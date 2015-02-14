@@ -557,12 +557,13 @@ void WPolar::Export(QTextStream &out, enumTextFileType FileType, bool bDataOnly)
 			out << strong;
 		}
 
-		Header = "   alpha      CL          CDi        CDv        CD         CY         Cl         Cm         Cn        Cni       QInf        XCP\n";
+		Header = "   alpha      Beta       CL          CDi        CDv        CD         CY         Cl         Cm         Cn        Cni       QInf        XCP\n";
 		out << Header;
 		for (j=0; j<m_Alpha.size(); j++)
 		{
-			strong = QString(" %1  %2  %3  %4  %5  %6  %7  %8  %9  %10  %11  %12\n")
+			strong = QString(" %1  %2  %3  %4  %5  %6  %7  %8  %9  %10  %11  %12  %13\n")
 					 .arg(m_Alpha[j],8,'f',3)
+					 .arg(m_Beta[j],8,'f',3)
 					 .arg(m_CL[j], 9,'f',6)
 					 .arg(m_ICd[j],9,'f',6)
 					 .arg(m_PCd[j],9,'f',6)
@@ -599,13 +600,14 @@ void WPolar::Export(QTextStream &out, enumTextFileType FileType, bool bDataOnly)
 			out << strong;
 		}
 
-		Header = "alpha, CL, CDi, CDv, CD, CY, Cl, Cm, Cn, Cni, QInf, XCP\n";
+		Header = "alpha, Beta, CL, CDi, CDv, CD, CY, Cl, Cm, Cn, Cni, QInf, XCP\n";
 		out << Header;
 		for (j=0; j<m_Alpha.size(); j++)
 		{
 //			strong.Format(" %8.3f,  %9.6f,  %9.6f,  %9.6f,  %9.6f,  %9.6f,  %9.6f,  %9.6f,  %9.6f,  %9.6f,  %8.4f,  %9.4f\n",
-			strong = QString(" %1,  %2,  %3,  %4,  %5,  %6,  %7,  %8,  %9,  %10,  %11,  %12\n")
+			strong = QString(" %1,  %2,  %3,  %4,  %5,  %6,  %7,  %8,  %9,  %10,  %11,  %12, %13\n")
 					 .arg(m_Alpha[j],8,'f',3)
+					 .arg(m_Beta[j], 8,'f',3)
 					 .arg(m_CL[j], 9,'f',6)
 					 .arg(m_ICd[j],9,'f',6)
 					 .arg(m_PCd[j],9,'f',6)
