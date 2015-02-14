@@ -25,6 +25,7 @@
 #include "../../misc/Units.h"
 #include "../Miarex.h"
 #include "StabPolarDlg.h"
+#include "AeroDataDlg.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -407,7 +408,6 @@ void StabPolarDlg::keyPressEvent(QKeyEvent *event)
 		default:
 			event->ignore();
 	}
-
 }
 
 
@@ -964,6 +964,9 @@ void StabPolarDlg::SetupLayout()
 				}
 				pAeroDataLayout->addLayout(pAeroUnitLayout);
 				pAeroDataLayout->addLayout(pAeroDataValuesLayout);
+				QPushButton *pFromData = new QPushButton(tr("From Altitude and Temperature"));
+				connect(pFromData, SIGNAL(clicked()), this, SLOT(OnAeroData()));
+				pAeroDataLayout->addWidget(pFromData);
 			}
 			pAeroDataGroupBox->setLayout(pAeroDataLayout);
 		}
@@ -1011,6 +1014,28 @@ void StabPolarDlg::SetupLayout()
 	}
 
 	setLayout(pMainLayout);
+}
+
+
+
+void StabPolarDlg::OnAeroData()
+{
+	AeroDataDlg dlg;
+	if(dlg.exec() == QDialog::Accepted)
+	{
+		s_StabPolar.m_Density = dlg.AirDensity();
+		s_StabPolar.m_Viscosity = dlg.KinematicViscosity();
+
+		if(m_pctrlUnit1->isChecked())
+		{
+			m_pctrlViscosity->SetValue(s_StabPolar.m_Viscosity);
+		}
+		else
+		{
+			m_pctrlViscosity->SetValue(s_StabPolar.m_Viscosity* 10.7182881);
+		}
+		SetDensity();
+	}
 }
 
 
