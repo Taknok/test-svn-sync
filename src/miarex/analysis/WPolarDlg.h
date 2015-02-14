@@ -69,6 +69,7 @@ private:
 private slots:
 	void OnOK();
 	void OnArea();
+	void OnAeroData();
 	void OnUnit();
 	void OnMethod();
 	void OnPolarName();

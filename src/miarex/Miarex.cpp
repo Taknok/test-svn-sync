@@ -26,6 +26,7 @@
 
 #include "Miarex.h"
 #include "./Objects3D.h"
+#include "./analysis/AeroDataDlg.h"
 #include "./view/GLCreateLists.h"
 #include "./view/GLCreateBodyLists.h"
 #include "../mainframe.h"
@@ -3582,6 +3583,9 @@ bool QMiarex::LoadSettings(QSettings *pSettings)
 		Panel::s_VortexPos     = pSettings->value("VortexPos").toDouble();
 		Panel::s_CoreSize      = pSettings->value("CoreSize", 0.000001).toDouble();
 		Wing::s_MinPanelSize   = pSettings->value("MinPanelSize").toDouble();
+
+		AeroDataDlg::s_Temperature = pSettings->value("Temperature", 288.15).toDouble();
+		AeroDataDlg::s_Altitude    = pSettings->value("Altitude", 0.0).toDouble();
 
 	}
 
@@ -9054,6 +9058,9 @@ bool QMiarex::SaveSettings(QSettings *pSettings)
 		pSettings->setValue("StabPolarCoGIyy", StabPolarDlg::s_StabPolar.m_CoGIyy);
 		pSettings->setValue("StabPolarCoGIzz", StabPolarDlg::s_StabPolar.m_CoGIzz);
 		pSettings->setValue("StabPolarCoGIxz", StabPolarDlg::s_StabPolar.m_CoGIxz);
+
+		pSettings->setValue("Temperature", AeroDataDlg::s_Temperature);
+		pSettings->setValue("Altitude", AeroDataDlg::s_Altitude);
 	}
 	pSettings->endGroup();
 

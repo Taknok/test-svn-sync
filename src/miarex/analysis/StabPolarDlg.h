@@ -82,6 +82,7 @@ private slots:
 	void OnCellChanged(QWidget *);
 	void OnMethod();
 	void OnAutoInertia();
+	void OnAeroData();
 
 
 private:

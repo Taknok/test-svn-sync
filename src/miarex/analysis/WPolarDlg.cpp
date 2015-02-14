@@ -24,6 +24,7 @@
 #include "../../misc/Units.h"
 #include "../Miarex.h"
 #include "WPolarDlg.h"
+#include "AeroDataDlg.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -909,6 +910,7 @@ void WPolarDlg::SetupLayout()
 					pAeroUnitLayout->addWidget(m_pctrlUnit1);
 					pAeroUnitLayout->addWidget(m_pctrlUnit2);
 					pAeroUnitLayout->addStretch();
+
 				}
 				QGridLayout *pAeroDataValuesLayout = new QGridLayout;
 				{
@@ -938,6 +940,9 @@ void WPolarDlg::SetupLayout()
 				}
 				pAeroDataLayout->addLayout(pAeroUnitLayout);
 				pAeroDataLayout->addLayout(pAeroDataValuesLayout);
+				QPushButton *pFromData = new QPushButton(tr("From Altitude and Temperature"));
+				connect(pFromData, SIGNAL(clicked()), this, SLOT(OnAeroData()));
+				pAeroDataLayout->addWidget(pFromData);
 			}
 			pAeroDataGroupBox->setLayout(pAeroDataLayout);
 		}
@@ -1181,7 +1186,25 @@ void WPolarDlg::SetReynolds()
 
 
 
+void WPolarDlg::OnAeroData()
+{
+	AeroDataDlg dlg;
+	if(dlg.exec() == QDialog::Accepted)
+	{
+		s_WPolar.m_Density = dlg.AirDensity();
+		s_WPolar.m_Viscosity = dlg.KinematicViscosity();
 
+		if(m_pctrlUnit1->isChecked())
+		{
+			m_pctrlViscosity->SetValue(s_WPolar.m_Viscosity);
+		}
+		else
+		{
+			m_pctrlViscosity->SetValue(s_WPolar.m_Viscosity* 10.7182881);
+		}
+		SetDensity();
+	}
+}
 
 
 
