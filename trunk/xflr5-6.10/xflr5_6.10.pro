@@ -116,7 +116,8 @@ SOURCES += \
 	src/design/LECircleDlg.cpp \
 	src/design/AFoil.cpp \
 	src/design/SplineCtrlsDlg.cpp \
-	src/design/AFoilTableDlg.cpp
+	src/design/AFoilTableDlg.cpp \
+    src/miarex/analysis/AeroDataDlg.cpp
 
 HEADERS += \
 	src/params.h \
@@ -232,7 +233,8 @@ HEADERS += \
 	src/design/LECircleDlg.h \
 	src/design/SplineCtrlsDlg.h \
 	src/design/FoilTableDelegate.h \
-	src/design/AFoilTableDlg.h
+	src/design/AFoilTableDlg.h \
+    src/miarex/analysis/AeroDataDlg.h
 
 
 TRANSLATIONS = translations/xflr5v6.ts \
