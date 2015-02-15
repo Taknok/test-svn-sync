@@ -53,7 +53,7 @@ public:
 
 	Foil *m_pBufferFoil;
 	QPushButton *OKButton, *CancelButton;
-	IntEdit *m_pctrlNumber;
+    QLineEdit *m_pctrlNumber;
 	IntEdit *m_pctrlPanels;
 	QLabel * m_pctrlMessage;
 
