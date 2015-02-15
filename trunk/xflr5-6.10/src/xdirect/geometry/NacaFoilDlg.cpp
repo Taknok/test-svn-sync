@@ -22,7 +22,7 @@
 #include "../analysis/XFoil.h"
 #include "NacaFoilDlg.h"
 #include <QGridLayout>
-
+#include <QtDebug>
 
 void *NacaFoilDlg::s_pXFoil;
 int NacaFoilDlg::s_Digits = 0;
@@ -38,7 +38,7 @@ NacaFoilDlg::NacaFoilDlg(QWidget *pParent) : QDialog(pParent)
 	m_pBufferFoil = NULL;
 
 	SetupLayout();
-	m_pctrlNumber->SetValue(s_Digits);
+    m_pctrlNumber->setText(QString("%1").arg(s_Digits,4));
 	m_pctrlPanels->SetValue(s_Panels);
 }
 
@@ -50,7 +50,8 @@ void NacaFoilDlg::SetupLayout()
 		QLabel *NacaNumber   = new QLabel(tr("4 or 5 digits"));
 		QLabel *PanelNumber  = new QLabel(tr("Number of Panels"));
 
-		m_pctrlNumber = new IntEdit(0, this);
+        m_pctrlNumber = new QLineEdit("0", this);
+        m_pctrlNumber->setValidator(new QIntValidator(m_pctrlNumber));
 		m_pctrlPanels = new IntEdit(100, this);
 		m_pctrlPanels->SetMax(IQX);
 
@@ -99,7 +100,12 @@ void NacaFoilDlg::SetupLayout()
 
 void NacaFoilDlg::EditingFinished()
 {
-	s_Digits = locale().toInt(m_pctrlNumber->text().trimmed());
+//	s_Digits = locale().toInt(m_pctrlNumber->text().trimmed());
+
+    bool bOK;
+    int d = m_pctrlNumber->text().toInt(&bOK);
+    if(bOK) s_Digits = d;
+
 	s_Panels = m_pctrlPanels->Value();
 
 	GenerateFoil();
