@@ -13448,4 +13448,3 @@ void XFoil::CreateXBL(double xs[IVX][3],int &nside1, int &nside2)
 		xs[iblte[1]+iblw][1] = xs[iblte[2]+iblw][2];
 }
 
-
