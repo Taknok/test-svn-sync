@@ -49,6 +49,7 @@
 #define MAXPOLARGRAPHS 5
 
 
+
 /**
 * @class QXDirect
 * @brief This class is the general interface for Foil direct analysis.
@@ -205,7 +206,7 @@ protected:
 	void FillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bInviscid=false);
 
 	void LoadSettings(QSettings *pSettings);
-
+	CVector MousetoReal(QPoint point);
 	void PaintBL(QPainter &painter, OpPoint* pOpPoint, double scale);
 	void PaintPressure(QPainter &painter, OpPoint* pOpPoint, double scale);
 	void PaintOpPoint(QPainter &painter);
@@ -306,7 +307,6 @@ private:
 	bool m_bYPressed;          /**< true if the 'Y' key is pressed */
 	bool m_bHighlightOpp;      /**< true if the active operating point should be highlighted on the curves of the polar graphs */
 
-
 	int m_posAnimate;          /**< the current aoa in the animation */
 	int m_XFoilVar;            /**< defines the variable for current XFoil results */
 
@@ -377,6 +377,7 @@ private:
 	QPoint m_PolarLegendOffset; /**< the offset position for the legend display in the client area */
 
 	XFoil *m_pXFoil;		    /**< a pointer to the unique instance of the XFoil object */
+
 };
 
 

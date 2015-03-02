@@ -225,8 +225,6 @@ public:
 	bool ViscalEnd();
 	bool ViscousIter();
 
-
-
 	XFoil();
 	virtual ~XFoil();
 

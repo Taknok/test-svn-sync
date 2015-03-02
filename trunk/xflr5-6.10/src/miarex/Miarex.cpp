@@ -902,7 +902,7 @@ void QMiarex::CreateWOppCurves()
 		maxlift = m_pCurPOpp->m_pPlaneWOpp[0]->GetMaxLift();
 		int nStart;
 		if(m_pCurPOpp->m_AnalysisMethod==LLTMETHOD) nStart = 1;
-		else nStart = 0;
+		else                                        nStart = 0;
 
 		for(int ig=0; ig<MAXGRAPHS; ig++)
 		{
