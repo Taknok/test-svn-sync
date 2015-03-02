@@ -2081,7 +2081,6 @@ bool PanelAnalysis::SolveUnitRHS()
 	Crout_LU_with_Pivoting_Solve(m_aij, m_wRHS, m_Index, m_RHS+Size, Size, &s_bCancel);
 
 
-
 	memcpy(m_uRHS, m_RHS,           m_MatSize*sizeof(double));
 	memcpy(m_wRHS, m_RHS+m_MatSize, m_MatSize*sizeof(double));
 

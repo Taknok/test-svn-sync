@@ -322,11 +322,19 @@ void Body::ExportGeometry(QTextStream &outStream, int type, double mtoUnit, int 
 			v = (double)l / (double)(nh-1);
 			GetPoint(u,  v, true, Point);
 
-			strong = QString("   %1"+str+"     %2"+str+"     %3\n")
+			//increased precision i.a.w. request #18
+/*			strong = QString("   %1"+str+"     %2"+str+"     %3\n")
 					 .arg(Point.x * mtoUnit,10,'f',3)
 					 .arg(Point.y * mtoUnit,10,'f',3)
 					 .arg(Point.z * mtoUnit,10,'f',3);
-			outStream  << (strong);
+			outStream  << (strong);*/
+
+
+			strong = QString(" %1"+str+" %2"+str+" %3\n")
+					    .arg(Point.x * mtoUnit,16,'f',8)
+					    .arg(Point.y * mtoUnit,16,'f',8)
+					    .arg(Point.z * mtoUnit,16,'f',8);
+			outStream << (strong);
 		}
 		outStream  << ("\n");
 	}

@@ -1232,18 +1232,37 @@ void QXDirect::LoadSettings(QSettings *pSettings)
  * @param event the QMouseEvent
  */
 void QXDirect::doubleClickEvent(QPoint pos)
-{	
-	if(!m_bPolarView)
+{
+//	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;	if(!m_bPolarView)
 	{
-		if (!m_CpGraph.IsInDrawRect(pos)) return;
+		if (!m_CpGraph.IsInDrawRect(pos))
+		{
+			return;
+		}
 	}
-
 	m_pCurGraph = GetGraph(pos);
 	if(!m_pCurGraph) return;
 
 	OnGraphSettings();
 }
 
+
+
+/**
+ * Converts screen coordinates to viewport coordinates
+ * @param point the screen coordinates
+ * @return the viewport coordinates
+ */
+CVector QXDirect::MousetoReal(QPoint point)
+{
+	CVector Real;
+
+	Real.x =  (point.x() - m_FoilOffset.x())/m_fFoilScale;
+	Real.y = -(point.y() - m_FoilOffset.y())/m_fFoilScale;
+	Real.z = 0.0;
+
+	return Real;
+}
 
 
 /**
@@ -1303,7 +1322,6 @@ void QXDirect::mouseMoveEvent(QMouseEvent *event)
 		}
 		m_PointDown = pt;
 	}
-
 	else if (Foil::curFoil() && ((event->buttons() & Qt::MidButton) || event->modifiers().testFlag(Qt::AltModifier)))
 	{
 		// we zoom the graph or the foil		
@@ -1343,7 +1361,11 @@ void QXDirect::mouseMoveEvent(QMouseEvent *event)
 	}
 	else
 	{
-		pMainFrame->statusBar()->clearMessage();
+		if(!Foil::curFoil()) return;
+
+		//convert screen coordinates to foil coordinates
+		CVector real = MousetoReal((event->pos()));
+		pMainFrame->statusBar()->showMessage(QString("X = %1, Y = %2").arg(real.x).arg(real.y));
 	}
 
 	event->accept();
@@ -5130,8 +5152,8 @@ void QXDirect::PaintOpPoint(QPainter &painter)
 		NeutralPen.setStyle(getStyle(m_iNeutralStyle));
 		NeutralPen.setWidth(m_iNeutralWidth);
 		painter.setPen(NeutralPen);
-		painter.drawLine(m_rCltRect.left(),m_FoilOffset.y(),
-						 m_rCltRect.right(),m_FoilOffset.y());
+		painter.drawLine(m_rCltRect.left(),  m_FoilOffset.y(),
+					  m_rCltRect.right(), m_FoilOffset.y());
 	}
 
 	if (!Foil::curFoil() || !Foil::curFoil()->foilName().length())

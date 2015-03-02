@@ -146,6 +146,8 @@ private:
 
 	double qincom(double qc, double qinf, double tklam);
 
+	CVector MousetoReal(QPoint point);
+
 private:
 
 	MinTextEdit *m_pctrlOutput;

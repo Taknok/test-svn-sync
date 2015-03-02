@@ -364,11 +364,13 @@ void WPolar::CalculatePoint(int i)
 
 	if(m_CL[i]>0.0) {
 		m_1Cl[i]    = (double)(1./sqrt(m_CL[i]));
-		m_Cl32Cd[i] = (double)pow(m_CL[i],1.5)/m_TCd[i];
+//		m_Cl32Cd[i] = (double)pow(m_CL[i],1.5)/m_TCd[i];
+		m_Cl32Cd[i] = sqrt(m_CL[i]*m_CL[i]*m_CL[i])/m_TCd[i];
 	}
 	else {
 		m_1Cl[i]    = -1.0;//will not be plotted
-		m_Cl32Cd[i] =  -(double)pow(-m_CL[i],1.5)/m_TCd[i];
+//		m_Cl32Cd[i] =  -(double)pow(-m_CL[i],1.5)/m_TCd[i];
+		m_Cl32Cd[i] = -sqrt(-m_CL[i]*m_CL[i]*m_CL[i])/m_TCd[i];
 	}
 
 	if(qAbs(m_CL[i])>0.) m_Gamma[i]  =  atan(m_TCd[i]/m_CL[i]) * 180.0/PI;

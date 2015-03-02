@@ -703,6 +703,7 @@ void QXInverse::doubleClickEvent(QPoint pos)
 void QXInverse::mouseMoveEvent(QMouseEvent *event)
 {
 //	if(!hasFocus()) setFocus();
+	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
 	static double x1,y1, xmin, xmax, ymin,  ymax, xpt, ypt, scale, ux, uy, unorm, vx, vy, vnorm, scal;
 	static double xx0,xx1,xx2,yy0,yy1,yy2, dist;
 	static int a, n, ipt;
@@ -954,13 +955,19 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 			UpdateView();
 		}
 	}
+
 	if(m_QGraph.IsInDrawRect(point))
 	{
-		MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
 		pMainFrame->statusBar()->showMessage(QString("X = %1, Y = %2").arg(m_QGraph.ClientTox(event->x())).arg(m_QGraph.ClientToy(event->y())));
 		m_pCurGraph = &m_QGraph;
 	}
-	else m_pCurGraph = NULL;
+	else
+	{
+		m_pCurGraph = NULL;
+		//convert screen coordinates to foil coordinates
+		CVector real = MousetoReal((event->pos()));
+		pMainFrame->statusBar()->showMessage(QString("X = %1, Y = %2").arg(real.x).arg(real.y));
+	}
 }
 
 
@@ -1250,6 +1257,23 @@ void QXInverse::mouseReleaseEvent(QMouseEvent *event)
 	UpdateView();
 }
 
+
+
+/**
+ * Converts screen coordinates to viewport coordinates
+ * @param point the screen coordinates
+ * @return the viewport coordinates
+ */
+CVector QXInverse::MousetoReal(QPoint point)
+{
+	CVector Real;
+
+	Real.x =  (point.x() - m_ptOffset.x())/m_fScale;
+	Real.y = -(point.y() - m_ptOffset.y())/m_fScale;
+	Real.z = 0.0;
+
+	return Real;
+}
 
 
 /**
