@@ -5260,6 +5260,8 @@ void QMiarex::OnDeleteCurPlane()
 
 	Objects3D::deletePlane(m_pCurPlane);
 	m_pCurPlane = NULL;
+    m_pCurWPolar = NULL;
+    m_pCurPOpp = NULL;
 
 	SetPlane();
 	pMainFrame->UpdatePlaneListBox();
