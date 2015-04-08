@@ -347,10 +347,10 @@ void ThreeDWidget::paintEvent(QPaintEvent *event)
 	if(m_iView==GLMIAREXVIEW)
 	{
 		QMiarex* pMiarex = (QMiarex*)s_pMiarex;
-		pMiarex->PaintPlaneLegend(painter, rect());
-		pMiarex->PaintPlaneOppLegend(painter, rect());
-		pMiarex->PaintCpLegendText(painter);
-		pMiarex->PaintPanelForceLegendText(painter);
+//		pMiarex->PaintPlaneLegend(painter, rect());
+//		pMiarex->PaintPlaneOppLegend(painter, rect());
+//		pMiarex->PaintCpLegendText(painter);
+//		pMiarex->PaintPanelForceLegendText(painter);
 
 		if(pMiarex->m_bResetTextLegend)
 		{
