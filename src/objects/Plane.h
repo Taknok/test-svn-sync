@@ -131,7 +131,7 @@ public:
 
 	double mac()           {return m_Wing[0].m_MAChord;}
 	double span()          {return m_Wing[0].m_PlanformSpan;}
-	double rootChord()     {return m_Wing[0].m_Chord[0];}
+	double rootChord()     {return m_Wing[0].RootChord();}
 	double tipChord()      {return m_Wing[0].TipChord();}
 
 	double projectedArea() {return m_Wing[0].m_ProjectedArea;}

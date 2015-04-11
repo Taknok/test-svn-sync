@@ -75,7 +75,7 @@ private:
 
 private slots:
 	void OnTempUnit();
-	void updateData();
+	void updateResults();
 
 
 private:

@@ -3318,9 +3318,9 @@ void QMiarex::keyPressEvent(QKeyEvent *event)
 			break;
 		}
 
-/*        case Qt::Key_F1:
+		case Qt::Key_F1:
         {
-            QSize sz(m_PixText.size());
+/*          QSize sz(m_PixText.size());
             QImage img(sz, QImage::Format_RGB32);
             QPainter painter(&img);
             QString FileName, Filter;
@@ -3341,8 +3341,8 @@ void QMiarex::keyPressEvent(QKeyEvent *event)
             painter.drawPixmap(0,0,m_PixText);
 
             img.save(FileName);
-            break;
-        }*/
+			break;*/
+		}
 
 		default:
 			//			QWidget::keyPressEvent(event);
@@ -5552,6 +5552,8 @@ void QMiarex::OnEditCurBody()
 	//then modifications are automatically recorded
 	m_pCurPlane->Duplicate(pModPlane);
 	Objects3D::deletePlaneResults(m_pCurPlane);// will also set new surface and Aerochord in WPolars
+	m_pCurWPolar = NULL;
+	m_pCurPOpp = NULL;
 	SetPlane();
 
 	s_bResetCurves = true;
@@ -5643,6 +5645,9 @@ void QMiarex::OnEditCurPlane()
 			m_pCurPlane->Duplicate(pModPlane);
 
 			Objects3D::deletePlaneResults(m_pCurPlane);// will also set new surface and Aerochord in WPolars
+			m_pCurWPolar = NULL;
+			m_pCurPOpp = NULL;
+
 			m_bResetglGeom = true;
 			m_bResetglMesh = true;
 //			m_bResetglOpp  = true;
@@ -5671,7 +5676,7 @@ void QMiarex::OnEditCurPlane()
  */
 void QMiarex::OnEditCurWing()
 {
-	if(!m_pCurPlane)	return;
+	if(!m_pCurPlane) return;
 
 	int i;
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
@@ -5707,7 +5712,7 @@ void QMiarex::OnEditCurWing()
 	plDlg.m_bAcceptName = false;
 	plDlg.InitDialog(pModPlane->wing());
 
-	ModDlg mdDlg(pMainFrame);
+
 
 	if(QDialog::Accepted == plDlg.exec())
 	{
@@ -5722,6 +5727,7 @@ void QMiarex::OnEditCurWing()
 		{
 			if(bHasResults)
 			{
+				ModDlg mdDlg(pMainFrame);
 				mdDlg.m_Question = tr("The modification will erase all results associated to this Plane.\nContinue ?");
 				mdDlg.InitDialog();
 				int Ans = mdDlg.exec();
@@ -5748,6 +5754,9 @@ void QMiarex::OnEditCurWing()
 			m_pCurPlane->Duplicate(pModPlane);
 
 			Objects3D::deletePlaneResults(m_pCurPlane);// will also set new surface and Aerochord in WPolars
+			m_pCurWPolar = NULL;
+			m_pCurPOpp = NULL;
+
 			m_bResetglGeom = true;
 			m_bResetglMesh = true;
 //			m_bResetglOpp  = true;
@@ -5764,12 +5773,113 @@ void QMiarex::OnEditCurWing()
 		UpdateView();
 	}
 
-	delete pModPlane; // clean up
-
+	delete pModPlane; // Clean up
 }
 
 
 
+/**
+ * The user has requested that the size of the active wing be scaled.
+ * Launches the dialog box, creates a new wing, and overwrites the existing wing or plane,
+ * or creates a new one i.a.w. user instructions.
+ */
+void QMiarex::OnScaleWing()
+{
+	if(!m_pCurPlane) return;
+	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
+
+	WPolar *pWPolar;
+	PlaneOpp* pPOpp;
+	bool bHasResults = false;
+	for (int i=0; i< m_poaWPolar->size(); i++)
+	{
+		pWPolar = (WPolar*)m_poaWPolar->at(i);
+		if(pWPolar->m_Alpha.size() && pWPolar->planeName() == m_pCurPlane->planeName())
+		{
+			bHasResults = true;
+			break;
+		}
+	}
+
+	for (int i=0; i<m_poaPOpp->size(); i++)
+	{
+		pPOpp = (PlaneOpp*)m_poaPOpp->at(i);
+		if(pPOpp->planeName() == m_pCurPlane->planeName())
+		{
+			bHasResults = true;
+			break;
+		}
+	}
+
+	Plane* pModPlane= new Plane;
+	pModPlane->Duplicate(m_pCurPlane);
+
+	WingScaleDlg wsDlg(pMainFrame);
+	wsDlg.InitDialog(pModPlane->planformSpan(),
+					 pModPlane->rootChord(),
+					 pModPlane->wing()->AverageSweep(),
+					 pModPlane->wing()->TipTwist(),
+					 pModPlane->planformArea(),
+					 pModPlane->aspectRatio());
+
+	if(QDialog::Accepted == wsDlg.exec())
+	{
+		if (wsDlg.m_bSpan || wsDlg.m_bChord || wsDlg.m_bSweep || wsDlg.m_bTwist || wsDlg.m_bArea || wsDlg.m_bAR)
+		{
+
+			Plane *pNewPlane = new Plane;
+			pNewPlane->Duplicate(m_pCurPlane);
+			if(wsDlg.m_bSpan)  pNewPlane->wing()->ScaleSpan(wsDlg.m_NewSpan);
+			if(wsDlg.m_bChord) pNewPlane->wing()->ScaleChord(wsDlg.m_NewChord);
+			if(wsDlg.m_bSweep) pNewPlane->wing()->ScaleSweep(wsDlg.m_NewSweep);
+			if(wsDlg.m_bTwist) pNewPlane->wing()->ScaleTwist(wsDlg.m_NewTwist);
+			if(wsDlg.m_bArea)  pNewPlane->wing()->ScaleArea(wsDlg.m_NewArea);
+			if(wsDlg.m_bAR)    pNewPlane->wing()->ScaleAR(wsDlg.m_NewAR);
+			pNewPlane->ComputePlane();
+
+			if(bHasResults)
+			{
+				ModDlg mdDlg(pMainFrame);
+				mdDlg.m_Question = tr("The modification will erase all results associated to this Plane.\nContinue ?");
+				mdDlg.InitDialog();
+				int Ans = mdDlg.exec();
+
+				if (Ans == QDialog::Rejected)
+				{
+					//restore geometry
+					delete pModPlane; // clean up
+					return;
+				}
+				else if(Ans==20)
+				{
+					//save mods to a new plane object
+					m_pCurPlane = Objects3D::setModPlane(pModPlane);
+
+					SetPlane();
+					pMainFrame->UpdatePlaneListBox();
+					UpdateView();
+					return;
+				}
+			}
+
+			//then modifications are automatically recorded
+			m_pCurPlane->Duplicate(pModPlane);
+
+			Objects3D::deletePlaneResults(m_pCurPlane);// will also set new surface and Aerochord in WPolars
+			m_pCurWPolar = NULL;
+			m_pCurPOpp = NULL;
+
+			m_bResetglGeom = true;
+			m_bResetglMesh = true;
+			s_bResetCurves = true;
+		}
+
+		s_bResetCurves = true;
+
+		UpdateView();
+	}
+	delete pModPlane; // Clean up
+}
 
 
 
@@ -6999,7 +7109,7 @@ void QMiarex::OnRenameCurPlane()
 	if(!m_pCurPlane)	return;
 	Objects3D::renamePlane(m_pCurPlane->planeName());
 	pMainFrame->UpdatePlaneListBox();
-	m_bResetglLegend = true;
+	m_bResetTextLegend = true;
 	UpdateView();
 
     emit projectModified();
@@ -7118,49 +7228,6 @@ void QMiarex::OnResetWPlrLegend()
 	UpdateView();
 }
 
-/**
- * The user has requested that the size of the active wing be scaled.
- * Launches the dialog box, creates a new wing, and overwrites the existing wing or plane,
- * or creates a new one i.a.w. user instructions.
- */
-void QMiarex::OnScaleWing()
-{
-	if(!m_pCurPlane) return;
-	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-
-	WingScaleDlg wsDlg(pMainFrame);
-	wsDlg.InitDialog(m_pCurPlane->planformSpan(),
-				  m_pCurPlane->rootChord(),
-				  m_pCurPlane->wing()->AverageSweep(),
-				  m_pCurPlane->wing()->TipTwist(),
-				  m_pCurPlane->planformArea(),
-				  m_pCurPlane->aspectRatio());
-
-	if(QDialog::Accepted == wsDlg.exec())
-	{
-		if (wsDlg.m_bSpan || wsDlg.m_bChord || wsDlg.m_bSweep || wsDlg.m_bTwist || wsDlg.m_bArea || wsDlg.m_bAR)
-		{
-			Plane *pNewPlane = new Plane;
-			pNewPlane->Duplicate(m_pCurPlane);
-			if(wsDlg.m_bSpan)  pNewPlane->wing()->ScaleSpan(wsDlg.m_NewSpan);
-			if(wsDlg.m_bChord) pNewPlane->wing()->ScaleChord(wsDlg.m_NewChord);
-			if(wsDlg.m_bSweep) pNewPlane->wing()->ScaleSweep(wsDlg.m_NewSweep);
-			if(wsDlg.m_bTwist) pNewPlane->wing()->ScaleTwist(wsDlg.m_NewTwist);
-			if(wsDlg.m_bArea) pNewPlane->wing()->ScaleArea(wsDlg.m_NewArea);
-			if(wsDlg.m_bAR) pNewPlane->wing()->ScaleAR(wsDlg.m_NewAR);
-			pNewPlane->ComputePlane();
-
-			m_pCurPlane = Objects3D::setModPlane(pNewPlane);
-			SetPlane();
-			pMainFrame->UpdatePlaneListBox();
-
-			emit projectModified();
-		}
-
-		s_bResetCurves = true;
-		UpdateView();
-	}
-}
 
 
 /**

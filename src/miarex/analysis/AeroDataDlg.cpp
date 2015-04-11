@@ -62,7 +62,7 @@ AeroDataDlg::AeroDataDlg(QWidget *parent) : QDialog(parent)
 
 	m_pctrlAltitude->SetValue(s_Altitude);
 
-	updateData();
+	updateResults();
 }
 
 
@@ -77,8 +77,8 @@ double AeroDataDlg::AirTemperature(double Altitude)   //[K]
 double AeroDataDlg::AirPressure(double Altitude)    //[Pa]
 {
 // Troposphere only <= 11000 m
-	return STANDARDPRESSURE * pow((1 - STANDARDLAPSERATE * Altitude / STANDARDTEMPERATURE),
-							(STANDARDGRAVITY * DryAirMolarMass / UniversalGasConstant / STANDARDLAPSERATE));
+	return STANDARDPRESSURE * pow((AirTemperature(Altitude) / STANDARDTEMPERATURE),
+								  (STANDARDGRAVITY * DryAirMolarMass / UniversalGasConstant / STANDARDLAPSERATE));
 }
 
 
@@ -98,7 +98,7 @@ double AeroDataDlg::DynamicViscosity(double Altitude, double temp)     //[kg/m3]
 
 	double T = AirTemperature(Altitude) + TemperatureCorrection(temp);
 	return    ReferenceViscosity * (STANDARDTEMPERATURE + SutherlandsConstant)
-		  / (T + SutherlandsConstant) * pow((T / STANDARDTEMPERATURE), 1.5);
+								 / (T                   + SutherlandsConstant) * pow((T / STANDARDTEMPERATURE), 1.5);
 }
 
 
@@ -137,7 +137,7 @@ double AeroDataDlg::AirDensity()
 
 void AeroDataDlg::setupLayout()
 {
-	QLabel *pValid = new QLabel(tr("Applicable in the troposphere\n i.e. Altitude < 1100m"));
+	QLabel *pValid = new QLabel(tr("Applicable in the troposphere\n i.e. Altitude < 11000m"));
 	QFont TitleFont("Arial");
 	TitleFont.setBold(true);
 	pValid->setFont(TitleFont);
@@ -160,8 +160,8 @@ void AeroDataDlg::setupLayout()
 
 		m_pctrlTemperature = new DoubleEdit(s_Temperature, 1, this);
 		m_pctrlAltitude    = new DoubleEdit(s_Altitude, 1, this);
-		connect(m_pctrlTemperature, SIGNAL(editingFinished()), this, SLOT(updateData()));
-		connect(m_pctrlAltitude,    SIGNAL(editingFinished()), this, SLOT(updateData()));
+		connect(m_pctrlTemperature, SIGNAL(editingFinished()), this, SLOT(updateResults()));
+		connect(m_pctrlAltitude,    SIGNAL(editingFinished()), this, SLOT(updateResults()));
 
 		m_pctrlAirPressure        = new QLabel("1000.0");
 		m_pctrlAirDensity         = new QLabel("1.225");
@@ -261,7 +261,7 @@ void AeroDataDlg::keyPressEvent(QKeyEvent *event)
 		{
 			if(!m_pOKButton->hasFocus() && !m_pCancelButton->hasFocus())
 			{
-//				updateData();
+//				updateResults();
 				m_pOKButton->setFocus();
 				return;
 			}
@@ -282,7 +282,7 @@ void AeroDataDlg::keyPressEvent(QKeyEvent *event)
 }
 
 
-void AeroDataDlg::updateData()
+void AeroDataDlg::updateResults()
 {
 
 	if(m_pctrlTempUnit->currentIndex()==0)
