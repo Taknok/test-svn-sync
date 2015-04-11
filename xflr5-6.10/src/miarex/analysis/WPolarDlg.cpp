@@ -294,7 +294,9 @@ void WPolarDlg::InitDialog(Plane *pPlane, WPolar *pWPolar)
 		m_pctrlRefArea->SetValue(s_WPolar.m_referenceArea*Units::m2toUnit());
 		m_pctrlRefSpan->SetValue(s_WPolar.m_referenceSpanLength*Units::mtoUnit());
 	}
-	m_pctrlRefChord->SetValue(m_pPlane->mac()*Units::mtoUnit());
+
+	s_WPolar.m_referenceChordLength = m_pPlane->mac();
+	m_pctrlRefChord->SetValue(s_WPolar.m_referenceChordLength*Units::mtoUnit());
 
 	s_WPolar.m_bWakeRollUp = false;
 
@@ -615,6 +617,7 @@ void WPolarDlg::ReadValues()
 		s_WPolar.m_referenceArea       = m_pctrlRefArea->Value() /Units::m2toUnit();
 		s_WPolar.m_referenceSpanLength = m_pctrlRefSpan->Value() /Units::mtoUnit();
 	}
+
 	s_WPolar.m_referenceChordLength = m_pctrlRefChord->Value() /Units::mtoUnit();
 
 	SetDensity();
@@ -915,17 +918,17 @@ void WPolarDlg::SetupLayout()
 				QGridLayout *pAeroDataValuesLayout = new QGridLayout;
 				{
 					m_pctrlRho = new QLabel("r =");
-					m_pctrlDensity = new DoubleEdit(1.225,3);
+					m_pctrlDensity = new DoubleEdit(1.225,6);
 					m_pctrlDensityUnit = new QLabel("kg/m3");
 					m_pctrlNu = new QLabel("n =");
 					m_pctrlRho->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 					m_pctrlNu->setAlignment(Qt::AlignRight | Qt::AlignCenter);
-					m_pctrlViscosity = new DoubleEdit(1.500e-5,3);
+					m_pctrlViscosity = new DoubleEdit(1.500e-5,6);
 					m_pctrlViscosityUnit = new QLabel("m2/s");
 					m_pctrlRho->setFont(symbolFont);
 					m_pctrlNu->setFont(symbolFont);
-					m_pctrlDensity->SetPrecision(5);
-					m_pctrlViscosity->SetPrecision(3);
+					m_pctrlDensity->SetPrecision(6);
+					m_pctrlViscosity->SetPrecision(6);
 					m_pctrlDensity->SetMin(0.0);
 					m_pctrlViscosity->SetMin(0.0);
 					pAeroDataValuesLayout->addWidget(m_pctrlRho,1,1);
