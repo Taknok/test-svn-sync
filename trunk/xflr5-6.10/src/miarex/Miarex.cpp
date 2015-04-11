@@ -2215,7 +2215,7 @@ QGraph* QMiarex::GetGraph(QPoint &pt)
 
 /**
 * Calls the existing OpenGL lists for display in the 3D view.
-* The list have been created previously by a call to GLDraw3D
+* The lists have been created previously by a call to GLDraw3D
 */
 void QMiarex::GLCallViewLists()
 {
@@ -8481,7 +8481,6 @@ void QMiarex::PaintPlaneOppLegend(QPainter &painter, QRect drawRect)
 	dwidth = fm.averageCharWidth()*50;
 	int D = 0;
 
-	D = 0;
 	int RightPos = drawRect.right()-margin - dwidth;
 	int ZPos	 = drawRect.height()-13*dheight;
 
@@ -8619,9 +8618,9 @@ void QMiarex::PaintXTr(QPainter & painter, QPoint ORef, double scale)
 	O.rx() = offset.x();
 	O.ry() = offset.y();
 
-    QPen TopPen(W3dPrefsDlg::s_TopColor);
+	QPen TopPen(W3dPrefsDlg::s_TopColor);
 	TopPen.setStyle(getStyle(W3dPrefsDlg::s_TopStyle));
-    TopPen.setWidth(W3dPrefsDlg::s_TopWidth);
+	TopPen.setWidth(W3dPrefsDlg::s_TopWidth);
 	painter.setPen(TopPen);
 
 	if (m_bXTop)
@@ -10604,8 +10603,8 @@ void QMiarex::PaintCpLegendText(QPainter &painter)
 
 
 /**
- * Paints and overlays the labels associated to the Panel forces color scale in the 3D view
- * @param painter the painter associated to the 3D widget
+ * Paints the labels associated to the Panel forces color scale in the 3D view
+ * @param painter the painter to write on
  */
 void QMiarex::PaintPanelForceLegendText(QPainter &painter)
 {

@@ -167,7 +167,7 @@ private:
 	void ResizeTables();
 
 private:
-	bool SetBody(Body *pBody);
+	bool SetBody(Body *pBody=NULL);
 
 	void ClearStack(int pos=0);
 	void SetPicture();
