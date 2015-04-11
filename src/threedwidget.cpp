@@ -64,7 +64,7 @@ ThreeDWidget::ThreeDWidget(QWidget *parent)
 
 		if(format().profile() == QGLFormat::NoProfile)                 Trace("Opengl::CompatibilityProfile::NoProfile");
 		else if(format().profile() == QGLFormat::CoreProfile)          Trace("Opengl::CompatibilityProfile::CoreProfile");
-		else if(format().profile()== QGLFormat::CompatibilityProfile) Trace("Opengl::CompatibilityProfile::CompatibilityProfile");
+		else if(format().profile()== QGLFormat::CompatibilityProfile)  Trace("Opengl::CompatibilityProfile::CompatibilityProfile");
 
 		Trace("\n\n");
 
@@ -219,12 +219,12 @@ void ThreeDWidget::wheelEvent(QWheelEvent *event)
 	if(event->delta()>0)
 	{
 		if(!Settings::s_bReverseZoom) zoomFactor = 1./1.06;
-		else                           zoomFactor = 1.06;
+		else                          zoomFactor = 1.06;
 	}
 	else
 	{
 		if(!Settings::s_bReverseZoom) zoomFactor = 1.06;
-		else                           zoomFactor = 1./1.06;
+		else                          zoomFactor = 1./1.06;
 	}
 
 	if(m_iView == GLMIAREXVIEW)
@@ -357,8 +357,8 @@ void ThreeDWidget::paintEvent(QPaintEvent *event)
 			pMiarex->DrawTextLegend();
 		}
 
-		painter.setBackgroundMode(Qt::TransparentMode);
-		painter.setOpacity(1);
+//		painter.setBackgroundMode(Qt::TransparentMode);
+//		painter.setOpacity(1);
 		painter.drawPixmap(0,0, pMiarex->m_PixText);
 
 	}

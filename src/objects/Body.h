@@ -72,6 +72,7 @@ public:
 	double Getv(double u, CVector r, bool bRight);
 	double GetSectionArcLength(double x);
 
+	CVector CenterPoint(double u);
 	CVector LeadingPoint();
 
 	void ClearPointMasses();
