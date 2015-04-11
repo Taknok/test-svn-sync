@@ -314,6 +314,7 @@ void GL3dBodyDlg::FillFrameTableRow(int row)
 
 	ind = m_pFrameModel->index(row, 1, QModelIndex());
 	m_pFrameModel->setData(ind, m_pBody->m_xPanels[row]);
+
 }
 
 
@@ -2426,9 +2427,9 @@ void GL3dBodyDlg::OnExportBodyGeom()
 
 void GL3dBodyDlg::OnImportBodyDef()
 {
-	Body *pNewBody = new Body();
-	if(!pNewBody) return;
+	Body memBody;
 
+	memBody.Duplicate(m_pBody);
 
 	double mtoUnit = 1.0;
 
@@ -2462,15 +2463,24 @@ void GL3dBodyDlg::OnImportBodyDef()
 
 	QTextStream in(&XFile);
 
-	if(!pNewBody->ImportDefinition(in, mtoUnit))
+	if(!m_pBody->ImportDefinition(in, mtoUnit))
 	{
-		delete pNewBody;
+		m_pBody->Duplicate(&memBody);
 		return;
 	}
 
 	XFile.close();
 
-	SetBody(pNewBody);
+	SetBody();
+
+	m_bResetglBodyPoints = true;
+	m_bResetglBody       = true;
+	m_bResetglBody2D     = true;
+	m_bResetglBodyMesh   = true;
+
+	m_bChanged = true;
+
+	UpdateView();
 }
 
 
@@ -3149,8 +3159,7 @@ bool GL3dBodyDlg::InitDialog(Body *pBody)
 
 bool GL3dBodyDlg::SetBody(Body *pBody)
 {
-	m_pBody = pBody;
-	if(!m_pBody) return false;
+	if(pBody) m_pBody = pBody;
 
 	if(m_pBody->m_LineType==BODYPANELTYPE)       m_pctrlFlatPanels->setChecked(true);
 	else if(m_pBody->m_LineType==BODYSPLINETYPE) m_pctrlBSplines->setChecked(true);
@@ -3163,7 +3172,7 @@ bool GL3dBodyDlg::SetBody(Body *pBody)
 	FillFrameDataTable();
 	FillPointDataTable();
 
-	m_pctrlBodyName->setText(pBody->m_BodyName);
+	m_pctrlBodyName->setText(m_pBody->m_BodyName);
 
 	TakePicture();
 

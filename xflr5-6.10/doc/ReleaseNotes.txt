@@ -16,7 +16,8 @@
 
 
 
-xflr5 v6.10.04 November xxth, 2014
+xflr5 v6.10.04 April xxth, 2015
+	- Corrected a potential crash bug when deleting a plane with polars
 	- Minor corrections and improvements
 
 

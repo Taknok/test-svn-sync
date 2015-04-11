@@ -19,7 +19,7 @@
 
 *****************************************************************************/
 
-
+#include "../mainframe.h"
 #include "Body.h"
 #include "../globals.h"
 #include <math.h>
@@ -392,6 +392,16 @@ double Body::GetSectionArcLength(double x)
 	return length*2.0; //to account for left side.
 }
 
+
+CVector Body::CenterPoint(double u)
+{
+	CVector Top, Bot;
+	GetPoint(u, 0.0, true, Top);
+	GetPoint(u, 1.0, true, Bot);
+	return (Top+Bot)/2.0;
+}
+
+
 /**
  * Calculates the absolute position of a point on the NURBS from its parametric coordinates.
  * @param u the value of the parameter in the longitudinal direction
@@ -419,11 +429,11 @@ double Body::Getu(double x)
 
 /**
  * For a NURBS surface: Given a value of the longitudinal parameter and a vector in the yz plane, returns the
- * value of the hoop paramater for the intersection of a ray originanating on the x-axis
+ * value of the hoop parameter for the intersection of a ray originating on the x-axis
  * and directed along the input vector
  * @param u in input, the value of the longitudinal parameter
  * @param r the vector which defines the ray's direction
- * @param bRight true if the intersection should be calculated on the Body's right side, and flase if on the left
+ * @param bRight true if the intersection should be calculated on the Body's right side, and false if on the left
  * @return the value of the hoop parameter
  */
 double Body::Getv(double u, CVector r, bool bRight)
@@ -440,11 +450,15 @@ double Body::Getv(double u, CVector r, bool bRight)
 	r.Normalize();
 	v1 = 0.0; v2 = 1.0;
 
+	CVector Origin = CenterPoint(u);
+
 	while(qAbs(sine)>1.0e-4 && iter<200)
 	{
 		v=(v1+v2)/2.0;
 		GetPoint(u, v, bRight, t_R);
-		t_R.x = 0.0;
+		t_R.x = t_R.x-Origin.x;
+		t_R.y = t_R.y-Origin.y;
+		t_R.z = t_R.z-Origin.z;
 		t_R.Normalize();//t_R is the unit radial vector for u,v
 
 		sine = (r.y*t_R.z - r.z*t_R.y);
@@ -468,7 +482,7 @@ double Body::Getv(double u, CVector r, bool bRight)
 
 
 /**
- * Imports the definition from a text file. cf. ExportDefinition for details.
+ * Imports the definition from a text file. cf. Export the definition for details.
  * @return true if the Body definition was correctly imported, false otherwise.
  */
 bool Body::ImportDefinition(QTextStream &inStream, double mtoUnit)
@@ -483,6 +497,8 @@ bool Body::ImportDefinition(QTextStream &inStream, double mtoUnit)
 	bRead  = ReadAVLString(inStream, Line, strong);
 	m_BodyName = strong.trimmed();
 	m_SplineSurface.ClearFrames();
+	m_xPanels.clear();
+	m_hPanels.clear();
 	//Header data
 
 	bRead = true;
@@ -507,10 +523,6 @@ bool Body::ImportDefinition(QTextStream &inStream, double mtoUnit)
 			bRead  = ReadAVLString(inStream, Line, strong);
 			if(!bRead) break;
 
-//			textline = strong.toLatin1();
-//			text = textline.constData();
-//			res = sscanf(text, "%lf  %lf  %lf", &xo, &yo, &zo);
-
 			//Do this the C++ way
 			QStringList values = strong.split(" ", QString::SkipEmptyParts);
 
@@ -533,6 +545,8 @@ bool Body::ImportDefinition(QTextStream &inStream, double mtoUnit)
 			if (NSideLines)
 			{
 				m_SplineSurface.InsertFrame(pNewFrame);
+				m_xPanels.append(3);
+				m_hPanels.append(7);
 			}
 		}
 	}
@@ -543,8 +557,9 @@ bool Body::ImportDefinition(QTextStream &inStream, double mtoUnit)
 	{
 		if(m_SplineSurface.m_pFrame[i]->m_CtrlPoint.size() != m_SplineSurface.m_pFrame[i-1]->m_CtrlPoint.size())
 		{
-//			QString strong = QObject::tr("Error reading ")+m_BodyName+QObject::tr("\nFrames have different number of side points");
-//			QMessageBox::warning(window(), QObject::tr("Error"),strong); //TODO
+			MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
+			QString strong = QObject::tr("Error reading ")+m_BodyName+QObject::tr("\nFrames have different number of side points");
+			QMessageBox::warning(pMainFrame, QObject::tr("Error"),strong); //TODO
 			return false;
 		}
 	}
