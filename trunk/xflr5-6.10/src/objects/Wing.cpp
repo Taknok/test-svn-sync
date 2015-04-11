@@ -417,6 +417,7 @@ void Wing::ComputeGeometry()
 	}
 }
 
+
 #define NXSTATIONS 20
 #define NYSTATIONS 40
 #define MAXSPANSECTIONS 1000
@@ -1060,6 +1061,7 @@ void Wing::Duplicate(Wing *pWing)
 		LeftFoil(is)   = pWing->LeftFoil(is);
 	}
 
+	ComputeGeometry();
 
 	m_nFlaps = pWing->m_nFlaps;
 
