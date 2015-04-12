@@ -5551,7 +5551,7 @@ void QMiarex::OnEditCurBody()
 
 	//then modifications are automatically recorded
 	m_pCurPlane->Duplicate(pModPlane);
-	Objects3D::deletePlaneResults(m_pCurPlane);// will also set new surface and Aerochord in WPolars
+	Objects3D::deletePlaneResults(m_pCurPlane, true);// will also set new surface and Aerochord in WPolars
 	m_pCurWPolar = NULL;
 	m_pCurPOpp = NULL;
 	SetPlane();
@@ -5644,7 +5644,7 @@ void QMiarex::OnEditCurPlane()
 			//then modifications are automatically recorded
 			m_pCurPlane->Duplicate(pModPlane);
 
-			Objects3D::deletePlaneResults(m_pCurPlane);// will also set new surface and Aerochord in WPolars
+			Objects3D::deletePlaneResults(m_pCurPlane, true);// will also set new surface and Aerochord in WPolars
 			m_pCurWPolar = NULL;
 			m_pCurPOpp = NULL;
 
@@ -5753,13 +5753,12 @@ void QMiarex::OnEditCurWing()
 			//then modifications are automatically recorded
 			m_pCurPlane->Duplicate(pModPlane);
 
-			Objects3D::deletePlaneResults(m_pCurPlane);// will also set new surface and Aerochord in WPolars
+			Objects3D::deletePlaneResults(m_pCurPlane, true);// will also set new surface and Aerochord in WPolars
 			m_pCurWPolar = NULL;
 			m_pCurPOpp = NULL;
 
 			m_bResetglGeom = true;
 			m_bResetglMesh = true;
-//			m_bResetglOpp  = true;
 			s_bResetCurves = true;
 		}
 
@@ -5826,16 +5825,13 @@ void QMiarex::OnScaleWing()
 	{
 		if (wsDlg.m_bSpan || wsDlg.m_bChord || wsDlg.m_bSweep || wsDlg.m_bTwist || wsDlg.m_bArea || wsDlg.m_bAR)
 		{
-
-			Plane *pNewPlane = new Plane;
-			pNewPlane->Duplicate(m_pCurPlane);
-			if(wsDlg.m_bSpan)  pNewPlane->wing()->ScaleSpan(wsDlg.m_NewSpan);
-			if(wsDlg.m_bChord) pNewPlane->wing()->ScaleChord(wsDlg.m_NewChord);
-			if(wsDlg.m_bSweep) pNewPlane->wing()->ScaleSweep(wsDlg.m_NewSweep);
-			if(wsDlg.m_bTwist) pNewPlane->wing()->ScaleTwist(wsDlg.m_NewTwist);
-			if(wsDlg.m_bArea)  pNewPlane->wing()->ScaleArea(wsDlg.m_NewArea);
-			if(wsDlg.m_bAR)    pNewPlane->wing()->ScaleAR(wsDlg.m_NewAR);
-			pNewPlane->ComputePlane();
+			if(wsDlg.m_bSpan)  pModPlane->wing()->ScaleSpan(wsDlg.m_NewSpan);
+			if(wsDlg.m_bChord) pModPlane->wing()->ScaleChord(wsDlg.m_NewChord);
+			if(wsDlg.m_bSweep) pModPlane->wing()->ScaleSweep(wsDlg.m_NewSweep);
+			if(wsDlg.m_bTwist) pModPlane->wing()->ScaleTwist(wsDlg.m_NewTwist);
+			if(wsDlg.m_bArea)  pModPlane->wing()->ScaleArea(wsDlg.m_NewArea);
+			if(wsDlg.m_bAR)    pModPlane->wing()->ScaleAR(wsDlg.m_NewAR);
+			pModPlane->ComputePlane();
 
 			if(bHasResults)
 			{
@@ -5864,8 +5860,7 @@ void QMiarex::OnScaleWing()
 
 			//then modifications are automatically recorded
 			m_pCurPlane->Duplicate(pModPlane);
-
-			Objects3D::deletePlaneResults(m_pCurPlane);// will also set new surface and Aerochord in WPolars
+			Objects3D::deletePlaneResults(m_pCurPlane, true);// will also set new surface and Aerochord in WPolars
 			m_pCurWPolar = NULL;
 			m_pCurPOpp = NULL;
 
@@ -5874,12 +5869,22 @@ void QMiarex::OnScaleWing()
 			s_bResetCurves = true;
 		}
 
-		s_bResetCurves = true;
+		SetPlane();
+		pMainFrame->UpdatePlaneListBox();
+		m_bIs2DScaleSet = false;
+		SetScale();
+		OnAdjustToWing();
+		SetControls();
 
 		UpdateView();
 	}
+
 	delete pModPlane; // Clean up
 }
+
+
+
+
 
 
 
