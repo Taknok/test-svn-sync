@@ -24,6 +24,7 @@
 #include <QSplashScreen>
 #include <QDateTime>
 #include <QMessageBox>
+#include <QtDebug>
 #include "XFLR5Application.h"
 #include "mainframe.h"
 
@@ -53,7 +54,7 @@ XFLR5Application::XFLR5Application(int &argc, char** argv) : QApplication(argc, 
 	QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
 #endif
 
-	qsrand(QDateTime::currentDateTime().toTime_t());
+    qsrand(QDateTime::currentDateTime().toTime_t());
 
 	bool bMaximized = true;
 	bool bOK;
@@ -96,20 +97,22 @@ XFLR5Application::XFLR5Application(int &argc, char** argv) : QApplication(argc, 
 	if(bMaximized)	MainFrame::self()->showMaximized();
 	else            MainFrame::self()->show();
 
-
 #ifndef Q_WS_MAC
 	QString PathName, Extension;
-	PathName=argv[1];
+    if(argc>1)
+    {
+        PathName=argv[1];
+        Extension = PathName.right(4);
+        if(Extension.compare(".wpa",Qt::CaseInsensitive)==0 ||	Extension.compare(".plr",Qt::CaseInsensitive)==0)
+        {
+            int iApp = w->LoadXFLR5File(PathName);
+            qDebug()<<"point "<<iApp;
 
+            if (iApp == MIAREX)             w->OnMiarex();
+            else if (iApp == XFOILANALYSIS) w->OnXDirect();
+        }
+    }
 
-	Extension = PathName.right(4);
-	if(Extension.compare(".wpa",Qt::CaseInsensitive)==0 ||	Extension.compare(".plr",Qt::CaseInsensitive)==0)
-	{
-		int iApp = w->LoadXFLR5File(PathName);
-
-		if (iApp == MIAREX)             w->OnMiarex();
-		else if (iApp == XFOILANALYSIS) w->OnXDirect();
-	}
 #endif
 
 	splash.finish(w);
