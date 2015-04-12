@@ -243,7 +243,7 @@ void WingScaleDlg::InitDialog(double const &RefSpan, double const &RefChord, dou
 	m_pctrlNewChord->SetValue(m_NewChord * Units::mtoUnit());
 	m_pctrlNewSweep->SetValue(m_NewSweep);
 	m_pctrlNewTwist->SetValue(m_NewTwist);
-	m_pctrlNewArea->SetValue(m_NewArea);
+    m_pctrlNewArea->SetValue(m_NewArea*Units::m2toUnit());
 	m_pctrlNewAR->SetValue(m_NewAR);
 
 	SetResults();

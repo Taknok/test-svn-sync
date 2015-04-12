@@ -278,8 +278,11 @@ void ManagePlanesDlg::OnDelete()
 										 QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel,
 										 QMessageBox::Yes)) return;
 
-	if(m_pPlane) Objects3D::deletePlane(m_pPlane);
-
+    if(m_pPlane)
+    {
+        Objects3D::deletePlaneResults(m_pPlane, true);
+        Objects3D::deletePlane(m_pPlane);
+    }
 	QModelIndex index = m_pctrlUFOTable->currentIndex();
 	int sel = qMax(index.row()-1,0);
 
