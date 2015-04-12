@@ -5258,7 +5258,8 @@ void QMiarex::OnDeleteCurPlane()
 	if(m_pCurPlane) strong = tr("Are you sure you want to delete the plane :\n") +  m_pCurPlane->planeName() +"?\n";
 	if (QMessageBox::Yes != QMessageBox::question(pMainFrame, tr("Question"), strong, QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel)) return;
 
-	Objects3D::deletePlane(m_pCurPlane);
+    Objects3D::deletePlaneResults(m_pCurPlane, true);
+    Objects3D::deletePlane(m_pCurPlane);
 	m_pCurPlane = NULL;
     m_pCurWPolar = NULL;
     m_pCurPOpp = NULL;

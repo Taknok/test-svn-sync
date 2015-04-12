@@ -235,7 +235,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 	   ReadStyleSheet(Settings::s_StyleSheetName, styleSheet);
 	}
 
-	Objects3D::setStaticPointers();
+    Objects3D::setStaticPointers();
 }
 
 
