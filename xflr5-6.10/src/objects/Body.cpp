@@ -429,11 +429,11 @@ double Body::Getu(double x)
 
 /**
  * For a NURBS surface: Given a value of the longitudinal parameter and a vector in the yz plane, returns the
- * value of the hoop parameter for the intersection of a ray originating on the x-axis
+ * value of the hoop paramater for the intersection of a ray originanating on the x-axis
  * and directed along the input vector
  * @param u in input, the value of the longitudinal parameter
  * @param r the vector which defines the ray's direction
- * @param bRight true if the intersection should be calculated on the Body's right side, and false if on the left
+ * @param bRight true if the intersection should be calculated on the Body's right side, and flase if on the left
  * @return the value of the hoop parameter
  */
 double Body::Getv(double u, CVector r, bool bRight)
@@ -450,15 +450,11 @@ double Body::Getv(double u, CVector r, bool bRight)
 	r.Normalize();
 	v1 = 0.0; v2 = 1.0;
 
-	CVector Origin = CenterPoint(u);
-
 	while(qAbs(sine)>1.0e-4 && iter<200)
 	{
 		v=(v1+v2)/2.0;
 		GetPoint(u, v, bRight, t_R);
-		t_R.x = t_R.x-Origin.x;
-		t_R.y = t_R.y-Origin.y;
-		t_R.z = t_R.z-Origin.z;
+		t_R.x = 0.0;
 		t_R.Normalize();//t_R is the unit radial vector for u,v
 
 		sine = (r.y*t_R.z - r.z*t_R.y);
@@ -478,6 +474,7 @@ double Body::Getv(double u, CVector r, bool bRight)
 
 	return (v1+v2)/2.0;
 }
+
 
 
 
@@ -733,7 +730,7 @@ bool Body::IntersectNURBS(CVector A, CVector B, CVector &I, bool bRight)
 		tmp = A;		A   = B;		B   = tmp;
 	}
 	//M0 is the outside Point, M1 is the inside point
-	M0 = A; M1 = B; 
+	M0 = A; M1 = B;
 
 	//define which side to intersect with
 	if(M0.y>=0.0) bRight = true; else bRight = false;
@@ -744,7 +741,7 @@ bool Body::IntersectNURBS(CVector A, CVector B, CVector &I, bool bRight)
 		I = M1;
 		return false;
 	}
- 
+
 	I = (M0+M1)/2.0; t=0.5;
 
 	while(dist>dmax && iter<itermax)
@@ -767,7 +764,7 @@ bool Body::IntersectNURBS(CVector A, CVector B, CVector &I, bool bRight)
 
 //		dist = sqrt((t_N.x-I.x)*(t_N.x-I.x) + (t_N.y-I.y)*(t_N.y-I.y) + (t_N.z-I.z)*(t_N.z-I.z));
 		dist = qAbs(t-tp);
-		iter++; 
+		iter++;
 	}
 
 	return dist<dmax;
