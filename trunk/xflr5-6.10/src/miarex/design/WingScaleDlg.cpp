@@ -31,7 +31,7 @@
 WingScaleDlg::WingScaleDlg(QWidget *pParent) : QDialog(pParent)
 {
 	setWindowTitle(tr("Scale Wing Dlg"));
-	m_bSweep = m_bSpan = m_bChord = m_bTwist = false;
+    m_bSweep = m_bSpan = m_bChord = m_bTwist = m_bArea = m_bAR = false;
 
 	m_NewSweep = m_NewChord = m_NewTwist = m_NewSpan = 1.0;
 	m_RefSweep = m_RefChord = m_RefTwist = m_RefSpan = 1.0;
@@ -65,8 +65,8 @@ void WingScaleDlg::SetupLayout()
 		m_pctrlRefChord = new QLabel("0.000");
 		m_pctrlRefSweep = new QLabel("0.000");
 		m_pctrlRefTwist = new QLabel("0.000");
-		m_pctrlRefArea = new QLabel("0.000");
-		m_pctrlRefAR   = new QLabel("0.000");
+        m_pctrlRefArea  = new QLabel("0.000");
+        m_pctrlRefAR    = new QLabel("0.000");
 
 		m_pctrlRefSpan->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 		m_pctrlRefChord->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
