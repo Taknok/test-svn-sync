@@ -46,7 +46,7 @@ public:
 	static int       createWingElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurface);
 	static void      deleteObjects();
 	static void      deletePlane(Plane *pPlane);
-	static void      deletePlaneResults(Plane *pPlane);
+	static void      deletePlaneResults(Plane *pPlane, bool bDeletePolars=false);
 	static Plane *   duplicatePlane(Plane *pPlane);
 	static Body*     getBody(QString BodyName);
 	static Plane*    getPlane(QString PlaneName);

@@ -1874,7 +1874,7 @@ void Objects3D::deletePlane(Plane *pPlane)
  * Deletes the WPolar and PlaneOpp objects associated to the plane.
  * @param pPlane a pointer to the Plane object for which the results will be deleted
  */
-void Objects3D::deletePlaneResults(Plane *pPlane)
+void Objects3D::deletePlaneResults(Plane *pPlane, bool bDeletePolars)
 {
 	if(!pPlane || !pPlane->planeName().length()) return ;
 	WPolar* pWPolar;
@@ -1899,9 +1899,16 @@ void Objects3D::deletePlaneResults(Plane *pPlane)
 		pWPolar = (WPolar*)s_oaWPolar.at(i);
 		if (pWPolar->m_PlaneName == pPlane->planeName())
 		{
-			s_oaWPolar.removeAt(i);
-			delete pWPolar;
-			pWPolar = NULL;
+			if(bDeletePolars)
+			{
+				s_oaWPolar.removeAt(i);
+				delete pWPolar;
+				pWPolar = NULL;
+			}
+			else
+			{
+				pWPolar->ClearData();
+			}
 		}
 	}
 }
