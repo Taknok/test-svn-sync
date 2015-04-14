@@ -398,7 +398,8 @@ void ThreeDWidget::resizeGL(int width, int height)
 	if(w>h)	m_GLViewRect.SetRect(-s, s*h/w, s, -s*h/w);
 	else    m_GLViewRect.SetRect(-s*w/h, s, s*w/h, -s*h/w);
 
-	if(m_iView == GLMIAREXVIEW)
+    if (s_pMiarex) {
+    if(m_iView == GLMIAREXVIEW)
 	{
 		QMiarex* pMiarex = (QMiarex*)s_pMiarex;
 //		pMiarex->m_ArcBall.GetMatrix();
@@ -418,6 +419,7 @@ void ThreeDWidget::resizeGL(int width, int height)
 		pDlg->SetBodyLineScale();
 		pDlg->SetFrameScale();
 	}
+    }
 }
 
 
@@ -427,8 +429,8 @@ void ThreeDWidget::setupViewPort(int width, int height)
 {
 	makeCurrent();
 	int side = qMax(width, height);
-#ifdef Q_WS_MAC
-	glViewport(0,0, width, height);
+#ifdef Q_OS_MAC
+    glViewport(0,0, width, height);
 #else
 	glViewport((width - side) / 2, (height - side) / 2, side, side);
 #endif
@@ -436,7 +438,7 @@ void ThreeDWidget::setupViewPort(int width, int height)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	double s = 1.0;
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     glOrtho(-s,s,-(height*s)/width,(height*s)/width,-100.0*s,100.0*s);
 #else
 	glOrtho(-s,s,-s,s,-100.0*s,100.0*s);

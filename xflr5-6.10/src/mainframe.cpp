@@ -77,7 +77,7 @@
 #include <QFileDialog>
 #include <QStyledItemDelegate>
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 	#include <CoreFoundation/CoreFoundation.h>
 #endif
 
@@ -154,7 +154,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 	QXInverse *pXInverse = (QXInverse*)m_pXInverse;
 	QMiarex *pMiarex     = (QMiarex*)m_pMiarex;
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 		QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #else
 		QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
@@ -269,12 +269,12 @@ void MainFrame::AboutQt()
 {
 #ifndef QT_NO_MESSAGEBOX
     QMessageBox::aboutQt(
-#ifdef Q_WS_MAC
-	this
+#ifdef Q_OS_MAC
+    this
 #else
 //            activeWindow()
 	this
-#endif // Q_WS_MAC
+#endif // Q_OS_MAC
             );
 #endif // QT_NO_MESSAGEBOX
 }
@@ -2711,7 +2711,7 @@ bool MainFrame::LoadSettings()
 	QSize size;
 	
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
         QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #else
         QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
@@ -3438,7 +3438,7 @@ void MainFrame::OnResetSettings()
 	if(resp == QMessageBox::Yes)
 	{
 		QMessageBox::warning(this,tr("Default Settings"), tr("The settings will be reset at the next session"));
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
         QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #else
         QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
@@ -4412,7 +4412,7 @@ void MainFrame::SaveSettings()
 	QXInverse *pXInverse = (QXInverse*)m_pXInverse;
 
 	if(!m_bSaveSettings) return;
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
         QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #else
 	QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
@@ -5863,7 +5863,7 @@ void MainFrame::WritePolars(QDataStream &ar, void *pFoilPtr)
 
 void MainFrame::SetupDataDir()
 {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 	s_TranslationDir.setPath(qApp->applicationDirPath()+"/translations/");
 	s_StylesheetDir.setPath(qApp->applicationDirPath()+"/qss/");
 #endif

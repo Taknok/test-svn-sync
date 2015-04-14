@@ -1813,7 +1813,7 @@ void GL3dWingDlg::OnWingColor()
 	if(!m_pWing) return;
 
     QColorDialog::ColorDialogOptions dialogOptions = QColorDialog::ShowAlphaChannel;
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 #if QT_VERSION >= 0x040700
     dialogOptions |= QColorDialog::DontUseNativeDialog;
 #endif

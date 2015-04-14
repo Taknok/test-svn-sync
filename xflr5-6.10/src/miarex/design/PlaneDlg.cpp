@@ -298,7 +298,7 @@ void PlaneDlg::OnDefineFin()
 		m_bChanged = true;
 	}
 	else   m_pPlane->fin()->Duplicate(pSaveWing);
-	m_pPlane->fin()->CreateSurfaces(m_pPlane->m_WingLE[3], -90.0, m_pPlane->m_WingTiltAngle[3]);//necessary for eventual inertia calculations
+    m_pPlane->fin()->CreateSurfaces(m_pPlane->m_WingLE[3], -90.0, m_pPlane->m_WingTiltAngle[3]);//necessary for eventual inertia calculations
 
 	delete pSaveWing;
 }
@@ -372,7 +372,9 @@ void PlaneDlg::OnDefineBody()
 
 	Body memBody;
 	memBody.Duplicate(m_pPlane->m_pBody);
-
+    CVector v = m_pPlane->BodyPos();
+    v.x = -v.x; v.z=-v.z;
+ //   m_pPlane->m_pBody->Translate(v,false);
 	GL3dBodyDlg glbDlg(this);
 	glbDlg.m_bEnableName = false;
 	glbDlg.InitDialog(m_pPlane->m_pBody);
@@ -384,6 +386,7 @@ void PlaneDlg::OnDefineBody()
 		SetResults();
 	}
 	else m_pPlane->m_pBody->Duplicate(&memBody);
+ //   m_pPlane->m_pBody->Translate(m_pPlane->BodyPos(),false);
 }
 
 
