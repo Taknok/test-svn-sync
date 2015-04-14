@@ -48,7 +48,7 @@ XFLR5Application::XFLR5Application(int &argc, char** argv) : QApplication(argc, 
 	d=700;
 
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #else
 	QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
@@ -97,7 +97,7 @@ XFLR5Application::XFLR5Application(int &argc, char** argv) : QApplication(argc, 
 	if(bMaximized)	MainFrame::self()->showMaximized();
 	else            MainFrame::self()->show();
 
-#ifndef Q_WS_MAC
+#ifndef Q_OS_MAC
 	QString PathName, Extension;
     if(argc>1)
     {

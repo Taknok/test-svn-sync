@@ -172,7 +172,7 @@ void LinePickerDlg::OnStyle(int val)
 void LinePickerDlg::OnColor()
 {
     QColorDialog::ColorDialogOptions dialogOptions = QColorDialog::ShowAlphaChannel;
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 #if QT_VERSION >= 0x040700
     dialogOptions |= QColorDialog::DontUseNativeDialog;
 #endif
