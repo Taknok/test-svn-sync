@@ -12,7 +12,7 @@
 #define PARAMS_H
 
 
-#define VERSIONNAME     "xflr5 v6.10.04"
+#define VERSIONNAME     "xflr5 v6.10.05"
 
 //General
 #define XFLR5

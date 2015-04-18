@@ -1174,7 +1174,7 @@ bool Wing::ExportAVLWing(QTextStream &out, int index, double y, double Thetay)
 		out << (strong);
 		out << ("\n");
 		out << ("AFIL 0.0 1.0\n");
-		out << (ASurface.m_pFoilA->m_FoilName +".dat\n");
+		if(ASurface.m_pFoilA)  out << (ASurface.m_pFoilA->m_FoilName +".dat\n");
 		out << ("\n");
 		if(ASurface.m_bTEFlap)
 		{
@@ -1183,9 +1183,12 @@ bool Wing::ExportAVLWing(QTextStream &out, int index, double y, double Thetay)
 			strong = m_WingName;
 			strong.replace(" ", "_");
 			strong += str;
-			double mean_angle = (ASurface.m_pFoilA->m_TEFlapAngle + ASurface.m_pFoilB->m_TEFlapAngle)/2.0;
-			if(qAbs(mean_angle)>0.0) str = QString("%1  ").arg(1.0/mean_angle,5,'f',2);
-			else                     str = "1.0   ";
+			double mean_angle = 0.0;
+
+			if(ASurface.m_pFoilA && ASurface.m_pFoilB)
+					(ASurface.m_pFoilA->m_TEFlapAngle + ASurface.m_pFoilB->m_TEFlapAngle)/2.0;
+			if(qAbs(mean_angle)>PRECISION) str = QString("%1  ").arg(1.0/mean_angle,5,'f',2);
+			else                           str = "1.0   ";
 			strong += str;
 			str = QString("%1  %2  %3  %4  -1.0  ")
 				  .arg(ASurface.m_pFoilA->m_TEXHinge/100.0,5,'f',3)
@@ -1250,7 +1253,7 @@ bool Wing::ExportAVLWing(QTextStream &out, int index, double y, double Thetay)
 		out << (strong);
 		out << ("\n");
 		out << ("AFIL 0.0 1.0\n");
-		out << (ASurface.m_pFoilB->m_FoilName +".dat\n");
+		if(ASurface.m_pFoilB) out << (ASurface.m_pFoilB->m_FoilName +".dat\n");
 		out << ("\n");
 	}
 
@@ -1258,6 +1261,8 @@ bool Wing::ExportAVLWing(QTextStream &out, int index, double y, double Thetay)
 
 	return true;
 }
+
+
 
 /**
 * Returns the wing's average sweep from root to tip measured at the quarter chord
