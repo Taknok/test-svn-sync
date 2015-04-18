@@ -99,14 +99,13 @@ XFLR5Application::XFLR5Application(int &argc, char** argv) : QApplication(argc, 
 
 #ifndef Q_OS_MAC
 	QString PathName, Extension;
-    if(argc>1)
+	if(argc>0)
     {
-        PathName=argv[1];
-        Extension = PathName.right(4);
-        if(Extension.compare(".wpa",Qt::CaseInsensitive)==0 ||	Extension.compare(".plr",Qt::CaseInsensitive)==0)
+		PathName=argv[1];
+		Extension = PathName.right(4);
+		if(Extension.compare(".xfl",Qt::CaseInsensitive)==0 || Extension.compare(".wpa",Qt::CaseInsensitive)==0 || Extension.compare(".plr",Qt::CaseInsensitive)==0)
         {
             int iApp = w->LoadXFLR5File(PathName);
-            qDebug()<<"point "<<iApp;
 
             if (iApp == MIAREX)             w->OnMiarex();
             else if (iApp == XFOILANALYSIS) w->OnXDirect();

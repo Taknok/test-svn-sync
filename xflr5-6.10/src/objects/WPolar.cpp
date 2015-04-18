@@ -26,8 +26,6 @@
 #include "../miarex/Objects3D.h"
 #include "../misc/Units.h"
 #include <math.h>
-#include <QMessageBox>
-#include <QtDebug>
 
 
 
