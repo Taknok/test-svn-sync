@@ -1151,7 +1151,6 @@ bool Wing::ExportAVLWing(QTextStream &out, int index, double y, double Thetay)
 
 	int NSurfaces = m_Surface.size();
 
-
 	int startIndex = (m_bIsFin ? 0 : (int)(NSurfaces/2));
 
 	for(j=startIndex; j<NSurfaces; j++)
@@ -1186,7 +1185,7 @@ bool Wing::ExportAVLWing(QTextStream &out, int index, double y, double Thetay)
 			double mean_angle = 0.0;
 
 			if(ASurface.m_pFoilA && ASurface.m_pFoilB)
-					(ASurface.m_pFoilA->m_TEFlapAngle + ASurface.m_pFoilB->m_TEFlapAngle)/2.0;
+					mean_angle = (ASurface.m_pFoilA->m_TEFlapAngle + ASurface.m_pFoilB->m_TEFlapAngle)/2.0;
 			if(qAbs(mean_angle)>PRECISION) str = QString("%1  ").arg(1.0/mean_angle,5,'f',2);
 			else                           str = "1.0   ";
 			strong += str;
