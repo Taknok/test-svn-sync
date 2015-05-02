@@ -1,4 +1,17 @@
 -------------------------------------------------------------------
+Sat Apr 18 12:30:00 UTC 2015 - techwinder@gmail.com
+
+- Update to version 6.10.04.
+  	* Corrected a potential crash bug when deleting a plane with polars
+	* Added a standard ISA model for the calculation of air properties
+    * Corrected the issues with the reference lengths after wing scaling
+    * Fixed the bugs related to the import operation of a body definition from a text file
+    * Fix for retina displays on OS X
+    * Corrected the export of plane polars to text files to include the sideslip variable
+    * Other minor corrections and improvements
+
+
+-------------------------------------------------------------------
 Mon Mar  2 16:07:00 UTC 2015 - sfalken@opensuse.org
 
 - Changed Category in .desktop file to clear brp-check-suse failure 
@@ -144,4 +157,3 @@ Sat Sep 19 00:00:00 UTC 2010 - adeperrois@xflr5.com
 Fri Apr 3  00:00:00 UTC 2010 - adeperrois@xflr5.com
 
 - First rpm release
- 
