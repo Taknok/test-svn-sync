@@ -1,0 +1,147 @@
+-------------------------------------------------------------------
+Mon Mar  2 16:07:00 UTC 2015 - sfalken@opensuse.org
+
+- Changed Category in .desktop file to clear brp-check-suse failure 
+
+-------------------------------------------------------------------
+Sat Jun 28 14:39:59 UTC 2014 - dmitry_r@opensuse.org
+
+- Update to version 6.10.03. Changes sinse version 6.09:
+  * Created a new binary .xfl projet file format. Replaces once and
+    for all the awful .wpa format
+  * Removed the option for independent wing analysis
+  * Introducing type 5 polars for the analysis of variable sideslip
+  * Disabled the horseshoe vortex method for stability polars, for
+    beta-polars, and whenever sidelip is defined.
+  * Aligned theviscous drag vector with freestream velocity rather
+    than with x-axis - slight impact on viscous results
+  * Enabled LLT analysis for all Plane objects
+  * Removed the option for symmetry in 3d analysis
+  * Corrected the bug in type 4 plane analysis-elevator and fin
+    coefficients were incorrectly calculated
+  * Removed the default sizing for panel and matrix arrays. The
+    arrays are now allocated for the size of the largest model
+    loaded in the session.
+  * Corrected some memory leaks
+  * Corrected memory allocation/release mismatches
+  * MASSIVE code cleaning.
+  * Created GUI-independant classes for 3D-panel analysis and LLT
+    analysis
+  * Minor corrections and enhancements
+
+-------------------------------------------------------------------
+Wed Dec 26 08:15:10 UTC 2012 - dmitry_r@opensuse.org
+
+- Update to version 6.09
+  * see included ReleaseNotes.txt for details
+- spec file cleanup
+  
+-------------------------------------------------------------------
+Tue Jun 26 00:00:00 UTC 2012 - adeperrois@xflr5.com
+
+- xflr5 v6.07
+  * fixed type 2 batch polar analysis
+  * fixed the issue with incorrect 3D-panel calculations
+  * Corrected the incorrect aileron control derivatives
+  * Corrected the bug in wing analysis with ground effect
+  * Corrected the bug in type 4 analysis for wings and planes
+  * Corrected the bug which modified the chord length as twist increases:
+    impact results for wings with high dihedral
+  * Cleaned, corrected, and improved the code for B-Splines
+  * Removed the option for Min/Max type controls in Stabillity Polars
+  * Added an option to edit Wing Polar paramaters
+  * Fixed the crash bug when defining wings with more than 16 span sections
+  * Corrected a bug leading to incorrect results in stability derivatives
+    with active controls (CPanel::RotateBC())
+  * Removed the Splined Points Foil option
+  * Other minor corrections and enhancements
+  * Code cleaning
+
+-------------------------------------------------------------------
+Fri Jan 06 00:00:00 UTC 2012 - adeperrois@xflr5.com
+
+- xflr5 v6.06
+  * Minor corrections and improvements
+
+-------------------------------------------------------------------
+Sun Jul 24 00:00:00 UTC 2011 - adeperrois@xflr5.com
+
+- xflr5 v6.05 beta, July 15th, 2011
+  * For Type 7 polars, listed the control value instead of the aoa in the top drop down box
+  * Added a calculation form to determine Re.sqrt(Cl) for foil Type 2 polars
+  * Added the Japanese translation to the repository - thanks to Koichi
+  * Minor corrections and improvements
+
+-------------------------------------------------------------------
+Sun May 15 00:00:00 UTC 2011 - adeperrois@xflr5.com
+
+- xflr5 v6.04 beta, May 14th, 2011
+  * added a settings save at each project save
+  * added and option to view forces on panels as coloured arrows
+  * fixed the incorrect setting of AVL-type controls for flaps in T7 analysis
+  * added the missing write operation in the project file of the control variable for wing operating points
+  * modified the setting of boundary conditions in T7 analysis with activated controls - impact on balanced aoa
+  * modified the wing construction process to allow for a gap in the middle of the wing
+  * corrected the bug which caused the disapperance of the left stability toolbar when switching to 3D view
+  * corrected the bug which prevented from changing the default number of panels in naca foil generation
+  * continued the code cleaning process
+
+-------------------------------------------------------------------
+Sun Feb 13 00:00:00 UTC 2011 - adeperrois@xflr5.com
+
+- XFLR5v6.03 beta rpm release
+  * modified the geometry connection between panels with dihedral and twist - may slightly impact the results
+  * corrected the calculations with sideslip
+  * added multi-threading capability for foil batch analysis
+  * added an option to display the position of point masses in 3d-view
+  * in the export to AVL of point masses, corrected the missing addition of wing x & z position
+  * modified the export format to AVL of with wing flaps
+  * added an option to highlight the currently selected operating point, or the mode in root locs view
+  * changed the interface for stability analysis
+  * added a properties dialog box option for operating points
+  * corrected various minor bugs
+  * made several minor enhancements
+
+-------------------------------------------------------------------
+Sun Dec 19 00:00:00 UTC 2010 - adeperrois@xflr5.com
+
+- XFLR5v6.02 beta rpm release
+  * added an option to load a background image in the foil direct design module
+  * corrected some errors in CoG and inertia automatic calculations, with impact on results
+  * did some deep code cleaning
+  * re-organized the panel analysis code to perform only one far field calculation per operating point
+  * optimized the panel method for increased speed of execution
+  * corrected the mesh edition for NURBS bodies
+  * changed the export format for graphs
+  * implemented the stability method for mixed panel/vlm method
+  * implemented the stability method for full 3D panel method
+  * corrected the bug which lead to incorrect results in 3D panel with Neumann B.C.
+  * corrected the error in the jump in potential at the wing's trailing edage in full 3d panel method
+  * set the estimation of inertia properties at the time of polar definition instead of evaluating at the time of analysis
+  * fixed the bug which could cause a crash when dragging a point in splines design
+  * corrected the asymetric transition location for symetric wings
+  * corrected the source strength influence of thick panels on thin surfaces, with impact on results for planes with body
+  * corrected the Cp 3D color display for VLM2 analysis
+  * added the influence of pressure forces acting on the body to induced pitching moment coefficient
+  * added calculation of neutral point position based on Cma/Cza ratio
+  * corrected various minor bugs
+  * made several minor enhancements
+
+-------------------------------------------------------------------
+Thu Oct 14 00:00:00 UTC 2010 - adeperrois@xflr5.com
+
+- XFLR5v6.01 beta rpm release
+  * Corrected the incorrect balance speed in 3D type 2 polars for planes
+  * Corrected the final moment calculation in stability analysis
+  * Corrected the incorrect lift calculation in stability analysis
+
+-------------------------------------------------------------------
+Sat Sep 19 00:00:00 UTC 2010 - adeperrois@xflr5.com
+
+- XFLR5v6.00 beta rpm release
+
+-------------------------------------------------------------------
+Fri Apr 3  00:00:00 UTC 2010 - adeperrois@xflr5.com
+
+- First rpm release
+ 
