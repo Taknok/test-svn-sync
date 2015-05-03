@@ -6651,7 +6651,7 @@ void QMiarex::OnHighlightWOpp()
 
 /**
  * The user has requested the import of a polar definition from a text file.
- * Createss a new CWPolar object, fills it with the data from the text file, and adds it to the array
+ * Createss a new WPolar object, fills it with the data from the text file, and adds it to the array
  *@todo not used often, nor thouroughly tested
  */
 void QMiarex::OnImportWPolar()
@@ -9249,12 +9249,10 @@ void QMiarex::Set3DRotationCenter(QPoint point)
 {
 	int  i, j;
 	CVector I, A, B, AA, BB, PP, U;
-	double dmin, dist;
+	double  dist;
 	ThreeDWidget *p3dWidget = (ThreeDWidget*)s_p3dWidget;
 
-
 	i=-1;
-	dmin = 100000.0;
 
 	p3dWidget->ClientToGL(point, B);
 
@@ -9292,21 +9290,6 @@ void QMiarex::Set3DRotationCenter(QPoint point)
 
 	if(m_iView==XFLR5::W3DVIEW )
 	{
-/*		for(p=0; p<Objects3D::s_MatSize; p++)
-		{
-			if(s_pPanel[p].Intersect(AA, U, I, dist))
-			{
-				if(dist < dmin)
-				{
-					dmin = dist;
-					PP.Set(I);
-					bIntersect = true;
-				}
-			}
-		}*/
-
-
-
 		for(j=0; j<Objects3D::s_SurfaceList.size(); j++)
 		{
 			bIntersect = Intersect(Objects3D::s_SurfaceList.at(j)->m_LA,
@@ -10916,16 +10899,7 @@ void QMiarex::OnExportPlanetoXML()
 		{
 			for(int ipm=0; ipm<m_pCurPlane->m_PointMass.size(); ipm++)
 			{
-				PointMass *ppm = m_pCurPlane->m_PointMass.at(ipm);
-				xml.writeStartElement("Point_Mass");
-				{
-					xml.writeTextElement("Tag", ppm->tag());
-					xml.writeTextElement("Mass", QString("%1").arg(ppm->mass()*Units::kgtoUnit(),7,'f',3));
-					xml.writeTextElement("x", QString("%1").arg(ppm->m_Position.x*Units::mtoUnit(),7,'f',3));
-					xml.writeTextElement("y", QString("%1").arg(ppm->m_Position.y*Units::mtoUnit(),7,'f',3));
-					xml.writeTextElement("z", QString("%1").arg(ppm->m_Position.z*Units::mtoUnit(),7,'f',3));
-				}
-				xml.writeEndElement();
+				writeXMLPointMass(xml, m_pCurPlane->m_PointMass.at(ipm), Units::kgtoUnit(), Units::mtoUnit());
 			}
 		}
 		xml.writeEndElement();
@@ -10938,9 +10912,12 @@ void QMiarex::OnExportPlanetoXML()
 			xml.writeStartElement("body");
 			{
 				xml.writeTextElement("Name", pBody->bodyName());
+				writeXMLColor(xml, pBody->bodyColor());
 				xml.writeTextElement("Description", pBody->bodyDescription());
-				xml.writeTextElement("x_position",  QString("%1").arg(m_pCurPlane->bodyPos().x*Units::mtoUnit(),7,'f',3));
-				xml.writeTextElement("z_position",  QString("%1").arg(m_pCurPlane->bodyPos().z*Units::mtoUnit(),7,'f',3));
+				xml.writeTextElement("Position",QString("%1, %2, %3").arg(m_pCurPlane->bodyPos().x*Units::mtoUnit(), 11,'g',5)
+																	 .arg(m_pCurPlane->bodyPos().y*Units::mtoUnit(), 11,'g',5)
+																	 .arg(m_pCurPlane->bodyPos().z*Units::mtoUnit(), 11,'g',5));
+
 				xml.writeTextElement("Type", pBody->bodyType()==XFLR5::BODYPANELTYPE ? "FLATPANELS" : "NURBS");
 				if(pBody->bodyType()==XFLR5::BODYSPLINETYPE && pSurface)
 				{
@@ -10959,18 +10936,10 @@ void QMiarex::OnExportPlanetoXML()
 				}
 				xml.writeStartElement("Inertia");
 				{
+					xml.writeTextElement("Volume_Mass", QString("%1").arg(pBody->volumeMass(),7,'f',3));
 					for(int ipm=0; ipm<pBody->m_PointMass.size(); ipm++)
 					{
-						PointMass *ppm = pBody->m_PointMass.at(ipm);
-						xml.writeStartElement("Point_Mass");
-						{
-							xml.writeTextElement("Tag", ppm->tag());
-							xml.writeTextElement("Mass", QString("%1").arg(ppm->mass()*Units::kgtoUnit(),7,'f',3));
-							xml.writeTextElement("x", QString("%1").arg(ppm->m_Position.x*Units::mtoUnit(),7,'f',3));
-							xml.writeTextElement("y", QString("%1").arg(ppm->m_Position.y*Units::mtoUnit(),7,'f',3));
-							xml.writeTextElement("z", QString("%1").arg(ppm->m_Position.z*Units::mtoUnit(),7,'f',3));
-						}
-						xml.writeEndElement();
+						writeXMLPointMass(xml, pBody->m_PointMass.at(ipm), Units::kgtoUnit(), Units::mtoUnit());
 					}
 				}
 				xml.writeEndElement();
@@ -10986,20 +10955,16 @@ void QMiarex::OnExportPlanetoXML()
 							xml.writeTextElement("h_panels", QString("%1").arg(pBody->m_xPanels.at(iFrame)));
 						}
 
-						xml.writeTextElement("x_position", QString("%1").arg(pFrame->m_Position.x*Units::mtoUnit()));
-						xml.writeTextElement("z_position", QString("%1").arg(pFrame->m_Position.z*Units::mtoUnit()));
-
+						xml.writeTextElement("Position",QString("%1, %2, %3").arg(pFrame->m_Position.x*Units::mtoUnit(), 11,'g',5)
+																			 .arg(pFrame->m_Position.y*Units::mtoUnit(), 11,'g',5)
+																			 .arg(pFrame->m_Position.z*Units::mtoUnit(), 11,'g',5));
 
 						for(int iPt=0; iPt<pFrame->PointCount(); iPt++)
 						{
 							CVector Pt(pFrame->Point(iPt));
-							xml.writeStartElement("point");
-							{
-								xml.writeTextElement("x", QString("%1").arg(Pt.x*Units::mtoUnit()));
-								xml.writeTextElement("y", QString("%1").arg(Pt.y*Units::mtoUnit()));
-								xml.writeTextElement("z", QString("%1").arg(Pt.z*Units::mtoUnit()));
-							}
-							xml.writeEndElement();
+							xml.writeTextElement("point",QString("%1, %2, %3").arg(Pt.x*Units::mtoUnit(), 11,'g',5)
+																			  .arg(Pt.y*Units::mtoUnit(), 11,'g',5)
+																			  .arg(Pt.z*Units::mtoUnit(), 11,'g',5));
 						}
 					}
 					xml.writeEndElement();
@@ -11015,9 +10980,11 @@ void QMiarex::OnExportPlanetoXML()
 				xml.writeStartElement("wing");
 				{
 					xml.writeTextElement("Name", m_pWingList[iw]->WingName());
+					writeXMLColor(xml, m_pWingList[iw]->wingColor());
 					xml.writeTextElement("Description", m_pWingList[iw]->WingDescription());
-					xml.writeTextElement("x_position",  QString("%1").arg(m_pCurPlane->WingLE(iw).x*Units::mtoUnit(),7,'f',3));
-					xml.writeTextElement("z_position",  QString("%1").arg(m_pCurPlane->WingLE(iw).z*Units::mtoUnit(),7,'f',3));
+					xml.writeTextElement("Position",QString("%1, %2, %3").arg(m_pCurPlane->WingLE(iw).x*Units::mtoUnit(), 11,'g',5)
+																		 .arg(m_pCurPlane->WingLE(iw).y*Units::mtoUnit(), 11,'g',5)
+																		 .arg(m_pCurPlane->WingLE(iw).z*Units::mtoUnit(), 11,'g',5));
 					xml.writeTextElement("Tilt_angle",  QString("%1").arg(m_pCurPlane->WingTiltAngle(iw),7,'f',3));
 					xml.writeTextElement("Symetric",    m_pWingList[iw]->isSymetric()  ? "true" : "false");
 					xml.writeTextElement("isFin",       m_pWingList[iw]->IsFin()       ? "true" : "false");
@@ -11028,16 +10995,7 @@ void QMiarex::OnExportPlanetoXML()
 						xml.writeTextElement("Volume_Mass", QString("%1").arg(m_pWingList[iw]->VolumeMass(),7,'f',3));
 						for(int ipm=0; ipm<m_pWingList[iw]->m_PointMass.size(); ipm++)
 						{
-							PointMass *ppm = m_pWingList[iw]->m_PointMass.at(ipm);
-							xml.writeStartElement("Point_Mass");
-							{
-								xml.writeTextElement("Tag", ppm->tag());
-								xml.writeTextElement("Mass", QString("%1").arg(ppm->mass()*Units::kgtoUnit(),7,'f',3));
-								xml.writeTextElement("x", QString("%1").arg(ppm->m_Position.x*Units::mtoUnit(),7,'f',3));
-								xml.writeTextElement("y", QString("%1").arg(ppm->m_Position.y*Units::mtoUnit(),7,'f',3));
-								xml.writeTextElement("z", QString("%1").arg(ppm->m_Position.z*Units::mtoUnit(),7,'f',3));
-							}
-							xml.writeEndElement();
+							writeXMLPointMass(xml, m_pWingList[iw]->m_PointMass.at(ipm), Units::kgtoUnit(), Units::mtoUnit());
 						}
 					}
 					xml.writeEndElement();
@@ -11048,7 +11006,7 @@ void QMiarex::OnExportPlanetoXML()
 							WingSection *ws = m_pWingList[iw]->m_WingSection.at(ips);
 							xml.writeStartElement("Section");
 							{
-								xml.writeTextElement("yposition", QString("%1").arg(ws->m_YPosition*Units::mtoUnit(), 7, 'f', 3));
+								xml.writeTextElement("y_position", QString("%1").arg(ws->m_YPosition*Units::mtoUnit(), 7, 'f', 3));
 								xml.writeTextElement("Chord", QString("%1").arg(ws->m_Chord*Units::mtoUnit(), 7, 'f', 3));
 								xml.writeTextElement("xOffset", QString("%1").arg(ws->m_Offset*Units::mtoUnit(), 7, 'f', 3));
 								xml.writeTextElement("Dihedral", QString("%1").arg(ws->m_Dihedral, 7, 'f', 3));
@@ -11108,11 +11066,11 @@ void QMiarex::OnImportPlanefromXML()
 	{
 		if (xml.name() == "explane" && xml.attributes().value("version") == "1.0")
 		{
-			while(xml.readNextStartElement())
+			while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() )
 			{
 				if (xml.name().toString().compare("units", Qt::CaseInsensitive)==0)
 				{
-					while (xml.readNextStartElement())
+					while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() )
 					{
 						if (xml.name().compare("length_unit_to_meter",      Qt::CaseInsensitive)==0)
 						{
@@ -11131,11 +11089,20 @@ void QMiarex::OnImportPlanefromXML()
 					Plane *pPlane = new Plane;
 					readXMLPlane(xml, pPlane, lengthunit, massunit);
 
-					if(Objects3D::planeExists(pPlane->planeName())) m_pCurPlane = Objects3D::setModPlane(pPlane);
-					else                                            m_pCurPlane = Objects3D::addPlane(pPlane);
+					if(xml.hasError())
+					{
+						QString errorMsg = xml.errorString() + QString("\nline %1 column %2").arg(xml.lineNumber()).arg(xml.columnNumber());
+						QMessageBox::warning((MainFrame*)s_pMainFrame, "XML read", errorMsg, QMessageBox::Ok);
+					}
+					else
+					{
+						if(Objects3D::planeExists(pPlane->planeName())) m_pCurPlane = Objects3D::setModPlane(pPlane);
+						else                                            m_pCurPlane = Objects3D::addPlane(pPlane);
 
-					SetPlane();
-					pMainFrame->UpdatePlaneListBox();
+						SetPlane();
+						pMainFrame->UpdatePlaneListBox();
+					}
+
 					UpdateView();
 				}
 			}
@@ -11144,20 +11111,24 @@ void QMiarex::OnImportPlanefromXML()
 			xml.raiseError(QObject::tr("The file is not an xflr5 plane version 1.0 file."));
 	}
 
-	!xml.error();
+
 }
 
 
 
-void QMiarex::readXMLBody(QXmlStreamReader &xml, Plane *pPlane, Body *pBody, double lengthunit, double massunit)
+void QMiarex::readXMLBody(QXmlStreamReader &xml, Plane *pPlane, Body *pBody, double lengthUnit, double massunit)
 {
 	pBody->splineSurface()->ClearFrames();
 
-	while (xml.readNextStartElement())
+	while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() )
 	{
 		if (xml.name().toString().compare("name",Qt::CaseInsensitive) ==0)
 		{
 			pBody->bodyName() = xml.readElementText();
+		}
+		else if (xml.name().toString().compare("color", Qt::CaseInsensitive)==0)
+		{
+			readXMLColor(xml, pBody->bodyColor());
 		}
 		else if (xml.name().toString().compare("description", Qt::CaseInsensitive)==0)
 		{
@@ -11165,29 +11136,31 @@ void QMiarex::readXMLBody(QXmlStreamReader &xml, Plane *pPlane, Body *pBody, dou
 		}
 		else if (xml.name().compare("Inertia",         Qt::CaseInsensitive)==0)
 		{
-			while (xml.readNextStartElement())
+			while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() )
 			{
-				if (xml.name().compare("point_mass", Qt::CaseInsensitive)==0)
+				if (xml.name().compare("volume_mass", Qt::CaseInsensitive)==0)
+				{
+					pBody->m_VolumeMass = xml.readElementText().toDouble();
+				}
+				else if (xml.name().compare("point_mass", Qt::CaseInsensitive)==0)
 				{
 					PointMass* ppm = new PointMass;
 					pBody->m_PointMass.append(ppm);
-					while (xml.readNextStartElement())
-					{
-						if (xml.name().compare("tag", Qt::CaseInsensitive)==0)       ppm->m_Tag = xml.readElementText();
-						else if (xml.name().compare("mass", Qt::CaseInsensitive)==0) ppm->m_Mass =  xml.readElementText().toDouble()*massunit;
-						else if (xml.name().compare("x", Qt::CaseInsensitive)==0)    ppm->m_Position.x =  xml.readElementText().toDouble()*lengthunit;
-						else if (xml.name().compare("y", Qt::CaseInsensitive)==0)    ppm->m_Position.y =  xml.readElementText().toDouble()*lengthunit;
-						else if (xml.name().compare("z", Qt::CaseInsensitive)==0)    ppm->m_Position.z =  xml.readElementText().toDouble()*lengthunit;
-						else xml.skipCurrentElement();
-					}
+					readXMLPointMass(xml, ppm, massunit, lengthUnit);
 				}
 				else
 					xml.skipCurrentElement();
 			}
 		}
-		else if (xml.name().compare("x_position", Qt::CaseInsensitive)==0)  pPlane->bodyPos().x = xml.readElementText().toDouble()*lengthunit;
-		else if (xml.name().compare("z_position", Qt::CaseInsensitive)==0)  pPlane->bodyPos().z = xml.readElementText().toDouble()*lengthunit;
-		else if (xml.name().compare("type", Qt::CaseInsensitive)==0)
+		else if (xml.name().compare("position", Qt::CaseInsensitive)==0)
+		{
+			QStringList coordList = xml.readElementText().split(",");
+			if(coordList.length()>=3)
+			{
+				pPlane->bodyPos().x = coordList.at(0).toDouble()*lengthUnit;
+				pPlane->bodyPos().z = coordList.at(2).toDouble()*lengthUnit;
+			}
+		}		else if (xml.name().compare("type", Qt::CaseInsensitive)==0)
 		{
 			if(xml.readElementText().compare("NURBS", Qt::CaseInsensitive)==0) pBody->bodyType()=XFLR5::BODYSPLINETYPE;
 			else                                                               pBody->bodyType()=XFLR5::BODYPANELTYPE;
@@ -11196,29 +11169,35 @@ void QMiarex::readXMLBody(QXmlStreamReader &xml, Plane *pPlane, Body *pBody, dou
 		else if (xml.name().compare("hoop_degree", Qt::CaseInsensitive)==0) pBody->splineSurface()->m_ivDegree = xml.readElementText().toInt();
 		else if (xml.name().compare("x_panels",    Qt::CaseInsensitive)==0) pBody->m_nxPanels = xml.readElementText().toInt();
 		else if (xml.name().compare("hoop_panels", Qt::CaseInsensitive)==0) pBody->m_nhPanels = xml.readElementText().toInt();
-/** @todo read hoop panels in flatpanel case */
-
 
 		//read frames
 		else if (xml.name().compare("frame", Qt::CaseInsensitive)==0)
 		{
 			Frame *pFrame = pBody->splineSurface()->AppendFrame();
-			while (xml.readNextStartElement())
+			while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() )
 			{
 				if(xml.name().compare("x_panels", Qt::CaseInsensitive)==0) pBody->m_xPanels.append(xml.readElementText().toInt());
 				if(xml.name().compare("h_panels", Qt::CaseInsensitive)==0) pBody->m_hPanels.append(xml.readElementText().toInt());
-				else if (xml.name().compare("x_position", Qt::CaseInsensitive)==0) pFrame->m_Position.x = xml.readElementText().toDouble()*lengthunit;
-				else if (xml.name().compare("z_position", Qt::CaseInsensitive)==0) pFrame->m_Position.z = xml.readElementText().toDouble()*lengthunit;
+				else if (xml.name().compare("position", Qt::CaseInsensitive)==0)
+				{
+					QStringList coordList = xml.readElementText().split(",");
+					if(coordList.length()>=3)
+					{
+						pFrame->m_Position.x = coordList.at(0).toDouble()*lengthUnit;
+						pFrame->m_Position.z = coordList.at(2).toDouble()*lengthUnit;
+					}
+				}
 				else if (xml.name().compare("point", Qt::CaseInsensitive)==0)
 				{
 					CVector ctrlPt;
-					while (xml.readNextStartElement())
+					QStringList coordList = xml.readElementText().split(",");
+					if(coordList.length()>=3)
 					{
-						if      (xml.name().compare("x", Qt::CaseInsensitive)==0) ctrlPt.x = xml.readElementText().toDouble()*lengthunit;
-						else if (xml.name().compare("y", Qt::CaseInsensitive)==0) ctrlPt.y = xml.readElementText().toDouble()*lengthunit;
-						else if (xml.name().compare("z", Qt::CaseInsensitive)==0) ctrlPt.z = xml.readElementText().toDouble()*lengthunit;
+						ctrlPt.x = coordList.at(0).toDouble()*lengthUnit;
+						ctrlPt.y = coordList.at(1).toDouble()*lengthUnit;
+						ctrlPt.z = coordList.at(2).toDouble()*lengthUnit;
+						pFrame->AppendPoint(ctrlPt);
 					}
-					pFrame->AppendPoint(ctrlPt);
 				}
 			}
 		}
@@ -11227,10 +11206,10 @@ void QMiarex::readXMLBody(QXmlStreamReader &xml, Plane *pPlane, Body *pBody, dou
 
 
 /** */
-void QMiarex::readXMLPlane(QXmlStreamReader &xml, Plane *pPlane, double lengthunit, double massunit)
+void QMiarex::readXMLPlane(QXmlStreamReader &xml, Plane *pPlane, double lengthUnit, double massUnit)
 {
 	int iw=0;
-	while (xml.readNextStartElement() && iw<MAXWINGS)
+	while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() && iw<MAXWINGS)
 	{
 		if (xml.name().toString().compare("name",Qt::CaseInsensitive) ==0)
 		{
@@ -11246,22 +11225,13 @@ void QMiarex::readXMLPlane(QXmlStreamReader &xml, Plane *pPlane, double lengthun
 		}
 		else if (xml.name().compare("Inertia",         Qt::CaseInsensitive)==0)
 		{
-			while (xml.readNextStartElement())
+			while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() )
 			{
 				if (xml.name().compare("point_mass", Qt::CaseInsensitive)==0)
 				{
 					PointMass* ppm = new PointMass;
 					pPlane->m_PointMass.append(ppm);
-					while (xml.readNextStartElement())
-					{
-						if (xml.name().compare("tag", Qt::CaseInsensitive)==0)       ppm->m_Tag = xml.readElementText();
-						else if (xml.name().compare("mass", Qt::CaseInsensitive)==0) ppm->m_Mass =  xml.readElementText().toDouble()*massunit;
-						else if (xml.name().compare("x", Qt::CaseInsensitive)==0)    ppm->m_Position.x =  xml.readElementText().toDouble()*lengthunit;
-						else if (xml.name().compare("y", Qt::CaseInsensitive)==0)    ppm->m_Position.y =  xml.readElementText().toDouble()*lengthunit;
-						else if (xml.name().compare("z", Qt::CaseInsensitive)==0)    ppm->m_Position.z =  xml.readElementText().toDouble()*lengthunit;
-						else xml.skipCurrentElement();
-
-					}
+					readXMLPointMass(xml, ppm, massUnit, lengthUnit);
 				}
 				else
 					xml.skipCurrentElement();
@@ -11270,7 +11240,7 @@ void QMiarex::readXMLPlane(QXmlStreamReader &xml, Plane *pPlane, double lengthun
 		else if (xml.name().toString().compare("body", Qt::CaseInsensitive)==0)
 		{
 			Body *pBody = new Body;
-			readXMLBody(xml, pPlane, pBody, lengthunit, massunit);
+			readXMLBody(xml, pPlane, pBody, lengthUnit, massUnit);
 			pPlane->setBody(pBody);
 		}
 		else if (xml.name().toString().compare("wing", Qt::CaseInsensitive)==0)
@@ -11280,23 +11250,28 @@ void QMiarex::readXMLPlane(QXmlStreamReader &xml, Plane *pPlane, double lengthun
 			{
 				newWing.m_WingSection.clear();
 
-				while (xml.readNextStartElement())
+				while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() )
 				{
 					if (xml.name().compare("name",                 Qt::CaseInsensitive)==0)
 					{
 						newWing.rWingName() = xml.readElementText();
 					}
+					else if (xml.name().compare("color",           Qt::CaseInsensitive)==0)
+					{
+						readXMLColor(xml, newWing.wingColor());
+					}
 					else if (xml.name().compare("description",     Qt::CaseInsensitive)==0)
 					{
 						newWing.rWingDescription() = xml.readElementText();
 					}
-					else if (xml.name().compare("x_position",      Qt::CaseInsensitive)==0)
+					else if (xml.name().compare("position",        Qt::CaseInsensitive)==0)
 					{
-						xw = xml.readElementText().toDouble()*lengthunit;
-					}
-					else if (xml.name().compare("z_position",      Qt::CaseInsensitive)==0)
-					{
-						zw = xml.readElementText().toDouble()*lengthunit;
+						QStringList coordList = xml.readElementText().split(",");
+						if(coordList.length()>=3)
+						{
+							xw = coordList.at(0).toDouble()*lengthUnit;
+							zw = coordList.at(2).toDouble()*lengthUnit;
+						}
 					}
 					else if (xml.name().compare("tilt_angle",      Qt::CaseInsensitive)==0)
 					{
@@ -11320,7 +11295,7 @@ void QMiarex::readXMLPlane(QXmlStreamReader &xml, Plane *pPlane, double lengthun
 					}
 					else if (xml.name().compare("Inertia",         Qt::CaseInsensitive)==0)
 					{
-						while (xml.readNextStartElement())
+						while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() )
 						{
 							if (xml.name().compare("volume_mass", Qt::CaseInsensitive)==0)
 							{
@@ -11330,15 +11305,7 @@ void QMiarex::readXMLPlane(QXmlStreamReader &xml, Plane *pPlane, double lengthun
 							{
 								PointMass* ppm = new PointMass;
 								newWing.m_PointMass.append(ppm);
-								while (xml.readNextStartElement())
-								{
-									if (xml.name().compare("tag", Qt::CaseInsensitive)==0)       ppm->m_Tag = xml.readElementText();
-									else if (xml.name().compare("mass", Qt::CaseInsensitive)==0) ppm->m_Mass =  xml.readElementText().toDouble()*massunit;
-									else if (xml.name().compare("x", Qt::CaseInsensitive)==0)    ppm->m_Position.x =  xml.readElementText().toDouble()*lengthunit;
-									else if (xml.name().compare("y", Qt::CaseInsensitive)==0)    ppm->m_Position.y =  xml.readElementText().toDouble()*lengthunit;
-									else if (xml.name().compare("z", Qt::CaseInsensitive)==0)    ppm->m_Position.z =  xml.readElementText().toDouble()*lengthunit;
-									else xml.skipCurrentElement();
-								}
+								readXMLPointMass(xml, ppm, massUnit, lengthUnit);
 							}
 							else
 								xml.skipCurrentElement();
@@ -11346,13 +11313,13 @@ void QMiarex::readXMLPlane(QXmlStreamReader &xml, Plane *pPlane, double lengthun
 					}
 					else if (xml.name().compare("Sections",        Qt::CaseInsensitive)==0)
 					{
-						while (xml.readNextStartElement())
+						while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() )
 						{
 							if (xml.name().compare("Section",  Qt::CaseInsensitive)==0)
 							{
 								WingSection *pWingSec = new WingSection;
 								newWing.m_WingSection.append(pWingSec);
-								while (xml.readNextStartElement())
+								while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() )
 								{
 									if (xml.name().compare("x_number_of_panels", Qt::CaseInsensitive)==0)
 									{
@@ -11372,31 +11339,31 @@ void QMiarex::readXMLPlane(QXmlStreamReader &xml, Plane *pPlane, double lengthun
 										QString strPanelDist = xml.readElementText();
 										pWingSec->m_YPanelDist = distributionType(strPanelDist);
 									}
-									else if (xml.name().compare("chord", Qt::CaseInsensitive)==0)
+									else if (xml.name().compare("Chord", Qt::CaseInsensitive)==0)
 									{
-										pWingSec->m_Chord = xml.readElementText().toDouble()*lengthunit;
+										pWingSec->m_Chord = xml.readElementText().toDouble()*lengthUnit;
 									}
 									else if (xml.name().compare("y_position", Qt::CaseInsensitive)==0)
 									{
-										pWingSec->m_YPosition = xml.readElementText().toDouble()*lengthunit;
+										pWingSec->m_YPosition = xml.readElementText().toDouble()*lengthUnit;
 									}
-									else if (xml.name().compare("xoffset", Qt::CaseInsensitive)==0)
+									else if (xml.name().compare("xOffset", Qt::CaseInsensitive)==0)
 									{
-										pWingSec->m_Offset = xml.readElementText().toDouble()*lengthunit;
+										pWingSec->m_Offset = xml.readElementText().toDouble()*lengthUnit;
 									}
-									else if (xml.name().compare("dihedral", Qt::CaseInsensitive)==0)
+									else if (xml.name().compare("Dihedral", Qt::CaseInsensitive)==0)
 									{
 										pWingSec->m_Dihedral = xml.readElementText().toDouble();
 									}
-									else if (xml.name().compare("twist", Qt::CaseInsensitive)==0)
+									else if (xml.name().compare("Twist", Qt::CaseInsensitive)==0)
 									{
 										pWingSec->m_Twist = xml.readElementText().toDouble();
 									}
-									else if (xml.name().compare("left_side_foilName", Qt::CaseInsensitive)==0)
+									else if (xml.name().compare("Left_Side_FoilName", Qt::CaseInsensitive)==0)
 									{
 										pWingSec->m_LeftFoilName = xml.readElementText();
 									}
-									else if (xml.name().compare("right_side_foilName", Qt::CaseInsensitive)==0)
+									else if (xml.name().compare("Right_Side_FoilName", Qt::CaseInsensitive)==0)
 									{
 										pWingSec->m_RightFoilName = xml.readElementText();
 									}
@@ -11429,6 +11396,8 @@ void QMiarex::readXMLPlane(QXmlStreamReader &xml, Plane *pPlane, double lengthun
 			xml.skipCurrentElement();
 	}
 }
+
+
 
 
 /*

@@ -43,7 +43,7 @@ int W3dPrefsDlg::s_3DAxisWidth    = 1;
 QColor W3dPrefsDlg::s_3DAxisColor    = QColor(150,150,150);
 int W3dPrefsDlg::s_OutlineStyle   = 0;
 int W3dPrefsDlg::s_OutlineWidth   = 1;
-QColor W3dPrefsDlg::s_OutlineColor   = QColor(255,255,255);
+QColor W3dPrefsDlg::s_OutlineColor   = QColor(50,50,50);
 int W3dPrefsDlg::s_XCPStyle       = 0;
 int W3dPrefsDlg::s_XCPWidth       = 1;
 QColor W3dPrefsDlg::s_XCPColor       = QColor(50, 150, 50);
@@ -601,7 +601,7 @@ void W3dPrefsDlg::ResetDefaults()
     s_3DAxisColor    = QColor(150,150,150);
     s_OutlineStyle   = 0;
     s_OutlineWidth   = 1;
-    s_OutlineColor   = QColor(255,255,255);
+	s_OutlineColor   = QColor(50, 50, 50);
     s_XCPStyle       = 0;
     s_XCPWidth       = 1;
     s_XCPColor       = QColor(50, 150, 50);

@@ -61,14 +61,11 @@ public:
 	GL3dWingDlg(QWidget *pParent=NULL);
 	~GL3dWingDlg();
 
+	bool IntersectObject(CVector AA,  CVector U, CVector &I);
+
 private slots:
 	void OnAxes();
-	void On3DIso();
-	void On3DTop();
-	void On3DLeft();
-	void On3DFront();
 	void On3DReset();
-	void On3DPickCenter();
 
 //	void OnSetupLight();
 	void OnSurfaces();
@@ -98,7 +95,6 @@ private slots:
 private:
 	void reject();
 
-	void doubleClickEvent(QPoint point);
 	void keyPressEvent(QKeyEvent *event);
 	void resizeEvent(QResizeEvent *event);
 	void showEvent(QShowEvent *event);
@@ -160,7 +156,7 @@ private:
 	QPushButton *OKButton, *CancelButton;
     QCheckBox *m_pctrlAxes, *m_pctrlSurfaces, *m_pctrlOutline, *m_pctrlPanels, *m_pctrlFoilNames;
 	QCheckBox *m_pctrlShowMasses;
-	QPushButton *m_pctrlReset, *m_pctrlPickCenter;
+	QPushButton *m_pctrlReset;
 
 	QToolButton *m_pctrlX, *m_pctrlY, *m_pctrlZ, *m_pctrlIso;
 	QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView;
@@ -184,9 +180,7 @@ private:
 	bool m_bTrans;
 	bool m_bStored;
 	bool m_bEnableName;
-	bool m_bPickCenter;			//true if the user is in the process of picking a new center for OpenGL display
 	bool m_bResetglWing;
-	bool m_bResetglArcball;
 	bool m_bResetglSectionHighlight;
 
 

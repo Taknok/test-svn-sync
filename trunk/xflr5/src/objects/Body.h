@@ -100,6 +100,7 @@ public:
 	void ComputeBodyAxisInertia();
 	void ComputeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz);
 	double TotalMass();
+	double &volumeMass(){return m_VolumeMass;}
 
 	QString &bodyName(){return m_BodyName;}
 	QString &bodyDescription() {return m_BodyDescription;}

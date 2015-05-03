@@ -82,11 +82,9 @@ GL3dWingDlg::GL3dWingDlg(QWidget *pParent) : QDialog(pParent)
 
 	m_bResetglSectionHighlight = true;
 	m_bResetglWing             = true;
-	m_bResetglArcball          = true;
 	m_bEnableName              = true;
 	m_bAcceptName              = true;
 	m_bTrans                   = false;
-	m_bPickCenter              = false;
 	m_bRightSide               = true;
 	m_bChanged                 = false;
 	m_bDescriptionChanged      = false;
@@ -188,12 +186,11 @@ void GL3dWingDlg::Connect()
 
 	connect(m_pResetScales, SIGNAL(triggered()), this, SLOT(On3DReset()));
 
-	connect(m_pctrlIso,        SIGNAL(clicked()),this, SLOT(On3DIso()));
-	connect(m_pctrlX,          SIGNAL(clicked()),this, SLOT(On3DFront()));
-	connect(m_pctrlY,          SIGNAL(clicked()),this, SLOT(On3DLeft()));
-	connect(m_pctrlZ,          SIGNAL(clicked()),this, SLOT(On3DTop()));
+	connect(m_pctrlIso,        SIGNAL(clicked()),m_pGLWidget, SLOT(On3DIso()));
+	connect(m_pctrlX,          SIGNAL(clicked()),m_pGLWidget, SLOT(On3DFront()));
+	connect(m_pctrlY,          SIGNAL(clicked()),m_pGLWidget, SLOT(On3DLeft()));
+	connect(m_pctrlZ,          SIGNAL(clicked()),m_pGLWidget, SLOT(On3DTop()));
 	connect(m_pctrlReset,      SIGNAL(clicked()),this, SLOT(On3DReset()));
-	connect(m_pctrlPickCenter, SIGNAL(clicked()),this, SLOT(On3DPickCenter()));
 	connect(m_pctrlFoilNames,  SIGNAL(clicked()),this, SLOT(OnFoilNames()));
 	connect(m_pctrlShowMasses, SIGNAL(clicked()),this, SLOT(OnShowMasses()));
 
@@ -725,62 +722,29 @@ void GL3dWingDlg::keyPressEvent(QKeyEvent *event)
 }
 
 
-void GL3dWingDlg::doubleClickEvent(QPoint point)
-{
-	m_bPickCenter = false;
-	m_pctrlPickCenter->setChecked(false);
-	UpdateView();
-}
-
-
-void GL3dWingDlg::On3DIso()
-{
-	m_pGLWidget->On3DIso();
-}
-
-
-
-void GL3dWingDlg::On3DTop()
-{
-	m_pGLWidget->On3DTop();
-}
-
-
-void GL3dWingDlg::On3DLeft()
-{
-	m_pGLWidget->On3DLeft();
-}
-
-
-void GL3dWingDlg::On3DFront()
-{
-	m_pGLWidget->On3DFront();
-}
-
 
 void GL3dWingDlg::On3DReset()
 {
-	m_bPickCenter   = false;
-	m_pctrlPickCenter->setChecked(false);
 	SetWingScale();
 	m_pGLWidget->On3DReset();
 }
 
 
-void GL3dWingDlg::On3DPickCenter()
+
+
+void GL3dWingDlg::OnFoilNames()
 {
-	m_bPickCenter = true;
-	m_pctrlPickCenter->setChecked(true);
-}
-
-
-
-void GL3dWingDlg::OnAxes()
-{
-	ThreeDWidget::s_bAxes = m_pctrlAxes->isChecked();
+	ThreeDWidget::s_bFoilNames = m_pctrlFoilNames->isChecked();
 	UpdateView();
 }
 
+
+
+void GL3dWingDlg::OnShowMasses()
+{
+	ThreeDWidget::s_bShowMasses = m_pctrlShowMasses->isChecked();
+	UpdateView();
+}
 
 
 void GL3dWingDlg::OnDescriptionChanged()
@@ -848,20 +812,6 @@ void GL3dWingDlg::OnDeleteSection()
 }
 
 
-
-void GL3dWingDlg::OnFoilNames()
-{
-	ThreeDWidget::s_bFoilNames = m_pctrlFoilNames->isChecked();
-	UpdateView();
-}
-
-
-
-void GL3dWingDlg::OnShowMasses()
-{
-	ThreeDWidget::s_bShowMasses = m_pctrlShowMasses->isChecked();
-	UpdateView();
-}
 
 
 void GL3dWingDlg::OnInertia()
@@ -1060,13 +1010,18 @@ void GL3dWingDlg::OnOK()
 }
 
 
+void GL3dWingDlg::OnAxes()
+{
+	ThreeDWidget::s_bAxes = m_pctrlAxes->isChecked();
+	UpdateView();
+}
+
+
 void GL3dWingDlg::OnSurfaces()
 {
 	ThreeDWidget::s_bSurfaces = m_pctrlSurfaces->isChecked();
 	UpdateView();
 }
-
-
 
 
 void GL3dWingDlg::OnOutline()
@@ -1354,18 +1309,11 @@ void GL3dWingDlg::SetCurrentSection(int section)
 
 void GL3dWingDlg::SetWingScale()
 {
-//if(m_bIs3DScaleSet) return;
-
 	//wing along X axis will take 3/4 of the screen
 	m_pGLWidget->m_glScaled = (GLfloat)(3./4.*2.0/m_pWing->planformSpan());
 	m_pGLWidget->m_glViewportTrans.Set(0.0,0.0,0.0);
 
-//	m_ArcBall.GetMatrix();
-//	CVector eye(0.0,0.0,1.0);
-//	CVector up(0.0,1.0,0.0);
-//	m_pGLWidget->m_ArcBall.SetZoom(0.3,eye,up);
-
-	m_pGLWidget->Set3DRotationCenter();
+//	m_pGLWidget->Set3DRotationCenter();
 }
 
 
@@ -1656,19 +1604,10 @@ void GL3dWingDlg::SetupLayout()
 				pAxisViewLayout->addWidget(m_pctrlIso);
 			}
 
+			m_pctrlReset = new QPushButton(tr("Reset View"));
 
-			QHBoxLayout *pViewResetLayout = new QHBoxLayout;
-			{
-				m_pctrlPickCenter     = new QPushButton(tr("Pick Center"));
-				m_pctrlPickCenter->setToolTip(tr("Activate the button, then click on the object to center it in the viewport; alternatively, double click on the object"));
-				m_pctrlReset          = new QPushButton(tr("Reset"));
-				m_pctrlPickCenter->setCheckable(true);
-
-				pViewResetLayout->addWidget(m_pctrlReset);
-				pViewResetLayout->addWidget(m_pctrlPickCenter);
-			}
 			pThreeDViewLayout->addLayout(pAxisViewLayout);
-			pThreeDViewLayout->addLayout(pViewResetLayout);
+			pThreeDViewLayout->addWidget(m_pctrlReset);
 		}
 
 
@@ -1773,8 +1712,6 @@ void GL3dWingDlg::resizeEvent(QResizeEvent *event)
 	m_pctrlWingTable->setColumnWidth(8, wCols);
 	m_pctrlWingTable->setColumnWidth(9, wCols);
 
-	m_bResetglArcball = true;
-
 	UpdateView();
 	event->accept();
 }
@@ -1878,4 +1815,59 @@ void GL3dWingDlg::OnExportWing()
 	}
 	m_pWing->ExportDefinition(path_to_file);
 }
+
+
+
+bool GL3dWingDlg::IntersectObject(CVector AA,  CVector U, CVector &I)
+{
+	double dist=0.0;
+
+	for(int j=0; j<m_pWing->m_Surface.size(); j++)
+	{
+		if ( Intersect(m_pWing->m_Surface.at(j)->m_LA,
+					   m_pWing->m_Surface.at(j)->m_LB,
+					   m_pWing->m_Surface.at(j)->m_TA,
+					   m_pWing->m_Surface.at(j)->m_TB,
+					   m_pWing->m_Surface.at(j)->Normal,
+					   AA, U, I, dist))
+			return true;
+	}
+	return false;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

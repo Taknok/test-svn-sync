@@ -72,14 +72,15 @@ public:
 	void GLToClient(CVector const &real, QPoint &point);
     void GLToClient(double const &x, double const &y, QPoint &point);
     void NormalVector(GLdouble p1[3], GLdouble p2[3],  GLdouble p3[3], GLdouble n[3]);
+	enumGLView &iView(){return m_iView;}
 
+private slots:
 	void On3DIso();
 	void On3DTop();
 	void On3DLeft();
 	void On3DFront();
 	void On3DReset();
 
-	enumGLView &iView(){return m_iView;}
 
 private:
 	void contextMenuEvent (QContextMenuEvent * event);
@@ -124,7 +125,6 @@ private:
 	bool m_bDragPoint;
 	bool m_bArcball;			//true if the arcball is to be displayed
 	bool m_bCrossPoint;			//true if the control point on the arcball is to be displayed
-	bool m_bPickCenter;			//true if the user is in the process of picking a new center for OpenGL display
 
 
 	double m_glScaled;//zoom factor for UFO

@@ -3111,3 +3111,87 @@ bool stringToBool(QString str)
 }
 
 
+
+
+
+
+
+
+void readXMLColor(QXmlStreamReader &xml, QColor &color)
+{
+	color.setRgb(0,0,0,255);
+	while (xml.readNextStartElement())
+	{
+		if (xml.name().compare("red", Qt::CaseInsensitive)==0)        color.setRed(xml.readElementText().toInt());
+		else if (xml.name().compare("green", Qt::CaseInsensitive)==0) color.setGreen(xml.readElementText().toInt());
+		else if (xml.name().compare("blue", Qt::CaseInsensitive)==0)   color.setBlue(xml.readElementText().toInt());
+		else if (xml.name().compare("alpha", Qt::CaseInsensitive)==0)  color.setAlpha(xml.readElementText().toInt());
+		else xml.skipCurrentElement();
+
+	}
+}
+
+void writeXMLColor(QXmlStreamWriter &xml, QColor color)
+{
+	xml.writeStartElement("Color");
+	{
+		xml.writeTextElement("red",   QString("%1").arg(color.red()));
+		xml.writeTextElement("green", QString("%1").arg(color.green()));
+		xml.writeTextElement("blue",  QString("%1").arg(color.blue()));
+		xml.writeTextElement("alpha", QString("%1").arg(color.alpha()));
+	}
+	xml.writeEndElement();
+}
+
+
+
+void readXMLPointMass(QXmlStreamReader &xml, PointMass *ppm, double massUnit, double lengthUnit)
+{
+	while (xml.readNextStartElement())
+	{
+		if (xml.name().compare("tag", Qt::CaseInsensitive)==0)       ppm->m_Tag = xml.readElementText();
+		else if (xml.name().compare("mass", Qt::CaseInsensitive)==0) ppm->m_Mass =  xml.readElementText().toDouble()*massUnit;
+		else if (xml.name().compare("coordinates", Qt::CaseInsensitive)==0)
+		{
+			QStringList coordList = xml.readElementText().split(",");
+			if(coordList.length()>=3)
+			{
+				ppm->m_Position.x = coordList.at(0).toDouble()*lengthUnit;
+				ppm->m_Position.y = coordList.at(1).toDouble()*lengthUnit;
+				ppm->m_Position.z = coordList.at(2).toDouble()*lengthUnit;
+			}
+		}
+//		else if (xml.name().compare("x", Qt::CaseInsensitive)==0)    ppm->m_Position.x =  xml.readElementText().toDouble()*lengthUnit;
+//		else if (xml.name().compare("y", Qt::CaseInsensitive)==0)    ppm->m_Position.y =  xml.readElementText().toDouble()*lengthUnit;
+//		else if (xml.name().compare("z", Qt::CaseInsensitive)==0)    ppm->m_Position.z =  xml.readElementText().toDouble()*lengthUnit;
+		else xml.skipCurrentElement();
+
+	}
+}
+
+
+void writeXMLPointMass(QXmlStreamWriter &xml, PointMass *ppm, double massUnit, double lengthUnit)
+{
+	xml.writeStartElement("Point_Mass");
+	{
+		xml.writeTextElement("Tag", ppm->tag());
+		xml.writeTextElement("Mass", QString("%1").arg(ppm->mass()*massUnit,7,'f',3));
+		xml.writeTextElement("coordinates",QString("%1, %2, %3").arg(ppm->m_Position.x*lengthUnit, 11,'g',5).arg(ppm->m_Position.y*lengthUnit, 11,'g',5).arg(ppm->m_Position.z*lengthUnit, 11,'g',5));
+
+//		xml.writeTextElement("x", QString("%1").arg(ppm->m_Position.x*lengthUnit,7,'f',3));
+//		xml.writeTextElement("y", QString("%1").arg(ppm->m_Position.y*lengthUnit,7,'f',3));
+//		xml.writeTextElement("z", QString("%1").arg(ppm->m_Position.z*lengthUnit,7,'f',3));
+	}
+	xml.writeEndElement();
+}
+
+
+
+
+
+
+
+
+
+
+
