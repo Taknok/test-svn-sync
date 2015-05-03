@@ -28,16 +28,20 @@
 
 
 #include <QFile>
+#include <QList>
 #include <QString>
 #include <QTextStream>
+#include <QXmlStreamWriter>
+#include <QXmlStreamReader>
 #include <QColor>
 #include <complex>
 #include "params.h"
 #include "objects/CVector.h"
 #include "objects/Foil.h"
 #include "objects/Polar.h"
-#include <QList>
+#include "objects/PointMass.h"
 #include "xflr5.h"
+#include "misc/Units.h"
 
 using namespace std;
 
@@ -149,6 +153,12 @@ QString referenceDimension(XFLR5::enumRefDimension analysisMethod);
 
 QString boolToString(bool b);
 bool stringToBool(QString str);
+
+void readXMLPointMass(QXmlStreamReader &xml, PointMass *ppm, double massUnit, double lengthUnit);
+void writeXMLPointMass(QXmlStreamWriter &xml, PointMass *ppm, double massUnit, double lengthUnit);
+void readXMLColor(QXmlStreamReader &xml, QColor &color);
+void writeXMLColor(QXmlStreamWriter &xml, QColor color);
+
 
 #endif // FUNCTIONS_H
  

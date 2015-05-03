@@ -107,7 +107,6 @@ ThreeDWidget::ThreeDWidget(QWidget *parent)
 	m_bTrans                   = false;
 	m_bArcball                 = false;
 	m_bCrossPoint              = false;
-	m_bPickCenter              = false;
 
 	m_LastPoint.setX(0);
 	m_LastPoint.setY(0);
@@ -194,12 +193,6 @@ void ThreeDWidget::mousePressEvent(QMouseEvent *event)
 		}
 		else if (event->buttons() & Qt::LeftButton)
 		{
-			if(m_bPickCenter)
-			{
-				Set3DRotationCenter(point);
-				m_bPickCenter = false;
-			}
-			else
 			{
 				m_bTrans=true;
 
@@ -222,7 +215,6 @@ void ThreeDWidget::mousePressEvent(QMouseEvent *event)
 			}
 		}
 
-		m_bPickCenter = false;
 		m_PointDown = point;
 		m_LastPoint = point;
 	}
@@ -360,8 +352,12 @@ void ThreeDWidget::mouseDoubleClickEvent ( QMouseEvent * event )
 	}
 	else if(m_iView == GLWINGVIEW)
 	{
-		GL3dWingDlg *pDlg = (GL3dWingDlg*)m_pParent;
-		pDlg->doubleClickEvent(event->pos());
+//		GL3dWingDlg *pDlg = (GL3dWingDlg*)m_pParent;
+		Set3DRotationCenter(event->pos());
+	}
+	else if(m_iView == GLPLANEVIEW)
+	{
+//		ViewObjectDlg *pDlg = (ViewObjectDlg*)m_pParent;
 		Set3DRotationCenter(event->pos());
 	}
 }
@@ -1316,24 +1312,25 @@ void ThreeDWidget::Set3DRotationCenter(QPoint point)
 	U.Normalize();
 
 	bool bIntersect = false;
-/*	double dist;
 
-	for(j=0; j<m_Surface.size(); j++)
+	if(m_iView == GLWINGVIEW)
 	{
-
-		bIntersect = Intersect(m_pWing->m_Surface.at(j)->m_LA,
-							   m_pWing->m_Surface.at(j)->m_LB,
-							   m_pWing->m_Surface.at(j)->m_TA,
-							   m_pWing->m_Surface.at(j)->m_TB,
-							   m_pWing->m_Surface.at(j)->Normal,
-							   AA, U, I, dist);
-		if(bIntersect)
+		GL3dWingDlg *pDlg = (GL3dWingDlg*)m_pParent;
+		if(pDlg->IntersectObject(AA, U, I))
 		{
+			bIntersect = true;
 			PP.Set(I);
-			break;
 		}
-	}*/
-
+	}
+	else if(m_iView == GLPLANEVIEW)
+	{
+		ViewObjectDlg *pDlg = (ViewObjectDlg*)m_pParent;
+		if(pDlg->IntersectObject(AA, U, I))
+		{
+			bIntersect = true;
+			PP.Set(I);
+		}
+	}
 
 	if(bIntersect)
 	{
@@ -1441,8 +1438,8 @@ void ThreeDWidget::On3DFront()
 void ThreeDWidget::On3DReset()
 {
 	m_glViewportTrans.Set(0.0, 0.0, 0.0);
-	m_bPickCenter   = false;
 
+	Set3DRotationCenter();
 	updateGL();
 }
 

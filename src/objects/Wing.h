@@ -195,7 +195,7 @@ public:
 	QString &LeftFoil(const int &iSection);
 	QString& rWingDescription() {return m_WingDescription;}
 
-	QColor const wingColor() {return m_WingColor;}
+	QColor &wingColor() {return m_WingColor;}
 	void setWingColor(QColor colour){m_WingColor= colour;}
 
 

@@ -43,7 +43,6 @@
 #include <QRadioButton>
 #include <QList>
 #include <QDialog>
-#include <QDataStream>
 #include <QSettings>
 #include <QXmlStreamWriter>
 #include "./analysis/PanelAnalysisDlg.h"
@@ -318,6 +317,7 @@ public:
 	void UpdateCurve();
 	void UpdateUnits();
 	void UpdateView();
+
 
 //____________________Variables______________________________________
 //
