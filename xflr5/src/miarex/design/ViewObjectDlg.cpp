@@ -56,7 +56,6 @@ ViewObjectDlg::ViewObjectDlg(QWidget *pParent) : QDialog(pParent)
 
 	m_bResetglSectionHighlight = true;
 	m_bResetglPlane            = true;
-	m_bPickCenter              = false;
 	m_bChanged                 = false;
 
 	setupLayout();
@@ -187,47 +186,37 @@ void ViewObjectDlg::setupLayout()
 					QVBoxLayout *pRightColLayout = new QVBoxLayout;
 					{
 						QHBoxLayout *pAxisViewLayout = new QHBoxLayout;
-					{
-						m_pctrlX          = new QToolButton;
-						m_pctrlY          = new QToolButton;
-						m_pctrlZ          = new QToolButton;
-						m_pctrlIso        = new QToolButton;
-						if(m_pctrlX->iconSize().height()<=48)
 						{
-							m_pctrlX->setIconSize(QSize(24,24));
-							m_pctrlY->setIconSize(QSize(24,24));
-							m_pctrlZ->setIconSize(QSize(24,24));
-							m_pctrlIso->setIconSize(QSize(24,24));
+							m_pctrlX          = new QToolButton;
+							m_pctrlY          = new QToolButton;
+							m_pctrlZ          = new QToolButton;
+							m_pctrlIso        = new QToolButton;
+							if(m_pctrlX->iconSize().height()<=48)
+							{
+								m_pctrlX->setIconSize(QSize(24,24));
+								m_pctrlY->setIconSize(QSize(24,24));
+								m_pctrlZ->setIconSize(QSize(24,24));
+								m_pctrlIso->setIconSize(QSize(24,24));
+							}
+							m_pXView   = new QAction(QIcon(":/images/OnXView.png"), tr("X View"), this);
+							m_pYView   = new QAction(QIcon(":/images/OnYView.png"), tr("Y View"), this);
+							m_pZView   = new QAction(QIcon(":/images/OnZView.png"), tr("Z View"), this);
+							m_pIsoView = new QAction(QIcon(":/images/OnIsoView.png"), tr("Iso View"), this);
+							m_pXView->setCheckable(true);
+							m_pYView->setCheckable(true);
+							m_pZView->setCheckable(true);
+							m_pIsoView->setCheckable(true);
+
+							m_pctrlX->setDefaultAction(m_pXView);
+							m_pctrlY->setDefaultAction(m_pYView);
+							m_pctrlZ->setDefaultAction(m_pZView);
+							m_pctrlIso->setDefaultAction(m_pIsoView);
+							pAxisViewLayout->addWidget(m_pctrlX);
+							pAxisViewLayout->addWidget(m_pctrlY);
+							pAxisViewLayout->addWidget(m_pctrlZ);
+							pAxisViewLayout->addWidget(m_pctrlIso);
 						}
-						m_pXView   = new QAction(QIcon(":/images/OnXView.png"), tr("X View"), this);
-						m_pYView   = new QAction(QIcon(":/images/OnYView.png"), tr("Y View"), this);
-						m_pZView   = new QAction(QIcon(":/images/OnZView.png"), tr("Z View"), this);
-						m_pIsoView = new QAction(QIcon(":/images/OnIsoView.png"), tr("Iso View"), this);
-						m_pXView->setCheckable(true);
-						m_pYView->setCheckable(true);
-						m_pZView->setCheckable(true);
-						m_pIsoView->setCheckable(true);
 
-						m_pctrlX->setDefaultAction(m_pXView);
-						m_pctrlY->setDefaultAction(m_pYView);
-						m_pctrlZ->setDefaultAction(m_pZView);
-						m_pctrlIso->setDefaultAction(m_pIsoView);
-						pAxisViewLayout->addWidget(m_pctrlX);
-						pAxisViewLayout->addWidget(m_pctrlY);
-						pAxisViewLayout->addWidget(m_pctrlZ);
-						pAxisViewLayout->addWidget(m_pctrlIso);
-					}
-
-						QHBoxLayout *pViewResetLayout = new QHBoxLayout;
-						{
-							m_pctrlPickCenter     = new QPushButton(tr("Pick Center"));
-							m_pctrlPickCenter->setToolTip(tr("Activate the button, then click on the object to center it in the viewport; alternatively, double click on the object"));
-							m_pctrlReset          = new QPushButton(tr("Reset"));
-							m_pctrlPickCenter->setCheckable(true);
-
-							pViewResetLayout->addWidget(m_pctrlReset);
-							pViewResetLayout->addWidget(m_pctrlPickCenter);
-						}
 
 						QHBoxLayout *pClipLayout = new QHBoxLayout;
 						{
@@ -242,8 +231,10 @@ void ViewObjectDlg::setupLayout()
 							pClipLayout->addWidget(m_pctrlClipPlanePos,1);
 						}
 
+						m_pctrlReset = new QPushButton(tr("Reset view"));
+
 						pRightColLayout->addLayout(pAxisViewLayout);
-						pRightColLayout->addLayout(pViewResetLayout);
+						pRightColLayout->addWidget(m_pctrlReset);
 						pRightColLayout->addLayout(pClipLayout);
 					}
 
@@ -960,14 +951,14 @@ void ViewObjectDlg::GLCreateSectionHighlight(Wing *m_pWing)
 
 void ViewObjectDlg::Connect()
 {
-	connect(m_pctrlIso,        SIGNAL(clicked()),this, SLOT(On3DIso()));
-	connect(m_pctrlX,          SIGNAL(clicked()),this, SLOT(On3DFront()));
-	connect(m_pctrlY,          SIGNAL(clicked()),this, SLOT(On3DLeft()));
-	connect(m_pctrlZ,          SIGNAL(clicked()),this, SLOT(On3DTop()));
-	connect(m_pctrlReset,      SIGNAL(clicked()),this, SLOT(On3DReset()));
-	connect(m_pctrlPickCenter, SIGNAL(clicked()),this, SLOT(On3DPickCenter()));
-	connect(m_pctrlFoilNames,  SIGNAL(clicked()),this, SLOT(OnFoilNames()));
-	connect(m_pctrlShowMasses, SIGNAL(clicked()),this, SLOT(OnShowMasses()));
+	connect(m_pctrlIso,        SIGNAL(clicked()), m_pGLWidget, SLOT(On3DIso()));
+	connect(m_pctrlX,          SIGNAL(clicked()), m_pGLWidget, SLOT(On3DFront()));
+	connect(m_pctrlY,          SIGNAL(clicked()), m_pGLWidget, SLOT(On3DLeft()));
+	connect(m_pctrlZ,          SIGNAL(clicked()), m_pGLWidget, SLOT(On3DTop()));
+
+	connect(m_pctrlReset,      SIGNAL(clicked()), this, SLOT(On3DReset()));
+	connect(m_pctrlFoilNames,  SIGNAL(clicked()), this, SLOT(OnFoilNames()));
+	connect(m_pctrlShowMasses, SIGNAL(clicked()), this, SLOT(OnShowMasses()));
 
 	connect(m_pctrlAxes,       SIGNAL(clicked()), this, SLOT(OnAxes()));
 	connect(m_pctrlPanels,     SIGNAL(clicked()), this, SLOT(OnPanels()));
@@ -975,13 +966,12 @@ void ViewObjectDlg::Connect()
 	connect(m_pctrlOutline,    SIGNAL(clicked()), this, SLOT(OnOutline()));
 }
 
+
 void ViewObjectDlg::OnSurfaces()
 {
 	ThreeDWidget::s_bSurfaces = m_pctrlSurfaces->isChecked();
 	m_pGLWidget->updateGL();
 }
-
-
 
 
 void ViewObjectDlg::OnOutline()
@@ -997,45 +987,11 @@ void ViewObjectDlg::OnPanels()
 	m_pGLWidget->updateGL();
 }
 
-void ViewObjectDlg::On3DIso()
-{
-	m_pGLWidget->On3DIso();
-}
-
-
-
-void ViewObjectDlg::On3DTop()
-{
-	m_pGLWidget->On3DTop();
-}
-
-
-void ViewObjectDlg::On3DLeft()
-{
-	m_pGLWidget->On3DLeft();
-}
-
-
-void ViewObjectDlg::On3DFront()
-{
-	m_pGLWidget->On3DFront();
-}
-
-
 void ViewObjectDlg::On3DReset()
 {
-	m_bPickCenter   = false;
-	m_pctrlPickCenter->setChecked(false);
+//	SetWingScale();
 	m_pGLWidget->On3DReset();
 }
-
-
-void ViewObjectDlg::On3DPickCenter()
-{
-	m_bPickCenter = true;
-	m_pctrlPickCenter->setChecked(true);
-}
-
 
 
 void ViewObjectDlg::OnAxes()
@@ -1061,5 +1017,43 @@ void ViewObjectDlg::OnShowMasses()
 	m_pGLWidget->updateGL();
 
 }
+
+
+
+bool ViewObjectDlg::IntersectObject(CVector AA,  CVector U, CVector &I)
+{
+	double dist=0.0;
+
+	Wing *pWingList[MAXWINGS] = {m_pPlane->wing(), m_pPlane->wing2(), m_pPlane->stab(), m_pPlane->fin()};
+
+	for(int iw=0; iw<MAXWINGS; iw++)
+	{
+		if(pWingList[iw])
+		{
+			for(int j=0; j<pWingList[iw]->m_Surface.size(); j++)
+			{
+				if ( Intersect(pWingList[iw]->m_Surface.at(j)->m_LA,
+							   pWingList[iw]->m_Surface.at(j)->m_LB,
+							   pWingList[iw]->m_Surface.at(j)->m_TA,
+							   pWingList[iw]->m_Surface.at(j)->m_TB,
+							   pWingList[iw]->m_Surface.at(j)->Normal,
+							   AA, U, I, dist))
+					return true;
+			}
+		}
+	}
+
+	/** @todo intersect body also */
+	return false;
+}
+
+
+
+
+
+
+
+
+
 
 

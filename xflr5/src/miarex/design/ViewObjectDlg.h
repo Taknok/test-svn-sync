@@ -48,6 +48,7 @@ public:
 	void hideEvent(QHideEvent *event);
 	void resizeEvent(QResizeEvent *event);
 
+	bool IntersectObject(CVector AA,  CVector U, CVector &I);
 	void Connect();
 	void GLDraw3D();
 	void GLRenderView();
@@ -66,14 +67,8 @@ public:
 
 private slots:
 	void OnAxes();
-	void On3DIso();
-	void On3DTop();
-	void On3DLeft();
-	void On3DFront();
 	void On3DReset();
-	void On3DPickCenter();
 
-//	void OnSetupLight();
 	void OnSurfaces();
 	void OnOutline();
 	void OnPanels();
@@ -99,11 +94,10 @@ private:
 	QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView;
 	QToolButton *m_pctrlX, *m_pctrlY, *m_pctrlZ, *m_pctrlIso;
 
-	QPushButton *m_pctrlReset, *m_pctrlPickCenter;
+	QPushButton *m_pctrlReset;
 	QSlider *m_pctrlClipPlanePos;
 
 	bool m_bChanged;
-	bool m_bPickCenter;			//true if the user is in the process of picking a new center for OpenGL display
 	bool m_bResetglSectionHighlight;
 	bool m_bResetglPlane;
 
