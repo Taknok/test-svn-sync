@@ -380,7 +380,7 @@ void GL3dWingDlg::GLCreateSectionHighlight()
 		if(iSection==0)
 		{
 			//define the inner left side surface
-			if(!m_pWing->IsFin())  jSurf = m_pWing->m_Surface.size()/2 - 1;
+			if(!m_pWing->isFin())  jSurf = m_pWing->m_Surface.size()/2 - 1;
 			else                   jSurf = m_pWing->m_Surface.size()   - 1;
 
 			//plot B side outline

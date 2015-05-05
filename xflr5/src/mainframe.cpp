@@ -5163,7 +5163,7 @@ bool MainFrame::SerializeProjectWPA(QDataStream &ar, bool bIsStoring)
 			{
 				//create a plane with this wing
 				pPlane = new Plane();
-				pPlane->setPlaneName(pWing->WingName());
+				pPlane->setPlaneName(pWing->wingName());
 				pPlane->m_Wing[0].Duplicate(pWing);
 				pPlane->setBody(NULL);
 				pPlane->setWings(false, false, false);

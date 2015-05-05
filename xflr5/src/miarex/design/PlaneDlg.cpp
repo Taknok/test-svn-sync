@@ -92,33 +92,6 @@ PlaneDlg::PlaneDlg(QWidget *parent) :QDialog(parent)
 
 
 
-void PlaneDlg::ComputePlane(void)
-{
-	if(m_pPlane->stab())
-	{
-		double SLA = m_pPlane->m_WingLE[2].x + m_pPlane->stab()->Chord(0)/4.0 - m_pPlane->m_WingLE[0].x -m_pPlane->wing()->Chord(0)/4.0;
-		double area = m_pPlane->wing()->m_ProjectedArea;
-		if(m_pPlane->wing2()) area += m_pPlane->wing2()->m_ProjectedArea;
-
-		double ProjectedArea = 0.0;
-		for (int i=0;i<m_pPlane->stab()->NWingSection()-1; i++)
-		{
-			ProjectedArea += m_pPlane->stab()->Length(i+1)*(m_pPlane->stab()->Chord(i)+m_pPlane->stab()->Chord(i+1))/2.0
-							*cos(m_pPlane->stab()->Dihedral(i)*PI/180.0)*cos(m_pPlane->stab()->Dihedral(i)*PI/180.0);
-
-		}
-		ProjectedArea *=2.0;
-		m_pPlane->m_TailVolume = ProjectedArea * SLA / area/m_pPlane->wing()->m_MAChord ;
-	}
-	else m_pPlane->m_TailVolume = 0.0;
-
-	if(m_pPlane->fin())
-	{
-		m_pPlane->fin()->m_bDoubleFin = m_pPlane->m_bDoubleFin;
-		m_pPlane->fin()->m_bSymFin    = m_pPlane->m_bSymFin;
-	}
-}
-
 
 void PlaneDlg::InitDialog()
 {
@@ -534,7 +507,7 @@ void PlaneDlg::OnOK()
 
 	m_pPlane->m_PlaneDescription = m_pctrlPlaneDescription->toPlainText();
 
-	ComputePlane();
+	m_pPlane->ComputePlane();
 
 
 	//check the number of surfaces
@@ -745,7 +718,7 @@ void PlaneDlg::SetResults()
 	str = QString("%1").arg(span*Units::mtoUnit(),5,'f',2);
 	m_pctrlWingSpan->setText(str);
 
-	ComputePlane();
+	m_pPlane->ComputePlane();
 	if(m_pPlane->stab())
 	{
 		double SLA = m_pPlane->m_WingLE[2].x + m_pPlane->stab()->Chord(0)/4.0 - m_pPlane->wing()->Chord(0)/4.0;

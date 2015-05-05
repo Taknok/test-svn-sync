@@ -128,10 +128,10 @@ public:
 	bool ExportAVLWing(QTextStream &out, int index, double y, double Thetay);
 
 	bool IsWingOut()      {return m_bWingOut;}
-	bool IsFin()          {return m_bIsFin;}
-	bool IsDoubleFin()    {return m_bDoubleFin;}
-	bool IsSymFin()       {return m_bSymFin;}
-	bool IsDoubleSymFin() {return m_bDoubleSymFin;}
+	bool &isFin()          {return m_bIsFin;}
+	bool &isDoubleFin()    {return m_bDoubleFin;}
+	bool &isSymFin()       {return m_bSymFin;}
+//	bool &isDoubleSymFin() {return m_bDoubleSymFin;}
 
 	void InsertSection(int iSection);
 	bool AppendWingSection();
@@ -175,20 +175,20 @@ public:
 	double getDihedral(double yob);
 	double getTwist(double y);
 	double AverageSweep();
-	double VolumeMass() {return m_VolumeMass;}
-	double TotalMass();
+	double &volumeMass() {return m_VolumeMass;}
+	double totalMass();
 	double C4(double yob, double xRef);
 	double ZPosition(double y);
 	double Beta(int m, int k);
 
-	bool isSymetric() {return m_bSymetric;}
+	bool &isSymetric() {return m_bSymetric;}
 
 	int &nFlaps() {return m_nFlaps;}
 
 	static double minPanelSize(){return s_MinPanelSize;}
 
 	CVector CoG() {return m_CoG;}
-	const QString& WingName() const {return m_WingName;}
+	const QString& wingName() const {return m_WingName;}
 	QString& rWingName() {return m_WingName;}
 	const QString& WingDescription() const {return m_WingDescription;}
 	QString &RightFoil(const int &iSection);
@@ -210,9 +210,11 @@ private:
 	bool m_bWingOut;	             /**< true if the wing OpPoint is outside the flight envelope of the available Type 1 polar mesh */
 	bool m_bSymetric;	             /**< true if the wing's geometry is symetric */
 	bool m_bIsFin;                   /**< true if this wing describes a fin */
+
+	/** @todo check use of symfin and doublesymfin - redundant with plane fields*/
 	bool m_bDoubleFin;               /**< true if the wing describes a double fin symetric about the y=0 plane */
-	double m_bSymFin;                /**< true if the wing describes a double fin symetric about the z=0 plane */
-	double m_bDoubleSymFin;          /**< true if the fin is both double and symetric */
+	bool m_bSymFin;                  /**< true if the wing describes a double fin symetric about the z=0 plane */
+//	double m_bDoubleSymFin;          /**< true if the fin is both double and symetric */
 
 	int m_NStation;                  /**< the number of stations for wing calculation; either the number of points of LLT, or the number of spanwise panels  */
 //	int m_nNodes;                    /**< the number of nodes of the panel mesh */

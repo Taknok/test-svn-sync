@@ -2638,164 +2638,6 @@ void QMiarex::GLDraw3D()
 }
 
 
-/**
- * Draws the point masses, the object masses, and the CG position in the OpenGL viewport
-*/
-void QMiarex::GLDrawMasses()
-{
-	ThreeDWidget *p3dWidget = (ThreeDWidget*)s_p3dWidget;
-	QString MassUnit;
-	Units::getWeightUnitLabel(MassUnit);
-
-	glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
-
-	double zdist = 25.0/(double)m_r3DCltRect.width();
-
-
-	for(int iw=0; iw<MAXWINGS; iw++)
-	{
-		if(m_pWingList[iw])
-		{
-			glPushMatrix();
-			{
-				if(m_pCurPlane)
-				{
-					glTranslated(m_pCurPlane->WingLE(iw).x,
-								 m_pCurPlane->WingLE(iw).y,
-								 m_pCurPlane->WingLE(iw).z);
-					if(m_pWingList[iw]->m_bIsFin) glTranslated(0.0,0.0, m_pWingList[iw]->m_ProjectedSpan/4.0);
-					else                          glTranslated(0.0, m_pWingList[iw]->m_ProjectedSpan/4.0,0.0);
-
-
-					glColor3d(0.5, 1.0, 0.5);
-					p3dWidget->renderText(0.0, 0.0, zdist,
-										  m_pWingList[iw]->m_WingName+
-										  QString(" %1").arg(m_pWingList[iw]->m_VolumeMass*Units::kgtoUnit(), 7,'g',3)+
-										  MassUnit);
-				}
-			}
-			glPopMatrix();
-
-			for(int im=0; im<m_pWingList[iw]->m_PointMass.size(); im++)
-			{
-				glPushMatrix();
-				{
-					if(m_pCurPlane)
-					{
-						glTranslated(m_pCurPlane->WingLE(iw).x,
-									 m_pCurPlane->WingLE(iw).y,
-									 m_pCurPlane->WingLE(iw).z);
-					}
-					glTranslated(m_pWingList[iw]->m_PointMass[im]->position().x,
-								 m_pWingList[iw]->m_PointMass[im]->position().y,
-								 m_pWingList[iw]->m_PointMass[im]->position().z);
-					glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
-					p3dWidget->GLRenderSphere(W3dPrefsDlg::s_MassRadius/m_glScaled);
-					glColor3d(Settings::s_TextColor.redF(), Settings::s_TextColor.greenF(), Settings::s_TextColor.blueF());
-					p3dWidget->renderText(0.0, 0.0, 0.0 +.02,
-										  m_pWingList[iw]->m_PointMass[im]->tag()
-										  +QString(" %1").arg(m_pWingList[iw]->m_PointMass[im]->mass()*Units::kgtoUnit(), 7,'g',3)
-										  +MassUnit);
-				}
-				glPopMatrix();
-			}
-		}
-	}
-
-	if(m_pCurPlane)
-	{
-        glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
-		for(int im=0; im<m_pCurPlane->m_PointMass.size(); im++)
-		{
-			glPushMatrix();
-			{
-				glTranslated(m_pCurPlane->m_PointMass[im]->position().x,
-							 m_pCurPlane->m_PointMass[im]->position().y,
-							 m_pCurPlane->m_PointMass[im]->position().z);
-				glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
-				p3dWidget->GLRenderSphere(W3dPrefsDlg::s_MassRadius/m_glScaled);
-				glColor3d(Settings::s_TextColor.redF(), Settings::s_TextColor.greenF(), Settings::s_TextColor.blueF());
-				p3dWidget->renderText(0.0,0.0,0.0+.02,
-								  m_pCurPlane->m_PointMass[im]->tag()
-								  +QString(" %1").arg(m_pCurPlane->m_PointMass[im]->mass()*Units::kgtoUnit(), 7,'g',3)
-								  +MassUnit);
-			}
-			glPopMatrix();
-		}
-
-	}
-	if(m_pCurPlane && m_pCurPlane->body())
-	{
-		Body *pCurBody = m_pCurPlane->body();
-//		glColor3d(W3dPrefsDlg::s_MassColor.redF()*.75, W3dPrefsDlg::s_MassColor.greenF()*.75, W3dPrefsDlg::s_MassColor.blueF()*.75);
-		glColor3d(0.0, 0.0, 0.7);
-
-		glPushMatrix();
-		{
-			if(m_pCurPlane)
-			{
-				glTranslated(m_pCurPlane->bodyPos().x,
-							 m_pCurPlane->bodyPos().y,
-							 m_pCurPlane->bodyPos().z);
-
-				glColor3d(0.5, 1.0, 0.5);
-				p3dWidget->renderText(0.0, 0.0, zdist,
-								  pCurBody->m_BodyName+
-								  QString(" %1").arg(pCurBody->m_VolumeMass*Units::kgtoUnit(), 7,'g',3)+
-								  MassUnit);
-			}
-		}
-		glPopMatrix();
-		glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
-		for(int im=0; im<pCurBody->m_PointMass.size(); im++)
-		{
-			glPushMatrix();
-			{
-				glTranslated(pCurBody->m_PointMass[im]->position().x,pCurBody->m_PointMass[im]->position().y,pCurBody->m_PointMass[im]->position().z);
-				if(m_pCurPlane)
-				{
-					glTranslated(m_pCurPlane->bodyPos().x,
-								 m_pCurPlane->bodyPos().y,
-								 m_pCurPlane->bodyPos().z);
-				}
-
-				glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
-				p3dWidget->GLRenderSphere(W3dPrefsDlg::s_MassRadius/m_glScaled);
-
-				glColor3d(Settings::s_TextColor.redF(), Settings::s_TextColor.greenF(), Settings::s_TextColor.blueF());
-				p3dWidget->renderText(0.0, 0.0, 0.0+.02,
-								  pCurBody->m_PointMass[im]->tag()
-								  +QString(" %1").arg(pCurBody->m_PointMass[im]->mass()*Units::kgtoUnit(), 7,'g',3)
-								  +MassUnit);
-			}
-			glPopMatrix();
-		}
-	}
-	//plot CG
-	if(m_pCurPlane)
-	{
-		CVector CoG;
-		double Mass=0.0;
-		if(m_pCurPlane)
-		{
-			CoG = m_pCurPlane->CoG();
-			Mass = m_pCurPlane->TotalMass();
-		}
-
-		glPushMatrix();
-		{
-			glTranslated(CoG.x,CoG.y,CoG.z);
-			glColor3d(1.0, 0.5, 0.5);
-			p3dWidget->GLRenderSphere(W3dPrefsDlg::s_MassRadius*2.0/m_glScaled);
-			glColor3d(Settings::s_TextColor.redF(), Settings::s_TextColor.greenF(), Settings::s_TextColor.blueF());
-			p3dWidget->renderText(0.0, 0.0, 0.0+.02,
-							  "CoG "+QString("%1").arg(Mass*Units::kgtoUnit(), 7,'g',3)
-							  +MassUnit);
-		}
-		glPopMatrix();
-	}
-}
-
 
 /**
 * Prints the foil names on the OpenGl viewport
@@ -2968,7 +2810,7 @@ void QMiarex::GLRenderView()
 
 		if(s_bFoilNames) GLDrawFoils();
 
-		if(s_bShowMasses) GLDrawMasses();
+		if(s_bShowMasses) GLDrawMasses((ThreeDWidget*)s_p3dWidget, m_pCurPlane, m_glScaled);
 
 		glLoadIdentity();
 		glDisable(GL_CLIP_PLANE1);
@@ -5080,7 +4922,6 @@ void QMiarex::OnEditCurWPolar()
 
 
 
-
 /**
  * The user has requested an edition of the current WPolar Object
  */
@@ -5088,14 +4929,26 @@ void QMiarex::OnEditCurWPolarObject()
 {
 	if(!m_pCurPlane || !m_pCurWPolar)	return;
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
+
+	WPolar *pNewWPolar = new WPolar;
+	pNewWPolar->DuplicateSpec(m_pCurWPolar);
+
 	ViewPolarDefDlg vpDlg((MainFrame*)s_pMainFrame);
-	vpDlg.initDialog(m_pCurPlane, m_pCurWPolar);
+	vpDlg.initDialog(m_pCurPlane, pNewWPolar);
 
 	if (vpDlg.exec() == QDialog::Accepted)
 	{
 		emit projectModified();
 
-		m_pCurWPolar = Objects3D::insertNewWPolar(m_pCurWPolar, m_pCurPlane);
+		pNewWPolar->planeName() = m_pCurPlane->planeName();
+
+		pNewWPolar->bDirichlet() = m_bDirichlet;
+
+		pNewWPolar->curveColor() = MainFrame::GetColor(4);
+		pNewWPolar->visible() = true;
+
+
+		m_pCurWPolar = Objects3D::insertNewWPolar(pNewWPolar, m_pCurPlane);
 		m_pCurPOpp = NULL;
 
 		m_bResetglGeom = true;
@@ -5533,7 +5386,7 @@ void QMiarex::OnEditCurBody()
 
 	//then modifications are automatically recorded
 	m_pCurPlane->Duplicate(pModPlane);
-	Objects3D::deletePlaneResults(m_pCurPlane, true);// will also set new surface and Aerochord in WPolars
+	Objects3D::deletePlaneResults(m_pCurPlane, false);// will also set new surface and Aerochord in WPolars
 	m_pCurWPolar = NULL;
 	m_pCurPOpp = NULL;
 	SetPlane();
@@ -5549,10 +5402,96 @@ void QMiarex::OnEditCurBody()
  */
 void QMiarex::OnEditCurObject()
 {
-	if(!m_pCurPlane)	return;
-	ViewObjectDlg voDlg((MainFrame*)s_pMainFrame);
-	voDlg.initDialog(m_pCurPlane);
-	voDlg.exec();
+	if(!m_pCurPlane) return;
+
+	int i;
+	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
+
+	WPolar *pWPolar;
+	PlaneOpp* pPOpp;
+	bool bHasResults = false;
+	for (i=0; i< m_poaWPolar->size(); i++)
+	{
+		pWPolar = (WPolar*)m_poaWPolar->at(i);
+		if(pWPolar->m_Alpha.size() && pWPolar->planeName() == m_pCurPlane->planeName())
+		{
+			bHasResults = true;
+			break;
+		}
+	}
+
+	for (i=0; i<m_poaPOpp->size(); i++)
+	{
+		pPOpp = (PlaneOpp*)m_poaPOpp->at(i);
+		if(pPOpp->planeName() == m_pCurPlane->planeName())
+		{
+			bHasResults = true;
+			break;
+		}
+	}
+
+	Plane* pModPlane= new Plane;
+	pModPlane->Duplicate(m_pCurPlane);
+
+	ViewObjectDlg voDlg((MainFrame*)pMainFrame);
+	voDlg.initDialog(pModPlane);
+
+	ModDlg mdDlg(pMainFrame);
+
+	if(QDialog::Accepted == voDlg.exec())
+	{
+		emit projectModified();
+
+		if(voDlg.m_bChanged)
+		{
+			if(bHasResults)
+			{
+				mdDlg.m_Question = tr("The modification will erase all results associated to this Plane.\nContinue ?");
+				mdDlg.InitDialog();
+				int Ans = mdDlg.exec();
+
+				if (Ans == QDialog::Rejected)
+				{
+					//restore geometry
+					delete pModPlane; // clean up
+					return;
+				}
+				else if(Ans==20)
+				{
+					//save mods to a new plane object
+					m_pCurPlane = Objects3D::setModPlane(pModPlane);
+
+					SetPlane();
+					pMainFrame->UpdatePlaneListBox();
+					UpdateView();
+					return;
+				}
+			}
+
+			//then modifications are automatically recorded
+			m_pCurPlane->Duplicate(pModPlane);
+
+			Objects3D::deletePlaneResults(m_pCurPlane, false);// will also set new surface and Aerochord in WPolars
+			m_pCurWPolar = NULL;
+			m_pCurPOpp = NULL;
+
+			m_bResetglGeom = true;
+			m_bResetglMesh = true;
+//			m_bResetglOpp  = true;
+			s_bResetCurves = true;
+		}
+
+		SetPlane();
+		pMainFrame->UpdatePlaneListBox();
+		m_bIs2DScaleSet = false;
+		SetScale();
+		OnAdjustToWing();
+		SetControls();
+
+		UpdateView();
+	}
+
+	delete pModPlane; // clean up
 }
 
 
@@ -5639,7 +5578,7 @@ void QMiarex::OnEditCurPlane()
 			//then modifications are automatically recorded
 			m_pCurPlane->Duplicate(pModPlane);
 
-			Objects3D::deletePlaneResults(m_pCurPlane, true);// will also set new surface and Aerochord in WPolars
+			Objects3D::deletePlaneResults(m_pCurPlane, false);// will also set new surface and Aerochord in WPolars
 			m_pCurWPolar = NULL;
 			m_pCurPOpp = NULL;
 
@@ -5748,7 +5687,7 @@ void QMiarex::OnEditCurWing()
 			//then modifications are automatically recorded
 			m_pCurPlane->Duplicate(pModPlane);
 
-			Objects3D::deletePlaneResults(m_pCurPlane, true);// will also set new surface and Aerochord in WPolars
+			Objects3D::deletePlaneResults(m_pCurPlane, false);// will also set new surface and Aerochord in WPolars
 			m_pCurWPolar = NULL;
 			m_pCurPOpp = NULL;
 
@@ -5855,7 +5794,7 @@ void QMiarex::OnScaleWing()
 
 			//then modifications are automatically recorded
 			m_pCurPlane->Duplicate(pModPlane);
-			Objects3D::deletePlaneResults(m_pCurPlane, true);// will also set new surface and Aerochord in WPolars
+			Objects3D::deletePlaneResults(m_pCurPlane, false);// will also set new surface and Aerochord in WPolars
 			m_pCurWPolar = NULL;
 			m_pCurPOpp = NULL;
 
@@ -9615,7 +9554,7 @@ void QMiarex::SetPlane(QString PlaneName)
 	if(m_pCurPlane->fin())
 	{
 		m_pWingList[3] = m_pCurPlane->fin();
-		m_pWingList[3]->m_bDoubleSymFin = m_pCurPlane->m_bDoubleSymFin;
+//		m_pWingList[3]->m_bDoubleSymFin = m_pCurPlane->m_bDoubleSymFin;
 	}
 	else
 		m_pWingList[3]  = NULL;
@@ -10100,22 +10039,41 @@ void QMiarex::SetWPolar(bool bCurrent, QString WPlrName)
 		m_bCurveVisible = m_pCurWPolar->visible();
 		m_bCurvePoints  = m_pCurWPolar->pointsVisible();
 
-		if(m_pCurWPolar->m_bAutoInertia)
+		//make sure the polar is up to date with the latest plane data
+		if(m_pCurWPolar->bAutoInertia())
 		{
 			if(m_pCurPlane)
 			{
-				m_pCurWPolar->mass() = m_pCurPlane->TotalMass();
+				m_pCurWPolar->mass()   = m_pCurPlane->TotalMass();
 				m_pCurWPolar->CoG()    = m_pCurPlane->CoG();
-				m_pCurWPolar->m_CoGIxx = m_pCurPlane->m_CoGIxx;
-				m_pCurWPolar->m_CoGIyy = m_pCurPlane->m_CoGIyy;
-				m_pCurWPolar->m_CoGIzz = m_pCurPlane->m_CoGIzz;
-				m_pCurWPolar->m_CoGIxz = m_pCurPlane->m_CoGIxz;
+				m_pCurWPolar->CoGIxx() = m_pCurPlane->CoGIxx();
+				m_pCurWPolar->CoGIyy() = m_pCurPlane->CoGIyy();
+				m_pCurWPolar->CoGIzz() = m_pCurPlane->CoGIzz();
+				m_pCurWPolar->CoGIxz() = m_pCurPlane->CoGIxz();
 			}
-
-			QString PolarProps;
-			m_pCurWPolar->GetPolarProperties(PolarProps);
-			m_pctrlPolarProps->setText(PolarProps);
 		}
+
+		if(m_pCurWPolar->referenceDim()!=XFLR5::MANUALREFDIM)
+		{
+			// get the latest dimensions from the plane definition
+			// should have been updated at the time when the plane was created or edited
+			// just a safety precaution
+			if(m_pCurWPolar->referenceDim()==XFLR5::PLANFORMREFDIM)
+			{
+				m_pCurWPolar->referenceArea()       = m_pCurPlane->planformArea();
+				m_pCurWPolar->referenceSpanLength() = m_pCurPlane->planformSpan();
+			}
+			else if(m_pCurWPolar->referenceDim()==XFLR5::PLANFORMREFDIM)
+			{
+				m_pCurWPolar->referenceArea()       = m_pCurPlane->projectedArea();
+				m_pCurWPolar->referenceSpanLength() = m_pCurPlane->projectedSpan();
+			}
+		}
+
+
+		QString PolarProps;
+		m_pCurWPolar->GetPolarProperties(PolarProps);
+		m_pctrlPolarProps->setText(PolarProps);
 	}
 	else m_pctrlPolarProps->clear();
 
@@ -10278,6 +10236,9 @@ void QMiarex::showEvent(QShowEvent *event)
 	SetAnalysisParams();
 	SetCurveParams();
 	event->accept();
+
+//	QWidget *pWidget = new QWidget;
+//	pWidget->show();
 }
 
 
@@ -10908,69 +10869,7 @@ void QMiarex::OnExportPlanetoXML()
 		if(m_pCurPlane->body())
 		{
 			Body *pBody = m_pCurPlane->body();
-			NURBSSurface *pSurface = pBody->splineSurface();
-			xml.writeStartElement("body");
-			{
-				xml.writeTextElement("Name", pBody->bodyName());
-				writeXMLColor(xml, pBody->bodyColor());
-				xml.writeTextElement("Description", pBody->bodyDescription());
-				xml.writeTextElement("Position",QString("%1, %2, %3").arg(m_pCurPlane->bodyPos().x*Units::mtoUnit(), 11,'g',5)
-																	 .arg(m_pCurPlane->bodyPos().y*Units::mtoUnit(), 11,'g',5)
-																	 .arg(m_pCurPlane->bodyPos().z*Units::mtoUnit(), 11,'g',5));
-
-				xml.writeTextElement("Type", pBody->bodyType()==XFLR5::BODYPANELTYPE ? "FLATPANELS" : "NURBS");
-				if(pBody->bodyType()==XFLR5::BODYSPLINETYPE && pSurface)
-				{
-					xml.writeTextElement("x_degree", QString ("%1").arg(pSurface->m_iuDegree));
-					xml.writeTextElement("hoop_degree", QString ("%1").arg(pSurface->m_ivDegree));
-					xml.writeTextElement("x_panels", QString ("%1").arg(pBody->m_nxPanels));
-					xml.writeTextElement("hoop_panels", QString ("%1").arg(pBody->m_nhPanels));
-				}
-				else
-				{
-					for(int isl=0; isl<pBody->SideLineCount(); isl++)
-					{
-						xml.writeTextElement("Hoop_panels_stripe_%1",  QString("%1").arg(pBody->m_hPanels.at(isl)));
-					}
-
-				}
-				xml.writeStartElement("Inertia");
-				{
-					xml.writeTextElement("Volume_Mass", QString("%1").arg(pBody->volumeMass(),7,'f',3));
-					for(int ipm=0; ipm<pBody->m_PointMass.size(); ipm++)
-					{
-						writeXMLPointMass(xml, pBody->m_PointMass.at(ipm), Units::kgtoUnit(), Units::mtoUnit());
-					}
-				}
-				xml.writeEndElement();
-
-				for(int iFrame=0; iFrame<pBody->splineSurface()->frameCount(); iFrame++)
-				{
-					Frame *pFrame = pBody->splineSurface()->frameAt(iFrame);
-					xml.writeStartElement("frame");
-					{
-						if(pBody->bodyType()==XFLR5::BODYPANELTYPE)
-						{
-							xml.writeTextElement("x_panels", QString("%1").arg(pBody->m_xPanels.at(iFrame)));
-							xml.writeTextElement("h_panels", QString("%1").arg(pBody->m_xPanels.at(iFrame)));
-						}
-
-						xml.writeTextElement("Position",QString("%1, %2, %3").arg(pFrame->m_Position.x*Units::mtoUnit(), 11,'g',5)
-																			 .arg(pFrame->m_Position.y*Units::mtoUnit(), 11,'g',5)
-																			 .arg(pFrame->m_Position.z*Units::mtoUnit(), 11,'g',5));
-
-						for(int iPt=0; iPt<pFrame->PointCount(); iPt++)
-						{
-							CVector Pt(pFrame->Point(iPt));
-							xml.writeTextElement("point",QString("%1, %2, %3").arg(Pt.x*Units::mtoUnit(), 11,'g',5)
-																			  .arg(Pt.y*Units::mtoUnit(), 11,'g',5)
-																			  .arg(Pt.z*Units::mtoUnit(), 11,'g',5));
-						}
-					}
-					xml.writeEndElement();
-				}
-			}
-			xml.writeEndElement();
+			writeXMLBody(xml, pBody, m_pCurPlane->bodyPos(), Units::mtoUnit(), Units::kgtoUnit());
 		}
 
 		for(int iw=0; iw<MAXWINGS; iw++)
@@ -10979,7 +10878,7 @@ void QMiarex::OnExportPlanetoXML()
 			{
 				xml.writeStartElement("wing");
 				{
-					xml.writeTextElement("Name", m_pWingList[iw]->WingName());
+					xml.writeTextElement("Name", m_pWingList[iw]->wingName());
 					writeXMLColor(xml, m_pWingList[iw]->wingColor());
 					xml.writeTextElement("Description", m_pWingList[iw]->WingDescription());
 					xml.writeTextElement("Position",QString("%1, %2, %3").arg(m_pCurPlane->WingLE(iw).x*Units::mtoUnit(), 11,'g',5)
@@ -10987,12 +10886,12 @@ void QMiarex::OnExportPlanetoXML()
 																		 .arg(m_pCurPlane->WingLE(iw).z*Units::mtoUnit(), 11,'g',5));
 					xml.writeTextElement("Tilt_angle",  QString("%1").arg(m_pCurPlane->WingTiltAngle(iw),7,'f',3));
 					xml.writeTextElement("Symetric",    m_pWingList[iw]->isSymetric()  ? "true" : "false");
-					xml.writeTextElement("isFin",       m_pWingList[iw]->IsFin()       ? "true" : "false");
-					xml.writeTextElement("isDoubleFin", m_pWingList[iw]->IsDoubleFin() ? "true" : "false");
-					xml.writeTextElement("isSymFin",    m_pWingList[iw]->IsSymFin()    ? "true" : "false");
+					xml.writeTextElement("isFin",       m_pWingList[iw]->isFin()       ? "true" : "false");
+					xml.writeTextElement("isDoubleFin", m_pWingList[iw]->isDoubleFin() ? "true" : "false");
+					xml.writeTextElement("isSymFin",    m_pWingList[iw]->isSymFin()    ? "true" : "false");
 					xml.writeStartElement("Inertia");
 					{
-						xml.writeTextElement("Volume_Mass", QString("%1").arg(m_pWingList[iw]->VolumeMass(),7,'f',3));
+						xml.writeTextElement("Volume_Mass", QString("%1").arg(m_pWingList[iw]->volumeMass(),7,'f',3));
 						for(int ipm=0; ipm<m_pWingList[iw]->m_PointMass.size(); ipm++)
 						{
 							writeXMLPointMass(xml, m_pWingList[iw]->m_PointMass.at(ipm), Units::kgtoUnit(), Units::mtoUnit());
@@ -11110,99 +11009,8 @@ void QMiarex::OnImportPlanefromXML()
 		else
 			xml.raiseError(QObject::tr("The file is not an xflr5 plane version 1.0 file."));
 	}
-
-
 }
 
-
-
-void QMiarex::readXMLBody(QXmlStreamReader &xml, Plane *pPlane, Body *pBody, double lengthUnit, double massunit)
-{
-	pBody->splineSurface()->ClearFrames();
-
-	while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() )
-	{
-		if (xml.name().toString().compare("name",Qt::CaseInsensitive) ==0)
-		{
-			pBody->bodyName() = xml.readElementText();
-		}
-		else if (xml.name().toString().compare("color", Qt::CaseInsensitive)==0)
-		{
-			readXMLColor(xml, pBody->bodyColor());
-		}
-		else if (xml.name().toString().compare("description", Qt::CaseInsensitive)==0)
-		{
-			pBody->bodyDescription() = xml.readElementText();
-		}
-		else if (xml.name().compare("Inertia",         Qt::CaseInsensitive)==0)
-		{
-			while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() )
-			{
-				if (xml.name().compare("volume_mass", Qt::CaseInsensitive)==0)
-				{
-					pBody->m_VolumeMass = xml.readElementText().toDouble();
-				}
-				else if (xml.name().compare("point_mass", Qt::CaseInsensitive)==0)
-				{
-					PointMass* ppm = new PointMass;
-					pBody->m_PointMass.append(ppm);
-					readXMLPointMass(xml, ppm, massunit, lengthUnit);
-				}
-				else
-					xml.skipCurrentElement();
-			}
-		}
-		else if (xml.name().compare("position", Qt::CaseInsensitive)==0)
-		{
-			QStringList coordList = xml.readElementText().split(",");
-			if(coordList.length()>=3)
-			{
-				pPlane->bodyPos().x = coordList.at(0).toDouble()*lengthUnit;
-				pPlane->bodyPos().z = coordList.at(2).toDouble()*lengthUnit;
-			}
-		}		else if (xml.name().compare("type", Qt::CaseInsensitive)==0)
-		{
-			if(xml.readElementText().compare("NURBS", Qt::CaseInsensitive)==0) pBody->bodyType()=XFLR5::BODYSPLINETYPE;
-			else                                                               pBody->bodyType()=XFLR5::BODYPANELTYPE;
-		}
-		else if (xml.name().compare("x_degree",    Qt::CaseInsensitive)==0) pBody->splineSurface()->m_iuDegree = xml.readElementText().toInt();
-		else if (xml.name().compare("hoop_degree", Qt::CaseInsensitive)==0) pBody->splineSurface()->m_ivDegree = xml.readElementText().toInt();
-		else if (xml.name().compare("x_panels",    Qt::CaseInsensitive)==0) pBody->m_nxPanels = xml.readElementText().toInt();
-		else if (xml.name().compare("hoop_panels", Qt::CaseInsensitive)==0) pBody->m_nhPanels = xml.readElementText().toInt();
-
-		//read frames
-		else if (xml.name().compare("frame", Qt::CaseInsensitive)==0)
-		{
-			Frame *pFrame = pBody->splineSurface()->AppendFrame();
-			while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() )
-			{
-				if(xml.name().compare("x_panels", Qt::CaseInsensitive)==0) pBody->m_xPanels.append(xml.readElementText().toInt());
-				if(xml.name().compare("h_panels", Qt::CaseInsensitive)==0) pBody->m_hPanels.append(xml.readElementText().toInt());
-				else if (xml.name().compare("position", Qt::CaseInsensitive)==0)
-				{
-					QStringList coordList = xml.readElementText().split(",");
-					if(coordList.length()>=3)
-					{
-						pFrame->m_Position.x = coordList.at(0).toDouble()*lengthUnit;
-						pFrame->m_Position.z = coordList.at(2).toDouble()*lengthUnit;
-					}
-				}
-				else if (xml.name().compare("point", Qt::CaseInsensitive)==0)
-				{
-					CVector ctrlPt;
-					QStringList coordList = xml.readElementText().split(",");
-					if(coordList.length()>=3)
-					{
-						ctrlPt.x = coordList.at(0).toDouble()*lengthUnit;
-						ctrlPt.y = coordList.at(1).toDouble()*lengthUnit;
-						ctrlPt.z = coordList.at(2).toDouble()*lengthUnit;
-						pFrame->AppendPoint(ctrlPt);
-					}
-				}
-			}
-		}
-	}
-}
 
 
 /** */
@@ -11240,7 +11048,7 @@ void QMiarex::readXMLPlane(QXmlStreamReader &xml, Plane *pPlane, double lengthUn
 		else if (xml.name().toString().compare("body", Qt::CaseInsensitive)==0)
 		{
 			Body *pBody = new Body;
-			readXMLBody(xml, pPlane, pBody, lengthUnit, massUnit);
+			readXMLBody(xml, pPlane->bodyPos(), pBody, lengthUnit, massUnit);
 			pPlane->setBody(pBody);
 		}
 		else if (xml.name().toString().compare("wing", Qt::CaseInsensitive)==0)
@@ -11380,7 +11188,7 @@ void QMiarex::readXMLPlane(QXmlStreamReader &xml, Plane *pPlane, double lengthUn
 				}
 
 				int iWing = 0;
-				if(newWing.IsFin()) iWing = 3;
+				if(newWing.isFin()) iWing = 3;
 				else if(iw==0)      iWing = 0;
 				else if(iw==1)      iWing = 2;
 

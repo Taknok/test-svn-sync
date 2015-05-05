@@ -88,14 +88,14 @@ public:
 	* @param iw the index of the Wing for which the LE position will be returned
 	* @return the LE position of the Wing
 	*/
-	CVector WingLE(int iw){return m_WingLE[iw];}
+	CVector &WingLE(int iw){return m_WingLE[iw];}
 	
 	/**
 	* Returns the tilt angle of a specified Wing.
 	* @param iw the index of the Wing for which the tilt angle will be returned
 	* @return the LE position of the Wing
 	*/
-	double WingTiltAngle(int iw){ return m_WingTiltAngle[iw];}
+	double &WingTiltAngle(int iw){ return m_WingTiltAngle[iw];}
 	
 	/** Returns true if the plane has a secondary main wing, false otherwise.*/ 
 	bool BiPlane(){return m_bBiplane;}
@@ -131,7 +131,13 @@ public:
 	Body *body()  {if(m_bBody)    return m_pBody; else return NULL;}
 	
 	/** Returns the Plane's CoG position */
-	CVector CoG()  {return m_CoG;}
+	CVector &CoG()  {return m_CoG;}
+
+	double &CoGIxx() {return m_CoGIxx;}
+	double &CoGIyy() {return m_CoGIyy;}
+	double &CoGIzz() {return m_CoGIzz;}
+	double &CoGIxz() {return m_CoGIxz;}
+
 
 	double mac()           {return m_Wing[0].m_MAChord;}
 	double span()          {return m_Wing[0].m_PlanformSpan;}
@@ -182,9 +188,9 @@ public:
 
 	QList<PointMass*> m_PointMass;              /**< the array of PointMass objects */
 	double m_CoGIxx;                            /**< the Ixx component of the inertia tensor, calculated at the CoG */
-	double m_CoGIyy;                            /**< the Ixx component of the inertia tensor, calculated at the CoG */
-	double m_CoGIzz;                            /**< the Ixx component of the inertia tensor, calculated at the CoG */
-	double m_CoGIxz;                            /**< the Ixx component of the inertia tensor, calculated at the CoG */
+	double m_CoGIyy;                            /**< the Iyy component of the inertia tensor, calculated at the CoG */
+	double m_CoGIzz;                            /**< the Izz component of the inertia tensor, calculated at the CoG */
+	double m_CoGIxz;                            /**< the Ixz component of the inertia tensor, calculated at the CoG */
 
 	bool m_bDoubleFin;                          /**< true if the plane has a double fin, i.e. left and right */
 	bool m_bSymFin;                             /**< true if the plane has a symetric fin, i.e. top and bottom */

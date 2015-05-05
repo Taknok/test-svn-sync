@@ -40,6 +40,7 @@
 #include "objects/Foil.h"
 #include "objects/Polar.h"
 #include "objects/PointMass.h"
+#include "objects/Body.h"
 #include "xflr5.h"
 #include "misc/Units.h"
 
@@ -159,6 +160,8 @@ void writeXMLPointMass(QXmlStreamWriter &xml, PointMass *ppm, double massUnit, d
 void readXMLColor(QXmlStreamReader &xml, QColor &color);
 void writeXMLColor(QXmlStreamWriter &xml, QColor color);
 
+void readXMLBody(QXmlStreamReader &xml, CVector &position, Body *pBody, double lengthUnit, double massUnit);
+void writeXMLBody(QXmlStreamWriter &xml, Body *pBody, CVector position, double lengthUnit, double massUnit);
 
 #endif // FUNCTIONS_H
  

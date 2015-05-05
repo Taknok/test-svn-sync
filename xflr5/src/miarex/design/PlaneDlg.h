@@ -69,7 +69,6 @@ private slots:
 
 private:
 	void SetupLayout();
-	void ComputePlane(void);
 	void SetResults();
 	void ReadParams();
 	void SetParams();

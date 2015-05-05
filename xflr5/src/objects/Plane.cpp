@@ -421,10 +421,10 @@ double Plane::TotalMass()
 {
 	static double Mass;
 	
-	Mass = m_Wing[0].TotalMass();
-	if(m_bBiplane) Mass += m_Wing[1].TotalMass();
-	if(m_bStab)    Mass += m_Wing[2].TotalMass();
-	if(m_bFin)     Mass += m_Wing[3].TotalMass();
+	Mass = m_Wing[0].totalMass();
+	if(m_bBiplane) Mass += m_Wing[1].totalMass();
+	if(m_bStab)    Mass += m_Wing[2].totalMass();
+	if(m_bFin)     Mass += m_Wing[3].totalMass();
 	if(body())  Mass += m_pBody->TotalMass();
 	
 	for(int i=0; i<m_PointMass.size(); i++)
@@ -504,7 +504,7 @@ bool Plane::SerializePlane(QDataStream &ar, bool bIsStoring)
 		{
 			ar >>k;
 			if(k) m_bDoubleSymFin = true;  else m_bDoubleSymFin = false;
-			m_Wing[3].m_bDoubleSymFin = m_bDoubleSymFin;
+//			m_Wing[3].m_bDoubleSymFin = m_bDoubleSymFin;
 		}
 		if(ArchiveFormat>=1007)
 		{
@@ -658,8 +658,8 @@ bool Plane::SerializePlaneXFL(QDataStream &ar, bool bIsStoring)
 		ar << m_PointMass.size();
 		for(i=0; i<m_PointMass.size(); i++)
 		{
-			ar << m_PointMass.at(i)->m_Mass;
-			ar << m_PointMass.at(i)->m_Position.x << m_PointMass.at(i)->m_Position.y << m_PointMass.at(i)->m_Position.z;
+			ar << m_PointMass.at(i)->mass();
+			ar << m_PointMass.at(i)->position().x << m_PointMass.at(i)->position().y << m_PointMass.at(i)->position().z;
 			ar << m_PointMass.at(i)->tag();
 		}
 
@@ -766,6 +766,12 @@ void Plane::CreateSurfaces()
 	m_Wing[1].CreateSurfaces(m_WingLE[1],   0.0, m_WingTiltAngle[1]);
 	m_Wing[2].CreateSurfaces(m_WingLE[2],   0.0, m_WingTiltAngle[2]);
 	m_Wing[3].CreateSurfaces(m_WingLE[3], -90.0, m_WingTiltAngle[3]);
+
+	for(int iw=0; iw<MAXWINGS; iw++)
+	{
+		for (int j=0; j<m_Wing[iw].m_Surface.size(); j++)
+			m_Wing[iw].m_Surface.at(j)->SetSidePoints(body(), bodyPos().x, bodyPos().z);
+	}
 }
 
 

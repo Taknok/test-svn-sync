@@ -47,6 +47,7 @@ public:
 	void showEvent(QShowEvent *event);
 	void hideEvent(QHideEvent *event);
 	void resizeEvent(QResizeEvent *event);
+	void keyPressEvent(QKeyEvent *event);
 
 	bool IntersectObject(CVector AA,  CVector U, CVector &I);
 	void Connect();
@@ -55,10 +56,19 @@ public:
 	void GLCreateSectionHighlight(Wing *m_pWing);
 	void initDialog(Plane *pPlane);
 	void setupLayout();
-	void showPlane();
-	void showWing(int iw, QList<QStandardItem *> &planeRootItem);
-	void showBody(QStandardItem *planeRootItem);
-	void showPlaneMetaData(QStandardItem *item);
+	void fillPlaneTreeView();
+	void fillWingTreeView(int iw, QList<QStandardItem *> &planeRootItem);
+	void fillBodyTreeView(QStandardItem *planeRootItem);
+	void fillPlaneMetaData(QStandardItem *item);
+	void readPlaneTree();
+	void readViewLevel(QModelIndex indexLevel);
+	void readBodyTree(QModelIndex indexLevel);
+	void readWingTree(Wing *pWing, CVector &pos, double &tiltAngle, QModelIndex indexLevel);
+	void readWingInertiaTree(Wing *pWing, QModelIndex indexLevel);
+	void readVectorTree(CVector &V, QModelIndex indexLevel);
+	void readWingSectionTree(Wing *pWing, QModelIndex indexLevel);
+	void readPointMassTree(PointMass *ppm, QModelIndex indexLevel);
+
 
 	QList<QStandardItem *> prepareRow(const QString &first, const QString &second="", const QString &third="",  const QString &fourth="");
 	QList<QStandardItem *> prepareBoolRow(const QString &first, const QString &second, const bool &third);
@@ -66,8 +76,10 @@ public:
 	QList<QStandardItem *> prepareDoubleRow(const QString &first, const QString &second, const double &third,  const QString &fourth);
 
 private slots:
+	void OnOK();
 	void OnAxes();
 	void On3DReset();
+	void OnRedraw();
 
 	void OnSurfaces();
 	void OnOutline();
@@ -75,10 +87,14 @@ private slots:
 	void OnFoilNames();
 	void OnShowMasses();
 
-public:
+private:
+	void reject();
 
-	static QPoint s_Position;   /**< the position on the client area of the dialog's topleft corner */
-	static QSize s_Size;	 /**< the window size in the client area */
+
+public:
+	static bool s_bWindowMaximized;
+	static QPoint s_WindowPosition;   /**< the position on the client area of the dialog's topleft corner */
+	static QSize s_WindowSize;	 /**< the window size in the client area */
 
 private:
 	Plane * m_pPlane;
@@ -94,12 +110,14 @@ private:
 	QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView;
 	QToolButton *m_pctrlX, *m_pctrlY, *m_pctrlZ, *m_pctrlIso;
 
+	QPushButton *m_pctrlRedraw;
 	QPushButton *m_pctrlReset;
+	QPushButton *pOKButton;
 	QSlider *m_pctrlClipPlanePos;
 
 	bool m_bChanged;
 	bool m_bResetglSectionHighlight;
-	bool m_bResetglPlane;
+	bool m_bResetglPlane, m_bResetglBody;
 
 	int m_iSection;
 };

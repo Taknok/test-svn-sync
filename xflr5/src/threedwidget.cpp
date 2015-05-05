@@ -118,7 +118,8 @@ ThreeDWidget::ThreeDWidget(QWidget *parent)
 	memset(MatOut, 0, 16*sizeof(double));
 
 	m_ArcBall.m_p3dWidget = this;
-	CreateArcballList(m_ArcBall, 1.0);
+	GLCreateArcballList(m_ArcBall, 1.0);
+	GLCreateUnitSphere();
 }
 
 
@@ -502,18 +503,8 @@ void ThreeDWidget::paintGL()
 		pDlg->GLDraw3D();
 		pDlg->GLRenderBody();
 	}
-	else if(m_iView == GLWINGVIEW)
+	else if(m_iView == GLWINGVIEW || m_iView == GLPLANEVIEW)
 	{
-//		GL3dWingDlg *pDlg = (GL3dWingDlg*)m_pParent;
-//		pDlg->GLDraw3D();
-//		pDlg->GLRenderView();
-		GLRenderView();
-	}
-	else if(m_iView == GLPLANEVIEW)
-	{
-//		ViewObjectDlg *pDlg = (ViewObjectDlg*)m_pParent;
-//		pDlg->GLDraw3D();
-//		pDlg->GLRenderView();
 		GLRenderView();
 	}
 }
@@ -644,7 +635,7 @@ void ThreeDWidget::setupViewPort(int width, int height)
 *@param ArcBall the ArcBall object associated to the view 
 *@param GLScale the overall scaling factor for the view @deprecated and unused
 */
-void ThreeDWidget::CreateArcballList(ArcBall &ArcBall, double GLScale)
+void ThreeDWidget::GLCreateArcballList(ArcBall &ArcBall, double GLScale)
 {
 	int row, col, NumAngles, NumCircles;
 	double Radius, lat_incr, lon_incr, phi, theta;

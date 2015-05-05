@@ -176,7 +176,7 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 						glEnd();
 					}
 					if (pWing->m_Surface[j]->IsTipRight() &&
-					   (!pWing->IsFin() || (pWing->IsFin()&&!pBody)) )
+					   (!pWing->isFin() || (pWing->isFin()&&!pBody)) )
 					{
 						//Tip right surface
 						glBegin(GL_QUAD_STRIP);
@@ -1002,7 +1002,7 @@ void GLCreateDrag(Wing *pWing, WPolar* pWPolar, WingOpp *pWOpp, int List)
 						i++;
 					}
 				}
-				if(!pWing->IsFin())
+				if(!pWing->isFin())
 				{
 					if(QMiarex::s_bICd)
 					{
@@ -1746,7 +1746,7 @@ void GLCreateTrans(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 			}
 			else
 			{
-				if(!pWing->IsFin())
+				if(!pWing->isFin())
 				{
 					glBegin(GL_LINE_STRIP);
 					{
@@ -1825,7 +1825,7 @@ void GLCreateTrans(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 			}
 			else
 			{
-				if(!pWing->IsFin())
+				if(!pWing->isFin())
 				{
 					glBegin(GL_LINE_STRIP);
 					{
@@ -2791,7 +2791,7 @@ void GLCreateSectionHighlight(int List, Wing *m_pWing, int highlightSection, boo
 		if(iSection==0)
 		{
 			//define the inner left side surface
-			if(!m_pWing->IsFin())  jSurf = m_pWing->m_Surface.size()/2 - 1;
+			if(!m_pWing->isFin())  jSurf = m_pWing->m_Surface.size()/2 - 1;
 			else                   jSurf = m_pWing->m_Surface.size()   - 1;
 
 			//plot B side outline
@@ -2821,7 +2821,7 @@ void GLCreateSectionHighlight(int List, Wing *m_pWing, int highlightSection, boo
 		}
 		else
 		{
-			if((m_pWing->isSymetric() || bRightSide) && !m_pWing->IsFin())
+			if((m_pWing->isSymetric() || bRightSide) && !m_pWing->isFin())
 			{
 				jSurf = m_pWing->m_Surface.size()/2 + iSection -1;
 
@@ -2852,7 +2852,7 @@ void GLCreateSectionHighlight(int List, Wing *m_pWing, int highlightSection, boo
 
 			if(m_pWing->isSymetric() || !bRightSide)
 			{
-				if(!m_pWing->IsFin()) jSurf = m_pWing->m_Surface.size()/2 - iSection;
+				if(!m_pWing->isFin()) jSurf = m_pWing->m_Surface.size()/2 - iSection;
 				else                  jSurf = m_pWing->m_Surface.size()   - iSection;
 
 				//plot A side outline
@@ -2883,4 +2883,165 @@ void GLCreateSectionHighlight(int List, Wing *m_pWing, int highlightSection, boo
 		}
 	}
 	glEndList();
+}
+
+
+
+
+/**
+ * Draws the point masses, the object masses, and the CG position in the OpenGL viewport
+*/
+void GLDrawMasses(ThreeDWidget *p3dWidget, Plane *m_pPlane, double glScaled)
+{
+	QString MassUnit;
+	Units::getWeightUnitLabel(MassUnit);
+
+	glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
+
+	double zdist = 25.0/(double)p3dWidget->rect().width();
+	Wing *m_pWingList[MAXWINGS] = {m_pPlane->wing(), m_pPlane->wing2(), m_pPlane->stab(), m_pPlane->fin()};
+
+
+	for(int iw=0; iw<MAXWINGS; iw++)
+	{
+		if(m_pWingList[iw])
+		{
+			glPushMatrix();
+			{
+				if(m_pPlane)
+				{
+					glTranslated(m_pPlane->WingLE(iw).x,
+								 m_pPlane->WingLE(iw).y,
+								 m_pPlane->WingLE(iw).z);
+					if(m_pWingList[iw]->isFin()) glTranslated(0.0,0.0, m_pWingList[iw]->m_ProjectedSpan/4.0);
+					else                         glTranslated(0.0, m_pWingList[iw]->m_ProjectedSpan/4.0,0.0);
+
+
+					glColor3d(0.5, 1.0, 0.5);
+					p3dWidget->renderText(0.0, 0.0, zdist,
+										  m_pWingList[iw]->wingName()+
+										  QString(" %1").arg(m_pWingList[iw]->volumeMass()*Units::kgtoUnit(), 7,'g',3)+
+										  MassUnit);
+				}
+			}
+			glPopMatrix();
+
+			for(int im=0; im<m_pWingList[iw]->m_PointMass.size(); im++)
+			{
+				glPushMatrix();
+				{
+					if(m_pPlane)
+					{
+						glTranslated(m_pPlane->WingLE(iw).x,
+									 m_pPlane->WingLE(iw).y,
+									 m_pPlane->WingLE(iw).z);
+					}
+					glTranslated(m_pWingList[iw]->m_PointMass[im]->position().x,
+								 m_pWingList[iw]->m_PointMass[im]->position().y,
+								 m_pWingList[iw]->m_PointMass[im]->position().z);
+					glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
+					p3dWidget->GLRenderSphere(W3dPrefsDlg::s_MassRadius/glScaled);
+					glColor3d(Settings::s_TextColor.redF(), Settings::s_TextColor.greenF(), Settings::s_TextColor.blueF());
+					p3dWidget->renderText(0.0, 0.0, 0.0 +.02,
+										  m_pWingList[iw]->m_PointMass[im]->tag()
+										  +QString(" %1").arg(m_pWingList[iw]->m_PointMass[im]->mass()*Units::kgtoUnit(), 7,'g',3)
+										  +MassUnit);
+				}
+				glPopMatrix();
+			}
+		}
+	}
+
+	if(m_pPlane)
+	{
+		glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
+		for(int im=0; im<m_pPlane->m_PointMass.size(); im++)
+		{
+			glPushMatrix();
+			{
+				glTranslated(m_pPlane->m_PointMass[im]->position().x,
+							 m_pPlane->m_PointMass[im]->position().y,
+							 m_pPlane->m_PointMass[im]->position().z);
+				glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
+				p3dWidget->GLRenderSphere(W3dPrefsDlg::s_MassRadius/glScaled);
+				glColor3d(Settings::s_TextColor.redF(), Settings::s_TextColor.greenF(), Settings::s_TextColor.blueF());
+				p3dWidget->renderText(0.0,0.0,0.0+.02,
+								  m_pPlane->m_PointMass[im]->tag()
+								  +QString(" %1").arg(m_pPlane->m_PointMass[im]->mass()*Units::kgtoUnit(), 7,'g',3)
+								  +MassUnit);
+			}
+			glPopMatrix();
+		}
+
+	}
+	if(m_pPlane && m_pPlane->body())
+	{
+		Body *pCurBody = m_pPlane->body();
+//		glColor3d(W3dPrefsDlg::s_MassColor.redF()*.75, W3dPrefsDlg::s_MassColor.greenF()*.75, W3dPrefsDlg::s_MassColor.blueF()*.75);
+		glColor3d(0.0, 0.0, 0.7);
+
+		glPushMatrix();
+		{
+			if(m_pPlane)
+			{
+				glTranslated(m_pPlane->bodyPos().x,
+							 m_pPlane->bodyPos().y,
+							 m_pPlane->bodyPos().z);
+
+				glColor3d(0.5, 1.0, 0.5);
+				p3dWidget->renderText(0.0, 0.0, zdist,
+								  pCurBody->m_BodyName+
+								  QString(" %1").arg(pCurBody->m_VolumeMass*Units::kgtoUnit(), 7,'g',3)+
+								  MassUnit);
+			}
+		}
+		glPopMatrix();
+		glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
+		for(int im=0; im<pCurBody->m_PointMass.size(); im++)
+		{
+			glPushMatrix();
+			{
+				glTranslated(pCurBody->m_PointMass[im]->position().x,pCurBody->m_PointMass[im]->position().y,pCurBody->m_PointMass[im]->position().z);
+				if(m_pPlane)
+				{
+					glTranslated(m_pPlane->bodyPos().x,
+								 m_pPlane->bodyPos().y,
+								 m_pPlane->bodyPos().z);
+				}
+
+				glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
+				p3dWidget->GLRenderSphere(W3dPrefsDlg::s_MassRadius/glScaled);
+
+				glColor3d(Settings::s_TextColor.redF(), Settings::s_TextColor.greenF(), Settings::s_TextColor.blueF());
+				p3dWidget->renderText(0.0, 0.0, 0.0+.02,
+								  pCurBody->m_PointMass[im]->tag()
+								  +QString(" %1").arg(pCurBody->m_PointMass[im]->mass()*Units::kgtoUnit(), 7,'g',3)
+								  +MassUnit);
+			}
+			glPopMatrix();
+		}
+	}
+	//plot CG
+	if(m_pPlane)
+	{
+		CVector CoG;
+		double Mass=0.0;
+		if(m_pPlane)
+		{
+			CoG = m_pPlane->CoG();
+			Mass = m_pPlane->TotalMass();
+		}
+
+		glPushMatrix();
+		{
+			glTranslated(CoG.x,CoG.y,CoG.z);
+			glColor3d(1.0, 0.5, 0.5);
+			p3dWidget->GLRenderSphere(W3dPrefsDlg::s_MassRadius*2.0/glScaled);
+			glColor3d(Settings::s_TextColor.redF(), Settings::s_TextColor.greenF(), Settings::s_TextColor.blueF());
+			p3dWidget->renderText(0.0, 0.0, 0.0+.02,
+							  "CoG "+QString("%1").arg(Mass*Units::kgtoUnit(), 7,'g',3)
+							  +MassUnit);
+		}
+		glPopMatrix();
+	}
 }
