@@ -2063,6 +2063,8 @@ Plane * Objects3D::setModPlane(Plane *pModPlane)
 	bool bExists = true;
 	int resp, k, l;
 
+	/** @todo what if pModPlane has results ?*/
+
 	QString OldName = pModPlane->planeName();
 
 	QStringList NameList;
@@ -2191,7 +2193,6 @@ WPolar* Objects3D::insertNewWPolar(WPolar *pNewWPolar, Plane *pCurPlane)
 	bool bExists = true;
 	int resp, k, l;
 
-	/** @todo modify this, should check for duplicate names first */
 	//check if this WPolar is already inserted
 	for(int ip=0; ip<s_oaWPolar.size(); ip++)
 	{
@@ -2446,7 +2447,6 @@ WPolar* Objects3D::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar, bool bC
 			pWPolar->m_CoGIzz = pCurPlane->m_CoGIzz;
 			pWPolar->m_CoGIxz = pCurPlane->m_CoGIxz;
 		}
-
 	}
 
 	return pWPolar;

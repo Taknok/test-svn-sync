@@ -61,7 +61,7 @@ class ThreeDWidget : public QGLWidget
 
 public:
 	ThreeDWidget(QWidget *parent = 0);
-	void CreateArcballList(ArcBall &ArcBall, double GLScale);
+	void GLCreateArcballList(ArcBall &ArcBall, double GLScale);
 	void ClientToGL(QPoint const &point, CVector &real);
 	void GLDrawAxes(double length, QColor AxisColor, int AxisStyle, int AxisWidth);
 	void GLInverseMatrix();

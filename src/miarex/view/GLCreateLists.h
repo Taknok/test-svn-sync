@@ -30,6 +30,7 @@
 #include "../../objects/Plane.h"
 #include "../../objects/PlaneOpp.h"
 #include "../../objects/WPolar.h"
+#include "../threedwidget.h"
 
 void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody);
 void GLCreateCp(int nPanels, int nNodes, CVector *pNode, Panel *pPanel, PlaneOpp *pPOpp);
@@ -48,5 +49,6 @@ void GLCreateTrans(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List);
 void GLCreatePanelForce(int size, Panel *pPanel, WPolar *pWPolar, PlaneOpp *pPOpp);
 void GLCreateMesh(Wing *pWingList[]);
 void GLCreateSectionHighlight(int List, Wing *m_pWing, int highlightSection, bool bRightSide);
+void GLDrawMasses(ThreeDWidget *p3dWidget, Plane *m_pPlane, double glScaled);
 
 #endif // GLCREATELISTS_H

@@ -499,6 +499,32 @@ bool PanelAnalysis::initializeAnalysis()
 	else if(m_pWPolar->polarType()==XFLR5::STABILITYPOLAR) strange = "Type 7 - Stability polar";
 	traceLog(strange+"\n");
 
+	// make sure the polar is up to date with the latest plane data
+	// should have been updated at the time when the polar was set
+	// but a user, who knows what he can do ?
+	if(m_pWPolar->bAutoInertia())
+	{
+		m_pWPolar->mass()   = m_pPlane->TotalMass();
+		m_pWPolar->CoG()    = m_pPlane->CoG();
+		m_pWPolar->CoGIxx() = m_pPlane->CoGIxx();
+		m_pWPolar->CoGIyy() = m_pPlane->CoGIyy();
+		m_pWPolar->CoGIzz() = m_pPlane->CoGIzz();
+		m_pWPolar->CoGIxz() = m_pPlane->CoGIxz();
+	}
+	if(m_pWPolar->referenceDim()!=XFLR5::MANUALREFDIM)
+	{
+	    if(m_pWPolar->referenceDim()==XFLR5::PLANFORMREFDIM)
+	    {
+			m_pWPolar->referenceArea()       = m_pPlane->planformArea();
+			m_pWPolar->referenceSpanLength() = m_pPlane->planformSpan();
+	    }
+	    else if(m_pWPolar->referenceDim()==XFLR5::PLANFORMREFDIM)
+	    {
+			m_pWPolar->referenceArea()       = m_pPlane->projectedArea();
+			m_pWPolar->referenceSpanLength() = m_pPlane->projectedSpan();
+	    }
+	}
+
 	QString strUnitLabel;
 	Units::getAreaUnitLabel(strUnitLabel);
 	strange =QString("Ref. area  = %1 ").arg(m_pWPolar->referenceArea()*Units::m2toUnit(),9,'f',3)+strUnitLabel;

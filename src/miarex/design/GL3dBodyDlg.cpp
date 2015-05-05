@@ -182,6 +182,12 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
 	m_pImportBodyDef = new QAction(tr("Import Body Definition from File"), this);
 	connect(m_pImportBodyDef, SIGNAL(triggered()), this, SLOT(OnImportBodyDef()));
 
+	m_pExportBodyXML= new QAction(tr("Export body definition to an XML file"), this);
+	connect(m_pExportBodyXML, SIGNAL(triggered()), this, SLOT(OnExportBodyXML()));
+
+	m_pImportBodyXML= new QAction(tr("Import body definition from an XML file"), this);
+	connect(m_pImportBodyXML, SIGNAL(triggered()), this, SLOT(OnImportBodyXML()));
+
 	m_pBodyInertia = new QAction(tr("Define Inertia")+"\tF12", this);
 	connect(m_pBodyInertia, SIGNAL(triggered()), this, SLOT(OnBodyInertia()));
 
@@ -1383,7 +1389,7 @@ void GL3dBodyDlg::GLDraw3D()
 			glDeleteLists(ARCBALL,2);
 			m_GLList-=2;
 		}
-		m_3dWidget.CreateArcballList(m_ArcBall, 1.0);
+		m_3dWidget.GLCreateArcballList(m_ArcBall, 1.0);
 		m_GLList+=2;
 	}
 
@@ -2357,6 +2363,57 @@ void GL3dBodyDlg::OnClipPlane()
 
 
 
+void GL3dBodyDlg::OnExportBodyXML()
+{
+	if(!m_pBody)return ;// is there anything to export ?
+
+	QString filter = "XML file (*.xpl)";
+	QString FileName, strong;
+qDebug()<<"opening";
+	strong = m_pBody->bodyName();
+	FileName = QFileDialog::getSaveFileName(this, tr("Export plane definition to xml file"),
+											Settings::s_LastDirName +'/'+strong,
+											filter,
+											&filter);
+
+	if(!FileName.length()) return;
+	int pos = FileName.lastIndexOf("/");
+	if(pos>0) Settings::s_LastDirName = FileName.left(pos);
+
+	pos = FileName.indexOf(".xpl", Qt::CaseInsensitive);
+	if(pos<0) FileName += ".xpl";
+
+
+	QFile XFile(FileName);
+	if (!XFile.open(QIODevice::WriteOnly | QIODevice::Text)) return ;
+
+
+	QXmlStreamWriter xml;
+	xml.setAutoFormatting(true);
+
+	xml.setDevice(&XFile);
+	xml.writeStartDocument();
+	xml.writeDTD("<!DOCTYPE explane>");
+	xml.writeStartElement("exbody");
+	xml.writeAttribute("version", "1.0");
+
+
+	xml.writeStartElement("Units");
+	{
+		xml.writeTextElement("length_unit_to_meter", QString("%1").arg(1./Units::mtoUnit()));
+		xml.writeTextElement("mass_unit_to_kg", QString("%1").arg(1./Units::kgtoUnit()));
+	}
+	xml.writeEndElement();
+
+	writeXMLBody(xml, m_pBody, CVector(), Units::mtoUnit(), Units::kgtoUnit());
+
+	xml.writeEndDocument();
+
+	XFile.close();
+	qDebug()<<"closing";
+}
+
+
 
 void GL3dBodyDlg::OnExportBodyDef()
 {
@@ -2423,7 +2480,6 @@ void GL3dBodyDlg::OnExportBodyGeom()
 void GL3dBodyDlg::OnImportBodyDef()
 {
 	Body memBody;
-
 	memBody.Duplicate(m_pBody);
 
 	double mtoUnit = 1.0;
@@ -2465,6 +2521,89 @@ void GL3dBodyDlg::OnImportBodyDef()
 	}
 
 	XFile.close();
+
+	SetBody();
+
+	m_bResetglBodyPoints = true;
+	m_bResetglBody       = true;
+	m_bResetglBody2D     = true;
+	m_bResetglBodyMesh   = true;
+
+	m_bChanged = true;
+
+	UpdateView();
+}
+
+
+
+void GL3dBodyDlg::OnImportBodyXML()
+{
+	Body memBody;
+	memBody.Duplicate(m_pBody);
+
+	QString PathName;
+	PathName = QFileDialog::getOpenFileName(this, tr("Open XML File"),
+											Settings::s_LastDirName,
+											tr("Plane XML file (*.xpl)"));
+	if(!PathName.length())		return ;
+	int pos = PathName.lastIndexOf("/");
+	if(pos>0) Settings::s_LastDirName = PathName.left(pos);
+
+	QFile XFile(PathName);
+	if (!XFile.open(QIODevice::ReadOnly))
+	{
+		QString strange = tr("Could not read the file\n")+PathName;
+		QMessageBox::warning(this, tr("Warning"), strange);
+		return;
+	}
+	QXmlStreamReader xml;
+	xml.setDevice(&XFile);
+
+	double lengthUnit = 1.0;
+	double massUnit = 1.0;
+
+	if (xml.readNextStartElement())
+	{
+		if (xml.name() == "exbody" && xml.attributes().value("version") == "1.0")
+		{
+			while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() )
+			{
+				if (xml.name().toString().compare("units", Qt::CaseInsensitive)==0)
+				{
+					while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() )
+					{
+						if (xml.name().compare("length_unit_to_meter",      Qt::CaseInsensitive)==0)
+						{
+							lengthUnit = xml.readElementText().toDouble();
+						}
+						else if (xml.name().compare("mass_unit_to_kg",      Qt::CaseInsensitive)==0)
+						{
+							massUnit = xml.readElementText().toDouble();
+						}
+						else
+							xml.skipCurrentElement();
+					}
+				}
+				else if (xml.name().toString().compare("body", Qt::CaseInsensitive)==0)
+				{
+					CVector pos;
+					readXMLBody(xml, pos, m_pBody, lengthUnit, massUnit);
+				}
+			}
+		}
+		else
+			xml.raiseError(QObject::tr("The file is not an xflr5 body version 1.0 file."));
+	}
+
+	XFile.close();
+
+	if(xml.hasError())
+	{
+		QString errorMsg = xml.errorString() + QString("\nline %1 column %2").arg(xml.lineNumber()).arg(xml.columnNumber());
+		QMessageBox::warning(this, "XML read", errorMsg, QMessageBox::Ok);
+		m_pBody->Duplicate(&memBody);
+		return;
+	}
 
 	SetBody();
 
@@ -3436,6 +3575,8 @@ void GL3dBodyDlg::SetupLayout()
 			BodyMenu->addSeparator();
 			BodyMenu->addAction(m_pImportBodyDef);
 			BodyMenu->addAction(m_pExportBodyDef);
+			BodyMenu->addAction(m_pImportBodyXML);
+			BodyMenu->addAction(m_pExportBodyXML);
 			BodyMenu->addAction(m_pExportBodyGeom);
 			BodyMenu->addSeparator();
 			BodyMenu->addAction(m_pBodyInertia);
@@ -3689,6 +3830,8 @@ void GL3dBodyDlg::ShowContextMenu(QContextMenuEvent * event)
 	CtxMenu->addSeparator();
 	CtxMenu->addAction(m_pImportBodyDef);
 	CtxMenu->addAction(m_pExportBodyDef);
+	CtxMenu->addAction(m_pImportBodyXML);
+	CtxMenu->addAction(m_pExportBodyXML);
 	CtxMenu->addAction(m_pExportBodyGeom);
 	CtxMenu->addSeparator();
 	CtxMenu->addAction(m_pBodyInertia);;

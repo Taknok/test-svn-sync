@@ -16,10 +16,11 @@
 
 
 
-xflr5 v6.11 April xxxth, 2015
+xflr5 v6.11 May xxxth, 2015
 	- enabled launching xflr5 from a project file, and opening the model
 	- added a viewer for the plane object - not yet an editor
 	- added an import/export option of a plane definition to an xml file
+	- added an import/export optin for body objects to an xml file
 
 
 xflr5 v6.10.04 April 12th, 2015

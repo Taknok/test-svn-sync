@@ -73,7 +73,7 @@ Wing::Wing()
 	m_bIsFin        = false;
 	m_bDoubleFin    = false;
 	m_bSymFin       = false;
-	m_bDoubleSymFin = false;
+//	m_bDoubleSymFin = false;
 	m_bSymetric     = true;
 	m_bWingOut      = false;
 
@@ -1040,7 +1040,7 @@ void Wing::Duplicate(Wing *pWing)
 	m_bIsFin        = pWing->m_bIsFin;
 	m_bSymFin       = pWing->m_bSymFin;
 	m_bDoubleFin    = pWing->m_bDoubleFin;
-	m_bDoubleSymFin = pWing->m_bDoubleSymFin;
+//	m_bDoubleSymFin = pWing->m_bDoubleSymFin;
 
 	ClearWingSections();
 
@@ -1455,7 +1455,7 @@ void Wing::GetFoils(Foil **pFoil0, Foil **pFoil1, double y, double &t)
  * Returns the total mass of the wing, as the sum of volume and point masses
  * @return the total mass
  */
-double Wing::TotalMass()
+double Wing::totalMass()
 {
 	double TotalMass = m_VolumeMass;
 	for(int im=0; im<m_PointMass.size(); im++)
@@ -2269,8 +2269,8 @@ bool Wing::SerializeWingXFL(QDataStream &ar, bool bIsStoring)
 		ar << m_PointMass.size();
 		for(i=0; i<m_PointMass.size(); i++)
 		{
-			ar << m_PointMass.at(i)->m_Mass;
-			ar << m_PointMass.at(i)->m_Position.x << m_PointMass.at(i)->m_Position.y << m_PointMass.at(i)->m_Position.z;
+			ar << m_PointMass.at(i)->mass();
+			ar << m_PointMass.at(i)->position().x << m_PointMass.at(i)->position().y << m_PointMass.at(i)->position().z;
 			ar << m_PointMass.at(i)->tag();
 		}
 

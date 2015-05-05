@@ -1738,7 +1738,7 @@ void WPolar::RetrieveInertia(void *ptr, bool bPlane)
 	else
 	{
 		pWing  = (Wing*)ptr;
-		m_Mass = pWing->TotalMass();
+		m_Mass = pWing->totalMass();
 		m_CoG = pWing->m_CoG;
 		m_CoGIxx = pWing->m_CoGIxx;
 		m_CoGIyy = pWing->m_CoGIyy;

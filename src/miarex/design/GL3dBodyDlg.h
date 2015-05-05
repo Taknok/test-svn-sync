@@ -75,7 +75,9 @@ private slots:
 	void OnEdgeWeight();
 	void OnExportBodyDef();
 	void OnExportBodyGeom();
+	void OnExportBodyXML();
 	void OnImportBodyDef() ;
+	void OnImportBodyXML();
 	void OnTranslateBody();
 	void OnGrid();
 	void OnClipPlane();
@@ -218,6 +220,7 @@ private:
 	QAction *m_pShowCurFrameOnly, *m_pResetScales;
 	QAction *m_pUndo, *m_pRedo;
 	QAction *m_pExportBodyDef, *m_pImportBodyDef, *m_pExportBodyGeom, *m_pTranslateBody, *m_pBodyInertia;// *m_pSetupLight;
+	QAction *m_pExportBodyXML, *m_pImportBodyXML;
 	QAction *m_pGrid;
 
 
