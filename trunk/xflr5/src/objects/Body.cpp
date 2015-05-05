@@ -1260,8 +1260,8 @@ bool Body::SerializeBodyXFL(QDataStream &ar, bool bIsStoring)
 		ar << m_PointMass.size();
 		for(i=0; i<m_PointMass.size(); i++)
 		{
-			ar << m_PointMass.at(i)->m_Mass;
-			ar << m_PointMass.at(i)->m_Position.x << m_PointMass.at(i)->m_Position.y << m_PointMass.at(i)->m_Position.z;
+			ar << m_PointMass.at(i)->mass();
+			ar << m_PointMass.at(i)->position().x << m_PointMass.at(i)->position().y << m_PointMass.at(i)->position().z;
 			ar << m_PointMass.at(i)->tag();
 		}
 

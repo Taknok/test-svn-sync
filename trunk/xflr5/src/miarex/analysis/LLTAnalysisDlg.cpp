@@ -222,7 +222,7 @@ void LLTAnalysisDlg::Analyze()
 	m_pctrlTextOutput->clear();
 
 	QString strange;
-	strange = 	m_pLLT->m_pWing->WingName()+"\n";
+	strange = 	m_pLLT->m_pWing->wingName()+"\n";
 	UpdateOutput(strange);
 	strange = m_pLLT->m_pWPolar->polarName()+"\n";
 	UpdateOutput(strange);
