@@ -50,7 +50,8 @@ public:
 	NURBSSurface(int iAxis=0);
 	~NURBSSurface();
 
-	Frame *AppendFrame();
+	void   appendFrame(Frame*pFrame);
+	Frame *appendNewFrame();
 	void   ClearFrames();
 	Frame *frameAt(int iFrame) {return m_pFrame.at(iFrame);}
 	int    frameCount() {return m_pFrame.size();}
@@ -58,6 +59,7 @@ public:
 	double Getu(double pos, double v);
 	double Getv(double u, CVector r);
 	void   GetPoint(double u, double v, CVector &Pt);
+	CVector Point(double u, double v);
 	void   InsertFrame(Frame *pNewFrame);
 	bool   IntersectNURBS(CVector A, CVector B, CVector &I);
 	void   RemoveFrame(int iFrame);

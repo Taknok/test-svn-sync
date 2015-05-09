@@ -17,6 +17,7 @@
 
 
 xflr5 v6.11 May xxxth, 2015
+	- fixed the issue of the plane-fin intersection when the body is translated
 	- enabled launching xflr5 from a project file, and opening the model
 	- added a viewer for the plane object - not yet an editor
 	- added an import/export option of a plane definition to an xml file

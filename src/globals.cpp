@@ -3091,13 +3091,37 @@ QString referenceDimension(XFLR5::enumRefDimension refDimension)
 {
 	switch(refDimension)
 	{
-		case XFLR5::PLANFORMREFDIM:   return "PLANFORMREFDIM";   break;
-		case XFLR5::PROJECTEDREFDIM:   return "PROJECTEDREFDIM";   break;
-		case XFLR5::MANUALREFDIM: return "MANUALREFDIM"; break;
+		case XFLR5::PLANFORMREFDIM:  return "PLANFORMREFDIM";
+		case XFLR5::PROJECTEDREFDIM: return "PROJECTEDREFDIM";
+		case XFLR5::MANUALREFDIM:    return "MANUALREFDIM";
 		default: return "";
 	}
 }
+typedef enum {MAINWING, SECONDWING, ELEVATOR, FIN, OTHERWING} enumWingType;
 
+
+
+XFLR5::enumWingType wingType(QString strWingType)
+{
+	if     (strWingType.compare("MAINWING",   Qt::CaseInsensitive)==0) return XFLR5::MAINWING;
+	else if(strWingType.compare("SECONDWING", Qt::CaseInsensitive)==0) return XFLR5::SECONDWING;
+	else if(strWingType.compare("ELEVATOR",   Qt::CaseInsensitive)==0) return XFLR5::ELEVATOR;
+	else if(strWingType.compare("FIN",        Qt::CaseInsensitive)==0) return XFLR5::FIN;
+	else                                                               return XFLR5::OTHERWING;
+}
+
+QString wingType(XFLR5::enumWingType wingType)
+{
+	switch(wingType)
+	{
+		case XFLR5::MAINWING:   return "MAINWING";
+		case XFLR5::SECONDWING: return "SECONDWING";
+		case XFLR5::ELEVATOR:   return "ELEVATOR";
+		case XFLR5::FIN:        return "FIN";
+		case XFLR5::OTHERWING:  return "OTHERWING";
+	}
+	return "OTHERWING";
+}
 
 QString boolToString(bool b)
 {
@@ -3109,242 +3133,6 @@ bool stringToBool(QString str)
 {
 	return str.compare("true", Qt::CaseInsensitive)==0 ? true : false;
 }
-
-
-
-
-
-
-
-
-void readXMLColor(QXmlStreamReader &xml, QColor &color)
-{
-	color.setRgb(0,0,0,255);
-	while (xml.readNextStartElement())
-	{
-		if (xml.name().compare("red", Qt::CaseInsensitive)==0)        color.setRed(xml.readElementText().toInt());
-		else if (xml.name().compare("green", Qt::CaseInsensitive)==0) color.setGreen(xml.readElementText().toInt());
-		else if (xml.name().compare("blue", Qt::CaseInsensitive)==0)   color.setBlue(xml.readElementText().toInt());
-		else if (xml.name().compare("alpha", Qt::CaseInsensitive)==0)  color.setAlpha(xml.readElementText().toInt());
-		else xml.skipCurrentElement();
-
-	}
-}
-
-void writeXMLColor(QXmlStreamWriter &xml, QColor color)
-{
-	xml.writeStartElement("Color");
-	{
-		xml.writeTextElement("red",   QString("%1").arg(color.red()));
-		xml.writeTextElement("green", QString("%1").arg(color.green()));
-		xml.writeTextElement("blue",  QString("%1").arg(color.blue()));
-		xml.writeTextElement("alpha", QString("%1").arg(color.alpha()));
-	}
-	xml.writeEndElement();
-}
-
-
-
-void readXMLPointMass(QXmlStreamReader &xml, PointMass *ppm, double massUnit, double lengthUnit)
-{
-	while (xml.readNextStartElement())
-	{
-		if (xml.name().compare("tag", Qt::CaseInsensitive)==0)       ppm->tag() = xml.readElementText();
-		else if (xml.name().compare("mass", Qt::CaseInsensitive)==0) ppm->mass() =  xml.readElementText().toDouble()*massUnit;
-		else if (xml.name().compare("coordinates", Qt::CaseInsensitive)==0)
-		{
-			QStringList coordList = xml.readElementText().split(",");
-			if(coordList.length()>=3)
-			{
-				ppm->position().x = coordList.at(0).toDouble()*lengthUnit;
-				ppm->position().y = coordList.at(1).toDouble()*lengthUnit;
-				ppm->position().z = coordList.at(2).toDouble()*lengthUnit;
-			}
-		}
-//		else if (xml.name().compare("x", Qt::CaseInsensitive)==0)    ppm->m_Position.x =  xml.readElementText().toDouble()*lengthUnit;
-//		else if (xml.name().compare("y", Qt::CaseInsensitive)==0)    ppm->m_Position.y =  xml.readElementText().toDouble()*lengthUnit;
-//		else if (xml.name().compare("z", Qt::CaseInsensitive)==0)    ppm->m_Position.z =  xml.readElementText().toDouble()*lengthUnit;
-		else xml.skipCurrentElement();
-
-	}
-}
-
-
-void writeXMLPointMass(QXmlStreamWriter &xml, PointMass *ppm, double massUnit, double lengthUnit)
-{
-	xml.writeStartElement("Point_Mass");
-	{
-		xml.writeTextElement("Tag", ppm->tag());
-		xml.writeTextElement("Mass", QString("%1").arg(ppm->mass()*massUnit,7,'f',3));
-		xml.writeTextElement("coordinates",QString("%1, %2, %3").arg(ppm->position().x*lengthUnit, 11,'g',5).arg(ppm->position().y*lengthUnit, 11,'g',5).arg(ppm->position().z*lengthUnit, 11,'g',5));
-
-//		xml.writeTextElement("x", QString("%1").arg(ppm->m_Position.x*lengthUnit,7,'f',3));
-//		xml.writeTextElement("y", QString("%1").arg(ppm->m_Position.y*lengthUnit,7,'f',3));
-//		xml.writeTextElement("z", QString("%1").arg(ppm->m_Position.z*lengthUnit,7,'f',3));
-	}
-	xml.writeEndElement();
-}
-
-
-
-void readXMLBody(QXmlStreamReader &xml, CVector &position, Body *pBody, double lengthUnit, double massUnit)
-{
-	pBody->splineSurface()->ClearFrames();
-
-	while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() )
-	{
-		if (xml.name().toString().compare("name",Qt::CaseInsensitive) ==0)
-		{
-			pBody->bodyName() = xml.readElementText();
-		}
-		else if (xml.name().toString().compare("color", Qt::CaseInsensitive)==0)
-		{
-			readXMLColor(xml, pBody->bodyColor());
-		}
-		else if (xml.name().toString().compare("description", Qt::CaseInsensitive)==0)
-		{
-			pBody->bodyDescription() = xml.readElementText();
-		}
-		else if (xml.name().compare("Inertia",         Qt::CaseInsensitive)==0)
-		{
-			while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() )
-			{
-				if (xml.name().compare("volume_mass", Qt::CaseInsensitive)==0)
-				{
-					pBody->m_VolumeMass = xml.readElementText().toDouble();
-				}
-				else if (xml.name().compare("point_mass", Qt::CaseInsensitive)==0)
-				{
-					PointMass* ppm = new PointMass;
-					pBody->m_PointMass.append(ppm);
-					readXMLPointMass(xml, ppm, massUnit, lengthUnit);
-				}
-				else
-					xml.skipCurrentElement();
-			}
-		}
-		else if (xml.name().compare("position", Qt::CaseInsensitive)==0)
-		{
-			QStringList coordList = xml.readElementText().split(",");
-			if(coordList.length()>=3)
-			{
-				position.x = coordList.at(0).toDouble()*lengthUnit;
-				position.z = coordList.at(2).toDouble()*lengthUnit;
-			}
-		}		else if (xml.name().compare("type", Qt::CaseInsensitive)==0)
-		{
-			if(xml.readElementText().compare("NURBS", Qt::CaseInsensitive)==0) pBody->bodyType()=XFLR5::BODYSPLINETYPE;
-			else                                                               pBody->bodyType()=XFLR5::BODYPANELTYPE;
-		}
-		else if (xml.name().compare("x_degree",    Qt::CaseInsensitive)==0) pBody->splineSurface()->m_iuDegree = xml.readElementText().toInt();
-		else if (xml.name().compare("hoop_degree", Qt::CaseInsensitive)==0) pBody->splineSurface()->m_ivDegree = xml.readElementText().toInt();
-		else if (xml.name().compare("x_panels",    Qt::CaseInsensitive)==0) pBody->m_nxPanels = xml.readElementText().toInt();
-		else if (xml.name().compare("hoop_panels", Qt::CaseInsensitive)==0) pBody->m_nhPanels = xml.readElementText().toInt();
-
-		//read frames
-		else if (xml.name().compare("frame", Qt::CaseInsensitive)==0)
-		{
-			Frame *pFrame = pBody->splineSurface()->AppendFrame();
-			while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() )
-			{
-				if(xml.name().compare("x_panels", Qt::CaseInsensitive)==0) pBody->m_xPanels.append(xml.readElementText().toInt());
-				if(xml.name().compare("h_panels", Qt::CaseInsensitive)==0) pBody->m_hPanels.append(xml.readElementText().toInt());
-				else if (xml.name().compare("position", Qt::CaseInsensitive)==0)
-				{
-					QStringList coordList = xml.readElementText().split(",");
-					if(coordList.length()>=3)
-					{
-						pFrame->m_Position.x = coordList.at(0).toDouble()*lengthUnit;
-						pFrame->m_Position.z = coordList.at(2).toDouble()*lengthUnit;
-					}
-				}
-				else if (xml.name().compare("point", Qt::CaseInsensitive)==0)
-				{
-					CVector ctrlPt;
-					QStringList coordList = xml.readElementText().split(",");
-					if(coordList.length()>=3)
-					{
-						ctrlPt.x = coordList.at(0).toDouble()*lengthUnit;
-						ctrlPt.y = coordList.at(1).toDouble()*lengthUnit;
-						ctrlPt.z = coordList.at(2).toDouble()*lengthUnit;
-						pFrame->AppendPoint(ctrlPt);
-					}
-				}
-			}
-		}
-	}
-}
-
-void writeXMLBody(QXmlStreamWriter &xml, Body *pBody, CVector position, double lengthUnit, double massUnit)
-{
-	NURBSSurface *pSurface = pBody->splineSurface();
-	xml.writeStartElement("body");
-	{
-		xml.writeTextElement("Name", pBody->bodyName());
-		writeXMLColor(xml, pBody->bodyColor());
-		xml.writeTextElement("Description", pBody->bodyDescription());
-		xml.writeTextElement("Position",QString("%1, %2, %3").arg(position.x*lengthUnit, 11,'g',5)
-															 .arg(position.y*lengthUnit, 11,'g',5)
-															 .arg(position.z*lengthUnit, 11,'g',5));
-
-		xml.writeTextElement("Type", pBody->bodyType()==XFLR5::BODYPANELTYPE ? "FLATPANELS" : "NURBS");
-		if(pBody->bodyType()==XFLR5::BODYSPLINETYPE && pSurface)
-		{
-			xml.writeTextElement("x_degree", QString ("%1").arg(pSurface->m_iuDegree));
-			xml.writeTextElement("hoop_degree", QString ("%1").arg(pSurface->m_ivDegree));
-			xml.writeTextElement("x_panels", QString ("%1").arg(pBody->m_nxPanels));
-			xml.writeTextElement("hoop_panels", QString ("%1").arg(pBody->m_nhPanels));
-		}
-		else
-		{
-			for(int isl=0; isl<pBody->SideLineCount(); isl++)
-			{
-				xml.writeTextElement("Hoop_panels_stripe_%1",  QString("%1").arg(pBody->m_hPanels.at(isl)));
-			}
-
-		}
-		xml.writeStartElement("Inertia");
-		{
-			xml.writeTextElement("Volume_Mass", QString("%1").arg(pBody->volumeMass(),7,'f',3));
-			for(int ipm=0; ipm<pBody->m_PointMass.size(); ipm++)
-			{
-				writeXMLPointMass(xml, pBody->m_PointMass.at(ipm), massUnit, lengthUnit);
-			}
-		}
-		xml.writeEndElement();
-
-		for(int iFrame=0; iFrame<pBody->splineSurface()->frameCount(); iFrame++)
-		{
-			Frame *pFrame = pBody->splineSurface()->frameAt(iFrame);
-			xml.writeStartElement("frame");
-			{
-				if(pBody->bodyType()==XFLR5::BODYPANELTYPE)
-				{
-					xml.writeTextElement("x_panels", QString("%1").arg(pBody->m_xPanels.at(iFrame)));
-					xml.writeTextElement("h_panels", QString("%1").arg(pBody->m_xPanels.at(iFrame)));
-				}
-
-				xml.writeTextElement("Position",QString("%1, %2, %3").arg(pFrame->m_Position.x*lengthUnit, 11,'g',5)
-																	 .arg(pFrame->m_Position.y*lengthUnit, 11,'g',5)
-																	 .arg(pFrame->m_Position.z*lengthUnit, 11,'g',5));
-
-				for(int iPt=0; iPt<pFrame->PointCount(); iPt++)
-				{
-					CVector Pt(pFrame->Point(iPt));
-					xml.writeTextElement("point",QString("%1, %2, %3").arg(Pt.x*lengthUnit, 11,'g',5)
-																	  .arg(Pt.y*lengthUnit, 11,'g',5)
-																	  .arg(Pt.z*lengthUnit, 11,'g',5));
-				}
-			}
-			xml.writeEndElement();
-		}
-	}
-	xml.writeEndElement();
-
-}
-
-
-
 
 
 

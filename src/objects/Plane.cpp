@@ -32,16 +32,20 @@ Plane::Plane()
 	m_pBody   = NULL;
 
 	m_Wing[0].m_WingName   = QObject::tr("Wing");
+	m_Wing[0].wingType()   = XFLR5::MAINWING;
 	m_Wing[0].ComputeGeometry();
+
 	m_Wing[1].m_WingName   = QObject::tr("2nd Wing");
+	m_Wing[1].wingType()   = XFLR5::SECONDWING;
 	m_Wing[1].ComputeGeometry();
 
 	m_Wing[2].m_WingName    = QObject::tr("Elevator");
+	m_Wing[2].wingType()    = XFLR5::ELEVATOR;
 	m_Wing[2].m_bIsFin      = false;
 	m_Wing[2].Chord(0)      = 0.100;
 	m_Wing[2].Chord(1)      = 0.080;
 	m_Wing[2].YPosition(0)  =   0.0;
-	m_Wing[2].YPosition(1)  = 0.150;
+	m_Wing[2].YPosition(1)  = 0.170;
 	m_Wing[2].Length(0)     =   0.0;
 	m_Wing[2].Length(1)     = 0.150;
 	m_Wing[2].Offset(0)     =   0.0;
@@ -53,6 +57,7 @@ Plane::Plane()
 	m_Wing[2].ComputeGeometry();
 
 	m_Wing[3].m_WingName    = QObject::tr("Fin");
+	m_Wing[3].wingType()    = XFLR5::FIN;
 	m_Wing[3].m_bIsFin      = true;
 	m_Wing[3].Chord(0)      = 0.100;
 	m_Wing[3].Chord(1)      = 0.060;
@@ -685,6 +690,12 @@ bool Plane::SerializePlaneXFL(QDataStream &ar, bool bIsStoring)
 		m_Wing[1].SerializeWingXFL(ar, bIsStoring);
 		m_Wing[2].SerializeWingXFL(ar, bIsStoring);
 		m_Wing[3].SerializeWingXFL(ar, bIsStoring);
+
+		m_Wing[0].wingType() = XFLR5::MAINWING;
+		m_Wing[1].wingType() = XFLR5::SECONDWING;
+		m_Wing[2].wingType() = XFLR5::ELEVATOR;
+		m_Wing[3].wingType() = XFLR5::FIN;
+
 		ar >> m_bBiplane>> m_bStab >>m_bFin >> m_bDoubleFin >> m_bSymFin >> m_bDoubleSymFin;
 
 		for(int iw=0; iw<MAXWINGS; iw++)
@@ -763,14 +774,18 @@ void Plane::setPlaneName(QString planeName)
 void Plane::CreateSurfaces()
 {
 	m_Wing[0].CreateSurfaces(m_WingLE[0],   0.0, m_WingTiltAngle[0]);
-	m_Wing[1].CreateSurfaces(m_WingLE[1],   0.0, m_WingTiltAngle[1]);
-	m_Wing[2].CreateSurfaces(m_WingLE[2],   0.0, m_WingTiltAngle[2]);
-	m_Wing[3].CreateSurfaces(m_WingLE[3], -90.0, m_WingTiltAngle[3]);
+	if(wing(1)) m_Wing[1].CreateSurfaces(m_WingLE[1],   0.0, m_WingTiltAngle[1]);
+	if(wing(2)) m_Wing[2].CreateSurfaces(m_WingLE[2],   0.0, m_WingTiltAngle[2]);
+	if(wing(3)) m_Wing[3].CreateSurfaces(m_WingLE[3], -90.0, m_WingTiltAngle[3]);
 
 	for(int iw=0; iw<MAXWINGS; iw++)
 	{
-		for (int j=0; j<m_Wing[iw].m_Surface.size(); j++)
-			m_Wing[iw].m_Surface.at(j)->SetSidePoints(body(), bodyPos().x, bodyPos().z);
+		if(wing(iw))
+		{
+			for (int j=0; j<m_Wing[iw].m_Surface.size(); j++)
+				m_Wing[iw].m_Surface.at(j)->SetSidePoints(body(), bodyPos().x, bodyPos().z);
+			m_Wing[iw].ComputeBodyAxisInertia();
+		}
 	}
 }
 
@@ -842,6 +857,30 @@ Wing *Plane::getWing(int iw)
 	return NULL;
 }
 
+
+
+/**
+ * Returns a pointer to the wing with index iw, or NULL if this plane's wing is not active
+ *  @param iw the index of the wing
+ *  @return a pointer to the wing, or NULL if none;
+ */
+Wing *Plane::getWing(XFLR5::enumWingType wingType)
+{
+	switch(wingType)
+	{
+		case XFLR5::MAINWING:
+			return wing();
+		case XFLR5::SECONDWING:
+			return wing2();
+		case XFLR5::ELEVATOR:
+			return stab();
+		case XFLR5::FIN:
+			return fin();
+		default:
+			return NULL;
+	}
+	return NULL;
+}
 
 
 /** Returns a pointer to the Plane's wing with index iw, or NULL if none has been defined.  */

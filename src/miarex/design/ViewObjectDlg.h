@@ -53,7 +53,8 @@ public:
 	void Connect();
 	void GLDraw3D();
 	void GLRenderView();
-	void GLCreateSectionHighlight(Wing *m_pWing);
+	void GLCreateWingSectionHighlight(Wing *pWing);
+	void GLCreateBodyFrameHighlight(Body *pBody, CVector bodyPos, int iFrame);
 	void initDialog(Plane *pPlane);
 	void setupLayout();
 	void fillPlaneTreeView();
@@ -62,13 +63,14 @@ public:
 	void fillPlaneMetaData(QStandardItem *item);
 	void readPlaneTree();
 	void readViewLevel(QModelIndex indexLevel);
-	void readBodyTree(QModelIndex indexLevel);
+	void readBodyTree(Body *pBosy, QModelIndex indexLevel);
 	void readWingTree(Wing *pWing, CVector &pos, double &tiltAngle, QModelIndex indexLevel);
-	void readWingInertiaTree(Wing *pWing, QModelIndex indexLevel);
+	void readInertiaTree(double &volumeMass, QList<PointMass *> &pointMasses, QModelIndex indexLevel);
 	void readVectorTree(CVector &V, QModelIndex indexLevel);
 	void readWingSectionTree(Wing *pWing, QModelIndex indexLevel);
 	void readPointMassTree(PointMass *ppm, QModelIndex indexLevel);
-
+	void readBodyFrameTree(Body *pBody, Frame *pFrame, QModelIndex indexLevel);
+	void highlightSelection(const QModelIndex &indexSel);
 
 	QList<QStandardItem *> prepareRow(const QString &first, const QString &second="", const QString &third="",  const QString &fourth="");
 	QList<QStandardItem *> prepareBoolRow(const QString &first, const QString &second, const bool &third);
@@ -80,6 +82,8 @@ private slots:
 	void OnAxes();
 	void On3DReset();
 	void OnRedraw();
+	void OnCellChanged(QWidget *);
+	void OnItemClicked(const QModelIndex &index);
 
 	void OnSurfaces();
 	void OnOutline();
@@ -119,7 +123,8 @@ private:
 	bool m_bResetglSectionHighlight;
 	bool m_bResetglPlane, m_bResetglBody;
 
-	int m_iSection;
+	XFLR5::enumWingType m_enumActiveWingType;
+	int m_iActiveSection, m_iActiveFrame;
 };
 
 #endif // VIEWOBJECTDLG_H
