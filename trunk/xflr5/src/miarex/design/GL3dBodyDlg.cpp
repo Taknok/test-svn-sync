@@ -33,6 +33,8 @@
 #include "./BodyScaleDlg.h"
 #include "./GL3dBodyDlg.h"
 #include "../view/GLCreateBodyLists.h"
+#include "../mgt/XmlPlaneReader.h"
+#include "../mgt/XmlPlaneWriter.h"
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -173,17 +175,17 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
 	m_pRedo->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_Z);
 	connect(m_pRedo, SIGNAL(triggered()), this, SLOT(OnRedo()));
 
-	m_pExportBodyGeom = new QAction(tr("Export Body Geometry to File"), this);
+	m_pExportBodyGeom = new QAction(tr("Export Body Geometry to text File"), this);
 	connect(m_pExportBodyGeom, SIGNAL(triggered()), this, SLOT(OnExportBodyGeom()));
 
-	m_pExportBodyDef = new QAction(tr("Export Body Definition to File"), this);
+	m_pExportBodyDef = new QAction(tr("Export Body Definition to txt File"), this);
 	connect(m_pExportBodyDef, SIGNAL(triggered()), this, SLOT(OnExportBodyDef()));
-
-	m_pImportBodyDef = new QAction(tr("Import Body Definition from File"), this);
-	connect(m_pImportBodyDef, SIGNAL(triggered()), this, SLOT(OnImportBodyDef()));
 
 	m_pExportBodyXML= new QAction(tr("Export body definition to an XML file"), this);
 	connect(m_pExportBodyXML, SIGNAL(triggered()), this, SLOT(OnExportBodyXML()));
+
+	m_pImportBodyDef = new QAction(tr("Import Body Definition from a text file"), this);
+	connect(m_pImportBodyDef, SIGNAL(triggered()), this, SLOT(OnImportBodyDef()));
 
 	m_pImportBodyXML= new QAction(tr("Import body definition from an XML file"), this);
 	connect(m_pImportBodyXML, SIGNAL(triggered()), this, SLOT(OnImportBodyXML()));
@@ -2369,7 +2371,7 @@ void GL3dBodyDlg::OnExportBodyXML()
 
 	QString filter = "XML file (*.xpl)";
 	QString FileName, strong;
-qDebug()<<"opening";
+
 	strong = m_pBody->bodyName();
 	FileName = QFileDialog::getSaveFileName(this, tr("Export plane definition to xml file"),
 											Settings::s_LastDirName +'/'+strong,
@@ -2387,30 +2389,11 @@ qDebug()<<"opening";
 	QFile XFile(FileName);
 	if (!XFile.open(QIODevice::WriteOnly | QIODevice::Text)) return ;
 
+	XMLPlaneWriter planeWriter(XFile);
 
-	QXmlStreamWriter xml;
-	xml.setAutoFormatting(true);
-
-	xml.setDevice(&XFile);
-	xml.writeStartDocument();
-	xml.writeDTD("<!DOCTYPE explane>");
-	xml.writeStartElement("exbody");
-	xml.writeAttribute("version", "1.0");
-
-
-	xml.writeStartElement("Units");
-	{
-		xml.writeTextElement("length_unit_to_meter", QString("%1").arg(1./Units::mtoUnit()));
-		xml.writeTextElement("mass_unit_to_kg", QString("%1").arg(1./Units::kgtoUnit()));
-	}
-	xml.writeEndElement();
-
-	writeXMLBody(xml, m_pBody, CVector(), Units::mtoUnit(), Units::kgtoUnit());
-
-	xml.writeEndDocument();
+	planeWriter.writeXMLBody(m_pBody);
 
 	XFile.close();
-	qDebug()<<"closing";
 }
 
 
@@ -2556,50 +2539,16 @@ void GL3dBodyDlg::OnImportBodyXML()
 		QMessageBox::warning(this, tr("Warning"), strange);
 		return;
 	}
-	QXmlStreamReader xml;
-	xml.setDevice(&XFile);
 
-	double lengthUnit = 1.0;
-	double massUnit = 1.0;
-
-	if (xml.readNextStartElement())
-	{
-		if (xml.name() == "exbody" && xml.attributes().value("version") == "1.0")
-		{
-			while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() )
-			{
-				if (xml.name().toString().compare("units", Qt::CaseInsensitive)==0)
-				{
-					while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() )
-					{
-						if (xml.name().compare("length_unit_to_meter",      Qt::CaseInsensitive)==0)
-						{
-							lengthUnit = xml.readElementText().toDouble();
-						}
-						else if (xml.name().compare("mass_unit_to_kg",      Qt::CaseInsensitive)==0)
-						{
-							massUnit = xml.readElementText().toDouble();
-						}
-						else
-							xml.skipCurrentElement();
-					}
-				}
-				else if (xml.name().toString().compare("body", Qt::CaseInsensitive)==0)
-				{
-					CVector pos;
-					readXMLBody(xml, pos, m_pBody, lengthUnit, massUnit);
-				}
-			}
-		}
-		else
-			xml.raiseError(QObject::tr("The file is not an xflr5 body version 1.0 file."));
-	}
+	Plane a_plane;
+	XMLPlaneReader planeReader(XFile, &a_plane);
+	planeReader.readXMLPlaneFile();
 
 	XFile.close();
 
-	if(xml.hasError())
+	if(planeReader.hasError())
 	{
-		QString errorMsg = xml.errorString() + QString("\nline %1 column %2").arg(xml.lineNumber()).arg(xml.columnNumber());
+		QString errorMsg = planeReader.errorString() + QString("\nline %1 column %2").arg(planeReader.lineNumber()).arg(planeReader.columnNumber());
 		QMessageBox::warning(this, "XML read", errorMsg, QMessageBox::Ok);
 		m_pBody->Duplicate(&memBody);
 		return;

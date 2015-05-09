@@ -24,6 +24,7 @@
 
 #include <QDialog>
 #include <QLabel>
+#include <QAction>
 #include <QPushButton>
 #include <QLineEdit>
 #include <QTextEdit>
@@ -64,7 +65,8 @@ private slots:
 	void OnBiplane();
 	void OnDefineWing2();
 	void OnImportWing2();
-	void OnImportBody();
+	void OnImportPlaneBody();
+	void OnImportXMLBody();
 	void OnInertia();
 
 private:
@@ -145,6 +147,7 @@ private:
 	QPushButton *OKButton;
 	QPushButton *CancelButton;
 
+	QAction *m_pImportXMLBody, *m_pImportPlaneBody;
 };
 
 #endif // PLANEDLG_H

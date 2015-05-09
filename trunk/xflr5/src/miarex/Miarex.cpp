@@ -35,6 +35,8 @@
 #include "../twodwidget.h"
 #include "../globals.h"
 #include "./mgt/ManagePlanesDlg.h"
+#include "./mgt/XmlPlaneReader.h"
+#include "./mgt/XmlPlaneWriter.h"
 #include "./view/StabViewDlg.h"
 #include "./design/ViewObjectDlg.h"
 #include "./design/PlaneDlg.h"
@@ -2345,13 +2347,6 @@ void QMiarex::GLDraw3D()
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 
-	if (!m_pCurPlane)
-	{
-		m_bResetglGeom = true;
-		m_bResetglMesh = true;
-		m_bResetglOpp  = true;
-	}
-
 	Body *pCurBody = NULL;
 	if(m_pCurPlane) pCurBody = m_pCurPlane->body();
 
@@ -2638,6 +2633,164 @@ void QMiarex::GLDraw3D()
 }
 
 
+/**
+ * Draws the point masses, the object masses, and the CG position in the OpenGL viewport
+*/
+void QMiarex::GLDrawMasses()
+{
+	ThreeDWidget *p3dWidget = (ThreeDWidget*)s_p3dWidget;
+	QString MassUnit;
+	Units::getWeightUnitLabel(MassUnit);
+
+	glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
+
+	double zdist = 25.0/(double)m_r3DCltRect.width();
+
+
+	for(int iw=0; iw<MAXWINGS; iw++)
+	{
+		if(m_pWingList[iw])
+		{
+			glPushMatrix();
+			{
+				if(m_pCurPlane)
+				{
+					glTranslated(m_pCurPlane->WingLE(iw).x,
+								 m_pCurPlane->WingLE(iw).y,
+								 m_pCurPlane->WingLE(iw).z);
+					if(m_pWingList[iw]->m_bIsFin) glTranslated(0.0,0.0, m_pWingList[iw]->m_ProjectedSpan/4.0);
+					else                          glTranslated(0.0, m_pWingList[iw]->m_ProjectedSpan/4.0,0.0);
+
+
+					glColor3d(0.5, 1.0, 0.5);
+					p3dWidget->renderText(0.0, 0.0, zdist,
+										  m_pWingList[iw]->m_WingName+
+										  QString(" %1").arg(m_pWingList[iw]->m_VolumeMass*Units::kgtoUnit(), 7,'g',3)+
+										  MassUnit);
+				}
+			}
+			glPopMatrix();
+
+			for(int im=0; im<m_pWingList[iw]->m_PointMass.size(); im++)
+			{
+				glPushMatrix();
+				{
+					if(m_pCurPlane)
+					{
+						glTranslated(m_pCurPlane->WingLE(iw).x,
+									 m_pCurPlane->WingLE(iw).y,
+									 m_pCurPlane->WingLE(iw).z);
+					}
+					glTranslated(m_pWingList[iw]->m_PointMass[im]->position().x,
+								 m_pWingList[iw]->m_PointMass[im]->position().y,
+								 m_pWingList[iw]->m_PointMass[im]->position().z);
+					glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
+					p3dWidget->GLRenderSphere(W3dPrefsDlg::s_MassRadius/m_glScaled);
+					glColor3d(Settings::s_TextColor.redF(), Settings::s_TextColor.greenF(), Settings::s_TextColor.blueF());
+					p3dWidget->renderText(0.0, 0.0, 0.0 +.02,
+										  m_pWingList[iw]->m_PointMass[im]->tag()
+										  +QString(" %1").arg(m_pWingList[iw]->m_PointMass[im]->mass()*Units::kgtoUnit(), 7,'g',3)
+										  +MassUnit);
+				}
+				glPopMatrix();
+			}
+		}
+	}
+
+	if(m_pCurPlane)
+	{
+        glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
+		for(int im=0; im<m_pCurPlane->m_PointMass.size(); im++)
+		{
+			glPushMatrix();
+			{
+				glTranslated(m_pCurPlane->m_PointMass[im]->position().x,
+							 m_pCurPlane->m_PointMass[im]->position().y,
+							 m_pCurPlane->m_PointMass[im]->position().z);
+				glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
+				p3dWidget->GLRenderSphere(W3dPrefsDlg::s_MassRadius/m_glScaled);
+				glColor3d(Settings::s_TextColor.redF(), Settings::s_TextColor.greenF(), Settings::s_TextColor.blueF());
+				p3dWidget->renderText(0.0,0.0,0.0+.02,
+								  m_pCurPlane->m_PointMass[im]->tag()
+								  +QString(" %1").arg(m_pCurPlane->m_PointMass[im]->mass()*Units::kgtoUnit(), 7,'g',3)
+								  +MassUnit);
+			}
+			glPopMatrix();
+		}
+
+	}
+	if(m_pCurPlane && m_pCurPlane->body())
+	{
+		Body *pCurBody = m_pCurPlane->body();
+//		glColor3d(W3dPrefsDlg::s_MassColor.redF()*.75, W3dPrefsDlg::s_MassColor.greenF()*.75, W3dPrefsDlg::s_MassColor.blueF()*.75);
+		glColor3d(0.0, 0.0, 0.7);
+
+		glPushMatrix();
+		{
+			if(m_pCurPlane)
+			{
+				glTranslated(m_pCurPlane->bodyPos().x,
+							 m_pCurPlane->bodyPos().y,
+							 m_pCurPlane->bodyPos().z);
+
+				glColor3d(0.5, 1.0, 0.5);
+				p3dWidget->renderText(0.0, 0.0, zdist,
+								  pCurBody->m_BodyName+
+								  QString(" %1").arg(pCurBody->m_VolumeMass*Units::kgtoUnit(), 7,'g',3)+
+								  MassUnit);
+			}
+		}
+		glPopMatrix();
+		glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
+		for(int im=0; im<pCurBody->m_PointMass.size(); im++)
+		{
+			glPushMatrix();
+			{
+				glTranslated(pCurBody->m_PointMass[im]->position().x,pCurBody->m_PointMass[im]->position().y,pCurBody->m_PointMass[im]->position().z);
+				if(m_pCurPlane)
+				{
+					glTranslated(m_pCurPlane->bodyPos().x,
+								 m_pCurPlane->bodyPos().y,
+								 m_pCurPlane->bodyPos().z);
+				}
+
+				glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
+				p3dWidget->GLRenderSphere(W3dPrefsDlg::s_MassRadius/m_glScaled);
+
+				glColor3d(Settings::s_TextColor.redF(), Settings::s_TextColor.greenF(), Settings::s_TextColor.blueF());
+				p3dWidget->renderText(0.0, 0.0, 0.0+.02,
+								  pCurBody->m_PointMass[im]->tag()
+								  +QString(" %1").arg(pCurBody->m_PointMass[im]->mass()*Units::kgtoUnit(), 7,'g',3)
+								  +MassUnit);
+			}
+			glPopMatrix();
+		}
+	}
+	//plot CG
+	if(m_pCurPlane)
+	{
+		CVector CoG;
+		double Mass=0.0;
+		if(m_pCurPlane)
+		{
+			CoG = m_pCurPlane->CoG();
+			Mass = m_pCurPlane->TotalMass();
+		}
+
+		glPushMatrix();
+		{
+			glTranslated(CoG.x,CoG.y,CoG.z);
+			glColor3d(1.0, 0.5, 0.5);
+			p3dWidget->GLRenderSphere(W3dPrefsDlg::s_MassRadius*2.0/m_glScaled);
+			glColor3d(Settings::s_TextColor.redF(), Settings::s_TextColor.greenF(), Settings::s_TextColor.blueF());
+			p3dWidget->renderText(0.0, 0.0, 0.0+.02,
+							  "CoG "+QString("%1").arg(Mass*Units::kgtoUnit(), 7,'g',3)
+							  +MassUnit);
+		}
+		glPopMatrix();
+	}
+}
+
 
 /**
 * Prints the foil names on the OpenGl viewport
@@ -2810,7 +2963,7 @@ void QMiarex::GLRenderView()
 
 		if(s_bFoilNames) GLDrawFoils();
 
-		if(s_bShowMasses) GLDrawMasses((ThreeDWidget*)s_p3dWidget, m_pCurPlane, m_glScaled);
+		if(s_bShowMasses) GLDrawMasses();
 
 		glLoadIdentity();
 		glDisable(GL_CLIP_PLANE1);
@@ -5502,7 +5655,7 @@ void QMiarex::OnEditCurObject()
  */
 void QMiarex::OnEditCurPlane()
 {
-	if(!m_pCurPlane)	return;
+	if(!m_pCurPlane) return;
 
 	int i;
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
@@ -10836,100 +10989,10 @@ void QMiarex::OnExportPlanetoXML()
 	if (!XFile.open(QIODevice::WriteOnly | QIODevice::Text)) return ;
 
 
-	QXmlStreamWriter xml;
-	xml.setAutoFormatting(true);
-
-	xml.setDevice(&XFile);
-	xml.writeStartDocument();
-	xml.writeDTD("<!DOCTYPE explane>");
-	xml.writeStartElement("explane");
-	xml.writeAttribute("version", "1.0");
+	XMLPlaneWriter planeWriter(XFile);
+	planeWriter.writeXMLPlane(m_pCurPlane);
 
 
-	xml.writeStartElement("Units");
-	{
-		xml.writeTextElement("length_unit_to_meter", QString("%1").arg(1./Units::mtoUnit()));
-		xml.writeTextElement("mass_unit_to_kg", QString("%1").arg(1./Units::kgtoUnit()));
-	}
-	xml.writeEndElement();
-	xml.writeStartElement("Plane");
-	{
-		xml.writeTextElement("Name", m_pCurPlane->planeName());
-		xml.writeTextElement("Description", m_pCurPlane->planeDescription());
-		xml.writeStartElement("Inertia");
-		{
-			for(int ipm=0; ipm<m_pCurPlane->m_PointMass.size(); ipm++)
-			{
-				writeXMLPointMass(xml, m_pCurPlane->m_PointMass.at(ipm), Units::kgtoUnit(), Units::mtoUnit());
-			}
-		}
-		xml.writeEndElement();
-
-		xml.writeTextElement("has_body", m_pCurPlane->body() ? "true" : "false");
-		if(m_pCurPlane->body())
-		{
-			Body *pBody = m_pCurPlane->body();
-			writeXMLBody(xml, pBody, m_pCurPlane->bodyPos(), Units::mtoUnit(), Units::kgtoUnit());
-		}
-
-		for(int iw=0; iw<MAXWINGS; iw++)
-		{
-			if(m_pWingList[iw])
-			{
-				xml.writeStartElement("wing");
-				{
-					xml.writeTextElement("Name", m_pWingList[iw]->wingName());
-					writeXMLColor(xml, m_pWingList[iw]->wingColor());
-					xml.writeTextElement("Description", m_pWingList[iw]->WingDescription());
-					xml.writeTextElement("Position",QString("%1, %2, %3").arg(m_pCurPlane->WingLE(iw).x*Units::mtoUnit(), 11,'g',5)
-																		 .arg(m_pCurPlane->WingLE(iw).y*Units::mtoUnit(), 11,'g',5)
-																		 .arg(m_pCurPlane->WingLE(iw).z*Units::mtoUnit(), 11,'g',5));
-					xml.writeTextElement("Tilt_angle",  QString("%1").arg(m_pCurPlane->WingTiltAngle(iw),7,'f',3));
-					xml.writeTextElement("Symetric",    m_pWingList[iw]->isSymetric()  ? "true" : "false");
-					xml.writeTextElement("isFin",       m_pWingList[iw]->isFin()       ? "true" : "false");
-					xml.writeTextElement("isDoubleFin", m_pWingList[iw]->isDoubleFin() ? "true" : "false");
-					xml.writeTextElement("isSymFin",    m_pWingList[iw]->isSymFin()    ? "true" : "false");
-					xml.writeStartElement("Inertia");
-					{
-						xml.writeTextElement("Volume_Mass", QString("%1").arg(m_pWingList[iw]->volumeMass(),7,'f',3));
-						for(int ipm=0; ipm<m_pWingList[iw]->m_PointMass.size(); ipm++)
-						{
-							writeXMLPointMass(xml, m_pWingList[iw]->m_PointMass.at(ipm), Units::kgtoUnit(), Units::mtoUnit());
-						}
-					}
-					xml.writeEndElement();
-					xml.writeStartElement("Sections");
-					{
-						for(int ips=0; ips<m_pWingList[iw]->m_WingSection.size(); ips++)
-						{
-							WingSection *ws = m_pWingList[iw]->m_WingSection.at(ips);
-							xml.writeStartElement("Section");
-							{
-								xml.writeTextElement("y_position", QString("%1").arg(ws->m_YPosition*Units::mtoUnit(), 7, 'f', 3));
-								xml.writeTextElement("Chord", QString("%1").arg(ws->m_Chord*Units::mtoUnit(), 7, 'f', 3));
-								xml.writeTextElement("xOffset", QString("%1").arg(ws->m_Offset*Units::mtoUnit(), 7, 'f', 3));
-								xml.writeTextElement("Dihedral", QString("%1").arg(ws->m_Dihedral, 7, 'f', 3));
-								xml.writeTextElement("Twist", QString("%1").arg(ws->m_Twist, 7, 'f', 3));
-								xml.writeTextElement("x_number_of_panels", QString("%1").arg(ws->m_NXPanels));
-								xml.writeTextElement("x_panel_distribution", ws->xDistributionType());
-								xml.writeTextElement("y_number_of_panels", QString("%1").arg(ws->m_NYPanels));
-								xml.writeTextElement("y_panel_distribution", ws->yDistributionType());
-								xml.writeTextElement("Left_Side_FoilName", ws->m_LeftFoilName);
-								xml.writeTextElement("Right_Side_FoilName", ws->m_RightFoilName);
-							}
-							xml.writeEndElement();
-						}
-					}
-					xml.writeEndElement();
-				}
-				xml.writeEndElement();
-			}
-		}
-	}
-	xml.writeEndElement();
-
-
-	xml.writeEndDocument();
 
 	XFile.close();
 }
@@ -10955,255 +11018,29 @@ void QMiarex::OnImportPlanefromXML()
 		QMessageBox::warning(pMainFrame, tr("Warning"), strange);
 		return;
 	}
-	QXmlStreamReader xml;
-	xml.setDevice(&XFile);
 
-	double lengthunit = 1.0;
-	double massunit = 1.0;
+	Plane *pPlane = new Plane;
+	XMLPlaneReader planeReader(XFile, pPlane);
+	planeReader.readXMLPlaneFile();
 
-	if (xml.readNextStartElement())
+	if(planeReader.hasError())
 	{
-		if (xml.name() == "explane" && xml.attributes().value("version") == "1.0")
-		{
-			while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() )
-			{
-				if (xml.name().toString().compare("units", Qt::CaseInsensitive)==0)
-				{
-					while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() )
-					{
-						if (xml.name().compare("length_unit_to_meter",      Qt::CaseInsensitive)==0)
-						{
-							lengthunit = xml.readElementText().toDouble();
-						}
-						else if (xml.name().compare("mass_unit_to_kg",      Qt::CaseInsensitive)==0)
-						{
-							massunit = xml.readElementText().toDouble();
-						}
-						else
-							xml.skipCurrentElement();
-					}
-				}
-				else if (xml.name().toString().compare("plane", Qt::CaseInsensitive)==0)
-				{
-					Plane *pPlane = new Plane;
-					readXMLPlane(xml, pPlane, lengthunit, massunit);
-
-					if(xml.hasError())
-					{
-						QString errorMsg = xml.errorString() + QString("\nline %1 column %2").arg(xml.lineNumber()).arg(xml.columnNumber());
-						QMessageBox::warning((MainFrame*)s_pMainFrame, "XML read", errorMsg, QMessageBox::Ok);
-					}
-					else
-					{
-						if(Objects3D::planeExists(pPlane->planeName())) m_pCurPlane = Objects3D::setModPlane(pPlane);
-						else                                            m_pCurPlane = Objects3D::addPlane(pPlane);
-
-						SetPlane();
-						pMainFrame->UpdatePlaneListBox();
-					}
-
-					UpdateView();
-				}
-			}
-		}
-		else
-			xml.raiseError(QObject::tr("The file is not an xflr5 plane version 1.0 file."));
+		QString errorMsg = planeReader.errorString() + QString("\nline %1 column %2").arg(planeReader.lineNumber()).arg(planeReader.columnNumber());
+		QMessageBox::warning((MainFrame*)s_pMainFrame, "XML read", errorMsg, QMessageBox::Ok);
 	}
+	else
+	{
+		if(Objects3D::planeExists(pPlane->planeName())) m_pCurPlane = Objects3D::setModPlane(pPlane);
+		else                                            m_pCurPlane = Objects3D::addPlane(pPlane);
+
+		SetPlane();
+		pMainFrame->UpdatePlaneListBox();
+	}
+
+	UpdateView();
+
 }
 
-
-
-/** */
-void QMiarex::readXMLPlane(QXmlStreamReader &xml, Plane *pPlane, double lengthUnit, double massUnit)
-{
-	int iw=0;
-	while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() && iw<MAXWINGS)
-	{
-		if (xml.name().toString().compare("name",Qt::CaseInsensitive) ==0)
-		{
-			pPlane->rPlaneName() = xml.readElementText();
-		}
-		else if (xml.name().toString().compare("has_body",Qt::CaseInsensitive) ==0)
-		{
-			pPlane->m_bBody  = xml.readElementText().compare("true", Qt::CaseInsensitive)==0;
-		}
-		else if (xml.name().toString().compare("description", Qt::CaseInsensitive)==0)
-		{
-			pPlane->rPlaneDescription() = xml.readElementText();
-		}
-		else if (xml.name().compare("Inertia",         Qt::CaseInsensitive)==0)
-		{
-			while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() )
-			{
-				if (xml.name().compare("point_mass", Qt::CaseInsensitive)==0)
-				{
-					PointMass* ppm = new PointMass;
-					pPlane->m_PointMass.append(ppm);
-					readXMLPointMass(xml, ppm, massUnit, lengthUnit);
-				}
-				else
-					xml.skipCurrentElement();
-			}
-		}
-		else if (xml.name().toString().compare("body", Qt::CaseInsensitive)==0)
-		{
-			Body *pBody = new Body;
-			readXMLBody(xml, pPlane->bodyPos(), pBody, lengthUnit, massUnit);
-			pPlane->setBody(pBody);
-		}
-		else if (xml.name().toString().compare("wing", Qt::CaseInsensitive)==0)
-		{
-			double xw=0.0, zw=0.0, ta=0.0;
-			Wing newWing;
-			{
-				newWing.m_WingSection.clear();
-
-				while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() )
-				{
-					if (xml.name().compare("name",                 Qt::CaseInsensitive)==0)
-					{
-						newWing.rWingName() = xml.readElementText();
-					}
-					else if (xml.name().compare("color",           Qt::CaseInsensitive)==0)
-					{
-						readXMLColor(xml, newWing.wingColor());
-					}
-					else if (xml.name().compare("description",     Qt::CaseInsensitive)==0)
-					{
-						newWing.rWingDescription() = xml.readElementText();
-					}
-					else if (xml.name().compare("position",        Qt::CaseInsensitive)==0)
-					{
-						QStringList coordList = xml.readElementText().split(",");
-						if(coordList.length()>=3)
-						{
-							xw = coordList.at(0).toDouble()*lengthUnit;
-							zw = coordList.at(2).toDouble()*lengthUnit;
-						}
-					}
-					else if (xml.name().compare("tilt_angle",      Qt::CaseInsensitive)==0)
-					{
-						ta = xml.readElementText().toDouble();
-					}
-					else if (xml.name().compare("Symetric",        Qt::CaseInsensitive)==0)
-					{
-						newWing.m_bSymetric = xml.readElementText().compare("true", Qt::CaseInsensitive)==0;
-					}
-					else if (xml.name().compare("isFin",           Qt::CaseInsensitive)==0)
-					{
-						newWing.m_bIsFin = xml.readElementText().compare("true", Qt::CaseInsensitive)==0;
-					}
-					else if (xml.name().compare("isDoubleFin",     Qt::CaseInsensitive)==0)
-					{
-						newWing.m_bDoubleFin = xml.readElementText().compare("true", Qt::CaseInsensitive)==0;
-					}
-					else if (xml.name().compare("isSymFin",        Qt::CaseInsensitive)==0)
-					{
-						newWing.m_bSymFin = xml.readElementText().compare("true", Qt::CaseInsensitive)==0;
-					}
-					else if (xml.name().compare("Inertia",         Qt::CaseInsensitive)==0)
-					{
-						while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() )
-						{
-							if (xml.name().compare("volume_mass", Qt::CaseInsensitive)==0)
-							{
-								newWing.m_VolumeMass = xml.readElementText().toDouble();
-							}
-							else if (xml.name().compare("point_mass", Qt::CaseInsensitive)==0)
-							{
-								PointMass* ppm = new PointMass;
-								newWing.m_PointMass.append(ppm);
-								readXMLPointMass(xml, ppm, massUnit, lengthUnit);
-							}
-							else
-								xml.skipCurrentElement();
-						}
-					}
-					else if (xml.name().compare("Sections",        Qt::CaseInsensitive)==0)
-					{
-						while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() )
-						{
-							if (xml.name().compare("Section",  Qt::CaseInsensitive)==0)
-							{
-								WingSection *pWingSec = new WingSection;
-								newWing.m_WingSection.append(pWingSec);
-								while(!xml.atEnd() && !xml.hasError() && xml.readNextStartElement() )
-								{
-									if (xml.name().compare("x_number_of_panels", Qt::CaseInsensitive)==0)
-									{
-										pWingSec->m_NXPanels = xml.readElementText().toInt();
-									}
-									else if (xml.name().compare("y_number_of_panels", Qt::CaseInsensitive)==0)
-									{
-										pWingSec->m_NYPanels = xml.readElementText().toInt();
-									}
-									else if (xml.name().compare("x_panel_distribution", Qt::CaseInsensitive)==0)
-									{
-										QString strPanelDist = xml.readElementText();
-										pWingSec->m_XPanelDist = distributionType(strPanelDist);
-									}
-									else if (xml.name().compare("y_panel_distribution", Qt::CaseInsensitive)==0)
-									{
-										QString strPanelDist = xml.readElementText();
-										pWingSec->m_YPanelDist = distributionType(strPanelDist);
-									}
-									else if (xml.name().compare("Chord", Qt::CaseInsensitive)==0)
-									{
-										pWingSec->m_Chord = xml.readElementText().toDouble()*lengthUnit;
-									}
-									else if (xml.name().compare("y_position", Qt::CaseInsensitive)==0)
-									{
-										pWingSec->m_YPosition = xml.readElementText().toDouble()*lengthUnit;
-									}
-									else if (xml.name().compare("xOffset", Qt::CaseInsensitive)==0)
-									{
-										pWingSec->m_Offset = xml.readElementText().toDouble()*lengthUnit;
-									}
-									else if (xml.name().compare("Dihedral", Qt::CaseInsensitive)==0)
-									{
-										pWingSec->m_Dihedral = xml.readElementText().toDouble();
-									}
-									else if (xml.name().compare("Twist", Qt::CaseInsensitive)==0)
-									{
-										pWingSec->m_Twist = xml.readElementText().toDouble();
-									}
-									else if (xml.name().compare("Left_Side_FoilName", Qt::CaseInsensitive)==0)
-									{
-										pWingSec->m_LeftFoilName = xml.readElementText();
-									}
-									else if (xml.name().compare("Right_Side_FoilName", Qt::CaseInsensitive)==0)
-									{
-										pWingSec->m_RightFoilName = xml.readElementText();
-									}
-									else
-										xml.skipCurrentElement();
-								}
-							}
-							else
-								xml.skipCurrentElement();
-						}
-					}
-					else
-						xml.skipCurrentElement();
-				}
-
-				int iWing = 0;
-				if(newWing.isFin()) iWing = 3;
-				else if(iw==0)      iWing = 0;
-				else if(iw==1)      iWing = 2;
-
-				pPlane->m_Wing[iWing].Duplicate(&newWing);
-				pPlane->m_WingLE[iWing].x      = xw;
-				pPlane->m_WingLE[iWing].z      = zw;
-				pPlane->m_WingTiltAngle[iWing] = ta;
-
-				iw++;
-			}
-		}
-		else
-			xml.skipCurrentElement();
-	}
-}
 
 
 

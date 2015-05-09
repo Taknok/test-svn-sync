@@ -75,7 +75,7 @@ void GLCreateBody3DSplines( int iList, Body *pBody, int nx, int nh)
 
 				glNormal3d(N.x, N.y, N.z);
 
-				glVertex3d(m_T[p].x, m_T[p].y, m_T[p].z);
+				glVertex3d(m_T[p].x, m_T[p].y,           m_T[p].z);
 				glVertex3d(m_T[p+nh+1].x, m_T[p+nh+1].y, m_T[p+nh+1].z);
 
 				p++;
@@ -97,8 +97,10 @@ void GLCreateBody3DSplines( int iList, Body *pBody, int nx, int nh)
 			}
 			glEnd();
 		}
+
 		//left side next;
 		p=0;
+
 		for (k=0; k<nx; k++)
 		{
 			glBegin(GL_QUAD_STRIP);
@@ -111,7 +113,7 @@ void GLCreateBody3DSplines( int iList, Body *pBody, int nx, int nh)
 				glNormal3d(N.x, -N.y, N.z);
 
 				glVertex3d(m_T[p+nh+1].x, -m_T[p+nh+1].y, m_T[p+nh+1].z);
-				glVertex3d(m_T[p].x,      -m_T[p].y, m_T[p].z);
+				glVertex3d(m_T[p].x,      -m_T[p].y,      m_T[p].z);
 
 				p++;
 

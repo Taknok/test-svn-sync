@@ -4,7 +4,6 @@
 // first name space
 namespace XFLR5
 {
-	typedef enum {BOOL, INTEGER, DOUBLE, STRING, PANELDISTRIBUTION, FOILNAME, BODYTYPE, POLARTYPE, ANALYSISMETHOD, REFDIMENSIONS} enumDataType;
 	/** @enum The different types of analysis methods for 3D calculations of wings and planes. */
 	typedef enum {LLTMETHOD, VLMMETHOD, PANELMETHOD} enumAnalysisMethod;
 
@@ -33,9 +32,14 @@ namespace XFLR5
 	/** @enum The two types of body : flat panels or NURBS*/
 	typedef enum  {BODYPANELTYPE, BODYSPLINETYPE }     enumBodyLineType;
 
+	/** @enum The 4 types of wing */
+	typedef enum {MAINWING, SECONDWING, ELEVATOR, FIN, OTHERWING} enumWingType;
 
 	/** @enum The different types of panel distribution on the wing */
 	typedef enum {COSINE, UNIFORM, SINE, INVERSESINE} enumPanelDistribution;
+
+
+	typedef enum {BOOL, INTEGER, DOUBLE, STRING, PANELDISTRIBUTION, FOILNAME, BODYTYPE, POLARTYPE, ANALYSISMETHOD, REFDIMENSIONS, WINGTYPE} enumDataType;
 
 }
 

@@ -19,18 +19,21 @@
 
 ****************************************************************************/
 
+#include <QFileDialog>
 #include <QGridLayout>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QGroupBox>
 #include <QMessageBox>
+#include <QMenu>
 #include <math.h>
-
+#include <Settings.h>
 
 #include "../../globals.h"
 #include "../../misc/Units.h"
 #include "./../Objects3D.h"
 #include "../mgt/ImportObjectDlg.h"
+#include "../mgt/XmlPlaneReader.h"
 #include "PlaneDlg.h"
 #include "GL3dWingDlg.h"
 #include "GL3dBodyDlg.h"
@@ -71,7 +74,6 @@ PlaneDlg::PlaneDlg(QWidget *parent) :QDialog(parent)
 
 	connect(m_pctrlBody,       SIGNAL(clicked()), this, SLOT(OnBodyCheck()));
 	connect(m_pctrlDefineBody, SIGNAL(clicked()), this, SLOT(OnDefineBody()));
-	connect(m_pctrlImportBody, SIGNAL(clicked()), this, SLOT(OnImportBody()));
 
 	connect(m_pctrlPlaneDescription, SIGNAL(textChanged()), this, SLOT(OnDescriptionChanged()));
 
@@ -395,7 +397,7 @@ void PlaneDlg::OnFin()
 }
 
 
-void PlaneDlg::OnImportBody()
+void PlaneDlg::OnImportPlaneBody()
 {
 	ImportObjectDlg dlg(this);
 	if(m_pPlane->m_bBody && m_pPlane->m_pBody) dlg.m_ObjectName = m_pPlane->body()->m_BodyName;
@@ -414,6 +416,51 @@ void PlaneDlg::OnImportBody()
 		}
 	}
 }
+
+
+
+void PlaneDlg::OnImportXMLBody()
+{
+	QString PathName;
+	PathName = QFileDialog::getOpenFileName(this, tr("Open XML File"),
+											Settings::s_LastDirName,
+											tr("Plane XML file (*.xpl)"));
+	if(!PathName.length())		return ;
+	int pos = PathName.lastIndexOf("/");
+	if(pos>0) Settings::s_LastDirName = PathName.left(pos);
+
+	QFile XFile(PathName);
+	if (!XFile.open(QIODevice::ReadOnly))
+	{
+		QString strange = tr("Could not read the file\n")+PathName;
+		QMessageBox::warning(this, tr("Warning"), strange);
+		return;
+	}
+
+	Plane a_plane;
+	XMLPlaneReader planeReader(XFile, &a_plane);
+	planeReader.readXMLPlaneFile();
+
+	XFile.close();
+
+	if(planeReader.hasError())
+	{
+		QString errorMsg = planeReader.errorString() + QString("\nline %1 column %2").arg(planeReader.lineNumber()).arg(planeReader.columnNumber());
+		QMessageBox::warning(this, "XML read", errorMsg, QMessageBox::Ok);
+		return;
+	}
+
+
+	m_bChanged = true;
+	if(m_pPlane->body()) delete m_pPlane->body();
+
+	Body *pXMLBody = new Body;
+	pXMLBody->Duplicate(a_plane.body());
+	m_pPlane->setBody(pXMLBody);
+	m_pctrlBody->setChecked(true);
+}
+
+
 
 
 void PlaneDlg::OnImportWing()
@@ -916,8 +963,23 @@ void PlaneDlg::SetupLayout()
 		QHBoxLayout *pBodyName = new QHBoxLayout;
 		{
 			m_pctrlBody = new QCheckBox(tr("Body"));
+
+
+			QAction *m_pImportXMLBody= new QAction(tr("Import body definition from an XML file"), this);
+			connect(m_pImportXMLBody, SIGNAL(triggered()), this, SLOT(OnImportXMLBody()));
+
+			QAction *m_pImportPlaneBody= new QAction(tr("Import body definition from another plane"), this);
+			connect(m_pImportPlaneBody, SIGNAL(triggered()), this, SLOT(OnImportPlaneBody()));
+
+
 			m_pctrlDefineBody = new QPushButton(tr("Define"));
 			m_pctrlImportBody = new QPushButton(tr("Import"));
+
+			QMenu *pBodyMenu = new QMenu(tr("Actions..."),this);
+			pBodyMenu->addAction(m_pImportXMLBody);
+			pBodyMenu->addAction(m_pImportPlaneBody);
+			m_pctrlImportBody->setMenu(pBodyMenu);
+
 			pBodyName->addWidget(m_pctrlBody);
 			pBodyName->addWidget(m_pctrlDefineBody);
 			pBodyName->addWidget(m_pctrlImportBody);

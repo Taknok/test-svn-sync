@@ -25,6 +25,7 @@
 #include <math.h>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QtDebug>
 
 void *Body::s_pMainFrame;
 double Body::s_XPanelPos[300];
@@ -36,7 +37,7 @@ Body::Body()
 {
 	m_BodyName = QObject::tr("Body Name");
 
-	m_BodyColor = QColor(200,228, 216);
+	m_BodyColor = QColor(98,102,156);
 	m_BodyStyle = 0;
 	m_BodyWidth = 1;
 
@@ -83,55 +84,55 @@ Body::Body()
 		}
 	}
 
-	getFrame(0)->SetuPosition(-0.10);
-	getFrame(1)->SetuPosition(-0.0936);
-	getFrame(2)->SetuPosition(-0.0067);
-	getFrame(3)->SetuPosition( 0.0943);
-	getFrame(4)->SetuPosition( 0.242);
-	getFrame(5)->SetuPosition( 0.636);
-	getFrame(6)->SetuPosition( 0.660);
+	getFrame(0)->SetuPosition(-0.243);
+	getFrame(1)->SetuPosition(-0.228);
+	getFrame(2)->SetuPosition(-0.051);
+	getFrame(3)->SetuPosition( 0.094);
+	getFrame(4)->SetuPosition( 0.279);
+	getFrame(5)->SetuPosition( 0.705);
+	getFrame(6)->SetuPosition( 0.719);
 
-	getFrame(0)->m_CtrlPoint[0].Set(-0.10, 0.0, -0.0124);
-	getFrame(0)->m_CtrlPoint[1].Set(-0.10, 0.0, -0.0124);
-	getFrame(0)->m_CtrlPoint[2].Set(-0.10, 0.0, -0.0124);
-	getFrame(0)->m_CtrlPoint[3].Set(-0.10, 0.0, -0.0124);
-	getFrame(0)->m_CtrlPoint[4].Set(-0.10, 0.0, -0.0124);
+	getFrame(0)->m_CtrlPoint[0].Set(-0.243, 0.0, -0.0172);
+	getFrame(0)->m_CtrlPoint[1].Set(-0.243, 0.0, -0.0172);
+	getFrame(0)->m_CtrlPoint[2].Set(-0.243, 0.0, -0.0172);
+	getFrame(0)->m_CtrlPoint[3].Set(-0.243, 0.0, -0.0172);
+	getFrame(0)->m_CtrlPoint[4].Set(-0.243, 0.0, -0.0172);
 
-	getFrame(1)->m_CtrlPoint[0].Set(-0.0936, 0.000,  0.0035);
-	getFrame(1)->m_CtrlPoint[1].Set(-0.0936, 0.011,  0.0003);
-	getFrame(1)->m_CtrlPoint[2].Set(-0.0936, 0.013, -0.0136);
-	getFrame(1)->m_CtrlPoint[3].Set(-0.0936, 0.011, -0.0257);
-	getFrame(1)->m_CtrlPoint[4].Set(-0.0936, 0.000, -0.0266);
+	getFrame(1)->m_CtrlPoint[0].Set(-0.228, 0.000,  0.001);
+	getFrame(1)->m_CtrlPoint[1].Set(-0.228, 0.011,  0.004);
+	getFrame(1)->m_CtrlPoint[2].Set(-0.228, 0.013, -0.018);
+	getFrame(1)->m_CtrlPoint[3].Set(-0.228, 0.011, -0.030);
+	getFrame(1)->m_CtrlPoint[4].Set(-0.228, 0.000, -0.031);
 
-	getFrame(2)->m_CtrlPoint[0].Set(-0.0067, 0.000,  0.0378);
-	getFrame(2)->m_CtrlPoint[1].Set(-0.0067, 0.028,  0.0406);
-	getFrame(2)->m_CtrlPoint[2].Set(-0.0067, 0.037,  0.0016);
-	getFrame(2)->m_CtrlPoint[3].Set(-0.0067, 0.034, -0.0408);
-	getFrame(2)->m_CtrlPoint[4].Set(-0.0067, 0.000, -0.0445);
+	getFrame(2)->m_CtrlPoint[0].Set(-0.051, 0.000,  0.033);
+	getFrame(2)->m_CtrlPoint[1].Set(-0.051, 0.028,  0.036);
+	getFrame(2)->m_CtrlPoint[2].Set(-0.051, 0.037, -0.003);
+	getFrame(2)->m_CtrlPoint[3].Set(-0.051, 0.034, -0.045);
+	getFrame(2)->m_CtrlPoint[4].Set(-0.051, 0.000, -0.049);
 
-	getFrame(3)->m_CtrlPoint[0].Set(0.0943, 0.000,  0.0252);
-	getFrame(3)->m_CtrlPoint[1].Set(0.0943, 0.012,  0.0192);
-	getFrame(3)->m_CtrlPoint[2].Set(0.0943, 0.018,  0.0012);
-	getFrame(3)->m_CtrlPoint[3].Set(0.0943, 0.012, -0.0168);
-	getFrame(3)->m_CtrlPoint[4].Set(0.0943, 0.000, -0.0228);
+	getFrame(3)->m_CtrlPoint[0].Set(0.094, 0.000,  0.025);
+	getFrame(3)->m_CtrlPoint[1].Set(0.094, 0.012,  0.019);
+	getFrame(3)->m_CtrlPoint[2].Set(0.094, 0.018,  0.001);
+	getFrame(3)->m_CtrlPoint[3].Set(0.094, 0.012, -0.017);
+	getFrame(3)->m_CtrlPoint[4].Set(0.094, 0.000, -0.023);
 
-	getFrame(4)->m_CtrlPoint[0].Set(0.242, 0.000,  0.0075);
-	getFrame(4)->m_CtrlPoint[1].Set(0.242, 0.006,  0.0090);
-	getFrame(4)->m_CtrlPoint[2].Set(0.242, 0.009,  0.0011);
-	getFrame(4)->m_CtrlPoint[3].Set(0.242, 0.007, -0.0059);
-	getFrame(4)->m_CtrlPoint[4].Set(0.242, 0.000, -0.0051);
+	getFrame(4)->m_CtrlPoint[0].Set(0.279, 0.000,  0.007);
+	getFrame(4)->m_CtrlPoint[1].Set(0.279, 0.006,  0.008);
+	getFrame(4)->m_CtrlPoint[2].Set(0.279, 0.009,  0.000);
+	getFrame(4)->m_CtrlPoint[3].Set(0.279, 0.007, -0.006);
+	getFrame(4)->m_CtrlPoint[4].Set(0.279, 0.000, -0.005);
 
-	getFrame(5)->m_CtrlPoint[0].Set(0.636, 0.000,  0.0138);
-	getFrame(5)->m_CtrlPoint[1].Set(0.636, 0.010,  0.0132);
-	getFrame(5)->m_CtrlPoint[2].Set(0.636, 0.012, -0.0001);
-	getFrame(5)->m_CtrlPoint[3].Set(0.636, 0.010, -0.0098);
-	getFrame(5)->m_CtrlPoint[4].Set(0.636, 0.000, -0.0106);
+	getFrame(5)->m_CtrlPoint[0].Set(0.705, 0.000,  0.0124);
+	getFrame(5)->m_CtrlPoint[1].Set(0.705, 0.010,  0.0118);
+	getFrame(5)->m_CtrlPoint[2].Set(0.705, 0.012, -0.0015);
+	getFrame(5)->m_CtrlPoint[3].Set(0.705, 0.010, -0.0116);
+	getFrame(5)->m_CtrlPoint[4].Set(0.705, 0.000, -0.012);
 
-	getFrame(6)->m_CtrlPoint[0].Set(0.660, 0.00,  0.0);
-	getFrame(6)->m_CtrlPoint[1].Set(0.660, 0.00,  0.0);
-	getFrame(6)->m_CtrlPoint[2].Set(0.660, 0.00,  0.0);
-	getFrame(6)->m_CtrlPoint[3].Set(0.660, 0.00, -0.0);
-	getFrame(6)->m_CtrlPoint[4].Set(0.660, 0.00, -0.0);
+	getFrame(6)->m_CtrlPoint[0].Set(0.719, 0.00,  0.0);
+	getFrame(6)->m_CtrlPoint[1].Set(0.719, 0.00,  0.0);
+	getFrame(6)->m_CtrlPoint[2].Set(0.719, 0.00,  0.0);
+	getFrame(6)->m_CtrlPoint[3].Set(0.719, 0.00, -0.0);
+	getFrame(6)->m_CtrlPoint[4].Set(0.719, 0.00, -0.0);
 
 
 	SetKnots();
@@ -418,6 +419,21 @@ void Body::GetPoint(double u, double v, bool bRight, CVector &Pt)
 
 
 /**
+ * Returns the absolute position of a point on the NURBS from its parametric coordinates.
+ * @param u the value of the parameter in the longitudinal direction
+ * @param v the value of the parameter in the hoop direction
+ * @param bRight if true, the position of the point will be returned for the right side,
+ * and for the left side if false
+ */
+CVector Body::Point(double u, double v, bool bRight)
+{
+	CVector Pt = m_SplineSurface.Point(u, v);
+	if(!bRight)  Pt.y = -Pt.y;
+	return Pt;
+}
+
+
+/**
  * Returns the value of the longitudinal parameter given the absolute X-position ON the NURBS surface.
  * @param x in input, the longitudinal position
  * @return the longitudinal paramater on the NURBS surface
@@ -429,7 +445,7 @@ double Body::Getu(double x)
 
 /**
  * For a NURBS surface: Given a value of the longitudinal parameter and a vector in the yz plane, returns the
- * value of the hoop paramater for the intersection of a ray originanating on the x-axis
+ * value of the hoop paramater for the intersection of a ray originating on the x-axis
  * and directed along the input vector
  * @param u in input, the value of the longitudinal parameter
  * @param r the vector which defines the ray's direction
@@ -438,22 +454,24 @@ double Body::Getu(double x)
  */
 double Body::Getv(double u, CVector r, bool bRight)
 {
-	double sine = 10000.0;
+	static double sine = 10000.0;
 
 	if(u<=0.0)          return 0.0;
 	if(u>=1.0)          return 0.0;
 	if(r.VAbs()<1.0e-5) return 0.0;
 
-	int iter=0;
-	double v, v1, v2;
+	static int iter=0;
+	static double v, v1, v2;
 
+	sine = 10000.0;
+	iter = 0;
 	r.Normalize();
 	v1 = 0.0; v2 = 1.0;
 
 	while(qAbs(sine)>1.0e-4 && iter<200)
 	{
 		v=(v1+v2)/2.0;
-		GetPoint(u, v, bRight, t_R);
+		t_R = Point(u, v, bRight);
 		t_R.x = 0.0;
 		t_R.Normalize();//t_R is the unit radial vector for u,v
 
@@ -471,11 +489,9 @@ double Body::Getv(double u, CVector r, bool bRight)
 		}
 		iter++;
 	}
-
+//qDebug()<<"new"<<iter<<v<<v1<<v2;
 	return (v1+v2)/2.0;
 }
-
-
 
 
 /**
@@ -735,7 +751,7 @@ bool Body::IntersectNURBS(CVector A, CVector B, CVector &I, bool bRight)
 	//define which side to intersect with
 	if(M0.y>=0.0) bRight = true; else bRight = false;
 
-	if(!IsInNURBSBody(M1))
+	if(!IsInNURBSBody(M1.x, M1.z))
 	{
 		//consider no intersection (not quite true in special high dihedral cases)
 		I = M1;
@@ -746,13 +762,17 @@ bool Body::IntersectNURBS(CVector A, CVector B, CVector &I, bool bRight)
 
 	while(dist>dmax && iter<itermax)
 	{
-		//first we get the u parameter corresponding to point I
+		//store the previous parameter
 		tp = t;
+		//first we get the u parameter corresponding to point I
 		u = Getu(I.x);
-		t_Q.Set(I.x, 0.0, 0.0);
-		t_r = (I-t_Q);
+//		t_Q.Set(I.x, 0.0, 0.0);
+//		t_r = (I-t_Q);
+		t_r.x = 0.0;
+		t_r.y = I.y;
+		t_r.z = I.z;
 		v = Getv(u, t_r, bRight);
-		GetPoint(u, v, bRight, t_N);
+		t_N = Point(u, v, bRight);
 
 		//project t_N on M0M1 line
 		t = - ( (M0.x - t_N.x) * (M1.x-M0.x) + (M0.y - t_N.y) * (M1.y-M0.y) + (M0.z - t_N.z)*(M1.z-M0.z))
@@ -938,12 +958,27 @@ int Body::IsFramePos(CVector Real, double ZoomFactor)
 	return -10;
 }
 
+
+/**
+ * Returns the true if the input point is inside the NURBS Body, false otherwise
+ * @param Pt the input point, in the x-z plane, i.e. y=0
+ * @return true if the point is inside the Body, false otherwise
+ */
+bool Body::IsInNURBSBody(double x, double z)
+{
+	double u = Getu(x);
+	if (u <= 0.0 || u >= 1.0) return false;
+
+	return (Point(u,1,true).z<z && z<Point(u,0,true).z);
+}
+
+
 /**
  * Returns the true if the input point is inside the NURBS Body, false otherwise
  * @param Pt the input point
  * @return true if the point is inside the Body, false otherwise
  */
-bool Body::IsInNURBSBody(CVector Pt)
+bool Body::IsInNURBSBodyOld(CVector Pt)
 {
 	double u, v;
 	bool bRight;
@@ -1380,7 +1415,7 @@ void Body::Translate(double XTrans, double , double ZTrans, bool bFrameOnly, int
 		{
 			m_SplineSurface.m_pFrame[i]->m_Position.x += XTrans;
 //			m_SplineSurface.m_pFrame[i]->m_Position.y += YTrans;
-//			m_SplineSurface.m_pFrame[i]->m_Position.z += ZTrans;
+			m_SplineSurface.m_pFrame[i]->m_Position.z += ZTrans;
 
 			for(j=0; j<m_SplineSurface.m_pFrame[i]->m_CtrlPoint.size(); j++)
 			{

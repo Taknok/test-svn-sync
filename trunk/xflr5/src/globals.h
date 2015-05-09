@@ -155,13 +155,8 @@ QString referenceDimension(XFLR5::enumRefDimension analysisMethod);
 QString boolToString(bool b);
 bool stringToBool(QString str);
 
-void readXMLPointMass(QXmlStreamReader &xml, PointMass *ppm, double massUnit, double lengthUnit);
-void writeXMLPointMass(QXmlStreamWriter &xml, PointMass *ppm, double massUnit, double lengthUnit);
-void readXMLColor(QXmlStreamReader &xml, QColor &color);
-void writeXMLColor(QXmlStreamWriter &xml, QColor color);
-
-void readXMLBody(QXmlStreamReader &xml, CVector &position, Body *pBody, double lengthUnit, double massUnit);
-void writeXMLBody(QXmlStreamWriter &xml, Body *pBody, CVector position, double lengthUnit, double massUnit);
+XFLR5::enumWingType wingType(QString strWingType);
+QString wingType(XFLR5::enumWingType wingType);
 
 #endif // FUNCTIONS_H
  

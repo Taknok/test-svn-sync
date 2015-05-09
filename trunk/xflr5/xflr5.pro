@@ -53,6 +53,7 @@ SOURCES += \
 	src/miarex/analysis/PanelAnalysisDlg.cpp \
 	src/miarex/analysis/PanelAnalysis.cpp \
 	src/miarex/analysis/AeroDataDlg.cpp \
+	src/miarex/analysis/ViewPolarDefDlg.cpp \
 	src/miarex/design/GL3dWingDlg.cpp \
 	src/miarex/design/GL3dBodyDlg.cpp \
 	src/miarex/design/PlaneDlg.cpp \
@@ -62,6 +63,8 @@ SOURCES += \
 	src/miarex/design/BodyGridDlg.cpp \
 	src/miarex/design/BodyScaleDlg.cpp \
 	src/miarex/design/BodyTableDelegate.cpp \
+	src/miarex/design/ViewObjectDelegate.cpp \
+	src/miarex/design/ViewObjectDlg.cpp \
 	src/miarex/design/BodyTransDlg.cpp \
 	src/miarex/view/GLCreateLists.cpp \
 	src/miarex/view/GLCreateBodyLists.cpp \
@@ -70,6 +73,8 @@ SOURCES += \
 	src/miarex/mgt/ImportObjectDlg.cpp\
 	src/miarex/mgt/ManagePlanesDlg.cpp \
 	src/miarex/mgt/PlaneTableDelegate.cpp \
+	src/miarex/mgt/XmlPlaneReader.cpp \
+	src/miarex/mgt/XmlPlaneWriter.cpp \
 	src/xdirect/XDirect.cpp \
 	src/xdirect/ManageFoilsDlg.cpp \
 	src/xdirect/XDirectStyleDlg.cpp \
@@ -122,10 +127,7 @@ SOURCES += \
 	src/design/LECircleDlg.cpp \
 	src/design/AFoil.cpp \
 	src/design/SplineCtrlsDlg.cpp \
-	src/design/AFoilTableDlg.cpp \
-    src/miarex/design/ViewObjectDelegate.cpp \
-    src/miarex/design/ViewObjectDlg.cpp \
-    src/miarex/analysis/ViewPolarDefDlg.cpp
+	src/design/AFoilTableDlg.cpp
 
 
 HEADERS += \
@@ -172,6 +174,7 @@ HEADERS += \
 	src/miarex/analysis/PanelAnalysis.h \
 	src/miarex/analysis/PanelAnalysisDlg.h \
 	src/miarex/analysis/AeroDataDlg.h \
+	src/miarex/analysis/ViewPolarDefDlg.h \
 	src/miarex/design/InertiaDlg.h \
 	src/miarex/design/GL3dBodyDlg.h \
 	src/miarex/design/WingScaleDlg.h \
@@ -182,6 +185,8 @@ HEADERS += \
 	src/miarex/design/BodyScaleDlg.h \
 	src/miarex/design/GL3dWingDlg.h \
 	src/miarex/design/BodyTransDlg.h \
+	src/miarex/design/ViewObjectDelegate.h \
+	src/miarex/design/ViewObjectDlg.h \
 	src/miarex/view/GLCreateLists.h \
 	src/miarex/view/GLCreateBodyLists.h \
 	src/miarex/view/GL3DScales.h \
@@ -189,6 +194,8 @@ HEADERS += \
 	src/miarex/mgt/ImportObjectDlg.h \
 	src/miarex/mgt/ManagePlanesDlg.h \
 	src/miarex/mgt/PlaneTableDelegate.h \
+	src/miarex/mgt/XmlPlaneReader.h \
+	src/miarex/mgt/XmlPlaneWriter.h \
 	src/xdirect/XDirect.h \
 	src/xdirect/ManageFoilsDlg.h \
 	src/xdirect/XDirectStyleDlg.h \
@@ -244,10 +251,7 @@ HEADERS += \
 	src/design/LECircleDlg.h \
 	src/design/SplineCtrlsDlg.h \
 	src/design/FoilTableDelegate.h \
-	src/design/AFoilTableDlg.h \
-    src/miarex/analysis/ViewPolarDefDlg.h \
-    src/miarex/design/ViewObjectDelegate.h \
-    src/miarex/design/ViewObjectDlg.h
+	src/design/AFoilTableDlg.h
 
 
 TRANSLATIONS = translations/xflr5v6.ts \

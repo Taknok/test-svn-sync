@@ -1,6 +1,6 @@
 /****************************************************************************
 
-	ViewObjectDelegate Class
+	XMLPlaneReader Class
 	Copyright (C) 2015 Andre Deperrois adeperrois@xflr5.com
 
 	This program is free software; you can redistribute it and/or modify
@@ -18,29 +18,28 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 *****************************************************************************/
-#ifndef VIEWOBJECTDELEGATE_H
-#define VIEWOBJECTDELEGATE_H
 
-#include <QStyledItemDelegate>
-#include <QItemDelegate>
-#include <QList>
+#ifndef XMLPLANEREADER_H
+#define XMLPLANEREADER_H
+
+#include <QXmlStreamReader>
+#include <Plane.h>
 
 
-
-class ViewObjectDelegate  : public QStyledItemDelegate
+class XMLPlaneReader : public QXmlStreamReader
 {
 public:
-	ViewObjectDelegate(QWidget *pParent=NULL);
+	XMLPlaneReader(QFile &file, Plane *pPlane);
 
-	QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &index) const;
-	void setEditorData(QWidget *editor, const QModelIndex &index) const;
-	void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
-	void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-	void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+	void readXMLPlaneFile();
 
+private:
+	void readPlane(Plane *pPlane, double lengthUnit, double massUnit);
+	void readBody(Body *pBody, CVector &position, double lengthUnit, double massUnit);
+	void readPointMass(PointMass *ppm, double massUnit, double lengthUnit);
+	void readColor(QColor &color);
 
-	static QList <void*> *s_poaFoil;
-
+	Plane *m_pPlane;
 };
 
-#endif // VIEWOBJECTDELEGATE_H
+#endif // XMLPLANEREADER_H

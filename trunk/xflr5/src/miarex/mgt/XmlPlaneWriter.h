@@ -1,6 +1,6 @@
 /****************************************************************************
 
-	ViewObjectDelegate Class
+	XmlPlaneWriter Class
 	Copyright (C) 2015 Andre Deperrois adeperrois@xflr5.com
 
 	This program is free software; you can redistribute it and/or modify
@@ -18,29 +18,26 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 *****************************************************************************/
-#ifndef VIEWOBJECTDELEGATE_H
-#define VIEWOBJECTDELEGATE_H
 
-#include <QStyledItemDelegate>
-#include <QItemDelegate>
-#include <QList>
+#ifndef XMLPLANEWRITER_H
+#define XMLPLANEWRITER_H
 
+#include <QXmlStreamWriter>
+#include <Plane.h>
 
-
-class ViewObjectDelegate  : public QStyledItemDelegate
+class XMLPlaneWriter : public QXmlStreamWriter
 {
 public:
-	ViewObjectDelegate(QWidget *pParent=NULL);
+	XMLPlaneWriter(QFile &XFile);
+	void writeXMLPlane(Plane *m_pPlane);
+	void writeXMLBody(Body *pBody);
+	void writeBody(Body *pBody, CVector position, double lengthUnit, double massUnit);
 
-	QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &index) const;
-	void setEditorData(QWidget *editor, const QModelIndex &index) const;
-	void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
-	void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-	void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-
-
-	static QList <void*> *s_poaFoil;
+private:
+	void writeHeader();
+	void writePointMass(PointMass *ppm, double massUnit, double lengthUnit);
+	void writeColor(QColor color);
 
 };
 
-#endif // VIEWOBJECTDELEGATE_H
+#endif // XMLPLANEWRITER_H
