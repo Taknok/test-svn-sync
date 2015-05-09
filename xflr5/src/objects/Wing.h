@@ -198,6 +198,7 @@ public:
 	QColor &wingColor() {return m_WingColor;}
 	void setWingColor(QColor colour){m_WingColor= colour;}
 
+	XFLR5::enumWingType &wingType() {return m_WingType;}
 
 //__________________________Variables_______________________
 private:
@@ -205,13 +206,14 @@ private:
 	QString m_WingDescription;                 /**< a text field for the description of the Wing */
 	QColor m_WingColor;                        /**< the Wing's display color */
 
+	XFLR5::enumWingType m_WingType;  /** Defines the type of wing on the plane : main, second, elevator, fin, other */
+
 	static double s_MinPanelSize;      /**< wing minimum panel size ; panels of less length are ignored */
 
 	bool m_bWingOut;	             /**< true if the wing OpPoint is outside the flight envelope of the available Type 1 polar mesh */
 	bool m_bSymetric;	             /**< true if the wing's geometry is symetric */
 	bool m_bIsFin;                   /**< true if this wing describes a fin */
 
-	/** @todo check use of symfin and doublesymfin - redundant with plane fields*/
 	bool m_bDoubleFin;               /**< true if the wing describes a double fin symetric about the y=0 plane */
 	bool m_bSymFin;                  /**< true if the wing describes a double fin symetric about the z=0 plane */
 //	double m_bDoubleSymFin;          /**< true if the fin is both double and symetric */

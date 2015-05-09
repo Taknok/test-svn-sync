@@ -50,7 +50,8 @@ class Body
 public:
 	Body();
 
-	bool IsInNURBSBody(CVector Pt);
+	bool IsInNURBSBody(double x, double z);
+	bool IsInNURBSBodyOld(CVector Pt);
 	bool Intersect(CVector A, CVector B, CVector &I, bool bRight);
 	bool IntersectPanels(CVector A, CVector B, CVector &I);
 	bool IntersectNURBS(CVector A, CVector B, CVector &I, bool bRight);
@@ -80,6 +81,7 @@ public:
 	void Duplicate(Body *pBody);
 	void ExportGeometry(QTextStream &outStream, int type, double mtoUnit, int nx, int nh);
 	void GetPoint(double u, double v, bool bRight, CVector &Pt);
+	CVector Point(double u, double v, bool bRight);
 	void RemoveActiveFrame();
 	void RemoveSideLine(int SideLine);
 	void Scale(double XFactor, double YFactor, double ZFactor, bool bFrameOnly=false, int FrameID=0);
@@ -145,7 +147,7 @@ public:
 
 
 	QVarLengthArray<int> m_xPanels;              /**< the number of mesh panels between two frames */
-	QVarLengthArray<int> m_hPanels;              /**< the number of mesh panels in the hoop direction, on one side of the Body */
+	QVarLengthArray<int> m_hPanels;              /**< the number of mesh panels in the hoop direction between two sidelines */
 
 
 	Panel *m_pBodyPanel;                       /** A pointer to the first body panel in the array */

@@ -275,7 +275,7 @@ public:
 	void GLCallViewLists();
 	void GLDraw3D();
 	void GLDrawFoils();
-//	void GLDrawMasses();
+	void GLDrawMasses();
 	void GLInverseMatrix();
 	void GLRenderView();
 	void LLTAnalyze(double V0, double VMax, double VDelta, bool bSequence, bool bInitCalc);	
@@ -290,7 +290,6 @@ public:
 	void PanelAnalyze(double V0, double VMax, double VDelta, bool bSequence);
 	void PaintPlaneLegend(QPainter &painter, QRect drawRect);
 	void PaintPlaneOppLegend(QPainter &painter, QRect drawRect);
-	void readXMLPlane(QXmlStreamReader &xml, Plane *pPlane, double lengthunit, double massunit);
 	void RenamePlane(QString PlaneName);
 	bool SaveSettings(QSettings *pSettings);
 	void Set2DScale();

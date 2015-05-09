@@ -78,6 +78,7 @@ Wing::Wing()
 	m_bWingOut      = false;
 
 	m_WingName        = QObject::tr("Wing Name");
+	m_WingType        = XFLR5::MAINWING;
 	m_WingDescription = "";
 	m_WingColor       = randomColor();
 

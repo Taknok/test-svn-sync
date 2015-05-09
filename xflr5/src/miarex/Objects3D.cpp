@@ -2861,16 +2861,9 @@ Plane * Objects3D::setPlaneObject(QString PlaneName, Plane *pCurPlane)
 		}
 	}
 
+	if(!pPlane) return NULL;
 
-	if(!pPlane)
-	{
-		return NULL;
-	}
-
-
-
-	double dx, dz;
-	dx=dz=0.0;
+	double dx=0, dz=0;
 
 	if(pPlane->body())
 	{
@@ -2884,27 +2877,19 @@ Plane * Objects3D::setPlaneObject(QString PlaneName, Plane *pCurPlane)
 
 	//create the array of wing Surface
 	s_SurfaceList.clear();
-
-	Wing *pWingList[MAXWINGS];
-	pWingList[0] = pPlane->wing();
-	pWingList[1] = pPlane->wing2();
-	pWingList[2] = pPlane->stab();
-	pWingList[3] = pPlane->fin();
-
-
 	for(int iw=0; iw<MAXWINGS; iw++)
 	{
-		if(pWingList[iw])
+		if(pPlane->wing(iw))
 		{
-			if(!pPlane && iw==0)  pWingList[iw]->CreateSurfaces(CVector(0,0,0), 0.0, 0.0);
-			else if(iw<3)         pWingList[iw]->CreateSurfaces(pPlane->WingLE(iw),   0.0, pPlane->WingTiltAngle(iw));
-			else if(iw==3)        pWingList[iw]->CreateSurfaces(pPlane->WingLE(iw), -90.0, pPlane->WingTiltAngle(iw));
-			for (j=0; j<pWingList[iw]->m_Surface.size(); j++)
+//			if(!pPlane && iw==0)  pPlane->wing(iw)->CreateSurfaces(CVector(0,0,0), 0.0, 0.0);
+			if(iw<3)         pPlane->wing(iw)->CreateSurfaces(pPlane->WingLE(iw),   0.0, pPlane->WingTiltAngle(iw));
+			else if(iw==3)   pPlane->wing(iw)->CreateSurfaces(pPlane->WingLE(iw), -90.0, pPlane->WingTiltAngle(iw));
+			for (j=0; j<pPlane->wing(iw)->m_Surface.size(); j++)
 			{
-				pWingList[iw]->m_Surface.at(j)->SetSidePoints(pCurBody, dx, dz);
-				s_SurfaceList.append(pWingList[iw]->m_Surface.at(j));
+				pPlane->wing(iw)->m_Surface.at(j)->SetSidePoints(pCurBody, dx, dz);
+				s_SurfaceList.append(pPlane->wing(iw)->m_Surface.at(j));
 			}
-			pWingList[iw]->ComputeBodyAxisInertia();
+			pPlane->wing(iw)->ComputeBodyAxisInertia();
 		}
 	}
 

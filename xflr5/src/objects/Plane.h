@@ -156,6 +156,9 @@ public:
 	double taperRatio()   {return m_Wing[0].m_TR;}
 
 	Wing *getWing(int iw);
+	Wing *getWing(XFLR5::enumWingType wingType);
+
+	bool &hasBody() {return m_bBody;}
 
 public:
 	Wing m_Wing[MAXWINGS];                      /**< the array of Wing objects used to define this Plane */

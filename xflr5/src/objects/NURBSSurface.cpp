@@ -195,6 +195,54 @@ void NURBSSurface::GetPoint(double u, double v, CVector &Pt)
 }
 
 
+
+
+/**
+ * Returns the point corresponding to the pair of parameters (u,v)
+ * Assumes that the knots have been set previously
+ *
+ * Scans the u-direction first, then v-direction
+ * @param u the specified u-parameter
+ * @param v the specified v-parameter
+ * @param Pt a reference to the point defined by the pair (u,v)
+*/
+CVector NURBSSurface::Point(double u, double v)
+{
+	CVector V, Vv;
+	double wx, weight;
+
+	if(u>=1.0) u=0.99999999999;
+	if(v>=1.0) v=0.99999999999;
+
+	weight = 0.0;
+	for(int iu=0; iu<frameCount(); iu++)
+	{
+		Vv.Set(0.0,0.0,0.0);
+		wx = 0.0;
+		for(int jv=0; jv<FramePointCount(); jv++)
+		{
+			cs = SplineBlend(jv, m_ivDegree, v, m_vKnots) * Weight(m_EdgeWeightv, jv, FramePointCount());
+
+			Vv.x += m_pFrame[iu]->m_CtrlPoint[jv].x * cs;
+			Vv.y += m_pFrame[iu]->m_CtrlPoint[jv].y * cs;
+			Vv.z += m_pFrame[iu]->m_CtrlPoint[jv].z * cs;
+
+			wx += cs;
+		}
+		bs = SplineBlend(iu, m_iuDegree, u, m_uKnots) * Weight(m_EdgeWeightu, iu, frameCount());
+
+		V.x += Vv.x * bs;
+		V.y += Vv.y * bs;
+		V.z += Vv.z * bs;
+
+		weight += wx * bs;
+	}
+
+	return V/weight;
+}
+
+
+
 /**
  * Returns the weight of the control point
  * @param i the index of the point along the edge
@@ -406,12 +454,22 @@ void NURBSSurface::InsertFrame(Frame *pNewFrame)
  * Appends a new Frame at the end of the array
  * @return a pointer to the Frame which has been created.
  */
-Frame * NURBSSurface::AppendFrame()
+Frame * NURBSSurface::appendNewFrame()
 {
 	m_pFrame.append(new Frame);
 	return m_pFrame.last();
 }
 
+
+/**
+ * Appends an existing Frame at the end of the array
+ * @return a pointer to the Frame which has been created.
+ */
+void NURBSSurface::appendFrame(Frame*pFrame)
+{
+	if(!pFrame)return;
+	m_pFrame.append(pFrame);
+}
 
 
 

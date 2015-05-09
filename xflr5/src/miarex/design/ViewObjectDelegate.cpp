@@ -115,6 +115,18 @@ QWidget *ViewObjectDelegate::createEditor(QWidget *parent, const QStyleOptionVie
 		}
 		return editor;
 	}
+	else if(dataType==XFLR5::WINGTYPE)
+	{
+		QComboBox *editor = new QComboBox(parent);
+		editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+		//fill comboboxes here
+		editor->addItem("MAINWING");
+		editor->addItem("SECONDWING");
+		editor->addItem("ELEVATOR");
+		editor->addItem("FIN");
+
+		return editor;
+	}
 	else if (dataType==XFLR5::DOUBLE)
 	{
 		DoubleEdit *editor = new DoubleEdit(parent);
@@ -157,7 +169,7 @@ void ViewObjectDelegate::setEditorData(QWidget *editor, const QModelIndex &index
 		QLineEdit *pLineEdit = (QLineEdit*)editor;
 		pLineEdit->setText(strong);
 	}
-//	else if(dataType==XFLR5::BOOL || dataType==XFLR5::PANELDISTRIBUTION || dataType==XFLR5::FOILNAME || dataType==XFLR5::BODYTYPE)
+//	else if(dataType==BOOL || dataType==PANELDISTRIBUTION || dataType==FOILNAME || dataType==BODYTYPE)
 	else
 	{
 		QString strong = index.model()->data(index, Qt::EditRole).toString();
@@ -189,8 +201,8 @@ void ViewObjectDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
 		QLineEdit *pLineEdit = (QLineEdit*)editor;
 		model->setData(index, pLineEdit->text(), Qt::EditRole);
 	}
-//	else if(dataType==XFLR5::BOOL || dataType==XFLR5::PANELDISTRIBUTION || dataType==XFLR5::FOILNAME ||
-//			dataType==XFLR5::BODYTYPE || dataType==XFLR5::POLARTYPE || dataType==XFLR5::ANALYSISMETHOD || dataType==XFLR5::REFDIMENSIONS)
+//	else if(dataType==BOOL || dataType==PANELDISTRIBUTION || dataType==FOILNAME ||
+//			dataType==BODYTYPE || dataType==POLARTYPE || dataType==ANALYSISMETHOD || dataType==REFDIMENSIONS)
 	else
 	{
 		QString strong;
@@ -227,8 +239,8 @@ void ViewObjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
 		myOption.displayAlignment = Qt::AlignLeft | Qt::AlignVCenter;
 		strong = index.model()->data(index, Qt::DisplayRole).toString();
 	}
-//	else if(dataType==XFLR5::BOOL || dataType==XFLR5::PANELDISTRIBUTION || dataType==XFLR5::FOILNAME ||
-//			dataType==XFLR5::BODYTYPE || dataType==XFLR5::POLARTYPE || dataType==XFLR5::ANALYSISMETHOD || dataType==XFLR5::REFDIMENSIONS)
+//	else if(dataType==BOOL || dataType==PANELDISTRIBUTION || dataType==FOILNAME ||
+//			dataType==BODYTYPE || dataType==POLARTYPE || dataType==ANALYSISMETHOD || dataType==REFDIMENSIONS)
 	else
 	{
 		myOption.displayAlignment = Qt::AlignLeft | Qt::AlignVCenter;
