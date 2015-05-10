@@ -277,7 +277,7 @@ void GL3dBodyDlg::FillFrameCell(int iItem, int iSubItem)
 		case 0:
 		{
 			ind = m_pFrameModel->index(iItem, 0, QModelIndex());
-			m_pFrameModel->setData(ind, m_pBody->getFrame(iItem)->m_Position.x * Units::mtoUnit());
+			m_pFrameModel->setData(ind, m_pBody->frame(iItem)->m_Position.x * Units::mtoUnit());
 			break;
 		}
 		case 1:
@@ -313,7 +313,7 @@ void GL3dBodyDlg::FillFrameTableRow(int row)
 	QModelIndex ind;
 
 	ind = m_pFrameModel->index(row, 0, QModelIndex());
-	m_pFrameModel->setData(ind, m_pBody->getFrame(row)->m_Position.x * Units::mtoUnit());
+	m_pFrameModel->setData(ind, m_pBody->frame(row)->m_Position.x * Units::mtoUnit());
 
 	ind = m_pFrameModel->index(row, 1, QModelIndex());
 	m_pFrameModel->setData(ind, m_pBody->m_xPanels[row]);
@@ -333,13 +333,13 @@ void GL3dBodyDlg::FillPointCell(int iItem, int iSubItem)
 		case 0:
 		{
 			ind = m_pPointModel->index(iItem, 0, QModelIndex());
-			m_pPointModel->setData(ind, m_pBody->getFrame(l)->m_CtrlPoint[iItem].y * Units::mtoUnit());
+			m_pPointModel->setData(ind, m_pBody->frame(l)->m_CtrlPoint[iItem].y * Units::mtoUnit());
 			break;
 		}
 		case 1:
 		{
 			ind = m_pPointModel->index(iItem, 1, QModelIndex());
-			m_pPointModel->setData(ind, m_pBody->getFrame(l)->m_CtrlPoint[iItem].z*Units::mtoUnit());
+			m_pPointModel->setData(ind, m_pBody->frame(l)->m_CtrlPoint[iItem].z*Units::mtoUnit());
 
 			break;
 		}
@@ -422,8 +422,8 @@ void GL3dBodyDlg::GLCreateBody2DBodySection()
 		{
 			for (k=0; k<m_pBody->FrameSize();k++)
 			{
-				zpos = (m_pBody->getFrame(k)->m_CtrlPoint.first().z +m_pBody->getFrame(k)->m_CtrlPoint.last().z )/2.0;
-				glVertex3d(m_pBody->getFrame(k)->m_Position.x,
+				zpos = (m_pBody->frame(k)->m_CtrlPoint.first().z +m_pBody->frame(k)->m_CtrlPoint.last().z )/2.0;
+				glVertex3d(m_pBody->frame(k)->m_Position.x,
 						   zpos	,
 						   0.0);
 			}
@@ -438,8 +438,8 @@ void GL3dBodyDlg::GLCreateBody2DBodySection()
 			glBegin(GL_LINE_STRIP);
 			{
 				for (k=0; k<m_pBody->FrameSize();k++)
-					glVertex3d(m_pBody->getFrame(k)->m_Position.x,
-							   m_pBody->getFrame(k)->m_CtrlPoint[0].z,
+					glVertex3d(m_pBody->frame(k)->m_Position.x,
+							   m_pBody->frame(k)->m_CtrlPoint[0].z,
 							   0.0);
 			}
 			glEnd();
@@ -448,8 +448,8 @@ void GL3dBodyDlg::GLCreateBody2DBodySection()
 			glBegin(GL_LINE_STRIP);
 			{
 				for (k=0; k<m_pBody->FrameSize();k++)
-					glVertex3d(m_pBody->getFrame(k)->m_Position.x,
-							   m_pBody->getFrame(k)->m_CtrlPoint[ m_pBody->getFrame(k)->PointCount()-1].z,
+					glVertex3d(m_pBody->frame(k)->m_Position.x,
+							   m_pBody->frame(k)->m_CtrlPoint[ m_pBody->frame(k)->PointCount()-1].z,
 							   0.0);
 			}
 			glEnd();
@@ -543,10 +543,10 @@ void GL3dBodyDlg::GLCreateBodyPoints()
 				glLineWidth(1.0);
                 glColor3d(m_pBody->m_BodyColor.redF(), m_pBody->m_BodyColor.greenF(), m_pBody->m_BodyColor.blueF());
 			}
-			zpos = (m_pBody->getFrame(k)->m_CtrlPoint.first().z + m_pBody->getFrame(k)->m_CtrlPoint.last().z ) /2.0;
-			glRectd(m_pBody->getFrame(k)->m_Position.x -0.006/m_BodyScale,
+			zpos = (m_pBody->frame(k)->m_CtrlPoint.first().z + m_pBody->frame(k)->m_CtrlPoint.last().z ) /2.0;
+			glRectd(m_pBody->frame(k)->m_Position.x -0.006/m_BodyScale,
                     zpos                               -0.006/m_BodyScale,
-					m_pBody->getFrame(k)->m_Position.x +0.006/m_BodyScale,
+					m_pBody->frame(k)->m_Position.x +0.006/m_BodyScale,
                     zpos                               +0.006/m_BodyScale);
 		}
 		glPolygonMode(GL_FRONT,GL_FILL);
@@ -636,12 +636,7 @@ void GL3dBodyDlg::GLCreateBodyFrames()
 
 		glLineWidth(width);
 
-		if     (style == Qt::DashLine)       glLineStipple (1, 0xCFCF);
-		else if(style == Qt::DotLine)        glLineStipple (1, 0x6666);
-		else if(style == Qt::DashDotLine)    glLineStipple (1, 0xFF18);
-		else if(style == Qt::DashDotDotLine) glLineStipple (1, 0x7E66);
-		else                                 glLineStipple (1, 0xFFFF);
-
+		GLLineStipple(style);
 
 		glColor3d(color.redF(), color.greenF(), color.blueF());
 
@@ -708,7 +703,7 @@ void GL3dBodyDlg::GLCreateBodyFrames()
 				{
 					if(m_pBody->m_LineType ==XFLR5::BODYSPLINETYPE)
 					{
-						u = m_pBody->Getu(m_pBody->getFrame(j)->m_Position.x);
+						u = m_pBody->Getu(m_pBody->frame(j)->m_Position.x);
 
 						glBegin(GL_LINE_STRIP);
 						{
@@ -738,16 +733,16 @@ void GL3dBodyDlg::GLCreateBodyFrames()
 						glBegin(GL_LINE_STRIP);
 						{
 							for (k=0; k<m_pBody->SideLineCount();k++)
-								glVertex3d(m_pBody->getFrame(j)->m_CtrlPoint[k].y,
-										   m_pBody->getFrame(j)->m_CtrlPoint[k].z,
+								glVertex3d(m_pBody->frame(j)->m_CtrlPoint[k].y,
+										   m_pBody->frame(j)->m_CtrlPoint[k].z,
 										   0.0);
 						}
 						glEnd();
 						glBegin(GL_LINE_STRIP);
 						{
 							for (k=0; k<m_pBody->SideLineCount();k++)
-								glVertex3d(m_pBody->getFrame(j)->m_CtrlPoint[k].y,
-										   m_pBody->getFrame(j)->m_CtrlPoint[k].z,
+								glVertex3d(m_pBody->frame(j)->m_CtrlPoint[k].y,
+										   m_pBody->frame(j)->m_CtrlPoint[k].z,
 										   0.0);
 						}
 						glEnd();
@@ -775,12 +770,7 @@ void GL3dBodyDlg::GLCreateBodyFrames()
 		glLineWidth(width);
 
 
-		if     (style == Qt::DashLine)       glLineStipple (1, 0xCFCF);
-		else if(style == Qt::DotLine)        glLineStipple (1, 0x6666);
-		else if(style == Qt::DashDotLine)    glLineStipple (1, 0xFF18);
-		else if(style == Qt::DashDotDotLine) glLineStipple (1, 0x7E66);
-		else                                 glLineStipple (1, 0xFFFF);
-
+		GLLineStipple(style);
 
 		glColor3d(color.redF(), color.greenF(), color.blueF());
 
@@ -1047,11 +1037,7 @@ void GL3dBodyDlg::GLCreateBodyGrid()
 			glColor3d(W3dPrefsDlg::s_3DAxisColor.redF(), W3dPrefsDlg::s_3DAxisColor.greenF(), W3dPrefsDlg::s_3DAxisColor.blueF());
 			glLineWidth(W3dPrefsDlg::s_3DAxisWidth);
 
-			if     (style == 1) 	glLineStipple (1, 0xCFCF);
-			else if(style == 2) 	glLineStipple (1, 0x6666);
-			else if(style == 3) 	glLineStipple (1, 0xFF18);
-			else if(style == 4) 	glLineStipple (1, 0x7E66);
-			else					glLineStipple (1, 0xFFFF);
+			GLLineStipple(style);
 
 			glBegin(GL_LINES);
 			{
@@ -1074,12 +1060,7 @@ void GL3dBodyDlg::GLCreateBodyGrid()
 
 		style = m_pBodyGridDlg->s_Style2;
 
-		if     (style == 1) 	glLineStipple (1, 0xCFCF);
-		else if(style == 2) 	glLineStipple (1, 0x6666);
-		else if(style == 3) 	glLineStipple (1, 0xFF18);
-		else if(style == 4) 	glLineStipple (1, 0x7E66);
-		else					glLineStipple (1, 0xFFFF);
-
+		GLLineStipple(style);
 
 		glBegin(GL_LINES);
 		{
@@ -1132,13 +1113,7 @@ void GL3dBodyDlg::GLCreateBodyGrid()
 		glColor3d(m_pBodyGridDlg->s_MinColor2.redF(), m_pBodyGridDlg->s_MinColor2.greenF(), m_pBodyGridDlg->s_MinColor2.blueF());
 		glLineWidth(m_pBodyGridDlg->s_MinWidth2);
 
-		style = m_pBodyGridDlg->s_MinStyle2 ;
-		if     (style == 1) 	glLineStipple (1, 0xCFCF);
-		else if(style == 2) 	glLineStipple (1, 0x6666);
-		else if(style == 3) 	glLineStipple (1, 0xFF18);
-		else if(style == 4) 	glLineStipple (1, 0x7E66);
-		else					glLineStipple (1, 0xFFFF);
-
+		GLLineStipple(m_pBodyGridDlg->s_MinStyle2);
 
 		glBegin(GL_LINES);
 		{
@@ -1205,12 +1180,7 @@ void GL3dBodyDlg::GLCreateBodyGrid()
 			glColor3d(W3dPrefsDlg::s_3DAxisColor.redF(), W3dPrefsDlg::s_3DAxisColor.greenF(), W3dPrefsDlg::s_3DAxisColor.blueF());
 			glLineWidth(W3dPrefsDlg::s_3DAxisWidth);
 
-			style = W3dPrefsDlg::s_3DAxisStyle;
-			if     (style == 1) 	glLineStipple (1, 0xCFCF);
-			else if(style == 2) 	glLineStipple (1, 0x6666);
-			else if(style == 3) 	glLineStipple (1, 0xFF18);
-			else if(style == 4) 	glLineStipple (1, 0x7E66);
-			else					glLineStipple (1, 0xFFFF);
+			GLLineStipple(W3dPrefsDlg::s_3DAxisStyle);
 
 
 			// BodyLine axis____________
@@ -1234,11 +1204,7 @@ void GL3dBodyDlg::GLCreateBodyGrid()
 		glLineWidth(m_pBodyGridDlg->s_Width);
 
 		style = m_pBodyGridDlg->s_Style;
-		if     (style == 1) 	glLineStipple (1, 0xCFCF);
-		else if(style == 2) 	glLineStipple (1, 0x6666);
-		else if(style == 3) 	glLineStipple (1, 0xFF18);
-		else if(style == 4) 	glLineStipple (1, 0x7E66);
-		else					glLineStipple (1, 0xFFFF);
+		GLLineStipple(style);
 
 
 		glBegin(GL_LINES);
@@ -1287,11 +1253,7 @@ void GL3dBodyDlg::GLCreateBodyGrid()
 		glLineWidth(m_pBodyGridDlg->s_MinWidth);
 
 		style = m_pBodyGridDlg->s_MinStyle;
-		if     (style == 1) 	glLineStipple (1, 0xCFCF);
-		else if(style == 2) 	glLineStipple (1, 0x6666);
-		else if(style == 3) 	glLineStipple (1, 0xFF18);
-		else if(style == 4) 	glLineStipple (1, 0x7E66);
-		else					glLineStipple (1, 0xFFFF);
+		GLLineStipple(style);
 
 
 		glBegin(GL_LINES);
@@ -1936,13 +1898,13 @@ void GL3dBodyDlg::mouseMoveEvent(QMouseEvent *event)
 			{
 				//dragging a point
 				m_pFrame = m_pBody->activeFrame();
-				m_pBody->getFrame(n)->m_Position.x = Real.x;
+				m_pBody->frame(n)->m_Position.x = Real.x;
 
-				double zpos = (m_pBody->getFrame(n)->m_CtrlPoint.first().z + m_pBody->getFrame(n)->m_CtrlPoint.last().z)/2.0;
-				for(int ic=0; ic<m_pBody->getFrame(n)->PointCount(); ic++)
+				double zpos = (m_pBody->frame(n)->m_CtrlPoint.first().z + m_pBody->frame(n)->m_CtrlPoint.last().z)/2.0;
+				for(int ic=0; ic<m_pBody->frame(n)->PointCount(); ic++)
 				{
-					m_pBody->getFrame(n)->m_CtrlPoint[ic].x  = Real.x;
-					m_pBody->getFrame(n)->m_CtrlPoint[ic].z += Real.y-zpos;
+					m_pBody->frame(n)->m_CtrlPoint[ic].x  = Real.x;
+					m_pBody->frame(n)->m_CtrlPoint[ic].z += Real.y-zpos;
 				}
 				m_bTrans = false;
 				m_bResetglBody2D = true;
@@ -2597,11 +2559,11 @@ void GL3dBodyDlg::ReadFrameSectionData(int sel)
 	strong = pItem->text();
 	strong.replace(" ","");
 	x = strong.toDouble(&bOK);
-	if(bOK) m_pBody->getFrame(sel)->SetuPosition(x / Units::mtoUnit());
+	if(bOK) m_pBody->frame(sel)->SetuPosition(x / Units::mtoUnit());
 
-	for(int ic=0; ic<m_pBody->getFrame(sel)->PointCount(); ic++)
+	for(int ic=0; ic<m_pBody->frame(sel)->PointCount(); ic++)
 	{
-		m_pBody->getFrame(sel)->m_CtrlPoint[ic].x  = x / Units::mtoUnit();
+		m_pBody->frame(sel)->m_CtrlPoint[ic].x  = x / Units::mtoUnit();
 	}
 
 	pItem = m_pFrameModel->item(sel,1);
@@ -2655,8 +2617,8 @@ void GL3dBodyDlg::Insert(CVector Pt)
 
 		if(m_pFrame)
 		{
-			FrameSel = m_pBody->InsertFrame(Real);
-			if(FrameSel>0) m_pFrame = m_pBody->getFrame(FrameSel);
+			FrameSel = m_pBody->insertFrame(Real);
+			if(FrameSel>0) m_pFrame = m_pBody->frame(FrameSel);
 			else           m_pFrame = NULL;
 		}
 
@@ -2832,7 +2794,7 @@ void GL3dBodyDlg::Remove(CVector Pt)
 
 			for (i=0; i<m_pBody->FrameSize();i++)
 			{
-				pBodyFrame = m_pBody->getFrame(i);
+				pBodyFrame = m_pBody->frame(i);
 				pBodyFrame->RemovePoint(n);
 			}
 			m_pBody->SetKnots();
@@ -3291,7 +3253,7 @@ void GL3dBodyDlg::SetFrameScale()
 		height = 0.0;
 		for(k=0; k<m_pBody->FrameSize(); k++)
 		{
-			height = qMax(height,m_pBody->getFrame(k)->Height());
+			height = qMax(height,m_pBody->frame(k)->Height());
 		}
 		m_FrameScale = (1.0-0.5)/height;
 	}
@@ -3384,7 +3346,7 @@ void GL3dBodyDlg::SetFrame(int iFrame)
 {
 	if(!m_pBody) return;
 	if(iFrame<0 || iFrame>=m_pBody->FrameSize()) m_pFrame = NULL;
-	else                                         m_pFrame = m_pBody->getFrame(iFrame);
+	else                                         m_pFrame = m_pBody->frame(iFrame);
 	m_pBody->m_iActiveFrame = iFrame;
 
 	FillPointDataTable();;

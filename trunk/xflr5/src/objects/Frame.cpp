@@ -296,6 +296,10 @@ void Frame::SetPosition(CVector Pos)
 void Frame::SetuPosition(double u)
 {
 	m_Position.x = u;
+	for (int ic=0; ic<m_CtrlPoint.count(); ic++)
+	{
+		m_CtrlPoint[ic].x = u;
+	}
 }
 
 /**
