@@ -1007,20 +1007,20 @@ int Objects3D::createBodyElements(Plane *pCurPlane)
 				{
 					//build the four corner points of the strips
 					PLB.x =  (1.0- dj) * pCurBody->FramePosition(i)      +  dj * pCurBody->FramePosition(i+1)       +dpx;
-					PLB.y = -(1.0- dj) * pCurBody->getFrame(i)->m_CtrlPoint[k].y   -  dj * pCurBody->getFrame(i+1)->m_CtrlPoint[k].y;
-					PLB.z =  (1.0- dj) * pCurBody->getFrame(i)->m_CtrlPoint[k].z   +  dj * pCurBody->getFrame(i+1)->m_CtrlPoint[k].z    +dpz;
+					PLB.y = -(1.0- dj) * pCurBody->frame(i)->m_CtrlPoint[k].y   -  dj * pCurBody->frame(i+1)->m_CtrlPoint[k].y;
+					PLB.z =  (1.0- dj) * pCurBody->frame(i)->m_CtrlPoint[k].z   +  dj * pCurBody->frame(i+1)->m_CtrlPoint[k].z    +dpz;
 
 					PTB.x =  (1.0-dj1) * pCurBody->FramePosition(i)      + dj1 * pCurBody->FramePosition(i+1)       +dpx;
-					PTB.y = -(1.0-dj1) * pCurBody->getFrame(i)->m_CtrlPoint[k].y   - dj1 * pCurBody->getFrame(i+1)->m_CtrlPoint[k].y;
-					PTB.z =  (1.0-dj1) * pCurBody->getFrame(i)->m_CtrlPoint[k].z   + dj1 * pCurBody->getFrame(i+1)->m_CtrlPoint[k].z    +dpz;
+					PTB.y = -(1.0-dj1) * pCurBody->frame(i)->m_CtrlPoint[k].y   - dj1 * pCurBody->frame(i+1)->m_CtrlPoint[k].y;
+					PTB.z =  (1.0-dj1) * pCurBody->frame(i)->m_CtrlPoint[k].z   + dj1 * pCurBody->frame(i+1)->m_CtrlPoint[k].z    +dpz;
 
 					PLA.x =  (1.0- dj) * pCurBody->FramePosition(i)      +  dj * pCurBody->FramePosition(i+1)       +dpx;
-					PLA.y = -(1.0- dj) * pCurBody->getFrame(i)->m_CtrlPoint[k+1].y -  dj * pCurBody->getFrame(i+1)->m_CtrlPoint[k+1].y;
-					PLA.z =  (1.0- dj) * pCurBody->getFrame(i)->m_CtrlPoint[k+1].z +  dj * pCurBody->getFrame(i+1)->m_CtrlPoint[k+1].z  +dpz;
+					PLA.y = -(1.0- dj) * pCurBody->frame(i)->m_CtrlPoint[k+1].y -  dj * pCurBody->frame(i+1)->m_CtrlPoint[k+1].y;
+					PLA.z =  (1.0- dj) * pCurBody->frame(i)->m_CtrlPoint[k+1].z +  dj * pCurBody->frame(i+1)->m_CtrlPoint[k+1].z  +dpz;
 
 					PTA.x =  (1.0-dj1) * pCurBody->FramePosition(i)      + dj1 * pCurBody->FramePosition(i+1)       +dpx;
-					PTA.y = -(1.0-dj1) * pCurBody->getFrame(i)->m_CtrlPoint[k+1].y - dj1 * pCurBody->getFrame(i+1)->m_CtrlPoint[k+1].y;
-					PTA.z =  (1.0-dj1) * pCurBody->getFrame(i)->m_CtrlPoint[k+1].z + dj1 * pCurBody->getFrame(i+1)->m_CtrlPoint[k+1].z  +dpz;
+					PTA.y = -(1.0-dj1) * pCurBody->frame(i)->m_CtrlPoint[k+1].y - dj1 * pCurBody->frame(i+1)->m_CtrlPoint[k+1].y;
+					PTA.z =  (1.0-dj1) * pCurBody->frame(i)->m_CtrlPoint[k+1].z + dj1 * pCurBody->frame(i+1)->m_CtrlPoint[k+1].z  +dpz;
 
 					LB = PLB;
 					TB = PTB;

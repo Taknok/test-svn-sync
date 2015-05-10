@@ -59,6 +59,7 @@ public:
 	void    SetwPosition(double w);
 	double  zPos();
 
+	CVector & position(){return m_Position;}
 
 	QList <CVector> m_CtrlPoint;	/**< the array of points which define the frame.  */
 	int m_iHighlight;               /**< the point over which the mouse hovers, or -1 if none */

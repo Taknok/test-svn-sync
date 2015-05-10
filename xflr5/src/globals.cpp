@@ -2986,6 +2986,17 @@ QColor randomColor()
 }
 
 
+
+
+void GLLineStipple(int style)
+{
+	if     (style == Qt::DashLine)       glLineStipple (1, 0xCFCF);
+	else if(style == Qt::DotLine)        glLineStipple (1, 0x6666);
+	else if(style == Qt::DashDotLine)    glLineStipple (1, 0xFF18);
+	else if(style == Qt::DashDotDotLine) glLineStipple (1, 0x7E66);
+	else                                 glLineStipple (1, 0xFFFF);
+}
+
 //-----------------------------------------------------------------------------------------------
 
 

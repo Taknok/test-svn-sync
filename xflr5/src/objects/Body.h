@@ -60,7 +60,9 @@ public:
 	bool ImportDefinition(QTextStream &inStream, double mtoUnit);
 	bool ExportBodyDefinition(QTextStream &outStream, double mtoUnit);
 
-	int InsertFrame(CVector Real);
+	int insertFrame(CVector Real);
+	int insertFrameBefore(int iFrame);
+	int insertFrameAfter(int iFrame);
 	int InsertPoint(CVector Real);
 	int IsFramePos(CVector Real, double ZoomFactor);
 	int RemoveFrame(int n);
@@ -91,7 +93,7 @@ public:
 	void SetPanelPos();
 	void SetEdgeWeight(double uw, double vw);
 
-	Frame *getFrame(int iFrame);
+	Frame *frame(int iFrame);
 	Frame *activeFrame();
 	void SetActiveFrame(Frame *pFrame);
 	double FramePosition(int iFrame);

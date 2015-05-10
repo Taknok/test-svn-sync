@@ -114,6 +114,7 @@ public:
 
 
 	Wing *wing(int iw);
+	Wing *wing(XFLR5::enumWingType wingType);
 
 	/** Returns a pointer to the Plane's main wing. Never NULL, a Plane always has a main Wing. */
 	Wing *wing()  {return m_Wing;}
@@ -155,10 +156,12 @@ public:
 	double aspectRatio()  {return m_Wing[0].m_AR;}
 	double taperRatio()   {return m_Wing[0].m_TR;}
 
-	Wing *getWing(int iw);
-	Wing *getWing(XFLR5::enumWingType wingType);
 
-	bool &hasBody() {return m_bBody;}
+	bool &hasBody()       {return m_bBody;}
+	bool &hasElevator()   {return m_bStab;}
+	bool &hasSecondWing() {return m_bBiplane;}
+	bool &hasFin()        {return m_bFin;}
+
 
 public:
 	Wing m_Wing[MAXWINGS];                      /**< the array of Wing objects used to define this Plane */

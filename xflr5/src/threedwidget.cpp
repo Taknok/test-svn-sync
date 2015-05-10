@@ -90,13 +90,6 @@ ThreeDWidget::ThreeDWidget(QWidget *parent)
 	setMouseTracking(true);
 	setCursor(Qt::CrossCursor);
 
-
-	QSizePolicy szPolicyExpanding;
-	szPolicyExpanding.setHorizontalPolicy(QSizePolicy::MinimumExpanding);
-	szPolicyExpanding.setVerticalPolicy(QSizePolicy::MinimumExpanding);
-
-	setSizePolicy(szPolicyExpanding);
-
 	m_ClipPlanePos = 5.0;
 
 	m_glViewportTrans.x  = 0.0;

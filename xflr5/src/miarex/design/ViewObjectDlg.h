@@ -24,6 +24,7 @@
 #define VIEWOBJECTDLG_H
 
 #include <QDialog>
+#include <QSplitter>
 #include <QTreeView>
 #include <QStandardItemModel>
 #include <QToolButton>
@@ -31,6 +32,9 @@
 #include "../../objects/Plane.h"
 #include "ViewObjectDelegate.h"
 
+
+
+typedef enum {PLANE, BODY, WING, NOOBJECT} enumObjectType;
 
 
 class ViewObjectDlg : public QDialog
@@ -48,6 +52,7 @@ public:
 	void hideEvent(QHideEvent *event);
 	void resizeEvent(QResizeEvent *event);
 	void keyPressEvent(QKeyEvent *event);
+	void contextMenuEvent(QContextMenuEvent *event);
 
 	bool IntersectObject(CVector AA,  CVector U, CVector &I);
 	void Connect();
@@ -70,7 +75,7 @@ public:
 	void readWingSectionTree(Wing *pWing, QModelIndex indexLevel);
 	void readPointMassTree(PointMass *ppm, QModelIndex indexLevel);
 	void readBodyFrameTree(Body *pBody, Frame *pFrame, QModelIndex indexLevel);
-	void highlightSelection(const QModelIndex &indexSel);
+	void identifySelection(const QModelIndex &indexSel);
 
 	QList<QStandardItem *> prepareRow(const QString &first, const QString &second="", const QString &third="",  const QString &fourth="");
 	QList<QStandardItem *> prepareBoolRow(const QString &first, const QString &second, const bool &third);
@@ -91,6 +96,11 @@ private slots:
 	void OnFoilNames();
 	void OnShowMasses();
 
+	void OnInsertBefore();
+	void OnInsertAfter();
+	void OnDelete();
+
+
 private:
 	void reject();
 
@@ -109,10 +119,15 @@ private:
 	ThreeDWidget *m_pGLWidget;
 
 	QCheckBox *m_pctrlAxes, *m_pctrlLight, *m_pctrlSurfaces, *m_pctrlOutline, *m_pctrlPanels;
-	QCheckBox *m_pctrlFoilNames, *m_pctrlVortices, *m_pctrlPanelNormals, *m_pctrlShowMasses;
+	QCheckBox *m_pctrlFoilNames, *m_pctrlShowMasses;
 
 	QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView;
 	QToolButton *m_pctrlX, *m_pctrlY, *m_pctrlZ, *m_pctrlIso;
+
+	QMenu *m_pContextMenu;
+	QAction *m_pInsertBefore, *m_pInsertAfter, *m_pDeleteItem;
+
+	QSplitter *m_pRightSideSplitter;
 
 	QPushButton *m_pctrlRedraw;
 	QPushButton *m_pctrlReset;
@@ -123,8 +138,9 @@ private:
 	bool m_bResetglSectionHighlight;
 	bool m_bResetglPlane, m_bResetglBody;
 
+	enumObjectType m_enumActiveObject;
 	XFLR5::enumWingType m_enumActiveWingType;
-	int m_iActiveSection, m_iActiveFrame;
+	int m_iActiveSection, m_iActiveFrame, m_iActivePointMass;
 };
 
 #endif // VIEWOBJECTDLG_H
