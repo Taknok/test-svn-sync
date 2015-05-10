@@ -84,55 +84,55 @@ Body::Body()
 		}
 	}
 
-	getFrame(0)->SetuPosition(-0.243);
-	getFrame(1)->SetuPosition(-0.228);
-	getFrame(2)->SetuPosition(-0.051);
-	getFrame(3)->SetuPosition( 0.094);
-	getFrame(4)->SetuPosition( 0.279);
-	getFrame(5)->SetuPosition( 0.705);
-	getFrame(6)->SetuPosition( 0.719);
+	frame(0)->SetuPosition(-0.243);
+	frame(1)->SetuPosition(-0.228);
+	frame(2)->SetuPosition(-0.051);
+	frame(3)->SetuPosition( 0.094);
+	frame(4)->SetuPosition( 0.279);
+	frame(5)->SetuPosition( 0.705);
+	frame(6)->SetuPosition( 0.719);
 
-	getFrame(0)->m_CtrlPoint[0].Set(-0.243, 0.0, -0.0172);
-	getFrame(0)->m_CtrlPoint[1].Set(-0.243, 0.0, -0.0172);
-	getFrame(0)->m_CtrlPoint[2].Set(-0.243, 0.0, -0.0172);
-	getFrame(0)->m_CtrlPoint[3].Set(-0.243, 0.0, -0.0172);
-	getFrame(0)->m_CtrlPoint[4].Set(-0.243, 0.0, -0.0172);
+	frame(0)->m_CtrlPoint[0].Set(-0.243, 0.0, -0.0172);
+	frame(0)->m_CtrlPoint[1].Set(-0.243, 0.0, -0.0172);
+	frame(0)->m_CtrlPoint[2].Set(-0.243, 0.0, -0.0172);
+	frame(0)->m_CtrlPoint[3].Set(-0.243, 0.0, -0.0172);
+	frame(0)->m_CtrlPoint[4].Set(-0.243, 0.0, -0.0172);
 
-	getFrame(1)->m_CtrlPoint[0].Set(-0.228, 0.000,  0.001);
-	getFrame(1)->m_CtrlPoint[1].Set(-0.228, 0.011,  0.004);
-	getFrame(1)->m_CtrlPoint[2].Set(-0.228, 0.013, -0.018);
-	getFrame(1)->m_CtrlPoint[3].Set(-0.228, 0.011, -0.030);
-	getFrame(1)->m_CtrlPoint[4].Set(-0.228, 0.000, -0.031);
+	frame(1)->m_CtrlPoint[0].Set(-0.228, 0.000,  0.001);
+	frame(1)->m_CtrlPoint[1].Set(-0.228, 0.011,  0.004);
+	frame(1)->m_CtrlPoint[2].Set(-0.228, 0.013, -0.018);
+	frame(1)->m_CtrlPoint[3].Set(-0.228, 0.011, -0.030);
+	frame(1)->m_CtrlPoint[4].Set(-0.228, 0.000, -0.031);
 
-	getFrame(2)->m_CtrlPoint[0].Set(-0.051, 0.000,  0.033);
-	getFrame(2)->m_CtrlPoint[1].Set(-0.051, 0.028,  0.036);
-	getFrame(2)->m_CtrlPoint[2].Set(-0.051, 0.037, -0.003);
-	getFrame(2)->m_CtrlPoint[3].Set(-0.051, 0.034, -0.045);
-	getFrame(2)->m_CtrlPoint[4].Set(-0.051, 0.000, -0.049);
+	frame(2)->m_CtrlPoint[0].Set(-0.051, 0.000,  0.033);
+	frame(2)->m_CtrlPoint[1].Set(-0.051, 0.028,  0.036);
+	frame(2)->m_CtrlPoint[2].Set(-0.051, 0.037, -0.003);
+	frame(2)->m_CtrlPoint[3].Set(-0.051, 0.034, -0.045);
+	frame(2)->m_CtrlPoint[4].Set(-0.051, 0.000, -0.049);
 
-	getFrame(3)->m_CtrlPoint[0].Set(0.094, 0.000,  0.025);
-	getFrame(3)->m_CtrlPoint[1].Set(0.094, 0.012,  0.019);
-	getFrame(3)->m_CtrlPoint[2].Set(0.094, 0.018,  0.001);
-	getFrame(3)->m_CtrlPoint[3].Set(0.094, 0.012, -0.017);
-	getFrame(3)->m_CtrlPoint[4].Set(0.094, 0.000, -0.023);
+	frame(3)->m_CtrlPoint[0].Set(0.094, 0.000,  0.025);
+	frame(3)->m_CtrlPoint[1].Set(0.094, 0.012,  0.019);
+	frame(3)->m_CtrlPoint[2].Set(0.094, 0.018,  0.001);
+	frame(3)->m_CtrlPoint[3].Set(0.094, 0.012, -0.017);
+	frame(3)->m_CtrlPoint[4].Set(0.094, 0.000, -0.023);
 
-	getFrame(4)->m_CtrlPoint[0].Set(0.279, 0.000,  0.007);
-	getFrame(4)->m_CtrlPoint[1].Set(0.279, 0.006,  0.008);
-	getFrame(4)->m_CtrlPoint[2].Set(0.279, 0.009,  0.000);
-	getFrame(4)->m_CtrlPoint[3].Set(0.279, 0.007, -0.006);
-	getFrame(4)->m_CtrlPoint[4].Set(0.279, 0.000, -0.005);
+	frame(4)->m_CtrlPoint[0].Set(0.279, 0.000,  0.007);
+	frame(4)->m_CtrlPoint[1].Set(0.279, 0.006,  0.008);
+	frame(4)->m_CtrlPoint[2].Set(0.279, 0.009,  0.000);
+	frame(4)->m_CtrlPoint[3].Set(0.279, 0.007, -0.006);
+	frame(4)->m_CtrlPoint[4].Set(0.279, 0.000, -0.005);
 
-	getFrame(5)->m_CtrlPoint[0].Set(0.705, 0.000,  0.0124);
-	getFrame(5)->m_CtrlPoint[1].Set(0.705, 0.010,  0.0118);
-	getFrame(5)->m_CtrlPoint[2].Set(0.705, 0.012, -0.0015);
-	getFrame(5)->m_CtrlPoint[3].Set(0.705, 0.010, -0.0116);
-	getFrame(5)->m_CtrlPoint[4].Set(0.705, 0.000, -0.012);
+	frame(5)->m_CtrlPoint[0].Set(0.705, 0.000,  0.0124);
+	frame(5)->m_CtrlPoint[1].Set(0.705, 0.010,  0.0118);
+	frame(5)->m_CtrlPoint[2].Set(0.705, 0.012, -0.0015);
+	frame(5)->m_CtrlPoint[3].Set(0.705, 0.010, -0.0116);
+	frame(5)->m_CtrlPoint[4].Set(0.705, 0.000, -0.012);
 
-	getFrame(6)->m_CtrlPoint[0].Set(0.719, 0.00,  0.0);
-	getFrame(6)->m_CtrlPoint[1].Set(0.719, 0.00,  0.0);
-	getFrame(6)->m_CtrlPoint[2].Set(0.719, 0.00,  0.0);
-	getFrame(6)->m_CtrlPoint[3].Set(0.719, 0.00, -0.0);
-	getFrame(6)->m_CtrlPoint[4].Set(0.719, 0.00, -0.0);
+	frame(6)->m_CtrlPoint[0].Set(0.719, 0.00,  0.0);
+	frame(6)->m_CtrlPoint[1].Set(0.719, 0.00,  0.0);
+	frame(6)->m_CtrlPoint[2].Set(0.719, 0.00,  0.0);
+	frame(6)->m_CtrlPoint[3].Set(0.719, 0.00, -0.0);
+	frame(6)->m_CtrlPoint[4].Set(0.719, 0.00, -0.0);
 
 
 	SetKnots();
@@ -632,13 +632,82 @@ int Body::InsertPoint(CVector Real)
 }
 
 
+/**
+ * Inserts a new Frame object in the Body definition
+ * @param iFrame the index of the frame before which a new Frame will be inserted
+ * @return the index of the Frame which has been inserted; Frame objects are indexed from nose to tail
+ */
+int Body::insertFrameBefore(int iFrame)
+{
+	Frame *pFrame = new Frame(SideLineCount());
+	if(iFrame==0)
+	{
+		pFrame->SetuPosition(frame(0)->position().x-0.1);
+		m_SplineSurface.m_pFrame.prepend(pFrame);
+	}
+	else
+	{
+		pFrame->SetuPosition((frame(iFrame)->position().x+frame(iFrame-1)->position().x)/2.0);
+
+		int n = iFrame;
+		m_SplineSurface.m_pFrame.insert(n, pFrame);
+
+		for (int ic=0; ic<SideLineCount(); ic++)
+		{
+			m_SplineSurface.m_pFrame[n]->m_CtrlPoint[ic].x = (m_SplineSurface.m_pFrame[n-1]->m_CtrlPoint[ic].x + m_SplineSurface.m_pFrame[n+1]->m_CtrlPoint[ic].x)/2.0;
+			m_SplineSurface.m_pFrame[n]->m_CtrlPoint[ic].y = (m_SplineSurface.m_pFrame[n-1]->m_CtrlPoint[ic].y + m_SplineSurface.m_pFrame[n+1]->m_CtrlPoint[ic].y)/2.0;
+			m_SplineSurface.m_pFrame[n]->m_CtrlPoint[ic].z = (m_SplineSurface.m_pFrame[n-1]->m_CtrlPoint[ic].z + m_SplineSurface.m_pFrame[n+1]->m_CtrlPoint[ic].z)/2.0;
+		}
+	}
+	m_xPanels.insert(iFrame, 1);
+
+	SetKnots();
+	return iFrame;
+}
+
+
+/**
+ * Inserts a new Frame object in the Body definition
+ * @param iFrame the index of the frame after which a new Frame will be inserted
+ * @return the index of the Frame which has been inserted; Frame objects are indexed from nose to tail
+ */
+int Body::insertFrameAfter(int iFrame)
+{
+	Frame *pFrame = new Frame(SideLineCount());
+	if(iFrame==FrameSize()-1)
+	{
+		pFrame->SetuPosition(frame(iFrame)->position().x+0.1);
+		m_SplineSurface.m_pFrame.append(pFrame);
+	}
+	else
+	{
+		pFrame->SetuPosition((frame(iFrame)->position().x+frame(iFrame+1)->position().x)/2.0);
+
+		int n = iFrame+1;
+		m_SplineSurface.m_pFrame.insert(n, pFrame);
+
+		for (int ic=0; ic<SideLineCount(); ic++)
+		{
+			m_SplineSurface.m_pFrame[n]->m_CtrlPoint[ic].x = (m_SplineSurface.m_pFrame[n-1]->m_CtrlPoint[ic].x + m_SplineSurface.m_pFrame[n+1]->m_CtrlPoint[ic].x)/2.0;
+			m_SplineSurface.m_pFrame[n]->m_CtrlPoint[ic].y = (m_SplineSurface.m_pFrame[n-1]->m_CtrlPoint[ic].y + m_SplineSurface.m_pFrame[n+1]->m_CtrlPoint[ic].y)/2.0;
+			m_SplineSurface.m_pFrame[n]->m_CtrlPoint[ic].z = (m_SplineSurface.m_pFrame[n-1]->m_CtrlPoint[ic].z + m_SplineSurface.m_pFrame[n+1]->m_CtrlPoint[ic].z)/2.0;
+		}
+	}
+
+	m_xPanels.insert(iFrame+1, 1);
+
+	SetKnots();
+
+	return iFrame+1;
+}
+
 
 /**
  * Inserts a new Frame object in the Body definition
  * @param Real the CVector which defines the x and z coordinates of the Frame to insert
  * @return the index of the Frame which has been inserted; Frame objects are indexed from nose to tail
  */
-int Body::InsertFrame(CVector Real)
+int Body::insertFrame(CVector Real)
 {
 	int k, n=0;
 
@@ -647,7 +716,7 @@ int Body::InsertFrame(CVector Real)
 		m_SplineSurface.m_pFrame.prepend(new Frame(SideLineCount()));
 		for (k=0; k<SideLineCount(); k++)
 		{
-			m_SplineSurface.m_pFrame.first()->m_CtrlPoint[k].Set(0.0,0.0,Real.z);
+			m_SplineSurface.m_pFrame.first()->m_CtrlPoint[k].Set(Real.x,0.0,Real.z);
 		}
 		m_SplineSurface.m_pFrame.first()->SetuPosition(Real.x);
 	}
@@ -1446,7 +1515,7 @@ void Body::Translate(CVector T, bool bFrameOnly, int FrameID)
  * @param iFrame the index of the Frame object
  * @return a pointer to the Frame object
  */
-Frame *Body::getFrame(int iFrame)
+Frame *Body::frame(int iFrame)
 {
 	if(iFrame>=0 && iFrame<FrameSize()) return m_SplineSurface.m_pFrame[iFrame];
 	return NULL;
@@ -1573,20 +1642,20 @@ void Body::ComputeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, do
 			{
 				//build the four corner points of the strips
 				PLA.x =  FramePosition(i);
-				PLA.y =  getFrame(i)->m_CtrlPoint[k].y  ;
-				PLA.z =  getFrame(i)->m_CtrlPoint[k].z  ;
+				PLA.y =  frame(i)->m_CtrlPoint[k].y  ;
+				PLA.z =  frame(i)->m_CtrlPoint[k].z  ;
 
 				PLB.x = FramePosition(i);
-				PLB.y = getFrame(i)->m_CtrlPoint[k+1].y ;
-				PLB.z = getFrame(i)->m_CtrlPoint[k+1].z ;
+				PLB.y = frame(i)->m_CtrlPoint[k+1].y ;
+				PLB.z = frame(i)->m_CtrlPoint[k+1].z ;
 
 				PTA.x = FramePosition(i+1);
-				PTA.y = getFrame(i+1)->m_CtrlPoint[k].y ;
-				PTA.z = getFrame(i+1)->m_CtrlPoint[k].z ;
+				PTA.y = frame(i+1)->m_CtrlPoint[k].y ;
+				PTA.z = frame(i+1)->m_CtrlPoint[k].z ;
 
 				PTB.x = FramePosition(i+1);
-				PTB.y = getFrame(i+1)->m_CtrlPoint[k+1].y;
-				PTB.z = getFrame(i+1)->m_CtrlPoint[k+1].z;
+				PTB.y = frame(i+1)->m_CtrlPoint[k+1].y;
+				PTB.z = frame(i+1)->m_CtrlPoint[k+1].z;
 
 				LATB = PTB - PLA;
 				TALB = PLB - PTA;
@@ -1612,17 +1681,17 @@ void Body::ComputeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, do
 				for (k=0; k<SideLineCount()-1; k++)
 				{
 					//build the four corner points of the strips
-					PLB.y = (1.0- dj) * getFrame(i)->m_CtrlPoint[k].y   +  dj * getFrame(i+1)->m_CtrlPoint[k].y;
-					PLB.z = (1.0- dj) * getFrame(i)->m_CtrlPoint[k].z   +  dj * getFrame(i+1)->m_CtrlPoint[k].z;
+					PLB.y = (1.0- dj) * frame(i)->m_CtrlPoint[k].y   +  dj * frame(i+1)->m_CtrlPoint[k].y;
+					PLB.z = (1.0- dj) * frame(i)->m_CtrlPoint[k].z   +  dj * frame(i+1)->m_CtrlPoint[k].z;
 
-					PTB.y = (1.0-dj1) * getFrame(i)->m_CtrlPoint[k].y   + dj1 * getFrame(i+1)->m_CtrlPoint[k].y;
-					PTB.z = (1.0-dj1) * getFrame(i)->m_CtrlPoint[k].z   + dj1 * getFrame(i+1)->m_CtrlPoint[k].z;
+					PTB.y = (1.0-dj1) * frame(i)->m_CtrlPoint[k].y   + dj1 * frame(i+1)->m_CtrlPoint[k].y;
+					PTB.z = (1.0-dj1) * frame(i)->m_CtrlPoint[k].z   + dj1 * frame(i+1)->m_CtrlPoint[k].z;
 
-					PLA.y = (1.0- dj) * getFrame(i)->m_CtrlPoint[k+1].y +  dj * getFrame(i+1)->m_CtrlPoint[k+1].y;
-					PLA.z = (1.0- dj) * getFrame(i)->m_CtrlPoint[k+1].z +  dj * getFrame(i+1)->m_CtrlPoint[k+1].z;
+					PLA.y = (1.0- dj) * frame(i)->m_CtrlPoint[k+1].y +  dj * frame(i+1)->m_CtrlPoint[k+1].y;
+					PLA.z = (1.0- dj) * frame(i)->m_CtrlPoint[k+1].z +  dj * frame(i+1)->m_CtrlPoint[k+1].z;
 
-					PTA.y = (1.0-dj1) * getFrame(i)->m_CtrlPoint[k+1].y + dj1 * getFrame(i+1)->m_CtrlPoint[k+1].y;
-					PTA.z = (1.0-dj1) * getFrame(i)->m_CtrlPoint[k+1].z + dj1 * getFrame(i+1)->m_CtrlPoint[k+1].z;
+					PTA.y = (1.0-dj1) * frame(i)->m_CtrlPoint[k+1].y + dj1 * frame(i+1)->m_CtrlPoint[k+1].y;
+					PTA.z = (1.0-dj1) * frame(i)->m_CtrlPoint[k+1].z + dj1 * frame(i+1)->m_CtrlPoint[k+1].z;
 
 					LATB = PTB - PLA;
 					TALB = PLB - PTA;
@@ -1661,17 +1730,17 @@ void Body::ComputeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, do
 				for (k=0; k<SideLineCount()-1; k++)
 				{
 					//build the four corner points of the strips
-					PLB.y = (1.0- dj) * getFrame(i)->m_CtrlPoint[k].y   +  dj * getFrame(i+1)->m_CtrlPoint[k].y;
-					PLB.z = (1.0- dj) * getFrame(i)->m_CtrlPoint[k].z   +  dj * getFrame(i+1)->m_CtrlPoint[k].z;
+					PLB.y = (1.0- dj) * frame(i)->m_CtrlPoint[k].y   +  dj * frame(i+1)->m_CtrlPoint[k].y;
+					PLB.z = (1.0- dj) * frame(i)->m_CtrlPoint[k].z   +  dj * frame(i+1)->m_CtrlPoint[k].z;
 
-					PTB.y = (1.0-dj1) * getFrame(i)->m_CtrlPoint[k].y   + dj1 * getFrame(i+1)->m_CtrlPoint[k].y;
-					PTB.z = (1.0-dj1) * getFrame(i)->m_CtrlPoint[k].z   + dj1 * getFrame(i+1)->m_CtrlPoint[k].z;
+					PTB.y = (1.0-dj1) * frame(i)->m_CtrlPoint[k].y   + dj1 * frame(i+1)->m_CtrlPoint[k].y;
+					PTB.z = (1.0-dj1) * frame(i)->m_CtrlPoint[k].z   + dj1 * frame(i+1)->m_CtrlPoint[k].z;
 
-					PLA.y = (1.0- dj) * getFrame(i)->m_CtrlPoint[k+1].y +  dj * getFrame(i+1)->m_CtrlPoint[k+1].y;
-					PLA.z = (1.0- dj) * getFrame(i)->m_CtrlPoint[k+1].z +  dj * getFrame(i+1)->m_CtrlPoint[k+1].z;
+					PLA.y = (1.0- dj) * frame(i)->m_CtrlPoint[k+1].y +  dj * frame(i+1)->m_CtrlPoint[k+1].y;
+					PLA.z = (1.0- dj) * frame(i)->m_CtrlPoint[k+1].z +  dj * frame(i+1)->m_CtrlPoint[k+1].z;
 
-					PTA.y = (1.0-dj1) * getFrame(i)->m_CtrlPoint[k+1].y + dj1 * getFrame(i+1)->m_CtrlPoint[k+1].y;
-					PTA.z = (1.0-dj1) * getFrame(i)->m_CtrlPoint[k+1].z + dj1 * getFrame(i+1)->m_CtrlPoint[k+1].z;
+					PTA.y = (1.0-dj1) * frame(i)->m_CtrlPoint[k+1].y + dj1 * frame(i+1)->m_CtrlPoint[k+1].y;
+					PTA.z = (1.0-dj1) * frame(i)->m_CtrlPoint[k+1].z + dj1 * frame(i+1)->m_CtrlPoint[k+1].z;
 
 					LATB = PTB - PLA;
 					TALB = PLB - PTA;

@@ -111,8 +111,6 @@ XFLR5Application::XFLR5Application(int &argc, char** argv) : QApplication(argc, 
 		   else if (iApp == XFLR5::XFOILANALYSIS) w->OnXDirect();
         }
     }
-	w->OnMiarex();
-
 #endif
 
 	splash.finish(w);

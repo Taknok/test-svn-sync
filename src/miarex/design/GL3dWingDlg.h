@@ -35,6 +35,7 @@
 #include <QStandardItemModel>
 #include <QTableView>
 #include <QPushButton>
+#include <QSplitter>
 
 #include "WingDelegate.h"
 #include "../../objects/ArcBall.h"
@@ -116,7 +117,7 @@ private:
 
 	bool InitDialog(Wing *pWing);
 	void Connect();
-	void SetupLayout();
+	void setupLayout();
 	void GLRenderView();
 	void GLCreateSectionHighlight();
 	void GLCallViewLists();
@@ -171,6 +172,7 @@ private:
 	QAction *m_pInsertBefore, *m_pInsertAfter, *m_pDeleteSection, *m_pResetSection;
 
 	QWidget *m_pctrlControlsWidget;
+	QSplitter *m_pLeftSideSplitter;
 
 	Wing *m_pWing;
 

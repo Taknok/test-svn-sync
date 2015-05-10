@@ -2344,7 +2344,7 @@ void QMiarex::GLCallViewLists()
 */
 void QMiarex::GLDraw3D()
 {
-	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+//	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 
 	Body *pCurBody = NULL;
@@ -2629,7 +2629,7 @@ void QMiarex::GLDraw3D()
 
 	m_bResetglOpp = false;
 
-	QApplication::restoreOverrideCursor();
+//	QApplication::restoreOverrideCursor();
 }
 
 

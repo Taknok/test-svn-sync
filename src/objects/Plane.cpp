@@ -836,27 +836,6 @@ int Plane::VLMPanelTotal()
 }
 
 
-/**
- * Returns a pointer to the wing with index iw, or NULL if this plane's wing is not active
- *  @param iw the index of the wing
- *  @return a pointer to the wing, or NULL if none;
- */
-Wing *Plane::getWing(int iw)
-{
-	switch(iw)
-	{
-		case 0:
-			return wing();
-		case 1:
-			return wing2();
-		case 2:
-			return stab();
-		case 3:
-			return fin();
-	}
-	return NULL;
-}
-
 
 
 /**
@@ -864,7 +843,7 @@ Wing *Plane::getWing(int iw)
  *  @param iw the index of the wing
  *  @return a pointer to the wing, or NULL if none;
  */
-Wing *Plane::getWing(XFLR5::enumWingType wingType)
+Wing *Plane::wing(XFLR5::enumWingType wingType)
 {
 	switch(wingType)
 	{

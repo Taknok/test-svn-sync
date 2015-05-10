@@ -132,6 +132,7 @@ double SplineBlend(int const &index, int const &p, double const &t, double *knot
 int Compare(complex<double> a, complex<double>b);
 void ComplexSort(complex<double>*array, int ub);
 
+void GLLineStipple(int style);
 
 
 XFLR5::enumPanelDistribution distributionType(QString strDist);

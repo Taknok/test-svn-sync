@@ -37,7 +37,7 @@
 #include <QHideEvent>
 #include <QtDebug>
 
-QSize ViewObjectDlg::s_WindowSize(911,783);
+QSize ViewObjectDlg::s_WindowSize(1031,783);
 QPoint ViewObjectDlg::s_WindowPosition(131, 77);
 bool ViewObjectDlg::s_bWindowMaximized =false;
 
@@ -54,15 +54,25 @@ ViewObjectDlg::ViewObjectDlg(QWidget *pParent) : QDialog(pParent)
 	m_pDelegate = NULL;
 	m_pModel = NULL;
 
+	m_enumActiveObject = NOOBJECT;
 	m_enumActiveWingType = XFLR5::OTHERWING;
 	m_iActiveSection   = -1;
 	m_iActiveFrame     = -1;
-
+	m_iActivePointMass = -1;
 
 	m_bResetglSectionHighlight = true;
 	m_bResetglPlane            = true;
 	m_bResetglBody             = true;
 	m_bChanged                 = false;
+
+	m_pInsertBefore  = new QAction(tr("Insert Before"), this);
+	m_pInsertAfter   = new QAction(tr("Insert after"), this);
+	m_pDeleteItem = new QAction(tr("Delete"), this);
+
+	m_pContextMenu = new QMenu(tr("Section"),this);
+	m_pContextMenu->addAction(m_pInsertBefore);
+	m_pContextMenu->addAction(m_pInsertAfter);
+	m_pContextMenu->addAction(m_pDeleteItem);
 
 	setupLayout();
 }
@@ -80,7 +90,6 @@ void ViewObjectDlg::showEvent(QShowEvent *event)
 	if(s_bWindowMaximized) setWindowState(Qt::WindowMaximized);
 
 	m_pGLWidget->updateGL();
-
 
 	event->accept();
 }
@@ -100,11 +109,50 @@ void ViewObjectDlg::hideEvent(QHideEvent *event)
 void ViewObjectDlg::resizeEvent(QResizeEvent *event)
 {
 //	m_pStruct->setMinimumWidth(width()/2);
-	int ColumnWidth = (int)((double)(m_pStruct->width())/6);
-	m_pStruct->setColumnWidth(0,ColumnWidth*2);
+	QList<int> sizes;
+	sizes.append((int)9*width()/10);
+	sizes.append((int)width()/10);
+	m_pRightSideSplitter->setSizes(sizes);
+
+	int ColumnWidth = (int)((double)(m_pStruct->width())/9);
+	m_pStruct->setColumnWidth(0,ColumnWidth*4);
 	m_pStruct->setColumnWidth(1,ColumnWidth*2);
-	m_pStruct->setColumnWidth(2,ColumnWidth);
+	m_pStruct->setColumnWidth(2,ColumnWidth*2);
 	event->accept();
+}
+
+
+void ViewObjectDlg::contextMenuEvent(QContextMenuEvent *event)
+{
+	// Display the context menu
+
+	if(m_iActiveFrame<0 && m_iActivePointMass<0 && m_iActiveSection<0) return;
+	if(m_iActiveFrame>=0)
+	{
+		m_pInsertBefore->setText(tr("Insert body frame before"));
+		m_pInsertAfter->setText(tr("Insert body frame after"));
+		m_pDeleteItem->setText(tr("Delete body frame"));
+	}
+	else if(m_iActiveSection>=0)
+	{
+		m_pInsertBefore->setText(tr("Insert wing section before"));
+		m_pInsertAfter->setText(tr("Insert wing section after"));
+		m_pDeleteItem->setText(tr("Delete wing section"));
+	}
+	else if(m_iActivePointMass>=0)
+	{
+		m_pInsertBefore->setText(tr("Insert point mass before"));
+		m_pInsertAfter->setText(tr("Insert point mass after"));
+		m_pDeleteItem->setText(tr("Delete point Mass"));
+	}
+	else if(m_enumActiveObject!=NOOBJECT)
+	{
+		m_pInsertBefore->setText("Insert object before");
+		m_pInsertAfter->setText("Insert object after");
+		m_pDeleteItem->setText("Remove object");
+	}
+
+	if(m_pStruct->geometry().contains(event->pos())) m_pContextMenu->exec(event->globalPos());
 }
 
 
@@ -160,6 +208,10 @@ void ViewObjectDlg::setupLayout()
 	szPolicyMinimum.setHorizontalPolicy(QSizePolicy::Minimum);
 	szPolicyMinimum.setVerticalPolicy(QSizePolicy::Minimum);
 
+	QSizePolicy szPolicyMaximum;
+	szPolicyMinimum.setHorizontalPolicy(QSizePolicy::Maximum);
+	szPolicyMinimum.setVerticalPolicy(QSizePolicy::Maximum);
+
 	QSizePolicy szPolicyPreferred;
 	szPolicyPreferred.setHorizontalPolicy(QSizePolicy::Preferred);
 	szPolicyPreferred.setVerticalPolicy(QSizePolicy::Preferred);
@@ -167,60 +219,70 @@ void ViewObjectDlg::setupLayout()
 	QSizePolicy szPolicyFixed;
 	szPolicyFixed.setHorizontalPolicy(QSizePolicy::Fixed);
 	szPolicyFixed.setVerticalPolicy(QSizePolicy::Fixed);
+	QSizePolicy szPolicyExpanding;
 
-	QHBoxLayout *pHLayout = new QHBoxLayout;
+	szPolicyExpanding.setHorizontalPolicy(QSizePolicy::Expanding);
+	szPolicyExpanding.setVerticalPolicy(QSizePolicy::Expanding);
+
+	QSizePolicy szPolicyIgnored;
+	szPolicyExpanding.setHorizontalPolicy(QSizePolicy::Ignored);
+	szPolicyExpanding.setVerticalPolicy(QSizePolicy::Ignored);
+
+
+	QSplitter *pHorizontalSplitter = new QSplitter(Qt::Horizontal, this);
 	{
-		QVBoxLayout *pLeftSideLayout = new QVBoxLayout;
-		{
-			pLeftSideLayout->addWidget(m_pStruct);
-
-			m_pctrlRedraw = new QPushButton(tr("Redraw plane"));
-			pLeftSideLayout->addWidget(m_pctrlRedraw);
-
-			QHBoxLayout *pCommandButtons = new QHBoxLayout;
-			{
-				pOKButton = new QPushButton(tr("Save and Close"));
-				pOKButton->setAutoDefault(true);
-				QPushButton *pCancelButton = new QPushButton(tr("Cancel"));
-				pCancelButton->setAutoDefault(false);
-				pCommandButtons->addWidget(pOKButton);
-				pCommandButtons->addWidget(pCancelButton);
-				connect(pOKButton, SIGNAL(clicked()),this, SLOT(OnOK()));
-				connect(pCancelButton, SIGNAL(clicked()),this, SLOT(reject()));
-			}
-			pLeftSideLayout->addLayout(pCommandButtons);
-
-		}
-
-		QVBoxLayout *pRightSideLayout = new QVBoxLayout;
+		m_pRightSideSplitter = new QSplitter(Qt::Vertical, this);
 		{
 			m_pGLWidget = new ThreeDWidget(this);
-			m_pStruct->setSizePolicy(szPolicyMinimumExpanding);
 			m_pGLWidget->m_iView = GLPLANEVIEW;
-			QGroupBox *p3DCtrlBox = new QGroupBox;
+
+			QWidget *p3DCtrlBox = new QWidget;
 			{
+				p3DCtrlBox->setSizePolicy(szPolicyMaximum);
 				QHBoxLayout *pThreeDViewControlsLayout = new QHBoxLayout;
 				{
+					QVBoxLayout *pCommandLayout = new QVBoxLayout;
+					{
+						m_pctrlRedraw = new QPushButton(tr("Regenerate"));
+
+						QHBoxLayout *pExitCommandLayout = new QHBoxLayout;
+						{
+							pOKButton = new QPushButton(tr("Save and Close"));
+							pOKButton->setAutoDefault(true);
+							QPushButton *pCancelButton = new QPushButton(tr("Cancel"));
+							pCancelButton->setAutoDefault(false);
+							pExitCommandLayout->addWidget(pOKButton);
+							pExitCommandLayout->addWidget(pCancelButton);
+							connect(pOKButton, SIGNAL(clicked()),this, SLOT(OnOK()));
+							connect(pCancelButton, SIGNAL(clicked()),this, SLOT(reject()));
+						}
+						pCommandLayout->addWidget(m_pctrlRedraw);
+						pCommandLayout->addLayout(pExitCommandLayout);
+					}
+
+
 					QGridLayout *pThreeDParamsLayout = new QGridLayout;
 					{
 						m_pctrlAxes         = new QCheckBox(tr("Axes"), this);
-		//				m_pctrlLight      = new QCheckBox(tr("Light"), this);
 						m_pctrlSurfaces     = new QCheckBox(tr("Surfaces"), this);
 						m_pctrlOutline      = new QCheckBox(tr("Outline"), this);
 						m_pctrlPanels       = new QCheckBox(tr("Panels"), this);
 						m_pctrlFoilNames    = new QCheckBox(tr("Foil Names"), this);
-						m_pctrlVortices     = new QCheckBox(tr("Vortices"), this);
-						m_pctrlPanelNormals = new QCheckBox(tr("Normals"), this);
 						m_pctrlShowMasses       = new QCheckBox(tr("Masses"), this);
+
+						m_pctrlAxes->setSizePolicy(szPolicyMaximum);
+						m_pctrlSurfaces->setSizePolicy(szPolicyMaximum);
+						m_pctrlOutline->setSizePolicy(szPolicyMaximum);
+						m_pctrlPanels->setSizePolicy(szPolicyMaximum);
+						m_pctrlFoilNames->setSizePolicy(szPolicyMaximum);
+						m_pctrlShowMasses->setSizePolicy(szPolicyMaximum);
 
 						pThreeDParamsLayout->addWidget(m_pctrlAxes, 1,1);
 						pThreeDParamsLayout->addWidget(m_pctrlPanels, 1,2);
-						pThreeDParamsLayout->addWidget(m_pctrlPanelNormals, 2,1);
-						pThreeDParamsLayout->addWidget(m_pctrlVortices, 2,2);
-						pThreeDParamsLayout->addWidget(m_pctrlSurfaces, 3,1);
-						pThreeDParamsLayout->addWidget(m_pctrlOutline, 3,2);
-						pThreeDParamsLayout->addWidget(m_pctrlFoilNames, 4,1);
-						pThreeDParamsLayout->addWidget(m_pctrlShowMasses, 4,2);
+						pThreeDParamsLayout->addWidget(m_pctrlSurfaces, 2,1);
+						pThreeDParamsLayout->addWidget(m_pctrlOutline, 2,2);
+						pThreeDParamsLayout->addWidget(m_pctrlFoilNames, 3,1);
+						pThreeDParamsLayout->addWidget(m_pctrlShowMasses, 3,2);
 					}
 
 					QVBoxLayout *pRightColLayout = new QVBoxLayout;
@@ -257,7 +319,6 @@ void ViewObjectDlg::setupLayout()
 							pAxisViewLayout->addWidget(m_pctrlIso);
 						}
 
-
 						QHBoxLayout *pClipLayout = new QHBoxLayout;
 						{
 							QLabel *ClipLabel = new QLabel(tr("Clip:"));
@@ -279,19 +340,31 @@ void ViewObjectDlg::setupLayout()
 						pRightColLayout->addLayout(pClipLayout);
 					}
 
+					pThreeDViewControlsLayout->addLayout(pCommandLayout);
+					pThreeDViewControlsLayout->addStretch();
 					pThreeDViewControlsLayout->addLayout(pThreeDParamsLayout);
+					pThreeDViewControlsLayout->addStretch();
 					pThreeDViewControlsLayout->addLayout(pRightColLayout);
 
 				}
 				p3DCtrlBox->setLayout(pThreeDViewControlsLayout);
 			}
-			pRightSideLayout->addWidget(m_pGLWidget);
-			pRightSideLayout->addWidget(p3DCtrlBox);
+			m_pGLWidget->sizePolicy().setVerticalStretch(5);
+			p3DCtrlBox->sizePolicy().setVerticalStretch(2);
+
+			m_pRightSideSplitter->addWidget(m_pGLWidget);
+			m_pRightSideSplitter->addWidget(p3DCtrlBox);
 		}
-		pHLayout->addLayout(pLeftSideLayout);
-		pHLayout->addLayout(pRightSideLayout);
+
+		pHorizontalSplitter->addWidget(m_pStruct);
+		pHorizontalSplitter->addWidget(m_pRightSideSplitter);
 	}
-	setLayout(pHLayout);
+
+	QHBoxLayout *pMainLayout = new QHBoxLayout;
+	{
+		pMainLayout->addWidget(pHorizontalSplitter);
+	}
+	setLayout(pMainLayout);
 	Connect();
 //	resize(s_Size);
 }
@@ -301,6 +374,8 @@ void ViewObjectDlg::setupLayout()
 void ViewObjectDlg::OnOK()
 {
 	int j;
+
+	readPlaneTree();
 
 	m_pPlane->ComputePlane();
 
@@ -488,8 +563,6 @@ void ViewObjectDlg::GLDraw3D()
 		m_bResetglPlane = false;
 	}
 	QApplication::restoreOverrideCursor();
-//	m_pctrlRedraw->setEnabled(true);
-
 }
 
 
@@ -584,7 +657,7 @@ void ViewObjectDlg::GLCreateBodyFrameHighlight(Body *pBody, CVector bodyPos, int
 		glEndList();
 		return;
 	}
-	Frame *pFrame = pBody->getFrame(iFrame);
+	Frame *pFrame = pBody->frame(iFrame);
 
 	nh = 23;
 //	xinc = 0.1;
@@ -597,18 +670,12 @@ void ViewObjectDlg::GLCreateBodyFrameHighlight(Body *pBody, CVector bodyPos, int
 		glEnable(GL_DEPTH_TEST);
 		glEnable (GL_LINE_STIPPLE);
 
-		color = QColor(0,0,255);
+		color = QColor(255,0,0);
 		style = 0;
 		width = 3;
 		glLineWidth(width);
 
-
-		if     (style == Qt::DashLine)       glLineStipple (1, 0xCFCF);
-		else if(style == Qt::DotLine)        glLineStipple (1, 0x6666);
-		else if(style == Qt::DashDotLine)    glLineStipple (1, 0xFF18);
-		else if(style == Qt::DashDotDotLine) glLineStipple (1, 0x7E66);
-		else                                 glLineStipple (1, 0xFFFF);
-
+		GLLineStipple(style);
 
 		glColor3d(color.redF(), color.greenF(), color.blueF());
 
@@ -788,6 +855,10 @@ void ViewObjectDlg::GLCreateWingSectionHighlight(Wing *pWing)
 
 void ViewObjectDlg::Connect()
 {
+	connect(m_pInsertBefore,  SIGNAL(triggered()), this, SLOT(OnInsertBefore()));
+	connect(m_pInsertAfter,   SIGNAL(triggered()), this, SLOT(OnInsertAfter()));
+	connect(m_pDeleteItem, SIGNAL(triggered()), this, SLOT(OnDelete()));
+
 	connect(m_pctrlIso,        SIGNAL(clicked()), m_pGLWidget, SLOT(On3DIso()));
 	connect(m_pctrlX,          SIGNAL(clicked()), m_pGLWidget, SLOT(On3DFront()));
 	connect(m_pctrlY,          SIGNAL(clicked()), m_pGLWidget, SLOT(On3DLeft()));
@@ -834,7 +905,6 @@ void ViewObjectDlg::On3DReset()
 
 void ViewObjectDlg::OnRedraw()
 {
-	m_pctrlRedraw->setEnabled(false);
 	readPlaneTree();
 
 	m_pPlane->CreateSurfaces();
@@ -964,6 +1034,8 @@ QList<QStandardItem *> ViewObjectDlg::prepareDoubleRow(const QString &object, co
 
 void ViewObjectDlg::fillPlaneTreeView()
 {
+	m_pModel->removeRows(0, m_pModel->rowCount());
+
 	QStandardItem *rootItem = m_pModel->invisibleRootItem();
 	rootItem->setText(m_pPlane->planeName());
 
@@ -975,7 +1047,7 @@ void ViewObjectDlg::fillPlaneTreeView()
 
 	fillPlaneMetaData(planeRootItem.first());
 
-	fillBodyTreeView(planeRootItem.first());
+	if(m_pPlane->body()) fillBodyTreeView(planeRootItem.first());
 
 	QList<QStandardItem*> wingFolder = prepareRow("Wings");
 	planeRootItem.first()->appendRow(wingFolder);
@@ -1000,18 +1072,36 @@ void ViewObjectDlg::fillPlaneMetaData(QStandardItem *item)
 	QList<QStandardItem*> descriptionDataItem = prepareRow("Description", "Description", m_pPlane->planeDescription());
 	item->appendRow(descriptionDataItem);
 
+	QList<QStandardItem*>dataItem = prepareBoolRow("", "hasBody", m_pPlane->hasBody());
+	item->appendRow(dataItem);
+	dataItem = prepareBoolRow("", "hasElevator", m_pPlane->hasElevator());
+	item->appendRow(dataItem);
+	dataItem = prepareBoolRow("", "hasSecondWing", m_pPlane->hasSecondWing());
+	item->appendRow(dataItem);
+	dataItem = prepareBoolRow("", "hasFin", m_pPlane->hasFin());
+	item->appendRow(dataItem);
+
+
 	if(m_pPlane->m_PointMass.size())
 	{
 		QList<QStandardItem*> PlaneInertiaFolder = prepareRow("Inertia");
 		item->appendRow(PlaneInertiaFolder);
 		{
+			if(m_enumActiveObject==PLANE && m_iActivePointMass>=0)
+			{
+				m_pStruct->expand(m_pModel->indexFromItem(PlaneInertiaFolder.first()));
+			}
 			for(int iwm=0; iwm<m_pPlane->m_PointMass.size(); iwm++)
 			{
 				PointMass *pm = m_pPlane->m_PointMass.at(iwm);
-				QList<QStandardItem*> planePointMassFolder = prepareRow("Point mass");
+				QList<QStandardItem*> planePointMassFolder = prepareRow(QString("Point_mass_%1").arg(iwm+1));
 
 				PlaneInertiaFolder.first()->appendRow(planePointMassFolder);
 				{
+					if(m_enumActiveObject==PLANE && m_iActivePointMass==iwm)
+					{
+						m_pStruct->expand(m_pModel->indexFromItem(planePointMassFolder.first()));
+					}
 					QList<QStandardItem*> dataItem = prepareRow("", "Tag", pm->tag());
 					dataItem.at(2)->setData(XFLR5::STRING, Qt::UserRole);
 					planePointMassFolder.first()->appendRow(dataItem);
@@ -1046,6 +1136,11 @@ void ViewObjectDlg::fillWingTreeView(int iw, QList<QStandardItem*> &planeRootIte
 	QList<QStandardItem*> wingFolder = prepareRow("Wing", "Type", wingType(pWing->wingType()));
 	wingFolder.at(2)->setData(XFLR5::WINGTYPE, Qt::UserRole);
 	planeRootItem.first()->appendRow(wingFolder);
+
+	if(m_pPlane->wing(m_enumActiveWingType)==pWing)
+	{
+		m_pStruct->expand(m_pModel->indexFromItem(wingFolder.first()));
+	}
 
 	QList<QStandardItem*> dataItem = prepareRow("Name", "Name", pWing->wingName());
 	wingFolder.first()->appendRow(dataItem);
@@ -1105,6 +1200,10 @@ void ViewObjectDlg::fillWingTreeView(int iw, QList<QStandardItem*> &planeRootIte
 	QList<QStandardItem*> wingInertiaFolder = prepareRow("Inertia");
 	wingFolder.first()->appendRow(wingInertiaFolder);
 	{
+		if(m_enumActiveObject==WING && m_enumActiveWingType==pWing->wingType() && m_iActivePointMass>=0)
+		{
+			m_pStruct->expand(m_pModel->indexFromItem(wingInertiaFolder.first()));
+		}
 		QList<QStandardItem*> dataItem = prepareDoubleRow( "", "Volume mass", pWing->volumeMass()*Units::kgtoUnit(), Units::weightUnitLabel());
 		dataItem.at(2)->setData(XFLR5::DOUBLE, Qt::UserRole);
 		wingInertiaFolder.first()->appendRow(dataItem);
@@ -1112,10 +1211,15 @@ void ViewObjectDlg::fillWingTreeView(int iw, QList<QStandardItem*> &planeRootIte
 		for(int iwm=0; iwm<pWing->m_PointMass.size(); iwm++)
 		{
 			PointMass *pm = pWing->m_PointMass.at(iwm);
-			QList<QStandardItem*> wingPointMassFolder = prepareRow("Point mass");
+			QList<QStandardItem*> wingPointMassFolder = prepareRow(QString("Point_mass_%1").arg(iwm+1));
 
 			wingInertiaFolder.first()->appendRow(wingPointMassFolder);
 			{
+				if(m_enumActiveObject==WING && m_enumActiveWingType==pWing->wingType() && m_iActivePointMass==iwm)
+				{
+					m_pStruct->expand(m_pModel->indexFromItem(wingPointMassFolder.first()));
+				}
+
 				QList<QStandardItem*> dataItem = prepareRow("", "Tag", pm->tag());
 				dataItem.at(2)->setData(XFLR5::STRING, Qt::UserRole);
 				wingPointMassFolder.first()->appendRow(dataItem);
@@ -1142,6 +1246,10 @@ void ViewObjectDlg::fillWingTreeView(int iw, QList<QStandardItem*> &planeRootIte
 	QList<QStandardItem*> wingSectionFolder = prepareRow("Sections");
 	wingFolder.first()->appendRow(wingSectionFolder);
 	{
+		if(m_pPlane->wing(m_enumActiveWingType)==pWing)
+		{
+			m_pStruct->expand(m_pModel->indexFromItem(wingSectionFolder.first()));
+		}
 		for(int iws=0; iws<pWing->m_WingSection.size(); iws++)
 		{
 			WingSection *wingsec = pWing->m_WingSection.at(iws);
@@ -1188,6 +1296,7 @@ void ViewObjectDlg::fillWingTreeView(int iw, QList<QStandardItem*> &planeRootIte
 			}
 		}
 	}
+
 }
 
 
@@ -1199,10 +1308,13 @@ void ViewObjectDlg::fillBodyTreeView(QStandardItem*planeRootItem)
 	QList<QStandardItem*> bodyFolder = prepareRow("Body", "Name");
 	planeRootItem->appendRow(bodyFolder);
 
-	QList<QStandardItem*> dataItem = prepareBoolRow("", "Active body", m_pPlane->body() ? true : false);
-	bodyFolder.first()->appendRow(dataItem);
+	if(m_enumActiveObject==BODY || m_iActiveFrame>=0)
+	{
+		m_pStruct->expand(m_pModel->indexFromItem(bodyFolder.first()));
+	}
 
-	if(!m_pPlane->body()) return;
+	QList<QStandardItem*> dataItem;
+
 
 	dataItem = prepareRow("", "Name", m_pPlane->body()->bodyName());
 	bodyFolder.first()->appendRow(dataItem);
@@ -1240,16 +1352,24 @@ void ViewObjectDlg::fillBodyTreeView(QStandardItem*planeRootItem)
 	QList<QStandardItem*> bodyInertiaFolder = prepareRow("Inertia");
 	bodyFolder.first()->appendRow(bodyInertiaFolder);
 	{
+		if(m_enumActiveObject==BODY && m_iActivePointMass>=0)
+		{
+			m_pStruct->expand(m_pModel->indexFromItem(bodyInertiaFolder.first()));
+		}
 		QList<QStandardItem*> dataItem = prepareDoubleRow( "Structural (volume) mass", "", pBody->m_VolumeMass*Units::kgtoUnit(), Units::weightUnitLabel());
 		bodyInertiaFolder.first()->appendRow(dataItem);
 
 		for(int iwm=0; iwm<pBody->m_PointMass.size(); iwm++)
 		{
 			PointMass *pm = pBody->m_PointMass.at(iwm);
-			QList<QStandardItem*> bodyPointMassFolder = prepareRow("Point mass");
+			QList<QStandardItem*> bodyPointMassFolder = prepareRow(QString("Point_mass_%1").arg(iwm+1));
 
 			bodyInertiaFolder.first()->appendRow(bodyPointMassFolder);
 			{
+				if(m_enumActiveObject==BODY && m_iActivePointMass==iwm)
+				{
+					m_pStruct->expand(m_pModel->indexFromItem(bodyPointMassFolder.first()));
+				}
 				QList<QStandardItem*> dataItem = prepareRow("", "Tag", pm->tag());
 				bodyPointMassFolder.first()->appendRow(dataItem);
 
@@ -1297,6 +1417,10 @@ void ViewObjectDlg::fillBodyTreeView(QStandardItem*planeRootItem)
 	QList<QStandardItem*> bodyFrameFolder = prepareRow("Frames");
 	bodyFolder.first()->appendRow(bodyFrameFolder);
 	{
+		if(m_iActiveFrame>=0)
+		{
+			m_pStruct->expand(m_pModel->indexFromItem(bodyFrameFolder.first()));
+		}
 		for(int iFrame=0; iFrame<pBody->splineSurface()->frameCount(); iFrame++)
 		{
 			Frame *pFrame = pBody->splineSurface()->frameAt(iFrame);
@@ -1356,11 +1480,13 @@ void ViewObjectDlg::readViewLevel(QModelIndex indexLevel)
 	int iw=0;
 	do
 	{
+		object = indexLevel.sibling(indexLevel.row(),0).data().toString();
+		field = indexLevel.sibling(indexLevel.row(),1).data().toString();
+		value = indexLevel.sibling(indexLevel.row(),2).data().toString();
+		dataIndex = subIndex.sibling(subIndex.row(),2);
+
 		if(indexLevel.child(0,0).isValid())
 		{
-			object = indexLevel.sibling(indexLevel.row(),0).data().toString();
-			field = indexLevel.sibling(indexLevel.row(),1).data().toString();
-			value = indexLevel.sibling(indexLevel.row(),2).data().toString();
 
 			if(object.compare("Body", Qt::CaseInsensitive)==0)
 				readBodyTree(m_pPlane->body(), indexLevel.child(0,0));
@@ -1388,8 +1514,18 @@ void ViewObjectDlg::readViewLevel(QModelIndex indexLevel)
 				m_pPlane->WingTiltAngle(iWing) = wingTiltAngle;
 				iw++;
 			}
+			else if(object.compare("inertia", Qt::CaseInsensitive)==0)
+			{
+				double volumeMass;
+				readInertiaTree(volumeMass, m_pPlane->m_PointMass, indexLevel.child(0,0));
+			}
+
 			else readViewLevel(indexLevel.child(0,0));
 		}
+		else if(field.compare("hasBody", Qt::CaseInsensitive)==0)        m_pPlane->hasBody()       = stringToBool(value);
+		else if(field.compare("hasSecondWing", Qt::CaseInsensitive)==0)  m_pPlane->hasSecondWing() = stringToBool(value);
+		else if(field.compare("hasElevator", Qt::CaseInsensitive)==0)    m_pPlane->hasElevator()   = stringToBool(value);
+		else if(field.compare("hasFin", Qt::CaseInsensitive)==0)         m_pPlane->hasFin()        = stringToBool(value);
 		indexLevel = indexLevel.sibling(indexLevel.row()+1,0);
 	} while(indexLevel.isValid());
 }
@@ -1575,8 +1711,6 @@ void ViewObjectDlg::readBodyTree(Body *pBody, QModelIndex indexLevel)
 
 			if     (field.compare("Name", Qt::CaseInsensitive)==0)     pBody->bodyName() = value;
 			else if(field.compare("Type", Qt::CaseInsensitive)==0)     pBody->bodyType() = XFLR5::BODYSPLINETYPE; /** @todo improve */
-			else if(field.compare("Active body", Qt::CaseInsensitive)==0)
-				m_pPlane->hasBody() = stringToBool(value);
 		}
 
 		indexLevel = indexLevel.sibling(indexLevel.row()+1,0);
@@ -1625,7 +1759,6 @@ void ViewObjectDlg::readWingSectionTree(Wing *pWing, QModelIndex indexLevel)
 		field = indexLevel.sibling(indexLevel.row(),1).data().toString();
 		value = indexLevel.sibling(indexLevel.row(),2).data().toString();
 
-//qDebug()<<object<<field<<value;
 
 		dataIndex = indexLevel.sibling(indexLevel.row(),2);
 
@@ -1661,7 +1794,7 @@ void ViewObjectDlg::readInertiaTree(double &volumeMass, QList<PointMass*>&pointM
 		if(indexLevel.child(0,0).isValid())
 		{
 			object = indexLevel.sibling(indexLevel.row(),0).data().toString();
-			if(object.compare("Point mass", Qt::CaseInsensitive)==0)
+			if(object.indexOf("Point_mass_", Qt::CaseInsensitive)>=0)
 			{
 				PointMass *ppm = new PointMass;
 				readPointMassTree(ppm, indexLevel.child(0,0));
@@ -1728,17 +1861,15 @@ void ViewObjectDlg::readVectorTree(CVector &V, QModelIndex indexLevel)
 
 		indexLevel = indexLevel.sibling(indexLevel.row()+1,0);
 	} while(indexLevel.isValid());
-
 }
 
 
 
 void ViewObjectDlg::OnItemClicked(const QModelIndex &index)
 {
-	highlightSelection(index);
+	identifySelection(index);
 	m_pGLWidget->updateGL();
 }
-
 
 
 
@@ -1750,11 +1881,16 @@ void ViewObjectDlg::OnCellChanged(QWidget *)
 
 
 
-
-void ViewObjectDlg::highlightSelection(const QModelIndex &indexSel)
+void ViewObjectDlg::identifySelection(const QModelIndex &indexSel)
 {
 	// we highlight wing sections and body frames
 	// so check if the user's selection is one of these
+	m_enumActiveObject = NOOBJECT;
+	m_enumActiveWingType = XFLR5::OTHERWING;
+	m_iActiveFrame     = -1;
+	m_iActiveSection   = -1;
+	m_iActivePointMass = -1;
+
 	QModelIndex indexLevel = indexSel;
 	QString object, value;
 	do
@@ -1773,34 +1909,336 @@ void ViewObjectDlg::highlightSelection(const QModelIndex &indexSel)
 
 				if(object.compare("Wing", Qt::CaseInsensitive)==0)
 				{
-					object = indexLevel.sibling(indexLevel.row(),0).data().toString();
+					m_enumActiveObject = WING;
 					m_enumActiveWingType = wingType(indexLevel.sibling(indexLevel.row(),2).data().toString());
 				}
 				indexLevel = indexLevel.parent();
 			} while(indexLevel.isValid());
 
-
-
-
 			m_iActiveFrame = -1;
+			m_iActivePointMass = -1;
 			m_bResetglSectionHighlight = true;
 			return;
 		}
 		else if(object.indexOf("Frame_", 0, Qt::CaseInsensitive)>=0)
 		{
+			m_enumActiveObject = BODY;
 			m_iActiveFrame = object.right(object.length()-6).toInt() -1;
 			m_iActiveSection = -1;
+			m_iActivePointMass = -1;
 			m_bResetglSectionHighlight = true;
 			return;
 		}
+		else if(object.indexOf("Point_Mass_", 0, Qt::CaseInsensitive)>=0)
+		{
+			m_iActivePointMass = object.right(object.length()-11).toInt() -1;
+			m_iActiveSection = -1;
+			m_iActiveFrame   = -1;
+			//the parent object may be a wing, a body or the plane itself
+			indexLevel = indexLevel.parent();
+			do
+			{
+				object = indexLevel.sibling(indexLevel.row(),0).data().toString();
+
+				if(object.compare("Wing", Qt::CaseInsensitive)==0)
+				{
+					m_enumActiveObject = WING;
+					m_enumActiveWingType = wingType(indexLevel.sibling(indexLevel.row(),2).data().toString());
+					return;
+				}
+				else if(object.compare("Body", Qt::CaseInsensitive)==0)
+				{
+					m_enumActiveObject = BODY;
+					return;
+				}
+				else if(object.compare("Plane", Qt::CaseInsensitive)==0)
+				{
+					m_enumActiveObject = PLANE;
+					return;
+				}
+				indexLevel = indexLevel.parent();
+			} while(indexLevel.isValid());
+			return;
+		}
+		else if(object.compare("Wing", Qt::CaseInsensitive)==0)
+		{
+			m_enumActiveObject = WING;
+			m_enumActiveWingType = wingType(indexLevel.sibling(indexLevel.row(),2).data().toString());
+			return;
+		}
+		else if(object.compare("Body", Qt::CaseInsensitive)==0)
+		{
+			m_enumActiveObject = BODY;
+			m_enumActiveWingType = XFLR5::OTHERWING;
+			return;
+		}
+
 		indexLevel = indexLevel.parent();
 	} while(indexLevel.isValid());
-
 }
 
 
 
+void ViewObjectDlg::OnInsertBefore()
+{
+	Wing *pWing = m_pPlane->wing(m_enumActiveWingType);
 
+	if(pWing && m_iActiveSection>=0 && m_iActiveSection<pWing->NWingSection() && m_enumActiveWingType!=XFLR5::OTHERWING)
+	{
+		if(m_iActiveSection==0)
+		{
+			QMessageBox::warning(this, tr("Warning"), tr("No insertion possible before the first section"));
+			return;
+		}
+
+
+		int n = m_iActiveSection;
+
+		pWing->InsertSection(m_iActiveSection);
+
+		pWing->YPosition(n) = (pWing->YPosition(n+1) + pWing->YPosition(n-1)) /2.0;
+		pWing->Chord(n)     = (pWing->Chord(n+1)     + pWing->Chord(n-1))     /2.0;
+		pWing->Offset(n)    = (pWing->Offset(n+1)    + pWing->Offset(n-1))    /2.0;
+		pWing->Twist(n)     = (pWing->Twist(n+1)     + pWing->Twist(n-1))     /2.0;
+		pWing->Dihedral(n)  = (pWing->Dihedral(n+1)  + pWing->Dihedral(n-1))  /2.0;
+
+		pWing->XPanelDist(n) = pWing->XPanelDist(n-1);
+		pWing->YPanelDist(n) = pWing->YPanelDist(n-1);
+
+		pWing->RightFoil(n) = pWing->RightFoil(n-1);
+		pWing->LeftFoil(n)  = pWing->LeftFoil(n-1);
+
+		pWing->NXPanels(n)   = pWing->NXPanels(n-1);
+
+
+		int ny = pWing->NYPanels(n-1);
+		pWing->NYPanels(n)   = (int)(ny/2);
+		pWing->NYPanels(n-1) = ny-pWing->NYPanels(n);
+		if(pWing->NYPanels(n)==0)   pWing->NYPanels(n)++;
+		if(pWing->NYPanels(n-1)==0) pWing->NYPanels(n-1)++;
+
+
+		m_pStruct->closePersistentEditor(m_pStruct->currentIndex());
+		fillPlaneTreeView();
+		m_pPlane->CreateSurfaces();
+
+		m_bChanged = true;
+		m_bResetglSectionHighlight = true;
+		m_bResetglPlane = true;
+		m_pGLWidget->updateGL();
+	}
+	else if(m_pPlane->body() && m_iActiveFrame>=0)
+	{
+		m_pPlane->body()->insertFrameBefore(m_iActiveFrame);
+
+		m_pStruct->closePersistentEditor(m_pStruct->currentIndex());
+		fillPlaneTreeView();
+		m_pPlane->CreateSurfaces();
+
+		m_bChanged = true;
+		m_bResetglSectionHighlight = true;
+		m_bResetglPlane = true;
+		m_bResetglBody   = true;
+		m_pGLWidget->updateGL();
+	}
+	else if(m_enumActiveObject!=NOOBJECT && m_iActivePointMass>=0)
+	{
+		if(m_enumActiveObject==PLANE)
+		{
+			m_pPlane->m_PointMass.insert(m_iActivePointMass, new PointMass);
+		}
+		else if(m_enumActiveObject==WING)
+		{
+			m_pPlane->wing(m_enumActiveWingType)->m_PointMass.insert(m_iActivePointMass, new PointMass);
+		}
+		else if(m_enumActiveObject==BODY && m_pPlane->body())
+		{
+			m_pPlane->body()->m_PointMass.insert(m_iActivePointMass, new PointMass);
+		}
+
+
+		m_pStruct->closePersistentEditor(m_pStruct->currentIndex());
+		fillPlaneTreeView();
+		m_pPlane->CreateSurfaces();
+
+		m_bChanged = true;
+		m_bResetglSectionHighlight = true;
+		m_pGLWidget->updateGL();
+
+	}
+}
+
+
+
+void ViewObjectDlg::OnInsertAfter()
+{
+	Wing *pWing = m_pPlane->wing(m_enumActiveWingType);
+
+	if(pWing && m_iActiveSection>=0 && m_iActiveSection<pWing->NWingSection() && m_enumActiveWingType!=XFLR5::OTHERWING)
+	{
+		int n = m_iActiveSection;
+
+		if(n<0) n=pWing->NWingSection();
+
+		pWing->InsertSection(m_iActiveSection+1);
+
+		if(n<pWing->NWingSection()-2)
+		{
+			pWing->YPosition(n+1)      = (pWing->YPosition(n)      + pWing->YPosition(n+2))     /2.0;
+			pWing->Chord(n+1)    = (pWing->Chord(n)    + pWing->Chord(n+2))   /2.0;
+			pWing->Offset(n+1)   = (pWing->Offset(n)   + pWing->Offset(n+2))  /2.0;
+			pWing->Twist(n+1)    = (pWing->Twist(n)    + pWing->Twist(n+2))   /2.0;
+		}
+		else
+		{
+			pWing->YPosition(n+1)     = pWing->YPosition(n)*1.1;
+			pWing->Chord(n+1)   = pWing->Chord(n)/1.1;
+			pWing->Offset(n+1)  = pWing->Offset(n) + pWing->Chord(n) - pWing->Chord(n) ;
+			pWing->Twist(n+1)     = pWing->Twist(n);
+		}
+
+		pWing->Dihedral(n+1)  = pWing->Dihedral(n);
+		pWing->NXPanels(n+1)   = pWing->NXPanels(n);
+		pWing->NYPanels(n+1)   = pWing->NYPanels(n);
+		pWing->XPanelDist(n+1) = pWing->XPanelDist(n);
+		pWing->YPanelDist(n+1) = pWing->YPanelDist(n);
+		pWing->RightFoil(n+1)  = pWing->RightFoil(n);
+		pWing->LeftFoil(n+1)   = pWing->LeftFoil(n);
+
+		int ny = pWing->NYPanels(n);
+		pWing->NYPanels(n+1) = qMax(1,(int)(ny/2));
+		pWing->NYPanels(n)   = qMax(1,ny-pWing->NYPanels(n+1));
+
+	//	m_pWing->m_bVLMAutoMesh = true;
+
+		m_pStruct->closePersistentEditor(m_pStruct->currentIndex());
+		fillPlaneTreeView();
+		m_pPlane->CreateSurfaces();
+
+
+		m_iActiveSection++;
+		m_bChanged = true;
+		m_bResetglSectionHighlight = true;
+		m_bResetglPlane = true;
+		m_pGLWidget->updateGL();
+	}
+	else if(m_pPlane->body() && m_iActiveFrame>=0)
+	{
+		m_pPlane->body()->insertFrameAfter(m_iActiveFrame);
+
+		m_pStruct->closePersistentEditor(m_pStruct->currentIndex());
+		fillPlaneTreeView();
+		m_pPlane->CreateSurfaces();
+
+		m_iActiveFrame++;
+		m_bChanged = true;
+		m_bResetglSectionHighlight = true;
+		m_bResetglPlane = true;
+		m_bResetglBody   = true;
+		m_pGLWidget->updateGL();
+	}
+	else if(m_enumActiveObject!=NOOBJECT && m_iActivePointMass>=0)
+	{
+		if(m_enumActiveObject==PLANE)
+		{
+			m_pPlane->m_PointMass.insert(m_iActivePointMass+1, new PointMass);
+			m_iActivePointMass++;
+		}
+		else if(m_enumActiveObject==WING)
+		{
+			m_pPlane->wing(m_enumActiveWingType)->m_PointMass.insert(m_iActivePointMass+1, new PointMass);
+			m_iActivePointMass++;
+		}
+		else if(m_enumActiveObject==BODY && m_pPlane->body())
+		{
+			m_pPlane->body()->m_PointMass.insert(m_iActivePointMass+1, new PointMass);
+			m_iActivePointMass++;
+		}
+
+
+		m_pStruct->closePersistentEditor(m_pStruct->currentIndex());
+		fillPlaneTreeView();
+		m_pPlane->CreateSurfaces();
+
+		m_bChanged = true;
+		m_bResetglSectionHighlight = true;
+		m_pGLWidget->updateGL();
+
+	}
+}
+
+
+void ViewObjectDlg::OnDelete()
+{
+	if(m_iActiveSection>=0 && m_enumActiveWingType!=XFLR5::OTHERWING)
+	{
+		if(m_iActiveSection==0)
+		{
+			QMessageBox::warning(this, tr("Warning"),tr("The wing's first section cannot be deleted"));
+			return;
+		}
+
+		Wing *pWing = m_pPlane->wing(m_enumActiveWingType);
+
+		if(pWing->NWingSection()<=2)
+		{
+			QMessageBox::warning(this, tr("Warning"),tr("The wing cannot have less than two sections"));
+			return;
+		}
+
+		m_pStruct->closePersistentEditor(m_pStruct->currentIndex());
+
+		int ny = pWing->NYPanels(m_iActiveSection-1) + pWing->NYPanels(m_iActiveSection);
+		pWing->RemoveWingSection(m_iActiveSection);
+		pWing->NYPanels(m_iActiveSection-1) = ny;
+
+		fillPlaneTreeView();
+		m_pPlane->CreateSurfaces();
+
+		m_bChanged = true;
+		m_bResetglSectionHighlight = true;
+		m_bResetglPlane = true;
+		m_pGLWidget->updateGL();
+	}
+	else if(m_pPlane->body() && m_iActiveFrame>=0)
+	{
+		m_pPlane->body()->RemoveFrame(m_iActiveFrame);
+
+		m_pStruct->closePersistentEditor(m_pStruct->currentIndex());
+		fillPlaneTreeView();
+		m_pPlane->CreateSurfaces();
+
+		m_bChanged = true;
+		m_bResetglSectionHighlight = true;
+		m_bResetglPlane = true;
+		m_bResetglBody   = true;
+		m_pGLWidget->updateGL();
+	}
+	else if(m_enumActiveObject!=NOOBJECT && m_iActivePointMass>=0)
+	{
+		if(m_enumActiveObject==PLANE)
+		{
+			m_pPlane->m_PointMass.removeAt(m_iActivePointMass);
+		}
+		else if(m_enumActiveObject==WING)
+		{
+			m_pPlane->wing(m_enumActiveWingType)->m_PointMass.removeAt(m_iActivePointMass);
+		}
+		else if(m_enumActiveObject==BODY && m_pPlane->body())
+		{
+			m_pPlane->body()->m_PointMass.removeAt(m_iActivePointMass);
+		}
+
+
+		m_pStruct->closePersistentEditor(m_pStruct->currentIndex());
+		fillPlaneTreeView();
+		m_pPlane->CreateSurfaces();
+
+		m_bChanged = true;
+		m_bResetglSectionHighlight = true;
+		m_pGLWidget->updateGL();
+	}
+}
 
 
 

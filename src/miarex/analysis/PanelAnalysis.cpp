@@ -333,8 +333,7 @@ void PanelAnalysis::setObjectPointers(void *pPlane, void *pSurfaceList)
 	m_pPlane    = (Plane*)pPlane;
 	for(int iw=0; iw<MAXWINGS; iw++)
 	{
-		if(m_pPlane->wing())
-		m_pWingList[iw] = m_pPlane->getWing(iw);
+		m_pWingList[iw] = m_pPlane->wing(iw);
 	}
 
 	m_ppSurface = (QList<Surface*>*)pSurfaceList;

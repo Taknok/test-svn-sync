@@ -30,7 +30,10 @@ class PointMass
 {
 public:
 	/** The public constructor */
-	PointMass(){}
+	PointMass()
+	{
+		m_Mass = 0.0;
+	}
 
 	/** Overloaded public constructor */
 	PointMass(PointMass *pPtMass)
