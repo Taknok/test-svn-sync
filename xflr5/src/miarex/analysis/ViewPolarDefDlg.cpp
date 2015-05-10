@@ -88,9 +88,11 @@ void ViewPolarDefDlg::setupLayout()
 	labels << tr("Object") << tr("Field")<<tr("Value")<<tr("Unit");
 
 	m_pStruct = new QTreeView;
-
+#if QT_VERSION >= 0x050000
 	m_pStruct->header()->setSectionResizeMode(QHeaderView::Interactive);
+#endif
 //	m_pPlaneStruct->header()->setDefaultSectionSize(239);
+
 	m_pStruct->header()->setStretchLastSection(true);
 	m_pStruct->header()->setDefaultAlignment(Qt::AlignCenter);
 
