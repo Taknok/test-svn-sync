@@ -163,7 +163,10 @@ void ViewObjectDlg::setupLayout()
 
 	m_pStruct = new QTreeView;
 
+#if QT_VERSION >= 0x050000
 	m_pStruct->header()->setSectionResizeMode(QHeaderView::Interactive);
+#endif
+
 //	m_pPlaneStruct->header()->setDefaultSectionSize(239);
 	m_pStruct->header()->setStretchLastSection(true);
 	m_pStruct->header()->setDefaultAlignment(Qt::AlignCenter);
@@ -493,7 +496,7 @@ void ViewObjectDlg::reject()
 
 void ViewObjectDlg::GLDraw3D()
 {
-	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+//	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	m_pGLWidget->makeCurrent();
 	glClearColor(Settings::s_BackgroundColor.redF(), Settings::s_BackgroundColor.greenF(), Settings::s_BackgroundColor.blueF(),0.0);
@@ -562,7 +565,7 @@ void ViewObjectDlg::GLDraw3D()
 
 		m_bResetglPlane = false;
 	}
-	QApplication::restoreOverrideCursor();
+//	QApplication::restoreOverrideCursor();
 }
 
 
