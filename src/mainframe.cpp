@@ -2513,6 +2513,8 @@ QColor MainFrame::GetColor(int type)
 
 void MainFrame::keyPressEvent(QKeyEvent *event)
 {
+	bool bCtrl = (event->modifiers() & Qt::ControlModifier);
+
 	if(m_iApp == XFLR5::XFOILANALYSIS && m_pXDirect)
 	{
 		QXDirect* pXDirect = (QXDirect*)m_pXDirect;
@@ -2537,6 +2539,36 @@ void MainFrame::keyPressEvent(QKeyEvent *event)
 	{
 		switch (event->key())
 		{
+		    case Qt::Key_1:
+		    {
+				if(bCtrl) OnAFoil();
+				break;
+			}
+		    case Qt::Key_2:
+		    {
+				if(bCtrl) OnAFoil();
+				break;
+			}
+		    case Qt::Key_3:
+		    {
+				if(bCtrl) OnXInverse();
+				break;
+			}
+		    case Qt::Key_4:
+		    {
+				if(bCtrl) OnXInverseMixed();
+				break;
+			}
+		    case Qt::Key_5:
+		    {
+				if(bCtrl) OnXDirect();
+				break;
+		    }
+		    case Qt::Key_6:
+		    {
+			    if(bCtrl) OnMiarex();
+				break;
+			}
 			case Qt::Key_L:
 			{
 				OnLogFile();
