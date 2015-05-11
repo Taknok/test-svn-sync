@@ -103,9 +103,9 @@ ThreeDWidget::ThreeDWidget(QWidget *parent)
 
 	m_LastPoint.setX(0);
 	m_LastPoint.setY(0);
-	m_PointDown.setX(0);
-	m_PointDown.setY(0);
 
+	m_PixText = QPixmap(107, 97);
+	m_PixText.fill(Qt::transparent);
 
 	memset(MatIn,  0, 16*sizeof(double));
 	memset(MatOut, 0, 16*sizeof(double));
@@ -209,7 +209,6 @@ void ThreeDWidget::mousePressEvent(QMouseEvent *event)
 			}
 		}
 
-		m_PointDown = point;
 		m_LastPoint = point;
 	}
 }
@@ -532,6 +531,9 @@ void ThreeDWidget::paintEvent(QPaintEvent *event)
 //		painter.setBackgroundMode(Qt::TransparentMode);
 //		painter.setOpacity(1);
 		painter.drawPixmap(0,0, pMiarex->m_PixText);
+		painter.drawPixmap(0,0, m_PixText);
+		m_PixText.fill(Qt::transparent);
+
 
 	}
 	else if(m_iView == GLBODYVIEW)
@@ -569,6 +571,10 @@ void ThreeDWidget::resizeGL(int width, int height)
 	glLoadIdentity();
 	if(w>h)	m_GLViewRect.SetRect(-s, s*h/w, s, -s*h/w);
 	else    m_GLViewRect.SetRect(-s*w/h, s, s*w/h, -s*h/w);
+
+	m_PixText = m_PixText.scaled(rect().size());
+
+
 
 
 	if(m_iView == GLMIAREXVIEW)
@@ -779,7 +785,8 @@ void ThreeDWidget::GLDrawAxes(double length, QColor AxisColor, int AxisStyle, in
 	glEnd();
 	glDisable (GL_LINE_STIPPLE);
 	//XLabel
-	renderText( l, 0.0, 0.0, "X", Settings::s_TextFont);
+//	renderText( l, 0.0, 0.0, "X", Settings::s_TextFont);
+	GLRenderText( l, 0.0, 0.0, "X");
 
 
 	// Y axis____________
@@ -800,7 +807,8 @@ void ThreeDWidget::GLDrawAxes(double length, QColor AxisColor, int AxisStyle, in
 	glEnd();
 	glDisable (GL_LINE_STIPPLE);
 	//Y Label
-	renderText( 0.0, l, 0.0, "Y", Settings::s_TextFont);
+//	renderText( 0.0, l, 0.0, "Y", Settings::s_TextFont);
+	GLRenderText( 0.0, l, 0.0, "Y");
 
 
 	// Z axis____________
@@ -821,7 +829,8 @@ void ThreeDWidget::GLDrawAxes(double length, QColor AxisColor, int AxisStyle, in
 	glEnd();
 	glDisable (GL_LINE_STIPPLE);
 	//ZLabel
-	renderText( 0.0, 0.0, l, "Z", Settings::s_TextFont);
+//	renderText( 0.0, 0.0, l, "Z", Settings::s_TextFont);
+	GLRenderText( 0.0, 0.0, l, "Z");
 
 	glDisable (GL_LINE_STIPPLE);
 }
@@ -1426,6 +1435,64 @@ void ThreeDWidget::On3DReset()
 	Set3DRotationCenter();
 	updateGL();
 }
+
+
+
+QSize ThreeDWidget::sizeHint() const
+{
+	return QSize(640, 480);
+}
+
+
+
+void ThreeDWidget::GLRenderText(double x, double y, double z, const QString & str)
+{
+	static QPoint point;
+
+	static float m_modelViewMat[16], m_projMat[16];
+	static float m_V[16];
+	m_V[0] = (float)x;
+	m_V[1] = (float)y;
+	m_V[2] = (float)z;
+	m_V[3] = 1.0f;
+
+	glGetFloatv(GL_MODELVIEW_MATRIX, m_modelViewMat);
+	glGetFloatv(GL_PROJECTION_MATRIX, m_projMat);
+
+	glPushMatrix();
+	{
+		glLoadMatrixf(m_projMat);
+		glMultMatrixf(m_modelViewMat);
+		glMultMatrixf(m_V);
+		glGetFloatv(GL_MODELVIEW_MATRIX,  m_V);
+	}
+	glPopMatrix();
+
+
+	QPainter paint(&m_PixText);
+	paint.save();
+	QPen textPen(Settings::s_TextColor);
+	paint.setPen(textPen);
+	GLToClient(m_V[0], m_V[1], point);
+
+	paint.drawText(point, str);
+	paint.restore();
+}
+
+
+
+
+void ThreeDWidget::GLRenderText(int x, int y, const QString & str)
+{
+	QPainter paint(&m_PixText);
+	paint.save();
+	QPen textPen(Settings::s_TextColor);
+	paint.setPen(textPen);
+
+	paint.drawText(x,y, str);
+	paint.restore();
+}
+
 
 
 
