@@ -163,8 +163,7 @@ QMiarex::QMiarex(QWidget *parent)
 
 	m_pglLightDlg = new GLLightDlg(pMainFrame);
 
-	//create a default pix from a random image - couldn't find a better way to do this
-	m_PixText = QPixmap(":/images/xflr5_64.png");
+	m_PixText = QPixmap(107, 97);
 	m_PixText.fill(Qt::transparent);
 
 	m_pXFile      = NULL;
@@ -2663,10 +2662,11 @@ void QMiarex::GLDrawMasses()
 
 
 					glColor3d(0.5, 1.0, 0.5);
-					p3dWidget->renderText(0.0, 0.0, zdist,
+					p3dWidget->GLRenderText(0.0, 0.0, zdist,
 										  m_pWingList[iw]->m_WingName+
 										  QString(" %1").arg(m_pWingList[iw]->m_VolumeMass*Units::kgtoUnit(), 7,'g',3)+
 										  MassUnit);
+
 				}
 			}
 			glPopMatrix();
@@ -2687,10 +2687,10 @@ void QMiarex::GLDrawMasses()
 					glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
 					p3dWidget->GLRenderSphere(W3dPrefsDlg::s_MassRadius/m_glScaled);
 					glColor3d(Settings::s_TextColor.redF(), Settings::s_TextColor.greenF(), Settings::s_TextColor.blueF());
-					p3dWidget->renderText(0.0, 0.0, 0.0 +.02,
-										  m_pWingList[iw]->m_PointMass[im]->tag()
-										  +QString(" %1").arg(m_pWingList[iw]->m_PointMass[im]->mass()*Units::kgtoUnit(), 7,'g',3)
-										  +MassUnit);
+					p3dWidget->GLRenderText(0.0, 0.0, 0.0 +.02,
+											m_pWingList[iw]->m_PointMass[im]->tag()
+											+QString(" %1").arg(m_pWingList[iw]->m_PointMass[im]->mass()*Units::kgtoUnit(), 7,'g',3)
+											+MassUnit);
 				}
 				glPopMatrix();
 			}
@@ -2710,10 +2710,10 @@ void QMiarex::GLDrawMasses()
 				glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
 				p3dWidget->GLRenderSphere(W3dPrefsDlg::s_MassRadius/m_glScaled);
 				glColor3d(Settings::s_TextColor.redF(), Settings::s_TextColor.greenF(), Settings::s_TextColor.blueF());
-				p3dWidget->renderText(0.0,0.0,0.0+.02,
-								  m_pCurPlane->m_PointMass[im]->tag()
-								  +QString(" %1").arg(m_pCurPlane->m_PointMass[im]->mass()*Units::kgtoUnit(), 7,'g',3)
-								  +MassUnit);
+				p3dWidget->GLRenderText(0.0,0.0,0.0+.02,
+										m_pCurPlane->m_PointMass[im]->tag()
+										+QString(" %1").arg(m_pCurPlane->m_PointMass[im]->mass()*Units::kgtoUnit(), 7,'g',3)
+										+MassUnit);
 			}
 			glPopMatrix();
 		}
@@ -2734,10 +2734,10 @@ void QMiarex::GLDrawMasses()
 							 m_pCurPlane->bodyPos().z);
 
 				glColor3d(0.5, 1.0, 0.5);
-				p3dWidget->renderText(0.0, 0.0, zdist,
-								  pCurBody->m_BodyName+
-								  QString(" %1").arg(pCurBody->m_VolumeMass*Units::kgtoUnit(), 7,'g',3)+
-								  MassUnit);
+				p3dWidget->GLRenderText(0.0, 0.0, zdist,
+									  pCurBody->m_BodyName+
+									  QString(" %1").arg(pCurBody->m_VolumeMass*Units::kgtoUnit(), 7,'g',3)
+									  +MassUnit);
 			}
 		}
 		glPopMatrix();
@@ -2758,10 +2758,10 @@ void QMiarex::GLDrawMasses()
 				p3dWidget->GLRenderSphere(W3dPrefsDlg::s_MassRadius/m_glScaled);
 
 				glColor3d(Settings::s_TextColor.redF(), Settings::s_TextColor.greenF(), Settings::s_TextColor.blueF());
-				p3dWidget->renderText(0.0, 0.0, 0.0+.02,
-								  pCurBody->m_PointMass[im]->tag()
-								  +QString(" %1").arg(pCurBody->m_PointMass[im]->mass()*Units::kgtoUnit(), 7,'g',3)
-								  +MassUnit);
+				p3dWidget->GLRenderText(0.0, 0.0, 0.0+.02,
+										pCurBody->m_PointMass[im]->tag()
+										+QString(" %1").arg(pCurBody->m_PointMass[im]->mass()*Units::kgtoUnit(), 7,'g',3)
+										+MassUnit);
 			}
 			glPopMatrix();
 		}
@@ -2783,9 +2783,9 @@ void QMiarex::GLDrawMasses()
 			glColor3d(1.0, 0.5, 0.5);
 			p3dWidget->GLRenderSphere(W3dPrefsDlg::s_MassRadius*2.0/m_glScaled);
 			glColor3d(Settings::s_TextColor.redF(), Settings::s_TextColor.greenF(), Settings::s_TextColor.blueF());
-			p3dWidget->renderText(0.0, 0.0, 0.0+.02,
-							  "CoG "+QString("%1").arg(Mass*Units::kgtoUnit(), 7,'g',3)
-							  +MassUnit);
+			p3dWidget->GLRenderText(0.0, 0.0, 0.0+.02,
+									"CoG "+QString("%1").arg(Mass*Units::kgtoUnit(), 7,'g',3)
+									+MassUnit);
 		}
 		glPopMatrix();
 	}
@@ -2821,11 +2821,8 @@ void QMiarex::GLDrawFoils()
 									 m_pWingList[iw]->m_Surface.at(j)->m_TA.y,
 									 m_pWingList[iw]->m_Surface.at(j)->m_TA.z);
 
-                        p3dWidget->renderText(0.0,
-                                              0.0,
-                                              zdist,
-											  pFoil->m_FoilName, Settings::s_TextFont);
-                    }
+						p3dWidget->GLRenderText(0.0, 0.0, zdist, pFoil->m_FoilName);
+					}
                     glPopMatrix();
 				}
 			}
@@ -2838,10 +2835,7 @@ void QMiarex::GLDrawFoils()
 					glTranslated(m_pWingList[iw]->m_Surface.at(j)->m_TB.x,
 								 m_pWingList[iw]->m_Surface.at(j)->m_TB.y,
 								 m_pWingList[iw]->m_Surface.at(j)->m_TB.z);
-                    p3dWidget->renderText(0.0,
-                                          0.0,
-                                          zdist,
-										  pFoil->m_FoilName, Settings::s_TextFont);
+					p3dWidget->GLRenderText(0.0, 0.0, zdist, pFoil->m_FoilName);
                 }
                 glPopMatrix();
             }
@@ -2903,7 +2897,7 @@ void QMiarex::GLRenderView()
 		if(m_pCurPOpp && m_pCurPOpp->m_WPolarType==XFLR5::STABILITYPOLAR)
 		{
 			QString strong = QString(tr("Time =")+"%1s").arg(m_ModeTime,6,'f',3);
-			p3dWidget->renderText(15, 15, strong, Settings::s_TextFont);
+			p3dWidget->GLRenderText(15, 15, strong);
 		}
 
 		if(pgllDlg->isVisible())

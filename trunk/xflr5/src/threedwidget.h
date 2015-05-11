@@ -30,6 +30,7 @@
 #define THREEDWIDGET_H
 
 #include <QGLWidget>
+#include <QPixmap>
 #include "params.h"
 #include "objects/CRectangle.h"
 #include "objects/ArcBall.h"
@@ -68,6 +69,8 @@ public:
 	void GLCreateUnitSphere();
 	void GLRenderView();
 	void GLRenderSphere(double radius);
+	void GLRenderText(double x, double y, double z, const QString & str);
+	void GLRenderText(int x, int y, const QString & str);
 	void GLSetupLight(double Offset_y, double LightFactor);
 	void GLToClient(CVector const &real, QPoint &point);
     void GLToClient(double const &x, double const &y, QPoint &point);
@@ -94,6 +97,7 @@ private:
 	void resizeGL(int width, int height);
 	void wheelEvent (QWheelEvent *event );
 	void paintEvent(QPaintEvent *event);
+	QSize sizeHint() const;
 
 	void GLDrawFoils(void *pWing);
 	void setupViewPort(int width, int height);
@@ -134,7 +138,7 @@ private:
 
 	QPoint m_MousePos;
 	QPoint m_ptPopUp;
-	QPoint m_LastPoint, m_PointDown;
+	QPoint m_LastPoint;
 
 
 	CVector m_RealPopUp;
@@ -142,6 +146,7 @@ private:
 	CVector m_glRotCenter;    // the center of rotation in object coordinates... is also the opposite of the translation vector
 
 	ArcBall m_ArcBall;
+	QPixmap m_PixText;
 };
 
 #endif
