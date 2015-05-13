@@ -28,7 +28,7 @@
 
 #include <WPolar.h>
 #include "../objects/Plane.h"
-#include "../design/ViewObjectDelegate.h"
+#include "../design/EditObjectDelegate.h"
 
 
 class ViewPolarDefDlg : public QDialog
@@ -53,6 +53,7 @@ public:
 
 	void initDialog(Plane *pPlane, WPolar *pWPolar);
 	void setupLayout();
+	void setWPolarName();
 	void showWPolar();
 	void FillControlFields(QList<QStandardItem *> stabControlFolder);
 	void ReadData();
@@ -75,7 +76,7 @@ private:
 	Plane * m_pPlane;
 	QTreeView * m_pStruct;
 	QStandardItemModel *m_pModel;
-	ViewObjectDelegate *m_pDelegate;
+	EditObjectDelegate *m_pDelegate;
 
 
 	QPushButton *pOKButton, *pCancelButton;

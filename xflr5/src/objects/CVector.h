@@ -196,6 +196,11 @@ public:
 		z += tz;
 	}
 
+	CVector translate(const double &tx, const double &ty, const double &tz)
+	{
+		return CVector(x+tx, y+ty,z+tz);
+	}
+
 	int size() const
 	{
 		return 3;//dimension

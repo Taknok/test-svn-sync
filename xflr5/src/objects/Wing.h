@@ -77,7 +77,7 @@ class Wing
 	friend class ManageUFOsDlg;
 	friend class InertiaDlg;
 	friend class StabViewDlg;
-	friend class ViewObjectDlg;
+	friend class EditPlaneDlg;
 
 
 public:
@@ -115,6 +115,8 @@ public:
 	void ComputeGeometry();
 	void ComputeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz);
 	void ComputeBodyAxisInertia();
+
+	bool IntersectWing(CVector O,  CVector U, CVector &I);
 
 	void ScaleSweep(double NewSweep);
 	void ScaleTwist(double NewTwist);

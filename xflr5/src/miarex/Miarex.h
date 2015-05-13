@@ -32,6 +32,7 @@
 
 
 #include "../params.h"
+#include "threedwidget.h"
 #include <QWidget>
 #include <QPixmap>
 #include <QLabel>
@@ -52,7 +53,6 @@
 #include "../misc/MinTextEdit.h"
 #include "../misc/LineCbBox.h"
 #include "../misc/LineDelegate.h"
-#include <ArcBall.h>
 #include <Body.h>
 #include <Wing.h>
 #include <Plane.h>
@@ -112,13 +112,8 @@ signals:
 
 private slots:
 	void On3DCp();
-	void On3DIso();
-	void On3DTop();
-	void On3DLeft();
-	void On3DFront();
 	void On3DPrefs();
 	void On3DReset();
-	void On3DPickCenter();
 	void On3DView();
 	void OnAdjustToWing();
 	void OnAdvancedSettings();
@@ -142,6 +137,7 @@ private slots:
 	void OnCurWOppOnly();
 	void OnDefineStabPolar();
 	void OnDefineWPolar();
+	void OnDefineWPolarObject();
 	void OnDeleteAllWOpps();
 	void OnDeleteAllWPlrOpps();
 	void OnDeleteCurPlane();
@@ -184,6 +180,7 @@ private slots:
 	void OnModalView();
 	void OnMoment();
 	void OnNewPlane();
+	void OnNewPlaneObject();
 	void OnOutline();
 	void OnPanelForce();
 	void OnPanels();
@@ -274,10 +271,9 @@ public:
 	QGraph*  GetGraph(QPoint &pt);
 	void GLCallViewLists();
 	void GLDraw3D();
-	void GLDrawFoils();
 	void GLDrawMasses();
-	void GLInverseMatrix();
 	void GLRenderView();
+	bool IntersectObject(CVector O,  CVector U, CVector &I);
 	void LLTAnalyze(double V0, double VMax, double VDelta, bool bSequence, bool bInitCalc);	
 	bool LoadSettings(QSettings *pSettings);
 	void PaintCpLegendText(QPainter &painter);
@@ -288,13 +284,11 @@ public:
 	void PaintView(QPainter &painter);
 	void PaintWing(QPainter &painter, QPoint ORef, double scale);
 	void PanelAnalyze(double V0, double VMax, double VDelta, bool bSequence);
-	void PaintPlaneLegend(QPainter &painter, QRect drawRect);
+	void PaintPlaneLegend(QPainter &painter, Plane *pPlane, WPolar *pWPolar, QRect drawRect);
 	void PaintPlaneOppLegend(QPainter &painter, QRect drawRect);
 	void RenamePlane(QString PlaneName);
 	bool SaveSettings(QSettings *pSettings);
 	void Set2DScale();
-	void Set3DRotationCenter();
-	void Set3DRotationCenter(QPoint point);
 	void Set3DScale();
 	void SetAnalysisParams();
 	void SetControls();
@@ -355,7 +349,7 @@ public:
 	QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView;
 	QToolButton *m_pctrlX, *m_pctrlY, *m_pctrlZ, *m_pctrlIso;
 
-	QPushButton *m_pctrlReset, *m_pctrlPickCenter;
+	QPushButton *m_pctrlReset;
 	QSlider *m_pctrlClipPlanePos;
 
 	QLabel *m_pctrlUnit1, *m_pctrlUnit2, *m_pctrlUnit3;
@@ -372,8 +366,6 @@ public:
 	static bool s_bSurfaces;                  /**< true if the surfaces are to be displayed in the 3D view*/
 	static bool s_bVLMPanels;                 /**< true if the panels are to be displayed in the 3D view*/
 	static bool s_bAxes;                      /**< true if the axes are to be displayed in the 3D view*/
-	static bool s_bShowMasses;                /**< true if the point masses are to be displayed on the openGL 3D view */
-	static bool s_bFoilNames;                 /**< true if the foil names are to be displayed on the openGL 3D view */
 
 	// Class variables
 
@@ -452,18 +444,12 @@ public:
 	static double s_VelocityScale;            /**< scaling factor for the velocity display in 3D view */
 	static double s_DragScale;                /**< scaling factor for the drag display in 3D view */
 
-	double m_glScaled;                 /**< scaling factor for the object in the 3D view */
-
 	QRect m_r2DCltRect;                /**< the client rectangle, in client coordinates. */
-	QRect m_r3DCltRect;                /**< the drawing rectangle, in client coordinates .*/
 
 	PlaneOpp * m_pCurPOpp;           /**< a pointer to the active Plane Operating Point, or NULL if none is active*/
 
 
 	QPoint m_LastPoint;           /**< The client position of the previous mousepress event */
-
-	CVector m_glViewportTrans;    /**< the translation vector in gl viewport coordinates */
-	CVector m_glRotCenter;        /**< the center of rotation in object coordinates... is also the opposite of the translation vector */
 
 
 	int m_CurveStyle;             /**< The style of the active curve */
@@ -503,11 +489,6 @@ public:
 
 	XFLR5::enumMiarexViews m_iView;    /**< defines the currently active view */
 
-	double m_ClipPlanePos;      /**< the z-position of the clip plane in viewport coordinates */
-	double MatIn[4][4];         /**< array used in the calculations of the transformation matrix in opengl*/
-	double MatOut[4][4];        /**< array used in the calculations of the transformation matrix in opengl*/
-
-	double m_GLScale;	               /**< the OpenGl scale for the view frustrum with respect to the windows device context. Always et to 1.0 */
 
 	double m_CurSpanPos;        /**< Span position for Cp Graph  */
 	double m_WingScale;			/**< scale for 2D display */
@@ -566,7 +547,7 @@ public:
 public:
 	static void *s_pMainFrame;          /**< a pointer to the frame class */
 	static void *s_p2dWidget;           /**< a pointer to mainframe's central widget where 2D drawing is performed */
-	static void *s_p3dWidget;           /**< a pointer to mainframe's central widget where 23 drawing is performed */
+	ThreeDWidget *m_p3dWidget;            /**< a pointer to the openGL widget where 3d calculations and rendering are performed */
 
 	static CVector *s_pNode;              /**< a static pointer to the node array for the currently loaded Plane*/
 	static CVector *s_pMemNode;           /**< a static pointer to used if the analysis should be performed on the tilted geometry */
@@ -581,8 +562,6 @@ public:
 public:
 	QColor m_CpColor;
 	int m_CpStyle, m_CpWidth;
-
-	void *m_pglLightDlg;
 
 };
 

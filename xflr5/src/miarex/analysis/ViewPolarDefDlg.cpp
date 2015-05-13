@@ -110,7 +110,7 @@ void ViewPolarDefDlg::setupLayout()
 	m_pStruct->setModel(m_pModel);
 
 
-	m_pDelegate = new ViewObjectDelegate(this);
+	m_pDelegate = new EditObjectDelegate(this);
 	m_pStruct->setItemDelegate(m_pDelegate);
 
 	QFont fnt;
@@ -248,6 +248,8 @@ void ViewPolarDefDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
 {
 	m_pPlane = pPlane;
 	m_pWPolar = pWPolar;
+
+	setWPolarName();
 	showWPolar();
 	m_pStruct->expandAll();
 }
@@ -588,12 +590,101 @@ void ViewPolarDefDlg::readControlFields(QModelIndex indexLevel)
 
 
 
+void ViewPolarDefDlg::setWPolarName()
+{
+
+	QString strSpeedUnit, strong;
+	QString WPolarName;
+	Units::getSpeedUnitLabel(strSpeedUnit);
+
+	if (m_pWPolar->polarType()==XFLR5::FIXEDSPEEDPOLAR)
+	{
+		WPolarName = QString("T1-%1 ").arg(m_pWPolar->m_QInfSpec * Units::mstoUnit(),0,'f',1);
+		WPolarName += strSpeedUnit;
+	}
+	else if(m_pWPolar->polarType()==XFLR5::FIXEDLIFTPOLAR)
+	{
+		WPolarName = QString("T2");
+	}
+	else if(m_pWPolar->polarType()==XFLR5::FIXEDAOAPOLAR)
+	{
+		WPolarName = QString(QString::fromUtf8("T4-%1°")).arg(m_pWPolar->m_AlphaSpec,0,'f',3);
+	}
+	else if(m_pWPolar->polarType()==XFLR5::BETAPOLAR)
+	{
+		WPolarName = QString(QString::fromUtf8("T5-a%1°-%2"))
+						  .arg(m_pWPolar->m_AlphaSpec,0,'f',1)
+						  .arg(m_pWPolar->m_QInfSpec * Units::mstoUnit(),0,'f',1);
+		WPolarName += strSpeedUnit;
+	}
+
+	if(m_pWPolar->analysisMethod()==XFLR5::LLTMETHOD)
+		WPolarName += "-LLT";
+	else if(m_pWPolar->analysisMethod()==XFLR5::VLMMETHOD)
+	{
+		if(m_pWPolar->m_bVLM1) WPolarName += "-VLM1";
+		else		           WPolarName += "-VLM2";
+	}
+	else if(m_pWPolar->analysisMethod()==XFLR5::PANELMETHOD)
+	{
+		if(m_pPlane->isWing() && !m_pWPolar->m_bThinSurfaces) WPolarName += "-Panel";
+		if(m_pWPolar->m_bThinSurfaces)
+		{
+			if(m_pWPolar->m_bVLM1) WPolarName += "-VLM1";
+			else		           WPolarName += "-VLM2";
+		}
+	}
+
+	if(!m_pWPolar->bAutoInertia())
+	{
+		Units::getWeightUnitLabel(strSpeedUnit);
+		strong = QString("-%1").arg(m_pWPolar->mass()*Units::kgtoUnit(),0,'f',3);
+		if(m_pWPolar->m_WPolarType==XFLR5::FIXEDLIFTPOLAR)   WPolarName += strong+strSpeedUnit;
+		Units::getLengthUnitLabel(strSpeedUnit);
+		strong = QString("-x%1").arg(m_pWPolar->CoG().x*Units::mtoUnit(),0,'f',3);
+		WPolarName += strong + strSpeedUnit;
+
+		if(qAbs(m_pWPolar->CoG().z)>=.000001)
+		{
+			strong = QString("-z%1").arg(m_pWPolar->CoG().z*Units::mtoUnit(),0,'f',3);
+			WPolarName += strong + strSpeedUnit;
+		}
+	}
+//	else WPolarName += "-Plane_Inertia";
 
 
+	if(qAbs(m_pWPolar->m_BetaSpec) > .001 && m_pWPolar->polarType()!=XFLR5::BETAPOLAR)
+	{
+		strong = QString(QString::fromUtf8("-b%1°")).arg(m_pWPolar->m_BetaSpec,0,'f',2);
+		WPolarName += strong;
+	}
+
+	if(m_pWPolar->bTilted())
+	{
+		WPolarName += "-TG";
+		if(m_pWPolar->m_bWakeRollUp) WPolarName += "-W";
+	}
+
+	if(!m_pWPolar->bViscous())
+	{
+		WPolarName += "-Inviscid";
+	}
+
+	if(m_pWPolar->m_bIgnoreBodyPanels && m_pPlane && m_pPlane->body())
+	{
+		WPolarName += "-NoBodyPanels";
+	}
+
+	if(m_pWPolar->bGround())
+	{
+		strong = QString("%1").arg(m_pWPolar->m_Height,0,'f',2),
+		WPolarName += "-G"+strong;
+	}
+	if(m_pWPolar->analysisMethod()!=XFLR5::LLTMETHOD && m_pWPolar->referenceDim()==XFLR5::PROJECTEDREFDIM) WPolarName += "-proj_area";
 
 
-
-
+	m_pWPolar->polarName() = WPolarName;
+}
 
 
 

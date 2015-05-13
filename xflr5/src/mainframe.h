@@ -227,8 +227,8 @@ private:
 	static QPointer<MainFrame> _self; /**< necessary for MacOS >*/
 
 	QStackedWidget *m_pctrlCentralWidget;  /** The stacked widget which is loaded at the center of the display area. The stack holds one TwoDWidget and one ThreeDWidget and sxwitches between the two depending on the user's request. */
-	TwoDWidget *m_p2DWidget;        /** A pointer to the instance of the TwoDWidget which is used to perform 2d drawings */
-	ThreeDWidget   *m_pGLWidget;  /** A pointer to the instance of the ThreeDWidget which is used to perform all 3D drawings */
+	TwoDWidget *m_p2dWidget;        /** A pointer to the instance of the TwoDWidget which is used to perform 2d drawings */
+	ThreeDWidget *m_p3dWidget;   /** A pointer to the instance of the ThreeDWidget  3d calculations and rendering are performed */
 
 	QDockWidget *m_pctrlXDirectWidget, *m_pctrlMiarexWidget, *m_pctrlAFoilWidget, *m_pctrlXInverseWidget;
 	QDockWidget *m_pctrl3DScalesWidget, *m_pctrlStabViewWidget;
@@ -297,7 +297,7 @@ private:
 	//Miarex Actions
 	QAction *WPolarAct, *WOppAct, *W3DAct, *CpViewAct, *StabTimeAct, *RootLocusAct;
 	QAction *W3DPrefsAct, *W3DLightAct, *W3DScalesAct;
-	QAction *definePlaneAct, *editPlaneAct, *editWingAct, *editBodyAct, *savePlaneAsProjectAct;
+	QAction *definePlaneAct, *definePlaneObjectAct, *editPlaneAct, *editWingAct, *editBodyAct, *savePlaneAsProjectAct;
 	QAction *renameCurPlaneAct, *deleteCurPlane, *duplicateCurPlane;
 	QAction *renameCurWPolar, *editWPolarAct, *editWPolarPts, *exportCurWPolar, *resetCurWPolar;
 	QAction *ShowPolarProps, *ShowWOppProps;
@@ -317,7 +317,7 @@ private:
 	QAction *resetWOppLegend, *resetWPlrLegend;
 	QAction *exportCurWOpp, *showCurWOppOnly, *hideAllWOpps, *showAllWOpps, *deleteAllWOpps;
 	QAction *showAllWPlrOpps, *hideAllWPlrOpps, * deleteAllWPlrOpps;
-	QAction *defineWPolar, *defineStabPolar, *advancedSettings;
+	QAction *defineWPolar, *defineStabPolar, *defineWPolarObjectAct, *advancedSettings;
 	QAction *halfWingAct;
 	QAction *showEllipticCurve, *showXCmRefLocation, *showStabCurve, *showFinCurve, *showWing2Curve;
 	QAction *exporttoAVL, *resetWingScale, *scaleWingAct;

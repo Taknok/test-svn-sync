@@ -64,6 +64,7 @@ class WPolar
 	friend class StabViewDlg;
 	friend class ManageBodiesDlg;
 	friend class EditPlrDlg;
+	friend class ViewPolarDefDlg;
 
 
 public:
