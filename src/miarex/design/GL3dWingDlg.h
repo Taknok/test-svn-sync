@@ -123,7 +123,6 @@ private:
 	void GLCallViewLists();
 	void GLDraw3D();
 	void SetWingScale();
-	void UpdateView();
 
 
 

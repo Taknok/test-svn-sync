@@ -26,7 +26,7 @@
 #include "../../misc/W3dPrefsDlg.h"
 #include "../view/GLCreateBodyLists.h"
 
-#include "ViewObjectDlg.h"
+#include "EditPlaneDlg.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QGroupBox>
@@ -37,15 +37,16 @@
 #include <QHideEvent>
 #include <QtDebug>
 
-QSize ViewObjectDlg::s_WindowSize(1031,783);
-QPoint ViewObjectDlg::s_WindowPosition(131, 77);
-bool ViewObjectDlg::s_bWindowMaximized =false;
+QSize EditPlaneDlg::s_WindowSize(1031,783);
+QPoint EditPlaneDlg::s_WindowPosition(131, 77);
+bool EditPlaneDlg::s_bWindowMaximized =false;
+QByteArray EditPlaneDlg::m_HorizontalSplitterSizes, EditPlaneDlg::m_RightSplitterSizes;
 
 #define SECTIONHIGHLIGHT    1702
 
 
 
-ViewObjectDlg::ViewObjectDlg(QWidget *pParent) : QDialog(pParent)
+EditPlaneDlg::EditPlaneDlg(QWidget *pParent) : QDialog(pParent)
 {
 	setWindowTitle("Plane object explorer");
 
@@ -74,6 +75,9 @@ ViewObjectDlg::ViewObjectDlg(QWidget *pParent) : QDialog(pParent)
 	m_pContextMenu->addAction(m_pInsertAfter);
 	m_pContextMenu->addAction(m_pDeleteItem);
 
+	m_PixText = QPixmap(107, 97);
+	m_PixText.fill(Qt::transparent);
+
 	setupLayout();
 }
 
@@ -82,31 +86,37 @@ ViewObjectDlg::ViewObjectDlg(QWidget *pParent) : QDialog(pParent)
  * Overrides the base class showEvent method. Moves the window to its former location.
  * @param event the showEvent.
  */
-void ViewObjectDlg::showEvent(QShowEvent *event)
+void EditPlaneDlg::showEvent(QShowEvent *event)
 {
+	m_pHorizontalSplitter->restoreState(m_HorizontalSplitterSizes);
+	m_pRightSideSplitter->restoreState(m_RightSplitterSizes);
+
 	move(s_WindowPosition);
 	resize(s_WindowSize);
 
 	if(s_bWindowMaximized) setWindowState(Qt::WindowMaximized);
 
-	m_pGLWidget->updateGL();
+	m_pGLWidget->update();
 
 	event->accept();
 }
+
 
 
 /**
  * Overrides the base class hideEvent method. Stores the window's current position.
  * @param event the hideEvent.
  */
-void ViewObjectDlg::hideEvent(QHideEvent *event)
+void EditPlaneDlg::hideEvent(QHideEvent *event)
 {
+	m_HorizontalSplitterSizes = m_pHorizontalSplitter->saveState();
+	m_RightSplitterSizes      = m_pRightSideSplitter->saveState();
 	s_WindowPosition = pos();
 	event->accept();
 }
 
 
-void ViewObjectDlg::resizeEvent(QResizeEvent *event)
+void EditPlaneDlg::resizeEvent(QResizeEvent *event)
 {
 //	m_pStruct->setMinimumWidth(width()/2);
 	QList<int> sizes;
@@ -114,15 +124,25 @@ void ViewObjectDlg::resizeEvent(QResizeEvent *event)
 	sizes.append((int)width()/10);
 	m_pRightSideSplitter->setSizes(sizes);
 
-	int ColumnWidth = (int)((double)(m_pStruct->width())/9);
-	m_pStruct->setColumnWidth(0,ColumnWidth*4);
-	m_pStruct->setColumnWidth(1,ColumnWidth*2);
-	m_pStruct->setColumnWidth(2,ColumnWidth*2);
+	int ColumnWidth = (int)((double)(m_pStruct->width())/15);
+	m_pStruct->setColumnWidth(0,ColumnWidth*6);
+	m_pStruct->setColumnWidth(1,ColumnWidth*3);
+	m_pStruct->setColumnWidth(2,ColumnWidth*3);
+
+	if(m_pGLWidget->width()>0 && m_pGLWidget->height()>0)
+	{
+		m_PixText = m_PixText.scaled(m_pGLWidget->rect().size());
+		m_PixText.fill(Qt::transparent);
+
+		QPainter paint(&m_PixText);
+		PaintPlaneLegend(paint, m_pPlane, m_pGLWidget->rect());
+
+	}
 	event->accept();
 }
 
 
-void ViewObjectDlg::contextMenuEvent(QContextMenuEvent *event)
+void EditPlaneDlg::contextMenuEvent(QContextMenuEvent *event)
 {
 	// Display the context menu
 
@@ -156,7 +176,7 @@ void ViewObjectDlg::contextMenuEvent(QContextMenuEvent *event)
 }
 
 
-void ViewObjectDlg::setupLayout()
+void EditPlaneDlg::setupLayout()
 {
 	QStringList labels;
 	labels << tr("Object") << tr("Field")<<tr("Value")<<tr("Unit");
@@ -183,9 +203,6 @@ void ViewObjectDlg::setupLayout()
 	m_pStruct->setModel(m_pModel);
 
 
-	m_pDelegate = new ViewObjectDelegate(this);
-	m_pStruct->setItemDelegate(m_pDelegate);
-
 	QFont fnt;
 	QFontMetrics fm(fnt);
 	m_pStruct->setColumnWidth(0, fm.averageCharWidth()*37);
@@ -198,7 +215,7 @@ void ViewObjectDlg::setupLayout()
 	connect(selectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(OnItemClicked(QModelIndex)));
 
 
-	m_pDelegate = new ViewObjectDelegate(this);
+	m_pDelegate = new EditObjectDelegate(this);
 	m_pStruct->setItemDelegate(m_pDelegate);
 	connect(m_pDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(OnCellChanged(QWidget *)));
 
@@ -232,7 +249,7 @@ void ViewObjectDlg::setupLayout()
 	szPolicyExpanding.setVerticalPolicy(QSizePolicy::Ignored);
 
 
-	QSplitter *pHorizontalSplitter = new QSplitter(Qt::Horizontal, this);
+	m_pHorizontalSplitter = new QSplitter(Qt::Horizontal, this);
 	{
 		m_pRightSideSplitter = new QSplitter(Qt::Vertical, this);
 		{
@@ -359,13 +376,13 @@ void ViewObjectDlg::setupLayout()
 			m_pRightSideSplitter->addWidget(p3DCtrlBox);
 		}
 
-		pHorizontalSplitter->addWidget(m_pStruct);
-		pHorizontalSplitter->addWidget(m_pRightSideSplitter);
+		m_pHorizontalSplitter->addWidget(m_pStruct);
+		m_pHorizontalSplitter->addWidget(m_pRightSideSplitter);
 	}
 
 	QHBoxLayout *pMainLayout = new QHBoxLayout;
 	{
-		pMainLayout->addWidget(pHorizontalSplitter);
+		pMainLayout->addWidget(m_pHorizontalSplitter);
 	}
 	setLayout(pMainLayout);
 	Connect();
@@ -374,7 +391,7 @@ void ViewObjectDlg::setupLayout()
 
 
 
-void ViewObjectDlg::OnOK()
+void EditPlaneDlg::OnOK()
 {
 	int j;
 
@@ -422,7 +439,7 @@ void ViewObjectDlg::OnOK()
 
 
 
-void ViewObjectDlg::initDialog(Plane *pPlane)
+void EditPlaneDlg::initDialog(Plane *pPlane)
 {
 	m_pPlane = pPlane;
 	m_pPlane->CreateSurfaces();
@@ -439,7 +456,7 @@ void ViewObjectDlg::initDialog(Plane *pPlane)
 
 
 
-void ViewObjectDlg::keyPressEvent(QKeyEvent *event)
+void EditPlaneDlg::keyPressEvent(QKeyEvent *event)
 {
 //	bool bShift = false;
 //	bool bCtrl  = false;
@@ -469,7 +486,7 @@ void ViewObjectDlg::keyPressEvent(QKeyEvent *event)
 
 
 
-void ViewObjectDlg::reject()
+void EditPlaneDlg::reject()
 {
 	s_bWindowMaximized= isMaximized();
 	s_WindowPosition = pos();
@@ -494,7 +511,7 @@ void ViewObjectDlg::reject()
 
 
 
-void ViewObjectDlg::GLDraw3D()
+void EditPlaneDlg::GLDraw3D()
 {
 //	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
@@ -570,15 +587,13 @@ void ViewObjectDlg::GLDraw3D()
 
 
 
-void ViewObjectDlg::GLRenderView()
+void EditPlaneDlg::GLRenderView()
 {
 	QString MassUnit;
 	Units::getWeightUnitLabel(MassUnit);
-	double glScaled = m_pGLWidget->m_glScaled;
 
 	Wing *pWingList[MAXWINGS] = {m_pPlane->wing(), m_pPlane->wing2(), m_pPlane->stab(), m_pPlane->fin()};
 
-	if(ThreeDWidget::s_bAxes)  m_pGLWidget->GLDrawAxes(1.0/glScaled, W3dPrefsDlg::s_3DAxisColor, W3dPrefsDlg::s_3DAxisStyle, W3dPrefsDlg::s_3DAxisWidth);
 
 	glDisable(GL_LIGHTING);
 	glDisable(GL_LIGHT0);
@@ -641,12 +656,42 @@ void ViewObjectDlg::GLRenderView()
 
 	if(ThreeDWidget::s_bShowMasses)
 	{
-		GLDrawMasses(m_pGLWidget, m_pPlane, m_pGLWidget->m_glScaled);
-	}
+		for(int iw=0; iw<MAXWINGS; iw++)
+		{
+			if(pWingList[iw])
+			{
+				m_pGLWidget->GLDrawMasses(pWingList[iw]->volumeMass(), m_pPlane->WingLE(iw).translate(0.0,0.0,0.02), pWingList[iw]->wingName(),pWingList[iw]->m_PointMass);
+			}
+		}
+
+			m_pGLWidget->GLDrawMasses(0.0, CVector(0.0,0.0,0.0),"",m_pPlane->m_PointMass);
+
+		if(m_pPlane->body())
+		{
+			Body *pCurBody = m_pPlane->body();
+
+			m_pGLWidget->GLDrawMasses(pCurBody->volumeMass(),
+									  m_pPlane->bodyPos().translate(m_pPlane->body()->Length()/5,0.0,0.0),
+									  pCurBody->bodyName(),
+									  pCurBody->m_PointMass);
+		}
+
+		//plot CG
+		glPushMatrix();
+		{
+			glTranslated(m_pPlane->CoG().x,m_pPlane->CoG().y,m_pPlane->CoG().z);
+			glColor3d(1.0, 0.5, 0.5);
+			m_pGLWidget->GLRenderSphere(W3dPrefsDlg::s_MassRadius*2.0/m_pGLWidget->m_glScaled);
+
+			m_pGLWidget->GLRenderText(m_pPlane->CoG().x, m_pPlane->CoG().y, m_pPlane->CoG().z+.02,
+									"CoG "+QString("%1").arg(m_pPlane->TotalMass()*Units::kgtoUnit(), 7,'g',3)
+									+Units::weightUnitLabel());
+		}
+		glPopMatrix();	}
 }
 
 
-void ViewObjectDlg::GLCreateBodyFrameHighlight(Body *pBody, CVector bodyPos, int iFrame)
+void EditPlaneDlg::GLCreateBodyFrameHighlight(Body *pBody, CVector bodyPos, int iFrame)
 {
 	int k;
 	CVector Point;
@@ -737,7 +782,7 @@ void ViewObjectDlg::GLCreateBodyFrameHighlight(Body *pBody, CVector bodyPos, int
 
 
 
-void ViewObjectDlg::GLCreateWingSectionHighlight(Wing *pWing)
+void EditPlaneDlg::GLCreateWingSectionHighlight(Wing *pWing)
 {
 	if(!pWing) return;
 
@@ -856,7 +901,7 @@ void ViewObjectDlg::GLCreateWingSectionHighlight(Wing *pWing)
 
 
 
-void ViewObjectDlg::Connect()
+void EditPlaneDlg::Connect()
 {
 	connect(m_pInsertBefore,  SIGNAL(triggered()), this, SLOT(OnInsertBefore()));
 	connect(m_pInsertAfter,   SIGNAL(triggered()), this, SLOT(OnInsertAfter()));
@@ -879,34 +924,34 @@ void ViewObjectDlg::Connect()
 }
 
 
-void ViewObjectDlg::OnSurfaces()
+void EditPlaneDlg::OnSurfaces()
 {
 	ThreeDWidget::s_bSurfaces = m_pctrlSurfaces->isChecked();
-	m_pGLWidget->updateGL();
+	m_pGLWidget->update();
 }
 
 
-void ViewObjectDlg::OnOutline()
+void EditPlaneDlg::OnOutline()
 {
 	ThreeDWidget::s_bOutline = m_pctrlOutline->isChecked();
-	m_pGLWidget->updateGL();
+	m_pGLWidget->update();
 }
 
 
-void ViewObjectDlg::OnPanels()
+void EditPlaneDlg::OnPanels()
 {
 	ThreeDWidget::s_bVLMPanels = m_pctrlPanels->isChecked();
-	m_pGLWidget->updateGL();
+	m_pGLWidget->update();
 }
 
-void ViewObjectDlg::On3DReset()
+void EditPlaneDlg::On3DReset()
 {
 //	SetWingScale();
 	m_pGLWidget->On3DReset();
 }
 
 
-void ViewObjectDlg::OnRedraw()
+void EditPlaneDlg::OnRedraw()
 {
 	readPlaneTree();
 
@@ -914,57 +959,47 @@ void ViewObjectDlg::OnRedraw()
 
 	m_bResetglPlane = true;
 	m_bChanged = true;
-	m_pGLWidget->updateGL();
+
+	QPainter paint(&m_PixText);
+	PaintPlaneLegend(paint, m_pPlane, m_pGLWidget->rect());
+
+	m_pGLWidget->update();
 }
 
 
-void ViewObjectDlg::OnAxes()
+void EditPlaneDlg::OnAxes()
 {
 	ThreeDWidget::s_bAxes = m_pctrlAxes->isChecked();
-	m_pGLWidget->updateGL();
+	m_pGLWidget->update();
 
 }
 
 
-void ViewObjectDlg::OnFoilNames()
+void EditPlaneDlg::OnFoilNames()
 {
 	ThreeDWidget::s_bFoilNames = m_pctrlFoilNames->isChecked();
-	m_pGLWidget->updateGL();
+	m_pGLWidget->update();
 
 }
 
 
 
-void ViewObjectDlg::OnShowMasses()
+void EditPlaneDlg::OnShowMasses()
 {
 	ThreeDWidget::s_bShowMasses = m_pctrlShowMasses->isChecked();
-	m_pGLWidget->updateGL();
+	m_pGLWidget->update();
 
 }
 
 
 
-bool ViewObjectDlg::IntersectObject(CVector AA,  CVector U, CVector &I)
+bool EditPlaneDlg::IntersectObject(CVector AA,  CVector U, CVector &I)
 {
-	double dist=0.0;
-
 	Wing *pWingList[MAXWINGS] = {m_pPlane->wing(), m_pPlane->wing2(), m_pPlane->stab(), m_pPlane->fin()};
 
 	for(int iw=0; iw<MAXWINGS; iw++)
 	{
-		if(pWingList[iw])
-		{
-			for(int j=0; j<pWingList[iw]->m_Surface.size(); j++)
-			{
-				if ( Intersect(pWingList[iw]->m_Surface.at(j)->m_LA,
-							   pWingList[iw]->m_Surface.at(j)->m_LB,
-							   pWingList[iw]->m_Surface.at(j)->m_TA,
-							   pWingList[iw]->m_Surface.at(j)->m_TB,
-							   pWingList[iw]->m_Surface.at(j)->Normal,
-							   AA, U, I, dist))
-					return true;
-			}
-		}
+		if (pWingList[iw] && pWingList[iw]->IntersectWing(AA, U, I)) return true;
 	}
 
 	/** @todo intersect body also */
@@ -972,7 +1007,8 @@ bool ViewObjectDlg::IntersectObject(CVector AA,  CVector U, CVector &I)
 }
 
 
-QList<QStandardItem *> ViewObjectDlg::prepareRow(const QString &object, const QString &field, const QString &value,  const QString &unit)
+
+QList<QStandardItem *> EditPlaneDlg::prepareRow(const QString &object, const QString &field, const QString &value,  const QString &unit)
 {
 	QList<QStandardItem *> rowItems;
 	rowItems << new QStandardItem(object)  << new QStandardItem(field)  << new QStandardItem(value) << new QStandardItem(unit);
@@ -981,7 +1017,7 @@ QList<QStandardItem *> ViewObjectDlg::prepareRow(const QString &object, const QS
 }
 
 
-QList<QStandardItem *> ViewObjectDlg::prepareBoolRow(const QString &object, const QString &field, const bool &value)
+QList<QStandardItem *> EditPlaneDlg::prepareBoolRow(const QString &object, const QString &field, const bool &value)
 {
 	QList<QStandardItem *> rowItems;
 	rowItems.append(new QStandardItem(object));
@@ -999,7 +1035,7 @@ QList<QStandardItem *> ViewObjectDlg::prepareBoolRow(const QString &object, cons
 }
 
 
-QList<QStandardItem *> ViewObjectDlg::prepareIntRow(const QString &object, const QString &field, const int &value)
+QList<QStandardItem *> EditPlaneDlg::prepareIntRow(const QString &object, const QString &field, const int &value)
 {
 	QList<QStandardItem *> rowItems;
 	rowItems.append(new QStandardItem(object));
@@ -1017,7 +1053,7 @@ QList<QStandardItem *> ViewObjectDlg::prepareIntRow(const QString &object, const
 }
 
 
-QList<QStandardItem *> ViewObjectDlg::prepareDoubleRow(const QString &object, const QString &field, const double &value,  const QString &unit)
+QList<QStandardItem *> EditPlaneDlg::prepareDoubleRow(const QString &object, const QString &field, const double &value,  const QString &unit)
 {
 	QList<QStandardItem *> rowItems;
 	rowItems.append(new QStandardItem(object));
@@ -1035,7 +1071,7 @@ QList<QStandardItem *> ViewObjectDlg::prepareDoubleRow(const QString &object, co
 }
 
 
-void ViewObjectDlg::fillPlaneTreeView()
+void EditPlaneDlg::fillPlaneTreeView()
 {
 	m_pModel->removeRows(0, m_pModel->rowCount());
 
@@ -1070,7 +1106,7 @@ void ViewObjectDlg::fillPlaneTreeView()
 
 
 
-void ViewObjectDlg::fillPlaneMetaData(QStandardItem *item)
+void EditPlaneDlg::fillPlaneMetaData(QStandardItem *item)
 {
 	QList<QStandardItem*> descriptionDataItem = prepareRow("Description", "Description", m_pPlane->planeDescription());
 	item->appendRow(descriptionDataItem);
@@ -1132,7 +1168,7 @@ void ViewObjectDlg::fillPlaneMetaData(QStandardItem *item)
 
 
 
-void ViewObjectDlg::fillWingTreeView(int iw, QList<QStandardItem*> &planeRootItem)
+void EditPlaneDlg::fillWingTreeView(int iw, QList<QStandardItem*> &planeRootItem)
 {
 	Wing *pWing = m_pPlane->wing(iw);
 
@@ -1304,7 +1340,7 @@ void ViewObjectDlg::fillWingTreeView(int iw, QList<QStandardItem*> &planeRootIte
 
 
 
-void ViewObjectDlg::fillBodyTreeView(QStandardItem*planeRootItem)
+void EditPlaneDlg::fillBodyTreeView(QStandardItem*planeRootItem)
 {
 	Body *pBody = m_pPlane->body();
 
@@ -1467,14 +1503,14 @@ void ViewObjectDlg::fillBodyTreeView(QStandardItem*planeRootItem)
 
 
 
-void ViewObjectDlg::readPlaneTree()
+void EditPlaneDlg::readPlaneTree()
 {
 	readViewLevel(m_pModel->index(0,0));
 }
 
 
 
-void ViewObjectDlg::readViewLevel(QModelIndex indexLevel)
+void EditPlaneDlg::readViewLevel(QModelIndex indexLevel)
 {
 	QString object, field, value;
 	QModelIndex dataIndex, subIndex;
@@ -1534,7 +1570,7 @@ void ViewObjectDlg::readViewLevel(QModelIndex indexLevel)
 }
 
 
-void ViewObjectDlg::readWingTree(Wing *pWing, CVector &pos, double &tiltAngle, QModelIndex indexLevel)
+void EditPlaneDlg::readWingTree(Wing *pWing, CVector &pos, double &tiltAngle, QModelIndex indexLevel)
 {
 	QString object, field, value;
 
@@ -1611,7 +1647,7 @@ void ViewObjectDlg::readWingTree(Wing *pWing, CVector &pos, double &tiltAngle, Q
 
 
 
-void ViewObjectDlg::readBodyTree(Body *pBody, QModelIndex indexLevel)
+void EditPlaneDlg::readBodyTree(Body *pBody, QModelIndex indexLevel)
 {
 	if(!pBody) return;
 
@@ -1722,7 +1758,7 @@ void ViewObjectDlg::readBodyTree(Body *pBody, QModelIndex indexLevel)
 }
 
 
-void ViewObjectDlg::readBodyFrameTree(Body *pBody, Frame *pFrame, QModelIndex indexLevel)
+void EditPlaneDlg::readBodyFrameTree(Body *pBody, Frame *pFrame, QModelIndex indexLevel)
 {
 	QString object, field, value;
 	QModelIndex dataIndex;
@@ -1749,7 +1785,7 @@ void ViewObjectDlg::readBodyFrameTree(Body *pBody, Frame *pFrame, QModelIndex in
 }
 
 
-void ViewObjectDlg::readWingSectionTree(Wing *pWing, QModelIndex indexLevel)
+void EditPlaneDlg::readWingSectionTree(Wing *pWing, QModelIndex indexLevel)
 {
 	QString object, field, value;
 	QModelIndex dataIndex;
@@ -1786,7 +1822,7 @@ void ViewObjectDlg::readWingSectionTree(Wing *pWing, QModelIndex indexLevel)
 
 
 
-void ViewObjectDlg::readInertiaTree(double &volumeMass, QList<PointMass*>&pointMasses, QModelIndex indexLevel)
+void EditPlaneDlg::readInertiaTree(double &volumeMass, QList<PointMass*>&pointMasses, QModelIndex indexLevel)
 {
 	pointMasses.clear();
 
@@ -1821,7 +1857,7 @@ void ViewObjectDlg::readInertiaTree(double &volumeMass, QList<PointMass*>&pointM
 }
 
 
-void ViewObjectDlg::readPointMassTree(PointMass *ppm, QModelIndex indexLevel)
+void EditPlaneDlg::readPointMassTree(PointMass *ppm, QModelIndex indexLevel)
 {
 	QString object, field, value;
 	QModelIndex dataIndex;
@@ -1846,7 +1882,7 @@ void ViewObjectDlg::readPointMassTree(PointMass *ppm, QModelIndex indexLevel)
 
 
 
-void ViewObjectDlg::readVectorTree(CVector &V, QModelIndex indexLevel)
+void EditPlaneDlg::readVectorTree(CVector &V, QModelIndex indexLevel)
 {
 	QString object, field, value;
 	QModelIndex dataIndex;
@@ -1868,23 +1904,23 @@ void ViewObjectDlg::readVectorTree(CVector &V, QModelIndex indexLevel)
 
 
 
-void ViewObjectDlg::OnItemClicked(const QModelIndex &index)
+void EditPlaneDlg::OnItemClicked(const QModelIndex &index)
 {
 	identifySelection(index);
-	m_pGLWidget->updateGL();
+	m_pGLWidget->update();
 }
 
 
 
-void ViewObjectDlg::OnCellChanged(QWidget *)
+void EditPlaneDlg::OnCellChanged(QWidget *)
 {
 	m_bChanged = true;
-	m_pGLWidget->updateGL();
+	m_pGLWidget->update();
 }
 
 
 
-void ViewObjectDlg::identifySelection(const QModelIndex &indexSel)
+void EditPlaneDlg::identifySelection(const QModelIndex &indexSel)
 {
 	// we highlight wing sections and body frames
 	// so check if the user's selection is one of these
@@ -1982,7 +2018,7 @@ void ViewObjectDlg::identifySelection(const QModelIndex &indexSel)
 
 
 
-void ViewObjectDlg::OnInsertBefore()
+void EditPlaneDlg::OnInsertBefore()
 {
 	Wing *pWing = m_pPlane->wing(m_enumActiveWingType);
 
@@ -2028,7 +2064,7 @@ void ViewObjectDlg::OnInsertBefore()
 		m_bChanged = true;
 		m_bResetglSectionHighlight = true;
 		m_bResetglPlane = true;
-		m_pGLWidget->updateGL();
+		m_pGLWidget->update();
 	}
 	else if(m_pPlane->body() && m_iActiveFrame>=0)
 	{
@@ -2042,7 +2078,7 @@ void ViewObjectDlg::OnInsertBefore()
 		m_bResetglSectionHighlight = true;
 		m_bResetglPlane = true;
 		m_bResetglBody   = true;
-		m_pGLWidget->updateGL();
+		m_pGLWidget->update();
 	}
 	else if(m_enumActiveObject!=NOOBJECT && m_iActivePointMass>=0)
 	{
@@ -2066,14 +2102,14 @@ void ViewObjectDlg::OnInsertBefore()
 
 		m_bChanged = true;
 		m_bResetglSectionHighlight = true;
-		m_pGLWidget->updateGL();
+		m_pGLWidget->update();
 
 	}
 }
 
 
 
-void ViewObjectDlg::OnInsertAfter()
+void EditPlaneDlg::OnInsertAfter()
 {
 	Wing *pWing = m_pPlane->wing(m_enumActiveWingType);
 
@@ -2123,7 +2159,7 @@ void ViewObjectDlg::OnInsertAfter()
 		m_bChanged = true;
 		m_bResetglSectionHighlight = true;
 		m_bResetglPlane = true;
-		m_pGLWidget->updateGL();
+		m_pGLWidget->update();
 	}
 	else if(m_pPlane->body() && m_iActiveFrame>=0)
 	{
@@ -2138,7 +2174,7 @@ void ViewObjectDlg::OnInsertAfter()
 		m_bResetglSectionHighlight = true;
 		m_bResetglPlane = true;
 		m_bResetglBody   = true;
-		m_pGLWidget->updateGL();
+		m_pGLWidget->update();
 	}
 	else if(m_enumActiveObject!=NOOBJECT && m_iActivePointMass>=0)
 	{
@@ -2165,13 +2201,13 @@ void ViewObjectDlg::OnInsertAfter()
 
 		m_bChanged = true;
 		m_bResetglSectionHighlight = true;
-		m_pGLWidget->updateGL();
+		m_pGLWidget->update();
 
 	}
 }
 
 
-void ViewObjectDlg::OnDelete()
+void EditPlaneDlg::OnDelete()
 {
 	if(m_iActiveSection>=0 && m_enumActiveWingType!=XFLR5::OTHERWING)
 	{
@@ -2201,7 +2237,7 @@ void ViewObjectDlg::OnDelete()
 		m_bChanged = true;
 		m_bResetglSectionHighlight = true;
 		m_bResetglPlane = true;
-		m_pGLWidget->updateGL();
+		m_pGLWidget->update();
 	}
 	else if(m_pPlane->body() && m_iActiveFrame>=0)
 	{
@@ -2215,7 +2251,7 @@ void ViewObjectDlg::OnDelete()
 		m_bResetglSectionHighlight = true;
 		m_bResetglPlane = true;
 		m_bResetglBody   = true;
-		m_pGLWidget->updateGL();
+		m_pGLWidget->update();
 	}
 	else if(m_enumActiveObject!=NOOBJECT && m_iActivePointMass>=0)
 	{
@@ -2239,14 +2275,144 @@ void ViewObjectDlg::OnDelete()
 
 		m_bChanged = true;
 		m_bResetglSectionHighlight = true;
-		m_pGLWidget->updateGL();
+		m_pGLWidget->update();
 	}
 }
 
 
 
 
+/**
+ * Draws the wing legend in the 2D operating point view
+ * @param painter a reference to the QPainter object on which the view shall be drawn
+ */
+void EditPlaneDlg::PaintPlaneLegend(QPainter &painter, Plane *pPlane, QRect drawRect)
+{
+	if(!pPlane) return;
+	painter.save();
 
+	QString Result, str, strong;
+	QString str1;
+	static double Mass;
+	static int margin,dheight;
+
+	QPen textPen(Settings::s_TextColor);
+	painter.setPen(textPen);
+	painter.setFont(Settings::s_TextFont);
+	painter.setRenderHint(QPainter::Antialiasing);
+
+	margin = 10;
+
+	QFontMetrics fm(Settings::s_TextFont);
+	dheight = fm.height();
+	int D = 0;
+	int LeftPos = margin;
+	int ZPos    = drawRect.height()-13*dheight;
+
+	if(pPlane && pPlane->wing2()) ZPos -= dheight;
+
+	painter.drawText(LeftPos, ZPos, pPlane->planeName());
+	D+=dheight;
+	QString length, surface;
+	Units::getLengthUnitLabel(length);
+	Units::getAreaUnitLabel(surface);
+
+	str1 = QString(tr("Wing Span      =")+"%1 ").arg(pPlane->planformSpan()*Units::mtoUnit(),10,'f',3);
+	str1 += length;
+	painter.drawText(LeftPos,ZPos+D, str1);
+	D+=dheight;
+
+	str1 = QString(tr("xyProj. Span   =")+"%1 ").arg(pPlane->projectedSpan()*Units::mtoUnit(),10,'f',3);
+	str1 += length;
+	painter.drawText(LeftPos,ZPos+D, str1);
+	D+=dheight;
+
+	str1 = QString(tr("Wing Area      =")+"%1 ").arg(pPlane->planformArea() * Units::m2toUnit(),10,'f',3);
+	str1 += surface;
+	painter.drawText(LeftPos,ZPos+D, str1);
+	D+=dheight;
+
+	str1 = QString(tr("xyProj. Area   =")+"%1 ").arg(pPlane->projectedArea() * Units::m2toUnit(),10,'f',3);
+	str1 += surface;
+	painter.drawText(LeftPos,ZPos+D, str1);
+	D+=dheight;
+
+	Units::getWeightUnitLabel(str);
+	Result = QString(tr("Plane Mass     =")+"%1 ").arg(Mass*Units::kgtoUnit(),10,'f',3);
+	Result += str;
+	painter.drawText(LeftPos, ZPos+D, Result);
+	D+=dheight;
+
+	Units::getAreaUnitLabel(strong);
+	Result = QString(tr("Wing Load      =")+"%1 ").arg(Mass*Units::kgtoUnit()/pPlane->projectedArea()/Units::m2toUnit(),10,'f',3);
+	Result += str + "/" + strong;
+	painter.drawText(LeftPos, ZPos+D, Result);
+	D+=dheight;
+
+	if(pPlane && pPlane->wing2())
+	{
+		str1 = QString(tr("Tail Volume    =")+"%1").arg(pPlane->TailVolume(),10,'f',3);
+		painter.drawText(LeftPos, ZPos+D, str1);
+		D+=dheight;
+	}
+
+	str1 = QString(tr("Root Chord     =")+"%1 ").arg(pPlane->m_Wing[0].RootChord()*Units::mtoUnit(), 10,'f', 3);
+	Result = str1+length;
+	painter.drawText(LeftPos, ZPos+D, Result);
+	D+=dheight;
+
+	str1 = QString(tr("MAC            =")+"%1 ").arg(pPlane->mac()*Units::mtoUnit(), 10,'f', 3);
+	Result = str1+length;
+	painter.drawText(LeftPos, ZPos+D, Result);
+	D+=dheight;
+
+	str1 = QString(tr("TipTwist       =")+"%1").arg(pPlane->m_Wing[0].TipTwist(), 10,'f', 3) + QString::fromUtf8("°");
+	painter.drawText(LeftPos, ZPos+D, str1);
+	D+=dheight;
+
+	str1 = QString(tr("Aspect Ratio   =")+"%1").arg(pPlane->aspectRatio(),10,'f',3);
+	painter.drawText(LeftPos, ZPos+D, str1);
+	D+=dheight;
+
+	str1 = QString(tr("Taper Ratio    =")+"%1").arg(pPlane->taperRatio(),10,'f',3);
+	painter.drawText(LeftPos, ZPos+D, str1);
+	D+=dheight;
+
+	str1 = QString(tr("Root-Tip Sweep =")+"%1").arg(pPlane->m_Wing[0].AverageSweep(), 10,'f',3) + QString::fromUtf8("°");
+	painter.drawText(LeftPos, ZPos+D, str1);
+	D+=dheight;
+
+	painter.restore();
+}
+
+
+
+bool EditPlaneDlg::LoadSettings(QSettings *pSettings)
+{
+	pSettings->beginGroup("EditPlaneDlg");
+	{
+	//  we're reading/loading
+		m_HorizontalSplitterSizes = pSettings->value("HorizontalSplitterSizes").toByteArray();
+		m_RightSplitterSizes      = pSettings->value("RightSplitterSizes").toByteArray();
+	}
+	pSettings->endGroup();
+	return true;
+}
+
+
+
+
+bool EditPlaneDlg::SaveSettings(QSettings *pSettings)
+{
+	pSettings->beginGroup("EditPlaneDlg");
+	{
+		pSettings->setValue("HorizontalSplitterSizes", m_HorizontalSplitterSizes);
+		pSettings->setValue("RightSplitterSizes",      m_RightSplitterSizes);
+	}
+	pSettings->endGroup();
+
+	return true;
+}
 
 
 

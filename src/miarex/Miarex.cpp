@@ -38,7 +38,7 @@
 #include "./mgt/XmlPlaneReader.h"
 #include "./mgt/XmlPlaneWriter.h"
 #include "./view/StabViewDlg.h"
-#include "./design/ViewObjectDlg.h"
+#include "./design/EditPlaneDlg.h"
 #include "./design/PlaneDlg.h"
 #include "./design/GL3dWingDlg.h"
 #include "./design/GL3dBodyDlg.h"
@@ -70,14 +70,11 @@
 
 void *QMiarex::s_pMainFrame = NULL;
 void *QMiarex::s_p2dWidget = NULL;
-void *QMiarex::s_p3dWidget = NULL;
-
 
 bool QMiarex::s_bAxes = true;
 bool QMiarex::s_bOutline = true;
 bool QMiarex::s_bSurfaces = true;
-bool QMiarex::s_bShowMasses = false;
-bool QMiarex::s_bFoilNames = false;
+
 bool QMiarex::s_bVLMPanels = false;
 bool QMiarex::s_bAutoCpScale = true;
 double QMiarex::s_LegendMin = -1.0;
@@ -161,8 +158,6 @@ QMiarex::QMiarex(QWidget *parent)
 	m_pLLTDlg = new LLTAnalysisDlg(pMainFrame, m_pLLT);
 	m_pPanelAnalysisDlg = new PanelAnalysisDlg(pMainFrame, Objects3D::s_pPanelAnalysis);
 
-	m_pglLightDlg = new GLLightDlg(pMainFrame);
-
 	m_PixText = QPixmap(107, 97);
 	m_PixText.fill(Qt::transparent);
 
@@ -196,7 +191,6 @@ QMiarex::QMiarex(QWidget *parent)
 	m_bLogFile           = true;
 	m_bHalfWing          = false;
 	m_bTransGraph        = true;
-	s_bFoilNames         = false;
 	m_bPanelForce        = false;
 	m_bLongitudinal      = true;
 	m_bCurPOppOnly       = true;
@@ -250,8 +244,6 @@ QMiarex::QMiarex(QWidget *parent)
 
 	m_r2DCltRect.setWidth(0);
 	m_r2DCltRect.setHeight(0);
-	m_r3DCltRect.setWidth(0);
-	m_r3DCltRect.setHeight(0);
 	m_rSingleRect.setWidth(0);
 	m_rSingleRect.setHeight(0);
 
@@ -443,28 +435,14 @@ QMiarex::QMiarex(QWidget *parent)
 
 	s_GLList = 0;
 
-	m_ClipPlanePos = 5.0;
-
-	m_glViewportTrans.x  = 0.0;
-	m_glViewportTrans.y  = 0.0;
-	m_glViewportTrans.z  = 0.0;
-	m_glScaled      = 1.0;
-	m_GLScale       = 1.0;
-
 	s_LiftScale = s_DragScale = s_VelocityScale = 0.7;
-
 
 	m_StabilityResponseType = 0;
 	
 	m_LastPoint.setX(0);
 	m_LastPoint.setY(0);
 
-	memset(MatIn, 0, 16*sizeof(double));
-	memset(MatOut, 0, 16*sizeof(double));
-
 	SetupLayout();
-
-	Connect();
 }
 
 
@@ -474,7 +452,6 @@ QMiarex::QMiarex(QWidget *parent)
 QMiarex::~QMiarex()
 {
 	Trace("Destroying Miarex");
-	delete (GLLightDlg*)m_pglLightDlg;
 	if(m_pLLTDlg) delete m_pLLTDlg;
 	if(m_pLLT)    delete m_pLLT;
 	if(m_pPanelAnalysisDlg) delete m_pPanelAnalysisDlg;
@@ -535,12 +512,15 @@ void QMiarex::Connect()
 	connect(m_pctrlSpanPos, SIGNAL(editingFinished()), this, SLOT(OnCpPosition()));
 
 	connect(m_pctrlAxes, SIGNAL(clicked()), SLOT(OnAxes()));
-	connect(m_pctrlX, SIGNAL(clicked()), SLOT(On3DFront()));
-	connect(m_pctrlY, SIGNAL(clicked()), SLOT(On3DLeft()));
-	connect(m_pctrlZ, SIGNAL(clicked()), SLOT(On3DTop()));
-	connect(m_pctrlIso, SIGNAL(clicked()), SLOT(On3DIso()));
+
+
+	connect(m_pctrlIso,        SIGNAL(clicked()), m_p3dWidget, SLOT(On3DIso()));
+	connect(m_pctrlX,          SIGNAL(clicked()), m_p3dWidget, SLOT(On3DFront()));
+	connect(m_pctrlY,          SIGNAL(clicked()), m_p3dWidget, SLOT(On3DLeft()));
+	connect(m_pctrlZ,          SIGNAL(clicked()), m_p3dWidget, SLOT(On3DTop()));
+
+
 	connect(m_pctrlReset, SIGNAL(clicked()), SLOT(On3DReset()));
-	connect(m_pctrlPickCenter, SIGNAL(clicked()), SLOT(On3DPickCenter()));
 
 	connect(m_pctrlAlphaMin, SIGNAL(editingFinished()), this, SLOT(OnReadAnalysisData()));
 	connect(m_pctrlAlphaMax, SIGNAL(editingFinished()), this, SLOT(OnReadAnalysisData()));
@@ -557,26 +537,21 @@ void QMiarex::Connect()
 void QMiarex::SetControls()
 {
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
-	QString str_translation;
 
 	blockSignals(true);
 
-	if(m_pCurPlane)     str_translation=tr("Current Plane");
-	else                str_translation=tr("Current Object");
-	pMainFrame->currentPlaneMenu->setTitle(str_translation);
-
 	if(m_iView==XFLR5::W3DVIEW) m_pctrBottomControls->setCurrentIndex(1);
-	else                 m_pctrBottomControls->setCurrentIndex(0);
+	else                        m_pctrBottomControls->setCurrentIndex(0);
 
 	if(m_iView==XFLR5::WPOLARVIEW)     m_pctrlMiddleControls->setCurrentIndex(1);
 	else if(m_iView==XFLR5::WCPVIEW)   m_pctrlMiddleControls->setCurrentIndex(2);
 	else if(m_iView==XFLR5::STABTIMEVIEW || m_iView==XFLR5::STABPOLARVIEW) m_pctrlMiddleControls->setCurrentIndex(1);
-	else                        m_pctrlMiddleControls->setCurrentIndex(0);
+	else                                                                   m_pctrlMiddleControls->setCurrentIndex(0);
 
 	if(m_pCurWPolar && m_pCurWPolar->polarType()==XFLR5::STABILITYPOLAR)
 	{
 		if (m_iView==XFLR5::W3DVIEW || m_iView==XFLR5::STABTIMEVIEW || m_iView==XFLR5::STABPOLARVIEW)
-			pMainFrame->m_pctrlStabViewWidget->show();
+			 pMainFrame->m_pctrlStabViewWidget->show();
 		else pMainFrame->m_pctrlStabViewWidget->hide();
 	}
 	else pMainFrame->m_pctrlStabViewWidget->hide();
@@ -681,8 +656,8 @@ void QMiarex::SetControls()
 	m_pctrlStream->setEnabled(    m_iView==XFLR5::W3DVIEW && m_pCurPOpp && m_pCurWPolar && m_pCurWPolar->analysisMethod()!=XFLR5::LLTMETHOD);
 	m_pctrlSurfVel->setEnabled(   m_iView==XFLR5::W3DVIEW && m_pCurPOpp && m_pCurWPolar && m_pCurWPolar->analysisMethod()!=XFLR5::LLTMETHOD);
 
-	m_pctrlFoilNames->setChecked(s_bFoilNames);
-	m_pctrlMasses->setChecked(s_bShowMasses);
+	m_pctrlFoilNames->setChecked(m_p3dWidget->s_bFoilNames);
+	m_pctrlMasses->setChecked(m_p3dWidget->s_bShowMasses);
 
 	pMainFrame->highlightWOppAct->setChecked(m_bHighlightOpp);
 
@@ -723,7 +698,7 @@ void QMiarex::SetControls()
 	m_pctrlSurfaces->setChecked(s_bSurfaces);
 	m_pctrlOutline->setChecked(s_bOutline);
 	m_pctrlStream->setChecked(m_bStream);
-	m_pctrlClipPlanePos->setValue((int)(m_ClipPlanePos*100.0));
+	m_pctrlClipPlanePos->setValue((int)(m_p3dWidget->m_ClipPlanePos*100.0));
 
 	m_pctrlOutline->setEnabled(m_pCurPlane);
 	m_pctrlSurfaces->setEnabled(m_pCurPlane);
@@ -2349,14 +2324,13 @@ void QMiarex::GLDraw3D()
 	Body *pCurBody = NULL;
 	if(m_pCurPlane) pCurBody = m_pCurPlane->body();
 
-	ThreeDWidget *p3dWidget = (ThreeDWidget*)s_p3dWidget;
-	p3dWidget->makeCurrent();
+	m_p3dWidget->makeCurrent();
 	glClearColor(Settings::s_BackgroundColor.redF(), Settings::s_BackgroundColor.greenF(), Settings::s_BackgroundColor.blueF(),0.0);
 
 
 	if(!glIsList(GLLISTSPHERE))
 	{
-		p3dWidget->GLCreateUnitSphere();
+		m_p3dWidget->GLCreateUnitSphere();
 		s_GLList++;
 	}
 
@@ -2564,7 +2538,7 @@ void QMiarex::GLDraw3D()
 		}
 		if(m_pCurPOpp)
 		{
-			GLCreateCpLegendClr(m_r3DCltRect);
+			GLCreateCpLegendClr(m_p3dWidget->rect());
 		}
 		m_bResetglLegend = false;
 	}
@@ -2608,7 +2582,7 @@ void QMiarex::GLDraw3D()
 		}
 		if(m_bSurfVelocities)
 		{
-			if(m_pCurPlane && m_pCurPOpp && m_pCurPOpp->m_AnalysisMethod>=XFLR5::VLMMETHOD)
+			if(m_pCurPlane && m_pCurPOpp && m_pCurPOpp->analysisMethod()>=XFLR5::VLMMETHOD)
 			{
 				if(!GLCreateSurfSpeeds(s_pPanel, m_pCurWPolar, m_pCurPOpp))
 				{
@@ -2631,235 +2605,68 @@ void QMiarex::GLDraw3D()
 //	QApplication::restoreOverrideCursor();
 }
 
+void QMiarex::OnFoilNames()
+{
+	ThreeDWidget::s_bFoilNames = m_pctrlFoilNames->isChecked();
+	m_p3dWidget->update();
+
+}
+
+
+
+void QMiarex::OnMasses()
+{
+	ThreeDWidget::s_bShowMasses = m_pctrlMasses->isChecked();
+	m_p3dWidget->update();
+
+}
+
+
 
 /**
  * Draws the point masses, the object masses, and the CG position in the OpenGL viewport
 */
 void QMiarex::GLDrawMasses()
 {
-	ThreeDWidget *p3dWidget = (ThreeDWidget*)s_p3dWidget;
-	QString MassUnit;
-	Units::getWeightUnitLabel(MassUnit);
-
-	glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
-
-	double zdist = 25.0/(double)m_r3DCltRect.width();
-
+	double delta = 0.02/m_p3dWidget->m_glScaled;
 
 	for(int iw=0; iw<MAXWINGS; iw++)
 	{
 		if(m_pWingList[iw])
 		{
-			glPushMatrix();
-			{
-				if(m_pCurPlane)
-				{
-					glTranslated(m_pCurPlane->WingLE(iw).x,
-								 m_pCurPlane->WingLE(iw).y,
-								 m_pCurPlane->WingLE(iw).z);
-					if(m_pWingList[iw]->m_bIsFin) glTranslated(0.0,0.0, m_pWingList[iw]->m_ProjectedSpan/4.0);
-					else                          glTranslated(0.0, m_pWingList[iw]->m_ProjectedSpan/4.0,0.0);
-
-
-					glColor3d(0.5, 1.0, 0.5);
-					p3dWidget->GLRenderText(0.0, 0.0, zdist,
-										  m_pWingList[iw]->m_WingName+
-										  QString(" %1").arg(m_pWingList[iw]->m_VolumeMass*Units::kgtoUnit(), 7,'g',3)+
-										  MassUnit);
-
-				}
-			}
-			glPopMatrix();
-
-			for(int im=0; im<m_pWingList[iw]->m_PointMass.size(); im++)
-			{
-				glPushMatrix();
-				{
-					if(m_pCurPlane)
-					{
-						glTranslated(m_pCurPlane->WingLE(iw).x,
-									 m_pCurPlane->WingLE(iw).y,
-									 m_pCurPlane->WingLE(iw).z);
-					}
-					glTranslated(m_pWingList[iw]->m_PointMass[im]->position().x,
-								 m_pWingList[iw]->m_PointMass[im]->position().y,
-								 m_pWingList[iw]->m_PointMass[im]->position().z);
-					glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
-					p3dWidget->GLRenderSphere(W3dPrefsDlg::s_MassRadius/m_glScaled);
-					glColor3d(Settings::s_TextColor.redF(), Settings::s_TextColor.greenF(), Settings::s_TextColor.blueF());
-					p3dWidget->GLRenderText(0.0, 0.0, 0.0 +.02,
-											m_pWingList[iw]->m_PointMass[im]->tag()
-											+QString(" %1").arg(m_pWingList[iw]->m_PointMass[im]->mass()*Units::kgtoUnit(), 7,'g',3)
-											+MassUnit);
-				}
-				glPopMatrix();
-			}
+			m_p3dWidget->GLDrawMasses(m_pWingList[iw]->m_VolumeMass, m_pCurPlane->WingLE(iw).translate(0.0,0.0,delta), m_pWingList[iw]->m_WingName,m_pWingList[iw]->m_PointMass);
 		}
 	}
 
 	if(m_pCurPlane)
 	{
-        glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
-		for(int im=0; im<m_pCurPlane->m_PointMass.size(); im++)
-		{
-			glPushMatrix();
-			{
-				glTranslated(m_pCurPlane->m_PointMass[im]->position().x,
-							 m_pCurPlane->m_PointMass[im]->position().y,
-							 m_pCurPlane->m_PointMass[im]->position().z);
-				glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
-				p3dWidget->GLRenderSphere(W3dPrefsDlg::s_MassRadius/m_glScaled);
-				glColor3d(Settings::s_TextColor.redF(), Settings::s_TextColor.greenF(), Settings::s_TextColor.blueF());
-				p3dWidget->GLRenderText(0.0,0.0,0.0+.02,
-										m_pCurPlane->m_PointMass[im]->tag()
-										+QString(" %1").arg(m_pCurPlane->m_PointMass[im]->mass()*Units::kgtoUnit(), 7,'g',3)
-										+MassUnit);
-			}
-			glPopMatrix();
-		}
-
+		m_p3dWidget->GLDrawMasses(0.0, CVector(0.0,0.0,0.0),"",m_pCurPlane->m_PointMass);
 	}
+
 	if(m_pCurPlane && m_pCurPlane->body())
 	{
 		Body *pCurBody = m_pCurPlane->body();
-//		glColor3d(W3dPrefsDlg::s_MassColor.redF()*.75, W3dPrefsDlg::s_MassColor.greenF()*.75, W3dPrefsDlg::s_MassColor.blueF()*.75);
-		glColor3d(0.0, 0.0, 0.7);
 
-		glPushMatrix();
-		{
-			if(m_pCurPlane)
-			{
-				glTranslated(m_pCurPlane->bodyPos().x,
-							 m_pCurPlane->bodyPos().y,
-							 m_pCurPlane->bodyPos().z);
-
-				glColor3d(0.5, 1.0, 0.5);
-				p3dWidget->GLRenderText(0.0, 0.0, zdist,
-									  pCurBody->m_BodyName+
-									  QString(" %1").arg(pCurBody->m_VolumeMass*Units::kgtoUnit(), 7,'g',3)
-									  +MassUnit);
-			}
-		}
-		glPopMatrix();
-		glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
-		for(int im=0; im<pCurBody->m_PointMass.size(); im++)
-		{
-			glPushMatrix();
-			{
-				glTranslated(pCurBody->m_PointMass[im]->position().x,pCurBody->m_PointMass[im]->position().y,pCurBody->m_PointMass[im]->position().z);
-				if(m_pCurPlane)
-				{
-					glTranslated(m_pCurPlane->bodyPos().x,
-								 m_pCurPlane->bodyPos().y,
-								 m_pCurPlane->bodyPos().z);
-				}
-
-				glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
-				p3dWidget->GLRenderSphere(W3dPrefsDlg::s_MassRadius/m_glScaled);
-
-				glColor3d(Settings::s_TextColor.redF(), Settings::s_TextColor.greenF(), Settings::s_TextColor.blueF());
-				p3dWidget->GLRenderText(0.0, 0.0, 0.0+.02,
-										pCurBody->m_PointMass[im]->tag()
-										+QString(" %1").arg(pCurBody->m_PointMass[im]->mass()*Units::kgtoUnit(), 7,'g',3)
-										+MassUnit);
-			}
-			glPopMatrix();
-		}
+		m_p3dWidget->GLDrawMasses(pCurBody->m_VolumeMass,
+								  m_pCurPlane->bodyPos().translate(m_pCurPlane->body()->Length()/5,0.0,0.0),
+								  pCurBody->m_BodyName,
+								  pCurBody->m_PointMass);
 	}
+
 	//plot CG
-	if(m_pCurPlane)
+	glPushMatrix();
 	{
-		CVector CoG;
-		double Mass=0.0;
-		if(m_pCurPlane)
-		{
-			CoG = m_pCurPlane->CoG();
-			Mass = m_pCurPlane->TotalMass();
-		}
+		glTranslated(m_pCurPlane->CoG().x,m_pCurPlane->CoG().y,m_pCurPlane->CoG().z);
+		glColor3d(1.0, 0.5, 0.5);
+		m_p3dWidget->GLRenderSphere(W3dPrefsDlg::s_MassRadius*2.0/m_p3dWidget->m_glScaled);
 
-		glPushMatrix();
-		{
-			glTranslated(CoG.x,CoG.y,CoG.z);
-			glColor3d(1.0, 0.5, 0.5);
-			p3dWidget->GLRenderSphere(W3dPrefsDlg::s_MassRadius*2.0/m_glScaled);
-			glColor3d(Settings::s_TextColor.redF(), Settings::s_TextColor.greenF(), Settings::s_TextColor.blueF());
-			p3dWidget->GLRenderText(0.0, 0.0, 0.0+.02,
-									"CoG "+QString("%1").arg(Mass*Units::kgtoUnit(), 7,'g',3)
-									+MassUnit);
-		}
-		glPopMatrix();
+		m_p3dWidget->GLRenderText(m_pCurPlane->CoG().x, m_pCurPlane->CoG().y, m_pCurPlane->CoG().z+delta,
+								  "CoG "+QString("%1").arg(m_pCurPlane->TotalMass()*Units::kgtoUnit(), 7,'g',3)
+								  +Units::weightUnitLabel(), W3dPrefsDlg::s_MassColor.lighter(125));
 	}
+	glPopMatrix();
 }
 
-
-/**
-* Prints the foil names on the OpenGl viewport
-*/
-void QMiarex::GLDrawFoils()
-{
-	ThreeDWidget *p3dWidget = (ThreeDWidget*)s_p3dWidget;
-	int j;
-	Foil *pFoil;
-    double zdist = 25.0/(double)m_r3DCltRect.width();
-
-
-	glColor3d(Settings::s_TextColor.redF(), Settings::s_TextColor.greenF(), Settings::s_TextColor.blueF());
-
-	for(int iw=0; iw<MAXWINGS; iw++)
-	{
-		if(m_pWingList[iw])
-		{
-			for(j=0; j<m_pWingList[iw]->m_Surface.size(); j++)
-			{
-				pFoil = m_pWingList[iw]->m_Surface.at(j)->m_pFoilA;
-
-				if(pFoil)
-				{
-                    glPushMatrix();
-                    {
-						glTranslated(m_pWingList[iw]->m_Surface.at(j)->m_TA.x,
-									 m_pWingList[iw]->m_Surface.at(j)->m_TA.y,
-									 m_pWingList[iw]->m_Surface.at(j)->m_TA.z);
-
-						p3dWidget->GLRenderText(0.0, 0.0, zdist, pFoil->m_FoilName);
-					}
-                    glPopMatrix();
-				}
-			}
-			j = m_pWingList[iw]->m_Surface.size()-1;
-			pFoil = m_pWingList[iw]->m_Surface.at(j)->m_pFoilB;
-			if(pFoil)
-			{
-                glPushMatrix();
-                {
-					glTranslated(m_pWingList[iw]->m_Surface.at(j)->m_TB.x,
-								 m_pWingList[iw]->m_Surface.at(j)->m_TB.y,
-								 m_pWingList[iw]->m_Surface.at(j)->m_TB.z);
-					p3dWidget->GLRenderText(0.0, 0.0, zdist, pFoil->m_FoilName);
-                }
-                glPopMatrix();
-            }
-		}
-	}
-}
-
-
-
-/**
-* Inverses by transposition the 3x3 rotation matrix used in the 3D display
-*/
-void QMiarex::GLInverseMatrix()
-{
-	int i,j;
-
-	for(i=0 ; i<3; i++)
-	{
-		for(j=0; j<3; j++)
-		{
-			MatOut[j][i] = MatIn[i][j];
-		}
-	}
-}
 
 
 /**
@@ -2867,82 +2674,18 @@ void QMiarex::GLInverseMatrix()
 */
 void QMiarex::GLRenderView()
 {
-	ThreeDWidget *p3dWidget = (ThreeDWidget*)s_p3dWidget;
-	p3dWidget->makeCurrent();
-
-	GLLightDlg *pgllDlg = (GLLightDlg*)m_pglLightDlg;
-
-	double LightFactor = qMin(1.0, m_glScaled);
-
-	static GLdouble pts[4];
-	pts[0]= 0.0; pts[1]=0.0; pts[2]=-1.0; pts[3]= m_ClipPlanePos;  //x=m_VerticalSplit
-	glClipPlane(GL_CLIP_PLANE1, pts);
-	if(m_ClipPlanePos>4.9999) 	glDisable(GL_CLIP_PLANE1);
-	else						glEnable(GL_CLIP_PLANE1);
-
-	// Clear the viewport
-	glFlush();
-	glEnable(GL_DEPTH_TEST);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	m_p3dWidget->makeCurrent();
 
 	glPushMatrix();
 	{
-		if(m_ClipPlanePos>4.9999) 	glDisable(GL_CLIP_PLANE1);
-		else						glEnable(GL_CLIP_PLANE1);
-
-		p3dWidget->GLSetupLight(0.0, LightFactor);
 		glDisable(GL_LIGHTING);
 		glDisable(GL_LIGHT0);
 
 		if(m_pCurPOpp && m_pCurPOpp->m_WPolarType==XFLR5::STABILITYPOLAR)
 		{
 			QString strong = QString(tr("Time =")+"%1s").arg(m_ModeTime,6,'f',3);
-			p3dWidget->GLRenderText(15, 15, strong);
+			m_p3dWidget->GLRenderText(15, 15, strong);
 		}
-
-		if(pgllDlg->isVisible())
-		{
-			glDisable(GL_LIGHTING);
-			glDisable(GL_LIGHT0);
-			glPushMatrix();
-			{
-				glTranslated( pgllDlg->s_XLight*m_GLScale, pgllDlg->s_YLight*m_GLScale, pgllDlg->s_ZLight*m_GLScale);
-				double radius = (pgllDlg->s_ZLight+2.0)/40.0*m_GLScale;
-				glColor3d(pgllDlg->s_Red, pgllDlg->s_Green, pgllDlg->s_Blue);
-				p3dWidget->GLRenderSphere(radius/m_glScaled);
-			}
-			glPopMatrix();
-		}
-
-		glLoadIdentity();
-		if(m_bCrossPoint && m_bArcball)
-		{
-			glPushMatrix();
-			{
-				p3dWidget->m_ArcBall.RotateCrossPoint();
-				glRotated(p3dWidget->m_ArcBall.angle, p3dWidget->m_ArcBall.p.x, p3dWidget->m_ArcBall.p.y, p3dWidget->m_ArcBall.p.z);
-				glCallList(ARCPOINT);
-			}
-			glPopMatrix();
-		}
-
-		if(m_bArcball)
-		{
-			glPushMatrix();
-			{
-				p3dWidget->m_ArcBall.Rotate();
-				glCallList(ARCBALL);
-			}
-			glPopMatrix();
-		}
-
-		p3dWidget->m_ArcBall.Rotate();
-
-		glScaled(m_glScaled, m_glScaled, m_glScaled);
-		glTranslated(m_glRotCenter.x, m_glRotCenter.y, m_glRotCenter.z);
-
-		if(s_bAxes)  p3dWidget->GLDrawAxes(1.0/m_glScaled, W3dPrefsDlg::s_3DAxisColor, W3dPrefsDlg::s_3DAxisStyle, W3dPrefsDlg::s_3DAxisWidth);
-
 
 		if(m_pCurWPolar && m_pCurWPolar->polarType()==XFLR5::STABILITYPOLAR)
 		{
@@ -2955,9 +2698,13 @@ void QMiarex::GLRenderView()
 
 		GLCallViewLists();
 
-		if(s_bFoilNames) GLDrawFoils();
 
-		if(s_bShowMasses) GLDrawMasses();
+		if(ThreeDWidget::s_bFoilNames)
+		{
+			for(int iw=0;iw<MAXWINGS; iw++)
+				if(m_pWingList[iw]) m_p3dWidget->GLDrawFoils(m_pWingList[iw]);
+		}
+		if(ThreeDWidget::s_bShowMasses) GLDrawMasses();
 
 		glLoadIdentity();
 		glDisable(GL_CLIP_PLANE1);
@@ -3214,15 +2961,16 @@ void QMiarex::keyPressEvent(QKeyEvent *event)
 		}
 		case Qt::Key_R:
 		{
+			if(m_iView==XFLR5::W3DVIEW)             On3DReset();
+			else if(m_iView==XFLR5::WOPPVIEW)       OnResetWingScale();
+			else if(m_iView==XFLR5::WPOLARVIEW)     OnResetWPlrLegend();
+			else if(m_iView==XFLR5::STABPOLARVIEW)  OnResetWPlrLegend();
+
 			if(m_pCurGraph)
 			{
 				m_pCurGraph->SetAuto(true);
 				UpdateView();
 			}
-			else if(m_iView==XFLR5::WOPPVIEW)       OnResetWingScale();
-			else if(m_iView==XFLR5::WPOLARVIEW)     OnResetWPlrLegend();
-			else if(m_iView==XFLR5::STABPOLARVIEW)  OnResetWPlrLegend();
-			else if(m_iView==XFLR5::W3DVIEW)        On3DReset();
 
 			break;
 		}
@@ -3543,6 +3291,8 @@ bool QMiarex::LoadSettings(QSettings *pSettings)
 
 	GLLightDlg::LoadSettings(pSettings);
 
+	EditPlaneDlg::LoadSettings(pSettings);
+
 	m_CpGraph.LoadSettings(pSettings);
 
 	for(int ig=0; ig<MAXGRAPHS; ig++)
@@ -3569,16 +3319,12 @@ void QMiarex::doubleClickEvent(QPoint pos)
 {
 	if(m_iView==XFLR5::W3DVIEW)
 	{
-		ThreeDWidget *p3dWidget = (ThreeDWidget*)s_p3dWidget;
-		p3dWidget->setCursor(Qt::CrossCursor);
+		m_p3dWidget->setCursor(Qt::CrossCursor);
 
 		CVector Real;
-		p3dWidget->ClientToGL(pos, Real);
-		if(m_r3DCltRect.contains(pos)) p3dWidget->setFocus();
-
-		Set3DRotationCenter(pos);
+		m_p3dWidget->screenToViewport(pos, Real);
+		m_p3dWidget->set3DRotationCenter(pos);
 		m_bPickCenter = false;
-		m_pctrlPickCenter->setChecked(false);
 		UpdateView();
 	}
 	else if(m_pCurGraph) 
@@ -3627,7 +3373,6 @@ void QMiarex::mouseMoveEvent(QMouseEvent *event)
 	static bool bCtrl;
 	static QPoint Delta, point;
 	static double xu, yu, x1, y1, xmin, xmax, ymin, ymax;
-	ThreeDWidget *p3dWidget = (ThreeDWidget*)s_p3dWidget;
 
 	Delta.setX(event->pos().x() - m_LastPoint.x());
 	Delta.setY(event->pos().y() - m_LastPoint.y());
@@ -3636,139 +3381,107 @@ void QMiarex::mouseMoveEvent(QMouseEvent *event)
 
 	bCtrl = false;
 	if(event->modifiers() & Qt::ControlModifier) bCtrl =true;
-	if(m_iView==XFLR5::W3DVIEW)
+
+
+	if ((event->buttons() & Qt::LeftButton) && m_bTrans &&
+		(m_iView==XFLR5::WOPPVIEW || m_iView==XFLR5::WPOLARVIEW || m_iView==XFLR5::WCPVIEW || m_iView==XFLR5::STABTIMEVIEW || m_iView==XFLR5::STABPOLARVIEW))
 	{
-		p3dWidget->ClientToGL(point, Real);
-
-		if (event->buttons() & Qt::LeftButton)
+		if(m_pCurGraph && m_bTransGraph)
 		{
-			if(bCtrl)//rotate
-			{
-				SetViewControls();
-				p3dWidget->m_ArcBall.Move(point.x(), m_r3DCltRect.height()-point.y());
-				UpdateView();
-			}
-			else if(m_bTrans)
-			{
-				//translate
-				m_glViewportTrans.x += (GLfloat)(Delta.x()*2.0*m_GLScale/m_glScaled/m_r3DCltRect.width());
-				m_glViewportTrans.y += (GLfloat)(Delta.y()*2.0*m_GLScale/m_glScaled/m_r3DCltRect.width());
+			// we translate the curves inside the graph
+			m_pCurGraph->SetAuto(false);
+			x1 =  m_pCurGraph->ClientTox(m_LastPoint.x()) ;
+			y1 =  m_pCurGraph->ClientToy(m_LastPoint.y()) ;
 
-				m_glRotCenter.x = MatOut[0][0]*m_glViewportTrans.x + MatOut[0][1]*(-m_glViewportTrans.y) + MatOut[0][2]*m_glViewportTrans.z;
-				m_glRotCenter.y = MatOut[1][0]*m_glViewportTrans.x + MatOut[1][1]*(-m_glViewportTrans.y) + MatOut[1][2]*m_glViewportTrans.z;
-				m_glRotCenter.z = MatOut[2][0]*m_glViewportTrans.x + MatOut[2][1]*(-m_glViewportTrans.y) + MatOut[2][2]*m_glViewportTrans.z;
+			xu = m_pCurGraph->ClientTox(point.x());
+			yu = m_pCurGraph->ClientToy(point.y());
 
-				UpdateView();
-			}
-		}
-		else if ((event->buttons() & Qt::MidButton) && !bCtrl)
-		{
-			SetViewControls();
-			p3dWidget->m_ArcBall.Move(point.x(), m_r3DCltRect.height()-point.y());
+			xmin = m_pCurGraph->GetXMin() - xu+x1;
+			xmax = m_pCurGraph->GetXMax() - xu+x1;
+			ymin = m_pCurGraph->GetYMin() - yu+y1;
+			ymax = m_pCurGraph->GetYMax() - yu+y1;
+
+			m_pCurGraph->SetWindow(xmin, xmax, ymin, ymax);
 			UpdateView();
 		}
-	}
-	else
-	{
-		if ((event->buttons() & Qt::LeftButton) && m_bTrans &&
-			(m_iView==XFLR5::WOPPVIEW || m_iView==XFLR5::WPOLARVIEW || m_iView==XFLR5::WCPVIEW || m_iView==XFLR5::STABTIMEVIEW || m_iView==XFLR5::STABPOLARVIEW))
+		else if (m_pCurPlane  && ((m_iView==XFLR5::WOPPVIEW && m_iWingView ==XFLR5::ONEGRAPH)))
 		{
-			if(m_pCurGraph && m_bTransGraph)
+			// we translate the Plane
+
+			m_ptOffset.rx() += Delta.x();
+			m_ptOffset.ry() += Delta.y();
+			UpdateView();
+
+		}
+		else if (m_pCurPlane  && m_iView==XFLR5::WOPPVIEW && m_iWingView !=XFLR5::ONEGRAPH)
+		{
+			// we translate the legend
+			//horizontally only
+			m_WingLegendOffset.rx() += Delta.x();
+			m_WingLegendOffset.ry() += Delta.y();
+			UpdateView();
+		}
+		else if (m_iView==XFLR5::WPOLARVIEW)
+		{
+			// we translate the legend
+			if(m_iWPlrView==XFLR5::ONEGRAPH || m_iWPlrView==XFLR5::ALLGRAPHS)
 			{
-				// we translate the curves inside the graph
-				m_pCurGraph->SetAuto(false);
-				x1 =  m_pCurGraph->ClientTox(m_LastPoint.x()) ;
-				y1 =  m_pCurGraph->ClientToy(m_LastPoint.y()) ;
-
-				xu = m_pCurGraph->ClientTox(point.x());
-				yu = m_pCurGraph->ClientToy(point.y());
-
-				xmin = m_pCurGraph->GetXMin() - xu+x1;
-				xmax = m_pCurGraph->GetXMax() - xu+x1;
-				ymin = m_pCurGraph->GetYMin() - yu+y1;
-				ymax = m_pCurGraph->GetYMax() - yu+y1;
-
-				m_pCurGraph->SetWindow(xmin, xmax, ymin, ymax);
+				m_WPlrLegendOffset.rx() += Delta.x();
+				m_WPlrLegendOffset.ry() += Delta.y();
 				UpdateView();
 			}
-			else if (m_pCurPlane  && ((m_iView==XFLR5::WOPPVIEW && m_iWingView ==XFLR5::ONEGRAPH)))
-			{
-				// we translate the Plane
-
-				m_ptOffset.rx() += Delta.x();
-				m_ptOffset.ry() += Delta.y();
-				UpdateView();
-
-			}
-			else if (m_pCurPlane  && m_iView==XFLR5::WOPPVIEW && m_iWingView !=XFLR5::ONEGRAPH)
-			{
-				// we translate the legend
-				//horizontally only
-				m_WingLegendOffset.rx() += Delta.x();
-				m_WingLegendOffset.ry() += Delta.y();
-				UpdateView();
-			}
-			else if (m_iView==XFLR5::WPOLARVIEW)
-			{
-				// we translate the legend
-				if(m_iWPlrView==XFLR5::ONEGRAPH || m_iWPlrView==XFLR5::ALLGRAPHS)
-				{
-					m_WPlrLegendOffset.rx() += Delta.x();
-					m_WPlrLegendOffset.ry() += Delta.y();
-					UpdateView();
-				}
-				else if(m_iWPlrView==XFLR5::TWOGRAPHS)
-				{
-					m_WPlrLegendOffset.rx() += Delta.x();
-					m_WPlrLegendOffset.ry() += Delta.y();
-					UpdateView();
-				}
-			}
-			else if(m_iView==XFLR5::STABTIMEVIEW)
-			{
-				m_WingLegendOffset.rx() += Delta.x();
-				m_WingLegendOffset.ry() += Delta.y();
-				UpdateView();
-
-			}
-			else if(m_iView==XFLR5::STABPOLARVIEW)
+			else if(m_iWPlrView==XFLR5::TWOGRAPHS)
 			{
 				m_WPlrLegendOffset.rx() += Delta.x();
 				m_WPlrLegendOffset.ry() += Delta.y();
 				UpdateView();
 			}
 		}
-
-		else if ((event->buttons() & Qt::MidButton) && !bCtrl)
-		//scaling
+		else if(m_iView==XFLR5::STABTIMEVIEW)
 		{
-			// we zoom the graph or the wing
-			if(m_iView ==XFLR5::WOPPVIEW ||m_iView==XFLR5::WPOLARVIEW || m_iView==XFLR5::WCPVIEW || m_iView==XFLR5::STABTIMEVIEW || m_iView==XFLR5::STABPOLARVIEW)
-			{
-				if(m_pCurGraph && m_pCurGraph->IsInDrawRect(point))
-				{
-					//zoom graph
-					m_pCurGraph->SetAuto(false);
-					if(point.y()-m_LastPoint.y()<0) m_pCurGraph->Scale(1.02);
-					else                            m_pCurGraph->Scale(1.0/1.02);
+			m_WingLegendOffset.rx() += Delta.x();
+			m_WingLegendOffset.ry() += Delta.y();
+			UpdateView();
 
-					UpdateView();
-				}
-				else if(m_pCurPlane && m_iView==XFLR5::WOPPVIEW)
-				{
-					//zoom wing
-					if(point.y()-m_LastPoint.y()<0)  m_WingScale /= 1.02;
-					else                             m_WingScale *= 1.02;
-					UpdateView();
-				}
-			}
 		}
-		else if(m_pCurGraph && m_pCurGraph->IsInDrawRect(point))
+		else if(m_iView==XFLR5::STABPOLARVIEW)
 		{
-			MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
-			pMainFrame->statusBar()->showMessage(QString("X =%1, Y = %2").arg(m_pCurGraph->ClientTox(event->x())).arg(m_pCurGraph->ClientToy(event->y())));
+			m_WPlrLegendOffset.rx() += Delta.x();
+			m_WPlrLegendOffset.ry() += Delta.y();
+			UpdateView();
 		}
 	}
+
+	else if ((event->buttons() & Qt::MidButton) && !bCtrl)
+	//scaling
+	{
+		// we zoom the graph or the wing
+		if(m_iView ==XFLR5::WOPPVIEW ||m_iView==XFLR5::WPOLARVIEW || m_iView==XFLR5::WCPVIEW || m_iView==XFLR5::STABTIMEVIEW || m_iView==XFLR5::STABPOLARVIEW)
+		{
+			if(m_pCurGraph && m_pCurGraph->IsInDrawRect(point))
+			{
+				//zoom graph
+				m_pCurGraph->SetAuto(false);
+				if(point.y()-m_LastPoint.y()<0) m_pCurGraph->Scale(1.02);
+				else                            m_pCurGraph->Scale(1.0/1.02);
+
+				UpdateView();
+			}
+			else if(m_pCurPlane && m_iView==XFLR5::WOPPVIEW)
+			{
+				//zoom wing
+				if(point.y()-m_LastPoint.y()<0)  m_WingScale /= 1.02;
+				else                             m_WingScale *= 1.02;
+				UpdateView();
+			}
+		}
+	}
+	else if(m_pCurGraph && m_pCurGraph->IsInDrawRect(point))
+	{
+		MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
+		pMainFrame->statusBar()->showMessage(QString("X =%1, Y = %2").arg(m_pCurGraph->ClientTox(event->x())).arg(m_pCurGraph->ClientToy(event->y())));
+	}
+
 	m_LastPoint = point;
 	event->accept();
 }
@@ -3783,7 +3496,6 @@ void QMiarex::mousePressEvent(QMouseEvent *event)
 {
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 	StabViewDlg *pStabView =(StabViewDlg*)pMainFrame->m_pStabView;
-	ThreeDWidget *p3dWidget = (ThreeDWidget*)s_p3dWidget;
 
 	static complex<double> eigenvalue;
 	static int i,j,k, isel, jsel,xval, yval;
@@ -3793,10 +3505,10 @@ void QMiarex::mousePressEvent(QMouseEvent *event)
 	if (event->buttons() & Qt::MidButton)
 	{
 		m_bArcball = true;
-		p3dWidget->m_ArcBall.Start(event->pos().x(), m_r3DCltRect.height()-event->pos().y());
+		m_p3dWidget->m_ArcBall.Start(event->pos().x(), m_p3dWidget->rect().height()-event->pos().y());
 		m_bCrossPoint = true;
 
-		Set3DRotationCenter();
+		m_p3dWidget->reset3DRotationCenter();
 		UpdateView();
 	}
 	else if (event->buttons() & Qt::RightButton)
@@ -3820,26 +3532,25 @@ void QMiarex::mousePressEvent(QMouseEvent *event)
 				bCtrl =true;
 			}
 
-			p3dWidget->ClientToGL(point, Real);
-			if(m_r3DCltRect.contains(point)) p3dWidget->setFocus();
+			m_p3dWidget->screenToViewport(point, Real);
+			if(m_p3dWidget->rect().contains(point)) m_p3dWidget->setFocus();
 
 			if(m_bPickCenter)
 			{
-				Set3DRotationCenter(point);
+				m_p3dWidget->set3DRotationCenter(point);
 				m_bPickCenter = false;
-				m_pctrlPickCenter->setChecked(false);
 			}
 			else
 			{
-				p3dWidget->m_ArcBall.Start(point.x(), m_r3DCltRect.height()-point.y());
+				m_p3dWidget->m_ArcBall.Start(point.x(), m_p3dWidget->rect().height()-point.y());
 				m_bCrossPoint = true;
 
-				Set3DRotationCenter();
+				m_p3dWidget->reset3DRotationCenter();
 
 				if (!bCtrl)
 				{
 					m_bTrans = true;
-					p3dWidget->setCursor(Qt::ClosedHandCursor);
+					m_p3dWidget->setCursor(Qt::ClosedHandCursor);
 				}
 			}
 
@@ -3946,31 +3657,8 @@ void QMiarex::mousePressEvent(QMouseEvent *event)
  */
 void QMiarex::mouseReleaseEvent(QMouseEvent *event)
 {
-	if(m_iView==XFLR5::W3DVIEW)
-	{
-		ThreeDWidget *p3dWidget = (ThreeDWidget*)s_p3dWidget;
-		p3dWidget->setCursor(Qt::CrossCursor);
-
-		m_bArcball = false;
-		m_bCrossPoint = false;
-		UpdateView();
-
-	//	We need to re-calculate the translation vector
-		int i,j;
-		for(i=0; i<4; i++)
-			for(j=0; j<4; j++)
-				MatIn[i][j] =  p3dWidget->m_ArcBall.ab_quat[i*4+j];
-
-		GLInverseMatrix();
-		m_glViewportTrans.x =  (MatOut[0][0]*m_glRotCenter.x + MatOut[0][1]*m_glRotCenter.y + MatOut[0][2]*m_glRotCenter.z);
-		m_glViewportTrans.y = -(MatOut[1][0]*m_glRotCenter.x + MatOut[1][1]*m_glRotCenter.y + MatOut[1][2]*m_glRotCenter.z);
-		m_glViewportTrans.z =  (MatOut[2][0]*m_glRotCenter.x + MatOut[2][1]*m_glRotCenter.y + MatOut[2][2]*m_glRotCenter.z);
-	}
-	else
-	{
-		TwoDWidget *p2dWidget = (TwoDWidget*)s_p2dWidget;
-		p2dWidget->setCursor(Qt::CrossCursor);
-	}
+	TwoDWidget *p2dWidget = (TwoDWidget*)s_p2dWidget;
+	p2dWidget->setCursor(Qt::CrossCursor);
 	m_bTrans = false;
 
 	event->accept();
@@ -4034,78 +3722,15 @@ void QMiarex::On3DCp()
 
 
 /**
- * Updates the display after the user has requested a perspective view in the 3D display
- */
-void QMiarex::On3DIso()
-{
-	SetViewControls();
-	m_pctrlIso->setChecked(true);
-
-	ThreeDWidget *p3dWidget = (ThreeDWidget*)s_p3dWidget;
-	p3dWidget->On3DIso();
-
-	Set3DRotationCenter();
-	UpdateView();
-}
-
-
-
-/**
- *  Updates the display after the user has requested a top view in the 3D display
-*/
-void QMiarex::On3DTop()
-{
-	ThreeDWidget *p3dWidget = (ThreeDWidget*)s_p3dWidget;
-	SetViewControls();
-	m_pctrlZ->setChecked(true);
-	p3dWidget->m_ArcBall.SetQuat(sqrt(2.0)/2.0, 0.0, 0.0, -sqrt(2.0)/2.0);
-	Set3DRotationCenter();
-	UpdateView();
-}
-
-
-/**
- * Updates the display after the user has requested a left view in the 3D display
-*/
-void QMiarex::On3DLeft()
-{
-	ThreeDWidget *p3dWidget = (ThreeDWidget*)s_p3dWidget;
-	SetViewControls();
-	m_pctrlY->setChecked(true);
-	p3dWidget->m_ArcBall.SetQuat(sqrt(2.0)/2.0, -sqrt(2.0)/2.0, 0.0, 0.0);// rotate by 90 deg around x
-	Set3DRotationCenter();
-	UpdateView();
-}
-
-
-/**
- * Updates the display after the user has requested a front view in the 3D display
-*/
-void QMiarex::On3DFront()
-{
-	ThreeDWidget *p3dWidget = (ThreeDWidget*)s_p3dWidget;
-	SetViewControls();
-	m_pctrlX->setChecked(true);
-
-	Quaternion Qt1(sqrt(2.0)/2.0, 0.0,           -sqrt(2.0)/2.0, 0.0);// rotate by 90 deg around y
-	Quaternion Qt2(sqrt(2.0)/2.0, -sqrt(2.0)/2.0, 0.0,           0.0);// rotate by 90 deg around x
-
-	p3dWidget->m_ArcBall.SetQuat(Qt1 * Qt2);
-	Set3DRotationCenter();
-	UpdateView();
-}
-
-
-/**
  * Updates the display after the user has requested a reset of the scales in the 3D view
 */
 void QMiarex::On3DReset()
 {
-	m_glViewportTrans.Set(0.0, 0.0, 0.0);
+	m_p3dWidget->m_glViewportTrans.Set(0.0, 0.0, 0.0);
 	m_bPickCenter   = false;
 	m_bIs3DScaleSet = false;
 	Set3DScale();
-	Set3DRotationCenter();
+	m_p3dWidget->reset3DRotationCenter();
 	UpdateView();
 }
 
@@ -4128,18 +3753,6 @@ void QMiarex::On3DPrefs()
 	m_bResetglStream = true;
 
 	UpdateView();
-}
-
-
-
-/**
- * The user has pressed the button which initiates a pick of the rotation center in 3D view
- * Sets the internal flag to true
- * The action will be processed in the ::mousePressEvent() function
- */
-void QMiarex::On3DPickCenter()
-{
-	m_bPickCenter = m_pctrlPickCenter->isChecked();
 }
 
 
@@ -4755,7 +4368,7 @@ void QMiarex::OnAdvancedSettings()
 void QMiarex::OnClipPlane(int pos)
 {
 	double planepos =  (double)pos/100.0;
-	m_ClipPlanePos = sinh(planepos) * 0.5;
+	m_p3dWidget->m_ClipPlanePos = sinh(planepos) * 0.5;
 	UpdateView();
 }
 
@@ -5002,6 +4615,71 @@ void QMiarex::OnDefineWPolar()
 	SetControls();
 }
 
+
+
+
+/**
+ * The user has requested the creation of a new performance polar.
+ * A new WPolar object is created and is attached to the owning plane or wing.
+ */
+void QMiarex::OnDefineWPolarObject()
+{
+	if(!m_pCurPlane) return;
+
+	StopAnimate();
+
+	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
+
+	WPolar* pNewWPolar  = new WPolar;
+	pNewWPolar->DuplicateSpec(&WPolarDlg::s_WPolar);
+	pNewWPolar->planeName() = m_pCurPlane->planeName();
+	pNewWPolar->polarName() = WPolarDlg::s_WPolar.polarName();
+
+	ViewPolarDefDlg vpDlg((MainFrame*)s_pMainFrame);
+	vpDlg.initDialog(m_pCurPlane, pNewWPolar);
+
+	if (vpDlg.exec() == QDialog::Accepted)
+	{
+		//Then add WPolar to array
+		emit projectModified();
+
+		if(pNewWPolar->referenceDim()==XFLR5::PLANFORMREFDIM)
+		{
+			pNewWPolar->referenceSpanLength() = m_pCurPlane->planformSpan();
+			pNewWPolar->referenceArea() = m_pCurPlane->planformArea();
+			if(m_pCurPlane && m_pCurPlane->BiPlane()) pNewWPolar->referenceArea() += m_pCurPlane->wing2()->m_PlanformArea;
+		}
+		else if(pNewWPolar->referenceDim()==XFLR5::PROJECTEDREFDIM)
+		{
+			pNewWPolar->referenceSpanLength() = m_pCurPlane->projectedSpan();
+			pNewWPolar->referenceArea() = m_pCurPlane->projectedArea();
+			if(m_pCurPlane && m_pCurPlane->BiPlane()) pNewWPolar->referenceArea() += m_pCurPlane->wing2()->m_ProjectedArea;
+		}
+
+		pNewWPolar->bDirichlet() = m_bDirichlet;
+		pNewWPolar->curveColor() = MainFrame::GetColor(4);
+		pNewWPolar->visible() = true;
+
+		m_pCurWPolar = Objects3D::insertNewWPolar(pNewWPolar, m_pCurPlane);
+		m_pCurPOpp = NULL;
+
+		m_bResetglGeom = true;
+		m_bResetglMesh = true;
+		m_bResetglOpp  = true;
+		m_bResetglWake = true;
+
+		SetWPolar();
+
+		pMainFrame->UpdateWPolarListBox();
+		UpdateView();
+		m_pctrlAnalyze->setFocus();
+	}
+	else
+	{
+		delete pNewWPolar;
+	}
+	SetControls();
+}
 
 /**
  * The user wants to edit the analysis parameters of the currently selected polar.
@@ -5580,7 +5258,7 @@ void QMiarex::OnEditCurObject()
 	Plane* pModPlane= new Plane;
 	pModPlane->Duplicate(m_pCurPlane);
 
-	ViewObjectDlg voDlg((MainFrame*)pMainFrame);
+	EditPlaneDlg voDlg((MainFrame*)pMainFrame);
 	voDlg.initDialog(pModPlane);
 
 	ModDlg mdDlg(pMainFrame);
@@ -6466,26 +6144,6 @@ void QMiarex::OnStabCurve()
 
 
 /**
- * The user has toggled the display of the foil names in the 3D view
- */
-void QMiarex::OnFoilNames()
-{
-	s_bFoilNames = m_pctrlFoilNames->isChecked();
-	UpdateView();
-}
-
-
-/**
- * The user has toggled the display of the masses in the 3D view
- */
-void QMiarex::OnMasses()
-{
-	s_bShowMasses = m_pctrlMasses->isChecked();
-	UpdateView();
-}
-
-
-/**
  * The user has changed one of the scale in the GL3DScale widget
  */
 void QMiarex::OnGL3DScale()
@@ -6958,6 +6616,44 @@ void QMiarex::OnNewPlane()
 	plDlg.InitDialog();
 
 	if(QDialog::Accepted == plDlg.exec())
+	{
+		emit projectModified();
+
+		if(Objects3D::getPlane(pPlane->planeName()))
+			m_pCurPlane = Objects3D::setModPlane(pPlane);
+		else
+		{
+			Objects3D::addPlane(pPlane);
+			m_pCurPlane = pPlane;
+		}
+		SetPlane();
+		pMainFrame->UpdatePlaneListBox();
+		m_bResetglLegend = true;
+	}
+	else
+	{
+		delete pPlane;
+	}
+
+	SetControls();
+	UpdateView();
+}
+
+
+
+/**
+ * The user has requested the creation of a new plane.
+ * Launches the dialog box, and stores the plane in the array i.a.w. user instructions
+ */
+void QMiarex::OnNewPlaneObject()
+{
+	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
+	Plane* pPlane = new Plane;
+
+	EditPlaneDlg eplDlg(pMainFrame);
+	eplDlg.initDialog(pPlane);
+
+	if(QDialog::Accepted == eplDlg.exec())
 	{
 		emit projectModified();
 
@@ -7875,20 +7571,17 @@ void QMiarex::OnSurfaceSpeeds()
 void QMiarex::OnSetupLight()
 {
 	if(m_iView!=XFLR5::W3DVIEW) return;
-	ThreeDWidget *p3dWidget = (ThreeDWidget*)s_p3dWidget;
 
-	GLLightDlg *pgllDlg = (GLLightDlg*)m_pglLightDlg;
-	pgllDlg->m_p3DWidget= s_p3dWidget;
 /*	QSize size = QSize(400,400);
 	QPoint pos = QPoint(100,50);
 	gllDlg.resize(size);
 	gllDlg.move(pos); */
-	pgllDlg->show();
+	m_p3dWidget->m_glLightDlg.show();
 
 	double LightFactor;
 	if(m_pCurPlane) LightFactor =  (GLfloat)pow(m_pCurPlane->planformSpan()/2.0,0.1);
 	else            LightFactor = 1.0;
-	p3dWidget->GLSetupLight(0.0, LightFactor);
+	m_p3dWidget->GLSetupLight(0.0, LightFactor);
 	UpdateView();
 }
 
@@ -8506,9 +8199,9 @@ void QMiarex::PaintWing(QPainter &painter, QPoint ORef, double scale)
  * Draws the wing legend in the 2D operating point view
  * @param painter a reference to the QPainter object on which the view shall be drawn
  */
-void QMiarex::PaintPlaneLegend(QPainter &painter, QRect drawRect)
+void QMiarex::PaintPlaneLegend(QPainter &painter, Plane *pPlane, WPolar *pWPolar, QRect drawRect)
 {
-	if(!m_pCurPlane) return;
+	if(!pPlane) return;
 	painter.save();
 
 	QString Result, str, strong;
@@ -8527,39 +8220,38 @@ void QMiarex::PaintPlaneLegend(QPainter &painter, QRect drawRect)
 	dheight = fm.height();
 	int D = 0;
 	int LeftPos = margin;
-	int ZPos    = drawRect.height()-14*dheight;
+	int ZPos    = drawRect.height()-13*dheight;
 
-//	double area = m_pCurPlane->m_Wing[0].s_RefArea;
-	if(m_pCurPlane && m_pWingList[2]) ZPos -= dheight;
+	if(pWPolar) ZPos -= dheight;
 
-	painter.drawText(LeftPos, ZPos, m_pCurPlane->planeName());
+//	double area = pPlane->m_Wing[0].s_RefArea;
+	if(pPlane && m_pWingList[2]) ZPos -= dheight;
+
+	painter.drawText(LeftPos, ZPos, pPlane->planeName());
 	D+=dheight;
 	QString length, surface;
 	Units::getLengthUnitLabel(length);
 	Units::getAreaUnitLabel(surface);
 
-	str1 = QString(tr("Wing Span      =")+"%1 ").arg(m_pCurPlane->planformSpan()*Units::mtoUnit(),10,'f',3);
+	str1 = QString(tr("Wing Span      =")+"%1 ").arg(pPlane->planformSpan()*Units::mtoUnit(),10,'f',3);
 	str1 += length;
 	painter.drawText(LeftPos,ZPos+D, str1);
 	D+=dheight;
 
-	str1 = QString(tr("xyProj. Span   =")+"%1 ").arg(m_pCurPlane->projectedSpan()*Units::mtoUnit(),10,'f',3);
+	str1 = QString(tr("xyProj. Span   =")+"%1 ").arg(pPlane->projectedSpan()*Units::mtoUnit(),10,'f',3);
 	str1 += length;
 	painter.drawText(LeftPos,ZPos+D, str1);
 	D+=dheight;
 
-	str1 = QString(tr("Wing Area      =")+"%1 ").arg(m_pCurPlane->planformArea() * Units::m2toUnit(),10,'f',3);
+	str1 = QString(tr("Wing Area      =")+"%1 ").arg(pPlane->planformArea() * Units::m2toUnit(),10,'f',3);
 	str1 += surface;
 	painter.drawText(LeftPos,ZPos+D, str1);
 	D+=dheight;
 
-	str1 = QString(tr("xyProj. Area   =")+"%1 ").arg(m_pCurPlane->projectedArea() * Units::m2toUnit(),10,'f',3);
+	str1 = QString(tr("xyProj. Area   =")+"%1 ").arg(pPlane->projectedArea() * Units::m2toUnit(),10,'f',3);
 	str1 += surface;
 	painter.drawText(LeftPos,ZPos+D, str1);
 	D+=dheight;
-
-	if(m_pCurWPolar && !m_pCurWPolar->m_bAutoInertia) Mass = m_pCurWPolar->mass();
-	else                                              Mass = m_pCurPlane->TotalMass();
 
 	Units::getWeightUnitLabel(str);
 	Result = QString(tr("Plane Mass     =")+"%1 ").arg(Mass*Units::kgtoUnit(),10,'f',3);
@@ -8568,47 +8260,49 @@ void QMiarex::PaintPlaneLegend(QPainter &painter, QRect drawRect)
 	D+=dheight;
 
 	Units::getAreaUnitLabel(strong);
-	Result = QString(tr("Wing Load      =")+"%1 ").arg(Mass*Units::kgtoUnit()/m_pCurPlane->projectedArea()/Units::m2toUnit(),10,'f',3);
+	Result = QString(tr("Wing Load      =")+"%1 ").arg(Mass*Units::kgtoUnit()/pPlane->projectedArea()/Units::m2toUnit(),10,'f',3);
 	Result += str + "/" + strong;
 	painter.drawText(LeftPos, ZPos+D, Result);
 	D+=dheight;
 
-	if(m_pCurPlane && m_pWingList[2])
+	if(pPlane && m_pWingList[2])
 	{
-		str1 = QString(tr("Tail Volume    =")+"%1").arg(m_pCurPlane->TailVolume(),10,'f',3);
+		str1 = QString(tr("Tail Volume    =")+"%1").arg(pPlane->TailVolume(),10,'f',3);
 		painter.drawText(LeftPos, ZPos+D, str1);
 		D+=dheight;
 	}
 
-	str1 = QString(tr("Root Chord     =")+"%1 ").arg(m_pCurPlane->m_Wing[0].RootChord()*Units::mtoUnit(), 10,'f', 3);
+	str1 = QString(tr("Root Chord     =")+"%1 ").arg(pPlane->m_Wing[0].RootChord()*Units::mtoUnit(), 10,'f', 3);
 	Result = str1+length;
 	painter.drawText(LeftPos, ZPos+D, Result);
 	D+=dheight;
 
-	str1 = QString(tr("MAC            =")+"%1 ").arg(m_pCurPlane->mac()*Units::mtoUnit(), 10,'f', 3);
+	str1 = QString(tr("MAC            =")+"%1 ").arg(pPlane->mac()*Units::mtoUnit(), 10,'f', 3);
 	Result = str1+length;
 	painter.drawText(LeftPos, ZPos+D, Result);
 	D+=dheight;
 
-	str1 = QString(tr("TipTwist       =")+"%1").arg(m_pCurPlane->m_Wing[0].TipTwist(), 10,'f', 3) + QString::fromUtf8("°");
+	str1 = QString(tr("TipTwist       =")+"%1").arg(pPlane->m_Wing[0].TipTwist(), 10,'f', 3) + QString::fromUtf8("°");
 	painter.drawText(LeftPos, ZPos+D, str1);
 	D+=dheight;
 
-	str1 = QString(tr("Aspect Ratio   =")+"%1").arg(m_pCurPlane->aspectRatio(),10,'f',3);
+	str1 = QString(tr("Aspect Ratio   =")+"%1").arg(pPlane->aspectRatio(),10,'f',3);
 	painter.drawText(LeftPos, ZPos+D, str1);
 	D+=dheight;
 
-	str1 = QString(tr("Taper Ratio    =")+"%1").arg(m_pCurPlane->taperRatio(),10,'f',3);
+	str1 = QString(tr("Taper Ratio    =")+"%1").arg(pPlane->taperRatio(),10,'f',3);
 	painter.drawText(LeftPos, ZPos+D, str1);
 	D+=dheight;
 
-	str1 = QString(tr("Root-Tip Sweep =")+"%1").arg(m_pCurPlane->m_Wing[0].AverageSweep(), 10,'f',3) + QString::fromUtf8("°");
+	str1 = QString(tr("Root-Tip Sweep =")+"%1").arg(pPlane->m_Wing[0].AverageSweep(), 10,'f',3) + QString::fromUtf8("°");
 	painter.drawText(LeftPos, ZPos+D, str1);
 	D+=dheight;
 
-	str1 = QString(tr("Mesh elements  =")+"%1").arg(Objects3D::calculateMatSize(m_pCurPlane, m_pCurWPolar),6);
-	painter.drawText(LeftPos, ZPos+D, str1);
-
+	if(pWPolar)
+	{
+		str1 = QString(tr("Mesh elements  =")+"%1").arg(Objects3D::calculateMatSize(pPlane, pWPolar),6);
+		painter.drawText(LeftPos, ZPos+D, str1);
+	}
 	painter.restore();
 }
 
@@ -9238,6 +8932,7 @@ bool QMiarex::SaveSettings(QSettings *pSettings)
 
 	GLLightDlg::SaveSettings(pSettings);
 	GL3dBodyDlg::SaveSettings(pSettings);
+	EditPlaneDlg::SaveSettings(pSettings);
 
 	return true;
 }
@@ -9308,132 +9003,6 @@ void QMiarex::Set2DScale()
 }
 
 
-/**
- * Adjusts the new rotation center after a translation or a rotation
- */
-void QMiarex::Set3DRotationCenter()
-{
-	ThreeDWidget *p3dWidget = (ThreeDWidget*)s_p3dWidget;
-	int i,j;
-
-	for(i=0; i<4; i++)
-		for(j=0; j<4; j++)
-			MatOut[i][j] =  p3dWidget->m_ArcBall.ab_quat[i*4+j];
-
-	m_glRotCenter.x = MatOut[0][0]*(m_glViewportTrans.x) + MatOut[0][1]*(-m_glViewportTrans.y) + MatOut[0][2]*m_glViewportTrans.z;
-	m_glRotCenter.y = MatOut[1][0]*(m_glViewportTrans.x) + MatOut[1][1]*(-m_glViewportTrans.y) + MatOut[1][2]*m_glViewportTrans.z;
-	m_glRotCenter.z = MatOut[2][0]*(m_glViewportTrans.x) + MatOut[2][1]*(-m_glViewportTrans.y) + MatOut[2][2]*m_glViewportTrans.z;
-}
-
-
-/**
-* Adjusts the new rotation center after the user has picked a point on the screen
-* Finds the closest panel under the point and changes the rotation vector and viewport translation
-*@param the point clicked by the user, in client coordinates
-*/
-void QMiarex::Set3DRotationCenter(QPoint point)
-{
-	int  i, j;
-	CVector I, A, B, AA, BB, PP, U;
-	double  dist;
-	ThreeDWidget *p3dWidget = (ThreeDWidget*)s_p3dWidget;
-
-	i=-1;
-
-	p3dWidget->ClientToGL(point, B);
-
-	B.x +=  - m_glViewportTrans.x*m_glScaled;
-	B.y +=  + m_glViewportTrans.y*m_glScaled;
-
-	B *= 1.0/m_glScaled;
-
-	A.Set(B.x, B.y, +1.0);
-	B.z = -1.0;
-
-	for(i=0; i<4; i++)
-		for(j=0; j<4; j++)
-			MatIn[i][j] =  p3dWidget->m_ArcBall.ab_quat[i*4+j];
-
-	//convert screen to model coordinates
-	AA.x = MatIn[0][0]*A.x + MatIn[0][1]*A.y + MatIn[0][2]*A.z;
-	AA.y = MatIn[1][0]*A.x + MatIn[1][1]*A.y + MatIn[1][2]*A.z;
-	AA.z = MatIn[2][0]*A.x + MatIn[2][1]*A.y + MatIn[2][2]*A.z;
-
-	BB.x = MatIn[0][0]*B.x + MatIn[0][1]*B.y + MatIn[0][2]*B.z;
-	BB.y = MatIn[1][0]*B.x + MatIn[1][1]*B.y + MatIn[1][2]*B.z;
-	BB.z = MatIn[2][0]*B.x + MatIn[2][1]*B.y + MatIn[2][2]*B.z;
-
-	if(m_pCurPOpp)
-	{
-		AA.RotateY(-m_pCurPOpp->m_pPlaneWOpp[0]->m_Alpha);
-		BB.RotateY(-m_pCurPOpp->m_pPlaneWOpp[0]->m_Alpha);
-	}
-
-	U.Set(BB.x-AA.x, BB.y-AA.y, BB.z-AA.z);
-	U.Normalize();
-
-	bool bIntersect = false;
-
-	if(m_iView==XFLR5::W3DVIEW )
-	{
-		for(j=0; j<Objects3D::s_SurfaceList.size(); j++)
-		{
-			bIntersect = Intersect(Objects3D::s_SurfaceList.at(j)->m_LA,
-					       Objects3D::s_SurfaceList.at(j)->m_LB,
-					       Objects3D::s_SurfaceList.at(j)->m_TA,
-					       Objects3D::s_SurfaceList.at(j)->m_TB,
-					       Objects3D::s_SurfaceList.at(j)->Normal,
-					       AA, U, I, dist);
-			if(bIntersect)
-			{
-				PP.Set(I);
-				break;
-			}
-		}
-	}
-
-	if(bIntersect)
-	{
-		if(m_pCurPOpp)
-		{
-			PP.RotateY(m_pCurPOpp->m_pPlaneWOpp[0]->m_Alpha);
-		}
-//		instantaneous visual transition
-//		m_glRotCenter -= PP * m_glScaled;
-
-//		smooth visual transition
-		GLInverseMatrix();
-
-		int nSteps = 50;
-		int millis = 5;
-
-		U.x = (-PP.x -m_glRotCenter.x)/(double)nSteps;
-		U.y = (-PP.y -m_glRotCenter.y)/(double)nSteps;
-		U.z = (-PP.z -m_glRotCenter.z)/(double)nSteps;
-
-		for(i=0; i<nSteps; i++)
-		{
-			m_glRotCenter += U;
-			m_glViewportTrans.x =  (MatOut[0][0]*m_glRotCenter.x + MatOut[0][1]*m_glRotCenter.y + MatOut[0][2]*m_glRotCenter.z);
-			m_glViewportTrans.y = -(MatOut[1][0]*m_glRotCenter.x + MatOut[1][1]*m_glRotCenter.y + MatOut[1][2]*m_glRotCenter.z);
-			m_glViewportTrans.z=   (MatOut[2][0]*m_glRotCenter.x + MatOut[2][1]*m_glRotCenter.y + MatOut[2][2]*m_glRotCenter.z);
-
-			UpdateView();
-
-			//sleep
-
-			#ifdef Q_OS_WIN
-				Sleep(uint(millis));
-			#else
-				struct timespec ts = { millis / 1000, (millis % 1000) * 1000 * 1000 };
-				nanosleep(&ts, NULL);
-			#endif
-
-			qApp->processEvents();
-		}
-	}
-}
-
 
 /**
  * Sets an automatic scale for the wing or plane in the 3D view, depending on wing span.
@@ -9444,17 +9013,14 @@ void QMiarex::Set3DScale()
 	if(m_iView==XFLR5::W3DVIEW) m_bResetglLegend = true;
 	if(m_bIs3DScaleSet && !m_bAutoScales) return;
 
-	ThreeDWidget *p3dWidget = (ThreeDWidget*)s_p3dWidget;
-	m_r3DCltRect = p3dWidget->geometry();
+	m_p3dWidget->rect() = m_p3dWidget->geometry();
 
 	if(m_pCurPlane)
 	{
 		//wing along X axis will take 3/4 of the screen
-		m_glScaled = (GLfloat)(3./4.*2.0*m_GLScale/m_pCurPlane->planformSpan());
+		m_p3dWidget->m_glScaled = (GLfloat)(3./4.*2.0/m_pCurPlane->planformSpan());
 
-		m_glViewportTrans.x = 0.0;
-		m_glViewportTrans.y = 0.0;
-		m_glViewportTrans.z = 0.0;
+		m_p3dWidget->m_glViewportTrans.Set(0.0,0.0,0.0);
 		m_bIs3DScaleSet = true;
 	}
 }
@@ -9982,9 +9548,9 @@ void QMiarex::SetupLayout()
 				pThreeDParamsLayout->addWidget(m_pctrlMasses, 4,2);
 			}
 
-			QVBoxLayout *ThreeDView = new QVBoxLayout;
+			QVBoxLayout *pThreeDViewLayout = new QVBoxLayout;
 			{
-				QHBoxLayout *AxisViewLayout = new QHBoxLayout;
+				QHBoxLayout *pAxisViewLayout = new QHBoxLayout;
 				{
 					m_pctrlX          = new QToolButton;
 					m_pctrlY          = new QToolButton;
@@ -10010,28 +9576,18 @@ void QMiarex::SetupLayout()
 					m_pctrlY->setDefaultAction(m_pYView);
 					m_pctrlZ->setDefaultAction(m_pZView);
 					m_pctrlIso->setDefaultAction(m_pIsoView);
-					AxisViewLayout->addWidget(m_pctrlX);
-					AxisViewLayout->addWidget(m_pctrlY);
-					AxisViewLayout->addWidget(m_pctrlZ);
-					AxisViewLayout->addWidget(m_pctrlIso);
+					pAxisViewLayout->addWidget(m_pctrlX);
+					pAxisViewLayout->addWidget(m_pctrlY);
+					pAxisViewLayout->addWidget(m_pctrlZ);
+					pAxisViewLayout->addWidget(m_pctrlIso);
 				}
 
-
-				QHBoxLayout *ViewResetLayout = new QHBoxLayout;
-				{
-					m_pctrlPickCenter     = new QPushButton(tr("Pick Center"));
-					m_pctrlPickCenter->setToolTip(tr("Activate the button, then click on the object to center it in the viewport; alternatively, double click on the object"));
-					m_pctrlReset          = new QPushButton(tr("Reset"));
-					m_pctrlPickCenter->setCheckable(true);
-
-					ViewResetLayout->addWidget(m_pctrlReset);
-					ViewResetLayout->addWidget(m_pctrlPickCenter);
-				}
-				ThreeDView->addLayout(AxisViewLayout);
-				ThreeDView->addLayout(ViewResetLayout);
+				pThreeDViewLayout->addLayout(pAxisViewLayout);
+				m_pctrlReset = new QPushButton(tr("Reset view"));
+				pThreeDViewLayout->addWidget(m_pctrlReset);
 			}
 
-			QHBoxLayout *ClipLayout = new QHBoxLayout;
+			QHBoxLayout *pClipLayout = new QHBoxLayout;
 			{
 				QLabel *ClipLabel = new QLabel(tr("Clip:"));
 				m_pctrlClipPlanePos = new QSlider(Qt::Horizontal);
@@ -10041,13 +9597,13 @@ void QMiarex::SetupLayout()
 				m_pctrlClipPlanePos->setSliderPosition(0);
 				m_pctrlClipPlanePos->setTickInterval(30);
 				m_pctrlClipPlanePos->setTickPosition(QSlider::TicksBelow);
-				ClipLayout->addWidget(ClipLabel);
-				ClipLayout->addWidget(m_pctrlClipPlanePos,1);
+				pClipLayout->addWidget(ClipLabel);
+				pClipLayout->addWidget(m_pctrlClipPlanePos,1);
 			}
 			pThreeDViewControlsLayout->addLayout(pThreeDParamsLayout);
 			pThreeDViewControlsLayout->addStretch(1);
-			pThreeDViewControlsLayout->addLayout(ThreeDView);
-			pThreeDViewControlsLayout->addLayout(ClipLayout);
+			pThreeDViewControlsLayout->addLayout(pThreeDViewLayout);
+			pThreeDViewControlsLayout->addLayout(pClipLayout);
 			pThreeDViewControlsLayout->addStretch(1);
 
 		}
@@ -10399,8 +9955,7 @@ void QMiarex::SnapClient(QString const &FileName)
 {
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 
-	ThreeDWidget *p3dWidget = (ThreeDWidget*)s_p3dWidget;
-	QGLFormat GLFormat = p3dWidget->format();
+	QGLFormat GLFormat = m_p3dWidget->format();
 
 	if(!GLFormat.rgba())
 	{
@@ -10409,7 +9964,7 @@ void QMiarex::SnapClient(QString const &FileName)
 	}
 
 	int NbBytes, bitsPerPixel;
-	QSize size(m_r3DCltRect.width(),m_r3DCltRect.height());
+	QSize size(m_p3dWidget->rect().width(),m_p3dWidget->rect().height());
 
 	bitsPerPixel = 24;
 	int width = size.width();
@@ -10599,10 +10154,9 @@ void QMiarex::UpdateUnits()
 void QMiarex::UpdateView()
 {
 	TwoDWidget *p2dWidget = (TwoDWidget*)s_p2dWidget;
-	ThreeDWidget *p3dWidget = (ThreeDWidget*)s_p3dWidget;
 	if(m_iView==XFLR5::W3DVIEW)
 	{
-		if(p3dWidget) p3dWidget->update();
+		m_p3dWidget->update();
 	}
 	else
 	{
@@ -10620,12 +10174,8 @@ void QMiarex::zoomEvent(QPoint pt, double zoomFactor)
 {
 	if(m_iView==XFLR5::W3DVIEW)
 	{
-		if(m_pCurPlane)
-		{
-			//zoom wing
-			m_glScaled *= zoomFactor;
-			UpdateView();
-		}
+		m_p3dWidget->m_glScaled *= zoomFactor;
+		UpdateView();
 	}
 	else if(m_iView ==XFLR5::WOPPVIEW || m_iView ==XFLR5::WPOLARVIEW || m_iView ==XFLR5::WCPVIEW || m_iView ==XFLR5::STABTIMEVIEW || m_iView==XFLR5::STABPOLARVIEW)
 	{
@@ -10702,10 +10252,9 @@ void QMiarex::contextMenuEvent (QContextMenuEvent * event)
 {
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 	TwoDWidget *p2dWidget = (TwoDWidget*)s_p2dWidget;
-	ThreeDWidget *p3dWidget = (ThreeDWidget*)s_p3dWidget;
 
 	if(pMainFrame->m_pctrlCentralWidget->currentIndex()==0) p2dWidget->contextMenuEvent(event);
-	else                                                    p3dWidget->contextMenuEvent(event);
+	else                                                    m_p3dWidget->contextMenuEvent(event);
 }
 
 
@@ -10733,13 +10282,13 @@ void QMiarex::PaintCpLegendText(QPainter &painter)
 	QFontMetrics fm(Settings::s_TextFont);
 	int back = fm.averageCharWidth() * 5;
 
-	double h = m_r3DCltRect.height();
+	double h = m_p3dWidget->rect().height();
 	double y0 = 2.*h/5.0;
 
 
 	int ixPos, iyPos, dy;
 
-	ixPos  = m_r3DCltRect.width()-back;
+	ixPos  = m_p3dWidget->rect().width()-back;
 
 	dy     = (int) (h/40.0);
 	iyPos  = (int) (y0 - 12.0*dy);
@@ -10824,13 +10373,13 @@ void QMiarex::PaintPanelForceLegendText(QPainter &painter)
 	QFontMetrics fm(Settings::s_TextFont);
 	int back = fm.averageCharWidth() * 5;
 
-	double h = (double)m_r3DCltRect.height();
+	double h = (double)m_p3dWidget->rect().height();
 	double y0 = 2.*h/5.0;
 
 
 	int ixPos, iyPos, dy;
 
-	ixPos  = m_r3DCltRect.width()-back;
+	ixPos  = m_p3dWidget->rect().width()-back;
 
 	dy     = (int) (h/40.0);
 	iyPos  = (int) (y0 - 12.0*dy);
@@ -10935,13 +10484,15 @@ bool QMiarex::SetPlaneOpp(bool bCurrent, double x)
 void QMiarex::DrawTextLegend()
 {
     QRect rect;
-	if(m_iView==XFLR5::W3DVIEW) rect = m_r3DCltRect;
-	else                 rect = m_r2DCltRect;
+	if(m_iView==XFLR5::W3DVIEW) rect = m_p3dWidget->rect();
+	else                        rect = m_r2DCltRect;
+
 	m_PixText = m_PixText.scaled(rect.size());
 	m_PixText.fill(Qt::transparent);
+
 	QPainter paint(&m_PixText);
 
-	PaintPlaneLegend(paint, rect);
+	PaintPlaneLegend(paint, m_pCurPlane, m_pCurWPolar, rect);
 	if(m_pCurPOpp)
 	{
 		PaintPlaneOppLegend(paint, rect);
@@ -11037,25 +10588,20 @@ void QMiarex::OnImportPlanefromXML()
 
 
 
-
-
-/*
-QString QMiarex::errorString() const
+/** @todo move method to plane class and add body intersection */
+bool QMiarex::IntersectObject(CVector O,  CVector U, CVector &I)
 {
-	return QObject::tr("%1\nLine %2, column %3")
-			.arg(xml.errorString())
-			.arg(xml.lineNumber())
-			.arg(xml.columnNumber());
+	if(!m_pCurPlane) return false;
+	Wing *pWingList[MAXWINGS] = {m_pCurPlane->wing(), m_pCurPlane->wing2(), m_pCurPlane->stab(), m_pCurPlane->fin()};
+
+	for(int iw=0; iw<MAXWINGS; iw++)
+	{
+		if (pWingList[iw] && pWingList[iw]->IntersectWing(O, U, I)) return true;
+	}
+
+	/** @todo intersect body also */
+	return false;
 }
-
-*/
-
-
-
-
-
-
-
 
 
 

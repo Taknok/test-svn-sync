@@ -27,10 +27,10 @@
 
 
 
-class ViewObjectDelegate  : public QStyledItemDelegate
+class EditObjectDelegate  : public QStyledItemDelegate
 {
 public:
-	ViewObjectDelegate(QWidget *pParent=NULL);
+	EditObjectDelegate(QWidget *pParent=NULL);
 
 	QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &index) const;
 	void setEditorData(QWidget *editor, const QModelIndex &index) const;

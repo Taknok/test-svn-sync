@@ -2870,6 +2870,25 @@ bool Wing::isWingFoil(Foil *pFoil)
 
 
 
+/** Finds the intersection point of a line originating at point O and with unit vector U
+ * @param O the origin of the line
+ * @param U the unit vector on the lie
+ * @param I the intersection point, if any, otherwise returns an unchanged value
+ * @return true if an intersection point was found, false otherwise
+ */
+bool Wing::IntersectWing(CVector O,  CVector U, CVector &I)
+{
+	double dist=0.0;
+
+	for(int j=0; j<m_Surface.count(); j++)
+	{
+		if(Intersect(m_Surface.at(j)->m_LA, m_Surface.at(j)->m_LB,
+					 m_Surface.at(j)->m_TA, m_Surface.at(j)->m_TB,
+					 m_Surface.at(j)->Normal,
+					 O, U, I, dist)) return true;
+	}
+	return false;
+}
 
 
 
