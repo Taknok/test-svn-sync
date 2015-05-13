@@ -518,9 +518,6 @@ void GL3dWingDlg::GLRenderView()
 {
 	QString MassUnit;
 	Units::getWeightUnitLabel(MassUnit);
-	double glScaled = m_pGLWidget->m_glScaled;
-
-	if(ThreeDWidget::s_bAxes)  m_pGLWidget->GLDrawAxes(1.0/glScaled, W3dPrefsDlg::s_3DAxisColor, W3dPrefsDlg::s_3DAxisStyle, W3dPrefsDlg::s_3DAxisWidth);
 
 	glDisable(GL_LIGHTING);
 	glDisable(GL_LIGHT0);
@@ -567,25 +564,8 @@ void GL3dWingDlg::GLRenderView()
 
 	if(ThreeDWidget::s_bShowMasses)
 	{
-        glColor3d(W3dPrefsDlg::s_MassColor.redF(),W3dPrefsDlg::s_MassColor.greenF(),W3dPrefsDlg::s_MassColor.blueF());
-		for(int im=0; im<m_pWing->m_PointMass.size(); im++)
-		{
-			glPushMatrix();
-			{
-				glTranslated(m_pWing->m_PointMass[im]->position().x,
-							 m_pWing->m_PointMass[im]->position().y,
-							 m_pWing->m_PointMass[im]->position().z);
-				glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
-				m_pGLWidget->GLRenderSphere(W3dPrefsDlg::s_MassRadius/glScaled);
-				glColor3d(Settings::s_TextColor.redF(), Settings::s_TextColor.greenF(), Settings::s_TextColor.blueF());
-				m_pGLWidget->renderText( 0.0, 0.0, 0.0 +.02,
-                                         m_pWing->m_PointMass[im]->tag()
-								+QString(" %1").arg(m_pWing->m_PointMass[im]->mass()*Units::kgtoUnit(), 7,'g',3)
-                                        +MassUnit);
-			}
-			glPopMatrix();
-		}
-	 }
+		m_pGLWidget->GLDrawMasses(m_pWing->volumeMass(), m_pWing->CoG(), "Structural mass", m_pWing->m_PointMass);
+	}
 }
 
 
@@ -734,7 +714,7 @@ void GL3dWingDlg::On3DReset()
 void GL3dWingDlg::OnFoilNames()
 {
 	ThreeDWidget::s_bFoilNames = m_pctrlFoilNames->isChecked();
-	UpdateView();
+	m_pGLWidget->update();
 }
 
 
@@ -742,7 +722,7 @@ void GL3dWingDlg::OnFoilNames()
 void GL3dWingDlg::OnShowMasses()
 {
 	ThreeDWidget::s_bShowMasses = m_pctrlShowMasses->isChecked();
-	UpdateView();
+	m_pGLWidget->update();
 }
 
 
@@ -758,7 +738,7 @@ void GL3dWingDlg::OnCellChanged(QWidget *)
 	m_bResetglWing = true;
 	ReadParams();
 	SetWingData();
-	UpdateView();
+	m_pGLWidget->update();
 }
 
 
@@ -807,7 +787,7 @@ void GL3dWingDlg::OnDeleteSection()
 	SetWingData();
 	m_bChanged = true;
 	m_bResetglWing = true;
-	UpdateView();
+	m_pGLWidget->update();
 }
 
 
@@ -888,7 +868,7 @@ void GL3dWingDlg::OnInsertBefore()
 	m_bChanged = true;
 	m_bResetglSectionHighlight = true;
 	m_bResetglWing = true;
-	UpdateView();
+	m_pGLWidget->update();
 }
 
 
@@ -940,7 +920,7 @@ void GL3dWingDlg::OnInsertAfter()
 	SetWingData();
 	m_bChanged = true;
 	m_bResetglWing = true;
-	UpdateView();
+	m_pGLWidget->update();
 }
 
 
@@ -964,7 +944,7 @@ void GL3dWingDlg::OnResetSection()
 		ComputeGeometry();
 		m_bChanged = true;
 		m_bResetglWing = true;
-		UpdateView();
+		m_pGLWidget->update();
 	}
 }
 
@@ -979,7 +959,7 @@ void GL3dWingDlg::OnItemClicked(const QModelIndex &index)
 		FillTableRow(m_pWing->NWingSection());
 	}
 	SetCurrentSection(index.row());
-	UpdateView();
+	m_pGLWidget->update();
 }
 
 
@@ -1012,28 +992,28 @@ void GL3dWingDlg::OnOK()
 void GL3dWingDlg::OnAxes()
 {
 	ThreeDWidget::s_bAxes = m_pctrlAxes->isChecked();
-	UpdateView();
+	m_pGLWidget->update();
 }
 
 
 void GL3dWingDlg::OnSurfaces()
 {
 	ThreeDWidget::s_bSurfaces = m_pctrlSurfaces->isChecked();
-	UpdateView();
+	m_pGLWidget->update();
 }
 
 
 void GL3dWingDlg::OnOutline()
 {
 	ThreeDWidget::s_bOutline = m_pctrlOutline->isChecked();
-	UpdateView();
+	m_pGLWidget->update();
 }
 
 
 void GL3dWingDlg::OnPanels()
 {
 	ThreeDWidget::s_bVLMPanels = m_pctrlPanels->isChecked();
-	UpdateView();
+	m_pGLWidget->update();
 }
 
 
@@ -1047,7 +1027,7 @@ void GL3dWingDlg::OnResetMesh()
 	ComputeGeometry();
 	m_bChanged = true;
 	m_bResetglWing = true;
-	UpdateView();
+	m_pGLWidget->update();
 }
 
 
@@ -1079,7 +1059,7 @@ void GL3dWingDlg::OnScaleWing()
 		m_bResetglWing = true;
 		m_bResetglSectionHighlight = true;
 		ComputeGeometry();
-		UpdateView();
+		m_pGLWidget->update();
 	}
 }
 
@@ -1091,7 +1071,7 @@ void GL3dWingDlg::OnSide()
 
 	m_bChanged = true;
 	m_bResetglSectionHighlight = true;
-	UpdateView();
+	m_pGLWidget->update();
 }
 
 
@@ -1118,7 +1098,7 @@ void GL3dWingDlg::OnSymetric()
 	ComputeGeometry();
 	m_bResetglWing             = true;
 	m_bResetglSectionHighlight = true;
-	UpdateView();
+	m_pGLWidget->update();
 }
 
 
@@ -1142,7 +1122,7 @@ void GL3dWingDlg::OnWingColor()
 
 	m_pctrlWingColor->SetColor(m_pWing->wingColor());
 	m_bResetglWing = true;
-	UpdateView();
+	m_pGLWidget->update();
 }
 
 
@@ -1706,7 +1686,7 @@ void GL3dWingDlg::showEvent(QShowEvent *event)
 	m_bChanged = false;
 	m_bResetglWing = true;
 
-	UpdateView();
+	m_pGLWidget->update();
 	event->accept();
 }
 
@@ -1741,15 +1721,10 @@ void GL3dWingDlg::resizeEvent(QResizeEvent *event)
 	m_pctrlWingTable->setColumnWidth(8, wCols);
 	m_pctrlWingTable->setColumnWidth(9, wCols);
 
-	UpdateView();
+	m_pGLWidget->update();
 	event->accept();
 }
 
-
-void GL3dWingDlg::UpdateView()
-{
-	if(isVisible()) m_pGLWidget->updateGL();
-}
 
 
 int GL3dWingDlg::VLMGetPanelTotal()
@@ -1827,7 +1802,7 @@ void GL3dWingDlg::OnImportWing()
 	this->SetWingData();
 	m_bChanged = true;
 	m_bResetglWing = true;
-	this->UpdateView();
+	this->m_pGLWidget->update();
 	
 }
 

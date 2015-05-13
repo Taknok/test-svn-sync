@@ -21,23 +21,24 @@
 #include <QPainter>
 #include <QComboBox>
 #include <QtDebug>
-#include "ViewObjectDelegate.h"
+#include "EditObjectDelegate.h"
 #include "../../objects/Foil.h"
 
+#include "../../misc/Settings.h"
 #include "../../misc/IntEdit.h"
 #include "../../misc/DoubleEdit.h"
 #include "../../xflr5.h"
 
 
-QList <void*> *ViewObjectDelegate::s_poaFoil;
+QList <void*> *EditObjectDelegate::s_poaFoil;
 
 
-ViewObjectDelegate::ViewObjectDelegate(QWidget *pParent) : QStyledItemDelegate(pParent)
+EditObjectDelegate::EditObjectDelegate(QWidget *pParent) : QStyledItemDelegate(pParent)
 {
 }
 
 
-QWidget *ViewObjectDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & index ) const
+QWidget *EditObjectDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & index ) const
 {
 	int dataType = index.model()->data(index, Qt::UserRole).toInt();
 
@@ -148,7 +149,7 @@ QWidget *ViewObjectDelegate::createEditor(QWidget *parent, const QStyleOptionVie
 }
 
 
-void ViewObjectDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
+void EditObjectDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
 	int dataType = index.model()->data(index, Qt::UserRole).toInt();
 	if(dataType==XFLR5::INTEGER)
@@ -181,7 +182,7 @@ void ViewObjectDelegate::setEditorData(QWidget *editor, const QModelIndex &index
 }
 
 
-void ViewObjectDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+void EditObjectDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {
 	int dataType = index.model()->data(index, Qt::UserRole).toInt();
 	if(dataType==XFLR5::INTEGER)
@@ -214,7 +215,7 @@ void ViewObjectDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
 }
 
 
-void ViewObjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+void EditObjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
 	int dataType = index.model()->data(index, Qt::UserRole).toInt();
 	QString strong;
@@ -252,9 +253,25 @@ void ViewObjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
 //	painter->setBackground(backBrush);
 //	painter->setBackgroundMode(Qt::OpaqueMode);
 
-	QPen textPen(Qt::darkBlue);
-	painter->setPen(textPen);
+	QFont font(Settings::s_TextFont);
+	font.setBold(true);
 
+	if(index.column()==0)
+	{
+		QFont boldfont(Settings::s_TextFont);
+		boldfont.setWeight(QFont::Bold);
+		painter->setFont(boldfont);
+		QPen textPen(Qt::darkRed);
+		painter->setPen(textPen);
+	}
+	else
+	{
+		QFont font(Settings::s_TextFont);
+		font.setWeight(QFont::Normal);
+		painter->setFont(font);
+		QPen textPen(Qt::darkBlue);
+		painter->setPen(textPen);
+	}
 	QFont fnt;
 	QFontMetrics fm(fnt);
 	int w = (int)((double)fm.height()/2);//pixels
@@ -266,7 +283,7 @@ void ViewObjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
 }
 
 
-void ViewObjectDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
+void EditObjectDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
 {
 	editor->setGeometry(option.rect);
 }

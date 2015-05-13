@@ -1428,7 +1428,7 @@ void GL3dBodyDlg::GLDrawBodyLegend()
 
 		// Draw the labels
 		CVector real;
-		m_3dWidget.ClientToGL(m_MousePos, real);
+		m_3dWidget.screenToViewport(m_MousePos, real);
 		QFontMetrics fm(Settings::s_TextFont);
 		int dD = fm.height();
 
@@ -1533,6 +1533,8 @@ void GL3dBodyDlg::GLRenderBody()
 		glDisable(GL_CLIP_PLANE5);
 
 
+		glLineWidth(3);
+		glColor3d(.83,.83,.83);
 		glBegin(GL_LINES);
 		{
 			glVertex2d(           -1.0, m_HorizontalSplit);
@@ -1813,7 +1815,7 @@ void GL3dBodyDlg::keyReleaseEvent(QKeyEvent *event)
 void GL3dBodyDlg::doubleClickEvent(QPoint point)
 {
 	CVector Real;
-	m_3dWidget.ClientToGL(point, Real);
+	m_3dWidget.screenToViewport(point, Real);
 
 	if(m_3dWidget.geometry().contains(point)) m_3dWidget.setFocus();
 
@@ -1837,7 +1839,7 @@ void GL3dBodyDlg::mouseMoveEvent(QMouseEvent *event)
 
 	Delta.setX(point.x() - m_LastPoint.x());
 	Delta.setY(point.y() - m_LastPoint.y());
-	m_3dWidget.ClientToGL(point, Real);
+	m_3dWidget.screenToViewport(point, Real);
 
 
 //	if(!m_3dWidget.hasFocus()) m_3dWidget.setFocus();
@@ -2003,7 +2005,7 @@ void GL3dBodyDlg::mousePressEvent(QMouseEvent *event)
 	if(event->modifiers() & Qt::ControlModifier) bCtrl =true;
 	if(event->modifiers() & Qt::ShiftModifier) bShift =true;
 
-	m_3dWidget.ClientToGL(point, Real);
+	m_3dWidget.screenToViewport(point, Real);
 
 	if(m_3dWidget.geometry().contains(point)) m_3dWidget.setFocus();
 
@@ -3087,7 +3089,7 @@ void GL3dBodyDlg::Set3DRotationCenter(QPoint point)
 
 	i=-1;
 
-	m_3dWidget.ClientToGL(point, B);
+	m_3dWidget.screenToViewport(point, B);
 
 	B.x += -m_UFOOffset.x - m_glViewportTrans.x*m_glScaled;
 	B.y += -m_UFOOffset.y + m_glViewportTrans.y*m_glScaled;
@@ -3287,22 +3289,22 @@ void GL3dBodyDlg::SetRectangles()
 
 	V1.Set(m_3dWidget.m_GLViewRect.left, m_3dWidget.m_GLViewRect.top, 0.0);
 	V2.Set(m_VerticalSplit,                m_HorizontalSplit,             0.0);
-	m_3dWidget.GLToClient(V1, P1);
-	m_3dWidget.GLToClient(V2, P2);
+	m_3dWidget.viewportToScreen(V1, P1);
+	m_3dWidget.viewportToScreen(V2, P2);
 	m_BodyLineRect.setTopLeft(P1);
 	m_BodyLineRect.setBottomRight(P2);
 
 	V1.Set(m_VerticalSplit,                 m_3dWidget.m_GLViewRect.top,    0.0);
 	V2.Set(m_3dWidget.m_GLViewRect.right, m_3dWidget.m_GLViewRect.bottom, 0.0);
-	m_3dWidget.GLToClient(V1, P1);
-	m_3dWidget.GLToClient(V2, P2);
+	m_3dWidget.viewportToScreen(V1, P1);
+	m_3dWidget.viewportToScreen(V2, P2);
 	m_FrameRect.setTopLeft(P1);
 	m_FrameRect.setBottomRight(P2);
 
 	V1.Set(m_3dWidget.m_GLViewRect.left, m_HorizontalSplit,                0.0);
 	V2.Set(m_VerticalSplit,                m_3dWidget.m_GLViewRect.bottom, 0.0);
-	m_3dWidget.GLToClient(V1, P1);
-	m_3dWidget.GLToClient(V2, P2);
+	m_3dWidget.viewportToScreen(V1, P1);
+	m_3dWidget.viewportToScreen(V2, P2);
 	m_BodyRect.setTopLeft(P1);
 	m_BodyRect.setBottomRight(P2);
 }
@@ -3750,7 +3752,7 @@ void GL3dBodyDlg::ShowContextMenu(QContextMenuEvent * event)
 	QPoint CltPt = event->pos();
 	m_ptPopUp.rx() = CltPt.x();
 	m_ptPopUp.ry() = CltPt.y();
-	m_3dWidget.ClientToGL(m_ptPopUp, m_RealPopUp);
+	m_3dWidget.screenToViewport(m_ptPopUp, m_RealPopUp);
 
 	CtxMenu->exec(event->globalPos());
 
@@ -3961,7 +3963,7 @@ void GL3dBodyDlg::PaintBodyLegend(QPainter &painter)
 
 	// Draw the labels
 	CVector real;
-	m_3dWidget.ClientToGL(m_MousePos, real);
+	m_3dWidget.screenToViewport(m_MousePos, real);
 	QFontMetrics fm(Settings::s_TextFont);
 	int dD = fm.height();
 

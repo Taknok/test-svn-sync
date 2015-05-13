@@ -63,9 +63,8 @@ SOURCES += \
 	src/miarex/design/BodyGridDlg.cpp \
 	src/miarex/design/BodyScaleDlg.cpp \
 	src/miarex/design/BodyTableDelegate.cpp \
-	src/miarex/design/ViewObjectDelegate.cpp \
-	src/miarex/design/ViewObjectDlg.cpp \
 	src/miarex/design/BodyTransDlg.cpp \
+	src/miarex/design/EditObjectDelegate.cpp \
 	src/miarex/view/GLCreateLists.cpp \
 	src/miarex/view/GLCreateBodyLists.cpp \
 	src/miarex/view/GL3DScales.cpp \
@@ -127,7 +126,8 @@ SOURCES += \
 	src/design/LECircleDlg.cpp \
 	src/design/AFoil.cpp \
 	src/design/SplineCtrlsDlg.cpp \
-	src/design/AFoilTableDlg.cpp
+	src/design/AFoilTableDlg.cpp \
+    src/miarex/design/EditPlaneDlg.cpp
 
 
 HEADERS += \
@@ -185,8 +185,7 @@ HEADERS += \
 	src/miarex/design/BodyScaleDlg.h \
 	src/miarex/design/GL3dWingDlg.h \
 	src/miarex/design/BodyTransDlg.h \
-	src/miarex/design/ViewObjectDelegate.h \
-	src/miarex/design/ViewObjectDlg.h \
+	src/miarex/design/EditObjectDelegate.h \
 	src/miarex/view/GLCreateLists.h \
 	src/miarex/view/GLCreateBodyLists.h \
 	src/miarex/view/GL3DScales.h \
@@ -251,7 +250,8 @@ HEADERS += \
 	src/design/LECircleDlg.h \
 	src/design/SplineCtrlsDlg.h \
 	src/design/FoilTableDelegate.h \
-	src/design/AFoilTableDlg.h
+	src/design/AFoilTableDlg.h \
+    src/miarex/design/EditPlaneDlg.h
 
 
 TRANSLATIONS = translations/xflr5v6.ts \

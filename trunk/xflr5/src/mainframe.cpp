@@ -24,7 +24,7 @@
 #include "design/AFoil.h"
 #include "miarex/Miarex.h"
 #include "miarex/design/InertiaDlg.h"
-#include "miarex/design/ViewObjectDelegate.h"
+#include "miarex/design/EditObjectDelegate.h"
 #include "miarex/Objects3D.h"
 #include "miarex/analysis/WPolarDlg.h"
 #include "miarex/analysis/StabPolarDlg.h"
@@ -331,8 +331,8 @@ void MainFrame::closeEvent (QCloseEvent * event)
 
 void MainFrame::contextMenuEvent (QContextMenuEvent * event)
 {
-	if(m_pctrlCentralWidget->currentIndex()==0) m_p2DWidget->contextMenuEvent(event);
-	else                                        m_pGLWidget->contextMenuEvent(event);
+	if(m_pctrlCentralWidget->currentIndex()==0) m_p2dWidget->contextMenuEvent(event);
+	else                                        m_p3dWidget->contextMenuEvent(event);
 }
 
 
@@ -767,8 +767,8 @@ void MainFrame::CreateDockWindows()
 	m_pctrlAFoilWidget->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
 	addDockWidget(Qt::BottomDockWidgetArea, m_pctrlAFoilWidget);
 
-	m_p2DWidget = new TwoDWidget(this);
-	m_pGLWidget = new ThreeDWidget(this);
+	m_p2dWidget = new TwoDWidget(this);
+	m_p3dWidget = new ThreeDWidget(this);
 
 	m_pXDirect = new QXDirect(this);
 	QXDirect *pXDirect = (QXDirect*)m_pXDirect;
@@ -821,8 +821,8 @@ void MainFrame::CreateDockWindows()
 	m_pctrlStabViewWidget->move(60,60);
 
 	m_pctrlCentralWidget = new QStackedWidget;
-	m_pctrlCentralWidget->addWidget(m_p2DWidget);
-	m_pctrlCentralWidget->addWidget(m_pGLWidget);
+	m_pctrlCentralWidget->addWidget(m_p2dWidget);
+	m_pctrlCentralWidget->addWidget(m_p3dWidget);
 
 	setCentralWidget(m_pctrlCentralWidget);
 
@@ -832,40 +832,40 @@ void MainFrame::CreateDockWindows()
 	m_pctrlAFoilWidget->setWidget(pAFoil);
 	m_pctrlAFoilWidget->setVisible(false);
 
-	m_p2DWidget->m_pXDirect   = pXDirect;
-	m_p2DWidget->m_pXInverse  = pXInverse;
-	m_p2DWidget->m_pMiarex    = pMiarex;
-	m_p2DWidget->m_pAFoil     = pAFoil;
-	m_p2DWidget->m_pMainFrame = this;
+	m_p2dWidget->m_pXDirect   = pXDirect;
+	m_p2dWidget->m_pXInverse  = pXInverse;
+	m_p2dWidget->m_pMiarex    = pMiarex;
+	m_p2dWidget->m_pAFoil     = pAFoil;
+	m_p2dWidget->m_pMainFrame = this;
 
 	QSizePolicy sizepol;
 	sizepol.setHorizontalPolicy(QSizePolicy::Expanding);
 	sizepol.setVerticalPolicy(QSizePolicy::Expanding);
-	m_p2DWidget->setSizePolicy(sizepol);
+	m_p2dWidget->setSizePolicy(sizepol);
 
-	QMiarex::s_p2dWidget = m_p2DWidget;
-	QMiarex::s_p3dWidget = m_pGLWidget;
+	QMiarex::s_p2dWidget = m_p2dWidget;
+	pMiarex->m_p3dWidget = m_p3dWidget;
 
 
-	QXDirect::s_p2DWidget            = m_p2DWidget;
-	pXDirect->m_CpGraph.m_pParent    = m_p2DWidget;
-	for(int ig=0; ig<MAXPOLARGRAPHS; ig++) pXDirect->m_PlrGraph[ig].m_pParent = m_p2DWidget;
+	QXDirect::s_p2DWidget            = m_p2dWidget;
+	pXDirect->m_CpGraph.m_pParent    = m_p2dWidget;
+	for(int ig=0; ig<MAXPOLARGRAPHS; ig++) pXDirect->m_PlrGraph[ig].m_pParent = m_p2dWidget;
 	pXDirect->m_poaFoil  = &Foil::s_oaFoil;
 	pXDirect->m_poaPolar = &Polar::s_oaPolar;
 	pXDirect->m_poaOpp   = &OpPoint::s_oaOpp;
 
-	QAFoil::s_p2DWidget  = m_p2DWidget;
+	QAFoil::s_p2DWidget  = m_p2dWidget;
 	pAFoil->m_poaFoil    = &Foil::s_oaFoil;
 	pAFoil->m_pXFoil     = pXDirect->m_pXFoil;
 
-	QXInverse::s_p2DWidget        = m_p2DWidget;
+	QXInverse::s_p2DWidget        = m_p2dWidget;
 	pXInverse->s_pMainFrame       = this;
 	pXInverse->m_pXFoil           = pXDirect->m_pXFoil;
-	pXInverse->s_p2DWidget        = m_p2DWidget;
+	pXInverse->s_p2DWidget        = m_p2dWidget;
 	pXInverse->m_poaFoil          = &Foil::s_oaFoil;
 
 	GL3dWingDlg::s_poaFoil = &Foil::s_oaFoil;
-	ViewObjectDelegate::s_poaFoil = &Foil::s_oaFoil;
+	EditObjectDelegate::s_poaFoil = &Foil::s_oaFoil;
 
 	LLTAnalysis::s_poaPolar = &Polar::s_oaPolar;
 
@@ -884,6 +884,8 @@ void MainFrame::CreateDockWindows()
 
 
 	GraphDlg::s_ActivePage = 0;
+
+	pMiarex->Connect();
 }
 
 
@@ -940,7 +942,6 @@ void MainFrame::CreateMenus()
 	CreateXInverseMenus();
 	CreateMiarexMenus();
 	CreateAFoilMenus();
-
 }
  
 
@@ -1007,17 +1008,17 @@ void MainFrame::CreateMiarexActions()
 	definePlaneAct->setStatusTip(tr("Shows a dialogbox to create a new plane definition"));
 	connect(definePlaneAct, SIGNAL(triggered()), pMiarex, SLOT(OnNewPlane()));
 
+	definePlaneObjectAct = new QAction(tr("Define... (Advanced users)")+"\tF3", this);
+	definePlaneObjectAct->setStatusTip(tr("Shows a dialogbox to create a new plane definition"));
+	connect(definePlaneObjectAct, SIGNAL(triggered()), pMiarex, SLOT(OnNewPlaneObject()));
+
 	editPlaneAct = new QAction(tr("Edit...")+"\tShift+F3", this);
 	editPlaneAct->setStatusTip(tr("Shows a form to edit the currently selected plane"));
 	connect(editPlaneAct, SIGNAL(triggered()), pMiarex, SLOT(OnEditCurPlane()));
 
-	editObjectAct = new QAction(tr("Explore object (advanced users)")+"\tCtrl+F3", this);
+	editObjectAct = new QAction(tr("Edit... (advanced users)")+"\tCtrl+F3", this);
 	editObjectAct->setStatusTip(tr("Shows a form to edit the currently selected plane"));
 	connect(editObjectAct, SIGNAL(triggered()), pMiarex, SLOT(OnEditCurObject()));
-
-	editWPolarObjectAct = new QAction(tr("Edit object (advanced users)"), this);
-	editWPolarObjectAct->setStatusTip(tr("Shows a form to edit the currently selected plane"));
-	connect(editWPolarObjectAct, SIGNAL(triggered()), pMiarex, SLOT(OnEditCurWPolarObject()));
 
 	exporttoXML = new QAction(tr("Export to xml file"), this);
 	connect(exporttoXML, SIGNAL(triggered()), pMiarex, SLOT(OnExportPlanetoXML()));
@@ -1135,14 +1136,23 @@ void MainFrame::CreateMiarexActions()
 	defineWPolar->setStatusTip(tr("Define an analysis for the current wing or plane"));
 	connect(defineWPolar, SIGNAL(triggered()), pMiarex, SLOT(OnDefineWPolar()));
 
+
+	defineWPolarObjectAct = new QAction(tr("Define a polar object (advanced users)"), this);
+	defineWPolarObjectAct->setStatusTip(tr("Shows a form to edit a new polar object"));
+	connect(defineWPolarObjectAct, SIGNAL(triggered()), pMiarex, SLOT(OnDefineWPolarObject()));
+
 	editWPolarAct = new QAction(tr("Edit...")+" \t(Ctrl+F6)", this);
 	editWPolarAct->setStatusTip(tr("Modify the analysis parameters of this polar"));
 	connect(editWPolarAct, SIGNAL(triggered()), pMiarex, SLOT(OnEditCurWPolar()));
 
+
+	editWPolarObjectAct = new QAction(tr("Edit object (advanced users)"), this);
+	editWPolarObjectAct->setStatusTip(tr("Shows a form to edit the currently selected polar"));
+	connect(editWPolarObjectAct, SIGNAL(triggered()), pMiarex, SLOT(OnEditCurWPolarObject()));
+
 	editWPolarPts = new QAction(tr("Edit data points..."), this);
 	editWPolarPts->setStatusTip(tr("Modify the data points of this polar"));
 	connect(editWPolarPts, SIGNAL(triggered()), pMiarex, SLOT(OnEditCurWPolarPts()));
-
 
 	defineStabPolar = new QAction(tr("Define a Stability Analysis")+"\t(Shift+F6)", this);
 	defineStabPolar->setStatusTip(tr("Define a stability analysis for the current wing or plane"));
@@ -1314,6 +1324,7 @@ void MainFrame::CreateMiarexMenus()
 	PlaneMenu = menuBar()->addMenu(tr("&Plane"));
 	{
 		PlaneMenu->addAction(definePlaneAct);
+		PlaneMenu->addAction(definePlaneObjectAct);
 		PlaneMenu->addAction(managePlanesAct);
 		currentPlaneMenu = PlaneMenu->addMenu(tr("Current Plane"));
 		{
@@ -1433,6 +1444,7 @@ void MainFrame::CreateMiarexMenus()
 	MiarexAnalysisMenu  = menuBar()->addMenu(tr("&Analysis"));
 	{
 		MiarexAnalysisMenu->addAction(defineWPolar);
+		MiarexAnalysisMenu->addAction(defineWPolarObjectAct);
 		MiarexAnalysisMenu->addAction(defineStabPolar);
 		MiarexAnalysisMenu->addSeparator();
 		MiarexAnalysisMenu->addAction(viewLogFile);
@@ -3341,7 +3353,7 @@ void MainFrame::OnMiarex()
 
 	SetMenus();
 	SetCentralWidget();
-//	pMiarex->SetControls();
+	pMiarex->SetControls();
 	pMiarex->SetCurveParams();
 	UpdateView();
 }
@@ -3385,7 +3397,7 @@ void MainFrame::OnNewProject()
 
 void MainFrame::OnOpenGLInfo()
 {
-	QGLFormat fmt = m_pGLWidget->format();
+	QGLFormat fmt = m_p3dWidget->format();
 	QString strongProps;
 
 
@@ -3620,7 +3632,7 @@ void MainFrame::OnSaveViewToImageFile()
 	QMiarex *pMiarex = (QMiarex*)m_pMiarex;
 	pMiarex->m_bArcball = false;
 
-	QSize sz(m_p2DWidget->geometry().width(), m_p2DWidget->geometry().height());
+	QSize sz(m_p2dWidget->geometry().width(), m_p2dWidget->geometry().height());
 	QImage img(sz, QImage::Format_RGB32);
 	QPainter painter(&img);
 	QString FileName, Filter;
@@ -3699,7 +3711,7 @@ void MainFrame::OnSaveViewToImageFile()
 			{
 				pMiarex->UpdateView();
 //				pMiarex->SnapClient(FileName);
-				m_pGLWidget->grabFrameBuffer().save(FileName);
+				m_p3dWidget->grabFrameBuffer().save(FileName);
 
 				return;
 			}
@@ -4555,7 +4567,7 @@ void MainFrame::SetCentralWidget()
 	if(m_iApp!=XFLR5::MIAREX)
 	{
 		m_pctrlCentralWidget->setCurrentIndex(0);
-		m_p2DWidget->setFocus();
+		m_p2dWidget->setFocus();
 	}
 	else if(m_iApp==XFLR5::MIAREX)
 	{
@@ -4563,12 +4575,12 @@ void MainFrame::SetCentralWidget()
 		   pMiarex->m_iView==XFLR5::STABPOLARVIEW || pMiarex->m_iView==XFLR5::STABTIMEVIEW)
 		{
 			m_pctrlCentralWidget->setCurrentIndex(0);
-			m_p2DWidget->setFocus();
+			m_p2dWidget->setFocus();
 		}
 		else if(pMiarex->m_iView==XFLR5::W3DVIEW)
 		{
 			m_pctrlCentralWidget->setCurrentIndex(1);
-			m_pGLWidget->setFocus();
+			m_p3dWidget->setFocus();
 		}
 	}
 }

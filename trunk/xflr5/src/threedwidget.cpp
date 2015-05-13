@@ -28,7 +28,7 @@
 
 #include "graph/Curve.h"
 #include "miarex/design/GL3dBodyDlg.h"
-#include "miarex/design/ViewObjectDlg.h"
+#include "miarex/design/EditPlaneDlg.h"
 #include "miarex/design/GL3dWingDlg.h"
 #include "misc/W3dPrefsDlg.h"
 #include "threedwidget.h"
@@ -95,6 +95,7 @@ ThreeDWidget::ThreeDWidget(QWidget *parent)
 	m_glViewportTrans.x  = 0.0;
 	m_glViewportTrans.y  = 0.0;
 	m_glViewportTrans.z  = 0.0;
+
 	m_glScaled      = 1.0;
 
 	m_bTrans                   = false;
@@ -109,6 +110,8 @@ ThreeDWidget::ThreeDWidget(QWidget *parent)
 
 	memset(MatIn,  0, 16*sizeof(double));
 	memset(MatOut, 0, 16*sizeof(double));
+
+	m_glLightDlg.m_p3DWidget = this;
 
 	m_ArcBall.m_p3dWidget = this;
 	GLCreateArcballList(m_ArcBall, 1.0);
@@ -153,17 +156,12 @@ void ThreeDWidget::contextMenuEvent (QContextMenuEvent * event)
 */
 void ThreeDWidget::mousePressEvent(QMouseEvent *event)
 {
-	if(m_iView == GLMIAREXVIEW)
-	{
-		QMiarex* pMiarex = (QMiarex*)s_pMiarex;
-		pMiarex->mousePressEvent(event);
-	}
-	else if(m_iView == GLBODYVIEW)
+	if(m_iView == GLBODYVIEW)
 	{
 		GL3dBodyDlg *pDlg = (GL3dBodyDlg*)m_pParent;
 		pDlg->mousePressEvent(event);
 	}
-	else if(m_iView == GLWINGVIEW || m_iView == GLPLANEVIEW)
+	else if(m_iView == GLMIAREXVIEW || m_iView == GLWINGVIEW || m_iView == GLPLANEVIEW)
 	{
 		QPoint point(event->pos().x(), event->pos().y());
 		QPoint glPoint(event->pos().x() + geometry().x(), event->pos().y()+geometry().y());
@@ -172,7 +170,7 @@ void ThreeDWidget::mousePressEvent(QMouseEvent *event)
 		bool bCtrl = false;
 		if(event->modifiers() & Qt::ControlModifier) bCtrl =true;
 
-		ClientToGL(point, Real);
+		screenToViewport(point, Real);
 
 		if(geometry().contains(glPoint)) setFocus();
 
@@ -182,8 +180,8 @@ void ThreeDWidget::mousePressEvent(QMouseEvent *event)
 			m_ArcBall.Start(event->pos().x(), m_rCltRect.height()-event->pos().y());
 			m_bCrossPoint = true;
 
-			Set3DRotationCenter();
-			updateGL();
+			reset3DRotationCenter();
+			update();
 		}
 		else if (event->buttons() & Qt::LeftButton)
 		{
@@ -194,7 +192,7 @@ void ThreeDWidget::mousePressEvent(QMouseEvent *event)
 				{
 					m_ArcBall.Start(point.x(), m_rCltRect.height()-point.y());
 					m_bCrossPoint = true;
-					Set3DRotationCenter();
+					reset3DRotationCenter();
 					if (!bCtrl)
 					{
 						m_bTrans = true;
@@ -204,7 +202,7 @@ void ThreeDWidget::mousePressEvent(QMouseEvent *event)
 					{
 						m_bArcball = true;
 					}
-					updateGL();
+					update();
 				}
 			}
 		}
@@ -220,17 +218,12 @@ void ThreeDWidget::mousePressEvent(QMouseEvent *event)
 */
 void ThreeDWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-	if(m_iView == GLMIAREXVIEW)
-	{
-		QMiarex* pMiarex = (QMiarex*)s_pMiarex;
-		pMiarex->mouseReleaseEvent(event);
-	}
-	else if(m_iView == GLBODYVIEW)
+	if(m_iView == GLBODYVIEW)
 	{
 		GL3dBodyDlg *pDlg = (GL3dBodyDlg*)m_pParent;
 		pDlg->mouseReleaseEvent(event);
 	}
-	else if(m_iView == GLWINGVIEW || m_iView == GLPLANEVIEW)
+	else if(m_iView == GLMIAREXVIEW || m_iView == GLWINGVIEW || m_iView == GLPLANEVIEW)
 	{
 		setCursor(Qt::CrossCursor);
 
@@ -238,8 +231,6 @@ void ThreeDWidget::mouseReleaseEvent(QMouseEvent *event)
 		m_bDragPoint  = false;
 		m_bArcball    = false;
 		m_bCrossPoint = false;
-
-		updateGL();
 
 	//	We need to re-calculate the translation vector
 		int i,j;
@@ -252,6 +243,8 @@ void ThreeDWidget::mouseReleaseEvent(QMouseEvent *event)
 		m_glViewportTrans.y = -(MatOut[1][0]*m_glRotCenter.x + MatOut[1][1]*m_glRotCenter.y + MatOut[1][2]*m_glRotCenter.z);
 		m_glViewportTrans.z =  (MatOut[2][0]*m_glRotCenter.x + MatOut[2][1]*m_glRotCenter.y + MatOut[2][2]*m_glRotCenter.z);
 
+
+		update();
 		event->accept();
 	}
 }
@@ -263,17 +256,12 @@ void ThreeDWidget::mouseReleaseEvent(QMouseEvent *event)
 */
 void ThreeDWidget::mouseMoveEvent(QMouseEvent *event)
 {
-	if(m_iView == GLMIAREXVIEW)
-	{
-		QMiarex* pMiarex = (QMiarex*)s_pMiarex;
-		pMiarex->mouseMoveEvent(event);
-	}
-	else if(m_iView == GLBODYVIEW)
+	if(m_iView == GLBODYVIEW)
 	{
 		GL3dBodyDlg *pDlg = (GL3dBodyDlg*)m_pParent;
 		pDlg->mouseMoveEvent(event);
 	}
-	else if(m_iView == GLWINGVIEW || m_iView == GLPLANEVIEW)
+	else if(m_iView == GLMIAREXVIEW || m_iView == GLWINGVIEW || m_iView == GLPLANEVIEW)
 	{
 		QPoint point(event->pos().x(), event->pos().y());
 		QPoint glPoint(event->pos().x() + geometry().x(), event->pos().y()+geometry().y());
@@ -281,7 +269,7 @@ void ThreeDWidget::mouseMoveEvent(QMouseEvent *event)
 		CVector Real;
 
 		QPoint Delta(point.x()-m_LastPoint.x(), point.y()-m_LastPoint.y());
-		ClientToGL(point, Real);
+		screenToViewport(point, Real);
 
 	//	if(!hasFocus()) setFocus();
 
@@ -295,7 +283,7 @@ void ThreeDWidget::mouseMoveEvent(QMouseEvent *event)
 			{
 				//rotate
 				m_ArcBall.Move(point.x(), m_rCltRect.height()-point.y());
-				updateGL();
+				update();
 			}
 			else if(m_bTrans)
 			{
@@ -311,7 +299,7 @@ void ThreeDWidget::mouseMoveEvent(QMouseEvent *event)
 					m_glRotCenter.y = MatOut[1][0]*(m_glViewportTrans.x) + MatOut[1][1]*(-m_glViewportTrans.y) + MatOut[1][2]*m_glViewportTrans.z;
 					m_glRotCenter.z = MatOut[2][0]*(m_glViewportTrans.x) + MatOut[2][1]*(-m_glViewportTrans.y) + MatOut[2][2]*m_glViewportTrans.z;
 
-					updateGL();
+					update();
 				}
 			}
 		}
@@ -319,7 +307,7 @@ void ThreeDWidget::mouseMoveEvent(QMouseEvent *event)
 		else if (event->buttons() & Qt::MidButton)
 		{
 				m_ArcBall.Move(point.x(), m_rCltRect.height()-point.y());
-				updateGL();
+				update();
 		}
 
 		m_LastPoint = point;
@@ -335,8 +323,8 @@ void ThreeDWidget::mouseDoubleClickEvent ( QMouseEvent * event )
 {
 	if(m_iView == GLMIAREXVIEW)
 	{
-		QMiarex* pMiarex = (QMiarex*)s_pMiarex;
-		pMiarex->doubleClickEvent(event->pos());
+//		QMiarex* pMiarex = (QMiarex*)s_pMiarex;
+		set3DRotationCenter(event->pos());
 	}
 	else if(m_iView == GLBODYVIEW)
 	{
@@ -346,12 +334,12 @@ void ThreeDWidget::mouseDoubleClickEvent ( QMouseEvent * event )
 	else if(m_iView == GLWINGVIEW)
 	{
 //		GL3dWingDlg *pDlg = (GL3dWingDlg*)m_pParent;
-		Set3DRotationCenter(event->pos());
+		set3DRotationCenter(event->pos());
 	}
 	else if(m_iView == GLPLANEVIEW)
 	{
 //		ViewObjectDlg *pDlg = (ViewObjectDlg*)m_pParent;
-		Set3DRotationCenter(event->pos());
+		set3DRotationCenter(event->pos());
 	}
 }
 
@@ -393,7 +381,7 @@ void ThreeDWidget::wheelEvent(QWheelEvent *event)
 			setFocus();	//The mouse button has been wheeled
 			m_glScaled *= zoomFactor;
 		}
-		updateGL();
+		update();
 	}
 }
 
@@ -426,7 +414,7 @@ void ThreeDWidget::keyPressEvent(QKeyEvent *event)
 			case Qt::Key_Control:
 			{
 				m_bArcball = true;
-				updateGL();
+				update();
 				break;
 			}
 			default:
@@ -442,24 +430,19 @@ void ThreeDWidget::keyPressEvent(QKeyEvent *event)
 */
 void ThreeDWidget::keyReleaseEvent(QKeyEvent *event)
 {
-	if(m_iView ==GLMIAREXVIEW)
-	{
-		QMiarex* pMiarex = (QMiarex*)s_pMiarex;
-		pMiarex->keyReleaseEvent(event);
-	}
-	else if(m_iView == GLBODYVIEW)
+	if(m_iView == GLBODYVIEW)
 	{
 		GL3dBodyDlg *pDlg = (GL3dBodyDlg*)m_pParent;
 		pDlg->keyReleaseEvent(event);
 	}
-	else if(m_iView == GLWINGVIEW || m_iView == GLPLANEVIEW)
+	else if(m_iView ==GLMIAREXVIEW || m_iView == GLWINGVIEW || m_iView == GLPLANEVIEW)
 	{
 		switch (event->key())
 		{
 			case Qt::Key_Control:
 			{
 				m_bArcball = false;
-				updateGL();
+				update();
 				break;
 			}
 
@@ -470,36 +453,6 @@ void ThreeDWidget::keyReleaseEvent(QKeyEvent *event)
 }
 
 
-
-/**
-*Overrides the paintGL method of the base class.
-*Dispatches the handling to the active child application.
-*/
-void ThreeDWidget::paintGL()
-{
-	qreal pixelRatio = 1;
-#if QT_VERSION >= 0x050000
-	pixelRatio = devicePixelRatio();
-#endif
-	setupViewPort(geometry().width() * pixelRatio, geometry().height() * pixelRatio);
-
-	if(m_iView==GLMIAREXVIEW)
-	{
-		QMiarex* pMiarex = (QMiarex*)s_pMiarex;
-		pMiarex->GLDraw3D();
-		if(pMiarex->m_iView==XFLR5::W3DVIEW) pMiarex->GLRenderView();
-	}
-	else if(m_iView == GLBODYVIEW)
-	{
-		GL3dBodyDlg *pDlg = (GL3dBodyDlg*)m_pParent;
-		pDlg->GLDraw3D();
-		pDlg->GLRenderBody();
-	}
-	else if(m_iView == GLWINGVIEW || m_iView == GLPLANEVIEW)
-	{
-		GLRenderView();
-	}
-}
 
 
 
@@ -518,23 +471,11 @@ void ThreeDWidget::paintEvent(QPaintEvent *event)
 	if(m_iView==GLMIAREXVIEW)
 	{
 		QMiarex* pMiarex = (QMiarex*)s_pMiarex;
-//		pMiarex->PaintPlaneLegend(painter, rect());
-//		pMiarex->PaintPlaneOppLegend(painter, rect());
-//		pMiarex->PaintCpLegendText(painter);
-//		pMiarex->PaintPanelForceLegendText(painter);
+		if(pMiarex->m_bResetTextLegend) pMiarex->DrawTextLegend();
 
-		if(pMiarex->m_bResetTextLegend)
-		{
-			pMiarex->DrawTextLegend();
-		}
-
-//		painter.setBackgroundMode(Qt::TransparentMode);
-//		painter.setOpacity(1);
 		painter.drawPixmap(0,0, pMiarex->m_PixText);
 		painter.drawPixmap(0,0, m_PixText);
 		m_PixText.fill(Qt::transparent);
-
-
 	}
 	else if(m_iView == GLBODYVIEW)
 	{
@@ -543,10 +484,52 @@ void ThreeDWidget::paintEvent(QPaintEvent *event)
 	}
 	else if(m_iView == GLWINGVIEW)
 	{
+		painter.drawPixmap(0,0, m_PixText);
+		m_PixText.fill(Qt::transparent);
+	}
+	else if(m_iView == GLPLANEVIEW)
+	{
+		EditPlaneDlg *pDlg = (EditPlaneDlg*)m_pParent;
+		painter.drawPixmap(0,0, pDlg->m_PixText);
+		painter.drawPixmap(0,0, m_PixText);
+		m_PixText.fill(Qt::transparent);
 	}
 	event->accept();
 }
 
+
+
+/**
+*Overrides the paintGL method of the base class.
+*Dispatches the handling to the active child application.
+*/
+void ThreeDWidget::paintGL()
+{
+	if(m_iView==GLMIAREXVIEW)
+	{
+		QMiarex* pMiarex = (QMiarex*)s_pMiarex;
+		pMiarex->GLDraw3D();
+		GLRenderView();
+	}
+	else if(m_iView == GLBODYVIEW)
+	{
+		GL3dBodyDlg *pDlg = (GL3dBodyDlg*)m_pParent;
+		pDlg->GLDraw3D();
+		pDlg->GLRenderBody();
+	}
+	else if(m_iView == GLWINGVIEW)
+	{
+		GL3dWingDlg *pDlg = (GL3dWingDlg*)m_pParent;
+		pDlg->GLDraw3D();
+		GLRenderView();
+	}
+	else if(m_iView == GLPLANEVIEW)
+	{
+		EditPlaneDlg *pDlg = (EditPlaneDlg*)m_pParent;
+		pDlg->GLDraw3D();
+		GLRenderView();
+	}
+}
 
 
 /**
@@ -570,12 +553,16 @@ void ThreeDWidget::resizeGL(int width, int height)
 
 	glLoadIdentity();
 	if(w>h)	m_GLViewRect.SetRect(-s, s*h/w, s, -s*h/w);
-	else    m_GLViewRect.SetRect(-s*w/h, s, s*w/h, -s*h/w);
+	else    m_GLViewRect.SetRect(-s*w/h, s, s*w/h, -s);
 
 	m_PixText = m_PixText.scaled(rect().size());
 
+	qreal pixelRatio = 1;
+#if QT_VERSION >= 0x050000
+	pixelRatio = devicePixelRatio();
+#endif
 
-
+	setupViewPort(geometry().width() * pixelRatio, geometry().height() * pixelRatio);
 
 	if(m_iView == GLMIAREXVIEW)
 	{
@@ -610,23 +597,17 @@ void ThreeDWidget::resizeGL(int width, int height)
 void ThreeDWidget::setupViewPort(int width, int height)
 {
 	makeCurrent();
-	int side = qMax(width, height);
-#ifdef Q_OS_MAC
-    glViewport(0,0, width, height);
-#else
-	glViewport((width - side) / 2, (height - side) / 2, side, side);
-#endif
+
+	glViewport(0,0, width, height);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	double s = 1.0;
-#ifdef Q_OS_MAC
-    glOrtho(-s,s,-(height*s)/width,(height*s)/width,-100.0*s,100.0*s);
-#else
-	glOrtho(-s,s,-s,s,-100.0*s,100.0*s);
-#endif
+	glOrtho(-s,s,-(height*s)/width,(height*s)/width,-100.0*s,100.0*s);
+
 	glMatrixMode(GL_MODELVIEW);
 }
+
 
 
 /**
@@ -785,8 +766,7 @@ void ThreeDWidget::GLDrawAxes(double length, QColor AxisColor, int AxisStyle, in
 	glEnd();
 	glDisable (GL_LINE_STIPPLE);
 	//XLabel
-//	renderText( l, 0.0, 0.0, "X", Settings::s_TextFont);
-	GLRenderText( l, 0.0, 0.0, "X");
+	GLRenderText( l, 0.015, 0.015, "X");
 
 
 	// Y axis____________
@@ -807,8 +787,7 @@ void ThreeDWidget::GLDrawAxes(double length, QColor AxisColor, int AxisStyle, in
 	glEnd();
 	glDisable (GL_LINE_STIPPLE);
 	//Y Label
-//	renderText( 0.0, l, 0.0, "Y", Settings::s_TextFont);
-	GLRenderText( 0.0, l, 0.0, "Y");
+	GLRenderText( 0.015, l, 0.015, "Y");
 
 
 	// Z axis____________
@@ -829,8 +808,7 @@ void ThreeDWidget::GLDrawAxes(double length, QColor AxisColor, int AxisStyle, in
 	glEnd();
 	glDisable (GL_LINE_STIPPLE);
 	//ZLabel
-//	renderText( 0.0, 0.0, l, "Z", Settings::s_TextFont);
-	GLRenderText( 0.0, 0.0, l, "Z");
+	GLRenderText( 0.015, 0.015, l, "Z");
 
 	glDisable (GL_LINE_STIPPLE);
 }
@@ -925,11 +903,34 @@ void ThreeDWidget::GLRenderView()
 	glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
+
+	static GLdouble pts[4];
+	pts[0]= 0.0; pts[1]=0.0; pts[2]=-1.0; pts[3]= m_ClipPlanePos;  //x=m_VerticalSplit
+	glClipPlane(GL_CLIP_PLANE1, pts);
+
+
 	glPushMatrix();
 	{
+		if(m_ClipPlanePos>4.9999) 	glDisable(GL_CLIP_PLANE1);
+		else						glEnable(GL_CLIP_PLANE1);
+
 		GLSetupLight(0.0, 1.0);
 		glDisable(GL_LIGHTING);
 		glDisable(GL_LIGHT0);
+		if(m_glLightDlg.isVisible())
+		{
+			glDisable(GL_LIGHTING);
+			glDisable(GL_LIGHT0);
+			glPushMatrix();
+			{
+				glTranslated( m_glLightDlg.s_XLight, m_glLightDlg.s_YLight, m_glLightDlg.s_ZLight);
+				double radius = (m_glLightDlg.s_ZLight+2.0)/73.0;
+				glColor3d(m_glLightDlg.s_Red, m_glLightDlg.s_Green, m_glLightDlg.s_Blue);
+				GLRenderSphere(radius/m_glScaled);
+			}
+			glPopMatrix();
+		}
 
 		glLoadIdentity();
 		if(m_bCrossPoint && m_bArcball)
@@ -956,29 +957,22 @@ void ThreeDWidget::GLRenderView()
 
 		glScaled(m_glScaled, m_glScaled, m_glScaled);
 		glTranslated(m_glRotCenter.x, m_glRotCenter.y, m_glRotCenter.z);
+		if(s_bAxes) GLDrawAxes(1.0, W3dPrefsDlg::s_3DAxisColor, W3dPrefsDlg::s_3DAxisStyle, W3dPrefsDlg::s_3DAxisWidth);
 
 		if(m_iView==GLMIAREXVIEW)
 		{
-/*			QMiarex* pMiarex = (QMiarex*)s_pMiarex;
-			pMiarex->GLDraw3D();
-			if(pMiarex->m_iView==XFLR5::W3DVIEW) pMiarex->GLRenderView();*/
+			QMiarex* pMiarex = (QMiarex*)s_pMiarex;
+			if(pMiarex->m_iView==XFLR5::W3DVIEW) pMiarex->GLRenderView();
 		}
-		else if(m_iView == GLBODYVIEW)
-		{
-/*			GL3dBodyDlg *pDlg = (GL3dBodyDlg*)m_pParent;
-			pDlg->GLDraw3D();
-			pDlg->GLRenderBody();*/
-		}
+
 		else if(m_iView == GLWINGVIEW)
 		{
 			GL3dWingDlg *pDlg = (GL3dWingDlg*)m_pParent;
-			pDlg->GLDraw3D();
 			pDlg->GLRenderView();
 		}
 		else if(m_iView == GLPLANEVIEW)
 		{
-			ViewObjectDlg *pDlg = (ViewObjectDlg*)m_pParent;
-			pDlg->GLDraw3D();
+			EditPlaneDlg *pDlg = (EditPlaneDlg*)m_pParent;
 			pDlg->GLRenderView();
 		}
 
@@ -1140,11 +1134,11 @@ void ThreeDWidget::GLSetupLight(double Offset_y, double LightFactor)
 
 
 /**
-*Converts Client coordinates to OpenGL Viewport coordinates.
-*@param point the client coordinates.
+*Converts screen coordinates to OpenGL Viewport coordinates.
+*@param point the screen coordinates.
 *@param real the viewport coordinates.
 */
-void ThreeDWidget::ClientToGL(QPoint const &point, CVector &real)
+void ThreeDWidget::screenToViewport(QPoint const &point, CVector &real)
 {
 	//
 	// In input, takes the 2D point in screen client area coordinates
@@ -1169,11 +1163,11 @@ void ThreeDWidget::ClientToGL(QPoint const &point, CVector &real)
 
 
 /**
-*Converts OpenGL Viewport coordinates to client coordinates
+*Converts OpenGL Viewport coordinates to screen coordinates
 *@param real the viewport coordinates.
-*@param point the client coordinates.
+*@param point the screen coordinates.
 */
-void ThreeDWidget::GLToClient(CVector const &real, QPoint &point)
+void ThreeDWidget::viewportToScreen(CVector const &real, QPoint &point)
 {
 	//
 	//converts an opengl 2D vector to screen client coordinates
@@ -1207,7 +1201,7 @@ void ThreeDWidget::GLToClient(CVector const &real, QPoint &point)
 *@param y the viewport y-coordinate.
 *@param point the client coordinates.
 */
-void ThreeDWidget::GLToClient(double const &x, double const &y, QPoint &point)
+void ThreeDWidget::viewportToScreen(double const &x, double const &y, QPoint &point)
 {
     //
     //converts an opengl 2D vector to screen client coordinates
@@ -1250,7 +1244,7 @@ void ThreeDWidget::GLInverseMatrix()
 }
 
 
-void ThreeDWidget::Set3DRotationCenter()
+void ThreeDWidget::reset3DRotationCenter()
 {
 	//adjust the new rotation center after a translation or a rotation
 
@@ -1266,39 +1260,19 @@ void ThreeDWidget::Set3DRotationCenter()
 }
 
 
-void ThreeDWidget::Set3DRotationCenter(QPoint point)
+void ThreeDWidget::set3DRotationCenter(QPoint point)
 {
 	//adjusts the new rotation center after the user has picked a point on the screen
 	//finds the closest panel under the point,
 	//and changes the rotation vector and viewport translation
-	int  i, j;
-//	CVector N, LA, LB, TA, TB;
 	CVector I, A, B, AA, BB, PP, U;
 
-	i=-1;
-
-	ClientToGL(point, B);
-
-	B.x += - m_glViewportTrans.x*m_glScaled;
-	B.y += + m_glViewportTrans.y*m_glScaled;
-
-	B *= 1.0/m_glScaled;
-
-	A.Set(B.x, B.y, +1.0);
+	screenToViewport(point, B);
 	B.z = -1.0;
+	A.Set(B.x, B.y, +1.0);
 
-	for(i=0; i<4; i++)
-		for(j=0; j<4; j++)
-			MatIn[i][j] =  m_ArcBall.ab_quat[i*4+j];
-
-	//convert screen to model coordinates
-	AA.x = MatIn[0][0]*A.x + MatIn[0][1]*A.y + MatIn[0][2]*A.z;
-	AA.y = MatIn[1][0]*A.x + MatIn[1][1]*A.y + MatIn[1][2]*A.z;
-	AA.z = MatIn[2][0]*A.x + MatIn[2][1]*A.y + MatIn[2][2]*A.z;
-
-	BB.x = MatIn[0][0]*B.x + MatIn[0][1]*B.y + MatIn[0][2]*B.z;
-	BB.y = MatIn[1][0]*B.x + MatIn[1][1]*B.y + MatIn[1][2]*B.z;
-	BB.z = MatIn[2][0]*B.x + MatIn[2][1]*B.y + MatIn[2][2]*B.z;
+	viewportToWorld(A, AA);
+	viewportToWorld(B, BB);
 
 
 	U.Set(BB.x-AA.x, BB.y-AA.y, BB.z-AA.z);
@@ -1317,8 +1291,17 @@ void ThreeDWidget::Set3DRotationCenter(QPoint point)
 	}
 	else if(m_iView == GLPLANEVIEW)
 	{
-		ViewObjectDlg *pDlg = (ViewObjectDlg*)m_pParent;
+		EditPlaneDlg *pDlg = (EditPlaneDlg*)m_pParent;
 		if(pDlg->IntersectObject(AA, U, I))
+		{
+			bIntersect = true;
+			PP.Set(I);
+		}
+	}
+	else if(m_iView == GLMIAREXVIEW)
+	{
+		QMiarex *pMiarex = (QMiarex*)s_pMiarex;
+		if(pMiarex->IntersectObject(AA, U, I))
 		{
 			bIntersect = true;
 			PP.Set(I);
@@ -1337,14 +1320,14 @@ void ThreeDWidget::Set3DRotationCenter(QPoint point)
 		U.y = (-PP.y -m_glRotCenter.y)/30.0;
 		U.z = (-PP.z -m_glRotCenter.z)/30.0;
 
-		for(i=0; i<30; i++)
+		for(int i=0; i<30; i++)
 		{
 			m_glRotCenter +=U;
 			m_glViewportTrans.x =  (MatOut[0][0]*m_glRotCenter.x + MatOut[0][1]*m_glRotCenter.y + MatOut[0][2]*m_glRotCenter.z);
 			m_glViewportTrans.y = -(MatOut[1][0]*m_glRotCenter.x + MatOut[1][1]*m_glRotCenter.y + MatOut[1][2]*m_glRotCenter.z);
 			m_glViewportTrans.z=   (MatOut[2][0]*m_glRotCenter.x + MatOut[2][1]*m_glRotCenter.y + MatOut[2][2]*m_glRotCenter.z);
 
-			updateGL();
+			update();
 		}
 	}
 }
@@ -1357,23 +1340,55 @@ void ThreeDWidget::GLDrawFoils(void *pWingPtr)
 	Foil *pFoil;
 	Wing *pWing = (Wing*)pWingPtr;
 
-	glColor3d(Settings::s_TextColor.redF(), Settings::s_TextColor.greenF(), Settings::s_TextColor.blueF());
-
 	for(j=0; j<pWing->m_Surface.size(); j++)
 	{
 		pFoil = pWing->m_Surface.at(j)->foilA();
 
-		if(pFoil) renderText(pWing->m_Surface.at(j)->m_TA.x, pWing->m_Surface.at(j)->m_TA.y, pWing->m_Surface.at(j)->m_TA.z,
-							 pFoil->foilName());
+		if(pFoil) GLRenderText(pWing->m_Surface.at(j)->m_TA.x, pWing->m_Surface.at(j)->m_TA.y, pWing->m_Surface.at(j)->m_TA.z,
+							   pFoil->foilName(),
+							   QColor(Qt::yellow).lighter(175));
 
 	}
 
 	j = pWing->m_Surface.size()-1;
 	pFoil = pWing->m_Surface.at(j)->foilB();
-	if(pFoil) renderText(pWing->m_Surface.at(j)->m_TB.x, pWing->m_Surface.at(j)->m_TB.y, pWing->m_Surface.at(j)->m_TB.z,
-						 pFoil->foilName());
-
+	if(pFoil) GLRenderText(pWing->m_Surface.at(j)->m_TB.x, pWing->m_Surface.at(j)->m_TB.y, pWing->m_Surface.at(j)->m_TB.z,
+						 pFoil->foilName(),
+						 QColor(Qt::yellow).lighter(175));
 }
+
+
+
+void ThreeDWidget::GLDrawMasses(double volumeMass, CVector pos, QString tag, QList<PointMass*> ptMasses)
+{
+	if(qAbs(volumeMass)>PRECISION)
+	{
+		glPushMatrix();
+		{
+			glTranslated(pos.x,
+						 pos.y,
+						 pos.z);
+			GLRenderText(0.0,0.0,0.0, tag + QString(" (%1").arg(volumeMass*Units::kgtoUnit(), 0,'g',3) + Units::weightUnitLabel()+")", W3dPrefsDlg::s_MassColor.lighter(125));
+		}
+		glPopMatrix();
+	}
+
+	for(int im=0; im<ptMasses.size(); im++)
+	{
+		glPushMatrix();
+		{
+			glTranslated(ptMasses[im]->position().x,
+						 ptMasses[im]->position().y,
+						 ptMasses[im]->position().z);
+			glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
+			GLRenderSphere(W3dPrefsDlg::s_MassRadius/m_glScaled);
+			GLRenderText(0.0, 0.0, 0.0 +.02/m_glScaled,
+						 ptMasses[im]->tag()+QString(" (%1").arg(ptMasses[im]->mass()*Units::kgtoUnit(), 0,'g',3)+Units::weightUnitLabel()+")", W3dPrefsDlg::s_MassColor.lighter(125));
+		}
+		glPopMatrix();
+	}
+}
+
 
 
 void ThreeDWidget::On3DIso()
@@ -1395,8 +1410,8 @@ void ThreeDWidget::On3DIso()
 	m_ArcBall.ab_quat[14]	=  0.0f;
 	m_ArcBall.ab_quat[15]	=  1.0f;
 
-	Set3DRotationCenter();
-	updateGL();
+	reset3DRotationCenter();
+	update();
 }
 
 
@@ -1404,16 +1419,16 @@ void ThreeDWidget::On3DIso()
 void ThreeDWidget::On3DTop()
 {
 	m_ArcBall.SetQuat(sqrt(2.0)/2.0, 0.0, 0.0, -sqrt(2.0)/2.0);
-	Set3DRotationCenter();
-	updateGL();
+	reset3DRotationCenter();
+	update();
 }
 
 
 void ThreeDWidget::On3DLeft()
 {
 	m_ArcBall.SetQuat(sqrt(2.0)/2.0, -sqrt(2.0)/2.0, 0.0, 0.0);// rotate by 90° around x
-	Set3DRotationCenter();
-	updateGL();
+	reset3DRotationCenter();
+	update();
 }
 
 
@@ -1423,8 +1438,8 @@ void ThreeDWidget::On3DFront()
 	Quaternion Qt2(sqrt(2.0)/2.0, -sqrt(2.0)/2.0, 0.0,           0.0);// rotate by 90° around x
 
 	m_ArcBall.SetQuat(Qt1 * Qt2);
-	Set3DRotationCenter();
-	updateGL();
+	reset3DRotationCenter();
+	update();
 }
 
 
@@ -1432,8 +1447,8 @@ void ThreeDWidget::On3DReset()
 {
 	m_glViewportTrans.Set(0.0, 0.0, 0.0);
 
-	Set3DRotationCenter();
-	updateGL();
+	reset3DRotationCenter();
+	update();
 }
 
 
@@ -1445,15 +1460,71 @@ QSize ThreeDWidget::sizeHint() const
 
 
 
-void ThreeDWidget::GLRenderText(double x, double y, double z, const QString & str)
-{
-	static QPoint point;
 
-	static float m_modelViewMat[16], m_projMat[16];
-	static float m_V[16];
-	m_V[0] = (float)x;
-	m_V[1] = (float)y;
-	m_V[2] = (float)z;
+void ThreeDWidget::GLRenderText(double x, double y, double z, const QString & str, QColor textColor)
+{
+	QPoint point;
+	double Vx, Vy;
+
+	if(z>m_ClipPlanePos) return;
+
+	worldToViewport(CVector(x,y,z), Vx, Vy);
+	viewportToScreen(Vx, Vy, point);
+
+	QPainter paint(&m_PixText);
+	paint.save();
+	QPen textPen(textColor);
+	paint.setPen(textPen);
+	paint.drawText(point, str);
+	paint.restore();
+}
+
+
+
+
+void ThreeDWidget::GLRenderText(int x, int y, const QString & str, QColor textColor)
+{
+	QPainter paint(&m_PixText);
+	paint.save();
+	QPen textPen(textColor);
+	paint.setPen(textPen);
+
+	paint.drawText(x,y, str);
+	paint.restore();
+}
+
+
+
+
+void ThreeDWidget::viewportToWorld(CVector vp, CVector &w)
+{
+	//un-translate
+	vp.x += - m_glViewportTrans.x*m_glScaled;
+	vp.y += + m_glViewportTrans.y*m_glScaled;
+
+	//un-scale
+	vp.x *= 1.0/m_glScaled;
+	vp.y *= 1.0/m_glScaled;
+	vp.z *= 1.0/m_glScaled;
+
+
+	//un-rotate
+	w.x = m_ArcBall.ab_quat[0]*vp.x + m_ArcBall.ab_quat[1]*vp.y + m_ArcBall.ab_quat[2]*vp.z;
+	w.y = m_ArcBall.ab_quat[4]*vp.x + m_ArcBall.ab_quat[5]*vp.y + m_ArcBall.ab_quat[6]*vp.z;
+	w.z = m_ArcBall.ab_quat[8]*vp.x + m_ArcBall.ab_quat[9]*vp.y + m_ArcBall.ab_quat[10]*vp.z;
+}
+
+
+
+
+
+void ThreeDWidget::worldToViewport(CVector const &V, double &Vx, double &Vy)
+{
+	float m_modelViewMat[16], m_projMat[16];
+	float m_V[16];
+	m_V[0] = (float)V.x;
+	m_V[1] = (float)V.y;
+	m_V[2] = (float)V.z;
 	m_V[3] = 1.0f;
 
 	glGetFloatv(GL_MODELVIEW_MATRIX, m_modelViewMat);
@@ -1467,31 +1538,15 @@ void ThreeDWidget::GLRenderText(double x, double y, double z, const QString & st
 		glGetFloatv(GL_MODELVIEW_MATRIX,  m_V);
 	}
 	glPopMatrix();
+	Vx = m_V[0];
+	Vy = m_V[1];
 
-
-	QPainter paint(&m_PixText);
-	paint.save();
-	QPen textPen(Settings::s_TextColor);
-	paint.setPen(textPen);
-	GLToClient(m_V[0], m_V[1], point);
-
-	paint.drawText(point, str);
-	paint.restore();
+	if(height()<width())  Vy *= (double)height() / (double)width();
+	else                  Vx *= (double)width()  / (double)height();
 }
 
 
 
-
-void ThreeDWidget::GLRenderText(int x, int y, const QString & str)
-{
-	QPainter paint(&m_PixText);
-	paint.save();
-	QPen textPen(Settings::s_TextColor);
-	paint.setPen(textPen);
-
-	paint.drawText(x,y, str);
-	paint.restore();
-}
 
 
 

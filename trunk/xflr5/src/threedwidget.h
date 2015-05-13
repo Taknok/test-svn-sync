@@ -32,8 +32,10 @@
 #include <QGLWidget>
 #include <QPixmap>
 #include "params.h"
+#include "misc/GLLightDlg.h"
 #include "objects/CRectangle.h"
-#include "objects/ArcBall.h"
+#include <ArcBall.h>
+#include <PointMass.h>
 #include "misc/GLLightDlg.h"
 
 /** @enum This enumeration lists the different 3D views used in the program, i.e. the view in Miarex, in Body edition and in Wing edition.*/
@@ -58,24 +60,29 @@ class ThreeDWidget : public QGLWidget
 	friend class GL3dWingDlg;
 	friend class MainFrame;
 	friend class ArcBall;
-	friend class ViewObjectDlg;
+	friend class EditPlaneDlg;
 
 public:
 	ThreeDWidget(QWidget *parent = 0);
 	void GLCreateArcballList(ArcBall &ArcBall, double GLScale);
-	void ClientToGL(QPoint const &point, CVector &real);
 	void GLDrawAxes(double length, QColor AxisColor, int AxisStyle, int AxisWidth);
 	void GLInverseMatrix();
 	void GLCreateUnitSphere();
 	void GLRenderView();
 	void GLRenderSphere(double radius);
-	void GLRenderText(double x, double y, double z, const QString & str);
-	void GLRenderText(int x, int y, const QString & str);
+	void GLRenderText(double x, double y, double z, const QString & str, QColor textColor = QColor(Qt::white));
+	void GLRenderText(int x, int y, const QString & str, QColor textColor = QColor(Qt::white));
 	void GLSetupLight(double Offset_y, double LightFactor);
-	void GLToClient(CVector const &real, QPoint &point);
-    void GLToClient(double const &x, double const &y, QPoint &point);
     void NormalVector(GLdouble p1[3], GLdouble p2[3],  GLdouble p3[3], GLdouble n[3]);
 	enumGLView &iView(){return m_iView;}
+
+	void screenToViewport(QPoint const &point, CVector &real);
+	void viewportToScreen(CVector const &real, QPoint &point);
+	void viewportToScreen(double const &x, double const &y, QPoint &point);
+
+	void worldToViewport(const CVector &V, double &Vx, double &Vy);
+	void viewportToWorld(CVector vp, CVector &w);
+
 
 private slots:
 	void On3DIso();
@@ -100,9 +107,11 @@ private:
 	QSize sizeHint() const;
 
 	void GLDrawFoils(void *pWing);
+	void GLDrawMasses(double volumeMass, CVector pos, QString tag, QList<PointMass*> ptMasses);
+
 	void setupViewPort(int width, int height);
-	void Set3DRotationCenter();
-	void Set3DRotationCenter(QPoint point);
+	void reset3DRotationCenter();
+	void set3DRotationCenter(QPoint point);
 
 
 
@@ -119,6 +128,8 @@ private:
 	static bool s_bFoilNames;                 /**< true if the foil names are to be displayed on the openGL 3D view */
 
 
+	GLLightDlg m_glLightDlg;
+
 
 	QRect m_rCltRect;           /**< The client window rectangle  */
 	CRectangle m_GLViewRect;    /**< The OpenGl viewport.*/
@@ -132,7 +143,7 @@ private:
 
 
 	double m_glScaled;//zoom factor for UFO
-	double m_ClipPlanePos;
+	double m_ClipPlanePos;      /**< the z-position of the clip plane in viewport coordinates */
 	double MatIn[4][4], MatOut[4][4];
 
 

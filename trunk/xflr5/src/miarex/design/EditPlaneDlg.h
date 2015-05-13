@@ -24,20 +24,21 @@
 #define VIEWOBJECTDLG_H
 
 #include <QDialog>
+#include <QPixmap>
 #include <QSplitter>
 #include <QTreeView>
 #include <QStandardItemModel>
 #include <QToolButton>
 #include <threedwidget.h>
 #include "../../objects/Plane.h"
-#include "ViewObjectDelegate.h"
+#include "EditObjectDelegate.h"
 
 
 
 typedef enum {PLANE, BODY, WING, NOOBJECT} enumObjectType;
 
 
-class ViewObjectDlg : public QDialog
+class EditPlaneDlg : public QDialog
 {
 	Q_OBJECT
 
@@ -46,7 +47,7 @@ class ViewObjectDlg : public QDialog
 	friend class QMiarex;
 
 public:
-	ViewObjectDlg(QWidget *pParent = NULL);
+	EditPlaneDlg(QWidget *pParent = NULL);
 
 	void showEvent(QShowEvent *event);
 	void hideEvent(QHideEvent *event);
@@ -82,6 +83,10 @@ public:
 	QList<QStandardItem *> prepareIntRow(const QString &first, const QString &second, const int &third);
 	QList<QStandardItem *> prepareDoubleRow(const QString &first, const QString &second, const double &third,  const QString &fourth);
 
+
+	static bool LoadSettings(QSettings *pSettings);
+	static bool SaveSettings(QSettings *pSettings);
+
 private slots:
 	void OnOK();
 	void OnAxes();
@@ -103,17 +108,20 @@ private slots:
 
 private:
 	void reject();
-
+	void PaintPlaneLegend(QPainter &painter, Plane *pPlane, QRect drawRect);
 
 public:
 	static bool s_bWindowMaximized;
 	static QPoint s_WindowPosition;   /**< the position on the client area of the dialog's topleft corner */
 	static QSize s_WindowSize;	 /**< the window size in the client area */
+	static QByteArray m_HorizontalSplitterSizes, m_RightSplitterSizes;
+
+	QPixmap m_PixText;
 
 private:
 	Plane * m_pPlane;
 	QTreeView * m_pStruct;
-	ViewObjectDelegate *m_pDelegate;
+	EditObjectDelegate *m_pDelegate;
 	QStandardItemModel *m_pModel;
 
 	ThreeDWidget *m_pGLWidget;
@@ -127,7 +135,7 @@ private:
 	QMenu *m_pContextMenu;
 	QAction *m_pInsertBefore, *m_pInsertAfter, *m_pDeleteItem;
 
-	QSplitter *m_pRightSideSplitter;
+	QSplitter *m_pHorizontalSplitter, *m_pRightSideSplitter;
 
 	QPushButton *m_pctrlRedraw;
 	QPushButton *m_pctrlReset;
@@ -137,6 +145,7 @@ private:
 	bool m_bChanged;
 	bool m_bResetglSectionHighlight;
 	bool m_bResetglPlane, m_bResetglBody;
+
 
 	enumObjectType m_enumActiveObject;
 	XFLR5::enumWingType m_enumActiveWingType;
