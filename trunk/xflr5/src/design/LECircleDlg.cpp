@@ -75,7 +75,7 @@ void LECircleDlg::SetupLayout()
 
 void LECircleDlg::InitDialog()
 {
-	m_pctrlRadius->SetValue(m_Radius);
+	m_pctrlRadius->setValue(m_Radius);
 	m_pctrlShow->setChecked(m_bShowRadius);
 }
 
@@ -112,7 +112,7 @@ void LECircleDlg::keyPressEvent(QKeyEvent *event)
 
 void LECircleDlg::OnOK()
 {
-	m_Radius = m_pctrlRadius->Value();
+	m_Radius = m_pctrlRadius->value();
 	m_bShowRadius = m_pctrlShow->isChecked();
 	accept();
 }

@@ -627,8 +627,8 @@ bool LLTAnalysis::alphaLoop()
 		{
 			str  = QString("Alpha=%1").arg(Alpha, 7,'f', 2);
 			str += QString::fromUtf8("°");
-			m_pCurve = m_pGraph->AddCurve();
-			m_pCurve->SetTitle(str);
+			m_pCurve = m_pGraph->addCurve();
+			m_pCurve->setTitle(str);
 		}
 
 
@@ -718,8 +718,8 @@ bool LLTAnalysis::QInfLoop()
 		if(m_pGraph)
 		{
 			str = QString("QInf=%1 m/s").arg(QInf, 7,'f', 2);
-			m_pCurve = m_pGraph->AddCurve();
-			m_pCurve->SetTitle(str);
+			m_pCurve = m_pGraph->addCurve();
+			m_pCurve->setTitle(str);
 		}
 
 		if(s_bInitCalc) setLinearSolution(m_pWPolar->m_AlphaSpec);

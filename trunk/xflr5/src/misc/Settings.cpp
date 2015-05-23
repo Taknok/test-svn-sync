@@ -52,7 +52,7 @@ Settings::Settings(QWidget *pParent) : QDialog(pParent)
 {
 	setWindowTitle(tr("General Display Settings"));
 
-	s_RefGraph.SetGraphName("Reference_Graph");
+	s_RefGraph.setGraphName("Reference_Graph");
 
 	m_pMainFrame = pParent;
 	m_bIsGraphModified = false;
@@ -193,9 +193,9 @@ void Settings::SetupLayout()
 }
 
 
-void Settings::InitDialog()
+void Settings::initDialog()
 {
-	m_MemGraph.CopySettings(&s_RefGraph);
+	m_MemGraph.copySettings(&s_RefGraph);
 
 	m_pctrlBackColor->SetColor(s_BackgroundColor);
 
@@ -271,21 +271,21 @@ void Settings::reject()
 	QMiarex *pMiarex     = (QMiarex*)pMainFrame->m_pMiarex;
 	QXInverse *pXInverse = (QXInverse*)pMainFrame->m_pXInverse;
 
-	pXDirect->m_CpGraph.CopySettings(&m_MemGraph);
-	pXDirect->m_CpGraph.SetInverted(true);
+	pXDirect->m_CpGraph.copySettings(&m_MemGraph);
+	pXDirect->m_CpGraph.setInverted(true);
 
-	for(int ig=0; ig<MAXPOLARGRAPHS; ig++)
-		pXDirect->m_PlrGraph[ig].CopySettings(&m_MemGraph);
+	for(int ig=0; ig<qMax(MAXPOLARGRAPHS,pXDirect->m_PlrGraph.count()); ig++)
+		pXDirect->m_PlrGraph[ig]->copySettings(&m_MemGraph);
 
 	for(int ig=0; ig<MAXGRAPHS; ig++)
 	{
-		pMiarex->m_WingGraph[ig].CopySettings(&m_MemGraph);
-		pMiarex->m_TimeGraph[ig].CopySettings(&m_MemGraph);
-		pMiarex->m_WPlrGraph[ig].CopySettings(&m_MemGraph);
+		pMiarex->m_WingGraph[ig]->copySettings(&m_MemGraph);
+		pMiarex->m_TimeGraph[ig]->copySettings(&m_MemGraph);
+		pMiarex->m_WPlrGraph[ig]->copySettings(&m_MemGraph);
 	}
 
-	pXInverse->m_QGraph.CopySettings(&m_MemGraph);
-	pXInverse->m_QGraph.SetInverted(true);
+	pXInverse->m_QGraph.copySettings(&m_MemGraph);
+	pXInverse->m_QGraph.setInverted(true);
 
 	QDialog::reject();
 }
@@ -302,44 +302,39 @@ void Settings::OnGraphSettings()
 	GraphDlg dlg(pMainFrame);
 
 	dlg.m_GraphArray[0] = &pXDirect->m_CpGraph;
-	for(int ig=0; ig<MAXPOLARGRAPHS; ig++)
-		dlg.m_GraphArray[ig+1] = pXDirect->m_PlrGraph+ig;
+	for(int ig=0; ig<qMax(MAXPOLARGRAPHS,pXDirect->m_PlrGraph.count()); ig++)
+		dlg.m_GraphArray[ig+1] = pXDirect->m_PlrGraph[ig];
 
-	dlg.m_GraphArray[6] = pMiarex->m_WingGraph;
-	dlg.m_GraphArray[7] = pMiarex->m_WingGraph+1;
-	dlg.m_GraphArray[8] = pMiarex->m_WingGraph+2;
-	dlg.m_GraphArray[9] = pMiarex->m_WingGraph+3;
-	dlg.m_GraphArray[10] = pMiarex->m_WPlrGraph;
-	dlg.m_GraphArray[11] = pMiarex->m_WPlrGraph+1;
-	dlg.m_GraphArray[12] = pMiarex->m_WPlrGraph+2;
-	dlg.m_GraphArray[13] = pMiarex->m_WPlrGraph+3;
-	dlg.m_GraphArray[14] = pMiarex->m_TimeGraph;
-	dlg.m_GraphArray[15] = pMiarex->m_TimeGraph+1;
-	dlg.m_GraphArray[16] = pMiarex->m_TimeGraph+2;
-	dlg.m_GraphArray[17] = pMiarex->m_TimeGraph+3;
-	dlg.m_GraphArray[18] = &pMiarex->m_LongRLGraph;
-	dlg.m_GraphArray[19] = &pMiarex->m_LatRLGraph;
+	dlg.m_GraphArray[6] = pMiarex->m_WingGraph.at(0);
+	dlg.m_GraphArray[7] = pMiarex->m_WingGraph.at(1);
+	dlg.m_GraphArray[8] = pMiarex->m_WingGraph.at(2);
+	dlg.m_GraphArray[9] = pMiarex->m_WingGraph.at(3);
+	dlg.m_GraphArray[10] = pMiarex->m_WPlrGraph.at(0);
+	dlg.m_GraphArray[11] = pMiarex->m_WPlrGraph.at(1);
+	dlg.m_GraphArray[12] = pMiarex->m_WPlrGraph.at(2);
+	dlg.m_GraphArray[13] = pMiarex->m_WPlrGraph.at(3);
+	dlg.m_GraphArray[14] = pMiarex->m_TimeGraph.at(0);
+	dlg.m_GraphArray[15] = pMiarex->m_TimeGraph.at(1);
+	dlg.m_GraphArray[16] = pMiarex->m_TimeGraph.at(2);
+	dlg.m_GraphArray[17] = pMiarex->m_TimeGraph.at(3);
+	dlg.m_GraphArray[18] = pMiarex->m_StabPlrGraph.at(0);
+	dlg.m_GraphArray[19] = pMiarex->m_StabPlrGraph.at(1);
 
 	dlg.m_GraphArray[20] = &pXInverse->m_QGraph;
 
 	dlg.m_NGraph = 21;
 
-	QGraph graph;
-	graph.CopySettings(&s_RefGraph);
 
-	/** @todo mem is same as ref */
-	dlg.m_pMemGraph = &s_RefGraph;
-	dlg.m_pGraph = &graph;
+	dlg.setGraph(&s_RefGraph);
 
-	dlg.SetParams();
+	dlg.setControls();
 
 	if(dlg.exec() == QDialog::Accepted)
 	{
-		s_RefGraph.CopySettings(dlg.m_pGraph);
 		m_bIsGraphModified = true;
 
-		pXDirect->m_CpGraph.SetInverted(true);
-		pXInverse->m_QGraph.SetInverted(true);
+		pXDirect->m_CpGraph.setInverted(true);
+		pXInverse->m_QGraph.setInverted(true);
 	}
 }
 
@@ -427,14 +422,14 @@ void Settings::SaveSettings(QSettings *pSettings)
 
 		pSettings->setValue("ReverseZoom", s_bReverseZoom);
 		pSettings->setValue("AlphaChannel", s_bAlphaChannel);
-		s_RefGraph.SaveSettings(pSettings);
+		s_RefGraph.saveSettings(pSettings);
 	}
 	pSettings->endGroup();
 
 }
 
 
-void Settings::LoadSettings(QSettings *pSettings)
+void Settings::loadSettings(QSettings *pSettings)
 {
 	pSettings->beginGroup("global_settings");
 	{
@@ -459,7 +454,7 @@ void Settings::LoadSettings(QSettings *pSettings)
 		s_bAlphaChannel = pSettings->value("AlphaChannel", true).toBool();
 
 
-		s_RefGraph.LoadSettings(pSettings);
+		s_RefGraph.loadSettings(pSettings);
 	}
 	pSettings->endGroup();
 

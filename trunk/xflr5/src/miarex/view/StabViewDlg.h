@@ -77,7 +77,7 @@ private:
 	double GetControlInput(const double &time);
 	void SetMode(int iMode=-1);
 	void SetupLayout();
-	void SetControls();
+	void setControls();
 	void SetTimeCurveStyle(QColor const &Color, int const&Style, int const &Width, bool const& bCurve, bool const& bPoints);
 	void ReadControlModelData();
 	void UpdateControlModelData();

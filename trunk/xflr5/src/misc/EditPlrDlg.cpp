@@ -238,15 +238,15 @@ void EditPlrDlg::OnDeletePoint()
 	{
 		m_pPolar->Remove(index.row());
 		FillPolarData();
-		pXDirect->CreatePolarCurves();
+		pXDirect->createPolarCurves();
 		pXDirect->UpdateView();
 	}
 	else if(pMiarex)
 	{
 		m_pWPolar->Remove(index.row());
 		FillWPolarData();
-		pMiarex->CreateWPolarCurves();
-		pMiarex->UpdateView();
+		pMiarex->createWPolarCurves();
+		pMiarex->updateView();
 	}
 
 	if(index.row()>=m_pPointModel->rowCount()-1)
@@ -267,15 +267,15 @@ void EditPlrDlg::OnDeleteAllPoints()
 	{
 		m_pPolar->ResetPolar();
 		FillPolarData();
-		pXDirect->CreatePolarCurves();
+		pXDirect->createPolarCurves();
 		pXDirect->UpdateView();
 	}
 	else if(pMiarex)
 	{
 		m_pWPolar->ClearData();
 		FillWPolarData();
-		pMiarex->CreateWPolarCurves();
-		pMiarex->UpdateView();
+		pMiarex->createWPolarCurves();
+		pMiarex->updateView();
 	}
 }
 

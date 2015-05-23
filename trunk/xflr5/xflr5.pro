@@ -6,6 +6,7 @@ QT += opengl xml
 TEMPLATE = app
 
 INCLUDEPATH += $$PWD/src
+INCLUDEPATH += $$PWD/src/viewwidgets
 INCLUDEPATH += $$PWD/src/objects
 INCLUDEPATH += $$PWD/src/graph
 INCLUDEPATH += $$PWD/src/misc
@@ -15,8 +16,11 @@ SOURCES += \
 	src/globals.cpp \
 	src/main.cpp \
 	src/mainframe.cpp \
-	src/threedwidget.cpp \
-	src/twodwidget.cpp \
+	src/viewwidgets/threedwidget.cpp \
+	src/viewwidgets/section2dwidget.cpp \
+	src/viewwidgets/graphwidget.cpp \
+	src/viewwidgets/graphtilewidget.cpp \
+	src/viewwidgets/legendwidget.cpp \
 	src/misc/Settings.cpp \
 	src/misc/SaveOptionsDlg.cpp \
 	src/misc/ProgressDlg.cpp \
@@ -65,6 +69,8 @@ SOURCES += \
 	src/miarex/design/BodyTableDelegate.cpp \
 	src/miarex/design/BodyTransDlg.cpp \
 	src/miarex/design/EditObjectDelegate.cpp \
+	src/miarex/design/EditPlaneDlg.cpp \
+	src/miarex/design/EditBodyDlg.cpp \
 	src/miarex/view/GLCreateLists.cpp \
 	src/miarex/view/GLCreateBodyLists.cpp \
 	src/miarex/view/GL3DScales.cpp \
@@ -113,7 +119,6 @@ SOURCES += \
 	src/objects/SplineFoil.cpp \
 	src/objects/WingOpp.cpp \
 	src/graph/QGraph.cpp \
-	src/graph/GraphWidget.cpp \
 	src/graph/GraphDlg.cpp \
 	src/graph/Graph.cpp \
 	src/graph/Curve.cpp \
@@ -122,12 +127,19 @@ SOURCES += \
 	src/xinverse/XInverse.cpp \
 	src/xinverse/InverseOptionsDlg.cpp \
 	src/design/FoilTableDelegate.cpp \
-	src/design/AFoilGridDlg.cpp \
 	src/design/LECircleDlg.cpp \
 	src/design/AFoil.cpp \
 	src/design/SplineCtrlsDlg.cpp \
 	src/design/AFoilTableDlg.cpp \
-    src/miarex/design/EditPlaneDlg.cpp
+	src/design/GridSettingsDlg.cpp \
+	src/viewwidgets/foilwidget.cpp \
+	src/viewwidgets/BodyFrameWidget.cpp \
+	src/viewwidgets/BodyLineWidget.cpp \
+	src/viewwidgets/Direct2dDesign.cpp \
+	src/viewwidgets/miarextilewidget.cpp \
+	src/viewwidgets/xdirecttilewidget.cpp \
+	src/viewwidgets/wingwidget.cpp \
+    src/viewwidgets/twodwidget.cpp
 
 
 HEADERS += \
@@ -135,9 +147,12 @@ HEADERS += \
 	src/xflr5.h \
 	src/globals.h \
 	src/mainframe.h \
-	src/twodwidget.h \
-	src/threedwidget.h \
 	src/XFLR5Application.h \
+	src/viewwidgets/section2dwidget.h \
+	src/viewwidgets/threedwidget.h \
+	src/viewwidgets/graphwidget.h \
+	src/viewwidgets/graphtilewidget.h \
+	src/viewwidgets/legendwidget.h \
 	src/misc/Settings.h \
 	src/misc/SaveOptionsDlg.h \
 	src/misc/ModDlg.h \
@@ -186,6 +201,8 @@ HEADERS += \
 	src/miarex/design/GL3dWingDlg.h \
 	src/miarex/design/BodyTransDlg.h \
 	src/miarex/design/EditObjectDelegate.h \
+	src/miarex/design/EditPlaneDlg.h \
+	src/miarex/design/EditBodyDlg.h \
 	src/miarex/view/GLCreateLists.h \
 	src/miarex/view/GLCreateBodyLists.h \
 	src/miarex/view/GL3DScales.h \
@@ -240,18 +257,24 @@ HEADERS += \
 	src/objects/SplineFoil.h \
 	src/objects/WingOpp.h \
 	src/objects/PointMass.h \
-	src/graph/GraphWidget.h \
 	src/graph/Graph.h \
 	src/graph/GraphDlg.h \
 	src/graph/Curve.h \
 	src/graph/QGraph.h \
 	src/design/AFoil.h \
-	src/design/AFoilGridDlg.h \
 	src/design/LECircleDlg.h \
 	src/design/SplineCtrlsDlg.h \
 	src/design/FoilTableDelegate.h \
 	src/design/AFoilTableDlg.h \
-    src/miarex/design/EditPlaneDlg.h
+	src/design/GridSettingsDlg.h \
+	src/viewwidgets/foilwidget.h \
+	src/viewwidgets/BodyFrameWidget.h \
+	src/viewwidgets/BodyLineWidget.h \
+	src/viewwidgets/Direct2dDesign.h \
+	src/viewwidgets/miarextilewidget.h \
+	src/viewwidgets/xdirecttilewidget.h \
+	src/viewwidgets/wingwidget.h \
+    src/viewwidgets/twodwidget.h
 
 
 TRANSLATIONS = translations/xflr5v6.ts \

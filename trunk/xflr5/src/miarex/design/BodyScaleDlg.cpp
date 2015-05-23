@@ -47,15 +47,15 @@ BodyScaleDlg::BodyScaleDlg(QWidget *pParent ): QDialog(pParent)
 
 void BodyScaleDlg::InitDialog()
 {
-	m_pctrlXScaleFactor->SetValue(m_XFactor);
-	m_pctrlYScaleFactor->SetValue(m_YFactor);
-	m_pctrlZScaleFactor->SetValue(m_ZFactor);
+	m_pctrlXScaleFactor->setValue(m_XFactor);
+	m_pctrlYScaleFactor->setValue(m_YFactor);
+	m_pctrlZScaleFactor->setValue(m_ZFactor);
 
 	m_pctrlXScaleFactor->setFocus();
 
 
 	m_pctrlFrameID->setEnabled(false);
-	m_pctrlFrameID->SetValue(m_FrameID+1);
+	m_pctrlFrameID->setValue(m_FrameID+1);
 
 	if(!m_bFrameOnly)
 	{
@@ -86,7 +86,7 @@ void BodyScaleDlg::SetupLayout()
 	m_pctrlBody  = new QRadioButton(tr("Whole Body"));
 	m_pctrlFrame = new QRadioButton(tr("Frame Only"));
     m_pctrlFrameID = new DoubleEdit(10);
-	m_pctrlFrameID->SetPrecision(0);
+	m_pctrlFrameID->setPrecision(0);
 	TopLayout->addWidget(m_pctrlBody,1,1);
 	TopLayout->addWidget(m_pctrlFrame,2,1);
 	TopLayout->addWidget(m_pctrlFrameID,2,2);
@@ -95,9 +95,9 @@ void BodyScaleDlg::SetupLayout()
     m_pctrlXScaleFactor = new DoubleEdit(1.0);
     m_pctrlYScaleFactor = new DoubleEdit(2.000);
     m_pctrlZScaleFactor = new DoubleEdit(3.);
-	m_pctrlXScaleFactor->SetPrecision(3);
-	m_pctrlYScaleFactor->SetPrecision(3);
-	m_pctrlZScaleFactor->SetPrecision(3);
+	m_pctrlXScaleFactor->setPrecision(3);
+	m_pctrlYScaleFactor->setPrecision(3);
+	m_pctrlZScaleFactor->setPrecision(3);
 	QLabel *lab0 = new QLabel(tr("Scale Factor"));
 	QLabel *lab1 = new QLabel(tr("X Scale"));
 	QLabel *lab2 = new QLabel(tr("Y Scale"));
@@ -200,11 +200,11 @@ void BodyScaleDlg::OnRadio()
 
 void BodyScaleDlg::OnOK()
 {
-	m_FrameID = m_pctrlFrameID->Value()-1;
+	m_FrameID = m_pctrlFrameID->value()-1;
 
-	m_XFactor = m_pctrlXScaleFactor->Value();
-	m_YFactor = m_pctrlYScaleFactor->Value();
-	m_ZFactor = m_pctrlZScaleFactor->Value();
+	m_XFactor = m_pctrlXScaleFactor->value();
+	m_YFactor = m_pctrlYScaleFactor->value();
+	m_ZFactor = m_pctrlZScaleFactor->value();
 
 	QDialog::accept();
 }
@@ -213,7 +213,7 @@ void BodyScaleDlg::OnOK()
 void BodyScaleDlg::OnEditingFinished()
 {
 	GL3dBodyDlg *pBodyDlg = (GL3dBodyDlg*)m_pBodyDlg;
-	m_FrameID = m_pctrlFrameID->Value()-1;
+	m_FrameID = m_pctrlFrameID->value()-1;
 	pBodyDlg->m_pBody->m_iActiveFrame = m_FrameID;
 	pBodyDlg->m_pFrame = pBodyDlg->m_pBody->activeFrame();
 	pBodyDlg->m_bResetglBody2D = true;

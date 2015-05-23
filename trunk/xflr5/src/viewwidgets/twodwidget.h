@@ -43,8 +43,7 @@ class TwoDWidget : public QWidget
     Q_OBJECT
 
 	friend class MainFrame;
-	friend class QXDirect;
-	friend class QMiarex;
+
 
 public:
 	TwoDWidget(QWidget *parent = 0);
@@ -62,10 +61,7 @@ protected:
  	void wheelEvent (QWheelEvent *event);
 
 private:
-	void *m_pAFoil;       /**< A void pointer to the instance of the QAFoil object. */
 	void *m_pMainFrame;   /**< A void pointer to the instance of the MainFrame object. */
-	void *m_pMiarex;      /**< A void pointer to the instance of the QMiarex object. */
-	void *m_pXDirect;     /**< A void pointer to the instance of the QXDirect object. */
 	void *m_pXInverse;    /**< A void pointer to the instance of the QXInverse object. */
 
 };

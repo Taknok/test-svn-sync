@@ -298,13 +298,13 @@ double Foil::DeRotate()
  * @param scaley the scaling factor in the y-direction
  * @param Offset the foil offset in the client area
  */
-void Foil::DrawFoil(QPainter &painter, double const &alpha, double const &scalex, double const &scaley, QPoint const &Offset)
+void Foil::drawFoil(QPainter &painter, double const &alpha, double const &scalex, double const &scaley, QPointF const &Offset)
 {
-	static double xa, ya, sina, cosa;
-	static QPoint From, To;
-	static QRect R;
-	static int k;
-	static QPen FoilPen, HighPen;
+	double xa, ya, sina, cosa;
+	QPointF From, To;
+	QRectF R;
+	int k;
+	QPen FoilPen, HighPen;
 
 	FoilPen.setColor(m_FoilColor);
 	FoilPen.setWidth(m_FoilWidth);
@@ -318,13 +318,13 @@ void Foil::DrawFoil(QPainter &painter, double const &alpha, double const &scalex
 
 	xa = (x[0]-0.5)*cosa - y[0]*sina + 0.5;
 	ya = (x[0]-0.5)*sina + y[0]*cosa;
-	From.rx() = (int)( xa*scalex + Offset.x());
-	From.ry() = (int)(-ya*scaley + Offset.y());
+	From.rx() = ( xa*scalex + Offset.x());
+	From.ry() = (-ya*scaley + Offset.y());
 
 	if(m_bPoints)
 	{
-		R.setLeft((int)( xa*scalex) + Offset.x() -2);
-		R.setTop( (int)(-ya*scaley) + Offset.y() -2);
+		R.setLeft(( xa*scalex) + Offset.x() -2);
+		R.setTop( (-ya*scaley) + Offset.y() -2);
 		R.setWidth(4);
 		R.setHeight(4);
 		painter.drawRect(R);
@@ -341,15 +341,15 @@ void Foil::DrawFoil(QPainter &painter, double const &alpha, double const &scalex
 	{
 		xa = (x[k]-0.5)*cosa - y[k]*sina+ 0.5;
 		ya = (x[k]-0.5)*sina + y[k]*cosa;
-		To.rx() = (int)( xa*scalex+Offset.x());
-		To.ry() = (int)(-ya*scaley+Offset.y());
+		To.rx() =  xa*scalex+Offset.x();
+		To.ry() = -ya*scaley+Offset.y();
 
 		painter.drawLine(From,To);
 
 		if(m_bPoints)
 		{
-			R.setLeft((int)( xa*scalex) + Offset.x() -2);
-			R.setTop( (int)(-ya*scaley) + Offset.y() -2);
+			R.setLeft(  xa*scalex + Offset.x() -2);
+			R.setTop( -ya*scaley + Offset.y() -2);
 			R.setWidth(3);
 			R.setHeight(3);
 			painter.drawRect(R);
@@ -376,24 +376,24 @@ void Foil::DrawFoil(QPainter &painter, double const &alpha, double const &scalex
  * @param scaley the scaling factor in the y-direction
  * @param Offset the foil offset in the client area
  */
-void Foil::DrawMidLine(QPainter &painter, double const &scalex, double const &scaley, QPoint const &Offset)
+void Foil::drawMidLine(QPainter &painter, double const &scalex, double const &scaley, QPointF const &Offset)
 {
-	static QPoint From, To;
-	static int k;
-	static QPen FoilPen;
+	QPointF From, To;
+	int k;
+	QPen FoilPen;
 	FoilPen.setColor(m_FoilColor);
 	FoilPen.setWidth(m_FoilWidth);
 	FoilPen.setStyle(Qt::DashLine);
 	painter.setPen(FoilPen);
 
-	From.rx() = (int)( m_rpMid[0].x*scalex)  +Offset.x();
-	From.ry() = (int)(-m_rpMid[0].y*scaley)  +Offset.y();
+	From.rx() = ( m_rpMid[0].x*scalex)  +Offset.x();
+	From.ry() = (-m_rpMid[0].y*scaley)  +Offset.y();
 
 
 	for (k=0; k<=MIDPOINTCOUNT+1; k++)
 	{
-		To.rx() = (int)( m_rpMid[k].x*scalex)+Offset.x();
-		To.ry() = (int)(-m_rpMid[k].y*scaley)+Offset.y();
+		To.rx() = ( m_rpMid[k].x*scalex)+Offset.x();
+		To.ry() = (-m_rpMid[k].y*scaley)+Offset.y();
 
 		painter.drawLine(From, To);
 		From = To;
@@ -413,14 +413,14 @@ void Foil::DrawMidLine(QPainter &painter, double const &scalex, double const &sc
  * @param scaley the scaling factor in the y-direction
  * @param Offset the foil offset in the client area
  */
-void Foil::DrawPoints(QPainter &painter, double const &scalex, double const &scaley, QPoint const &Offset)
+void Foil::drawPoints(QPainter &painter, double const &scalex, double const &scaley, QPointF const &Offset)
 {
 	static int width;
 	static QPoint pt1;
 
 	width = 2;
 
-	static QPen FoilPen, HighPen;
+	QPen FoilPen, HighPen;
 	FoilPen.setColor(m_FoilColor);
 	FoilPen.setWidth(m_FoilWidth);
 	FoilPen.setStyle(Qt::SolidLine);
@@ -430,8 +430,8 @@ void Foil::DrawPoints(QPainter &painter, double const &scalex, double const &sca
 
 	for (int i=0; i<n;i++)
 	{
-		pt1.rx() = (int)( x[i]*scalex + Offset.x() - width);
-		pt1.ry() = (int)(-y[i]*scaley + Offset.y() - width);
+		pt1.rx() = ( x[i]*scalex + Offset.x() - width);
+		pt1.ry() = (-y[i]*scaley + Offset.y() - width);
 
 		painter.drawRect(pt1.x(), pt1.y(), 4, 4) ;
 	}
@@ -440,8 +440,8 @@ void Foil::DrawPoints(QPainter &painter, double const &scalex, double const &sca
 		HighPen.setWidth(2);
 		painter.setPen(HighPen);
 
-		pt1.rx() = (int)( x[m_iHighLight]*scalex + Offset.x() - width);
-		pt1.ry() = (int)(-y[m_iHighLight]*scaley + Offset.y() - width);
+		pt1.rx() = ( x[m_iHighLight]*scalex + Offset.x() - width);
+		pt1.ry() = (-y[m_iHighLight]*scaley + Offset.y() - width);
 
 		painter.drawRect(pt1.x(), pt1.y(), 4, 4);
 	}

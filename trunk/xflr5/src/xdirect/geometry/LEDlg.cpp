@@ -139,14 +139,14 @@ void LEDlg::keyPressEvent(QKeyEvent *event)
 
 void LEDlg::InitDialog()
 {
-	m_pctrlLE->SetMin(  0.0);
-	m_pctrlLE->SetMax(100.0);
+	m_pctrlLE->setMin(  0.0);
+	m_pctrlLE->setMax(100.0);
 
-	m_pctrlBlend->SetMin(  0.001);
-	m_pctrlBlend->SetMax(100.0);
+	m_pctrlBlend->setMin(  0.001);
+	m_pctrlBlend->setMax(100.0);
 
-	m_pctrlLE->SetValue(m_LErfac);
-	m_pctrlBlend->SetValue(m_Blend*100.0);
+	m_pctrlLE->setValue(m_LErfac);
+	m_pctrlBlend->setValue(m_Blend*100.0);
 }
 
 
@@ -191,8 +191,8 @@ void LEDlg::OnApply()
 		return;
 	}
 
-	m_LErfac = m_pctrlLE->Value();
-	m_Blend = m_pctrlBlend->Value()/100.0;
+	m_LErfac = m_pctrlLE->value();
+	m_Blend = m_pctrlBlend->value()/100.0;
 
 	pXFoil->lerad(m_LErfac,m_Blend);
 

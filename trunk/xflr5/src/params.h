@@ -17,16 +17,9 @@
 //General
 #define PI             3.14159265358979  
 #define MAXRECENTFILES         8  /**< Defines the maximum number of file names in the recent file list */
-#define SETTINGSFORMAT     53639  /**< A random number which defines the format of the settings file */
+#define SETTINGSFORMAT     53753  /**< A random number which defines the format of the settings file */
 #define PRECISION  0.00000000001  /**< Values are assumed 0 if less than this value. This is to avoid comparing the equality of two floating point numbers */
 
-
-
-
-//3D analysis parameters
-#define MAXWINGS            4     /**< Wing, wing2, elevator, fin, in that order.*/
-#define MAXBODIES           1     /**< One only in XFLR5 */
-#define MAXSPANSTATIONS   250     /**< The max number of stations for LLT. For a VLM analysis, this is the max number of panels in the spanwise direction. */
 
 
 
@@ -45,53 +38,17 @@
 #define IMX 64      /**< number of complex mapping coefficients  Cn */
 #define IMX4 16     /**< = IMX/4 */
 
+
+//3D analysis parameters
+#define MAXWINGS            4     /**< Wing, wing2, elevator, fin, in that order.*/
+#define MAXBODIES           1     /**< One only in XFLR5 */
+#define MAXSPANSTATIONS   250     /**< The max number of stations for LLT. For a VLM analysis, this is the max number of panels in the spanwise direction. */
+
+
 #define MIDPOINTCOUNT 100  /** the number of points which define the foil's mid camber line */
 
 
-//MIAREX
 
-//3D OpenGl list references
-
-#define VLMSTREAMLINES          1220
-#define SURFACESPEEDS           1221
-#define LIFTFORCE               1222
-#define VLMMOMENTS              1223
-#define VLMWINGLIFT             1232
-#define VLMWINGDRAG             1236
-#define VLMWINGWASH             1241
-#define VLMWINGTOPTRANS         1245
-#define VLMWINGBOTTRANS         1249
-#define WINGSURFACES            1300
-#define WINGOUTLINE             1304
-
-#define MESHPANELS              1372
-#define MESHBACK                1373
-
-#define WINGLEGEND              1376
-#define WOPPLEGEND              1377
-#define WOPPCPLEGENDCLR         1378
-#define WOPPCPLEGENDTXT         1379
-
-#define WINGWAKEPANELS          1383
-
-#define VLMCTRLPTS              1385
-#define VLMVORTICES             1386
-
-#define PANELCP                 1390
-#define PANELFORCEARROWS        1391
-#define PANELFORCELEGENDTXT     1392
-
-#define ARCBALL                 1414
-#define ARCPOINT                1415
-
-
-#define BODYGEOMBASE            4321
-#define BODYMESHBASE            5322
-#define BODYCPBASE              6173
-#define BODYFORCELISTBASE       6245
-
-
-#define MAXGRAPHS 4  /**< The max number of graphs available for display in QXDirect and in QMiarex. */
 
 
 #define QUESTION (BB || !BB) /**< Shakespeare */

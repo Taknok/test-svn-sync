@@ -44,7 +44,7 @@ public:
 	void    CopyFrame(Frame *pFrame);
 	void    CopyPoints(QList<CVector> *pPointList);
 	double  Height();
-	int     IsPoint(CVector const &Point, double const &ZoomFactor);
+	int     isPoint(CVector const &Point, double const &ZoomFactor);
 	void    InsertPoint(int n);
 	void    InsertPoint(int n, const CVector &Pt);
 	int     InsertPoint(CVector const &Real, int iAxis);
@@ -53,17 +53,18 @@ public:
 	bool    RemovePoint(int n);
 	void    RotateFrameY(double Angle);
 	bool    SerializeFrame(QDataStream &ar, bool bIsStoring);
-	void    SetPosition(CVector Pos);
+	void    setPosition(CVector Pos);
 	void    SetuPosition(double u);
 	void    SetvPosition(double v);
 	void    SetwPosition(double w);
 	double  zPos();
 
 	CVector & position(){return m_Position;}
+	CVector &selectedPoint(){return m_CtrlPoint[s_iSelect];}
 
 	QList <CVector> m_CtrlPoint;	/**< the array of points which define the frame.  */
-	int m_iHighlight;               /**< the point over which the mouse hovers, or -1 if none */
-	int m_iSelect;                  /**< the selected pointed, i.e. the last point on which the user has clicked, or -1 if none */
+	static int s_iHighlight;               /**< the point over which the mouse hovers, or -1 if none */
+	static int s_iSelect;                  /**< the selected pointed, i.e. the last point on which the user has clicked, or -1 if none */
 	CVector m_Position;             /**< the translation vector for the Frame's origin */
 };
 

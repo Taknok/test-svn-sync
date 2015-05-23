@@ -20,14 +20,14 @@ namespace XFLR5
 	typedef enum {TXT, CSV}	enumTextFileType;
 
 	/** @enum The different number of graphs in the polar view */
-	typedef enum {ONEGRAPH, TWOGRAPHS, ALLGRAPHS} enumGraphView;
+	typedef enum {ONEGRAPH, TWOGRAPHS, FOURGRAPHS, ALLGRAPHS} enumGraphView;
 
 	/** @enum The different type of reference areaand length */
 	typedef enum {PLANFORMREFDIM, PROJECTEDREFDIM, MANUALREFDIM} enumRefDimension;
 
 	/** This enumeration defines the options for the active view.
 	 *May be the operaring point view, the polar view, the 3D view, the Cp view, or the stability view*/
-	typedef enum {WOPPVIEW, WPOLARVIEW,  WCPVIEW, W3DVIEW, STABTIMEVIEW, STABPOLARVIEW} enumMiarexViews;
+	typedef enum {WOPPVIEW, WPOLARVIEW,  WCPVIEW, W3DVIEW, STABTIMEVIEW, STABPOLARVIEW, OTHERVIEW} enumMiarexViews;
 
 	/** @enum The two types of body : flat panels or NURBS*/
 	typedef enum  {BODYPANELTYPE, BODYSPLINETYPE }     enumBodyLineType;

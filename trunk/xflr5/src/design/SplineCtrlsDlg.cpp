@@ -62,8 +62,8 @@ void SplineCtrlsDlg::InitDialog()
 
 	m_pctrlDegExtrados->setCurrentIndex(m_pSF->m_Extrados.m_iDegree-2);
 	m_pctrlDegIntrados->setCurrentIndex(m_pSF->m_Intrados.m_iDegree-2);
-	m_pctrlOutExtrados->SetValue(m_pSF->m_Extrados.m_iRes);
-	m_pctrlOutIntrados->SetValue(m_pSF->m_Intrados.m_iRes);
+	m_pctrlOutExtrados->setValue(m_pSF->m_Extrados.m_iRes);
+	m_pctrlOutIntrados->setValue(m_pSF->m_Intrados.m_iRes);
 
 
 	//upper point list
@@ -145,7 +145,7 @@ void SplineCtrlsDlg::SetupLayout()
 				QLabel *labupper2 = new QLabel(tr("Output"));
 				m_pctrlDegExtrados = new QComboBox;
 				m_pctrlOutExtrados = new DoubleEdit;
-				m_pctrlOutExtrados->SetPrecision(0);
+				m_pctrlOutExtrados->setPrecision(0);
 				pUpperLayout->addWidget(labupper1, 1,1);
 				pUpperLayout->addWidget(labupper2, 2,1);
 				pUpperLayout->addWidget(m_pctrlDegExtrados, 1,2);
@@ -176,7 +176,7 @@ void SplineCtrlsDlg::SetupLayout()
 				QLabel *lablower2 = new QLabel(tr("Output"));
 				m_pctrlDegIntrados = new QComboBox;
 				m_pctrlOutIntrados = new DoubleEdit;
-				m_pctrlOutIntrados->SetPrecision(0);
+				m_pctrlOutIntrados->setPrecision(0);
 				pLowerLayout->addWidget(lablower1, 1,1);
 				pLowerLayout->addWidget(lablower2, 2,1);
 				pLowerLayout->addWidget(m_pctrlDegIntrados, 1,2);
@@ -334,8 +334,8 @@ void SplineCtrlsDlg::ReadData()
 		m_pctrlDegIntrados->setCurrentIndex(m_pSF->m_Intrados.m_iDegree-2);
 	}
 
-	m_pSF->m_Extrados.m_iRes = m_pctrlOutExtrados->Value();
-	m_pSF->m_Intrados.m_iRes = m_pctrlOutExtrados->Value();
+	m_pSF->m_Extrados.m_iRes = m_pctrlOutExtrados->value();
+	m_pSF->m_Intrados.m_iRes = m_pctrlOutExtrados->value();
 	m_pSF->m_bSymetric = m_pctrlSymetric->isChecked();
 
 	if(m_pSF->m_bSymetric)
@@ -355,7 +355,7 @@ void SplineCtrlsDlg::SetControls()
 	if(m_pSF->m_bSymetric)
 	{
 		m_pctrlDegIntrados->setCurrentIndex(m_pSF->m_Intrados.m_iDegree-2);
-		m_pctrlOutIntrados->SetValue(m_pSF->m_Intrados.m_iRes);
+		m_pctrlOutIntrados->setValue(m_pSF->m_Intrados.m_iRes);
 		FillPointLists();
 	}
 	m_pctrlLowerList->setEnabled(!m_pSF->m_bSymetric);
@@ -420,7 +420,7 @@ void SplineCtrlsDlg::UpdateSplines()
 	m_pSF->m_Intrados.SplineCurve();
 	m_pSF->UpdateSplineFoil();
 	QAFoil *pAFoil = (QAFoil*)s_pAFoil;
-	pAFoil->UpdateView();
+	pAFoil->m_p2DWidget->update();
 }
 
 

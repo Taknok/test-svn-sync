@@ -97,7 +97,7 @@ Graph::Graph()
 	m_h       = 0;
 	m_w       = 0;
 
-	SetDefaults();
+	setGraphDefaults();
 }
 
 Graph::~Graph()
@@ -106,14 +106,14 @@ Graph::~Graph()
 
 
 
-Curve* Graph::AddCurve()
+Curve* Graph::addCurve()
 {
 	Curve *pCurve = new Curve();
 	if(pCurve)
 	{
 		int nIndex = m_oaCurves.size();
-		pCurve->SetColor(m_CurveColors[nIndex%10]);
-		pCurve->SetStyle(0);
+		pCurve->setColor(m_CurveColors[nIndex%10]);
+		pCurve->setStyle(0);
 		pCurve->m_pParentGraph = this;
 		m_oaCurves.append(pCurve);
 	}
@@ -121,13 +121,13 @@ Curve* Graph::AddCurve()
 }
 
 /**< In the case where a curve has been constructed independantly and needs to be added to the Graph */
-Curve* Graph::AddCurve(Curve *pCurve)
+Curve* Graph::addCurve(Curve *pCurve)
 {
 	if(pCurve)
 	{
 		int nIndex = m_oaCurves.size();
-		pCurve->SetColor(m_CurveColors[nIndex%10]);
-		pCurve->SetStyle(0);
+		pCurve->setColor(m_CurveColors[nIndex%10]);
+		pCurve->setStyle(0);
 		pCurve->m_pParentGraph = this;
 		m_oaCurves.append(pCurve);
 	}
@@ -215,7 +215,7 @@ void Graph::CopySettings(Graph *pGraph, bool bScales)
 
 void Graph::DeleteCurve(int index)
 {
-    Curve * pCurve = GetCurve(index);
+    Curve * pCurve = curve(index);
     m_oaCurves.removeAt(index);
 	delete pCurve;
 }
@@ -257,7 +257,7 @@ void Graph::DeleteCurves()
 {
     int nIndex = (int)m_oaCurves.size();
 	for (int i=nIndex-1; i>=0;i--)
-		delete GetCurve(i);
+		delete curve(i);
 
     m_oaCurves.clear();//removes the pointers
 
@@ -276,10 +276,6 @@ void Graph::DeleteCurves()
 
 //___________________Start Gets______________________________________________________________
 
-int Graph::GetCurveCount()
-{
-    return (int)m_oaCurves.size();
-}
 
 
 QColor Graph::GetLabelColor()
@@ -357,7 +353,7 @@ void Graph::GetClientRect(QRect &Rect)
 	Rect = m_rCltRect;
 }
 
-Curve* Graph::GetCurve(int nIndex)
+Curve* Graph::curve(int nIndex)
 {
     if(m_oaCurves.size()>nIndex)
 		return (Curve*)m_oaCurves[nIndex];
@@ -365,7 +361,7 @@ Curve* Graph::GetCurve(int nIndex)
 }
 
 
-Curve* Graph::GetCurve(QString CurveTitle)
+Curve* Graph::curve(QString CurveTitle)
 {
 	QString strong;
 	Curve * pCurve;
@@ -388,21 +384,18 @@ bool Graph::GetInverted()
 	else return false;
 }
 
-int Graph::GetMargin()
+int Graph::margin()
 {
 	return m_iMargin;
 }
 
 
-void Graph::GetGraphName(QString &GraphName)
+void Graph::graphName(QString &GraphName)
 {
 	GraphName = m_GraphName;
 }
 
-QString Graph::GetGraphName()
-{
-	return m_GraphName;
-}
+
 
 QColor Graph::GetTitleColor()
 {
@@ -470,7 +463,7 @@ double Graph::GetXUnit()
 }
 
 
-int Graph::GetXVariable()
+int Graph::getXVariable()
 {
 	return m_X;
 }
@@ -537,13 +530,13 @@ double Graph::GetYScale()
 }
 
 
-int Graph::GetYVariable()
+int Graph::getYVariable()
 {
 	return m_Y;
 }
 
 
-bool Graph::Init()
+bool Graph::initializeGraph()
 {
 	//graph width and height
 	m_w =  m_rCltRect.width()  -2*m_iMargin;
@@ -559,20 +552,20 @@ bool Graph::Init()
 }
 
 
-bool Graph::IsInDrawRect(QPoint const &pt)
+bool Graph::isInDrawRect(QPoint const &pt)
 {
 	if(m_rCltRect.contains(pt)) return true;
 	else return false;
 }
 
-bool Graph::IsInDrawRect(int const &x, int const &y)
+bool Graph::isInDrawRect(int const &x, int const &y)
 {
 	if(m_rCltRect.contains(x,y)) return true;
 	else return false;
 }
 
 
-void Graph::ResetCurves()
+void Graph::resetCurves()
 {
 	Curve *pCurve;
 	for(int i=0; i<m_oaCurves.size(); i++)
@@ -583,14 +576,14 @@ void Graph::ResetCurves()
 }
 
 
-void Graph::ResetLimits()
+void Graph::resetLimits()
 {
-	ResetXLimits();
-	ResetYLimits();
+	resetXLimits();
+	resetYLimits();
 }
 
 
-void Graph::ResetXLimits()
+void Graph::resetXLimits()
 {
 	if(m_bAutoX)
 	{
@@ -601,7 +594,7 @@ void Graph::ResetXLimits()
 }
 
 
-void Graph::ResetYLimits()
+void Graph::resetYLimits()
 {
 	if(m_bAutoY)
 	{
@@ -652,32 +645,32 @@ void Graph::Scaley(double zoom)
 //___________________Start Sets______________________________________________________________
 
 
-void Graph::SetAuto(bool bAuto)
+void Graph::setAuto(bool bAuto)
 {
 	m_bAutoX = bAuto;
 	m_bAutoY = bAuto;
-	ResetXLimits();
-	ResetYLimits();
+	resetXLimits();
+	resetYLimits();
 }
 
-void Graph::SetAutoX(bool bAuto)
+void Graph::setAutoX(bool bAuto)
 {
 	m_bAutoX = bAuto;
-	ResetXLimits();
+	resetXLimits();
 }
-void Graph::SetAutoY(bool bAuto)
+void Graph::setAutoY(bool bAuto)
 {
 	m_bAutoY = bAuto;
-	ResetYLimits();
+	resetYLimits();
 }
-void Graph::SetAutoXMinUnit(bool bAuto)
+void Graph::setAutoXMinUnit(bool bAuto)
 {
 	m_bXAutoMinGrid = bAuto;
 	if(bAuto) m_XMinorUnit = xunit/5.0;
 }
 
 
-void Graph::SetAutoXUnit()
+void Graph::setAutoXUnit()
 {
 //	xunit = 100.0*m_scalex;
 	xunit = (xmax-xmin)/3.0;
@@ -701,14 +694,14 @@ void Graph::SetAutoXUnit()
 }
 
 
-void Graph::SetAutoYMinUnit(bool bAuto)
+void Graph::setAutoYMinUnit(bool bAuto)
 {
 	m_bYAutoMinGrid = bAuto;
 	if(bAuto) m_YMinorUnit = yunit/5.0;
 }
 
 
-void Graph::SetAutoYUnit()
+void Graph::setAutoYUnit()
 {
 //	yunit = 100.0 * m_scaley;
 	yunit = (ymax-ymin)/5.0;
@@ -729,65 +722,65 @@ void Graph::SetAutoYUnit()
 		yunit = 5.0*pow(10.0,exp_y);	
 }
 
-void Graph::SetAxisData(int s, int w, QColor clr)
+void Graph::setAxisData(int s, int w, QColor clr)
 {
 	m_AxisStyle = s;
 	m_AxisWidth = w;
 	m_AxisColor = clr;
 }
 
-void Graph::SetAxisColor(QColor crColor)
+void Graph::setAxisColor(QColor crColor)
 {
 	m_AxisColor = crColor;
 }
 
-void Graph::SetAxisStyle(int nStyle)
+void Graph::setAxisStyle(int nStyle)
 {
 	m_AxisStyle = nStyle;
 }
 
-void Graph::SetAxisWidth(int Width)
+void Graph::setAxisWidth(int Width)
 {
 	m_AxisWidth = Width;
 }
 
 
-void Graph::SetBkColor(QColor cr)
+void Graph::setBkColor(QColor cr)
 {
 	m_BkColor = cr;
 }
 
-void Graph::SetBorderColor(QColor crBorder)
+void Graph::setBorderColor(QColor crBorder)
 {
 	m_BorderColor = crBorder;
 }
 
-void Graph::SetBorder(bool bBorder)
+void Graph::setBorder(bool bBorder)
 {
 	m_bBorder = bBorder;
 }
 
-void Graph::SetBorderWidth(int w)
+void Graph::setBorderWidth(int w)
 {
 	m_BorderWidth = w;
 }
 
-void Graph::SetBorderStyle(int s)
+void Graph::setBorderStyle(int s)
 {
 	m_BorderStyle = s;
 }
 
-void Graph::SetDrawRect(QRect &Rect)
+void Graph::setDrawRect(QRect Rect)
 {
 	m_rCltRect = Rect;
 }
 
-void Graph::SetGraphName(QString GraphName)
+void Graph::setGraphName(QString GraphName)
 {
 	m_GraphName = GraphName;
 }
 
-void Graph::SetDefaults()
+void Graph::setGraphDefaults()
 {
 	m_BkColor = QColor(0,9,13);
 	m_BorderColor = QColor(200,200,200);
@@ -799,9 +792,9 @@ void Graph::SetDefaults()
 
 	m_bYInverted = false;
 
-	SetAxisColor(QColor(200,200,200));
-	SetTitleColor(QColor(255,255,255));
-	SetLabelColor(QColor(255,255,255));
+	setAxisColor(QColor(200,200,200));
+	setTitleColor(QColor(255,255,255));
+	setLabelColor(QColor(255,255,255));
 
 	m_bXMajGrid = true;
 	m_bYMajGrid = true;
@@ -829,26 +822,26 @@ void Graph::SetDefaults()
 
 
 
-void Graph::SetLabelColor(QColor crColor)
+void Graph::setLabelColor(QColor crColor)
 {
 	m_LabelColor = crColor;
 }
 
 
-void Graph::SetInverted(bool bInverted)
+void Graph::setInverted(bool bInverted)
 {
 	m_bYInverted = bInverted;
 }
 
 
-void Graph::SetMargin(int m)
+void Graph::setMargin(int m)
 {
 	m_iMargin = m;
 }
 
 
 
-void Graph::SetTitleColor(QColor crColor)
+void Graph::setTitleColor(QColor crColor)
 {
 	m_TitleColor = crColor;
 }
@@ -856,14 +849,14 @@ void Graph::SetTitleColor(QColor crColor)
 
 
 
-void Graph::SetType(int type)
+void Graph::setType(int type)
 {
 	m_Type = type;
 }
 
 
 
-void Graph::SetVariables(int const & X, int const & Y)
+void Graph::setVariables(int const & X, int const & Y)
 {
 	m_X = X;
 	m_Y = Y;
@@ -907,12 +900,12 @@ void Graph::SetXMinGrid(bool const &bGrid)
 
 
 
-void Graph::SetXMax(double f){
+void Graph::setXMax(double f){
 	xmax = f;
 }
 
 
-void Graph::SetXMin(double f){
+void Graph::setXMin(double f){
 	xmin = f;
 }
 
@@ -1023,7 +1016,7 @@ bool Graph::SetXScale()
 
 		//try to set an automatic scale for X Axis
 
-		SetAutoXUnit();
+		setAutoXUnit();
 	}
 	else
 	{
@@ -1056,7 +1049,7 @@ void Graph::SetXUnit(double f){
 	xunit = f;
 }
 
-void Graph::SetXTitle(QString str)
+void Graph::setXTitle(QString str)
 {
 	m_XTitle = str;
 }
@@ -1071,7 +1064,7 @@ void Graph::SetXVariable(int const & X)
 
 
 
-void Graph::SetYMin(double f){
+void Graph::setYMin(double f){
 	ymin = f;
 }
 
@@ -1080,7 +1073,7 @@ void Graph::SetYMinorUnit(double f){
 }
 
 
-void Graph::SetYMax(double f){
+void Graph::setYMax(double f){
 	ymax = f;
 }
 
@@ -1088,7 +1081,7 @@ void Graph::SetY0(double f){
 	yo = f;
 }
 
-void Graph::SetYTitle(QString str)
+void Graph::setYTitle(QString str)
 {
 	m_YTitle = str;
 }
@@ -1193,7 +1186,7 @@ bool Graph::SetYScale()
 		}
 
 		//try to set an automatic scale for Y Axis
-		SetAutoYUnit();
+		setAutoYUnit();
 	}
 	else
 	{

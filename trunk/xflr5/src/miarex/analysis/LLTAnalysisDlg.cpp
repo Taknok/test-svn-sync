@@ -51,27 +51,28 @@ LLTAnalysisDlg::LLTAnalysisDlg(QWidget *pParent, LLTAnalysis *pLLTAnalysis) : QD
 
 	m_pLLT = pLLTAnalysis;
 
-	m_pIterGraph = m_pGraphWidget->graph();
-	m_pIterGraph->CopySettings(&Settings::s_RefGraph, false);
+	m_pIterGraph = new QGraph();
+	m_pGraphWidget->setGraph(m_pIterGraph);
+	m_pIterGraph->copySettings(&Settings::s_RefGraph, false);
 //	m_pIterGraph->SetXTitle(tr("Iterations"));
-	m_pIterGraph->SetYTitle("");
+	m_pIterGraph->setYTitle("");
 	QFont fnt("Symbol");
-	m_pIterGraph->SetTitleFont(fnt);
+	m_pIterGraph->setTitleFont(fnt);
 
-	m_pIterGraph->SetAuto(true);
+	m_pIterGraph->setAuto(true);
 
-	m_pIterGraph->SetMargin(40);
+	m_pIterGraph->setMargin(40);
 
 	m_pIterGraph->SetXMajGrid(true, QColor(120,120,120),2,1);
 	m_pIterGraph->SetYMajGrid(true, QColor(120,120,120),2,1);
 
-	m_pIterGraph->SetXMin(0.0);
-	m_pIterGraph->SetXMax(50);
-	m_pIterGraph->SetYMin(0.0);
-	m_pIterGraph->SetYMax(1.0);
-	m_pIterGraph->SetType(1);
+	m_pIterGraph->setXMin(0.0);
+	m_pIterGraph->setXMax(50);
+	m_pIterGraph->setYMin(0.0);
+	m_pIterGraph->setYMax(1.0);
+	m_pIterGraph->setType(1);
 
-	m_pIterGraph->SetYTitle("|Da|");
+	m_pIterGraph->setYTitle("|Da|");
 
 
 	m_bCancel     = false;
@@ -100,14 +101,14 @@ void LLTAnalysisDlg::initDialog()
 
 	m_pIterGraph->DeleteCurves();
 
-	m_pIterGraph->SetXMin(0.0);
-	m_pIterGraph->SetXMax((double)LLTAnalysis::s_IterLim);
+	m_pIterGraph->setXMin(0.0);
+	m_pIterGraph->setXMax((double)LLTAnalysis::s_IterLim);
 	m_pIterGraph->SetX0(0.0);
 	m_pIterGraph->SetXUnit((int)(LLTAnalysis::s_IterLim/10.0));
 
 	m_pIterGraph->SetY0(0.0);
-	m_pIterGraph->SetYMin(0.0);
-	m_pIterGraph->SetYMax(1.0);
+	m_pIterGraph->setYMin(0.0);
+	m_pIterGraph->setYMax(1.0);
 
 }
 
@@ -148,9 +149,9 @@ void LLTAnalysisDlg::OnCancelAnalysis()
 void LLTAnalysisDlg::ResetCurves()
 {
 	Curve*pCurve;
-	pCurve = m_pIterGraph->GetCurve(0);
+	pCurve = m_pIterGraph->curve(0);
 	if(pCurve) pCurve->clear();
-	pCurve = m_pIterGraph->GetCurve(1);
+	pCurve = m_pIterGraph->curve(1);
 	if(pCurve) pCurve->clear();
 }
 
@@ -238,8 +239,8 @@ void LLTAnalysisDlg::Analyze()
 	strange = QString(tr("Relaxation factor  = %1")+"\n\n").arg(LLTAnalysis::s_RelaxMax,0,'f',1);
 	UpdateOutput(strange);
 
-	m_pIterGraph->ResetLimits();
-	m_pIterGraph->SetXMax((double)LLTAnalysis::s_IterLim);
+	m_pIterGraph->resetLimits();
+	m_pIterGraph->setXMax((double)LLTAnalysis::s_IterLim);
 	m_pIterGraph->SetYMinGrid(false, true, QColor(100,100,100), 2, 1, 4);
 
 	m_pLLT->initializeAnalysis();
@@ -331,7 +332,7 @@ void LLTAnalysisDlg::UpdateOutput(QString &strong)
 */
 void LLTAnalysisDlg::UpdateGraph(int x, double y)
 {
-	Curve *pCurve = m_pIterGraph->GetCurve(0);
+	Curve *pCurve = m_pIterGraph->curve(0);
 	if(pCurve) pCurve->AppendPoint((double)x,y);
 	UpdateView();
 }

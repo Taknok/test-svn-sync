@@ -53,7 +53,7 @@ public:
 	bool IsInNURBSBody(double x, double z);
 	bool IsInNURBSBodyOld(CVector Pt);
 	bool Intersect(CVector A, CVector B, CVector &I, bool bRight);
-	bool IntersectPanels(CVector A, CVector B, CVector &I);
+	bool intersectFlatPanels(CVector A, CVector B, CVector &I);
 	bool IntersectNURBS(CVector A, CVector B, CVector &I, bool bRight);
 	bool SerializeBodyWPA(QDataStream &ar, bool bIsStoring);
 	bool SerializeBodyXFL(QDataStream &ar, bool bIsStoring);
@@ -64,8 +64,8 @@ public:
 	int insertFrameBefore(int iFrame);
 	int insertFrameAfter(int iFrame);
 	int InsertPoint(CVector Real);
-	int IsFramePos(CVector Real, double ZoomFactor);
-	int RemoveFrame(int n);
+	int isFramePos(CVector Real, double ZoomFactor);
+	int removeFrame(int n);
 	int ReadFrame(QTextStream &in, int &Line, Frame *pFrame, double const &Unit);
 
 	double Length();
@@ -95,7 +95,11 @@ public:
 
 	Frame *frame(int iFrame);
 	Frame *activeFrame();
-	void SetActiveFrame(Frame *pFrame);
+
+	int setActiveFrame(Frame *pFrame);
+	Frame *setActiveFrame(int iFrame);
+
+
 	double FramePosition(int iFrame);
 	int FrameSize()       {return m_SplineSurface.frameCount();}
 	int FramePointCount() {return m_SplineSurface.FramePointCount();}

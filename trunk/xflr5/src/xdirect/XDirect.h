@@ -46,9 +46,6 @@
 #include "analysis/XFoil.h"
 
 
-#define MAXPOLARGRAPHS 5
-
-
 
 /**
 * @class QXDirect
@@ -69,6 +66,8 @@ class QXDirect : public QWidget
 	friend class XDirectStyleDlg;
 	friend class Settings;
 	friend class XFoilAdvancedDlg;
+	friend class XDirectTileWidget;
+
 
     Q_OBJECT
 
@@ -93,7 +92,6 @@ private slots:
 	void OnSinglePolarGraph();
 	void OnAllPolarGraphsSetting();
 
-	void OnCpGraphSettings();
 	void OnPolarFilter();
 	void OnInputChanged();
 	void OnAnalyze();
@@ -124,26 +122,19 @@ private slots:
 	void OnOpPointView();
 	void OnPolarView();
 	void OnResetAllPolarGraphsScales();
-	void OnResetFoilScale();
 	void OnResetCurPolar();
 	void OnSavePolars();
 	void OnSequence();
 	void OnShowFoilPolarsOnly();
 	void OnShowFoilPolars();
-	void OnShowBL();
 	void OnShowCurve();
-	void OnShowNeutralLine();
 	void OnShowCurvePoints();
-	void OnShowPanels();
 	void OnShowAllOpps();
 	void OnShowAllPolars();
-	void OnShowPressure();
 	void OnDefinePolar();
 	void OnSpec();
 	void OnStoreOpp();
 	void OnViscous();
-	void OnXDirectStyle();
-	void OnGraphSettings();
 	void OnDuplicateFoil();
 	void OnShowPolarOpps();
 	void OnHidePolarOpps();
@@ -157,7 +148,6 @@ private slots:
 	void OnRefinePanelsGlobally();
 	void OnFoilCoordinates();
 	void OnFoilGeom();
-	void OnResetGraphLegend();
 	void OnSetTEGap();
 	void OnSetLERadius();
 	void OnSetFlap();
@@ -186,60 +176,43 @@ private slots:
 	void OnRenameCurFoil();
 
 
-protected:
+public:
 	void keyPressEvent(QKeyEvent *event);
 	void keyReleaseEvent(QKeyEvent *event);
-	void mousePressEvent(QMouseEvent *event);
-	void mouseMoveEvent(QMouseEvent *event);
-	void mouseReleaseEvent(QMouseEvent *event);
 
-	void doubleClickEvent(QPoint pos);
-	void zoomEvent (QPoint pos, double zoomFactor);
-
-	void SetControls();
+	void setControls();
 	void Connect();
-	void CreateOppCurves(OpPoint *pOpp= NULL);
-	void CreatePolarCurves();
-	void PaintPolarLegend(QPoint place, int bottom,QPainter &painter);
-	void FillComboBoxes(bool bEnable = true);
-	void FillPolarCurve(Curve *pCurve, Polar *pPolar, int XVar, int YVar);
-	void FillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bInviscid=false);
+	void createOppCurves(OpPoint *pOpp= NULL);
+	void createPolarCurves();
+	void fillComboBoxes(bool bEnable = true);
+	void fillPolarCurve(Curve *pCurve, Polar *pPolar, int XVar, int YVar);
+	void fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bInviscid=false);
 
-	void LoadSettings(QSettings *pSettings);
-	CVector MousetoReal(QPoint point);
-	void PaintBL(QPainter &painter, OpPoint* pOpPoint, double scale);
-	void PaintPressure(QPainter &painter, OpPoint* pOpPoint, double scale);
-	void PaintOpPoint(QPainter &painter);
-	void PaintSingleGraph(QPainter &painter);
-	void PaintCoupleGraphs(QPainter &painter);
-	void PaintPolarGraphs(QPainter &painter);
-	void PaintView(QPainter &painter);
-	void ReadParams();
-	Foil *AddNewFoil(Foil *pFoil);
-	void RenameFoil(Foil *pFoil);
-	void SaveSettings(QSettings *pSettings);
-	void SetBufferFoil();
-	void SetCurveParams();
-	void SetFoilScale();
-	void SetFoilScale(QRect CltRect);
-	void SetOpPointSequence();
-	void SetAnalysisParams();
-	void SetGraphTitles(Graph* pGraph, int iX, int iY);
-	void SetGraphTitles(Graph* pGraph);
-	void SetPolarLegendPos();
-	void SetupLayout();	
-	void StopAnimate();
-	void UpdateCurveStyle();
+	void loadSettings(QSettings *pSettings);
+	void readParams();
+	Foil *addNewFoil(Foil *pFoil);
+	void renameFoil(Foil *pFoil);
+	void saveSettings(QSettings *pSettings);
+	void setBufferFoil();
+	void setCurveParams();
+	void setFoilScale();
+	void setGraphTiles();
+	void setOpPointSequence();
+	void setAnalysisParams();
+	void setGraphTitles(Graph* pGraph, int iX, int iY);
+	void setGraphTitles(Graph* pGraph);
+	void setupLayout();
+	void setView(XFLR5::enumGraphView eView);
+	void stopAnimate();
+	void updateCurveStyle();
 
 	void * GetVariable(Polar *pPolar, int iVar);
 
-	QGraph* GetGraph(QPoint &pt);
+	Foil* setFoil(Foil* pFoil=NULL);
+	Polar *setPolar(Polar *pPolar=NULL);
+	OpPoint *setOpp(double Alpha=-123456789.0);
 
-	Foil* SetFoil(Foil* pFoil=NULL);
-	Polar *SetPolar(Polar *pPolar=NULL);
-	OpPoint *SetOpp(double Alpha=-123456789.0);
-
-
+	bool bPolarView() {return m_bPolarView;}
 
 private:
 
@@ -283,8 +256,6 @@ private:
 	static bool s_bFromZero;          /**< true if the batch analysis should start from Alpha=0 */
 	static bool s_bKeepOpenErrors; /**< true if the XfoilAnalysisDlg should be kept open if errors occured in the XFoil calculation */
 
-	bool m_bBL;                /**< true if the Boundary layer shoud be displayed */
-	bool m_bPressure;          /**< true if the pressure distirbution should be displayed */
 	bool m_bPolarView;         /**< true if the polar view is selected, false if the operating point view is selected */
 	bool m_bShowUserGraph;     /**< true if the 5th polar graph should be displayed */
 	bool m_bAnimate;           /**< true if a result animation is underway */
@@ -295,7 +266,6 @@ private:
 	bool m_bType3;             /**< true if the type 3 polars are to be displayed in the graphs */
 	bool m_bType4;             /**< true if the type 4 polars are to be displayed in the graphs */
 	bool m_bTrans;             /**< true if the user is dragging a view */
-	bool m_bTransGraph;        /**< true if the user is dragging a graph */
 	bool m_bFromList;          /**< true if the batch analysis is based on a list of Re values */
 	bool m_bShowTextOutput;    /**< true if the batch analysis should display text result output */
 	bool m_bNeutralLine;       /**< true if the neutral line should be displayed */
@@ -306,6 +276,8 @@ private:
 	bool m_bXPressed;          /**< true if the 'X' key is pressed */
 	bool m_bYPressed;          /**< true if the 'Y' key is pressed */
 	bool m_bHighlightOpp;      /**< true if the active operating point should be highlighted on the curves of the polar graphs */
+	bool m_bResetCurves;       /**< true if the graph curves need to be redrawn before the next view update */
+
 
 	int m_posAnimate;          /**< the current aoa in the animation */
 	int m_XFoilVar;            /**< defines the variable for current XFoil results */
@@ -348,33 +320,16 @@ private:
 	QList<void*> *m_poaOpp;		/**< pointer to the OpPoint object array */
 
 	QGraph m_CpGraph;           /**< the Cp graph for the OpPoint view */
-	QGraph m_PlrGraph[MAXPOLARGRAPHS];          /**< the 5 Polar graphs */
-
-	QGraph* m_pCurGraph;        /**< a pointer to the graph over which the mouse is hovering */
-
+	QList<QGraph*> m_PlrGraph;  /**< the array of pointer to the 5 Polar graphs */
 
 	static void *s_pMainFrame;  /**< a static pointer to the instance of the application's MainFrame object */
-	static void *s_p2DWidget;   /**< a static pointer to the instance of the application's central widget used for 2D drawings */
-
-	QColor m_crBLColor;         /**< the color used to draw the boundary layer */
-	QColor m_crPressureColor;   /**< the color used to draw the pressure arrows */
-	QColor m_crNeutralColor;    /**< the color used to draw the neutral line */
 	QColor m_CurveColor;        /**< the color displayed in the comboboxes for the selection of curve styles */
-
-	int m_iBLStyle;             /**< the index of the style used to draw the boundary layer */
-	int m_iBLWidth;             /**< the width of the line used to draw the boundary layer */
-	int m_iPressureStyle;       /**< the index of the style used to draw the pressure arrows*/
-	int m_iPressureWidth;       /**< the width of the line used to draw the pressure arrows */
-	int m_iNeutralStyle;        /**< the index of the style used to draw the neutral line */
-	int m_iNeutralWidth;        /**< the width of the line used to draw the neutral line */
 
 	int m_CurveStyle;           /**< the index of the style of the lines displayed in the comboboxes for the selection of curve styles*/
 	int m_CurveWidth;           /**< the width of the lines displayed in the comboboxes for the selection of curve styles*/
 	
 	QRect m_rCltRect;		    /**< the client rectangle of the central TwoDWidget */
 	QPoint m_PointDown;		    /**< the client coordinated of the last mouse left-click */
-	QPoint m_FoilOffset;		/**< the offset position for the foil display in the client area */
-	QPoint m_PolarLegendOffset; /**< the offset position for the legend display in the client area */
 
 	XFoil *m_pXFoil;		    /**< a pointer to the unique instance of the XFoil object */
 

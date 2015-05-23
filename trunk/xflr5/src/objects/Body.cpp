@@ -783,7 +783,7 @@ int Body::insertFrame(CVector Real)
  */
 bool Body::Intersect(CVector A, CVector B, CVector &I, bool bRight)
 {
-	if(m_LineType==XFLR5::BODYPANELTYPE)        return IntersectPanels(A,B,I);
+	if(m_LineType==XFLR5::BODYPANELTYPE)        return intersectFlatPanels(A,B,I);
 	else if (m_LineType==XFLR5::BODYSPLINETYPE) return IntersectNURBS(A,B,I, bRight);
 	return false;
 }
@@ -867,7 +867,7 @@ bool Body::IntersectNURBS(CVector A, CVector B, CVector &I, bool bRight)
  * @param I the intersection point
  * @return true if an intersection point has been found, false otherwise.
  */
-bool Body::IntersectPanels(CVector A, CVector B, CVector &I)
+bool Body::intersectFlatPanels(CVector A, CVector B, CVector &I)
 {
 	bool b1, b2, b3, b4, b5;
 	int i,k;
@@ -1015,13 +1015,13 @@ bool Body::IntersectPanels(CVector A, CVector B, CVector &I)
  * @param ZoomFactor the view's scae factor
  * @return the Frame's index, or -10 if none found
  */
-int Body::IsFramePos(CVector Real, double ZoomFactor)
+int Body::isFramePos(CVector Real, double ZoomFactor)
 {
 	int k;
 	for (k=0; k<FrameSize(); k++)
 	{
 		if (qAbs(Real.x-m_SplineSurface.m_pFrame[k]->m_Position.x) < 0.01 *Length()/ZoomFactor &&
-			qAbs(Real.y-m_SplineSurface.m_pFrame[k]->zPos())       < 0.01 *Length()/ZoomFactor)
+			qAbs(Real.z-m_SplineSurface.m_pFrame[k]->zPos())       < 0.01 *Length()/ZoomFactor)
 			return k;
 	}
 	return -10;
@@ -1118,7 +1118,7 @@ int Body::ReadFrame(QTextStream &in, int &Line, Frame *pFrame, double const &Uni
  * @param n the index of the Frame to remove
  * @return the index of the new active Frame object
  */
-int Body::RemoveFrame(int n)
+int Body::removeFrame(int n)
 {
 	m_SplineSurface.m_pFrame.removeAt(n);
 
@@ -1497,6 +1497,8 @@ void Body::Translate(double XTrans, double , double ZTrans, bool bFrameOnly, int
 }
 
 
+
+
 /**
  * Overloaded function
  * Translates either a Frame or the whole Body in the xz plane
@@ -1540,26 +1542,40 @@ double Body::FramePosition(int iFrame)
 Frame *Body::activeFrame()
 {
 	if(m_iActiveFrame>=0 && m_iActiveFrame<FrameSize()) return m_SplineSurface.m_pFrame[m_iActiveFrame];
-	return NULL;
+	else                                                return NULL;
 }
 
 
 /**
  * Sets as active the Frame pointed in input
  * @param pFrame a pointer to the Frame object to be set as active
+ * @return the index of the newly selected Frame
  */
-void Body::SetActiveFrame(Frame *pFrame)
+int Body::setActiveFrame(Frame *pFrame)
 {
 	for(int ifr=0; ifr<m_SplineSurface.m_pFrame.size(); ifr++)
 	{
 		if(m_SplineSurface.m_pFrame.at(ifr)==pFrame)
 		{
 			m_iActiveFrame = ifr;
-			break;
+			return m_iActiveFrame;
 		}
 	}
+	return -1;
 }
 
+
+
+/**
+ * Sets as active the Frame pointed in input
+ * @param iFrame the index of the newly selected Frame
+ * @return a pointer to the Frame object to be set as active
+ */
+Frame * Body::setActiveFrame(int iFrame)
+{
+	m_iActiveFrame = iFrame;
+	return frame(iFrame);
+}
 
 
 /**

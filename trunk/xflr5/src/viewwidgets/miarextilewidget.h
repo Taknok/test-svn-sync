@@ -1,7 +1,7 @@
 /****************************************************************************
 
-	GraphWidget Class
-        Copyright (C) 2008-2014 Andre Deperrois adeperrois@xflr5.com
+	MiarexTileWidget Class
+		Copyright (C) 2015 Andre Deperrois adeperrois@xflr5.com
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -19,38 +19,38 @@
 
 *****************************************************************************/
 
+#ifndef MIAREXTILEWIDGET_H
+#define MIAREXTILEWIDGET_H
 
-#ifndef GRAPHWIDGET_H
-#define GRAPHWIDGET_H
+#include "graphtilewidget.h"
+#include "wingwidget.h"
+#include <QStackedWidget>
 
-#include <QWidget>
-#include "QGraph.h"
 
-class GraphWidget : public QWidget
+class MiarexTileWidget : public GraphTileWidget
 {
-	friend class XFoilAnalysisDlg;
-	friend class LLTAnalysisDlg;
-	friend class BatchDlg;
+	Q_OBJECT
 
 public:
-	GraphWidget();
+	MiarexTileWidget(QWidget *pParent = NULL);
+	~MiarexTileWidget();
 
-	QGraph *graph(){return &m_Graph;}
+public:
+	void Connect();
+	void adjustLayout();
+	void setMiarexGraphList(XFLR5::enumMiarexViews miarexView, QList<QGraph*>pGraphList, int nGraphs, int iGraphWidget=0, Qt::Orientation orientation =Qt::Horizontal);
 
-protected:
-	void paintEvent(QPaintEvent *event);
-	void resizeEvent (QResizeEvent *event);
 
-	void SetTitle(QString &Title, QPoint &Place);
+private:
+	void setupMainLayout();
 
-	QPoint m_TitlePosition;
-	QString m_GraphTitle;
-	QGraph m_Graph;
+private:
+	XFLR5::enumMiarexViews &miarexView(){return m_MiarexView;}
 
-	QPoint m_LegendOrigin;
-	bool m_bDrawLegend;
-	void showLegend(bool bShow);
-	void setLegendPosition(QPoint pos);
+	QStackedWidget *m_pLegendStack;
+	WingWidget *m_pWingWidget;
+
+	double m_splitWOpp, m_splitWPolar;
 };
 
-#endif // GRAPHWIDGET_H
+#endif // MIAREXTILEWIDGET_H

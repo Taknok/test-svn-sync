@@ -392,10 +392,10 @@ void SplineFoil::UpdateSplineFoil()
  * @param scaley the scale of the view in the y direction
  * @param Offset the postion of the SplineFoil's leading edge point
  */
-void SplineFoil::DrawCtrlPoints(QPainter &painter, double scalex, double scaley, QPoint Offset)
+void SplineFoil::drawCtrlPoints(QPainter &painter, double scalex, double scaley, QPointF Offset)
 {
-	m_Extrados.DrawCtrlPoints(painter, scalex, scaley, Offset);
-	m_Intrados.DrawCtrlPoints(painter, scalex, scaley, Offset);
+	m_Extrados.drawCtrlPoints(painter, scalex, scaley, Offset);
+	m_Intrados.drawCtrlPoints(painter, scalex, scaley, Offset);
 }
 
 /**
@@ -405,10 +405,10 @@ void SplineFoil::DrawCtrlPoints(QPainter &painter, double scalex, double scaley,
  * @param scaley the scale of the view in the y direction
  * @param Offset the postion of the SplineFoil's leading edge point
  */
-void SplineFoil::DrawOutPoints(QPainter & painter, double scalex, double scaley, QPoint Offset)
+void SplineFoil::drawOutPoints(QPainter & painter, double scalex, double scaley, QPointF Offset)
 {
-	m_Extrados.DrawOutputPoints(painter, scalex, scaley, Offset);
-	m_Intrados.DrawOutputPoints(painter, scalex, scaley, Offset);
+	m_Extrados.drawOutputPoints(painter, scalex, scaley, Offset);
+	m_Intrados.drawOutputPoints(painter, scalex, scaley, Offset);
 }
 
 /**
@@ -418,10 +418,10 @@ void SplineFoil::DrawOutPoints(QPainter & painter, double scalex, double scaley,
  * @param scaley the scale of the view in the y direction
  * @param Offset the postion of the SplineFoil's leading edge point
  */
-void SplineFoil::DrawFoil(QPainter &painter, double scalex, double scaley, QPoint Offset)
+void SplineFoil::drawFoil(QPainter &painter, double scalex, double scaley, QPointF Offset)
 {
-	m_Extrados.DrawSpline(painter, scalex, scaley, Offset);
-	m_Intrados.DrawSpline(painter, scalex, scaley, Offset);
+	m_Extrados.drawSpline(painter, scalex, scaley, Offset);
+	m_Intrados.drawSpline(painter, scalex, scaley, Offset);
 }
 
 
@@ -432,11 +432,11 @@ void SplineFoil::DrawFoil(QPainter &painter, double scalex, double scaley, QPoin
  * @param scaley the scale of the view in the y direction
  * @param Offset the postion of the SplineFoil's leading edge point
  */
-void SplineFoil::DrawMidLine(QPainter &painter, double scalex, double scaley, QPoint Offset)
+void SplineFoil::drawMidLine(QPainter &painter, double scalex, double scaley, QPointF Offset)
 {
 	painter.save();
 	int k;
-	QPoint From, To;
+	QPointF From, To;
 	
 	QPen MidPen(m_FoilColor);
 	MidPen.setStyle(Qt::DashLine);

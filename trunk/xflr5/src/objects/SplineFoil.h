@@ -54,7 +54,23 @@ public:
 	SplineFoil();
 	SplineFoil(SplineFoil *pSF);
 
-private:
+	bool isVisible(){return m_bVisible;}
+	bool isSymetric(){return m_bSymetric;}
+	bool showOutPoints(){return m_bOutPoints;}
+	bool showCenterLine(){return m_bCenterLine;}
+	int splineFoilWidth(){return m_FoilWidth;}
+	int splineFoilStyle(){return m_FoilStyle;}
+	QColor splineFoilColor(){return m_FoilColor;}
+	QString splineFoilName(){return m_strFoilName;}
+
+	Spline *extrados(){return &m_Extrados;}
+	Spline *intrados(){return &m_Intrados;}
+
+	bool isModified(){return m_bModified;}
+	void setModified(bool bModified){m_bModified = bModified;}
+
+	void setVisible(bool bVisible){m_bVisible = bVisible;}
+
 	void CompMidLine();
 
 	void InitSplineFoil();
@@ -63,15 +79,17 @@ private:
 	bool SerializeXFL(QDataStream &ar, bool bIsStoring);
 
 	void Copy(SplineFoil* pSF);
-	void DrawCtrlPoints(QPainter &painter, double scalex, double scaley, QPoint Offset);
-	void DrawMidLine(QPainter &painter, double scalex, double scaley, QPoint Offset);
-	void DrawFoil(QPainter &painter, double scalex, double scaley, QPoint Offset);
-	void DrawOutPoints(QPainter &painter, double scalex, double scaley, QPoint Offset);
+	void drawCtrlPoints(QPainter &painter, double scalex, double scaley, QPointF Offset);
+	void drawMidLine(QPainter &painter, double scalex, double scaley, QPointF Offset);
+	void drawFoil(QPainter &painter, double scalex, double scaley, QPointF Offset);
+	void drawOutPoints(QPainter &painter, double scalex, double scaley, QPointF Offset);
 	void ExportToBuffer(void *pFoilPtr);
 	void ExportToFile(QTextStream &out);
 	void UpdateSplineFoil();
 	void SetCurveParams(int style, int width, QColor color);
 
+
+private:
 	bool m_bModified;                /**< false if the SplineFoil has been serialized in its current dtate, false otherwise */
 	bool m_bVisible;                 /**< true if this SplineFoil object is visible */
 	bool m_bOutPoints;               /**< true if the ouput line points should be displayed */

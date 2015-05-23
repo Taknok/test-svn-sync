@@ -29,6 +29,7 @@
 #include "graph/Curve.h"
 #include "miarex/design/GL3dBodyDlg.h"
 #include "miarex/design/EditPlaneDlg.h"
+#include "miarex/design/EditBodyDlg.h"
 #include "miarex/design/GL3dWingDlg.h"
 #include "misc/W3dPrefsDlg.h"
 #include "threedwidget.h"
@@ -45,11 +46,12 @@ bool ThreeDWidget::s_bShowMasses = false;
 bool ThreeDWidget::s_bFoilNames = false;
 
 
+
 /**
 *The public constructor
 */
 ThreeDWidget::ThreeDWidget(QWidget *parent)
-	: QGLWidget(parent)
+    : QOpenGLWidget(parent)
 {
 	if(MainFrame::s_bTrace)
 	{
@@ -57,24 +59,13 @@ ThreeDWidget::ThreeDWidget(QWidget *parent)
 
 		Trace("OpenGl::majorversion", format().majorVersion());
 		Trace("OpenGl::minorversion", format().minorVersion());
-		Trace("OpenGl::accum", format().accum());
-		Trace("OpenGl::accumbuffersize", format().accumBufferSize());
-		Trace("OpenGl::alpha", format().alpha());
-		Trace("OpenGl::depth", format().depth());
-		Trace("OpenGl::double bufffer",format().doubleBuffer());
 		Trace("OpenGl::depth buffer size", format().depthBufferSize());
-		Trace("OpenGl::directRendering", format().directRendering());
-		Trace("OpenGl::plane", format().plane());
-		Trace("OpenGl::rgba", format().rgba());
-		Trace("OpenGl::sampleBuffers", format().sampleBuffers());
 		Trace("OpenGl::stereo", format().stereo());
 		Trace("OpenGl::swapInterval", format().swapInterval());
-		Trace("OpenGl::hasOverlay", format().hasOverlay());
-		Trace("OpenGl::hasOpenGLOverlays", format().hasOpenGLOverlays());
 
-		if(format().profile() == QGLFormat::NoProfile)                 Trace("Opengl::CompatibilityProfile::NoProfile");
-		else if(format().profile() == QGLFormat::CoreProfile)          Trace("Opengl::CompatibilityProfile::CoreProfile");
-		else if(format().profile()== QGLFormat::CompatibilityProfile)  Trace("Opengl::CompatibilityProfile::CompatibilityProfile");
+		if(format().profile() == QSurfaceFormat::NoProfile)                 Trace("Opengl::CompatibilityProfile::NoProfile");
+		else if(format().profile() == QSurfaceFormat::CoreProfile)          Trace("Opengl::CompatibilityProfile::CoreProfile");
+		else if(format().profile()== QSurfaceFormat::CompatibilityProfile)  Trace("Opengl::CompatibilityProfile::CompatibilityProfile");
 
 		Trace("\n\n");
 
@@ -90,12 +81,11 @@ ThreeDWidget::ThreeDWidget(QWidget *parent)
 	setMouseTracking(true);
 	setCursor(Qt::CrossCursor);
 
-	m_ClipPlanePos = 5.0;
-
 	m_glViewportTrans.x  = 0.0;
 	m_glViewportTrans.y  = 0.0;
 	m_glViewportTrans.z  = 0.0;
 
+	m_ClipPlanePos  = 5.0;
 	m_glScaled      = 1.0;
 
 	m_bTrans                   = false;
@@ -114,8 +104,6 @@ ThreeDWidget::ThreeDWidget(QWidget *parent)
 	m_glLightDlg.m_p3DWidget = this;
 
 	m_ArcBall.m_p3dWidget = this;
-	GLCreateArcballList(m_ArcBall, 1.0);
-	GLCreateUnitSphere();
 }
 
 
@@ -133,8 +121,8 @@ void ThreeDWidget::contextMenuEvent (QContextMenuEvent * event)
 		if (pMiarex->m_iView==XFLR5::W3DVIEW)
 		{
 			if(pMiarex->m_pCurWPolar && pMiarex->m_pCurWPolar->polarType()==XFLR5::STABILITYPOLAR)
-				pMainFrame->W3DStabCtxMenu->exec(ScreenPt);
-			else pMainFrame->W3DCtxMenu->exec(ScreenPt);
+				pMainFrame->m_pW3DStabCtxMenu->exec(ScreenPt);
+			else pMainFrame->m_pW3DCtxMenu->exec(ScreenPt);
 		}
 	}
 	else  if(m_iView ==GLBODYVIEW)
@@ -161,7 +149,7 @@ void ThreeDWidget::mousePressEvent(QMouseEvent *event)
 		GL3dBodyDlg *pDlg = (GL3dBodyDlg*)m_pParent;
 		pDlg->mousePressEvent(event);
 	}
-	else if(m_iView == GLMIAREXVIEW || m_iView == GLWINGVIEW || m_iView == GLPLANEVIEW)
+	else if(m_iView == GLMIAREXVIEW || m_iView == GLWINGVIEW || m_iView == GLPLANEVIEW || m_iView == GLEDITBODYVIEW)
 	{
 		QPoint point(event->pos().x(), event->pos().y());
 		QPoint glPoint(event->pos().x() + geometry().x(), event->pos().y()+geometry().y());
@@ -223,7 +211,7 @@ void ThreeDWidget::mouseReleaseEvent(QMouseEvent *event)
 		GL3dBodyDlg *pDlg = (GL3dBodyDlg*)m_pParent;
 		pDlg->mouseReleaseEvent(event);
 	}
-	else if(m_iView == GLMIAREXVIEW || m_iView == GLWINGVIEW || m_iView == GLPLANEVIEW)
+	else if(m_iView == GLMIAREXVIEW || m_iView == GLWINGVIEW || m_iView == GLPLANEVIEW || m_iView == GLEDITBODYVIEW)
 	{
 		setCursor(Qt::CrossCursor);
 
@@ -261,7 +249,7 @@ void ThreeDWidget::mouseMoveEvent(QMouseEvent *event)
 		GL3dBodyDlg *pDlg = (GL3dBodyDlg*)m_pParent;
 		pDlg->mouseMoveEvent(event);
 	}
-	else if(m_iView == GLMIAREXVIEW || m_iView == GLWINGVIEW || m_iView == GLPLANEVIEW)
+	else if(m_iView == GLMIAREXVIEW || m_iView == GLWINGVIEW || m_iView == GLPLANEVIEW || m_iView == GLEDITBODYVIEW)
 	{
 		QPoint point(event->pos().x(), event->pos().y());
 		QPoint glPoint(event->pos().x() + geometry().x(), event->pos().y()+geometry().y());
@@ -341,6 +329,11 @@ void ThreeDWidget::mouseDoubleClickEvent ( QMouseEvent * event )
 //		ViewObjectDlg *pDlg = (ViewObjectDlg*)m_pParent;
 		set3DRotationCenter(event->pos());
 	}
+	else if(m_iView == GLEDITBODYVIEW)
+	{
+//		ViewObjectDlg *pDlg = (ViewObjectDlg*)m_pParent;
+		set3DRotationCenter(event->pos());
+	}
 }
 
 
@@ -364,15 +357,15 @@ void ThreeDWidget::wheelEvent(QWheelEvent *event)
 
 	if(m_iView == GLMIAREXVIEW)
 	{
-		QMiarex* pMiarex = (QMiarex*)s_pMiarex;
-		pMiarex->zoomEvent(event->pos(), zoomFactor);
+		m_glScaled *= zoomFactor;
+		update();
 	}
 	else if(m_iView == GLBODYVIEW)
 	{
 		GL3dBodyDlg *pDlg = (GL3dBodyDlg*)m_pParent;
 		pDlg->zoomEvent(event->pos(), zoomFactor);
 	}
-	else if(m_iView == GLWINGVIEW || m_iView==GLPLANEVIEW)
+	else if(m_iView == GLWINGVIEW || m_iView==GLPLANEVIEW || m_iView==GLEDITBODYVIEW)
 	{
 		QPoint glPoint(event->pos().x() + geometry().x(), event->pos().y()+geometry().y());
 
@@ -407,7 +400,7 @@ void ThreeDWidget::keyPressEvent(QKeyEvent *event)
 		GL3dBodyDlg *pDlg = (GL3dBodyDlg*)m_pParent;
 		pDlg->keyPressEvent(event);
 	}
-	else if(m_iView == GLWINGVIEW || m_iView == GLPLANEVIEW)
+	else if(m_iView == GLWINGVIEW || m_iView == GLPLANEVIEW || m_iView == GLEDITBODYVIEW)
 	{
 		switch (event->key())
 		{
@@ -415,6 +408,12 @@ void ThreeDWidget::keyPressEvent(QKeyEvent *event)
 			{
 				m_bArcball = true;
 				update();
+				break;
+			}
+			case Qt::Key_R:
+			{
+				on3DReset();
+				event->accept();
 				break;
 			}
 			default:
@@ -435,7 +434,7 @@ void ThreeDWidget::keyReleaseEvent(QKeyEvent *event)
 		GL3dBodyDlg *pDlg = (GL3dBodyDlg*)m_pParent;
 		pDlg->keyReleaseEvent(event);
 	}
-	else if(m_iView ==GLMIAREXVIEW || m_iView == GLWINGVIEW || m_iView == GLPLANEVIEW)
+	else if(m_iView ==GLMIAREXVIEW || m_iView == GLWINGVIEW || m_iView == GLPLANEVIEW || m_iView == GLEDITBODYVIEW)
 	{
 		switch (event->key())
 		{
@@ -465,8 +464,6 @@ void ThreeDWidget::paintEvent(QPaintEvent *event)
 {
 	paintGL();
 	QPainter painter(this);
-//	painter.setFont(Settings::m_TextFont);
-//	painter.setRenderHint(QPainter::Antialiasing);
 
 	if(m_iView==GLMIAREXVIEW)
 	{
@@ -490,6 +487,13 @@ void ThreeDWidget::paintEvent(QPaintEvent *event)
 	else if(m_iView == GLPLANEVIEW)
 	{
 		EditPlaneDlg *pDlg = (EditPlaneDlg*)m_pParent;
+		painter.drawPixmap(0,0, pDlg->m_PixText);
+		painter.drawPixmap(0,0, m_PixText);
+		m_PixText.fill(Qt::transparent);
+	}
+	else if(m_iView == GLEDITBODYVIEW)
+	{
+		EditBodyDlg *pDlg = (EditBodyDlg*)m_pParent;
 		painter.drawPixmap(0,0, pDlg->m_PixText);
 		painter.drawPixmap(0,0, m_PixText);
 		m_PixText.fill(Qt::transparent);
@@ -529,6 +533,12 @@ void ThreeDWidget::paintGL()
 		pDlg->GLDraw3D();
 		GLRenderView();
 	}
+	else if(m_iView == GLEDITBODYVIEW)
+	{
+		EditBodyDlg *pDlg = (EditBodyDlg*)m_pParent;
+		pDlg->GLDraw3D();
+		GLRenderView();
+	}
 }
 
 
@@ -547,9 +557,6 @@ void ThreeDWidget::resizeGL(int width, int height)
 	h = (double)height;
 	s = 1.0;
 
-	makeCurrent();
-
-//	setupViewPort(width, height);
 
 	glLoadIdentity();
 	if(w>h)	m_GLViewRect.SetRect(-s, s*h/w, s, -s*h/w);
@@ -563,6 +570,9 @@ void ThreeDWidget::resizeGL(int width, int height)
 #endif
 
 	setupViewPort(geometry().width() * pixelRatio, geometry().height() * pixelRatio);
+
+	GLCreateArcballList(m_ArcBall, 1.0);
+	GLCreateUnitSphere();
 
 	if(m_iView == GLMIAREXVIEW)
 	{
@@ -596,7 +606,7 @@ void ThreeDWidget::resizeGL(int width, int height)
 
 void ThreeDWidget::setupViewPort(int width, int height)
 {
-	makeCurrent();
+//	makeCurrent();
 
 	glViewport(0,0, width, height);
 
@@ -624,105 +634,110 @@ void ThreeDWidget::GLCreateArcballList(ArcBall &ArcBall, double GLScale)
 	CVector up(0.0,1.0,0.0);
 	ArcBall.SetZoom(0.45,eye,up);
 
-	makeCurrent();
-
-	glNewList(ARCBALL,GL_COMPILE);
+	if(!glIsList(ARCBALLLIST))
 	{
-		glColor3d(0.3,0.3,.5);
-		glLineWidth(1.0);
-
-		Radius = ArcBall.ab_sphere;
-
-		NumAngles  = 50;
-		NumCircles =  6;
-		lat_incr =  90.0 / NumAngles;
-		lon_incr = 360.0 / NumCircles;
-
-		for (col = 0; col < NumCircles; col++)
+		glNewList(ARCBALLLIST,GL_COMPILE);
 		{
+			glColor3d(0.3,0.3,.5);
+			glLineWidth(1.0);
+
+			Radius = ArcBall.ab_sphere;
+
+			NumAngles  = 50;
+			NumCircles =  6;
+			lat_incr =  90.0 / NumAngles;
+			lon_incr = 360.0 / NumCircles;
+
+			for (col = 0; col < NumCircles; col++)
+			{
+				glBegin(GL_LINE_STRIP);
+				{
+					phi = (col * lon_incr) * PI/180.0;
+
+					for (row = 1; row < NumAngles-1; row++)
+					{
+						theta = (row * lat_incr) * PI/180.0;
+						glVertex3d(Radius*cos(phi)*cos(theta)*GLScale, Radius*sin(theta)*GLScale, Radius*sin(phi)*cos(theta)*GLScale);
+					}
+				}
+				glEnd();
+				glBegin(GL_LINE_STRIP);
+				{
+					phi = (col * lon_incr ) * PI/180.0;
+
+					for (row = 1; row < NumAngles-1; row++)
+					{
+						theta = -(row * lat_incr) * PI/180.0;
+						glVertex3d(Radius*cos(phi)*cos(theta)*GLScale, Radius*sin(theta)*GLScale, Radius*sin(phi)*cos(theta)*GLScale);
+					}
+				}
+				glEnd();
+			}
+
+
 			glBegin(GL_LINE_STRIP);
 			{
-				phi = (col * lon_incr) * PI/180.0;
+				theta = 0.;
+				for(col=1; col<35; col++)
+				{
+					phi = (0.0 + (double)col*360.0/72.0) * PI/180.0;
+					glVertex3d(Radius * cos(phi) * cos(theta)*GLScale, Radius * sin(theta)*GLScale, Radius * sin(phi) * cos(theta)*GLScale);
+				}
+			}
+			glEnd();
 
-				for (row = 1; row < NumAngles-1; row++)
+			glBegin(GL_LINE_STRIP);
+			{
+				theta = 0.;
+				for(col=1; col<35; col++)
+				{
+					phi = (0.0 + (double)col*360.0/72.0) * PI/180.0;
+					glVertex3d(Radius * cos(-phi) * cos(theta)*GLScale, Radius * sin(theta)*GLScale, Radius * sin(-phi) * cos(theta)*GLScale);
+				}
+			}
+			glEnd();
+		}
+		glEndList();
+	}
+qDebug()<<GLError();
+
+	if(!glIsList(ARCPOINTLIST))
+	{
+		glNewList(ARCPOINTLIST,GL_COMPILE);
+		{
+			glColor3d(0.3,0.1,.2);
+			glLineWidth(2.0);
+
+			NumAngles  = 10;
+
+			lat_incr = 30.0 / NumAngles;
+			lon_incr = 30.0 / NumAngles;
+
+			glBegin(GL_LINE_STRIP);
+			{
+				phi = 0.0;//longitude
+
+				for (row = -NumAngles; row < NumAngles; row++)
 				{
 					theta = (row * lat_incr) * PI/180.0;
 					glVertex3d(Radius*cos(phi)*cos(theta)*GLScale, Radius*sin(theta)*GLScale, Radius*sin(phi)*cos(theta)*GLScale);
 				}
 			}
 			glEnd();
+
 			glBegin(GL_LINE_STRIP);
 			{
-				phi = (col * lon_incr ) * PI/180.0;
-
-				for (row = 1; row < NumAngles-1; row++)
+				theta = 0.;
+				for(col=-NumAngles; col<NumAngles; col++)
 				{
-					theta = -(row * lat_incr) * PI/180.0;
-					glVertex3d(Radius*cos(phi)*cos(theta)*GLScale, Radius*sin(theta)*GLScale, Radius*sin(phi)*cos(theta)*GLScale);
+					phi = (0.0 + (double)col*30.0/NumAngles) * PI/180.0;
+					glVertex3d(Radius * cos(phi) * cos(theta)*GLScale, Radius * sin(theta)*GLScale, Radius * sin(phi) * cos(theta)*GLScale);
 				}
 			}
 			glEnd();
 		}
-
-
-		glBegin(GL_LINE_STRIP);
-		{
-			theta = 0.;
-			for(col=1; col<35; col++)
-			{
-				phi = (0.0 + (double)col*360.0/72.0) * PI/180.0;
-				glVertex3d(Radius * cos(phi) * cos(theta)*GLScale, Radius * sin(theta)*GLScale, Radius * sin(phi) * cos(theta)*GLScale);
-			}
-		}
-		glEnd();
-
-		glBegin(GL_LINE_STRIP);
-		{
-			theta = 0.;
-			for(col=1; col<35; col++)
-			{
-				phi = (0.0 + (double)col*360.0/72.0) * PI/180.0;
-				glVertex3d(Radius * cos(-phi) * cos(theta)*GLScale, Radius * sin(theta)*GLScale, Radius * sin(-phi) * cos(theta)*GLScale);
-			}
-		}
-		glEnd();
+		glEndList();
 	}
-	glEndList();
-
-	glNewList(ARCPOINT,GL_COMPILE);
-	{
-		glColor3d(0.3,0.1,.2);
-		glLineWidth(2.0);
-
-		NumAngles  = 10;
-
-		lat_incr = 30.0 / NumAngles;
-		lon_incr = 30.0 / NumAngles;
-
-		glBegin(GL_LINE_STRIP);
-		{
-			phi = 0.0;//longitude
-
-			for (row = -NumAngles; row < NumAngles; row++)
-			{
-				theta = (row * lat_incr) * PI/180.0;
-				glVertex3d(Radius*cos(phi)*cos(theta)*GLScale, Radius*sin(theta)*GLScale, Radius*sin(phi)*cos(theta)*GLScale);
-			}
-		}
-		glEnd();
-
-		glBegin(GL_LINE_STRIP);
-		{
-			theta = 0.;
-			for(col=-NumAngles; col<NumAngles; col++)
-			{
-				phi = (0.0 + (double)col*30.0/NumAngles) * PI/180.0;
-				glVertex3d(Radius * cos(phi) * cos(theta)*GLScale, Radius * sin(theta)*GLScale, Radius * sin(phi) * cos(theta)*GLScale);
-			}
-		}
-		glEnd();
-	}
-	glEndList();
 }
 
 
@@ -897,7 +912,7 @@ void ThreeDWidget::GLCreateUnitSphere()
 
 void ThreeDWidget::GLRenderView()
 {
-	makeCurrent();
+//	makeCurrent();
 	// Clear the viewport
 	glFlush();
 	glEnable(GL_DEPTH_TEST);
@@ -939,7 +954,7 @@ void ThreeDWidget::GLRenderView()
 			{
 				m_ArcBall.RotateCrossPoint();
 				glRotated(m_ArcBall.angle, m_ArcBall.p.x, m_ArcBall.p.y, m_ArcBall.p.z);
-				glCallList(ARCPOINT);
+				glCallList(ARCPOINTLIST);
 			}
 			glPopMatrix();
 		}
@@ -948,7 +963,7 @@ void ThreeDWidget::GLRenderView()
 			glPushMatrix();
 			{
 				m_ArcBall.Rotate();
-				glCallList(ARCBALL);
+				glCallList(ARCBALLLIST);
 			}
 			glPopMatrix();
 		}
@@ -973,6 +988,11 @@ void ThreeDWidget::GLRenderView()
 		else if(m_iView == GLPLANEVIEW)
 		{
 			EditPlaneDlg *pDlg = (EditPlaneDlg*)m_pParent;
+			pDlg->GLRenderView();
+		}
+		else if(m_iView == GLEDITBODYVIEW)
+		{
+			EditBodyDlg *pDlg = (EditBodyDlg*)m_pParent;
 			pDlg->GLRenderView();
 		}
 
@@ -1298,6 +1318,15 @@ void ThreeDWidget::set3DRotationCenter(QPoint point)
 			PP.Set(I);
 		}
 	}
+	else if(m_iView == GLEDITBODYVIEW)
+	{
+		EditBodyDlg *pDlg = (EditBodyDlg*)m_pParent;
+		if(pDlg->IntersectObject(AA, U, I))
+		{
+			bIntersect = true;
+			PP.Set(I);
+		}
+	}
 	else if(m_iView == GLMIAREXVIEW)
 	{
 		QMiarex *pMiarex = (QMiarex*)s_pMiarex;
@@ -1391,7 +1420,52 @@ void ThreeDWidget::GLDrawMasses(double volumeMass, CVector pos, QString tag, QLi
 
 
 
-void ThreeDWidget::On3DIso()
+void ThreeDWidget::onSurfaces(bool bChecked)
+{
+	ThreeDWidget::s_bSurfaces = bChecked;
+	update();
+}
+
+
+void ThreeDWidget::onOutline(bool bChecked)
+{
+	ThreeDWidget::s_bOutline = bChecked;
+	update();
+}
+
+
+void ThreeDWidget::onPanels(bool bChecked)
+{
+	ThreeDWidget::s_bVLMPanels = bChecked;
+	update();
+}
+
+void ThreeDWidget::onAxes(bool bChecked)
+{
+	ThreeDWidget::s_bAxes = bChecked;
+	update();
+
+}
+
+
+void ThreeDWidget::onFoilNames(bool bChecked)
+{
+	ThreeDWidget::s_bFoilNames = bChecked;
+	update();
+
+}
+
+
+
+void ThreeDWidget::onShowMasses(bool bChecked)
+{
+	ThreeDWidget::s_bShowMasses = bChecked;
+	update();
+
+}
+
+
+void ThreeDWidget::on3DIso()
 {
 	m_ArcBall.ab_quat[0]	= -0.65987748f;
 	m_ArcBall.ab_quat[1]	=  0.38526487f;
@@ -1416,7 +1490,7 @@ void ThreeDWidget::On3DIso()
 
 
 
-void ThreeDWidget::On3DTop()
+void ThreeDWidget::on3DTop()
 {
 	m_ArcBall.SetQuat(sqrt(2.0)/2.0, 0.0, 0.0, -sqrt(2.0)/2.0);
 	reset3DRotationCenter();
@@ -1424,7 +1498,7 @@ void ThreeDWidget::On3DTop()
 }
 
 
-void ThreeDWidget::On3DLeft()
+void ThreeDWidget::on3DLeft()
 {
 	m_ArcBall.SetQuat(sqrt(2.0)/2.0, -sqrt(2.0)/2.0, 0.0, 0.0);// rotate by 90° around x
 	reset3DRotationCenter();
@@ -1432,7 +1506,7 @@ void ThreeDWidget::On3DLeft()
 }
 
 
-void ThreeDWidget::On3DFront()
+void ThreeDWidget::on3DFront()
 {
 	Quaternion Qt1(sqrt(2.0)/2.0, 0.0,           -sqrt(2.0)/2.0, 0.0);// rotate by 90° around y
 	Quaternion Qt2(sqrt(2.0)/2.0, -sqrt(2.0)/2.0, 0.0,           0.0);// rotate by 90° around x
@@ -1443,7 +1517,7 @@ void ThreeDWidget::On3DFront()
 }
 
 
-void ThreeDWidget::On3DReset()
+void ThreeDWidget::on3DReset()
 {
 	m_glViewportTrans.Set(0.0, 0.0, 0.0);
 
@@ -1458,6 +1532,13 @@ QSize ThreeDWidget::sizeHint() const
 	return QSize(640, 480);
 }
 
+
+
+
+QSize ThreeDWidget::minimumSizeHint() const
+{
+	return QSize(250, 200);
+}
 
 
 
@@ -1548,7 +1629,67 @@ void ThreeDWidget::worldToViewport(CVector const &V, double &Vx, double &Vy)
 
 
 
+void ThreeDWidget::setScale(double refLength)
+{
+	m_glScaled = 1.5/refLength;
+}
 
+
+
+
+
+/**
+* The user has modified the position of the clip plane in the 3D view
+*@param pos the new z position in viewport coordinates of the clipping plane
+*/
+void ThreeDWidget::onClipPlane(int pos)
+{
+	double planepos =  (double)pos/100.0;
+	m_ClipPlanePos = sinh(planepos) * 0.5;
+	update();
+}
+
+
+
+QString ThreeDWidget::GLError()
+{
+	GLenum err = glGetError();
+	QString strange;
+	switch(err)
+	{
+		case GL_NO_ERROR:
+		strange = "GL_NO_ERROR: No error has been recorded. The value of this symbolic constant is guaranteed to be 0.";
+		break;
+
+		case GL_INVALID_ENUM:
+			strange = "GL_INVALID_ENUM: An unacceptable value is specified for an enumerated argument. The offending command is ignored and has no other side effect than to set the error flag.";
+			break;
+
+		case GL_INVALID_VALUE:
+			strange = "GL_INVALID_VALUE: A numeric argument is out of range. The offending command is ignored and has no other side effect than to set the error flag.";
+			break;
+		case GL_INVALID_OPERATION:
+			strange = "GL_INVALID_OPERATION: The specified operation is not allowed in the current state. The offending command is ignored and has no other side effect than to set the error flag.";
+			break;
+
+		case GL_INVALID_FRAMEBUFFER_OPERATION:
+			strange = "GL_INVALID_FRAMEBUFFER_OPERATION: The framebuffer object is not complete. The offending command is ignored and has no other side effect than to set the error flag.";
+			break;
+
+		case GL_OUT_OF_MEMORY:
+			strange = "GL_OUT_OF_MEMORY: There is not enough memory left to execute the command. The state of the GL is undefined, except for the state of the error flags, after this error is recorded.";
+			break;
+
+		case GL_STACK_UNDERFLOW:
+			strange = "GL_STACK_UNDERFLOW: An attempt has been made to perform an operation that would cause an internal stack to underflow.";
+			break;
+
+		case GL_STACK_OVERFLOW:
+			strange = "GL_STACK_OVERFLOW: An attempt has been made to perform an operation that would cause an internal stack to overflow.";
+			break;
+	}
+	return strange;
+}
 
 
 

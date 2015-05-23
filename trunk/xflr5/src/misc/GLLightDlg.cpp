@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 #include "GLLightDlg.h"
-#include "../threedwidget.h"
+#include "threedwidget.h"
 #include <QGroupBox>
 #include <QGridLayout>
 #include <QVBoxLayout>
@@ -36,7 +36,6 @@ int GLLightDlg::s_iMatShininess;
 bool GLLightDlg::s_bCullFaces, GLLightDlg::s_bShade, GLLightDlg::s_bSmooth, GLLightDlg::s_bLocalView, GLLightDlg::s_bDepthTest;
 bool GLLightDlg::s_bColorMaterial;
 bool GLLightDlg::s_bLight;
-
 
 
 GLLightDlg::GLLightDlg(QWidget *pParent) : QDialog(pParent)
@@ -296,7 +295,7 @@ void GLLightDlg::Apply()
 	ReadParams();
 
 	ThreeDWidget *p3dWidget = (ThreeDWidget*)m_p3DWidget;
-    p3dWidget->updateGL();
+    p3dWidget->update();
 }
 
 
@@ -320,7 +319,7 @@ void GLLightDlg::OnDefaults()
 
 	SetParams();
 	SetEnabled();
-    p3dWidget->updateGL();
+    p3dWidget->update();
 }
 
 

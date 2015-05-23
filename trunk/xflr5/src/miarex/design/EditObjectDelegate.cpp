@@ -44,65 +44,65 @@ QWidget *EditObjectDelegate::createEditor(QWidget *parent, const QStyleOptionVie
 
 	if(dataType==XFLR5::BOOL)
 	{
-			QComboBox *editor = new QComboBox(parent);
-			editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-			//fill comboboxes here
-			editor->addItem("true");
-			editor->addItem("false");
-			return editor;
+		QComboBox *editor = new QComboBox(parent);
+		editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+		//fill comboboxes here
+		editor->addItem("true");
+		editor->addItem("false");
+		return editor;
 	}
 	else if(dataType==XFLR5::POLARTYPE)
 	{
-			QComboBox *editor = new QComboBox(parent);
-			editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-			//fill comboboxes here
-			editor->addItem("FIXEDSPEEDPOLAR");
-			editor->addItem("FIXEDLIFTPOLAR");
-			editor->addItem("FIXEDAOAPOLAR");
-			editor->addItem("STABILITYPOLAR");
-			editor->addItem("BETAPOLAR");
-			return editor;
+		QComboBox *editor = new QComboBox(parent);
+		editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+		//fill comboboxes here
+		editor->addItem("FIXEDSPEEDPOLAR");
+		editor->addItem("FIXEDLIFTPOLAR");
+		editor->addItem("FIXEDAOAPOLAR");
+		editor->addItem("STABILITYPOLAR");
+		editor->addItem("BETAPOLAR");
+		return editor;
 	}
 	else if(dataType==XFLR5::ANALYSISMETHOD)
 	{
-			QComboBox *editor = new QComboBox(parent);
-			editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-			//fill comboboxes here
-			editor->addItem("LLTMETHOD");
-			editor->addItem("VLMMETHOD");
-			editor->addItem("PANELMETHOD");
-			return editor;
+		QComboBox *editor = new QComboBox(parent);
+		editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+		//fill comboboxes here
+		editor->addItem("LLTMETHOD");
+		editor->addItem("VLMMETHOD");
+		editor->addItem("PANELMETHOD");
+		return editor;
 	}
 	else if(dataType==XFLR5::PANELDISTRIBUTION)
 	{
-			QComboBox *editor = new QComboBox(parent);
-			editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-			//fill comboboxes here
-			editor->addItem("INVERSESINE");
-			editor->addItem("COSINE");
-			editor->addItem("SINE");
-			editor->addItem("UNIFORM");
-			return editor;
+		QComboBox *editor = new QComboBox(parent);
+		editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+		//fill comboboxes here
+		editor->addItem("INVERSESINE");
+		editor->addItem("COSINE");
+		editor->addItem("SINE");
+		editor->addItem("UNIFORM");
+		return editor;
 	}
 	else if(dataType==XFLR5::REFDIMENSIONS)
 	{
-			QComboBox *editor = new QComboBox(parent);
-			editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-			//fill comboboxes here
-			editor->addItem("PLANFORMREFDIM");
-			editor->addItem("PROJECTEDREFDIM");
-			editor->addItem("MANUALREFDIM");
+		QComboBox *editor = new QComboBox(parent);
+		editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+		//fill comboboxes here
+		editor->addItem("PLANFORMREFDIM");
+		editor->addItem("PROJECTEDREFDIM");
+		editor->addItem("MANUALREFDIM");
 
-			return editor;
+		return editor;
 	}
 	else if(dataType==XFLR5::BODYTYPE)
 	{
-			QComboBox *editor = new QComboBox(parent);
-			editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-			//fill comboboxes here
-			editor->addItem("FLATPANELS");
-			editor->addItem("NURBS");
-			return editor;
+		QComboBox *editor = new QComboBox(parent);
+		editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+		//fill comboboxes here
+		editor->addItem("FLATPANELS");
+		editor->addItem("NURBS");
+		return editor;
 	}
 	else if(dataType==XFLR5::FOILNAME)
 	{
@@ -131,7 +131,7 @@ QWidget *EditObjectDelegate::createEditor(QWidget *parent, const QStyleOptionVie
 	else if (dataType==XFLR5::DOUBLE)
 	{
 		DoubleEdit *editor = new DoubleEdit(parent);
-		editor->SetPrecision(3);
+		editor->setPrecision(3);
 		return editor;
 	}
 	else if (dataType==XFLR5::INTEGER)
@@ -156,13 +156,13 @@ void EditObjectDelegate::setEditorData(QWidget *editor, const QModelIndex &index
 	{
 		int value = index.model()->data(index, Qt::EditRole).toInt();
 		IntEdit *pIE = static_cast<IntEdit*>(editor);
-		pIE->SetValue(value);
+		pIE->setValue(value);
 	}
 	else if(dataType==XFLR5::DOUBLE)
 	{
 		double value = index.model()->data(index, Qt::EditRole).toDouble();
 		DoubleEdit *pDE = static_cast<DoubleEdit*>(editor);
-		pDE->SetValue(value);
+		pDE->setValue(value);
 	}
 	else if(dataType==XFLR5::STRING)
 	{
@@ -188,13 +188,13 @@ void EditObjectDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
 	if(dataType==XFLR5::INTEGER)
 	{
 		IntEdit *pIE = static_cast<IntEdit*>(editor);
-		int value = pIE->Value();
+		int value = pIE->value();
 		model->setData(index, value, Qt::EditRole);
 	}
 	else if(dataType==XFLR5::DOUBLE)
 	{
 		DoubleEdit *pDE = static_cast<DoubleEdit*>(editor);
-		double value = pDE->Value();
+		double value = pDE->value();
 		model->setData(index, value, Qt::EditRole);
 	}
 	else if(dataType==XFLR5::STRING)
@@ -228,7 +228,11 @@ void EditObjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
 	else if(dataType==XFLR5::DOUBLE)
 	{
 		myOption.displayAlignment = Qt::AlignRight | Qt::AlignVCenter;
-		strong = QString("%L1").arg(index.model()->data(index, Qt::DisplayRole).toDouble(), 0,'g', 3);
+		double val = index.model()->data(index, Qt::DisplayRole).toDouble();
+		if(fabs(val)<0.0001)      strong = QString("%L1").arg(val, 0,'g', 3);
+		else if(fabs(val)>1000.0) strong = QString("%L1").arg(val, 0,'f', 1);
+		else if(fabs(val)>100.0)  strong = QString("%L1").arg(val, 0,'f', 2);
+		else                      strong = QString("%L1").arg(val, 0,'f', 3);
 	}
 	else if(dataType==XFLR5::STRING)
 	{
@@ -248,38 +252,34 @@ void EditObjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
 		strong = index.model()->data(index, Qt::DisplayRole).toString();
 	}
 
-//	QBrush backBrush(Qt::transparent);
-//	painter->setBrush(backBrush);
-//	painter->setBackground(backBrush);
-//	painter->setBackgroundMode(Qt::OpaqueMode);
-
-	QFont font(Settings::s_TextFont);
-	font.setBold(true);
+	QFont myFont(myOption.font);
 
 	if(index.column()==0)
 	{
-		QFont boldfont(Settings::s_TextFont);
-		boldfont.setWeight(QFont::Bold);
-		painter->setFont(boldfont);
+		myFont.setWeight(QFont::Bold);
+		painter->setFont(myFont);
 		QPen textPen(Qt::darkRed);
 		painter->setPen(textPen);
 	}
 	else
 	{
-		QFont font(Settings::s_TextFont);
-		font.setWeight(QFont::Normal);
-		painter->setFont(font);
+		myFont.setWeight(QFont::Normal);
+		painter->setFont(myFont);
 		QPen textPen(Qt::darkBlue);
 		painter->setPen(textPen);
 	}
-	QFont fnt;
-	QFontMetrics fm(fnt);
+
+	QFontMetrics fm(myFont);
 	int w = (int)((double)fm.height()/2);//pixels
+
+	if (option.state & QStyle::State_Selected)
+		painter->fillRect(option.rect, option.palette.highlight());
 
 	QRect sR3 = myOption.rect;
 	sR3.setLeft(sR3.left()+w);
 	sR3.setRight(sR3.right()-w);
 	painter->drawText(sR3, myOption.displayAlignment , strong);
+
 }
 
 

@@ -40,19 +40,19 @@ public:
 	void keyPressEvent(QKeyEvent *event);
 	QSize sizeHint() const;
 
-	double Value(){return m_Value;}
-	void SetValue(double val);
+	double value(){return m_Value;}
+	void setValue(double val);
 
 
-	void SetValueNoFormat(double val);
+	void setValueNoFormat(double val);
 
-	void FormatValue();
-	double ReadValue();
-	void SetMin(double min) {m_pDV->setBottom(min);}
-	void SetMax(double max) {m_pDV->setTop(max);}
+	void formatValue();
+	double readValue();
+	void setMin(double min) {m_pDV->setBottom(min);}
+	void setMax(double max) {m_pDV->setTop(max);}
 
 
-	void SetPrecision(int decimals) {m_pDV->setDecimals(decimals);}
+	void setPrecision(int decimals) {m_pDV->setDecimals(decimals);}
 
 	void setNotation(QDoubleValidator::Notation notation) {m_pDV->setNotation(notation);}
 

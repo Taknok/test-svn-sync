@@ -89,8 +89,8 @@ void BodyGridDlg::InitDialog()
 	m_pctrlMinLine->SetStyle(s_MinStyle);
 	m_pctrlMinLine->SetWidth(s_MinWidth);
 	m_pctrlMinLine->SetColor(s_MinColor);
-	m_pctrlUnit->SetValue(s_Unit*Units::mtoUnit());
-	m_pctrlMinUnit->SetValue(s_MinorUnit*Units::mtoUnit());
+	m_pctrlUnit->setValue(s_Unit*Units::mtoUnit());
+	m_pctrlMinUnit->setValue(s_MinorUnit*Units::mtoUnit());
 
 	m_pctrlGrid2->setChecked(s_bGrid2);
 	m_pctrlLine2->SetStyle(s_Style2);
@@ -100,8 +100,8 @@ void BodyGridDlg::InitDialog()
 	m_pctrlMinLine2->SetStyle(s_MinStyle2);
 	m_pctrlMinLine2->SetWidth(s_MinWidth2);
 	m_pctrlMinLine2->SetColor(s_MinColor2);
-	m_pctrlUnit2->SetValue(s_Unit2*Units::mtoUnit());
-	m_pctrlMinUnit2->SetValue(s_MinorUnit2*Units::mtoUnit());
+	m_pctrlUnit2->setValue(s_Unit2*Units::mtoUnit());
+	m_pctrlMinUnit2->setValue(s_MinorUnit2*Units::mtoUnit());
 
 	EnableControls();
 }
@@ -127,10 +127,10 @@ void BodyGridDlg::SetupLayout()
 	m_pctrlUnit2 = new DoubleEdit(101.00);
 	m_pctrlMinUnit  = new DoubleEdit(102.00);
 	m_pctrlMinUnit2 = new DoubleEdit(103.00);
-	m_pctrlUnit->SetPrecision(3);
-	m_pctrlUnit2->SetPrecision(3);
-	m_pctrlMinUnit->SetPrecision(3);
-	m_pctrlMinUnit2->SetPrecision(3);
+	m_pctrlUnit->setPrecision(3);
+	m_pctrlUnit2->setPrecision(3);
+	m_pctrlMinUnit->setPrecision(3);
+	m_pctrlMinUnit2->setPrecision(3);
 
 	m_pctrlLength1 = new QLabel("mm");
 	m_pctrlLength2 = new QLabel("mm");

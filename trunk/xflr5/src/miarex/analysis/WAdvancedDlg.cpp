@@ -308,14 +308,14 @@ void WAdvancedDlg::OnResetDefaults()
 
 void WAdvancedDlg::ReadParams()
 {
-	m_Relax           = m_pctrlRelax->Value();
-	m_AlphaPrec       = m_pctrlAlphaPrec->Value();
-	m_CoreSize        = m_pctrlCoreSize->Value() / Units::mtoUnit();
-	m_MinPanelSize    = m_pctrlMinPanelSize->Value() / Units::mtoUnit();
-	m_VortexPos       = m_pctrlVortexPos->Value()/100.0;
-	m_ControlPos      = m_pctrlControlPos->Value()/100.0;
-	m_Iter            = (int)m_pctrlIterMax->Value();;
-	m_NLLTStation     = (int)m_pctrlNStation->Value();
+	m_Relax           = m_pctrlRelax->value();
+	m_AlphaPrec       = m_pctrlAlphaPrec->value();
+	m_CoreSize        = m_pctrlCoreSize->value() / Units::mtoUnit();
+	m_MinPanelSize    = m_pctrlMinPanelSize->value() / Units::mtoUnit();
+	m_VortexPos       = m_pctrlVortexPos->value()/100.0;
+	m_ControlPos      = m_pctrlControlPos->value()/100.0;
+	m_Iter            = (int)m_pctrlIterMax->value();;
+	m_NLLTStation     = (int)m_pctrlNStation->value();
 	m_bDirichlet      = m_pctrlDirichlet->isChecked();
 	m_bTrefftz        = true;
 	m_bKeepOutOpps    = m_pctrlKeepOutOpps->isChecked();
@@ -325,20 +325,20 @@ void WAdvancedDlg::ReadParams()
 
 void WAdvancedDlg::SetParams()
 {
-	m_pctrlIterMax->SetValue(m_Iter);
-	m_pctrlRelax->SetValue(m_Relax);
-	m_pctrlAlphaPrec->SetValue(m_AlphaPrec);
-	m_pctrlNStation->SetValue(m_NLLTStation);
+	m_pctrlIterMax->setValue(m_Iter);
+	m_pctrlRelax->setValue(m_Relax);
+	m_pctrlAlphaPrec->setValue(m_AlphaPrec);
+	m_pctrlNStation->setValue(m_NLLTStation);
 
-	m_pctrlCoreSize->SetValue(m_CoreSize* Units::mtoUnit());
+	m_pctrlCoreSize->setValue(m_CoreSize* Units::mtoUnit());
 
-	m_pctrlMinPanelSize->SetValue(m_MinPanelSize * Units::mtoUnit());
+	m_pctrlMinPanelSize->setValue(m_MinPanelSize * Units::mtoUnit());
 
 	m_pctrlLogFile->setChecked(m_bLogFile);
 	m_pctrlKeepOutOpps->setChecked(m_bKeepOutOpps);
 
-	m_pctrlControlPos->SetValue(m_ControlPos*100.0);
-	m_pctrlVortexPos->SetValue(m_VortexPos*100.0);
+	m_pctrlControlPos->setValue(m_ControlPos*100.0);
+	m_pctrlVortexPos->setValue(m_VortexPos*100.0);
 }
 
 

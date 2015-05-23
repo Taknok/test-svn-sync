@@ -131,14 +131,14 @@ void TEGapDlg::keyPressEvent(QKeyEvent *event)
 
 void TEGapDlg::InitDialog()
 {
-	m_pctrlGap->SetMin(  0.0);
-	m_pctrlGap->SetMax(100.0);
+	m_pctrlGap->setMin(  0.0);
+	m_pctrlGap->setMax(100.0);
 
-	m_pctrlBlend->SetMin(  0.0);
-	m_pctrlBlend->SetMax(100.0);
+	m_pctrlBlend->setMin(  0.0);
+	m_pctrlBlend->setMax(100.0);
 
-	m_pctrlGap->SetValue(m_pMemFoil->m_Gap*100.0);
-	m_pctrlBlend->SetValue(m_Blend*100.0);
+	m_pctrlGap->setValue(m_pMemFoil->m_Gap*100.0);
+	m_pctrlBlend->setValue(m_Blend*100.0);
 
 }
 
@@ -188,8 +188,8 @@ void TEGapDlg::OnApply()
 		return;
 	}
 
-	m_Gap = m_pctrlGap->Value();
-	m_Blend = m_pctrlBlend->Value();
+	m_Gap = m_pctrlGap->value();
+	m_Blend = m_pctrlBlend->value();
 
 	pXFoil->tgap(m_Gap/100.0,m_Blend/100.0);
 	if(pXFoil->n>IQX)

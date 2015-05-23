@@ -17,12 +17,16 @@
 
 
 xflr5 v6.11 May xxxth, 2015
+	- replaced the deprecated QGLWidget by the new QOpenGLWidget recommended in Qt5.4
+	- added a new editor for the plane object
+	- added a new editor for the body object
+	- reviewed in depth the 2D rendering system to separate viewing operations from the analysis part
 	- replaced the rendertext methods in OpenGL by custom implementations to improve the rendering quality
 	- improved the issue of the plane-fin intersection when the body is translated
 	- enabled launching xflr5 from a project file, and opening the model
-	- added a viewer for the plane object - not yet an editor
 	- added an import/export option of a plane definition to an xml file
-	- added an import/export optin for body objects to an xml file
+	- added an import/export option for body objects to an xml file
+	- deeeeep code cleaning
 	- Other minor corrections and improvements
 
 

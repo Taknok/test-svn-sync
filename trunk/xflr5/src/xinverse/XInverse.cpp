@@ -105,19 +105,20 @@ QXInverse::QXInverse(QWidget *parent)
 	m_SplineLeftPos   = -1;
 	m_SplineRightPos  = -1;
 
-	m_QGraph.SetType(2);
-	m_QGraph.SetDefaults();
-	m_QGraph.SetXTitle(tr("x/c"));
-	m_QGraph.SetYTitle(tr("Q/Vinf"));
-	m_QGraph.SetXMin(0.0);
-	m_QGraph.SetXMax(1.0);
-	m_QGraph.SetYMin(-0.1);
-	m_QGraph.SetYMax(0.1);
-	m_QGraph.SetGraphName(tr("Q Graph"));
-	m_pQCurve  = m_QGraph.AddCurve();
-	m_pMCurve  = m_QGraph.AddCurve();
-	m_pQVCurve = m_QGraph.AddCurve();
-	m_pReflectedCurve = m_QGraph.AddCurve();
+	m_QGraph.graphType() = QGRAPH::INVERSEGRAPH;
+	m_QGraph.setType(2);
+	m_QGraph.setGraphDefaults();
+	m_QGraph.setXTitle(tr("x/c"));
+	m_QGraph.setYTitle(tr("Q/Vinf"));
+	m_QGraph.setXMin(0.0);
+	m_QGraph.setXMax(1.0);
+	m_QGraph.setYMin(-0.1);
+	m_QGraph.setYMax(0.1);
+	m_QGraph.setGraphName(tr("Q Graph"));
+	m_pQCurve  = m_QGraph.addCurve();
+	m_pMCurve  = m_QGraph.addCurve();
+	m_pQVCurve = m_QGraph.addCurve();
+	m_pReflectedCurve = m_QGraph.addCurve();
 	m_pReflectedCurve->SetVisible(m_bReflected);
 
 	SetupLayout();
@@ -231,7 +232,7 @@ void QXInverse::Clear()
  */
 void QXInverse::Connect()
 {
-	connect(this, SIGNAL(projectModified()), (MainFrame*)s_pMainFrame, SLOT(OnProjectModified()));
+	connect(this, SIGNAL(projectModified()), (MainFrame*)s_pMainFrame, SLOT(onProjectModified()));
 
 	connect(m_pctrlSpecAlpha,     SIGNAL(clicked()), this, SLOT(OnSpecal()));
 	connect(m_pctrlSpecCl,        SIGNAL(clicked()), this, SLOT(OnSpecal()));
@@ -537,6 +538,9 @@ bool QXInverse::InitXFoil(Foil * pFoil)
  */
 void QXInverse::keyPressEvent(QKeyEvent *event)
 {
+	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
+	bool bCtrl = false;
+	if(event->modifiers() & Qt::ControlModifier)   bCtrl =true;
 	switch (event->key())
 	{
 		case Qt::Key_X:
@@ -607,12 +611,54 @@ void QXInverse::keyPressEvent(QKeyEvent *event)
 		{
 			if(m_pCurGraph)
 			{
-				m_QGraph.SetAuto(true);
+				m_QGraph.setAuto(true);
 				UpdateView();
 			}
 			else OnResetFoilScale();
 			break;
 		}
+
+		case Qt::Key_1:
+			if(bCtrl)
+			{
+				pMainFrame->OnAFoil();
+				return;
+			}
+
+		case Qt::Key_2:
+			if(bCtrl)
+			{
+				pMainFrame->OnAFoil();
+				return;
+			}
+
+		case Qt::Key_3:
+			if(bCtrl)
+			{
+				pMainFrame->OnXInverse();
+				return;
+			}
+
+		case Qt::Key_4:
+			if(bCtrl)
+			{
+				pMainFrame->OnXInverseMixed();
+				return;
+			}
+
+		case Qt::Key_5:
+			if(bCtrl)
+			{
+				pMainFrame->onXDirect();
+				return;
+			}
+
+		case Qt::Key_6:
+			if(bCtrl)
+			{
+				pMainFrame->onMiarex();
+				return;
+			}
 		default:
 			QWidget::keyPressEvent(event);
 	}
@@ -661,7 +707,7 @@ void QXInverse::keyReleaseEvent(QKeyEvent *event)
  * Loads the user's default settings from the application QSettings object
  * @param pSettings a pointer to the QSettings object
  */
-void QXInverse::LoadSettings(QSettings *pSettings)
+void QXInverse::loadSettings(QSettings *pSettings)
 {
 	pSettings->beginGroup("XInverse");
 	{
@@ -678,7 +724,7 @@ void QXInverse::LoadSettings(QSettings *pSettings)
 		m_pModFoil->m_FoilWidth = pSettings->value("ModFoilWidth").toInt();
 	}
 	pSettings->endGroup();
-	m_QGraph.LoadSettings(pSettings);
+	m_QGraph.loadSettings(pSettings);
 }
 
 
@@ -689,7 +735,7 @@ void QXInverse::LoadSettings(QSettings *pSettings)
  */
 void QXInverse::doubleClickEvent(QPoint pos)
 {
-	if (!m_QGraph.IsInDrawRect(pos)) return;
+	if (!m_QGraph.isInDrawRect(pos)) return;
 
 	OnGraphSettings();
 }
@@ -919,10 +965,10 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 	{
 		ReleaseZoom();
 		QPoint pttmp(point.x(), point.y());
-		if(m_QGraph.IsInDrawRect(pttmp))
+		if(m_QGraph.isInDrawRect(pttmp))
 		{
 			//zoom graph
-			m_QGraph.SetAuto(false);
+			m_QGraph.setAuto(false);
 			if(point.y()-m_PointDown.y()<0) m_QGraph.Scale(1.02);
 			else                            m_QGraph.Scale(1.0/1.02);
 		}
@@ -946,7 +992,7 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 		{
 			x1 =  m_QGraph.ClientTox(point.x());
 			y1 =  m_QGraph.ClientToy(point.y());
-			n = m_Spline.IsControlPoint(x1,y1, m_QGraph.GetXScale(), m_QGraph.GetYScale());
+			n = m_Spline.isControlPoint(x1,y1, m_QGraph.GetXScale(), m_QGraph.GetYScale());
 			if (n>=0 && n<m_Spline.m_CtrlPoint.size())
 			{
 				m_Spline.m_iHighlight = n;
@@ -956,7 +1002,7 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 		}
 	}
 
-	if(m_QGraph.IsInDrawRect(point))
+	if(m_QGraph.isInDrawRect(point))
 	{
 		pMainFrame->statusBar()->showMessage(QString("X = %1, Y = %2").arg(m_QGraph.ClientTox(event->x())).arg(m_QGraph.ClientToy(event->y())));
 		m_pCurGraph = &m_QGraph;
@@ -998,7 +1044,7 @@ void QXInverse::mousePressEvent(QMouseEvent *event)
 			m_PointDown.ry() = point.y();
 			pttmp = QPoint(point.x(), point.y());
 
-			if(m_QGraph.IsInDrawRect(pttmp))
+			if(m_QGraph.isInDrawRect(pttmp))
 			{
 				m_bTransGraph = true;
 				p2DWidget->setCursor(Qt::ClosedHandCursor);
@@ -1006,7 +1052,7 @@ void QXInverse::mousePressEvent(QMouseEvent *event)
 				yd = m_QGraph.ClientToy(point.y());
 				if(m_bSpline)
 				{
-					CtrlPt = m_Spline.IsControlPoint(xd, yd, m_QGraph.GetXScale(), m_QGraph.GetYScale());
+					CtrlPt = m_Spline.isControlPoint(xd, yd, m_QGraph.GetXScale(), m_QGraph.GetYScale());
 					if(CtrlPt<0) m_Spline.m_iSelect = -1;
 					else 
 					{
@@ -1040,7 +1086,7 @@ void QXInverse::mousePressEvent(QMouseEvent *event)
 			}
 			else m_bTransGraph = false;
 
-			if(m_bZoomPlus && m_QGraph.IsInDrawRect(point))
+			if(m_bZoomPlus && m_QGraph.isInDrawRect(point))
 			{
 				m_ZoomRect.setLeft(point.x());
 				m_ZoomRect.setTop(point.y());
@@ -1048,7 +1094,7 @@ void QXInverse::mousePressEvent(QMouseEvent *event)
 				m_ZoomRect.setBottom(point.y());
 				return;
 			}
-			else if(m_bZoomPlus && !m_QGraph.IsInDrawRect(point))
+			else if(m_bZoomPlus && !m_QGraph.isInDrawRect(point))
 			{
 				ReleaseZoom();
 			}
@@ -1120,8 +1166,8 @@ void QXInverse::mouseReleaseEvent(QMouseEvent *event)
 				xmin  = xm - ratio * xw/2.0;
 				xmax  = xm + ratio * xw/2.0;
 			}
-			if (m_QGraph.IsInDrawRect(ZRect.left(), ZRect.top()) &&
-				m_QGraph.IsInDrawRect(ZRect.right(), ZRect.bottom()))
+			if (m_QGraph.isInDrawRect(ZRect.left(), ZRect.top()) &&
+				m_QGraph.isInDrawRect(ZRect.right(), ZRect.bottom()))
 			{
 				m_QGraph.SetWindow(xmin, xmax, ymin, ymax);
 			}
@@ -1353,14 +1399,14 @@ void QXInverse::OnExecute()
 
 	if(m_bFullInverse)
 	{
-		SetTAngle(m_pctrlTAngle->Value());
-		SetTGap(m_pctrlTGapx->Value(), m_pctrlTGapy->Value());
+		SetTAngle(m_pctrlTAngle->value());
+		SetTGap(m_pctrlTGapx->value(), m_pctrlTGapy->value());
 		m_pctrlOutput->setPlainText(" ");
 		ExecMDES();
 	}
 	else
 	{
-		pXFoil->niterq = m_pctrlIter->Value();
+		pXFoil->niterq = m_pctrlIter->value();
 		m_pctrlMOutput->setPlainText(" ");
 		ExecQDES();
 	}
@@ -1412,7 +1458,7 @@ void QXInverse::OnFilter()
 	CancelSpline();
 	if (m_bZoomPlus) ReleaseZoom();
 
-	double filt = m_pctrlFilterParam->Value();
+	double filt = m_pctrlFilterParam->value();
 	pXFoil->Filter(filt);
 	CreateMCurve();
 
@@ -1428,23 +1474,13 @@ void QXInverse::OnGraphSettings()
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 	GraphDlg *m_pGraphDlg = new GraphDlg(pMainFrame);
 
-	m_pGraphDlg->m_iGraphType = 31;
 	m_pGraphDlg->m_XSel = 0;
 	m_pGraphDlg->m_YSel = 0;
-	m_pGraphDlg->m_pGraph = &m_QGraph;
-
-	QGraph graph;
-	graph.CopySettings(&m_QGraph);
-	m_pGraphDlg->m_pMemGraph = &m_QGraph;
-	m_pGraphDlg->m_pGraph = &m_QGraph;
-	m_pGraphDlg->SetParams();
+	m_pGraphDlg->setGraph(&m_QGraph);
+	m_pGraphDlg->setControls();
 
 	if(m_pGraphDlg->exec() == QDialog::Accepted)
 	{
-	}
-	else
-	{
-		m_QGraph.CopySettings(&graph);
 	}
 
 	UpdateView();
@@ -1624,8 +1660,8 @@ void QXInverse::OnQViscous()
 void QXInverse::OnQPoints()
 {
 	m_bShowPoints = !m_bShowPoints;
-	m_pQCurve->ShowPoints(m_bShowPoints);
-	m_pMCurve->ShowPoints(m_bShowPoints);
+	m_pQCurve->showPoints(m_bShowPoints);
+	m_pMCurve->showPoints(m_bShowPoints);
 	CheckActions();
 	UpdateView();
 }
@@ -1689,14 +1725,14 @@ void QXInverse::OnSpecal()
 	if(m_pctrlSpecAlpha->isChecked())
 	{
 		m_pctrlSpecif->setText(tr("Alpha = "));
-		m_pctrlSpec->SetPrecision(2);
-		m_pctrlSpec->SetValue(pXFoil->alqsp[1]*180.0/PI);
+		m_pctrlSpec->setPrecision(2);
+		m_pctrlSpec->setValue(pXFoil->alqsp[1]*180.0/PI);
 	}
 	else
 	{
 		m_pctrlSpecif->setText(tr("Cl = "));
-		m_pctrlSpec->SetPrecision(3);
-		m_pctrlSpec->SetValue(pXFoil->clqsp[1]);
+		m_pctrlSpec->setPrecision(3);
+		m_pctrlSpec->setValue(pXFoil->clqsp[1]);
 	}
 }
 
@@ -1710,13 +1746,13 @@ void QXInverse::OnSpecInv()
 
 	if(m_pctrlSpecAlpha->isChecked())
 	{
-		pXFoil->alqsp[1] = m_pctrlSpec->Value()*PI/180.0;
+		pXFoil->alqsp[1] = m_pctrlSpec->value()*PI/180.0;
 		pXFoil->iacqsp = 1;
 		pXFoil->qspcir();
 	}
 	else if(m_pctrlSpecCl->isChecked())
 	{
-		pXFoil->clqsp[1] = m_pctrlSpec->Value();
+		pXFoil->clqsp[1] = m_pctrlSpec->value();
 		pXFoil->iacqsp = 2;
 		pXFoil->qspcir();
 	}
@@ -1871,9 +1907,9 @@ void QXInverse::PaintGraph(QPainter &painter)
 //  draw  the graph	
 	if(m_rGraphRect.width()>200 && m_rGraphRect.height()>150)
 	{
-		m_QGraph.DrawGraph(painter);
+		m_QGraph.drawGraph(painter);
 		QPoint Place((int)(m_rGraphRect.right()-300), m_rGraphRect.top()+12);
-		m_QGraph.DrawLegend(painter, Place, Settings::s_TextFont, Settings::s_TextColor);
+		m_QGraph.drawLegend(painter, Place, Settings::s_TextFont, Settings::s_TextColor);
 	}
 
 // draw the zoom rectangle, if relevant
@@ -1892,10 +1928,10 @@ void QXInverse::PaintGraph(QPainter &painter)
 	if(m_bSpline && !m_bGetPos)
 	{
 
-		QPoint pt = m_QGraph.GetOffset();
+		QPoint pt = m_QGraph.getOffset();
 
-		m_Spline.DrawSpline(painter, 1.0/m_QGraph.GetXScale(), -1.0/m_QGraph.GetYScale(), pt);
-		m_Spline.DrawCtrlPoints(painter, 1.0/m_QGraph.GetXScale(), -1.0/m_QGraph.GetYScale(), pt);
+		m_Spline.drawSpline(painter, 1.0/m_QGraph.GetXScale(), -1.0/m_QGraph.GetYScale(), pt);
+		m_Spline.drawCtrlPoints(painter, 1.0/m_QGraph.GetXScale(), -1.0/m_QGraph.GetYScale(), pt);
 		
 	}
 
@@ -1904,9 +1940,9 @@ void QXInverse::PaintGraph(QPainter &painter)
 	{
 		QPoint pt;
 		//QRect r;
-		m_QGraph.Highlight(painter, m_pMCurve,m_tmpPos);
-		if(m_nPos>=1) m_QGraph.Highlight(painter, m_pMCurve, m_Pos1);
-		if(m_nPos>=2) m_QGraph.Highlight(painter, m_pMCurve, m_Pos2);
+		m_QGraph.highlight(painter, m_pMCurve,m_tmpPos);
+		if(m_nPos>=1) m_QGraph.highlight(painter, m_pMCurve, m_Pos1);
+		if(m_nPos>=2) m_QGraph.highlight(painter, m_pMCurve, m_Pos2);
 		
 	}
 // Show marked segment if mixed-inverse design
@@ -1966,7 +2002,7 @@ void QXInverse::PaintFoil(QPainter &painter)
 		FoilPen.setWidth(m_pRefFoil->m_FoilWidth);
 		painter.setPen(FoilPen);
 
-		m_pRefFoil->DrawFoil(painter, -alpha, m_fScale, m_fScale, m_ptOffset);
+		m_pRefFoil->drawFoil(painter, -alpha, m_fScale, m_fScale, m_ptOffset);
 		painter.drawLine(20, m_rGraphRect.bottom()+20, 40, m_rGraphRect.bottom()+20);
 		painter.setPen(TextPen);
 		painter.drawText(50, m_rGraphRect.bottom()+25, m_pRefFoil->m_FoilName);
@@ -1979,7 +2015,7 @@ void QXInverse::PaintFoil(QPainter &painter)
 		ModPen.setWidth(m_pModFoil->m_FoilWidth);
 		painter.setPen(ModPen);
 
-		m_pModFoil->DrawFoil(painter, -alpha, m_fScale, m_fScale, m_ptOffset);
+		m_pModFoil->drawFoil(painter, -alpha, m_fScale, m_fScale, m_ptOffset);
 		painter.drawLine(20, m_rGraphRect.bottom()+35, 40, m_rGraphRect.bottom()+35);
 		painter.setPen(TextPen);
 		painter.drawText(50, m_rGraphRect.bottom()+40, m_pModFoil->m_FoilName);
@@ -1992,7 +2028,7 @@ void QXInverse::PaintFoil(QPainter &painter)
 		CtrlPen.setWidth(m_pRefFoil->m_FoilWidth);
 		painter.setPen(CtrlPen);
 
-		m_pRefFoil->DrawPoints(painter, 1.0,  1.0, m_ptOffset);
+		m_pRefFoil->drawPoints(painter, 1.0,  1.0, m_ptOffset);
 	}
 
 	painter.setFont(Settings::s_TextFont);
@@ -2128,8 +2164,8 @@ void QXInverse::ResetQ()
 void QXInverse::ResetScale()
 {
 	int h4 = m_rCltRect.height()/4;
-	m_ptOffset.rx() = m_rGraphRect.left() +(int)(1.0*m_QGraph.GetMargin());
-	m_fRefScale  = m_rGraphRect.width()-2.0*m_QGraph.GetMargin();
+	m_ptOffset.rx() = m_rGraphRect.left() +(int)(1.0*m_QGraph.margin());
+	m_fRefScale  = m_rGraphRect.width()-2.0*m_QGraph.margin();
 
 	m_ptOffset.ry() = m_rCltRect.bottom()-h4/2;
 	m_fScale = m_fRefScale;
@@ -2157,7 +2193,7 @@ void QXInverse::SaveSettings(QSettings *pSettings)
 	}
 	pSettings->endGroup();
 
-	m_QGraph.SaveSettings(pSettings);
+	m_QGraph.saveSettings(pSettings);
 }
 
 
@@ -2184,10 +2220,10 @@ void QXInverse::SetFoil()
 		CreateQCurve();
 		CreateMCurve();
 
-		m_pctrlSpec->SetValue(pXFoil->alqsp[1]*180.0/PI);
-		m_pctrlTAngle->SetValue(pXFoil->agte*180.0);//agte expressed in PI units:!?!?
-		m_pctrlTGapx->SetValue(real(pXFoil->dzte));
-		m_pctrlTGapy->SetValue(imag(pXFoil->dzte));
+		m_pctrlSpec->setValue(pXFoil->alqsp[1]*180.0/PI);
+		m_pctrlTAngle->setValue(pXFoil->agte*180.0);//agte expressed in PI units:!?!?
+		m_pctrlTGapx->setValue(real(pXFoil->dzte));
+		m_pctrlTGapy->setValue(imag(pXFoil->dzte));
 	}
 	else
 	{
@@ -2206,7 +2242,7 @@ void QXInverse::SetFoil()
 		m_pctrlMAlphaSpec->setText(strong);
 		strong = QString(tr("Cl = %1")).arg(pXFoil->clgam,0,'f',3);
 		m_pctrlMClSpec->setText(strong);
-		m_pctrlIter->SetValue(pXFoil->niterq);
+		m_pctrlIter->setValue(pXFoil->niterq);
 	}
 
 	if(pXFoil->lvisc)
@@ -2271,22 +2307,22 @@ bool QXInverse::SetParams()
 		m_pctrlStackedInv->setCurrentIndex(1);
 	}
 
-	m_pQCurve->SetColor(m_pRefFoil->m_FoilColor);
-	m_pQCurve->SetStyle(m_pRefFoil->m_FoilStyle);
-	m_pQCurve->SetWidth(m_pRefFoil->m_FoilWidth);
-	m_pMCurve->SetColor(m_pModFoil->m_FoilColor);
-	m_pMCurve->SetStyle(m_pModFoil->m_FoilStyle);
-	m_pMCurve->SetWidth(m_pModFoil->m_FoilWidth);
-	m_pQCurve->SetTitle(tr("Q - Reference"));
-	m_pMCurve->SetTitle(tr("Q - Specification"));
-	m_pQVCurve->SetTitle(tr("Q - Viscous"));
-	m_pQVCurve->SetColor(QColor(50,170,0));
-	m_pQVCurve->SetStyle(0);
+	m_pQCurve->setColor(m_pRefFoil->m_FoilColor);
+	m_pQCurve->setStyle(m_pRefFoil->m_FoilStyle);
+	m_pQCurve->setWidth(m_pRefFoil->m_FoilWidth);
+	m_pMCurve->setColor(m_pModFoil->m_FoilColor);
+	m_pMCurve->setStyle(m_pModFoil->m_FoilStyle);
+	m_pMCurve->setWidth(m_pModFoil->m_FoilWidth);
+	m_pQCurve->setTitle(tr("Q - Reference"));
+	m_pMCurve->setTitle(tr("Q - Specification"));
+	m_pQVCurve->setTitle(tr("Q - Viscous"));
+	m_pQVCurve->setColor(QColor(50,170,0));
+	m_pQVCurve->setStyle(0);
 
-	m_pReflectedCurve->SetColor(m_ReflectedClr);
-	m_pReflectedCurve->SetStyle(m_ReflectedStyle);
-	m_pReflectedCurve->SetWidth(m_ReflectedWidth);
-	m_pReflectedCurve->SetTitle(tr("Reflected"));
+	m_pReflectedCurve->setColor(m_ReflectedClr);
+	m_pReflectedCurve->setStyle(m_ReflectedStyle);
+	m_pReflectedCurve->setWidth(m_ReflectedWidth);
+	m_pReflectedCurve->setTitle(tr("Reflected"));
 
 	m_bTrans   = false;
 	m_bSpline  = false;
@@ -2298,8 +2334,8 @@ bool QXInverse::SetParams()
 	m_bMarked  = false;
 	m_bSmooth  = false;
 
-	m_QGraph.SetDrawRect(m_rGraphRect);
-	m_QGraph.Init();
+	m_QGraph.setDrawRect(m_rGraphRect);
+	m_QGraph.initializeGraph();
 	m_pQCurve->SetVisible(true);
 	m_pctrlSpecAlpha->setChecked(true);
 
@@ -2330,14 +2366,14 @@ bool QXInverse::SetParams()
 			//nothing to initialize
 			if(m_bFullInverse)
 			{
-				m_pctrlSpec->SetValue(0.0);
-				m_pctrlTAngle->SetValue(0.0);
-				m_pctrlTGapx->SetValue(0.0);
-				m_pctrlTGapy->SetValue(0.0);
+				m_pctrlSpec->setValue(0.0);
+				m_pctrlTAngle->setValue(0.0);
+				m_pctrlTGapx->setValue(0.0);
+				m_pctrlTGapy->setValue(0.0);
 			}
 			else
 			{
-				m_pctrlIter->SetValue(pXFoil->niterq);
+				m_pctrlIter->setValue(pXFoil->niterq);
 			}
 
 			Clear();
@@ -2381,8 +2417,8 @@ void QXInverse::SetScale(QRect CltRect)
 	int w = CltRect.width();
 	int w20 = (int)(w/20);
 	m_rGraphRect = QRect(w20, 10, + m_rCltRect.width()-2*w20, m_rCltRect.height()-h4);
-	m_QGraph.SetMargin(50);
-	m_QGraph.SetDrawRect(m_rGraphRect);
+	m_QGraph.setMargin(50);
+	m_QGraph.setDrawRect(m_rGraphRect);
 
 	ResetScale();
 }
@@ -2676,28 +2712,28 @@ void QXInverse::zoomEvent(QPoint pos, double zoomFactor)
 {
 	ReleaseZoom();
 
-	if(m_QGraph.IsInDrawRect(pos))
+	if(m_QGraph.isInDrawRect(pos))
 	{
 		if (m_bXPressed || m_bZoomXOnly)
 		{
 			//zoom x scale
-			m_QGraph.SetAutoX(false);
+			m_QGraph.setAutoX(false);
 			m_QGraph.Scalex(1.0/zoomFactor);
 		}
 		else if(m_bYPressed || m_bZoomYOnly)
 		{
 			//zoom y scale
-			m_QGraph.SetAutoY(false);
+			m_QGraph.setAutoY(false);
 			m_QGraph.Scaley(1.0/zoomFactor);
 		}
 		else
 		{
 			//zoom both
-			m_QGraph.SetAuto(false);
+			m_QGraph.setAuto(false);
 			m_QGraph.Scale(1.0/zoomFactor);
 		}
-		m_QGraph.SetAutoXUnit();
-		m_QGraph.SetAutoYUnit();
+		m_QGraph.setAutoXUnit();
+		m_QGraph.setAutoYUnit();
 	}
 	else
 	{

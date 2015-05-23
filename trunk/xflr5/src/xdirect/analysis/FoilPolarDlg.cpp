@@ -139,10 +139,10 @@ void FoilPolarDlg::SetupLayout()
 						m_pctrlViscosityUnit = new QLabel("m2/s");
 						m_pctrlRho->setFont(SymbolFont);
 						m_pctrlNu->setFont(SymbolFont);
-						m_pctrlDensity->SetPrecision(5);
-						m_pctrlViscosity->SetPrecision(3);
-						m_pctrlDensity->SetMin(0.0);
-						m_pctrlViscosity->SetMin(0.0);
+						m_pctrlDensity->setPrecision(5);
+						m_pctrlViscosity->setPrecision(3);
+						m_pctrlDensity->setMin(0.0);
+						m_pctrlViscosity->setMin(0.0);
 						AeroDataLayout->addWidget(lab9,1,1);
 						AeroDataLayout->addWidget(m_pctrlUnit1,1,2);
 						AeroDataLayout->addWidget(m_pctrlUnit2,1,3);
@@ -245,27 +245,27 @@ void FoilPolarDlg::SetupLayout()
 
 	setLayout(mainLayout);
 
-	m_pctrlTopTrans->SetPrecision(2);
-	m_pctrlTopTrans->SetMin(0.0);
-	m_pctrlTopTrans->SetMax(1.0);
+	m_pctrlTopTrans->setPrecision(2);
+	m_pctrlTopTrans->setMin(0.0);
+	m_pctrlTopTrans->setMax(1.0);
 
-	m_pctrlBotTrans->SetPrecision(2);
-	m_pctrlBotTrans->SetMin(0.0);
-	m_pctrlBotTrans->SetMax(1.0);
-
-
-	m_pctrlNCrit->SetPrecision(3);
-	m_pctrlNCrit->SetMin(0.0);
-	m_pctrlNCrit->SetMax(1000000.0);
+	m_pctrlBotTrans->setPrecision(2);
+	m_pctrlBotTrans->setMin(0.0);
+	m_pctrlBotTrans->setMax(1.0);
 
 
-	m_pctrlReynolds->SetPrecision(0);
-	m_pctrlReynolds->SetMin(-1.0e10);
-	m_pctrlReynolds->SetMax(1.e10);
+	m_pctrlNCrit->setPrecision(3);
+	m_pctrlNCrit->setMin(0.0);
+	m_pctrlNCrit->setMax(1000000.0);
 
 
-	m_pctrlMach->SetMin(0.0);
-	m_pctrlMach->SetMax(1000.0);
+	m_pctrlReynolds->setPrecision(0);
+	m_pctrlReynolds->setMin(-1.0e10);
+	m_pctrlReynolds->setMax(1.e10);
+
+
+	m_pctrlMach->setMin(0.0);
+	m_pctrlMach->setMax(1000.0);
 
 	connect(m_pctrlAuto1, SIGNAL(clicked()), this, SLOT(OnAutoName()));
 	connect(m_pctrlAuto2, SIGNAL(clicked()), this, SLOT(OnAutoName()));
@@ -318,11 +318,11 @@ void FoilPolarDlg::InitDialog()
 	m_PolarType = QXDirect::s_refPolar.m_PolarType;
 
 
-	m_pctrlReynolds->SetValue(m_Reynolds);
-	m_pctrlMach->SetValue(m_Mach);
-	m_pctrlNCrit->SetValue(m_NCrit);
-	m_pctrlTopTrans->SetValue(m_XTop);
-	m_pctrlBotTrans->SetValue(m_XBot);
+	m_pctrlReynolds->setValue(m_Reynolds);
+	m_pctrlMach->setValue(m_Mach);
+	m_pctrlNCrit->setValue(m_NCrit);
+	m_pctrlTopTrans->setValue(m_XTop);
+	m_pctrlBotTrans->setValue(m_XBot);
 
 	switch(QXDirect::s_refPolar.polarType())
 	{
@@ -362,13 +362,13 @@ void FoilPolarDlg::InitDialog()
 
 	m_pctrlUnit1->setChecked(s_UnitType==1);
 	m_pctrlUnit2->setChecked(s_UnitType!=1);
-	m_pctrlViscosity->SetValue(s_Viscosity);
-	m_pctrlDensity->SetValue(s_Density);
+	m_pctrlViscosity->setValue(s_Viscosity);
+	m_pctrlDensity->setValue(s_Density);
 	OnUnit();
 
-	m_pctrlMass->SetValue(s_Mass);
-	m_pctrlSpan->SetValue(s_Span);
-	m_pctrlChord->SetValue(s_Chord);
+	m_pctrlMass->setValue(s_Mass);
+	m_pctrlSpan->setValue(s_Span);
+	m_pctrlChord->setValue(s_Chord);
 
 	OnPolarType();	
 
@@ -457,32 +457,32 @@ void FoilPolarDlg::OnPolarType()
 	{
 		m_pctrlReLabel->setText(tr("Reynolds ="));
 		m_pctrlMachLabel->setText(tr("Mach ="));
-		m_pctrlReynolds->SetPrecision(0);
-		m_pctrlReynolds->SetValue(m_Reynolds);
+		m_pctrlReynolds->setPrecision(0);
+		m_pctrlReynolds->setValue(m_Reynolds);
 		m_PolarType = XFLR5::FIXEDSPEEDPOLAR;
 	}
 	else if(m_rbtype2->isChecked())
 	{
 		m_pctrlReLabel->setText(tr("Re.sqrt(Cl) ="));
 		m_pctrlMachLabel->setText(tr("Ma.sqrt(Cl) ="));
-		m_pctrlReynolds->SetPrecision(0);
-		m_pctrlReynolds->SetValue(m_Reynolds);		
+		m_pctrlReynolds->setPrecision(0);
+		m_pctrlReynolds->setValue(m_Reynolds);		
 		m_PolarType = XFLR5::FIXEDLIFTPOLAR;
 	}
 	else if(m_rbtype3->isChecked())
 	{
 		m_pctrlReLabel->setText(tr("Re.Cl ="));
 		m_pctrlMachLabel->setText(tr("Mach ="));
-		m_pctrlReynolds->SetPrecision(0);
-		m_pctrlReynolds->SetValue(m_Reynolds);
+		m_pctrlReynolds->setPrecision(0);
+		m_pctrlReynolds->setValue(m_Reynolds);
 		m_PolarType = XFLR5::RUBBERCHORDPOLAR;
 	}
 	else if(m_rbtype4->isChecked())
 	{
 		m_pctrlReLabel->setText(tr("Alpha ="));
 		m_pctrlMachLabel->setText(tr("Mach ="));
-		m_pctrlReynolds->SetPrecision(2);
-		m_pctrlReynolds->SetValue(m_ASpec);
+		m_pctrlReynolds->setPrecision(2);
+		m_pctrlReynolds->setValue(m_ASpec);
 		m_PolarType = XFLR5::FIXEDAOAPOLAR;
 	}
 
@@ -516,14 +516,14 @@ void FoilPolarDlg::OnUnit()
 	if(m_pctrlUnit1->isChecked())
 	{
 		s_UnitType   = 1;
-		m_pctrlViscosity->SetValue(s_Viscosity);
+		m_pctrlViscosity->setValue(s_Viscosity);
 		m_pctrlDensityUnit->setText("kg/m3");
 		m_pctrlViscosityUnit->setText("m"+QString::fromUtf8("²")+"/s");
 	}
 	else
 	{
 		s_UnitType   = 2;
-		m_pctrlViscosity->SetValue(s_Viscosity* 10.7182881);
+		m_pctrlViscosity->setValue(s_Viscosity* 10.7182881);
 		m_pctrlDensityUnit->setText("slugs/ft3");
 		m_pctrlViscosityUnit->setText("ft"+QString::fromUtf8("²")+"/s");
 	}
@@ -540,19 +540,19 @@ void FoilPolarDlg::ReadParams()
 	if(m_PolarType==XFLR5::FIXEDAOAPOLAR) m_ASpec    = locale().toDouble(str, &bOK);
 	else                                  m_Reynolds = locale().toDouble(str, &bOK);
 
-	m_Mach     = m_pctrlMach->Value();
+	m_Mach     = m_pctrlMach->value();
 //  m_pctrlMach->clear();
 //	m_pctrlMach->insert(str.setNum(m_Mach,'f',3));
 
-	m_NCrit  = m_pctrlNCrit->Value();
-	m_XTop = m_pctrlTopTrans->Value();
-	m_XBot = m_pctrlBotTrans->Value();
+	m_NCrit  = m_pctrlNCrit->value();
+	m_XTop = m_pctrlTopTrans->value();
+	m_XBot = m_pctrlBotTrans->value();
 
-    s_Mass = m_pctrlMass->Value();
-    s_Chord = m_pctrlChord->Value();
-    s_Span = m_pctrlSpan->Value();
-    s_Viscosity = m_pctrlViscosity->Value();
-    s_Density = m_pctrlDensity->Value();
+    s_Mass = m_pctrlMass->value();
+    s_Chord = m_pctrlChord->value();
+    s_Span = m_pctrlSpan->value();
+    s_Viscosity = m_pctrlViscosity->value();
+    s_Density = m_pctrlDensity->value();
 }
 
 
@@ -566,8 +566,8 @@ void FoilPolarDlg::SetDensity()
 		if(exp>1) precision = 1;
 		else if(exp<-4) precision = 4;
 		else precision = 3-exp;
-		m_pctrlDensity->SetPrecision(precision);
-		m_pctrlDensity->SetValue(s_Density);
+		m_pctrlDensity->setPrecision(precision);
+		m_pctrlDensity->setValue(s_Density);
 	}
 	else
 	{
@@ -575,8 +575,8 @@ void FoilPolarDlg::SetDensity()
 		if(exp>1) precision = 1;
 		else if(exp<-4) precision = 4;
 		else precision = 3-exp;
-		m_pctrlDensity->SetPrecision(precision);
-		m_pctrlDensity->SetValue(s_Density* 0.00194122);
+		m_pctrlDensity->setPrecision(precision);
+		m_pctrlDensity->setValue(s_Density* 0.00194122);
 	}
 }
 
@@ -588,7 +588,7 @@ void FoilPolarDlg::OnEditingFinished()
 	if(m_PolarType==XFLR5::FIXEDLIFTPOLAR)
 	{
 		//compute Re.sqrt(Cl)
-		m_pctrlReynolds->SetValue(sqrt(2.0*s_Mass*9.81*s_Density*s_Chord/s_Viscosity/s_Viscosity/s_Span));
+		m_pctrlReynolds->setValue(sqrt(2.0*s_Mass*9.81*s_Density*s_Chord/s_Viscosity/s_Viscosity/s_Span));
 	}
 }
 

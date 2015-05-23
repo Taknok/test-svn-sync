@@ -50,7 +50,7 @@ QWidget *FoilTableDelegate::createEditor(QWidget *parent, const QStyleOptionView
 	{
 		DoubleEdit *editor = new DoubleEdit(parent);
 		editor->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-		editor->SetPrecision(m_Precision[index.column()]);
+		editor->setPrecision(m_Precision[index.column()]);
 		return editor;
 	}
 
@@ -247,7 +247,7 @@ void FoilTableDelegate::setEditorData(QWidget *editor, const QModelIndex &index)
 	{
 		double value = index.model()->data(index, Qt::EditRole).toDouble();
         DoubleEdit *pDE = static_cast<DoubleEdit*>(editor);
-        pDE->SetValue(value);
+        pDE->setValue(value);
 	}
 }
 
@@ -264,7 +264,7 @@ void FoilTableDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
 	else
 	{
         DoubleEdit *pDE = static_cast<DoubleEdit*>(editor);
-        double value = pDE->Value()/100.0;
+        double value = pDE->value()/100.0;
 		model->setData(index, value, Qt::EditRole);
 	}
 }

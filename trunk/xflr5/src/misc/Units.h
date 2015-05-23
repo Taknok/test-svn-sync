@@ -94,7 +94,7 @@ private:
 	QLabel *m_pctrlQuestion;
 
 private:
-	void InitDialog();
+	void initDialog();
 	void SetupLayout();
 
 	bool m_bLengthOnly;
