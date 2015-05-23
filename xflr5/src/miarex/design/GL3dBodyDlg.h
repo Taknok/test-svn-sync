@@ -42,7 +42,7 @@
 #include "../../misc/LineBtn.h"
 #include "../../objects/ArcBall.h"
 #include "../../objects/Body.h"
-#include "../../threedwidget.h"
+#include "threedwidget.h"
 
 
 class GL3dBodyDlg : public QDialog

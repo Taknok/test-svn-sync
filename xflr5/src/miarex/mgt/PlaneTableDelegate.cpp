@@ -44,7 +44,7 @@ QWidget *PlaneTableDelegate::createEditor(QWidget *parent, const QStyleOptionVie
 	{
         DoubleEdit *editor = new DoubleEdit(parent);
 		editor->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-		editor->SetPrecision(m_Precision[index.column()]);
+		editor->setPrecision(m_Precision[index.column()]);
 		return editor;
 	}
 
@@ -101,7 +101,7 @@ void PlaneTableDelegate::setEditorData(QWidget *editor, const QModelIndex &index
 	{
 		double value = index.model()->data(index, Qt::EditRole).toDouble();
         DoubleEdit *pDE = static_cast<DoubleEdit*>(editor);
-        pDE->SetValue(value);
+        pDE->setValue(value);
 	}
 }
 
@@ -118,7 +118,7 @@ void PlaneTableDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
 	else
 	{
         DoubleEdit *pDE = static_cast<DoubleEdit*>(editor);
-        double value = pDE->Value();
+        double value = pDE->value();
 		model->setData(index, value, Qt::EditRole);
 	}
 }

@@ -136,7 +136,7 @@ private:
 	void SetTGap(double tr, double ti);
 
 	void ExecMDES();
-	void LoadSettings(QSettings *pSettings);
+	void loadSettings(QSettings *pSettings);
 	void SaveSettings(QSettings *pSettings);
 
 	bool ExecQDES();

@@ -19,8 +19,8 @@
 
 *****************************************************************************/
 
-#ifndef AFOILGRIDDLG_H
-#define AFOILGRIDDLG_H
+#ifndef GRIDSETTINGSDLG_H
+#define GRIDSETTINGSDLG_H
 
 #include <QDialog>
 #include <QPushButton>
@@ -29,18 +29,18 @@
 #include "../misc/DoubleEdit.h"
 
 
-class AFoilGridDlg : public QDialog
+class GridSettingsDlg : public QDialog
 {
 	Q_OBJECT
 
 	friend class QAFoil;
+	friend class Section2dWidget;
 
 public:
-    AFoilGridDlg(QWidget *pParent);
+	GridSettingsDlg(QWidget *pParent=NULL);
 	void InitDialog();
 
 private slots:
-	void OnApply();
 	void OnOK();
 	void OnScale();
 	void OnNeutralStyle();
@@ -58,11 +58,11 @@ private:
 	void SetupLayout();
 	void keyPressEvent(QKeyEvent *event);
 
-	void *m_pAFoil;
+	void *m_pParent;
 	QCheckBox  *m_pctrlNeutralShow, *m_pctrlScale, *m_pctrlXMajShow, *m_pctrlYMajShow, *m_pctrlXMinShow, *m_pctrlYMinShow;
 	LineBtn *m_pctrlNeutralStyle, *m_pctrlXMajStyle, *m_pctrlYMajStyle, *m_pctrlXMinStyle, *m_pctrlYMinStyle;
 	DoubleEdit *m_pctrlXUnit, *m_pctrlYUnit,*m_pctrlXMinUnit, *m_pctrlYMinUnit;
-	QPushButton	*ApplyButton, *OKButton, *CancelButton;
+	QPushButton	*OKButton, *CancelButton;
 
 	bool m_bNeutralLine, m_bScale;
 	bool m_bXGrid,m_bYGrid;
@@ -80,4 +80,4 @@ private:
 
 };
 
-#endif // AFOILGRIDDLG_H
+#endif // GRIDSETTINGSDLG_H

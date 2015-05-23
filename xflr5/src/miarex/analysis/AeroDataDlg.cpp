@@ -52,15 +52,15 @@ AeroDataDlg::AeroDataDlg(QWidget *parent) : QDialog(parent)
 
 	setupLayout();
 
-	if(s_bCelsius)	m_pctrlTemperature->SetValue(s_Temperature-STANDARDTEMPERATURE+15);
+	if(s_bCelsius)	m_pctrlTemperature->setValue(s_Temperature-STANDARDTEMPERATURE+15);
 	else
 	{
 		double temp = s_Temperature-STANDARDTEMPERATURE+15;
-		m_pctrlTemperature->SetValue(temp*9.0/5.0 + 32.0);
+		m_pctrlTemperature->setValue(temp*9.0/5.0 + 32.0);
 	}
 
 
-	m_pctrlAltitude->SetValue(s_Altitude);
+	m_pctrlAltitude->setValue(s_Altitude);
 
 	updateResults();
 }
@@ -287,16 +287,16 @@ void AeroDataDlg::updateResults()
 
 	if(m_pctrlTempUnit->currentIndex()==0)
 	{
-		s_Temperature = m_pctrlTemperature->Value()+STANDARDTEMPERATURE-15;
+		s_Temperature = m_pctrlTemperature->value()+STANDARDTEMPERATURE-15;
 	}
 	else
 	{
 		// convert first to Celsius : Deduct 32, then multiply by 5, then divide by 9
-		s_Temperature = (m_pctrlTemperature->Value()-32.0)*5.0/9.0;
+		s_Temperature = (m_pctrlTemperature->value()-32.0)*5.0/9.0;
 		s_Temperature += STANDARDTEMPERATURE-15;
 	}
 
-	s_Altitude = m_pctrlAltitude->Value();
+	s_Altitude = m_pctrlAltitude->value();
 	m_pctrlAirPressure->setText(QString("%1").arg(AirPressure(s_Altitude)));
 
 	double density = AirDensity(s_Altitude, s_Temperature);
@@ -317,11 +317,11 @@ void AeroDataDlg::OnTempUnit()
 
 	if(s_bCelsius)
 	{
-		m_pctrlTemperature->SetValue(s_Temperature-STANDARDTEMPERATURE+15);
+		m_pctrlTemperature->setValue(s_Temperature-STANDARDTEMPERATURE+15);
 	}
 	else
 	{
-		m_pctrlTemperature->SetValue( (s_Temperature-STANDARDTEMPERATURE+15)*9.0/5.0+32);
+		m_pctrlTemperature->setValue( (s_Temperature-STANDARDTEMPERATURE+15)*9.0/5.0+32);
 	}
 }
 

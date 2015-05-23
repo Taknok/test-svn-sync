@@ -76,7 +76,7 @@ public:
 	 * Sets the visibility of the points in the graphs
 	 *@param bShow true if the points are to be displayed, false otherwise
 	 */
-	void ShowPoints(bool bShow){m_bShowPoints = bShow;}
+	void showPoints(bool bShow){m_bShowPoints = bShow;}
 
 	/**
 	 * Sets the visibility of the curve in the graphs
@@ -88,13 +88,13 @@ public:
 	 * Sets the curve's color
 	 * @param clr the new QColor value for the curve
 	 */
-	void SetColor(QColor clr){CurveColor = clr;}
+	void setColor(QColor clr){CurveColor = clr;}
 
 	/**
 	 * Sets the curve's style
 	 * @param nStyle the index of the new curve's style
 	 */
-	void SetStyle(int nStyle){ CurveStyle = nStyle;}
+	void setStyle(int nStyle){ CurveStyle = nStyle;}
 
 
 	/**
@@ -107,13 +107,13 @@ public:
 	 *Sets the curve's width
 	 *@param nWidth the new curve's width in pixels
 	 **/
-	void SetWidth(int nWidth){CurveWidth = nWidth;}
+	void setWidth(int nWidth){CurveWidth = nWidth;}
 
 	/**
 	 * Sets the curve title
 	 *@param Title the new curve's title
 	 */
-	void SetTitle(QString Title){ m_CurveName = Title;}
+	void setTitle(QString Title){ m_CurveName = Title;}
 
 
 	/** Return the visibility of the curve as a boolean. */

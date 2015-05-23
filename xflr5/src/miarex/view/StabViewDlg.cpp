@@ -175,9 +175,9 @@ void StabViewDlg::FillEigenThings()
         if(Omega1 > PRECISION) Dsi = -Sigma1/Omega1;
         else                   Dsi = 0.0;
 
-		m_pctrlFreqN->SetValue(OmegaN/2.0/PI);
-		m_pctrlFreq1->SetValue(Omega1/2.0/PI);
-		m_pctrlDsi->SetValue(Dsi);
+		m_pctrlFreqN->setValue(OmegaN/2.0/PI);
+		m_pctrlFreq1->setValue(Omega1/2.0/PI);
+		m_pctrlDsi->setValue(Dsi);
 		strange = QString("FN=%1 Hz").arg(OmegaN/2.0/PI,6,'f',3);
         ModeDescription.append(strange+"<br/>");
 		strange = QString("F1=%1 Hz").arg(Omega1/2.0/PI,6,'f',3);
@@ -295,9 +295,9 @@ void StabViewDlg::OnAnimate()
 	{
 //		pMiarex->m_iView = WSTABVIEW;
 		pMiarex->m_iView=XFLR5::W3DVIEW;
-		pMiarex->SetControls();
+		pMiarex->setControls();
 		
-		pMiarex->m_Modedt = m_pctrlModeStep->Value();
+		pMiarex->m_Modedt = m_pctrlModeStep->value();
 		pMiarex->m_bAnimateMode  = true;
 		int speed = m_pctrlAnimationSpeed->value();
 		pMiarex->m_pTimerMode->setInterval(400-speed);
@@ -348,7 +348,7 @@ void StabViewDlg::OnAnimateRestart()
 		pMiarex->m_ModeState[3] = 0.0;
 		pMiarex->m_ModeState[4] = 0.0;
 		pMiarex->m_ModeState[5] = 0.0;
-		pMiarex->UpdateView();
+		pMiarex->updateView();
 		return;
 	}
 
@@ -431,7 +431,7 @@ void StabViewDlg::OnCellChanged(QWidget *)
 void StabViewDlg::OnPlotStabilityGraph()
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
-	if(!pMiarex->m_TimeGraph[0].GetCurveCount())
+	if(!pMiarex->m_TimeGraph[0]->curveCount())
 	{
 		//we don't have a curve yet
 		// so return
@@ -439,7 +439,7 @@ void StabViewDlg::OnPlotStabilityGraph()
 	}
 	
 	pMiarex->CreateStabilityCurves();
-	pMiarex->UpdateView();
+	pMiarex->updateView();
 	pMiarex->setFocus();
 }
 
@@ -467,7 +467,7 @@ void StabViewDlg::OnModeSelection()
 	if(pMiarex->m_iView==XFLR5::STABPOLARVIEW && pMiarex->m_bHighlightOpp)
 	{
 		pMiarex->CreateStabRLCurves();
-		pMiarex->UpdateView();
+		pMiarex->updateView();
 	}
 }
 
@@ -475,8 +475,8 @@ void StabViewDlg::OnModeSelection()
 void StabViewDlg::OnReadData()
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
-	pMiarex->m_Modedt = m_pctrlModeStep->Value();
-	pMiarex->m_Deltat = m_pctrlDeltat->Value();
+	pMiarex->m_Modedt = m_pctrlModeStep->value();
+	pMiarex->m_Deltat = m_pctrlDeltat->value();
 }
 
 
@@ -493,9 +493,9 @@ void StabViewDlg::OnResponseType()
 	if(type==pMiarex->m_StabilityResponseType) return;
 	
 	pMiarex->m_StabilityResponseType=type;
-	SetControls();
+	setControls();
 //	pMiarex->CreateStabilityCurves();
-	pMiarex->UpdateView();
+	pMiarex->updateView();
 	
 }
 
@@ -910,7 +910,7 @@ void StabViewDlg::SetupLayout()
 
 
 
-void StabViewDlg::SetControls()
+void StabViewDlg::setControls()
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 	QString str, strong;
@@ -967,11 +967,11 @@ void StabViewDlg::SetControls()
 		m_pctrlUnit3->setText(strong);
 	}
 
-	m_pctrlStabVar1->SetValue(pMiarex->m_TimeInput[0]);
-	m_pctrlStabVar2->SetValue(pMiarex->m_TimeInput[1]);
-	m_pctrlStabVar3->SetValue(pMiarex->m_TimeInput[2]);
-	m_pctrlTotalTime->SetValue(pMiarex->m_TotalTime);
-	m_pctrlDeltat->SetValue(pMiarex->m_Deltat);
+	m_pctrlStabVar1->setValue(pMiarex->m_TimeInput[0]);
+	m_pctrlStabVar2->setValue(pMiarex->m_TimeInput[1]);
+	m_pctrlStabVar3->setValue(pMiarex->m_TimeInput[2]);
+	m_pctrlTotalTime->setValue(pMiarex->m_TotalTime);
+	m_pctrlDeltat->setValue(pMiarex->m_Deltat);
 
 	m_pctrlTimeMode1->setChecked(m_iCurrentMode%4==0);
 	m_pctrlTimeMode2->setChecked(m_iCurrentMode%4==1);
@@ -1021,7 +1021,7 @@ void StabViewDlg::SetControls()
 	m_pctrlAnimationAmplitude->setEnabled(bEnable3DAnimation);
 	m_pctrlAnimationSpeed->setEnabled(bEnable3DAnimation);
 
-	m_pctrlModeStep->SetValue(pMiarex->m_Modedt);
+	m_pctrlModeStep->setValue(pMiarex->m_Modedt);
 
 	FillEigenThings();
 
@@ -1037,19 +1037,19 @@ void StabViewDlg::SetTimeCurveStyle(QColor const &Color, int const&Style, int co
 	if(!m_pCurve) return;
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 	Curve *pCurve;
-	for (int i=0; i<pMiarex->m_TimeGraph[0].GetCurveCount(); i++)
+	for (int i=0; i<pMiarex->m_TimeGraph[0]->curveCount(); i++)
 	{
-		pCurve = pMiarex->m_TimeGraph[0].GetCurve(i);
+		pCurve = pMiarex->m_TimeGraph[0]->curve(i);
 		if(pCurve == m_pCurve)
 		{
 			for(int ig=0; ig<4; ig++)
 			{
-				pCurve = pMiarex->m_TimeGraph[ig].GetCurve(i);
-				pCurve->SetColor(Color);
-				pCurve->SetStyle(Style);
-				pCurve->SetWidth(Width);
+				pCurve = pMiarex->m_TimeGraph[ig]->curve(i);
+				pCurve->setColor(Color);
+				pCurve->setStyle(Style);
+				pCurve->setWidth(Width);
 				pCurve->SetVisible(bCurve);
-				pCurve->ShowPoints(bPoints);
+				pCurve->showPoints(bPoints);
 			}
 						
 			return;
@@ -1073,15 +1073,15 @@ void StabViewDlg::OnRenameCurve()
 	if(dlg.exec() != QDialog::Accepted) return;
 	NewName = dlg.m_NewName;
 
-	for (int i=0; i<pMiarex->m_TimeGraph[0].GetCurveCount(); i++)
+	for (int i=0; i<pMiarex->m_TimeGraph[0]->curveCount(); i++)
 	{
-		pCurve = pMiarex->m_TimeGraph[0].GetCurve(i);
+		pCurve = pMiarex->m_TimeGraph[0]->curve(i);
 		if(pCurve && (pCurve == m_pCurve))
 		{
 			for(int ig=0; ig<4; ig++)
 			{
-				pCurve = pMiarex->m_TimeGraph[ig].GetCurve(i);
-				pCurve->SetTitle(NewName);
+				pCurve = pMiarex->m_TimeGraph[ig]->curve(i);
+				pCurve->setTitle(NewName);
 			}
 
 			FillCurveList();
@@ -1096,10 +1096,10 @@ void StabViewDlg::OnSelChangeCurve(int sel)
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 	QString strong = m_pctrlCurveList->itemText(sel);
-	m_pCurve = pMiarex->m_TimeGraph[0].GetCurve(strong);
+	m_pCurve = pMiarex->m_TimeGraph[0]->curve(strong);
 	m_pCurve->title(strong);
 	
-	pMiarex->SetCurveParams();
+	pMiarex->setCurveParams();
 }
 
 
@@ -1120,7 +1120,7 @@ void StabViewDlg::OnDeleteCurve()
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 	if(!m_pCurve) return;
 	QString CurveTitle = m_pCurve->title();
-	for(int ig=0; ig<4; ig++)	pMiarex->m_TimeGraph[ig].DeleteCurve(CurveTitle);
+	for(int ig=0; ig<MAXGRAPHS; ig++)	pMiarex->m_TimeGraph[ig]->DeleteCurve(CurveTitle);
 	m_pCurve = NULL;
 
 	FillCurveList();
@@ -1130,12 +1130,12 @@ void StabViewDlg::OnDeleteCurve()
 	m_pctrlDeleteCurve->setEnabled(  pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
 	m_pctrlCurveList->setEnabled(    pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
 
-	if(m_pctrlCurveList->count()) m_pCurve = pMiarex->m_TimeGraph[0].GetCurve(m_pctrlCurveList->itemText(0));
+	if(m_pctrlCurveList->count()) m_pCurve = pMiarex->m_TimeGraph[0]->curve(m_pctrlCurveList->itemText(0));
 	else                          m_pCurve = NULL;
 
-	pMiarex->SetCurveParams();
+	pMiarex->setCurveParams();
 	pMiarex->CreateStabilityCurves();
-	pMiarex->UpdateView();
+	pMiarex->updateView();
 	pMiarex->setFocus();
 }
 
@@ -1143,14 +1143,14 @@ void StabViewDlg::OnDeleteCurve()
 void StabViewDlg::AddCurve()
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
-	int nCurves = pMiarex->m_TimeGraph[0].GetCurveCount();
+	int nCurves = pMiarex->m_TimeGraph[0]->curveCount();
 	QString strong = tr("New curve") + QString(" %1").arg(nCurves);
 
 	Curve *pCurve;
 	for(int ig=0; ig<4; ig++)
 	{
-		pCurve = pMiarex->m_TimeGraph[ig].AddCurve();
-		pCurve->SetTitle(strong);
+		pCurve = pMiarex->m_TimeGraph[ig]->addCurve();
+		pCurve->setTitle(strong);
 		if(ig==0) m_pCurve = pCurve;
 	}
 
@@ -1160,7 +1160,7 @@ void StabViewDlg::AddCurve()
 	m_pctrlDeleteCurve->setEnabled(  pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
 	m_pctrlCurveList->setEnabled(    pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
 
-	pMiarex->SetCurveParams();
+	pMiarex->setCurveParams();
 
 }
 
@@ -1170,9 +1170,9 @@ void StabViewDlg::FillCurveList()
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 	m_pctrlCurveList->clear();
 	QString strong;
-	for(int i=0; i<pMiarex->m_TimeGraph[0].GetCurveCount(); i++)
+	for(int i=0; i<pMiarex->m_TimeGraph[0]->curveCount(); i++)
 	{
-		pMiarex->m_TimeGraph[0].GetCurve(i)->title(strong);
+		pMiarex->m_TimeGraph[0]->curve(i)->title(strong);
 		m_pctrlCurveList->addItem(strong);
 	}
 	if(m_pCurve)

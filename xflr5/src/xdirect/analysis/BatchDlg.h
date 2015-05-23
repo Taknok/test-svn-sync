@@ -32,7 +32,7 @@
 #include <QRadioButton>
 #include <QTextEdit>
 #include "../../graph/QGraph.h"
-#include "../../graph/GraphWidget.h"
+#include "graphwidget.h"
 #include "../../objects/Foil.h"
 #include "../../objects/Polar.h"
 #include "../../misc/IntEdit.h"

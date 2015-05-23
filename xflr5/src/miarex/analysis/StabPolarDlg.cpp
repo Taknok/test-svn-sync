@@ -147,13 +147,13 @@ void StabPolarDlg::FillUFOInertia()
 	s_StabPolar.m_CoGIzz = m_pPlane->m_CoGIzz;
 	s_StabPolar.m_CoGIxz = m_pPlane->m_CoGIxz;
 
-	m_pctrlMass->SetValue(s_StabPolar.m_Mass*Units::kgtoUnit());
-	m_pctrlCoGx->SetValue(s_StabPolar.m_CoG.x*Units::mtoUnit());
-	m_pctrlCoGz->SetValue(s_StabPolar.m_CoG.z*Units::mtoUnit());
-	m_pctrlIxx->SetValue(s_StabPolar.m_CoGIxx*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit());
-	m_pctrlIyy->SetValue(s_StabPolar.m_CoGIyy*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit());
-	m_pctrlIzz->SetValue(s_StabPolar.m_CoGIzz*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit());
-	m_pctrlIxz->SetValue(s_StabPolar.m_CoGIxz*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit());
+	m_pctrlMass->setValue(s_StabPolar.m_Mass*Units::kgtoUnit());
+	m_pctrlCoGx->setValue(s_StabPolar.m_CoG.x*Units::mtoUnit());
+	m_pctrlCoGz->setValue(s_StabPolar.m_CoG.z*Units::mtoUnit());
+	m_pctrlIxx->setValue(s_StabPolar.m_CoGIxx*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit());
+	m_pctrlIyy->setValue(s_StabPolar.m_CoGIyy*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit());
+	m_pctrlIzz->setValue(s_StabPolar.m_CoGIzz*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit());
+	m_pctrlIxz->setValue(s_StabPolar.m_CoGIxz*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit());
 }
 
 
@@ -291,20 +291,20 @@ void StabPolarDlg::InitDialog(Plane *pPlane, WPolar *pWPolar)
 
 	if(m_pctrlArea1->isChecked())
 	{
-		m_pctrlRefArea->SetValue(m_pPlane->planformArea()*Units::m2toUnit());
-		m_pctrlRefSpan->SetValue(m_pPlane->planformSpan()*Units::mtoUnit());
+		m_pctrlRefArea->setValue(m_pPlane->planformArea()*Units::m2toUnit());
+		m_pctrlRefSpan->setValue(m_pPlane->planformSpan()*Units::mtoUnit());
 	}
 	else if(m_pctrlArea2->isChecked())
 	{
-		m_pctrlRefArea->SetValue(m_pPlane->projectedArea()*Units::m2toUnit());
-		m_pctrlRefSpan->SetValue(m_pPlane->projectedSpan()*Units::mtoUnit());
+		m_pctrlRefArea->setValue(m_pPlane->projectedArea()*Units::m2toUnit());
+		m_pctrlRefSpan->setValue(m_pPlane->projectedSpan()*Units::mtoUnit());
 	}
 	else if(m_pctrlArea3->isChecked())
 	{
-		m_pctrlRefArea->SetValue(s_StabPolar.m_referenceArea*Units::m2toUnit());
-		m_pctrlRefSpan->SetValue(s_StabPolar.m_referenceSpanLength*Units::mtoUnit());
+		m_pctrlRefArea->setValue(s_StabPolar.m_referenceArea*Units::m2toUnit());
+		m_pctrlRefSpan->setValue(s_StabPolar.m_referenceSpanLength*Units::mtoUnit());
 	}
-	m_pctrlRefChord->SetValue(m_pPlane->mac()*Units::mtoUnit());
+	m_pctrlRefChord->setValue(m_pPlane->mac()*Units::mtoUnit());
 
 
 
@@ -336,8 +336,8 @@ void StabPolarDlg::InitDialog(Plane *pPlane, WPolar *pWPolar)
 
 	}
 
-	m_pctrlBeta->SetValue(s_StabPolar.m_BetaSpec);
-	m_pctrlPhi->SetValue(s_StabPolar.m_BankAngle);
+	m_pctrlBeta->setValue(s_StabPolar.m_BetaSpec);
+	m_pctrlPhi->setValue(s_StabPolar.m_BankAngle);
 
 	if(s_StabPolar.analysisMethod()==XFLR5::LLTMETHOD)
 	{
@@ -416,16 +416,16 @@ void StabPolarDlg::OnArea()
 	if(m_pctrlArea1->isChecked())
 	{
 		s_StabPolar.m_ReferenceDim = XFLR5::PLANFORMREFDIM;
-		m_pctrlRefArea->SetValue(m_pPlane->planformArea()*Units::m2toUnit());
-		m_pctrlRefChord->SetValue(m_pPlane->mac()*Units::mtoUnit());
-		m_pctrlRefSpan->SetValue(m_pPlane->planformSpan()*Units::mtoUnit());
+		m_pctrlRefArea->setValue(m_pPlane->planformArea()*Units::m2toUnit());
+		m_pctrlRefChord->setValue(m_pPlane->mac()*Units::mtoUnit());
+		m_pctrlRefSpan->setValue(m_pPlane->planformSpan()*Units::mtoUnit());
 	}
 	else if(m_pctrlArea2->isChecked())
 	{
 		s_StabPolar.m_ReferenceDim = XFLR5::PROJECTEDREFDIM;
-		m_pctrlRefArea->SetValue(m_pPlane->projectedArea()*Units::m2toUnit());
-		m_pctrlRefSpan->SetValue(m_pPlane->projectedSpan()*Units::mtoUnit());
-		m_pctrlRefChord->SetValue(m_pPlane->mac()*Units::mtoUnit());
+		m_pctrlRefArea->setValue(m_pPlane->projectedArea()*Units::m2toUnit());
+		m_pctrlRefSpan->setValue(m_pPlane->projectedSpan()*Units::mtoUnit());
+		m_pctrlRefChord->setValue(m_pPlane->mac()*Units::mtoUnit());
 	}
 	else if(m_pctrlArea3->isChecked())
 	{
@@ -471,14 +471,14 @@ void StabPolarDlg::OnUnit()
 	if(m_pctrlUnit1->isChecked())
 	{
 		m_UnitType   = 1;
-		m_pctrlViscosity->SetValue(s_StabPolar.m_Viscosity);
+		m_pctrlViscosity->setValue(s_StabPolar.m_Viscosity);
 		m_pctrlDensityUnit->setText("kg/m3");
 		m_pctrlViscosityUnit->setText("m"+QString::fromUtf8("²")+"/s");
 	}
 	else 
 	{
 		m_UnitType   = 2;
-		m_pctrlViscosity->SetValue(s_StabPolar.m_Viscosity* 10.7182881);
+		m_pctrlViscosity->setValue(s_StabPolar.m_Viscosity* 10.7182881);
 		m_pctrlDensityUnit->setText("slugs/ft3");
 		m_pctrlViscosityUnit->setText("ft"+QString::fromUtf8("²")+"/s");
 	}
@@ -556,26 +556,26 @@ void StabPolarDlg::ReadParams()
 {
 	if(m_pctrlUnit1->isChecked())
 	{
-		s_StabPolar.m_Density   = m_pctrlDensity->Value();
-		s_StabPolar.m_Viscosity = m_pctrlViscosity->Value();
+		s_StabPolar.m_Density   = m_pctrlDensity->value();
+		s_StabPolar.m_Viscosity = m_pctrlViscosity->value();
 	}
 	else
 	{
-		s_StabPolar.m_Density   = m_pctrlDensity->Value()   / 0.00194122;
-		s_StabPolar.m_Viscosity = m_pctrlViscosity->Value() / 10.7182881;
+		s_StabPolar.m_Density   = m_pctrlDensity->value()   / 0.00194122;
+		s_StabPolar.m_Viscosity = m_pctrlViscosity->value() / 10.7182881;
 	}
 
-	s_StabPolar.m_BetaSpec  = m_pctrlBeta->Value();
-	s_StabPolar.m_BankAngle = m_pctrlPhi->Value();
+	s_StabPolar.m_BetaSpec  = m_pctrlBeta->value();
+	s_StabPolar.m_BankAngle = m_pctrlPhi->value();
 	SetDensity();
 
-	s_StabPolar.m_Mass  = m_pctrlMass->Value() / Units::kgtoUnit();
-	s_StabPolar.m_CoG.x = m_pctrlCoGx->Value() / Units::mtoUnit();
-	s_StabPolar.m_CoG.z = m_pctrlCoGz->Value() / Units::mtoUnit();
-	s_StabPolar.m_CoGIxx = m_pctrlIxx->Value()  / Units::kgtoUnit() / Units::mtoUnit() / Units::mtoUnit();
-	s_StabPolar.m_CoGIyy = m_pctrlIyy->Value()  / Units::kgtoUnit() / Units::mtoUnit() / Units::mtoUnit();
-	s_StabPolar.m_CoGIzz = m_pctrlIzz->Value()  / Units::kgtoUnit() / Units::mtoUnit() / Units::mtoUnit();
-	s_StabPolar.m_CoGIxz = m_pctrlIxz->Value()  / Units::kgtoUnit() / Units::mtoUnit() / Units::mtoUnit();
+	s_StabPolar.m_Mass  = m_pctrlMass->value() / Units::kgtoUnit();
+	s_StabPolar.m_CoG.x = m_pctrlCoGx->value() / Units::mtoUnit();
+	s_StabPolar.m_CoG.z = m_pctrlCoGz->value() / Units::mtoUnit();
+	s_StabPolar.m_CoGIxx = m_pctrlIxx->value()  / Units::kgtoUnit() / Units::mtoUnit() / Units::mtoUnit();
+	s_StabPolar.m_CoGIyy = m_pctrlIyy->value()  / Units::kgtoUnit() / Units::mtoUnit() / Units::mtoUnit();
+	s_StabPolar.m_CoGIzz = m_pctrlIzz->value()  / Units::kgtoUnit() / Units::mtoUnit() / Units::mtoUnit();
+	s_StabPolar.m_CoGIxz = m_pctrlIxz->value()  / Units::kgtoUnit() / Units::mtoUnit() / Units::mtoUnit();
 
 	s_StabPolar.m_bViscous = m_pctrlViscous->isChecked();
 	s_StabPolar.m_bIgnoreBodyPanels = m_pctrlIgnoreBodyPanels->isChecked();
@@ -596,10 +596,10 @@ void StabPolarDlg::ReadParams()
 	else if(m_pctrlArea3->isChecked())
 	{
 		s_StabPolar.m_ReferenceDim = XFLR5::MANUALREFDIM;
-		s_StabPolar.m_referenceArea       = m_pctrlRefArea->Value() /Units::m2toUnit();
-		s_StabPolar.m_referenceSpanLength = m_pctrlRefSpan->Value() /Units::mtoUnit();
+		s_StabPolar.m_referenceArea       = m_pctrlRefArea->value() /Units::m2toUnit();
+		s_StabPolar.m_referenceSpanLength = m_pctrlRefSpan->value() /Units::mtoUnit();
 	}
-	s_StabPolar.m_referenceChordLength = m_pctrlRefChord->Value() /Units::mtoUnit();
+	s_StabPolar.m_referenceChordLength = m_pctrlRefChord->value() /Units::mtoUnit();
 }
 
 
@@ -614,8 +614,8 @@ void StabPolarDlg::SetDensity()
 		if(exp>1) precision = 1;
 		else if(exp<-4) precision = 4;
 		else precision = 3-exp;
-		m_pctrlDensity->SetPrecision(precision);
-		m_pctrlDensity->SetValue(s_StabPolar.m_Density);
+		m_pctrlDensity->setPrecision(precision);
+		m_pctrlDensity->setValue(s_StabPolar.m_Density);
 	}
 	else
 	{
@@ -623,8 +623,8 @@ void StabPolarDlg::SetDensity()
 		if(exp>1) precision = 1;
 		else if(exp<-4) precision = 4;
 		else precision = 3-exp;
-		m_pctrlDensity->SetPrecision(precision);
-		m_pctrlDensity->SetValue(s_StabPolar.m_Density* 0.00194122);
+		m_pctrlDensity->setPrecision(precision);
+		m_pctrlDensity->setValue(s_StabPolar.m_Density* 0.00194122);
 	}
 }
 
@@ -947,10 +947,10 @@ void StabPolarDlg::SetupLayout()
 					m_pctrlViscosityUnit = new QLabel("m2/s");
 					m_pctrlRho->setFont(symbolFont);
 					m_pctrlNu->setFont(symbolFont);
-					m_pctrlDensity->SetPrecision(5);
-					m_pctrlViscosity->SetPrecision(3);
-					m_pctrlDensity->SetMin(0.0);
-					m_pctrlViscosity->SetMin(0.0);
+					m_pctrlDensity->setPrecision(5);
+					m_pctrlViscosity->setPrecision(3);
+					m_pctrlDensity->setMin(0.0);
+					m_pctrlViscosity->setMin(0.0);
 					pAeroDataValuesLayout->addWidget(m_pctrlRho,1,1);
 					pAeroDataValuesLayout->addWidget(m_pctrlDensity,1,2);
 					pAeroDataValuesLayout->addWidget(m_pctrlDensityUnit,1,3);
@@ -1027,11 +1027,11 @@ void StabPolarDlg::OnAeroData()
 
 		if(m_pctrlUnit1->isChecked())
 		{
-			m_pctrlViscosity->SetValue(s_StabPolar.m_Viscosity);
+			m_pctrlViscosity->setValue(s_StabPolar.m_Viscosity);
 		}
 		else
 		{
-			m_pctrlViscosity->SetValue(s_StabPolar.m_Viscosity* 10.7182881);
+			m_pctrlViscosity->setValue(s_StabPolar.m_Viscosity* 10.7182881);
 		}
 		SetDensity();
 	}
@@ -1208,13 +1208,13 @@ void StabPolarDlg::OnAutoInertia()
 	}
 	else
 	{
-		m_pctrlMass->SetValue(s_StabPolar.m_Mass*Units::kgtoUnit());
-		m_pctrlCoGx->SetValue(s_StabPolar.m_CoG.x*Units::mtoUnit());
-		m_pctrlCoGz->SetValue(s_StabPolar.m_CoG.z*Units::mtoUnit());
-		m_pctrlIxx->SetValue(s_StabPolar.m_CoGIxx*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit());
-		m_pctrlIyy->SetValue(s_StabPolar.m_CoGIyy*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit());
-		m_pctrlIzz->SetValue(s_StabPolar.m_CoGIzz*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit());
-		m_pctrlIxz->SetValue(s_StabPolar.m_CoGIxz*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit());
+		m_pctrlMass->setValue(s_StabPolar.m_Mass*Units::kgtoUnit());
+		m_pctrlCoGx->setValue(s_StabPolar.m_CoG.x*Units::mtoUnit());
+		m_pctrlCoGz->setValue(s_StabPolar.m_CoG.z*Units::mtoUnit());
+		m_pctrlIxx->setValue(s_StabPolar.m_CoGIxx*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit());
+		m_pctrlIyy->setValue(s_StabPolar.m_CoGIyy*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit());
+		m_pctrlIzz->setValue(s_StabPolar.m_CoGIzz*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit());
+		m_pctrlIxz->setValue(s_StabPolar.m_CoGIxz*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit());
 	}
 
 	EnableControls();

@@ -40,6 +40,7 @@ double GL3DScales::s_ZOffset = 0.0;
 
 GL3DScales::GL3DScales(QWidget *)
 {
+	setAttribute(Qt::WA_DeleteOnClose, false);
 	setWindowTitle(tr("3D Scales Settings"));
 
 	m_pParent = NULL;
@@ -83,8 +84,8 @@ void GL3DScales::SetupLayout()
 			m_pctrlAutoCpScale = new QCheckBox(tr("Auto Scales"));
 			m_pctrlLegendMin = new DoubleEdit(-1.0);
 			m_pctrlLegendMax = new DoubleEdit(1.0);
-			m_pctrlLegendMin->SetPrecision(2);
-			m_pctrlLegendMax->SetPrecision(2);
+			m_pctrlLegendMin->setPrecision(2);
+			m_pctrlLegendMax->setPrecision(2);
 			QLabel *lab0 = new QLabel(tr("Min"));
 			QLabel *lab1 = new QLabel(tr("Max"));
 			lab0->setAlignment(Qt::AlignVCenter |Qt::AlignRight);
@@ -150,7 +151,7 @@ void GL3DScales::SetupLayout()
 	QGroupBox *pLengthBox = new QGroupBox(tr("Streamline length"));
 	{
 		m_pctrlNXPoint = new DoubleEdit(33,0);
-		m_pctrlNXPoint->SetPrecision(0);
+		m_pctrlNXPoint->setPrecision(0);
 		m_pctrlDeltaL = new DoubleEdit(12.34,2);
 		m_pctrlXFactor       = new DoubleEdit(1.23,2);
 		m_pctrlLengthUnit1 = new QLabel("miles");
@@ -248,8 +249,8 @@ void GL3DScales::InitDialog()
 	m_pctrlLengthUnit3->setText(str);
 
 	m_pctrlAutoCpScale->setChecked(QMiarex::s_bAutoCpScale);
-	m_pctrlLegendMin->SetValue(QMiarex::s_LegendMin);
-	m_pctrlLegendMax->SetValue(QMiarex::s_LegendMax);
+	m_pctrlLegendMin->setValue(QMiarex::s_LegendMin);
+	m_pctrlLegendMax->setValue(QMiarex::s_LegendMax);
 	m_pctrlLegendMin->setEnabled(!QMiarex::s_bAutoCpScale);
 	m_pctrlLegendMax->setEnabled(!QMiarex::s_bAutoCpScale);
 
@@ -270,11 +271,11 @@ void GL3DScales::InitDialog()
 	else if(s_pos==1)	m_pctrlTE->setChecked(true);
 	else if(s_pos==2)	m_pctrlLine->setChecked(true);
 
-	m_pctrlDeltaL->SetValue(s_DeltaL* Units::mtoUnit());
-	m_pctrlXOffset->SetValue(s_XOffset* Units::mtoUnit());
-	m_pctrlZOffset->SetValue(s_ZOffset* Units::mtoUnit());
-	m_pctrlXFactor->SetValue(s_XFactor);
-	m_pctrlNXPoint->SetValue(s_NX);
+	m_pctrlDeltaL->setValue(s_DeltaL* Units::mtoUnit());
+	m_pctrlXOffset->setValue(s_XOffset* Units::mtoUnit());
+	m_pctrlZOffset->setValue(s_ZOffset* Units::mtoUnit());
+	m_pctrlXFactor->setValue(s_XFactor);
+	m_pctrlNXPoint->setValue(s_NX);
 }
 
 
@@ -282,26 +283,26 @@ void GL3DScales::OnCpScale()
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
     QMiarex::s_bAutoCpScale = m_pctrlAutoCpScale->isChecked();
-    QMiarex::s_LegendMax = m_pctrlLegendMax->Value();
-    QMiarex::s_LegendMin = m_pctrlLegendMin->Value();
+    QMiarex::s_LegendMax = m_pctrlLegendMax->value();
+    QMiarex::s_LegendMin = m_pctrlLegendMin->value();
     m_pctrlLegendMin->setEnabled(!QMiarex::s_bAutoCpScale);
     m_pctrlLegendMax->setEnabled(!QMiarex::s_bAutoCpScale);
 
 	pMiarex->m_bResetglPanelCp = true;
 	pMiarex->m_bResetglLegend = true;
-	pMiarex->UpdateView();
+	pMiarex->updateView();
 }
 
 
 void GL3DScales::OnApply()
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
-	QMiarex::s_LegendMax = m_pctrlLegendMax->Value();
-	QMiarex::s_LegendMin = m_pctrlLegendMin->Value();
+	QMiarex::s_LegendMax = m_pctrlLegendMax->value();
+	QMiarex::s_LegendMin = m_pctrlLegendMin->value();
 	QMiarex::s_bAutoCpScale = m_pctrlAutoCpScale->isChecked();
 	ReadStreamParams();
 	pMiarex->m_bResetglStream = true;
-	pMiarex->UpdateView();
+	pMiarex->updateView();
 }
 
 
@@ -311,7 +312,7 @@ void GL3DScales::OnLiftScale(int pos)
 	pMiarex->s_LiftScale    = pos/100.0/sqrt(1.01-pos/100.0);
 	pMiarex->m_bResetglLift = true;
 	pMiarex->m_bResetglPanelForce = true;
-	pMiarex->UpdateView();
+	pMiarex->updateView();
 }
 
 
@@ -320,7 +321,7 @@ void GL3DScales::OnDragScale(int pos)
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 	pMiarex->s_DragScale    = pos/100.0/sqrt(1.01-pos/100.0);
 	pMiarex->m_bResetglDrag = true;
-	pMiarex->UpdateView();
+	pMiarex->updateView();
 }
 
 
@@ -329,7 +330,7 @@ void GL3DScales::OnVelocityScale(int pos)
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 	pMiarex->s_VelocityScale    = pos/100.0/sqrt(1.01-pos/100.0);
 	pMiarex->m_bResetglDownwash = true;
-	pMiarex->UpdateView();
+	pMiarex->updateView();
 }
 
 
@@ -342,11 +343,11 @@ void GL3DScales::showEvent(QShowEvent *event)
 
 void GL3DScales::ReadStreamParams()
 {
-	s_NX = m_pctrlNXPoint->Value();
-	s_XOffset = m_pctrlXOffset->Value() / Units::mtoUnit();
-	s_ZOffset = m_pctrlZOffset->Value() / Units::mtoUnit();
-	s_DeltaL  = m_pctrlDeltaL->Value()  / Units::mtoUnit();
-	s_XFactor = m_pctrlXFactor->Value();
+	s_NX = m_pctrlNXPoint->value();
+	s_XOffset = m_pctrlXOffset->value() / Units::mtoUnit();
+	s_ZOffset = m_pctrlZOffset->value() / Units::mtoUnit();
+	s_DeltaL  = m_pctrlDeltaL->value()  / Units::mtoUnit();
+	s_XFactor = m_pctrlXFactor->value();
 
 	if(m_pctrlLE->isChecked())	        s_pos=0;
 	else if(m_pctrlTE->isChecked())     s_pos=1;
@@ -355,7 +356,7 @@ void GL3DScales::ReadStreamParams()
 
 
 
-bool GL3DScales::LoadSettings(QSettings *pSettings)
+bool GL3DScales::loadSettings(QSettings *pSettings)
 {
 	pSettings->beginGroup("GL3DScales");
 	{

@@ -78,6 +78,13 @@ public:
 
 	bool isOut(){return m_bOut;}
 
+	bool isVisible(){return m_bIsVisible;}
+	bool showPoints(){return m_bShowPoints;}
+	int style(){return m_Style;}
+	int width(){return m_Width;}
+	QColor color(){return m_Color;}
+
+
 private:
 	XFLR5::enumAnalysisMethod m_AnalysisMethod;   /**< defines by which type of method (LLT, VLM, PANEL), this WingOpp was calculated */
 

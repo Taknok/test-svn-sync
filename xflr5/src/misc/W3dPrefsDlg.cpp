@@ -518,7 +518,7 @@ void W3dPrefsDlg::SaveSettings(QSettings *pSettings)
 }
 
 
-void W3dPrefsDlg::LoadSettings(QSettings *pSettings)
+void W3dPrefsDlg::loadSettings(QSettings *pSettings)
 {
 	ResetDefaults();
 	pSettings->beginGroup("3DPrefs");

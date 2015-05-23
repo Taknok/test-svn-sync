@@ -22,6 +22,7 @@
 #include "XDirectStyleDlg.h"
 #include "XDirect.h"
 #include "../misc/LinePickerDlg.h"
+#include "viewwidgets/foilwidget.h"
 #include <QGridLayout>
 #include <QLabel>
 
@@ -30,15 +31,32 @@
 XDirectStyleDlg::XDirectStyleDlg(QWidget *pParent) : QDialog(pParent)
 {
 	setWindowTitle(tr("XDirect Styles"));
-	m_pXDirect = NULL;
+	m_pParent = pParent;
 
-	SetupLayout();
+	FoilWidget *pFoilWidget = (FoilWidget*)m_pParent;
+	m_iNeutralStyle  = pFoilWidget->m_iNeutralStyle;
+	m_iNeutralWidth  = pFoilWidget->m_iNeutralWidth;
+	m_crNeutralColor = pFoilWidget->m_crNeutralColor;
+
+	m_iBLStyle  = pFoilWidget->m_iBLStyle;
+	m_iBLWidth  = pFoilWidget->m_iBLWidth;
+	m_crBLColor = pFoilWidget->m_crBLColor;
+
+	m_iPressureStyle  = pFoilWidget->m_iPressureStyle;
+	m_iPressureWidth  = pFoilWidget->m_iPressureWidth;
+	m_crPressureColor = pFoilWidget->m_crPressureColor;
+
+	setupLayout();
+
+	m_pctrlNeutral->SetStyle(m_iNeutralStyle, m_iNeutralWidth, m_crNeutralColor);
+	m_pctrlBL->SetStyle(m_iBLStyle, m_iBLWidth, m_crBLColor);
+	m_pctrlPressure->SetStyle(m_iPressureStyle, m_iPressureWidth, m_crPressureColor);
 
 	OnRestoreDefaults();
 }
 
 
-void XDirectStyleDlg::SetupLayout()
+void XDirectStyleDlg::setupLayout()
 {
 	QGridLayout *StyleLayout = new QGridLayout;
 	{
@@ -141,25 +159,6 @@ void XDirectStyleDlg::OnBLStyle()
 
 
 
-void XDirectStyleDlg::InitDialog()
-{
-	QXDirect *pXDirect = (QXDirect*)m_pXDirect;
-	m_iNeutralStyle  = pXDirect->m_iNeutralStyle;
-	m_iNeutralWidth  = pXDirect->m_iNeutralWidth;
-	m_crNeutralColor = pXDirect->m_crNeutralColor;
-
-	m_iBLStyle  = pXDirect->m_iBLStyle;
-	m_iBLWidth  = pXDirect->m_iBLWidth;
-	m_crBLColor = pXDirect->m_crBLColor;
-
-	m_iPressureStyle  = pXDirect->m_iPressureStyle;
-	m_iPressureWidth  = pXDirect->m_iPressureWidth;
-	m_crPressureColor = pXDirect->m_crPressureColor;
-
-	m_pctrlNeutral->SetStyle(m_iNeutralStyle, m_iNeutralWidth, m_crNeutralColor);
-	m_pctrlBL->SetStyle(m_iBLStyle, m_iBLWidth, m_crBLColor);
-	m_pctrlPressure->SetStyle(m_iPressureStyle, m_iPressureWidth, m_crPressureColor);
-}
 
 void XDirectStyleDlg::OnRestoreDefaults()
 {

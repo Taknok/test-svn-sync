@@ -44,9 +44,9 @@ public:
 	bool GetAutoYMin();
 	bool GetBorder();
 	bool GetInverted();
-	bool IsInDrawRect(int const &x, int const &y);
-	bool IsInDrawRect(QPoint const &pt);
-	bool Init();
+	bool isInDrawRect(int const &x, int const &y);
+	bool isInDrawRect(QPoint const &pt);
+	bool initializeGraph();
 
 	double ClientTox(int x);
 	double ClientToy(int y);
@@ -61,49 +61,49 @@ public:
 	void DeselectPoint();
 	Curve * GetCurvePoint(const int &xClt, const int &yClt, int &nSel);
 	Curve * GetClosestPoint(double const &x, double const &y, double &xSel, double &ySel, int &nSel);
-	void ResetLimits();
-	void ResetCurves();
+	void resetLimits();
+	void resetCurves();
 	void Scale(double zoom);
 	void Scalex(double zoom);
 	void Scaley(double zoom);
-	void SetAutoXMinUnit(bool bAuto);
-	void SetAutoYMinUnit(bool bAuto);
-	void SetAutoXUnit();
-	void SetAutoYUnit();
-	void SetAxisData(int s, int w, QColor clr);
-	void SetBkColor(QColor cr);
-	void SetBorderColor(QColor crBorder);
-	void SetBorder(bool bBorder);
-	void SetBorderStyle(int s);
-	void SetBorderWidth(int w);
-	void SetDrawRect(QRect &Rect);
-	void SetMargin(int m);
-	void SetInverted(bool bInverted);
-	void SetType(int type);
-	void SetXTitle(QString str);
-	void SetYTitle(QString str);
+	void setAutoXMinUnit(bool bAuto);
+	void setAutoYMinUnit(bool bAuto);
+	void setAutoXUnit();
+	void setAutoYUnit();
+	void setAxisData(int s, int w, QColor clr);
+	void setBkColor(QColor cr);
+	void setBorderColor(QColor crBorder);
+	void setBorder(bool bBorder);
+	void setBorderStyle(int s);
+	void setBorderWidth(int w);
+	void setDrawRect(QRect Rect);
+	void setMargin(int m);
+	void setInverted(bool bInverted);
+	void setType(int type);
+	void setXTitle(QString str);
+	void setYTitle(QString str);
 	void SetX0(double f);
-	void SetXMax(double f);
-	void SetXMin(double f);
+	void setXMax(double f);
+	void setXMin(double f);
 	void SetXMinorUnit(double f);
 	void SetXUnit(double f);
 	void SetY0(double f);
-	void SetYMax(double f);
-	void SetYMin(double f);
+	void setYMax(double f);
+	void setYMin(double f);
 	void SetYMinorUnit(double f);
 	void SetYUnit(double f);
 	void SetXMajGrid(bool const &state, QColor const &clr, int const &style, int const &width);
 	void SetYMajGrid(bool const &state, QColor const &clr, int const &style, int const &width);
 	void SetXMinGrid(bool state, bool bAuto, QColor clr, int style, int width, double unit = -1.0);
 	void SetYMinGrid(bool state, bool bAuto, QColor clr, int style, int width, double unit = -1.0);
-	void SetAuto(bool bAuto);
-	void SetAutoX(bool bAuto);
-	void SetAutoY(bool bAuto);
-	void SetAxisColor(QColor crColor);
-	void SetAxisStyle(int nStyle);
-	void SetAxisWidth(int Width);
-	void SetTitleColor(QColor crColor);
-	void SetLabelColor(QColor crColor);
+	void setAuto(bool bAuto);
+	void setAutoX(bool bAuto);
+	void setAutoY(bool bAuto);
+	void setAxisColor(QColor crColor);
+	void setAxisStyle(int nStyle);
+	void setAxisWidth(int Width);
+	void setTitleColor(QColor crColor);
+	void setLabelColor(QColor crColor);
 	void SetWindow(double x1, double x2, double y1, double y2);
 
 	QColor GetAxisColor();
@@ -113,14 +113,13 @@ public:
 	QColor GetLabelColor();
 
 	int GetBorderStyle();
-	int GetCurveCount();
-	int GetMargin();
+	int margin();
 	int GetAxisStyle();
 	int GetAxisWidth();
 	int GetBorderWidth();
-	int GetXVariable();
-	int GetYVariable();
-	void SetVariables(int const & X, int const & Y);
+	int getXVariable();
+	int getYVariable();
+	void setVariables(int const & X, int const & Y);
 	void SetXVariable(int const & X);
 	void SetYVariable(int const & Y);
 	double GetX0();
@@ -155,25 +154,31 @@ public:
 
 	void GetClientRect(QRect &Rect);
 
-	void SetDefaults();
-	void SetGraphName(QString GraphName);
-	void GetGraphName(QString &GraphName);
+	void setGraphDefaults();
+	void setGraphName(QString GraphName);
+	void graphName(QString &GraphName);
 
-	QString GetGraphName();
-	
-	Curve* GetCurve(int nIndex);
-	Curve* GetCurve(QString CurveTitle);
-	Curve* AddCurve();
-	Curve* AddCurve(Curve *pCurve);
+	QString graphName(){return m_GraphName;}
+	Curve* curve(int nIndex);
+	Curve* curve(QString CurveTitle);
+	Curve* addCurve();
+	Curve* addCurve(Curve *pCurve);
 	void DeleteCurve(int index);
 	void DeleteCurve(Curve *pCurve);
 	void DeleteCurve(QString CurveTitle);
 	void DeleteCurves();
-	void ResetXLimits();
-	void ResetYLimits();
+	void resetXLimits();
+	void resetYLimits();
 
 	int curveCount() {return m_oaCurves.size();}
 	QList<void*> *getCurves(){return &m_oaCurves;}
+
+
+	QColor backgroundColor(){return m_BkColor;}
+	QColor borderColor() {return m_BorderColor;}
+	int borderStyle(){return m_BorderStyle;}
+	int borderWidth(){return m_BorderWidth;}
+
 
 	Graph();
 	virtual ~Graph();
@@ -232,6 +237,7 @@ private:
 	QColor m_BorderColor;
 	int m_BorderStyle;
 	int m_BorderWidth;
+
 
 	int m_X, m_Y; //index of X and Y variables
 };

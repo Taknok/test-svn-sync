@@ -60,7 +60,7 @@
 #include <WingOpp.h>
 #include <PlaneOpp.h>
 #include <QGraph.h>
-
+#include "graphtilewidget.h"
 
 /**
  *@class QMiarex
@@ -114,20 +114,15 @@ private slots:
 	void On3DCp();
 	void On3DPrefs();
 	void On3DReset();
-	void On3DView();
-	void OnAdjustToWing();
+	void on3DView();
+	void onAdjustToWing();
 	void OnAdvancedSettings();
-	void OnAllWingGraphScales();
-	void OnAllWingGraphSettings();
-	void OnAllWPolarGraphScales();
-	void OnAllWPolarGraphSettings();
 	void OnAnalyze();
 	void OnAnimateWOpp();
-	void OnAnimateWOppSingle();
-	void OnAnimateWOppSpeed(int val);
+	void onAnimateWOppSingle();
+	void onAnimateWOppSpeed(int val);
 	void OnAnimateModeSingle(bool bStep=true);
 	void OnAxes();
-	void OnClipPlane(int pos);
 	void OnCpSection(int pos);
 	void OnCpPosition();
 	void OnCpView();
@@ -135,8 +130,8 @@ private slots:
 	void OnCurveStyle(int index);
 	void OnCurveWidth(int index);
 	void OnCurWOppOnly();
-	void OnDefineStabPolar();
-	void OnDefineWPolar();
+	void onDefineStabPolar();
+	void onDefineWPolar();
 	void OnDefineWPolarObject();
 	void OnDeleteAllWOpps();
 	void OnDeleteAllWPlrOpps();
@@ -147,13 +142,14 @@ private slots:
 	void OnDeletePlaneWPolars();
 	void OnDownwash();
 	void OnDuplicateCurPlane();
-	void OnEditCurWPolar();
+	void onEditCurWPolar();
 	void OnEditCurWPolarPts();
 	void OnEditCurWing();
-	void OnEditCurBody();
+	void onEditCurBody();
+	void onEditCurBodyObject();
 	void OnEditCurPlane();
 	void OnEditCurObject();
-	void OnEditCurWPolarObject();
+	void onEditCurWPolarObject();
 	void OnExporttoAVL();
 	void OnExportCurWOpp();
 	void OnExportCurWPolar();
@@ -163,8 +159,6 @@ private slots:
 	void OnFoilNames();
 	void OnFourGraphs();
 	void OnGL3DScale();
-	void OnGraphSettings();
-	void OnHalfWing();
 	void OnHideAllWOpps();
 	void OnHideAllWPlrOpps();
 	void OnHideAllWPolars();
@@ -189,12 +183,8 @@ private slots:
 	void OnRenameCurPlane();
 	void OnRenameCurWPolar();
 	void OnResetCpSection();
-	void OnResetWingGraphScale();
-	void OnResetWOppLegend();
-	void OnResetWPlrLegend();
-	void OnRootLocusView();
+	void onRootLocusView();
 	void OnResetCurWPolar();
-	void OnResetWingScale();
 	void OnSetupLight();
 	void OnScaleWing();
 	void OnSequence();
@@ -221,95 +211,82 @@ private slots:
 	void OnStreamlines();
 	void OnSurfaces();
 	void OnSurfaceSpeeds();
-	void OnTimeView();
+	void onStabTimeView();
 	void OnTwoGraphs();
 	void OnPlaneInertia();
 	void OnVortices();
 	void OnNormals();
 	void OnWing2Curve();
 	void OnPlaneOppProperties();
-	void OnWOppView();
-	void OnWPolarView();
+	void onWOppView();
+	void onWPolarView();
 	void OnWPolarProperties();
 
 public:
 	//overrides
-	void contextMenuEvent (QContextMenuEvent * event);
 	void keyPressEvent(QKeyEvent *event);
 	void keyReleaseEvent(QKeyEvent *event);
-	void mouseMoveEvent(QMouseEvent *event);
-	void mousePressEvent(QMouseEvent *event);
-	void mouseReleaseEvent(QMouseEvent *event);
 	void showEvent(QShowEvent *event);
-
 
 public:
 	//class methods
 	void doubleClickEvent(QPoint pos);
-	void zoomEvent(QPoint pt, double zoomFactor);
 
 	WPolar* AddWPolar(WPolar* pWPolar);
 	int CalculateMatSize();
 	void Connect();
-	void CreateCpCurves();
-	void CreateWPolarCurves();
+	void createCpCurves();
+	void createWPolarCurves();
 	void CreateWOppCurves();
 	void CreateStabilityCurves();
 	void CreateStabRLCurves();
 	void CreateStabTimeCurves();
 	void CreateStabRungeKuttaCurves();
 	void DrawCpLegend(QPainter &painter, QPoint place, int bottom);
-	void DrawOppGraphLegend(QPainter &painter, QPoint place, int bottom);
-	void DrawWPolarLegend(QPainter &painter, QPoint place, int bottom);
-	void DrawStabTimeLegend(QPainter &painter, QPoint place, int bottom);
 	void DrawTextLegend();
 	void DuplicatePlane();
 	void FillComboBoxes(bool bEnable = true);
 	void FillWPlrCurve(Curve *pCurve, WPolar *pWPolar, int XVar, int YVar);
 	void FillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve);
 	void FillStabCurve(Curve *pCurve, WPolar *pWPolar, int iMode);
-	QGraph*  GetGraph(QPoint &pt);
 	void GLCallViewLists();
 	void GLDraw3D();
 	void GLDrawMasses();
 	void GLRenderView();
 	bool IntersectObject(CVector O,  CVector U, CVector &I);
 	void LLTAnalyze(double V0, double VMax, double VDelta, bool bSequence, bool bInitCalc);	
-	bool LoadSettings(QSettings *pSettings);
+	bool loadSettings(QSettings *pSettings);
 	void PaintCpLegendText(QPainter &painter);
 	void PaintPanelForceLegendText(QPainter &painter);
-	void PaintXCmRef(QPainter &painter, QPoint ORef, double scale);
-	void PaintXCP(QPainter &painter, QPoint ORef, double scale);
-	void PaintXTr(QPainter &painter, QPoint ORef, double scale);
-	void PaintView(QPainter &painter);
-	void PaintWing(QPainter &painter, QPoint ORef, double scale);
 	void PanelAnalyze(double V0, double VMax, double VDelta, bool bSequence);
 	void PaintPlaneLegend(QPainter &painter, Plane *pPlane, WPolar *pWPolar, QRect drawRect);
 	void PaintPlaneOppLegend(QPainter &painter, QRect drawRect);
 	void RenamePlane(QString PlaneName);
-	bool SaveSettings(QSettings *pSettings);
-	void Set2DScale();
+	bool saveSettings(QSettings *pSettings);
 	void Set3DScale();
 	void SetAnalysisParams();
-	void SetControls();
-	void SetCurveParams();
+	void setControls();
+	void setCurveParams();
+	void setGraphTiles();
 	bool SetPlaneOpp(bool bCurrent, double x = 0.0);
 	void SetScale();
 	void SetStabGraphTitles();
-	void SetPlane(QString PlaneName="");
+	void setPlane(QString PlaneName="");
 	void SetupLayout();
 	void SetViewControls();
+	void setView(XFLR5::enumGraphView eView);
 	void SetWGraphScale();
-	void SetWGraphTitles(Graph* pGraph);
-	void SetWingLegendPos();
+	void setWGraphTitles(Graph* pGraph);
 	void SetWPolar(bool bCurrent = true, QString WPlrName = "");
-	void SetWPlrLegendPos();
 	void SnapClient(QString const &FileName);
 	void StopAnimate();
 	void UpdateCurve();
-	void UpdateUnits();
-	void UpdateView();
+	void updateUnits();
+	void updateView();
 
+
+	PlaneOpp *curPOpp(){return m_pCurPOpp;}
+	bool curPOppOnly(){return m_bCurPOppOnly;}
 
 //____________________Variables______________________________________
 //
@@ -382,7 +359,6 @@ public:
 	bool m_bCurveVisible;              /**< true if the active curve is to be displayed */
 	bool m_bDirichlet;                 /**< true if Dirichlet BC are applied in 3D panel analysis, false if Neumann */
 	bool m_bDownwash;                  /**< true if the arrows represeting downwash are to be displayed on the 3D openGl view */
-	bool m_bHalfWing;                  /**< true if only a half-wing should be displayed of the in the OpPoint view */
 	bool m_bHighlightOpp;              /**< true if the currently selected operating point is to be highlighted on the polar graph */
 	bool m_bInitLLTCalc;               /**< true if the LLT parameters should be set to default prior to the analysis. Otherwise, the iterations will start at the results of the previous calculation */
 	bool m_bIs2DScaleSet;              /**< true if the 3D scale has been set, false if needs to be reset */
@@ -410,10 +386,9 @@ public:
 	bool m_bVortices;                  /**< true if the panel vortices should be displayed */
 	bool m_bPanelNormals;                   /**< true if the panel normals should be displayed */
 	bool m_bXBot;                      /**< true if the transition on the bottom surface should be displayed in the operating point or in 3D view*/
-	bool m_bXCmRef; 	               /**< true if the position of the reference point for the moments should be displayed in the operating point view*/
 	bool m_bXCP;                       /**< true if the lift curve should be displayed in the operating point or in the 3D view*/
-	bool m_bXPressed;                  /**< true if the X key is pressed */
 	bool m_bXTop;                      /**< true if the transition on the top surface should be displayed in the operating point or in 3D view */
+	bool m_bXPressed;                  /**< true if the X key is pressed */
 	bool m_bYPressed;                  /**< true if the Y key is pressed */
 
 	static bool m_bResetglGeom;               /**< true if the geometry OpenGL list needs to be re-generated */
@@ -444,12 +419,9 @@ public:
 	static double s_VelocityScale;            /**< scaling factor for the velocity display in 3D view */
 	static double s_DragScale;                /**< scaling factor for the drag display in 3D view */
 
-	QRect m_r2DCltRect;                /**< the client rectangle, in client coordinates. */
-
 	PlaneOpp * m_pCurPOpp;           /**< a pointer to the active Plane Operating Point, or NULL if none is active*/
 
 
-	QPoint m_LastPoint;           /**< The client position of the previous mousepress event */
 
 
 	int m_CurveStyle;             /**< The style of the active curve */
@@ -472,7 +444,7 @@ public:
 
 	Plane * m_pCurPlane;          /**< the currently active Plane */
 	WPolar * m_pCurWPolar;        /**< the currently active WPolar */
-	Wing *m_pWingList[MAXWINGS];  /**< for convenienece, an array of pointers to the four wings of the currently selected plane */
+	Wing *m_pWingList[MAXWINGS];  /**< for convenience, an array of pointers to the four wings of the currently selected plane */
 
 
 	int m_StabilityResponseType;   /**< 0 = initial conditions, 1=forced response, 2=modal response */
@@ -491,7 +463,6 @@ public:
 
 
 	double m_CurSpanPos;        /**< Span position for Cp Graph  */
-	double m_WingScale;			/**< scale for 2D display */
 
 	double m_AlphaMin;          /**< the min value of the aoa for sequential analysis*/
 	double m_AlphaMax;          /**< the max value of the aoa for sequential analysis*/
@@ -523,30 +494,18 @@ public:
 
 	QFile* m_pXFile;            /**< a pointer to the output .log file */
 
-	QPoint m_ptOffset;              /**< client offset position for wing display */
-	QPoint m_WPlrLegendOffset;      /**< client offset position for wing polar legend */
-	QPoint m_WingLegendOffset;      /**< client offset position for WOPP polar legend */
-
-	QRect m_rSingleRect;            /**< the drawing rectangle for single graph view */
 
 	QGraph m_CpGraph;                       /**< the Cp Graph in 3D panel analysis */
-	QGraph m_WingGraph[MAXGRAPHS];          /**< the WOpp graphs */
-	QGraph m_WPlrGraph[MAXGRAPHS];          /**< the WPolar graphs */
-	QGraph m_TimeGraph[MAXGRAPHS];          /**< the time response in stability view */
-	QGraph m_LongRLGraph;                   /**< the root locus graph for Longitudinal modes */
-	QGraph m_LatRLGraph;                    /**< the root locus graph for Longitudinal modes */
-	QGraph* m_pCurGraph;                    /**< a pointer to the currently active graph */
-	QGraph* m_pCurWPlrGraph;                /**< a pointer to the currently active WPolar graph */
-	QGraph* m_pCurWingGraph;                /**< a pointer to the currently active WOpp graph */
-	QGraph* m_pCurRLStabGraph;              /**< a pointer to the currently active Root Locus Graph */
-	QGraph* m_pCurTimeGraph;                /**< a pointer to the currently active time graph */
+	QList<QGraph*> m_WingGraph;             /**< the array of pointer to the OpPoint graphs */
+	QList<QGraph*> m_WPlrGraph;             /**< the array of pointers to the WPolar graphs */
+	QList<QGraph*> m_StabPlrGraph;          /**< the array of pointers to the two root locus graphs */
+	QList<QGraph*> m_TimeGraph;             /**< the array of pointers to the time response graphs in stability view */
 
 	bool m_bResetTextLegend;
 	QPixmap m_PixText;
 
 public:
 	static void *s_pMainFrame;          /**< a pointer to the frame class */
-	static void *s_p2dWidget;           /**< a pointer to mainframe's central widget where 2D drawing is performed */
 	ThreeDWidget *m_p3dWidget;            /**< a pointer to the openGL widget where 3d calculations and rendering are performed */
 
 	static CVector *s_pNode;              /**< a static pointer to the node array for the currently loaded Plane*/

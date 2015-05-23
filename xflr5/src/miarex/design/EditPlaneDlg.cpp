@@ -40,7 +40,7 @@
 QSize EditPlaneDlg::s_WindowSize(1031,783);
 QPoint EditPlaneDlg::s_WindowPosition(131, 77);
 bool EditPlaneDlg::s_bWindowMaximized =false;
-QByteArray EditPlaneDlg::m_HorizontalSplitterSizes, EditPlaneDlg::m_RightSplitterSizes;
+QByteArray EditPlaneDlg::m_HorizontalSplitterSizes;
 
 #define SECTIONHIGHLIGHT    1702
 
@@ -49,6 +49,7 @@ QByteArray EditPlaneDlg::m_HorizontalSplitterSizes, EditPlaneDlg::m_RightSplitte
 EditPlaneDlg::EditPlaneDlg(QWidget *pParent) : QDialog(pParent)
 {
 	setWindowTitle("Plane object explorer");
+	setWindowFlags(Qt::Window);
 
 	m_pPlane = NULL;
 	m_pStruct = NULL;
@@ -89,7 +90,6 @@ EditPlaneDlg::EditPlaneDlg(QWidget *pParent) : QDialog(pParent)
 void EditPlaneDlg::showEvent(QShowEvent *event)
 {
 	m_pHorizontalSplitter->restoreState(m_HorizontalSplitterSizes);
-	m_pRightSideSplitter->restoreState(m_RightSplitterSizes);
 
 	move(s_WindowPosition);
 	resize(s_WindowSize);
@@ -110,7 +110,6 @@ void EditPlaneDlg::showEvent(QShowEvent *event)
 void EditPlaneDlg::hideEvent(QHideEvent *event)
 {
 	m_HorizontalSplitterSizes = m_pHorizontalSplitter->saveState();
-	m_RightSplitterSizes      = m_pRightSideSplitter->saveState();
 	s_WindowPosition = pos();
 	event->accept();
 }
@@ -118,11 +117,15 @@ void EditPlaneDlg::hideEvent(QHideEvent *event)
 
 void EditPlaneDlg::resizeEvent(QResizeEvent *event)
 {
-//	m_pStruct->setMinimumWidth(width()/2);
-	QList<int> sizes;
-	sizes.append((int)9*width()/10);
-	sizes.append((int)width()/10);
-	m_pRightSideSplitter->setSizes(sizes);
+	QList<int> leftSizes;
+	leftSizes.append((int)(height()*95/100));
+	leftSizes.append((int)(height()*5/100));
+	m_pLeftSideSplitter->setSizes(leftSizes);
+
+	QList<int> rightSizes;
+	rightSizes.append((int)(height()*95/100));
+	rightSizes.append((int)(height()*5/100));
+	m_pRightSideSplitter->setSizes(rightSizes);
 
 	int ColumnWidth = (int)((double)(m_pStruct->width())/15);
 	m_pStruct->setColumnWidth(0,ColumnWidth*6);
@@ -229,8 +232,8 @@ void EditPlaneDlg::setupLayout()
 	szPolicyMinimum.setVerticalPolicy(QSizePolicy::Minimum);
 
 	QSizePolicy szPolicyMaximum;
-	szPolicyMinimum.setHorizontalPolicy(QSizePolicy::Maximum);
-	szPolicyMinimum.setVerticalPolicy(QSizePolicy::Maximum);
+	szPolicyMaximum.setHorizontalPolicy(QSizePolicy::Maximum);
+	szPolicyMaximum.setVerticalPolicy(QSizePolicy::Maximum);
 
 	QSizePolicy szPolicyPreferred;
 	szPolicyPreferred.setHorizontalPolicy(QSizePolicy::Preferred);
@@ -239,14 +242,14 @@ void EditPlaneDlg::setupLayout()
 	QSizePolicy szPolicyFixed;
 	szPolicyFixed.setHorizontalPolicy(QSizePolicy::Fixed);
 	szPolicyFixed.setVerticalPolicy(QSizePolicy::Fixed);
-	QSizePolicy szPolicyExpanding;
 
+	QSizePolicy szPolicyExpanding;
 	szPolicyExpanding.setHorizontalPolicy(QSizePolicy::Expanding);
 	szPolicyExpanding.setVerticalPolicy(QSizePolicy::Expanding);
 
 	QSizePolicy szPolicyIgnored;
-	szPolicyExpanding.setHorizontalPolicy(QSizePolicy::Ignored);
-	szPolicyExpanding.setVerticalPolicy(QSizePolicy::Ignored);
+	szPolicyIgnored.setHorizontalPolicy(QSizePolicy::Ignored);
+	szPolicyIgnored.setVerticalPolicy(QSizePolicy::Ignored);
 
 
 	m_pHorizontalSplitter = new QSplitter(Qt::Horizontal, this);
@@ -261,26 +264,6 @@ void EditPlaneDlg::setupLayout()
 				p3DCtrlBox->setSizePolicy(szPolicyMaximum);
 				QHBoxLayout *pThreeDViewControlsLayout = new QHBoxLayout;
 				{
-					QVBoxLayout *pCommandLayout = new QVBoxLayout;
-					{
-						m_pctrlRedraw = new QPushButton(tr("Regenerate"));
-
-						QHBoxLayout *pExitCommandLayout = new QHBoxLayout;
-						{
-							pOKButton = new QPushButton(tr("Save and Close"));
-							pOKButton->setAutoDefault(true);
-							QPushButton *pCancelButton = new QPushButton(tr("Cancel"));
-							pCancelButton->setAutoDefault(false);
-							pExitCommandLayout->addWidget(pOKButton);
-							pExitCommandLayout->addWidget(pCancelButton);
-							connect(pOKButton, SIGNAL(clicked()),this, SLOT(OnOK()));
-							connect(pCancelButton, SIGNAL(clicked()),this, SLOT(reject()));
-						}
-						pCommandLayout->addWidget(m_pctrlRedraw);
-						pCommandLayout->addLayout(pExitCommandLayout);
-					}
-
-
 					QGridLayout *pThreeDParamsLayout = new QGridLayout;
 					{
 						m_pctrlAxes         = new QCheckBox(tr("Axes"), this);
@@ -299,46 +282,46 @@ void EditPlaneDlg::setupLayout()
 
 						pThreeDParamsLayout->addWidget(m_pctrlAxes, 1,1);
 						pThreeDParamsLayout->addWidget(m_pctrlPanels, 1,2);
-						pThreeDParamsLayout->addWidget(m_pctrlSurfaces, 2,1);
-						pThreeDParamsLayout->addWidget(m_pctrlOutline, 2,2);
-						pThreeDParamsLayout->addWidget(m_pctrlFoilNames, 3,1);
-						pThreeDParamsLayout->addWidget(m_pctrlShowMasses, 3,2);
+						pThreeDParamsLayout->addWidget(m_pctrlSurfaces, 1,3);
+						pThreeDParamsLayout->addWidget(m_pctrlOutline, 2,1);
+						pThreeDParamsLayout->addWidget(m_pctrlFoilNames, 2,2);
+						pThreeDParamsLayout->addWidget(m_pctrlShowMasses, 2,3);
 					}
+					QHBoxLayout *pAxisViewLayout = new QHBoxLayout;
+					{
+						m_pctrlX          = new QToolButton;
+						m_pctrlY          = new QToolButton;
+						m_pctrlZ          = new QToolButton;
+						m_pctrlIso        = new QToolButton;
+						if(m_pctrlX->iconSize().height()<=48)
+						{
+							m_pctrlX->setIconSize(QSize(24,24));
+							m_pctrlY->setIconSize(QSize(24,24));
+							m_pctrlZ->setIconSize(QSize(24,24));
+							m_pctrlIso->setIconSize(QSize(24,24));
+						}
+						m_pXView   = new QAction(QIcon(":/images/OnXView.png"), tr("X View"), this);
+						m_pYView   = new QAction(QIcon(":/images/OnYView.png"), tr("Y View"), this);
+						m_pZView   = new QAction(QIcon(":/images/OnZView.png"), tr("Z View"), this);
+						m_pIsoView = new QAction(QIcon(":/images/OnIsoView.png"), tr("Iso View"), this);
+						m_pXView->setCheckable(true);
+						m_pYView->setCheckable(true);
+						m_pZView->setCheckable(true);
+						m_pIsoView->setCheckable(true);
 
+						m_pctrlX->setDefaultAction(m_pXView);
+						m_pctrlY->setDefaultAction(m_pYView);
+						m_pctrlZ->setDefaultAction(m_pZView);
+						m_pctrlIso->setDefaultAction(m_pIsoView);
+						pAxisViewLayout->addWidget(m_pctrlX);
+						pAxisViewLayout->addWidget(m_pctrlY);
+						pAxisViewLayout->addWidget(m_pctrlZ);
+						pAxisViewLayout->addWidget(m_pctrlIso);
+						m_pctrlReset = new QPushButton(tr("Reset view"));
+						pAxisViewLayout->addWidget(m_pctrlReset);
+					}
 					QVBoxLayout *pRightColLayout = new QVBoxLayout;
 					{
-						QHBoxLayout *pAxisViewLayout = new QHBoxLayout;
-						{
-							m_pctrlX          = new QToolButton;
-							m_pctrlY          = new QToolButton;
-							m_pctrlZ          = new QToolButton;
-							m_pctrlIso        = new QToolButton;
-							if(m_pctrlX->iconSize().height()<=48)
-							{
-								m_pctrlX->setIconSize(QSize(24,24));
-								m_pctrlY->setIconSize(QSize(24,24));
-								m_pctrlZ->setIconSize(QSize(24,24));
-								m_pctrlIso->setIconSize(QSize(24,24));
-							}
-							m_pXView   = new QAction(QIcon(":/images/OnXView.png"), tr("X View"), this);
-							m_pYView   = new QAction(QIcon(":/images/OnYView.png"), tr("Y View"), this);
-							m_pZView   = new QAction(QIcon(":/images/OnZView.png"), tr("Z View"), this);
-							m_pIsoView = new QAction(QIcon(":/images/OnIsoView.png"), tr("Iso View"), this);
-							m_pXView->setCheckable(true);
-							m_pYView->setCheckable(true);
-							m_pZView->setCheckable(true);
-							m_pIsoView->setCheckable(true);
-
-							m_pctrlX->setDefaultAction(m_pXView);
-							m_pctrlY->setDefaultAction(m_pYView);
-							m_pctrlZ->setDefaultAction(m_pZView);
-							m_pctrlIso->setDefaultAction(m_pIsoView);
-							pAxisViewLayout->addWidget(m_pctrlX);
-							pAxisViewLayout->addWidget(m_pctrlY);
-							pAxisViewLayout->addWidget(m_pctrlZ);
-							pAxisViewLayout->addWidget(m_pctrlIso);
-						}
-
 						QHBoxLayout *pClipLayout = new QHBoxLayout;
 						{
 							QLabel *ClipLabel = new QLabel(tr("Clip:"));
@@ -352,17 +335,12 @@ void EditPlaneDlg::setupLayout()
 							pClipLayout->addWidget(m_pctrlClipPlanePos,1);
 						}
 
-							m_pctrlReset = new QPushButton(tr("Reset view"));
-
-
-						pRightColLayout->addLayout(pAxisViewLayout);
-						pRightColLayout->addWidget(m_pctrlReset);
 						pRightColLayout->addLayout(pClipLayout);
 					}
 
-					pThreeDViewControlsLayout->addLayout(pCommandLayout);
-					pThreeDViewControlsLayout->addStretch();
 					pThreeDViewControlsLayout->addLayout(pThreeDParamsLayout);
+					pThreeDViewControlsLayout->addStretch();
+					pThreeDViewControlsLayout->addLayout(pAxisViewLayout);
 					pThreeDViewControlsLayout->addStretch();
 					pThreeDViewControlsLayout->addLayout(pRightColLayout);
 
@@ -370,13 +348,44 @@ void EditPlaneDlg::setupLayout()
 				p3DCtrlBox->setLayout(pThreeDViewControlsLayout);
 			}
 			m_pGLWidget->sizePolicy().setVerticalStretch(5);
-			p3DCtrlBox->sizePolicy().setVerticalStretch(2);
+			p3DCtrlBox->sizePolicy().setVerticalStretch(1);
 
 			m_pRightSideSplitter->addWidget(m_pGLWidget);
 			m_pRightSideSplitter->addWidget(p3DCtrlBox);
 		}
 
-		m_pHorizontalSplitter->addWidget(m_pStruct);
+		m_pLeftSideSplitter = new QSplitter(Qt::Vertical, this);
+		{
+			QWidget *pCommandWidget = new QWidget(this);
+			{
+				QVBoxLayout *pCommandLayout = new QVBoxLayout;
+				{
+					m_pctrlRedraw = new QPushButton(tr("Regenerate")+"\t(F4)");
+
+					QHBoxLayout *pExitCommandLayout = new QHBoxLayout;
+					{
+						pOKButton = new QPushButton(tr("Save and Close"));
+						pOKButton->setAutoDefault(true);
+						QPushButton *pCancelButton = new QPushButton(tr("Cancel"));
+						pCancelButton->setAutoDefault(false);
+						pExitCommandLayout->addWidget(pOKButton);
+						pExitCommandLayout->addWidget(pCancelButton);
+						connect(pOKButton, SIGNAL(clicked()),this, SLOT(OnOK()));
+						connect(pCancelButton, SIGNAL(clicked()),this, SLOT(reject()));
+					}
+					pCommandLayout->addWidget(m_pctrlRedraw);
+					pCommandLayout->addLayout(pExitCommandLayout);
+				}
+				pCommandWidget->setLayout(pCommandLayout);
+			}
+
+			m_pStruct->sizePolicy().setVerticalStretch(17);
+			pCommandWidget->sizePolicy().setVerticalStretch(1);
+
+			m_pLeftSideSplitter->addWidget(m_pStruct);
+			m_pLeftSideSplitter->addWidget(pCommandWidget);
+		}
+		m_pHorizontalSplitter->addWidget(m_pLeftSideSplitter);
 		m_pHorizontalSplitter->addWidget(m_pRightSideSplitter);
 	}
 
@@ -445,12 +454,16 @@ void EditPlaneDlg::initDialog(Plane *pPlane)
 	m_pPlane->CreateSurfaces();
 	fillPlaneTreeView();
 
+	m_pGLWidget->setScale(qMax(m_pPlane->wing()->planformSpan(), m_pPlane->body() ? m_pPlane->body()->Length() : 1.0));
+
 	m_pctrlSurfaces->setChecked(ThreeDWidget::s_bSurfaces);
 	m_pctrlOutline->setChecked(ThreeDWidget::s_bOutline);
 	m_pctrlAxes->setChecked(ThreeDWidget::s_bAxes);
 	m_pctrlPanels->setChecked(ThreeDWidget::s_bVLMPanels);
 	m_pctrlFoilNames->setChecked(ThreeDWidget::s_bFoilNames);
 	m_pctrlShowMasses->setChecked(ThreeDWidget::s_bShowMasses);
+	m_pctrlClipPlanePos->setValue((int)(m_pGLWidget->m_ClipPlanePos*100.0));
+
 }
 
 
@@ -473,12 +486,16 @@ void EditPlaneDlg::keyPressEvent(QKeyEvent *event)
 
 			break;
 		}
+		case Qt::Key_F4:
+		{
+			on3DReset();
+			return;
+		}
 		case Qt::Key_Escape:
 		{
 			reject();
 			return;
 		}
-
 		default:
 			event->ignore();
 	}
@@ -905,53 +922,40 @@ void EditPlaneDlg::Connect()
 {
 	connect(m_pInsertBefore,  SIGNAL(triggered()), this, SLOT(OnInsertBefore()));
 	connect(m_pInsertAfter,   SIGNAL(triggered()), this, SLOT(OnInsertAfter()));
-	connect(m_pDeleteItem, SIGNAL(triggered()), this, SLOT(OnDelete()));
+	connect(m_pDeleteItem,    SIGNAL(triggered()), this, SLOT(OnDelete()));
 
-	connect(m_pctrlIso,        SIGNAL(clicked()), m_pGLWidget, SLOT(On3DIso()));
-	connect(m_pctrlX,          SIGNAL(clicked()), m_pGLWidget, SLOT(On3DFront()));
-	connect(m_pctrlY,          SIGNAL(clicked()), m_pGLWidget, SLOT(On3DLeft()));
-	connect(m_pctrlZ,          SIGNAL(clicked()), m_pGLWidget, SLOT(On3DTop()));
+	connect(m_pctrlRedraw,     SIGNAL(clicked()), this, SLOT(onRedraw()));
+	connect(m_pctrlReset,      SIGNAL(clicked()), this, SLOT(on3DReset()));
 
-	connect(m_pctrlRedraw,     SIGNAL(clicked()), this, SLOT(OnRedraw()));
-	connect(m_pctrlReset,      SIGNAL(clicked()), this, SLOT(On3DReset()));
-	connect(m_pctrlFoilNames,  SIGNAL(clicked()), this, SLOT(OnFoilNames()));
-	connect(m_pctrlShowMasses, SIGNAL(clicked()), this, SLOT(OnShowMasses()));
+	connect(m_pctrlReset,      SIGNAL(clicked()), m_pGLWidget, SLOT(on3DReset()));
 
-	connect(m_pctrlAxes,       SIGNAL(clicked()), this, SLOT(OnAxes()));
-	connect(m_pctrlPanels,     SIGNAL(clicked()), this, SLOT(OnPanels()));
-	connect(m_pctrlSurfaces,   SIGNAL(clicked()), this, SLOT(OnSurfaces()));
-	connect(m_pctrlOutline,    SIGNAL(clicked()), this, SLOT(OnOutline()));
+	connect(m_pctrlAxes,       SIGNAL(clicked(bool)), m_pGLWidget, SLOT(onAxes(bool)));
+	connect(m_pctrlPanels,     SIGNAL(clicked(bool)), m_pGLWidget, SLOT(onPanels(bool)));
+	connect(m_pctrlSurfaces,   SIGNAL(clicked(bool)), m_pGLWidget, SLOT(onSurfaces(bool)));
+	connect(m_pctrlOutline,    SIGNAL(clicked(bool)), m_pGLWidget, SLOT(onOutline(bool)));
+	connect(m_pctrlFoilNames,  SIGNAL(clicked(bool)), m_pGLWidget, SLOT(onFoilNames(bool)));
+	connect(m_pctrlShowMasses, SIGNAL(clicked(bool)), m_pGLWidget, SLOT(onShowMasses(bool)));
+
+	connect(m_pctrlIso,        SIGNAL(clicked()), m_pGLWidget, SLOT(on3DIso()));
+	connect(m_pctrlX,          SIGNAL(clicked()), m_pGLWidget, SLOT(on3DFront()));
+	connect(m_pctrlY,          SIGNAL(clicked()), m_pGLWidget, SLOT(on3DLeft()));
+	connect(m_pctrlZ,          SIGNAL(clicked()), m_pGLWidget, SLOT(on3DTop()));
+
+
+
+	connect(m_pctrlClipPlanePos, SIGNAL(sliderMoved(int)), m_pGLWidget, SLOT(onClipPlane(int)));
 }
 
 
-void EditPlaneDlg::OnSurfaces()
+
+void EditPlaneDlg::on3DReset()
 {
-	ThreeDWidget::s_bSurfaces = m_pctrlSurfaces->isChecked();
-	m_pGLWidget->update();
+	m_pGLWidget->setScale(qMax(m_pPlane->wing()->planformSpan(), m_pPlane->body() ? m_pPlane->body()->Length() : 1.0));
+	m_pGLWidget->on3DReset();
 }
 
 
-void EditPlaneDlg::OnOutline()
-{
-	ThreeDWidget::s_bOutline = m_pctrlOutline->isChecked();
-	m_pGLWidget->update();
-}
-
-
-void EditPlaneDlg::OnPanels()
-{
-	ThreeDWidget::s_bVLMPanels = m_pctrlPanels->isChecked();
-	m_pGLWidget->update();
-}
-
-void EditPlaneDlg::On3DReset()
-{
-//	SetWingScale();
-	m_pGLWidget->On3DReset();
-}
-
-
-void EditPlaneDlg::OnRedraw()
+void EditPlaneDlg::onRedraw()
 {
 	readPlaneTree();
 
@@ -967,31 +971,6 @@ void EditPlaneDlg::OnRedraw()
 }
 
 
-void EditPlaneDlg::OnAxes()
-{
-	ThreeDWidget::s_bAxes = m_pctrlAxes->isChecked();
-	m_pGLWidget->update();
-
-}
-
-
-void EditPlaneDlg::OnFoilNames()
-{
-	ThreeDWidget::s_bFoilNames = m_pctrlFoilNames->isChecked();
-	m_pGLWidget->update();
-
-}
-
-
-
-void EditPlaneDlg::OnShowMasses()
-{
-	ThreeDWidget::s_bShowMasses = m_pctrlShowMasses->isChecked();
-	m_pGLWidget->update();
-
-}
-
-
 
 bool EditPlaneDlg::IntersectObject(CVector AA,  CVector U, CVector &I)
 {
@@ -1002,7 +981,10 @@ bool EditPlaneDlg::IntersectObject(CVector AA,  CVector U, CVector &I)
 		if (pWingList[iw] && pWingList[iw]->IntersectWing(AA, U, I)) return true;
 	}
 
-	/** @todo intersect body also */
+	if(m_pPlane->body())
+	{
+		if(m_pPlane->body()->intersectFlatPanels(AA, AA+U*10, I))return true;
+	}
 	return false;
 }
 
@@ -1470,19 +1452,12 @@ void EditPlaneDlg::fillBodyTreeView(QStandardItem*planeRootItem)
 				dataItem = prepareIntRow("", "Lengthwise panels (FLATPANELS case)", pBody->m_xPanels.at(iFrame));
 				sectionFolder.first()->appendRow(dataItem);
 
-				QList<QStandardItem*> positionFolder = prepareRow("Position");
-				sectionFolder.first()->appendRow(positionFolder);
-				{
-					QList<QStandardItem*> dataItem = prepareDoubleRow("", "x", pFrame->m_Position.x*Units::mtoUnit(), Units::lengthUnitLabel());
-					positionFolder.first()->appendRow(dataItem);
-
-					dataItem = prepareDoubleRow("", "z", pFrame->m_Position.z*Units::mtoUnit(), Units::lengthUnitLabel());
-					positionFolder.first()->appendRow(dataItem);
-				}
+				QList<QStandardItem*> dataItem = prepareDoubleRow("x_Position", "x", pFrame->m_Position.x*Units::mtoUnit(), Units::lengthUnitLabel());
+				sectionFolder.first()->appendRow(dataItem);
 
 				for(int iPt=0; iPt<pFrame->PointCount(); iPt++)
 				{
-					QList<QStandardItem*> pointFolder = prepareRow(QString("Point %1").arg(iPt));
+					QList<QStandardItem*> pointFolder = prepareRow(QString("Point %1").arg(iPt+1));
 					sectionFolder.first()->appendRow(pointFolder);
 					{
 						CVector Pt(pFrame->Point(iPt));
@@ -1541,12 +1516,9 @@ void EditPlaneDlg::readViewLevel(QModelIndex indexLevel)
 				readWingTree(&newWing, wingPos, wingTiltAngle, indexLevel.child(0,0));
 
 
-				if(newWing.isFin())
-					iWing = 3;
-				else if(iw==0)
-					iWing = 0;
-				else if(iw==1)
-					iWing = 2;
+				if(newWing.isFin()) iWing = 3;
+				else if(iw==0)      iWing = 0;
+				else if(iw==1)      iWing = 2;
 
 				m_pPlane->m_Wing[iWing].Duplicate(&newWing);
 				m_pPlane->WingLE(iWing)        = wingPos;
@@ -1748,8 +1720,8 @@ void EditPlaneDlg::readBodyTree(Body *pBody, QModelIndex indexLevel)
 
 			dataIndex = indexLevel.sibling(indexLevel.row(),2);
 
-			if     (field.compare("Name", Qt::CaseInsensitive)==0)     pBody->bodyName() = value;
-			else if(field.compare("Type", Qt::CaseInsensitive)==0)     pBody->bodyType() = XFLR5::BODYSPLINETYPE; /** @todo improve */
+			if     (field.compare("Name", Qt::CaseInsensitive)==0) pBody->bodyName() = value;
+			else if(field.compare("Type", Qt::CaseInsensitive)==0) pBody->bodyType() = bodyPanelType(value);
 		}
 
 		indexLevel = indexLevel.sibling(indexLevel.row()+1,0);
@@ -1762,6 +1734,7 @@ void EditPlaneDlg::readBodyFrameTree(Body *pBody, Frame *pFrame, QModelIndex ind
 {
 	QString object, field, value;
 	QModelIndex dataIndex;
+	double x=0.0;
 
 	do
 	{
@@ -1772,7 +1745,7 @@ void EditPlaneDlg::readBodyFrameTree(Body *pBody, Frame *pFrame, QModelIndex ind
 		dataIndex = indexLevel.sibling(indexLevel.row(),2);
 
 		if (field.compare("Lengthwise panels (FLATPANELS case)", Qt::CaseInsensitive)==0)   pBody->m_xPanels.append(dataIndex.data().toInt());
-		else if (object.compare("Position", Qt::CaseInsensitive)==0) readVectorTree(pFrame->m_Position, indexLevel.child(0,0));
+		else if (object.compare("x_Position", Qt::CaseInsensitive)==0) x = dataIndex.data().toDouble()/Units::mtoUnit();
 		else if (object.indexOf("Point", Qt::CaseInsensitive)==0)
 		{
 			CVector Pt;
@@ -1781,7 +1754,7 @@ void EditPlaneDlg::readBodyFrameTree(Body *pBody, Frame *pFrame, QModelIndex ind
 		}
 		indexLevel = indexLevel.sibling(indexLevel.row()+1,0);
 	} while(indexLevel.isValid());
-
+	pFrame->SetuPosition(x);
 }
 
 
@@ -2241,7 +2214,7 @@ void EditPlaneDlg::OnDelete()
 	}
 	else if(m_pPlane->body() && m_iActiveFrame>=0)
 	{
-		m_pPlane->body()->RemoveFrame(m_iActiveFrame);
+		m_pPlane->body()->removeFrame(m_iActiveFrame);
 
 		m_pStruct->closePersistentEditor(m_pStruct->currentIndex());
 		fillPlaneTreeView();
@@ -2387,27 +2360,29 @@ void EditPlaneDlg::PaintPlaneLegend(QPainter &painter, Plane *pPlane, QRect draw
 
 
 
-bool EditPlaneDlg::LoadSettings(QSettings *pSettings)
+bool EditPlaneDlg::loadSettings(QSettings *pSettings)
 {
 	pSettings->beginGroup("EditPlaneDlg");
 	{
 	//  we're reading/loading
+		s_WindowSize              = pSettings->value("WindowSize", QSize(1031,783)).toSize();
+		s_bWindowMaximized        = pSettings->value("WindowMaximized", false).toBool();
+		s_WindowPosition          = pSettings->value("WindowPosition", QPoint(131, 77)).toPoint();
 		m_HorizontalSplitterSizes = pSettings->value("HorizontalSplitterSizes").toByteArray();
-		m_RightSplitterSizes      = pSettings->value("RightSplitterSizes").toByteArray();
 	}
 	pSettings->endGroup();
 	return true;
 }
 
 
-
-
-bool EditPlaneDlg::SaveSettings(QSettings *pSettings)
+bool EditPlaneDlg::saveSettings(QSettings *pSettings)
 {
 	pSettings->beginGroup("EditPlaneDlg");
 	{
+		pSettings->setValue("WindowSize", s_WindowSize);
+		pSettings->setValue("WindowMaximized", s_bWindowMaximized);
+		pSettings->setValue("WindowPosition", s_WindowPosition);
 		pSettings->setValue("HorizontalSplitterSizes", m_HorizontalSplitterSizes);
-		pSettings->setValue("RightSplitterSizes",      m_RightSplitterSizes);
 	}
 	pSettings->endGroup();
 

@@ -56,6 +56,7 @@ class OpPoint
 	friend class Polar;
 	friend class QXDirect;
 	friend class ObjectPropsDlg;
+	friend class FoilWidget;
 
 public:
 	OpPoint();
@@ -82,6 +83,8 @@ public:
 
 	void setFoilName(QString newFoilName) {m_strFoilName = newFoilName;}
 
+	bool bViscResults(){return m_bViscResults;}
+	bool bBL(){return m_bBL;}
 
 private:
 	bool m_bViscResults;        /**< true if viscous results are stored in this OpPoint */

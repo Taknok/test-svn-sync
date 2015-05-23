@@ -20,16 +20,16 @@
 *****************************************************************************/
 
 #include "AFoil.h"
-#include "AFoilGridDlg.h"
+#include "GridSettingsDlg.h"
 #include <QGridLayout>
 #include <QVBoxLayout>
 #include <QLabel>
 #include "../misc/LinePickerDlg.h"
 
-AFoilGridDlg::AFoilGridDlg(QWidget *pParent): QDialog(pParent)
+GridSettingsDlg::GridSettingsDlg(QWidget *pParent): QDialog(pParent)
 {
 	setWindowTitle(tr("Grid Options"));
-	m_pAFoil = pParent;
+	m_pParent = pParent;
 
 	m_bScale = false;
 
@@ -63,7 +63,6 @@ AFoilGridDlg::AFoilGridDlg(QWidget *pParent): QDialog(pParent)
 
 	SetupLayout();
 
-	connect(ApplyButton, SIGNAL(clicked()),this, SLOT(OnApply()));
 	connect(OKButton, SIGNAL(clicked()),this, SLOT(OnOK()));
 	connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 
@@ -81,7 +80,7 @@ AFoilGridDlg::AFoilGridDlg(QWidget *pParent): QDialog(pParent)
 
 }
 
-void AFoilGridDlg::keyPressEvent(QKeyEvent *event)
+void GridSettingsDlg::keyPressEvent(QKeyEvent *event)
 {
 	switch (event->key())
 	{
@@ -95,7 +94,6 @@ void AFoilGridDlg::keyPressEvent(QKeyEvent *event)
 		{
 			if(!OKButton->hasFocus() && !CancelButton->hasFocus())
 			{
-				OnApply();
 				OKButton->setFocus();
 //				m_bApplied  = true;
 			}
@@ -111,7 +109,7 @@ void AFoilGridDlg::keyPressEvent(QKeyEvent *event)
 }
 
 
-void AFoilGridDlg::InitDialog()
+void GridSettingsDlg::InitDialog()
 {
 	m_pctrlNeutralStyle->SetStyle(m_NeutralStyle, m_NeutralWidth, m_NeutralColor);
 
@@ -137,16 +135,16 @@ void AFoilGridDlg::InitDialog()
 	m_pctrlXMinShow->setChecked(m_bXMinGrid);
 	m_pctrlYMinShow->setChecked(m_bYMinGrid);
 
-	m_pctrlXUnit->SetValue(m_XUnit);
-	m_pctrlYUnit->SetValue(m_YUnit);
-	m_pctrlXMinUnit->SetValue(m_XMinUnit);
-	m_pctrlYMinUnit->SetValue(m_YMinUnit);
+	m_pctrlXUnit->setValue(m_XUnit);
+	m_pctrlYUnit->setValue(m_YUnit);
+	m_pctrlXMinUnit->setValue(m_XMinUnit);
+	m_pctrlYMinUnit->setValue(m_YMinUnit);
 }
 
 
-void AFoilGridDlg::SetupLayout()
+void GridSettingsDlg::SetupLayout()
 {
-	QGridLayout *GridData = new QGridLayout;
+	QGridLayout *pGridData = new QGridLayout;
 	{
 		m_pctrlNeutralShow = new QCheckBox(tr("Neutral Line"));
 		m_pctrlScale       = new QCheckBox(tr("X-Scale"));
@@ -165,55 +163,52 @@ void AFoilGridDlg::SetupLayout()
 		m_pctrlYUnit = new DoubleEdit;
 		m_pctrlXMinUnit = new DoubleEdit;
 		m_pctrlYMinUnit = new DoubleEdit;
-		m_pctrlXUnit->SetPrecision(3);
-		m_pctrlYUnit->SetPrecision(3);
-		m_pctrlXMinUnit->SetPrecision(3);
-		m_pctrlYMinUnit->SetPrecision(3);
+		m_pctrlXUnit->setPrecision(3);
+		m_pctrlYUnit->setPrecision(3);
+		m_pctrlXMinUnit->setPrecision(3);
+		m_pctrlYMinUnit->setPrecision(3);
 
-		GridData->addWidget(m_pctrlNeutralShow,1,1);
-		GridData->addWidget(m_pctrlXMajShow,2,1);
-		GridData->addWidget(m_pctrlYMajShow,3,1);
-		GridData->addWidget(m_pctrlXMinShow,4,1);
-		GridData->addWidget(m_pctrlYMinShow,5,1);
+		pGridData->addWidget(m_pctrlNeutralShow,1,1);
+		pGridData->addWidget(m_pctrlXMajShow,2,1);
+		pGridData->addWidget(m_pctrlYMajShow,3,1);
+		pGridData->addWidget(m_pctrlXMinShow,4,1);
+		pGridData->addWidget(m_pctrlYMinShow,5,1);
 
-		GridData->addWidget(m_pctrlNeutralStyle,1,2);
-		GridData->addWidget(m_pctrlXMajStyle,2,2);
-		GridData->addWidget(m_pctrlYMajStyle,3,2);
-		GridData->addWidget(m_pctrlXMinStyle,4,2);
-		GridData->addWidget(m_pctrlYMinStyle,5,2);
+		pGridData->addWidget(m_pctrlNeutralStyle,1,2);
+		pGridData->addWidget(m_pctrlXMajStyle,2,2);
+		pGridData->addWidget(m_pctrlYMajStyle,3,2);
+		pGridData->addWidget(m_pctrlXMinStyle,4,2);
+		pGridData->addWidget(m_pctrlYMinStyle,5,2);
 
-		GridData->addWidget(m_pctrlScale,1,3);
-		GridData->addWidget(m_pctrlXUnit,2,3);
-		GridData->addWidget(m_pctrlYUnit,3,3);
-		GridData->addWidget(m_pctrlXMinUnit,4,3);
-		GridData->addWidget(m_pctrlYMinUnit,5,3);
+		pGridData->addWidget(m_pctrlScale,1,3);
+		pGridData->addWidget(m_pctrlXUnit,2,3);
+		pGridData->addWidget(m_pctrlYUnit,3,3);
+		pGridData->addWidget(m_pctrlXMinUnit,4,3);
+		pGridData->addWidget(m_pctrlYMinUnit,5,3);
 	}
 
-	QHBoxLayout *CommandButtons = new QHBoxLayout;
+	QHBoxLayout *pCommandButtons = new QHBoxLayout;
 	{
 		OKButton      = new QPushButton(tr("Accept"));
 		CancelButton  = new QPushButton(tr("Cancel"));
-		ApplyButton  = new QPushButton(tr("Apply"));
 
-		CommandButtons->addStretch(1);
-		CommandButtons->addWidget(ApplyButton);
-		CommandButtons->addStretch(1);
-		CommandButtons->addWidget(OKButton);
-		CommandButtons->addStretch(1);
-		CommandButtons->addWidget(CancelButton);
-		CommandButtons->addStretch(1);
+		pCommandButtons->addStretch(1);
+		pCommandButtons->addWidget(OKButton);
+		pCommandButtons->addStretch(1);
+		pCommandButtons->addWidget(CancelButton);
+		pCommandButtons->addStretch(1);
 	}
 
-	QVBoxLayout *mainLayout = new QVBoxLayout;
+	QVBoxLayout *pMainLayout = new QVBoxLayout;
 	{
-		mainLayout->addLayout(GridData);
-		mainLayout->addLayout(CommandButtons);
+		pMainLayout->addLayout(pGridData);
+		pMainLayout->addLayout(pCommandButtons);
 	}
-	setLayout(mainLayout);
+	setLayout(pMainLayout);
 }
 
 
-void AFoilGridDlg::OnNeutralStyle()
+void GridSettingsDlg::OnNeutralStyle()
 {
     LinePickerDlg dlg(this);
 	dlg.InitDialog(m_NeutralStyle,m_NeutralWidth,m_NeutralColor);
@@ -230,7 +225,7 @@ void AFoilGridDlg::OnNeutralStyle()
 }
 
 
-void AFoilGridDlg::OnXMajStyle()
+void GridSettingsDlg::OnXMajStyle()
 {
     LinePickerDlg dlg(this);
 	dlg.InitDialog(m_XStyle,m_XWidth,m_XColor);
@@ -246,7 +241,7 @@ void AFoilGridDlg::OnXMajStyle()
 	}
 }
 
-void AFoilGridDlg::OnXMinStyle()
+void GridSettingsDlg::OnXMinStyle()
 {
     LinePickerDlg dlg(this);
 	dlg.InitDialog(m_XMinStyle,m_XMinWidth,m_XMinColor);
@@ -263,7 +258,7 @@ void AFoilGridDlg::OnXMinStyle()
 
 }
 
-void AFoilGridDlg::OnYMajStyle()
+void GridSettingsDlg::OnYMajStyle()
 {
     LinePickerDlg dlg(this);
 
@@ -280,7 +275,7 @@ void AFoilGridDlg::OnYMajStyle()
 	}
 }
 
-void AFoilGridDlg::OnYMinStyle()
+void GridSettingsDlg::OnYMinStyle()
 {
     LinePickerDlg dlg(this);
 
@@ -297,19 +292,19 @@ void AFoilGridDlg::OnYMinStyle()
 	}
 }
 
-void AFoilGridDlg::OnNeutralShow(bool bShow)
+void GridSettingsDlg::OnNeutralShow(bool bShow)
 {
 	m_bNeutralLine = bShow;
 	m_pctrlNeutralStyle->setEnabled(m_bNeutralLine);
 }
 
-void AFoilGridDlg::OnScale()
+void GridSettingsDlg::OnScale()
 {
 	m_bScale = m_pctrlScale->isChecked();
 }
 
 
-void AFoilGridDlg::OnXMajShow(bool bShow)
+void GridSettingsDlg::OnXMajShow(bool bShow)
 {
 	m_bXGrid = bShow;
 	m_pctrlXMajStyle->setEnabled(m_bXGrid);
@@ -320,7 +315,7 @@ void AFoilGridDlg::OnXMajShow(bool bShow)
 
 
 
-void AFoilGridDlg::OnYMajShow(bool bShow)
+void GridSettingsDlg::OnYMajShow(bool bShow)
 {
 	m_bYGrid = bShow;
 	m_pctrlYMajStyle->setEnabled(m_bYGrid);
@@ -328,7 +323,7 @@ void AFoilGridDlg::OnYMajShow(bool bShow)
 }
 
 
-void AFoilGridDlg::OnXMinShow(bool bShow)
+void GridSettingsDlg::OnXMinShow(bool bShow)
 {
 	m_bXMinGrid = bShow;
 	m_pctrlXMinStyle->setEnabled(m_bXMinGrid);
@@ -336,63 +331,22 @@ void AFoilGridDlg::OnXMinShow(bool bShow)
 }
 
 
-void AFoilGridDlg::OnYMinShow(bool bShow)
+void GridSettingsDlg::OnYMinShow(bool bShow)
 {
 	m_bYMinGrid = bShow;
 	m_pctrlYMinStyle->setEnabled(m_bYMinGrid);
 	m_pctrlYMinUnit->setEnabled(m_bYMinGrid);
 }
 
-void AFoilGridDlg::OnOK()
+void GridSettingsDlg::OnOK()
 {
-	m_XUnit = m_pctrlXUnit->Value();
-	m_YUnit = m_pctrlYUnit->Value();
-	m_XMinUnit = m_pctrlXMinUnit->Value();
-	m_YMinUnit = m_pctrlYMinUnit->Value();
+	m_XUnit = m_pctrlXUnit->value();
+	m_YUnit = m_pctrlYUnit->value();
+	m_XMinUnit = m_pctrlXMinUnit->value();
+	m_YMinUnit = m_pctrlYMinUnit->value();
 	accept();
 }
 
-void AFoilGridDlg::OnApply()
-{
-	if(!m_pAFoil) return;
-	QAFoil *pAFoil = (QAFoil*)m_pAFoil;
-
-	m_XUnit = m_pctrlXUnit->Value();
-	m_YUnit = m_pctrlYUnit->Value();
-	m_XMinUnit = m_pctrlXMinUnit->Value();
-	m_YMinUnit = m_pctrlYMinUnit->Value();
-
-	pAFoil->m_bScale       = m_bScale;
-
-	pAFoil->m_bNeutralLine = m_bNeutralLine;
-	pAFoil->m_NeutralStyle = m_NeutralStyle;
-	pAFoil->m_NeutralWidth = m_NeutralWidth;
-	pAFoil->m_NeutralColor = m_NeutralColor;
-
-	pAFoil->m_bXGrid     = m_bXGrid;
-	pAFoil->m_bXMinGrid  = m_bXMinGrid;
-	pAFoil->m_XGridStyle = m_XStyle;
-	pAFoil->m_XGridWidth = m_XWidth;
-	pAFoil->m_XGridColor = m_XColor;
-	pAFoil->m_XGridUnit  = m_XUnit;
-	pAFoil->m_XMinStyle  = m_XMinStyle;
-	pAFoil->m_XMinWidth  = m_XMinWidth;
-	pAFoil->m_XMinColor  = m_XMinColor;
-	pAFoil->m_XMinUnit   = m_XMinUnit;
-
-	pAFoil->m_bYGrid     = m_bYGrid;
-	pAFoil->m_bYMinGrid  = m_bYMinGrid;
-	pAFoil->m_YGridStyle = m_YStyle;
-	pAFoil->m_YGridWidth = m_YWidth;
-	pAFoil->m_YGridColor = m_YColor;
-	pAFoil->m_YGridUnit  = m_YUnit;
-	pAFoil->m_YMinStyle  = m_YMinStyle;
-	pAFoil->m_YMinWidth  = m_YMinWidth;
-	pAFoil->m_YMinColor  = m_YMinColor;
-	pAFoil->m_YMinUnit   = m_YMinUnit;
-
-	pAFoil->UpdateView();
-}
 
 
 

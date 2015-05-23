@@ -26,6 +26,7 @@
 IntEdit::IntEdit(QWidget *pParent)
 {
 	setParent(pParent);
+	setAutoFillBackground(true);
 	m_Value = 0.0;
 	m_pDV = new QIntValidator(this);
 	setValidator(m_pDV);
@@ -36,24 +37,25 @@ IntEdit::IntEdit(QWidget *pParent)
 IntEdit::IntEdit(int val, QWidget *pParent)
 {
 	setParent(pParent);
+	setAutoFillBackground(true);
 	m_Value = val;
 	m_pDV = new QIntValidator(this);
 	setValidator(m_pDV);
 	setAlignment(Qt::AlignRight);
-	FormatValue();
+	formatValue();
 }
 
 
 void IntEdit::focusOutEvent (QFocusEvent *event)
 {
-	ReadValue();
-	FormatValue();
+	readValue();
+	formatValue();
 	//	emit(editingFinished()); //is emitted by call to base class
 	QLineEdit::focusOutEvent(event);
 }
 
 
-int IntEdit::ReadValue()
+int IntEdit::readValue()
 {
 	bool bOK;
 	int f = locale().toInt(text().trimmed(), &bOK);
@@ -62,10 +64,10 @@ int IntEdit::ReadValue()
 }
 
 
-void IntEdit::SetValue(int val)
+void IntEdit::setValue(int val)
 {
 	m_Value = val;
-	FormatValue();
+	formatValue();
 }
 
 
@@ -76,22 +78,22 @@ void IntEdit::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_Return:
 		case Qt::Key_Enter:
 		{
-			ReadValue();
-			FormatValue();
+			readValue();
+			formatValue();
 			QLineEdit::keyPressEvent(event);
 
 			break;
 		}
 		case Qt::Key_Escape:
 		{
-			FormatValue();
+			formatValue();
 			QLineEdit::keyPressEvent(event);
 			break;
 		}
 		default:
 		{
 			QLineEdit::keyPressEvent(event);
-			ReadValue();
+			readValue();
 			break;
 		}
 	}
@@ -99,14 +101,14 @@ void IntEdit::keyPressEvent(QKeyEvent *event)
 
 
 
-void IntEdit::FormatValue()
+void IntEdit::formatValue()
 {
 	setText(QString("%L1").arg(m_Value));
 }
 
 
 
-void IntEdit::SetValueNoFormat(int val)
+void IntEdit::setValueNoFormat(int val)
 {
 	m_Value = val;
 }

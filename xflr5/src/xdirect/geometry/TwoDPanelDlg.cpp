@@ -64,7 +64,7 @@ void TwoDPanelDlg::SetupLayout()
 
 
 		m_pctrlNPanels = new IntEdit(100, this);
-		m_pctrlNPanels->SetMax(IQX);
+		m_pctrlNPanels->setMax(IQX);
 
 		m_pctrlCVpar  = new DoubleEdit;
 		m_pctrlCTErat = new DoubleEdit;
@@ -140,14 +140,14 @@ void TwoDPanelDlg::InitDialog()
 	xpref1 = pXFoil->xpref1;
 	xpref2 = pXFoil->xpref2;
 
-	m_pctrlNPanels->SetValue(npan);
-	m_pctrlCVpar->SetValue(cvpar);
-	m_pctrlCTErat->SetValue(cterat);
-	m_pctrlCTRrat->SetValue(ctrrat);
-	m_pctrlXsRef1->SetValue(xsref1);
-	m_pctrlXsRef2->SetValue(xsref2);
-	m_pctrlXpRef1->SetValue(xpref1);
-	m_pctrlXpRef2->SetValue(xpref2);
+	m_pctrlNPanels->setValue(npan);
+	m_pctrlCVpar->setValue(cvpar);
+	m_pctrlCTErat->setValue(cterat);
+	m_pctrlCTRrat->setValue(ctrrat);
+	m_pctrlXsRef1->setValue(xsref1);
+	m_pctrlXsRef2->setValue(xsref2);
+	m_pctrlXpRef1->setValue(xpref1);
+	m_pctrlXpRef2->setValue(xpref2);
 	m_pctrlNPanels->setFocus();
 }
 
@@ -276,14 +276,14 @@ void TwoDPanelDlg::ReadParams()
 {
 	XFoil *pXFoil = (XFoil*)s_pXFoil;
 
-	pXFoil->npan   = m_pctrlNPanels->Value();
-	pXFoil->cvpar  = m_pctrlCVpar->Value();
-	pXFoil->cterat = m_pctrlCTErat->Value();
-	pXFoil->ctrrat = m_pctrlCTRrat->Value();
-	pXFoil->xsref1 = m_pctrlXsRef1->Value();
-	pXFoil->xsref2 = m_pctrlXsRef2->Value();
-	pXFoil->xpref1 = m_pctrlXpRef1->Value();
-	pXFoil->xpref2 = m_pctrlXpRef2->Value();
+	pXFoil->npan   = m_pctrlNPanels->value();
+	pXFoil->cvpar  = m_pctrlCVpar->value();
+	pXFoil->cterat = m_pctrlCTErat->value();
+	pXFoil->ctrrat = m_pctrlCTRrat->value();
+	pXFoil->xsref1 = m_pctrlXsRef1->value();
+	pXFoil->xsref2 = m_pctrlXsRef2->value();
+	pXFoil->xpref1 = m_pctrlXpRef1->value();
+	pXFoil->xpref2 = m_pctrlXpRef2->value();
 }
 
 

@@ -40,8 +40,6 @@ GraphDlg::GraphDlg(QWidget *pParent): QDialog(pParent)
 
 	m_pParent = pParent;
 
-	m_iGraphType = 1;
-	m_pMemGraph = NULL;
 	m_pGraph    = NULL;
 	m_NGraph      = 0 ;
 	m_bApplied = true;
@@ -110,65 +108,89 @@ void GraphDlg::FillVariableList()
 {
 	m_pctrlXSel->clear();
 	m_pctrlYSel->clear();
-	if(m_iGraphType == 31)
-	{
-		m_pctrlXSel->addItem(tr("X - Chord"));
-		m_pctrlYSel->addItem(tr("Q - Speed"));
-	}
-	else if(m_iGraphType==51)
-	{
-		//foil oppoint graph variables
-		m_pctrlXSel->addItem(tr("X - chord"));
-		m_pctrlYSel->addItem(tr("Cp"));
-		m_pctrlYSel->addItem(tr("Q - Speed"));
-	}
-	else if(m_iGraphType==52)
-	{
-		//foil polar graph variables
-		for(int iVar=0; iVar<15; iVar++)
-		{
-			m_pctrlXSel->addItem(Polar::variableName(iVar));
-			m_pctrlYSel->addItem(Polar::variableName(iVar));
-		}
-	}
-	else if(m_iGraphType==61)
-	{
-		//wing graph variable
-		m_pctrlXSel->addItem(tr("Y - span"));
 
-		m_pctrlYSel->addItem(tr("Induced Angle"));						//0
-		m_pctrlYSel->addItem(tr("Total Angle"));						//1
-		m_pctrlYSel->addItem(tr("Local lift coef."));					//2
-		m_pctrlYSel->addItem(tr("Local Lift C.Cl/M.A.C."));				//3
-		m_pctrlYSel->addItem(tr("Airfoil viscous drag coef."));			//4
-		m_pctrlYSel->addItem(tr("Induced drag coef."));					//5
-		m_pctrlYSel->addItem(tr("Total drag coef."));					//6
-		m_pctrlYSel->addItem(tr("Local Drag C.Cd/M.A.C."));              //7
-		m_pctrlYSel->addItem(tr("Airfoil Pitching moment coef."));       //8
-		m_pctrlYSel->addItem(tr("Total Pitching moment coef."));         //9
-		m_pctrlYSel->addItem(tr("Reynolds"));                            //10
-		m_pctrlYSel->addItem(tr("Top Transition x-pos%"));               //11
-		m_pctrlYSel->addItem(tr("Bottom Transition x-pos%"));            //12
-		m_pctrlYSel->addItem(tr("Centre of Pressure x-pos%"));           //13
-		m_pctrlYSel->addItem(tr("Bending moment"));                      //14
-	}
-	else if(m_iGraphType == 62)
+	switch(m_pGraph->graphType())
 	{
-		//WingPolar Graph Variables
-		for(int iVar=0; iVar<44; iVar++)
+		case  QGRAPH::INVERSEGRAPH:
 		{
-			m_pctrlXSel->addItem(WPolar::variableName(iVar));
-			m_pctrlYSel->addItem(WPolar::variableName(iVar));
+			m_pctrlXSel->addItem(tr("X - Chord"));
+			m_pctrlYSel->addItem(tr("Q - Speed"));
+			break;
 		}
-	}
-	else if(m_iGraphType == 64)
-	{
-		m_pctrlXSel->addItem(tr("X - Chord"));
-		m_pctrlYSel->addItem(tr("Cp"));
-	}
+		case QGRAPH::OPPGRAPH:
+		{
+			//foil oppoint graph variables
+			m_pctrlXSel->addItem(tr("X - chord"));
+			m_pctrlYSel->addItem(tr("Cp"));
+			m_pctrlYSel->addItem(tr("Q - Speed"));
+			break;
+		}
+		case QGRAPH::POLARGRAPH:
+		{
+			//foil polar graph variables
+			for(int iVar=0; iVar<15; iVar++)
+			{
+				m_pctrlXSel->addItem(Polar::variableName(iVar));
+				m_pctrlYSel->addItem(Polar::variableName(iVar));
+			}
+			break;
+		}
+		case QGRAPH::POPPGRAPH:
+		{
+			//wing graph variable
+			m_pctrlXSel->addItem(tr("Y - span"));
 
+			m_pctrlYSel->addItem(tr("Induced Angle"));						//0
+			m_pctrlYSel->addItem(tr("Total Angle"));						//1
+			m_pctrlYSel->addItem(tr("Local lift coef."));					//2
+			m_pctrlYSel->addItem(tr("Local Lift C.Cl/M.A.C."));				//3
+			m_pctrlYSel->addItem(tr("Airfoil viscous drag coef."));			//4
+			m_pctrlYSel->addItem(tr("Induced drag coef."));					//5
+			m_pctrlYSel->addItem(tr("Total drag coef."));					//6
+			m_pctrlYSel->addItem(tr("Local Drag C.Cd/M.A.C."));              //7
+			m_pctrlYSel->addItem(tr("Airfoil Pitching moment coef."));       //8
+			m_pctrlYSel->addItem(tr("Total Pitching moment coef."));         //9
+			m_pctrlYSel->addItem(tr("Reynolds"));                            //10
+			m_pctrlYSel->addItem(tr("Top Transition x-pos%"));               //11
+			m_pctrlYSel->addItem(tr("Bottom Transition x-pos%"));            //12
+			m_pctrlYSel->addItem(tr("Centre of Pressure x-pos%"));           //13
+			m_pctrlYSel->addItem(tr("Bending moment"));                      //14
+			break;
+		}
+		case QGRAPH::WPOLARGRAPH:
+		{
+			//WingPolar Graph Variables
+			for(int iVar=0; iVar<44; iVar++)
+			{
+				m_pctrlXSel->addItem(WPolar::variableName(iVar));
+				m_pctrlYSel->addItem(WPolar::variableName(iVar));
+			}
+			break;
+		}
+		case QGRAPH::CPGRAPH:
+		{
+			m_pctrlXSel->addItem(tr("X - Chord"));
+			m_pctrlYSel->addItem(tr("Cp"));
+			break;
+		}
+		case QGRAPH::STABTIMEGRAPH:
+		{
+			m_pctrlXSel->addItem(tr("X - Chord"));
+			m_pctrlYSel->addItem(tr("Cp"));
+			break;
+		}
+		case QGRAPH::OTHERGRAPH:
+			return;
+	}
 	m_pctrlXSel->adjustSize();
 	m_pctrlYSel->adjustSize();
+}
+
+
+void GraphDlg::reject()
+{
+	m_pGraph->copySettings(&m_MemGraph);
+	done(QDialog::Rejected);
 }
 
 
@@ -214,11 +236,11 @@ void GraphDlg::OnAutoMinGrid()
 {
 	bool bAuto;
 	bAuto = m_pctrlAutoXMinUnit->isChecked();
-	m_pGraph->SetAutoXMinUnit(bAuto);
+	m_pGraph->setAutoXMinUnit(bAuto);
 	m_pctrlXMinorUnit->setEnabled(!bAuto);
 
 	bAuto = m_pctrlAutoYMinUnit->isChecked();
-	m_pGraph->SetAutoYMinUnit(bAuto);
+	m_pGraph->setAutoYMinUnit(bAuto);
 	m_pctrlYMinorUnit->setEnabled(!bAuto);
 }
 
@@ -251,7 +273,7 @@ void GraphDlg::OnAxisStyle()
 
 	if(QDialog::Accepted==dlg.exec())
 	{
-		m_pGraph->SetAxisData(dlg.GetStyle(), dlg.GetWidth(), dlg.GetColor());
+		m_pGraph->setAxisData(dlg.GetStyle(), dlg.GetWidth(), dlg.GetColor());
 		m_pctrlAxisStyle->SetStyle(dlg.GetStyle());
 		m_pctrlAxisStyle->SetWidth(dlg.GetWidth());
 		m_pctrlAxisStyle->SetColor(dlg.GetColor());
@@ -271,9 +293,9 @@ void GraphDlg::OnBorderStyle()
 
 	if(QDialog::Accepted==dlg.exec())
 	{
-		m_pGraph->SetBorderColor(dlg.GetColor());
-		m_pGraph->SetBorderStyle(dlg.GetStyle());
-		m_pGraph->SetBorderWidth(dlg.GetWidth());
+		m_pGraph->setBorderColor(dlg.GetColor());
+		m_pGraph->setBorderStyle(dlg.GetStyle());
+		m_pGraph->setBorderWidth(dlg.GetWidth());
 		m_pctrlBorderStyle->SetStyle(dlg.GetStyle());
 		m_pctrlBorderStyle->SetWidth(dlg.GetWidth());
 		m_pctrlBorderStyle->SetColor(dlg.GetColor());
@@ -284,7 +306,7 @@ void GraphDlg::OnBorderStyle()
 void GraphDlg::OnGraphBorder(int state)
 {
 	bool bShow = (state==Qt::Checked);
-	m_pGraph->SetBorder(bShow);
+	m_pGraph->setBorder(bShow);
 	SetApplied(false);
 }
 
@@ -293,7 +315,7 @@ void GraphDlg::OnGraphBackColor()
 {
 	QColor BkColor = m_pGraph->GetBackColor();
 	BkColor = QColorDialog::getColor(BkColor);
-	if(BkColor.isValid()) m_pGraph->SetBkColor(BkColor);
+	if(BkColor.isValid()) m_pGraph->setBkColor(BkColor);
 
 	m_pctrlGraphBack->SetColor(m_pGraph->GetBackColor());
 	SetButtonColors();
@@ -306,7 +328,7 @@ void GraphDlg::OnLabelColor()
 	QColor color = m_pGraph->GetLabelColor();
 	color = QColorDialog::getRgba(color.rgba());
 
-	m_pGraph->SetLabelColor(color);
+	m_pGraph->setLabelColor(color);
 	m_pctrlLabelClr->setTextColor(color);
 
 	SetApplied(false);
@@ -320,14 +342,14 @@ void GraphDlg::OnLabelFont()
 {
 	bool ok;
 	QFont LabelFont("Courier");
-	m_pGraph->GetLabelFont(LabelFont);
+	m_pGraph->getLabelFont(LabelFont);
 	QFont font = QFontDialog::getFont(&ok, LabelFont, this);
 
 	if (ok)
 	{
 		m_pctrlLabelButton->setFont(font);
 		m_pctrlLabelButton->setText(font.family()+QString(" %1").arg(font.pointSize()));
-		m_pGraph->SetLabelFont(font);
+		m_pGraph->setLabelFont(font);
 		SetApplied(false);
 	}
 }
@@ -339,7 +361,7 @@ void GraphDlg::OnOK()
 
 	m_XSel = m_pctrlXSel->currentRow();
 	m_YSel = m_pctrlYSel->currentRow();
-	m_pGraph->SetVariables(m_pctrlXSel->currentRow(), m_pctrlYSel->currentRow());
+	m_pGraph->setVariables(m_pctrlXSel->currentRow(), m_pctrlYSel->currentRow());
 
 	accept();
 }
@@ -347,42 +369,42 @@ void GraphDlg::OnOK()
 
 void GraphDlg::ApplyChanges()
 {
-	m_pGraph->SetAutoX(m_pctrlXAuto->isChecked());
-	m_pGraph->SetXMin(m_pctrlXMin->Value());
-	m_pGraph->SetXMax(m_pctrlXMax->Value());
-	m_pGraph->SetX0(m_pctrlXOrigin->Value());
-	m_pGraph->SetXUnit(m_pctrlXUnit->Value());
+	m_pGraph->setAutoX(m_pctrlXAuto->isChecked());
+	m_pGraph->setXMin(m_pctrlXMin->value());
+	m_pGraph->setXMax(m_pctrlXMax->value());
+	m_pGraph->SetX0(m_pctrlXOrigin->value());
+	m_pGraph->SetXUnit(m_pctrlXUnit->value());
 
-	m_pGraph->SetAutoY(m_pctrlYAuto->isChecked());
-	m_pGraph->SetYMin(m_pctrlYMin->Value());
-	m_pGraph->SetYMax(m_pctrlYMax->Value());
-	m_pGraph->SetY0(m_pctrlYOrigin->Value());
-	m_pGraph->SetYUnit(m_pctrlYUnit->Value());
+	m_pGraph->setAutoY(m_pctrlYAuto->isChecked());
+	m_pGraph->setYMin(m_pctrlYMin->value());
+	m_pGraph->setYMax(m_pctrlYMax->value());
+	m_pGraph->SetY0(m_pctrlYOrigin->value());
+	m_pGraph->SetYUnit(m_pctrlYUnit->value());
 
 	double MinUnit;
 	if(!m_pctrlAutoXMinUnit->isChecked())
 	{
-		MinUnit = m_pctrlXMinorUnit->Value();
+		MinUnit = m_pctrlXMinorUnit->value();
 		m_pGraph->SetXMinorUnit(MinUnit);
-		m_pGraph->SetAutoXMinUnit(false);
+		m_pGraph->setAutoXMinUnit(false);
 	}
 	else
-		m_pGraph->SetAutoXMinUnit(true);
+		m_pGraph->setAutoXMinUnit(true);
 
 	if(!m_pctrlAutoYMinUnit->isChecked())
 	{
-		MinUnit = m_pctrlYMinorUnit->Value();
+		MinUnit = m_pctrlYMinorUnit->value();
 		m_pGraph->SetYMinorUnit(MinUnit);
-		m_pGraph->SetAutoYMinUnit(false);
+		m_pGraph->setAutoYMinUnit(false);
 	}
 	else
-		m_pGraph->SetAutoYMinUnit(true);
+		m_pGraph->setAutoYMinUnit(true);
 
-	m_pGraph->SetMargin(m_pctrlMargin->Value());
+	m_pGraph->setMargin(m_pctrlMargin->value());
 
 	for(int i=0; i<m_NGraph; i++)
 	{
-		m_GraphArray[i]->CopySettings(m_pGraph);
+		m_GraphArray[i]->copySettings(m_pGraph);
 	}
 
 }
@@ -392,7 +414,7 @@ void GraphDlg::OnApply()
 {
 	ApplyChanges();
 
-	m_pGraph->SetInverted(m_pctrlYInverted->isChecked());
+	m_pGraph->setInverted(m_pctrlYInverted->isChecked());
 
 	if(m_pParent) m_pParent->update();
 	SetApplied(true);
@@ -402,14 +424,14 @@ void GraphDlg::OnApply()
 
 void GraphDlg::OnRestoreParams()
 {
-	m_pGraph->CopySettings(m_pMemGraph);
+	m_pGraph->copySettings(&m_MemGraph);
 
 	for(int i=0; i<m_NGraph; i++)
 	{
-		m_GraphArray[i]->CopySettings(m_pMemGraph);
+		m_GraphArray[i]->copySettings(&m_MemGraph);
 	}
 
-	SetParams();
+	setControls();
 	SetApplied(true);
 
 	if(m_pParent) m_pParent->update();
@@ -421,7 +443,7 @@ void GraphDlg::OnTitleColor()
 	QColor color = m_pGraph->GetTitleColor();
 	color = QColorDialog::getRgba(color.rgba());
 
-	m_pGraph->SetTitleColor(color);
+	m_pGraph->setTitleColor(color);
 	m_pctrlTitleClr->setTextColor(color);
 
 	SetApplied(false);
@@ -433,7 +455,7 @@ void GraphDlg::OnTitleFont()
 {
 	bool bOk;
 	QFont TitleFont("Arial");
-	m_pGraph->GetTitleFont(TitleFont);
+	m_pGraph->getTitleFont(TitleFont);
 
 	QFont font = QFontDialog::getFont(&bOk, TitleFont, this);
 
@@ -442,7 +464,7 @@ void GraphDlg::OnTitleFont()
 		m_pctrlTitleButton->setFont(font);
 		m_pctrlTitleButton->setText(font.family()+QString(" %1").arg(font.pointSize()));
 
-		m_pGraph->SetTitleFont(font);
+		m_pGraph->setTitleFont(font);
 		SetApplied(false);
 	}
 }
@@ -456,7 +478,7 @@ void GraphDlg::OnVariableChanged()
 
 void GraphDlg::OnMargin()
 {
-	m_pGraph->SetMargin(m_pctrlMargin->Value());
+	m_pGraph->setMargin(m_pctrlMargin->value());
 }
 
 void GraphDlg::OnXMajGridStyle()
@@ -523,7 +545,7 @@ void GraphDlg::OnXMinGridShow(int state)
 
 void GraphDlg::OnYInverted()
 {
-	m_pGraph->SetInverted(m_pctrlYInverted->checkState() == Qt::Checked);
+	m_pGraph->setInverted(m_pctrlYInverted->checkState() == Qt::Checked);
 	SetApplied(false);
 }
 
@@ -605,19 +627,19 @@ void GraphDlg::SetButtonColors()
 }
 
 
-void GraphDlg::SetParams()
+void GraphDlg::setControls()
 {
 	m_pctrlXAuto->setChecked(m_pGraph->GetAutoX());
 	m_pctrlYAuto->setChecked(m_pGraph->GetAutoY());
 
-	m_pctrlXMin->SetValue(m_pGraph->GetXMin());
-	m_pctrlXMax->SetValue(m_pGraph->GetXMax());
-	m_pctrlXOrigin->SetValue(m_pGraph->GetX0());
-	m_pctrlXUnit->SetValue(m_pGraph->GetXUnit());
-	m_pctrlYMin->SetValue(m_pGraph->GetYMin());
-	m_pctrlYMax->SetValue(m_pGraph->GetYMax());
-	m_pctrlYOrigin->SetValue(m_pGraph->GetY0());
-	m_pctrlYUnit->SetValue(m_pGraph->GetYUnit());
+	m_pctrlXMin->setValue(m_pGraph->GetXMin());
+	m_pctrlXMax->setValue(m_pGraph->GetXMax());
+	m_pctrlXOrigin->setValue(m_pGraph->GetX0());
+	m_pctrlXUnit->setValue(m_pGraph->GetXUnit());
+	m_pctrlYMin->setValue(m_pGraph->GetYMin());
+	m_pctrlYMax->setValue(m_pGraph->GetYMax());
+	m_pctrlYOrigin->setValue(m_pGraph->GetY0());
+	m_pctrlYUnit->setValue(m_pGraph->GetYUnit());
 
 	OnAutoX();
 	OnAutoY();
@@ -625,11 +647,11 @@ void GraphDlg::SetParams()
 	SetButtonColors();
 
 	QFont font;
-	m_pGraph->GetLabelFont(font);
+	m_pGraph->getLabelFont(font);
 	m_pctrlLabelButton->setText(font.family()+QString(" %1").arg(font.pointSize()));
 	m_pctrlLabelButton->setFont(font);
 
-	m_pGraph->GetTitleFont(font);
+	m_pGraph->getTitleFont(font);
 	m_pctrlTitleButton->setText(font.family()+QString(" %1").arg(font.pointSize()));
 	m_pctrlTitleButton->setFont(font);
 
@@ -651,7 +673,7 @@ void GraphDlg::SetParams()
 	m_pctrlXMinGridStyle->SetStyle(style);
 	m_pctrlXMinGridStyle->SetWidth(width);
 	m_pctrlXMinGridStyle->setEnabled(bState);
-	m_pctrlXMinorUnit->SetValue(unit);
+	m_pctrlXMinorUnit->setValue(unit);
 	m_pctrlAutoXMinUnit->setChecked(bAuto);
 	m_pctrlAutoXMinUnit->setEnabled(bState);
 	m_pctrlXMinorUnit->setEnabled(!bAuto && bState);
@@ -669,7 +691,7 @@ void GraphDlg::SetParams()
 	m_pctrlYMinGridStyle->SetStyle(style);
 	m_pctrlYMinGridStyle->SetWidth(width);
 	m_pctrlYMinGridStyle->setEnabled(bState);
-	m_pctrlYMinorUnit->SetValue(unit);
+	m_pctrlYMinorUnit->setValue(unit);
 	m_pctrlAutoYMinUnit->setChecked(bAuto);
 	m_pctrlAutoYMinUnit->setEnabled(bState);
 	m_pctrlYMinorUnit->setEnabled(!bAuto && bState);
@@ -685,14 +707,14 @@ void GraphDlg::SetParams()
 
 	m_pctrlGraphBack->SetColor(m_pGraph->GetBackColor());
 
-	m_pctrlMargin->SetValue(m_pGraph->GetMargin());
+	m_pctrlMargin->setValue(m_pGraph->margin());
 
 	m_pctrlYInverted->setChecked(m_pGraph->GetInverted());
 
 	FillVariableList();
 
-	m_pctrlXSel->setCurrentRow(m_pGraph->GetXVariable());
-	m_pctrlYSel->setCurrentRow(m_pGraph->GetYVariable());
+	m_pctrlXSel->setCurrentRow(m_pGraph->getXVariable());
+	m_pctrlYSel->setCurrentRow(m_pGraph->getYVariable());
 	m_bVariableChanged = false;
 
 	SetApplied(true);
@@ -964,5 +986,11 @@ void GraphDlg::SetupLayout()
 }
 
 
+void GraphDlg::setGraph(QGraph *pGraph)
+{
+	m_pGraph = pGraph;
+	m_MemGraph.copySettings(m_pGraph);
+	setControls();
+}
 
 

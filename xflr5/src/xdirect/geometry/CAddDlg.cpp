@@ -146,8 +146,8 @@ void CAddDlg::OnApply()
 	else
 		m_iSplineType = 2;
 
-	int added = pXFoil->cadd(m_iSplineType, m_pctrlAngTol->Value(),
-	                         m_pctrlFrom->Value(), m_pctrlTo->Value());
+	int added = pXFoil->cadd(m_iSplineType, m_pctrlAngTol->value(),
+	                         m_pctrlFrom->value(), m_pctrlTo->value());
 	pXFoil->abcopy();
 
 	QString strong;
@@ -204,9 +204,9 @@ void CAddDlg::InitDialog()
 
 	m_pctrlrb1->setChecked(1);
 	m_iSplineType = 1;
-	m_pctrlFrom->SetValue(xrf1);
-	m_pctrlTo->SetValue(xrf2);
-	m_pctrlAngTol->SetValue(atol);
+	m_pctrlFrom->setValue(xrf1);
+	m_pctrlTo->setValue(xrf2);
+	m_pctrlAngTol->setValue(atol);
 
 	QString strong;
 	pXFoil->CheckAngles();
