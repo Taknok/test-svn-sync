@@ -56,15 +56,15 @@ class Spline
 public:
 	Spline();
 
-	void DrawSpline(QPainter & painter, double const &scalex, double const &scaley, QPoint const &Offset);
-	void DrawCtrlPoints(QPainter & painter, double const &scalex, double const &scaley, QPoint const &Offset);
-	void DrawOutputPoints(QPainter & painter, double const &scalex, double const &scaley, QPoint const &Offset);
+	void drawSpline(QPainter & painter, double const &scalex, double const &scaley, QPointF const &Offset);
+	void drawCtrlPoints(QPainter & painter, double const &scalex, double const &scaley, QPointF const &Offset);
+	void drawOutputPoints(QPainter & painter, double const &scalex, double const &scaley, QPointF const &Offset);
 
 	bool InsertPoint(double const &x, double const &y);
 	bool RemovePoint(int const &k);
-	int IsControlPoint(CVector const &Real);
-	int IsControlPoint(double const &x, double const &y, double const &zx, double const &zy);
-	int IsControlPoint(CVector const &Real, double const &ZoomFactor);
+	int isControlPoint(CVector const &Real);
+	int isControlPoint(double const &x, double const &y, double const &zx, double const &zy);
+	int isControlPoint(CVector const &Real, double const &ZoomFactor);
 	double SplineBlend(int const &i, int const &p, double const &t);
 	double GetY(double const &x);
 

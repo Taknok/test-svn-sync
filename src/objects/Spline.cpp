@@ -114,11 +114,11 @@ void Spline::CopySymetric(Spline *pSpline)
 /**
 *Draws the control points on a QPainter. @todo separate GUI and object for polymorphism.
 */
-void Spline::DrawCtrlPoints(QPainter &painter, double const &scalex, double const &scaley, QPoint const &Offset)
+void Spline::drawCtrlPoints(QPainter &painter, double const &scalex, double const &scaley, QPointF const &Offset)
 {
 	painter.save();
 
-	static QPoint pt;
+	static QPointF pt;
 	static int i, width;
 
 	width  = 3;
@@ -132,8 +132,8 @@ void Spline::DrawCtrlPoints(QPainter &painter, double const &scalex, double cons
 
 	for (i=0; i<m_CtrlPoint.size(); i++)
 	{
-		pt.rx() = (int)( m_CtrlPoint[i].x*scalex + Offset.x());
-		pt.ry() = (int)(-m_CtrlPoint[i].y*scaley + Offset.y());
+		pt.rx() =  m_CtrlPoint[i].x*scalex + Offset.x();
+		pt.ry() = -m_CtrlPoint[i].y*scaley + Offset.y();
 
 		if (m_iSelect==i)
 		{
@@ -161,11 +161,11 @@ void Spline::DrawCtrlPoints(QPainter &painter, double const &scalex, double cons
 /**
 *Draws the output points on a QPainter. @todo separate GUI and object for polymorphism.
 */
-void Spline::DrawOutputPoints(QPainter & painter, double const &scalex, double const &scaley, QPoint const &Offset)
+void Spline::drawOutputPoints(QPainter & painter, double const &scalex, double const &scaley, QPointF const &Offset)
 {
 	painter.save();
 
-	static QPoint pt;
+	static QPointF pt;
 	static int i, width;
 	static QPen OutPen;
 
@@ -178,8 +178,8 @@ void Spline::DrawOutputPoints(QPainter & painter, double const &scalex, double c
 
 	for (i=0; i<m_iRes;i++)
 	{
-		pt.rx() = (int)( m_Output[i].x*scalex + Offset.x());
-		pt.ry() = (int)(-m_Output[i].y*scaley + Offset.y());
+		pt.rx() =  m_Output[i].x*scalex + Offset.x();
+		pt.ry() = -m_Output[i].y*scaley + Offset.y();
 
 		painter.drawRect(pt.x()-width, pt.y()-width, 2*width, 2*width);
 	}
@@ -191,13 +191,13 @@ void Spline::DrawOutputPoints(QPainter & painter, double const &scalex, double c
 /**
 *Draws the spline curve on a QPainter. @todo separate GUI and object for polymorphism.
 */
-void Spline::DrawSpline(QPainter & painter, double const &scalex, double const &scaley, QPoint const &Offset)
+void Spline::drawSpline(QPainter & painter, double const &scalex, double const &scaley, QPointF const &Offset)
 {
 	painter.save();
 
-	static QPoint From, To;
-	static int k;
-	static QPen SplinePen;
+	QPointF From, To;
+	int k;
+	QPen SplinePen;
 
 	SplinePen.setColor(m_Color);
 	SplinePen.setStyle(getStyle(m_Style));
@@ -207,13 +207,13 @@ void Spline::DrawSpline(QPainter & painter, double const &scalex, double const &
 
 	if(m_CtrlPoint.size()>=3)
 	{ 
-		From.rx() = (int)( m_Output[0].x * scalex + Offset.x());
-		From.ry() = (int)(-m_Output[0].y * scaley + Offset.y());
+		From.rx() =  m_Output[0].x * scalex + Offset.x();
+		From.ry() = -m_Output[0].y * scaley + Offset.y();
 
 		for(k=1; k<m_iRes;k++) 
 		{
-			To.rx() = (int)( m_Output[k].x * scalex + Offset.x());
-			To.ry() = (int)(-m_Output[k].y * scaley + Offset.y());
+			To.rx() =  m_Output[k].x * scalex + Offset.x();
+			To.ry() = -m_Output[k].y * scaley + Offset.y();
 
 			painter.drawLine(From, To);
 
@@ -331,7 +331,7 @@ bool Spline::InsertPoint(double const &x, double const &y)
 *@param Real the input point to compare with the control points
 *@return the index of the first control point which matches, or -10 if none matches.
 */
-int Spline::IsControlPoint(CVector const &Real)
+int Spline::isControlPoint(CVector const &Real)
 {
 	static int k;
 	for (k=0; k<m_CtrlPoint.size(); k++)
@@ -348,7 +348,7 @@ int Spline::IsControlPoint(CVector const &Real)
 *@param ZoomFactor the scaling factor to withdraw from the input point @todo withdrawal to be performed from within the calling function.
 *@return the index of the first control point which matches, or -10 if none matches.
 */
-int Spline::IsControlPoint(CVector const &Real, double const &ZoomFactor)
+int Spline::isControlPoint(CVector const &Real, double const &ZoomFactor)
 {
 	static int k;
 	for (k=0; k<m_CtrlPoint.size(); k++)
@@ -367,7 +367,7 @@ int Spline::IsControlPoint(CVector const &Real, double const &ZoomFactor)
 *@param zy the scaling factor of the y-scale, to withdraw from the input point @todo withdrawal to be performed from within the calling function.
 *@return the index of the first control point which matches, or -10 if none matches.
 */
-int Spline::IsControlPoint(double const &x, double const &y, double const &zx, double const &zy)
+int Spline::isControlPoint(double const &x, double const &y, double const &zx, double const &zy)
 {
 	static int k;
 	for (k=0; k<m_CtrlPoint.size(); k++)

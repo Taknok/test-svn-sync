@@ -33,8 +33,9 @@ QGraph::QGraph()
 	m_bHighlightPoint = false;
 
 	m_rCltRect.setRect(0,0, 200, 300);
+	m_graphType = QGRAPH::OTHERGRAPH;
 
-	SetDefaults();
+	setGraphDefaults();
 }
 
 
@@ -44,14 +45,14 @@ QGraph::~QGraph()
 }
 
 
-void QGraph::DrawGraph(QRect const &rect, QPainter &painter)
+void QGraph::drawGraph(QRect const &rect, QPainter &painter)
 {
 	m_rCltRect = rect;
-	DrawGraph(painter);
+	drawGraph(painter);
 }
 
 
-void QGraph::DrawGraph(QPainter &painter)
+void QGraph::drawGraph(QPainter &painter)
 {
 	static QColor color;
 	painter.save();
@@ -66,32 +67,32 @@ void QGraph::DrawGraph(QPainter &painter)
 	painter.setPen(BorderPen);
 	painter.fillRect(m_rCltRect, m_BkColor);
 	painter.drawRect(m_rCltRect);
-	Init();
+	initializeGraph();
 
 	painter.setClipRect(m_rCltRect);
 
 	painter.setBackgroundMode(Qt::TransparentMode);
 
-	if(m_bXMinGrid) DrawXMinGrid(painter);
-	if(m_bYMinGrid) DrawYMinGrid(painter);
-	if(m_bXMajGrid) DrawXMajGrid(painter);
-	if(m_bYMajGrid) DrawYMajGrid(painter);
+	if(m_bXMinGrid) drawXMinGrid(painter);
+	if(m_bYMinGrid) drawYMinGrid(painter);
+	if(m_bXMajGrid) drawXMajGrid(painter);
+	if(m_bYMajGrid) drawYMajGrid(painter);
 
-	DrawAxes(painter);
+	drawAxes(painter);
 
-	DrawXTicks(painter);
+	drawXTicks(painter);
 
-	DrawYTicks(painter);
+	drawYTicks(painter);
 
-	for (int nc=0; nc < m_oaCurves.size(); nc++)	DrawCurve(nc,painter);
+	for (int nc=0; nc < m_oaCurves.size(); nc++)	drawCurve(nc,painter);
 
-	DrawTitles(painter);
+	drawTitles(painter);
 
 	painter.setClipping(false);
 	painter.restore();
 }
 
-void QGraph::DrawCurve(int nIndex, QPainter &painter)
+void QGraph::drawCurve(int nIndex, QPainter &painter)
 {
 	painter.save();
 	static double scaley;
@@ -100,7 +101,7 @@ void QGraph::DrawCurve(int nIndex, QPainter &painter)
 	static QRect rViewRect;
 
 	ptside = 2;
-	Curve* pCurve = GetCurve(nIndex);
+	Curve* pCurve = curve(nIndex);
 
 	scaley = m_scaley;
 
@@ -167,7 +168,7 @@ void QGraph::DrawCurve(int nIndex, QPainter &painter)
 }
 
 
-void QGraph::DrawAxes(QPainter &painter)
+void QGraph::drawAxes(QPainter &painter)
 {
 	static double xp, yp, scaley;
 	static QPen AxesPen;
@@ -200,7 +201,7 @@ void QGraph::DrawAxes(QPainter &painter)
 }
 
 
-void QGraph::DrawTitles(QPainter &painter)
+void QGraph::drawTitles(QPainter &painter)
 {
 	//draws the x & y axis name
 	static double scaley;
@@ -236,7 +237,7 @@ void QGraph::DrawTitles(QPainter &painter)
 }
 
 
-void QGraph::DrawXTicks(QPainter &painter)
+void QGraph::drawXTicks(QPainter &painter)
 {
 	static double main, scaley, xt, yp;
 	static int exp, TickSize, height, yExpOff, nx;
@@ -296,7 +297,7 @@ void QGraph::DrawXTicks(QPainter &painter)
 			else if(exp_x>=4 || exp_x<=-4)
 			{
 				main = xt;
-				ExpFormat(main, exp);
+				expFormat(main, exp);
 
 				strLabel = QString("%1 10").arg(main,5,'f',1);
 				painter.drawText(int(xt/m_scalex) - fm.width(strLabel)/2  +m_ptoffset.x(),
@@ -328,7 +329,7 @@ void QGraph::DrawXTicks(QPainter &painter)
 
 
 
-void QGraph::DrawYTicks(QPainter &painter)
+void QGraph::drawYTicks(QPainter &painter)
 {
 	static double scaley, xp, main, yt;
 	static int TickSize, fmheight, fmheight4, exp;
@@ -381,7 +382,7 @@ void QGraph::DrawYTicks(QPainter &painter)
 			else if(abs(exp_y)>=4)
 			{
 				main = yt;
-				ExpFormat(main, exp);
+				expFormat(main, exp);
 
 				strLabel    = QString("%1 10").arg(main,5,'f',1);
 				strLabelExp = QString("%1").arg(exp);
@@ -422,7 +423,7 @@ void QGraph::DrawYTicks(QPainter &painter)
 }
 
 
-void QGraph::DrawXMajGrid(QPainter &painter)
+void QGraph::drawXMajGrid(QPainter &painter)
 {
 	double scaley = m_scaley;
 	if(qAbs(xunit)<0.00000001)     return;
@@ -454,7 +455,7 @@ void QGraph::DrawXMajGrid(QPainter &painter)
 }
 
 
-void QGraph::DrawYMajGrid(QPainter &painter)
+void QGraph::drawYMajGrid(QPainter &painter)
 {
 	double scaley = m_scaley;
 	if(qAbs(yunit)<0.00000001) return;
@@ -486,7 +487,7 @@ void QGraph::DrawYMajGrid(QPainter &painter)
 	painter.restore();
 }
 
-void QGraph::DrawXMinGrid(QPainter &painter)
+void QGraph::drawXMinGrid(QPainter &painter)
 {
 	double scaley = m_scaley;
 	if(qAbs(xunit)<0.00000001) return;
@@ -520,7 +521,7 @@ void QGraph::DrawXMinGrid(QPainter &painter)
 	painter.restore();
 }
 
-void QGraph::DrawYMinGrid(QPainter &painter)
+void QGraph::drawYMinGrid(QPainter &painter)
 {
 	double scaley = m_scaley;
 	if(qAbs(yunit)<0.00000001) return;
@@ -551,7 +552,7 @@ void QGraph::DrawYMinGrid(QPainter &painter)
 }
 
 
-void QGraph::DrawLegend(QPainter &painter, QPoint &Place, QFont &LegendFont, QColor &LegendColor)
+void QGraph::drawLegend(QPainter &painter, QPoint &Place, QFont &LegendFont, QColor &LegendColor)
 {
 	painter.save();
 	int LegendSize, ypos;
@@ -599,7 +600,7 @@ void QGraph::DrawLegend(QPainter &painter, QPoint &Place, QFont &LegendFont, QCo
 
 }
 
-void QGraph::ExpFormat(double &f, int &exp)
+void QGraph::expFormat(double &f, int &exp)
 {
 
 	if (f==0.0)
@@ -619,7 +620,7 @@ void QGraph::ExpFormat(double &f, int &exp)
 }
 
 
-void QGraph::ExportToFile(QFile &XFile, XFLR5::enumTextFileType FileType)
+void QGraph::exportToFile(QFile &XFile, XFLR5::enumTextFileType FileType)
 {
 	int i,j, maxpoints;
 	Curve *pCurve;
@@ -629,7 +630,7 @@ void QGraph::ExportToFile(QFile &XFile, XFLR5::enumTextFileType FileType)
 	maxpoints = 0;
 	for(i=0; i<m_oaCurves.size(); i++)
 	{
-		pCurve = GetCurve(i);
+		pCurve = curve(i);
 		if(pCurve)
 		{
 			maxpoints = qMax(maxpoints,pCurve->size());
@@ -645,7 +646,7 @@ void QGraph::ExportToFile(QFile &XFile, XFLR5::enumTextFileType FileType)
 	{
 		for(i=0; i<m_oaCurves.size(); i++)
 		{
-			pCurve = GetCurve(i);
+			pCurve = curve(i);
 			if(pCurve && j<pCurve->size())
 			{
 				if(FileType==XFLR5::TXT) strong= QString("%1     %2  ")
@@ -668,13 +669,13 @@ void QGraph::ExportToFile(QFile &XFile, XFLR5::enumTextFileType FileType)
 
 
 
-QPoint QGraph::GetOffset()
+QPoint QGraph::getOffset()
 {
 	return m_ptoffset;
 }
 
 
-void QGraph::Highlight(QPainter &painter, Curve *pCurve, int ref)
+void QGraph::highlight(QPainter &painter, Curve *pCurve, int ref)
 {
 	if(!pCurve) return;
 	if(ref<0 || ref>pCurve->size()-1) return;
@@ -692,7 +693,7 @@ void QGraph::Highlight(QPainter &painter, Curve *pCurve, int ref)
 }
 
 
-void QGraph::SaveSettings(QSettings *pSettings)
+void QGraph::saveSettings(QSettings *pSettings)
 {
 	QFont lgft;
 	QColor clr;
@@ -716,13 +717,13 @@ void QGraph::SaveSettings(QSettings *pSettings)
 		clr = GetLabelColor();
 		pSettings->setValue("LabelColor", clr);
 
-		GetTitleFont(lgft);
+		getTitleFont(lgft);
 		pSettings->setValue("TitleFontName", lgft.family());
 		pSettings->setValue("TitleFontSize", lgft.pointSize());
 		pSettings->setValue("TitleFontItalic", lgft.italic());
 		pSettings->setValue("TitleFontBold", lgft.bold());
 
-		GetLabelFont(lgft);
+		getLabelFont(lgft);
 		pSettings->setValue("LabelFontName", lgft.family());
 		pSettings->setValue("LabelFontSize", lgft.pointSize());
 		pSettings->setValue("LabelFontItalic", lgft.italic());
@@ -778,7 +779,7 @@ void QGraph::SaveSettings(QSettings *pSettings)
 }
 
 
-void QGraph::LoadSettings(QSettings *pSettings)
+void QGraph::loadSettings(QSettings *pSettings)
 {
 	QFont lgft;
 	bool bs, ba;
@@ -793,26 +794,26 @@ void QGraph::LoadSettings(QSettings *pSettings)
 		clr = pSettings->value("AxisColor", QColor(255,255,255)).value<QColor>();
 		s = pSettings->value("AxisStyle",0).toInt();
 		w = pSettings->value("AxisWidth",1).toInt();
-		SetAxisData(s,w,clr);
+		setAxisData(s,w,clr);
 
 		clr = pSettings->value("TitleColor", QColor(255,255,255)).value<QColor>();
-		SetTitleColor(clr);
+		setTitleColor(clr);
 		clr = pSettings->value("LabelColor", QColor(255,255,255)).value<QColor>();
-		SetLabelColor(clr);
+		setLabelColor(clr);
 
 		lgft = QFont(pSettings->value("TitleFontName","Comic Sans MS").toString());
 		int size = pSettings->value("TitleFontSize",8).toInt();
 		if(size>0) lgft.setPointSize(size);
 		lgft.setItalic(pSettings->value("TitleFontItalic", false).toBool());
 		lgft.setBold(pSettings->value("TitleFontBold", false).toBool());
-		SetTitleFont(lgft);
+		setTitleFont(lgft);
 
 		lgft = QFont(pSettings->value("LabelFontName","Comic Sans MS").toString());
 		size = pSettings->value("LabelFontSize",8).toInt();
 		if(size>0) lgft.setPointSize(size);
 		lgft.setItalic(pSettings->value("LabelFontItalic", false).toBool());
 		lgft.setBold(pSettings->value("LabelFontBold", false).toBool());
-		SetLabelFont(lgft);
+		setLabelFont(lgft);
 
 		clr  = pSettings->value("XMajGridColor", QColor(90,90,90)).value<QColor>();
 		bs = pSettings->value("XMajGridShow",true).toBool();
@@ -846,12 +847,12 @@ void QGraph::LoadSettings(QSettings *pSettings)
 		s  = pSettings->value("BorderStyle",0).toInt();
 		w  = pSettings->value("BorderWidth",2).toInt();
 		m_bBorder = pSettings->value("BorderShow", true).toBool();
-		SetBorderColor(clr);
-		SetBorderStyle(s);
-		SetBorderWidth(w);
+		setBorderColor(clr);
+		setBorderStyle(s);
+		setBorderWidth(w);
 
 		clr  = pSettings->value("BackgroundColor", QColor(15,19,20)).value<QColor>();
-		SetBkColor(clr);
+		setBkColor(clr);
 
 		m_iMargin = pSettings->value("margin", 61).toInt();
 
@@ -864,20 +865,21 @@ void QGraph::LoadSettings(QSettings *pSettings)
 }
 
 
-void QGraph::SetLabelFont(QFont &font)
+void QGraph::setLabelFont(QFont &font)
 {
 	m_LabelFont = font;
 }
 
 
-void QGraph::SetTitleFont(QFont &font)
+void QGraph::setTitleFont(QFont &font)
 {
 	m_TitleFont = font;
 }
 
 
-void QGraph::CopySettings(QGraph *pGraph, bool bScales)
+void QGraph::copySettings(QGraph *pGraph, bool bScales)
 {
+	if(!pGraph) return;
 	Graph::CopySettings(pGraph, bScales);
 	m_LabelFont     = pGraph->m_LabelFont;
 	m_TitleFont     = pGraph->m_TitleFont;
@@ -885,11 +887,11 @@ void QGraph::CopySettings(QGraph *pGraph, bool bScales)
 
 
 
-void QGraph::GetTitleFont(QFont &titleFont)
+void QGraph::getTitleFont(QFont &titleFont)
 {
 	titleFont = m_TitleFont;
 }
-void QGraph::GetLabelFont(QFont &labelFont)
+void QGraph::getLabelFont(QFont &labelFont)
 {
 	labelFont = m_LabelFont;
 }

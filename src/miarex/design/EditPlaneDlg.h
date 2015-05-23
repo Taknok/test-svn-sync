@@ -20,8 +20,8 @@
 *****************************************************************************/
 
 
-#ifndef VIEWOBJECTDLG_H
-#define VIEWOBJECTDLG_H
+#ifndef EDITPLANEOBJECTDLG_H
+#define EDITPLANEOBJECTDLG_H
 
 #include <QDialog>
 #include <QPixmap>
@@ -84,22 +84,15 @@ public:
 	QList<QStandardItem *> prepareDoubleRow(const QString &first, const QString &second, const double &third,  const QString &fourth);
 
 
-	static bool LoadSettings(QSettings *pSettings);
-	static bool SaveSettings(QSettings *pSettings);
+	static bool loadSettings(QSettings *pSettings);
+	static bool saveSettings(QSettings *pSettings);
 
 private slots:
 	void OnOK();
-	void OnAxes();
-	void On3DReset();
-	void OnRedraw();
+	void on3DReset();
+	void onRedraw();
 	void OnCellChanged(QWidget *);
 	void OnItemClicked(const QModelIndex &index);
-
-	void OnSurfaces();
-	void OnOutline();
-	void OnPanels();
-	void OnFoilNames();
-	void OnShowMasses();
 
 	void OnInsertBefore();
 	void OnInsertAfter();
@@ -114,7 +107,7 @@ public:
 	static bool s_bWindowMaximized;
 	static QPoint s_WindowPosition;   /**< the position on the client area of the dialog's topleft corner */
 	static QSize s_WindowSize;	 /**< the window size in the client area */
-	static QByteArray m_HorizontalSplitterSizes, m_RightSplitterSizes;
+	static QByteArray m_HorizontalSplitterSizes;
 
 	QPixmap m_PixText;
 
@@ -135,7 +128,7 @@ private:
 	QMenu *m_pContextMenu;
 	QAction *m_pInsertBefore, *m_pInsertAfter, *m_pDeleteItem;
 
-	QSplitter *m_pHorizontalSplitter, *m_pRightSideSplitter;
+	QSplitter *m_pHorizontalSplitter, *m_pLeftSideSplitter, *m_pRightSideSplitter;
 
 	QPushButton *m_pctrlRedraw;
 	QPushButton *m_pctrlReset;
@@ -152,4 +145,4 @@ private:
 	int m_iActiveSection, m_iActiveFrame, m_iActivePointMass;
 };
 
-#endif // VIEWOBJECTDLG_H
+#endif // EDITPLANEOBJECTDLG_H

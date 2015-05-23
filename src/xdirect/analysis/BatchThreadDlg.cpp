@@ -492,26 +492,26 @@ void BatchThreadDlg::InitDialog()
 	m_pctrlFoil2->setChecked(!s_bCurrentFoil);
 	OnFoilSelectionType();
 	
-	m_pctrlReMin->SetPrecision(0);
-	m_pctrlReMax->SetPrecision(0);
-	m_pctrlReDelta->SetPrecision(0);
+	m_pctrlReMin->setPrecision(0);
+	m_pctrlReMax->setPrecision(0);
+	m_pctrlReDelta->setPrecision(0);
 
-	m_pctrlSpecMin->SetPrecision(1);
-	m_pctrlSpecMax->SetPrecision(1);
-	m_pctrlSpecDelta->SetPrecision(1);
+	m_pctrlSpecMin->setPrecision(1);
+	m_pctrlSpecMax->setPrecision(1);
+	m_pctrlSpecDelta->setPrecision(1);
 
 	if(m_ReMin<=0.0) m_ReMin = qAbs(m_ReInc);
-	m_pctrlReMin->SetValue(m_ReMin);
-	m_pctrlReMax->SetValue(m_ReMax);
-	m_pctrlReDelta->SetValue(m_ReInc);
-	m_pctrlSpecMin->SetValue(m_AlphaMin);
-	m_pctrlSpecMax->SetValue(m_AlphaMax);
-	m_pctrlSpecDelta->SetValue(m_AlphaInc);
+	m_pctrlReMin->setValue(m_ReMin);
+	m_pctrlReMax->setValue(m_ReMax);
+	m_pctrlReDelta->setValue(m_ReInc);
+	m_pctrlSpecMin->setValue(m_AlphaMin);
+	m_pctrlSpecMax->setValue(m_AlphaMax);
+	m_pctrlSpecDelta->setValue(m_AlphaInc);
 
-	m_pctrlMach->SetValue(m_Mach);
-	m_pctrlACrit->SetValue(m_ACrit);
-	m_pctrlXTopTr->SetValue(m_XTop);
-	m_pctrlXBotTr->SetValue(m_XBot);
+	m_pctrlMach->setValue(m_Mach);
+	m_pctrlACrit->setValue(m_ACrit);
+	m_pctrlXTopTr->setValue(m_XTop);
+	m_pctrlXBotTr->setValue(m_XBot);
 
 	if(m_bAlpha) m_pctrlAlpha->setChecked(true);
 	else         m_pctrlCl->setChecked(m_bAlpha);
@@ -549,17 +549,17 @@ void BatchThreadDlg::OnAcl()
 	if(m_bAlpha)
 	{
 		m_pctrlSpecVar->setText(tr("Alpha"));
-		m_pctrlSpecMin->SetValue(m_AlphaMin);
-		m_pctrlSpecMax->SetValue(m_AlphaMax);
-		m_pctrlSpecDelta->SetValue(m_AlphaInc);
+		m_pctrlSpecMin->setValue(m_AlphaMin);
+		m_pctrlSpecMax->setValue(m_AlphaMax);
+		m_pctrlSpecDelta->setValue(m_AlphaInc);
 		m_pctrlFromZero->setEnabled(true);
 	}
 	else
 	{
 		m_pctrlSpecVar->setText(tr("CL"));
-		m_pctrlSpecMin->SetValue(m_ClMin);
-		m_pctrlSpecMax->SetValue(m_ClMax);
-		m_pctrlSpecDelta->SetValue(m_ClInc);
+		m_pctrlSpecMin->setValue(m_ClMin);
+		m_pctrlSpecMax->setValue(m_ClMax);
+		m_pctrlSpecDelta->setValue(m_ClInc);
 		m_bFromZero = false;
 		m_pctrlFromZero->setChecked(false);
 		m_pctrlFromZero->setEnabled(false);
@@ -740,32 +740,32 @@ void BatchThreadDlg::ReadParams()
 
 	if(m_PolarType!=XFLR5::FIXEDAOAPOLAR)
 	{
-		m_ReInc = m_pctrlReDelta->Value();
-		m_ReMax = m_pctrlReMax->Value();
-		m_ReMin = m_pctrlReMin->Value();
+		m_ReInc = m_pctrlReDelta->value();
+		m_ReMax = m_pctrlReMax->value();
+		m_ReMin = m_pctrlReMin->value();
 
 		if(m_bAlpha)
 		{
-			m_AlphaInc = qAbs(m_pctrlSpecDelta->Value());
-			m_AlphaMax = m_pctrlSpecMax->Value();
-			m_AlphaMin = m_pctrlSpecMin->Value();
+			m_AlphaInc = qAbs(m_pctrlSpecDelta->value());
+			m_AlphaMax = m_pctrlSpecMax->value();
+			m_AlphaMin = m_pctrlSpecMin->value();
 		}
 		else
 		{
-			m_ClInc = qAbs(m_pctrlSpecDelta->Value());
-			m_ClMin = m_pctrlSpecMin->Value();
-			m_ClMax = m_pctrlSpecMax->Value();
+			m_ClInc = qAbs(m_pctrlSpecDelta->value());
+			m_ClMin = m_pctrlSpecMin->value();
+			m_ClMax = m_pctrlSpecMax->value();
 		}
 	}
 
 	if(m_ReMin<=0.0) m_ReMin = qAbs(m_ReInc);
 	if(m_ReMax<=0.0) m_ReMax = qAbs(m_ReMax);
 
-	m_Mach     = m_pctrlMach->Value();
+	m_Mach     = m_pctrlMach->value();
 	if(m_Mach<=0.0) m_Mach = 0.0;
-	m_ACrit    = m_pctrlACrit->Value();
-	m_XTop   = m_pctrlXTopTr->Value();
-	m_XBot   = m_pctrlXBotTr->Value();
+	m_ACrit    = m_pctrlACrit->value();
+	m_XTop   = m_pctrlXTopTr->value();
+	m_XBot   = m_pctrlXBotTr->value();
 }
 
 
@@ -928,7 +928,7 @@ void BatchThreadDlg::timerEvent(QTimerEvent *event)
 	QXDirect *pXDirect = (QXDirect*)s_pXDirect;
 	if(m_pctrlUpdatePolarView->isChecked())
 	{
-		pXDirect->CreatePolarCurves();
+		pXDirect->createPolarCurves();
 		pXDirect->UpdateView();
 	}
 
@@ -961,7 +961,7 @@ void BatchThreadDlg::timerEvent(QTimerEvent *event)
 				CleanUp();
 				if(pXDirect->m_bPolarView)
 				{
-					pXDirect->CreatePolarCurves();
+					pXDirect->createPolarCurves();
 					pXDirect->UpdateView();
 				}
 			}

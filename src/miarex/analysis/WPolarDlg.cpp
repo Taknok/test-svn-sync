@@ -199,23 +199,23 @@ void WPolarDlg::InitDialog(Plane *pPlane, WPolar *pWPolar)
 	//initialize inertia
 	if(s_WPolar.m_bAutoInertia)
 	{
-		m_pctrlWeight->SetValue(m_pPlane->TotalMass() * Units::kgtoUnit());
-		m_pctrlXCmRef->SetValue(m_pPlane->CoG().x * Units::mtoUnit());
-		m_pctrlZCmRef->SetValue(m_pPlane->CoG().z * Units::mtoUnit());
+		m_pctrlWeight->setValue(m_pPlane->TotalMass() * Units::kgtoUnit());
+		m_pctrlXCmRef->setValue(m_pPlane->CoG().x * Units::mtoUnit());
+		m_pctrlZCmRef->setValue(m_pPlane->CoG().z * Units::mtoUnit());
 		s_WPolar.m_Mass    = m_pPlane->TotalMass();
 		s_WPolar.m_CoG.x   = m_pPlane->CoG().x;
 		s_WPolar.m_CoG.z   = m_pPlane->CoG().z;
 	}
 	else
 	{
-		m_pctrlWeight->SetValue(s_WPolar.m_Mass  * Units::kgtoUnit());
-		m_pctrlXCmRef->SetValue(s_WPolar.m_CoG.y * Units::mtoUnit());
-		m_pctrlZCmRef->SetValue(s_WPolar.m_CoG.z * Units::mtoUnit());
+		m_pctrlWeight->setValue(s_WPolar.m_Mass  * Units::kgtoUnit());
+		m_pctrlXCmRef->setValue(s_WPolar.m_CoG.y * Units::mtoUnit());
+		m_pctrlZCmRef->setValue(s_WPolar.m_CoG.z * Units::mtoUnit());
 	}
 
 
 	//initialize ground data
-	m_pctrlHeight->SetValue(s_WPolar.m_Height*Units::mtoUnit());
+	m_pctrlHeight->setValue(s_WPolar.m_Height*Units::mtoUnit());
 	if(s_WPolar.m_bGround)
 	{
 		m_pctrlHeight->setEnabled(true);
@@ -228,13 +228,13 @@ void WPolarDlg::InitDialog(Plane *pPlane, WPolar *pWPolar)
 	}
 
 
-	m_pctrlXCmRef->SetValue(s_WPolar.m_CoG.x*Units::mtoUnit());
-	m_pctrlZCmRef->SetValue(s_WPolar.m_CoG.z*Units::mtoUnit());
+	m_pctrlXCmRef->setValue(s_WPolar.m_CoG.x*Units::mtoUnit());
+	m_pctrlZCmRef->setValue(s_WPolar.m_CoG.z*Units::mtoUnit());
 
-	m_pctrlQInf->SetValue(s_WPolar.m_QInfSpec*Units::mstoUnit());
-	m_pctrlWeight->SetValue(s_WPolar.m_Mass*Units::kgtoUnit());
-	m_pctrlBeta->SetValue(s_WPolar.m_BetaSpec);
-	m_pctrlAlpha->SetValue(s_WPolar.m_AlphaSpec);
+	m_pctrlQInf->setValue(s_WPolar.m_QInfSpec*Units::mstoUnit());
+	m_pctrlWeight->setValue(s_WPolar.m_Mass*Units::kgtoUnit());
+	m_pctrlBeta->setValue(s_WPolar.m_BetaSpec);
+	m_pctrlAlpha->setValue(s_WPolar.m_AlphaSpec);
 
 
 	m_pctrlViscous->setChecked(s_WPolar.m_bViscous);
@@ -279,24 +279,24 @@ void WPolarDlg::InitDialog(Plane *pPlane, WPolar *pWPolar)
 	{
 		s_WPolar.m_referenceArea = m_pPlane->planformArea();
 		s_WPolar.m_referenceSpanLength = m_pPlane->planformSpan();
-		m_pctrlRefArea->SetValue(m_pPlane->planformArea()*Units::m2toUnit());
-		m_pctrlRefSpan->SetValue(m_pPlane->planformSpan()*Units::mtoUnit());
+		m_pctrlRefArea->setValue(m_pPlane->planformArea()*Units::m2toUnit());
+		m_pctrlRefSpan->setValue(m_pPlane->planformSpan()*Units::mtoUnit());
 	}
 	else if(m_pctrlArea2->isChecked())
 	{
 		s_WPolar.m_referenceArea = m_pPlane->projectedArea();
 		s_WPolar.m_referenceSpanLength = m_pPlane->projectedSpan();
-		m_pctrlRefArea->SetValue(m_pPlane->projectedArea()*Units::m2toUnit());
-		m_pctrlRefSpan->SetValue(m_pPlane->projectedSpan()*Units::mtoUnit());
+		m_pctrlRefArea->setValue(m_pPlane->projectedArea()*Units::m2toUnit());
+		m_pctrlRefSpan->setValue(m_pPlane->projectedSpan()*Units::mtoUnit());
 	}
 	else if(m_pctrlArea3->isChecked())
 	{
-		m_pctrlRefArea->SetValue(s_WPolar.m_referenceArea*Units::m2toUnit());
-		m_pctrlRefSpan->SetValue(s_WPolar.m_referenceSpanLength*Units::mtoUnit());
+		m_pctrlRefArea->setValue(s_WPolar.m_referenceArea*Units::m2toUnit());
+		m_pctrlRefSpan->setValue(s_WPolar.m_referenceSpanLength*Units::mtoUnit());
 	}
 
 	s_WPolar.m_referenceChordLength = m_pPlane->mac();
-	m_pctrlRefChord->SetValue(s_WPolar.m_referenceChordLength*Units::mtoUnit());
+	m_pctrlRefChord->setValue(s_WPolar.m_referenceChordLength*Units::mtoUnit());
 
 	s_WPolar.m_bWakeRollUp = false;
 
@@ -353,16 +353,16 @@ void WPolarDlg::OnArea()
 	if(m_pctrlArea1->isChecked())
 	{
 		s_WPolar.m_ReferenceDim = XFLR5::PLANFORMREFDIM;
-		m_pctrlRefArea->SetValue(m_pPlane->planformArea()*Units::m2toUnit());
-		m_pctrlRefChord->SetValue(m_pPlane->mac()*Units::mtoUnit());
-		m_pctrlRefSpan->SetValue(m_pPlane->planformSpan()*Units::mtoUnit());
+		m_pctrlRefArea->setValue(m_pPlane->planformArea()*Units::m2toUnit());
+		m_pctrlRefChord->setValue(m_pPlane->mac()*Units::mtoUnit());
+		m_pctrlRefSpan->setValue(m_pPlane->planformSpan()*Units::mtoUnit());
 	}
 	else if(m_pctrlArea2->isChecked())
 	{
 		s_WPolar.m_ReferenceDim = XFLR5::PROJECTEDREFDIM;
-		m_pctrlRefArea->SetValue(m_pPlane->projectedArea()*Units::m2toUnit());
-		m_pctrlRefSpan->SetValue(m_pPlane->projectedSpan()*Units::mtoUnit());
-		m_pctrlRefChord->SetValue(m_pPlane->mac()*Units::mtoUnit());
+		m_pctrlRefArea->setValue(m_pPlane->projectedArea()*Units::m2toUnit());
+		m_pctrlRefSpan->setValue(m_pPlane->projectedSpan()*Units::mtoUnit());
+		m_pctrlRefChord->setValue(m_pPlane->mac()*Units::mtoUnit());
 	}
 	else if(m_pctrlArea3->isChecked())
 	{
@@ -409,9 +409,9 @@ void WPolarDlg::OnPlaneInertia()
 	{
 		if(m_pPlane)
 		{
-			m_pctrlWeight->SetValue(m_pPlane->TotalMass() * Units::kgtoUnit());
-			m_pctrlXCmRef->SetValue(m_pPlane->CoG().x * Units::mtoUnit());
-			m_pctrlZCmRef->SetValue(m_pPlane->CoG().z * Units::mtoUnit());
+			m_pctrlWeight->setValue(m_pPlane->TotalMass() * Units::kgtoUnit());
+			m_pctrlXCmRef->setValue(m_pPlane->CoG().x * Units::mtoUnit());
+			m_pctrlZCmRef->setValue(m_pPlane->CoG().z * Units::mtoUnit());
 			s_WPolar.m_Mass    = m_pPlane->TotalMass();
 			s_WPolar.m_CoG.x   = m_pPlane->CoG().x;
 			s_WPolar.m_CoG.z   = m_pPlane->CoG().z;
@@ -419,9 +419,9 @@ void WPolarDlg::OnPlaneInertia()
 	}
 	else
 	{
-		s_WPolar.m_Mass    = m_pctrlWeight->Value() / Units::kgtoUnit();
-		s_WPolar.m_CoG.x   = m_pctrlXCmRef->Value() / Units::mtoUnit();
-		s_WPolar.m_CoG.z   = m_pctrlZCmRef->Value() / Units::mtoUnit();
+		s_WPolar.m_Mass    = m_pctrlWeight->value() / Units::kgtoUnit();
+		s_WPolar.m_CoG.x   = m_pctrlXCmRef->value() / Units::mtoUnit();
+		s_WPolar.m_CoG.z   = m_pctrlZCmRef->value() / Units::mtoUnit();
 	}
 	s_WPolar.m_bAutoInertia = m_pctrlPlaneInertia->isChecked();
 	SetWPolarName();
@@ -508,14 +508,14 @@ void WPolarDlg::OnUnit()
 	if(m_pctrlUnit1->isChecked())
 	{
 		m_UnitType   = 1;
-		m_pctrlViscosity->SetValue(s_WPolar.m_Viscosity);
+		m_pctrlViscosity->setValue(s_WPolar.m_Viscosity);
 		m_pctrlDensityUnit->setText("kg/m3");
 		m_pctrlViscosityUnit->setText("m"+QString::fromUtf8("²")+"/s");
 	}
 	else
 	{
 		m_UnitType   = 2;
-		m_pctrlViscosity->SetValue(s_WPolar.m_Viscosity* 10.7182881);
+		m_pctrlViscosity->setValue(s_WPolar.m_Viscosity* 10.7182881);
 		m_pctrlDensityUnit->setText("slugs/ft3");
 		m_pctrlViscosityUnit->setText("ft"+QString::fromUtf8("²")+"/s");
 	}
@@ -566,8 +566,8 @@ void WPolarDlg::OnPolarType()
 
 void WPolarDlg::ReadValues()
 {
-	s_WPolar.m_AlphaSpec     = m_pctrlAlpha->Value();
-	s_WPolar.m_BetaSpec      = m_pctrlBeta->Value();
+	s_WPolar.m_AlphaSpec     = m_pctrlAlpha->value();
+	s_WPolar.m_BetaSpec      = m_pctrlBeta->value();
 	if(fabs(s_WPolar.m_BetaSpec)>PRECISION)
 	{
 		s_WPolar.m_bVLM1 = false;
@@ -581,21 +581,21 @@ void WPolarDlg::ReadValues()
 		}
 	}
 
-	s_WPolar.m_Mass          = m_pctrlWeight->Value() / Units::kgtoUnit();
-	s_WPolar.m_CoG.x         = m_pctrlXCmRef->Value() / Units::mtoUnit();
-	s_WPolar.m_CoG.z         = m_pctrlZCmRef->Value() / Units::mtoUnit();
-	s_WPolar.m_QInfSpec      = m_pctrlQInf->Value() / Units::mstoUnit();
-	s_WPolar.m_Height        = m_pctrlHeight->Value() / Units::mtoUnit();
+	s_WPolar.m_Mass          = m_pctrlWeight->value() / Units::kgtoUnit();
+	s_WPolar.m_CoG.x         = m_pctrlXCmRef->value() / Units::mtoUnit();
+	s_WPolar.m_CoG.z         = m_pctrlZCmRef->value() / Units::mtoUnit();
+	s_WPolar.m_QInfSpec      = m_pctrlQInf->value() / Units::mstoUnit();
+	s_WPolar.m_Height        = m_pctrlHeight->value() / Units::mtoUnit();
 
 	if(m_pctrlUnit1->isChecked())
 	{
-		s_WPolar.m_Viscosity = m_pctrlViscosity->Value();
-		s_WPolar.m_Density   = m_pctrlDensity->Value();
+		s_WPolar.m_Viscosity = m_pctrlViscosity->value();
+		s_WPolar.m_Density   = m_pctrlDensity->value();
 	}
 	else
 	{
-		s_WPolar.m_Density   = m_pctrlDensity->Value() / 0.00194122;
-		s_WPolar.m_Viscosity = m_pctrlViscosity->Value() / 10.7182881;
+		s_WPolar.m_Density   = m_pctrlDensity->value() / 0.00194122;
+		s_WPolar.m_Viscosity = m_pctrlViscosity->value() / 10.7182881;
 	}
 
 
@@ -614,11 +614,11 @@ void WPolarDlg::ReadValues()
 	else if(m_pctrlArea3->isChecked())
 	{
 		s_WPolar.m_ReferenceDim = XFLR5::MANUALREFDIM;
-		s_WPolar.m_referenceArea       = m_pctrlRefArea->Value() /Units::m2toUnit();
-		s_WPolar.m_referenceSpanLength = m_pctrlRefSpan->Value() /Units::mtoUnit();
+		s_WPolar.m_referenceArea       = m_pctrlRefArea->value() /Units::m2toUnit();
+		s_WPolar.m_referenceSpanLength = m_pctrlRefSpan->value() /Units::mtoUnit();
 	}
 
-	s_WPolar.m_referenceChordLength = m_pctrlRefChord->Value() /Units::mtoUnit();
+	s_WPolar.m_referenceChordLength = m_pctrlRefChord->value() /Units::mtoUnit();
 
 	SetDensity();
 
@@ -636,8 +636,8 @@ void WPolarDlg::SetDensity()
 		if(exp>1) precision = 1;
 		else if(exp<-4) precision = 4;
 		else precision = 3-exp;
-		m_pctrlDensity->SetPrecision(precision);
-		m_pctrlDensity->SetValue(s_WPolar.m_Density);
+		m_pctrlDensity->setPrecision(precision);
+		m_pctrlDensity->setValue(s_WPolar.m_Density);
 	}
 	else
 	{
@@ -645,8 +645,8 @@ void WPolarDlg::SetDensity()
 		if(exp>1) precision = 1;
 		else if(exp<-4) precision = 4;
 		else precision = 3-exp;
-		m_pctrlDensity->SetPrecision(precision);
-		m_pctrlDensity->SetValue(s_WPolar.m_Density* 0.00194122);
+		m_pctrlDensity->setPrecision(precision);
+		m_pctrlDensity->setValue(s_WPolar.m_Density* 0.00194122);
 	}
 }
 
@@ -704,7 +704,7 @@ void WPolarDlg::SetupLayout()
 				lab5->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 				lab6->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 				m_pctrlQInf    = new DoubleEdit(10.05);
-				m_pctrlQInf->SetMin(0.0);
+				m_pctrlQInf->setMin(0.0);
 				m_pctrlAlpha   = new DoubleEdit(1.00,2);
 				m_pctrlBeta    = new DoubleEdit(0.00,2);
 				QLabel *labSpeedUnit   = new QLabel(strSpeedUnit);
@@ -816,7 +816,7 @@ void WPolarDlg::SetupLayout()
 					pInertiaDataLayout->addWidget(lab3,2,1);
 					pInertiaDataLayout->addWidget(lab4,3,1);
 					m_pctrlWeight  = new DoubleEdit(0,3);
-					m_pctrlWeight->SetMin(0.0);
+					m_pctrlWeight->setMin(0.0);
 					m_pctrlXCmRef  = new DoubleEdit(100.00,3);
 					m_pctrlZCmRef  = new DoubleEdit(100.00,3);
 					pInertiaDataLayout->addWidget(m_pctrlWeight,1,2);
@@ -927,10 +927,10 @@ void WPolarDlg::SetupLayout()
 					m_pctrlViscosityUnit = new QLabel("m2/s");
 					m_pctrlRho->setFont(symbolFont);
 					m_pctrlNu->setFont(symbolFont);
-					m_pctrlDensity->SetPrecision(6);
-					m_pctrlViscosity->SetPrecision(6);
-					m_pctrlDensity->SetMin(0.0);
-					m_pctrlViscosity->SetMin(0.0);
+					m_pctrlDensity->setPrecision(6);
+					m_pctrlViscosity->setPrecision(6);
+					m_pctrlDensity->setMin(0.0);
+					m_pctrlViscosity->setMin(0.0);
 					pAeroDataValuesLayout->addWidget(m_pctrlRho,1,1);
 					pAeroDataValuesLayout->addWidget(m_pctrlDensity,1,2);
 					pAeroDataValuesLayout->addWidget(m_pctrlDensityUnit,1,3);
@@ -1199,11 +1199,11 @@ void WPolarDlg::OnAeroData()
 
 		if(m_pctrlUnit1->isChecked())
 		{
-			m_pctrlViscosity->SetValue(s_WPolar.m_Viscosity);
+			m_pctrlViscosity->setValue(s_WPolar.m_Viscosity);
 		}
 		else
 		{
-			m_pctrlViscosity->SetValue(s_WPolar.m_Viscosity* 10.7182881);
+			m_pctrlViscosity->setValue(s_WPolar.m_Viscosity* 10.7182881);
 		}
 		SetDensity();
 	}

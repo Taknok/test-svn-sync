@@ -39,7 +39,7 @@ NacaFoilDlg::NacaFoilDlg(QWidget *pParent) : QDialog(pParent)
 
 	SetupLayout();
     m_pctrlNumber->setText(QString("%1").arg(s_Digits,4));
-	m_pctrlPanels->SetValue(s_Panels);
+	m_pctrlPanels->setValue(s_Panels);
 }
 
 
@@ -53,7 +53,7 @@ void NacaFoilDlg::SetupLayout()
         m_pctrlNumber = new QLineEdit("0", this);
         m_pctrlNumber->setValidator(new QIntValidator(m_pctrlNumber));
 		m_pctrlPanels = new IntEdit(100, this);
-		m_pctrlPanels->SetMax(IQX);
+		m_pctrlPanels->setMax(IQX);
 
 		m_pctrlMessage = new QLabel();
 		m_pctrlMessage->setMinimumWidth(120);
@@ -106,7 +106,7 @@ void NacaFoilDlg::EditingFinished()
     int d = m_pctrlNumber->text().toInt(&bOK);
     if(bOK) s_Digits = d;
 
-	s_Panels = m_pctrlPanels->Value();
+	s_Panels = m_pctrlPanels->value();
 
 	GenerateFoil();
 	OKButton->setFocus();

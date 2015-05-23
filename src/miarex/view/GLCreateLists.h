@@ -27,10 +27,10 @@
 #define GLCREATELISTS_H
 
 #include <QtOpenGL>
-#include "../../objects/Plane.h"
-#include "../../objects/PlaneOpp.h"
-#include "../../objects/WPolar.h"
-#include "../threedwidget.h"
+#include "Plane.h"
+#include "PlaneOpp.h"
+#include "WPolar.h"
+#include "threedwidget.h"
 
 void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody);
 void GLCreateCp(int nPanels, int nNodes, CVector *pNode, Panel *pPanel, PlaneOpp *pPOpp);

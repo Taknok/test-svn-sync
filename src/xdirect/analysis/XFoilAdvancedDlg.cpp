@@ -74,7 +74,7 @@ void XFoilAdvancedDlg::SetupLayout()
 		QLabel *pTimerLabel = new QLabel(tr("Time interval between graph updates"));
 		QLabel *pTimerUnitLabel = new QLabel("ms");
 		m_pctrlTimerInterval = new IntEdit(QXDirect::s_TimeUpdateInterval, this);
-		m_pctrlTimerInterval->SetMin(0);
+		m_pctrlTimerInterval->setMin(0);
 		pTimerLayout->addStretch();
 		pTimerLayout->addWidget(pTimerLabel);
 		pTimerLayout->addWidget(m_pctrlTimerInterval);
@@ -127,12 +127,12 @@ void XFoilAdvancedDlg::OnDefaults()
 
 void XFoilAdvancedDlg::InitDialog()
 {
-	m_pctrlVAccel->SetValue(m_VAccel);
+	m_pctrlVAccel->setValue(m_VAccel);
 	m_pctrlInitBL->setChecked(m_bAutoInitBL);
-	m_pctrlIterLimit->SetValue(m_IterLimit);
+	m_pctrlIterLimit->setValue(m_IterLimit);
 	m_pctrlFullReport->setChecked(m_bFullReport);
 	m_pctrlKeepErrorsOpen->setChecked(QXDirect::s_bKeepOpenErrors);
-	m_pctrlTimerInterval->SetValue(QXDirect::s_TimeUpdateInterval);
+	m_pctrlTimerInterval->setValue(QXDirect::s_TimeUpdateInterval);
 }
 
 
@@ -169,11 +169,11 @@ void XFoilAdvancedDlg::keyPressEvent(QKeyEvent *event)
 
 void XFoilAdvancedDlg::OnOK()
 {
-	m_IterLimit = m_pctrlIterLimit->Value();
-	m_VAccel = m_pctrlVAccel->Value();
+	m_IterLimit = m_pctrlIterLimit->value();
+	m_VAccel = m_pctrlVAccel->value();
 	m_bAutoInitBL = m_pctrlInitBL->isChecked();
 	m_bFullReport = m_pctrlFullReport->isChecked();
-	QXDirect::s_TimeUpdateInterval = m_pctrlTimerInterval->Value();
+	QXDirect::s_TimeUpdateInterval = m_pctrlTimerInterval->value();
 	QXDirect::s_bKeepOpenErrors = m_pctrlKeepErrorsOpen->isChecked();
 	done(1);
 }

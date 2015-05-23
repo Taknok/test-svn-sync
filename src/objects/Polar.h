@@ -52,7 +52,7 @@ class Polar
 	friend class EditPlrDlg;
 	friend class ObjectPropsDlg;
 	friend class XFoil;
-
+	friend class FoilWidget;
 
 
 public:
@@ -74,7 +74,7 @@ public:
 	void CopyPolar(Polar *pPolar);
 
 	bool isVisible(){return m_bIsVisible;}
-	bool pointsVisible(){return m_bShowPoints;}
+	bool showPoints(){return m_bShowPoints;}
 
 	void ReplaceOppDataAt(int pos, OpPoint *pOpp);
 	void InsertOppDataAt(int pos, OpPoint *pOpp);
@@ -89,6 +89,10 @@ public:
 
 	QString foilName() {return m_FoilName;}
 	QString polarName() {return m_PlrName;}
+
+	QColor &polarColor(){return m_Color;}
+	int &polarStyle(){return m_Style;}
+	int &polarWidth(){return m_Width;}
 
 	XFLR5::enumPolarType polarType() {return m_PolarType;}
 	void setPolarType(XFLR5::enumPolarType type);

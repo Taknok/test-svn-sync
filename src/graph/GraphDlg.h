@@ -44,7 +44,8 @@ class GraphDlg : public QDialog
 
 public:
 	GraphDlg(QWidget *pParent);
-	void SetParams();
+	void setControls();
+	void setGraph(QGraph* pGraph);
 
 private slots:
 	void OnOK();
@@ -74,8 +75,11 @@ private slots:
 	void OnActivePage(int index);
 	void OnVariableChanged();
 
+
 private:
 	void keyPressEvent(QKeyEvent *event);
+	void reject();
+
 	void SetupLayout();
 	void SetButtonColors();
 	void SetApplied(bool bApplied);
@@ -116,14 +120,17 @@ private:
 	bool m_bApplied;
 
 public:
-	QGraph *m_pGraph, *m_pMemGraph;
 	QGraph *m_GraphArray[30];
 	int m_NGraph;
 	int m_XSel, m_YSel;
-	int m_iGraphType;
+//	QGRAPH::enumGraphType m_enumGraphType;
 	bool m_bVariableChanged;
 
 	static int s_ActivePage;
+private:
+	QGraph *m_pGraph;
+	QGraph m_MemGraph;
+
 };
 
 #endif // GRAPHDLG_H

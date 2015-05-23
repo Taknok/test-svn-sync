@@ -85,18 +85,18 @@ class Foil
 	friend class FoilSelectionDlg;
 	friend class ManageFoilsDlg;
 	friend class FoilTableDelegate;
+	friend class FoilWidget;
 	
 public:
 	Foil();
 
-	QString foilName() {return m_FoilName;}
 	void setFoilName(QString FoilName){m_FoilName = FoilName;}
 	void renameThisFoil(QString newFoilName);
 
 	int IsPoint(CVector const &Real);
-	void DrawFoil(QPainter &painter, double const &alpha, double const &scalex, double const &scaley, QPoint const &Offset);
-	void DrawPoints(QPainter &painter, double const &scalex, double const &scaley, QPoint const &Offset);
-	void DrawMidLine(QPainter &painter, double const &scalex, double const &scaley, QPoint const &Offset);
+	void drawFoil(QPainter &painter, double const &alpha, double const &scalex, double const &scaley, QPointF const &Offset);
+	void drawPoints(QPainter &painter, double const &scalex, double const &scaley, QPointF const &Offset);
+	void drawMidLine(QPainter &painter, double const &scalex, double const &scaley, QPointF const &Offset);
 
 	void GetLowerY(double x, double &y, double &normx, double &normy);
 	void GetUpperY(double x, double &y, double &normx, double &normy);
@@ -135,6 +135,15 @@ public:
 	static Foil *deleteFoil(Foil *pFoil);
 	void insertThisFoil();
 	Foil * deleteThisFoil();
+
+	bool isVisible(){return m_bVisible;}
+	bool showPoints(){return m_bPoints;}
+	bool showCenterLine(){return m_bCenterLine;}
+	int foilWidth(){return m_FoilWidth;}
+	int foilStyle(){return m_FoilStyle;}
+	QColor foilColor(){return m_FoilColor;}
+	QString foilName(){return m_FoilName;}
+
 
 private:
 	QString m_FoilDescription;	        /**< a free description */
@@ -187,9 +196,9 @@ private:
 
 	QString m_FoilName;		            /**<  the foil's name... */
 
-	static QList <void *> s_oaFoil;      /**< The array of void pointers to the Foil objects. */
-
 public:
+
+	static QList <void *> s_oaFoil;      /**< The array of void pointers to the Foil objects. */
 
 	bool m_bTEFlap;          /**< true if the foil has a trailing edge flap */
 	double m_TEFlapAngle;    /**< the trailing edge flap angle, in degrees*/

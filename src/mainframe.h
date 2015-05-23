@@ -43,6 +43,9 @@
 #include "twodwidget.h"
 #include "threedwidget.h"
 #include "graph/QGraph.h"
+#include "Direct2dDesign.h"
+#include "xdirecttilewidget.h"
+#include "miarextilewidget.h"
 
 /**
 *@class MainFrame
@@ -99,6 +102,11 @@ class MainFrame : public QMainWindow
 	friend class InertiaDlg;
 	friend class TranslatorDlg;
 	friend class Settings;
+	friend class Direct2dDesign;
+	friend class GraphTileWidget;
+	friend class MiarexTileWidget;
+	friend class XDirectTileWidget;
+	friend class FoilWidget;
 
 	Q_OBJECT
 
@@ -113,39 +121,37 @@ public:
 
 public slots:
 	void OnAFoil();
-	void OnXDirect();
+	void onXDirect();
 	void OnXInverse();
 	void OnXInverseMixed();
-	void OnMiarex();
+	void onMiarex();
 
 private slots:
 	void AboutQt();
 	void aboutXFLR5();
 	void OnCurFoilStyle();
-	void OnExportCurGraph();
 	void OnInsertProject();
 	void OnNewProject();
 	void OnLanguage();
 	void OnLoadFile();
 	void OnLogFile();
 	void OnOpenGLInfo();
-	void OnProjectModified();
-	void OnResetCurGraphScales();
+	void onProjectModified();
 	void OnResetSettings();
 	void OnRestoreToolbars();
-	void OnSaveOptions();
-	bool OnSaveProjectAs();
-	void OnSaveViewToImageFile();
+	void onSaveOptions();
+	bool onSaveProjectAs();
+	void onSaveViewToImageFile();
 	void OnSelChangeFoil(int sel);
 	void OnSelChangePolar(int sel);
 	void OnSelChangeOpp(int sel);
 	void OnSelChangePlane(int sel);
 	void OnSelChangePlaneOpp(int sel);
 	void OnSelChangeWPolar(int sel);
-	void OnSaveProject();
+	void onSaveProject();
 	void OnStyleSettings();
-	void OnUnits();
-	void OnManageFoils();
+	void onUnits();
+	void onManageFoils();
 	void OnSavePlaneAsProject();
 	void openRecentFile();
 
@@ -153,18 +159,20 @@ protected:
 	void keyPressEvent(QKeyEvent *event);
 	void keyReleaseEvent(QKeyEvent *event);
 	void closeEvent (QCloseEvent * event);
+	void contextMenuEvent (QContextMenuEvent * event) ;
 
 
 
 public:
 	void AddRecentFile(const QString &PathNAme);
+	void checkGraphActions();
 	void ClientToGL(QPoint const &point, CVector &real);
-	void contextMenuEvent (QContextMenuEvent * event) ;
 	void CreateDockWindows();
 	void CreateToolbars();
 	void CreateStatusBar();
 	void CreateActions();
 	void CreateMenus();
+	void createGraphActions();
 	void CreateXDirectActions();
 	void CreateXDirectMenus();
 	void CreateXDirectToolbar();
@@ -179,7 +187,7 @@ public:
 	void CreateAFoilToolbar();
 	void DeleteProject(bool bClosing=false);
 	void GLToClient(CVector const &real, QPoint &point);
-	bool LoadSettings();
+	bool loadSettings();
 	bool LoadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
 	void* ReadFoilFile(QTextStream &ar);
 	void ReadPolarFile(QDataStream &ar);
@@ -194,25 +202,28 @@ public:
 	bool SerializeProjectWPA(QDataStream &ar, bool bIsStoring);
 	bool SerializeProjectXFL(QDataStream &ar, bool bIsStoring);
 	bool SerializePlaneProject(QDataStream &ar);
-	void SetCentralWidget();
-	void SetGraphSettings(QGraph *pGraph);
+	void setMainFrameCentralWidget();
+	void setGraphSettings(QGraph *pGraph);
 	void SetProjectName(QString PathName);
-	void SetMenus();
+	void setMenus();
 	void SetupDataDir();
 	QString ShortenFileName(QString &PathName);
 	void UpdateFoilListBox();
 	void UpdatePolarListBox();
 	void UpdateOppListBox();
 	void updateRecentFileActions();
-	void UpdatePlaneListBox();
-	void UpdateView();
+	void updatePlaneListBox();
+	void updateView();
 	void UpdateWPolarListBox();
 	void UpdatePOppListBox();
 	void WritePolars(QDataStream &ar, void *pFoilPtr=NULL);
 
-	static void SetSaveState(bool bSave);
+	static void setSaveState(bool bSave);
 	static void ReadStyleSheet(QString styleSheetName, QString &styleSheet);
 	static QColor GetColor(int type);
+
+
+	XFLR5::enumApp xflr5App(){return m_iApp;}
 
 /*___________________________________________Variables_______________________________*/
 
@@ -228,7 +239,11 @@ private:
 
 	QStackedWidget *m_pctrlCentralWidget;  /** The stacked widget which is loaded at the center of the display area. The stack holds one TwoDWidget and one ThreeDWidget and sxwitches between the two depending on the user's request. */
 	TwoDWidget *m_p2dWidget;        /** A pointer to the instance of the TwoDWidget which is used to perform 2d drawings */
+	Direct2dDesign *m_pDirect2dWidget;        /** A pointer to the instance of the TwoDWidget which is used to perform 2d drawings of foils in Direct Design */
 	ThreeDWidget *m_p3dWidget;   /** A pointer to the instance of the ThreeDWidget  3d calculations and rendering are performed */
+	MiarexTileWidget *m_pMiarexTileWidget;
+	XDirectTileWidget *m_pXDirectTileWidget;
+
 
 	QDockWidget *m_pctrlXDirectWidget, *m_pctrlMiarexWidget, *m_pctrlAFoilWidget, *m_pctrlXInverseWidget;
 	QDockWidget *m_pctrl3DScalesWidget, *m_pctrlStabViewWidget;
@@ -240,32 +255,31 @@ private:
 
 	//Common Menus
 	QMenu * MainMenu;
-	QMenu *fileMenu, *optionsMenu, *helpMenu;
+	QMenu *m_pFileMenu, *m_pOptionsMenu, *m_pHelpMenu, *m_pGraphMenu;
 
 	//AFoilMenus
-	QMenu *AFoilViewMenu, *AFoilDesignMenu, *AFoilSplineMenu;
-	QMenu *AFoilCtxMenu,*AFoilCurrentFoilMenu, *AFoilTableCtxMenu;
+	QMenu *m_pAFoilViewMenu, *m_pAFoilDesignMenu, *m_pAFoilSplineMenu;
+	QMenu *m_pAFoilCtxMenu,*m_pAFoilCurrentFoilMenu, *m_pAFoilTableCtxMenu;
 
 	//  XFoilAnalysis Menus
-	QMenu * XDirectViewMenu;
-	QMenu *FoilMenu, *CurGraphCtxMenu, *CurOppCtxMenu;
-	QMenu *currentFoilMenu;
-	QMenu *DesignMenu;
-	QMenu *XFoilAnalysisMenu;
-	QMenu *OpPointMenu, *CpGraphMenu, *currentOppMenu;
-	QMenu *PolarMenu, *currentPolarMenu, *GraphPolarMenu, *CurPolarGraphMenu;
-	QMenu *OperFoilCtxMenu, *OperPolarCtxMenu, *CurXFoilResults;
+	QMenu * m_pXDirectViewMenu;
+	QMenu *m_pXDirectFoilMenu, *CurGraphCtxMenu, *m_pCurOppCtxMenu;
+	QMenu *m_pCurrentFoilMenu;
+	QMenu *m_pDesignMenu;
+	QMenu *m_pXFoilAnalysisMenu;
+	QMenu *m_pOpPointMenu, *m_pXDirectCpGraphMenu, *m_pCurrentOppMenu;
+	QMenu *m_pPolarMenu, *m_pCurrentPolarMenu, *m_pGraphPolarMenu, *CurPolarGraphMenu;
+	QMenu *m_pOperFoilCtxMenu, *m_pOperPolarCtxMenu, *m_pCurXFoilResults;
 
 	//XInverse menu
 	QMenu *XInverseViewMenu, *InverseFoilMenu, *InverseGraphMenu, *InverseContextMenu;
 
 	//Miarex Menus
-	QMenu *MiarexViewMenu;
-	QMenu *MiarexAnalysisMenu;
-	QMenu *PlaneMenu, *currentPlaneMenu, *curWPlrMenu, *curWOppMenu;
-	QMenu *MiarexWPlrMenu, *MiarexWOppMenu;
-	QMenu *WPlrGraphMenu,*WPlrCurGraphMenu, *WOppGraphMenu, *WOppCurGraphMenu;
-	QMenu *WPlrCtxMenu, *WOppCtxMenu, *W3DCtxMenu, *WCpCtxMenu, *WTimeCtxMenu, *W3DStabCtxMenu;
+	QMenu *m_pMiarexViewMenu;
+	QMenu *m_pMiarexAnalysisMenu;
+	QMenu *m_pPlaneMenu, *m_pCurrentPlaneMenu, *m_pCurWPlrMenu, *m_pCurWOppMenu;
+	QMenu *m_pMiarexWPlrMenu, *m_pMiarexWOppMenu;
+	QMenu *m_pWPlrCtxMenu, *m_pWOppCtxMenu, *m_pW3DCtxMenu, *m_pWCpCtxMenu, *m_pWTimeCtxMenu, *m_pW3DStabCtxMenu;
 
 	//MainFrame actions
 	QAction *OnXDirectAct, *OnMiarexAct, *OnAFoilAct, *OnXInverseAct, *OnMixedInverseAct;
@@ -278,6 +292,9 @@ private:
 	QAction *recentFileActs[MAXRECENTFILES];
 	QAction *separatorAct;
 	QAction *saveViewToImageFileAct, *resetSettingsAct;
+	QAction *m_pSingleGraphAct[MAXGRAPHS], *m_pTwoGraphs, *m_pFourGraphs, *m_pAllGraphs;
+	QAction *m_pGraphDlgAct;
+
 
 	//AFoil Actions
 	QAction *zoomInAct, *ResetXScaleAct, *ResetYScaleAct, *ResetXYScaleAct;
@@ -297,30 +314,24 @@ private:
 	//Miarex Actions
 	QAction *WPolarAct, *WOppAct, *W3DAct, *CpViewAct, *StabTimeAct, *RootLocusAct;
 	QAction *W3DPrefsAct, *W3DLightAct, *W3DScalesAct;
-	QAction *definePlaneAct, *definePlaneObjectAct, *editPlaneAct, *editWingAct, *editBodyAct, *savePlaneAsProjectAct;
+	QAction *definePlaneAct, *definePlaneObjectAct, *editPlaneAct, *editWingAct, *m_pEditBodyAct, *m_pEditBodyObjectAct, *savePlaneAsProjectAct;
 	QAction *renameCurPlaneAct, *deleteCurPlane, *duplicateCurPlane;
 	QAction *renameCurWPolar, *editWPolarAct, *editWPolarPts, *exportCurWPolar, *resetCurWPolar;
 	QAction *ShowPolarProps, *ShowWOppProps;
 	QAction *deleteCurWPolar, *deleteCurWOpp;
-	QAction *twoGraphs, *fourGraphs;
-	QAction *Graph1,*Graph2,*Graph3,*Graph4;
-	QAction *MiarexGraphDlg;
-	QAction *highlightWOppAct;
+	QAction *m_pHighlightWOppAct;
 	QAction *editObjectAct, *editWPolarObjectAct, *exporttoXML, *importXMLPlaneAct ;
 
-	QAction *ResetWingGraphScale;
 	QAction *MiarexPolarFilter;
-	QAction *allWPolarGraphsScalesAct, *allWingGraphsScalesAct, *allWPolarGraphsSettings, *allWingGraphsSettings;
+	QAction *m_pAllGraphsScalesAct, *m_pAllGraphsSettings;
 	QAction *hideAllWPlrs, *showAllWPlrs;
 	QAction *hidePlaneWPlrs, *showPlaneWPlrs, *showPlaneWPlrsOnly, *deletePlaneWPlrs;
 	QAction *hidePlaneWOpps, *showPlaneWOpps, *deletePlaneWOpps;
-	QAction *resetWOppLegend, *resetWPlrLegend;
 	QAction *exportCurWOpp, *showCurWOppOnly, *hideAllWOpps, *showAllWOpps, *deleteAllWOpps;
 	QAction *showAllWPlrOpps, *hideAllWPlrOpps, * deleteAllWPlrOpps;
 	QAction *defineWPolar, *defineStabPolar, *defineWPolarObjectAct, *advancedSettings;
-	QAction *halfWingAct;
 	QAction *showEllipticCurve, *showXCmRefLocation, *showStabCurve, *showFinCurve, *showWing2Curve;
-	QAction *exporttoAVL, *resetWingScale, *scaleWingAct;
+	QAction *exporttoAVL, *scaleWingAct;
 	QAction *managePlanesAct;
 	QAction *m_pImportWPolar, *m_pPlaneInertia;
 
@@ -333,16 +344,16 @@ private:
 	QAction *hideFoilOpps, *showFoilOpps, *deleteFoilOpps;
 	QAction *hidePolarOpps, *showPolarOpps, *deletePolarOpps;
 	QAction *exportCurOpp, *deleteCurOpp, *getOppProps, *getPolarProps;
-	QAction *viewXFoilAdvanced, *viewLogFile, *showPanels, *showNeutralLine, *resetFoilScale, *showInviscidCurve;
+	QAction *viewXFoilAdvanced, *viewLogFile, *m_pShowPanels, *m_pShowNeutralLine, *m_pResetFoilScale, *showInviscidCurve;
 	QAction *exportCurFoil, *deleteCurFoil, *renameCurFoil, *setCurFoilStyle;
 	QAction *DerotateFoil, *NormalizeFoil, *RefineLocalFoil, *RefineGlobalFoil , *EditCoordsFoil, *ScaleFoil;
 	QAction *SetTEGap, *SetLERadius, *SetFlap, *InterpolateFoils, *NacaFoils, *pDirectDuplicateCurFoil;
 	QAction *XDirectGraphDlg,*exportCurGraphAct, *resetCurGraphScales, *allPolarGraphsSettingsAct, *allPolarGraphsScales;
-	QAction *TwoPolarGraphsAct, *AllPolarGraphsAct, *resetGraphLegend;
-	QAction *PolarGraphAct[5];
-	QAction *XDirectStyleAct;
+	QAction *TwoPolarGraphsAct, *AllPolarGraphsAct, *m_pResetGraphLegendAct;
+	QAction *m_pPolarGraphAct[5];
+	QAction *m_pXDirectStyleAct;
 	QAction *XDirectPolarFilter;
-	QAction *defineCpGraphSettings, *exportCpGraphAct, *setQVarGraph, *setCpVarGraph;
+	QAction *setQVarGraph, *setCpVarGraph;
 	QAction *CurXFoilResExport, * CurXFoilCtPlot, *CurXFoilDbPlot, *CurXFoilDtPlot, *CurXFoilRtLPlot;
 	QAction *CurXFoilRtPlot, *CurXFoilNPlot, *CurXFoilCdPlot, *CurXFoilCfPlot, *CurXFoilUePlot, *CurXFoilHPlot;
 	QAction *ManageFoilsAct, *RenamePolarAct;
@@ -360,9 +371,6 @@ private:
 	QAction *InverseResetGraphScale, *XInverseGraphDlg, *InverseZoomIn, *InverseZoomX, *InverseZoomY;
 
 	QStringList m_RecentFiles;
-
-
-
 
 	XFLR5::enumApp m_iApp;                 /**< The identification number of the active app. */
 

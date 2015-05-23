@@ -26,6 +26,7 @@
 DoubleEdit::DoubleEdit(QWidget *pParent)  : QLineEdit(pParent)
 {
 	setParent(pParent);
+	setAutoFillBackground(true);
 	m_Value = 0.0;
 	m_pDV = new QDoubleValidator(this);
 //	m_pDV->setNotation(QDoubleValidator::StandardNotation);
@@ -34,13 +35,14 @@ DoubleEdit::DoubleEdit(QWidget *pParent)  : QLineEdit(pParent)
 	setValidator(m_pDV);
 	setAlignment(Qt::AlignRight);
 	setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding));
-	FormatValue();
+	formatValue();
 }
 
 
 DoubleEdit::DoubleEdit(double val, int decimals, QWidget *pParent)
 {
 	setParent(pParent);
+	setAutoFillBackground(true);
 	m_Value = val;
 	m_pDV = new QDoubleValidator(this);
 //	m_pDV->setNotation(QDoubleValidator::StandardNotation);
@@ -49,7 +51,7 @@ DoubleEdit::DoubleEdit(double val, int decimals, QWidget *pParent)
 	setValidator(m_pDV);
 	setAlignment(Qt::AlignRight);
 	setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding));
-	FormatValue();
+	formatValue();
 }
 
 
@@ -65,14 +67,14 @@ QSize DoubleEdit::sizeHint() const
 
 void DoubleEdit::focusOutEvent (QFocusEvent *event)
 {
-	ReadValue();
-	FormatValue();
+	readValue();
+	formatValue();
 //	emit(editingFinished()); //is emitted by call to base class
 	QLineEdit::focusOutEvent(event);
 }
 
 
-double DoubleEdit::ReadValue()
+double DoubleEdit::readValue()
 {
 	bool bOK;
 	double f = locale().toDouble(text().trimmed(), &bOK);
@@ -84,10 +86,10 @@ double DoubleEdit::ReadValue()
 }
 
 
-void DoubleEdit::SetValue(double val)
+void DoubleEdit::setValue(double val)
 {
 	m_Value = val;
-	FormatValue();
+	formatValue();
 }
 
 
@@ -98,29 +100,29 @@ void DoubleEdit::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_Return:
 		case Qt::Key_Enter:
 		{
-			ReadValue();
-			FormatValue();
+			readValue();
+			formatValue();
 			QLineEdit::keyPressEvent(event);
 
 			break;
 		}
 		case Qt::Key_Escape:
 		{
-			FormatValue();
+			formatValue();
 			QLineEdit::keyPressEvent(event);
 			break;
 		}
 		default:
 		{
 			QLineEdit::keyPressEvent(event);
-			ReadValue();
+			readValue();
 			break;
 		}
 	}
 }
 
 
-void DoubleEdit::FormatValue()
+void DoubleEdit::formatValue()
 {
 	QString str;
 	if ((fabs(m_Value)<=1.e-10 || fabs(m_Value)>=pow(10.0, -precision())) && m_Value <10000000.0)
@@ -135,7 +137,7 @@ void DoubleEdit::FormatValue()
 }
 
 
-void DoubleEdit::SetValueNoFormat(double val)
+void DoubleEdit::setValueNoFormat(double val)
 {
 	m_Value = val;
 }

@@ -40,16 +40,16 @@ public:
 	void keyPressEvent(QKeyEvent *event);
 
 
-	int Value(){return m_Value;}
-	void SetValue(int val);
+	int value(){return m_Value;}
+	void setValue(int val);
 
 
-	void SetValueNoFormat(int val);
+	void setValueNoFormat(int val);
 
-	void FormatValue();
-	int ReadValue();
-	void SetMin(int min) {m_pDV->setBottom(min);}
-	void SetMax(int max) {m_pDV->setTop(max);}
+	void formatValue();
+	int readValue();
+	void setMin(int min) {m_pDV->setBottom(min);}
+	void setMax(int max) {m_pDV->setTop(max);}
 
 
 

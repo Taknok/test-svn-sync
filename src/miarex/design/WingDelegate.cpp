@@ -39,14 +39,14 @@ QWidget *WingDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem 
         DoubleEdit *editor = new DoubleEdit(parent);
 		editor->setAlignment(Qt::AlignRight);
 
-		editor->SetPrecision(m_Precision[index.column()]);
+		editor->setPrecision(m_Precision[index.column()]);
         if(index.column()==6)
         {
-            editor->SetMin(1);
+            editor->setMin(1);
         }
         if(index.column()==8)
         {
-            editor->SetMin(1);
+            editor->setMin(1);
         }
 		return editor;
 	}
@@ -89,7 +89,7 @@ void WingDelegate::setEditorData(QWidget *editor, const QModelIndex &index) cons
 	{
 		double value = index.model()->data(index, Qt::EditRole).toDouble();
         DoubleEdit *pDE = static_cast<DoubleEdit*>(editor);
-        pDE->SetValue(value);
+        pDE->setValue(value);
 	}
 	else
 	{
@@ -107,7 +107,7 @@ void WingDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, cons
 	if(index.column()!=5 && index.column()!=7 && index.column()!=9)
 	{
         DoubleEdit *pDE = static_cast<DoubleEdit*>(editor);
-        double value = pDE->Value();
+        double value = pDE->value();
 		model->setData(index, value, Qt::EditRole);
 	}
 	else

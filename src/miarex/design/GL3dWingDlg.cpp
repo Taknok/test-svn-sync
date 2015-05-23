@@ -22,7 +22,7 @@
 #include "../../misc/Settings.h"
 #include "../../globals.h"
 #include "../../miarex/view/GLCreateLists.h"
-#include "../../threedwidget.h"
+#include "threedwidget.h"
 #include "../../misc/Units.h"
 #include "../../misc/GLLightDlg.h"
 #include "../../misc/W3dPrefsDlg.h"
@@ -705,7 +705,7 @@ void GL3dWingDlg::keyPressEvent(QKeyEvent *event)
 void GL3dWingDlg::On3DReset()
 {
 	SetWingScale();
-	m_pGLWidget->On3DReset();
+	m_pGLWidget->on3DReset();
 }
 
 

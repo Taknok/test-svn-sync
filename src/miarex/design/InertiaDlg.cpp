@@ -143,14 +143,14 @@ void InertiaDlg::ComputeInertia()
 	}
 
 	// and display the results
-	m_pctrlXCoG->SetValue(m_VolumeCoG.x*Units::mtoUnit());
-	m_pctrlYCoG->SetValue(m_VolumeCoG.y*Units::mtoUnit());
-	m_pctrlZCoG->SetValue(m_VolumeCoG.z*Units::mtoUnit());
+	m_pctrlXCoG->setValue(m_VolumeCoG.x*Units::mtoUnit());
+	m_pctrlYCoG->setValue(m_VolumeCoG.y*Units::mtoUnit());
+	m_pctrlZCoG->setValue(m_VolumeCoG.z*Units::mtoUnit());
 
-	m_pctrlCoGIxx->SetValue(m_CoGIxx*Unit);
-	m_pctrlCoGIyy->SetValue(m_CoGIyy*Unit);
-	m_pctrlCoGIzz->SetValue(m_CoGIzz*Unit);
-	m_pctrlCoGIxz->SetValue(m_CoGIxz*Unit);
+	m_pctrlCoGIxx->setValue(m_CoGIxx*Unit);
+	m_pctrlCoGIyy->setValue(m_CoGIyy*Unit);
+	m_pctrlCoGIzz->setValue(m_CoGIzz*Unit);
+	m_pctrlCoGIxz->setValue(m_CoGIxz*Unit);
 
 	// take into account all point masses to calculate the total CoG and total mass
 	TotalCoG.Set(m_VolumeMass*m_VolumeCoG.x, m_VolumeMass*m_VolumeCoG.y, m_VolumeMass*m_VolumeCoG.z);
@@ -243,16 +243,16 @@ void InertiaDlg::ComputeInertia()
 	}
 
 	//display the results
-	m_pctrlTotalMass->SetValue(TotalMass*Units::kgtoUnit());
+	m_pctrlTotalMass->setValue(TotalMass*Units::kgtoUnit());
 	
-	m_pctrlXTotalCoG->SetValue(TotalCoG.x*Units::mtoUnit());
-	m_pctrlYTotalCoG->SetValue(TotalCoG.y*Units::mtoUnit());
-	m_pctrlZTotalCoG->SetValue(TotalCoG.z*Units::mtoUnit());
+	m_pctrlXTotalCoG->setValue(TotalCoG.x*Units::mtoUnit());
+	m_pctrlYTotalCoG->setValue(TotalCoG.y*Units::mtoUnit());
+	m_pctrlZTotalCoG->setValue(TotalCoG.z*Units::mtoUnit());
 
-	m_pctrlTotalIxx->SetValue(TotalIxx*Unit);
-	m_pctrlTotalIyy->SetValue(TotalIyy*Unit);
-	m_pctrlTotalIzz->SetValue(TotalIzz*Unit);
-	m_pctrlTotalIxz->SetValue(TotalIxz*Unit);
+	m_pctrlTotalIxx->setValue(TotalIxx*Unit);
+	m_pctrlTotalIyy->setValue(TotalIyy*Unit);
+	m_pctrlTotalIzz->setValue(TotalIzz*Unit);
+	m_pctrlTotalIxz->setValue(TotalIxz*Unit);
 }
 
 
@@ -354,7 +354,7 @@ void InertiaDlg::InitDialog()
 		{
 			m_PointMass.append(new PointMass(m_pWing->m_PointMass[i]));
 		}
-		m_pctrlVolumeMass->SetValue(m_pWing->m_VolumeMass * Units::kgtoUnit()); //we only display half a wing, AVL way
+		m_pctrlVolumeMass->setValue(m_pWing->m_VolumeMass * Units::kgtoUnit()); //we only display half a wing, AVL way
 		m_pctrlVolumeMassLabel->setText(tr("Wing Mass:"));
 		m_pctrlWingInertia->setEnabled(true);
 		setWindowTitle(tr("Inertia properties for ")+m_pWing->m_WingName);
@@ -366,7 +366,7 @@ void InertiaDlg::InitDialog()
 		{
 			m_PointMass.append(new PointMass(m_pBody->m_PointMass[i]->mass(), m_pBody->m_PointMass[i]->position(), m_pBody->m_PointMass[i]->tag()));
 		}
-		m_pctrlVolumeMass->SetValue(m_pBody->m_VolumeMass * Units::kgtoUnit());
+		m_pctrlVolumeMass->setValue(m_pBody->m_VolumeMass * Units::kgtoUnit());
 		m_pctrlVolumeMassLabel->setText(tr("Body Mass:"));
 		m_pctrlBodyInertia->setEnabled(true);
 		setWindowTitle(tr("Inertia properties for ")+m_pBody->m_BodyName);
@@ -385,7 +385,7 @@ void InertiaDlg::InitDialog()
 			m_PointMass.append(new PointMass(m_pPlane->m_PointMass[i]));
 		}
 
-		m_pctrlVolumeMass->SetValue(m_VolumeMass * Units::kgtoUnit());
+		m_pctrlVolumeMass->setValue(m_VolumeMass * Units::kgtoUnit());
 		m_pctrlVolumeMassLabel->setText(tr("Volume Mass:"));
 		m_pctrlVolumeMass->setEnabled(false);
 		m_pctrlWingInertia->setEnabled(true);
@@ -790,7 +790,7 @@ void InertiaDlg::ReadData()
 											 tag));
 		}
 	}
-	m_VolumeMass = m_pctrlVolumeMass->Value() / Units::kgtoUnit();
+	m_VolumeMass = m_pctrlVolumeMass->value() / Units::kgtoUnit();
 }
 
 

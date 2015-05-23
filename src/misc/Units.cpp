@@ -187,7 +187,7 @@ void Units::SetupLayout()
 }
 
 
-void Units::InitDialog()
+void Units::initDialog()
 {
 	QStringList list;
 	list <<"mm" << "cm"<<"dm"<<"m"<<"in"<<"ft";

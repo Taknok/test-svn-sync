@@ -295,7 +295,7 @@ bool XFoilTask::AlphaSequence()
 
 			if(m_pGraph)
 			{
-				m_pGraph->ResetYLimits();
+				m_pGraph->resetYLimits();
 				if(m_pCurve0) m_pCurve0->clear();
 				if(m_pCurve1) m_pCurve1->clear();
 
@@ -387,7 +387,7 @@ bool XFoilTask::ReSequence()
 
 		if(m_pGraph)
 		{
-			m_pGraph->ResetYLimits();
+			m_pGraph->resetYLimits();
 			if(m_pCurve0) m_pCurve0->clear();
 			if(m_pCurve1) m_pCurve1->clear();
 		}

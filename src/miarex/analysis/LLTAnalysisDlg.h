@@ -38,7 +38,7 @@
 #include <QPoint>
 #include "LLTAnalysis.h"
 #include "../../graph/QGraph.h"
-#include "../../graph/GraphWidget.h"
+#include "graphwidget.h"
 #include "../../objects/WPolar.h"
 #include "../../objects/Wing.h"
 

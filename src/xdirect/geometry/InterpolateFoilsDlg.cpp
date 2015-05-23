@@ -150,7 +150,7 @@ void InterpolateFoilsDlg::InitDialog()
 	m_pctrlFoil2->setCurrentIndex(1);
 
 	m_Frac = 0.0;
-	m_pctrlFrac->SetValue(100);
+	m_pctrlFrac->setValue(100);
 	m_pctrlSlider->setSliderPosition(SLIDERSCALE);
 
 	OnSelChangeFoil1(0);
@@ -295,7 +295,7 @@ void InterpolateFoilsDlg::Update()
 
 void InterpolateFoilsDlg::OnFrac()
 {
-	m_Frac = m_pctrlFrac->Value();
+	m_Frac = m_pctrlFrac->value();
 	m_pctrlSlider->setSliderPosition((int)(m_Frac/100.0*SLIDERSCALE));
 	m_Frac = 100.0 - m_Frac;
 
@@ -315,7 +315,7 @@ void InterpolateFoilsDlg::OnVScroll(int val)
 {
 	val = m_pctrlSlider->sliderPosition();
 	m_Frac = (SLIDERSCALE - (double)val)/SLIDERSCALE*100.0;
-	m_pctrlFrac->SetValue(100.0-m_Frac);
+	m_pctrlFrac->setValue(100.0-m_Frac);
 	Update();
 }
 

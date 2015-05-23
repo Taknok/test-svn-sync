@@ -45,27 +45,28 @@ XFoilAnalysisDlg::XFoilAnalysisDlg(QWidget *pParent) : QDialog(pParent)
 
 	m_pXFile       = NULL;
 
-	m_pRmsGraph = m_pGraphWidget->graph();
+	m_pRmsGraph = new QGraph;
+	m_pGraphWidget->setGraph(m_pRmsGraph);
 
-	m_pRmsGraph->SetXTitle(tr("Iter"));
-	m_pRmsGraph->SetYTitle("");//Change from BL newton system solution
+	m_pRmsGraph->setXTitle(tr("Iter"));
+	m_pRmsGraph->setYTitle("");//Change from BL newton system solution
 
 
 	m_pRmsGraph->SetXMajGrid(true, QColor(120,120,120),2,1);
 	m_pRmsGraph->SetYMajGrid(true, QColor(120,120,120),2,1);
 
-	m_pRmsGraph->SetXMin(0.0);
-	m_pRmsGraph->SetXMax(50);
-	m_pRmsGraph->SetYMin(0.0);
-	m_pRmsGraph->SetYMax(1.0);
-	m_pRmsGraph->SetType(1);
+	m_pRmsGraph->setXMin(0.0);
+	m_pRmsGraph->setXMax(50);
+	m_pRmsGraph->setYMin(0.0);
+	m_pRmsGraph->setYMax(1.0);
+	m_pRmsGraph->setType(1);
 
-	m_pRmsGraph->SetXTitle("abs");
-	m_pRmsGraph->SetYTitle("rms");
+	m_pRmsGraph->setXTitle("abs");
+	m_pRmsGraph->setYTitle("rms");
 
-	m_pRmsGraph->SetAuto(true);
-	m_pRmsGraph->SetMargin(40);
-	m_pRmsGraph->CopySettings(&Settings::s_RefGraph, false);
+	m_pRmsGraph->setAuto(true);
+	m_pRmsGraph->setMargin(40);
+	m_pRmsGraph->copySettings(&Settings::s_RefGraph, false);
 
 	m_bErrors     = false;
 	m_bAlpha      = true;
@@ -162,23 +163,23 @@ void XFoilAnalysisDlg::InitDialog()
 
 	QString str;
 	m_pRmsGraph->DeleteCurves();
-	Curve *pCurve0 = m_pRmsGraph->AddCurve();
-	Curve *pCurve1 = m_pRmsGraph->AddCurve();
+	Curve *pCurve0 = m_pRmsGraph->addCurve();
+	Curve *pCurve1 = m_pRmsGraph->addCurve();
 
 	str = "rms";
-	pCurve0->SetTitle(str);
+	pCurve0->setTitle(str);
 	str = "max";
-	pCurve1->SetTitle(str);
-	pCurve1->SetStyle(0);
+	pCurve1->setTitle(str);
+	pCurve1->setStyle(0);
 
-	m_pRmsGraph->SetXMin(0.0);
-	m_pRmsGraph->SetXMax((double)XFoilTask::s_IterLim);
+	m_pRmsGraph->setXMin(0.0);
+	m_pRmsGraph->setXMax((double)XFoilTask::s_IterLim);
 	m_pRmsGraph->SetX0(0.0);
 	m_pRmsGraph->SetXUnit((int)(XFoilTask::s_IterLim/5.0));
 
 	m_pRmsGraph->SetY0(0.0);
-	m_pRmsGraph->SetYMin(0.0);
-	m_pRmsGraph->SetYMax(1.0);
+	m_pRmsGraph->setYMin(0.0);
+	m_pRmsGraph->setYMax(1.0);
 
 	m_pXFoilTask->setGraphPointers(m_pRmsGraph, pCurve0, pCurve1);
 
@@ -239,9 +240,9 @@ void XFoilAnalysisDlg::OnSkipPoint()
 void XFoilAnalysisDlg::ResetCurves()
 {
 	Curve*pCurve;
-	pCurve = m_pRmsGraph->GetCurve(0);
+	pCurve = m_pRmsGraph->curve(0);
 	if(pCurve) pCurve->clear();
-	pCurve = m_pRmsGraph->GetCurve(1);
+	pCurve = m_pRmsGraph->curve(1);
 	if(pCurve) pCurve->clear();
 }
 
@@ -348,7 +349,7 @@ void XFoilAnalysisDlg::OnProgress()
 	repaint();
 
 	QXDirect *pXDirect = (QXDirect*)s_pXDirect;
-	pXDirect->CreatePolarCurves();
+	pXDirect->createPolarCurves();
 	pXDirect->UpdateView();
 }
 

@@ -86,23 +86,24 @@ BatchDlg::BatchDlg(QWidget *pParent) : QDialog(pParent)
 
 	SetupLayout();
 
-	m_pRmsGraph = m_pctrlGraphOutput->graph();
+	m_pRmsGraph = new QGraph;
+	m_pctrlGraphOutput->setGraph(m_pRmsGraph);
 //	m_pRmsGraph->CopySettings(&Settings::s_RefGraph, false);
 
-	m_pRmsGraph->SetXTitle(tr("Iter"));
-	m_pRmsGraph->SetYTitle("");//Change from bl newton system solution
+	m_pRmsGraph->setXTitle(tr("Iter"));
+	m_pRmsGraph->setYTitle("");//Change from bl newton system solution
 
-	m_pRmsGraph->SetAuto(true);
+	m_pRmsGraph->setAuto(true);
 
 	m_pRmsGraph->SetXMajGrid(true, QColor(120,120,120),2,1);
 	m_pRmsGraph->SetYMajGrid(true, QColor(120,120,120),2,1);
 
-	m_pRmsGraph->SetXMin(0.0);
-	m_pRmsGraph->SetXMax(50);
-	m_pRmsGraph->SetYMin(-1.0);
-	m_pRmsGraph->SetYMax( 1.0);
-	m_pRmsGraph->SetType(1);
-	m_pRmsGraph->SetMargin(40);
+	m_pRmsGraph->setXMin(0.0);
+	m_pRmsGraph->setXMax(50);
+	m_pRmsGraph->setYMin(-1.0);
+	m_pRmsGraph->setYMax( 1.0);
+	m_pRmsGraph->setType(1);
+	m_pRmsGraph->setMargin(40);
 
 	connect(m_pctrlFoil1, SIGNAL(clicked()), this, SLOT(OnFoilSelectionType()));
 	connect(m_pctrlFoil2, SIGNAL(clicked()), this, SLOT(OnFoilSelectionType()));
@@ -377,7 +378,7 @@ void BatchDlg::AlphaLoop()
 
 		if(pXDirect->m_bPolarView)
 		{
-			pXDirect->CreatePolarCurves();
+			pXDirect->createPolarCurves();
 			pXDirect->UpdateView();
 		}
 
@@ -566,46 +567,46 @@ void BatchDlg::InitDialog()
 
 	if(m_PolarType!=XFLR5::FIXEDAOAPOLAR)
 	{
-		m_pctrlReMin->SetPrecision(0);
-		m_pctrlReMax->SetPrecision(0);
-		m_pctrlReDelta->SetPrecision(0);
+		m_pctrlReMin->setPrecision(0);
+		m_pctrlReMax->setPrecision(0);
+		m_pctrlReDelta->setPrecision(0);
 
-		m_pctrlSpecMin->SetPrecision(1);
-		m_pctrlSpecMax->SetPrecision(1);
-		m_pctrlSpecDelta->SetPrecision(1);
+		m_pctrlSpecMin->setPrecision(1);
+		m_pctrlSpecMax->setPrecision(1);
+		m_pctrlSpecDelta->setPrecision(1);
 
-		m_pctrlReMin->SetValue(m_ReMin);
-		m_pctrlReMax->SetValue(m_ReMax);
-		m_pctrlReDelta->SetValue(m_ReInc);
-		m_pctrlSpecMin->SetValue(m_SpMin);
-		m_pctrlSpecMax->SetValue(m_SpMax);
-		m_pctrlSpecDelta->SetValue(m_SpInc);
+		m_pctrlReMin->setValue(m_ReMin);
+		m_pctrlReMax->setValue(m_ReMax);
+		m_pctrlReDelta->setValue(m_ReInc);
+		m_pctrlSpecMin->setValue(m_SpMin);
+		m_pctrlSpecMax->setValue(m_SpMax);
+		m_pctrlSpecDelta->setValue(m_SpInc);
 		m_rbRange2->setEnabled(true);
 	}
 	else
 	{
-		m_pctrlReMin->SetPrecision(1);
-		m_pctrlReMax->SetPrecision(1);
-		m_pctrlReDelta->SetPrecision(1);
+		m_pctrlReMin->setPrecision(1);
+		m_pctrlReMax->setPrecision(1);
+		m_pctrlReDelta->setPrecision(1);
 
-		m_pctrlSpecMin->SetPrecision(0);
-		m_pctrlSpecMax->SetPrecision(0);
-		m_pctrlSpecDelta->SetPrecision(0);
-		m_pctrlReMin->SetValue(m_SpMin);
-		m_pctrlReMax->SetValue(m_SpMax);
-		m_pctrlReDelta->SetValue(m_SpInc);
-		m_pctrlSpecMin->SetValue(m_ReMin);
-		m_pctrlSpecMax->SetValue(m_ReMax);
-		m_pctrlSpecDelta->SetValue(m_ReInc);
+		m_pctrlSpecMin->setPrecision(0);
+		m_pctrlSpecMax->setPrecision(0);
+		m_pctrlSpecDelta->setPrecision(0);
+		m_pctrlReMin->setValue(m_SpMin);
+		m_pctrlReMax->setValue(m_SpMax);
+		m_pctrlReDelta->setValue(m_SpInc);
+		m_pctrlSpecMin->setValue(m_ReMin);
+		m_pctrlSpecMax->setValue(m_ReMax);
+		m_pctrlSpecDelta->setValue(m_ReInc);
 		m_rbRange2->setEnabled(false);
 		m_bFromList = false;
 	}
 
 
-	m_pctrlMach->SetValue(m_Mach);
-	m_pctrlNCrit->SetValue(m_ACrit);
-	m_pctrlXTopTr->SetValue(m_XTop);
-	m_pctrlXBotTr->SetValue(m_XBot);
+	m_pctrlMach->setValue(m_Mach);
+	m_pctrlNCrit->setValue(m_ACrit);
+	m_pctrlXTopTr->setValue(m_XTop);
+	m_pctrlXBotTr->setValue(m_XBot);
 
 	if(m_bAlpha) m_rbspec1->setChecked(true);
 	else         m_rbspec2->setChecked(true);
@@ -647,18 +648,18 @@ void BatchDlg::OnAcl()
 	if(m_rbspec1->isChecked())
 	{
 		m_pctrlSpecVar->setText(tr("Alpha ="));
-		m_pctrlSpecMin->SetValue(m_AlphaMin);
-		m_pctrlSpecMax->SetValue(m_AlphaMax);
-		m_pctrlSpecDelta->SetValue(m_AlphaInc);
+		m_pctrlSpecMin->setValue(m_AlphaMin);
+		m_pctrlSpecMax->setValue(m_AlphaMax);
+		m_pctrlSpecDelta->setValue(m_AlphaInc);
 		m_bAlpha = true;
 		m_pctrlFromZero->setEnabled(true);
 	}
 	else
 	{
 		m_pctrlSpecVar->setText(tr("Cl ="));
-		m_pctrlSpecMin->SetValue(m_ClMin);
-		m_pctrlSpecMax->SetValue(m_ClMax);
-		m_pctrlSpecDelta->SetValue(m_ClInc);
+		m_pctrlSpecMin->setValue(m_ClMin);
+		m_pctrlSpecMax->setValue(m_ClMax);
+		m_pctrlSpecDelta->setValue(m_ClInc);
 		m_bAlpha = false;
 		m_pctrlFromZero->setEnabled(false);
 	}
@@ -702,33 +703,33 @@ void BatchDlg::OnPolarType()
 
 	if(m_PolarType!=XFLR5::FIXEDAOAPOLAR)
 	{
-		m_pctrlReMin->SetPrecision(0);
-		m_pctrlReMax->SetPrecision(0);
-		m_pctrlReDelta->SetPrecision(0);
-		m_pctrlSpecMin->SetPrecision(2);
-		m_pctrlSpecMax->SetPrecision(2);
-		m_pctrlSpecDelta->SetPrecision(2);
+		m_pctrlReMin->setPrecision(0);
+		m_pctrlReMax->setPrecision(0);
+		m_pctrlReDelta->setPrecision(0);
+		m_pctrlSpecMin->setPrecision(2);
+		m_pctrlSpecMax->setPrecision(2);
+		m_pctrlSpecDelta->setPrecision(2);
 		m_rbspec1->setEnabled(true);
 		m_rbspec2->setEnabled(true);
 		m_rbRange2->setEnabled(true);
 		OnAcl();
 
-		m_pctrlReMin->SetValue(m_ReMin);
-		m_pctrlReMax->SetValue(m_ReMax);
-		m_pctrlReDelta->SetValue(m_ReInc);
+		m_pctrlReMin->setValue(m_ReMin);
+		m_pctrlReMax->setValue(m_ReMax);
+		m_pctrlReDelta->setValue(m_ReInc);
 
-		m_pctrlSpecMin->SetValue(m_SpMin);
-		m_pctrlSpecMax->SetValue(m_SpMax);
-		m_pctrlSpecDelta->SetValue(m_SpInc);
+		m_pctrlSpecMin->setValue(m_SpMin);
+		m_pctrlSpecMax->setValue(m_SpMax);
+		m_pctrlSpecDelta->setValue(m_SpInc);
 	}
 	else
 	{
-		m_pctrlReMin->SetPrecision(2);
-		m_pctrlReMax->SetPrecision(2);
-		m_pctrlReDelta->SetPrecision(2);
-		m_pctrlSpecMin->SetPrecision(0);
-		m_pctrlSpecMax->SetPrecision(0);
-		m_pctrlSpecDelta->SetPrecision(0);
+		m_pctrlReMin->setPrecision(2);
+		m_pctrlReMax->setPrecision(2);
+		m_pctrlReDelta->setPrecision(2);
+		m_pctrlSpecMin->setPrecision(0);
+		m_pctrlSpecMax->setPrecision(0);
+		m_pctrlSpecDelta->setPrecision(0);
 		m_pctrlSpecVar->setText(tr("Reynolds ="));
 		m_rbspec1->setEnabled(false);
 		m_rbspec2->setEnabled(false);
@@ -737,13 +738,13 @@ void BatchDlg::OnPolarType()
 		m_rbRange2->setEnabled(false);
 		m_bFromList = false;
 
-		m_pctrlReMin->SetValue(m_SpMin);
-		m_pctrlReMax->SetValue(m_SpMax);
-		m_pctrlReDelta->SetValue(m_SpInc);
+		m_pctrlReMin->setValue(m_SpMin);
+		m_pctrlReMax->setValue(m_SpMax);
+		m_pctrlReDelta->setValue(m_SpInc);
 
-		m_pctrlSpecMin->SetValue(m_ReMin);
-		m_pctrlSpecMax->SetValue(m_ReMax);
-		m_pctrlSpecDelta->SetValue(m_ReInc);
+		m_pctrlSpecMin->setValue(m_ReMin);
+		m_pctrlSpecMax->setValue(m_ReMax);
+		m_pctrlSpecDelta->setValue(m_ReInc);
 	}
 }
 
@@ -932,36 +933,36 @@ void BatchDlg::ReadParams()
 
 	if(m_PolarType!=XFLR5::FIXEDAOAPOLAR)
 	{
-		m_ReInc = m_pctrlReDelta->Value();
-		m_ReMax = m_pctrlReMax->Value();
-		m_ReMin = m_pctrlReMin->Value();
+		m_ReInc = m_pctrlReDelta->value();
+		m_ReMax = m_pctrlReMax->value();
+		m_ReMin = m_pctrlReMin->value();
 
 		if(m_bAlpha)
 		{
-			m_AlphaInc = m_pctrlSpecDelta->Value();
-			m_AlphaMax = m_pctrlSpecMax->Value();
-			m_AlphaMin = m_pctrlSpecMin->Value();
+			m_AlphaInc = m_pctrlSpecDelta->value();
+			m_AlphaMax = m_pctrlSpecMax->value();
+			m_AlphaMin = m_pctrlSpecMin->value();
 			if(m_AlphaMin< m_AlphaMax) m_AlphaInc =  qAbs(m_AlphaInc);
 			else                       m_AlphaInc = -qAbs(m_AlphaInc);
 		}
 		else
 		{
-			m_ClInc = m_pctrlSpecDelta->Value();
-			m_ClMax = m_pctrlSpecMax->Value();
-			m_ClMin = m_pctrlSpecMin->Value();
+			m_ClInc = m_pctrlSpecDelta->value();
+			m_ClMax = m_pctrlSpecMax->value();
+			m_ClMin = m_pctrlSpecMin->value();
 			if(m_ClMin< m_ClMax) m_ClInc =  qAbs(m_ClInc);
 			else                 m_ClInc = -qAbs(m_ClInc);
 		}
 	}
 	else
 	{
-		m_SpInc = m_pctrlReDelta->Value();
-		m_SpMax = m_pctrlReMax->Value();
-		m_SpMin = m_pctrlReMin->Value();
+		m_SpInc = m_pctrlReDelta->value();
+		m_SpMax = m_pctrlReMax->value();
+		m_SpMin = m_pctrlReMin->value();
 
-		m_ReInc = m_pctrlSpecDelta->Value();
-		m_ReMax = m_pctrlSpecMax->Value();
-		m_ReMin = m_pctrlSpecMin->Value();
+		m_ReInc = m_pctrlSpecDelta->value();
+		m_ReMax = m_pctrlSpecMax->value();
+		m_ReMin = m_pctrlSpecMin->value();
 	}
 
 	if(m_ReMin<=0.0) m_ReMin = qAbs(m_ReInc);
@@ -969,11 +970,11 @@ void BatchDlg::ReadParams()
 	m_SpInc = qAbs(m_SpInc);
 
 
-	m_Mach     = m_pctrlMach->Value();
+	m_Mach     = m_pctrlMach->value();
 	if(m_Mach<=0.0) m_Mach = 0.0;
-	m_ACrit  = m_pctrlNCrit->Value();
-	m_XTop   = m_pctrlXTopTr->Value();
-	m_XBot   = m_pctrlXBotTr->Value();
+	m_ACrit  = m_pctrlNCrit->value();
+	m_XTop   = m_pctrlXTopTr->value();
+	m_XBot   = m_pctrlXBotTr->value();
 	
 	OpPoint::s_bStoreOpp = m_pctrlStoreOpp->isChecked();
 	m_bInitBL = m_pctrlInitBLPolar->isChecked();
@@ -1031,7 +1032,7 @@ void BatchDlg::ReLoop()
 
 		if(pXDirect->m_bPolarView)
 		{
-			pXDirect->CreatePolarCurves();
+			pXDirect->createPolarCurves();
 			pXDirect->UpdateView();
 		}
 
@@ -1052,17 +1053,17 @@ void BatchDlg::ReLoop()
 void BatchDlg::ResetCurves()
 {
 	m_pRmsGraph->DeleteCurves();
-	Curve *pCurve0 = m_pRmsGraph->AddCurve();
-	Curve *pCurve1 = m_pRmsGraph->AddCurve();
-	pCurve0->SetTitle("rms");
-	pCurve1->SetTitle("max");
-	pCurve1->SetStyle(0);
-	m_pRmsGraph->SetAutoX(false);
-	m_pRmsGraph->SetXMin(0.0);
-	m_pRmsGraph->SetXMax((double)XFoilTask::s_IterLim);
+	Curve *pCurve0 = m_pRmsGraph->addCurve();
+	Curve *pCurve1 = m_pRmsGraph->addCurve();
+	pCurve0->setTitle("rms");
+	pCurve1->setTitle("max");
+	pCurve1->setStyle(0);
+	m_pRmsGraph->setAutoX(false);
+	m_pRmsGraph->setXMin(0.0);
+	m_pRmsGraph->setXMax((double)XFoilTask::s_IterLim);
 	m_pRmsGraph->SetXUnit((int)(XFoilTask::s_IterLim/5.0));
-	m_pRmsGraph->SetYMin(-1.0);
-	m_pRmsGraph->SetYMax( 1.0);
+	m_pRmsGraph->setYMin(-1.0);
+	m_pRmsGraph->setYMax( 1.0);
 	m_pRmsGraph->SetX0(0.0);
 	m_pRmsGraph->SetY0(0.0);
 
@@ -1228,9 +1229,9 @@ void BatchDlg::OnAnalysisSettings()
 {
 	m_bInitBL = m_pctrlInitBLPolar->isChecked();
 	XFoilTask::s_bAutoInitBL = m_pctrlInitBLOpp->isChecked();
-	XFoilTask::s_IterLim = m_pctrlMaxIter->Value();
-	m_pRmsGraph->SetXMax(XFoilTask::s_IterLim);
-	m_pRmsGraph->SetAutoXUnit();
+	XFoilTask::s_IterLim = m_pctrlMaxIter->value();
+	m_pRmsGraph->setXMax(XFoilTask::s_IterLim);
+	m_pRmsGraph->setAutoXUnit();
 	update();
 }
 

@@ -42,9 +42,16 @@ class Settings : public QDialog
 	friend class MainFrame;
 public:
 	Settings(QWidget *pParent);
-	void InitDialog();
-	static void LoadSettings(QSettings *settings);
+	void initDialog();
+	static void loadSettings(QSettings *settings);
 	static void SaveSettings(QSettings *settings);
+
+	static QColor &backgroundColor(){return s_BackgroundColor;}
+	static QColor &textColor(){return s_TextColor;}
+	static QString &lastDirName(){return s_LastDirName;}
+	static QString &styleName(){return s_StyleName;}
+	static QFont &textFont(){return s_TextFont;}
+	static QFont &tableFont(){return s_TableFont;}
 
 private slots:
 	void OnStyleChanged(const QString &StyleName);

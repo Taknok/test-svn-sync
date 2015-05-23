@@ -239,12 +239,12 @@ void WingScaleDlg::InitDialog(double const &RefSpan, double const &RefChord, dou
 	strong = QString ("%1").arg(m_RefAR , 8,'f',3);
 	m_pctrlRefAR->setText(strong);
 
-	m_pctrlNewSpan->SetValue(m_NewSpan * Units::mtoUnit());
-	m_pctrlNewChord->SetValue(m_NewChord * Units::mtoUnit());
-	m_pctrlNewSweep->SetValue(m_NewSweep);
-	m_pctrlNewTwist->SetValue(m_NewTwist);
-    m_pctrlNewArea->SetValue(m_NewArea*Units::m2toUnit());
-	m_pctrlNewAR->SetValue(m_NewAR);
+	m_pctrlNewSpan->setValue(m_NewSpan * Units::mtoUnit());
+	m_pctrlNewChord->setValue(m_NewChord * Units::mtoUnit());
+	m_pctrlNewSweep->setValue(m_NewSweep);
+	m_pctrlNewTwist->setValue(m_NewTwist);
+    m_pctrlNewArea->setValue(m_NewArea*Units::m2toUnit());
+	m_pctrlNewAR->setValue(m_NewAR);
 
 	SetResults();
 	EnableControls();
@@ -293,12 +293,12 @@ void WingScaleDlg::ReadData()
 	m_bArea  = m_pctrlScaleArea->isChecked();
 	m_bAR    = m_pctrlScaleAR->isChecked();
 
-	m_NewSpan  = m_pctrlNewSpan->Value()  / Units::mtoUnit();
-	m_NewChord = m_pctrlNewChord->Value() / Units::mtoUnit();
-	m_NewSweep = m_pctrlNewSweep->Value();
-	m_NewTwist = m_pctrlNewTwist->Value();
-	m_NewArea  = m_pctrlNewArea->Value() /Units::m2toUnit();
-	m_NewAR    = m_pctrlNewAR->Value();
+	m_NewSpan  = m_pctrlNewSpan->value()  / Units::mtoUnit();
+	m_NewChord = m_pctrlNewChord->value() / Units::mtoUnit();
+	m_NewSweep = m_pctrlNewSweep->value();
+	m_NewTwist = m_pctrlNewTwist->value();
+	m_NewArea  = m_pctrlNewArea->value() /Units::m2toUnit();
+	m_NewAR    = m_pctrlNewAR->value();
 }
 
 

@@ -43,14 +43,14 @@ BodyTransDlg::BodyTransDlg(QWidget *pParent): QDialog(pParent)
 
 void BodyTransDlg::InitDialog()
 {
-	m_pctrlXTransFactor->SetValue(m_XTrans);
-	m_pctrlYTransFactor->SetValue(m_YTrans);
-	m_pctrlZTransFactor->SetValue(m_ZTrans);
+	m_pctrlXTransFactor->setValue(m_XTrans);
+	m_pctrlYTransFactor->setValue(m_YTrans);
+	m_pctrlZTransFactor->setValue(m_ZTrans);
 
 	m_pctrlYTransFactor->setEnabled(false);
 
 	m_pctrlFrameOnly->setChecked(m_bFrameOnly);
-	m_pctrlFrameID->SetValue(m_FrameID+1);
+	m_pctrlFrameID->setValue(m_FrameID+1);
 	m_pctrlFrameID->setEnabled(m_bFrameOnly);
 
 	QString length;
@@ -95,10 +95,10 @@ void BodyTransDlg::keyPressEvent(QKeyEvent *event)
 void BodyTransDlg::OnOK()
 {
 	m_bFrameOnly = m_pctrlFrameOnly->isChecked();
-	m_FrameID    = m_pctrlFrameID->Value()-1;
-	m_XTrans     = m_pctrlXTransFactor->Value() / Units::mtoUnit();
-	m_YTrans     = m_pctrlYTransFactor->Value() / Units::mtoUnit();
-	m_ZTrans     = m_pctrlZTransFactor->Value() / Units::mtoUnit();
+	m_FrameID    = m_pctrlFrameID->value()-1;
+	m_XTrans     = m_pctrlXTransFactor->value() / Units::mtoUnit();
+	m_YTrans     = m_pctrlYTransFactor->value() / Units::mtoUnit();
+	m_ZTrans     = m_pctrlZTransFactor->value() / Units::mtoUnit();
 	accept();
 }
 

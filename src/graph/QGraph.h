@@ -32,37 +32,48 @@
 #include <QFont>
 
 
+#define MAXPOLARGRAPHS 5 /**< The max number of graphs available for display in QXDirect. */
+
+#define MAXGRAPHS 6  /**< The max number of graphs available for display in QMiarex. */
+
+namespace QGRAPH
+{
+	typedef enum{OPPGRAPH, POLARGRAPH, POPPGRAPH, WPOLARGRAPH, STABTIMEGRAPH, CPGRAPH, INVERSEGRAPH, OTHERGRAPH} enumGraphType;
+}
+
 class QGraph : public Graph
 {
 public: 
 	QGraph();
 	virtual ~QGraph();
 
-	void DrawGraph(QRect const & rect, QPainter &painter);
-	void DrawGraph(QPainter &painter);
-	void DrawAxes(QPainter &painter);
-	void DrawCurve(int nIndex, QPainter &painter);
-	void DrawLegend(QPainter &painter, QPoint &Place, QFont &LegendFont, QColor &LegendColor);
-	void DrawTitles(QPainter &painter);
-	void DrawXMinGrid(QPainter &painter);
-	void DrawYMinGrid(QPainter &painter);
-	void DrawXMajGrid(QPainter &painter);
-	void DrawYMajGrid(QPainter &painter);
-	void DrawXTicks(QPainter &painter);
-	void DrawYTicks(QPainter &painter);
-	void ExpFormat(double &f, int &exp);
-	void ExportToFile(QFile &XFile, XFLR5::enumTextFileType FileType);
-	void Highlight(QPainter &painter, Curve *pCurve, int ref);
+	void drawGraph(QRect const & rect, QPainter &painter);
+	void drawGraph(QPainter &painter);
+	void drawAxes(QPainter &painter);
+	void drawCurve(int nIndex, QPainter &painter);
+	void drawLegend(QPainter &painter, QPoint &Place, QFont &LegendFont, QColor &LegendColor);
+	void drawTitles(QPainter &painter);
+	void drawXMinGrid(QPainter &painter);
+	void drawYMinGrid(QPainter &painter);
+	void drawXMajGrid(QPainter &painter);
+	void drawYMajGrid(QPainter &painter);
+	void drawXTicks(QPainter &painter);
+	void drawYTicks(QPainter &painter);
+	void expFormat(double &f, int &exp);
+	void exportToFile(QFile &XFile, XFLR5::enumTextFileType FileType);
+	void highlight(QPainter &painter, Curve *pCurve, int ref);
 
-	void LoadSettings(QSettings *pSettings);
-	void SaveSettings(QSettings *pSettings);
-	QPoint GetOffset();
+	void loadSettings(QSettings *pSettings);
+	void saveSettings(QSettings *pSettings);
+	QPoint getOffset();
 
-	void CopySettings(QGraph *pGraph, bool bScales=true);
-	void GetLabelFont(QFont &labelFont);
-	void GetTitleFont(QFont &titleFont);
-	void SetLabelFont(QFont &font);
-	void SetTitleFont(QFont &font);
+	void copySettings(QGraph *pGraph, bool bScales=true);
+	void getLabelFont(QFont &labelFont);
+	void getTitleFont(QFont &titleFont);
+	void setLabelFont(QFont &font);
+	void setTitleFont(QFont &font);
+
+	QGRAPH::enumGraphType &graphType(){return m_graphType;}
 
 public:
 	void *m_pParent;
@@ -71,7 +82,7 @@ public:
 private:
 	QFont m_TitleFont;
 	QFont m_LabelFont;
-
+	QGRAPH::enumGraphType m_graphType;
 };
 
 #endif

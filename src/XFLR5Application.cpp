@@ -107,8 +107,8 @@ XFLR5Application::XFLR5Application(int &argc, char** argv) : QApplication(argc, 
         {
 			int iApp = w->LoadXFLR5File(PathName);
 
-		   if (iApp == XFLR5::MIAREX)             w->OnMiarex();
-		   else if (iApp == XFLR5::XFOILANALYSIS) w->OnXDirect();
+		   if (iApp == XFLR5::MIAREX)             w->onMiarex();
+		   else if (iApp == XFLR5::XFOILANALYSIS) w->onXDirect();
         }
     }
 #endif
@@ -125,8 +125,8 @@ bool XFLR5Application::event(QEvent *event)
 		case QEvent::FileOpen:
 		{
 			iApp = MainFrame::self()->LoadXFLR5File(static_cast<QFileOpenEvent *>(event)->file());
-			if (iApp == XFLR5::MIAREX)             MainFrame::self()->OnMiarex();
-			else if (iApp == XFLR5::XFOILANALYSIS) MainFrame::self()->OnXDirect();
+			if (iApp == XFLR5::MIAREX)             MainFrame::self()->onMiarex();
+			else if (iApp == XFLR5::XFOILANALYSIS) MainFrame::self()->onXDirect();
 
 			return true;
 		}

@@ -188,6 +188,7 @@ private:
 	double m_WingTiltAngle[MAXWINGS];           /**< the rotation in degrees of each Wing about the y-axis */
 	CVector m_BodyPos;                          /**< the translation vector to apply to the Body */
 
+
 public:
 	QString m_BodyName;                         /**< identifies this plane's body */
 

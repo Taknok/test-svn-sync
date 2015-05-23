@@ -35,7 +35,7 @@
 #include <QPushButton>
 #include <QPoint>
 #include "../../graph/QGraph.h"
-#include "../../graph/GraphWidget.h"
+#include "graphwidget.h"
 #include "XFoil.h"
 #include "XFoilTask.h"
 

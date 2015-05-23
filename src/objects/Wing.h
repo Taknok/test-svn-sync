@@ -78,6 +78,7 @@ class Wing
 	friend class InertiaDlg;
 	friend class StabViewDlg;
 	friend class EditPlaneDlg;
+	friend class EditBodyDlg;
 
 
 public:

@@ -29,7 +29,7 @@
 #ifndef THREEDWIDGET_H
 #define THREEDWIDGET_H
 
-#include <QGLWidget>
+#include <QOpenGLWidget>
 #include <QPixmap>
 #include "params.h"
 #include "misc/GLLightDlg.h"
@@ -38,10 +38,50 @@
 #include <PointMass.h>
 #include "misc/GLLightDlg.h"
 
-/** @enum This enumeration lists the different 3D views used in the program, i.e. the view in Miarex, in Body edition and in Wing edition.*/
-typedef enum {GLMIAREXVIEW,GLBODYVIEW, GLWINGVIEW, GLPLANEVIEW} enumGLView;
 
-#define GLLISTSPHERE 531
+#define GLLISTSPHERE             531
+
+#define VLMSTREAMLINES          1220
+#define SURFACESPEEDS           1221
+#define LIFTFORCE               1222
+#define VLMMOMENTS              1223
+#define VLMWINGLIFT             1232
+#define VLMWINGDRAG             1236
+#define VLMWINGWASH             1241
+#define VLMWINGTOPTRANS         1245
+#define VLMWINGBOTTRANS         1249
+#define WINGSURFACES            1300
+#define WINGOUTLINE             1304
+
+#define MESHPANELS              1372
+#define MESHBACK                1373
+
+#define WINGLEGEND              1376
+#define WOPPLEGEND              1377
+#define WOPPCPLEGENDCLR         1378
+#define WOPPCPLEGENDTXT         1379
+
+#define WINGWAKEPANELS          1383
+
+#define VLMCTRLPTS              1385
+#define VLMVORTICES             1386
+
+#define PANELCP                 1390
+#define PANELFORCEARROWS        1391
+#define PANELFORCELEGENDTXT     1392
+
+#define ARCBALLLIST             1414
+#define ARCPOINTLIST            1415
+
+
+#define BODYGEOMBASE            4321
+#define BODYMESHBASE            5322
+#define BODYCPBASE              6173
+#define BODYFORCELISTBASE       6245
+
+/** @enum This enumeration lists the different 3D views used in the program, i.e. the view in Miarex, in Body edition and in Wing edition.*/
+typedef enum {GLMIAREXVIEW,GLBODYVIEW, GLWINGVIEW, GLPLANEVIEW, GLEDITBODYVIEW} enumGLView;
+
 
 
 /**
@@ -51,7 +91,7 @@ typedef enum {GLMIAREXVIEW,GLBODYVIEW, GLWINGVIEW, GLPLANEVIEW} enumGLView;
 * Depending on the active application, this class calls the drawings methods in QMiarex, in the GLBodyDlg or in GLWingDlg.
 * All Qt events received by this widget are sent to the child windows for handling.
 */
-class ThreeDWidget : public QGLWidget
+class ThreeDWidget : public QOpenGLWidget
 {
     Q_OBJECT
 
@@ -61,6 +101,7 @@ class ThreeDWidget : public QGLWidget
 	friend class MainFrame;
 	friend class ArcBall;
 	friend class EditPlaneDlg;
+	friend class EditBodyDlg;
 
 public:
 	ThreeDWidget(QWidget *parent = 0);
@@ -76,6 +117,8 @@ public:
     void NormalVector(GLdouble p1[3], GLdouble p2[3],  GLdouble p3[3], GLdouble n[3]);
 	enumGLView &iView(){return m_iView;}
 
+	void setScale(double refLength);
+
 	void screenToViewport(QPoint const &point, CVector &real);
 	void viewportToScreen(CVector const &real, QPoint &point);
 	void viewportToScreen(double const &x, double const &y, QPoint &point);
@@ -85,11 +128,20 @@ public:
 
 
 private slots:
-	void On3DIso();
-	void On3DTop();
-	void On3DLeft();
-	void On3DFront();
-	void On3DReset();
+	void on3DIso();
+	void on3DTop();
+	void on3DLeft();
+	void on3DFront();
+	void on3DReset();
+	void onClipPlane(int pos);
+
+	void onAxes(bool bChecked);
+	void onSurfaces(bool bChecked);
+	void onPanels(bool bChecked);
+	void onOutline(bool bChecked);
+	void onFoilNames(bool bChecked);
+	void onShowMasses(bool bChecked);
+
 
 
 private:
@@ -105,9 +157,11 @@ private:
 	void wheelEvent (QWheelEvent *event );
 	void paintEvent(QPaintEvent *event);
 	QSize sizeHint() const;
+	QSize minimumSizeHint() const;
 
 	void GLDrawFoils(void *pWing);
 	void GLDrawMasses(double volumeMass, CVector pos, QString tag, QList<PointMass*> ptMasses);
+	QString GLError();
 
 	void setupViewPort(int width, int height);
 	void reset3DRotationCenter();
@@ -142,8 +196,8 @@ private:
 	bool m_bCrossPoint;			//true if the control point on the arcball is to be displayed
 
 
-	double m_glScaled;//zoom factor for UFO
 	double m_ClipPlanePos;      /**< the z-position of the clip plane in viewport coordinates */
+	double m_glScaled;//zoom factor for UFO
 	double MatIn[4][4], MatOut[4][4];
 
 

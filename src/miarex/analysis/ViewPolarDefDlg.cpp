@@ -410,8 +410,6 @@ void ViewPolarDefDlg::readViewLevel(QModelIndex indexLevel)
 			QModelIndex dataIndex = indexLevel.sibling(indexLevel.row(),2);
 			QString value = indexLevel.sibling(indexLevel.row(),2).data().toString();
 
-
-//qDebug()<<field<<value;
 			if     (field.compare("Name")==0)                    m_pWPolar->polarName() = value;
 			else if(field.compare("Type")==0)                    m_pWPolar->polarType() = polarType(value);
 			else if(field.compare("Velocity")==0)                m_pWPolar->velocity()             = dataIndex.data().toDouble()/Units::mstoUnit();
@@ -520,7 +518,6 @@ void ViewPolarDefDlg::readControlFields(QModelIndex indexLevel)
 	{
 		field = indexLevel.sibling(indexLevel.row(),1).data().toString();
 		value = indexLevel.sibling(indexLevel.row(),2).data().toString();
-//qDebug()<<field<<value;
 
 		m_pWPolar->m_ControlGain[0] = value.toDouble();
 		++nControls;

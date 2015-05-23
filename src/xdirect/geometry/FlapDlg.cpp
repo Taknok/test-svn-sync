@@ -129,29 +129,29 @@ void FlapDlg::InitDialog()
 	m_pctrlTEFlapCheck->setChecked(m_pMemFoil->m_bTEFlap);
 
 	EnableTEFlap(m_pMemFoil->m_bTEFlap);
-	m_pctrlTEFlapAngle->SetValue(m_pMemFoil->m_TEFlapAngle);
-	m_pctrlTEXHinge->SetValue(m_pMemFoil->m_TEXHinge);
-	m_pctrlTEYHinge->SetValue(m_pMemFoil->m_TEYHinge);
+	m_pctrlTEFlapAngle->setValue(m_pMemFoil->m_TEFlapAngle);
+	m_pctrlTEXHinge->setValue(m_pMemFoil->m_TEXHinge);
+	m_pctrlTEYHinge->setValue(m_pMemFoil->m_TEYHinge);
 
 	m_pctrlLEFlapCheck->setChecked(m_pMemFoil->m_bLEFlap);
 	EnableLEFlap(m_pMemFoil->m_bLEFlap);
-	m_pctrlLEFlapAngle->SetValue(m_pMemFoil->m_LEFlapAngle);
-	m_pctrlLEXHinge->SetValue(m_pMemFoil->m_LEXHinge);
-	m_pctrlLEYHinge->SetValue(m_pMemFoil->m_LEYHinge);
+	m_pctrlLEFlapAngle->setValue(m_pMemFoil->m_LEFlapAngle);
+	m_pctrlLEXHinge->setValue(m_pMemFoil->m_LEXHinge);
+	m_pctrlLEYHinge->setValue(m_pMemFoil->m_LEYHinge);
 }
 
 
 void FlapDlg::ReadParams()
 {
 	m_bLEFlap = m_pctrlLEFlapCheck->isChecked();
-	m_LEFlapAngle = m_pctrlLEFlapAngle->Value();
-	m_LEXHinge    = m_pctrlLEXHinge->Value();
-	m_LEYHinge    = m_pctrlLEYHinge->Value();
+	m_LEFlapAngle = m_pctrlLEFlapAngle->value();
+	m_LEXHinge    = m_pctrlLEXHinge->value();
+	m_LEYHinge    = m_pctrlLEYHinge->value();
 
 	m_bTEFlap = m_pctrlTEFlapCheck->isChecked();
-	m_TEFlapAngle = m_pctrlTEFlapAngle->Value();
-	m_TEXHinge    = m_pctrlTEXHinge->Value();
-	m_TEYHinge    = m_pctrlTEYHinge->Value();
+	m_TEFlapAngle = m_pctrlTEFlapAngle->value();
+	m_TEXHinge    = m_pctrlTEXHinge->value();
+	m_TEYHinge    = m_pctrlTEYHinge->value();
 
 	if(m_LEXHinge>=m_TEXHinge && m_bLEFlap && m_bTEFlap)
 	{

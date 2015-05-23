@@ -28,11 +28,10 @@
 class XDirectStyleDlg : public QDialog
 {
 	Q_OBJECT
-	friend class QXDirect;
+	friend class FoilWidget;
 
 public:
 	XDirectStyleDlg(QWidget *pParent=NULL);
-	void InitDialog();
 
 private slots:
 	void OnRestoreDefaults();
@@ -42,9 +41,9 @@ private slots:
 
 private:
 	void keyPressEvent(QKeyEvent *event);
-	void SetupLayout();
+	void setupLayout();
 
-	void *m_pXDirect;
+	void *m_pParent;
 	LineBtn *m_pctrlBL, *m_pctrlPressure, *m_pctrlNeutral;
 	QPushButton *OKButton;
 

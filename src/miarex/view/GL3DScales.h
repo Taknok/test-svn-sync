@@ -56,7 +56,7 @@ private:
 	void SetupLayout();
 	void ReadStreamParams();
 
-	static bool LoadSettings(QSettings *pSettings);
+	static bool loadSettings(QSettings *pSettings);
 	static bool SaveSettings(QSettings *pSettings);
 
 	QSlider *m_pctrlLiftScaleSlider, *m_pctrlDragScaleSlider, *m_pctrlVelocityScaleSlider;

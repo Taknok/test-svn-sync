@@ -39,7 +39,7 @@
 
 #include "WingDelegate.h"
 #include "../../objects/ArcBall.h"
-#include "../../threedwidget.h"
+#include "threedwidget.h"
 #include "../../misc/DoubleEdit.h"
 #include "../../misc/ColorButton.h"
 #include "../../objects/Wing.h"

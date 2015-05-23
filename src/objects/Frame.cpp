@@ -24,6 +24,9 @@
 #include "../params.h"
 
 
+int Frame::s_iHighlight = -1;
+int Frame::s_iSelect = -1;
+
 /**
 * The public constructor
 * @param nCtrlPts the number of points with which the Frame is initialized.
@@ -36,8 +39,8 @@ Frame::Frame(int nCtrlPts)
 	{
 		m_CtrlPoint.append(CVector(0.0,0.0,0.0));
 	}
-	m_iHighlight = -1;
-	m_iSelect    =  0;
+	s_iHighlight = -1;
+	s_iSelect    =  0;
 }
 
 /**
@@ -46,7 +49,7 @@ Frame::Frame(int nCtrlPts)
 *@param ZoomFactor the scaing factor to be withdrawn from the Point prior to the comparison. @todo withdrawal to be performed from within the calling function.
 *@return the index of the point in the array which matches with the input point
 */
-int Frame::IsPoint(const CVector &Point, const double &ZoomFactor)
+int Frame::isPoint(const CVector &Point, const double &ZoomFactor)
 {
     int l;
 	for(l=0; l<m_CtrlPoint.size(); l++)
@@ -131,7 +134,7 @@ void Frame::InsertPoint(int n)
 	{
 		m_CtrlPoint[n] = m_CtrlPoint[n-1] + (m_CtrlPoint[n-1] - m_CtrlPoint.first())/5.0;
 	}
-	m_iSelect = n;
+	s_iSelect = n;
 }
 
 /**
@@ -142,7 +145,7 @@ void Frame::InsertPoint(int n)
 void Frame::InsertPoint(int n, CVector const& Pt)
 {
 	m_CtrlPoint.insert(n, Pt);
-	m_iSelect = n;
+	s_iSelect = n;
 }
 
 
@@ -208,7 +211,7 @@ int Frame::InsertPoint(const CVector &Real, int iAxis)
 	}
 
 	m_CtrlPoint.insert(k+1, Real);
-	m_iSelect = k+1;
+	s_iSelect = k+1;
 	return k+1;
 }
 
@@ -258,6 +261,7 @@ void Frame::CopyFrame(Frame *pFrame)
 	CopyPoints(&pFrame->m_CtrlPoint);
 }
 
+
 /**
  * Copies the control point data from an existing list of points
  * @param pPointList a pointer to the list of points
@@ -271,6 +275,7 @@ void Frame::CopyPoints(QList<CVector> *pPointList)
 	}
 }
 
+
 /**
 * Appends a new point at the end of the current array
 * @param Pt to point to append
@@ -280,14 +285,25 @@ void Frame::AppendPoint(CVector const& Pt)
 	m_CtrlPoint.append(Pt);
 }
 
+
 /**
 * Sets the Frame's absolute position
 * @param Pos the new position
 */
-void Frame::SetPosition(CVector Pos)
+void Frame::setPosition(CVector Pos)
 {
+	double zpos;
+	if(m_CtrlPoint.isEmpty()) zpos = 0.0;
+	else                      zpos = (m_CtrlPoint.first().z + m_CtrlPoint.last().z)/2.0;
+
 	m_Position = Pos;
+	for (int ic=0; ic<m_CtrlPoint.count(); ic++)
+	{
+		m_CtrlPoint[ic].x  = Pos.x;
+		m_CtrlPoint[ic].z += Pos.z - zpos;
+	}
 }
+
 
 /**
 * Set the frame's position on the x-axis
@@ -301,6 +317,7 @@ void Frame::SetuPosition(double u)
 		m_CtrlPoint[ic].x = u;
 	}
 }
+
 
 /**
 * Set the frame's position on the y-axis

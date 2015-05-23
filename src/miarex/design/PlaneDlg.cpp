@@ -648,26 +648,26 @@ void PlaneDlg::OnSymFin()
 void PlaneDlg::ReadParams()
 {
 	OnPlaneName();
-	m_pPlane->m_WingTiltAngle[0] = m_pctrlWingTilt->Value();
-	m_pPlane->m_WingTiltAngle[1] = m_pctrlWingTilt2->Value();
-	m_pPlane->m_WingTiltAngle[2] = m_pctrlStabTilt->Value();
-	m_pPlane->m_WingTiltAngle[3] = m_pctrlFinTilt->Value();
+	m_pPlane->m_WingTiltAngle[0] = m_pctrlWingTilt->value();
+	m_pPlane->m_WingTiltAngle[1] = m_pctrlWingTilt2->value();
+	m_pPlane->m_WingTiltAngle[2] = m_pctrlStabTilt->value();
+	m_pPlane->m_WingTiltAngle[3] = m_pctrlFinTilt->value();
 
-	m_pPlane->m_WingLE[0].x = m_pctrlXLEWing->Value() / Units::mtoUnit();
-	m_pPlane->m_WingLE[0].z = m_pctrlZLEWing->Value() / Units::mtoUnit();
+	m_pPlane->m_WingLE[0].x = m_pctrlXLEWing->value() / Units::mtoUnit();
+	m_pPlane->m_WingLE[0].z = m_pctrlZLEWing->value() / Units::mtoUnit();
 
-	m_pPlane->m_WingLE[1].x = m_pctrlXLEWing2->Value() / Units::mtoUnit();
-	m_pPlane->m_WingLE[1].z = m_pctrlZLEWing2->Value() / Units::mtoUnit();
+	m_pPlane->m_WingLE[1].x = m_pctrlXLEWing2->value() / Units::mtoUnit();
+	m_pPlane->m_WingLE[1].z = m_pctrlZLEWing2->value() / Units::mtoUnit();
 
-	m_pPlane->m_WingLE[2].x = m_pctrlXLEStab->Value() / Units::mtoUnit();
-	m_pPlane->m_WingLE[2].z = m_pctrlZLEStab->Value() / Units::mtoUnit();
+	m_pPlane->m_WingLE[2].x = m_pctrlXLEStab->value() / Units::mtoUnit();
+	m_pPlane->m_WingLE[2].z = m_pctrlZLEStab->value() / Units::mtoUnit();
 
-	m_pPlane->m_WingLE[3].x = m_pctrlXLEFin->Value() / Units::mtoUnit();
-	m_pPlane->m_WingLE[3].y = m_pctrlYLEFin->Value() / Units::mtoUnit();
-	m_pPlane->m_WingLE[3].z = m_pctrlZLEFin->Value() / Units::mtoUnit();
+	m_pPlane->m_WingLE[3].x = m_pctrlXLEFin->value() / Units::mtoUnit();
+	m_pPlane->m_WingLE[3].y = m_pctrlYLEFin->value() / Units::mtoUnit();
+	m_pPlane->m_WingLE[3].z = m_pctrlZLEFin->value() / Units::mtoUnit();
 
-	m_pPlane->m_BodyPos.x = m_pctrlXBody->Value() / Units::mtoUnit();
-	m_pPlane->m_BodyPos.z = m_pctrlZBody->Value() / Units::mtoUnit();
+	m_pPlane->m_BodyPos.x = m_pctrlXBody->value() / Units::mtoUnit();
+	m_pPlane->m_BodyPos.z = m_pctrlZBody->value() / Units::mtoUnit();
 
 	if(m_pctrlBiplane->isChecked())   m_pPlane->m_bBiplane = true;
 	else                              m_pPlane->m_bBiplane = false;
@@ -710,29 +710,29 @@ void PlaneDlg::SetParams()
 	m_pctrlImportBody->setEnabled(m_pPlane->m_bBody);
 
 	m_pctrlPlaneName->setText(m_pPlane->planeName());
-	m_pctrlWingTilt->SetValue(m_pPlane->m_WingTiltAngle[0]);
-	m_pctrlWingTilt2->SetValue(m_pPlane->m_WingTiltAngle[1]);
-	m_pctrlStabTilt->SetValue(m_pPlane->m_WingTiltAngle[2]);
-	m_pctrlFinTilt->SetValue(m_pPlane->m_WingTiltAngle[3]);
+	m_pctrlWingTilt->setValue(m_pPlane->m_WingTiltAngle[0]);
+	m_pctrlWingTilt2->setValue(m_pPlane->m_WingTiltAngle[1]);
+	m_pctrlStabTilt->setValue(m_pPlane->m_WingTiltAngle[2]);
+	m_pctrlFinTilt->setValue(m_pPlane->m_WingTiltAngle[3]);
 
-	m_pctrlXLEWing->SetValue(m_pPlane->m_WingLE[0].x * Units::mtoUnit());
-	m_pctrlZLEWing->SetValue(m_pPlane->m_WingLE[0].z * Units::mtoUnit());
+	m_pctrlXLEWing->setValue(m_pPlane->m_WingLE[0].x * Units::mtoUnit());
+	m_pctrlZLEWing->setValue(m_pPlane->m_WingLE[0].z * Units::mtoUnit());
 
-	m_pctrlXLEWing2->SetValue(m_pPlane->m_WingLE[1].x * Units::mtoUnit());
-	m_pctrlZLEWing2->SetValue(m_pPlane->m_WingLE[1].z * Units::mtoUnit());
+	m_pctrlXLEWing2->setValue(m_pPlane->m_WingLE[1].x * Units::mtoUnit());
+	m_pctrlZLEWing2->setValue(m_pPlane->m_WingLE[1].z * Units::mtoUnit());
 
-	m_pctrlXLEStab->SetValue(m_pPlane->m_WingLE[2].x * Units::mtoUnit());
-	m_pctrlZLEStab->SetValue(m_pPlane->m_WingLE[2].z * Units::mtoUnit());
+	m_pctrlXLEStab->setValue(m_pPlane->m_WingLE[2].x * Units::mtoUnit());
+	m_pctrlZLEStab->setValue(m_pPlane->m_WingLE[2].z * Units::mtoUnit());
 
-	m_pctrlXBody->SetValue(m_pPlane->m_BodyPos.x * Units::mtoUnit());
-	m_pctrlZBody->SetValue(m_pPlane->m_BodyPos.z * Units::mtoUnit());
+	m_pctrlXBody->setValue(m_pPlane->m_BodyPos.x * Units::mtoUnit());
+	m_pctrlZBody->setValue(m_pPlane->m_BodyPos.z * Units::mtoUnit());
 
 	m_pctrlBiplane->setChecked(m_pPlane->wing2());
 	OnBiplane();
 
-	m_pctrlXLEFin->SetValue(m_pPlane->m_WingLE[3].x* Units::mtoUnit());
-	m_pctrlYLEFin->SetValue(m_pPlane->m_WingLE[3].y* Units::mtoUnit());
-	m_pctrlZLEFin->SetValue(m_pPlane->m_WingLE[3].z* Units::mtoUnit());
+	m_pctrlXLEFin->setValue(m_pPlane->m_WingLE[3].x* Units::mtoUnit());
+	m_pctrlYLEFin->setValue(m_pPlane->m_WingLE[3].y* Units::mtoUnit());
+	m_pctrlZLEFin->setValue(m_pPlane->m_WingLE[3].z* Units::mtoUnit());
 	m_pctrlFinCheck->setChecked(m_pPlane->m_bFin);
 	m_pctrlDoubleFin->setChecked(m_pPlane->m_bDoubleFin);
 	m_pctrlSymFin->setChecked(m_pPlane->m_bSymFin);

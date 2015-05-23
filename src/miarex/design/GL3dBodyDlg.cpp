@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 
-#include "../../threedwidget.h"
+#include "threedwidget.h"
 #include "../../globals.h"
 #include "../../misc/LinePickerDlg.h"
 #include "../../misc/GLLightDlg.h"
@@ -572,12 +572,12 @@ void GL3dBodyDlg::GLCreateBodyPoints()
 
 		for (k=0; k<m_pFrame->PointCount();k++)
 		{
-			if(m_pFrame->m_iSelect==k)
+			if(m_pFrame->s_iSelect==k)
 			{
 				glLineWidth(2.0);
 				glColor3d(0.0,0.0,1.0);
 			}
-			else if(m_pFrame->m_iHighlight==k)
+			else if(m_pFrame->s_iHighlight==k)
 			{
 				glLineWidth(2.0);
 				glColor3d(1.,0.,0.0);
@@ -1348,9 +1348,9 @@ void GL3dBodyDlg::GLDraw3D()
 		CVector up(0.0,1.0,0.0);
 		m_ArcBall.SetZoom(0.3,eye,up);
 
-		if(glIsList(ARCBALL))
+		if(glIsList(ARCBALLLIST))
 		{
-			glDeleteLists(ARCBALL,2);
+			glDeleteLists(ARCBALLLIST,2);
 			m_GLList-=2;
 		}
 		m_3dWidget.GLCreateArcballList(m_ArcBall, 1.0);
@@ -1433,13 +1433,13 @@ void GL3dBodyDlg::GLDrawBodyLegend()
 		int dD = fm.height();
 
 		strong = QString(tr("Frame %1")).arg(m_pBody->m_iActiveFrame+1,2);
-		m_3dWidget.renderText(m_FrameRect.left() +dD ,dD,strong, Settings::s_TextFont);
+        m_3dWidget.GLRenderText(m_FrameRect.left() +dD ,dD,strong);
 
 		strong = QString(tr("Scale = %1")).arg(m_FrameScale/m_BodyRefScale,4,'f',2);
-		m_3dWidget.renderText(m_FrameRect.left() +dD ,2*dD,strong, Settings::s_TextFont);
+        m_3dWidget.GLRenderText(m_FrameRect.left() +dD ,2*dD,strong);
 
 		strong = QString(tr("Scale = %1")).arg(m_BodyScale/m_BodyRefScale,4,'f',2);
-		m_3dWidget.renderText(m_BodyLineRect.left() +dD ,dD,strong, Settings::s_TextFont);
+        m_3dWidget.GLRenderText(m_BodyLineRect.left() +dD ,dD,strong);
 
 		if(m_FrameRect.contains(m_MousePos))
 		{
@@ -1449,11 +1449,11 @@ void GL3dBodyDlg::GLDrawBodyLegend()
 
 			strong = QString("y = %1 ").arg(real.x * Units::mtoUnit(),9,'f',3);
 			strong += strLengthUnit;
-			m_3dWidget.renderText(m_FrameRect.left() +dD ,3*dD,strong, Settings::s_TextFont);
+            m_3dWidget.GLRenderText(m_FrameRect.left() +dD ,3*dD,strong);
 
 			strong = QString("z = %1 ").arg(real.y * Units::mtoUnit(),9,'f',3);
 			strong += strLengthUnit;
-			m_3dWidget.renderText(m_FrameRect.left() +dD ,4*dD,strong, Settings::s_TextFont);
+            m_3dWidget.GLRenderText(m_FrameRect.left() +dD ,4*dD,strong);
 		}
 		else if(m_BodyLineRect.contains(m_MousePos))
 		{
@@ -1463,11 +1463,11 @@ void GL3dBodyDlg::GLDrawBodyLegend()
 
 			strong = QString("x = %1 ").arg(real.x * Units::mtoUnit(),9,'f',3);
 			strong += strLengthUnit;
-			m_3dWidget.renderText(m_BodyLineRect.left() +dD ,2*dD,strong, Settings::s_TextFont);
+            m_3dWidget.GLRenderText(m_BodyLineRect.left() +dD ,2*dD,strong);
 
 			strong = QString("z = %1 ").arg(real.y * Units::mtoUnit(),9,'f',3);
 			strong += strLengthUnit;
-			m_3dWidget.renderText(m_BodyLineRect.left() +dD ,3*dD,strong, Settings::s_TextFont);
+            m_3dWidget.GLRenderText(m_BodyLineRect.left() +dD ,3*dD,strong);
 		}
 	}
     glDisable(GL_DEPTH_TEST);
@@ -1621,7 +1621,7 @@ void GL3dBodyDlg::GLRenderBody()
 					glTranslated(m_UFOOffset.x, m_UFOOffset.y,  0.0);
 					m_ArcBall.RotateCrossPoint();
 					glRotated(m_ArcBall.angle, m_ArcBall.p.x, m_ArcBall.p.y, m_ArcBall.p.z);
-					glCallList(ARCPOINT);
+					glCallList(ARCPOINTLIST);
 				}
 				glPopMatrix();
 			}
@@ -1631,7 +1631,7 @@ void GL3dBodyDlg::GLRenderBody()
 				{
 					glTranslated(m_UFOOffset.x, m_UFOOffset.y,  0.0);
 					m_ArcBall.Rotate();
-					glCallList(ARCBALL);
+					glCallList(ARCBALLLIST);
 				}
 				glPopMatrix();
 			}
@@ -1698,7 +1698,7 @@ void GL3dBodyDlg::GLDrawMasses()
 		glPushMatrix();
 		{
 			glColor3d(0.5, 1.0, 0.5);
-			m_3dWidget.renderText(m_pBody->Length()/2., 0.0, m_pBody->Length()/20,
+            m_3dWidget.GLRenderText(m_pBody->Length()/2., 0.0, m_pBody->Length()/20,
 								  m_pBody->m_BodyName +
 								  QString(" %1").arg(m_pBody->m_VolumeMass*Units::kgtoUnit(), 7,'g',3)+
 								  MassUnit);
@@ -1713,7 +1713,7 @@ void GL3dBodyDlg::GLDrawMasses()
 				glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
 				m_3dWidget.GLRenderSphere(W3dPrefsDlg::s_MassRadius/m_glScaled);
 				glColor3d(Settings::s_TextColor.redF(), Settings::s_TextColor.greenF(), Settings::s_TextColor.blueF());
-				m_3dWidget.renderText(0.0, 0.0, 0.0+.02,
+                m_3dWidget.GLRenderText(0.0, 0.0, 0.0+.02,
 									  m_pBody->m_PointMass[im]->tag()
 									  +QString(" %1").arg(m_pBody->m_PointMass[im]->mass()*Units::kgtoUnit(), 7,'g',3)
 									  +MassUnit);
@@ -1920,7 +1920,7 @@ void GL3dBodyDlg::mouseMoveEvent(QMouseEvent *event)
 			Real.y =  (Real.y - m_FrameScaledOffset.y)/m_FrameScale;
 			Real.z =   m_pFrame->m_Position.x;
 
-			if(m_pFrame)	n = m_pFrame->m_iSelect;
+			if(m_pFrame)	n = m_pFrame->s_iSelect;
 			else			n = -10;
 			if (n>0 && n<m_pFrame->PointCount()-1 && !m_bTrans && m_bDragPoint)
 			{
@@ -1961,9 +1961,9 @@ void GL3dBodyDlg::mouseMoveEvent(QMouseEvent *event)
 		if (m_BodyLineRect.contains(point) && m_pBody)
 		{
 			Real.x = (Real.x - m_BodyScaledOffset.x)/m_BodyScale;
-			Real.y = (Real.y - m_BodyScaledOffset.y)/m_BodyScale;
-			Real.z = 0.0;
-			int n = m_pBody->IsFramePos(Real, m_BodyScale/m_BodyRefScale);
+			Real.z = (Real.z - m_BodyScaledOffset.y)/m_BodyScale;
+			Real.y = 0.0;
+			int n = m_pBody->isFramePos(Real, m_BodyScale/m_BodyRefScale);
 			m_pBody->m_iHighlight = -10;
 			if (n>=0 && n<=m_pBody->FrameSize())
 			{
@@ -1978,11 +1978,11 @@ void GL3dBodyDlg::mouseMoveEvent(QMouseEvent *event)
 			Real.y = (Real.x - m_FrameScaledOffset.x)/m_FrameScale;
 			Real.x = m_pFrame->m_Position.x;
 
-			int n = m_pFrame->IsPoint(Real, m_FrameScale/m_FrameRefScale);
-			m_pFrame->m_iHighlight = -10;
+			int n = m_pFrame->isPoint(Real, m_FrameScale/m_FrameRefScale);
+			m_pFrame->s_iHighlight = -10;
 			if (n>=0 && n<=m_pFrame->PointCount())
 			{
-				m_pFrame->m_iHighlight = n;
+				m_pFrame->s_iHighlight = n;
 			}
 			m_bResetglBodyPoints = true;
 			UpdateView();
@@ -2052,9 +2052,9 @@ void GL3dBodyDlg::mousePressEvent(QMouseEvent *event)
 		else if(m_pBody && m_BodyLineRect.contains(point))
 		{
 			Real.x =  (Real.x - m_BodyScaledOffset.x)/m_BodyScale;
-			Real.y =  (Real.y - m_BodyScaledOffset.y)/m_BodyScale;
-			Real.z = 0.0;
-			iFrame = m_pBody->IsFramePos(Real, m_BodyScale/m_BodyRefScale);
+			Real.z =  (Real.z - m_BodyScaledOffset.y)/m_BodyScale;
+			Real.y = 0.0;
+			iFrame = m_pBody->isFramePos(Real, m_BodyScale/m_BodyRefScale);
 			if(iFrame >=0)
 			{
 				m_pBody->m_iActiveFrame = iFrame;
@@ -2063,8 +2063,8 @@ void GL3dBodyDlg::mousePressEvent(QMouseEvent *event)
 				SetFrame(m_pBody->m_iActiveFrame);
 				if(iFrame>=0 && iFrame<m_pFrameModel->rowCount()) m_pctrlFrameTable->selectRow(iFrame);
 
-				if(m_pFrame && m_pFrame->m_iSelect>=0 && m_pFrame->m_iSelect<m_pPointModel->rowCount())
-					m_pctrlPointTable->selectRow(m_pFrame->m_iSelect);
+				if(m_pFrame && m_pFrame->s_iSelect>=0 && m_pFrame->s_iSelect<m_pPointModel->rowCount())
+					m_pctrlPointTable->selectRow(m_pFrame->s_iSelect);
 
 				m_bTrans = false;
 				m_bDragPoint  = true;
@@ -2078,13 +2078,13 @@ void GL3dBodyDlg::mousePressEvent(QMouseEvent *event)
 			Real.y =  (Real.x - m_FrameScaledOffset.x)/m_FrameScale;
 			Real.x = m_pFrame->m_Position.x;
 
-			m_pFrame->m_iSelect = m_pFrame->IsPoint(Real, m_FrameScale/m_FrameRefScale);
-			if(m_pFrame->m_iSelect >=0)
+			m_pFrame->s_iSelect = m_pFrame->isPoint(Real, m_FrameScale/m_FrameRefScale);
+			if(m_pFrame->s_iSelect >=0)
 			{
 				m_bTrans = false;
 				m_bDragPoint  = true;
 
-				if(m_pFrame->m_iSelect<m_pPointModel->rowCount()) m_pctrlPointTable->selectRow(m_pFrame->m_iSelect);
+				if(m_pFrame->s_iSelect<m_pPointModel->rowCount()) m_pctrlPointTable->selectRow(m_pFrame->s_iSelect);
 			}
 		}
 		if(m_bTrans && !bCtrl)	m_3dWidget.setCursor(Qt::ClosedHandCursor);
@@ -2118,7 +2118,7 @@ void GL3dBodyDlg::mouseReleaseEvent(QMouseEvent *event)
 		{
 			int n1, n2;
 			n1 = m_pBody->m_iActiveFrame;
-			if(m_pFrame)	n2 = m_pFrame->m_iSelect;
+			if(m_pFrame)	n2 = m_pFrame->s_iSelect;
 			else			n2 = -10;
 
 			if (m_BodyLineRect.contains(point) && n1>=0 && n1<m_pBody->FrameSize())
@@ -2726,7 +2726,7 @@ void GL3dBodyDlg::OnPointCellChanged(QWidget *)
 
 	TakePicture();
 	m_bChanged = true;
-	ReadPointSectionData(m_pFrame->m_iSelect);
+	ReadPointSectionData(m_pFrame->s_iSelect);
 	m_bResetglBodyPoints = true;
 	m_bResetglBody       = true;
 	m_bResetglBody2D     = true;
@@ -2739,8 +2739,8 @@ void GL3dBodyDlg::OnPointCellChanged(QWidget *)
 void GL3dBodyDlg::OnPointItemClicked(const QModelIndex &index)
 {
 	if(!m_pFrame) return;
-	m_pFrame->m_iSelect = index.row();
-	m_pFrame->m_iHighlight = index.row();
+	m_pFrame->s_iSelect = index.row();
+	m_pFrame->s_iHighlight = index.row();
 	m_bResetglBodyPoints = true;
 	UpdateView();
 }
@@ -2765,15 +2765,15 @@ void GL3dBodyDlg::Remove(CVector Pt)
 	{
 
 		Real.x =  (Pt.x - m_BodyScaledOffset.x)/m_BodyScale;
-		Real.y =  (Pt.y - m_BodyScaledOffset.y)/m_BodyScale;
-		Real.z = 0.0;
+		Real.z =  (Pt.z - m_BodyScaledOffset.y)/m_BodyScale;
+		Real.y = 0.0;
 
-		n =  m_pBody->IsFramePos(Real, m_BodyScale/m_BodyRefScale);
+		n =  m_pBody->isFramePos(Real, m_BodyScale/m_BodyRefScale);
 		if (n>=0)
 		{
 			TakePicture();
 
-			n = m_pBody->RemoveFrame(n);
+			n = m_pBody->removeFrame(n);
 			FillFrameDataTable();
 			SetFrame(n);
 			m_bResetglBody   = true;
@@ -2789,7 +2789,7 @@ void GL3dBodyDlg::Remove(CVector Pt)
 		Real.y = (Pt.x - m_FrameScaledOffset.x)/m_FrameScale;
 		Real.z = (Pt.y - m_FrameScaledOffset.y)/m_FrameScale;
 
-		n =   m_pFrame->IsPoint(Real, m_FrameScale/m_FrameRefScale);
+		n =   m_pFrame->isPoint(Real, m_FrameScale/m_FrameRefScale);
 		if (n>=0)
 		{
 			TakePicture();
@@ -2908,8 +2908,8 @@ void GL3dBodyDlg::OnNURBSPanels()
 
 	m_pBody->m_Bunch = m_pctrlPanelBunch->sliderPosition()/100.0;
 
-	m_pBody->m_nhPanels = m_pctrlNHoopPanels->Value();
-	m_pBody->m_nxPanels = m_pctrlNXPanels->Value();
+	m_pBody->m_nhPanels = m_pctrlNHoopPanels->value();
+	m_pBody->m_nxPanels = m_pctrlNXPanels->value();
 	m_pBody->SetPanelPos();
 
 	m_bResetglBody   = true;
@@ -3185,8 +3185,8 @@ void GL3dBodyDlg::SetControls()
 	m_pctrlBodyStyle->SetWidth(m_pBody->m_BodyWidth);
 	m_pctrlBodyStyle->SetColor(m_pBody->m_BodyColor);
 
-	m_pctrlNXPanels->SetValue(m_pBody->m_nxPanels);
-	m_pctrlNHoopPanels->SetValue(m_pBody->m_nhPanels);
+	m_pctrlNXPanels->setValue(m_pBody->m_nxPanels);
+	m_pctrlNHoopPanels->setValue(m_pBody->m_nhPanels);
 
 	m_pctrlXDegree->setCurrentIndex(m_pBody->m_SplineSurface.m_iuDegree-1);
 	m_pctrlHoopDegree->setCurrentIndex(m_pBody->m_SplineSurface.m_ivDegree-1);
@@ -3360,7 +3360,7 @@ void GL3dBodyDlg::SetFrame(Frame *pFrame)
 {
 	if(!m_pBody || !pFrame) return;
 
-	m_pBody->SetActiveFrame(pFrame);
+	m_pBody->setActiveFrame(pFrame);
 
 	FillPointDataTable();;
 
@@ -3589,8 +3589,8 @@ void GL3dBodyDlg::SetupLayout()
 			m_pctrlHoopDegree->setSizePolicy(szPolicyMinimum);
 			m_pctrlNXPanels->setSizePolicy(szPolicyMinimum);
 			m_pctrlNHoopPanels->setSizePolicy(szPolicyMinimum);
-			m_pctrlNXPanels->SetPrecision(0);
-			m_pctrlNHoopPanels->SetPrecision(0);
+			m_pctrlNXPanels->setPrecision(0);
+			m_pctrlNHoopPanels->setPrecision(0);
 			SplineParams->addWidget(lab1,1,2, Qt::AlignCenter);
 			SplineParams->addWidget(lab2,1,3, Qt::AlignCenter);
 			SplineParams->addWidget(lab3,2,1, Qt::AlignRight);
