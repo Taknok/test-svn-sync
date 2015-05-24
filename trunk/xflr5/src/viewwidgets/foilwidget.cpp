@@ -854,7 +854,7 @@ void FoilWidget::setFoilScale()
 	m_FoilOffset.ry() = rect().center().y();
 
 	m_fScale = (rect().width()-2.0*iMargin);
-	if(m_pCpGraph && m_pCpGraph->getYVariable()>=2)
+	if(m_pCpGraph && m_pCpGraph->yVariable()>=2)
 	{
 		double p0  = m_pCpGraph->xToClient(0.0);
 		double p1  = m_pCpGraph->xToClient(1.0);

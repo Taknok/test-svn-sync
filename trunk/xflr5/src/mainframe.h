@@ -130,6 +130,8 @@ private slots:
 	void AboutQt();
 	void aboutXFLR5();
 	void OnCurFoilStyle();
+	void onExportCurGraph();
+	void onCurGraphSettings();
 	void OnInsertProject();
 	void OnNewProject();
 	void OnLanguage();
@@ -137,6 +139,7 @@ private slots:
 	void OnLogFile();
 	void OnOpenGLInfo();
 	void onProjectModified();
+	void onResetCurGraphScales();
 	void OnResetSettings();
 	void OnRestoreToolbars();
 	void onSaveOptions();
@@ -159,8 +162,6 @@ protected:
 	void keyPressEvent(QKeyEvent *event);
 	void keyReleaseEvent(QKeyEvent *event);
 	void closeEvent (QCloseEvent * event);
-	void contextMenuEvent (QContextMenuEvent * event) ;
-
 
 
 public:
@@ -185,7 +186,7 @@ public:
 	void CreateAFoilActions();
 	void CreateAFoilMenus();
 	void CreateAFoilToolbar();
-	void DeleteProject(bool bClosing=false);
+	void deleteProject(bool bClosing=false);
 	void GLToClient(CVector const &real, QPoint &point);
 	bool loadSettings();
 	bool LoadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
@@ -224,6 +225,8 @@ public:
 
 
 	XFLR5::enumApp xflr5App(){return m_iApp;}
+	QString &exportLastDirName() {return m_ExportLastDirName;}
+	QString &exportGraphFilter() {return m_GraphExportFilter;}
 
 /*___________________________________________Variables_______________________________*/
 
@@ -263,7 +266,7 @@ private:
 
 	//  XFoilAnalysis Menus
 	QMenu * m_pXDirectViewMenu;
-	QMenu *m_pXDirectFoilMenu, *CurGraphCtxMenu, *m_pCurOppCtxMenu;
+	QMenu *m_pXDirectFoilMenu, *m_pCurGraphCtxMenu, *m_pCurOppCtxMenu;
 	QMenu *m_pCurrentFoilMenu;
 	QMenu *m_pDesignMenu;
 	QMenu *m_pXFoilAnalysisMenu;
@@ -272,7 +275,7 @@ private:
 	QMenu *m_pOperFoilCtxMenu, *m_pOperPolarCtxMenu, *m_pCurXFoilResults;
 
 	//XInverse menu
-	QMenu *XInverseViewMenu, *InverseFoilMenu, *InverseGraphMenu, *InverseContextMenu;
+	QMenu *m_pXInverseViewMenu, *m_pXInverseFoilMenu, *m_pXInverseGraphMenu, *m_pInverseContextMenu;
 
 	//Miarex Menus
 	QMenu *m_pMiarexViewMenu;
@@ -292,7 +295,7 @@ private:
 	QAction *recentFileActs[MAXRECENTFILES];
 	QAction *separatorAct;
 	QAction *saveViewToImageFileAct, *resetSettingsAct;
-	QAction *m_pSingleGraphAct[MAXGRAPHS], *m_pTwoGraphs, *m_pFourGraphs, *m_pAllGraphs;
+	QAction *m_pSingleGraph[MAXGRAPHS], *m_pTwoGraphs, *m_pFourGraphs, *m_pAllGraphs;
 	QAction *m_pGraphDlgAct;
 
 
@@ -336,7 +339,7 @@ private:
 	QAction *m_pImportWPolar, *m_pPlaneInertia;
 
 	//XDirect Actions
-	QAction *PolarsAct, *OpPointsAct, *deletePolar, *definePolar, *editCurPolar, *defineBatch, *resetCurPolar;
+	QAction *PolarsAct, *OpPointsAct, *deletePolar, *m_pDefinePolarAct, *editCurPolar, *m_pBatchAnalysisAct, *resetCurPolar;
 	QAction *MultiThreadedBatchAct;
 	QAction *restoreToolbarsAct;
 	QAction *exportCurPolar, *exportAllPolars, *hideFoilPolars, *showFoilPolars, *showFoilPolarsOnly, *saveFoilPolars,*deleteFoilPolars;
@@ -348,9 +351,9 @@ private:
 	QAction *exportCurFoil, *deleteCurFoil, *renameCurFoil, *setCurFoilStyle;
 	QAction *DerotateFoil, *NormalizeFoil, *RefineLocalFoil, *RefineGlobalFoil , *EditCoordsFoil, *ScaleFoil;
 	QAction *SetTEGap, *SetLERadius, *SetFlap, *InterpolateFoils, *NacaFoils, *pDirectDuplicateCurFoil;
-	QAction *XDirectGraphDlg,*exportCurGraphAct, *resetCurGraphScales, *allPolarGraphsSettingsAct, *allPolarGraphsScales;
-	QAction *TwoPolarGraphsAct, *AllPolarGraphsAct, *m_pResetGraphLegendAct;
-	QAction *m_pPolarGraphAct[5];
+
+	QAction *m_pCurGraphDlgAct,*m_pExportCurGraphAct, *m_pResetCurGraphScales;
+
 	QAction *m_pXDirectStyleAct;
 	QAction *XDirectPolarFilter;
 	QAction *setQVarGraph, *setCpVarGraph;
@@ -366,9 +369,10 @@ private:
 	static QLabel *m_pctrlProjectName;
 
 	//XInverse Actions
-	QAction *StoreFoil, *ExtractFoil, *InverseStyles, *InverseResetScale, *InverseInsertCtrlPt, *InverseRemoveCtrlPt;
+	QAction *StoreFoil, *ExtractFoil, *m_pXInverseStyles, *m_pXInverseResetFoilScale, *InverseInsertCtrlPt, *InverseRemoveCtrlPt;
 	QAction *InvQInitial, *InvQSpec, *InvQViscous, *InvQPoints, *InvQReflected;
-	QAction *InverseResetGraphScale, *XInverseGraphDlg, *InverseZoomIn, *InverseZoomX, *InverseZoomY;
+//	QAction *InverseResetGraphScale, *XInverseGraphDlg;
+	QAction *InverseZoomIn, *InverseZoomX, *InverseZoomY;
 
 	QStringList m_RecentFiles;
 

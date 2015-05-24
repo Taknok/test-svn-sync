@@ -220,7 +220,11 @@ QXDirect::QXDirect(QWidget *parent) : QWidget(parent)
  */
 QXDirect::~QXDirect()
 {
-	Trace("Destroying XDirect");
+	for(int ig=m_PlrGraph.count()-1; ig>=0; ig--)
+	{
+		delete m_PlrGraph.at(ig);
+		m_PlrGraph.removeAt(ig);
+	}
 }
 
 
@@ -250,13 +254,10 @@ void QXDirect::setControls()
 	pMainFrame->showInviscidCurve->setChecked(m_bShowInviscid);
 	pMainFrame->showCurOppOnly->setChecked(m_bCurOppOnly);
 
-	pMainFrame->setCpVarGraph->setChecked(m_CpGraph.getYVariable()==0);
-	pMainFrame->setQVarGraph->setChecked(m_CpGraph.getYVariable()==1);
+	pMainFrame->setCpVarGraph->setChecked(m_CpGraph.yVariable()==0);
+	pMainFrame->setQVarGraph->setChecked(m_CpGraph.yVariable()==1);
 
-	pMainFrame->TwoPolarGraphsAct->setChecked(m_iPlrView==XFLR5::TWOGRAPHS);
-	pMainFrame->AllPolarGraphsAct->setChecked(m_iPlrView==XFLR5::ALLGRAPHS);
-
-	int OppVar = m_CpGraph.getYVariable();
+	int OppVar = m_CpGraph.yVariable();
 	pMainFrame->CurXFoilCtPlot->setChecked(!m_bPolarView  && OppVar==2 && m_XFoilVar ==1);
 	pMainFrame->CurXFoilDbPlot->setChecked(!m_bPolarView  && OppVar==2 && m_XFoilVar ==2);
 	pMainFrame->CurXFoilDtPlot->setChecked(!m_bPolarView  && OppVar==2 && m_XFoilVar ==3);
@@ -283,8 +284,8 @@ void QXDirect::setControls()
 	pMainFrame->exportCurFoil->setEnabled(Foil::curFoil());
 	pMainFrame->renameCurFoil->setEnabled(Foil::curFoil());
 	pMainFrame->setCurFoilStyle->setEnabled(Foil::curFoil());
-	pMainFrame->definePolar->setEnabled(Foil::curFoil());
-	pMainFrame->defineBatch->setEnabled(Foil::curFoil());
+	pMainFrame->m_pDefinePolarAct->setEnabled(Foil::curFoil());
+	pMainFrame->m_pBatchAnalysisAct->setEnabled(Foil::curFoil());
 	pMainFrame->deleteFoilOpps->setEnabled(Foil::curFoil());
 	pMainFrame->deleteFoilPolars->setEnabled(Foil::curFoil());
 
@@ -309,6 +310,8 @@ void QXDirect::setControls()
 	pMainFrame->m_pCurrentOppMenu->setEnabled(OpPoint::curOpp());
 	pMainFrame->deleteCurOpp->setEnabled(OpPoint::curOpp());
 	pMainFrame->exportCurOpp->setEnabled(OpPoint::curOpp());
+
+	pMainFrame->checkGraphActions();
 }
 
 
@@ -325,9 +328,9 @@ void QXDirect::Connect()
 	connect(m_pctrlSpec2, SIGNAL(clicked()), this, SLOT(OnSpec()));
 	connect(m_pctrlSpec3, SIGNAL(clicked()), this, SLOT(OnSpec()));
 	connect(m_pctrlAnalyze, SIGNAL(clicked()), this, SLOT(OnAnalyze()));
-	connect(m_pctrlAlphaMin, SIGNAL(editingFinished()), this, SLOT(OnInputChanged()));
-	connect(m_pctrlAlphaMax, SIGNAL(editingFinished()), this, SLOT(OnInputChanged()));
-	connect(m_pctrlAlphaDelta, SIGNAL(editingFinished()), this, SLOT(OnInputChanged()));
+	connect(m_pctrlAlphaMin, SIGNAL(editingFinished()), this, SLOT(onInputChanged()));
+	connect(m_pctrlAlphaMax, SIGNAL(editingFinished()), this, SLOT(onInputChanged()));
+	connect(m_pctrlAlphaDelta, SIGNAL(editingFinished()), this, SLOT(onInputChanged()));
 	connect(m_pctrlCurveStyle, SIGNAL(activated(int)), this, SLOT(OnCurveStyle(int)));
 	connect(m_pctrlCurveWidth, SIGNAL(activated(int)), this, SLOT(OnCurveWidth(int)));
 	connect(m_pctrlCurveColor, SIGNAL(clickedLB()), this, SLOT(OnCurveColor()));
@@ -338,7 +341,7 @@ void QXDirect::Connect()
 	connect(m_pctrlShowCurve, SIGNAL(clicked()), this, SLOT(OnShowCurve()));
 //	connect(m_pctrlHighlightOpp, SIGNAL(clicked()), this, SLOT(OnHighlightOpp()));
 
-	connect(m_pctrlAnimate, SIGNAL(clicked(bool)), this, SLOT(OnAnimate(bool)));
+	connect(m_pctrlAnimate, SIGNAL(clicked(bool)), this, SLOT(onAnimate(bool)));
 	connect(m_pctrlAnimateSpeed, SIGNAL(sliderMoved(int)), this, SLOT(OnAnimateSpeed(int)));
 	connect(m_pAnimateTimer, SIGNAL(timeout()), this, SLOT(OnAnimateSingle()));
 
@@ -361,7 +364,7 @@ void QXDirect::createOppCurves(OpPoint *pOpp)
 	QString str;
 	int k;
 
-	m_CpGraph.DeleteCurves();
+	m_CpGraph.deleteCurves();
 
 	if(m_bCurOppOnly && pOpPoint)
 	{
@@ -430,7 +433,7 @@ void QXDirect::createPolarCurves()
 	Polar *pPolar;
 	QString str;
 
-	for(int ig=0; ig<MAXPOLARGRAPHS; ig++) m_PlrGraph[ig]->DeleteCurves();
+	for(int ig=0; ig<MAXPOLARGRAPHS; ig++) m_PlrGraph[ig]->deleteCurves();
 
 	for (k=0; k<m_poaPolar->size(); k++)
 	{
@@ -445,38 +448,38 @@ void QXDirect::createPolarCurves()
 			{
 
 				Curve* pCurve[MAXPOLARGRAPHS];
+				Curve* pTr2Curve = NULL;
 				for(int ig=0; ig<MAXPOLARGRAPHS; ig++)
 				{
 					pCurve[ig] = m_PlrGraph[ig]->addCurve();
-					pCurve[ig] = m_PlrGraph[ig]->addCurve();
-					if(pPolar->m_bShowPoints) pCurve[ig]->showPoints(true);
+					pCurve[ig]->showPoints(pPolar->showPoints());
 					pCurve[ig]->setStyle(pPolar->polarStyle());
 					pCurve[ig]->setWidth(pPolar->polarWidth());
 					pCurve[ig]->setColor(pPolar->polarColor());
-					fillPolarCurve(pCurve[ig], pPolar, m_PlrGraph[ig]->getXVariable(), m_PlrGraph[ig]->getYVariable());
-					pCurve[ig]->setTitle(pPolar->m_PlrName);
+					fillPolarCurve(pCurve[ig], pPolar, m_PlrGraph[ig]->xVariable(), m_PlrGraph[ig]->yVariable());
+					pCurve[ig]->setTitle(pPolar->polarName());
+
+					if(m_PlrGraph[ig]->yVariable() == 6)	pTr2Curve = m_PlrGraph[ig]->addCurve();
+					else                                    pTr2Curve = NULL;
+					if(pTr2Curve)
+					{
+						pTr2Curve->showPoints(pPolar->showPoints());
+						pTr2Curve->setStyle(1);
+						pTr2Curve->setWidth(pPolar->polarWidth());
+						pTr2Curve->setColor(pPolar->polarColor());
+						fillPolarCurve(pTr2Curve, pPolar, m_PlrGraph[ig]->xVariable(), 7);
+
+						str = pPolar->polarName() + " / Xtr1";
+						pCurve[ig]->setTitle(str);
+						str = pPolar->polarName() + " / Xtr2";
+						pTr2Curve->setTitle(str);
+					}
 				}
-
-/** @todo pt2curve
- * 				if(pTr2Curve)
-				{
-
-//				if(m_PlrGraph[3]->getYVariable() == 6)	pTr2Curve   = m_PlrGraph[3]->addCurve();
-					pTr2Curve->showPoints(true);
-
-					str = pPolar->m_PlrName + " / Xtr1";
-					pTr1Curve->setTitle(str);
-					str = pPolar->m_PlrName + " / Xtr2";
-					pTr2Curve->setTitle(str);
-				}
-				else
-				{
-					pTr1Curve->setTitle(pPolar->m_PlrName);
-				}*/
 			}
 		}
 	}
 }
+
 
 
 
@@ -542,7 +545,7 @@ void QXDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bI
 
 	Foil *pOpFoil = Foil::foil(pOpp->m_strFoilName);
 
-	switch(m_CpGraph.getYVariable())
+	switch(m_CpGraph.yVariable())
 	{
 		case 0:
 		{
@@ -770,7 +773,7 @@ void QXDirect::keyPressEvent(QKeyEvent *event)
 			break;
 		case Qt::Key_Escape:
 			stopAnimate();
-			UpdateView();
+			updateView();
 			break;
 		case Qt::Key_H:
 		{
@@ -842,7 +845,7 @@ void QXDirect::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_F5:
 		{
 			if(!m_bPolarView) return;
-			OnOpPointView();
+			onOpPointView();
 			break;
 		}
 		case Qt::Key_F6:
@@ -855,7 +858,7 @@ void QXDirect::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_F8:
 		{
 			if(m_bPolarView) return;
-			OnPolarView();
+			onPolarView();
 			break;
 		}
 		case Qt::Key_F9:
@@ -954,6 +957,9 @@ void QXDirect::loadSettings(QSettings *pSettings)
 			case 2:
 				m_iPlrView = XFLR5::TWOGRAPHS;
 				break;
+			case 4:
+				m_iPlrView = XFLR5::FOURGRAPHS;
+				break;
 			default:
 				m_iPlrView = XFLR5::ALLGRAPHS;
 				break;
@@ -1009,7 +1015,7 @@ void QXDirect::loadSettings(QSettings *pSettings)
 
 	m_CpGraph.loadSettings(pSettings);
 
-	if(m_CpGraph.getYVariable() == 0 || m_CpGraph.getYVariable()>=2)
+	if(m_CpGraph.yVariable() == 0 || m_CpGraph.yVariable()>=2)
 	{
 		m_CpGraph.setYTitle(tr("Cp"));
 		m_CpGraph.setInverted(true);
@@ -1026,50 +1032,10 @@ void QXDirect::loadSettings(QSettings *pSettings)
 
 
 
-
-/**
- * The user has requested a display of all polar graphs
- */
-void QXDirect::OnAllPolarGraphs()
-{
-	m_iPlrView  = XFLR5::ALLGRAPHS;
-	m_bPolarView = true;
-	setGraphTiles();
-	setControls();
-	UpdateView();
-}
-
-
-
-/**
- * The user has requested an edition of all polar graphs settings
- */
-void QXDirect::OnAllPolarGraphsSetting()
-{
-	GraphDlg grDlg((MainFrame*)s_pMainFrame);
-
-	grDlg.setGraph(m_PlrGraph.at(0));
-	for(int ig=0; ig<m_PlrGraph.count(); ig++)
-		grDlg.m_GraphArray[ig] = m_PlrGraph.at(ig);
-	grDlg.m_NGraph = m_PlrGraph.count();
-	grDlg.setControls();
-
-	if(grDlg.exec() == QDialog::Accepted)
-	{
-	}
-	else
-	{
-		for(int ig=1; ig<m_PlrGraph.count(); ig++)
-			m_PlrGraph[ig]->copySettings(m_PlrGraph[0]);
-	}
-	UpdateView();
-}
-
-
 /**
  * The user has changed one of the analysis parameters. Reads all the data and maps it.
  */
-void QXDirect::OnInputChanged()
+void QXDirect::onInputChanged()
 {
 	readParams();
 }
@@ -1079,7 +1045,7 @@ void QXDirect::OnInputChanged()
  * The user has clicked the animate checkcbox
  * @param bChecked the new state of the checkbox
  */
-void QXDirect::OnAnimate(bool bChecked)
+void QXDirect::onAnimate(bool bChecked)
 {
 	if(!Foil::curFoil() || !Polar::curPolar())
 	{
@@ -1177,7 +1143,7 @@ void QXDirect::OnAnimateSingle()
 			indexCbBox = pMainFrame->m_pctrlOpPoint->findText(str);
 			if(indexCbBox>=0) pMainFrame->m_pctrlOpPoint->setCurrentIndex(indexCbBox);
 
-			UpdateView();
+			updateView();
 		}
 	}
 }
@@ -1259,7 +1225,7 @@ void QXDirect::OnAnalyze()
 	emit projectModified();
 
 	setControls();
-	UpdateView();
+	updateView();
 }
 
 
@@ -1273,8 +1239,8 @@ void QXDirect::OnBatchAnalysis()
 	if(!Foil::curFoil()) return;
 
 	m_bPolarView = true;
-	OnPolarView();
-	UpdateView();
+	onPolarView();
+	updateView();
 
 	m_pctrlAnalyze->setEnabled(false);
 
@@ -1326,7 +1292,7 @@ void QXDirect::OnBatchAnalysis()
 	emit projectModified();
 
 	setControls();
-	UpdateView();
+	updateView();
 }
 
 
@@ -1347,8 +1313,8 @@ void QXDirect::OnMultiThreadedBatchAnalysis()
 	}
 
 	m_bPolarView = true;
-	OnPolarView();
-	UpdateView();
+	onPolarView();
+	updateView();
 
 	m_pctrlAnalyze->setEnabled(false);
 
@@ -1400,7 +1366,7 @@ void QXDirect::OnMultiThreadedBatchAnalysis()
 
 
 	setControls();
-	UpdateView();
+	updateView();
 
 	emit projectModified();
 
@@ -1418,9 +1384,9 @@ void QXDirect::OnCfPlot()
 	double x[IVX][3],y[IVX][3];
 	int nside1, nside2, ibl;
 
-	m_CpGraph.SetYVariable(2);
+	m_CpGraph.setYVariable(2);
 	m_XFoilVar = 8;
-	m_CpGraph.DeleteCurves();
+	m_CpGraph.deleteCurves();
 	m_CpGraph.resetLimits();
 	m_CpGraph.setAuto(true);
 	m_CpGraph.setInverted(false);
@@ -1454,7 +1420,7 @@ void QXDirect::OnCfPlot()
 	m_CpGraph.SetXScale();
 	setFoilScale();
 	setControls();
-	UpdateView();
+	updateView();
 }
 
 
@@ -1466,9 +1432,9 @@ void QXDirect::OnCtPlot()
 	if(!m_pXFoil->lvconv) return;
 	int i;
 
-	m_CpGraph.SetYVariable(2);
+	m_CpGraph.setYVariable(2);
 	m_XFoilVar=1;
-	m_CpGraph.DeleteCurves();
+	m_CpGraph.deleteCurves();
 	m_CpGraph.resetLimits();
 	m_CpGraph.setAuto(true);
 	m_CpGraph.setInverted(false);
@@ -1499,7 +1465,7 @@ void QXDirect::OnCtPlot()
 	m_CpGraph.SetXScale();
 	setFoilScale();
 	setControls();
-	UpdateView();
+	updateView();
 
 }
 
@@ -1512,9 +1478,9 @@ void QXDirect::OnDtPlot()
 	if(!m_pXFoil->lvconv) return;
 	int i;
 
-	m_CpGraph.SetYVariable(2);
+	m_CpGraph.setYVariable(2);
 	m_XFoilVar=3;
-	m_CpGraph.DeleteCurves();
+	m_CpGraph.deleteCurves();
 	m_CpGraph.resetLimits();
 	m_CpGraph.setAuto(true);
 	m_CpGraph.setInverted(false);
@@ -1539,7 +1505,7 @@ void QXDirect::OnDtPlot()
 	m_CpGraph.SetXScale();
 	setFoilScale();
 	setControls();
-	UpdateView();
+	updateView();
 }
 
 
@@ -1551,9 +1517,9 @@ void QXDirect::OnDbPlot()
 	if(!m_pXFoil->lvconv) return;
 	int i;
 
-	m_CpGraph.SetYVariable(2);
+	m_CpGraph.setYVariable(2);
 	m_XFoilVar = 2;
-	m_CpGraph.DeleteCurves();
+	m_CpGraph.deleteCurves();
 	m_CpGraph.resetLimits();
 	m_CpGraph.setAuto(true);
 	m_CpGraph.setInverted(false);
@@ -1579,7 +1545,7 @@ void QXDirect::OnDbPlot()
 	m_CpGraph.SetXScale();
 	setFoilScale();
 	setControls();
-	UpdateView();
+	updateView();
 }
 
 
@@ -1593,9 +1559,9 @@ void QXDirect::OnCdPlot()
 	int nside1, nside2, ibl;
 	int i;
 
-	m_CpGraph.SetYVariable(2);
+	m_CpGraph.setYVariable(2);
 	m_XFoilVar = 7;
-	m_CpGraph.DeleteCurves();
+	m_CpGraph.deleteCurves();
 	m_CpGraph.resetLimits();
 	m_CpGraph.setAuto(true);
 	m_CpGraph.setInverted(false);
@@ -1629,7 +1595,7 @@ void QXDirect::OnCdPlot()
 	m_CpGraph.SetXScale();
 	setFoilScale();
 	setControls();
-	UpdateView();
+	updateView();
 }
 
 
@@ -1641,9 +1607,9 @@ void QXDirect::OnHPlot()
 	if(!m_pXFoil->lvconv) return;
 	int i;
 
-	m_CpGraph.SetYVariable(2);
+	m_CpGraph.setYVariable(2);
 	m_XFoilVar = 10;
-	m_CpGraph.DeleteCurves();
+	m_CpGraph.deleteCurves();
 	m_CpGraph.resetLimits();
 	m_CpGraph.setAuto(true);
 	m_CpGraph.setInverted(false);
@@ -1671,7 +1637,7 @@ void QXDirect::OnHPlot()
 	m_CpGraph.SetXScale();
 	setFoilScale();
 	setControls();
-	UpdateView();
+	updateView();
 }
 
 
@@ -1683,9 +1649,9 @@ void QXDirect::OnRtPlot()
 	if(!m_pXFoil->lvconv) return;
 	int i;
 
-	m_CpGraph.SetYVariable(2);
+	m_CpGraph.setYVariable(2);
 	m_XFoilVar=5;
-	m_CpGraph.DeleteCurves();
+	m_CpGraph.deleteCurves();
 	m_CpGraph.resetLimits();
 	m_CpGraph.setAuto(true);
 	m_CpGraph.setInverted(false);
@@ -1707,7 +1673,7 @@ void QXDirect::OnRtPlot()
 	m_CpGraph.SetXScale();
 	setFoilScale();
 	setControls();
-	UpdateView();
+	updateView();
 }
 
 
@@ -1719,9 +1685,9 @@ void QXDirect::OnRtLPlot()
 	if(!m_pXFoil->lvconv) return;
 	int i;
 
-	m_CpGraph.SetYVariable(2);
+	m_CpGraph.setYVariable(2);
 	m_XFoilVar=4;
-	m_CpGraph.DeleteCurves();
+	m_CpGraph.deleteCurves();
 	m_CpGraph.resetLimits();
 	m_CpGraph.setAuto(true);
 	m_CpGraph.setInverted(false);
@@ -1750,7 +1716,7 @@ void QXDirect::OnRtLPlot()
 	m_CpGraph.SetXScale();
 	setFoilScale();
 	setControls();
-	UpdateView();
+	updateView();
 }
 
 
@@ -1765,9 +1731,9 @@ void QXDirect::OnUePlot()
 	double uei;
 	int nside1, nside2, ibl;
 
-	m_CpGraph.SetYVariable(2);
+	m_CpGraph.setYVariable(2);
 	m_XFoilVar = 9;
-	m_CpGraph.DeleteCurves();
+	m_CpGraph.deleteCurves();
 	m_CpGraph.resetLimits();
 	m_CpGraph.setAuto(true);
 	m_CpGraph.setInverted(false);
@@ -1803,23 +1769,10 @@ void QXDirect::OnUePlot()
 	m_CpGraph.SetXScale();
 	setFoilScale();
 	setControls();
-	UpdateView();
+	updateView();
 }
 
 
-/**
- * The user has requested to switch to the two polar graph view
- */
-void QXDirect::OnCouplePolarGraphs()
-{
-	m_iPlrView  = XFLR5::TWOGRAPHS;
-	m_bPolarView = true;
-
-	setGraphTiles();
-	setControls();
-
-	UpdateView();
-}
 
 
 /**
@@ -1828,11 +1781,11 @@ void QXDirect::OnCouplePolarGraphs()
 void QXDirect::OnCpGraph()
 {
 	m_bPolarView = false;
-	if(m_CpGraph.getYVariable()!=0)
+	if(m_CpGraph.yVariable()!=0)
 	{
 //		m_pCpGraph->ResetLimits();
 		m_CpGraph.setAuto(true);
-		m_CpGraph.SetYVariable(0);
+		m_CpGraph.setYVariable(0);
 	}
 
 	m_CpGraph.setInverted(true);
@@ -1842,7 +1795,7 @@ void QXDirect::OnCpGraph()
 	setControls();
 	m_CpGraph.SetXScale();
 	setFoilScale();
-	UpdateView();
+	updateView();
 }
 
 
@@ -1855,7 +1808,7 @@ void QXDirect::OnCpi()
 
 	m_bResetCurves = true;
 	setControls();
-	UpdateView();
+	updateView();
 }
 
 
@@ -1870,7 +1823,7 @@ void QXDirect::OnCurOppOnly()
 	if(OpPoint::curOpp()) OpPoint::curOpp()->m_bIsVisible = true;
 	m_bResetCurves = true;
 	setAnalysisParams();
-	UpdateView();
+	updateView();
 }
 
 
@@ -1937,7 +1890,7 @@ void QXDirect::OnDefinePolar()
 
 		pMainFrame->UpdatePolarListBox();
 		setBufferFoil();
-		UpdateView();
+		updateView();
 		emit projectModified();
 	}
 	setControls();
@@ -1972,7 +1925,7 @@ void QXDirect::OnDeleteCurFoil()
 	emit projectModified();
 
 	setControls();
-	UpdateView();
+	updateView();
 }
 
 
@@ -2000,7 +1953,7 @@ void QXDirect::OnDelCurOpp()
 		OpPoint::deleteOpp(OpPoint::curOpp());
 		pMainFrame->UpdateOppListBox();
 		setOpp();
-		UpdateView();
+		updateView();
 	}
 	setControls();
 }
@@ -2009,7 +1962,7 @@ void QXDirect::OnDelCurOpp()
 /**
  * The user has requested the deletion of the current Polar.
  */
-void QXDirect::OnDeleteCurPolar()
+void QXDirect::onDeleteCurPolar()
 {
 	if(!Polar::curPolar()) return;
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
@@ -2052,14 +2005,14 @@ void QXDirect::OnDeleteCurPolar()
 	setPolar();
 
 	emit projectModified();
-	UpdateView();
+	updateView();
 }
 
 
 /**
  * The user has requested the deletion of the OpPoints associated to the current Polar.
  */
-void QXDirect::OnDeletePolarOpps()
+void QXDirect::onDeletePolarOpps()
 {
 	if(!Foil::curFoil() || !Polar::curPolar()) return;
 
@@ -2083,14 +2036,14 @@ void QXDirect::OnDeletePolarOpps()
 	m_bResetCurves = true;
 	setCurveParams();
 	setControls();
-	UpdateView();
+	updateView();
 }
 
 
 /**
  * The user has requested the deletion of the OpPoints associated to the current Foil.
  */
-void QXDirect::OnDeleteFoilOpps()
+void QXDirect::onDeleteFoilOpps()
 {
 	if(!Foil::curFoil() || !Polar::curPolar()) return;
 
@@ -2112,7 +2065,7 @@ void QXDirect::OnDeleteFoilOpps()
 	m_bResetCurves = true;
 	setCurveParams();
 	setControls();
-	UpdateView();
+	updateView();
 
 	emit projectModified();
 }
@@ -2121,7 +2074,7 @@ void QXDirect::OnDeleteFoilOpps()
 /**
  * The user has requested the deletion of the Polars associated to the current Foil.
  */
-void QXDirect::OnDeleteFoilPolars()
+void QXDirect::onDeleteFoilPolars()
 {
 	if(!Foil::curFoil()) return;
 	MainFrame * pMainFrame = (MainFrame*) s_pMainFrame;
@@ -2171,7 +2124,7 @@ void QXDirect::OnDeleteFoilPolars()
 	emit projectModified();
 
 	setControls();
-	UpdateView();
+	updateView();
 }
 
 
@@ -2189,7 +2142,7 @@ void QXDirect::OnCadd()
 	m_bResetCurves = true;
 
 	bool bState = m_bShowPanels;
-	OnOpPointView();
+	onOpPointView();
 
 	CAddDlg caDlg(pMainFrame);
 	caDlg.m_pBufferFoil = &m_BufferFoil;
@@ -2198,7 +2151,7 @@ void QXDirect::OnCadd()
 
 
 	m_bShowPanels = true;
-	UpdateView();
+	updateView();
 
 	if(QDialog::Accepted == caDlg.exec())
 	{
@@ -2224,7 +2177,7 @@ void QXDirect::OnCadd()
 
 	m_bShowPanels = bState;
 
-	UpdateView();
+	updateView();
 }
 
 
@@ -2256,7 +2209,7 @@ void QXDirect::OnDerotateFoil()
 	pMainFrame->UpdateFoilListBox();
 
 	emit projectModified();
-	UpdateView();
+	updateView();
 }
 
 
@@ -2281,7 +2234,7 @@ void QXDirect::OnEditCurPolar()
 	Polar::curPolar()->m_bShowPoints = true;
 
 	m_bResetCurves = true;
-	UpdateView();
+	updateView();
 
 	if(epDlg.exec() == QDialog::Accepted)
 	{
@@ -2293,7 +2246,7 @@ void QXDirect::OnEditCurPolar()
 	}
 	Polar::curPolar()->m_bShowPoints = bPoints;
 	m_bResetCurves = true;
-	UpdateView();
+	updateView();
 
 	delete pMemPolar;
 }
@@ -2725,7 +2678,7 @@ void QXDirect::OnFoilCoordinates()
 	m_bResetCurves = true;
 
 	m_bPolarView    = false;
-	UpdateView();
+	updateView();
 
 	bool bFlap       = m_BufferFoil.m_bTEFlap;
 	double FlapAngle = m_BufferFoil.m_TEFlapAngle;
@@ -2741,7 +2694,7 @@ void QXDirect::OnFoilCoordinates()
 	fcoDlg.InitDialog();
 
 	m_bShowPanels = true;
-	UpdateView();
+	updateView();
 
 	int res = fcoDlg.exec();
 
@@ -2781,7 +2734,7 @@ void QXDirect::OnFoilCoordinates()
 
 	m_BufferFoil.m_iHighLight = -1;
 	m_bShowPanels = bState;//restore as it was
-	UpdateView();
+	updateView();
 }
 
 
@@ -2800,7 +2753,7 @@ void QXDirect::OnFoilGeom()
 	void* ptr = OpPoint::curOpp();
 	OpPoint::setCurOpp(NULL);
 	m_bResetCurves = true;
-	UpdateView();
+	updateView();
 
 	FoilGeomDlg fgeDlg(pMainFrame);
 	fgeDlg.m_pMemFoil = Foil::curFoil();
@@ -2830,7 +2783,7 @@ void QXDirect::OnFoilGeom()
 		m_pXFoil->InitXFoilGeometry(Foil::curFoil());
 	}
 
-	UpdateView();
+	updateView();
 }
 
 
@@ -2848,7 +2801,7 @@ void QXDirect::OnHighlightOpp()
 		m_PlrGraph[ig]->m_bHighlightPoint = m_bHighlightOpp;
 
 	m_bResetCurves = true;
-	UpdateView();
+	updateView();
 }
 
 
@@ -2866,7 +2819,7 @@ void QXDirect::OnHideAllOpps()
 	emit projectModified();
 	m_bResetCurves = true;
 	setAnalysisParams();
-	UpdateView();
+	updateView();
 }
 
 
@@ -2884,7 +2837,7 @@ void QXDirect::OnHideAllPolars()
 	emit projectModified();
 	m_bResetCurves = true;
 	setCurveParams();
-	UpdateView();
+	updateView();
 }
 
 
@@ -2906,7 +2859,7 @@ void QXDirect::OnHideFoilPolars()
 	emit projectModified();
 	m_bResetCurves = true;
 	setCurveParams();
-	UpdateView();
+	updateView();
 }
 
 
@@ -2928,7 +2881,7 @@ void QXDirect::OnHideFoilOpps()
 	emit projectModified();
 	m_bResetCurves = true;
 	setCurveParams();
-	UpdateView();
+	updateView();
 }
 
 
@@ -2950,7 +2903,7 @@ void QXDirect::OnHidePolarOpps()
 	emit projectModified();
 	m_bResetCurves = true;
 	setCurveParams();
-	UpdateView();
+	updateView();
 }
 
 
@@ -3143,7 +3096,7 @@ void QXDirect::OnImportXFoilPolar()
 	OpPoint::setCurOpp(NULL);
 	setPolar(pPolar);
 	pMainFrame->UpdatePolarListBox();
-	UpdateView();
+	updateView();
 	emit projectModified();
 }
 
@@ -3256,7 +3209,7 @@ void QXDirect::OnImportJavaFoilPolar()
 		OpPoint::setCurOpp(NULL);
 		setPolar();
 		pMainFrame->UpdatePolarListBox();
-		UpdateView();
+		updateView();
 		emit projectModified();
 	}
 }
@@ -3277,7 +3230,7 @@ void QXDirect::OnInterpolateFoils()
 
 	stopAnimate();
 
-	OnOpPointView();
+	onOpPointView();
 
 	InterpolateFoilsDlg ifDlg(pMainFrame);
 	ifDlg.m_poaFoil     = m_poaFoil;
@@ -3306,7 +3259,7 @@ void QXDirect::OnInterpolateFoils()
 		m_pXFoil->InitXFoilGeometry(Foil::curFoil());
 	}
 
-	UpdateView();
+	updateView();
 }
 
 
@@ -3326,7 +3279,7 @@ void QXDirect::OnNacaFoils()
 	OpPoint::setCurOpp(NULL);
 
 	m_bResetCurves = true;
-	UpdateView();
+	updateView();
 
 	NacaFoilDlg nacaDlg(pMainFrame);
 	nacaDlg.m_pBufferFoil = &m_BufferFoil;
@@ -3364,7 +3317,7 @@ void QXDirect::OnNacaFoils()
 		m_pXFoil->InitXFoilGeometry(Foil::curFoil());
 	}
 	setControls();
-	UpdateView();
+	updateView();
 }
 
 
@@ -3386,7 +3339,7 @@ void QXDirect::OnNormalizeFoil()
 	emit projectModified();
 	pMainFrame->statusBar()->showMessage(str);
 
-	UpdateView();
+	updateView();
 }
 
 
@@ -3399,9 +3352,9 @@ void QXDirect::OnNPlot()
 	int i;
 	int nside1, nside2, ibl;
 
-	m_CpGraph.SetYVariable(2);
+	m_CpGraph.setYVariable(2);
 	m_XFoilVar=6;
-	m_CpGraph.DeleteCurves();
+	m_CpGraph.deleteCurves();
 	m_CpGraph.resetLimits();
 	m_CpGraph.setAuto(true);
 	m_CpGraph.setInverted(false);
@@ -3435,14 +3388,14 @@ void QXDirect::OnNPlot()
 	m_CpGraph.SetXScale();
 	setFoilScale();
 	setControls();
-	UpdateView();
+	updateView();
 }
 
 
 /**
  * The user has requested to switch to the OpPoint view
  */
-void QXDirect::OnOpPointView()
+void QXDirect::onOpPointView()
 {
 	if(!m_bPolarView) return;
 
@@ -3455,14 +3408,14 @@ void QXDirect::OnOpPointView()
 	setGraphTiles();
 	setControls();
 
-	UpdateView();
+	updateView();
 }
 
 
 /**
  * The user has requested to switch to the Polar view
  */
-void QXDirect::OnPolarView()
+void QXDirect::onPolarView()
 {
 	if(m_bPolarView) return;
 	m_bPolarView = true;
@@ -3473,7 +3426,7 @@ void QXDirect::OnPolarView()
 	setGraphTiles();
 	setControls();
 
-	UpdateView();
+	updateView();
 }
 
 /**
@@ -3498,7 +3451,7 @@ void QXDirect::OnPolarFilter()
 		if(m_bPolarView)
 		{
 			m_bResetCurves = true;
-			UpdateView();
+			updateView();
 		}
 	}
 }
@@ -3519,14 +3472,14 @@ void QXDirect::OnRefinePanelsGlobally()
 	OpPoint::setCurOpp(NULL);
 	m_bResetCurves = true;
 
-	OnOpPointView();
+	onOpPointView();
 
 	TwoDPanelDlg tdpDlg(pMainFrame);
 	tdpDlg.m_pBufferFoil = &m_BufferFoil;
 	tdpDlg.m_pMemFoil    = Foil::curFoil();
 
 	m_bShowPanels = true;
-	UpdateView();
+	updateView();
 
 	tdpDlg.InitDialog();
 
@@ -3553,7 +3506,7 @@ void QXDirect::OnRefinePanelsGlobally()
 	}
 
 	m_bShowPanels = bState;//restore as it was
-	UpdateView();
+	updateView();
 }
 
 
@@ -3563,11 +3516,11 @@ void QXDirect::OnRefinePanelsGlobally()
 void QXDirect::OnQGraph()
 {
 	m_bPolarView = false;
-	if(m_CpGraph.getYVariable()!=1)
+	if(m_CpGraph.yVariable()!=1)
 	{
 		m_CpGraph.resetLimits();
 		m_CpGraph.setAuto(true);
-		m_CpGraph.SetYVariable(1);
+		m_CpGraph.setYVariable(1);
 	}
 	m_CpGraph.setInverted(false);
 	m_bResetCurves = true;
@@ -3577,8 +3530,10 @@ void QXDirect::OnQGraph()
 
 	m_CpGraph.SetXScale();
 	setFoilScale();
-	UpdateView();
+	updateView();
 }
+
+
 
 /**
  * The user has requested to rename the Polar
@@ -3690,7 +3645,7 @@ void QXDirect::OnRenamePolar()
 //	OpPoint::setCurOpp(NULL);
 //	SetPolar();
 	pMainFrame->UpdatePolarListBox();
-	UpdateView();
+	updateView();
 }
 
 
@@ -3737,7 +3692,7 @@ void QXDirect::OnResetAllPolarGraphsScales()
 		m_PlrGraph[ig]->resetXLimits();
 		m_PlrGraph[ig]->resetYLimits();
 	}
-	UpdateView();
+	updateView();
 }
 
 
@@ -3766,7 +3721,7 @@ void QXDirect::OnResetCurPolar()
 	pMainFrame->UpdateOppListBox();
 
 	m_bResetCurves = true;
-	UpdateView();
+	updateView();
 
 	emit projectModified();
 }
@@ -3832,7 +3787,7 @@ void QXDirect::OnSetFlap()
 	m_bResetCurves = true;
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
 
-	OnOpPointView();
+	onOpPointView();
 
 	FlapDlg flpDlg(pMainFrame);
 	flpDlg.m_pBufferFoil  = &m_BufferFoil;
@@ -3865,7 +3820,7 @@ void QXDirect::OnSetFlap()
 		m_pXFoil->InitXFoilGeometry(Foil::curFoil());
 	}
 
-	UpdateView();
+	updateView();
 }
 
 
@@ -3881,7 +3836,7 @@ void QXDirect::OnSetLERadius()
 	void* ptr = OpPoint::curOpp();
 	OpPoint::setCurOpp(NULL);
 	m_bResetCurves = true;
-	OnOpPointView();
+	onOpPointView();
 
 	LEDlg lDlg(pMainFrame);
 	lDlg.m_pBufferFoil = &m_BufferFoil;
@@ -3912,7 +3867,7 @@ void QXDirect::OnSetLERadius()
 		m_pXFoil->InitXFoilGeometry(Foil::curFoil());
 	}
 
-	UpdateView();
+	updateView();
 }
 
 
@@ -3929,7 +3884,7 @@ void QXDirect::OnSetTEGap()
 	OpPoint::setCurOpp(NULL);
 	m_bResetCurves = true;
 
-	OnOpPointView();
+	onOpPointView();
 
 	TEGapDlg tegDlg(pMainFrame);
 	tegDlg.m_pBufferFoil = &m_BufferFoil;
@@ -3961,7 +3916,7 @@ void QXDirect::OnSetTEGap()
 		m_pXFoil->InitXFoilGeometry(Foil::curFoil());
 	}
 
-	UpdateView();
+	updateView();
 
 }
 
@@ -3984,7 +3939,7 @@ void QXDirect::OnShowAllOpps()
     emit projectModified();
 	m_bResetCurves = true;
 	setCurveParams();
-	UpdateView();
+	updateView();
 }
 
 
@@ -4002,7 +3957,7 @@ void QXDirect::OnShowAllPolars()
 	emit projectModified();
 	m_bResetCurves = true;
 	setCurveParams();
-	UpdateView();
+	updateView();
 }
 
 
@@ -4030,7 +3985,7 @@ void QXDirect::OnShowCurve()
 		m_bResetCurves = true;
 	}
 	emit projectModified();
-	UpdateView();
+	updateView();
 }
 
 
@@ -4050,7 +4005,7 @@ void QXDirect::OnShowFoilPolarsOnly()
 	emit projectModified();
 	m_bResetCurves = true;
 	setCurveParams();
-	UpdateView();
+	updateView();
 }
 
 
@@ -4072,7 +4027,7 @@ void QXDirect::OnShowFoilPolars()
 	emit projectModified();
 	m_bResetCurves = true;
 	setCurveParams();
-	UpdateView();
+	updateView();
 }
 
 
@@ -4098,7 +4053,7 @@ void QXDirect::OnShowFoilOpps()
 	if(!m_bPolarView) m_bResetCurves = true;
 	setCurveParams();
 
-	UpdateView();
+	updateView();
 }
 
 
@@ -4123,7 +4078,7 @@ void QXDirect::OnShowCurvePoints()
 	}
 	
 	emit projectModified();
-	UpdateView();	
+	updateView();
 }
 
 
@@ -4148,24 +4103,7 @@ void QXDirect::OnShowPolarOpps()
 	emit projectModified();
 	if(!m_bPolarView) m_bResetCurves = true;
 	setCurveParams();
-	UpdateView();
-}
-
-
-/**
- * The user has requested the display of a single polar graph
- */
-void QXDirect::OnSinglePolarGraph()
-{
-	QAction *action = qobject_cast<QAction *>(sender());
-	if (!action) return;
-
-	m_iPlrView  = XFLR5::ONEGRAPH;
-	m_iPlrGraph = action->data().toInt();
-	m_bPolarView = true;
-	setGraphTiles();
-	setControls();
-	UpdateView();
+	updateView();
 }
 
 
@@ -4269,6 +4207,7 @@ void QXDirect::readParams()
  */
 void QXDirect::saveSettings(QSettings *pSettings)
 {
+	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 	QString str1, str2, str3;
 	pSettings->beginGroup("XDirect");
 	{
@@ -4304,6 +4243,9 @@ void QXDirect::saveSettings(QSettings *pSettings)
 				break;
 			case XFLR5::TWOGRAPHS:
 				pSettings->setValue("PlrView", 2);
+				break;
+			case XFLR5::FOURGRAPHS:
+				pSettings->setValue("PlrView", 4);
 				break;
 			default:
 				pSettings->setValue("PlrView", 0);
@@ -4740,10 +4682,10 @@ void QXDirect::setGraphTitles(Graph* pGraph)
 	if(!pGraph) return;
 
 	QString Title;
-	Title = Polar::variableName(pGraph->getXVariable());
+	Title = Polar::variableName(pGraph->xVariable());
 	pGraph->setXTitle(Title);
 
-	Title = Polar::variableName(pGraph->getYVariable());
+	Title = Polar::variableName(pGraph->yVariable());
 	pGraph->setYTitle(Title);
 
 }
@@ -4991,7 +4933,7 @@ void QXDirect::updateCurveStyle()
 		m_bResetCurves = true;
 	}
 
-	UpdateView();
+	updateView();
 	emit projectModified();
 }
 
@@ -4999,7 +4941,7 @@ void QXDirect::updateCurveStyle()
 /**
  * Refreshes the 2d central display.
  */
-void QXDirect::UpdateView()
+void QXDirect::updateView()
 {
 	if (!m_bPolarView)
 	{

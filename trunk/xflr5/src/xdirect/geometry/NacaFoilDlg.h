@@ -38,13 +38,13 @@ class NacaFoilDlg : public QDialog
 
 
 private slots:
-	void EditingFinished();
-	void OnOK();
+	void onEditingFinished();
+	void onOK();
 
 public:
 	NacaFoilDlg(QWidget *pParent);
-	void SetupLayout();
-	void GenerateFoil();
+	void setupLayout();
+	void generateFoil();
 	void keyPressEvent(QKeyEvent *event);
 
 	static void *s_pXFoil;
@@ -52,8 +52,8 @@ public:
 	QWidget *m_pParent;
 
 	Foil *m_pBufferFoil;
-	QPushButton *OKButton, *CancelButton;
-    QLineEdit *m_pctrlNumber;
+	QPushButton *m_pOKButton, *CancelButton;
+	QLineEdit *m_pctrlNumber;
 	IntEdit *m_pctrlPanels;
 	QLabel * m_pctrlMessage;
 

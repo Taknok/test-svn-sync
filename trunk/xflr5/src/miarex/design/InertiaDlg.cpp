@@ -727,7 +727,7 @@ void InertiaDlg::OnOK()
 	else if(m_pBody)
 	{
 		m_pBody->m_VolumeMass = m_VolumeMass;
-		m_pBody->ClearPointMasses();
+		m_pBody->clearPointMasses();
 
 		for(i=0; i< m_PointMass.size(); i++)
 		{

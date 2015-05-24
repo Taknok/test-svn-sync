@@ -38,29 +38,29 @@ class Graph
 	friend class QXDirect;
 public:
 
-	bool GetAutoX();
-	bool GetAutoY();
-	bool GetAutoXMin();
-	bool GetAutoYMin();
-	bool GetBorder();
-	bool GetInverted();
+	bool bAutoX();
+	bool bAutoY();
+	bool bAutoXMin();
+	bool bAutoYMin();
+	bool hasBorder();
+	bool bInverted();
 	bool isInDrawRect(int const &x, int const &y);
 	bool isInDrawRect(QPoint const &pt);
 	bool initializeGraph();
 
-	double ClientTox(int x);
-	double ClientToy(int y);
+	double clientTox(int x);
+	double clientToy(int y);
 
-	double ClientTox(double x);
-	double ClientToy(double y);
+	double clientTox(double x);
+	double clientToy(double y);
 
 	int xToClient(double x);
 	int yToClient(double y);
 
-	void CopySettings(Graph* pGraph, bool bScales=true);
-	void DeselectPoint();
-	Curve * GetCurvePoint(const int &xClt, const int &yClt, int &nSel);
-	Curve * GetClosestPoint(double const &x, double const &y, double &xSel, double &ySel, int &nSel);
+	void copySettings(Graph* pGraph, bool bScales=true);
+	void deselectPoint();
+	Curve * getCurvePoint(const int &xClt, const int &yClt, int &nSel);
+	Curve * getClosestPoint(double const &x, double const &y, double &xSel, double &ySel, int &nSel);
 	void resetLimits();
 	void resetCurves();
 	void Scale(double zoom);
@@ -82,20 +82,20 @@ public:
 	void setType(int type);
 	void setXTitle(QString str);
 	void setYTitle(QString str);
-	void SetX0(double f);
+	void setX0(double f);
 	void setXMax(double f);
 	void setXMin(double f);
-	void SetXMinorUnit(double f);
-	void SetXUnit(double f);
-	void SetY0(double f);
+	void setXMinorUnit(double f);
+	void setXUnit(double f);
+	void setY0(double f);
 	void setYMax(double f);
 	void setYMin(double f);
-	void SetYMinorUnit(double f);
-	void SetYUnit(double f);
-	void SetXMajGrid(bool const &state, QColor const &clr, int const &style, int const &width);
-	void SetYMajGrid(bool const &state, QColor const &clr, int const &style, int const &width);
-	void SetXMinGrid(bool state, bool bAuto, QColor clr, int style, int width, double unit = -1.0);
-	void SetYMinGrid(bool state, bool bAuto, QColor clr, int style, int width, double unit = -1.0);
+	void setYMinorUnit(double f);
+	void setYUnit(double f);
+	void setXMajGrid(bool const &state, QColor const &clr, int const &style, int const &width);
+	void setYMajGrid(bool const &state, QColor const &clr, int const &style, int const &width);
+	void setXMinGrid(bool state, bool bAuto, QColor clr, int style, int width, double unit = -1.0);
+	void setYMinGrid(bool state, bool bAuto, QColor clr, int style, int width, double unit = -1.0);
 	void setAuto(bool bAuto);
 	void setAutoX(bool bAuto);
 	void setAutoY(bool bAuto);
@@ -106,53 +106,49 @@ public:
 	void setLabelColor(QColor crColor);
 	void SetWindow(double x1, double x2, double y1, double y2);
 
-	QColor GetAxisColor();
-	QColor GetBorderColor();
-	QColor GetBackColor();
-	QColor GetTitleColor();
-	QColor GetLabelColor();
+	QColor axisColor();
+	QColor titleColor();
+	QColor labelColor();
 
-	int GetBorderStyle();
 	int margin();
-	int GetAxisStyle();
-	int GetAxisWidth();
-	int GetBorderWidth();
-	int getXVariable();
-	int getYVariable();
+	int axisStyle();
+	int axisWidth();
+	int xVariable();
+	int yVariable();
 	void setVariables(int const & X, int const & Y);
-	void SetXVariable(int const & X);
-	void SetYVariable(int const & Y);
-	double GetX0();
-	double GetXMin();
-	double GetXMax();
-	double GetXUnit();
-	double GetY0();
-	double GetYMin();
+	void setXVariable(int const & X);
+	void setYVariable(int const & Y);
+	double xOrigin();
+	double xMin();
+	double xMax();
+	double xUnit();
+	double yOrigin();
+	double yMin();
 	double GetYMax();
-	double GetYUnit();
-	double GetXScale();
-	double GetYScale();
+	double yUnit();
+	double xScale();
+	double yScale();
 	
-	bool GetXMajGrid();
-	bool GetYMajGrid();
-	bool GetXMinGrid();
-	bool GetYMinGrid();
+	bool bXMajGrid();
+	bool yMajGrid();
+	bool bXMinGrid();
+	bool bYMinGrid();
 	bool SelectPoint(QString const &CurveName, int sel);
 	bool SetXScale();
 	bool SetYScale();
 	
-	void SetXMajGrid(bool const &bGrid);
-	void SetYMajGrid(bool const &bGrid);
-	void SetXMinGrid(bool const &bGrid);
-	void SetYMinGrid(bool const &bGrid);
-	void GetXMajGrid(bool &bstate, QColor &clr, int &style, int &width);
-	void GetYMajGrid(bool &bstate, QColor &clr, int &style, int &width);
-	void GetXMinGrid(bool &bstate, bool &bAuto, QColor &clr, int &style, int &width, double &unit);
-	void GetYMinGrid(bool &bstate, bool &bAuto, QColor &clr, int &style, int &width, double &unit);
-	void GetXTitle(QString &str);
-	void GetYTitle(QString &str);
+	void setXMajGrid(bool const &bGrid);
+	void setYMajGrid(bool const &bGrid);
+	void setXMinGrid(bool const &bGrid);
+	void setYMinGrid(bool const &bGrid);
+	void bXMajGrid(bool &bstate, QColor &clr, int &style, int &width);
+	void yMajGrid(bool &bstate, QColor &clr, int &style, int &width);
+	void bXMinGrid(bool &bstate, bool &bAuto, QColor &clr, int &style, int &width, double &unit);
+	void bYMinGrid(bool &bstate, bool &bAuto, QColor &clr, int &style, int &width, double &unit);
+	QString xTitle(){return m_XTitle;}
+	QString yTitle(){return m_YTitle;}
 
-	void GetClientRect(QRect &Rect);
+	void clientRect(QRect &Rect);
 
 	void setGraphDefaults();
 	void setGraphName(QString GraphName);
@@ -163,10 +159,10 @@ public:
 	Curve* curve(QString CurveTitle);
 	Curve* addCurve();
 	Curve* addCurve(Curve *pCurve);
-	void DeleteCurve(int index);
-	void DeleteCurve(Curve *pCurve);
-	void DeleteCurve(QString CurveTitle);
-	void DeleteCurves();
+	void deleteCurve(int index);
+	void deleteCurve(Curve *pCurve);
+	void deleteCurve(QString CurveTitle);
+	void deleteCurves();
 	void resetXLimits();
 	void resetYLimits();
 

@@ -106,8 +106,8 @@ int Curve::closestPoint(double xs, double ys, double &dist )
 	if (size()<1) return -1;
 	for(int i=0; i<size(); i++)
 	{
-		d2 =   (xs-x[i])*(xs-x[i])/pGraph->GetXScale()/pGraph->GetXScale() 
-			 + (ys-y[i])*(ys-y[i])/pGraph->GetYScale()/pGraph->GetYScale();
+		d2 =   (xs-x[i])*(xs-x[i])/pGraph->xScale()/pGraph->xScale() 
+			 + (ys-y[i])*(ys-y[i])/pGraph->yScale()/pGraph->yScale();
 		if (d2<dist)
 		{
 			dist = d2;
@@ -135,8 +135,8 @@ void Curve::closestPoint(double xs, double ys, double &dist, int &n)
 	if (n<1) return;
 	for(int i=0; i<n; i++)
 	{
-		d2 =   (xs-x[i])*(xs-x[i])/pGraph->GetXScale()/pGraph->GetXScale()
-			 + (ys-y[i])*(ys-y[i])/pGraph->GetYScale()/pGraph->GetYScale();
+		d2 =   (xs-x[i])*(xs-x[i])/pGraph->xScale()/pGraph->xScale()
+			 + (ys-y[i])*(ys-y[i])/pGraph->yScale()/pGraph->yScale();
 		if (d2<dist)
 		{
 			dist = d2;

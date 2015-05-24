@@ -244,7 +244,7 @@ void BodyFrameWidget::onRemovePt()
 			{
 				m_pBody->frame(i)->RemovePoint(n);
 			}
-			m_pBody->SetKnots();
+			m_pBody->setNURBSKnots();
 			emit objectModified();
 		}
 	}

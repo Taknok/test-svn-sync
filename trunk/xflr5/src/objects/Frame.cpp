@@ -27,6 +27,7 @@
 int Frame::s_iHighlight = -1;
 int Frame::s_iSelect = -1;
 
+
 /**
 * The public constructor
 * @param nCtrlPts the number of points with which the Frame is initialized.
@@ -42,6 +43,7 @@ Frame::Frame(int nCtrlPts)
 	s_iHighlight = -1;
 	s_iSelect    =  0;
 }
+
 
 /**
 *Identifies if an input point matches with one of the Frame's control points
@@ -62,6 +64,7 @@ int Frame::isPoint(const CVector &Point, const double &ZoomFactor)
 	}
 	return -10;
 }
+
 
 /**
  * Loads or Saves the data of this spline to a binary file

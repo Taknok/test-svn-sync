@@ -136,29 +136,29 @@ Curve* Graph::addCurve(Curve *pCurve)
 
 
 
-double Graph::ClientTox(double x)
+double Graph::clientTox(double x)
 {
 	return (x-m_ptoffset.x())*m_scalex;
 }
 
-double Graph::ClientToy(double y)
+double Graph::clientToy(double y)
 {
 	return (y-m_ptoffset.y())*m_scaley;
 }
 
-double Graph::ClientTox(int x)
+double Graph::clientTox(int x)
 {
 	return ((double)x-(double)m_ptoffset.x())*m_scalex;
 }
 
-double Graph::ClientToy(int y)
+double Graph::clientToy(int y)
 {
 	return ((double)y-(double)m_ptoffset.y())*m_scaley;
 }
 
 
 
-void Graph::CopySettings(Graph *pGraph, bool bScales)
+void Graph::copySettings(Graph *pGraph, bool bScales)
 {
 	if(bScales)
 	{
@@ -213,7 +213,7 @@ void Graph::CopySettings(Graph *pGraph, bool bScales)
 }
 
 
-void Graph::DeleteCurve(int index)
+void Graph::deleteCurve(int index)
 {
     Curve * pCurve = curve(index);
     m_oaCurves.removeAt(index);
@@ -221,7 +221,7 @@ void Graph::DeleteCurve(int index)
 }
 
 
-void Graph::DeleteCurve(Curve *pCurve)
+void Graph::deleteCurve(Curve *pCurve)
 {
 	Curve *pOldCurve = NULL;
 	for(int i=0; i<m_oaCurves.size(); i++)
@@ -237,7 +237,7 @@ void Graph::DeleteCurve(Curve *pCurve)
 }
 
 
-void Graph::DeleteCurve(QString CurveTitle)
+void Graph::deleteCurve(QString CurveTitle)
 {
 	Curve *pOldCurve = NULL;
 	for(int i=0; i<m_oaCurves.size(); i++)
@@ -253,10 +253,9 @@ void Graph::DeleteCurve(QString CurveTitle)
 }
 
 
-void Graph::DeleteCurves()
+void Graph::deleteCurves()
 {
-    int nIndex = (int)m_oaCurves.size();
-	for (int i=nIndex-1; i>=0;i--)
+	for (int i=m_oaCurves.size()-1; i>=0;i--)
 		delete curve(i);
 
     m_oaCurves.clear();//removes the pointers
@@ -267,7 +266,8 @@ void Graph::DeleteCurves()
 		xmax =  0.1;
 	}
 
-	if (m_bAutoY && !m_Type){
+	if (m_bAutoY && !m_Type)
+	{
 		ymin =  0.0;
 		ymax =  0.1;
 	}
@@ -278,42 +278,34 @@ void Graph::DeleteCurves()
 
 
 
-QColor Graph::GetLabelColor()
+QColor Graph::labelColor()
 {
 	return m_LabelColor;
 }
 
-QColor Graph::GetAxisColor()
+QColor Graph::axisColor()
 {
 	return m_AxisColor;
 }
 
-QColor Graph::GetBorderColor()
-{
-	return m_BorderColor;
-}
 
-QColor Graph::GetBackColor()
-{
-	return m_BkColor;
-}
 
-int Graph::GetAxisStyle()
+int Graph::axisStyle()
 {
 	return m_AxisStyle;
 }
 
-int Graph::GetAxisWidth()
+int Graph::axisWidth()
 {
 	return m_AxisWidth;
 }
 
 
-bool Graph::GetAutoX()
+bool Graph::bAutoX()
 {
 	return m_bAutoX;
 }
-bool Graph::GetAutoY()
+bool Graph::bAutoY()
 {
 	return m_bAutoY;
 }
@@ -321,37 +313,28 @@ bool Graph::GetAutoY()
 
 
 
-bool Graph::GetAutoXMin()
+bool Graph::bAutoXMin()
 {
 	return m_bXAutoMinGrid;
 }
-bool Graph::GetAutoYMin()
+bool Graph::bAutoYMin()
 {
 	return m_bYAutoMinGrid;
 }
 
 
 
-bool Graph::GetBorder()
+bool Graph::hasBorder()
 {
 	return m_bBorder;
 }
 
 
-
-int Graph::GetBorderStyle()
-{
-	return m_BorderStyle;
-}
-
-int Graph::GetBorderWidth()
-{
-	return m_BorderWidth;
-}
-void Graph::GetClientRect(QRect &Rect)
+void Graph::clientRect(QRect &Rect)
 {
 	Rect = m_rCltRect;
 }
+
 
 Curve* Graph::curve(int nIndex)
 {
@@ -378,10 +361,9 @@ Curve* Graph::curve(QString CurveTitle)
 }
 
 
-bool Graph::GetInverted()
+bool Graph::bInverted()
 {
-	if(m_bYInverted) return true;
-	else return false;
+	return m_bYInverted;
 }
 
 int Graph::margin()
@@ -397,23 +379,23 @@ void Graph::graphName(QString &GraphName)
 
 
 
-QColor Graph::GetTitleColor()
+QColor Graph::titleColor()
 {
 	return m_TitleColor;
 }
-double Graph::GetX0()
+double Graph::xOrigin()
 {
 	return xo;
 }
 
 
-bool Graph::GetXMajGrid()
+bool Graph::bXMajGrid()
 {
 	return m_bXMajGrid;
 }
 
 
-void Graph::GetXMajGrid(bool &bstate, QColor &clr, int &style, int &width)
+void Graph::bXMajGrid(bool &bstate, QColor &clr, int &style, int &width)
 {
 	bstate = m_bXMajGrid;
 	clr   = m_XMajClr;
@@ -422,12 +404,12 @@ void Graph::GetXMajGrid(bool &bstate, QColor &clr, int &style, int &width)
 }
 
 
-bool Graph::GetXMinGrid()
+bool Graph::bXMinGrid()
 {
 	return m_bXMinGrid;
 }
 
-void Graph::GetXMinGrid(bool &state, bool &bAuto, QColor &clr, int &style, int &width, double &unit)
+void Graph::bXMinGrid(bool &state, bool &bAuto, QColor &clr, int &style, int &width, double &unit)
 {
 	state = m_bXMinGrid;
 	bAuto = m_bXAutoMinGrid;
@@ -437,45 +419,42 @@ void Graph::GetXMinGrid(bool &state, bool &bAuto, QColor &clr, int &style, int &
 	unit  = m_XMinorUnit;
 }
 
-double Graph::GetXMin()
+double Graph::xMin()
 {
 	return xmin;
 }
 
-double Graph::GetXMax()
+double Graph::xMax()
 {
 	return xmax;
 }
 
 
-double Graph::GetXScale()
+double Graph::xScale()
 {
 	return m_scalex;
 }
-void Graph::GetXTitle(QString &str)
-{
-	str = m_XTitle;
-}
 
-double Graph::GetXUnit()
+
+double Graph::xUnit()
 {
 	return xunit;
 }
 
 
-int Graph::getXVariable()
+int Graph::xVariable()
 {
 	return m_X;
 }
 
 
 
-bool Graph::GetYMajGrid()
+bool Graph::yMajGrid()
 {
 	return m_bYMajGrid;
 }
 
-void Graph::GetYMajGrid(bool &state, QColor &clr, int &style, int &width)
+void Graph::yMajGrid(bool &state, QColor &clr, int &style, int &width)
 {
 	state = m_bYMajGrid;
 	clr   = m_YMajClr;
@@ -483,19 +462,14 @@ void Graph::GetYMajGrid(bool &state, QColor &clr, int &style, int &width)
 	width = m_YMajWidth;
 }
 
-void Graph::GetYTitle(QString &str)
-{
-	str = m_YTitle;
-}
 
-
-bool Graph::GetYMinGrid()
+bool Graph::bYMinGrid()
 {
 	return m_bYMinGrid;
 }
 
 
-void Graph::GetYMinGrid(bool &state, bool &bAuto, QColor &clr, int &style, int &width, double &unit)
+void Graph::bYMinGrid(bool &state, bool &bAuto, QColor &clr, int &style, int &width, double &unit)
 {
 	state = m_bYMinGrid;
 	bAuto = m_bYAutoMinGrid;
@@ -506,11 +480,11 @@ void Graph::GetYMinGrid(bool &state, bool &bAuto, QColor &clr, int &style, int &
 }
 
 
-double Graph::GetY0()
+double Graph::yOrigin()
 {
 	return yo;
 }
-double Graph::GetYMin()
+double Graph::yMin()
 {
 	return ymin;
 }
@@ -518,19 +492,19 @@ double Graph::GetYMax()
 {
 	return ymax;
 }
-double Graph::GetYUnit()
+double Graph::yUnit()
 {
 	return yunit;
 }
 
 
-double Graph::GetYScale()
+double Graph::yScale()
 {
 	return m_scaley;
 }
 
 
-int Graph::getYVariable()
+int Graph::yVariable()
 {
 	return m_Y;
 }
@@ -873,13 +847,13 @@ void Graph::SetWindow(double x1, double x2, double y1, double y2)
 	ymax = y2;
 }
 
-void Graph::SetX0(double f){
+void Graph::setX0(double f){
 	xo = f;
 }
 
 
 
-void Graph::SetXMajGrid(bool const &state, QColor const &clr, int const &style, int const &width)
+void Graph::setXMajGrid(bool const &state, QColor const &clr, int const &style, int const &width)
 {
 	m_bXMajGrid = state;
 	m_XMajClr   = clr;
@@ -888,12 +862,12 @@ void Graph::SetXMajGrid(bool const &state, QColor const &clr, int const &style, 
 }
 
 
-void Graph::SetXMajGrid(bool const &bGrid)
+void Graph::setXMajGrid(bool const &bGrid)
 {
 	m_bXMajGrid = bGrid;
 }
 
-void Graph::SetXMinGrid(bool const &bGrid)
+void Graph::setXMinGrid(bool const &bGrid)
 {
 	m_bXMinGrid = bGrid;
 }
@@ -909,7 +883,7 @@ void Graph::setXMin(double f){
 	xmin = f;
 }
 
-void Graph::SetXMinGrid(bool state, bool bAuto, QColor clr, int style, int width, double unit)
+void Graph::setXMinGrid(bool state, bool bAuto, QColor clr, int style, int width, double unit)
 {
 	m_bXMinGrid = state;
 	m_bXAutoMinGrid = bAuto;
@@ -921,7 +895,7 @@ void Graph::SetXMinGrid(bool state, bool bAuto, QColor clr, int style, int width
 
 
 
-void Graph::SetXMinorUnit(double f){
+void Graph::setXMinorUnit(double f){
 	m_XMinorUnit = f;
 }
 
@@ -1045,7 +1019,7 @@ bool Graph::SetXScale()
 
 
 
-void Graph::SetXUnit(double f){
+void Graph::setXUnit(double f){
 	xunit = f;
 }
 
@@ -1056,7 +1030,7 @@ void Graph::setXTitle(QString str)
 
 
 
-void Graph::SetXVariable(int const & X)
+void Graph::setXVariable(int const & X)
 {
 	m_X = X;
 }
@@ -1068,7 +1042,7 @@ void Graph::setYMin(double f){
 	ymin = f;
 }
 
-void Graph::SetYMinorUnit(double f){
+void Graph::setYMinorUnit(double f){
 	m_YMinorUnit = f;
 }
 
@@ -1077,7 +1051,7 @@ void Graph::setYMax(double f){
 	ymax = f;
 }
 
-void Graph::SetY0(double f){
+void Graph::setY0(double f){
 	yo = f;
 }
 
@@ -1086,7 +1060,7 @@ void Graph::setYTitle(QString str)
 	m_YTitle = str;
 }
 
-void Graph::SetYUnit(double f){
+void Graph::setYUnit(double f){
 	yunit = f;
 }
 
@@ -1221,7 +1195,7 @@ bool Graph::SetYScale()
 	return true;
 }
 
-void Graph::SetYMajGrid(bool const &state, QColor const &clr, int const &style, int const &width)
+void Graph::setYMajGrid(bool const &state, QColor const &clr, int const &style, int const &width)
 {
 	m_bYMajGrid = state;
 	m_YMajClr   = clr;
@@ -1230,12 +1204,12 @@ void Graph::SetYMajGrid(bool const &state, QColor const &clr, int const &style, 
 }
 
 
-void Graph::SetYMajGrid(bool const &bGrid)
+void Graph::setYMajGrid(bool const &bGrid)
 {
 	m_bYMajGrid = bGrid;
 }
 
-void Graph::SetYMinGrid(bool state, bool bAuto, QColor clr, int style, int width, double unit)
+void Graph::setYMinGrid(bool state, bool bAuto, QColor clr, int style, int width, double unit)
 {
 	m_bYMinGrid = state;
 	m_bYAutoMinGrid = bAuto;
@@ -1246,14 +1220,14 @@ void Graph::SetYMinGrid(bool state, bool bAuto, QColor clr, int style, int width
 }
 
 
-void Graph::SetYMinGrid(bool const &bGrid)
+void Graph::setYMinGrid(bool const &bGrid)
 {
 	m_bYMinGrid = bGrid;
 }
 
 
 
-void Graph::SetYVariable(int const & Y)
+void Graph::setYVariable(int const & Y)
 {
 	m_Y = Y;
 }
@@ -1273,7 +1247,7 @@ int Graph::yToClient(double y)
 
 
 
-Curve*  Graph::GetClosestPoint(const double &x, const double &y, double &xSel, double &ySel, int &nSel)
+Curve*  Graph::getClosestPoint(const double &x, const double &y, double &xSel, double &ySel, int &nSel)
 {
 	static int i, n1;
 	static double dist, dmax, x1, y1;
@@ -1298,14 +1272,14 @@ Curve*  Graph::GetClosestPoint(const double &x, const double &y, double &xSel, d
 }
 
 
-Curve* Graph::GetCurvePoint(const int &xClt, const int &yClt,int &nSel)
+Curve* Graph::getCurvePoint(const int &xClt, const int &yClt,int &nSel)
 {
 	static int i, n, xc, yc;
 	static double dist, x1, y1, x,y;
 	Curve *pOldCurve;
 
-	x= ClientTox(xClt);
-	y= ClientToy(yClt);
+	x= clientTox(xClt);
+	y= clientToy(yClt);
 	for(i=0; i<m_oaCurves.size(); i++)
 	{
 		pOldCurve = (Curve*)m_oaCurves.at(i);
@@ -1360,7 +1334,7 @@ bool Graph::SelectPoint(QString const &CurveName, int sel)
 
 
 
-void Graph::DeselectPoint()
+void Graph::deselectPoint()
 {
 	Curve *pCurve;
 	for(int i=0; i<m_oaCurves.size(); i++)

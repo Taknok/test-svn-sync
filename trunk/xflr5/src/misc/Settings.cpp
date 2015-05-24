@@ -73,9 +73,9 @@ Settings::Settings(QWidget *pParent) : QDialog(pParent)
 	connect(m_pctrlStyles, SIGNAL(activated(const QString &)),this, SLOT(OnStyleChanged(const QString &)));
 
 	connect(m_pctrlBackColor, SIGNAL(clicked()),this, SLOT(OnBackgroundColor()));
-	connect(m_pctrlGraphSettings, SIGNAL(clicked()),this, SLOT(OnGraphSettings()));
-	connect(m_pctrlTextClr, SIGNAL(clickedTB()),this, SLOT(OnTextColor()));
-	connect(m_pctrlTextFont, SIGNAL(clicked()),this, SLOT(OnTextFont()));
+	connect(m_pctrlGraphSettings, SIGNAL(clicked()),this, SLOT(onGraphSettings()));
+	connect(m_pctrlTextClr, SIGNAL(clickedTB()),this, SLOT(onTextColor()));
+	connect(m_pctrlTextFont, SIGNAL(clicked()),this, SLOT(onTextFont()));
 	connect(m_pctrlTableFont, SIGNAL(clicked()),this, SLOT(OnTableFont()));
 
 	connect(m_pctrlReverseZoom, SIGNAL(clicked()), this, SLOT(OnReverseZoom()));
@@ -292,7 +292,7 @@ void Settings::reject()
 
 
 
-void Settings::OnGraphSettings()
+void Settings::onGraphSettings()
 {
 	MainFrame *pMainFrame = (MainFrame*)m_pMainFrame;
 	QXDirect *pXDirect   = (QXDirect*)pMainFrame->m_pXDirect;
@@ -300,30 +300,6 @@ void Settings::OnGraphSettings()
 	QXInverse *pXInverse = (QXInverse*)pMainFrame->m_pXInverse;
 
 	GraphDlg dlg(pMainFrame);
-
-	dlg.m_GraphArray[0] = &pXDirect->m_CpGraph;
-	for(int ig=0; ig<qMax(MAXPOLARGRAPHS,pXDirect->m_PlrGraph.count()); ig++)
-		dlg.m_GraphArray[ig+1] = pXDirect->m_PlrGraph[ig];
-
-	dlg.m_GraphArray[6] = pMiarex->m_WingGraph.at(0);
-	dlg.m_GraphArray[7] = pMiarex->m_WingGraph.at(1);
-	dlg.m_GraphArray[8] = pMiarex->m_WingGraph.at(2);
-	dlg.m_GraphArray[9] = pMiarex->m_WingGraph.at(3);
-	dlg.m_GraphArray[10] = pMiarex->m_WPlrGraph.at(0);
-	dlg.m_GraphArray[11] = pMiarex->m_WPlrGraph.at(1);
-	dlg.m_GraphArray[12] = pMiarex->m_WPlrGraph.at(2);
-	dlg.m_GraphArray[13] = pMiarex->m_WPlrGraph.at(3);
-	dlg.m_GraphArray[14] = pMiarex->m_TimeGraph.at(0);
-	dlg.m_GraphArray[15] = pMiarex->m_TimeGraph.at(1);
-	dlg.m_GraphArray[16] = pMiarex->m_TimeGraph.at(2);
-	dlg.m_GraphArray[17] = pMiarex->m_TimeGraph.at(3);
-	dlg.m_GraphArray[18] = pMiarex->m_StabPlrGraph.at(0);
-	dlg.m_GraphArray[19] = pMiarex->m_StabPlrGraph.at(1);
-
-	dlg.m_GraphArray[20] = &pXInverse->m_QGraph;
-
-	dlg.m_NGraph = 21;
-
 
 	dlg.setGraph(&s_RefGraph);
 
@@ -333,13 +309,23 @@ void Settings::OnGraphSettings()
 	{
 		m_bIsGraphModified = true;
 
+		pXDirect->m_CpGraph.copySettings(dlg.graph());
 		pXDirect->m_CpGraph.setInverted(true);
+
+		for(int ig=0; ig<pXDirect->m_PlrGraph.count(); ig++)     pXDirect->PlrGraph(ig)->copySettings(dlg.graph());
+		for(int ig=0; ig<pMiarex->m_WingGraph.count(); ig++)     pMiarex->m_WingGraph.at(ig)->copySettings(dlg.graph());
+		for(int ig=0; ig<pMiarex->m_WPlrGraph.count(); ig++)     pMiarex->m_WPlrGraph.at(ig)->copySettings(dlg.graph());
+		for(int ig=0; ig<pMiarex->m_StabPlrGraph.count(); ig++)  pMiarex->m_StabPlrGraph.at(ig)->copySettings(dlg.graph());
+		for(int ig=0; ig<pMiarex->m_TimeGraph.count(); ig++)     pMiarex->m_TimeGraph.at(ig)->copySettings(dlg.graph());
+
+
+		pXInverse->m_QGraph.copySettings(dlg.graph());
 		pXInverse->m_QGraph.setInverted(true);
 	}
 }
 
 
-void Settings::OnTextColor()
+void Settings::onTextColor()
 {
 	QColor Color = QColorDialog::getColor(s_TextColor);
 	if(Color.isValid()) s_TextColor = Color;
@@ -348,7 +334,7 @@ void Settings::OnTextColor()
 
 
 
-void Settings::OnTextFont()
+void Settings::onTextFont()
 {
 	bool bOK;
 	QFont TextFont;

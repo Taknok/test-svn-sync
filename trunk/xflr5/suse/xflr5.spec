@@ -27,7 +27,7 @@ Url:            http://www.xflr5.com
 # Source0:        http://sourceforge.net/projects/%{name}/files/%{version}/%{name}-%{version}_src.tar.gz
 Source0:        %{name}-%{version}_src.tar.gz
 Source1:        %{name}.desktop
-BuildRequires:  Mesa-devel
+#BuildRequires:  Mesa-devel
 BuildRequires:  gcc-c++
 BuildRequires:  libqt4-devel >= 4.7.0
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build

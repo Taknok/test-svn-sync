@@ -27,6 +27,7 @@
 #include <QPainter>
 #include <QMessageBox>
 
+
 Direct2dDesign::Direct2dDesign(QWidget *pParent) : Section2dWidget(pParent)
 {
 	m_bNeutralLine = true;
@@ -44,6 +45,7 @@ void Direct2dDesign::setObjects(Foil *pBufferFoil, SplineFoil *pSF, QList<void *
 	m_pSF = pSF;
 	m_poaFoil = poaFoil;
 }
+
 
 void Direct2dDesign::setScale()
 {

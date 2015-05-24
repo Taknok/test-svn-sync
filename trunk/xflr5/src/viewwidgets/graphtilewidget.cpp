@@ -41,7 +41,7 @@ void* GraphTileWidget::s_pXDirect = NULL;
 
 GraphTileWidget::GraphTileWidget(QWidget *parent) : QWidget(parent)
 {
-	m_pCurGraph = NULL;
+//	setMouseTracking(true);
 	m_pLegendWidget = NULL;
 	m_pMainSplitter = NULL;
 
@@ -52,8 +52,6 @@ GraphTileWidget::GraphTileWidget(QWidget *parent) : QWidget(parent)
 	m_MiarexView = XFLR5::WPOLARVIEW;
 
 	m_SingleGraphOrientation = Qt::Horizontal;
-
-	m_pCurGraph = NULL;
 }
 
 
@@ -109,14 +107,6 @@ void GraphTileWidget::setGraphList(QList<QGraph*>pGraphList, int nGraphs, int iG
 }
 
 
-
-void GraphTileWidget::setActiveGraph(int iGraphWidget)
-{
-	m_iActiveGraphWidget = iGraphWidget;
-	update();
-}
-
-
 void GraphTileWidget::setGraphCount(int nGraphs)
 {
 	m_nGraphWidgets =  qMin(nGraphs,MAXGRAPHS);
@@ -124,10 +114,15 @@ void GraphTileWidget::setGraphCount(int nGraphs)
 }
 
 
+void GraphTileWidget::showEvent(QShowEvent *event)
+{
+	setCursor(Qt::CrossCursor);
+}
+
+
 void GraphTileWidget::contextMenuEvent (QContextMenuEvent *event)
 {
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-
 	QMenu * pGraphMenu = pMainFrame->m_pWPlrCtxMenu;
 
 	//get the main menu
@@ -203,6 +198,17 @@ void GraphTileWidget::keyPressEvent(QKeyEvent *event)
 
 				pMainFrame->checkGraphActions();
 
+				if(m_xflr5App==XFLR5::XFOILANALYSIS)
+				{
+					QXDirect *pXDirect = (QXDirect*)s_pXDirect;
+					pXDirect->setView(XFLR5::ONEGRAPH);
+				}
+				else if(m_xflr5App==XFLR5::MIAREX)
+				{
+					QMiarex *pMiarex = (QMiarex*)s_pMiarex;
+					pMiarex->setView(XFLR5::ONEGRAPH);
+				}
+
 				update();
 				setFocus();
 				return;
@@ -237,7 +243,7 @@ void GraphTileWidget::onResetCurves(QGraph *pGraph)
 		case XFLR5::XFOILANALYSIS:
 		{
 			QXDirect *pXDirect = (QXDirect*)s_pXDirect;
-			pXDirect->UpdateView();
+			pXDirect->updateView();
 		}
 		case XFLR5::INVERSEDESIGN:
 		{
@@ -253,12 +259,6 @@ void GraphTileWidget::onResetCurves(QGraph *pGraph)
 }
 
 
-void GraphTileWidget::onSetActiveGraph(QGraph *pGraph)
-{
-	m_pCurGraph = pGraph;
-}
-
-
 
 void GraphTileWidget::onSingleGraph()
 {
@@ -270,6 +270,12 @@ void GraphTileWidget::onSingleGraph()
 	int iGraph = pAction->data().toInt();
 
 	m_nGraphWidgets = 1;
+
+	if(iGraph>=m_GraphWidget.count())
+	{
+		pMainFrame->checkGraphActions();
+		return;
+	}
 
 	m_iActiveGraphWidget = iGraph;
 	m_pLegendWidget->setGraph(m_GraphWidget.at(iGraph)->graph());
@@ -374,19 +380,10 @@ void GraphTileWidget::onAllGraphs()
 
 
 
-void GraphTileWidget::onGraphSettings()
+void GraphTileWidget::onCurGraphSettings()
 {
 	if(!isVisible()) return;
-	if(!m_pCurGraph) return;
-	GraphDlg *m_pGraphDlg = new GraphDlg(this);
-
-	m_pGraphDlg->setGraph(m_pCurGraph);
-
-	if(m_pGraphDlg->exec() == QDialog::Accepted)
-	{
-	}
-
-	update();
+	activeGraphWidget()->onGraphSettings();
 	setFocus();
 
 }
@@ -395,10 +392,7 @@ void GraphTileWidget::onGraphSettings()
 void GraphTileWidget::onResetCurGraphScales()
 {
 	if(!isVisible()) return;
-	if(!m_pCurGraph) return;
-
-	m_pCurGraph->setAuto(true);
-	update();
+	activeGraphWidget()->onResetGraphScales();
 	setFocus();
 }
 
@@ -406,40 +400,11 @@ void GraphTileWidget::onResetCurGraphScales()
 void GraphTileWidget::onExportCurGraph()
 {
 	if(!isVisible()) return;
-	if(!m_pCurGraph) return;
-
-	QString FileName;
-	MainFrame *pMainFrame =(MainFrame*)s_pMainFrame;
-
-	FileName = m_pCurGraph->graphName();
-	FileName = QFileDialog::getSaveFileName(this, tr("Export Graph"), pMainFrame->m_ExportLastDirName+"/"+FileName,
-											tr("Text File (*.txt);;Comma Separated Values (*.csv)"),
-											&pMainFrame->m_GraphExportFilter);
-	if(!FileName.length()) return;
-
-	int pos = FileName.lastIndexOf("/");
-	if(pos>0) pMainFrame->m_ExportLastDirName = FileName.left(pos);
-
-
-	if(pMainFrame->m_GraphExportFilter.indexOf("*.txt")>0)
-	{
-		Settings::s_ExportFileType = XFLR5::TXT;
-		if(FileName.indexOf(".txt")<0) FileName +=".txt";
-	}
-	else if(pMainFrame->m_GraphExportFilter.indexOf("*.csv")>0)
-	{
-		Settings::s_ExportFileType = XFLR5::CSV;
-		if(FileName.indexOf(".csv")<0) FileName +=".csv";
-	}
-
-	QFile XFile(FileName);
-	if (!XFile.open(QIODevice::WriteOnly | QIODevice::Text)) return;
-
-	m_pCurGraph->exportToFile(XFile, Settings::s_ExportFileType);
+	QGraph *pGraph = activeGraph();
+	if(!pGraph) return;
+	pGraph->exportGraph();
 	setFocus();
 }
-
-
 
 
 
@@ -451,28 +416,36 @@ void GraphTileWidget::onAllGraphSettings()
 {
 	if(!isVisible()) return;
 
-	QMiarex *pMiarex = (QMiarex*)s_pMiarex;
-
 	GraphDlg grDlg(this);
-	if(pMiarex->m_iView==XFLR5::WPOLARVIEW)
-		grDlg.setGraph(pMiarex->m_WPlrGraph[0]);
-	else if(pMiarex->m_iView==XFLR5::WOPPVIEW)
-		grDlg.setGraph(pMiarex->m_WingGraph[0]);
+	grDlg.setActivePage(1);
 
-	grDlg.setGraph(pMiarex->m_WingGraph[0]);
-	for(int ig=0; ig<MAXGRAPHS; ig++) grDlg.m_GraphArray[ig] = pMiarex->m_WingGraph[ig];
-	grDlg.m_NGraph = MAXGRAPHS;
-	grDlg.setControls();
-
-	if(grDlg.exec() == QDialog::Accepted)
+	if(xflr5App()==XFLR5::MIAREX)
 	{
+		QMiarex *pMiarex = (QMiarex*)s_pMiarex;
+
+		if(pMiarex->m_iView==XFLR5::WPOLARVIEW)    grDlg.setGraph(pMiarex->m_WPlrGraph[0]);
+		else if(pMiarex->m_iView==XFLR5::WOPPVIEW) grDlg.setGraph(pMiarex->m_WingGraph[0]);
+
+		if(grDlg.exec() == QDialog::Accepted)
+		{
+			if(pMiarex->m_iView==XFLR5::WPOLARVIEW)
+				for(int ig=1; ig<MAXGRAPHS; ig++) pMiarex->m_WingGraph[ig]->copySettings(pMiarex->m_WingGraph[0]);
+			else if(pMiarex->m_iView==XFLR5::WOPPVIEW)
+				for(int ig=1; ig<MAXGRAPHS; ig++) pMiarex->m_WPlrGraph[ig]->copySettings(pMiarex->m_WPlrGraph[0]);
+		}
 	}
-	else
+	else if (m_xflr5App==XFLR5::XFOILANALYSIS)
 	{
-		if(pMiarex->m_iView==XFLR5::WPOLARVIEW)
-			for(int ig=1; ig<MAXGRAPHS; ig++) pMiarex->m_WingGraph[ig]->copySettings(pMiarex->m_WingGraph[0]);
-		else if(pMiarex->m_iView==XFLR5::WOPPVIEW)
-			for(int ig=1; ig<MAXGRAPHS; ig++) pMiarex->m_WPlrGraph[ig]->copySettings(pMiarex->m_WPlrGraph[0]);
+		QXDirect *pXDirect = (QXDirect*)s_pXDirect;
+
+		if(!pXDirect->bPolarView()) grDlg.setGraph(pXDirect->CpGraph());
+		else                        grDlg.setGraph(pXDirect->PlrGraph(0));
+
+		if(grDlg.exec() == QDialog::Accepted)
+		{
+			if(pXDirect->bPolarView())
+				for(int ig=1; ig<MAXPOLARGRAPHS; ig++) pXDirect->PlrGraph(ig)->copySettings(pXDirect->PlrGraph(0));
+		}
 	}
 	update();
 	setFocus();
@@ -489,52 +462,97 @@ void GraphTileWidget::onAllGraphScales()
 {
 	if(!isVisible()) return;
 
-	QMiarex *pMiarex = (QMiarex*)s_pMiarex;
-	if(pMiarex->m_iView == XFLR5::WOPPVIEW)
+	if(xflr5App()==XFLR5::MIAREX)
 	{
-		for(int ig=0; ig<MAXGRAPHS; ig++)
+		QMiarex *pMiarex = (QMiarex*)s_pMiarex;
+		if(pMiarex->m_iView == XFLR5::WOPPVIEW)
 		{
-			pMiarex->m_WingGraph[ig]->setAuto(true);
-			pMiarex->m_WingGraph[ig]->resetXLimits();
-			pMiarex->m_WingGraph[ig]->resetYLimits();
-			pMiarex->m_WingGraph[ig]->setAutoX(false);
-			if(pMiarex->m_pCurPlane)
+			for(int ig=0; ig<MAXGRAPHS; ig++)
 			{
-				pMiarex->m_WingGraph[ig]->setXMin( -pMiarex->m_pCurPlane->planformSpan()*Units::mtoUnit());
-				pMiarex->m_WingGraph[ig]->setXMax(  pMiarex->m_pCurPlane->planformSpan()*Units::mtoUnit());
+				pMiarex->m_WingGraph[ig]->setAuto(true);
+				pMiarex->m_WingGraph[ig]->resetXLimits();
+				pMiarex->m_WingGraph[ig]->resetYLimits();
+				pMiarex->m_WingGraph[ig]->setAutoX(false);
+				if(pMiarex->m_pCurPlane)
+				{
+					pMiarex->m_WingGraph[ig]->setXMin( -pMiarex->m_pCurPlane->planformSpan()*Units::mtoUnit());
+					pMiarex->m_WingGraph[ig]->setXMax(  pMiarex->m_pCurPlane->planformSpan()*Units::mtoUnit());
+				}
 			}
 		}
-	}
-	else if(pMiarex->m_iView==XFLR5::STABTIMEVIEW)
-	{
-		for(int ig=0; ig<MAXGRAPHS; ig++)
+		else if(pMiarex->m_iView==XFLR5::STABTIMEVIEW)
 		{
-			pMiarex->m_TimeGraph[ig]->setAuto(true);
-			pMiarex->m_TimeGraph[ig]->resetXLimits();
-			pMiarex->m_TimeGraph[ig]->resetYLimits();
+			for(int ig=0; ig<MAXGRAPHS; ig++)
+			{
+				pMiarex->m_TimeGraph[ig]->setAuto(true);
+				pMiarex->m_TimeGraph[ig]->resetXLimits();
+				pMiarex->m_TimeGraph[ig]->resetYLimits();
+			}
+		}
+		else if(pMiarex->m_iView==XFLR5::WPOLARVIEW)
+		{
+			for(int ig=0; ig<MAXGRAPHS; ig++)
+			{
+				pMiarex->m_WPlrGraph[ig]->setAuto(true);
+				pMiarex->m_WPlrGraph[ig]->resetXLimits();
+				pMiarex->m_WPlrGraph[ig]->resetYLimits();
+			}
+		}
+		else if(pMiarex->m_iView==XFLR5::WCPVIEW)
+		{
+			pMiarex->m_CpGraph.setAuto(true);
+			pMiarex->m_CpGraph.resetXLimits();
+			pMiarex->m_CpGraph.resetYLimits();
+			pMiarex->m_CpGraph.setInverted(true);
 		}
 	}
-	else if(pMiarex->m_iView==XFLR5::WPOLARVIEW)
+	else if (xflr5App()==XFLR5::XFOILANALYSIS)
 	{
-		for(int ig=0; ig<MAXGRAPHS; ig++)
+		QXDirect *pXDirect = (QXDirect*)s_pXDirect;
+		if(!pXDirect->bPolarView())
 		{
-			pMiarex->m_WPlrGraph[ig]->setAuto(true);
-			pMiarex->m_WPlrGraph[ig]->resetXLimits();
-			pMiarex->m_WPlrGraph[ig]->resetYLimits();
+			pXDirect->CpGraph()->setAuto(true);
+			pXDirect->CpGraph()->resetXLimits();
+			pXDirect->CpGraph()->resetYLimits();
 		}
-	}
-	else if(pMiarex->m_iView==XFLR5::WCPVIEW)
-	{
-		pMiarex->m_CpGraph.setAuto(true);
-		pMiarex->m_CpGraph.resetXLimits();
-		pMiarex->m_CpGraph.resetYLimits();
-		pMiarex->m_CpGraph.setInverted(true);
+		else
+		{
+			for(int ig=0; ig<MAXPOLARGRAPHS; ig++)
+			{
+				pXDirect->PlrGraph(ig)->setAuto(true);
+				pXDirect->PlrGraph(ig)->resetXLimits();
+				pXDirect->PlrGraph(ig)->resetYLimits();
+			}
+		}
 	}
 	update();
 	setFocus();
 }
 
 
+
+
+QGraph *GraphTileWidget::activeGraph()
+{
+	for(int igw=0; igw<m_GraphWidget.count(); igw++)
+	{
+		if(m_GraphWidget.at(igw)->isVisible()&& m_GraphWidget.at(igw)->hasFocus()) return m_GraphWidget.at(igw)->graph();
+	}
+	return NULL;
+}
+
+
+
+
+
+GraphWidget *GraphTileWidget::activeGraphWidget()
+{
+	for(int igw=0; igw<m_GraphWidget.count(); igw++)
+	{
+		if(m_GraphWidget.at(igw)->isVisible()&& m_GraphWidget.at(igw)->hasFocus()) return m_GraphWidget.at(igw);
+	}
+	return NULL;
+}
 
 
 

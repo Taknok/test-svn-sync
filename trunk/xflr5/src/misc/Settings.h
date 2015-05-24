@@ -56,9 +56,9 @@ public:
 private slots:
 	void OnStyleChanged(const QString &StyleName);
 	void OnBackgroundColor();
-	void OnGraphSettings();
-	void OnTextColor();
-	void OnTextFont();
+	void onGraphSettings();
+	void onTextColor();
+	void onTextFont();
 	void OnTableFont();
 	void OnReverseZoom();
 	void OnAlphaChannel();

@@ -1,6 +1,20 @@
 # -------------------------------------------------
 # Project created by QtCreator 2009-02-14T15:30:46
 # -------------------------------------------------
+
+
+#Qt5.4 required for QOpenGLWidget instead of QGLWidget
+lessThan(QT_MAJOR_VERSION, 5) {
+  error("Qt5.4 or greater required for xflr5 v6.11")
+}
+else
+{
+    lessThan(QT_MINOR_VERSION, 4) {
+	  error("Qt5.4 or greater required for xflr5 v6.11")
+    }
+}
+
+
 CONFIG += qt
 QT += opengl xml
 TEMPLATE = app
@@ -139,7 +153,7 @@ SOURCES += \
 	src/viewwidgets/miarextilewidget.cpp \
 	src/viewwidgets/xdirecttilewidget.cpp \
 	src/viewwidgets/wingwidget.cpp \
-    src/viewwidgets/twodwidget.cpp
+	src/viewwidgets/twodwidget.cpp
 
 
 HEADERS += \
@@ -274,7 +288,7 @@ HEADERS += \
 	src/viewwidgets/miarextilewidget.h \
 	src/viewwidgets/xdirecttilewidget.h \
 	src/viewwidgets/wingwidget.h \
-    src/viewwidgets/twodwidget.h
+	src/viewwidgets/twodwidget.h
 
 
 TRANSLATIONS = translations/xflr5v6.ts \
