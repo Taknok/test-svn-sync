@@ -2799,7 +2799,7 @@ void GL3dBodyDlg::Remove(CVector Pt)
 				pBodyFrame = m_pBody->frame(i);
 				pBodyFrame->RemovePoint(n);
 			}
-			m_pBody->SetKnots();
+			m_pBody->setNURBSKnots();
 			SetFrame(m_pBody->m_iActiveFrame);
 			m_bResetglBody   = true;
 			m_bResetglBody2D = true;
@@ -2857,7 +2857,7 @@ void GL3dBodyDlg::OnSelChangeXDegree(int sel)
 	m_bChanged = true;
 
 	m_pBody->m_SplineSurface.m_iuDegree = sel+1;
-	m_pBody->SetKnots();
+	m_pBody->setNURBSKnots();
 	m_bResetglBody   = true;
 	m_bResetglBody2D = true;
 	UpdateView();
@@ -2874,7 +2874,7 @@ void GL3dBodyDlg::OnSelChangeHoopDegree(int sel)
 	TakePicture();
 
 	m_pBody->m_SplineSurface.m_ivDegree = sel+1;
-	m_pBody->SetKnots();
+	m_pBody->setNURBSKnots();
 	m_bResetglBody   = true;
 	m_bResetglBody2D = true;
 	UpdateView();
@@ -3827,7 +3827,7 @@ void GL3dBodyDlg::SetPicture()
 {
 	Body *pTmpBody = m_UndoStack.at(m_StackPos);
 	m_pBody->Duplicate(pTmpBody);
-	m_pBody->SetKnots();
+	m_pBody->setNURBSKnots();
 	FillFrameDataTable();
 	m_pFrame = m_pBody->activeFrame();
 	FillPointDataTable();

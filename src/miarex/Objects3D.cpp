@@ -2869,7 +2869,7 @@ Plane * Objects3D::setPlaneObject(QString PlaneName, Plane *pCurPlane)
 	{
 		dx = pPlane->bodyPos().x;
 		dz = pPlane->bodyPos().z;
-		pPlane->body()->SetKnots();
+		pPlane->body()->setNURBSKnots();
 		pPlane->body()->SetPanelPos();
 	}
 

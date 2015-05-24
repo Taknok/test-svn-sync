@@ -239,7 +239,7 @@ void EditPlrDlg::OnDeletePoint()
 		m_pPolar->Remove(index.row());
 		FillPolarData();
 		pXDirect->createPolarCurves();
-		pXDirect->UpdateView();
+		pXDirect->updateView();
 	}
 	else if(pMiarex)
 	{
@@ -268,7 +268,7 @@ void EditPlrDlg::OnDeleteAllPoints()
 		m_pPolar->ResetPolar();
 		FillPolarData();
 		pXDirect->createPolarCurves();
-		pXDirect->UpdateView();
+		pXDirect->updateView();
 	}
 	else if(pMiarex)
 	{

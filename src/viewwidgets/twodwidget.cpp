@@ -226,7 +226,7 @@ void TwoDWidget::contextMenuEvent (QContextMenuEvent * event)
 	{
 		case XFLR5::INVERSEDESIGN:
 		{
-			pMainFrame->InverseContextMenu->exec(ScreenPt);
+			pMainFrame->m_pInverseContextMenu->exec(ScreenPt);
 			break;
 		}
 		default:

@@ -95,8 +95,8 @@ BatchDlg::BatchDlg(QWidget *pParent) : QDialog(pParent)
 
 	m_pRmsGraph->setAuto(true);
 
-	m_pRmsGraph->SetXMajGrid(true, QColor(120,120,120),2,1);
-	m_pRmsGraph->SetYMajGrid(true, QColor(120,120,120),2,1);
+	m_pRmsGraph->setXMajGrid(true, QColor(120,120,120),2,1);
+	m_pRmsGraph->setYMajGrid(true, QColor(120,120,120),2,1);
 
 	m_pRmsGraph->setXMin(0.0);
 	m_pRmsGraph->setXMax(50);
@@ -379,7 +379,7 @@ void BatchDlg::AlphaLoop()
 		if(pXDirect->m_bPolarView)
 		{
 			pXDirect->createPolarCurves();
-			pXDirect->UpdateView();
+			pXDirect->updateView();
 		}
 
 		if(m_bCancel)
@@ -1033,7 +1033,7 @@ void BatchDlg::ReLoop()
 		if(pXDirect->m_bPolarView)
 		{
 			pXDirect->createPolarCurves();
-			pXDirect->UpdateView();
+			pXDirect->updateView();
 		}
 
 		if(m_bCancel)
@@ -1052,7 +1052,7 @@ void BatchDlg::ReLoop()
  */
 void BatchDlg::ResetCurves()
 {
-	m_pRmsGraph->DeleteCurves();
+	m_pRmsGraph->deleteCurves();
 	Curve *pCurve0 = m_pRmsGraph->addCurve();
 	Curve *pCurve1 = m_pRmsGraph->addCurve();
 	pCurve0->setTitle("rms");
@@ -1061,11 +1061,11 @@ void BatchDlg::ResetCurves()
 	m_pRmsGraph->setAutoX(false);
 	m_pRmsGraph->setXMin(0.0);
 	m_pRmsGraph->setXMax((double)XFoilTask::s_IterLim);
-	m_pRmsGraph->SetXUnit((int)(XFoilTask::s_IterLim/5.0));
+	m_pRmsGraph->setXUnit((int)(XFoilTask::s_IterLim/5.0));
 	m_pRmsGraph->setYMin(-1.0);
 	m_pRmsGraph->setYMax( 1.0);
-	m_pRmsGraph->SetX0(0.0);
-	m_pRmsGraph->SetY0(0.0);
+	m_pRmsGraph->setX0(0.0);
+	m_pRmsGraph->setY0(0.0);
 
 	m_pXFoilTask->setGraphPointers(m_pRmsGraph, pCurve0, pCurve1);
 }

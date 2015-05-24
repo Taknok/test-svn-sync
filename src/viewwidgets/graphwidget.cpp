@@ -140,7 +140,6 @@ void GraphWidget::setLegendPosition(QPoint pos)
 void GraphWidget::contextMenuEvent (QContextMenuEvent *event)
 {
 	event->ignore();
-
 }
 
 
@@ -150,17 +149,13 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
 	{
 		case Qt::Key_R:
 		{
-			if(m_pGraph)
-			{
-				m_pGraph->setAuto(true);
-				update();
-			}
+			onResetGraphScales();
 			event->accept();
 			break;
 		}
 		case Qt::Key_V:
 		{
-			GraphDlg::s_ActivePage=0;
+			GraphDlg::setActivePage(0);
 			onGraphSettings();
 			event->accept();
 			break;
@@ -176,10 +171,6 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
 }
 
 
-void GraphWidget::keyReleaseEvent(QKeyEvent *event)
-{
-
-}
 
 
 void GraphWidget::mouseDoubleClickEvent (QMouseEvent *event)
@@ -217,15 +208,15 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 	{
 		// we translate the curves inside the graph
 		m_pGraph->setAuto(false);
-		x1 =  m_pGraph->ClientTox(m_LastPoint.x()) ;
-		y1 =  m_pGraph->ClientToy(m_LastPoint.y()) ;
+		x1 =  m_pGraph->clientTox(m_LastPoint.x()) ;
+		y1 =  m_pGraph->clientToy(m_LastPoint.y()) ;
 
-		xu = m_pGraph->ClientTox(point.x());
-		yu = m_pGraph->ClientToy(point.y());
+		xu = m_pGraph->clientTox(point.x());
+		yu = m_pGraph->clientToy(point.y());
 
-		xmin = m_pGraph->GetXMin() - xu+x1;
-		xmax = m_pGraph->GetXMax() - xu+x1;
-		ymin = m_pGraph->GetYMin() - yu+y1;
+		xmin = m_pGraph->xMin() - xu+x1;
+		xmax = m_pGraph->xMax() - xu+x1;
+		ymin = m_pGraph->yMin() - yu+y1;
 		ymax = m_pGraph->GetYMax() - yu+y1;
 
 		m_pGraph->SetWindow(xmin, xmax, ymin, ymax);
@@ -245,7 +236,7 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 	else if(m_pGraph->isInDrawRect(point))
 	{
 		MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
-		pMainFrame->statusBar()->showMessage(QString("X =%1, Y = %2").arg(m_pGraph->ClientTox(event->x())).arg(m_pGraph->ClientToy(event->y())));
+		pMainFrame->statusBar()->showMessage(QString("X =%1, Y = %2").arg(m_pGraph->clientTox(event->x())).arg(m_pGraph->clientToy(event->y())));
 	}
 
 	m_LastPoint = point;
@@ -262,8 +253,7 @@ void GraphWidget::mousePressEvent(QMouseEvent *event)
 		m_LastPoint.ry() = point.y();
 
 		m_bTransGraph = true;
-
-		if(m_bTransGraph) setCursor(Qt::ClosedHandCursor);
+		setCursor(Qt::ClosedHandCursor);
 
 		m_LastPoint = point;
 	}
@@ -325,6 +315,14 @@ void GraphWidget::wheelEvent (QWheelEvent *event)
 	}
 }
 
+/**
+ * The user has requested the reset of the active graph's scales to their default value
+ */
+void GraphWidget::onResetGraphScales()
+{
+	m_pGraph->setAuto(true);
+	update();
+}
 
 
 
@@ -334,9 +332,11 @@ void GraphWidget::wheelEvent (QWheelEvent *event)
 void GraphWidget::onGraphSettings()
 {
 	GraphDlg grDlg(this);
-
 	grDlg.setGraph(m_pGraph);
-	grDlg.setControls();
+
+//	QAction *action = qobject_cast<QAction *>(sender());
+//	qDebug()<< action->data().toString();
+//	grDlg.setActivePage(0);
 
 	if(grDlg.exec() == QDialog::Accepted)
 	{
@@ -348,7 +348,7 @@ void GraphWidget::onGraphSettings()
 			}
 			case QGRAPH::OPPGRAPH:
 			{
-				if(m_pGraph->getYVariable() == 0 || m_pGraph->getYVariable()>=2)
+				if(m_pGraph->yVariable() == 0 || m_pGraph->yVariable()>=2)
 				{
 					m_pGraph->setYTitle(tr("Cp"));
 					m_pGraph->setInverted(true);
@@ -364,13 +364,13 @@ void GraphWidget::onGraphSettings()
 			case QGRAPH::POLARGRAPH:
 			{
 				QString Title;
-				Title = Polar::variableName(m_pGraph->getXVariable());
+				Title = Polar::variableName(m_pGraph->xVariable());
 				m_pGraph->setXTitle(Title);
 
-				Title = Polar::variableName(m_pGraph->getYVariable());
+				Title = Polar::variableName(m_pGraph->yVariable());
 				m_pGraph->setYTitle(Title);
 
-				if(grDlg.m_bVariableChanged)
+				if(grDlg.bVariableChanged())
 				{
 					m_pGraph->setAuto(true);
 					m_pGraph->setAutoYMinUnit(true);
@@ -379,7 +379,7 @@ void GraphWidget::onGraphSettings()
 			}
 			case QGRAPH::POPPGRAPH:
 			{
-				if(grDlg.m_bVariableChanged)
+				if(grDlg.bVariableChanged())
 				{
 					m_pGraph->setAutoY(true);
 					m_pGraph->setAutoYMinUnit(true);
@@ -391,13 +391,13 @@ void GraphWidget::onGraphSettings()
 			{
 				QString Title;
 
-				Title  = WPolar::variableName(m_pGraph->getXVariable());
+				Title  = WPolar::variableName(m_pGraph->xVariable());
 				m_pGraph->setXTitle(Title);
 
-				Title  = WPolar::variableName(m_pGraph->getYVariable());
+				Title  = WPolar::variableName(m_pGraph->yVariable());
 				m_pGraph->setYTitle(Title);
 
-				if(grDlg.m_bVariableChanged)
+				if(grDlg.bVariableChanged())
 				{
 					m_pGraph->setAuto(true);
 					m_pGraph->setAutoYMinUnit(true);

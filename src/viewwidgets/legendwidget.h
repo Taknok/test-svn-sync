@@ -34,8 +34,12 @@ public:
 	LegendWidget(QWidget *pParent = 0);
 	~LegendWidget();
 
+	void keyPressEvent(QKeyEvent *event);
 	void paintEvent(QPaintEvent *event);
 	QSize sizeHint();
+	void mouseMoveEvent(QMouseEvent *event);
+	void mousePressEvent(QMouseEvent *event);
+	void mouseReleaseEvent(QMouseEvent *event);
 
 	void setGraph(QGraph*pGraph){m_pGraph = pGraph;}
 
@@ -59,6 +63,9 @@ private:
 	QGraph *m_pGraph;
 
 	XFLR5::enumMiarexViews m_MiarexView;
+	QPointF m_LegendPosition;
+	QPointF m_PointDown;
+	bool m_bTrans;
 };
 
 #endif // LEGENDWIDGET_H

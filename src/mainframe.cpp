@@ -325,19 +325,12 @@ void MainFrame::closeEvent (QCloseEvent * event)
 			return;
 		}
 	}
-	DeleteProject(true);
+	deleteProject(true);
 
 	SaveSettings();
 	event->accept();//continue closing
 }
 
-
-void MainFrame::contextMenuEvent (QContextMenuEvent * event)
-{
-	if     (m_pctrlCentralWidget->currentIndex()==0) m_p2dWidget->contextMenuEvent(event);
-	else if(m_pctrlCentralWidget->currentIndex()==1) m_p3dWidget->contextMenuEvent(event);
-	else if(m_pctrlCentralWidget->currentIndex()==2) m_pDirect2dWidget->contextMenuEvent(event);
-}
 
 
 void MainFrame::CreateActions()
@@ -429,6 +422,17 @@ void MainFrame::CreateActions()
 		connect(recentFileActs[i], SIGNAL(triggered()), this, SLOT(openRecentFile()));
 	}
 
+	m_pExportCurGraphAct = new QAction(tr("Export Graph"), this);
+	m_pExportCurGraphAct->setStatusTip(tr("Export the current graph data to a text file"));
+	connect(m_pExportCurGraphAct, SIGNAL(triggered()), this, SLOT(onExportCurGraph()));
+
+	m_pResetCurGraphScales = new QAction(QIcon(":/images/OnResetGraphScale.png"), tr("Reset Graph Scales")+"\t(R)", this);
+	m_pResetCurGraphScales->setStatusTip(tr("Restores the graph's x and y scales"));
+	connect(m_pResetCurGraphScales, SIGNAL(triggered()), this, SLOT(onResetCurGraphScales()));
+
+	m_pCurGraphDlgAct = new QAction(tr("Define Graph Settings")+"\t(G)", this);
+	connect(m_pCurGraphDlgAct, SIGNAL(triggered()), this, SLOT(onCurGraphSettings()));
+
 	styleAct = new QAction(tr("General Display Settings"), this);
 	styleAct->setStatusTip(tr("Define the color and font options for all views and graphs"));
 	connect(styleAct, SIGNAL(triggered()), this, SLOT(OnStyleSettings()));
@@ -447,17 +451,6 @@ void MainFrame::CreateActions()
 
 	aboutQtAct = new QAction(tr("About Qt"), this);
 	connect(aboutQtAct, SIGNAL(triggered()), this, SLOT(AboutQt()));
-
-
-	exportCurGraphAct = new QAction(tr("Export Graph"), this);
-	exportCurGraphAct->setStatusTip(tr("Export the current graph data to a text file"));
-	connect(exportCurGraphAct, SIGNAL(triggered()), m_pMiarexTileWidget, SLOT(onExportCurGraph()));
-	connect(exportCurGraphAct, SIGNAL(triggered()), m_pXDirectTileWidget, SLOT(onExportCurGraph()));
-
-	resetCurGraphScales = new QAction(QIcon(":/images/OnResetGraphScale.png"), tr("Reset Graph Scales")+"\t(R)", this);
-	resetCurGraphScales->setStatusTip(tr("Restores the graph's x and y scales"));
-	connect(resetCurGraphScales, SIGNAL(triggered()), m_pMiarexTileWidget, SLOT(onResetCurGraphScales()));
-	connect(resetCurGraphScales, SIGNAL(triggered()), m_pMiarexTileWidget, SLOT(onResetCurGraphScales()));
 
 	createGraphActions();
 	CreateAFoilActions();
@@ -765,6 +758,8 @@ void MainFrame::CreateDockWindows()
 	GraphWidget::s_pMainFrame      = this;
 	FoilWidget::s_pMainFrame       = this;
 	WingWidget::s_pMainFrame       = this;
+	QGraph::s_pMainFrame           = this;
+
 
 	m_pctrlXDirectWidget = new QDockWidget(tr("Direct foil analysis"), this);
 	m_pctrlXDirectWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
@@ -885,7 +880,6 @@ void MainFrame::CreateDockWindows()
 	BatchDlg::s_pXDirect          = m_pXDirect;
 	BatchThreadDlg::s_pXDirect    = m_pXDirect;
 
-
 	GraphTileWidget::s_pMainFrame = this;
 	GraphTileWidget::s_pMiarex    = m_pMiarex;
 	GraphTileWidget::s_pXDirect   = m_pXDirect;
@@ -893,8 +887,6 @@ void MainFrame::CreateDockWindows()
 	LegendWidget::s_pMainFrame = this;
 	LegendWidget::s_pMiarex    = m_pMiarex;
 	LegendWidget::s_pXDirect   = m_pXDirect;
-
-	GraphDlg::s_ActivePage = 0;
 
 	pMiarex->Connect();
 }
@@ -944,7 +936,7 @@ void MainFrame::CreateMenus()
 	m_pGraphMenu = menuBar()->addMenu(tr("&Graphs"));
 	{
 		for(int ig=0; ig<MAXGRAPHS; ig++)
-			m_pGraphMenu->addAction(m_pSingleGraphAct[ig]);
+			m_pGraphMenu->addAction(m_pSingleGraph[ig]);
 		m_pGraphMenu->addSeparator();
 		m_pGraphMenu->addAction(m_pTwoGraphs);
 		m_pGraphMenu->addAction(m_pFourGraphs);
@@ -980,11 +972,11 @@ void MainFrame::createGraphActions()
 
 	for (int ig=0; ig<MAXGRAPHS; ++ig)
 	{
-		m_pSingleGraphAct[ig] = new QAction(tr("Graph")+QString(" %1\t(%2)").arg(ig+1).arg(ig+1), this);
-		m_pSingleGraphAct[ig]->setData(ig);
-		m_pSingleGraphAct[ig]->setCheckable(true);
-		connect(m_pSingleGraphAct[ig], SIGNAL(triggered()), m_pXDirectTileWidget, SLOT(onSingleGraph()));
-		connect(m_pSingleGraphAct[ig], SIGNAL(triggered()), m_pMiarexTileWidget, SLOT(onSingleGraph()));
+		m_pSingleGraph[ig] = new QAction(tr("Graph")+QString(" %1\t(%2)").arg(ig+1).arg(ig+1), this);
+		m_pSingleGraph[ig]->setData(ig);
+		m_pSingleGraph[ig]->setCheckable(true);
+		connect(m_pSingleGraph[ig], SIGNAL(triggered()), m_pXDirectTileWidget, SLOT(onSingleGraph()));
+		connect(m_pSingleGraph[ig], SIGNAL(triggered()), m_pMiarexTileWidget, SLOT(onSingleGraph()));
 	}
 	m_pTwoGraphs = new QAction(tr("Two Graphs")+"\t(T)", this);
 	m_pTwoGraphs->setStatusTip(tr("Display the first two graphs"));
@@ -1006,8 +998,8 @@ void MainFrame::createGraphActions()
 
 	m_pGraphDlgAct = new QAction(tr("Define Graph Settings")+"\t(G)", this);
 	m_pGraphDlgAct->setStatusTip(tr("Define the settings for the selected graph"));
-	connect(m_pGraphDlgAct, SIGNAL(triggered()), m_pXDirectTileWidget, SLOT(onGraphSettings()));
-	connect(m_pGraphDlgAct, SIGNAL(triggered()), m_pMiarexTileWidget, SLOT(onGraphSettings()));
+	connect(m_pGraphDlgAct, SIGNAL(triggered()), m_pXDirectTileWidget, SLOT(onCurGraphSettings()));
+	connect(m_pGraphDlgAct, SIGNAL(triggered()), m_pMiarexTileWidget, SLOT(onCurGraphSettings()));
 
 	m_pAllGraphsScalesAct = new QAction(tr("Reset All Graph Scales"), this);
 	m_pAllGraphsScalesAct->setStatusTip(tr("Reset the scales of all four polar graphs"));
@@ -1097,10 +1089,10 @@ void MainFrame::CreateMiarexActions()
 	connect(editObjectAct, SIGNAL(triggered()), pMiarex, SLOT(OnEditCurObject()));
 
 	exporttoXML = new QAction(tr("Export to xml file"), this);
-	connect(exporttoXML, SIGNAL(triggered()), pMiarex, SLOT(OnExportPlanetoXML()));
+	connect(exporttoXML, SIGNAL(triggered()), pMiarex, SLOT(onExportPlanetoXML()));
 
 	importXMLPlaneAct = new QAction(tr("Import plane from xml file"), this);
-	connect(importXMLPlaneAct, SIGNAL(triggered()), pMiarex, SLOT(OnImportPlanefromXML()));
+	connect(importXMLPlaneAct, SIGNAL(triggered()), pMiarex, SLOT(onImportPlanefromXML()));
 
 	editWingAct = new QAction(tr("Edit wing..."), this);
 	editWingAct->setStatusTip(tr("Shows a form to edit the wing of the currently selected plane"));
@@ -1178,12 +1170,12 @@ void MainFrame::CreateMiarexActions()
 	showEllipticCurve = new QAction(tr("Show Elliptic Curve"), this);
 	showEllipticCurve->setStatusTip(tr("Show the theoretical optimal elliptic lift curve on all graphs for which the selected variable is the local lift"));
 	showEllipticCurve->setCheckable(true);
-	connect(showEllipticCurve, SIGNAL(triggered()), pMiarex, SLOT(OnShowEllipticCurve()));
+	connect(showEllipticCurve, SIGNAL(triggered()), pMiarex, SLOT(onShowEllipticCurve()));
 
 	showXCmRefLocation = new QAction(tr("Show XCG location"), this);
 	showXCmRefLocation->setStatusTip(tr("Show the position of the center of gravity defined in the analysis"));
 	showXCmRefLocation->setCheckable(true);
-	connect(showXCmRefLocation, SIGNAL(triggered()), pMiarex, SLOT(OnShowXCmRef()));
+	connect(showXCmRefLocation, SIGNAL(triggered()), pMiarex, SLOT(onShowXCmRef()));
 
 	showStabCurve = new QAction(tr("Show Elevator Curve"), this);
 	showStabCurve->setStatusTip(tr("Show the graph curves for the elevator"));
@@ -1656,49 +1648,15 @@ void MainFrame::CreateXDirectActions()
 	OpPointsAct = new QAction(QIcon(":/images/OnCpView.png"), tr("OpPoint view")+"\tF5", this);
 	OpPointsAct->setCheckable(true);
 	OpPointsAct->setStatusTip(tr("Show Operating point view"));
-	connect(OpPointsAct, SIGNAL(triggered()), pXDirect, SLOT(OnOpPointView()));
+	connect(OpPointsAct, SIGNAL(triggered()), pXDirect, SLOT(onOpPointView()));
 
 	PolarsAct = new QAction(QIcon(":/images/OnPolarView.png"), tr("Polar view")+"\tF8", this);
 	PolarsAct->setCheckable(true);
 	PolarsAct->setStatusTip(tr("Show Polar view"));
-	connect(PolarsAct, SIGNAL(triggered()), pXDirect, SLOT(OnPolarView()));
+	connect(PolarsAct, SIGNAL(triggered()), pXDirect, SLOT(onPolarView()));
 
 	XDirectPolarFilter = new QAction(tr("Polar Filter"), this);
 	connect(XDirectPolarFilter, SIGNAL(triggered()), pXDirect, SLOT(OnPolarFilter()));
-
-	allPolarGraphsSettingsAct = new QAction(tr("All Polar Graph Settings"), this);
-	allPolarGraphsSettingsAct->setStatusTip("Modifies the setting for all polar graphs simultaneously");
-	connect(allPolarGraphsSettingsAct, SIGNAL(triggered()), pXDirect, SLOT(OnAllPolarGraphsSetting()));
-
-	allPolarGraphsScales = new QAction(tr("Reset All Polar Graph Scales"), this);
-	connect(allPolarGraphsScales, SIGNAL(triggered()), pXDirect, SLOT(OnResetAllPolarGraphsScales()));
-
-	XDirectGraphDlg = new QAction(tr("Define Graph Settings")+"\t(G)", this);
-//	connect(XDirectGraphDlg, SIGNAL(triggered()), pXDirect, SLOT(OnGraphSettings()));
-
-	m_pResetGraphLegendAct = new QAction(tr("Reset Legend Position"), this);
-//	connect(resetGraphLegend, SIGNAL(triggered()), pXDirect, SLOT(OnResetGraphLegend()));
-
-	TwoPolarGraphsAct = new QAction(tr("Two Polar Graphs")+"\t(T)", this);
-	TwoPolarGraphsAct->setCheckable(true);
-	connect(TwoPolarGraphsAct, SIGNAL(triggered()), pXDirect, SLOT(OnCouplePolarGraphs()));
-
-	AllPolarGraphsAct = new QAction(tr("All Polar Graphs")+"\t(A)", this);
-	AllPolarGraphsAct->setCheckable(true);
-	connect(AllPolarGraphsAct, SIGNAL(triggered()), pXDirect, SLOT(OnAllPolarGraphs()));
-
-	for (int i = 0; i < 5; ++i)
-	{
-		m_pPolarGraphAct[i] = new QAction(this);
-		m_pPolarGraphAct[i]->setData(i);
-		m_pPolarGraphAct[i]->setCheckable(true);
-		connect(m_pPolarGraphAct[i], SIGNAL(triggered()), pXDirect, SLOT(OnSinglePolarGraph()));
-	}
-	m_pPolarGraphAct[0]->setText(tr("Cl vs. Cd") +"\t(1)");
-	m_pPolarGraphAct[1]->setText(tr("Cl vs.Alpha")+ "\t(2)");
-	m_pPolarGraphAct[2]->setText(tr("Cl vs. Xtr.")+ "\t(3)");
-	m_pPolarGraphAct[3]->setText(tr("Cm vs.Alpha")+ "\t(4)");
-	m_pPolarGraphAct[4]->setText(tr("Glide ratio vs. alpha")+ "\t(5)");
 
 	highlightOppAct	 = new QAction(tr("Highlight Current OpPoint")+"\t(Ctrl+H)", this);
 	highlightOppAct->setCheckable(true);
@@ -1723,7 +1681,7 @@ void MainFrame::CreateXDirectActions()
 
 	deleteFoilPolars = new QAction(tr("Delete associated polars"), this);
 	deleteFoilPolars->setStatusTip(tr("Delete all the polars associated to this foil"));
-	connect(deleteFoilPolars, SIGNAL(triggered()), pXDirect, SLOT(OnDeleteFoilPolars()));
+	connect(deleteFoilPolars, SIGNAL(triggered()), pXDirect, SLOT(onDeleteFoilPolars()));
 
 	showFoilPolarsOnly = new QAction(tr("Show only associated polars"), this);
 	connect(showFoilPolarsOnly, SIGNAL(triggered()), pXDirect, SLOT(OnShowFoilPolarsOnly()));
@@ -1744,7 +1702,7 @@ void MainFrame::CreateXDirectActions()
 	connect(showPolarOpps, SIGNAL(triggered()), pXDirect, SLOT(OnShowPolarOpps()));
 
 	deletePolarOpps = new QAction(tr("Delete associated OpPoints"), this);
-	connect(deletePolarOpps, SIGNAL(triggered()), pXDirect, SLOT(OnDeletePolarOpps()));
+	connect(deletePolarOpps, SIGNAL(triggered()), pXDirect, SLOT(onDeletePolarOpps()));
 
 	exportPolarOpps = new QAction(tr("Export associated OpPoints"), this);
 	connect(exportPolarOpps, SIGNAL(triggered()), pXDirect, SLOT(OnExportPolarOpps()));
@@ -1756,15 +1714,15 @@ void MainFrame::CreateXDirectActions()
 	connect(showFoilOpps, SIGNAL(triggered()), pXDirect, SLOT(OnShowFoilOpps()));
 
 	deleteFoilOpps = new QAction(tr("Delete associated OpPoints"), this);
-	connect(deleteFoilOpps, SIGNAL(triggered()), pXDirect, SLOT(OnDeleteFoilOpps()));
+	connect(deleteFoilOpps, SIGNAL(triggered()), pXDirect, SLOT(onDeleteFoilOpps()));
 
-	definePolar = new QAction(tr("Define an Analysis")+"\tF6", this);
-	definePolar->setStatusTip(tr("Defines a single analysis/polar"));
-	connect(definePolar, SIGNAL(triggered()), pXDirect, SLOT(OnDefinePolar()));
+	m_pDefinePolarAct = new QAction(tr("Define an Analysis")+"\tF6", this);
+	m_pDefinePolarAct->setStatusTip(tr("Defines a single analysis/polar"));
+	connect(m_pDefinePolarAct, SIGNAL(triggered()), pXDirect, SLOT(OnDefinePolar()));
 
-	defineBatch = new QAction(tr("Batch Analysis")+"\tShift+F6", this);
-	defineBatch->setStatusTip(tr("Launches a batch of analysis calculation for a specified range or list of Reynolds numbers"));
-	connect(defineBatch, SIGNAL(triggered()), pXDirect, SLOT(OnBatchAnalysis()));
+	m_pBatchAnalysisAct = new QAction(tr("Batch Analysis")+"\tShift+F6", this);
+	m_pBatchAnalysisAct->setStatusTip(tr("Launches a batch of analysis calculation for a specified range or list of Reynolds numbers"));
+	connect(m_pBatchAnalysisAct, SIGNAL(triggered()), pXDirect, SLOT(OnBatchAnalysis()));
 
 	MultiThreadedBatchAct = new QAction(tr("Multi-threaded Batch Analysis")+"\tCtrl+F6", this);
 	MultiThreadedBatchAct->setStatusTip(tr("Launches a batch of analysis calculation using all available computer CPU cores"));
@@ -1772,7 +1730,7 @@ void MainFrame::CreateXDirectActions()
 
 	deletePolar = new QAction(tr("Delete"), this);
 	deletePolar->setStatusTip(tr("Deletes the currently selected polar"));
-	connect(deletePolar, SIGNAL(triggered()), pXDirect, SLOT(OnDeleteCurPolar()));
+	connect(deletePolar, SIGNAL(triggered()), pXDirect, SLOT(onDeleteCurPolar()));
 
 	resetCurPolar = new QAction(tr("Reset"), this);
 	resetCurPolar->setStatusTip(tr("Deletes the contents of the currently selected polar"));
@@ -1844,7 +1802,7 @@ void MainFrame::CreateXDirectActions()
 	connect(getPolarProps, SIGNAL(triggered()), pXDirect, SLOT(OnPolarProps()));
 
 	viewXFoilAdvanced = new QAction(tr("XFoil Advanced Settings"), this);
-	defineBatch->setStatusTip(tr("Tip : you don't want to use that option..."));
+	m_pBatchAnalysisAct->setStatusTip(tr("Tip : you don't want to use that option..."));
 	connect(viewXFoilAdvanced, SIGNAL(triggered()), pXDirect, SLOT(OnXFoilAdvanced()));
  
 	viewLogFile = new QAction(tr("View Log File")+"\t(L)", this);
@@ -2004,8 +1962,8 @@ void MainFrame::CreateXDirectMenus()
 
 	m_pXFoilAnalysisMenu = menuBar()->addMenu(tr("Analysis"));
 	{
-		m_pXFoilAnalysisMenu->addAction(definePolar);
-		m_pXFoilAnalysisMenu->addAction(defineBatch);
+		m_pXFoilAnalysisMenu->addAction(m_pDefinePolarAct);
+		m_pXFoilAnalysisMenu->addAction(m_pBatchAnalysisAct);
 		m_pXFoilAnalysisMenu->addAction(MultiThreadedBatchAct);
 		m_pXFoilAnalysisMenu->addSeparator();
 //		XFoilAnalysisMenu->addAction(resetXFoil);
@@ -2040,7 +1998,7 @@ void MainFrame::CreateXDirectMenus()
 		m_pPolarMenu->addAction(showAllPolars);
 		m_pPolarMenu->addAction(hideAllPolars);
 		m_pPolarMenu->addSeparator();
-		m_pGraphPolarMenu = m_pPolarMenu->addMenu(tr("Polar Graphs"));
+/*		m_pGraphPolarMenu = m_pPolarMenu->addMenu(tr("Polar Graphs"));
 		{
 			m_pGraphPolarMenu->addAction(allPolarGraphsSettingsAct);
 			m_pGraphPolarMenu->addAction(allPolarGraphsScales);
@@ -2053,7 +2011,7 @@ void MainFrame::CreateXDirectMenus()
 				m_pGraphPolarMenu->addAction(m_pPolarGraphAct[i]);
 			m_pGraphPolarMenu->addSeparator();
 			m_pGraphPolarMenu->addAction(highlightOppAct);
-		}
+		}*/
 	}
 
 	m_pOpPointMenu = menuBar()->addMenu(tr("Operating Points"));
@@ -2087,8 +2045,8 @@ void MainFrame::CreateXDirectMenus()
 				m_pCurXFoilResults->addAction(CurXFoilHPlot);
 			}
 			m_pXDirectCpGraphMenu->addSeparator();
-			m_pXDirectCpGraphMenu->addAction(resetCurGraphScales);
-			m_pXDirectCpGraphMenu->addAction(exportCurGraphAct);
+//			m_pXDirectCpGraphMenu->addAction(resetCurGraphScales);
+//			m_pXDirectCpGraphMenu->addAction(exportCurGraphAct);
 		}
 		m_pOpPointMenu->addSeparator();
 		m_pOpPointMenu->addAction(showCurOppOnly);
@@ -2116,8 +2074,8 @@ void MainFrame::CreateXDirectMenus()
 		m_pOperFoilCtxMenu->addMenu(m_pXDirectCpGraphMenu);
 
 		m_pOperFoilCtxMenu->addSeparator();//_______________
-		m_pOperFoilCtxMenu->addAction(definePolar);
-		m_pOperFoilCtxMenu->addAction(defineBatch);
+		m_pOperFoilCtxMenu->addAction(m_pDefinePolarAct);
+		m_pOperFoilCtxMenu->addAction(m_pBatchAnalysisAct);
 		m_pOperFoilCtxMenu->addAction(MultiThreadedBatchAct);
 		m_pOperFoilCtxMenu->addSeparator();//_______________
 		m_pOperFoilCtxMenu->addAction(showAllPolars);
@@ -2143,17 +2101,17 @@ void MainFrame::CreateXDirectMenus()
 		m_pOperPolarCtxMenu->addMenu(m_pCurrentFoilMenu);
 		m_pOperPolarCtxMenu->addMenu(m_pCurrentPolarMenu);
 		m_pOperPolarCtxMenu->addSeparator();//_______________
-		CurGraphCtxMenu = m_pOperPolarCtxMenu->addMenu(tr("Current Graph"));
+		m_pCurGraphCtxMenu = m_pOperPolarCtxMenu->addMenu(tr("Current Graph"));
 		{
-			CurGraphCtxMenu->addAction(resetCurGraphScales);
-			CurGraphCtxMenu->addAction(XDirectGraphDlg);
-			CurGraphCtxMenu->addAction(exportCurGraphAct);
+			m_pCurGraphCtxMenu->addAction(m_pResetCurGraphScales);
+			m_pCurGraphCtxMenu->addAction(m_pCurGraphDlgAct);
+			m_pCurGraphCtxMenu->addAction(m_pExportCurGraphAct);
 		}
+		m_pOperPolarCtxMenu->addAction(m_pAllGraphsSettings);
+		m_pOperPolarCtxMenu->addAction(m_pAllGraphsScalesAct);
 		m_pOperPolarCtxMenu->addSeparator();//_______________
-		m_pOperPolarCtxMenu->addMenu(m_pGraphPolarMenu);
-		m_pOperPolarCtxMenu->addSeparator();//_______________
-		m_pOperPolarCtxMenu->addAction(definePolar);
-		m_pOperPolarCtxMenu->addAction(defineBatch);
+		m_pOperPolarCtxMenu->addAction(m_pDefinePolarAct);
+		m_pOperPolarCtxMenu->addAction(m_pBatchAnalysisAct);
 		m_pOperPolarCtxMenu->addAction(MultiThreadedBatchAct);
 		m_pOperPolarCtxMenu->addSeparator();//_______________
 		m_pOperPolarCtxMenu->addAction(showAllPolars);
@@ -2180,13 +2138,13 @@ void MainFrame::CreateXInverseActions()
 	ExtractFoil->setStatusTip(tr("Extract a Foil from the database for modification"));
 	connect(ExtractFoil, SIGNAL(triggered()), pXInverse, SLOT(OnExtractFoil()));
 
-	InverseStyles = new QAction(tr("Define Styles"), this);
-	InverseStyles->setStatusTip(tr("Define the styles for this view"));
-	connect(InverseStyles, SIGNAL(triggered()), pXInverse, SLOT(OnInverseStyles()));
+	m_pXInverseStyles = new QAction(tr("Define Styles"), this);
+	m_pXInverseStyles->setStatusTip(tr("Define the styles for this view"));
+	connect(m_pXInverseStyles, SIGNAL(triggered()), pXInverse, SLOT(OnInverseStyles()));
 
-	InverseResetScale = new QAction(QIcon(":/images/OnResetFoilScale.png"), tr("Reset foil scale")+"\t(R)", this);
-	InverseResetScale->setStatusTip(tr("Resets the scale to fit the screen size"));
-	connect(InverseResetScale, SIGNAL(triggered()), pXInverse, SLOT(OnResetFoilScale()));
+	m_pXInverseResetFoilScale = new QAction(QIcon(":/images/OnResetFoilScale.png"), tr("Reset foil scale")+"\t(R)", this);
+	m_pXInverseResetFoilScale->setStatusTip(tr("Resets the scale to fit the screen size"));
+	connect(m_pXInverseResetFoilScale, SIGNAL(triggered()), pXInverse, SLOT(OnResetFoilScale()));
 
 	InverseInsertCtrlPt = new QAction(tr("Insert Control Point")+"\tShift+Click", this);
 	connect(InverseInsertCtrlPt, SIGNAL(triggered()), pXInverse, SLOT(OnInsertCtrlPt()));
@@ -2214,9 +2172,6 @@ void MainFrame::CreateXInverseActions()
 	InvQReflected->setCheckable(true);
 	connect(InvQReflected, SIGNAL(triggered()), pXInverse, SLOT(OnQReflected()));
 
-	XInverseGraphDlg = new QAction(tr("Define Graph Settings")+"\t(G)", this);
-//	connect(XInverseGraphDlg, SIGNAL(triggered()), pXInverse, SLOT(OnGraphSettings()));
-
 	InverseZoomIn = new QAction(QIcon(":/images/OnZoomIn.png"), tr("Zoom in"), this);
 	InverseZoomIn->setStatusTip(tr("Zoom the view by drawing a rectangle in the client area"));
 	connect(InverseZoomIn, SIGNAL(triggered()), pXInverse, SLOT(OnZoomIn()));
@@ -2234,43 +2189,44 @@ void MainFrame::CreateXInverseActions()
 void MainFrame::CreateXInverseMenus()
 {
 	//MainMenu for XInverse Application
-	XInverseViewMenu = menuBar()->addMenu(tr("&View"));
-	XInverseViewMenu->addAction(InverseStyles);
-	XInverseViewMenu->addAction(XInverseGraphDlg);
-	XInverseViewMenu->addSeparator();
-	XInverseViewMenu->addAction(saveViewToImageFileAct);
+	m_pXInverseViewMenu = menuBar()->addMenu(tr("&View"));
+	m_pXInverseViewMenu->addAction(m_pXInverseStyles);
+	m_pXInverseViewMenu->addSeparator();
+	m_pXInverseViewMenu->addAction(saveViewToImageFileAct);
 
-	InverseGraphMenu = menuBar()->addMenu(tr("&Graph"));
-	InverseGraphMenu->addAction(XInverseGraphDlg);
-	InverseGraphMenu->addAction(resetCurGraphScales);
-	InverseGraphMenu->addAction(exportCurGraphAct);
+	m_pXInverseGraphMenu = menuBar()->addMenu(tr("&Graph"));
+	m_pXInverseGraphMenu->addAction(m_pCurGraphDlgAct);
+	m_pXInverseGraphMenu->addAction(m_pResetCurGraphScales);
+	m_pXInverseGraphMenu->addAction(m_pExportCurGraphAct);
 
-	InverseFoilMenu = menuBar()->addMenu(tr("&Foil"));
-	InverseFoilMenu->addAction(StoreFoil);
-	InverseFoilMenu->addAction(ExtractFoil);
-	InverseFoilMenu->addAction(InverseResetScale);
-	InverseFoilMenu->addSeparator();
-	InverseFoilMenu->addAction(InvQInitial);
-	InverseFoilMenu->addAction(InvQSpec);
-	InverseFoilMenu->addAction(InvQViscous);
-	InverseFoilMenu->addAction(InvQPoints);
-	InverseFoilMenu->addAction(InvQReflected);
+	m_pXInverseFoilMenu = menuBar()->addMenu(tr("&Foil"));
+	m_pXInverseFoilMenu->addAction(StoreFoil);
+	m_pXInverseFoilMenu->addAction(ExtractFoil);
+	m_pXInverseFoilMenu->addAction(m_pXInverseResetFoilScale);
+	m_pXInverseFoilMenu->addSeparator();
+	m_pXInverseFoilMenu->addAction(InvQInitial);
+	m_pXInverseFoilMenu->addAction(InvQSpec);
+	m_pXInverseFoilMenu->addAction(InvQViscous);
+	m_pXInverseFoilMenu->addAction(InvQPoints);
+	m_pXInverseFoilMenu->addAction(InvQReflected);
 
 	//Context Menu for XInverse Application
-	InverseContextMenu = new QMenu(tr("Context Menu"),this);
-	InverseContextMenu->addAction(InverseStyles);
-	InverseContextMenu->addAction(InverseResetScale);
-	InverseContextMenu->addAction(resetCurGraphScales);
-	InverseContextMenu->addAction(XInverseGraphDlg);
-	InverseContextMenu->addSeparator();
-	InverseContextMenu->addAction(InverseInsertCtrlPt);
-	InverseContextMenu->addAction(InverseRemoveCtrlPt);
-	InverseContextMenu->addSeparator();
-	InverseContextMenu->addAction(InvQInitial);
-	InverseContextMenu->addAction(InvQSpec);
-	InverseContextMenu->addAction(InvQViscous);
-	InverseContextMenu->addAction(InvQPoints);
-	InverseContextMenu->addAction(InvQReflected);
+	m_pInverseContextMenu = new QMenu(tr("Context Menu"),this);
+	m_pInverseContextMenu->addAction(m_pXInverseStyles);
+	m_pInverseContextMenu->addAction(m_pXInverseResetFoilScale);
+	m_pInverseContextMenu->addSeparator();
+	m_pInverseContextMenu->addAction(m_pCurGraphDlgAct);
+	m_pInverseContextMenu->addAction(m_pResetCurGraphScales);
+	m_pInverseContextMenu->addAction(m_pExportCurGraphAct);
+	m_pInverseContextMenu->addSeparator();
+	m_pInverseContextMenu->addAction(InverseInsertCtrlPt);
+	m_pInverseContextMenu->addAction(InverseRemoveCtrlPt);
+	m_pInverseContextMenu->addSeparator();
+	m_pInverseContextMenu->addAction(InvQInitial);
+	m_pInverseContextMenu->addAction(InvQSpec);
+	m_pInverseContextMenu->addAction(InvQViscous);
+	m_pInverseContextMenu->addAction(InvQPoints);
+	m_pInverseContextMenu->addAction(InvQReflected);
 }
 
 
@@ -2297,15 +2253,15 @@ void MainFrame::CreateXInverseToolbar()
 	m_pctrlXInverseToolBar->addAction(InverseZoomIn);
 	m_pctrlXInverseToolBar->addAction(InverseZoomX);
 	m_pctrlXInverseToolBar->addAction(InverseZoomY);
-	m_pctrlXInverseToolBar->addAction(resetCurGraphScales);
-	m_pctrlXInverseToolBar->addAction(InverseResetScale);
+	m_pctrlXInverseToolBar->addAction(m_pResetCurGraphScales);
+	m_pctrlXInverseToolBar->addAction(m_pXInverseResetFoilScale);
 }
 
 
 
 
 
-void MainFrame::DeleteProject(bool bClosing)
+void MainFrame::deleteProject(bool bClosing)
 {
 	// clear everything
 	int i;
@@ -2939,7 +2895,7 @@ XFLR5::enumApp MainFrame::LoadXFLR5File(QString PathName)
 			}
 		}
 
-		DeleteProject();
+		deleteProject();
 
 		QDataStream ar(&XFile);
 		ar.setVersion(QDataStream::Qt_4_5);
@@ -2980,7 +2936,7 @@ XFLR5::enumApp MainFrame::LoadXFLR5File(QString PathName)
 			}
 		}
 
-		DeleteProject();
+		deleteProject();
 
 		QDataStream ar(&XFile);
 		if(!SerializeProjectXFL(ar, false))
@@ -3241,19 +3197,19 @@ void MainFrame::OnNewProject()
 		{
 			if(SaveProject(m_FileName))
 			{
-				DeleteProject();
+				deleteProject();
 				statusBar()->showMessage(tr("The project ") + s_ProjectName + tr(" has been saved"));
 			}
 			else return; //save failed, don't close
 		}
 		else if (QMessageBox::No == resp)
 		{
-			DeleteProject();
+			deleteProject();
 		}
 	}
 	else
 	{
-		DeleteProject();
+		deleteProject();
 	}
 
 	updateView();
@@ -3549,7 +3505,7 @@ void MainFrame::OnSelChangeWPolar(int sel)
 //	int sel = m_pctrlPlanePolar->currentIndex();
 	if (sel>=0) strong = m_pctrlPlanePolar->itemText(sel);
 	m_iApp = XFLR5::MIAREX;
-	pMiarex->SetWPolar(false, strong);
+	pMiarex->setWPolar(false, strong);
 	pMiarex->setControls();
 	pMiarex->updateView();
 }
@@ -3737,7 +3693,7 @@ void MainFrame::onXDirect()
 	setMenus();
 	checkGraphActions();
 	pXDirect->setControls();
-	pXDirect->UpdateView();
+	pXDirect->updateView();
 }
 
 
@@ -3795,7 +3751,7 @@ void MainFrame::OnXInverse()
 	setMenus();
 	checkGraphActions();
 	pXInverse->SetParams();
-	pXInverse->UpdateView();
+	pXInverse->updateView();
 }
 
 
@@ -3824,7 +3780,7 @@ void MainFrame::OnXInverseMixed()
 	setMenus();
 	checkGraphActions();
 	pXInverse->SetParams();
-	pXInverse->UpdateView();
+	pXInverse->updateView();
 }
 
 
@@ -5264,8 +5220,9 @@ void MainFrame::setMenus()
 	{
 		menuBar()->clear();
 		menuBar()->addMenu(m_pFileMenu);
-		menuBar()->addMenu(XInverseViewMenu);
-		menuBar()->addMenu(InverseFoilMenu);
+		menuBar()->addMenu(m_pXInverseViewMenu);
+		menuBar()->addMenu(m_pXInverseGraphMenu);
+		menuBar()->addMenu(m_pXInverseFoilMenu);
 		menuBar()->addMenu(m_pOptionsMenu);
 		menuBar()->addMenu(m_pHelpMenu);
 	}
@@ -5659,7 +5616,7 @@ void MainFrame::updateView()
 		case XFLR5::XFOILANALYSIS:
 		{
 			QXDirect *pXDirect = (QXDirect*)m_pXDirect;
-			pXDirect->UpdateView();
+			pXDirect->updateView();
 			break;
 		}
 		case XFLR5::DIRECTDESIGN:
@@ -5676,7 +5633,7 @@ void MainFrame::updateView()
 		case XFLR5::INVERSEDESIGN:
 		{
 			QXInverse *pXInverse = (QXInverse*)m_pXInverse;
-			pXInverse->UpdateView();
+			pXInverse->updateView();
 			break;
 		}
 		default:
@@ -5829,10 +5786,11 @@ void MainFrame::onManageFoils()
 
 void MainFrame::checkGraphActions()
 {
-	for(int ig=0; ig<MAXGRAPHS; ig++)	m_pSingleGraphAct[ig]->setChecked(false);
+	for(int ig=0; ig<MAXGRAPHS; ig++)	m_pSingleGraph[ig]->setChecked(false);
 	m_pTwoGraphs->setChecked(false);
 	m_pFourGraphs->setChecked(false);
 	m_pAllGraphs->setChecked(false);
+	m_pSingleGraph[0]->setEnabled(true);
 
 	if(m_iApp==XFLR5::MIAREX)
 	{
@@ -5841,32 +5799,63 @@ void MainFrame::checkGraphActions()
 		{
 			case XFLR5::WOPPVIEW:
 			{
-				if(pMiarex->m_iWingView == XFLR5::ONEGRAPH)        m_pSingleGraphAct[m_pMiarexTileWidget->activeGraph()]->setChecked(true);
+				if(pMiarex->m_iWingView == XFLR5::ONEGRAPH)        m_pSingleGraph[m_pMiarexTileWidget->activeGraphIndex()]->setChecked(true);
 				else if(pMiarex->m_iWingView == XFLR5::TWOGRAPHS)  m_pTwoGraphs->setChecked(true);
 				else if(pMiarex->m_iWingView == XFLR5::FOURGRAPHS) m_pFourGraphs->setChecked(true);
 				else if(pMiarex->m_iWingView == XFLR5::ALLGRAPHS)  m_pAllGraphs->setChecked(true);
+				m_pSingleGraph[1]->setEnabled(true);
+				m_pSingleGraph[2]->setEnabled(true);
+				m_pSingleGraph[3]->setEnabled(true);
+				m_pSingleGraph[4]->setEnabled(true);
+				m_pSingleGraph[5]->setEnabled(true);
+				m_pTwoGraphs->setEnabled(true);
+				m_pFourGraphs->setEnabled(true);
+				m_pAllGraphs->setEnabled(true);
 				break;
 			}
 			case XFLR5::WPOLARVIEW:
 			{
-				if(pMiarex->m_iWPlrView == XFLR5::ONEGRAPH)        m_pSingleGraphAct[m_pMiarexTileWidget->activeGraph()]->setChecked(true);
+				if(pMiarex->m_iWPlrView == XFLR5::ONEGRAPH)        m_pSingleGraph[m_pMiarexTileWidget->activeGraphIndex()]->setChecked(true);
 				else if(pMiarex->m_iWPlrView == XFLR5::TWOGRAPHS)  m_pTwoGraphs->setChecked(true);
 				else if(pMiarex->m_iWPlrView == XFLR5::FOURGRAPHS) m_pFourGraphs->setChecked(true);
 				else if(pMiarex->m_iWPlrView == XFLR5::ALLGRAPHS)  m_pAllGraphs->setChecked(true);
+				m_pSingleGraph[1]->setEnabled(true);
+				m_pSingleGraph[2]->setEnabled(true);
+				m_pSingleGraph[3]->setEnabled(true);
+				m_pSingleGraph[4]->setEnabled(true);
+				m_pSingleGraph[5]->setEnabled(true);
+				m_pTwoGraphs->setEnabled(true);
+				m_pFourGraphs->setEnabled(true);
+				m_pAllGraphs->setEnabled(true);
 				break;
 			}
 			case XFLR5::STABPOLARVIEW:
 			{
-				if(pMiarex->m_bLongitudinal== XFLR5::ONEGRAPH)      m_pSingleGraphAct[0]->setChecked(true);
-				else if(pMiarex->m_bLongitudinal== XFLR5::ONEGRAPH) m_pSingleGraphAct[1]->setChecked(true);
+				if(pMiarex->m_bLongitudinal== XFLR5::ONEGRAPH)      m_pSingleGraph[0]->setChecked(true);
+				else if(pMiarex->m_bLongitudinal== XFLR5::ONEGRAPH) m_pSingleGraph[1]->setChecked(true);
+				m_pSingleGraph[2]->setEnabled(false);
+				m_pSingleGraph[3]->setEnabled(false);
+				m_pSingleGraph[4]->setEnabled(false);
+				m_pSingleGraph[5]->setEnabled(false);
+				m_pTwoGraphs->setEnabled(false);
+				m_pFourGraphs->setEnabled(false);
+				m_pAllGraphs->setEnabled(false);
 				break;
 			}
 			case XFLR5::STABTIMEVIEW:
 			{
-				if(pMiarex->m_iStabTimeView == XFLR5::ONEGRAPH)        m_pSingleGraphAct[m_pMiarexTileWidget->activeGraph()]->setChecked(true);
+				if(pMiarex->m_iStabTimeView == XFLR5::ONEGRAPH)        m_pSingleGraph[m_pMiarexTileWidget->activeGraphIndex()]->setChecked(true);
 				else if(pMiarex->m_iStabTimeView == XFLR5::TWOGRAPHS)  m_pTwoGraphs->setChecked(true);
 				else if(pMiarex->m_iStabTimeView == XFLR5::FOURGRAPHS) m_pFourGraphs->setChecked(true);
 				else if(pMiarex->m_iStabTimeView == XFLR5::ALLGRAPHS)  m_pAllGraphs->setChecked(true);
+				m_pSingleGraph[1]->setEnabled(true);
+				m_pSingleGraph[2]->setEnabled(true);
+				m_pSingleGraph[3]->setEnabled(true);
+				m_pSingleGraph[4]->setEnabled(false);
+				m_pSingleGraph[5]->setEnabled(false);
+				m_pTwoGraphs->setEnabled(true);
+				m_pFourGraphs->setEnabled(true);
+				m_pAllGraphs->setEnabled(false);
 				break;
 			}
 			default:
@@ -5880,19 +5869,121 @@ void MainFrame::checkGraphActions()
 		QXDirect *pXDirect = (QXDirect*)m_pXDirect;
 		if(!pXDirect->m_bPolarView)
 		{
-			m_pSingleGraphAct[0]->setChecked(true);
+			m_pSingleGraph[0]->setChecked(true);
+
+			m_pSingleGraph[1]->setEnabled(false);
+			m_pSingleGraph[2]->setEnabled(false);
+			m_pSingleGraph[3]->setEnabled(false);
+			m_pSingleGraph[4]->setEnabled(false);
+			m_pSingleGraph[5]->setEnabled(false);
+			m_pTwoGraphs->setEnabled(false);
+			m_pFourGraphs->setEnabled(false);
+			m_pAllGraphs->setEnabled(false);
 		}
 		else
 		{
-			if(pXDirect->m_iPlrView == XFLR5::ONEGRAPH)        m_pSingleGraphAct[m_pXDirectTileWidget->activeGraph()]->setChecked(true);
+			if(pXDirect->m_iPlrView == XFLR5::ONEGRAPH)        m_pSingleGraph[m_pXDirectTileWidget->activeGraphIndex()]->setChecked(true);
 			else if(pXDirect->m_iPlrView == XFLR5::TWOGRAPHS)  m_pTwoGraphs->setChecked(true);
 			else if(pXDirect->m_iPlrView == XFLR5::FOURGRAPHS) m_pFourGraphs->setChecked(true);
 			else if(pXDirect->m_iPlrView == XFLR5::ALLGRAPHS)  m_pAllGraphs->setChecked(true);
+
+			m_pSingleGraph[1]->setEnabled(true);
+			m_pSingleGraph[2]->setEnabled(true);
+			m_pSingleGraph[3]->setEnabled(true);
+			m_pSingleGraph[4]->setEnabled(true);
+			m_pSingleGraph[5]->setEnabled(false);
+			m_pTwoGraphs->setEnabled(true);
+			m_pFourGraphs->setEnabled(true);
+			m_pAllGraphs->setEnabled(true);
 		}
 	}
 	else if (m_iApp==XFLR5::INVERSEDESIGN)
 	{
-		m_pSingleGraphAct[0]->setChecked(true);
+		m_pSingleGraph[0]->setChecked(true);
+	}
+}
+
+
+void MainFrame::onResetCurGraphScales()
+{
+	switch(m_iApp)
+	{
+		case XFLR5::MIAREX:
+		{
+			m_pMiarexTileWidget->onResetCurGraphScales();
+			break;
+		}
+		case XFLR5::XFOILANALYSIS:
+		{
+			m_pXDirectTileWidget->onResetCurGraphScales();
+			break;
+		}
+		case XFLR5::INVERSEDESIGN:
+		{
+			QXInverse *pXInverse = (QXInverse*)m_pXInverse;
+			pXInverse->m_QGraph.setAuto(true);
+			pXInverse->ReleaseZoom();
+			pXInverse->updateView();
+			return;
+		}
+		default:
+			return;
+	}
+
+}
+
+
+void MainFrame::onExportCurGraph()
+{
+	switch(m_iApp)
+	{
+		case XFLR5::MIAREX:
+		{
+			m_pMiarexTileWidget->onExportCurGraph();
+			break;
+		}
+		case XFLR5::XFOILANALYSIS:
+		{
+			m_pXDirectTileWidget->onExportCurGraph();
+			break;
+		}
+		case XFLR5::INVERSEDESIGN:
+		{
+			QXInverse *pXInverse = (QXInverse*)m_pXInverse;
+			pXInverse->m_QGraph.exportGraph();
+			break;
+		}
+		default:
+			break;
+	}
+}
+
+
+
+
+
+void MainFrame::onCurGraphSettings()
+{
+	switch(m_iApp)
+	{
+		case XFLR5::MIAREX:
+		{
+			m_pMiarexTileWidget->onCurGraphSettings();
+			break;
+		}
+		case XFLR5::XFOILANALYSIS:
+		{
+			m_pXDirectTileWidget->onCurGraphSettings();
+			break;
+		}
+		case XFLR5::INVERSEDESIGN:
+		{
+			QXInverse *pXInverse = (QXInverse*)m_pXInverse;
+			pXInverse->onQGraphSettings();
+			break;
+		}
+		default:
+			break;
 	}
 }
 

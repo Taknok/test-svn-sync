@@ -29,8 +29,6 @@ public:
 
 	void setWingScale();
 	void setWingGraph(QGraph *pGraph);
-	void loadSettings(QSettings *pSettings);
-	void saveSettings(QSettings *pSettings);
 
 private:
 	void paintXCmRef(QPainter &painter, QPointF ORef, double scale);
@@ -50,13 +48,7 @@ public:
 
 private:
 
-	bool m_bXBot;                      /**< true if the transition on the bottom surface should be displayed in the operating point or in 3D view*/
-	bool m_bXCmRef; 	               /**< true if the position of the reference point for the moments should be displayed in the operating point view*/
-	bool m_bXCP;                       /**< true if the lift curve should be displayed in the operating point or in the 3D view*/
-	bool m_bXTop;                      /**< true if the transition on the top surface should be displayed in the operating point or in 3D view */
-
 	bool m_bTrans;
-	bool m_bIs2DScaleSet;
 
 	double m_WingScale;
 	QPointF m_ptOffset;              /**< client offset position for wing display */

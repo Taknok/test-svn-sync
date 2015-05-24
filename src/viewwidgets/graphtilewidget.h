@@ -48,19 +48,21 @@ public:
 	XFLR5::enumApp xflr5App(){return m_xflr5App;}
 
 	int graphWidgetCount(){return m_GraphWidget.count();}
-	int activeGraph(){return m_iActiveGraphWidget;}
-	void setActiveGraph(int iGraphWidget);
+	int activeGraphIndex(){return m_iActiveGraphWidget;}
 	void setGraphCount(int nGraphs);
 
 	void keyPressEvent(QKeyEvent *event);
 	void contextMenuEvent (QContextMenuEvent *event);
+	void showEvent(QShowEvent *event);
+
 
 	virtual void setGraphList(QList<QGraph*>pGraphList, int nGraphs, int iGraphWidget, Qt::Orientation orientation =Qt::Horizontal);
 	virtual void Connect() = 0;
 
 
 	GraphWidget *graphWidget(QGraph *pGraph);
-	void setCurGraph(QGraph *pGraph){m_pCurGraph = pGraph;}
+	QGraph *activeGraph();
+	GraphWidget *activeGraphWidget();
 
 private:
 	virtual void adjustLayout() = 0;
@@ -68,7 +70,6 @@ private:
 
 
 public slots:
-	void onSetActiveGraph(QGraph* pGraph = NULL);
 	void onResetCurves(QGraph *pGraph = NULL);
 
 	void onSingleGraph();
@@ -79,7 +80,7 @@ public slots:
 	void onTwoGraphs();
 	void onFourGraphs();
 	void onAllGraphs();
-	void onGraphSettings();
+	void onCurGraphSettings();
 	void onResetCurGraphScales();
 	void onExportCurGraph();
 
@@ -102,8 +103,6 @@ private:
 	XFLR5::enumMiarexViews m_MiarexView;
 
 	Qt::Orientation m_SingleGraphOrientation;
-
-	QGraph *m_pCurGraph;
 };
 
 #endif // GRAPHTILEWIDGET_H

@@ -80,22 +80,17 @@ signals:
 	void projectModified();
 
 public slots:
-	void UpdateView();
+	void updateView();
 
 
 
 private slots:
 	void OnXFoilAdvanced();
 
-	void OnCouplePolarGraphs();
-	void OnAllPolarGraphs();
-	void OnSinglePolarGraph();
-	void OnAllPolarGraphsSetting();
-
 	void OnPolarFilter();
-	void OnInputChanged();
+	void onInputChanged();
 	void OnAnalyze();
-	void OnAnimate(bool bChecked);
+	void onAnimate(bool bChecked);
 	void OnAnimateSpeed(int val);
 	void OnBatchAnalysis();
 	void OnMultiThreadedBatchAnalysis();
@@ -106,8 +101,8 @@ private slots:
 	void OnCurveColor();
 	void OnDeleteCurFoil();
 	void OnDelCurOpp();
-	void OnDeleteCurPolar();
-	void OnDeleteFoilPolars();
+	void onDeleteCurPolar();
+	void onDeleteFoilPolars();
 	void OnEditCurPolar();
 	void OnExportCurFoil();
 	void OnExportCurOpp();
@@ -119,8 +114,8 @@ private slots:
 	void OnHideFoilPolars();
 	void OnImportJavaFoilPolar();
 	void OnImportXFoilPolar();
-	void OnOpPointView();
-	void OnPolarView();
+	void onOpPointView();
+	void onPolarView();
 	void OnResetAllPolarGraphsScales();
 	void OnResetCurPolar();
 	void OnSavePolars();
@@ -138,10 +133,10 @@ private slots:
 	void OnDuplicateFoil();
 	void OnShowPolarOpps();
 	void OnHidePolarOpps();
-	void OnDeletePolarOpps();
+	void onDeletePolarOpps();
 	void OnShowFoilOpps();
 	void OnHideFoilOpps();
-	void OnDeleteFoilOpps();
+	void onDeleteFoilOpps();
 	void OnDerotateFoil();
 	void OnNormalizeFoil();
 	void OnCadd();
@@ -213,6 +208,9 @@ public:
 	OpPoint *setOpp(double Alpha=-123456789.0);
 
 	bool bPolarView() {return m_bPolarView;}
+	QGraph *CpGraph(){return &m_CpGraph;}
+	QGraph *PlrGraph(int iPlrGraph){return m_PlrGraph.at(iPlrGraph);}
+	int PlrGraphSize(){return m_PlrGraph.count();}
 
 private:
 

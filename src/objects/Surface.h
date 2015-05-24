@@ -195,7 +195,7 @@ private :
 	double y1, y2, xLA, xTA, xLB, xTB;
 
 
-	XFLR5::enumPanelDistribution m_XDistType;            /**< the type of distribution along the Surface's x axis @todo replace with an enumeration*/
+	XFLR5::enumPanelDistribution m_XDistType;            /**< the type of distribution along the Surface's x axis */
 	XFLR5::enumPanelDistribution m_YDistType;            /**< the type of distribution along the Surface's y axis */
 	int m_NXLead;               /**< the number of panels upstream of the flap, i.e. between the leading edge and the hinge */
 	int m_NXFlap;               /**< the number of panels on the flap, i.e. between the hinge and the trailing edge */

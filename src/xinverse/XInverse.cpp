@@ -571,7 +571,7 @@ void QXInverse::keyPressEvent(QKeyEvent *event)
 					CancelSpline();
 					CancelSmooth();
 				}
-				UpdateView();
+				updateView();
 			}
 			break;
 		}
@@ -604,7 +604,7 @@ void QXInverse::keyPressEvent(QKeyEvent *event)
 		}
 		case Qt::Key_G:
 		{
-			OnGraphSettings();
+			onQGraphSettings();
 			return;
 		}
 		case Qt::Key_R:
@@ -612,7 +612,7 @@ void QXInverse::keyPressEvent(QKeyEvent *event)
 			if(m_pCurGraph)
 			{
 				m_QGraph.setAuto(true);
-				UpdateView();
+				updateView();
 			}
 			else OnResetFoilScale();
 			break;
@@ -737,7 +737,7 @@ void QXInverse::doubleClickEvent(QPoint pos)
 {
 	if (!m_QGraph.isInDrawRect(pos)) return;
 
-	OnGraphSettings();
+	onQGraphSettings();
 }
 
 
@@ -758,29 +758,29 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 
 	if(m_bGetPos)
 	{
-		m_tmpPos = m_pMCurve->closestPoint(m_QGraph.ClientTox(point.x()), m_QGraph.ClientToy(point.y()), dist);
-		UpdateView();
+		m_tmpPos = m_pMCurve->closestPoint(m_QGraph.clientTox(point.x()), m_QGraph.clientToy(point.y()), dist);
+		updateView();
 	}
 	else if(m_bZoomPlus && (event->buttons() & Qt::LeftButton))
 	{
 		m_ZoomRect.setRight(point.x());
 		m_ZoomRect.setBottom(point.y());
-		UpdateView();
+		updateView();
 	}
 	else if(m_rCltRect.contains(point) && (event->buttons() & Qt::LeftButton) && m_bTrans)
 	{
 		if(m_bTransGraph)
 		{
 			// we're dragging the graph
-			x1 =  m_QGraph.ClientTox(m_PointDown.x()) ;
-			y1 =  m_QGraph.ClientToy(m_PointDown.y()) ;
+			x1 =  m_QGraph.clientTox(m_PointDown.x()) ;
+			y1 =  m_QGraph.clientToy(m_PointDown.y()) ;
 			
-			xu = m_QGraph.ClientTox(point.x());
-			yu = m_QGraph.ClientToy(point.y());
+			xu = m_QGraph.clientTox(point.x());
+			yu = m_QGraph.clientToy(point.y());
 
-			xmin = m_QGraph.GetXMin() - xu+x1;
-			xmax = m_QGraph.GetXMax() - xu+x1;
-			ymin = m_QGraph.GetYMin() - yu+y1;
+			xmin = m_QGraph.xMin() - xu+x1;
+			xmax = m_QGraph.xMax() - xu+x1;
+			ymin = m_QGraph.yMin() - yu+y1;
 			ymax = m_QGraph.GetYMax() - yu+y1;
 
 			m_QGraph.SetWindow(xmin, xmax, ymin, ymax);
@@ -791,14 +791,14 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 			m_ptOffset.rx() += point.x() - m_PointDown.x();
 			m_ptOffset.ry() += point.y() - m_PointDown.y();
 		}
-		UpdateView();
+		updateView();
 		m_PointDown = point;
 	}
 	else if ((event->buttons() & Qt::LeftButton)  && !m_bZoomPlus && m_bSpline && m_Spline.m_iSelect>=0) 
 	{
 		// user is dragging the point
-		x1 =  m_QGraph.ClientTox(point.x()) ;
-		y1 =  m_QGraph.ClientToy(point.y()) ;
+		x1 =  m_QGraph.clientTox(point.x()) ;
+		y1 =  m_QGraph.clientToy(point.y()) ;
 		if(m_rGraphRect.contains(point))
 		{
 			n = m_Spline.m_iSelect;
@@ -807,7 +807,7 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 			{
 				// user is dragging end point
 				// find closest graph point
-				ipt = m_pMCurve->closestPoint(m_QGraph.ClientTox(point.x()), m_QGraph.ClientToy(point.y()), dist);
+				ipt = m_pMCurve->closestPoint(m_QGraph.clientTox(point.x()), m_QGraph.clientToy(point.y()), dist);
 				m_SplineLeftPos = ipt;
 				xpt = m_pMCurve->x[ipt];
 				ypt = m_pMCurve->y[ipt];
@@ -831,7 +831,7 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 			{
 				// user is dragging end point
 				// find closest graph point
-				ipt = m_pMCurve->closestPoint(m_QGraph.ClientTox(point.x()), m_QGraph.ClientToy(point.y()), dist);
+				ipt = m_pMCurve->closestPoint(m_QGraph.clientTox(point.x()), m_QGraph.clientToy(point.y()), dist);
 				m_SplineRightPos = ipt;
 				xpt = m_pMCurve->x[ipt];
 				ypt = m_pMCurve->y[ipt];
@@ -873,8 +873,8 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 				tanpt.rx() = P1.x() + (int)(vx * scal);
 				tanpt.ry() = P1.y() + (int)(vy * scal);
 
-				x1 =  m_QGraph.ClientTox(tanpt.x()) ;
-				y1 =  m_QGraph.ClientToy(tanpt.y()) ;
+				x1 =  m_QGraph.clientTox(tanpt.x()) ;
+				y1 =  m_QGraph.clientToy(tanpt.y()) ;
 
 				xx0 = m_pMCurve->x[m_SplineLeftPos-1];
 				xx1 = m_pMCurve->x[m_SplineLeftPos];
@@ -923,8 +923,8 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 				tanpt.rx() = P1.x() + (int)(vx * scal);
 				tanpt.ry() = P1.y() + (int)(vy * scal);
 
-				x1 =  m_QGraph.ClientTox(tanpt.x()) ;
-				y1 =  m_QGraph.ClientToy(tanpt.y()) ;
+				x1 =  m_QGraph.clientTox(tanpt.x()) ;
+				y1 =  m_QGraph.clientToy(tanpt.y()) ;
 
 				xx0 = m_pMCurve->x[m_SplineRightPos-1];
 				xx1 = m_pMCurve->x[m_SplineRightPos];
@@ -958,7 +958,7 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 				m_Spline.SplineCurve();
 				m_bSplined = false;
 			}
-			UpdateView();
+			updateView();
 		}
 	}
 	else if((event->buttons() & Qt::MidButton) /*||  (shZ & 0x8000)*/)
@@ -982,7 +982,7 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 			a = (int)((m_rCltRect.right()+m_rCltRect.left())/2);
 			m_ptOffset.rx() = a + (int)((m_ptOffset.x()-a)*m_fScale/scale);
 		}
-		UpdateView();
+		updateView();
 		m_PointDown = point;
 	}
 	else
@@ -990,21 +990,21 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 		// highlight if mouse passe over a point
 		if(m_bSpline)
 		{
-			x1 =  m_QGraph.ClientTox(point.x());
-			y1 =  m_QGraph.ClientToy(point.y());
-			n = m_Spline.isControlPoint(x1,y1, m_QGraph.GetXScale(), m_QGraph.GetYScale());
+			x1 =  m_QGraph.clientTox(point.x());
+			y1 =  m_QGraph.clientToy(point.y());
+			n = m_Spline.isControlPoint(x1,y1, m_QGraph.xScale(), m_QGraph.yScale());
 			if (n>=0 && n<m_Spline.m_CtrlPoint.size())
 			{
 				m_Spline.m_iHighlight = n;
 			}
 			else m_Spline.m_iHighlight = -1;
-			UpdateView();
+			updateView();
 		}
 	}
 
 	if(m_QGraph.isInDrawRect(point))
 	{
-		pMainFrame->statusBar()->showMessage(QString("X = %1, Y = %2").arg(m_QGraph.ClientTox(event->x())).arg(m_QGraph.ClientToy(event->y())));
+		pMainFrame->statusBar()->showMessage(QString("X = %1, Y = %2").arg(m_QGraph.clientTox(event->x())).arg(m_QGraph.clientToy(event->y())));
 		m_pCurGraph = &m_QGraph;
 	}
 	else
@@ -1048,11 +1048,11 @@ void QXInverse::mousePressEvent(QMouseEvent *event)
 			{
 				m_bTransGraph = true;
 				p2DWidget->setCursor(Qt::ClosedHandCursor);
-				xd = m_QGraph.ClientTox(point.x());
-				yd = m_QGraph.ClientToy(point.y());
+				xd = m_QGraph.clientTox(point.x());
+				yd = m_QGraph.clientToy(point.y());
 				if(m_bSpline)
 				{
-					CtrlPt = m_Spline.isControlPoint(xd, yd, m_QGraph.GetXScale(), m_QGraph.GetYScale());
+					CtrlPt = m_Spline.isControlPoint(xd, yd, m_QGraph.xScale(), m_QGraph.yScale());
 					if(CtrlPt<0) m_Spline.m_iSelect = -1;
 					else 
 					{
@@ -1136,16 +1136,16 @@ void QXInverse::mouseReleaseEvent(QMouseEvent *event)
 		QRect ZRect = m_ZoomRect.normalized();
 		if (!ZRect.isEmpty() )
 		{
-			xu = m_QGraph.ClientTox(point.x());
-			yu = m_QGraph.ClientToy(point.y());
+			xu = m_QGraph.clientTox(point.x());
+			yu = m_QGraph.clientToy(point.y());
 
 			width  = abs(m_PointDown.x()-point.x());
 			height = abs(m_PointDown.y()-point.y());
 			//preserve ratio
 			w = qAbs(xu-xd);
 			h = qAbs(yu-yd);
-			xw = 	m_QGraph.GetXMax() - m_QGraph.GetXMin();
-			yh = 	m_QGraph.GetYMax() - m_QGraph.GetYMin();
+			xw = 	m_QGraph.xMax() - m_QGraph.xMin();
+			yh = 	m_QGraph.GetYMax() - m_QGraph.yMin();
 			xm = (xu+xd)/2.0;
 			ym = (yu+yd)/2.0;
 
@@ -1187,11 +1187,11 @@ void QXInverse::mouseReleaseEvent(QMouseEvent *event)
 	{
 		if(m_nPos == 0)
 		{
-			m_Pos1 = m_pMCurve->closestPoint(m_QGraph.ClientTox(point.x()), m_QGraph.ClientToy(point.y()), dist);
+			m_Pos1 = m_pMCurve->closestPoint(m_QGraph.clientTox(point.x()), m_QGraph.clientToy(point.y()), dist);
 		}
 		if(m_nPos == 1)
 		{
-			m_Pos2 = m_pMCurve->closestPoint(m_QGraph.ClientTox(point.x()), m_QGraph.ClientToy(point.y()), dist);
+			m_Pos2 = m_pMCurve->closestPoint(m_QGraph.clientTox(point.x()), m_QGraph.clientToy(point.y()), dist);
 		}
 		m_nPos++;
 		if(m_nPos == 2) 
@@ -1300,7 +1300,7 @@ void QXInverse::mouseReleaseEvent(QMouseEvent *event)
 	}
 
 	p2DWidget->setCursor(Qt::CrossCursor);
-	UpdateView();
+	updateView();
 }
 
 
@@ -1358,7 +1358,7 @@ void QXInverse::OnApplySpline()
 
 		pXFoil->lqspec = false;
 
-		UpdateView();
+		updateView();
 	}
 	if(m_bZoomPlus) ReleaseZoom();
 //	m_bSpline = false;
@@ -1367,7 +1367,7 @@ void QXInverse::OnApplySpline()
 	m_Pos1    = -1;
 	m_Pos2    = -1;
 
-	UpdateView();
+	updateView();
 	emit projectModified();
 }
 
@@ -1410,7 +1410,7 @@ void QXInverse::OnExecute()
 		m_pctrlMOutput->setPlainText(" ");
 		ExecQDES();
 	}
-	UpdateView();
+	updateView();
 	emit projectModified();
 }
 
@@ -1444,7 +1444,7 @@ void QXInverse::OnExtractFoil()
 		m_pModFoil->m_FoilName = m_pRefFoil->m_FoilName + tr(" Modified");
 		InitXFoil(m_pRefFoil);
 		SetFoil();
-		UpdateView();
+		updateView();
 	}
 }
 
@@ -1462,29 +1462,32 @@ void QXInverse::OnFilter()
 	pXFoil->Filter(filt);
 	CreateMCurve();
 
-	UpdateView();
+	updateView();
 }
 
 
 /**
  *The user has requested an edition of the graph settings
 */
-void QXInverse::OnGraphSettings()
+void QXInverse::onQGraphSettings()
 {
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 	GraphDlg *m_pGraphDlg = new GraphDlg(pMainFrame);
 
-	m_pGraphDlg->m_XSel = 0;
-	m_pGraphDlg->m_YSel = 0;
+	m_pGraphDlg->XSel() = 0;
+	m_pGraphDlg->YSel() = 0;
 	m_pGraphDlg->setGraph(&m_QGraph);
-	m_pGraphDlg->setControls();
 
-	if(m_pGraphDlg->exec() == QDialog::Accepted)
-	{
-	}
-
-	UpdateView();
+	m_pGraphDlg->exec();
+	updateView();
 }
+
+
+void QXInverse::onExportQGraph()
+{
+	m_QGraph.exportGraph();
+}
+
 
 
 /**
@@ -1492,8 +1495,8 @@ void QXInverse::OnGraphSettings()
  */
 void QXInverse::OnInsertCtrlPt()
 {
-	double xd = m_QGraph.ClientTox(m_ptPopUp.x());
-	double yd = m_QGraph.ClientToy(m_ptPopUp.y());
+	double xd = m_QGraph.clientTox(m_ptPopUp.x());
+	double yd = m_QGraph.clientToy(m_ptPopUp.y());
 
 	if(xd < m_Spline.m_CtrlPoint.first().x) return;
 	if(xd > m_Spline.m_CtrlPoint.last().x) return;
@@ -1501,7 +1504,7 @@ void QXInverse::OnInsertCtrlPt()
 	m_Spline.InsertPoint(xd,yd);
 	m_Spline.SplineKnots();
 	m_Spline.SplineCurve();
-	UpdateView();
+	updateView();
 }
 
 
@@ -1522,7 +1525,7 @@ void QXInverse::OnInverseApp()
 		m_pctrlStackedInv->setCurrentIndex(1);
 	}
 	SetFoil();
-	UpdateView();
+	updateView();
 }
 
 
@@ -1560,7 +1563,7 @@ void QXInverse::OnMarkSegment()
 	m_pctrlMNewSpline->setChecked(false);
 	m_pctrlMShowSpline->setChecked(false);
 
-	UpdateView();
+	updateView();
 }
 
 
@@ -1590,7 +1593,7 @@ void QXInverse::OnNewSpline()
 	{
 		CancelSpline();
 	}
-	UpdateView();
+	updateView();
 }
 
 
@@ -1623,7 +1626,7 @@ void QXInverse::OnPertubate()
 		pXFoil->pert_process(1);
 		CreateMCurve();
 		m_pMCurve->SetVisible(true);
-		UpdateView();
+		updateView();
 	}
 }
 
@@ -1633,7 +1636,7 @@ void QXInverse::OnQInitial()
 {
 	m_pQCurve->SetVisible(!m_pQCurve->IsVisible());
 	CheckActions();
-	UpdateView();
+	updateView();
 }
 
 /** Toggles the visibility of the specification curve */
@@ -1641,7 +1644,7 @@ void QXInverse::OnQSpec()
 {
 	m_pMCurve->SetVisible(!m_pMCurve->IsVisible());
 	CheckActions();
-	UpdateView();
+	updateView();
 }
 
 /** Toggles the visibility of the viscous curve */
@@ -1651,7 +1654,7 @@ void QXInverse::OnQViscous()
 	if(pXFoil->lvisc)
 	{
 		m_pQVCurve->SetVisible(!m_pQVCurve->IsVisible());
-		UpdateView();
+		updateView();
 	}
 	CheckActions();
 }
@@ -1663,7 +1666,7 @@ void QXInverse::OnQPoints()
 	m_pQCurve->showPoints(m_bShowPoints);
 	m_pMCurve->showPoints(m_bShowPoints);
 	CheckActions();
-	UpdateView();
+	updateView();
 }
 
 /** Toggles the visibility of the reflected curve */
@@ -1672,7 +1675,7 @@ void QXInverse::OnQReflected()
 	m_bReflected = !m_bReflected;
 	m_pReflectedCurve->SetVisible(m_bReflected);
 	CheckActions();
-	UpdateView();
+	updateView();
 }
 
 
@@ -1685,7 +1688,7 @@ void QXInverse::OnQReset()
 	ReleaseZoom();
 	if(m_bFullInverse) ResetQ();
 	else               ResetMixedQ();
-	UpdateView();
+	updateView();
 }
 
 /**
@@ -1703,7 +1706,7 @@ void QXInverse::OnRemoveCtrlPt()
 		}
 	}
 	m_Spline.SplineCurve();
-	UpdateView();
+	updateView();
 }
 
 /** The user has requested a reset of the Foil scale */
@@ -1711,7 +1714,7 @@ void QXInverse::OnResetFoilScale()
 {
 	ReleaseZoom();
 	ResetScale();
-	UpdateView();
+	updateView();
 }
 
 
@@ -1758,7 +1761,7 @@ void QXInverse::OnSpecInv()
 	}
 	CreateQCurve();
 	CreateMCurve();
-	UpdateView();
+	updateView();
 }
 
 
@@ -1768,7 +1771,7 @@ void QXInverse::OnShowSpline()
 	if(m_bFullInverse) m_bSpline = m_pctrlShowSpline->isChecked();
 	else               m_bSpline = m_pctrlMShowSpline->isChecked();
 	m_bSplined =   !m_bSpline;
-	UpdateView();
+	updateView();
 }
 
 /** The user has requested a smoothing operation on the curve */
@@ -1781,7 +1784,7 @@ void QXInverse::OnSmooth()
 
 		m_bSpline = false;
 		m_bSmooth = true;
-		UpdateView();
+		updateView();
 		m_bGetPos = true;
 		m_nPos    = 0;
 	}
@@ -1930,8 +1933,8 @@ void QXInverse::PaintGraph(QPainter &painter)
 
 		QPoint pt = m_QGraph.getOffset();
 
-		m_Spline.drawSpline(painter, 1.0/m_QGraph.GetXScale(), -1.0/m_QGraph.GetYScale(), pt);
-		m_Spline.drawCtrlPoints(painter, 1.0/m_QGraph.GetXScale(), -1.0/m_QGraph.GetYScale(), pt);
+		m_Spline.drawSpline(painter, 1.0/m_QGraph.xScale(), -1.0/m_QGraph.yScale(), pt);
+		m_Spline.drawCtrlPoints(painter, 1.0/m_QGraph.xScale(), -1.0/m_QGraph.yScale(), pt);
 		
 	}
 
@@ -2154,7 +2157,7 @@ void QXInverse::ResetQ()
 	pXFoil->cncalc(pXFoil->qgamm,false);
 	pXFoil->qspcir();
 	CreateMCurve();
-	UpdateView();
+	updateView();
 }
 
 
@@ -2686,16 +2689,15 @@ void QXInverse::Smooth(int Pos1, int Pos2)
 	CreateMCurve();
 	m_bSmooth = false;
 	CancelSmooth();
-	UpdateView();
+	updateView();
 }
 
 /**
  * Refreshes the display
  */
-void QXInverse::UpdateView()
+void QXInverse::updateView()
 {
 	TwoDWidget *p2DWidget = (TwoDWidget*)s_p2DWidget;
-
 	if(s_p2DWidget)
 	{
 		p2DWidget->update();
@@ -2745,7 +2747,7 @@ void QXInverse::zoomEvent(QPoint pos, double zoomFactor)
 		int a = (int)((m_rCltRect.right() + m_rCltRect.left())/2);
 		m_ptOffset.rx() = a + (int)((m_ptOffset.x()-a)*m_fScale/scale);
 	}
-	UpdateView();
+	updateView();
 }
 
 

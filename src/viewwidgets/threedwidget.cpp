@@ -468,7 +468,7 @@ void ThreeDWidget::paintEvent(QPaintEvent *event)
 	if(m_iView==GLMIAREXVIEW)
 	{
 		QMiarex* pMiarex = (QMiarex*)s_pMiarex;
-		if(pMiarex->m_bResetTextLegend) pMiarex->DrawTextLegend();
+		if(pMiarex->m_bResetTextLegend) pMiarex->drawTextLegend();
 
 		painter.drawPixmap(0,0, pMiarex->m_PixText);
 		painter.drawPixmap(0,0, m_PixText);
@@ -699,7 +699,6 @@ void ThreeDWidget::GLCreateArcballList(ArcBall &ArcBall, double GLScale)
 		}
 		glEndList();
 	}
-qDebug()<<GLError();
 
 	if(!glIsList(ARCPOINTLIST))
 	{

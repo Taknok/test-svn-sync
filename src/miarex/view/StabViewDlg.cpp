@@ -1120,7 +1120,7 @@ void StabViewDlg::OnDeleteCurve()
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 	if(!m_pCurve) return;
 	QString CurveTitle = m_pCurve->title();
-	for(int ig=0; ig<MAXGRAPHS; ig++)	pMiarex->m_TimeGraph[ig]->DeleteCurve(CurveTitle);
+	for(int ig=0; ig<MAXGRAPHS; ig++)	pMiarex->m_TimeGraph[ig]->deleteCurve(CurveTitle);
 	m_pCurve = NULL;
 
 	FillCurveList();

@@ -40,7 +40,7 @@ XDirectTileWidget::XDirectTileWidget(QWidget *pParent) :  GraphTileWidget(pParen
 
 	m_pLegendWidget = new LegendWidget(this);
 	m_pFoilWidget   = new FoilWidget(this);
-	m_pLegendStack = new QStackedWidget;
+//	m_pLegendStack = new QStackedWidget(this);
 
 	m_nGraphWidgets = MAXPOLARGRAPHS;
 
@@ -68,7 +68,6 @@ void XDirectTileWidget::Connect()
 	for(int igw=0; igw<m_GraphWidget.count(); igw++)
 	{
 		connect(m_GraphWidget.at(igw), SIGNAL(graphChanged(QGraph*)), this, SLOT(onResetCurves(QGraph*)));
-		connect(m_GraphWidget.at(igw), SIGNAL(isActive(QGraph*)), this, SLOT(onSetActiveGraph(QGraph*)));
 	}
 }
 
@@ -216,8 +215,9 @@ void XDirectTileWidget::setGraphList(QList<QGraph*>pGraphList, int nGraphs, int 
 	QXDirect *pXDirect = (QXDirect*)s_pXDirect;
 	if(!pXDirect->bPolarView()) m_pFoilWidget->setGraph(&pXDirect->m_CpGraph);
 
-
 	adjustLayout();
+
+	m_GraphWidget.at(0)->setFocus();
 
 	update();
 }

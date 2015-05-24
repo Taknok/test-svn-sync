@@ -153,8 +153,8 @@ private slots:
 	void OnExporttoAVL();
 	void OnExportCurWOpp();
 	void OnExportCurWPolar();
-	void OnExportPlanetoXML();
-	void OnImportPlanefromXML();
+	void onExportPlanetoXML();
+	void onImportPlanefromXML();
 	void OnFinCurve();
 	void OnFoilNames();
 	void OnFourGraphs();
@@ -192,7 +192,7 @@ private slots:
 	void OnShowAllWPlrOpps();
 	void OnShowAllWPolars();
 	void OnShowCurve();
-	void OnShowEllipticCurve();
+	void onShowEllipticCurve();
 	void OnShowLift();
 	void OnShowIDrag();
 	void OnShowTransitions();
@@ -200,11 +200,7 @@ private slots:
 	void OnShowPlaneWPolarsOnly();
 	void OnShowPlaneOpps();
 	void OnShowVDrag();
-	void OnShowXCmRef();
-	void OnSingleGraph1();
-	void OnSingleGraph2();
-	void OnSingleGraph3();
-	void OnSingleGraph4();
+	void onShowXCmRef();
 	void OnStabCurve();
 	void OnStabilityDirection();
 	void OnStoreWOpp();
@@ -243,7 +239,7 @@ public:
 	void CreateStabTimeCurves();
 	void CreateStabRungeKuttaCurves();
 	void DrawCpLegend(QPainter &painter, QPoint place, int bottom);
-	void DrawTextLegend();
+	void drawTextLegend();
 	void DuplicatePlane();
 	void FillComboBoxes(bool bEnable = true);
 	void FillWPlrCurve(Curve *pCurve, WPolar *pWPolar, int XVar, int YVar);
@@ -256,11 +252,11 @@ public:
 	bool IntersectObject(CVector O,  CVector U, CVector &I);
 	void LLTAnalyze(double V0, double VMax, double VDelta, bool bSequence, bool bInitCalc);	
 	bool loadSettings(QSettings *pSettings);
-	void PaintCpLegendText(QPainter &painter);
-	void PaintPanelForceLegendText(QPainter &painter);
+	void paintCpLegendText(QPainter &painter);
+	void paintPanelForceLegendText(QPainter &painter);
 	void PanelAnalyze(double V0, double VMax, double VDelta, bool bSequence);
-	void PaintPlaneLegend(QPainter &painter, Plane *pPlane, WPolar *pWPolar, QRect drawRect);
-	void PaintPlaneOppLegend(QPainter &painter, QRect drawRect);
+	void paintPlaneLegend(QPainter &painter, Plane *pPlane, WPolar *pWPolar, QRect drawRect);
+	void paintPlaneOppLegend(QPainter &painter, QRect drawRect);
 	void RenamePlane(QString PlaneName);
 	bool saveSettings(QSettings *pSettings);
 	void Set3DScale();
@@ -277,7 +273,7 @@ public:
 	void setView(XFLR5::enumGraphView eView);
 	void SetWGraphScale();
 	void setWGraphTitles(Graph* pGraph);
-	void SetWPolar(bool bCurrent = true, QString WPlrName = "");
+	void setWPolar(bool bCurrent = true, QString WPlrName = "");
 	void SnapClient(QString const &FileName);
 	void StopAnimate();
 	void UpdateCurve();
@@ -385,6 +381,7 @@ public:
 	bool m_bType7;                     /**< true if polars of type 71 are to be displayed */
 	bool m_bVortices;                  /**< true if the panel vortices should be displayed */
 	bool m_bPanelNormals;                   /**< true if the panel normals should be displayed */
+	bool m_bXCmRef; 	               /**< true if the position of the reference point for the moments should be displayed in the operating point view*/
 	bool m_bXBot;                      /**< true if the transition on the bottom surface should be displayed in the operating point or in 3D view*/
 	bool m_bXCP;                       /**< true if the lift curve should be displayed in the operating point or in the 3D view*/
 	bool m_bXTop;                      /**< true if the transition on the top surface should be displayed in the operating point or in 3D view */
