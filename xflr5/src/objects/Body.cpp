@@ -58,7 +58,7 @@ Body::Body()
 	m_CoG.Set(0.0,0.0,0.0);
 	m_VolumeMass =  m_TotalMass = 0.0;	    //for inertia calculations
 	m_CoGIxx = m_CoGIyy = m_CoGIzz = m_CoGIxz = 0.0;
-	ClearPointMasses();
+	clearPointMasses();
 
 	m_Bunch  = 0.0;
 
@@ -135,11 +135,15 @@ Body::Body()
 	frame(6)->m_CtrlPoint[4].Set(0.719, 0.00, -0.0);
 
 
-	SetKnots();
+	setNURBSKnots();
 }
 
+Body::~Body()
+{
+	clearPointMasses();
+}
 
-void Body::SetKnots()
+void Body::setNURBSKnots()
 {
 	m_SplineSurface.SetKnots();
 }
@@ -219,7 +223,7 @@ void Body::Duplicate(Body *pBody)
 		m_SplineSurface.m_pFrame[i]->CopyFrame(pBody->m_SplineSurface.m_pFrame[i]);
 		m_xPanels.append(pBody->m_xPanels.at(i));
 	}
-	SetKnots();
+	setNURBSKnots();
 
 	m_hPanels.clear();
 	for(int i=0; i<SideLineCount(); i++)
@@ -227,7 +231,7 @@ void Body::Duplicate(Body *pBody)
 		m_hPanels.append(pBody->m_hPanels[i]);
 	}
 
-	ClearPointMasses();
+	clearPointMasses();
 	for(int im=0; im<pBody->m_PointMass.size(); im++)
 	{
 		m_PointMass.append(new PointMass(pBody->m_PointMass.at(im)));
@@ -239,7 +243,6 @@ void Body::Duplicate(Body *pBody)
 /**
  * Exports the definition to text file. The definition is the type of body, the position of the control points,
  * the NURBS degree and other related data.
- * @todo The format is home-made and could be advantageously replaced by some kind of xml format.
  * @return true if the Body definition was correctly exported, false otherwise.
  */
 bool Body::ExportBodyDefinition(QTextStream &outStream, double mtoUnit)
@@ -627,7 +630,7 @@ int Body::InsertPoint(CVector Real)
 
 	m_hPanels.insert(n, 1);
 
-	SetKnots();
+	setNURBSKnots();
 	return n;
 }
 
@@ -661,7 +664,7 @@ int Body::insertFrameBefore(int iFrame)
 	}
 	m_xPanels.insert(iFrame, 1);
 
-	SetKnots();
+	setNURBSKnots();
 	return iFrame;
 }
 
@@ -696,7 +699,7 @@ int Body::insertFrameAfter(int iFrame)
 
 	m_xPanels.insert(iFrame+1, 1);
 
-	SetKnots();
+	setNURBSKnots();
 
 	return iFrame+1;
 }
@@ -767,7 +770,7 @@ int Body::insertFrame(CVector Real)
 
 	m_xPanels.insert(n, 1);
 
-	SetKnots();
+	setNURBSKnots();
 
 	return n+1;
 }
@@ -1124,7 +1127,7 @@ int Body::removeFrame(int n)
 
 	m_iActiveFrame = qMin(n, m_SplineSurface.m_pFrame.size());
 	m_iHighlight = -1;
-	SetKnots();
+	setNURBSKnots();
 	return m_iActiveFrame;
 }
 
@@ -1138,7 +1141,7 @@ void Body::RemoveActiveFrame()
 
 
 	m_iHighlight = -1;
-	SetKnots();
+	setNURBSKnots();
 }
 
 /**
@@ -1151,7 +1154,7 @@ void Body::RemoveSideLine(int SideLine)
 	{
 		m_SplineSurface.m_pFrame[i]->RemovePoint(SideLine);
 	}
-	SetKnots();
+	setNURBSKnots();
 }
 
 
@@ -1295,7 +1298,7 @@ bool Body::SerializeBodyWPA(QDataStream &ar, bool bIsStoring)
 				ReadCString(ar, tag[im]);
 			}
 
-			ClearPointMasses();
+			clearPointMasses();
 			for(int im=0; im<nMass; im++)
 			{
 				m_PointMass.append(new PointMass(mass[im], position[im], tag[im]));
@@ -1311,7 +1314,7 @@ bool Body::SerializeBodyWPA(QDataStream &ar, bool bIsStoring)
 //		else m_BodyLEPosition.Set(0.0,0.0,0.0);
 		ar >> f;
 
-		SetKnots();
+		setNURBSKnots();
 	}
 	return true;
 }
@@ -1421,7 +1424,7 @@ bool Body::SerializeBodyXFL(QDataStream &ar, bool bIsStoring)
 
 		ar >> m_VolumeMass;
 
-		ClearPointMasses();
+		clearPointMasses();
 		ar >> k;
 		for(i=0; i<k; i++)
 		{
@@ -1863,7 +1866,7 @@ void Body::SetEdgeWeight(double uw, double vw)
 /**
  * Destroys the PointMass objects in good order to avoid memory leaks
 */
-void Body::ClearPointMasses()
+void Body::clearPointMasses()
 {
 	for(int ipm=m_PointMass.size()-1; ipm>=0; ipm--)
 	{

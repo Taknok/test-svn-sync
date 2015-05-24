@@ -22,11 +22,12 @@
 #include "../analysis/XFoil.h"
 #include "NacaFoilDlg.h"
 #include <QGridLayout>
-#include <QtDebug>
+#include <QFormLayout>
 
 void *NacaFoilDlg::s_pXFoil;
 int NacaFoilDlg::s_Digits = 0;
 int NacaFoilDlg::s_Panels = 100;
+
 
 NacaFoilDlg::NacaFoilDlg(QWidget *pParent) : QDialog(pParent)
 {
@@ -37,83 +38,81 @@ NacaFoilDlg::NacaFoilDlg(QWidget *pParent) : QDialog(pParent)
 	m_bGenerated = false;
 	m_pBufferFoil = NULL;
 
-	SetupLayout();
-    m_pctrlNumber->setText(QString("%1").arg(s_Digits,4));
+	setupLayout();
+
+	m_pctrlNumber->setText(QString("%1").arg(s_Digits,4,10,QChar('0')));
 	m_pctrlPanels->setValue(s_Panels);
 }
 
 
-void NacaFoilDlg::SetupLayout()
+void NacaFoilDlg::setupLayout()
 {
-	QGridLayout *MainGridLayout = new QGridLayout;
+	QFormLayout *pFormLayout = new QFormLayout;
 	{
-		QLabel *NacaNumber   = new QLabel(tr("4 or 5 digits"));
-		QLabel *PanelNumber  = new QLabel(tr("Number of Panels"));
-
-        m_pctrlNumber = new QLineEdit("0", this);
-        m_pctrlNumber->setValidator(new QIntValidator(m_pctrlNumber));
+		m_pctrlNumber = new QLineEdit(this);
+//		m_pctrlNumber->setValidator(new QIntValidator(m_pctrlNumber));
+		m_pctrlNumber->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
 		m_pctrlPanels = new IntEdit(100, this);
 		m_pctrlPanels->setMax(IQX);
 
-		m_pctrlMessage = new QLabel();
-		m_pctrlMessage->setMinimumWidth(120);
-
-		m_pctrlNumber->setAlignment(Qt::AlignRight);
-		m_pctrlPanels->setAlignment(Qt::AlignRight);
-		MainGridLayout->addWidget(NacaNumber,     1,1, 1,1, Qt::AlignRight);
-		MainGridLayout->addWidget(m_pctrlNumber,  1,2, 1,1, Qt::AlignRight);
-		MainGridLayout->addWidget(m_pctrlMessage, 2,1, 1,2, Qt::AlignRight);
-		MainGridLayout->addWidget(PanelNumber,    3,1, 1,1, Qt::AlignRight);
-		MainGridLayout->addWidget(m_pctrlPanels,  3,2, 1,1, Qt::AlignRight);
+		pFormLayout->addRow(tr("4 or 5 digits:"), m_pctrlNumber);
+		pFormLayout->addRow(tr("Number of Panels:"), m_pctrlPanels);
 	}
 
+	m_pctrlMessage = new QLabel();
+	m_pctrlMessage->setMinimumWidth(120);
 
-	QHBoxLayout *CommandButtonsLayout = new QHBoxLayout;
+	QHBoxLayout *pCommandButtonsLayout = new QHBoxLayout;
 	{
-		OKButton = new QPushButton(tr("OK"));
-		OKButton->setAutoDefault(false);
+		m_pOKButton = new QPushButton(tr("OK"));
+		m_pOKButton->setAutoDefault(false);
 		CancelButton = new QPushButton(tr("Cancel"));
 		CancelButton->setAutoDefault(false);
-		CommandButtonsLayout->addStretch(1);
-		CommandButtonsLayout->addWidget(OKButton);
-		CommandButtonsLayout->addStretch(1);
-		CommandButtonsLayout->addWidget(CancelButton);
-		CommandButtonsLayout->addStretch(1);
-		connect(OKButton, SIGNAL(clicked()),this, SLOT(OnOK()));
+		pCommandButtonsLayout->addStretch(1);
+		pCommandButtonsLayout->addWidget(m_pOKButton);
+		pCommandButtonsLayout->addStretch(1);
+		pCommandButtonsLayout->addWidget(CancelButton);
+		pCommandButtonsLayout->addStretch(1);
+		connect(m_pOKButton, SIGNAL(clicked()),this, SLOT(onOK()));
 		connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 	}
 
-	QVBoxLayout *mainLayout = new QVBoxLayout;
+	QVBoxLayout *pMainLayout = new QVBoxLayout;
 	{
-		mainLayout->addLayout(MainGridLayout);
-		mainLayout->addStretch(1);
-		mainLayout->addSpacing(30);
-		mainLayout->addLayout(CommandButtonsLayout);
+		pMainLayout->addLayout(pFormLayout);
+		pMainLayout->addStretch(1);
+		pMainLayout->addWidget(m_pctrlMessage);
+		pMainLayout->addSpacing(30);
+		pMainLayout->addLayout(pCommandButtonsLayout);
 	}
 
-	setLayout(mainLayout);
+	setLayout(pMainLayout);
 
-	connect(m_pctrlNumber, SIGNAL(editingFinished()), this, SLOT(EditingFinished()));
-	connect(m_pctrlPanels, SIGNAL(editingFinished()), this, SLOT(EditingFinished()));
+	connect(m_pctrlNumber, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+	connect(m_pctrlPanels, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
 }
 
 
-void NacaFoilDlg::EditingFinished()
+void NacaFoilDlg::onEditingFinished()
 {
 //	s_Digits = locale().toInt(m_pctrlNumber->text().trimmed());
 
     bool bOK;
+	QString strange = m_pctrlNumber->text();
     int d = m_pctrlNumber->text().toInt(&bOK);
+//	int d1 = m_pctrlNumber->value();
     if(bOK) s_Digits = d;
 
 	s_Panels = m_pctrlPanels->value();
 
-	GenerateFoil();
-	OKButton->setFocus();
+	generateFoil();
+
+	m_pctrlNumber->setText(QString("%1").arg(s_Digits,4,10,QChar('0')));
+	m_pOKButton->setFocus();
 }
 
 
-void NacaFoilDlg::GenerateFoil()
+void NacaFoilDlg::generateFoil()
 {
 	int itype;
 
@@ -177,18 +176,18 @@ void NacaFoilDlg::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_Return:
 		case Qt::Key_Enter:
 		{
-			if(!OKButton->hasFocus() && !CancelButton->hasFocus())
+			if(!m_pOKButton->hasFocus() && !CancelButton->hasFocus())
 			{
-				GenerateFoil();
-				if(m_bGenerated) OKButton->setFocus();
+				generateFoil();
+				if(m_bGenerated) m_pOKButton->setFocus();
 				else
 				{
 					m_pctrlNumber->selectAll();
 				}
 			}
-			else if (OKButton->hasFocus())
+			else if (m_pOKButton->hasFocus())
 			{
-				OnOK();
+				onOK();
 			}
 			return;
 		}
@@ -201,8 +200,8 @@ void NacaFoilDlg::keyPressEvent(QKeyEvent *event)
 }
 
 
-void NacaFoilDlg::OnOK()
+void NacaFoilDlg::onOK()
 {
-	GenerateFoil();
+	generateFoil();
 	accept();
 }

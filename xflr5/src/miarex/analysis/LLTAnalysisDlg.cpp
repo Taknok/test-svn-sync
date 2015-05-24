@@ -63,8 +63,8 @@ LLTAnalysisDlg::LLTAnalysisDlg(QWidget *pParent, LLTAnalysis *pLLTAnalysis) : QD
 
 	m_pIterGraph->setMargin(40);
 
-	m_pIterGraph->SetXMajGrid(true, QColor(120,120,120),2,1);
-	m_pIterGraph->SetYMajGrid(true, QColor(120,120,120),2,1);
+	m_pIterGraph->setXMajGrid(true, QColor(120,120,120),2,1);
+	m_pIterGraph->setYMajGrid(true, QColor(120,120,120),2,1);
 
 	m_pIterGraph->setXMin(0.0);
 	m_pIterGraph->setXMax(50);
@@ -89,6 +89,7 @@ LLTAnalysisDlg::LLTAnalysisDlg(QWidget *pParent, LLTAnalysis *pLLTAnalysis) : QD
  */
 LLTAnalysisDlg::~LLTAnalysisDlg()
 {
+    if(m_pIterGraph) delete m_pIterGraph;
 }
 
 
@@ -99,14 +100,14 @@ void LLTAnalysisDlg::initDialog()
 {
 	m_pctrlTextOutput->setFont(Settings::s_TableFont);
 
-	m_pIterGraph->DeleteCurves();
+	m_pIterGraph->deleteCurves();
 
 	m_pIterGraph->setXMin(0.0);
 	m_pIterGraph->setXMax((double)LLTAnalysis::s_IterLim);
-	m_pIterGraph->SetX0(0.0);
-	m_pIterGraph->SetXUnit((int)(LLTAnalysis::s_IterLim/10.0));
+	m_pIterGraph->setX0(0.0);
+	m_pIterGraph->setXUnit((int)(LLTAnalysis::s_IterLim/10.0));
 
-	m_pIterGraph->SetY0(0.0);
+	m_pIterGraph->setY0(0.0);
 	m_pIterGraph->setYMin(0.0);
 	m_pIterGraph->setYMax(1.0);
 
@@ -241,7 +242,7 @@ void LLTAnalysisDlg::Analyze()
 
 	m_pIterGraph->resetLimits();
 	m_pIterGraph->setXMax((double)LLTAnalysis::s_IterLim);
-	m_pIterGraph->SetYMinGrid(false, true, QColor(100,100,100), 2, 1, 4);
+	m_pIterGraph->setYMinGrid(false, true, QColor(100,100,100), 2, 1, 4);
 
 	m_pLLT->initializeAnalysis();
 

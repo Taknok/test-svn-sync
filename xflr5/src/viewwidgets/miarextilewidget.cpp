@@ -65,7 +65,6 @@ void MiarexTileWidget::Connect()
 	for(int igw=0; igw<m_GraphWidget.count(); igw++)
 	{
 		connect(m_GraphWidget.at(igw), SIGNAL(graphChanged(QGraph*)), this, SLOT(onResetCurves(QGraph*)));
-		connect(m_GraphWidget.at(igw), SIGNAL(isActive(QGraph*)), this, SLOT(onSetActiveGraph(QGraph*)));
 	}
 }
 
@@ -105,10 +104,10 @@ void MiarexTileWidget::setupMainLayout()
 		pMainLayout->setSpacing(0);
 		pMainLayout->setMargin(0);
 		pMainLayout->addWidget(m_pMainSplitter);
+		connect(m_pMainSplitter, SIGNAL(splitterMoved(int,int)), this, SLOT(onSplitterMoved(int, int)));
 	}
 	setLayout(pMainLayout);
 }
-
 
 
 
@@ -191,8 +190,17 @@ void MiarexTileWidget::setMiarexGraphList(XFLR5::enumMiarexViews miarexView, QLi
 
 	adjustLayout();
 
+	m_GraphWidget.at(0)->setFocus();
 	update();
 }
 
 
+void MiarexTileWidget::onSplitterMoved(int pos, int index)
+{
+	if(m_MiarexView==XFLR5::WOPPVIEW)
+	{
+		m_pWingWidget->setWingScale();
+//		update();
+	}
+}
 

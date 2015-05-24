@@ -35,7 +35,7 @@
 #include "xinverse/XInverse.h"
 #include "xdirect/XDirect.h"
 #include <QPainter>
-
+#include <QtDebug>
 
 void* LegendWidget::s_pMainFrame = NULL;
 void* LegendWidget::s_pMiarex = NULL;
@@ -45,15 +45,17 @@ void* LegendWidget::s_pXDirect = NULL;
 
 LegendWidget::LegendWidget(QWidget *pParent) : QWidget(pParent)
 {
+	setMouseTracking(true);
 	m_pParent = pParent;
 	m_pGraph = NULL;
 	m_MiarexView = XFLR5::OTHERVIEW;
+	m_LegendPosition = QPointF(11.0,11.0);
+	m_bTrans = false;
 }
 
 
 LegendWidget::~LegendWidget()
 {
-
 }
 
 void LegendWidget::setMiarexView(XFLR5::enumMiarexViews eMiarexView)
@@ -68,7 +70,7 @@ void LegendWidget::paintEvent(QPaintEvent *event)
 	QPainter painter(this);
 	painter.fillRect(rect(), Settings::backgroundColor());
 
-	QPointF place(11.0,11.0);
+
 	double bottom = rect().height();
 
 	if(m_pParent)
@@ -79,26 +81,26 @@ void LegendWidget::paintEvent(QPaintEvent *event)
 			switch(m_MiarexView)
 			{
 				case XFLR5::WOPPVIEW:
-					drawPOppGraphLegend(painter, place, bottom);
+					drawPOppGraphLegend(painter, m_LegendPosition, bottom);
 					break;
 				case XFLR5::WPOLARVIEW:
-					drawWPolarLegend(painter, place, bottom);
+					drawWPolarLegend(painter, m_LegendPosition, bottom);
 					break;
 				case XFLR5::STABPOLARVIEW:
-					drawWPolarLegend(painter, place, bottom);
+					drawWPolarLegend(painter, m_LegendPosition, bottom);
 					break;
 				case XFLR5::STABTIMEVIEW:
-					if(m_pGraph) drawStabTimeLegend(painter, m_pGraph, place, bottom);
+					if(m_pGraph) drawStabTimeLegend(painter, m_pGraph, m_LegendPosition, bottom);
 					break;
 				case XFLR5::WCPVIEW:
-					if(m_pGraph) drawCpLegend(painter, m_pGraph, place, bottom);
+					if(m_pGraph) drawCpLegend(painter, m_pGraph, m_LegendPosition, bottom);
 					break;
 				default: break;
 			}
 		}
 		else //XFLR5::XFOILANALYSIS
 		{
-			drawPolarLegend(painter, place, bottom);
+			drawPolarLegend(painter, m_LegendPosition, bottom);
 		}
 	}
 }
@@ -537,7 +539,6 @@ void LegendWidget::drawStabTimeLegend(QPainter &painter, QGraph *pGraph, QPointF
  * @param place the top-left point where the legend will be placed
  * @param bottom the number of pixels to the bottom of the client area
  * @param painter a reference to the QPainter object with which to draw
- *@todo position improvement required for the two graph display
  */
 void LegendWidget::drawPolarLegend(QPainter &painter, QPointF place, int bottom)
 {
@@ -649,8 +650,51 @@ void LegendWidget::drawPolarLegend(QPainter &painter, QPointF place, int bottom)
 }
 
 
+void LegendWidget::keyPressEvent(QKeyEvent *event)
+{
+	switch (event->key())
+	{
+		case Qt::Key_R:
+		{
+			m_LegendPosition = QPointF(11.0,11.0);
+			update();
+			event->accept();
+			break;
+		}
+		default:event->ignore();
+	}
+}
 
 
+
+void LegendWidget::mouseMoveEvent(QMouseEvent *event)
+{
+	setFocus();
+	if(m_bTrans)
+	{
+		m_LegendPosition.rx() += event->pos().x()-m_PointDown.x();
+		m_LegendPosition.ry() += event->pos().y()-m_PointDown.y();
+		m_PointDown = event->pos();
+		update();
+	}
+}
+
+
+void LegendWidget::mousePressEvent(QMouseEvent *event)
+{
+	m_PointDown.setX(event->pos().x());
+	m_PointDown.setY(event->pos().y());
+	m_bTrans = true;
+	setCursor(Qt::ClosedHandCursor);
+}
+
+
+
+void LegendWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+	m_bTrans = false;
+	setCursor(Qt::CrossCursor);
+}
 
 
 

@@ -72,10 +72,12 @@ public:
 	void getTitleFont(QFont &titleFont);
 	void setLabelFont(QFont &font);
 	void setTitleFont(QFont &font);
+	void exportGraph();
 
 	QGRAPH::enumGraphType &graphType(){return m_graphType;}
 
 public:
+	static void *s_pMainFrame;
 	void *m_pParent;
 	bool m_bHighlightPoint;
 

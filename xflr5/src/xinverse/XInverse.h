@@ -88,21 +88,22 @@ private slots:
 	void OnExtractFoil();
 	void OnResetFoilScale();
 	void OnInsertCtrlPt();
-	void OnRemoveCtrlPt();
+	void OnPertubate();
+	void onExportQGraph();
+	void onQGraphSettings();
 	void OnQInitial();
 	void OnQSpec();
 	void OnQViscous();
 	void OnQPoints();
 	void OnQReflected();
-	void OnPertubate();
-	void OnGraphSettings();
+	void OnRemoveCtrlPt();
 	void OnSpecInv() ;
 	void OnZoomIn();
 	void OnZoomX();
 	void OnZoomY();
 
 private:
-	void UpdateView();
+	void updateView();
 
 	void mouseMoveEvent(QMouseEvent *event);
 	void mousePressEvent(QMouseEvent *event) ;

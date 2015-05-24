@@ -20,13 +20,17 @@
 *****************************************************************************/
 
 
-
+#include <mainframe.h>
 #include "QGraph.h"
 #include "../globals.h"
 #include <math.h>
 #include <QPainter>
 #include <QFontMetrics>
+#include <Settings.h>
+#include <QFileDialog>
 #include <QtDebug>
+
+void *QGraph::s_pMainFrame = NULL;
 
 QGraph::QGraph()
 {
@@ -41,7 +45,7 @@ QGraph::QGraph()
 
 QGraph::~QGraph()
 {
-	DeleteCurves();
+	deleteCurves();
 }
 
 
@@ -91,6 +95,8 @@ void QGraph::drawGraph(QPainter &painter)
 	painter.setClipping(false);
 	painter.restore();
 }
+
+
 
 void QGraph::drawCurve(int nIndex, QPainter &painter)
 {
@@ -619,6 +625,42 @@ void QGraph::expFormat(double &f, int &exp)
 
 }
 
+/**
+ * The user has requested of the graph data to a text file
+ */
+void QGraph::exportGraph()
+{
+	MainFrame *pMainFrame =(MainFrame*)s_pMainFrame;
+
+	QString FileName = graphName().trimmed();
+	FileName.replace(" ", "_");
+	FileName = QFileDialog::getSaveFileName(pMainFrame, QObject::tr("Export Graph"), pMainFrame->exportLastDirName()+"/"+graphName(),
+											QObject::tr("Text File (*.txt);;Comma Separated Values (*.csv)"),
+											&pMainFrame->exportGraphFilter());
+	if(!FileName.length()) return;
+
+	int pos = FileName.lastIndexOf("/");
+	if(pos>0) pMainFrame->exportLastDirName() = FileName.left(pos);
+
+
+	if(pMainFrame->exportGraphFilter().indexOf("*.txt")>0)
+	{
+		Settings::s_ExportFileType = XFLR5::TXT;
+		if(FileName.indexOf(".txt")<0) FileName +=".txt";
+	}
+	else if(pMainFrame->exportGraphFilter().indexOf("*.csv")>0)
+	{
+		Settings::s_ExportFileType = XFLR5::CSV;
+		if(FileName.indexOf(".csv")<0) FileName +=".csv";
+	}
+
+	QFile XFile(FileName);
+	if (!XFile.open(QIODevice::WriteOnly | QIODevice::Text)) return;
+
+	exportToFile(XFile, Settings::s_ExportFileType);
+}
+
+
 
 void QGraph::exportToFile(QFile &XFile, XFLR5::enumTextFileType FileType)
 {
@@ -704,17 +746,17 @@ void QGraph::saveSettings(QSettings *pSettings)
 	pSettings->beginGroup(m_GraphName);
 	{
 		//read variables
-		clr = GetAxisColor();
+		clr = axisColor();
 		pSettings->setValue("AxisColor", clr);
-		k = GetAxisStyle();
+		k = axisStyle();
 		pSettings->setValue("AxisStyle", k);
-		k = GetAxisWidth();
+		k = axisWidth();
 		pSettings->setValue("AxisWidth", k);
 
-		clr = GetTitleColor();
+		clr = titleColor();
 		pSettings->setValue("TitleColor", clr);
 
-		clr = GetLabelColor();
+		clr = labelColor();
 		pSettings->setValue("LabelColor", clr);
 
 		getTitleFont(lgft);
@@ -729,19 +771,19 @@ void QGraph::saveSettings(QSettings *pSettings)
 		pSettings->setValue("LabelFontItalic", lgft.italic());
 		pSettings->setValue("LabelFontBold", lgft.bold());
 
-		GetXMajGrid(bs,clr,s,w);
+		bXMajGrid(bs,clr,s,w);
 		pSettings->setValue("XMajGridColor", clr);
 		pSettings->setValue("XMajGridShow",bs);
 		pSettings->setValue("XMajGridStyle",s);
 		pSettings->setValue("XMajGridWidth",w);
 
-		GetYMajGrid(bs,clr,s,w);
+		yMajGrid(bs,clr,s,w);
 		pSettings->setValue("YMajGridColor", clr);
 		pSettings->setValue("YMajGridShow",bs);
 		pSettings->setValue("YMajGridStyle",s);
 		pSettings->setValue("YMajGridWidth",w);
 
-		GetXMinGrid(bs,ba,clr,s,w,f);
+		bXMinGrid(bs,ba,clr,s,w,f);
 		pSettings->setValue("XMinGridColor", clr);
 		pSettings->setValue("XMinGridAuto",ba);
 		pSettings->setValue("XMinGridShow",bs);
@@ -749,7 +791,7 @@ void QGraph::saveSettings(QSettings *pSettings)
 		pSettings->setValue("XMinGridWidth",w);
 		pSettings->setValue("XMinGridUnit",f);
 
-		GetYMinGrid(bs,ba,clr,s,w,f);
+		bYMinGrid(bs,ba,clr,s,w,f);
 		pSettings->setValue("YMinGridColor", clr);
 		pSettings->setValue("YMinGridAuto",ba);
 		pSettings->setValue("YMinGridShow",bs);
@@ -757,15 +799,15 @@ void QGraph::saveSettings(QSettings *pSettings)
 		pSettings->setValue("YMinGridWidth",w);
 		pSettings->setValue("YMinGridUnit",f);
 
-		clr = GetBorderColor();
-		s   = GetBorderStyle();
-		w   = GetBorderWidth();
+		clr = borderColor();
+		s   = borderStyle();
+		w   = borderWidth();
 		pSettings->setValue("BorderColor", clr);
 		pSettings->setValue("BorderStyle", s);
 		pSettings->setValue("BorderWidth", w);
 		pSettings->setValue("BorderShow", m_bBorder);
 
-		clr = GetBackColor();
+		clr = backgroundColor();
 		pSettings->setValue("BackgroundColor", clr);
 
 		pSettings->setValue("margin", m_iMargin);
@@ -819,13 +861,13 @@ void QGraph::loadSettings(QSettings *pSettings)
 		bs = pSettings->value("XMajGridShow",true).toBool();
 		s  = pSettings->value("XMajGridStyle",1).toInt();
 		w  = pSettings->value("XMajGridWidth",1).toInt();
-		SetXMajGrid(bs,clr,s,w);
+		setXMajGrid(bs,clr,s,w);
 
 		clr  = pSettings->value("YMajGridColor", QColor(90,90,90)).value<QColor>();
 		bs = pSettings->value("YMajGridShow",true).toBool();
 		s  = pSettings->value("YMajGridStyle",1).toInt();
 		w  = pSettings->value("YMajGridWidth",1).toInt();
-		SetYMajGrid(bs,clr,s,w);
+		setYMajGrid(bs,clr,s,w);
 
 		clr  = pSettings->value("XMinGridColor", QColor(90,90,90)).value<QColor>();
 		ba = pSettings->value("XMinGridAuto",true).toBool();
@@ -833,7 +875,7 @@ void QGraph::loadSettings(QSettings *pSettings)
 		s  = pSettings->value("XMinGridStyle",2).toInt();
 		w  = pSettings->value("XMinGridWidth",1).toInt();
 		f  = pSettings->value("XMinGridUnit", 0.01).toDouble();
-		SetXMinGrid(bs,ba,clr,s,w,f);
+		setXMinGrid(bs,ba,clr,s,w,f);
 
 		clr  = pSettings->value("YMinGridColor", QColor(90,90,90)).value<QColor>();
 		ba = pSettings->value("YMinGridAuto",true).toBool();
@@ -841,7 +883,7 @@ void QGraph::loadSettings(QSettings *pSettings)
 		s  = pSettings->value("YMinGridStyle",2).toInt();
 		w  = pSettings->value("YMinGridWidth",1).toInt();
 		f  = pSettings->value("YMinGridUnit",0.01).toDouble();
-		SetYMinGrid(bs,ba,clr,s,w,f);
+		setYMinGrid(bs,ba,clr,s,w,f);
 
 		clr  = pSettings->value("BorderColor", QColor(200,200,200)).value<QColor>();
 		s  = pSettings->value("BorderStyle",0).toInt();
@@ -880,7 +922,7 @@ void QGraph::setTitleFont(QFont &font)
 void QGraph::copySettings(QGraph *pGraph, bool bScales)
 {
 	if(!pGraph) return;
-	Graph::CopySettings(pGraph, bScales);
+	Graph::copySettings(pGraph, bScales);
 	m_LabelFont     = pGraph->m_LabelFont;
 	m_TitleFont     = pGraph->m_TitleFont;
 }

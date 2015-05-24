@@ -50,7 +50,6 @@ protected:
 	void resizeEvent (QResizeEvent *event);
 	void contextMenuEvent (QContextMenuEvent *event);
 	void keyPressEvent(QKeyEvent *event);
-	void keyReleaseEvent(QKeyEvent *event);
 	void mouseDoubleClickEvent (QMouseEvent *event);
 	void mouseMoveEvent(QMouseEvent *event);
 	void mousePressEvent(QMouseEvent *event);
@@ -60,10 +59,11 @@ protected:
 
 signals:
 	void graphChanged(QGraph *);
-	void isActive(QGraph*);
 
-private slots:
+
+public slots:
 	void onGraphSettings();
+	void onResetGraphScales();
 
 
 private:

@@ -929,7 +929,7 @@ void BatchThreadDlg::timerEvent(QTimerEvent *event)
 	if(m_pctrlUpdatePolarView->isChecked())
 	{
 		pXDirect->createPolarCurves();
-		pXDirect->UpdateView();
+		pXDirect->updateView();
 	}
 
 	if(m_AnalysisPair.size()<=0 || m_bCancel)
@@ -962,7 +962,7 @@ void BatchThreadDlg::timerEvent(QTimerEvent *event)
 				if(pXDirect->m_bPolarView)
 				{
 					pXDirect->createPolarCurves();
-					pXDirect->UpdateView();
+					pXDirect->updateView();
 				}
 			}
 		}

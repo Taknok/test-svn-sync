@@ -33,13 +33,8 @@ void *WingWidget::s_pMiarex = NULL;
 WingWidget::WingWidget(QWidget *pParent) : QWidget(pParent)
 {
 	setMouseTracking(true);
-	m_bXCP               = false;
-	m_bXTop              = false;
-	m_bXBot              = false;
-	m_bXCmRef            = true;
 
 	m_bTrans = false;
-	m_bIs2DScaleSet = false;
 
 	m_pGraph = NULL;
 
@@ -58,6 +53,7 @@ WingWidget::~WingWidget()
 
 void WingWidget::contextMenuEvent (QContextMenuEvent *event)
 {
+	event->ignore();
 }
 
 
@@ -106,7 +102,6 @@ void WingWidget::mouseMoveEvent(QMouseEvent *event)
 		Delta.setY(event->pos().y() - m_LastPoint.y());
 		m_ptOffset.rx() += Delta.x();
 		m_ptOffset.ry() += Delta.y();
-		m_bIs2DScaleSet = false;
 		update();
 	}
 	m_LastPoint = event->pos();
@@ -131,6 +126,7 @@ void WingWidget::mouseReleaseEvent(QMouseEvent *event)
 void WingWidget::paintEvent(QPaintEvent *event)
 {
 	QMiarex *pMiarex=(QMiarex*)s_pMiarex;
+	if(pMiarex->m_bResetTextLegend) pMiarex->drawTextLegend();
 
 	QPainter painter(this);
 	painter.save();
@@ -141,22 +137,22 @@ void WingWidget::paintEvent(QPaintEvent *event)
 	TextPen.setWidth(1);
 	painter.setPen(TextPen);
 
+
 	if(pMiarex->m_pCurPlane)
 	{
 		paintWing(painter, m_ptOffset, m_WingScale);
 		if(pMiarex->m_pCurPOpp && pMiarex->m_pCurPOpp->isVisible())
 		{
-			QPointF PtLegend;
-			PtLegend.rx() = rect().width()/2;
-			PtLegend.ry() = rect().bottom();
-			paintXTr(painter, m_ptOffset, m_WingScale);
-			if (m_bXCP)    paintXCP(painter, m_ptOffset, m_WingScale);
-			if (m_bXCmRef) paintXCmRef(painter, m_ptOffset, m_WingScale);
+			if (pMiarex->m_bXTop || pMiarex->m_bXBot) paintXTr(painter, m_ptOffset, m_WingScale);
+			if (pMiarex->m_bXCP) paintXCP(painter, m_ptOffset, m_WingScale);
+			if (pMiarex->m_bXCmRef) paintXCmRef(painter, m_ptOffset, m_WingScale);
 		}
 
 		painter.setBackgroundMode(Qt::TransparentMode);
 		painter.setOpacity(1);
-		painter.drawPixmap(0,0, m_PixText);
+
+		if(pMiarex->m_bResetTextLegend) pMiarex->drawTextLegend();
+		painter.drawPixmap(QPoint(0,0), pMiarex->m_PixText);
 	}
 	painter.restore();
 }
@@ -182,7 +178,7 @@ void WingWidget::paintWing(QPainter &painter, QPointF ORef, double scale)
 	Wing *pWing = pMiarex->m_pCurPlane->m_Wing;
 
 	painter.save();
-	QPen WingPen(W3dPrefsDlg::s_OutlineColor);
+	QPen WingPen(Settings::textColor().darker());
 	WingPen.setStyle(getStyle(W3dPrefsDlg::s_OutlineStyle));
 	WingPen.setWidth(W3dPrefsDlg::s_OutlineWidth);
 
@@ -231,11 +227,11 @@ void WingWidget::paintWing(QPainter &painter, QPointF ORef, double scale)
 	}
 
 
-	QPen SymPen(QColor(155,128,190));
+/*	QPen SymPen(QColor(155,128,190));
 	painter.setPen(SymPen);
 	painter.setBackgroundMode(Qt::TransparentMode);
 
-	painter.drawLine(ORef.x(), ORef.y()-20, ORef.x(), ORef.y()+75);
+	painter.drawLine(ORef.x(), ORef.y()-20, ORef.x(), ORef.y()+75);*/
 	painter.restore();
 }
 
@@ -389,7 +385,7 @@ void WingWidget::paintXTr(QPainter & painter, QPointF ORef, double scale)
 	TopPen.setWidth(W3dPrefsDlg::s_TopWidth);
 	painter.setPen(TopPen);
 
-	if (m_bXTop)
+	if (pMiarex->m_bXTop)
 	{
 		offLE = pWing->getOffset(pMiarex->m_pCurPOpp->m_pPlaneWOpp[0]->m_SpanPos[nStart]*2.0/pMiarex->m_pCurPOpp->m_pPlaneWOpp[0]->m_Span);
 		y = (offLE+pMiarex->m_pCurPOpp->m_pPlaneWOpp[0]->m_Chord[nStart]*pMiarex->m_pCurPOpp->m_pPlaneWOpp[0]->m_XTrTop[nStart])*scaley;
@@ -419,7 +415,7 @@ void WingWidget::paintXTr(QPainter & painter, QPointF ORef, double scale)
 	BotPen.setWidth(W3dPrefsDlg::s_BotWidth);
 
 	painter.setPen(BotPen);
-	if (m_bXBot)
+	if (pMiarex->m_bXBot)
 	{
 		offLE = pWing->getOffset(pMiarex->m_pCurPOpp->m_pPlaneWOpp[0]->m_SpanPos[nStart]*2.0/pMiarex->m_pCurPOpp->m_pPlaneWOpp[0]->m_Span);
 		y = (offLE+pMiarex->m_pCurPOpp->m_pPlaneWOpp[0]->m_Chord[nStart]*pMiarex->m_pCurPOpp->m_pPlaneWOpp[0]->m_XTrBot[nStart])*scaley;
@@ -448,6 +444,8 @@ void WingWidget::paintXTr(QPainter & painter, QPointF ORef, double scale)
 
 void WingWidget::resizeEvent (QResizeEvent *event)
 {
+	QMiarex *pMiarex = (QMiarex*)s_pMiarex;
+	pMiarex->m_bResetTextLegend = true;
 	setWingScale();
 	update();
 }
@@ -455,7 +453,6 @@ void WingWidget::resizeEvent (QResizeEvent *event)
 
 void WingWidget::wheelEvent (QWheelEvent *event)
 {
-qDebug()<<"WingWidget wheel event"<<m_WingScale	;
 	double zoomFactor=1.0;
 
 	QPoint pt(event->x(), event->y()); //client coordinates
@@ -473,7 +470,6 @@ qDebug()<<"WingWidget wheel event"<<m_WingScale	;
 
 	m_WingScale *= zoomFactor;
 
-	m_bIs2DScaleSet = false;
 
 	update();
 }
@@ -482,7 +478,6 @@ qDebug()<<"WingWidget wheel event"<<m_WingScale	;
 
 void WingWidget::setWingScale()
 {
-	if(m_bIs2DScaleSet) return;
 	QMiarex *pMiarex=(QMiarex*)s_pMiarex;
 
 	m_ptOffset.rx() = rect().width()/2.0;
@@ -492,7 +487,6 @@ void WingWidget::setWingScale()
 	{
 //		qDebug()<<"graphmargin"<<m_pGraph->margin()<<pMiarex->m_pCurPlane->planformSpan();
 		m_WingScale = (rect().width()-2*m_pGraph->margin())/pMiarex->m_pCurPlane->planformSpan();
-		m_bIs2DScaleSet = true;
 	}
 }
 
@@ -505,30 +499,3 @@ void WingWidget::onResetWingScale()
 }
 
 
-
-/**
- * Loads the user's default settings from the application QSettings object
- * @param pSettings a pointer to the QSettings object
- */
-void WingWidget::loadSettings(QSettings *pSettings)
-{
-	pSettings->beginGroup("WingWidget");
-	{
-		m_bXCmRef       = pSettings->value("bXCmRef", true).toBool();
-
-	}
-}
-
-
-/**
- * Saves the user-defined settings
- * @param pSettings a pointer to the QSetting object.
- */
-void WingWidget::saveSettings(QSettings *pSettings)
-{
-	pSettings->beginGroup("WingWidget");
-	{
-		pSettings->setValue("bXCmRef", m_bXCmRef);
-
-	}
-}

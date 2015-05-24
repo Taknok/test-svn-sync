@@ -46,7 +46,7 @@ public:
 private:
 	void setupMainLayout();
 
-	QStackedWidget *m_pLegendStack;
+//	QStackedWidget *m_pLegendStack;
 	FoilWidget *m_pFoilWidget;
 
 

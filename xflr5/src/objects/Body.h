@@ -43,12 +43,12 @@
  *   - porvides methods for the panel calculations.
  * The data is stored in International Standard Units, i.e. meters, kg, and seconds.
  * Angular data is stored in degrees.
- * @todo see if an abstract Body class can be defined, and subclass the NURBS and Panel body classes.
  */
 class Body
 {
 public:
 	Body();
+	~Body();
 
 	bool IsInNURBSBody(double x, double z);
 	bool IsInNURBSBodyOld(CVector Pt);
@@ -77,7 +77,7 @@ public:
 	CVector CenterPoint(double u);
 	CVector LeadingPoint();
 
-	void ClearPointMasses();
+	void clearPointMasses();
 	void ComputeAero(double *Cp, double &XCP, double &YCP, double &ZCP,
 				  double &GCm, double &GRm, double &GYm, double &Alpha, CVector &CoG);
 	void Duplicate(Body *pBody);
@@ -89,7 +89,7 @@ public:
 	void Scale(double XFactor, double YFactor, double ZFactor, bool bFrameOnly=false, int FrameID=0);
 	void Translate(double XTrans, double, double ZTrans, bool bFrameOnly=false, int FrameID=0);
 	void Translate(CVector T, bool bFrameOnly=false, int FrameID=0);
-	void SetKnots();
+	void setNURBSKnots();
 	void SetPanelPos();
 	void SetEdgeWeight(double uw, double vw);
 

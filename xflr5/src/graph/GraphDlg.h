@@ -46,6 +46,15 @@ public:
 	GraphDlg(QWidget *pParent);
 	void setControls();
 	void setGraph(QGraph* pGraph);
+	QGraph* graph() {return m_pGraph;}
+	bool bVariableChanged(){return m_bVariableChanged;}
+
+	int &XSel(){return m_XSel;}
+	int &YSel(){return m_YSel;}
+
+	static void setActivePage(int iPage);
+
+
 
 private slots:
 	void OnOK();
@@ -55,10 +64,10 @@ private slots:
 	void OnTitleColor();
 	void OnLabelColor();
 	void OnRestoreParams();
-	void OnAutoX();
-	void OnAutoY();
-	void OnAutoMinGrid();
-	void OnAxisStyle();
+	void onAutoX();
+	void onAutoY();
+	void onAutoMinGrid();
+	void onAxisStyle();
 	void OnMargin();
 	void OnXMajGridStyle();
 	void OnXMinGridStyle();
@@ -72,17 +81,18 @@ private slots:
 	void OnGraphBackColor();
 	void OnBorderStyle();
 	void OnYInverted();
-	void OnActivePage(int index);
+	void onActivePage(int index);
 	void OnVariableChanged();
 
 
 private:
 	void keyPressEvent(QKeyEvent *event);
+	void showEvent(QShowEvent *event);
 	void reject();
 
-	void SetupLayout();
-	void SetButtonColors();
-	void SetApplied(bool bApplied);
+	void setupLayout();
+	void setButtonColors();
+	void setApplied(bool bApplied);
 	void Connect();
 	void ApplyChanges();
 
@@ -120,16 +130,14 @@ private:
 	bool m_bApplied;
 
 public:
-	QGraph *m_GraphArray[30];
-	int m_NGraph;
+
+private:
+	QGraph *m_pGraph;
+	QGraph m_SaveGraph;
 	int m_XSel, m_YSel;
 //	QGRAPH::enumGraphType m_enumGraphType;
 	bool m_bVariableChanged;
-
-	static int s_ActivePage;
-private:
-	QGraph *m_pGraph;
-	QGraph m_MemGraph;
+	static int s_iActivePage;
 
 };
 

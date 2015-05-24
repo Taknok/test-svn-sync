@@ -58,8 +58,9 @@ void IntEdit::focusOutEvent (QFocusEvent *event)
 int IntEdit::readValue()
 {
 	bool bOK;
-	int f = locale().toInt(text().trimmed(), &bOK);
-	if(bOK) m_Value = f;
+	int val = locale().toInt(text().trimmed(), &bOK);
+//	int val = text().toInt(&bOK);
+	if(bOK) m_Value = val;
 	return m_Value;
 }
 

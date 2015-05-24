@@ -39,10 +39,13 @@ public:
 	void Connect();
 	void adjustLayout();
 	void setMiarexGraphList(XFLR5::enumMiarexViews miarexView, QList<QGraph*>pGraphList, int nGraphs, int iGraphWidget=0, Qt::Orientation orientation =Qt::Horizontal);
-
+	WingWidget *pWingWidget(){return m_pWingWidget;}
 
 private:
 	void setupMainLayout();
+
+private slots:
+	void onSplitterMoved(int pos, int index);
 
 private:
 	XFLR5::enumMiarexViews &miarexView(){return m_MiarexView;}
