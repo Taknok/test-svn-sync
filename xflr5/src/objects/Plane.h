@@ -66,7 +66,7 @@ public:
 
 	void ClearPointMasses();
 	void ComputeVolumeInertia(double &Mass, CVector &CoG, double &Ixx, double &Iyy, double &Izz, double &Ixz);
-	void ComputeBodyAxisInertia();
+	void computeBodyAxisInertia();
 
 	void setAutoBodyName();
 	void setPlaneName(QString planeName);

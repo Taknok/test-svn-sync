@@ -2965,7 +2965,7 @@ XFLR5::enumApp MainFrame::LoadXFLR5File(QString PathName)
 void MainFrame::OnAFoil()
 {
 	QMiarex *pMiarex = (QMiarex*)m_pMiarex;
-	pMiarex->StopAnimate();
+	pMiarex->stopAnimate();
 
 	QXDirect *pXDirect = (QXDirect*)m_pXDirect;
 	pXDirect->stopAnimate();
@@ -3487,7 +3487,7 @@ void MainFrame::OnSelChangePlane(int sel)
 	// and selects either the current WPolar
 	// or the first one in the list, if any
 	QMiarex *pMiarex = (QMiarex*)m_pMiarex;
-	pMiarex->StopAnimate();
+	pMiarex->stopAnimate();
 	QString strong;
 //	int sel = m_pctrlPlane->currentIndex();
 	if (sel >=0) strong = m_pctrlPlane->itemText(sel);
@@ -3499,7 +3499,7 @@ void MainFrame::OnSelChangePlane(int sel)
 void MainFrame::OnSelChangeWPolar(int sel)
 {
 	QMiarex *pMiarex = (QMiarex*)m_pMiarex;
-	pMiarex->StopAnimate();
+	pMiarex->stopAnimate();
 
 	QString strong;
 //	int sel = m_pctrlPlanePolar->currentIndex();
@@ -3515,7 +3515,7 @@ void MainFrame::OnSelChangePlaneOpp(int sel)
 {
 	QString strong;
 	QMiarex *pMiarex = (QMiarex*)m_pMiarex;
-	pMiarex->StopAnimate();
+	pMiarex->stopAnimate();
 
 	// Gets the new selected WOpp name and notifies Miarex
 	if(!m_pctrlPlaneOpp->count())
@@ -3539,13 +3539,13 @@ void MainFrame::OnSelChangePlaneOpp(int sel)
 		if(bOK)
 		{
 			m_iApp = XFLR5::MIAREX;
-			pMiarex->SetPlaneOpp(false, x);
+			pMiarex->setPlaneOpp(false, x);
 			pMiarex->updateView();
 		}
 		else
 		{
 			QMessageBox::warning(window(), tr("Warning"), tr("Unidentified Operating Point"));
-			pMiarex->SetPlaneOpp(true);
+			pMiarex->setPlaneOpp(true);
 		}
 	}
 }
@@ -3671,7 +3671,7 @@ void MainFrame::onUnits()
 void MainFrame::onXDirect()
 {
 	QMiarex *pMiarex = (QMiarex*)m_pMiarex;
-	pMiarex->StopAnimate();
+	pMiarex->stopAnimate();
 
 	QXDirect *pXDirect = (QXDirect*)m_pXDirect;
 	m_iApp = XFLR5::XFOILANALYSIS;
@@ -3730,7 +3730,7 @@ void MainFrame::OnXInverse()
 	QXDirect *pXDirect = (QXDirect*)m_pXDirect;
 	pXDirect->stopAnimate();
 	QMiarex *pMiarex = (QMiarex*)m_pMiarex;
-	pMiarex->StopAnimate();
+	pMiarex->stopAnimate();
 
 	QXInverse *pXInverse = (QXInverse*)m_pXInverse;
 //	pXInverse->SetScale();
@@ -3760,7 +3760,7 @@ void MainFrame::OnXInverseMixed()
 	QXDirect *pXDirect = (QXDirect*)m_pXDirect;
 	pXDirect->stopAnimate();
 	QMiarex *pMiarex = (QMiarex*)m_pMiarex;
-	pMiarex->StopAnimate();
+	pMiarex->stopAnimate();
 
 	QXInverse *pXInverse = (QXInverse*)m_pXInverse;
 //	pXInverse->SetScale();

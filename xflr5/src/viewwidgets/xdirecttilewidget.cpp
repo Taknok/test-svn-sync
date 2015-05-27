@@ -138,8 +138,8 @@ void XDirectTileWidget::adjustLayout()
 
 			m_pMainGridLayout->setRowStretch(1,1);
 			m_pMainGridLayout->setRowStretch(2,0);
-			m_pMainGridLayout->setColumnStretch(1,4);
-			m_pMainGridLayout->setColumnStretch(2,1);
+			m_pMainGridLayout->setColumnStretch(1,13);
+			m_pMainGridLayout->setColumnStretch(2,5);
 			m_pMainGridLayout->setColumnStretch(3,0);
 
 		}
@@ -152,8 +152,8 @@ void XDirectTileWidget::adjustLayout()
 			m_pMainGridLayout->addWidget(m_GraphWidget.at(1),1,2);
 			m_pMainGridLayout->addWidget(m_pLegendWidget,2,1,1,2);
 
-			m_pMainGridLayout->setRowStretch(1,9);
-			m_pMainGridLayout->setRowStretch(2,3);
+			m_pMainGridLayout->setRowStretch(1,17);
+			m_pMainGridLayout->setRowStretch(2,5);
 			m_pMainGridLayout->setColumnStretch(1,1);
 			m_pMainGridLayout->setColumnStretch(2,1);
 			m_pMainGridLayout->setColumnStretch(3,0);

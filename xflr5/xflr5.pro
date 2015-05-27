@@ -5,12 +5,12 @@
 
 #Qt5.4 required for QOpenGLWidget instead of QGLWidget
 lessThan(QT_MAJOR_VERSION, 5) {
-  error("Qt5.4 or greater required for xflr5 v6.11")
+  error("Qt5.4 or greater is required for xflr5 v6.11")
 }
 else
 {
     lessThan(QT_MINOR_VERSION, 4) {
-	  error("Qt5.4 or greater required for xflr5 v6.11")
+	  error("Qt5.4 or greater is required for xflr5 v6.11")
     }
 }
 

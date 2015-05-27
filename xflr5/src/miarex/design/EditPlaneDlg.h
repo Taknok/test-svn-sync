@@ -88,7 +88,7 @@ public:
 	static bool saveSettings(QSettings *pSettings);
 
 private slots:
-	void OnOK();
+	void onOK();
 	void on3DReset();
 	void onRedraw();
 	void OnCellChanged(QWidget *);
