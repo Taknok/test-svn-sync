@@ -2366,7 +2366,7 @@ void QMiarex::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_Escape:
 		{
 
-			StopAnimate();
+			stopAnimate();
 
 			if(pMainFrame->m_pctrl3DScalesWidget->isVisible()) pMainFrame->m_pctrl3DScalesWidget->hide();
 			updateView();
@@ -2522,7 +2522,7 @@ void QMiarex::LLTAnalyze(double V0, double VMax, double VDelta, bool bSequence, 
 		m_pLLTDlg->hide();
 	}
 
-	SetPlaneOpp(false, V0);
+	setPlaneOpp(false, V0);
 	pMainFrame->UpdatePOppListBox();
 
     emit projectModified();
@@ -3009,7 +3009,7 @@ void QMiarex::OnAnimateWOpp()
 	}
 	else
 	{
-		StopAnimate();
+		stopAnimate();
 	}
 	QApplication::restoreOverrideCursor();
 }
@@ -3050,7 +3050,7 @@ void QMiarex::OnAnimateModeSingle(bool bStep)
 	o2 = omega*omega;
 	t=m_ModeTime;
 
-	if(t>=100) StopAnimate();
+	if(t>=100) stopAnimate();
 
 
 	if(s2+o2>PRECISION)
@@ -3331,7 +3331,7 @@ void QMiarex::OnCpPosition()
 */
 void QMiarex::OnCpView()
 {
-	if (m_bAnimateWOpp) StopAnimate();
+	if (m_bAnimateWOpp) stopAnimate();
 
 	if(m_iView==XFLR5::WCPVIEW)
 	{
@@ -3376,7 +3376,7 @@ void QMiarex::OnCurveColor()
 	if(Color.isValid()) m_CurveColor = Color;
 	FillComboBoxes();
 
-	UpdateCurve();
+	updateCurve();
 }
 
 
@@ -3389,7 +3389,7 @@ void QMiarex::OnCurveStyle(int index)
 {
 	m_CurveStyle = index;
 	FillComboBoxes();
-	UpdateCurve();
+	updateCurve();
 }
 
 
@@ -3403,7 +3403,7 @@ void QMiarex::OnCurveWidth(int index)
 {
 	m_CurveWidth = index+1;
 	FillComboBoxes();
-	UpdateCurve();
+	updateCurve();
 }
 
 
@@ -3413,7 +3413,7 @@ void QMiarex::OnCurveWidth(int index)
 void QMiarex::onDefineStabPolar()
 {
 	if(!m_pCurPlane) return;
-	StopAnimate();
+	stopAnimate();
 	m_bArcball = false;
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 
@@ -3482,7 +3482,7 @@ void QMiarex::onDefineWPolar()
 {
 	if(!m_pCurPlane) return;
 
-	StopAnimate();
+	stopAnimate();
 
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
 
@@ -3552,7 +3552,7 @@ void QMiarex::OnDefineWPolarObject()
 {
 	if(!m_pCurPlane) return;
 
-	StopAnimate();
+	stopAnimate();
 
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
 
@@ -3613,7 +3613,7 @@ void QMiarex::OnDefineWPolarObject()
  */
 void QMiarex::onEditCurWPolar()
 {
-	StopAnimate();
+	stopAnimate();
 
 	if(!m_pCurPlane || !m_pCurWPolar) return;
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
@@ -3723,7 +3723,7 @@ void QMiarex::onEditCurWPolarObject()
  */
 void QMiarex::OnEditCurWPolarPts()
 {
-	StopAnimate();
+	stopAnimate();
 
 	if(!m_pCurPlane || !m_pCurWPolar) return;
 
@@ -3794,7 +3794,7 @@ void QMiarex::OnDeleteAllWPlrOpps()
 	m_pCurPOpp = NULL;
 	m_bResetglMesh = true;
 	pMainFrame->UpdatePOppListBox();
-	SetPlaneOpp(true);
+	setPlaneOpp(true);
 	setControls();
 	s_bResetCurves = true;
 	updateView();
@@ -3821,7 +3821,7 @@ void QMiarex::OnDeleteAllWOpps()
 	m_pCurPOpp = NULL;
 	pMainFrame->UpdatePOppListBox();
 
-	SetPlaneOpp(true);
+	setPlaneOpp(true);
 
 	setControls();
 
@@ -3884,7 +3884,7 @@ void QMiarex::OnDeleteCurWOpp()
 		}
 		m_pCurPOpp = NULL;
 		pMainFrame->UpdatePOppListBox();
-		SetPlaneOpp(true);
+		setPlaneOpp(true);
 		emit projectModified();
 
 		s_bResetCurves = true;
@@ -6159,7 +6159,7 @@ void QMiarex::OnShowCurve()
 {
 	m_bCurveVisible = m_pctrlShowCurve->isChecked();
 	m_bCurvePoints  = m_pctrlShowPoints->isChecked();
-	UpdateCurve();
+	updateCurve();
 }
 
 
@@ -6203,7 +6203,7 @@ void QMiarex::OnStabilityDirection()
 void QMiarex::onStabTimeView()
 {
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-	StopAnimate();
+	stopAnimate();
 	m_iView =  XFLR5::STABTIMEVIEW;
 	setGraphTiles();
 
@@ -6226,7 +6226,7 @@ void QMiarex::onStabTimeView()
 void QMiarex::onRootLocusView()
 {
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-	StopAnimate();
+	stopAnimate();
 	m_iView = XFLR5::STABPOLARVIEW;
 	setGraphTiles();
 
@@ -6556,7 +6556,7 @@ void QMiarex::onWOppView()
 void QMiarex::onWPolarView()
 {
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
-	if (m_bAnimateWOpp) StopAnimate();
+	if (m_bAnimateWOpp) stopAnimate();
 
 	m_bResetTextLegend = true;
 
@@ -6874,7 +6874,7 @@ void QMiarex::PanelAnalyze(double V0, double VMax, double VDelta, bool bSequence
 		m_pPanelAnalysisDlg->hide();
 
 
-	SetPlaneOpp(false, Objects3D::s_pPanelAnalysis->m_OpAlpha);
+	setPlaneOpp(false, Objects3D::s_pPanelAnalysis->m_OpAlpha);
 	pMainFrame->UpdatePOppListBox();
 
 	m_bResetglWake=true; //TODO remove
@@ -7841,7 +7841,7 @@ void QMiarex::setWPolar(bool bCurrent, QString WPlrName)
 			x = m_pCurPOpp->m_Beta;
 	}
 
-	SetPlaneOpp(false, x);
+	setPlaneOpp(false, x);
 
 
 	if(m_pCurWPolar)
@@ -7978,7 +7978,7 @@ void QMiarex::showEvent(QShowEvent *event)
  * @deprecated QGLWidget::grabFrameBuffer() is used instead.
  * @param FileName the name of the destination image file.
  */
-void QMiarex::SnapClient(QString const &FileName)
+void QMiarex::snapClient(QString const &FileName)
 {
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 
@@ -8058,7 +8058,7 @@ void QMiarex::SnapClient(QString const &FileName)
 /**
  * Cancels the animation whatever the active view
  */
-void QMiarex::StopAnimate()
+void QMiarex::stopAnimate()
 {
 	m_bAnimateWOpp = false;
 	m_pctrlWOppAnimate->setChecked(false);
@@ -8076,7 +8076,7 @@ void QMiarex::StopAnimate()
 	{
 		if(m_pCurPlane)
 		{
-			SetPlaneOpp(true);
+			setPlaneOpp(true);
 		}
 	}
 }
@@ -8085,7 +8085,7 @@ void QMiarex::StopAnimate()
 /**
  * Updates the active curve with the data from the currently active operating points or polars.
  */
-void QMiarex::UpdateCurve()
+void QMiarex::updateCurve()
 {
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 	if(m_iView==XFLR5::WPOLARVIEW && m_pCurWPolar)
@@ -8434,7 +8434,7 @@ void QMiarex::paintPanelForceLegendText(QPainter &painter)
 *@param bCurrent, if true, uses the x value of the current operating point; this is useful if the user has changed the polar, but wants to display the same aoa for instance
 *@return true if a new valid operating point has been selected
 */
-bool QMiarex::SetPlaneOpp(bool bCurrent, double x)
+bool QMiarex::setPlaneOpp(bool bCurrent, double x)
 {
 	if(!m_pCurPlane) return false;
 

@@ -305,7 +305,7 @@ void StabViewDlg::OnAnimate()
 	}
 	else
 	{
-		pMiarex->StopAnimate();
+		pMiarex->stopAnimate();
 	}
 }
 

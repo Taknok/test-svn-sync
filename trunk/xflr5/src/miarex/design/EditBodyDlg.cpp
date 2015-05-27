@@ -122,7 +122,7 @@ void EditBodyDlg::resizeEvent(QResizeEvent *event)
 	QList<int> midlleSizes;
 	midlleSizes.append((int)(height()*45/100));
 	midlleSizes.append((int)(height()*45/100));
-	midlleSizes.append((int)(height()*10/100));
+	midlleSizes.append((int)(height()*5/100));
 	m_pMiddleSplitter->setSizes(midlleSizes);
 
 
@@ -250,7 +250,6 @@ void EditBodyDlg::setupLayout()
 		m_pMiddleSplitter = new QSplitter(Qt::Vertical, this);
 		{
 			m_pBodyLineWidget = new BodyLineWidget(this);
-//			m_pBodyLineWidget->setMinimumHeight(100);
 			m_pBodyLineWidget->setSizePolicy(szPolicyMaximum);
 
 			m_pGLWidget = new ThreeDWidget(this);
@@ -276,45 +275,46 @@ void EditBodyDlg::setupLayout()
 						m_pctrlShowMasses->setSizePolicy(szPolicyMaximum);
 
 						pThreeDParamsLayout->addWidget(m_pctrlAxes, 1,1);
-						pThreeDParamsLayout->addWidget(m_pctrlPanels, 1,2);
-						pThreeDParamsLayout->addWidget(m_pctrlSurfaces, 2,1);
+						pThreeDParamsLayout->addWidget(m_pctrlPanels, 1,3);
+						pThreeDParamsLayout->addWidget(m_pctrlSurfaces, 1,2);
 						pThreeDParamsLayout->addWidget(m_pctrlOutline, 2,2);
-						pThreeDParamsLayout->addWidget(m_pctrlShowMasses, 3,2);
+						pThreeDParamsLayout->addWidget(m_pctrlShowMasses, 2,3);
 					}
 
+					QHBoxLayout *pAxisViewLayout = new QHBoxLayout;
+					{
+						m_pctrlX          = new QToolButton;
+						m_pctrlY          = new QToolButton;
+						m_pctrlZ          = new QToolButton;
+						m_pctrlIso        = new QToolButton;
+						if(m_pctrlX->iconSize().height()<=48)
+						{
+							m_pctrlX->setIconSize(QSize(24,24));
+							m_pctrlY->setIconSize(QSize(24,24));
+							m_pctrlZ->setIconSize(QSize(24,24));
+							m_pctrlIso->setIconSize(QSize(24,24));
+						}
+						m_pXView   = new QAction(QIcon(":/images/OnXView.png"), tr("X View"), this);
+						m_pYView   = new QAction(QIcon(":/images/OnYView.png"), tr("Y View"), this);
+						m_pZView   = new QAction(QIcon(":/images/OnZView.png"), tr("Z View"), this);
+						m_pIsoView = new QAction(QIcon(":/images/OnIsoView.png"), tr("Iso View"), this);
+						m_pXView->setCheckable(true);
+						m_pYView->setCheckable(true);
+						m_pZView->setCheckable(true);
+						m_pIsoView->setCheckable(true);
+
+						m_pctrlX->setDefaultAction(m_pXView);
+						m_pctrlY->setDefaultAction(m_pYView);
+						m_pctrlZ->setDefaultAction(m_pZView);
+						m_pctrlIso->setDefaultAction(m_pIsoView);
+						pAxisViewLayout->addWidget(m_pctrlX);
+						pAxisViewLayout->addWidget(m_pctrlY);
+						pAxisViewLayout->addWidget(m_pctrlZ);
+						pAxisViewLayout->addWidget(m_pctrlIso);
+					}
 					QVBoxLayout *pRightColLayout = new QVBoxLayout;
 					{
-						QHBoxLayout *pAxisViewLayout = new QHBoxLayout;
-						{
-							m_pctrlX          = new QToolButton;
-							m_pctrlY          = new QToolButton;
-							m_pctrlZ          = new QToolButton;
-							m_pctrlIso        = new QToolButton;
-							if(m_pctrlX->iconSize().height()<=48)
-							{
-								m_pctrlX->setIconSize(QSize(24,24));
-								m_pctrlY->setIconSize(QSize(24,24));
-								m_pctrlZ->setIconSize(QSize(24,24));
-								m_pctrlIso->setIconSize(QSize(24,24));
-							}
-							m_pXView   = new QAction(QIcon(":/images/OnXView.png"), tr("X View"), this);
-							m_pYView   = new QAction(QIcon(":/images/OnYView.png"), tr("Y View"), this);
-							m_pZView   = new QAction(QIcon(":/images/OnZView.png"), tr("Z View"), this);
-							m_pIsoView = new QAction(QIcon(":/images/OnIsoView.png"), tr("Iso View"), this);
-							m_pXView->setCheckable(true);
-							m_pYView->setCheckable(true);
-							m_pZView->setCheckable(true);
-							m_pIsoView->setCheckable(true);
 
-							m_pctrlX->setDefaultAction(m_pXView);
-							m_pctrlY->setDefaultAction(m_pYView);
-							m_pctrlZ->setDefaultAction(m_pZView);
-							m_pctrlIso->setDefaultAction(m_pIsoView);
-							pAxisViewLayout->addWidget(m_pctrlX);
-							pAxisViewLayout->addWidget(m_pctrlY);
-							pAxisViewLayout->addWidget(m_pctrlZ);
-							pAxisViewLayout->addWidget(m_pctrlIso);
-						}
 
 						QHBoxLayout *pClipLayout = new QHBoxLayout;
 						{
@@ -332,12 +332,12 @@ void EditBodyDlg::setupLayout()
 						m_pctrlReset = new QPushButton(tr("Reset view"));
 
 
-						pRightColLayout->addLayout(pAxisViewLayout);
 						pRightColLayout->addWidget(m_pctrlReset);
 						pRightColLayout->addLayout(pClipLayout);
 					}
-
 					pThreeDViewControlsLayout->addLayout(pThreeDParamsLayout);
+					pThreeDViewControlsLayout->addStretch();
+					pThreeDViewControlsLayout->addLayout(pAxisViewLayout);
 					pThreeDViewControlsLayout->addStretch();
 					pThreeDViewControlsLayout->addLayout(pRightColLayout);
 
@@ -510,6 +510,12 @@ void EditBodyDlg::GLDraw3D()
 		else if(m_pBody->bodyType()==XFLR5::BODYSPLINETYPE) GLCreateBody3DSplines(   BODYGEOMBASE, m_pBody, 47, 37);
 
 		m_bResetglBody = false;
+		if(glIsList(BODYMESHBASE))
+		{
+			glDeleteLists(BODYMESHBASE,1);
+			glDeleteLists(BODYMESHBASE+MAXBODIES,1);
+		}
+		GLCreateBodyMesh(BODYMESHBASE, m_pBody);
 	}
 }
 
@@ -555,8 +561,8 @@ void EditBodyDlg::GLRenderView()
 
 	if(ThreeDWidget::s_bVLMPanels)
 	{
-		if(!ThreeDWidget::s_bSurfaces) glCallList(MESHBACK);
-		glCallList(MESHPANELS);
+		glCallList(BODYMESHBASE);
+		if(!ThreeDWidget::s_bSurfaces) glCallList(BODYMESHBASE+MAXBODIES);
 	}
 
 
@@ -566,7 +572,6 @@ void EditBodyDlg::GLRenderView()
 								  CVector(0.0,0.0,0.0),
 								  m_pBody->bodyName(),
 								  m_pBody->m_PointMass);
-
 	}
 }
 

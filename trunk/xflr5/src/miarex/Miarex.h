@@ -264,7 +264,7 @@ public:
 	void setControls();
 	void setCurveParams();
 	void setGraphTiles();
-	bool SetPlaneOpp(bool bCurrent, double x = 0.0);
+	bool setPlaneOpp(bool bCurrent, double x = 0.0);
 	void SetScale();
 	void SetStabGraphTitles();
 	void setPlane(QString PlaneName="");
@@ -274,9 +274,9 @@ public:
 	void SetWGraphScale();
 	void setWGraphTitles(Graph* pGraph);
 	void setWPolar(bool bCurrent = true, QString WPlrName = "");
-	void SnapClient(QString const &FileName);
-	void StopAnimate();
-	void UpdateCurve();
+	void snapClient(QString const &FileName);
+	void stopAnimate();
+	void updateCurve();
 	void updateUnits();
 	void updateView();
 
