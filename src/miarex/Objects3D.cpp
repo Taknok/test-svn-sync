@@ -2893,7 +2893,7 @@ Plane * Objects3D::setPlaneObject(QString PlaneName, Plane *pCurPlane)
 		}
 	}
 
-	pPlane->ComputeBodyAxisInertia();
+	pPlane->computeBodyAxisInertia();
 
 	return pPlane;
 }

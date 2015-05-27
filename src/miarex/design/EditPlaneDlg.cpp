@@ -370,7 +370,7 @@ void EditPlaneDlg::setupLayout()
 						pCancelButton->setAutoDefault(false);
 						pExitCommandLayout->addWidget(pOKButton);
 						pExitCommandLayout->addWidget(pCancelButton);
-						connect(pOKButton, SIGNAL(clicked()),this, SLOT(OnOK()));
+						connect(pOKButton, SIGNAL(clicked()),this, SLOT(onOK()));
 						connect(pCancelButton, SIGNAL(clicked()),this, SLOT(reject()));
 					}
 					pCommandLayout->addWidget(m_pctrlRedraw);
@@ -400,7 +400,7 @@ void EditPlaneDlg::setupLayout()
 
 
 
-void EditPlaneDlg::OnOK()
+void EditPlaneDlg::onOK()
 {
 	int j;
 
@@ -437,7 +437,7 @@ void EditPlaneDlg::OnOK()
 		}
 	}
 
-	m_pPlane->ComputeBodyAxisInertia();
+	m_pPlane->computeBodyAxisInertia();
 
 	s_bWindowMaximized= isMaximized();
 	s_WindowPosition = pos();
@@ -516,7 +516,7 @@ void EditPlaneDlg::reject()
 										QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
 		if (QMessageBox::Yes == Ans)
 		{
-			OnOK();
+			onOK();
 			return;
 		}
 		else if(QMessageBox::Cancel == Ans) return;
@@ -574,6 +574,12 @@ void EditPlaneDlg::GLDraw3D()
 			else if(m_pPlane->body()->bodyType()==XFLR5::BODYSPLINETYPE) GLCreateBody3DSplines(   BODYGEOMBASE, m_pPlane->body(), 47, 37);
 
 			m_bResetglBody = false;
+			if(glIsList(BODYMESHBASE))
+			{
+				glDeleteLists(BODYMESHBASE,1);
+				glDeleteLists(BODYMESHBASE+MAXBODIES,1);
+			}
+			GLCreateBodyMesh(BODYMESHBASE, m_pPlane->body());
 		}
 	}
 
@@ -663,6 +669,11 @@ void EditPlaneDlg::GLRenderView()
 	{
 		if(!ThreeDWidget::s_bSurfaces) glCallList(MESHBACK);
 		glCallList(MESHPANELS);
+		if(m_pPlane->body())
+		{
+			glCallList(BODYMESHBASE);
+			if(!ThreeDWidget::s_bSurfaces) glCallList(BODYMESHBASE+MAXBODIES);
+		}
 	}
 
 	if(ThreeDWidget::s_bFoilNames)

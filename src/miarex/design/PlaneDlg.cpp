@@ -585,7 +585,7 @@ void PlaneDlg::OnOK()
 		}
 	}
 
-	m_pPlane->ComputeBodyAxisInertia();
+	m_pPlane->computeBodyAxisInertia();
 
 	if(!m_pctrlBody->isChecked())
 	{

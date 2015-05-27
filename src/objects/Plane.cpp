@@ -211,7 +211,7 @@ void Plane::ComputeVolumeInertia(double &Mass, CVector & CoG, double &CoGIxx, do
 *  - the body axis is the frame in which the geometry has been defined
 *  - the origin is the plane's CoG, taking into account all masses
 */
-void Plane::ComputeBodyAxisInertia()
+void Plane::computeBodyAxisInertia()
 {
 	int i, iw;
 	CVector VolumeCoG, MassPos;
