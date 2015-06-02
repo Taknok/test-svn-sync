@@ -424,7 +424,7 @@ void PlaneDlg::OnImportXMLBody()
 	QString PathName;
 	PathName = QFileDialog::getOpenFileName(this, tr("Open XML File"),
 											Settings::s_LastDirName,
-											tr("Plane XML file (*.xpl)"));
+											tr("Plane XML file")+"(*.xpl)");
 	if(!PathName.length())		return ;
 	int pos = PathName.lastIndexOf("/");
 	if(pos>0) Settings::s_LastDirName = PathName.left(pos);

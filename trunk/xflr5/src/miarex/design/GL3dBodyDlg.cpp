@@ -2333,7 +2333,7 @@ void GL3dBodyDlg::OnExportBodyXML()
 {
 	if(!m_pBody)return ;// is there anything to export ?
 
-	QString filter = "XML file (*.xpl)";
+	QString filter = "XML file (*.xml)";
 	QString FileName, strong;
 
 	strong = m_pBody->bodyName();
@@ -2346,8 +2346,8 @@ void GL3dBodyDlg::OnExportBodyXML()
 	int pos = FileName.lastIndexOf("/");
 	if(pos>0) Settings::s_LastDirName = FileName.left(pos);
 
-	pos = FileName.indexOf(".xpl", Qt::CaseInsensitive);
-	if(pos<0) FileName += ".xpl";
+	pos = FileName.indexOf(".xùl", Qt::CaseInsensitive);
+	if(pos<0) FileName += ".xùl";
 
 
 	QFile XFile(FileName);
@@ -2491,7 +2491,7 @@ void GL3dBodyDlg::OnImportBodyXML()
 	QString PathName;
 	PathName = QFileDialog::getOpenFileName(this, tr("Open XML File"),
 											Settings::s_LastDirName,
-											tr("Plane XML file (*.xpl)"));
+											tr("Plane XML file")+"(*.xpl)");
 	if(!PathName.length())		return ;
 	int pos = PathName.lastIndexOf("/");
 	if(pos>0) Settings::s_LastDirName = PathName.left(pos);
