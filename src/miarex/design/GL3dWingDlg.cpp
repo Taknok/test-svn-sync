@@ -185,10 +185,10 @@ void GL3dWingDlg::Connect()
 
 	connect(m_pResetScales, SIGNAL(triggered()), this, SLOT(On3DReset()));
 
-	connect(m_pctrlIso,        SIGNAL(clicked()),m_pGLWidget, SLOT(On3DIso()));
-	connect(m_pctrlX,          SIGNAL(clicked()),m_pGLWidget, SLOT(On3DFront()));
-	connect(m_pctrlY,          SIGNAL(clicked()),m_pGLWidget, SLOT(On3DLeft()));
-	connect(m_pctrlZ,          SIGNAL(clicked()),m_pGLWidget, SLOT(On3DTop()));
+	connect(m_pctrlIso,        SIGNAL(clicked()),m_pGLWidget, SLOT(on3DIso()));
+	connect(m_pctrlX,          SIGNAL(clicked()),m_pGLWidget, SLOT(on3DFront()));
+	connect(m_pctrlY,          SIGNAL(clicked()),m_pGLWidget, SLOT(on3DLeft()));
+	connect(m_pctrlZ,          SIGNAL(clicked()),m_pGLWidget, SLOT(on3DTop()));
 	connect(m_pctrlReset,      SIGNAL(clicked()),this, SLOT(On3DReset()));
 	connect(m_pctrlFoilNames,  SIGNAL(clicked()),this, SLOT(OnFoilNames()));
 	connect(m_pctrlShowMasses, SIGNAL(clicked()),this, SLOT(OnShowMasses()));

@@ -1337,7 +1337,7 @@ void EditPlaneDlg::fillBodyTreeView(QStandardItem*planeRootItem)
 {
 	Body *pBody = m_pPlane->body();
 
-	QList<QStandardItem*> bodyFolder = prepareRow("Body", "Name");
+	QList<QStandardItem*> bodyFolder = prepareRow("Body");
 	planeRootItem->appendRow(bodyFolder);
 
 	if(m_enumActiveObject==BODY || m_iActiveFrame>=0)

@@ -250,6 +250,7 @@ void GraphTileWidget::onResetCurves(QGraph *pGraph)
 		}
 		case XFLR5::MIAREX:
 		{
+			QMiarex::s_bResetCurves = true;
 			QMiarex *pMiarex = (QMiarex*)s_pMiarex;
 			pMiarex->updateView();
 		}
