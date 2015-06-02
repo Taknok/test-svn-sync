@@ -8533,7 +8533,7 @@ void QMiarex::onExportPlanetoXML()
 	if(!m_pCurPlane)return ;// is there anything to export ?
 
 
-	QString filter = "XML file (*.xpl)";
+	QString filter = "XML file (*.xml)";
 	QString FileName, strong;
 
 	strong = m_pCurPlane->planeName();
@@ -8546,8 +8546,7 @@ void QMiarex::onExportPlanetoXML()
 	int pos = FileName.lastIndexOf("/");
 	if(pos>0) Settings::s_LastDirName = FileName.left(pos);
 
-	pos = FileName.indexOf(".xpl", Qt::CaseInsensitive);
-	if(pos<0) FileName += ".xpl";
+	if(FileName.indexOf(".xml", Qt::CaseInsensitive)<0) FileName += ".xml";
 
 
 	QFile XFile(FileName);
@@ -8571,7 +8570,7 @@ void QMiarex::onImportPlanefromXML()
 	QString PathName;
 	PathName = QFileDialog::getOpenFileName(pMainFrame, tr("Open XML File"),
 											Settings::s_LastDirName,
-											tr("Plane XML file (*.xpl)"));
+											tr("Plane XML file")+"(*.xpl)");
 	if(!PathName.length())		return ;
 	int pos = PathName.lastIndexOf("/");
 	if(pos>0) Settings::s_LastDirName = PathName.left(pos);
