@@ -27,14 +27,7 @@
 #include "../view/GLCreateBodyLists.h"
 
 #include "EditBodyDlg.h"
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QHeaderView>
-#include <QTreeWidgetItem>
-#include <QFontMetrics>
-#include <QShowEvent>
-#include <QHideEvent>
-#include <QtDebug>
+
 
 QSize EditBodyDlg::s_WindowSize(1031,783);
 QPoint EditBodyDlg::s_WindowPosition(131, 77);
@@ -203,7 +196,7 @@ void EditBodyDlg::setupLayout()
 
 	m_pDelegate = new EditObjectDelegate(this);
 	m_pStruct->setItemDelegate(m_pDelegate);
-	connect(m_pDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(onCellChanged(QWidget *)));
+	connect(m_pDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(onRedraw()));
 
 
 	QSizePolicy szPolicyMinimumExpanding;
@@ -925,6 +918,7 @@ void EditBodyDlg::updateViews()
 
 
 
+
 void EditBodyDlg::onRedraw()
 {
 	readBodyTree(m_pModel->index(0,0).child(0,0));
@@ -1169,14 +1163,6 @@ void EditBodyDlg::readVectorTree(CVector &V, QModelIndex indexLevel)
 void EditBodyDlg::onItemClicked(const QModelIndex &index)
 {
 	identifySelection(index);
-	update();
-}
-
-
-
-void EditBodyDlg::onCellChanged(QWidget *)
-{
-	m_bChanged = true;
 	update();
 }
 

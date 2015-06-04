@@ -22,9 +22,6 @@
 #include "miarextilewidget.h"
 
 #include <QHBoxLayout>
-#include <QSplitter>
-#include <QtDebug>
-
 
 
 MiarexTileWidget::MiarexTileWidget(QWidget *pParent) : GraphTileWidget(pParent)
@@ -47,9 +44,6 @@ MiarexTileWidget::MiarexTileWidget(QWidget *pParent) : GraphTileWidget(pParent)
 	m_iActiveGraphWidget = 0;
 	m_SingleGraphOrientation = Qt::Horizontal;
 
-	m_splitWOpp = 5./8.;
-	m_splitWPolar = 4./5.;
-
 	setupMainLayout();
 }
 
@@ -69,107 +63,130 @@ void MiarexTileWidget::Connect()
 }
 
 
+
 void MiarexTileWidget::setupMainLayout()
 {
-	QHBoxLayout *pMainLayout = new QHBoxLayout;
+	m_pMainGridLayout = new QGridLayout;
 	{
-		m_pMainSplitter = new QSplitter(Qt::Horizontal, this);
-		{
-			QWidget *p4GraphWidget = new QWidget;
-			{
-				QGridLayout *pGridLayout = new QGridLayout;
-				{
-					for(int i=0; i<2; i++)
-						for(int j=0; j<3; j++)
-							if(3*i+j<m_GraphWidget.count()) pGridLayout->addWidget(m_GraphWidget.at(3*i+j),i,j);
+		for(int i=0; i<2; i++)
+			for(int j=0; j<3; j++)
+				if(3*i+j<m_GraphWidget.count()) m_pMainGridLayout->addWidget(m_GraphWidget.at(3*i+j),i,j);
 
-					pGridLayout->setSpacing(0);
-					pGridLayout->setMargin(0);
-				}
-				p4GraphWidget->setLayout(pGridLayout);
-			}
-			m_pMainSplitter->addWidget(p4GraphWidget);
-
-			m_pLegendStack = new QStackedWidget;
-			m_pLegendStack->addWidget(m_pLegendWidget);
-			m_pLegendStack->addWidget(m_pWingWidget);
-			m_pMainSplitter->addWidget(m_pLegendStack);
-
-			QList<int> splitSizes;
-			splitSizes.append(5);
-			splitSizes.append(3);
-			m_pMainSplitter->setSizes(splitSizes);
-		}
-
-		pMainLayout->setSpacing(0);
-		pMainLayout->setMargin(0);
-		pMainLayout->addWidget(m_pMainSplitter);
-		connect(m_pMainSplitter, SIGNAL(splitterMoved(int,int)), this, SLOT(onSplitterMoved(int, int)));
+		m_pMainGridLayout->setSpacing(0);
+		m_pMainGridLayout->setMargin(0);
 	}
-	setLayout(pMainLayout);
+
+	setLayout(m_pMainGridLayout);
 }
 
 
 
 void MiarexTileWidget::adjustLayout()
 {
+	blockSignals(true);
+
+	for(int ig=0; ig<MAXGRAPHS; ig++)
+		m_pMainGridLayout->removeWidget(m_GraphWidget.at(ig));
+
+	m_pMainGridLayout->removeWidget(m_pWingWidget);
+	m_pMainGridLayout->removeWidget(m_pLegendWidget);
+
+
+	m_pWingWidget->setVisible(false);
+	m_pLegendWidget->setVisible(true);
+
 	if(m_nGraphWidgets==1)
 	{
 		if(m_MiarexView==XFLR5::WOPPVIEW)
 		{
-			m_pMainSplitter->setOrientation(Qt::Vertical);
-			m_pLegendStack->setCurrentWidget(m_pWingWidget);
-			QList<int> splitSizes;
-			splitSizes.append((int)(m_splitWOpp*100.0));
-			splitSizes.append(100 - (int)(m_splitWOpp*100.0));
-			m_pMainSplitter->setSizes(splitSizes);
+			for(int igw=0; igw<m_GraphWidget.count(); igw++)
+				m_GraphWidget.at(igw)->setVisible(igw==m_iActiveGraphWidget);
+
+			m_pWingWidget->setVisible(true);
+			m_pLegendWidget->setVisible(false);
+
+			m_pMainGridLayout->addWidget(m_GraphWidget.at(m_iActiveGraphWidget),1,1);
+			m_pMainGridLayout->addWidget(m_pWingWidget,2,1);
+			m_pMainGridLayout->setRowStretch(1,5);
+			m_pMainGridLayout->setRowStretch(2,3);
+			m_pMainGridLayout->setColumnStretch(1,1);
+			m_pMainGridLayout->setColumnStretch(2,0);
+			m_pMainGridLayout->setColumnStretch(3,0);
+			m_pMainGridLayout->setColumnStretch(4,0);
 		}
 		else
 		{
-			m_pMainSplitter->setOrientation(Qt::Horizontal);
-			m_pLegendStack->setCurrentWidget(m_pLegendWidget);
-			QList<int> splitSizes;
-			splitSizes.append((int)(m_splitWPolar*100.0));
-			splitSizes.append(100 - (int)(m_splitWPolar*100.0));
-			m_pMainSplitter->setSizes(splitSizes);
+			for(int igw=0; igw<m_GraphWidget.count(); igw++)
+				m_GraphWidget.at(igw)->setVisible(igw==m_iActiveGraphWidget);
+
+			m_pMainGridLayout->addWidget(m_GraphWidget.at(m_iActiveGraphWidget),1,1);
+			m_pMainGridLayout->addWidget(m_pLegendWidget,1,2);
+
+			m_pMainGridLayout->setRowStretch(1,1);
+			m_pMainGridLayout->setRowStretch(2,0);
+			m_pMainGridLayout->setColumnStretch(1,13);
+			m_pMainGridLayout->setColumnStretch(2,5);
+			m_pMainGridLayout->setColumnStretch(3,0);
+			m_pMainGridLayout->setColumnStretch(4,0);
 		}
-		for(int igw=0; igw<m_GraphWidget.count(); igw++)
-			m_GraphWidget.at(igw)->setVisible(igw==m_iActiveGraphWidget);
 	}
 	else if(m_nGraphWidgets==2)
 	{
-		QList<int> splitSizes;
-		splitSizes.append((int)(m_splitWPolar*100.0));
-		splitSizes.append(100 - (int)(m_splitWPolar*100.0));
-		m_pMainSplitter->setSizes(splitSizes);
-		m_pMainSplitter->setOrientation(Qt::Vertical);
-		m_pLegendStack->setCurrentWidget(m_pLegendWidget);
 		for(int igw=0; igw<m_GraphWidget.count(); igw++)
 			m_GraphWidget.at(igw)->setVisible(igw<2);
+		m_pMainGridLayout->addWidget(m_GraphWidget.at(0),1,1);
+		m_pMainGridLayout->addWidget(m_GraphWidget.at(1),1,2);
+		m_pMainGridLayout->addWidget(m_pLegendWidget,2,1,1,2);
+
+		m_pMainGridLayout->setRowStretch(1,17);
+		m_pMainGridLayout->setRowStretch(2,5);
+		m_pMainGridLayout->setColumnStretch(1,1);
+		m_pMainGridLayout->setColumnStretch(2,1);
+		m_pMainGridLayout->setColumnStretch(3,0);
+		m_pMainGridLayout->setColumnStretch(4,0);
 	}
 	else if(m_nGraphWidgets==4)
 	{
-		QList<int> splitSizes;
-		splitSizes.append((int)(m_splitWPolar*100.0));
-		splitSizes.append(100 - (int)(m_splitWPolar*100.0));
-		m_pMainSplitter->setSizes(splitSizes);
-		m_pMainSplitter->setOrientation(Qt::Horizontal);
-		m_pLegendStack->setCurrentWidget(m_pLegendWidget);
 		for(int igw=0; igw<m_GraphWidget.count(); igw++)
-			m_GraphWidget.at(igw)->setVisible(igw==0 || igw==1 || igw==3 || igw==4);
+			m_GraphWidget.at(igw)->setVisible(igw==0 || igw==1 || igw==2 || igw==3);
+
+		m_pMainGridLayout->addWidget(m_GraphWidget.at(0),1,1);
+		m_pMainGridLayout->addWidget(m_GraphWidget.at(1),1,2);
+		m_pMainGridLayout->addWidget(m_GraphWidget.at(2),2,1);
+		m_pMainGridLayout->addWidget(m_GraphWidget.at(3),2,2);
+
+		m_pMainGridLayout->addWidget(m_pLegendWidget,1,3,2,1);
+
+		m_pMainGridLayout->setRowStretch(1,1);
+		m_pMainGridLayout->setRowStretch(2,1);
+		m_pMainGridLayout->setColumnStretch(1,2);
+		m_pMainGridLayout->setColumnStretch(2,2);
+		m_pMainGridLayout->setColumnStretch(3,1);
+		m_pMainGridLayout->setColumnStretch(4,0);
 	}
 	else
 	{
-		QList<int> splitSizes;
-		splitSizes.append((int)(m_splitWPolar*100.0));
-		splitSizes.append(100 - (int)(m_splitWPolar*100.0));
-		m_pMainSplitter->setSizes(splitSizes);
-		m_pMainSplitter->setOrientation(Qt::Horizontal);
-		m_pLegendStack->setCurrentWidget(m_pLegendWidget);
-		for(int igw=0; igw<m_GraphWidget.count(); igw++)
-			m_GraphWidget.at(igw)->setVisible(true);
+		for(int igw=0; igw<m_GraphWidget.count(); igw++) m_GraphWidget.at(igw)->setVisible(true);
+		m_pMainGridLayout->addWidget(m_GraphWidget.at(0),1,1);
+		m_pMainGridLayout->addWidget(m_GraphWidget.at(1),1,2);
+		m_pMainGridLayout->addWidget(m_GraphWidget.at(2),1,3);
+		m_pMainGridLayout->addWidget(m_GraphWidget.at(3),2,1);
+		m_pMainGridLayout->addWidget(m_GraphWidget.at(4),2,2);
+		m_pMainGridLayout->addWidget(m_GraphWidget.at(5),2,3);
+		m_pMainGridLayout->addWidget(m_pLegendWidget,1,4,2,1);
+
+		m_pMainGridLayout->setRowStretch(1,1);
+		m_pMainGridLayout->setRowStretch(2,1);
+		m_pMainGridLayout->setColumnStretch(1,1);
+		m_pMainGridLayout->setColumnStretch(2,1);
+		m_pMainGridLayout->setColumnStretch(3,1);
+		m_pMainGridLayout->setColumnStretch(4,1);
 	}
+
+
+	blockSignals(false);
 }
+
 
 
 

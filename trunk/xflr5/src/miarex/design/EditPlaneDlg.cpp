@@ -27,15 +27,6 @@
 #include "../view/GLCreateBodyLists.h"
 
 #include "EditPlaneDlg.h"
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QGroupBox>
-#include <QHeaderView>
-#include <QTreeWidgetItem>
-#include <QFontMetrics>
-#include <QShowEvent>
-#include <QHideEvent>
-#include <QtDebug>
 
 QSize EditPlaneDlg::s_WindowSize(1031,783);
 QPoint EditPlaneDlg::s_WindowPosition(131, 77);
@@ -138,7 +129,7 @@ void EditPlaneDlg::resizeEvent(QResizeEvent *event)
 		m_PixText.fill(Qt::transparent);
 
 		QPainter paint(&m_PixText);
-		PaintPlaneLegend(paint, m_pPlane, m_pGLWidget->rect());
+		paintPlaneLegend(paint, m_pPlane, m_pGLWidget->rect());
 
 	}
 	event->accept();
@@ -215,12 +206,12 @@ void EditPlaneDlg::setupLayout()
 
 	QItemSelectionModel *selectionModel = new QItemSelectionModel(m_pModel);
 	m_pStruct->setSelectionModel(selectionModel);
-	connect(selectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(OnItemClicked(QModelIndex)));
+	connect(selectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(onItemClicked(QModelIndex)));
 
 
 	m_pDelegate = new EditObjectDelegate(this);
 	m_pStruct->setItemDelegate(m_pDelegate);
-	connect(m_pDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(OnCellChanged(QWidget *)));
+	connect(m_pDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(onRedraw()));
 
 
 	QSizePolicy szPolicyMinimumExpanding;
@@ -931,9 +922,9 @@ void EditPlaneDlg::GLCreateWingSectionHighlight(Wing *pWing)
 
 void EditPlaneDlg::Connect()
 {
-	connect(m_pInsertBefore,  SIGNAL(triggered()), this, SLOT(OnInsertBefore()));
-	connect(m_pInsertAfter,   SIGNAL(triggered()), this, SLOT(OnInsertAfter()));
-	connect(m_pDeleteItem,    SIGNAL(triggered()), this, SLOT(OnDelete()));
+	connect(m_pInsertBefore,  SIGNAL(triggered()), this, SLOT(onInsertBefore()));
+	connect(m_pInsertAfter,   SIGNAL(triggered()), this, SLOT(onInsertAfter()));
+	connect(m_pDeleteItem,    SIGNAL(triggered()), this, SLOT(onDelete()));
 
 	connect(m_pctrlRedraw,     SIGNAL(clicked()), this, SLOT(onRedraw()));
 	connect(m_pctrlReset,      SIGNAL(clicked()), this, SLOT(on3DReset()));
@@ -952,8 +943,6 @@ void EditPlaneDlg::Connect()
 	connect(m_pctrlY,          SIGNAL(clicked()), m_pGLWidget, SLOT(on3DLeft()));
 	connect(m_pctrlZ,          SIGNAL(clicked()), m_pGLWidget, SLOT(on3DTop()));
 
-
-
 	connect(m_pctrlClipPlanePos, SIGNAL(sliderMoved(int)), m_pGLWidget, SLOT(onClipPlane(int)));
 }
 
@@ -966,6 +955,7 @@ void EditPlaneDlg::on3DReset()
 }
 
 
+
 void EditPlaneDlg::onRedraw()
 {
 	readPlaneTree();
@@ -976,7 +966,7 @@ void EditPlaneDlg::onRedraw()
 	m_bChanged = true;
 
 	QPainter paint(&m_PixText);
-	PaintPlaneLegend(paint, m_pPlane, m_pGLWidget->rect());
+	paintPlaneLegend(paint, m_pPlane, m_pGLWidget->rect());
 
 	m_pGLWidget->update();
 }
@@ -1888,19 +1878,12 @@ void EditPlaneDlg::readVectorTree(CVector &V, QModelIndex indexLevel)
 
 
 
-void EditPlaneDlg::OnItemClicked(const QModelIndex &index)
+void EditPlaneDlg::onItemClicked(const QModelIndex &index)
 {
 	identifySelection(index);
 	m_pGLWidget->update();
 }
 
-
-
-void EditPlaneDlg::OnCellChanged(QWidget *)
-{
-	m_bChanged = true;
-	m_pGLWidget->update();
-}
 
 
 
@@ -2002,7 +1985,7 @@ void EditPlaneDlg::identifySelection(const QModelIndex &indexSel)
 
 
 
-void EditPlaneDlg::OnInsertBefore()
+void EditPlaneDlg::onInsertBefore()
 {
 	Wing *pWing = m_pPlane->wing(m_enumActiveWingType);
 
@@ -2093,7 +2076,7 @@ void EditPlaneDlg::OnInsertBefore()
 
 
 
-void EditPlaneDlg::OnInsertAfter()
+void EditPlaneDlg::onInsertAfter()
 {
 	Wing *pWing = m_pPlane->wing(m_enumActiveWingType);
 
@@ -2191,7 +2174,7 @@ void EditPlaneDlg::OnInsertAfter()
 }
 
 
-void EditPlaneDlg::OnDelete()
+void EditPlaneDlg::onDelete()
 {
 	if(m_iActiveSection>=0 && m_enumActiveWingType!=XFLR5::OTHERWING)
 	{
@@ -2270,7 +2253,7 @@ void EditPlaneDlg::OnDelete()
  * Draws the wing legend in the 2D operating point view
  * @param painter a reference to the QPainter object on which the view shall be drawn
  */
-void EditPlaneDlg::PaintPlaneLegend(QPainter &painter, Plane *pPlane, QRect drawRect)
+void EditPlaneDlg::paintPlaneLegend(QPainter &painter, Plane *pPlane, QRect drawRect)
 {
 	if(!pPlane) return;
 	painter.save();
