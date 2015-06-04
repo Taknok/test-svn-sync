@@ -24,8 +24,7 @@
 
 #include "graphtilewidget.h"
 #include "wingwidget.h"
-#include <QStackedWidget>
-
+#include <QGridLayout>
 
 class MiarexTileWidget : public GraphTileWidget
 {
@@ -50,10 +49,8 @@ private slots:
 private:
 	XFLR5::enumMiarexViews &miarexView(){return m_MiarexView;}
 
-	QStackedWidget *m_pLegendStack;
 	WingWidget *m_pWingWidget;
-
-	double m_splitWOpp, m_splitWPolar;
+	QGridLayout *m_pMainGridLayout;
 };
 
 #endif // MIAREXTILEWIDGET_H

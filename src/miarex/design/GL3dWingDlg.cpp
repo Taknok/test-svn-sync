@@ -34,17 +34,6 @@
 #include "WingScaleDlg.h"
 #include "InertiaDlg.h"
 
-#include <QDesktopWidget>
-#include <QGridLayout>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QGroupBox>
-#include <QAction>
-#include <QMenu>
-#include <QMessageBox>
-#include <QColorDialog>
-#include <math.h>
-
 
 #include <QAction>
 #include <QMenu>
