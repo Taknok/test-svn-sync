@@ -87,7 +87,6 @@ private slots:
 	void onOK();
 	void onRedraw();
 	void onRefillBodyTree();
-	void onCellChanged(QWidget *);
 	void onItemClicked(const QModelIndex &index);
 
 

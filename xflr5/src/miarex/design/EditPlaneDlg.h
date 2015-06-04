@@ -91,17 +91,16 @@ private slots:
 	void onOK();
 	void on3DReset();
 	void onRedraw();
-	void OnCellChanged(QWidget *);
-	void OnItemClicked(const QModelIndex &index);
+	void onItemClicked(const QModelIndex &index);
 
-	void OnInsertBefore();
-	void OnInsertAfter();
-	void OnDelete();
+	void onInsertBefore();
+	void onInsertAfter();
+	void onDelete();
 
 
 private:
 	void reject();
-	void PaintPlaneLegend(QPainter &painter, Plane *pPlane, QRect drawRect);
+	void paintPlaneLegend(QPainter &painter, Plane *pPlane, QRect drawRect);
 
 public:
 	static bool s_bWindowMaximized;
