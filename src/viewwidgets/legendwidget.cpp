@@ -455,7 +455,7 @@ void LegendWidget::drawCpLegend(QPainter &painter, QGraph *pGraph, QPointF place
 			painter.drawLine(place.x() + 1.5*LegendSize, place.y() + 1.*dny*ny,
 							 place.x() + 2.5*LegendSize, place.y() + 1.*dny*ny);
 
-			if(pCurve->PointsVisible())
+			if(pCurve->pointsVisible())
 			{
 				x1 = place.x() + 2.0*LegendSize;
 				painter.drawRect(x1-2, place.y() + 1.*dny*ny-2,4,4);
@@ -497,7 +497,7 @@ void LegendWidget::drawStabTimeLegend(QPainter &painter, QGraph *pGraph, QPointF
 	for (i=0; i<pGraph->curveCount(); i++)
 	{
 		pCurve = pGraph->curve(i);
-		if(pCurve->size() && pCurve->IsVisible())
+		if(pCurve->size() && pCurve->isVisible())
 		{
 			ny++;
 
@@ -516,7 +516,7 @@ void LegendWidget::drawStabTimeLegend(QPainter &painter, QGraph *pGraph, QPointF
 			painter.drawLine(place.x() + 1.5*LegendSize, place.y() + 1.*dny*ny,
 							 place.x() + 2.5*LegendSize, place.y() + 1.*dny*ny);
 
-			if(pCurve->PointsVisible())
+			if(pCurve->pointsVisible())
 			{
 				x1 = place.x() + (int)(2.0*LegendSize);
 				painter.drawRect(x1-2, place.y() + 1.*dny*ny-2,4,4);

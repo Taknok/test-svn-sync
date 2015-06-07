@@ -131,7 +131,7 @@ void QGraph::drawCurve(int nIndex, QPainter &painter)
 		From.setX(int(pCurve->x[0]/m_scalex+m_ptoffset.x()));
 		From.setY(int(pCurve->y[0]/scaley  +m_ptoffset.y()));
 
-		if(pCurve->IsVisible())
+		if(pCurve->isVisible())
 		{
 			for (i=1; i<pCurve->size();i++)
 			{
@@ -143,7 +143,7 @@ void QGraph::drawCurve(int nIndex, QPainter &painter)
 			}
 		}
 
-		if(pCurve->PointsVisible())
+		if(pCurve->pointsVisible())
 		{
 			for (i=0; i<pCurve->size();i++)
 			{
@@ -578,7 +578,7 @@ void QGraph::drawLegend(QPainter &painter, QPoint &Place, QFont &LegendFont, QCo
 	for (int nc=0; nc< m_oaCurves.size(); nc++)
 	{
 		pCurve = (Curve*) m_oaCurves[nc];
-		if(pCurve->IsVisible())
+		if(pCurve->isVisible())
 		{
 			pCurve->title(strong);
 			if(pCurve->size()>0 && strong.length())//is there anything to draw ?

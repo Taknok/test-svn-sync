@@ -1365,7 +1365,7 @@ void QMiarex::DrawCpLegend(QPainter &painter, QPoint place, int bottom)
 			painter.drawLine(place.x() + (int)(1.5*LegendSize), place.y() + (int)(1.*dny*ny),
 							 place.x() + (int)(2.5*LegendSize), place.y() + (int)(1.*dny*ny));
 
-			if(pCurve->PointsVisible())
+			if(pCurve->pointsVisible())
 			{
 				x1 = place.x() + (int)(2.0*LegendSize);
 				painter.drawRect(x1-2, place.y() + (int)(1.*dny*ny)-2,4,4);
@@ -1385,7 +1385,7 @@ void QMiarex::DrawCpLegend(QPainter &painter, QPoint place, int bottom)
  * Initializes the style combo box for the graph curves
  * Selects the styles of the active curve
  */
-void QMiarex::FillComboBoxes(bool bEnable)
+void QMiarex::fillComboBoxes(bool bEnable)
 {
 	if(!bEnable)
 	{
@@ -2764,7 +2764,7 @@ void QMiarex::on3DReset()
 {
 	m_bPickCenter   = false;
 	m_bIs3DScaleSet = false;
-	Set3DScale();
+	set3DScale();
 	m_p3dWidget->on3DReset();
 }
 
@@ -3329,7 +3329,7 @@ void QMiarex::onCurveColor()
 {
 	QColor Color = QColorDialog::getColor(m_CurveColor);
 	if(Color.isValid()) m_CurveColor = Color;
-	FillComboBoxes();
+	fillComboBoxes();
 
 	updateCurve();
 }
@@ -3343,7 +3343,7 @@ void QMiarex::onCurveColor()
 void QMiarex::onCurveStyle(int index)
 {
 	m_CurveStyle = index;
-	FillComboBoxes();
+	fillComboBoxes();
 	updateCurve();
 }
 
@@ -3357,7 +3357,7 @@ void QMiarex::onCurveStyle(int index)
 void QMiarex::onCurveWidth(int index)
 {
 	m_CurveWidth = index+1;
-	FillComboBoxes();
+	fillComboBoxes();
 	updateCurve();
 }
 
@@ -4273,7 +4273,7 @@ void QMiarex::onEditCurObject()
 		setPlane();
 		pMainFrame->updatePlaneListBox();
 		m_bIs2DScaleSet = false;
-		SetScale();
+		setScale();
 		onAdjustToWing();
 		setControls();
 
@@ -4380,7 +4380,7 @@ void QMiarex::onEditCurPlane()
 		setPlane();
 		pMainFrame->updatePlaneListBox();
 		m_bIs2DScaleSet = false;
-		SetScale();
+		setScale();
 		onAdjustToWing();
 		setControls();
 
@@ -4488,7 +4488,7 @@ void QMiarex::onEditCurWing()
 		setPlane();
 		pMainFrame->updatePlaneListBox();
 		m_bIs2DScaleSet = false;
-		SetScale();
+		setScale();
 		onAdjustToWing();
 		setControls();
 
@@ -4595,7 +4595,7 @@ void QMiarex::onScaleWing()
 		setPlane();
 		pMainFrame->updatePlaneListBox();
 		m_bIs2DScaleSet = false;
-		SetScale();
+		setScale();
 		onAdjustToWing();
 		setControls();
 
@@ -7051,9 +7051,19 @@ bool QMiarex::saveSettings(QSettings *pSettings)
 
 
 /**
+ * Sets the scale for the 2d or 3d selected view
+ */
+void QMiarex::setScale()
+{
+	if(m_iView==XFLR5::W3DVIEW) set3DScale();
+//	else                        Set2DScale();
+}
+
+
+/**
  * Sets an automatic scale for the wing or plane in the 3D view, depending on wing span.
  */
-void QMiarex::Set3DScale()
+void QMiarex::set3DScale()
 {
 	if(m_iView!=XFLR5::W3DVIEW ) return;
 	if(m_iView==XFLR5::W3DVIEW) m_bResetglLegend = true;
@@ -7075,7 +7085,7 @@ void QMiarex::Set3DScale()
 /**
  * Initializes the input parameters depending onthe type of the active polar
  */
-void QMiarex::SetAnalysisParams()
+void QMiarex::setAnalysisParams()
 {
 	m_pctrlSequence->setChecked(m_bSequence);
 
@@ -7150,11 +7160,11 @@ void QMiarex::setCurveParams()
 			m_CurveColor = m_pCurWPolar->curveColor();
 			m_CurveStyle = m_pCurWPolar->curveStyle();
 			m_CurveWidth = m_pCurWPolar->curveWidth();
-			FillComboBoxes();
+			fillComboBoxes();
 		}
 		else
 		{
-			FillComboBoxes(false);
+			fillComboBoxes(false);
 		}
 	}
 	else if(m_iView==XFLR5::STABTIMEVIEW)
@@ -7165,9 +7175,9 @@ void QMiarex::setCurveParams()
 			m_CurveColor = pStabView->m_pCurve->color();
 			m_CurveStyle = pStabView->m_pCurve->style();
 			m_CurveWidth = pStabView->m_pCurve->width();
-			m_pctrlShowCurve->setChecked(pStabView->m_pCurve->IsVisible());
-			m_pctrlShowPoints->setChecked(pStabView->m_pCurve->PointsVisible());
-			FillComboBoxes();
+			m_pctrlShowCurve->setChecked(pStabView->m_pCurve->isVisible());
+			m_pctrlShowPoints->setChecked(pStabView->m_pCurve->pointsVisible());
+			fillComboBoxes();
 		}		
 	}
 	else if(m_iView==XFLR5::WOPPVIEW)
@@ -7181,11 +7191,11 @@ void QMiarex::setCurveParams()
 			m_CurveColor = m_pCurPOpp->m_Color;
 			m_CurveStyle = m_pCurPOpp->m_Style;
 			m_CurveWidth = m_pCurPOpp->m_Width;
-			FillComboBoxes();
+			fillComboBoxes();
 		}
 		else
 		{
-			FillComboBoxes(false);
+			fillComboBoxes(false);
 		}
 	}
 	else if(m_iView==XFLR5::WCPVIEW)
@@ -7199,16 +7209,16 @@ void QMiarex::setCurveParams()
 			m_CurveColor = m_CpColor;
 			m_CurveStyle = m_CpStyle;
 			m_CurveWidth = m_CpWidth;
-			FillComboBoxes();
+			fillComboBoxes();
 		}
 		else
 		{
-			FillComboBoxes(false);
+			fillComboBoxes(false);
 		}
 	}
 	else
 	{
-		FillComboBoxes(false);
+		fillComboBoxes(false);
 	}
 
 
@@ -7261,16 +7271,6 @@ void QMiarex::setCurveParams()
 	}
 }
 
-
-
-/**
- * Sets the scale for the 2d or 3d selected view
- */
-void QMiarex::SetScale()
-{
-	if(m_iView==XFLR5::W3DVIEW) Set3DScale();
-//	else                        Set2DScale();
-}
 
 
 /**
@@ -7340,7 +7340,7 @@ void QMiarex::setPlane(QString PlaneName)
 		setWPolar();
 	}
 
-	SetScale();
+	setScale();
 	SetWGraphScale();
 
 	QApplication::restoreOverrideCursor();
@@ -7824,7 +7824,7 @@ void QMiarex::setWPolar(bool bCurrent, QString WPlrName)
 	else m_pctrlPolarProps->clear();
 
 
-	SetAnalysisParams();
+	setAnalysisParams();
 	setCurveParams();
 
 	m_bResetglLegend = true;
@@ -7899,7 +7899,7 @@ void QMiarex::setWGraphTitles(Graph* pGraph)
  */
 void QMiarex::showEvent(QShowEvent *event)
 {
-	SetAnalysisParams();
+	setAnalysisParams();
 	setCurveParams();
 	event->accept();
 

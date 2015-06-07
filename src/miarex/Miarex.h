@@ -236,7 +236,7 @@ public:
 	void DrawCpLegend(QPainter &painter, QPoint place, int bottom);
 	void drawTextLegend();
 	void DuplicatePlane();
-	void FillComboBoxes(bool bEnable = true);
+	void fillComboBoxes(bool bEnable = true);
 	void FillWPlrCurve(Curve *pCurve, WPolar *pWPolar, int XVar, int YVar);
 	void FillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve);
 	void FillStabCurve(Curve *pCurve, WPolar *pWPolar, int iMode);
@@ -254,13 +254,13 @@ public:
 	void paintPlaneOppLegend(QPainter &painter, QRect drawRect);
 	void RenamePlane(QString PlaneName);
 	bool saveSettings(QSettings *pSettings);
-	void Set3DScale();
-	void SetAnalysisParams();
+	void set3DScale();
+	void setAnalysisParams();
 	void setControls();
 	void setCurveParams();
 	void setGraphTiles();
 	bool setPlaneOpp(bool bCurrent, double x = 0.0);
-	void SetScale();
+	void setScale();
 	void SetStabGraphTitles();
 	void setPlane(QString PlaneName="");
 	void SetupLayout();
@@ -346,7 +346,7 @@ public:
 	bool m_bDownwash;                  /**< true if the arrows represeting downwash are to be displayed on the 3D openGl view */
 	bool m_bHighlightOpp;              /**< true if the currently selected operating point is to be highlighted on the polar graph */
 	bool m_bInitLLTCalc;               /**< true if the LLT parameters should be set to default prior to the analysis. Otherwise, the iterations will start at the results of the previous calculation */
-	bool m_bIs2DScaleSet;              /**< true if the 3D scale has been set, false if needs to be reset */
+	bool m_bIs2DScaleSet;              /**< true if the 2D scale has been set, false if needs to be reset */
 	bool m_bIs3DScaleSet;              /**< true if the 3D scale has been set, false if needs to be reset */
 	bool m_bLogFile;			       /**< true if the log file warning is turned on */
 	bool m_bLongitudinal;              /**< true if longitudinal stability results are to be displayed, false if lateral */
