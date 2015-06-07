@@ -155,7 +155,7 @@ void QAFoil::SetControls()
 /**
  * Fills the table with the data from the Foil objects.
  */
-void QAFoil::FillFoilTable()
+void QAFoil::fillFoilTable()
 {
 	int i;
 	m_pFoilModel->setRowCount(m_poaFoil->size()+1);
@@ -352,14 +352,14 @@ void QAFoil::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_3:
 			if(bCtrl)
 			{
-				pMainFrame->OnXInverse();
+				pMainFrame->onXInverse();
 				return;
 			}
 
 		case Qt::Key_4:
 			if(bCtrl)
 			{
-				pMainFrame->OnXInverseMixed();
+				pMainFrame->onXInverseMixed();
 				return;
 			}
 
@@ -458,8 +458,8 @@ void QAFoil::OnAFoilDerotateFoil()
 	pNewFoil->m_FoilWidth = 1;
 
 	AddNewFoil(pNewFoil);
-	FillFoilTable();
-	SelectFoil(pNewFoil);
+	fillFoilTable();
+	selectFoil(pNewFoil);
 
 	m_pBufferFoil->m_bVisible = false;
 
@@ -519,13 +519,13 @@ void QAFoil::OnAFoilCadd()
 		pNewFoil->m_bPoints = false;
 
 		AddNewFoil(pNewFoil);
-		FillFoilTable();
-		SelectFoil(pNewFoil);
+		fillFoilTable();
+		selectFoil(pNewFoil);
 	}
 	else
 	{
-		FillFoilTable();
-		SelectFoil(Foil::curFoil());
+		fillFoilTable();
+		selectFoil(Foil::curFoil());
 		((XFoil*)m_pXFoil)->m_FoilName ="";
 
 	}
@@ -588,13 +588,13 @@ void QAFoil::OnAFoilPanels()
 		pNewFoil->m_bPoints = false;
 
 		AddNewFoil(pNewFoil);
-		FillFoilTable();
-		SelectFoil(pNewFoil);
+		fillFoilTable();
+		selectFoil(pNewFoil);
 	}
 	else
 	{
-		FillFoilTable();
-		SelectFoil(Foil::curFoil());
+		fillFoilTable();
+		selectFoil(Foil::curFoil());
 //		m_pXFoil->m_FoilName ="";
 
 	}
@@ -638,13 +638,13 @@ void QAFoil::OnAFoilFoilCoordinates()
 		pNewFoil->m_iHighLight = -1;
 
 		AddNewFoil(pNewFoil);
-		FillFoilTable();
-		SelectFoil(pNewFoil);
+		fillFoilTable();
+		selectFoil(pNewFoil);
 	}
 	else
 	{
-		FillFoilTable();
-		SelectFoil(Foil::curFoil());
+		fillFoilTable();
+		selectFoil(Foil::curFoil());
 		((XFoil*)m_pXFoil)->m_FoilName ="";
 	}
 	m_pBufferFoil->m_bVisible = false;
@@ -686,13 +686,13 @@ void QAFoil::OnAFoilFoilGeom()
 		pNewFoil->m_bPoints = false;
 
 		AddNewFoil(pNewFoil);
-		FillFoilTable();
-		SelectFoil(pNewFoil);
+		fillFoilTable();
+		selectFoil(pNewFoil);
 	}
 	else
 	{
-		FillFoilTable();
-		SelectFoil(Foil::curFoil());
+		fillFoilTable();
+		selectFoil(Foil::curFoil());
 //		m_pXFoil->m_FoilName ="";
 	}
 	m_pBufferFoil->m_bVisible = false;
@@ -735,13 +735,13 @@ void QAFoil::OnAFoilSetTEGap()
 		pNewFoil->m_bPoints    = false;
 
 		AddNewFoil(pNewFoil);
-		FillFoilTable();
-		SelectFoil(pNewFoil);
+		fillFoilTable();
+		selectFoil(pNewFoil);
 	}
 	else
 	{
-		FillFoilTable();
-		SelectFoil(Foil::curFoil());
+		fillFoilTable();
+		selectFoil(Foil::curFoil());
 //		m_pXFoil->m_FoilName ="";
 		//to un-initialize XFoil in case user switches to XInverse
 		//Thanks Jean-Marc !
@@ -787,13 +787,13 @@ void QAFoil::OnAFoilSetLERadius()
 		pNewFoil->m_bPoints    = false;
 
 		AddNewFoil(pNewFoil);
-		FillFoilTable();
-		SelectFoil(pNewFoil);
+		fillFoilTable();
+		selectFoil(pNewFoil);
 	}
 	else
 	{
-		FillFoilTable();
-		SelectFoil(Foil::curFoil());
+		fillFoilTable();
+		selectFoil(Foil::curFoil());
 //		m_pXFoil->m_FoilName ="";
 
 	}
@@ -815,7 +815,7 @@ void QAFoil::OnAFoilInterpolateFoils()
 		return;
 	}
 
-	if(!Foil::curFoil()) SelectFoil();
+	if(!Foil::curFoil()) selectFoil();
 	if(!Foil::curFoil()) return;
 	m_pBufferFoil->CopyFoil(Foil::curFoil());
 	m_pBufferFoil->m_FoilName  = Foil::curFoil()->m_FoilName;
@@ -844,14 +844,14 @@ void QAFoil::OnAFoilInterpolateFoils()
         pNewFoil->m_FoilName = ifDlg.m_NewFoilName;
 
 		AddNewFoil(pNewFoil);
-		FillFoilTable();
-		SelectFoil(pNewFoil);
+		fillFoilTable();
+		selectFoil(pNewFoil);
 
 	}
 	else
 	{
-		FillFoilTable();
-		SelectFoil(Foil::curFoil());
+		fillFoilTable();
+		selectFoil(Foil::curFoil());
 	}
 	m_pBufferFoil->m_bVisible = false;
 	m_p2DWidget->update();;
@@ -898,13 +898,13 @@ void QAFoil::OnAFoilNacaFoils()
 		pNewFoil->m_FoilName   = str;
 
 		AddNewFoil(pNewFoil);
-		FillFoilTable();
-		SelectFoil(pNewFoil);
+		fillFoilTable();
+		selectFoil(pNewFoil);
 	}
 	else
 	{
-		FillFoilTable();;
-		if(Foil::curFoil()) SelectFoil(Foil::curFoil());
+		fillFoilTable();;
+		if(Foil::curFoil()) selectFoil(Foil::curFoil());
 		((XFoil*)m_pXFoil)->m_FoilName ="";
 
 	}
@@ -948,13 +948,13 @@ void QAFoil::OnAFoilSetFlap()
 		pNewFoil->m_FoilWidth = 1;
 
 		AddNewFoil(pNewFoil);
-		FillFoilTable();
-		SelectFoil(pNewFoil);
+		fillFoilTable();
+		selectFoil(pNewFoil);
 	}
 	else
 	{
-		FillFoilTable();
-		SelectFoil(Foil::curFoil());
+		fillFoilTable();
+		selectFoil(Foil::curFoil());
 		((XFoil*)m_pXFoil)->m_FoilName ="";
 	}
 	m_pBufferFoil->m_bVisible = false;
@@ -978,8 +978,8 @@ void QAFoil::OnDeleteCurFoil()
 
 	Foil*pNextFoil = Foil::deleteFoil(Foil::curFoil());
 
-	FillFoilTable();
-	SelectFoil(pNextFoil);
+	fillFoilTable();
+	selectFoil(pNextFoil);
 	m_p2DWidget->update();;
 }
 
@@ -996,8 +996,8 @@ void QAFoil::OnDuplicate()
 	pNewFoil->InitFoil();
 
 	AddNewFoil(pNewFoil);
-	FillFoilTable();
-	SelectFoil(pNewFoil);
+	fillFoilTable();
+	selectFoil(pNewFoil);
 }
 
 
@@ -1199,7 +1199,7 @@ void QAFoil::OnHideAllFoils()
 		pFoil = (Foil*)m_poaFoil->at(k);
 		pFoil->m_bVisible = false;
 	}
-	FillFoilTable();
+	fillFoilTable();
 	m_p2DWidget->update();;
 }
 
@@ -1266,7 +1266,7 @@ void QAFoil::OnRenameFoil()
 		Foil::curFoil()->renameThisFoil(renDlg.newName());
 	}
 
-	FillFoilTable();
+	fillFoilTable();
 	m_p2DWidget->update();;
 }
 
@@ -1283,7 +1283,7 @@ void QAFoil::OnShowAllFoils()
 		pFoil = (Foil*)m_poaFoil->at(k);
 		pFoil->m_bVisible = true;
 	}
-	FillFoilTable();
+	fillFoilTable();
 	m_p2DWidget->update();;
 }
 
@@ -1336,8 +1336,8 @@ void QAFoil::OnStoreSplines()
 	m_pSF->ExportToBuffer(pNewFoil);
 	pNewFoil->m_FoilName = m_pSF->m_strFoilName;
 	AddNewFoil(pNewFoil);
-	FillFoilTable();
-	SelectFoil(pNewFoil);
+	fillFoilTable();
+	selectFoil(pNewFoil);
 
 	m_p2DWidget->update();;
 }
@@ -1509,7 +1509,7 @@ void QAFoil::SetupLayout()
  * Selects the specified foil in the table of Foil objects. This will highlight the corresponding row.
  * @param pFoil
  */
-void QAFoil::SelectFoil(Foil* pFoil)
+void QAFoil::selectFoil(Foil* pFoil)
 {
 	int i;
 
@@ -1547,9 +1547,9 @@ void QAFoil::SelectFoil(Foil* pFoil)
 void QAFoil::SetAFoilParams()
 {
 	SetTableFont();
-	FillFoilTable();
+	fillFoilTable();
 
-	SelectFoil(Foil::curFoil());
+	selectFoil(Foil::curFoil());
 	SetControls();
 }
 

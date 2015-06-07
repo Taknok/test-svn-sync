@@ -114,48 +114,48 @@ public:
 	MainFrame(QWidget * parent = 0, Qt::WindowFlags flags = 0);
     ~MainFrame();
 
-	XFLR5::enumApp LoadXFLR5File(QString PathName);
+	XFLR5::enumApp loadXFLR5File(QString PathName);
 	static MainFrame* self();
 
 /*___________________________________________Methods_______________________________*/
 
 public slots:
-	void OnAFoil();
+	void onAFoil();
 	void onXDirect();
-	void OnXInverse();
-	void OnXInverseMixed();
+	void onXInverse();
+	void onXInverseMixed();
 	void onMiarex();
 
 private slots:
 	void AboutQt();
 	void aboutXFLR5();
-	void OnCurFoilStyle();
+	void onCurFoilStyle();
 	void onExportCurGraph();
 	void onCurGraphSettings();
-	void OnInsertProject();
-	void OnNewProject();
-	void OnLanguage();
-	void OnLoadFile();
-	void OnLogFile();
-	void OnOpenGLInfo();
+	void onInsertProject();
+	void onNewProject();
+	void onLanguage();
+	void onLoadFile();
+	void onLogFile();
+	void onOpenGLInfo();
 	void onProjectModified();
 	void onResetCurGraphScales();
-	void OnResetSettings();
-	void OnRestoreToolbars();
+	void onResetSettings();
+	void onRestoreToolbars();
 	void onSaveOptions();
 	bool onSaveProjectAs();
 	void onSaveViewToImageFile();
-	void OnSelChangeFoil(int sel);
-	void OnSelChangePolar(int sel);
-	void OnSelChangeOpp(int sel);
-	void OnSelChangePlane(int sel);
-	void OnSelChangePlaneOpp(int sel);
-	void OnSelChangeWPolar(int sel);
+	void onSelChangeFoil(int sel);
+	void onSelChangePolar(int sel);
+	void onSelChangeOpp(int sel);
+	void onSelChangePlane(int sel);
+	void onSelChangePlaneOpp(int sel);
+	void onSelChangeWPolar(int sel);
 	void onSaveProject();
-	void OnStyleSettings();
+	void onStyleSettings();
 	void onUnits();
 	void onManageFoils();
-	void OnSavePlaneAsProject();
+	void onSavePlaneAsProject();
 	void openRecentFile();
 
 protected:
@@ -165,7 +165,7 @@ protected:
 
 
 public:
-	void AddRecentFile(const QString &PathNAme);
+	void addRecentFile(const QString &PathNAme);
 	void checkGraphActions();
 	void ClientToGL(QPoint const &point, CVector &real);
 	void CreateDockWindows();
@@ -191,8 +191,8 @@ public:
 	bool loadSettings();
 	bool LoadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
 	void* ReadFoilFile(QTextStream &ar);
-	void ReadPolarFile(QDataStream &ar);
-	bool SaveProject(QString PathName="");
+	void readPolarFile(QDataStream &ar);
+	bool saveProject(QString PathName="");
 	void SaveSettings();
 	void SelectFoil(void *pFoilPtr);
 	void SelectPolar(void *pPolarPtr);
@@ -200,12 +200,12 @@ public:
 	void SelectPlane(void *pPlanePtr);
 	void SelectWPolar(void *pWPolarPtr);
 	void SelectPlaneOpp(void *pPlaneOppPtr);
-	bool SerializeProjectWPA(QDataStream &ar, bool bIsStoring);
-	bool SerializeProjectXFL(QDataStream &ar, bool bIsStoring);
+	bool serializeProjectWPA(QDataStream &ar, bool bIsStoring);
+	bool serializeProjectXFL(QDataStream &ar, bool bIsStoring);
 	bool SerializePlaneProject(QDataStream &ar);
 	void setMainFrameCentralWidget();
 	void setGraphSettings(QGraph *pGraph);
-	void SetProjectName(QString PathName);
+	void setProjectName(QString PathName);
 	void setMenus();
 	void SetupDataDir();
 	QString ShortenFileName(QString &PathName);

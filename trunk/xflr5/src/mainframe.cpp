@@ -292,7 +292,7 @@ void MainFrame::aboutXFLR5()
 }
 
 
-void MainFrame::AddRecentFile(const QString &PathName)
+void MainFrame::addRecentFile(const QString &PathName)
 {
 	m_RecentFiles.removeAll(PathName);
 	m_RecentFiles.prepend(PathName);
@@ -312,12 +312,12 @@ void MainFrame::closeEvent (QCloseEvent * event)
 										 QMessageBox::Yes);
 		if(resp == QMessageBox::Yes)
 		{
-			if(!SaveProject(m_FileName))
+			if(!saveProject(m_FileName))
 			{
 				event->ignore();
 				return;
 			}
-			AddRecentFile(m_FileName);
+			addRecentFile(m_FileName);
 		}
 		else if (resp==QMessageBox::Cancel)
 		{
@@ -338,36 +338,36 @@ void MainFrame::CreateActions()
 	newProjectAct = new QAction(QIcon(":/images/new.png"), tr("New Project"), this);
 	newProjectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_N));
 	newProjectAct->setStatusTip(tr("Save and close the current project, create a new project"));
-	connect(newProjectAct, SIGNAL(triggered()), this, SLOT(OnNewProject()));
+	connect(newProjectAct, SIGNAL(triggered()), this, SLOT(onNewProject()));
 
 	closeProjectAct = new QAction(QIcon(":/images/new.png"), tr("Close the Project"), this);
 	closeProjectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_W));
 	closeProjectAct->setStatusTip(tr("Save and close the current project"));
-	connect(closeProjectAct, SIGNAL(triggered()), this, SLOT(OnNewProject()));
+	connect(closeProjectAct, SIGNAL(triggered()), this, SLOT(onNewProject()));
 
 	openAct = new QAction(QIcon(":/images/open.png"), tr("&Open..."), this);
 	openAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
 	openAct->setStatusTip(tr("Open an existing file"));
-	connect(openAct, SIGNAL(triggered()), this, SLOT(OnLoadFile()));
+	connect(openAct, SIGNAL(triggered()), this, SLOT(onLoadFile()));
 
 	insertAct = new QAction(tr("&Insert Project..."), this);
 	insertAct->setStatusTip(tr("Insert an existing project in the current project"));
-	connect(insertAct, SIGNAL(triggered()), this, SLOT(OnInsertProject()));
+	connect(insertAct, SIGNAL(triggered()), this, SLOT(onInsertProject()));
 
 	OnAFoilAct = new QAction(tr("&Direct Foil Design"), this);
 	OnAFoilAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_1));
 	OnAFoilAct->setStatusTip(tr("Open Foil Design application"));
-	connect(OnAFoilAct, SIGNAL(triggered()), this, SLOT(OnAFoil()));
+	connect(OnAFoilAct, SIGNAL(triggered()), this, SLOT(onAFoil()));
 
 	OnXInverseAct = new QAction(tr("&XFoil Inverse Design"), this);
 	OnXInverseAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_3));
 	OnXInverseAct->setStatusTip(tr("Open XFoil inverse analysis application"));
-	connect(OnXInverseAct, SIGNAL(triggered()), this, SLOT(OnXInverse()));
+	connect(OnXInverseAct, SIGNAL(triggered()), this, SLOT(onXInverse()));
 
 	OnMixedInverseAct = new QAction(tr("&XFoil Mixed Inverse Design"), this);
 	OnMixedInverseAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_4));
 	OnMixedInverseAct->setStatusTip(tr("Open XFoil Mixed Inverse analysis application"));
-	connect(OnMixedInverseAct, SIGNAL(triggered()), this, SLOT(OnXInverseMixed()));
+	connect(OnMixedInverseAct, SIGNAL(triggered()), this, SLOT(onXInverseMixed()));
 
 	OnXDirectAct = new QAction(tr("&XFoil Direct Analysis"), this);
 	OnXDirectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_5));
@@ -398,11 +398,11 @@ void MainFrame::CreateActions()
 
 	languageAct = new QAction(tr("Language..."), this);
 	languageAct->setStatusTip(tr("Define the default language for the application"));
-	connect(languageAct, SIGNAL(triggered()), this, SLOT(OnLanguage()));
+	connect(languageAct, SIGNAL(triggered()), this, SLOT(onLanguage()));
 
 	restoreToolbarsAct	 = new QAction(tr("Restore toolbars"), this);
 	restoreToolbarsAct->setStatusTip(tr("Restores the toolbars to their original state"));
-	connect(restoreToolbarsAct, SIGNAL(triggered()), this, SLOT(OnRestoreToolbars()));
+	connect(restoreToolbarsAct, SIGNAL(triggered()), this, SLOT(onRestoreToolbars()));
 
 	saveViewToImageFileAct = new QAction(tr("Save View to Image File"), this);
 	saveViewToImageFileAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_I));
@@ -412,7 +412,7 @@ void MainFrame::CreateActions()
 
 	resetSettingsAct = new QAction(tr("Reset Default Settings"), this);
 	resetSettingsAct->setStatusTip(tr("will revert to default settings at the next session"));
-	connect(resetSettingsAct, SIGNAL(triggered()), this, SLOT(OnResetSettings()));
+	connect(resetSettingsAct, SIGNAL(triggered()), this, SLOT(onResetSettings()));
 
 
 	for (int i = 0; i < MAXRECENTFILES; ++i)
@@ -435,7 +435,7 @@ void MainFrame::CreateActions()
 
 	styleAct = new QAction(tr("General Display Settings"), this);
 	styleAct->setStatusTip(tr("Define the color and font options for all views and graphs"));
-	connect(styleAct, SIGNAL(triggered()), this, SLOT(OnStyleSettings()));
+	connect(styleAct, SIGNAL(triggered()), this, SLOT(onStyleSettings()));
 
 	exitAct = new QAction(tr("E&xit"), this);
 	exitAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
@@ -443,7 +443,7 @@ void MainFrame::CreateActions()
 	connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
 	openGLAct = new QAction(tr("OpenGL info"), this);
-	connect(openGLAct, SIGNAL(triggered()), this, SLOT(OnOpenGLInfo()));
+	connect(openGLAct, SIGNAL(triggered()), this, SLOT(onOpenGLInfo()));
 
 	aboutAct = new QAction(tr("&About"), this);
 	aboutAct->setStatusTip(tr("More information about XFLR5"));
@@ -1014,7 +1014,7 @@ void MainFrame::createGraphActions()
 	m_pHighlightWOppAct	 = new QAction(tr("Highlight Current OpPoint")+"\t(Ctrl+H)", this);
 	m_pHighlightWOppAct->setCheckable(true);
 	m_pHighlightWOppAct->setStatusTip(tr("Highlights on the polar curve the currently selected operating point"));
-	connect(m_pHighlightWOppAct, SIGNAL(triggered()), pMiarex, SLOT(OnHighlightWOpp()));
+	connect(m_pHighlightWOppAct, SIGNAL(triggered()), pMiarex, SLOT(onHighlightWOpp()));
 }
 
 
@@ -1053,40 +1053,40 @@ void MainFrame::CreateMiarexActions()
 	CpViewAct = new QAction(QIcon(":/images/OnCpView.png"), tr("Cp View")+"\tF9", this);
 	CpViewAct->setCheckable(true);
 	CpViewAct->setStatusTip(tr("Switch to the Cp view"));
-	connect(CpViewAct, SIGNAL(triggered()), pMiarex, SLOT(OnCpView()));
+	connect(CpViewAct, SIGNAL(triggered()), pMiarex, SLOT(onCpView()));
 
 	W3DPrefsAct = new QAction(tr("3D Color Preferences"), this);
 	W3DPrefsAct->setStatusTip(tr("Define the style and color preferences for the 3D view"));
-	connect(W3DPrefsAct, SIGNAL(triggered()), pMiarex, SLOT(On3DPrefs()));
+	connect(W3DPrefsAct, SIGNAL(triggered()), pMiarex, SLOT(on3DPrefs()));
 
 	MiarexPolarFilter = new QAction(tr("Polar Filter"), this);
 	MiarexPolarFilter->setStatusTip(tr("Define which type of polars should be shown or hidden"));
-	connect(MiarexPolarFilter, SIGNAL(triggered()), pMiarex, SLOT(OnPolarFilter()));
+	connect(MiarexPolarFilter, SIGNAL(triggered()), pMiarex, SLOT(onPolarFilter()));
 
 	W3DScalesAct = new QAction(tr("3D Scales"), this);
 	W3DScalesAct->setStatusTip(tr("Define the scales for the 3D display of lift, moment, drag, and downwash"));
 	W3DScalesAct->setCheckable(true);
-	connect(W3DScalesAct, SIGNAL(triggered()), pMiarex, SLOT(OnGL3DScale()));
+	connect(W3DScalesAct, SIGNAL(triggered()), pMiarex, SLOT(onGL3DScale()));
 
 	W3DLightAct = new QAction(tr("3D Light Options"), this);
 	W3DLightAct->setStatusTip(tr("Define the light options in 3D view"));
-	connect(W3DLightAct, SIGNAL(triggered()), pMiarex, SLOT(OnSetupLight()));
+	connect(W3DLightAct, SIGNAL(triggered()), pMiarex, SLOT(onSetupLight()));
 
 	definePlaneAct = new QAction(tr("Define a New Plane")+"\tF3", this);
 	definePlaneAct->setStatusTip(tr("Shows a dialogbox to create a new plane definition"));
-	connect(definePlaneAct, SIGNAL(triggered()), pMiarex, SLOT(OnNewPlane()));
+	connect(definePlaneAct, SIGNAL(triggered()), pMiarex, SLOT(onNewPlane()));
 
 	definePlaneObjectAct = new QAction(tr("Define... (Advanced users)")+"\tF3", this);
 	definePlaneObjectAct->setStatusTip(tr("Shows a dialogbox to create a new plane definition"));
-	connect(definePlaneObjectAct, SIGNAL(triggered()), pMiarex, SLOT(OnNewPlaneObject()));
+	connect(definePlaneObjectAct, SIGNAL(triggered()), pMiarex, SLOT(onNewPlaneObject()));
 
 	editPlaneAct = new QAction(tr("Edit...")+"\tShift+F3", this);
 	editPlaneAct->setStatusTip(tr("Shows a form to edit the currently selected plane"));
-	connect(editPlaneAct, SIGNAL(triggered()), pMiarex, SLOT(OnEditCurPlane()));
+	connect(editPlaneAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurPlane()));
 
 	editObjectAct = new QAction(tr("Edit... (advanced users)")+"\tCtrl+F3", this);
 	editObjectAct->setStatusTip(tr("Shows a form to edit the currently selected plane"));
-	connect(editObjectAct, SIGNAL(triggered()), pMiarex, SLOT(OnEditCurObject()));
+	connect(editObjectAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurObject()));
 
 	exporttoXML = new QAction(tr("Export to xml file"), this);
 	connect(exporttoXML, SIGNAL(triggered()), pMiarex, SLOT(onExportPlanetoXML()));
@@ -1097,7 +1097,7 @@ void MainFrame::CreateMiarexActions()
 	editWingAct = new QAction(tr("Edit wing..."), this);
 	editWingAct->setStatusTip(tr("Shows a form to edit the wing of the currently selected plane"));
 	editWingAct->setShortcut(QKeySequence(Qt::Key_F10));
-	connect(editWingAct, SIGNAL(triggered()), pMiarex, SLOT(OnEditCurWing()));
+	connect(editWingAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurWing()));
 
 	m_pEditBodyAct = new QAction(tr("Edit body..."), this);
 	m_pEditBodyAct->setStatusTip(tr("Shows a form to edit the body of the currently selected plane"));
@@ -1110,62 +1110,62 @@ void MainFrame::CreateMiarexActions()
 
 	renameCurPlaneAct = new QAction(tr("Rename...")+"\tF2", this);
 	renameCurPlaneAct->setStatusTip(tr("Rename the currently selected object"));
-	connect(renameCurPlaneAct, SIGNAL(triggered()), pMiarex, SLOT(OnRenameCurPlane()));
+	connect(renameCurPlaneAct, SIGNAL(triggered()), pMiarex, SLOT(onRenameCurPlane()));
 
 	exporttoAVL = new QAction(tr("Export to AVL..."), this);
 	exporttoAVL->setStatusTip(tr("Export the current plane or wing to a text file in the format required by AVL"));
-	connect(exporttoAVL, SIGNAL(triggered()), pMiarex, SLOT(OnExporttoAVL()));
+	connect(exporttoAVL, SIGNAL(triggered()), pMiarex, SLOT(onExporttoAVL()));
 
 	exportCurWOpp = new QAction(tr("Export..."), this);
 	exportCurWOpp->setStatusTip(tr("Export the current operating point to a text or csv file"));
-	connect(exportCurWOpp, SIGNAL(triggered()), pMiarex, SLOT(OnExportCurWOpp()));
+	connect(exportCurWOpp, SIGNAL(triggered()), pMiarex, SLOT(onExportCurWOpp()));
 
 
 	scaleWingAct = new QAction(tr("Scale Wing"), this);
 	scaleWingAct->setStatusTip(tr("Scale the dimensions of the currently selected wing"));
-	connect(scaleWingAct, SIGNAL(triggered()), pMiarex, SLOT(OnScaleWing()));
+	connect(scaleWingAct, SIGNAL(triggered()), pMiarex, SLOT(onScaleWing()));
 
 	managePlanesAct = new QAction(tr("Manage objects"), this);
 	managePlanesAct->setStatusTip(tr("Rename or delete the planes and wings stored in the database"));
 	managePlanesAct->setShortcut(Qt::Key_F7);
-	connect(managePlanesAct, SIGNAL(triggered()), pMiarex, SLOT(OnManagePlanes()));
+	connect(managePlanesAct, SIGNAL(triggered()), pMiarex, SLOT(onManagePlanes()));
 
 	m_pImportWPolar = new QAction(tr("Import Polar"), this);
 	m_pImportWPolar->setStatusTip(tr("Import a polar from a text file"));
-	connect(m_pImportWPolar, SIGNAL(triggered()), pMiarex, SLOT(OnImportWPolar()));
+	connect(m_pImportWPolar, SIGNAL(triggered()), pMiarex, SLOT(onImportWPolar()));
 
 	m_pPlaneInertia = new QAction(tr("Define Inertia")+"\tF12", this);
 	m_pPlaneInertia->setStatusTip(tr("Define the inertia for the current plane or wing"));
-	connect(m_pPlaneInertia, SIGNAL(triggered()), pMiarex, SLOT(OnPlaneInertia()));
+	connect(m_pPlaneInertia, SIGNAL(triggered()), pMiarex, SLOT(onPlaneInertia()));
 
 	showCurWOppOnly = new QAction(tr("Show Current OpPoint Only"), this);
 	showCurWOppOnly->setStatusTip(tr("Hide all the curves except for the one corresponding to the currently selected operating point"));
 	showCurWOppOnly->setCheckable(true);
-	connect(showCurWOppOnly, SIGNAL(triggered()), pMiarex, SLOT(OnCurWOppOnly()));
+	connect(showCurWOppOnly, SIGNAL(triggered()), pMiarex, SLOT(onCurWOppOnly()));
 
 	showAllWOpps = new QAction(tr("Show All OpPoints"), this);
 	showAllWOpps->setStatusTip(tr("Show the graph curves of all operating points"));
-	connect(showAllWOpps, SIGNAL(triggered()), pMiarex, SLOT(OnShowAllWOpps()));
+	connect(showAllWOpps, SIGNAL(triggered()), pMiarex, SLOT(onShowAllWOpps()));
 
 	hideAllWOpps = new QAction(tr("Hide All OpPoints"), this);
 	hideAllWOpps->setStatusTip(tr("Hide the graph curves of all operating points"));
-	connect(hideAllWOpps, SIGNAL(triggered()), pMiarex, SLOT(OnHideAllWOpps()));
+	connect(hideAllWOpps, SIGNAL(triggered()), pMiarex, SLOT(onHideAllWOpps()));
 
 	deleteAllWOpps = new QAction(tr("Delete All OpPoints"), this);
 	deleteAllWOpps->setStatusTip(tr("Delete all the operating points of all planes and polars"));
-	connect(deleteAllWOpps, SIGNAL(triggered()), pMiarex, SLOT(OnDeleteAllWOpps()));
+	connect(deleteAllWOpps, SIGNAL(triggered()), pMiarex, SLOT(onDeleteAllWOpps()));
 
 	showAllWPlrOpps = new QAction(tr("Show Associated OpPoints"), this);
 	showAllWPlrOpps->setStatusTip(tr("Show the curves of all the operating points of the currently selected polar"));
-	connect(showAllWPlrOpps, SIGNAL(triggered()), pMiarex, SLOT(OnShowAllWPlrOpps()));
+	connect(showAllWPlrOpps, SIGNAL(triggered()), pMiarex, SLOT(onShowAllWPlrOpps()));
 	
 	hideAllWPlrOpps = new QAction(tr("Hide Associated OpPoints"), this);
 	hideAllWPlrOpps->setStatusTip(tr("Hide the curves of all the operating points of the currently selected polar"));
-	connect(hideAllWPlrOpps, SIGNAL(triggered()), pMiarex, SLOT(OnHideAllWPlrOpps()));
+	connect(hideAllWPlrOpps, SIGNAL(triggered()), pMiarex, SLOT(onHideAllWPlrOpps()));
 	
 	deleteAllWPlrOpps = new QAction(tr("Delete Associated OpPoints"), this);
 	deleteAllWPlrOpps->setStatusTip(tr("Delete all the operating points of the currently selected polar"));
-	connect(deleteAllWPlrOpps, SIGNAL(triggered()), pMiarex, SLOT(OnDeleteAllWPlrOpps()));
+	connect(deleteAllWPlrOpps, SIGNAL(triggered()), pMiarex, SLOT(onDeleteAllWPlrOpps()));
 
 	showEllipticCurve = new QAction(tr("Show Elliptic Curve"), this);
 	showEllipticCurve->setStatusTip(tr("Show the theoretical optimal elliptic lift curve on all graphs for which the selected variable is the local lift"));
@@ -1180,17 +1180,17 @@ void MainFrame::CreateMiarexActions()
 	showStabCurve = new QAction(tr("Show Elevator Curve"), this);
 	showStabCurve->setStatusTip(tr("Show the graph curves for the elevator"));
 	showStabCurve->setCheckable(true);
-	connect(showStabCurve, SIGNAL(triggered()), pMiarex, SLOT(OnStabCurve()));
+	connect(showStabCurve, SIGNAL(triggered()), pMiarex, SLOT(onStabCurve()));
 
 	showFinCurve = new QAction(tr("Show Fin Curve"), this);
 	showFinCurve->setStatusTip(tr("Show the graph curves for the fin"));
 	showFinCurve->setCheckable(true);
-	connect(showFinCurve, SIGNAL(triggered()), pMiarex, SLOT(OnFinCurve()));
+	connect(showFinCurve, SIGNAL(triggered()), pMiarex, SLOT(onFinCurve()));
 
 	showWing2Curve = new QAction(tr("Show Second Wing Curve"), this);
 	showWing2Curve->setStatusTip(tr("Show the graph curves for the second wing"));
 	showWing2Curve->setCheckable(true);
-	connect(showWing2Curve, SIGNAL(triggered()), pMiarex, SLOT(OnWing2Curve()));
+	connect(showWing2Curve, SIGNAL(triggered()), pMiarex, SLOT(onWing2Curve()));
 
 	defineWPolar = new QAction(tr("Define an Analysis")+" \t(F6)", this);
 	defineWPolar->setStatusTip(tr("Define an analysis for the current wing or plane"));
@@ -1199,7 +1199,7 @@ void MainFrame::CreateMiarexActions()
 
 	defineWPolarObjectAct = new QAction(tr("Define a polar object (advanced users)"), this);
 	defineWPolarObjectAct->setStatusTip(tr("Shows a form to edit a new polar object"));
-	connect(defineWPolarObjectAct, SIGNAL(triggered()), pMiarex, SLOT(OnDefineWPolarObject()));
+	connect(defineWPolarObjectAct, SIGNAL(triggered()), pMiarex, SLOT(onDefineWPolarObject()));
 
 	editWPolarAct = new QAction(tr("Edit...")+" \t(Ctrl+F6)", this);
 	editWPolarAct->setStatusTip(tr("Modify the analysis parameters of this polar"));
@@ -1212,7 +1212,7 @@ void MainFrame::CreateMiarexActions()
 
 	editWPolarPts = new QAction(tr("Edit data points..."), this);
 	editWPolarPts->setStatusTip(tr("Modify the data points of this polar"));
-	connect(editWPolarPts, SIGNAL(triggered()), pMiarex, SLOT(OnEditCurWPolarPts()));
+	connect(editWPolarPts, SIGNAL(triggered()), pMiarex, SLOT(onEditCurWPolarPts()));
 
 	defineStabPolar = new QAction(tr("Define a Stability Analysis")+"\t(Shift+F6)", this);
 	defineStabPolar->setStatusTip(tr("Define a stability analysis for the current wing or plane"));
@@ -1221,84 +1221,84 @@ void MainFrame::CreateMiarexActions()
 
 	hidePlaneWPlrs = new QAction(tr("Hide Associated Polars"), this);
 	hidePlaneWPlrs->setStatusTip(tr("Hide all the polar curves associated to the currently selected wing or plane"));
-	connect(hidePlaneWPlrs, SIGNAL(triggered()), pMiarex, SLOT(OnHidePlaneWPolars()));
+	connect(hidePlaneWPlrs, SIGNAL(triggered()), pMiarex, SLOT(onHidePlaneWPolars()));
 	
 	showPlaneWPlrsOnly = new QAction(tr("Show Only Associated Polars"), this);
-	connect(showPlaneWPlrsOnly, SIGNAL(triggered()), pMiarex, SLOT(OnShowPlaneWPolarsOnly()));
+	connect(showPlaneWPlrsOnly, SIGNAL(triggered()), pMiarex, SLOT(onShowPlaneWPolarsOnly()));
 
 	showPlaneWPlrs = new QAction(tr("Show Associated Polars"), this);
 	showPlaneWPlrs->setStatusTip(tr("Show all the polar curves associated to the currently selected wing or plane"));
-	connect(showPlaneWPlrs, SIGNAL(triggered()), pMiarex, SLOT(OnShowPlaneWPolars()));
+	connect(showPlaneWPlrs, SIGNAL(triggered()), pMiarex, SLOT(onShowPlaneWPolars()));
 
 	deletePlaneWPlrs = new QAction(tr("Delete Associated Polars"), this);
 	deletePlaneWPlrs->setStatusTip(tr("Delete all the polars associated to the currently selected wing or plane"));
-	connect(deletePlaneWPlrs, SIGNAL(triggered()), pMiarex, SLOT(OnDeletePlaneWPolars()));
+	connect(deletePlaneWPlrs, SIGNAL(triggered()), pMiarex, SLOT(onDeletePlaneWPolars()));
 
 	hideAllWPlrs = new QAction(tr("Hide All Polars"), this);
 	hideAllWPlrs->setStatusTip(tr("Hide all the polar curves of all wings and planes"));
-	connect(hideAllWPlrs, SIGNAL(triggered()), pMiarex, SLOT(OnHideAllWPolars()));
+	connect(hideAllWPlrs, SIGNAL(triggered()), pMiarex, SLOT(onHideAllWPolars()));
 	
 	showAllWPlrs = new QAction(tr("Show All Polars"), this);
 	showAllWPlrs->setStatusTip(tr("Show all the polar curves of all wings and planes"));
-	connect(showAllWPlrs, SIGNAL(triggered()), pMiarex, SLOT(OnShowAllWPolars()));
+	connect(showAllWPlrs, SIGNAL(triggered()), pMiarex, SLOT(onShowAllWPolars()));
 
 	hidePlaneWOpps = new QAction(tr("Hide Associated OpPoints"), this);
 	hidePlaneWOpps->setStatusTip(tr("Hide all the operating point curves of the currently selected wing or plane"));
-	connect(hidePlaneWOpps, SIGNAL(triggered()), pMiarex, SLOT(OnHidePlaneOpps()));
+	connect(hidePlaneWOpps, SIGNAL(triggered()), pMiarex, SLOT(onHidePlaneOpps()));
 	
 	showPlaneWOpps = new QAction(tr("Show Associated OpPoints"), this);
 	showPlaneWOpps->setStatusTip(tr("Show all the operating point curves of the currently selected wing or plane"));
-	connect(showPlaneWOpps, SIGNAL(triggered()), pMiarex, SLOT(OnShowPlaneOpps()));
+	connect(showPlaneWOpps, SIGNAL(triggered()), pMiarex, SLOT(onShowPlaneOpps()));
 	
 	deletePlaneWOpps = new QAction(tr("Delete Associated OpPoints"), this);
 	deletePlaneWOpps->setStatusTip(tr("Delete all the operating points of the currently selected wing or plane"));
-	connect(deletePlaneWOpps, SIGNAL(triggered()), pMiarex, SLOT(OnDeletePlaneOpps()));
+	connect(deletePlaneWOpps, SIGNAL(triggered()), pMiarex, SLOT(onDeletePlaneOpps()));
 
 	deleteCurPlane = new QAction(tr("Delete..."), this);
 	deleteCurPlane->setStatusTip(tr("Delete the currently selected wing or plane"));
-	connect(deleteCurPlane, SIGNAL(triggered()), pMiarex, SLOT(OnDeleteCurPlane()));
+	connect(deleteCurPlane, SIGNAL(triggered()), pMiarex, SLOT(onDeleteCurPlane()));
 
 	duplicateCurPlane = new QAction(tr("Duplicate..."), this);
 	duplicateCurPlane->setStatusTip(tr("Duplicate the currently selected wing or plane"));
-	connect(duplicateCurPlane, SIGNAL(triggered()), pMiarex, SLOT(OnDuplicateCurPlane()));
+	connect(duplicateCurPlane, SIGNAL(triggered()), pMiarex, SLOT(onDuplicateCurPlane()));
 
 	savePlaneAsProjectAct = new QAction(tr("Save as Project..."), this);
 	savePlaneAsProjectAct->setStatusTip(tr("Save the currently selected wing or plane as a new separate project"));
-	connect(savePlaneAsProjectAct, SIGNAL(triggered()), this, SLOT(OnSavePlaneAsProject()));
+	connect(savePlaneAsProjectAct, SIGNAL(triggered()), this, SLOT(onSavePlaneAsProject()));
 
 	renameCurWPolar = new QAction(tr("Rename..."), this);
 	renameCurWPolar->setStatusTip(tr("Rename the currently selected polar"));
-	connect(renameCurWPolar, SIGNAL(triggered()), pMiarex, SLOT(OnRenameCurWPolar()));
+	connect(renameCurWPolar, SIGNAL(triggered()), pMiarex, SLOT(onRenameCurWPolar()));
 
 	exportCurWPolar = new QAction(tr("Export ..."), this);
 	exportCurWPolar->setStatusTip(tr("Export the currently selected polar to a text or csv file"));
-	connect(exportCurWPolar, SIGNAL(triggered()), pMiarex, SLOT(OnExportCurWPolar()));
+	connect(exportCurWPolar, SIGNAL(triggered()), pMiarex, SLOT(onExportCurWPolar()));
 
 	resetCurWPolar = new QAction(tr("Reset ..."), this);
 	resetCurWPolar->setStatusTip(tr("Delete all the points of the currently selected polar, but keep the analysis settings"));
-	connect(resetCurWPolar, SIGNAL(triggered()), pMiarex, SLOT(OnResetCurWPolar()));
+	connect(resetCurWPolar, SIGNAL(triggered()), pMiarex, SLOT(onResetCurWPolar()));
 
 	deleteCurWPolar = new QAction(tr("Delete ..."), this);
 	deleteCurWPolar->setStatusTip(tr("Delete the currently selected polar"));
-	connect(deleteCurWPolar, SIGNAL(triggered()), pMiarex, SLOT(OnDeleteCurWPolar()));
+	connect(deleteCurWPolar, SIGNAL(triggered()), pMiarex, SLOT(onDeleteCurWPolar()));
 
 	deleteCurWOpp = new QAction(tr("Delete..."), this);
 	deleteCurWOpp->setStatusTip(tr("Delete the currently selected operating point"));
-	connect(deleteCurWOpp, SIGNAL(triggered()), pMiarex, SLOT(OnDeleteCurWOpp()));
+	connect(deleteCurWOpp, SIGNAL(triggered()), pMiarex, SLOT(onDeleteCurWOpp()));
 
 	advancedSettings = new QAction(tr("Advanced Settings..."), this);
 	advancedSettings->setStatusTip(tr("Define the settings for LLT, VLM and Panel analysis"));
-	connect(advancedSettings, SIGNAL(triggered()), pMiarex, SLOT(OnAdvancedSettings()));
+	connect(advancedSettings, SIGNAL(triggered()), pMiarex, SLOT(onAdvancedSettings()));
 
 	ShowPolarProps = new QAction(tr("Properties"), this);
 	ShowPolarProps->setStatusTip(tr("Show the properties of the currently selected polar"));
 	ShowPolarProps->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Return));
-	connect(ShowPolarProps, SIGNAL(triggered()), pMiarex, SLOT(OnWPolarProperties()));
+	connect(ShowPolarProps, SIGNAL(triggered()), pMiarex, SLOT(onWPolarProperties()));
 
 	ShowWOppProps = new QAction(tr("Properties"), this);
 	ShowWOppProps->setStatusTip(tr("Show the properties of the currently selected operating point"));
 	ShowWOppProps->setShortcut(QKeySequence(Qt::ALT + Qt::SHIFT + Qt::Key_Return));
-	connect(ShowWOppProps, SIGNAL(triggered()), pMiarex, SLOT(OnPlaneOppProperties()));
+	connect(ShowWOppProps, SIGNAL(triggered()), pMiarex, SLOT(onPlaneOppProperties()));
 }
 
 
@@ -1572,9 +1572,9 @@ void MainFrame::CreateMiarexToolbar()
 	m_pctrlMiarexToolBar->addWidget(m_pctrlPlanePolar);
 	m_pctrlMiarexToolBar->addWidget(m_pctrlPlaneOpp);
 
-	connect(m_pctrlPlane,      SIGNAL(activated(int)), this, SLOT(OnSelChangePlane(int)));
-	connect(m_pctrlPlanePolar, SIGNAL(activated(int)), this, SLOT(OnSelChangeWPolar(int)));
-	connect(m_pctrlPlaneOpp,   SIGNAL(activated(int)), this, SLOT(OnSelChangePlaneOpp(int)));
+	connect(m_pctrlPlane,      SIGNAL(activated(int)), this, SLOT(onSelChangePlane(int)));
+	connect(m_pctrlPlanePolar, SIGNAL(activated(int)), this, SLOT(onSelChangeWPolar(int)));
+	connect(m_pctrlPlaneOpp,   SIGNAL(activated(int)), this, SLOT(onSelChangePlaneOpp(int)));
 }
 
 
@@ -1633,9 +1633,9 @@ void MainFrame::CreateXDirectToolbar()
 	m_pctrlXDirectToolBar->addWidget(m_pctrlPolar);
 	m_pctrlXDirectToolBar->addWidget(m_pctrlOpPoint);
 
-	connect(m_pctrlFoil,    SIGNAL(activated(int)), this, SLOT(OnSelChangeFoil(int)));
-	connect(m_pctrlPolar,   SIGNAL(activated(int)), this, SLOT(OnSelChangePolar(int)));
-	connect(m_pctrlOpPoint, SIGNAL(activated(int)), this, SLOT(OnSelChangeOpp(int)));
+	connect(m_pctrlFoil,    SIGNAL(activated(int)), this, SLOT(onSelChangeFoil(int)));
+	connect(m_pctrlPolar,   SIGNAL(activated(int)), this, SLOT(onSelChangePolar(int)));
+	connect(m_pctrlOpPoint, SIGNAL(activated(int)), this, SLOT(onSelChangeOpp(int)));
 }
 
 
@@ -1677,7 +1677,7 @@ void MainFrame::CreateXDirectActions()
 	connect(pDirectDuplicateCurFoil, SIGNAL(triggered()), pXDirect, SLOT(OnDuplicateFoil()));
 
 	setCurFoilStyle = new QAction(tr("Set Style..."), this);
-	connect(setCurFoilStyle, SIGNAL(triggered()), this, SLOT(OnCurFoilStyle()));
+	connect(setCurFoilStyle, SIGNAL(triggered()), this, SLOT(onCurFoilStyle()));
 
 	deleteFoilPolars = new QAction(tr("Delete associated polars"), this);
 	deleteFoilPolars->setStatusTip(tr("Delete all the polars associated to this foil"));
@@ -1806,7 +1806,7 @@ void MainFrame::CreateXDirectActions()
 	connect(viewXFoilAdvanced, SIGNAL(triggered()), pXDirect, SLOT(OnXFoilAdvanced()));
  
 	viewLogFile = new QAction(tr("View Log File")+"\t(L)", this);
-	connect(viewLogFile, SIGNAL(triggered()), this, SLOT(OnLogFile()));
+	connect(viewLogFile, SIGNAL(triggered()), this, SLOT(onLogFile()));
 
 	DerotateFoil = new QAction(tr("De-rotate the Foil"), this);
 	connect(DerotateFoil, SIGNAL(triggered()), pXDirect, SLOT(OnDerotateFoil()));
@@ -2329,14 +2329,14 @@ void MainFrame::deleteProject(bool bClosing)
 		else                       pXDirect->createOppCurves();
 
 		QAFoil *pAFoil = (QAFoil*)m_pAFoil;
-		pAFoil->FillFoilTable();
-		pAFoil->SelectFoil();
+		pAFoil->fillFoilTable();
+		pAFoil->selectFoil();
 
 
 		QXInverse *pXInverse =(QXInverse*)m_pXInverse;
 		pXInverse->Clear();
 
-		SetProjectName("");
+		setProjectName("");
 		setSaveState(true);
 	}
 }
@@ -2454,22 +2454,22 @@ void MainFrame::keyPressEvent(QKeyEvent *event)
 		{
 		    case Qt::Key_1:
 		    {
-				if(bCtrl) OnAFoil();
+				if(bCtrl) onAFoil();
 				break;
 			}
 		    case Qt::Key_2:
 		    {
-				if(bCtrl) OnAFoil();
+				if(bCtrl) onAFoil();
 				break;
 			}
 		    case Qt::Key_3:
 		    {
-				if(bCtrl) OnXInverse();
+				if(bCtrl) onXInverse();
 				break;
 			}
 		    case Qt::Key_4:
 		    {
-				if(bCtrl) OnXInverseMixed();
+				if(bCtrl) onXInverseMixed();
 				break;
 			}
 		    case Qt::Key_5:
@@ -2484,16 +2484,9 @@ void MainFrame::keyPressEvent(QKeyEvent *event)
 			}
 			case Qt::Key_L:
 			{
-				OnLogFile();
+				onLogFile();
 				break;
 			}
-			case Qt::Key_Control:
-			{
-				QMiarex* pMiarex = (QMiarex*)m_pMiarex;
-				pMiarex->m_bArcball = true;
-				updateView();
-				break;
-			}	
 
 			default:
 				event->ignore();
@@ -2516,7 +2509,6 @@ void MainFrame::keyReleaseEvent(QKeyEvent *event)
 
 		if (event->key()==Qt::Key_Control)
 		{
-			pMiarex->m_bArcball = false;
 			updateView();
 		}
 		else pMiarex->keyReleaseEvent(event);
@@ -2800,7 +2792,7 @@ MainFrame* MainFrame::self() {
 }
 
 
-XFLR5::enumApp MainFrame::LoadXFLR5File(QString PathName)
+XFLR5::enumApp MainFrame::loadXFLR5File(QString PathName)
 {
 	QFile XFile(PathName);
 	if (!XFile.open(QIODevice::ReadOnly))
@@ -2813,11 +2805,7 @@ XFLR5::enumApp MainFrame::LoadXFLR5File(QString PathName)
 	QAFoil *pAFoil= (QAFoil*)m_pAFoil;
 	QXDirect * pXDirect = (QXDirect*)m_pXDirect;
 
-	QString end;
-	//QFileInfo fileinfo(XFile);
-	end = PathName.right(4);
-	end = end.toLower();
-	//QString dir = fileinfo.canonicalPath();
+	QString end = PathName.right(4).toLower();
 
 	PathName.replace(QDir::separator(), "/"); // Qt sometimes uses the windows \ separator
 
@@ -2829,7 +2817,7 @@ XFLR5::enumApp MainFrame::LoadXFLR5File(QString PathName)
 		ar.setVersion(QDataStream::Qt_4_5);
 		ar.setByteOrder(QDataStream::LittleEndian);
 
-		ReadPolarFile(ar);
+		readPolarFile(ar);
 
 		pXDirect->m_bPolarView = true;
 		Polar::setCurPolar(NULL);
@@ -2841,7 +2829,7 @@ XFLR5::enumApp MainFrame::LoadXFLR5File(QString PathName)
 
 		XFile.close();
 
-		AddRecentFile(PathName);
+		addRecentFile(PathName);
 		setSaveState(false);
 		pXDirect->setControls();
 		return XFLR5::XFOILANALYSIS;
@@ -2864,12 +2852,12 @@ XFLR5::enumApp MainFrame::LoadXFLR5File(QString PathName)
 				pXDirect->setControls();
 				pXDirect->setFoil(pFoil);
 			}
-			else if(m_iApp==XFLR5::DIRECTDESIGN)  pAFoil->SelectFoil(pFoil);
+			else if(m_iApp==XFLR5::DIRECTDESIGN)  pAFoil->selectFoil(pFoil);
 
 			XFile.close();
 
 			setSaveState(false);
-			AddRecentFile(PathName);
+			addRecentFile(PathName);
 
 			return XFLR5::XFOILANALYSIS;
 		}
@@ -2887,7 +2875,7 @@ XFLR5::enumApp MainFrame::LoadXFLR5File(QString PathName)
 			}
 			else if (resp==QMessageBox::Yes)
 			{
-				if(!SaveProject(m_FileName))
+				if(!saveProject(m_FileName))
 				{
 					XFile.close();
 					return XFLR5::NOAPP;
@@ -2900,15 +2888,15 @@ XFLR5::enumApp MainFrame::LoadXFLR5File(QString PathName)
 		QDataStream ar(&XFile);
 		ar.setVersion(QDataStream::Qt_4_5);
 		ar.setByteOrder(QDataStream::LittleEndian);
-		if(!SerializeProjectWPA(ar, false))
+		if(!serializeProjectWPA(ar, false))
 		{
 			QMessageBox::warning(this,tr("Warning"), tr("Error reading the file")+"\n"+tr("Saved the valid part"));
 		}
 
-		AddRecentFile(PathName);
+		addRecentFile(PathName);
 		setSaveState(true);
 		PathName.replace(".wpa", ".xfl", Qt::CaseInsensitive);
-		SetProjectName(PathName);
+		setProjectName(PathName);
 
 		XFile.close();
 
@@ -2928,7 +2916,7 @@ XFLR5::enumApp MainFrame::LoadXFLR5File(QString PathName)
 			}
 			else if (resp==QMessageBox::Yes)
 			{
-				if(!SaveProject(m_FileName))
+				if(!saveProject(m_FileName))
 				{
 					XFile.close();
 					return XFLR5::NOAPP;
@@ -2939,14 +2927,14 @@ XFLR5::enumApp MainFrame::LoadXFLR5File(QString PathName)
 		deleteProject();
 
 		QDataStream ar(&XFile);
-		if(!SerializeProjectXFL(ar, false))
+		if(!serializeProjectXFL(ar, false))
 		{
 			QMessageBox::warning(this,tr("Warning"), tr("Error reading the file")+"\n"+tr("Saved the valid part"));
 		}
 
-		AddRecentFile(PathName);
+		addRecentFile(PathName);
 		setSaveState(true);
-		SetProjectName(PathName);
+		setProjectName(PathName);
 
 		XFile.close();
 
@@ -2962,7 +2950,7 @@ XFLR5::enumApp MainFrame::LoadXFLR5File(QString PathName)
 
 
 
-void MainFrame::OnAFoil()
+void MainFrame::onAFoil()
 {
 	QMiarex *pMiarex = (QMiarex*)m_pMiarex;
 	pMiarex->stopAnimate();
@@ -2989,7 +2977,7 @@ void MainFrame::OnAFoil()
 }
 
 
-void MainFrame::OnCurFoilStyle()
+void MainFrame::onCurFoilStyle()
 {
 	if(!Foil::curFoil()) return;
 
@@ -3013,34 +3001,50 @@ void MainFrame::OnCurFoilStyle()
 
 
 
-void MainFrame::OnInsertProject()
+void MainFrame::onInsertProject()
 {
 	QString PathName;
 	QAFoil *pAFoil = (QAFoil*)m_pAFoil;
 	QXDirect *pXDirect = (QXDirect*)m_pXDirect;
 	QMiarex *pMiarex = (QMiarex*)m_pMiarex;
-	pMiarex->m_bArcball = false;
 
 	PathName = QFileDialog::getOpenFileName(this, tr("Open File"),
 											Settings::s_LastDirName,
-											tr("Project file (*.xfl)"));
-	if(!PathName.length())		return;
+											"Project file (*.wpa *.xfl)");
+	if(!PathName.length()) return;
 	int pos = PathName.lastIndexOf("/");
 	if(pos>0) Settings::s_LastDirName = PathName.left(pos);
-
 
 	QFile XFile(PathName);
 	if (!XFile.open(QIODevice::ReadOnly))
 	{
-		QString strange = tr("Could not read the file\n") + PathName;
-		QMessageBox::information(window(), tr("Warning"), strange);
+		QMessageBox::warning(this,tr("Warning"), tr("Could not read the file\n")+ PathName);
 		return;
 	}
 
-	QDataStream ar(&XFile);
+	QString end = PathName.right(4).toLower();
 
-	SerializeProjectXFL(ar, false);
+	if(end==".wpa")
+	{
+		QDataStream ar(&XFile);
+		ar.setVersion(QDataStream::Qt_4_5);
+		ar.setByteOrder(QDataStream::LittleEndian);
+		if(!serializeProjectWPA(ar, false))
+		{
+			QMessageBox::warning(this,tr("Warning"), tr("Error reading the file")+PathName+"\n");
+		}
 
+	}
+	else if(end==".xfl")
+	{
+		QDataStream ar(&XFile);
+		if(!serializeProjectXFL(ar, false))
+		{
+			QMessageBox::warning(this,tr("Warning"), tr("Error reading the file")+PathName+"\n");
+		}
+	}
+
+	XFile.close();
 	setSaveState(false);
 
 	if(m_iApp == XFLR5::MIAREX)
@@ -3060,15 +3064,15 @@ void MainFrame::OnInsertProject()
 	}
 	else if(m_iApp == XFLR5::DIRECTDESIGN)
 	{
-		pAFoil->FillFoilTable();
-		pAFoil->SelectFoil();
+		pAFoil->fillFoilTable();
+		pAFoil->selectFoil();
 	}
 	updateView();
 }
 
 
 
-void MainFrame::OnLanguage()
+void MainFrame::onLanguage()
 {
     TranslatorDlg tDlg(this);
     tDlg.InitDialog();
@@ -3080,7 +3084,7 @@ void MainFrame::OnLanguage()
 
 
 
-void MainFrame::OnLoadFile()
+void MainFrame::onLoadFile()
 {
 	QStringList PathNames;
 	QString PathName;
@@ -3088,7 +3092,6 @@ void MainFrame::OnLoadFile()
 	bool warn_non_airfoil_multiload = false;
 	QXDirect *pXDirect = (QXDirect*)m_pXDirect;
 	QMiarex *pMiarex = (QMiarex*)m_pMiarex;
-	pMiarex->m_bArcball = false;
 
 	PathNames = QFileDialog::getOpenFileNames(this, tr("Open File"),
 												Settings::s_LastDirName,
@@ -3101,7 +3104,7 @@ void MainFrame::OnLoadFile()
 			PathName = PathNames.at(i);
 			if (PathName.endsWith(".dat"))
 			{
-				App = LoadXFLR5File(PathName);
+				App = loadXFLR5File(PathName);
 			} else {
 				warn_non_airfoil_multiload = true;
 			}
@@ -3121,7 +3124,7 @@ void MainFrame::OnLoadFile()
 		int pos = PathName.lastIndexOf("/");
 		if(pos>0) Settings::s_LastDirName = PathName.left(pos);
 
-		App = LoadXFLR5File(PathName);
+		App = loadXFLR5File(PathName);
 	}
 
 	if(m_iApp==XFLR5::NOAPP)
@@ -3150,7 +3153,6 @@ void MainFrame::OnLoadFile()
 	{
 		updatePlaneListBox();
 		pMiarex->setPlane();
-		pMiarex->m_bArcball = false;
 		pMiarex->m_bIs2DScaleSet = false;
 		pMiarex->setControls();
 		updateView();
@@ -3159,18 +3161,18 @@ void MainFrame::OnLoadFile()
 	{
 		QAFoil *pAFoil = (QAFoil*)m_pAFoil;
 		pAFoil->SetAFoilParams();
-		pAFoil->SelectFoil(Foil::curFoil());
+		pAFoil->selectFoil(Foil::curFoil());
 		updateView();
 	}
 	else if(m_iApp==XFLR5::INVERSEDESIGN)
 	{
-		OnXInverse();
+		onXInverse();
 		updateView();
 	}
 }
 
 
-void MainFrame::OnLogFile()
+void MainFrame::onLogFile()
 {
 	QString FileName = QDir::tempPath() + "/XFLR5.log";
 	// 20090605 Francesco Meschia
@@ -3180,10 +3182,8 @@ void MainFrame::OnLogFile()
 
 
 
-void MainFrame::OnNewProject()
+void MainFrame::onNewProject()
 {
-	QMiarex *pMiarex = (QMiarex*)m_pMiarex;
-	pMiarex->m_bArcball = false;
 	if(!s_bSaved)
 	{
 		int resp = QMessageBox::question(this, tr("Question"), tr("Save the current project ?"),
@@ -3195,7 +3195,7 @@ void MainFrame::OnNewProject()
 		}
 		else if (QMessageBox::Yes == resp)
 		{
-			if(SaveProject(m_FileName))
+			if(saveProject(m_FileName))
 			{
 				deleteProject();
 				statusBar()->showMessage(tr("The project ") + s_ProjectName + tr(" has been saved"));
@@ -3216,7 +3216,7 @@ void MainFrame::OnNewProject()
 }
 
 
-void MainFrame::OnOpenGLInfo()
+void MainFrame::onOpenGLInfo()
 {
     QSurfaceFormat fmt = m_p3dWidget->format();
 	QString strongProps;
@@ -3248,7 +3248,7 @@ void MainFrame::OnOpenGLInfo()
 
 
 
-void MainFrame::OnResetSettings()
+void MainFrame::onResetSettings()
 {
 	int resp = QMessageBox::question(this, tr("Default Settings"), tr("Are you sure you want to reset the default settings ?"),
 									 QMessageBox::Yes|QMessageBox::No, QMessageBox::Yes);
@@ -3268,7 +3268,7 @@ void MainFrame::OnResetSettings()
 }
 
 
-void MainFrame::OnRestoreToolbars()
+void MainFrame::onRestoreToolbars()
 {
 	if(m_iApp==XFLR5::XFOILANALYSIS)
 	{
@@ -3353,13 +3353,13 @@ void MainFrame::onSaveProject()
 		onSaveProjectAs();
 		return;
 	}
-	if(SaveProject(m_FileName))
+	if(saveProject(m_FileName))
 	{
-		AddRecentFile(m_FileName);
+		addRecentFile(m_FileName);
 		statusBar()->showMessage(tr("The project ") + s_ProjectName + tr(" has been saved"));
 	}
 	QMiarex *pMiarex = (QMiarex*)m_pMiarex;
-	pMiarex->m_bArcball = false;
+
 	pMiarex->updateView();
 }
 
@@ -3367,14 +3367,13 @@ void MainFrame::onSaveProject()
 
 bool MainFrame::onSaveProjectAs()
 {
-	if(SaveProject())
+	if(saveProject())
 	{
-		SetProjectName(m_FileName);
-		AddRecentFile(m_FileName);
+		setProjectName(m_FileName);
+		addRecentFile(m_FileName);
 		statusBar()->showMessage(tr("The project ") + s_ProjectName + tr(" has been saved"));
 	}
-	QMiarex *pMiarex = (QMiarex*)m_pMiarex;
-	pMiarex->m_bArcball = false;
+
 	return true;
 }
 
@@ -3383,9 +3382,6 @@ bool MainFrame::onSaveProjectAs()
 
 void MainFrame::onSaveViewToImageFile()
 {
-	QMiarex *pMiarex = (QMiarex*)m_pMiarex;
-	pMiarex->m_bArcball = false;
-
 	QSize sz(m_p2dWidget->geometry().width(), m_p2dWidget->geometry().height());
 	QImage img(sz, QImage::Format_RGB32);
 	QPainter painter(&img);
@@ -3459,7 +3455,6 @@ void MainFrame::onSaveViewToImageFile()
 		case XFLR5::MIAREX:
 		{
 			QMiarex *pMiarex = (QMiarex*)m_pMiarex;
-			pMiarex->m_bArcball = false;
 
 			if(pMiarex->m_iView==XFLR5::W3DVIEW)
 			{
@@ -3480,7 +3475,7 @@ void MainFrame::onSaveViewToImageFile()
 }
 
 
-void MainFrame::OnSelChangePlane(int sel)
+void MainFrame::onSelChangePlane(int sel)
 {
 	// Gets the new selected wing name and notifies Miarex
 	// then updates WPolar combobox
@@ -3496,7 +3491,7 @@ void MainFrame::OnSelChangePlane(int sel)
 }
 
 
-void MainFrame::OnSelChangeWPolar(int sel)
+void MainFrame::onSelChangeWPolar(int sel)
 {
 	QMiarex *pMiarex = (QMiarex*)m_pMiarex;
 	pMiarex->stopAnimate();
@@ -3511,7 +3506,7 @@ void MainFrame::OnSelChangeWPolar(int sel)
 }
 
 
-void MainFrame::OnSelChangePlaneOpp(int sel)
+void MainFrame::onSelChangePlaneOpp(int sel)
 {
 	QString strong;
 	QMiarex *pMiarex = (QMiarex*)m_pMiarex;
@@ -3551,7 +3546,7 @@ void MainFrame::OnSelChangePlaneOpp(int sel)
 }
 
 
-void MainFrame::OnSelChangeFoil(int sel)
+void MainFrame::onSelChangeFoil(int sel)
 {
 	// Gets the new selected foil name and notifies XDirect
 	// sets a polar, if any
@@ -3574,7 +3569,7 @@ void MainFrame::OnSelChangeFoil(int sel)
 }
 
 
-void MainFrame::OnSelChangePolar(int sel)
+void MainFrame::onSelChangePolar(int sel)
 {
 	QXDirect *pXDirect = (QXDirect*)m_pXDirect;
 	pXDirect->m_bAnimate = false;
@@ -3593,7 +3588,7 @@ void MainFrame::OnSelChangePolar(int sel)
 }
 
 
-void MainFrame::OnSelChangeOpp(int sel)
+void MainFrame::onSelChangeOpp(int sel)
 {
 	QXDirect *pXDirect = (QXDirect*)m_pXDirect;
 	pXDirect->m_bAnimate = false;
@@ -3623,7 +3618,7 @@ void MainFrame::OnSelChangeOpp(int sel)
 
 
 
-void MainFrame::OnStyleSettings()
+void MainFrame::onStyleSettings()
 {
 	QXDirect *pXDirect   = (QXDirect*)m_pXDirect;
 	QMiarex *pMiarex     = (QMiarex*)m_pMiarex;
@@ -3715,7 +3710,6 @@ void MainFrame::onMiarex()
 
 	updatePlaneListBox();
 	pMiarex->setPlane();
-	pMiarex->m_bArcball = false;
 
 	setMenus();
 	setMainFrameCentralWidget();
@@ -3725,7 +3719,7 @@ void MainFrame::onMiarex()
 	updateView();
 }
 
-void MainFrame::OnXInverse()
+void MainFrame::onXInverse()
 {
 	QXDirect *pXDirect = (QXDirect*)m_pXDirect;
 	pXDirect->stopAnimate();
@@ -3755,7 +3749,7 @@ void MainFrame::OnXInverse()
 }
 
 
-void MainFrame::OnXInverseMixed()
+void MainFrame::onXInverseMixed()
 {
 	QXDirect *pXDirect = (QXDirect*)m_pXDirect;
 	pXDirect->stopAnimate();
@@ -3791,7 +3785,7 @@ void MainFrame::openRecentFile()
 
 	QXDirect *pXDirect = (QXDirect*) m_pXDirect;
 	
-	XFLR5::enumApp App = LoadXFLR5File(action->data().toString());
+	XFLR5::enumApp App = loadXFLR5File(action->data().toString());
 	if(m_iApp==XFLR5::NOAPP) m_iApp = App;
 
 	if(App==XFLR5::NOAPP)
@@ -3825,7 +3819,7 @@ void MainFrame::openRecentFile()
 	}
 	else if(m_iApp==XFLR5::INVERSEDESIGN)
 	{
-		OnXInverse();
+		onXInverse();
 		updateView();
 	}
 }
@@ -3947,7 +3941,7 @@ void *MainFrame::ReadFoilFile(QTextStream &in)
  * @param ar the binary stream
  * @return the pointer to the Foil object which has been created, or NULL if failure.
  */
-void MainFrame::ReadPolarFile(QDataStream &ar)
+void MainFrame::readPolarFile(QDataStream &ar)
 {
 	Foil* pFoil = NULL;
 	Polar *pPolar = NULL;
@@ -4009,7 +4003,7 @@ void MainFrame::ReadPolarFile(QDataStream &ar)
 
 
 
-bool MainFrame::SaveProject(QString PathName)
+bool MainFrame::saveProject(QString PathName)
 {
 	QString Filter = "XFLR5 v6 Project File (*.xfl)";
 	QString FileName = s_ProjectName;
@@ -4043,7 +4037,7 @@ bool MainFrame::SaveProject(QString PathName)
 	}
 
 	QDataStream ar(&fp);
-	SerializeProjectXFL(ar,true);
+	serializeProjectXFL(ar,true);
 
 	m_FileName = PathName;
 	fp.close();
@@ -4057,10 +4051,9 @@ bool MainFrame::SaveProject(QString PathName)
 
 
 
-void MainFrame::OnSavePlaneAsProject()
+void MainFrame::onSavePlaneAsProject()
 {
 	QMiarex *pMiarex = (QMiarex*)m_pMiarex;
-	pMiarex->m_bArcball = false;
 
 	QString strong;
 	if(pMiarex->m_pCurPlane) strong = pMiarex->m_pCurPlane->planeName();
@@ -4584,7 +4577,7 @@ void MainFrame::SelectPlaneOpp(void *pPlaneOppPtr)
 
 
 
-bool MainFrame::SerializeProjectXFL(QDataStream &ar, bool bIsStoring)
+bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 {
 	QAFoil *pAFoil = (QAFoil*)m_pAFoil;
 
@@ -4872,7 +4865,7 @@ bool MainFrame::SerializeProjectXFL(QDataStream &ar, bool bIsStoring)
 
 
 
-bool MainFrame::SerializeProjectWPA(QDataStream &ar, bool bIsStoring)
+bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 {
 	QMiarex *pMiarex = (QMiarex*)m_pMiarex;
 	QAFoil *pAFoil = (QAFoil*)m_pAFoil;
@@ -5252,7 +5245,7 @@ void MainFrame::setMenus()
 }
 
 
-void MainFrame::SetProjectName(QString PathName)
+void MainFrame::setProjectName(QString PathName)
 {
 	m_FileName = PathName;
 	int pos = PathName.lastIndexOf("/");
@@ -5775,8 +5768,8 @@ void MainFrame::onManageFoils()
 	else if(m_iApp==XFLR5::DIRECTDESIGN)
 	{
 		QAFoil *pAFoil = (QAFoil*)m_pAFoil;
-		pAFoil->FillFoilTable();
-		pAFoil->SelectFoil();
+		pAFoil->fillFoilTable();
+		pAFoil->selectFoil();
 	}
 
 	updateView();

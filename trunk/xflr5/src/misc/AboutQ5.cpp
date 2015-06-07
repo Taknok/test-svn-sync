@@ -28,13 +28,13 @@
 AboutQ5::AboutQ5(QWidget *parent) : QDialog(parent)
 {
 	setWindowTitle(tr("About XFLR5"));
-	SetupLayout();
+	setupLayout();
 }
 
 
-void AboutQ5::SetupLayout()
+void AboutQ5::setupLayout()
 {
-	QGridLayout *LogoLayout = new QGridLayout;
+	QGridLayout *pLogoLayout = new QGridLayout;
 	{
 		QLabel *LabIconQ5 = new QLabel;
 		LabIconQ5->setObjectName("iconXFLR5");
@@ -47,11 +47,11 @@ void AboutQ5::SetupLayout()
 		XFLR5Link->setTextInteractionFlags(Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse);
 		XFLR5Link->setAlignment(Qt::AlignVCenter| Qt::AlignLeft);
 
-		LogoLayout->setColumnStretch(1,1);
-		LogoLayout->setColumnStretch(2,2);
-		LogoLayout->addWidget(LabIconQ5,1,1,2,1);
-		LogoLayout->addWidget(lab1,1,2);
-		LogoLayout->addWidget(XFLR5Link,2,2);
+		pLogoLayout->setColumnStretch(1,1);
+		pLogoLayout->setColumnStretch(2,2);
+		pLogoLayout->addWidget(LabIconQ5,1,1,2,1);
+		pLogoLayout->addWidget(lab1,1,2);
+		pLogoLayout->addWidget(XFLR5Link,2,2);
 	}
 
 	QLabel *lab2  = new QLabel(tr("Copyright (C) M. Drela and H. Youngren 2000 - XFoil v6.94"));
@@ -61,7 +61,7 @@ void AboutQ5::SetupLayout()
 	QLabel *lab6  = new QLabel(tr("but WITHOUT ANY WARRANTY; without even the implied warranty of"));
 	QLabel *lab7  = new QLabel(tr("MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."));
 	QLabel *lab8  = new QLabel(tr("This program has been developed exclusively for the analysis of model aircraft"));
-	QLabel *lab9  = new QLabel(tr("Any other usage is strongly disapproved"));
+	QLabel *lab9  = new QLabel(tr("Any other usage is expressly prohibited"));
 	QLabel *lab10 = new QLabel(tr("Program distributed  under the terms of the GNU General Public License"));
 	QLabel *lab11 = new QLabel(tr("German translation by Martin Willner"));
 	QLabel *lab12 = new QLabel(tr("Japanese translation by IKUSU, Koichi Akabe, Misatus, dynamicsoar, hide253"));
@@ -70,39 +70,39 @@ void AboutQ5::SetupLayout()
 
 	QPushButton *OKButton = new QPushButton(tr("OK"));
 	connect(OKButton, SIGNAL(clicked()),this, SLOT(accept()));
-	QHBoxLayout *OKLayout = new QHBoxLayout;
+	QHBoxLayout *pOKLayout = new QHBoxLayout;
 	{
-        OKLayout->addStretch(1);
-        OKLayout->addWidget(OKButton);
-        OKLayout->addStretch(1);
+		pOKLayout->addStretch(1);
+		pOKLayout->addWidget(OKButton);
+		pOKLayout->addStretch(1);
 	}
 
-	QVBoxLayout *MainLayout = new QVBoxLayout;
+	QVBoxLayout *pMainLayout = new QVBoxLayout;
 	{
-        MainLayout->addLayout(LogoLayout);
-        MainLayout->addStretch(1);
-        MainLayout->addWidget(lab2);
-        MainLayout->addWidget(lab3);
-        MainLayout->addWidget(lab4);
-        MainLayout->addStretch(1);
-        MainLayout->addWidget(lab11);
-        MainLayout->addWidget(lab12);
-        MainLayout->addWidget(lab13);
-        MainLayout->addWidget(lab14);
-        MainLayout->addSpacing(20);
-        MainLayout->addStretch(1);
-        MainLayout->addWidget(lab5);
-        MainLayout->addWidget(lab6);
-        MainLayout->addWidget(lab7);
-        MainLayout->addStretch(1);
-        MainLayout->addWidget(lab8);
-        MainLayout->addWidget(lab9);
-        MainLayout->addStretch(1);
-        MainLayout->addWidget(lab10);
-        MainLayout->addStretch(1);
-        MainLayout->addLayout(OKLayout);
+		pMainLayout->addLayout(pLogoLayout);
+		pMainLayout->addStretch(1);
+		pMainLayout->addWidget(lab2);
+		pMainLayout->addWidget(lab3);
+		pMainLayout->addWidget(lab4);
+		pMainLayout->addStretch(1);
+		pMainLayout->addWidget(lab11);
+		pMainLayout->addWidget(lab12);
+		pMainLayout->addWidget(lab13);
+		pMainLayout->addWidget(lab14);
+		pMainLayout->addSpacing(20);
+		pMainLayout->addStretch(1);
+		pMainLayout->addWidget(lab5);
+		pMainLayout->addWidget(lab6);
+		pMainLayout->addWidget(lab7);
+		pMainLayout->addStretch(1);
+		pMainLayout->addWidget(lab8);
+		pMainLayout->addWidget(lab9);
+		pMainLayout->addStretch(1);
+		pMainLayout->addWidget(lab10);
+		pMainLayout->addStretch(1);
+		pMainLayout->addLayout(pOKLayout);
 	}
-	setLayout(MainLayout);
+	setLayout(pMainLayout);
 	setMinimumHeight(400);
 }
 

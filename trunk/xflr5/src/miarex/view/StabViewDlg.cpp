@@ -69,8 +69,8 @@ void StabViewDlg::Connect()
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 
-	connect(m_pctrlLongDynamics, SIGNAL(clicked()), pMiarex, SLOT(OnStabilityDirection()));
-	connect(m_pctrlLatDynamics,  SIGNAL(clicked()), pMiarex, SLOT(OnStabilityDirection()));
+	connect(m_pctrlLongDynamics, SIGNAL(clicked()), pMiarex, SLOT(onStabilityDirection()));
+	connect(m_pctrlLatDynamics,  SIGNAL(clicked()), pMiarex, SLOT(onStabilityDirection()));
 
 	connect(m_pctrlPlotStabGraph, SIGNAL(clicked()), this , SLOT(OnPlotStabilityGraph()));
 
@@ -315,7 +315,7 @@ void StabViewDlg::OnAnimationAmplitude(int val)
 {
 	m_ModeAmplitude = (double)val/500.0;
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
-	pMiarex->OnAnimateModeSingle(false);
+	pMiarex->onAnimateModeSingle(false);
 }
 
 
@@ -418,7 +418,7 @@ void StabViewDlg::OnAnimateRestart()
 	pMiarex->m_ModeNorm = qMin(norm1, norm2);
 
 	//set initial mode positions, i.e. t=0
-	pMiarex->OnAnimateModeSingle(false);
+	pMiarex->onAnimateModeSingle(false);
 }
 
 
