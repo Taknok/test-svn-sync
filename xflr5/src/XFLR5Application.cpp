@@ -105,7 +105,7 @@ XFLR5Application::XFLR5Application(int &argc, char** argv) : QApplication(argc, 
 		Extension = PathName.right(4);
 		if(Extension.compare(".xfl",Qt::CaseInsensitive)==0 || Extension.compare(".wpa",Qt::CaseInsensitive)==0 || Extension.compare(".plr",Qt::CaseInsensitive)==0)
         {
-			int iApp = w->LoadXFLR5File(PathName);
+			int iApp = w->loadXFLR5File(PathName);
 
 		   if (iApp == XFLR5::MIAREX)             w->onMiarex();
 		   else if (iApp == XFLR5::XFOILANALYSIS) w->onXDirect();
@@ -124,7 +124,7 @@ bool XFLR5Application::event(QEvent *event)
 	{
 		case QEvent::FileOpen:
 		{
-			iApp = MainFrame::self()->LoadXFLR5File(static_cast<QFileOpenEvent *>(event)->file());
+			iApp = MainFrame::self()->loadXFLR5File(static_cast<QFileOpenEvent *>(event)->file());
 			if (iApp == XFLR5::MIAREX)             MainFrame::self()->onMiarex();
 			else if (iApp == XFLR5::XFOILANALYSIS) MainFrame::self()->onXDirect();
 

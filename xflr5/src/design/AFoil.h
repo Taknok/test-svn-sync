@@ -118,11 +118,11 @@ private:
 	Foil* AddNewFoil(Foil *pFoil);
 	void SetControls();
 	void ClearStack(int pos=0);
-	void FillFoilTable();
+	void fillFoilTable();
 	void FillTableRow(int row);
 	void ShowFoil(Foil* pFoil, bool bShow=true);
 	void SetAFoilParams();
-	void SelectFoil(Foil* pFoil = NULL);
+	void selectFoil(Foil* pFoil = NULL);
 	void PaintSplines(QPainter &painter);
 	void PaintFoils(QPainter &painter);
 	void SetTableFont();

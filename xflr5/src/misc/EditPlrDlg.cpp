@@ -50,7 +50,7 @@ EditPlrDlg::EditPlrDlg(QWidget *pParent) : QDialog(pParent)
 	m_pPointModel     = NULL;
 	m_pFloatDelegate  = NULL;
 
-	SetupLayout();
+	setupLayout();
 }
 
 EditPlrDlg::~EditPlrDlg()
@@ -58,7 +58,7 @@ EditPlrDlg::~EditPlrDlg()
 	delete [] m_precision;
 }
 
-void EditPlrDlg::InitDialog(void *pXDirect, Polar* pPolar, void *pMiarex, WPolar*pWPolar)
+void EditPlrDlg::initDialog(void *pXDirect, Polar* pPolar, void *pMiarex, WPolar*pWPolar)
 {
 	m_pXDirect = pXDirect;
 	m_pMiarex = pMiarex;
@@ -112,12 +112,12 @@ void EditPlrDlg::InitDialog(void *pXDirect, Polar* pPolar, void *pMiarex, WPolar
 
 	m_pFloatDelegate->SetPrecision(m_precision);
 
-	if(m_pXDirect && pPolar)        FillPolarData();
-	else if(m_pMiarex && m_pWPolar) FillWPolarData();
+	if(m_pXDirect && pPolar)        fillPolarData();
+	else if(m_pMiarex && m_pWPolar) fillWPolarData();
 }
 
 
-void EditPlrDlg::FillPolarData()
+void EditPlrDlg::fillPolarData()
 {
 	m_pPointModel->setColumnCount(14);
 	m_pPointModel->setRowCount(m_pPolar->m_Alpha.size());
@@ -172,7 +172,7 @@ void EditPlrDlg::FillPolarData()
 
 
 
-void EditPlrDlg::FillWPolarData()
+void EditPlrDlg::fillWPolarData()
 {
 	m_pPointModel->setColumnCount(4);
 	m_pPointModel->setRowCount(m_pWPolar->m_Alpha.size());
@@ -227,7 +227,7 @@ void EditPlrDlg::keyPressEvent(QKeyEvent *event)
 }
 
 
-void EditPlrDlg::OnDeletePoint()
+void EditPlrDlg::onDeletePoint()
 {
 	QXDirect *pXDirect = (QXDirect*)m_pXDirect;
 	QMiarex *pMiarex= (QMiarex*)m_pMiarex;
@@ -237,15 +237,16 @@ void EditPlrDlg::OnDeletePoint()
 	if(pXDirect)
 	{
 		m_pPolar->Remove(index.row());
-		FillPolarData();
+		fillPolarData();
 		pXDirect->createPolarCurves();
 		pXDirect->updateView();
 	}
 	else if(pMiarex)
 	{
 		m_pWPolar->Remove(index.row());
-		FillWPolarData();
-		pMiarex->createWPolarCurves();
+		fillWPolarData();
+		QMiarex::s_bResetCurves = true;
+//		pMiarex->createWPolarCurves();
 		pMiarex->updateView();
 	}
 
@@ -258,7 +259,7 @@ void EditPlrDlg::OnDeletePoint()
 
 
 
-void EditPlrDlg::OnDeleteAllPoints()
+void EditPlrDlg::onDeleteAllPoints()
 {
 	QXDirect *pXDirect = (QXDirect*)m_pXDirect;
 	QMiarex *pMiarex= (QMiarex*)m_pMiarex;
@@ -266,36 +267,36 @@ void EditPlrDlg::OnDeleteAllPoints()
 	if(pXDirect)
 	{
 		m_pPolar->ResetPolar();
-		FillPolarData();
+		fillPolarData();
 		pXDirect->createPolarCurves();
 		pXDirect->updateView();
 	}
 	else if(pMiarex)
 	{
 		m_pWPolar->ClearData();
-		FillWPolarData();
+		fillWPolarData();
 		pMiarex->createWPolarCurves();
 		pMiarex->updateView();
 	}
 }
 
 
-void EditPlrDlg::SetupLayout()
+void EditPlrDlg::setupLayout()
 {
-	QHBoxLayout *CommandButtonsLayout = new QHBoxLayout;
+	QHBoxLayout *pCommandButtonsLayout = new QHBoxLayout;
 	{
 		m_pctrlDeleteAllPoints = new QPushButton(tr("Delete All Points"));
 		m_pctrlDeleteAllPoints->adjustSize();
 		m_pctrlDeletePoint	   = new QPushButton(tr("Delete Point"));
 		OKButton               = new QPushButton(tr("OK"));
 		CancelButton           = new QPushButton(tr("Cancel"));
-		CommandButtonsLayout->addStretch(1);
-		CommandButtonsLayout->addWidget(m_pctrlDeleteAllPoints);
-		CommandButtonsLayout->addWidget(m_pctrlDeletePoint);
-		CommandButtonsLayout->addStretch(2);
-		CommandButtonsLayout->addWidget(OKButton);
-		CommandButtonsLayout->addWidget(CancelButton);
-		CommandButtonsLayout->addStretch(1);
+		pCommandButtonsLayout->addStretch(1);
+		pCommandButtonsLayout->addWidget(m_pctrlDeleteAllPoints);
+		pCommandButtonsLayout->addWidget(m_pctrlDeletePoint);
+		pCommandButtonsLayout->addStretch(2);
+		pCommandButtonsLayout->addWidget(OKButton);
+		pCommandButtonsLayout->addWidget(CancelButton);
+		pCommandButtonsLayout->addStretch(1);
 	}
 
 	m_pctrlPointTable = new QTableView(this);
@@ -309,14 +310,14 @@ void EditPlrDlg::SetupLayout()
 	QVBoxLayout * MainLayout = new QVBoxLayout(this);
 	{
 		MainLayout->addWidget(m_pctrlPointTable);
-		MainLayout->addLayout(CommandButtonsLayout);
+		MainLayout->addLayout(pCommandButtonsLayout);
 	}
 
 	setLayout(MainLayout);
 
 
-	connect(m_pctrlDeletePoint, SIGNAL(clicked()),this, SLOT(OnDeletePoint()));
-	connect(m_pctrlDeleteAllPoints, SIGNAL(clicked()),this, SLOT(OnDeleteAllPoints()));
+	connect(m_pctrlDeletePoint, SIGNAL(clicked()),this, SLOT(onDeletePoint()));
+	connect(m_pctrlDeleteAllPoints, SIGNAL(clicked()),this, SLOT(onDeleteAllPoints()));
 
 	connect(OKButton, SIGNAL(clicked()),this, SLOT(accept()));
 	connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));

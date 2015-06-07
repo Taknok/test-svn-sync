@@ -390,17 +390,7 @@ void ThreeDWidget::wheelEvent(QWheelEvent *event)
 */
 void ThreeDWidget::keyPressEvent(QKeyEvent *event)
 {
-	if(m_iView == GLMIAREXVIEW)
-	{
-		QMiarex* pMiarex = (QMiarex*)s_pMiarex;
-		pMiarex->keyPressEvent(event);
-	}
-	else if(m_iView == GLBODYVIEW)
-	{
-		GL3dBodyDlg *pDlg = (GL3dBodyDlg*)m_pParent;
-		pDlg->keyPressEvent(event);
-	}
-	else if(m_iView == GLWINGVIEW || m_iView == GLPLANEVIEW || m_iView == GLEDITBODYVIEW)
+	if(m_iView == GLMIAREXVIEW || m_iView == GLWINGVIEW || m_iView == GLPLANEVIEW || m_iView == GLEDITBODYVIEW)
 	{
 		switch (event->key())
 		{
@@ -419,6 +409,11 @@ void ThreeDWidget::keyPressEvent(QKeyEvent *event)
 			default:
 				event->ignore();
 		}
+	}
+	else if(m_iView == GLBODYVIEW)
+	{
+		GL3dBodyDlg *pDlg = (GL3dBodyDlg*)m_pParent;
+		pDlg->keyPressEvent(event);
 	}
 }
 
