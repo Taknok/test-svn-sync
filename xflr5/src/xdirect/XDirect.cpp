@@ -4207,7 +4207,6 @@ void QXDirect::readParams()
  */
 void QXDirect::saveSettings(QSettings *pSettings)
 {
-	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 	QString str1, str2, str3;
 	pSettings->beginGroup("XDirect");
 	{

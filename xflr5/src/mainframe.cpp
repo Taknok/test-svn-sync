@@ -3382,9 +3382,6 @@ bool MainFrame::onSaveProjectAs()
 
 void MainFrame::onSaveViewToImageFile()
 {
-	QSize sz(m_p2dWidget->geometry().width(), m_p2dWidget->geometry().height());
-	QImage img(sz, QImage::Format_RGB32);
-	QPainter painter(&img);
 	QString FileName, Filter;
 
 	switch(m_ImageFormat)
@@ -3458,7 +3455,26 @@ void MainFrame::onSaveViewToImageFile()
 
 			if(pMiarex->m_iView==XFLR5::W3DVIEW)
 			{
-//				m_p3dWidget->grabFrameBuffer().save(FileName);
+				QMessageBox::StandardButton reply = QMessageBox::question(this, "3D save option", tr("Set a transparent background ?"), QMessageBox::Yes|QMessageBox::No);
+				if (reply == QMessageBox::Yes)
+				{
+					QPixmap outPix = m_p3dWidget->grab();
+					QPainter painter(&outPix);
+					painter.drawPixmap(0,0, pMiarex->m_PixText);
+					painter.drawPixmap(0,0, m_p3dWidget->m_PixText);
+
+					outPix.save(FileName);
+				}
+				else
+				{
+					QImage outImg = m_p3dWidget->grabFramebuffer();
+					QPainter painter(&outImg);
+					painter.drawPixmap(0,0, pMiarex->m_PixText);
+					painter.drawPixmap(0,0, m_p3dWidget->m_PixText);
+
+					outImg.save(FileName);
+				}
+
 				return;
 			}
 			else
@@ -3471,7 +3487,7 @@ void MainFrame::onSaveViewToImageFile()
 		default:
 			break;
 	}
-	img.save(FileName);
+
 }
 
 

@@ -577,7 +577,7 @@ void ThreeDWidget::resizeGL(int width, int height)
 	//		pMiarex->m_ArcBall.GetMatrix();
 			pMiarex->m_bIs3DScaleSet = false;
 			pMiarex->m_bResetTextLegend = true;
-			pMiarex->Set3DScale();
+			pMiarex->set3DScale();
 		}
 	}
 	else if(m_iView == GLWINGVIEW)
@@ -1513,8 +1513,16 @@ void ThreeDWidget::on3DFront()
 
 void ThreeDWidget::on3DReset()
 {
-	m_glViewportTrans.Set(0.0, 0.0, 0.0);
+//	if(m_iView == GLMIAREXVIEW || m_iView == GLWINGVIEW || m_iView == GLPLANEVIEW || m_iView == GLEDITBODYVIEW)
 
+	if(m_iView == GLMIAREXVIEW)
+	{
+		QMiarex *pMiarex = (QMiarex *)s_pMiarex;
+		pMiarex->m_bIs3DScaleSet = false;
+		pMiarex->set3DScale();
+	}
+
+	m_glViewportTrans.Set(0.0, 0.0, 0.0);
 	reset3DRotationCenter();
 	update();
 }

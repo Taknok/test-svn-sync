@@ -117,10 +117,10 @@ public:
 
 
 	/** Return the visibility of the curve as a boolean. */
-	bool IsVisible() {return m_bIsVisible;}
+	bool isVisible() {return m_bIsVisible;}
 
 	/** Return the visibility of the points as a boolean. */
-	bool PointsVisible() {return m_bShowPoints; }
+	bool pointsVisible() {return m_bShowPoints; }
 
 	/** Returns the Curve's number of points. */
 	int size() {return x.count();}
