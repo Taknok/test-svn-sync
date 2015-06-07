@@ -45,17 +45,17 @@ public:
 	~EditPlrDlg();
 
 
-	void InitDialog(void *pXDirect, Polar *pPolar, void *pMiarex, WPolar *pWPolar);
+	void initDialog(void *pXDirect, Polar *pPolar, void *pMiarex, WPolar *pWPolar);
 
 private slots:
-	void OnDeletePoint();
-	void OnDeleteAllPoints();
+	void onDeletePoint();
+	void onDeleteAllPoints();
 
 
 private:
-	void SetupLayout();
-	void FillPolarData();
-	void FillWPolarData();
+	void setupLayout();
+	void fillPolarData();
+	void fillWPolarData();
 	void keyPressEvent(QKeyEvent *event);
 	void resizeEvent(QResizeEvent*event);
 	void hideEvent(QHideEvent *event);

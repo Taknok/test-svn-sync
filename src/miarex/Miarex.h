@@ -111,112 +111,107 @@ signals:
 	void projectModified();
 
 private slots:
-	void On3DCp();
-	void On3DPrefs();
-	void On3DReset();
+	void on3DCp();
+	void on3DPrefs();
+	void on3DReset();
 	void on3DView();
 	void onAdjustToWing();
-	void OnAdvancedSettings();
-	void OnAnalyze();
-	void OnAnimateWOpp();
+	void onAdvancedSettings();
+	void onAnalyze();
+	void onAnimateWOpp();
 	void onAnimateWOppSingle();
 	void onAnimateWOppSpeed(int val);
-	void OnAnimateModeSingle(bool bStep=true);
-	void OnAxes();
-	void OnCpSection(int pos);
-	void OnCpPosition();
-	void OnCpView();
-	void OnCurveColor();
-	void OnCurveStyle(int index);
-	void OnCurveWidth(int index);
-	void OnCurWOppOnly();
+	void onAnimateModeSingle(bool bStep=true);
+	void onCpSection(int pos);
+	void onCpPosition();
+	void onCpView();
+	void onCurveColor();
+	void onCurveStyle(int index);
+	void onCurveWidth(int index);
+	void onCurWOppOnly();
 	void onDefineStabPolar();
 	void onDefineWPolar();
-	void OnDefineWPolarObject();
-	void OnDeleteAllWOpps();
-	void OnDeleteAllWPlrOpps();
-	void OnDeleteCurPlane();
-	void OnDeleteCurWOpp();
-	void OnDeleteCurWPolar();
-	void OnDeletePlaneOpps();
-	void OnDeletePlaneWPolars();
-	void OnDownwash();
-	void OnDuplicateCurPlane();
+	void onDefineWPolarObject();
+	void onDeleteAllWOpps();
+	void onDeleteAllWPlrOpps();
+	void onDeleteCurPlane();
+	void onDeleteCurWOpp();
+	void onDeleteCurWPolar();
+	void onDeletePlaneOpps();
+	void onDeletePlaneWPolars();
+	void onDownwash();
+	void onDuplicateCurPlane();
 	void onEditCurWPolar();
-	void OnEditCurWPolarPts();
-	void OnEditCurWing();
+	void onEditCurWPolarPts();
+	void onEditCurWing();
 	void onEditCurBody();
 	void onEditCurBodyObject();
-	void OnEditCurPlane();
-	void OnEditCurObject();
+	void onEditCurPlane();
+	void onEditCurObject();
 	void onEditCurWPolarObject();
-	void OnExporttoAVL();
-	void OnExportCurWOpp();
-	void OnExportCurWPolar();
+	void onExporttoAVL();
+	void onExportCurWOpp();
+	void onExportCurWPolar();
 	void onExportPlanetoXML();
 	void onImportPlanefromXML();
-	void OnFinCurve();
-	void OnFoilNames();
-	void OnFourGraphs();
-	void OnGL3DScale();
-	void OnHideAllWOpps();
-	void OnHideAllWPlrOpps();
-	void OnHideAllWPolars();
-	void OnHidePlaneOpps();
-	void OnHidePlaneWPolars();
-	void OnHighlightWOpp();
-	void OnInitLLTCalc();
-	void OnLight();
-	void OnImportWPolar();
-	void OnKeepCpSection();
-	void OnManagePlanes();
-	void OnMasses();
-	void OnModalView();
-	void OnMoment();
-	void OnNewPlane();
-	void OnNewPlaneObject();
-	void OnOutline();
-	void OnPanelForce();
-	void OnPanels();
-	void OnPolarFilter();
-	void OnReadAnalysisData();
-	void OnRenameCurPlane();
-	void OnRenameCurWPolar();
-	void OnResetCpSection();
+	void onFinCurve();
+	void onFourGraphs();
+	void onGL3DScale();
+	void onHideAllWOpps();
+	void onHideAllWPlrOpps();
+	void onHideAllWPolars();
+	void onHidePlaneOpps();
+	void onHidePlaneWPolars();
+	void onHighlightWOpp();
+	void onInitLLTCalc();
+	void onLight();
+	void onImportWPolar();
+	void onKeepCpSection();
+	void onManagePlanes();
+	void onModalView();
+	void onMoment();
+	void onNewPlane();
+	void onNewPlaneObject();
+	void onPanelForce();
+	void onPolarFilter();
+	void onReadAnalysisData();
+	void onRenameCurPlane();
+	void onRenameCurWPolar();
+	void onResetCpSection();
 	void onRootLocusView();
-	void OnResetCurWPolar();
-	void OnSetupLight();
-	void OnScaleWing();
-	void OnSequence();
-	void OnShowAllWOpps();
-	void OnShowAllWPlrOpps();
-	void OnShowAllWPolars();
-	void OnShowCurve();
+	void onResetCurWPolar();
+	void onSetupLight();
+	void onScaleWing();
+	void onSequence();
+	void onShowAllWOpps();
+	void onShowAllWPlrOpps();
+	void onShowAllWPolars();
+	void onShowCurve();
 	void onShowEllipticCurve();
-	void OnShowLift();
-	void OnShowIDrag();
-	void OnShowTransitions();
-	void OnShowPlaneWPolars();
-	void OnShowPlaneWPolarsOnly();
-	void OnShowPlaneOpps();
-	void OnShowVDrag();
+	void onShowLift();
+	void onShowIDrag();
+	void onShowTransitions();
+	void onShowPlaneWPolars();
+	void onShowPlaneWPolarsOnly();
+	void onShowPlaneOpps();
+	void onShowVDrag();
 	void onShowXCmRef();
-	void OnStabCurve();
-	void OnStabilityDirection();
-	void OnStoreWOpp();
-	void OnStreamlines();
-	void OnSurfaces();
-	void OnSurfaceSpeeds();
+	void onStabCurve();
+	void onStabilityDirection();
+	void onStoreWOpp();
+	void onStreamlines();
+	void onSurfaces();
+	void onSurfaceSpeeds();
 	void onStabTimeView();
-	void OnTwoGraphs();
-	void OnPlaneInertia();
-	void OnVortices();
-	void OnNormals();
-	void OnWing2Curve();
-	void OnPlaneOppProperties();
+	void onTwoGraphs();
+	void onPlaneInertia();
+	void onVortices();
+	void onNormals();
+	void onWing2Curve();
+	void onPlaneOppProperties();
 	void onWOppView();
 	void onWPolarView();
-	void OnWPolarProperties();
+	void onWPolarProperties();
 
 public:
 	//overrides
@@ -335,18 +330,12 @@ public:
 
 public:
 
-	static bool s_bOutline;                   /**< true if the surface outlines are to be displayed in the 3D view*/
-	static bool s_bSurfaces;                  /**< true if the surfaces are to be displayed in the 3D view*/
-	static bool s_bVLMPanels;                 /**< true if the panels are to be displayed in the 3D view*/
-	static bool s_bAxes;                      /**< true if the axes are to be displayed in the 3D view*/
-
-	// Class variables
+// Class variables
 
 	bool m_b3DCp;                      /**< true if the Cp Colors are to be displayed on the 3D openGl view */
 	bool m_bAnimateWOpp;               /**< true if there is an animation going on for an operating point */
 	bool m_bAnimateMode;               /**< true if there is an animation going on for a Mode */
 	bool m_bAnimateWOppPlus;           /**< true if the animation is going in aoa crescending order */
-	bool m_bArcball;                   /**< true if the arcball is to be displayed */
 	bool m_bAutoScales;                /**< true if automatic scales are requested for the graphs */
 	bool m_bCrossPoint;                /**< true if the control point on the arcball is to be displayed */
 	bool m_bCurPOppOnly;               /**< true if only the current WOpp is to be displayed */

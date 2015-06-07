@@ -34,7 +34,7 @@ public:
 
 
 private:
-	void SetupLayout();
+	void setupLayout();
 
 };
 

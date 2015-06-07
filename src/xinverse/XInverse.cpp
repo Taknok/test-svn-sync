@@ -621,28 +621,28 @@ void QXInverse::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_1:
 			if(bCtrl)
 			{
-				pMainFrame->OnAFoil();
+				pMainFrame->onAFoil();
 				return;
 			}
 
 		case Qt::Key_2:
 			if(bCtrl)
 			{
-				pMainFrame->OnAFoil();
+				pMainFrame->onAFoil();
 				return;
 			}
 
 		case Qt::Key_3:
 			if(bCtrl)
 			{
-				pMainFrame->OnXInverse();
+				pMainFrame->onXInverse();
 				return;
 			}
 
 		case Qt::Key_4:
 			if(bCtrl)
 			{
-				pMainFrame->OnXInverseMixed();
+				pMainFrame->onXInverseMixed();
 				return;
 			}
 

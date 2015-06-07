@@ -784,7 +784,7 @@ void QXDirect::keyPressEvent(QKeyEvent *event)
 			break;
 		}
 		case Qt::Key_L:
-			pMainFrame->OnLogFile();
+			pMainFrame->onLogFile();
 			break;
 		case Qt::Key_X:
 			m_bXPressed = true;
@@ -795,14 +795,14 @@ void QXDirect::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_1:
 			if(bCtrl)
 			{
-				pMainFrame->OnAFoil();
+				pMainFrame->onAFoil();
 				event->accept();
 				return;
 			}
 		case Qt::Key_2:
 			if(bCtrl)
 			{
-				pMainFrame->OnAFoil();
+				pMainFrame->onAFoil();
 				event->accept();
 				return;
 			}
@@ -810,14 +810,14 @@ void QXDirect::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_3:
 			if(bCtrl)
 			{
-				pMainFrame->OnXInverse();
+				pMainFrame->onXInverse();
 				event->accept();
 				return;
 			}
 		case Qt::Key_4:
 			if(bCtrl)
 			{
-				pMainFrame->OnXInverseMixed();
+				pMainFrame->onXInverseMixed();
 				event->accept();
 				return;
 			}
@@ -2228,7 +2228,7 @@ void QXDirect::OnEditCurPolar()
 	epDlg.resize(EditPlrDlg::s_WindowSize);
 	if(EditPlrDlg::s_bWindowMaximized) epDlg.setWindowState(Qt::WindowMaximized);
 
-	epDlg.InitDialog(this, Polar::curPolar(), NULL, NULL);
+	epDlg.initDialog(this, Polar::curPolar(), NULL, NULL);
 
 	bool bPoints = Polar::curPolar()->m_bShowPoints;
 	Polar::curPolar()->m_bShowPoints = true;
