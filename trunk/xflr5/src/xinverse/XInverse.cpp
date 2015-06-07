@@ -191,9 +191,9 @@ void QXInverse::CancelSpline()
 void QXInverse::CheckActions()
 {
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-	pMainFrame->InvQInitial->setChecked(m_pQCurve->IsVisible());
-	pMainFrame->InvQSpec->setChecked(m_pMCurve->IsVisible());
-	pMainFrame->InvQViscous->setChecked(m_pQVCurve->IsVisible());
+	pMainFrame->InvQInitial->setChecked(m_pQCurve->isVisible());
+	pMainFrame->InvQSpec->setChecked(m_pMCurve->isVisible());
+	pMainFrame->InvQViscous->setChecked(m_pQVCurve->isVisible());
 	pMainFrame->InvQPoints->setChecked(m_bShowPoints);
 	pMainFrame->InvQReflected->setChecked(m_bReflected);
 
@@ -1634,7 +1634,7 @@ void QXInverse::OnPertubate()
 /** Toggles the visibility of the reference curve */
 void QXInverse::OnQInitial()
 {
-	m_pQCurve->SetVisible(!m_pQCurve->IsVisible());
+	m_pQCurve->SetVisible(!m_pQCurve->isVisible());
 	CheckActions();
 	updateView();
 }
@@ -1642,7 +1642,7 @@ void QXInverse::OnQInitial()
 /** Toggles the visibility of the specification curve */
 void QXInverse::OnQSpec()
 {
-	m_pMCurve->SetVisible(!m_pMCurve->IsVisible());
+	m_pMCurve->SetVisible(!m_pMCurve->isVisible());
 	CheckActions();
 	updateView();
 }
@@ -1653,7 +1653,7 @@ void QXInverse::OnQViscous()
 	XFoil *pXFoil = (XFoil*)m_pXFoil;
 	if(pXFoil->lvisc)
 	{
-		m_pQVCurve->SetVisible(!m_pQVCurve->IsVisible());
+		m_pQVCurve->SetVisible(!m_pQVCurve->isVisible());
 		updateView();
 	}
 	CheckActions();
