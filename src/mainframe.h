@@ -194,12 +194,12 @@ public:
 	void readPolarFile(QDataStream &ar);
 	bool saveProject(QString PathName="");
 	void SaveSettings();
-	void SelectFoil(void *pFoilPtr);
-	void SelectPolar(void *pPolarPtr);
-	void SelectOpPoint(void *pOppPtr);
-	void SelectPlane(void *pPlanePtr);
-	void SelectWPolar(void *pWPolarPtr);
-	void SelectPlaneOpp(void *pPlaneOppPtr);
+	void selectFoil(void *pFoilPtr);
+	void selectPolar(void *pPolarPtr);
+	void selectOpPoint(void *pOppPtr);
+	void selectPlane(void *pPlanePtr);
+	void selectWPolar(void *pWPolarPtr);
+	void selectPlaneOpp(void *pPlaneOppPtr);
 	bool serializeProjectWPA(QDataStream &ar, bool bIsStoring);
 	bool serializeProjectXFL(QDataStream &ar, bool bIsStoring);
 	bool SerializePlaneProject(QDataStream &ar);
@@ -221,7 +221,7 @@ public:
 
 	static void setSaveState(bool bSave);
 	static void ReadStyleSheet(QString styleSheetName, QString &styleSheet);
-	static QColor GetColor(int type);
+	static QColor getColor(int type);
 
 
 	XFLR5::enumApp xflr5App(){return m_iApp;}

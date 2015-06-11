@@ -414,8 +414,8 @@ bool XFoilTask::Iterate()
 	{
 		if(XFoilInstance.ViscousIter())
 		{
-			if(m_pCurve0) m_pCurve0->AppendPoint((double)m_Iterations, XFoilInstance.rmsbl);
-			if(m_pCurve1) m_pCurve1->AppendPoint((double)m_Iterations, XFoilInstance.rmxbl);
+			if(m_pCurve0) m_pCurve0->appendPoint((double)m_Iterations, XFoilInstance.rmsbl);
+			if(m_pCurve1) m_pCurve1->appendPoint((double)m_Iterations, XFoilInstance.rmxbl);
 			m_Iterations++;
 		}
 		else m_Iterations = s_IterLim;

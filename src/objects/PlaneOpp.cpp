@@ -91,7 +91,7 @@ PlaneOpp::PlaneOpp(void *pPlanePtr, void *pWPolarPtr, int PanelArraySize)
 	for (int iw=0; iw<MAXWINGS; iw++) m_pPlaneWOpp[iw] = NULL;
 
 	m_dCp = m_dG = m_dSigma = NULL;
-	Allocate(PanelArraySize);
+	allocateMemory(PanelArraySize);
 
 
 	if(pPlanePtr)
@@ -122,7 +122,7 @@ PlaneOpp::PlaneOpp(void *pPlanePtr, void *pWPolarPtr, int PanelArraySize)
  * @param iw the index of the wing for which a WingOpp is added
  * @param PanelArraySize the number of panels on the wing
  */
-void PlaneOpp::AddWingOpp(int iw, int PanelArraySize)
+void PlaneOpp::addWingOpp(int iw, int PanelArraySize)
 {
 //	m_bWing[iw] = true;
 	m_pPlaneWOpp[iw] = new WingOpp(PanelArraySize);
@@ -135,15 +135,15 @@ void PlaneOpp::AddWingOpp(int iw, int PanelArraySize)
  */
 PlaneOpp::~PlaneOpp()
 {
-	Release();
+	releaseMemory();
 }
 
 
 
 /** Allocate memory to the arrays */
-void PlaneOpp::Allocate(int PanelArraySize)
+void PlaneOpp::allocateMemory(int PanelArraySize)
 {
-	Release();
+	releaseMemory();
 
 	m_NPanels = PanelArraySize;
 	m_dCp    = new double[PanelArraySize];
@@ -158,7 +158,7 @@ void PlaneOpp::Allocate(int PanelArraySize)
 /**
  * Releases memory allocated on the heap
  */
-void PlaneOpp::Release()
+void PlaneOpp::releaseMemory()
 {
 	if(m_dCp)    delete [] m_dCp;
 	if(m_dSigma) delete [] m_dSigma;
@@ -182,7 +182,7 @@ void PlaneOpp::Release()
  * @param &WingOppProperties the reference of the QString object to be filled with the description
  * @param bData true if the analysis data should be appended to the string
  */
-void PlaneOpp::GetPlaneOppProperties(QString &PlaneOppProperties)
+void PlaneOpp::getPlaneOppProperties(QString &PlaneOppProperties)
 {
 	QString strong, strange, lenunit, massunit, speedunit;
 	Units::getLengthUnitLabel(lenunit);
@@ -466,7 +466,7 @@ void PlaneOpp::GetPlaneOppProperties(QString &PlaneOppProperties)
  * @param bIsStoring true if saving the data, false if loading
  * @return true if the operation was successful, false otherwise
  */
-bool PlaneOpp::SerializePOppWPA(QDataStream &ar, bool bIsStoring)
+bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
 {
 	int ArchiveFormat;
 	int a, k;
@@ -799,7 +799,7 @@ bool PlaneOpp::SerializePOppWPA(QDataStream &ar, bool bIsStoring)
  * @param bIsStoring true if saving the data, false if loading
  * @return true if the operation was successful, false otherwise
  */
-bool PlaneOpp::SerializePOppXFL(QDataStream &ar, bool bIsStoring)
+bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
 {
 	int ArchiveFormat;
 	int k, n;
@@ -895,7 +895,9 @@ bool PlaneOpp::SerializePOppXFL(QDataStream &ar, bool bIsStoring)
 
 		// space allocation for the future storage of more data, without need to change the format
 		for (int i=0; i<20; i++) ar << i;
-		for (int i=0; i<50; i++) ar << (double)i;
+
+		ar<<m_MAChord<<m_Span;
+		for (int i=2; i<50; i++) ar << (double)i;
 	}
 	else
 	{
@@ -1013,7 +1015,9 @@ bool PlaneOpp::SerializePOppXFL(QDataStream &ar, bool bIsStoring)
 
 		// space allocation
 		for (int i=0; i<20; i++) ar >> k;
-		for (int i=0; i<50; i++) ar >> dble;
+
+		ar>>m_MAChord>>m_Span;
+		for (int i=2; i<50; i++) ar >> dble;
 	}
 	return true;
 }
@@ -1055,7 +1059,12 @@ QString PlaneOpp::title()
 
 
 
+void PlaneOpp::setReferenceLengths(double mac, double span)
+{
+	m_MAChord = mac;
+	m_Span = span;
 
+}
 
 
 

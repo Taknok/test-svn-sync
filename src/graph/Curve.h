@@ -46,7 +46,7 @@ class Curve
 public:
 	Curve();
 
-	int     AppendPoint(double xn, double yn);
+	int     appendPoint(double xn, double yn);
 
 
 	/**
@@ -61,8 +61,8 @@ public:
 	int     closestPoint(double xs, double ys, double &dist);
 	void    closestPoint(double xs, double ys, double &dist, int &n);
 	void    closestPoint(double const &xs, double const &ys, double &xSel, double &ySel, double &dist, int &nSel);
-	void    CopyData(Curve *pCurve);
-	void    Duplicate(Curve *pCurve);
+	void    copyData(Curve *pCurve);
+	void    duplicate(Curve *pCurve);
 
 
 	/**
@@ -113,7 +113,7 @@ public:
 	 * Sets the curve title
 	 *@param Title the new curve's title
 	 */
-	void setTitle(QString Title){ m_CurveName = Title;}
+	void setCurveName(QString Title){ m_CurveName = Title;}
 
 
 	/** Return the visibility of the curve as a boolean. */
@@ -138,10 +138,10 @@ public:
 	QColor  color() {return CurveColor;}
 
 	/** Returns the Curve's title */
-	void title(QString &string) {string =  m_CurveName;}
+	void curveName(QString &string) {string =  m_CurveName;}
 
 	/** Returns the Curve's title */
-	QString title(){ return m_CurveName;}
+	QString curveName(){ return m_CurveName;}
 
 	double  xMin();
 	double  xMax();

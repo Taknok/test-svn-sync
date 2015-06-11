@@ -104,6 +104,19 @@ void WingWidget::mouseMoveEvent(QMouseEvent *event)
 		m_ptOffset.ry() += Delta.y();
 		update();
 	}
+	else if ((event->buttons() & Qt::MidButton) || event->modifiers().testFlag(Qt::AltModifier))
+	{
+		//zoom the wing
+
+		if(event->pos().y()-m_LastPoint.y()<0) m_WingScale /= 1.02;
+		else                                   m_WingScale *= 1.02;
+
+		double a = rect().center().x();
+
+		m_ptOffset.rx() = a + (m_ptOffset.x()-a)/m_WingScale;
+
+		update();
+	}
 	m_LastPoint = event->pos();
 }
 

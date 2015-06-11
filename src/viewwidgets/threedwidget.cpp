@@ -294,10 +294,22 @@ void ThreeDWidget::mouseMoveEvent(QMouseEvent *event)
 
 		else if (event->buttons() & Qt::MidButton)
 		{
-				m_ArcBall.Move(point.x(), m_rCltRect.height()-point.y());
-				update();
+			m_ArcBall.Move(point.x(), m_rCltRect.height()-point.y());
+			update();
 		}
+		else if(event->modifiers().testFlag(Qt::AltModifier))
+		{
+			double zoomFactor=1.0;
 
+			if(point.y()-m_LastPoint.y()<0) zoomFactor = 1./1.06;
+			else                            zoomFactor = 1.06;
+
+			if(m_iView == GLMIAREXVIEW)
+			{
+				m_glScaled *= zoomFactor;
+				update();
+			}
+		}
 		m_LastPoint = point;
 	}
 }

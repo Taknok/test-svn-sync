@@ -4232,7 +4232,7 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double *Gamma, double *Sigma
 	{
 		if(m_pWingList[iw])
 		{
-			pPOpp->AddWingOpp(iw, m_pWingList[iw]->m_MatSize);
+			pPOpp->addWingOpp(iw, m_pWingList[iw]->m_MatSize);
 			pPOpp->m_pPlaneWOpp[iw]->createWOpp(m_pWingList[iw], m_pWPolar);
 		}
 	}

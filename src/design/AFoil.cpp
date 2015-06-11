@@ -453,7 +453,7 @@ void QAFoil::OnAFoilDerotateFoil()
 	//then duplicate the buffer foil and add it
 	Foil *pNewFoil = new Foil();
 	pNewFoil->CopyFoil(m_pBufferFoil);
-	pNewFoil->m_FoilColor  = MainFrame::GetColor(0);
+	pNewFoil->m_FoilColor  = MainFrame::getColor(0);
 	pNewFoil->m_FoilStyle = 0;
 	pNewFoil->m_FoilWidth = 1;
 
@@ -513,7 +513,7 @@ void QAFoil::OnAFoilCadd()
 		//then duplicate the buffer foil and add it
 		Foil *pNewFoil = new Foil();
 		pNewFoil->CopyFoil(m_pBufferFoil);
-		pNewFoil->m_FoilColor  = MainFrame::GetColor(0);
+		pNewFoil->m_FoilColor  = MainFrame::getColor(0);
 		pNewFoil->m_FoilStyle = 0;
 		pNewFoil->m_FoilWidth = 1;
 		pNewFoil->m_bPoints = false;
@@ -582,7 +582,7 @@ void QAFoil::OnAFoilPanels()
 		//then duplicate the buffer foil and add it
 		Foil *pNewFoil = new Foil();
 		pNewFoil->CopyFoil(m_pBufferFoil);
-		pNewFoil->m_FoilColor  = MainFrame::GetColor(0);
+		pNewFoil->m_FoilColor  = MainFrame::getColor(0);
 		pNewFoil->m_FoilStyle = 0;
 		pNewFoil->m_FoilWidth = 1;
 		pNewFoil->m_bPoints = false;
@@ -632,7 +632,7 @@ void QAFoil::OnAFoilFoilCoordinates()
 		Foil *pNewFoil = new Foil();
 		pNewFoil->CopyFoil(m_pBufferFoil);
 		pNewFoil->m_bPoints = false;
-		pNewFoil->m_FoilColor  = MainFrame::GetColor(0);
+		pNewFoil->m_FoilColor  = MainFrame::getColor(0);
 		pNewFoil->m_FoilStyle = 0;
 		pNewFoil->m_FoilWidth = 1;
 		pNewFoil->m_iHighLight = -1;
@@ -680,7 +680,7 @@ void QAFoil::OnAFoilFoilGeom()
 		//then duplicate the buffer foil and add it
 		Foil *pNewFoil = new Foil();
 		pNewFoil->CopyFoil(m_pBufferFoil);
-		pNewFoil->m_FoilColor  = MainFrame::GetColor(0);
+		pNewFoil->m_FoilColor  = MainFrame::getColor(0);
 		pNewFoil->m_FoilStyle = 0;
 		pNewFoil->m_FoilWidth = 1;
 		pNewFoil->m_bPoints = false;
@@ -729,7 +729,7 @@ void QAFoil::OnAFoilSetTEGap()
 		//then duplicate the buffer foil and add it
 		Foil *pNewFoil = new Foil();
 		pNewFoil->CopyFoil(m_pBufferFoil);
-		pNewFoil->m_FoilColor  = MainFrame::GetColor(0);
+		pNewFoil->m_FoilColor  = MainFrame::getColor(0);
 		pNewFoil->m_FoilStyle = 0;
 		pNewFoil->m_FoilWidth = 1;
 		pNewFoil->m_bPoints    = false;
@@ -781,7 +781,7 @@ void QAFoil::OnAFoilSetLERadius()
 		//then duplicate the buffer foil and add it
 		Foil *pNewFoil = new Foil();
 		pNewFoil->CopyFoil(m_pBufferFoil);
-		pNewFoil->m_FoilColor  = MainFrame::GetColor(0);
+		pNewFoil->m_FoilColor  = MainFrame::getColor(0);
 		pNewFoil->m_FoilStyle = 0;
 		pNewFoil->m_FoilWidth = 1;
 		pNewFoil->m_bPoints    = false;
@@ -837,7 +837,7 @@ void QAFoil::OnAFoilInterpolateFoils()
 		//then duplicate the buffer foil and add it
 		Foil *pNewFoil = new Foil();
 		pNewFoil->CopyFoil(m_pBufferFoil);
-		pNewFoil->m_FoilColor  = MainFrame::GetColor(0);
+		pNewFoil->m_FoilColor  = MainFrame::getColor(0);
 		pNewFoil->m_FoilStyle = 0;
 		pNewFoil->m_FoilWidth = 1;
 		pNewFoil->m_bPoints = false;
@@ -891,7 +891,7 @@ void QAFoil::OnAFoilNacaFoils()
 
 		Foil *pNewFoil    = new Foil();
 		pNewFoil->CopyFoil(m_pBufferFoil);
-		pNewFoil->m_FoilColor  = MainFrame::GetColor(0);
+		pNewFoil->m_FoilColor  = MainFrame::getColor(0);
 		pNewFoil->m_FoilStyle = 0;
 		pNewFoil->m_FoilWidth = 1;
 		pNewFoil->m_bPoints    = false;
@@ -943,7 +943,7 @@ void QAFoil::OnAFoilSetFlap()
 		//then duplicate the buffer foil and add it
 		Foil *pNewFoil = new Foil();
 		pNewFoil->CopyFoil(m_pBufferFoil);
-		pNewFoil->m_FoilColor  = MainFrame::GetColor(0);
+		pNewFoil->m_FoilColor  = MainFrame::getColor(0);
 		pNewFoil->m_FoilStyle = 0;
 		pNewFoil->m_FoilWidth = 1;
 
@@ -992,7 +992,7 @@ void QAFoil::OnDuplicate()
 	if(!Foil::curFoil()) return;
 	Foil *pNewFoil = new Foil;
 	pNewFoil->CopyFoil(Foil::curFoil());
-	pNewFoil->m_FoilColor = MainFrame::GetColor(0);
+	pNewFoil->m_FoilColor = MainFrame::getColor(0);
 	pNewFoil->InitFoil();
 
 	AddNewFoil(pNewFoil);

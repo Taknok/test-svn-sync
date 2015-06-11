@@ -1055,8 +1055,8 @@ void BatchDlg::ResetCurves()
 	m_pRmsGraph->deleteCurves();
 	Curve *pCurve0 = m_pRmsGraph->addCurve();
 	Curve *pCurve1 = m_pRmsGraph->addCurve();
-	pCurve0->setTitle("rms");
-	pCurve1->setTitle("max");
+	pCurve0->setCurveName("rms");
+	pCurve1->setCurveName("max");
 	pCurve1->setStyle(0);
 	m_pRmsGraph->setAutoX(false);
 	m_pRmsGraph->setXMin(0.0);

@@ -2313,8 +2313,8 @@ void MainFrame::deleteProject(bool bClosing)
 
 		pMiarex->setPlane();
 		if(pMiarex->m_iView==XFLR5::WPOLARVIEW)    pMiarex->createWPolarCurves(); /** @todo --> in miarex! */
-		else if(pMiarex->m_iView==XFLR5::WOPPVIEW) pMiarex->CreateWOppCurves();
-		else if(pMiarex->m_iView==XFLR5::WCPVIEW)  pMiarex->createCpCurves();
+		else if(pMiarex->m_iView==XFLR5::WOPPVIEW) pMiarex->createWOppCurves();
+		else if(pMiarex->m_iView==XFLR5::WOPPVIEW) pMiarex->createCpCurves();
 		if(m_iApp==XFLR5::MIAREX) pMiarex->setControls();
 
 		QXDirect *pXDirect = (QXDirect*)m_pXDirect;
@@ -2343,7 +2343,7 @@ void MainFrame::deleteProject(bool bClosing)
 
 
 
-QColor MainFrame::GetColor(int type)
+QColor MainFrame::getColor(int type)
 {
 	//type
 	// 0=Foil
@@ -2560,7 +2560,7 @@ bool MainFrame::LoadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFor
 	{
 		pPolar = new Polar();
 
-		pPolar->m_Color = GetColor(1);
+		pPolar->m_Color = getColor(1);
 
 		if (!pPolar->Serialize(ar, bIsStoring))
 		{
@@ -3053,7 +3053,7 @@ void MainFrame::onInsertProject()
 		pMiarex->setPlane();
 
 		if(pMiarex->m_iView==XFLR5::WPOLARVIEW)    pMiarex->createWPolarCurves();
-		else if(pMiarex->m_iView==XFLR5::WOPPVIEW) pMiarex->CreateWOppCurves();
+		else if(pMiarex->m_iView==XFLR5::WOPPVIEW) pMiarex->createWOppCurves();
 		else if(pMiarex->m_iView==XFLR5::WCPVIEW)  pMiarex->createCpCurves();
 	}
 	else if(m_iApp == XFLR5::XFOILANALYSIS)
@@ -3531,7 +3531,7 @@ void MainFrame::onSelChangePlaneOpp(int sel)
 	// Gets the new selected WOpp name and notifies Miarex
 	if(!m_pctrlPlaneOpp->count())
 	{
-		if (pMiarex->m_iView==XFLR5::WOPPVIEW)    pMiarex->CreateWOppCurves();
+		if (pMiarex->m_iView==XFLR5::WOPPVIEW)    pMiarex->createWOppCurves();
 		else if(pMiarex->m_iView==XFLR5::WCPVIEW) pMiarex->createCpCurves();
 		pMiarex->updateView();
 		return;
@@ -3945,7 +3945,7 @@ void *MainFrame::ReadFoilFile(QTextStream &in)
 	memcpy(pFoil->y, pFoil->yb, sizeof(pFoil->yb));
 	pFoil->n = pFoil->nb;
 
-	pFoil->m_FoilColor = GetColor(0);
+	pFoil->m_FoilColor = getColor(0);
 	pFoil->InitFoil();
 
 	return pFoil;
@@ -4357,7 +4357,8 @@ void MainFrame::setMainFrameCentralWidget()
 	if(m_iApp==XFLR5::MIAREX)
 	{
 		QMiarex *pMiarex = (QMiarex*)m_pMiarex;
-		if(pMiarex->m_iView==XFLR5::WOPPVIEW || pMiarex->m_iView==XFLR5::WPOLARVIEW || pMiarex->m_iView==XFLR5::STABPOLARVIEW  || pMiarex->m_iView==XFLR5::STABTIMEVIEW)
+		if (pMiarex->m_iView==XFLR5::WOPPVIEW || pMiarex->m_iView==XFLR5::WPOLARVIEW || pMiarex->m_iView==XFLR5::WCPVIEW ||
+			pMiarex->m_iView==XFLR5::STABPOLARVIEW  || pMiarex->m_iView==XFLR5::STABTIMEVIEW)
 		{
 			m_pctrlCentralWidget->setCurrentWidget(m_pMiarexTileWidget);
 			pMiarex->setGraphTiles();
@@ -4389,7 +4390,7 @@ void MainFrame::setMainFrameCentralWidget()
 }
 
 
-void MainFrame::SelectFoil(void*pFoilPtr)
+void MainFrame::selectFoil(void*pFoilPtr)
 {
 	Foil *pFoil = (Foil*)pFoilPtr;
 	if(!m_pctrlFoil->count()) return;
@@ -4413,7 +4414,7 @@ void MainFrame::SelectFoil(void*pFoilPtr)
 
 
 
-void MainFrame::SelectPolar(void*pPolarPtr)
+void MainFrame::selectPolar(void*pPolarPtr)
 {
 	Polar *pPolar = (Polar*)pPolarPtr;
 	if(!m_pctrlPolar->count()) return;
@@ -4441,7 +4442,7 @@ void MainFrame::SelectPolar(void*pPolarPtr)
  *Selects the operating point in the combobox and returns true
  *On error, selects the first and returns false
  */
-void MainFrame::SelectOpPoint(void *pOppPtr)
+void MainFrame::selectOpPoint(void *pOppPtr)
 {
 	Polar *pCurPlr = Polar::curPolar();
 	OpPoint *pOpp = (OpPoint*)pOppPtr;
@@ -4480,7 +4481,7 @@ void MainFrame::SelectOpPoint(void *pOppPtr)
 }
 
 
-void MainFrame::SelectPlane(void *pPlanePtr)
+void MainFrame::selectPlane(void *pPlanePtr)
 {
 	if(!m_pctrlPlane->count()) return;
 	m_pctrlPlane->blockSignals(true);
@@ -4503,7 +4504,7 @@ void MainFrame::SelectPlane(void *pPlanePtr)
 }
 
 
-void MainFrame::SelectWPolar(void *pWPolarPtr)
+void MainFrame::selectWPolar(void *pWPolarPtr)
 {
 	if(!m_pctrlPlanePolar->count()) return;
 
@@ -4526,7 +4527,7 @@ void MainFrame::SelectWPolar(void *pWPolarPtr)
 }
 
 
-void MainFrame::SelectPlaneOpp(void *pPlaneOppPtr)
+void MainFrame::selectPlaneOpp(void *pPlaneOppPtr)
 {
 	double x = 0.0;
 	PlaneOpp *pPlaneOpp = (PlaneOpp*)pPlaneOppPtr;
@@ -4672,7 +4673,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 			for (i=0; i<Objects3D::s_oaPOpp.size();i++)
 			{
 				pPOpp = (PlaneOpp*)Objects3D::s_oaPOpp.at(i);
-				pPOpp->SerializePOppXFL(ar, bIsStoring);
+				pPOpp->serializePOppXFL(ar, bIsStoring);
 			}
 		}
 		else ar << 0;
@@ -4800,7 +4801,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 		for(i=0; i<n; i++)
 		{
 			pPOpp = new PlaneOpp();
-			if(pPOpp->SerializePOppXFL(ar, bIsStoring))
+			if(pPOpp->serializePOppXFL(ar, bIsStoring))
 			{
 				//just append, since POpps have been sorted when first inserted
 				pPlane = Objects3D::getPlane(pPOpp->planeName());
@@ -5179,7 +5180,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 			{
 				pPOpp = new PlaneOpp();
 
-				if (!pPOpp->SerializePOppWPA(ar, bIsStoring))
+				if (!pPOpp->serializePOppWPA(ar, bIsStoring))
 				{
 					if(pPOpp) delete pPOpp;
 					return false;
@@ -5368,7 +5369,7 @@ void MainFrame::updatePlaneListBox()
 	m_pctrlPlane->addItems(PlaneNames);
 
 	//select the current Plane, if any...
-	if(pCurPlane) SelectPlane(pCurPlane);
+	if(pCurPlane) selectPlane(pCurPlane);
 
 	m_pctrlPlane->setEnabled(m_pctrlPlane->count());
 	m_pctrlPlane->blockSignals(false);
@@ -5416,7 +5417,7 @@ void MainFrame::UpdateWPolarListBox()
 
     m_pctrlPlanePolar->setEnabled(m_pctrlPlanePolar->count());
 
-	if(pCurWPlr) SelectWPolar(pCurWPlr);
+	if(pCurWPlr) selectWPolar(pCurWPlr);
 
 	m_pctrlPlanePolar->blockSignals(false);
     UpdatePOppListBox();
@@ -5460,7 +5461,7 @@ void MainFrame::UpdatePOppListBox()
 		}
 	}
 
-	if(pMiarex->m_pCurPOpp) SelectPlaneOpp(pMiarex->m_pCurPOpp);
+	if(pMiarex->m_pCurPOpp) selectPlaneOpp(pMiarex->m_pCurPOpp);
 	else                    m_pctrlPlaneOpp->setCurrentIndex(0);
 
 	// otherwise disable control
@@ -5495,7 +5496,7 @@ void MainFrame::UpdateFoilListBox()
 
 	m_pctrlFoil->addItems(foilList);
 	m_pctrlFoil->setEnabled(m_pctrlFoil->count());
-	SelectFoil(Foil::curFoil());
+	selectFoil(Foil::curFoil());
 
 	m_pctrlFoil->blockSignals(false);
 
@@ -5538,7 +5539,7 @@ void MainFrame::UpdatePolarListBox()
 	}
 
 	m_pctrlPolar->setEnabled(m_pctrlPolar->count());
-	SelectPolar(Polar::curPolar());
+	selectPolar(Polar::curPolar());
 
 	m_pctrlPolar->blockSignals(false);
 
@@ -5591,7 +5592,7 @@ void MainFrame::UpdateOppListBox()
 	}
 
 	m_pctrlOpPoint->setEnabled(m_pctrlOpPoint->count());
-	SelectOpPoint(OpPoint::curOpp());
+	selectOpPoint(OpPoint::curOpp());
 
 	m_pctrlOpPoint->blockSignals(false);
 }

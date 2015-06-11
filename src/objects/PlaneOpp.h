@@ -60,15 +60,16 @@ public:
 	PlaneOpp(void *pPlanePtr=NULL, void *pWPolarPtr=NULL, int PanelArraySize=0);
 	~PlaneOpp();
 
-	bool SerializePOppWPA(QDataStream &ar, bool bIsStoring);
-	bool SerializePOppXFL(QDataStream &ar, bool bIsStoring);
+	bool serializePOppWPA(QDataStream &ar, bool bIsStoring);
+	bool serializePOppXFL(QDataStream &ar, bool bIsStoring);
 
-	void AddWingOpp(int iw, int PanelArraySize);
+	void addWingOpp(int iw, int PanelArraySize);
 
-	void Allocate(int PanelArraySize);
-	void Release();
+	void allocateMemory(int PanelArraySize);
+	void releaseMemory();
+	void setReferenceLengths(double mac, double span);
 
-	void GetPlaneOppProperties(QString &PlaneOppProperties);
+	void getPlaneOppProperties(QString &PlaneOppProperties);
 
 	QString title();
 	double alpha() {return m_Alpha;}
