@@ -138,7 +138,7 @@ void XDirectTileWidget::adjustLayout()
 
 			m_pMainGridLayout->setRowStretch(1,1);
 			m_pMainGridLayout->setRowStretch(2,0);
-			m_pMainGridLayout->setColumnStretch(1,13);
+			m_pMainGridLayout->setColumnStretch(1,15);
 			m_pMainGridLayout->setColumnStretch(2,5);
 			m_pMainGridLayout->setColumnStretch(3,0);
 
@@ -172,9 +172,9 @@ void XDirectTileWidget::adjustLayout()
 
 			m_pMainGridLayout->setRowStretch(1,1);
 			m_pMainGridLayout->setRowStretch(2,1);
-			m_pMainGridLayout->setColumnStretch(1,2);
-			m_pMainGridLayout->setColumnStretch(2,2);
-			m_pMainGridLayout->setColumnStretch(3,1);
+			m_pMainGridLayout->setColumnStretch(1,3);
+			m_pMainGridLayout->setColumnStretch(2,3);
+			m_pMainGridLayout->setColumnStretch(3,2);
 		}
 		else
 		{

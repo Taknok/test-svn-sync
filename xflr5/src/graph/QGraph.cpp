@@ -580,7 +580,7 @@ void QGraph::drawLegend(QPainter &painter, QPoint &Place, QFont &LegendFont, QCo
 		pCurve = (Curve*) m_oaCurves[nc];
 		if(pCurve->isVisible())
 		{
-			pCurve->title(strong);
+			pCurve->curveName(strong);
 			if(pCurve->size()>0 && strong.length())//is there anything to draw ?
 			{
 
@@ -677,7 +677,7 @@ void QGraph::exportToFile(QFile &XFile, XFLR5::enumTextFileType FileType)
 		{
 			maxpoints = qMax(maxpoints,pCurve->size());
 
-			pCurve->title(strong);
+			pCurve->curveName(strong);
 			if(FileType==XFLR5::TXT) out << "     "<<m_XTitle<<"       "<< strong <<"    ";
 			else                     out << m_XTitle<<","<< strong << ", , ";
 		}

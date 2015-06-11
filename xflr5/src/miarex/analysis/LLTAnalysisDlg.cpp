@@ -334,7 +334,7 @@ void LLTAnalysisDlg::UpdateOutput(QString &strong)
 void LLTAnalysisDlg::UpdateGraph(int x, double y)
 {
 	Curve *pCurve = m_pIterGraph->curve(0);
-	if(pCurve) pCurve->AppendPoint((double)x,y);
+	if(pCurve) pCurve->appendPoint((double)x,y);
 	UpdateView();
 }
 

@@ -93,7 +93,7 @@ void LegendWidget::paintEvent(QPaintEvent *event)
 					if(m_pGraph) drawStabTimeLegend(painter, m_pGraph, m_LegendPosition, bottom);
 					break;
 				case XFLR5::WCPVIEW:
-					if(m_pGraph) drawCpLegend(painter, m_pGraph, m_LegendPosition, bottom);
+					if(m_pGraph) drawCpLegend(painter, m_pGraph, QPointF(0, 30.0), bottom);
 					break;
 				default: break;
 			}
@@ -461,7 +461,7 @@ void LegendWidget::drawCpLegend(QPainter &painter, QGraph *pGraph, QPointF place
 				painter.drawRect(x1-2, place.y() + 1.*dny*ny-2,4,4);
 			}
 
-			pCurve->title(strong);
+			pCurve->curveName(strong);
 			painter.setPen(TextPen);
 			painter.drawText(place.x() + 3*LegendSize,place.y() + 1.*dny*ny, strong);
 		}
@@ -522,7 +522,7 @@ void LegendWidget::drawStabTimeLegend(QPainter &painter, QGraph *pGraph, QPointF
 				painter.drawRect(x1-2, place.y() + 1.*dny*ny-2,4,4);
 			}
 
-			pCurve->title(strong);
+			pCurve->curveName(strong);
 			painter.setPen(TextPen);
 			painter.drawText(place.x() + 3*LegendSize,
 							 place.y() + 1.*dny*ny+dny/3, strong);

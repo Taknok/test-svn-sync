@@ -438,7 +438,7 @@ void StabViewDlg::OnPlotStabilityGraph()
 		return;
 	}
 	
-	pMiarex->CreateStabilityCurves();
+	pMiarex->createStabilityCurves();
 	pMiarex->updateView();
 	pMiarex->setFocus();
 }
@@ -466,7 +466,7 @@ void StabViewDlg::OnModeSelection()
 
 	if(pMiarex->m_iView==XFLR5::STABPOLARVIEW && pMiarex->m_bHighlightOpp)
 	{
-		pMiarex->CreateStabRLCurves();
+		pMiarex->createStabRLCurves();
 		pMiarex->updateView();
 	}
 }
@@ -1067,7 +1067,7 @@ void StabViewDlg::OnRenameCurve()
 
 	QString NewName = "Test Name";
 	NewNameDlg dlg(this);
-	dlg.m_OldName = m_pCurve->title();
+	dlg.m_OldName = m_pCurve->curveName();
 	dlg.InitDialog();
 
 	if(dlg.exec() != QDialog::Accepted) return;
@@ -1081,7 +1081,7 @@ void StabViewDlg::OnRenameCurve()
 			for(int ig=0; ig<4; ig++)
 			{
 				pCurve = pMiarex->m_TimeGraph[ig]->curve(i);
-				pCurve->setTitle(NewName);
+				pCurve->setCurveName(NewName);
 			}
 
 			FillCurveList();
@@ -1097,7 +1097,7 @@ void StabViewDlg::OnSelChangeCurve(int sel)
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 	QString strong = m_pctrlCurveList->itemText(sel);
 	m_pCurve = pMiarex->m_TimeGraph[0]->curve(strong);
-	m_pCurve->title(strong);
+	m_pCurve->curveName(strong);
 	
 	pMiarex->setCurveParams();
 }
@@ -1108,7 +1108,7 @@ void StabViewDlg::OnAddCurve()
 	AddCurve();
 	if(m_pCurve)
 	{
-		int pos =m_pctrlCurveList->findText(m_pCurve->title());
+		int pos =m_pctrlCurveList->findText(m_pCurve->curveName());
 		m_pctrlCurveList->setCurrentIndex(pos);
 	}
 	OnPlotStabilityGraph();
@@ -1119,7 +1119,7 @@ void StabViewDlg::OnDeleteCurve()
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 	if(!m_pCurve) return;
-	QString CurveTitle = m_pCurve->title();
+	QString CurveTitle = m_pCurve->curveName();
 	for(int ig=0; ig<MAXGRAPHS; ig++)	pMiarex->m_TimeGraph[ig]->deleteCurve(CurveTitle);
 	m_pCurve = NULL;
 
@@ -1134,7 +1134,7 @@ void StabViewDlg::OnDeleteCurve()
 	else                          m_pCurve = NULL;
 
 	pMiarex->setCurveParams();
-	pMiarex->CreateStabilityCurves();
+	pMiarex->createStabilityCurves();
 	pMiarex->updateView();
 	pMiarex->setFocus();
 }
@@ -1150,11 +1150,11 @@ void StabViewDlg::AddCurve()
 	for(int ig=0; ig<4; ig++)
 	{
 		pCurve = pMiarex->m_TimeGraph[ig]->addCurve();
-		pCurve->setTitle(strong);
+		pCurve->setCurveName(strong);
 		if(ig==0) m_pCurve = pCurve;
 	}
 
-	m_pctrlCurveList->addItem(pCurve->title());
+	m_pctrlCurveList->addItem(pCurve->curveName());
 	m_pctrlPlotStabGraph->setEnabled(pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
 	m_pctrlRenameCurve->setEnabled(  pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
 	m_pctrlDeleteCurve->setEnabled(  pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
@@ -1172,12 +1172,12 @@ void StabViewDlg::FillCurveList()
 	QString strong;
 	for(int i=0; i<pMiarex->m_TimeGraph[0]->curveCount(); i++)
 	{
-		pMiarex->m_TimeGraph[0]->curve(i)->title(strong);
+		pMiarex->m_TimeGraph[0]->curve(i)->curveName(strong);
 		m_pctrlCurveList->addItem(strong);
 	}
 	if(m_pCurve)
 	{
-		int sel = m_pctrlCurveList->findText(m_pCurve->title());
+		int sel = m_pctrlCurveList->findText(m_pCurve->curveName());
 		m_pctrlCurveList->setCurrentIndex(sel);
 	}
 }

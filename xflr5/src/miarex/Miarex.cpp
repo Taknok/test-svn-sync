@@ -413,19 +413,13 @@ QMiarex::QMiarex(QWidget *parent)
 
 	m_CpGraph.setGraphName(tr("Cp Graph"));
 
-	m_CpColor = QColor(255,0,0);
-	m_CpStyle = 0;
-	m_CpWidth = 1;
-	m_bShowCp = true;
-	m_bShowCpPoints = false;
-
 	s_GLList = 0;
 
 	s_LiftScale = s_DragScale = s_VelocityScale = 0.7;
 
 	m_StabilityResponseType = 0;
 	
-	SetupLayout();
+	setupLayout();
 }
 
 
@@ -514,10 +508,10 @@ void QMiarex::Connect()
 
 	connect(m_pctrlClipPlanePos, SIGNAL(sliderMoved(int)), m_p3dWidget, SLOT(onClipPlane(int)));
 
-	connect(m_pctrlKeepCpSection,  SIGNAL(clicked()), this, SLOT(onKeepCpSection()));
-	connect(m_pctrlResetCpSection, SIGNAL(clicked()), this, SLOT(onResetCpSection()));
-	connect(m_pctrlCpSectionSlider, SIGNAL(sliderMoved(int)), this, SLOT(onCpSection(int)));
-	connect(m_pctrlSpanPos, SIGNAL(editingFinished()), this, SLOT(onCpPosition()));
+	connect(m_pctrlKeepCpSection,   SIGNAL(clicked()),         this, SLOT(onKeepCpSection()));
+	connect(m_pctrlResetCpSection,  SIGNAL(clicked()),         this, SLOT(onResetCpSection()));
+	connect(m_pctrlCpSectionSlider, SIGNAL(sliderMoved(int)),  this, SLOT(onCpSectionSlider(int)));
+	connect(m_pctrlSpanPos,         SIGNAL(editingFinished()), this, SLOT(onCpPosition()));
 
 	connect(m_pctrlAxes, SIGNAL(clicked(bool)), m_p3dWidget, SLOT(onAxes(bool)));
 
@@ -691,7 +685,7 @@ void QMiarex::setControls()
 /**
  * Sets the checkboxes of the x, y and z view to their default false value
  */
-void QMiarex::SetViewControls()
+void QMiarex::setViewControls()
 {
 	m_pctrlX->setChecked(false);
 	m_pctrlY->setChecked(false);
@@ -700,13 +694,20 @@ void QMiarex::SetViewControls()
 }
 
 
+/**
+ * Creates the curves of the Cp graph at the selected span positions
+ */
+void QMiarex::clearCpCurves()
+{
+	m_CpGraph.deleteCurves();
+}
 
 /**
  * Creates the curves of the Cp graph at the selected span positions
  */
 void QMiarex::createCpCurves()
 {
-	int p,pp,i;
+	int pp,i;
 	bool bFound;
 	double SpanPos, SpanInc;
 
@@ -721,14 +722,14 @@ void QMiarex::createCpCurves()
 		if(pCurve) pCurve->clear();
 	}
 
-	if(!m_pCurPOpp || !m_bShowCp) return;
 
-	int coef = 2;
-	if(m_pCurWPolar->bThinSurfaces()) coef = 1;
+	if(!m_pCurPlane || !m_pCurPOpp || !m_bShowCp) return;
+
+	int coef = m_pCurWPolar->bThinSurfaces() ? 1 : 2;
 
 	m_CurSpanPos = qMax(-1.0, m_CurSpanPos);
 	m_CurSpanPos = qMin( 1.0, m_CurSpanPos);
-	SpanPos = m_CurSpanPos*m_pCurPOpp->m_Span/2.000001;
+	SpanPos = m_CurSpanPos*m_pCurPlane->span()/2.000001;
 
 //	str1 = m_pCurPlane->m_Wing[0].WingName();
 	str2 = QString(" a=%1").arg(m_pCurPOpp->m_Alpha, 5, 'f', 2);
@@ -736,12 +737,12 @@ void QMiarex::createCpCurves()
 
 //	if(m_bCurWOppOnly)
 	{
-		p=0;
+//		p=0;
 		bFound = false;
-		if(m_pCurWPolar->bThinSurfaces()) p+=m_pCurPlane->m_Wing[0].m_Surface[0]->m_NXPanels;
+//		if(m_pCurWPolar->bThinSurfaces()) p+=m_pCurPlane->m_Wing[0].m_Surface[0]->m_NXPanels;
 
 		SpanInc = -m_pCurPlane->planformSpan()/2.0;
-		for (p=0; p<m_pCurPlane->m_Wing[0].m_MatSize; p++)
+		for (int p=0; p<m_pCurPlane->m_Wing[0].m_MatSize; p++)
 		{
 			if(m_pCurPlane->m_Wing[0].m_pWingPanel[p].m_bIsTrailing && m_pCurPlane->m_Wing[0].m_pWingPanel[p].m_Pos<=MIDSURFACE)
 			{
@@ -757,9 +758,9 @@ void QMiarex::createCpCurves()
 		{
 			if(m_pWingList[iw] && m_bShowWingCurve[iw])
 			{
-				p=0;
+				int p=0;
 				bFound = false;
-				if(m_pCurWPolar->bThinSurfaces()) p+=m_pWingList[iw]->m_Surface.at(0)->m_NXPanels;
+//				if(m_pCurWPolar->bThinSurfaces()) p+=m_pWingList[iw]->m_Surface.at(0)->m_NXPanels;
 
 				SpanInc = -m_pWingList[iw]->m_PlanformSpan/2.0;
 				for (p=0; p<m_pWingList[iw]->m_MatSize; p++)
@@ -783,11 +784,11 @@ void QMiarex::createCpCurves()
 					pCurve->setWidth(m_CpWidth);
 					pCurve->showPoints(m_bShowCpPoints);
 
-					pCurve->setTitle(m_pWingList[iw]->m_WingName+str2+str3);
+					pCurve->setCurveName(m_pWingList[iw]->m_WingName+str2+str3);
 
 					for (pp=p; pp<p+coef*m_pWingList[iw]->m_Surface.at(0)->m_NXPanels; pp++)
 					{
-						pCurve->AppendPoint(s_pPanel[pp].CollPt.x, m_pWOpp[iw]->m_dCp[pp]);
+						pCurve->appendPoint(s_pPanel[pp].CollPt.x, m_pWOpp[iw]->m_dCp[pp]);
 					}
 				}
 			}
@@ -802,7 +803,7 @@ void QMiarex::createCpCurves()
  * Creates the curves for the graphs in the operating point view.
  * @todo manage with a boolean flag to recreate only when necessary
 */
-void QMiarex::CreateWOppCurves()
+void QMiarex::createWOppCurves()
 {
 //	WingOpp *pWOpp = NULL;;
 	PlaneOpp *pPOpp = NULL;
@@ -830,8 +831,8 @@ void QMiarex::CreateWOppCurves()
 						pWingCurve[iw][ic]->setStyle(pPOpp->m_Style);
 						pWingCurve[iw][ic]->setColor(pPOpp->m_Color);
 						pWingCurve[iw][ic]->setWidth(pPOpp->m_Width);
-						pWingCurve[iw][ic]->setTitle(pPOpp->title());
-						FillWOppCurve(pPOpp->m_pPlaneWOpp[iw], m_WingGraph[ic], pWingCurve[iw][ic]);
+						pWingCurve[iw][ic]->setCurveName(pPOpp->title());
+						fillWOppCurve(pPOpp->m_pPlaneWOpp[iw], m_WingGraph[ic], pWingCurve[iw][ic]);
 					}
 				}
 			}
@@ -858,7 +859,7 @@ void QMiarex::CreateWOppCurves()
 				{
 					x = m_pCurPOpp->m_pPlaneWOpp[0]->m_SpanPos[i];
 					y = maxlift*sqrt(1.0-x*x/m_pCurPOpp->m_pPlaneWOpp[0]->m_Span/m_pCurPOpp->m_pPlaneWOpp[0]->m_Span*4.0);
-					pCurve->AppendPoint(x*Units::mtoUnit(),y);
+					pCurve->appendPoint(x*Units::mtoUnit(),y);
 				}
 			}
 		}
@@ -894,12 +895,12 @@ void QMiarex::createWPolarCurves()
 				if(s_bResetCurves)
 				{
 					pCurve[ig] = m_WPlrGraph[ig]->addCurve();
-					FillWPlrCurve(pCurve[ig], pWPolar, m_WPlrGraph[ig]->xVariable(), m_WPlrGraph[ig]->yVariable());
+					fillWPlrCurve(pCurve[ig], pWPolar, m_WPlrGraph[ig]->xVariable(), m_WPlrGraph[ig]->yVariable());
 					pCurve[ig]->showPoints(pWPolar->pointsVisible());
 					pCurve[ig]->setStyle(  pWPolar->curveStyle());
 					pCurve[ig]->setColor(  pWPolar->curveColor());
 					pCurve[ig]->setWidth(  pWPolar->curveWidth());
-					pCurve[ig]->setTitle(  pWPolar->polarName());
+					pCurve[ig]->setCurveName(  pWPolar->polarName());
 				}
 			}
 		}
@@ -911,16 +912,16 @@ void QMiarex::createWPolarCurves()
 /**
 * Resets and fills the stability graphs curves with the data from the CWPolar objects
 */
-void QMiarex::CreateStabilityCurves()
+void QMiarex::createStabilityCurves()
 {
 	if(m_iView==XFLR5::STABTIMEVIEW)
 	{
-		if(m_StabilityResponseType==1)  CreateStabRungeKuttaCurves();
-		else                            CreateStabTimeCurves();
+		if(m_StabilityResponseType==1)  createStabRungeKuttaCurves();
+		else                            createStabTimeCurves();
 	}
 	else
 	{
-		CreateStabRLCurves();
+		createStabRLCurves();
 	}
 }
 
@@ -929,7 +930,7 @@ void QMiarex::CreateStabilityCurves()
 * Builds the initial condition response due to perturbations from steady state
 * The time response is calculated analytically based on the knowledge of the eigenvalues and eigenvectors
 */
-void QMiarex::CreateStabTimeCurves()
+void QMiarex::createStabTimeCurves()
 {
 	complex<double> M[16];// the modal matrix
 	complex<double> InvM[16];// the inverse of the modal matrix
@@ -1026,11 +1027,11 @@ void QMiarex::CreateStabTimeCurves()
 			y[3] = *(M+4*3+0) * q[0] +*(M+4*3+1) * q[1] +*(M+4*3+2) * q[2] +*(M+4*3+3) * q[3];
 			if(abs(q[0])>1.e10 || abs(q[1])>1.e10 || abs(q[2])>1.e10  || abs(q[3])>1.e10 ) break;
 
-			pCurve0->AppendPoint(t, y[0].real());
-			if(m_bLongitudinal) pCurve1->AppendPoint(t, y[1].real());
-			else                pCurve1->AppendPoint(t, y[1].real()*180.0/PI);
-			pCurve2->AppendPoint(t, y[2].real()*180.0/PI);
-			pCurve3->AppendPoint(t, y[3].real()*180.0/PI);
+			pCurve0->appendPoint(t, y[0].real());
+			if(m_bLongitudinal) pCurve1->appendPoint(t, y[1].real());
+			else                pCurve1->appendPoint(t, y[1].real()*180.0/PI);
+			pCurve2->appendPoint(t, y[2].real()*180.0/PI);
+			pCurve3->appendPoint(t, y[3].real()*180.0/PI);
 		}
 	}
 	s_bResetCurves = false;
@@ -1043,7 +1044,7 @@ void QMiarex::CreateStabTimeCurves()
 * using a Runge-Kutta integration scheme.
 * The forced input is interpolated in the control history defined in the input table.
 */
-void QMiarex::CreateStabRungeKuttaCurves()
+void QMiarex::createStabRungeKuttaCurves()
 {
 	static int i, TotalPoints, PlotInterval;
 
@@ -1105,10 +1106,10 @@ void QMiarex::CreateStabRungeKuttaCurves()
 	// initial conditions to 0
 	t = 0.0;
 	y[0] = y[1] = y[2] = y[3] = 0.0;
-	pCurve0->AppendPoint(0.0, y[0]);
-	pCurve1->AppendPoint(0.0, y[1]);
-	pCurve2->AppendPoint(0.0, y[2]);
-	pCurve3->AppendPoint(0.0, y[3]);
+	pCurve0->appendPoint(0.0, y[0]);
+	pCurve1->appendPoint(0.0, y[1]);
+	pCurve2->appendPoint(0.0, y[2]);
+	pCurve3->appendPoint(0.0, y[3]);
 
 	//Runge-Kutta method
 	for(i=0; i<TotalPoints; i++)
@@ -1195,17 +1196,17 @@ void QMiarex::CreateStabRungeKuttaCurves()
 		{
 			if(m_bLongitudinal)
 			{
-				pCurve0->AppendPoint(t, y[0]*Units::mstoUnit());
-				pCurve1->AppendPoint(t, y[1]*Units::mstoUnit());
-				pCurve2->AppendPoint(t, y[2]*180.0/PI);//deg/s
-				pCurve3->AppendPoint(t, y[3]*180.0/PI);//deg
+				pCurve0->appendPoint(t, y[0]*Units::mstoUnit());
+				pCurve1->appendPoint(t, y[1]*Units::mstoUnit());
+				pCurve2->appendPoint(t, y[2]*180.0/PI);//deg/s
+				pCurve3->appendPoint(t, y[3]*180.0/PI);//deg
 			}
 			else
 			{
-				pCurve0->AppendPoint(t, y[0]*Units::mstoUnit());
-				pCurve1->AppendPoint(t, y[1]*180.0/PI);//deg/s
-				pCurve2->AppendPoint(t, y[2]*180.0/PI);//deg/s
-				pCurve3->AppendPoint(t, y[3]*180.0/PI);//deg
+				pCurve0->appendPoint(t, y[0]*Units::mstoUnit());
+				pCurve1->appendPoint(t, y[1]*180.0/PI);//deg/s
+				pCurve2->appendPoint(t, y[2]*180.0/PI);//deg/s
+				pCurve3->appendPoint(t, y[3]*180.0/PI);//deg
 			}
 		}
 	}
@@ -1221,7 +1222,7 @@ void QMiarex::CreateStabRungeKuttaCurves()
 /**
 * Resets and fills the curves of the root locus graph with the data from the CWPolar objects
 */
-void QMiarex::CreateStabRLCurves()
+void QMiarex::createStabRLCurves()
 {
 	WPolar *pWPolar;
 
@@ -1266,15 +1267,15 @@ void QMiarex::CreateStabRLCurves()
 			pLongCurve4->setColor(pWPolar->curveColor());
 			pLongCurve4->setWidth(pWPolar->curveWidth());
 
-			FillStabCurve(pLongCurve1, pWPolar, 0);
-			FillStabCurve(pLongCurve2, pWPolar, 1);
-			FillStabCurve(pLongCurve3, pWPolar, 2);
-			FillStabCurve(pLongCurve4, pWPolar, 3);
+			fillStabCurve(pLongCurve1, pWPolar, 0);
+			fillStabCurve(pLongCurve2, pWPolar, 1);
+			fillStabCurve(pLongCurve3, pWPolar, 2);
+			fillStabCurve(pLongCurve4, pWPolar, 3);
 
-			pLongCurve1->setTitle(pWPolar->polarName()+"_Mode_1");
-			pLongCurve2->setTitle(pWPolar->polarName()+"_Mode_2");
-			pLongCurve3->setTitle(pWPolar->polarName()+"_Mode_3");
-			pLongCurve4->setTitle(pWPolar->polarName()+"_Mode_4");
+			pLongCurve1->setCurveName(pWPolar->polarName()+"_Mode_1");
+			pLongCurve2->setCurveName(pWPolar->polarName()+"_Mode_2");
+			pLongCurve3->setCurveName(pWPolar->polarName()+"_Mode_3");
+			pLongCurve4->setCurveName(pWPolar->polarName()+"_Mode_4");
 
 			//Lateral modes
 			pLatCurve1 = m_StabPlrGraph.at(1)->addCurve();
@@ -1304,80 +1305,20 @@ void QMiarex::CreateStabRLCurves()
 			pLatCurve4->setColor(pWPolar->curveColor());
 			pLatCurve4->setWidth(pWPolar->curveWidth());
 
-			FillStabCurve(pLatCurve1, pWPolar, 4);
-			FillStabCurve(pLatCurve2, pWPolar, 5);
-			FillStabCurve(pLatCurve3, pWPolar, 6);
-			FillStabCurve(pLatCurve4, pWPolar, 7);
+			fillStabCurve(pLatCurve1, pWPolar, 4);
+			fillStabCurve(pLatCurve2, pWPolar, 5);
+			fillStabCurve(pLatCurve3, pWPolar, 6);
+			fillStabCurve(pLatCurve4, pWPolar, 7);
 
-			pLatCurve1->setTitle(pWPolar->polarName()+"_Mode_1");
-			pLatCurve2->setTitle(pWPolar->polarName()+"_Mode_2");
-			pLatCurve3->setTitle(pWPolar->polarName()+"_Mode_3");
-			pLatCurve4->setTitle(pWPolar->polarName()+"_Mode_4");
+			pLatCurve1->setCurveName(pWPolar->polarName()+"_Mode_1");
+			pLatCurve2->setCurveName(pWPolar->polarName()+"_Mode_2");
+			pLatCurve3->setCurveName(pWPolar->polarName()+"_Mode_3");
+			pLatCurve4->setCurveName(pWPolar->polarName()+"_Mode_4");
 		}
 	}
 	s_bResetCurves = false;
 }
 
-
-
-/**
-* Draws the legend of the Cp graph
-*@param painter the instance of the QPainter object associated to the active view
-*@param the top left postition where the legend is to be drawn
-*@param the y coordinate of the bottom of the drawing rectangle
-*/
-void QMiarex::DrawCpLegend(QPainter &painter, QPoint place, int bottom)
-{
-	painter.save();
-	int LegendSize, LegendWidth, dny, x1, i, ny;
-	Curve *pCurve=NULL;
-	QString strong;
-
-	LegendSize = 30;
-	LegendWidth = 350;
-	dny = 14;
-	bottom -= 15;//margin
-
-	QPen CurvePen;
-	QPen TextPen(Settings::s_TextColor);
-
-	ny=-1;
-
-	for (i=0; i<m_CpGraph.curveCount(); i++)
-	{
-		pCurve = m_CpGraph.curve(i);
-		if(pCurve->size())
-		{
-			ny++;
-
-			if(abs(bottom)<abs(place.y() + (int)(dny*(ny+1))))
-			{
-				//move right
-				place.rx() += LegendWidth;
-				ny=0;
-			}
-
-			CurvePen.setColor(pCurve->color());
-			CurvePen.setStyle(getStyle(pCurve->style()));
-			CurvePen.setWidth(pCurve->width());
-			painter.setPen(CurvePen);
-
-			painter.drawLine(place.x() + (int)(1.5*LegendSize), place.y() + (int)(1.*dny*ny),
-							 place.x() + (int)(2.5*LegendSize), place.y() + (int)(1.*dny*ny));
-
-			if(pCurve->pointsVisible())
-			{
-				x1 = place.x() + (int)(2.0*LegendSize);
-				painter.drawRect(x1-2, place.y() + (int)(1.*dny*ny)-2,4,4);
-			}
-
-			pCurve->title(strong);
-			painter.setPen(TextPen);
-			painter.drawText(place.x() + (int)(3*LegendSize),place.y() + (int)(1.*dny*ny), strong);
-		}
-	}
-	painter.restore();
-}
 
 
 
@@ -1436,7 +1377,7 @@ void QMiarex::fillComboBoxes(bool bEnable)
 *@param pGraph a pointer to the instance of the Graph object to which the curve belongs
 *@param pCurve a pointer to the instance of the CCurve object to be filled with the data from the CWOpp object
 */
-void QMiarex::FillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
+void QMiarex::fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 {
 	if(!pWOpp || !pGraph || !pCurve || !m_pCurWPolar) return;
 	int Var = pGraph->yVariable();
@@ -1451,7 +1392,7 @@ void QMiarex::FillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		{
 			for (i=nStart; i<pWOpp->m_NStation; i++)
 			{
-				pCurve->AppendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_Ai[i]);
+				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_Ai[i]);
 			}
 			pGraph->setYTitle(tr("Induced Angle"));
 			break;
@@ -1460,7 +1401,7 @@ void QMiarex::FillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		{
 			for (i=nStart; i<pWOpp->m_NStation; i++)
 			{
-				pCurve->AppendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(),
+				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(),
 					pWOpp->m_Alpha + pWOpp->m_Ai[i] + pWOpp->m_Twist[i]);
 			}
 			pGraph->setYTitle(tr("Total Angle"));
@@ -1470,7 +1411,7 @@ void QMiarex::FillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		{
 			for (i=nStart; i<pWOpp->m_NStation; i++)
 			{
-				pCurve->AppendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_Cl[i]);
+				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_Cl[i]);
 			}
 			pGraph->setYTitle(tr("Cl"));
 			break;
@@ -1479,7 +1420,7 @@ void QMiarex::FillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		{
 			for (i=nStart; i<pWOpp->m_NStation; i++)
 			{
-				pCurve->AppendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_Cl[i] * pWOpp->m_Chord[i]/pWOpp->m_MAChord);
+				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_Cl[i] * pWOpp->m_Chord[i]/pWOpp->m_MAChord);
 			}
 			pGraph->setYTitle(tr("Local lift"));
 			break;
@@ -1488,7 +1429,7 @@ void QMiarex::FillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		{
 			for (i=nStart; i<pWOpp->m_NStation; i++)
 			{
-				pCurve->AppendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_PCd[i]);
+				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_PCd[i]);
 			}
 			pGraph->setYTitle(tr("Airfoil drag"));
 			break;
@@ -1497,7 +1438,7 @@ void QMiarex::FillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		{
 			for (i=nStart; i<pWOpp->m_NStation; i++)
 			{
-				pCurve->AppendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_ICd[i]);
+				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_ICd[i]);
 			}
 			pGraph->setYTitle(tr("Induced drag"));
 			break;
@@ -1506,7 +1447,7 @@ void QMiarex::FillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		{
 			for (i=nStart; i<pWOpp->m_NStation; i++)
 			{
-				pCurve->AppendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_PCd[i]+ pWOpp->m_ICd[i]);
+				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_PCd[i]+ pWOpp->m_ICd[i]);
 			}
 			pGraph->setYTitle(tr("Total drag"));
 			break;
@@ -1515,7 +1456,7 @@ void QMiarex::FillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		{
 			for (i=nStart; i<pWOpp->m_NStation; i++)
 			{
-				pCurve->AppendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), (pWOpp->m_PCd[i]+ pWOpp->m_ICd[i])* pWOpp->m_Chord[i]/pWOpp->m_MAChord);
+				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), (pWOpp->m_PCd[i]+ pWOpp->m_ICd[i])* pWOpp->m_Chord[i]/pWOpp->m_MAChord);
 			}
 			pGraph->setYTitle(tr("Local drag"));
 			break;
@@ -1524,7 +1465,7 @@ void QMiarex::FillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		{
 			for (i=nStart; i<pWOpp->m_NStation; i++)
 			{
-				pCurve->AppendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_CmAirf[i]);
+				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_CmAirf[i]);
 			}
 			pGraph->setYTitle(tr("Cm Airfoil"));
 			break;
@@ -1533,7 +1474,7 @@ void QMiarex::FillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		{
 			for (i=nStart; i<pWOpp->m_NStation; i++)
 			{
-				pCurve->AppendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_Cm[i]);
+				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_Cm[i]);
 			}
 			pGraph->setYTitle(tr("Cm total"));
 			break;
@@ -1542,7 +1483,7 @@ void QMiarex::FillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		{
 			for (i=nStart; i<pWOpp->m_NStation; i++)
 			{
-				pCurve->AppendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_Re[i]);
+				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_Re[i]);
 			}
 			pGraph->setYTitle(tr("Re"));
 			break;
@@ -1551,7 +1492,7 @@ void QMiarex::FillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		{
 			for (i=nStart; i<pWOpp->m_NStation; i++)
 			{
-				pCurve->AppendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_XTrTop[i]);
+				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_XTrTop[i]);
 			}
 			pGraph->setYTitle(tr("Top Trans x-Pos %"));
 			break;
@@ -1560,7 +1501,7 @@ void QMiarex::FillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		{
 			for (i=nStart; i<pWOpp->m_NStation; i++)
 			{
-				pCurve->AppendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_XTrBot[i]);
+				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_XTrBot[i]);
 			}
 			pGraph->setYTitle(tr("Bot Trans x-Pos %"));
 			break;
@@ -1569,7 +1510,7 @@ void QMiarex::FillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		{
 			for (i=nStart; i<pWOpp->m_NStation; i++)
 			{
-				pCurve->AppendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_XCPSpanRel[i]*100.0);
+				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_XCPSpanRel[i]*100.0);
 			}
 			pGraph->setYTitle(tr("CP x-Pos %"));
 			break;
@@ -1578,7 +1519,7 @@ void QMiarex::FillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		{
 			for (i=nStart; i<pWOpp->m_NStation; i++)
 			{
-				pCurve->AppendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(),
+				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(),
 								pWOpp->m_BendingMoment[i] * Units::NmtoUnit());
 			}
 			QString str;
@@ -1590,7 +1531,7 @@ void QMiarex::FillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		{
 			for (i=nStart; i<pWOpp->m_NStation; i++)
 			{
-				pCurve->AppendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_Ai[i]);
+				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_Ai[i]);
 			}
 			pGraph->setYTitle(tr("Induced Angle"));
 		}
@@ -1604,7 +1545,7 @@ void QMiarex::FillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 *@param pWPolar a pointer to the instance of the CWPolar object from which the data is to be extracted
 *@param iMode the index of the mode for which the curve is to be created
 */
-void QMiarex::FillStabCurve(Curve *pCurve, WPolar *pWPolar, int iMode)
+void QMiarex::fillStabCurve(Curve *pCurve, WPolar *pWPolar, int iMode)
 {
 	static int i;
 	static double x,y;
@@ -1619,7 +1560,7 @@ void QMiarex::FillStabCurve(Curve *pCurve, WPolar *pWPolar, int iMode)
 		x = pWPolar->m_EigenValue[iMode][i].real();
 		y = pWPolar->m_EigenValue[iMode][i].imag()/2./PI;
 
-		pCurve->AppendPoint(x, y);
+		pCurve->appendPoint(x, y);
 		if(m_pCurPlane && m_pCurPOpp && m_bHighlightOpp)
 		{
 			if(qAbs(pWPolar->m_Ctrl[i]-m_pCurPOpp->m_Ctrl)<0.0001)
@@ -1641,7 +1582,7 @@ void QMiarex::FillStabCurve(Curve *pCurve, WPolar *pWPolar, int iMode)
 *@param XVar the index of the variable to appear on the x-axis
 *@param YVar the index of the variable to appear on the y-axis
 */
-void QMiarex::FillWPlrCurve(Curve *pCurve, WPolar *pWPolar, int XVar, int YVar)
+void QMiarex::fillWPlrCurve(Curve *pCurve, WPolar *pWPolar, int XVar, int YVar)
 {
 	bool bAdd;
 	int i;
@@ -1686,7 +1627,7 @@ void QMiarex::FillWPlrCurve(Curve *pCurve, WPolar *pWPolar, int XVar, int YVar)
 
 		if(bAdd)
 		{
-			pCurve->AppendPoint(x,y);
+			pCurve->appendPoint(x,y);
 			if(m_pCurPOpp && m_bHighlightOpp)
 			{
 				if(qAbs(pWPolar->m_Alpha[i]-m_pCurPOpp->m_pPlaneWOpp[0]->m_Alpha)<0.0001)
@@ -3118,7 +3059,7 @@ void QMiarex::onAnimateWOppSingle()
 
 			if (m_iView==XFLR5::WOPPVIEW)
 			{
-				CreateWOppCurves();
+				createWOppCurves();
 				updateView();
 			}
 			else if (m_iView==XFLR5::W3DVIEW)
@@ -3260,7 +3201,7 @@ void QMiarex::onAdvancedSettings()
 /**
 * The user has modified the position span section to display in the Cp view
 */
-void QMiarex::onCpSection(int pos)
+void QMiarex::onCpSectionSlider(int pos)
 {
 	m_CurSpanPos = (double)pos/100.0;
 	m_pctrlSpanPos->setValue(m_CurSpanPos);
@@ -3388,7 +3329,7 @@ void QMiarex::onDefineStabPolar()
 
 		WPolar* pNewStabPolar      = new WPolar;
 		pNewStabPolar->planeName() = m_pCurPlane->planeName();
-		pNewStabPolar->curveColor() = MainFrame::GetColor(4);
+		pNewStabPolar->curveColor() = MainFrame::getColor(4);
 		pNewStabPolar->curveWidth() = 2;
 		pNewStabPolar->pointsVisible() = true;
 		pNewStabPolar->visible()  = true;
@@ -3471,7 +3412,7 @@ void QMiarex::onDefineWPolar()
 
 		pNewWPolar->bDirichlet() = m_bDirichlet;
 
-		pNewWPolar->curveColor() = MainFrame::GetColor(4);
+		pNewWPolar->curveColor() = MainFrame::getColor(4);
 		pNewWPolar->visible() = true;
 
 		m_pCurWPolar = Objects3D::insertNewWPolar(pNewWPolar, m_pCurPlane);
@@ -3538,7 +3479,7 @@ void QMiarex::onDefineWPolarObject()
 		}
 
 		pNewWPolar->bDirichlet() = m_bDirichlet;
-		pNewWPolar->curveColor() = MainFrame::GetColor(4);
+		pNewWPolar->curveColor() = MainFrame::getColor(4);
 		pNewWPolar->visible() = true;
 
 		m_pCurWPolar = Objects3D::insertNewWPolar(pNewWPolar, m_pCurPlane);
@@ -3603,7 +3544,7 @@ void QMiarex::onEditCurWPolar()
 
 		pNewWPolar->bDirichlet() = m_bDirichlet;
 
-		pNewWPolar->curveColor() = MainFrame::GetColor(4);
+		pNewWPolar->curveColor() = MainFrame::getColor(4);
 		pNewWPolar->visible() = true;
 
 		m_pCurWPolar = Objects3D::insertNewWPolar(pNewWPolar, m_pCurPlane);
@@ -3650,7 +3591,7 @@ void QMiarex::onEditCurWPolarObject()
 
 		pNewWPolar->bDirichlet() = m_bDirichlet;
 
-		pNewWPolar->curveColor() = MainFrame::GetColor(4);
+		pNewWPolar->curveColor() = MainFrame::getColor(4);
 		pNewWPolar->visible() = true;
 
 
@@ -5084,7 +5025,7 @@ void QMiarex::onFinCurve()
 	m_bShowWingCurve[3] = !m_bShowWingCurve[3];
 //	CheckMenus();
 
-	if (m_iView==XFLR5::WOPPVIEW)    CreateWOppCurves();
+	if (m_iView==XFLR5::WOPPVIEW)    createWOppCurves();
 	else if(m_iView==XFLR5::WCPVIEW) createCpCurves();
 
 	updateView();
@@ -5100,7 +5041,7 @@ void QMiarex::onStabCurve()
 	m_bShowWingCurve[2] = !m_bShowWingCurve[2];
 //	CheckMenus();
 
-	if (m_iView==XFLR5::WOPPVIEW)    CreateWOppCurves();
+	if (m_iView==XFLR5::WOPPVIEW)    createWOppCurves();
 	else if(m_iView==XFLR5::WCPVIEW) createCpCurves();
 
 	updateView();
@@ -5409,15 +5350,18 @@ void QMiarex::onInitLLTCalc()
  */
 void QMiarex::onKeepCpSection()
 {
-	Curve *pCurve, *pNewCurve;
+	Curve *pCurrentCurve, *pNewCurve;
 
-	pCurve = m_CpGraph.curve(0);
+	pCurrentCurve = m_CpGraph.curve(0);
 	pNewCurve = m_CpGraph.addCurve();
-	pNewCurve->CopyData(pCurve);
-	pNewCurve->setTitle(pCurve->title());
+	pNewCurve->copyData(pCurrentCurve);
+	pNewCurve->duplicate(pCurrentCurve);
 
-    m_CpColor = MainFrame::s_ColorList[(m_CpGraph.curveCount())%24];
-	pCurve->setColor(m_CpColor);
+//	pNewCurve->setCurveName(pCurrentCurve->curveName());
+//	pNewCurve->setColor(pCurrentCurve->color());
+
+	m_CpColor = randomColor();
+	pCurrentCurve->setColor(m_CpColor);
 
 	m_CpStyle = 0;
 	m_CpWidth = 1;
@@ -6000,7 +5944,7 @@ void QMiarex::onShowEllipticCurve()
 	m_bShowElliptic = !m_bShowElliptic;
 //	CheckMenus();
 
-	CreateWOppCurves();
+	createWOppCurves();
 	updateView();
 }
 
@@ -6329,7 +6273,7 @@ void QMiarex::onWing2Curve()
 	m_bShowWingCurve[1] = !m_bShowWingCurve[1];
 //	CheckMenus();
 
-	if (m_iView==XFLR5::WOPPVIEW)    CreateWOppCurves();
+	if (m_iView==XFLR5::WOPPVIEW)    createWOppCurves();
 	else if(m_iView==XFLR5::WCPVIEW) createCpCurves();
 
 	updateView();
@@ -6477,7 +6421,7 @@ void QMiarex::onWOppView()
 
 	m_bIs2DScaleSet = false;
 //	Set2DScale();
-	CreateWOppCurves();
+	createWOppCurves();
 	setCurveParams();
 	setControls();
 
@@ -7327,7 +7271,7 @@ void QMiarex::setPlane(QString PlaneName)
 
 
 	MainFrame*pMainFrame = (MainFrame*)s_pMainFrame;
-	pMainFrame->SelectPlane(m_pCurPlane);
+	pMainFrame->selectPlane(m_pCurPlane);
 	pMainFrame->UpdateWPolarListBox();
 
 	if (m_pCurWPolar)
@@ -7350,7 +7294,7 @@ void QMiarex::setPlane(QString PlaneName)
 /**
  * Constructs the layout of the QMiarex widget
  */
-void QMiarex::SetupLayout()
+void QMiarex::setupLayout()
 {
 	QSizePolicy szPolicyExpanding;
 	szPolicyExpanding.setHorizontalPolicy(QSizePolicy::Expanding);
@@ -7731,7 +7675,7 @@ void QMiarex::setWPolar(bool bCurrent, QString WPlrName)
 
 	if(m_pCurWPolar)
 	{
-		pMainFrame->SelectWPolar(m_pCurWPolar);
+		pMainFrame->selectWPolar(m_pCurWPolar);
 	}
 
 /** @todo restore ?
@@ -8125,7 +8069,7 @@ void QMiarex::updateView()
 		{
 			if(s_bResetCurves)
 			{
-				CreateWOppCurves();
+				createWOppCurves();
 			}
 		}
 		else if (m_iView==XFLR5::WCPVIEW)
@@ -8139,15 +8083,15 @@ void QMiarex::updateView()
 		{
 			if(s_bResetCurves)
 			{
-				if(m_StabilityResponseType==1)  CreateStabRungeKuttaCurves();
-				else                            CreateStabTimeCurves();
+				if(m_StabilityResponseType==1)  createStabRungeKuttaCurves();
+				else                            createStabTimeCurves();
 			}
 		}
 		else if(m_iView==XFLR5::STABPOLARVIEW)
 		{
 			if(s_bResetCurves)
 			{
-				CreateStabRLCurves();
+				createStabRLCurves();
 			}
 		}
 		MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
@@ -8207,7 +8151,7 @@ void QMiarex::onPlaneOppProperties()
 	if(!m_pCurPOpp) return;
 	ObjectPropsDlg opDlg((MainFrame*)s_pMainFrame);
 	QString strangeProps;
-	m_pCurPOpp->GetPlaneOppProperties(strangeProps);
+	m_pCurPOpp->getPlaneOppProperties(strangeProps);
 	opDlg.InitDialog(tr("Operating point Properties"), strangeProps);
 	opDlg.exec();
 }
@@ -8391,7 +8335,7 @@ bool QMiarex::setPlaneOpp(bool bCurrent, double x)
 		}
 
 		//select m_pCurPOpp in the listbox
-		pMainFrame->SelectPlaneOpp(m_pCurPOpp);
+		pMainFrame->selectPlaneOpp(m_pCurPOpp);
 	}
 	else
 	{
@@ -8570,68 +8514,88 @@ void QMiarex::setGraphTiles()
 
 	int maxWidgets = pMainFrame->m_pMiarexTileWidget->graphWidgetCount();
 
-	if(m_iView==XFLR5::WPOLARVIEW)
+	switch(m_iView)
 	{
-		switch(m_iWPlrView)
+		case XFLR5::WPOLARVIEW:
 		{
-			case XFLR5::ONEGRAPH:
-				pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WPlrGraph, 1,0);
-				break;
-			case XFLR5::TWOGRAPHS:
-				pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WPlrGraph, 2);
-				break;
+			switch(m_iWPlrView)
+			{
+				case XFLR5::ONEGRAPH:
+					pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WPlrGraph, 1,0);
+					break;
+				case XFLR5::TWOGRAPHS:
+					pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WPlrGraph, 2);
+					break;
+				case XFLR5::FOURGRAPHS:
+					pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WPlrGraph, 4);
+					break;
+				case XFLR5::ALLGRAPHS:
+					pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WPlrGraph, MAXGRAPHS);
+					break;
+			}
+			break;
+		}
+
+		case XFLR5::WOPPVIEW:
+		{
+			switch(m_iWingView)
+			{
+				case XFLR5::ONEGRAPH:
+					pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WingGraph, 1, 0);
+					break;
+				case XFLR5::TWOGRAPHS:
+					pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WingGraph, 2);
+					break;
+				case XFLR5::FOURGRAPHS:
+					pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WingGraph, 4);
+					break;
+				case XFLR5::ALLGRAPHS:
+					pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WingGraph, MAXGRAPHS);
+					break;
+			}
+			break;
+		}
+
+
+		case XFLR5::WCPVIEW:
+		{
+			QList<QGraph*> pGraphList;
+			pGraphList.append(&m_CpGraph);
+			pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, pGraphList, 1, 0, Qt::Vertical);
+			break;
+		}
+
+		case XFLR5::STABPOLARVIEW:
+		{
+			if(m_bLongitudinal)	pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_StabPlrGraph, 1,0);
+			else                pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_StabPlrGraph, 1,1);
+			break;
+		}
+
+		case XFLR5::STABTIMEVIEW:
+		{
+			switch(m_iStabTimeView)
+			{
+				case XFLR5::ONEGRAPH:
+					pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_TimeGraph, 1,0);
+					break;
+				case XFLR5::TWOGRAPHS:
+					pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_TimeGraph, 2);
+					break;
 			case XFLR5::FOURGRAPHS:
-				pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WPlrGraph, 4);
-				break;
 			case XFLR5::ALLGRAPHS:
-				pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WPlrGraph, MAXGRAPHS);
-				break;
+					pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_TimeGraph, 4);
+					break;
+			}
+			break;
 		}
-	}
-	else if(m_iView==XFLR5::WOPPVIEW)
-	{
-		switch(m_iWingView)
+
+		default:
 		{
-			case XFLR5::ONEGRAPH:
-				pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WingGraph, 1,0);
-				break;
-			case XFLR5::TWOGRAPHS:
-				pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WingGraph, 2);
-				break;
-			case XFLR5::FOURGRAPHS:
-				pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WingGraph, 4);
-				break;
-			case XFLR5::ALLGRAPHS:
-				pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WingGraph, MAXGRAPHS);
-				break;
-		}
-	}
-	else if(m_iView==XFLR5::STABPOLARVIEW)
-	{
-		if(m_bLongitudinal)	pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_StabPlrGraph, 1,0);
-		else                pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_StabPlrGraph, 1,1);
-	}
-	else if(m_iView==XFLR5::STABTIMEVIEW)
-	{
-		switch(m_iStabTimeView)
-		{
-			case XFLR5::ONEGRAPH:
-				pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_TimeGraph, 1,0);
-				break;
-			case XFLR5::TWOGRAPHS:
-				pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_TimeGraph, 2);
-				break;
-		case XFLR5::FOURGRAPHS:
-		case XFLR5::ALLGRAPHS:
-				pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_TimeGraph, 4);
-				break;
-		}
-	}
-	else
-	{
-		for(int ig=0; ig<maxWidgets; ig++)
-		{
-			pMainFrame->m_pMiarexTileWidget->graphWidget(ig)->setGraph(NULL);
+			for(int ig=0; ig<maxWidgets; ig++)
+			{
+				pMainFrame->m_pMiarexTileWidget->graphWidget(ig)->setGraph(NULL);
+			}
 		}
 	}
 }

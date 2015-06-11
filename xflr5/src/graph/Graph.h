@@ -63,7 +63,7 @@ public:
 	Curve * getClosestPoint(double const &x, double const &y, double &xSel, double &ySel, int &nSel);
 	void resetLimits();
 	void resetCurves();
-	void Scale(double zoom);
+	void scale(double zoom);
 	void Scalex(double zoom);
 	void Scaley(double zoom);
 	void setAutoXMinUnit(bool bAuto);

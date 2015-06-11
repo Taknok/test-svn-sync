@@ -166,6 +166,7 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
 			event->accept();
 			break;
 		}
+
 		default:event->ignore();
 	}
 }
@@ -228,10 +229,24 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 	{
 		//zoom graph
 		m_pGraph->setAuto(false);
-		if(point.y()-m_LastPoint.y()<0) m_pGraph->Scale(1.02);
-		else                            m_pGraph->Scale(1.0/1.02);
+		if(point.y()-m_LastPoint.y()<0) m_pGraph->scale(1.02);
+		else                            m_pGraph->scale(1.0/1.02);
 
 		update();
+	}
+	// we zoom the graph or the foil
+	else if ((event->buttons() & Qt::MidButton) || event->modifiers().testFlag(Qt::AltModifier))
+	{
+		if(m_pGraph)
+		{
+			//zoom graph
+			m_pGraph->setAuto(false);
+			if(point.y()-m_LastPoint.y()<0) m_pGraph->scale(1.02);
+			else                            m_pGraph->scale(1.0/1.02);
+			update();
+		}
+
+		m_LastPoint = point;
 	}
 	else if(m_pGraph->isInDrawRect(point))
 	{
@@ -257,8 +272,6 @@ void GraphWidget::mousePressEvent(QMouseEvent *event)
 
 		m_LastPoint = point;
 	}
-
-//	setFocus();
 }
 
 
@@ -306,7 +319,7 @@ void GraphWidget::wheelEvent (QWheelEvent *event)
 		{
 			//zoom both
 			m_pGraph->setAuto(false);
-			m_pGraph->Scale(1./zoomFactor);
+			m_pGraph->scale(1./zoomFactor);
 		}
 
 		m_pGraph->setAutoXUnit();

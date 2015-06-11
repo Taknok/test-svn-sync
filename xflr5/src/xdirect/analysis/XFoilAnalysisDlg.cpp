@@ -167,9 +167,9 @@ void XFoilAnalysisDlg::InitDialog()
 	Curve *pCurve1 = m_pRmsGraph->addCurve();
 
 	str = "rms";
-	pCurve0->setTitle(str);
+	pCurve0->setCurveName(str);
 	str = "max";
-	pCurve1->setTitle(str);
+	pCurve1->setCurveName(str);
 	pCurve1->setStyle(0);
 
 	m_pRmsGraph->setXMin(0.0);
