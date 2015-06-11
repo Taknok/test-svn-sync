@@ -276,7 +276,7 @@ void QXInverse::CreateQCurve()
 	{
 		x = 1.0 - pXFoil->sspec[i];
 		y = pXFoil->qcomp(pXFoil->qspec[1][i])/pXFoil->qinf;
-		m_pQCurve->AppendPoint(x,y);
+		m_pQCurve->appendPoint(x,y);
 	}
 }
 
@@ -298,8 +298,8 @@ void QXInverse::CreateMCurve()
 	{
 		x = 1.0 - pXFoil->sspec[i];
 		y = pXFoil->qcomp(pXFoil->qspec[1][i])/pXFoil->qinf;
-		m_pMCurve->AppendPoint(x,y);
-		m_pReflectedCurve->AppendPoint(pXFoil->sspec[i],-y);
+		m_pMCurve->appendPoint(x,y);
+		m_pReflectedCurve->appendPoint(pXFoil->sspec[i],-y);
 	}
 }
 
@@ -961,7 +961,7 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 			updateView();
 		}
 	}
-	else if((event->buttons() & Qt::MidButton) /*||  (shZ & 0x8000)*/)
+	else if((event->buttons() & Qt::MidButton)  || event->modifiers().testFlag(Qt::AltModifier))
 	{
 		ReleaseZoom();
 		QPoint pttmp(point.x(), point.y());
@@ -969,8 +969,8 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 		{
 			//zoom graph
 			m_QGraph.setAuto(false);
-			if(point.y()-m_PointDown.y()<0) m_QGraph.Scale(1.02);
-			else                            m_QGraph.Scale(1.0/1.02);
+			if(point.y()-m_PointDown.y()<0) m_QGraph.scale(1.02);
+			else                            m_QGraph.scale(1.0/1.02);
 		}
 		else
 		{
@@ -2140,7 +2140,7 @@ void QXInverse::ResetMixedQ()
 	m_pMCurve->clear();
 	for (int i=0; i<=m_pQCurve->size(); i++)
 	{
-		m_pMCurve->AppendPoint(m_pQCurve->x[i], m_pQCurve->y[i]);
+		m_pMCurve->appendPoint(m_pQCurve->x[i], m_pQCurve->y[i]);
 	}
 
 //	m_pXFoil->gamqsp(1);
@@ -2266,10 +2266,10 @@ void QXInverse::SetFoil()
 			qv2 = pXFoil->qcomp(pXFoil->qvis[i]  ) - 0.25*dqv;
 			x = 1.0 - sp1;
 			y = qv1/pXFoil->qinf;
-			m_pQVCurve->AppendPoint(x,y);
+			m_pQVCurve->appendPoint(x,y);
 			x = 1.0 - sp2;
 			y = qv2/pXFoil->qinf;
-			m_pQVCurve->AppendPoint(x,y);
+			m_pQVCurve->appendPoint(x,y);
 		}
 		m_pQVCurve->SetVisible(true);
 	}
@@ -2316,16 +2316,16 @@ bool QXInverse::SetParams()
 	m_pMCurve->setColor(m_pModFoil->m_FoilColor);
 	m_pMCurve->setStyle(m_pModFoil->m_FoilStyle);
 	m_pMCurve->setWidth(m_pModFoil->m_FoilWidth);
-	m_pQCurve->setTitle(tr("Q - Reference"));
-	m_pMCurve->setTitle(tr("Q - Specification"));
-	m_pQVCurve->setTitle(tr("Q - Viscous"));
+	m_pQCurve->setCurveName(tr("Q - Reference"));
+	m_pMCurve->setCurveName(tr("Q - Specification"));
+	m_pQVCurve->setCurveName(tr("Q - Viscous"));
 	m_pQVCurve->setColor(QColor(50,170,0));
 	m_pQVCurve->setStyle(0);
 
 	m_pReflectedCurve->setColor(m_ReflectedClr);
 	m_pReflectedCurve->setStyle(m_ReflectedStyle);
 	m_pReflectedCurve->setWidth(m_ReflectedWidth);
-	m_pReflectedCurve->setTitle(tr("Reflected"));
+	m_pReflectedCurve->setCurveName(tr("Reflected"));
 
 	m_bTrans   = false;
 	m_bSpline  = false;
@@ -2732,7 +2732,7 @@ void QXInverse::zoomEvent(QPoint pos, double zoomFactor)
 		{
 			//zoom both
 			m_QGraph.setAuto(false);
-			m_QGraph.Scale(1.0/zoomFactor);
+			m_QGraph.scale(1.0/zoomFactor);
 		}
 		m_QGraph.setAutoXUnit();
 		m_QGraph.setAutoYUnit();

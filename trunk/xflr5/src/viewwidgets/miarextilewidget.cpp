@@ -124,7 +124,7 @@ void MiarexTileWidget::adjustLayout()
 
 			m_pMainGridLayout->setRowStretch(1,1);
 			m_pMainGridLayout->setRowStretch(2,0);
-			m_pMainGridLayout->setColumnStretch(1,13);
+			m_pMainGridLayout->setColumnStretch(1,15);
 			m_pMainGridLayout->setColumnStretch(2,5);
 			m_pMainGridLayout->setColumnStretch(3,0);
 			m_pMainGridLayout->setColumnStretch(4,0);
@@ -159,9 +159,9 @@ void MiarexTileWidget::adjustLayout()
 
 		m_pMainGridLayout->setRowStretch(1,1);
 		m_pMainGridLayout->setRowStretch(2,1);
-		m_pMainGridLayout->setColumnStretch(1,2);
-		m_pMainGridLayout->setColumnStretch(2,2);
-		m_pMainGridLayout->setColumnStretch(3,1);
+		m_pMainGridLayout->setColumnStretch(1,3);
+		m_pMainGridLayout->setColumnStretch(2,3);
+		m_pMainGridLayout->setColumnStretch(3,2);
 		m_pMainGridLayout->setColumnStretch(4,0);
 	}
 	else
@@ -195,6 +195,7 @@ void MiarexTileWidget::setMiarexGraphList(XFLR5::enumMiarexViews miarexView, QLi
 	m_nGraphWidgets = qMin(nGraphs,MAXGRAPHS);
 	m_iActiveGraphWidget = iGraphWidget;
 	m_MiarexView = miarexView;
+	m_pLegendWidget->setMiarexView(m_MiarexView);
 
 	if(miarexView==XFLR5::WOPPVIEW) m_pWingWidget->setWingGraph(m_GraphWidget.at(0)->graph());
 
@@ -220,4 +221,8 @@ void MiarexTileWidget::onSplitterMoved(int pos, int index)
 //		update();
 	}
 }
+
+
+
+
 

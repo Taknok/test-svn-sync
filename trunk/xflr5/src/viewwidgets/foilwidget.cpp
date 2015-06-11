@@ -152,8 +152,8 @@ void FoilWidget::mouseMoveEvent(QMouseEvent *event)
 			//zoom the foil
 			scale = m_fScale;
 
-			if(pt.y()-m_PointDown.y()<0) m_fScale *= 1.02;
-			else                         m_fScale /= 1.02;
+			if(pt.y()-m_PointDown.y()<0) m_fScale /= 1.02;
+			else                         m_fScale *= 1.02;
 
 			a = rect().center().x();
 

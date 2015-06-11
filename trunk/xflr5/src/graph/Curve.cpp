@@ -45,7 +45,7 @@ Curve::Curve()
  * @param yn: y-coordinate
  * @return the new number of points in the curve
  */
-int Curve::AppendPoint(double xn, double yn)
+int Curve::appendPoint(double xn, double yn)
 {
 	x.append(xn);
 	y.append(yn);
@@ -56,11 +56,11 @@ int Curve::AppendPoint(double xn, double yn)
  * Copies the data and settings from an existing curve
  * @param pCurve: a pointer to the input curve
  */
-void Curve::Duplicate(Curve *pCurve)
+void Curve::duplicate(Curve *pCurve)
 {
 	if(!pCurve) return;
 
-	CopyData(pCurve);
+	copyData(pCurve);
 
 	CurveColor = pCurve->CurveColor;
 	CurveStyle = pCurve->CurveStyle;
@@ -74,7 +74,7 @@ void Curve::Duplicate(Curve *pCurve)
  * Copies the data and settings from an existing curve
  * @param pCurve: a pointer to the input curve
  */
-void Curve::CopyData(Curve *pCurve)
+void Curve::copyData(Curve *pCurve)
 {
 	if(!pCurve) return;
 	clear();

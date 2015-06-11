@@ -353,7 +353,7 @@ Curve* Graph::curve(QString CurveTitle)
 		pCurve = (Curve*)m_oaCurves.at(i);
 		if(pCurve)
 		{
-			pCurve->title(strong);
+			pCurve->curveName(strong);
 			if(strong==CurveTitle) return pCurve;
 		}
 	}
@@ -579,7 +579,7 @@ void Graph::resetYLimits()
 }
 
 
-void Graph::Scale(double zoom)
+void Graph::scale(double zoom)
 {
 	if (zoom<0.01) zoom =0.01;
 	m_bAutoX = false;
@@ -1313,7 +1313,7 @@ bool Graph::SelectPoint(QString const &CurveName, int sel)
 	for(int i=0; i<m_oaCurves.size(); i++)
 	{
 		pCurve = (Curve*)m_oaCurves.at(i);
-		pCurve->title(str);
+		pCurve->curveName(str);
 		if(str == CurveName)
 		{
 			if(sel>pCurve->count())

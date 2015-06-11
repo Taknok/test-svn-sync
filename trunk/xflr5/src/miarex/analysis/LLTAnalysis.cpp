@@ -542,7 +542,7 @@ int LLTAnalysis::iterate(double &QInf, double Alpha)
 			break;
 		}
 
-		if(m_pCurve) m_pCurve->AppendPoint(iter, m_Maxa);
+		if(m_pCurve) m_pCurve->appendPoint(iter, m_Maxa);
 		iter++;
 	}
 	return iter;
@@ -628,7 +628,7 @@ bool LLTAnalysis::alphaLoop()
 			str  = QString("Alpha=%1").arg(Alpha, 7,'f', 2);
 			str += QString::fromUtf8("°");
 			m_pCurve = m_pGraph->addCurve();
-			m_pCurve->setTitle(str);
+			m_pCurve->setCurveName(str);
 		}
 
 
@@ -719,7 +719,7 @@ bool LLTAnalysis::QInfLoop()
 		{
 			str = QString("QInf=%1 m/s").arg(QInf, 7,'f', 2);
 			m_pCurve = m_pGraph->addCurve();
-			m_pCurve->setTitle(str);
+			m_pCurve->setCurveName(str);
 		}
 
 		if(s_bInitCalc) setLinearSolution(m_pWPolar->m_AlphaSpec);
@@ -878,7 +878,7 @@ PlaneOpp* LLTAnalysis::createPlaneOpp(double QInf, double Alpha, bool bWingOut)
 		pNewPOpp->m_bOut                = bWingOut;
 
 
-		pNewPOpp->AddWingOpp(0, 0);
+		pNewPOpp->addWingOpp(0, 0);
 		pNewPOpp->m_pPlaneWOpp[0]->createWOpp(m_pWing, m_pWPolar);
 
 		WingOpp *pNewPoint = pNewPOpp->m_pPlaneWOpp[0];
