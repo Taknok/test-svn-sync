@@ -179,7 +179,7 @@ void GraphTileWidget::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_5:
 		case Qt::Key_6:
 		{
-			if(bShift || bCtrl)
+			if(bCtrl)
 			{
 				event->ignore();
 				return;
@@ -192,7 +192,7 @@ void GraphTileWidget::keyPressEvent(QKeyEvent *event)
 				if(iGraph<m_GraphWidget.count())
 				{
 					m_iActiveGraphWidget = iGraph;
-					m_pLegendWidget->setGraph(m_GraphWidget.at(iGraph)->graph());
+					if(iGraph<m_GraphWidget.count()) m_pLegendWidget->setGraph(m_GraphWidget.at(iGraph)->graph());
 					adjustLayout();
 				}
 
