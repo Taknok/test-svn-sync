@@ -161,7 +161,7 @@ void Plane::ComputeVolumeInertia(double &Mass, CVector & CoG, double &CoGIxx, do
 	{
 		if(m_pBody->m_VolumeMass>PRECISION)
 		{
-			m_pBody->ComputeVolumeInertia(CoGBody, Ixx, Iyy, Izz, Ixz);
+			m_pBody->computeVolumeInertia(CoGBody, Ixx, Iyy, Izz, Ixz);
 			CoG += (CoGBody+m_BodyPos) * m_pBody->m_VolumeMass;
 			PlaneMass += m_pBody->m_VolumeMass;
 			CoGIxx += Ixx;
@@ -383,7 +383,7 @@ void Plane::Duplicate(Plane *pPlane)
 	if(m_bBody)
 	{
 		m_pBody = new Body();
-		m_pBody->Duplicate(pPlane->m_pBody);
+		m_pBody->duplicate(pPlane->m_pBody);
 	}
 
 	setAutoBodyName();
@@ -430,7 +430,7 @@ double Plane::TotalMass()
 	if(m_bBiplane) Mass += m_Wing[1].totalMass();
 	if(m_bStab)    Mass += m_Wing[2].totalMass();
 	if(m_bFin)     Mass += m_Wing[3].totalMass();
-	if(body())  Mass += m_pBody->TotalMass();
+	if(body())  Mass += m_pBody->totalMass();
 	
 	for(int i=0; i<m_PointMass.size(); i++)
 		Mass += m_PointMass[i]->mass();
@@ -606,7 +606,7 @@ bool Plane::SerializePlane(QDataStream &ar, bool bIsStoring)
 			if(m_bBody)
 			{
 				m_pBody = new Body;
-				m_pBody->SerializeBodyWPA(ar, false);
+				m_pBody->serializeBodyWPA(ar, false);
 			}
 		}
 
@@ -657,7 +657,7 @@ bool Plane::SerializePlaneXFL(QDataStream &ar, bool bIsStoring)
 		if(m_bBody)
 		{
 			ar << m_BodyName;
-			m_pBody->SerializeBodyXFL(ar, true);
+			m_pBody->serializeBodyXFL(ar, true);
 		}
 
 		ar << m_PointMass.size();
@@ -710,7 +710,7 @@ bool Plane::SerializePlaneXFL(QDataStream &ar, bool bIsStoring)
 			ar >> m_BodyName;
 			if(m_pBody) delete m_pBody;
 			m_pBody = new Body();
-			m_pBody->SerializeBodyXFL(ar, bIsStoring);
+			m_pBody->serializeBodyXFL(ar, bIsStoring);
 		}
 
 		ClearPointMasses();

@@ -313,7 +313,7 @@ void ManageFoilsDlg::OnExport()
 
 	QTextStream out(&XFile);
 
-	m_pFoil->ExportFoil(out);
+	m_pFoil->exportFoil(out);
 	XFile.close();
 }
 

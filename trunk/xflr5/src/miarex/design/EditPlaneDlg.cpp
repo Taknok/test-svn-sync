@@ -581,8 +581,8 @@ void EditPlaneDlg::GLDraw3D()
 		if(m_pPlane->body())
 		{
 			Body TranslatedBody;
-			TranslatedBody.Duplicate(m_pPlane->body());
-			TranslatedBody.Translate(m_pPlane->bodyPos());
+			TranslatedBody.duplicate(m_pPlane->body());
+			TranslatedBody.translate(m_pPlane->bodyPos());
 			GLCreateGeom(WINGSURFACES, pWingList, &TranslatedBody);
 		}
 		else GLCreateGeom(WINGSURFACES, pWingList, NULL);
@@ -750,14 +750,14 @@ void EditPlaneDlg::GLCreateBodyFrameHighlight(Body *pBody, CVector bodyPos, int 
 		{
 			if(pBody->activeFrame())
 			{
-				u = pBody->Getu(pFrame->m_Position.x);
+				u = pBody->getu(pFrame->m_Position.x);
 
 				glBegin(GL_LINE_STRIP);
 				{
 					v = 0.0;
 					for (k=0; k<nh; k++)
 					{
-						pBody->GetPoint(u,v,true, Point);
+						pBody->getPoint(u,v,true, Point);
 						glVertex3d(Point.x+bodyPos.x, Point.y, Point.z+bodyPos.z);
 						v += hinc;
 					}
@@ -768,7 +768,7 @@ void EditPlaneDlg::GLCreateBodyFrameHighlight(Body *pBody, CVector bodyPos, int 
 					v = 0.0;
 					for (k=0; k<nh; k++)
 					{
-						pBody->GetPoint(u,v,false, Point);
+						pBody->getPoint(u,v,false, Point);
 						glVertex3d(Point.x+bodyPos.x, Point.y, Point.z+bodyPos.z);
 						v += hinc;
 					}
@@ -1429,7 +1429,7 @@ void EditPlaneDlg::fillBodyTreeView(QStandardItem*planeRootItem)
 	QList<QStandardItem*> hoopFolder = prepareRow("Hoop_panels (FLATPANELS case)");
 	bodyFolder.first()->appendRow(hoopFolder);
 	{
-		for(int isl=0; isl<pBody->SideLineCount(); isl++)
+		for(int isl=0; isl<pBody->sideLineCount(); isl++)
 		{
 			QList<QStandardItem*> dataItem = prepareIntRow("", QString("Hoop panels in stripe %1").arg(isl+1), pBody->m_hPanels.at(isl));
 			hoopFolder.first()->appendRow(dataItem);

@@ -159,7 +159,7 @@ void NacaFoilDlg::generateFoil()
 	}
 	m_pBufferFoil->nb = pXFoil->nb;
 	m_pBufferFoil->n = pXFoil->nb;
-	m_pBufferFoil->InitFoil();
+	m_pBufferFoil->initFoil();
 
 	m_pParent->update();
 	m_bGenerated = true;

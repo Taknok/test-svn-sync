@@ -346,7 +346,7 @@ void PlaneDlg::OnDefineBody()
 	if(!m_pPlane->m_pBody) return;
 
 	Body memBody;
-	memBody.Duplicate(m_pPlane->m_pBody);
+	memBody.duplicate(m_pPlane->m_pBody);
     CVector v = m_pPlane->bodyPos();
     v.x = -v.x; v.z=-v.z;
  //   m_pPlane->m_pBody->Translate(v,false);
@@ -360,7 +360,7 @@ void PlaneDlg::OnDefineBody()
 		m_bChanged = true;
 		SetResults();
 	}
-	else m_pPlane->m_pBody->Duplicate(&memBody);
+	else m_pPlane->m_pBody->duplicate(&memBody);
  //   m_pPlane->m_pBody->Translate(m_pPlane->BodyPos(),false);
 }
 
@@ -411,7 +411,7 @@ void PlaneDlg::OnImportPlaneBody()
 		if(pOldBody)
 		{
 			Body *pNewBody = new Body;
-			pNewBody->Duplicate(pOldBody);
+			pNewBody->duplicate(pOldBody);
             m_pPlane->setBody(pNewBody);
 		}
 	}
@@ -455,7 +455,7 @@ void PlaneDlg::OnImportXMLBody()
 	if(m_pPlane->body()) delete m_pPlane->body();
 
 	Body *pXMLBody = new Body;
-	pXMLBody->Duplicate(a_plane.body());
+	pXMLBody->duplicate(a_plane.body());
 	m_pPlane->setBody(pXMLBody);
 	m_pctrlBody->setChecked(true);
 }

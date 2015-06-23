@@ -404,7 +404,7 @@ void QXInverse::ExecMDES()
 	}
 	m_pModFoil->n  = pXFoil->nsp;
 	m_pModFoil->nb = pXFoil->nsp;
-	m_pModFoil->InitFoil();
+	m_pModFoil->initFoil();
 	m_pModFoil->m_bSaved = false;
 
 	m_bModFoil = true;
@@ -472,7 +472,7 @@ bool QXInverse::ExecQDES()
 	m_pModFoil->n  = pXFoil->n;
 	m_pModFoil->nb = pXFoil->nb;
 
-	m_pModFoil->InitFoil();
+	m_pModFoil->initFoil();
 	m_bModFoil = true;
 
 	return true;
@@ -1439,7 +1439,7 @@ void QXInverse::OnExtractFoil()
 		pFoil = Foil::foil(dlg.m_FoilName);
 		Foil::setCurFoil(pFoil);
 
-		m_pRefFoil->CopyFoil(pFoil);
+		m_pRefFoil->copyFoil(pFoil);
 
 		m_pModFoil->m_FoilName = m_pRefFoil->m_FoilName + tr(" Modified");
 		InitXFoil(m_pRefFoil);
@@ -1801,7 +1801,7 @@ void QXInverse::OnStoreFoil()
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 
 	Foil* pNewFoil = new Foil();
-	pNewFoil->CopyFoil(m_pModFoil);
+	pNewFoil->copyFoil(m_pModFoil);
 	pNewFoil->m_FoilStyle = 0;
 	pNewFoil->m_FoilWidth = 1;
 	memcpy(pNewFoil->xb, m_pModFoil->x, sizeof(m_pModFoil->x));
@@ -2346,7 +2346,7 @@ bool QXInverse::SetParams()
 	//is a foil set as current in the mainframe ?
 	if (Foil::curFoil() && pXFoil->m_FoilName==Foil::curFoil()->m_FoilName && pXFoil->lqspec)
 	{
-		m_pRefFoil->CopyFoil(Foil::curFoil());
+		m_pRefFoil->copyFoil(Foil::curFoil());
 		m_pRefFoil->m_FoilColor = m_pQCurve->color();
 //		m_pXFoil->m_FoilName    = m_pRefFoil->m_FoilName ;
 //		InitXFoil(m_pRefFoil);
@@ -2359,7 +2359,7 @@ bool QXInverse::SetParams()
 		if(m_poaFoil->size())
 		{
 			pFoil = (Foil*)m_poaFoil->at(0);
-			m_pRefFoil->CopyFoil(pFoil);
+			m_pRefFoil->copyFoil(pFoil);
 			m_pRefFoil->m_FoilColor = m_pQCurve->color();
 			pXFoil->m_FoilName      = m_pRefFoil->m_FoilName ;
 			InitXFoil(m_pRefFoil);
@@ -2398,7 +2398,7 @@ bool QXInverse::SetParams()
 	m_pRefFoil->n          = pXFoil->n;
 	m_pRefFoil->nb         = pXFoil->n;
 	m_pRefFoil->m_FoilName = pXFoil->m_FoilName;
-	m_pRefFoil->InitFoil();
+	m_pRefFoil->initFoil();
 	m_pModFoil->m_FoilName = pXFoil->m_FoilName + tr(" Modified");
 
 	SetFoil();

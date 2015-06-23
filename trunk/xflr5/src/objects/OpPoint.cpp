@@ -553,8 +553,8 @@ void OpPoint::setHingeMoments()
 	double xof, yof;
 	double ymin, ymax;
 	xof = Foil::curFoil()->m_TEXHinge/100.0;
-	ymin = Foil::curFoil()->GetBaseLowerY(xof);
-	ymax = Foil::curFoil()->GetBaseUpperY(xof);
+	ymin = Foil::curFoil()->baseLowerY(xof);
+	ymax = Foil::curFoil()->baseUpperY(xof);
 	yof = ymin + (ymax-ymin) * Foil::curFoil()->m_TEYHinge/100.0;
 
 	if(Foil::curFoil()->m_bTEFlap)
@@ -659,7 +659,7 @@ OpPoint *OpPoint::getOpp(double Alpha)
 			}
 		}
 	}
-	return NULL;// shouldn't ever get here, fortunately
+	return NULL;// if no OpPoint has a matching alpha
 }
 
 

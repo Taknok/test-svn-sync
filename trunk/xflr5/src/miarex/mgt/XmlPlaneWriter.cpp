@@ -203,7 +203,7 @@ void XMLPlaneWriter::writeBody(Body *pBody, CVector position, double lengthUnit,
 		}
 		else
 		{
-			for(int isl=0; isl<pBody->SideLineCount(); isl++)
+			for(int isl=0; isl<pBody->sideLineCount(); isl++)
 			{
 				writeTextElement("Hoop_panels_stripe_%1",  QString("%1").arg(pBody->m_hPanels.at(isl)));
 			}

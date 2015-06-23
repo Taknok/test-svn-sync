@@ -248,8 +248,8 @@ void TwoDPanelDlg::OnApply()
 		}
 		pBufferFoil->nb = pXFoil->n;
 //		pXFoil->SetFoilFlap(pBufferFoil);
-		pBufferFoil->InitFoil();
-		pBufferFoil->SetFlap();
+		pBufferFoil->initFoil();
+		pBufferFoil->setFlap();
 	}
 	m_bApplied = true;
 	m_bModified = true;

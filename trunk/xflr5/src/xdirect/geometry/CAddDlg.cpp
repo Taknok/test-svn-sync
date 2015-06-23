@@ -163,8 +163,8 @@ void CAddDlg::OnApply()
 	}
 	m_pBufferFoil->nb = pXFoil->n;
 //		pXFoil->SetFoilFlap(m_pBufferFoil);
-	m_pBufferFoil->InitFoil();
-	m_pBufferFoil->SetFlap();
+	m_pBufferFoil->initFoil();
+	m_pBufferFoil->setFlap();
 
 	pXFoil->CheckAngles();
 	strong = QString(tr("Maximum panel angle is %1")).arg( pXFoil->amax,0,'f',1);

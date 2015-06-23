@@ -303,8 +303,8 @@ void FoilGeomDlg::Apply()
 		}
 		m_pBufferFoil->nb = pXFoil->nb;
 //		pXFoil->SetFoilFlap(m_pBufferFoil);
-		m_pBufferFoil->InitFoil();
-		m_pBufferFoil->SetFlap();
+		m_pBufferFoil->initFoil();
+		m_pBufferFoil->setFlap();
 	}
 	m_bModified = true;
 
@@ -384,7 +384,7 @@ void FoilGeomDlg::OnRestore()
 {
 	XFoil *pXFoil = (XFoil*)s_pXFoil;
 
-	m_pBufferFoil->CopyFoil(m_pMemFoil);
+	m_pBufferFoil->copyFoil(m_pMemFoil);
 
 	m_fThickness   = m_pMemFoil->m_fThickness;
 	m_fCamber      = m_pMemFoil->m_fCamber;

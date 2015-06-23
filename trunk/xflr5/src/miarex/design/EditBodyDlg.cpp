@@ -609,14 +609,14 @@ void EditBodyDlg::GLCreateBodyFrameHighlight(Body *pBody, CVector bodyPos, int i
 		{
 			if(m_pBody->activeFrame())
 			{
-				u = m_pBody->Getu(pFrame->m_Position.x);
+				u = m_pBody->getu(pFrame->m_Position.x);
 
 				glBegin(GL_LINE_STRIP);
 				{
 					v = 0.0;
 					for (k=0; k<nh; k++)
 					{
-						pBody->GetPoint(u,v,true, Point);
+						pBody->getPoint(u,v,true, Point);
 						glVertex3d(Point.x+bodyPos.x, Point.y, Point.z+bodyPos.z);
 						v += hinc;
 					}
@@ -627,7 +627,7 @@ void EditBodyDlg::GLCreateBodyFrameHighlight(Body *pBody, CVector bodyPos, int i
 					v = 0.0;
 					for (k=0; k<nh; k++)
 					{
-						pBody->GetPoint(u,v,false, Point);
+						pBody->getPoint(u,v,false, Point);
 						glVertex3d(Point.x+bodyPos.x, Point.y, Point.z+bodyPos.z);
 						v += hinc;
 					}
@@ -857,7 +857,7 @@ void EditBodyDlg::fillBodyTreeView()
 	QList<QStandardItem*> hoopFolder = prepareRow("Hoop_panels (FLATPANELS case)");
 	bodyFolder.first()->appendRow(hoopFolder);
 	{
-		for(int isl=0; isl<m_pBody->SideLineCount(); isl++)
+		for(int isl=0; isl<m_pBody->sideLineCount(); isl++)
 		{
 			QList<QStandardItem*> dataItem = prepareIntRow("", QString("Hoop panels in stripe %1").arg(isl+1), m_pBody->m_hPanels.at(isl));
 			hoopFolder.first()->appendRow(dataItem);
@@ -1297,7 +1297,7 @@ void EditBodyDlg::onDelete()
 {
 	if(m_pBody && m_pBody->activeFrame())
 	{
-		m_pBody->RemoveActiveFrame();
+		m_pBody->removeActiveFrame();
 
 		m_pStruct->closePersistentEditor(m_pStruct->currentIndex());
 		fillBodyTreeView();
