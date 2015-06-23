@@ -1516,16 +1516,16 @@ void Wing::GetViewYZPos(double xrel, double y, double &yv, double &zv, int pos)
 
 			if(pos==1)
 			{
-				pFoil0->GetUpperY(xrel, z0, nx, ny) ;
-				pFoil1->GetUpperY(xrel, z1, nx, ny) ;
+				pFoil0->upperY(xrel, z0, nx, ny) ;
+				pFoil1->upperY(xrel, z1, nx, ny) ;
 				z0 *= chord;
 				z1 *= chord;
 				zv += z0 + (z1-z0)*tau;
 			}
 			else if(pos==-1)
 			{
-				pFoil0->GetLowerY(xrel, z0, nx, ny);
-				pFoil1->GetLowerY(xrel, z1, nx, ny);
+				pFoil0->lowerY(xrel, z0, nx, ny);
+				pFoil1->lowerY(xrel, z1, nx, ny);
 				z0 *= chord;
 				z1 *= chord;
 				zv += z0 + (z1-z0)*tau;

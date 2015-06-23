@@ -93,41 +93,41 @@ public:
 	void setFoilName(QString FoilName){m_FoilName = FoilName;}
 	void renameThisFoil(QString newFoilName);
 
-	int IsPoint(CVector const &Real);
+	int isPoint(CVector const &Real);
 	void drawFoil(QPainter &painter, double const &alpha, double const &scalex, double const &scaley, QPointF const &Offset);
 	void drawPoints(QPainter &painter, double const &scalex, double const &scaley, QPointF const &Offset);
 	void drawMidLine(QPainter &painter, double const &scalex, double const &scaley, QPointF const &Offset);
 
-	void GetLowerY(double x, double &y, double &normx, double &normy);
-	void GetUpperY(double x, double &y, double &normx, double &normy);
+	void lowerY(double x, double &y, double &normx, double &normy);
+	void upperY(double x, double &y, double &normx, double &normy);
 
-	double DeRotate();
-	double GetBaseUpperY(double x);
-	double GetBaseLowerY(double x);
-	double GetMidY(double xl);
-	double GetLowerY(double x);
-	double GetUpperY(double x);
-	double GetCamber(double const &x);
-	double GetCamberSlope(double const &x);
+	double derotate();
+	double baseUpperY(double x);
+	double baseLowerY(double x);
+	double midY(double xl);
+	double lowerY(double x);
+	double upperY(double x);
+	double camber(double const &x);
+	double camberSlope(double const &x);
 	double length();
-	double GetArea();
-	double GetTopSlope(double const &x);
-	double GetBotSlope(double const &x);
-	double NormalizeGeometry();
-	void CompMidLine(bool bParams);
+	double area();
+	double topSlope(double const &x);
+	double bottomSlope(double const &x);
+	double normalizeGeometry();
+	void compMidLine(bool bParams);
 
-	bool ExportFoil(QTextStream &out);
-	bool InitFoil();
+	bool exportFoil(QTextStream &out);
+	bool initFoil();
 
-	void CopyFoil(Foil *pSrcFoil);
-	bool Serialize(QDataStream &ar, bool bIsStoring);
-	bool SerializeFoilXFL(QDataStream &ar, bool bIsStoring);
-	void SetFlap();
-	void SetTEFlap();
-	void SetLEFlap();
-	void SetNaca009();
-	void SetLEFlapData(bool bFlap, double xhinge, double yhinge, double angle);
-	void SetTEFlapData(bool bFlap, double xhinge, double yhinge, double angle);
+	void copyFoil(Foil *pSrcFoil);
+	bool serialize(QDataStream &ar, bool bIsStoring);
+	bool serializeFoilXFL(QDataStream &ar, bool bIsStoring);
+	void setFlap();
+	void setTEFlap();
+	void setLEFlap();
+	void setNaca009();
+	void setLEFlapData(bool bFlap, double xhinge, double yhinge, double angle);
+	void setTEFlapData(bool bFlap, double xhinge, double yhinge, double angle);
 
 	bool Intersect(CVector const &A, CVector const &B, CVector const &C, CVector const &D, CVector *M);
 

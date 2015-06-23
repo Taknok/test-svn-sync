@@ -1518,7 +1518,7 @@ void PanelAnalysis::ComputePlane(double Alpha, double QInf, int qrhs)
 		{
 			double ICm = 0.0;
 			traceLog("       Calculating body...\n");
-			m_pPlane->body()->ComputeAero(m_Cp+qrhs*m_MatSize+pos, XCP, YCP, ZCP, ICm, m_GRm, m_GYm, Alpha, m_pWPolar->m_CoG);
+			m_pPlane->body()->computeAero(m_Cp+qrhs*m_MatSize+pos, XCP, YCP, ZCP, ICm, m_GRm, m_GYm, Alpha, m_pWPolar->m_CoG);
 			m_ICm += ICm;
 			m_GCm += ICm;
 

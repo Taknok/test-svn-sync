@@ -109,12 +109,12 @@ void BodyFrameWidget::drawFrameLines()
 	{
 		if(m_pBody->activeFrame())
 		{
-			u = m_pBody->Getu(m_pBody->activeFrame()->m_Position.x);
+			u = m_pBody->getu(m_pBody->activeFrame()->m_Position.x);
 
 			v = 0.0;
 			for (k=0; k<nh; k++)
 			{
-				m_pBody->GetPoint(u,v,true, Point);
+				m_pBody->getPoint(u,v,true, Point);
 				rightPolyline.append(QPointF(Point.y*m_fScale+m_ptOffset.x(), Point.z* -m_fScale + m_ptOffset.y()));
 				leftPolyline.append(QPointF(-Point.y*m_fScale+m_ptOffset.x(), Point.z* -m_fScale + m_ptOffset.y()));
 				v += hinc;
@@ -129,7 +129,7 @@ void BodyFrameWidget::drawFrameLines()
 	framePen.setWidth(1);
 	painter.setPen(framePen);
 
-	for(int j=0; j<m_pBody->FrameSize(); j++)
+	for(int j=0; j<m_pBody->frameSize(); j++)
 	{
 		if(m_pBody->frame(j)!=m_pBody->activeFrame())
 		{
@@ -138,12 +138,12 @@ void BodyFrameWidget::drawFrameLines()
 
 			if(m_pBody->m_LineType ==XFLR5::BODYSPLINETYPE)
 			{
-				u = m_pBody->Getu(m_pBody->frame(j)->m_Position.x);
+				u = m_pBody->getu(m_pBody->frame(j)->m_Position.x);
 
 				v = 0.0;
 				for (k=0; k<nh; k++)
 				{
-					m_pBody->GetPoint(u,v,true, Point);
+					m_pBody->getPoint(u,v,true, Point);
 					rightPolyline.append(QPointF(Point.y*m_fScale+m_ptOffset.x(), Point.z* -m_fScale + m_ptOffset.y()));
 					leftPolyline.append(QPointF(-Point.y*m_fScale+m_ptOffset.x(), Point.z* -m_fScale + m_ptOffset.y()));
 					v += hinc;
@@ -153,7 +153,7 @@ void BodyFrameWidget::drawFrameLines()
 			else
 			{
 
-				for (k=0; k<m_pBody->SideLineCount();k++)
+				for (k=0; k<m_pBody->sideLineCount();k++)
 				{
 					rightPolyline.append(QPointF( m_pBody->frame(j)->m_CtrlPoint[k].y*m_fScale+m_ptOffset.x(), m_pBody->frame(j)->m_CtrlPoint[k].z* -m_fScale + m_ptOffset.y()));
 					leftPolyline.append( QPointF(-m_pBody->frame(j)->m_CtrlPoint[k].y*m_fScale+m_ptOffset.x(), m_pBody->frame(j)->m_CtrlPoint[k].z* -m_fScale + m_ptOffset.y()));
@@ -240,7 +240,7 @@ void BodyFrameWidget::onRemovePt()
 		int n =   m_pBody->activeFrame()->isPoint(Real, m_fScale/m_fRefScale);
 		if (n>=0)
 		{
-			for (int i=0; i<m_pBody->FrameSize();i++)
+			for (int i=0; i<m_pBody->frameSize();i++)
 			{
 				m_pBody->frame(i)->RemovePoint(n);
 			}

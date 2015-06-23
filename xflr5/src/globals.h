@@ -59,7 +59,7 @@ bool Intersect(CVector const &LA, CVector const &LB, CVector const &TA, CVector 
 bool ReadAVLString(QTextStream &in, int &Line, QString &strong);
 bool Rewind1Line(QTextStream &in, int &Line, QString &strong);
 
-void ReadValues(QString line, int &res, double &x, double &y, double &z);
+int readValues(QString line, double &x, double &y, double &z);
 
 void ExpFormat(double &f, int &exp);
 void ReynoldsFormat(QString &str, double f);

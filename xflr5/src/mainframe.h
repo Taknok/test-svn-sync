@@ -127,7 +127,7 @@ public slots:
 	void onMiarex();
 
 private slots:
-	void AboutQt();
+	void aboutQt();
 	void aboutXFLR5();
 	void onCurFoilStyle();
 	void onExportCurGraph();
@@ -168,29 +168,29 @@ public:
 	void addRecentFile(const QString &PathNAme);
 	void checkGraphActions();
 	void ClientToGL(QPoint const &point, CVector &real);
-	void CreateDockWindows();
-	void CreateToolbars();
-	void CreateStatusBar();
-	void CreateActions();
-	void CreateMenus();
+	void createDockWindows();
+	void createToolbars();
+	void createStatusBar();
+	void createActions();
+	void createMenus();
 	void createGraphActions();
-	void CreateXDirectActions();
-	void CreateXDirectMenus();
-	void CreateXDirectToolbar();
-	void CreateXInverseActions();
+	void createXDirectActions();
+	void createXDirectMenus();
+	void createXDirectToolbar();
+	void createXInverseActions();
 	void CreateXInverseMenus();
-	void CreateXInverseToolbar();
-	void CreateMiarexActions();
-	void CreateMiarexMenus();
-	void CreateMiarexToolbar();
-	void CreateAFoilActions();
-	void CreateAFoilMenus();
-	void CreateAFoilToolbar();
+	void createXInverseToolbar();
+	void createMiarexActions();
+	void createMiarexMenus();
+	void createMiarexToolbar();
+	void createAFoilActions();
+	void createAFoilMenus();
+	void createAFoilToolbar();
 	void deleteProject(bool bClosing=false);
 	void GLToClient(CVector const &real, QPoint &point);
 	bool loadSettings();
-	bool LoadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
-	void* ReadFoilFile(QTextStream &ar);
+	bool loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
+	void* readFoilFile(QTextStream &ar);
 	void readPolarFile(QDataStream &ar);
 	bool saveProject(QString PathName="");
 	void SaveSettings();
@@ -209,18 +209,18 @@ public:
 	void setMenus();
 	void SetupDataDir();
 	QString ShortenFileName(QString &PathName);
-	void UpdateFoilListBox();
-	void UpdatePolarListBox();
-	void UpdateOppListBox();
+	void updateFoilListBox();
+	void updatePolarListBox();
+	void updateOppListBox();
 	void updateRecentFileActions();
 	void updatePlaneListBox();
 	void updateView();
-	void UpdateWPolarListBox();
-	void UpdatePOppListBox();
-	void WritePolars(QDataStream &ar, void *pFoilPtr=NULL);
+	void updateWPolarListBox();
+	void updatePOppListBox();
+	void writePolars(QDataStream &ar, void *pFoilPtr=NULL);
 
 	static void setSaveState(bool bSave);
-	static void ReadStyleSheet(QString styleSheetName, QString &styleSheet);
+	static void readStyleSheet(QString styleSheetName, QString &styleSheet);
 	static QColor getColor(int type);
 
 
@@ -285,7 +285,7 @@ private:
 	QMenu *m_pWPlrCtxMenu, *m_pWOppCtxMenu, *m_pW3DCtxMenu, *m_pWCpCtxMenu, *m_pWTimeCtxMenu, *m_pW3DStabCtxMenu;
 
 	//MainFrame actions
-	QAction *OnXDirectAct, *OnMiarexAct, *OnAFoilAct, *OnXInverseAct, *OnMixedInverseAct;
+	QAction *onXDirectAct, *onMiarexAct, *onAFoilAct, *onXInverseAct, *onMixedInverseAct;
 	QAction *openAct, *insertAct, *styleAct;
 	QAction *saveAct, *saveProjectAsAct,*newProjectAct, *closeProjectAct, *saveOptionsAct;
 	QAction *unitsAct;

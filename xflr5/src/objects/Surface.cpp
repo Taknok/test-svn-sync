@@ -304,7 +304,7 @@ double Surface::GetFoilArea(double const &tau)
 	if(m_pFoilA && m_pFoilB)
 	{
 		chord = GetChord(tau);
-		area = (m_pFoilA->GetArea() + m_pFoilB->GetArea())/2.0*chord*chord;//m2
+		area = (m_pFoilA->area() + m_pFoilB->area())/2.0*chord*chord;//m2
 		return area;
 	}
 	else
@@ -455,8 +455,8 @@ void Surface::GetSurfacePoint(double const &xArel, double const &xBrel, double c
 
 	if(pos==1 && m_pFoilA && m_pFoilB)
 	{
-		TopA = m_pFoilA->GetUpperY(xArel)*GetChord(0.0);
-		TopB = m_pFoilB->GetUpperY(xBrel)*GetChord(1.0);
+		TopA = m_pFoilA->upperY(xArel)*GetChord(0.0);
+		TopB = m_pFoilB->upperY(xBrel)*GetChord(1.0);
 		APt.x +=  Normal.x * TopA;
 		APt.y +=  Normal.y * TopA;
 		APt.z +=  Normal.z * TopA;
@@ -466,8 +466,8 @@ void Surface::GetSurfacePoint(double const &xArel, double const &xBrel, double c
 	}
 	else if(pos==-1 && m_pFoilA && m_pFoilB)
 	{
-		BotA = m_pFoilA->GetLowerY(xArel)*GetChord(0.0);
-		BotB = m_pFoilB->GetLowerY(xBrel)*GetChord(1.0);
+		BotA = m_pFoilA->lowerY(xArel)*GetChord(0.0);
+		BotB = m_pFoilB->lowerY(xBrel)*GetChord(1.0);
 		APt.x +=  Normal.x * BotA;
 		APt.y +=  Normal.y * BotA;
 		APt.z +=  Normal.z * BotA;
@@ -517,8 +517,8 @@ void Surface::GetSurfacePointNormal(double const &xArel, double const &xBrel, do
 
 	if(pos==1 && m_pFoilA && m_pFoilB)
 	{
-		m_pFoilA->GetUpperY(xArel, TopA, nxA, nyA);
-		m_pFoilB->GetUpperY(xBrel, TopB, nxB, nyB);
+		m_pFoilA->upperY(xArel, TopA, nxA, nyA);
+		m_pFoilB->upperY(xBrel, TopB, nxB, nyB);
 		TopA *= GetChord(0.0);
 		TopB *= GetChord(1.0);
 
@@ -537,8 +537,8 @@ void Surface::GetSurfacePointNormal(double const &xArel, double const &xBrel, do
 	}
 	else if(pos==-1 && m_pFoilA && m_pFoilB)
 	{
-		m_pFoilA->GetLowerY(xArel, BotA, nxA, nyA);
-		m_pFoilB->GetLowerY(xBrel, BotB, nxB, nyB);
+		m_pFoilA->lowerY(xArel, BotA, nxA, nyA);
+		m_pFoilB->lowerY(xBrel, BotB, nxB, nyB);
 		BotA *= GetChord(0.0);
 		BotB *= GetChord(1.0);
 
@@ -584,7 +584,7 @@ void Surface::GetSection(double const &tau, double &Chord, double &Area, CVector
 
 	if(m_pFoilA && m_pFoilB)
 	{
-		Area = (m_pFoilA->GetArea() * tau + m_pFoilB->GetArea() * (1.0-tau))*Chord*Chord;//m2
+		Area = (m_pFoilA->area() * tau + m_pFoilB->area() * (1.0-tau))*Chord*Chord;//m2
 	}
 	else
 	{
@@ -950,8 +950,8 @@ void Surface::SetSidePoints(Body * pBody, double dx, double dz)
 	static Body TBody;
 	if(pBody)
 	{
-		TBody.Duplicate(pBody);
-		TBody.Translate(dx, 0.0, dz);
+		TBody.duplicate(pBody);
+		TBody.translate(dx, 0.0, dz);
 	}
 
 	cosdA = Normal.dot(NormalA);
@@ -982,18 +982,18 @@ void Surface::SetSidePoints(Body * pBody, double dx, double dz)
 
 	if(m_pFoilA && m_pFoilB)
 	{
-		zA = m_pFoilA->GetLowerY(m_xPointA[0])*chordA;
-		zB = m_pFoilB->GetLowerY(m_xPointB[0])*chordB;
+		zA = m_pFoilA->lowerY(m_xPointA[0])*chordA;
+		zB = m_pFoilB->lowerY(m_xPointB[0])*chordB;
 		SideA_B[0] = m_TA + NormalA * zA/cosdA;
 		SideB_B[0] = m_TB + NormalB * zB/cosdB;
 
-		zA = m_pFoilA->GetUpperY(m_xPointA[0])*chordA;
-		zB = m_pFoilB->GetUpperY(m_xPointB[0])*chordB;
+		zA = m_pFoilA->upperY(m_xPointA[0])*chordA;
+		zB = m_pFoilB->upperY(m_xPointB[0])*chordB;
 		SideA_T[0] = m_TA + NormalA * zA/cosdA;
 		SideB_T[0] = m_TB + NormalB * zB/cosdB;
 
-		zA = m_pFoilA->GetMidY(m_xPointA[0])*chordA;
-		zB = m_pFoilB->GetMidY(m_xPointB[0])*chordB;
+		zA = m_pFoilA->midY(m_xPointA[0])*chordA;
+		zB = m_pFoilB->midY(m_xPointB[0])*chordB;
 		SideA[0]   = m_TA + NormalA * zA/cosdA;
 		SideB[0]   = m_TB + NormalB * zB/cosdB;
 	}
@@ -1009,15 +1009,15 @@ void Surface::SetSidePoints(Body * pBody, double dx, double dz)
 
 	if(pBody && m_bIsCenterSurf && m_bIsLeftSurf)
 	{
-		if(TBody.Intersect(SideA_B[0], SideB_B[0], SideB_B[0], false)) m_bJoinRight = false;
-		if(TBody.Intersect(SideA_T[0], SideB_T[0], SideB_T[0], false)) m_bJoinRight = false;
-		if(TBody.Intersect(SideA[0],   SideB[0],   SideB[0],   false)) m_bJoinRight = false;;
+		if(TBody.intersect(SideA_B[0], SideB_B[0], SideB_B[0], false)) m_bJoinRight = false;
+		if(TBody.intersect(SideA_T[0], SideB_T[0], SideB_T[0], false)) m_bJoinRight = false;
+		if(TBody.intersect(SideA[0],   SideB[0],   SideB[0],   false)) m_bJoinRight = false;;
 	}
 	else if(pBody && m_bIsCenterSurf && m_bIsRightSurf)
 	{
-		TBody.Intersect(SideA_B[0], SideB_B[0], SideA_B[0], true);
-		TBody.Intersect(SideA_T[0], SideB_T[0], SideA_T[0], true);
-		TBody.Intersect(SideA[0],   SideB[0],   SideA[0],   true);
+		TBody.intersect(SideA_B[0], SideB_B[0], SideA_B[0], true);
+		TBody.intersect(SideA_T[0], SideB_T[0], SideA_T[0], true);
+		TBody.intersect(SideA[0],   SideB[0],   SideA[0],   true);
 	}
 
 
@@ -1037,20 +1037,20 @@ void Surface::SetSidePoints(Body * pBody, double dx, double dz)
 		if (m_pFoilA && m_pFoilB)
 		{
 			//create bottom surface side points
-			zA = m_pFoilA->GetLowerY(xLA)*chordA;
-			zB = m_pFoilB->GetLowerY(xLB)*chordB;
+			zA = m_pFoilA->lowerY(xLA)*chordA;
+			zB = m_pFoilB->lowerY(xLB)*chordB;
 			SideA_B[l+1]   = LA + NormalA * zA/cosdA;
 			SideB_B[l+1]   = LB + NormalB * zB/cosdB;
 
 			//create top surface side points
-			zA = m_pFoilA->GetUpperY(xLA)*chordA;
-			zB = m_pFoilB->GetUpperY(xLB)*chordB;
+			zA = m_pFoilA->upperY(xLA)*chordA;
+			zB = m_pFoilB->upperY(xLB)*chordB;
 			SideA_T[l+1] = LA + NormalA * zA/cosdA;
 			SideB_T[l+1] = LB + NormalB * zB/cosdB;
 
 			//create middle surface side points
-			zA = m_pFoilA->GetMidY(xLA)*chordA;
-			zB = m_pFoilB->GetMidY(xLB)*chordB;
+			zA = m_pFoilA->midY(xLA)*chordA;
+			zB = m_pFoilB->midY(xLB)*chordB;
 			SideA[l+1]   = LA + NormalA * zA/cosdA;
 			SideB[l+1]   = LB + NormalB * zB/cosdB;
 		}
@@ -1066,15 +1066,15 @@ void Surface::SetSidePoints(Body * pBody, double dx, double dz)
 
 		if(pBody && m_bIsCenterSurf && m_bIsLeftSurf)
 		{
-			if(TBody.Intersect(SideA_B[l+1], SideB_B[l+1], SideB_B[l+1], false)) m_bJoinRight = false;
-			if(TBody.Intersect(SideA_T[l+1], SideB_T[l+1], SideB_T[l+1], false)) m_bJoinRight = false;
-			if(TBody.Intersect(SideA[l+1],   SideB[l+1],   SideB[l+1],   false)) m_bJoinRight = false;
+			if(TBody.intersect(SideA_B[l+1], SideB_B[l+1], SideB_B[l+1], false)) m_bJoinRight = false;
+			if(TBody.intersect(SideA_T[l+1], SideB_T[l+1], SideB_T[l+1], false)) m_bJoinRight = false;
+			if(TBody.intersect(SideA[l+1],   SideB[l+1],   SideB[l+1],   false)) m_bJoinRight = false;
 		}
 		else if(pBody && m_bIsCenterSurf && m_bIsRightSurf)
 		{
-			TBody.Intersect(SideA_B[l+1], SideB_B[l+1], SideA_B[l+1], true);
-			TBody.Intersect(SideA_T[l+1], SideB_T[l+1], SideA_T[l+1], true);
-			TBody.Intersect(SideA[l+1],   SideB[l+1],     SideA[l+1], true);
+			TBody.intersect(SideA_B[l+1], SideB_B[l+1], SideA_B[l+1], true);
+			TBody.intersect(SideA_T[l+1], SideB_T[l+1], SideA_T[l+1], true);
+			TBody.intersect(SideA[l+1],   SideB[l+1],     SideA[l+1], true);
 		}
 	}
 

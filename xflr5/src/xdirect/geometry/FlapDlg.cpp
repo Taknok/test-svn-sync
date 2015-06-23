@@ -169,9 +169,9 @@ void FlapDlg::OnApply()
 
 	ReadParams();
 
-	m_pBufferFoil->SetTEFlapData(m_bTEFlap, m_TEXHinge, m_TEYHinge, m_TEFlapAngle);
-	m_pBufferFoil->SetLEFlapData(m_bLEFlap, m_LEXHinge, m_LEYHinge, m_LEFlapAngle);
-	m_pBufferFoil->SetFlap();
+	m_pBufferFoil->setTEFlapData(m_bTEFlap, m_TEXHinge, m_TEYHinge, m_TEFlapAngle);
+	m_pBufferFoil->setLEFlapData(m_bLEFlap, m_LEXHinge, m_LEYHinge, m_LEFlapAngle);
+	m_pBufferFoil->setFlap();
 
 	m_bApplied = true;
 	m_bModified = true;

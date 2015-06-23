@@ -272,7 +272,7 @@ void InterpolateFoilsDlg::Update()
 	m_pBufferFoil->n  = pFoil1->n;
 	m_pBufferFoil->nb = pFoil1->n;
 
-	m_pBufferFoil->InitFoil();
+	m_pBufferFoil->initFoil();
 
 	QString str;
 	str = QString(tr("Camb.=%1")).arg(m_pBufferFoil->m_fCamber*100,5,'f',2);

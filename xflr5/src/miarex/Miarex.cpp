@@ -1825,8 +1825,8 @@ void QMiarex::GLDraw3D()
 		Body TranslatedBody;
 		if(pCurBody && m_pCurPlane)
 		{
-			TranslatedBody.Duplicate(pCurBody);
-			TranslatedBody.Translate(m_pCurPlane->bodyPos());
+			TranslatedBody.duplicate(pCurBody);
+			TranslatedBody.translate(m_pCurPlane->bodyPos());
 		}
 
 		if(pCurBody && m_pCurPlane) GLCreateGeom(WINGSURFACES, m_pWingList, &TranslatedBody);
@@ -2431,7 +2431,7 @@ void QMiarex::LLTAnalyze(double V0, double VMax, double VDelta, bool bSequence, 
 	}
 
 	setPlaneOpp(false, V0);
-	pMainFrame->UpdatePOppListBox();
+	pMainFrame->updatePOppListBox();
 
     emit projectModified();
 }
@@ -3362,7 +3362,7 @@ void QMiarex::onDefineStabPolar()
 		m_bResetglWake = true;
 
 		setWPolar();
-		pMainFrame->UpdateWPolarListBox();
+		pMainFrame->updateWPolarListBox();
 		updateView();
 	}
 
@@ -3426,7 +3426,7 @@ void QMiarex::onDefineWPolar()
 		setWPolar();
 
 
-		pMainFrame->UpdateWPolarListBox();
+		pMainFrame->updateWPolarListBox();
 		updateView();
 		m_pctrlAnalyze->setFocus();
 	}
@@ -3492,7 +3492,7 @@ void QMiarex::onDefineWPolarObject()
 
 		setWPolar();
 
-		pMainFrame->UpdateWPolarListBox();
+		pMainFrame->updateWPolarListBox();
 		updateView();
 		m_pctrlAnalyze->setFocus();
 	}
@@ -3556,7 +3556,7 @@ void QMiarex::onEditCurWPolar()
 		m_bResetglWake = true;
 
 		setWPolar();
-		pMainFrame->UpdateWPolarListBox();
+		pMainFrame->updateWPolarListBox();
 		updateView();
 		m_pctrlAnalyze->setFocus();
 	}
@@ -3604,7 +3604,7 @@ void QMiarex::onEditCurWPolarObject()
 		m_bResetglWake = true;
 
 		setWPolar();
-		pMainFrame->UpdateWPolarListBox();
+		pMainFrame->updateWPolarListBox();
 		updateView();
 		m_pctrlAnalyze->setFocus();
 	}
@@ -3688,7 +3688,7 @@ void QMiarex::onDeleteAllWPlrOpps()
 
 	m_pCurPOpp = NULL;
 	m_bResetglMesh = true;
-	pMainFrame->UpdatePOppListBox();
+	pMainFrame->updatePOppListBox();
 	setPlaneOpp(true);
 	setControls();
 	s_bResetCurves = true;
@@ -3714,7 +3714,7 @@ void QMiarex::onDeleteAllWOpps()
 	}
 
 	m_pCurPOpp = NULL;
-	pMainFrame->UpdatePOppListBox();
+	pMainFrame->updatePOppListBox();
 
 	setPlaneOpp(true);
 
@@ -3778,7 +3778,7 @@ void QMiarex::onDeleteCurWOpp()
 			}
 		}
 		m_pCurPOpp = NULL;
-		pMainFrame->UpdatePOppListBox();
+		pMainFrame->updatePOppListBox();
 		setPlaneOpp(true);
 		emit projectModified();
 
@@ -3821,7 +3821,7 @@ void QMiarex::onDeletePlaneOpps()
 
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
 	emit projectModified();
-	pMainFrame->UpdatePOppListBox();
+	pMainFrame->updatePOppListBox();
 	setControls();
 	s_bResetCurves = true;
 	updateView();
@@ -3870,7 +3870,7 @@ void QMiarex::onDeletePlaneWPolars()
 	}
 	m_pCurWPolar = NULL;
 	setWPolar();
-	pMainFrame->UpdateWPolarListBox();
+	pMainFrame->updateWPolarListBox();
 	emit projectModified();
 	setControls();
 	updateView();
@@ -3927,7 +3927,7 @@ void QMiarex::onDeleteCurWPolar()
 	emit projectModified();
 	setWPolar();
 
-	pMainFrame->UpdateWPolarListBox();
+	pMainFrame->updateWPolarListBox();
 	setControls();
 	updateView();
 }
@@ -5329,7 +5329,7 @@ void QMiarex::onImportWPolar()
 	m_pCurWPolar = pWPolar;
 
 	setWPolar(pWPolar);
-	pMainFrame->UpdateWPolarListBox();
+	pMainFrame->updateWPolarListBox();
 	updateView();
 	emit projectModified();
 }
@@ -5685,7 +5685,7 @@ void QMiarex::onRenameCurWPolar()
 	if(!bInserted) m_poaWPolar->append(m_pCurWPolar);
 
 
-	pMainFrame->UpdateWPolarListBox();
+	pMainFrame->updateWPolarListBox();
 
 	emit projectModified();
 
@@ -5752,7 +5752,7 @@ void QMiarex::onResetCurWPolar()
 			}
 		}
 	}
-	pMainFrame->UpdatePOppListBox();
+	pMainFrame->updatePOppListBox();
 	m_pCurPOpp = NULL;
 
 	if(m_iView==XFLR5::WPOLARVIEW)
@@ -6755,7 +6755,7 @@ void QMiarex::PanelAnalyze(double V0, double VMax, double VDelta, bool bSequence
 
 
 	setPlaneOpp(false, Objects3D::s_pPanelAnalysis->m_OpAlpha);
-	pMainFrame->UpdatePOppListBox();
+	pMainFrame->updatePOppListBox();
 
 	m_bResetglWake=true; //TODO remove
 
@@ -7272,7 +7272,7 @@ void QMiarex::setPlane(QString PlaneName)
 
 	MainFrame*pMainFrame = (MainFrame*)s_pMainFrame;
 	pMainFrame->selectPlane(m_pCurPlane);
-	pMainFrame->UpdateWPolarListBox();
+	pMainFrame->updateWPolarListBox();
 
 	if (m_pCurWPolar)
 	{
@@ -7710,7 +7710,7 @@ void QMiarex::setWPolar(bool bCurrent, QString WPlrName)
 		}
 	}*/
 
-	pMainFrame->UpdatePOppListBox();
+	pMainFrame->updatePOppListBox();
 
 	double x = 0.0;
 	if(m_pCurPOpp)

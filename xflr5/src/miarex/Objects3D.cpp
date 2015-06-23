@@ -181,7 +181,7 @@ void Objects3D::addBody(Body *pBody)
 			// duplicate the body - create one for each plane
 			// no more bodies associated to multiple plane
 			Body *planeBody = new Body();
-			planeBody->Duplicate(pBody);
+			planeBody->duplicate(pBody);
 
 			//attach it and rename it
 			pPlane->setBody(planeBody);
@@ -987,14 +987,14 @@ int Objects3D::createBodyElements(Plane *pCurPlane)
 	if(pCurBody->m_LineType==XFLR5::BODYPANELTYPE)
 	{
 		nx = 0;
-		for(i=0; i<pCurBody->FrameSize()-1; i++) nx+=pCurBody->m_xPanels[i];
+		for(i=0; i<pCurBody->frameSize()-1; i++) nx+=pCurBody->m_xPanels[i];
 		nh = 0;
-		for(i=0; i<pCurBody->SideLineCount()-1; i++) nh+=pCurBody->m_hPanels[i];
+		for(i=0; i<pCurBody->sideLineCount()-1; i++) nh+=pCurBody->m_hPanels[i];
 		FullSize = nx*nh*2;
 		pCurBody->m_nxPanels = nx;
 		pCurBody->m_nhPanels = nh;
 
-		for (i=0; i<pCurBody->FrameSize()-1; i++)
+		for (i=0; i<pCurBody->frameSize()-1; i++)
 		{
 			for (j=0; j<pCurBody->m_xPanels[i]; j++)
 			{
@@ -1003,22 +1003,22 @@ int Objects3D::createBodyElements(Plane *pCurPlane)
 
 				//body left side
 				lnh = 0;
-				for (k=0; k<pCurBody->SideLineCount()-1; k++)
+				for (k=0; k<pCurBody->sideLineCount()-1; k++)
 				{
 					//build the four corner points of the strips
-					PLB.x =  (1.0- dj) * pCurBody->FramePosition(i)      +  dj * pCurBody->FramePosition(i+1)       +dpx;
+					PLB.x =  (1.0- dj) * pCurBody->framePosition(i)      +  dj * pCurBody->framePosition(i+1)       +dpx;
 					PLB.y = -(1.0- dj) * pCurBody->frame(i)->m_CtrlPoint[k].y   -  dj * pCurBody->frame(i+1)->m_CtrlPoint[k].y;
 					PLB.z =  (1.0- dj) * pCurBody->frame(i)->m_CtrlPoint[k].z   +  dj * pCurBody->frame(i+1)->m_CtrlPoint[k].z    +dpz;
 
-					PTB.x =  (1.0-dj1) * pCurBody->FramePosition(i)      + dj1 * pCurBody->FramePosition(i+1)       +dpx;
+					PTB.x =  (1.0-dj1) * pCurBody->framePosition(i)      + dj1 * pCurBody->framePosition(i+1)       +dpx;
 					PTB.y = -(1.0-dj1) * pCurBody->frame(i)->m_CtrlPoint[k].y   - dj1 * pCurBody->frame(i+1)->m_CtrlPoint[k].y;
 					PTB.z =  (1.0-dj1) * pCurBody->frame(i)->m_CtrlPoint[k].z   + dj1 * pCurBody->frame(i+1)->m_CtrlPoint[k].z    +dpz;
 
-					PLA.x =  (1.0- dj) * pCurBody->FramePosition(i)      +  dj * pCurBody->FramePosition(i+1)       +dpx;
+					PLA.x =  (1.0- dj) * pCurBody->framePosition(i)      +  dj * pCurBody->framePosition(i+1)       +dpx;
 					PLA.y = -(1.0- dj) * pCurBody->frame(i)->m_CtrlPoint[k+1].y -  dj * pCurBody->frame(i+1)->m_CtrlPoint[k+1].y;
 					PLA.z =  (1.0- dj) * pCurBody->frame(i)->m_CtrlPoint[k+1].z +  dj * pCurBody->frame(i+1)->m_CtrlPoint[k+1].z  +dpz;
 
-					PTA.x =  (1.0-dj1) * pCurBody->FramePosition(i)      + dj1 * pCurBody->FramePosition(i+1)       +dpx;
+					PTA.x =  (1.0-dj1) * pCurBody->framePosition(i)      + dj1 * pCurBody->framePosition(i+1)       +dpx;
 					PTA.y = -(1.0-dj1) * pCurBody->frame(i)->m_CtrlPoint[k+1].y - dj1 * pCurBody->frame(i+1)->m_CtrlPoint[k+1].y;
 					PTA.z =  (1.0-dj1) * pCurBody->frame(i)->m_CtrlPoint[k+1].z + dj1 * pCurBody->frame(i+1)->m_CtrlPoint[k+1].z  +dpz;
 
@@ -1120,8 +1120,8 @@ int Objects3D::createBodyElements(Plane *pCurPlane)
 			uk  = pCurBody->s_XPanelPos[k];
 			uk1 = pCurBody->s_XPanelPos[k+1];
 
-			pCurBody->GetPoint(uk,  0, false, LB);
-			pCurBody->GetPoint(uk1, 0, false, TB);
+			pCurBody->getPoint(uk,  0, false, LB);
+			pCurBody->getPoint(uk1, 0, false, TB);
 
 			LB.x += dpx;
 			LB.z += dpz;
@@ -1132,8 +1132,8 @@ int Objects3D::createBodyElements(Plane *pCurPlane)
 			{
 				//start with left side... same as for wings
 				v = (double)(l+1) / (double)(nh);
-				pCurBody->GetPoint(uk,  v, false, LA);
-				pCurBody->GetPoint(uk1, v, false, TA);
+				pCurBody->getPoint(uk,  v, false, LA);
+				pCurBody->getPoint(uk1, v, false, TA);
 
 				LA.x += dpx;
 				LA.z += dpz;
@@ -1852,9 +1852,9 @@ int Objects3D::calculateMatSize(Plane *pPlane, WPolar *pWPolar)
 			if(pCurBody->m_LineType==XFLR5::BODYPANELTYPE)
 			{
 				nx = 0;
-				for(int i=0; i<pCurBody->FrameSize()-1; i++) nx+=pCurBody->m_xPanels[i];
+				for(int i=0; i<pCurBody->frameSize()-1; i++) nx+=pCurBody->m_xPanels[i];
 				nh = 0;
-				for(int i=0; i<pCurBody->SideLineCount()-1; i++) nh+=pCurBody->m_hPanels[i];
+				for(int i=0; i<pCurBody->sideLineCount()-1; i++) nh+=pCurBody->m_hPanels[i];
 				PanelArraySize += nx*nh*2;
 			}
 			else PanelArraySize += 2 * pCurBody->m_nxPanels * pCurBody->m_nhPanels;
@@ -2870,7 +2870,7 @@ Plane * Objects3D::setPlaneObject(QString PlaneName, Plane *pCurPlane)
 		dx = pPlane->bodyPos().x;
 		dz = pPlane->bodyPos().z;
 		pPlane->body()->setNURBSKnots();
-		pPlane->body()->SetPanelPos();
+		pPlane->body()->setPanelPos();
 	}
 
 	Body *pCurBody = pPlane->body();
