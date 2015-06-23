@@ -138,7 +138,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 	}
 	
 
-	CreateDockWindows();
+	createDockWindows();
 
 	m_ImageFormat = XFLR5::PNG;
 	Settings::s_ExportFileType = XFLR5::TXT;
@@ -206,10 +206,10 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 	SetupDataDir();
 
 	pXDirect->setAnalysisParams();
-	CreateActions();
-	CreateMenus();
-	CreateToolbars();
-	CreateStatusBar();
+	createActions();
+	createMenus();
+	createToolbars();
+	createStatusBar();
 
 	m_pXDirectTileWidget->Connect();
 	m_pMiarexTileWidget->Connect();
@@ -236,7 +236,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 	QString styleSheet;
 	if(Settings::s_bStyleSheets)
 	{
-	   ReadStyleSheet(Settings::s_StyleSheetName, styleSheet);
+	   readStyleSheet(Settings::s_StyleSheetName, styleSheet);
 	}
 
     Objects3D::setStaticPointers();
@@ -269,7 +269,7 @@ MainFrame::~MainFrame()
 }
 
 
-void MainFrame::AboutQt()
+void MainFrame::aboutQt()
 {
 #ifndef QT_NO_MESSAGEBOX
     QMessageBox::aboutQt(
@@ -333,7 +333,7 @@ void MainFrame::closeEvent (QCloseEvent * event)
 
 
 
-void MainFrame::CreateActions()
+void MainFrame::createActions()
 {
 	newProjectAct = new QAction(QIcon(":/images/new.png"), tr("New Project"), this);
 	newProjectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_N));
@@ -354,30 +354,30 @@ void MainFrame::CreateActions()
 	insertAct->setStatusTip(tr("Insert an existing project in the current project"));
 	connect(insertAct, SIGNAL(triggered()), this, SLOT(onInsertProject()));
 
-	OnAFoilAct = new QAction(tr("&Direct Foil Design"), this);
-	OnAFoilAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_1));
-	OnAFoilAct->setStatusTip(tr("Open Foil Design application"));
-	connect(OnAFoilAct, SIGNAL(triggered()), this, SLOT(onAFoil()));
+	onAFoilAct = new QAction(tr("&Direct Foil Design"), this);
+	onAFoilAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_1));
+	onAFoilAct->setStatusTip(tr("Open Foil Design application"));
+	connect(onAFoilAct, SIGNAL(triggered()), this, SLOT(onAFoil()));
 
-	OnXInverseAct = new QAction(tr("&XFoil Inverse Design"), this);
-	OnXInverseAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_3));
-	OnXInverseAct->setStatusTip(tr("Open XFoil inverse analysis application"));
-	connect(OnXInverseAct, SIGNAL(triggered()), this, SLOT(onXInverse()));
+	onXInverseAct = new QAction(tr("&XFoil Inverse Design"), this);
+	onXInverseAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_3));
+	onXInverseAct->setStatusTip(tr("Open XFoil inverse analysis application"));
+	connect(onXInverseAct, SIGNAL(triggered()), this, SLOT(onXInverse()));
 
-	OnMixedInverseAct = new QAction(tr("&XFoil Mixed Inverse Design"), this);
-	OnMixedInverseAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_4));
-	OnMixedInverseAct->setStatusTip(tr("Open XFoil Mixed Inverse analysis application"));
-	connect(OnMixedInverseAct, SIGNAL(triggered()), this, SLOT(onXInverseMixed()));
+	onMixedInverseAct = new QAction(tr("&XFoil Mixed Inverse Design"), this);
+	onMixedInverseAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_4));
+	onMixedInverseAct->setStatusTip(tr("Open XFoil Mixed Inverse analysis application"));
+	connect(onMixedInverseAct, SIGNAL(triggered()), this, SLOT(onXInverseMixed()));
 
-	OnXDirectAct = new QAction(tr("&XFoil Direct Analysis"), this);
-	OnXDirectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_5));
-	OnXDirectAct->setStatusTip(tr("Open XFoil direct analysis application"));
-	connect(OnXDirectAct, SIGNAL(triggered()), this, SLOT(onXDirect()));
+	onXDirectAct = new QAction(tr("&XFoil Direct Analysis"), this);
+	onXDirectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_5));
+	onXDirectAct->setStatusTip(tr("Open XFoil direct analysis application"));
+	connect(onXDirectAct, SIGNAL(triggered()), this, SLOT(onXDirect()));
 
-	OnMiarexAct = new QAction(tr("&Wing and Plane Design"), this);
-	OnMiarexAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_6));
-	OnMiarexAct->setStatusTip(tr("Open Wing/plane design and analysis application"));
-	connect(OnMiarexAct, SIGNAL(triggered()), this, SLOT(onMiarex()));
+	onMiarexAct = new QAction(tr("&Wing and Plane Design"), this);
+	onMiarexAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_6));
+	onMiarexAct->setStatusTip(tr("Open Wing/plane design and analysis application"));
+	connect(onMiarexAct, SIGNAL(triggered()), this, SLOT(onMiarex()));
 
 	saveAct = new QAction(QIcon(":/images/save.png"), tr("Save"), this);
 	saveAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
@@ -450,17 +450,17 @@ void MainFrame::CreateActions()
 	connect(aboutAct, SIGNAL(triggered()), this, SLOT(aboutXFLR5()));
 
 	aboutQtAct = new QAction(tr("About Qt"), this);
-	connect(aboutQtAct, SIGNAL(triggered()), this, SLOT(AboutQt()));
+	connect(aboutQtAct, SIGNAL(triggered()), this, SLOT(aboutQt()));
 
 	createGraphActions();
-	CreateAFoilActions();
-	CreateXDirectActions();
-	CreateXInverseActions();
-	CreateMiarexActions();
+	createAFoilActions();
+	createXDirectActions();
+	createXInverseActions();
+	createMiarexActions();
 }
 
 
-void MainFrame::CreateAFoilActions()
+void MainFrame::createAFoilActions()
 {
 	QAFoil *pAFoil = (QAFoil*)m_pAFoil;
 
@@ -605,8 +605,9 @@ void MainFrame::CreateAFoilActions()
 	connect(zoomYAct, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onZoomYOnly()));
 }
 
-//
-void MainFrame::CreateAFoilMenus()
+
+
+void MainFrame::createAFoilMenus()
 {
 	m_pAFoilViewMenu = menuBar()->addMenu(tr("&View"));
 	{
@@ -723,7 +724,7 @@ void MainFrame::CreateAFoilMenus()
 }
 
 
-void MainFrame::CreateAFoilToolbar()
+void MainFrame::createAFoilToolbar()
 {
 	m_pctrlAFoilToolBar = addToolBar(tr("Foil"));
 	m_pctrlAFoilToolBar->addAction(newProjectAct);
@@ -745,7 +746,7 @@ void MainFrame::CreateAFoilToolbar()
 
 
 
-void MainFrame::CreateDockWindows()
+void MainFrame::createDockWindows()
 {
 	QAFoil::s_pMainFrame           = this;
 	QXDirect::s_pMainFrame         = this;
@@ -893,7 +894,7 @@ void MainFrame::CreateDockWindows()
 
 
 
-void MainFrame::CreateMenus()
+void MainFrame::createMenus()
 {
 	m_pFileMenu = menuBar()->addMenu(tr("&File"));
 	{
@@ -905,10 +906,10 @@ void MainFrame::CreateMenus()
 		m_pFileMenu->addAction(saveAct);
 		m_pFileMenu->addAction(saveProjectAsAct);
 		m_pFileMenu->addSeparator();
-		m_pFileMenu->addAction(OnAFoilAct);
-		m_pFileMenu->addAction(OnXInverseAct);
-		m_pFileMenu->addAction(OnXDirectAct);
-		m_pFileMenu->addAction(OnMiarexAct);
+		m_pFileMenu->addAction(onAFoilAct);
+		m_pFileMenu->addAction(onXInverseAct);
+		m_pFileMenu->addAction(onXDirectAct);
+		m_pFileMenu->addAction(onMiarexAct);
 		separatorAct = m_pFileMenu->addSeparator();
 		for (int i = 0; i < MAXRECENTFILES; ++i)
 			m_pFileMenu->addAction(recentFileActs[i]);
@@ -958,10 +959,10 @@ void MainFrame::CreateMenus()
 
 
 	//Create Application-Specific Menus
-	CreateXDirectMenus();
+	createXDirectMenus();
 	CreateXInverseMenus();
-	CreateMiarexMenus();
-	CreateAFoilMenus();
+	createMiarexMenus();
+	createAFoilMenus();
 }
  
 
@@ -1018,7 +1019,7 @@ void MainFrame::createGraphActions()
 }
 
 
-void MainFrame::CreateMiarexActions()
+void MainFrame::createMiarexActions()
 {
 	QMiarex *pMiarex = (QMiarex*)m_pMiarex;
 
@@ -1302,7 +1303,7 @@ void MainFrame::CreateMiarexActions()
 }
 
 
-void MainFrame::CreateMiarexMenus()
+void MainFrame::createMiarexMenus()
 {
 	//MainMenu for Miarex Application
 	m_pMiarexViewMenu = menuBar()->addMenu(tr("&View"));
@@ -1528,7 +1529,7 @@ void MainFrame::CreateMiarexMenus()
 }
 
 
-void MainFrame::CreateMiarexToolbar()
+void MainFrame::createMiarexToolbar()
 {
 	m_pctrlPlane  = new QComboBox();
 	QStyledItemDelegate *pPlaneDelegate = new QStyledItemDelegate(this);
@@ -1578,7 +1579,7 @@ void MainFrame::CreateMiarexToolbar()
 }
 
 
-void MainFrame::CreateStatusBar()
+void MainFrame::createStatusBar()
 {
 	statusBar()->showMessage(tr("Ready"));
 	m_pctrlProjectName = new QLabel(" ");
@@ -1587,16 +1588,16 @@ void MainFrame::CreateStatusBar()
 }
 
 
-void MainFrame::CreateToolbars()
+void MainFrame::createToolbars()
 {
-	CreateXDirectToolbar();
-	CreateXInverseToolbar();
-	CreateMiarexToolbar();
-	CreateAFoilToolbar();
+	createXDirectToolbar();
+	createXInverseToolbar();
+	createMiarexToolbar();
+	createAFoilToolbar();
 }
 
 
-void MainFrame::CreateXDirectToolbar()
+void MainFrame::createXDirectToolbar()
 {
 	m_pctrlFoil    = new QComboBox;
 	m_pctrlPolar   = new QComboBox;
@@ -1641,7 +1642,7 @@ void MainFrame::CreateXDirectToolbar()
 
 
 
-void MainFrame::CreateXDirectActions()
+void MainFrame::createXDirectActions()
 {
 	QXDirect *pXDirect = (QXDirect*)m_pXDirect;
 
@@ -1903,7 +1904,7 @@ void MainFrame::CreateXDirectActions()
 }
 
 
-void MainFrame::CreateXDirectMenus()
+void MainFrame::createXDirectMenus()
 {
 	//MainMenu for XDirect Application
 	m_pXDirectViewMenu = menuBar()->addMenu(tr("&View"));
@@ -2126,7 +2127,7 @@ void MainFrame::CreateXDirectMenus()
 }
 
 
-void MainFrame::CreateXInverseActions()
+void MainFrame::createXInverseActions()
 {
 	QXInverse *pXInverse = (QXInverse*)m_pXInverse;
 
@@ -2231,7 +2232,7 @@ void MainFrame::CreateXInverseMenus()
 
 
 
-void MainFrame::CreateXInverseToolbar()
+void MainFrame::createXInverseToolbar()
 {
 	m_pctrlFullInverse  = new QRadioButton(tr("Full Inverse"));
 	m_pctrlMixedInverse = new QRadioButton(tr("Mixed Inverse"));
@@ -2324,7 +2325,7 @@ void MainFrame::deleteProject(bool bClosing)
 		OpPoint::setCurOpp(NULL);
 		pXDirect->setFoil();
 
-		UpdateFoilListBox();
+		updateFoilListBox();
 		if(pXDirect->m_bPolarView) pXDirect->createPolarCurves();
 		else                       pXDirect->createOppCurves();
 
@@ -2527,7 +2528,7 @@ void MainFrame::keyReleaseEvent(QKeyEvent *event)
 }
 
 
-bool MainFrame::LoadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFormat)
+bool MainFrame::loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFormat)
 {
 	Foil *pFoil;
 	Polar *pPolar = NULL;
@@ -2545,7 +2546,7 @@ bool MainFrame::LoadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFor
 	{
 		pFoil = new Foil();
 
-		if (!pFoil->Serialize(ar, bIsStoring))
+		if (!pFoil->serialize(ar, bIsStoring))
 		{
 			delete pFoil;
 			return false;
@@ -2837,7 +2838,7 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString PathName)
 	else if(end==".dat")
 	{
 		QTextStream ar(&XFile);
-		Foil *pFoil = (Foil*)ReadFoilFile(ar);
+		Foil *pFoil = (Foil*)readFoilFile(ar);
 		XFile.close();
 
 		if(pFoil)
@@ -3060,7 +3061,7 @@ void MainFrame::onInsertProject()
 	{
 		if(pXDirect->m_bPolarView) pXDirect->createPolarCurves();
 		else                       pXDirect->createOppCurves();
-		UpdateFoilListBox();
+		updateFoilListBox();
 	}
 	else if(m_iApp == XFLR5::DIRECTDESIGN)
 	{
@@ -3146,7 +3147,7 @@ void MainFrame::onLoadFile()
 			if(pXDirect->m_bPolarView) pXDirect->createPolarCurves();
 			else                       pXDirect->createOppCurves();
 		}
-		UpdateFoilListBox();
+		updateFoilListBox();
 		updateView();
 	}
 	else if(m_iApp==XFLR5::MIAREX)
@@ -3579,7 +3580,7 @@ void MainFrame::onSelChangeFoil(int sel)
 	pXDirect->setFoil(Foil::curFoil());
 	pXDirect->setPolar();
 	m_iApp = XFLR5::XFOILANALYSIS;
-	UpdatePolarListBox();
+	updatePolarListBox();
 	pXDirect->setControls();
 	updateView();
 }
@@ -3598,7 +3599,7 @@ void MainFrame::onSelChangePolar(int sel)
 
 
 	pXDirect->setPolar(Polar::getPolar(Foil::curFoil(), strong));
-	UpdateOppListBox();
+	updateOppListBox();
 	pXDirect->setControls();
 	updateView();
 }
@@ -3699,7 +3700,7 @@ void MainFrame::onXDirect()
 	m_pctrlXDirectWidget->show();
 
 	pXDirect->setFoil();
-	UpdateFoilListBox();
+	updateFoilListBox();
 	setMainFrameCentralWidget();
 	setMenus();
 	checkGraphActions();
@@ -3820,7 +3821,7 @@ void MainFrame::openRecentFile()
 			else                       pXDirect->createOppCurves();
 		}
 		onXDirect();
-		UpdateFoilListBox();
+		updateFoilListBox();
 		updateView();
 	}
 	else if(m_iApp==XFLR5::MIAREX)
@@ -3841,16 +3842,17 @@ void MainFrame::openRecentFile()
 }
 
 
-void *MainFrame::ReadFoilFile(QTextStream &in)
+void *MainFrame::readFoilFile(QTextStream &in)
 {
-	QString Strong;
+	QString strong;
 	QString tempStr;
 	QString FoilName;
 
 	Foil* pFoil = NULL;
-	int pos, res, i, ip;
+	int pos, i, ip;
 	pos = 0;
-	double x,y, z,area;
+	double x, y, z, area;
+	double xp, yp;
 	bool bRead;
 
 
@@ -3859,20 +3861,20 @@ void *MainFrame::ReadFoilFile(QTextStream &in)
 
 	while(tempStr.length()==0 && !in.atEnd())
 	{
-		FoilName = Strong;
-		Strong = in.readLine();
-		pos = Strong.indexOf("#",0);
+		strong = in.readLine();
+		pos = strong.indexOf("#",0);
 		// ignore everything after # (including #)
-		if(pos>0)Strong.truncate(pos);
-		tempStr = Strong;
+		if(pos>0)strong.truncate(pos);
+		tempStr = strong;
 		tempStr.remove(" ");
+		FoilName = strong;
 	}
 
 	if(!in.atEnd())
 	{
 		// FoilName contains the last comment
-		ReadValues(Strong, res,x,y,z);
-		if(res==2)
+
+		if(readValues(strong,x,y,z)==2)
 		{
 			//there isn't a name on the first line
 			FoilName = "New Foil";
@@ -3880,39 +3882,49 @@ void *MainFrame::ReadFoilFile(QTextStream &in)
 				pFoil->xb[0] = x;
 				pFoil->yb[0] = y;
 				pFoil->nb=1;
+				xp = x;
+				yp = y;
 			}
 		}
-		else FoilName = Strong;
+		else FoilName = strong;
 		// remove fore and aft spaces
 		FoilName = FoilName.trimmed();
 	}
 
 	bRead = true;
+	xp=-9999.0;
+	yp=-9999.0;
 	do
 	{
-		Strong = in.readLine();
-		pos = Strong.indexOf("#",0);
+		strong = in.readLine();
+		pos = strong.indexOf("#",0);
 		// ignore everything after # (including #)
-		if(pos>0)Strong.truncate(pos);
-		tempStr = Strong;
+		if(pos>0)strong.truncate(pos);
+		tempStr = strong;
 		tempStr.remove(" ");
-		if (!Strong.isNull() && bRead && tempStr.length())
+		if (!strong.isNull() && bRead && tempStr.length())
 		{
-			ReadValues(Strong, res, x,y,z);
-			if(res==2)
+			if(readValues(strong, x,y,z)==2)
 			{
-				pFoil->xb[pFoil->nb] = x;
-				pFoil->yb[pFoil->nb] = y;
-				pFoil->nb++;
-				if(pFoil->nb>IQX)
+				//add values only if the point is not coincident with the previous one
+				double dist = sqrt((x-xp)*(x-xp) + (y-yp)*(y-yp));
+				if(dist>0.000001)
 				{
-					delete pFoil;
-					return NULL;
+					pFoil->xb[pFoil->nb] = x;
+					pFoil->yb[pFoil->nb] = y;
+					pFoil->nb++;
+					if(pFoil->nb>IQX)
+					{
+						delete pFoil;
+						return NULL;
+					}
+					xp = x;
+					yp = y;
 				}
 			}
 			else bRead = false;
 		}
-	}while (bRead && !Strong.isNull());
+	}while (bRead && !strong.isNull());
 
 	pFoil->m_FoilName = FoilName;
 
@@ -3946,7 +3958,7 @@ void *MainFrame::ReadFoilFile(QTextStream &in)
 	pFoil->n = pFoil->nb;
 
 	pFoil->m_FoilColor = getColor(0);
-	pFoil->InitFoil();
+	pFoil->initFoil();
 
 	return pFoil;
 }
@@ -3980,7 +3992,7 @@ void MainFrame::readPolarFile(QDataStream &ar)
 		for (i=0;i<n; i++)
 		{
 			pFoil = new Foil();
-			if (!pFoil->Serialize(ar, false))
+			if (!pFoil->serialize(ar, false))
 			{
 				delete pFoil;
 				return;
@@ -4211,7 +4223,7 @@ bool MainFrame::SerializePlaneProject(QDataStream &ar)
 	ar << foilList.count();
 	for(int iFoil=0; iFoil<foilList.size(); iFoil++)
 	{
-		foilList.at(iFoil)->SerializeFoilXFL(ar, bIsStoring);
+		foilList.at(iFoil)->serializeFoilXFL(ar, bIsStoring);
 	}
 
 	// the foil polars
@@ -4683,7 +4695,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 		for(i=0; i<Foil::s_oaFoil.size(); i++)
 		{
 			pFoil = (Foil*)Foil::s_oaFoil.at(i);
-			pFoil->SerializeFoilXFL(ar, bIsStoring);
+			pFoil->serializeFoilXFL(ar, bIsStoring);
 		}
 
 		//the foil polars
@@ -4825,7 +4837,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 		for(i=0; i<n; i++)
 		{
 			pFoil = new Foil();
-			if(pFoil->SerializeFoilXFL(ar, bIsStoring))
+			if(pFoil->serializeFoilXFL(ar, bIsStoring))
 			{
 				// delete any former foil with that name - necessary in the case of project insertion to avoid duplication
 				// there is a risk that old plane results are not consisent with the new foil, but difficult to avoid that
@@ -5069,7 +5081,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 		//THEN FOILS, POLARS and OPPS
 		if(ArchiveFormat>=100009)
 		{
-			if(!LoadPolarFileV3(ar, bIsStoring,100002))
+			if(!loadPolarFileV3(ar, bIsStoring,100002))
 			{
 				return false;
 			}
@@ -5078,7 +5090,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 		{
 			if(ArchiveFormat>=100006)
 			{
-				if(!LoadPolarFileV3(ar, bIsStoring))
+				if(!loadPolarFileV3(ar, bIsStoring))
 				{
 					return false;
 				}
@@ -5116,7 +5128,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 			{
 				pBody = new Body();
 
-				if (pBody->SerializeBodyWPA(ar, bIsStoring))
+				if (pBody->serializeBodyWPA(ar, bIsStoring))
 				{
 					Objects3D::s_oaBody.append(pBody);
 
@@ -5374,12 +5386,12 @@ void MainFrame::updatePlaneListBox()
 	m_pctrlPlane->setEnabled(m_pctrlPlane->count());
 	m_pctrlPlane->blockSignals(false);
 
-	UpdateWPolarListBox();
+	updateWPolarListBox();
 }
 
 
 
-void MainFrame::UpdateWPolarListBox()
+void MainFrame::updateWPolarListBox()
 {
 //	fills the combobox with WPolar names associated to Miarex's current wing
 //	then selects Miarex current WPolar if any, else selects the first, if any
@@ -5420,7 +5432,7 @@ void MainFrame::UpdateWPolarListBox()
 	if(pCurWPlr) selectWPolar(pCurWPlr);
 
 	m_pctrlPlanePolar->blockSignals(false);
-    UpdatePOppListBox();
+	updatePOppListBox();
 }
 
 
@@ -5429,7 +5441,7 @@ void MainFrame::UpdateWPolarListBox()
  * then selects the current WingOpp or PlaneOpp if any, else selects the first, if any,
  * else disables the combobox.
  */
-void MainFrame::UpdatePOppListBox()
+void MainFrame::updatePOppListBox()
 {
 	m_pctrlPlaneOpp->blockSignals(true);
 	QMiarex * pMiarex = (QMiarex*)m_pMiarex;
@@ -5476,7 +5488,7 @@ void MainFrame::UpdatePOppListBox()
  * then selects the current Foil if any, else selects the first, if any,
  * else disables the combobox
  */
-void MainFrame::UpdateFoilListBox()
+void MainFrame::updateFoilListBox()
 {
 	m_pctrlFoil->blockSignals(true);
 	m_pctrlFoil->clear();
@@ -5500,7 +5512,7 @@ void MainFrame::UpdateFoilListBox()
 
 	m_pctrlFoil->blockSignals(false);
 
-	UpdatePolarListBox();
+	updatePolarListBox();
 }
 
 
@@ -5509,7 +5521,7 @@ void MainFrame::UpdateFoilListBox()
  * then selects XDirect current polar if any, else selects the first, if any,
  * else disables the combobox,
  */
-void MainFrame::UpdatePolarListBox()
+void MainFrame::updatePolarListBox()
 {
 	m_pctrlPolar->blockSignals(true);
 	m_pctrlPolar->clear();
@@ -5543,7 +5555,7 @@ void MainFrame::UpdatePolarListBox()
 
 	m_pctrlPolar->blockSignals(false);
 
-	UpdateOppListBox();
+	updateOppListBox();
 }
 
 
@@ -5552,7 +5564,7 @@ void MainFrame::UpdatePolarListBox()
  * then selects the current OpPoint if any, else selects the first, if any,
  * else disables the combobox.
  */
-void MainFrame::UpdateOppListBox()
+void MainFrame::updateOppListBox()
 {
 	m_pctrlOpPoint->blockSignals(true);
 	m_pctrlOpPoint->clear();
@@ -5652,7 +5664,7 @@ void MainFrame::updateView()
 }
 
 
-void MainFrame::WritePolars(QDataStream &ar, void *pFoilPtr)
+void MainFrame::writePolars(QDataStream &ar, void *pFoilPtr)
 {
 	Foil *pFoil = (Foil*)pFoilPtr;
 	int i;
@@ -5669,7 +5681,7 @@ void MainFrame::WritePolars(QDataStream &ar, void *pFoilPtr)
 		for (i=0; i<Foil::s_oaFoil.size(); i++)
 		{
 			pFoil = (Foil*)Foil::s_oaFoil.at(i);
-			pFoil->Serialize(ar, true);
+			pFoil->serialize(ar, true);
 		}
 
 		//then write polars
@@ -5689,7 +5701,7 @@ void MainFrame::WritePolars(QDataStream &ar, void *pFoilPtr)
 		//100001 : transferred NCrit, XTopTr, XBotTr to polar file
 		//first write foil
 		ar << 1;//only one this time
-		pFoil->Serialize(ar,true);
+		pFoil->serialize(ar,true);
 		//count polars associated to the foil
 		Polar * pPolar ;
 		int n=0;
@@ -5741,7 +5753,7 @@ void MainFrame::SetupDataDir()
 }
 
 
-void MainFrame::ReadStyleSheet(QString styleSheetName, QString &styleSheet)
+void MainFrame::readStyleSheet(QString styleSheetName, QString &styleSheet)
 {
 	QFile file(s_StylesheetDir.canonicalPath()+"/"+styleSheetName+".qss");
 
@@ -5779,7 +5791,7 @@ void MainFrame::onManageFoils()
 	{
 		QXDirect *pXDirect = (QXDirect*)m_pXDirect;
 		pXDirect->setFoil(mfDlg.m_pFoil);
-		UpdateFoilListBox();
+		updateFoilListBox();
 		pXDirect->setControls();
 	}
 	else if(m_iApp==XFLR5::DIRECTDESIGN)

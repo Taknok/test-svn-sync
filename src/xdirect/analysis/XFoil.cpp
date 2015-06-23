@@ -13205,7 +13205,7 @@ void XFoil::SetFoilFlap(void *pFoilPtr)
 			pFoil->ny[k] = ny[k+1];
 		}
 		pFoil->n = nb;
-		pFoil->InitFoil();
+		pFoil->initFoil();
 	}
 	else{
 			//what do I do now ?

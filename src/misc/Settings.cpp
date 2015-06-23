@@ -240,7 +240,7 @@ void Settings::OnStyleChanged(const QString &StyleName)
 			s_StyleSheetName = styleSheetName;
 			s_StyleName.clear();
 			QString styleSheet;
-			MainFrame::ReadStyleSheet(styleSheetName, styleSheet);
+			MainFrame::readStyleSheet(styleSheetName, styleSheet);
 			return;
 		}
 	}

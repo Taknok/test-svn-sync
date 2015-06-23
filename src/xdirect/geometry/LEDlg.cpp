@@ -216,8 +216,8 @@ void LEDlg::OnApply()
 		}
 		m_pBufferFoil->nb = pXFoil->nb;
 //		pXFoil->SetFoilFlap(m_pBufferFoil);
-		m_pBufferFoil->InitFoil();
-		m_pBufferFoil->SetFlap();
+		m_pBufferFoil->initFoil();
+		m_pBufferFoil->setFlap();
 	}
 	m_bApplied = true;
 	m_bModified = true;

@@ -98,7 +98,7 @@ Foil::Foil()
 * Calculates the foil's thickness and camber, if requested.
 *@param bParams true if the max thickness and camber properties shold be calculated
 */
-void Foil::CompMidLine(bool bParams)
+void Foil::compMidLine(bool bParams)
 {
 	static int l;
 	static double xt, yex, yin, step;
@@ -117,8 +117,8 @@ void Foil::CompMidLine(bool bParams)
 	for (l=0; l<=MIDPOINTCOUNT; l++)
 	{
 		xt = m_rpExtrados[0].x + l*step;
-		yex = GetUpperY((double)l*step);
-		yin = GetLowerY((double)l*step);
+		yex = upperY((double)l*step);
+		yin = lowerY((double)l*step);
 
 		m_rpMid[l].x = xt;
 		m_rpMid[l].y = (yex+yin)/2.0;
@@ -165,7 +165,7 @@ void Foil::CompMidLine(bool bParams)
 * Copies the data from an existing foil and maps it to this foil's variables.
 * @param pSrcFoil a pointer to the reference foil from which the data wil be copied
 */
-void Foil::CopyFoil(Foil *pSrcFoil)
+void Foil::copyFoil(Foil *pSrcFoil)
 {
 	memcpy(x, pSrcFoil->x,  sizeof(pSrcFoil->x));
 	memcpy(y, pSrcFoil->y,  sizeof(pSrcFoil->y));
@@ -222,7 +222,7 @@ void Foil::CopyFoil(Foil *pSrcFoil)
 * Derotates the fol's geometry i.e. aligns the mid-line with the x-axis.
 * @return the angle, in degrees, by which the foil has been de-rotated
 */
-double Foil::DeRotate()
+double Foil::derotate()
 {
 	//De-rotates the foil,
 
@@ -282,7 +282,7 @@ double Foil::DeRotate()
 		y[i] = (-(x[i])*sina + (y[i])*cosa);
 	}
 	
-	InitFoil();
+	initFoil();
 
 	return angle*180.0/PI;
 }
@@ -453,7 +453,7 @@ void Foil::drawPoints(QPainter &painter, double const &scalex, double const &sca
  * @param out the QtextStream to which the output will be directed
  * @return true if the operation has been successful, false otherwise
  */
-bool Foil::ExportFoil(QTextStream &out)
+bool Foil::exportFoil(QTextStream &out)
 {
     int i;
 
@@ -475,7 +475,7 @@ bool Foil::ExportFoil(QTextStream &out)
  * Returns the area defined by the foil's contour, in normalized units.
  * @return the foil's internal area
  */
-double Foil::GetArea()
+double Foil::area()
 {
 	int i;
 	double area = 0.0;
@@ -493,7 +493,7 @@ double Foil::GetArea()
  * @param &x the chordwise position
  * @return the y-position
  */
-double Foil::GetBaseLowerY(double x)
+double Foil::baseLowerY(double x)
 {
 	static int i;
 	static double y;
@@ -520,7 +520,7 @@ double Foil::GetBaseLowerY(double x)
  * @param &x the chordwise position
  * @return the y-position
  */
-double Foil::GetBaseUpperY(double x)
+double Foil::baseUpperY(double x)
 {
 	static double y;
 	static int i;
@@ -545,7 +545,7 @@ double Foil::GetBaseUpperY(double x)
  * @param &x the chordwise position
  * @return the slope in radians
  */
-double Foil::GetBotSlope(double const &x)
+double Foil::bottomSlope(double const &x)
 {
 	//returns the bottom slope at position x
 	static int i;
@@ -568,7 +568,7 @@ double Foil::GetBotSlope(double const &x)
  * @param &x the chordwise position
  * @return the slope in radians
  */
-double Foil::GetTopSlope(double const &x)
+double Foil::topSlope(double const &x)
 {
 	//returns the upper slope at position x
 	static int i;
@@ -591,7 +591,7 @@ double Foil::GetTopSlope(double const &x)
  * @param &x the chordwise position
  * @return the camber value
  */
-double Foil::GetCamber(double const &x)
+double Foil::camber(double const &x)
 {
 	//returns the camber value at position x
 	for (int i=0; i<MIDPOINTCOUNT; i++)
@@ -610,7 +610,7 @@ double Foil::GetCamber(double const &x)
  * @param &x the chordwise position
  * @return the camber angle, in degrees
  */
-double Foil::GetCamberSlope(double const &x)
+double Foil::camberSlope(double const &x)
 {
 	//returns the camber slope at position x
 	static int i;
@@ -648,7 +648,7 @@ double Foil::length()
 *@param x the chordwise position
 *@return the position on the lower surface
 */
-double Foil::GetLowerY(double x)
+double Foil::lowerY(double x)
 {
 	x = m_rpIntrados[0].x + x*(m_rpIntrados[m_iInt].x-m_rpIntrados[0].x)*.999999999;//in case there is a flap which reduces the length
 	static double y;
@@ -674,7 +674,7 @@ double Foil::GetLowerY(double x)
 *@param &normx a reference to variable holding the x-component of the normal to the surface
 *@param &normy a reference to variable holding the y-component of the normal to the surface
 */
-void Foil::GetLowerY(double x, double &y, double &normx, double &normy)
+void Foil::lowerY(double x, double &y, double &normx, double &normy)
 {
 	static double nabs;
 	static int i;
@@ -701,7 +701,7 @@ void Foil::GetLowerY(double x, double &y, double &normx, double &normy)
 * @param x the chordwise position
 * @return the position on the mid line
 */
-double Foil::GetMidY(double xl)
+double Foil::midY(double xl)
 {
 	xl = m_rpMid[0].x + xl*(m_rpMid[MIDPOINTCOUNT].x-m_rpMid[0].x)*.999999999;//in case there is a flap which reduces the length
 
@@ -726,7 +726,7 @@ double Foil::GetMidY(double xl)
 * @param x the chordwise position
 * @return the position on the upper surface
 */
-double Foil::GetUpperY(double x)
+double Foil::upperY(double x)
 {
 	// Returns the y-coordinate on the current foil's upper surface at the x position
 	x = m_rpExtrados[0].x + x*(m_rpExtrados[m_iExt].x-m_rpExtrados[0].x)*.999999999;//in case there is a flap which reduces the length
@@ -752,7 +752,7 @@ double Foil::GetUpperY(double x)
 *@param &normx a reference to variable holding the x-component of the normal to the surface
 *@param &normy a reference to variable holding the y-component of the normal to the surface
 */
-void Foil::GetUpperY(double x, double &y, double &normx, double &normy)
+void Foil::upperY(double x, double &y, double &normx, double &normy)
 {
 	static double nabs;
 	static int i;
@@ -778,7 +778,7 @@ void Foil::GetUpperY(double x, double &y, double &normx, double &normy)
 /**
 * Initializes the foil geometry, constructs the upper and lower points, and applies the flap deflection if requested.
 */
-bool Foil::InitFoil()
+bool Foil::initFoil()
 {
 	// at this point, coordinates have been loaded
 	// so has been the number of points defining the foil
@@ -826,7 +826,7 @@ bool Foil::InitFoil()
 	m_iExt = m_iBaseExt;
 	m_iInt = m_iBaseInt;
 
-	CompMidLine(true);
+	compMidLine(true);
 	memcpy(m_rpBaseMid, m_rpMid, sizeof(m_rpBaseMid));
 
 
@@ -872,7 +872,7 @@ bool Foil::InitFoil()
 		m_rpExtrados[k].y = y[m_iExt-k];
 	}
 
-	CompMidLine(false);
+	compMidLine(false);
 	return true;
 }
 
@@ -918,7 +918,7 @@ bool Foil::Intersect(CVector const &A, CVector const &B, CVector const &C, CVect
 *Returns the index of foil's point which coincides with the input point, if any, otherwise returns -10.
 *@param &Real the Cvector which defines the input point
 */
-int Foil::IsPoint(CVector const &Real)
+int Foil::isPoint(CVector const &Real)
 {
 	static int k;
 	for (k=0; k<n; k++)
@@ -933,7 +933,7 @@ int Foil::IsPoint(CVector const &Real)
 * The current foil's length is modified by the same ratio.
 * @return the foil's former length
 */
-double Foil::NormalizeGeometry()
+double Foil::normalizeGeometry()
 {
 	int i;
 	double xmin = 1.0;
@@ -983,7 +983,7 @@ double Foil::NormalizeGeometry()
  * @param bIsStoring true if saving the data, false if loading
  * @return true if the operation was successful, false otherwise
  */
-bool Foil::Serialize(QDataStream &ar, bool bIsStoring)
+bool Foil::serialize(QDataStream &ar, bool bIsStoring)
 {
 	// saves or loads the foil to the archive ar
 
@@ -1102,8 +1102,8 @@ bool Foil::Serialize(QDataStream &ar, bool bIsStoring)
 		}
 
 
-		InitFoil();
-		SetFlap();
+		initFoil();
+		setFlap();
 
 		return true;
 	}
@@ -1118,7 +1118,7 @@ bool Foil::Serialize(QDataStream &ar, bool bIsStoring)
  * @param bIsStoring true if saving the data, false if loading
  * @return true if the operation was successful, false otherwise
  */
-bool Foil::SerializeFoilXFL(QDataStream &ar, bool bIsStoring)
+bool Foil::serializeFoilXFL(QDataStream &ar, bool bIsStoring)
 {
 	int j;
 
@@ -1162,8 +1162,8 @@ bool Foil::SerializeFoilXFL(QDataStream &ar, bool bIsStoring)
 		memcpy(y,yb, sizeof(yb));
 		n=nb;
 
-		InitFoil();
-		SetFlap();
+		initFoil();
+		setFlap();
 		return true;
 	}
 }
@@ -1172,7 +1172,7 @@ bool Foil::SerializeFoilXFL(QDataStream &ar, bool bIsStoring)
 /**
  * 	Reset the foil to a default Naca 009 geometry.
  */
-void Foil::SetNaca009()
+void Foil::setNaca009()
 {	
 	x[0]  = 1.00000    ; y[0]  = 0.00000;
 	x[1]  = 0.99572    ; y[1]  = 0.00057;
@@ -1216,7 +1216,7 @@ void Foil::SetNaca009()
 	n = 69;
 	nb = 69;
 	memcpy(xb,x, sizeof(x));
-	InitFoil();
+	initFoil();
 }
 
 
@@ -1227,7 +1227,7 @@ void Foil::SetNaca009()
 * @param yhinge the relative y-position of the flap's hinge
 * @param angle the flap angle in degrees
 */
-void  Foil::SetTEFlapData(bool bFlap, double xhinge, double yhinge, double angle)
+void  Foil::setTEFlapData(bool bFlap, double xhinge, double yhinge, double angle)
 {
 	m_bTEFlap     = bFlap;
 	m_TEXHinge    = xhinge;
@@ -1243,7 +1243,7 @@ void  Foil::SetTEFlapData(bool bFlap, double xhinge, double yhinge, double angle
 * @param yhinge the relative y-position of the flap's hinge
 * @param angle the flap angle in degrees
 */
-void  Foil::SetLEFlapData(bool bFlap, double xhinge, double yhinge, double angle)
+void  Foil::setLEFlapData(bool bFlap, double xhinge, double yhinge, double angle)
 {
 	m_bLEFlap     = bFlap;
 	m_LEXHinge    = xhinge;
@@ -1255,7 +1255,7 @@ void  Foil::SetLEFlapData(bool bFlap, double xhinge, double yhinge, double angle
  * Modifies the geometry of the current foil by setting the leading edge flap.
  * The specification for the flap is assumed to have been set previously
  */
-void Foil::SetLEFlap()
+void Foil::setLEFlap()
 {
 	int i, j, k, l, p, i1, i2;
 	i=j=k=l=p=i1=i2=0;
@@ -1268,8 +1268,8 @@ void Foil::SetLEFlap()
 	sina = sin(m_LEFlapAngle*PI/180.0);
 	//first convert xhinge and yhinge in absolute coordinates
 	xh = m_LEXHinge/100.0;
-	double ymin = GetBaseLowerY(xh);
-	double ymax = GetBaseUpperY(xh);
+	double ymin = baseLowerY(xh);
+	double ymax = baseUpperY(xh);
 	yh = ymin + m_LEYHinge/100.0 * (ymax-ymin);
 
 	// insert a breakpoint at xhinge location, if there isn't one already
@@ -1509,7 +1509,7 @@ void Foil::SetLEFlap()
  * Modifies the geometry of the current foil by setting the trailing edge flap.
  * The specification for the flap is assumed to have been set previously
  */
-void Foil::SetTEFlap()
+void Foil::setTEFlap()
 {
 	int i, j, k, l, p, i1, i2;
 	double xh, yh, dx, dy;
@@ -1521,8 +1521,8 @@ void Foil::SetTEFlap()
 	sina = sin(m_TEFlapAngle*PI/180.0);
 	//first convert xhinge and yhinge in absolute coordinates
 	xh = m_TEXHinge/100.0;
-	double ymin = GetBaseLowerY(xh);
-	double ymax = GetBaseUpperY(xh);
+	double ymin = baseLowerY(xh);
+	double ymax = baseUpperY(xh);
 	yh = ymin + m_TEYHinge/100.0 * (ymax-ymin);
 	// insert a breakpoint at xhinge location, if there isn't one already
 	int iUpperh = 0;
@@ -1752,7 +1752,7 @@ void Foil::SetTEFlap()
 /**
  * Creates the leading and trailing edge flaps on the current geometry.
  */
-void Foil::SetFlap()
+void Foil::setFlap()
 {
 	int i;
 	// modifies the current airfoil's geometry 
@@ -1766,8 +1766,8 @@ void Foil::SetFlap()
 	m_iInt = m_iBaseInt;
 
 
-	if(m_bLEFlap) SetLEFlap();
-	if(m_bTEFlap) SetTEFlap();
+	if(m_bLEFlap) setLEFlap();
+	if(m_bTEFlap) setTEFlap();
 
 	//And finally rebuild the current foil
 	for (i=m_iExt; i>=0; i--)
@@ -1792,8 +1792,8 @@ void Foil::SetFlap()
 
 		//convert xhinge and yhinge in absolute coordinates
 		double xh = m_TEXHinge/100.0;
-		double ymin = GetBaseLowerY(xh);
-		double ymax = GetBaseUpperY(xh);
+		double ymin = baseLowerY(xh);
+		double ymax = baseUpperY(xh);
 		double yh = ymin + m_TEYHinge/100.0 * (ymax-ymin);
 
 		CVector hinge(xh, yh, 0.0);

@@ -163,7 +163,7 @@ void Body::setNURBSKnots()
  * @param Alpha the angle of attack, in degrees
  * @param CoG the position of the CoG
  */
-void Body::ComputeAero(double *Cp, double &XCP, double &YCP, double &ZCP,
+void Body::computeAero(double *Cp, double &XCP, double &YCP, double &ZCP,
 						double &GCm, double &GRm, double &GYm, double &Alpha, CVector &CoG)
 {
 	int p;
@@ -204,7 +204,7 @@ void Body::ComputeAero(double *Cp, double &XCP, double &YCP, double &ZCP,
  * Copies the data of an existing Body object to this Body
  * @param pBody the source Body object
  */
-void Body::Duplicate(Body *pBody)
+void Body::duplicate(Body *pBody)
 {
 	if(!pBody) return;
 
@@ -217,7 +217,7 @@ void Body::Duplicate(Body *pBody)
 
 	m_SplineSurface.ClearFrames();
 	m_xPanels.clear();
-	for(int i=0; i<pBody->FrameSize(); i++)
+	for(int i=0; i<pBody->frameSize(); i++)
 	{
 		m_SplineSurface.m_pFrame.append(new Frame);
 		m_SplineSurface.m_pFrame[i]->CopyFrame(pBody->m_SplineSurface.m_pFrame[i]);
@@ -226,7 +226,7 @@ void Body::Duplicate(Body *pBody)
 	setNURBSKnots();
 
 	m_hPanels.clear();
-	for(int i=0; i<SideLineCount(); i++)
+	for(int i=0; i<sideLineCount(); i++)
 	{
 		m_hPanels.append(pBody->m_hPanels[i]);
 	}
@@ -245,7 +245,7 @@ void Body::Duplicate(Body *pBody)
  * the NURBS degree and other related data.
  * @return true if the Body definition was correctly exported, false otherwise.
  */
-bool Body::ExportBodyDefinition(QTextStream &outStream, double mtoUnit)
+bool Body::exportBodyDefinition(QTextStream &outStream, double mtoUnit)
 {
 	int i, j;
 	QString strong;
@@ -271,10 +271,10 @@ bool Body::ExportBodyDefinition(QTextStream &outStream, double mtoUnit)
 	outStream << ("OFFSET\n");
 	outStream << ("0.0     0.0     0.0     #Total body offset (Y-coord is ignored)\n\n");
 
-	for(i=0; i<FrameSize(); i++)
+	for(i=0; i<frameSize(); i++)
 	{
 		outStream << ("FRAME\n");
-		for(j=0;j<SideLineCount(); j++)
+		for(j=0;j<sideLineCount(); j++)
 		{
 			strong = QString("%1     %2    %3\n")
 					 .arg(m_SplineSurface.m_pFrame[i]->m_Position.x     * mtoUnit,14,'f',7)
@@ -295,7 +295,7 @@ bool Body::ExportBodyDefinition(QTextStream &outStream, double mtoUnit)
  * some mean to access the surface geometry.
  * @todo remove.
  */
-void Body::ExportGeometry(QTextStream &outStream, int type, double mtoUnit, int nx, int nh)
+void Body::exportGeometry(QTextStream &outStream, int type, double mtoUnit, int nx, int nh)
 {
 	QString strong, LengthUnit,str;
 	int k,l;
@@ -324,7 +324,7 @@ void Body::ExportGeometry(QTextStream &outStream, int type, double mtoUnit, int 
 		for (l=0; l<nh; l++)
 		{
 			v = (double)l / (double)(nh-1);
-			GetPoint(u,  v, true, Point);
+			getPoint(u,  v, true, Point);
 
 			//increased precision i.a.w. request #18
 /*			strong = QString("   %1"+str+"     %2"+str+"     %3\n")
@@ -361,7 +361,7 @@ double Body::Length()
  * Returns the posistion of the Body nose
  * @return the CVector which defines the position of the Body nose.
  */
-CVector Body::LeadingPoint()
+CVector Body::leadingPoint()
 {
 	return CVector(m_SplineSurface.m_pFrame[0]->m_Position.x,
 				   0.0,
@@ -375,20 +375,20 @@ CVector Body::LeadingPoint()
  * @param x the longitudinal position at which the arc length is to be calculated.
  * @return  the arc length, in meters.
  */
-double Body::GetSectionArcLength(double x)
+double Body::getSectionArcLength(double x)
 {
 	//NURBS only
 	if(m_LineType==XFLR5::BODYPANELTYPE) return 0.0;
 	// aproximate arc length, used for inertia estimations
 	double length = 0.0;
-	double ux = Getu(x);
+	double ux = getu(x);
 	CVector Pt, Pt1;
-	GetPoint(ux, 0.0, true, Pt1);
+	getPoint(ux, 0.0, true, Pt1);
 
 	int NPoints = 10;//why not ?
 	for(int i=1; i<=NPoints; i++)
 	{
-		GetPoint(ux, (double)i/(double)NPoints, true, Pt);
+		getPoint(ux, (double)i/(double)NPoints, true, Pt);
 		length += sqrt((Pt.y-Pt1.y)*(Pt.y-Pt1.y) + (Pt.z-Pt1.z)*(Pt.z-Pt1.z));
 		Pt1.y = Pt.y;
 		Pt1.z = Pt.z;
@@ -397,11 +397,11 @@ double Body::GetSectionArcLength(double x)
 }
 
 
-CVector Body::CenterPoint(double u)
+CVector Body::centerPoint(double u)
 {
 	CVector Top, Bot;
-	GetPoint(u, 0.0, true, Top);
-	GetPoint(u, 1.0, true, Bot);
+	getPoint(u, 0.0, true, Top);
+	getPoint(u, 1.0, true, Bot);
 	return (Top+Bot)/2.0;
 }
 
@@ -414,7 +414,7 @@ CVector Body::CenterPoint(double u)
  * and for the left side if false
  * @param Pt the calculated point position
  */
-void Body::GetPoint(double u, double v, bool bRight, CVector &Pt)
+void Body::getPoint(double u, double v, bool bRight, CVector &Pt)
 {
 	m_SplineSurface.GetPoint(u, v, Pt);
 	if(!bRight)  Pt.y = -Pt.y;
@@ -441,7 +441,7 @@ CVector Body::Point(double u, double v, bool bRight)
  * @param x in input, the longitudinal position
  * @return the longitudinal paramater on the NURBS surface
  */
-double Body::Getu(double x)
+double Body::getu(double x)
 {
 	return m_SplineSurface.Getu(x,0.0);
 }
@@ -455,7 +455,7 @@ double Body::Getu(double x)
  * @param bRight true if the intersection should be calculated on the Body's right side, and flase if on the left
  * @return the value of the hoop parameter
  */
-double Body::Getv(double u, CVector r, bool bRight)
+double Body::getv(double u, CVector r, bool bRight)
 {
 	static double sine = 10000.0;
 
@@ -501,7 +501,7 @@ double Body::Getv(double u, CVector r, bool bRight)
  * Imports the definition from a text file. cf. Export the definition for details.
  * @return true if the Body definition was correctly imported, false otherwise.
  */
-bool Body::ImportDefinition(QTextStream &inStream, double mtoUnit)
+bool Body::importDefinition(QTextStream &inStream, double mtoUnit)
 {
 	int res, i, j, Line, NSideLines;
 	QString strong;
@@ -556,7 +556,7 @@ bool Body::ImportDefinition(QTextStream &inStream, double mtoUnit)
 		else if (strong.indexOf("FRAME", 0)  >=0)
 		{
 			Frame *pNewFrame = new Frame;
-			NSideLines = ReadFrame(inStream, Line, pNewFrame, mtoUnit);
+			NSideLines = readFrame(inStream, Line, pNewFrame, mtoUnit);
 
 			if (NSideLines)
 			{
@@ -569,7 +569,7 @@ bool Body::ImportDefinition(QTextStream &inStream, double mtoUnit)
 
 
 
-	for(i=1; i<FrameSize(); i++)
+	for(i=1; i<frameSize(); i++)
 	{
 		if(m_SplineSurface.m_pFrame[i]->m_CtrlPoint.size() != m_SplineSurface.m_pFrame[i-1]->m_CtrlPoint.size())
 		{
@@ -580,10 +580,10 @@ bool Body::ImportDefinition(QTextStream &inStream, double mtoUnit)
 		}
 	}
 
-	for(i=0; i<FrameSize(); i++)
+	for(i=0; i<frameSize(); i++)
 	{
 		m_SplineSurface.m_pFrame[i]->m_Position.x =  m_SplineSurface.m_pFrame[i]->m_CtrlPoint[0].x + xo;
-		for(j=0; j<SideLineCount(); j++)
+		for(j=0; j<sideLineCount(); j++)
 		{
 			m_SplineSurface.m_pFrame[i]->m_CtrlPoint[j].z += zo;
 		}
@@ -619,7 +619,7 @@ int Body::InsertPoint(CVector Real)
 
 
 	n = activeFrame()->InsertPoint(Real, 3);
-	for (i=0; i<FrameSize(); i++)
+	for (i=0; i<frameSize(); i++)
 	{
 		Frame *pFrame = m_SplineSurface.m_pFrame[i];
 		if(pFrame != activeFrame())
@@ -642,7 +642,7 @@ int Body::InsertPoint(CVector Real)
  */
 int Body::insertFrameBefore(int iFrame)
 {
-	Frame *pFrame = new Frame(SideLineCount());
+	Frame *pFrame = new Frame(sideLineCount());
 	if(iFrame==0)
 	{
 		pFrame->SetuPosition(frame(0)->position().x-0.1);
@@ -655,7 +655,7 @@ int Body::insertFrameBefore(int iFrame)
 		int n = iFrame;
 		m_SplineSurface.m_pFrame.insert(n, pFrame);
 
-		for (int ic=0; ic<SideLineCount(); ic++)
+		for (int ic=0; ic<sideLineCount(); ic++)
 		{
 			m_SplineSurface.m_pFrame[n]->m_CtrlPoint[ic].x = (m_SplineSurface.m_pFrame[n-1]->m_CtrlPoint[ic].x + m_SplineSurface.m_pFrame[n+1]->m_CtrlPoint[ic].x)/2.0;
 			m_SplineSurface.m_pFrame[n]->m_CtrlPoint[ic].y = (m_SplineSurface.m_pFrame[n-1]->m_CtrlPoint[ic].y + m_SplineSurface.m_pFrame[n+1]->m_CtrlPoint[ic].y)/2.0;
@@ -676,8 +676,8 @@ int Body::insertFrameBefore(int iFrame)
  */
 int Body::insertFrameAfter(int iFrame)
 {
-	Frame *pFrame = new Frame(SideLineCount());
-	if(iFrame==FrameSize()-1)
+	Frame *pFrame = new Frame(sideLineCount());
+	if(iFrame==frameSize()-1)
 	{
 		pFrame->SetuPosition(frame(iFrame)->position().x+0.1);
 		m_SplineSurface.m_pFrame.append(pFrame);
@@ -689,7 +689,7 @@ int Body::insertFrameAfter(int iFrame)
 		int n = iFrame+1;
 		m_SplineSurface.m_pFrame.insert(n, pFrame);
 
-		for (int ic=0; ic<SideLineCount(); ic++)
+		for (int ic=0; ic<sideLineCount(); ic++)
 		{
 			m_SplineSurface.m_pFrame[n]->m_CtrlPoint[ic].x = (m_SplineSurface.m_pFrame[n-1]->m_CtrlPoint[ic].x + m_SplineSurface.m_pFrame[n+1]->m_CtrlPoint[ic].x)/2.0;
 			m_SplineSurface.m_pFrame[n]->m_CtrlPoint[ic].y = (m_SplineSurface.m_pFrame[n-1]->m_CtrlPoint[ic].y + m_SplineSurface.m_pFrame[n+1]->m_CtrlPoint[ic].y)/2.0;
@@ -716,8 +716,8 @@ int Body::insertFrame(CVector Real)
 
 	if(Real.x<m_SplineSurface.m_pFrame[0]->m_Position.x)
 	{
-		m_SplineSurface.m_pFrame.prepend(new Frame(SideLineCount()));
-		for (k=0; k<SideLineCount(); k++)
+		m_SplineSurface.m_pFrame.prepend(new Frame(sideLineCount()));
+		for (k=0; k<sideLineCount(); k++)
 		{
 			m_SplineSurface.m_pFrame.first()->m_CtrlPoint[k].Set(Real.x,0.0,Real.z);
 		}
@@ -725,9 +725,9 @@ int Body::insertFrame(CVector Real)
 	}
 	else if(Real.x>m_SplineSurface.m_pFrame.last()->m_Position.x)
 	{
-		m_SplineSurface.m_pFrame.append(new Frame(SideLineCount()));
+		m_SplineSurface.m_pFrame.append(new Frame(sideLineCount()));
 		
-		for (k=0; k<SideLineCount(); k++)
+		for (k=0; k<sideLineCount(); k++)
 		{
 			m_SplineSurface.m_pFrame.last()->m_CtrlPoint[k].Set(0.0,0.0,Real.z);
 		}
@@ -735,14 +735,14 @@ int Body::insertFrame(CVector Real)
 	}
 	else
 	{
-		for (n=0; n<FrameSize()-1; n++)
+		for (n=0; n<frameSize()-1; n++)
 		{
 			if(m_SplineSurface.m_pFrame[n]->m_Position.x<=Real.x  &&  Real.x<m_SplineSurface.m_pFrame[n+1]->m_Position.x)
 			{
-				m_SplineSurface.m_pFrame.insert(n+1, new Frame(SideLineCount()));
+				m_SplineSurface.m_pFrame.insert(n+1, new Frame(sideLineCount()));
 				m_xPanels.insert(n+1,1);
 
-				for (k=0; k<SideLineCount(); k++)
+				for (k=0; k<sideLineCount(); k++)
 				{
 					m_SplineSurface.m_pFrame[n+1]->m_CtrlPoint[k].x = (m_SplineSurface.m_pFrame[n]->m_CtrlPoint[k].x + m_SplineSurface.m_pFrame[n+2]->m_CtrlPoint[k].x)/2.0;
 					m_SplineSurface.m_pFrame[n+1]->m_CtrlPoint[k].y = (m_SplineSurface.m_pFrame[n]->m_CtrlPoint[k].y + m_SplineSurface.m_pFrame[n+2]->m_CtrlPoint[k].y)/2.0;
@@ -751,11 +751,11 @@ int Body::insertFrame(CVector Real)
 				break;
 			}
 		}
-		if(n+1<FrameSize())
+		if(n+1<frameSize())
 		{
 			m_SplineSurface.m_pFrame[n+1]->SetuPosition(Real.x);
 			double trans = Real.z - (m_SplineSurface.m_pFrame[n+1]->m_CtrlPoint[0].z + m_SplineSurface.m_pFrame[n+1]->m_CtrlPoint.last().z)/2.0;
-			for (k=0; k<SideLineCount(); k++)
+			for (k=0; k<sideLineCount(); k++)
 			{
 				m_SplineSurface.m_pFrame[n+1]->m_CtrlPoint[k].z += trans;
 			}
@@ -764,7 +764,7 @@ int Body::insertFrame(CVector Real)
 
 	m_iActiveFrame = n+1;
 
-	if(n>=FrameSize())	m_iActiveFrame = FrameSize();
+	if(n>=frameSize())	m_iActiveFrame = frameSize();
 	if(n<=0)			m_iActiveFrame = 0;
 	m_iHighlight = -1;
 
@@ -784,10 +784,10 @@ int Body::insertFrame(CVector Real)
  * @param bRight true if the intersection was found on the right side, false if found on the left side.
  * @return true if an intersection point has been found, false otherwise.
  */
-bool Body::Intersect(CVector A, CVector B, CVector &I, bool bRight)
+bool Body::intersect(CVector A, CVector B, CVector &I, bool bRight)
 {
 	if(m_LineType==XFLR5::BODYPANELTYPE)        return intersectFlatPanels(A,B,I);
-	else if (m_LineType==XFLR5::BODYSPLINETYPE) return IntersectNURBS(A,B,I, bRight);
+	else if (m_LineType==XFLR5::BODYSPLINETYPE) return intersectNURBS(A,B,I, bRight);
 	return false;
 }
 
@@ -799,7 +799,7 @@ bool Body::Intersect(CVector A, CVector B, CVector &I, bool bRight)
  * @param bRight true if the intersection was found on the right side, false if found on the left side.
  * @return true if an intersection point has been found, false otherwise.
  */
-bool Body::IntersectNURBS(CVector A, CVector B, CVector &I, bool bRight)
+bool Body::intersectNURBS(CVector A, CVector B, CVector &I, bool bRight)
 {
 	//intersect line AB with right or left body surface
 	//intersection point is I
@@ -823,7 +823,7 @@ bool Body::IntersectNURBS(CVector A, CVector B, CVector &I, bool bRight)
 	//define which side to intersect with
 	if(M0.y>=0.0) bRight = true; else bRight = false;
 
-	if(!IsInNURBSBody(M1.x, M1.z))
+	if(!isInNURBSBody(M1.x, M1.z))
 	{
 		//consider no intersection (not quite true in special high dihedral cases)
 		I = M1;
@@ -837,13 +837,13 @@ bool Body::IntersectNURBS(CVector A, CVector B, CVector &I, bool bRight)
 		//store the previous parameter
 		tp = t;
 		//first we get the u parameter corresponding to point I
-		u = Getu(I.x);
+		u = getu(I.x);
 //		t_Q.Set(I.x, 0.0, 0.0);
 //		t_r = (I-t_Q);
 		t_r.x = 0.0;
 		t_r.y = I.y;
 		t_r.z = I.z;
-		v = Getv(u, t_r, bRight);
+		v = getv(u, t_r, bRight);
 		t_N = Point(u, v, bRight);
 
 		//project t_N on M0M1 line
@@ -881,9 +881,9 @@ bool Body::intersectFlatPanels(CVector A, CVector B, CVector &I)
 	U = B-A;
 	U.Normalize();
 
-	for (i=0; i<FrameSize()-1; i++)
+	for (i=0; i<frameSize()-1; i++)
 	{
-		for (k=0; k<SideLineCount()-1; k++)
+		for (k=0; k<sideLineCount()-1; k++)
 		{
 			//build the four corner points of the Quad Panel
 			LB.x =  m_SplineSurface.m_pFrame[i]->m_Position.x     ;
@@ -1021,7 +1021,7 @@ bool Body::intersectFlatPanels(CVector A, CVector B, CVector &I)
 int Body::isFramePos(CVector Real, double ZoomFactor)
 {
 	int k;
-	for (k=0; k<FrameSize(); k++)
+	for (k=0; k<frameSize(); k++)
 	{
 		if (qAbs(Real.x-m_SplineSurface.m_pFrame[k]->m_Position.x) < 0.01 *Length()/ZoomFactor &&
 			qAbs(Real.z-m_SplineSurface.m_pFrame[k]->zPos())       < 0.01 *Length()/ZoomFactor)
@@ -1036,9 +1036,9 @@ int Body::isFramePos(CVector Real, double ZoomFactor)
  * @param Pt the input point, in the x-z plane, i.e. y=0
  * @return true if the point is inside the Body, false otherwise
  */
-bool Body::IsInNURBSBody(double x, double z)
+bool Body::isInNURBSBody(double x, double z)
 {
-	double u = Getu(x);
+	double u = getu(x);
 	if (u <= 0.0 || u >= 1.0) return false;
 
 	return (Point(u,1,true).z<z && z<Point(u,0,true).z);
@@ -1050,12 +1050,12 @@ bool Body::IsInNURBSBody(double x, double z)
  * @param Pt the input point
  * @return true if the point is inside the Body, false otherwise
  */
-bool Body::IsInNURBSBodyOld(CVector Pt)
+bool Body::isInNURBSBodyOld(CVector Pt)
 {
 	double u, v;
 	bool bRight;
 
-	u = Getu(Pt.x);
+	u = getu(Pt.x);
 
 	if (u <= 0.0 || u >= 1.0) return false;
 
@@ -1063,8 +1063,8 @@ bool Body::IsInNURBSBodyOld(CVector Pt)
 
 	bRight = (Pt.y>=0.0);
 
-	v = Getv(u, t_r, bRight);
-	GetPoint(u, v, bRight, t_N);
+	v = getv(u, t_r, bRight);
+	getPoint(u, v, bRight, t_N);
 
 	t_N.x = 0.0;
 
@@ -1081,12 +1081,12 @@ bool Body::IsInNURBSBodyOld(CVector Pt)
  * @param Unit the unit used to read from the datastream
  * @return the number of control points read from the stream
  */
-int Body::ReadFrame(QTextStream &in, int &Line, Frame *pFrame, double const &Unit)
+int Body::readFrame(QTextStream &in, int &Line, Frame *pFrame, double const &Unit)
 {
 	double x,y,z;
 
 	QString strong;
-	int i, res;
+	int i;
 	i = 0;
 	x=y=z=0.0;
 
@@ -1097,9 +1097,8 @@ int Body::ReadFrame(QTextStream &in, int &Line, Frame *pFrame, double const &Uni
 	while (bRead)
 	{
 		if(!ReadAVLString(in, Line,  strong)) bRead = false;
-		ReadValues(strong, res, x,y,z);
 
-		if(res!=3)
+		if(readValues(strong, x,y,z)!=3)
 		{
 			bRead = false;
 			Rewind1Line(in, Line, strong);
@@ -1135,7 +1134,7 @@ int Body::removeFrame(int n)
 /**
  * Removes the active Frame from the Body
  */
-void Body::RemoveActiveFrame()
+void Body::removeActiveFrame()
 {
 	m_SplineSurface.RemoveFrame(m_iActiveFrame);
 
@@ -1148,7 +1147,7 @@ void Body::RemoveActiveFrame()
  * Removes a sideline from the Body
  * @param SideLine the index of the sideline to remove
  */
-void Body::RemoveSideLine(int SideLine)
+void Body::removeSideLine(int SideLine)
 {
 	for (int i=0; i<m_SplineSurface.m_pFrame.size(); i++)
 	{
@@ -1166,10 +1165,10 @@ void Body::RemoveSideLine(int SideLine)
  * @param bFrameOnly if true, only a Frame shall be scaled, otherwise the whole Body shall be scaled
  * @param FrameID the index of the Frame to scale
  */
-void Body::Scale(double XFactor, double YFactor, double ZFactor, bool bFrameOnly, int FrameID)
+void Body::scale(double XFactor, double YFactor, double ZFactor, bool bFrameOnly, int FrameID)
 {
 	int i,j;
-	for (i=0; i<FrameSize(); i++)
+	for (i=0; i<frameSize(); i++)
 	{
 		if((bFrameOnly &&  i==FrameID) || !bFrameOnly)
 		{
@@ -1193,7 +1192,7 @@ void Body::Scale(double XFactor, double YFactor, double ZFactor, bool bFrameOnly
  * @param bIsStoring always false, since storing to this format is deprecated
  * @return true if the loading was successful, false otherwise
  */
-bool Body::SerializeBodyWPA(QDataStream &ar, bool bIsStoring)
+bool Body::serializeBodyWPA(QDataStream &ar, bool bIsStoring)
 {
 	int ArchiveFormat;
 	int k, p, nStations;
@@ -1328,7 +1327,7 @@ bool Body::SerializeBodyWPA(QDataStream &ar, bool bIsStoring)
  * @param bIsStoring true if storing, false if loading the data
  * @return true if the operation was successful, false otherwise
  */
-bool Body::SerializeBodyXFL(QDataStream &ar, bool bIsStoring)
+bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
 {
 	int ArchiveFormat;
 	int i,k,n,p;
@@ -1352,14 +1351,14 @@ bool Body::SerializeBodyXFL(QDataStream &ar, bool bIsStoring)
 		ar << m_nxPanels << m_nhPanels;
 		ar << m_Bunch;
 
-		ar << SideLineCount();
-		for(k=0; k<SideLineCount(); k++) ar << m_hPanels[k];
+		ar << sideLineCount();
+		for(k=0; k<sideLineCount(); k++) ar << m_hPanels[k];
 
-		ar << FrameSize();
-		for(k=0; k<FrameSize(); k++)
+		ar << frameSize();
+		for(k=0; k<frameSize(); k++)
 		{
 			ar << m_xPanels[k];
-			ar << FramePosition(k);
+			ar << framePosition(k);
 			m_SplineSurface.m_pFrame[k]->SerializeFrame(ar, bIsStoring);
 		}
 
@@ -1446,7 +1445,7 @@ bool Body::SerializeBodyXFL(QDataStream &ar, bool bIsStoring)
 /**
  * For a NURBS Body, sets the default position of the longitudinal parameters
  */
-void Body::SetPanelPos()
+void Body::setPanelPos()
 {
 	int i;
 /*	for(i=0; i<=m_nxPanels; i++)
@@ -1478,10 +1477,10 @@ void Body::SetPanelPos()
  * @param bFrameOnly true if only a Frame is to be translated
  * @param FrameID the index of the Frame object to be translated
  */
-void Body::Translate(double XTrans, double , double ZTrans, bool bFrameOnly, int FrameID)
+void Body::translate(double XTrans, double , double ZTrans, bool bFrameOnly, int FrameID)
 {
 	int i,j;
-	for (i=0; i<FrameSize(); i++)
+	for (i=0; i<frameSize(); i++)
 	{
 		if((bFrameOnly &&  i==FrameID) || !bFrameOnly)
 		{
@@ -1509,9 +1508,9 @@ void Body::Translate(double XTrans, double , double ZTrans, bool bFrameOnly, int
  * @param bFrameOnly true if only a Frame is to be translated
  * @param FrameID the index of the Frame object to be translated
  */
-void Body::Translate(CVector T, bool bFrameOnly, int FrameID)
+void Body::translate(CVector T, bool bFrameOnly, int FrameID)
 {
-	Translate(T.x, T.y, T.z, bFrameOnly, FrameID);
+	translate(T.x, T.y, T.z, bFrameOnly, FrameID);
 }
 
 
@@ -1522,7 +1521,7 @@ void Body::Translate(CVector T, bool bFrameOnly, int FrameID)
  */
 Frame *Body::frame(int iFrame)
 {
-	if(iFrame>=0 && iFrame<FrameSize()) return m_SplineSurface.m_pFrame[iFrame];
+	if(iFrame>=0 && iFrame<frameSize()) return m_SplineSurface.m_pFrame[iFrame];
 	return NULL;
 }
 
@@ -1532,7 +1531,7 @@ Frame *Body::frame(int iFrame)
  * @param iFrame the index of the Frame object
  * @return the absolute longitudinal position, in meters
  */
-double Body::FramePosition(int iFrame)
+double Body::framePosition(int iFrame)
 {
 	return m_SplineSurface.m_pFrame[iFrame]->m_Position.x;
 }
@@ -1544,7 +1543,7 @@ double Body::FramePosition(int iFrame)
  */
 Frame *Body::activeFrame()
 {
-	if(m_iActiveFrame>=0 && m_iActiveFrame<FrameSize()) return m_SplineSurface.m_pFrame[m_iActiveFrame];
+	if(m_iActiveFrame>=0 && m_iActiveFrame<frameSize()) return m_SplineSurface.m_pFrame[m_iActiveFrame];
 	else                                                return NULL;
 }
 
@@ -1588,7 +1587,7 @@ Frame * Body::setActiveFrame(int iFrame)
  *  - the origin=BodyFrame;
  *  - the center of gravity is calculated from component masses and is NOT the CoG defined in the polar
  */
-void Body::ComputeBodyAxisInertia()
+void Body::computeBodyAxisInertia()
 {
 
 	int i;
@@ -1596,7 +1595,7 @@ void Body::ComputeBodyAxisInertia()
 	double Ixx, Iyy, Izz, Ixz, VolumeMass;
 	Ixx = Iyy = Izz = Ixz = VolumeMass = 0.0;
 
-	ComputeVolumeInertia(VolumeCoG, Ixx, Iyy, Izz, Ixz);
+	computeVolumeInertia(VolumeCoG, Ixx, Iyy, Izz, Ixz);
 	m_TotalMass = m_VolumeMass;
 
 	m_CoG = VolumeCoG *m_VolumeMass;
@@ -1637,7 +1636,7 @@ void Body::ComputeBodyAxisInertia()
  * Homogeneity is questionable, but is a rather handy assumption.
  * Mass in the body's skin is reasonable, given that the point masses are added manually.
  */
-void Body::ComputeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz)
+void Body::computeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz)
 {
 	//evaluate roughly the Body's wetted area
 	int i,j,k;
@@ -1655,24 +1654,24 @@ void Body::ComputeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, do
 		// we use the panel division
 		//first get the wetted area
 
-		for (i=0; i<FrameSize()-1; i++)
+		for (i=0; i<frameSize()-1; i++)
 		{
-			for (k=0; k<SideLineCount()-1; k++)
+			for (k=0; k<sideLineCount()-1; k++)
 			{
 				//build the four corner points of the strips
-				PLA.x =  FramePosition(i);
+				PLA.x =  framePosition(i);
 				PLA.y =  frame(i)->m_CtrlPoint[k].y  ;
 				PLA.z =  frame(i)->m_CtrlPoint[k].z  ;
 
-				PLB.x = FramePosition(i);
+				PLB.x = framePosition(i);
 				PLB.y = frame(i)->m_CtrlPoint[k+1].y ;
 				PLB.z = frame(i)->m_CtrlPoint[k+1].z ;
 
-				PTA.x = FramePosition(i+1);
+				PTA.x = framePosition(i+1);
 				PTA.y = frame(i+1)->m_CtrlPoint[k].y ;
 				PTA.z = frame(i+1)->m_CtrlPoint[k].z ;
 
-				PTB.x = FramePosition(i+1);
+				PTB.x = framePosition(i+1);
 				PTB.y = frame(i+1)->m_CtrlPoint[k+1].y;
 				PTB.z = frame(i+1)->m_CtrlPoint[k+1].z;
 
@@ -1686,7 +1685,7 @@ void Body::ComputeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, do
 		BodyArea *= 2.0;
 		rho = m_VolumeMass/BodyArea;
 		//First get the CoG position
-		for (i=0; i<FrameSize()-1; i++)
+		for (i=0; i<frameSize()-1; i++)
 		{
 			for (j=0; j<m_xPanels[i]; j++)
 			{
@@ -1694,10 +1693,10 @@ void Body::ComputeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, do
 				dj1 = (double)(j+1)/(double)(m_xPanels[i]);
 				SectionArea = 0.0;
 
-				PLA.x = PLB.x = (1.0- dj) * FramePosition(i)  +  dj * FramePosition(i+1);
-				PTA.x = PTB.x = (1.0-dj1) * FramePosition(i)  + dj1 * FramePosition(i+1);
+				PLA.x = PLB.x = (1.0- dj) * framePosition(i)  +  dj * framePosition(i+1);
+				PTA.x = PTB.x = (1.0-dj1) * framePosition(i)  + dj1 * framePosition(i+1);
 
-				for (k=0; k<SideLineCount()-1; k++)
+				for (k=0; k<sideLineCount()-1; k++)
 				{
 					//build the four corner points of the strips
 					PLB.y = (1.0- dj) * frame(i)->m_CtrlPoint[k].y   +  dj * frame(i+1)->m_CtrlPoint[k].y;
@@ -1735,7 +1734,7 @@ void Body::ComputeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, do
 
 		//Then Get Inertias
 		// we could do it one calculation, for CG and inertia, by using Hyghens/steiner theorem
-		for (i=0; i<FrameSize()-1; i++)
+		for (i=0; i<frameSize()-1; i++)
 		{
 			for (j=0; j<m_xPanels[i]; j++)
 			{
@@ -1743,10 +1742,10 @@ void Body::ComputeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, do
 				dj1 = (double)(j+1)/(double)(m_xPanels[i]);
 				SectionArea = 0.0;
 
-				PLA.x = PLB.x = (1.0- dj) * FramePosition(i)   +  dj * FramePosition(i+1);
-				PTA.x = PTB.x = (1.0-dj1) * FramePosition(i)   + dj1 * FramePosition(i+1);
+				PLA.x = PLB.x = (1.0- dj) * framePosition(i)   +  dj * framePosition(i+1);
+				PTA.x = PTB.x = (1.0-dj1) * framePosition(i)   + dj1 * framePosition(i+1);
 
-				for (k=0; k<SideLineCount()-1; k++)
+				for (k=0; k<sideLineCount()-1; k++)
 				{
 					//build the four corner points of the strips
 					PLB.y = (1.0- dj) * frame(i)->m_CtrlPoint[k].y   +  dj * frame(i+1)->m_CtrlPoint[k].y;
@@ -1784,27 +1783,27 @@ void Body::ComputeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, do
 	else if(m_LineType==XFLR5::BODYSPLINETYPE)
 	{
 		int NSections = 20;//why not ?
-		xpos = FramePosition(0);
+		xpos = framePosition(0);
 		dl = Length()/(double)(NSections-1);
 
 		for (j=0; j<NSections-1; j++)
 		{
-			BodyArea += dl * (GetSectionArcLength(xpos)+ GetSectionArcLength(xpos+dl)) /2.0;
+			BodyArea += dl * (getSectionArcLength(xpos)+ getSectionArcLength(xpos+dl)) /2.0;
 			xpos += dl;
 		}
 
 		rho = m_VolumeMass / BodyArea;
 
 		// First evaluate CoG, assuming each section is a point mass
-		xpos = FramePosition(0);
+		xpos = framePosition(0);
 		for (j=0; j<NSections-1; j++)
 		{
-			SectionArea = dl * (GetSectionArcLength(xpos)+ GetSectionArcLength(xpos+dl))/2.0;
+			SectionArea = dl * (getSectionArcLength(xpos)+ getSectionArcLength(xpos+dl))/2.0;
 			Pt.x = xpos + dl/2.0;
 			Pt.y = 0.0;
-			ux = Getu(Pt.x);
-			GetPoint(ux, 0.0, true, Top);
-			GetPoint(ux, 1.0, true, Bot);
+			ux = getu(Pt.x);
+			getPoint(ux, 0.0, true, Top);
+			getPoint(ux, 1.0, true, Bot);
 			Pt.z = (Top.z + Bot.z)/2.0;
 			xpos += dl;
 
@@ -1816,15 +1815,15 @@ void Body::ComputeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, do
 		else                       CoG.Set(0.0, 0.0, 0.0);
 
 		// Next evaluate inertia, assuming each section is a point mass
-		xpos = FramePosition(0);
+		xpos = framePosition(0);
 		for (j=0; j<NSections-1; j++)
 		{
-			SectionArea = dl * (GetSectionArcLength(xpos)+ GetSectionArcLength(xpos+dl))/2.0;
+			SectionArea = dl * (getSectionArcLength(xpos)+ getSectionArcLength(xpos+dl))/2.0;
 			Pt.x = xpos + dl/2.0;
 			Pt.y = 0.0;
-			ux = Getu(Pt.x);
-			GetPoint(ux, 0.0, true, Top);
-			GetPoint(ux, 1.0, true, Bot);
+			ux = getu(Pt.x);
+			getPoint(ux, 0.0, true, Top);
+			getPoint(ux, 1.0, true, Bot);
 			Pt.z = (Top.z + Bot.z)/2.0;
 
 			CoGIxx += SectionArea*rho * ( (Pt.y-CoG.y)*(Pt.y-CoG.y) + (Pt.z-CoG.z)*(Pt.z-CoG.z) );
@@ -1841,7 +1840,7 @@ void Body::ComputeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, do
  * Returns the sum of volume and point masses
  * @return the sum of volume and point masses
  */
-double Body::TotalMass()
+double Body::totalMass()
 {
 	double TotalMass = m_VolumeMass;
 	for(int im=0; im<m_PointMass.size(); im++)
@@ -1855,7 +1854,7 @@ double Body::TotalMass()
  * @param uw the weight on the longitudinal edges ( @todo check )
  * @param uw the weight on the hoop edges ( @todo check )
  */
-void Body::SetEdgeWeight(double uw, double vw)
+void Body::setEdgeWeight(double uw, double vw)
 {
 	m_SplineSurface.m_EdgeWeightu = uw;
 	m_SplineSurface.m_EdgeWeightv = vw;

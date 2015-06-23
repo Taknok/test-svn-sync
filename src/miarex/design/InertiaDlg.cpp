@@ -91,7 +91,7 @@ void InertiaDlg::ComputeBodyAxisInertia()
 {
 	if(m_pPlane)     m_pPlane->computeBodyAxisInertia();
 	else if(m_pWing) m_pWing->ComputeBodyAxisInertia();
-	else if(m_pBody) m_pBody->ComputeBodyAxisInertia();
+	else if(m_pBody) m_pBody->computeBodyAxisInertia();
 }
 
 
@@ -135,7 +135,7 @@ void InertiaDlg::ComputeInertia()
 	else if(m_pBody)
 	{
 		m_pBody->m_VolumeMass = m_VolumeMass;
-		if(m_pBody->m_VolumeMass>PRECISION) m_pBody->ComputeVolumeInertia(m_VolumeCoG, m_CoGIxx, m_CoGIyy, m_CoGIzz, m_CoGIxz);
+		if(m_pBody->m_VolumeMass>PRECISION) m_pBody->computeVolumeInertia(m_VolumeCoG, m_CoGIxx, m_CoGIyy, m_CoGIzz, m_CoGIxz);
 	}
 	else if(m_pPlane)
 	{
@@ -589,7 +589,7 @@ void InertiaDlg::OnExportToAVL()
 
 		if(m_pPlane->body())
 		{
-						m_pPlane->body()->ComputeVolumeInertia(CoG, CoGIxx, CoGIyy, CoGIzz, CoGIxz);
+						m_pPlane->body()->computeVolumeInertia(CoG, CoGIxx, CoGIyy, CoGIzz, CoGIxz);
 			strong = QString(tr("%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 ! Body's inertia"))
 								 .arg(m_pPlane->body()->m_VolumeMass /Munit, 10, 'g', 3)
                                  .arg(CoG.x/Lunit, 10, 'g', 3)

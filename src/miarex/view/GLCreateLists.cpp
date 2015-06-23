@@ -96,12 +96,12 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 
 							if(pBody && pWing->m_Surface[j]->IsCenterSurf() && pWing->m_Surface[j]->IsLeftSurf())
 							{
-								pBody->Intersect(PtA, PtB, PtB, false);
+								pBody->intersect(PtA, PtB, PtB, false);
 								PtIRight[l] = PtB;
 							}
 							else if(pBody && pWing->m_Surface[j]->IsCenterSurf() && pWing->m_Surface[j]->IsRightSurf())
 							{
-								pBody->Intersect(PtA, PtB, PtA, true);
+								pBody->intersect(PtA, PtB, PtA, true);
 								PtILeft[l] = PtA;
 							}
 
@@ -126,12 +126,12 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 
 							if(pBody && pWing->m_Surface[j]->IsCenterSurf() && pWing->m_Surface[j]->IsLeftSurf())
 							{
-								pBody->Intersect(PtA, PtB, PtB, false);
+								pBody->intersect(PtA, PtB, PtB, false);
 								PtIRight[l+SIDEPOINTS] = PtB;
 							}
 							else if(pBody && pWing->m_Surface[j]->IsCenterSurf() && pWing->m_Surface[j]->IsRightSurf())
 							{
-								pBody->Intersect(PtA, PtB, PtA, true);
+								pBody->intersect(PtA, PtB, PtA, true);
 								PtILeft[l+SIDEPOINTS] = PtA;
 							}
 							glNormal3d(PtNormal.x, PtNormal.y, PtNormal.z);

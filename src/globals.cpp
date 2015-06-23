@@ -580,17 +580,20 @@ double IntegralCy(double y1, double y2, double c1, double c2)
 /**
 * Extracts three double values from a QString, and returns the number of extracted values.
 */
-void ReadValues(QString line, int &res, double &x, double &y, double &z)
+int readValues(QString line, double &x, double &y, double &z)
 {
 /*	char *sx = new char[30];
 	char *sy = new char[30];
 	char *text;*/
+	int res=0;
+
 	QString str;
 	bool bOK;
 
 	line = line.simplified();
 	int pos = line.indexOf(" ");
-	res = 0;
+
+
 	if(pos>0)
 	{
 		str = line.left(pos);
@@ -606,7 +609,7 @@ void ReadValues(QString line, int &res, double &x, double &y, double &z)
 	else
 	{
 		y=z=0.0;
-		return;
+		return res;
 	}
 
 	line = line.trimmed();
@@ -626,7 +629,7 @@ void ReadValues(QString line, int &res, double &x, double &y, double &z)
 	else
 	{
 		z=0.0;
-		return;
+		return res;
 	}
 
 	line = line.trimmed();
@@ -636,6 +639,8 @@ void ReadValues(QString line, int &res, double &x, double &y, double &z)
 		if(bOK) res++;
 	}
 	else z=0.0;
+
+	return res;
 }
 
 

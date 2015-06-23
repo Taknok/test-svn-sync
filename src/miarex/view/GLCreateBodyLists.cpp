@@ -40,7 +40,7 @@ void GLCreateBody3DSplines( int iList, Body *pBody, int nx, int nh)
 		for (l=0; l<=nh; l++)
 		{
 			v = (double)l / (double)nh;
-			pBody->GetPoint(u,  v, true, m_T[p]);
+			pBody->getPoint(u,  v, true, m_T[p]);
 			p++;
 		}
 	}
@@ -158,16 +158,16 @@ void GLCreateBody3DSplines( int iList, Body *pBody, int nx, int nh)
 		u=0.0; v = 0.0;
 
 		// sides
-		for (i=0; i<pBody->FrameSize(); i++)
+		for (i=0; i<pBody->frameSize(); i++)
 		{
-			u = pBody->Getu(pBody->frame(i)->m_Position.x);
+			u = pBody->getu(pBody->frame(i)->m_Position.x);
 
 			glBegin(GL_LINE_STRIP);
 			{
 				v = 0.0;
 				for (j=0; j<nh; j++)
 				{
-					pBody->GetPoint(u,v,true, Point);
+					pBody->getPoint(u,v,true, Point);
 					glVertex3d(Point.x, Point.y, Point.z);
 					v += hinc;
 				}
@@ -178,7 +178,7 @@ void GLCreateBody3DSplines( int iList, Body *pBody, int nx, int nh)
 				v = 0.0;
 				for (j=0; j<nh; j++)
 				{
-					pBody->GetPoint(u,v,false, Point);
+					pBody->getPoint(u,v,false, Point);
 					glVertex3d(Point.x,Point.y, Point.z);
 					v += hinc;
 				}
@@ -192,7 +192,7 @@ void GLCreateBody3DSplines( int iList, Body *pBody, int nx, int nh)
 			v = 0.0;
 			for (int iu=0; iu<=nh; iu++)
 			{
-				pBody->GetPoint((double)iu/(double)nh,v, true, Point);
+				pBody->getPoint((double)iu/(double)nh,v, true, Point);
 				glVertex3d(Point.x, Point.y, Point.z);
 			}
 		}
@@ -204,7 +204,7 @@ void GLCreateBody3DSplines( int iList, Body *pBody, int nx, int nh)
 			v = 1.0;
 			for (int iu=0; iu<=nh; iu++)
 			{
-				pBody->GetPoint((double)iu/(double)nh,v, true, Point);
+				pBody->getPoint((double)iu/(double)nh,v, true, Point);
 				glVertex3d(Point.x, Point.y, Point.z);
 			}
 		}
@@ -245,9 +245,9 @@ void GLCreateBody3DFlatPanels(int iList, Body *pBody)
 		glDisable(GL_LINE_STIPPLE);
 		glLineWidth(1.0);
 
-		for (k=0; k<pBody->SideLineCount()-1;k++)
+		for (k=0; k<pBody->sideLineCount()-1;k++)
 		{
-			for (j=0; j<pBody->FrameSize()-1;j++)
+			for (j=0; j<pBody->frameSize()-1;j++)
 			{
 				Tj.Set(pBody->frame(j)->m_Position.x,     0.0, 0.0);
 				Tjp1.Set(pBody->frame(j+1)->m_Position.x, 0.0, 0.0);
@@ -313,9 +313,9 @@ void GLCreateBody3DFlatPanels(int iList, Body *pBody)
 
 		glColor3d(color.redF(), color.greenF(), color.blueF());
 
-		for (k=0; k<pBody->SideLineCount()-1;k++)
+		for (k=0; k<pBody->sideLineCount()-1;k++)
 		{
-			for (j=0; j<pBody->FrameSize()-1;j++)
+			for (j=0; j<pBody->frameSize()-1;j++)
 			{
 				Tj.Set(pBody->frame(j)->m_Position.x,     0.0, 0.0);
 				Tjp1.Set(pBody->frame(j+1)->m_Position.x, 0.0, 0.0);
@@ -396,7 +396,7 @@ void GLCreateBodyMesh(int iList, Body *pBody)
 
             glLineWidth(1.0);
 
-            for (i=0; i<pBody->FrameSize()-1; i++)
+            for (i=0; i<pBody->frameSize()-1; i++)
             {
                 for (j=0; j<pBody->m_xPanels[i]; j++)
                 {
@@ -404,7 +404,7 @@ void GLCreateBodyMesh(int iList, Body *pBody)
                     dj1 = (double)(j+1)/(double)(pBody->m_xPanels[i]);
 
                     //body left side
-                    for (k=0; k<pBody->SideLineCount()-1; k++)
+                    for (k=0; k<pBody->sideLineCount()-1; k++)
                     {
                         //build the four corner points of the strips
                         PLB.x =  (1.0- dj) * pBody->frame(i)->m_Position.x       +  dj * pBody->frame(i+1)->m_Position.x;
@@ -453,7 +453,7 @@ void GLCreateBodyMesh(int iList, Body *pBody)
                         glEnd();
                     }
                     //body right side
-                    for (k=pBody->SideLineCount()-2; k>=0; k--)
+                    for (k=pBody->sideLineCount()-2; k>=0; k--)
                     {
                         //build the four corner points of the strips
                         PLA.x = (1.0- dj) * pBody->frame(i)->m_Position.x     +  dj * pBody->frame(i+1)->m_Position.x;
@@ -521,7 +521,7 @@ void GLCreateBodyMesh(int iList, Body *pBody)
 
             glLineWidth(1.0);
 
-            for (i=0; i<pBody->FrameSize()-1; i++)
+            for (i=0; i<pBody->frameSize()-1; i++)
             {
                 for (j=0; j<pBody->m_xPanels[i]; j++)
                 {
@@ -529,7 +529,7 @@ void GLCreateBodyMesh(int iList, Body *pBody)
                     dj1 = (double)(j+1)/(double)(pBody->m_xPanels[i]);
 
                     //body left side
-                    for (k=0; k<pBody->SideLineCount()-1; k++)
+                    for (k=0; k<pBody->sideLineCount()-1; k++)
                     {
                         //build the four corner points of the strips
                         PLB.x =  (1.0- dj) * pBody->frame(i)->m_Position.x        +  dj * pBody->frame(i+1)->m_Position.x;
@@ -578,7 +578,7 @@ void GLCreateBodyMesh(int iList, Body *pBody)
                         glEnd();
                     }
                     //body right side
-                    for (k=pBody->SideLineCount()-2; k>=0; k--)
+                    for (k=pBody->sideLineCount()-2; k>=0; k--)
                     {
                         //build the four corner points of the strips
                         PLA.x = (1.0- dj) * pBody->frame(i)->m_Position.x        +  dj * pBody->frame(i+1)->m_Position.x;
@@ -634,7 +634,7 @@ void GLCreateBodyMesh(int iList, Body *pBody)
     }
 	else if(pBody->m_LineType==XFLR5::BODYSPLINETYPE) //NURBS
     {
-        pBody->SetPanelPos();
+        pBody->setPanelPos();
         p = 0;
         for (k=0; k<=nx; k++)
         {
@@ -642,7 +642,7 @@ void GLCreateBodyMesh(int iList, Body *pBody)
             for (l=0; l<=nh; l++)
             {
                 v = (double)l / (double)(nh);
-                pBody->GetPoint(uk,  v, true, m_T[p]);
+                pBody->getPoint(uk,  v, true, m_T[p]);
                 p++;
             }
         }

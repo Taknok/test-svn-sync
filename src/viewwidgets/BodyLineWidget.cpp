@@ -85,7 +85,7 @@ void BodyLineWidget::drawBodyLines()
 
 	QPolygonF midLine,topLine, botLine;
 	//Middle Line
-	for (k=0; k<m_pBody->FrameSize();k++)
+	for (k=0; k<m_pBody->frameSize();k++)
 	{
 		zpos = (m_pBody->frame(k)->m_CtrlPoint.first().z +m_pBody->frame(k)->m_CtrlPoint.last().z )/2.0;
 		midLine.append(QPointF(m_pBody->frame(k)->m_Position.x*m_fScale + m_ptOffset.x(), zpos*-m_fScale + m_ptOffset.y()));
@@ -94,13 +94,13 @@ void BodyLineWidget::drawBodyLines()
 	if(m_pBody->m_LineType==XFLR5::BODYPANELTYPE)
 	{
 		//Top Line
-		for (k=0; k<m_pBody->FrameSize();k++)
+		for (k=0; k<m_pBody->frameSize();k++)
 		{
 			topLine.append(QPointF(m_pBody->frame(k)->m_Position.x*m_fScale + m_ptOffset.x(), m_pBody->frame(k)->m_CtrlPoint[0].z*-m_fScale+ m_ptOffset.y()));
 		}
 
 		//Bottom Line
-		for (k=0; k<m_pBody->FrameSize();k++)
+		for (k=0; k<m_pBody->frameSize();k++)
 		{
 			botLine.append(QPointF(m_pBody->frame(k)->m_Position.x*m_fScale + m_ptOffset.x(),
 								   m_pBody->frame(k)->m_CtrlPoint[ m_pBody->frame(k)->PointCount()-1].z*-m_fScale + m_ptOffset.y()));
@@ -120,7 +120,7 @@ void BodyLineWidget::drawBodyLines()
 		v = 0.0;
 		for (i=0; i<=nh; i++)
 		{
-			m_pBody->GetPoint(u,v,true, Point);
+			m_pBody->getPoint(u,v,true, Point);
 			topLine.append(QPointF(Point.x*m_fScale + m_ptOffset.x(), Point.z*-m_fScale + m_ptOffset.y()));
 			u += xinc;
 		}
@@ -130,7 +130,7 @@ void BodyLineWidget::drawBodyLines()
 		v = 1.0;
 		for (i=0; i<=nh; i++)
 		{
-			m_pBody->GetPoint(u,v,true, Point);
+			m_pBody->getPoint(u,v,true, Point);
 			botLine.append(QPointF(Point.x*m_fScale + m_ptOffset.x(), Point.z*-m_fScale + m_ptOffset.y()));
 			u += xinc;
 		}
@@ -153,7 +153,7 @@ void BodyLineWidget::drawBodyPoints()
 	painter.save();
 	QPen pointPen;
 
-	for (int k=0; k<m_pBody->FrameSize();k++)
+	for (int k=0; k<m_pBody->frameSize();k++)
 	{
 		if(m_pBody->m_iActiveFrame==k)
 		{

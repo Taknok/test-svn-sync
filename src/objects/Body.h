@@ -50,15 +50,15 @@ public:
 	Body();
 	~Body();
 
-	bool IsInNURBSBody(double x, double z);
-	bool IsInNURBSBodyOld(CVector Pt);
-	bool Intersect(CVector A, CVector B, CVector &I, bool bRight);
+	bool isInNURBSBody(double x, double z);
+	bool isInNURBSBodyOld(CVector Pt);
+	bool intersect(CVector A, CVector B, CVector &I, bool bRight);
 	bool intersectFlatPanels(CVector A, CVector B, CVector &I);
-	bool IntersectNURBS(CVector A, CVector B, CVector &I, bool bRight);
-	bool SerializeBodyWPA(QDataStream &ar, bool bIsStoring);
-	bool SerializeBodyXFL(QDataStream &ar, bool bIsStoring);
-	bool ImportDefinition(QTextStream &inStream, double mtoUnit);
-	bool ExportBodyDefinition(QTextStream &outStream, double mtoUnit);
+	bool intersectNURBS(CVector A, CVector B, CVector &I, bool bRight);
+	bool serializeBodyWPA(QDataStream &ar, bool bIsStoring);
+	bool serializeBodyXFL(QDataStream &ar, bool bIsStoring);
+	bool importDefinition(QTextStream &inStream, double mtoUnit);
+	bool exportBodyDefinition(QTextStream &outStream, double mtoUnit);
 
 	int insertFrame(CVector Real);
 	int insertFrameBefore(int iFrame);
@@ -66,32 +66,32 @@ public:
 	int InsertPoint(CVector Real);
 	int isFramePos(CVector Real, double ZoomFactor);
 	int removeFrame(int n);
-	int ReadFrame(QTextStream &in, int &Line, Frame *pFrame, double const &Unit);
+	int readFrame(QTextStream &in, int &Line, Frame *pFrame, double const &Unit);
 
 	double Length();
 
-	double Getu(double x);
-	double Getv(double u, CVector r, bool bRight);
-	double GetSectionArcLength(double x);
+	double getu(double x);
+	double getv(double u, CVector r, bool bRight);
+	double getSectionArcLength(double x);
 
-	CVector CenterPoint(double u);
-	CVector LeadingPoint();
+	CVector centerPoint(double u);
+	CVector leadingPoint();
 
 	void clearPointMasses();
-	void ComputeAero(double *Cp, double &XCP, double &YCP, double &ZCP,
+	void computeAero(double *Cp, double &XCP, double &YCP, double &ZCP,
 				  double &GCm, double &GRm, double &GYm, double &Alpha, CVector &CoG);
-	void Duplicate(Body *pBody);
-	void ExportGeometry(QTextStream &outStream, int type, double mtoUnit, int nx, int nh);
-	void GetPoint(double u, double v, bool bRight, CVector &Pt);
+	void duplicate(Body *pBody);
+	void exportGeometry(QTextStream &outStream, int type, double mtoUnit, int nx, int nh);
+	void getPoint(double u, double v, bool bRight, CVector &Pt);
 	CVector Point(double u, double v, bool bRight);
-	void RemoveActiveFrame();
-	void RemoveSideLine(int SideLine);
-	void Scale(double XFactor, double YFactor, double ZFactor, bool bFrameOnly=false, int FrameID=0);
-	void Translate(double XTrans, double, double ZTrans, bool bFrameOnly=false, int FrameID=0);
-	void Translate(CVector T, bool bFrameOnly=false, int FrameID=0);
+	void removeActiveFrame();
+	void removeSideLine(int SideLine);
+	void scale(double XFactor, double YFactor, double ZFactor, bool bFrameOnly=false, int FrameID=0);
+	void translate(double XTrans, double, double ZTrans, bool bFrameOnly=false, int FrameID=0);
+	void translate(CVector T, bool bFrameOnly=false, int FrameID=0);
 	void setNURBSKnots();
-	void SetPanelPos();
-	void SetEdgeWeight(double uw, double vw);
+	void setPanelPos();
+	void setEdgeWeight(double uw, double vw);
 
 	Frame *frame(int iFrame);
 	Frame *activeFrame();
@@ -100,14 +100,14 @@ public:
 	Frame *setActiveFrame(int iFrame);
 
 
-	double FramePosition(int iFrame);
-	int FrameSize()       {return m_SplineSurface.frameCount();}
-	int FramePointCount() {return m_SplineSurface.FramePointCount();}
-	int SideLineCount()   {return m_SplineSurface.FramePointCount();}// same as FramePointCount();
+	double framePosition(int iFrame);
+	int frameSize()       {return m_SplineSurface.frameCount();}
+	int framePointCount() {return m_SplineSurface.FramePointCount();}
+	int sideLineCount()   {return m_SplineSurface.FramePointCount();}// same as FramePointCount();
 
-	void ComputeBodyAxisInertia();
-	void ComputeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz);
-	double TotalMass();
+	void computeBodyAxisInertia();
+	void computeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz);
+	double totalMass();
 	double &volumeMass(){return m_VolumeMass;}
 
 	QString &bodyName(){return m_BodyName;}
