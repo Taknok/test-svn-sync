@@ -39,9 +39,10 @@ LineBtn::LineBtn(QWidget *parent)
 //	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 	setSizePolicy(szPolicyExpanding);
 
-	m_Color = Qt::darkGray;
-	m_Style = 0;
-	m_Width = 1;
+	m_LineStyle.m_Color = Qt::darkGray;
+	m_LineStyle.m_Style = 0;
+	m_LineStyle.m_Width = 1;
+	m_LineStyle.m_PointStyle = 0;
 }
 
 
@@ -66,52 +67,42 @@ QSize LineBtn::sizeHint() const
 }
 
 
-void LineBtn::SetColor(QColor const & color)
+void LineBtn::setColor(QColor const & color)
 {
-	m_Color = color;
+	m_LineStyle.m_Color = color;
 	update();
 }
 
 
-void LineBtn::SetStyle(int const & style)
+void LineBtn::setStyle(int const & style)
 {
-	m_Style = style;
+	m_LineStyle.m_Style = style;
 	update();
 }
 
 
-void LineBtn::SetWidth(int const & width)
+void LineBtn::setWidth(int const & width)
 {
-	m_Width = width;
+	m_LineStyle.m_Width = width;
 	update();
 }
 
 
-void LineBtn::SetStyle(int const &style, int const &width, QColor const & color)
+void LineBtn::setPointStyle(int const & pointStyle)
 {
-	m_Style = style;
-	m_Width = width;
-	m_Color = color;
+	m_LineStyle.m_PointStyle = pointStyle;
 	update();
 }
 
-
-QColor &LineBtn::GetColor()
+void LineBtn::setStyle(int const &style, int const &width, QColor const & color, int const & pointStyle)
 {
-	return m_Color;
+	m_LineStyle.m_Style = style;
+	m_LineStyle.m_Width = width;
+	m_LineStyle.m_Color = color;
+	m_LineStyle.m_PointStyle = pointStyle;
+	update();
 }
 
-
-int &LineBtn::GetStyle()
-{
-	return m_Style;
-}
-
-
-int &LineBtn::GetWidth()
-{
-	return m_Width;
-}
 
 
 void LineBtn::paintEvent(QPaintEvent *event)
@@ -121,20 +112,50 @@ void LineBtn::paintEvent(QPaintEvent *event)
 
 	QRect r = rect();
 
-	QStyleOption opt;
-	opt.initFrom(this);
-	style()->drawPrimitive(QStyle::PE_Widget, &opt, &painter, this);
+//	QStyleOption opt;
+//	opt.initFrom(this);
+//	style()->drawPrimitive(QStyle::PE_Widget, &opt, &painter, this);
 
 
-	painter.setBrush(Qt::DiagCrossPattern);
+//	painter.setBrush(Qt::DiagCrossPattern);
 	painter.setBackgroundMode(Qt::TransparentMode);
 
-	QPen LinePen(m_Color);
-	LinePen.setStyle(::getStyle(m_Style));
-	LinePen.setWidth(m_Width);
+	QPen LinePen(m_LineStyle.m_Color);
+	LinePen.setStyle(::getStyle(m_LineStyle.m_Style));
+	LinePen.setWidth(m_LineStyle.m_Width);
 	painter.setPen(LinePen);
 	painter.drawLine(r.left()+5, r.height()/2, r.width()-5, r.height()/2);
 
+/*
+	switch(m_LineStyle.m_PointStyle)
+	{
+		case 0: break;
+		case 1:
+		{
+			int ptSide = 2;
+			painter.drawEllipse(r.center().x()-ptSide, r.center().y()-ptSide, 2*ptSide, 2*ptSide );
+			break;
+		}
+		case 2:
+		{
+			int ptSide = 4;
+			painter.drawEllipse(r.center().x()-ptSide, r.center().y()-ptSide, 2*ptSide, 2*ptSide );
+			break;
+		}
+		case 3:
+		{
+			int ptSide = 2;
+			painter.drawRect(r.center().x()-ptSide, r.center().y()-ptSide, 2*ptSide, 2*ptSide );
+			break;
+		}
+		case 4:
+		{
+			int ptSide = 4;
+			painter.drawRect(r.center().x()-ptSide, r.center().y()-ptSide, 2*ptSide, 2*ptSide );
+			break;
+		}
+		default: break;
+	}*/
 
 	painter.restore();
 	event->accept();

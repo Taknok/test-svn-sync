@@ -508,7 +508,7 @@ void PlaneDlg::OnInertia()
 	if(!m_pPlane) return;
 	ReadParams();
 
-	m_pPlane->CreateSurfaces();//necessary for inertia calculations
+	m_pPlane->createSurfaces();//necessary for inertia calculations
 
     InertiaDlg dlg(this);
 	dlg.m_pBody = NULL;
@@ -531,7 +531,7 @@ void PlaneDlg::OnInertia()
 	else
 	{
 		//restore everything
-		m_pPlane->ClearPointMasses();
+		m_pPlane->clearPointMasses();
 		for(int im=0; im<memPtMass.size(); im++)
 		{
 			m_pPlane->m_PointMass.append(new PointMass(memPtMass[im]));
@@ -554,7 +554,7 @@ void PlaneDlg::OnOK()
 
 	m_pPlane->m_PlaneDescription = m_pctrlPlaneDescription->toPlainText();
 
-	m_pPlane->ComputePlane();
+	m_pPlane->computePlane();
 
 
 	//check the number of surfaces
@@ -765,7 +765,7 @@ void PlaneDlg::SetResults()
 	str = QString("%1").arg(span*Units::mtoUnit(),5,'f',2);
 	m_pctrlWingSpan->setText(str);
 
-	m_pPlane->ComputePlane();
+	m_pPlane->computePlane();
 	if(m_pPlane->stab())
 	{
 		double SLA = m_pPlane->m_WingLE[2].x + m_pPlane->stab()->Chord(0)/4.0 - m_pPlane->wing()->Chord(0)/4.0;
@@ -776,7 +776,7 @@ void PlaneDlg::SetResults()
 
 	if(m_pPlane->stab())
 	{
-		str = QString("%1").arg(m_pPlane->TailVolume(),5,'f',2);
+		str = QString("%1").arg(m_pPlane->tailVolume(),5,'f',2);
 	}
 	else str =" ";
 	m_pctrlStabVolume->setText(str);

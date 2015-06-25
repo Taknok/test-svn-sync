@@ -52,35 +52,35 @@ public:
 
 
 private slots:
-	void OnAnimate();
-	void OnAnimateRestart();
-	void OnAnimationSpeed(int val);
-	void OnAnimationAmplitude(int val);
-	void OnCellChanged(QWidget *);
-	void OnModeSelection();
-	void OnPlotStabilityGraph();
-	void OnReadData();
-	void OnResponseType();
-	void OnAddCurve();
-	void OnDeleteCurve();
-	void OnRenameCurve();
-	void OnSelChangeCurve(int sel);
+	void onAnimate();
+	void onAnimateRestart();
+	void onAnimationSpeed(int val);
+	void onAnimationAmplitude(int val);
+	void onCellChanged(QWidget *);
+	void onModeSelection();
+	void onPlotStabilityGraph();
+	void onReadData();
+	void onResponseType();
+	void onAddCurve();
+	void onDeleteCurve();
+	void onRenameCurve();
+	void onSelChangeCurve(int sel);
 	
 private:
 	void keyPressEvent(QKeyEvent *event);
 	
-	void AddCurve();
-	void Connect();
+	void addCurve();
+	void connectSignals();
 //	void FillControlNames();
-	void FillEigenThings();
-	void FillCurveList();
-	double GetControlInput(const double &time);
-	void SetMode(int iMode=-1);
-	void SetupLayout();
+	void fillEigenThings();
+	void fillCurveList();
+	double getControlInput(const double &time);
+	void setMode(int iMode=-1);
+	void setupLayout();
 	void setControls();
-	void SetTimeCurveStyle(QColor const &Color, int const&Style, int const &Width, bool const& bCurve, bool const& bPoints);
-	void ReadControlModelData();
-	void UpdateControlModelData();
+	void setTimeCurveStyle(QColor const &Color, int const&Style, int const &Width, bool const& bCurve, const int &PointStyle);
+	void readControlModelData();
+	void updateControlModelData();
 
 	static void *s_pMiarex;
 

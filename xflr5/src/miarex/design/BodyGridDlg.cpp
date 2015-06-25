@@ -82,24 +82,24 @@ void BodyGridDlg::InitDialog()
 
 	m_pctrlScales->setChecked(s_bScale);
 	m_pctrlGrid->setChecked(s_bGrid);
-	m_pctrlLine->SetStyle(s_Style);
-	m_pctrlLine->SetWidth(s_Width);
-	m_pctrlLine->SetColor(s_Color);
+	m_pctrlLine->setStyle(s_Style);
+	m_pctrlLine->setWidth(s_Width);
+	m_pctrlLine->setColor(s_Color);
 	m_pctrlMinGrid->setChecked(s_bMinGrid);
-	m_pctrlMinLine->SetStyle(s_MinStyle);
-	m_pctrlMinLine->SetWidth(s_MinWidth);
-	m_pctrlMinLine->SetColor(s_MinColor);
+	m_pctrlMinLine->setStyle(s_MinStyle);
+	m_pctrlMinLine->setWidth(s_MinWidth);
+	m_pctrlMinLine->setColor(s_MinColor);
 	m_pctrlUnit->setValue(s_Unit*Units::mtoUnit());
 	m_pctrlMinUnit->setValue(s_MinorUnit*Units::mtoUnit());
 
 	m_pctrlGrid2->setChecked(s_bGrid2);
-	m_pctrlLine2->SetStyle(s_Style2);
-	m_pctrlLine2->SetWidth(s_Width2);
-	m_pctrlLine2->SetColor(s_Color2);
+	m_pctrlLine2->setStyle(s_Style2);
+	m_pctrlLine2->setWidth(s_Width2);
+	m_pctrlLine2->setColor(s_Color2);
 	m_pctrlMinGrid2->setChecked(s_bMinGrid2);
-	m_pctrlMinLine2->SetStyle(s_MinStyle2);
-	m_pctrlMinLine2->SetWidth(s_MinWidth2);
-	m_pctrlMinLine2->SetColor(s_MinColor2);
+	m_pctrlMinLine2->setStyle(s_MinStyle2);
+	m_pctrlMinLine2->setWidth(s_MinWidth2);
+	m_pctrlMinLine2->setColor(s_MinColor2);
 	m_pctrlUnit2->setValue(s_Unit2*Units::mtoUnit());
 	m_pctrlMinUnit2->setValue(s_MinorUnit2*Units::mtoUnit());
 
@@ -263,16 +263,16 @@ void BodyGridDlg::OnMinGrid2()
 void BodyGridDlg::OnLineStyle()
 {
 	LinePickerDlg dlg(this);
-	dlg.InitDialog(s_Style, s_Width, s_Color);
+	dlg.initDialog(s_Style, s_Width, s_Color);
 
 	if(QDialog::Accepted==dlg.exec())
 	{
-		s_Style = dlg.GetStyle();
-		s_Width = dlg.GetWidth();
-		s_Color = dlg.GetColor();
-		m_pctrlLine->SetStyle(s_Style);
-		m_pctrlLine->SetWidth(s_Width);
-		m_pctrlLine->SetColor(s_Color);
+		s_Style = dlg.setStyle();
+		s_Width = dlg.width();
+		s_Color = dlg.setColor();
+		m_pctrlLine->setStyle(s_Style);
+		m_pctrlLine->setWidth(s_Width);
+		m_pctrlLine->setColor(s_Color);
 	}
 }
 
@@ -280,16 +280,16 @@ void BodyGridDlg::OnLineStyle()
 void BodyGridDlg::OnLine2Style()
 {
 	LinePickerDlg dlg(this);
-	dlg.InitDialog(s_Style2, s_Width2, s_Color2);
+	dlg.initDialog(s_Style2, s_Width2, s_Color2);
 
 	if(QDialog::Accepted==dlg.exec())
 	{
-		s_Style2 = dlg.GetStyle();
-		s_Width2 = dlg.GetWidth();
-		s_Color2 = dlg.GetColor();
-		m_pctrlLine2->SetStyle(s_Style2);
-		m_pctrlLine2->SetWidth(s_Width2);
-		m_pctrlLine2->SetColor(s_Color2);
+		s_Style2 = dlg.setStyle();
+		s_Width2 = dlg.width();
+		s_Color2 = dlg.setColor();
+		m_pctrlLine2->setStyle(s_Style2);
+		m_pctrlLine2->setWidth(s_Width2);
+		m_pctrlLine2->setColor(s_Color2);
 	}
 }
 
@@ -297,16 +297,16 @@ void BodyGridDlg::OnLine2Style()
 void BodyGridDlg::OnMinLineStyle()
 {
 	LinePickerDlg dlg(this);
-	dlg.InitDialog(s_MinStyle, s_MinWidth, s_MinColor);
+	dlg.initDialog(s_MinStyle, s_MinWidth, s_MinColor);
 
 	if(QDialog::Accepted==dlg.exec())
 	{
-		s_MinStyle = dlg.GetStyle();
-		s_MinWidth = dlg.GetWidth();
-		s_MinColor = dlg.GetColor();
-		m_pctrlMinLine->SetStyle(s_MinStyle);
-		m_pctrlMinLine->SetWidth(s_MinWidth);
-		m_pctrlMinLine->SetColor(s_MinColor);
+		s_MinStyle = dlg.setStyle();
+		s_MinWidth = dlg.width();
+		s_MinColor = dlg.setColor();
+		m_pctrlMinLine->setStyle(s_MinStyle);
+		m_pctrlMinLine->setWidth(s_MinWidth);
+		m_pctrlMinLine->setColor(s_MinColor);
 	}
 }
 
@@ -314,16 +314,16 @@ void BodyGridDlg::OnMinLineStyle()
 void BodyGridDlg::OnMinLine2Style()
 {
 	LinePickerDlg dlg(this);
-	dlg.InitDialog(s_MinStyle2, s_MinWidth2, s_MinColor2);
+	dlg.initDialog(s_MinStyle2, s_MinWidth2, s_MinColor2);
 
 	if(QDialog::Accepted==dlg.exec())
 	{
-		s_MinStyle2 = dlg.GetStyle();
-		s_MinWidth2 = dlg.GetWidth();
-		s_MinColor2 = dlg.GetColor();
-		m_pctrlMinLine2->SetStyle(s_MinStyle2);
-		m_pctrlMinLine2->SetWidth(s_MinWidth2);
-		m_pctrlMinLine2->SetColor(s_MinColor2);
+		s_MinStyle2 = dlg.setStyle();
+		s_MinWidth2 = dlg.width();
+		s_MinColor2 = dlg.setColor();
+		m_pctrlMinLine2->setStyle(s_MinStyle2);
+		m_pctrlMinLine2->setWidth(s_MinWidth2);
+		m_pctrlMinLine2->setColor(s_MinColor2);
 	}
 }
 

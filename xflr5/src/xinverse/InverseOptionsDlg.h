@@ -43,7 +43,7 @@ private slots:
 
 private:
 	void SetupLayout();
-	void InitDialog();
+	void initDialog();
 
 	LineBtn *m_pctrlRefFoil, *m_pctrlModFoil, *m_pctrlSpline, *m_pctrlReflected;
 

@@ -16,7 +16,9 @@
 
 
 
-xflr5 v6.11 May xxxth, 2015
+xflr5 v6.11 June xxxth, 2015
+	- added inertia data as parameters in stability analysis
+	- added more display options for curve points
 	- replaced the deprecated QGLWidget by the new QOpenGLWidget recommended in Qt5.4
 	- added a new editor for the plane object
 	- added a new editor for the body object

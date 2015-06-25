@@ -251,10 +251,10 @@ void ManagePlanesDlg::FillPlaneRow(int row)
 	m_pUFOModel->setData(ind, pWing->m_TR);
 
 	ind = m_pUFOModel->index(row, 6, QModelIndex());
-	m_pUFOModel->setData(ind,pWing->AverageSweep());
+	m_pUFOModel->setData(ind,pWing->averageSweep());
 
 	ind = m_pUFOModel->index(row, 7, QModelIndex());
-	m_pUFOModel->setData(ind,pPlane->TailVolume());
+	m_pUFOModel->setData(ind,pPlane->tailVolume());
 }
 
 

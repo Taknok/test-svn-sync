@@ -197,7 +197,7 @@ void Settings::initDialog()
 {
 	m_MemGraph.copySettings(&s_RefGraph);
 
-	m_pctrlBackColor->SetColor(s_BackgroundColor);
+	m_pctrlBackColor->setColor(s_BackgroundColor);
 
 	m_pctrlTextClr->setTextColor(s_TextColor);
 	m_pctrlTextClr->setBackgroundColor(s_BackgroundColor);
@@ -258,7 +258,7 @@ void Settings::OnBackgroundColor()
 	QColor Color = QColorDialog::getColor(s_BackgroundColor);
 	if(Color.isValid()) s_BackgroundColor = Color;
 
-	m_pctrlBackColor->SetColor(s_BackgroundColor);
+	m_pctrlBackColor->setColor(s_BackgroundColor);
 
 	m_pctrlTextClr->setBackgroundColor(s_BackgroundColor);
 }

@@ -81,7 +81,7 @@ public:
 	{	
 		CVector N;
 		N = R;
-		N.Normalize();
+		N.normalize();
 		theta = Angle*PI/180.0;
 
 		a = cos(theta/2.0);
@@ -148,7 +148,7 @@ public:
 	{	
 		CVector N;
 		N = R;
-		N.Normalize();
+		N.normalize();
 		theta = Angle*PI/180.0;
 
 		a = cos(theta/2.0);

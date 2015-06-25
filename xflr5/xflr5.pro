@@ -288,7 +288,8 @@ HEADERS += \
 	src/viewwidgets/miarextilewidget.h \
 	src/viewwidgets/xdirecttilewidget.h \
 	src/viewwidgets/wingwidget.h \
-	src/viewwidgets/twodwidget.h
+	src/viewwidgets/twodwidget.h \
+    src/objects/linestyle.h
 
 
 TRANSLATIONS = translations/xflr5v6.ts \

@@ -407,8 +407,8 @@ void QAFoil::loadSettings(QSettings *pSettings)
 
 		m_pSF->m_Intrados.m_iRes =  pSettings->value("LowerRes",79).toInt();
 		m_pSF->m_Extrados.m_iRes =  pSettings->value("UpperRes",79).toInt();
-		m_pSF->m_Extrados.SplineCurve();
-		m_pSF->m_Intrados.SplineCurve();
+		m_pSF->m_Extrados.splineCurve();
+		m_pSF->m_Intrados.splineCurve();
 
 
 		m_bLECircle          = pSettings->value("LECircle").toBool();
@@ -1161,25 +1161,25 @@ void QAFoil::OnFoilStyle()
 	if(!Foil::curFoil())
 	{
         LinePickerDlg dlg(this);
-		dlg.InitDialog(m_pSF->m_FoilStyle, m_pSF->m_FoilWidth, m_pSF->m_FoilColor);
+		dlg.initDialog(m_pSF->m_FoilStyle, m_pSF->m_FoilWidth, m_pSF->m_FoilColor);
 
 		if(QDialog::Accepted==dlg.exec())
 		{
-			m_pSF->SetCurveParams(dlg.GetStyle(), dlg.GetWidth(), dlg.GetColor());
+			m_pSF->SetCurveParams(dlg.setStyle(), dlg.width(), dlg.setColor());
 			m_p2DWidget->update();;
 		}
 	}
 	else
 	{
         LinePickerDlg dlg(this);
-		dlg.InitDialog(Foil::curFoil()->m_FoilStyle, Foil::curFoil()->m_FoilWidth, Foil::curFoil()->m_FoilColor);
+		dlg.initDialog(Foil::curFoil()->m_FoilStyle, Foil::curFoil()->m_FoilWidth, Foil::curFoil()->m_FoilColor);
 
 		if(QDialog::Accepted==dlg.exec())
 		{
 			emit projectModified();
-			Foil::curFoil()->m_FoilStyle = dlg.GetStyle();
-			Foil::curFoil()->m_FoilWidth = dlg.GetWidth();
-			Foil::curFoil()->m_FoilColor = dlg.GetColor();
+			Foil::curFoil()->m_FoilStyle = dlg.setStyle();
+			Foil::curFoil()->m_FoilWidth = dlg.width();
+			Foil::curFoil()->m_FoilColor = dlg.setColor();
 			m_p2DWidget->update();;
 		}
 	}
@@ -1600,9 +1600,9 @@ void QAFoil::SetPicture()
 	SplineFoil SF = m_UndoStack.at(m_StackPos);
 	m_pSF->Copy(&SF);
 	m_pSF->m_Intrados.SplineKnots();
-	m_pSF->m_Intrados.SplineCurve();
+	m_pSF->m_Intrados.splineCurve();
 	m_pSF->m_Extrados.SplineKnots();
-	m_pSF->m_Extrados.SplineCurve();
+	m_pSF->m_Extrados.splineCurve();
 	m_pSF->UpdateSplineFoil();
 
 	m_p2DWidget->update();;

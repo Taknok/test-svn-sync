@@ -35,6 +35,8 @@
 #include "WingOpp.h"
 #include <QDataStream>
 
+#include <linestyle.h>
+
 using namespace std;
 
 /**
@@ -75,22 +77,25 @@ public:
 	double alpha() {return m_Alpha;}
 	XFLR5::enumAnalysisMethod analysisMethod() {return m_AnalysisMethod;}
 	QString planeName(){return m_PlaneName;}
-	QString polarName(){return m_PlrName;}
+	QString polarName(){return m_WPlrName;}
+	XFLR5::enumPolarType polarType(){return m_WPolarType;}
 
 	bool isOut(){return m_bOut;}
 
-	bool isVisible(){return m_bIsVisible;}
-	bool showPoints(){return m_bShowPoints;}
-	int style(){return m_Style;}
-	int width(){return m_Width;}
-	QColor color(){return m_Color;}
+	LineStyle &lineStyle() {return m_LineStyle; }
+	bool &isVisible()      {return m_LineStyle.m_bIsVisible;}
+	int &points()          {return m_LineStyle.m_PointStyle;}
+	int &style()           {return m_LineStyle.m_Style;}
+	int &width()           {return m_LineStyle.m_Width;}
+	QColor &color()        {return m_LineStyle.m_Color;}
+
 
 
 private:
 	XFLR5::enumAnalysisMethod m_AnalysisMethod;   /**< defines by which type of method (LLT, VLM, PANEL), this WingOpp was calculated */
 
 	QString m_PlaneName;       /**< the pPane's name to which the PlaneOpp is attached */
-	QString m_PlrName;         /**< the WPolar's name to which the PlaneOpp is attached */
+	QString m_WPlrName;         /**< the WPolar's name to which the PlaneOpp is attached */
 	
 	double m_Alpha;            /**< the angle of attack*/
 	double m_Beta;             /**< the sideslip angle */
@@ -106,13 +111,7 @@ private:
 	bool m_bVLM1;              /**<  true if the PlaneOpp is the result of a horseshoe VLM analysis */
 	bool m_bOut;               /**<  true if the interpolation of viscous properties was outside the Foil Polar mesh */
 
-	bool m_bIsVisible;         /**< true if the PlaneOpp's curve is visible in the active view */
-	bool m_bShowPoints;        /**< true if the PlaneOpp's curve points are visible in the active graphs */
-
-	int m_Style;               /**< the index of the style with which to draw the PlaneOpp's curve */
-	int m_Width;               /**< the width with which to draw the PlaneOpp's curve */
-	QColor m_Color;            /**< the color with which to draw the PlaneOpp's curve */
-
+	LineStyle m_LineStyle;
 
 public:
 	XFLR5::enumPolarType m_WPolarType;		  /**< defines the type of the parent WPolar */

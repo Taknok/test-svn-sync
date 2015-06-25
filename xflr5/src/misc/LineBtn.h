@@ -26,7 +26,7 @@
 
 
 #include <QAbstractButton>
-
+#include <linestyle.h>
 
 class LineBtn : public QAbstractButton
 {
@@ -35,14 +35,16 @@ class LineBtn : public QAbstractButton
 public:
 	LineBtn(QWidget *parent = 0);
 
-	void SetStyle(int const &style, int const &width, QColor const & color);
-	void SetColor(QColor const & color);
-	void SetStyle(int const &style);
-	void SetWidth(int const &width);
-	QColor &GetColor();
-	int & GetStyle();
-	int & GetWidth();
+	void setStyle(int const &lineStyle, int const &width, QColor const & color, const int &pointStyle);
+	void setColor(QColor const & color);
+	void setStyle(int const &lineStyle);
+	void setWidth(int const &width);
+	void setPointStyle(int const & pointStyle);
 
+	QColor &color()    {return m_LineStyle.m_Color;}
+	int & lineStyle()  {return m_LineStyle.m_Style;}
+	int & width()      {return m_LineStyle.m_Width;}
+	int & pointStyle() {return m_LineStyle.m_PointStyle;}
 
 signals:
     void clickedLB();
@@ -53,8 +55,7 @@ public:
 	QSize sizeHint() const;
 
 private:
-	QColor m_Color;
-	int m_Style, m_Width;
+	LineStyle m_LineStyle;
 };
 
 #endif

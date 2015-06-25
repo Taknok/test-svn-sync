@@ -223,7 +223,7 @@ bool SplineFoil::Serialize(QDataStream &ar, bool bIsStoring)
 		if(ArchiveFormat < 100000 || ArchiveFormat > 110000) return false;
 		ReadCString(ar, m_strFoilName);
 		m_strFoilName = QObject::tr("Spline Foil");
-		ReadCOLORREF(ar, m_FoilColor);
+		readCOLORREF(ar, m_FoilColor);
 		ar >>m_FoilStyle >> m_FoilWidth;
 
 		m_Extrados.SetSplineParams(m_FoilStyle, m_FoilWidth, m_FoilColor);
@@ -278,9 +278,9 @@ bool SplineFoil::Serialize(QDataStream &ar, bool bIsStoring)
 
 
 		m_Extrados.SplineKnots();
-		m_Extrados.SplineCurve();
+		m_Extrados.splineCurve();
 		m_Intrados.SplineKnots();
-		m_Intrados.SplineCurve();
+		m_Intrados.splineCurve();
 
 		UpdateSplineFoil();
 
@@ -326,8 +326,8 @@ bool SplineFoil::SerializeXFL(QDataStream &ar, bool bIsStoring)
 		}
 
 		// space allocation for the future storage of more data, without need to change the format
-		for (int i=0; i<10; i++) ar << i;
-		for (int i=0; i<10; i++) ar << (double)i;
+		for (int i=0; i<10; i++) ar << 0;
+		for (int i=0; i<10; i++) ar << (double)0.0;
 	}
 	else
 	{
@@ -363,9 +363,9 @@ bool SplineFoil::SerializeXFL(QDataStream &ar, bool bIsStoring)
 		for (int i=0; i<10; i++) ar >> dble;
 
 		m_Extrados.SplineKnots();
-		m_Extrados.SplineCurve();
+		m_Extrados.splineCurve();
 		m_Intrados.SplineKnots();
-		m_Intrados.SplineCurve();
+		m_Intrados.splineCurve();
 
 		UpdateSplineFoil();
 

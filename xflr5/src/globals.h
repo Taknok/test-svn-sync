@@ -78,7 +78,7 @@ QColor randomColor();
 
 void ReadCString(QDataStream &ar, QString &strong);
 void WriteCString(QDataStream &ar, QString const &strong);
-void ReadCOLORREF(QDataStream &ar, QColor &color);
+void readCOLORREF(QDataStream &ar, QColor &color);
 void WriteCOLORREF(QDataStream &ar, QColor const &color);
 
 void Trace(int n);

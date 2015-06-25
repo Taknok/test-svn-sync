@@ -46,63 +46,63 @@ WPolarDlg::WPolarDlg(QWidget *pParent) : QDialog(pParent)
 	m_WingLoad   = 0.0;
 	m_UnitType  = 1;
 
-	SetupLayout();
-	Connect();
+	setupLayout();
+	connectSignals();
 }
 
 
-void WPolarDlg::Connect()
+void WPolarDlg::connectSignals()
 {
-	connect(m_pctrlAutoName, SIGNAL(toggled(bool)), this, SLOT(OnAutoName()));
-	connect(m_pctrlLLTMethod, SIGNAL(toggled(bool)), this, SLOT(OnMethod()));
-	connect(m_pctrlVLM1Method, SIGNAL(toggled(bool)), this, SLOT(OnMethod()));
-	connect(m_pctrlVLM2Method, SIGNAL(toggled(bool)), this, SLOT(OnMethod()));
-	connect(m_pctrlPanelMethod, SIGNAL(toggled(bool)), this, SLOT(OnMethod()));
+	connect(m_pctrlAutoName, SIGNAL(toggled(bool)), this, SLOT(onAutoName()));
+	connect(m_pctrlLLTMethod, SIGNAL(toggled(bool)), this, SLOT(onMethod()));
+	connect(m_pctrlVLM1Method, SIGNAL(toggled(bool)), this, SLOT(onMethod()));
+	connect(m_pctrlVLM2Method, SIGNAL(toggled(bool)), this, SLOT(onMethod()));
+	connect(m_pctrlPanelMethod, SIGNAL(toggled(bool)), this, SLOT(onMethod()));
 
-	connect(m_pctrlUnit1, SIGNAL(toggled(bool)), this, SLOT(OnUnit()));
-	connect(m_pctrlUnit2, SIGNAL(toggled(bool)), this, SLOT(OnUnit()));
+	connect(m_pctrlUnit1, SIGNAL(toggled(bool)), this, SLOT(onUnit()));
+	connect(m_pctrlUnit2, SIGNAL(toggled(bool)), this, SLOT(onUnit()));
 
-	connect(m_pctrlType1, SIGNAL(toggled(bool)), this, SLOT(OnPolarType()));
-	connect(m_pctrlType2, SIGNAL(toggled(bool)), this, SLOT(OnPolarType()));
-	connect(m_pctrlType4, SIGNAL(toggled(bool)), this, SLOT(OnPolarType()));
-	connect(m_pctrlType5, SIGNAL(toggled(bool)), this, SLOT(OnPolarType()));
+	connect(m_pctrlType1, SIGNAL(toggled(bool)), this, SLOT(onPolarType()));
+	connect(m_pctrlType2, SIGNAL(toggled(bool)), this, SLOT(onPolarType()));
+	connect(m_pctrlType4, SIGNAL(toggled(bool)), this, SLOT(onPolarType()));
+	connect(m_pctrlType5, SIGNAL(toggled(bool)), this, SLOT(onPolarType()));
 
-	connect(m_pctrlTiltGeom, SIGNAL(clicked()), this, SLOT(OnTiltedGeom()));
-	connect(m_pctrlViscous, SIGNAL(clicked()), this, SLOT(OnViscous()));
-	connect(m_pctrlIgnoreBodyPanels, SIGNAL(clicked()), this, SLOT(OnIgnoreBodyPanels()));
+	connect(m_pctrlTiltGeom, SIGNAL(clicked()), this, SLOT(onTiltedGeom()));
+	connect(m_pctrlViscous, SIGNAL(clicked()), this, SLOT(onViscous()));
+	connect(m_pctrlIgnoreBodyPanels, SIGNAL(clicked()), this, SLOT(onIgnoreBodyPanels()));
 
-	connect(m_pctrlGroundEffect, SIGNAL(clicked()), this, SLOT(OnGroundEffect()));
-	connect(m_pctrlPlaneInertia, SIGNAL(clicked()), this, SLOT(OnPlaneInertia()));
+	connect(m_pctrlGroundEffect, SIGNAL(clicked()), this, SLOT(onGroundEffect()));
+	connect(m_pctrlPlaneInertia, SIGNAL(clicked()), this, SLOT(onPlaneInertia()));
 
-	connect(m_pctrlXCmRef,     SIGNAL(editingFinished()), this, SLOT(OnEditingFinished()));
-	connect(m_pctrlZCmRef,     SIGNAL(editingFinished()), this, SLOT(OnEditingFinished()));
-	connect(m_pctrlDensity,    SIGNAL(editingFinished()), this, SLOT(OnEditingFinished()));
-	connect(m_pctrlViscosity,  SIGNAL(editingFinished()), this, SLOT(OnEditingFinished()));
-	connect(m_pctrlAlpha,      SIGNAL(editingFinished()), this, SLOT(OnEditingFinished()));
-	connect(m_pctrlBeta,       SIGNAL(editingFinished()), this, SLOT(OnEditingFinished()));
-	connect(m_pctrlWeight,     SIGNAL(editingFinished()), this, SLOT(OnEditingFinished()));
-	connect(m_pctrlQInf,       SIGNAL(editingFinished()), this, SLOT(OnEditingFinished()));
-	connect(m_pctrlHeight,     SIGNAL(editingFinished()), this, SLOT(OnEditingFinished()));
-	connect(m_pctrlRefArea,    SIGNAL(editingFinished()), this, SLOT(OnEditingFinished()));
-	connect(m_pctrlRefSpan,    SIGNAL(editingFinished()), this, SLOT(OnEditingFinished()));
-	connect(m_pctrlRefChord,   SIGNAL(editingFinished()), this, SLOT(OnEditingFinished()));
-	connect(m_pctrlWPolarName, SIGNAL(editingFinished()), this, SLOT(OnEditingFinished()));
-	connect(m_pctrlWPolarName, SIGNAL(textEdited ( const QString &  )), this, SLOT(OnPolarName()));
+	connect(m_pctrlXCmRef,     SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+	connect(m_pctrlZCmRef,     SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+	connect(m_pctrlDensity,    SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+	connect(m_pctrlViscosity,  SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+	connect(m_pctrlAlpha,      SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+	connect(m_pctrlBeta,       SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+	connect(m_pctrlWeight,     SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+	connect(m_pctrlQInf,       SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+	connect(m_pctrlHeight,     SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+	connect(m_pctrlRefArea,    SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+	connect(m_pctrlRefSpan,    SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+	connect(m_pctrlRefChord,   SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+	connect(m_pctrlWPolarName, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+	connect(m_pctrlWPolarName, SIGNAL(textEdited ( const QString &  )), this, SLOT(onPolarName()));
 
-	connect(m_pctrlArea1, SIGNAL(clicked()),this, SLOT(OnArea()));
-	connect(m_pctrlArea2, SIGNAL(clicked()),this, SLOT(OnArea()));
-	connect(m_pctrlArea3, SIGNAL(clicked()),this, SLOT(OnArea()));
+	connect(m_pctrlArea1, SIGNAL(clicked()),this, SLOT(onArea()));
+	connect(m_pctrlArea2, SIGNAL(clicked()),this, SLOT(onArea()));
+	connect(m_pctrlArea3, SIGNAL(clicked()),this, SLOT(onArea()));
 
-	connect(OKButton, SIGNAL(clicked()),this, SLOT(OnOK()));
+	connect(OKButton, SIGNAL(clicked()),this, SLOT(onOK()));
 	connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 }
 
 
-void WPolarDlg::EnableControls()
+void WPolarDlg::enableControls()
 {
 	m_pctrlWPolarName->setEnabled(!m_pctrlAutoName->isChecked());
 
-	switch (s_WPolar.m_WPolarType)
+	switch (s_WPolar.polarType())
 	{
 		case XFLR5::FIXEDSPEEDPOLAR:
 		{
@@ -135,12 +135,12 @@ void WPolarDlg::EnableControls()
 		}
 	}
 
-	m_pctrlViscous->setEnabled(s_WPolar.m_AnalysisMethod==XFLR5::PANELMETHOD);
-	m_pctrlTiltGeom->setEnabled(s_WPolar.m_AnalysisMethod==XFLR5::PANELMETHOD);
+	m_pctrlViscous->setEnabled(s_WPolar.analysisMethod()==XFLR5::PANELMETHOD);
+	m_pctrlTiltGeom->setEnabled(s_WPolar.analysisMethod()==XFLR5::PANELMETHOD);
 	m_pctrlIgnoreBodyPanels->setEnabled(m_pPlane && m_pPlane->body());
-	m_pctrlBeta->setEnabled(s_WPolar.m_AnalysisMethod==XFLR5::PANELMETHOD && s_WPolar.polarType()!=XFLR5::BETAPOLAR);
-	m_pctrlGroundEffect->setEnabled(s_WPolar.m_AnalysisMethod==XFLR5::PANELMETHOD);
-	m_pctrlHeight->setEnabled(m_pctrlGroundEffect->isChecked() && s_WPolar.m_AnalysisMethod==XFLR5::PANELMETHOD);
+	m_pctrlBeta->setEnabled(s_WPolar.analysisMethod()==XFLR5::PANELMETHOD && s_WPolar.polarType()!=XFLR5::BETAPOLAR);
+	m_pctrlGroundEffect->setEnabled(s_WPolar.analysisMethod()==XFLR5::PANELMETHOD);
+	m_pctrlHeight->setEnabled(m_pctrlGroundEffect->isChecked() && s_WPolar.analysisMethod()==XFLR5::PANELMETHOD);
 
 	m_pctrlWeight->setEnabled(!s_WPolar.m_bAutoInertia);
 	m_pctrlXCmRef->setEnabled(!s_WPolar.m_bAutoInertia);
@@ -155,15 +155,15 @@ void WPolarDlg::EnableControls()
 
 
 
-void WPolarDlg::InitDialog(Plane *pPlane, WPolar *pWPolar)
+void WPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
 {
 	m_pPlane = pPlane;
 
 	if(pWPolar)
 	{
 		m_pctrlAutoName->setChecked(false);
-		m_pctrlWPolarName->setText(pWPolar->m_WPlrName);
-		s_WPolar.DuplicateSpec(pWPolar);
+		m_pctrlWPolarName->setText(pWPolar->polarName());
+		s_WPolar.duplicateSpec(pWPolar);
 	}
 	else
 	{
@@ -176,13 +176,13 @@ void WPolarDlg::InitDialog(Plane *pPlane, WPolar *pWPolar)
 	}
 	else
 	{
-		s_WPolar.m_AnalysisMethod=XFLR5::VLMMETHOD;
-		s_WPolar.m_bThinSurfaces = true;
+		s_WPolar.analysisMethod()=XFLR5::VLMMETHOD;
+		s_WPolar.bThinSurfaces() = true;
 		m_pctrlPanelMethod->setVisible(false);
 	}
 
 	//initialize the name box
-	s_WPolar.m_PlaneName = m_pPlane->planeName();
+	s_WPolar.planeName() = m_pPlane->planeName();
 
 	// initialize units
 	if(m_UnitType==1) m_pctrlUnit1->setChecked(true);
@@ -190,33 +190,33 @@ void WPolarDlg::InitDialog(Plane *pPlane, WPolar *pWPolar)
 
 
 	//initialize polar type
-	if(s_WPolar.m_WPolarType==XFLR5::FIXEDSPEEDPOLAR)     m_pctrlType1->setChecked(true);
-	else if(s_WPolar.m_WPolarType==XFLR5::FIXEDLIFTPOLAR) m_pctrlType2->setChecked(true);
-	else if(s_WPolar.m_WPolarType==XFLR5::FIXEDAOAPOLAR)  m_pctrlType4->setChecked(true);
-	else if(s_WPolar.m_WPolarType==XFLR5::BETAPOLAR)      m_pctrlType5->setChecked(true);
+	if(s_WPolar.polarType()==XFLR5::FIXEDSPEEDPOLAR)     m_pctrlType1->setChecked(true);
+	else if(s_WPolar.polarType()==XFLR5::FIXEDLIFTPOLAR) m_pctrlType2->setChecked(true);
+	else if(s_WPolar.polarType()==XFLR5::FIXEDAOAPOLAR)  m_pctrlType4->setChecked(true);
+	else if(s_WPolar.polarType()==XFLR5::BETAPOLAR)      m_pctrlType5->setChecked(true);
 
 
 	//initialize inertia
 	if(s_WPolar.m_bAutoInertia)
 	{
-		m_pctrlWeight->setValue(m_pPlane->TotalMass() * Units::kgtoUnit());
+		m_pctrlWeight->setValue(m_pPlane->totalMass() * Units::kgtoUnit());
 		m_pctrlXCmRef->setValue(m_pPlane->CoG().x * Units::mtoUnit());
 		m_pctrlZCmRef->setValue(m_pPlane->CoG().z * Units::mtoUnit());
-		s_WPolar.m_Mass    = m_pPlane->TotalMass();
-		s_WPolar.m_CoG.x   = m_pPlane->CoG().x;
-		s_WPolar.m_CoG.z   = m_pPlane->CoG().z;
+		s_WPolar.mass()    = m_pPlane->totalMass();
+		s_WPolar.CoG().x   = m_pPlane->CoG().x;
+		s_WPolar.CoG().z   = m_pPlane->CoG().z;
 	}
 	else
 	{
-		m_pctrlWeight->setValue(s_WPolar.m_Mass  * Units::kgtoUnit());
-		m_pctrlXCmRef->setValue(s_WPolar.m_CoG.y * Units::mtoUnit());
-		m_pctrlZCmRef->setValue(s_WPolar.m_CoG.z * Units::mtoUnit());
+		m_pctrlWeight->setValue(s_WPolar.mass()  * Units::kgtoUnit());
+		m_pctrlXCmRef->setValue(s_WPolar.CoG().y * Units::mtoUnit());
+		m_pctrlZCmRef->setValue(s_WPolar.CoG().z * Units::mtoUnit());
 	}
 
 
 	//initialize ground data
 	m_pctrlHeight->setValue(s_WPolar.m_Height*Units::mtoUnit());
-	if(s_WPolar.m_bGround)
+	if(s_WPolar.bGround())
 	{
 		m_pctrlHeight->setEnabled(true);
 		m_pctrlGroundEffect->setChecked(true);
@@ -228,40 +228,40 @@ void WPolarDlg::InitDialog(Plane *pPlane, WPolar *pWPolar)
 	}
 
 
-	m_pctrlXCmRef->setValue(s_WPolar.m_CoG.x*Units::mtoUnit());
-	m_pctrlZCmRef->setValue(s_WPolar.m_CoG.z*Units::mtoUnit());
+	m_pctrlXCmRef->setValue(s_WPolar.CoG().x*Units::mtoUnit());
+	m_pctrlZCmRef->setValue(s_WPolar.CoG().z*Units::mtoUnit());
 
 	m_pctrlQInf->setValue(s_WPolar.m_QInfSpec*Units::mstoUnit());
-	m_pctrlWeight->setValue(s_WPolar.m_Mass*Units::kgtoUnit());
+	m_pctrlWeight->setValue(s_WPolar.mass()*Units::kgtoUnit());
 	m_pctrlBeta->setValue(s_WPolar.m_BetaSpec);
 	m_pctrlAlpha->setValue(s_WPolar.m_AlphaSpec);
 
 
-	m_pctrlViscous->setChecked(s_WPolar.m_bViscous);
-	m_pctrlTiltGeom->setChecked(s_WPolar.m_bTiltedGeom);
+	m_pctrlViscous->setChecked(s_WPolar.bViscous());
+	m_pctrlTiltGeom->setChecked(s_WPolar.bTilted());
 
-	m_pctrlIgnoreBodyPanels->setChecked(m_pPlane && m_pPlane->body() && s_WPolar.m_bIgnoreBodyPanels);
-	if(!m_pPlane) s_WPolar.m_bIgnoreBodyPanels=false;
+	m_pctrlIgnoreBodyPanels->setChecked(m_pPlane && m_pPlane->body() && s_WPolar.bIgnoreBodyPanels());
+	if(!m_pPlane) s_WPolar.bIgnoreBodyPanels()=false;
 
 
-	if(s_WPolar.m_AnalysisMethod==XFLR5::LLTMETHOD)
+	if(s_WPolar.analysisMethod()==XFLR5::LLTMETHOD)
 	{
 		m_pctrlLLTMethod->setChecked(true);
 		m_pctrlViscous->setChecked(true);
 		m_pctrlViscous->setEnabled(false);
 	}
-	else if(s_WPolar.m_AnalysisMethod==XFLR5::VLMMETHOD)
+	else if(s_WPolar.analysisMethod()==XFLR5::VLMMETHOD)
 	{
-		m_pctrlVLM1Method->setChecked( s_WPolar.m_bVLM1);
-		m_pctrlVLM2Method->setChecked(!s_WPolar.m_bVLM1);
+		m_pctrlVLM1Method->setChecked( s_WPolar.bVLM1());
+		m_pctrlVLM2Method->setChecked(!s_WPolar.bVLM1());
 		m_pctrlViscous->setEnabled(true);
 	}
-	else if(s_WPolar.m_AnalysisMethod==XFLR5::PANELMETHOD)
+	else if(s_WPolar.analysisMethod()==XFLR5::PANELMETHOD)
 	{
-		if(s_WPolar.m_bThinSurfaces)
+		if(s_WPolar.bThinSurfaces())
 		{
-			m_pctrlVLM1Method->setChecked(s_WPolar.m_bVLM1);
-			m_pctrlVLM2Method->setChecked(!s_WPolar.m_bVLM1);
+			m_pctrlVLM1Method->setChecked(s_WPolar.bVLM1());
+			m_pctrlVLM2Method->setChecked(!s_WPolar.bVLM1());
 		}
 		else
 		{
@@ -271,44 +271,44 @@ void WPolarDlg::InitDialog(Plane *pPlane, WPolar *pWPolar)
 	}
 
 
-	m_pctrlArea1->setChecked(s_WPolar.m_ReferenceDim==XFLR5::PLANFORMREFDIM);
-	m_pctrlArea2->setChecked(s_WPolar.m_ReferenceDim==XFLR5::PROJECTEDREFDIM);
-	m_pctrlArea3->setChecked(s_WPolar.m_ReferenceDim==XFLR5::MANUALREFDIM);
+	m_pctrlArea1->setChecked(s_WPolar.referenceDim()==XFLR5::PLANFORMREFDIM);
+	m_pctrlArea2->setChecked(s_WPolar.referenceDim()==XFLR5::PROJECTEDREFDIM);
+	m_pctrlArea3->setChecked(s_WPolar.referenceDim()==XFLR5::MANUALREFDIM);
 
 	if(m_pctrlArea1->isChecked())
 	{
-		s_WPolar.m_referenceArea = m_pPlane->planformArea();
-		s_WPolar.m_referenceSpanLength = m_pPlane->planformSpan();
+		s_WPolar.referenceArea() = m_pPlane->planformArea();
+		s_WPolar.referenceSpanLength() = m_pPlane->planformSpan();
 		m_pctrlRefArea->setValue(m_pPlane->planformArea()*Units::m2toUnit());
 		m_pctrlRefSpan->setValue(m_pPlane->planformSpan()*Units::mtoUnit());
 	}
 	else if(m_pctrlArea2->isChecked())
 	{
-		s_WPolar.m_referenceArea = m_pPlane->projectedArea();
-		s_WPolar.m_referenceSpanLength = m_pPlane->projectedSpan();
+		s_WPolar.referenceArea() = m_pPlane->projectedArea();
+		s_WPolar.referenceSpanLength() = m_pPlane->projectedSpan();
 		m_pctrlRefArea->setValue(m_pPlane->projectedArea()*Units::m2toUnit());
 		m_pctrlRefSpan->setValue(m_pPlane->projectedSpan()*Units::mtoUnit());
 	}
 	else if(m_pctrlArea3->isChecked())
 	{
-		m_pctrlRefArea->setValue(s_WPolar.m_referenceArea*Units::m2toUnit());
-		m_pctrlRefSpan->setValue(s_WPolar.m_referenceSpanLength*Units::mtoUnit());
+		m_pctrlRefArea->setValue(s_WPolar.referenceArea()*Units::m2toUnit());
+		m_pctrlRefSpan->setValue(s_WPolar.referenceSpanLength()*Units::mtoUnit());
 	}
 
-	s_WPolar.m_referenceChordLength = m_pPlane->mac();
-	m_pctrlRefChord->setValue(s_WPolar.m_referenceChordLength*Units::mtoUnit());
+	s_WPolar.referenceChordLength() = m_pPlane->mac();
+	m_pctrlRefChord->setValue(s_WPolar.referenceChordLength()*Units::mtoUnit());
 
-	s_WPolar.m_bWakeRollUp = false;
+	s_WPolar.bWakeRollUp() = false;
 
 	m_pctrlPlaneInertia->setChecked(s_WPolar.m_bAutoInertia);
 
 
-	SetDensity();
-	SetWingLoad();
-	SetReynolds();
-	SetWPolarName();
+	setDensity();
+	setWingLoad();
+	setReynolds();
+	setWPolarName();
 
-	EnableControls();
+	enableControls();
 
 	m_pctrlQInf->setSelection(0,-1);
 	m_pctrlQInf->setFocus();
@@ -326,14 +326,14 @@ void WPolarDlg::keyPressEvent(QKeyEvent *event)
 		{
 			if(!OKButton->hasFocus() && !CancelButton->hasFocus())
 			{
-				ReadValues();
-				SetWPolarName();
+				readValues();
+				setWPolarName();
 				OKButton->setFocus();
 				return;
 			}
 			else
 			{
-				OnOK();
+				onOK();
 				return;
 			}
 			break;
@@ -348,140 +348,140 @@ void WPolarDlg::keyPressEvent(QKeyEvent *event)
 }
 
 
-void WPolarDlg::OnArea()
+void WPolarDlg::onArea()
 {
 	if(m_pctrlArea1->isChecked())
 	{
-		s_WPolar.m_ReferenceDim = XFLR5::PLANFORMREFDIM;
+		s_WPolar.referenceDim() = XFLR5::PLANFORMREFDIM;
 		m_pctrlRefArea->setValue(m_pPlane->planformArea()*Units::m2toUnit());
 		m_pctrlRefChord->setValue(m_pPlane->mac()*Units::mtoUnit());
 		m_pctrlRefSpan->setValue(m_pPlane->planformSpan()*Units::mtoUnit());
 	}
 	else if(m_pctrlArea2->isChecked())
 	{
-		s_WPolar.m_ReferenceDim = XFLR5::PROJECTEDREFDIM;
+		s_WPolar.referenceDim() = XFLR5::PROJECTEDREFDIM;
 		m_pctrlRefArea->setValue(m_pPlane->projectedArea()*Units::m2toUnit());
 		m_pctrlRefSpan->setValue(m_pPlane->projectedSpan()*Units::mtoUnit());
 		m_pctrlRefChord->setValue(m_pPlane->mac()*Units::mtoUnit());
 	}
 	else if(m_pctrlArea3->isChecked())
 	{
-		s_WPolar.m_ReferenceDim = XFLR5::MANUALREFDIM;
-//		m_pctrlRefArea->SetValue(s_WPolar.m_referenceAreaLength*Units::m2toUnit());
-//		m_pctrlRefSpan->SetValue(s_WPolar.m_referenceSpanLength*Units::mtoUnit());
-//		m_pctrlRefChord->SetValue(s_WPolar.m_referenceChordLength*Units::mtoUnit());
+		s_WPolar.referenceDim() = XFLR5::MANUALREFDIM;
+//		m_pctrlRefArea->SetValue(s_WPolar.referenceArea()Length*Units::m2toUnit());
+//		m_pctrlRefSpan->SetValue(s_WPolar.referenceSpanLength()*Units::mtoUnit());
+//		m_pctrlRefChord->SetValue(s_WPolar.referenceChordLength()*Units::mtoUnit());
 	}
 
-	SetWPolarName();
-	EnableControls();
+	setWPolarName();
+	enableControls();
 }
 
 
 
-void WPolarDlg::OnEditingFinished()
+void WPolarDlg::onEditingFinished()
 {
-	ReadValues();
-	SetReynolds();
-	SetWPolarName();
-	EnableControls();
+	readValues();
+	setReynolds();
+	setWPolarName();
+	enableControls();
 }
 
 
-void WPolarDlg::OnAutoName()
+void WPolarDlg::onAutoName()
 {
 	m_bAutoName = m_pctrlAutoName->isChecked();
-	if(m_bAutoName) SetWPolarName();
-	EnableControls();
+	if(m_bAutoName) setWPolarName();
+	enableControls();
 }
 
 
-void WPolarDlg::OnTiltedGeom()
+void WPolarDlg::onTiltedGeom()
 {
-	s_WPolar.m_bTiltedGeom = m_pctrlTiltGeom->isChecked();
-	SetWPolarName();
-	EnableControls();
+	s_WPolar.bTilted() = m_pctrlTiltGeom->isChecked();
+	setWPolarName();
+	enableControls();
 }
 
 
-void WPolarDlg::OnPlaneInertia()
+void WPolarDlg::onPlaneInertia()
 {
 	if(m_pctrlPlaneInertia->isChecked())
 	{
 		if(m_pPlane)
 		{
-			m_pctrlWeight->setValue(m_pPlane->TotalMass() * Units::kgtoUnit());
+			m_pctrlWeight->setValue(m_pPlane->totalMass() * Units::kgtoUnit());
 			m_pctrlXCmRef->setValue(m_pPlane->CoG().x * Units::mtoUnit());
 			m_pctrlZCmRef->setValue(m_pPlane->CoG().z * Units::mtoUnit());
-			s_WPolar.m_Mass    = m_pPlane->TotalMass();
-			s_WPolar.m_CoG.x   = m_pPlane->CoG().x;
-			s_WPolar.m_CoG.z   = m_pPlane->CoG().z;
+			s_WPolar.mass()    = m_pPlane->totalMass();
+			s_WPolar.CoG().x   = m_pPlane->CoG().x;
+			s_WPolar.CoG().z   = m_pPlane->CoG().z;
 		}
 	}
 	else
 	{
-		s_WPolar.m_Mass    = m_pctrlWeight->value() / Units::kgtoUnit();
-		s_WPolar.m_CoG.x   = m_pctrlXCmRef->value() / Units::mtoUnit();
-		s_WPolar.m_CoG.z   = m_pctrlZCmRef->value() / Units::mtoUnit();
+		s_WPolar.mass()    = m_pctrlWeight->value() / Units::kgtoUnit();
+		s_WPolar.CoG().x   = m_pctrlXCmRef->value() / Units::mtoUnit();
+		s_WPolar.CoG().z   = m_pctrlZCmRef->value() / Units::mtoUnit();
 	}
 	s_WPolar.m_bAutoInertia = m_pctrlPlaneInertia->isChecked();
-	SetWPolarName();
-	EnableControls();
+	setWPolarName();
+	enableControls();
 }
 
 
-void WPolarDlg::OnViscous()
+void WPolarDlg::onViscous()
 {
-	s_WPolar.m_bViscous = m_pctrlViscous->isChecked();
-	SetWPolarName();
-	EnableControls();
+	s_WPolar.bViscous() = m_pctrlViscous->isChecked();
+	setWPolarName();
+	enableControls();
 }
 
 
-void WPolarDlg::OnIgnoreBodyPanels()
+void WPolarDlg::onIgnoreBodyPanels()
 {
-	s_WPolar.m_bIgnoreBodyPanels = m_pctrlIgnoreBodyPanels->isChecked();
-	SetWPolarName();
-	EnableControls();
+	s_WPolar.bIgnoreBodyPanels() = m_pctrlIgnoreBodyPanels->isChecked();
+	setWPolarName();
+	enableControls();
 }
 
 
-void WPolarDlg::OnGroundEffect()
+void WPolarDlg::onGroundEffect()
 {
-	s_WPolar.m_bGround = m_pctrlGroundEffect->isChecked();
-	m_pctrlHeight->setEnabled(s_WPolar.m_bGround);
-	SetWPolarName();
+	s_WPolar.bGround() = m_pctrlGroundEffect->isChecked();
+	m_pctrlHeight->setEnabled(s_WPolar.bGround());
+	setWPolarName();
 }
 
 
-void WPolarDlg::OnMethod()
+void WPolarDlg::onMethod()
 {
 	if (m_pctrlLLTMethod->isChecked())
 	{
-		s_WPolar.m_bViscous      = true;
-		s_WPolar.m_bThinSurfaces = true;
-		s_WPolar.m_bWakeRollUp   = false;
-		s_WPolar.m_bTiltedGeom   = false;
-		s_WPolar.m_AnalysisMethod  = XFLR5::LLTMETHOD;
+		s_WPolar.bViscous()      = true;
+		s_WPolar.bThinSurfaces() = true;
+		s_WPolar.bWakeRollUp()   = false;
+		s_WPolar.bTilted()   = false;
+		s_WPolar.analysisMethod()  = XFLR5::LLTMETHOD;
 		m_pctrlTiltGeom->setChecked(false);
 	}
 	else if (m_pctrlVLM1Method->isChecked() || m_pctrlVLM2Method->isChecked())
 	{
-		s_WPolar.m_bVLM1 = m_pctrlVLM1Method->isChecked();
-		s_WPolar.m_bThinSurfaces = true;
-		s_WPolar.m_AnalysisMethod = XFLR5::PANELMETHOD;
+		s_WPolar.bVLM1() = m_pctrlVLM1Method->isChecked();
+		s_WPolar.bThinSurfaces() = true;
+		s_WPolar.analysisMethod() = XFLR5::PANELMETHOD;
 	}
 	else if (m_pctrlPanelMethod->isChecked())
 	{
-		s_WPolar.m_bThinSurfaces = false;
-		s_WPolar.m_AnalysisMethod = XFLR5::PANELMETHOD;
+		s_WPolar.bThinSurfaces() = false;
+		s_WPolar.analysisMethod() = XFLR5::PANELMETHOD;
 	}
 
-	EnableControls();
-	SetWPolarName();
+	enableControls();
+	setWPolarName();
 }
 
 
-void WPolarDlg::OnOK()
+void WPolarDlg::onOK()
 {
 	if(!m_pctrlWPolarName->text().length())
 	{
@@ -489,21 +489,21 @@ void WPolarDlg::OnOK()
 		m_pctrlWPolarName->setFocus();
 		return;
 	}
-	s_WPolar.m_WPlrName = m_pctrlWPolarName->text();
+	s_WPolar.polarName() = m_pctrlWPolarName->text();
 
-	if(qAbs(s_WPolar.m_Mass)<PRECISION && s_WPolar.m_WPolarType==XFLR5::FIXEDLIFTPOLAR)
+	if(qAbs(s_WPolar.mass())<PRECISION && s_WPolar.polarType()==XFLR5::FIXEDLIFTPOLAR)
 	{
 		QMessageBox::warning(this, tr("Warning"),tr("Mass must be non-zero for type 2 polars"));
 		m_pctrlWeight->setFocus();
 		return;
 	}
-	if(!m_pPlane->isWing() && s_WPolar.m_AnalysisMethod==XFLR5::PANELMETHOD) s_WPolar.m_bThinSurfaces = true;
+	if(!m_pPlane->isWing() && s_WPolar.analysisMethod()==XFLR5::PANELMETHOD) s_WPolar.bThinSurfaces() = true;
 
 	accept();
 }
 
 
-void WPolarDlg::OnUnit()
+void WPolarDlg::onUnit()
 {
 	if(m_pctrlUnit1->isChecked())
 	{
@@ -519,11 +519,11 @@ void WPolarDlg::OnUnit()
 		m_pctrlDensityUnit->setText("slugs/ft3");
 		m_pctrlViscosityUnit->setText("ft"+QString::fromUtf8("²")+"/s");
 	}
-	SetDensity();
+	setDensity();
 }
 
 
-void WPolarDlg::OnPolarName()
+void WPolarDlg::onPolarName()
 {
 	m_bAutoName = false;
 	m_pctrlAutoName->setChecked(false);
@@ -531,24 +531,24 @@ void WPolarDlg::OnPolarName()
 
 
 
-void WPolarDlg::OnPolarType()
+void WPolarDlg::onPolarType()
 {
 	if (m_pctrlType1->isChecked())
 	{
-		s_WPolar.m_WPolarType = XFLR5::FIXEDSPEEDPOLAR;
+		s_WPolar.polarType() = XFLR5::FIXEDSPEEDPOLAR;
 	}
 	else if(m_pctrlType2->isChecked())
 	{
-		s_WPolar.m_WPolarType = XFLR5::FIXEDLIFTPOLAR;
+		s_WPolar.polarType() = XFLR5::FIXEDLIFTPOLAR;
 	}
 	else if(m_pctrlType4->isChecked())
 	{
-		s_WPolar.m_WPolarType = XFLR5::FIXEDAOAPOLAR;
+		s_WPolar.polarType() = XFLR5::FIXEDAOAPOLAR;
 	}
 	else if(m_pctrlType5->isChecked())
 	{
-		s_WPolar.m_WPolarType = XFLR5::BETAPOLAR;
-		s_WPolar.m_bVLM1 = false;
+		s_WPolar.polarType() = XFLR5::BETAPOLAR;
+		s_WPolar.bVLM1() = false;
 		if(m_pctrlVLM1Method->isChecked())
 		{
 			m_pctrlVLM1Method->blockSignals(true);
@@ -558,19 +558,19 @@ void WPolarDlg::OnPolarType()
 			m_pctrlVLM2Method->blockSignals(false);
 		}
 	}
-	EnableControls();
-	SetReynolds();
-	SetWPolarName();
+	enableControls();
+	setReynolds();
+	setWPolarName();
 }
 
 
-void WPolarDlg::ReadValues()
+void WPolarDlg::readValues()
 {
 	s_WPolar.m_AlphaSpec     = m_pctrlAlpha->value();
 	s_WPolar.m_BetaSpec      = m_pctrlBeta->value();
 	if(fabs(s_WPolar.m_BetaSpec)>PRECISION)
 	{
-		s_WPolar.m_bVLM1 = false;
+		s_WPolar.bVLM1() = false;
 		if(m_pctrlVLM1Method->isChecked())
 		{
 			m_pctrlVLM1Method->blockSignals(true);
@@ -581,77 +581,77 @@ void WPolarDlg::ReadValues()
 		}
 	}
 
-	s_WPolar.m_Mass          = m_pctrlWeight->value() / Units::kgtoUnit();
-	s_WPolar.m_CoG.x         = m_pctrlXCmRef->value() / Units::mtoUnit();
-	s_WPolar.m_CoG.z         = m_pctrlZCmRef->value() / Units::mtoUnit();
+	s_WPolar.mass()          = m_pctrlWeight->value() / Units::kgtoUnit();
+	s_WPolar.CoG().x         = m_pctrlXCmRef->value() / Units::mtoUnit();
+	s_WPolar.CoG().z         = m_pctrlZCmRef->value() / Units::mtoUnit();
 	s_WPolar.m_QInfSpec      = m_pctrlQInf->value() / Units::mstoUnit();
 	s_WPolar.m_Height        = m_pctrlHeight->value() / Units::mtoUnit();
 
 	if(m_pctrlUnit1->isChecked())
 	{
-		s_WPolar.m_Viscosity = m_pctrlViscosity->value();
-		s_WPolar.m_Density   = m_pctrlDensity->value();
+		s_WPolar.viscosity() = m_pctrlViscosity->value();
+		s_WPolar.density()   = m_pctrlDensity->value();
 	}
 	else
 	{
-		s_WPolar.m_Density   = m_pctrlDensity->value() / 0.00194122;
-		s_WPolar.m_Viscosity = m_pctrlViscosity->value() / 10.7182881;
+		s_WPolar.density()   = m_pctrlDensity->value() / 0.00194122;
+		s_WPolar.viscosity() = m_pctrlViscosity->value() / 10.7182881;
 	}
 
 
 	if(m_pctrlArea1->isChecked())
 	{
-		s_WPolar.m_ReferenceDim = XFLR5::PLANFORMREFDIM;
-		s_WPolar.m_referenceArea       = m_pPlane->planformArea();
-		s_WPolar.m_referenceSpanLength = m_pPlane->planformSpan();
+		s_WPolar.referenceDim() = XFLR5::PLANFORMREFDIM;
+		s_WPolar.referenceArea()       = m_pPlane->planformArea();
+		s_WPolar.referenceSpanLength() = m_pPlane->planformSpan();
 	}
 	else if(m_pctrlArea2->isChecked())
 	{
-		s_WPolar.m_ReferenceDim = XFLR5::PROJECTEDREFDIM;
-		s_WPolar.m_referenceArea       = m_pPlane->projectedArea();
-		s_WPolar.m_referenceSpanLength = m_pPlane->projectedSpan();
+		s_WPolar.referenceDim() = XFLR5::PROJECTEDREFDIM;
+		s_WPolar.referenceArea()       = m_pPlane->projectedArea();
+		s_WPolar.referenceSpanLength() = m_pPlane->projectedSpan();
 	}
 	else if(m_pctrlArea3->isChecked())
 	{
-		s_WPolar.m_ReferenceDim = XFLR5::MANUALREFDIM;
-		s_WPolar.m_referenceArea       = m_pctrlRefArea->value() /Units::m2toUnit();
-		s_WPolar.m_referenceSpanLength = m_pctrlRefSpan->value() /Units::mtoUnit();
+		s_WPolar.referenceDim() = XFLR5::MANUALREFDIM;
+		s_WPolar.referenceArea()       = m_pctrlRefArea->value() /Units::m2toUnit();
+		s_WPolar.referenceSpanLength() = m_pctrlRefSpan->value() /Units::mtoUnit();
 	}
 
-	s_WPolar.m_referenceChordLength = m_pctrlRefChord->value() /Units::mtoUnit();
+	s_WPolar.referenceChordLength() = m_pctrlRefChord->value() /Units::mtoUnit();
 
-	SetDensity();
+	setDensity();
 
-	SetWingLoad();
+	setWingLoad();
 }
 
 
 
-void WPolarDlg::SetDensity()
+void WPolarDlg::setDensity()
 {
 	int exp, precision;
 	if(m_pctrlUnit1->isChecked())
 	{
-		exp = (int)log(s_WPolar.m_Density);
+		exp = (int)log(s_WPolar.density());
 		if(exp>1) precision = 1;
 		else if(exp<-4) precision = 4;
 		else precision = 3-exp;
 		m_pctrlDensity->setPrecision(precision);
-		m_pctrlDensity->setValue(s_WPolar.m_Density);
+		m_pctrlDensity->setValue(s_WPolar.density());
 	}
 	else
 	{
-		exp = (int)log(s_WPolar.m_Density* 0.00194122);
+		exp = (int)log(s_WPolar.density()* 0.00194122);
 		if(exp>1) precision = 1;
 		else if(exp<-4) precision = 4;
 		else precision = 3-exp;
 		m_pctrlDensity->setPrecision(precision);
-		m_pctrlDensity->setValue(s_WPolar.m_Density* 0.00194122);
+		m_pctrlDensity->setValue(s_WPolar.density()* 0.00194122);
 	}
 }
 
 
-void WPolarDlg::SetupLayout()
+void WPolarDlg::setupLayout()
 {
 	QString strSpeedUnit, strAreaUnit, strLengthUnit, strWeightUnit;
 
@@ -944,7 +944,7 @@ void WPolarDlg::SetupLayout()
 				pAeroDataLayout->addLayout(pAeroUnitLayout);
 				pAeroDataLayout->addLayout(pAeroDataValuesLayout);
 				QPushButton *pFromData = new QPushButton(tr("From Altitude and Temperature"));
-				connect(pFromData, SIGNAL(clicked()), this, SLOT(OnAeroData()));
+				connect(pFromData, SIGNAL(clicked()), this, SLOT(onAeroData()));
 				pAeroDataLayout->addWidget(pFromData);
 			}
 			pAeroDataGroupBox->setLayout(pAeroDataLayout);
@@ -1011,19 +1011,18 @@ void WPolarDlg::SetupLayout()
 			pPolarNameLayout->addWidget(m_pctrlWPolarName);
 		}
 
-		pMainLayout->addLayout(pPolarNameLayout);
+		pMainLayout->addLayout(pPolarNameLayout,1);
 		pMainLayout->addSpacing(13);
-		pMainLayout->addWidget(pTabWidget);
+		pMainLayout->addWidget(pTabWidget,13);
 		pMainLayout->addStretch(1);
-		pMainLayout->addLayout(pCommandButtons);
-		pMainLayout->addStretch(1);
+		pMainLayout->addLayout(pCommandButtons,1);
 	}
 	setLayout(pMainLayout);
 }
 
 
 
-void WPolarDlg::SetWPolarName()
+void WPolarDlg::setWPolarName()
 {
 	if(!m_bAutoName) return;
 
@@ -1031,20 +1030,20 @@ void WPolarDlg::SetWPolarName()
 	QString WPolarName;
 	Units::getSpeedUnitLabel(strSpeedUnit);
 
-	if (s_WPolar.m_WPolarType==XFLR5::FIXEDSPEEDPOLAR)
+	if (s_WPolar.polarType()==XFLR5::FIXEDSPEEDPOLAR)
 	{
 		WPolarName = QString("T1-%1 ").arg(s_WPolar.m_QInfSpec * Units::mstoUnit(),0,'f',1);
 		WPolarName += strSpeedUnit;
 	}
-	else if(s_WPolar.m_WPolarType==XFLR5::FIXEDLIFTPOLAR)
+	else if(s_WPolar.polarType()==XFLR5::FIXEDLIFTPOLAR)
 	{
 		WPolarName = QString("T2");
 	}
-	else if(s_WPolar.m_WPolarType==XFLR5::FIXEDAOAPOLAR)
+	else if(s_WPolar.polarType()==XFLR5::FIXEDAOAPOLAR)
 	{
 		WPolarName = QString(QString::fromUtf8("T4-%1°")).arg(s_WPolar.m_AlphaSpec,0,'f',3);
 	}
-	else if(s_WPolar.m_WPolarType==XFLR5::BETAPOLAR)
+	else if(s_WPolar.polarType()==XFLR5::BETAPOLAR)
 	{
 		WPolarName = QString(QString::fromUtf8("T5-a%1°-%2"))
 						  .arg(s_WPolar.m_AlphaSpec,0,'f',1)
@@ -1052,19 +1051,19 @@ void WPolarDlg::SetWPolarName()
 		WPolarName += strSpeedUnit;
 	}
 
-	if(s_WPolar.m_AnalysisMethod==XFLR5::LLTMETHOD)
+	if(s_WPolar.analysisMethod()==XFLR5::LLTMETHOD)
 		WPolarName += "-LLT";
-	else if(s_WPolar.m_AnalysisMethod==XFLR5::VLMMETHOD)
+	else if(s_WPolar.analysisMethod()==XFLR5::VLMMETHOD)
 	{
-		if(s_WPolar.m_bVLM1) WPolarName += "-VLM1";
+		if(s_WPolar.bVLM1()) WPolarName += "-VLM1";
 		else		           WPolarName += "-VLM2";
 	}
-	else if(s_WPolar.m_AnalysisMethod==XFLR5::PANELMETHOD)
+	else if(s_WPolar.analysisMethod()==XFLR5::PANELMETHOD)
 	{
-		if(m_pPlane->isWing() && !s_WPolar.m_bThinSurfaces) WPolarName += "-Panel";
-		if(s_WPolar.m_bThinSurfaces)
+		if(m_pPlane->isWing() && !s_WPolar.bThinSurfaces()) WPolarName += "-Panel";
+		if(s_WPolar.bThinSurfaces())
 		{
-			if(s_WPolar.m_bVLM1) WPolarName += "-VLM1";
+			if(s_WPolar.bVLM1()) WPolarName += "-VLM1";
 			else		         WPolarName += "-VLM2";
 		}
 	}
@@ -1072,15 +1071,15 @@ void WPolarDlg::SetWPolarName()
 	if(!s_WPolar.m_bAutoInertia)
 	{
 		Units::getWeightUnitLabel(strSpeedUnit);
-		strong = QString("-%1").arg(s_WPolar.m_Mass*Units::kgtoUnit(),0,'f',3);
-		if(s_WPolar.m_WPolarType==XFLR5::FIXEDLIFTPOLAR)   WPolarName += strong+strSpeedUnit;
+		strong = QString("-%1").arg(s_WPolar.mass()*Units::kgtoUnit(),0,'f',3);
+		if(s_WPolar.polarType()==XFLR5::FIXEDLIFTPOLAR)   WPolarName += strong+strSpeedUnit;
 		Units::getLengthUnitLabel(strSpeedUnit);
-		strong = QString("-x%1").arg(s_WPolar.m_CoG.x*Units::mtoUnit(),0,'f',3);
+		strong = QString("-x%1").arg(s_WPolar.CoG().x*Units::mtoUnit(),0,'f',3);
 		WPolarName += strong + strSpeedUnit;
 
-		if(qAbs(s_WPolar.m_CoG.z)>=.000001)
+		if(qAbs(s_WPolar.CoG().z)>=.000001)
 		{
-			strong = QString("-z%1").arg(s_WPolar.m_CoG.z*Units::mtoUnit(),0,'f',3);
+			strong = QString("-z%1").arg(s_WPolar.CoG().z*Units::mtoUnit(),0,'f',3);
 			WPolarName += strong + strSpeedUnit;
 		}
 	}
@@ -1093,28 +1092,28 @@ void WPolarDlg::SetWPolarName()
 		WPolarName += strong;
 	}
 
-	if(s_WPolar.m_bTiltedGeom)
+	if(s_WPolar.bTilted())
 	{
 		WPolarName += "-TG";
-		if(s_WPolar.m_bWakeRollUp) WPolarName += "-W";
+		if(s_WPolar.bWakeRollUp()) WPolarName += "-W";
 	}
 
-	if(!s_WPolar.m_bViscous)
+	if(!s_WPolar.bViscous())
 	{
 		WPolarName += "-Inviscid";
 	}
 
-	if(s_WPolar.m_bIgnoreBodyPanels && m_pPlane && m_pPlane->body())
+	if(s_WPolar.bIgnoreBodyPanels() && m_pPlane && m_pPlane->body())
 	{
 		WPolarName += "-NoBodyPanels";
 	}
 
-	if(s_WPolar.m_bGround)
+	if(s_WPolar.bGround())
 	{
 		strong = QString("%1").arg(s_WPolar.m_Height,0,'f',2),
 		WPolarName += "-G"+strong;
 	}
-	if(s_WPolar.m_AnalysisMethod!=XFLR5::LLTMETHOD && s_WPolar.m_ReferenceDim==XFLR5::PROJECTEDREFDIM) WPolarName += "-proj_area";
+	if(s_WPolar.analysisMethod()!=XFLR5::LLTMETHOD && s_WPolar.referenceDim()==XFLR5::PROJECTEDREFDIM) WPolarName += "-proj_area";
 
 	m_pctrlWPolarName->setText(WPolarName);
 }
@@ -1123,13 +1122,13 @@ void WPolarDlg::SetWPolarName()
 
 
 
-void WPolarDlg::SetWingLoad()
+void WPolarDlg::setWingLoad()
 {
 	QString str,str1, str2;
 
 	if(s_WPolar.referenceArea()>0)
 	{
-		m_WingLoad = s_WPolar.m_Mass/s_WPolar.referenceArea();//kg/dm2
+		m_WingLoad = s_WPolar.mass()/s_WPolar.referenceArea();//kg/dm2
 
 		str = QString("%1 ").arg(m_WingLoad * Units::kgtoUnit() / Units::m2toUnit(),7,'f',3);
 
@@ -1141,12 +1140,12 @@ void WPolarDlg::SetWingLoad()
 
 
 
-void WPolarDlg::SetReynolds()
+void WPolarDlg::setReynolds()
 {
 	QString strange, str, strUnit;
 	Units::getSpeedUnitLabel(strUnit);
 
-	if(s_WPolar.m_WPolarType == XFLR5::FIXEDSPEEDPOLAR)
+	if(s_WPolar.polarType() == XFLR5::FIXEDSPEEDPOLAR)
 	{
 		double RRe = m_pPlane->rootChord() * s_WPolar.m_QInfSpec/s_WPolar.m_Viscosity;
 		ReynoldsFormat(str, RRe);
@@ -1160,9 +1159,9 @@ void WPolarDlg::SetReynolds()
 
 		m_pctrlQInfCl->setText(" ");
 	}
-	else if(s_WPolar.m_WPolarType == XFLR5::FIXEDLIFTPOLAR)
+	else if(s_WPolar.polarType() == XFLR5::FIXEDLIFTPOLAR)
 	{
-		double QCl =  sqrt(2.* 9.81 /s_WPolar.m_Density* s_WPolar.m_Mass /s_WPolar.referenceArea()) * Units::mstoUnit();
+		double QCl =  sqrt(2.* 9.81 /s_WPolar.density()* s_WPolar.mass() /s_WPolar.referenceArea()) * Units::mstoUnit();
 		str = QString("%1 ").arg(QCl,5,'f',2);
 		str += strUnit;
 		strange = tr("Vinf.sqrt(Cl) =");
@@ -1178,7 +1177,7 @@ void WPolarDlg::SetReynolds()
 		strange = tr("Tip Re.sqrt(Cl) =");
 		m_pctrlSRe->setText(strange+str);
 	}
-	else if(s_WPolar.m_WPolarType ==XFLR5::FIXEDAOAPOLAR)
+	else if(s_WPolar.polarType() ==XFLR5::FIXEDAOAPOLAR)
 	{
 		m_pctrlQInfCl->setText(" ");
 		m_pctrlRRe->setText(" ");
@@ -1189,12 +1188,12 @@ void WPolarDlg::SetReynolds()
 
 
 
-void WPolarDlg::OnAeroData()
+void WPolarDlg::onAeroData()
 {
 	AeroDataDlg dlg;
 	if(dlg.exec() == QDialog::Accepted)
 	{
-		s_WPolar.m_Density = dlg.AirDensity();
+		s_WPolar.density() = dlg.AirDensity();
 		s_WPolar.m_Viscosity = dlg.KinematicViscosity();
 
 		if(m_pctrlUnit1->isChecked())
@@ -1205,7 +1204,7 @@ void WPolarDlg::OnAeroData()
 		{
 			m_pctrlViscosity->setValue(s_WPolar.m_Viscosity* 10.7182881);
 		}
-		SetDensity();
+		setDensity();
 	}
 }
 

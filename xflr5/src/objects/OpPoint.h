@@ -36,6 +36,7 @@
 
 #include "../params.h"
 #include "../xflr5.h"
+#include <objects/linestyle.h>
 #include <QString>
 #include <QColor>
 #include <QTextStream>
@@ -73,10 +74,10 @@ public:
 
 
 
-	void ExportOpp(QTextStream &out, QString Version, XFLR5::enumTextFileType FileType, bool bDataOnly=false);
-	bool SerializeOppWPA(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
-	bool SerializeOppXFL(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
-	void GetOppProperties(QString &OpPointProperties, bool bData=false);
+	void exportOpp(QTextStream &out, QString Version, XFLR5::enumTextFileType FileType, bool bDataOnly=false);
+	bool serializeOppWPA(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
+	bool serializeOppXFL(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
+	void getOppProperties(QString &OpPointProperties, bool bData=false);
 
 	QString foilName()  {return m_strFoilName;}
 	QString polarName() {return m_strPlrName;}
@@ -85,6 +86,12 @@ public:
 
 	bool bViscResults(){return m_bViscResults;}
 	bool bBL(){return m_bBL;}
+
+	LineStyle &lineStyle() {return m_LineStyle; }
+	int &oppStyle()        {return m_LineStyle.m_Style;}
+	int &oppWidth()        {return m_LineStyle.m_Width;}
+	QColor &oppColor()     {return m_LineStyle.m_Color;}
+	bool &bIsVisible()     {return m_LineStyle.m_bIsVisible;}
 
 private:
 	bool m_bViscResults;        /**< true if viscous results are stored in this OpPoint */
@@ -122,16 +129,13 @@ private:
 	double YForce;              /**< the y-component of the pressure forces */
 	double Cpmn;                /**< @todo check significance in XFoil doc */
 
-
-	bool m_bIsVisible;          /**< true if the OpPoint's curve is visible in the active view */
-	bool m_bShowPoints;         /**< true if the OpPoint's curve points are visible in the active graphs */
-	int m_Style;                /**< the index of the style with which to draw the OpPoint's curve */
-	int m_Width;                /**< the width with which to draw the OpPoint's curve */
-	QColor m_Color;             /**< the color with which to draw the OpPoint's curve */
 	QString m_strFoilName;      /**< the name of the parent Foil */
 	QString m_strPlrName;       /**< the name of the parent Polar */
 
+	LineStyle m_LineStyle;
+
 	static OpPoint *s_pCurOpp;
+
 
 public:
 	static QList <void *> s_oaOpp;     /**< The array of void pointers to the foil operating point objects. */

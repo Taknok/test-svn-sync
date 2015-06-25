@@ -442,7 +442,7 @@ Polar *BatchDlg::CreatePolar(Foil *pFoil, double Spec, double Mach, double NCrit
 
 	Polar *pPolar = new Polar;
 	pPolar->m_FoilName   = pFoil->m_FoilName;
-	pPolar->m_bIsVisible = true;
+	pPolar->lineStyle().m_bIsVisible = true;
 
 	pPolar->m_PolarType = m_PolarType;
 

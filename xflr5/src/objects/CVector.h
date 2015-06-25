@@ -136,28 +136,28 @@ public:
 
 	
 	//inline methods
-	void Copy(CVector const &V)
+	void copy(CVector const &V)
 	{	
 		x = V.x;
 		y = V.y;
 		z = V.z;
 	}
 	
-	void Set(double const &x0, double const &y0, double const &z0)
+	void set(double const &x0, double const &y0, double const &z0)
 	{	
 		x = x0;
 		y = y0;
 		z = z0;
 	}
 	
-	void Set(CVector const &V)
+	void set(CVector const &V)
 	{	
 		x = V.x;
 		y = V.y;
 		z = V.z;
 	}
 
-	void Normalize()
+	void normalize()
 	{
 		double abs = VAbs();
 		if(abs< 1.e-10) return;
@@ -176,29 +176,30 @@ public:
 		return x*V.x + y*V.y + z*V.z;
 	}
 	
-	bool IsSame(CVector const &V)
+	bool isSame(CVector const &V)
 	{
 		//used only to compare point positions
 		return (V.x-x)*(V.x-x) + (V.y-y)*(V.y-y) + (V.z-z)*(V.z-z)<0.000000001;
 	}
 
-	void Translate(CVector const &T)
+	void translate(CVector const &T)
 	{
 		x += T.x;
 		y += T.y;
 		z += T.z;
 	}
 
-	void Translate(const double &tx, const double &ty, const double &tz)
+	void translate(const double &tx, const double &ty, const double &tz)
 	{
 		x += tx;
 		y += ty;
 		z += tz;
 	}
 
-	CVector translate(const double &tx, const double &ty, const double &tz)
+
+	CVector translated(const double &tx, const double &ty, const double &tz)
 	{
-		return CVector(x+tx, y+ty,z+tz);
+		return CVector(x+tx, y+ty, z+tz);
 	}
 
 	int size() const
@@ -207,14 +208,14 @@ public:
 	}
 
 	//other methods
-	void Rotate(CVector const &R, double Angle);
-	void Rotate(CVector &O, CVector const &R, double Angle);
-	void RotateX(CVector const &O, double XTilt);
-	void RotateY(CVector const &O, double YTilt);
-	void RotateZ(CVector const &O, double ZTilt);
-	void RotateX(double Bank);
-	void RotateY(double YTilt);
-	void RotateZ(double ZRot);
+	void rotate(CVector const &R, double Angle);
+	void rotate(CVector &O, CVector const &R, double Angle);
+	void rotateX(CVector const &O, double XTilt);
+	void rotateY(CVector const &O, double YTilt);
+	void rotateZ(CVector const &O, double ZTilt);
+	void rotateX(double Bank);
+	void rotateY(double YTilt);
+	void rotateZ(double ZRot);
 
  
 };

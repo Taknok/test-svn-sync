@@ -226,7 +226,7 @@ void ThreeDWidget::mouseReleaseEvent(QMouseEvent *event)
 			for(j=0; j<4; j++)
 				MatIn[i][j] =  m_ArcBall.ab_quat[i*4+j];
 
-		GLInverseMatrix();
+		glInverseMatrix();
 		m_glViewportTrans.x =  (MatOut[0][0]*m_glRotCenter.x + MatOut[0][1]*m_glRotCenter.y + MatOut[0][2]*m_glRotCenter.z);
 		m_glViewportTrans.y = -(MatOut[1][0]*m_glRotCenter.x + MatOut[1][1]*m_glRotCenter.y + MatOut[1][2]*m_glRotCenter.z);
 		m_glViewportTrans.z =  (MatOut[2][0]*m_glRotCenter.x + MatOut[2][1]*m_glRotCenter.y + MatOut[2][2]*m_glRotCenter.z);
@@ -519,8 +519,8 @@ void ThreeDWidget::paintGL()
 	if(m_iView==GLMIAREXVIEW)
 	{
 		QMiarex* pMiarex = (QMiarex*)s_pMiarex;
-		pMiarex->GLDraw3D();
-		GLRenderView();
+		pMiarex->glDraw3D();
+		glRenderView();
 	}
 	else if(m_iView == GLBODYVIEW)
 	{
@@ -532,19 +532,19 @@ void ThreeDWidget::paintGL()
 	{
 		GL3dWingDlg *pDlg = (GL3dWingDlg*)m_pParent;
 		pDlg->GLDraw3D();
-		GLRenderView();
+		glRenderView();
 	}
 	else if(m_iView == GLPLANEVIEW)
 	{
 		EditPlaneDlg *pDlg = (EditPlaneDlg*)m_pParent;
-		pDlg->GLDraw3D();
-		GLRenderView();
+		pDlg->glDraw3D();
+		glRenderView();
 	}
 	else if(m_iView == GLEDITBODYVIEW)
 	{
 		EditBodyDlg *pDlg = (EditBodyDlg*)m_pParent;
 		pDlg->GLDraw3D();
-		GLRenderView();
+		glRenderView();
 	}
 }
 
@@ -578,8 +578,8 @@ void ThreeDWidget::resizeGL(int width, int height)
 
 	setupViewPort(geometry().width() * pixelRatio, geometry().height() * pixelRatio);
 
-	GLCreateArcballList(m_ArcBall, 1.0);
-	GLCreateUnitSphere();
+	glCreateArcballList(m_ArcBall, 1.0);
+	glCreateUnitSphere();
 
 	if(m_iView == GLMIAREXVIEW)
 	{
@@ -632,7 +632,7 @@ void ThreeDWidget::setupViewPort(int width, int height)
 *@param ArcBall the ArcBall object associated to the view 
 *@param GLScale the overall scaling factor for the view @deprecated and unused
 */
-void ThreeDWidget::GLCreateArcballList(ArcBall &ArcBall, double GLScale)
+void ThreeDWidget::glCreateArcballList(ArcBall &ArcBall, double GLScale)
 {
 	int row, col, NumAngles, NumCircles;
 	double Radius, lat_incr, lon_incr, phi, theta;
@@ -755,7 +755,7 @@ void ThreeDWidget::GLCreateArcballList(ArcBall &ArcBall, double GLScale)
 *@param style the index of the style to use to draw the axis
 *@param width the width to use to draw the axis
 */
-void ThreeDWidget::GLDrawAxes(double length, QColor AxisColor, int AxisStyle, int AxisWidth)
+void ThreeDWidget::glDrawAxes(double length, QColor AxisColor, int AxisStyle, int AxisWidth)
 {
 	double l = .6*length;
 
@@ -787,7 +787,7 @@ void ThreeDWidget::GLDrawAxes(double length, QColor AxisColor, int AxisStyle, in
 	glEnd();
 	glDisable (GL_LINE_STIPPLE);
 	//XLabel
-	GLRenderText( l, 0.015, 0.015, "X");
+	glRenderText( l, 0.015, 0.015, "X");
 
 
 	// Y axis____________
@@ -808,7 +808,7 @@ void ThreeDWidget::GLDrawAxes(double length, QColor AxisColor, int AxisStyle, in
 	glEnd();
 	glDisable (GL_LINE_STIPPLE);
 	//Y Label
-	GLRenderText( 0.015, l, 0.015, "Y");
+	glRenderText( 0.015, l, 0.015, "Y");
 
 
 	// Z axis____________
@@ -829,7 +829,7 @@ void ThreeDWidget::GLDrawAxes(double length, QColor AxisColor, int AxisStyle, in
 	glEnd();
 	glDisable (GL_LINE_STIPPLE);
 	//ZLabel
-	GLRenderText( 0.015, 0.015, l, "Z");
+	glRenderText( 0.015, 0.015, l, "Z");
 
 	glDisable (GL_LINE_STIPPLE);
 }
@@ -839,7 +839,7 @@ void ThreeDWidget::GLDrawAxes(double length, QColor AxisColor, int AxisStyle, in
 /**
 Creates a list for a sphere with unit radius
 */
-void ThreeDWidget::GLCreateUnitSphere()
+void ThreeDWidget::glCreateUnitSphere()
 {
 	double start_lat, start_lon,lat_incr, lon_incr, R;
 	double phi1, phi2, theta1, theta2;
@@ -889,7 +889,7 @@ void ThreeDWidget::GLCreateUnitSphere()
 				w[1] = R * sin(theta2);//y
 				w[2] = R * sin(phi2) * cos(theta2);//z
 
-				NormalVector(u,v,w,n);
+				normalVector(u,v,w,n);
 
 				glNormal3dv(n);
 				glVertex3dv(u);
@@ -900,7 +900,7 @@ void ThreeDWidget::GLCreateUnitSphere()
 				v[1] = R * sin(theta1);//y
 				v[2] = R * sin(phi2) * cos(theta1);//z
 
-				NormalVector(u,w,v,n);
+				normalVector(u,w,v,n);
 				glNormal3dv(n);
 				glVertex3dv(u);
 				glVertex3dv(w);
@@ -916,7 +916,7 @@ void ThreeDWidget::GLCreateUnitSphere()
 
 
 
-void ThreeDWidget::GLRenderView()
+void ThreeDWidget::glRenderView()
 {
 //	makeCurrent();
 	// Clear the viewport
@@ -936,7 +936,7 @@ void ThreeDWidget::GLRenderView()
 		if(m_ClipPlanePos>4.9999) 	glDisable(GL_CLIP_PLANE1);
 		else						glEnable(GL_CLIP_PLANE1);
 
-		GLSetupLight(0.0, 1.0);
+		glSetupLight(0.0, 1.0);
 		glDisable(GL_LIGHTING);
 		glDisable(GL_LIGHT0);
 		if(m_glLightDlg.isVisible())
@@ -948,7 +948,7 @@ void ThreeDWidget::GLRenderView()
 				glTranslated( m_glLightDlg.s_XLight, m_glLightDlg.s_YLight, m_glLightDlg.s_ZLight);
 				double radius = (m_glLightDlg.s_ZLight+2.0)/73.0;
 				glColor3d(m_glLightDlg.s_Red, m_glLightDlg.s_Green, m_glLightDlg.s_Blue);
-				GLRenderSphere(radius/m_glScaled);
+				glRenderSphere(radius/m_glScaled);
 			}
 			glPopMatrix();
 		}
@@ -978,12 +978,12 @@ void ThreeDWidget::GLRenderView()
 
 		glScaled(m_glScaled, m_glScaled, m_glScaled);
 		glTranslated(m_glRotCenter.x, m_glRotCenter.y, m_glRotCenter.z);
-		if(s_bAxes) GLDrawAxes(1.0, W3dPrefsDlg::s_3DAxisColor, W3dPrefsDlg::s_3DAxisStyle, W3dPrefsDlg::s_3DAxisWidth);
+		if(s_bAxes) glDrawAxes(1.0, W3dPrefsDlg::s_3DAxisColor, W3dPrefsDlg::s_3DAxisStyle, W3dPrefsDlg::s_3DAxisWidth);
 
 		if(m_iView==GLMIAREXVIEW)
 		{
 			QMiarex* pMiarex = (QMiarex*)s_pMiarex;
-			if(pMiarex->m_iView==XFLR5::W3DVIEW) pMiarex->GLRenderView();
+			if(pMiarex->m_iView==XFLR5::W3DVIEW) pMiarex->glRenderView();
 		}
 
 		else if(m_iView == GLWINGVIEW)
@@ -994,7 +994,7 @@ void ThreeDWidget::GLRenderView()
 		else if(m_iView == GLPLANEVIEW)
 		{
 			EditPlaneDlg *pDlg = (EditPlaneDlg*)m_pParent;
-			pDlg->GLRenderView();
+			pDlg->glRenderView();
 		}
 		else if(m_iView == GLEDITBODYVIEW)
 		{
@@ -1009,7 +1009,6 @@ void ThreeDWidget::GLRenderView()
 
 	glDisable(GL_CLIP_PLANE1);
 	glFinish();
-
 }
 
 
@@ -1017,7 +1016,7 @@ void ThreeDWidget::GLRenderView()
 *Renders a sphere in the viewport. Used to draw the point masses and the light.
 *@param radius the sphere's radius, in IS units
 */
-void ThreeDWidget::GLRenderSphere(double radius)
+void ThreeDWidget::glRenderSphere(double radius)
 {
 	if(radius>0)
 	{
@@ -1033,7 +1032,7 @@ void ThreeDWidget::GLRenderSphere(double radius)
 /**
 * Calculates two vectors, using the middle point as the common origin
 */
-void ThreeDWidget::NormalVector(GLdouble p1[3], GLdouble p2[3],  GLdouble p3[3], GLdouble n[3])
+void ThreeDWidget::normalVector(GLdouble p1[3], GLdouble p2[3],  GLdouble p3[3], GLdouble n[3])
 {
 
 	GLdouble v1[3], v2[3], d;
@@ -1072,7 +1071,7 @@ void ThreeDWidget::NormalVector(GLdouble p1[3], GLdouble p2[3],  GLdouble p3[3],
 *@param Offset_y
 *@param LightFactor a global factor for all light intensities.
 */
-void ThreeDWidget::GLSetupLight(double Offset_y, double LightFactor)
+void ThreeDWidget::glSetupLight(double Offset_y, double LightFactor)
 {
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);    // the ambient light
@@ -1255,7 +1254,7 @@ void ThreeDWidget::viewportToScreen(double const &x, double const &y, QPoint &po
 
 
 
-void ThreeDWidget::GLInverseMatrix()
+void ThreeDWidget::glInverseMatrix()
 {
 	//Step 1. Transpose the 3x3 rotation portion of the 4x4 matrix to get the inverse rotation
 	int i,j;
@@ -1295,14 +1294,14 @@ void ThreeDWidget::set3DRotationCenter(QPoint point)
 
 	screenToViewport(point, B);
 	B.z = -1.0;
-	A.Set(B.x, B.y, +1.0);
+	A.set(B.x, B.y, +1.0);
 
 	viewportToWorld(A, AA);
 	viewportToWorld(B, BB);
 
 
-	U.Set(BB.x-AA.x, BB.y-AA.y, BB.z-AA.z);
-	U.Normalize();
+	U.set(BB.x-AA.x, BB.y-AA.y, BB.z-AA.z);
+	U.normalize();
 
 	bool bIntersect = false;
 
@@ -1312,7 +1311,7 @@ void ThreeDWidget::set3DRotationCenter(QPoint point)
 		if(pDlg->IntersectObject(AA, U, I))
 		{
 			bIntersect = true;
-			PP.Set(I);
+			PP.set(I);
 		}
 	}
 	else if(m_iView == GLPLANEVIEW)
@@ -1321,7 +1320,7 @@ void ThreeDWidget::set3DRotationCenter(QPoint point)
 		if(pDlg->IntersectObject(AA, U, I))
 		{
 			bIntersect = true;
-			PP.Set(I);
+			PP.set(I);
 		}
 	}
 	else if(m_iView == GLEDITBODYVIEW)
@@ -1330,16 +1329,16 @@ void ThreeDWidget::set3DRotationCenter(QPoint point)
 		if(pDlg->IntersectObject(AA, U, I))
 		{
 			bIntersect = true;
-			PP.Set(I);
+			PP.set(I);
 		}
 	}
 	else if(m_iView == GLMIAREXVIEW)
 	{
 		QMiarex *pMiarex = (QMiarex*)s_pMiarex;
-		if(pMiarex->IntersectObject(AA, U, I))
+		if(pMiarex->intersectObject(AA, U, I))
 		{
 			bIntersect = true;
-			PP.Set(I);
+			PP.set(I);
 		}
 	}
 
@@ -1349,7 +1348,7 @@ void ThreeDWidget::set3DRotationCenter(QPoint point)
 //		m_glRotCenter -= PP * m_glScaled;
 
 //		smooth visual transition
-		GLInverseMatrix();
+		glInverseMatrix();
 
 		U.x = (-PP.x -m_glRotCenter.x)/30.0;
 		U.y = (-PP.y -m_glRotCenter.y)/30.0;
@@ -1369,7 +1368,7 @@ void ThreeDWidget::set3DRotationCenter(QPoint point)
 
 
 
-void ThreeDWidget::GLDrawFoils(void *pWingPtr)
+void ThreeDWidget::glDrawFoils(void *pWingPtr)
 {
 	int j;
 	Foil *pFoil;
@@ -1379,7 +1378,7 @@ void ThreeDWidget::GLDrawFoils(void *pWingPtr)
 	{
 		pFoil = pWing->m_Surface.at(j)->foilA();
 
-		if(pFoil) GLRenderText(pWing->m_Surface.at(j)->m_TA.x, pWing->m_Surface.at(j)->m_TA.y, pWing->m_Surface.at(j)->m_TA.z,
+		if(pFoil) glRenderText(pWing->m_Surface.at(j)->m_TA.x, pWing->m_Surface.at(j)->m_TA.y, pWing->m_Surface.at(j)->m_TA.z,
 							   pFoil->foilName(),
 							   QColor(Qt::yellow).lighter(175));
 
@@ -1387,14 +1386,14 @@ void ThreeDWidget::GLDrawFoils(void *pWingPtr)
 
 	j = pWing->m_Surface.size()-1;
 	pFoil = pWing->m_Surface.at(j)->foilB();
-	if(pFoil) GLRenderText(pWing->m_Surface.at(j)->m_TB.x, pWing->m_Surface.at(j)->m_TB.y, pWing->m_Surface.at(j)->m_TB.z,
+	if(pFoil) glRenderText(pWing->m_Surface.at(j)->m_TB.x, pWing->m_Surface.at(j)->m_TB.y, pWing->m_Surface.at(j)->m_TB.z,
 						 pFoil->foilName(),
 						 QColor(Qt::yellow).lighter(175));
 }
 
 
 
-void ThreeDWidget::GLDrawMasses(double volumeMass, CVector pos, QString tag, QList<PointMass*> ptMasses)
+void ThreeDWidget::glDrawMasses(double volumeMass, CVector pos, QString tag, QList<PointMass*> ptMasses)
 {
 	if(qAbs(volumeMass)>PRECISION)
 	{
@@ -1403,7 +1402,7 @@ void ThreeDWidget::GLDrawMasses(double volumeMass, CVector pos, QString tag, QLi
 			glTranslated(pos.x,
 						 pos.y,
 						 pos.z);
-			GLRenderText(0.0,0.0,0.0, tag + QString(" (%1").arg(volumeMass*Units::kgtoUnit(), 0,'g',3) + Units::weightUnitLabel()+")", W3dPrefsDlg::s_MassColor.lighter(125));
+			glRenderText(0.0,0.0,0.0, tag + QString(" (%1").arg(volumeMass*Units::kgtoUnit(), 0,'g',3) + Units::weightUnitLabel()+")", W3dPrefsDlg::s_MassColor.lighter(125));
 		}
 		glPopMatrix();
 	}
@@ -1416,8 +1415,8 @@ void ThreeDWidget::GLDrawMasses(double volumeMass, CVector pos, QString tag, QLi
 						 ptMasses[im]->position().y,
 						 ptMasses[im]->position().z);
 			glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
-			GLRenderSphere(W3dPrefsDlg::s_MassRadius/m_glScaled);
-			GLRenderText(0.0, 0.0, 0.0 +.02/m_glScaled,
+			glRenderSphere(W3dPrefsDlg::s_MassRadius/m_glScaled);
+			glRenderText(0.0, 0.0, 0.0 +.02/m_glScaled,
 						 ptMasses[im]->tag()+QString(" (%1").arg(ptMasses[im]->mass()*Units::kgtoUnit(), 0,'g',3)+Units::weightUnitLabel()+")", W3dPrefsDlg::s_MassColor.lighter(125));
 		}
 		glPopMatrix();
@@ -1534,7 +1533,7 @@ void ThreeDWidget::on3DReset()
 		pMiarex->set3DScale();
 	}
 
-	m_glViewportTrans.Set(0.0, 0.0, 0.0);
+	m_glViewportTrans.set(0.0, 0.0, 0.0);
 	reset3DRotationCenter();
 	update();
 }
@@ -1556,7 +1555,7 @@ QSize ThreeDWidget::minimumSizeHint() const
 
 
 
-void ThreeDWidget::GLRenderText(double x, double y, double z, const QString & str, QColor textColor)
+void ThreeDWidget::glRenderText(double x, double y, double z, const QString & str, QColor textColor)
 {
 	QPoint point;
 	double Vx, Vy;
@@ -1577,7 +1576,7 @@ void ThreeDWidget::GLRenderText(double x, double y, double z, const QString & st
 
 
 
-void ThreeDWidget::GLRenderText(int x, int y, const QString & str, QColor textColor)
+void ThreeDWidget::glRenderText(int x, int y, const QString & str, QColor textColor)
 {
 	QPainter paint(&m_PixText);
 	paint.save();
@@ -1665,7 +1664,7 @@ void ThreeDWidget::onClipPlane(int pos)
 
 
 
-QString ThreeDWidget::GLError()
+QString ThreeDWidget::glError()
 {
 	GLenum err = glGetError();
 	QString strange;

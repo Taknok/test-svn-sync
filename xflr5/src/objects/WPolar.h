@@ -31,6 +31,7 @@
 #ifndef WPOLAR_H
 #define WPOLAR_H
 
+#include <linestyle.h>
 
 /**
 *@brief
@@ -52,17 +53,17 @@
 
 class WPolar
 {
-	friend class Objects3D;
+//	friend class Objects3D;
 	friend class MainFrame;
-	friend class WPolarDlg;
-	friend class StabPolarDlg;
-	friend class LLTAnalysisDlg;
+//	friend class WPolarDlg;
+//	friend class StabPolarDlg;
+//	friend class LLTAnalysisDlg;
 	friend class LLTAnalysis;
-	friend class PanelAnalysis;
-	friend class PanelAnalysisDlg;
-	friend class ObjectPropsDlg;
-	friend class StabViewDlg;
-	friend class ManageBodiesDlg;
+//	friend class PanelAnalysis;
+//	friend class PanelAnalysisDlg;
+//	friend class ObjectPropsDlg;
+//	friend class StabViewDlg;
+//	friend class ManageBodiesDlg;
 	friend class EditPlrDlg;
 	friend class ViewPolarDefDlg;
 
@@ -70,24 +71,24 @@ class WPolar
 public:
 	WPolar();
 
-	void AddPlaneOpPoint(PlaneOpp* pPOpp);
-	void ReplacePOppDataAt(int pos, PlaneOpp *pPOpp);
-	void InsertPOppDataAt(int pos, PlaneOpp *pPOpp);
-	void InsertDataAt(int pos, double Alpha, double Beta, double QInf, double Ctrl, double Cl, double CY, double ICd, double PCd, double GCm,
+	void addPlaneOpPoint(PlaneOpp* pPOpp);
+	void replacePOppDataAt(int pos, PlaneOpp *pPOpp);
+	void insertPOppDataAt(int pos, PlaneOpp *pPOpp);
+	void insertDataAt(int pos, double Alpha, double Beta, double QInf, double Ctrl, double Cl, double CY, double ICd, double PCd, double GCm,
 						  double ICm, double VCm, double GRm, double GYm, double IYm, double VYm, double XCP, double YCP,
 						  double ZCP, double Cb, double XNP);
-	void CalculatePoint(int i);
-	void Copy(WPolar *pWPolar);
-	void DuplicateSpec(WPolar *pWPolar);
-	void Export(QTextStream &out, XFLR5::enumTextFileType FileType, bool bDataOnly=false);
-	void GetPolarProperties(QString &Properties, bool bData=false);
-	void *GetWPlrVariable(int iVar);
-	void Remove(int i);
-	void Remove(double alpha);
-	void ClearData();
-	void RetrieveInertia(void *ptr, bool bPlane);
-	bool SerializeWPlrWPA(QDataStream &ar, bool bIsStoring);
-	bool SerializeWPlrXFL(QDataStream &ar, bool bIsStoring);
+	void calculatePoint(int i);
+	void copy(WPolar *pWPolar);
+	void duplicateSpec(WPolar *pWPolar);
+	void exportToTextFile(QTextStream &out, XFLR5::enumTextFileType FileType, bool bDataOnly=false);
+	void getPolarProperties(QString &Properties, bool bData=false);
+	void *getWPlrVariable(int iVar);
+	void remove(int i);
+	void remove(double alpha);
+	void clearData();
+	void retrieveInertia(void *ptr);
+	bool serializeWPlrWPA(QDataStream &ar, bool bIsStoring);
+	bool serializeWPlrXFL(QDataStream &ar, bool bIsStoring);
 
 	static QString variableName(int iVar);
 
@@ -108,8 +109,6 @@ public:
 	bool isBetaPolar() {return m_WPolarType==XFLR5::BETAPOLAR;}             /**< returns true if the polar is of the BETAPOLAR type, false otherwise >*/
 
 
-	bool &visible()                       {return m_bIsVisible;}     /**< returns true if the polar curve should be displayed the graphs. */
-	bool &pointsVisible()                 {return m_bShowPoints;}    /**< returns true if the polar curve's points should be displayed in the graphs. */
 	bool &bThinSurfaces()                 {return m_bThinSurfaces;}  /**< returns true if the analysis if using thin surfaces, i.e. VLM, false if 3D Panels for the Wing objects. */
 	bool &bWakeRollUp() {return m_bWakeRollUp;}
 	bool &bDirichlet() {return m_bDirichlet;}
@@ -125,10 +124,6 @@ public:
 	double &referenceSpanLength()  {return m_referenceSpanLength;}
 	double &referenceChordLength() {return m_referenceChordLength;}
 
-	QColor &curveColor(){return m_Color;}
-	int &curveStyle(){return m_Style;}
-	int &curveWidth(){return m_Width;}
-
 	double &velocity() {return m_QInfSpec;}
 	double &Alpha()    {return m_AlphaSpec;}
 	double &Beta()     {return m_BetaSpec;}
@@ -143,28 +138,28 @@ public:
 	double &CoGIxz() {return m_CoGIxz;}
 
 
+	LineStyle &lineStyle() {return m_LineStyle; }
+	bool &visible()        {return m_LineStyle.m_bIsVisible;}
+	int &points()          {return m_LineStyle.m_PointStyle;}
+	int &curveStyle()      {return m_LineStyle.m_Style;}
+	int &curveWidth()      {return m_LineStyle.m_Width;}
+	QColor &curveColor()   {return m_LineStyle.m_Color;}
+
 private:
 	bool     m_bVLM1;              /**< true if the analysis is performed with horseshoe vortices, flase if quad rings */
 	bool     m_bDirichlet;         /**< true if Dirichlet boundary conditions should be applied, false if Neumann */
 	bool     m_bGround;            /**< true if ground effect should be taken into account in the analysis */
 	bool     m_bIgnoreBodyPanels;  /**< true if the body panels should be ignored in the analysis */
-	bool     m_bIsVisible;         /**< true if the polar curve is visible in the graphs */
-	bool     m_bShowPoints;        /**< true if the polar points are visible in the graphs */
 	bool     m_bThinSurfaces;      /**< true if VLM, false if 3D-panels */
 	bool     m_bTiltedGeom;        /**< true if the analysis should be performed on the tilted geometry */
 	bool     m_bViscous;           /**< true if the analysis is viscous */
 	bool     m_bWakeRollUp;        /**< true if wake roll-up  should be taken into account in the analysis */
-	QColor   m_Color;              /**< the curve's color for the graphs */
 	QString  m_WPlrName;            /**< the polar's name */
 	int      m_PolarFormat;        /**< the identification number which references the format used to serialize the data */
 	XFLR5::enumRefDimension  m_ReferenceDim;        /**< Describes the origin of the refernce area : 1 if planform area, else projected area */
-	int      m_Style;              /**< the index of the curve's style for the graphs */
-	double   m_TotalWakeLength;    /**< the wake's length */
 	QString  m_PlaneName;          /**< the name of the parent wing or plane */
-	double   m_WakePanelFactor;    /**< the ratio between the length of two wake panels in the x direction */
-	int      m_Width;              /**< the curve's width in pixels for the graphs */
 
-
+	LineStyle m_LineStyle;
 
 	double m_referenceArea;          /**< The reference area for the calculation of aero coefficients */
 	double m_referenceChordLength;   /**< The reference length = the mean aero chord, for the calculation of aero coefficients */
@@ -184,6 +179,8 @@ public:
 	double   m_CoGIyy;             /**< The Iyy component of the inertia tensor, w.r.t. the CoG origin */
 	double   m_CoGIzz;             /**< The Izz component of the inertia tensor, w.r.t. the CoG origin */
 
+	double   m_inertiaGain[7];
+
 	int      m_nControls;          /**< the number of control surfaces for this wing or plane */
 	int      m_NXWakePanels;       /**< the number of wake panels */
 	double   m_AlphaSpec;          /**< the angle of attack for type 4 & 5 polars */
@@ -192,6 +189,9 @@ public:
 	double   m_QInfSpec;           /**< the freestream velocity for type 1 & 5 polars */
 	double   m_Height;             /**< The plane flight altitude, used if ground effect is to be taken into account*/
 	double   m_Viscosity;          /**< The fluid's kinematic viscosity */
+
+	double   m_WakePanelFactor;    /**< the ratio between the length of two wake panels in the x direction */
+	double   m_TotalWakeLength;    /**< the wake's length */
 
 	QVarLengthArray<double> m_ControlGain;      /**< the scaling factor for each of the control surfaces */
 

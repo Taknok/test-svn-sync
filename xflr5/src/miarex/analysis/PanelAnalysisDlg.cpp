@@ -64,7 +64,7 @@ PanelAnalysisDlg::~PanelAnalysisDlg()
 /**
 *Initializes the dialog and the analysis
 */
-bool PanelAnalysisDlg::InitDialog()
+bool PanelAnalysisDlg::initDialog()
 {
 	m_pctrlTextOutput->setFont(Settings::s_TableFont);
 	m_Progress = 0.0;
@@ -106,7 +106,7 @@ void PanelAnalysisDlg::OnCancelAnalysis()
 
 
 /**Updates the progress of the analysis in the slider widget */
-void PanelAnalysisDlg::OnProgress()
+void PanelAnalysisDlg::onProgress()
 {
 	m_pctrlProgress->setValue((int)PanelAnalysis::s_Progress);
 	if(m_pPanelAnalysis->m_OutMessage.length())
@@ -187,7 +187,7 @@ void PanelAnalysisDlg::SetupLayout()
 *    Last consideration : since the potential of a straight vortex line requires a lot of computations, 
 *    the Neumann type BC is applied to the body panels, rather than the Dirichlet type BC
 */
-void PanelAnalysisDlg::Analyze()
+void PanelAnalysisDlg::analyze()
 {
 	if(!m_pPanelAnalysis) return;
 
@@ -203,7 +203,7 @@ void PanelAnalysisDlg::Analyze()
 	Units::getLengthUnitLabel(len);
 
 	QTimer *pTimer = new QTimer(this);
-	connect(pTimer, SIGNAL(timeout()), this, SLOT(OnProgress()));
+	connect(pTimer, SIGNAL(timeout()), this, SLOT(onProgress()));
 	pTimer->setInterval(250);
 	pTimer->start();
 
@@ -219,7 +219,7 @@ void PanelAnalysisDlg::Analyze()
 			//add the data to the polar object
 			PlaneOpp *pPOpp = m_pPanelAnalysis->m_PlaneOppList.at(iPOpp);
 			if(PlaneOpp::s_bKeepOutOpps || !pPOpp->isOut())
-				Objects3D::InsertPOpp(pPOpp);
+				Objects3D::insertPOpp(pPOpp);
 		}
 	}
 	pTimer->stop();
@@ -233,7 +233,7 @@ void PanelAnalysisDlg::Analyze()
 		strong = "\n"+tr("Panel Analysis completed ... Errors encountered")+"\n";
 
 	m_pPanelAnalysis->traceLog(strong);
-	OnProgress();
+	onProgress();
 
 	QString FileName = QDir::tempPath() + "/XFLR5.log";
 	QFile *pXFile = new QFile(FileName);

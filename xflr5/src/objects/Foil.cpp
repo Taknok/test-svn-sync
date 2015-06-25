@@ -889,8 +889,8 @@ bool Foil::Intersect(CVector const &A, CVector const &B, CVector const &C, CVect
 	M->x = 0.0;
 	M->y = 0.0;
 	M->z = 0.0;
-	AB.Set(B.x-A.x, B.y-A.y, B.z-A.z);
-	CD.Set(D.x-C.x, D.y-C.y, D.z-C.z);
+	AB.set(B.x-A.x, B.y-A.y, B.z-A.z);
+	CD.set(D.x-C.x, D.y-C.y, D.z-C.z);
 
 	//Cramer's rule
 
@@ -1038,7 +1038,7 @@ bool Foil::serialize(QDataStream &ar, bool bIsStoring)
 		if(ArchiveFormat>=1002)
 		{
 			ar >> m_FoilStyle >> m_FoilWidth;
-			ReadCOLORREF(ar, m_FoilColor);
+			readCOLORREF(ar, m_FoilColor);
 
 		}
 		if(ArchiveFormat>=1003)
@@ -1395,7 +1395,7 @@ void Foil::setLEFlap()
 		LinkSpline.InsertPoint(M.x, M.y);
 		LinkSpline.InsertPoint(m_rpIntrados[iLowerh].x,m_rpIntrados[iLowerh].y);
 		LinkSpline.SplineKnots();
-		LinkSpline.SplineCurve();
+		LinkSpline.splineCurve();
 		//retrieve point 1 and 2 and insert them
 		for (i=m_iInt; i>=iLowerh; i--)
 		{
@@ -1425,7 +1425,7 @@ void Foil::setLEFlap()
 		LinkSpline.InsertPoint(M.x, M.y);
 		LinkSpline.InsertPoint(m_rpExtrados[iUpperh].x,m_rpExtrados[iUpperh].y);
 		LinkSpline.SplineKnots();
-		LinkSpline.SplineCurve();
+		LinkSpline.splineCurve();
 		//retrieve point 1 and 2 and insert them
 		for (i=m_iExt; i>=iUpperh; i--)
 		{
@@ -1639,7 +1639,7 @@ void Foil::setTEFlap()
 		LinkSpline.InsertPoint(M.x, M.y);
 		LinkSpline.InsertPoint(m_rpIntrados[iLowerh+1].x,m_rpIntrados[iLowerh+1].y);
 		LinkSpline.SplineKnots();
-		LinkSpline.SplineCurve();
+		LinkSpline.splineCurve();
 		//retrieve point 1 and 2 and insert them
 		for (i=m_iInt; i>=iLowerh+1; i--)
 		{
@@ -1668,7 +1668,7 @@ void Foil::setTEFlap()
 		LinkSpline.InsertPoint(M.x, M.y);
 		LinkSpline.InsertPoint(m_rpExtrados[iUpperh+1].x,m_rpExtrados[iUpperh+1].y);
 		LinkSpline.SplineKnots();
-		LinkSpline.SplineCurve();
+		LinkSpline.splineCurve();
 
 		//retrieve point 1 and 2 and insert them
 		for (i=m_iExt; i>=iUpperh+1; i--)
@@ -1803,7 +1803,7 @@ void Foil::setFlap()
 			if(m_rpMid[im].x>=hinge.x)
 			{
 				// rotate around XHinge
-				m_rpMid[im].RotateZ(hinge, -m_TEFlapAngle);
+				m_rpMid[im].rotateZ(hinge, -m_TEFlapAngle);
 			}
 			im++;
 		}

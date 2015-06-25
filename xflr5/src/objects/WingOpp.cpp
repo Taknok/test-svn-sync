@@ -62,7 +62,7 @@ WingOpp::WingOpp(int PanelArraySize)
 	m_VCD                 = 0.0;
 	m_ICD                 = 0.0;
 	m_GCm = m_VCm = m_ICm = m_GRm = m_GYm = m_VYm = m_IYm = 0.0;
-	m_CP.Set(0.0,0.0,0.0);
+	m_CP.set(0.0,0.0,0.0);
 
 	m_oldCtrl = 0.0;
 
@@ -201,7 +201,6 @@ bool WingOpp::SerializeWingOppWPA(QDataStream &ar, bool bIsStoring)
 //		if(a) m_bIsVisible = true; else m_bIsVisible = false;
 		ar >> a;
 		if (a!=0 && a!=1) return false;
-
 //		if(a) m_bShowPoints = true; else m_bShowPoints = false;
 
 		ar >> a;
@@ -236,7 +235,7 @@ bool WingOpp::SerializeWingOppWPA(QDataStream &ar, bool bIsStoring)
 
 //		ar >> m_Style >> m_Width;
 		ar>> k>>l;
-		ReadCOLORREF(ar,clr);
+		readCOLORREF(ar,clr);
 
 		ar >>k;
 /*		if(k==1)      m_WPolarType = FIXEDSPEEDPOLAR;
@@ -512,7 +511,7 @@ bool WingOpp::SerializeWingOppWPA(QDataStream &ar, bool bIsStoring)
  * @param bIsStoring true if saving the data, false if loading
  * @return true if the operation was successful, false otherwise
  */
-bool WingOpp::SerializeWingOppXFL(QDataStream &ar, bool bIsStoring)
+bool WingOpp::serializeWingOppXFL(QDataStream &ar, bool bIsStoring)
 {
 	int ArchiveFormat;
 	int k, n;
@@ -573,11 +572,9 @@ bool WingOpp::SerializeWingOppXFL(QDataStream &ar, bool bIsStoring)
 			ar <<0;
 		}
 
-
-
 		// space allocation for the future storage of more data, without need to change the format
-		for (int i=0; i<20; i++) ar << i;
-		for (int i=0; i<50; i++) ar << (double)i;
+		for (int i=0; i<20; i++) ar << 0;
+		for (int i=0; i<50; i++) ar << 0.0;
 	}
 	else
 	{

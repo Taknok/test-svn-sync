@@ -33,6 +33,8 @@
 #include "../params.h"
 #include <QVarLengthArray>
 #include <QColor>
+#include <objects/linestyle.h>
+
 
 /**
 * @class Curve
@@ -72,42 +74,40 @@ public:
 	int selected(){return m_iSelected;}
 
 
-	/**
-	 * Sets the visibility of the points in the graphs
-	 *@param bShow true if the points are to be displayed, false otherwise
-	 */
-	void showPoints(bool bShow){m_bShowPoints = bShow;}
 
 	/**
 	 * Sets the visibility of the curve in the graphs
 	 *@param bVisible true if the curve is to be displayed, false otherwise
 	 */
-	void SetVisible(bool bVisible){m_bIsVisible = bVisible;}
+	void setVisible(bool bVisible){m_curveStyle.m_bIsVisible = bVisible;}
 
 	/**
 	 * Sets the curve's color
 	 * @param clr the new QColor value for the curve
 	 */
-	void setColor(QColor clr){CurveColor = clr;}
+	void setColor(QColor clr){m_curveStyle.m_Color = clr;}
 
 	/**
 	 * Sets the curve's style
 	 * @param nStyle the index of the new curve's style
 	 */
-	void setStyle(int nStyle){ CurveStyle = nStyle;}
+	void setStyle(int nStyle){ m_curveStyle.m_Style = nStyle;}
 
+	void setLineStyle(LineStyle lineStyle) { m_curveStyle = lineStyle; }
+
+	void setPoints(int points) {m_curveStyle.m_PointStyle=points;}
 
 	/**
 	 * Sets the index of the currently selected point of this curve
 	 * @param n the point to select
 	 */
-	void SetSelected(int n){	m_iSelected = n;}
+	void setSelected(int n){	m_iSelected = n;}
 
 	/**
 	 *Sets the curve's width
 	 *@param nWidth the new curve's width in pixels
 	 **/
-	void setWidth(int nWidth){CurveWidth = nWidth;}
+	void setWidth(int nWidth){m_curveStyle.m_Width = nWidth;}
 
 	/**
 	 * Sets the curve title
@@ -117,10 +117,10 @@ public:
 
 
 	/** Return the visibility of the curve as a boolean. */
-	bool isVisible() {return m_bIsVisible;}
+	bool isVisible() {return m_curveStyle.m_bIsVisible;}
 
 	/** Return the visibility of the points as a boolean. */
-	bool pointsVisible() {return m_bShowPoints; }
+	bool pointsVisible() {return m_curveStyle.m_PointStyle>0; }
 
 	/** Returns the Curve's number of points. */
 	int size() {return x.count();}
@@ -129,13 +129,15 @@ public:
 	int count() {return x.size();}
 
 	/** Returns the Curve style*/
-	int style() {return CurveStyle;}
+	int style() {return m_curveStyle.m_Style;}
 
 	/** Returns the Curve width*/
-	int width() {return CurveWidth;}
+	int width() {return m_curveStyle.m_Width;}
 
 	/** Returns the Curve color*/
-	QColor  color() {return CurveColor;}
+	QColor  color() {return m_curveStyle.m_Color;}
+
+	int pointStyle() {return m_curveStyle.m_PointStyle;}
 
 	/** Returns the Curve's title */
 	void curveName(QString &string) {string =  m_CurveName;}
@@ -148,6 +150,7 @@ public:
 	double  yMin();
 	double  yMax();
 
+
 public:
 	//	Curve Data
 	QVarLengthArray<double,  1024> x;          /**< the array of the points x-coordinates */
@@ -155,14 +158,10 @@ public:
 
 
 private:	
-	bool m_bIsVisible;                         /**< true if the curve is visible */
-	bool m_bShowPoints;                        /**< true if the curve's points are visible */
-	QColor CurveColor;                         /**< the curve's display color */
 	QString m_CurveName;                       /**< the curves's name */
-	int CurveStyle;                            /**< the index of the curve's display style */
-	int CurveWidth;                            /**< the width of the curve's display */
 	int m_iSelected;                           /**< the index of the curve's currently selected point, or -1 if none is selected */
 	void *m_pParentGraph;                      /**< a pointer to the parent graph to which this curve belongs */
+	LineStyle m_curveStyle;
 };
 
 

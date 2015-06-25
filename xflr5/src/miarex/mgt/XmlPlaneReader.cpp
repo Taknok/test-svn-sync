@@ -377,7 +377,7 @@ void XMLPlaneReader::readBody(Body *pBody, CVector &position, double lengthUnit,
 						ctrlPt.x = coordList.at(0).toDouble()*lengthUnit;
 						ctrlPt.y = coordList.at(1).toDouble()*lengthUnit;
 						ctrlPt.z = coordList.at(2).toDouble()*lengthUnit;
-						pFrame->AppendPoint(ctrlPt);
+						pFrame->appendPoint(ctrlPt);
 					}
 				}
 			}

@@ -34,23 +34,23 @@ bool PlaneOpp::s_bKeepOutOpps=false;
 PlaneOpp::PlaneOpp(void *pPlanePtr, void *pWPolarPtr, int PanelArraySize)
 {
 	m_PlaneName   = "";
-	m_PlrName     = "";
+	m_WPlrName     = "";
 
 
 	m_NStation    = 0;
 	m_NPanels     = 0;
-	m_Style       = 0;
-	m_Width       = 1;
 
-	m_Color = randomColor();
+	m_LineStyle.m_Color = randomColor();
 
 	m_WPolarType     = XFLR5::FIXEDSPEEDPOLAR;
 	m_AnalysisMethod = XFLR5::VLMMETHOD;
 
 	m_Weight = 0.0;
 
-	m_bIsVisible  = true;
-	m_bShowPoints = false;
+	m_LineStyle.m_Style       = 0;
+	m_LineStyle.m_Width       = 1;
+	m_LineStyle.m_PointStyle  = 0;
+	m_LineStyle.m_bIsVisible  = true;
 
 	m_bVLM1 = false;
 	m_bThinSurface = true;
@@ -106,9 +106,9 @@ PlaneOpp::PlaneOpp(void *pPlanePtr, void *pWPolarPtr, int PanelArraySize)
 	if(pWPolarPtr)
 	{
 		WPolar *pWPolar = (WPolar*)pWPolarPtr;
-		m_PlrName         = pWPolar->polarName();
+		m_WPlrName         = pWPolar->polarName();
 		m_bVLM1           = pWPolar->bVLM1();
-		m_PlrName         = pWPolar->polarName();
+		m_WPlrName         = pWPolar->polarName();
 		m_bThinSurface    = pWPolar->bThinSurfaces();
 		m_bTiltedGeom     = pWPolar->bTilted();
 		m_WPolarType      = pWPolar->polarType();
@@ -491,7 +491,7 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
 		if(ArchiveFormat<1000 || ArchiveFormat>1100) return false;
 		//read variables
 		ReadCString(ar, m_PlaneName);
-		ReadCString(ar, m_PlrName);
+		ReadCString(ar, m_WPlrName);
 
 		//always a main wing
 		if(m_pPlaneWOpp[0]!=NULL) delete m_pPlaneWOpp[0];
@@ -527,12 +527,9 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
 
 		ar >> a;
 		if (a!=0 && a!=1) return false;
-		if(a) m_bIsVisible = true; else m_bIsVisible = false;
+		if(a) m_LineStyle.m_bIsVisible = true; else m_LineStyle.m_bIsVisible = false;
 
-		ar >> a;
-		if (a!=0 && a!=1) return false;
-
-		if(a) m_bShowPoints = true; else m_bShowPoints = false;
+		ar >> a; m_LineStyle.m_PointStyle = a;
 
 		ar >> a;
 		if (a!=0 && a!=1) return false;
@@ -548,8 +545,8 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
 		if (a!=0 && a!=1) return false;
 //		if(a) m_bMiddle = true; else m_bMiddle = false;
 
-		ar >> m_Style >> m_Width;
-		ReadCOLORREF(ar, m_Color);
+		ar >> m_LineStyle.m_Style >> m_LineStyle.m_Width;
+		readCOLORREF(ar, m_LineStyle.m_Color);
 
 		ar >>k;
 		if(k==1)      m_WPolarType = XFLR5::FIXEDSPEEDPOLAR;
@@ -701,7 +698,7 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
 		m_VYm = m_pPlaneWOpp[0]->m_VYm;
 		m_GYm = m_pPlaneWOpp[0]->m_GYm;
 
-		m_CP.Copy(m_pPlaneWOpp[0]->m_CP);
+		m_CP.copy(m_pPlaneWOpp[0]->m_CP);
 
 		m_Ctrl = m_pPlaneWOpp[0]->m_oldCtrl;
 
@@ -802,6 +799,7 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
 bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
 {
 	int ArchiveFormat;
+	bool boolean;
 	int k, n;
 	float f0, f1, f2;
 	double dble, dbl1, dbl2;
@@ -813,11 +811,11 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
 
 		//write variables
 		ar << m_PlaneName;
-		ar << m_PlrName;
+		ar << m_WPlrName;
 
-		ar << m_Style << m_Width;
-		ar << m_Color;
-		ar << m_bIsVisible << m_bShowPoints;
+		ar << m_LineStyle.m_Style << m_LineStyle.m_Width;
+		ar << m_LineStyle.m_Color;
+		ar << m_LineStyle.m_bIsVisible << false;
 
 		ar << m_bOut;
 		ar << m_bVLM1;
@@ -855,7 +853,7 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
 
 			if(m_pPlaneWOpp[iw])
 			{
-				m_pPlaneWOpp[iw]->SerializeWingOppXFL(ar, bIsStoring);
+				m_pPlaneWOpp[iw]->serializeWingOppXFL(ar, bIsStoring);
 			}
 		}
 
@@ -894,21 +892,22 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
 		}
 
 		// space allocation for the future storage of more data, without need to change the format
-		for (int i=0; i<20; i++) ar << i;
+		for (int i=0; i<19; i++) ar << 0;
+		ar << m_LineStyle.m_PointStyle;
 
-		ar<<m_MAChord<<m_Span;
-		for (int i=2; i<50; i++) ar << (double)i;
+		ar << m_MAChord<<m_Span;
+		for (int i=2; i<50; i++) ar << 0.0;
 	}
 	else
 	{
 		ar >> ArchiveFormat;
 
 		ar >> m_PlaneName;
-		ar >> m_PlrName;
+		ar >> m_WPlrName;
 
-		ar >> m_Style >> m_Width;
-		ar >> m_Color;
-		ar >> m_bIsVisible >> m_bShowPoints;
+		ar >> m_LineStyle.m_Style >> m_LineStyle.m_Width;
+		ar >> m_LineStyle.m_Color;
+		ar >> m_LineStyle.m_bIsVisible >> boolean;
 
 		ar >> m_bOut;
 		ar >> m_bVLM1;
@@ -963,7 +962,7 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
 
 			if(m_pPlaneWOpp[iw])
 			{
-				m_pPlaneWOpp[iw]->SerializeWingOppXFL(ar, bIsStoring);
+				m_pPlaneWOpp[iw]->serializeWingOppXFL(ar, bIsStoring);
 
 				m_pPlaneWOpp[iw]->m_dCp    = m_dCp    + pos;
 				m_pPlaneWOpp[iw]->m_dG     = m_dG     + pos;
@@ -1014,7 +1013,8 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
 		}
 
 		// space allocation
-		for (int i=0; i<20; i++) ar >> k;
+		for (int i=0; i<19; i++) ar >> k;
+		ar >> m_LineStyle.m_PointStyle;
 
 		ar>>m_MAChord>>m_Span;
 		for (int i=2; i<50; i++) ar >> dble;

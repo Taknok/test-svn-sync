@@ -254,7 +254,7 @@ void LLTAnalysisDlg::Analyze()
 	{
 		for(int iPOpp=0; iPOpp<m_pLLT->m_PlaneOppList.size(); iPOpp++)
 		{
-			Objects3D::InsertPOpp(m_pLLT->m_PlaneOppList.at(iPOpp));
+			Objects3D::insertPOpp(m_pLLT->m_PlaneOppList.at(iPOpp));
 		}
 	}
 

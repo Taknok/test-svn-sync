@@ -397,7 +397,7 @@ void EditPlaneDlg::onOK()
 
 	readPlaneTree();
 
-	m_pPlane->ComputePlane();
+	m_pPlane->computePlane();
 
 
 	//check the number of surfaces
@@ -442,7 +442,7 @@ void EditPlaneDlg::onOK()
 void EditPlaneDlg::initDialog(Plane *pPlane)
 {
 	m_pPlane = pPlane;
-	m_pPlane->CreateSurfaces();
+	m_pPlane->createSurfaces();
 	fillPlaneTreeView();
 
 	m_pGLWidget->setScale(qMax(m_pPlane->wing()->planformSpan(), m_pPlane->body() ? m_pPlane->body()->Length() : 1.0));
@@ -519,7 +519,7 @@ void EditPlaneDlg::reject()
 
 
 
-void EditPlaneDlg::GLDraw3D()
+void EditPlaneDlg::glDraw3D()
 {
 //	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
@@ -537,17 +537,17 @@ void EditPlaneDlg::GLDraw3D()
 		{
 			switch(m_enumActiveWingType)
 			{
-				case XFLR5::MAINWING:   GLCreateWingSectionHighlight(m_pPlane->wing());  break;
-				case XFLR5::SECONDWING: GLCreateWingSectionHighlight(m_pPlane->wing2()); break;
-				case XFLR5::ELEVATOR:   GLCreateWingSectionHighlight(m_pPlane->stab());  break;
-				case XFLR5::FIN:        GLCreateWingSectionHighlight(m_pPlane->fin());   break;
+				case XFLR5::MAINWING:   glCreateWingSectionHighlight(m_pPlane->wing());  break;
+				case XFLR5::SECONDWING: glCreateWingSectionHighlight(m_pPlane->wing2()); break;
+				case XFLR5::ELEVATOR:   glCreateWingSectionHighlight(m_pPlane->stab());  break;
+				case XFLR5::FIN:        glCreateWingSectionHighlight(m_pPlane->fin());   break;
 				case XFLR5::OTHERWING: break;
 			}
 			m_bResetglSectionHighlight = false;
 		}
 		else if(m_iActiveFrame>=0)
 		{
-			GLCreateBodyFrameHighlight(m_pPlane->body(),m_pPlane->bodyPos(), m_iActiveFrame);
+			glCreateBodyFrameHighlight(m_pPlane->body(),m_pPlane->bodyPos(), m_iActiveFrame);
 			m_bResetglSectionHighlight = false;
 		}
 	}
@@ -601,7 +601,7 @@ void EditPlaneDlg::GLDraw3D()
 
 
 
-void EditPlaneDlg::GLRenderView()
+void EditPlaneDlg::glRenderView()
 {
 	QString MassUnit;
 	Units::getWeightUnitLabel(MassUnit);
@@ -670,7 +670,7 @@ void EditPlaneDlg::GLRenderView()
 	if(ThreeDWidget::s_bFoilNames)
 	{
 		for(int iw=0;iw<MAXWINGS; iw++)
-			if(pWingList[iw]) m_pGLWidget->GLDrawFoils(pWingList[iw]);
+			if(pWingList[iw]) m_pGLWidget->glDrawFoils(pWingList[iw]);
 	}
 
 	if(ThreeDWidget::s_bShowMasses)
@@ -679,18 +679,18 @@ void EditPlaneDlg::GLRenderView()
 		{
 			if(pWingList[iw])
 			{
-				m_pGLWidget->GLDrawMasses(pWingList[iw]->volumeMass(), m_pPlane->WingLE(iw).translate(0.0,0.0,0.02), pWingList[iw]->wingName(),pWingList[iw]->m_PointMass);
+				m_pGLWidget->glDrawMasses(pWingList[iw]->volumeMass(), m_pPlane->WingLE(iw).translated(0.0,0.0,0.02), pWingList[iw]->wingName(),pWingList[iw]->m_PointMass);
 			}
 		}
 
-			m_pGLWidget->GLDrawMasses(0.0, CVector(0.0,0.0,0.0),"",m_pPlane->m_PointMass);
+			m_pGLWidget->glDrawMasses(0.0, CVector(0.0,0.0,0.0),"",m_pPlane->m_PointMass);
 
 		if(m_pPlane->body())
 		{
 			Body *pCurBody = m_pPlane->body();
 
-			m_pGLWidget->GLDrawMasses(pCurBody->volumeMass(),
-									  m_pPlane->bodyPos().translate(m_pPlane->body()->Length()/5,0.0,0.0),
+			m_pGLWidget->glDrawMasses(pCurBody->volumeMass(),
+									  m_pPlane->bodyPos().translated(m_pPlane->body()->Length()/5,0.0,0.0),
 									  pCurBody->bodyName(),
 									  pCurBody->m_PointMass);
 		}
@@ -700,17 +700,17 @@ void EditPlaneDlg::GLRenderView()
 		{
 			glTranslated(m_pPlane->CoG().x,m_pPlane->CoG().y,m_pPlane->CoG().z);
 			glColor3d(1.0, 0.5, 0.5);
-			m_pGLWidget->GLRenderSphere(W3dPrefsDlg::s_MassRadius*2.0/m_pGLWidget->m_glScaled);
+			m_pGLWidget->glRenderSphere(W3dPrefsDlg::s_MassRadius*2.0/m_pGLWidget->m_glScaled);
 
-			m_pGLWidget->GLRenderText(m_pPlane->CoG().x, m_pPlane->CoG().y, m_pPlane->CoG().z+.02,
-									"CoG "+QString("%1").arg(m_pPlane->TotalMass()*Units::kgtoUnit(), 7,'g',3)
+			m_pGLWidget->glRenderText(m_pPlane->CoG().x, m_pPlane->CoG().y, m_pPlane->CoG().z+.02,
+									"CoG "+QString("%1").arg(m_pPlane->totalMass()*Units::kgtoUnit(), 7,'g',3)
 									+Units::weightUnitLabel());
 		}
 		glPopMatrix();	}
 }
 
 
-void EditPlaneDlg::GLCreateBodyFrameHighlight(Body *pBody, CVector bodyPos, int iFrame)
+void EditPlaneDlg::glCreateBodyFrameHighlight(Body *pBody, CVector bodyPos, int iFrame)
 {
 	int k;
 	CVector Point;
@@ -801,7 +801,7 @@ void EditPlaneDlg::GLCreateBodyFrameHighlight(Body *pBody, CVector bodyPos, int 
 
 
 
-void EditPlaneDlg::GLCreateWingSectionHighlight(Wing *pWing)
+void EditPlaneDlg::glCreateWingSectionHighlight(Wing *pWing)
 {
 	if(!pWing) return;
 
@@ -960,7 +960,7 @@ void EditPlaneDlg::onRedraw()
 {
 	readPlaneTree();
 
-	m_pPlane->CreateSurfaces();
+	m_pPlane->createSurfaces();
 
 	m_bResetglPlane = true;
 	m_bChanged = true;
@@ -1509,7 +1509,7 @@ void EditPlaneDlg::readViewLevel(QModelIndex indexLevel)
 			{
 				Wing newWing;
 				newWing.ClearPointMasses();
-				newWing.ClearWingSections();
+				newWing.clearWingSections();
 				newWing.ClearSurfaces();
 				newWing.rWingName() = value;
 				CVector wingPos;
@@ -1751,11 +1751,11 @@ void EditPlaneDlg::readBodyFrameTree(Body *pBody, Frame *pFrame, QModelIndex ind
 		{
 			CVector Pt;
 			readVectorTree(Pt, indexLevel.child(0,0));
-			pFrame->AppendPoint(Pt);
+			pFrame->appendPoint(Pt);
 		}
 		indexLevel = indexLevel.sibling(indexLevel.row()+1,0);
 	} while(indexLevel.isValid());
-	pFrame->SetuPosition(x);
+	pFrame->setuPosition(x);
 }
 
 
@@ -2026,7 +2026,7 @@ void EditPlaneDlg::onInsertBefore()
 
 		m_pStruct->closePersistentEditor(m_pStruct->currentIndex());
 		fillPlaneTreeView();
-		m_pPlane->CreateSurfaces();
+		m_pPlane->createSurfaces();
 
 		m_bChanged = true;
 		m_bResetglSectionHighlight = true;
@@ -2039,7 +2039,7 @@ void EditPlaneDlg::onInsertBefore()
 
 		m_pStruct->closePersistentEditor(m_pStruct->currentIndex());
 		fillPlaneTreeView();
-		m_pPlane->CreateSurfaces();
+		m_pPlane->createSurfaces();
 
 		m_bChanged = true;
 		m_bResetglSectionHighlight = true;
@@ -2065,7 +2065,7 @@ void EditPlaneDlg::onInsertBefore()
 
 		m_pStruct->closePersistentEditor(m_pStruct->currentIndex());
 		fillPlaneTreeView();
-		m_pPlane->CreateSurfaces();
+		m_pPlane->createSurfaces();
 
 		m_bChanged = true;
 		m_bResetglSectionHighlight = true;
@@ -2119,7 +2119,7 @@ void EditPlaneDlg::onInsertAfter()
 
 		m_pStruct->closePersistentEditor(m_pStruct->currentIndex());
 		fillPlaneTreeView();
-		m_pPlane->CreateSurfaces();
+		m_pPlane->createSurfaces();
 
 
 		m_iActiveSection++;
@@ -2134,7 +2134,7 @@ void EditPlaneDlg::onInsertAfter()
 
 		m_pStruct->closePersistentEditor(m_pStruct->currentIndex());
 		fillPlaneTreeView();
-		m_pPlane->CreateSurfaces();
+		m_pPlane->createSurfaces();
 
 		m_iActiveFrame++;
 		m_bChanged = true;
@@ -2164,7 +2164,7 @@ void EditPlaneDlg::onInsertAfter()
 
 		m_pStruct->closePersistentEditor(m_pStruct->currentIndex());
 		fillPlaneTreeView();
-		m_pPlane->CreateSurfaces();
+		m_pPlane->createSurfaces();
 
 		m_bChanged = true;
 		m_bResetglSectionHighlight = true;
@@ -2199,7 +2199,7 @@ void EditPlaneDlg::onDelete()
 		pWing->NYPanels(m_iActiveSection-1) = ny;
 
 		fillPlaneTreeView();
-		m_pPlane->CreateSurfaces();
+		m_pPlane->createSurfaces();
 
 		m_bChanged = true;
 		m_bResetglSectionHighlight = true;
@@ -2212,7 +2212,7 @@ void EditPlaneDlg::onDelete()
 
 		m_pStruct->closePersistentEditor(m_pStruct->currentIndex());
 		fillPlaneTreeView();
-		m_pPlane->CreateSurfaces();
+		m_pPlane->createSurfaces();
 
 		m_bChanged = true;
 		m_bResetglSectionHighlight = true;
@@ -2238,7 +2238,7 @@ void EditPlaneDlg::onDelete()
 
 		m_pStruct->closePersistentEditor(m_pStruct->currentIndex());
 		fillPlaneTreeView();
-		m_pPlane->CreateSurfaces();
+		m_pPlane->createSurfaces();
 
 		m_bChanged = true;
 		m_bResetglSectionHighlight = true;
@@ -2318,12 +2318,12 @@ void EditPlaneDlg::paintPlaneLegend(QPainter &painter, Plane *pPlane, QRect draw
 
 	if(pPlane && pPlane->wing2())
 	{
-		str1 = QString(tr("Tail Volume    =")+"%1").arg(pPlane->TailVolume(),10,'f',3);
+		str1 = QString(tr("Tail Volume    =")+"%1").arg(pPlane->tailVolume(),10,'f',3);
 		painter.drawText(LeftPos, ZPos+D, str1);
 		D+=dheight;
 	}
 
-	str1 = QString(tr("Root Chord     =")+"%1 ").arg(pPlane->m_Wing[0].RootChord()*Units::mtoUnit(), 10,'f', 3);
+	str1 = QString(tr("Root Chord     =")+"%1 ").arg(pPlane->m_Wing[0].rootChord()*Units::mtoUnit(), 10,'f', 3);
 	Result = str1+length;
 	painter.drawText(LeftPos, ZPos+D, Result);
 	D+=dheight;
@@ -2333,7 +2333,7 @@ void EditPlaneDlg::paintPlaneLegend(QPainter &painter, Plane *pPlane, QRect draw
 	painter.drawText(LeftPos, ZPos+D, Result);
 	D+=dheight;
 
-	str1 = QString(tr("TipTwist       =")+"%1").arg(pPlane->m_Wing[0].TipTwist(), 10,'f', 3) + QString::fromUtf8("°");
+	str1 = QString(tr("TipTwist       =")+"%1").arg(pPlane->m_Wing[0].tipTwist(), 10,'f', 3) + QString::fromUtf8("°");
 	painter.drawText(LeftPos, ZPos+D, str1);
 	D+=dheight;
 
@@ -2345,7 +2345,7 @@ void EditPlaneDlg::paintPlaneLegend(QPainter &painter, Plane *pPlane, QRect draw
 	painter.drawText(LeftPos, ZPos+D, str1);
 	D+=dheight;
 
-	str1 = QString(tr("Root-Tip Sweep =")+"%1").arg(pPlane->m_Wing[0].AverageSweep(), 10,'f',3) + QString::fromUtf8("°");
+	str1 = QString(tr("Root-Tip Sweep =")+"%1").arg(pPlane->m_Wing[0].averageSweep(), 10,'f',3) + QString::fromUtf8("°");
 	painter.drawText(LeftPos, ZPos+D, str1);
 	D+=dheight;
 
