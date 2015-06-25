@@ -74,7 +74,7 @@ private:
 //________________METHODS____________________________________
 
 	bool SerializeWingOppWPA(QDataStream &ar, bool bIsStoring);
-	bool SerializeWingOppXFL(QDataStream &ar, bool bIsStoring);
+	bool serializeWingOppXFL(QDataStream &ar, bool bIsStoring);
 	bool Export(QTextStream &out, XFLR5::enumTextFileType FileType);
 	void GetWingOppProperties(QString &WingOppProperties);
 	double GetMaxLift();

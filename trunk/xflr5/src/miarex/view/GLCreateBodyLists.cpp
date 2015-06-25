@@ -71,7 +71,7 @@ void GLCreateBody3DSplines( int iList, Body *pBody, int nx, int nh)
 				LATB = m_T[p+nh+1] - m_T[p+1];     //	LATB = TB - LA;
 				TALB = m_T[p]  - m_T[p+nh+2];      //	TALB = LB - TA;
 				N = TALB * LATB;
-				N.Normalize();
+				N.normalize();
 
 				glNormal3d(N.x, N.y, N.z);
 
@@ -85,7 +85,7 @@ void GLCreateBody3DSplines( int iList, Body *pBody, int nx, int nh)
 					LATB = m_T[p+nh] - m_T[p];     //	LATB = TB - LA;
 					TALB = m_T[p-1]  - m_T[p+nh+1];//	TALB = LB - TA;
 					N = TALB * LATB;
-					N.Normalize();
+					N.normalize();
 
 					glNormal3d(N.x, N.y, N.z);
 					glVertex3d(m_T[p].x,      m_T[p].y,      m_T[p].z);
@@ -108,7 +108,7 @@ void GLCreateBody3DSplines( int iList, Body *pBody, int nx, int nh)
 				LATB = m_T[p+nh+1] - m_T[p+1];//	LATB = TB - LA;
 				TALB = m_T[p]  - m_T[p+nh+2]; //	TALB = LB - TA;
 				N = TALB * LATB;
-				N.Normalize();
+				N.normalize();
 
 				glNormal3d(N.x, -N.y, N.z);
 
@@ -122,7 +122,7 @@ void GLCreateBody3DSplines( int iList, Body *pBody, int nx, int nh)
 					LATB = m_T[p+nh] - m_T[p];     //	LATB = TB - LA;
 					TALB = m_T[p-1]  - m_T[p+nh+1];//	TALB = LB - TA;
 					N = TALB * LATB;
-					N.Normalize();
+					N.normalize();
 
 					glNormal3d(N.x, -N.y, N.z);
 					glVertex3d(m_T[p+nh+1].x, -m_T[p+nh+1].y, m_T[p+nh+1].z);
@@ -249,8 +249,8 @@ void GLCreateBody3DFlatPanels(int iList, Body *pBody)
 		{
 			for (j=0; j<pBody->frameSize()-1;j++)
 			{
-				Tj.Set(pBody->frame(j)->m_Position.x,     0.0, 0.0);
-				Tjp1.Set(pBody->frame(j+1)->m_Position.x, 0.0, 0.0);
+				Tj.set(pBody->frame(j)->m_Position.x,     0.0, 0.0);
+				Tjp1.set(pBody->frame(j+1)->m_Position.x, 0.0, 0.0);
 
 				glBegin(GL_QUADS);
 				{
@@ -262,7 +262,7 @@ void GLCreateBody3DFlatPanels(int iList, Body *pBody)
 					P1P3 = P3-P1;
 					P2P4 = P4-P2;
 					N = P1P3 * P2P4;
-					N.Normalize();
+					N.normalize();
 					glNormal3d(N.x,  N.y,  N.z);
 					glVertex3d(P1.x, P1.y, P1.z);
 					glVertex3d(P2.x, P2.y, P2.z);
@@ -317,8 +317,8 @@ void GLCreateBody3DFlatPanels(int iList, Body *pBody)
 		{
 			for (j=0; j<pBody->frameSize()-1;j++)
 			{
-				Tj.Set(pBody->frame(j)->m_Position.x,     0.0, 0.0);
-				Tjp1.Set(pBody->frame(j+1)->m_Position.x, 0.0, 0.0);
+				Tj.set(pBody->frame(j)->m_Position.x,     0.0, 0.0);
+				Tjp1.set(pBody->frame(j+1)->m_Position.x, 0.0, 0.0);
 
 				glBegin(GL_QUADS);
 				{
@@ -330,7 +330,7 @@ void GLCreateBody3DFlatPanels(int iList, Body *pBody)
 					P1P3 = P3-P1;
 					P2P4 = P4-P2;
 					N = P1P3 * P2P4;
-					N.Normalize();
+					N.normalize();
 					glNormal3d(N.x,  N.y,  N.z);
 					glVertex3d(P1.x, P1.y, P1.z);
 					glVertex3d(P2.x, P2.y, P2.z);
@@ -348,7 +348,7 @@ void GLCreateBody3DFlatPanels(int iList, Body *pBody)
 					P1P3 = P3-P1;
 					P2P4 = P4-P2;
 					N = P1P3 * P2P4;
-					N.Normalize();
+					N.normalize();
 					glNormal3d(N.x,  N.y,  N.z);
 					glVertex3d(P4.x, P4.y, P4.z);
 					glVertex3d(P3.x, P3.y, P3.z);
@@ -425,7 +425,7 @@ void GLCreateBodyMesh(int iList, Body *pBody)
 
                         glBegin(GL_QUAD_STRIP);
                         {
-                            N.Set(0.0, 0.0, 1.0);//top line normal is vertical
+                            N.set(0.0, 0.0, 1.0);//top line normal is vertical
 
                             LB = PLB;
                             TB = PTB;
@@ -441,7 +441,7 @@ void GLCreateBodyMesh(int iList, Body *pBody)
                                 LATB = TB - LA;
                                 TALB = LB - TA;
                                 N = TALB * LATB;
-                                N.Normalize();
+                                N.normalize();
 
                                 glNormal3d(N.x, N.y, N.z);
                                 glVertex3d(LA.x, LA.y, LA.z);
@@ -474,7 +474,7 @@ void GLCreateBodyMesh(int iList, Body *pBody)
 
                         glBegin(GL_QUAD_STRIP);
                         {
-                            N.Set(0.0, 0.0, 1.0);//top line normal is vertical
+                            N.set(0.0, 0.0, 1.0);//top line normal is vertical
 
                             LB = PLB;
                             TB = PTB;
@@ -490,7 +490,7 @@ void GLCreateBodyMesh(int iList, Body *pBody)
                                 LATB = TB - LA;
                                 TALB = LB - TA;
                                 N = TALB * LATB;
-                                N.Normalize();
+                                N.normalize();
 
                                 glNormal3d(N.x, N.y, N.z);
                                 glVertex3d(LA.x, LA.y, LA.z);
@@ -550,7 +550,7 @@ void GLCreateBodyMesh(int iList, Body *pBody)
 
                         glBegin(GL_QUAD_STRIP);
                         {
-                            N.Set(0.0, 0.0, 1.0);//top line normal is vertical
+                            N.set(0.0, 0.0, 1.0);//top line normal is vertical
 
                             LB = PLB;
                             TB = PTB;
@@ -566,7 +566,7 @@ void GLCreateBodyMesh(int iList, Body *pBody)
                                 LATB = TB - LA;
                                 TALB = LB - TA;
                                 N = TALB * LATB;
-                                N.Normalize();
+                                N.normalize();
 
                                 glNormal3d(N.x, N.y, N.z);
                                 glVertex3d(LA.x, LA.y, LA.z);
@@ -599,7 +599,7 @@ void GLCreateBodyMesh(int iList, Body *pBody)
 
                         glBegin(GL_QUAD_STRIP);
                         {
-                            N.Set(0.0, 0.0, 1.0);//top line normal is vertical
+                            N.set(0.0, 0.0, 1.0);//top line normal is vertical
 
                             LB = PLB;
                             TB = PTB;
@@ -615,7 +615,7 @@ void GLCreateBodyMesh(int iList, Body *pBody)
                                 LATB = TB - LA;
                                 TALB = LB - TA;
                                 N = TALB * LATB;
-                                N.Normalize();
+                                N.normalize();
 
                                 glNormal3d(N.x, N.y, N.z);
                                 glVertex3d(LA.x, LA.y, LA.z);
@@ -666,7 +666,7 @@ void GLCreateBodyMesh(int iList, Body *pBody)
             {
                 glBegin(GL_QUAD_STRIP);
                 {
-                    N.Set(0.0, 0.0, 1.0);//top line normal is vertical
+                    N.set(0.0, 0.0, 1.0);//top line normal is vertical
 
                     glVertex3d(m_T[p].x, m_T[p].y, m_T[p].z);
                     glVertex3d(m_T[p+nh+1].x, m_T[p+nh+1].y, m_T[p+nh+1].z);
@@ -691,7 +691,7 @@ void GLCreateBodyMesh(int iList, Body *pBody)
             {
                 glBegin(GL_QUAD_STRIP);
                 {
-                    N.Set(0.0, 0.0, 1.0);//top line normal is vertical
+                    N.set(0.0, 0.0, 1.0);//top line normal is vertical
 
                     glVertex3d(m_T[p].x,      -m_T[p].y, m_T[p].z);
                     glVertex3d(m_T[p+nh+1].x, -m_T[p+nh+1].y, m_T[p+nh+1].z);
@@ -735,7 +735,7 @@ void GLCreateBodyMesh(int iList, Body *pBody)
             {
                 glBegin(GL_QUAD_STRIP);
                 {
-                    N.Set(0.0, 0.0, 1.0);//top line normal is vertical
+                    N.set(0.0, 0.0, 1.0);//top line normal is vertical
 
                     glVertex3d(m_T[p].x, m_T[p].y, m_T[p].z);
                     glVertex3d(m_T[p+nh+1].x, m_T[p+nh+1].y, m_T[p+nh+1].z);
@@ -765,7 +765,7 @@ void GLCreateBodyMesh(int iList, Body *pBody)
             {
                 glBegin(GL_QUAD_STRIP);
                 {
-                    N.Set(0.0, 0.0, 1.0);//top line normal is vertical
+                    N.set(0.0, 0.0, 1.0);//top line normal is vertical
 
                     glVertex3d(m_T[p].x,      -m_T[p].y, m_T[p].z);
                     glVertex3d(m_T[p+nh+1].x, -m_T[p+nh+1].y, m_T[p+nh+1].z);

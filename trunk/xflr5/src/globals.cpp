@@ -266,7 +266,7 @@ bool ReadAVLString(QTextStream &in, int &Line, QString &strong)
 *@param ar the binary datastream
 *@param color the QColor read from the stream
 */
-void ReadCOLORREF(QDataStream &ar, QColor &color)
+void readCOLORREF(QDataStream &ar, QColor &color)
 {
 	qint32 colorref;
 	int r,g,b;
@@ -1674,7 +1674,7 @@ double GetPlrPointFromAlpha(Foil *pFoil, double Re, double Alpha, int PlrVar, bo
 			pPolar->m_Alpha.size()>0)
 		{
 			// we have found the first type 1 polar for this foil
-			pPolar->GetAlphaLimits(amin, amax);
+			pPolar->getAlphaLimits(amin, amax);
 			if (pPolar->m_Reynolds <= Re)
 			{
 				if(amin <= Alpha && Alpha <= amax)
@@ -1936,7 +1936,7 @@ double GetPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bool &bO
 		if((pPolar->polarType()== XFLR5::FIXEDSPEEDPOLAR) && (pPolar->foilName() == pFoil->foilName())  && pPolar->m_Cl.size()>0)
 		{
 			// we have found the first type 1 polar for this foil
-			pPolar->GetClLimits(Clmin, Clmax);
+			pPolar->getClLimits(Clmin, Clmax);
 			if (pPolar->m_Reynolds <= Re)
 			{
 				if(Clmin <= Cl && Cl <= Clmax)
@@ -2016,7 +2016,7 @@ double GetPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bool &bO
 		}
 
 		pX = (QList <double> *) GetPlrVariable(pPolar1, PlrVar);
-		pPolar1->GetClLimits(Clmin, Clmax);
+		pPolar1->getClLimits(Clmin, Clmax);
 		if(Cl < Clmin)
 		{
 			Var1 = (*pX)[0];
@@ -2094,7 +2094,7 @@ double GetPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bool &bO
 		}
 
 		pX = (QList <double> *) GetPlrVariable(pPolar2, PlrVar);
-		pPolar2->GetClLimits(Clmin, Clmax);
+		pPolar2->getClLimits(Clmin, Clmax);
 
 		if(Cl < Clmin)
 		{
@@ -2506,8 +2506,8 @@ double GetZeroLiftAngle(Foil *pFoil0, Foil *pFoil1, double Re, double Tau)
 		}
 		if(pPolar1 && pPolar2)
 		{
-			a01 = pPolar1->GetZeroLiftAngle();
-			a02 = pPolar2->GetZeroLiftAngle();
+			a01 = pPolar1->getZeroLiftAngle();
+			a02 = pPolar2->getZeroLiftAngle();
 			Alpha00 = a01 + (a02-a01) * (Re-pPolar1->m_Reynolds)/(pPolar2->m_Reynolds-pPolar1->m_Reynolds);
 		}
 		else Alpha00 = 0.0;
@@ -2548,8 +2548,8 @@ double GetZeroLiftAngle(Foil *pFoil0, Foil *pFoil1, double Re, double Tau)
 		}
 		if(pPolar1 && pPolar2)
 		{
-			a01 = pPolar1->GetZeroLiftAngle();
-			a02 = pPolar2->GetZeroLiftAngle();
+			a01 = pPolar1->getZeroLiftAngle();
+			a02 = pPolar2->getZeroLiftAngle();
 			Alpha01 = a01 + (a02-a01) * (Re-pPolar1->m_Reynolds)/(pPolar2->m_Reynolds-pPolar1->m_Reynolds);
 		}
 		else Alpha01 = 0.0;
@@ -2619,8 +2619,8 @@ void GetLinearizedPolar(Foil *pFoil0, Foil *pFoil1, double Re, double Tau, doubl
 		}
 		if(pPolar1 && pPolar2)
 		{
-			pPolar1->GetLinearizedCl(AlphaTemp1, SlopeTemp1);
-			pPolar2->GetLinearizedCl(AlphaTemp2, SlopeTemp2);
+			pPolar1->getLinearizedCl(AlphaTemp1, SlopeTemp1);
+			pPolar2->getLinearizedCl(AlphaTemp2, SlopeTemp2);
 			Alpha00 = AlphaTemp1 +
 					 (AlphaTemp2-AlphaTemp1) * (Re-pPolar1->m_Reynolds)/(pPolar2->m_Reynolds-pPolar1->m_Reynolds);
 			Slope0  = SlopeTemp1 +
@@ -2672,8 +2672,8 @@ void GetLinearizedPolar(Foil *pFoil0, Foil *pFoil1, double Re, double Tau, doubl
 		}
 		if(pPolar1 && pPolar2)
 		{
-			pPolar1->GetLinearizedCl(AlphaTemp1, SlopeTemp1);
-			pPolar2->GetLinearizedCl(AlphaTemp2, SlopeTemp2);
+			pPolar1->getLinearizedCl(AlphaTemp1, SlopeTemp1);
+			pPolar2->getLinearizedCl(AlphaTemp2, SlopeTemp2);
 			Alpha01 = AlphaTemp1 +
 			         (AlphaTemp2-AlphaTemp1) * (Re-pPolar1->m_Reynolds)/(pPolar2->m_Reynolds-pPolar1->m_Reynolds);
 			Slope1  =  SlopeTemp1 +
@@ -2937,7 +2937,7 @@ bool Intersect(CVector const &LA, CVector const &LB, CVector const &TA, CVector 
 
 		if(b1 && b2 && b3 && b4)
 		{
-			I.Set(P.x, P.y, P.z);
+			I.set(P.x, P.y, P.z);
 			return true;
 		}
 	}

@@ -35,21 +35,21 @@ class LinePickerDlg : public QDialog
 public:
     LinePickerDlg(QWidget *pParent);
 
-	void InitDialog();
-	void InitDialog(int style, int width, QColor color);
+	void initDialog();
+	void initDialog(int style, int width, QColor color);
 
 	void keyPressEvent(QKeyEvent *event);
 
-	int &GetWidth();
-	int &GetStyle();
-	QColor &GetColor();
+	int &width();
+	int &setStyle();
+	QColor &setColor();
 
-	void SetColor(QColor color);
-	void SetWidth(int width);
-	void SetStyle(int style);
+	void setColor(QColor color);
+	void setWidth(int width);
+	void setStyle(int style);
 
-	void FillBoxes();
-	void SetupLayout();
+	void fillBoxes();
+	void setupLayout();
 
 
 protected:
@@ -66,9 +66,9 @@ private:
 
 
 private slots:
-	void OnWidth(int val);
-	void OnStyle(int val);
-	void OnColor();
+	void onWidth(int val);
+	void onStyle(int val);
+	void onColor();
 
 };
 

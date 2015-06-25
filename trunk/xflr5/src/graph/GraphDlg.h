@@ -57,32 +57,32 @@ public:
 
 
 private slots:
-	void OnOK();
-	void OnApply();
-	void OnTitleFont();
-	void OnLabelFont();
-	void OnTitleColor();
-	void OnLabelColor();
-	void OnRestoreParams();
+	void onOK();
+	void onApply();
+	void onTitleFont();
+	void onLabelFont();
+	void onTitleColor();
+	void onLabelColor();
+	void onRestoreParams();
 	void onAutoX();
 	void onAutoY();
 	void onAutoMinGrid();
 	void onAxisStyle();
 	void OnMargin();
-	void OnXMajGridStyle();
-	void OnXMinGridStyle();
-	void OnYMajGridStyle();
-	void OnYMinGridStyle();
-	void OnXMajGridShow(int state);
-	void OnYMajGridShow(int state);
-	void OnXMinGridShow(int state);
-	void OnYMinGridShow(int state);
-	void OnGraphBorder(int state);
-	void OnGraphBackColor();
-	void OnBorderStyle();
-	void OnYInverted();
+	void onXMajGridStyle();
+	void onXMinGridStyle();
+	void onYMajGridStyle();
+	void onYMinGridStyle();
+	void onXMajGridShow(int state);
+	void onYMajGridShow(int state);
+	void onXMinGridShow(int state);
+	void onYMinGridShow(int state);
+	void onGraphBorder(int state);
+	void onGraphBackColor();
+	void onBorderStyle();
+	void onYInverted();
 	void onActivePage(int index);
-	void OnVariableChanged();
+	void onVariableChanged();
 
 
 private:
@@ -93,10 +93,10 @@ private:
 	void setupLayout();
 	void setButtonColors();
 	void setApplied(bool bApplied);
-	void Connect();
-	void ApplyChanges();
+	void connectSignals();
+	void applyChanges();
 
-	void FillVariableList();
+	void fillVariableList();
 
 	QWidget *m_pParent;
 

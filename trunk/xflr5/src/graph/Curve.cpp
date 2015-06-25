@@ -30,14 +30,15 @@
  */
 Curve::Curve()
 {
-    CurveColor = QColor(255,0,0,127);
+	m_curveStyle.m_Color = QColor(255,0,0,127);
 	m_CurveName = "";
-	m_bIsVisible = true;
-	m_bShowPoints = false;
-	CurveWidth = 1;
-	CurveStyle = Qt::SolidLine;
+	m_curveStyle.m_bIsVisible = true;
+	m_curveStyle.m_PointStyle = 0;
+	m_curveStyle.m_Width = 1;
+	m_curveStyle.m_Style = Qt::SolidLine;
 	m_iSelected = -1;
 }
+
 
 /**
  * Appends a point to the end of the data
@@ -52,6 +53,7 @@ int Curve::appendPoint(double xn, double yn)
 	return size();
 }
 
+
 /**
  * Copies the data and settings from an existing curve
  * @param pCurve: a pointer to the input curve
@@ -62,13 +64,10 @@ void Curve::duplicate(Curve *pCurve)
 
 	copyData(pCurve);
 
-	CurveColor = pCurve->CurveColor;
-	CurveStyle = pCurve->CurveStyle;
-	CurveWidth = pCurve->CurveWidth;
-	m_bIsVisible = pCurve->m_bIsVisible;
-	m_bShowPoints = pCurve->m_bShowPoints;
-	m_CurveName = pCurve->m_CurveName;
+	m_curveStyle = pCurve->m_curveStyle;
+	m_CurveName  = pCurve->m_CurveName;
 }
+
 
 /**
  * Copies the data and settings from an existing curve

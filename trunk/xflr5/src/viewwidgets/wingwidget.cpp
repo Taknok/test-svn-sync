@@ -65,8 +65,8 @@ void WingWidget::setWingGraph(QGraph *pGraph)
 
 void WingWidget::keyPressEvent(QKeyEvent *event)
 {
-	bool bShift = false;
-	if(event->modifiers() & Qt::ShiftModifier)   bShift =true;
+//	bool bShift = false;
+//	if(event->modifiers() & Qt::ShiftModifier)   bShift =true;
 
 	switch (event->key())
 	{
@@ -74,7 +74,6 @@ void WingWidget::keyPressEvent(QKeyEvent *event)
 			onResetWingScale();
 			event->accept();
 			return;
-
 
 		default:
 			QWidget::keyPressEvent(event);

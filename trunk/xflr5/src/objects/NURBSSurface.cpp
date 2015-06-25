@@ -126,7 +126,7 @@ double NURBSSurface::Getv(double u, CVector r)
 	int iter=0;
 	double v, v1, v2;
 
-	r.Normalize();
+	r.normalize();
 	v1 = 0.0; v2 = 1.0;
 
 	while(qAbs(sine)>1.0e-4 && iter<200)
@@ -134,7 +134,7 @@ double NURBSSurface::Getv(double u, CVector r)
 		v=(v1+v2)/2.0;
 		GetPoint(u, v, t_R);
 		t_R.x = 0.0;
-		t_R.Normalize();//t_R is the unit radial vector for u,v
+		t_R.normalize();//t_R is the unit radial vector for u,v
 
 		sine = (r.y*t_R.z - r.z*t_R.y);
 
@@ -168,7 +168,7 @@ void NURBSSurface::GetPoint(double u, double v, CVector &Pt)
 	weight = 0.0;
 	for(int iu=0; iu<frameCount(); iu++)
 	{
-		Vv.Set(0.0,0.0,0.0);
+		Vv.set(0.0,0.0,0.0);
 		wx = 0.0;
 		for(int jv=0; jv<FramePointCount(); jv++)
 		{
@@ -217,7 +217,7 @@ CVector NURBSSurface::Point(double u, double v)
 	weight = 0.0;
 	for(int iu=0; iu<frameCount(); iu++)
 	{
-		Vv.Set(0.0,0.0,0.0);
+		Vv.set(0.0,0.0,0.0);
 		wx = 0.0;
 		for(int jv=0; jv<FramePointCount(); jv++)
 		{
@@ -285,8 +285,8 @@ bool NURBSSurface::IntersectNURBS(CVector A, CVector B, CVector &I)
 	double dmax = 1.0e-5;
 	dist = 1000.0;//m
 
-	M0.Set(0.0, A.y, A.z);
-	M1.Set(0.0, B.y, B.z);
+	M0.set(0.0, A.y, A.z);
+	M1.set(0.0, B.y, B.z);
 
 	if(M0.VAbs()<M1.VAbs())
 	{
@@ -304,7 +304,7 @@ bool NURBSSurface::IntersectNURBS(CVector A, CVector B, CVector &I)
 		//first we get the u parameter corresponding to point I
 		tp = t;
 		u = Getu(I.z, 0.0);
-		t_Q.Set(I.x, 0.0, 0.0);
+		t_Q.set(I.x, 0.0, 0.0);
 		t_r = (I-t_Q);
 		v = Getv(u, t_r);
 		GetPoint(u, v, t_N);

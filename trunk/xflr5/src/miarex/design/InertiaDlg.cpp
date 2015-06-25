@@ -108,7 +108,7 @@ void InertiaDlg::ComputeInertia()
 	CVector TotalCoG, MassPos;
 
 	m_CoGIxx = m_CoGIyy = m_CoGIzz = m_CoGIxz = 0.0;
-	m_VolumeCoG.Set(0.0, 0.0, 0.0);
+	m_VolumeCoG.set(0.0, 0.0, 0.0);
 
 	Wing *pWing[MAXWINGS];
 	pWing[0] = pWing[1] = pWing[2] = pWing[3] = NULL;
@@ -139,7 +139,7 @@ void InertiaDlg::ComputeInertia()
 	}
 	else if(m_pPlane)
 	{
-		m_pPlane->ComputeVolumeInertia(m_VolumeMass, m_VolumeCoG, m_CoGIxx, m_CoGIyy, m_CoGIzz, m_CoGIxz);
+		m_pPlane->computeVolumeInertia(m_VolumeMass, m_VolumeCoG, m_CoGIxx, m_CoGIyy, m_CoGIzz, m_CoGIxz);
 	}
 
 	// and display the results
@@ -153,7 +153,7 @@ void InertiaDlg::ComputeInertia()
 	m_pctrlCoGIxz->setValue(m_CoGIxz*Unit);
 
 	// take into account all point masses to calculate the total CoG and total mass
-	TotalCoG.Set(m_VolumeMass*m_VolumeCoG.x, m_VolumeMass*m_VolumeCoG.y, m_VolumeMass*m_VolumeCoG.z);
+	TotalCoG.set(m_VolumeMass*m_VolumeCoG.x, m_VolumeMass*m_VolumeCoG.y, m_VolumeMass*m_VolumeCoG.z);
 	TotalMass = m_VolumeMass;
 	TotalIxx = TotalIyy = TotalIzz = TotalIxz = 0.0;
 
@@ -188,7 +188,7 @@ void InertiaDlg::ComputeInertia()
 	}
 
 	if(TotalMass>PRECISION) TotalCoG *= 1.0/TotalMass;
-	else                    TotalCoG.Set(0.0,0.0,0.0);
+	else                    TotalCoG.set(0.0,0.0,0.0);
 
 	//Total inertia in CoG referential
 	//Apply Huyghens theorem to convert the object's inertia to the new frame
@@ -739,7 +739,7 @@ void InertiaDlg::OnOK()
 	}
 	else if(m_pPlane)
 	{
-		m_pPlane->ClearPointMasses();
+		m_pPlane->clearPointMasses();
 
 		for(i=0; i<m_PointMass.size(); i++)
 		{

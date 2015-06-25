@@ -54,33 +54,33 @@ public:
 
 private:
 
-	void Connect();
-	void EnableControls();
-	void InitDialog(Plane *pPlane, WPolar *pWPolar=NULL);
+	void connectSignals();
+	void enableControls();
+	void initDialog(Plane *pPlane, WPolar *pWPolar=NULL);
 	void keyPressEvent(QKeyEvent *event);
-	void ReadValues();
-	void SetDensity();
-	void SetReynolds();
-	void SetupLayout();
-	void SetWingLoad();
-	void SetWPolarName();
+	void readValues();
+	void setDensity();
+	void setReynolds();
+	void setupLayout();
+	void setWingLoad();
+	void setWPolarName();
 
 
 private slots:
-	void OnOK();
-	void OnArea();
-	void OnAeroData();
-	void OnUnit();
-	void OnMethod();
-	void OnPolarName();
-	void OnAutoName();
-	void OnTiltedGeom();
-	void OnViscous();
-	void OnIgnoreBodyPanels();
-	void OnGroundEffect();
-	void OnPolarType();
-	void OnEditingFinished();
-	void OnPlaneInertia();
+	void onOK();
+	void onArea();
+	void onAeroData();
+	void onUnit();
+	void onMethod();
+	void onPolarName();
+	void onAutoName();
+	void onTiltedGeom();
+	void onViscous();
+	void onIgnoreBodyPanels();
+	void onGroundEffect();
+	void onPolarType();
+	void onEditingFinished();
+	void onPlaneInertia();
 
 private:
 	static WPolar s_WPolar;

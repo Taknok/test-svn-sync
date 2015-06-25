@@ -106,7 +106,7 @@ void QGraph::drawCurve(int nIndex, QPainter &painter)
 	static QPoint From, To, Min, Max;
 	static QRect rViewRect;
 
-	ptside = 2;
+	ptside = 5;
 	Curve* pCurve = curve(nIndex);
 
 	scaley = m_scaley;
@@ -147,12 +147,41 @@ void QGraph::drawCurve(int nIndex, QPainter &painter)
 		{
 			for (i=0; i<pCurve->size();i++)
 			{
-				if(pCurve->selected() !=i)
-					painter.drawRect(int(pCurve->x[i]/m_scalex+m_ptoffset.x())-ptside,
-									 int(pCurve->y[i]/  scaley+m_ptoffset.y())-ptside,
-									 2*ptside,2*ptside);
+				QPoint pt(int(pCurve->x[i]/m_scalex+m_ptoffset.x()), int(pCurve->y[i]/  scaley+m_ptoffset.y()));
+
+				switch(pCurve->pointStyle())
+				{
+					case 0: break;
+					case 1:
+					{
+						int ptSide = 2;
+						painter.drawEllipse(pt.x()-ptSide, pt.y()-ptSide, 2*ptSide, 2*ptSide );
+						break;
+					}
+					case 2:
+					{
+						int ptSide = 4;
+						painter.drawEllipse(pt.x()-ptSide, pt.y()-ptSide, 2*ptSide, 2*ptSide );
+						break;
+					}
+					case 3:
+					{
+						int ptSide = 2;
+						painter.drawRect(pt.x()-ptSide, pt.y()-ptSide, 2*ptSide, 2*ptSide );
+						break;
+					}
+					case 4:
+					{
+						int ptSide = 4;
+						painter.drawRect(pt.x()-ptSide, pt.y()-ptSide, 2*ptSide, 2*ptSide );
+						break;
+					}
+					default: break;
+				}
+
 			}
 		}
+
 	}
 
 	if(m_bHighlightPoint)

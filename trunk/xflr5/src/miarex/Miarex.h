@@ -128,6 +128,7 @@ private slots:
 	void onCurveColor();
 	void onCurveStyle(int index);
 	void onCurveWidth(int index);
+	void onCurvePoints(int index);
 	void onCurWOppOnly();
 	void onDefineStabPolar();
 	void onDefineWPolar();
@@ -225,7 +226,7 @@ public:
 
 	WPolar* AddWPolar(WPolar* pWPolar);
 	int CalculateMatSize();
-	void Connect();
+	void connectSignals();
 	void clearCpCurves();
 	void createCpCurves();
 	void createWPolarCurves();
@@ -240,19 +241,19 @@ public:
 	void fillWPlrCurve(Curve *pCurve, WPolar *pWPolar, int XVar, int YVar);
 	void fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve);
 	void fillStabCurve(Curve *pCurve, WPolar *pWPolar, int iMode);
-	void GLCallViewLists();
-	void GLDraw3D();
-	void GLDrawMasses();
-	void GLRenderView();
-	bool IntersectObject(CVector O,  CVector U, CVector &I);
+	void glCallViewLists();
+	void glDraw3D();
+	void glDrawMasses();
+	void glRenderView();
+	bool intersectObject(CVector O,  CVector U, CVector &I);
 	void LLTAnalyze(double V0, double VMax, double VDelta, bool bSequence, bool bInitCalc);	
 	bool loadSettings(QSettings *pSettings);
 	void paintCpLegendText(QPainter &painter);
 	void paintPanelForceLegendText(QPainter &painter);
-	void PanelAnalyze(double V0, double VMax, double VDelta, bool bSequence);
+	void panelAnalyze(double V0, double VMax, double VDelta, bool bSequence);
 	void paintPlaneLegend(QPainter &painter, Plane *pPlane, WPolar *pWPolar, QRect drawRect);
 	void paintPlaneOppLegend(QPainter &painter, QRect drawRect);
-	void RenamePlane(QString PlaneName);
+	void renamePlane(QString PlaneName);
 	bool saveSettings(QSettings *pSettings);
 	void set3DScale();
 	void setAnalysisParams();
@@ -261,12 +262,12 @@ public:
 	void setGraphTiles();
 	bool setPlaneOpp(bool bCurrent, double x = 0.0);
 	void setScale();
-	void SetStabGraphTitles();
+	void setStabGraphTitles();
 	void setPlane(QString PlaneName="");
 	void setupLayout();
 	void setViewControls();
 	void setView(XFLR5::enumGraphView eView);
-	void SetWGraphScale();
+	void setWGraphScale();
 	void setWGraphTitles(Graph* pGraph);
 	void setWPolar(bool bCurrent = true, QString WPlrName = "");
 	void snapClient(QString const &FileName);
@@ -305,11 +306,9 @@ public:
 	QCheckBox *m_pctrlMoment,  *m_pctrlDownwash, *m_pctrlCp,*m_pctrlSurfVel, *m_pctrlStream;
 
 	QCheckBox *m_pctrlShowCurve;
-	QCheckBox *m_pctrlShowPoints;
-	LineCbBox *m_pctrlCurveStyle;
-	LineCbBox *m_pctrlCurveWidth;
+	LineCbBox *m_pctrlCurveStyle, *m_pctrlCurveWidth, *m_pctrlCurvePoints;
 	LineBtn *m_pctrlCurveColor;
-	LineDelegate *m_pStyleDelegate, *m_pWidthDelegate;
+	LineDelegate *m_pStyleDelegate, *m_pWidthDelegate, *m_pPointDelegate;
 
 	QCheckBox *m_pctrlAxes, *m_pctrlLight, *m_pctrlSurfaces, *m_pctrlOutline, *m_pctrlPanels;
 	QCheckBox *m_pctrlFoilNames, *m_pctrlVortices, *m_pctrlPanelNormals, *m_pctrlMasses;
@@ -340,8 +339,6 @@ public:
 	bool m_bCrossPoint;                /**< true if the control point on the arcball is to be displayed */
 	bool m_bCurPOppOnly;               /**< true if only the current WOpp is to be displayed */
 	bool m_bCurFrameOnly;              /**< true if only the currently selected body frame is to be displayed */
-	bool m_bCurvePoints;               /**< true if the points of the active curve are to be displayed */
-	bool m_bCurveVisible;              /**< true if the active curve is to be displayed */
 	bool m_bDirichlet;                 /**< true if Dirichlet BC are applied in 3D panel analysis, false if Neumann */
 	bool m_bDownwash;                  /**< true if the arrows represeting downwash are to be displayed on the 3D openGl view */
 	bool m_bHighlightOpp;              /**< true if the currently selected operating point is to be highlighted on the polar graph */
@@ -357,7 +354,6 @@ public:
 	bool m_bSequence;                  /**< true if a sequential analysis is to be performed */
 	bool m_bShowCp;                    /**< true if the active curve should be displayed in Cp view */
 	bool m_bShowCpScale;               /**< true if the Cp Scale in Miarex is to be displayed */
-	bool m_bShowCpPoints;              /**< true if the points of the active curve should be displayed in Cp view */
 	bool m_bShowElliptic;              /**< true if the elliptic loading should be displayed in the local lift graph */
 	bool m_bShowWingCurve[MAXWINGS];   /**< true if various plane's wing curves shoud be displayed*/
 	bool m_bSurfVelocities;                    /**< true if the velocities should be displayed in the operating point or 3D view*/
@@ -390,14 +386,14 @@ public:
 	static bool m_bResetglLegend;             /**< true if the legend needs to be reset if the window has been resized */
 	static bool m_bResetglBody;               /**< true if the openGL list for the body needs to be re-generated */
 	static bool m_bResetglBodyMesh;           /**< true if the openGL list for panel mesh needs to be re-generated */
-	static bool m_bResetglSurfVelocities;               /**< true if the crossflow OpenGL list needs to be refreshed */
+	static bool m_bResetglSurfVelocities;     /**< true if the crossflow OpenGL list needs to be refreshed */
 
 	static bool s_bResetCurves;               /**< true if the curves of the active view should be regenerated before the next view update >*/
 
 	static bool s_bICd;                       /**< true if the induced drag forces should be displayed in the operating point or 3D view*/
 	static bool s_bVCd;                       /**< true if the viscous drag forces should be displayed in the operating point or 3D view*/
 
-	static bool s_bAutoCpScale;		       /**< true if the Cp scale should be set automatically */
+	static bool s_bAutoCpScale;		          /**< true if the Cp scale should be set automatically */
 	static double s_LegendMin;                /**< minimum value of the Cp scale in 3D view */
 	static double s_LegendMax;                /**< maximum value of the Cp scale in 3D view */
 
@@ -405,14 +401,14 @@ public:
 	static double s_VelocityScale;            /**< scaling factor for the velocity display in 3D view */
 	static double s_DragScale;                /**< scaling factor for the drag display in 3D view */
 
-	PlaneOpp * m_pCurPOpp;           /**< a pointer to the active Plane Operating Point, or NULL if none is active*/
+	PlaneOpp * m_pCurPOpp;                    /**< a pointer to the active Plane Operating Point, or NULL if none is active*/
 
 
 
+	bool m_bCurveVisible;                     /**< true if the active curve is to be displayed */
 
-	int m_CurveStyle;             /**< The style of the active curve */
-	int m_CurveWidth;             /**< The width of the active curve */
-	QColor m_CurveColor;          /**< The color of the active curve */
+	LineStyle m_LineStyle;                    /**< the style of the lines displayed in the comboboxes*/
+	LineStyle m_CpLineStyle;                    /**< the style of the lines displayed in the comboboxes*/
 
 
 	QTimer *m_pTimerWOpp;         /**< A pointer to the timer which signals the animation in the operating point and 3D view */
@@ -504,9 +500,6 @@ public:
 	static Panel *s_pWakePanel;           /**< a static pointer to the reference current wake panel array */
 	static Panel *s_pRefWakePanel;        /**< a static pointer to the reference wake panel array if wake= new CVector needs to be reset */
 
-public:
-	QColor m_CpColor;
-	int m_CpStyle, m_CpWidth;
 
 };
 

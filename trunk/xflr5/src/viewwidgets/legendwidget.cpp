@@ -224,7 +224,7 @@ void LegendWidget::drawWPolarLegend(QPainter &painter, QPointF place, int bottom
 						painter.drawLine(place.x() + 0.5*LegendSize, place.y() + 1.*ypos*ny,
 										 place.x() + 1.5*LegendSize, place.y() + 1.*ypos*ny);
 
-						if(pWPolar->pointsVisible())
+						if(pWPolar->points())
 						{
 							x1 = place.x() + (int)(1.0*LegendSize);
 							painter.drawRect(x1-2, place.y()-2 + (int)(1.*ypos*ny), 4, 4);
@@ -322,7 +322,7 @@ void LegendWidget::drawPOppGraphLegend(QPainter &painter, QPointF place, double 
 		painter.drawLine(place.x() + 1.5*LegendSize, place.y() + 1.*ypos*ny,
 						 place.x() + 2.5*LegendSize, place.y() + 1.*ypos*ny);
 
-		if(pMiarex->curPOpp()->showPoints())
+		if(pMiarex->curPOpp()->points())
 		{
 			x1 = place.x() + 2.0*LegendSize;
 			painter.drawRect(x1-2, place.y() + 1.*ypos*ny-2, 4, 4);
@@ -385,7 +385,7 @@ void LegendWidget::drawPOppGraphLegend(QPainter &painter, QPointF place, double 
 						painter.drawLine(place.x() + 1.5*LegendSize, place.y() + 1.*ypos*ny,
 										 place.x() + 2.5*LegendSize, place.y() + 1.*ypos*ny);
 
-						if(pPOpp->showPoints())
+						if(pPOpp->points())
 						{
 							x1 = place.x() + 2.0*LegendSize;
 							painter.drawRect(x1-2, place.y() + 1.*ypos*ny-2, 4, 4);
@@ -630,7 +630,7 @@ void LegendWidget::drawPolarLegend(QPainter &painter, QPointF place, int bottom)
 
 					painter.drawLine(place.x() + 1.0*LegendSize, place.y() + 1.*legendHeight*ny+2,
 									 place.x() + 2.0*LegendSize, place.y() + 1.*legendHeight*ny+2);
-					if(pPolar->showPoints())
+					if(pPolar->points())
 					{
 						x1 = place.x() + 1.5*LegendSize;
 						painter.drawRect(x1-2, place.y() + 1.*legendHeight*ny, 4, 4);

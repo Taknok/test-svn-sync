@@ -74,7 +74,7 @@ void Spline::Copy(Spline *pSpline)
 	m_iSelect     = pSpline->m_iSelect;
 
 	SplineKnots();
-	SplineCurve();
+	splineCurve();
 }
 
 
@@ -322,7 +322,7 @@ bool Spline::InsertPoint(double const &x, double const &y)
 		}
 	}
 	SplineKnots();
-	SplineCurve();
+	splineCurve();
 	return true;
 }
 
@@ -390,7 +390,7 @@ bool Spline::RemovePoint(int const &k)
 	{
 		m_CtrlPoint.removeAt(k);
 		SplineKnots();
-		SplineCurve();
+		splineCurve();
 	}
 	return true;
 }
@@ -399,7 +399,7 @@ bool Spline::RemovePoint(int const &k)
 /** Sets the spline's drawing style 
 *@param style the index of the spline's style
 */
-void Spline::SetStyle(int style)
+void Spline::setStyle(int style)
 {
 	m_Style = style;
 }
@@ -408,7 +408,7 @@ void Spline::SetStyle(int style)
 /** Sets the spline's drawing width 
 *@param width the width of the spline
 */
-void Spline::SetWidth(int width)
+void Spline::setWidth(int width)
 {
 	m_Width = width;
 }
@@ -418,7 +418,7 @@ void Spline::SetWidth(int width)
 *Sets the spline drawing color
 *@param color the spline's color
 */
-void Spline::SetColor(QColor color)
+void Spline::setColor(QColor color)
 {
 	m_Color = color;
 }
@@ -486,7 +486,7 @@ double Spline::SplineBlend(int const &i,  int const &p, double const &t)
 /**
 * Calculates the spline's output points 
 */
-void Spline::SplineCurve()
+void Spline::splineCurve()
 {
 	static double t, increment, b, w;
 	static int i,j;

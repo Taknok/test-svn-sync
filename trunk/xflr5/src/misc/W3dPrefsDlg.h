@@ -44,10 +44,10 @@ public:
 	void InitDialog();
 
 private slots:
-	void On3DAxis();
-	void OnOutline();
-	void OnTopTrans();
-	void OnBotTrans();
+	void on3DAxis();
+	void onOutline();
+	void onTopTrans();
+	void onBotTrans();
 	void OnXCP();
 	void OnMoments();
 	void OnIDrag();
@@ -55,9 +55,9 @@ private slots:
 	void OnDownwash();
 	void OnWakePanels();
 	void OnStreamLines();
-	void OnVLMMesh();
-	void OnShowWake();
-	void OnMasses();
+	void onVLMMesh();
+	void onShowWake();
+	void onMasses();
     void OnResetDefaults();
 
 private:

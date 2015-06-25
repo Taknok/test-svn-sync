@@ -127,7 +127,7 @@ public:
 	void ScaleAR(double newAR);
 
 	bool SerializeWingWPA(QDataStream &ar, bool bIsStoring);
-	bool SerializeWingXFL(QDataStream &ar, bool bIsStoring);
+	bool serializeWingXFL(QDataStream &ar, bool bIsStoring);
 	bool ExportAVLWing(QTextStream &out, int index, double y, double Thetay);
 
 	bool IsWingOut()      {return m_bWingOut;}
@@ -142,7 +142,7 @@ public:
 						   XFLR5::enumPanelDistribution XPanelDist, XFLR5::enumPanelDistribution YPanelDist, QString RightFoilName, QString LeftFoilName);
 	void RemoveWingSection(int const iSection);
 	
-	void ClearWingSections();
+	void clearWingSections();
 	void ClearPointMasses();
 	void ClearSurfaces();
 
@@ -155,11 +155,11 @@ public:
 
 	bool isWingFoil(Foil *pFoil);
 
-	double RootChord()     {return m_WingSection.first()->m_Chord;}
-	double TipChord()      {return m_WingSection.last()->m_Chord;}
-	double TipTwist()      {return m_WingSection.last()->m_Twist;}
-	double TipOffset()     {return m_WingSection.last()->m_Offset;}
-	double TipPos()        {return m_WingSection.last()->m_YPosition;}
+	double rootChord()     {return m_WingSection.first()->m_Chord;}
+	double tipChord()      {return m_WingSection.last()->m_Chord;}
+	double tipTwist()      {return m_WingSection.last()->m_Twist;}
+	double tipOffset()     {return m_WingSection.last()->m_Offset;}
+	double tipPos()        {return m_WingSection.last()->m_YPosition;}
 	double planformSpan()  {return m_PlanformSpan;}
 	double projectedSpan() {return m_ProjectedSpan;}
 
@@ -177,7 +177,7 @@ public:
 	double getOffset(double yob);
 	double getDihedral(double yob);
 	double getTwist(double y);
-	double AverageSweep();
+	double averageSweep();
 	double &volumeMass() {return m_VolumeMass;}
 	double totalMass();
 	double C4(double yob, double xRef);

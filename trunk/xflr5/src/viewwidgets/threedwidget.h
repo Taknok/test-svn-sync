@@ -105,16 +105,16 @@ class ThreeDWidget : public QOpenGLWidget
 
 public:
 	ThreeDWidget(QWidget *parent = 0);
-	void GLCreateArcballList(ArcBall &ArcBall, double GLScale);
-	void GLDrawAxes(double length, QColor AxisColor, int AxisStyle, int AxisWidth);
-	void GLInverseMatrix();
-	void GLCreateUnitSphere();
-	void GLRenderView();
-	void GLRenderSphere(double radius);
-	void GLRenderText(double x, double y, double z, const QString & str, QColor textColor = QColor(Qt::white));
-	void GLRenderText(int x, int y, const QString & str, QColor textColor = QColor(Qt::white));
-	void GLSetupLight(double Offset_y, double LightFactor);
-    void NormalVector(GLdouble p1[3], GLdouble p2[3],  GLdouble p3[3], GLdouble n[3]);
+	void glCreateArcballList(ArcBall &ArcBall, double GLScale);
+	void glDrawAxes(double length, QColor AxisColor, int AxisStyle, int AxisWidth);
+	void glInverseMatrix();
+	void glCreateUnitSphere();
+	void glRenderView();
+	void glRenderSphere(double radius);
+	void glRenderText(double x, double y, double z, const QString & str, QColor textColor = QColor(Qt::white));
+	void glRenderText(int x, int y, const QString & str, QColor textColor = QColor(Qt::white));
+	void glSetupLight(double Offset_y, double LightFactor);
+	void normalVector(GLdouble p1[3], GLdouble p2[3],  GLdouble p3[3], GLdouble n[3]);
 	enumGLView &iView(){return m_iView;}
 
 	void setScale(double refLength);
@@ -159,9 +159,9 @@ private:
 	QSize sizeHint() const;
 	QSize minimumSizeHint() const;
 
-	void GLDrawFoils(void *pWing);
-	void GLDrawMasses(double volumeMass, CVector pos, QString tag, QList<PointMass*> ptMasses);
-	QString GLError();
+	void glDrawFoils(void *pWing);
+	void glDrawMasses(double volumeMass, CVector pos, QString tag, QList<PointMass*> ptMasses);
+	QString glError();
 
 	void setupViewPort(int width, int height);
 	void reset3DRotationCenter();

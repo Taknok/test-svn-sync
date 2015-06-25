@@ -117,7 +117,7 @@ void Panel::SetPanelFrame(CVector const &LA, CVector const &LB, CVector const &T
 
 	Normal = LATB * TALB;
 	Area = Normal.VAbs()/2.0;
-	Normal.Normalize();
+	Normal.normalize();
 
 	VA.x = LA.x*(1.0-s_VortexPos) + TA.x*s_VortexPos;
 	VA.y = LA.y*(1.0-s_VortexPos) + TA.y*s_VortexPos;
@@ -167,7 +167,7 @@ void Panel::SetPanelFrame(CVector const &LA, CVector const &LB, CVector const &T
 		m.y = (LA.y + TA.y) *0.5 - CollPt.y;
 		m.z = (LA.z + TA.z) *0.5 - CollPt.z;
 	}*/
-	m.Normalize();
+	m.normalize();
 
 	l.x =  m.y * Normal.z - m.z * Normal.y;
 	l.y = -m.x * Normal.z + m.z * Normal.x;
@@ -328,10 +328,10 @@ bool Panel::Intersect(CVector const &A, CVector const &U, CVector &I, double &di
 	static bool b1, b2, b3, b4;
 	static double r,s;
 
-	ILA.Copy(s_pNode[m_iLA]);
-	ITA.Copy(s_pNode[m_iTA]);
-	ILB.Copy(s_pNode[m_iLB]);
-	ITB.Copy(s_pNode[m_iTB]);
+	ILA.copy(s_pNode[m_iLA]);
+	ITA.copy(s_pNode[m_iTA]);
+	ILB.copy(s_pNode[m_iLB]);
+	ITB.copy(s_pNode[m_iTB]);
 		
 	r = (CollPt.x-A.x)*Normal.x + (CollPt.y-A.y)*Normal.y + (CollPt.z-A.z)*Normal.z ;
 	s = U.x*Normal.x + U.y*Normal.y + U.z*Normal.z;
@@ -394,7 +394,7 @@ bool Panel::Intersect(CVector const &A, CVector const &U, CVector &I, double &di
 		
 		if(b1 && b2 && b3 && b4) 
 		{
-			I.Set(P.x, P.y, P.z);
+			I.set(P.x, P.y, P.z);
 			return true;
 		}
 	}
@@ -568,7 +568,7 @@ void Panel::SourceNASA4023(CVector const &C,  CVector &V, double &phi)
 		h.y = -a.x*s.z + a.z*s.x;
 		h.z =  a.x*s.y - a.y*s.x;
 
-		if(m_pR[i]->IsSame(*m_pR[i+1]))
+		if(m_pR[i]->isSame(*m_pR[i+1]))
 		{
 			//no contribution from this side
 			CJKi = 0.0;
@@ -727,7 +727,7 @@ void Panel::DoubletNASA4023(CVector const &C, CVector &V, double &phi, bool bWak
 		h.z =  a.x*s.y - a.y*s.x;
 
 		//first the potential
-		if(m_pR[i]->IsSame(*m_pR[i+1]))
+		if(m_pR[i]->isSame(*m_pR[i+1]))
 		{
 			CJKi = 0.0;
 			//no contribution to speed either

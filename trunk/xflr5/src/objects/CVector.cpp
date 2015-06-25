@@ -27,7 +27,7 @@
 #define PI             3.14159265358979
 
 
-void CVector::Rotate(CVector const &R, double Angle)
+void CVector::rotate(CVector const &R, double Angle)
 {
 	//rotate the vector around R with an angle Angle
 	static double norm, ux, uy,uz, ca, sa, x0, y0, z0;
@@ -51,7 +51,7 @@ void CVector::Rotate(CVector const &R, double Angle)
 }
 
 
-void CVector::Rotate(CVector &O, CVector const &R, double Angle)
+void CVector::rotate(CVector &O, CVector const &R, double Angle)
 {
 	//rotate the point defined by the vector around origin O, rotation vector R and angle Angle
 	static CVector OP;
@@ -59,7 +59,7 @@ void CVector::Rotate(CVector &O, CVector const &R, double Angle)
 	OP.y = y-O.y;
 	OP.z = z-O.z;
 
-	OP.Rotate(R, Angle);
+	OP.rotate(R, Angle);
 
 	x = O.x + OP.x;
 	y = O.y + OP.y;
@@ -67,7 +67,7 @@ void CVector::Rotate(CVector &O, CVector const &R, double Angle)
 }
 
 
-void CVector::RotateX(CVector const &O, double XTilt)
+void CVector::rotateX(CVector const &O, double XTilt)
 {
 	//Rotate the vector around the X-axis, by an angle XTilt
 	CVector OP;
@@ -80,7 +80,7 @@ void CVector::RotateX(CVector const &O, double XTilt)
 	z = O.z + OP.y * sin(XTilt) + OP.z * cos(XTilt);
 }
 
-void CVector::RotateY(CVector const &O, double YTilt)
+void CVector::rotateY(CVector const &O, double YTilt)
 {
 	//Rotate the vector around the Y-axis, by an angle YTilt
 	CVector OP;
@@ -95,7 +95,7 @@ void CVector::RotateY(CVector const &O, double YTilt)
 }
 
 
-void CVector::RotateZ(CVector const &O, double ZTilt)
+void CVector::rotateZ(CVector const &O, double ZTilt)
 {
 	//Rotate the vector around the Z-axis, by an angle ZTilt
 	CVector OP;
@@ -110,7 +110,7 @@ void CVector::RotateZ(CVector const &O, double ZTilt)
 }
 
 
-void  CVector::RotateY(double YTilt)
+void  CVector::rotateY(double YTilt)
 {
 	YTilt *=PI/180.0;
 

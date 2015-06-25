@@ -88,11 +88,11 @@ QXInverse::QXInverse(QWidget *parent)
 	m_Spline.InsertPoint(0.75, 0.0);
 	m_Spline.InsertPoint(1.0,  0.0);
 	m_Spline.SplineKnots();
-	m_Spline.SplineCurve();
+	m_Spline.splineCurve();
 
-	m_Spline.SetStyle(0);
-	m_Spline.SetWidth(1);
-	m_Spline.SetColor(QColor(170,120, 0));
+	m_Spline.setStyle(0);
+	m_Spline.setWidth(1);
+	m_Spline.setColor(QColor(170,120, 0));
 
 	m_ReflectedStyle = 1;
 	m_ReflectedWidth = 1;
@@ -119,7 +119,7 @@ QXInverse::QXInverse(QWidget *parent)
 	m_pMCurve  = m_QGraph.addCurve();
 	m_pQVCurve = m_QGraph.addCurve();
 	m_pReflectedCurve = m_QGraph.addCurve();
-	m_pReflectedCurve->SetVisible(m_bReflected);
+	m_pReflectedCurve->setVisible(m_bReflected);
 
 	SetupLayout();
 	if(m_bFullInverse)
@@ -241,9 +241,9 @@ void QXInverse::Connect()
 	connect(m_pctrlNewSpline,     SIGNAL(clicked()), this, SLOT(OnNewSpline()));
 	connect(m_pctrlApplySpline,   SIGNAL(clicked()), this, SLOT(OnApplySpline()));
 	connect(m_pctrlTangentSpline, SIGNAL(clicked()), this, SLOT(OnTangentSpline()));
-	connect(m_pctrlResetQSpec,    SIGNAL(clicked()), this, SLOT(OnQReset()));
+	connect(m_pctrlResetQSpec,    SIGNAL(clicked()), this, SLOT(onQReset()));
 	connect(m_pctrlSmooth,        SIGNAL(clicked()), this, SLOT(OnSmooth()));
-	connect(m_pctrlPert,          SIGNAL(clicked()), this, SLOT(OnPertubate()));
+	connect(m_pctrlPert,          SIGNAL(clicked()), this, SLOT(onPertubate()));
 	connect(m_pctrlFilter,        SIGNAL(clicked()), this, SLOT(OnFilter()));
 	connect(m_pctrlSymm,          SIGNAL(clicked()), this, SLOT(OnSymm()));
 	connect(m_pctrlExec,          SIGNAL(clicked()), this, SLOT(OnExecute()));
@@ -253,7 +253,7 @@ void QXInverse::Connect()
 	connect(m_pctrlMApplySpline,   SIGNAL(clicked()), this, SLOT(OnApplySpline()));
 	connect(m_pctrlMTangentSpline, SIGNAL(clicked()), this, SLOT(OnTangentSpline()));
 	connect(m_pctrlMShowSpline,    SIGNAL(clicked()), this, SLOT(OnShowSpline()));
-	connect(m_pctrlMResetQSpec,    SIGNAL(clicked()), this, SLOT(OnQReset()));
+	connect(m_pctrlMResetQSpec,    SIGNAL(clicked()), this, SLOT(onQReset()));
 	connect(m_pctrlCpxx,           SIGNAL(clicked()), this, SLOT(OnCpxx()));
 	connect(m_pctrlMExec,          SIGNAL(clicked()), this, SLOT(OnExecute()));
 }
@@ -713,9 +713,9 @@ void QXInverse::loadSettings(QSettings *pSettings)
 	{
 		m_bFullInverse = pSettings->value("FullInverse").toBool();
 
-		m_Spline.SetColor(pSettings->value("SplineColor").value<QColor>());
-		m_Spline.SetStyle(pSettings->value("SplineStyle").toInt());
-		m_Spline.SetWidth(pSettings->value("SplineWdth").toInt());
+		m_Spline.setColor(pSettings->value("SplineColor").value<QColor>());
+		m_Spline.setStyle(pSettings->value("SplineStyle").toInt());
+		m_Spline.setWidth(pSettings->value("SplineWdth").toInt());
 		m_pRefFoil->m_FoilColor  = pSettings->value("BaseFoilColor").value<QColor>();
 		m_pRefFoil->m_FoilStyle = pSettings->value("BaseFoilStyle").toInt();
 		m_pRefFoil->m_FoilWidth = pSettings->value("BaseFoilWidth").toInt();
@@ -781,7 +781,7 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 			xmin = m_QGraph.xMin() - xu+x1;
 			xmax = m_QGraph.xMax() - xu+x1;
 			ymin = m_QGraph.yMin() - yu+y1;
-			ymax = m_QGraph.GetYMax() - yu+y1;
+			ymax = m_QGraph.yMax() - yu+y1;
 
 			m_QGraph.SetWindow(xmin, xmax, ymin, ymax);
 		}
@@ -825,7 +825,7 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 					m_Spline.m_CtrlPoint[n].y = ypt;
 				}
 				m_bSplined = false;
-				m_Spline.SplineCurve();
+				m_Spline.splineCurve();
 			}
 			else if(n == m_Spline.m_CtrlPoint.size()-1)
 			{
@@ -848,7 +848,7 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 					m_Spline.m_CtrlPoint[n].x = xpt;
 					m_Spline.m_CtrlPoint[n].y = ypt;
 				}
-				m_Spline.SplineCurve();
+				m_Spline.splineCurve();
 				m_bSplined = false;
 			}
 			else if (n==1 && m_bTangentSpline)
@@ -899,7 +899,7 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 				scal =  (ux*vx + uy*vy);
 				m_Spline.m_CtrlPoint[n].x = m_Spline.m_CtrlPoint[0].x + scal * ux ;
 				m_Spline.m_CtrlPoint[n].y = m_Spline.m_CtrlPoint[0].y + scal * uy ;
-				m_Spline.SplineCurve();
+				m_Spline.splineCurve();
 				m_bSplined = false;
 			}
 			else if (n==m_Spline.m_CtrlPoint.size()-2 && m_bTangentSpline)
@@ -948,14 +948,14 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 				scal =  (ux*vx + uy*vy);
 				m_Spline.m_CtrlPoint[n].x = m_Spline.m_CtrlPoint[n+1].x + scal * ux;
 				m_Spline.m_CtrlPoint[n].y = m_Spline.m_CtrlPoint[n+1].y + scal * uy;
-				m_Spline.SplineCurve();
+				m_Spline.splineCurve();
 				m_bSplined = false;
 			}	
 			else if (n>0 && n<m_Spline.m_CtrlPoint.size()-1)
 			{
 				m_Spline.m_CtrlPoint[n].x = x1;
 				m_Spline.m_CtrlPoint[n].y = y1;
-				m_Spline.SplineCurve();
+				m_Spline.splineCurve();
 				m_bSplined = false;
 			}
 			updateView();
@@ -1071,7 +1071,7 @@ void QXInverse::mousePressEvent(QMouseEvent *event)
 									return;
 								}
 								m_Spline.SplineKnots();
-								m_Spline.SplineCurve();
+								m_Spline.splineCurve();
 							}
 						}
 					}
@@ -1079,7 +1079,7 @@ void QXInverse::mousePressEvent(QMouseEvent *event)
 					{
 						m_Spline.InsertPoint(xd,yd);
 						m_Spline.SplineKnots();
-						m_Spline.SplineCurve();
+						m_Spline.splineCurve();
 					}
 					if(CtrlPt>=0) return;
 				}
@@ -1145,7 +1145,7 @@ void QXInverse::mouseReleaseEvent(QMouseEvent *event)
 			w = qAbs(xu-xd);
 			h = qAbs(yu-yd);
 			xw = 	m_QGraph.xMax() - m_QGraph.xMin();
-			yh = 	m_QGraph.GetYMax() - m_QGraph.yMin();
+			yh = 	m_QGraph.yMax() - m_QGraph.yMin();
 			xm = (xu+xd)/2.0;
 			ym = (yu+yd)/2.0;
 
@@ -1263,7 +1263,7 @@ void QXInverse::mouseReleaseEvent(QMouseEvent *event)
 				}	
 
 				m_Spline.SplineKnots();
-				m_Spline.SplineCurve();
+				m_Spline.splineCurve();
 				if(m_bFullInverse)
 				{
 					m_pctrlNewSpline->setChecked(0);
@@ -1503,7 +1503,7 @@ void QXInverse::OnInsertCtrlPt()
 
 	m_Spline.InsertPoint(xd,yd);
 	m_Spline.SplineKnots();
-	m_Spline.SplineCurve();
+	m_Spline.splineCurve();
 	updateView();
 }
 
@@ -1536,7 +1536,7 @@ void QXInverse::OnInverseStyles()
 {
 	InverseOptionsDlg *m_pXInverseStyleDlg = new InverseOptionsDlg((MainFrame*)s_pMainFrame);
 	m_pXInverseStyleDlg->m_pXInverse = this;
-	m_pXInverseStyleDlg->InitDialog();
+	m_pXInverseStyleDlg->initDialog();
 	m_pXInverseStyleDlg->exec();
 }
 
@@ -1600,7 +1600,7 @@ void QXInverse::OnNewSpline()
 /**
  * @todo check The user has requested the launch of the interface to define the perturbation to the curve
  */
-void QXInverse::OnPertubate()
+void QXInverse::onPertubate()
 {
 	XFoil *pXFoil = (XFoil*)m_pXFoil;
 	int m;
@@ -1625,62 +1625,62 @@ void QXInverse::OnPertubate()
 
 		pXFoil->pert_process(1);
 		CreateMCurve();
-		m_pMCurve->SetVisible(true);
+		m_pMCurve->setVisible(true);
 		updateView();
 	}
 }
 
 
 /** Toggles the visibility of the reference curve */
-void QXInverse::OnQInitial()
+void QXInverse::onQInitial()
 {
-	m_pQCurve->SetVisible(!m_pQCurve->isVisible());
+	m_pQCurve->setVisible(!m_pQCurve->isVisible());
 	CheckActions();
 	updateView();
 }
 
 /** Toggles the visibility of the specification curve */
-void QXInverse::OnQSpec()
+void QXInverse::onQSpec()
 {
-	m_pMCurve->SetVisible(!m_pMCurve->isVisible());
+	m_pMCurve->setVisible(!m_pMCurve->isVisible());
 	CheckActions();
 	updateView();
 }
 
 /** Toggles the visibility of the viscous curve */
-void QXInverse::OnQViscous()
+void QXInverse::onQViscous()
 {
 	XFoil *pXFoil = (XFoil*)m_pXFoil;
 	if(pXFoil->lvisc)
 	{
-		m_pQVCurve->SetVisible(!m_pQVCurve->isVisible());
+		m_pQVCurve->setVisible(!m_pQVCurve->isVisible());
 		updateView();
 	}
 	CheckActions();
 }
 
 /** Toggles the visibility of the curve's points */
-void QXInverse::OnQPoints()
+void QXInverse::onQPoints()
 {
 	m_bShowPoints = !m_bShowPoints;
-	m_pQCurve->showPoints(m_bShowPoints);
-	m_pMCurve->showPoints(m_bShowPoints);
+	m_pQCurve->setPoints(m_bShowPoints);
+	m_pMCurve->setPoints(m_bShowPoints);
 	CheckActions();
 	updateView();
 }
 
 /** Toggles the visibility of the reflected curve */
-void QXInverse::OnQReflected()
+void QXInverse::onQReflected()
 {
 	m_bReflected = !m_bReflected;
-	m_pReflectedCurve->SetVisible(m_bReflected);
+	m_pReflectedCurve->setVisible(m_bReflected);
 	CheckActions();
 	updateView();
 }
 
 
 /** Resets the specification curve */
-void QXInverse::OnQReset()
+void QXInverse::onQReset()
 {
 	CancelSpline();
 	CancelSmooth();
@@ -1694,7 +1694,7 @@ void QXInverse::OnQReset()
 /**
  * The user has requested to remove the selected control point from the spline
  */
-void QXInverse::OnRemoveCtrlPt()
+void QXInverse::onRemoveCtrlPt()
 {
 	if (m_Spline.m_iHighlight>=0)
 	{
@@ -1705,7 +1705,7 @@ void QXInverse::OnRemoveCtrlPt()
 			return;
 		}
 	}
-	m_Spline.SplineCurve();
+	m_Spline.splineCurve();
 	updateView();
 }
 
@@ -2271,11 +2271,11 @@ void QXInverse::SetFoil()
 			y = qv2/pXFoil->qinf;
 			m_pQVCurve->appendPoint(x,y);
 		}
-		m_pQVCurve->SetVisible(true);
+		m_pQVCurve->setVisible(true);
 	}
 	else
 	{
-		m_pQVCurve->SetVisible(false);
+		m_pQVCurve->setVisible(false);
 	}
 
 	m_bLoaded = true;
@@ -2339,7 +2339,7 @@ bool QXInverse::SetParams()
 
 	m_QGraph.setDrawRect(m_rGraphRect);
 	m_QGraph.initializeGraph();
-	m_pQCurve->SetVisible(true);
+	m_pQCurve->setVisible(true);
 	m_pctrlSpecAlpha->setChecked(true);
 
 	OnSpecal();

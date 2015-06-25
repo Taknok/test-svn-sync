@@ -57,10 +57,10 @@ public:
 
 	bool IntersectObject(CVector AA,  CVector U, CVector &I);
 	void Connect();
-	void GLDraw3D();
-	void GLRenderView();
-	void GLCreateWingSectionHighlight(Wing *pWing);
-	void GLCreateBodyFrameHighlight(Body *pBody, CVector bodyPos, int iFrame);
+	void glDraw3D();
+	void glRenderView();
+	void glCreateWingSectionHighlight(Wing *pWing);
+	void glCreateBodyFrameHighlight(Body *pBody, CVector bodyPos, int iFrame);
 	void initDialog(Plane *pPlane);
 	void setupLayout();
 	void fillPlaneTreeView();

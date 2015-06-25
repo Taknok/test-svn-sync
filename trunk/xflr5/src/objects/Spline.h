@@ -71,12 +71,12 @@ public:
 	void Copy(Spline *pSpline);
 	void CopySymetric(Spline *pSpline);
 	void Export(QTextStream &out, bool bExtrados);
-	void SplineCurve();
+	void splineCurve();
 	void SplineKnots();
 	
-	void SetStyle(int style);
-	void SetWidth(int width);
-	void SetColor(QColor color);
+	void setStyle(int style);
+	void setWidth(int width);
+	void setColor(QColor color);
 	void SetSplineParams(int style, int width, QColor color);
 	QColor color() {return m_Color;}
 	int style() {return m_Style;}

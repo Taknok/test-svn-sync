@@ -54,18 +54,18 @@ public:
 	~Plane();
 
 //	double VolumeMass() {return m_VolumeMass;}
-	double TotalMass();
-	double TailVolume();
+	double totalMass();
+	double tailVolume();
 
-	void Duplicate(Plane *pPlane);
-	bool SerializePlane(QDataStream &ar, bool bIsStoring);
-	bool SerializePlaneXFL(QDataStream &ar, bool bIsStoring);
-	void ComputePlane(void);
-	void CreateSurfaces();
-	void RenameWings();
+	void duplicate(Plane *pPlane);
+	bool serializePlane(QDataStream &ar, bool bIsStoring);
+	bool serializePlaneXFL(QDataStream &ar, bool bIsStoring);
+	void computePlane(void);
+	void createSurfaces();
+	void renameWings();
 
-	void ClearPointMasses();
-	void ComputeVolumeInertia(double &Mass, CVector &CoG, double &Ixx, double &Iyy, double &Izz, double &Ixz);
+	void clearPointMasses();
+	void computeVolumeInertia(double &Mass, CVector &CoG, double &Ixx, double &Iyy, double &Izz, double &Ixz);
 	void computeBodyAxisInertia();
 
 	void setAutoBodyName();
@@ -142,8 +142,8 @@ public:
 
 	double mac()           {return m_Wing[0].m_MAChord;}
 	double span()          {return m_Wing[0].m_PlanformSpan;}
-	double rootChord()     {return m_Wing[0].RootChord();}
-	double tipChord()      {return m_Wing[0].TipChord();}
+	double rootChord()     {return m_Wing[0].rootChord();}
+	double tipChord()      {return m_Wing[0].tipChord();}
 
 	double projectedArea() {return m_Wing[0].m_ProjectedArea;}
 	double planformArea()  {return m_Wing[0].m_PlanformArea;}

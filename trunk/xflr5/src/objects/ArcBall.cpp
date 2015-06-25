@@ -72,12 +72,12 @@ ArcBall::ArcBall(void)
 	ab_planar = false;
 	ab_planedist = 0.5;
 
-	ab_start.Set(0.0,0.0,1.0);
-	ab_curr.Set(0.0,0.0,1.0);
-	ab_eye.Set(0.0,0.0,1.0);
-	ab_eyedir.Set(0.0,0.0,1.0);
-	ab_up.Set(0.0,1.0,0.0);
-	ab_out.Set(1.0,0.0,0.0);
+	ab_start.set(0.0,0.0,1.0);
+	ab_curr.set(0.0,0.0,1.0);
+	ab_eye.set(0.0,0.0,1.0);
+	ab_eyedir.set(0.0,0.0,1.0);
+	ab_up.set(0.0,1.0,0.0);
+	ab_out.set(1.0,0.0,0.0);
 
 /*	ab_glp[0]  = 1.0; ab_glp[1]  = 0.0; ab_glp[2]  = 0.0; ab_glp[3]  = 0.0;
 	ab_glp[4]  = 0.0; ab_glp[5]  = 1.0; ab_glp[6]  = 0.0; ab_glp[7]  = 0.0; 
@@ -91,8 +91,8 @@ ArcBall::ArcBall(void)
 	ab_glv[2] = 640;
 	ab_glv[3] = 480;
 */
-	sc.Set(0.0,0.0,1.0);
-	ec.Set(0.0,0.0,1.0);
+	sc.set(0.0,0.0,1.0);
+	ec.set(0.0,0.0,1.0);
 
 	memset(ab_crosspoint, 0, 16*sizeof(float));
 }
@@ -122,7 +122,7 @@ void ArcBall::EdgeCoords(CVector m, CVector &V)
 	c2 = c.dot(c);
 	q = ( 0.0 - ac - sqrt( ac*ac - c2*(aa.dot(aa)-ab_sphere2 ))) / c2;
 	V = aa+(c*q);
-	V.Normalize();
+	V.normalize();
 }
 
 
@@ -142,7 +142,7 @@ void ArcBall::Move(int mx, int my)
 		sina2 = sin(angle/2.0);
 		// p is perpendicular to d
 		p = (ab_out*d.x)-(ab_up*d.y);
-		p.Normalize();
+		p.normalize();
 		p *= sina2;
 		Quat.Set(cosa2, p.x, p.y, p.z);
 
@@ -171,7 +171,7 @@ void ArcBall::Move(int mx, int my)
 		angle = acos(cosa2)*180.0/PI;
 
 		p = (ab_start*ab_curr);
-		p.Normalize();
+		p.normalize();
 		p *=sina2;
 		Quat.Set(cosa2, p.x, p.y, p.z);
 
@@ -261,7 +261,7 @@ void ArcBall::Rotate()
 
 void ArcBall::RotateCrossPoint()
 {
-	aa.Set(1.0, 0.0, 0.0);
+	aa.set(1.0, 0.0, 0.0);
 
 	cosa   = aa.dot(ab_curr);
 	sina2  = sqrt((1.0 - cosa)*0.5);
@@ -269,7 +269,7 @@ void ArcBall::RotateCrossPoint()
 	angle = 2.0*acos(cosa2)*180.0/PI;
 
 	p = aa * ab_curr;
-	p.Normalize();
+	p.normalize();
 }
 
 
@@ -325,12 +325,12 @@ void ArcBall::PlanarCoords(int const &mx, int const &my, CVector &V)
 {
 	ClientToGL(mx, my, ax, ay);
 
-	m.Set(ax- ab_eye.x, ay- ab_eye.y, az- ab_eye.z);
+	m.set(ax- ab_eye.x, ay- ab_eye.y, az- ab_eye.z);
 	// intersect the point with the trackball plane
 	t = (ab_planedist - ab_zoom)*1.0 / (ab_eyedir.dot(m));
 	d = ab_eye + m*t;
 
-	V.Set(d.dot(ab_up),d.dot(ab_out),0.0);
+	V.set(d.dot(ab_up),d.dot(ab_out),0.0);
 }
 
 
@@ -339,11 +339,11 @@ void ArcBall::SphereCoords(int const &mx, int const &my, CVector &V)
 	// find the intersection with the sphere
 
 	ClientToGL(mx, my, ax, ay);
-	if(ab_sphere2>ax*ax+ay*ay) V.Set(ax,ay,sqrt(ab_sphere2-ax*ax-ay*ay));
-	else                       V.Set(ax,ay,0.0);
+	if(ab_sphere2>ax*ax+ay*ay) V.set(ax,ay,sqrt(ab_sphere2-ax*ax-ay*ay));
+	else                       V.set(ax,ay,0.0);
 //	else return EdgeCoords(ax, ay);
 
-	V.Normalize();
+	V.normalize();
 }
 
 

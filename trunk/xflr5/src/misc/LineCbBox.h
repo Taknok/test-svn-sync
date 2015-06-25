@@ -24,6 +24,8 @@
 #define LINECBBOX_H
 
 #include <QComboBox>
+#include <objects/linestyle.h>
+
 
 class LineCbBox : public QComboBox
 {
@@ -34,11 +36,15 @@ public:
 	QSize sizeHint() const;
 	void paintEvent (QPaintEvent *event);
 
-	void SetLine(int const &style, int const &width, QColor const &color);
+	void setLine(int const &style, int const &width, QColor const &color, const int &pointStyle);
+	void setLine(LineStyle lineStyle);
+	void showPoints(bool bShow){m_bShowPoints=bShow;}
+
+	bool points() {return m_bShowPoints; }
 
 private:
-	int m_Style, m_Width;
-	QColor m_Color;
+	LineStyle m_LineStyle;
+	bool m_bShowPoints;
 };
 
 #endif // LINECBBOX_H

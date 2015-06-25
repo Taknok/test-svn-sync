@@ -488,7 +488,7 @@ double Graph::yMin()
 {
 	return ymin;
 }
-double Graph::GetYMax()
+double Graph::yMax()
 {
 	return ymax;
 }
@@ -1318,12 +1318,12 @@ bool Graph::SelectPoint(QString const &CurveName, int sel)
 		{
 			if(sel>pCurve->count())
 			{
-				pCurve->SetSelected(-1);
+				pCurve->setSelected(-1);
 				return false;				
 			}
 			else
 			{
-				pCurve->SetSelected(sel);
+				pCurve->setSelected(sel);
 				return true;
 			}
 		}
@@ -1340,7 +1340,7 @@ void Graph::deselectPoint()
 	for(int i=0; i<m_oaCurves.size(); i++)
 	{
 		pCurve = (Curve*)m_oaCurves.at(i);
-		pCurve->SetSelected(-1);
+		pCurve->setSelected(-1);
 	}
 }
 

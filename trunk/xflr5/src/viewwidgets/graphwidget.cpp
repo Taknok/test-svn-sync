@@ -218,7 +218,7 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 		xmin = m_pGraph->xMin() - xu+x1;
 		xmax = m_pGraph->xMax() - xu+x1;
 		ymin = m_pGraph->yMin() - yu+y1;
-		ymax = m_pGraph->GetYMax() - yu+y1;
+		ymax = m_pGraph->yMax() - yu+y1;
 
 		m_pGraph->SetWindow(xmin, xmax, ymin, ymax);
 		update();

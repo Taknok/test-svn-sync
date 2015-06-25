@@ -29,6 +29,7 @@
 #ifndef POLAR_H
 #define POLAR_H
 
+#include <objects/linestyle.h>
 #include "OpPoint.h"
 #include <QList>
 
@@ -57,42 +58,36 @@ class Polar
 
 public:
 	Polar();
-	void AddOpPointData(OpPoint *pOpPoint);
+	void addOpPointData(OpPoint *pOpPoint);
 
-	void AddXFoilData(void* ptrXFoil);
+	void addXFoilData(void* ptrXFoil);
 
-	void AddPoint(double Alpha, double Cd, double Cdp, double Cl, double Cm,
+	void addPoint(double Alpha, double Cd, double Cdp, double Cl, double Cm,
 				  double Xtr1, double Xtr2, double HMom, double Cpmn, double Reynolds, double XCp);
-	void ExportPolar(QTextStream &out, XFLR5::enumTextFileType FileType, bool bDataOnly=false);
-	void GetPolarProperties(QString &PolarProperties, bool bData=false);
-	void ResetPolar();
+	void exportPolar(QTextStream &out, XFLR5::enumTextFileType FileType, bool bDataOnly=false);
+	void getPolarProperties(QString &PolarProperties, bool bData=false);
+	void resetPolar();
 
-	bool Serialize(QDataStream &ar, bool bIsStoring);
-	bool SerializePolarXFL(QDataStream &ar, bool bIsStoring);
+	bool serialize(QDataStream &ar, bool bIsStoring);
+	bool serializePolarXFL(QDataStream &ar, bool bIsStoring);
 
-	void CopySpecification(Polar *pPolar);
-	void CopyPolar(Polar *pPolar);
+	void copySpecification(Polar *pPolar);
+	void copyPolar(Polar *pPolar);
 
-	bool isVisible(){return m_bIsVisible;}
-	bool showPoints(){return m_bShowPoints;}
+	bool isVisible(){return m_polarStyle.m_bIsVisible;}
 
-	void ReplaceOppDataAt(int pos, OpPoint *pOpp);
-	void InsertOppDataAt(int pos, OpPoint *pOpp);
-	void Remove(int i);
-	void Insert(int i);
+	void replaceOppDataAt(int pos, OpPoint *pOpp);
+	void insertOppDataAt(int pos, OpPoint *pOpp);
+	void removePoint(int i);
 
-	double GetCm0();
-	double GetZeroLiftAngle();
-	void GetAlphaLimits(double &amin, double &amax);
-	void GetClLimits(double &Clmin, double &Clmax);
-	void GetLinearizedCl(double &Alpha0, double &slope);
+	double getCm0();
+	double getZeroLiftAngle();
+	void getAlphaLimits(double &amin, double &amax);
+	void getClLimits(double &Clmin, double &Clmax);
+	void getLinearizedCl(double &Alpha0, double &slope);
 
 	QString foilName() {return m_FoilName;}
 	QString polarName() {return m_PlrName;}
-
-	QColor &polarColor(){return m_Color;}
-	int &polarStyle(){return m_Style;}
-	int &polarWidth(){return m_Width;}
 
 	XFLR5::enumPolarType polarType() {return m_PolarType;}
 	void setPolarType(XFLR5::enumPolarType type);
@@ -101,6 +96,14 @@ public:
 	void setPolarName(QString newPolarName) {m_PlrName = newPolarName;}
 
 	void setAutoPolarName();
+
+	LineStyle &lineStyle() {return m_polarStyle;}
+	QColor &polarColor()   {return m_polarStyle.m_Color;}
+	int &polarStyle()      {return m_polarStyle.m_Style;}
+	int &polarWidth()      {return m_polarStyle.m_Width;}
+	bool &bIsVisible()     {return m_polarStyle.m_bIsVisible;}
+	int &points()     {return m_polarStyle.m_PointStyle;}
+
 	static QString getAutoPolarName(XFLR5::enumPolarType polarType, double Re, double Mach, double NCrit, double ASpec=0.0);
 	static QString variableName(int iVar);
 	static Polar *curPolar() {return s_pCurPolar;}
@@ -135,12 +138,7 @@ private:
 	QString m_PlrName;                  /**< the Polar's name, used for references */
 	QString m_FoilName;                 /**< the name of the parent Foil to which this Polar object is attached */
 
-	bool m_bIsVisible;                  /**< true if the Polar's curve is visible in the active view */
-	bool m_bShowPoints;                 /**< true if the Polar's curve points are visible in the active graphs */
-
-	int m_Style;                        /**< the index of the style with which to draw the Polar's curve */
-	int m_Width;                        /**< the width with which to draw the Polar's curve */
-	QColor m_Color;                     /**< the color with which to draw the Polar's curve */
+	LineStyle m_polarStyle;
 
 	//Analysis specification
 	XFLR5::enumPolarType m_PolarType;          /**< the Polar type */

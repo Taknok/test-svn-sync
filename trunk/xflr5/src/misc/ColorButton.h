@@ -33,8 +33,8 @@ public:
 	void paintEvent ( QPaintEvent * event );
 	QSize sizeHint() const;
 
-	void SetColor(QColor const & color);
-	QColor &GetColor();
+	void setColor(QColor const & color);
+	QColor &color();
 
 private:
 	QColor m_Color;

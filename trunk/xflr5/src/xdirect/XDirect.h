@@ -85,90 +85,90 @@ public slots:
 
 
 private slots:
-	void OnXFoilAdvanced();
+	void onXFoilAdvanced();
 
-	void OnPolarFilter();
+	void onPolarFilter();
 	void onInputChanged();
-	void OnAnalyze();
+	void onAnalyze();
 	void onAnimate(bool bChecked);
-	void OnAnimateSpeed(int val);
-	void OnBatchAnalysis();
-	void OnMultiThreadedBatchAnalysis();
-	void OnCpi();
-	void OnCurOppOnly();
-	void OnCurveStyle(int index);
-	void OnCurveWidth(int index);
-	void OnCurveColor();
-	void OnDeleteCurFoil();
-	void OnDelCurOpp();
+	void onAnimateSpeed(int val);
+	void onBatchAnalysis();
+	void onMultiThreadedBatchAnalysis();
+	void onCpi();
+	void onCurOppOnly();
+	void onCurveStyle(int index);
+	void onCurveWidth(int index);
+	void onCurvePoints(int index);
+	void onCurveColor();
+	void onDeleteCurFoil();
+	void onDelCurOpp();
 	void onDeleteCurPolar();
 	void onDeleteFoilPolars();
-	void OnEditCurPolar();
-	void OnExportCurFoil();
-	void OnExportCurOpp();
-	void OnExportPolarOpps() ;
-	void OnExportCurPolar();
-	void OnExportAllPolars();
-	void OnHideAllOpps();
-	void OnHideAllPolars();
-	void OnHideFoilPolars();
-	void OnImportJavaFoilPolar();
-	void OnImportXFoilPolar();
+	void onEditCurPolar();
+	void onExportCurFoil();
+	void onExportCurOpp();
+	void onExportPolarOpps() ;
+	void onExportCurPolar();
+	void onExportAllPolars();
+	void onHideAllOpps();
+	void onHideAllPolars();
+	void onHideFoilPolars();
+	void onImportJavaFoilPolar();
+	void onImportXFoilPolar();
 	void onOpPointView();
 	void onPolarView();
-	void OnResetAllPolarGraphsScales();
-	void OnResetCurPolar();
-	void OnSavePolars();
-	void OnSequence();
-	void OnShowFoilPolarsOnly();
-	void OnShowFoilPolars();
-	void OnShowCurve();
-	void OnShowCurvePoints();
-	void OnShowAllOpps();
-	void OnShowAllPolars();
-	void OnDefinePolar();
-	void OnSpec();
-	void OnStoreOpp();
-	void OnViscous();
-	void OnDuplicateFoil();
-	void OnShowPolarOpps();
-	void OnHidePolarOpps();
+	void onResetAllPolarGraphsScales();
+	void onResetCurPolar();
+	void onSavePolars();
+	void onSequence();
+	void onShowFoilPolarsOnly();
+	void onShowFoilPolars();
+	void onShowCurve();
+	void onShowAllOpps();
+	void onShowAllPolars();
+	void onDefinePolar();
+	void onSpec();
+	void onStoreOpp();
+	void onViscous();
+	void onDuplicateFoil();
+	void onShowPolarOpps();
+	void onHidePolarOpps();
 	void onDeletePolarOpps();
-	void OnShowFoilOpps();
-	void OnHideFoilOpps();
+	void onShowFoilOpps();
+	void onHideFoilOpps();
 	void onDeleteFoilOpps();
-	void OnDerotateFoil();
-	void OnNormalizeFoil();
-	void OnCadd();
-	void OnRefinePanelsGlobally();
-	void OnFoilCoordinates();
-	void OnFoilGeom();
-	void OnSetTEGap();
-	void OnSetLERadius();
-	void OnSetFlap();
-	void OnInterpolateFoils();
-	void OnNacaFoils();
-	void OnRenamePolar();
-	void OnAnimateSingle();
-	void OnHighlightOpp();
+	void onDerotateFoil();
+	void onNormalizeFoil();
+	void onCadd();
+	void onRefinePanelsGlobally();
+	void onFoilCoordinates();
+	void onFoilGeom();
+	void onSetTEGap();
+	void onSetLERadius();
+	void onSetFlap();
+	void onInterpolateFoils();
+	void onNacaFoils();
+	void onRenamePolar();
+	void onAnimateSingle();
+	void onHighlightOpp();
 
-	void OnQGraph();
-	void OnCpGraph();
-	void OnExportCurXFoilResults();
-	void OnCtPlot();
-	void OnDbPlot();
-	void OnDtPlot();
-	void OnRtLPlot();
-	void OnRtPlot();
-	void OnNPlot();
-	void OnCdPlot();
-	void OnCfPlot();
-	void OnUePlot();
-	void OnHPlot();
+	void onQGraph();
+	void onCpGraph();
+	void onExportCurXFoilResults();
+	void onCtPlot();
+	void onDbPlot();
+	void onDtPlot();
+	void onRtLPlot();
+	void onRtPlot();
+	void onNPlot();
+	void onCdPlot();
+	void onCfPlot();
+	void onUePlot();
+	void onHPlot();
 
-	void OnOpPointProps();
-	void OnPolarProps();
-	void OnRenameCurFoil();
+	void onOpPointProps();
+	void onPolarProps();
+	void onRenameCurFoil();
 
 
 public:
@@ -176,7 +176,7 @@ public:
 	void keyReleaseEvent(QKeyEvent *event);
 
 	void setControls();
-	void Connect();
+	void connectSignals();
 	void createOppCurves(OpPoint *pOpp= NULL);
 	void createPolarCurves();
 	void fillComboBoxes(bool bEnable = true);
@@ -201,7 +201,7 @@ public:
 	void stopAnimate();
 	void updateCurveStyle();
 
-	void * GetVariable(Polar *pPolar, int iVar);
+	void * getVariable(Polar *pPolar, int iVar);
 
 	Foil* setFoil(Foil* pFoil=NULL);
 	Polar *setPolar(Polar *pPolar=NULL);
@@ -241,12 +241,15 @@ private:
 	QLabel *m_pctrlPolarProps;
 
 	QCheckBox *m_pctrlShowCurve;
-	QCheckBox *m_pctrlShowPoints;
+//	QCheckBox *m_pctrlShowPoints;
 	LineCbBox *m_pctrlCurveStyle;
 	LineCbBox *m_pctrlCurveWidth;
+	LineCbBox *m_pctrlPointStyle;
 	LineBtn *m_pctrlCurveColor;
 
-	LineDelegate *m_pStyleDelegate, *m_pWidthDelegate;
+	LineDelegate *m_pStyleDelegate, *m_pWidthDelegate, *m_pPointDelegate;
+
+	static void *s_pMainFrame;  /**< a static pointer to the instance of the application's MainFrame object */
 
 	static bool s_bViscous;           /**< true if performing a viscous calculation, false if inviscid */
 	static bool s_bAlpha;             /**< true if performing an analysis based on aoa, false if based on Cl */
@@ -320,12 +323,8 @@ private:
 	QGraph m_CpGraph;           /**< the Cp graph for the OpPoint view */
 	QList<QGraph*> m_PlrGraph;  /**< the array of pointer to the 5 Polar graphs */
 
-	static void *s_pMainFrame;  /**< a static pointer to the instance of the application's MainFrame object */
-	QColor m_CurveColor;        /**< the color displayed in the comboboxes for the selection of curve styles */
+	LineStyle m_LineStyle;      /**< the style of the lines displayed in the comboboxes*/
 
-	int m_CurveStyle;           /**< the index of the style of the lines displayed in the comboboxes for the selection of curve styles*/
-	int m_CurveWidth;           /**< the width of the lines displayed in the comboboxes for the selection of curve styles*/
-	
 	QRect m_rCltRect;		    /**< the client rectangle of the central TwoDWidget */
 	QPoint m_PointDown;		    /**< the client coordinated of the last mouse left-click */
 

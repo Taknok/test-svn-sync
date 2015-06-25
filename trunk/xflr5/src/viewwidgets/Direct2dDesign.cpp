@@ -334,13 +334,13 @@ void Direct2dDesign::dragSelectedPoint(double x, double y)
 	{
 		m_pSF->extrados()->m_CtrlPoint[n].x = m_MousePos.x;
 		m_pSF->extrados()->m_CtrlPoint[n].y = m_MousePos.y;
-		m_pSF->extrados()->SplineCurve();
+		m_pSF->extrados()->splineCurve();
 		m_pSF->UpdateSplineFoil();
 		if(m_pSF->isSymetric())
 		{
 			m_pSF->intrados()->m_CtrlPoint[n].x = m_MousePos.x;
 			m_pSF->intrados()->m_CtrlPoint[n].y = -m_MousePos.y;
-			m_pSF->intrados()->SplineCurve();
+			m_pSF->intrados()->splineCurve();
 			m_pSF->UpdateSplineFoil();
 		}
 		m_pSF->setModified(true);
@@ -352,14 +352,14 @@ void Direct2dDesign::dragSelectedPoint(double x, double y)
 		{
 			m_pSF->intrados()->m_CtrlPoint[n].x = m_MousePos.x;
 			m_pSF->intrados()->m_CtrlPoint[n].y = m_MousePos.y;
-			m_pSF->intrados()->SplineCurve();
+			m_pSF->intrados()->splineCurve();
 			m_pSF->UpdateSplineFoil();
 
 			if(m_pSF->isSymetric())
 			{
 				m_pSF->extrados()->m_CtrlPoint[n].x =  m_MousePos.x;
 				m_pSF->extrados()->m_CtrlPoint[n].y = -m_MousePos.y;
-				m_pSF->extrados()->SplineCurve();
+				m_pSF->extrados()->splineCurve();
 				m_pSF->UpdateSplineFoil();
 			}
 			m_pSF->setModified(true);
@@ -386,14 +386,14 @@ void Direct2dDesign::onInsertPt()
 	{
 		m_pSF->extrados()->InsertPoint(Real.x,Real.y);
 		m_pSF->extrados()->SplineKnots();
-		m_pSF->extrados()->SplineCurve();
+		m_pSF->extrados()->splineCurve();
 		m_pSF->UpdateSplineFoil();
 	}
 	else
 	{
 		m_pSF->intrados()->InsertPoint(Real.x,Real.y);
 		m_pSF->intrados()->SplineKnots();
-		m_pSF->intrados()->SplineCurve();
+		m_pSF->intrados()->splineCurve();
 		m_pSF->UpdateSplineFoil();
 	}
 
@@ -420,7 +420,7 @@ void Direct2dDesign::onRemovePt()
 			return;
 		}
 		m_pSF->extrados()->SplineKnots();
-		m_pSF->extrados()->SplineCurve();
+		m_pSF->extrados()->splineCurve();
 		m_pSF->UpdateSplineFoil();
 	}
 	else
@@ -434,7 +434,7 @@ void Direct2dDesign::onRemovePt()
 				return;
 			}
 			m_pSF->intrados()->SplineKnots();
-			m_pSF->intrados()->SplineCurve();
+			m_pSF->intrados()->splineCurve();
 			m_pSF->UpdateSplineFoil();
 		}
 	}

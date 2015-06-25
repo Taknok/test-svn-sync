@@ -19,8 +19,9 @@
 
 *****************************************************************************/
 
-
+#include <QtDebug>
 #include "LineDelegate.h"
+#include "LineCbBox.h"
 #include "../globals.h"
 
 LineDelegate::LineDelegate(QObject *parent)
@@ -29,14 +30,19 @@ LineDelegate::LineDelegate(QObject *parent)
 	//initialize with something, just in case
 	for (int i=0; i<5; i++)
 	{
-		m_LineWidth[i] = i+1;
-		m_LineStyle[i] = i;
+		m_LineWidth[i]  = i+1;
+		m_LineStyle[i]  = i;
+		m_PointStyle[i] = i;
 	}
 
 	m_LineColor = QColor(0,255,0);
 	m_Size.setHeight(15);
 	m_Size.setWidth(50);
+
+	m_pCbBox = parent;
 }
+
+
 
 void LineDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
@@ -56,6 +62,40 @@ void LineDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, 
 					  option.rect.y() + option.rect.height()/2,
 					  option.rect.width()-6,
 					  option.rect.y() + option.rect.height()/2);
+
+
+	if(m_pCbBox && ((LineCbBox*)m_pCbBox)->points())
+	{
+		switch(m_PointStyle[index.row()])
+		{
+			case 0: break;
+			case 1:
+			{
+				int ptSide = 2;
+				painter->drawEllipse(option.rect.center().x()-ptSide, option.rect.center().y()-ptSide, 2*ptSide, 2*ptSide );
+				break;
+			}
+			case 2:
+			{
+				int ptSide = 4;
+				painter->drawEllipse(option.rect.center().x()-ptSide, option.rect.center().y()-ptSide, 2*ptSide, 2*ptSide );
+				break;
+			}
+			case 3:
+			{
+				int ptSide = 2;
+				painter->drawRect(option.rect.center().x()-ptSide, option.rect.center().y()-ptSide, 2*ptSide, 2*ptSide );
+				break;
+			}
+			case 4:
+			{
+				int ptSide = 4;
+				painter->drawRect(option.rect.center().x()-ptSide, option.rect.center().y()-ptSide, 2*ptSide, 2*ptSide );
+				break;
+			}
+			default: break;
+		}
+	}
 	painter->restore();
 }
 
@@ -66,28 +106,30 @@ QSize LineDelegate::sizeHint(const QStyleOptionViewItem & /* option */, const QM
 }
 
 
-void LineDelegate::SetLineColor(QColor color)
+void LineDelegate::setLineColor(QColor color)
 {
 	m_LineColor = color;
 }
 
 
-void LineDelegate::SetLineStyle(int *style)
+void LineDelegate::setLineStyle(int *style)
 {
 	for (int i=0; i<5; i++)	m_LineStyle[i] = style[i];
 }
 
 
-void LineDelegate::SetLineWidth(int *width)
+void LineDelegate::setLineWidth(int *width)
 {
 	for (int i=0; i<5; i++)	m_LineWidth[i] = width[i];
 }
 
 
-void LineDelegate::SetSize(QSize size)
+void LineDelegate::setPointStyle(int *pointStyle)
 {
-	m_Size = size;
+	for (int i=0; i<5; i++)	m_PointStyle[i] = pointStyle[i];
 }
+
+
 
 
 

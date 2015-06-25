@@ -40,12 +40,11 @@ public:
 	void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 	QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index ) const;
 
-	void SetLineColor(QColor color);
-	void SetLineStyle(int *style);
-	void SetLineWidth(int *width);
+	void setLineColor(QColor color);
+	void setLineStyle(int *style);
+	void setLineWidth(int *width);
+	void setPointStyle(int *pointStyle);
 
-public slots:
-	void SetSize(QSize size);//what's the use ?
 
 private:
 	void * m_pCbBox; //pointer to the parent QLineComboBox
@@ -54,6 +53,7 @@ private:
 	int m_LineStyle[5]; // values depend on whether we have a line or width CbBox....
 	int m_LineWidth[5]; // values depend on whether we have a line or width CbBox....
 	QColor m_LineColor; // the same for all CbBox items
+	int m_PointStyle[5];
 };
 
 

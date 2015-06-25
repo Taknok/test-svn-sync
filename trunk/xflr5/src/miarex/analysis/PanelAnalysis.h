@@ -49,7 +49,7 @@ public:
 
 
 private:
-	bool SolveUnitRHS();
+	bool solveUnitRHS();
 
 	bool loop();
 	bool alphaLoop();
@@ -57,48 +57,47 @@ private:
 	bool unitLoop();
 	bool controlLoop();
 
-	bool GetZeroMomentAngle();
+	bool getZeroMomentAngle();
 
-	void BuildInfluenceMatrix();
+	void buildInfluenceMatrix();
 
-	void ComputeAeroCoefs(double V0, double VDelta, int nrhs);
-	void ComputeOnBodyCp(double V0, double VDelta, int nval);
-	void ComputePlane(double Alpha, double QInf, int qrhs);
-	void ComputeFarField(double QInf, double Alpha0, double AlphaDelta, int nval);
-	void ComputeBalanceSpeeds(double Alpha, int q);
-	void CreateDoubletStrength(double Alpha0, double AlphaDelta, int nval);
-	void CreateSourceStrength(double Alpha0, double AlphaDelta, int nval);
-	void CreateRHS(double *RHS, CVector VInf, double *VField = NULL);
-	void CreateUnitRHS();
-	void CreateWakeContribution();
-	void CreateWakeContribution(double *pWakeContrib, CVector WindDirection);
-	void GetDoubletInfluence(CVector const &C, Panel *pPanel, CVector &V, double &phi, bool bWake=false, bool bAll=true);
-	void GetSourceInfluence(CVector const &C, Panel *pPanel, CVector &V, double &phi);
-	void ScaleResultstoSpeed(int nval);
-	void SumPanelForces(double *Cp, double Alpha, double &Lift, double &Drag);
+	void computeAeroCoefs(double V0, double VDelta, int nrhs);
+	void computeOnBodyCp(double V0, double VDelta, int nval);
+	void computePlane(double Alpha, double QInf, int qrhs);
+	void computeFarField(double QInf, double Alpha0, double AlphaDelta, int nval);
+	void computeBalanceSpeeds(double Alpha, int q);
+	void createDoubletStrength(double Alpha0, double AlphaDelta, int nval);
+	void createSourceStrength(double Alpha0, double AlphaDelta, int nval);
+	void createRHS(double *RHS, CVector VInf, double *VField = NULL);
+	void createUnitRHS();
+	void createWakeContribution();
+	void createWakeContribution(double *pWakeContrib, CVector WindDirection);
+	void getDoubletInfluence(CVector const &C, Panel *pPanel, CVector &V, double &phi, bool bWake=false, bool bAll=true);
+	void getSourceInfluence(CVector const &C, Panel *pPanel, CVector &V, double &phi);
+	void scaleResultstoSpeed(int nval);
+	void sumPanelForces(double *Cp, double Alpha, double &Lift, double &Drag);
 	void VLMGetVortexInfluence(Panel *pPanel, CVector const &C, CVector &V, bool bAll);
 	void VLMQmn(CVector &LA, CVector &LB, CVector &TA, CVector &TB, CVector const &C, CVector &V);
 	void VLMCmn(CVector const &A, CVector const &B, CVector const &C, CVector &V, bool const &bAll=true);
 
-	void GetDoubletDerivative(const int &p, double *Mu, double &Cp, CVector &VTotl, double const &QInf, double Vx, double Vy, double Vz);
-	void GetVortexCp(const int &p, double *Gamma, double *Cp, CVector &VInf);
+	void getDoubletDerivative(const int &p, double *Mu, double &Cp, CVector &VTotl, double const &QInf, double Vx, double Vy, double Vz);
+	void getVortexCp(const int &p, double *Gamma, double *Cp, CVector &VInf);
 
 
-	void ComputeStabilityDerivatives();
-	void ComputeStabilityInertia();
-	bool ComputeTrimmedConditions();
-	bool SolveEigenvalues();
-	void BuildRotationMatrix();
-	void BuildStateMatrices();
-	void ComputeControlDerivatives();
-	void ComputeResults();
-	void ComputeNDStabDerivatives();
-	void Forces(double *Mu, double *Sigma, double alpha, double *VInf, CVector &Force, CVector &Moment, bool bViscous);
-	double ComputeCm(double Alpha);
+	void computeStabilityDerivatives();
+	void computeStabilityInertia();
+	bool computeTrimmedConditions();
+	bool solveEigenvalues();
+	void buildRotationMatrix();
+	void buildStateMatrices();
+	void computeControlDerivatives();
+	void computeNDStabDerivatives();
+	void forces(double *Mu, double *Sigma, double alpha, double *VInf, CVector &Force, CVector &Moment, bool bViscous);
+	double computeCm(double Alpha);
 
-	bool AllocateMatrix(int matSize, int &memsize);
-	bool AllocateRHS(int matSize, int &memsize);
-	void ReleaseArrays();
+	bool allocateMatrix(int matSize, int &memsize);
+	bool allocateRHS(int matSize, int &memsize);
+	void releaseArrays();
 
 	void traceLog(QString str);
 
@@ -106,15 +105,16 @@ private:
 	void restorePanels();
 	void setArrayPointers(void *pPanel, void *pMemPanel, void *pWakePanel, void *pRefWakePanel, void *pNode, void *pMemNode, void *pWakeNode, void *pRefWakeNode);
 	void setArraySize(int MatSize, int WakeSize, int nNodes, int nWakeNodes, int NWakeColumn);
-	void setRange(double vMin, double VMax, double vDelta, bool bSequence);
+	void setInertia(double ctrl);
 	void setObjectPointers(void *pPlane, void *pSurfaceList);
 	void setParams(int nMaxWakeIter);
+	void setRange(double vMin, double VMax, double vDelta, bool bSequence);
 	void setWPolar(WPolar*pWPolar){m_pWPolar = pWPolar;}
 	PlaneOpp* createPlaneOpp(double *Cp, double *Gamma, double *Sigma);
 
 
 public:
-	void GetSpeedVector(CVector const &C, double *Mu, double *Sigma, CVector &VT, bool bAll=true);
+	void getSpeedVector(CVector const &C, double *Mu, double *Sigma, CVector &VT, bool bAll=true);
 
 private:
 
@@ -130,7 +130,6 @@ private:
 
 	bool m_bPointOut;           /**< true if an interpolation was outside the min or max Cl */
 	bool m_bSequence;           /**< true if the calculation is should be performed for a range of aoa */
-	bool m_bWakeRollUp;         /**< true if wake roll-up is enabled. This option is disabled */
 
 	int m_nRHS;                 /**< the number of RHS to calculate; cannot be greater than VLMMAXRHS */
 	int m_nNodes;               /**< the number of nodes  */
@@ -271,6 +270,10 @@ public: //stability analysis method and variables
 
 	bool m_bTrace;
 	QString m_OutMessage;
+
+	double m_Mass;         /** The value of the mass for the calculation. Is set from the mean value, the gain, and the control parameter */
+	CVector m_CoG;         /** The value of the CoG for the calculation. Is set from the mean value, the gain, and the control parameter */
+	double m_Inertia[4];   /** The value of the inertia tensor components for the calculation. Is set from the mean value, the gain, and the control parameter. */
 };
 
 #endif // PANELANALYSIS_H

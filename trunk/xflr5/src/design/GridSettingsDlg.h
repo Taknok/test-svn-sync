@@ -38,7 +38,7 @@ class GridSettingsDlg : public QDialog
 
 public:
 	GridSettingsDlg(QWidget *pParent=NULL);
-	void InitDialog();
+	void initDialog();
 
 private slots:
 	void OnOK();

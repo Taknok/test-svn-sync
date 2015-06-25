@@ -242,7 +242,7 @@ void BodyFrameWidget::onRemovePt()
 		{
 			for (int i=0; i<m_pBody->frameSize();i++)
 			{
-				m_pBody->frame(i)->RemovePoint(n);
+				m_pBody->frame(i)->removePoint(n);
 			}
 			m_pBody->setNURBSKnots();
 			emit objectModified();
@@ -286,7 +286,7 @@ void BodyFrameWidget::dragSelectedPoint(double x, double y)
 {
 	if (!m_pBody->activeFrame() || (Frame::s_iSelect<0) ||  (Frame::s_iSelect > m_pBody->activeFrame()->PointCount())) return;
 
-	m_pBody->activeFrame()->selectedPoint().Set(m_pBody->activeFrame()->position().x, qMax(x,0.0), y);
+	m_pBody->activeFrame()->selectedPoint().set(m_pBody->activeFrame()->position().x, qMax(x,0.0), y);
 
 }
 

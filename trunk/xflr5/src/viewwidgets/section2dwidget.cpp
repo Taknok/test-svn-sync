@@ -991,7 +991,7 @@ void Section2dWidget::onGridSettings()
 	dlg.m_YMinColor  = m_YMinColor;
 	dlg.m_YMinUnit   = m_YMinUnit;
 
-	dlg.InitDialog();
+	dlg.initDialog();
 
 	if(dlg.exec() == QDialog::Accepted)
 	{

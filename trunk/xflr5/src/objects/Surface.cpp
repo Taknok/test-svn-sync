@@ -177,10 +177,10 @@ void Surface::AddFlapPanel(Panel *pPanel)
  */
 void Surface::Copy(Surface *pSurface)
 {
-	m_LA.Copy(pSurface->m_LA);
-	m_LB.Copy(pSurface->m_LB);
-	m_TA.Copy(pSurface->m_TA);
-	m_TB.Copy(pSurface->m_TB);
+	m_LA.copy(pSurface->m_LA);
+	m_LB.copy(pSurface->m_LB);
+	m_TA.copy(pSurface->m_TA);
+	m_TB.copy(pSurface->m_TB);
 	m_XDistType = pSurface->m_XDistType;
 	m_YDistType = pSurface->m_YDistType;
 	m_NElements = pSurface->m_NElements;
@@ -319,7 +319,7 @@ double Surface::GetFoilArea(double const &tau)
 void Surface::GetNormal(double yrel, CVector &N)
 {
 	N = NormalA * (1.0-yrel) + NormalB * yrel;
-	N.Normalize();
+	N.normalize();
 }
 
 
@@ -684,8 +684,8 @@ void Surface::GetyDist(int const &k, double &y1, double &y2)
 void Surface::Init()
 {
 	CVector DL, DC;
-	DL.Set(m_LB.x-m_LA.x, m_LB.y-m_LA.y, m_LB.z-m_LA.z);
-	DC.Set(m_TA.x-m_LA.x, m_TA.y-m_LA.y, m_TA.z-m_LA.z);
+	DL.set(m_LB.x-m_LA.x, m_LB.y-m_LA.y, m_LB.z-m_LA.z);
+	DC.set(m_TA.x-m_LA.x, m_TA.y-m_LA.y, m_TA.z-m_LA.z);
 //	Length = DL.VAbs();
 //	Chord  = DC.VAbs();
 //	u.Set(DC.x/Chord,  DC.y/Chord,  DC.z/Chord);
@@ -701,7 +701,7 @@ void Surface::Init()
 	LATB = m_TB - m_LA;
 	TALB = m_LB - m_TA;
 	Normal = LATB * TALB;
-	Normal.Normalize();
+	Normal.normalize();
 }
 
 
@@ -834,17 +834,17 @@ bool Surface::RotateFlap(double const &Angle)
  */
 void Surface::RotateX(CVector const&O, double XTilt)
 {
-	m_LA.RotateX(O, XTilt);
-	m_LB.RotateX(O, XTilt);
-	m_TA.RotateX(O, XTilt);
-	m_TB.RotateX(O, XTilt);
-	m_HingePoint.RotateX(O, XTilt);
+	m_LA.rotateX(O, XTilt);
+	m_LB.rotateX(O, XTilt);
+	m_TA.rotateX(O, XTilt);
+	m_TB.rotateX(O, XTilt);
+	m_HingePoint.rotateX(O, XTilt);
 
 	CVector Origin(0.0,0.0,0.0);
-	Normal.RotateX(Origin, XTilt);
-	NormalA.RotateX(Origin, XTilt);
-	NormalB.RotateX(Origin, XTilt);
-	m_HingeVector.RotateX(Origin, XTilt);
+	Normal.rotateX(Origin, XTilt);
+	NormalA.rotateX(Origin, XTilt);
+	NormalB.rotateX(Origin, XTilt);
+	m_HingeVector.rotateX(Origin, XTilt);
 }
 
 
@@ -855,17 +855,17 @@ void Surface::RotateX(CVector const&O, double XTilt)
  */
 void Surface::RotateY(CVector const &O, double YTilt)
 {
-	m_LA.RotateY(O, YTilt);
-	m_LB.RotateY(O, YTilt);
-	m_TA.RotateY(O, YTilt);
-	m_TB.RotateY(O, YTilt);
-	m_HingePoint.RotateY(O, YTilt);
+	m_LA.rotateY(O, YTilt);
+	m_LB.rotateY(O, YTilt);
+	m_TA.rotateY(O, YTilt);
+	m_TB.rotateY(O, YTilt);
+	m_HingePoint.rotateY(O, YTilt);
 
 	CVector Origin(0.0,0.0,0.0);
-	Normal.RotateY(Origin, YTilt);
-	NormalA.RotateY(Origin, YTilt);
-	NormalB.RotateY(Origin, YTilt);
-	m_HingeVector.RotateY(Origin, YTilt);
+	Normal.rotateY(Origin, YTilt);
+	NormalA.rotateY(Origin, YTilt);
+	NormalB.rotateY(Origin, YTilt);
+	m_HingeVector.rotateY(Origin, YTilt);
 }
 
 /**
@@ -875,17 +875,17 @@ void Surface::RotateY(CVector const &O, double YTilt)
  */
 void Surface::RotateZ(CVector const &O, double ZTilt)
 {
-	m_LA.RotateZ(O, ZTilt);
-	m_LB.RotateZ(O, ZTilt);
-	m_TA.RotateZ(O, ZTilt);
-	m_TB.RotateZ(O, ZTilt);
-	m_HingePoint.RotateZ(O, ZTilt);
+	m_LA.rotateZ(O, ZTilt);
+	m_LB.rotateZ(O, ZTilt);
+	m_TA.rotateZ(O, ZTilt);
+	m_TB.rotateZ(O, ZTilt);
+	m_HingePoint.rotateZ(O, ZTilt);
 
 	CVector Origin(0.0,0.0,0.0);
-	Normal.RotateZ(Origin, ZTilt);
-	NormalA.RotateZ(Origin, ZTilt);
-	NormalB.RotateZ(Origin, ZTilt);
-	m_HingeVector.RotateZ(Origin, ZTilt);
+	Normal.rotateZ(Origin, ZTilt);
+	NormalA.rotateZ(Origin, ZTilt);
+	NormalB.rotateZ(Origin, ZTilt);
+	m_HingeVector.rotateZ(Origin, ZTilt);
 }
 
 /**
@@ -918,7 +918,7 @@ void Surface::SetFlap()
 		GetSurfacePoint(m_posATE, m_posBTE, 0.0, m_HingePoint, 0);
 		GetSurfacePoint(m_posATE, m_posBTE, 1.0, HB, 0);
 		m_HingeVector = HB-m_HingePoint;
-		m_HingeVector.Normalize();
+		m_HingeVector.normalize();
 	}
 }
 
@@ -930,7 +930,7 @@ void Surface::SetNormal()
 	LATB = m_TB - m_LA;
 	TALB = m_LB - m_TA;
 	Normal = LATB * TALB;
-	Normal.Normalize();
+	Normal.normalize();
 }
 
 
@@ -1083,12 +1083,12 @@ void Surface::SetSidePoints(Body * pBody, double dx, double dz)
 	CVector Node;
 
 	Node = (SideA_B[0] + SideA_T[0])/2.0;
-	SideA_B[0].Set(Node);
-	SideA_T[0].Set(Node);
+	SideA_B[0].set(Node);
+	SideA_T[0].set(Node);
 
 	Node = (SideB_B[0] + SideB_T[0])/2.0;
-	SideB_B[0].Set(Node);
-	SideB_T[0].Set(Node);
+	SideB_B[0].set(Node);
+	SideB_T[0].set(Node);
 }
 
 
@@ -1098,11 +1098,11 @@ void Surface::SetSidePoints(Body * pBody, double dx, double dz)
  */
 void Surface::Translate(CVector const &T)
 {
-	m_LA.Translate(T);
-	m_LB.Translate(T);
-	m_TA.Translate(T);
-	m_TB.Translate(T);
-	m_HingePoint.Translate(T);
+	m_LA.translate(T);
+	m_LB.translate(T);
+	m_TA.translate(T);
+	m_TB.translate(T);
+	m_HingePoint.translate(T);
 }
 
 /**
@@ -1111,11 +1111,11 @@ void Surface::Translate(CVector const &T)
  */
 void Surface::Translate(double tx, double ty, double tz)
 {
-	m_LA.Translate(tx, ty, tz);
-	m_LB.Translate(tx, ty, tz);
-	m_TA.Translate(tx, ty, tz);
-	m_TB.Translate(tx, ty, tz);
-	m_HingePoint.Translate(tx, ty, tz);
+	m_LA.translate(tx, ty, tz);
+	m_LB.translate(tx, ty, tz);
+	m_TA.translate(tx, ty, tz);
+	m_TB.translate(tx, ty, tz);
+	m_HingePoint.translate(tx, ty, tz);
 }
 
 
@@ -1197,12 +1197,12 @@ void Surface::CreateXPoints()
 void Surface::SetTwist1()
 {
 	static CVector A4, B4, L, U, T, O;
-	O.Set(0.0,0.0,0.0);
+	O.set(0.0,0.0,0.0);
 
 	A4 = m_LA *3.0/4.0 + m_TA * 1/4.0;
 	B4 = m_LB *3.0/4.0 + m_TB * 1/4.0;
 	L = B4 - A4;
-	L.Normalize();
+	L.normalize();
 
 	// create a vector perpendicular to NormalA and x-axis
 	T.x = 0.0;
@@ -1210,14 +1210,14 @@ void Surface::SetTwist1()
 	T.z = -NormalA.y;
 	//rotate around this axis
 	U = m_LA-A4;
-	U.Rotate(T, m_TwistA);
+	U.rotate(T, m_TwistA);
 	m_LA = A4+ U;
 
 	U = m_TA-A4;
-	U.Rotate(T, m_TwistA);
+	U.rotate(T, m_TwistA);
 	m_TA = A4 + U;
 
-	NormalA.Rotate(T, m_TwistA);
+	NormalA.rotate(T, m_TwistA);
 
 	// create a vector perpendicular to NormalB and x-axis
 	T.x = 0.0;
@@ -1225,14 +1225,14 @@ void Surface::SetTwist1()
 	T.z = -NormalB.y;
 
 	U = m_LB-B4;
-	U.Rotate(T, m_TwistB);
+	U.rotate(T, m_TwistB);
 	m_LB = B4+ U;
 
 	U = m_TB-B4;
-	U.Rotate(T, m_TwistB);
+	U.rotate(T, m_TwistB);
 	m_TB = B4 + U;
 
-	NormalB.Rotate(T, m_TwistB);
+	NormalB.rotate(T, m_TwistB);
 }
 
 
@@ -1256,7 +1256,7 @@ void Surface::SetTwist2()
 	m_LA.z = zc4 - (LA.x-xc4) * sin(m_TwistA *PI/180.0) + (LA.z-zc4) * cos(m_TwistA *PI/180.0);
 	m_TA.x = xc4 + (TA.x-xc4) * cos(m_TwistA *PI/180.0) - (TA.z-zc4) * sin(m_TwistA *PI/180.0);
 	m_TA.z = zc4 - (TA.x-xc4) * sin(m_TwistA *PI/180.0) + (TA.z-zc4) * cos(m_TwistA *PI/180.0);
-	NormalA.RotateY(O, m_TwistA);
+	NormalA.rotateY(O, m_TwistA);
 
 	//"B" Section next
 	xc4 = m_LB.x + (m_TB.x-m_LB.x)/4.0;
@@ -1265,7 +1265,7 @@ void Surface::SetTwist2()
 	m_LB.z = zc4 - (LB.x-xc4) * sin(m_TwistB *PI/180.0) + (LB.z-zc4) * cos(m_TwistB *PI/180.0);;
 	m_TB.x = xc4 + (TB.x-xc4) * cos(m_TwistB *PI/180.0) - (TB.z-zc4) * sin(m_TwistB *PI/180.0);;
 	m_TB.z = zc4 - (TB.x-xc4) * sin(m_TwistB *PI/180.0) + (TB.z-zc4) * cos(m_TwistB *PI/180.0);;
-	NormalB.RotateY(O, m_TwistB);
+	NormalB.rotateY(O, m_TwistB);
 }
 
 

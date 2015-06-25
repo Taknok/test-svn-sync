@@ -54,8 +54,8 @@ StabViewDlg::StabViewDlg(QWidget *parent) : QWidget(parent)
 		m_Time[i] = (double)i;
 		m_Amplitude[i] = 0.0;
 	}
-	SetupLayout();
-	Connect();
+	setupLayout();
+	connectSignals();
 }
 
 StabViewDlg::~StabViewDlg()
@@ -65,40 +65,40 @@ StabViewDlg::~StabViewDlg()
 }
 
 
-void StabViewDlg::Connect()
+void StabViewDlg::connectSignals()
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 
 	connect(m_pctrlLongDynamics, SIGNAL(clicked()), pMiarex, SLOT(onStabilityDirection()));
 	connect(m_pctrlLatDynamics,  SIGNAL(clicked()), pMiarex, SLOT(onStabilityDirection()));
 
-	connect(m_pctrlPlotStabGraph, SIGNAL(clicked()), this , SLOT(OnPlotStabilityGraph()));
+	connect(m_pctrlPlotStabGraph, SIGNAL(clicked()), this , SLOT(onPlotStabilityGraph()));
 
-	connect(m_pctrlRLMode1,   SIGNAL(clicked()), this, SLOT(OnModeSelection()));
-	connect(m_pctrlRLMode2,   SIGNAL(clicked()), this, SLOT(OnModeSelection()));
-	connect(m_pctrlRLMode3,   SIGNAL(clicked()), this, SLOT(OnModeSelection()));
-	connect(m_pctrlRLMode4,   SIGNAL(clicked()), this, SLOT(OnModeSelection()));
-	connect(m_pctrlTimeMode1, SIGNAL(clicked()), this, SLOT(OnModeSelection()));
-	connect(m_pctrlTimeMode2, SIGNAL(clicked()), this, SLOT(OnModeSelection()));
-	connect(m_pctrlTimeMode3, SIGNAL(clicked()), this, SLOT(OnModeSelection()));
-	connect(m_pctrlTimeMode4, SIGNAL(clicked()), this, SLOT(OnModeSelection()));
+	connect(m_pctrlRLMode1,   SIGNAL(clicked()), this, SLOT(onModeSelection()));
+	connect(m_pctrlRLMode2,   SIGNAL(clicked()), this, SLOT(onModeSelection()));
+	connect(m_pctrlRLMode3,   SIGNAL(clicked()), this, SLOT(onModeSelection()));
+	connect(m_pctrlRLMode4,   SIGNAL(clicked()), this, SLOT(onModeSelection()));
+	connect(m_pctrlTimeMode1, SIGNAL(clicked()), this, SLOT(onModeSelection()));
+	connect(m_pctrlTimeMode2, SIGNAL(clicked()), this, SLOT(onModeSelection()));
+	connect(m_pctrlTimeMode3, SIGNAL(clicked()), this, SLOT(onModeSelection()));
+	connect(m_pctrlTimeMode4, SIGNAL(clicked()), this, SLOT(onModeSelection()));
 	
-	connect(m_pctrlAnimate,            SIGNAL(clicked()),         this, SLOT(OnAnimate()));
-	connect(m_pctrlAnimationSpeed ,    SIGNAL(valueChanged(int)), this, SLOT(OnAnimationSpeed(int)));
-	connect(m_pctrlAnimationAmplitude, SIGNAL(valueChanged(int)), this, SLOT(OnAnimationAmplitude(int)));
-	connect(m_pctrlAnimateRestart,     SIGNAL(clicked()),         this, SLOT(OnAnimateRestart()));
-	connect(m_pctrlDeltat,             SIGNAL(editingFinished()), this, SLOT(OnReadData()));
-	connect(m_pctrlModeStep,           SIGNAL(editingFinished()), this, SLOT(OnReadData()));
+	connect(m_pctrlAnimate,            SIGNAL(clicked()),         this, SLOT(onAnimate()));
+	connect(m_pctrlAnimationSpeed ,    SIGNAL(valueChanged(int)), this, SLOT(onAnimationSpeed(int)));
+	connect(m_pctrlAnimationAmplitude, SIGNAL(valueChanged(int)), this, SLOT(onAnimationAmplitude(int)));
+	connect(m_pctrlAnimateRestart,     SIGNAL(clicked()),         this, SLOT(onAnimateRestart()));
+	connect(m_pctrlDeltat,             SIGNAL(editingFinished()), this, SLOT(onReadData()));
+	connect(m_pctrlModeStep,           SIGNAL(editingFinished()), this, SLOT(onReadData()));
 //	connect(m_pCtrlDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(OnCellChanged(QWidget *)));
 
-	connect(m_pctrlInitCondResponse, SIGNAL(clicked()), this, SLOT(OnResponseType()));
-	connect(m_pctrlForcedResponse,   SIGNAL(clicked()), this, SLOT(OnResponseType()));
-	connect(m_pctrlModalResponse,    SIGNAL(clicked()), this, SLOT(OnResponseType()));
+	connect(m_pctrlInitCondResponse, SIGNAL(clicked()), this, SLOT(onResponseType()));
+	connect(m_pctrlForcedResponse,   SIGNAL(clicked()), this, SLOT(onResponseType()));
+	connect(m_pctrlModalResponse,    SIGNAL(clicked()), this, SLOT(onResponseType()));
 	
-	connect(m_pctrlAddCurve,    SIGNAL(clicked()),      this, SLOT(OnAddCurve()));
-	connect(m_pctrlDeleteCurve, SIGNAL(clicked()),      this, SLOT(OnDeleteCurve()));
-	connect(m_pctrlRenameCurve, SIGNAL(clicked()),      this, SLOT(OnRenameCurve()));
-	connect(m_pctrlCurveList,   SIGNAL(activated(int)), this, SLOT(OnSelChangeCurve(int)));
+	connect(m_pctrlAddCurve,    SIGNAL(clicked()),      this, SLOT(onAddCurve()));
+	connect(m_pctrlDeleteCurve, SIGNAL(clicked()),      this, SLOT(onDeleteCurve()));
+	connect(m_pctrlRenameCurve, SIGNAL(clicked()),      this, SLOT(onRenameCurve()));
+	connect(m_pctrlCurveList,   SIGNAL(activated(int)), this, SLOT(onSelChangeCurve(int)));
 	
 	m_pControlModel = new QStandardItemModel(this);
 	m_pControlModel->setRowCount(20);//temporary
@@ -118,7 +118,7 @@ void StabViewDlg::Connect()
 }
 
 
-void StabViewDlg::UpdateControlModelData()
+void StabViewDlg::updateControlModelData()
 {
 	QModelIndex ind;
 	for(int i=0; i<m_pControlModel->rowCount(); i++)
@@ -131,7 +131,7 @@ void StabViewDlg::UpdateControlModelData()
 }
 
 
-void StabViewDlg::ReadControlModelData()
+void StabViewDlg::readControlModelData()
 {
 	for(int i=0; i<m_pControlModel->rowCount(); i++)
 	{
@@ -141,7 +141,7 @@ void StabViewDlg::ReadControlModelData()
 }
 
 
-void StabViewDlg::FillEigenThings()
+void StabViewDlg::fillEigenThings()
 {
     QMiarex * pMiarex = (QMiarex*)s_pMiarex;
     complex<double> c;
@@ -153,7 +153,7 @@ void StabViewDlg::FillEigenThings()
 
     QString ModeDescription = tr("<small>Mode Properties:")+"<br/>";
 
-	if(pMiarex->m_pCurPlane && pMiarex->m_pCurPOpp && pMiarex->m_pCurWPolar->m_WPolarType==XFLR5::STABILITYPOLAR)
+	if(pMiarex->m_pCurPlane && pMiarex->m_pCurPOpp && pMiarex->m_pCurWPolar->polarType()==XFLR5::STABILITYPOLAR)
     {
         //We normalize the mode before display and only for display purposes
 		u0   = pMiarex->m_pCurPOpp->m_QInf;
@@ -268,14 +268,14 @@ void StabViewDlg::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_Enter:
 		{
 			if(!m_pctrlPlotStabGraph->hasFocus()) m_pctrlPlotStabGraph->setFocus();
-			else OnPlotStabilityGraph();
+			else onPlotStabilityGraph();
 			 
 			break;
 		}
 		case Qt::Key_Escape:
 		{
 			if(m_pctrlAnimate->isChecked()) m_pctrlAnimate->setChecked(false);
-			OnAnimate();
+			onAnimate();
 			break;
 		}
 		default:
@@ -288,7 +288,7 @@ void StabViewDlg::keyPressEvent(QKeyEvent *event)
 }
 
 
-void StabViewDlg::OnAnimate()
+void StabViewDlg::onAnimate()
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 	if(m_pctrlAnimate->isChecked())
@@ -311,7 +311,7 @@ void StabViewDlg::OnAnimate()
 
 
 
-void StabViewDlg::OnAnimationAmplitude(int val)
+void StabViewDlg::onAnimationAmplitude(int val)
 {
 	m_ModeAmplitude = (double)val/500.0;
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
@@ -319,7 +319,7 @@ void StabViewDlg::OnAnimationAmplitude(int val)
 }
 
 
-void StabViewDlg::OnAnimationSpeed(int val)
+void StabViewDlg::onAnimationSpeed(int val)
 {
 	m_ModeInterval = val;
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
@@ -327,7 +327,7 @@ void StabViewDlg::OnAnimationSpeed(int val)
 }
 
 
-void StabViewDlg::OnAnimateRestart()
+void StabViewDlg::onAnimateRestart()
 {
 	double sigma, s2, omega, o2;
 	double norm1, norm2, theta_sum, psi_sum, ModeState[6];
@@ -422,13 +422,13 @@ void StabViewDlg::OnAnimateRestart()
 }
 
 
-void StabViewDlg::OnCellChanged(QWidget *)
+void StabViewDlg::onCellChanged(QWidget *)
 {
 	
 }
 
 
-void StabViewDlg::OnPlotStabilityGraph()
+void StabViewDlg::onPlotStabilityGraph()
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 	if(!pMiarex->m_TimeGraph[0]->curveCount())
@@ -444,7 +444,7 @@ void StabViewDlg::OnPlotStabilityGraph()
 }
 
 
-void StabViewDlg::OnModeSelection()
+void StabViewDlg::onModeSelection()
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 	if(pMiarex->m_iView==XFLR5::STABTIMEVIEW)
@@ -462,7 +462,7 @@ void StabViewDlg::OnModeSelection()
 		else if(m_pctrlRLMode4->isChecked()) m_iCurrentMode = 3;
 	}
 	if(!pMiarex->m_bLongitudinal) m_iCurrentMode +=4;
-	SetMode(m_iCurrentMode);
+	setMode(m_iCurrentMode);
 
 	if(pMiarex->m_iView==XFLR5::STABPOLARVIEW && pMiarex->m_bHighlightOpp)
 	{
@@ -472,7 +472,7 @@ void StabViewDlg::OnModeSelection()
 }
 
 
-void StabViewDlg::OnReadData()
+void StabViewDlg::onReadData()
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 	pMiarex->m_Modedt = m_pctrlModeStep->value();
@@ -481,7 +481,7 @@ void StabViewDlg::OnReadData()
 
 
 
-void StabViewDlg::OnResponseType()
+void StabViewDlg::onResponseType()
 {
 	int type=0;
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
@@ -500,7 +500,7 @@ void StabViewDlg::OnResponseType()
 }
 
 
-void StabViewDlg::SetMode(int iMode)
+void StabViewDlg::setMode(int iMode)
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 	if(iMode>=0)
@@ -514,7 +514,7 @@ void StabViewDlg::SetMode(int iMode)
 	m_pctrlRLMode2->setChecked(m_iCurrentMode%4==1);
 	m_pctrlRLMode3->setChecked(m_iCurrentMode%4==2);
 	m_pctrlRLMode4->setChecked(m_iCurrentMode%4==3);
-	FillEigenThings();
+	fillEigenThings();
 	PlaneOpp *pPOpp = pMiarex->m_pCurPOpp;
 
 	if(pPOpp)
@@ -538,11 +538,11 @@ void StabViewDlg::SetMode(int iMode)
 
 //	if(pMiarex->m_pCurRLStabGraph && pMiarex->m_pCurWPolar) pMiarex->m_pCurRLStabGraph->DeselectPoint();
 
-	OnAnimateRestart();
+	onAnimateRestart();
 }
 
 
-void StabViewDlg::SetupLayout()
+void StabViewDlg::setupLayout()
 {
 	QFont SymbolFont("Symbol");
 
@@ -921,7 +921,7 @@ void StabViewDlg::setControls()
 	m_pctrlLongDynamics->setChecked(pMiarex->m_bLongitudinal);
 	m_pctrlLatDynamics->setChecked(!pMiarex->m_bLongitudinal);
 
-	if(pMiarex->m_pCurWPolar && pMiarex->m_pCurWPolar->m_WPolarType!=XFLR5::STABILITYPOLAR)
+	if(pMiarex->m_pCurWPolar && pMiarex->m_pCurWPolar->polarType()!=XFLR5::STABILITYPOLAR)
 	{
 //		m_pControlModel->setRowCount(0);
 	}
@@ -945,7 +945,7 @@ void StabViewDlg::setControls()
 		m_pctrlStackWidget->setCurrentIndex(1);
 		m_pctrlModeViewType->setCurrentIndex(1);
 	}
-	SetMode(m_iCurrentMode);
+	setMode(m_iCurrentMode);
 
 	strong = QString::fromUtf8("°/s");
 	if(pMiarex->m_bLongitudinal)
@@ -992,7 +992,7 @@ void StabViewDlg::setControls()
 	//   - the polar's type is 7
 	//   - we have an active wopp
 	//   - the StabilityView is0
-	bool bEnableTimeCtrl = pMiarex->m_pCurPOpp && pMiarex->m_pCurPOpp->m_WPolarType==XFLR5::STABILITYPOLAR && pMiarex->m_iView==XFLR5::STABTIMEVIEW;
+	bool bEnableTimeCtrl = pMiarex->m_pCurPOpp && pMiarex->m_pCurPOpp->polarType()==XFLR5::STABILITYPOLAR && pMiarex->m_iView==XFLR5::STABTIMEVIEW;
 	m_pctrlAddCurve->setEnabled(bEnableTimeCtrl);
 	m_pctrlRenameCurve->setEnabled(m_pctrlCurveList->count());
 	m_pctrlPlotStabGraph->setEnabled(m_pctrlCurveList->count());
@@ -1015,7 +1015,7 @@ void StabViewDlg::setControls()
 	//   - the polar's type is 7
 	//   - we have an active wopp
 	//   - the StabilityView is 3
-	bool bEnable3DAnimation = pMiarex->m_iView==XFLR5::W3DVIEW && pMiarex->m_pCurPOpp && pMiarex->m_pCurPOpp->m_WPolarType==XFLR5::STABILITYPOLAR;
+	bool bEnable3DAnimation = pMiarex->m_iView==XFLR5::W3DVIEW && pMiarex->m_pCurPOpp && pMiarex->m_pCurPOpp->polarType()==XFLR5::STABILITYPOLAR;
 	m_pctrlAnimate->setEnabled(bEnable3DAnimation);
 	m_pctrlAnimateRestart->setEnabled(bEnable3DAnimation);
 	m_pctrlAnimationAmplitude->setEnabled(bEnable3DAnimation);
@@ -1023,16 +1023,14 @@ void StabViewDlg::setControls()
 
 	m_pctrlModeStep->setValue(pMiarex->m_Modedt);
 
-	FillEigenThings();
+	fillEigenThings();
 
 	blockSignals(false);
 }
 
 
 
-
-
-void StabViewDlg::SetTimeCurveStyle(QColor const &Color, int const&Style, int const &Width, bool const& bCurve, bool const& bPoints)
+void StabViewDlg::setTimeCurveStyle(QColor const &Color, int const&Style, int const &Width, bool const& bCurve, int const& PointStyle)
 {
 	if(!m_pCurve) return;
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
@@ -1048,8 +1046,8 @@ void StabViewDlg::SetTimeCurveStyle(QColor const &Color, int const&Style, int co
 				pCurve->setColor(Color);
 				pCurve->setStyle(Style);
 				pCurve->setWidth(Width);
-				pCurve->SetVisible(bCurve);
-				pCurve->showPoints(bPoints);
+				pCurve->setVisible(bCurve);
+				pCurve->setPoints(PointStyle);
 			}
 						
 			return;
@@ -1058,7 +1056,7 @@ void StabViewDlg::SetTimeCurveStyle(QColor const &Color, int const&Style, int co
 }
 
 
-void StabViewDlg::OnRenameCurve()
+void StabViewDlg::onRenameCurve()
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 	
@@ -1084,15 +1082,15 @@ void StabViewDlg::OnRenameCurve()
 				pCurve->setCurveName(NewName);
 			}
 
-			FillCurveList();
-			OnPlotStabilityGraph();
+			fillCurveList();
+			onPlotStabilityGraph();
 			return;
 		}
 	}
 }
 
 
-void StabViewDlg::OnSelChangeCurve(int sel)
+void StabViewDlg::onSelChangeCurve(int sel)
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 	QString strong = m_pctrlCurveList->itemText(sel);
@@ -1103,19 +1101,19 @@ void StabViewDlg::OnSelChangeCurve(int sel)
 }
 
 
-void StabViewDlg::OnAddCurve()
+void StabViewDlg::onAddCurve()
 {
-	AddCurve();
+	addCurve();
 	if(m_pCurve)
 	{
 		int pos =m_pctrlCurveList->findText(m_pCurve->curveName());
 		m_pctrlCurveList->setCurrentIndex(pos);
 	}
-	OnPlotStabilityGraph();
+	onPlotStabilityGraph();
 }
 
 
-void StabViewDlg::OnDeleteCurve()
+void StabViewDlg::onDeleteCurve()
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 	if(!m_pCurve) return;
@@ -1123,7 +1121,7 @@ void StabViewDlg::OnDeleteCurve()
 	for(int ig=0; ig<MAXGRAPHS; ig++)	pMiarex->m_TimeGraph[ig]->deleteCurve(CurveTitle);
 	m_pCurve = NULL;
 
-	FillCurveList();
+	fillCurveList();
 	m_pctrlCurveList->setCurrentIndex(0);
 	m_pctrlPlotStabGraph->setEnabled(pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
 	m_pctrlRenameCurve->setEnabled(  pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
@@ -1140,7 +1138,7 @@ void StabViewDlg::OnDeleteCurve()
 }
 
 
-void StabViewDlg::AddCurve()
+void StabViewDlg::addCurve()
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 	int nCurves = pMiarex->m_TimeGraph[0]->curveCount();
@@ -1161,11 +1159,11 @@ void StabViewDlg::AddCurve()
 	m_pctrlCurveList->setEnabled(    pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
 
 	pMiarex->setCurveParams();
-
 }
 
 
-void StabViewDlg::FillCurveList()
+
+void StabViewDlg::fillCurveList()
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 	m_pctrlCurveList->clear();
@@ -1183,7 +1181,7 @@ void StabViewDlg::FillCurveList()
 }
 
 
-double StabViewDlg::GetControlInput(const double &time)
+double StabViewDlg::getControlInput(const double &time)
 {
 	static double t1, t2, in1, in2;
 	t1 = t2 = 0.0;
