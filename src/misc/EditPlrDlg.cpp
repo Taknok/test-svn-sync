@@ -236,14 +236,14 @@ void EditPlrDlg::onDeletePoint()
 
 	if(pXDirect)
 	{
-		m_pPolar->Remove(index.row());
+		m_pPolar->removePoint(index.row());
 		fillPolarData();
 		pXDirect->createPolarCurves();
 		pXDirect->updateView();
 	}
 	else if(pMiarex)
 	{
-		m_pWPolar->Remove(index.row());
+		m_pWPolar->remove(index.row());
 		fillWPolarData();
 		QMiarex::s_bResetCurves = true;
 //		pMiarex->createWPolarCurves();
@@ -266,14 +266,14 @@ void EditPlrDlg::onDeleteAllPoints()
 
 	if(pXDirect)
 	{
-		m_pPolar->ResetPolar();
+		m_pPolar->resetPolar();
 		fillPolarData();
 		pXDirect->createPolarCurves();
 		pXDirect->updateView();
 	}
 	else if(pMiarex)
 	{
-		m_pWPolar->ClearData();
+		m_pWPolar->clearData();
 		fillWPolarData();
 		pMiarex->createWPolarCurves();
 		pMiarex->updateView();

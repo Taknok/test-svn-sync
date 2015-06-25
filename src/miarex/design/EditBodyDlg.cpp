@@ -561,7 +561,7 @@ void EditBodyDlg::GLRenderView()
 
 	if(ThreeDWidget::s_bShowMasses)
 	{
-		m_pGLWidget->GLDrawMasses(m_pBody->volumeMass(),
+		m_pGLWidget->glDrawMasses(m_pBody->volumeMass(),
 								  CVector(0.0,0.0,0.0),
 								  m_pBody->bodyName(),
 								  m_pBody->m_PointMass);
@@ -1068,12 +1068,12 @@ void EditBodyDlg::readBodyFrameTree(Frame *pFrame, QModelIndex indexLevel)
 		{
 			CVector Pt;
 			readVectorTree(Pt, indexLevel.child(0,0));
-			pFrame->AppendPoint(Pt);
+			pFrame->appendPoint(Pt);
 		}
 		indexLevel = indexLevel.sibling(indexLevel.row()+1,0);
 	} while(indexLevel.isValid());
 
-	pFrame->SetuPosition(x);
+	pFrame->setuPosition(x);
 }
 
 

@@ -40,23 +40,23 @@ class Frame
 public:
 	Frame(int nCtrlPts=0);
 
-	void    AppendPoint(CVector const& Pt);
-	void    CopyFrame(Frame *pFrame);
-	void    CopyPoints(QList<CVector> *pPointList);
-	double  Height();
+	void    appendPoint(CVector const& Pt);
+	void    copyFrame(Frame *pFrame);
+	void    copyPoints(QList<CVector> *pPointList);
+	double  height();
 	int     isPoint(CVector const &Point, double const &ZoomFactor);
-	void    InsertPoint(int n);
-	void    InsertPoint(int n, const CVector &Pt);
-	int     InsertPoint(CVector const &Real, int iAxis);
+	void    insertPoint(int n);
+	void    insertPoint(int n, const CVector &Pt);
+	int     insertPoint(CVector const &Real, int iAxis);
 	CVector Point(int iPt) {return m_CtrlPoint.at(iPt);}
 	int     PointCount() {return m_CtrlPoint.size();}
-	bool    RemovePoint(int n);
-	void    RotateFrameY(double Angle);
-	bool    SerializeFrame(QDataStream &ar, bool bIsStoring);
+	bool    removePoint(int n);
+	void    rotateFrameY(double Angle);
+	bool    serializeFrame(QDataStream &ar, bool bIsStoring);
 	void    setPosition(CVector Pos);
-	void    SetuPosition(double u);
-	void    SetvPosition(double v);
-	void    SetwPosition(double w);
+	void    setuPosition(double u);
+	void    setvPosition(double v);
+	void    setwPosition(double w);
 	double  zPos();
 
 	CVector & position(){return m_Position;}

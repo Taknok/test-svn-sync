@@ -124,7 +124,7 @@ public:
 	double xUnit();
 	double yOrigin();
 	double yMin();
-	double GetYMax();
+	double yMax();
 	double yUnit();
 	double xScale();
 	double yScale();

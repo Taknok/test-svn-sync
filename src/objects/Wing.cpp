@@ -64,7 +64,7 @@ Wing::Wing()
 	m_xPanel.clear();
 	m_xPanel.insert(0, 1000, 0);
 
-	m_CoG.Set(0.0,0.0,0.0);
+	m_CoG.set(0.0,0.0,0.0);
 	m_CoGIxx = m_CoGIyy = m_CoGIzz = m_CoGIxz = 0.0;
 	m_VolumeMass = m_TotalMass = 0.0;
 
@@ -96,7 +96,7 @@ Wing::Wing()
 	m_VCm               = 0.0;
 	m_VYm               = 0.0;
 
-	m_CP.Set(0.0, 0.0, 0.0);
+	m_CP.set(0.0, 0.0, 0.0);
 
 //	m_AVLIndex = -(int)(qrand()/10000);//improbable value...
 
@@ -111,7 +111,7 @@ Wing::Wing()
 	m_ProjectedSpan = 0.0;
 
 	m_nFlaps =  0;
-	ClearWingSections();
+	clearWingSections();
 	AppendWingSection(.180, .0, 0.0, 0.0, 0.000, 13, 19, XFLR5::COSINE, XFLR5::INVERSESINE, "", "");
 	AppendWingSection(.110, .0, 1.0, 0.0, 0.070, 13, 5,  XFLR5::COSINE,     XFLR5::UNIFORM, "", "");
 
@@ -130,14 +130,14 @@ Wing::Wing()
 /** The public destructor */
 Wing::~Wing()
 {
-	ClearWingSections();
+	clearWingSections();
 	ClearPointMasses();
 	ClearSurfaces();
 }
 
 
 /** Destroys the WingSection objects in good order to avoid memory leaks */
-void Wing::ClearWingSections()
+void Wing::clearWingSections()
 {
 	for(int iws=m_WingSection.size()-1; iws>=0; iws--)
 	{
@@ -197,7 +197,7 @@ void Wing::ImportDefinition(QString path_to_file)
 			return;
 		} else {
 			QTextStream infile(&fp);
-			ClearWingSections();
+			clearWingSections();
 			this->m_WingName = infile.readLine();
 			while (true)
 			{
@@ -355,7 +355,7 @@ void Wing::ComputeGeometry()
 		YProj(is) = YProj(is-1) + Length(is) * cos(Dihedral(is-1)*PI/180.0);
 	}
 
-	m_PlanformSpan  = 2.0 * TipPos();
+	m_PlanformSpan  = 2.0 * tipPos();
 	m_ProjectedSpan = 0.0;
 	m_MAChord = 0.0;
 	m_yMac    = 0.0;
@@ -393,7 +393,7 @@ void Wing::ComputeGeometry()
 		m_GChord  = m_PlanformArea/m_PlanformSpan*2.0;
 		m_AR      = m_PlanformSpan*m_PlanformSpan/m_PlanformArea/2.0;
 	}
-	if(TipChord()>0.0)	m_TR = RootChord()/TipChord();
+	if(tipChord()>0.0)	m_TR = rootChord()/tipChord();
 	else				m_TR = 99999.0;
 
 	//calculate the number of flaps
@@ -443,7 +443,7 @@ void Wing::ComputeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, do
 	double xrel, xrel1, yrel, ElemArea;
 	CVector ATop, ABot, CTop, CBot, PointNormal, Diag1, Diag2;
 	CVector PtC4, Pt, Pt1;
-	CoG.Set(0.0, 0.0, 0.0);
+	CoG.set(0.0, 0.0, 0.0);
 	CoGIxx = CoGIyy = CoGIzz = CoGIxz = 0.0;
 
 	//sanity check
@@ -521,7 +521,7 @@ void Wing::ComputeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, do
 	else                      rho = 0.0;
 
 	if(checkVolume>0.0)  CoG *= 1.0/ checkVolume;
-	else                 CoG.Set(0.0, 0.0, 0.0);
+	else                 CoG.set(0.0, 0.0, 0.0);
 
 
 	// CoG is the new origin for inertia calculation
@@ -590,7 +590,7 @@ void Wing::ComputeBodyAxisInertia()
 	}
 
 	if(m_TotalMass>0.0) m_CoG = m_CoG/m_TotalMass;
-	else                m_CoG.Set(0.0,0.0,0.0);
+	else                m_CoG.set(0.0,0.0,0.0);
 
 	// The CoG position is now available, so calculate the inertia w.r.t the CoG
 	// using Huygens theorem
@@ -641,15 +641,15 @@ void Wing::CreateSurfaces(CVector const &T, double XTilt, double YTilt)
 
 	//define the normal to each surface
 	nSurf=0;
-	VNormal[0].Set(0.0, 0.0, 1.0);
-	VNSide[0].Set(0.0, 0.0, 1.0);
+	VNormal[0].set(0.0, 0.0, 1.0);
+	VNSide[0].set(0.0, 0.0, 1.0);
 
 	for(int is=0; is<NWingSection()-1;is++)
 	{
 		if (qAbs(YPosition(is)-YPosition(is+1)) > MinPanelSize)
 		{
-			VNormal[nSurf].Set(0.0, 0.0, 1.0);
-			VNormal[nSurf].RotateX(O, Dihedral(is));
+			VNormal[nSurf].set(0.0, 0.0, 1.0);
+			VNormal[nSurf].rotateX(O, Dihedral(is));
 			nSurf++;
 		}
 	}
@@ -677,7 +677,7 @@ void Wing::CreateSurfaces(CVector const &T, double XTilt, double YTilt)
 	for(int jss=0; jss<nSurf; jss++)
 	{
 		VNSide[jss+1] = VNormal[jss]+VNormal[jss+1];
-		VNSide[jss+1].Normalize();
+		VNSide[jss+1].normalize();
 	}
 
 	//we start with the center panel, moving towards the left wing tip
@@ -703,16 +703,16 @@ void Wing::CreateSurfaces(CVector const &T, double XTilt, double YTilt)
 			PTA.y =  PLA.y;	                PTB.y = PLB.y;
 			PTA.z =  0.0;                   PTB.z =  0.0;
 
-			m_Surface[iSurf]->m_LA.Copy(PLA);
-			m_Surface[iSurf]->m_TA.Copy(PTA);
-			m_Surface[iSurf]->m_LB.Copy(PLB);
-			m_Surface[iSurf]->m_TB.Copy(PTB);
+			m_Surface[iSurf]->m_LA.copy(PLA);
+			m_Surface[iSurf]->m_TA.copy(PTA);
+			m_Surface[iSurf]->m_LB.copy(PLB);
+			m_Surface[iSurf]->m_TB.copy(PTB);
 
 			m_Surface[iSurf]->SetNormal(); // is (0,0,1)
 
 			m_Surface[iSurf]->RotateX(m_Surface[iSurf]->m_LB, -Dihedral(jss));
-			m_Surface[iSurf]->NormalA.Set(VNSide[nSurf+1].x, -VNSide[nSurf+1].y, VNSide[nSurf+1].z);
-			m_Surface[iSurf]->NormalB.Set(VNSide[nSurf].x,   -VNSide[nSurf].y,   VNSide[nSurf].z);
+			m_Surface[iSurf]->NormalA.set(VNSide[nSurf+1].x, -VNSide[nSurf+1].y, VNSide[nSurf+1].z);
+			m_Surface[iSurf]->NormalB.set(VNSide[nSurf].x,   -VNSide[nSurf].y,   VNSide[nSurf].z);
 
 			m_Surface[iSurf]->m_TwistA   =  Twist(jss+1);
 			m_Surface[iSurf]->m_TwistB   =  Twist(jss);
@@ -775,16 +775,16 @@ void Wing::CreateSurfaces(CVector const &T, double XTilt, double YTilt)
 				PTA.y = PLA.y;              PTB.y = PLB.y;
 				PTA.z = 0.0;                PTB.z = 0.0;
 
-				m_Surface[iSurf]->m_LA.Copy(PLA);
-				m_Surface[iSurf]->m_TA.Copy(PTA);
-				m_Surface[iSurf]->m_LB.Copy(PLB);
-				m_Surface[iSurf]->m_TB.Copy(PTB);
+				m_Surface[iSurf]->m_LA.copy(PLA);
+				m_Surface[iSurf]->m_TA.copy(PTA);
+				m_Surface[iSurf]->m_LB.copy(PLB);
+				m_Surface[iSurf]->m_TB.copy(PTB);
 
 				m_Surface[iSurf]->SetNormal(); // is (0,0,1)
 
 				m_Surface[iSurf]->RotateX(m_Surface[iSurf]->m_LA, Dihedral(jss));
-				m_Surface[iSurf]->NormalA.Set(VNSide[iSurf-nSurf].x,   VNSide[iSurf-nSurf].y,   VNSide[iSurf-nSurf].z);
-				m_Surface[iSurf]->NormalB.Set(VNSide[iSurf-nSurf+1].x, VNSide[iSurf-nSurf+1].y, VNSide[iSurf-nSurf+1].z);
+				m_Surface[iSurf]->NormalA.set(VNSide[iSurf-nSurf].x,   VNSide[iSurf-nSurf].y,   VNSide[iSurf-nSurf].z);
+				m_Surface[iSurf]->NormalB.set(VNSide[iSurf-nSurf+1].x, VNSide[iSurf-nSurf+1].y, VNSide[iSurf-nSurf+1].z);
 
 				m_Surface[iSurf]->m_TwistA   =  Twist(jss);
 				m_Surface[iSurf]->m_TwistB   =  Twist(jss+1);
@@ -841,7 +841,7 @@ void Wing::CreateSurfaces(CVector const &T, double XTilt, double YTilt)
 			NSurfaces*=2;
 			//rotate surfaces symetrically
 			int ns2 = (int)(NSurfaces/2);
-			offset.Set(0.0, -T.y, 0.0);
+			offset.set(0.0, -T.y, 0.0);
 			for(int jSurf=0; jSurf<ns2; jSurf++)
 			{
 				m_Surface[jSurf]->RotateX(Or, +XTilt);
@@ -1043,7 +1043,7 @@ void Wing::Duplicate(Wing *pWing)
 	m_bDoubleFin    = pWing->m_bDoubleFin;
 //	m_bDoubleSymFin = pWing->m_bDoubleSymFin;
 
-	ClearWingSections();
+	clearWingSections();
 
 	for (int is=0; is<pWing->m_WingSection.size(); is++)
 	{
@@ -1272,10 +1272,10 @@ bool Wing::ExportAVLWing(QTextStream &out, int index, double y, double Thetay)
 * The sweep is calulated as the arctangent of the root and tip quarter-chord points
 *@return the value of the average sweep, in degrees
 */
-double Wing::AverageSweep()
+double Wing::averageSweep()
 {
 	double xroot = Chord(0)/4.0;
-	double xtip  = TipOffset() + TipChord()/4.0;
+	double xtip  = tipOffset() + tipChord()/4.0;
 //	double sweep = (atan2(xtip-xroot, m_PlanformSpan/2.0)) * 180.0/PI;
 	return (atan2(xtip-xroot, m_PlanformSpan/2.0)) * 180.0/PI;
 }
@@ -1611,8 +1611,8 @@ void Wing::PanelTrefftz(void *pAnalysis, double QInf, double Alpha, double *Mu, 
 //	}
 
 	//   Define wind axis
-	WindNormal.Set(   -sina, 0.0, cosa);
-	WindDirection.Set( cosa, 0.0, sina);
+	WindNormal.set(   -sina, 0.0, cosa);
+	WindDirection.set( cosa, 0.0, sina);
 
 	VInf = WindDirection * QInf;
 
@@ -1642,7 +1642,7 @@ void Wing::PanelTrefftz(void *pAnalysis, double QInf, double Alpha, double *Mu, 
 		{
 			pp = p;
 			m_StripArea[m] = 0.0;
-			StripForce.Set(0.0,0.0,0.0);
+			StripForce.set(0.0,0.0,0.0);
 			for (l=0; l<coef*m_Surface.at(j)->m_NXPanels; l++)
 			{
 				m_StripArea[m]  += m_pWingPanel[pp].Area;
@@ -1663,7 +1663,7 @@ void Wing::PanelTrefftz(void *pAnalysis, double QInf, double Alpha, double *Mu, 
 				iTA = pWakePanel[nw].m_iTA;
 				iTB = pWakePanel[nw].m_iTB;
 				C = (pWakeNode[iTA] + pWakeNode[iTB])/2.0;
-				pPanelAnalysis->GetSpeedVector(C, Mu, Sigma, Wg, false);
+				pPanelAnalysis->getSpeedVector(C, Mu, Sigma, Wg, false);
 
 				m_Vd[m] = Wg;
 				InducedAngle = atan2(Wg.dot(WindNormal), QInf);
@@ -1700,7 +1700,7 @@ void Wing::PanelTrefftz(void *pAnalysis, double QInf, double Alpha, double *Mu, 
 						C = m_pWingPanel[pp].CtrlPt;
 						C.x = m_PlanformSpan * 1000.0;
 
-						pPanelAnalysis->GetSpeedVector(C, Mu, Sigma, Wg, false);
+						pPanelAnalysis->getSpeedVector(C, Mu, Sigma, Wg, false);
 
 						if(m_pWingPanel[pp].m_bIsTrailing)
 						{
@@ -1855,10 +1855,10 @@ void Wing::ScaleSpan(double NewSpan)
 */
 void Wing::ScaleSweep(double NewSweep)
 {
-	double OldTipOffset = TipOffset();
+	double OldTipOffset = tipOffset();
 	double NewTipOffset = Chord(0)/4.0
 						 + tan(NewSweep*PI/180.0)*m_PlanformSpan/2.0
-						 - TipChord()/4.0;
+						 - tipChord()/4.0;
 	if(qAbs(OldTipOffset)>0.00001)
 	{
 		//scale each panel's offset
@@ -1886,10 +1886,10 @@ void Wing::ScaleSweep(double NewSweep)
 */
 void Wing::ScaleTwist(double NewTwist)
 {
-	if(qAbs(TipTwist())>0.0001)
+	if(qAbs(tipTwist())>0.0001)
 	{
 		//scale each panel's twist
-		double ratio = NewTwist/TipTwist();
+		double ratio = NewTwist/tipTwist();
 
 		for(int is=1; is<NWingSection(); is++)
 		{
@@ -2019,7 +2019,7 @@ bool Wing::SerializeWingWPA(QDataStream &ar, bool bIsStoring)
 		ar >> NPanel;
 		if(NPanel <0 || NPanel>1000) return false;
 
-		ClearWingSections();
+		clearWingSections();
 		for(int is=0; is<=NPanel; is++) m_WingSection.append(new WingSection);
 
 		QString strFoil;
@@ -2142,7 +2142,7 @@ bool Wing::SerializeWingWPA(QDataStream &ar, bool bIsStoring)
 
 		if(ArchiveFormat>=1006)
 		{
-			ReadCOLORREF(ar, m_WingColor);
+			readCOLORREF(ar, m_WingColor);
 		}
 
 		if(ArchiveFormat>=1009)
@@ -2198,7 +2198,7 @@ bool Wing::SerializeWingWPA(QDataStream &ar, bool bIsStoring)
  * @param bIsStoring true if saving the data, false if loading
  * @return true if the operation was successful, false otherwise
  */
-bool Wing::SerializeWingXFL(QDataStream &ar, bool bIsStoring)
+bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
 {
 	QString tag;
 	QString rightFoil, leftFoil;
@@ -2276,8 +2276,8 @@ bool Wing::SerializeWingXFL(QDataStream &ar, bool bIsStoring)
 		}
 
 		// space allocation for the future storage of more data, without need to change the format
-		for (int i=0; i<20; i++) ar << i;
-		for (int i=0; i<50; i++) ar << (double)i;
+		for (int i=0; i<20; i++) ar << 0;
+		for (int i=0; i<50; i++) ar << 0.0;
 
 		return true;
 	}
@@ -2293,7 +2293,7 @@ bool Wing::SerializeWingXFL(QDataStream &ar, bool bIsStoring)
 
 		ar >> m_bSymetric;
 
-		ClearWingSections();
+		clearWingSections();
 		ar >> n;
 		for (i=0; i<n; i++)
 		{
@@ -2414,8 +2414,8 @@ void Wing::PanelComputeOnBody(double QInf, double Alpha, double *Cp, double *Gam
 	// Define the wind axis
 	cosa = cos(Alpha*PI/180.0);
 	sina = sin(Alpha*PI/180.0);
-	WindDirection.Set( cosa, 0.0, sina);
-	WindNormal.Set(   -sina, 0.0, cosa);
+	WindDirection.set( cosa, 0.0, sina);
+	WindNormal.set(   -sina, 0.0, cosa);
 
 
 	// Calculate the Reynolds number on each strip
@@ -2442,9 +2442,9 @@ void Wing::PanelComputeOnBody(double QInf, double Alpha, double *Cp, double *Gam
 		for (k=0; k<m_Surface.at(j)->m_NYPanels; k++)
 		{
 			//initialize
-			DragVector.Set(0.0,0.0,0.0);
-			StripForce.Set(0.0,0.0,0.0);
-			GeomMoment.Set(0.0,0.0,0.0);
+			DragVector.set(0.0,0.0,0.0);
+			StripForce.set(0.0,0.0,0.0);
+			GeomMoment.set(0.0,0.0,0.0);
 
 			m_CmAirf[m]    = 0.0;
 			CPStrip        = 0.0;
@@ -2453,8 +2453,8 @@ void Wing::PanelComputeOnBody(double QInf, double Alpha, double *Cp, double *Gam
 			m_Surface.at(j)->GetC4(k, PtC4Strip, tau);
 			if(fabs(pWPolar->m_BetaSpec)>0.0)
 			{
-				PtC4Strip.RotateZ(Origin, pWPolar->m_BetaSpec);
-				PtLEStrip.RotateZ(Origin, pWPolar->m_BetaSpec);
+				PtC4Strip.rotateZ(Origin, pWPolar->m_BetaSpec);
+				PtLEStrip.rotateZ(Origin, pWPolar->m_BetaSpec);
 			}
 
 			LeverArmC4CoG = PtC4Strip - CoG;
@@ -2523,7 +2523,7 @@ void Wing::PanelComputeOnBody(double QInf, double Alpha, double *Cp, double *Gam
 //			else                    DragVector.x = 0.0;
 
 			if(pWPolar->bViscous()) DragVector = WindDirection * m_PCd[m] * m_StripArea[m];   // N/q
-			else                    DragVector.Set(0.0,0.0,0.0);
+			else                    DragVector.set(0.0,0.0,0.0);
 			// global moments, in N.m/q
 			DragMoment =  LeverArmC4CoG * DragVector;
 

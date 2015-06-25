@@ -35,16 +35,22 @@ QWidget *CtrlTableDelegate::createEditor(QWidget *parent, const QStyleOptionView
 {
 	if(index.column()==0)
 	{
-		QLineEdit *editor = new QLineEdit(parent);
+/*		QLineEdit *editor = new QLineEdit(parent);
 		editor->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-		return editor;
+		return editor;*/
 	}
-	else
+	else if(index.column()==1 || index.column()==2)
 	{
         DoubleEdit *editor = new DoubleEdit(parent);
 		editor->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 		editor->setPrecision(m_Precision[index.column()]);
 		return editor;
+	}
+	else if(index.column()==3)
+	{
+/*		QLineEdit *editor = new QLineEdit(parent);
+		editor->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+		return editor;*/
 	}
 
 	return NULL;
@@ -59,11 +65,17 @@ void CtrlTableDelegate::setEditorData(QWidget *editor, const QModelIndex &index)
 		QLineEdit *lineEdit = (QLineEdit*)editor;
 		lineEdit->setText(strong);
 	}
-	else
+	else if(index.column()==1 || index.column()==2)
 	{
 		double value = index.model()->data(index, Qt::EditRole).toDouble();
         DoubleEdit *pDE = static_cast<DoubleEdit*>(editor);
         pDE->setValue(value);
+	}
+	else if(index.column()==3)
+	{
+		QString strong = index.model()->data(index, Qt::EditRole).toString();
+		QLineEdit *lineEdit = (QLineEdit*)editor;
+		lineEdit->setText(strong);
 	}
 }
 
@@ -72,16 +84,23 @@ void CtrlTableDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
 {
 	if(index.column()==0)
 	{
-		QString strong;
+/*		QString strong;
 		QLineEdit *pLineEdit = static_cast<QLineEdit*>(editor);
 		strong = pLineEdit->text();
-		model->setData(index, strong, Qt::EditRole);
+		model->setData(index, strong, Qt::EditRole);*/
 	}
-	else
+	else if(index.column()==1 || index.column()==2)
 	{
         DoubleEdit *pDE = static_cast<DoubleEdit*>(editor);
         double value = pDE->value();
 		model->setData(index, value, Qt::EditRole);
+	}
+	else if(index.column()==3)
+	{
+/*		QString strong;
+		QLineEdit *pLineEdit = static_cast<QLineEdit*>(editor);
+		strong = pLineEdit->text();
+		model->setData(index, strong, Qt::EditRole);*/
 	}
 }
  
@@ -108,17 +127,17 @@ void CtrlTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
 		drawDisplay(painter, myOption, myOption.rect, strong);
 		drawFocus(painter, myOption, myOption.rect);
 	}
-/*	else if(index.column()==1)
-	{
-		myOption.displayAlignment = Qt::AlignRight | Qt::AlignVCenter;
-		strong = QString("%1").arg(index.model()->data(index, Qt::DisplayRole).toInt());
-		drawDisplay(painter, myOption, myOption.rect, strong);
-		drawFocus(painter, myOption, myOption.rect);
-	}*/
-	else
+	else if(index.column()==1 || index.column()==2)
 	{
 		myOption.displayAlignment = Qt::AlignRight | Qt::AlignVCenter;
 		strong = QString("%1").arg(index.model()->data(index, Qt::DisplayRole).toDouble(), 0,'f',m_Precision[index.column()]);
+		drawDisplay(painter, myOption, myOption.rect, strong);
+		drawFocus(painter, myOption, myOption.rect);
+	}
+	else if(index.column()==3)
+	{
+		myOption.displayAlignment = Qt::AlignLeft | Qt::AlignVCenter;
+		strong = index.model()->data(index, Qt::DisplayRole).toString();
 		drawDisplay(painter, myOption, myOption.rect, strong);
 		drawFocus(painter, myOption, myOption.rect);
 	}

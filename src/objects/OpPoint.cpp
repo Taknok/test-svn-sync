@@ -65,11 +65,11 @@ OpPoint::OpPoint()
 	nd3 = 0;
 //	Format = 1;
 
-	m_bIsVisible  = true;
-	m_bShowPoints = false;
-	m_Style = 0;
-	m_Width = 1;
-	m_Color.setHsv((int)(((double)qrand()/(double)RAND_MAX)*360),
+	lineStyle().m_bIsVisible = true;
+	lineStyle().m_PointStyle = 0;
+	lineStyle().m_Style = 0;
+	lineStyle().m_Width = 1;
+	lineStyle().m_Color.setHsv((int)(((double)qrand()/(double)RAND_MAX)*360),
 				   (int)(((double)qrand()/(double)RAND_MAX)*155)+100,
 				   (int)(((double)qrand()/(double)RAND_MAX)*155)+100,
 					255);
@@ -85,7 +85,7 @@ OpPoint::OpPoint()
  * @param bIsStoring true if saving the data, false if loading
  * @return true if the operation was successful, false otherwise
  */
-bool OpPoint::SerializeOppWPA(QDataStream &ar, bool bIsStoring, int ArchiveFormat)
+bool OpPoint::serializeOppWPA(QDataStream &ar, bool bIsStoring, int ArchiveFormat)
 {
 	int a, b, k, Format;
 	float f,gg;
@@ -156,17 +156,16 @@ bool OpPoint::SerializeOppWPA(QDataStream &ar, bool bIsStoring, int ArchiveForma
         }
 		if(ArchiveFormat>=100002)
 		{
-			ar>>m_Style>>m_Width;
-			ReadCOLORREF(ar, m_Color);
+			ar>>lineStyle().m_Style>>lineStyle().m_Width;
+			readCOLORREF(ar, lineStyle().m_Color);
 
 			ar >> a ;
 			if(a!=0 && a!=1) return false;
-			if(a) m_bIsVisible = true; else m_bIsVisible = false;
+			if(a) lineStyle().m_bIsVisible = true; else lineStyle().m_bIsVisible = false;
 
 			ar >> a ;
 			if(a!=0 && a!=1) return false;
-
-			if(a) m_bShowPoints = true; else m_bShowPoints = false;
+			lineStyle().m_PointStyle = a;
         }
 	}
 	return true;
@@ -179,8 +178,9 @@ bool OpPoint::SerializeOppWPA(QDataStream &ar, bool bIsStoring, int ArchiveForma
  * @param bIsStoring true if saving the data, false if loading
  * @return true if the operation was successful, false otherwise
  */
-bool OpPoint::SerializeOppXFL(QDataStream &ar, bool bIsStoring, int ArchiveFormat)
+bool OpPoint::serializeOppXFL(QDataStream &ar, bool bIsStoring, int ArchiveFormat)
 {
+	bool boolean;
 	int k;
 	float f0,f1;
 	double dble;
@@ -193,9 +193,9 @@ bool OpPoint::SerializeOppXFL(QDataStream &ar, bool bIsStoring, int ArchiveForma
 		ar << m_strFoilName;
 		ar << m_strPlrName;
 
-		ar << m_Style << m_Width;
-		ar << m_Color;
-		ar << m_bIsVisible << m_bShowPoints;
+		ar << lineStyle().m_Style << lineStyle().m_Width;
+		ar << lineStyle().m_Color;
+		ar << lineStyle().m_bIsVisible << false;
 
 		ar << Reynolds << Mach << Alpha;
 		ar << n << nd1 << nd2 << nd3;
@@ -214,8 +214,8 @@ bool OpPoint::SerializeOppXFL(QDataStream &ar, bool bIsStoring, int ArchiveForma
 		for (k=0; k<nd3; k++)	ar << (float)xd3[k] << (float)yd3[k];
 
 		// space allocation for the future storage of more data, without need to change the format
-		for (int i=0; i<20; i++) ar << i;
-		for (int i=0; i<50; i++) ar << (double)i;
+		for (int i=0; i<20; i++) ar << 0;
+		for (int i=0; i<50; i++) ar << (double)0.0;
 	}
 	else
 	{
@@ -225,9 +225,9 @@ bool OpPoint::SerializeOppXFL(QDataStream &ar, bool bIsStoring, int ArchiveForma
 		ar >> m_strFoilName;
 		ar >> m_strPlrName;
 
-		ar >> m_Style >> m_Width;
-		ar >> m_Color;
-		ar >> m_bIsVisible >> m_bShowPoints;
+		ar >> lineStyle().m_Style >> lineStyle().m_Width;
+		ar >> lineStyle().m_Color;
+		ar >> lineStyle().m_bIsVisible >> boolean;
 
 		ar >> Reynolds >> Mach >> Alpha;
 		ar >> n >> nd1 >> nd2 >> nd3;
@@ -287,7 +287,7 @@ bool OpPoint::SerializeOppXFL(QDataStream &ar, bool bIsStoring, int ArchiveForma
  * @param bDataOnly true if the analysis parameters should not be output
  */
 
-void OpPoint::ExportOpp(QTextStream &out, QString Version, XFLR5::enumTextFileType FileType, bool bDataOnly)
+void OpPoint::exportOpp(QTextStream &out, QString Version, XFLR5::enumTextFileType FileType, bool bDataOnly)
 {
 	int k;
 	QString strong;
@@ -329,7 +329,7 @@ void OpPoint::ExportOpp(QTextStream &out, QString Version, XFLR5::enumTextFileTy
  * @param &OpPointProperties the reference of the QString object to be filled with the description
  * @param bData true if the analysis data should be appended to the string
  */
-void OpPoint::GetOppProperties(QString &OpPointProperties, bool bData)
+void OpPoint::getOppProperties(QString &OpPointProperties, bool bData)
 {
 	QString strong;
 	OpPointProperties.clear();
@@ -385,7 +385,7 @@ void OpPoint::GetOppProperties(QString &OpPointProperties, bool bData)
 	QTextStream out;
 	strong.clear();
 	out.setString(&strong);
-	ExportOpp(out, "", XFLR5::TXT, true);
+	exportOpp(out, "", XFLR5::TXT, true);
 	OpPointProperties += "\n"+strong;
 }
 
@@ -779,12 +779,12 @@ OpPoint* OpPoint::addOpPoint(void *pFoilPtr, void *pPolarPtr, void *pXFoilPtr)
 		{
 			if(pNewPoint && pNewPoint->Reynolds<1.00e8)
 			{
-				pPolar->AddOpPointData(pNewPoint);
+				pPolar->addOpPointData(pNewPoint);
 			}
 		}
 		else
 		{
-			pPolar->AddOpPointData(pNewPoint);
+			pPolar->addOpPointData(pNewPoint);
 		}
 	}
 

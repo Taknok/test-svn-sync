@@ -45,7 +45,7 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 	static CVector PtILeft[2*SIDEPOINTS],PtIRight[2*SIDEPOINTS];
 	static Foil * pFoilA, *pFoilB;
 
-	N.Set(0.0, 0.0, 0.0);
+	N.set(0.0, 0.0, 0.0);
 
 	double xx;
 	for(int i=0; i<SIDEPOINTS; i++)
@@ -150,16 +150,16 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 						glBegin(GL_QUAD_STRIP);
 						{
 							pWing->m_Surface[j]->GetPanel(0, 0, BOTSURFACE);
-							C. Copy(pWing->m_Surface[0]->LA);
-							D. Copy(pWing->m_Surface[0]->TA);
+							C. copy(pWing->m_Surface[0]->LA);
+							D. copy(pWing->m_Surface[0]->TA);
 							pWing->m_Surface[j]->GetPanel(0, 0, TOPSURFACE);
-							A. Copy(pWing->m_Surface[0]->TA);
-							B. Copy(pWing->m_Surface[0]->LA);
+							A. copy(pWing->m_Surface[0]->TA);
+							B. copy(pWing->m_Surface[0]->LA);
 
 							BD = D-B;
 							AC = C-A;
 							N  = AC*BD;
-							N.Normalize();
+							N.normalize();
 							glNormal3d( N.x, N.y, N.z);
 
 							for (l=0; l<SIDEPOINTS; l++)
@@ -182,16 +182,16 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 						glBegin(GL_QUAD_STRIP);
 						{
 							pWing->m_Surface[j]->GetPanel(pWing->m_Surface[j]->m_NYPanels-1,0, TOPSURFACE);
-							A. Copy(pWing->m_Surface[0]->TB);
-							B. Copy(pWing->m_Surface[0]->LB);
+							A. copy(pWing->m_Surface[0]->TB);
+							B. copy(pWing->m_Surface[0]->LB);
 							pWing->m_Surface[j]->GetPanel(pWing->m_Surface[j]->m_NYPanels-1,0, BOTSURFACE);
-							C. Copy(pWing->m_Surface[0]->LB);
-							D. Copy(pWing->m_Surface[0]->TB);
+							C. copy(pWing->m_Surface[0]->LB);
+							D. copy(pWing->m_Surface[0]->TB);
 
 							BD = D-B;
 							AC = C-A;
 							N  = BD * AC;
-							N.Normalize();
+							N.normalize();
 							glNormal3d( N.x,  N.y,  N.z);
 
 							for (l=0; l<SIDEPOINTS; l++)
@@ -488,8 +488,8 @@ void GLCreateCp(int nPanels, int nNodes, CVector *pNode, Panel *pPanel, PlaneOpp
 			CpInf[n] = 0.0; CpSup[n] = 0.0; Cp100[n] = 0.0;
 			for (pp=0; pp< nPanels; pp++)
 			{
-				if (pNode[pPanel[pp].m_iLA].IsSame(pNode[n]) || pNode[pPanel[pp].m_iTA].IsSame(pNode[n]) ||
-				pNode[pPanel[pp].m_iTB].IsSame(pNode[n]) || pNode[pPanel[pp].m_iLB].IsSame(pNode[n]))
+				if (pNode[pPanel[pp].m_iLA].isSame(pNode[n]) || pNode[pPanel[pp].m_iTA].isSame(pNode[n]) ||
+				pNode[pPanel[pp].m_iTB].isSame(pNode[n]) || pNode[pPanel[pp].m_iLB].isSame(pNode[n]))
 				{
 					if(pPanel[pp].m_Pos==TOPSURFACE)
 					{
@@ -546,10 +546,10 @@ void GLCreateCp(int nPanels, int nNodes, CVector *pNode, Panel *pPanel, PlaneOpp
 		{
 			glBegin(GL_QUADS);
 			{
-				TA.Copy(pNode[pPanel[p].m_iTA]);
-				TB.Copy(pNode[pPanel[p].m_iTB]);
-				LA.Copy(pNode[pPanel[p].m_iLA]);
-				LB.Copy(pNode[pPanel[p].m_iLB]);
+				TA.copy(pNode[pPanel[p].m_iTA]);
+				TB.copy(pNode[pPanel[p].m_iTB]);
+				LA.copy(pNode[pPanel[p].m_iLA]);
+				LB.copy(pNode[pPanel[p].m_iLB]);
 
 				if(pPanel[p].m_Pos==TOPSURFACE)      color = (CpSup[pPanel[p].m_iLA]-lmin)/range;
 				else if(pPanel[p].m_Pos<=MIDSURFACE) color = (CpInf[pPanel[p].m_iLA]-lmin)/range;
@@ -1131,7 +1131,7 @@ void GLCreateMesh(int iList, int nPanels, Panel *pPanel, CVector *pNode, QColor 
 	int iLA, iLB, iTA, iTB;
 	int p;
 	CVector  N;
-	N.Set(0.0, 0.0, 0.0);
+	N.set(0.0, 0.0, 0.0);
 
 	glNewList(iList, GL_COMPILE);
 	{
@@ -1896,7 +1896,7 @@ bool GLCreateStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPolar *pWPo
 	CVector C, D, D1, VA, VAT, VB, VBT, VT, VInf, TC, TD;
 	CVector RefPoint(0.0,0.0,0.0);
 
-	D1.Set(987654321.0, 0.0, 0.0);
+	D1.set(987654321.0, 0.0, 0.0);
 
 	Mu    = pPOpp->m_dG;
 	Sigma = pPOpp->m_dSigma;
@@ -1918,7 +1918,7 @@ bool GLCreateStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPolar *pWPo
 		glLineWidth(W3dPrefsDlg::s_StreamLinesWidth);
 		glColor3d(W3dPrefsDlg::s_StreamLinesColor.redF(), W3dPrefsDlg::s_StreamLinesColor.greenF(), W3dPrefsDlg::s_StreamLinesColor.blueF());
 
-		VInf.Set(pPOpp->m_QInf,0.0,0.0);
+		VInf.set(pPOpp->m_QInf,0.0,0.0);
 
 		m = 0;
 
@@ -1934,20 +1934,20 @@ bool GLCreateStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPolar *pWPo
 
 					if(GL3DScales::s_pos==0 && pWing->m_pWingPanel[p].m_bIsLeading && pWing->m_pWingPanel[p].m_Pos<=MIDSURFACE)
 					{
-						C.Set(pNode[pWing->m_pWingPanel[p].m_iLA]);
-						D.Set(pNode[pWing->m_pWingPanel[p].m_iLB]);
+						C.set(pNode[pWing->m_pWingPanel[p].m_iLA]);
+						D.set(pNode[pWing->m_pWingPanel[p].m_iLB]);
 						bFound = true;
 					}
 					else if(GL3DScales::s_pos==1 && pWing->m_pWingPanel[p].m_bIsTrailing && pWing->m_pWingPanel[p].m_Pos<=MIDSURFACE)
 					{
-						C.Set(pNode[pWing->m_pWingPanel[p].m_iTA]);
-						D.Set(pNode[pWing->m_pWingPanel[p].m_iTB]);
+						C.set(pNode[pWing->m_pWingPanel[p].m_iTA]);
+						D.set(pNode[pWing->m_pWingPanel[p].m_iTB]);
 						bFound = true;
 					}
 					else if(GL3DScales::s_pos==2 && pWing->m_pWingPanel[p].m_bIsLeading && pWing->m_pWingPanel[p].m_Pos<=MIDSURFACE)
 					{
-						C.Set(0.0, pNode[pWing->m_pWingPanel[p].m_iLA].y, 0.0);
-						D.Set(0.0, pNode[pWing->m_pWingPanel[p].m_iLB].y, 0.0);
+						C.set(0.0, pNode[pWing->m_pWingPanel[p].m_iLA].y, 0.0);
+						D.set(0.0, pNode[pWing->m_pWingPanel[p].m_iLB].y, 0.0);
 						bFound = true;
 					}
 
@@ -1955,37 +1955,37 @@ bool GLCreateStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPolar *pWPo
 					{
 						TC = C;
 						TD = D;
-						TC.RotateY(RefPoint, pPOpp->alpha());
-						TD.RotateY(RefPoint, pPOpp->alpha());
+						TC.rotateY(RefPoint, pPOpp->alpha());
+						TD.rotateY(RefPoint, pPOpp->alpha());
 						TC -= C;
 						TD -= D;
 						if(GL3DScales::s_pos==1 && qAbs(GL3DScales::s_XOffset)<0.001 && qAbs(GL3DScales::s_ZOffset)<0.001)
 						{
 							//apply Kutta's condition : initial speed vector is parallel to the T.E. bisector angle
-							VA.Set(pNode[pWing->m_pWingPanel[p].m_iTA] - pNode[pWing->m_pWingPanel[p].m_iLA]);
-							VA. Normalize();
-							VB.Set(pNode[pWing->m_pWingPanel[p].m_iTB] - pNode[pWing->m_pWingPanel[p].m_iLB]);
-							VB. Normalize();
+							VA.set(pNode[pWing->m_pWingPanel[p].m_iTA] - pNode[pWing->m_pWingPanel[p].m_iLA]);
+							VA. normalize();
+							VB.set(pNode[pWing->m_pWingPanel[p].m_iTB] - pNode[pWing->m_pWingPanel[p].m_iLB]);
+							VB. normalize();
 							if(pWing->m_pWingPanel[p].m_Pos==BOTSURFACE)
 							{
 								//corresponding upper panel is the next one coming up
 								for (i=p; i<pWing->m_MatSize;i++)
 									if(pWing->m_pWingPanel[i].m_Pos>MIDSURFACE && pWing->m_pWingPanel[i].m_bIsTrailing) break;
 								VAT = pNode[pWing->m_pWingPanel[i].m_iTA] - pNode[pWing->m_pWingPanel[i].m_iLA];
-								VAT.Normalize();
+								VAT.normalize();
 								VA = VA+VAT;
-								VA.Normalize();//VA is parallel to the bisector angle
+								VA.normalize();//VA is parallel to the bisector angle
 
 								VBT = pNode[pWing->m_pWingPanel[i].m_iTB] - pNode[pWing->m_pWingPanel[i].m_iLB];
-								VBT.Normalize();
+								VBT.normalize();
 								VB = VB+VBT;
-								VB.Normalize();//VB is parallel to the bisector angle
+								VB.normalize();//VB is parallel to the bisector angle
 							}
-							VA.RotateY(pPOpp->alpha());
-							VB.RotateY(pPOpp->alpha());
+							VA.rotateY(pPOpp->alpha());
+							VB.rotateY(pPOpp->alpha());
 						}
 
-						if(!C.IsSame(D1))
+						if(!C.isSame(D1))
 						{
 							//we plot the left trailing point only for the extreme left trailing panel
 							// only right trailing points afterwards
@@ -2006,10 +2006,10 @@ bool GLCreateStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPolar *pWPo
 
 								for (i=1; i< GL3DScales::s_NX ;i++)
 								{
-									Objects3D::s_pPanelAnalysis->GetSpeedVector(C, Mu, Sigma, VT);
+									Objects3D::s_pPanelAnalysis->getSpeedVector(C, Mu, Sigma, VT);
 
 									VT += VInf;
-									VT.Normalize();
+									VT.normalize();
 									C   += VT* ds;
 									glVertex3d(C.x+TC.x, C.y+TC.y, C.z+TC.z);
 									ds *= GL3DScales::s_XFactor;
@@ -2036,10 +2036,10 @@ bool GLCreateStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPolar *pWPo
 
 							for (i=1; i< GL3DScales::s_NX ;i++)
 							{
-								Objects3D::s_pPanelAnalysis->GetSpeedVector(D, Mu, Sigma, VT);
+								Objects3D::s_pPanelAnalysis->getSpeedVector(D, Mu, Sigma, VT);
 
 								VT += VInf;
-								VT.Normalize();
+								VT.normalize();
 								D   += VT* ds;
 								glVertex3d(D.x+TD.x, D.y+TD.y, D.z+TD.z);
 								ds *= GL3DScales::s_XFactor;
@@ -2116,17 +2116,17 @@ bool GLCreateSurfSpeeds(Panel *pPanel, WPolar *pWPolar, PlaneOpp *pPOpp)
 
 		for (p=0; p<Objects3D::s_MatSize; p++)
 		{
-			VT.Set(pPOpp->m_QInf,0.0,0.0);
+			VT.set(pPOpp->m_QInf,0.0,0.0);
 
 			if(pWPolar->analysisMethod()==XFLR5::PANELMETHOD)
 			{
-				if(pPanel[p].m_Pos==MIDSURFACE) C.Copy(pPanel[p].CtrlPt);
-				else                            C.Copy(pPanel[p].CollPt);
-				Objects3D::s_pPanelAnalysis->GetSpeedVector(C, Mu, Sigma, V);
+				if(pPanel[p].m_Pos==MIDSURFACE) C.copy(pPanel[p].CtrlPt);
+				else                            C.copy(pPanel[p].CollPt);
+				Objects3D::s_pPanelAnalysis->getSpeedVector(C, Mu, Sigma, V);
 
 				VT += V;
 //					if(!pWPolar->m_bTiltedGeom)
-					C.RotateY(RefPoint, pPOpp->alpha());
+					C.rotateY(RefPoint, pPOpp->alpha());
 					//Tilt the geometry w.r.t. sideslip
 //						C.RotateZ(RefPoint, -pWOpp->m_Beta);
 			}
@@ -2270,7 +2270,7 @@ void GLCreatePanelForce(int nPanels, Panel *pPanel, WPolar *pWPolar, PlaneOpp *p
 				cosa2  = sqrt((1.0 + cosa)*0.5);
 
 				Omega = R * pPanel[p].Normal;//crossproduct
-				Omega.Normalize();
+				Omega.normalize();
 				Omega *=sina2;
 				Qt.Set(cosa2, Omega.x, Omega.y, Omega.z);
 			}
@@ -2353,7 +2353,7 @@ void GLCreatePanelForce(int nPanels, Panel *pPanel, WPolar *pWPolar, PlaneOpp *p
 				else
 				{
 					// depression, point outwards from the surface
-					P.Set(-P.x, -P.y, -P.z);
+					P.set(-P.x, -P.y, -P.z);
 					glBegin(GL_LINES);
 					{
 						glVertex3d(O.x, O.y, O.z);
@@ -2420,7 +2420,7 @@ void GLCreateCtrlPts(int nPanels, Panel *pPanel, double normalLength)
 				cosa2  = sqrt((1.0 + cosa)*0.5);
 
 				Omega = R * pPanel[p].Normal;//crossproduct
-				Omega.Normalize();
+				Omega.normalize();
 				Omega *=sina2;
 				Qt.Set(cosa2, Omega.x, Omega.y, Omega.z);
 			}
@@ -2511,7 +2511,7 @@ void GLCreateMesh(Wing *pWingList[MAXWINGS])
 								TALB = pWing->m_Surface.at(j)->LB - pWing->m_Surface.at(j)->TA;
 
 								N = LATB *TALB;
-								N. Normalize();
+								N. normalize();
 
 								glNormal3d(N.x, N.y, N.z);
 								glVertex3d(pWing->m_Surface.at(j)->TA.x,
@@ -2530,7 +2530,7 @@ void GLCreateMesh(Wing *pWingList[MAXWINGS])
 								TALB = pWing->m_Surface.at(j)->LB - pWing->m_Surface.at(j)->TA;
 
 								N = LATB *TALB;
-								N. Normalize();
+								N. normalize();
 
 								glNormal3d(N.x, N.y, N.z);
 								glVertex3d(pWing->m_Surface.at(j)->LA.x,
@@ -2570,7 +2570,7 @@ void GLCreateMesh(Wing *pWingList[MAXWINGS])
 								TALB = D-B;
 
 								N = LATB *TALB;
-								N. Normalize();
+								N. normalize();
 
 								glNormal3d(N.x, N.y, N.z);
 								glVertex3d(A.x,A.y,A.z);
@@ -2598,7 +2598,7 @@ void GLCreateMesh(Wing *pWingList[MAXWINGS])
 								TALB = D-B;
 
 								N = LATB *TALB;
-								N. Normalize();
+								N. normalize();
 
 								glNormal3d(N.x, N.y, N.z);
 								glVertex3d(A.x,A.y,A.z);
@@ -2658,7 +2658,7 @@ void GLCreateMesh(Wing *pWingList[MAXWINGS])
 								TALB = pWing->m_Surface.at(j)->LB - pWing->m_Surface.at(j)->TA;
 
 								N = LATB *TALB;
-								N. Normalize();
+								N. normalize();
 
 								glNormal3d(N.x, N.y, N.z);
 								glVertex3d(pWing->m_Surface.at(j)->TA.x,
@@ -2677,7 +2677,7 @@ void GLCreateMesh(Wing *pWingList[MAXWINGS])
 								TALB = pWing->m_Surface.at(j)->LB - pWing->m_Surface.at(j)->TA;
 
 								N = LATB *TALB;
-								N. Normalize();
+								N. normalize();
 
 								glNormal3d(N.x, N.y, N.z);
 								glVertex3d(pWing->m_Surface.at(j)->LA.x,
@@ -2717,7 +2717,7 @@ void GLCreateMesh(Wing *pWingList[MAXWINGS])
 								TALB = D-B;
 
 								N = LATB *TALB;
-								N. Normalize();
+								N. normalize();
 
 								glNormal3d(N.x, N.y, N.z);
 								glVertex3d(A.x,A.y,A.z);
@@ -2745,7 +2745,7 @@ void GLCreateMesh(Wing *pWingList[MAXWINGS])
 								TALB = D-B;
 
 								N = LATB *TALB;
-								N. Normalize();
+								N. normalize();
 
 								glNormal3d(N.x, N.y, N.z);
 								glVertex3d(A.x,A.y,A.z);

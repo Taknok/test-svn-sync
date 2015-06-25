@@ -34,8 +34,11 @@
  */
 WPolar::WPolar()
 {
-	m_bIsVisible  = true;
-	m_bShowPoints = false;
+	m_LineStyle.m_bIsVisible  = true;
+	m_LineStyle.m_PointStyle = 0;
+	m_LineStyle.m_Style  = 0;
+	m_LineStyle.m_Width  = 1;
+	m_LineStyle.m_Color = randomColor();
 
 	m_bVLM1         = true;
 	m_bThinSurfaces = true;
@@ -53,9 +56,6 @@ WPolar::WPolar()
 	m_AnalysisMethod = XFLR5::LLTMETHOD;
 	m_WPolarType     = XFLR5::FIXEDSPEEDPOLAR;
 	m_ReferenceDim   = XFLR5::PLANFORMREFDIM;
-	m_Style  = 0;
-	m_Width  = 1;
-	m_Color = randomColor();
 
 	m_BankAngle = 0.0;
 	m_AlphaSpec = 0.0;
@@ -77,11 +77,13 @@ WPolar::WPolar()
 	
 	m_bAutoInertia = true;
 	m_CoGIxx = m_CoGIyy = m_CoGIzz = m_CoGIxz =0.0;
-	m_CoG.Set(0.0,0.0,0.0);
+	m_CoG.set(0.0,0.0,0.0);
+
+	for(int i=0; i<7; i++) m_inertiaGain[i] = 0.0;
 }
 
 
-void WPolar::ReplacePOppDataAt(int pos, PlaneOpp *pPOpp)
+void WPolar::replacePOppDataAt(int pos, PlaneOpp *pPOpp)
 {
 	if(pos<0 || pos>= m_Alpha.size()) return;
 
@@ -112,11 +114,11 @@ void WPolar::ReplacePOppDataAt(int pos, PlaneOpp *pPOpp)
 	//store the eigenthings
 	for(int l=0; l<8; l++) m_EigenValue[l][pos] = pPOpp->m_EigenValue[l];
 
-	CalculatePoint(pos);
+	calculatePoint(pos);
 }
 
 
-void WPolar::InsertPOppDataAt(int pos, PlaneOpp *pPOpp)
+void WPolar::insertPOppDataAt(int pos, PlaneOpp *pPOpp)
 {
 	if(pos<0 || pos> m_Alpha.size()) return; // if(pos==size), then the data is appended
 	
@@ -179,12 +181,12 @@ void WPolar::InsertPOppDataAt(int pos, PlaneOpp *pPOpp)
 	m_Oswald.insert(pos, 0.0);
 	m_SM.insert(pos, 0.0);
 	
-	CalculatePoint(pos);
+	calculatePoint(pos);
 }
 
 
 
-void WPolar::InsertDataAt(int pos, double Alpha, double Beta, double QInf, double Ctrl, double Cl, double CY, double ICd, double PCd, double GCm,
+void WPolar::insertDataAt(int pos, double Alpha, double Beta, double QInf, double Ctrl, double Cl, double CY, double ICd, double PCd, double GCm,
 							double ICm, double VCm, double GRm, double GYm, double IYm, double VYm, double XCP, double YCP,
 							double ZCP, double Cb, double XNP)
 {
@@ -252,7 +254,7 @@ void WPolar::InsertDataAt(int pos, double Alpha, double Beta, double QInf, doubl
  *
  * @param pPOpp the plane operating point from which the data is to be extracted
  */
-void WPolar::AddPlaneOpPoint(PlaneOpp *pPOpp)
+void WPolar::addPlaneOpPoint(PlaneOpp *pPOpp)
 {
 	bool bInserted = false;
 	int i;
@@ -266,13 +268,13 @@ void WPolar::AddPlaneOpPoint(PlaneOpp *pPOpp)
 			{
                 if (qAbs(pPOpp->m_Alpha-m_Alpha[i]) < 0.001)
 				{
-					ReplacePOppDataAt(i, pPOpp);
+					replacePOppDataAt(i, pPOpp);
 					bInserted = true;
 					break;
 				}
 				else if (pPOpp->m_Alpha < m_Alpha[i])
 				{
-					InsertPOppDataAt(i, pPOpp);
+					insertPOppDataAt(i, pPOpp);
 					bInserted = true;
 					break;
 				}
@@ -283,14 +285,14 @@ void WPolar::AddPlaneOpPoint(PlaneOpp *pPOpp)
 				if (qAbs(pPOpp->m_QInf - m_QInfinite[i]) < 0.001)
 				{
 					// then erase former result
-					ReplacePOppDataAt(i, pPOpp);
+					replacePOppDataAt(i, pPOpp);
 					bInserted = true;
 					break;
 				}
 				else if (pPOpp->m_QInf < m_QInfinite[i])
 				{
 					// sort by crescending speed
-					InsertPOppDataAt(i, pPOpp);
+					insertPOppDataAt(i, pPOpp);
 					bInserted = true;
 					break;
 				}
@@ -301,14 +303,14 @@ void WPolar::AddPlaneOpPoint(PlaneOpp *pPOpp)
 				if (qAbs(pPOpp->m_Beta - m_Beta[i]) < 0.001)
 				{
 					// then erase former result
-					ReplacePOppDataAt(i, pPOpp);
+					replacePOppDataAt(i, pPOpp);
 					bInserted = true;
 					break;
 				}
 				else if (pPOpp->m_Beta < m_Beta[i])
 				{
 					// sort by crescending speed
-					InsertPOppDataAt(i, pPOpp);
+					insertPOppDataAt(i, pPOpp);
 					bInserted = true;
 					break;
 				}
@@ -316,17 +318,17 @@ void WPolar::AddPlaneOpPoint(PlaneOpp *pPOpp)
 			else if(m_WPolarType==XFLR5::STABILITYPOLAR)
 			{
 				// Control or stability analysis, sort by control value
-				if (qAbs(pPOpp->m_Alpha - m_Alpha[i])<0.0001)
+				if (qAbs(pPOpp->m_Ctrl - m_Ctrl[i])<0.001)
 				{
 					// then erase former result
-					ReplacePOppDataAt(i, pPOpp);
+					replacePOppDataAt(i, pPOpp);
 					bInserted = true;
 					break;
 				}
 				else if (pPOpp->m_Ctrl < m_Ctrl[i])
 				{
 					// sort by crescending control values
-					InsertPOppDataAt(i, pPOpp);
+					insertPOppDataAt(i, pPOpp);
 					bInserted = true;
 					break;
 				}
@@ -338,7 +340,7 @@ void WPolar::AddPlaneOpPoint(PlaneOpp *pPOpp)
 	{
 		// data is appended at the end
 		int size = m_Alpha.size();
-		InsertPOppDataAt(size, pPOpp);
+		insertPOppDataAt(size, pPOpp);
 	}
 }
 
@@ -349,7 +351,7 @@ void WPolar::AddPlaneOpPoint(PlaneOpp *pPOpp)
  * for horizontal flight, efficiency coefficient, mode frequencies and amping factors.
  * @param i the index of the point for which the values are to be calculated
  */
-void WPolar::CalculatePoint(int i)
+void WPolar::calculatePoint(int i)
 {
 	//finish calculations
 //	double cl = m_CL[i];
@@ -451,7 +453,7 @@ void WPolar::CalculatePoint(int i)
  * Copies the polar's analysis parameters from an existing polar
  * @param pWPolar a pointer to the instance of the reference CWPolar object from which the parameters should be copied
  */
-void WPolar::DuplicateSpec(WPolar *pWPolar)
+void WPolar::duplicateSpec(WPolar *pWPolar)
 {
 	m_PlaneName   = pWPolar->m_PlaneName;
 	m_WPlrName    = pWPolar->m_WPlrName;
@@ -464,9 +466,11 @@ void WPolar::DuplicateSpec(WPolar *pWPolar)
 	if(pWPolar->polarType()==XFLR5::BETAPOLAR) m_BetaSpec = 0.0;
 	else                                m_BetaSpec = pWPolar->m_BetaSpec;
 
-	m_Style  = pWPolar->curveStyle();
-	m_Width  = pWPolar->curveWidth();
-	m_Color  = pWPolar->curveColor();
+	m_LineStyle.m_Style  = pWPolar->curveStyle();
+	m_LineStyle.m_Width  = pWPolar->curveWidth();
+	m_LineStyle.m_Color  = pWPolar->curveColor();
+	m_LineStyle.m_PointStyle = pWPolar->points();
+	m_LineStyle.m_bIsVisible = pWPolar->visible();
 
 	// general aerodynamic data - specific to a polar
 	m_Viscosity   = pWPolar->m_Viscosity;
@@ -480,8 +484,6 @@ void WPolar::DuplicateSpec(WPolar *pWPolar)
 
 	m_bGround         = pWPolar->m_bGround;
 	m_bDirichlet      = pWPolar->m_bDirichlet;
-	m_bIsVisible      = pWPolar->visible();
-	m_bShowPoints     = pWPolar->pointsVisible();
 	m_bTiltedGeom     = pWPolar->m_bTiltedGeom;
 	m_bViscous        = pWPolar->m_bViscous;
 	m_bIgnoreBodyPanels = pWPolar->m_bIgnoreBodyPanels;
@@ -511,6 +513,8 @@ void WPolar::DuplicateSpec(WPolar *pWPolar)
 	m_CoGIxz = pWPolar->m_CoGIxz;
 
 	m_CoG = pWPolar->m_CoG;
+
+	for(int i=0; i<7; i++) m_inertiaGain[i] = pWPolar->m_inertiaGain[i];
 }
 
 
@@ -521,7 +525,7 @@ void WPolar::DuplicateSpec(WPolar *pWPolar)
  * @param FileType TXT if the data is separated by spaces, CSV for a comma separator
  * @param bDataOnly true if the analysis parameters should not be output
  */
-void WPolar::Export(QTextStream &out, XFLR5::enumTextFileType FileType, bool bDataOnly)
+void WPolar::exportToTextFile(QTextStream &out, XFLR5::enumTextFileType FileType, bool bDataOnly)
 {
 	int j;
 	QString Header, strong, str;
@@ -634,7 +638,7 @@ void WPolar::Export(QTextStream &out, XFLR5::enumTextFileType FileType, bool bDa
  * @param iVar the index of the variable
  * @return a void pointer to the array of data
  */
-void * WPolar::GetWPlrVariable(int iVar)
+void * WPolar::getWPlrVariable(int iVar)
 {
 	// returns a pointer to the variable array defined by its index iVar
 	void * pVar;
@@ -943,13 +947,13 @@ QString WPolar::variableName(int iVar)
  * Removes the data for the point with aoa alpha
  * @param alpha the aoa of the point to be deleted
  **/
-void WPolar::Remove(double alpha)
+void WPolar::remove(double alpha)
 {
 	for(int ia=0;ia<m_Alpha.size(); ia++)
 	{
         if(qAbs(m_Alpha.at(ia)-alpha)<PRECISION)
 		{
-			Remove(ia);
+			remove(ia);
 			break;
 		}
 	}
@@ -960,7 +964,7 @@ void WPolar::Remove(double alpha)
  * Removes the data at index i of the data arrays
  * @param i the index at which the data is to be deleted
  **/
-void WPolar::Remove(int i)
+void WPolar::remove(int i)
 {
 	int size = m_Alpha.size();
 	m_Alpha.removeAt(i);
@@ -1026,7 +1030,7 @@ void WPolar::Remove(int i)
 /**
  *Clears the content of the data arrays
 */
-void WPolar::ClearData()
+void WPolar::clearData()
 {
 	int size = m_Alpha.size();
 	m_Alpha.clear();
@@ -1093,7 +1097,7 @@ void WPolar::ClearData()
  * @param bIsStoring true if saving the data, false if loading
  * @return true if the operation was successful, false otherwise
  */
-bool WPolar::SerializeWPlrWPA(QDataStream &ar, bool bIsStoring)
+bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
 {
 	int n;
 	float f,r0,r1,r2,r3,i0,i1,i2,i3;
@@ -1154,12 +1158,12 @@ bool WPolar::SerializeWPlrWPA(QDataStream &ar, bool bIsStoring)
 		m_referenceSpanLength = f;
 		if (m_referenceSpanLength<0) return false;
 
-		ar >> m_Style  >> m_Width;
-		if (m_Style<0 || m_Style> 10) return false;
+		ar >> m_LineStyle.m_Style  >> m_LineStyle.m_Width;
+		if (m_LineStyle.m_Style<0 || m_LineStyle.m_Style> 10) return false;
 
-		if (m_Width<0 || m_Width> 10) return false;
+		if (m_LineStyle.m_Width<0 || m_LineStyle.m_Width> 10) return false;
 
-		ReadCOLORREF(ar, m_Color);
+		readCOLORREF(ar, m_LineStyle.m_Color);
 
 		ar>>k;
 		if(k==1)      m_AnalysisMethod=XFLR5::LLTMETHOD;
@@ -1233,13 +1237,9 @@ bool WPolar::SerializeWPlrWPA(QDataStream &ar, bool bIsStoring)
 		ar >> n;
 		if (n!=0 && n!=1) return false;
 		else {
-			if(n) m_bIsVisible =true; else m_bIsVisible = false;
+			if(n) m_LineStyle.m_bIsVisible =true; else m_LineStyle.m_bIsVisible = false;
 		}
-		ar >> n;
-		if (n!=0 && n!=1) return false;
-		else {
-			if(n) m_bShowPoints =true; else m_bShowPoints = false;
-		}
+		ar >> n; m_LineStyle.m_PointStyle =n;
 
 		ar >>k;
 		if(k==1)      m_WPolarType = XFLR5::FIXEDSPEEDPOLAR;
@@ -1435,7 +1435,7 @@ bool WPolar::SerializeWPlrWPA(QDataStream &ar, bool bIsStoring)
 				m_EigenValue[5][i] = complex<double>(r1,i1);
 				m_EigenValue[6][i] = complex<double>(r2,i2);
 				m_EigenValue[7][i] = complex<double>(r3,i3);
-				CalculatePoint(i);
+				calculatePoint(i);
 			}
 		}
 		if(m_PolarFormat>=1020)
@@ -1479,7 +1479,7 @@ bool WPolar::SerializeWPlrWPA(QDataStream &ar, bool bIsStoring)
  * @param &PolarProperties the reference of the QString object to be filled with the description
  * @param bData true if the analysis data should be appended to the string
  */
-void WPolar::GetPolarProperties(QString &PolarProperties, bool bData)
+void WPolar::getPolarProperties(QString &PolarProperties, bool bData)
 {
 	QString strong, lenunit, massunit, speedunit, areaunit;
 	Units::getLengthUnitLabel(lenunit);
@@ -1533,6 +1533,57 @@ void WPolar::GetPolarProperties(QString &PolarProperties, bool bData)
 
 
 	//Control data
+	//Mass and inertia controls
+	QString strLen, strMass, strInertia;
+	Units::getLengthUnitLabel(strLen);
+	Units::getWeightUnitLabel(strMass);
+	strInertia = strMass+"."+strLen+QString::fromUtf8("²");
+
+	if(qAbs(m_inertiaGain[0])>PRECISION)
+	{
+		strong = QString::fromUtf8("Mass:  gain=%1").arg(m_inertiaGain[0], 0,'f',2);
+		strong += Units::weightUnitLabel() + "/ctrl\n";
+		PolarProperties +=strong;
+	}
+	if(qAbs(m_inertiaGain[1])>PRECISION)
+	{
+		strong = QString::fromUtf8("CoG_x: gain=%1").arg(m_inertiaGain[1], 0,'f',2);
+		strong += Units::lengthUnitLabel() + "/ctrl\n";
+		PolarProperties +=strong;
+	}
+	if(qAbs(m_inertiaGain[2])>PRECISION)
+	{
+		strong = QString::fromUtf8("CoG_z: gain=%1").arg(m_inertiaGain[2], 0,'f',2);
+		strong += Units::lengthUnitLabel() + "/ctrl\n";
+		PolarProperties +=strong;
+	}
+	if(qAbs(m_inertiaGain[3])>PRECISION)
+	{
+		strong = QString(QString::fromUtf8("Ixx:   gain=%1")).arg(m_inertiaGain[3],0,'f',2);
+		PolarProperties += strInertia;
+		PolarProperties +=strong;
+	}
+	if(qAbs(m_inertiaGain[4])>PRECISION)
+	{
+		strong = QString(QString::fromUtf8("Iyy:   gain=%1")).arg(m_inertiaGain[4],0,'f',2);
+		PolarProperties += strInertia;
+		PolarProperties +=strong;
+	}
+	if(qAbs(m_inertiaGain[5])>PRECISION)
+	{
+		strong = QString(QString::fromUtf8("Izz:   gain=%1")).arg(m_inertiaGain[5],0,'f',2);
+		PolarProperties += strInertia;
+		PolarProperties +=strong;
+	}
+	if(qAbs(m_inertiaGain[6])>PRECISION)
+	{
+		strong = QString(QString::fromUtf8("Ixz:   gain=%1")).arg(m_inertiaGain[6],0,'f',2);
+		PolarProperties += strInertia;
+		PolarProperties +=strong;
+	}
+
+
+	//Angle controls
 	if(m_ControlGain.size()<m_nControls && m_WPolarType==XFLR5::STABILITYPOLAR && pPlane)
 	{
 		int j;
@@ -1546,7 +1597,7 @@ void WPolar::GetPolarProperties(QString &PolarProperties, bool bData)
 		{
 			if(qAbs(m_ControlGain[iCtrl])>PRECISION)
 			{
-				strong = QString(QString::fromUtf8("Wing Tilt: gain=%1°/unit\n")).arg(m_ControlGain[iCtrl],0,'f',2);
+				strong = QString::fromUtf8("Wing Tilt: gain=%1°/unit\n").arg(m_ControlGain[iCtrl],0,'f',2);
 				PolarProperties +=strong;
 			}
 			iCtrl=1;
@@ -1554,7 +1605,7 @@ void WPolar::GetPolarProperties(QString &PolarProperties, bool bData)
 			{
 				if(qAbs(m_ControlGain[iCtrl])>PRECISION)
 				{
-					strong = QString(QString::fromUtf8("Elev. Tilt: gain=%1°/unit\n")).arg(m_ControlGain[iCtrl],0,'f',2);
+					strong = QString::fromUtf8("Elev. Tilt: gain=%1°/unit\n").arg(m_ControlGain[iCtrl],0,'f',2);
 					PolarProperties +=strong;
 				}
 				iCtrl=2;
@@ -1710,7 +1761,7 @@ void WPolar::GetPolarProperties(QString &PolarProperties, bool bData)
 	QTextStream out;
 	strong.clear();
 	out.setString(&strong);
-	Export(out, Settings::s_ExportFileType, true);
+	exportToTextFile(out, Settings::s_ExportFileType, true);
 	PolarProperties += "\n"+strong;
 }
 
@@ -1721,31 +1772,17 @@ void WPolar::GetPolarProperties(QString &PolarProperties, bool bData)
  * @param ptr a void pointer to the reference wing or plane instance
  * @param bPlane true if the reference object is a plane, false if it is a wing
  */
-void WPolar::RetrieveInertia(void *ptr, bool bPlane)
+void WPolar::retrieveInertia(void *ptr)
 {
-	Plane *pPlane = NULL;
-	Wing *pWing = NULL;
-	if(bPlane)
-	{
-		pPlane = (Plane*)ptr;
-		m_Mass = pPlane->TotalMass();
-		m_CoG = pPlane->CoG();
-		m_CoGIxx = pPlane->m_CoGIxx;
-		m_CoGIyy = pPlane->m_CoGIyy;
-		m_CoGIzz = pPlane->m_CoGIzz;
-		m_CoGIxz = pPlane->m_CoGIxz;
-	}
-	else
-	{
-		pWing  = (Wing*)ptr;
-		m_Mass = pWing->totalMass();
-		m_CoG = pWing->m_CoG;
-		m_CoGIxx = pWing->m_CoGIxx;
-		m_CoGIyy = pWing->m_CoGIyy;
-		m_CoGIzz = pWing->m_CoGIzz;
-		m_CoGIxz = pWing->m_CoGIxz;
-	}
-	ClearData();
+	Plane *pPlane = (Plane*)ptr;
+	m_Mass = pPlane->totalMass();
+	m_CoG = pPlane->CoG();
+	m_CoGIxx = pPlane->m_CoGIxx;
+	m_CoGIyy = pPlane->m_CoGIyy;
+	m_CoGIzz = pPlane->m_CoGIzz;
+	m_CoGIxz = pPlane->m_CoGIxz;
+
+	clearData();
 }
 
 
@@ -1756,8 +1793,9 @@ void WPolar::RetrieveInertia(void *ptr, bool bPlane)
  * @param bIsStoring true if saving the data, false if loading
  * @return true if the operation was successful, false otherwise
  */
-bool WPolar::SerializeWPlrXFL(QDataStream &ar, bool bIsStoring)
+bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 {
+	bool boolean;
 	int i, k, n;
 	double dble;
 	double r0, r1, r2, r3, r4, r5, r6, r7;
@@ -1775,9 +1813,9 @@ bool WPolar::SerializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 		ar << m_WPlrName;
 
 		ar << m_referenceArea << m_referenceChordLength << m_referenceSpanLength ;
-		ar << m_Style << m_Width;
-		ar << m_Color;
-		ar << m_bIsVisible << m_bShowPoints;
+		ar << m_LineStyle.m_Style << m_LineStyle.m_Width;
+		ar << m_LineStyle.m_Color;
+		ar << m_LineStyle.m_bIsVisible << false;
 
 		if(m_AnalysisMethod==XFLR5::LLTMETHOD)        ar<<1;
 		else if(m_AnalysisMethod==XFLR5::VLMMETHOD)   ar<<2;
@@ -1844,8 +1882,10 @@ bool WPolar::SerializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 		}
 
 		// space allocation for the future storage of more data, without need to change the format
-		for (int i=0; i<20; i++) ar << i;
-		for (int i=0; i<50; i++) ar << (double)i;
+		for (int i=0; i<19; i++) ar << 0;
+		ar << m_LineStyle.m_PointStyle;
+		for (int i=0; i<43; i++) ar << 0.0;
+		for (int i=43; i<50; i++) ar << m_inertiaGain[i];
 
 		return true;
 	}
@@ -1858,9 +1898,9 @@ bool WPolar::SerializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 		ar >> m_WPlrName;
 
 		ar >> m_referenceArea >> m_referenceChordLength >> m_referenceSpanLength;
-		ar >> m_Style >> m_Width;
-		ar >> m_Color;
-		ar >> m_bIsVisible >> m_bShowPoints;
+		ar >> m_LineStyle.m_Style >> m_LineStyle.m_Width;
+		ar >> m_LineStyle.m_Color;
+		ar >> m_LineStyle.m_bIsVisible >> boolean;
 
 		ar >> n;
 		if(n==1)      m_AnalysisMethod=XFLR5::LLTMETHOD;
@@ -1933,7 +1973,7 @@ bool WPolar::SerializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 		// Last store the array data
 		// assumes the arrays have been cleared previously
 		double d[20];
-		ClearData();
+		clearData();
 
 		ar >> n;
 		if(qAbs(n)>10000) return false;
@@ -1945,9 +1985,8 @@ bool WPolar::SerializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 			{
 				ar >> d[j];
 			}
-			InsertDataAt(i, d[0],  d[1],  d[2],  d[3],  d[4], d[5], d[6], d[7], d[8], d[9], d[10], d[11], d[12], d[13],
+			insertDataAt(i, d[0],  d[1],  d[2],  d[3],  d[4], d[5], d[6], d[7], d[8], d[9], d[10], d[11], d[12], d[13],
 							d[14], d[15], d[16], d[17], d[18], d[19]);
-
 
 
 			ar >> r0 >> r1 >>r2 >> r3;
@@ -1963,23 +2002,29 @@ bool WPolar::SerializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 			m_EigenValue[6][i] = complex<double>(r6, i6);
 			m_EigenValue[7][i] = complex<double>(r7, i7);
 
-			CalculatePoint(i);
+			calculatePoint(i);
 		}
 	}
 
 	// space allocation
-	for (int i=0; i<20; i++) ar >> k;
-	for (int i=0; i<50; i++) ar >> dble;
+	for (int i=0; i<19; i++) ar >> k;
+	ar >> m_LineStyle.m_PointStyle;
 
+	for (int i=0; i<43; i++) ar >> dble;
+	for (int i=43; i<50; i++)
+	{
+		ar >> m_inertiaGain[i];
+		if(m_inertiaGain[i]>42 && m_inertiaGain[i]<51) m_inertiaGain[i] = 0.0; //correcting some former bad programming
+	}
 	return true;
 }
 
 
-void WPolar::Copy(WPolar *pWPolar)
+void WPolar::copy(WPolar *pWPolar)
 {
 	int i;
-	m_bIsVisible      = pWPolar->visible();
-	m_bShowPoints     = pWPolar->pointsVisible();
+	m_LineStyle.m_bIsVisible = pWPolar->visible();
+	m_LineStyle.m_PointStyle = pWPolar->points();
 	m_bTiltedGeom     = pWPolar->m_bTiltedGeom;
 	m_bViscous        = pWPolar->m_bViscous;
 	m_bVLM1           = pWPolar->m_bVLM1;
@@ -1989,7 +2034,7 @@ void WPolar::Copy(WPolar *pWPolar)
 	m_bThinSurfaces   = pWPolar->bThinSurfaces();
 	m_nControls       = pWPolar->m_nControls;
 
-	ClearData();
+	clearData();
 
 	for(i=0; i<pWPolar->m_Alpha.size(); i++)
 	{

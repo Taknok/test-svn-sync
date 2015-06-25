@@ -415,9 +415,9 @@ void SplineCtrlsDlg::OnUpdate()
 void SplineCtrlsDlg::UpdateSplines()
 {
 	m_pSF->m_Extrados.SplineKnots();
-	m_pSF->m_Extrados.SplineCurve();
+	m_pSF->m_Extrados.splineCurve();
 	m_pSF->m_Intrados.SplineKnots();
-	m_pSF->m_Intrados.SplineCurve();
+	m_pSF->m_Intrados.splineCurve();
 	m_pSF->UpdateSplineFoil();
 	QAFoil *pAFoil = (QAFoil*)s_pAFoil;
 	pAFoil->m_p2DWidget->update();

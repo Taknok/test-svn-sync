@@ -34,7 +34,7 @@ int Frame::s_iSelect = -1;
 */
 Frame::Frame(int nCtrlPts)
 {
-	m_Position.Set(0.0,0.0,0.0);
+	m_Position.set(0.0,0.0,0.0);
 	m_CtrlPoint.clear();
 	for(int ic=0; ic<nCtrlPts; ic++)
 	{
@@ -58,7 +58,7 @@ int Frame::isPoint(const CVector &Point, const double &ZoomFactor)
 	{
 		if(sqrt(  (Point.x-m_CtrlPoint[l].x)*(Point.x-m_CtrlPoint[l].x)
 				+ (Point.y-m_CtrlPoint[l].y)*(Point.y-m_CtrlPoint[l].y)
-				+ (Point.z-m_CtrlPoint[l].z)*(Point.z-m_CtrlPoint[l].z))<0.05*Height()/ZoomFactor)
+				+ (Point.z-m_CtrlPoint[l].z)*(Point.z-m_CtrlPoint[l].z))<0.05*height()/ZoomFactor)
 			  return l;
 //        if (qAbs(Point.x-m_CtrlPoint[l].y)<0.005/ZoomFactor && qAbs(Point.y-m_CtrlPoint[l].z)<0.005/ZoomFactor) return l;
 	}
@@ -72,7 +72,7 @@ int Frame::isPoint(const CVector &Point, const double &ZoomFactor)
  * @param bIsStoring true if saving the data, false if loading
  * @return true if the operation was successful, false otherwise
  */
-bool Frame::SerializeFrame(QDataStream &ar, bool bIsStoring)
+bool Frame::serializeFrame(QDataStream &ar, bool bIsStoring)
 {
 	int ArchiveFormat;
 	int k,n;
@@ -111,7 +111,7 @@ bool Frame::SerializeFrame(QDataStream &ar, bool bIsStoring)
 *@param n the index of the control point to remove in the array
 *@return true if the input index is within the array's boundaries, false otherwise
 */
-bool Frame::RemovePoint(int n)
+bool Frame::removePoint(int n)
 {
 	if (n>=0 && n<m_CtrlPoint.size())
 	{
@@ -126,7 +126,7 @@ bool Frame::RemovePoint(int n)
 * the point is inserted at a mid position between the two adjacent points, or positioned 1/5 of hte distance of the last two points in the array.
 *@param n the index at which a new points will be inserted
 */
-void Frame::InsertPoint(int n)
+void Frame::insertPoint(int n)
 {
 	m_CtrlPoint.insert(n, CVector(0.0,0.0,0.0));
 	if(n>0 && n<m_CtrlPoint.size()-1)
@@ -145,7 +145,7 @@ void Frame::InsertPoint(int n)
 * @param n the index at which a new points will be inserted
 * @param Pt the coordinates of the point to insert
 */
-void Frame::InsertPoint(int n, CVector const& Pt)
+void Frame::insertPoint(int n, CVector const& Pt)
 {
 	m_CtrlPoint.insert(n, Pt);
 	s_iSelect = n;
@@ -157,7 +157,7 @@ void Frame::InsertPoint(int n, CVector const& Pt)
 * @param Real the coordinates of the point to insert
 * @param iAxis the axis used as the index key
 */
-int Frame::InsertPoint(const CVector &Real, int iAxis)
+int Frame::insertPoint(const CVector &Real, int iAxis)
 {
 	int k=0;
 	if(iAxis==1)
@@ -223,7 +223,7 @@ int Frame::InsertPoint(const CVector &Real, int iAxis)
  * Returns the Frame's height as the difference of the z-coordinate of the last and first control points.
  *@return the Frame's height
  */
-double Frame::Height()
+double Frame::height()
 {
 	return (m_CtrlPoint.last() - m_CtrlPoint.first()).VAbs();
 /*	double hmin	=  10.0;
@@ -258,10 +258,10 @@ double Frame::zPos()
  * Copies the data from an existing Frame
  * @param pFrame a pointer to the Frame object from which to copy the data
 */
-void Frame::CopyFrame(Frame *pFrame)
+void Frame::copyFrame(Frame *pFrame)
 {
 	m_Position = pFrame->m_Position;
-	CopyPoints(&pFrame->m_CtrlPoint);
+	copyPoints(&pFrame->m_CtrlPoint);
 }
 
 
@@ -269,7 +269,7 @@ void Frame::CopyFrame(Frame *pFrame)
  * Copies the control point data from an existing list of points
  * @param pPointList a pointer to the list of points
 */
-void Frame::CopyPoints(QList<CVector> *pPointList)
+void Frame::copyPoints(QList<CVector> *pPointList)
 {
 	m_CtrlPoint.clear();
 	for(int ip=0; ip<pPointList->size(); ip++)
@@ -283,7 +283,7 @@ void Frame::CopyPoints(QList<CVector> *pPointList)
 * Appends a new point at the end of the current array
 * @param Pt to point to append
 */
-void Frame::AppendPoint(CVector const& Pt)
+void Frame::appendPoint(CVector const& Pt)
 {
 	m_CtrlPoint.append(Pt);
 }
@@ -312,7 +312,7 @@ void Frame::setPosition(CVector Pos)
 * Set the frame's position on the x-axis
 *@param u the new x-position
 */
-void Frame::SetuPosition(double u)
+void Frame::setuPosition(double u)
 {
 	m_Position.x = u;
 	for (int ic=0; ic<m_CtrlPoint.count(); ic++)
@@ -326,7 +326,7 @@ void Frame::SetuPosition(double u)
 * Set the frame's position on the y-axis
 *@param v the new y-position
 */
-void Frame::SetvPosition(double v)
+void Frame::setvPosition(double v)
 {
 	m_Position.y = v;
 }
@@ -335,7 +335,7 @@ void Frame::SetvPosition(double v)
 * Set the frame's position on the z-axis
 *@param v the new z-position
 */
-void Frame::SetwPosition(double w)
+void Frame::setwPosition(double w)
 {
 	m_Position.z = w;
 }
@@ -345,14 +345,14 @@ void Frame::SetwPosition(double w)
 * Rotates the Control points by a specified angle about the Frame's Oy axis
 *@param Angle the rotation angle in degrees
 */
-void Frame::RotateFrameY(double Angle)
+void Frame::rotateFrameY(double Angle)
 {
 	if(!m_CtrlPoint.size()) return;
 
 //	CVector RotationCenter = m_CtrlPoint.first();
 	for(int ic=0; ic<m_CtrlPoint.size(); ic++)
 	{
-		m_CtrlPoint[ic].RotateY(m_Position, Angle);
+		m_CtrlPoint[ic].rotateY(m_Position, Angle);
 	}
 }
 

@@ -64,11 +64,11 @@ public:
 	PanelAnalysisDlg(QWidget *pParent, PanelAnalysis *pPanelAnalysis);
 	~PanelAnalysisDlg();
 
-	bool InitDialog();
+	bool initDialog();
 
 private slots:
 	void OnCancelAnalysis();
-	void OnProgress();
+	void onProgress();
 
 
 private:
@@ -77,7 +77,7 @@ private:
 	void keyPressEvent(QKeyEvent *event);
 
 	void SetupLayout();
-	void Analyze();
+	void analyze();
 
 	void UpdateView();
 	

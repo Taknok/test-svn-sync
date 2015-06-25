@@ -92,13 +92,14 @@ QXDirect::QXDirect(QWidget *parent) : QWidget(parent)
 
 	m_pXFoil = new XFoil();
 
-	m_CurveStyle = 0;
-	m_CurveWidth = 1;
-	m_CurveColor = QColor(0,0,0);
+	m_LineStyle.m_PointStyle = 0;
+	m_LineStyle.m_Width = 1;
+	m_LineStyle.m_Color = QColor(0,0,0);
+	m_LineStyle.m_PointStyle = 0;
 
 	m_pAnimateTimer = new QTimer(this);
 	m_posAnimate = 0; // no animation to start with
-	Connect();
+	connectSignals();
 
 	fillComboBoxes(false);
 
@@ -241,7 +242,7 @@ void QXDirect::setControls()
 	if(Polar::curPolar())
 	{
 		QString PolarProps;
-		Polar::curPolar()->GetPolarProperties(PolarProps);
+		Polar::curPolar()->getPolarProperties(PolarProps);
 		m_pctrlPolarProps->setText(PolarProps);
 	}
 	else m_pctrlPolarProps->clear();
@@ -318,32 +319,33 @@ void QXDirect::setControls()
 /**
 * Connects signals and slots
 */
-void QXDirect::Connect()
+void QXDirect::connectSignals()
 {
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 
 
 	connect(this, SIGNAL(projectModified()), pMainFrame, SLOT(onProjectModified()));
-	connect(m_pctrlSpec1, SIGNAL(clicked()), this, SLOT(OnSpec()));
-	connect(m_pctrlSpec2, SIGNAL(clicked()), this, SLOT(OnSpec()));
-	connect(m_pctrlSpec3, SIGNAL(clicked()), this, SLOT(OnSpec()));
-	connect(m_pctrlAnalyze, SIGNAL(clicked()), this, SLOT(OnAnalyze()));
+	connect(m_pctrlSpec1, SIGNAL(clicked()), this, SLOT(onSpec()));
+	connect(m_pctrlSpec2, SIGNAL(clicked()), this, SLOT(onSpec()));
+	connect(m_pctrlSpec3, SIGNAL(clicked()), this, SLOT(onSpec()));
+	connect(m_pctrlAnalyze, SIGNAL(clicked()), this, SLOT(onAnalyze()));
 	connect(m_pctrlAlphaMin, SIGNAL(editingFinished()), this, SLOT(onInputChanged()));
 	connect(m_pctrlAlphaMax, SIGNAL(editingFinished()), this, SLOT(onInputChanged()));
 	connect(m_pctrlAlphaDelta, SIGNAL(editingFinished()), this, SLOT(onInputChanged()));
-	connect(m_pctrlCurveStyle, SIGNAL(activated(int)), this, SLOT(OnCurveStyle(int)));
-	connect(m_pctrlCurveWidth, SIGNAL(activated(int)), this, SLOT(OnCurveWidth(int)));
-	connect(m_pctrlCurveColor, SIGNAL(clickedLB()), this, SLOT(OnCurveColor()));
-	connect(m_pctrlSequence, SIGNAL(clicked()), this, SLOT(OnSequence()));
-	connect(m_pctrlViscous, SIGNAL(clicked()), this, SLOT(OnViscous()));
-	connect(m_pctrlStoreOpp, SIGNAL(clicked()), this, SLOT(OnStoreOpp()));
-	connect(m_pctrlShowPoints, SIGNAL(clicked()), this, SLOT(OnShowCurvePoints()));
-	connect(m_pctrlShowCurve, SIGNAL(clicked()), this, SLOT(OnShowCurve()));
+	connect(m_pctrlCurveStyle, SIGNAL(activated(int)), this, SLOT(onCurveStyle(int)));
+	connect(m_pctrlCurveWidth, SIGNAL(activated(int)), this, SLOT(onCurveWidth(int)));
+	connect(m_pctrlPointStyle, SIGNAL(activated(int)), this, SLOT(onCurvePoints(int)));
+	connect(m_pctrlCurveColor, SIGNAL(clickedLB()), this, SLOT(onCurveColor()));
+	connect(m_pctrlSequence, SIGNAL(clicked()), this, SLOT(onSequence()));
+	connect(m_pctrlViscous, SIGNAL(clicked()), this, SLOT(onViscous()));
+	connect(m_pctrlStoreOpp, SIGNAL(clicked()), this, SLOT(onStoreOpp()));
+//	connect(m_pctrlShowPoints, SIGNAL(clicked()), this, SLOT(onShowCurvePoints()));
+	connect(m_pctrlShowCurve, SIGNAL(clicked()), this, SLOT(onShowCurve()));
 //	connect(m_pctrlHighlightOpp, SIGNAL(clicked()), this, SLOT(OnHighlightOpp()));
 
 	connect(m_pctrlAnimate, SIGNAL(clicked(bool)), this, SLOT(onAnimate(bool)));
-	connect(m_pctrlAnimateSpeed, SIGNAL(sliderMoved(int)), this, SLOT(OnAnimateSpeed(int)));
-	connect(m_pAnimateTimer, SIGNAL(timeout()), this, SLOT(OnAnimateSingle()));
+	connect(m_pctrlAnimateSpeed, SIGNAL(sliderMoved(int)), this, SLOT(onAnimateSpeed(int)));
+	connect(m_pAnimateTimer, SIGNAL(timeout()), this, SLOT(onAnimateSingle()));
 
 
     connect(m_pctrlShowBL,       SIGNAL(clicked(bool)), pMainFrame->m_pXDirectTileWidget->foilWidget(), SLOT(onShowBL(bool)));
@@ -368,13 +370,10 @@ void QXDirect::createOppCurves(OpPoint *pOpp)
 
 	if(m_bCurOppOnly && pOpPoint)
 	{
-		if(!pOpPoint || !pOpPoint->m_bIsVisible) return;
+		if(!pOpPoint || !pOpPoint->lineStyle().m_bIsVisible) return;
 		pCurve1    = m_CpGraph.addCurve();
-		if(pOpPoint->m_bShowPoints) pCurve1->showPoints(true);
 		
-		pCurve1->setStyle(pOpPoint->m_Style);
-		pCurve1->setColor(pOpPoint->m_Color);
-		pCurve1->setWidth(pOpPoint->m_Width);
+		pCurve1->setLineStyle(pOpPoint->lineStyle());
 
 		str = QString("-Re=%1-Alpha=%2").arg(pOpPoint->Reynolds,8,'f',0).arg(pOpPoint->Alpha,5,'f',2);
 		str = pOpPoint->m_strFoilName+str;
@@ -385,10 +384,10 @@ void QXDirect::createOppCurves(OpPoint *pOpp)
 		if(m_bShowInviscid && pOpPoint)
 		{
 			Curve *pCpi = m_CpGraph.addCurve();
-			if(pOpPoint->m_bShowPoints) pCpi->showPoints(true);
+			pCpi->setPoints(pOpPoint->lineStyle().m_PointStyle);
 			pCpi->setStyle(1);
-			pCpi->setColor(pOpPoint->m_Color.darker(150));
-			pCpi->setWidth(pOpPoint->m_Width);
+			pCpi->setColor(pOpPoint->lineStyle().m_Color.darker(150));
+			pCpi->setWidth(pOpPoint->lineStyle().m_Width);
 			str= QString("-Re=%1-Alpha=%2_Inviscid").arg(pOpPoint->Reynolds,8,'f',0).arg(pOpPoint->Alpha,5,'f',2);
 			str = pOpPoint->m_strFoilName+str;
 			pCpi->setCurveName(str);
@@ -400,15 +399,12 @@ void QXDirect::createOppCurves(OpPoint *pOpp)
 		for (k=0; k<m_poaOpp->size(); k++)
 		{
 			pOpp = (OpPoint*)m_poaOpp->at(k);
-			if (pOpp && pOpp->m_bIsVisible)
+			if (pOpp && pOpp->lineStyle().m_bIsVisible)
 			{
 				pCurve1    = m_CpGraph.addCurve();
 
-				if(pOpp->m_bShowPoints) pCurve1->showPoints(true);
-
-				pCurve1->setStyle(pOpp->m_Style);
-				pCurve1->setColor(pOpp->m_Color);
-				pCurve1->setWidth(pOpp->m_Width);
+//				pCurve1->setPoints(pOpp->lineStyle().m_PointStyle);
+				pCurve1->setLineStyle(pOpp->lineStyle());
 
 				str= QString("-Re=%1-Alpha=%2").arg(pOpp->Reynolds,8,'f',0).arg(pOpp->Alpha,5,'f',2);
 				str = pOpp->m_strFoilName+str;
@@ -439,7 +435,7 @@ void QXDirect::createPolarCurves()
 	{
 		pPolar = (Polar*)m_poaPolar->at(k);
 
-		if (pPolar->m_bIsVisible && pPolar->m_Alpha.size()>0)
+		if (pPolar->lineStyle().m_bIsVisible && pPolar->m_Alpha.size()>0)
 		{
 			if ((pPolar->m_PolarType==XFLR5::FIXEDSPEEDPOLAR  && m_bType1) ||
 			    (pPolar->m_PolarType==XFLR5::FIXEDLIFTPOLAR   && m_bType2) ||
@@ -452,10 +448,11 @@ void QXDirect::createPolarCurves()
 				for(int ig=0; ig<MAXPOLARGRAPHS; ig++)
 				{
 					pCurve[ig] = m_PlrGraph[ig]->addCurve();
-					pCurve[ig]->showPoints(pPolar->showPoints());
-					pCurve[ig]->setStyle(pPolar->polarStyle());
-					pCurve[ig]->setWidth(pPolar->polarWidth());
-					pCurve[ig]->setColor(pPolar->polarColor());
+//					pCurve[ig]->showPoints(pPolar->showPoints());
+//					pCurve[ig]->setStyle(pPolar->polarStyle());
+//					pCurve[ig]->setWidth(pPolar->polarWidth());
+//					pCurve[ig]->setColor(pPolar->polarColor());
+					pCurve[ig]->setLineStyle(pPolar->lineStyle());
 					fillPolarCurve(pCurve[ig], pPolar, m_PlrGraph[ig]->xVariable(), m_PlrGraph[ig]->yVariable());
 					pCurve[ig]->setCurveName(pPolar->polarName());
 
@@ -463,10 +460,11 @@ void QXDirect::createPolarCurves()
 					else                                    pTr2Curve = NULL;
 					if(pTr2Curve)
 					{
-						pTr2Curve->showPoints(pPolar->showPoints());
+/*						pTr2Curve->showPoints(pPolar->showPoints());
 						pTr2Curve->setStyle(1);
 						pTr2Curve->setWidth(pPolar->polarWidth());
-						pTr2Curve->setColor(pPolar->polarColor());
+						pTr2Curve->setColor(pPolar->polarColor());*/
+						pTr2Curve->setLineStyle(pPolar->lineStyle());
 						fillPolarCurve(pTr2Curve, pPolar, m_PlrGraph[ig]->xVariable(), 7);
 
 						str = pPolar->polarName() + " / Xtr1";
@@ -490,45 +488,51 @@ void QXDirect::createPolarCurves()
 */
 void QXDirect::fillComboBoxes(bool bEnable)
 {
-	if(!bEnable)
-	{
-		m_pctrlCurveColor->setEnabled(false);
-		m_pctrlCurveStyle->setEnabled(false);
-		m_pctrlCurveWidth->setEnabled(false);
-		m_pctrlShowCurve->setEnabled(false);
-		m_pctrlShowPoints->setEnabled(false);
-	}
-	else
-	{
-		m_pctrlCurveColor->setEnabled(true);
-		m_pctrlCurveStyle->setEnabled(true);
-		m_pctrlCurveWidth->setEnabled(true);
-		m_pctrlShowCurve->setEnabled(true);
-		m_pctrlShowPoints->setEnabled(true);
-	}
+	m_pctrlCurveColor->setEnabled(bEnable);
+	m_pctrlCurveStyle->setEnabled(bEnable);
+	m_pctrlCurveWidth->setEnabled(bEnable);
+	m_pctrlShowCurve->setEnabled(bEnable);
+	m_pctrlPointStyle->setEnabled(bEnable);
+
 	int LineWidth[5];
-	for (int i=0; i<5;i++) LineWidth[i] = m_CurveWidth;
-	m_pStyleDelegate->SetLineWidth(LineWidth); // the same selected width for all styles
-	m_pStyleDelegate->SetLineColor(m_CurveColor);
-
 	int LineStyle[5];
-	for (int i=0; i<5;i++) LineStyle[i] = m_CurveStyle;
-	m_pWidthDelegate->SetLineStyle(LineStyle); //the same selected style for all widths
-	m_pWidthDelegate->SetLineColor(m_CurveColor);
+	int PointStyle[5];
 
-	m_pctrlCurveStyle->SetLine(m_CurveStyle, m_CurveWidth, m_CurveColor);
-	m_pctrlCurveWidth->SetLine(m_CurveStyle, m_CurveWidth, m_CurveColor);
+	for (int i=0; i<5;i++)
+	{
+		LineStyle[i] = m_LineStyle.m_Style;
+		LineWidth[i]  = m_LineStyle.m_Width;
+		PointStyle[i] = m_LineStyle.m_PointStyle;
+	}
+	m_pStyleDelegate->setLineWidth(LineWidth); // the same selected width for all styles
+	m_pStyleDelegate->setPointStyle(PointStyle); // the same selected width for all styles
+	m_pStyleDelegate->setLineColor(m_LineStyle.m_Color);
 
-	m_pctrlCurveColor->SetColor(m_CurveColor);
-	m_pctrlCurveColor->SetStyle(m_CurveStyle);
-	m_pctrlCurveColor->SetWidth(m_CurveWidth);
+	m_pWidthDelegate->setLineStyle(LineStyle); //the same selected style for all widths
+	m_pWidthDelegate->setPointStyle(PointStyle); // the same selected width for all styles
+	m_pWidthDelegate->setLineColor(m_LineStyle.m_Color);
+
+	m_pPointDelegate->setLineStyle(LineStyle); //the same selected style for all widths
+	m_pPointDelegate->setLineWidth(LineWidth); // the same selected width for all styles
+	m_pPointDelegate->setLineColor(m_LineStyle.m_Color);
+
+	m_pctrlCurveStyle->setLine(m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
+	m_pctrlCurveWidth->setLine(m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
+	m_pctrlPointStyle->setLine(m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
+
+	m_pctrlCurveColor->setColor(m_LineStyle.m_Color);
+	m_pctrlCurveColor->setStyle(m_LineStyle.m_Style);
+	m_pctrlCurveColor->setWidth(m_LineStyle.m_Width);
+	m_pctrlCurveColor->setPointStyle(m_LineStyle.m_PointStyle);
 
 	m_pctrlCurveStyle->update();
 	m_pctrlCurveWidth->update();
+	m_pctrlPointStyle->update();
 	m_pctrlCurveColor->update();
 
-	m_pctrlCurveStyle->setCurrentIndex(m_CurveStyle);
-	m_pctrlCurveWidth->setCurrentIndex(m_CurveWidth-1);
+	m_pctrlCurveStyle->setCurrentIndex(m_LineStyle.m_Style);
+	m_pctrlCurveWidth->setCurrentIndex(m_LineStyle.m_Width-1);
+	m_pctrlPointStyle->setCurrentIndex(m_LineStyle.m_PointStyle);
 }
 
 
@@ -611,12 +615,12 @@ void QXDirect::fillPolarCurve(Curve *pCurve, Polar *pPolar, int XVar, int YVar)
 	QList <double> *pX;
 	QList <double> *pY;
 
-	pX = (QList <double> *) GetVariable(pPolar, XVar);
-	pY = (QList <double> *) GetVariable(pPolar, YVar);
+	pX = (QList <double> *) getVariable(pPolar, XVar);
+	pY = (QList <double> *) getVariable(pPolar, YVar);
 	double fx = 1.0;
 	double fy = 1.0;
 
-	pCurve->SetSelected(-1);
+	pCurve->setSelected(-1);
 
 	if(XVar == 3) fx = 10000.0;
 	if(YVar == 3) fy = 10000.0;
@@ -660,7 +664,7 @@ void QXDirect::fillPolarCurve(Curve *pCurve, Polar *pPolar, int XVar, int YVar)
 				if(pPolar->m_PlrName==OpPoint::curOpp()->m_strPlrName  && Foil::curFoil()->foilName()==pPolar->foilName())
 				{
 
-					pCurve->SetSelected(i);
+					pCurve->setSelected(i);
 				}
 			}
 		}
@@ -675,7 +679,7 @@ void QXDirect::fillPolarCurve(Curve *pCurve, Polar *pPolar, int XVar, int YVar)
 * @param iVar the index of the variable for which a pointer is requested
 * @return a pointer to the array of the requested variable
 */
-void * QXDirect::GetVariable(Polar *pPolar, int iVar)
+void * QXDirect::getVariable(Polar *pPolar, int iVar)
 {
 	void * pVar;
 	switch (iVar){
@@ -751,17 +755,17 @@ void QXDirect::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_Enter:
 			if (event->modifiers().testFlag(Qt::AltModifier) & event->modifiers().testFlag(Qt::ShiftModifier))
 			{
-				OnOpPointProps();
+				onOpPointProps();
 				break;
 			}
 			else if (event->modifiers().testFlag(Qt::AltModifier))
 			{
-				OnPolarProps();
+				onPolarProps();
 				break;
 			}
 
 			readParams();
-			if(m_pctrlAnalyze->hasFocus())  OnAnalyze();
+			if(m_pctrlAnalyze->hasFocus())  onAnalyze();
 			else
 			{
 				activateWindow();
@@ -779,7 +783,7 @@ void QXDirect::keyPressEvent(QKeyEvent *event)
 		{
 			if(m_bPolarView && event->modifiers().testFlag(Qt::ControlModifier))
 			{
-				OnHighlightOpp();
+				onHighlightOpp();
 			}
 			break;
 		}
@@ -833,13 +837,13 @@ void QXDirect::keyPressEvent(QKeyEvent *event)
 			}
 		case Qt::Key_F2:
 		{
-			OnRenameCurFoil();
+			onRenameCurFoil();
 			break;
 		}
 		case Qt::Key_F3:
 		{
-			if(bShift) OnCadd();
-			else       OnRefinePanelsGlobally();
+			if(bShift) onCadd();
+			else       onRefinePanelsGlobally();
 			break;
 		}
 		case Qt::Key_F5:
@@ -850,9 +854,9 @@ void QXDirect::keyPressEvent(QKeyEvent *event)
 		}
 		case Qt::Key_F6:
 		{
-			if (event->modifiers().testFlag(Qt::ShiftModifier))        OnBatchAnalysis();
-			else if (event->modifiers().testFlag(Qt::ControlModifier)) OnMultiThreadedBatchAnalysis();
-			else                                                       OnDefinePolar();
+			if (event->modifiers().testFlag(Qt::ShiftModifier))        onBatchAnalysis();
+			else if (event->modifiers().testFlag(Qt::ControlModifier)) onMultiThreadedBatchAnalysis();
+			else                                                       onDefinePolar();
 			break;
 		}
 		case Qt::Key_F8:
@@ -863,17 +867,17 @@ void QXDirect::keyPressEvent(QKeyEvent *event)
 		}
 		case Qt::Key_F9:
 		{
-			OnFoilGeom();
+			onFoilGeom();
 			break;
 		}
 		case Qt::Key_F10:
 		{
-			OnSetFlap();
+			onSetFlap();
 			break;
 		}
 		case Qt::Key_F11:
 		{
-			OnInterpolateFoils();
+			onInterpolateFoils();
 			break;
 		}
 		default:
@@ -1092,7 +1096,7 @@ void QXDirect::onAnimate(bool bChecked)
  * Called by the animation timer.
  * Updates the display with the data of the next OpPoint.
  */
-void QXDirect::OnAnimateSingle()
+void QXDirect::onAnimateSingle()
 {
 	static int indexCbBox;
 	static QString str;
@@ -1153,7 +1157,7 @@ void QXDirect::OnAnimateSingle()
  * the user has moved the slider which defines the animation speed
  * @param val the slider's new position
  */
-void QXDirect::OnAnimateSpeed(int val)
+void QXDirect::onAnimateSpeed(int val)
 {
 	if(m_pAnimateTimer->isActive())
 	{
@@ -1168,7 +1172,7 @@ void QXDirect::OnAnimateSpeed(int val)
  *
  * Reads the input parameters, initializes the analysis dialog box, and starts the analysis.
  */
-void QXDirect::OnAnalyze()
+void QXDirect::onAnalyze()
 {
 	if(!Foil::curFoil() || !Polar::curPolar()) return;
 
@@ -1233,7 +1237,7 @@ void QXDirect::OnAnalyze()
 /**
  * Launches a single-threaded batch analysis
  */
-void QXDirect::OnBatchAnalysis()
+void QXDirect::onBatchAnalysis()
 {
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
 	if(!Foil::curFoil()) return;
@@ -1300,7 +1304,7 @@ void QXDirect::OnBatchAnalysis()
  * Launches a multi-threaded batch analysis
  *
  */
-void QXDirect::OnMultiThreadedBatchAnalysis()
+void QXDirect::onMultiThreadedBatchAnalysis()
 {
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
 	if(!Foil::curFoil()) 		return;
@@ -1377,7 +1381,7 @@ void QXDirect::OnMultiThreadedBatchAnalysis()
 /**
  * The user has requested the plot of the Cf variable using current XFoil results.
  */
-void QXDirect::OnCfPlot()
+void QXDirect::onCfPlot()
 {
 	if(!m_pXFoil->lvconv) return;
 	int i;
@@ -1427,7 +1431,7 @@ void QXDirect::OnCfPlot()
 /**
  * The user has requested the plot of the Ct variable using current XFoil results.
  */
-void QXDirect::OnCtPlot()
+void QXDirect::onCtPlot()
 {
 	if(!m_pXFoil->lvconv) return;
 	int i;
@@ -1473,7 +1477,7 @@ void QXDirect::OnCtPlot()
 /**
  * The user has requested the plot of the Dt variable using current XFoil results.
  */
-void QXDirect::OnDtPlot()
+void QXDirect::onDtPlot()
 {
 	if(!m_pXFoil->lvconv) return;
 	int i;
@@ -1512,7 +1516,7 @@ void QXDirect::OnDtPlot()
 /**
  * The user has requested the plot of the Db variable using current XFoil results.
  */
-void QXDirect::OnDbPlot()
+void QXDirect::onDbPlot()
 {
 	if(!m_pXFoil->lvconv) return;
 	int i;
@@ -1552,7 +1556,7 @@ void QXDirect::OnDbPlot()
 /**
  * The user has requested the plot of the Cd variable using current XFoil results.
  */
-void QXDirect::OnCdPlot()
+void QXDirect::onCdPlot()
 {
 	if(!m_pXFoil->lvconv) return;
 	double x[IVX][3],y[IVX][3];
@@ -1602,7 +1606,7 @@ void QXDirect::OnCdPlot()
 /**
  * The user has requested the plot of the Hk variable using current XFoil results.
  */
-void QXDirect::OnHPlot()
+void QXDirect::onHPlot()
 {
 	if(!m_pXFoil->lvconv) return;
 	int i;
@@ -1644,7 +1648,7 @@ void QXDirect::OnHPlot()
 /**
  * The user has requested the plot of the Rt variable using current XFoil results.
  */
-void QXDirect::OnRtPlot()
+void QXDirect::onRtPlot()
 {
 	if(!m_pXFoil->lvconv) return;
 	int i;
@@ -1680,7 +1684,7 @@ void QXDirect::OnRtPlot()
 /**
  * The user has requested the plot of the RtL variable using current XFoil results.
  */
-void QXDirect::OnRtLPlot()
+void QXDirect::onRtLPlot()
 {
 	if(!m_pXFoil->lvconv) return;
 	int i;
@@ -1723,7 +1727,7 @@ void QXDirect::OnRtLPlot()
 /**
  * The user has requested the plot of the Ue variable using current XFoil results.
  */
-void QXDirect::OnUePlot()
+void QXDirect::onUePlot()
 {
 	if(!m_pXFoil->lvconv) return;
 	int i;
@@ -1778,7 +1782,7 @@ void QXDirect::OnUePlot()
 /**
  * The user has requested to switch to the Cp graph view
  */
-void QXDirect::OnCpGraph()
+void QXDirect::onCpGraph()
 {
 	m_bPolarView = false;
 	if(m_CpGraph.yVariable()!=0)
@@ -1802,7 +1806,7 @@ void QXDirect::OnCpGraph()
 /**
  * The user has toggled the request for the display of the inviscid Cp curve
  */
-void QXDirect::OnCpi()
+void QXDirect::onCpi()
 {
 	m_bShowInviscid = !m_bShowInviscid;
 
@@ -1815,12 +1819,12 @@ void QXDirect::OnCpi()
 /**
  * The user has toggled the switch for the display of the current OpPoint only
  */
-void QXDirect::OnCurOppOnly()
+void QXDirect::onCurOppOnly()
 {
 	m_bCurOppOnly = !m_bCurOppOnly;
 	((MainFrame*)s_pMainFrame)->showCurOppOnly->setChecked(m_bCurOppOnly);
 
-	if(OpPoint::curOpp()) OpPoint::curOpp()->m_bIsVisible = true;
+	if(OpPoint::curOpp()) OpPoint::curOpp()->lineStyle().m_bIsVisible = true;
 	m_bResetCurves = true;
 	setAnalysisParams();
 	updateView();
@@ -1830,10 +1834,10 @@ void QXDirect::OnCurOppOnly()
 /**
  * The user has changed the color of the current curve
  */
-void QXDirect::OnCurveColor()
+void QXDirect::onCurveColor()
 {
-	QColor Color = QColorDialog::getColor(m_CurveColor);
-	if(Color.isValid()) m_CurveColor = Color;
+	QColor Color = QColorDialog::getColor(m_LineStyle.m_Color);
+	if(Color.isValid()) m_LineStyle.m_Color = Color;
 
 	fillComboBoxes();
 	updateCurveStyle();
@@ -1843,9 +1847,9 @@ void QXDirect::OnCurveColor()
 /**
  * The user has changed the style of the current curve
  */
-void QXDirect::OnCurveStyle(int index)
+void QXDirect::onCurveStyle(int index)
 {
-	m_CurveStyle = index;
+	m_LineStyle.m_Style = index;
 	fillComboBoxes();
 	updateCurveStyle();
 }
@@ -1854,9 +1858,17 @@ void QXDirect::OnCurveStyle(int index)
 /**
  * The user has changed the width of the current curve
  */
-void QXDirect::OnCurveWidth(int index)
+void QXDirect::onCurveWidth(int index)
 {
-	m_CurveWidth = index+1;
+	m_LineStyle.m_Width = index+1;
+	fillComboBoxes();
+	updateCurveStyle();
+}
+
+
+void QXDirect::onCurvePoints(int index)
+{
+	m_LineStyle.m_PointStyle = index;
 	fillComboBoxes();
 	updateCurveStyle();
 }
@@ -1865,7 +1877,7 @@ void QXDirect::OnCurveWidth(int index)
 /**
  * The user has requested to define a new polar
  */
-void QXDirect::OnDefinePolar()
+void QXDirect::onDefinePolar()
 {
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
 	if(!Foil::curFoil()) return;
@@ -1880,8 +1892,8 @@ void QXDirect::OnDefinePolar()
 		Polar::setCurPolar(new Polar());
 		Polar::curPolar()->m_FoilName = Foil::curFoil()->foilName();
 		Polar::curPolar()->m_PlrName = fpDlg.m_PlrName;
-		Polar::curPolar()->m_bIsVisible = true;
-		Polar::curPolar()->CopySpecification(&s_refPolar);
+		Polar::curPolar()->lineStyle().m_bIsVisible = true;
+		Polar::curPolar()->copySpecification(&s_refPolar);
 
 		Polar::curPolar()->setPolarType(fpDlg.m_PolarType);
 
@@ -1901,7 +1913,7 @@ void QXDirect::OnDefinePolar()
  * The user has requested the deletion of the current Foil.
  * Deletes the Foil, and selects the next one in the array, if any.
  */
-void QXDirect::OnDeleteCurFoil()
+void QXDirect::onDeleteCurFoil()
 {
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
 
@@ -1933,7 +1945,7 @@ void QXDirect::OnDeleteCurFoil()
 /**
  * The user has requested the deletion of the current OpPoint.
  */
-void QXDirect::OnDelCurOpp()
+void QXDirect::onDelCurOpp()
 {
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
 	OpPoint* pOpPoint = OpPoint::curOpp();
@@ -2131,7 +2143,7 @@ void QXDirect::onDeleteFoilPolars()
 /**
  * The user has requested a local refinement of the panels of the current foil
  */
-void QXDirect::OnCadd()
+void QXDirect::onCadd()
 {
 	stopAnimate();
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
@@ -2184,7 +2196,7 @@ void QXDirect::OnCadd()
 /**
  * The user has requested that the foil be derotated
  */
-void QXDirect::OnDerotateFoil()
+void QXDirect::onDerotateFoil()
 {
 	if(!Foil::curFoil()) return;
 	QString str;
@@ -2216,12 +2228,12 @@ void QXDirect::OnDerotateFoil()
 /**
  * The user has requested to modify the parameters of the active polar
  */
-void QXDirect::OnEditCurPolar()
+void QXDirect::onEditCurPolar()
 {
 	if (!Polar::curPolar()) return;
 
 	Polar *pMemPolar = new Polar;
-	pMemPolar->CopyPolar(Polar::curPolar());
+	pMemPolar->copyPolar(Polar::curPolar());
 
 	EditPlrDlg epDlg((MainFrame*)s_pMainFrame);
 	epDlg.move(EditPlrDlg::s_Position);
@@ -2230,8 +2242,8 @@ void QXDirect::OnEditCurPolar()
 
 	epDlg.initDialog(this, Polar::curPolar(), NULL, NULL);
 
-	bool bPoints = Polar::curPolar()->m_bShowPoints;
-	Polar::curPolar()->m_bShowPoints = true;
+	LineStyle style = Polar::curPolar()->lineStyle();
+	Polar::curPolar()->lineStyle().m_PointStyle = 1;
 
 	m_bResetCurves = true;
 	updateView();
@@ -2242,9 +2254,9 @@ void QXDirect::OnEditCurPolar()
 	}
 	else
 	{
-		Polar::curPolar()->CopyPolar(pMemPolar);
+		Polar::curPolar()->copyPolar(pMemPolar);
 	}
-	Polar::curPolar()->m_bShowPoints = bPoints;
+	Polar::curPolar()->lineStyle() = style;
 	m_bResetCurves = true;
 	updateView();
 
@@ -2255,7 +2267,7 @@ void QXDirect::OnEditCurPolar()
 /**
  * The user has requested the export of the current results stored in the XFoil object to a text file
  */
-void QXDirect::OnExportCurXFoilResults()
+void QXDirect::onExportCurXFoilResults()
 {
 	if(!m_pXFoil->lvconv) return;
 	if(!Foil::curFoil())		  return;
@@ -2414,7 +2426,7 @@ void QXDirect::OnExportCurXFoilResults()
 /**
  * The user has requested the export of all polars to text files
  */
-void QXDirect::OnExportAllPolars()
+void QXDirect::onExportAllPolars()
 {
 	QString FileName, DirName;
 	QFile XFile;
@@ -2434,7 +2446,7 @@ void QXDirect::OnExportAllPolars()
 		XFile.setFileName(FileName);
 		if (XFile.open(QIODevice::WriteOnly | QIODevice::Text))
 		{
-			pPolar->ExportPolar(out, Settings::s_ExportFileType);
+			pPolar->exportPolar(out, Settings::s_ExportFileType);
 			XFile.close();
 		}
 	}
@@ -2444,7 +2456,7 @@ void QXDirect::OnExportAllPolars()
 /**
  * The user has requested the export of the current foil to a text file
  */
-void QXDirect::OnExportCurFoil()
+void QXDirect::onExportCurFoil()
 {
 	if(!Foil::curFoil())	return;
 
@@ -2475,7 +2487,7 @@ void QXDirect::OnExportCurFoil()
 /**
  * The user has requested the export of the current OpPoint to a text file
  */
-void QXDirect::OnExportCurOpp()
+void QXDirect::onExportCurOpp()
 {
 	if(!Foil::curFoil() || !Polar::curPolar() || !OpPoint::curOpp())	return;
 
@@ -2503,7 +2515,7 @@ void QXDirect::OnExportCurOpp()
 
 	QTextStream out(&XFile);
 
-	OpPoint::curOpp()->ExportOpp(out, VERSIONNAME, Settings::s_ExportFileType);
+	OpPoint::curOpp()->exportOpp(out, VERSIONNAME, Settings::s_ExportFileType);
 	XFile.close();
 }
 
@@ -2511,7 +2523,7 @@ void QXDirect::OnExportCurOpp()
 /**
  * The user has requested the export of the OpPoints associated to the current Polar to a text file
  */
-void QXDirect::OnExportPolarOpps()
+void QXDirect::onExportPolarOpps()
 {
 	MainFrame * pMainFrame = (MainFrame*)s_pMainFrame;
 	if(!m_poaPolar->size())
@@ -2628,7 +2640,7 @@ void QXDirect::OnExportPolarOpps()
 /**
  * The user has requested the export of the current Polar to a text file
  */
-void QXDirect::OnExportCurPolar()
+void QXDirect::onExportCurPolar()
 {
 	if(!Foil::curFoil() || !Polar::curPolar())	return;
 
@@ -2657,7 +2669,7 @@ void QXDirect::OnExportCurPolar()
 
 	QTextStream out(&XFile);
 
-	Polar::curPolar()->ExportPolar(out, Settings::s_ExportFileType);
+	Polar::curPolar()->exportPolar(out, Settings::s_ExportFileType);
 	XFile.close();
 }
 
@@ -2665,7 +2677,7 @@ void QXDirect::OnExportCurPolar()
 /**
  * The user has requested an edition of the current foil coordinates
  */
-void QXDirect::OnFoilCoordinates()
+void QXDirect::onFoilCoordinates()
 {
 	if(!Foil::curFoil())	return;
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
@@ -2741,7 +2753,7 @@ void QXDirect::OnFoilCoordinates()
 /**
  * The user has requested to perform an edition of the current foil's thickness and camber properties.
  */
-void QXDirect::OnFoilGeom()
+void QXDirect::onFoilGeom()
 {
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
 
@@ -2790,7 +2802,7 @@ void QXDirect::OnFoilGeom()
 /**
  * The user has requested the highlighting of the current OpPoint on the polar curves
  */
-void QXDirect::OnHighlightOpp()
+void QXDirect::onHighlightOpp()
 {
 	if(!m_bPolarView) return;
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
@@ -2808,13 +2820,13 @@ void QXDirect::OnHighlightOpp()
 /**
  * The user has requested to hide all OpPoints
  */
-void QXDirect::OnHideAllOpps()
+void QXDirect::onHideAllOpps()
 {
 	OpPoint *pOpp;
 	for (int i=0; i<m_poaOpp->size(); i++)
 	{
 		pOpp = (OpPoint*)m_poaOpp->at(i);
-		pOpp->m_bIsVisible = false;
+		pOpp->lineStyle().m_bIsVisible = false;
 	}
 	emit projectModified();
 	m_bResetCurves = true;
@@ -2826,13 +2838,13 @@ void QXDirect::OnHideAllOpps()
 /**
  * The user has requested to hide all polar curves
  */
-void QXDirect::OnHideAllPolars()
+void QXDirect::onHideAllPolars()
 {
 	Polar *pPolar;
 	for (int i=0; i<m_poaPolar->size(); i++)
 	{
 		pPolar = (Polar*)m_poaPolar->at(i);
-		pPolar->m_bIsVisible = false;
+		pPolar->lineStyle().m_bIsVisible = false;
 	}
 	emit projectModified();
 	m_bResetCurves = true;
@@ -2844,7 +2856,7 @@ void QXDirect::OnHideAllPolars()
 /**
  * The user has requested to hide all polar curves associated to the current Foil
  */
-void QXDirect::OnHideFoilPolars()
+void QXDirect::onHideFoilPolars()
 {
 	if(!Foil::curFoil()) return;
 	Polar *pPolar;
@@ -2853,7 +2865,7 @@ void QXDirect::OnHideFoilPolars()
 		pPolar = (Polar*)m_poaPolar->at(i);
 		if(pPolar->foilName() == Foil::curFoil()->foilName())
 		{
-			pPolar->m_bIsVisible = false;
+			pPolar->lineStyle().m_bIsVisible = false;
 		}
 	}
 	emit projectModified();
@@ -2866,7 +2878,7 @@ void QXDirect::OnHideFoilPolars()
 /**
  * The user has requested to hide all OpPoint curves associated to the current Foil
  */
-void QXDirect::OnHideFoilOpps()
+void QXDirect::onHideFoilOpps()
 {
 	if(!Foil::curFoil() || !Polar::curPolar()) return;
 
@@ -2876,7 +2888,7 @@ void QXDirect::OnHideFoilOpps()
 	{
 		pOpp = (OpPoint*)m_poaOpp->at(i);
 		if(pOpp->m_strFoilName==Foil::curFoil()->foilName())
-			pOpp->m_bIsVisible = false;
+			pOpp->lineStyle().m_bIsVisible = false;
 	}
 	emit projectModified();
 	m_bResetCurves = true;
@@ -2888,7 +2900,7 @@ void QXDirect::OnHideFoilOpps()
 /**
  * The user has requested to hide all OpPoint curves associated to the current Polar
  */
-void QXDirect::OnHidePolarOpps()
+void QXDirect::onHidePolarOpps()
 {
 	if(!Foil::curFoil() || !Polar::curPolar()) return;
 
@@ -2898,7 +2910,7 @@ void QXDirect::OnHidePolarOpps()
 	{
 		pOpp = (OpPoint*)m_poaOpp->at(i);
 		if(pOpp->m_strFoilName==Foil::curFoil()->foilName() && pOpp->m_strPlrName==Polar::curPolar()->polarName())
-			pOpp->m_bIsVisible = false;
+			pOpp->lineStyle().m_bIsVisible = false;
 	}
 	emit projectModified();
 	m_bResetCurves = true;
@@ -2911,7 +2923,7 @@ void QXDirect::OnHidePolarOpps()
  * The user has requested to import a polar from a text file.
  * The Polar will be added to the array only if a Foil with the parent name exists.
  */
-void QXDirect::OnImportXFoilPolar()
+void QXDirect::onImportXFoilPolar()
 {
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 	Polar *pPolar = new Polar;
@@ -3069,11 +3081,11 @@ void QXDirect::OnImportXFoilPolar()
 					{
 						Cpmn    = values.at(7).toDouble();
 						HMom    = values.at(8).toDouble();
-						pPolar->AddPoint(alpha, CD, CDp, CL, CM, Xt, Xb, Cpmn, HMom,Re,0.0);
+						pPolar->addPoint(alpha, CD, CDp, CL, CM, Xt, Xb, Cpmn, HMom,Re,0.0);
 					}
 					else
 					{
-						pPolar->AddPoint(alpha, CD, CDp, CL, CM, Xt, Xb, 0.0, 0.0,Re,0.0);
+						pPolar->addPoint(alpha, CD, CDp, CL, CM, Xt, Xb, 0.0, 0.0,Re,0.0);
 
 					}
 				}
@@ -3089,7 +3101,7 @@ void QXDirect::OnImportXFoilPolar()
 	str = QString("_N%1").arg(pPolar->m_ACrit,0,'f',1);
 	pPolar->m_PlrName += str + "_Imported";
 
-	pPolar->m_Color = MainFrame::getColor(1);
+	pPolar->lineStyle().m_Color = MainFrame::getColor(1);
 
 	Polar::addPolar(pPolar);
 
@@ -3106,7 +3118,7 @@ void QXDirect::OnImportXFoilPolar()
  * The Polar will be added to the array only if a Foil with the parent name exists.
  *  @todo Note: this option has not been tested in years... the JavaFoil format may have changed since
  */
-void QXDirect::OnImportJavaFoilPolar()
+void QXDirect::onImportJavaFoilPolar()
 {
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 	QString FoilName;
@@ -3176,7 +3188,7 @@ void QXDirect::OnImportJavaFoilPolar()
 								.arg(pPolar->m_Reynolds/1000000.0,0,'f',2)
 								.arg(pPolar->m_Mach,0,'f',2);
 
-			pPolar->m_Color = MainFrame::getColor(1);
+			pPolar->lineStyle().m_Color = MainFrame::getColor(1);
 			Polar::addPolar(pPolar);
 			Polar::setCurPolar(pPolar);
 			NPolars++;
@@ -3198,7 +3210,7 @@ void QXDirect::OnImportJavaFoilPolar()
 					text = textline.constData();
 
 					res = sscanf(text, "%lf%lf%lf%lf%lf%lf",&alpha, &CL, &CD, &CM, &Xt, &Xb);
-					if (res == 6) 	pPolar->AddPoint(alpha, CD, 0.0, CL, CM, Xt, Xb, 0.0, 0.0, Re,0.0);
+					if (res == 6) 	pPolar->addPoint(alpha, CD, 0.0, CL, CM, Xt, Xb, 0.0, 0.0, Re,0.0);
 				}
 				else
 				{
@@ -3219,7 +3231,7 @@ void QXDirect::OnImportJavaFoilPolar()
 /**
  * The user has requested the launch of the interface to create a foil from the interpolation of two existing Foil objects.
  */
-void QXDirect::OnInterpolateFoils()
+void QXDirect::onInterpolateFoils()
 {
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
 	if(m_poaFoil->size()<2)
@@ -3267,7 +3279,7 @@ void QXDirect::OnInterpolateFoils()
 /**
  * The user has requested the launch of the interface used to create a NACA type foil.
  */
-void QXDirect::OnNacaFoils()
+void QXDirect::onNacaFoils()
 {
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 	stopAnimate();
@@ -3324,7 +3336,7 @@ void QXDirect::OnNacaFoils()
 /**
  * The user has requested that the length of the current foil be normalized to 1.
  */
-void QXDirect::OnNormalizeFoil()
+void QXDirect::onNormalizeFoil()
 {
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
 	if(!Foil::curFoil()) return;
@@ -3346,7 +3358,7 @@ void QXDirect::OnNormalizeFoil()
 /**
  * The user has requested a  plot of the A/A0 variable using current XFoil results.
  */
-void QXDirect::OnNPlot()
+void QXDirect::onNPlot()
 {
 	if(!m_pXFoil->lvconv) return;
 	int i;
@@ -3432,7 +3444,7 @@ void QXDirect::onPolarView()
 /**
  * The user has requested the launch of the interface used to filter the type of polars to be displayed.
  */
-void QXDirect::OnPolarFilter()
+void QXDirect::onPolarFilter()
 {
 	PolarFilterDlg pfDlg((MainFrame*)s_pMainFrame);
 	pfDlg.m_bMiarex = false;
@@ -3460,7 +3472,7 @@ void QXDirect::OnPolarFilter()
 /**
  * The user has requested the launch of the interface to refine globally the Foil
 */
-void QXDirect::OnRefinePanelsGlobally()
+void QXDirect::onRefinePanelsGlobally()
 {
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
 	if(!Foil::curFoil())	return;
@@ -3513,7 +3525,7 @@ void QXDirect::OnRefinePanelsGlobally()
 /**
  * The user has requested the display of the velocity in the Cp graph.
  */
-void QXDirect::OnQGraph()
+void QXDirect::onQGraph()
 {
 	m_bPolarView = false;
 	if(m_CpGraph.yVariable()!=1)
@@ -3538,7 +3550,7 @@ void QXDirect::OnQGraph()
 /**
  * The user has requested to rename the Polar
  */
-void QXDirect::OnRenamePolar()
+void QXDirect::onRenamePolar()
 {
 	if(!Polar::curPolar()) return;
 	if(!Foil::curFoil()) return;
@@ -3652,12 +3664,12 @@ void QXDirect::OnRenamePolar()
 /**
  *The user has requested the display of the detailed properties of the active OpPoint object.
  */
-void QXDirect::OnOpPointProps()
+void QXDirect::onOpPointProps()
 {
 	if(!OpPoint::curOpp()) return;
 	ObjectPropsDlg opDlg((MainFrame*)s_pMainFrame);
 	QString strangeProps;
-	OpPoint::curOpp()->GetOppProperties(strangeProps);
+	OpPoint::curOpp()->getOppProperties(strangeProps);
 	opDlg.InitDialog(tr("Operating point properties"), strangeProps);
 	opDlg.exec();
 }
@@ -3668,12 +3680,12 @@ void QXDirect::OnOpPointProps()
 /**
  *The user has requested the display of the detailed properties of the active Polar object.
  */
-void QXDirect::OnPolarProps()
+void QXDirect::onPolarProps()
 {
 	if(!Polar::curPolar()) return;
 	ObjectPropsDlg opDlg((MainFrame*)s_pMainFrame);
 	QString strangeProps;
-	Polar::curPolar()->GetPolarProperties(strangeProps);
+	Polar::curPolar()->getPolarProperties(strangeProps);
 	opDlg.InitDialog(tr("Polar properties"), strangeProps);
 	opDlg.exec();
 }
@@ -3684,7 +3696,7 @@ void QXDirect::OnPolarProps()
 /**
  * The user has requested to reset all polar graph scales to their automatic default value
  */
-void QXDirect::OnResetAllPolarGraphsScales()
+void QXDirect::onResetAllPolarGraphsScales()
 {
 	for(int ig=0; ig<m_PlrGraph.count(); ig++)
 	{
@@ -3700,11 +3712,11 @@ void QXDirect::OnResetAllPolarGraphsScales()
  * The user has requested the deletion of the dataof the current Polar.
  * The associated OpPoint objects will be deleted too.
  */
-void QXDirect::OnResetCurPolar()
+void QXDirect::onResetCurPolar()
 {
 	if(!Polar::curPolar()) return;
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
-	Polar::curPolar()->ResetPolar();
+	Polar::curPolar()->resetPolar();
 
 	OpPoint*pOpp;
 	for(int i=m_poaOpp->size()-1;i>=0;i--)
@@ -3730,7 +3742,7 @@ void QXDirect::OnResetCurPolar()
 /**
  * The user has requested the creation of a .plr file with the Polars of the active Foil object.
  */
-void QXDirect::OnSavePolars()
+void QXDirect::onSavePolars()
 {
 	if(!Foil::curFoil() || !m_poaPolar->size()) return;
 
@@ -3767,7 +3779,7 @@ void QXDirect::OnSavePolars()
 /**
  * The user has toggled the switch for a sequential analysis.
  */
-void QXDirect::OnSequence()
+void QXDirect::onSequence()
 {
 	m_bSequence = m_pctrlSequence->isChecked();
 	setOpPointSequence();
@@ -3777,7 +3789,7 @@ void QXDirect::OnSequence()
 /**
  * The user has requested the launch of the interface to define a L.E. or T.E. flap.
  */
-void QXDirect::OnSetFlap()
+void QXDirect::onSetFlap()
 {
 	if(!Foil::curFoil()) return;
 	stopAnimate();
@@ -3827,7 +3839,7 @@ void QXDirect::OnSetFlap()
 /**
  * The user has requested the launch of the interface to modify the radius of the Foil's leading edge.
  */
-void QXDirect::OnSetLERadius()
+void QXDirect::onSetLERadius()
 {
 	if(!Foil::curFoil())	return;
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
@@ -3874,7 +3886,7 @@ void QXDirect::OnSetLERadius()
 /**
  * The user has requested the launch of the interface to modify the gap at the Foil's trailing edge.
  */
-void QXDirect::OnSetTEGap()
+void QXDirect::onSetTEGap()
 {
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
 	if(!Foil::curFoil())	return;
@@ -3924,7 +3936,7 @@ void QXDirect::OnSetTEGap()
 /**
  * The user has requested the display of all OpPoint curves.
  */
-void QXDirect::OnShowAllOpps()
+void QXDirect::onShowAllOpps()
 {
 	OpPoint *pOpp;
 
@@ -3934,7 +3946,7 @@ void QXDirect::OnShowAllOpps()
 	for (int i=0; i<m_poaOpp->size(); i++)
 	{
 		pOpp = (OpPoint*)m_poaOpp->at(i);
-		pOpp->m_bIsVisible = true;
+		pOpp->lineStyle().m_bIsVisible = true;
 	}
     emit projectModified();
 	m_bResetCurves = true;
@@ -3946,13 +3958,13 @@ void QXDirect::OnShowAllOpps()
 /**
  * The user has requested the display of all Polar curves.
  */
-void QXDirect::OnShowAllPolars()
+void QXDirect::onShowAllPolars()
 {
 	Polar *pPolar;
 	for (int i=0; i<m_poaPolar->size(); i++)
 	{
 		pPolar = (Polar*)m_poaPolar->at(i);
-		pPolar->m_bIsVisible = true;
+		pPolar->lineStyle().m_bIsVisible = true;
 	}
 	emit projectModified();
 	m_bResetCurves = true;
@@ -3966,7 +3978,7 @@ void QXDirect::OnShowAllPolars()
 /**
  * The user has toggled the display of the curve of the active object
  */
-void QXDirect::OnShowCurve()
+void QXDirect::onShowCurve()
 {
 	//user has toggled visible switch
 
@@ -3974,14 +3986,14 @@ void QXDirect::OnShowCurve()
 	{
 		if (Polar::curPolar())
 		{
-			Polar::curPolar()->m_bIsVisible = m_pctrlShowCurve->isChecked();
+			Polar::curPolar()->lineStyle().m_bIsVisible = m_pctrlShowCurve->isChecked();
 
 		}
 		m_bResetCurves = true;
 	}
 	else if (OpPoint::curOpp())
 	{
-		OpPoint::curOpp()->m_bIsVisible = m_pctrlShowCurve->isChecked();
+		OpPoint::curOpp()->lineStyle().m_bIsVisible = m_pctrlShowCurve->isChecked();
 		m_bResetCurves = true;
 	}
 	emit projectModified();
@@ -3992,7 +4004,7 @@ void QXDirect::OnShowCurve()
 /**
  * The user has requested the display of only the Polar curves associated to the active Foil
  */
-void QXDirect::OnShowFoilPolarsOnly()
+void QXDirect::onShowFoilPolarsOnly()
 {
 	if(!Foil::curFoil()) return;
 
@@ -4000,7 +4012,7 @@ void QXDirect::OnShowFoilPolarsOnly()
 	for (int i=0; i<m_poaPolar->size(); i++)
 	{
 		pPolar = (Polar*)m_poaPolar->at(i);
-		pPolar->m_bIsVisible = (pPolar->foilName() == Foil::curFoil()->foilName());
+		pPolar->lineStyle().m_bIsVisible = (pPolar->foilName() == Foil::curFoil()->foilName());
 	}
 	emit projectModified();
 	m_bResetCurves = true;
@@ -4012,7 +4024,7 @@ void QXDirect::OnShowFoilPolarsOnly()
 /**
  * The user has requested the display of the Polar curves associated to the active Foil
  */
-void QXDirect::OnShowFoilPolars()
+void QXDirect::onShowFoilPolars()
 {
 	if(!Foil::curFoil()) return;
 	Polar *pPolar;
@@ -4021,7 +4033,7 @@ void QXDirect::OnShowFoilPolars()
 		pPolar = (Polar*)m_poaPolar->at(i);
 		if(pPolar->m_FoilName == Foil::curFoil()->foilName())
 		{
-			pPolar->m_bIsVisible = true;
+			pPolar->lineStyle().m_bIsVisible = true;
 		}
 	}
 	emit projectModified();
@@ -4034,7 +4046,7 @@ void QXDirect::OnShowFoilPolars()
 /**
  * The user has requested the display of the OpPoint curves associated to the active Foil
  */
-void QXDirect::OnShowFoilOpps()
+void QXDirect::onShowFoilOpps()
 {
 	if(!Foil::curFoil() || !Polar::curPolar()) return;
 
@@ -4047,7 +4059,7 @@ void QXDirect::OnShowFoilOpps()
 	{
 		pOpp = (OpPoint*)m_poaOpp->at(i);
 		if(pOpp->m_strFoilName==Foil::curFoil()->foilName())
-			pOpp->m_bIsVisible = true;
+			pOpp->lineStyle().m_bIsVisible = true;
 	}
 	emit projectModified();
 	if(!m_bPolarView) m_bResetCurves = true;
@@ -4059,33 +4071,9 @@ void QXDirect::OnShowFoilOpps()
 
 
 /**
- * The user has toggled the display of the curve's points
- */
-void QXDirect::OnShowCurvePoints()
-{
-	if(m_bPolarView)
-	{
-		if (Polar::curPolar())
-		{ 
-			Polar::curPolar()->m_bShowPoints = m_pctrlShowPoints->isChecked();
-		}
-		m_bResetCurves = true;
-	}
-	else if (OpPoint::curOpp())
-	{
-		OpPoint::curOpp()->m_bShowPoints = m_pctrlShowPoints->isChecked();
-		m_bResetCurves = true;
-	}
-	
-	emit projectModified();
-	updateView();
-}
-
-
-/**
  * The user has requested the display of the curves of all OpPoint objects associated to the active Polar.
  */
-void QXDirect::OnShowPolarOpps()
+void QXDirect::onShowPolarOpps()
 {
 	if(!Foil::curFoil() || !Polar::curPolar()) return;
 
@@ -4098,7 +4086,7 @@ void QXDirect::OnShowPolarOpps()
 	{
 		pOpp = (OpPoint*)m_poaOpp->at(i);
 		if(pOpp->m_strFoilName==Foil::curFoil()->foilName() && pOpp->m_strPlrName==Polar::curPolar()->polarName())
-			pOpp->m_bIsVisible = true;
+			pOpp->lineStyle().m_bIsVisible = true;
 	}
 	emit projectModified();
 	if(!m_bPolarView) m_bResetCurves = true;
@@ -4110,7 +4098,7 @@ void QXDirect::OnShowPolarOpps()
 /**
  * The user has toggled the switch used to define the type of input parameter bewteen aoa, Cl, and Re
  */
-void QXDirect::OnSpec()
+void QXDirect::onSpec()
 {
 	if      (m_pctrlSpec1->isChecked()) s_bAlpha = true;
 	else if (m_pctrlSpec2->isChecked()) s_bAlpha = false;
@@ -4121,7 +4109,7 @@ void QXDirect::OnSpec()
 /**
  * The user has toggled the switch which defines if OpPoints should be stored at the end of the analysis
  */
-void QXDirect::OnStoreOpp()
+void QXDirect::onStoreOpp()
 {
 	OpPoint::s_bStoreOpp = m_pctrlStoreOpp->isChecked();
 }
@@ -4130,7 +4118,7 @@ void QXDirect::OnStoreOpp()
 /**
  * The user has toggled the switch which defines if the analysis will be viscous or inviscid
  */
-void QXDirect::OnViscous()
+void QXDirect::onViscous()
 {
 	s_bViscous = m_pctrlViscous->isChecked();
 }
@@ -4141,7 +4129,7 @@ void QXDirect::OnViscous()
 /**
  * The user has requested the launch of the interface used to define advanced settings for the XFoil analysis
  */
-void QXDirect::OnXFoilAdvanced()
+void QXDirect::onXFoilAdvanced()
 {
 	XFoilAdvancedDlg xfaDlg((MainFrame*)s_pMainFrame);
 	xfaDlg.m_IterLimit   = XFoilTask::s_IterLim;
@@ -4370,12 +4358,12 @@ void QXDirect::setCurveParams()
 	{
 		if(Polar::curPolar())
 		{
-			if(Polar::curPolar()->m_bIsVisible)  m_pctrlShowCurve->setChecked(true);  else  m_pctrlShowCurve->setChecked(false);
-			if(Polar::curPolar()->m_bShowPoints) m_pctrlShowPoints->setChecked(true); else  m_pctrlShowPoints->setChecked(false);
+			if(Polar::curPolar()->lineStyle().m_bIsVisible)  m_pctrlShowCurve->setChecked(true);  else  m_pctrlShowCurve->setChecked(false);
 
-			m_CurveColor = Polar::curPolar()->m_Color;
-			m_CurveStyle = Polar::curPolar()->m_Style;
-			m_CurveWidth = Polar::curPolar()->m_Width;
+			m_LineStyle.m_Color = Polar::curPolar()->lineStyle().m_Color;
+			m_LineStyle.m_Style = Polar::curPolar()->lineStyle().m_Style;
+			m_LineStyle.m_Width = Polar::curPolar()->lineStyle().m_Width;
+			m_LineStyle.m_PointStyle = Polar::curPolar()->lineStyle().m_PointStyle;
 			fillComboBoxes();
 		}
 		else
@@ -4388,12 +4376,12 @@ void QXDirect::setCurveParams()
 		//set Opoint params
 		if(OpPoint::curOpp())
 		{
-			if(OpPoint::curOpp()->m_bIsVisible)  m_pctrlShowCurve->setChecked(true);  else  m_pctrlShowCurve->setChecked(false);
-			if(OpPoint::curOpp()->m_bShowPoints) m_pctrlShowPoints->setChecked(true); else  m_pctrlShowPoints->setChecked(false);
+			if(OpPoint::curOpp()->lineStyle().m_bIsVisible)  m_pctrlShowCurve->setChecked(true);  else  m_pctrlShowCurve->setChecked(false);
 
-			m_CurveColor = OpPoint::curOpp()->m_Color;
-			m_CurveStyle = OpPoint::curOpp()->m_Style;
-			m_CurveWidth = OpPoint::curOpp()->m_Width;
+			m_LineStyle.m_Color  = OpPoint::curOpp()->lineStyle().m_Color;
+			m_LineStyle.m_Style  = OpPoint::curOpp()->lineStyle().m_Style;
+			m_LineStyle.m_Width  = OpPoint::curOpp()->lineStyle().m_Width;
+			m_LineStyle.m_PointStyle = OpPoint::curOpp()->lineStyle().m_PointStyle;
 			fillComboBoxes();
 		}
 		else
@@ -4789,7 +4777,6 @@ void QXDirect::setupLayout()
 
 	}
 
-
 	QGroupBox *DisplayBox = new QGroupBox(tr("Display"));
 	{
 		QVBoxLayout *DisplayGroup = new QVBoxLayout;
@@ -4813,6 +4800,7 @@ void QXDirect::setupLayout()
 		DisplayBox->setLayout(DisplayGroup);
 		DisplayBox->setSizePolicy(szPolicyExpanding);
 	}
+
 	QGroupBox *pPolarPropsBox = new QGroupBox(tr("Polar properties"));
 	{
 		m_pctrlPolarProps = new QLabel;
@@ -4837,13 +4825,13 @@ void QXDirect::setupLayout()
 			QHBoxLayout *pCurveDisplay = new QHBoxLayout;
 			{
 				m_pctrlShowCurve  = new QCheckBox(tr("Curve"));
-				m_pctrlShowPoints = new QCheckBox(tr("Points"));
 				pCurveDisplay->addWidget(m_pctrlShowCurve);
-				pCurveDisplay->addWidget(m_pctrlShowPoints);
 			}
 
 			m_pctrlCurveStyle = new LineCbBox(this);
 			m_pctrlCurveWidth = new LineCbBox(this);
+			m_pctrlPointStyle = new LineCbBox(this);
+			m_pctrlPointStyle->showPoints(true);
 			m_pctrlCurveColor = new LineBtn(this);
 			m_pctrlCurveColor->setMinimumHeight(m_pctrlCurveStyle->minimumSizeHint().height());
 
@@ -4851,25 +4839,32 @@ void QXDirect::setupLayout()
 			{
 				m_pctrlCurveStyle->addItem("item");
 				m_pctrlCurveWidth->addItem("item");
+				m_pctrlPointStyle->addItem("item");
 			}
-			m_pStyleDelegate = new LineDelegate(this);
-			m_pWidthDelegate = new LineDelegate(this);
+
+			m_pStyleDelegate = new LineDelegate(m_pctrlCurveStyle);
+			m_pWidthDelegate = new LineDelegate(m_pctrlCurveWidth);
+			m_pPointDelegate = new LineDelegate(m_pctrlPointStyle);
 			m_pctrlCurveStyle->setItemDelegate(m_pStyleDelegate);
 			m_pctrlCurveWidth->setItemDelegate(m_pWidthDelegate);
+			m_pctrlPointStyle->setItemDelegate(m_pPointDelegate);
 
 			QGridLayout *CurveStyleLayout = new QGridLayout;
 			QLabel *lab200 = new QLabel(tr("Style"));
 			QLabel *lab201 = new QLabel(tr("Width"));
 			QLabel *lab202 = new QLabel(tr("Color"));
+			QLabel *lab203 = new QLabel(tr("Points"));
 			lab200->setAlignment(Qt::AlignRight |Qt::AlignVCenter);
 			lab201->setAlignment(Qt::AlignRight |Qt::AlignVCenter);
 			lab202->setAlignment(Qt::AlignRight |Qt::AlignVCenter);
 			CurveStyleLayout->addWidget(lab200,1,1);
 			CurveStyleLayout->addWidget(lab201,2,1);
 			CurveStyleLayout->addWidget(lab202,3,1);
+			CurveStyleLayout->addWidget(lab203,4,1);
 			CurveStyleLayout->addWidget(m_pctrlCurveStyle,1,2);
 			CurveStyleLayout->addWidget(m_pctrlCurveWidth,2,2);
 			CurveStyleLayout->addWidget(m_pctrlCurveColor,3,2);
+			CurveStyleLayout->addWidget(m_pctrlPointStyle,4,2);
 			CurveStyleLayout->setColumnStretch(2,5);
 
 			pCurveGroup->addLayout(pCurveDisplay);
@@ -4924,16 +4919,18 @@ void QXDirect::updateCurveStyle()
 {
 	if(m_bPolarView && Polar::curPolar())
 	{
-		Polar::curPolar()->m_Color = m_CurveColor;
-		Polar::curPolar()->m_Style = m_CurveStyle;
-		Polar::curPolar()->m_Width = (int)m_CurveWidth;
+		Polar::curPolar()->lineStyle().m_Color = m_LineStyle.m_Color;
+		Polar::curPolar()->lineStyle().m_Style = m_LineStyle.m_Style;
+		Polar::curPolar()->lineStyle().m_Width = m_LineStyle.m_Width;
+		Polar::curPolar()->lineStyle().m_PointStyle = m_LineStyle.m_PointStyle;
 		m_bResetCurves = true;
 	}
 	else if (!m_bPolarView && OpPoint::curOpp())
 	{
-		OpPoint::curOpp()->m_Color = m_CurveColor;
-		OpPoint::curOpp()->m_Style = m_CurveStyle;
-		OpPoint::curOpp()->m_Width = (int)m_CurveWidth;
+		OpPoint::curOpp()->lineStyle().m_Color = m_LineStyle.m_Color;
+		OpPoint::curOpp()->lineStyle().m_Style = m_LineStyle.m_Style;
+		OpPoint::curOpp()->lineStyle().m_Width = m_LineStyle.m_Width;
+		OpPoint::curOpp()->lineStyle().m_PointStyle = m_LineStyle.m_PointStyle;
 		m_bResetCurves = true;
 	}
 
@@ -4966,7 +4963,7 @@ void QXDirect::updateView()
 /**
  * The user has requested the duplication of the current Foil.
  */
-void QXDirect::OnDuplicateFoil()
+void QXDirect::onDuplicateFoil()
 {
 	if(!Foil::curFoil()) return;
 
@@ -4987,7 +4984,7 @@ void QXDirect::OnDuplicateFoil()
 /**
  * The user has requested to rename the current Foil.
  */
-void QXDirect::OnRenameCurFoil()
+void QXDirect::onRenameCurFoil()
 {
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
 

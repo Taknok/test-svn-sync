@@ -203,7 +203,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 		W3dPrefsDlg::loadSettings(&settings);
 	}
 
-	SetupDataDir();
+	setupDataDir();
 
 	pXDirect->setAnalysisParams();
 	createActions();
@@ -889,7 +889,7 @@ void MainFrame::createDockWindows()
 	LegendWidget::s_pMiarex    = m_pMiarex;
 	LegendWidget::s_pXDirect   = m_pXDirect;
 
-	pMiarex->Connect();
+	pMiarex->connectSignals();
 }
 
 
@@ -960,7 +960,7 @@ void MainFrame::createMenus()
 
 	//Create Application-Specific Menus
 	createXDirectMenus();
-	CreateXInverseMenus();
+	createXInverseMenus();
 	createMiarexMenus();
 	createAFoilMenus();
 }
@@ -1657,25 +1657,25 @@ void MainFrame::createXDirectActions()
 	connect(PolarsAct, SIGNAL(triggered()), pXDirect, SLOT(onPolarView()));
 
 	XDirectPolarFilter = new QAction(tr("Polar Filter"), this);
-	connect(XDirectPolarFilter, SIGNAL(triggered()), pXDirect, SLOT(OnPolarFilter()));
+	connect(XDirectPolarFilter, SIGNAL(triggered()), pXDirect, SLOT(onPolarFilter()));
 
 	highlightOppAct	 = new QAction(tr("Highlight Current OpPoint")+"\t(Ctrl+H)", this);
 	highlightOppAct->setCheckable(true);
 	highlightOppAct->setStatusTip(tr("Highlights on the polar curve the currently selected operating point"));
-	connect(highlightOppAct, SIGNAL(triggered()), pXDirect, SLOT(OnHighlightOpp()));
+	connect(highlightOppAct, SIGNAL(triggered()), pXDirect, SLOT(onHighlightOpp()));
 
 
 	deleteCurFoil = new QAction(tr("Delete..."), this);
-	connect(deleteCurFoil, SIGNAL(triggered()), pXDirect, SLOT(OnDeleteCurFoil()));
+	connect(deleteCurFoil, SIGNAL(triggered()), pXDirect, SLOT(onDeleteCurFoil()));
 
 	renameCurFoil = new QAction(tr("Rename...")+"\tF2", this);
-	connect(renameCurFoil, SIGNAL(triggered()), pXDirect, SLOT(OnRenameCurFoil()));
+	connect(renameCurFoil, SIGNAL(triggered()), pXDirect, SLOT(onRenameCurFoil()));
 
 	exportCurFoil = new QAction(tr("Export..."), this);
-	connect(exportCurFoil, SIGNAL(triggered()), pXDirect, SLOT(OnExportCurFoil()));
+	connect(exportCurFoil, SIGNAL(triggered()), pXDirect, SLOT(onExportCurFoil()));
 
 	pDirectDuplicateCurFoil = new QAction(tr("Duplicate..."), this);
-	connect(pDirectDuplicateCurFoil, SIGNAL(triggered()), pXDirect, SLOT(OnDuplicateFoil()));
+	connect(pDirectDuplicateCurFoil, SIGNAL(triggered()), pXDirect, SLOT(onDuplicateFoil()));
 
 	setCurFoilStyle = new QAction(tr("Set Style..."), this);
 	connect(setCurFoilStyle, SIGNAL(triggered()), this, SLOT(onCurFoilStyle()));
@@ -1685,49 +1685,49 @@ void MainFrame::createXDirectActions()
 	connect(deleteFoilPolars, SIGNAL(triggered()), pXDirect, SLOT(onDeleteFoilPolars()));
 
 	showFoilPolarsOnly = new QAction(tr("Show only associated polars"), this);
-	connect(showFoilPolarsOnly, SIGNAL(triggered()), pXDirect, SLOT(OnShowFoilPolarsOnly()));
+	connect(showFoilPolarsOnly, SIGNAL(triggered()), pXDirect, SLOT(onShowFoilPolarsOnly()));
 
 	showFoilPolars = new QAction(tr("Show associated polars"), this);
-	connect(showFoilPolars, SIGNAL(triggered()), pXDirect, SLOT(OnShowFoilPolars()));
+	connect(showFoilPolars, SIGNAL(triggered()), pXDirect, SLOT(onShowFoilPolars()));
 
 	hideFoilPolars = new QAction(tr("Hide associated polars"), this);
-	connect(hideFoilPolars, SIGNAL(triggered()), pXDirect, SLOT(OnHideFoilPolars()));
+	connect(hideFoilPolars, SIGNAL(triggered()), pXDirect, SLOT(onHideFoilPolars()));
 
 	saveFoilPolars = new QAction(tr("Save associated polars"), this);
-	connect(saveFoilPolars, SIGNAL(triggered()), pXDirect, SLOT(OnSavePolars()));
+	connect(saveFoilPolars, SIGNAL(triggered()), pXDirect, SLOT(onSavePolars()));
 
 	hidePolarOpps = new QAction(tr("Hide associated OpPoints"), this);
-	connect(hidePolarOpps, SIGNAL(triggered()), pXDirect, SLOT(OnHidePolarOpps()));
+	connect(hidePolarOpps, SIGNAL(triggered()), pXDirect, SLOT(onHidePolarOpps()));
 
 	showPolarOpps = new QAction(tr("Show associated OpPoints"), this);
-	connect(showPolarOpps, SIGNAL(triggered()), pXDirect, SLOT(OnShowPolarOpps()));
+	connect(showPolarOpps, SIGNAL(triggered()), pXDirect, SLOT(onShowPolarOpps()));
 
 	deletePolarOpps = new QAction(tr("Delete associated OpPoints"), this);
 	connect(deletePolarOpps, SIGNAL(triggered()), pXDirect, SLOT(onDeletePolarOpps()));
 
 	exportPolarOpps = new QAction(tr("Export associated OpPoints"), this);
-	connect(exportPolarOpps, SIGNAL(triggered()), pXDirect, SLOT(OnExportPolarOpps()));
+	connect(exportPolarOpps, SIGNAL(triggered()), pXDirect, SLOT(onExportPolarOpps()));
 
 	hideFoilOpps = new QAction(tr("Hide associated OpPoints"), this);
-	connect(hideFoilOpps, SIGNAL(triggered()), pXDirect, SLOT(OnHideFoilOpps()));
+	connect(hideFoilOpps, SIGNAL(triggered()), pXDirect, SLOT(onHideFoilOpps()));
 
 	showFoilOpps = new QAction(tr("Show associated OpPoints"), this);
-	connect(showFoilOpps, SIGNAL(triggered()), pXDirect, SLOT(OnShowFoilOpps()));
+	connect(showFoilOpps, SIGNAL(triggered()), pXDirect, SLOT(onShowFoilOpps()));
 
 	deleteFoilOpps = new QAction(tr("Delete associated OpPoints"), this);
 	connect(deleteFoilOpps, SIGNAL(triggered()), pXDirect, SLOT(onDeleteFoilOpps()));
 
 	m_pDefinePolarAct = new QAction(tr("Define an Analysis")+"\tF6", this);
 	m_pDefinePolarAct->setStatusTip(tr("Defines a single analysis/polar"));
-	connect(m_pDefinePolarAct, SIGNAL(triggered()), pXDirect, SLOT(OnDefinePolar()));
+	connect(m_pDefinePolarAct, SIGNAL(triggered()), pXDirect, SLOT(onDefinePolar()));
 
 	m_pBatchAnalysisAct = new QAction(tr("Batch Analysis")+"\tShift+F6", this);
 	m_pBatchAnalysisAct->setStatusTip(tr("Launches a batch of analysis calculation for a specified range or list of Reynolds numbers"));
-	connect(m_pBatchAnalysisAct, SIGNAL(triggered()), pXDirect, SLOT(OnBatchAnalysis()));
+	connect(m_pBatchAnalysisAct, SIGNAL(triggered()), pXDirect, SLOT(onBatchAnalysis()));
 
 	MultiThreadedBatchAct = new QAction(tr("Multi-threaded Batch Analysis")+"\tCtrl+F6", this);
 	MultiThreadedBatchAct->setStatusTip(tr("Launches a batch of analysis calculation using all available computer CPU cores"));
-	connect(MultiThreadedBatchAct, SIGNAL(triggered()), pXDirect, SLOT(OnMultiThreadedBatchAnalysis()));
+	connect(MultiThreadedBatchAct, SIGNAL(triggered()), pXDirect, SLOT(onMultiThreadedBatchAnalysis()));
 
 	deletePolar = new QAction(tr("Delete"), this);
 	deletePolar->setStatusTip(tr("Deletes the currently selected polar"));
@@ -1735,17 +1735,17 @@ void MainFrame::createXDirectActions()
 
 	resetCurPolar = new QAction(tr("Reset"), this);
 	resetCurPolar->setStatusTip(tr("Deletes the contents of the currently selected polar"));
-	connect(resetCurPolar, SIGNAL(triggered()), pXDirect, SLOT(OnResetCurPolar()));
+	connect(resetCurPolar, SIGNAL(triggered()), pXDirect, SLOT(onResetCurPolar()));
 
 	editCurPolar = new QAction(tr("Edit"), this);
 	editCurPolar->setStatusTip(tr("Remove the unconverged or erroneaous points of the currently selected polar"));
-	connect(editCurPolar, SIGNAL(triggered()), pXDirect, SLOT(OnEditCurPolar()));
+	connect(editCurPolar, SIGNAL(triggered()), pXDirect, SLOT(onEditCurPolar()));
 
 	exportCurPolar = new QAction(tr("Export"), this);
-	connect(exportCurPolar, SIGNAL(triggered()), pXDirect, SLOT(OnExportCurPolar()));
+	connect(exportCurPolar, SIGNAL(triggered()), pXDirect, SLOT(onExportCurPolar()));
 
 	exportAllPolars = new QAction(tr("Export all polars"), this);
-	connect(exportAllPolars, SIGNAL(triggered()), pXDirect, SLOT(OnExportAllPolars()));
+	connect(exportAllPolars, SIGNAL(triggered()), pXDirect, SLOT(onExportAllPolars()));
 
 	m_pXDirectStyleAct = new QAction(tr("Define Styles"), this);
 	m_pXDirectStyleAct->setStatusTip(tr("Define the style for the boundary layer and the pressure arrows"));
@@ -1765,142 +1765,142 @@ void MainFrame::createXDirectActions()
 	connect(ManageFoilsAct, SIGNAL(triggered()), this, SLOT(onManageFoils()));
 
 	RenamePolarAct = new QAction(tr("Rename"), this);
-	connect(RenamePolarAct, SIGNAL(triggered()), pXDirect, SLOT(OnRenamePolar()));
+	connect(RenamePolarAct, SIGNAL(triggered()), pXDirect, SLOT(onRenamePolar()));
 
 
 	showInviscidCurve = new QAction(tr("Show Inviscid Curve"), this);
 	showInviscidCurve->setCheckable(true);
 	showInviscidCurve->setStatusTip(tr("Display the Opp's inviscid curve"));
-	connect(showInviscidCurve, SIGNAL(triggered()), pXDirect, SLOT(OnCpi()));
+	connect(showInviscidCurve, SIGNAL(triggered()), pXDirect, SLOT(onCpi()));
 
 
 	showAllPolars = new QAction(tr("Show All Polars"), this);
-	connect(showAllPolars, SIGNAL(triggered()), pXDirect, SLOT(OnShowAllPolars()));
+	connect(showAllPolars, SIGNAL(triggered()), pXDirect, SLOT(onShowAllPolars()));
 
 	hideAllPolars = new QAction(tr("Hide All Polars"), this);
-	connect(hideAllPolars, SIGNAL(triggered()), pXDirect, SLOT(OnHideAllPolars()));
+	connect(hideAllPolars, SIGNAL(triggered()), pXDirect, SLOT(onHideAllPolars()));
 
 	showCurOppOnly = new QAction(tr("Show Current Opp Only"), this);
 	showCurOppOnly->setCheckable(true);
-	connect(showCurOppOnly, SIGNAL(triggered()), pXDirect, SLOT(OnCurOppOnly()));
+	connect(showCurOppOnly, SIGNAL(triggered()), pXDirect, SLOT(onCurOppOnly()));
 
 	showAllOpPoints = new QAction(tr("Show All Opps"), this);
-	connect(showAllOpPoints, SIGNAL(triggered()), pXDirect, SLOT(OnShowAllOpps()));
+	connect(showAllOpPoints, SIGNAL(triggered()), pXDirect, SLOT(onShowAllOpps()));
 
 	hideAllOpPoints = new QAction(tr("Hide All Opps"), this);
-	connect(hideAllOpPoints, SIGNAL(triggered()), pXDirect, SLOT(OnHideAllOpps()));
+	connect(hideAllOpPoints, SIGNAL(triggered()), pXDirect, SLOT(onHideAllOpps()));
 
 	exportCurOpp = new QAction(tr("Export"), this);
-	connect(exportCurOpp, SIGNAL(triggered()), pXDirect, SLOT(OnExportCurOpp()));
+	connect(exportCurOpp, SIGNAL(triggered()), pXDirect, SLOT(onExportCurOpp()));
 
 	deleteCurOpp = new QAction(tr("Delete"), this);
-	connect(deleteCurOpp, SIGNAL(triggered()), pXDirect, SLOT(OnDelCurOpp()));
+	connect(deleteCurOpp, SIGNAL(triggered()), pXDirect, SLOT(onDelCurOpp()));
 
 	getOppProps = new QAction(tr("Properties"), this);
-	connect(getOppProps, SIGNAL(triggered()), pXDirect, SLOT(OnOpPointProps()));
+	connect(getOppProps, SIGNAL(triggered()), pXDirect, SLOT(onOpPointProps()));
 
 	getPolarProps = new QAction(tr("Properties"), this);
-	connect(getPolarProps, SIGNAL(triggered()), pXDirect, SLOT(OnPolarProps()));
+	connect(getPolarProps, SIGNAL(triggered()), pXDirect, SLOT(onPolarProps()));
 
 	viewXFoilAdvanced = new QAction(tr("XFoil Advanced Settings"), this);
 	m_pBatchAnalysisAct->setStatusTip(tr("Tip : you don't want to use that option..."));
-	connect(viewXFoilAdvanced, SIGNAL(triggered()), pXDirect, SLOT(OnXFoilAdvanced()));
+	connect(viewXFoilAdvanced, SIGNAL(triggered()), pXDirect, SLOT(onXFoilAdvanced()));
  
 	viewLogFile = new QAction(tr("View Log File")+"\t(L)", this);
 	connect(viewLogFile, SIGNAL(triggered()), this, SLOT(onLogFile()));
 
 	DerotateFoil = new QAction(tr("De-rotate the Foil"), this);
-	connect(DerotateFoil, SIGNAL(triggered()), pXDirect, SLOT(OnDerotateFoil()));
+	connect(DerotateFoil, SIGNAL(triggered()), pXDirect, SLOT(onDerotateFoil()));
 
 	NormalizeFoil = new QAction(tr("Normalize the Foil"), this);
-	connect(NormalizeFoil, SIGNAL(triggered()), pXDirect, SLOT(OnNormalizeFoil()));
+	connect(NormalizeFoil, SIGNAL(triggered()), pXDirect, SLOT(onNormalizeFoil()));
 
 	RefineLocalFoil = new QAction(tr("Refine Locally")+"\t(Shift+F3)", this);
-	connect(RefineLocalFoil, SIGNAL(triggered()), pXDirect, SLOT(OnCadd()));
+	connect(RefineLocalFoil, SIGNAL(triggered()), pXDirect, SLOT(onCadd()));
 
 	RefineGlobalFoil = new QAction(tr("Refine Globally")+"\t(F3)", this);
-	connect(RefineGlobalFoil, SIGNAL(triggered()), pXDirect, SLOT(OnRefinePanelsGlobally()));
+	connect(RefineGlobalFoil, SIGNAL(triggered()), pXDirect, SLOT(onRefinePanelsGlobally()));
 
 	EditCoordsFoil = new QAction(tr("Edit Foil Coordinates"), this);
-	connect(EditCoordsFoil, SIGNAL(triggered()), pXDirect, SLOT(OnFoilCoordinates()));
+	connect(EditCoordsFoil, SIGNAL(triggered()), pXDirect, SLOT(onFoilCoordinates()));
 
 	ScaleFoil = new QAction(tr("Scale camber and thickness")+"\t(F9)", this);
-	connect(ScaleFoil, SIGNAL(triggered()), pXDirect, SLOT(OnFoilGeom()));
+	connect(ScaleFoil, SIGNAL(triggered()), pXDirect, SLOT(onFoilGeom()));
 
 	SetTEGap = new QAction(tr("Set T.E. Gap"), this);
-	connect(SetTEGap, SIGNAL(triggered()), pXDirect, SLOT(OnSetTEGap()));
+	connect(SetTEGap, SIGNAL(triggered()), pXDirect, SLOT(onSetTEGap()));
 
 	SetLERadius = new QAction(tr("Set L.E. Radius"), this);
-	connect(SetLERadius, SIGNAL(triggered()), pXDirect, SLOT(OnSetLERadius()));
+	connect(SetLERadius, SIGNAL(triggered()), pXDirect, SLOT(onSetLERadius()));
 
 	SetFlap = new QAction(tr("Set Flap")+"\t(F10)", this);
-	connect(SetFlap, SIGNAL(triggered()), pXDirect, SLOT(OnSetFlap()));
+	connect(SetFlap, SIGNAL(triggered()), pXDirect, SLOT(onSetFlap()));
 
 	InterpolateFoils = new QAction(tr("Interpolate Foils")+"\t(F11)", this);
-	connect(InterpolateFoils, SIGNAL(triggered()), pXDirect, SLOT(OnInterpolateFoils()));
+	connect(InterpolateFoils, SIGNAL(triggered()), pXDirect, SLOT(onInterpolateFoils()));
 
 	NacaFoils = new QAction(tr("Naca Foils"), this);
-	connect(NacaFoils, SIGNAL(triggered()), pXDirect, SLOT(OnNacaFoils()));
+	connect(NacaFoils, SIGNAL(triggered()), pXDirect, SLOT(onNacaFoils()));
 
 	setCpVarGraph = new QAction(tr("Cp Variable"), this);
 	setCpVarGraph->setCheckable(true);
 	setCpVarGraph->setStatusTip(tr("Sets Cp vs. chord graph"));
-	connect(setCpVarGraph, SIGNAL(triggered()), pXDirect, SLOT(OnCpGraph()));
+	connect(setCpVarGraph, SIGNAL(triggered()), pXDirect, SLOT(onCpGraph()));
 
 	setQVarGraph = new QAction(tr("Q Variable"), this);
 	setQVarGraph->setCheckable(true);
 	setQVarGraph->setStatusTip(tr("Sets Speed vs. chord graph"));
-	connect(setQVarGraph, SIGNAL(triggered()), pXDirect, SLOT(OnQGraph()));
+	connect(setQVarGraph, SIGNAL(triggered()), pXDirect, SLOT(onQGraph()));
 
 	CurXFoilResExport = new QAction(tr("Export Cur. XFoil Results"), this);
 	CurXFoilResExport->setStatusTip(tr("Sets Speed vs. chord graph"));
-	connect(CurXFoilResExport, SIGNAL(triggered()), pXDirect, SLOT(OnExportCurXFoilResults()));
+	connect(CurXFoilResExport, SIGNAL(triggered()), pXDirect, SLOT(onExportCurXFoilResults()));
 
 	CurXFoilCtPlot = new QAction(tr("Max. Shear Coefficient"), this);
 	CurXFoilCtPlot->setCheckable(true);
-	connect(CurXFoilCtPlot, SIGNAL(triggered()), pXDirect, SLOT(OnCtPlot()));
+	connect(CurXFoilCtPlot, SIGNAL(triggered()), pXDirect, SLOT(onCtPlot()));
 
 	CurXFoilDbPlot = new QAction(tr("Bottom Side D* and Theta"), this);
 	CurXFoilDbPlot->setCheckable(true);
-	connect(CurXFoilDbPlot, SIGNAL(triggered()), pXDirect, SLOT(OnDbPlot()));
+	connect(CurXFoilDbPlot, SIGNAL(triggered()), pXDirect, SLOT(onDbPlot()));
 
 	CurXFoilDtPlot = new QAction(tr("Top Side D* and Theta"), this);
 	CurXFoilDtPlot->setCheckable(true);
-	connect(CurXFoilDtPlot, SIGNAL(triggered()), pXDirect, SLOT(OnDtPlot()));
+	connect(CurXFoilDtPlot, SIGNAL(triggered()), pXDirect, SLOT(onDtPlot()));
 
 	CurXFoilRtLPlot = new QAction(tr("Log(Re_Theta)"), this);
 	CurXFoilRtLPlot->setCheckable(true);
-	connect(CurXFoilRtLPlot, SIGNAL(triggered()), pXDirect, SLOT(OnRtLPlot()));
+	connect(CurXFoilRtLPlot, SIGNAL(triggered()), pXDirect, SLOT(onRtLPlot()));
 
 	CurXFoilRtPlot = new QAction(tr("Re_Theta"), this);
 	CurXFoilRtPlot->setCheckable(true);
-	connect(CurXFoilRtPlot, SIGNAL(triggered()), pXDirect, SLOT(OnRtPlot()));
+	connect(CurXFoilRtPlot, SIGNAL(triggered()), pXDirect, SLOT(onRtPlot()));
 
 	CurXFoilNPlot = new QAction(tr("Amplification Ratio"), this);
 	CurXFoilNPlot->setCheckable(true);
-	connect(CurXFoilNPlot, SIGNAL(triggered()), pXDirect, SLOT(OnNPlot()));
+	connect(CurXFoilNPlot, SIGNAL(triggered()), pXDirect, SLOT(onNPlot()));
 
 	CurXFoilCdPlot = new QAction(tr("Dissipation Coefficient"), this);
 	CurXFoilCdPlot->setCheckable(true);
-	connect(CurXFoilCdPlot, SIGNAL(triggered()), pXDirect, SLOT(OnCdPlot()));
+	connect(CurXFoilCdPlot, SIGNAL(triggered()), pXDirect, SLOT(onCdPlot()));
 
 	CurXFoilCfPlot = new QAction(tr("Skin Friction Coefficient"), this);
 	CurXFoilCfPlot->setCheckable(true);
-	connect(CurXFoilCfPlot, SIGNAL(triggered()), pXDirect, SLOT(OnCfPlot()));
+	connect(CurXFoilCfPlot, SIGNAL(triggered()), pXDirect, SLOT(onCfPlot()));
 
 	CurXFoilUePlot = new QAction(tr("Edge Velocity"), this);
 	CurXFoilUePlot->setCheckable(true);
-	connect(CurXFoilUePlot, SIGNAL(triggered()), pXDirect, SLOT(OnUePlot()));
+	connect(CurXFoilUePlot, SIGNAL(triggered()), pXDirect, SLOT(onUePlot()));
 
 	CurXFoilHPlot = new QAction(tr("Kinematic Shape Parameter"), this);
 	CurXFoilHPlot->setCheckable(true);
-	connect(CurXFoilHPlot, SIGNAL(triggered()), pXDirect, SLOT(OnHPlot()));
+	connect(CurXFoilHPlot, SIGNAL(triggered()), pXDirect, SLOT(onHPlot()));
 
 //	m_pImportJavaFoilPolar = new QAction(tr("Import JavaFoil Polar"), this);
-//	connect(m_pImportJavaFoilPolar, SIGNAL(triggered()), pXDirect, SLOT(OnImportJavaFoilPolar()));
+//	connect(m_pImportJavaFoilPolar, SIGNAL(triggered()), pXDirect, SLOT(onImportJavaFoilPolar()));
 
 	m_pImportXFoilPolar = new QAction(tr("Import XFoil Polar"), this);
-	connect(m_pImportXFoilPolar, SIGNAL(triggered()), pXDirect, SLOT(OnImportXFoilPolar()));
+	connect(m_pImportXFoilPolar, SIGNAL(triggered()), pXDirect, SLOT(onImportXFoilPolar()));
 }
 
 
@@ -2151,27 +2151,27 @@ void MainFrame::createXInverseActions()
 	connect(InverseInsertCtrlPt, SIGNAL(triggered()), pXInverse, SLOT(OnInsertCtrlPt()));
 
 	InverseRemoveCtrlPt = new QAction(tr("Remove Control Point")+"\tCtrl+Click", this);
-	connect(InverseRemoveCtrlPt, SIGNAL(triggered()), pXInverse, SLOT(OnRemoveCtrlPt()));
+	connect(InverseRemoveCtrlPt, SIGNAL(triggered()), pXInverse, SLOT(onRemoveCtrlPt()));
 
 	InvQInitial = new QAction(tr("Show Q-Initial"), this);
 	InvQInitial->setCheckable(true);
-	connect(InvQInitial, SIGNAL(triggered()), pXInverse, SLOT(OnQInitial()));
+	connect(InvQInitial, SIGNAL(triggered()), pXInverse, SLOT(onQInitial()));
 
 	InvQSpec = new QAction(tr("Show Q-Spec"), this);
 	InvQSpec->setCheckable(true);
-	connect(InvQSpec, SIGNAL(triggered()), pXInverse, SLOT(OnQSpec()));
+	connect(InvQSpec, SIGNAL(triggered()), pXInverse, SLOT(onQSpec()));
 
 	InvQViscous = new QAction(tr("Show Q-Viscous"), this);
 	InvQViscous->setCheckable(true);
-	connect(InvQViscous, SIGNAL(triggered()), pXInverse, SLOT(OnQViscous()));
+	connect(InvQViscous, SIGNAL(triggered()), pXInverse, SLOT(onQViscous()));
 
 	InvQPoints = new QAction(tr("Show Points"), this);
 	InvQPoints->setCheckable(true);
-	connect(InvQPoints, SIGNAL(triggered()), pXInverse, SLOT(OnQPoints()));
+	connect(InvQPoints, SIGNAL(triggered()), pXInverse, SLOT(onQPoints()));
 
 	InvQReflected = new QAction(tr("Show Reflected"), this);
 	InvQReflected->setCheckable(true);
-	connect(InvQReflected, SIGNAL(triggered()), pXInverse, SLOT(OnQReflected()));
+	connect(InvQReflected, SIGNAL(triggered()), pXInverse, SLOT(onQReflected()));
 
 	InverseZoomIn = new QAction(QIcon(":/images/OnZoomIn.png"), tr("Zoom in"), this);
 	InverseZoomIn->setStatusTip(tr("Zoom the view by drawing a rectangle in the client area"));
@@ -2187,7 +2187,7 @@ void MainFrame::createXInverseActions()
 }
 
 
-void MainFrame::CreateXInverseMenus()
+void MainFrame::createXInverseMenus()
 {
 	//MainMenu for XInverse Application
 	m_pXInverseViewMenu = menuBar()->addMenu(tr("&View"));
@@ -2386,7 +2386,7 @@ QColor MainFrame::getColor(int type)
 				{
 					pPolar = (Polar*)Polar::s_oaPolar.at(i);
 					bFound = false;
-					if(pPolar->m_Color == s_ColorList.at(j))
+					if(pPolar->lineStyle().m_Color == s_ColorList.at(j))
 					{
 						bFound = true;
 						break;
@@ -2405,7 +2405,7 @@ QColor MainFrame::getColor(int type)
 				{
 					pOpPoint = (OpPoint*)OpPoint::s_oaOpp.at(i);
 					bFound = false;
-					if(pOpPoint->m_Color == s_ColorList.at(j))
+					if(pOpPoint->lineStyle().m_Color == s_ColorList.at(j))
 					{
 						bFound = true;
 						break;
@@ -2561,9 +2561,9 @@ bool MainFrame::loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFor
 	{
 		pPolar = new Polar();
 
-		pPolar->m_Color = getColor(1);
+		pPolar->lineStyle().m_Color = getColor(1);
 
-		if (!pPolar->Serialize(ar, bIsStoring))
+		if (!pPolar->serialize(ar, bIsStoring))
 		{
 			delete pPolar;
 			return false;
@@ -2594,10 +2594,10 @@ bool MainFrame::loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFor
 			return false;
 		}
 
-		pOpp->m_Color = s_ColorList[OpPoint::s_oaOpp.size()%24];
+		pOpp->lineStyle().m_Color = s_ColorList[OpPoint::s_oaOpp.size()%24];
 		if(ArchiveFormat>=100002)
 		{
-			if (!pOpp->SerializeOppWPA(ar, bIsStoring, 100002))
+			if (!pOpp->serializeOppWPA(ar, bIsStoring, 100002))
 			{
 				delete pOpp;
 				return false;
@@ -2618,7 +2618,7 @@ bool MainFrame::loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFor
 		}
 		else
 		{
-			if (!pOpp->SerializeOppWPA(ar, bIsStoring))
+			if (!pOpp->serializeOppWPA(ar, bIsStoring))
 			{
 				delete pOpp;
 				return false;
@@ -2983,13 +2983,13 @@ void MainFrame::onCurFoilStyle()
 	if(!Foil::curFoil()) return;
 
 	LinePickerDlg dlg(this);
-	dlg.InitDialog(Foil::curFoil()->m_FoilStyle, Foil::curFoil()->m_FoilWidth, Foil::curFoil()->m_FoilColor);
+	dlg.initDialog(Foil::curFoil()->m_FoilStyle, Foil::curFoil()->m_FoilWidth, Foil::curFoil()->m_FoilColor);
 
 	if(QDialog::Accepted==dlg.exec())
 	{
-		Foil::curFoil()->m_FoilColor = dlg.GetColor();
-		Foil::curFoil()->m_FoilStyle = dlg.GetStyle();
-		Foil::curFoil()->m_FoilWidth = dlg.GetWidth();
+		Foil::curFoil()->m_FoilColor = dlg.setColor();
+		Foil::curFoil()->m_FoilStyle = dlg.setStyle();
+		Foil::curFoil()->m_FoilWidth = dlg.width();
 		QXDirect *pXDirect = (QXDirect*)m_pXDirect;
 		pXDirect->m_BufferFoil.m_FoilColor = Foil::curFoil()->m_FoilColor;
 		pXDirect->m_BufferFoil.m_FoilStyle = Foil::curFoil()->m_FoilStyle;
@@ -4007,7 +4007,7 @@ void MainFrame::readPolarFile(QDataStream &ar)
 		{
 			pPolar = new Polar();
 
-			if (!pPolar->Serialize(ar, false))
+			if (!pPolar->serialize(ar, false))
 			{
 				delete pPolar;
 				return;
@@ -4185,7 +4185,7 @@ bool MainFrame::SerializePlaneProject(QDataStream &ar)
 
 	// save the plane
 	ar << 1;
-	pMiarex->m_pCurPlane->SerializePlaneXFL(ar, bIsStoring);
+	pMiarex->m_pCurPlane->serializePlaneXFL(ar, bIsStoring);
 
 	// save the WPolars associated to this plane
 	//count the polars
@@ -4199,7 +4199,7 @@ bool MainFrame::SerializePlaneProject(QDataStream &ar)
 	for (i=0; i<Objects3D::s_oaWPolar.size();i++)
 	{
 		pWPolar = (WPolar*)Objects3D::s_oaWPolar.at(i);
-		if(pWPolar->planeName()==PlaneName) pWPolar->SerializeWPlrXFL(ar, bIsStoring);
+		if(pWPolar->planeName()==PlaneName) pWPolar->serializeWPlrXFL(ar, bIsStoring);
 	}
 
 	ar << 0; //no need to save the operating points
@@ -4257,7 +4257,7 @@ bool MainFrame::SerializePlaneProject(QDataStream &ar)
 	ar << polarList.size();
 	for (int ip=0; ip<polarList.size();ip++)
 	{
-		polarList.at(ip)->SerializePolarXFL(ar, true);
+		polarList.at(ip)->serializePolarXFL(ar, true);
 	}
 
 	ar << 0; //no need to save the operating points
@@ -4667,7 +4667,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 		for (i=0; i<Objects3D::s_oaPlane.size();i++)
 		{
 			pPlane = (Plane*)Objects3D::s_oaPlane.at(i);
-			pPlane->SerializePlaneXFL(ar, bIsStoring);
+			pPlane->serializePlaneXFL(ar, bIsStoring);
 		}
 
 		// save the WPolars
@@ -4675,7 +4675,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 		for (i=0; i<Objects3D::s_oaWPolar.size();i++)
 		{
 			pWPolar = (WPolar*)Objects3D::s_oaWPolar.at(i);
-			pWPolar->SerializeWPlrXFL(ar, bIsStoring);
+			pWPolar->serializeWPlrXFL(ar, bIsStoring);
 		}
 
 		if(m_bSaveWOpps)
@@ -4703,7 +4703,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 		for (i=0; i<Polar::s_oaPolar.size();i++)
 		{
 			pPolar = (Polar*)Polar::s_oaPolar.at(i);
-			pPolar->SerializePolarXFL(ar, bIsStoring);
+			pPolar->serializePolarXFL(ar, bIsStoring);
 		}
 
 		//the oppoints
@@ -4713,7 +4713,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 			for (i=0; i<OpPoint::s_oaOpp.size();i++)
 			{
 				pOpp = (OpPoint*)OpPoint::s_oaOpp.at(i);
-				pOpp->SerializeOppXFL(ar, bIsStoring);
+				pOpp->serializeOppXFL(ar, bIsStoring);
 			}
 		}
 		else ar << 0;
@@ -4723,8 +4723,8 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 
 		//add provisions
 		// space allocation for the future storage of more data, without need to change the format
-		for (int i=0; i<20; i++) ar << i;
-		for (int i=0; i<50; i++) ar << (double)i;
+		for (int i=0; i<20; i++) ar << 0;
+		for (int i=0; i<50; i++) ar << (double)0.0;
 	}
 	else
 	{
@@ -4779,7 +4779,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 		for(i=0; i<n; i++)
 		{
 			pPlane = new Plane();
-			if(pPlane->SerializePlaneXFL(ar, bIsStoring)) Objects3D::s_oaPlane.append(pPlane);
+			if(pPlane->serializePlaneXFL(ar, bIsStoring)) Objects3D::s_oaPlane.append(pPlane);
 			else
 			{
 				QMessageBox::warning(this,tr("Warning"), tr("Error reading the file")+"\n"+tr("Saved the valid part"));
@@ -4792,7 +4792,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 		for(i=0; i<n; i++)
 		{
 			pWPolar = new WPolar();
-			if(pWPolar->SerializeWPlrXFL(ar, bIsStoring))
+			if(pWPolar->serializeWPlrXFL(ar, bIsStoring))
 			{
 				// clean up : the project may be carrying useless WPolars due to past programming errors
 				pPlane = Objects3D::getPlane(pWPolar->planeName());
@@ -4857,7 +4857,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 		for(i=0; i<n; i++)
 		{
 			pPolar = new Polar();
-			if(pPolar->SerializePolarXFL(ar, bIsStoring)) Polar::s_oaPolar.append(pPolar);
+			if(pPolar->serializePolarXFL(ar, bIsStoring)) Polar::s_oaPolar.append(pPolar);
 			else
 			{
 				QMessageBox::warning(this,tr("Warning"), tr("Error reading the file")+"\n"+tr("Saved the valid part"));
@@ -4870,7 +4870,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 		for(i=0; i<n; i++)
 		{
 			pOpp = new OpPoint();
-			if(pOpp->SerializeOppXFL(ar, bIsStoring))  OpPoint::s_oaOpp.append(pOpp);
+			if(pOpp->serializeOppXFL(ar, bIsStoring))  OpPoint::s_oaOpp.append(pOpp);
 			else
 			{
 				QMessageBox::warning(this,tr("Warning"), tr("Error reading the file")+"\n"+tr("Saved the valid part"));
@@ -5038,7 +5038,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 		for (i=0;i<n; i++)
 		{
 			pWPolar = new WPolar;
-			bWPolarOK = pWPolar->SerializeWPlrWPA(ar, bIsStoring);
+			bWPolarOK = pWPolar->serializeWPlrWPA(ar, bIsStoring);
 			//force compatibilty
 			if(pWPolar->analysisMethod()==XFLR5::PANELMETHOD && pWPolar->m_WPolarType==XFLR5::STABILITYPOLAR) pWPolar->m_bThinSurfaces = true;
 
@@ -5047,7 +5047,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 				if(pWPolar) delete pWPolar;
 				return false;
 			}
-			if(!pWPolar->analysisMethod()==XFLR5::LLTMETHOD && ArchiveFormat <100003)	pWPolar->ClearData();//former VLM version was flawed
+			if(!pWPolar->analysisMethod()==XFLR5::LLTMETHOD && ArchiveFormat <100003)	pWPolar->clearData();//former VLM version was flawed
 //			if(pWPolar->m_WPolarType==STABILITYPOLAR)	pWPolar->bThinSurfaces() = true;
 
 			if(pWPolar->m_PolarFormat!=1020 || pWPolar->m_WPolarType!=XFLR5::STABILITYPOLAR) Objects3D::addWPolar(pWPolar);
@@ -5148,7 +5148,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 				pPlane = new Plane();
 				if(pPlane)
 				{
-					if(pPlane->SerializePlane(ar, bIsStoring))
+					if(pPlane->serializePlane(ar, bIsStoring))
 					{
 						Objects3D::addPlane(pPlane);
 					}
@@ -5176,13 +5176,13 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 				{
 					pWPolar = new WPolar();
 
-					if (!pWPolar->SerializeWPlrWPA(ar, bIsStoring))
+					if (!pWPolar->serializeWPlrWPA(ar, bIsStoring))
 					{
 						if(pWPolar) delete pWPolar;
 						return false;
 					}
 					if(!pWPolar->analysisMethod()==XFLR5::LLTMETHOD && ArchiveFormat <100003)
-						pWPolar->ClearData();
+						pWPolar->clearData();
 					Objects3D::addWPolar(pWPolar);
 				}
 			}
@@ -5197,7 +5197,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 					if(pPOpp) delete pPOpp;
 					return false;
 				}
-				Objects3D::InsertPOpp(pPOpp);
+				Objects3D::insertPOpp(pPOpp);
 //				Objects3D::s_oaPOpp.append(pPOpp);
 			}
 		}
@@ -5326,7 +5326,7 @@ void MainFrame::setGraphSettings(QGraph *pGraph)
 
 
 
-QString MainFrame::ShortenFileName(QString &PathName)
+QString MainFrame::shortenFileName(QString &PathName)
 {
 	QString strong, strange;
 	if(PathName.length()>60)
@@ -5618,7 +5618,7 @@ void MainFrame::updateRecentFileActions()
 	QString text;
 	for (int i = 0; i < numRecentFiles; ++i)
 	{
-		text = tr("&%1 %2").arg(i + 1).arg(ShortenFileName(m_RecentFiles[i]));
+		text = tr("&%1 %2").arg(i + 1).arg(shortenFileName(m_RecentFiles[i]));
 		recentFileActs[i]->setText(text);
 		recentFileActs[i]->setData(m_RecentFiles[i]);
 		recentFileActs[i]->setVisible(true);
@@ -5690,7 +5690,7 @@ void MainFrame::writePolars(QDataStream &ar, void *pFoilPtr)
 		for (i=0; i<Polar::s_oaPolar.size();i++)
 		{
 			pPolar = (Polar*)Polar::s_oaPolar.at(i);
-			pPolar->Serialize(ar, true);
+			pPolar->serialize(ar, true);
 		}
 	}
 	else
@@ -5715,7 +5715,7 @@ void MainFrame::writePolars(QDataStream &ar, void *pFoilPtr)
 		for (i=0; i<Polar::s_oaPolar.size();i++)
 		{
 			pPolar = (Polar*)Polar::s_oaPolar.at(i);
-			if (pPolar->m_FoilName == pFoil->m_FoilName) pPolar->Serialize(ar, true);
+			if (pPolar->m_FoilName == pFoil->m_FoilName) pPolar->serialize(ar, true);
 		}		
 	}
 
@@ -5726,7 +5726,7 @@ void MainFrame::writePolars(QDataStream &ar, void *pFoilPtr)
 		for (i=0; i<OpPoint::s_oaOpp.size();i++)
 		{
 			pOpp = (OpPoint*)OpPoint::s_oaOpp.at(i);
-			pOpp->SerializeOppWPA(ar,true,100002);
+			pOpp->serializeOppWPA(ar,true,100002);
 		}
 	}
 	else ar << 0;
@@ -5735,7 +5735,7 @@ void MainFrame::writePolars(QDataStream &ar, void *pFoilPtr)
 
  
 
-void MainFrame::SetupDataDir()
+void MainFrame::setupDataDir()
 {
 #ifdef Q_OS_MAC
 	s_TranslationDir.setPath(qApp->applicationDirPath()+"/translations/");

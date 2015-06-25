@@ -55,7 +55,7 @@ Body::Body()
 	m_iRes = 31;
 
 //	m_BodyLEPosition.Set(0.0,0.0,0.0);
-	m_CoG.Set(0.0,0.0,0.0);
+	m_CoG.set(0.0,0.0,0.0);
 	m_VolumeMass =  m_TotalMass = 0.0;	    //for inertia calculations
 	m_CoGIxx = m_CoGIyy = m_CoGIzz = m_CoGIxz = 0.0;
 	clearPointMasses();
@@ -84,55 +84,55 @@ Body::Body()
 		}
 	}
 
-	frame(0)->SetuPosition(-0.243);
-	frame(1)->SetuPosition(-0.228);
-	frame(2)->SetuPosition(-0.051);
-	frame(3)->SetuPosition( 0.094);
-	frame(4)->SetuPosition( 0.279);
-	frame(5)->SetuPosition( 0.705);
-	frame(6)->SetuPosition( 0.719);
+	frame(0)->setuPosition(-0.243);
+	frame(1)->setuPosition(-0.228);
+	frame(2)->setuPosition(-0.051);
+	frame(3)->setuPosition( 0.094);
+	frame(4)->setuPosition( 0.279);
+	frame(5)->setuPosition( 0.705);
+	frame(6)->setuPosition( 0.719);
 
-	frame(0)->m_CtrlPoint[0].Set(-0.243, 0.0, -0.0172);
-	frame(0)->m_CtrlPoint[1].Set(-0.243, 0.0, -0.0172);
-	frame(0)->m_CtrlPoint[2].Set(-0.243, 0.0, -0.0172);
-	frame(0)->m_CtrlPoint[3].Set(-0.243, 0.0, -0.0172);
-	frame(0)->m_CtrlPoint[4].Set(-0.243, 0.0, -0.0172);
+	frame(0)->m_CtrlPoint[0].set(-0.243, 0.0, -0.0172);
+	frame(0)->m_CtrlPoint[1].set(-0.243, 0.0, -0.0172);
+	frame(0)->m_CtrlPoint[2].set(-0.243, 0.0, -0.0172);
+	frame(0)->m_CtrlPoint[3].set(-0.243, 0.0, -0.0172);
+	frame(0)->m_CtrlPoint[4].set(-0.243, 0.0, -0.0172);
 
-	frame(1)->m_CtrlPoint[0].Set(-0.228, 0.000,  0.001);
-	frame(1)->m_CtrlPoint[1].Set(-0.228, 0.011,  0.004);
-	frame(1)->m_CtrlPoint[2].Set(-0.228, 0.013, -0.018);
-	frame(1)->m_CtrlPoint[3].Set(-0.228, 0.011, -0.030);
-	frame(1)->m_CtrlPoint[4].Set(-0.228, 0.000, -0.031);
+	frame(1)->m_CtrlPoint[0].set(-0.228, 0.000,  0.001);
+	frame(1)->m_CtrlPoint[1].set(-0.228, 0.011,  0.004);
+	frame(1)->m_CtrlPoint[2].set(-0.228, 0.013, -0.018);
+	frame(1)->m_CtrlPoint[3].set(-0.228, 0.011, -0.030);
+	frame(1)->m_CtrlPoint[4].set(-0.228, 0.000, -0.031);
 
-	frame(2)->m_CtrlPoint[0].Set(-0.051, 0.000,  0.033);
-	frame(2)->m_CtrlPoint[1].Set(-0.051, 0.028,  0.036);
-	frame(2)->m_CtrlPoint[2].Set(-0.051, 0.037, -0.003);
-	frame(2)->m_CtrlPoint[3].Set(-0.051, 0.034, -0.045);
-	frame(2)->m_CtrlPoint[4].Set(-0.051, 0.000, -0.049);
+	frame(2)->m_CtrlPoint[0].set(-0.051, 0.000,  0.033);
+	frame(2)->m_CtrlPoint[1].set(-0.051, 0.028,  0.036);
+	frame(2)->m_CtrlPoint[2].set(-0.051, 0.037, -0.003);
+	frame(2)->m_CtrlPoint[3].set(-0.051, 0.034, -0.045);
+	frame(2)->m_CtrlPoint[4].set(-0.051, 0.000, -0.049);
 
-	frame(3)->m_CtrlPoint[0].Set(0.094, 0.000,  0.025);
-	frame(3)->m_CtrlPoint[1].Set(0.094, 0.012,  0.019);
-	frame(3)->m_CtrlPoint[2].Set(0.094, 0.018,  0.001);
-	frame(3)->m_CtrlPoint[3].Set(0.094, 0.012, -0.017);
-	frame(3)->m_CtrlPoint[4].Set(0.094, 0.000, -0.023);
+	frame(3)->m_CtrlPoint[0].set(0.094, 0.000,  0.025);
+	frame(3)->m_CtrlPoint[1].set(0.094, 0.012,  0.019);
+	frame(3)->m_CtrlPoint[2].set(0.094, 0.018,  0.001);
+	frame(3)->m_CtrlPoint[3].set(0.094, 0.012, -0.017);
+	frame(3)->m_CtrlPoint[4].set(0.094, 0.000, -0.023);
 
-	frame(4)->m_CtrlPoint[0].Set(0.279, 0.000,  0.007);
-	frame(4)->m_CtrlPoint[1].Set(0.279, 0.006,  0.008);
-	frame(4)->m_CtrlPoint[2].Set(0.279, 0.009,  0.000);
-	frame(4)->m_CtrlPoint[3].Set(0.279, 0.007, -0.006);
-	frame(4)->m_CtrlPoint[4].Set(0.279, 0.000, -0.005);
+	frame(4)->m_CtrlPoint[0].set(0.279, 0.000,  0.007);
+	frame(4)->m_CtrlPoint[1].set(0.279, 0.006,  0.008);
+	frame(4)->m_CtrlPoint[2].set(0.279, 0.009,  0.000);
+	frame(4)->m_CtrlPoint[3].set(0.279, 0.007, -0.006);
+	frame(4)->m_CtrlPoint[4].set(0.279, 0.000, -0.005);
 
-	frame(5)->m_CtrlPoint[0].Set(0.705, 0.000,  0.0124);
-	frame(5)->m_CtrlPoint[1].Set(0.705, 0.010,  0.0118);
-	frame(5)->m_CtrlPoint[2].Set(0.705, 0.012, -0.0015);
-	frame(5)->m_CtrlPoint[3].Set(0.705, 0.010, -0.0116);
-	frame(5)->m_CtrlPoint[4].Set(0.705, 0.000, -0.012);
+	frame(5)->m_CtrlPoint[0].set(0.705, 0.000,  0.0124);
+	frame(5)->m_CtrlPoint[1].set(0.705, 0.010,  0.0118);
+	frame(5)->m_CtrlPoint[2].set(0.705, 0.012, -0.0015);
+	frame(5)->m_CtrlPoint[3].set(0.705, 0.010, -0.0116);
+	frame(5)->m_CtrlPoint[4].set(0.705, 0.000, -0.012);
 
-	frame(6)->m_CtrlPoint[0].Set(0.719, 0.00,  0.0);
-	frame(6)->m_CtrlPoint[1].Set(0.719, 0.00,  0.0);
-	frame(6)->m_CtrlPoint[2].Set(0.719, 0.00,  0.0);
-	frame(6)->m_CtrlPoint[3].Set(0.719, 0.00, -0.0);
-	frame(6)->m_CtrlPoint[4].Set(0.719, 0.00, -0.0);
+	frame(6)->m_CtrlPoint[0].set(0.719, 0.00,  0.0);
+	frame(6)->m_CtrlPoint[1].set(0.719, 0.00,  0.0);
+	frame(6)->m_CtrlPoint[2].set(0.719, 0.00,  0.0);
+	frame(6)->m_CtrlPoint[3].set(0.719, 0.00, -0.0);
+	frame(6)->m_CtrlPoint[4].set(0.719, 0.00, -0.0);
 
 
 	setNURBSKnots();
@@ -176,8 +176,8 @@ void Body::computeAero(double *Cp, double &XCP, double &YCP, double &ZCP,
 
 
 	//   Define wind axis
-	WindNormal.Set(   -sina, 0.0, cosa);
-	WindDirection.Set( cosa, 0.0, sina);
+	WindNormal.set(   -sina, 0.0, cosa);
+	WindDirection.set( cosa, 0.0, sina);
 
 	for (p=0; p<m_NElements; p++)
 	{
@@ -190,7 +190,7 @@ void Body::computeAero(double *Cp, double &XCP, double &YCP, double &ZCP,
 		YCP   += m_pBodyPanel[p].CollPt.y * PanelLift;
         ZCP   += m_pBodyPanel[p].CollPt.z * PanelLift;
 
-		LeverArm.Set(m_pBodyPanel[p].CollPt.x - CoG.x, m_pBodyPanel[p].CollPt.y, m_pBodyPanel[p].CollPt.z-CoG.z);
+		LeverArm.set(m_pBodyPanel[p].CollPt.x - CoG.x, m_pBodyPanel[p].CollPt.y, m_pBodyPanel[p].CollPt.z-CoG.z);
 		GeomMoment = LeverArm * PanelForce; // N.m/q
 
 		GCm  += GeomMoment.y;
@@ -220,7 +220,7 @@ void Body::duplicate(Body *pBody)
 	for(int i=0; i<pBody->frameSize(); i++)
 	{
 		m_SplineSurface.m_pFrame.append(new Frame);
-		m_SplineSurface.m_pFrame[i]->CopyFrame(pBody->m_SplineSurface.m_pFrame[i]);
+		m_SplineSurface.m_pFrame[i]->copyFrame(pBody->m_SplineSurface.m_pFrame[i]);
 		m_xPanels.append(pBody->m_xPanels.at(i));
 	}
 	setNURBSKnots();
@@ -468,7 +468,7 @@ double Body::getv(double u, CVector r, bool bRight)
 
 	sine = 10000.0;
 	iter = 0;
-	r.Normalize();
+	r.normalize();
 	v1 = 0.0; v2 = 1.0;
 
 	while(qAbs(sine)>1.0e-4 && iter<200)
@@ -476,7 +476,7 @@ double Body::getv(double u, CVector r, bool bRight)
 		v=(v1+v2)/2.0;
 		t_R = Point(u, v, bRight);
 		t_R.x = 0.0;
-		t_R.Normalize();//t_R is the unit radial vector for u,v
+		t_R.normalize();//t_R is the unit radial vector for u,v
 
 		sine = (r.y*t_R.z - r.z*t_R.y);
 
@@ -618,13 +618,13 @@ int Body::InsertPoint(CVector Real)
 	int i, n;
 
 
-	n = activeFrame()->InsertPoint(Real, 3);
+	n = activeFrame()->insertPoint(Real, 3);
 	for (i=0; i<frameSize(); i++)
 	{
 		Frame *pFrame = m_SplineSurface.m_pFrame[i];
 		if(pFrame != activeFrame())
 		{
-			pFrame->InsertPoint(n);
+			pFrame->insertPoint(n);
 		}
 	}
 
@@ -645,12 +645,12 @@ int Body::insertFrameBefore(int iFrame)
 	Frame *pFrame = new Frame(sideLineCount());
 	if(iFrame==0)
 	{
-		pFrame->SetuPosition(frame(0)->position().x-0.1);
+		pFrame->setuPosition(frame(0)->position().x-0.1);
 		m_SplineSurface.m_pFrame.prepend(pFrame);
 	}
 	else
 	{
-		pFrame->SetuPosition((frame(iFrame)->position().x+frame(iFrame-1)->position().x)/2.0);
+		pFrame->setuPosition((frame(iFrame)->position().x+frame(iFrame-1)->position().x)/2.0);
 
 		int n = iFrame;
 		m_SplineSurface.m_pFrame.insert(n, pFrame);
@@ -679,12 +679,12 @@ int Body::insertFrameAfter(int iFrame)
 	Frame *pFrame = new Frame(sideLineCount());
 	if(iFrame==frameSize()-1)
 	{
-		pFrame->SetuPosition(frame(iFrame)->position().x+0.1);
+		pFrame->setuPosition(frame(iFrame)->position().x+0.1);
 		m_SplineSurface.m_pFrame.append(pFrame);
 	}
 	else
 	{
-		pFrame->SetuPosition((frame(iFrame)->position().x+frame(iFrame+1)->position().x)/2.0);
+		pFrame->setuPosition((frame(iFrame)->position().x+frame(iFrame+1)->position().x)/2.0);
 
 		int n = iFrame+1;
 		m_SplineSurface.m_pFrame.insert(n, pFrame);
@@ -719,9 +719,9 @@ int Body::insertFrame(CVector Real)
 		m_SplineSurface.m_pFrame.prepend(new Frame(sideLineCount()));
 		for (k=0; k<sideLineCount(); k++)
 		{
-			m_SplineSurface.m_pFrame.first()->m_CtrlPoint[k].Set(Real.x,0.0,Real.z);
+			m_SplineSurface.m_pFrame.first()->m_CtrlPoint[k].set(Real.x,0.0,Real.z);
 		}
-		m_SplineSurface.m_pFrame.first()->SetuPosition(Real.x);
+		m_SplineSurface.m_pFrame.first()->setuPosition(Real.x);
 	}
 	else if(Real.x>m_SplineSurface.m_pFrame.last()->m_Position.x)
 	{
@@ -729,9 +729,9 @@ int Body::insertFrame(CVector Real)
 		
 		for (k=0; k<sideLineCount(); k++)
 		{
-			m_SplineSurface.m_pFrame.last()->m_CtrlPoint[k].Set(0.0,0.0,Real.z);
+			m_SplineSurface.m_pFrame.last()->m_CtrlPoint[k].set(0.0,0.0,Real.z);
 		}
-		m_SplineSurface.m_pFrame.last()->SetuPosition(Real.x);
+		m_SplineSurface.m_pFrame.last()->setuPosition(Real.x);
 	}
 	else
 	{
@@ -753,7 +753,7 @@ int Body::insertFrame(CVector Real)
 		}
 		if(n+1<frameSize())
 		{
-			m_SplineSurface.m_pFrame[n+1]->SetuPosition(Real.x);
+			m_SplineSurface.m_pFrame[n+1]->setuPosition(Real.x);
 			double trans = Real.z - (m_SplineSurface.m_pFrame[n+1]->m_CtrlPoint[0].z + m_SplineSurface.m_pFrame[n+1]->m_CtrlPoint.last().z)/2.0;
 			for (k=0; k<sideLineCount(); k++)
 			{
@@ -810,8 +810,8 @@ bool Body::intersectNURBS(CVector A, CVector B, CVector &I, bool bRight)
 	double dmax = 1.0e-5;
 	dist = 1000.0;//m
 
-	M0.Set(0.0, A.y, A.z);
-	M1.Set(0.0, B.y, B.z);
+	M0.set(0.0, A.y, A.z);
+	M1.set(0.0, B.y, B.z);
 
 	if(M0.VAbs()<M1.VAbs())
 	{
@@ -879,7 +879,7 @@ bool Body::intersectFlatPanels(CVector A, CVector B, CVector &I)
 	bool bIntersect = false;
 
 	U = B-A;
-	U.Normalize();
+	U.normalize();
 
 	for (i=0; i<frameSize()-1; i++)
 	{
@@ -909,7 +909,7 @@ bool Body::intersectFlatPanels(CVector A, CVector B, CVector &I)
 			D2 = LB - TA;
 
 			N = D2 * D1;
-			N.Normalize();
+			N.normalize();
 			
 			r = (C.x-A.x)*N.x + (C.y-A.y)*N.y + (C.z-A.z)*N.z ;
 			s = (U.x*N.x + U.y*N.y + U.z*N.z);
@@ -963,7 +963,7 @@ bool Body::intersectFlatPanels(CVector A, CVector B, CVector &I)
 			D2 = LB - TA;
 
 			N = D2 * D1;
-			N.Normalize();
+			N.normalize();
 			
 			r = (C.x-A.x)*N.x + (C.y-A.y)*N.y + (C.z-A.z)*N.z ;
 			s = (U.x*N.x + U.y*N.y + U.z*N.z);
@@ -1059,7 +1059,7 @@ bool Body::isInNURBSBodyOld(CVector Pt)
 
 	if (u <= 0.0 || u >= 1.0) return false;
 
-	t_r.Set(0.0, Pt.y, Pt.z);
+	t_r.set(0.0, Pt.y, Pt.z);
 
 	bRight = (Pt.y>=0.0);
 
@@ -1151,7 +1151,7 @@ void Body::removeSideLine(int SideLine)
 {
 	for (int i=0; i<m_SplineSurface.m_pFrame.size(); i++)
 	{
-		m_SplineSurface.m_pFrame[i]->RemovePoint(SideLine);
+		m_SplineSurface.m_pFrame[i]->removePoint(SideLine);
 	}
 	setNURBSKnots();
 }
@@ -1219,7 +1219,7 @@ bool Body::serializeBodyWPA(QDataStream &ar, bool bIsStoring)
 		ReadCString(ar, m_BodyName);
 		if(ArchiveFormat>=1003) ReadCString(ar, m_BodyDescription);
 
-		ReadCOLORREF(ar, m_BodyColor);
+		readCOLORREF(ar, m_BodyColor);
 		ar >> k;
 		if(k==1) m_LineType = XFLR5::BODYPANELTYPE;
 		else     m_LineType = XFLR5::BODYSPLINETYPE;
@@ -1257,14 +1257,14 @@ bool Body::serializeBodyWPA(QDataStream &ar, bool bIsStoring)
 		for(k=0; k<nStations; k++)
 		{
 			m_SplineSurface.m_pFrame.append(new Frame);
-			m_SplineSurface.m_pFrame[k]->SerializeFrame(ar, bIsStoring);
+			m_SplineSurface.m_pFrame[k]->serializeFrame(ar, bIsStoring);
 		}
 		//Serialize Bodyline
 		ar >>k;//	ar >> m_NStations; again ?
 
 		for (k=0; k<nStations;k++)
 		{
-			ar >> f; m_SplineSurface.m_pFrame[k]->SetuPosition(f);
+			ar >> f; m_SplineSurface.m_pFrame[k]->setuPosition(f);
 			for(int ic=0; ic<m_SplineSurface.m_pFrame[k]->m_CtrlPoint.size(); ic++)
 			{
 				m_SplineSurface.m_pFrame[k]->m_CtrlPoint[ic].x = f;
@@ -1359,7 +1359,7 @@ bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
 		{
 			ar << m_xPanels[k];
 			ar << framePosition(k);
-			m_SplineSurface.m_pFrame[k]->SerializeFrame(ar, bIsStoring);
+			m_SplineSurface.m_pFrame[k]->serializeFrame(ar, bIsStoring);
 		}
 
 		ar << m_VolumeMass;
@@ -1372,8 +1372,8 @@ bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
 		}
 
 		// space allocation for the future storage of more data, without need to change the format
-		for (int i=0; i<20; i++) ar << i;
-		for (int i=0; i<50; i++) ar << (double)i;
+		for (int i=0; i<20; i++) ar << 0;
+		for (int i=0; i<50; i++) ar << (double)0.0;
 	}
 	else
 	{
@@ -1411,13 +1411,13 @@ bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
 			m_xPanels.append(p);
 
 			ar >> dble;
-			m_SplineSurface.m_pFrame[k]->SetuPosition(dble);
+			m_SplineSurface.m_pFrame[k]->setuPosition(dble);
 			for(int ic=0; ic<m_SplineSurface.m_pFrame[k]->m_CtrlPoint.size(); ic++)
 			{
 				m_SplineSurface.m_pFrame[k]->m_CtrlPoint[ic].x = dble;
 			}
 
-			m_SplineSurface.m_pFrame[k]->SerializeFrame(ar, bIsStoring);
+			m_SplineSurface.m_pFrame[k]->serializeFrame(ar, bIsStoring);
 		}
 
 
@@ -1608,7 +1608,7 @@ void Body::computeBodyAxisInertia()
 	}
 
 	if(m_TotalMass>0) m_CoG = m_CoG/m_TotalMass;
-	else              m_CoG.Set(0.0,0.0,0.0);
+	else              m_CoG.set(0.0,0.0,0.0);
 
 	// The CoG position is now available, so calculate the inertia w.r.t the CoG
 	// using Huyghens theorem
@@ -1646,7 +1646,7 @@ void Body::computeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, do
 	double BodyArea = 0.0;
 	double SectionArea;
 	double xpos, dl;
-	CoG.Set(0.0, 0.0, 0.0);
+	CoG.set(0.0, 0.0, 0.0);
 	CoGIxx = CoGIyy = CoGIzz = CoGIxz = 0.0;
 
 	if(m_LineType==XFLR5::BODYPANELTYPE)
@@ -1730,7 +1730,7 @@ void Body::computeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, do
 			}
 		}
 		if(m_VolumeMass>PRECISION) CoG *= 1.0/ m_VolumeMass;
-		else                       CoG.Set(0.0, 0.0, 0.0);
+		else                       CoG.set(0.0, 0.0, 0.0);
 
 		//Then Get Inertias
 		// we could do it one calculation, for CG and inertia, by using Hyghens/steiner theorem
@@ -1812,7 +1812,7 @@ void Body::computeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, do
 			CoG.z += SectionArea*rho * Pt.z;
 		}
 		if(m_VolumeMass>PRECISION) CoG *= 1.0/ m_VolumeMass;
-		else                       CoG.Set(0.0, 0.0, 0.0);
+		else                       CoG.set(0.0, 0.0, 0.0);
 
 		// Next evaluate inertia, assuming each section is a point mass
 		xpos = framePosition(0);

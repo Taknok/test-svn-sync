@@ -34,10 +34,11 @@ Polar* Polar::s_pCurPolar = NULL;
 */
 Polar::Polar()
 {
-	m_bIsVisible  = true;
-	m_bShowPoints = false;
-	m_Style = 0;// = PS_SOLID
-	m_Width = 1;
+	lineStyle().m_bIsVisible = true;
+	lineStyle().m_PointStyle = 0;
+	lineStyle().m_Style = 0;// = PS_SOLID
+	lineStyle().m_Width = 1;
+	lineStyle().m_Color= randomColor();
 	m_ASpec = 0.0;
 	m_PolarType = XFLR5::FIXEDSPEEDPOLAR;
 	m_ReType = 1;
@@ -49,7 +50,6 @@ Polar::Polar()
 	m_XBot     = 1.0;
 	m_FoilName = "";
 	m_PlrName = "";
-	m_Color= randomColor();
 }
 
 
@@ -60,7 +60,7 @@ Polar::Polar()
  * @param FileType TXT if the data is separated by spaces, CSV for a comma separator
  * @param bDataOnly true if the analysis parameters should not be output
  */
-void Polar::ExportPolar(QTextStream &out, XFLR5::enumTextFileType FileType, bool bDataOnly)
+void Polar::exportPolar(QTextStream &out, XFLR5::enumTextFileType FileType, bool bDataOnly)
 {
 	QString Header, strong;
 	int j;
@@ -177,7 +177,7 @@ void Polar::ExportPolar(QTextStream &out, XFLR5::enumTextFileType FileType, bool
 /**
  * Remove all data from the polar object
  */
-void Polar::ResetPolar()
+void Polar::resetPolar()
 {
     m_Alpha.clear();
     m_Cl.clear();
@@ -205,7 +205,7 @@ void Polar::ResetPolar()
  *
  * @param *pPOpPoint a pointer to the foil's operating point from which the data is to be extracted
  */
-void Polar::AddOpPointData(OpPoint *pOpPoint)
+void Polar::addOpPointData(OpPoint *pOpPoint)
 {
 	if(!pOpPoint->m_bViscResults) return;
 
@@ -221,13 +221,13 @@ void Polar::AddOpPointData(OpPoint *pOpPoint)
 			{
 				if (qAbs(pOpPoint->Alpha-m_Alpha[i]) < 0.001)
 				{
-					ReplaceOppDataAt(i, pOpPoint);
+					replaceOppDataAt(i, pOpPoint);
 					bInserted = true;
 					break;
 				}
 				else if (pOpPoint->Alpha < m_Alpha[i])
 				{
-					InsertOppDataAt(i, pOpPoint);
+					insertOppDataAt(i, pOpPoint);
 					bInserted = true;
 					break;
 				}
@@ -238,14 +238,14 @@ void Polar::AddOpPointData(OpPoint *pOpPoint)
 				if (qAbs(pOpPoint->Reynolds - m_Re[i]) < 0.1)
 				{
 					// then erase former result
-					ReplaceOppDataAt(i, pOpPoint);
+					replaceOppDataAt(i, pOpPoint);
 					bInserted = true;
 					break;
 				}
 				else if (pOpPoint->Reynolds < m_Re[i])
 				{
 					// sort by crescending speed
-					InsertOppDataAt(i, pOpPoint);
+					insertOppDataAt(i, pOpPoint);
 					bInserted = true;
 					break;
 				}
@@ -258,12 +258,12 @@ void Polar::AddOpPointData(OpPoint *pOpPoint)
 	{
 		// data is appended at the end
 		int size = m_Alpha.size();
-		InsertOppDataAt(size, pOpPoint);
+		insertOppDataAt(size, pOpPoint);
 	}
 }
 
 
-void Polar::ReplaceOppDataAt(int pos, OpPoint *pOpp)
+void Polar::replaceOppDataAt(int pos, OpPoint *pOpp)
 {
 	if(pos<0 || pos>= m_Alpha.size()) return;
 
@@ -299,7 +299,7 @@ void Polar::ReplaceOppDataAt(int pos, OpPoint *pOpp)
 }
 
 
-void Polar::InsertOppDataAt(int i, OpPoint *pOpp)
+void Polar::insertOppDataAt(int i, OpPoint *pOpp)
 {
 	m_Alpha.insert(i, pOpp->Alpha);
 	m_Cd.insert(i, pOpp->Cd);
@@ -346,7 +346,7 @@ void Polar::InsertOppDataAt(int i, OpPoint *pOpp)
  *
  * @param *ptrXFoil a pointer to the instance of the XFoil class where the calculation has been performed.
  */
-void Polar::AddXFoilData(void* ptrXFoil)
+void Polar::addXFoilData(void* ptrXFoil)
 {
 	XFoil *pXFoil = (XFoil*)ptrXFoil;
 
@@ -364,7 +364,7 @@ void Polar::AddXFoilData(void* ptrXFoil)
 	pOpp->Reynolds = pXFoil->reinf1;
 	pOpp->m_XCP    = pXFoil->xcp;
 
-	AddOpPointData(pOpp);
+	addOpPointData(pOpp);
 	delete pOpp;
 }
 
@@ -377,7 +377,7 @@ void Polar::AddXFoilData(void* ptrXFoil)
  * If not, the data is inserted for this index.
  *
  */
-void Polar::AddPoint(double Alpha, double Cd, double Cdp, double Cl, double Cm, double Xtr1,
+void Polar::addPoint(double Alpha, double Cd, double Cdp, double Cl, double Cm, double Xtr1,
 					 double Xtr2, double HMom, double Cpmn, double Reynolds, double XCp)
 {
 	OpPoint *pOpp = new OpPoint;
@@ -394,7 +394,7 @@ void Polar::AddPoint(double Alpha, double Cd, double Cdp, double Cl, double Cm, 
 	pOpp->Reynolds = Reynolds;
 	pOpp->m_XCP    = XCp;
 
-	AddOpPointData(pOpp);
+	addOpPointData(pOpp);
 	delete pOpp;
 
 }
@@ -404,13 +404,13 @@ void Polar::AddPoint(double Alpha, double Cd, double Cdp, double Cl, double Cm, 
  * Copies the polar's data from an existing polar
  * @param pPolar a pointer to the instance of the reference Polar object from which the data should be copied
  */
-void Polar::CopyPolar(Polar *pPolar)
+void Polar::copyPolar(Polar *pPolar)
 {
-	CopySpecification(pPolar);
+	copySpecification(pPolar);
 
 	int size  = m_Alpha.size();
 	for(int i=size-1; i>=0; i--)
-		Remove(i);
+		removePoint(i);
 
 	size  = pPolar->m_Alpha.size();
 	for(int i=0; i<size; i++)
@@ -438,7 +438,7 @@ void Polar::CopyPolar(Polar *pPolar)
  * Copies the polar's data from an existing polar
  * @param pPolar a pointer to the instance of the reference Polar object from which the data should be copied
  */
-void Polar::CopySpecification(Polar *pPolar)
+void Polar::copySpecification(Polar *pPolar)
 {
 	m_PolarType = pPolar->polarType();
 	m_ReType    = pPolar->m_ReType;
@@ -458,7 +458,7 @@ void Polar::CopySpecification(Polar *pPolar)
  * @param bIsStoring true if saving the data, false if loading
  * @return true if the operation was successful, false otherwise
  */
-bool Polar::Serialize(QDataStream &ar, bool bIsStoring)
+bool Polar::serialize(QDataStream &ar, bool bIsStoring)
 {
 	int i, j, n, l, k;
 	int ArchiveFormat;// identifies the format of the file
@@ -486,10 +486,11 @@ bool Polar::Serialize(QDataStream &ar, bool bIsStoring)
         ar << (float)m_ASpec;
         ar << n << (float)m_ACrit;
         ar << (float)m_XTop << (float)m_XBot;
-		WriteCOLORREF(ar,m_Color);
-		ar << m_Style << m_Width;
-		if (m_bIsVisible)  ar<<1; else ar<<0;
-		if (m_bShowPoints) ar<<1; else ar<<0;
+		WriteCOLORREF(ar, lineStyle().m_Color);
+
+		ar << lineStyle().m_Style << lineStyle().m_Width;
+		if (lineStyle().m_bIsVisible)  ar<<1; else ar<<0;
+		ar<<lineStyle().m_PointStyle;
 		
         for (i=0; i< m_Alpha.size(); i++){
             ar << (float)m_Alpha[i] << (float)m_Cd[i] ;
@@ -553,9 +554,9 @@ bool Polar::Serialize(QDataStream &ar, bool bIsStoring)
 		ar >> f; m_XTop =f;
 		ar >> f; m_XBot =f;
 
-		ReadCOLORREF(ar, m_Color);
+		readCOLORREF(ar, lineStyle().m_Color);
 
-		ar >> m_Style >> m_Width;
+		ar >> lineStyle().m_Style >> lineStyle().m_Width;
 
 		if(ArchiveFormat>=1002)
 		{
@@ -564,15 +565,10 @@ bool Polar::Serialize(QDataStream &ar, bool bIsStoring)
             {
 				return false;
 			}
-			if (l) m_bIsVisible =true; else m_bIsVisible = false;
+			if (l) lineStyle().m_bIsVisible =true; else lineStyle().m_bIsVisible = false;
 		}
 
-		ar >> l;
-		if(l!=0 && l!=1 )
-		{
-			return false;
-		}
-		if (l) m_bShowPoints =true; else m_bShowPoints = false;
+		ar >> l;  lineStyle().m_PointStyle =l;
 			
 		bool bExists;
 		for (i=0; i< n; i++)
@@ -612,7 +608,7 @@ bool Polar::Serialize(QDataStream &ar, bool bIsStoring)
 			}
 			if(!bExists)
 			{
-				AddPoint(Alpha, Cd, Cdp, Cl, Cm, XTr1, XTr2, HMom, Cpmn, Re, XCp);
+				addPoint(Alpha, Cd, Cdp, Cl, Cm, XTr1, XTr2, HMom, Cpmn, Re, XCp);
 			}
 		}
 		if(ArchiveFormat>=1003)
@@ -629,9 +625,10 @@ bool Polar::Serialize(QDataStream &ar, bool bIsStoring)
  * @param bIsStoring true if saving the data, false if loading
  * @return true if the operation was successful, false otherwise
  */
-bool Polar::SerializePolarXFL(QDataStream &ar, bool bIsStoring)
+bool Polar::serializePolarXFL(QDataStream &ar, bool bIsStoring)
 {
 	double dble;
+	bool boolean;
 	int i, k, n;
 	int ArchiveFormat;// identifies the format of the file
 
@@ -642,9 +639,9 @@ bool Polar::SerializePolarXFL(QDataStream &ar, bool bIsStoring)
 		ar << m_FoilName;
 		ar << m_PlrName;
 
-		ar << m_Style << m_Width;
-		ar << m_Color;
-		ar << m_bIsVisible << m_bShowPoints;
+		ar << lineStyle().m_Style << lineStyle().m_Width;
+		ar << lineStyle().m_Color;
+		ar << lineStyle().m_bIsVisible << false;
 
 
 		if(m_PolarType==XFLR5::FIXEDSPEEDPOLAR)       ar<<1;
@@ -670,9 +667,10 @@ bool Polar::SerializePolarXFL(QDataStream &ar, bool bIsStoring)
 			ar << (float)m_XCp[i];
 		}
 
+		ar << lineStyle().m_PointStyle;
 		// space allocation for the future storage of more data, without need to change the format
-		for (int i=0; i<20; i++) ar << i;
-		for (int i=0; i<50; i++) ar << (double)i;
+		for (int i=0; i<19; i++) ar << 0;
+		for (int i=0; i<50; i++) ar << 0.0;
 
 		return true;
 	}
@@ -687,9 +685,9 @@ bool Polar::SerializePolarXFL(QDataStream &ar, bool bIsStoring)
 		ar >> m_FoilName;
 		ar >> m_PlrName;
 
-		ar >> m_Style >> m_Width;
-		ar >> m_Color;
-		ar >> m_bIsVisible >> m_bShowPoints;
+		ar >> polarStyle() >> polarWidth();
+		ar >> polarColor();
+		ar >> lineStyle().m_bIsVisible >> boolean;
 
 
 		ar >> n;
@@ -709,11 +707,13 @@ bool Polar::SerializePolarXFL(QDataStream &ar, bool bIsStoring)
 		for (i=0; i< n; i++)
 		{
 			ar >> Alpha >> Cd >> Cdp >> Cl >> Cm >> XTr1 >> XTr2 >> HMom >> Cpmn >> Re >> XCp;
-			AddPoint(Alpha, Cd, Cdp, Cl, Cm, XTr1, XTr2, HMom, Cpmn, Re, XCp);
+			addPoint(Alpha, Cd, Cdp, Cl, Cm, XTr1, XTr2, HMom, Cpmn, Re, XCp);
 		}
 
+		ar >> lineStyle().m_PointStyle;
+
 		// space allocation
-		for (int i=0; i<20; i++) ar >> k;
+		for (int i=0; i<19; i++) ar >> k;
 		for (int i=0; i<50; i++) ar >> dble;
 	}
 	return true;
@@ -725,7 +725,7 @@ bool Polar::SerializePolarXFL(QDataStream &ar, bool bIsStoring)
  * Removes the data for the point at a given index of the data arrays
  * @param i the index of the point to be removed
  **/
-void Polar::Remove(int i)
+void Polar::removePoint(int i)
 {
     m_Alpha.removeAt(i);
     m_Cl.removeAt(i);
@@ -750,7 +750,7 @@ void Polar::Remove(int i)
 *@param &amin the miminum aoa
 *@param &amax the maximum aoa
 */
-void Polar::GetAlphaLimits(double &amin, double &amax)
+void Polar::getAlphaLimits(double &amin, double &amax)
 {
     if(!m_Alpha.size()){
 		amin = 0.0;
@@ -769,7 +769,7 @@ void Polar::GetAlphaLimits(double &amin, double &amax)
 *@param &Clmin the miminum lift coefficient
 *@param &Clmax the maximum lift coefficient
 */
-void Polar::GetClLimits(double &Clmin, double &Clmax)
+void Polar::getClLimits(double &Clmin, double &Clmax)
 {
     if(!m_Cl.size())
     {
@@ -796,7 +796,7 @@ void Polar::GetClLimits(double &Clmin, double &Clmax)
 * If no such pair is found, the method returns 0.
 *@return Cm0
 */
-double Polar::GetCm0()
+double Polar::getCm0()
 {
     int i;
 	double Clmin =  1000.0;
@@ -830,7 +830,7 @@ double Polar::GetCm0()
 * If no such pair is found, the method returns 0.
 *@return Cm0
 */
-double Polar::GetZeroLiftAngle()
+double Polar::getZeroLiftAngle()
 {
 	double Clmin =  1000.0;
 	double Clmax = -1000.0;
@@ -862,7 +862,7 @@ double Polar::GetZeroLiftAngle()
 * @param Alpha0 the zero-lift angle, i.e.such that Cl = 0, in degrees
 * @param slope the slope of the curve Cl=f(aoa), in units 1/°
 */
-void Polar::GetLinearizedCl(double &Alpha0, double &slope)
+void Polar::getLinearizedCl(double &Alpha0, double &slope)
 {
     int n = (int)m_Cl.size();
 
@@ -908,7 +908,7 @@ void Polar::GetLinearizedCl(double &Alpha0, double &slope)
  * @param &PolarProperties the reference of the QString object to be filled with the description
  * @param bData true if the analysis data should be appended to the string
  */
-void Polar::GetPolarProperties(QString &PolarProperties, bool bData)
+void Polar::getPolarProperties(QString &PolarProperties, bool bData)
 {
 	QString strong;
 	PolarProperties = m_PlrName +"\n\n";
@@ -970,7 +970,7 @@ void Polar::GetPolarProperties(QString &PolarProperties, bool bData)
 	QTextStream out;
 	strong.clear();
 	out.setString(&strong);
-	ExportPolar(out, Settings::s_ExportFileType, true);
+	exportPolar(out, Settings::s_ExportFileType, true);
 	PolarProperties += "\n"+strong;
 }
 

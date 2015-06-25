@@ -63,42 +63,51 @@ public:
 	StabPolarDlg(QWidget *pParent=NULL);
 	~StabPolarDlg();
 
-	void InitDialog(Plane *pPlane, WPolar *pWPolar=NULL);
+	void initDialog(Plane *pPlane, WPolar *pWPolar=NULL);
 
 private:
-	void SetupLayout();
-	void Connect();
-	
+	void setupLayout();
+	void connectSignals();
+	void resizeColumns();
+	void keyPressEvent(QKeyEvent *event);
+
 
 private slots:
-	void OnOK();
-	void OnAutoName();
-	void OnWPolarName();
-	void OnArea();
-	void OnEditingFinished();
-	void OnViscous();
-	void OnIgnoreBodyPanels();
-	void OnUnit();
-	void OnCellChanged(QWidget *);
-	void OnMethod();
-	void OnAutoInertia();
-	void OnAeroData();
+	void onOK();
+	void onAutoInertia(bool isChecked);
+	void onAutoName();
+	void onWPolarName();
+	void onArea();
+	void onEditingFinished();
+	void onViscous();
+	void onIgnoreBodyPanels();
+	void onUnit();
+	void onAngleCellChanged(QWidget *);
+	void onInertiaCellChanged(QWidget *);
+	void onMethod();
+	void onAeroData();
+	void onTabChanged(int index);
+
+private:
+	void enableControls();
+	void fillControlList();
+	void fillInertiaPage();
+	void readCtrlData();
+	void readInertiaData();
+	void readParams();
+	void setDensity();
+	void setWPolarName();
+	void setViscous();
 
 
 private:
-	void keyPressEvent(QKeyEvent *event);
-	void EnableControls();
-	void FillControlList();
-	void FillUFOInertia();
-	void ReadCtrlData();
-	void ReadParams();
-	void SetDensity();
-	void SetWPolarName();
-	void SetViscous();
 
-	QTableView *m_pctrlControlTable;
-	CtrlTableModel *m_pControlModel;
-	CtrlTableDelegate *m_pCtrlDelegate;
+	QTableView *m_pInertiaControlTable;
+	CtrlTableModel *m_pInertiaControlModel;
+	QTabWidget *m_pTabWidget;
+
+	QTableView *m_pAngleControlTable;
+	CtrlTableModel *m_pAngleControlModel;
 
 	DoubleEdit *m_pctrlDensity;
 	DoubleEdit *m_pctrlViscosity;
@@ -108,8 +117,8 @@ private:
 
 	QCheckBox *m_pctrlViscous;
 	QCheckBox *m_pctrlAutoName;
-	QCheckBox *m_pctrlPlaneInertia;
 	QCheckBox *m_pctrlIgnoreBodyPanels;
+	QCheckBox *m_pctrlAutoPlaneInertia;
 
 	QRadioButton *m_pctrlUnit1, *m_pctrlUnit2;
 	QRadioButton *m_pctrlArea1, *m_pctrlArea2, *m_pctrlArea3;
@@ -123,10 +132,7 @@ private:
 	QLabel *m_pctrlRho, *m_pctrlNu;
 	QLabel *m_pctrlDensityUnit, *m_pctrlViscosityUnit;
 
-	DoubleEdit *m_pctrlMass, *m_pctrlCoGx,*m_pctrlCoGz, *m_pctrlIxx, *m_pctrlIyy, *m_pctrlIzz, *m_pctrlIxz;
-
-
-	int  *m_precision;
+	int  *m_anglePrecision, *m_massPrecision;
 
 	QPushButton *OKButton, *CancelButton;
 

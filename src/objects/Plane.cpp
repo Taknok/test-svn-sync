@@ -85,9 +85,9 @@ Plane::Plane()
 
 	for(int iw=0; iw<MAXWINGS; iw++) m_WingTiltAngle[iw] = 0.0;
 	
-	m_BodyPos.Set(0.0, 0.0, 0.0);
+	m_BodyPos.set(0.0, 0.0, 0.0);
 
-	m_CoG.Set(0.0,0.0,0.0);
+	m_CoG.set(0.0,0.0,0.0);
 	m_CoGIxx = m_CoGIyy = m_CoGIzz = m_CoGIxz = 0.0;
 //	m_VolumeMass = 0.0;
 	m_TotalMass = 0.0;
@@ -100,14 +100,14 @@ Plane::Plane()
 	m_bDoubleSymFin = false;
 	m_bBiplane      = false;
 
-	ClearPointMasses();
+	clearPointMasses();
 
 	m_PlaneName  = QObject::tr("Plane Name");
 }
 
 Plane::~Plane()
 {
-	ClearPointMasses();
+	clearPointMasses();
 	if(m_pBody) delete m_pBody;
 }
 
@@ -122,7 +122,7 @@ Plane::~Plane()
  * @param  &CoGIzz zz axis component of the inertia tensor, calculated at the Plane's CoG
  * @param  &CoGIxz xz axis component of the inertia tensor, calculated at the Plane's CoG
 */
-void Plane::ComputeVolumeInertia(double &Mass, CVector & CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz)
+void Plane::computeVolumeInertia(double &Mass, CVector & CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz)
 {
 	double Ixx, Iyy, Izz, Ixz, PlaneMass;
 	CVector Pt;
@@ -136,7 +136,7 @@ void Plane::ComputeVolumeInertia(double &Mass, CVector & CoG, double &CoGIxx, do
 	if(m_bStab)    pWing[2] = m_Wing+2;
 	if(m_bFin)     pWing[3] = m_Wing+3;
 
-	CoG.Set(0.0, 0.0, 0.0);
+	CoG.set(0.0, 0.0, 0.0);
 	CoGIxx = CoGIyy = CoGIzz = CoGIxz = 0.0;
 	PlaneMass = 0.0;
 
@@ -172,7 +172,7 @@ void Plane::ComputeVolumeInertia(double &Mass, CVector & CoG, double &CoGIxx, do
 	}
 
 	if(PlaneMass>0.0) CoG *= 1.0/ PlaneMass;
-	else              CoG.Set(0.0, 0.0, 0.0);
+	else              CoG.set(0.0, 0.0, 0.0);
 
 
 	// Deduce inertia tensor in plane CoG from Huyghens/Steiner theorem
@@ -225,7 +225,7 @@ void Plane::computeBodyAxisInertia()
 	if(m_bStab)    pWing[2] = m_Wing+2; else pWing[2] = NULL;
 	if(m_bFin)     pWing[3] = m_Wing+3; else pWing[3] = NULL;
 
-	ComputeVolumeInertia(VolumeMass, VolumeCoG, Ixx, Iyy, Izz, Ixz);
+	computeVolumeInertia(VolumeMass, VolumeCoG, Ixx, Iyy, Izz, Ixz);
 	m_TotalMass = VolumeMass;
 
 	m_CoG = VolumeCoG *VolumeMass;
@@ -258,7 +258,7 @@ void Plane::computeBodyAxisInertia()
 		}
 	}
 	if(m_TotalMass>PRECISION) m_CoG = m_CoG/m_TotalMass;
-	else                      m_CoG.Set(0.0,0.0,0.0);
+	else                      m_CoG.set(0.0,0.0,0.0);
 
 
 	// The CoG position is now available, so calculate the inertia w.r.t the Total CoG, including point masses
@@ -312,7 +312,7 @@ void Plane::computeBodyAxisInertia()
 /**
 * Calculates the Plane's tail volume = lever_arm_elev x Area_Elev / MAC_Wing / Area_Wing 
 */
-void Plane::ComputePlane(void)
+void Plane::computePlane(void)
 {
 	int i;
 	if(m_bStab)
@@ -342,11 +342,11 @@ void Plane::ComputePlane(void)
 * Copies the data from an existing Plane
 *@param pPlane a pointer to the instance of the source Plane object
 */
-void Plane::Duplicate(Plane *pPlane)
+void Plane::duplicate(Plane *pPlane)
 {
 	m_PlaneName        = pPlane->m_PlaneName;
 	m_PlaneDescription = pPlane->m_PlaneDescription;
-	RenameWings();
+	renameWings();
 
 	m_bFin          = pPlane->m_bFin;
 	m_bSymFin       = pPlane->m_bSymFin;
@@ -364,7 +364,7 @@ void Plane::Duplicate(Plane *pPlane)
 		m_Wing[iw].Duplicate(pPlane->m_Wing+iw);
 	}
 
-	m_BodyPos.Copy(pPlane->m_BodyPos);
+	m_BodyPos.copy(pPlane->m_BodyPos);
 
 	m_TotalMass  = pPlane->m_TotalMass;
 	m_CoG = pPlane->m_CoG;
@@ -373,7 +373,7 @@ void Plane::Duplicate(Plane *pPlane)
 	m_CoGIzz = pPlane->m_CoGIzz;
 	m_CoGIxz = pPlane->m_CoGIxz;
 
-	ClearPointMasses();
+	clearPointMasses();
 	for(int i=0; i<pPlane->m_PointMass.size();i++)
 	{
 		m_PointMass.append(new PointMass(pPlane->m_PointMass[i]));
@@ -412,7 +412,7 @@ void Plane::setWings(bool bWing2, bool bStab, bool bFin)
 * Returns the plane's tail volume
 * @return the plane's tail volume
 */
-double Plane::TailVolume()
+double Plane::tailVolume()
 {
 	if(m_bStab) return m_TailVolume;
 	else        return 0.0;
@@ -422,7 +422,7 @@ double Plane::TailVolume()
 * Returns the Plane's total mass, i.e. the sum of Volume and Point masses of all its components.
 * @return the Plane's total mass.
 */
-double Plane::TotalMass()
+double Plane::totalMass()
 {
 	static double Mass;
 	
@@ -446,7 +446,7 @@ double Plane::TotalMass()
  * @param bIsStoring true if saving the data, false if loading
  * @return true if the operation was successful, false otherwise
  */
-bool Plane::SerializePlane(QDataStream &ar, bool bIsStoring)
+bool Plane::serializePlane(QDataStream &ar, bool bIsStoring)
 {
 	int nMass;
 	float f,g,h;
@@ -538,9 +538,9 @@ bool Plane::SerializePlane(QDataStream &ar, bool bIsStoring)
 		if(ArchiveFormat<1004)
 		{
 			QColor cr;
-			ReadCOLORREF(ar,cr);
-			ReadCOLORREF(ar,cr);
-			ReadCOLORREF(ar,cr);
+			readCOLORREF(ar,cr);
+			readCOLORREF(ar,cr);
+			readCOLORREF(ar,cr);
 		}
 
 		if(ArchiveFormat<1006)
@@ -588,7 +588,7 @@ bool Plane::SerializePlane(QDataStream &ar, bool bIsStoring)
 				ReadCString(ar, tag[im]);
 			}
 
-			ClearPointMasses();
+			clearPointMasses();
 			PointMass *pPM;
 			for(int im=0; im<nMass; im++)
 			{
@@ -610,7 +610,7 @@ bool Plane::SerializePlane(QDataStream &ar, bool bIsStoring)
 			}
 		}
 
-		ComputePlane();
+		computePlane();
 
 		return true;
 	}
@@ -625,7 +625,7 @@ bool Plane::SerializePlane(QDataStream &ar, bool bIsStoring)
  * @param bIsStoring true if saving the data, false if loading
  * @return true if the operation was successful, false otherwise
  */
-bool Plane::SerializePlaneXFL(QDataStream &ar, bool bIsStoring)
+bool Plane::serializePlaneXFL(QDataStream &ar, bool bIsStoring)
 {
 	double dble, m, px, py, pz;
 	QString str;
@@ -640,10 +640,10 @@ bool Plane::SerializePlaneXFL(QDataStream &ar, bool bIsStoring)
 		ar << m_PlaneName;
 		ar << m_PlaneDescription;
 
-		m_Wing[0].SerializeWingXFL(ar, bIsStoring);
-		m_Wing[1].SerializeWingXFL(ar, bIsStoring);
-		m_Wing[2].SerializeWingXFL(ar, bIsStoring);
-		m_Wing[3].SerializeWingXFL(ar, bIsStoring);
+		m_Wing[0].serializeWingXFL(ar, bIsStoring);
+		m_Wing[1].serializeWingXFL(ar, bIsStoring);
+		m_Wing[2].serializeWingXFL(ar, bIsStoring);
+		m_Wing[3].serializeWingXFL(ar, bIsStoring);
 
 		ar << m_bBiplane<< m_bStab <<m_bFin << m_bDoubleFin << m_bSymFin << m_bDoubleSymFin;
 
@@ -669,8 +669,8 @@ bool Plane::SerializePlaneXFL(QDataStream &ar, bool bIsStoring)
 		}
 
 		// space allocation for the future storage of more data, without need to change the format
-		for (int i=0; i<20; i++) ar << i;
-		for (int i=0; i<50; i++) ar << (double)i;
+		for (int i=0; i<20; i++) ar << 0;
+		for (int i=0; i<50; i++) ar << (double)0.0;
 
 		return true;
 	}
@@ -686,10 +686,10 @@ bool Plane::SerializePlaneXFL(QDataStream &ar, bool bIsStoring)
 		ar >> m_PlaneName;
 		ar >> m_PlaneDescription;
 
-		m_Wing[0].SerializeWingXFL(ar, bIsStoring);
-		m_Wing[1].SerializeWingXFL(ar, bIsStoring);
-		m_Wing[2].SerializeWingXFL(ar, bIsStoring);
-		m_Wing[3].SerializeWingXFL(ar, bIsStoring);
+		m_Wing[0].serializeWingXFL(ar, bIsStoring);
+		m_Wing[1].serializeWingXFL(ar, bIsStoring);
+		m_Wing[2].serializeWingXFL(ar, bIsStoring);
+		m_Wing[3].serializeWingXFL(ar, bIsStoring);
 
 		m_Wing[0].wingType() = XFLR5::MAINWING;
 		m_Wing[1].wingType() = XFLR5::SECONDWING;
@@ -713,7 +713,7 @@ bool Plane::SerializePlaneXFL(QDataStream &ar, bool bIsStoring)
 			m_pBody->serializeBodyXFL(ar, bIsStoring);
 		}
 
-		ClearPointMasses();
+		clearPointMasses();
 		ar >> k;
 		for(i=0; i<k; i++)
 		{
@@ -726,7 +726,7 @@ bool Plane::SerializePlaneXFL(QDataStream &ar, bool bIsStoring)
 		for (int i=0; i<20; i++) ar >> k;
 		for (int i=0; i<50; i++) ar >> dble;
 
-		ComputePlane();
+		computePlane();
 
 		return true;
 	}
@@ -735,7 +735,7 @@ bool Plane::SerializePlaneXFL(QDataStream &ar, bool bIsStoring)
 
 
 /** Destroys the PointMass objects in good order to avoid memory leaks */
-void Plane::ClearPointMasses()
+void Plane::clearPointMasses()
 {
 	for(int ipm=m_PointMass.size()-1; ipm>=0; ipm--)
 	{
@@ -748,7 +748,7 @@ void Plane::ClearPointMasses()
 /**
 * Renames each of the Plane's Wing objects with an automatic name.
 */
-void Plane::RenameWings()
+void Plane::renameWings()
 {
 	m_Wing[0].m_WingName = "Main Wing";
 	m_Wing[1].m_WingName = "Second Wing2";
@@ -764,14 +764,14 @@ void Plane::RenameWings()
 void Plane::setPlaneName(QString planeName)
 {
 	m_PlaneName = planeName;
-	RenameWings();
+	renameWings();
 }
 
 
 /**
 * Creates the Surface objects associated to each of the Plane's Wing objects.
 */
-void Plane::CreateSurfaces()
+void Plane::createSurfaces()
 {
 	m_Wing[0].CreateSurfaces(m_WingLE[0],   0.0, m_WingTiltAngle[0]);
 	if(wing(1)) m_Wing[1].CreateSurfaces(m_WingLE[1],   0.0, m_WingTiltAngle[1]);

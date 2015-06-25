@@ -30,9 +30,11 @@ LineCbBox::LineCbBox(QWidget *pParent)
 	:QComboBox(pParent)
 {
 	setParent(pParent);
-	m_Style = 0;
-	m_Width = 1;
-	m_Color = QColor(255,100,50);
+	m_LineStyle.m_Style = 0;
+	m_LineStyle.m_Width = 1;
+	m_LineStyle.m_Color = QColor(255,100,50);
+	m_LineStyle.m_PointStyle = 0;
+	m_bShowPoints = false;
 
 	QSizePolicy szPolicyExpanding;
 	szPolicyExpanding.setHorizontalPolicy(QSizePolicy::MinimumExpanding);
@@ -51,11 +53,19 @@ QSize LineCbBox::sizeHint() const
 
 
 
-void LineCbBox::SetLine(int const &style, int const &width, QColor const &color)
+void LineCbBox::setLine(int const &style, int const &width, QColor const &color, int const &pointStyle)
 {
-	m_Style = style;
-	m_Width = width;
-	m_Color = color;
+	m_LineStyle.m_Style = style;
+	m_LineStyle.m_Width = width;
+	m_LineStyle.m_Color = color;
+	m_LineStyle.m_PointStyle = pointStyle;
+}
+
+
+
+void LineCbBox::setLine(LineStyle lineStyle)
+{
+	m_LineStyle = lineStyle;
 }
 
 
@@ -79,11 +89,44 @@ void LineCbBox::paintEvent (QPaintEvent *event)
 	painter.setBrush(Qt::NoBrush);
 	painter.setBackgroundMode(Qt::TransparentMode);
 
-	QPen LinePen(m_Color);
-	LinePen.setStyle(getStyle(m_Style));
-	LinePen.setWidth(m_Width);
+	QPen LinePen(m_LineStyle.m_Color);
+	LinePen.setStyle(getStyle(m_LineStyle.m_Style));
+	LinePen.setWidth(m_LineStyle.m_Width);
 	painter.setPen(LinePen);
 	painter.drawLine(r.left()+5, r.height()/2, r.width()-10, r.height()/2);
+
+	if(m_bShowPoints)
+	{
+		switch(m_LineStyle.m_PointStyle)
+		{
+			case 0: break;
+			case 1:
+			{
+				int ptSide = 2;
+				painter.drawEllipse(r.center().x()-ptSide, r.center().y()-ptSide, 2*ptSide, 2*ptSide );
+				break;
+			}
+			case 2:
+			{
+				int ptSide = 4;
+				painter.drawEllipse(r.center().x()-ptSide, r.center().y()-ptSide, 2*ptSide, 2*ptSide );
+				break;
+			}
+			case 3:
+			{
+				int ptSide = 2;
+				painter.drawEllipse(r.center().x()-ptSide, r.center().y()-ptSide, 2*ptSide, 2*ptSide );
+				break;
+			}
+			case 4:
+			{
+				int ptSide = 4;
+				painter.drawRect(r.center().x()-ptSide, r.center().y()-ptSide, 2*ptSide, 2*ptSide );
+				break;
+			}
+			default: break;
+		}
+	}
 
 //	QPen ContourPen(ContourColor);
 //	painter.setPen(ContourPen);

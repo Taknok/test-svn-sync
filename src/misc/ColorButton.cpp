@@ -45,14 +45,14 @@ QSize ColorButton::sizeHint() const
 }
 
 
-void ColorButton::SetColor(QColor const & color)
+void ColorButton::setColor(QColor const & color)
 {
 	m_Color = color;
 	update();
 }
 
 
-QColor &ColorButton::GetColor()
+QColor &ColorButton::color()
 {
 	return m_Color;
 }
@@ -61,7 +61,6 @@ QColor &ColorButton::GetColor()
 void ColorButton::paintEvent ( QPaintEvent * event )
 {
 	QColor paintcolor;
-
 
 	if(isEnabled()) paintcolor = m_Color;
 	else

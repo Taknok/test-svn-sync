@@ -78,7 +78,7 @@ Objects3D::Objects3D()
  * Reserves the memory necessary to all the arrays used in a Panel analysis.
  *@return true if the memory could be allocated, false otherwise.
  */
-bool Objects3D::AllocatePanelArrays(int &memsize)
+bool Objects3D::allocatePanelArrays(int &memsize)
 {
 //	Trace(QString("QMiarex::Allocating() %1 Panels").arg(s_MaxPanelSize));
 
@@ -96,7 +96,7 @@ bool Objects3D::AllocatePanelArrays(int &memsize)
 	}
 	catch(std::exception & e)
 	{
-		ReleasePanelMemory();
+		releasePanelMemory();
 		s_MaxPanelSize = 0;
 
 		Trace(e.what());
@@ -128,7 +128,7 @@ bool Objects3D::AllocatePanelArrays(int &memsize)
  * Releases the memory allocated to the Panel and node arrays.
  * Sets the pointers to NULL and the matrixsize to 0.
  */
-void Objects3D::ReleasePanelMemory()
+void Objects3D::releasePanelMemory()
 {
 	Trace("Objects3D::ReleasingPanelMemory()");
 
@@ -271,7 +271,7 @@ Plane* Objects3D::duplicatePlane(Plane *pPlane)
 {
 	if(!pPlane) return NULL;
 	Plane* pNewPlane= new Plane;
-	pNewPlane->Duplicate(pPlane);
+	pNewPlane->duplicate(pPlane);
 	return setModPlane(pNewPlane);
 }
 
@@ -311,9 +311,9 @@ bool Objects3D::initializePanels(Plane *pPlane, WPolar *pWPolar)
 
 		// allocate 10% more than needed to avoid repeating the operation if the user requirement increases sightly again.
 		s_MaxPanelSize = (int)((double)PanelArraySize *1.1);
-		ReleasePanelMemory();
+		releasePanelMemory();
 
-		if(!AllocatePanelArrays(memsize))
+		if(!allocatePanelArrays(memsize))
 		{
 			s_MaxPanelSize = 0;
 			return false;
@@ -325,9 +325,9 @@ bool Objects3D::initializePanels(Plane *pPlane, WPolar *pWPolar)
 	{
 		int MatrixSize=0;
 
-		if(!s_pPanelAnalysis->AllocateMatrix(s_MaxPanelSize, MatrixSize))
+		if(!s_pPanelAnalysis->allocateMatrix(s_MaxPanelSize, MatrixSize))
 		{
-			ReleasePanelMemory();
+			releasePanelMemory();
 			return false;
 		}
 
@@ -381,7 +381,7 @@ bool Objects3D::initializePanels(Plane *pPlane, WPolar *pWPolar)
 	if(pPlane && pPlane->body())
 	{
 		if(!pWPolar) bBodyEl = true;//no risk...
-		else if(pWPolar->analysisMethod()==XFLR5::PANELMETHOD && !pWPolar->m_bIgnoreBodyPanels)
+		else if(pWPolar->analysisMethod()==XFLR5::PANELMETHOD && !pWPolar->bIgnoreBodyPanels())
 		{
 			bBodyEl = true;
 		}
@@ -429,7 +429,7 @@ void Objects3D::rotateGeomZ(Panel *pPanel, CVector *pNode, Panel *pWakePanel, CV
 	int iLA, iLB, iTA, iTB;
 	CVector Pt, Trans;
 
-	for (n=0; n<nNodes; n++)	pNode[n].RotateZ(P, Beta);
+	for (n=0; n<nNodes; n++)	pNode[n].rotateZ(P, Beta);
 
 	for (p=0; p<nPanels; p++)
 	{
@@ -449,7 +449,7 @@ void Objects3D::rotateGeomZ(Panel *pPanel, CVector *pNode, Panel *pWakePanel, CV
 	{
 		//consider the first panel of the column;
 		Pt = pWakeNode[pWakePanel[pw].m_iLA];
-		Pt.RotateZ(P, Beta);
+		Pt.rotateZ(P, Beta);
 		//define the translation to be applied to the column's left points
 		Trans = Pt-pWakeNode[pWakePanel[pw].m_iLA] ;
 
@@ -466,7 +466,7 @@ void Objects3D::rotateGeomZ(Panel *pPanel, CVector *pNode, Panel *pWakePanel, CV
 	pw -= NXWakePanels;
 	//consider the first panel of the column;
 	Pt = pWakeNode[pWakePanel[pw].m_iLB];
-	Pt.RotateZ(P, Beta);
+	Pt.rotateZ(P, Beta);
 	//define the translation to be applied to the column's left points
 	Trans = Pt - pWakeNode[pWakePanel[pw].m_iLB];
 
@@ -507,7 +507,7 @@ void Objects3D::rotateGeomY(Panel *pPanel, CVector *pNode, Panel *pWakePanel, CV
 	CVector LATB, TALB, Pt, Trans;
 
 	for (n=0; n<nNodes; n++)
-		pNode[n].RotateY(P, Alpha);
+		pNode[n].rotateY(P, Alpha);
 
 	for (p=0; p<nPanels; p++)
 	{
@@ -529,7 +529,7 @@ void Objects3D::rotateGeomY(Panel *pPanel, CVector *pNode, Panel *pWakePanel, CV
 	{
 		//consider the first panel of the column;
 		Pt = pWakeNode[pWakePanel[pw].m_iLA];
-		Pt.RotateY(P, Alpha);
+		Pt.rotateY(P, Alpha);
 		//define the translation to be applied to the column's left points
 		Trans = Pt - pWakeNode[pWakePanel[pw].m_iLA];
 
@@ -545,7 +545,7 @@ void Objects3D::rotateGeomY(Panel *pPanel, CVector *pNode, Panel *pWakePanel, CV
 	//do the same for the very last right wake node column
 	pw -= NXWakePanels;
 	Pt = pWakeNode[pWakePanel[pw].m_iLB];
-	Pt.RotateY(P, Alpha);
+	Pt.rotateY(P, Alpha);
 	//define the translation to be applied to the column's left points
 	Trans = Pt-pWakeNode[pWakePanel[pw].m_iLB];
 
@@ -568,7 +568,7 @@ void Objects3D::rotateGeomY(Panel *pPanel, CVector *pNode, Panel *pWakePanel, CV
 
 
 
-void Objects3D::InsertPOpp(PlaneOpp *pPOpp)
+void Objects3D::insertPOpp(PlaneOpp *pPOpp)
 {
 	PlaneOpp *pOldPOpp = NULL;
 	bool bIsInserted = false;
@@ -576,20 +576,20 @@ void Objects3D::InsertPOpp(PlaneOpp *pPOpp)
 	for (int i=0; i<s_oaPOpp.size(); i++)
 	{
 		pOldPOpp = (PlaneOpp*)s_oaPOpp.at(i);
-		if (pPOpp->m_PlaneName == pOldPOpp->m_PlaneName)
+		if (pPOpp->planeName() == pOldPOpp->planeName())
 		{
-			if (pPOpp->m_PlrName == pOldPOpp->m_PlrName)
+			if (pPOpp->polarName() == pOldPOpp->polarName())
 			{
-				if(pPOpp->m_WPolarType<XFLR5::FIXEDAOAPOLAR)
+				if(pPOpp->polarType()<XFLR5::FIXEDAOAPOLAR)
 				{
 					if(qAbs(pPOpp->m_Alpha - pOldPOpp->m_Alpha)<0.005)
 					{
 						//replace existing point
-						pPOpp->m_Color = pOldPOpp->m_Color;
-						pPOpp->m_Style = pOldPOpp->m_Style;
-						pPOpp->m_Width = pOldPOpp->m_Width;
-						pPOpp->m_bIsVisible  = pOldPOpp->m_bIsVisible;
-						pPOpp->m_bShowPoints = pOldPOpp->m_bShowPoints;
+						pPOpp->color()      = pOldPOpp->color();
+						pPOpp->style()      = pOldPOpp->style();
+						pPOpp->width()      = pOldPOpp->width();
+						pPOpp->isVisible()  = pOldPOpp->isVisible();
+						pPOpp->points()     = pOldPOpp->points();
 
 						s_oaPOpp.removeAt(i);
 						delete pOldPOpp;
@@ -605,16 +605,16 @@ void Objects3D::InsertPOpp(PlaneOpp *pPOpp)
 						i = s_oaPOpp.size();// to break
 					}
 				}
-				else if (pPOpp->m_WPolarType==XFLR5::FIXEDAOAPOLAR)
+				else if (pPOpp->polarType()==XFLR5::FIXEDAOAPOLAR)
 				{
 					if(qAbs(pPOpp->m_QInf - pOldPOpp->m_QInf)<0.1)
 					{
 						//replace existing point
-						pPOpp->m_Color = pOldPOpp->m_Color;
-						pPOpp->m_Style = pOldPOpp->m_Style;
-						pPOpp->m_Width = pOldPOpp->m_Width;
-						pPOpp->m_bIsVisible  = pOldPOpp->m_bIsVisible;
-						pPOpp->m_bShowPoints = pOldPOpp->m_bShowPoints;
+						pPOpp->color() = pOldPOpp->color();
+						pPOpp->style() = pOldPOpp->style();
+						pPOpp->width() = pOldPOpp->width();
+						pPOpp->isVisible()  = pOldPOpp->isVisible();
+						pPOpp->points() = pOldPOpp->points();
 
 						s_oaPOpp.removeAt(i);
 						delete pOldPOpp;
@@ -630,16 +630,16 @@ void Objects3D::InsertPOpp(PlaneOpp *pPOpp)
 						i = s_oaPOpp.size();// to break
 					}
 				}
-				else if (pPOpp->m_WPolarType==XFLR5::BETAPOLAR)
+				else if (pPOpp->polarType()==XFLR5::BETAPOLAR)
 				{
 					if(qAbs(pPOpp->m_Beta - pOldPOpp->m_Beta)<0.01)
 					{
 						//replace existing point
-						pPOpp->m_Color = pOldPOpp->m_Color;
-						pPOpp->m_Style = pOldPOpp->m_Style;
-						pPOpp->m_Width = pOldPOpp->m_Width;
-						pPOpp->m_bIsVisible  = pOldPOpp->m_bIsVisible;
-						pPOpp->m_bShowPoints = pOldPOpp->m_bShowPoints;
+						pPOpp->color() = pOldPOpp->color();
+						pPOpp->style() = pOldPOpp->style();
+						pPOpp->width() = pOldPOpp->width();
+						pPOpp->isVisible()  = pOldPOpp->isVisible();
+						pPOpp->points() = pOldPOpp->points();
 
 						s_oaPOpp.removeAt(i);
 						delete pOldPOpp;
@@ -655,16 +655,16 @@ void Objects3D::InsertPOpp(PlaneOpp *pPOpp)
 						i = s_oaPOpp.size();// to break
 					}
 				}
-				else if(pPOpp->m_WPolarType==XFLR5::STABILITYPOLAR)
+				else if(pPOpp->polarType()==XFLR5::STABILITYPOLAR)
 				{
-					if(qAbs(pPOpp->m_Ctrl - pOldPOpp->m_Ctrl)<0.005)
+					if(qAbs(pPOpp->m_Ctrl - pOldPOpp->m_Ctrl)<0.001)
 					{
 						//replace existing point
-						pPOpp->m_Color = pOldPOpp->m_Color;
-						pPOpp->m_Style = pOldPOpp->m_Style;
-						pPOpp->m_Width = pOldPOpp->m_Width;
-						pPOpp->m_bIsVisible  = pOldPOpp->m_bIsVisible;
-						pPOpp->m_bShowPoints = pOldPOpp->m_bShowPoints;
+						pPOpp->color() = pOldPOpp->color();
+						pPOpp->style() = pOldPOpp->style();
+						pPOpp->width() = pOldPOpp->width();
+						pPOpp->isVisible()  = pOldPOpp->isVisible();
+						pPOpp->points() = pOldPOpp->points();
 
 						s_oaPOpp.removeAt(i);
 						delete pOldPOpp;
@@ -696,7 +696,7 @@ void Objects3D::InsertPOpp(PlaneOpp *pPOpp)
  *@param Pt : the point to identify
  *@return the index of the node with coordinates equal to the input Pt
 */
-int Objects3D::IsWakeNode(CVector &Pt)
+int Objects3D::isWakeNode(CVector &Pt)
 {
 	//
 	// returns the index of a wake node if found, else returns NULL
@@ -704,7 +704,7 @@ int Objects3D::IsWakeNode(CVector &Pt)
 	int in;
 	for (in=0; in<s_nWakeNodes; in++)
 	{
-		if(Pt.IsSame(s_WakeNode[in])) return in;
+		if(Pt.isSame(s_WakeNode[in])) return in;
 	}
 	return -1;
 }
@@ -716,12 +716,12 @@ int Objects3D::IsWakeNode(CVector &Pt)
  *@param Pt : the point to identify
  *@return the index of the node with coordinates equal to the input Pt
 */
-int Objects3D::IsNode(CVector &Pt)
+int Objects3D::isNode(CVector &Pt)
 {
 	int in;
 	for (in=s_nNodes-1; in>=0; in--)
 	{
-		if(Pt.IsSame(s_Node[in])) return in;
+		if(Pt.isSame(s_Node[in])) return in;
 	}
 	return -1;
 }
@@ -739,7 +739,7 @@ int Objects3D::IsNode(CVector &Pt)
  * Uses VSAERO method
  *
 */
-void Objects3D::JoinSurfaces(WPolar*pWPolar, Surface *pLeftSurf, Surface *pRightSurf, int pl, int pr)
+void Objects3D::joinSurfaces(WPolar*pWPolar, Surface *pLeftSurf, Surface *pRightSurf, int pl, int pr)
 {
 
 	if(!pWPolar || pWPolar->analysisMethod()!=XFLR5::PANELMETHOD) return;//panel analysis only
@@ -749,7 +749,7 @@ void Objects3D::JoinSurfaces(WPolar*pWPolar, Surface *pLeftSurf, Surface *pRight
 	double dist, x,y,z, mindist;
 	lclose=0;
 	CVector MidNormal = pLeftSurf->Normal + pRightSurf->Normal;
-	MidNormal.Normalize();
+	MidNormal.normalize();
 
 	int coef = 1;
 	if(pWPolar && pWPolar->analysisMethod()==XFLR5::PANELMETHOD && !pWPolar->bThinSurfaces()) coef = 2;
@@ -1031,17 +1031,17 @@ int Objects3D::createBodyElements(Plane *pCurPlane)
 						LA = PLB * (1.0- dl1) + PLA * dl1;
 						TA = PTB * (1.0- dl1) + PTA * dl1;
 
-						n0 = IsNode(LA);
-						n1 = IsNode(TA);
-						n2 = IsNode(LB);
-						n3 = IsNode(TB);
+						n0 = isNode(LA);
+						n1 = isNode(TA);
+						n2 = isNode(LB);
+						n3 = isNode(TB);
 
 						if(n0>=0) {
 							s_Panel[s_MatSize].m_iLA = n0;
 						}
 						else {
 							s_Panel[s_MatSize].m_iLA = s_nNodes;
-							s_Node[s_nNodes].Copy(LA);
+							s_Node[s_nNodes].copy(LA);
 							s_nNodes++;
 						}
 
@@ -1050,7 +1050,7 @@ int Objects3D::createBodyElements(Plane *pCurPlane)
 						}
 						else {
 							s_Panel[s_MatSize].m_iTA = s_nNodes;
-							s_Node[s_nNodes].Copy(TA);
+							s_Node[s_nNodes].copy(TA);
 							s_nNodes++;
 						}
 
@@ -1059,7 +1059,7 @@ int Objects3D::createBodyElements(Plane *pCurPlane)
 						}
 						else {
 							s_Panel[s_MatSize].m_iLB = s_nNodes;
-							s_Node[s_nNodes].Copy(LB);
+							s_Node[s_nNodes].copy(LB);
 							s_nNodes++;
 						}
 
@@ -1068,7 +1068,7 @@ int Objects3D::createBodyElements(Plane *pCurPlane)
 						}
 						else {
 							s_Panel[s_MatSize].m_iTB = s_nNodes;
-							s_Node[s_nNodes].Copy(TB);
+							s_Node[s_nNodes].copy(TB);
 							s_nNodes++;
 						}
 
@@ -1076,7 +1076,7 @@ int Objects3D::createBodyElements(Plane *pCurPlane)
 						TALB = LB - TA;
 						s_Panel[s_MatSize].Normal = LATB * TALB;
 						s_Panel[s_MatSize].Area =  s_Panel[s_MatSize].Normal.VAbs()/2.0;
-						s_Panel[s_MatSize].Normal.Normalize();
+						s_Panel[s_MatSize].Normal.normalize();
 
 						s_Panel[s_MatSize].m_bIsInSymPlane  = false;
 						s_Panel[s_MatSize].m_bIsLeading     = false;
@@ -1140,17 +1140,17 @@ int Objects3D::createBodyElements(Plane *pCurPlane)
 				TA.x += dpx;
 				TA.z += dpz;
 
-				n0 = IsNode(LA);
-				n1 = IsNode(TA);
-				n2 = IsNode(LB);
-				n3 = IsNode(TB);
+				n0 = isNode(LA);
+				n1 = isNode(TA);
+				n2 = isNode(LB);
+				n3 = isNode(TB);
 
 				if(n0>=0) {
 					s_Panel[s_MatSize].m_iLA = n0;
 				}
 				else {
 					s_Panel[s_MatSize].m_iLA = s_nNodes;
-					s_Node[s_nNodes].Copy(LA);
+					s_Node[s_nNodes].copy(LA);
 					s_nNodes++;
 				}
 
@@ -1159,7 +1159,7 @@ int Objects3D::createBodyElements(Plane *pCurPlane)
 				}
 				else {
 					s_Panel[s_MatSize].m_iTA = s_nNodes;
-					s_Node[s_nNodes].Copy(TA);
+					s_Node[s_nNodes].copy(TA);
 					s_nNodes++;
 				}
 
@@ -1168,7 +1168,7 @@ int Objects3D::createBodyElements(Plane *pCurPlane)
 				}
 				else {
 					s_Panel[s_MatSize].m_iLB = s_nNodes;
-					s_Node[s_nNodes].Copy(LB);
+					s_Node[s_nNodes].copy(LB);
 					s_nNodes++;
 				}
 
@@ -1177,7 +1177,7 @@ int Objects3D::createBodyElements(Plane *pCurPlane)
 				}
 				else {
 					s_Panel[s_MatSize].m_iTB = s_nNodes;
-					s_Node[s_nNodes].Copy(TB);
+					s_Node[s_nNodes].copy(TB);
 					s_nNodes++;
 				}
 
@@ -1185,7 +1185,7 @@ int Objects3D::createBodyElements(Plane *pCurPlane)
 				TALB = LB - TA;
 				s_Panel[s_MatSize].Normal = LATB * TALB;
 				s_Panel[s_MatSize].Area =  s_Panel[s_MatSize].Normal.VAbs()/2.0;
-				s_Panel[s_MatSize].Normal.Normalize();
+				s_Panel[s_MatSize].Normal.normalize();
 
 				s_Panel[s_MatSize].m_bIsInSymPlane  = false;
 				s_Panel[s_MatSize].m_bIsLeading     = false;
@@ -1235,17 +1235,17 @@ int Objects3D::createBodyElements(Plane *pCurPlane)
 			TA.y = -TA.y;
 			TB.y = -TB.y;
 
-			n0 = IsNode(LA);
-			n1 = IsNode(TA);
-			n2 = IsNode(LB);
-			n3 = IsNode(TB);
+			n0 = isNode(LA);
+			n1 = isNode(TA);
+			n2 = isNode(LB);
+			n3 = isNode(TB);
 
 			if(n0>=0) {
 				s_Panel[s_MatSize].m_iLA = n0;
 			}
 			else {
 				s_Panel[s_MatSize].m_iLA = s_nNodes;
-				s_Node[s_nNodes].Copy(LA);
+				s_Node[s_nNodes].copy(LA);
 				s_nNodes++;
 			}
 
@@ -1254,7 +1254,7 @@ int Objects3D::createBodyElements(Plane *pCurPlane)
 			}
 			else {
 				s_Panel[s_MatSize].m_iTA = s_nNodes;
-				s_Node[s_nNodes].Copy(TA);
+				s_Node[s_nNodes].copy(TA);
 				s_nNodes++;
 			}
 
@@ -1263,7 +1263,7 @@ int Objects3D::createBodyElements(Plane *pCurPlane)
 			}
 			else {
 				s_Panel[s_MatSize].m_iLB = s_nNodes;
-				s_Node[s_nNodes].Copy(LB);
+				s_Node[s_nNodes].copy(LB);
 				s_nNodes++;
 			}
 
@@ -1272,7 +1272,7 @@ int Objects3D::createBodyElements(Plane *pCurPlane)
 			}
 			else {
 				s_Panel[s_MatSize].m_iTB = s_nNodes;
-				s_Node[s_nNodes].Copy(TB);
+				s_Node[s_nNodes].copy(TB);
 				s_nNodes++;
 			}
 
@@ -1280,7 +1280,7 @@ int Objects3D::createBodyElements(Plane *pCurPlane)
 			TALB = LB - TA;
 			s_Panel[s_MatSize].Normal = LATB * TALB;
 			s_Panel[s_MatSize].Area =  s_Panel[s_MatSize].Normal.VAbs()/2.0;
-			s_Panel[s_MatSize].Normal.Normalize();
+			s_Panel[s_MatSize].Normal.normalize();
 
 			s_Panel[s_MatSize].m_bIsInSymPlane  = false;
 			s_Panel[s_MatSize].m_bIsLeading     = false;
@@ -1361,42 +1361,42 @@ int Objects3D::createWingElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurf
 			s_Panel[s_MatSize].m_bIsInSymPlane  = false; //even if part of a fin
 
 			pSurface->GetPanel(0, l, BOTSURFACE);
-			LA.Copy(pSurface->LA);
-			TA.Copy(pSurface->TA);
+			LA.copy(pSurface->LA);
+			TA.copy(pSurface->TA);
 
 			pSurface->GetPanel(0, l, TOPSURFACE);
-			LB.Copy(pSurface->LA);
-			TB.Copy(pSurface->TA);
+			LB.copy(pSurface->LA);
+			TB.copy(pSurface->TA);
 
-			n0 = IsNode(LA);
+			n0 = isNode(LA);
 			if(n0>=0) 	s_Panel[s_MatSize].m_iLA = n0;
 			else {
 				s_Panel[s_MatSize].m_iLA = s_nNodes;
-				s_Node[s_nNodes].Copy(LA);
+				s_Node[s_nNodes].copy(LA);
 				s_nNodes++;
 			}
 
-			n1 = IsNode(TA);
+			n1 = isNode(TA);
 			if(n1>=0) 	s_Panel[s_MatSize].m_iTA = n1;
 			else {
 				s_Panel[s_MatSize].m_iTA = s_nNodes;
-				s_Node[s_nNodes].Copy(TA);
+				s_Node[s_nNodes].copy(TA);
 				s_nNodes++;
 			}
 
-			n2 = IsNode(LB);
+			n2 = isNode(LB);
 			if(n2>=0) 	s_Panel[s_MatSize].m_iLB = n2;
 			else {
 				s_Panel[s_MatSize].m_iLB = s_nNodes;
-				s_Node[s_nNodes].Copy(LB);
+				s_Node[s_nNodes].copy(LB);
 				s_nNodes++;
 			}
 
-			n3 = IsNode(TB);
+			n3 = isNode(TB);
 			if(n3>=0) 	s_Panel[s_MatSize].m_iTB = n3;
 			else {
 				s_Panel[s_MatSize].m_iTB = s_nNodes;
-				s_Node[s_nNodes].Copy(TB);
+				s_Node[s_nNodes].copy(TB);
 				s_nNodes++;
 			}
 
@@ -1427,10 +1427,10 @@ int Objects3D::createWingElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurf
 		{
 			pSurface->GetPanel(k,l,side);
 
-			n0 = IsNode(pSurface->LA);
-			n1 = IsNode(pSurface->TA);
-			n2 = IsNode(pSurface->LB);
-			n3 = IsNode(pSurface->TB);
+			n0 = isNode(pSurface->LA);
+			n1 = isNode(pSurface->TA);
+			n2 = isNode(pSurface->LB);
+			n3 = isNode(pSurface->TB);
 
 			if(l==0)                      s_Panel[s_MatSize].m_bIsTrailing = true;
 			if(l==pSurface->m_NXPanels-1) s_Panel[s_MatSize].m_bIsLeading  = true;
@@ -1445,7 +1445,7 @@ int Objects3D::createWingElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurf
 			}
 			else {
 				s_Panel[s_MatSize].m_iLA = s_nNodes;
-				s_Node[s_nNodes].Copy(pSurface->LA);
+				s_Node[s_nNodes].copy(pSurface->LA);
 				s_nNodes++;
 			}
 
@@ -1455,7 +1455,7 @@ int Objects3D::createWingElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurf
 			}
 			else {
 				s_Panel[s_MatSize].m_iTA = s_nNodes;
-				s_Node[s_nNodes].Copy(pSurface->TA);
+				s_Node[s_nNodes].copy(pSurface->TA);
 				s_nNodes++;
 			}
 
@@ -1467,7 +1467,7 @@ int Objects3D::createWingElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurf
 			}
 			else {
 				s_Panel[s_MatSize].m_iLB = s_nNodes;
-				s_Node[s_nNodes].Copy(pSurface->LB);
+				s_Node[s_nNodes].copy(pSurface->LB);
 				s_nNodes++;
 			}
 
@@ -1477,7 +1477,7 @@ int Objects3D::createWingElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurf
 			}
 			else {
 				s_Panel[s_MatSize].m_iTB = s_nNodes;
-				s_Node[s_nNodes].Copy(pSurface->TB);
+				s_Node[s_nNodes].copy(pSurface->TB);
 				s_nNodes++;
 			}
 
@@ -1542,10 +1542,10 @@ int Objects3D::createWingElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurf
 			for (l=pSurface->m_NXPanels-1;l>=0; l--)
 			{
 				pSurface->GetPanel(k,l,side);
-				n0 = IsNode(pSurface->LA);
-				n1 = IsNode(pSurface->TA);
-				n2 = IsNode(pSurface->LB);
-				n3 = IsNode(pSurface->TB);
+				n0 = isNode(pSurface->LA);
+				n1 = isNode(pSurface->TA);
+				n2 = isNode(pSurface->LB);
+				n3 = isNode(pSurface->TB);
 
 				if(l==0)                      s_Panel[s_MatSize].m_bIsTrailing = true;
 				if(l==pSurface->m_NXPanels-1) s_Panel[s_MatSize].m_bIsLeading  = true;
@@ -1556,7 +1556,7 @@ int Objects3D::createWingElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurf
 					s_Panel[s_MatSize].m_iLA = n0;
 				else {
 					s_Panel[s_MatSize].m_iLA = s_nNodes;
-					s_Node[s_nNodes].Copy(pSurface->LA);
+					s_Node[s_nNodes].copy(pSurface->LA);
 					s_nNodes++;
 				}
 
@@ -1564,7 +1564,7 @@ int Objects3D::createWingElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurf
 					s_Panel[s_MatSize].m_iTA = n1;
 				else {
 					s_Panel[s_MatSize].m_iTA = s_nNodes;
-					s_Node[s_nNodes].Copy(pSurface->TA);
+					s_Node[s_nNodes].copy(pSurface->TA);
 					s_nNodes++;
 				}
 
@@ -1572,7 +1572,7 @@ int Objects3D::createWingElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurf
 					s_Panel[s_MatSize].m_iLB = n2;
 				else {
 					s_Panel[s_MatSize].m_iLB = s_nNodes;
-					s_Node[s_nNodes].Copy(pSurface->LB);
+					s_Node[s_nNodes].copy(pSurface->LB);
 					s_nNodes++;
 				}
 
@@ -1580,7 +1580,7 @@ int Objects3D::createWingElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurf
 					s_Panel[s_MatSize].m_iTB = n3;
 				else {
 					s_Panel[s_MatSize].m_iTB = s_nNodes;
-					s_Node[s_nNodes].Copy(pSurface->TB);
+					s_Node[s_nNodes].copy(pSurface->TB);
 					s_nNodes++;
 				}
 
@@ -1634,39 +1634,39 @@ int Objects3D::createWingElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurf
 			s_Panel[s_MatSize].m_bIsInSymPlane  = false;//even if part of a fin
 
 			pSurface->GetPanel(k,l,TOPSURFACE);
-			LA.Copy(pSurface->LB);
-			TA.Copy(pSurface->TB);
+			LA.copy(pSurface->LB);
+			TA.copy(pSurface->TB);
 
 			pSurface->GetPanel(k,l,BOTSURFACE);
-			LB.Copy(pSurface->LB);
-			TB.Copy(pSurface->TB);
+			LB.copy(pSurface->LB);
+			TB.copy(pSurface->TB);
 
-			n0 = IsNode(LA);//answer should be yes
+			n0 = isNode(LA);//answer should be yes
 			if(n0>=0) 				s_Panel[s_MatSize].m_iLA = n0;
 			else {
 				s_Panel[s_MatSize].m_iLA = s_nNodes;
-				s_Node[s_nNodes].Copy(LA);
+				s_Node[s_nNodes].copy(LA);
 				s_nNodes++;
 			}
-			n1 = IsNode(TA);//answer should be yes
+			n1 = isNode(TA);//answer should be yes
 			if(n1>=0) 				s_Panel[s_MatSize].m_iTA = n1;
 			else {
 				s_Panel[s_MatSize].m_iTA = s_nNodes;
-				s_Node[s_nNodes].Copy(TA);
+				s_Node[s_nNodes].copy(TA);
 				s_nNodes++;
 			}
-			n2 = IsNode(LB);//answer should be yes
+			n2 = isNode(LB);//answer should be yes
 			if(n2>=0) 				s_Panel[s_MatSize].m_iLB = n2;
 			else {
 				s_Panel[s_MatSize].m_iLB = s_nNodes;
-				s_Node[s_nNodes].Copy(LB);
+				s_Node[s_nNodes].copy(LB);
 				s_nNodes++;
 			}
-			n3 = IsNode(TB);//answer should be yes
+			n3 = isNode(TB);//answer should be yes
 			if(n3>=0)				s_Panel[s_MatSize].m_iTB = n3;
 			else {
 				s_Panel[s_MatSize].m_iTB = s_nNodes;
-				s_Node[s_nNodes].Copy(TB);
+				s_Node[s_nNodes].copy(TB);
 				s_nNodes++;
 			}
 
@@ -1747,17 +1747,17 @@ bool Objects3D::createWakeElems(int PanelIndex, Plane *pPlane, WPolar* pWPolar)
 		dxA *= WakePanelFactor;
 		dxB *= WakePanelFactor;
 
-		n0 = IsWakeNode(LA);
-		n1 = IsWakeNode(TA);
-		n2 = IsWakeNode(LB);
-		n3 = IsWakeNode(TB);
+		n0 = isWakeNode(LA);
+		n1 = isWakeNode(TA);
+		n2 = isWakeNode(LB);
+		n3 = isWakeNode(TB);
 
 		if(n0>=0) {
 			s_WakePanel[mw].m_iLA = n0;
 		}
 		else {
 			s_WakePanel[mw].m_iLA = s_nWakeNodes;
-			s_WakeNode[s_nWakeNodes].Copy(LA);
+			s_WakeNode[s_nWakeNodes].copy(LA);
 			s_nWakeNodes++;
 		}
 
@@ -1766,7 +1766,7 @@ bool Objects3D::createWakeElems(int PanelIndex, Plane *pPlane, WPolar* pWPolar)
 		}
 		else {
 			s_WakePanel[mw].m_iTA = s_nWakeNodes;
-			s_WakeNode[s_nWakeNodes].Copy(TA);
+			s_WakeNode[s_nWakeNodes].copy(TA);
 			s_nWakeNodes++;
 		}
 
@@ -1775,7 +1775,7 @@ bool Objects3D::createWakeElems(int PanelIndex, Plane *pPlane, WPolar* pWPolar)
 		}
 		else {
 			s_WakePanel[mw].m_iLB = s_nWakeNodes;
-			s_WakeNode[s_nWakeNodes].Copy(LB);
+			s_WakeNode[s_nWakeNodes].copy(LB);
 			s_nWakeNodes++;
 		}
 
@@ -1784,7 +1784,7 @@ bool Objects3D::createWakeElems(int PanelIndex, Plane *pPlane, WPolar* pWPolar)
 		}
 		else {
 			s_WakePanel[mw].m_iTB = s_nWakeNodes;
-			s_WakeNode[s_nWakeNodes].Copy(TB);
+			s_WakeNode[s_nWakeNodes].copy(TB);
 			s_nWakeNodes++;
 		}
 
@@ -1796,7 +1796,7 @@ bool Objects3D::createWakeElems(int PanelIndex, Plane *pPlane, WPolar* pWPolar)
 		s_WakePanel[mw].m_Pos = MIDSURFACE;
 		s_WakePanel[mw].m_bIsWakePanel = true;
 		s_WakePanel[mw].Area =  s_WakePanel[mw].Normal.VAbs()/2.0;
-		s_WakePanel[mw].Normal.Normalize();
+		s_WakePanel[mw].Normal.normalize();
 		s_WakePanel[mw].SetPanelFrame(LA,LB, TA, TB);
 		s_WakePanel[mw].m_bIsLeftPanel  = false;
 
@@ -1844,7 +1844,7 @@ int Objects3D::calculateMatSize(Plane *pPlane, WPolar *pWPolar)
 	{
 		Body *pCurBody = pPlane->body();
 
-		if(pWPolar && pWPolar->analysisMethod()==XFLR5::PANELMETHOD && pWPolar->m_bIgnoreBodyPanels)
+		if(pWPolar && pWPolar->analysisMethod()==XFLR5::PANELMETHOD && pWPolar->bIgnoreBodyPanels())
 		{
 		}
 		else
@@ -1906,7 +1906,7 @@ void Objects3D::deletePlaneResults(Plane *pPlane, bool bDeletePolars)
 	for (i=s_oaPOpp.size()-1; i>=0; i--)
 	{
 		pPOpp = (PlaneOpp*)s_oaPOpp.at(i);
-		if(pPOpp->m_PlaneName == pPlane->planeName())
+		if(pPOpp->planeName() == pPlane->planeName())
 		{
 			s_oaPOpp.removeAt(i);
 			delete pPOpp;
@@ -1917,7 +1917,7 @@ void Objects3D::deletePlaneResults(Plane *pPlane, bool bDeletePolars)
 	for (i=s_oaWPolar.size()-1; i>=0; i--)
 	{
 		pWPolar = (WPolar*)s_oaWPolar.at(i);
-		if (pWPolar->m_PlaneName == pPlane->planeName())
+		if (pWPolar->planeName() == pPlane->planeName())
 		{
 			if(bDeletePolars)
 			{
@@ -1927,7 +1927,7 @@ void Objects3D::deletePlaneResults(Plane *pPlane, bool bDeletePolars)
 			}
 			else
 			{
-				pWPolar->ClearData();
+				pWPolar->clearData();
 			}
 		}
 	}
@@ -1980,7 +1980,7 @@ PlaneOpp * Objects3D::getPlaneOpp(Plane *pPlane, WPolar* pWPolar, double x)
 	for (i=0; i<s_oaPOpp.size(); i++)
 	{
 		pPOpp = (PlaneOpp*)s_oaPOpp.at(i);
-		if ((pPOpp->m_PlaneName == pPlane->planeName()) && (pPOpp->m_PlrName == pWPolar->m_WPlrName))
+		if ((pPOpp->planeName() == pPlane->planeName()) && (pPOpp->polarName() == pWPolar->polarName()))
 		{
 			if     (pWPolar->polarType()< XFLR5::FIXEDAOAPOLAR  && qAbs(pPOpp->m_Alpha - x)<0.005)  return pPOpp;
 			else if(pWPolar->polarType()==XFLR5::FIXEDAOAPOLAR  && qAbs(pPOpp->m_QInf - x)<0.005)  return pPOpp;
@@ -2209,7 +2209,7 @@ WPolar* Objects3D::insertNewWPolar(WPolar *pNewWPolar, Plane *pCurPlane)
 	for(k=0; k<s_oaWPolar.size(); k++)
 	{
 		pWPolar = (WPolar*)s_oaWPolar.at(k);
-		if(pWPolar->m_PlaneName==pCurPlane->planeName()) NameList.append(pWPolar->m_WPlrName);
+		if(pWPolar->planeName()==pCurPlane->planeName()) NameList.append(pWPolar->polarName());
 	}
 
 	//Is the new WPolar's name already used ?
@@ -2230,7 +2230,7 @@ WPolar* Objects3D::insertNewWPolar(WPolar *pNewWPolar, Plane *pCurPlane)
 		{
 			pOldWPolar = (WPolar*)s_oaWPolar.at(l);
 
-			if(pOldWPolar->m_WPlrName.compare(pNewWPolar->m_WPlrName, Qt::CaseInsensitive) >0)
+			if(pOldWPolar->polarName().compare(pNewWPolar->polarName(), Qt::CaseInsensitive) >0)
 			{
 				//then insert before
 				s_oaWPolar.insert(l, pNewWPolar);
@@ -2255,7 +2255,7 @@ WPolar* Objects3D::insertNewWPolar(WPolar *pNewWPolar, Plane *pCurPlane)
 		for(int ipb=0; ipb<s_oaWPolar.size(); ipb++)
 		{
 			pOldWPolar = (WPolar*)s_oaWPolar.at(ipb);
-			if(pOldWPolar->polarName()==pNewWPolar->polarName() && pOldWPolar->m_PlaneName==pCurPlane->planeName())
+			if(pOldWPolar->polarName()==pNewWPolar->polarName() && pOldWPolar->planeName()==pCurPlane->planeName())
 			{
 				pWPolar = pOldWPolar;
 				break;
@@ -2281,7 +2281,7 @@ WPolar* Objects3D::insertNewWPolar(WPolar *pNewWPolar, Plane *pCurPlane)
 		{
 			pOldWPolar = (WPolar*)s_oaWPolar.at(l);
 
-			if(pOldWPolar->m_WPlrName.compare(pNewWPolar->m_WPlrName, Qt::CaseInsensitive) >0)
+			if(pOldWPolar->polarName().compare(pNewWPolar->polarName(), Qt::CaseInsensitive) >0)
 			{
 				//then insert before
 				s_oaWPolar.insert(l, pNewWPolar);
@@ -2300,12 +2300,12 @@ WPolar* Objects3D::insertNewWPolar(WPolar *pNewWPolar, Plane *pCurPlane)
 	else if(resp==QDialog::Accepted)
 	{
 		//not rejected, no overwrite, else the user has selected a non-existing name, rename and insert
-		pNewWPolar->m_WPlrName=dlg.newName();
+		pNewWPolar->polarName()=dlg.newName();
 		for (l=0; l<s_oaWPolar.size();l++)
 		{
 			pOldWPolar = (WPolar*)s_oaWPolar.at(l);
 
-			if(pOldWPolar->m_WPlrName.compare(pNewWPolar->m_WPlrName, Qt::CaseInsensitive) >0)
+			if(pOldWPolar->polarName().compare(pNewWPolar->polarName(), Qt::CaseInsensitive) >0)
 			{
 				//then insert before
 				s_oaWPolar.insert(l, pNewWPolar);
@@ -2358,7 +2358,7 @@ WPolar* Objects3D::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar, bool bC
 		for (i=0; i<s_oaWPolar.size(); i++)
 		{
 			pOldWPolar = (WPolar*)s_oaWPolar.at(i);
-			if (pOldWPolar->m_PlaneName == PlaneName)
+			if (pOldWPolar->planeName() == PlaneName)
 			{
 				pWPolar = pOldWPolar;
 				break;
@@ -2436,16 +2436,17 @@ WPolar* Objects3D::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar, bool bC
 //		else                                  setPlaneOppObject(pCurPlane, pWPolar, NULL, false, s_LastAlpha);
 //	}
 
+	/** @todo need to cancel results too if we modify the inertia */
 	if(pWPolar->m_bAutoInertia)
 	{
 		if(pCurPlane)
 		{
-			pWPolar->m_Mass = pCurPlane->TotalMass();
-			pWPolar->m_CoG    = pCurPlane->CoG();
-			pWPolar->m_CoGIxx = pCurPlane->m_CoGIxx;
-			pWPolar->m_CoGIyy = pCurPlane->m_CoGIyy;
-			pWPolar->m_CoGIzz = pCurPlane->m_CoGIzz;
-			pWPolar->m_CoGIxz = pCurPlane->m_CoGIxz;
+			pWPolar->mass()   = pCurPlane->totalMass();
+			pWPolar->CoG()    = pCurPlane->CoG();
+			pWPolar->CoGIxx() = pCurPlane->CoGIxx();
+			pWPolar->CoGIyy() = pCurPlane->CoGIyy();
+			pWPolar->CoGIzz() = pCurPlane->CoGIzz();
+			pWPolar->CoGIxz() = pCurPlane->CoGIxz();
 		}
 	}
 
@@ -2459,8 +2460,8 @@ WPolar* Objects3D::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar, bool bC
 * else sets the current WOpp, if any
 * else sets the comboBox's first, if any
 * else sets it to NULL
-*@param bCurrent, if true, uses the x value of the current operating point; this is useful if the user has changed the polar, but wants to display the same aoa for instance
-*@return true if a new valid operating point has been selected
+* @param bCurrent, if true, uses the x value of the current operating point; this is useful if the user has changed the polar, but wants to display the same aoa for instance
+* @return true if a new valid operating point has been selected
 */
 PlaneOpp* Objects3D::setPlaneOppObject(Plane *pPlane, WPolar *pWPolar, PlaneOpp *pCurPOpp, bool bCurrent, double x)
 {
@@ -2487,7 +2488,7 @@ PlaneOpp* Objects3D::setPlaneOppObject(Plane *pPlane, WPolar *pWPolar, PlaneOpp 
 		for(int iPOpp=0; iPOpp<s_oaPOpp.size(); iPOpp++)
 		{
 			PlaneOpp *pOldPOpp = (PlaneOpp*)s_oaPOpp.at(iPOpp);
-			if(pOldPOpp->m_PlaneName==pPlane->planeName() && pOldPOpp->m_PlrName==pWPolar->polarName())
+			if(pOldPOpp->planeName()==pPlane->planeName() && pOldPOpp->polarName()==pWPolar->polarName())
 			{
 				pPOpp = pOldPOpp;
 				break;
@@ -2547,22 +2548,22 @@ void Objects3D::renamePlane(QString PlaneName)
 		OldName = pPlane->planeName();
 		setModPlane(pPlane);
 
-		pPlane->RenameWings();
+		pPlane->renameWings();
 
 		for (l=s_oaWPolar.size()-1;l>=0; l--)
 		{
 			pWPolar = (WPolar*)s_oaWPolar.at(l);
-			if (pWPolar->m_PlaneName == OldName)
+			if (pWPolar->planeName() == OldName)
 			{
-				pWPolar->m_PlaneName = pPlane->planeName();
+				pWPolar->planeName() = pPlane->planeName();
 			}
 		}
 		for (l=s_oaPOpp.size()-1;l>=0; l--)
 		{
 			pPOpp = (PlaneOpp*)s_oaPOpp.at(l);
-			if (pPOpp->m_PlaneName == OldName)
+			if (pPOpp->planeName() == OldName)
 			{
-				pPOpp->m_PlaneName = pPlane->planeName();
+				pPOpp->planeName() = pPlane->planeName();
 			}
 		}
 //		return pPlane->PlaneName();
@@ -2638,7 +2639,7 @@ void Objects3D::setControlPositions(Plane *pPlane, WPolar *pWPolar, Panel *pPane
 				{
 					if(pPlane->wing()->IsWingNode(n))
 					{
-							pNode[n].Copy(s_MemNode[n]);
+							pNode[n].copy(s_MemNode[n]);
 							W = pNode[n] - pPlane->WingLE(0);
 							Quat.Conjugate(W);
 							pNode[n] = W + pPlane->WingLE(0);
@@ -2672,7 +2673,7 @@ void Objects3D::setControlPositions(Plane *pPlane, WPolar *pWPolar, Panel *pPane
 					{
 						if(pPlane->stab()->IsWingNode(n))
 						{
-								pNode[n].Copy(s_MemNode[n]);
+								pNode[n].copy(s_MemNode[n]);
 								W = pNode[n] - pPlane->WingLE(2);
 								Quat.Conjugate(W);
 								pNode[n] = W + pPlane->WingLE(2);
@@ -2742,7 +2743,7 @@ void Objects3D::setControlPositions(Plane *pPlane, WPolar *pWPolar, Panel *pPane
 								{
 									if(pWing->m_Surface.at(j)->IsFlapNode(n))
 									{
-										pNode[n].Copy(s_MemNode[n]);
+										pNode[n].copy(s_MemNode[n]);
 										W = pNode[n] - pWing->m_Surface.at(j)->m_HingePoint;
 										Quat.Conjugate(W);
 										pNode[n] = W + pWing->m_Surface.at(j)->m_HingePoint;
@@ -2772,11 +2773,11 @@ void Objects3D::initPanelAnalysis(Plane*, WPolar* pWPolar, double V0, double VMa
 	s_pPanelAnalysis->setRange(V0, VMax, VDelta, bSequence);
 	s_pPanelAnalysis->setParams(s_MaxWakeIter);
 
-	if(pWPolar->m_WPolarType==XFLR5::FIXEDAOAPOLAR)
+	if(pWPolar->polarType()==XFLR5::FIXEDAOAPOLAR)
 	{
 		s_pPanelAnalysis->m_Alpha      = pWPolar->m_AlphaSpec;
 	}
-	else if(pWPolar->m_WPolarType==XFLR5::STABILITYPOLAR)
+	else if(pWPolar->polarType()==XFLR5::STABILITYPOLAR)
 	{
 		s_pPanelAnalysis->m_Alpha      = pWPolar->m_AlphaSpec;
 	}

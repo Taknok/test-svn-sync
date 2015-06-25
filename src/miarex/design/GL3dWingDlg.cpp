@@ -548,12 +548,12 @@ void GL3dWingDlg::GLRenderView()
 
 	if(ThreeDWidget::s_bFoilNames)
 	{
-		m_pGLWidget->GLDrawFoils(m_pWing);
+		m_pGLWidget->glDrawFoils(m_pWing);
 	}
 
 	if(ThreeDWidget::s_bShowMasses)
 	{
-		m_pGLWidget->GLDrawMasses(m_pWing->volumeMass(), m_pWing->CoG(), "Structural mass", m_pWing->m_PointMass);
+		m_pGLWidget->glDrawMasses(m_pWing->volumeMass(), m_pWing->CoG(), "Structural mass", m_pWing->m_PointMass);
 	}
 }
 
@@ -602,7 +602,7 @@ bool GL3dWingDlg::InitDialog(Wing *pWing)
 	m_pctrlFoilNames->setChecked(ThreeDWidget::s_bFoilNames);
 	m_pctrlShowMasses->setChecked(ThreeDWidget::s_bShowMasses);
 
-	m_pctrlWingColor->SetColor(m_pWing->m_WingColor);
+	m_pctrlWingColor->setColor(m_pWing->m_WingColor);
 
 
 	m_pctrlWingTable->setFont(Settings::s_TableFont);
@@ -1026,7 +1026,7 @@ void GL3dWingDlg::OnScaleWing()
 	WingScaleDlg dlg(this);
 	dlg.InitDialog(m_pWing->m_PlanformSpan,
 				m_pWing->Chord(0),
-				m_pWing->AverageSweep(),
+				m_pWing->averageSweep(),
 				m_pWing->Twist(m_pWing->NWingSection()-1),
 				m_pWing->m_PlanformArea,
 				m_pWing->m_AR);
@@ -1109,7 +1109,7 @@ void GL3dWingDlg::OnWingColor()
 		m_bDescriptionChanged = true;
 	}
 
-	m_pctrlWingColor->SetColor(m_pWing->wingColor());
+	m_pctrlWingColor->setColor(m_pWing->wingColor());
 	m_bResetglWing = true;
 	m_pGLWidget->update();
 }
@@ -1279,7 +1279,7 @@ void GL3dWingDlg::SetWingScale()
 {
 	//wing along X axis will take 3/4 of the screen
 	m_pGLWidget->m_glScaled = (GLfloat)(3./4.*2.0/m_pWing->planformSpan());
-	m_pGLWidget->m_glViewportTrans.Set(0.0,0.0,0.0);
+	m_pGLWidget->m_glViewportTrans.set(0.0,0.0,0.0);
 
 //	m_pGLWidget->Set3DRotationCenter();
 }
@@ -1313,11 +1313,11 @@ void GL3dWingDlg::SetWingData()
 	str = QString("%1").arg(m_pWing->m_AR,5,'f',2);
 	m_pctrlAspectRatio->setText(str);
 
-	if(m_pWing->TipChord()>0.0) str = QString("%1").arg(m_pWing->m_TR,0,'f',2);
+	if(m_pWing->tipChord()>0.0) str = QString("%1").arg(m_pWing->m_TR,0,'f',2);
 	else                        str = tr("Undefined");
 	m_pctrlTaperRatio->setText(str);
 
-	str = QString("%1").arg(m_pWing->AverageSweep(),5,'f',2);
+	str = QString("%1").arg(m_pWing->averageSweep(),5,'f',2);
 	m_pctrlSweep->setText(str);
 
 	str = QString("%1").arg(m_pWing->VLMPanelTotal(true));

@@ -178,7 +178,7 @@ public:
 	void createXDirectMenus();
 	void createXDirectToolbar();
 	void createXInverseActions();
-	void CreateXInverseMenus();
+	void createXInverseMenus();
 	void createXInverseToolbar();
 	void createMiarexActions();
 	void createMiarexMenus();
@@ -207,8 +207,8 @@ public:
 	void setGraphSettings(QGraph *pGraph);
 	void setProjectName(QString PathName);
 	void setMenus();
-	void SetupDataDir();
-	QString ShortenFileName(QString &PathName);
+	void setupDataDir();
+	QString shortenFileName(QString &PathName);
 	void updateFoilListBox();
 	void updatePolarListBox();
 	void updateOppListBox();

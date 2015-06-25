@@ -166,9 +166,9 @@ void GraphTileWidget::contextMenuEvent (QContextMenuEvent *event)
 void GraphTileWidget::keyPressEvent(QKeyEvent *event)
 {
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-	bool bShift = false;
+//	bool bShift = false;
 	bool bCtrl  = false;
-	if(event->modifiers() & Qt::ShiftModifier)   bShift =true;
+//	if(event->modifiers() & Qt::ShiftModifier)   bShift =true;
 	if(event->modifiers() & Qt::ControlModifier) bCtrl =true;
 	switch (event->key())
 	{
@@ -188,15 +188,6 @@ void GraphTileWidget::keyPressEvent(QKeyEvent *event)
 			{
 				int iGraph = event->text().toInt()-1;
 
-				m_nGraphWidgets = 1;
-				if(iGraph<m_GraphWidget.count())
-				{
-					m_iActiveGraphWidget = iGraph;
-					if(iGraph<m_GraphWidget.count()) m_pLegendWidget->setGraph(m_GraphWidget.at(iGraph)->graph());
-					adjustLayout();
-				}
-
-				pMainFrame->checkGraphActions();
 
 				if(m_xflr5App==XFLR5::XFOILANALYSIS)
 				{
@@ -206,9 +197,20 @@ void GraphTileWidget::keyPressEvent(QKeyEvent *event)
 				else if(m_xflr5App==XFLR5::MIAREX)
 				{
 					QMiarex *pMiarex = (QMiarex*)s_pMiarex;
+					if (pMiarex->m_iView==XFLR5::STABPOLARVIEW && iGraph>1)
+						return; //only case whare there is only one graph to display
 					pMiarex->setView(XFLR5::ONEGRAPH);
 				}
 
+				m_nGraphWidgets = 1;
+				if(iGraph<m_GraphWidget.count())
+				{
+					m_iActiveGraphWidget = iGraph;
+					if(iGraph<m_GraphWidget.count()) m_pLegendWidget->setGraph(m_GraphWidget.at(iGraph)->graph());
+					adjustLayout();
+				}
+
+				pMainFrame->checkGraphActions();
 				update();
 				setFocus();
 				return;
@@ -270,7 +272,6 @@ void GraphTileWidget::onSingleGraph()
 	if (!pAction) return;
 	int iGraph = pAction->data().toInt();
 
-	m_nGraphWidgets = 1;
 
 	if(iGraph>=m_GraphWidget.count())
 	{
@@ -278,17 +279,24 @@ void GraphTileWidget::onSingleGraph()
 		return;
 	}
 
-	m_iActiveGraphWidget = iGraph;
-	m_pLegendWidget->setGraph(m_GraphWidget.at(iGraph)->graph());
 
 	if(m_xflr5App==XFLR5::XFOILANALYSIS)
 	{
 		QXDirect *pXDirect = (QXDirect*)s_pXDirect;
+		m_nGraphWidgets = 1;
+		m_iActiveGraphWidget = iGraph;
+		m_pLegendWidget->setGraph(m_GraphWidget.at(iGraph)->graph());
 		pXDirect->setView(XFLR5::ONEGRAPH);
 	}
 	else if(m_xflr5App==XFLR5::MIAREX)
 	{
 		QMiarex *pMiarex = (QMiarex*)s_pMiarex;
+		if (pMiarex->m_iView==XFLR5::STABPOLARVIEW && iGraph>1)
+			return; //only case whare there is only one graph to display
+
+		m_nGraphWidgets = 1;
+		m_iActiveGraphWidget = iGraph;
+		m_pLegendWidget->setGraph(m_GraphWidget.at(iGraph)->graph());
 		pMiarex->setView(XFLR5::ONEGRAPH);
 	}
 
@@ -331,18 +339,23 @@ void GraphTileWidget::onFourGraphs()
 	if(!isVisible()) return;
 
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-	m_nGraphWidgets = 4;
-	m_iActiveGraphWidget = 0;
-	m_pLegendWidget->setGraph(m_GraphWidget.at(0)->graph());
 
 	if(m_xflr5App==XFLR5::XFOILANALYSIS)
 	{
 		QXDirect *pXDirect = (QXDirect*)s_pXDirect;
+		m_nGraphWidgets = 4;
+		m_iActiveGraphWidget = 0;
+		m_pLegendWidget->setGraph(m_GraphWidget.at(0)->graph());
 		pXDirect->setView(XFLR5::FOURGRAPHS);
 	}
 	else if(m_xflr5App==XFLR5::MIAREX)
 	{
 		QMiarex *pMiarex = (QMiarex*)s_pMiarex;
+		if (pMiarex->m_iView==XFLR5::STABPOLARVIEW)
+			return; //only case whare there is only one graph to display
+		m_nGraphWidgets = 4;
+		m_iActiveGraphWidget = 0;
+		m_pLegendWidget->setGraph(m_GraphWidget.at(0)->graph());
 		pMiarex->setView(XFLR5::FOURGRAPHS);
 	}
 
@@ -358,19 +371,27 @@ void GraphTileWidget::onAllGraphs()
 	if(!isVisible()) return;
 
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-	m_nGraphWidgets = 6;
-	m_iActiveGraphWidget = 0;
-	m_pLegendWidget->setGraph(m_GraphWidget.at(0)->graph());
 
 	if(m_xflr5App==XFLR5::XFOILANALYSIS)
 	{
 		QXDirect *pXDirect = (QXDirect*)s_pXDirect;
 		pXDirect->setView(XFLR5::ALLGRAPHS);
+		m_nGraphWidgets = 6;
+		m_iActiveGraphWidget = 0;
+		m_pLegendWidget->setGraph(m_GraphWidget.at(0)->graph());
 	}
 	else if(m_xflr5App==XFLR5::MIAREX)
 	{
 		QMiarex *pMiarex = (QMiarex*)s_pMiarex;
+
+		if (pMiarex->m_iView==XFLR5::STABPOLARVIEW)
+			return; //only case whare there is only one graph to display
+
 		pMiarex->setView(XFLR5::ALLGRAPHS);
+
+		m_nGraphWidgets = 6;
+		m_iActiveGraphWidget = 0;
+		m_pLegendWidget->setGraph(m_GraphWidget.at(0)->graph());
 	}
 
 	adjustLayout();

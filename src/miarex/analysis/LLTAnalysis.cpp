@@ -91,7 +91,7 @@ void LLTAnalysis::resetVariables()
 	m_VCm = m_ICm = m_GCm = 0.0;
 	m_GRm = 0.0;
 
-	m_CP.Set(0.0,0.0,0.0);
+	m_CP.set(0.0,0.0,0.0);
 	m_pGraph = NULL;
 	m_pCurve = NULL;
 }
@@ -327,7 +327,7 @@ void LLTAnalysis::ComputeWing(double QInf, double Alpha, QString &ErrorMessage)
 	}
 	else
 	{
-		m_CP.Set(0.0,0.0,0.0);
+		m_CP.set(0.0,0.0,0.0);
     }
 	if(m_pWing->m_bSymetric) m_CP.y = 0.0;
 	else                     m_CP.y = m_pWing->m_AR/m_CL * Integral1;
@@ -399,7 +399,7 @@ bool LLTAnalysis::setLinearSolution(double Alpha)
 	int size = s_NLLTStations-1;
 	double dn  = (double)s_NLLTStations;
 	double di, dj, t0, st0, snt0, ch, a0, slope, tau, yob, twist;
-	double cs = m_pWing->RootChord();
+	double cs = m_pWing->rootChord();
 	double b  = m_pWing->m_PlanformSpan;
 
 	for (i=1; i<s_NLLTStations; i++)
@@ -932,7 +932,7 @@ PlaneOpp* LLTAnalysis::createPlaneOpp(double QInf, double Alpha, bool bWingOut)
 
 	//add the data to the polar object
 	if(PlaneOpp::s_bKeepOutOpps || !pNewPOpp->m_bOut)
-		m_pWPolar->AddPlaneOpPoint(pNewPOpp);
+		m_pWPolar->addPlaneOpPoint(pNewPOpp);
 
 	return pNewPOpp;
 }
