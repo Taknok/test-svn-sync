@@ -8023,12 +8023,10 @@ void QMiarex::updateView()
 			}
 			else if (m_iView==XFLR5::WOPPVIEW)
 			{
-
 				createWOppCurves();
 			}
 			else if (m_iView==XFLR5::WCPVIEW)
 			{
-
 				createCpCurves();
 			}
 			else if(m_iView==XFLR5::STABTIMEVIEW)
