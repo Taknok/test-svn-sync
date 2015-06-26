@@ -59,9 +59,9 @@ void LineDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, 
 //	else                                        painter->setBrush(QBrush(Qt::black));
 
 	painter->drawLine(option.rect.x()+3,
-					  option.rect.y() + option.rect.height()/2,
+					  option.rect.center().y(),
 					  option.rect.width()-6,
-					  option.rect.y() + option.rect.height()/2);
+					  option.rect.center().y());
 
 
 	if(m_pCbBox && ((LineCbBox*)m_pCbBox)->points())

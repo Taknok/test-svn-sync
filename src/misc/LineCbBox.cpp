@@ -93,7 +93,7 @@ void LineCbBox::paintEvent (QPaintEvent *event)
 	LinePen.setStyle(getStyle(m_LineStyle.m_Style));
 	LinePen.setWidth(m_LineStyle.m_Width);
 	painter.setPen(LinePen);
-	painter.drawLine(r.left()+5, r.height()/2, r.width()-10, r.height()/2);
+	painter.drawLine(r.left()+5, r.center().y(), r.width()-10, r.center().y());
 
 	if(m_bShowPoints)
 	{

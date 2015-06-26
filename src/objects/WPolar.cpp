@@ -178,6 +178,7 @@ void WPolar::insertPOppDataAt(int pos, PlaneOpp *pPOpp)
 	m_Pm.insert(pos, 0.0);
 	m_Ym.insert(pos, 0.0);
 	m_VertPower.insert(pos, 0.0);
+	m_HorizontalPower.insert(pos, 0.0);
 	m_Oswald.insert(pos, 0.0);
 	m_SM.insert(pos, 0.0);
 	
@@ -239,6 +240,7 @@ void WPolar::insertDataAt(int pos, double Alpha, double Beta, double QInf, doubl
 	m_Pm.insert(pos, 0.0);
 	m_Ym.insert(pos, 0.0);
 	m_VertPower.insert(pos, 0.0);
+	m_HorizontalPower.insert(pos, 0.0);
 	m_Oswald.insert(pos, 0.0);
 	m_SM.insert(pos, 0.0);
 
@@ -391,6 +393,7 @@ void WPolar::calculatePoint(int i)
 
 	//power for horizontal flight
 	m_VertPower[i] = m_Mass * 9.81 * m_Vz[i];
+	m_HorizontalPower[i] = m_FX[i] * m_Vx[i];
 
 	double AR      = m_referenceSpanLength*m_referenceSpanLength/m_referenceArea;
 
@@ -776,6 +779,9 @@ void * WPolar::getWPlrVariable(int iVar)
 		case 43:
 			pVar = &m_SpiralDamping;
 			break;
+		case 44:
+			pVar = &m_HorizontalPower;
+			break;
 		default:
 			pVar = &m_Alpha;
 			break;
@@ -935,6 +941,9 @@ QString WPolar::variableName(int iVar)
 		case 43:
 			return "Spiral Damping";
 			break;
+		case 44:
+			return "Fx.Vx (W)";
+			break;
 		default:
 			return "";
 	}
@@ -988,6 +997,7 @@ void WPolar::remove(int i)
 	m_ZCP.removeAt(i);
 	m_MaxBending.removeAt(i);
 	m_VertPower.removeAt(i);
+	m_HorizontalPower.removeAt(i);
 
 	m_Oswald.removeAt(i);
 	m_SM.removeAt(i);
@@ -1054,6 +1064,7 @@ void WPolar::clearData()
 	m_ZCP.clear();
 	m_MaxBending.clear();
 	m_VertPower.clear();
+	m_HorizontalPower.clear();
 
 	m_Oswald.clear();
 	m_SM.clear();
@@ -1391,6 +1402,7 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
 			m_Pm.append(0.0);
 			m_Ym.append(0.0);
 			m_VertPower.append(0.0);
+			m_HorizontalPower.append(0.0);
 			m_Oswald.append(0.0);
 			m_SM.append(0.0);
 			
@@ -2088,6 +2100,7 @@ void WPolar::copy(WPolar *pWPolar)
 		m_Ym.append(        pWPolar-> m_Ym[i]);
 		m_Rm.append(        pWPolar-> m_Rm[i]);
 		m_VertPower.append( pWPolar-> m_VertPower[i]);
+		m_HorizontalPower.append( pWPolar-> m_HorizontalPower[i]);
 
 		m_Oswald.append(    pWPolar-> m_Oswald[i]);
 		m_SM.append(        pWPolar-> m_SM[i]);

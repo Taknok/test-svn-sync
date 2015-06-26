@@ -234,11 +234,12 @@ public:
 	QList <double>  m_ShortPeriodDamping;      /**< the damping of the short period mode, as a result of stability analysis only */
 	QList <double>  m_ShortPeriodFrequency;    /**< the frequency of the short period mode, as a result of stability analysis only */
 
-	QList <double>  m_SM;                      /**< pseudo Static Margin = (XCP-XCmRef)/m.a.c; */
-	QList <double>  m_SpiralDamping;           /**< the damping of the spiral mode, as a result of stability analysis only */
-	QList <double>  m_TCd;        /**< total drag coef. */
-	QList <double>  m_VCm;        /**< Viscous Pitching Moment coefficient */
-	QList <double>  m_VertPower;  /**< the power for steady horizontal flight = m.g.Vz */
+	QList <double>  m_SM;                      /**< pseudo Static Margin = (XCP-XCmRef)/m.a.c; >*/
+	QList <double>  m_SpiralDamping;           /**< the damping of the spiral mode, as a result of stability analysis only >*/
+	QList <double>  m_TCd;                     /**< the total drag coeficient >*/
+	QList <double>  m_VCm;                     /**< the viscous Pitching Moment coefficient >*/
+	QList <double>  m_VertPower;               /**< the power for steady horizontal flight = m.g.Vz >*/
+	QList <double>  m_HorizontalPower;         /**< the power for steady horizontal flight = Fx.Vx >*/
 
 	QList <double>  m_Vx;         /**< the horizontal component of the velocity */
 	QList <double>  m_VYm;        /**< Profile yawing Moment coefficient */
