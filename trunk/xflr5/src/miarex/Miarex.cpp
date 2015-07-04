@@ -4525,7 +4525,7 @@ void QMiarex::onScaleWing()
 /**
  * Exports the data from the active WOpp to the text file
  */
-void QMiarex::onExportCurWOpp()
+void QMiarex::onExportCurPOpp()
 {
 	if(!m_pCurPOpp)return ;// is there anything to export ?
 
@@ -4543,7 +4543,7 @@ void QMiarex::onExportCurWOpp()
 
 	strong.replace(" ","");
 	strong.replace("/", "");
-	FileName = QFileDialog::getSaveFileName(this, tr("Export Wing OpPoint"),
+	FileName = QFileDialog::getSaveFileName(this, tr("Export OpPoint"),
 											Settings::s_LastDirName +'/'+strong,
 											tr("Text File (*.txt);;Comma Separated Values (*.csv)"),
 											&filter);
@@ -4571,62 +4571,62 @@ void QMiarex::onExportCurWOpp()
 
 	if(m_pCurPOpp)		out << m_pCurPOpp->planeName()<< "\n";
 
-	strong = m_pCurPOpp->m_pPlaneWOpp[0]->m_PlrName + "\n";
+	strong = m_pCurPOpp->polarName() + "\n";
 	out << strong;
-	strong = QString("QInf  ="+sep+" %1 "+sep).arg(m_pCurPOpp->m_pPlaneWOpp[0]->m_QInf*Units::mstoUnit(),11, 'f', 6);
+	strong = QString("QInf  ="+sep+" %1 "+sep).arg(m_pCurPOpp->m_QInf*Units::mstoUnit(),11, 'f', 6);
 	Units::getSpeedUnitLabel(str);
 	strong+=str+"\n";
 	out << strong;
 
-	strong = QString("Alpha = "+sep+"%1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->m_Alpha,11, 'f', 6);
+	strong = QString("Alpha = "+sep+"%1\n").arg(m_pCurPOpp->m_Alpha,11, 'f', 6);
 	out << strong;
 
-	strong = QString("Beta  = "+sep+"%1").arg(m_pCurPOpp->m_pPlaneWOpp[0]->m_Beta, 8,'f',3);
+	strong = QString("Beta  = "+sep+"%1").arg(m_pCurPOpp->m_Beta, 8,'f',3);
 	strong += QString::fromUtf8("°\n");
 	out << strong;
 
-	strong = QString("Phi   = "+sep+"%1").arg(m_pCurPOpp->m_pPlaneWOpp[0]->m_Phi, 8,'f',3);
+	strong = QString("Phi   = "+sep+"%1").arg(m_pCurPOpp->m_Bank, 8,'f',3);
 	strong += QString::fromUtf8("°\n");
 	out << strong;
 
 	strong = QString("Ctrl  = "+sep+"%1\n").arg(m_pCurPOpp->m_Ctrl, 8,'f',3);
 	out << strong;
 
-	strong = QString("CL    = "+sep+"%1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->m_CL,11, 'f', 6);
+	strong = QString("CL    = "+sep+"%1\n").arg(m_pCurPOpp->m_CL,11, 'f', 6);
 	out << strong;
 
-	strong = QString("Cy    = "+sep+"%1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->m_CY,11, 'f', 6);
+	strong = QString("Cy    = "+sep+"%1\n").arg(m_pCurPOpp->m_CY,11, 'f', 6);
 	out << strong;
 
 	if(exporttype==XFLR5::TXT) strong = QString(tr("Cd    = %1     ICd   = %2     PCd   = %3\n"))
-		.arg(m_pCurPOpp->m_pPlaneWOpp[0]->m_ICD+m_pCurPOpp->m_pPlaneWOpp[0]->m_VCD,11, 'f', 6)
-		.arg(m_pCurPOpp->m_pPlaneWOpp[0]->m_ICD,11, 'f', 6)
-		.arg(m_pCurPOpp->m_pPlaneWOpp[0]->m_VCD,11, 'f', 6);
+		.arg(m_pCurPOpp->m_ICD+m_pCurPOpp->m_VCD,11, 'f', 6)
+		.arg(m_pCurPOpp->m_ICD,11, 'f', 6)
+		.arg(m_pCurPOpp->m_VCD,11, 'f', 6);
 	else        strong = QString(tr("Cd=,%1,ICd=, %2,PCd=, %3\n"))
-		.arg(m_pCurPOpp->m_pPlaneWOpp[0]->m_ICD+m_pCurPOpp->m_pPlaneWOpp[0]->m_VCD,11, 'f', 6)
-		.arg(m_pCurPOpp->m_pPlaneWOpp[0]->m_ICD,11, 'f', 6)
-		.arg(m_pCurPOpp->m_pPlaneWOpp[0]->m_VCD,11, 'f', 6);
+		.arg(m_pCurPOpp->m_ICD+m_pCurPOpp->m_VCD,11, 'f', 6)
+		.arg(m_pCurPOpp->m_ICD,11, 'f', 6)
+		.arg(m_pCurPOpp->m_VCD,11, 'f', 6);
 	out << strong;
 
-	strong = QString(tr("Cl   = ")+sep+"%1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->m_GRm, 11,'g',6);
+	strong = QString(tr("Cl   = ")+sep+"%1\n").arg(m_pCurPOpp->m_GRm, 11,'g',6);
 	out << strong;
-	strong = QString(tr("Cm   =")+sep+" %1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->m_GCm, 11,'g',6);
-	out << strong;
-
-	if(exporttype==XFLR5::TXT) strong = QString(tr("ICn   = %1     PCn   = %2 \n")).arg(m_pCurPOpp->m_pPlaneWOpp[0]->m_IYm, 11, 'f', 6).arg(m_pCurPOpp->m_pPlaneWOpp[0]->m_GYm, 11, 'f', 6);
-	else                strong = QString(tr("ICn=, %1,PCn=, %2\n")).arg(m_pCurPOpp->m_pPlaneWOpp[0]->m_IYm, 11, 'f', 6).arg(m_pCurPOpp->m_pPlaneWOpp[0]->m_GYm, 11, 'f', 6);
+	strong = QString(tr("Cm   =")+sep+" %1\n").arg(m_pCurPOpp->m_GCm, 11,'g',6);
 	out << strong;
 
-	if(exporttype==XFLR5::TXT) strong = QString("XCP   = %1     YCP   = %2     ZCP   = %3  \n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->m_CP.x, 11, 'f', 6).arg(m_pCurPOpp->m_pPlaneWOpp[0]->m_CP.y, 11, 'f', 6).arg(m_pCurPOpp->m_pPlaneWOpp[0]->m_CP.z, 11, 'f', 6);
-	else                strong = QString("XCP=, %1, YCP=, %2, ZCP=, %3 \n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->m_CP.x, 11, 'f', 6).arg(m_pCurPOpp->m_pPlaneWOpp[0]->m_CP.y, 11, 'f', 6).arg(m_pCurPOpp->m_pPlaneWOpp[0]->m_CP.z, 11, 'f', 6);
+	if(exporttype==XFLR5::TXT) strong = QString(tr("ICn   = %1     PCn   = %2 \n")).arg(m_pCurPOpp->m_IYm, 11, 'f', 6).arg(m_pCurPOpp->m_GYm, 11, 'f', 6);
+	else                       strong = QString(tr("ICn=, %1,PCn=, %2\n")).arg(m_pCurPOpp->m_IYm, 11, 'f', 6).arg(m_pCurPOpp->m_GYm, 11, 'f', 6);
+	out << strong;
+
+	if(exporttype==XFLR5::TXT) strong = QString("XCP   = %1     YCP   = %2     ZCP   = %3  \n").arg(m_pCurPOpp->m_CP.x, 11, 'f', 6).arg(m_pCurPOpp->m_CP.y, 11, 'f', 6).arg(m_pCurPOpp->m_CP.z, 11, 'f', 6);
+	else                       strong = QString("XCP=, %1, YCP=, %2, ZCP=, %3 \n").arg(m_pCurPOpp->m_CP.x, 11, 'f', 6).arg(m_pCurPOpp->m_CP.y, 11, 'f', 6).arg(m_pCurPOpp->m_CP.z, 11, 'f', 6);
 	out << strong;
 
 	if(exporttype==XFLR5::TXT) strong = QString("XNP   = %1\n").arg(m_pCurPOpp->m_XNP, 11, 'f', 6);
-	else                strong = QString("XNP=, %1\n").arg(m_pCurPOpp->m_XNP, 11, 'f', 6);
+	else                       strong = QString("XNP=, %1\n").arg(m_pCurPOpp->m_XNP, 11, 'f', 6);
 	out << strong;
 
 
-	strong = QString(tr("Bend. =")+sep+" %1\n\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->m_MaxBending, 11, 'f', 6);
+	strong = QString(tr("Bending =")+sep+" %1\n\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->m_MaxBending, 11, 'f', 6);
 	out << strong;
 
 	if(m_pCurWPolar->polarType()==XFLR5::STABILITYPOLAR)
@@ -4635,7 +4635,7 @@ void QMiarex::onExportCurWOpp()
 		if(exporttype==XFLR5::TXT)
 		{
 //			complex<double> c, angle;
-			double u0 = m_pCurPOpp->m_pPlaneWOpp[0]->m_QInf;
+			double u0 = m_pCurPOpp->m_QInf;
 			double mac = m_pCurWPolar->referenceArea();
 			double b = m_pCurWPolar->referenceSpanLength();
 			
@@ -4720,55 +4720,6 @@ void QMiarex::onExportCurWOpp()
 
 			strong = "\n";
 			out << strong;
-			
-
-/*			strong = QString("CLa = %1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->CLa, 11, 'f', 6);		out << strong;
-			strong = QString("CLq = %1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->CLq, 11, 'f', 6);		out << strong;
-			strong = QString("Cma = %1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->Cma, 11, 'f', 6);		out << strong;
-			strong = QString("Cmq = %1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->Cmq, 11, 'f', 6);		out << strong;
-			strong = QString("CYb = %1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->CYb, 11, 'f', 6);		out << strong;
-			strong = QString("CYp = %1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->CYp, 11, 'f', 6);		out << strong;
-			strong = QString("CYr = %1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->CYr, 11, 'f', 6);		out << strong;
-			strong = QString("Clb = %1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->Clb, 11, 'f', 6);		out << strong;
-			strong = QString("Clp = %1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->Clp, 11, 'f', 6);		out << strong;
-			strong = QString("Clr = %1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->Clr, 11, 'f', 6);		out << strong;
-			strong = QString("Cnb = %1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->Cnb, 11, 'f', 6);		out << strong;
-			strong = QString("Cnp = %1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->Cnp, 11, 'f', 6);		out << strong;
-			strong = QString("Cnr = %1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->Cnr, 11, 'f', 6);		out << strong;
-			if(m_pCurPOpp->m_pPlaneWOpp[0]->m_nControls>0)
-			{
-				strong = QString("CXe = %1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->CXe, 11, 'f', 6);		out << strong;
-				strong = QString("CYe = %1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->CYe, 11, 'f', 6);		out << strong;
-				strong = QString("CZe = %1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->CZe, 11, 'f', 6);		out << strong;
-				strong = QString("CLe = %1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->CLe, 11, 'f', 6);		out << strong;
-				strong = QString("CMe = %1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->CMe, 11, 'f', 6);		out << strong;
-				strong = QString("CNe = %1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->CNe, 11, 'f', 6);		out << strong;
-			}*/
-		}
-		else
-		{
-/*			strong = QString("CLa =,%1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->CLa, 11, 'f', 6);		out << strong;
-			strong = QString("CLq =,%1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->CLq, 11, 'f', 6);		out << strong;
-			strong = QString("Cma =,%1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->Cma, 11, 'f', 6);		out << strong;
-			strong = QString("Cmq =,%1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->Cmq, 11, 'f', 6);		out << strong;
-			strong = QString("CYb =,%1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->CYb, 11, 'f', 6);		out << strong;
-			strong = QString("CYp =,%1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->CYp, 11, 'f', 6);		out << strong;
-			strong = QString("CYr =,%1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->CYr, 11, 'f', 6);		out << strong;
-			strong = QString("Clb =,%1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->Clb, 11, 'f', 6);		out << strong;
-			strong = QString("Clp =,%1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->Clp, 11, 'f', 6);		out << strong;
-			strong = QString("Clr =,%1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->Clr, 11, 'f', 6);		out << strong;
-			strong = QString("Cnb =,%1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->Cnb, 11, 'f', 6);		out << strong;
-			strong = QString("Cnp =,%1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->Cnp, 11, 'f', 6);		out << strong;
-			strong = QString("Cnr =,%1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->Cnr, 11, 'f', 6);		out << strong;*/
-			if(m_pCurPOpp->m_pPlaneWOpp[0]->m_nControls>0)
-			{
-/*				strong = QString("CXe =, %1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->CXe, 11, 'f', 6);		out << strong;
-				strong = QString("CYe =, %1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->CYe, 11, 'f', 6);		out << strong;
-				strong = QString("CZe =, %1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->CZe, 11, 'f', 6);		out << strong;
-				strong = QString("CLe =, %1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->CLe, 11, 'f', 6);		out << strong;
-				strong = QString("CMe =, %1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->CMe, 11, 'f', 6);		out << strong;
-				strong = QString("CNe =, %1\n").arg(m_pCurPOpp->m_pPlaneWOpp[0]->CNe, 11, 'f', 6);		out << strong;*/
-			}
 		}
 		out << "\n\n";
 	}
@@ -4787,7 +4738,7 @@ void QMiarex::onExportCurWOpp()
 				out << strong;
 			}
 			out << ("\n");
-			m_pWOpp[iw]->Export(out, exporttype);
+			m_pWOpp[iw]->exportWOpp(out, exporttype);
 		}
 	}
 
@@ -4801,11 +4752,11 @@ void QMiarex::onExportCurWOpp()
 		{
 			coef = 2;
 		}
-		if(exporttype==1) out << tr(" Panel     CtrlPt.x        CtrlPt.y        CtrlPt.z             Cp\n");
-		else              out << tr("Panel,CtrlPt.x,CtrlPt.y,CtrlPt.z,Cp\n");
+		if(exporttype==XFLR5::TXT) out << tr(" Panel     CtrlPt.x        CtrlPt.y        CtrlPt.z       Nx      Ny       Nz        Area       Cp\n");
+		else                       out << tr("Panel,CtrlPt.x,CtrlPt.y,CtrlPt.z,Nx,Ny,Nz,Area,Cp\n");
 
-		if(exporttype==1) Format = "%1     %2     %3     %4     %5\n";
-		else              Format = "%1,%2,%3,%4,%5\n";
+		if(exporttype==XFLR5::TXT) Format = "%1     %2     %3     %4     %5     %6     %7     %8     %9\n";
+		else                       Format = "%1, %2, %3, %4, %5, %6, %7, %8, %9\n";
 
 
 		for(int iw=0; iw<MAXWINGS; iw++)
@@ -4830,10 +4781,14 @@ void QMiarex::onExportCurWOpp()
 							if(m_pWingList[iw]->m_pWingPanel[p].m_Pos==MIDSURFACE)
 							{
 								strong = QString(Format).arg(p,4)
-														 .arg(m_pWingList[iw]->m_pWingPanel[p].CtrlPt.x,11,'e',3)
-														 .arg(m_pWingList[iw]->m_pWingPanel[p].CtrlPt.y,11,'e',3)
-														 .arg(m_pWingList[iw]->m_pWingPanel[p].CtrlPt.z,11,'e',3)
-														 .arg(m_pWOpp[iw]->m_dCp[p],11,'f',4);
+														.arg(m_pWingList[iw]->m_pWingPanel[p].CtrlPt.x,11,'e',3)
+														.arg(m_pWingList[iw]->m_pWingPanel[p].CtrlPt.y,11,'e',3)
+														.arg(m_pWingList[iw]->m_pWingPanel[p].CtrlPt.z,11,'e',3)
+														.arg(m_pWingList[iw]->m_pWingPanel[p].Normal.x,11,'f',3)
+														.arg(m_pWingList[iw]->m_pWingPanel[p].Normal.y,11,'f',3)
+														.arg(m_pWingList[iw]->m_pWingPanel[p].Normal.z,11,'f',3)
+														.arg(m_pWingList[iw]->m_pWingPanel[p].Area,11,'e',3)
+														.arg(m_pWOpp[iw]->m_dCp[p],11,'f',4);
 							}
 							else
 							{
@@ -4841,6 +4796,10 @@ void QMiarex::onExportCurWOpp()
 														.arg(m_pWingList[iw]->m_pWingPanel[p].CollPt.x,11,'e',3)
 														.arg(m_pWingList[iw]->m_pWingPanel[p].CollPt.y,11,'e',3)
 														.arg(m_pWingList[iw]->m_pWingPanel[p].CollPt.z,11,'e',3)
+														.arg(m_pWingList[iw]->m_pWingPanel[p].Normal.x,11,'f',3)
+														.arg(m_pWingList[iw]->m_pWingPanel[p].Normal.y,11,'f',3)
+														.arg(m_pWingList[iw]->m_pWingPanel[p].Normal.z,11,'f',3)
+														.arg(m_pWingList[iw]->m_pWingPanel[p].Area,11,'e',3)
 														.arg(m_pWOpp[iw]->m_dCp[p],11,'f',4);
 							}
 							out << strong;
@@ -4855,8 +4814,8 @@ void QMiarex::onExportCurWOpp()
 	out << ("\n\n");
 
 	XFile.close();
-
 }
+
 
 
 /**

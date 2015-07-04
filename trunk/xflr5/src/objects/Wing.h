@@ -259,7 +259,7 @@ private:
 	double m_XTrTop[MAXSPANSTATIONS+1];        /**< the upper transition location at stations */
 	double m_XTrBot[MAXSPANSTATIONS+1];        /**< the lower transition location at stations */
 	double m_Cm[MAXSPANSTATIONS+1];            /**< the total pitching moment coefficient at stations */
-	double m_CmAirf[MAXSPANSTATIONS+1];        /**< the viscous part of the pitching moment coefficient at stations @todo check and rename*/
+	double m_CmAirfoil[MAXSPANSTATIONS+1];     /**< the pitching moment coefficient at stations w.r.t. the chord's quarter point */
 	double m_XCPSpanRel[MAXSPANSTATIONS+1];    /**< the relative position of the strip's center of pressure at stations as a % of the local chord length*/
 	double m_XCPSpanAbs[MAXSPANSTATIONS+1];    /**< the absolute position of the strip's center of pressure pos at stations */
 	double m_Chord[MAXSPANSTATIONS+1];         /**< the chord at stations */
