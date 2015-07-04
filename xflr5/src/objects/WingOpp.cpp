@@ -109,13 +109,13 @@ WingOpp::~WingOpp()
  * @param FileType TXT if the data is separated by spaces, CSV for a comma separator
  * @return true if the export was successful, false otherwise.
  */
-bool WingOpp::Export(QTextStream &out, XFLR5::enumTextFileType FileType)
+bool WingOpp::exportWOpp(QTextStream &out, XFLR5::enumTextFileType FileType)
 {
 	QString Header, strong, Format;
 	int k;
 
-	if(FileType==XFLR5::TXT) Header = "  y-span        Chord      Ai         Cl        PCd          ICd        CmGeom      CmAirf      XTrtop    XTrBot      XCP       BM\n";
-	else                     Header = "  y-span,Chord,Ai,Cl,PCd,ICd,CmGeom,CmAirf,XTrtop,XTrBot,XCP,BM\n";
+	if(FileType==XFLR5::TXT) Header = "  y-span        Chord      Ai         Cl        PCd          ICd        CmGeom    CmAirf@chord/4    XTrtop    XTrBot      XCP       BM\n";
+	else                     Header = "  y-span,Chord,Ai,Cl,PCd,ICd,CmGeom,CmAirf@chord/4,XTrtop,XTrBot,XCP,BM\n";
 	out << Header;
 
 	int nStart;
@@ -686,7 +686,7 @@ void WingOpp::createWOpp(void *pWingPtr, void *pWPolarPtr)
 		m_PCd[l] =           pWing->m_PCd[l];
 		m_ICd[l] =           pWing->m_ICd[l];
 		m_Cm[l] =            pWing->m_Cm[l];
-		m_CmAirf[l] =        pWing->m_CmAirf[l];
+		m_CmAirf[l] =        pWing->m_CmAirfoil[l];
 		m_XCPSpanRel[l] =    pWing->m_XCPSpanRel[l];
 		m_XCPSpanAbs[l] =    pWing->m_XCPSpanAbs[l];
 		m_Re[l] =            pWing->m_Re[l];

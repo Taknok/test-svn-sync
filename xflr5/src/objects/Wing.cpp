@@ -45,7 +45,7 @@ Wing::Wing()
 	memset(m_PCd, 0, sizeof(m_PCd));
 	memset(m_ICd, 0, sizeof(m_ICd));
 	memset(m_Cm, 0, sizeof(m_Cm));
-	memset(m_CmAirf, 0, sizeof(m_CmAirf));
+	memset(m_CmAirfoil, 0, sizeof(m_CmAirfoil));
 	memset(m_XCPSpanAbs, 0, sizeof(m_XCPSpanAbs));
 	memset(m_XCPSpanRel, 0, sizeof(m_XCPSpanRel));
 	memset(m_Re, 0, sizeof(m_Re));
@@ -2446,7 +2446,7 @@ void Wing::PanelComputeOnBody(double QInf, double Alpha, double *Cp, double *Gam
 			StripForce.set(0.0,0.0,0.0);
 			GeomMoment.set(0.0,0.0,0.0);
 
-			m_CmAirf[m]    = 0.0;
+			m_CmAirfoil[m]    = 0.0;
 			CPStrip        = 0.0;
 
 			m_Surface.at(j)->GetLeadingPt(k, PtLEStrip);
@@ -2491,7 +2491,7 @@ void Wing::PanelComputeOnBody(double QInf, double Alpha, double *Cp, double *Gam
 
 
 				Moment0 = LeverArmPanelC4 * PanelForce;                             // N.m/q
-				m_CmAirf[m]  += Moment0.y;                                          // N.m/q
+				m_CmAirfoil[m]  += Moment0.y;                                       // N.m/q
 
 				GeomMoment += LeverArmPanelCoG * PanelForce;                        // N.m/q
 
@@ -2538,7 +2538,7 @@ void Wing::PanelComputeOnBody(double QInf, double Alpha, double *Cp, double *Gam
 			m_VCm += DragMoment.y;
 			m_ICm += GeomMoment.y;
 
-			m_CmAirf[m]    *= 1.0                          /m_Chord[m]/m_StripArea[m];
+			m_CmAirfoil[m] *= 1.0                          /m_Chord[m]/m_StripArea[m];
 			m_Cm[m]         = (GeomMoment.y + DragMoment.y)/m_Chord[m]/m_StripArea[m];
 			m++;
 		}
