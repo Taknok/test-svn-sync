@@ -1119,7 +1119,7 @@ void MainFrame::createMiarexActions()
 
 	exportCurWOpp = new QAction(tr("Export..."), this);
 	exportCurWOpp->setStatusTip(tr("Export the current operating point to a text or csv file"));
-	connect(exportCurWOpp, SIGNAL(triggered()), pMiarex, SLOT(onExportCurWOpp()));
+	connect(exportCurWOpp, SIGNAL(triggered()), pMiarex, SLOT(onExportCurPOpp()));
 
 
 	scaleWingAct = new QAction(tr("Scale Wing"), this);

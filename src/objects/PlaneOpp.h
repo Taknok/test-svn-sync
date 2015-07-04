@@ -114,14 +114,14 @@ private:
 	LineStyle m_LineStyle;
 
 public:
-	XFLR5::enumPolarType m_WPolarType;		  /**< defines the type of the parent WPolar */
-	WingOpp *m_pPlaneWOpp[MAXWINGS];  /**< An array of pointers to the four WingOpp objects associated to the four wings */
-	double m_QInf;                    /**< the freestream velocity */
-	double *m_dG;                       /**< the VLM vortex strengths, or the panel's doublet's strengths */
-	double *m_dSigma;                   /**< the panel's source strengths */
-	double *m_dCp;                      /**< the array of Cp coefficients */
-	int m_NPanels;                    /**<  the number of VLM or 3D-panels */
-	int m_nControls;	              /**< the number of control surfaces associated to the WingOpp */
+	XFLR5::enumPolarType m_WPolarType;   /**< defines the type of the parent WPolar */
+	WingOpp *m_pPlaneWOpp[MAXWINGS];      /**< An array of pointers to the four WingOpp objects associated to the four wings */
+	double m_QInf;                        /**< the freestream velocity */
+	double *m_dG;                         /**< the VLM vortex strengths, or the panel's doublet's strengths */
+	double *m_dSigma;                     /**< the panel's source strengths */
+	double *m_dCp;                        /**< the array of Cp coefficients */
+	int m_NPanels;                        /**<  the number of VLM or 3D-panels */
+	int m_nControls;	                  /**< the number of control surfaces associated to the WingOpp */
 
 	complex<double> m_EigenValue[8];      /**< the eigenvalues of the four longitudinal and four lateral modes */
 	complex<double> m_EigenVector[8][4];  /**< the longitudinal and lateral eigenvectors (4 longitudinal + 4 lateral) x 4 components */
