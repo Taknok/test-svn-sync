@@ -3193,7 +3193,7 @@ void GL3dBodyDlg::SetControls()
 }
 
 
-bool GL3dBodyDlg::InitDialog(Body *pBody)
+bool GL3dBodyDlg::initDialog(Body *pBody)
 {
 	if(!pBody) return false;
 

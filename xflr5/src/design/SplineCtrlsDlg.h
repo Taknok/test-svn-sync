@@ -44,21 +44,21 @@ public:
 	SplineCtrlsDlg(QWidget *pParent);
 	~SplineCtrlsDlg();
 
-	void InitDialog();
+	void initDialog();
 
 private slots:
-	void OnOK();
-	void OnUpdate();
+	void onOK();
+	void onUpdate();
 
 private:
 	void keyPressEvent(QKeyEvent *event);
 	void showEvent(QShowEvent *event);
 
-	void FillPointLists();
-	void ReadData();
-	void SetControls();
-	void SetupLayout();
-	void UpdateSplines();
+	void fillPointLists();
+	void readData();
+	void setControls();
+	void setupLayout();
+	void updateSplines();
 
 
 	DoubleEdit	*m_pctrlOutExtrados;

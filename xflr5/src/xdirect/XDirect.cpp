@@ -4857,14 +4857,14 @@ void QXDirect::setupLayout()
 			lab200->setAlignment(Qt::AlignRight |Qt::AlignVCenter);
 			lab201->setAlignment(Qt::AlignRight |Qt::AlignVCenter);
 			lab202->setAlignment(Qt::AlignRight |Qt::AlignVCenter);
-			CurveStyleLayout->addWidget(lab200,1,1);
-			CurveStyleLayout->addWidget(lab201,2,1);
-			CurveStyleLayout->addWidget(lab202,3,1);
-			CurveStyleLayout->addWidget(lab203,4,1);
-			CurveStyleLayout->addWidget(m_pctrlCurveStyle,1,2);
-			CurveStyleLayout->addWidget(m_pctrlCurveWidth,2,2);
-			CurveStyleLayout->addWidget(m_pctrlCurveColor,3,2);
-			CurveStyleLayout->addWidget(m_pctrlPointStyle,4,2);
+			CurveStyleLayout->addWidget(lab203,1,1);
+			CurveStyleLayout->addWidget(lab200,2,1);
+			CurveStyleLayout->addWidget(lab201,3,1);
+			CurveStyleLayout->addWidget(lab202,4,1);
+			CurveStyleLayout->addWidget(m_pctrlPointStyle,1,2);
+			CurveStyleLayout->addWidget(m_pctrlCurveStyle,2,2);
+			CurveStyleLayout->addWidget(m_pctrlCurveWidth,3,2);
+			CurveStyleLayout->addWidget(m_pctrlCurveColor,4,2);
 			CurveStyleLayout->setColumnStretch(2,5);
 
 			pCurveGroup->addLayout(pCurveDisplay);

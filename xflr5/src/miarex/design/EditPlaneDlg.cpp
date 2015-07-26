@@ -25,7 +25,7 @@
 #include "../../misc/GLLightDlg.h"
 #include "../../misc/W3dPrefsDlg.h"
 #include "../view/GLCreateBodyLists.h"
-
+#include "wingseldlg.h"
 #include "EditPlaneDlg.h"
 
 QSize EditPlaneDlg::s_WindowSize(1031,783);
@@ -80,15 +80,14 @@ EditPlaneDlg::EditPlaneDlg(QWidget *pParent) : QDialog(pParent)
  */
 void EditPlaneDlg::showEvent(QShowEvent *event)
 {
-	m_pHorizontalSplitter->restoreState(m_HorizontalSplitterSizes);
-
 	move(s_WindowPosition);
 	resize(s_WindowSize);
+	m_pHorizontalSplitter->restoreState(m_HorizontalSplitterSizes);
 
 	if(s_bWindowMaximized) setWindowState(Qt::WindowMaximized);
 
-	m_pGLWidget->update();
 
+	m_pGLWidget->update();
 	event->accept();
 }
 
@@ -132,15 +131,23 @@ void EditPlaneDlg::resizeEvent(QResizeEvent *event)
 		paintPlaneLegend(paint, m_pPlane, m_pGLWidget->rect());
 
 	}
+
 	event->accept();
 }
 
 
 void EditPlaneDlg::contextMenuEvent(QContextMenuEvent *event)
 {
-	// Display the context menu
-
-	if(m_iActiveFrame<0 && m_iActivePointMass<0 && m_iActiveSection<0) return;
+	if(m_iActiveFrame<0 && m_iActivePointMass<0 && m_iActiveSection<0)
+	{
+		WingSelDlg wsDlg;
+		wsDlg.initDialog(m_pPlane);
+		wsDlg.move(event->globalPos());
+		wsDlg.exec();
+		fillPlaneTreeView();
+		onRedraw();
+		return;
+	}
 	if(m_iActiveFrame>=0)
 	{
 		m_pInsertBefore->setText(tr("Insert body frame before"));
@@ -385,7 +392,7 @@ void EditPlaneDlg::setupLayout()
 		pMainLayout->addWidget(m_pHorizontalSplitter);
 	}
 	setLayout(pMainLayout);
-	Connect();
+	connectSignals();
 //	resize(s_Size);
 }
 
@@ -522,10 +529,8 @@ void EditPlaneDlg::reject()
 void EditPlaneDlg::glDraw3D()
 {
 //	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-
 	m_pGLWidget->makeCurrent();
 	glClearColor(Settings::s_BackgroundColor.redF(), Settings::s_BackgroundColor.greenF(), Settings::s_BackgroundColor.blueF(),0.0);
-
 
 	if(m_bResetglSectionHighlight || m_bResetglPlane)
 	{
@@ -630,7 +635,7 @@ void EditPlaneDlg::glRenderView()
 		glCallList(SECTIONHIGHLIGHT);
 	}
 
-	if(GLLightDlg::IsLightOn())
+	if(GLLightDlg::isLightOn())
 	{
 		glEnable(GL_LIGHTING);
 		glEnable(GL_LIGHT0);
@@ -920,7 +925,7 @@ void EditPlaneDlg::glCreateWingSectionHighlight(Wing *pWing)
 
 
 
-void EditPlaneDlg::Connect()
+void EditPlaneDlg::connectSignals()
 {
 	connect(m_pInsertBefore,  SIGNAL(triggered()), this, SLOT(onInsertBefore()));
 	connect(m_pInsertAfter,   SIGNAL(triggered()), this, SLOT(onInsertAfter()));
@@ -958,6 +963,8 @@ void EditPlaneDlg::on3DReset()
 
 void EditPlaneDlg::onRedraw()
 {
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
 	readPlaneTree();
 
 	m_pPlane->createSurfaces();
@@ -965,21 +972,24 @@ void EditPlaneDlg::onRedraw()
 	m_bResetglPlane = true;
 	m_bChanged = true;
 
+	m_PixText.fill(Qt::transparent);
 	QPainter paint(&m_PixText);
 	paintPlaneLegend(paint, m_pPlane, m_pGLWidget->rect());
 
-	m_pGLWidget->update();
+	m_pGLWidget->repaint();
+	QApplication::restoreOverrideCursor();
+
 }
 
 
 
-bool EditPlaneDlg::IntersectObject(CVector AA,  CVector U, CVector &I)
+bool EditPlaneDlg::intersectObject(CVector AA,  CVector U, CVector &I)
 {
 	Wing *pWingList[MAXWINGS] = {m_pPlane->wing(), m_pPlane->wing2(), m_pPlane->stab(), m_pPlane->fin()};
 
 	for(int iw=0; iw<MAXWINGS; iw++)
 	{
-		if (pWingList[iw] && pWingList[iw]->IntersectWing(AA, U, I)) return true;
+		if (pWingList[iw] && pWingList[iw]->intersectWing(AA, U, I)) return true;
 	}
 
 	if(m_pPlane->body())
@@ -1171,7 +1181,7 @@ void EditPlaneDlg::fillWingTreeView(int iw, QList<QStandardItem*> &planeRootItem
 	dataItem.at(2)->setData(XFLR5::BOOL, Qt::UserRole);
 	wingFolder.first()->appendRow(dataItem);
 
-	dataItem = prepareDoubleRow("Pitch angle", "Angle", m_pPlane->WingTiltAngle(iw),"");
+	dataItem = prepareDoubleRow("Pitch angle", "Angle", m_pPlane->WingTiltAngle(iw),QString::fromUtf8("°"));
 	dataItem.at(2)->setData(XFLR5::DOUBLE, Qt::UserRole);
 	wingFolder.first()->appendRow(dataItem);
 
@@ -1508,20 +1518,48 @@ void EditPlaneDlg::readViewLevel(QModelIndex indexLevel)
 			else if(object.compare("Wing", Qt::CaseInsensitive)==0)
 			{
 				Wing newWing;
-				newWing.ClearPointMasses();
+				newWing.clearPointMasses();
 				newWing.clearWingSections();
-				newWing.ClearSurfaces();
-				newWing.rWingName() = value;
+				newWing.clearSurfaces();
+				newWing.wingType() = wingType(value);
 				CVector wingPos;
 				double wingTiltAngle;
 				readWingTree(&newWing, wingPos, wingTiltAngle, indexLevel.child(0,0));
 
-
-				if(newWing.isFin()) iWing = 3;
+/*				if(newWing.isFin()) iWing = 3;
 				else if(iw==0)      iWing = 0;
-				else if(iw==1)      iWing = 2;
+				else if(iw==1)      iWing = 2;*/
 
-				m_pPlane->m_Wing[iWing].Duplicate(&newWing);
+				switch(newWing.wingType())
+				{
+					case XFLR5::MAINWING:
+					{
+						iWing=0;
+						break;
+					}
+					case XFLR5::SECONDWING:
+					{
+						iWing=1;
+						break;
+					}
+					case XFLR5::ELEVATOR:
+					{
+						iWing=2;
+						break;
+					}
+					case XFLR5::FIN:
+					{
+						iWing=3;
+						break;
+					}
+					default:
+					{
+						iWing=0;
+						break;
+					}
+				}
+
+				m_pPlane->m_Wing[iWing].duplicate(&newWing);
 				m_pPlane->WingLE(iWing)        = wingPos;
 				m_pPlane->WingTiltAngle(iWing) = wingTiltAngle;
 				iw++;
@@ -1608,7 +1646,6 @@ void EditPlaneDlg::readWingTree(Wing *pWing, CVector &pos, double &tiltAngle, QM
 			QString value = indexLevel.sibling(indexLevel.row(),2).data().toString();
 
 			if     (field.compare("Name", Qt::CaseInsensitive)==0)     pWing->rWingName() = value;
-			else if(field.compare("Type", Qt::CaseInsensitive)==0)     pWing->wingType() = wingType(value);
 			else if(field.compare("Angle", Qt::CaseInsensitive)==0)    tiltAngle = value.toDouble();
 			else if(field.compare("Symetric", Qt::CaseInsensitive)==0) pWing->isSymetric() = stringToBool(value);
 		}
@@ -1969,7 +2006,8 @@ void EditPlaneDlg::identifySelection(const QModelIndex &indexSel)
 		else if(object.compare("Wing", Qt::CaseInsensitive)==0)
 		{
 			m_enumActiveObject = WING;
-			m_enumActiveWingType = wingType(indexLevel.sibling(indexLevel.row(),2).data().toString());
+			value = indexLevel.sibling(indexLevel.row(),2).data().toString();
+			m_enumActiveWingType = wingType(value);
 			return;
 		}
 		else if(object.compare("Body", Qt::CaseInsensitive)==0)
@@ -2000,7 +2038,7 @@ void EditPlaneDlg::onInsertBefore()
 
 		int n = m_iActiveSection;
 
-		pWing->InsertSection(m_iActiveSection);
+		pWing->insertSection(m_iActiveSection);
 
 		pWing->YPosition(n) = (pWing->YPosition(n+1) + pWing->YPosition(n-1)) /2.0;
 		pWing->Chord(n)     = (pWing->Chord(n+1)     + pWing->Chord(n-1))     /2.0;
@@ -2086,7 +2124,7 @@ void EditPlaneDlg::onInsertAfter()
 
 		if(n<0) n=pWing->NWingSection();
 
-		pWing->InsertSection(m_iActiveSection+1);
+		pWing->insertSection(m_iActiveSection+1);
 
 		if(n<pWing->NWingSection()-2)
 		{
@@ -2195,7 +2233,7 @@ void EditPlaneDlg::onDelete()
 		m_pStruct->closePersistentEditor(m_pStruct->currentIndex());
 
 		int ny = pWing->NYPanels(m_iActiveSection-1) + pWing->NYPanels(m_iActiveSection);
-		pWing->RemoveWingSection(m_iActiveSection);
+		pWing->removeWingSection(m_iActiveSection);
 		pWing->NYPanels(m_iActiveSection-1) = ny;
 
 		fillPlaneTreeView();

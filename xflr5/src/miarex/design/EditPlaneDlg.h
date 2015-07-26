@@ -55,8 +55,8 @@ public:
 	void keyPressEvent(QKeyEvent *event);
 	void contextMenuEvent(QContextMenuEvent *event);
 
-	bool IntersectObject(CVector AA,  CVector U, CVector &I);
-	void Connect();
+	bool intersectObject(CVector AA,  CVector U, CVector &I);
+	void connectSignals();
 	void glDraw3D();
 	void glRenderView();
 	void glCreateWingSectionHighlight(Wing *pWing);

@@ -153,7 +153,8 @@ SOURCES += \
 	src/viewwidgets/miarextilewidget.cpp \
 	src/viewwidgets/xdirecttilewidget.cpp \
 	src/viewwidgets/wingwidget.cpp \
-	src/viewwidgets/twodwidget.cpp
+	src/viewwidgets/twodwidget.cpp \
+    src/miarex/design/wingseldlg.cpp
 
 
 HEADERS += \
@@ -289,7 +290,8 @@ HEADERS += \
 	src/viewwidgets/xdirecttilewidget.h \
 	src/viewwidgets/wingwidget.h \
 	src/viewwidgets/twodwidget.h \
-    src/objects/linestyle.h
+    src/objects/linestyle.h \
+    src/miarex/design/wingseldlg.h
 
 
 TRANSLATIONS = translations/xflr5v6.ts \

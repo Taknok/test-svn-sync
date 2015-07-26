@@ -72,7 +72,7 @@ Settings::Settings(QWidget *pParent) : QDialog(pParent)
 
 	connect(m_pctrlStyles, SIGNAL(activated(const QString &)),this, SLOT(OnStyleChanged(const QString &)));
 
-	connect(m_pctrlBackColor, SIGNAL(clicked()),this, SLOT(OnBackgroundColor()));
+	connect(m_pctrlBackColor, SIGNAL(clicked()),this, SLOT(onBackgroundColor()));
 	connect(m_pctrlGraphSettings, SIGNAL(clicked()),this, SLOT(onGraphSettings()));
 	connect(m_pctrlTextClr, SIGNAL(clickedTB()),this, SLOT(onTextColor()));
 	connect(m_pctrlTextFont, SIGNAL(clicked()),this, SLOT(onTextFont()));
@@ -253,7 +253,7 @@ void Settings::OnStyleChanged(const QString &StyleName)
 }
 
 
-void Settings::OnBackgroundColor()
+void Settings::onBackgroundColor()
 {
 	QColor Color = QColorDialog::getColor(s_BackgroundColor);
 	if(Color.isValid()) s_BackgroundColor = Color;

@@ -84,14 +84,6 @@ private:
 	QString m_WingName;	// the wing name to which the WingOpp belongs
 	QString m_PlrName; 	// the polar name to which the WingOpp belongs
 
-//	bool m_bIsVisible;          /**< true if the WingOpp's curve is visible in the active view */
-//	bool m_bShowPoints;         /**< true if the WingOpp's curve points are visible in the active graphs */
-
-//	int m_Style;                /**< the index of the style with which to draw the WingOpp's curve */
-//	int m_Width;                /**< the width with which to draw the WingOpp's curve */
-//	QColor m_Color;             /**< the color with which to draw the WingOpp's curve */
-
-//	int m_WingType;		//0 for wing, 1 for elevator, 2 for fin
 	int m_nWakeNodes;	        /**< the number of wake nodes */
 	int m_NXWakePanels;	        /**< the number of wake panels */
 	int m_nControls;	        /**< the number of control surfaces associated to the WingOpp */

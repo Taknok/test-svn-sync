@@ -1208,7 +1208,7 @@ void PanelAnalysis::computeFarField(double QInf, double Alpha0, double AlphaDelt
 			if(m_pWingList[iw])
 			{
 				WingForce.set(0.0, 0.0,		0.0);
-				m_pWingList[iw]->PanelTrefftz(this, QInf, alpha, Mu, Sigma, pos, WingForce, IDrag, m_pWPolar, m_pWakePanel, m_pWakeNode);
+				m_pWingList[iw]->panelTrefftz(this, QInf, alpha, Mu, Sigma, pos, WingForce, IDrag, m_pWPolar, m_pWakePanel, m_pWakeNode);
 
 				//save the results... will save another FF calculation when computing operating point
 				m_WingForce[q*MAXWINGS+iw] = WingForce;
@@ -1497,7 +1497,7 @@ void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
 				IDrag += m_WingIDrag[qrhs*MAXWINGS+iw];
 
 				//Get viscous interpolations
-				m_pWingList[iw]->PanelComputeViscous(QInf, m_pWPolar, WingVDrag, m_pWPolar->bViscous(), OutString);
+				m_pWingList[iw]->panelComputeViscous(QInf, m_pWPolar, WingVDrag, m_pWPolar->bViscous(), OutString);
 				VDrag += WingVDrag;
 
 				traceLog(OutString);
@@ -1505,12 +1505,12 @@ void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
 
 
 				//Compute moment coefficients
-				m_pWingList[iw]->PanelComputeOnBody(QInf, Alpha, m_Cp+qrhs*m_MatSize+pos, m_Mu+qrhs*m_MatSize+pos,
+				m_pWingList[iw]->panelComputeOnBody(QInf, Alpha, m_Cp+qrhs*m_MatSize+pos, m_Mu+qrhs*m_MatSize+pos,
 													XCP, YCP, ZCP, m_GCm, m_VCm, m_ICm, m_GRm, m_GYm, m_VYm, m_IYm,
 													m_pWPolar, m_CoG);
 
 
-				m_pWingList[iw]->PanelComputeBending(m_pWPolar->bThinSurfaces());
+				m_pWingList[iw]->panelComputeBending(m_pWPolar->bThinSurfaces());
 
 				pos += m_pWingList[iw]->m_MatSize;
 			}

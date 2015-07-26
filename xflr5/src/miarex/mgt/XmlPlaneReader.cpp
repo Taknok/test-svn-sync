@@ -256,7 +256,7 @@ void XMLPlaneReader::readPlane(Plane *pPlane, double lengthUnit, double massUnit
 				else if(iw==0)      iWing = 0;
 				else if(iw==1)      iWing = 2;
 
-				pPlane->m_Wing[iWing].Duplicate(&newWing);
+				pPlane->m_Wing[iWing].duplicate(&newWing);
 				pPlane->WingLE(iWing).x      = xw;
 				pPlane->WingLE(iWing).z      = zw;
 				pPlane->WingTiltAngle(iWing) = ta;
