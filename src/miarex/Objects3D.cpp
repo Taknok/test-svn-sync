@@ -2274,6 +2274,17 @@ WPolar* Objects3D::insertNewWPolar(WPolar *pNewWPolar, Plane *pCurPlane)
 					delete pPOpp;
 				}
 			}
+
+			for(int ipb=0; ipb<s_oaWPolar.size(); ipb++)
+			{
+				pOldWPolar = (WPolar*)s_oaWPolar.at(ipb);
+				if(pOldWPolar==pWPolar)
+				{
+					s_oaWPolar.removeAt(ipb);
+					delete pOldWPolar;
+					break;
+				}
+			}
 		}
 
 		//room has been made, insert the new WPolar in alphabetical order

@@ -31,7 +31,7 @@
 #include "../design/EditObjectDelegate.h"
 
 
-class ViewPolarDefDlg : public QDialog
+class EditPolarDefDlg : public QDialog
 {
 	Q_OBJECT
 
@@ -41,10 +41,10 @@ class ViewPolarDefDlg : public QDialog
 	friend class WPolar;
 
 private slots:
-	void OnOK();
+	void onOK();
 
 public:
-	ViewPolarDefDlg(QWidget *pParent=NULL);
+	EditPolarDefDlg(QWidget *pParent=NULL);
 
 	void showEvent(QShowEvent *event);
 	void hideEvent(QHideEvent *event);
@@ -55,8 +55,9 @@ public:
 	void setupLayout();
 	void setWPolarName();
 	void showWPolar();
-	void FillControlFields(QList<QStandardItem *> stabControlFolder);
-	void ReadData();
+	void fillInertiaData(QList<QStandardItem*> inertiaFolder);
+	void fillControlFields(QList<QStandardItem *> stabControlFolder);
+	void readData();
 	void readViewLevel(QModelIndex indexLevel);
 	void readControlFields(QModelIndex indexLevel);
 

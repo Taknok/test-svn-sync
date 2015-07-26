@@ -141,7 +141,7 @@ void LegendWidget::drawWPolarLegend(QPainter &painter, QPointF place, int bottom
 	painter.setPen(TextPen);
 	TextPen.setWidth(1);
 
-	QStringList strPlaneList; // we need to make an inventory of planes which have a visible polar
+	QStringList strPlaneList; // we need to make an inventory of planes which have a visible polar of the desired type
 	WPolar * pWPolar;
 	Plane *pPlane;
 
@@ -153,8 +153,11 @@ void LegendWidget::drawWPolarLegend(QPainter &painter, QPointF place, int bottom
 			pWPolar = (WPolar*)Objects3D::s_oaWPolar.at(i);
 			if (pWPolar->planeName()==pPlane->planeName() && pWPolar->visible())
 			{
-				strPlaneList.append(pPlane->planeName());
-				break;
+				if(m_MiarexView==XFLR5::WPOLARVIEW || (m_MiarexView==XFLR5::STABPOLARVIEW && pWPolar->isStabilityPolar()))
+				{
+					strPlaneList.append(pPlane->planeName());
+					break;
+				}
 			}
 		}// finished inventory
 	}
@@ -180,9 +183,10 @@ void LegendWidget::drawWPolarLegend(QPainter &painter, QPointF place, int bottom
 		{
 			pWPolar = (WPolar*)Objects3D::s_oaWPolar.at(l);
 
-			if ( pWPolar->m_Alpha.size() && pWPolar->visible()  && pWPolar->planeName()==strPlaneList.at(k))
+			if (pWPolar->m_Alpha.size() && pWPolar->visible()  && pWPolar->planeName()==strPlaneList.at(k))
 			{
-				nPlanePlrs++;
+				if(m_MiarexView==XFLR5::WPOLARVIEW || (m_MiarexView==XFLR5::STABPOLARVIEW && pWPolar->isStabilityPolar()))
+					nPlanePlrs++;
 			}
 		}
 
@@ -192,7 +196,7 @@ void LegendWidget::drawWPolarLegend(QPainter &painter, QPointF place, int bottom
 			if(abs(bottom) > abs(YPos))
 			{
 				ny++;
-				painter.drawText(place.x(), place.y() + ypos*ny-(int)(ypos/2), strPlaneList.at(k));
+				painter.drawText(place.x(), place.y() + ypos*ny- (double)ypos/2, strPlaneList.at(k));
 			}
 			else
 			{
@@ -200,7 +204,7 @@ void LegendWidget::drawWPolarLegend(QPainter &painter, QPointF place, int bottom
 				place.rx() += LegendWidth;
 				ny=1;
 				painter.setPen(TextPen);
-				painter.drawText(place.x(), place.y() + ypos*ny-(int)(ypos/2), strPlaneList.at(k));
+				painter.drawText(place.x(), place.y() + ypos*ny-(double)ypos/2, strPlaneList.at(k));
 			}
 
 			for (int nc=0; nc<Objects3D::s_oaWPolar.size(); nc++)
@@ -212,6 +216,9 @@ void LegendWidget::drawWPolarLegend(QPainter &painter, QPointF place, int bottom
 					{
 					}
 					else if(!pWPolar->visible())
+					{
+					}
+					else if(m_MiarexView!=XFLR5::WPOLARVIEW && (m_MiarexView!=XFLR5::STABPOLARVIEW || !pWPolar->isStabilityPolar()))
 					{
 					}
 					else
@@ -226,8 +233,8 @@ void LegendWidget::drawWPolarLegend(QPainter &painter, QPointF place, int bottom
 
 						if(pWPolar->points())
 						{
-							x1 = place.x() + (int)(1.0*LegendSize);
-							y1 = place.y() + (int)(1.*ypos*ny);
+							x1 = place.x() + 1.0*LegendSize;
+							y1 = place.y() + 1.*ypos*ny;
 //							painter.drawRect(x1-2, place.y()-2 + (int)(1.*ypos*ny), 4, 4);
 
 							switch(pWPolar->lineStyle().m_PointStyle)
