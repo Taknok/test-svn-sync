@@ -511,7 +511,7 @@ void GL3dWingDlg::GLRenderView()
 	glDisable(GL_LIGHTING);
 	glDisable(GL_LIGHT0);
 
-	if(ThreeDWidget::s_bOutline)
+	if(m_pGLWidget->s_bOutline)
 	{
 		glCallList(WINGSURFACES+4);
 	}
@@ -532,7 +532,7 @@ void GL3dWingDlg::GLRenderView()
 		glDisable(GL_LIGHT0);
 	}
 
-	if(ThreeDWidget::s_bSurfaces)
+	if(m_pGLWidget->s_bSurfaces)
 	{
 		glCallList(WINGSURFACES);
 	}
@@ -540,18 +540,18 @@ void GL3dWingDlg::GLRenderView()
 	glDisable(GL_LIGHTING);
 	glDisable(GL_LIGHT0);
 
-	if(ThreeDWidget::s_bVLMPanels)
+	if(m_pGLWidget->s_bVLMPanels)
 	{
-		if(!ThreeDWidget::s_bSurfaces) glCallList(MESHBACK);
+		if(!m_pGLWidget->s_bSurfaces) glCallList(MESHBACK);
 		glCallList(MESHPANELS);
 	}
 
-	if(ThreeDWidget::s_bFoilNames)
+	if(m_pGLWidget->s_bFoilNames)
 	{
 		m_pGLWidget->glDrawFoils(m_pWing);
 	}
 
-	if(ThreeDWidget::s_bShowMasses)
+	if(m_pGLWidget->s_bShowMasses)
 	{
 		m_pGLWidget->glDrawMasses(m_pWing->volumeMass(), m_pWing->CoG(), "Structural mass", m_pWing->m_PointMass);
 	}
@@ -595,12 +595,12 @@ bool GL3dWingDlg::initDialog(Wing *pWing)
 	m_pctrlLeftSide->setChecked(!m_bRightSide);
 
 
-	m_pctrlSurfaces->setChecked(ThreeDWidget::s_bSurfaces);
-	m_pctrlOutline->setChecked(ThreeDWidget::s_bOutline);
-	m_pctrlAxes->setChecked(ThreeDWidget::s_bAxes);
-	m_pctrlPanels->setChecked(ThreeDWidget::s_bVLMPanels);
-	m_pctrlFoilNames->setChecked(ThreeDWidget::s_bFoilNames);
-	m_pctrlShowMasses->setChecked(ThreeDWidget::s_bShowMasses);
+	m_pctrlSurfaces->setChecked(m_pGLWidget->s_bSurfaces);
+	m_pctrlOutline->setChecked(m_pGLWidget->s_bOutline);
+	m_pctrlAxes->setChecked(m_pGLWidget->s_bAxes);
+	m_pctrlPanels->setChecked(m_pGLWidget->s_bVLMPanels);
+	m_pctrlFoilNames->setChecked(m_pGLWidget->s_bFoilNames);
+	m_pctrlShowMasses->setChecked(m_pGLWidget->s_bShowMasses);
 
 	m_pctrlWingColor->setColor(m_pWing->m_WingColor);
 
@@ -702,7 +702,7 @@ void GL3dWingDlg::on3DReset()
 
 void GL3dWingDlg::onFoilNames()
 {
-	ThreeDWidget::s_bFoilNames = m_pctrlFoilNames->isChecked();
+	m_pGLWidget->s_bFoilNames = m_pctrlFoilNames->isChecked();
 	m_pGLWidget->update();
 }
 
@@ -710,7 +710,7 @@ void GL3dWingDlg::onFoilNames()
 
 void GL3dWingDlg::onShowMasses()
 {
-	ThreeDWidget::s_bShowMasses = m_pctrlShowMasses->isChecked();
+	m_pGLWidget->s_bShowMasses = m_pctrlShowMasses->isChecked();
 	m_pGLWidget->update();
 }
 
@@ -980,28 +980,28 @@ void GL3dWingDlg::onOK()
 
 void GL3dWingDlg::onAxes()
 {
-	ThreeDWidget::s_bAxes = m_pctrlAxes->isChecked();
+	m_pGLWidget->s_bAxes = m_pctrlAxes->isChecked();
 	m_pGLWidget->update();
 }
 
 
 void GL3dWingDlg::onSurfaces()
 {
-	ThreeDWidget::s_bSurfaces = m_pctrlSurfaces->isChecked();
+	m_pGLWidget->s_bSurfaces = m_pctrlSurfaces->isChecked();
 	m_pGLWidget->update();
 }
 
 
 void GL3dWingDlg::onOutline()
 {
-	ThreeDWidget::s_bOutline = m_pctrlOutline->isChecked();
+	m_pGLWidget->s_bOutline = m_pctrlOutline->isChecked();
 	m_pGLWidget->update();
 }
 
 
 void GL3dWingDlg::onPanels()
 {
-	ThreeDWidget::s_bVLMPanels = m_pctrlPanels->isChecked();
+	m_pGLWidget->s_bVLMPanels = m_pctrlPanels->isChecked();
 	m_pGLWidget->update();
 }
 

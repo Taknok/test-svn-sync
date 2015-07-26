@@ -80,7 +80,7 @@
 #define BODYFORCELISTBASE       6245
 
 /** @enum This enumeration lists the different 3D views used in the program, i.e. the view in Miarex, in Body edition and in Wing edition.*/
-typedef enum {GLMIAREXVIEW,GLBODYVIEW, GLWINGVIEW, GLPLANEVIEW, GLEDITBODYVIEW} enumGLView;
+typedef enum {GLMIAREXVIEW, GLBODYVIEW, GLWINGVIEW, GLPLANEVIEW, GLEDITBODYVIEW} enumGLView;
 
 
 
@@ -174,12 +174,12 @@ private:
 	static void *s_pMainFrame;  /**< A void pointer to the instance of the MainFrame widget.*/
 	void *m_pParent;            /**< A void pointer to the parent widget. */
 
-	static bool s_bOutline;                   /**< true if the surface outlines are to be displayed in the 3D view*/
-	static bool s_bSurfaces;                  /**< true if the surfaces are to be displayed in the 3D view*/
-	static bool s_bVLMPanels;                 /**< true if the panels are to be displayed in the 3D view*/
-	static bool s_bAxes;                      /**< true if the axes are to be displayed in the 3D view*/
-	static bool s_bShowMasses;                /**< true if the point masses are to be displayed on the openGL 3D view */
-	static bool s_bFoilNames;                 /**< true if the foil names are to be displayed on the openGL 3D view */
+	 bool s_bOutline;                   /**< true if the surface outlines are to be displayed in the 3D view*/
+	 bool s_bSurfaces;                  /**< true if the surfaces are to be displayed in the 3D view*/
+	 bool s_bVLMPanels;                 /**< true if the panels are to be displayed in the 3D view*/
+	 bool s_bAxes;                      /**< true if the axes are to be displayed in the 3D view*/
+	 bool s_bShowMasses;                /**< true if the point masses are to be displayed on the openGL 3D view */
+	 bool s_bFoilNames;                 /**< true if the foil names are to be displayed on the openGL 3D view */
 
 
 	GLLightDlg m_glLightDlg;

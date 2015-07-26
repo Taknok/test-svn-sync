@@ -401,11 +401,11 @@ void EditBodyDlg::initDialog(Body *pBody)
 
 	fillBodyTreeView();
 
-	m_pctrlSurfaces->setChecked(ThreeDWidget::s_bSurfaces);
-	m_pctrlOutline->setChecked(ThreeDWidget::s_bOutline);
-	m_pctrlAxes->setChecked(ThreeDWidget::s_bAxes);
-	m_pctrlPanels->setChecked(ThreeDWidget::s_bVLMPanels);
-	m_pctrlShowMasses->setChecked(ThreeDWidget::s_bShowMasses);
+	m_pctrlSurfaces->setChecked(m_pGLWidget->s_bSurfaces);
+	m_pctrlOutline->setChecked(m_pGLWidget->s_bOutline);
+	m_pctrlAxes->setChecked(m_pGLWidget->s_bAxes);
+	m_pctrlPanels->setChecked(m_pGLWidget->s_bVLMPanels);
+	m_pctrlShowMasses->setChecked(m_pGLWidget->s_bShowMasses);
 	m_pctrlClipPlanePos->setValue((int)(m_pGLWidget->m_ClipPlanePos*100.0));
 }
 
@@ -523,7 +523,7 @@ void EditBodyDlg::GLRenderView()
 	glDisable(GL_LIGHTING);
 	glDisable(GL_LIGHT0);
 
-	if(ThreeDWidget::s_bOutline)
+	if(m_pGLWidget->s_bOutline)
 	{
 		glCallList(BODYGEOMBASE+MAXBODIES);
 	}
@@ -544,7 +544,7 @@ void EditBodyDlg::GLRenderView()
 		glDisable(GL_LIGHT0);
 	}
 
-	if(ThreeDWidget::s_bSurfaces)
+	if(m_pGLWidget->s_bSurfaces)
 	{
 		glCallList(BODYGEOMBASE);
 	}
@@ -552,14 +552,14 @@ void EditBodyDlg::GLRenderView()
 	glDisable(GL_LIGHTING);
 	glDisable(GL_LIGHT0);
 
-	if(ThreeDWidget::s_bVLMPanels)
+	if(m_pGLWidget->s_bVLMPanels)
 	{
 		glCallList(BODYMESHBASE);
-		if(!ThreeDWidget::s_bSurfaces) glCallList(BODYMESHBASE+MAXBODIES);
+		if(!m_pGLWidget->s_bSurfaces) glCallList(BODYMESHBASE+MAXBODIES);
 	}
 
 
-	if(ThreeDWidget::s_bShowMasses)
+	if(m_pGLWidget->s_bShowMasses)
 	{
 		m_pGLWidget->glDrawMasses(m_pBody->volumeMass(),
 								  CVector(0.0,0.0,0.0),

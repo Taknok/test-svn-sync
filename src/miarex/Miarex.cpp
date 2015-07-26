@@ -1625,9 +1625,9 @@ void QMiarex::glCallViewLists()
 
 	if (m_pCurPOpp) glRotated(m_pCurPOpp->m_pPlaneWOpp[0]->m_Alpha, 0.0, 1.0, 0.0);
 
-	if(ThreeDWidget::s_bVLMPanels && m_pCurPlane)
+	if(m_p3dWidget->s_bVLMPanels && m_pCurPlane)
 	{
-		if(!(m_b3DCp&&m_pCurPOpp) && !ThreeDWidget::s_bSurfaces) glCallList(MESHBACK);
+		if(!(m_b3DCp&&m_pCurPOpp) && !m_p3dWidget->s_bSurfaces) glCallList(MESHBACK);
 		glCallList(MESHPANELS);
 	}
 
@@ -1665,7 +1665,7 @@ void QMiarex::glCallViewLists()
 	glDisable(GL_LIGHTING);
 	glDisable(GL_LIGHT0);
 
-	if(ThreeDWidget::s_bOutline)
+	if(m_p3dWidget->s_bOutline)
 	{
 		for(int iw=0; iw<MAXWINGS; iw++)
 			if(pWing(iw))  glCallList(WINGOUTLINE+iw);
@@ -1689,7 +1689,7 @@ void QMiarex::glCallViewLists()
 		glDisable(GL_LIGHT0);
 	}
 
-	if(ThreeDWidget::s_bSurfaces)
+	if(m_p3dWidget->s_bSurfaces)
 	{
 		for(int iw=0; iw<MAXWINGS; iw++)
 		{
@@ -1804,7 +1804,7 @@ void QMiarex::glDraw3D()
 		m_bResetglWake = false;
 	}
 
-	if(m_bResetglMesh && ThreeDWidget::s_bVLMPanels && m_iView==XFLR5::W3DVIEW)
+	if(m_bResetglMesh && m_p3dWidget->s_bVLMPanels && m_iView==XFLR5::W3DVIEW)
 	{
 		if(glIsList(MESHPANELS))
 		{
@@ -2108,12 +2108,12 @@ void QMiarex::glRenderView()
 		glCallViewLists();
 
 
-		if(ThreeDWidget::s_bFoilNames)
+		if(m_p3dWidget->s_bFoilNames)
 		{
 			for(int iw=0;iw<MAXWINGS; iw++)
 				if(pWing(iw)) m_p3dWidget->glDrawFoils(pWing(iw));
 		}
-		if(ThreeDWidget::s_bShowMasses) glDrawMasses();
+		if(m_p3dWidget->s_bShowMasses) glDrawMasses();
 
 		glLoadIdentity();
 		glDisable(GL_CLIP_PLANE1);
@@ -2413,10 +2413,10 @@ bool QMiarex::loadSettings(QSettings *pSettings)
 		m_bPanelForce   = pSettings->value("bPanelForce", false).toBool();
 		s_bICd          = pSettings->value("bICd", true).toBool();
 		s_bVCd          = pSettings->value("bVCd", true).toBool();
-		ThreeDWidget::s_bSurfaces     = pSettings->value("bSurfaces").toBool();
-		ThreeDWidget::s_bOutline      = pSettings->value("bOutline").toBool();
-		ThreeDWidget::s_bVLMPanels    = pSettings->value("bVLMPanels").toBool();
-		ThreeDWidget::s_bAxes         = pSettings->value("bAxes").toBool();
+		m_p3dWidget->s_bSurfaces     = pSettings->value("bSurfaces").toBool();
+		m_p3dWidget->s_bOutline      = pSettings->value("bOutline").toBool();
+		m_p3dWidget->s_bVLMPanels    = pSettings->value("bVLMPanels").toBool();
+		m_p3dWidget->s_bAxes         = pSettings->value("bAxes").toBool();
 		m_b3DCp         = pSettings->value("b3DCp").toBool();
 		m_bDownwash     = pSettings->value("bDownwash").toBool();
 		m_bMoments      = pSettings->value("bMoments").toBool();
@@ -2557,7 +2557,7 @@ bool QMiarex::loadSettings(QSettings *pSettings)
 
 	pSettings->endGroup();
 
-	GL3dBodyDlg::LoadSettings(pSettings);
+	GL3dBodyDlg::loadSettings(pSettings);
 
 	GLLightDlg::LoadSettings(pSettings);
 
@@ -2646,7 +2646,7 @@ void QMiarex::on3DCp()
 	m_bResetTextLegend = true;
 	if(m_b3DCp)
 	{
-		ThreeDWidget::s_bSurfaces = false;
+		m_p3dWidget->s_bSurfaces = false;
 		m_pctrlSurfaces->setChecked(false);
 		m_bPanelForce = false;
 		m_pctrlPanelForce->setChecked(false);
@@ -6092,8 +6092,8 @@ void QMiarex::onStreamlines()
  */
 void QMiarex::onSurfaces()
 {
-	ThreeDWidget::s_bSurfaces = m_pctrlSurfaces->isChecked();
-	if(ThreeDWidget::s_bSurfaces)
+	m_p3dWidget->s_bSurfaces = m_pctrlSurfaces->isChecked();
+	if(m_p3dWidget->s_bSurfaces)
 	{
 		m_b3DCp = false;
 		m_pctrlCp->setChecked(false);
@@ -6717,10 +6717,10 @@ bool QMiarex::saveSettings(QSettings *pSettings)
 		pSettings->setValue("bPanelForce", m_bPanelForce);
 		pSettings->setValue("bICd", s_bICd);
 		pSettings->setValue("bVCd", s_bVCd);
-		pSettings->setValue("bSurfaces", ThreeDWidget::s_bSurfaces);
-		pSettings->setValue("bOutline", ThreeDWidget::s_bOutline);
-		pSettings->setValue("bVLMPanels", ThreeDWidget::s_bVLMPanels);
-		pSettings->setValue("bAxes", ThreeDWidget::s_bAxes);
+		pSettings->setValue("bSurfaces", m_p3dWidget->s_bSurfaces);
+		pSettings->setValue("bOutline", m_p3dWidget->s_bOutline);
+		pSettings->setValue("bVLMPanels", m_p3dWidget->s_bVLMPanels);
+		pSettings->setValue("bAxes", m_p3dWidget->s_bAxes);
 		pSettings->setValue("b3DCp", m_b3DCp);
 		pSettings->setValue("bDownwash", m_bDownwash);
 		pSettings->setValue("bMoments", m_bMoments);
@@ -6916,7 +6916,7 @@ bool QMiarex::saveSettings(QSettings *pSettings)
 	for(int ig=0; ig<m_TimeGraph.count(); ig++) m_TimeGraph[ig]->saveSettings(pSettings);
 
 	GLLightDlg::SaveSettings(pSettings);
-	GL3dBodyDlg::SaveSettings(pSettings);
+	GL3dBodyDlg::saveSettings(pSettings);
 	EditPlaneDlg::saveSettings(pSettings);
 	EditBodyDlg::saveSettings(pSettings);
 

@@ -5859,7 +5859,7 @@ void MainFrame::checkGraphActions()
 				m_pSingleGraph[3]->setEnabled(false);
 				m_pSingleGraph[4]->setEnabled(false);
 				m_pSingleGraph[5]->setEnabled(false);
-				m_pTwoGraphs->setEnabled(false);
+				m_pTwoGraphs->setEnabled(true);
 				m_pFourGraphs->setEnabled(false);
 				m_pAllGraphs->setEnabled(false);
 				break;
