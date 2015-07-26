@@ -61,6 +61,7 @@ public:
 	void glRenderView();
 	void glCreateWingSectionHighlight(Wing *pWing);
 	void glCreateBodyFrameHighlight(Body *pBody, CVector bodyPos, int iFrame);
+	void identifySelection(const QModelIndex &indexSel);
 	void initDialog(Plane *pPlane);
 	void setupLayout();
 	void fillPlaneTreeView();
@@ -76,7 +77,8 @@ public:
 	void readWingSectionTree(Wing *pWing, QModelIndex indexLevel);
 	void readPointMassTree(PointMass *ppm, QModelIndex indexLevel);
 	void readBodyFrameTree(Body *pBody, Frame *pFrame, QModelIndex indexLevel);
-	void identifySelection(const QModelIndex &indexSel);
+	void resize3DView();
+	void resizeTreeView();
 
 	QList<QStandardItem *> prepareRow(const QString &first, const QString &second="", const QString &third="",  const QString &fourth="");
 	QList<QStandardItem *> prepareBoolRow(const QString &first, const QString &second, const bool &third);
@@ -88,15 +90,16 @@ public:
 	static bool saveSettings(QSettings *pSettings);
 
 private slots:
-	void onOK();
 	void on3DReset();
-	void onRedraw();
-	void onItemClicked(const QModelIndex &index);
-
+	void onAutoRedraw();
+	void onDelete();
+	void onEndEdit();
 	void onInsertBefore();
 	void onInsertAfter();
-	void onDelete();
-
+	void onItemClicked(const QModelIndex &index);
+	void onOK();
+	void onRedraw();
+	void onResize();
 
 private:
 	void reject();
@@ -129,6 +132,7 @@ private:
 
 	QSplitter *m_pHorizontalSplitter, *m_pLeftSideSplitter, *m_pRightSideSplitter;
 
+	QCheckBox *m_pctrlAutoRedraw;
 	QPushButton *m_pctrlRedraw;
 	QPushButton *m_pctrlReset;
 	QPushButton *pOKButton;
@@ -137,7 +141,7 @@ private:
 	bool m_bChanged;
 	bool m_bResetglSectionHighlight;
 	bool m_bResetglPlane, m_bResetglBody;
-
+	static bool s_bAutoRedraw;
 
 	enumObjectType m_enumActiveObject;
 	XFLR5::enumWingType m_enumActiveWingType;

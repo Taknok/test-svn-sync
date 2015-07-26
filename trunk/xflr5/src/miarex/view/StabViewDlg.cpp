@@ -983,10 +983,11 @@ void StabViewDlg::setControls()
 	m_pctrlRLMode4->setChecked(m_iCurrentMode%4==3);
 
 
-	m_pctrlRLMode1->setEnabled(pMiarex->m_pCurPOpp && pMiarex->m_iView>=XFLR5::W3DVIEW);
-	m_pctrlRLMode2->setEnabled(pMiarex->m_pCurPOpp && pMiarex->m_iView>=XFLR5::W3DVIEW);
-	m_pctrlRLMode3->setEnabled(pMiarex->m_pCurPOpp && pMiarex->m_iView>=XFLR5::W3DVIEW);
-	m_pctrlRLMode4->setEnabled(pMiarex->m_pCurPOpp && pMiarex->m_iView>=XFLR5::W3DVIEW);
+	bool bStabPOpp = pMiarex->m_pCurWPolar && pMiarex->m_pCurWPolar->isStabilityPolar() && pMiarex->m_pCurPOpp && pMiarex->m_iView>=XFLR5::W3DVIEW;
+	m_pctrlRLMode1->setEnabled(bStabPOpp);
+	m_pctrlRLMode2->setEnabled(bStabPOpp);
+	m_pctrlRLMode3->setEnabled(bStabPOpp);
+	m_pctrlRLMode4->setEnabled(bStabPOpp);
 
 	// Enable the time response controls only if
 	//   - the polar's type is 7

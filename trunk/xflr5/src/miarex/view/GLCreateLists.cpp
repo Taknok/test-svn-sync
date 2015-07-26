@@ -38,6 +38,7 @@
 void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 {
 	if(!pWingList) return;
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	static int j, l ;
 	static double x, xDistrib[SIDEPOINTS];
@@ -446,6 +447,8 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 			glEndList();
 		}
 	}
+	QApplication::restoreOverrideCursor();
+
 }
 
 
