@@ -970,7 +970,7 @@ void StabPolarDlg::setupLayout()
 		m_pAngleControlModel->setRowCount(10);//temporary
 		m_pAngleControlModel->setColumnCount(2);
 		m_pAngleControlModel->setHeaderData(0, Qt::Horizontal, tr("Control Name"));
-		m_pAngleControlModel->setHeaderData(1, Qt::Horizontal, tr("Gain")+QString::fromUtf8("(°/unit)"));
+		m_pAngleControlModel->setHeaderData(1, Qt::Horizontal, tr("Gain")+QString::fromUtf8("(°/ctrl)"));
 
 
 		m_pAngleControlTable->setModel(m_pAngleControlModel);

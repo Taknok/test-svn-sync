@@ -71,7 +71,7 @@ SOURCES += \
 	src/miarex/analysis/PanelAnalysisDlg.cpp \
 	src/miarex/analysis/PanelAnalysis.cpp \
 	src/miarex/analysis/AeroDataDlg.cpp \
-	src/miarex/analysis/ViewPolarDefDlg.cpp \
+	src/miarex/analysis/EditPolarDefDlg.cpp \
 	src/miarex/design/GL3dWingDlg.cpp \
 	src/miarex/design/GL3dBodyDlg.cpp \
 	src/miarex/design/PlaneDlg.cpp \
@@ -204,7 +204,7 @@ HEADERS += \
 	src/miarex/analysis/PanelAnalysis.h \
 	src/miarex/analysis/PanelAnalysisDlg.h \
 	src/miarex/analysis/AeroDataDlg.h \
-	src/miarex/analysis/ViewPolarDefDlg.h \
+	src/miarex/analysis/EditPolarDefDlg.h \
 	src/miarex/design/InertiaDlg.h \
 	src/miarex/design/GL3dBodyDlg.h \
 	src/miarex/design/WingScaleDlg.h \

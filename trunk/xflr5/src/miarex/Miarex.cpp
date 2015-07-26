@@ -49,7 +49,7 @@
 #include "./analysis/WAdvancedDlg.h"
 #include "./analysis/WPolarDlg.h"
 #include "./analysis/StabPolarDlg.h"
-#include "./analysis/ViewPolarDefDlg.h"
+#include "./analysis/EditPolarDefDlg.h"
 #include "../objects/PointMass.h"
 #include "../graph/GraphDlg.h"
 #include "../misc/ProgressDlg.h"
@@ -3427,7 +3427,7 @@ void QMiarex::onDefineWPolarObject()
 	pNewWPolar->planeName() = m_pCurPlane->planeName();
 	pNewWPolar->polarName() = WPolarDlg::s_WPolar.polarName();
 
-	ViewPolarDefDlg vpDlg((MainFrame*)s_pMainFrame);
+	EditPolarDefDlg vpDlg((MainFrame*)s_pMainFrame);
 	vpDlg.initDialog(m_pCurPlane, pNewWPolar);
 
 	if (vpDlg.exec() == QDialog::Accepted)
@@ -3551,7 +3551,7 @@ void QMiarex::onEditCurWPolarObject()
 	WPolar *pNewWPolar = new WPolar;
 	pNewWPolar->duplicateSpec(m_pCurWPolar);
 
-	ViewPolarDefDlg vpDlg((MainFrame*)s_pMainFrame);
+	EditPolarDefDlg vpDlg((MainFrame*)s_pMainFrame);
 	vpDlg.initDialog(m_pCurPlane, pNewWPolar);
 
 	if (vpDlg.exec() == QDialog::Accepted)
