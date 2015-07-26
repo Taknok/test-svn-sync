@@ -29,17 +29,17 @@
 #include <QShowEvent>
 #include <QHideEvent>
 #include <QtDebug>
-#include "ViewPolarDefDlg.h"
+#include "EditPolarDefDlg.h"
 #include "../../misc/Units.h"
 #include <xflr5.h>
 
 
-QSize ViewPolarDefDlg::s_Size(579,783);
-QPoint ViewPolarDefDlg::s_Position(231, 97);
-WPolar ViewPolarDefDlg::s_StabPolar;
+QSize EditPolarDefDlg::s_Size(579,783);
+QPoint EditPolarDefDlg::s_Position(231, 97);
+WPolar EditPolarDefDlg::s_StabPolar;
 
 
-ViewPolarDefDlg::ViewPolarDefDlg(QWidget *pParent) : QDialog(pParent)
+EditPolarDefDlg::EditPolarDefDlg(QWidget *pParent) : QDialog(pParent)
 {
 	setWindowTitle("Polar object explorer");
 	m_pWPolar = NULL;
@@ -53,7 +53,7 @@ ViewPolarDefDlg::ViewPolarDefDlg(QWidget *pParent) : QDialog(pParent)
  * Overrides the base class showEvent method. Moves the window to its former location.
  * @param event the showEvent.
  */
-void ViewPolarDefDlg::showEvent(QShowEvent *event)
+void EditPolarDefDlg::showEvent(QShowEvent *event)
 {
 	move(s_Position);
 	event->accept();
@@ -64,14 +64,14 @@ void ViewPolarDefDlg::showEvent(QShowEvent *event)
  * Overrides the base class hideEvent method. Stores the window's current position.
  * @param event the hideEvent.
  */
-void ViewPolarDefDlg::hideEvent(QHideEvent *event)
+void EditPolarDefDlg::hideEvent(QHideEvent *event)
 {
 	s_Position = pos();
 	event->accept();
 }
 
 
-void ViewPolarDefDlg::resizeEvent(QResizeEvent *event)
+void EditPolarDefDlg::resizeEvent(QResizeEvent *event)
 {
 	s_Size = size();
 	int ColumnWidth = (int)((double)(m_pStruct->width())/6);
@@ -82,7 +82,7 @@ void ViewPolarDefDlg::resizeEvent(QResizeEvent *event)
 }
 
 
-void ViewPolarDefDlg::setupLayout()
+void EditPolarDefDlg::setupLayout()
 {
 	QStringList labels;
 	labels << tr("Object") << tr("Field")<<tr("Value")<<tr("Unit");
@@ -135,7 +135,7 @@ void ViewPolarDefDlg::setupLayout()
 			pCommandButtons->addStretch(1);
 			pCommandButtons->addWidget(pCancelButton);
 			pCommandButtons->addStretch(1);
-			connect(pOKButton,     SIGNAL(clicked()), this, SLOT(OnOK()));
+			connect(pOKButton,     SIGNAL(clicked()), this, SLOT(onOK()));
 			connect(pCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 		}
 		pVBox->addLayout(pCommandButtons);
@@ -145,7 +145,7 @@ void ViewPolarDefDlg::setupLayout()
 }
 
 
-void ViewPolarDefDlg::keyPressEvent(QKeyEvent *event)
+void EditPolarDefDlg::keyPressEvent(QKeyEvent *event)
 {
 	// Prevent Return Key from closing App
 	switch (event->key())
@@ -155,13 +155,13 @@ void ViewPolarDefDlg::keyPressEvent(QKeyEvent *event)
 		{
 			if(!pOKButton->hasFocus() && !pCancelButton->hasFocus())
 			{
-				ReadData();
+				readData();
 				pOKButton->setFocus();
 				return;
 			}
 			else
 			{
-				OnOK();
+				onOK();
 				return;
 			}
 			break;
@@ -177,14 +177,14 @@ void ViewPolarDefDlg::keyPressEvent(QKeyEvent *event)
 
 
 
-void ViewPolarDefDlg::OnOK()
+void EditPolarDefDlg::onOK()
 {
-	ReadData();
+	readData();
 	accept();
 }
 
 
-QList<QStandardItem *> ViewPolarDefDlg::prepareRow(const QString &object, const QString &field, const QString &value,  const QString &unit)
+QList<QStandardItem *> EditPolarDefDlg::prepareRow(const QString &object, const QString &field, const QString &value,  const QString &unit)
 {
 	QList<QStandardItem *> rowItems;
 	rowItems << new QStandardItem(object)  << new QStandardItem(field)  << new QStandardItem(value) << new QStandardItem(unit);
@@ -193,7 +193,7 @@ QList<QStandardItem *> ViewPolarDefDlg::prepareRow(const QString &object, const 
 }
 
 
-QList<QStandardItem *> ViewPolarDefDlg::prepareBoolRow(const QString &object, const QString &field, const bool &value)
+QList<QStandardItem *> EditPolarDefDlg::prepareBoolRow(const QString &object, const QString &field, const bool &value)
 {
 	QList<QStandardItem *> rowItems;
 	rowItems.append(new QStandardItem(object));
@@ -210,7 +210,7 @@ QList<QStandardItem *> ViewPolarDefDlg::prepareBoolRow(const QString &object, co
 }
 
 
-QList<QStandardItem *> ViewPolarDefDlg::prepareIntRow(const QString &object, const QString &field, const int &value)
+QList<QStandardItem *> EditPolarDefDlg::prepareIntRow(const QString &object, const QString &field, const int &value)
 {
 	QList<QStandardItem *> rowItems;
 	rowItems.append(new QStandardItem(object));
@@ -227,7 +227,7 @@ QList<QStandardItem *> ViewPolarDefDlg::prepareIntRow(const QString &object, con
 }
 
 
-QList<QStandardItem *> ViewPolarDefDlg::prepareDoubleRow(const QString &object, const QString &field, const double &value,  const QString &unit)
+QList<QStandardItem *> EditPolarDefDlg::prepareDoubleRow(const QString &object, const QString &field, const double &value,  const QString &unit)
 {
 	QList<QStandardItem *> rowItems;
 	rowItems.append(new QStandardItem(object));
@@ -244,7 +244,7 @@ QList<QStandardItem *> ViewPolarDefDlg::prepareDoubleRow(const QString &object, 
 }
 
 
-void ViewPolarDefDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
+void EditPolarDefDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
 {
 	m_pPlane = pPlane;
 	m_pWPolar = pWPolar;
@@ -255,7 +255,7 @@ void ViewPolarDefDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
 }
 
 
-void ViewPolarDefDlg::showWPolar()
+void EditPolarDefDlg::showWPolar()
 {
 	QList<QStandardItem*> dataItem;
 
@@ -301,35 +301,7 @@ void ViewPolarDefDlg::showWPolar()
 
 	QList<QStandardItem*> inertiaFolder = prepareRow("Inertia");
 	rootItem->appendRow(inertiaFolder);
-	{
-		dataItem = prepareBoolRow("", "Use plane inertia", m_pWPolar->bAutoInertia());
-		inertiaFolder.first()->appendRow(dataItem);
-
-		dataItem = prepareDoubleRow("", "Mass", m_pWPolar->mass()*Units::kgtoUnit(), Units::weightUnitLabel());
-		inertiaFolder.first()->appendRow(dataItem);
-
-		QList<QStandardItem*> cogFolder = prepareRow("Center of Gravity");
-		inertiaFolder.first()->appendRow(cogFolder);
-		{
-			dataItem = prepareDoubleRow("", "x", m_pWPolar->CoG().x*Units::mtoUnit(), Units::lengthUnitLabel());
-			cogFolder.first()->appendRow(dataItem);
-			dataItem = prepareDoubleRow("", "z", m_pWPolar->CoG().z*Units::mtoUnit(), Units::lengthUnitLabel());
-			cogFolder.first()->appendRow(dataItem);
-		}
-
-		QList<QStandardItem*> inertiaTensorFolder = prepareRow("Inertia tensor");
-		inertiaFolder.first()->appendRow(inertiaTensorFolder);
-		{
-			dataItem = prepareDoubleRow("", "Ixx", m_pWPolar->CoGIxx(), QString::fromUtf8("kg.m²"));
-			inertiaTensorFolder.first()->appendRow(dataItem);
-			dataItem = prepareDoubleRow("", "Iyy", m_pWPolar->CoGIyy(), QString::fromUtf8("kg.m²"));
-			inertiaTensorFolder.first()->appendRow(dataItem);
-			dataItem = prepareDoubleRow("", "Izz", m_pWPolar->CoGIzz(), QString::fromUtf8("kg.m²"));
-			inertiaTensorFolder.first()->appendRow(dataItem);
-			dataItem = prepareDoubleRow("", "Ixz", m_pWPolar->CoGIxx(), QString::fromUtf8("kg.m²"));
-			inertiaTensorFolder.first()->appendRow(dataItem);
-		}
-	}
+	fillInertiaData(inertiaFolder);
 
 	QList<QStandardItem*> refDimensionsFolder = prepareRow("Reference Dimensions");
 	rootItem->appendRow(refDimensionsFolder);
@@ -371,27 +343,56 @@ void ViewPolarDefDlg::showWPolar()
 		}
 	}
 
-//	if(m_pWPolar->isStabilityPolar())
-	{
-		QList<QStandardItem*> stabControlFolder = prepareRow("Stability Controls");
-		rootItem->appendRow(stabControlFolder);
-		FillControlFields(stabControlFolder);
-	}
+	QList<QStandardItem*> stabControlFolder = prepareRow("Stability Controls");
+	rootItem->appendRow(stabControlFolder);
+	fillControlFields(stabControlFolder);
 }
 
 
+void EditPolarDefDlg::fillInertiaData(QList<QStandardItem *> inertiaFolder)
+{
+	QList<QStandardItem*> dataItem;
+
+	dataItem = prepareBoolRow("", "Use plane inertia", m_pWPolar->bAutoInertia());
+	inertiaFolder.first()->appendRow(dataItem);
+
+	dataItem = prepareDoubleRow("", "Mass", m_pWPolar->mass()*Units::kgtoUnit(), Units::weightUnitLabel());
+	inertiaFolder.first()->appendRow(dataItem);
+
+	QList<QStandardItem*> cogFolder = prepareRow("Center of Gravity");
+	inertiaFolder.first()->appendRow(cogFolder);
+	{
+		dataItem = prepareDoubleRow("", "x", m_pWPolar->CoG().x*Units::mtoUnit(), Units::lengthUnitLabel());
+		cogFolder.first()->appendRow(dataItem);
+		dataItem = prepareDoubleRow("", "z", m_pWPolar->CoG().z*Units::mtoUnit(), Units::lengthUnitLabel());
+		cogFolder.first()->appendRow(dataItem);
+	}
+
+	QList<QStandardItem*> inertiaTensorFolder = prepareRow("Inertia tensor");
+	inertiaFolder.first()->appendRow(inertiaTensorFolder);
+	{
+		dataItem = prepareDoubleRow("", "Ixx", m_pWPolar->CoGIxx(), QString::fromUtf8("kg.m²"));
+		inertiaTensorFolder.first()->appendRow(dataItem);
+		dataItem = prepareDoubleRow("", "Iyy", m_pWPolar->CoGIyy(), QString::fromUtf8("kg.m²"));
+		inertiaTensorFolder.first()->appendRow(dataItem);
+		dataItem = prepareDoubleRow("", "Izz", m_pWPolar->CoGIzz(), QString::fromUtf8("kg.m²"));
+		inertiaTensorFolder.first()->appendRow(dataItem);
+		dataItem = prepareDoubleRow("", "Ixz", m_pWPolar->CoGIxx(), QString::fromUtf8("kg.m²"));
+		inertiaTensorFolder.first()->appendRow(dataItem);
+	}
+
+}
 
 
-void ViewPolarDefDlg::ReadData()
+void EditPolarDefDlg::readData()
 {
 	readViewLevel(m_pModel->index(0,0));
-
 	return;
 }
 
 
 
-void ViewPolarDefDlg::readViewLevel(QModelIndex indexLevel)
+void EditPolarDefDlg::readViewLevel(QModelIndex indexLevel)
 {
 	do
 	{
@@ -410,16 +411,16 @@ void ViewPolarDefDlg::readViewLevel(QModelIndex indexLevel)
 			QModelIndex dataIndex = indexLevel.sibling(indexLevel.row(),2);
 			QString value = indexLevel.sibling(indexLevel.row(),2).data().toString();
 
-			if     (field.compare("Name")==0)                    m_pWPolar->polarName() = value;
-			else if(field.compare("Type")==0)                    m_pWPolar->polarType() = polarType(value);
+			if     (field.compare("Name")==0)                    m_pWPolar->polarName()            = value;
+			else if(field.compare("Type")==0)                    m_pWPolar->polarType()            = polarType(value);
 			else if(field.compare("Velocity")==0)                m_pWPolar->velocity()             = dataIndex.data().toDouble()/Units::mstoUnit();
 			else if(field.compare("Alpha")==0)                   m_pWPolar->Alpha()                = dataIndex.data().toDouble();
 			else if(field.compare("Beta")==0)                    m_pWPolar->Beta()                 = dataIndex.data().toDouble();
-			else if(field.compare("Method")==0)                  m_pWPolar->analysisMethod()  = analysisMethod(value);
-			else if(field.compare("Viscous")==0)                 m_pWPolar->bViscous()          = stringToBool(value);
-			else if(field.compare("Tilted geometry")==0)         m_pWPolar->bTilted()           = stringToBool(value);
-			else if(field.compare("Ignore body panels")==0)      m_pWPolar->bIgnoreBodyPanels() = stringToBool(value);
-			else if(field.compare("Use plane inertia")==0)       m_pWPolar->bAutoInertia()      = stringToBool(value);
+			else if(field.compare("Method")==0)                  m_pWPolar->analysisMethod()       = analysisMethod(value);
+			else if(field.compare("Viscous")==0)                 m_pWPolar->bViscous()             = stringToBool(value);
+			else if(field.compare("Tilted geometry")==0)         m_pWPolar->bTilted()              = stringToBool(value);
+			else if(field.compare("Ignore body panels")==0)      m_pWPolar->bIgnoreBodyPanels()    = stringToBool(value);
+			else if(field.compare("Use plane inertia")==0)       m_pWPolar->bAutoInertia()         = stringToBool(value);
 			else if(field.compare("Mass")==0)                    m_pWPolar->mass()                 = dataIndex.data().toDouble()/Units::kgtoUnit();
 			else if(field.compare("x")==0)                       m_pWPolar->CoG().x                = dataIndex.data().toDouble()/Units::mtoUnit();
 			else if(field.compare("z")==0)                       m_pWPolar->CoG().z                = dataIndex.data().toDouble()/Units::mtoUnit();
@@ -427,13 +428,13 @@ void ViewPolarDefDlg::readViewLevel(QModelIndex indexLevel)
 			else if(field.compare("Iyy")==0)                     m_pWPolar->CoGIyy()               = dataIndex.data().toDouble();
 			else if(field.compare("Izz")==0)                     m_pWPolar->CoGIzz()               = dataIndex.data().toDouble();
 			else if(field.compare("Ixz")==0)                     m_pWPolar->CoGIxz()               = dataIndex.data().toDouble();
-			else if(field.compare("Area")==0)                    m_pWPolar->referenceArea() = referenceDimension(value);
+			else if(field.compare("Area")==0)                    m_pWPolar->referenceArea()        = referenceDimension(value);
 			else if(field.compare("Reference Area")==0)          m_pWPolar->referenceArea()        = dataIndex.data().toDouble()/Units::m2toUnit();
 			else if(field.compare("Reference Span Length")==0)   m_pWPolar->referenceSpanLength()  = dataIndex.data().toDouble()/Units::mtoUnit();
 			else if(field.compare("Reference Chord Length")==0)  m_pWPolar->referenceChordLength() = dataIndex.data().toDouble()/Units::mtoUnit();
 			else if(field.compare("Density")==0)                 m_pWPolar->density()              = dataIndex.data().toDouble();
 			else if(field.compare("Viscosity")==0)               m_pWPolar->viscosity()            = dataIndex.data().toDouble();
-			else if(field.compare("Ground effect")==0)           m_pWPolar->bGround() = stringToBool(value);
+			else if(field.compare("Ground effect")==0)           m_pWPolar->bGround()              = stringToBool(value);
 			else if(field.compare("Height flight")==0)           m_pWPolar->groundHeight()         = dataIndex.data().toDouble()/Units::mtoUnit();
 
 		}
@@ -444,141 +445,205 @@ void ViewPolarDefDlg::readViewLevel(QModelIndex indexLevel)
 }
 
 
-void ViewPolarDefDlg::FillControlFields(QList<QStandardItem*> stabControlFolder)
+
+void EditPolarDefDlg::readControlFields(QModelIndex indexLevel)
 {
-	QList<QStandardItem*> dataItem;
-	QString str, strong;
-	QModelIndex ind;
-	int i;
-	Units::getLengthUnitLabel(str);
-
-	m_pWPolar->m_nControls = 0;
-	if(!m_pPlane->isWing())
-	{
-		if(m_pWPolar->m_ControlGain.size()<=m_pWPolar->m_nControls)m_pWPolar->m_ControlGain.append(0.0);
-
-		dataItem = prepareDoubleRow("", "Wing Tilt ", m_pWPolar->m_ControlGain[0], QString::fromUtf8("°/unit"));
-		stabControlFolder.first()->appendRow(dataItem);
-
-		++m_pWPolar->m_nControls;
-
-		if(m_pPlane->stab())
-		{
-			if(m_pWPolar->m_ControlGain.size()<=m_pWPolar->m_nControls)m_pWPolar->m_ControlGain.append(0.0);
-			dataItem = prepareDoubleRow("", "Elevator Tilt ", m_pWPolar->m_ControlGain[1], QString::fromUtf8("°/unit"));
-			stabControlFolder.first()->appendRow(dataItem);
-
-			++m_pWPolar->m_nControls;
-		}
-	}
-
-	for(i=0; i<m_pPlane->wing()->nFlaps(); i++)
-	{
-		if(m_pWPolar->m_ControlGain.size()<=m_pWPolar->m_nControls)m_pWPolar->m_ControlGain.append(0.0);
-		dataItem = prepareDoubleRow("", QString("Wing Flap %1 ").arg(i+1), m_pWPolar->m_ControlGain[m_pWPolar->m_nControls], QString::fromUtf8("°/unit"));
-		stabControlFolder.first()->appendRow(dataItem);
-		++m_pWPolar->m_nControls;
-	}
-
-
-	if(m_pPlane->stab())
-	{
-		for(i=0; i<m_pPlane->stab()->nFlaps(); i++)
-		{
-			if(m_pWPolar->m_ControlGain.size()<=m_pWPolar->m_nControls)m_pWPolar->m_ControlGain.append(0.0);
-			dataItem = prepareDoubleRow("", QString("Elevator Flap %1 ").arg(i+1), m_pWPolar->m_ControlGain[m_pWPolar->m_nControls], QString::fromUtf8("°/unit"));
-			stabControlFolder.first()->appendRow(dataItem);
-		}
-		m_pWPolar->m_nControls += m_pPlane->stab()->nFlaps();
-	}
-
-	if(m_pPlane->fin())
-	{
-		for(i=0; i<m_pPlane->fin()->nFlaps(); i++)
-		{
-			if(m_pWPolar->m_ControlGain.size()<=m_pWPolar->m_nControls)m_pWPolar->m_ControlGain.append(0.0);
-			dataItem = prepareDoubleRow("", QString("Fin Flap %1 ").arg(i+1), m_pWPolar->m_ControlGain[m_pWPolar->m_nControls], QString::fromUtf8("°/unit"));
-			stabControlFolder.first()->appendRow(dataItem);
-			++m_pWPolar->m_nControls;
-		}
-	}
-}
-
-
-
-void ViewPolarDefDlg::readControlFields(QModelIndex indexLevel)
-{
-	QString  field, value;
 	if(!indexLevel.isValid()) return;
 
-	int nControls = 0;
-
-
-	if(!m_pPlane->isWing())
+	do
 	{
-		field = indexLevel.sibling(indexLevel.row(),1).data().toString();
-		value = indexLevel.sibling(indexLevel.row(),2).data().toString();
+		QString object = indexLevel.sibling(indexLevel.row(),0).data().toString();
+		QString field  = indexLevel.sibling(indexLevel.row(),1).data().toString();
+		QString value  = indexLevel.sibling(indexLevel.row(),2).data().toString();
 
-		m_pWPolar->m_ControlGain[0] = value.toDouble();
-		++nControls;
+		if(indexLevel.child(0,0).isValid())
+		{
+
+			if(object.compare("Mass gains", Qt::CaseInsensitive)==0)
+			{
+				//no more children
+				QModelIndex childIndex= indexLevel.child(0,0);
+				do
+				{
+					QString childObject = childIndex.sibling(childIndex.row(),0).data().toString();
+					QString childField = childIndex.sibling(childIndex.row(),1).data().toString();
+					QString childValue = childIndex.sibling(childIndex.row(),2).data().toString();
+
+					QModelIndex dataIndex = childIndex.sibling(childIndex.row(),2);
+
+					if     (childField.compare("Mass")==0)   m_pWPolar->m_inertiaGain[0]  = dataIndex.data().toInt()/Units::kgtoUnit();
+					else if(childField.compare("CoG.x")==0)  m_pWPolar->m_inertiaGain[1]  = dataIndex.data().toDouble()/Units::mtoUnit();
+					else if(childField.compare("CoG.z")==0)  m_pWPolar->m_inertiaGain[2]  = dataIndex.data().toDouble()/Units::mtoUnit();
+					else if(childField.compare("Ixx")==0)    m_pWPolar->m_inertiaGain[3]  = dataIndex.data().toDouble()/Units::kgtoUnit()/Units::mtoUnit()/Units::mtoUnit();
+					else if(childField.compare("Iyy")==0)    m_pWPolar->m_inertiaGain[4]  = dataIndex.data().toDouble()/Units::kgtoUnit()/Units::mtoUnit()/Units::mtoUnit();
+					else if(childField.compare("Izz")==0)    m_pWPolar->m_inertiaGain[5]  = dataIndex.data().toDouble()/Units::kgtoUnit()/Units::mtoUnit()/Units::mtoUnit();
+					else if(childField.compare("Ixz")==0)    m_pWPolar->m_inertiaGain[6]  = dataIndex.data().toDouble()/Units::kgtoUnit()/Units::mtoUnit()/Units::mtoUnit();
+					childIndex = childIndex.sibling(childIndex.row()+1,0);
+
+				} while(childIndex.isValid());
+			}
+			else  if(object.compare("Angle gains", Qt::CaseInsensitive)==0)
+			{
+				QString field, value;
+				int nControls = 0;
+				QModelIndex childIndex= indexLevel.child(0,0);
+				field = childIndex.sibling(childIndex.row(),1).data().toString();
+				value = childIndex.sibling(childIndex.row(),2).data().toString();
+
+				if(!m_pPlane->isWing())
+				{
+					m_pWPolar->m_ControlGain[0] = value.toDouble();
+					++nControls;
+
+					if(m_pPlane->stab())
+					{
+						childIndex = childIndex.sibling(childIndex.row()+1,0);
+						if(childIndex.isValid())
+						{
+							field = childIndex.sibling(childIndex.row(),1).data().toString();
+							value = childIndex.sibling(childIndex.row(),2).data().toString();
+							m_pWPolar->m_ControlGain[1] = value.toDouble();
+							++nControls;
+						}
+						else return;
+					}
+				}
+
+				for(int i=0; i<m_pPlane->wing()->nFlaps(); i++)
+				{
+					childIndex = childIndex.sibling(childIndex.row()+1,0);
+					if(childIndex.isValid())
+					{
+						field = childIndex.sibling(childIndex.row(),1).data().toString();
+						value = childIndex.sibling(childIndex.row(),2).data().toString();
+						m_pWPolar->m_ControlGain[nControls] = value.toDouble();
+						++nControls;
+					}
+					else return;
+				}
+
+
+				if(m_pPlane->stab())
+				{
+					for(int i=0; i<m_pPlane->stab()->nFlaps(); i++)
+					{
+						childIndex = childIndex.sibling(childIndex.row()+1,0);
+						if(childIndex.isValid())
+						{
+							field = childIndex.sibling(childIndex.row(),1).data().toString();
+							value = childIndex.sibling(childIndex.row(),2).data().toString();
+							m_pWPolar->m_ControlGain[nControls] = value.toDouble();
+							++nControls;
+						}
+						else return;
+					}
+				}
+
+				if(m_pPlane->fin())
+				{
+					for(int i=0; i<m_pPlane->fin()->nFlaps(); i++)
+					{
+						childIndex = childIndex.sibling(childIndex.row()+1,0);
+						if(childIndex.isValid())
+						{
+							field = childIndex.sibling(childIndex.row(),1).data().toString();
+							value = childIndex.sibling(childIndex.row(),2).data().toString();
+							m_pWPolar->m_ControlGain[nControls] = value.toDouble();
+							++nControls;
+						}
+						else return;
+					}
+				}
+			}
+		}
+
+		indexLevel = indexLevel.sibling(indexLevel.row()+1,0);
+
+	} while(indexLevel.isValid());
+}
+
+
+
+void EditPolarDefDlg::fillControlFields(QList<QStandardItem*> stabControlFolder)
+{
+	QList<QStandardItem*> dataItem;
+	QString strLength, strMass;
+
+	int i;
+	strLength = Units::lengthUnitLabel();
+	strMass   = Units::weightUnitLabel();
+
+	QList<QStandardItem*> massCtrlFolder = prepareRow("Mass gains");
+	stabControlFolder.first()->appendRow(massCtrlFolder);
+	{
+		dataItem = prepareDoubleRow("", "Mass",  m_pWPolar->m_inertiaGain[0], strMass+"/ctrl");
+		massCtrlFolder.first()->appendRow(dataItem);
+		dataItem = prepareDoubleRow("", "CoG.x", m_pWPolar->m_inertiaGain[1], strLength+"/ctrl");
+		massCtrlFolder.first()->appendRow(dataItem);
+		dataItem = prepareDoubleRow("", "CoG.z", m_pWPolar->m_inertiaGain[2], strLength+"/ctrl");
+		massCtrlFolder.first()->appendRow(dataItem);
+		dataItem = prepareDoubleRow("", "Ixx",   m_pWPolar->m_inertiaGain[3], strMass+"."+strLength+QString::fromUtf8("²/ctrl"));
+		massCtrlFolder.first()->appendRow(dataItem);
+		dataItem = prepareDoubleRow("", "Iyy",   m_pWPolar->m_inertiaGain[4], strMass+"."+strLength+QString::fromUtf8("²/ctrl"));
+		massCtrlFolder.first()->appendRow(dataItem);
+		dataItem = prepareDoubleRow("", "Izz",   m_pWPolar->m_inertiaGain[5], strMass+"."+strLength+QString::fromUtf8("²/ctrl"));
+		massCtrlFolder.first()->appendRow(dataItem);
+		dataItem = prepareDoubleRow("", "Ixz",   m_pWPolar->m_inertiaGain[6], strMass+"."+strLength+QString::fromUtf8("²/ctrl"));
+		massCtrlFolder.first()->appendRow(dataItem);
+	}
+
+	QList<QStandardItem*> angleCtrlFolder = prepareRow("Angle gains");
+	stabControlFolder.first()->appendRow(angleCtrlFolder);
+	{
+		m_pWPolar->m_nControls = 0;
+		if(!m_pPlane->isWing())
+		{
+			if(m_pWPolar->m_ControlGain.size()<=m_pWPolar->m_nControls)m_pWPolar->m_ControlGain.append(0.0);
+
+			dataItem = prepareDoubleRow("", "Wing Tilt ", m_pWPolar->m_ControlGain[0], QString::fromUtf8("°/ctrl"));
+			angleCtrlFolder.first()->appendRow(dataItem);
+
+			++m_pWPolar->m_nControls;
+
+			if(m_pPlane->stab())
+			{
+				if(m_pWPolar->m_ControlGain.size()<=m_pWPolar->m_nControls)m_pWPolar->m_ControlGain.append(0.0);
+				dataItem = prepareDoubleRow("", "Elevator Tilt ", m_pWPolar->m_ControlGain[1], QString::fromUtf8("°/ctrl"));
+				angleCtrlFolder.first()->appendRow(dataItem);
+
+				++m_pWPolar->m_nControls;
+			}
+		}
+
+		for(i=0; i<m_pPlane->wing()->nFlaps(); i++)
+		{
+			if(m_pWPolar->m_ControlGain.size()<=m_pWPolar->m_nControls)m_pWPolar->m_ControlGain.append(0.0);
+			dataItem = prepareDoubleRow("", QString("Wing Flap %1 ").arg(i+1), m_pWPolar->m_ControlGain[m_pWPolar->m_nControls], QString::fromUtf8("°/ctrl"));
+			angleCtrlFolder.first()->appendRow(dataItem);
+			++m_pWPolar->m_nControls;
+		}
+
 
 		if(m_pPlane->stab())
 		{
-			indexLevel = indexLevel.sibling(indexLevel.row()+1,0);
-			if(indexLevel.isValid())
+			for(i=0; i<m_pPlane->stab()->nFlaps(); i++)
 			{
-				field = indexLevel.sibling(indexLevel.row(),1).data().toString();
-				value = indexLevel.sibling(indexLevel.row(),2).data().toString();
-				m_pWPolar->m_ControlGain[1] = value.toDouble();
-				++nControls;
+				if(m_pWPolar->m_ControlGain.size()<=m_pWPolar->m_nControls)m_pWPolar->m_ControlGain.append(0.0);
+				dataItem = prepareDoubleRow("", QString("Elevator Flap %1 ").arg(i+1), m_pWPolar->m_ControlGain[m_pWPolar->m_nControls], QString::fromUtf8("°/ctrl"));
+				angleCtrlFolder.first()->appendRow(dataItem);
 			}
-			else return;
+			m_pWPolar->m_nControls += m_pPlane->stab()->nFlaps();
 		}
-	}
 
-	for(int i=0; i<m_pPlane->wing()->nFlaps(); i++)
-	{
-		indexLevel = indexLevel.sibling(indexLevel.row()+1,0);
-		if(indexLevel.isValid())
+		if(m_pPlane->fin())
 		{
-			field = indexLevel.sibling(indexLevel.row(),1).data().toString();
-			value = indexLevel.sibling(indexLevel.row(),2).data().toString();
-			m_pWPolar->m_ControlGain[nControls] = value.toDouble();
-			++nControls;
-		}
-		else return;
-	}
-
-
-	if(m_pPlane->stab())
-	{
-		for(int i=0; i<m_pPlane->stab()->nFlaps(); i++)
-		{
-			indexLevel = indexLevel.sibling(indexLevel.row()+1,0);
-			if(indexLevel.isValid())
+			for(i=0; i<m_pPlane->fin()->nFlaps(); i++)
 			{
-				field = indexLevel.sibling(indexLevel.row(),1).data().toString();
-				value = indexLevel.sibling(indexLevel.row(),2).data().toString();
-				m_pWPolar->m_ControlGain[nControls] = value.toDouble();
-				++nControls;
+				if(m_pWPolar->m_ControlGain.size()<=m_pWPolar->m_nControls)m_pWPolar->m_ControlGain.append(0.0);
+				dataItem = prepareDoubleRow("", QString("Fin Flap %1 ").arg(i+1), m_pWPolar->m_ControlGain[m_pWPolar->m_nControls], QString::fromUtf8("°/ctrl"));
+				angleCtrlFolder.first()->appendRow(dataItem);
+				++m_pWPolar->m_nControls;
 			}
-			else return;
-		}
-	}
-
-	if(m_pPlane->fin())
-	{
-		for(int i=0; i<m_pPlane->fin()->nFlaps(); i++)
-		{
-			indexLevel = indexLevel.sibling(indexLevel.row()+1,0);
-			if(indexLevel.isValid())
-			{
-				field = indexLevel.sibling(indexLevel.row(),1).data().toString();
-				value = indexLevel.sibling(indexLevel.row(),2).data().toString();
-				m_pWPolar->m_ControlGain[nControls] = value.toDouble();
-				++nControls;
-			}
-			else return;
 		}
 	}
 }
@@ -586,8 +651,7 @@ void ViewPolarDefDlg::readControlFields(QModelIndex indexLevel)
 
 
 
-
-void ViewPolarDefDlg::setWPolarName()
+void EditPolarDefDlg::setWPolarName()
 {
 
 	QString strSpeedUnit, strong;
@@ -619,15 +683,15 @@ void ViewPolarDefDlg::setWPolarName()
 		WPolarName += "-LLT";
 	else if(m_pWPolar->analysisMethod()==XFLR5::VLMMETHOD)
 	{
-		if(m_pWPolar->m_bVLM1) WPolarName += "-VLM1";
+		if(m_pWPolar->bVLM1()) WPolarName += "-VLM1";
 		else		           WPolarName += "-VLM2";
 	}
 	else if(m_pWPolar->analysisMethod()==XFLR5::PANELMETHOD)
 	{
-		if(m_pPlane->isWing() && !m_pWPolar->m_bThinSurfaces) WPolarName += "-Panel";
-		if(m_pWPolar->m_bThinSurfaces)
+		if(m_pPlane->isWing() && !m_pWPolar->bThinSurfaces()) WPolarName += "-Panel";
+		if(m_pWPolar->bThinSurfaces())
 		{
-			if(m_pWPolar->m_bVLM1) WPolarName += "-VLM1";
+			if(m_pWPolar->bVLM1()) WPolarName += "-VLM1";
 			else		           WPolarName += "-VLM2";
 		}
 	}
@@ -636,7 +700,7 @@ void ViewPolarDefDlg::setWPolarName()
 	{
 		Units::getWeightUnitLabel(strSpeedUnit);
 		strong = QString("-%1").arg(m_pWPolar->mass()*Units::kgtoUnit(),0,'f',3);
-		if(m_pWPolar->m_WPolarType==XFLR5::FIXEDLIFTPOLAR)   WPolarName += strong+strSpeedUnit;
+		if(m_pWPolar->polarType()==XFLR5::FIXEDLIFTPOLAR)   WPolarName += strong+strSpeedUnit;
 		Units::getLengthUnitLabel(strSpeedUnit);
 		strong = QString("-x%1").arg(m_pWPolar->CoG().x*Units::mtoUnit(),0,'f',3);
 		WPolarName += strong + strSpeedUnit;
@@ -659,7 +723,7 @@ void ViewPolarDefDlg::setWPolarName()
 	if(m_pWPolar->bTilted())
 	{
 		WPolarName += "-TG";
-		if(m_pWPolar->m_bWakeRollUp) WPolarName += "-W";
+		if(m_pWPolar->bWakeRollUp()) WPolarName += "-W";
 	}
 
 	if(!m_pWPolar->bViscous())
@@ -667,7 +731,7 @@ void ViewPolarDefDlg::setWPolarName()
 		WPolarName += "-Inviscid";
 	}
 
-	if(m_pWPolar->m_bIgnoreBodyPanels && m_pPlane && m_pPlane->body())
+	if(m_pWPolar->bIgnoreBodyPanels() && m_pPlane && m_pPlane->body())
 	{
 		WPolarName += "-NoBodyPanels";
 	}

@@ -104,7 +104,7 @@ void LLTAnalysis::resetVariables()
 */
 void LLTAnalysis::setVelocity(double &QInf)
 {
-	if(m_pWPolar->m_WPolarType==XFLR5::FIXEDLIFTPOLAR)
+	if(m_pWPolar->polarType()==XFLR5::FIXEDLIFTPOLAR)
 	{
 		double Lift=0.0;// required for Type 2
 		for (int k=1; k<s_NLLTStations; k++)
@@ -253,7 +253,7 @@ void LLTAnalysis::ComputeWing(double QInf, double Alpha, QString &ErrorMessage)
 
 		arad = (Alpha+m_Ai[m]+m_Twist[m])*PI/180.0;
 //		arad = (s_Alpha-m_Ai[m])*PI/180.0;
-		c4   = m_pWing->C4(yob, m_pWPolar->m_CoG.x)/m_Chord[m];
+		c4   = m_pWing->C4(yob, m_pWPolar->CoG().x)/m_Chord[m];
 		zpos = m_pWing->ZPosition(yob*m_pWing->m_PlanformSpan/2.0)/m_Chord[m];
 
 		m_Cm[m]      = m_CmAirf[m]- c4  * (m_Cl[m]*cos(arad) + m_PCd[m]*sin(arad)) - zpos* (m_Cl[m]*sin(arad) - m_PCd[m]*cos(arad));
@@ -514,13 +514,13 @@ int LLTAnalysis::iterate(double &QInf, double Alpha)
 			yob     = cos(k*PI/s_NLLTStations);
 			m_pWing->getFoils(&pFoil0, &pFoil1, yob*m_pWing->m_PlanformSpan/2.0, tau);
 			m_Cl[k] = GetCl( pFoil0, pFoil1, m_Re[k], Alpha + m_Ai[k]+ m_Twist[k], tau, bOutRe, bError);
-			if (m_pWPolar->m_WPolarType==XFLR5::FIXEDLIFTPOLAR)
+			if (m_pWPolar->polarType()==XFLR5::FIXEDLIFTPOLAR)
 			{
 				Lift += Eta(k) * m_Cl[k] * m_Chord[k];
 			}
 		}
 
-		if(m_pWPolar->m_WPolarType==XFLR5::FIXEDLIFTPOLAR)
+		if(m_pWPolar->polarType()==XFLR5::FIXEDLIFTPOLAR)
 		{
 			Lift *= m_pWing->m_AR / m_pWing->m_PlanformSpan;
 			if(Lift<=0.0)  return -1;
@@ -559,8 +559,8 @@ void LLTAnalysis::initializeGeom()
 	m_bWingOut = false;
 	m_bConverged = false;
 
-	if(m_pWPolar->m_WPolarType==XFLR5::FIXEDLIFTPOLAR)	m_QInf0 = sqrt(2.*m_pWPolar->m_Mass* 9.81 /m_pWPolar->density()/m_pWing->m_PlanformArea);
-	else                                        m_QInf0 = 0.0;
+	if(m_pWPolar->polarType()==XFLR5::FIXEDLIFTPOLAR) m_QInf0 = sqrt(2.*m_pWPolar->mass()* 9.81 /m_pWPolar->density()/m_pWing->m_PlanformArea);
+	else                                              m_QInf0 = 0.0;
 
 	m_pWing->computeChords(s_NLLTStations, m_Chord, m_Offset, m_Twist);
 

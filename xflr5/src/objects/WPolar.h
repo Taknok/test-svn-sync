@@ -53,19 +53,7 @@
 
 class WPolar
 {
-//	friend class Objects3D;
-	friend class MainFrame;
-//	friend class WPolarDlg;
-//	friend class StabPolarDlg;
-//	friend class LLTAnalysisDlg;
-	friend class LLTAnalysis;
-//	friend class PanelAnalysis;
-//	friend class PanelAnalysisDlg;
-//	friend class ObjectPropsDlg;
-//	friend class StabViewDlg;
-//	friend class ManageBodiesDlg;
-	friend class EditPlrDlg;
-	friend class ViewPolarDefDlg;
+//	friend class LLTAnalysis;
 
 
 public:
@@ -118,6 +106,8 @@ public:
 	bool &bViscous() {return m_bViscous;}
 	bool &bVLM1() {return m_bVLM1;}
 	bool &bAutoInertia() {return m_bAutoInertia;}
+
+	int &polarFormat() {return m_PolarFormat;}
 
 	XFLR5::enumRefDimension  &referenceDim(){return m_ReferenceDim;}
 	double &referenceArea()  {return m_referenceArea;}
