@@ -360,6 +360,12 @@ void WPolar::calculatePoint(int i)
 //	double tcd = m_TCd[i];
 //	double Qinf =  m_QInfinite[i];
 
+	double mass = m_Mass;
+	if(qAbs(m_inertiaGain[0])>PRECISION)
+	{
+		mass += m_Ctrl[i]*m_inertiaGain[0];
+	}
+
 	if(i>=m_CL.count()) return;
 
 	m_ClCd[i]   =  m_CL[i]/m_TCd[i];
@@ -377,7 +383,7 @@ void WPolar::calculatePoint(int i)
 
 	if(qAbs(m_CL[i])>0.) m_Gamma[i]  =  atan(m_TCd[i]/m_CL[i]) * 180.0/PI;
 	else m_Gamma[i] = 90.0;
-	m_Vz[i] = (double)sqrt(2*m_Mass*9.81/m_Density/m_referenceArea)/m_Cl32Cd[i];
+	m_Vz[i] = (double)sqrt(2*mass*9.81/m_Density/m_referenceArea)/m_Cl32Cd[i];
 	m_Vx[i] = m_QInfinite[i] * (double)cos(m_Gamma[i]*PI/180.0);
 
 	//dynamic pressure
@@ -392,7 +398,7 @@ void WPolar::calculatePoint(int i)
 	m_Pm[i] = q * m_referenceArea * m_GCm[i] * m_referenceChordLength;// in N.m
 
 	//power for horizontal flight
-	m_VertPower[i] = m_Mass * 9.81 * m_Vz[i];
+	m_VertPower[i] = mass * 9.81 * m_Vz[i];
 	m_HorizontalPower[i] = m_FX[i] * m_Vx[i];
 
 	double AR      = m_referenceSpanLength*m_referenceSpanLength/m_referenceArea;
@@ -1491,7 +1497,7 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
  * @param &PolarProperties the reference of the QString object to be filled with the description
  * @param bData true if the analysis data should be appended to the string
  */
-void WPolar::getPolarProperties(QString &PolarProperties, bool bData)
+void WPolar::getPolarProperties(QString &polarProps, bool bData)
 {
 	QString strong, lenunit, massunit, speedunit, areaunit;
 	Units::getLengthUnitLabel(lenunit);
@@ -1503,45 +1509,45 @@ void WPolar::getPolarProperties(QString &PolarProperties, bool bData)
 
 	Plane *pPlane = Objects3D::getPlane(m_PlaneName);
 
-	PolarProperties.clear();
+	polarProps.clear();
 
 	if(m_WPolarType==XFLR5::FIXEDSPEEDPOLAR)     strong = "Type 1: "+QObject::tr("Fixed speed") +"\n";
 	else if(m_WPolarType==XFLR5::FIXEDLIFTPOLAR) strong = "Type 2: "+QObject::tr("Fixed lift") +"\n";
 	else if(m_WPolarType==XFLR5::FIXEDAOAPOLAR)  strong = "Type 4: "+QObject::tr("Fixed angle of attack") +"\n";
 	else if(m_WPolarType==XFLR5::STABILITYPOLAR) strong = "Type 7: "+QObject::tr("Stability analysis") +"\n";
 	else if(m_WPolarType==XFLR5::BETAPOLAR)      strong = "Type 5: "+QObject::tr("Sideslip analysis") +"\n";
-	PolarProperties += strong;
+	polarProps += strong;
 
 	if(m_WPolarType==XFLR5::FIXEDSPEEDPOLAR)
 	{
 		strong  = QString(QObject::tr("VInf =")+"%1 ").arg(m_QInfSpec*Units::mstoUnit(),10,'g',2);
-		PolarProperties += strong + speedunit+"\n";
+		polarProps += strong + speedunit+"\n";
 	}
 	else if(m_WPolarType==XFLR5::FIXEDAOAPOLAR)
 	{
 		strong  = QString(QObject::tr("Alpha =")+"%1").arg(m_AlphaSpec,7,'f',2);
-		PolarProperties += strong +QString::fromUtf8("°")+"\n";
+		polarProps += strong +QString::fromUtf8("°")+"\n";
 	}
 	else if(m_WPolarType==XFLR5::BETAPOLAR)
 	{
 		strong  = QString(QObject::tr("Alpha =")+"%1").arg(m_AlphaSpec,7,'f',2);
-		PolarProperties += strong +QString::fromUtf8("°")+"\n";
+		polarProps += strong +QString::fromUtf8("°")+"\n";
 		strong  = QString(QObject::tr("VInf =")+"%1 ").arg(m_QInfSpec*Units::mstoUnit(),10,'g',2);
-		PolarProperties += strong + speedunit+"\n";
+		polarProps += strong + speedunit+"\n";
 	}
 
 	if(m_WPolarType != XFLR5::BETAPOLAR && qAbs(m_BetaSpec)>PRECISION)
 	{
 		strong  = QString(QObject::tr("Beta")+" = %1").arg(m_BetaSpec,7,'f',2);
-		PolarProperties += strong +QString::fromUtf8("°")+"\n";
+		polarProps += strong +QString::fromUtf8("°")+"\n";
 	}
 
 //	PolarProperties += QObject::tr("Method")+" = ";
-	if(m_AnalysisMethod==XFLR5::LLTMETHOD)                              PolarProperties +=QObject::tr("LLT");
-	else if(m_AnalysisMethod==XFLR5::PANELMETHOD && !m_bThinSurfaces)   PolarProperties +=QObject::tr("3D-Panels");
-	else if(m_AnalysisMethod==XFLR5::PANELMETHOD && m_bVLM1)            PolarProperties +=QObject::tr("3D-Panels/VLM1");
-	else if(m_AnalysisMethod==XFLR5::PANELMETHOD && !m_bVLM1)           PolarProperties +=QObject::tr("3D-Panels/VLM2");
-	PolarProperties +="\n";
+	if(m_AnalysisMethod==XFLR5::LLTMETHOD)                              polarProps +=QObject::tr("LLT");
+	else if(m_AnalysisMethod==XFLR5::PANELMETHOD && !m_bThinSurfaces)   polarProps +=QObject::tr("3D-Panels");
+	else if(m_AnalysisMethod==XFLR5::PANELMETHOD && m_bVLM1)            polarProps +=QObject::tr("3D-Panels/VLM1");
+	else if(m_AnalysisMethod==XFLR5::PANELMETHOD && !m_bVLM1)           polarProps +=QObject::tr("3D-Panels/VLM2");
+	polarProps +="\n";
 
 
 	//Control data
@@ -1551,49 +1557,6 @@ void WPolar::getPolarProperties(QString &PolarProperties, bool bData)
 	Units::getWeightUnitLabel(strMass);
 	strInertia = strMass+"."+strLen+QString::fromUtf8("²");
 
-	if(qAbs(m_inertiaGain[0])>PRECISION)
-	{
-		strong = QString::fromUtf8("Mass:  gain=%1").arg(m_inertiaGain[0], 0,'f',2);
-		strong += Units::weightUnitLabel() + "/ctrl\n";
-		PolarProperties +=strong;
-	}
-	if(qAbs(m_inertiaGain[1])>PRECISION)
-	{
-		strong = QString::fromUtf8("CoG_x: gain=%1").arg(m_inertiaGain[1], 0,'f',2);
-		strong += Units::lengthUnitLabel() + "/ctrl\n";
-		PolarProperties +=strong;
-	}
-	if(qAbs(m_inertiaGain[2])>PRECISION)
-	{
-		strong = QString::fromUtf8("CoG_z: gain=%1").arg(m_inertiaGain[2], 0,'f',2);
-		strong += Units::lengthUnitLabel() + "/ctrl\n";
-		PolarProperties +=strong;
-	}
-	if(qAbs(m_inertiaGain[3])>PRECISION)
-	{
-		strong = QString(QString::fromUtf8("Ixx:   gain=%1")).arg(m_inertiaGain[3],0,'f',2);
-		PolarProperties += strInertia;
-		PolarProperties +=strong;
-	}
-	if(qAbs(m_inertiaGain[4])>PRECISION)
-	{
-		strong = QString(QString::fromUtf8("Iyy:   gain=%1")).arg(m_inertiaGain[4],0,'f',2);
-		PolarProperties += strInertia;
-		PolarProperties +=strong;
-	}
-	if(qAbs(m_inertiaGain[5])>PRECISION)
-	{
-		strong = QString(QString::fromUtf8("Izz:   gain=%1")).arg(m_inertiaGain[5],0,'f',2);
-		PolarProperties += strInertia;
-		PolarProperties +=strong;
-	}
-	if(qAbs(m_inertiaGain[6])>PRECISION)
-	{
-		strong = QString(QString::fromUtf8("Ixz:   gain=%1")).arg(m_inertiaGain[6],0,'f',2);
-		PolarProperties += strInertia;
-		PolarProperties +=strong;
-	}
-
 
 	//Angle controls
 	if(m_ControlGain.size()<m_nControls && m_WPolarType==XFLR5::STABILITYPOLAR && pPlane)
@@ -1602,7 +1565,7 @@ void WPolar::getPolarProperties(QString &PolarProperties, bool bData)
 		int iCtrl = 0;
 
 		strong = "AVL type controls\n";
-		PolarProperties +=strong;
+		polarProps +=strong;
 
 
 		if(!pPlane->isWing())
@@ -1610,7 +1573,7 @@ void WPolar::getPolarProperties(QString &PolarProperties, bool bData)
 			if(qAbs(m_ControlGain[iCtrl])>PRECISION)
 			{
 				strong = QString::fromUtf8("Wing Tilt: gain=%1°/unit\n").arg(m_ControlGain[iCtrl],0,'f',2);
-				PolarProperties +=strong;
+				polarProps +=strong;
 			}
 			iCtrl=1;
 			if(pPlane->stab())
@@ -1618,7 +1581,7 @@ void WPolar::getPolarProperties(QString &PolarProperties, bool bData)
 				if(qAbs(m_ControlGain[iCtrl])>PRECISION)
 				{
 					strong = QString::fromUtf8("Elev. Tilt: gain=%1°/unit\n").arg(m_ControlGain[iCtrl],0,'f',2);
-					PolarProperties +=strong;
+					polarProps +=strong;
 				}
 				iCtrl=2;
 			}
@@ -1647,7 +1610,7 @@ void WPolar::getPolarProperties(QString &PolarProperties, bool bData)
 						strong = QString(QString::fromUtf8("Wing Flap %1: g=%2°/unit\n"))
 										.arg(nFlap+1)
 										.arg(m_ControlGain[iCtrl],5,'f',2);
-						PolarProperties +=strong;
+						polarProps +=strong;
 					}
 					nFlap++;
 					iCtrl++;
@@ -1668,7 +1631,7 @@ void WPolar::getPolarProperties(QString &PolarProperties, bool bData)
 						strong = QString(QString::fromUtf8("Elev. Flap %1: gain=%2°/unit\n"))
 										.arg(nFlap+1)
 										.arg(m_ControlGain[iCtrl],5,'f',2);
-						PolarProperties +=strong;
+						polarProps +=strong;
 					}
 					nFlap++;
 					iCtrl++;
@@ -1688,7 +1651,7 @@ void WPolar::getPolarProperties(QString &PolarProperties, bool bData)
 						strong = QString(QString::fromUtf8("Fin Flap %1: gain=%2°/unit\n"))
 										.arg(nFlap+1)
 										.arg(m_ControlGain[iCtrl],5,'f',2);
-						PolarProperties +=strong;
+						polarProps +=strong;
 					}
 					nFlap++;
 					iCtrl++;
@@ -1700,81 +1663,135 @@ void WPolar::getPolarProperties(QString &PolarProperties, bool bData)
 
 	if(m_bAutoInertia)
 	{
-		PolarProperties += "Using plane inertia\n";
+		polarProps += "Using plane inertia\n";
 	}
 
 	strong  = QString(QObject::tr("Mass")+" = %1 ").arg(m_Mass*Units::kgtoUnit(),10,'f',3);
-	PolarProperties += strong + massunit + "\n";
+	polarProps += strong + massunit;
+	if(qAbs(m_inertiaGain[0])>PRECISION)
+	{
+		strong = QString::fromUtf8(" - g=%1").arg(m_inertiaGain[0]*Units::kgtoUnit(), 0,'f',2);
+		strong += Units::weightUnitLabel() + "/ctrl\n";
+		polarProps +=strong;
+	}
+	else polarProps +="\n";
 
 	strong  = QString(QObject::tr("CoG.x")+" = %1 ").arg(m_CoG.x*Units::mtoUnit(),10,'g',4);
-	PolarProperties += strong + lenunit + "\n";
+	polarProps += strong + lenunit;
+
+	if(qAbs(m_inertiaGain[1])>PRECISION)
+	{
+		strong = QString::fromUtf8(" - g=%1").arg(m_inertiaGain[1]*Units::mtoUnit(), 0,'f',2);
+		strong += Units::lengthUnitLabel() + "/ctrl\n";
+		polarProps +=strong;
+	}
+	else polarProps +="\n";
 
 	strong  = QString(QObject::tr("CoG.z")+" = %1 ").arg(m_CoG.z*Units::mtoUnit(),10,'g',4);
-	PolarProperties += strong + lenunit + "\n";
+	polarProps += strong + lenunit + "\n";
+	if(qAbs(m_inertiaGain[2])>PRECISION)
+	{
+		strong = QString::fromUtf8(" - g=%1").arg(m_inertiaGain[2]*Units::mtoUnit(), 0,'f',2);
+		strong += Units::lengthUnitLabel() + "/ctrl";
+		polarProps +=strong;
+	}
+	else polarProps +="\n";
 
 	if(m_WPolarType==XFLR5::STABILITYPOLAR)
 	{
 		strong  = QString("Ixx = %1 ").arg(m_CoGIxx*Units::mtoUnit()*Units::mtoUnit()*Units::kgtoUnit(),10,'g',4);
-		PolarProperties += strong + inertiaunit + "\n";
+		polarProps += strong + inertiaunit;
+		if(qAbs(m_inertiaGain[3])>PRECISION)
+		{
+			strong = QString(QString::fromUtf8(" - g=%1")).arg(m_inertiaGain[3]*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit(),0,'f',2);
+			polarProps += strInertia + "/ctrl";
+			polarProps +=strong;
+		}
+		else polarProps +="\n";
+
 		strong  = QString("Iyy = %1 ").arg(m_CoGIyy*Units::mtoUnit()*Units::mtoUnit()*Units::kgtoUnit(),10,'g',4);
-		PolarProperties += strong + inertiaunit + "\n";
+		polarProps += strong + inertiaunit;
+		if(qAbs(m_inertiaGain[4])>PRECISION)
+		{
+			strong = QString(QString::fromUtf8(" - g=%1")).arg(m_inertiaGain[4]*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit(),0,'f',2);
+			polarProps += strInertia + "/ctrl";
+			polarProps +=strong;
+		}
+		else polarProps +="\n";
+
 		strong  = QString("Izz = %1 ").arg(m_CoGIzz*Units::mtoUnit()*Units::mtoUnit()*Units::kgtoUnit(),10,'g',4);
-		PolarProperties += strong + inertiaunit + "\n";
+		polarProps += strong + inertiaunit;
+		if(qAbs(m_inertiaGain[5])>PRECISION)
+		{
+			strong = QString(QString::fromUtf8(" - g=%1")).arg(m_inertiaGain[5]*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit(),0,'f',2);
+			polarProps += strInertia + "/ctrl";
+			polarProps +=strong;
+		}
+		else polarProps +="\n";
+
 		strong  = QString("Ixz = %1 ").arg(m_CoGIxz*Units::mtoUnit()*Units::mtoUnit()*Units::kgtoUnit(),10,'g',4);
-		PolarProperties += strong + inertiaunit + "\n";
+		polarProps += strong + inertiaunit;
+		if(qAbs(m_inertiaGain[6])>PRECISION)
+		{
+			strong = QString(QString::fromUtf8(" - g=%1")).arg(m_inertiaGain[6]*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit(),0,'f',2);
+			polarProps += strInertia + "/ctrl";
+			polarProps +=strong;
+		}
+		else polarProps +="\n";
 	}
+
 
 	if(m_AnalysisMethod !=XFLR5::LLTMETHOD)
 	{
 		if(m_bDirichlet)  strong  = QObject::tr("B.C. = Dirichlet");
 		else              strong  = QObject::tr("B.C. = Neumann");
-		PolarProperties += strong +"\n";
+		polarProps += strong +"\n";
 	}
 
-	PolarProperties += QObject::tr("Analysis type")+" = ";
-	if(m_bViscous) PolarProperties += QObject::tr("Viscous")+"\n";
-	else           PolarProperties += QObject::tr("Inviscid")+"\n";
+	polarProps += QObject::tr("Analysis type")+" = ";
+	if(m_bViscous) polarProps += QObject::tr("Viscous")+"\n";
+	else           polarProps += QObject::tr("Inviscid")+"\n";
 
 	if(pPlane && pPlane->body())
 	{
-		PolarProperties += QObject::tr("Body option")+" = ";
-		if(m_bIgnoreBodyPanels) PolarProperties += QObject::tr("Body Panels Ignored");
+		polarProps += QObject::tr("Body option")+" = ";
+		if(m_bIgnoreBodyPanels) polarProps += QObject::tr("Body Panels Ignored");
 		//    else              PolarProperties += QObject::tr("Body Included")+"\n";
-		PolarProperties += "\n";
+		polarProps += "\n";
 	}
 
-	if(m_ReferenceDim==XFLR5::PLANFORMREFDIM)       PolarProperties += QObject::tr("Ref. dimensions = ")+QObject::tr("Planform")+"\n";
-	else if(m_ReferenceDim==XFLR5::PROJECTEDREFDIM) PolarProperties += QObject::tr("Ref. dimensions = ")+QObject::tr("Projected")+"\n";
+	if(m_ReferenceDim==XFLR5::PLANFORMREFDIM)       polarProps += QObject::tr("Ref. dimensions = ")+QObject::tr("Planform")+"\n";
+	else if(m_ReferenceDim==XFLR5::PROJECTEDREFDIM) polarProps += QObject::tr("Ref. dimensions = ")+QObject::tr("Projected")+"\n";
 
-	PolarProperties += QObject::tr("Ref. area  = ") + QString("%1 ").arg(m_referenceArea*Units::m2toUnit(),9,'f',3) + areaunit +"\n";
-	PolarProperties += QObject::tr("Ref. span  = ") + QString("%1 ").arg(m_referenceSpanLength*Units::mtoUnit(),9,'f',3) +lenunit +"\n";
-	PolarProperties += QObject::tr("Ref. chord = ") + QString("%1 ").arg(m_referenceChordLength*Units::mtoUnit(),9,'f',3) + lenunit +"\n";
+	polarProps += QObject::tr("Ref. area  = ") + QString("%1 ").arg(m_referenceArea*Units::m2toUnit(),9,'f',3) + areaunit +"\n";
+	polarProps += QObject::tr("Ref. span  = ") + QString("%1 ").arg(m_referenceSpanLength*Units::mtoUnit(),9,'f',3) +lenunit +"\n";
+	polarProps += QObject::tr("Ref. chord = ") + QString("%1 ").arg(m_referenceChordLength*Units::mtoUnit(),9,'f',3) + lenunit +"\n";
 
 
-	if(m_bTiltedGeom) PolarProperties += QObject::tr("Tilted geometry")+"\n";
+	if(m_bTiltedGeom) polarProps += QObject::tr("Tilted geometry")+"\n";
 
 	if(m_bGround)
 	{
 		strong = QString(QObject::tr("Ground height")+" = %1").arg(m_Height*Units::mtoUnit())+lenunit+"\n";
-		PolarProperties += strong;
+		polarProps += strong;
 	}
 
 	strong  = QString(QObject::tr("Density =")+"%1 kg/m3\n").arg(m_Density,12,'g',4);
-	PolarProperties += strong;
+	polarProps += strong;
 
 	strong  = QString(QObject::tr("Viscosity =")+"%1").arg(m_Viscosity,12,'g',4);
 	strong +=  "m"+QString::fromUtf8("²")+"/s\n";
-	PolarProperties += strong;
+	polarProps += strong;
 
 	strong = QString(QObject::tr("Data points") +" = %1\n").arg(m_Alpha.size());
-	PolarProperties += "\n"+strong;
+	polarProps += "\n"+strong;
 
 	if(!bData || m_Alpha.size()==0) return;
 	QTextStream out;
 	strong.clear();
 	out.setString(&strong);
 	exportToTextFile(out, Settings::s_ExportFileType, true);
-	PolarProperties += "\n"+strong;
+	polarProps += "\n"+strong;
 }
 
 
@@ -1897,7 +1914,7 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 		for (int i=0; i<19; i++) ar << 0;
 		ar << m_LineStyle.m_PointStyle;
 		for (int i=0; i<43; i++) ar << 0.0;
-		for (int i=43; i<50; i++) ar << m_inertiaGain[i];
+		for (int i=0; i<7; i++) ar << m_inertiaGain[i];
 
 		return true;
 	}
@@ -2023,7 +2040,7 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 	ar >> m_LineStyle.m_PointStyle;
 
 	for (int i=0; i<43; i++) ar >> dble;
-	for (int i=43; i<50; i++)
+	for (int i=0; i<7; i++)
 	{
 		ar >> m_inertiaGain[i];
 		if(m_inertiaGain[i]>42 && m_inertiaGain[i]<51) m_inertiaGain[i] = 0.0; //correcting some former bad programming

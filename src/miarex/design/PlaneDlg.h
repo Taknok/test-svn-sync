@@ -45,35 +45,35 @@ class PlaneDlg : public QDialog
 
 public:
     PlaneDlg(QWidget *parent);
-	void InitDialog();
+	void initDialog();
 
 private slots:
-	void OnOK();
-	void OnFin();
-	void OnStab();
-	void OnBodyCheck();
-	void OnDefineWing();
-	void OnDefineStab();
-	void OnDefineFin();
-	void OnDefineBody();
-	void OnChanged();
-	void OnDescriptionChanged();
-	void OnImportWing();
-	void OnPlaneName();
-	void OnSymFin();
-	void OnDoubleFin();
-	void OnBiplane();
-	void OnDefineWing2();
-	void OnImportWing2();
-	void OnImportPlaneBody();
-	void OnImportXMLBody();
-	void OnInertia();
+	void onOK();
+	void onFin();
+	void onStab();
+	void onBodyCheck();
+	void onDefineWing();
+	void onDefineStab();
+	void onDefineFin();
+	void onDefineBody();
+	void onChanged();
+	void onDescriptionChanged();
+	void onImportWing();
+	void onPlaneName();
+	void onSymFin();
+	void onDoubleFin();
+	void onBiplane();
+	void onDefineWing2();
+	void onImportWing2();
+	void onImportPlaneBody();
+	void onImportXMLBody();
+	void onInertia();
 
 private:
-	void SetupLayout();
-	void SetResults();
-	void ReadParams();
-	void SetParams();
+	void setupLayout();
+	void setResults();
+	void readParams();
+	void setParams();
 	void keyPressEvent(QKeyEvent *event);
 	void reject();
 

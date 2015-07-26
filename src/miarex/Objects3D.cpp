@@ -2402,7 +2402,7 @@ WPolar* Objects3D::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar, bool bC
 		{
 			if(pWingList[iw])
 			{
-				pWingList[iw]->ComputeChords();
+				pWingList[iw]->computeChords();
 
 				NStation = 0;
 				m=0;
@@ -2637,7 +2637,7 @@ void Objects3D::setControlPositions(Plane *pPlane, WPolar *pWPolar, Panel *pPane
 			{
 				for(int n=0; n<s_nNodes; n++)
 				{
-					if(pPlane->wing()->IsWingNode(n))
+					if(pPlane->wing()->isWingNode(n))
 					{
 							pNode[n].copy(s_MemNode[n]);
 							W = pNode[n] - pPlane->WingLE(0);
@@ -2647,7 +2647,7 @@ void Objects3D::setControlPositions(Plane *pPlane, WPolar *pWPolar, Panel *pPane
 				}
 				for(int p=0; p<s_MatSize; p++)
 				{
-					if(pPlane->wing()->IsWingPanel(p)) s_Panel[p].SetPanelFrame();
+					if(pPlane->wing()->isWingPanel(p)) s_Panel[p].SetPanelFrame();
 				}
 			}
 		}
@@ -2671,7 +2671,7 @@ void Objects3D::setControlPositions(Plane *pPlane, WPolar *pWPolar, Panel *pPane
 				{
 					for(int n=0; n<s_nNodes; n++)
 					{
-						if(pPlane->stab()->IsWingNode(n))
+						if(pPlane->stab()->isWingNode(n))
 						{
 								pNode[n].copy(s_MemNode[n]);
 								W = pNode[n] - pPlane->WingLE(2);
@@ -2681,7 +2681,7 @@ void Objects3D::setControlPositions(Plane *pPlane, WPolar *pWPolar, Panel *pPane
 					}
 					for(int p=0; p<s_MatSize; p++)
 					{
-						if(pWingList[2]->IsWingPanel(p)) s_Panel[p].SetPanelFrame();
+						if(pWingList[2]->isWingPanel(p)) s_Panel[p].SetPanelFrame();
 					}
 				}
 				else
@@ -2883,14 +2883,14 @@ Plane * Objects3D::setPlaneObject(QString PlaneName, Plane *pCurPlane)
 		if(pPlane->wing(iw))
 		{
 //			if(!pPlane && iw==0)  pPlane->wing(iw)->CreateSurfaces(CVector(0,0,0), 0.0, 0.0);
-			if(iw<3)         pPlane->wing(iw)->CreateSurfaces(pPlane->WingLE(iw),   0.0, pPlane->WingTiltAngle(iw));
-			else if(iw==3)   pPlane->wing(iw)->CreateSurfaces(pPlane->WingLE(iw), -90.0, pPlane->WingTiltAngle(iw));
+			if(iw<3)         pPlane->wing(iw)->createSurfaces(pPlane->WingLE(iw),   0.0, pPlane->WingTiltAngle(iw));
+			else if(iw==3)   pPlane->wing(iw)->createSurfaces(pPlane->WingLE(iw), -90.0, pPlane->WingTiltAngle(iw));
 			for (j=0; j<pPlane->wing(iw)->m_Surface.size(); j++)
 			{
 				pPlane->wing(iw)->m_Surface.at(j)->SetSidePoints(pCurBody, dx, dz);
 				s_SurfaceList.append(pPlane->wing(iw)->m_Surface.at(j));
 			}
-			pPlane->wing(iw)->ComputeBodyAxisInertia();
+			pPlane->wing(iw)->computeBodyAxisInertia();
 		}
 	}
 

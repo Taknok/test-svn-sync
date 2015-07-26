@@ -35,17 +35,17 @@ class WingScaleDlg : public QDialog
 	friend class MainFrame;
 public:
     WingScaleDlg(QWidget *pParent);
-	void InitDialog(double const &RefSpan, double const &RefChord, double const &RefSweep, double const &RefTwist, const double &RefArea, const double &RefAR);
+	void initDialog(double const &RefSpan, double const &RefChord, double const &RefSweep, double const &RefTwist, const double &RefArea, const double &RefAR);
 private:
-	void SetupLayout();
-	void ReadData();
-	void SetResults();
-	void EnableControls();
+	void setupLayout();
+	void readData();
+	void setResults();
+	void enableControls();
 
 private slots:
-	void OnOK();
-	void OnClickedCheckBox();
-	void OnEditingFinished();
+	void onOK();
+	void onClickedCheckBox();
+	void onEditingFinished();
 
 
 public:

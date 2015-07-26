@@ -62,35 +62,34 @@ public:
 	GL3dWingDlg(QWidget *pParent=NULL);
 	~GL3dWingDlg();
 
-	bool IntersectObject(CVector AA,  CVector U, CVector &I);
+	bool intersectObject(CVector AA,  CVector U, CVector &I);
 
 private slots:
-	void OnAxes();
-	void On3DReset();
+	void onAxes();
+	void on3DReset();
 
-//	void OnSetupLight();
-	void OnSurfaces();
-	void OnOutline();
-	void OnPanels();
-	void OnFoilNames();
-	void OnShowMasses();
+	void onSurfaces();
+	void onOutline();
+	void onPanels();
+	void onFoilNames();
+	void onShowMasses();
 
-	void OnOK();
-	void OnDescriptionChanged();
-	void OnCellChanged(QWidget *);
-	void OnItemClicked(const QModelIndex &index);
-	void OnWingColor();
-	void OnSide();
-	void OnSymetric();
-	void OnInsertBefore();
-	void OnInsertAfter();
-	void OnDeleteSection();
-	void OnResetSection();
-	void OnResetMesh();
-	void OnScaleWing();
-	void OnInertia();
-	void OnImportWing();
-	void OnExportWing();
+	void onOK();
+	void onDescriptionChanged();
+	void onCellChanged(QWidget *);
+	void onItemClicked(const QModelIndex &index);
+	void onWingColor();
+	void onSide();
+	void onSymetric();
+	void onInsertBefore();
+	void onInsertAfter();
+	void onDeleteSection();
+	void onResetSection();
+	void onResetMesh();
+	void onScaleWing();
+	void onInertia();
+	void onImportWing();
+	void onExportWing();
 
 
 private:
@@ -101,28 +100,28 @@ private:
 	void showEvent(QShowEvent *event);
 	void contextMenuEvent(QContextMenuEvent *event);
 
-	bool CheckWing();
-	void CreateXPoints(int NXPanels, int XDist, Foil *pFoilA, Foil *pFoilB, double *xPointA, double *xPointB, int &NXLead, int &NXFlap);
-	void ComputeGeometry();
+	bool checkWing();
+	void createXPoints(int NXPanels, int XDist, Foil *pFoilA, Foil *pFoilB, double *xPointA, double *xPointB, int &NXLead, int &NXFlap);
+	void computeGeometry();
 
-	void SetWingData();
-	void FillDataTable();
-	void FillTableRow(int row);
-	void ReadParams();
-	void ReadSectionData(int sel);
-	void SetCurrentSection(int section);
-	void SetScale();
+	void setWingData();
+	void fillDataTable();
+	void fillTableRow(int row);
+	void readParams();
+	void readSectionData(int sel);
+	void setCurrentSection(int section);
+	void setScale();
 	int VLMGetPanelTotal();
 	bool VLMSetAutoMesh(int total=0);
 
-	bool InitDialog(Wing *pWing);
-	void Connect();
+	bool initDialog(Wing *pWing);
+	void connectSignals();
 	void setupLayout();
 	void GLRenderView();
-	void GLCreateSectionHighlight();
-	void GLCallViewLists();
-	void GLDraw3D();
-	void SetWingScale();
+	void glCreateSectionHighlight();
+	void glCallViewLists();
+	void glDraw3D();
+	void setWingScale();
 
 
 

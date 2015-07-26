@@ -1352,7 +1352,7 @@ void QAFoil::OnSplineControls()
 {
     SplineCtrlsDlg dlg(this);
 	dlg.m_pSF = m_pSF;
-	dlg.InitDialog();
+	dlg.initDialog();
 
 	SplineFoil memSF;
 	memSF.Copy(m_pSF);

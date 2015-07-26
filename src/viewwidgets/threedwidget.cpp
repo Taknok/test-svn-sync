@@ -531,7 +531,7 @@ void ThreeDWidget::paintGL()
 	else if(m_iView == GLWINGVIEW)
 	{
 		GL3dWingDlg *pDlg = (GL3dWingDlg*)m_pParent;
-		pDlg->GLDraw3D();
+		pDlg->glDraw3D();
 		glRenderView();
 	}
 	else if(m_iView == GLPLANEVIEW)
@@ -570,6 +570,7 @@ void ThreeDWidget::resizeGL(int width, int height)
 	else    m_GLViewRect.SetRect(-s*w/h, s, s*w/h, -s);
 
 	m_PixText = m_PixText.scaled(rect().size());
+	m_PixText.fill(Qt::transparent);
 
 	qreal pixelRatio = 1;
 #if QT_VERSION >= 0x050000
@@ -918,18 +919,14 @@ void ThreeDWidget::glCreateUnitSphere()
 
 void ThreeDWidget::glRenderView()
 {
-//	makeCurrent();
 	// Clear the viewport
 	glFlush();
 	glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-
 	static GLdouble pts[4];
 	pts[0]= 0.0; pts[1]=0.0; pts[2]=-1.0; pts[3]= m_ClipPlanePos;  //x=m_VerticalSplit
 	glClipPlane(GL_CLIP_PLANE1, pts);
-
 
 	glPushMatrix();
 	{
@@ -979,7 +976,6 @@ void ThreeDWidget::glRenderView()
 		glScaled(m_glScaled, m_glScaled, m_glScaled);
 		glTranslated(m_glRotCenter.x, m_glRotCenter.y, m_glRotCenter.z);
 		if(s_bAxes) glDrawAxes(1.0, W3dPrefsDlg::s_3DAxisColor, W3dPrefsDlg::s_3DAxisStyle, W3dPrefsDlg::s_3DAxisWidth);
-
 		if(m_iView==GLMIAREXVIEW)
 		{
 			QMiarex* pMiarex = (QMiarex*)s_pMiarex;
@@ -1308,7 +1304,7 @@ void ThreeDWidget::set3DRotationCenter(QPoint point)
 	if(m_iView == GLWINGVIEW)
 	{
 		GL3dWingDlg *pDlg = (GL3dWingDlg*)m_pParent;
-		if(pDlg->IntersectObject(AA, U, I))
+		if(pDlg->intersectObject(AA, U, I))
 		{
 			bIntersect = true;
 			PP.set(I);
@@ -1317,7 +1313,7 @@ void ThreeDWidget::set3DRotationCenter(QPoint point)
 	else if(m_iView == GLPLANEVIEW)
 	{
 		EditPlaneDlg *pDlg = (EditPlaneDlg*)m_pParent;
-		if(pDlg->IntersectObject(AA, U, I))
+		if(pDlg->intersectObject(AA, U, I))
 		{
 			bIntersect = true;
 			PP.set(I);

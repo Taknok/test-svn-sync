@@ -90,7 +90,7 @@ void InertiaDlg::ClearPointMasses()
 void InertiaDlg::ComputeBodyAxisInertia()
 {
 	if(m_pPlane)     m_pPlane->computeBodyAxisInertia();
-	else if(m_pWing) m_pWing->ComputeBodyAxisInertia();
+	else if(m_pWing) m_pWing->computeBodyAxisInertia();
 	else if(m_pBody) m_pBody->computeBodyAxisInertia();
 }
 
@@ -130,7 +130,7 @@ void InertiaDlg::ComputeInertia()
 	if(m_pWing)
 	{
 		m_pWing->m_VolumeMass = m_VolumeMass;
-		if(m_pWing->m_VolumeMass>PRECISION) m_pWing->ComputeVolumeInertia(m_VolumeCoG, m_CoGIxx, m_CoGIyy, m_CoGIzz, m_CoGIxz);
+		if(m_pWing->m_VolumeMass>PRECISION) m_pWing->computeVolumeInertia(m_VolumeCoG, m_CoGIxx, m_CoGIyy, m_CoGIzz, m_CoGIxz);
 	}
 	else if(m_pBody)
 	{
@@ -570,7 +570,7 @@ void InertiaDlg::OnExportToAVL()
 		{
 			if(pWing[iw])
 			{
-				pWing[iw]->ComputeVolumeInertia(CoG, CoGIxx, CoGIyy, CoGIzz, CoGIxz);
+				pWing[iw]->computeVolumeInertia(CoG, CoGIxx, CoGIyy, CoGIzz, CoGIxz);
 				strong = QString(tr("%1 %2 %3 %4 %5 %6 %7 %8 %9 %10 ! "))
 								.arg(pWing[iw]->m_VolumeMass /Munit, 10, 'g', 3)
 								.arg(CoG.x/Lunit, 10, 'g', 3)
@@ -714,7 +714,7 @@ void InertiaDlg::OnOK()
 	if(m_pWing)
 	{
 		m_pWing->m_VolumeMass = m_VolumeMass;
-		m_pWing->ClearPointMasses();
+		m_pWing->clearPointMasses();
 
 		for(i=0; i<m_PointMass.size(); i++)
 		{

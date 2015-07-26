@@ -86,65 +86,65 @@ public:
 	Wing();
 	~Wing();
 
-	void ImportDefinition(QString path_to_file);
-	void ExportDefinition(QString path_to_file);
+	void importDefinition(QString path_to_file);
+	void exportDefinition(QString path_to_file);
 
-	void GetViewYZPos(double xrel, double y, double &yv, double &zv, int pos);
+	void getViewYZPos(double xrel, double y, double &yv, double &zv, int pos);
 
-	void CreateSurfaces(CVector const &T, double XTilt, double YTilt);//generic surface, LLT, VLM or Panel
+	void createSurfaces(CVector const &T, double XTilt, double YTilt);//generic surface, LLT, VLM or Panel
 
 	int  VLMPanelTotal(bool bThinSurface);
 	void VLMSetBending();
 
-	void PanelTrefftz(void *pAnalysis, double QInf, double Alpha, double *Mu, double *Sigma, int pos, CVector &Force, double &WingIDrag,
+	void panelTrefftz(void *pAnalysis, double QInf, double Alpha, double *Mu, double *Sigma, int pos, CVector &Force, double &WingIDrag,
 							 WPolar *pWPolar, Panel *pWakePanel, CVector *pWakeNode);
-    void PanelComputeOnBody(double QInf, double Alpha, double *Cp, double *Gamma, double &XCP, double &YCP, double &ZCP,
+	void panelComputeOnBody(double QInf, double Alpha, double *Cp, double *Gamma, double &XCP, double &YCP, double &ZCP,
 						 double &GCm, double &VCm, double &ICm, double &GRm, double &GYm, double &VYm,double &IYm,
 						 WPolar *pWPolar, CVector CoG);
 
 
-	void PanelComputeViscous(double QInf, WPolar *pWPolar, double &WingVDrag, bool bViscous, QString &OutString);
-	void PanelComputeBending(bool bThinSurface);
+	void panelComputeViscous(double QInf, WPolar *pWPolar, double &WingVDrag, bool bViscous, QString &OutString);
+	void panelComputeBending(bool bThinSurface);
 
-	bool IsWingPanel(int nPanel);
-	bool IsWingNode(int nNode);
+	bool isWingPanel(int nPanel);
+	bool isWingNode(int nNode);
 
-	void GetFoils(Foil **pFoil0, Foil **pFoil1, double y, double &t);
-	void Duplicate(Wing *pWing);
-	void ComputeChords(int NStation=0);
-	void ComputeChords(int NStation, double *chord, double *offset, double *twist);
-	void ComputeGeometry();
-	void ComputeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz);
-	void ComputeBodyAxisInertia();
+	void getFoils(Foil **pFoil0, Foil **pFoil1, double y, double &t);
+	void duplicate(Wing *pWing);
+	void computeChords(int NStation=0);
+	void computeChords(int NStation, double *chord, double *offset, double *twist);
+	void computeGeometry();
+	void computeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz);
+	void computeBodyAxisInertia();
 
-	bool IntersectWing(CVector O,  CVector U, CVector &I);
+	bool intersectWing(CVector O,  CVector U, CVector &I);
 
-	void ScaleSweep(double NewSweep);
-	void ScaleTwist(double NewTwist);
-	void ScaleSpan(double NewSpan);
-	void ScaleChord(double NewChord);
-	void ScaleArea(double newArea);
-	void ScaleAR(double newAR);
+	void scaleSweep(double NewSweep);
+	void scaleTwist(double NewTwist);
+	void scaleSpan(double NewSpan);
+	void scaleChord(double NewChord);
+	void scaleArea(double newArea);
+	void scaleAR(double newAR);
 
-	bool SerializeWingWPA(QDataStream &ar, bool bIsStoring);
+	bool serializeWingWPA(QDataStream &ar, bool bIsStoring);
 	bool serializeWingXFL(QDataStream &ar, bool bIsStoring);
-	bool ExportAVLWing(QTextStream &out, int index, double y, double Thetay);
+	bool exportAVLWing(QTextStream &out, int index, double y, double Thetay);
 
-	bool IsWingOut()      {return m_bWingOut;}
+	bool isWingOut()      {return m_bWingOut;}
 	bool &isFin()          {return m_bIsFin;}
 	bool &isDoubleFin()    {return m_bDoubleFin;}
 	bool &isSymFin()       {return m_bSymFin;}
 //	bool &isDoubleSymFin() {return m_bDoubleSymFin;}
 
-	void InsertSection(int iSection);
-	bool AppendWingSection();
-	bool AppendWingSection(double Chord, double Twist, double Pos, double Dihedral, double Offset, int NXPanels, int NYPanels,
+	void insertSection(int iSection);
+	bool appendWingSection();
+	bool appendWingSection(double Chord, double Twist, double Pos, double Dihedral, double Offset, int NXPanels, int NYPanels,
 						   XFLR5::enumPanelDistribution XPanelDist, XFLR5::enumPanelDistribution YPanelDist, QString RightFoilName, QString LeftFoilName);
-	void RemoveWingSection(int const iSection);
+	void removeWingSection(int const iSection);
 	
 	void clearWingSections();
-	void ClearPointMasses();
-	void ClearSurfaces();
+	void clearPointMasses();
+	void clearSurfaces();
 
 	//access methods
 	int NWingSection() {return m_WingSection.count();}
