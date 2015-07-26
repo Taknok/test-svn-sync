@@ -1105,7 +1105,7 @@ void MainFrame::createMiarexActions()
 	m_pEditBodyAct->setShortcut(QKeySequence(Qt::Key_F11));
 	connect(m_pEditBodyAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurBody()));
 
-	m_pEditBodyObjectAct= new QAction(tr("Edit body (advanced users"), this);
+	m_pEditBodyObjectAct= new QAction(tr("Edit body (advanced users)"), this);
 	m_pEditBodyObjectAct->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_F11));
 	connect(m_pEditBodyObjectAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurBodyObject()));
 
@@ -5012,7 +5012,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 		{
 			pWing = new Wing;
 
-			if (!pWing->SerializeWingWPA(ar, bIsStoring))
+			if (!pWing->serializeWingWPA(ar, bIsStoring))
 			{
 				if(pWing) delete pWing;
 				return false;
@@ -5022,7 +5022,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 				//create a plane with this wing
 				pPlane = new Plane();
 				pPlane->setPlaneName(pWing->wingName());
-				pPlane->m_Wing[0].Duplicate(pWing);
+				pPlane->m_Wing[0].duplicate(pWing);
 				pPlane->setBody(NULL);
 				pPlane->setWings(false, false, false);
 				Objects3D::addPlane(pPlane);
@@ -5148,7 +5148,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 				pPlane = new Plane();
 				if(pPlane)
 				{
-					if(pPlane->serializePlane(ar, bIsStoring))
+					if(pPlane->serializePlaneWPA(ar, bIsStoring))
 					{
 						Objects3D::addPlane(pPlane);
 					}

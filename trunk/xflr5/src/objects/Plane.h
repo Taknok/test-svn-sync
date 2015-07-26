@@ -58,7 +58,7 @@ public:
 	double tailVolume();
 
 	void duplicate(Plane *pPlane);
-	bool serializePlane(QDataStream &ar, bool bIsStoring);
+	bool serializePlaneWPA(QDataStream &ar, bool bIsStoring);
 	bool serializePlaneXFL(QDataStream &ar, bool bIsStoring);
 	void computePlane(void);
 	void createSurfaces();
@@ -129,7 +129,7 @@ public:
 	Wing *fin()   {if(m_bFin) return m_Wing+3; else return NULL;}
 
 	/** Returns a pointer to the Plane's Body, or NULL if none. */
-	Body *body()  {if(m_bBody)    return m_pBody; else return NULL;}
+	Body *body()  {if(m_bBody)    return &m_Body; else return NULL;}
 	
 	/** Returns the Plane's CoG position */
 	CVector &CoG()  {return m_CoG;}
@@ -169,7 +169,7 @@ public:
 
 private:
 
-	Body *m_pBody;                              /**< a pointer to the Body object, a NULL if none */
+	Body m_Body;                                /**< the Body object */
 
 	bool m_bBody;                               /**< true if a Body has been selected for this plane */
 	bool m_bBiplane;                            /**< true if this Plane is a bi-plane */

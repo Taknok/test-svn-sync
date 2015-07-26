@@ -29,15 +29,13 @@ void*	Plane::s_pMainFrame;
 /** The public constructor. */
 Plane::Plane()
 {
-	m_pBody   = NULL;
-
 	m_Wing[0].m_WingName   = QObject::tr("Wing");
 	m_Wing[0].wingType()   = XFLR5::MAINWING;
-	m_Wing[0].ComputeGeometry();
+	m_Wing[0].computeGeometry();
 
 	m_Wing[1].m_WingName   = QObject::tr("2nd Wing");
 	m_Wing[1].wingType()   = XFLR5::SECONDWING;
-	m_Wing[1].ComputeGeometry();
+	m_Wing[1].computeGeometry();
 
 	m_Wing[2].m_WingName    = QObject::tr("Elevator");
 	m_Wing[2].wingType()    = XFLR5::ELEVATOR;
@@ -54,7 +52,7 @@ Plane::Plane()
 	m_Wing[2].NYPanels(0)   = 7;
 	m_Wing[2].XPanelDist(0) = XFLR5::SINE;
 	m_Wing[2].YPanelDist(0) = XFLR5::UNIFORM;
-	m_Wing[2].ComputeGeometry();
+	m_Wing[2].computeGeometry();
 
 	m_Wing[3].m_WingName    = QObject::tr("Fin");
 	m_Wing[3].wingType()    = XFLR5::FIN;
@@ -72,7 +70,7 @@ Plane::Plane()
 	m_Wing[3].XPanelDist(0) = XFLR5::UNIFORM;
 	m_Wing[3].YPanelDist(0) = XFLR5::COSINE;
 
-	m_Wing[3].ComputeGeometry();
+	m_Wing[3].computeGeometry();
 
 	m_TailVolume       =   0.0;
 	m_WingLE[2].x      = 0.600;
@@ -108,7 +106,6 @@ Plane::Plane()
 Plane::~Plane()
 {
 	clearPointMasses();
-	if(m_pBody) delete m_pBody;
 }
 
 
@@ -147,7 +144,7 @@ void Plane::computeVolumeInertia(double &Mass, CVector & CoG, double &CoGIxx, do
 		{
 			//the inertia of the wings are base on the surface geometry;
 			//these surfaces have been translated to the LE position as they were created
-			pWing[iw]->ComputeVolumeInertia(CoGWing[iw], Ixx, Iyy, Izz, Ixz);
+			pWing[iw]->computeVolumeInertia(CoGWing[iw], Ixx, Iyy, Izz, Ixz);
 			CoG += CoGWing[iw] * pWing[iw]->m_VolumeMass;// so we do not add again the LE position
 			PlaneMass += pWing[iw]->m_VolumeMass;
 			CoGIxx += Ixx;
@@ -157,13 +154,13 @@ void Plane::computeVolumeInertia(double &Mass, CVector & CoG, double &CoGIxx, do
 		}
 	}
 
-	if(body())
+	if(m_bBody)
 	{
-		if(m_pBody->m_VolumeMass>PRECISION)
+		if(m_Body.m_VolumeMass>PRECISION)
 		{
-			m_pBody->computeVolumeInertia(CoGBody, Ixx, Iyy, Izz, Ixz);
-			CoG += (CoGBody+m_BodyPos) * m_pBody->m_VolumeMass;
-			PlaneMass += m_pBody->m_VolumeMass;
+			m_Body.computeVolumeInertia(CoGBody, Ixx, Iyy, Izz, Ixz);
+			CoG += (CoGBody+m_BodyPos) * m_Body.m_VolumeMass;
+			PlaneMass += m_Body.m_VolumeMass;
 			CoGIxx += Ixx;
 			CoGIyy += Iyy;
 			CoGIzz += Izz;
@@ -191,13 +188,13 @@ void Plane::computeVolumeInertia(double &Mass, CVector & CoG, double &CoGIxx, do
 		}
 	}
 
-	if(body())
+	if(m_bBody)
 	{
 		Pt = CoGBody - CoG;
-		CoGIxx += m_pBody->m_VolumeMass * (Pt.y*Pt.y + Pt.z*Pt.z);
-		CoGIyy += m_pBody->m_VolumeMass * (Pt.x*Pt.x + Pt.z*Pt.z);
-		CoGIzz += m_pBody->m_VolumeMass * (Pt.x*Pt.x + Pt.y*Pt.y);
-		CoGIxz -= m_pBody->m_VolumeMass *  Pt.x*Pt.z;
+		CoGIxx += m_Body.m_VolumeMass * (Pt.y*Pt.y + Pt.z*Pt.z);
+		CoGIyy += m_Body.m_VolumeMass * (Pt.x*Pt.x + Pt.z*Pt.z);
+		CoGIzz += m_Body.m_VolumeMass * (Pt.x*Pt.x + Pt.y*Pt.y);
+		CoGIxz -= m_Body.m_VolumeMass *  Pt.x*Pt.z;
 	}
 	Mass = PlaneMass;
 }
@@ -249,12 +246,12 @@ void Plane::computeBodyAxisInertia()
 		}
 	}
 
-	if(body())
+	if(m_bBody)
 	{
-		for(i=0; i<m_pBody->m_PointMass.size(); i++)
+		for(i=0; i<m_Body.m_PointMass.size(); i++)
 		{
-			m_TotalMass +=  m_pBody->m_PointMass[i]->mass();
-			m_CoG       += (m_pBody->m_PointMass[i]->position()+m_BodyPos) * m_pBody->m_PointMass[i]->mass();
+			m_TotalMass +=  m_Body.m_PointMass[i]->mass();
+			m_CoG       += (m_Body.m_PointMass[i]->position()+m_BodyPos) * m_Body.m_PointMass[i]->mass();
 		}
 	}
 	if(m_TotalMass>PRECISION) m_CoG = m_CoG/m_TotalMass;
@@ -293,16 +290,15 @@ void Plane::computeBodyAxisInertia()
 			}
 		}
 	}
-	if(body())
+	if(m_bBody)
 	{
-		Body *pBody = m_pBody;
-		for(i=0; i<pBody->m_PointMass.size(); i++)
+		for(i=0; i<m_Body.m_PointMass.size(); i++)
 		{
-			MassPos = m_CoG - (pBody->m_PointMass[i]->position() + m_BodyPos);
-			m_CoGIxx += pBody->m_PointMass[i]->mass() * (MassPos.y*MassPos.y + MassPos.z*MassPos.z);
-			m_CoGIyy += pBody->m_PointMass[i]->mass() * (MassPos.x*MassPos.x + MassPos.z*MassPos.z);
-			m_CoGIzz += pBody->m_PointMass[i]->mass() * (MassPos.x*MassPos.x + MassPos.y*MassPos.y);
-			m_CoGIxz -= pBody->m_PointMass[i]->mass() * (MassPos.x*MassPos.z);
+			MassPos = m_CoG - (m_Body.m_PointMass[i]->position() + m_BodyPos);
+			m_CoGIxx += m_Body.m_PointMass[i]->mass() * (MassPos.y*MassPos.y + MassPos.z*MassPos.z);
+			m_CoGIyy += m_Body.m_PointMass[i]->mass() * (MassPos.x*MassPos.x + MassPos.z*MassPos.z);
+			m_CoGIzz += m_Body.m_PointMass[i]->mass() * (MassPos.x*MassPos.x + MassPos.y*MassPos.y);
+			m_CoGIxz -= m_Body.m_PointMass[i]->mass() * (MassPos.x*MassPos.z);
 		}
 	}
 }
@@ -361,7 +357,7 @@ void Plane::duplicate(Plane *pPlane)
 	{
 		m_WingTiltAngle[iw] = pPlane->m_WingTiltAngle[iw];
 		m_WingLE[iw]        = pPlane->m_WingLE[iw];
-		m_Wing[iw].Duplicate(pPlane->m_Wing+iw);
+		m_Wing[iw].duplicate(pPlane->m_Wing+iw);
 	}
 
 	m_BodyPos.copy(pPlane->m_BodyPos);
@@ -382,8 +378,7 @@ void Plane::duplicate(Plane *pPlane)
 	m_bBody = pPlane->m_bBody ;
 	if(m_bBody)
 	{
-		m_pBody = new Body();
-		m_pBody->duplicate(pPlane->m_pBody);
+		m_Body.duplicate(pPlane->body());
 	}
 
 	setAutoBodyName();
@@ -392,11 +387,11 @@ void Plane::duplicate(Plane *pPlane)
 
 void Plane::setAutoBodyName()
 {
-	if(!m_pBody) m_BodyName.clear();
+	if(!m_bBody) m_BodyName.clear();
 	else
 	{
 		m_BodyName = m_PlaneName+"_body";
-		m_pBody->m_BodyName = m_PlaneName+"_body";
+		m_Body.m_BodyName = m_PlaneName+"_body";
 	}
 }
 
@@ -430,7 +425,7 @@ double Plane::totalMass()
 	if(m_bBiplane) Mass += m_Wing[1].totalMass();
 	if(m_bStab)    Mass += m_Wing[2].totalMass();
 	if(m_bFin)     Mass += m_Wing[3].totalMass();
-	if(body())  Mass += m_pBody->totalMass();
+	if(m_bBody)  Mass += m_Body.totalMass();
 	
 	for(int i=0; i<m_PointMass.size(); i++)
 		Mass += m_PointMass[i]->mass();
@@ -446,7 +441,7 @@ double Plane::totalMass()
  * @param bIsStoring true if saving the data, false if loading
  * @return true if the operation was successful, false otherwise
  */
-bool Plane::serializePlane(QDataStream &ar, bool bIsStoring)
+bool Plane::serializePlaneWPA(QDataStream &ar, bool bIsStoring)
 {
 	int nMass;
 	float f,g,h;
@@ -486,10 +481,10 @@ bool Plane::serializePlane(QDataStream &ar, bool bIsStoring)
 		if(ArchiveFormat>=1011) ReadCString(ar, m_PlaneDescription);
 
 		/**@todo remove non active wings from serialization */
-		m_Wing[0].SerializeWingWPA(ar, false);
-		if(ArchiveFormat>=1007) m_Wing[1].SerializeWingWPA(ar, false);
-		m_Wing[2].SerializeWingWPA(ar, false);
-		m_Wing[3].SerializeWingWPA(ar, false);
+		m_Wing[0].serializeWingWPA(ar, false);
+		if(ArchiveFormat>=1007) m_Wing[1].serializeWingWPA(ar, false);
+		m_Wing[2].serializeWingWPA(ar, false);
+		m_Wing[3].serializeWingWPA(ar, false);
 
 		ar >>k;
 		if(k) m_bStab = true; else m_bStab = false;
@@ -559,10 +554,9 @@ bool Plane::serializePlane(QDataStream &ar, bool bIsStoring)
 			if(k)  m_bBody=true; else m_bBody=false;
 			ReadCString(ar,strong);
 			m_BodyName = strong;
-			if(m_BodyName.length()) m_pBody = Objects3D::getBody(strong);
-			else                    m_pBody = NULL; //redundant
+			if(m_BodyName.length()) m_Body.duplicate(Objects3D::getBody(strong));
 		}
-		else m_pBody = NULL;
+		else m_bBody = false;
 
 		if(ArchiveFormat>=1012)
 		{
@@ -605,8 +599,7 @@ bool Plane::serializePlane(QDataStream &ar, bool bIsStoring)
 		{
 			if(m_bBody)
 			{
-				m_pBody = new Body;
-				m_pBody->serializeBodyWPA(ar, false);
+				m_Body.serializeBodyWPA(ar, false);
 			}
 		}
 
@@ -657,7 +650,7 @@ bool Plane::serializePlaneXFL(QDataStream &ar, bool bIsStoring)
 		if(m_bBody)
 		{
 			ar << m_BodyName;
-			m_pBody->serializeBodyXFL(ar, true);
+			m_Body.serializeBodyXFL(ar, true);
 		}
 
 		ar << m_PointMass.size();
@@ -708,9 +701,7 @@ bool Plane::serializePlaneXFL(QDataStream &ar, bool bIsStoring)
 		if(m_bBody)
 		{
 			ar >> m_BodyName;
-			if(m_pBody) delete m_pBody;
-			m_pBody = new Body();
-			m_pBody->serializeBodyXFL(ar, bIsStoring);
+			m_Body.serializeBodyXFL(ar, bIsStoring);
 		}
 
 		clearPointMasses();
@@ -773,10 +764,10 @@ void Plane::setPlaneName(QString planeName)
 */
 void Plane::createSurfaces()
 {
-	m_Wing[0].CreateSurfaces(m_WingLE[0],   0.0, m_WingTiltAngle[0]);
-	if(wing(1)) m_Wing[1].CreateSurfaces(m_WingLE[1],   0.0, m_WingTiltAngle[1]);
-	if(wing(2)) m_Wing[2].CreateSurfaces(m_WingLE[2],   0.0, m_WingTiltAngle[2]);
-	if(wing(3)) m_Wing[3].CreateSurfaces(m_WingLE[3], -90.0, m_WingTiltAngle[3]);
+	m_Wing[0].createSurfaces(m_WingLE[0],   0.0, m_WingTiltAngle[0]);
+	if(wing(1)) m_Wing[1].createSurfaces(m_WingLE[1],   0.0, m_WingTiltAngle[1]);
+	if(wing(2)) m_Wing[2].createSurfaces(m_WingLE[2],   0.0, m_WingTiltAngle[2]);
+	if(wing(3)) m_Wing[3].createSurfaces(m_WingLE[3], -90.0, m_WingTiltAngle[3]);
 
 	for(int iw=0; iw<MAXWINGS; iw++)
 	{
@@ -784,7 +775,7 @@ void Plane::createSurfaces()
 		{
 			for (int j=0; j<m_Wing[iw].m_Surface.size(); j++)
 				m_Wing[iw].m_Surface.at(j)->SetSidePoints(body(), bodyPos().x, bodyPos().z);
-			m_Wing[iw].ComputeBodyAxisInertia();
+			m_Wing[iw].computeBodyAxisInertia();
 		}
 	}
 }
@@ -799,13 +790,12 @@ void Plane::setBody(Body *pBody)
 	if(!pBody)
 	{
 		m_bBody = false;
-		m_pBody = NULL;
 		m_BodyName.clear();
 	}
 	else
 	{
 		m_bBody = true;
-		m_pBody = pBody;
+		m_Body.duplicate(pBody);
 		setAutoBodyName();
 	}
 }
@@ -830,7 +820,7 @@ int Plane::VLMPanelTotal()
 		else                          total +=   fin()->VLMPanelTotal(true);
 	}
 
-	if(body()) total += body()->m_nxPanels * body()->m_nhPanels * 2;
+	if(m_bBody) total += body()->m_nxPanels * body()->m_nhPanels * 2;
 
 	return total;
 }

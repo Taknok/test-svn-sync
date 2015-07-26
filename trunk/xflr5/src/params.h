@@ -45,7 +45,7 @@
 #define MAXSPANSTATIONS   250     /**< The max number of stations for LLT. For a VLM analysis, this is the max number of panels in the spanwise direction. */
 
 
-#define MIDPOINTCOUNT 100  /** the number of points which define the foil's mid camber line */
+#define MIDPOINTCOUNT 100  /**< the number of points which define the foil's mid camber line */
 
 
 

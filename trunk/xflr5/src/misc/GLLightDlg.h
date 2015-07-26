@@ -45,7 +45,7 @@ public:
 	static bool LoadSettings(QSettings *pSettings);
 	static bool SaveSettings(QSettings *pSettings);
 
-	static bool IsLightOn() {return s_bLight;}
+	static bool isLightOn() {return s_bLight;}
 	static void SetLightOn(bool bLight) {s_bLight = bLight;}
 
 private:

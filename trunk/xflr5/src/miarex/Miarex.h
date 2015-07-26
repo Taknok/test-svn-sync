@@ -280,6 +280,8 @@ public:
 	PlaneOpp *curPOpp(){return m_pCurPOpp;}
 	bool curPOppOnly(){return m_bCurPOppOnly;}
 
+	Wing *pWing(int iw);
+
 //____________________Variables______________________________________
 //
 
@@ -426,8 +428,6 @@ public:
 
 	Plane * m_pCurPlane;          /**< the currently active Plane */
 	WPolar * m_pCurWPolar;        /**< the currently active WPolar */
-	Wing *m_pWingList[MAXWINGS];  /**< for convenience, an array of pointers to the four wings of the currently selected plane */
-
 
 	int m_StabilityResponseType;   /**< 0 = initial conditions, 1=forced response, 2=modal response */
 

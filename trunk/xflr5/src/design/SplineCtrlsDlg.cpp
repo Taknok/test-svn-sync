@@ -35,7 +35,7 @@ SplineCtrlsDlg::SplineCtrlsDlg(QWidget *pParent): QDialog(pParent)
 {
 	setWindowTitle(tr("Spline Parameters"));
 	m_pSF = NULL;
-	SetupLayout();
+	setupLayout();
 }
 
 SplineCtrlsDlg::~SplineCtrlsDlg()
@@ -43,7 +43,7 @@ SplineCtrlsDlg::~SplineCtrlsDlg()
 	delete [] m_precision;
 }
 
-void SplineCtrlsDlg::InitDialog()
+void SplineCtrlsDlg::initDialog()
 {
 	int i;
 
@@ -107,14 +107,14 @@ void SplineCtrlsDlg::InitDialog()
 	m_pUpperFloatDelegate->SetPrecision(m_precision);
 	m_pLowerFloatDelegate->SetPrecision(m_precision);
 
-	connect(m_pUpperFloatDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(OnUpdate()));
-	connect(m_pLowerFloatDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(OnUpdate()));
+	connect(m_pUpperFloatDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(onUpdate()));
+	connect(m_pLowerFloatDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(onUpdate()));
 
 	m_pctrlPtWeight->setValue(m_pSF->m_Extrados.m_PtWeight);
 
-	FillPointLists();
+	fillPointLists();
 
-	SetControls();
+	setControls();
 }
 
 
@@ -133,7 +133,7 @@ void SplineCtrlsDlg::showEvent(QShowEvent *event)
 
 
 
-void SplineCtrlsDlg::SetupLayout()
+void SplineCtrlsDlg::setupLayout()
 {
 	QGroupBox *pUpperSideBox = new QGroupBox(tr("Upper side"));
 	{
@@ -204,7 +204,7 @@ void SplineCtrlsDlg::SetupLayout()
 
 	m_pctrlSymetric = new QCheckBox(tr("Symetric foil"));
 
-	QHBoxLayout *pWeightLayout = new QHBoxLayout(this);
+	QHBoxLayout *pWeightLayout = new QHBoxLayout;
 	{
 		QLabel *labWeight = new QLabel(tr("Point Weight ="));
 		m_pctrlPtWeight = new QSlider(Qt::Horizontal);
@@ -235,28 +235,30 @@ void SplineCtrlsDlg::SetupLayout()
 		pMainLayout->addWidget(m_pctrlSymetric);
 //		MainLayout->addLayout(WeightLayout);
 		pMainLayout->addStretch(1);
+		pMainLayout->addLayout(pWeightLayout);
+		pMainLayout->addStretch(1);
 		pMainLayout->addLayout(pCommandButtons);
 		setLayout(pMainLayout);
 	}
 
 
-	connect(OKButton, SIGNAL(clicked()),this, SLOT(OnOK()));
+	connect(OKButton, SIGNAL(clicked()),this, SLOT(onOK()));
 	connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 
-	connect(m_pctrlSymetric, SIGNAL(clicked()), this, SLOT(OnUpdate()));
-	connect(m_pctrlDegExtrados, SIGNAL(activated(int)), this, SLOT(OnUpdate()));
-	connect(m_pctrlDegIntrados, SIGNAL(activated(int)), this, SLOT(OnUpdate()));
-	connect(m_pctrlOutExtrados, SIGNAL(editingFinished()), this, SLOT(OnUpdate()));
-	connect(m_pctrlOutIntrados, SIGNAL(editingFinished()), this, SLOT(OnUpdate()));
+	connect(m_pctrlSymetric, SIGNAL(clicked()), this, SLOT(onUpdate()));
+	connect(m_pctrlDegExtrados, SIGNAL(activated(int)), this, SLOT(onUpdate()));
+	connect(m_pctrlDegIntrados, SIGNAL(activated(int)), this, SLOT(onUpdate()));
+	connect(m_pctrlOutExtrados, SIGNAL(editingFinished()), this, SLOT(onUpdate()));
+	connect(m_pctrlOutIntrados, SIGNAL(editingFinished()), this, SLOT(onUpdate()));
 
-	connect(m_pctrlPtWeight, SIGNAL(sliderMoved(int)), this, SLOT(OnUpdate()));
-	connect(m_pctrlPtWeight, SIGNAL(sliderReleased()), this, SLOT(OnUpdate()));
+	connect(m_pctrlPtWeight, SIGNAL(sliderMoved(int)), this, SLOT(onUpdate()));
+	connect(m_pctrlPtWeight, SIGNAL(sliderReleased()), this, SLOT(onUpdate()));
 
 }
 
 
 
-void SplineCtrlsDlg::FillPointLists()
+void SplineCtrlsDlg::fillPointLists()
 {
 	m_pUpperListModel->setRowCount(m_pSF->m_Extrados.m_CtrlPoint.size());
 	for (int i=0; i<m_pSF->m_Extrados.m_CtrlPoint.size(); i++)
@@ -286,7 +288,7 @@ void SplineCtrlsDlg::FillPointLists()
 }
 
 
-void SplineCtrlsDlg::ReadData()
+void SplineCtrlsDlg::readData()
 {
 	for(int i=0; i<m_pSF->m_Extrados.m_CtrlPoint.size(); i++)
 	{
@@ -349,14 +351,14 @@ void SplineCtrlsDlg::ReadData()
 }
 
 
-void SplineCtrlsDlg::SetControls()
+void SplineCtrlsDlg::setControls()
 {
 	m_pctrlSymetric->setChecked(m_pSF->m_bSymetric);
 	if(m_pSF->m_bSymetric)
 	{
 		m_pctrlDegIntrados->setCurrentIndex(m_pSF->m_Intrados.m_iDegree-2);
 		m_pctrlOutIntrados->setValue(m_pSF->m_Intrados.m_iRes);
-		FillPointLists();
+		fillPointLists();
 	}
 	m_pctrlLowerList->setEnabled(!m_pSF->m_bSymetric);
 	m_pctrlDegIntrados->setEnabled(!m_pSF->m_bSymetric);
@@ -386,7 +388,7 @@ void SplineCtrlsDlg::keyPressEvent(QKeyEvent *event)
 			}
 			else
 			{
-				OnOK();
+				onOK();
 			}
 			break;
 		}
@@ -396,23 +398,23 @@ void SplineCtrlsDlg::keyPressEvent(QKeyEvent *event)
 	}
 }
 
-void SplineCtrlsDlg::OnOK()
+void SplineCtrlsDlg::onOK()
 {
-	ReadData();
+	readData();
 	accept();
 }
 
 
-void SplineCtrlsDlg::OnUpdate()
+void SplineCtrlsDlg::onUpdate()
 {
-	ReadData();
-	SetControls();
+	readData();
+	setControls();
 
-	UpdateSplines();
+	updateSplines();
 }
 
 
-void SplineCtrlsDlg::UpdateSplines()
+void SplineCtrlsDlg::updateSplines()
 {
 	m_pSF->m_Extrados.SplineKnots();
 	m_pSF->m_Extrados.splineCurve();

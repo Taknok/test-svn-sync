@@ -51,51 +51,51 @@ PlaneDlg::PlaneDlg(QWidget *parent) :QDialog(parent)
 	m_bChanged            = false;
 	m_bDescriptionChanged = false;
 
-	SetupLayout();
+	setupLayout();
 
-	connect(m_pctrlBiplane,   SIGNAL(clicked()), this, SLOT(OnBiplane()));
-	connect(m_pctrlStabCheck, SIGNAL(clicked()), this, SLOT(OnStab()));
-	connect(m_pctrlFinCheck,  SIGNAL(clicked()), this, SLOT(OnFin()));
+	connect(m_pctrlBiplane,   SIGNAL(clicked()), this, SLOT(onBiplane()));
+	connect(m_pctrlStabCheck, SIGNAL(clicked()), this, SLOT(onStab()));
+	connect(m_pctrlFinCheck,  SIGNAL(clicked()), this, SLOT(onFin()));
 
-	connect(m_pctrlSymFin,    SIGNAL(clicked()), this, SLOT(OnSymFin()));
-	connect(m_pctrlDoubleFin, SIGNAL(clicked()), this, SLOT(OnDoubleFin()));
+	connect(m_pctrlSymFin,    SIGNAL(clicked()), this, SLOT(onSymFin()));
+	connect(m_pctrlDoubleFin, SIGNAL(clicked()), this, SLOT(onDoubleFin()));
 
-	connect(m_pctrlDefineWing,  SIGNAL(clicked()), this, SLOT(OnDefineWing()));
-	connect(m_pctrlImportWing,  SIGNAL(clicked()), this, SLOT(OnImportWing()));
-	connect(m_pctrlDefineWing2, SIGNAL(clicked()), this, SLOT(OnDefineWing2()));
-	connect(m_pctrlImportWing2, SIGNAL(clicked()), this, SLOT(OnImportWing2()));
-	connect(m_pctrlDefineStab,  SIGNAL(clicked()), this, SLOT(OnDefineStab()));
-	connect(m_pctrlDefineFin,   SIGNAL(clicked()), this, SLOT(OnDefineFin()));
+	connect(m_pctrlDefineWing,  SIGNAL(clicked()), this, SLOT(onDefineWing()));
+	connect(m_pctrlImportWing,  SIGNAL(clicked()), this, SLOT(onImportWing()));
+	connect(m_pctrlDefineWing2, SIGNAL(clicked()), this, SLOT(onDefineWing2()));
+	connect(m_pctrlImportWing2, SIGNAL(clicked()), this, SLOT(onImportWing2()));
+	connect(m_pctrlDefineStab,  SIGNAL(clicked()), this, SLOT(onDefineStab()));
+	connect(m_pctrlDefineFin,   SIGNAL(clicked()), this, SLOT(onDefineFin()));
 
-	connect(m_pctrlPlaneInertia, SIGNAL(clicked()), this, SLOT(OnInertia()));
+	connect(m_pctrlPlaneInertia, SIGNAL(clicked()), this, SLOT(onInertia()));
 
-	connect(OKButton,     SIGNAL(clicked()), this, SLOT(OnOK()));
+	connect(OKButton,     SIGNAL(clicked()), this, SLOT(onOK()));
 	connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 
-	connect(m_pctrlBody,       SIGNAL(clicked()), this, SLOT(OnBodyCheck()));
-	connect(m_pctrlDefineBody, SIGNAL(clicked()), this, SLOT(OnDefineBody()));
+	connect(m_pctrlBody,       SIGNAL(clicked()), this, SLOT(onBodyCheck()));
+	connect(m_pctrlDefineBody, SIGNAL(clicked()), this, SLOT(onDefineBody()));
 
-	connect(m_pctrlPlaneDescription, SIGNAL(textChanged()), this, SLOT(OnDescriptionChanged()));
+	connect(m_pctrlPlaneDescription, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()));
 
-	connect(m_pctrlWingTilt, SIGNAL(editingFinished()), this, SLOT(OnChanged()));
-	connect(m_pctrlStabTilt, SIGNAL(editingFinished()), this, SLOT(OnChanged()));
-	connect(m_pctrlFinTilt,  SIGNAL(editingFinished()), this, SLOT(OnChanged()));
-	connect(m_pctrlXLEWing,  SIGNAL(editingFinished()), this, SLOT(OnChanged()));
-	connect(m_pctrlZLEWing,  SIGNAL(editingFinished()), this, SLOT(OnChanged()));
-	connect(m_pctrlXLEWing2, SIGNAL(editingFinished()), this, SLOT(OnChanged()));
-	connect(m_pctrlZLEWing2, SIGNAL(editingFinished()), this, SLOT(OnChanged()));
-	connect(m_pctrlXLEStab,  SIGNAL(editingFinished()), this, SLOT(OnChanged()));
-	connect(m_pctrlZLEStab,  SIGNAL(editingFinished()), this, SLOT(OnChanged()));
-	connect(m_pctrlXLEFin,   SIGNAL(editingFinished()), this, SLOT(OnChanged()));
-	connect(m_pctrlZLEFin,   SIGNAL(editingFinished()), this, SLOT(OnChanged()));
-	connect(m_pctrlXBody,    SIGNAL(editingFinished()), this, SLOT(OnChanged()));
-	connect(m_pctrlZBody,    SIGNAL(editingFinished()), this, SLOT(OnChanged()));
+	connect(m_pctrlWingTilt, SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlStabTilt, SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlFinTilt,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlXLEWing,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlZLEWing,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlXLEWing2, SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlZLEWing2, SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlXLEStab,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlZLEStab,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlXLEFin,   SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlZLEFin,   SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlXBody,    SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlZBody,    SIGNAL(editingFinished()), this, SLOT(onChanged()));
 }
 
 
 
 
-void PlaneDlg::InitDialog()
+void PlaneDlg::initDialog()
 {
 	QString len, surf;
 	Units::getLengthUnitLabel(len);
@@ -124,17 +124,17 @@ void PlaneDlg::InitDialog()
 	if(m_pPlane->m_PlaneDescription.length()) m_pctrlPlaneDescription->setPlainText(m_pPlane->m_PlaneDescription);
 	else                                      m_pctrlPlaneDescription->setPlainText("");
 
-	SetParams();
-	SetResults();
+	setParams();
+	setResults();
 
 	if(!m_bAcceptName) m_pctrlPlaneName->setEnabled(false);
 	m_bChanged = false;
 
 	m_pPlane->m_bDoubleSymFin = true;
-	m_pPlane->m_Wing[0].CreateSurfaces(m_pPlane->m_WingLE[0],   0.0, m_pPlane->m_WingTiltAngle[0]);//necessary for eventual inertia calculations
-	m_pPlane->m_Wing[1].CreateSurfaces(m_pPlane->m_WingLE[1],   0.0, m_pPlane->m_WingTiltAngle[1]);//necessary for eventual inertia calculations
-	m_pPlane->m_Wing[2].CreateSurfaces(m_pPlane->m_WingLE[2],   0.0, m_pPlane->m_WingTiltAngle[2]);//necessary for eventual inertia calculations
-	m_pPlane->m_Wing[3].CreateSurfaces(m_pPlane->m_WingLE[3], -90.0, m_pPlane->m_WingTiltAngle[3]);//necessary for eventual inertia calculations
+	m_pPlane->m_Wing[0].createSurfaces(m_pPlane->m_WingLE[0],   0.0, m_pPlane->m_WingTiltAngle[0]);//necessary for eventual inertia calculations
+	m_pPlane->m_Wing[1].createSurfaces(m_pPlane->m_WingLE[1],   0.0, m_pPlane->m_WingTiltAngle[1]);//necessary for eventual inertia calculations
+	m_pPlane->m_Wing[2].createSurfaces(m_pPlane->m_WingLE[2],   0.0, m_pPlane->m_WingTiltAngle[2]);//necessary for eventual inertia calculations
+	m_pPlane->m_Wing[3].createSurfaces(m_pPlane->m_WingLE[3], -90.0, m_pPlane->m_WingTiltAngle[3]);//necessary for eventual inertia calculations
 }
 
 
@@ -153,7 +153,7 @@ void PlaneDlg::keyPressEvent(QKeyEvent *event)
 			}
 			else
 			{
-				OnOK();
+				onOK();
 				return;
 			}
 			break;
@@ -169,7 +169,7 @@ void PlaneDlg::keyPressEvent(QKeyEvent *event)
 }
 
 
-void PlaneDlg::OnBiplane()
+void PlaneDlg::onBiplane()
 {
 	m_bChanged = true;
 	m_pPlane->m_bBiplane = m_pctrlBiplane->isChecked();
@@ -193,7 +193,7 @@ void PlaneDlg::OnBiplane()
 
 
 
-void PlaneDlg::OnBodyCheck()
+void PlaneDlg::onBodyCheck()
 {
 	m_bChanged = true;
 
@@ -215,114 +215,114 @@ void PlaneDlg::OnBodyCheck()
 	m_pctrlDefineBody->setEnabled(m_pctrlBody->isChecked());
 	m_pctrlImportBody->setEnabled(m_pctrlBody->isChecked());
 
-	SetResults();
+	setResults();
 }
 
 
 
-void PlaneDlg::OnChanged()
+void PlaneDlg::onChanged()
 {
 	m_bChanged = true;
-	ReadParams();
-	SetResults();
+	readParams();
+	setResults();
 }
 
 
-void PlaneDlg::OnDescriptionChanged()
+void PlaneDlg::onDescriptionChanged()
 {
 	m_bDescriptionChanged = true;
 }
 
 
 
-void PlaneDlg::OnDefineWing()
+void PlaneDlg::onDefineWing()
 {
 	Wing *pSaveWing = new Wing();
-	pSaveWing->Duplicate(m_pPlane->wing());
+	pSaveWing->duplicate(m_pPlane->wing());
 
 	GL3dWingDlg wingDlg(this);
 
 	wingDlg.m_bAcceptName = true;
-	wingDlg.InitDialog(m_pPlane->wing());
+	wingDlg.initDialog(m_pPlane->wing());
 
 	if(wingDlg.exec() ==QDialog::Accepted)
 	{
-		SetResults();
+		setResults();
 		m_bChanged = true;
 	}
-	else   m_pPlane->wing()->Duplicate(pSaveWing);
-	m_pPlane->wing()->CreateSurfaces(m_pPlane->m_WingLE[0], 0.0, m_pPlane->m_WingTiltAngle[0]);//necessary for eventual inertia calculations
+	else   m_pPlane->wing()->duplicate(pSaveWing);
+	m_pPlane->wing()->createSurfaces(m_pPlane->m_WingLE[0], 0.0, m_pPlane->m_WingTiltAngle[0]);//necessary for eventual inertia calculations
 
 	delete pSaveWing;
 }
 
 
-void PlaneDlg::OnDefineFin() 
+void PlaneDlg::onDefineFin()
 {
 	Wing *pSaveWing = new Wing();
-	pSaveWing->Duplicate(m_pPlane->fin());
+	pSaveWing->duplicate(m_pPlane->fin());
 
 	GL3dWingDlg wingDlg(this);
 	wingDlg.m_bAcceptName = true;
-	wingDlg.InitDialog(m_pPlane->fin());
+	wingDlg.initDialog(m_pPlane->fin());
 
 
 	if(wingDlg.exec() ==QDialog::Accepted)
 	{
-		SetResults();	
+		setResults();
 		m_bChanged = true;
 	}
-	else   m_pPlane->fin()->Duplicate(pSaveWing);
-    m_pPlane->fin()->CreateSurfaces(m_pPlane->m_WingLE[3], -90.0, m_pPlane->m_WingTiltAngle[3]);//necessary for eventual inertia calculations
+	else   m_pPlane->fin()->duplicate(pSaveWing);
+    m_pPlane->fin()->createSurfaces(m_pPlane->m_WingLE[3], -90.0, m_pPlane->m_WingTiltAngle[3]);//necessary for eventual inertia calculations
 
 	delete pSaveWing;
 }
 
 
-void PlaneDlg::OnDefineStab() 
+void PlaneDlg::onDefineStab()
 {
 	Wing *pSaveWing = new Wing();
-	pSaveWing->Duplicate(m_pPlane->stab());
+	pSaveWing->duplicate(m_pPlane->stab());
 
 	GL3dWingDlg wingDlg(this);
 	wingDlg.m_bAcceptName = true;
-	wingDlg.InitDialog(m_pPlane->stab());
+	wingDlg.initDialog(m_pPlane->stab());
 
 	if(wingDlg.exec() == QDialog::Accepted)
 	{
-		SetResults();	
+		setResults();
 		m_bChanged = true;
 	}
-	else  m_pPlane->stab()->Duplicate(pSaveWing);
-	m_pPlane->stab()->CreateSurfaces(m_pPlane->m_WingLE[2], 0.0, m_pPlane->m_WingTiltAngle[2]);//necessary for eventual inertia calculations
+	else  m_pPlane->stab()->duplicate(pSaveWing);
+	m_pPlane->stab()->createSurfaces(m_pPlane->m_WingLE[2], 0.0, m_pPlane->m_WingTiltAngle[2]);//necessary for eventual inertia calculations
 
 	delete pSaveWing;
 }
 
 
 
-void PlaneDlg::OnDefineWing2()
+void PlaneDlg::onDefineWing2()
 {
 	Wing *pSaveWing = new Wing();
-	pSaveWing->Duplicate(m_pPlane->wing2());
+	pSaveWing->duplicate(m_pPlane->wing2());
 
 	GL3dWingDlg wingDlg(this);
 	wingDlg.m_bAcceptName = true;
-	wingDlg.InitDialog(m_pPlane->wing2());
+	wingDlg.initDialog(m_pPlane->wing2());
 
 	if(wingDlg.exec() ==QDialog::Accepted)
 	{
-		SetResults();
+		setResults();
 		m_bChanged = true;
 	}
-	else   m_pPlane->wing2()->Duplicate(pSaveWing);
-	m_pPlane->wing2()->CreateSurfaces(m_pPlane->m_WingLE[1], 0.0, m_pPlane->m_WingTiltAngle[1]);//necessary for eventual inertia calculations
+	else   m_pPlane->wing2()->duplicate(pSaveWing);
+	m_pPlane->wing2()->createSurfaces(m_pPlane->m_WingLE[1], 0.0, m_pPlane->m_WingTiltAngle[1]);//necessary for eventual inertia calculations
 
 	delete pSaveWing;
 }
 
 
-void PlaneDlg::OnDoubleFin()
+void PlaneDlg::onDoubleFin()
 {
 	if (m_pctrlDoubleFin->isChecked())
 	{
@@ -337,36 +337,36 @@ void PlaneDlg::OnDoubleFin()
 		m_pPlane->m_bDoubleFin = false;
 	}
 	m_bChanged = true;
-	SetResults();
+	setResults();
 }
 
 
-void PlaneDlg::OnDefineBody()
+void PlaneDlg::onDefineBody()
 {
-	if(!m_pPlane->m_pBody) return;
+	if(!m_pPlane->body()) return;
 
 	Body memBody;
-	memBody.duplicate(m_pPlane->m_pBody);
+	memBody.duplicate(m_pPlane->body());
     CVector v = m_pPlane->bodyPos();
     v.x = -v.x; v.z=-v.z;
  //   m_pPlane->m_pBody->Translate(v,false);
 	GL3dBodyDlg glbDlg(this);
 	glbDlg.m_bEnableName = false;
-	glbDlg.InitDialog(m_pPlane->m_pBody);
+	glbDlg.initDialog(m_pPlane->body());
 	glbDlg.setWindowState(Qt::WindowMaximized);
 
 	if(glbDlg.exec() == QDialog::Accepted)
 	{
 		m_bChanged = true;
-		SetResults();
+		setResults();
 	}
-	else m_pPlane->m_pBody->duplicate(&memBody);
+	else m_pPlane->body()->duplicate(&memBody);
  //   m_pPlane->m_pBody->Translate(m_pPlane->BodyPos(),false);
 }
 
 
 
-void PlaneDlg::OnFin()
+void PlaneDlg::onFin()
 {
 	m_bChanged = true;
 	if(m_pctrlFinCheck->isChecked())
@@ -393,15 +393,15 @@ void PlaneDlg::OnFin()
 		m_pctrlDefineFin->setEnabled(false);
 		m_pPlane->m_bFin = false;
 	}
-	SetResults();
+	setResults();
 }
 
 
-void PlaneDlg::OnImportPlaneBody()
+void PlaneDlg::onImportPlaneBody()
 {
 	ImportObjectDlg dlg(this);
-	if(m_pPlane->m_bBody && m_pPlane->m_pBody) dlg.m_ObjectName = m_pPlane->body()->m_BodyName;
-	else                                       dlg.m_ObjectName.clear();
+	if(m_pPlane->body()) dlg.m_ObjectName = m_pPlane->body()->m_BodyName;
+	else                 dlg.m_ObjectName.clear();
 	dlg.InitDialog(false);
 
 	if(dlg.exec() == QDialog::Accepted)
@@ -419,7 +419,7 @@ void PlaneDlg::OnImportPlaneBody()
 
 
 
-void PlaneDlg::OnImportXMLBody()
+void PlaneDlg::onImportXMLBody()
 {
 	QString PathName;
 	PathName = QFileDialog::getOpenFileName(this, tr("Open XML File"),
@@ -463,7 +463,7 @@ void PlaneDlg::OnImportXMLBody()
 
 
 
-void PlaneDlg::OnImportWing()
+void PlaneDlg::onImportWing()
 {
 	ImportObjectDlg dlg(this);
 	dlg.m_ObjectName = m_pPlane->planeName();
@@ -476,14 +476,14 @@ void PlaneDlg::OnImportWing()
 		Wing *pWing = Objects3D::getWing(dlg.m_ObjectName);
 		if(pWing)
 		{
-			m_pPlane->wing()->Duplicate(pWing);
+			m_pPlane->wing()->duplicate(pWing);
 			m_pPlane->wing()->setWingColor(pWing->wingColor());
 		}
 	}
 }
 
 
-void PlaneDlg::OnImportWing2() 
+void PlaneDlg::onImportWing2()
 {
 	ImportObjectDlg dlg(this);
 	dlg.m_ObjectName = m_pPlane->wing()->m_WingName;
@@ -495,7 +495,7 @@ void PlaneDlg::OnImportWing2()
 		Wing *pWing = Objects3D::getWing(dlg.m_ObjectName);
 		if(pWing)
 		{
-			m_pPlane->wing2()->Duplicate(pWing);
+			m_pPlane->wing2()->duplicate(pWing);
 			m_pPlane->wing2()->setWingColor(pWing->wingColor());
 		}
 	}
@@ -503,10 +503,10 @@ void PlaneDlg::OnImportWing2()
 
 
 
-void PlaneDlg::OnInertia()
+void PlaneDlg::onInertia()
 {
 	if(!m_pPlane) return;
-	ReadParams();
+	readParams();
 
 	m_pPlane->createSurfaces();//necessary for inertia calculations
 
@@ -540,17 +540,17 @@ void PlaneDlg::OnInertia()
 }
 
 
-void PlaneDlg::OnPlaneName() 
+void PlaneDlg::onPlaneName()
 {
 	m_pPlane->setPlaneName(m_pctrlPlaneName->text());
 }
 
 
-void PlaneDlg::OnOK()
+void PlaneDlg::onOK()
 {
 	int j;
 
-	ReadParams();
+	readParams();
 
 	m_pPlane->m_PlaneDescription = m_pctrlPlaneDescription->toPlainText();
 
@@ -587,19 +587,14 @@ void PlaneDlg::OnOK()
 
 	m_pPlane->computeBodyAxisInertia();
 
-	if(!m_pctrlBody->isChecked())
-	{
-		delete m_pPlane->m_pBody;
-		m_pPlane->m_pBody = NULL;
-		m_pPlane->m_bBody = false;
-	}
+	m_pPlane->m_bBody = m_pctrlBody->isChecked();
 
 	accept();
 }
 
 
 
-void PlaneDlg::OnStab()
+void PlaneDlg::onStab()
 {
 	m_bChanged = true;
 	if(m_pctrlStabCheck->isChecked())
@@ -618,11 +613,11 @@ void PlaneDlg::OnStab()
 		m_pctrlStabTilt->setEnabled(false);
 		m_pPlane->m_bStab = false;
 	}
-	SetResults();
+	setResults();
 }
 
 
-void PlaneDlg::OnSymFin()
+void PlaneDlg::onSymFin()
 {	
 	if (m_pctrlSymFin->isChecked()) 
 	{
@@ -639,15 +634,15 @@ void PlaneDlg::OnSymFin()
 		m_pPlane->m_bSymFin = false;
 	}
 	m_bChanged = true;
-	SetResults();
+	setResults();
 }
 
 
 
 
-void PlaneDlg::ReadParams()
+void PlaneDlg::readParams()
 {
-	OnPlaneName();
+	onPlaneName();
 	m_pPlane->m_WingTiltAngle[0] = m_pctrlWingTilt->value();
 	m_pPlane->m_WingTiltAngle[1] = m_pctrlWingTilt2->value();
 	m_pPlane->m_WingTiltAngle[2] = m_pctrlStabTilt->value();
@@ -688,7 +683,7 @@ void PlaneDlg::reject()
 										QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
 		if (QMessageBox::Yes == Ans)
 		{
-			OnOK();
+			onOK();
 			return;
 		}
 		else if(QMessageBox::Cancel == Ans) return;
@@ -698,7 +693,7 @@ void PlaneDlg::reject()
 }
 
 
-void PlaneDlg::SetParams()
+void PlaneDlg::setParams()
 {
 	if(m_pPlane->body()) m_pctrlBody->setChecked(true);
 	else                 m_pctrlBody->setChecked(false);
@@ -728,7 +723,7 @@ void PlaneDlg::SetParams()
 	m_pctrlZBody->setValue(m_pPlane->m_BodyPos.z * Units::mtoUnit());
 
 	m_pctrlBiplane->setChecked(m_pPlane->wing2());
-	OnBiplane();
+	onBiplane();
 
 	m_pctrlXLEFin->setValue(m_pPlane->m_WingLE[3].x* Units::mtoUnit());
 	m_pctrlYLEFin->setValue(m_pPlane->m_WingLE[3].y* Units::mtoUnit());
@@ -736,13 +731,13 @@ void PlaneDlg::SetParams()
 	m_pctrlFinCheck->setChecked(m_pPlane->m_bFin);
 	m_pctrlDoubleFin->setChecked(m_pPlane->m_bDoubleFin);
 	m_pctrlSymFin->setChecked(m_pPlane->m_bSymFin);
-	OnFin();
+	onFin();
 	m_pctrlStabCheck->setChecked(m_pPlane->stab());
-	OnStab();
+	onStab();
 }
 
 
-void PlaneDlg::SetResults()
+void PlaneDlg::setResults()
 {
 	QString str;
 
@@ -788,7 +783,7 @@ void PlaneDlg::SetResults()
 
 
 
-void PlaneDlg::SetupLayout()
+void PlaneDlg::setupLayout()
 {
 	QGroupBox *pNameBox = new QGroupBox(tr("Plane Description"));
 	{
@@ -960,16 +955,16 @@ void PlaneDlg::SetupLayout()
 
 	QGroupBox *pBodyBox = new QGroupBox(tr("Body"));
 	{
-		QHBoxLayout *pBodyName = new QHBoxLayout;
+		QHBoxLayout *pBodyNameLayout = new QHBoxLayout;
 		{
 			m_pctrlBody = new QCheckBox(tr("Body"));
 
 
 			QAction *m_pImportXMLBody= new QAction(tr("Import body definition from an XML file"), this);
-			connect(m_pImportXMLBody, SIGNAL(triggered()), this, SLOT(OnImportXMLBody()));
+			connect(m_pImportXMLBody, SIGNAL(triggered()), this, SLOT(onImportXMLBody()));
 
 			QAction *m_pImportPlaneBody= new QAction(tr("Import body definition from another plane"), this);
-			connect(m_pImportPlaneBody, SIGNAL(triggered()), this, SLOT(OnImportPlaneBody()));
+			connect(m_pImportPlaneBody, SIGNAL(triggered()), this, SLOT(onImportPlaneBody()));
 
 
 			m_pctrlDefineBody = new QPushButton(tr("Define"));
@@ -980,10 +975,10 @@ void PlaneDlg::SetupLayout()
 			pBodyMenu->addAction(m_pImportPlaneBody);
 			m_pctrlImportBody->setMenu(pBodyMenu);
 
-			pBodyName->addWidget(m_pctrlBody);
-			pBodyName->addWidget(m_pctrlDefineBody);
-			pBodyName->addWidget(m_pctrlImportBody);
-			pBodyName->addStretch(1);
+			pBodyNameLayout->addWidget(m_pctrlBody);
+			pBodyNameLayout->addWidget(m_pctrlDefineBody);
+			pBodyNameLayout->addWidget(m_pctrlImportBody);
+			pBodyNameLayout->addStretch(1);
 		}
 		QGridLayout *pBodyPos = new QGridLayout;
 		{
@@ -1007,7 +1002,7 @@ void PlaneDlg::SetupLayout()
 		{
 			QLabel *BodyWarning = new QLabel(tr("Warning:\nIncluding the body in the analysis is not recommended.\nCheck the guidelines for explanations."));
 			pBodyLayout->addWidget(BodyWarning);
-			pBodyLayout->addLayout(pBodyName);
+			pBodyLayout->addLayout(pBodyNameLayout);
 			pBodyLayout->addLayout(pBodyPos);
 			pBodyLayout->addStretch(1);
 		}

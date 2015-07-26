@@ -533,7 +533,7 @@ void EditBodyDlg::GLRenderView()
 		glCallList(SECTIONHIGHLIGHT);
 	}
 
-	if(GLLightDlg::IsLightOn())
+	if(GLLightDlg::isLightOn())
 	{
 		glEnable(GL_LIGHTING);
 		glEnable(GL_LIGHT0);

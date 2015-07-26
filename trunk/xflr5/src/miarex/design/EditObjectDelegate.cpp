@@ -118,7 +118,7 @@ QWidget *EditObjectDelegate::createEditor(QWidget *parent, const QStyleOptionVie
 	}
 	else if(dataType==XFLR5::WINGTYPE)
 	{
-		QComboBox *editor = new QComboBox(parent);
+/*		QComboBox *editor = new QComboBox(parent);
 		editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
 		//fill comboboxes here
 		editor->addItem("MAINWING");
@@ -126,7 +126,8 @@ QWidget *EditObjectDelegate::createEditor(QWidget *parent, const QStyleOptionVie
 		editor->addItem("ELEVATOR");
 		editor->addItem("FIN");
 
-		return editor;
+		return editor;*/
+		return NULL;
 	}
 	else if (dataType==XFLR5::DOUBLE)
 	{

@@ -695,7 +695,7 @@ void GLCreateDownwash(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 				{
 					yob = 2.0*pWOpp->m_SpanPos[i]/pWOpp->m_Span;
 					xt = pWing->getOffset(yob) + pWing->getChord(yob);
-					pWing->GetViewYZPos(1., pWOpp->m_SpanPos[i], yt,zt,0);
+					pWing->getViewYZPos(1., pWOpp->m_SpanPos[i], yt,zt,0);
 
 					dih = -pWing->Dihedral(yob)*PI/180.0;
 					amp = pWOpp->m_QInf*sin(pWOpp->m_Ai[i]*PI/180.0);
@@ -715,7 +715,7 @@ void GLCreateDownwash(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 					{
 						yob = 2.0*pWOpp->m_SpanPos[i]/pWOpp->m_Span;
 						xt = pWing->getOffset(yob) + pWing->getChord(yob);
-						pWing->GetViewYZPos(1., pWOpp->m_SpanPos[i], yt,zt,0);
+						pWing->getViewYZPos(1., pWOpp->m_SpanPos[i], yt,zt,0);
 
 						dih = -pWing->Dihedral(yob)*PI/180.0;
 						amp = pWOpp->m_QInf*sin(pWOpp->m_Ai[i]*PI/180.0);
@@ -849,7 +849,7 @@ void GLCreateDrag(Wing *pWing, WPolar* pWPolar, WingOpp *pWOpp, int List)
 					yob = 2.0*pWOpp->m_SpanPos[i]/pWOpp->m_Span;
 
 					xt = pWing->getChord(yob) + pWing->getOffset(yob);
-					pWing->GetViewYZPos(1.0, pWOpp->m_SpanPos[i],yt,zt,0);
+					pWing->getViewYZPos(1.0, pWOpp->m_SpanPos[i],yt,zt,0);
 					dih = pWing->Dihedral(yob)*PI/180.0;
 					amp1 = q0*pWOpp->m_ICd[i]*pWing->getChord(yob)/pWOpp->m_MAChord*QMiarex::s_DragScale/coef;
 					amp2 = q0*pWOpp->m_PCd[i]*pWing->getChord(yob)/pWOpp->m_MAChord*QMiarex::s_DragScale/coef;
@@ -904,7 +904,7 @@ void GLCreateDrag(Wing *pWing, WPolar* pWPolar, WingOpp *pWOpp, int List)
 						{
 							yob = 2.0*pWOpp->m_SpanPos[i]/pWOpp->m_Span;
 							xt = pWing->getOffset(yob) + pWing->getChord(yob);
-							pWing->GetViewYZPos(1.0, pWOpp->m_SpanPos[i],yt,zt,0);
+							pWing->getViewYZPos(1.0, pWOpp->m_SpanPos[i],yt,zt,0);
 
 							dih = pWing->Dihedral(yob)*PI/180.0;
 
@@ -929,7 +929,7 @@ void GLCreateDrag(Wing *pWing, WPolar* pWPolar, WingOpp *pWOpp, int List)
 						{
 							yob = 2.0*pWOpp->m_SpanPos[i]/pWOpp->m_Span;
 							xt = pWing->getOffset(yob) + pWing->getChord(yob);
-							pWing->GetViewYZPos(1.0, pWOpp->m_SpanPos[i],yt,zt,0);
+							pWing->getViewYZPos(1.0, pWOpp->m_SpanPos[i],yt,zt,0);
 
 							dih = pWing->Dihedral(yob)*PI/180.0;
 							amp=0.0;
@@ -1599,7 +1599,7 @@ void GLCreateLiftStrip(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 				{
 					yob = 2.0*pWOpp->m_SpanPos[i]/pWOpp->m_Span;
 					xt = pWing->getOffset(yob) + pWOpp->m_XCPSpanRel[i]*pWing->getChord(yob);
-					pWing->GetViewYZPos(pWOpp->m_XCPSpanRel[i], pWOpp->m_SpanPos[i], yt, zt, 0);
+					pWing->getViewYZPos(pWOpp->m_XCPSpanRel[i], pWOpp->m_SpanPos[i], yt, zt, 0);
 					dih = -pWing->Dihedral(yob)*PI/180.0;
 					amp = q0*pWOpp->m_Cl[i]*pWing->getChord(yob)/pWOpp->m_MAChord;
 					amp *= QMiarex::s_LiftScale/1000.0;
@@ -1619,7 +1619,7 @@ void GLCreateLiftStrip(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 					{
 						yob = 2.0*pWOpp->m_SpanPos[i]/pWOpp->m_Span;
 						xt = pWing->getOffset(yob) + pWOpp->m_XCPSpanRel[i]*pWing->getChord(yob);
-						pWing->GetViewYZPos(pWOpp->m_XCPSpanRel[i], pWOpp->m_SpanPos[i],yt,zt,0);
+						pWing->getViewYZPos(pWOpp->m_XCPSpanRel[i], pWOpp->m_SpanPos[i],yt,zt,0);
 
 						dih = -pWing->Dihedral(yob)*PI/180.0;
 						amp = q0*pWOpp->m_Cl[i]*pWing->getChord(yob)/pWOpp->m_MAChord;
@@ -1737,7 +1737,7 @@ void GLCreateTrans(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 					{
 						yob = 2.0*pWOpp->m_SpanPos[i]/pWOpp->m_Span;
 						xt = pWing->getOffset(yob) + pWOpp->m_XTrTop[i]*pWing->getChord(yob);
-						pWing->GetViewYZPos(pWOpp->m_XTrTop[i], pWOpp->m_SpanPos[i],yt,zt,0);
+						pWing->getViewYZPos(pWOpp->m_XTrTop[i], pWOpp->m_SpanPos[i],yt,zt,0);
 
 						glVertex3d(xt,yt,zt);
 					}
@@ -1816,7 +1816,7 @@ void GLCreateTrans(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 					{
 						yob = 2.0*pWOpp->m_SpanPos[i]/pWOpp->m_Span;
 						xt = pWing->getOffset(yob) + pWOpp->m_XTrBot[i]*pWing->getChord(yob);
-						pWing->GetViewYZPos(pWOpp->m_XTrBot[i], pWOpp->m_SpanPos[i],yt,zt,0);
+						pWing->getViewYZPos(pWOpp->m_XTrBot[i], pWOpp->m_SpanPos[i],yt,zt,0);
 
 						glVertex3d(xt,yt, zt);
 					}

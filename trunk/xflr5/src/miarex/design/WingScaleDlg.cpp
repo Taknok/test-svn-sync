@@ -39,11 +39,11 @@ WingScaleDlg::WingScaleDlg(QWidget *pParent) : QDialog(pParent)
 	m_RefArea = m_RefAR = 1.0;
 	m_NewArea = m_NewAR = 1.0;
 
-	SetupLayout();
+	setupLayout();
 }
 
 
-void WingScaleDlg::SetupLayout()
+void WingScaleDlg::setupLayout()
 {
 	QGridLayout *pScaleLayout = new QGridLayout;
 	{
@@ -155,7 +155,7 @@ void WingScaleDlg::SetupLayout()
 		pCommandButtons->addWidget(CancelButton);
 		pCommandButtons->addStretch(1);
 
-		connect(OKButton, SIGNAL(clicked()), this, SLOT(OnOK()));
+		connect(OKButton, SIGNAL(clicked()), this, SLOT(onOK()));
 		connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 	}
 
@@ -177,23 +177,23 @@ void WingScaleDlg::SetupLayout()
 
 	setLayout(pMainLayout);
 
-	connect(m_pctrlSpan,  SIGNAL(clicked()), this, SLOT(OnClickedCheckBox()));
-	connect(m_pctrlChord, SIGNAL(clicked()), this, SLOT(OnClickedCheckBox()));
-	connect(m_pctrlSweep, SIGNAL(clicked()), this, SLOT(OnClickedCheckBox()));
-	connect(m_pctrlTwist, SIGNAL(clicked()), this, SLOT(OnClickedCheckBox()));
-	connect(m_pctrlScaleArea, SIGNAL(clicked()), this, SLOT(OnClickedCheckBox()));
-	connect(m_pctrlScaleAR, SIGNAL(clicked()), this, SLOT(OnClickedCheckBox()));
+	connect(m_pctrlSpan,  SIGNAL(clicked()), this, SLOT(onClickedCheckBox()));
+	connect(m_pctrlChord, SIGNAL(clicked()), this, SLOT(onClickedCheckBox()));
+	connect(m_pctrlSweep, SIGNAL(clicked()), this, SLOT(onClickedCheckBox()));
+	connect(m_pctrlTwist, SIGNAL(clicked()), this, SLOT(onClickedCheckBox()));
+	connect(m_pctrlScaleArea, SIGNAL(clicked()), this, SLOT(onClickedCheckBox()));
+	connect(m_pctrlScaleAR, SIGNAL(clicked()), this, SLOT(onClickedCheckBox()));
 
-	connect(m_pctrlNewSpan,  SIGNAL(editingFinished()), this, SLOT(OnEditingFinished()));
-	connect(m_pctrlNewChord, SIGNAL(editingFinished()), this, SLOT(OnEditingFinished()));
-	connect(m_pctrlNewSweep, SIGNAL(editingFinished()), this, SLOT(OnEditingFinished()));
-	connect(m_pctrlNewTwist, SIGNAL(editingFinished()), this, SLOT(OnEditingFinished()));
-	connect(m_pctrlNewArea, SIGNAL(editingFinished()), this, SLOT(OnEditingFinished()));
-	connect(m_pctrlNewAR, SIGNAL(editingFinished()), this, SLOT(OnEditingFinished()));
+	connect(m_pctrlNewSpan,  SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+	connect(m_pctrlNewChord, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+	connect(m_pctrlNewSweep, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+	connect(m_pctrlNewTwist, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+	connect(m_pctrlNewArea, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+	connect(m_pctrlNewAR, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
 }
 
 
-void WingScaleDlg::InitDialog(double const &RefSpan, double const &RefChord, double const &RefSweep, double const &RefTwist,
+void WingScaleDlg::initDialog(double const &RefSpan, double const &RefChord, double const &RefSweep, double const &RefTwist,
 						double const &RefArea, double const &RefAR)
 {
 	m_RefSpan  = RefSpan;
@@ -246,34 +246,34 @@ void WingScaleDlg::InitDialog(double const &RefSpan, double const &RefChord, dou
     m_pctrlNewArea->setValue(m_NewArea*Units::m2toUnit());
 	m_pctrlNewAR->setValue(m_NewAR);
 
-	SetResults();
-	EnableControls();
+	setResults();
+	enableControls();
 }
 
 
 
-void WingScaleDlg::OnClickedCheckBox()
+void WingScaleDlg::onClickedCheckBox()
 {
-	ReadData();
-	EnableControls();
+	readData();
+	enableControls();
 }
 
 
-void WingScaleDlg::OnOK()
+void WingScaleDlg::onOK()
 {
-	ReadData();
+	readData();
 	accept();
 }
 
-void WingScaleDlg::OnEditingFinished()
+void WingScaleDlg::onEditingFinished()
 {
-	ReadData();
-	SetResults();
+	readData();
+	setResults();
 }
 
 
 
-void WingScaleDlg::EnableControls()
+void WingScaleDlg::enableControls()
 {
 	m_pctrlNewSpan->setEnabled(m_bSpan);
 	m_pctrlNewChord->setEnabled(m_bChord);
@@ -284,7 +284,7 @@ void WingScaleDlg::EnableControls()
 }
 
 
-void WingScaleDlg::ReadData()
+void WingScaleDlg::readData()
 {
 	m_bSpan  = m_pctrlSpan->isChecked();
 	m_bChord = m_pctrlChord->isChecked();
@@ -302,7 +302,7 @@ void WingScaleDlg::ReadData()
 }
 
 
-void WingScaleDlg::SetResults()
+void WingScaleDlg::setResults()
 {
 	QString strong;
 

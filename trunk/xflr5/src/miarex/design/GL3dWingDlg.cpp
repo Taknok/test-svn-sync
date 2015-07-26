@@ -94,7 +94,7 @@ GL3dWingDlg::GL3dWingDlg(QWidget *pParent) : QDialog(pParent)
 
 	setupLayout();
 
-	Connect();
+	connectSignals();
 
 	setMouseTracking(true);
 }
@@ -110,7 +110,7 @@ GL3dWingDlg::~GL3dWingDlg()
 
 
 
-bool GL3dWingDlg::CheckWing()
+bool GL3dWingDlg::checkWing()
 {
 	if(!m_pWing->m_WingName.length())
 	{
@@ -146,11 +146,11 @@ bool GL3dWingDlg::CheckWing()
 
 
 
-void GL3dWingDlg::ComputeGeometry()
+void GL3dWingDlg::computeGeometry()
 {
 	// Computes the wing's characteristics from the panel data
-	m_pWing->ComputeGeometry();
-	m_pWing->CreateSurfaces(CVector(0.0,0.0,0.0), 0.0, 0.0);
+	m_pWing->computeGeometry();
+	m_pWing->createSurfaces(CVector(0.0,0.0,0.0), 0.0, 0.0);
 
 	for (int j=0; j<m_pWing->m_Surface.size(); j++)
 		m_pWing->m_Surface.at(j)->SetSidePoints(NULL, 0.0, 0.0);
@@ -165,48 +165,48 @@ void GL3dWingDlg::contextMenuEvent(QContextMenuEvent *event)
 }
 
 
-void GL3dWingDlg::Connect()
+void GL3dWingDlg::connectSignals()
 {
-	connect(m_pInsertBefore,  SIGNAL(triggered()), this, SLOT(OnInsertBefore()));
-	connect(m_pInsertAfter,   SIGNAL(triggered()), this, SLOT(OnInsertAfter()));
-	connect(m_pDeleteSection, SIGNAL(triggered()), this, SLOT(OnDeleteSection()));
-	connect(m_pResetSection,  SIGNAL(triggered()), this, SLOT(OnResetSection()));
+	connect(m_pInsertBefore,  SIGNAL(triggered()), this, SLOT(onInsertBefore()));
+	connect(m_pInsertAfter,   SIGNAL(triggered()), this, SLOT(onInsertAfter()));
+	connect(m_pDeleteSection, SIGNAL(triggered()), this, SLOT(onDeleteSection()));
+	connect(m_pResetSection,  SIGNAL(triggered()), this, SLOT(onResetSection()));
 
-	connect(m_pResetScales, SIGNAL(triggered()), this, SLOT(On3DReset()));
+	connect(m_pResetScales, SIGNAL(triggered()), this, SLOT(on3DReset()));
 
 	connect(m_pctrlIso,        SIGNAL(clicked()),m_pGLWidget, SLOT(on3DIso()));
 	connect(m_pctrlX,          SIGNAL(clicked()),m_pGLWidget, SLOT(on3DFront()));
 	connect(m_pctrlY,          SIGNAL(clicked()),m_pGLWidget, SLOT(on3DLeft()));
 	connect(m_pctrlZ,          SIGNAL(clicked()),m_pGLWidget, SLOT(on3DTop()));
-	connect(m_pctrlReset,      SIGNAL(clicked()),this, SLOT(On3DReset()));
-	connect(m_pctrlFoilNames,  SIGNAL(clicked()),this, SLOT(OnFoilNames()));
-	connect(m_pctrlShowMasses, SIGNAL(clicked()),this, SLOT(OnShowMasses()));
+	connect(m_pctrlReset,      SIGNAL(clicked()),this, SLOT(on3DReset()));
+	connect(m_pctrlFoilNames,  SIGNAL(clicked()),this, SLOT(onFoilNames()));
+	connect(m_pctrlShowMasses, SIGNAL(clicked()),this, SLOT(onShowMasses()));
 
-	connect(m_pctrlAxes,       SIGNAL(clicked()), this, SLOT(OnAxes()));
-	connect(m_pctrlPanels,     SIGNAL(clicked()), this, SLOT(OnPanels()));
-	connect(m_pctrlSurfaces,   SIGNAL(clicked()), this, SLOT(OnSurfaces()));
-	connect(m_pctrlOutline,    SIGNAL(clicked()), this, SLOT(OnOutline()));
+	connect(m_pctrlAxes,       SIGNAL(clicked()), this, SLOT(onAxes()));
+	connect(m_pctrlPanels,     SIGNAL(clicked()), this, SLOT(onPanels()));
+	connect(m_pctrlSurfaces,   SIGNAL(clicked()), this, SLOT(onSurfaces()));
+	connect(m_pctrlOutline,    SIGNAL(clicked()), this, SLOT(onOutline()));
 
-	connect(m_pctrlInsertBefore,  SIGNAL(clicked()), this, SLOT(OnInsertBefore()));
-	connect(m_pctrlInsertAfter,   SIGNAL(clicked()), this, SLOT(OnInsertAfter()));
-	connect(m_pctrlDeleteSection, SIGNAL(clicked()), this, SLOT(OnDeleteSection()));
+	connect(m_pctrlInsertBefore,  SIGNAL(clicked()), this, SLOT(onInsertBefore()));
+	connect(m_pctrlInsertAfter,   SIGNAL(clicked()), this, SLOT(onInsertAfter()));
+	connect(m_pctrlDeleteSection, SIGNAL(clicked()), this, SLOT(onDeleteSection()));
 
-	connect(m_pctrlResetMesh,     SIGNAL(clicked()), this, SLOT(OnResetMesh()));
-	connect(m_pctrlWingColor,     SIGNAL(clicked()), this, SLOT(OnWingColor()));
-	connect(m_pctrlSymetric,      SIGNAL(clicked()), this, SLOT(OnSymetric()));
-	connect(m_pctrlRightSide,     SIGNAL(clicked()), this, SLOT(OnSide()));
-	connect(m_pctrlLeftSide,      SIGNAL(clicked()), this, SLOT(OnSide()));
+	connect(m_pctrlResetMesh,     SIGNAL(clicked()), this, SLOT(onResetMesh()));
+	connect(m_pctrlWingColor,     SIGNAL(clicked()), this, SLOT(onWingColor()));
+	connect(m_pctrlSymetric,      SIGNAL(clicked()), this, SLOT(onSymetric()));
+	connect(m_pctrlRightSide,     SIGNAL(clicked()), this, SLOT(onSide()));
+	connect(m_pctrlLeftSide,      SIGNAL(clicked()), this, SLOT(onSide()));
 
-	connect(m_pctrlWingDescription, SIGNAL(textChanged()), this, SLOT(OnDescriptionChanged()));
+	connect(m_pctrlWingDescription, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()));
 
-	connect(m_pInertia,       SIGNAL(triggered()), this, SLOT(OnInertia()));
-	connect(m_pScaleWing,     SIGNAL(triggered()), this, SLOT(OnScaleWing()));
-	connect(m_pImportWingAct, SIGNAL(triggered()),this, SLOT(OnImportWing()));
-	connect(m_pExportWingAct, SIGNAL(triggered()),this, SLOT(OnExportWing()));
+	connect(m_pInertia,       SIGNAL(triggered()), this, SLOT(onInertia()));
+	connect(m_pScaleWing,     SIGNAL(triggered()), this, SLOT(onScaleWing()));
+	connect(m_pImportWingAct, SIGNAL(triggered()),this, SLOT(onImportWing()));
+	connect(m_pExportWingAct, SIGNAL(triggered()),this, SLOT(onExportWing()));
 }
 
 
-void GL3dWingDlg::CreateXPoints(int NXPanels, int XDist, Foil *pFoilA, Foil *pFoilB, double *xPointA, double *xPointB, int &NXLead, int &NXFlap)
+void GL3dWingDlg::createXPoints(int NXPanels, int XDist, Foil *pFoilA, Foil *pFoilB, double *xPointA, double *xPointB, int &NXLead, int &NXFlap)
 {
 	// the chordwise panel distribution is set i.a.w. with the flap hinges;
 
@@ -271,7 +271,7 @@ void GL3dWingDlg::CreateXPoints(int NXPanels, int XDist, Foil *pFoilA, Foil *pFo
 }
 
 
-void GL3dWingDlg::FillDataTable()
+void GL3dWingDlg::fillDataTable()
 {
 	if(!m_pWing) return;
 	int i;
@@ -279,13 +279,13 @@ void GL3dWingDlg::FillDataTable()
 
 	for(i=0; i<m_pWing->NWingSection(); i++)
 	{
-		FillTableRow(i);
+		fillTableRow(i);
 	}
 }
 
 
 
-void GL3dWingDlg::FillTableRow(int row)
+void GL3dWingDlg::fillTableRow(int row)
 {
 	QString strong;
 	QModelIndex ind;
@@ -345,7 +345,7 @@ void GL3dWingDlg::FillTableRow(int row)
 
 
 
-void GL3dWingDlg::GLCreateSectionHighlight()
+void GL3dWingDlg::glCreateSectionHighlight()
 {
 	int iSection = 0;
 	int jSurf = 0;
@@ -465,7 +465,7 @@ void GL3dWingDlg::GLCreateSectionHighlight()
 
 
 
-void GL3dWingDlg::GLDraw3D()
+void GL3dWingDlg::glDraw3D()
 {
 	m_pGLWidget->makeCurrent();
 	glClearColor(Settings::s_BackgroundColor.redF(), Settings::s_BackgroundColor.greenF(), Settings::s_BackgroundColor.blueF(),0.0);
@@ -479,7 +479,7 @@ void GL3dWingDlg::GLDraw3D()
 		}
 		if(m_iSection>=0)
 		{
-			GLCreateSectionHighlight();
+			glCreateSectionHighlight();
 			m_bResetglSectionHighlight = false;
 		}
 	}
@@ -521,7 +521,7 @@ void GL3dWingDlg::GLRenderView()
 		glCallList(SECTIONHIGHLIGHT);
 	}
 
-	if(GLLightDlg::IsLightOn())
+	if(GLLightDlg::isLightOn())
 	{
 		glEnable(GL_LIGHTING);
 		glEnable(GL_LIGHT0);
@@ -558,7 +558,7 @@ void GL3dWingDlg::GLRenderView()
 }
 
 
-bool GL3dWingDlg::InitDialog(Wing *pWing)
+bool GL3dWingDlg::initDialog(Wing *pWing)
 {
 	QString str;
 	m_iSection = 0;
@@ -575,7 +575,7 @@ bool GL3dWingDlg::InitDialog(Wing *pWing)
 	m_pctrlLength4->setText(str);
 	m_pWing = pWing;
 	if(!m_pWing) return false;
-	ComputeGeometry();
+	computeGeometry();
 
 	m_pctrlWingName->setText(m_pWing->m_WingName);
 	if(m_pWing->m_WingDescription.length())
@@ -627,12 +627,12 @@ bool GL3dWingDlg::InitDialog(Wing *pWing)
 
 	QItemSelectionModel *selectionModel = new QItemSelectionModel(m_pWingModel);
 	m_pctrlWingTable->setSelectionModel(selectionModel);
-	connect(selectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(OnItemClicked(QModelIndex)));
+	connect(selectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(onItemClicked(QModelIndex)));
 
 
 	m_pWingDelegate = new WingDelegate(this);
 	m_pctrlWingTable->setItemDelegate(m_pWingDelegate);
-	connect(m_pWingDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(OnCellChanged(QWidget *)));
+	connect(m_pWingDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(onCellChanged(QWidget *)));
 
 	m_precision = new int[10];
 	m_precision[0] = 3;
@@ -648,10 +648,10 @@ bool GL3dWingDlg::InitDialog(Wing *pWing)
 	m_pWingDelegate->SetPrecision(m_precision);
 	m_pWingDelegate->m_pWingSection = &m_pWing->m_WingSection;
 	m_pWingDelegate->m_poaFoil = s_poaFoil;
-	FillDataTable();
-	SetWingData();
+	fillDataTable();
+	setWingData();
 	m_pctrlWingTable->selectRow(m_iSection);
-	SetCurrentSection(m_iSection);
+	setCurrentSection(m_iSection);
 	return true;
 }
 
@@ -680,7 +680,7 @@ void GL3dWingDlg::keyPressEvent(QKeyEvent *event)
 		}
 		case Qt::Key_Delete:
 		{
-			OnDeleteSection();
+			onDeleteSection();
 			break;
 		}
 
@@ -691,16 +691,16 @@ void GL3dWingDlg::keyPressEvent(QKeyEvent *event)
 
 
 
-void GL3dWingDlg::On3DReset()
+void GL3dWingDlg::on3DReset()
 {
-	SetWingScale();
+	setWingScale();
 	m_pGLWidget->on3DReset();
 }
 
 
 
 
-void GL3dWingDlg::OnFoilNames()
+void GL3dWingDlg::onFoilNames()
 {
 	ThreeDWidget::s_bFoilNames = m_pctrlFoilNames->isChecked();
 	m_pGLWidget->update();
@@ -708,31 +708,31 @@ void GL3dWingDlg::OnFoilNames()
 
 
 
-void GL3dWingDlg::OnShowMasses()
+void GL3dWingDlg::onShowMasses()
 {
 	ThreeDWidget::s_bShowMasses = m_pctrlShowMasses->isChecked();
 	m_pGLWidget->update();
 }
 
 
-void GL3dWingDlg::OnDescriptionChanged()
+void GL3dWingDlg::onDescriptionChanged()
 {
 	m_bDescriptionChanged=true;
 }
 
 
-void GL3dWingDlg::OnCellChanged(QWidget *)
+void GL3dWingDlg::onCellChanged(QWidget *)
 {
 	m_bChanged = true;
 	m_bResetglWing = true;
-	ReadParams();
-	SetWingData();
+	readParams();
+	setWingData();
 	m_pGLWidget->update();
 }
 
 
 
-void GL3dWingDlg::OnDeleteSection()
+void GL3dWingDlg::onDeleteSection()
 {
 	if(m_iSection <0 || m_iSection>m_pWing->NWingSection()) return;
 
@@ -766,14 +766,14 @@ void GL3dWingDlg::OnDeleteSection()
 	m_pWing->m_RightFoil.removeAt(m_iSection);
 	m_pWing->m_LeftFoil.removeAt(m_iSection);*/
 
-	m_pWing->RemoveWingSection(m_iSection);
+	m_pWing->removeWingSection(m_iSection);
 
 
 	m_pWing->NYPanels(m_iSection-1) = ny;
 
-	FillDataTable();
-	ComputeGeometry();
-	SetWingData();
+	fillDataTable();
+	computeGeometry();
+	setWingData();
 	m_bChanged = true;
 	m_bResetglWing = true;
 	m_pGLWidget->update();
@@ -782,7 +782,7 @@ void GL3dWingDlg::OnDeleteSection()
 
 
 
-void GL3dWingDlg::OnInertia()
+void GL3dWingDlg::onInertia()
 {
     InertiaDlg dlg(this);
 	dlg.m_pWing = m_pWing;
@@ -804,7 +804,7 @@ void GL3dWingDlg::OnInertia()
 	else
 	{
 		// restore saved inertia
-		m_pWing->ClearPointMasses();
+		m_pWing->clearPointMasses();
 		for(int i=0; i< PtMass.size(); i++)
 		{
 			m_pWing->m_PointMass.append(PtMass.at(i));
@@ -813,7 +813,7 @@ void GL3dWingDlg::OnInertia()
 }
 
 
-void GL3dWingDlg::OnInsertBefore()
+void GL3dWingDlg::onInsertBefore()
 {
 	if(m_iSection <0 || m_iSection>m_pWing->NWingSection()) return;
 
@@ -825,7 +825,7 @@ void GL3dWingDlg::OnInsertBefore()
 
 	int n = m_iSection;
 
-	m_pWing->InsertSection(m_iSection);
+	m_pWing->insertSection(m_iSection);
 
     m_pWing->YPosition(n) = (m_pWing->YPosition(n+1) + m_pWing->YPosition(n-1)) /2.0;
     m_pWing->Chord(n)     = (m_pWing->Chord(n+1)     + m_pWing->Chord(n-1))     /2.0;
@@ -849,10 +849,10 @@ void GL3dWingDlg::OnInsertBefore()
 	if(m_pWing->NYPanels(n-1)==0) m_pWing->NYPanels(n-1)++;
 
 
-	FillDataTable();
+	fillDataTable();
 	m_pctrlWingTable->closePersistentEditor(m_pctrlWingTable->currentIndex());
-	ComputeGeometry();
-	SetWingData();
+	computeGeometry();
+	setWingData();
 
 	m_bChanged = true;
 	m_bResetglSectionHighlight = true;
@@ -863,7 +863,7 @@ void GL3dWingDlg::OnInsertBefore()
 
 
 
-void GL3dWingDlg::OnInsertAfter()
+void GL3dWingDlg::onInsertAfter()
 {
 	if(m_iSection <0 || m_iSection>=m_pWing->NWingSection()) return;
 
@@ -871,7 +871,7 @@ void GL3dWingDlg::OnInsertAfter()
 
 	if(n<0) n=m_pWing->NWingSection();
 
-	m_pWing->InsertSection(m_iSection+1);
+	m_pWing->insertSection(m_iSection+1);
 
 	if(n<m_pWing->NWingSection()-2)
 	{
@@ -902,11 +902,11 @@ void GL3dWingDlg::OnInsertAfter()
 
 //	m_pWing->m_bVLMAutoMesh = true;
 
-	FillDataTable();
+	fillDataTable();
 	m_pctrlWingTable->closePersistentEditor(m_pctrlWingTable->currentIndex());
 
-	ComputeGeometry();
-	SetWingData();
+	computeGeometry();
+	setWingData();
 	m_bChanged = true;
 	m_bResetglWing = true;
 	m_pGLWidget->update();
@@ -914,7 +914,7 @@ void GL3dWingDlg::OnInsertAfter()
 
 
 
-void GL3dWingDlg::OnResetSection()
+void GL3dWingDlg::onResetSection()
 {
 	int n = m_iSection;
 
@@ -928,9 +928,9 @@ void GL3dWingDlg::OnResetSection()
 		m_pWing->Twist   (n) = m_pWing->Twist   (n-1) + ratio * (m_pWing->Twist   (n+1) - m_pWing->Twist   (n-1));
 
 		// same code here that in OnResetMesh
-		FillDataTable();
-		SetWingData();
-		ComputeGeometry();
+		fillDataTable();
+		setWingData();
+		computeGeometry();
 		m_bChanged = true;
 		m_bResetglWing = true;
 		m_pGLWidget->update();
@@ -938,26 +938,26 @@ void GL3dWingDlg::OnResetSection()
 }
 
 
-void GL3dWingDlg::OnItemClicked(const QModelIndex &index)
+void GL3dWingDlg::onItemClicked(const QModelIndex &index)
 {
 	if(index.row()>=m_pWing->NWingSection())
 	{
 		//the user has filled a cell in the last line
 		//so add an item before reading
 		m_pWingModel->setRowCount(m_pWing->NWingSection()+1);
-		FillTableRow(m_pWing->NWingSection());
+		fillTableRow(m_pWing->NWingSection());
 	}
-	SetCurrentSection(index.row());
+	setCurrentSection(index.row());
 	m_pGLWidget->update();
 }
 
 
 
-void GL3dWingDlg::OnOK()
+void GL3dWingDlg::onOK()
 {
-	ReadParams();
+	readParams();
 
-	if(!CheckWing()) return;
+	if(!checkWing()) return;
 
 	if(m_pWing->m_bSymetric)
 	{
@@ -967,8 +967,8 @@ void GL3dWingDlg::OnOK()
 		}
 	}
 
-	m_pWing->ComputeGeometry();
-	m_pWing->ComputeBodyAxisInertia();
+	m_pWing->computeGeometry();
+	m_pWing->computeBodyAxisInertia();
 
 	s_bWindowMaximized= isMaximized();
 	s_WindowPos = pos();
@@ -978,28 +978,28 @@ void GL3dWingDlg::OnOK()
 }
 
 
-void GL3dWingDlg::OnAxes()
+void GL3dWingDlg::onAxes()
 {
 	ThreeDWidget::s_bAxes = m_pctrlAxes->isChecked();
 	m_pGLWidget->update();
 }
 
 
-void GL3dWingDlg::OnSurfaces()
+void GL3dWingDlg::onSurfaces()
 {
 	ThreeDWidget::s_bSurfaces = m_pctrlSurfaces->isChecked();
 	m_pGLWidget->update();
 }
 
 
-void GL3dWingDlg::OnOutline()
+void GL3dWingDlg::onOutline()
 {
 	ThreeDWidget::s_bOutline = m_pctrlOutline->isChecked();
 	m_pGLWidget->update();
 }
 
 
-void GL3dWingDlg::OnPanels()
+void GL3dWingDlg::onPanels()
 {
 	ThreeDWidget::s_bVLMPanels = m_pctrlPanels->isChecked();
 	m_pGLWidget->update();
@@ -1008,12 +1008,12 @@ void GL3dWingDlg::OnPanels()
 
 
 
-void GL3dWingDlg::OnResetMesh()
+void GL3dWingDlg::onResetMesh()
 {
 	VLMSetAutoMesh();
-	FillDataTable();
-	SetWingData();
-	ComputeGeometry();
+	fillDataTable();
+	setWingData();
+	computeGeometry();
 	m_bChanged = true;
 	m_bResetglWing = true;
 	m_pGLWidget->update();
@@ -1021,10 +1021,10 @@ void GL3dWingDlg::OnResetMesh()
 
 
 
-void GL3dWingDlg::OnScaleWing()
+void GL3dWingDlg::onScaleWing()
 {
 	WingScaleDlg dlg(this);
-	dlg.InitDialog(m_pWing->m_PlanformSpan,
+	dlg.initDialog(m_pWing->m_PlanformSpan,
 				m_pWing->Chord(0),
 				m_pWing->averageSweep(),
 				m_pWing->Twist(m_pWing->NWingSection()-1),
@@ -1035,28 +1035,28 @@ void GL3dWingDlg::OnScaleWing()
 	{
 		if (dlg.m_bSpan || dlg.m_bChord || dlg.m_bSweep || dlg.m_bTwist || dlg.m_bArea || dlg.m_bAR)
 		{
-			if(dlg.m_bSpan)  m_pWing->ScaleSpan(dlg.m_NewSpan);
-			if(dlg.m_bChord) m_pWing->ScaleChord(dlg.m_NewChord);
-			if(dlg.m_bSweep) m_pWing->ScaleSweep(dlg.m_NewSweep);
-			if(dlg.m_bTwist) m_pWing->ScaleTwist(dlg.m_NewTwist);
-			if(dlg.m_bArea) m_pWing->ScaleArea(dlg.m_NewArea);
-			if(dlg.m_bAR) m_pWing->ScaleAR(dlg.m_NewAR);
+			if(dlg.m_bSpan)  m_pWing->scaleSpan(dlg.m_NewSpan);
+			if(dlg.m_bChord) m_pWing->scaleChord(dlg.m_NewChord);
+			if(dlg.m_bSweep) m_pWing->scaleSweep(dlg.m_NewSweep);
+			if(dlg.m_bTwist) m_pWing->scaleTwist(dlg.m_NewTwist);
+			if(dlg.m_bArea) m_pWing->scaleArea(dlg.m_NewArea);
+			if(dlg.m_bAR) m_pWing->scaleAR(dlg.m_NewAR);
 		}
 
-		FillDataTable();
+		fillDataTable();
 		m_bChanged = true;
 		m_bResetglWing = true;
 		m_bResetglSectionHighlight = true;
-		ComputeGeometry();
+		computeGeometry();
 		m_pGLWidget->update();
 	}
 }
 
 
-void GL3dWingDlg::OnSide()
+void GL3dWingDlg::onSide()
 {
 	m_bRightSide = m_pctrlRightSide->isChecked();
-	FillDataTable();
+	fillDataTable();
 
 	m_bChanged = true;
 	m_bResetglSectionHighlight = true;
@@ -1064,7 +1064,7 @@ void GL3dWingDlg::OnSide()
 }
 
 
-void GL3dWingDlg::OnSymetric()
+void GL3dWingDlg::onSymetric()
 {
 	if(m_pctrlSymetric->isChecked())
 	{
@@ -1084,14 +1084,14 @@ void GL3dWingDlg::OnSymetric()
 	}
 
 	m_bChanged = true;
-	ComputeGeometry();
+	computeGeometry();
 	m_bResetglWing             = true;
 	m_bResetglSectionHighlight = true;
 	m_pGLWidget->update();
 }
 
 
-void GL3dWingDlg::OnWingColor()
+void GL3dWingDlg::onWingColor()
 {
 	if(!m_pWing) return;
 
@@ -1116,7 +1116,7 @@ void GL3dWingDlg::OnWingColor()
 
 
 
-void GL3dWingDlg::ReadParams()
+void GL3dWingDlg::readParams()
 {
 	m_pWing->m_WingName = m_pctrlWingName->text();
 	QString strange = m_pctrlWingDescription->toPlainText();
@@ -1125,16 +1125,16 @@ void GL3dWingDlg::ReadParams()
 
 	for (int i=0; i< m_pWingModel->rowCount();  i++)
 	{
-		ReadSectionData(i);
+		readSectionData(i);
 	}
 
 	//Update Geometry
-	ComputeGeometry();
+	computeGeometry();
 }
 
 
 
-void GL3dWingDlg::ReadSectionData(int sel)
+void GL3dWingDlg::readSectionData(int sel)
 {
 	if(sel>=m_pWingModel->rowCount()) return;
 	double d;
@@ -1229,7 +1229,7 @@ void GL3dWingDlg::reject()
 										QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
 		if (QMessageBox::Yes == Ans)
 		{
-			OnOK();
+			onOK();
 			return;
 		}
 		else if(QMessageBox::Cancel == Ans) return;
@@ -1243,7 +1243,7 @@ void GL3dWingDlg::reject()
 }
 
 
-void GL3dWingDlg::SetCurrentSection(int section)
+void GL3dWingDlg::setCurrentSection(int section)
 {
 	m_iSection = section;
 	if(m_iSection <0 || m_iSection>m_pWing->NWingSection())
@@ -1275,7 +1275,7 @@ void GL3dWingDlg::SetCurrentSection(int section)
 }
 
 
-void GL3dWingDlg::SetWingScale()
+void GL3dWingDlg::setWingScale()
 {
 	//wing along X axis will take 3/4 of the screen
 	m_pGLWidget->m_glScaled = (GLfloat)(3./4.*2.0/m_pWing->planformSpan());
@@ -1285,7 +1285,7 @@ void GL3dWingDlg::SetWingScale()
 }
 
 
-void GL3dWingDlg::SetWingData()
+void GL3dWingDlg::setWingData()
 {
 	if(!m_pWing) return;
 	//Updates the wing's properties after a change of geometry
@@ -1626,7 +1626,7 @@ void GL3dWingDlg::setupLayout()
 				CancelButton->setAutoDefault(false);
 				pCommandButtonsLayout->addWidget(OKButton);
 				pCommandButtonsLayout->addWidget(CancelButton);
-				connect(OKButton, SIGNAL(clicked()),this, SLOT(OnOK()));
+				connect(OKButton, SIGNAL(clicked()),this, SLOT(onOK()));
 				connect(CancelButton, SIGNAL(clicked()),this, SLOT(reject()));
 			}
 
@@ -1693,7 +1693,7 @@ void GL3dWingDlg::resizeEvent(QResizeEvent *event)
 		m_pLeftSideSplitter->setSizes(leftSideSizes);
 	}
 
-	SetWingScale();
+	setWingScale();
 
 	double w = (double)m_pctrlWingTable->width()*.97;
 	int wFoil  = (int)(w/5.);
@@ -1778,17 +1778,17 @@ bool GL3dWingDlg::VLMSetAutoMesh(int total)
 
 
 
-void GL3dWingDlg::OnImportWing()
+void GL3dWingDlg::onImportWing()
 {
 	QString path_to_file;
 	path_to_file = QFileDialog::getOpenFileName(0, 
 												QString("Open File"), 
 												Settings::s_LastDirName,
 												QString("XFLR5 Wing file (*.xwimp)"));
-	m_pWing->ImportDefinition(path_to_file);
-	this->InitDialog(m_pWing);
-	this->ReadParams();
-	this->SetWingData();
+	m_pWing->importDefinition(path_to_file);
+	this->initDialog(m_pWing);
+	this->readParams();
+	this->setWingData();
 	m_bChanged = true;
 	m_bResetglWing = true;
 	this->m_pGLWidget->update();
@@ -1796,7 +1796,7 @@ void GL3dWingDlg::OnImportWing()
 }
 
 
-void GL3dWingDlg::OnExportWing()
+void GL3dWingDlg::onExportWing()
 {
 	QString path_to_file;
 	path_to_file = QFileDialog::getSaveFileName(0, 
@@ -1806,12 +1806,12 @@ void GL3dWingDlg::OnExportWing()
 	if (!path_to_file.endsWith(".xwimp")) {
 		path_to_file.append(".xwimp");
 	}
-	m_pWing->ExportDefinition(path_to_file);
+	m_pWing->exportDefinition(path_to_file);
 }
 
 
 
-bool GL3dWingDlg::IntersectObject(CVector AA,  CVector U, CVector &I)
+bool GL3dWingDlg::intersectObject(CVector AA,  CVector U, CVector &I)
 {
 	double dist=0.0;
 

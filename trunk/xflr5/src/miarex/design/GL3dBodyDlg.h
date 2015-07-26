@@ -162,7 +162,7 @@ private:
 	void Set3DRotationCenter(QPoint point);
 	void UpdateView();
 
-	bool InitDialog(Body *pBody);
+	bool initDialog(Body *pBody);
 	static bool LoadSettings(QSettings *pSettings);
 	static bool SaveSettings(QSettings *pSettings);
 

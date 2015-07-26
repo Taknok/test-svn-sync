@@ -55,7 +55,7 @@ public:
 
 private slots:
 	void OnStyleChanged(const QString &StyleName);
-	void OnBackgroundColor();
+	void onBackgroundColor();
 	void onGraphSettings();
 	void onTextColor();
 	void onTextFont();

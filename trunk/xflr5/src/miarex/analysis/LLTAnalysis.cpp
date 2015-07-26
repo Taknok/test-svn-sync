@@ -215,7 +215,7 @@ void LLTAnalysis::ComputeWing(double QInf, double Alpha, QString &ErrorMessage)
 		bPointOutRe    = false;
 		bPointOutAlpha = false;
 		yob   = cos((double)m*PI/(double)s_NLLTStations);
-		m_pWing->GetFoils(&pFoil0, &pFoil1, yob*m_pWing->m_PlanformSpan/2.0, tau);
+		m_pWing->getFoils(&pFoil0, &pFoil1, yob*m_pWing->m_PlanformSpan/2.0, tau);
 
 		m_Cl[m]     = GetCl(pFoil0, pFoil1, m_Re[m], Alpha+m_Ai[m]+m_Twist[m], tau, bOutRe, bError);
 		if(bOutRe) bPointOutRe = true;
@@ -421,7 +421,7 @@ bool LLTAnalysis::setLinearSolution(double Alpha)
 			aij[p] = snt0 + ch*PI/b/2.0* dj*snt0/st0;
 		}
 
-		m_pWing->GetFoils(&pFoil0, &pFoil1, yob*b/2.0, tau);
+		m_pWing->getFoils(&pFoil0, &pFoil1, yob*b/2.0, tau);
 		a0 = GetZeroLiftAngle(pFoil0, pFoil1, m_Re[i], tau);
 		rhs[i] = ch/cs * (Alpha-a0+twist)/180.0*PI;
 	}
@@ -447,7 +447,7 @@ bool LLTAnalysis::setLinearSolution(double Alpha)
 			snt0 = sin(dj*t0);
 			m_Cl[i] += rhs[j]* snt0;
 		}
-		m_pWing->GetFoils(&pFoil0, &pFoil1, yob*b/2.0, tau);
+		m_pWing->getFoils(&pFoil0, &pFoil1, yob*b/2.0, tau);
 		GetLinearizedPolar(pFoil0, pFoil1, m_Re[i], tau, a0, slope);
 		a0 = GetZeroLiftAngle(pFoil0, pFoil1, m_Re[i], tau); //better approximation ?
 
@@ -512,7 +512,7 @@ int LLTAnalysis::iterate(double &QInf, double Alpha)
 		for (k=1; k<s_NLLTStations; k++)
 		{
 			yob     = cos(k*PI/s_NLLTStations);
-			m_pWing->GetFoils(&pFoil0, &pFoil1, yob*m_pWing->m_PlanformSpan/2.0, tau);
+			m_pWing->getFoils(&pFoil0, &pFoil1, yob*m_pWing->m_PlanformSpan/2.0, tau);
 			m_Cl[k] = GetCl( pFoil0, pFoil1, m_Re[k], Alpha + m_Ai[k]+ m_Twist[k], tau, bOutRe, bError);
 			if (m_pWPolar->m_WPolarType==XFLR5::FIXEDLIFTPOLAR)
 			{
@@ -531,7 +531,7 @@ int LLTAnalysis::iterate(double &QInf, double Alpha)
 			{
 				m_Re[k] = m_Chord[k] * QInf /m_pWPolar->m_Viscosity;
 				yob     = cos(k*PI/s_NLLTStations);
-				m_pWing->GetFoils(&pFoil0, &pFoil1, yob*m_pWing->m_PlanformSpan/2.0, tau);
+				m_pWing->getFoils(&pFoil0, &pFoil1, yob*m_pWing->m_PlanformSpan/2.0, tau);
 				m_Cl[k] = GetCl(pFoil0, pFoil1, m_Re[k], Alpha + m_Ai[k]+ m_Twist[k], tau, bOutRe, bError);
 			}
 		}
@@ -562,7 +562,7 @@ void LLTAnalysis::initializeGeom()
 	if(m_pWPolar->m_WPolarType==XFLR5::FIXEDLIFTPOLAR)	m_QInf0 = sqrt(2.*m_pWPolar->m_Mass* 9.81 /m_pWPolar->density()/m_pWing->m_PlanformArea);
 	else                                        m_QInf0 = 0.0;
 
-	m_pWing->ComputeChords(s_NLLTStations, m_Chord, m_Offset, m_Twist);
+	m_pWing->computeChords(s_NLLTStations, m_Chord, m_Offset, m_Twist);
 
 	for (k=0; k<=s_NLLTStations; k++)
 	{
@@ -639,7 +639,7 @@ bool LLTAnalysis::alphaLoop()
 		for (int k=1; k<s_NLLTStations; k++)
 		{
 			yob   = cos(k*PI/s_NLLTStations);
-			m_pWing->GetFoils(&pFoil0, &pFoil1, yob*m_pWing->m_PlanformSpan/2.0, tau);
+			m_pWing->getFoils(&pFoil0, &pFoil1, yob*m_pWing->m_PlanformSpan/2.0, tau);
 			m_Cl[k] = GetCl(pFoil0, pFoil1, m_Re[k], Alpha + m_Ai[k] + m_Twist[k], tau, bOutRe, bError);
 		}
 
@@ -729,7 +729,7 @@ bool LLTAnalysis::QInfLoop()
 		for (int k=1; k<s_NLLTStations; k++)
 		{
 			yob   = cos(k*PI/s_NLLTStations);
-			m_pWing->GetFoils(&pFoil0, &pFoil1, yob*m_pWing->m_PlanformSpan/2.0, tau);
+			m_pWing->getFoils(&pFoil0, &pFoil1, yob*m_pWing->m_PlanformSpan/2.0, tau);
 			m_Cl[k] = GetCl(pFoil0, pFoil1, m_Re[k], Alpha + m_Ai[k] + m_Twist[k], tau, bOutRe, bError);
 		}
 
