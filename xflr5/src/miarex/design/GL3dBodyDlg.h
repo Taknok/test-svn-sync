@@ -122,22 +122,22 @@ private:
 
 	void blockSignalling(bool bBlock);
 
-	void FillFrameTableRow(int row);
-	void FillFrameDataTable();
-	void FillFrameCell(int iItem, int iSubItem);
-	void ReadFrameSectionData(int sel);
+	void fillFrameTableRow(int row);
+	void fillFrameDataTable();
+	void fillFrameCell(int iItem, int iSubItem);
+	void readFrameSectionData(int sel);
 
-	void FillPointCell(int iItem, int iSubItem);
-	void FillPointTableRow(int row);
-	void FillPointDataTable();
-	void ReadPointSectionData(int sel);
+	void fillPointCell(int iItem, int iSubItem);
+	void fillPointTableRow(int row);
+	void fillPointDataTable();
+	void readPointSectionData(int sel);
 
-	void SetFrame(int iFrame);
-	void SetFrame(Frame *pFrame);
+	void setFrame(int iFrame);
+	void setFrame(Frame *pFrame);
 
-	void SetupLayout();
-	void SetViewControls();
-	void SetTableUnits();
+	void setupLayout();
+	void setViewControls();
+	void setTableUnits();
 
 	void GLInverseMatrix();
 	void GLCreateBody2DBodySection();
@@ -151,34 +151,33 @@ private:
 	void GLDrawBodyLineScale();
 	void GLDrawBodyFrameScale();
 	void GLDrawMasses();
-	void PaintBodyLegend(QPainter &painter);
-	void SetControls();
-	void SetScales();
-	void SetRectangles();
-	void SetBodyScale();
-	void SetBodyLineScale();
-	void SetFrameScale();
-	void Set3DRotationCenter();
-	void Set3DRotationCenter(QPoint point);
-	void UpdateView();
+	void paintBodyLegend(QPainter &painter);
+	void setControls();
+	void setScales();
+	void setRectangles();
+	void setBodyScale();
+	void setBodyLineScale();
+	void setFrameScale();
+	void set3DRotationCenter();
+	void set3DRotationCenter(QPoint point);
+	void updateView();
 
 	bool initDialog(Body *pBody);
-	static bool LoadSettings(QSettings *pSettings);
-	static bool SaveSettings(QSettings *pSettings);
+	static bool loadSettings(QSettings *pSettings);
+	static bool saveSettings(QSettings *pSettings);
 
-	void ResizeTables();
+	void resizeTables();
 
 private:
-	bool SetBody(Body *pBody=NULL);
+	bool setBody(Body *pBody=NULL);
 
-	void ClearStack(int pos=0);
-	void SetPicture();
-	void TakePicture();
+	void clearStack(int pos=0);
+	void setPicture();
+	void takePicture();
 
-	void Insert(CVector Pt);
-	void Remove(CVector Pt);
+	void insert(CVector Pt);
+	void remove(CVector Pt);
 
-	QPixmap m_pixTextLegend;
 
 private:
 	ThreeDWidget m_3dWidget;
@@ -187,6 +186,7 @@ private:
 	static QSize  s_WindowSize;
 	static bool s_bWindowMaximized;
 
+	QPixmap m_pixTextLegend;
 
 	QWidget *m_pctrlControlsWidget;
 

@@ -37,14 +37,14 @@
 void *ThreeDWidget::s_pMiarex;
 void *ThreeDWidget::s_pMainFrame;
 
-
+/*
 bool ThreeDWidget::s_bOutline = true;
 bool ThreeDWidget::s_bSurfaces = true;
 bool ThreeDWidget::s_bVLMPanels = false;
 bool ThreeDWidget::s_bAxes = true;
 bool ThreeDWidget::s_bShowMasses = false;
 bool ThreeDWidget::s_bFoilNames = false;
-
+*/
 
 
 /**
@@ -75,6 +75,12 @@ ThreeDWidget::ThreeDWidget(QWidget *parent)
 	m_pParent = parent;
 	m_iView = GLMIAREXVIEW;
 
+	s_bOutline    = true;
+	s_bSurfaces   = true;
+	s_bVLMPanels  = false;
+	s_bAxes       = true;
+	s_bShowMasses = false;
+	s_bFoilNames  = false;
 
 	setAutoFillBackground(false);
 
@@ -484,7 +490,7 @@ void ThreeDWidget::paintEvent(QPaintEvent *event)
 	else if(m_iView == GLBODYVIEW)
 	{
 		GL3dBodyDlg *pDlg = (GL3dBodyDlg*)m_pParent;
-		pDlg->PaintBodyLegend(painter);
+		pDlg->paintBodyLegend(painter);
 	}
 	else if(m_iView == GLWINGVIEW)
 	{
@@ -602,10 +608,18 @@ void ThreeDWidget::resizeGL(int width, int height)
 		{
 			GL3dBodyDlg *pDlg = (GL3dBodyDlg*)m_pParent;
 			pDlg->m_bIs3DScaleSet = false;
-			pDlg->SetRectangles();
-			pDlg->SetBodyScale();
-			pDlg->SetBodyLineScale();
-			pDlg->SetFrameScale();
+			pDlg->setRectangles();
+			pDlg->setBodyScale();
+			pDlg->setBodyLineScale();
+			pDlg->setFrameScale();
+		}
+	}
+	else if(m_iView == GLPLANEVIEW)
+	{
+		if(m_pParent)
+		{
+			EditPlaneDlg *pDlg = (EditPlaneDlg*)m_pParent;
+			pDlg->resize3DView();
 		}
 	}
 }

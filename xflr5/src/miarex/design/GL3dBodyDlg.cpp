@@ -195,8 +195,8 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
 
 	m_pTranslateBody = new QAction(tr("Translate"), this);
 	connect(m_pTranslateBody, SIGNAL(triggered()), this, SLOT(OnTranslateBody()));
-	SetupLayout();
-	SetTableUnits();
+	setupLayout();
+	setTableUnits();
 
 	connect(m_pInsertPoint,      SIGNAL(triggered()), this, SLOT(OnInsert()));
 	connect(m_pRemovePoint,      SIGNAL(triggered()), this, SLOT(OnRemove()));
@@ -248,7 +248,7 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
 }
 
 
-void GL3dBodyDlg::SetTableUnits()
+void GL3dBodyDlg::setTableUnits()
 {
 	QString length;
 	Units::getLengthUnitLabel(length);
@@ -263,12 +263,12 @@ void GL3dBodyDlg::SetTableUnits()
 
 GL3dBodyDlg::~GL3dBodyDlg()
 {
-	ClearStack(-1);
+	clearStack(-1);
 	delete m_pBodyGridDlg;
 }
 
 
-void GL3dBodyDlg::FillFrameCell(int iItem, int iSubItem)
+void GL3dBodyDlg::fillFrameCell(int iItem, int iSubItem)
 {
 	QModelIndex ind;
 
@@ -294,7 +294,7 @@ void GL3dBodyDlg::FillFrameCell(int iItem, int iSubItem)
 }
 
 
-void GL3dBodyDlg::FillFrameDataTable()
+void GL3dBodyDlg::fillFrameDataTable()
 {
 	if(!m_pBody) return;
 	int i;
@@ -303,12 +303,12 @@ void GL3dBodyDlg::FillFrameDataTable()
 
 	for(i=0; i<m_pBody->frameSize(); i++)
 	{
-		FillFrameTableRow(i);
+		fillFrameTableRow(i);
 	}
 }
 
 
-void GL3dBodyDlg::FillFrameTableRow(int row)
+void GL3dBodyDlg::fillFrameTableRow(int row)
 {
 	QModelIndex ind;
 
@@ -321,7 +321,7 @@ void GL3dBodyDlg::FillFrameTableRow(int row)
 }
 
 
-void GL3dBodyDlg::FillPointCell(int iItem, int iSubItem)
+void GL3dBodyDlg::fillPointCell(int iItem, int iSubItem)
 {
 	QModelIndex ind;
 
@@ -358,7 +358,7 @@ void GL3dBodyDlg::FillPointCell(int iItem, int iSubItem)
 }
 
 
-void GL3dBodyDlg::FillPointDataTable()
+void GL3dBodyDlg::fillPointDataTable()
 {
 	if(!m_pBody) return;
 	int i;
@@ -366,12 +366,12 @@ void GL3dBodyDlg::FillPointDataTable()
 	m_pPointModel->setRowCount(m_pBody->sideLineCount());
 	for(i=0; i<m_pBody->sideLineCount(); i++)
 	{
-		FillPointTableRow(i);
+		fillPointTableRow(i);
 	}
 }
 
 
-void GL3dBodyDlg::FillPointTableRow(int row)
+void GL3dBodyDlg::fillPointTableRow(int row)
 {
 	if(!m_pFrame) return;
 	QModelIndex ind;
@@ -1750,10 +1750,10 @@ void GL3dBodyDlg::keyPressEvent(QKeyEvent *event)
 		}
 		case Qt::Key_R:
 		{
-			if(m_FrameRect.contains(m_LastPoint))          SetFrameScale();
-			else if(m_BodyLineRect.contains(m_LastPoint))  SetBodyLineScale();
-			else                                           SetBodyScale();
-			UpdateView();
+			if(m_FrameRect.contains(m_LastPoint))          setFrameScale();
+			else if(m_BodyLineRect.contains(m_LastPoint))  setBodyLineScale();
+			else                                           setBodyScale();
+			updateView();
 			break;
 		}
 		case Qt::Key_Y:
@@ -1782,7 +1782,7 @@ void GL3dBodyDlg::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_Control:
 		{
 			m_bArcball = true;
-			UpdateView();
+			updateView();
 			break;
 		}
 		case Qt::Key_F12:
@@ -1803,7 +1803,7 @@ void GL3dBodyDlg::keyReleaseEvent(QKeyEvent *event)
 		case Qt::Key_Control:
 		{
 			m_bArcball = false;
-			UpdateView();
+			updateView();
 			break;
 		}
 		default:
@@ -1819,7 +1819,7 @@ void GL3dBodyDlg::doubleClickEvent(QPoint point)
 
 	if(m_3dWidget.geometry().contains(point)) m_3dWidget.setFocus();
 
-	Set3DRotationCenter(point);
+	set3DRotationCenter(point);
 	m_bPickCenter = false;
 	m_pctrlPickCenter->setChecked(false);
 }
@@ -1854,7 +1854,7 @@ void GL3dBodyDlg::mouseMoveEvent(QMouseEvent *event)
 		{
 			//rotate
 			m_ArcBall.Move(point.x(), m_3dWidget.geometry().height()-point.y());
-			UpdateView();
+			updateView();
 		}
 		else if(m_bTrans)
 		{
@@ -1868,7 +1868,7 @@ void GL3dBodyDlg::mouseMoveEvent(QMouseEvent *event)
 				m_glRotCenter.y = MatOut[1][0]*(m_glViewportTrans.x) + MatOut[1][1]*(-m_glViewportTrans.y) + MatOut[1][2]*m_glViewportTrans.z;
 				m_glRotCenter.z = MatOut[2][0]*(m_glViewportTrans.x) + MatOut[2][1]*(-m_glViewportTrans.y) + MatOut[2][2]*m_glViewportTrans.z;
 
-				UpdateView();
+				updateView();
 			}
 			else if (m_BodyLineRect.contains(point) && m_pBody)
 			{
@@ -1877,7 +1877,7 @@ void GL3dBodyDlg::mouseMoveEvent(QMouseEvent *event)
 				m_BodyScaledOffset.set((1.0-m_BodyScale)*m_BodyScalingCenter.x + m_BodyScale * m_BodyOffset.x,
 									   (1.0-m_BodyScale)*m_BodyScalingCenter.y + m_BodyScale * m_BodyOffset.y,
 									   0.0);
-				UpdateView();
+				updateView();
 			}
 			else if(m_FrameRect.contains(point) && m_pFrame)
 			{
@@ -1886,7 +1886,7 @@ void GL3dBodyDlg::mouseMoveEvent(QMouseEvent *event)
 				m_FrameScaledOffset.set((1.0-m_FrameScale)*m_FrameScalingCenter.x + m_FrameScale * m_FrameOffset.x,
 										(1.0-m_FrameScale)*m_FrameScalingCenter.y + m_FrameScale * m_FrameOffset.y,
 										0.0);
-				UpdateView();
+				updateView();
 			}
 		}
 		else if (m_BodyLineRect.contains(point) && m_pBody)
@@ -1912,7 +1912,7 @@ void GL3dBodyDlg::mouseMoveEvent(QMouseEvent *event)
 				m_bResetglBody2D = true;
 			}
 
-			UpdateView();
+			updateView();
 		}
 		else if(m_FrameRect.contains(point) && m_pFrame)
 		{
@@ -1943,7 +1943,7 @@ void GL3dBodyDlg::mouseMoveEvent(QMouseEvent *event)
 
 			if(m_pFrame->m_CtrlPoint[n].y<0.0) m_pFrame->m_CtrlPoint[n].y=0.0;
 
-			UpdateView();
+			updateView();
 		}
 	}
 	else if (event->buttons() & Qt::MidButton)
@@ -1952,7 +1952,7 @@ void GL3dBodyDlg::mouseMoveEvent(QMouseEvent *event)
 		{
 			//rotate
 			m_ArcBall.Move(point.x(), m_3dWidget.geometry().height()-point.y());
-			UpdateView();
+			updateView();
 		}
 	}
 	else 
@@ -1970,7 +1970,7 @@ void GL3dBodyDlg::mouseMoveEvent(QMouseEvent *event)
 				m_pBody->m_iHighlight = n;
 			}
 			m_bResetglBodyPoints = true;
-			UpdateView();
+			updateView();
 		}
 		else if (m_pFrame && m_FrameRect.contains(point))
 		{
@@ -1985,7 +1985,7 @@ void GL3dBodyDlg::mouseMoveEvent(QMouseEvent *event)
 				m_pFrame->s_iHighlight = n;
 			}
 			m_bResetglBodyPoints = true;
-			UpdateView();
+			updateView();
 		}
 	}
 	m_LastPoint = point;
@@ -2011,7 +2011,7 @@ void GL3dBodyDlg::mousePressEvent(QMouseEvent *event)
 
 	if(m_bPickCenter)
 	{
-		Set3DRotationCenter(point);
+		set3DRotationCenter(point);
 		m_bPickCenter = false;
 		m_pctrlPickCenter->setChecked(false);
 	}
@@ -2023,8 +2023,8 @@ void GL3dBodyDlg::mousePressEvent(QMouseEvent *event)
 			m_ArcBall.Start(event->pos().x(), m_3dWidget.geometry().height()-event->pos().y());
 			m_bCrossPoint = true;
 
-			Set3DRotationCenter();
-			UpdateView();
+			set3DRotationCenter();
+			updateView();
 		}
 	}
 	else if (event->buttons() & Qt::LeftButton)
@@ -2035,7 +2035,7 @@ void GL3dBodyDlg::mousePressEvent(QMouseEvent *event)
 		{
 			m_ArcBall.Start(point.x(), m_3dWidget.geometry().height()-point.y());
 			m_bCrossPoint = true;
-			Set3DRotationCenter();
+			set3DRotationCenter();
 			if (!bCtrl)
 			{
 				m_bTrans = true;
@@ -2045,10 +2045,10 @@ void GL3dBodyDlg::mousePressEvent(QMouseEvent *event)
 			{
 				m_bArcball = true;
 			}
-			UpdateView();
+			updateView();
 		}
-		else if(bShift)  Insert(Real);
-		else if(bCtrl)   Remove(Real);
+		else if(bShift)  insert(Real);
+		else if(bCtrl)   remove(Real);
 		else if(m_pBody && m_BodyLineRect.contains(point))
 		{
 			Real.x =  (Real.x - m_BodyScaledOffset.x)/m_BodyScale;
@@ -2060,7 +2060,7 @@ void GL3dBodyDlg::mousePressEvent(QMouseEvent *event)
 				m_pBody->m_iActiveFrame = iFrame;
 				m_pFrame = m_pBody->activeFrame();
 
-				SetFrame(m_pBody->m_iActiveFrame);
+				setFrame(m_pBody->m_iActiveFrame);
 				if(iFrame>=0 && iFrame<m_pFrameModel->rowCount()) m_pctrlFrameTable->selectRow(iFrame);
 
 				if(m_pFrame && m_pFrame->s_iSelect>=0 && m_pFrame->s_iSelect<m_pPointModel->rowCount())
@@ -2069,7 +2069,7 @@ void GL3dBodyDlg::mousePressEvent(QMouseEvent *event)
 				m_bTrans = false;
 				m_bDragPoint  = true;
 
-				UpdateView();
+				updateView();
 			}
 		}
 		else if(m_pFrame && m_FrameRect.contains(point))
@@ -2124,9 +2124,9 @@ void GL3dBodyDlg::mouseReleaseEvent(QMouseEvent *event)
 			if (m_BodyLineRect.contains(point) && n1>=0 && n1<m_pBody->frameSize())
 			{
 				//the user has been dragging a point
-				FillFrameCell(n1,0);
-				FillFrameCell(n1,1);
-				SetFrame(n1);
+				fillFrameCell(n1,0);
+				fillFrameCell(n1,1);
+				setFrame(n1);
 				m_bResetglBody     = true;
 				m_bResetglBodyMesh = true;
 				m_bResetglBody2D   = true;
@@ -2134,11 +2134,11 @@ void GL3dBodyDlg::mouseReleaseEvent(QMouseEvent *event)
 			else if (m_FrameRect.contains(point) && n2>=0 && n2<m_pFrame->PointCount())
 			{
 				//the user has been dragging a point
-				FillFrameCell(n1,0);
-				FillFrameCell(n1,1);
-				FillPointCell(n2,0);
-				FillPointCell(n2,1);
-				TakePicture();
+				fillFrameCell(n1,0);
+				fillFrameCell(n1,1);
+				fillPointCell(n2,0);
+				fillPointCell(n2,1);
+				takePicture();
 				m_bResetglBody     = true;
 				m_bResetglBodyMesh = true;
 				m_bResetglBody2D   = true;
@@ -2153,7 +2153,7 @@ void GL3dBodyDlg::mouseReleaseEvent(QMouseEvent *event)
 
 	m_bArcball    = false;
 	m_bCrossPoint = false;
-	UpdateView();
+	updateView();
 
 //	We need to re-calculate the translation vector
 	int i,j;
@@ -2173,7 +2173,7 @@ void GL3dBodyDlg::mouseReleaseEvent(QMouseEvent *event)
 
 void GL3dBodyDlg::On3DIso()
 {
-	SetViewControls();
+	setViewControls();
 	m_pctrlIso->setChecked(true);
 
 	m_ArcBall.ab_quat[0]	= -0.65987748f;
@@ -2193,46 +2193,46 @@ void GL3dBodyDlg::On3DIso()
 	m_ArcBall.ab_quat[14]	=  0.0f;
 	m_ArcBall.ab_quat[15]	=  1.0f;
 
-	Set3DRotationCenter();
-	UpdateView();
+	set3DRotationCenter();
+	updateView();
 }
 
 
 
 void GL3dBodyDlg::On3DTop()
 {
-	SetViewControls();
+	setViewControls();
 	m_pctrlZ->setChecked(true);
 	m_ArcBall.SetQuat(sqrt(2.0)/2.0, 0.0, 0.0, -sqrt(2.0)/2.0);
-	Set3DRotationCenter();
-	UpdateView();
+	set3DRotationCenter();
+	updateView();
 }
 
 
 void GL3dBodyDlg::On3DLeft()
 {
-	SetViewControls();
+	setViewControls();
 	m_pctrlY->setChecked(true);
 	m_ArcBall.SetQuat(sqrt(2.0)/2.0, -sqrt(2.0)/2.0, 0.0, 0.0);// rotate by 90 deg around x
-	Set3DRotationCenter();
-	UpdateView();
+	set3DRotationCenter();
+	updateView();
 }
 
 
 void GL3dBodyDlg::On3DFront()
 {
-	SetViewControls();
+	setViewControls();
 	m_pctrlX->setChecked(true);
 	Quaternion Qt1(sqrt(2.0)/2.0, 0.0,           -sqrt(2.0)/2.0, 0.0);// rotate by 90 deg around y
 	Quaternion Qt2(sqrt(2.0)/2.0, -sqrt(2.0)/2.0, 0.0,           0.0);// rotate by 90 deg around x
 
 	m_ArcBall.SetQuat(Qt1 * Qt2);
-	Set3DRotationCenter();
-	UpdateView();
+	set3DRotationCenter();
+	updateView();
 }
 
 
-void GL3dBodyDlg::SetViewControls()
+void GL3dBodyDlg::setViewControls()
 {
 	m_pctrlX->setChecked(false);
 	m_pctrlY->setChecked(false);
@@ -2250,8 +2250,8 @@ void GL3dBodyDlg::On3DReset()
 	m_bIs3DScaleSet = false;
 	m_bResetglBody2D = true;
 
-	SetBodyScale();
-	UpdateView();
+	setBodyScale();
+	updateView();
 }
 
 
@@ -2267,7 +2267,7 @@ void GL3dBodyDlg::OnAxes()
 {
 	s_bAxes = m_pctrlAxes->isChecked();
 //	m_bResetglBody2D = true;
-	UpdateView();
+	updateView();
 }
 
 void GL3dBodyDlg::OnBodyName()
@@ -2301,7 +2301,7 @@ void GL3dBodyDlg::OnBodyStyle()
 		m_pctrlBodyStyle->setColor(dlg.setColor());
 		m_bResetglBody2D = true;
 		m_bResetglBody = true;
-		UpdateView();
+		updateView();
 	}
 }
 
@@ -2324,7 +2324,7 @@ void GL3dBodyDlg::OnClipPlane()
 {
 	double planepos =  (double)m_pctrlClipPlanePos->sliderPosition()/100.0;
 	m_ClipPlanePos = sinh(planepos) * 0.5;
-	UpdateView();
+	updateView();
 }
 
 
@@ -2469,7 +2469,7 @@ void GL3dBodyDlg::OnImportBodyDef()
 
 	XFile.close();
 
-	SetBody();
+	setBody();
 
 	m_bResetglBodyPoints = true;
 	m_bResetglBody       = true;
@@ -2478,7 +2478,7 @@ void GL3dBodyDlg::OnImportBodyDef()
 
 	m_bChanged = true;
 
-	UpdateView();
+	updateView();
 }
 
 
@@ -2518,7 +2518,7 @@ void GL3dBodyDlg::OnImportBodyXML()
 		return;
 	}
 
-	SetBody();
+	setBody();
 
 	m_bResetglBodyPoints = true;
 	m_bResetglBody       = true;
@@ -2527,26 +2527,26 @@ void GL3dBodyDlg::OnImportBodyXML()
 
 	m_bChanged = true;
 
-	UpdateView();
+	updateView();
 }
 
 
 void GL3dBodyDlg::OnFrameCellChanged(QWidget *)
 {
-	TakePicture();
+	takePicture();
 	m_bChanged = true;
 //	int n = m_pBody->m_iActiveFrame;
-	ReadFrameSectionData(m_pBody->m_iActiveFrame);
+	readFrameSectionData(m_pBody->m_iActiveFrame);
 	m_bResetglBody   = true;
 	m_bResetglBody2D = true;
 	m_bResetglBodyMesh = true;
 
-	UpdateView();
+	updateView();
 }
 
 
 
-void GL3dBodyDlg::ReadFrameSectionData(int sel)
+void GL3dBodyDlg::readFrameSectionData(int sel)
 {
 	if(sel>=m_pFrameModel->rowCount()) return;
 	double x;
@@ -2580,8 +2580,8 @@ void GL3dBodyDlg::ReadFrameSectionData(int sel)
 void GL3dBodyDlg::OnFrameItemClicked(const QModelIndex &index)
 {
 	m_pBody->m_iActiveFrame = index.row();
-	SetFrame(m_pBody->m_iActiveFrame);
-	UpdateView();
+	setFrame(m_pBody->m_iActiveFrame);
+	updateView();
 }
 
 
@@ -2592,26 +2592,26 @@ void GL3dBodyDlg::OnGrid()
 	m_pBodyGridDlg->exec();
 	m_bResetglBody2D = true;
 
-	UpdateView();
+	updateView();
 }
 
 
 
 void GL3dBodyDlg::OnInsert()
 {
-	Insert(m_RealPopUp);
+	insert(m_RealPopUp);
 }
 
 
 
-void GL3dBodyDlg::Insert(CVector Pt)
+void GL3dBodyDlg::insert(CVector Pt)
 {
 	CVector Real;
 	m_bChanged = true;
 	int FrameSel = 0;
 	if(m_BodyLineRect.contains(m_ptPopUp))
 	{
-		TakePicture();
+		takePicture();
 
 		Real.x = (Pt.x - m_BodyScaledOffset.x)/m_BodyScale;
 		Real.z = (Pt.y - m_BodyScaledOffset.y)/m_BodyScale;
@@ -2626,13 +2626,13 @@ void GL3dBodyDlg::Insert(CVector Pt)
 
 		m_bResetglBody   = true;
 		m_bResetglBody2D = true;
-		FillFrameDataTable();
-		SetFrame(FrameSel);
-		UpdateView();
+		fillFrameDataTable();
+		setFrame(FrameSel);
+		updateView();
 	}
 	else if(m_FrameRect.contains(m_ptPopUp) && m_pFrame)
 	{
-		TakePicture();
+		takePicture();
 
 		Real.x = m_pFrame->m_CtrlPoint.first().x;
 		Real.y = (Pt.x - m_FrameScaledOffset.x)/m_FrameScale;
@@ -2643,9 +2643,9 @@ void GL3dBodyDlg::Insert(CVector Pt)
 		m_pBody->InsertPoint(Real);
 		m_bResetglBody   = true;
 		m_bResetglBody2D = true;
-		FillPointDataTable();
+		fillPointDataTable();
 //		SetPointSel(point);
-		UpdateView();
+		updateView();
 	}
 }
 
@@ -2654,7 +2654,7 @@ void GL3dBodyDlg::Insert(CVector Pt)
 void GL3dBodyDlg::OnLight()
 {
 	s_bglLight = m_pctrlLight->isChecked();
-	UpdateView();
+	updateView();
 }
 
 
@@ -2662,7 +2662,7 @@ void GL3dBodyDlg::OnLight()
 void GL3dBodyDlg::OnShowMasses()
 {
 	s_bShowMasses = m_pctrlShowMasses->isChecked();
-	UpdateView();
+	updateView();
 }
 
 
@@ -2687,7 +2687,7 @@ void GL3dBodyDlg::OnLineType()
 	}
 	m_bResetglBody2D = true;
 	m_bResetglBody = true;
-	UpdateView();
+	updateView();
 }
 
 
@@ -2708,14 +2708,14 @@ void GL3dBodyDlg::OnOK()
 void GL3dBodyDlg::OnOutline()
 {
 	s_bOutline = m_pctrlOutline->isChecked();
-	UpdateView();
+	updateView();
 }
 
 
 void GL3dBodyDlg::OnPanels()
 {
 	s_bVLMPanels = m_pctrlPanels->isChecked();
-	UpdateView();
+	updateView();
 }
 
 
@@ -2724,15 +2724,15 @@ void GL3dBodyDlg::OnPointCellChanged(QWidget *)
 {
 	if(!m_pFrame) return;
 
-	TakePicture();
+	takePicture();
 	m_bChanged = true;
-	ReadPointSectionData(m_pFrame->s_iSelect);
+	readPointSectionData(m_pFrame->s_iSelect);
 	m_bResetglBodyPoints = true;
 	m_bResetglBody       = true;
 	m_bResetglBody2D     = true;
 	m_bResetglBodyMesh   = true;
 
-	UpdateView();
+	updateView();
 }
 
 
@@ -2742,7 +2742,7 @@ void GL3dBodyDlg::OnPointItemClicked(const QModelIndex &index)
 	m_pFrame->s_iSelect = index.row();
 	m_pFrame->s_iHighlight = index.row();
 	m_bResetglBodyPoints = true;
-	UpdateView();
+	updateView();
 }
 
 
@@ -2750,11 +2750,11 @@ void GL3dBodyDlg::OnPointItemClicked(const QModelIndex &index)
 
 void GL3dBodyDlg::OnRemove()
 {
-	Remove(m_RealPopUp);
+	remove(m_RealPopUp);
 }
 
 
-void GL3dBodyDlg::Remove(CVector Pt)
+void GL3dBodyDlg::remove(CVector Pt)
 {
 	int i,n;
 	CVector Real;
@@ -2771,16 +2771,16 @@ void GL3dBodyDlg::Remove(CVector Pt)
 		n =  m_pBody->isFramePos(Real, m_BodyScale/m_BodyRefScale);
 		if (n>=0)
 		{
-			TakePicture();
+			takePicture();
 
 			n = m_pBody->removeFrame(n);
-			FillFrameDataTable();
-			SetFrame(n);
+			fillFrameDataTable();
+			setFrame(n);
 			m_bResetglBody   = true;
 			m_bResetglBody2D = true;
 		}
 
-		UpdateView();
+		updateView();
 	}
 	else if(m_FrameRect.contains(m_ptPopUp) && m_pFrame)
 	{
@@ -2792,7 +2792,7 @@ void GL3dBodyDlg::Remove(CVector Pt)
 		n =   m_pFrame->isPoint(Real, m_FrameScale/m_FrameRefScale);
 		if (n>=0)
 		{
-			TakePicture();
+			takePicture();
 
 			for (i=0; i<m_pBody->frameSize();i++)
 			{
@@ -2800,12 +2800,12 @@ void GL3dBodyDlg::Remove(CVector Pt)
 				pBodyFrame->removePoint(n);
 			}
 			m_pBody->setNURBSKnots();
-			SetFrame(m_pBody->m_iActiveFrame);
+			setFrame(m_pBody->m_iActiveFrame);
 			m_bResetglBody   = true;
 			m_bResetglBody2D = true;
 		}
 
-		UpdateView();
+		updateView();
 	}
 }
 
@@ -2815,11 +2815,11 @@ void GL3dBodyDlg::OnResetScales()
 {
 	m_bIs3DScaleSet  = false;
 	m_bResetglBody2D = true;
-	if(m_FrameRect.contains(m_ptPopUp))         SetFrameScale();
-	else if(m_BodyLineRect.contains(m_ptPopUp)) SetBodyLineScale();
-	else                                        SetBodyScale();
+	if(m_FrameRect.contains(m_ptPopUp))         setFrameScale();
+	else if(m_BodyLineRect.contains(m_ptPopUp)) setBodyLineScale();
+	else                                        setBodyScale();
 
-	UpdateView();
+	updateView();
 }
 
 
@@ -2837,13 +2837,13 @@ void GL3dBodyDlg::OnScaleBody()
 
 	if(dlg.exec()==QDialog::Accepted)
 	{
-		TakePicture();
+		takePicture();
 		m_pBody->scale(dlg.m_XFactor, dlg.m_YFactor, dlg.m_ZFactor, dlg.m_bFrameOnly, dlg.m_FrameID);
 		m_bResetglBody     = true;
 		m_bResetglBodyMesh = true;
 		m_bResetglBody2D   = true;
 
-		UpdateView();
+		updateView();
 	}
 }
 
@@ -2853,14 +2853,14 @@ void GL3dBodyDlg::OnSelChangeXDegree(int sel)
 	if(!m_pBody) return;
 	if (sel <0) return;
 
-	TakePicture();
+	takePicture();
 	m_bChanged = true;
 
 	m_pBody->m_SplineSurface.m_iuDegree = sel+1;
 	m_pBody->setNURBSKnots();
 	m_bResetglBody   = true;
 	m_bResetglBody2D = true;
-	UpdateView();
+	updateView();
 }
 
 
@@ -2871,13 +2871,13 @@ void GL3dBodyDlg::OnSelChangeHoopDegree(int sel)
 
 	m_bChanged = true;
 
-	TakePicture();
+	takePicture();
 
 	m_pBody->m_SplineSurface.m_ivDegree = sel+1;
 	m_pBody->setNURBSKnots();
 	m_bResetglBody   = true;
 	m_bResetglBody2D = true;
-	UpdateView();
+	updateView();
 }
 
 
@@ -2886,7 +2886,7 @@ void GL3dBodyDlg::OnEdgeWeight()
 	if(!m_pBody) return;
 
 	m_bChanged = true;
-	TakePicture();
+	takePicture();
 
 	double w= (double)m_pctrlEdgeWeight->value()/100.0 + 1.0;
 	m_pBody->setEdgeWeight(w, w);
@@ -2894,7 +2894,7 @@ void GL3dBodyDlg::OnEdgeWeight()
 	m_bResetglBody   = true;
 	m_bResetglBody2D = true;
 	m_bResetglBodyMesh = true;
-	UpdateView();
+	updateView();
 }
 
 
@@ -2904,7 +2904,7 @@ void GL3dBodyDlg::OnNURBSPanels()
 	if(!m_pBody) return;
 
 	m_bChanged = true;
-	TakePicture();
+	takePicture();
 
 	m_pBody->m_Bunch = m_pctrlPanelBunch->sliderPosition()/100.0;
 
@@ -2915,7 +2915,7 @@ void GL3dBodyDlg::OnNURBSPanels()
 	m_bResetglBody   = true;
 	m_bResetglBody2D = true;
 	m_bResetglBodyMesh = true;
-	UpdateView();
+	updateView();
 }
 
 
@@ -2925,14 +2925,14 @@ void GL3dBodyDlg::OnShowCurFrameOnly()
 	m_bCurFrameOnly = !m_bCurFrameOnly;
 	m_bResetglBody2D = true;
 	m_pShowCurFrameOnly->setChecked(m_bCurFrameOnly);
-	UpdateView();
+	updateView();
 }
 
 
 void GL3dBodyDlg::OnSurfaces()
 {
 	s_bSurfaces = m_pctrlSurfaces->isChecked();
-	UpdateView();
+	updateView();
 }
 
 
@@ -2946,15 +2946,15 @@ void GL3dBodyDlg::OnTranslateBody()
 
 	if(dlg.exec()==QDialog::Accepted)
 	{
-		TakePicture();
+		takePicture();
 		m_pBody->translate(dlg.m_XTrans, dlg.m_YTrans, dlg.m_ZTrans, dlg.m_bFrameOnly, dlg.m_FrameID);
-		FillFrameDataTable();
-		FillPointDataTable();
+		fillFrameDataTable();
+		fillPointDataTable();
 
 		m_bResetglBody     = true;
 		m_bResetglBodyMesh = true;
 		m_bResetglBody2D   = true;
-		UpdateView();
+		updateView();
 	}
 }
 
@@ -2962,7 +2962,7 @@ void GL3dBodyDlg::OnTranslateBody()
 
 
 
-void GL3dBodyDlg::ReadPointSectionData(int sel)
+void GL3dBodyDlg::readPointSectionData(int sel)
 {
 	if(sel>=m_pPointModel->rowCount()) return;
 	if(!m_pFrame) return;
@@ -3030,12 +3030,12 @@ void GL3dBodyDlg::resizeEvent(QResizeEvent *event)
 //	SetBodyScale();
 //	SetRectangles();
 
-	ResizeTables();
+	resizeTables();
 	event->accept();
 }
 
 
-bool GL3dBodyDlg::LoadSettings(QSettings *pSettings)
+bool GL3dBodyDlg::loadSettings(QSettings *pSettings)
 {
 	pSettings->beginGroup("GL3dBody");
 	{
@@ -3048,7 +3048,7 @@ bool GL3dBodyDlg::LoadSettings(QSettings *pSettings)
 }
 
 
-bool GL3dBodyDlg::SaveSettings(QSettings *pSettings)
+bool GL3dBodyDlg::saveSettings(QSettings *pSettings)
 {
 	pSettings->beginGroup("GL3dBody");
 	{
@@ -3062,7 +3062,7 @@ bool GL3dBodyDlg::SaveSettings(QSettings *pSettings)
 }
 
 
-void GL3dBodyDlg::Set3DRotationCenter()
+void GL3dBodyDlg::set3DRotationCenter()
 {
 	//adjust the new rotation center after a translation or a rotation
 
@@ -3078,7 +3078,7 @@ void GL3dBodyDlg::Set3DRotationCenter()
 }
 
 
-void GL3dBodyDlg::Set3DRotationCenter(QPoint point)
+void GL3dBodyDlg::set3DRotationCenter(QPoint point)
 {
 	//adjusts the new rotation center after the user has picked a point on the screen
 	//finds the closest panel under the point,
@@ -3137,7 +3137,7 @@ void GL3dBodyDlg::Set3DRotationCenter(QPoint point)
 			m_glViewportTrans.y = -(MatOut[1][0]*m_glRotCenter.x + MatOut[1][1]*m_glRotCenter.y + MatOut[1][2]*m_glRotCenter.z);
 			m_glViewportTrans.z=   (MatOut[2][0]*m_glRotCenter.x + MatOut[2][1]*m_glRotCenter.y + MatOut[2][2]*m_glRotCenter.z);
 
-			UpdateView();
+			updateView();
 		}
 	}
 }
@@ -3145,7 +3145,7 @@ void GL3dBodyDlg::Set3DRotationCenter(QPoint point)
 
 
 
-void GL3dBodyDlg::SetControls()
+void GL3dBodyDlg::setControls()
 {
 	m_pctrlBodyName->setEnabled(m_bEnableName);
 
@@ -3200,11 +3200,11 @@ bool GL3dBodyDlg::initDialog(Body *pBody)
 	m_pctrlFrameTable->setFont(Settings::s_TableFont);
 	m_pctrlPointTable->setFont(Settings::s_TableFont);
 
-	return SetBody(pBody);
+	return setBody(pBody);
 }
 
 
-bool GL3dBodyDlg::SetBody(Body *pBody)
+bool GL3dBodyDlg::setBody(Body *pBody)
 {
 	if(pBody) m_pBody = pBody;
 
@@ -3215,20 +3215,20 @@ bool GL3dBodyDlg::SetBody(Body *pBody)
 	m_pFrame = m_pBody->activeFrame();
 	m_bResetglBody2D = true;
 
-	SetControls();
-	FillFrameDataTable();
-	FillPointDataTable();
+	setControls();
+	fillFrameDataTable();
+	fillPointDataTable();
 
 	m_pctrlBodyName->setText(m_pBody->m_BodyName);
 
-	TakePicture();
+	takePicture();
 
 	return true;
 }
 
 
 
-void GL3dBodyDlg::SetBodyLineScale()
+void GL3dBodyDlg::setBodyLineScale()
 {
 	if(m_pBody) m_BodyScale = (m_VerticalSplit-m_3dWidget.m_GLViewRect.left)*.7/m_pBody->Length();
 	else        return;
@@ -3246,7 +3246,7 @@ void GL3dBodyDlg::SetBodyLineScale()
 }
 
 
-void GL3dBodyDlg::SetFrameScale()
+void GL3dBodyDlg::setFrameScale()
 {
 	int k;
 	double height;
@@ -3277,7 +3277,7 @@ void GL3dBodyDlg::SetFrameScale()
 
 }
 
-void GL3dBodyDlg::SetRectangles()
+void GL3dBodyDlg::setRectangles()
 {
 	CVector V1, V2;
 	QPoint P1, P2;
@@ -3310,7 +3310,7 @@ void GL3dBodyDlg::SetRectangles()
 }
 
 
-void GL3dBodyDlg::SetBodyScale()
+void GL3dBodyDlg::setBodyScale()
 {
 	if(!m_pBody) return;
 //	if(m_bIs3DScaleSet /*&& !m_bAutoScales*/) return;
@@ -3331,45 +3331,45 @@ void GL3dBodyDlg::SetBodyScale()
 	CVector up(0.0,1.0,0.0);
 	m_ArcBall.SetZoom(0.3,eye,up);
 
-	Set3DRotationCenter();
+	set3DRotationCenter();
 }
 
 
-void GL3dBodyDlg::SetScales()
+void GL3dBodyDlg::setScales()
 {
-	SetBodyScale();
-	SetFrameScale();
-	SetBodyLineScale();
+	setBodyScale();
+	setFrameScale();
+	setBodyLineScale();
 }
 
 
 
-void GL3dBodyDlg::SetFrame(int iFrame)
+void GL3dBodyDlg::setFrame(int iFrame)
 {
 	if(!m_pBody) return;
 	if(iFrame<0 || iFrame>=m_pBody->frameSize()) m_pFrame = NULL;
 	else                                         m_pFrame = m_pBody->frame(iFrame);
 	m_pBody->m_iActiveFrame = iFrame;
 
-	FillPointDataTable();;
+	fillPointDataTable();;
 
 	m_bResetglBody2D = true;
 }
 
-void GL3dBodyDlg::SetFrame(Frame *pFrame)
+void GL3dBodyDlg::setFrame(Frame *pFrame)
 {
 	if(!m_pBody || !pFrame) return;
 
 	m_pBody->setActiveFrame(pFrame);
 
-	FillPointDataTable();;
+	fillPointDataTable();;
 
 	m_bResetglBody2D = true;
 }
 
 
 
-void GL3dBodyDlg::SetupLayout()
+void GL3dBodyDlg::setupLayout()
 {
 	int i;
 	QString str;
@@ -3767,15 +3767,15 @@ void GL3dBodyDlg::showEvent(QShowEvent *event)
 	resize(s_WindowSize);
 	if(s_bWindowMaximized) setWindowState(Qt::WindowMaximized);
 
-	SetTableUnits();
+	setTableUnits();
 	m_bChanged    = false;
 	m_bResetglBody = true;
 	m_bIs3DScaleSet = false;
-	SetScales();
+	setScales();
 
-	ResizeTables();
+	resizeTables();
 
-	UpdateView();
+	updateView();
 
 	event->accept();
 }
@@ -3791,7 +3791,7 @@ void GL3dBodyDlg::hideEvent(QHideEvent *event)
 
 
 
-void GL3dBodyDlg::ResizeTables()
+void GL3dBodyDlg::resizeTables()
 {
 	int ColumnWidth = (int)((double)(m_pctrlFrameTable->width())/2.5);
 	m_pctrlFrameTable->setColumnWidth(0,ColumnWidth);
@@ -3809,7 +3809,7 @@ void GL3dBodyDlg::ResizeTables()
   * Clears the stack starting at a given position.
   * @param the first stack element to remove
   */
-void GL3dBodyDlg::ClearStack(int pos)
+void GL3dBodyDlg::clearStack(int pos)
 {
 	for(int il=m_UndoStack.size()-1; il>pos; il--)
 	{
@@ -3823,18 +3823,18 @@ void GL3dBodyDlg::ClearStack(int pos)
 /**
  * Restores a SplineFoil definition from the current position in the stack.
  */
-void GL3dBodyDlg::SetPicture()
+void GL3dBodyDlg::setPicture()
 {
 	Body *pTmpBody = m_UndoStack.at(m_StackPos);
 	m_pBody->duplicate(pTmpBody);
 	m_pBody->setNURBSKnots();
-	FillFrameDataTable();
+	fillFrameDataTable();
 	m_pFrame = m_pBody->activeFrame();
-	FillPointDataTable();
+	fillPointDataTable();
 	m_bResetglBody   = true;
 	m_bResetglBody2D = true;
 
-	UpdateView();
+	updateView();
 }
 
 
@@ -3842,12 +3842,12 @@ void GL3dBodyDlg::SetPicture()
 /**
  * Copies the current Body object to a new Body and pushes it on the stack.
  */
-void GL3dBodyDlg::TakePicture()
+void GL3dBodyDlg::takePicture()
 {
 	m_bChanged = true;
 
 	//clear the downstream part of the stack which becomes obsolete
-	ClearStack(m_StackPos);
+	clearStack(m_StackPos);
 
 	// append a copy of the current object
 	Body *pBody = new Body();
@@ -3866,7 +3866,7 @@ void GL3dBodyDlg::OnRedo()
 	if(m_StackPos<m_UndoStack.size()-1)
 	{
 		m_StackPos++;
-		SetPicture();
+		setPicture();
 	}
 	m_pctrlUndo->setEnabled(m_StackPos>0);
 	m_pctrlRedo->setEnabled(m_StackPos<m_UndoStack.size()-1);
@@ -3878,7 +3878,7 @@ void GL3dBodyDlg::OnUndo()
 	if(m_StackPos>0)
 	{
 		m_StackPos--;
-		SetPicture();
+		setPicture();
 		m_pctrlRedo->setEnabled(true);
 	}
 	else
@@ -3891,7 +3891,7 @@ void GL3dBodyDlg::OnUndo()
 
 
 
-void GL3dBodyDlg::UpdateView()
+void GL3dBodyDlg::updateView()
 {
 	if(isVisible()) m_3dWidget.update();
 }
@@ -3925,7 +3925,7 @@ void GL3dBodyDlg::zoomEvent(QPoint pos, double zoomFactor)
 
 		m_bResetglBody2D=true;
 	}
-	UpdateView();
+	updateView();
 	
 }
 
@@ -3945,7 +3945,7 @@ void GL3dBodyDlg::blockSignalling(bool bBlock)
 
 
 
-void GL3dBodyDlg::PaintBodyLegend(QPainter &painter)
+void GL3dBodyDlg::paintBodyLegend(QPainter &painter)
 {
 	if(!m_pBody) return;
 
