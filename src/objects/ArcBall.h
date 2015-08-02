@@ -89,22 +89,22 @@ class ArcBall
 public:
 	ArcBall(void);
 
-	void SetQuat(Quaternion Qt);
-	void SetQuat(double r, double qx, double qy, double qz);
+	void setQuat(Quaternion Qt);
+	void setQuat(double r, double qx, double qy, double qz);
 	void SetZoom(double radius, CVector eye, CVector up);
-	void Rotate();
-	void Reset();
+	void rotate();
+	void reset();
 	void Start(int mx, int my);
-	void Move(int mx, int my);
-	void GetMatrix();
+	void move(int mx, int my);
+	void getMatrix();
 	void SphereCoords(int const &mx, int const &my, CVector &V);// find the intersection with the sphere
 	void PlanarCoords(int const &mx, int const &my, CVector &V);// get intersection with plane for "trackball" style rotation
-	void EdgeCoords(CVector m, CVector &V);	// find the intersection with the plane through the visible edge
-	void RotateCrossPoint();
-	void QuatIdentity(float* q);	// reset the rotation matrix
+	void edgeCoords(CVector m, CVector &V);	// find the intersection with the plane through the visible edge
+	void rotateCrossPoint();
+	void quatIdentity(float* q);	// reset the rotation matrix
 	void QuatCopy(float* dst, float* src);// copy a rotation matrix
-	void QuattoMatrix(float* q, Quaternion Qt);// convert the quaternion into a rotation matrix
-	void QuatNext(float* dest, float* left, float* right);// multiply two rotation matrices
+	void quatToMatrix(float* q, Quaternion Qt);// convert the quaternion into a rotation matrix
+	void quatNext(float* dest, float* left, float* right);// multiply two rotation matrices
 	void ClientToGL(int const &x, int const &y, double &glx, double &gly);
 
 	float ab_quat[16];

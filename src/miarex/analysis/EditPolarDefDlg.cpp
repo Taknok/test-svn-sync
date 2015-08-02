@@ -208,21 +208,15 @@ void EditPolarDefDlg::onOK()
 	{
 		m_pWPolar->bThinSurfaces()  = true;
 		m_pWPolar->analysisMethod() = XFLR5::PANELMETHOD;
-		m_pWPolar->boundaryCondition()=XFLR5::NEUMANN;
+	}
+	else if (m_pWPolar->analysisMethod()==XFLR5::PANELMETHOD && !m_pPlane->isWing())
+	{
+		m_pWPolar->bThinSurfaces()  = true;
 	}
 	else if (m_pWPolar->analysisMethod()==XFLR5::PANELMETHOD && m_pPlane->isWing())
 	{
 		m_pWPolar->bThinSurfaces()  = false;
-		m_pWPolar->analysisMethod() = XFLR5::PANELMETHOD;
 	}
-	else
-	{
-		m_pWPolar->bThinSurfaces()  = true;
-		m_pWPolar->analysisMethod() = XFLR5::PANELMETHOD;
-	}
-
-//	qDebug()<<analysisMethod(m_pWPolar->analysisMethod()) <<boundaryCondition(m_pWPolar->boundaryCondition());
-
 	accept();
 }
 
@@ -289,7 +283,7 @@ QList<QStandardItem *> EditPolarDefDlg::prepareDoubleRow(const QString &object, 
 
 void EditPolarDefDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
 {
-	m_pPlane = pPlane;
+	m_pPlane  = pPlane;
 	m_pWPolar = pWPolar;
 
 	pWPolar->setAutoWPolarName(m_pPlane);
@@ -336,10 +330,6 @@ void EditPolarDefDlg::showWPolar()
 		analysisTypeFolder.first()->appendRow(dataItem);
 
 		dataItem = prepareBoolRow("", "Tilted geometry", m_pWPolar->bTilted());
-		analysisTypeFolder.first()->appendRow(dataItem);
-
-		dataItem = prepareRow("", "Boundary conditions", boundaryCondition(m_pWPolar->boundaryCondition()));
-		dataItem.at(2)->setData(XFLR5::BOUNDARYCONDITION, Qt::UserRole);
 		analysisTypeFolder.first()->appendRow(dataItem);
 
 		dataItem = prepareBoolRow("", "Ignore body panels", m_pWPolar->bIgnoreBodyPanels());
@@ -481,8 +471,6 @@ void EditPolarDefDlg::readViewLevel(QModelIndex indexLevel)
 			else if(field.compare("Alpha")==0)                   m_pWPolar->Alpha()                = dataIndex.data().toDouble();
 			else if(field.compare("Beta")==0)                    m_pWPolar->Beta()                 = dataIndex.data().toDouble();
 			else if(field.compare("Method")==0)                  m_pWPolar->analysisMethod()       = analysisMethod(value);
-			else if(field.compare("Boundary conditions")==0)
-				m_pWPolar->boundaryCondition()    = boundaryCondition(value);
 			else if(field.compare("Viscous")==0)                 m_pWPolar->bViscous()             = stringToBool(value);
 			else if(field.compare("Tilted geometry")==0)         m_pWPolar->bTilted()              = stringToBool(value);
 			else if(field.compare("Ignore body panels")==0)      m_pWPolar->bIgnoreBodyPanels()    = stringToBool(value);

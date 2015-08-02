@@ -480,7 +480,7 @@ void WPolar::duplicateSpec(WPolar *pWPolar)
 	m_LineStyle.m_Width  = pWPolar->curveWidth();
 	m_LineStyle.m_Color  = pWPolar->curveColor();
 	m_LineStyle.m_PointStyle = pWPolar->points();
-	m_LineStyle.m_bIsVisible = pWPolar->visible();
+	m_LineStyle.m_bIsVisible = pWPolar->isVisible();
 
 	// general aerodynamic data - specific to a polar
 	m_Viscosity   = pWPolar->m_Viscosity;
@@ -2055,7 +2055,7 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 void WPolar::copy(WPolar *pWPolar)
 {
 	int i;
-	m_LineStyle.m_bIsVisible = pWPolar->visible();
+	m_LineStyle.m_bIsVisible = pWPolar->isVisible();
 	m_LineStyle.m_PointStyle = pWPolar->points();
 	m_bTiltedGeom     = pWPolar->m_bTiltedGeom;
 	m_bViscous        = pWPolar->m_bViscous;

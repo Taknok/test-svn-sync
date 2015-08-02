@@ -151,7 +151,7 @@ void LegendWidget::drawWPolarLegend(QPainter &painter, QPointF place, int bottom
 		for (i=0; i<Objects3D::s_oaWPolar.size(); i++)
 		{
 			pWPolar = (WPolar*)Objects3D::s_oaWPolar.at(i);
-			if (pWPolar->planeName()==pPlane->planeName() && pWPolar->visible())
+			if (pWPolar->planeName()==pPlane->planeName() && pWPolar->isVisible())
 			{
 				if(m_MiarexView==XFLR5::WPOLARVIEW || (m_MiarexView==XFLR5::STABPOLARVIEW && pWPolar->isStabilityPolar()))
 				{
@@ -183,7 +183,7 @@ void LegendWidget::drawWPolarLegend(QPainter &painter, QPointF place, int bottom
 		{
 			pWPolar = (WPolar*)Objects3D::s_oaWPolar.at(l);
 
-			if (pWPolar->m_Alpha.size() && pWPolar->visible()  && pWPolar->planeName()==strPlaneList.at(k))
+			if (pWPolar->m_Alpha.size() && pWPolar->isVisible()  && pWPolar->planeName()==strPlaneList.at(k))
 			{
 				if(m_MiarexView==XFLR5::WPOLARVIEW || (m_MiarexView==XFLR5::STABPOLARVIEW && pWPolar->isStabilityPolar()))
 					nPlanePlrs++;
@@ -215,7 +215,7 @@ void LegendWidget::drawWPolarLegend(QPainter &painter, QPointF place, int bottom
 					if(!pWPolar->m_Alpha.size())
 					{
 					}
-					else if(!pWPolar->visible())
+					else if(!pWPolar->isVisible())
 					{
 					}
 					else if(m_MiarexView!=XFLR5::WPOLARVIEW && (m_MiarexView!=XFLR5::STABPOLARVIEW || !pWPolar->isStabilityPolar()))
