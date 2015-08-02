@@ -38,8 +38,10 @@ namespace XFLR5
 	/** @enum The different types of panel distribution on the wing */
 	typedef enum {COSINE, UNIFORM, SINE, INVERSESINE} enumPanelDistribution;
 
+	/** @enum The two types of boundary conditions for 3D panel analysis. VLM BC are of the NEUMANN type*/
+	typedef enum {DIRICHLET, NEUMANN} enumBC;
 
-	typedef enum {BOOL, INTEGER, DOUBLE, STRING, PANELDISTRIBUTION, FOILNAME, BODYTYPE, POLARTYPE, ANALYSISMETHOD, REFDIMENSIONS, WINGTYPE} enumDataType;
+	typedef enum {BOOL, INTEGER, DOUBLE, STRING, PANELDISTRIBUTION, FOILNAME, BODYTYPE, POLARTYPE, ANALYSISMETHOD, REFDIMENSIONS, WINGTYPE, BOUNDARYCONDITION} enumDataType;
 
 }
 

@@ -19,8 +19,8 @@
 
 *****************************************************************************/
 
-#ifndef VIEWPOLARDEFDLG_H
-#define VIEWPOLARDEFDLG_H
+#ifndef EDITPOLARDEFDLG_H
+#define EDITPOLARDEFDLG_H
 
 #include <QDialog>
 #include <QTreeView>
@@ -42,6 +42,7 @@ class EditPolarDefDlg : public QDialog
 
 private slots:
 	void onOK();
+	void onItemChanged();
 
 public:
 	EditPolarDefDlg(QWidget *pParent=NULL);
@@ -53,7 +54,6 @@ public:
 
 	void initDialog(Plane *pPlane, WPolar *pWPolar);
 	void setupLayout();
-	void setWPolarName();
 	void showWPolar();
 	void fillInertiaData(QList<QStandardItem*> inertiaFolder);
 	void fillControlFields(QList<QStandardItem *> stabControlFolder);
@@ -71,8 +71,6 @@ public:
 	static QSize s_Size;	    /**< the window size in the client area */
 
 private:
-	static WPolar s_StabPolar;
-
 	WPolar * m_pWPolar;
 	Plane * m_pPlane;
 	QTreeView * m_pStruct;
@@ -84,7 +82,7 @@ private:
 
 };
 
-#endif // VIEWPOLARDEFDLG_H
+#endif // EDITPOLARDEFDLG_H
 
 
 

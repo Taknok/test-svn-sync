@@ -1130,123 +1130,10 @@ void StabPolarDlg::enableControls()
 void StabPolarDlg::setWPolarName()
 {
 	if(!m_bAutoName || !m_pPlane) return;
-	QString str, strong;
-	int i, nCtrl;
 
-	Units::getSpeedUnitLabel(str);
-	QString WPolarName = "T7";
-
-	if(m_pPlane->isWing() && !s_StabPolar.bThinSurfaces()) WPolarName += "-Panel";
-
-	if(s_StabPolar.bThinSurfaces())
-	{
-		WPolarName += "-VLM2";
-	}
-
-	nCtrl = 0;
-
-	if(!m_pPlane->isWing())
-	{
-		if(qAbs(s_StabPolar.m_ControlGain[0])>PRECISION)
-		{
-			strong = QString(QString::fromUtf8("-Wing(g%1)"))
-							   .arg(s_StabPolar.m_ControlGain[0],0,'f',1);
-			WPolarName += strong;
-		}
-		nCtrl++;
-	}
-
-	if(m_pWingList[2])
-	{
-		if(qAbs(s_StabPolar.m_ControlGain[1])>PRECISION)
-		{
-			strong = QString(QString::fromUtf8("-Elev(g%1)")).arg(s_StabPolar.m_ControlGain[1],0,'f',1);
-			WPolarName += strong;
-		}
-		nCtrl++;
-	}
-
-	for(i=0; i<m_pWingList[0]->m_nFlaps; i++)
-	{
-		if(qAbs(s_StabPolar.m_ControlGain[i+nCtrl])>PRECISION)
-		{
-			strong = QString(QString::fromUtf8("-WF%1(g%2)"))
-					 .arg(i+1)
-					 .arg(s_StabPolar.m_ControlGain[i+nCtrl],0,'f',1);
-			WPolarName += strong;
-		}
-	}
-	nCtrl += m_pWingList[0]->m_nFlaps;
-
-	if(m_pWingList[2])
-	{
-		for(i=0; i<m_pWingList[2]->m_nFlaps; i++)
-		{
-			if(qAbs(s_StabPolar.m_ControlGain[i+nCtrl])>PRECISION)
-			{
-				strong = QString(QString::fromUtf8("-EF%1(g%2)"))
-						 .arg(i+1).arg(s_StabPolar.m_ControlGain[i+nCtrl]);
-				WPolarName += strong;
-			}
-		}
-		nCtrl += m_pWingList[2]->m_nFlaps;
-	}
-
-	if(m_pWingList[3])
-	{
-		for(i=0; i<m_pWingList[3]->m_nFlaps; i++)
-		{
-			if(qAbs(s_StabPolar.m_ControlGain[i+nCtrl])>PRECISION)
-			{
-				strong = QString(QString::fromUtf8("-FF%1(g%2)"))
-						 .arg(i+1).arg(s_StabPolar.m_ControlGain[i+nCtrl]);
-				WPolarName += strong;
-			}
-		}
-	}
-
-
-	if(qAbs(s_StabPolar.m_BetaSpec) > .001)
-	{
-		strong = QString(QString::fromUtf8("-b%1°")).arg(s_StabPolar.m_BetaSpec,0,'f',1);
-		WPolarName += strong;
-	}
+	s_StabPolar.setAutoWPolarName(m_pPlane);
 	
-	if(qAbs(s_StabPolar.m_BankAngle) > .001)
-	{
-		strong = QString(QString::fromUtf8("-B%1°")).arg(s_StabPolar.m_BankAngle,0,'f',1);
-		WPolarName += strong;
-	}
-
-	if(!s_StabPolar.m_bAutoInertia)
-	{
-		Units::getWeightUnitLabel(str);
-		strong = QString("-%1").arg(s_StabPolar.mass()*Units::kgtoUnit(),0,'f',1);
-		WPolarName += strong+str;
-		Units::getLengthUnitLabel(str);
-		strong = QString("-x%1").arg(s_StabPolar.CoG().x*Units::mtoUnit(),0,'f',1);
-		WPolarName += strong + str;
-
-		if(qAbs(s_StabPolar.CoG().z)>=.000001)
-		{
-			strong = QString("-z%1").arg(s_StabPolar.CoG().z*Units::mtoUnit(),0,'f',1);
-			WPolarName += strong + str;
-		}
-	}
-//	else m_WPolarName += "-Plane_Inertia";
-
-	if(!s_StabPolar.bViscous())
-	{
-		WPolarName += "-Inviscid";
-	}
-	if(s_StabPolar.bIgnoreBodyPanels())
-	{
-		WPolarName += "-NoBodyPanels";
-	}
-	if(s_StabPolar.referenceDim()==XFLR5::PROJECTEDREFDIM) WPolarName += "-proj_area";
-	
-	
-	m_pctrlWPolarName->setText(WPolarName);
+	m_pctrlWPolarName->setText(s_StabPolar.polarName());
 }
 
 
@@ -1255,12 +1142,12 @@ void StabPolarDlg::onMethod()
 {
 	if (m_pctrlWingMethod2->isChecked())
 	{
-		s_StabPolar.bThinSurfaces() = true;
+		s_StabPolar.bThinSurfaces()  = true;
 		s_StabPolar.analysisMethod() = XFLR5::VLMMETHOD;
 	}
 	else if (m_pctrlWingMethod3->isChecked())
 	{
-		s_StabPolar.bThinSurfaces() = false;
+		s_StabPolar.bThinSurfaces()  = false;
 		s_StabPolar.analysisMethod() = XFLR5::PANELMETHOD;
 	}
 

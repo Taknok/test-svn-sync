@@ -1891,6 +1891,39 @@ void Objects3D::deletePlane(Plane *pPlane)
 
 
 /**
+ * Deletes the WPolar and its PlaneOpp objects.
+ * @param pWPolar a pointer to the WPolar object which will be deleted
+ */
+void Objects3D::deleteWPolar(WPolar *pWPolar)
+{
+	//remove and delete its children POpps from the array
+	if(!pWPolar)return;
+
+	for (int l=s_oaPOpp.size()-1;l>=0; l--)
+	{
+		PlaneOpp *pPOpp = (PlaneOpp*)s_oaPOpp.at(l);
+		if (pPOpp->planeName()==pWPolar->planeName() && pPOpp->polarName()==pWPolar->polarName())
+		{
+			s_oaPOpp.removeAt(l);
+			delete pPOpp;
+		}
+	}
+
+	for(int ipb=0; ipb<s_oaWPolar.size(); ipb++)
+	{
+		WPolar *pOldWPolar = (WPolar*)s_oaWPolar.at(ipb);
+		if(pOldWPolar==pWPolar)
+		{
+			s_oaWPolar.removeAt(ipb);
+			delete pWPolar;
+			break;
+		}
+	}
+}
+
+
+
+/**
  * Deletes the WPolar and PlaneOpp objects associated to the plane.
  * @param pPlane a pointer to the Plane object for which the results will be deleted
  */
@@ -2577,9 +2610,7 @@ void Objects3D::renamePlane(QString PlaneName)
 				pPOpp->planeName() = pPlane->planeName();
 			}
 		}
-//		return pPlane->PlaneName();
 	}
-//	return "";
 }
 
 
