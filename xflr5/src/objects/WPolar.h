@@ -78,6 +78,8 @@ public:
 	bool serializeWPlrWPA(QDataStream &ar, bool bIsStoring);
 	bool serializeWPlrXFL(QDataStream &ar, bool bIsStoring);
 
+	void setAutoWPolarName(void *ptrPlane);
+
 	static QString variableName(int iVar);
 
 	XFLR5::enumPolarType &polarType()           {return m_WPolarType;}       /**< returns the type of the polar as an index in the enumeration. */
@@ -97,18 +99,19 @@ public:
 	bool isBetaPolar() {return m_WPolarType==XFLR5::BETAPOLAR;}             /**< returns true if the polar is of the BETAPOLAR type, false otherwise >*/
 
 
-	bool &bThinSurfaces()                 {return m_bThinSurfaces;}  /**< returns true if the analysis if using thin surfaces, i.e. VLM, false if 3D Panels for the Wing objects. */
-	bool &bWakeRollUp() {return m_bWakeRollUp;}
-	bool &bDirichlet() {return m_bDirichlet;}
+	bool &bThinSurfaces() {return m_bThinSurfaces;}  /**< returns true if the analysis if using thin surfaces, i.e. VLM, false if 3D Panels for the Wing objects. */
+	bool &bWakeRollUp()  {return m_bWakeRollUp;}
 	bool &bTilted() {return m_bTiltedGeom; }
 	bool &bGround() {return m_bGround;}
 	bool &bIgnoreBodyPanels() {return m_bIgnoreBodyPanels;}
 	bool &bViscous() {return m_bViscous;}
 	bool &bVLM1() {return m_bVLM1;}
 	bool &bAutoInertia() {return m_bAutoInertia;}
+	bool bDirichlet() {return m_BoundaryCondition==XFLR5::DIRICHLET;}
 
 	int &polarFormat() {return m_PolarFormat;}
 
+	XFLR5::enumBC &boundaryCondition() {return m_BoundaryCondition;}
 	XFLR5::enumRefDimension  &referenceDim(){return m_ReferenceDim;}
 	double &referenceArea()  {return m_referenceArea;}
 	double &referenceSpanLength()  {return m_referenceSpanLength;}
@@ -137,16 +140,19 @@ public:
 
 private:
 	bool     m_bVLM1;              /**< true if the analysis is performed with horseshoe vortices, flase if quad rings */
-	bool     m_bDirichlet;         /**< true if Dirichlet boundary conditions should be applied, false if Neumann */
+//	bool     m_bDirichlet;         /**< true if Dirichlet boundary conditions should be applied, false if Neumann */
 	bool     m_bGround;            /**< true if ground effect should be taken into account in the analysis */
 	bool     m_bIgnoreBodyPanels;  /**< true if the body panels should be ignored in the analysis */
 	bool     m_bThinSurfaces;      /**< true if VLM, false if 3D-panels */
 	bool     m_bTiltedGeom;        /**< true if the analysis should be performed on the tilted geometry */
 	bool     m_bViscous;           /**< true if the analysis is viscous */
 	bool     m_bWakeRollUp;        /**< true if wake roll-up  should be taken into account in the analysis */
-	QString  m_WPlrName;            /**< the polar's name */
 	int      m_PolarFormat;        /**< the identification number which references the format used to serialize the data */
+
+	XFLR5::enumBC m_BoundaryCondition;
 	XFLR5::enumRefDimension  m_ReferenceDim;        /**< Describes the origin of the refernce area : 1 if planform area, else projected area */
+
+	QString  m_WPlrName;            /**< the polar's name */
 	QString  m_PlaneName;          /**< the name of the parent wing or plane */
 
 	LineStyle m_LineStyle;

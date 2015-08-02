@@ -502,6 +502,19 @@ bool PanelAnalysis::initializeAnalysis()
 	else if(m_pWPolar->polarType()==XFLR5::STABILITYPOLAR) strange = "Type 7 - Stability polar";
 	traceLog(strange+"\n");
 
+	if(m_pWPolar->analysisMethod()==XFLR5::PANELMETHOD)
+	{
+		if(m_pWPolar->boundaryCondition()==XFLR5::DIRICHLET) strange = "Using Dirichlet boundary conditions\n\n";
+		else                                                 strange = "Using Neumann boundary conditions\n\n";
+		traceLog(strange+"\n");
+
+		if(m_pWPolar->bThinSurfaces()) strange = "Wing as thin surfaces";
+		else                           strange = "Wing as thick surfaces";
+		traceLog(strange+"\n");
+	}
+
+
+
 	// make sure the polar is up to date with the latest plane data
 	// should have been updated at the time when the polar was set
 	// but a user, who knows what he can do ?
@@ -514,6 +527,7 @@ bool PanelAnalysis::initializeAnalysis()
 		m_pWPolar->CoGIzz() = m_pPlane->CoGIzz();
 		m_pWPolar->CoGIxz() = m_pPlane->CoGIxz();
 	}
+
 	if(m_pWPolar->referenceDim()!=XFLR5::MANUALREFDIM)
 	{
 	    if(m_pWPolar->referenceDim()==XFLR5::PLANFORMREFDIM)
@@ -625,7 +639,6 @@ bool PanelAnalysis::alphaLoop()
 
 	buildInfluenceMatrix();
 	if (s_bCancel) return true;
-
 
 	createUnitRHS();
 	if (s_bCancel) return true;
@@ -815,7 +828,6 @@ void PanelAnalysis::createRHS(double *RHS, CVector VInf, double *VField)
 		}
 		else VPanel = VInf;
 
-
 //		if(!m_b3DSymetric || m_pPanel[p].m_bIsLeftPanel)
 //		{
 			if(!m_pWPolar->bDirichlet() || m_pPanel[p].m_Pos==MIDSURFACE)
@@ -874,6 +886,7 @@ void PanelAnalysis::createUnitRHS()
 
 	VInf.set(1.0, 0.0, 0.0);
 	createRHS(m_uRHS,  VInf);
+
 	VInf.set(0.0, 0.0, 1.0);
 	createRHS(m_wRHS, VInf);
 }

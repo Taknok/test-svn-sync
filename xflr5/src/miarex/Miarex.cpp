@@ -3315,7 +3315,8 @@ void QMiarex::onDefineStabPolar()
 		}
 
 		pNewStabPolar->bVLM1()           = false;
-		pNewStabPolar->bDirichlet()      = m_bDirichlet;
+		if(m_bDirichlet) pNewStabPolar->boundaryCondition() = XFLR5::DIRICHLET;
+		else             pNewStabPolar->boundaryCondition() = XFLR5::NEUMANN;
 		pNewStabPolar->bTilted()         = false;
 		pNewStabPolar->bWakeRollUp()     = false;
 		pNewStabPolar->analysisMethod()  = XFLR5::PANELMETHOD;
@@ -3380,7 +3381,8 @@ void QMiarex::onDefineWPolar()
 			if(m_pCurPlane && m_pCurPlane->BiPlane()) pNewWPolar->referenceArea() += m_pCurPlane->wing2()->m_ProjectedArea;
 		}
 
-		pNewWPolar->bDirichlet() = m_bDirichlet;
+		if(m_bDirichlet) pNewWPolar->boundaryCondition() = XFLR5::DIRICHLET;
+		else             pNewWPolar->boundaryCondition() = XFLR5::NEUMANN;
 
 		pNewWPolar->curveColor() = MainFrame::getColor(4);
 		pNewWPolar->visible() = true;
@@ -3448,7 +3450,8 @@ void QMiarex::onDefineWPolarObject()
 			if(m_pCurPlane && m_pCurPlane->BiPlane()) pNewWPolar->referenceArea() += m_pCurPlane->wing2()->m_ProjectedArea;
 		}
 
-		pNewWPolar->bDirichlet() = m_bDirichlet;
+		if(m_bDirichlet) pNewWPolar->boundaryCondition() = XFLR5::DIRICHLET;
+		else             pNewWPolar->boundaryCondition() = XFLR5::NEUMANN;
 		pNewWPolar->curveColor() = MainFrame::getColor(4);
 		pNewWPolar->visible() = true;
 
@@ -3513,7 +3516,7 @@ void QMiarex::onEditCurWPolar()
 		pNewWPolar->planeName() = m_pCurPlane->planeName();
 		pNewWPolar->polarName() = WPolarName;
 
-		pNewWPolar->bDirichlet() = m_bDirichlet;
+//		pNewWPolar->bDirichlet() = m_bDirichlet;
 
 		pNewWPolar->curveColor() = MainFrame::getColor(4);
 		pNewWPolar->visible() = true;
@@ -3560,7 +3563,7 @@ void QMiarex::onEditCurWPolarObject()
 
 		pNewWPolar->planeName() = m_pCurPlane->planeName();
 
-		pNewWPolar->bDirichlet() = m_bDirichlet;
+//		pNewWPolar->bDirichlet() = m_bDirichlet;
 
 		pNewWPolar->curveColor() = MainFrame::getColor(4);
 		pNewWPolar->visible() = true;
@@ -3808,7 +3811,6 @@ void QMiarex::onDeletePlaneWPolars()
 	if(!m_pCurPlane) return;
 
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-	WPolar *pWPolar;
 	QString PlaneName, strong;
 
 	PlaneName = m_pCurPlane->planeName();
@@ -3816,29 +3818,8 @@ void QMiarex::onDeletePlaneWPolars()
 	strong = tr("Are you sure you want to delete the polars associated to :\n") +  PlaneName +"?\n";
 	if (QMessageBox::Yes != QMessageBox::question(pMainFrame, tr("Question"), strong, QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel)) return;
 
-	for(int j=m_poaWPolar->size()-1; j>=0; j--)
-	{
-		pWPolar  = (WPolar *)m_poaWPolar->at(j);
-		if(pWPolar && pWPolar->planeName()==PlaneName)
-		{
-			//first remove all WOpps and POpps associated to the Wing Polar
+	Objects3D::deletePlaneResults(m_pCurPlane, true);
 
-			PlaneOpp * pPOpp;
-			for (int i=m_poaPOpp->size()-1; i>=0; i--)
-			{
-				pPOpp = (PlaneOpp*)m_poaPOpp->at(i);
-				if (pPOpp->polarName() == pWPolar->polarName()   &&  pPOpp->planeName()== PlaneName)
-				{
-					m_poaPOpp->removeAt(i);
-					delete pPOpp;
-				}
-			}
-
-			//then remove the polar
-			m_poaWPolar->removeAt(j);
-			delete pWPolar;
-		}
-	}
 	m_pCurWPolar = NULL;
 	setWPolar();
 	pMainFrame->updateWPolarListBox();
@@ -3855,43 +3836,13 @@ void QMiarex::onDeleteCurWPolar()
 {
 	if(!m_pCurWPolar) return;
 	m_bAnimateWOpp = false;
-	int i;
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 
-	QString strong, PlaneName;
-
-	if(m_pCurPlane)     PlaneName = m_pCurPlane->planeName();
-	else return;
-
-	strong = tr("Are you sure you want to delete the polar :\n") +  m_pCurWPolar->polarName() +"?\n";
+	QString strong = tr("Are you sure you want to delete the polar :\n") +  m_pCurWPolar->polarName() +"?\n";
 	if (QMessageBox::Yes != QMessageBox::question(pMainFrame, tr("Question"), strong,
 												  QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel)) return;
 
-	//first remove all WOpps associated to the Wing Polar
-
-	//next remove all the POpps associated to the Wing Polar
-	PlaneOpp * pPOpp;
-	for (i=m_poaPOpp->size()-1; i>=0; i--)
-	{
-		pPOpp = (PlaneOpp*)m_poaPOpp->at(i);
-		if (pPOpp->polarName()  == m_pCurWPolar->polarName()  &&  pPOpp->planeName() == PlaneName)
-		{
-			m_poaPOpp->removeAt(i);
-			delete pPOpp;
-		}
-	}
-	//next remove the WPolar
-	WPolar* pWPolar;
-	for (i=m_poaWPolar->size()-1;i>=0; i--)
-	{
-		pWPolar = (WPolar*)m_poaWPolar->at(i);
-		if (pWPolar == m_pCurWPolar)
-		{
-			m_poaWPolar->removeAt(i);
-			delete pWPolar;
-			break;
-		}
-	}
+	Objects3D::deleteWPolar(m_pCurWPolar);
 
 	m_pCurPOpp = NULL;
 	m_pCurWPolar = NULL;
@@ -5553,33 +5504,16 @@ void QMiarex::onRenameCurWPolar()
 		if(dlg.newName()==m_pCurWPolar->polarName()) return; //what's the point ?
 
 		// it's a real overwrite
-		// so find the existing WPolar with the new name
+		// so find and delete the existing WPolar with the new name
 		pWPolar = NULL;
 		for(int ipb=0; ipb<m_poaWPolar->size(); ipb++)
 		{
 			pOldWPolar = (WPolar*)m_poaWPolar->at(ipb);
 			if(pOldWPolar->polarName()==dlg.newName() && pOldWPolar->planeName()==m_pCurPlane->planeName())
 			{
-				pWPolar = pOldWPolar;
-				m_poaWPolar->removeAt(ipb);
+				Objects3D::deleteWPolar(pOldWPolar);
 				break;
 			}
-		}
-
-		//remove and delete its children POpps from the array
-		if(pWPolar)
-		{
-			for (int l=m_poaPOpp->size()-1;l>=0; l--)
-			{
-				PlaneOpp *pPOpp = (PlaneOpp*)m_poaPOpp->at(l);
-				if (pPOpp->planeName()==pWPolar->planeName() && pPOpp->polarName()==pWPolar->polarName())
-				{
-					m_poaPOpp->removeAt(l);
-					delete pPOpp;
-				}
-			}
-			//delete the old WPolar;
-			delete pWPolar;
 		}
 	}
 
@@ -5594,10 +5528,20 @@ void QMiarex::onRenameCurWPolar()
 			break;
 		}
 	}
+
 	//set the new name
+	for (int l=m_poaPOpp->size()-1;l>=0; l--)
+	{
+		PlaneOpp *pPOpp = (PlaneOpp*)m_poaPOpp->at(l);
+		if (pPOpp->planeName() == m_pCurPlane->planeName() && pPOpp->polarName()==m_pCurWPolar->polarName())
+		{
+			pPOpp->polarName() = dlg.newName();
+		}
+	}
+
 	m_pCurWPolar->polarName() = dlg.newName();
 
-	//insert
+	//insert alphabetically
 	bool bInserted = false;
 	for (int l=0; l<m_poaWPolar->size();l++)
 	{

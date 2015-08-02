@@ -159,5 +159,9 @@ bool stringToBool(QString str);
 XFLR5::enumWingType wingType(QString strWingType);
 QString wingType(XFLR5::enumWingType wingType);
 
+XFLR5::enumBC boundaryCondition(QString strBC);
+QString boundaryCondition(XFLR5::enumBC boundaryCondition);
+
+
 #endif // FUNCTIONS_H
  

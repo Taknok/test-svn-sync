@@ -18,8 +18,8 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 *****************************************************************************/
-#ifndef VIEWOBJECTDELEGATE_H
-#define VIEWOBJECTDELEGATE_H
+#ifndef EDITOBJECTDELEGATE_H
+#define EDITOBJECTDELEGATE_H
 
 #include <QStyledItemDelegate>
 #include <QItemDelegate>
@@ -43,4 +43,4 @@ public:
 
 };
 
-#endif // VIEWOBJECTDELEGATE_H
+#endif // EDITOBJECTDELEGATE_H

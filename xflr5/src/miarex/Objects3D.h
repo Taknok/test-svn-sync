@@ -47,6 +47,7 @@ public:
 	static void      deleteObjects();
 	static void      deletePlane(Plane *pPlane);
 	static void      deletePlaneResults(Plane *pPlane, bool bDeletePolars=false);
+	static void      deleteWPolar(WPolar *pWPolar);
 	static Plane *   duplicatePlane(Plane *pPlane);
 	static Body*     getBody(QString BodyName);
 	static Plane*    getPlane(QString PlaneName);

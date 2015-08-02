@@ -42,109 +42,121 @@ QWidget *EditObjectDelegate::createEditor(QWidget *parent, const QStyleOptionVie
 {
 	int dataType = index.model()->data(index, Qt::UserRole).toInt();
 
-	if(dataType==XFLR5::BOOL)
+	switch (dataType)
 	{
-		QComboBox *editor = new QComboBox(parent);
-		editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-		//fill comboboxes here
-		editor->addItem("true");
-		editor->addItem("false");
-		return editor;
-	}
-	else if(dataType==XFLR5::POLARTYPE)
-	{
-		QComboBox *editor = new QComboBox(parent);
-		editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-		//fill comboboxes here
-		editor->addItem("FIXEDSPEEDPOLAR");
-		editor->addItem("FIXEDLIFTPOLAR");
-		editor->addItem("FIXEDAOAPOLAR");
-		editor->addItem("STABILITYPOLAR");
-		editor->addItem("BETAPOLAR");
-		return editor;
-	}
-	else if(dataType==XFLR5::ANALYSISMETHOD)
-	{
-		QComboBox *editor = new QComboBox(parent);
-		editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-		//fill comboboxes here
-		editor->addItem("LLTMETHOD");
-		editor->addItem("VLMMETHOD");
-		editor->addItem("PANELMETHOD");
-		return editor;
-	}
-	else if(dataType==XFLR5::PANELDISTRIBUTION)
-	{
-		QComboBox *editor = new QComboBox(parent);
-		editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-		//fill comboboxes here
-		editor->addItem("INVERSESINE");
-		editor->addItem("COSINE");
-		editor->addItem("SINE");
-		editor->addItem("UNIFORM");
-		return editor;
-	}
-	else if(dataType==XFLR5::REFDIMENSIONS)
-	{
-		QComboBox *editor = new QComboBox(parent);
-		editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-		//fill comboboxes here
-		editor->addItem("PLANFORMREFDIM");
-		editor->addItem("PROJECTEDREFDIM");
-		editor->addItem("MANUALREFDIM");
-
-		return editor;
-	}
-	else if(dataType==XFLR5::BODYTYPE)
-	{
-		QComboBox *editor = new QComboBox(parent);
-		editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-		//fill comboboxes here
-		editor->addItem("FLATPANELS");
-		editor->addItem("NURBS");
-		return editor;
-	}
-	else if(dataType==XFLR5::FOILNAME)
-	{
-		QComboBox *editor = new QComboBox(parent);
-		editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-		//fill comboboxes here
-		for(int i=0; i<s_poaFoil->size(); i++)
+		case XFLR5::BOOL:
 		{
-			Foil *pFoil = (Foil*)s_poaFoil->at(i);
-			editor->addItem(pFoil->foilName());
+			QComboBox *editor = new QComboBox(parent);
+			editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+			//fill comboboxes here
+			editor->addItem("true");
+			editor->addItem("false");
+			return editor;
 		}
-		return editor;
-	}
-	else if(dataType==XFLR5::WINGTYPE)
-	{
-/*		QComboBox *editor = new QComboBox(parent);
-		editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-		//fill comboboxes here
-		editor->addItem("MAINWING");
-		editor->addItem("SECONDWING");
-		editor->addItem("ELEVATOR");
-		editor->addItem("FIN");
+		case XFLR5::POLARTYPE:
+		{
+			QComboBox *editor = new QComboBox(parent);
+			editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+			//fill comboboxes here
+			editor->addItem("FIXEDSPEEDPOLAR");
+			editor->addItem("FIXEDLIFTPOLAR");
+			editor->addItem("FIXEDAOAPOLAR");
+			editor->addItem("STABILITYPOLAR");
+			editor->addItem("BETAPOLAR");
+			return editor;
+		}
+		case XFLR5::ANALYSISMETHOD:
+		{
+			QComboBox *editor = new QComboBox(parent);
+			editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+			//fill comboboxes here
+			editor->addItem("LLTMETHOD");
+			editor->addItem("VLMMETHOD");
+			editor->addItem("PANELMETHOD");
+			return editor;
+		}
+		case XFLR5::PANELDISTRIBUTION:
+		{
+			QComboBox *editor = new QComboBox(parent);
+			editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+			//fill comboboxes here
+			editor->addItem("INVERSESINE");
+			editor->addItem("COSINE");
+			editor->addItem("SINE");
+			editor->addItem("UNIFORM");
+			return editor;
+		}
+		case XFLR5::REFDIMENSIONS:
+		{
+			QComboBox *editor = new QComboBox(parent);
+			editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+			//fill comboboxes here
+			editor->addItem("PLANFORMREFDIM");
+			editor->addItem("PROJECTEDREFDIM");
+			editor->addItem("MANUALREFDIM");
 
-		return editor;*/
-		return NULL;
-	}
-	else if (dataType==XFLR5::DOUBLE)
-	{
-		DoubleEdit *editor = new DoubleEdit(parent);
-		editor->setPrecision(3);
-		return editor;
-	}
-	else if (dataType==XFLR5::INTEGER)
-	{
-		IntEdit *editor = new IntEdit(parent);
-		return editor;
-	}
-	else
-	{
-		//String case, only edit the first line with the polar name
-		if(index.row()==0 && index.column()==2)  return new QLineEdit(parent);
-		else                                     return NULL;
+			return editor;
+		}
+		case XFLR5::BODYTYPE:
+		{
+			QComboBox *editor = new QComboBox(parent);
+			editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+			//fill comboboxes here
+			editor->addItem("FLATPANELS");
+			editor->addItem("NURBS");
+			return editor;
+		}
+		case XFLR5::FOILNAME:
+		{
+			QComboBox *editor = new QComboBox(parent);
+			editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+			//fill comboboxes here
+			for(int i=0; i<s_poaFoil->size(); i++)
+			{
+				Foil *pFoil = (Foil*)s_poaFoil->at(i);
+				editor->addItem(pFoil->foilName());
+			}
+			return editor;
+		}
+		case XFLR5::BOUNDARYCONDITION:
+		{
+			QComboBox *editor = new QComboBox(parent);
+			editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+			//fill comboboxes here
+			editor->addItem("DIRICHLET");
+			editor->addItem("NEUMANN");
+			return editor;
+		}
+		case XFLR5::WINGTYPE:
+		{
+	/*		QComboBox *editor = new QComboBox(parent);
+			editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+			//fill comboboxes here
+			editor->addItem("MAINWING");
+			editor->addItem("SECONDWING");
+			editor->addItem("ELEVATOR");
+			editor->addItem("FIN");
+
+			return editor;*/
+			return NULL;
+		}
+		case XFLR5::DOUBLE:
+		{
+			DoubleEdit *editor = new DoubleEdit(parent);
+			editor->setPrecision(3);
+			return editor;
+		}
+		case XFLR5::INTEGER:
+		{
+			IntEdit *editor = new IntEdit(parent);
+			return editor;
+		}
+		default:
+		{
+			//String case, only edit the first line with the polar name
+			if(index.row()==0 && index.column()==2)  return new QLineEdit(parent);
+			else                                     return NULL;
+		}
 	}
 	return NULL;
 }
