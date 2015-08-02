@@ -3092,7 +3092,21 @@ QString analysisMethod(XFLR5::enumAnalysisMethod analysisMethod)
 	}
 }
 
+XFLR5::enumBC boundaryCondition(QString strBC)
+{
+	if   (strBC.compare("DIRICHLET", Qt::CaseInsensitive)==0) return XFLR5::DIRICHLET;
+	else return XFLR5::NEUMANN;
+}
 
+QString boundaryCondition(XFLR5::enumBC boundaryCondition)
+{
+	switch(boundaryCondition)
+	{
+		case XFLR5::DIRICHLET: return "DIRICHLET";   break;
+		case XFLR5::NEUMANN:   return "NEUMANN";     break;
+		default: return "";
+	}
+}
 
 XFLR5::enumRefDimension referenceDimension(QString strRefDimension)
 {

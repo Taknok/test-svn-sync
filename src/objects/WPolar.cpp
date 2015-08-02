@@ -46,7 +46,8 @@ WPolar::WPolar()
 	m_bTiltedGeom   = false;
 	m_bViscous      = true;
 	m_bGround       = false;
-	m_bDirichlet    = true;
+//	m_bDirichlet    = true;
+	m_BoundaryCondition = XFLR5::DIRICHLET;
 	m_bIgnoreBodyPanels = false;
 
 	m_NXWakePanels    = 1;
@@ -491,8 +492,9 @@ void WPolar::duplicateSpec(WPolar *pWPolar)
 	m_TotalWakeLength   = pWPolar->m_TotalWakeLength;
 	m_WakePanelFactor   = pWPolar->m_WakePanelFactor;
 
+	m_BoundaryCondition = pWPolar->m_BoundaryCondition;
+
 	m_bGround         = pWPolar->m_bGround;
-	m_bDirichlet      = pWPolar->m_bDirichlet;
 	m_bTiltedGeom     = pWPolar->m_bTiltedGeom;
 	m_bViscous        = pWPolar->m_bViscous;
 	m_bIgnoreBodyPanels = pWPolar->m_bIgnoreBodyPanels;
@@ -515,7 +517,6 @@ void WPolar::duplicateSpec(WPolar *pWPolar)
 	//Inertia properties
 	m_Mass = pWPolar->m_Mass;
 	m_bAutoInertia = pWPolar->m_bAutoInertia;
-	m_bThinSurfaces = pWPolar->bThinSurfaces();
 	m_CoGIxx = pWPolar->m_CoGIxx;
 	m_CoGIyy = pWPolar->m_CoGIyy;
 	m_CoGIzz = pWPolar->m_CoGIzz;
@@ -1216,7 +1217,8 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
 		{
 			ar >> n;
 			if (n!=0 && n!=1) return false;
-			if(n) m_bDirichlet = false; else m_bDirichlet = true;
+//			if(n) m_bDirichlet = false; else m_bDirichlet = true;
+			m_BoundaryCondition = n ? XFLR5::DIRICHLET : XFLR5::NEUMANN;
 		}
 		if(m_PolarFormat>=1009)
 		{
@@ -1743,8 +1745,8 @@ void WPolar::getPolarProperties(QString &polarProps, bool bData)
 
 	if(m_AnalysisMethod !=XFLR5::LLTMETHOD)
 	{
-		if(m_bDirichlet)  strong  = QObject::tr("B.C. = Dirichlet");
-		else              strong  = QObject::tr("B.C. = Neumann");
+		if(m_BoundaryCondition==XFLR5::DIRICHLET)  strong  = QObject::tr("B.C. = Dirichlet");
+		else                                       strong  = QObject::tr("B.C. = Neumann");
 		polarProps += strong +"\n";
 	}
 
@@ -1861,7 +1863,7 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 		ar << m_bVLM1;
 		ar << m_bThinSurfaces;
 		ar << m_bTiltedGeom;
-		ar << m_bDirichlet;
+		ar << (m_BoundaryCondition==XFLR5::DIRICHLET);
 		ar << m_bViscous;
 		ar << m_bIgnoreBodyPanels;
 
@@ -1946,7 +1948,8 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 		ar >> m_bVLM1;
 		ar >> m_bThinSurfaces;
 		ar >> m_bTiltedGeom;
-		ar >> m_bDirichlet;
+		ar >> boolean;
+		m_BoundaryCondition = boolean ? XFLR5::DIRICHLET : XFLR5::NEUMANN;
 		ar >> m_bViscous;
 		ar >> m_bIgnoreBodyPanels;
 
@@ -2128,6 +2131,188 @@ void WPolar::copy(WPolar *pWPolar)
 }
 
 
+
+
+void WPolar::setAutoWPolarName(void *ptrPlane)
+{
+	if(!ptrPlane) return;
+	QString str, strong;
+	QString strSpeedUnit;
+	Units::getSpeedUnitLabel(strSpeedUnit);
+
+	int i, nCtrl;
+
+	Plane *pPlane = (Plane*)ptrPlane;
+
+	Units::getSpeedUnitLabel(str);
+
+	switch(polarType())
+	{
+		case XFLR5::FIXEDSPEEDPOLAR:
+		{
+			m_WPlrName = QString("T1-%1 ").arg(m_QInfSpec * Units::mstoUnit(),0,'f',1);
+			m_WPlrName += strSpeedUnit;
+			break;
+		}
+		case XFLR5::FIXEDLIFTPOLAR:
+		{
+			m_WPlrName = QString("T2");
+			break;
+		}
+		case XFLR5::FIXEDAOAPOLAR:
+		{
+			m_WPlrName = QString(QString::fromUtf8("T4-%1°")).arg(m_AlphaSpec,0,'f',3);
+			break;
+		}
+		case XFLR5::BETAPOLAR:
+		{
+			m_WPlrName = QString(QString::fromUtf8("T5-a%1°-%2"))
+							  .arg(m_AlphaSpec,0,'f',1)
+							  .arg(m_QInfSpec * Units::mstoUnit(),0,'f',1);
+			m_WPlrName += strSpeedUnit;
+			break;
+		}
+		case XFLR5::STABILITYPOLAR:
+		{
+			m_WPlrName = QString("T7");
+			break;
+		}
+		default:
+		{
+			m_WPlrName = "Tx";
+			break;
+		}
+	}
+
+	switch(m_AnalysisMethod)
+	{
+		case XFLR5::LLTMETHOD:
+		{
+			m_WPlrName += "-LLT";
+			break;
+		}
+		case XFLR5::VLMMETHOD:
+		{
+			if(m_bVLM1) m_WPlrName += "-VLM1";
+			else        m_WPlrName += "-VLM2";
+			break;
+		}
+		case XFLR5::PANELMETHOD:
+		{
+			if(!m_bThinSurfaces) m_WPlrName += "-Panel";
+			else
+			{
+				if(m_bVLM1) m_WPlrName += "-VLM1";
+				else        m_WPlrName += "-VLM2";
+			}
+			break;
+		}
+	}
+
+	nCtrl = 0;
+
+	if(!pPlane->isWing())
+	{
+		if(qAbs(m_ControlGain[0])>PRECISION)
+		{
+			strong = QString(QString::fromUtf8("-Wing(g%1)"))
+							   .arg(m_ControlGain[0],0,'f',1);
+			m_WPlrName += strong;
+		}
+		nCtrl++;
+	}
+
+	if(pPlane->stab())
+	{
+		if(qAbs(m_ControlGain[1])>PRECISION)
+		{
+			strong = QString(QString::fromUtf8("-Elev(g%1)")).arg(m_ControlGain[1],0,'f',1);
+			m_WPlrName += strong;
+		}
+		nCtrl++;
+	}
+
+	if(isStabilityPolar())
+	{
+		for(i=0; i<pPlane->wing()->m_nFlaps; i++)
+		{
+			if(m_ControlGain.size()>i+nCtrl && qAbs(m_ControlGain[i+nCtrl])>PRECISION)
+			{
+				strong = QString(QString::fromUtf8("-WF%1(g%2)"))
+						 .arg(i+1)
+						 .arg(m_ControlGain[i+nCtrl],0,'f',1);
+				m_WPlrName += strong;
+			}
+		}
+		nCtrl += pPlane->wing()->m_nFlaps;
+
+		if(pPlane->stab())
+		{
+			for(i=0; i<pPlane->stab()->m_nFlaps; i++)
+			{
+				if(m_ControlGain.size()>i+nCtrl && qAbs(m_ControlGain[i+nCtrl])>PRECISION)
+				{
+					strong = QString(QString::fromUtf8("-EF%1(g%2)")).arg(i+1).arg(m_ControlGain[i+nCtrl]);
+					m_WPlrName += strong;
+				}
+			}
+			nCtrl += pPlane->stab()->m_nFlaps;
+		}
+
+		if(pPlane->fin())
+		{
+			for(i=0; i<pPlane->fin()->m_nFlaps; i++)
+			{
+				if(m_ControlGain.size()>i+nCtrl && qAbs(m_ControlGain[i+nCtrl])>PRECISION)
+				{
+					strong = QString(QString::fromUtf8("-FF%1(g%2)")).arg(i+1).arg(m_ControlGain[i+nCtrl]);
+					m_WPlrName += strong;
+				}
+			}
+		}
+	}
+
+
+	if(qAbs(m_BetaSpec) > .001)
+	{
+		strong = QString(QString::fromUtf8("-b%1°")).arg(m_BetaSpec,0,'f',1);
+		m_WPlrName += strong;
+	}
+
+	if(qAbs(m_BankAngle) > .001)
+	{
+		strong = QString(QString::fromUtf8("-B%1°")).arg(m_BankAngle,0,'f',1);
+		m_WPlrName += strong;
+	}
+
+	if(!m_bAutoInertia)
+	{
+		Units::getWeightUnitLabel(str);
+		strong = QString("-%1").arg(mass()*Units::kgtoUnit(),0,'f',1);
+		m_WPlrName += strong+str;
+		Units::getLengthUnitLabel(str);
+		strong = QString("-x%1").arg(CoG().x*Units::mtoUnit(),0,'f',1);
+		m_WPlrName += strong + str;
+
+		if(qAbs(CoG().z)>=.000001)
+		{
+			strong = QString("-z%1").arg(CoG().z*Units::mtoUnit(),0,'f',1);
+			m_WPlrName += strong + str;
+		}
+	}
+
+	if(!bViscous())
+	{
+		m_WPlrName += "-Inviscid";
+	}
+	if(bIgnoreBodyPanels())
+	{
+		m_WPlrName += "-NoBodyPanels";
+	}
+	if(referenceDim()==XFLR5::PROJECTEDREFDIM) m_WPlrName += "-proj_area";
+
+
+}
 
 
 

@@ -36,7 +36,6 @@
 
 QSize EditPolarDefDlg::s_Size(579,783);
 QPoint EditPolarDefDlg::s_Position(231, 97);
-WPolar EditPolarDefDlg::s_StabPolar;
 
 
 EditPolarDefDlg::EditPolarDefDlg(QWidget *pParent) : QDialog(pParent)
@@ -74,9 +73,9 @@ void EditPolarDefDlg::hideEvent(QHideEvent *event)
 void EditPolarDefDlg::resizeEvent(QResizeEvent *event)
 {
 	s_Size = size();
-	int ColumnWidth = (int)((double)(m_pStruct->width())/6);
-	m_pStruct->setColumnWidth(0,ColumnWidth*2);
-	m_pStruct->setColumnWidth(1,ColumnWidth*2);
+	int ColumnWidth = (int)((double)(m_pStruct->width())/4);
+	m_pStruct->setColumnWidth(0,ColumnWidth);
+	m_pStruct->setColumnWidth(1,ColumnWidth);
 	m_pStruct->setColumnWidth(2,ColumnWidth);
 	event->accept();
 }
@@ -109,6 +108,11 @@ void EditPolarDefDlg::setupLayout()
 
 	m_pStruct->setModel(m_pModel);
 
+/*	QItemSelectionModel *pSelectionModel = new QItemSelectionModel(m_pModel);
+	m_pStruct->setSelectionModel(pSelectionModel);
+	connect(pSelectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(onItemClicked(QModelIndex)));*/
+
+	connect(m_pModel, SIGNAL(itemChanged(QStandardItem*)), this, SLOT(onItemChanged()));
 
 	m_pDelegate = new EditObjectDelegate(this);
 	m_pStruct->setItemDelegate(m_pDelegate);
@@ -118,7 +122,6 @@ void EditPolarDefDlg::setupLayout()
 	m_pStruct->setColumnWidth(0, fm.averageCharWidth()*37);
 	m_pStruct->setColumnWidth(1, fm.averageCharWidth()*29);
 	m_pStruct->setColumnWidth(2, fm.averageCharWidth()*17);
-
 
 
 	QVBoxLayout *pVBox = new QVBoxLayout;
@@ -177,9 +180,49 @@ void EditPolarDefDlg::keyPressEvent(QKeyEvent *event)
 
 
 
+void EditPolarDefDlg::onItemChanged()
+{
+	readData();
+	m_pWPolar->setAutoWPolarName(m_pPlane);
+	QModelIndex indexLevel = m_pModel->index(0,0);
+
+	do
+	{
+		QString field  = indexLevel.sibling(indexLevel.row(),1).data().toString();
+		if (field.compare("Name")==0)
+		{
+			m_pModel->setData(indexLevel.sibling(indexLevel.row(),2), m_pWPolar->polarName());
+		}
+
+		indexLevel = indexLevel.sibling(indexLevel.row()+1,0);
+
+	} while(indexLevel.isValid());
+}
+
+
 void EditPolarDefDlg::onOK()
 {
 	readData();
+
+	if (m_pWPolar->analysisMethod()==XFLR5::VLMMETHOD)
+	{
+		m_pWPolar->bThinSurfaces()  = true;
+		m_pWPolar->analysisMethod() = XFLR5::PANELMETHOD;
+		m_pWPolar->boundaryCondition()=XFLR5::NEUMANN;
+	}
+	else if (m_pWPolar->analysisMethod()==XFLR5::PANELMETHOD && m_pPlane->isWing())
+	{
+		m_pWPolar->bThinSurfaces()  = false;
+		m_pWPolar->analysisMethod() = XFLR5::PANELMETHOD;
+	}
+	else
+	{
+		m_pWPolar->bThinSurfaces()  = true;
+		m_pWPolar->analysisMethod() = XFLR5::PANELMETHOD;
+	}
+
+//	qDebug()<<analysisMethod(m_pWPolar->analysisMethod()) <<boundaryCondition(m_pWPolar->boundaryCondition());
+
 	accept();
 }
 
@@ -249,7 +292,7 @@ void EditPolarDefDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
 	m_pPlane = pPlane;
 	m_pWPolar = pWPolar;
 
-	setWPolarName();
+	pWPolar->setAutoWPolarName(m_pPlane);
 	showWPolar();
 	m_pStruct->expandAll();
 }
@@ -260,11 +303,10 @@ void EditPolarDefDlg::showWPolar()
 	QList<QStandardItem*> dataItem;
 
 	QStandardItem *rootItem = m_pModel->invisibleRootItem();
-	dataItem = prepareRow("", "Name", m_pWPolar->polarName());
+	dataItem = prepareRow("Polar Name", "Name", m_pWPolar->polarName());
 	rootItem->appendRow(dataItem);
 
 	QList<QStandardItem*> polarTypeFolder = prepareRow("Polar Type");
-//	m_pModel->appendRow(polarTypeFolder);
 	rootItem->appendRow(polarTypeFolder);
 	{
 		dataItem = prepareRow("", "Type", polarType(m_pWPolar->polarType()));
@@ -279,13 +321,14 @@ void EditPolarDefDlg::showWPolar()
 
 		dataItem = prepareDoubleRow("", "Beta", m_pWPolar->Beta(), QString::fromUtf8("°"));
 		polarTypeFolder.first()->appendRow(dataItem);
-
 	}
 
 	QList<QStandardItem*> analysisTypeFolder = prepareRow("Analysis Type");
 	rootItem->appendRow(analysisTypeFolder);
 	{
-		dataItem = prepareRow("", "Method", analysisMethod(m_pWPolar->analysisMethod()));
+		if(m_pWPolar->analysisMethod()==XFLR5::LLTMETHOD) dataItem = prepareRow("", "Method", "LLTMETHOD");
+		else if(m_pWPolar->bThinSurfaces())               dataItem = prepareRow("", "Method", "VLMMETHOD");
+		else                                              dataItem = prepareRow("", "Method", "PANELMETHOD");
 		dataItem.at(2)->setData(XFLR5::ANALYSISMETHOD, Qt::UserRole);
 		analysisTypeFolder.first()->appendRow(dataItem);
 
@@ -293,6 +336,10 @@ void EditPolarDefDlg::showWPolar()
 		analysisTypeFolder.first()->appendRow(dataItem);
 
 		dataItem = prepareBoolRow("", "Tilted geometry", m_pWPolar->bTilted());
+		analysisTypeFolder.first()->appendRow(dataItem);
+
+		dataItem = prepareRow("", "Boundary conditions", boundaryCondition(m_pWPolar->boundaryCondition()));
+		dataItem.at(2)->setData(XFLR5::BOUNDARYCONDITION, Qt::UserRole);
 		analysisTypeFolder.first()->appendRow(dataItem);
 
 		dataItem = prepareBoolRow("", "Ignore body panels", m_pWPolar->bIgnoreBodyPanels());
@@ -380,13 +427,30 @@ void EditPolarDefDlg::fillInertiaData(QList<QStandardItem *> inertiaFolder)
 		dataItem = prepareDoubleRow("", "Ixz", m_pWPolar->CoGIxx(), QString::fromUtf8("kg.m²"));
 		inertiaTensorFolder.first()->appendRow(dataItem);
 	}
-
 }
 
 
 void EditPolarDefDlg::readData()
 {
 	readViewLevel(m_pModel->index(0,0));
+	if (m_pWPolar->analysisMethod() == XFLR5::LLTMETHOD)
+	{
+		m_pWPolar->bViscous()      = true;
+		m_pWPolar->bThinSurfaces() = true;
+		m_pWPolar->bWakeRollUp()   = false;
+		m_pWPolar->bTilted()       = false;
+	}
+	else if (m_pWPolar->analysisMethod() == XFLR5::VLMMETHOD)
+	{
+		m_pWPolar->bThinSurfaces() = true;
+//		m_pWPolar->analysisMethod() = XFLR5::PANELMETHOD;
+	}
+	else if (m_pWPolar->analysisMethod() == XFLR5::PANELMETHOD)
+	{
+		m_pWPolar->bThinSurfaces() = false;
+	}
+
+//	m_pWPolar->bThinSurfaces() = m_pWPolar->analysisMethod()==XFLR5::PANELMETHOD && m_pPlane->isWing();
 	return;
 }
 
@@ -417,6 +481,8 @@ void EditPolarDefDlg::readViewLevel(QModelIndex indexLevel)
 			else if(field.compare("Alpha")==0)                   m_pWPolar->Alpha()                = dataIndex.data().toDouble();
 			else if(field.compare("Beta")==0)                    m_pWPolar->Beta()                 = dataIndex.data().toDouble();
 			else if(field.compare("Method")==0)                  m_pWPolar->analysisMethod()       = analysisMethod(value);
+			else if(field.compare("Boundary conditions")==0)
+				m_pWPolar->boundaryCondition()    = boundaryCondition(value);
 			else if(field.compare("Viscous")==0)                 m_pWPolar->bViscous()             = stringToBool(value);
 			else if(field.compare("Tilted geometry")==0)         m_pWPolar->bTilted()              = stringToBool(value);
 			else if(field.compare("Ignore body panels")==0)      m_pWPolar->bIgnoreBodyPanels()    = stringToBool(value);
@@ -646,105 +712,6 @@ void EditPolarDefDlg::fillControlFields(QList<QStandardItem*> stabControlFolder)
 			}
 		}
 	}
-}
-
-
-
-
-void EditPolarDefDlg::setWPolarName()
-{
-
-	QString strSpeedUnit, strong;
-	QString WPolarName;
-	Units::getSpeedUnitLabel(strSpeedUnit);
-
-	if (m_pWPolar->polarType()==XFLR5::FIXEDSPEEDPOLAR)
-	{
-		WPolarName = QString("T1-%1 ").arg(m_pWPolar->m_QInfSpec * Units::mstoUnit(),0,'f',1);
-		WPolarName += strSpeedUnit;
-	}
-	else if(m_pWPolar->polarType()==XFLR5::FIXEDLIFTPOLAR)
-	{
-		WPolarName = QString("T2");
-	}
-	else if(m_pWPolar->polarType()==XFLR5::FIXEDAOAPOLAR)
-	{
-		WPolarName = QString(QString::fromUtf8("T4-%1°")).arg(m_pWPolar->m_AlphaSpec,0,'f',3);
-	}
-	else if(m_pWPolar->polarType()==XFLR5::BETAPOLAR)
-	{
-		WPolarName = QString(QString::fromUtf8("T5-a%1°-%2"))
-						  .arg(m_pWPolar->m_AlphaSpec,0,'f',1)
-						  .arg(m_pWPolar->m_QInfSpec * Units::mstoUnit(),0,'f',1);
-		WPolarName += strSpeedUnit;
-	}
-
-	if(m_pWPolar->analysisMethod()==XFLR5::LLTMETHOD)
-		WPolarName += "-LLT";
-	else if(m_pWPolar->analysisMethod()==XFLR5::VLMMETHOD)
-	{
-		if(m_pWPolar->bVLM1()) WPolarName += "-VLM1";
-		else		           WPolarName += "-VLM2";
-	}
-	else if(m_pWPolar->analysisMethod()==XFLR5::PANELMETHOD)
-	{
-		if(m_pPlane->isWing() && !m_pWPolar->bThinSurfaces()) WPolarName += "-Panel";
-		if(m_pWPolar->bThinSurfaces())
-		{
-			if(m_pWPolar->bVLM1()) WPolarName += "-VLM1";
-			else		           WPolarName += "-VLM2";
-		}
-	}
-
-	if(!m_pWPolar->bAutoInertia())
-	{
-		Units::getWeightUnitLabel(strSpeedUnit);
-		strong = QString("-%1").arg(m_pWPolar->mass()*Units::kgtoUnit(),0,'f',3);
-		if(m_pWPolar->polarType()==XFLR5::FIXEDLIFTPOLAR)   WPolarName += strong+strSpeedUnit;
-		Units::getLengthUnitLabel(strSpeedUnit);
-		strong = QString("-x%1").arg(m_pWPolar->CoG().x*Units::mtoUnit(),0,'f',3);
-		WPolarName += strong + strSpeedUnit;
-
-		if(qAbs(m_pWPolar->CoG().z)>=.000001)
-		{
-			strong = QString("-z%1").arg(m_pWPolar->CoG().z*Units::mtoUnit(),0,'f',3);
-			WPolarName += strong + strSpeedUnit;
-		}
-	}
-//	else WPolarName += "-Plane_Inertia";
-
-
-	if(qAbs(m_pWPolar->m_BetaSpec) > .001 && m_pWPolar->polarType()!=XFLR5::BETAPOLAR)
-	{
-		strong = QString(QString::fromUtf8("-b%1°")).arg(m_pWPolar->m_BetaSpec,0,'f',2);
-		WPolarName += strong;
-	}
-
-	if(m_pWPolar->bTilted())
-	{
-		WPolarName += "-TG";
-		if(m_pWPolar->bWakeRollUp()) WPolarName += "-W";
-	}
-
-	if(!m_pWPolar->bViscous())
-	{
-		WPolarName += "-Inviscid";
-	}
-
-	if(m_pWPolar->bIgnoreBodyPanels() && m_pPlane && m_pPlane->body())
-	{
-		WPolarName += "-NoBodyPanels";
-	}
-
-	if(m_pWPolar->bGround())
-	{
-		strong = QString("%1").arg(m_pWPolar->m_Height,0,'f',2),
-		WPolarName += "-G"+strong;
-	}
-	if(m_pWPolar->analysisMethod()!=XFLR5::LLTMETHOD && m_pWPolar->referenceDim()==XFLR5::PROJECTEDREFDIM) WPolarName += "-proj_area";
-
-
-	m_pWPolar->polarName() = WPolarName;
 }
 
 
