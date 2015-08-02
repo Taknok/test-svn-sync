@@ -276,7 +276,7 @@ void ThreeDWidget::mouseMoveEvent(QMouseEvent *event)
 			if(bCtrl&& geometry().contains(glPoint))
 			{
 				//rotate
-				m_ArcBall.Move(point.x(), m_rCltRect.height()-point.y());
+				m_ArcBall.move(point.x(), m_rCltRect.height()-point.y());
 				update();
 			}
 			else if(m_bTrans)
@@ -300,7 +300,7 @@ void ThreeDWidget::mouseMoveEvent(QMouseEvent *event)
 
 		else if (event->buttons() & Qt::MidButton)
 		{
-			m_ArcBall.Move(point.x(), m_rCltRect.height()-point.y());
+			m_ArcBall.move(point.x(), m_rCltRect.height()-point.y());
 			update();
 		}
 		else if(event->modifiers().testFlag(Qt::AltModifier))
@@ -933,6 +933,7 @@ void ThreeDWidget::glCreateUnitSphere()
 
 void ThreeDWidget::glRenderView()
 {
+	makeCurrent();
 	// Clear the viewport
 	glFlush();
 	glEnable(GL_DEPTH_TEST);
@@ -969,7 +970,7 @@ void ThreeDWidget::glRenderView()
 		{
 			glPushMatrix();
 			{
-				m_ArcBall.RotateCrossPoint();
+				m_ArcBall.rotateCrossPoint();
 				glRotated(m_ArcBall.angle, m_ArcBall.p.x, m_ArcBall.p.y, m_ArcBall.p.z);
 				glCallList(ARCPOINTLIST);
 			}
@@ -979,13 +980,13 @@ void ThreeDWidget::glRenderView()
 		{
 			glPushMatrix();
 			{
-				m_ArcBall.Rotate();
+				m_ArcBall.rotate();
 				glCallList(ARCBALLLIST);
 			}
 			glPopMatrix();
 		}
 
-		m_ArcBall.Rotate();
+		m_ArcBall.rotate();
 
 		glScaled(m_glScaled, m_glScaled, m_glScaled);
 		glTranslated(m_glRotCenter.x, m_glRotCenter.y, m_glRotCenter.z);
@@ -1507,7 +1508,7 @@ void ThreeDWidget::on3DIso()
 
 void ThreeDWidget::on3DTop()
 {
-	m_ArcBall.SetQuat(sqrt(2.0)/2.0, 0.0, 0.0, -sqrt(2.0)/2.0);
+	m_ArcBall.setQuat(sqrt(2.0)/2.0, 0.0, 0.0, -sqrt(2.0)/2.0);
 	reset3DRotationCenter();
 	update();
 }
@@ -1515,7 +1516,7 @@ void ThreeDWidget::on3DTop()
 
 void ThreeDWidget::on3DLeft()
 {
-	m_ArcBall.SetQuat(sqrt(2.0)/2.0, -sqrt(2.0)/2.0, 0.0, 0.0);// rotate by 90° around x
+	m_ArcBall.setQuat(sqrt(2.0)/2.0, -sqrt(2.0)/2.0, 0.0, 0.0);// rotate by 90° around x
 	reset3DRotationCenter();
 	update();
 }
@@ -1526,7 +1527,7 @@ void ThreeDWidget::on3DFront()
 	Quaternion Qt1(sqrt(2.0)/2.0, 0.0,           -sqrt(2.0)/2.0, 0.0);// rotate by 90° around y
 	Quaternion Qt2(sqrt(2.0)/2.0, -sqrt(2.0)/2.0, 0.0,           0.0);// rotate by 90° around x
 
-	m_ArcBall.SetQuat(Qt1 * Qt2);
+	m_ArcBall.setQuat(Qt1 * Qt2);
 	reset3DRotationCenter();
 	update();
 }

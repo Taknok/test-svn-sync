@@ -500,20 +500,29 @@ bool PanelAnalysis::initializeAnalysis()
 	else if(m_pWPolar->polarType()==XFLR5::FIXEDAOAPOLAR)  strange = "Type 4 - Fixed angle of attack polar";
 	else if(m_pWPolar->polarType()==XFLR5::FIXEDAOAPOLAR)  strange = "Type 5 - Sideslip variation polar";
 	else if(m_pWPolar->polarType()==XFLR5::STABILITYPOLAR) strange = "Type 7 - Stability polar";
-	traceLog(strange+"\n");
+	traceLog(strange+"\n\n");
 
-	if(m_pWPolar->analysisMethod()==XFLR5::PANELMETHOD)
+	if(m_pWPolar->bThinSurfaces())
 	{
-		if(m_pWPolar->boundaryCondition()==XFLR5::DIRICHLET) strange = "Using Dirichlet boundary conditions\n\n";
-		else                                                 strange = "Using Neumann boundary conditions\n\n";
+		strange = "Wings as thin surfaces";
 		traceLog(strange+"\n");
 
-		if(m_pWPolar->bThinSurfaces()) strange = "Wing as thin surfaces";
-		else                           strange = "Wing as thick surfaces";
+		if(m_pWPolar->bVLM1()) strange = "Using horseshoe vortices- VLM1";
+		else                   strange = "Using ring vortices - VLM2";
+		traceLog(strange+"\n");
+
+		strange = "Using Neumann boundary conditions";
 		traceLog(strange+"\n");
 	}
-
-
+	else
+	{
+		strange = "Wings as thick surfaces";
+		traceLog(strange+"\n");
+		if(m_pWPolar->boundaryCondition()==XFLR5::DIRICHLET) strange = "Using Dirichlet boundary conditions";
+		else                                                 strange = "Using Neumann boundary conditions";
+		traceLog(strange+"\n");
+	}
+	traceLog("\n");
 
 	// make sure the polar is up to date with the latest plane data
 	// should have been updated at the time when the polar was set
@@ -640,15 +649,15 @@ bool PanelAnalysis::alphaLoop()
 	buildInfluenceMatrix();
 	if (s_bCancel) return true;
 
+
+
 	createUnitRHS();
 	if (s_bCancel) return true;
-
 
 	if(!m_pWPolar->bThinSurfaces())
 	{
 		//compute wake contribution
 		createWakeContribution();
-
 
 		//add wake contribution to matrix and RHS
 		for(int p=0; p<m_MatSize; p++)
@@ -661,6 +670,7 @@ bool PanelAnalysis::alphaLoop()
 			}
 		}
 	}
+
 	if (s_bCancel) return true;
 
 
@@ -669,6 +679,7 @@ bool PanelAnalysis::alphaLoop()
 		s_bWarning = true;
 		return true;
 	}
+
 	if (s_bCancel) return true;
 
 
@@ -2102,7 +2113,6 @@ bool PanelAnalysis::solveUnitRHS()
 {
 	double taskTime = 400.0;
 	int Size = m_MatSize;
-//	if(m_b3DSymetric) Size = m_SymSize;
 
 	memcpy(m_RHS,      m_uRHS, Size * sizeof(double));
 	memcpy(m_RHS+Size, m_wRHS, Size * sizeof(double));
@@ -2115,11 +2125,9 @@ bool PanelAnalysis::solveUnitRHS()
 		return false;
 	}
 
-
 	traceLog("      Solving the LU system...\n");
 	Crout_LU_with_Pivoting_Solve(m_aij, m_uRHS, m_Index, m_RHS,      Size, &s_bCancel);
 	Crout_LU_with_Pivoting_Solve(m_aij, m_wRHS, m_Index, m_RHS+Size, Size, &s_bCancel);
-
 
 	memcpy(m_uRHS, m_RHS,           m_MatSize*sizeof(double));
 	memcpy(m_wRHS, m_RHS+m_MatSize, m_MatSize*sizeof(double));

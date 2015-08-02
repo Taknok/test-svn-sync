@@ -99,7 +99,7 @@ ArcBall::ArcBall(void)
 
 
 
-void ArcBall::GetMatrix()
+void ArcBall::getMatrix()
 {
 //	glGetDoublev(GL_PROJECTION_MATRIX,ab_glp);
 //	glGetIntegerv(GL_VIEWPORT,ab_glv);
@@ -107,7 +107,7 @@ void ArcBall::GetMatrix()
 
 
 /** find the intersection with the plane through the visible edge*/
-void ArcBall::EdgeCoords(CVector m, CVector &V)
+void ArcBall::edgeCoords(CVector m, CVector &V)
 {
 	// find the intersection of the edge plane and the ray
 	t = (ab_edge - ab_zoom) / (ab_eyedir.dot(m));
@@ -127,7 +127,7 @@ void ArcBall::EdgeCoords(CVector m, CVector &V)
 
 
 /** update current arcball rotation*/
-void ArcBall::Move(int mx, int my)
+void ArcBall::move(int mx, int my)
 {
 	if(ab_planar)
 	{
@@ -146,8 +146,8 @@ void ArcBall::Move(int mx, int my)
 		p *= sina2;
 		Quat.Set(cosa2, p.x, p.y, p.z);
 
-		QuattoMatrix(ab_next, Quat);
-		QuatNext(ab_quat,ab_last,ab_next);
+		quatToMatrix(ab_next, Quat);
+		quatNext(ab_quat,ab_last,ab_next);
 		// planar style only ever relates to the last point
 		QuatCopy(ab_last,ab_quat);
 		ab_start = ab_curr;
@@ -175,17 +175,17 @@ void ArcBall::Move(int mx, int my)
 		p *=sina2;
 		Quat.Set(cosa2, p.x, p.y, p.z);
 
-		QuattoMatrix(ab_next, Quat);
+		quatToMatrix(ab_next, Quat);
 
 		// update the rotation matrix
-		QuatNext(ab_quat,ab_last,ab_next);
+		quatNext(ab_quat,ab_last,ab_next);
 	}
 }
 
 
 
 /** reset the rotation matrix*/
-void ArcBall::QuatIdentity(float* q)
+void ArcBall::quatIdentity(float* q)
 {
 	q[0] =1; q[1] =0; q[2] =0; q[3] =0;
 	q[4] =0; q[5] =1; q[6] =0; q[7] =0;
@@ -204,7 +204,7 @@ void ArcBall::QuatCopy(float* dst, float* src)
 
 
 /** convert the quaternion into a rotation matrix*/
-void ArcBall::QuattoMatrix(float* q, Quaternion Qt)
+void ArcBall::quatToMatrix(float* q, Quaternion Qt)
 {
 	x2 = Qt.qx*Qt.qx;
 	y2 = Qt.qy*Qt.qy;
@@ -230,7 +230,7 @@ void ArcBall::QuattoMatrix(float* q, Quaternion Qt)
 }
 
 /** multiply two rotation matrices*/
-void ArcBall::QuatNext(float* dest, float* left, float* right)
+void ArcBall::quatNext(float* dest, float* left, float* right)
 {
 	dest[0] = left[0]*right[0] + left[1]*right[4] + left[2] *right[8];
 	dest[1] = left[0]*right[1] + left[1]*right[5] + left[2] *right[9];
@@ -245,21 +245,21 @@ void ArcBall::QuatNext(float* dest, float* left, float* right)
 
 
 /** reset the arcball*/
-void ArcBall::Reset()
+void ArcBall::reset()
 {
-	QuatIdentity(ab_quat);
-	QuatIdentity(ab_last);
+	quatIdentity(ab_quat);
+	quatIdentity(ab_last);
 }
 
 
 /** affect the arcball's orientation on openGL*/
-void ArcBall::Rotate()
+void ArcBall::rotate()
 {
 	glMultMatrixf(ab_quat);
 }
 
 
-void ArcBall::RotateCrossPoint()
+void ArcBall::rotateCrossPoint()
 {
 	aa.set(1.0, 0.0, 0.0);
 
@@ -273,7 +273,7 @@ void ArcBall::RotateCrossPoint()
 }
 
 
-void ArcBall::SetQuat(Quaternion Qt)
+void ArcBall::setQuat(Quaternion Qt)
 {
 	if(qAbs(Qt.a)<=1.0) angle = 2.0*acos(Qt.a) *  180.0/PI;
 	Quat.a  = Qt.a;
@@ -282,11 +282,11 @@ void ArcBall::SetQuat(Quaternion Qt)
 	Quat.qy = Qt.qy;
 	Quat.qz = Qt.qz;
 
-	QuattoMatrix(ab_quat, Quat);
+	quatToMatrix(ab_quat, Quat);
 }
 
 
-void ArcBall::SetQuat(double r, double qx, double qy, double qz)
+void ArcBall::setQuat(double r, double qx, double qy, double qz)
 {
 	if(qAbs(r)<=1.0) angle = 2.0*acos(r) *  180.0/PI;
 	Quat.a  = r;
@@ -295,7 +295,7 @@ void ArcBall::SetQuat(double r, double qx, double qy, double qz)
 	Quat.qy = qy;
 	Quat.qz = qz;
 
-	QuattoMatrix(ab_quat, Quat);
+	quatToMatrix(ab_quat, Quat);
 }
 
 

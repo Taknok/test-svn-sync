@@ -132,7 +132,7 @@ public:
 
 
 	LineStyle &lineStyle() {return m_LineStyle; }
-	bool &visible()        {return m_LineStyle.m_bIsVisible;}
+	bool &isVisible()        {return m_LineStyle.m_bIsVisible;}
 	int &points()          {return m_LineStyle.m_PointStyle;}
 	int &curveStyle()      {return m_LineStyle.m_Style;}
 	int &curveWidth()      {return m_LineStyle.m_Width;}

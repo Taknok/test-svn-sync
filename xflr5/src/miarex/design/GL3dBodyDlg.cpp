@@ -1619,7 +1619,7 @@ void GL3dBodyDlg::GLRenderBody()
 				glPushMatrix();
 				{
 					glTranslated(m_UFOOffset.x, m_UFOOffset.y,  0.0);
-					m_ArcBall.RotateCrossPoint();
+					m_ArcBall.rotateCrossPoint();
 					glRotated(m_ArcBall.angle, m_ArcBall.p.x, m_ArcBall.p.y, m_ArcBall.p.z);
 					glCallList(ARCPOINTLIST);
 				}
@@ -1630,7 +1630,7 @@ void GL3dBodyDlg::GLRenderBody()
 				glPushMatrix();
 				{
 					glTranslated(m_UFOOffset.x, m_UFOOffset.y,  0.0);
-					m_ArcBall.Rotate();
+					m_ArcBall.rotate();
 					glCallList(ARCBALLLIST);
 				}
 				glPopMatrix();
@@ -1638,7 +1638,7 @@ void GL3dBodyDlg::GLRenderBody()
 
 			glTranslated(m_UFOOffset.x, m_UFOOffset.y,  0.0);
 
-			m_ArcBall.Rotate();
+			m_ArcBall.rotate();
 
 			glScaled(m_glScaled, m_glScaled, m_glScaled);
 			glTranslated(m_glRotCenter.x, m_glRotCenter.y, m_glRotCenter.z);
@@ -1853,7 +1853,7 @@ void GL3dBodyDlg::mouseMoveEvent(QMouseEvent *event)
 		if(bCtrl&& m_BodyRect.contains(point))
 		{
 			//rotate
-			m_ArcBall.Move(point.x(), m_3dWidget.geometry().height()-point.y());
+			m_ArcBall.move(point.x(), m_3dWidget.geometry().height()-point.y());
 			updateView();
 		}
 		else if(m_bTrans)
@@ -1951,7 +1951,7 @@ void GL3dBodyDlg::mouseMoveEvent(QMouseEvent *event)
 		if(m_BodyRect.contains(point))
 		{
 			//rotate
-			m_ArcBall.Move(point.x(), m_3dWidget.geometry().height()-point.y());
+			m_ArcBall.move(point.x(), m_3dWidget.geometry().height()-point.y());
 			updateView();
 		}
 	}
@@ -2203,7 +2203,7 @@ void GL3dBodyDlg::On3DTop()
 {
 	setViewControls();
 	m_pctrlZ->setChecked(true);
-	m_ArcBall.SetQuat(sqrt(2.0)/2.0, 0.0, 0.0, -sqrt(2.0)/2.0);
+	m_ArcBall.setQuat(sqrt(2.0)/2.0, 0.0, 0.0, -sqrt(2.0)/2.0);
 	set3DRotationCenter();
 	updateView();
 }
@@ -2213,7 +2213,7 @@ void GL3dBodyDlg::On3DLeft()
 {
 	setViewControls();
 	m_pctrlY->setChecked(true);
-	m_ArcBall.SetQuat(sqrt(2.0)/2.0, -sqrt(2.0)/2.0, 0.0, 0.0);// rotate by 90 deg around x
+	m_ArcBall.setQuat(sqrt(2.0)/2.0, -sqrt(2.0)/2.0, 0.0, 0.0);// rotate by 90 deg around x
 	set3DRotationCenter();
 	updateView();
 }
@@ -2226,7 +2226,7 @@ void GL3dBodyDlg::On3DFront()
 	Quaternion Qt1(sqrt(2.0)/2.0, 0.0,           -sqrt(2.0)/2.0, 0.0);// rotate by 90 deg around y
 	Quaternion Qt2(sqrt(2.0)/2.0, -sqrt(2.0)/2.0, 0.0,           0.0);// rotate by 90 deg around x
 
-	m_ArcBall.SetQuat(Qt1 * Qt2);
+	m_ArcBall.setQuat(Qt1 * Qt2);
 	set3DRotationCenter();
 	updateView();
 }
