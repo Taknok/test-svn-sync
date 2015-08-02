@@ -2211,29 +2211,31 @@ void WPolar::setAutoWPolarName(void *ptrPlane)
 
 	nCtrl = 0;
 
-	if(!pPlane->isWing())
-	{
-		if(qAbs(m_ControlGain[0])>PRECISION)
-		{
-			strong = QString(QString::fromUtf8("-Wing(g%1)"))
-							   .arg(m_ControlGain[0],0,'f',1);
-			m_WPlrName += strong;
-		}
-		nCtrl++;
-	}
 
-	if(pPlane->stab())
-	{
-		if(qAbs(m_ControlGain[1])>PRECISION)
-		{
-			strong = QString(QString::fromUtf8("-Elev(g%1)")).arg(m_ControlGain[1],0,'f',1);
-			m_WPlrName += strong;
-		}
-		nCtrl++;
-	}
 
 	if(isStabilityPolar())
 	{
+		if(!pPlane->isWing())
+		{
+			if(m_ControlGain.size()>0 && qAbs(m_ControlGain[0])>PRECISION)
+			{
+				strong = QString(QString::fromUtf8("-Wing(g%1)"))
+								   .arg(m_ControlGain[0],0,'f',1);
+				m_WPlrName += strong;
+			}
+			nCtrl++;
+		}
+
+		if(pPlane->stab())
+		{
+			if(m_ControlGain.size()>1 && qAbs(m_ControlGain[1])>PRECISION)
+			{
+				strong = QString(QString::fromUtf8("-Elev(g%1)")).arg(m_ControlGain[1],0,'f',1);
+				m_WPlrName += strong;
+			}
+			nCtrl++;
+		}
+
 		for(i=0; i<pPlane->wing()->m_nFlaps; i++)
 		{
 			if(m_ControlGain.size()>i+nCtrl && qAbs(m_ControlGain[i+nCtrl])>PRECISION)
