@@ -30,6 +30,7 @@
 #include "./analysis/AeroDataDlg.h"
 #include "./view/GLCreateLists.h"
 #include "./view/GLCreateBodyLists.h"
+#include "./view/TargetCurveDlg.h"
 #include "../mainframe.h"
 #include "misc/Settings.h"
 #include "globals.h"
@@ -155,7 +156,6 @@ QMiarex::QMiarex(QWidget *parent)
 	m_PixText = QPixmap(107, 97);
 	m_PixText.fill(Qt::transparent);
 
-	m_pXFile      = NULL;
 	m_pCurPlane   = NULL;
 	m_pCurPOpp    = NULL;
 	m_pCurWPolar  = NULL;
@@ -186,7 +186,8 @@ QMiarex::QMiarex(QWidget *parent)
 	m_bCurPOppOnly       = true;
 	m_bCurFrameOnly      = true;
 	m_bType1 = m_bType2 = m_bType4 = m_bType7 = true;
-	m_bShowElliptic      = false;
+	m_bShowEllipticCurve = false;
+	m_bShowBellCurve   = false;
 	m_bShowWingCurve[0] = m_bShowWingCurve[1] = m_bShowWingCurve[2] = m_bShowWingCurve[3] = true;
 	m_bAutoScales        = false;
 	m_bAutoScales        = false;
@@ -417,7 +418,10 @@ QMiarex::QMiarex(QWidget *parent)
 	s_LiftScale = s_DragScale = s_VelocityScale = 0.7;
 
 	m_StabilityResponseType = 0;
-	
+
+	m_BellCurveExp = 1;
+	m_bMaxCL = true;
+
 	setupLayout();
 }
 
@@ -580,7 +584,6 @@ void QMiarex::setControls()
 	pMainFrame->StabTimeAct->setChecked(m_iView==XFLR5::STABTIMEVIEW);
 	pMainFrame->RootLocusAct->setChecked(m_iView==XFLR5::STABPOLARVIEW);
 
-	pMainFrame->showEllipticCurve->setChecked(m_bShowElliptic);
 	pMainFrame->showWing2Curve->setChecked(m_bShowWingCurve[1]);
 	pMainFrame->showStabCurve->setChecked(m_bShowWingCurve[2]);
 	pMainFrame->showFinCurve->setChecked(m_bShowWingCurve[3]);
@@ -598,7 +601,7 @@ void QMiarex::setControls()
 	pMainFrame->showCurWOppOnly->setEnabled(m_iView==XFLR5::WOPPVIEW);
 	pMainFrame->showAllWOpps->setEnabled(m_iView==XFLR5::WOPPVIEW);
 	pMainFrame->hideAllWOpps->setEnabled(m_iView==XFLR5::WOPPVIEW);
-	pMainFrame->showEllipticCurve->setEnabled(m_iView==XFLR5::WOPPVIEW);
+	pMainFrame->showTargetCurve->setEnabled(m_iView==XFLR5::WOPPVIEW);
 	pMainFrame->showXCmRefLocation->setEnabled(m_iView==XFLR5::WOPPVIEW);
 	pMainFrame->showWing2Curve->setEnabled(pWing(1) && (m_iView==XFLR5::WOPPVIEW || m_iView==XFLR5::WCPVIEW));
 	pMainFrame->showStabCurve->setEnabled( pWing(2) && (m_iView==XFLR5::WOPPVIEW || m_iView==XFLR5::WCPVIEW));
@@ -835,16 +838,31 @@ void QMiarex::createWOppCurves()
 		}
 	}
 	
-	//if the optimal elliptic curve is requested, and if the graph variable is local lift, then add the curve
-	if(m_bShowElliptic && m_pCurPOpp)
+	//if the elliptic curve is requested, and if the graph variable is local lift, then add the curve
+	if(m_bShowEllipticCurve && m_pCurPOpp)
 	{
-		double maxlift, x, y;
-		maxlift = m_pCurPOpp->m_pPlaneWOpp[0]->GetMaxLift();
+		double x, y;
+		double lift, maxlift = 0.0;
+
 		int nStart;
 		if(m_pCurPOpp->analysisMethod()==XFLR5::LLTMETHOD) nStart = 1;
 		else                                               nStart = 0;
 
-		for(int ig=0; ig<MAXGRAPHS; ig++)
+		if(m_bMaxCL) maxlift = m_pCurPOpp->m_pPlaneWOpp[0]->maxLift();
+		else
+		{
+			lift=0.0;
+			for (i=nStart; i<m_pCurPOpp->m_NStation; i++)
+			{
+				x = m_pCurPOpp->m_pPlaneWOpp[0]->m_SpanPos[i]/m_pCurPlane->span()*2.0;
+				y = sqrt(1.0 - x*x);
+				lift += y*m_pCurPOpp->m_pPlaneWOpp[0]->m_StripArea[i] ;
+			}
+			maxlift = m_pCurPOpp->m_CL / lift * m_pCurPlane->planformArea();
+		}
+
+
+/*		for(int ig=0; ig<MAXGRAPHS; ig++)
 		{
 			if(m_WingGraph[ig]->yVariable()==3)
 			{
@@ -854,7 +872,76 @@ void QMiarex::createWOppCurves()
 				for (i=nStart; i<m_pCurPOpp->m_NStation; i++)
 				{
 					x = m_pCurPOpp->m_pPlaneWOpp[0]->m_SpanPos[i];
-					y = maxlift*sqrt(1.0-x*x/m_pCurPOpp->m_pPlaneWOpp[0]->m_Span/m_pCurPOpp->m_pPlaneWOpp[0]->m_Span*4.0);
+					y = maxlift*sqrt(1.0 - x*x/m_pCurPlane->span()/m_pCurPlane->span()*4.0);
+					pCurve->appendPoint(x*Units::mtoUnit(),y);
+				}
+
+			}
+		}*/
+		for(int ig=0; ig<MAXGRAPHS; ig++)
+		{
+			if(m_WingGraph[ig]->yVariable()==3)
+			{
+				Curve *pCurve = m_WingGraph[ig]->addCurve();
+				pCurve->setStyle(1);
+				pCurve->setColor(QColor(150, 150, 150));
+				for (double id=-50.0; id<=50.5; id+=1.0)
+				{
+					x = m_pCurPlane->span()/2.0 * cos(id*PI/50.0);
+					y = maxlift*sqrt(1.0 - x*x/m_pCurPlane->span()/m_pCurPlane->span()*4.0);
+					pCurve->appendPoint(x*Units::mtoUnit(),y);
+				}
+			}
+		}
+	}
+	//if the target elliptic curve is requested, and if the graph variable is local lift, then add the curve
+	if(m_bShowBellCurve && m_pCurPOpp)
+	{
+		int nStart;
+		if(m_pCurPOpp->analysisMethod()==XFLR5::LLTMETHOD) nStart = 1;
+		else                                               nStart = 0;
+
+		double lift, maxlift, x, y;
+		if(m_bMaxCL) maxlift = m_pCurPOpp->m_pPlaneWOpp[0]->maxLift();
+		else
+		{
+			lift=0.0;
+			for (i=nStart; i<m_pCurPOpp->m_NStation; i++)
+			{
+				x = m_pCurPOpp->m_pPlaneWOpp[0]->m_SpanPos[i]/m_pCurPlane->span()*2.0;
+				y = pow((1+cos(x*PI))/2.0, m_BellCurveExp);
+				lift += y*m_pCurPOpp->m_pPlaneWOpp[0]->m_StripArea[i] ;
+			}
+			maxlift = m_pCurPOpp->m_CL / lift * m_pCurPlane->planformArea();
+		}
+
+/*		for(int ig=0; ig<MAXGRAPHS; ig++)
+		{
+			if(m_WingGraph[ig]->yVariable()==3)
+			{
+				Curve *pCurve = m_WingGraph[ig]->addCurve();
+				pCurve->setStyle(1);
+				pCurve->setColor(QColor(150, 150, 150));
+				for (i=nStart; i<m_pCurPOpp->m_NStation; i++)
+				{
+					x = m_pCurPOpp->m_pPlaneWOpp[0]->m_SpanPos[i];
+					y = maxlift * pow((1+cos(x/m_pCurPlane->span()*2.0*PI))/2.0, m_BellCurveExp);
+					pCurve->appendPoint(x*Units::mtoUnit(),y);
+				}
+			}
+		}*/
+
+		for(int ig=0; ig<MAXGRAPHS; ig++)
+		{
+			if(m_WingGraph[ig]->yVariable()==3)
+			{
+				Curve *pCurve = m_WingGraph[ig]->addCurve();
+				pCurve->setStyle(1);
+				pCurve->setColor(QColor(150, 150, 150));
+				for (double id=-50.0; id<=50.5; id+=1.0)
+				{
+					x = m_pCurPlane->span()/2.0 * cos(id*PI/50.0);
+					y = maxlift * pow((1+cos(x/m_pCurPlane->span()*2.0*PI))/2.0, m_BellCurveExp);
 					pCurve->appendPoint(x*Units::mtoUnit(),y);
 				}
 			}
@@ -865,7 +952,7 @@ void QMiarex::createWOppCurves()
 
 
 /**
-* Resets and fills the polar graphs curves with the data from the CWPolar objects
+* Resets and fills the polar graphs curves with the data from the WPolar objects
 * @todo manage with a boolean flag to recreate only when necessary
 */
 void QMiarex::createWPolarCurves()
@@ -2425,7 +2512,10 @@ bool QMiarex::loadSettings(QSettings *pSettings)
 		s_bAutoCpScale  = pSettings->value("bAutoCpScale").toBool();
 		m_bShowCpScale  = pSettings->value("bShowCpScale").toBool();
 		m_bCurPOppOnly  = pSettings->value("CurWOppOnly").toBool();
-		m_bShowElliptic = pSettings->value("bShowElliptic").toBool();
+		m_bShowEllipticCurve = pSettings->value("bShowElliptic").toBool();
+		m_bShowBellCurve     = pSettings->value("bShowTargetCurve").toBool();
+		m_BellCurveExp  = pSettings->value("BellCurveExp", 1).toDouble();
+		m_bMaxCL        = pSettings->value("CurveMaxCL", true ).toBool();
 		m_bLogFile      = pSettings->value("LogFile").toBool();
 		m_bDirichlet    = pSettings->value("Dirichlet").toBool();
 		m_bResetWake    = pSettings->value("ResetWake").toBool();
@@ -5812,13 +5902,22 @@ void QMiarex::onShowAllWPlrOpps()
 	updateView();
 }
 
+
+
+
 /**
- * The user has toggled the display of the elliptic curve in the lift graph in the operating point view
+ * The user has toggled the display of the target curve in the lift graph in the operating point view
  */
-void QMiarex::onShowEllipticCurve()
+void QMiarex::onShowTargetCurve()
 {
-	m_bShowElliptic = !m_bShowElliptic;
-//	CheckMenus();
+	TargetCurveDlg dlg;
+	dlg.initDialog(m_bShowEllipticCurve, m_bShowBellCurve, m_bMaxCL, m_BellCurveExp);
+	dlg.exec();
+
+	m_BellCurveExp = dlg.m_BellCurveExp;
+	m_bMaxCL = dlg.m_bMaxCL;
+	m_bShowEllipticCurve = dlg.m_bShowEllipticCurve;
+	m_bShowBellCurve = dlg.m_bShowBellCurve;
 
 	createWOppCurves();
 	updateView();
@@ -6673,7 +6772,10 @@ bool QMiarex::saveSettings(QSettings *pSettings)
 		pSettings->setValue("bAutoCpScale", s_bAutoCpScale);
 		pSettings->setValue("bShowCpScale", m_bShowCpScale);
 		pSettings->setValue("CurWOppOnly", m_bCurPOppOnly);
-		pSettings->setValue("bShowElliptic", m_bShowElliptic);
+		pSettings->setValue("bShowElliptic", m_bShowEllipticCurve);
+		pSettings->setValue("bShowTargetCurve", m_bShowBellCurve);
+		pSettings->setValue("BellCurveExp",m_BellCurveExp);
+		pSettings->setValue("CurveMaxCL",m_bMaxCL);
 		pSettings->setValue("LogFile", m_bLogFile);
 		pSettings->setValue("bVLM1", WPolarDlg::s_WPolar.bVLM1());
 		pSettings->setValue("Dirichlet", m_bDirichlet);

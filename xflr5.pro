@@ -85,6 +85,8 @@ SOURCES += \
 	src/miarex/design/EditObjectDelegate.cpp \
 	src/miarex/design/EditPlaneDlg.cpp \
 	src/miarex/design/EditBodyDlg.cpp \
+	src/miarex/design/wingseldlg.cpp \
+	src/miarex/view/TargetCurveDlg.cpp \
 	src/miarex/view/GLCreateLists.cpp \
 	src/miarex/view/GLCreateBodyLists.cpp \
 	src/miarex/view/GL3DScales.cpp \
@@ -153,8 +155,7 @@ SOURCES += \
 	src/viewwidgets/miarextilewidget.cpp \
 	src/viewwidgets/xdirecttilewidget.cpp \
 	src/viewwidgets/wingwidget.cpp \
-	src/viewwidgets/twodwidget.cpp \
-    src/miarex/design/wingseldlg.cpp
+	src/viewwidgets/twodwidget.cpp
 
 
 HEADERS += \
@@ -218,6 +219,8 @@ HEADERS += \
 	src/miarex/design/EditObjectDelegate.h \
 	src/miarex/design/EditPlaneDlg.h \
 	src/miarex/design/EditBodyDlg.h \
+	src/miarex/design/wingseldlg.h \
+	src/miarex/view/TargetCurveDlg.h \
 	src/miarex/view/GLCreateLists.h \
 	src/miarex/view/GLCreateBodyLists.h \
 	src/miarex/view/GL3DScales.h \
@@ -272,6 +275,7 @@ HEADERS += \
 	src/objects/SplineFoil.h \
 	src/objects/WingOpp.h \
 	src/objects/PointMass.h \
+	src/objects/linestyle.h \
 	src/graph/Graph.h \
 	src/graph/GraphDlg.h \
 	src/graph/Curve.h \
@@ -289,9 +293,7 @@ HEADERS += \
 	src/viewwidgets/miarextilewidget.h \
 	src/viewwidgets/xdirecttilewidget.h \
 	src/viewwidgets/wingwidget.h \
-	src/viewwidgets/twodwidget.h \
-    src/objects/linestyle.h \
-    src/miarex/design/wingseldlg.h
+	src/viewwidgets/twodwidget.h
 
 
 TRANSLATIONS = translations/xflr5v6.ts \

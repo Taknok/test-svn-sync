@@ -188,7 +188,7 @@ private slots:
 	void onShowAllWPlrOpps();
 	void onShowAllWPolars();
 	void onShowCurve();
-	void onShowEllipticCurve();
+	void onShowTargetCurve();
 	void onShowLift();
 	void onShowIDrag();
 	void onShowTransitions();
@@ -356,9 +356,10 @@ public:
 	bool m_bSequence;                  /**< true if a sequential analysis is to be performed */
 	bool m_bShowCp;                    /**< true if the active curve should be displayed in Cp view */
 	bool m_bShowCpScale;               /**< true if the Cp Scale in Miarex is to be displayed */
-	bool m_bShowElliptic;              /**< true if the elliptic loading should be displayed in the local lift graph */
+	bool m_bShowEllipticCurve;         /**< true if the elliptic loading should be displayed in the local lift graph */
+	bool m_bShowBellCurve;             /**< true if the bell distribution loading should be displayed in the local lift graph */
 	bool m_bShowWingCurve[MAXWINGS];   /**< true if various plane's wing curves shoud be displayed*/
-	bool m_bSurfVelocities;                    /**< true if the velocities should be displayed in the operating point or 3D view*/
+	bool m_bSurfVelocities;            /**< true if the velocities should be displayed in the operating point or 3D view*/
 	bool m_bStream;                    /**< defines whether the streamlines should be displayed in the operating point or 3D view*/
 	bool m_bTrans;                     /**< true if the view is being dragged */
 	bool m_bTransGraph;	               /**< true if a graph is being dragged */
@@ -367,7 +368,7 @@ public:
 	bool m_bType4;                     /**< true if polars of type 4 are to be displayed */
 	bool m_bType7;                     /**< true if polars of type 71 are to be displayed */
 	bool m_bVortices;                  /**< true if the panel vortices should be displayed */
-	bool m_bPanelNormals;                   /**< true if the panel normals should be displayed */
+	bool m_bPanelNormals;              /**< true if the panel normals should be displayed */
 	bool m_bXCmRef; 	               /**< true if the position of the reference point for the moments should be displayed in the operating point view*/
 	bool m_bXBot;                      /**< true if the transition on the bottom surface should be displayed in the operating point or in 3D view*/
 	bool m_bXCP;                       /**< true if the lift curve should be displayed in the operating point or in the 3D view*/
@@ -474,8 +475,9 @@ public:
 
 	static int s_GLList;               /**< the number of existing OpenGl list at a given time. @deprecated, for development purposes only */
 
-	QFile* m_pXFile;            /**< a pointer to the output .log file */
 
+	double m_BellCurveExp;
+	bool m_bMaxCL;
 
 	QGraph m_CpGraph;                       /**< the Cp Graph in 3D panel analysis */
 	QList<QGraph*> m_WingGraph;             /**< the array of pointer to the OpPoint graphs */

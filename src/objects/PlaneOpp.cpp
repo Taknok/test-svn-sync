@@ -648,7 +648,7 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
 
 		ar >> k; //VLMType
 
-		if (!m_pPlaneWOpp[0]->SerializeWingOppWPA(ar, bIsStoring))
+		if (!m_pPlaneWOpp[0]->serializeWingOppWPA(ar, bIsStoring))
 		{
 			return false;
 		}
@@ -658,7 +658,7 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
 		{
 			if(m_pPlaneWOpp[1])
 			{
-				if (!m_pPlaneWOpp[1]->SerializeWingOppWPA(ar, bIsStoring))
+				if (!m_pPlaneWOpp[1]->serializeWingOppWPA(ar, bIsStoring))
 				{
 					return false;
 				}
@@ -666,7 +666,7 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
 		}
 		if(m_pPlaneWOpp[2])
 		{
-			if (!m_pPlaneWOpp[2]->SerializeWingOppWPA(ar, bIsStoring))
+			if (!m_pPlaneWOpp[2]->serializeWingOppWPA(ar, bIsStoring))
 			{
 				return false;
 			}
@@ -674,7 +674,7 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
 		}
 		if(m_pPlaneWOpp[3])
 		{
-			if (!m_pPlaneWOpp[3]->SerializeWingOppWPA(ar, bIsStoring))
+			if (!m_pPlaneWOpp[3]->serializeWingOppWPA(ar, bIsStoring))
 			{
 				return false;
 			}

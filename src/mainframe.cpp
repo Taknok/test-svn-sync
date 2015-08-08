@@ -1167,11 +1167,9 @@ void MainFrame::createMiarexActions()
 	deleteAllWPlrOpps = new QAction(tr("Delete Associated OpPoints"), this);
 	deleteAllWPlrOpps->setStatusTip(tr("Delete all the operating points of the currently selected polar"));
 	connect(deleteAllWPlrOpps, SIGNAL(triggered()), pMiarex, SLOT(onDeleteAllWPlrOpps()));
-
-	showEllipticCurve = new QAction(tr("Show Elliptic Curve"), this);
-	showEllipticCurve->setStatusTip(tr("Show the theoretical optimal elliptic lift curve on all graphs for which the selected variable is the local lift"));
-	showEllipticCurve->setCheckable(true);
-	connect(showEllipticCurve, SIGNAL(triggered()), pMiarex, SLOT(onShowEllipticCurve()));
+	showTargetCurve = new QAction(tr("Show Target Curve"), this);
+	showTargetCurve->setCheckable(false);
+	connect(showTargetCurve, SIGNAL(triggered()), pMiarex, SLOT(onShowTargetCurve()));
 
 	showXCmRefLocation = new QAction(tr("Show XCG location"), this);
 	showXCmRefLocation->setStatusTip(tr("Show the position of the center of gravity defined in the analysis"));
@@ -1400,7 +1398,7 @@ void MainFrame::createMiarexMenus()
 		m_pMiarexWOppMenu->addAction(hideAllWOpps);
 		m_pMiarexWOppMenu->addAction(deleteAllWOpps);
 		m_pMiarexWOppMenu->addSeparator();
-		m_pMiarexWOppMenu->addAction(showEllipticCurve);
+		m_pMiarexWOppMenu->addAction(showTargetCurve);
 		m_pMiarexWOppMenu->addAction(showXCmRefLocation);
 		m_pMiarexWOppMenu->addAction(showWing2Curve);
 		m_pMiarexWOppMenu->addAction(showStabCurve);
@@ -1433,7 +1431,7 @@ void MainFrame::createMiarexMenus()
 		m_pWOppCtxMenu->addAction(hideAllWOpps);
 		m_pWOppCtxMenu->addAction(deleteAllWOpps);
 		m_pWOppCtxMenu->addSeparator();
-		m_pWOppCtxMenu->addAction(showEllipticCurve);
+		m_pWOppCtxMenu->addAction(showTargetCurve);
 		m_pWOppCtxMenu->addAction(showXCmRefLocation);
 		m_pWOppCtxMenu->addAction(showWing2Curve);
 		m_pWOppCtxMenu->addAction(showStabCurve);
@@ -5063,7 +5061,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 			}
 			else
 			{
-				bWOppOK = pWOpp->SerializeWingOppWPA(ar, bIsStoring);
+				bWOppOK = pWOpp->serializeWingOppWPA(ar, bIsStoring);
 				if (!bWOppOK)
 				{
 					if(pWOpp) delete pWOpp;
