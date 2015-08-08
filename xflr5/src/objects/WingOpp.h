@@ -73,11 +73,11 @@ public:
 private:
 //________________METHODS____________________________________
 
-	bool SerializeWingOppWPA(QDataStream &ar, bool bIsStoring);
+	bool serializeWingOppWPA(QDataStream &ar, bool bIsStoring);
 	bool serializeWingOppXFL(QDataStream &ar, bool bIsStoring);
 	bool exportWOpp(QTextStream &out, XFLR5::enumTextFileType FileType);
 	void GetWingOppProperties(QString &WingOppProperties);
-	double GetMaxLift();
+	double maxLift();
 	void createWOpp(void *pWingPtr, void *pWPolarPtr);
 
 private:

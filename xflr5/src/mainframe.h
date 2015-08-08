@@ -333,7 +333,7 @@ private:
 	QAction *exportCurWOpp, *showCurWOppOnly, *hideAllWOpps, *showAllWOpps, *deleteAllWOpps;
 	QAction *showAllWPlrOpps, *hideAllWPlrOpps, * deleteAllWPlrOpps;
 	QAction *defineWPolar, *defineStabPolar, *defineWPolarObjectAct, *advancedSettings;
-	QAction *showEllipticCurve, *showXCmRefLocation, *showStabCurve, *showFinCurve, *showWing2Curve;
+	QAction *showTargetCurve, *showXCmRefLocation, *showStabCurve, *showFinCurve, *showWing2Curve;
 	QAction *exporttoAVL, *scaleWingAct;
 	QAction *managePlanesAct;
 	QAction *m_pImportWPolar, *m_pPlaneInertia;
