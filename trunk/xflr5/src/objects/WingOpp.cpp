@@ -152,11 +152,11 @@ bool WingOpp::exportWOpp(QTextStream &out, XFLR5::enumTextFileType FileType)
  * Used to calibrate the display of the optimal elliptic curve in hte WingOpp graph.
  * @return the maximum local lift.
 */
-double WingOpp::GetMaxLift()
+double WingOpp::maxLift()
 {
 	int i,nStart;
 	if(m_AnalysisMethod==XFLR5::LLTMETHOD) nStart = 1;
-	else                            nStart = 0;
+	else                                   nStart = 0;
 
 	double maxlift = 0.0;
 	for (i=nStart; i<m_NStation; i++)
@@ -176,7 +176,7 @@ double WingOpp::GetMaxLift()
  * @param bIsStoring true if saving the data, false if loading
  * @return true if the operation was successful, false otherwise
  */
-bool WingOpp::SerializeWingOppWPA(QDataStream &ar, bool bIsStoring)
+bool WingOpp::serializeWingOppWPA(QDataStream &ar, bool bIsStoring)
 {
 	int ArchiveFormat;
 	int a,p,k,l,n;

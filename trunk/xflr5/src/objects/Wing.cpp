@@ -1583,7 +1583,6 @@ double Wing::ZPosition(double y)
 }
 
 
-
 /**
 * Calculates the induced lift and drag from the vortices or wake panels strength using a farfield method
 * Downwash is evaluated at a distance 100 times the span downstream (i.e. infinite)
