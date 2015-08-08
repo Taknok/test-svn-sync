@@ -52,10 +52,22 @@ void TargetCurveDlg::initDialog(bool bShowElliptic, bool bShowBell, bool bMaxCl,
 
 void TargetCurveDlg::setupLayout()
 {
-	QVBoxLayout*pFormLayout = new QVBoxLayout;
+	QVBoxLayout*pMainLayout = new QVBoxLayout;
 	{
-		m_pctrlShowEllipticCurve = new QCheckBox(tr("Show Elliptic Curve"));
-		m_pctrlShowBellCurve = new QCheckBox(tr("Show Bell Curve"));
+		QHBoxLayout *pEllLayout = new QHBoxLayout;
+		{
+			QLabel *pEllipticLabel = new QLabel(QString::fromUtf8("y=sqrt(1-(2x/b)²)"));
+			m_pctrlShowEllipticCurve = new QCheckBox(tr("Show Elliptic Curve"));
+			pEllLayout->addWidget(m_pctrlShowEllipticCurve);
+			pEllLayout->addWidget(pEllipticLabel);
+		}
+		QHBoxLayout *pBellLayout = new QHBoxLayout;
+		{
+			QLabel *pBellLabel = new QLabel(QString::fromUtf8("y=(1+cos(PI *2x/b))^p"));
+			m_pctrlShowBellCurve = new QCheckBox(tr("Show Bell Curve"));
+			pBellLayout->addWidget(m_pctrlShowBellCurve);
+			pBellLayout->addWidget(pBellLabel);
+		}
 		QHBoxLayout * pExpLayout = new QHBoxLayout;
 		{
 			QLabel *pExpLabel = new QLabel(tr("Bell Curve exponent:"));
@@ -74,16 +86,18 @@ void TargetCurveDlg::setupLayout()
 			}
 			pctrlCLBox->setLayout(pCLLayout);
 		}
-		pFormLayout->addWidget(m_pctrlShowEllipticCurve);
-		pFormLayout->addWidget(m_pctrlShowBellCurve);
-		pFormLayout->addLayout(pExpLayout);
-		pFormLayout->addWidget(pctrlCLBox);
+		pMainLayout->addLayout(pEllLayout);
+		pMainLayout->addLayout(pBellLayout);
+		pMainLayout->addLayout(pExpLayout);
+		pMainLayout->addSpacing(20);
+		pMainLayout->addWidget(pctrlCLBox);
+		pMainLayout->addSpacing(20);
 	}
 	QPushButton *pOKButton = new QPushButton(tr("Close"));
 	connect(pOKButton, SIGNAL(clicked()), this, SLOT(onOK()));
-	pFormLayout->addStretch();
-	pFormLayout->addWidget(pOKButton);
-	setLayout(pFormLayout);
+	pMainLayout->addStretch();
+	pMainLayout->addWidget(pOKButton);
+	setLayout(pMainLayout);
 }
 
 
