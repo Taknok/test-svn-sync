@@ -511,15 +511,22 @@ bool PanelAnalysis::initializeAnalysis()
 		else                   strange = "Using ring vortices - VLM2";
 		traceLog(strange+"\n");
 
-		strange = "Using Neumann boundary conditions";
+		strange = "Using Neumann boundary conditions for wings";
 		traceLog(strange+"\n");
 	}
 	else
 	{
 		strange = "Wings as thick surfaces";
 		traceLog(strange+"\n");
-		if(m_pWPolar->boundaryCondition()==XFLR5::DIRICHLET) strange = "Using Dirichlet boundary conditions";
-		else                                                 strange = "Using Neumann boundary conditions";
+		if(m_pWPolar->boundaryCondition()==XFLR5::DIRICHLET) strange = "Using Dirichlet boundary conditions for wings";
+		else                                                 strange = "Using Neumann boundary conditions for wings";
+		traceLog(strange+"\n");
+	}
+
+	if(m_pPlane->body())
+	{
+		if(m_pWPolar->bDirichlet())  strange = "Using Dirichlet boundary conditions for the body";
+		else                         strange = "Using Neumann boundary conditions for the body";
 		traceLog(strange+"\n");
 	}
 	traceLog("\n");

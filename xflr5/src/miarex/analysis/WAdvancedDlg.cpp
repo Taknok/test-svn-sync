@@ -55,11 +55,11 @@ WAdvancedDlg::WAdvancedDlg(QWidget *pParent) : QDialog(pParent)
 	m_VortexPos  = 0.25;
 
 
-	SetupLayout();
+	setupLayout();
 }
 
 
-void WAdvancedDlg::SetupLayout()
+void WAdvancedDlg::setupLayout()
 {
 	QSizePolicy szPolicyMaximum;
 	szPolicyMaximum.setHorizontalPolicy(QSizePolicy::Maximum);
@@ -172,7 +172,7 @@ void WAdvancedDlg::SetupLayout()
 	{
 		QVBoxLayout *PanelBCLayout = new QVBoxLayout;
 		{
-			m_pctrlDirichlet = new QRadioButton("Dirichlet");
+			m_pctrlDirichlet = new QRadioButton("Dirichlet (Recommended)");
 			m_pCtrlNeumann = new QRadioButton("Neumann");
 			PanelBCLayout->addWidget(m_pctrlDirichlet);
 			PanelBCLayout->addWidget(m_pCtrlNeumann);
@@ -192,9 +192,9 @@ void WAdvancedDlg::SetupLayout()
 		CommandButtons->addStretch(1);
 		CommandButtons->addWidget(ResetButton);
 		CommandButtons->addStretch(1);
-		connect(OKButton, SIGNAL(clicked()),this, SLOT(OnOK()));
+		connect(OKButton, SIGNAL(clicked()),this, SLOT(onOK()));
 		connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
-		connect(ResetButton, SIGNAL(clicked()), this, SLOT(OnResetDefaults()));
+		connect(ResetButton, SIGNAL(clicked()), this, SLOT(onResetDefaults()));
 	}
 
 	QHBoxLayout *BothSides = new QHBoxLayout;
@@ -262,9 +262,9 @@ void WAdvancedDlg::keyPressEvent(QKeyEvent *event)
 
 
 
-void WAdvancedDlg::InitDialog()
+void WAdvancedDlg::initDialog()
 {
-	SetParams();
+	setParams();
 
 	QString len;
 	Units::getLengthUnitLabel(len);
@@ -279,14 +279,14 @@ void WAdvancedDlg::InitDialog()
 }
 
 
-void WAdvancedDlg::OnOK()
+void WAdvancedDlg::onOK()
 {
-	ReadParams();
+	readParams();
 	accept();
 }
 
 
-void WAdvancedDlg::OnResetDefaults()
+void WAdvancedDlg::onResetDefaults()
 {
 	m_Relax            = 20.0;
 	m_AlphaPrec        = 0.01;
@@ -302,11 +302,11 @@ void WAdvancedDlg::OnResetDefaults()
 	m_bDirichlet       = true;
 	m_bTrefftz         = true;
 	m_bKeepOutOpps     = false;
-	SetParams();
+	setParams();
 }
 
 
-void WAdvancedDlg::ReadParams()
+void WAdvancedDlg::readParams()
 {
 	m_Relax           = m_pctrlRelax->value();
 	m_AlphaPrec       = m_pctrlAlphaPrec->value();
@@ -323,7 +323,7 @@ void WAdvancedDlg::ReadParams()
 }
 
 
-void WAdvancedDlg::SetParams()
+void WAdvancedDlg::setParams()
 {
 	m_pctrlIterMax->setValue(m_Iter);
 	m_pctrlRelax->setValue(m_Relax);

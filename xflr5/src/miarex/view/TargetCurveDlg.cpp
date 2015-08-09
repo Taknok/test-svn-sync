@@ -63,7 +63,7 @@ void TargetCurveDlg::setupLayout()
 		}
 		QHBoxLayout *pBellLayout = new QHBoxLayout;
 		{
-			QLabel *pBellLabel = new QLabel(QString::fromUtf8("y=(1+cos(PI *2x/b))^p"));
+			QLabel *pBellLabel = new QLabel(QString::fromUtf8("y=((cos(2x/b * PI/2))^p"));
 			m_pctrlShowBellCurve = new QCheckBox(tr("Show Bell Curve"));
 			pBellLayout->addWidget(m_pctrlShowBellCurve);
 			pBellLayout->addWidget(pBellLabel);

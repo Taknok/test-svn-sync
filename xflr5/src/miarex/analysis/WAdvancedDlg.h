@@ -40,17 +40,17 @@ class WAdvancedDlg : public QDialog
 
 public:
 	WAdvancedDlg(QWidget *pParent);
-	void InitDialog();
+	void initDialog();
 
 private slots:
-	void OnOK();
-	void OnResetDefaults();
+	void onOK();
+	void onResetDefaults();
 
 private:
 	void keyPressEvent(QKeyEvent *event);
-	void ReadParams();
-	void SetParams();
-	void SetupLayout();
+	void readParams();
+	void setParams();
+	void setupLayout();
 
 	QLabel *m_pctrlLength, *m_pctrlLength2;
 	QPushButton *OKButton, *CancelButton;

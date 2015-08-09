@@ -56,11 +56,12 @@ public:
 	void contextMenuEvent(QContextMenuEvent *event);
 
 
-	bool IntersectObject(CVector AA,  CVector U, CVector &I);
-	void Connect();
-	void GLDraw3D();
-	void GLRenderView();
-	void GLCreateBodyFrameHighlight(Body *pBody, CVector bodyPos, int iFrame);
+	bool intersectObject(CVector AA,  CVector U, CVector &I);
+	void connectSignals();
+	void glDraw3D();
+	void glRenderView();
+	void glCreateBodyFrameHighlight(Body *pBody, CVector bodyPos, int iFrame);
+	void identifySelection(const QModelIndex &indexSel);
 	void initDialog(Body *pBody);
 	void setupLayout();
 	void fillBodyTreeView();
@@ -69,7 +70,7 @@ public:
 	void readVectorTree(CVector &V, QModelIndex indexLevel);
 	void readPointMassTree(PointMass *ppm, QModelIndex indexLevel);
 	void readBodyFrameTree(Frame *pFrame, QModelIndex indexLevel);
-	void identifySelection(const QModelIndex &indexSel);
+	void resizeTreeView();
 	void setActiveFrame(int iFrame);
 	void updateViews();
 
@@ -88,6 +89,7 @@ private slots:
 	void onRedraw();
 	void onRefillBodyTree();
 	void onItemClicked(const QModelIndex &index);
+	void onResize();
 
 
 	void onInsertBefore();
