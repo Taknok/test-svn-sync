@@ -909,27 +909,11 @@ void QMiarex::createWOppCurves()
 			for (i=nStart; i<m_pCurPOpp->m_NStation; i++)
 			{
 				x = m_pCurPOpp->m_pPlaneWOpp[0]->m_SpanPos[i]/m_pCurPlane->span()*2.0;
-				y = pow((1+cos(x*PI))/2.0, m_BellCurveExp);
+				y = pow(cos(x*PI/2.0), m_BellCurveExp);
 				lift += y*m_pCurPOpp->m_pPlaneWOpp[0]->m_StripArea[i] ;
 			}
 			maxlift = m_pCurPOpp->m_CL / lift * m_pCurPlane->planformArea();
 		}
-
-/*		for(int ig=0; ig<MAXGRAPHS; ig++)
-		{
-			if(m_WingGraph[ig]->yVariable()==3)
-			{
-				Curve *pCurve = m_WingGraph[ig]->addCurve();
-				pCurve->setStyle(1);
-				pCurve->setColor(QColor(150, 150, 150));
-				for (i=nStart; i<m_pCurPOpp->m_NStation; i++)
-				{
-					x = m_pCurPOpp->m_pPlaneWOpp[0]->m_SpanPos[i];
-					y = maxlift * pow((1+cos(x/m_pCurPlane->span()*2.0*PI))/2.0, m_BellCurveExp);
-					pCurve->appendPoint(x*Units::mtoUnit(),y);
-				}
-			}
-		}*/
 
 		for(int ig=0; ig<MAXGRAPHS; ig++)
 		{
@@ -941,7 +925,7 @@ void QMiarex::createWOppCurves()
 				for (double id=-50.0; id<=50.5; id+=1.0)
 				{
 					x = m_pCurPlane->span()/2.0 * cos(id*PI/50.0);
-					y = maxlift * pow((1+cos(x/m_pCurPlane->span()*2.0*PI))/2.0, m_BellCurveExp);
+					y = maxlift * pow(cos(x/m_pCurPlane->span()*2.0*PI/2.0), m_BellCurveExp);
 					pCurve->appendPoint(x*Units::mtoUnit(),y);
 				}
 			}
@@ -2387,7 +2371,7 @@ void QMiarex::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_F6:
 		{
 			if (event->modifiers().testFlag(Qt::ShiftModifier))         onDefineStabPolar();
-			else if (event->modifiers().testFlag(Qt::ControlModifier))  onEditCurWPolar();
+			else if (event->modifiers().testFlag(Qt::ControlModifier))  onDefineWPolarObject();
 			else                                                        onDefineWPolar();
 			break;
 		}
@@ -3108,11 +3092,13 @@ void QMiarex::onAnimateWOppSingle()
 
 			if (m_iView==XFLR5::WOPPVIEW)
 			{
+				m_bResetTextLegend = true;
 				createWOppCurves();
 				updateView();
 			}
 			else if (m_iView==XFLR5::W3DVIEW)
 			{
+				m_bResetTextLegend = true;
 				m_bResetglOpp      = true;
 				m_bResetglDownwash = true;
 				m_bResetglLift     = true;
@@ -3120,11 +3106,6 @@ void QMiarex::onAnimateWOppSingle()
 				m_bResetglWake     = true;
 				m_bResetglLegend   = true;
 
-				updateView();
-			}
-			else if(m_iView==XFLR5::WCPVIEW)
-			{
-				createCpCurves();
 				updateView();
 			}
 
@@ -3216,7 +3197,7 @@ void QMiarex::onAdvancedSettings()
 	waDlg.m_bLogFile        = m_bLogFile;
 	waDlg.m_WakeInterNodes  = m_WakeInterNodes;
 
-	waDlg.InitDialog();
+	waDlg.initDialog();
 	if(waDlg.exec() == QDialog::Accepted)
 	{
 		Objects3D::s_MaxWakeIter     = waDlg.m_MaxWakeIter;
@@ -3546,8 +3527,8 @@ void QMiarex::onDefineWPolarObject()
 			if(m_pCurPlane && m_pCurPlane->BiPlane()) pNewWPolar->referenceArea() += m_pCurPlane->wing2()->m_ProjectedArea;
 		}
 
-		if(m_bDirichlet) pNewWPolar->boundaryCondition() = XFLR5::DIRICHLET;
-		else             pNewWPolar->boundaryCondition() = XFLR5::NEUMANN;
+//		if(m_bDirichlet) pNewWPolar->boundaryCondition() = XFLR5::DIRICHLET;
+//		else             pNewWPolar->boundaryCondition() = XFLR5::NEUMANN;
 		pNewWPolar->curveColor() = MainFrame::getColor(4);
 		pNewWPolar->isVisible() = true;
 
@@ -7348,7 +7329,7 @@ void QMiarex::setupLayout()
 			m_pctrlVDrag          = new QCheckBox(tr("Visc. Drag"));
 			m_pctrlTrans          = new QCheckBox(tr("Trans."));
 			m_pctrlMoment         = new QCheckBox(tr("Moment"));
-			m_pctrlDownwash       = new QCheckBox(tr("Downw."));
+			m_pctrlDownwash       = new QCheckBox(tr("Downwash"));
 			m_pctrlCp             = new QCheckBox(tr("Cp"));
 			m_pctrlSurfVel        = new QCheckBox(tr("Surf. Vel."));
 			m_pctrlStream         = new QCheckBox(tr("Stream"));
@@ -7919,13 +7900,10 @@ void QMiarex::stopAnimate()
 
 	pStabView->m_pctrlAnimate->setChecked(false);
 
-	if(!m_bAnimateWOpp) return;
-//	if(m_iView!=WSTABVIEW)
+	if(m_pCurPlane)
 	{
-		if(m_pCurPlane)
-		{
-			setPlaneOpp(true);
-		}
+		setPlaneOpp(true);
+		pMainFrame->selectOpPoint(m_pCurPOpp);
 	}
 }
 

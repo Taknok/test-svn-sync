@@ -326,6 +326,11 @@ void EditPolarDefDlg::showWPolar()
 		dataItem.at(2)->setData(XFLR5::ANALYSISMETHOD, Qt::UserRole);
 		analysisTypeFolder.first()->appendRow(dataItem);
 
+		if(m_pWPolar->bDirichlet())  dataItem = prepareRow("", "Boundary condition", "DIRICHLET");
+		else                         dataItem = prepareRow("", "Boundary condition", "NEUMANN");
+		dataItem.at(2)->setData(XFLR5::BOUNDARYCONDITION, Qt::UserRole);
+		analysisTypeFolder.first()->appendRow(dataItem);
+
 		dataItem = prepareBoolRow("", "Viscous", m_pWPolar->bViscous());
 		analysisTypeFolder.first()->appendRow(dataItem);
 
@@ -471,6 +476,7 @@ void EditPolarDefDlg::readViewLevel(QModelIndex indexLevel)
 			else if(field.compare("Alpha")==0)                   m_pWPolar->Alpha()                = dataIndex.data().toDouble();
 			else if(field.compare("Beta")==0)                    m_pWPolar->Beta()                 = dataIndex.data().toDouble();
 			else if(field.compare("Method")==0)                  m_pWPolar->analysisMethod()       = analysisMethod(value);
+			else if(field.compare("Boundary condition")==0)      m_pWPolar->boundaryCondition()    = boundaryCondition(value);
 			else if(field.compare("Viscous")==0)                 m_pWPolar->bViscous()             = stringToBool(value);
 			else if(field.compare("Tilted geometry")==0)         m_pWPolar->bTilted()              = stringToBool(value);
 			else if(field.compare("Ignore body panels")==0)      m_pWPolar->bIgnoreBodyPanels()    = stringToBool(value);
