@@ -3504,7 +3504,11 @@ void QMiarex::onDefineWPolarObject()
 	WPolar* pNewWPolar  = new WPolar;
 	pNewWPolar->duplicateSpec(&WPolarDlg::s_WPolar);
 	pNewWPolar->planeName() = m_pCurPlane->planeName();
-	pNewWPolar->polarName() = WPolarDlg::s_WPolar.polarName();
+//	pNewWPolar->polarName() = WPolarDlg::s_WPolar.polarName();
+	pNewWPolar->referenceArea()        = m_pCurPlane->planformArea();
+	pNewWPolar->referenceSpanLength()  = m_pCurPlane->planformSpan();
+	pNewWPolar->referenceChordLength() = m_pCurPlane->mac();
+	pNewWPolar->curveColor() = MainFrame::getColor(4);
 
 	EditPolarDefDlg vpDlg((MainFrame*)s_pMainFrame);
 	vpDlg.initDialog(m_pCurPlane, pNewWPolar);
@@ -3517,19 +3521,18 @@ void QMiarex::onDefineWPolarObject()
 		if(pNewWPolar->referenceDim()==XFLR5::PLANFORMREFDIM)
 		{
 			pNewWPolar->referenceSpanLength() = m_pCurPlane->planformSpan();
-			pNewWPolar->referenceArea() = m_pCurPlane->planformArea();
+			pNewWPolar->referenceArea()       = m_pCurPlane->planformArea();
 			if(m_pCurPlane && m_pCurPlane->BiPlane()) pNewWPolar->referenceArea() += m_pCurPlane->wing2()->m_PlanformArea;
 		}
 		else if(pNewWPolar->referenceDim()==XFLR5::PROJECTEDREFDIM)
 		{
 			pNewWPolar->referenceSpanLength() = m_pCurPlane->projectedSpan();
-			pNewWPolar->referenceArea() = m_pCurPlane->projectedArea();
+			pNewWPolar->referenceArea()       = m_pCurPlane->projectedArea();
 			if(m_pCurPlane && m_pCurPlane->BiPlane()) pNewWPolar->referenceArea() += m_pCurPlane->wing2()->m_ProjectedArea;
 		}
 
 //		if(m_bDirichlet) pNewWPolar->boundaryCondition() = XFLR5::DIRICHLET;
 //		else             pNewWPolar->boundaryCondition() = XFLR5::NEUMANN;
-		pNewWPolar->curveColor() = MainFrame::getColor(4);
 		pNewWPolar->isVisible() = true;
 
 		m_pCurWPolar = Objects3D::insertNewWPolar(pNewWPolar, m_pCurPlane);

@@ -1483,8 +1483,8 @@ void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
 
 	m_QInf      = QInf;
 
-	if(m_pWPolar->bTilted() || m_pWPolar->isBetaPolar()) Alpha     = m_OpAlpha;
-	else                                                     m_OpAlpha = Alpha;
+	if(m_pWPolar->bTilted() || m_pWPolar->isBetaPolar()) Alpha = m_OpAlpha;
+	else                                                 m_OpAlpha = Alpha;
 
 	for(int iw=0; iw<MAXWINGS; iw++)
 		if(m_pWingList[iw])m_pWingList[iw]->m_bWingOut = false;
