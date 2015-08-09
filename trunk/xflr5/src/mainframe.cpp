@@ -1195,11 +1195,11 @@ void MainFrame::createMiarexActions()
 	defineWPolar->setStatusTip(tr("Define an analysis for the current wing or plane"));
 	connect(defineWPolar, SIGNAL(triggered()), pMiarex, SLOT(onDefineWPolar()));
 
-	defineWPolarObjectAct = new QAction(tr("Define an Analysis (advanced users)"), this);
+	defineWPolarObjectAct = new QAction(tr("Define an Analysis (advanced users)")+" \t(Ctrl+F6)", this);
 	defineWPolarObjectAct->setStatusTip(tr("Shows a form to edit a new polar object"));
 	connect(defineWPolarObjectAct, SIGNAL(triggered()), pMiarex, SLOT(onDefineWPolarObject()));
 
-	editWPolarAct = new QAction(tr("Edit...")+" \t(Ctrl+F6)", this);
+	editWPolarAct = new QAction(tr("Edit..."), this);
 	editWPolarAct->setStatusTip(tr("Modify the analysis parameters of this polar"));
 	connect(editWPolarAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurWPolar()));
 
@@ -1326,6 +1326,13 @@ void MainFrame::createMiarexMenus()
 		m_pPlaneMenu->addAction(managePlanesAct);
 		m_pCurrentPlaneMenu = m_pPlaneMenu->addMenu(tr("Current Plane"));
 		{
+			QMenu *pAnalysisMenu = m_pCurrentPlaneMenu->addMenu(tr("Analysis"));
+			{
+				pAnalysisMenu->addAction(defineWPolar);
+				pAnalysisMenu->addAction(defineWPolarObjectAct);
+				pAnalysisMenu->addAction(defineStabPolar);
+			}
+			m_pCurrentPlaneMenu->addSeparator();
 			m_pCurrentPlaneMenu->addAction(editPlaneAct);
 			m_pCurrentPlaneMenu->addAction(editObjectAct);
 			m_pCurrentPlaneMenu->addAction(editWingAct);

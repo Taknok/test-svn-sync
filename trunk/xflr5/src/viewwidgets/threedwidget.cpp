@@ -549,7 +549,7 @@ void ThreeDWidget::paintGL()
 	else if(m_iView == GLEDITBODYVIEW)
 	{
 		EditBodyDlg *pDlg = (EditBodyDlg*)m_pParent;
-		pDlg->GLDraw3D();
+		pDlg->glDraw3D();
 		glRenderView();
 	}
 }
@@ -1010,7 +1010,7 @@ void ThreeDWidget::glRenderView()
 		else if(m_iView == GLEDITBODYVIEW)
 		{
 			EditBodyDlg *pDlg = (EditBodyDlg*)m_pParent;
-			pDlg->GLRenderView();
+			pDlg->glRenderView();
 		}
 
 		glDisable(GL_LIGHTING);
@@ -1337,7 +1337,7 @@ void ThreeDWidget::set3DRotationCenter(QPoint point)
 	else if(m_iView == GLEDITBODYVIEW)
 	{
 		EditBodyDlg *pDlg = (EditBodyDlg*)m_pParent;
-		if(pDlg->IntersectObject(AA, U, I))
+		if(pDlg->intersectObject(AA, U, I))
 		{
 			bIntersect = true;
 			PP.set(I);

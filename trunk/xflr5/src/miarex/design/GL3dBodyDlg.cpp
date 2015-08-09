@@ -1827,9 +1827,9 @@ void GL3dBodyDlg::doubleClickEvent(QPoint point)
 
 void GL3dBodyDlg::mouseMoveEvent(QMouseEvent *event)
 {
-	static int n;
-	static CVector Real;
-	static QPoint Delta, point;
+	int n;
+	CVector Real;
+	QPoint Delta, point;
 
 	blockSignalling(true);
 
@@ -1876,7 +1876,7 @@ void GL3dBodyDlg::mouseMoveEvent(QMouseEvent *event)
 				m_BodyOffset.y  += -(double)Delta.y()*2.0/(double)m_3dWidget.geometry().width()/m_BodyScale;
 				m_BodyScaledOffset.set((1.0-m_BodyScale)*m_BodyScalingCenter.x + m_BodyScale * m_BodyOffset.x,
 									   (1.0-m_BodyScale)*m_BodyScalingCenter.y + m_BodyScale * m_BodyOffset.y,
-									   0.0);
+										0.0);
 				updateView();
 			}
 			else if(m_FrameRect.contains(point) && m_pFrame)
@@ -1885,15 +1885,15 @@ void GL3dBodyDlg::mouseMoveEvent(QMouseEvent *event)
 				m_FrameOffset.y += -(double)Delta.y()*2.0/(double)m_3dWidget.geometry().width()/m_FrameScale;
 				m_FrameScaledOffset.set((1.0-m_FrameScale)*m_FrameScalingCenter.x + m_FrameScale * m_FrameOffset.x,
 										(1.0-m_FrameScale)*m_FrameScalingCenter.y + m_FrameScale * m_FrameOffset.y,
-										0.0);
+										 0.0);
 				updateView();
 			}
 		}
 		else if (m_BodyLineRect.contains(point) && m_pBody)
 		{
-			Real.x =  (Real.x - m_BodyScaledOffset.x)/m_BodyScale;
-			Real.y =  (Real.y - m_BodyScaledOffset.y)/m_BodyScale;
-			Real.z = 0.0;
+			Real.x = (Real.x - m_BodyScaledOffset.x)/m_BodyScale;
+			Real.z = (Real.y - m_BodyScaledOffset.y)/m_BodyScale;
+			Real.y = 0.0;
 
 			int n = m_pBody->m_iActiveFrame;
 			if (n>=0 && n<=m_pBody->frameSize() && !m_bTrans && m_bDragPoint)
@@ -1906,7 +1906,7 @@ void GL3dBodyDlg::mouseMoveEvent(QMouseEvent *event)
 				for(int ic=0; ic<m_pBody->frame(n)->PointCount(); ic++)
 				{
 					m_pBody->frame(n)->m_CtrlPoint[ic].x  = Real.x;
-					m_pBody->frame(n)->m_CtrlPoint[ic].z += Real.y-zpos;
+					m_pBody->frame(n)->m_CtrlPoint[ic].z += Real.z-zpos;
 				}
 				m_bTrans = false;
 				m_bResetglBody2D = true;
@@ -1961,7 +1961,7 @@ void GL3dBodyDlg::mouseMoveEvent(QMouseEvent *event)
 		if (m_BodyLineRect.contains(point) && m_pBody)
 		{
 			Real.x = (Real.x - m_BodyScaledOffset.x)/m_BodyScale;
-			Real.z = (Real.z - m_BodyScaledOffset.y)/m_BodyScale;
+			Real.z = (Real.y - m_BodyScaledOffset.y)/m_BodyScale;
 			Real.y = 0.0;
 			int n = m_pBody->isFramePos(Real, m_BodyScale/m_BodyRefScale);
 			m_pBody->m_iHighlight = -10;
@@ -2052,8 +2052,9 @@ void GL3dBodyDlg::mousePressEvent(QMouseEvent *event)
 		else if(m_pBody && m_BodyLineRect.contains(point))
 		{
 			Real.x =  (Real.x - m_BodyScaledOffset.x)/m_BodyScale;
-			Real.z =  (Real.z - m_BodyScaledOffset.y)/m_BodyScale;
+			Real.z =  (Real.y - m_BodyScaledOffset.y)/m_BodyScale;
 			Real.y = 0.0;
+
 			iFrame = m_pBody->isFramePos(Real, m_BodyScale/m_BodyRefScale);
 			if(iFrame >=0)
 			{
@@ -3241,9 +3242,10 @@ void GL3dBodyDlg::setBodyLineScale()
 						   (1.0 - m_BodyScale)*m_BodyScalingCenter.y + m_BodyScale * m_BodyOffset.y,
 							0.0);
 	m_BodyRefScale  = m_BodyScale;
-	m_BodyScalingCenter.x  = (m_VerticalSplit                + m_3dWidget.m_GLViewRect.left)   /2.0;
-	m_BodyScalingCenter.y  = (m_3dWidget.m_GLViewRect.top  + m_HorizontalSplit)                /2.0;
+	m_BodyScalingCenter.x  = (m_VerticalSplit              + m_3dWidget.m_GLViewRect.left)   /2.0;
+	m_BodyScalingCenter.y  = (m_3dWidget.m_GLViewRect.top  + m_HorizontalSplit)              /2.0;
 }
+
 
 
 void GL3dBodyDlg::setFrameScale()
@@ -3262,20 +3264,19 @@ void GL3dBodyDlg::setFrameScale()
 	else m_FrameScale = 1.0;
 
 	m_FrameOffset.set((m_VerticalSplit + m_3dWidget.m_GLViewRect.right)/2.0,
-				   (m_3dWidget.m_GLViewRect.top +m_3dWidget.m_GLViewRect.bottom)/2.0,
-				   0.0);
+					  (m_3dWidget.m_GLViewRect.top +m_3dWidget.m_GLViewRect.bottom)/2.0,
+					   0.0);
 
 
 	m_FrameScaledOffset.set((1.0 - m_FrameScale)*m_FrameScalingCenter.x + m_FrameScale * m_FrameOffset.x,
 							(1.0 - m_FrameScale)*m_FrameScalingCenter.y + m_FrameScale * m_FrameOffset.y,
-						0.0);
+							 0.0);
 
 	m_FrameRefScale = m_FrameScale;
-	m_FrameScalingCenter.x = (m_VerticalSplit                + m_3dWidget.m_GLViewRect.right)  /2.0;
+	m_FrameScalingCenter.x = (m_VerticalSplit              + m_3dWidget.m_GLViewRect.right)  /2.0;
 	m_FrameScalingCenter.y = (m_3dWidget.m_GLViewRect.top  + m_3dWidget.m_GLViewRect.bottom) /2.0;
-
-
 }
+
 
 void GL3dBodyDlg::setRectangles()
 {

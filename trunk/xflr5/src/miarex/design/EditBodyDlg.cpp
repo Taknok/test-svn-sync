@@ -76,12 +76,11 @@ EditBodyDlg::EditBodyDlg(QWidget *pParent) : QDialog(pParent)
  */
 void EditBodyDlg::showEvent(QShowEvent *event)
 {
-	if(m_HorizontalSplitterSizes.length()>0)
-		m_pHorizontalSplitter->restoreState(m_HorizontalSplitterSizes);
-
 	move(s_WindowPosition);
 	resize(s_WindowSize);
-
+	if(m_HorizontalSplitterSizes.length()>0)
+		m_pHorizontalSplitter->restoreState(m_HorizontalSplitterSizes);
+	resizeTreeView();
 	if(s_bWindowMaximized) setWindowState(Qt::WindowMaximized);
 
 	m_pGLWidget->update();
@@ -107,6 +106,26 @@ void EditBodyDlg::hideEvent(QHideEvent *event)
 
 void EditBodyDlg::resizeEvent(QResizeEvent *event)
 {
+	resizeTreeView();
+	if(m_pGLWidget->width()>0 && m_pGLWidget->height()>0)
+	{
+		m_PixText = m_PixText.scaled(m_pGLWidget->rect().size());
+		m_PixText.fill(Qt::transparent);
+	}
+	event->accept();
+}
+
+
+
+void EditBodyDlg::onResize()
+{
+	resizeTreeView();
+//	resize3DView();
+}
+
+
+void EditBodyDlg::resizeTreeView()
+{
 	QList<int> leftSizes;
 	leftSizes.append((int)(height()*95/100));
 	leftSizes.append((int)(height()*5/100));
@@ -124,13 +143,10 @@ void EditBodyDlg::resizeEvent(QResizeEvent *event)
 	m_pStruct->setColumnWidth(1,ColumnWidth*3);
 	m_pStruct->setColumnWidth(2,ColumnWidth*3);
 
-	if(m_pGLWidget->width()>0 && m_pGLWidget->height()>0)
-	{
-		m_PixText = m_PixText.scaled(m_pGLWidget->rect().size());
-		m_PixText.fill(Qt::transparent);
-	}
-	event->accept();
 }
+
+
+
 
 
 void EditBodyDlg::contextMenuEvent(QContextMenuEvent *event)
@@ -375,7 +391,7 @@ void EditBodyDlg::setupLayout()
 		pMainLayout->addWidget(m_pHorizontalSplitter);
 	}
 	setLayout(pMainLayout);
-	Connect();
+	connectSignals();
 //	resize(s_Size);
 }
 
@@ -472,7 +488,7 @@ void EditBodyDlg::reject()
 
 
 
-void EditBodyDlg::GLDraw3D()
+void EditBodyDlg::glDraw3D()
 {
 	m_pGLWidget->makeCurrent();
 	glClearColor(Settings::s_BackgroundColor.redF(), Settings::s_BackgroundColor.greenF(), Settings::s_BackgroundColor.blueF(),0.0);
@@ -486,7 +502,7 @@ void EditBodyDlg::GLDraw3D()
 		}
 		if(m_pBody->activeFrame())
 		{
-			GLCreateBodyFrameHighlight(m_pBody,CVector(0.0,0.0,0.0), m_pBody->m_iActiveFrame);
+			glCreateBodyFrameHighlight(m_pBody,CVector(0.0,0.0,0.0), m_pBody->m_iActiveFrame);
 			m_bResetglFrameHighlight = false;
 		}
 	}
@@ -514,7 +530,7 @@ void EditBodyDlg::GLDraw3D()
 
 
 
-void EditBodyDlg::GLRenderView()
+void EditBodyDlg::glRenderView()
 {
 	QString MassUnit;
 	Units::getWeightUnitLabel(MassUnit);
@@ -569,7 +585,7 @@ void EditBodyDlg::GLRenderView()
 }
 
 
-void EditBodyDlg::GLCreateBodyFrameHighlight(Body *pBody, CVector bodyPos, int iFrame)
+void EditBodyDlg::glCreateBodyFrameHighlight(Body *pBody, CVector bodyPos, int iFrame)
 {
 	int k;
 	CVector Point;
@@ -659,7 +675,7 @@ void EditBodyDlg::GLCreateBodyFrameHighlight(Body *pBody, CVector bodyPos, int i
 }
 
 
-void EditBodyDlg::Connect()
+void EditBodyDlg::connectSignals()
 {
 	connect(m_pBodyLineWidget, SIGNAL(objectModified()), this, SLOT(onRefillBodyTree()));
 	connect(m_pFrameWidget,    SIGNAL(objectModified()), this, SLOT(onRefillBodyTree()));
@@ -684,11 +700,13 @@ void EditBodyDlg::Connect()
 	connect(m_pctrlZ,          SIGNAL(clicked()), m_pGLWidget, SLOT(on3DTop()));
 
 	connect(m_pctrlClipPlanePos, SIGNAL(sliderMoved(int)), m_pGLWidget, SLOT(onClipPlane(int)));
+	connect(m_pHorizontalSplitter, SIGNAL(splitterMoved(int,int)), this, SLOT(onResize()));
+
 }
 
 
 
-bool EditBodyDlg::IntersectObject(CVector AA,  CVector U, CVector &I)
+bool EditBodyDlg::intersectObject(CVector AA,  CVector U, CVector &I)
 {
 	return m_pBody->intersectFlatPanels(AA, AA+U*10, I);
 }
