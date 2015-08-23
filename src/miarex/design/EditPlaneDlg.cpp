@@ -334,11 +334,11 @@ void EditPlaneDlg::setupLayout()
 						pAxisViewLayout->addWidget(m_pctrlY);
 						pAxisViewLayout->addWidget(m_pctrlZ);
 						pAxisViewLayout->addWidget(m_pctrlIso);
-						m_pctrlReset = new QPushButton(tr("Reset view"));
-						pAxisViewLayout->addWidget(m_pctrlReset);
 					}
 					QVBoxLayout *pRightColLayout = new QVBoxLayout;
 					{
+						m_pctrlReset = new QPushButton(tr("Reset view"));
+						pRightColLayout->addWidget(m_pctrlReset);
 						QHBoxLayout *pClipLayout = new QHBoxLayout;
 						{
 							QLabel *ClipLabel = new QLabel(tr("Clip:"));

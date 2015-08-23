@@ -424,7 +424,7 @@ void PlaneDlg::onImportXMLBody()
 	QString PathName;
 	PathName = QFileDialog::getOpenFileName(this, tr("Open XML File"),
 											Settings::s_LastDirName,
-											tr("Plane XML file")+"(*.xpl)");
+											tr("Plane XML file")+"(*.xml)");
 	if(!PathName.length())		return ;
 	int pos = PathName.lastIndexOf("/");
 	if(pos>0) Settings::s_LastDirName = PathName.left(pos);
@@ -452,11 +452,11 @@ void PlaneDlg::onImportXMLBody()
 
 
 	m_bChanged = true;
-	if(m_pPlane->body()) delete m_pPlane->body();
+//	if(m_pPlane->body()) delete m_pPlane->body();
 
-	Body *pXMLBody = new Body;
-	pXMLBody->duplicate(a_plane.body());
-	m_pPlane->setBody(pXMLBody);
+//	Body *pXMLBody = new Body;
+//	pXMLBody->duplicate(a_plane.body());
+	m_pPlane->body()->duplicate(a_plane.body());
 	m_pctrlBody->setChecked(true);
 }
 
