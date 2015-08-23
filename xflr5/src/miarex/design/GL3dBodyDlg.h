@@ -76,8 +76,8 @@ private slots:
 	void OnExportBodyDef();
 	void OnExportBodyGeom();
 	void OnExportBodyXML();
-	void OnImportBodyDef() ;
-	void OnImportBodyXML();
+	void onImportBodyDef() ;
+	void onImportBodyXML();
 	void OnTranslateBody();
 	void OnGrid();
 	void OnClipPlane();

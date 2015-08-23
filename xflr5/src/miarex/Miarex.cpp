@@ -8332,6 +8332,10 @@ void QMiarex::drawTextLegend()
 
 
 
+
+/**
+ * Exports the plane geometry to an XML file
+ */
 void QMiarex::onExportPlanetoXML()
 {
 	if(!m_pCurPlane)return ;// is there anything to export ?
@@ -8366,7 +8370,9 @@ void QMiarex::onExportPlanetoXML()
 }
 
 
-
+/**
+ * Imports the plane geometry from an XML file
+ */
 void QMiarex::onImportPlanefromXML()
 {
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
@@ -8374,7 +8380,7 @@ void QMiarex::onImportPlanefromXML()
 	QString PathName;
 	PathName = QFileDialog::getOpenFileName(pMainFrame, tr("Open XML File"),
 											Settings::s_LastDirName,
-											tr("Plane XML file")+"(*.xpl)");
+											tr("Plane XML file")+"(*.xml)");
 	if(!PathName.length())		return ;
 	int pos = PathName.lastIndexOf("/");
 	if(pos>0) Settings::s_LastDirName = PathName.left(pos);
@@ -8404,14 +8410,21 @@ void QMiarex::onImportPlanefromXML()
 		setPlane();
 		pMainFrame->updatePlaneListBox();
 	}
-
+	emit projectModified();
 	updateView();
 
 }
 
 
 
-/** @todo move method to plane class */
+/**
+ * Finds the intersection of a line defined by its origin and its direction with the current Plane object.
+ * @param O the point which defines the line's origin
+ * @param U the Vector which defines the line's direction
+ * @param I the point of intersection
+ * @return true if an intersection point has been found, false otherwise
+ * @todo move method to Plane class
+ */
 bool QMiarex::intersectObject(CVector O,  CVector U, CVector &I)
 {
 	if(!m_pCurPlane) return false;
@@ -8431,7 +8444,9 @@ bool QMiarex::intersectObject(CVector O,  CVector U, CVector &I)
 
 
 
-
+/**
+ * Sets the graph tiles in accordance with the requested view
+ */
 void QMiarex::setGraphTiles()
 {
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
@@ -8525,7 +8540,11 @@ void QMiarex::setGraphTiles()
 }
 
 
-
+/**
+ * Returns a pointer to the Plane's wing with the given index, or NULL if there is no active Plane object
+ * @param iw the index of the wing
+ * @return a pointer to the wing
+ */
 Wing *QMiarex::pWing(int iw)
 {
 	if(!m_pCurPlane) return NULL;
