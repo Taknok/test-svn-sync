@@ -185,10 +185,10 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
 	connect(m_pExportBodyXML, SIGNAL(triggered()), this, SLOT(OnExportBodyXML()));
 
 	m_pImportBodyDef = new QAction(tr("Import Body Definition from a text file"), this);
-	connect(m_pImportBodyDef, SIGNAL(triggered()), this, SLOT(OnImportBodyDef()));
+	connect(m_pImportBodyDef, SIGNAL(triggered()), this, SLOT(onImportBodyDef()));
 
 	m_pImportBodyXML= new QAction(tr("Import body definition from an XML file"), this);
-	connect(m_pImportBodyXML, SIGNAL(triggered()), this, SLOT(OnImportBodyXML()));
+	connect(m_pImportBodyXML, SIGNAL(triggered()), this, SLOT(onImportBodyXML()));
 
 	m_pBodyInertia = new QAction(tr("Define Inertia")+"\tF12", this);
 	connect(m_pBodyInertia, SIGNAL(triggered()), this, SLOT(OnBodyInertia()));
@@ -2425,7 +2425,7 @@ void GL3dBodyDlg::OnExportBodyGeom()
 }
 
 
-void GL3dBodyDlg::OnImportBodyDef()
+void GL3dBodyDlg::onImportBodyDef()
 {
 	Body memBody;
 	memBody.duplicate(m_pBody);
@@ -2484,15 +2484,15 @@ void GL3dBodyDlg::OnImportBodyDef()
 
 
 
-void GL3dBodyDlg::OnImportBodyXML()
+void GL3dBodyDlg::onImportBodyXML()
 {
-	Body memBody;
-	memBody.duplicate(m_pBody);
+//	Body memBody;
+//	memBody.duplicate(m_pBody);
 
 	QString PathName;
 	PathName = QFileDialog::getOpenFileName(this, tr("Open XML File"),
 											Settings::s_LastDirName,
-											tr("Plane XML file")+"(*.xpl)");
+											tr("Plane XML file")+"(*.xml)");
 	if(!PathName.length())		return ;
 	int pos = PathName.lastIndexOf("/");
 	if(pos>0) Settings::s_LastDirName = PathName.left(pos);
@@ -2515,10 +2515,11 @@ void GL3dBodyDlg::OnImportBodyXML()
 	{
 		QString errorMsg = planeReader.errorString() + QString("\nline %1 column %2").arg(planeReader.lineNumber()).arg(planeReader.columnNumber());
 		QMessageBox::warning(this, "XML read", errorMsg, QMessageBox::Ok);
-		m_pBody->duplicate(&memBody);
+//		m_pBody->duplicate(&memBody);
 		return;
 	}
 
+	m_pBody->duplicate(a_plane.body());
 	setBody();
 
 	m_bResetglBodyPoints = true;
@@ -3489,8 +3490,10 @@ void GL3dBodyDlg::setupLayout()
 			BodyMenu->addSeparator();
 			BodyMenu->addAction(m_pImportBodyDef);
 			BodyMenu->addAction(m_pExportBodyDef);
+			BodyMenu->addSeparator();
 			BodyMenu->addAction(m_pImportBodyXML);
 			BodyMenu->addAction(m_pExportBodyXML);
+			BodyMenu->addSeparator();
 			BodyMenu->addAction(m_pExportBodyGeom);
 			BodyMenu->addSeparator();
 			BodyMenu->addAction(m_pBodyInertia);

@@ -16,6 +16,10 @@
 
 
 
+xflr5 v6.12 August xxxth, 2015
+	- Corrected bugs in the import/export operation of body objects to xml files
+
+
 xflr5 v6.11 August 8th, 2015
 	- added an option to customize the target lift distribution curve in the wing's operating point view
 	- added inertia data as parameters in stability analysis
