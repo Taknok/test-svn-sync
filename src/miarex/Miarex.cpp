@@ -5359,11 +5359,15 @@ void QMiarex::onManagePlanes()
 	if(m_pCurPlane)     PlaneName = m_pCurPlane->planeName();
 
 	ManagePlanesDlg uDlg(pMainFrame);
-	uDlg.InitDialog(PlaneName);
+	uDlg.initDialog(PlaneName);
 	uDlg.exec();
 
 	if(uDlg.m_pPlane)     setPlane(uDlg.m_pPlane->planeName());
-	else                  setPlane();
+	else
+	{
+		m_pCurPlane = NULL;
+		setPlane();
+	}
 
 	if(uDlg.m_bChanged) emit projectModified();
 

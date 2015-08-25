@@ -41,23 +41,23 @@ class ManagePlanesDlg : public QDialog
 
 public:
 	ManagePlanesDlg(QWidget *pParent);
-	void InitDialog(QString &UFOName);
+	void initDialog(QString &UFOName);
 
 private slots:
-	void OnDelete();
-	void OnRename();
-	void OnUFOClicked(QModelIndex index);
-	void OnDoubleClickTable(const QModelIndex &index);
-	void OnDescriptionChanged();
+	void onDelete();
+	void onRename();
+	void onUFOClicked(QModelIndex index);
+	void onDoubleClickTable(const QModelIndex &index);
+	void onDescriptionChanged();
 
 private:
 	void resizeEvent(QResizeEvent *event);
 	void keyPressEvent(QKeyEvent *event);
 
-	void FillUFOTable();
-	void FillPlaneRow(int row);
+	void fillUFOTable();
+	void fillPlaneRow(int row);
 
-	void SetupLayout();
+	void setupLayout();
 	void SelectUFO();
 
 private:

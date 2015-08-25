@@ -40,20 +40,20 @@ ManagePlanesDlg::ManagePlanesDlg(QWidget *pParent) : QDialog(pParent)
 	m_pPlane     = NULL;
 	m_bChanged = false;
 
-	SetupLayout();
+	setupLayout();
 
-	connect(m_pctrlDelete, SIGNAL(clicked()),this, SLOT(OnDelete()));
-	connect(m_pctrlRename, SIGNAL(clicked()),this, SLOT(OnRename()));
-	connect(m_pctrlUFOTable, SIGNAL(doubleClicked(const QModelIndex &)), this, SLOT(OnDoubleClickTable(const QModelIndex &)));
-	connect(m_pctrlDescription, SIGNAL(textChanged()), this, SLOT(OnDescriptionChanged()));
+	connect(m_pctrlDelete, SIGNAL(clicked()),this, SLOT(onDelete()));
+	connect(m_pctrlRename, SIGNAL(clicked()),this, SLOT(onRename()));
+	connect(m_pctrlUFOTable, SIGNAL(doubleClicked(const QModelIndex &)), this, SLOT(onDoubleClickTable(const QModelIndex &)));
+	connect(m_pctrlDescription, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()));
 	connect(CloseButton, SIGNAL(clicked()),this, SLOT(accept()));
 }
 
 
 
-void ManagePlanesDlg::InitDialog(QString &UFOName)
+void ManagePlanesDlg::initDialog(QString &UFOName)
 {
-	FillUFOTable();
+	fillUFOTable();
 
 	QString strong;
 	QString strArea, strLength;
@@ -126,25 +126,25 @@ void ManagePlanesDlg::keyPressEvent(QKeyEvent *event)
 }
 
 
-void ManagePlanesDlg::SetupLayout()
+void ManagePlanesDlg::setupLayout()
 {
-	QVBoxLayout *CommandButtons = new QVBoxLayout;
+	QVBoxLayout *pCommandButtons = new QVBoxLayout;
 	{
 		m_pctrlDelete     = new QPushButton(tr("Delete"));
 		m_pctrlRename     = new QPushButton(tr("Rename"));
 
 		CloseButton     = new QPushButton(tr("Close"));
 
-		CommandButtons->addStretch(1);
-		CommandButtons->addWidget(m_pctrlRename);
-		CommandButtons->addWidget(m_pctrlDelete);
-		CommandButtons->addStretch(2);
-		CommandButtons->addWidget(CloseButton);
-		CommandButtons->addStretch(1);
+		pCommandButtons->addStretch(1);
+		pCommandButtons->addWidget(m_pctrlRename);
+		pCommandButtons->addWidget(m_pctrlDelete);
+		pCommandButtons->addStretch(2);
+		pCommandButtons->addWidget(CloseButton);
+		pCommandButtons->addStretch(1);
 	}
 
 
-	QVBoxLayout *LeftLayout = new QVBoxLayout;
+	QVBoxLayout *pLeftLayout = new QVBoxLayout;
 	{
 		m_pctrlUFOTable = new QTableView(this);
 		m_pctrlUFOTable->setFont(Settings::s_TableFont);
@@ -162,19 +162,19 @@ void ManagePlanesDlg::SetupLayout()
 		m_pctrlDescription = new QTextEdit;
 	//	m_pctrlDescription->setEnabled(false);
 		QLabel *Description = new QLabel(tr("Description:"));
-		LeftLayout->addWidget(m_pctrlUFOTable);
-		LeftLayout->addWidget(Description);
-		LeftLayout->addWidget(m_pctrlDescription);
-		LeftLayout->setStretchFactor(m_pctrlUFOTable, 5);
-		LeftLayout->setStretchFactor(m_pctrlDescription, 1);
+		pLeftLayout->addWidget(m_pctrlUFOTable);
+		pLeftLayout->addWidget(Description);
+		pLeftLayout->addWidget(m_pctrlDescription);
+		pLeftLayout->setStretchFactor(m_pctrlUFOTable, 5);
+		pLeftLayout->setStretchFactor(m_pctrlDescription, 1);
 	}
 
-	QHBoxLayout * MainLayout = new QHBoxLayout(this);
+	QHBoxLayout * pMainLayout = new QHBoxLayout(this);
 	{
-		MainLayout->addLayout(LeftLayout);
-		MainLayout->addLayout(CommandButtons);
+		pMainLayout->addLayout(pLeftLayout);
+		pMainLayout->addLayout(pCommandButtons);
 	}
-	setLayout(MainLayout);
+	setLayout(pMainLayout);
 
 	m_pUFOModel = new QStandardItemModel;
 	m_pUFOModel->setRowCount(10);//temporary
@@ -185,7 +185,7 @@ void ManagePlanesDlg::SetupLayout()
 
 	QItemSelectionModel *selectionModel = new QItemSelectionModel(m_pUFOModel);
 	m_pctrlUFOTable->setSelectionModel(selectionModel);
-	connect(selectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(OnUFOClicked(QModelIndex)));
+	connect(selectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(onUFOClicked(QModelIndex)));
 
 	m_pUFODelegate = new PlaneTableDelegate;
 
@@ -207,21 +207,21 @@ void ManagePlanesDlg::SetupLayout()
 }
 
 
-void ManagePlanesDlg::FillUFOTable()
+void ManagePlanesDlg::fillUFOTable()
 {
 	int i;
 	m_pUFOModel->setRowCount(Objects3D::s_oaPlane.size());
 
 	for(i=0; i<Objects3D::s_oaPlane.size(); i++)
 	{
-		FillPlaneRow(i);
+		fillPlaneRow(i);
 	}
 }
 
 
 
 
-void ManagePlanesDlg::FillPlaneRow(int row)
+void ManagePlanesDlg::fillPlaneRow(int row)
 {
 	QModelIndex ind;
 
@@ -258,16 +258,16 @@ void ManagePlanesDlg::FillPlaneRow(int row)
 }
 
 
-void ManagePlanesDlg::OnRename()
+void ManagePlanesDlg::onRename()
 {
 	if(m_pPlane)      Objects3D::renamePlane(m_pPlane->planeName());
 
-	FillUFOTable();
+	fillUFOTable();
 	m_bChanged = true;
 }
 
 
-void ManagePlanesDlg::OnDelete()
+void ManagePlanesDlg::onDelete()
 {
 	if(!m_pPlane) return;
 
@@ -286,7 +286,7 @@ void ManagePlanesDlg::OnDelete()
 	QModelIndex index = m_pctrlUFOTable->currentIndex();
 	int sel = qMax(index.row()-1,0);
 
-	FillUFOTable();
+	fillUFOTable();
 
 	if(m_pUFOModel->rowCount()>0)
 	{
@@ -309,13 +309,13 @@ void ManagePlanesDlg::OnDelete()
 }
 
 
-void ManagePlanesDlg::OnDoubleClickTable(const QModelIndex &index)
+void ManagePlanesDlg::onDoubleClickTable(const QModelIndex &index)
 {
 	if(index.row()>=0) accept();
 }
 
 
-void ManagePlanesDlg::OnDescriptionChanged()
+void ManagePlanesDlg::onDescriptionChanged()
 {
 	if(m_pPlane)
 	{
@@ -325,7 +325,7 @@ void ManagePlanesDlg::OnDescriptionChanged()
 }
 
 
-void ManagePlanesDlg::OnUFOClicked(QModelIndex index)
+void ManagePlanesDlg::onUFOClicked(QModelIndex index)
 {
 	QStandardItem *pItem = m_pUFOModel->item(index.row(),0);
 	QString UFOName;
