@@ -38,27 +38,27 @@ class GLLightDlg : public QDialog
 
 public:
     GLLightDlg(QWidget *pParent=NULL);
-	void Apply();
-	void ReadParams(void);
-	void SetDefaults(double size);
-	void SetParams(void);
-	static bool LoadSettings(QSettings *pSettings);
-	static bool SaveSettings(QSettings *pSettings);
+	void apply();
+	void readParams(void);
+	void setDefaults(double size);
+	void setParams(void);
+	static bool loadSettings(QSettings *pSettings);
+	static bool saveSettings(QSettings *pSettings);
 
 	static bool isLightOn() {return s_bLight;}
 	static void SetLightOn(bool bLight) {s_bLight = bLight;}
 
 private:
-	void SetupLayout();
+	void setupLayout();
 	void showEvent(QShowEvent *event);
-	void SetEnabled();
+	void setEnabled();
 
 
 private slots:
-	void OnSlider(int);
-	void OnChanged();
-	void OnDefaults();
-	void OnLight();
+	void onSlider(int);
+	void onChanged();
+	void onDefaults();
+	void onLight();
 
 private:
 	QSlider *m_pctrlRed;
@@ -86,9 +86,7 @@ private:
 	QPushButton *m_pctrlDefaults, *m_pctrlClose;
 
 private:
-	void *m_pGL3dBodyDlg;
-	void *m_pGL3dWingDlg;
-	void *m_p3DWidget;
+	void *m_p3dWidget;
 
 	static float s_Ambient, s_Diffuse, s_Specular;
 	static float s_MatAmbient, s_MatDiffuse, s_MatSpecular, s_MatEmission;

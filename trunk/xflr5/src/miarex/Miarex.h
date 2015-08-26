@@ -165,7 +165,7 @@ private slots:
 	void onHidePlaneWPolars();
 	void onHighlightWOpp();
 	void onInitLLTCalc();
-	void onLight();
+//	void onLight();
 	void onImportWPolar();
 	void onKeepCpSection();
 	void onManagePlanes();
