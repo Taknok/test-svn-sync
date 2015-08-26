@@ -107,7 +107,7 @@ ThreeDWidget::ThreeDWidget(QWidget *parent)
 	memset(MatIn,  0, 16*sizeof(double));
 	memset(MatOut, 0, 16*sizeof(double));
 
-	m_glLightDlg.m_p3DWidget = this;
+	m_glLightDlg.m_p3dWidget = this;
 
 	m_ArcBall.m_p3dWidget = this;
 }
@@ -1149,7 +1149,6 @@ void ThreeDWidget::glSetupLight(double Offset_y, double LightFactor)
 	else
 	{
 		glDisable(GL_COLOR_MATERIAL);
-
 	}
 	glMaterialfv(GL_FRONT, GL_SPECULAR,  fMatSpecular);
 	glMaterialfv(GL_FRONT, GL_AMBIENT,   fMatAmbient);
@@ -1157,13 +1156,15 @@ void ThreeDWidget::glSetupLight(double Offset_y, double LightFactor)
 	glMaterialfv(GL_FRONT, GL_EMISSION,  fMatEmission);
 	glMateriali( GL_FRONT, GL_SHININESS, GLLightDlg::s_iMatShininess);
 
-	if(GLLightDlg::s_bDepthTest)  glEnable(GL_DEPTH_TEST);     else glDisable(GL_DEPTH_TEST);
+
+	/** @todo check and restore */
+//	if(GLLightDlg::s_bDepthTest)  glEnable(GL_DEPTH_TEST);     else glDisable(GL_DEPTH_TEST);
 	if(GLLightDlg::s_bCullFaces)  glEnable(GL_CULL_FACE);      else glDisable(GL_CULL_FACE);
 	if(GLLightDlg::s_bSmooth)     glEnable(GL_POLYGON_SMOOTH); else glDisable(GL_POLYGON_SMOOTH);
 	if(GLLightDlg::s_bShade)      glShadeModel(GL_SMOOTH);     else glShadeModel(GL_FLAT);
 
 	if(GLLightDlg::s_bLocalView) glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER ,0);
-	else                           glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER ,1);
+	else                         glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER ,1);
 
 	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,0);
 }

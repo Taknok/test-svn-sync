@@ -2635,7 +2635,7 @@ bool QMiarex::loadSettings(QSettings *pSettings)
 
 	GL3dBodyDlg::loadSettings(pSettings);
 
-	GLLightDlg::LoadSettings(pSettings);
+	GLLightDlg::loadSettings(pSettings);
 
 	EditPlaneDlg::loadSettings(pSettings);
 	EditBodyDlg::loadSettings(pSettings);
@@ -5336,16 +5336,6 @@ void QMiarex::onKeepCpSection()
 
 
 
-/**
- * The user has toggled the switch of the light - much like in real life ?
- */
-void QMiarex::onLight()
-{
-//	GLLightDlg::s_bLight = m_pctrlLight->isChecked();
-//	m_bResetglGeom = true;
-	updateView();
-}
-
 
 
 /**
@@ -6951,7 +6941,7 @@ bool QMiarex::saveSettings(QSettings *pSettings)
 	for(int ig=0; ig<m_WingGraph.count(); ig++) m_WingGraph[ig]->saveSettings(pSettings);
 	for(int ig=0; ig<m_TimeGraph.count(); ig++) m_TimeGraph[ig]->saveSettings(pSettings);
 
-	GLLightDlg::SaveSettings(pSettings);
+	GLLightDlg::saveSettings(pSettings);
 	GL3dBodyDlg::saveSettings(pSettings);
 	EditPlaneDlg::saveSettings(pSettings);
 	EditBodyDlg::saveSettings(pSettings);
