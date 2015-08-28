@@ -19,7 +19,6 @@
 
 *****************************************************************************/
  
-
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QHeaderView>
@@ -37,14 +36,15 @@ ReListDlg::ReListDlg(QWidget *pParent) : QDialog(pParent)
 	m_pFloatDelegate = NULL;
 	m_Precision = NULL;
 
-	SetupLayout();
+	setupLayout();
 
-	connect(m_pctrlDelete, SIGNAL(clicked()),this, SLOT(OnDelete()));
-	connect(m_pctrlInsert, SIGNAL(clicked()),this, SLOT(OnInsert()));
+	connect(m_pctrlDelete, SIGNAL(clicked()),this, SLOT(onDelete()));
+	connect(m_pctrlInsert, SIGNAL(clicked()),this, SLOT(onInsert()));
 
-	connect(OKButton, SIGNAL(clicked()),this, SLOT(OnOK()));
+	connect(OKButton, SIGNAL(clicked()),this, SLOT(onOK()));
 	connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 }
+
 
 ReListDlg::~ReListDlg()
 {
@@ -52,7 +52,8 @@ ReListDlg::~ReListDlg()
 	if(m_pFloatDelegate) delete m_pFloatDelegate;
 }
 
-void ReListDlg::InitDialog(QList<double> ReList, QList<double> MachList, QList<double> NCritList)
+
+void ReListDlg::initDialog(QList<double> ReList, QList<double> MachList, QList<double> NCritList)
 {
 	m_ReList.clear();
 	m_MachList.clear();
@@ -63,7 +64,7 @@ void ReListDlg::InitDialog(QList<double> ReList, QList<double> MachList, QList<d
 	m_NCritList.append(NCritList);
 
 	m_pReModel = new QStandardItemModel(this);
-	m_pReModel->setRowCount(3);//temporary
+	m_pReModel->setRowCount(5);//temporary
 	m_pReModel->setColumnCount(3);
 
 	m_pReModel->setHeaderData(0, Qt::Horizontal, QObject::tr("Re"));
@@ -88,9 +89,10 @@ void ReListDlg::InitDialog(QList<double> ReList, QList<double> MachList, QList<d
 	m_Precision[2] = 2;//two digits for Mach and NCrit
 	m_pFloatDelegate->SetPrecision(m_Precision);
 
-	connect(m_pFloatDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(OnCellChanged(QWidget *)));
+//	connect(m_pFloatDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(onCellChanged(QWidget *)));
+	connect(m_pReModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(onCellChanged(QModelIndex ,QModelIndex)));
 
-	FillReModel();
+	fillReModel();
 }
 
 
@@ -117,28 +119,31 @@ void ReListDlg::keyPressEvent(QKeyEvent *event)
 }
 
 
-void ReListDlg::OnCellChanged(QWidget *)
+void ReListDlg::onCellChanged(QModelIndex topLeft, QModelIndex botRight)
 {
-//sort the data in case the Re Number was changed
-	SortData();
+	if(topLeft.column()==0)
+		sortData();
 }
 
-void ReListDlg::SetupLayout()
+
+
+
+void ReListDlg::setupLayout()
 {
-	QVBoxLayout *CommandButtons = new QVBoxLayout;
+	QVBoxLayout *pCommandButtons = new QVBoxLayout;
 	{
 		m_pctrlInsert	= new QPushButton(tr("Insert"));
 		m_pctrlDelete	= new QPushButton(tr("Delete"));
 
 		OKButton        = new QPushButton(tr("OK"));
 		CancelButton    = new QPushButton(tr("Cancel"));
-		CommandButtons->addStretch(1);
-		CommandButtons->addWidget(m_pctrlInsert);
-		CommandButtons->addWidget(m_pctrlDelete);
-		CommandButtons->addStretch(2);
-		CommandButtons->addWidget(OKButton);
-		CommandButtons->addWidget(CancelButton);
-		CommandButtons->addStretch(1);
+		pCommandButtons->addStretch(1);
+		pCommandButtons->addWidget(m_pctrlInsert);
+		pCommandButtons->addWidget(m_pctrlDelete);
+		pCommandButtons->addStretch(2);
+		pCommandButtons->addWidget(OKButton);
+		pCommandButtons->addWidget(CancelButton);
+		pCommandButtons->addStretch(1);
 	}
 
 	m_pctrlReTable = new QTableView(this);
@@ -147,27 +152,24 @@ void ReListDlg::SetupLayout()
 	m_pctrlReTable->setMinimumHeight(500);
 	m_pctrlReTable->setMinimumWidth(250);
 	m_pctrlReTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-	m_pctrlReTable->setEditTriggers(QAbstractItemView::CurrentChanged |
-								   QAbstractItemView::DoubleClicked |
-								   QAbstractItemView::SelectedClicked |
-								   QAbstractItemView::EditKeyPressed |
-								   QAbstractItemView::AnyKeyPressed);
+	m_pctrlReTable->setEditTriggers(QAbstractItemView::AllEditTriggers);
 	m_pctrlReTable->setWindowTitle(QObject::tr("Re List"));
 
-	QHBoxLayout * MainLayout = new QHBoxLayout(this);
+	QHBoxLayout * pMainLayout = new QHBoxLayout(this);
 	{
-		MainLayout->addWidget(m_pctrlReTable);
-		MainLayout->addLayout(CommandButtons);
+		pMainLayout->addWidget(m_pctrlReTable);
+		pMainLayout->addLayout(pCommandButtons);
 	}
-	setLayout(MainLayout);
+	setLayout(pMainLayout);
 }
 
 
-void ReListDlg::FillReModel()
+void ReListDlg::fillReModel()
 {
 	m_pReModel->setColumnCount(3);
 	m_pReModel->setRowCount(m_ReList.count());
 
+	m_pReModel->blockSignals(true);
 	for (int i=0; i<m_ReList.count(); i++)
 	{
 		QModelIndex Xindex = m_pReModel->index(i, 0, QModelIndex());
@@ -179,11 +181,12 @@ void ReListDlg::FillReModel()
 		QModelIndex Zindex =m_pReModel->index(i, 2, QModelIndex());
 		m_pReModel->setData(Zindex, m_NCritList[i]);
 	}
+	m_pReModel->blockSignals(false);
 	m_pctrlReTable->resizeRowsToContents();
 }
 
 
-void ReListDlg::OnDelete()
+void ReListDlg::onDelete()
 {
 	QModelIndex index = m_pctrlReTable->currentIndex();
 	int sel = index.row();
@@ -195,11 +198,11 @@ void ReListDlg::OnDelete()
 	m_NCritList.removeAt(sel);
 
 
-	FillReModel();
+	fillReModel();
 }
 
 
-void ReListDlg::OnInsert()
+void ReListDlg::onInsert()
 {
 	int sel = m_pctrlReTable->currentIndex().row();
 //	if(sel<0) return;
@@ -224,7 +227,7 @@ void ReListDlg::OnInsert()
 		m_NCritList[sel] = 0.0;
 	}
 
-	FillReModel();
+	fillReModel();
 
 	QModelIndex index = m_pReModel->index(sel, 0, QModelIndex());
 	m_pctrlReTable->setCurrentIndex(index);
@@ -232,7 +235,7 @@ void ReListDlg::OnInsert()
 }
 
 
-void ReListDlg::OnOK()
+void ReListDlg::onOK()
 {
 	for (int i=0; i<m_ReList.count(); i++)
 	{
@@ -251,7 +254,7 @@ void ReListDlg::OnOK()
 
 
 
-void ReListDlg::SortData()
+void ReListDlg::sortData()
 {
 	int i;
 	m_ReList.clear();
@@ -264,15 +267,62 @@ void ReListDlg::SortData()
 		m_MachList.append(m_pReModel->index(i, 1, QModelIndex()).data().toDouble());
 		m_NCritList.append(m_pReModel->index(i, 2, QModelIndex()).data().toDouble());
 	}
-
-	qSort(m_ReList);
-	qSort(m_MachList);
-	qSort(m_NCritList);
-
+	sortRe();
 
 	//and fill back the model
-	FillReModel();
+	fillReModel();
 }
+
+
+
+
+
+/**
+* Bubble sort algorithm for the arrays of Reynolds, Mach and NCrit numbers.
+* The arrays are sorted by crescending Re numbers.
+*/
+void ReListDlg::sortRe()
+{
+	int indx, indx2;
+	double Retemp, Retemp2;
+	double Matemp, Matemp2;
+	double NCtemp, NCtemp2;
+	int flipped;
+
+	if (m_ReList.size() <= 1) return;
+
+	indx = 1;
+	do
+	{
+		flipped = 0;
+		for (indx2 = m_ReList.size() - 1; indx2 >= indx; --indx2)
+		{
+			Retemp  = m_ReList[indx2];
+			Retemp2 = m_ReList[indx2 - 1];
+			Matemp  = m_MachList[indx2];
+			Matemp2 = m_MachList[indx2 - 1];
+			NCtemp  = m_NCritList[indx2];
+			NCtemp2 = m_NCritList[indx2 - 1];
+			if (Retemp2> Retemp)
+			{
+				m_ReList[indx2 - 1]    = Retemp;
+				m_ReList[indx2]        = Retemp2;
+				m_MachList[indx2 - 1]  = Matemp;
+				m_MachList[indx2]      = Matemp2;
+				m_NCritList[indx2 - 1] = NCtemp;
+				m_NCritList[indx2]     = NCtemp2;
+				flipped = 1;
+			}
+		}
+	} while ((++indx < m_ReList.size()) && flipped);
+}
+
+
+
+
+
+
+
 
 
 
