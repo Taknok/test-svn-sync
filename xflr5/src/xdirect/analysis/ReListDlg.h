@@ -41,18 +41,19 @@ public:
 	ReListDlg(QWidget *pParent=NULL);
 	~ReListDlg();
 
-	void InitDialog(QList<double> ReList, QList<double> MachList, QList<double> NCritList);
+	void initDialog(QList<double> ReList, QList<double> MachList, QList<double> NCritList);
 
 private slots:
-	void OnDelete();
-	void OnInsert();
-	void OnOK();
-	void OnCellChanged(QWidget *);
+	void onDelete();
+	void onInsert();
+	void onOK();
+	void onCellChanged(QModelIndex topLeft, QModelIndex botRight);
 
 private:
-	void FillReModel();
-	void SetupLayout();
-	void SortData();
+	void fillReModel();
+	void setupLayout();
+	void sortData();
+	void sortRe();
 	void keyPressEvent(QKeyEvent *event);
 
 private:

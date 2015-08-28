@@ -637,7 +637,7 @@ void BatchThreadDlg::OnClose()
 void BatchThreadDlg::OnEditReList()
 {
 	ReListDlg dlg(this);
-	dlg.InitDialog(QXDirect::s_ReList,QXDirect::s_MachList, QXDirect::s_NCritList);
+	dlg.initDialog(QXDirect::s_ReList,QXDirect::s_MachList, QXDirect::s_NCritList);
 
 	if(QDialog::Accepted == dlg.exec())
 	{
