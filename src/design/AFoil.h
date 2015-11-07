@@ -74,64 +74,64 @@ public:
 	QAFoil(QWidget *parent = NULL);
 	~QAFoil();
 
-	void SetupLayout();
+	void setupLayout();
 	void initDialog(void *p2DWidget, QList<void*> *poaFoil, void *pXFoil);
 
 signals:
 	void projectModified();
 
 private slots:
-	void OnAFoilLECircle();
-	void OnExportSplinesToFile();
-	void OnRenameFoil();
-	void OnFoilStyle();
-	void OnDeleteCurFoil();
-	void OnDuplicate();
-	void OnExportCurFoil();
-	void OnFoilClicked(const QModelIndex& index);
-	void OnShowAllFoils();
-	void OnHideAllFoils();
-	void OnHideCurrentFoil();
-	void OnShowCurrentFoil();
-	void OnShowLegend();
-	void OnStoreSplines();
-	void OnUndo();
-	void OnRedo();
-	void OnSplineControls();
-	void OnNewSplines();
-	void OnAFoilSetFlap();
-	void OnAFoilDerotateFoil();
-	void OnAFoilNormalizeFoil();
-	void OnAFoilCadd();
-	void OnAFoilPanels();
-	void OnAFoilFoilCoordinates();
-	void OnAFoilFoilGeom();
-	void OnAFoilSetTEGap();
-	void OnAFoilSetLERadius();
-	void OnAFoilInterpolateFoils();
-	void OnAFoilNacaFoils();
-	void OnFoilTableCtxMenu(const QPoint &);
-	void OnAFoilTableColumns();
-	void OnResetColumnWidths();
+	void onAFoilLECircle();
+	void onExportSplinesToFile();
+	void onRenameFoil();
+	void onFoilStyle();
+	void onDeleteCurFoil();
+	void onDuplicate();
+	void onExportCurFoil();
+	void onFoilClicked(const QModelIndex& index);
+	void onShowAllFoils();
+	void onHideAllFoils();
+	void onHideCurrentFoil();
+	void onShowCurrentFoil();
+	void onShowLegend();
+	void onStoreSplines();
+	void onUndo();
+	void onRedo();
+	void onSplineControls();
+	void onNewSplines();
+	void onAFoilSetFlap();
+	void onAFoilDerotateFoil();
+	void onAFoilNormalizeFoil();
+	void onAFoilCadd();
+	void onAFoilPanels();
+	void onAFoilFoilCoordinates();
+	void onAFoilFoilGeom();
+	void onAFoilSetTEGap();
+	void onAFoilSetLERadius();
+	void onAFoilInterpolateFoils();
+	void onAFoilNacaFoils();
+	void onFoilTableCtxMenu(const QPoint &);
+	void onAFoilTableColumns();
+	void onResetColumnWidths();
 
 private:
-	Foil* AddNewFoil(Foil *pFoil);
-	void SetControls();
-	void ClearStack(int pos=0);
+	Foil* addNewFoil(Foil *pFoil);
+	void setControls();
+	void clearStack(int pos=0);
 	void fillFoilTable();
-	void FillTableRow(int row);
-	void ShowFoil(Foil* pFoil, bool bShow=true);
-	void SetAFoilParams();
+	void fillTableRow(int row);
+	void showFoil(Foil* pFoil, bool bShow=true);
+	void setAFoilParams();
 	void selectFoil(Foil* pFoil = NULL);
-	void PaintSplines(QPainter &painter);
-	void PaintFoils(QPainter &painter);
-	void SetTableFont();
+	void paintSplines(QPainter &painter);
+	void paintFoils(QPainter &painter);
+	void setTableFont();
 
 	void loadSettings(QSettings *pSettings);
 	void SaveSettings(QSettings *pSettings);
 
-	void TakePicture();
-	void SetPicture();
+	void takePicture();
+	void setPicture();
 
 	void keyPressEvent(QKeyEvent *event);
 	void resizeEvent(QResizeEvent *event);
