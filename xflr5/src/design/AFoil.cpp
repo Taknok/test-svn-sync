@@ -81,8 +81,8 @@ QAFoil::QAFoil(QWidget *parent)
 	MainFrame *pMainFrame =(MainFrame*)parent;
 	pMainFrame->UndoAFoilAct = pMainFrame->RedoAFoilAct = NULL;
 
-	ClearStack();
-	TakePicture();
+	clearStack();
+	takePicture();
 
 	m_bLECircle      = false;
 	m_bStored        = false;
@@ -94,7 +94,7 @@ QAFoil::QAFoil(QWidget *parent)
 
 	m_StackPos = 0;
 
-	SetupLayout();
+	setupLayout();
 
 	SplineCtrlsDlg::s_pAFoil    = this;
 }
@@ -107,7 +107,7 @@ QAFoil::~QAFoil()
 {
 	Trace("Destroying AFoil");
 
-	ClearStack(-1);
+	clearStack(-1);
 	if(m_pSF) delete m_pSF;
 	if(m_pBufferFoil) delete m_pBufferFoil;
 	if(m_precision) delete [] m_precision;
@@ -117,7 +117,7 @@ QAFoil::~QAFoil()
 /**
  * Initializes the state of the button widgets and of the QAction objects.
  */
-void QAFoil::SetControls()
+void QAFoil::setControls()
 {
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 
@@ -221,7 +221,7 @@ void QAFoil::fillFoilTable()
 
 	for(i=0; i<m_poaFoil->size(); i++)
 	{
-		FillTableRow(i+1);
+		fillTableRow(i+1);
 	}
 }
 
@@ -230,7 +230,7 @@ void QAFoil::fillFoilTable()
  * Fills the data from a Foil object in the specified table row.
  * @param row the index of the row to be filled
  */
-void QAFoil::FillTableRow(int row)
+void QAFoil::fillTableRow(int row)
 {
 	QModelIndex ind;
 
@@ -316,36 +316,36 @@ void QAFoil::keyPressEvent(QKeyEvent *event)
 	{
 		case Qt::Key_F2:
 		{
-			OnRenameFoil();
+			onRenameFoil();
 			break;
 		}
 		case Qt::Key_F3:
 		{
 			if(Foil::curFoil())
 			{
-				if(bShift) OnAFoilCadd();
-				else       OnAFoilPanels();
+				if(bShift) onAFoilCadd();
+				else       onAFoilPanels();
 			}
 			break;
 		}
 		case Qt::Key_F4:
 		{
-			OnStoreSplines();
+			onStoreSplines();
 			break;
 		}
 		case Qt::Key_F9:
 		{
-			OnAFoilFoilGeom();
+			onAFoilFoilGeom();
 			break;
 		}
 		case Qt::Key_F10:
 		{
-			OnAFoilSetFlap();
+			onAFoilSetFlap();
 			break;
 		}
 		case Qt::Key_F11:
 		{
-			OnAFoilInterpolateFoils();
+			onAFoilInterpolateFoils();
 			break;
 		}
 
@@ -432,7 +432,7 @@ void QAFoil::loadSettings(QSettings *pSettings)
 /**
  * The user has requested that the foil be derotated.
  */
-void QAFoil::OnAFoilDerotateFoil()
+void QAFoil::onAFoilDerotateFoil()
 {
 	if(!Foil::curFoil()) return;
 
@@ -457,7 +457,7 @@ void QAFoil::OnAFoilDerotateFoil()
 	pNewFoil->m_FoilStyle = 0;
 	pNewFoil->m_FoilWidth = 1;
 
-	AddNewFoil(pNewFoil);
+	addNewFoil(pNewFoil);
 	fillFoilTable();
 	selectFoil(pNewFoil);
 
@@ -470,7 +470,7 @@ void QAFoil::OnAFoilDerotateFoil()
 /**
  * The user has requested that the Foil be normalized to unit length.
  */
-void QAFoil::OnAFoilNormalizeFoil()
+void QAFoil::onAFoilNormalizeFoil()
 {
 	if(!Foil::curFoil()) return;
 	double length = Foil::curFoil()->normalizeGeometry();
@@ -487,7 +487,7 @@ void QAFoil::OnAFoilNormalizeFoil()
 /**
  * The user has requested a local refinement of the panels of the current Foil.
  */
-void QAFoil::OnAFoilCadd()
+void QAFoil::onAFoilCadd()
 {
 	if(!Foil::curFoil()) return;
 
@@ -518,7 +518,7 @@ void QAFoil::OnAFoilCadd()
 		pNewFoil->m_FoilWidth = 1;
 		pNewFoil->m_bPoints = false;
 
-		AddNewFoil(pNewFoil);
+		addNewFoil(pNewFoil);
 		fillFoilTable();
 		selectFoil(pNewFoil);
 	}
@@ -536,7 +536,7 @@ void QAFoil::OnAFoilCadd()
 /**
  * The user has requested the display of a circle at the L.E. position.
  */
-void QAFoil::OnAFoilLECircle()
+void QAFoil::onAFoilLECircle()
 {
     LECircleDlg LECircleDlg(this);
 	LECircleDlg.m_Radius      = m_LERad;
@@ -556,7 +556,7 @@ void QAFoil::OnAFoilLECircle()
 /**
  * The user has requested the launch of the interface to refine globally the Foil.
 */
-void QAFoil::OnAFoilPanels()
+void QAFoil::onAFoilPanels()
 {
 	if(!Foil::curFoil()) return;
 
@@ -587,7 +587,7 @@ void QAFoil::OnAFoilPanels()
 		pNewFoil->m_FoilWidth = 1;
 		pNewFoil->m_bPoints = false;
 
-		AddNewFoil(pNewFoil);
+		addNewFoil(pNewFoil);
 		fillFoilTable();
 		selectFoil(pNewFoil);
 	}
@@ -606,7 +606,7 @@ void QAFoil::OnAFoilPanels()
 /**
  * The user has requested the launch of the interface to edit the Foil coordinates manually.
 */
-void QAFoil::OnAFoilFoilCoordinates()
+void QAFoil::onAFoilFoilCoordinates()
 {
 	if(!Foil::curFoil()) return;
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
@@ -637,7 +637,7 @@ void QAFoil::OnAFoilFoilCoordinates()
 		pNewFoil->m_FoilWidth = 1;
 		pNewFoil->m_iHighLight = -1;
 
-		AddNewFoil(pNewFoil);
+		addNewFoil(pNewFoil);
 		fillFoilTable();
 		selectFoil(pNewFoil);
 	}
@@ -655,7 +655,7 @@ void QAFoil::OnAFoilFoilCoordinates()
 /**
  * The user has requested to perform an edition of the current foil's thickness and camber properties.
  */
-void QAFoil::OnAFoilFoilGeom()
+void QAFoil::onAFoilFoilGeom()
 {
 	if(!Foil::curFoil()) return;
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
@@ -685,7 +685,7 @@ void QAFoil::OnAFoilFoilGeom()
 		pNewFoil->m_FoilWidth = 1;
 		pNewFoil->m_bPoints = false;
 
-		AddNewFoil(pNewFoil);
+		addNewFoil(pNewFoil);
 		fillFoilTable();
 		selectFoil(pNewFoil);
 	}
@@ -703,7 +703,7 @@ void QAFoil::OnAFoilFoilGeom()
 /**
  * The user has requested the launch of the interface to modify the gap at the Foil's trailing edge.
  */
-void QAFoil::OnAFoilSetTEGap()
+void QAFoil::onAFoilSetTEGap()
 {
 	if(!Foil::curFoil()) return;
 
@@ -734,7 +734,7 @@ void QAFoil::OnAFoilSetTEGap()
 		pNewFoil->m_FoilWidth = 1;
 		pNewFoil->m_bPoints    = false;
 
-		AddNewFoil(pNewFoil);
+		addNewFoil(pNewFoil);
 		fillFoilTable();
 		selectFoil(pNewFoil);
 	}
@@ -755,7 +755,7 @@ void QAFoil::OnAFoilSetTEGap()
 /**
  * The user has requested the launch of the interface to modify the radius of the Foil's leading edge.
  */
-void QAFoil::OnAFoilSetLERadius()
+void QAFoil::onAFoilSetLERadius()
 {
 	if(!Foil::curFoil()) return;
 
@@ -786,7 +786,7 @@ void QAFoil::OnAFoilSetLERadius()
 		pNewFoil->m_FoilWidth = 1;
 		pNewFoil->m_bPoints    = false;
 
-		AddNewFoil(pNewFoil);
+		addNewFoil(pNewFoil);
 		fillFoilTable();
 		selectFoil(pNewFoil);
 	}
@@ -806,7 +806,7 @@ void QAFoil::OnAFoilSetLERadius()
 /**
  * The user has requested the launch of the interface to create a foil from the interpolation of two existing Foil objects.
  */
-void QAFoil::OnAFoilInterpolateFoils()
+void QAFoil::onAFoilInterpolateFoils()
 {
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
 	if(m_poaFoil->size()<2)
@@ -843,7 +843,7 @@ void QAFoil::OnAFoilInterpolateFoils()
 		pNewFoil->m_bPoints = false;
         pNewFoil->m_FoilName = ifDlg.m_NewFoilName;
 
-		AddNewFoil(pNewFoil);
+		addNewFoil(pNewFoil);
 		fillFoilTable();
 		selectFoil(pNewFoil);
 
@@ -861,7 +861,7 @@ void QAFoil::OnAFoilInterpolateFoils()
 /**
  * The user has requested the launch of the interface used to create a NACA type Foil.
  */
-void QAFoil::OnAFoilNacaFoils()
+void QAFoil::onAFoilNacaFoils()
 {
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
 
@@ -897,7 +897,7 @@ void QAFoil::OnAFoilNacaFoils()
 		pNewFoil->m_bPoints    = false;
 		pNewFoil->m_FoilName   = str;
 
-		AddNewFoil(pNewFoil);
+		addNewFoil(pNewFoil);
 		fillFoilTable();
 		selectFoil(pNewFoil);
 	}
@@ -917,7 +917,7 @@ void QAFoil::OnAFoilNacaFoils()
 /**
  * The user has requested the launch of the interface to define a L.E. or T.E. flap.
  */
-void QAFoil::OnAFoilSetFlap()
+void QAFoil::onAFoilSetFlap()
 {
 	if(!Foil::curFoil()) return;
 
@@ -947,7 +947,7 @@ void QAFoil::OnAFoilSetFlap()
 		pNewFoil->m_FoilStyle = 0;
 		pNewFoil->m_FoilWidth = 1;
 
-		AddNewFoil(pNewFoil);
+		addNewFoil(pNewFoil);
 		fillFoilTable();
 		selectFoil(pNewFoil);
 	}
@@ -965,7 +965,7 @@ void QAFoil::OnAFoilSetFlap()
 /**
  * The user has requested the deletion of the current Foil.
  */
-void QAFoil::OnDeleteCurFoil()
+void QAFoil::onDeleteCurFoil()
 {
 	if(!Foil::curFoil()) return;
 
@@ -987,7 +987,7 @@ void QAFoil::OnDeleteCurFoil()
 /**
  * The user has requested the duplication of the current Foil.
  */
-void QAFoil::OnDuplicate()
+void QAFoil::onDuplicate()
 {
 	if(!Foil::curFoil()) return;
 	Foil *pNewFoil = new Foil;
@@ -995,7 +995,7 @@ void QAFoil::OnDuplicate()
 	pNewFoil->m_FoilColor = MainFrame::getColor(0);
 	pNewFoil->initFoil();
 
-	AddNewFoil(pNewFoil);
+	addNewFoil(pNewFoil);
 	fillFoilTable();
 	selectFoil(pNewFoil);
 }
@@ -1004,7 +1004,7 @@ void QAFoil::OnDuplicate()
 /**
  * The user has requested the export of the current Foil to a text file.
  */
-void QAFoil::OnExportCurFoil()
+void QAFoil::onExportCurFoil()
 {
 	if(!Foil::curFoil())	return;
 
@@ -1034,7 +1034,7 @@ void QAFoil::OnExportCurFoil()
 /**
  * The user has requested the export of the current SplineFoil to a text file.
  */
-void QAFoil::OnExportSplinesToFile()
+void QAFoil::onExportSplinesToFile()
 {
 	QString FoilName = tr("Spline Foil");
 	QString FileName, strong;
@@ -1091,7 +1091,7 @@ void QAFoil::OnExportSplinesToFile()
  * A row has been clicked in the table of Foil objects.
  * @param index a QModelIndex object clicked in the table
  */
-void QAFoil::OnFoilClicked(const QModelIndex& index)
+void QAFoil::onFoilClicked(const QModelIndex& index)
 {
 	m_pctrlFoilTable->blockSignals(true);
 	m_pFoilModel->blockSignals(true);
@@ -1143,9 +1143,9 @@ void QAFoil::OnFoilClicked(const QModelIndex& index)
 		m_p2DWidget->update();;
 	}
 
-	if(index.column()==15) OnFoilStyle();
+	if(index.column()==15) onFoilStyle();
 
-	SetControls();
+	setControls();
 
 	m_pctrlFoilTable->blockSignals(false);
 	m_pFoilModel->blockSignals(false);
@@ -1156,7 +1156,7 @@ void QAFoil::OnFoilClicked(const QModelIndex& index)
 /**
  * The user has requested an edition of the style of the active Foil.
  */
-void QAFoil::OnFoilStyle()
+void QAFoil::onFoilStyle()
 {
 	if(!Foil::curFoil())
 	{
@@ -1190,7 +1190,7 @@ void QAFoil::OnFoilStyle()
 /**
  * The user has requested that the visibility of all Foil objects be turned off.
  */
-void QAFoil::OnHideAllFoils()
+void QAFoil::onHideAllFoils()
 {
 	emit projectModified();
 	Foil*pFoil;
@@ -1208,10 +1208,10 @@ void QAFoil::OnHideAllFoils()
 /**
  * The user has requested that the visibility of the active Foil object be turned off.
  */
-void QAFoil::OnHideCurrentFoil()
+void QAFoil::onHideCurrentFoil()
 {
 	if(!Foil::curFoil()) return;
-	ShowFoil(Foil::curFoil(), false);
+	showFoil(Foil::curFoil(), false);
 	m_p2DWidget->update();;
 
 }
@@ -1220,7 +1220,7 @@ void QAFoil::OnHideCurrentFoil()
 /**
  * The user has requested to restore the default settings for the splines.
  */
-void QAFoil::OnNewSplines()
+void QAFoil::onNewSplines()
 {
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 	if(m_pSF->m_bModified)
@@ -1234,8 +1234,8 @@ void QAFoil::OnNewSplines()
 	m_pSF->InitSplineFoil();
 
 	m_StackPos  = 0;
-	ClearStack(0);
-	TakePicture();
+	clearStack(0);
+	takePicture();
 
 	emit projectModified();
 	m_p2DWidget->update();;
@@ -1245,7 +1245,7 @@ void QAFoil::OnNewSplines()
 /**
  * The user has requested to rename the Foil object
  */
-void QAFoil::OnRenameFoil()
+void QAFoil::onRenameFoil()
 {
 	if(!Foil::curFoil()) return;
 
@@ -1274,7 +1274,7 @@ void QAFoil::OnRenameFoil()
 /**
  * The user has requested that the visibility of all Foil objects be turned on.
  */
-void QAFoil::OnShowAllFoils()
+void QAFoil::onShowAllFoils()
 {
 	emit projectModified();
 	Foil*pFoil;
@@ -1291,10 +1291,10 @@ void QAFoil::OnShowAllFoils()
 /**
  * The user has requested that the visibility of the active Foil object be turned on.
  */
-void QAFoil::OnShowCurrentFoil()
+void QAFoil::onShowCurrentFoil()
 {
 	if(!Foil::curFoil()) return;
-	ShowFoil(Foil::curFoil(), true);
+	showFoil(Foil::curFoil(), true);
 	m_p2DWidget->update();;
 
 }
@@ -1303,18 +1303,18 @@ void QAFoil::OnShowCurrentFoil()
 /**
  * The user has toggled the visibility of the legend
  */
-void QAFoil::OnShowLegend()
+void QAFoil::onShowLegend()
 {
 	m_bShowLegend = !m_bShowLegend;
 	m_p2DWidget->update();;
-	SetControls();
+	setControls();
 }
 
 
 /**
  * The user has requested to convert the SplineFoil object to a Foil, and to store it in the database.
  */
-void QAFoil::OnStoreSplines()
+void QAFoil::onStoreSplines()
 {
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 
@@ -1335,7 +1335,7 @@ void QAFoil::OnStoreSplines()
 	Foil *pNewFoil = new Foil();
 	m_pSF->ExportToBuffer(pNewFoil);
 	pNewFoil->m_FoilName = m_pSF->m_strFoilName;
-	AddNewFoil(pNewFoil);
+	addNewFoil(pNewFoil);
 	fillFoilTable();
 	selectFoil(pNewFoil);
 
@@ -1348,7 +1348,7 @@ void QAFoil::OnStoreSplines()
 /**
  * The user has requested the launch of the interface to edit SplineFoil data.
  */
-void QAFoil::OnSplineControls()
+void QAFoil::onSplineControls()
 {
     SplineCtrlsDlg dlg(this);
 	dlg.m_pSF = m_pSF;
@@ -1359,7 +1359,7 @@ void QAFoil::OnSplineControls()
 
 	if(dlg.exec() == QDialog::Accepted)
 	{
-		TakePicture();
+		takePicture();
 	}
 	else m_pSF->Copy(&memSF);
 }
@@ -1414,7 +1414,7 @@ void QAFoil::SaveSettings(QSettings *pSettings)
  * The user has requested the context menu associated to the Foil table.
  * @param position the right-click positon
  */
-void QAFoil::OnFoilTableCtxMenu(const QPoint &)
+void QAFoil::onFoilTableCtxMenu(const QPoint &)
 {
 //	m_CurrentColumn = m_pctrlFoilTable->columnAt(position.x());
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
@@ -1425,7 +1425,7 @@ void QAFoil::OnFoilTableCtxMenu(const QPoint &)
 /**
  * Sets up the GUI.
  */
-void QAFoil::SetupLayout()
+void QAFoil::setupLayout()
 {
 	m_pctrlFoilTable   = new QTableView(this);
 	m_pctrlFoilTable->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -1436,7 +1436,7 @@ void QAFoil::SetupLayout()
 	m_pctrlFoilTable->horizontalHeader()->setFont(Settings::s_TableFont);
 
 //	connect(m_pctrlFoilTable, SIGNAL(pressed(const QModelIndex &)), this, SLOT(OnFoilClicked(const QModelIndex&)));
-	connect(m_pctrlFoilTable, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(OnFoilTableCtxMenu(const QPoint &)));
+	connect(m_pctrlFoilTable, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onFoilTableCtxMenu(const QPoint &)));
 
 	QHBoxLayout *MainLayout = new QHBoxLayout;
 	MainLayout->addWidget(m_pctrlFoilTable);
@@ -1544,13 +1544,13 @@ void QAFoil::selectFoil(Foil* pFoil)
  * Initializes the Foil table, the QWidget and the QAction objects from the data.
  * Selects the current foil in the table
  */
-void QAFoil::SetAFoilParams()
+void QAFoil::setAFoilParams()
 {
-	SetTableFont();
+	setTableFont();
 	fillFoilTable();
 
 	selectFoil(Foil::curFoil());
-	SetControls();
+	setControls();
 }
 
 /**
@@ -1558,7 +1558,7 @@ void QAFoil::SetAFoilParams()
  * @param pFoil a pointer to the Foil object to show
  * @param bShow the new visibility status of the Foil
  */
-void QAFoil::ShowFoil(Foil* pFoil, bool bShow)
+void QAFoil::showFoil(Foil* pFoil, bool bShow)
 {
 	if(!pFoil) return;
 	Foil::curFoil()->m_bVisible = bShow;
@@ -1569,10 +1569,10 @@ void QAFoil::ShowFoil(Foil* pFoil, bool bShow)
 /**
  * Copies the current SplineFoil object to a new SplineFoil object and pushes it on the stack.
  */
-void QAFoil::TakePicture()
+void QAFoil::takePicture()
 {
 	//clear the downstream part of the stack which becomes obsolete
-	ClearStack(m_StackPos);
+	clearStack(m_StackPos);
 
 	// append a copy of the current object
 	m_UndoStack.append(SplineFoil(m_pSF));
@@ -1595,7 +1595,7 @@ void QAFoil::TakePicture()
 /**
  * Restores a SplineFoil definition from the current position in the stack.
  */
-void QAFoil::SetPicture()
+void QAFoil::setPicture()
 {
 	SplineFoil SF = m_UndoStack.at(m_StackPos);
 	m_pSF->Copy(&SF);
@@ -1612,14 +1612,14 @@ void QAFoil::SetPicture()
 /**
  * The user has requested to Undo the last modification to the SplineFoil object.
  */
-void QAFoil::OnUndo()
+void QAFoil::onUndo()
 {
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 
 	if(m_StackPos>0)
 	{
 		m_StackPos--;
-		SetPicture();
+		setPicture();
 		pMainFrame->UndoAFoilAct->setEnabled(m_StackPos>0);
 		pMainFrame->RedoAFoilAct->setEnabled(m_StackPos<m_UndoStack.size()-1);
 	}
@@ -1633,13 +1633,13 @@ void QAFoil::OnUndo()
 /**
  *The user has requested a Redo operation after an undo.
  */
-void QAFoil::OnRedo()
+void QAFoil::onRedo()
 {
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 	if(m_StackPos<m_UndoStack.size()-1)
 	{
 		m_StackPos++;
-		SetPicture();
+		setPicture();
 		pMainFrame->UndoAFoilAct->setEnabled(m_StackPos>0);
 		pMainFrame->RedoAFoilAct->setEnabled(m_StackPos<m_UndoStack.size()-1);
 	}
@@ -1650,7 +1650,7 @@ void QAFoil::OnRedo()
   * Clears the stack starting at a given position.
   * @param the first stack element to remove
   */
-void QAFoil::ClearStack(int pos)
+void QAFoil::clearStack(int pos)
 {
 	for(int il=m_UndoStack.size()-1; il>pos; il--)
 	{
@@ -1665,7 +1665,7 @@ void QAFoil::ClearStack(int pos)
 /**
  * The user has requested that the width of the columns of the Foil table be reset to default values.
  */
-void QAFoil::OnResetColumnWidths()
+void QAFoil::onResetColumnWidths()
 {
 	int unitwidth = (int)((double)m_pctrlFoilTable->width()/16.0);
 	m_pctrlFoilTable->setColumnWidth(0, 3*unitwidth);
@@ -1678,7 +1678,7 @@ void QAFoil::OnResetColumnWidths()
 /**
  * The user has requested the lanuch of the interface to show or hide the columns of the Foil table.
  */
-void QAFoil::OnAFoilTableColumns()
+void QAFoil::onAFoilTableColumns()
 {
 	AFoilTableDlg dlg((MainFrame*)s_pMainFrame);
 
@@ -1737,14 +1737,14 @@ void QAFoil::resizeEvent(QResizeEvent *event)
 
 
 /** Sets the display font for the Foil table using the default defined in the MainFrame class/ */
-void QAFoil::SetTableFont()
+void QAFoil::setTableFont()
 {
 	m_pctrlFoilTable->setFont(Settings::s_TableFont);
 }
 
 
 
-Foil* QAFoil::AddNewFoil(Foil *pFoil)
+Foil* QAFoil::addNewFoil(Foil *pFoil)
 {
 	if(!pFoil) return NULL;
 	QStringList NameList;

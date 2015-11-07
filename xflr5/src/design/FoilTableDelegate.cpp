@@ -66,7 +66,7 @@ bool FoilTableDelegate::editorEvent(QEvent *event, QAbstractItemModel *pModel, c
 	{
 		QAFoil *pAFoil = (QAFoil*)m_pAFoil;
 		QMouseEvent *pEvent = (QMouseEvent*)event;
-		if(pEvent->buttons() & Qt::LeftButton) pAFoil->OnFoilClicked(index);
+		if(pEvent->buttons() & Qt::LeftButton) pAFoil->onFoilClicked(index);
 		event->accept();
 		return true;
 	}
