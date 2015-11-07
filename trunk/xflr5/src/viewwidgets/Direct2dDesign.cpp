@@ -315,10 +315,10 @@ int Direct2dDesign::selectPoint(CVector real)
 
 	//Selects the point
 	m_pSF->extrados()->m_iSelect = m_pSF->extrados()->isControlPoint(real, m_fScale/m_fRefScale);
-	if(m_pSF->extrados()->m_iSelect>0) return m_pSF->extrados()->m_iSelect;
+	if(m_pSF->extrados()->m_iSelect>=0) return m_pSF->extrados()->m_iSelect;
 
 	m_pSF->intrados()->m_iSelect = m_pSF->intrados()->isControlPoint(real, m_fScale/m_fRefScale);
-	if(m_pSF->intrados()->m_iSelect>0) return m_pSF->intrados()->m_iSelect;
+	if(m_pSF->intrados()->m_iSelect>=0) return m_pSF->intrados()->m_iSelect;
 
 	return  -1;
 }

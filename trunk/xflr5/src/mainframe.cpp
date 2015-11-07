@@ -466,100 +466,100 @@ void MainFrame::createAFoilActions()
 
 	storeSplineAct= new QAction(QIcon(":/images/OnStoreFoil.png"), tr("Store Splines as Foil"), this);
 	storeSplineAct->setStatusTip(tr("Store the current splines in the foil database"));
-	connect(storeSplineAct, SIGNAL(triggered()), pAFoil, SLOT(OnStoreSplines()));
+	connect(storeSplineAct, SIGNAL(triggered()), pAFoil, SLOT(onStoreSplines()));
 
 	splineControlsAct= new QAction(tr("Splines Params"), this);
 	splineControlsAct->setStatusTip(tr("Define parameters for the splines : degree, number of out points"));
-	connect(splineControlsAct, SIGNAL(triggered()), pAFoil, SLOT(OnSplineControls()));
+	connect(splineControlsAct, SIGNAL(triggered()), pAFoil, SLOT(onSplineControls()));
 
 	exportSplinesToFileAct= new QAction(tr("Export Splines To File"), this);
 	exportSplinesToFileAct->setStatusTip(tr("Define parameters for the splines : degree, number of out points"));
-	connect(exportSplinesToFileAct, SIGNAL(triggered()), pAFoil, SLOT(OnExportSplinesToFile()));
+	connect(exportSplinesToFileAct, SIGNAL(triggered()), pAFoil, SLOT(onExportSplinesToFile()));
 
 	newSplinesAct= new QAction(tr("New Splines"), this);
 	newSplinesAct->setStatusTip(tr("Reset the splines"));
-	connect(newSplinesAct, SIGNAL(triggered()), pAFoil, SLOT(OnNewSplines()));
+	connect(newSplinesAct, SIGNAL(triggered()), pAFoil, SLOT(onNewSplines()));
 
 	UndoAFoilAct= new QAction(QIcon(":/images/OnUndo.png"), tr("Undo"), this);
 	UndoAFoilAct->setShortcut(Qt::CTRL + Qt::Key_Z);
 	UndoAFoilAct->setStatusTip(tr("Cancels the last modification"));
-	connect(UndoAFoilAct, SIGNAL(triggered()), pAFoil, SLOT(OnUndo()));
+	connect(UndoAFoilAct, SIGNAL(triggered()), pAFoil, SLOT(onUndo()));
 
 	RedoAFoilAct= new QAction(QIcon(":/images/OnRedo.png"), tr("Redo"), this);
 	RedoAFoilAct->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_Z);
 	RedoAFoilAct->setStatusTip(tr("Restores the last cancelled modification"));
-	connect(RedoAFoilAct, SIGNAL(triggered()), pAFoil, SLOT(OnRedo()));
+	connect(RedoAFoilAct, SIGNAL(triggered()), pAFoil, SLOT(onRedo()));
 
 	ShowAllFoils= new QAction(tr("Show All Foils"), this);
-	connect(ShowAllFoils, SIGNAL(triggered()), pAFoil, SLOT(OnShowAllFoils()));
+	connect(ShowAllFoils, SIGNAL(triggered()), pAFoil, SLOT(onShowAllFoils()));
 	HideAllFoils= new QAction(tr("Hide All Foils"), this);
-	connect(HideAllFoils, SIGNAL(triggered()), pAFoil, SLOT(OnHideAllFoils()));
+	connect(HideAllFoils, SIGNAL(triggered()), pAFoil, SLOT(onHideAllFoils()));
 
 
 	AFoilDelete = new QAction(tr("Delete..."), this);
-	connect(AFoilDelete, SIGNAL(triggered()), pAFoil, SLOT(OnDeleteCurFoil()));
+	connect(AFoilDelete, SIGNAL(triggered()), pAFoil, SLOT(onDeleteCurFoil()));
 
 	AFoilRename = new QAction(tr("Rename..."), this);
 	AFoilRename->setShortcut(Qt::Key_F2);
-	connect(AFoilRename, SIGNAL(triggered()), pAFoil, SLOT(OnRenameFoil()));
+	connect(AFoilRename, SIGNAL(triggered()), pAFoil, SLOT(onRenameFoil()));
 
 	AFoilExport = new QAction(tr("Export..."), this);
-	connect(AFoilExport, SIGNAL(triggered()), pAFoil, SLOT(OnExportCurFoil()));
+	connect(AFoilExport, SIGNAL(triggered()), pAFoil, SLOT(onExportCurFoil()));
 
 	pAFoilDuplicateFoil = new QAction(tr("Duplicate..."), this);
-	connect(pAFoilDuplicateFoil, SIGNAL(triggered()), pAFoil, SLOT(OnDuplicate()));
+	connect(pAFoilDuplicateFoil, SIGNAL(triggered()), pAFoil, SLOT(onDuplicate()));
 
 	ShowCurrentFoil= new QAction(tr("Show Current Foil"), this);
-	connect(ShowCurrentFoil, SIGNAL(triggered()), pAFoil, SLOT(OnShowCurrentFoil()));
+	connect(ShowCurrentFoil, SIGNAL(triggered()), pAFoil, SLOT(onShowCurrentFoil()));
 
 	HideCurrentFoil= new QAction(tr("Hide Current Foil"), this);
-	connect(HideCurrentFoil, SIGNAL(triggered()), pAFoil, SLOT(OnHideCurrentFoil()));
+	connect(HideCurrentFoil, SIGNAL(triggered()), pAFoil, SLOT(onHideCurrentFoil()));
 
 	AFoilDerotateFoil = new QAction(tr("De-rotate the Foil"), this);
-	connect(AFoilDerotateFoil, SIGNAL(triggered()), pAFoil, SLOT(OnAFoilDerotateFoil()));
+	connect(AFoilDerotateFoil, SIGNAL(triggered()), pAFoil, SLOT(onAFoilDerotateFoil()));
 
 	AFoilNormalizeFoil = new QAction(tr("Normalize the Foil"), this);
-	connect(AFoilNormalizeFoil, SIGNAL(triggered()), pAFoil, SLOT(OnAFoilNormalizeFoil()));
+	connect(AFoilNormalizeFoil, SIGNAL(triggered()), pAFoil, SLOT(onAFoilNormalizeFoil()));
 
 	AFoilRefineGlobalFoil = new QAction(tr("Refine Globally")+"\t(F3)", this);
-	connect(AFoilRefineGlobalFoil, SIGNAL(triggered()), pAFoil, SLOT(OnAFoilPanels()));
+	connect(AFoilRefineGlobalFoil, SIGNAL(triggered()), pAFoil, SLOT(onAFoilPanels()));
 
 	AFoilRefineLocalFoil = new QAction(tr("Refine Locally")+"\t(Shift+F3)", this);
-	connect(AFoilRefineLocalFoil, SIGNAL(triggered()), pAFoil, SLOT(OnAFoilCadd()));
+	connect(AFoilRefineLocalFoil, SIGNAL(triggered()), pAFoil, SLOT(onAFoilCadd()));
 
 	AFoilEditCoordsFoil = new QAction(tr("Edit Foil Coordinates"), this);
-	connect(AFoilEditCoordsFoil, SIGNAL(triggered()), pAFoil, SLOT(OnAFoilFoilCoordinates()));
+	connect(AFoilEditCoordsFoil, SIGNAL(triggered()), pAFoil, SLOT(onAFoilFoilCoordinates()));
 
 	AFoilScaleFoil = new QAction(tr("Scale camber and thickness")+"\t(F9)", this);
-	connect(AFoilScaleFoil, SIGNAL(triggered()), pAFoil, SLOT(OnAFoilFoilGeom()));
+	connect(AFoilScaleFoil, SIGNAL(triggered()), pAFoil, SLOT(onAFoilFoilGeom()));
 
 	AFoilSetTEGap = new QAction(tr("Set T.E. Gap"), this);
-	connect(AFoilSetTEGap, SIGNAL(triggered()), pAFoil, SLOT(OnAFoilSetTEGap()));
+	connect(AFoilSetTEGap, SIGNAL(triggered()), pAFoil, SLOT(onAFoilSetTEGap()));
 
 	AFoilSetLERadius = new QAction(tr("Set L.E. Radius"), this);
-	connect(AFoilSetLERadius, SIGNAL(triggered()), pAFoil, SLOT(OnAFoilSetLERadius()));
+	connect(AFoilSetLERadius, SIGNAL(triggered()), pAFoil, SLOT(onAFoilSetLERadius()));
 
 	AFoilLECircle = new QAction(tr("Show LE Circle"), this);
-	connect(AFoilLECircle, SIGNAL(triggered()), pAFoil, SLOT(OnAFoilLECircle()));
+	connect(AFoilLECircle, SIGNAL(triggered()), pAFoil, SLOT(onAFoilLECircle()));
 
 	m_pShowLegend = new QAction(tr("Show Legend"), this);
 	m_pShowLegend->setCheckable(true);
-	connect(m_pShowLegend, SIGNAL(triggered()), pAFoil, SLOT(OnShowLegend()));
+	connect(m_pShowLegend, SIGNAL(triggered()), pAFoil, SLOT(onShowLegend()));
 
 	AFoilSetFlap = new QAction(tr("Set Flap")+"\t(F10)", this);
-	connect(AFoilSetFlap, SIGNAL(triggered()), pAFoil, SLOT(OnAFoilSetFlap()));
+	connect(AFoilSetFlap, SIGNAL(triggered()), pAFoil, SLOT(onAFoilSetFlap()));
 
 	AFoilInterpolateFoils = new QAction(tr("Interpolate Foils")+"\t(F11)", this);
-	connect(AFoilInterpolateFoils, SIGNAL(triggered()), pAFoil, SLOT(OnAFoilInterpolateFoils()));
+	connect(AFoilInterpolateFoils, SIGNAL(triggered()), pAFoil, SLOT(onAFoilInterpolateFoils()));
 
 	AFoilNacaFoils = new QAction(tr("Naca Foils"), this);
-	connect(AFoilNacaFoils, SIGNAL(triggered()), pAFoil, SLOT(OnAFoilNacaFoils()));
+	connect(AFoilNacaFoils, SIGNAL(triggered()), pAFoil, SLOT(onAFoilNacaFoils()));
 
 	AFoilTableColumns = new QAction(tr("Set Table Columns"), this);
-	connect(AFoilTableColumns, SIGNAL(triggered()), pAFoil, SLOT(OnAFoilTableColumns()));
+	connect(AFoilTableColumns, SIGNAL(triggered()), pAFoil, SLOT(onAFoilTableColumns()));
 
 	AFoilTableColumnWidths = new QAction(tr("Reset column widths"), this);
-	connect(AFoilTableColumnWidths, SIGNAL(triggered()), pAFoil, SLOT(OnResetColumnWidths()));
+	connect(AFoilTableColumnWidths, SIGNAL(triggered()), pAFoil, SLOT(onResetColumnWidths()));
 
 
 
@@ -2977,7 +2977,7 @@ void MainFrame::onAFoil()
 	setMainFrameCentralWidget();
 	setMenus();
 	QAFoil *pAFoil = (QAFoil*)m_pAFoil;
-	pAFoil->SetAFoilParams();
+	pAFoil->setAFoilParams();
 }
 
 
@@ -3164,7 +3164,7 @@ void MainFrame::onLoadFile()
 	else if(m_iApp==XFLR5::DIRECTDESIGN)
 	{
 		QAFoil *pAFoil = (QAFoil*)m_pAFoil;
-		pAFoil->SetAFoilParams();
+		pAFoil->setAFoilParams();
 		pAFoil->selectFoil(Foil::curFoil());
 		updateView();
 	}
@@ -3657,7 +3657,7 @@ void MainFrame::onStyleSettings()
 		setGraphSettings(&Settings::s_RefGraph);
 	}
 	QAFoil *pAFoil = (QAFoil*)m_pAFoil;
-	pAFoil->SetTableFont();
+	pAFoil->setTableFont();
 
 	pXDirect->m_CpGraph.setInverted(true);
 	pMiarex->m_CpGraph.setInverted(true);
@@ -3834,7 +3834,7 @@ void MainFrame::openRecentFile()
 	else if(m_iApp==XFLR5::DIRECTDESIGN)
 	{
 		QAFoil *pAFoil = (QAFoil*)m_pAFoil;
-		pAFoil->SetAFoilParams();
+		pAFoil->setAFoilParams();
 		updateView();
 	}
 	else if(m_iApp==XFLR5::INVERSEDESIGN)
