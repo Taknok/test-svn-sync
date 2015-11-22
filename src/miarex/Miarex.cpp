@@ -1856,7 +1856,7 @@ void QMiarex::glDraw3D()
 			TranslatedBody.translate(m_pCurPlane->bodyPos());
 		}
 
-		Wing *pWingList[MAXWINGS];
+        Wing *pWingList[MAXWINGS];
 		for(int iw=0; iw<MAXWINGS;iw++) pWingList[iw]=m_pCurPlane->wing(iw);
 		if(pCurBody && m_pCurPlane) GLCreateGeom(WINGSURFACES, pWingList, &TranslatedBody);
 		else                        GLCreateGeom(WINGSURFACES, pWingList, pCurBody);

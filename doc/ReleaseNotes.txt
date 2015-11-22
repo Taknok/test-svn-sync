@@ -17,9 +17,11 @@
 
 
 xflr5 v6.12 November xxxth, 2015
-	- Modified in depth the constuction of the wing geometry, to better account for flap with large deflections
-	- Corrected bugs in the import/export operation of body objects to xml files
-	- Enabled the LE points of the spline foil to be dragged in Direct Design
+	- modified in depth the constuction of the wing geometry, to better account for flap with large deflections; 
+          has an impact on results;
+	- corrected bugs in the import/export operation of body objects to xml files
+	- enabled the LE points of the spline foil to be dragged in Direct Design
+	- corrected other minor things
 
 
 xflr5 v6.11 August 8th, 2015
@@ -36,7 +38,7 @@ xflr5 v6.11 August 8th, 2015
 	- added an import/export option of a plane definition to an xml file
 	- added an import/export option for body objects to an xml file
 	- deeeeep code cleaning
-	- Other minor corrections and improvements
+	- other minor corrections and improvements
 
 
 xflr5 v6.10.04 April 12th, 2015
