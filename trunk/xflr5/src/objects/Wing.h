@@ -194,8 +194,8 @@ public:
 	const QString& wingName() const {return m_WingName;}
 	QString& rWingName() {return m_WingName;}
 	const QString& WingDescription() const {return m_WingDescription;}
-	QString &RightFoil(const int &iSection);
-	QString &LeftFoil(const int &iSection);
+	QString &rightFoil(const int &iSection);
+	QString &leftFoil(const int &iSection);
 	QString& rWingDescription() {return m_WingDescription;}
 
 	QColor &wingColor() {return m_WingColor;}

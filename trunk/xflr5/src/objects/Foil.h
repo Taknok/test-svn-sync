@@ -98,17 +98,17 @@ public:
 	void drawPoints(QPainter &painter, double const &scalex, double const &scaley, QPointF const &Offset);
 	void drawMidLine(QPainter &painter, double const &scalex, double const &scaley, QPointF const &Offset);
 
-	void lowerY(double x, double &y, double &normx, double &normy);
-	void upperY(double x, double &y, double &normx, double &normy);
+	void getLowerY(double x, double &y, double &normx, double &normy);
+	void getUpperY(double x, double &y, double &normx, double &normy);
 
 	double derotate();
 	double baseUpperY(double x);
 	double baseLowerY(double x);
-	double midY(double xl);
-	double lowerY(double x);
-	double upperY(double x);
-	double camber(double const &x);
-	double camberSlope(double const &x);
+	CVector midYRel(double sRel);
+	CVector lowerYRel(double sRel);
+	CVector upperYRel(double sRel);
+	double camber(double x);
+	double camberSlope(double x);
 	double length();
 	double area();
 	double topSlope(double const &x);
@@ -129,7 +129,7 @@ public:
 	void setLEFlapData(bool bFlap, double xhinge, double yhinge, double angle);
 	void setTEFlapData(bool bFlap, double xhinge, double yhinge, double angle);
 
-	bool Intersect(CVector const &A, CVector const &B, CVector const &C, CVector const &D, CVector *M);
+	bool intersect(CVector const &A, CVector const &B, CVector const &C, CVector const &D, CVector *M);
 
 	static Foil *foil(QString strFoilName);
 	static Foil *deleteFoil(Foil *pFoil);

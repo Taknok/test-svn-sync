@@ -26,11 +26,6 @@
 #include "../objects/Quaternion.h"
 
 
-CVector Surface::LA;//save time by preventing allocation & release of memory
-CVector Surface::LB;
-CVector Surface::TA;
-CVector Surface::TB;
-CVector Surface::VTemp;
 CVector *Surface::s_pNode;
 Panel *Surface::s_pPanel;
 
@@ -88,7 +83,7 @@ Surface::Surface()
  * Adds the reference of thE input panel to the array of flap panel indexes.
  * @param pPanel the pointer of the panel to add to the flap panel list.
  */
-void Surface::AddFlapPanel(Panel *pPanel)
+void Surface::addFlapPanel(Panel *pPanel)
 {
 	bool bFound = false;
 	int i;
@@ -175,7 +170,7 @@ void Surface::AddFlapPanel(Panel *pPanel)
  * Copy the data from another Surface object to this Surface
  * @param Surface the source Surface from which the data shall be duplicated
  */
-void Surface::Copy(Surface *pSurface)
+void Surface::copy(Surface *pSurface)
 {
 	m_LA.copy(pSurface->m_LA);
 	m_LB.copy(pSurface->m_LB);
@@ -230,13 +225,13 @@ void Surface::Copy(Surface *pSurface)
  * @param Pt the quarter-chord point
  * @param tau the relative span position of the Pt
  */
-void Surface::GetC4(int k, CVector &Pt, double &tau)
+void Surface::getC4(int k, CVector &Pt, double &tau)
 {
-	GetPanel(k,m_NXPanels-1,MIDSURFACE);
+	getPanel(k,m_NXPanels-1,MIDSURFACE);
 	double xl = (LA.x+LB.x)/2.0;
 	double yl = (LA.y+LB.y)/2.0;
 	double zl = (LA.z+LB.z)/2.0;
-	GetPanel(k,0,MIDSURFACE);
+	getPanel(k,0,MIDSURFACE);
 	double xt = (TA.x+TB.x)/2.0;
 	double yt = (TA.y+TB.y)/2.0;
 	double zt = (TA.z+TB.z)/2.0;
@@ -253,11 +248,11 @@ void Surface::GetC4(int k, CVector &Pt, double &tau)
  * @param k the 0-based index of the strip for which the chord shall be returned.
  * @return the chord length
  */
-double Surface::GetChord(int const &k)
+double Surface::chord(int k)
 {
 	static double y1, y2;
-	GetyDist(k, y1, y2);
-	return GetChord((y1+y2)/2.0);
+	getYDist(k, y1, y2);
+	return chord((y1+y2)/2.0);
 }
 
 
@@ -266,7 +261,7 @@ double Surface::GetChord(int const &k)
  * @param tau the relative percentage of the Surface's span length
  * @return the chord length
  */
-double Surface::GetChord(double const &tau)
+double Surface::chord(double tau)
 {
 	//assumes LA-TB have already been loaded
 	static CVector V1, V2;
@@ -287,41 +282,40 @@ double Surface::GetChord(double const &tau)
  * @param tau the relative percentage of the Surface's span length
  * @return the offset in the x-direction
  */
-double Surface::GetOffset(double const &tau)
+double Surface::offset(double tau)
 {
 	//chord spacing
 	return m_LA.x + (m_LB.x-m_LA.x) * qAbs(tau);
 }
+
 
 /**
  * Returns the area of the virtual foil at a specified relative span position. Used in Inertia calaculations.
  * @param tau the relative percentage of the Surface's span length
  * @return the cross area at the specified location
  */
-double Surface::GetFoilArea(double const &tau)
+double Surface::foilArea(double tau)
 {
-	double area, chord;
 	if(m_pFoilA && m_pFoilB)
 	{
-		chord = GetChord(tau);
-		area = (m_pFoilA->area() + m_pFoilB->area())/2.0*chord*chord;//m2
-		return area;
+		return (m_pFoilA->area() + m_pFoilB->area())/2.0*chord(tau)*chord(tau);//m2
 	}
 	else
 		return 0.0;
 }
 
+
 /**
  * Returns the normal vector at a specified relative span position.
  * @param tau the relative percentage of the Surface's span length
  * @return N the average normal at the specified location
+ * @todo N = Normal ?
  */
-void Surface::GetNormal(double yrel, CVector &N)
+void Surface::getNormal(double yrel, CVector &N)
 {
 	N = NormalA * (1.0-yrel) + NormalB * yrel;
 	N.normalize();
 }
-
 
 
 
@@ -330,9 +324,9 @@ void Surface::GetNormal(double yrel, CVector &N)
  * @param k the 0-based index of the strip for which the leading point shall be returned.
  * @param C the strip's leading point.
  */
-void Surface::GetLeadingPt(int k, CVector &C)
+void Surface::getLeadingPt(int k, CVector &C)
 {
-	GetPanel(k,m_NXPanels-1, MIDSURFACE);
+	getPanel(k,m_NXPanels-1, MIDSURFACE);
 
 	C.x    = (LA.x+LB.x)/2.0;
 	C.y    = (LA.y+LB.y)/2.0;
@@ -346,9 +340,9 @@ void Surface::GetLeadingPt(int k, CVector &C)
  * @param k the 0-based index of the strip for which the trailing point shall be returned.
  * @param C the strip's leading point.
  */
-void Surface::GetTrailingPt(int k, CVector &C)
+void Surface::getTrailingPt(int k, CVector &C)
 {
-	GetPanel(k,0,MIDSURFACE);
+	getPanel(k,0,MIDSURFACE);
 
 	C.x    = (TA.x+TB.x)/2.0;
 	C.y    = (TA.y+TB.y)/2.0;
@@ -366,9 +360,9 @@ void Surface::GetTrailingPt(int k, CVector &C)
  * @param l the index of the panel in the chordwise direction. 0<=l<m_NXPanels
  * @param pos defines on which surface (BOTSURFACE, TOPSURFACE, MIDSURFACE) the node positions should be calculated.
  */
-void Surface::GetPanel(int const &k, int const &l, enumPanelPosition const &pos)
+void Surface::getPanel(int const &k, int const &l, enumPanelPosition pos)
 {
-	GetyDist(k,y1,y2);
+	getYDist(k,y1,y2);
 	if(pos==MIDSURFACE)
 	{
 		LA.x = SideA[l+1].x * (1.0-y1) + SideB[l+1].x* y1;
@@ -421,144 +415,68 @@ void Surface::GetPanel(int const &k, int const &l, enumPanelPosition const &pos)
 	}
 }
 
+
 /**
  * Returns the strip width at a specified
  * @param k the index of the strip 0<=k<m_NYPanels
  * @return the strip width
  */
-double Surface::GetStripWidth(int const &k)
+double Surface::stripWidth(int k)
 {
-	GetPanel(k, 0, MIDSURFACE);
+	getPanel(k, 0, MIDSURFACE);
 	return qAbs(LA.y-LB.y);
 }
 
+
 /**
- * Returns the postion of a surface point at the position specified by the input parameters.
+ * Returns the position of a surface point at the position specified by the input parameters.
  * @param xArel the relative position at the left Foil
  * @param xBrel the relative position at the right Foil
  * @param yrel the relative span position
  * @param Point a reference of the requested point's position
  * @param pos defines on which surface (BOTSURFACE, TOPSURFACE, MIDSURFACE) the point is calculated
  */
-void Surface::GetSurfacePoint(double const &xArel, double const &xBrel, double const &yrel,
-							  CVector &Point, int const &pos)
+void Surface::getSurfacePoint(double xArel, double xBrel, double yrel, enumPanelPosition pos, CVector &Point, CVector &PtNormal)
 {
-	static CVector APt, BPt;
-	static double TopA, TopB, BotA, BotB;
+	CVector APt, BPt, foilPt;
 
-	APt.x = m_LA.x * (1.0-xArel) + m_TA.x * xArel;
-	APt.y = m_LA.y * (1.0-xArel) + m_TA.y * xArel;
-	APt.z = m_LA.z * (1.0-xArel) + m_TA.z * xArel;
-	BPt.x = m_LB.x * (1.0-xBrel) + m_TB.x * xBrel;
-	BPt.y = m_LB.y * (1.0-xBrel) + m_TB.y * xBrel;
-	BPt.z = m_LB.z * (1.0-xBrel) + m_TB.z * xBrel;
+	if(pos==MIDSURFACE && m_pFoilA && m_pFoilB)
+	{
+		foilPt = m_pFoilA->midYRel(xArel);
+		APt = m_LA * (1.0-foilPt.x) + m_TA * foilPt.x;
+		APt +=  Normal * foilPt.y*chord(0.0);
 
-	if(pos==1 && m_pFoilA && m_pFoilB)
-	{
-		TopA = m_pFoilA->upperY(xArel)*GetChord(0.0);
-		TopB = m_pFoilB->upperY(xBrel)*GetChord(1.0);
-		APt.x +=  Normal.x * TopA;
-		APt.y +=  Normal.y * TopA;
-		APt.z +=  Normal.z * TopA;
-		BPt.x +=  Normal.x * TopB;
-		BPt.y +=  Normal.y * TopB;
-		BPt.z +=  Normal.z * TopB;
+		foilPt = m_pFoilB->midYRel(xBrel);
+		BPt = m_LB * (1.0-foilPt.x) + m_TB * foilPt.x;
+		BPt +=  Normal * foilPt.y*chord(1.0);
+
 	}
-	else if(pos==-1 && m_pFoilA && m_pFoilB)
+	else if(pos==TOPSURFACE && m_pFoilA && m_pFoilB)
 	{
-		BotA = m_pFoilA->lowerY(xArel)*GetChord(0.0);
-		BotB = m_pFoilB->lowerY(xBrel)*GetChord(1.0);
-		APt.x +=  Normal.x * BotA;
-		APt.y +=  Normal.y * BotA;
-		APt.z +=  Normal.z * BotA;
-		BPt.x +=  Normal.x * BotB;
-		BPt.y +=  Normal.y * BotB;
-		BPt.z +=  Normal.z * BotB;
+		foilPt = m_pFoilA->upperYRel(xArel);
+		APt = m_LA * (1.0-foilPt.x) + m_TA * foilPt.x;
+		APt +=  Normal * foilPt.y*chord(0.0);
+
+		foilPt = m_pFoilB->upperYRel(xBrel);
+		BPt = m_LB * (1.0-foilPt.x) + m_TB * foilPt.x;
+		BPt +=  Normal * foilPt.y*chord(1.0);
+
 	}
-	Point.x = APt.x * (1.0-yrel)+  BPt.x * yrel ;
-	Point.y = APt.y * (1.0-yrel)+  BPt.y * yrel ;
-	Point.z = APt.z * (1.0-yrel)+  BPt.z * yrel ;
+	else if(pos==BOTSURFACE && m_pFoilA && m_pFoilB)
+	{
+		foilPt = m_pFoilA->lowerYRel(xArel);
+		APt = m_LA * (1.0-foilPt.x) + m_TA * foilPt.x;
+		APt +=  Normal * foilPt.y*chord(0.0);
+
+		foilPt = m_pFoilB->lowerYRel(xBrel);
+		BPt = m_LB * (1.0-foilPt.x) + m_TB * foilPt.x;
+		BPt +=  Normal * foilPt.y*chord(1.0);
+	}
+	Point = APt * (1.0-yrel)+  BPt * yrel;
+	getNormal(yrel, PtNormal);
 }
 
 
-/**
- * Returns the postion of a surface point at the position specified by the input parameters.
- * @param xArel the relative position at the left Foil
- * @param xBrel the relative position at the right Foil
- * @param yrel the relative span position
- * @param Point a reference of the requested point's position
- * @param PtNormal the normal to the surface at the requested point
- * @param pos defines on which surface (BOTSURFACE, TOPSURFACE, MIDSURFACE) the point is calculated
- */
-void Surface::GetSurfacePointNormal(double const &xArel, double const &xBrel, double const &yrel,
-							 CVector &Point, CVector &PtNormal, int const &pos)
-{
-	static CVector APt, BPt, Nc, u;
-	static double TopA, TopB, BotA, BotB, nxA, nxB, nyA, nyB, theta;
-	static Quaternion q;
-	
-	//define the strip's normal
-	GetNormal(yrel, Nc);
-
-	//define the quaternion to rotate the unit vector (0,0,1) to Nc
-	//use the dot product to get the rotation angle, and the crossproduct to get the rotation vector
-	theta = acos(Nc.z);
-	u.x = -Nc.y;
-	u.y =  Nc.x;
-	u.z =  0.0;
-	q.Set(theta*180.0/PI, u);
-
-	APt.x = m_LA.x * (1.0-xArel) + m_TA.x * xArel;
-	APt.y = m_LA.y * (1.0-xArel) + m_TA.y * xArel;
-	APt.z = m_LA.z * (1.0-xArel) + m_TA.z * xArel;
-	BPt.x = m_LB.x * (1.0-xBrel) + m_TB.x * xBrel;
-	BPt.y = m_LB.y * (1.0-xBrel) + m_TB.y * xBrel;
-	BPt.z = m_LB.z * (1.0-xBrel) + m_TB.z * xBrel;
-
-	if(pos==1 && m_pFoilA && m_pFoilB)
-	{
-		m_pFoilA->upperY(xArel, TopA, nxA, nyA);
-		m_pFoilB->upperY(xBrel, TopB, nxB, nyB);
-		TopA *= GetChord(0.0);
-		TopB *= GetChord(1.0);
-
-		// rotate the point's normal vector i.a.w. dihedral and local washout
-		PtNormal.x = nxA * (1.0-yrel) + nxB * yrel;
-		PtNormal.y = 0.0;
-		PtNormal.z = nyA * (1.0-yrel) + nyB * yrel;
-		q.Conjugate(PtNormal.x, PtNormal.y, PtNormal.z);
-
-		APt.x +=  NormalA.x * TopA;
-		APt.y +=  NormalA.y * TopA;
-		APt.z +=  NormalA.z * TopA;
-		BPt.x +=  NormalB.x * TopB;
-		BPt.y +=  NormalB.y * TopB;
-		BPt.z +=  NormalB.z * TopB;
-	}
-	else if(pos==-1 && m_pFoilA && m_pFoilB)
-	{
-		m_pFoilA->lowerY(xArel, BotA, nxA, nyA);
-		m_pFoilB->lowerY(xBrel, BotB, nxB, nyB);
-		BotA *= GetChord(0.0);
-		BotB *= GetChord(1.0);
-
-		// rotate the point's normal vector i.a.w. dihedral and local washout
-		PtNormal.x = nxA * (1.0-yrel) + nxB * yrel;
-		PtNormal.y = 0.0;
-		PtNormal.z = nyA * (1.0-yrel) + nyB * yrel;
-		q.Conjugate(PtNormal.x, PtNormal.y, PtNormal.z);
-
-		APt.x +=  NormalA.x * BotA;
-		APt.y +=  NormalA.y * BotA;
-		APt.z +=  NormalA.z * BotA;
-		BPt.x +=  NormalB.x * BotB;
-		BPt.y +=  NormalB.y * BotB;
-		BPt.z +=  NormalB.z * BotB;
-	}
-	Point.x = APt.x * (1.0-yrel)+  BPt.x * yrel ;
-	Point.y = APt.y * (1.0-yrel)+  BPt.y * yrel ;
-	Point.z = APt.z * (1.0-yrel)+  BPt.z * yrel ;
-}
 
 /**
  * Returns the chord length, cross-section area, and quarter-chord point of a given strip,
@@ -567,7 +485,7 @@ void Surface::GetSurfacePointNormal(double const &xArel, double const &xBrel, do
  * @param Area a reference to the cross-section area
  * @param PtC4 a reference to the quarter-chord point
  */
-void Surface::GetSection(double const &tau, double &Chord, double &Area, CVector &PtC4)
+void Surface::getSection(double const &tau, double &Chord, double &Area, CVector &PtC4)
 {
 	//explicit double calculations are much faster than vector algebra
 	LA.x = m_LA.x * (1.0-tau) + m_LB.x * tau;
@@ -601,7 +519,7 @@ void Surface::GetSection(double const &tau, double &Chord, double &Area, CVector
  * @param k the 0-based index of the strip for which the position shall be returned.
  * @return the absolute position of the strip
  */
-double Surface::GetStripSpanPos(int const &k)
+double Surface::stripSpanPos(int k)
 {
 	int  l;
 	double YPos = 0.0;
@@ -609,7 +527,7 @@ double Surface::GetStripSpanPos(int const &k)
 
 	for(l=0; l<m_NXPanels; l++)
 	{
-		GetPanel(k,l, MIDSURFACE);
+		getPanel(k,l, MIDSURFACE);
 		YPos += (LA.y+LB.y+TA.y+TB.y)/4.0;
 		ZPos += (LA.z+LB.z+TA.z+TB.z)/4.0;
 	}
@@ -629,9 +547,9 @@ double Surface::GetStripSpanPos(int const &k)
  * @param k the 0-based index of the strip for which the leading point shall be returned.
  * @return the strip's twist.
  */
-double Surface::GetTwist(int const &k)
+double Surface::twist(int k)
 {
-	GetPanel(k, 0, MIDSURFACE);
+	getPanel(k, 0, MIDSURFACE);
 	double y = (LA.y+LB.y+TA.y+TB.y)/4.0;
 	return  m_TwistA + (m_TwistB-m_TwistA) *(y-m_LA.y)/(m_LB.y-m_LA.y);
 }
@@ -643,7 +561,7 @@ double Surface::GetTwist(int const &k)
  * @param y1 a reference to the relative left span position.
  * @param y2 a reference to the relative left span position.
  */
-void Surface::GetyDist(int const &k, double &y1, double &y2)
+void Surface::getYDist(int const &k, double &y1, double &y2)
 {
 	//leading edge
 
@@ -681,7 +599,7 @@ void Surface::GetyDist(int const &k, double &y1, double &y2)
 /**
  * Initializes the Surface
  */
-void Surface::Init()
+void Surface::init()
 {
 	CVector DL, DC;
 	DL.set(m_LB.x-m_LA.x, m_LB.y-m_LA.y, m_LB.z-m_LA.z);
@@ -705,12 +623,21 @@ void Surface::Init()
 }
 
 
+void Surface::setCornerPoints(CVector PLA, CVector PTA, CVector PLB, CVector PTB)
+{
+	m_LA = PLA;
+	m_LB = PLB;
+	m_TA = PTA;
+	m_TB = PTB;
+}
+
+
 /**
  * Returns true if the specified panel is located on the T.E. flap
  * @param p the index of the panel
  * @return true if the panel is located on the T.E. flap
  */
-bool Surface::IsFlapPanel(int const &p)
+bool Surface::isFlapPanel(int p)
 {
 	int pp;
 	for(pp=0; pp<m_nFlapPanels; pp++)
@@ -726,7 +653,7 @@ bool Surface::IsFlapPanel(int const &p)
  * @param nNode the index of the node
  * @return true if the node is located on the T.E. flap
  */
-bool Surface::IsFlapNode(int const &nNode)
+bool Surface::isFlapNode(int nNode)
 {
 	int pp;
 	for(pp=0; pp<m_nFlapPanels; pp++)
@@ -741,7 +668,7 @@ bool Surface::IsFlapNode(int const &nNode)
 
 
 /** Clears the array of flap panel and node references */
-void Surface::ResetFlap()
+void Surface::resetFlap()
 {
 	int i;
 	for(i=0; i<200; i++)
@@ -753,12 +680,14 @@ void Surface::ResetFlap()
 	m_nFlapNodes = 0;
 }
 
+
+
 /**
  * Rotates a flap panels around its hinge axis.
  * @param Angle the rotation angle in degrees
  * @return false if the left and right Foil objects do not have an identical default flap angle, true otherwise.
  */
-bool Surface::RotateFlap(double const &Angle)
+bool Surface::rotateFlap(double Angle)
 {
 	//The average angle between the two tip foil is cancelled
 	//Instead, the Panels are rotated by Angle around the hinge point and hinge vector
@@ -832,7 +761,7 @@ bool Surface::RotateFlap(double const &Angle)
  * @param O a point on the axis of rotation
  * @param XTilt the rotation angle in degrees
  */
-void Surface::RotateX(CVector const&O, double XTilt)
+void Surface::rotateX(CVector const&O, double XTilt)
 {
 	m_LA.rotateX(O, XTilt);
 	m_LB.rotateX(O, XTilt);
@@ -853,7 +782,7 @@ void Surface::RotateX(CVector const&O, double XTilt)
  * @param O a point on the axis of rotation
  * @param YTilt the rotation angle in degrees
  */
-void Surface::RotateY(CVector const &O, double YTilt)
+void Surface::rotateY(CVector const &O, double YTilt)
 {
 	m_LA.rotateY(O, YTilt);
 	m_LB.rotateY(O, YTilt);
@@ -873,7 +802,7 @@ void Surface::RotateY(CVector const &O, double YTilt)
  * @param O a point on the axis of rotation
  * @param ZTilt the rotation angle in degrees
  */
-void Surface::RotateZ(CVector const &O, double ZTilt)
+void Surface::rotateZ(CVector const &O, double ZTilt)
 {
 	m_LA.rotateZ(O, ZTilt);
 	m_LB.rotateZ(O, ZTilt);
@@ -891,8 +820,9 @@ void Surface::RotateZ(CVector const &O, double ZTilt)
 /**
  * Initializes the flap data
  */
-void Surface::SetFlap()
+void Surface::setFlap()
 {
+	CVector N;
 	if(m_pFoilA && m_pFoilA->m_bTEFlap)
 	{
 		m_posATE = m_pFoilA->m_TEXHinge/100.0;
@@ -915,8 +845,8 @@ void Surface::SetFlap()
 	{
 		CVector HB;
 		//create a hinge unit vector and initialize hinge moment
-		GetSurfacePoint(m_posATE, m_posBTE, 0.0, m_HingePoint, 0);
-		GetSurfacePoint(m_posATE, m_posBTE, 1.0, HB, 0);
+		getSurfacePoint(m_posATE, m_posBTE, 0.0, MIDSURFACE, m_HingePoint,N);
+		getSurfacePoint(m_posATE, m_posBTE, 1.0, MIDSURFACE, HB, N);
 		m_HingeVector = HB-m_HingePoint;
 		m_HingeVector.normalize();
 	}
@@ -924,7 +854,7 @@ void Surface::SetFlap()
 
 
 /** Sets the surface average normal vector */
-void Surface::SetNormal()
+void Surface::setNormal()
 {
 	static CVector LATB, TALB;
 	LATB = m_TB - m_LA;
@@ -941,12 +871,12 @@ void Surface::SetNormal()
  * @param dx the x-component of the translation to apply to the body.
  * @param dz the z-component of the translation to apply to the body.
  */
-void Surface::SetSidePoints(Body * pBody, double dx, double dz)
+void Surface::setSidePoints(Body * pBody, double dx, double dz)
 {
-	//creates the left and right tip points between which the panels will be interpolated
 	int l;
-	static double zA, zB;
+	double alpha_dA, alpha_dB;
 	double cosdA, cosdB;
+	CVector N;
 	static Body TBody;
 	if(pBody)
 	{
@@ -956,13 +886,12 @@ void Surface::SetSidePoints(Body * pBody, double dx, double dz)
 
 	cosdA = Normal.dot(NormalA);
 	cosdB = Normal.dot(NormalB);
-	chordA  = GetChord(0.0);//todo : compare with |m_LA-m_TA|
-	chordB  = GetChord(1.0);
+	alpha_dA = -acos(cosdA)*180.0/PI;
+	alpha_dB = acos(cosdB)*180.0/PI;
+//qDebug("%13.5f   %13.5f   %13.5f   %13.5f   ",alpha_dA,alpha_dB,cosdA, cosdB);
+	chordA  = chord(0.0);
+	chordB  = chord(1.0);
 
-	cosdA = cosdB = 1.0;
-
-	//SideA, SideB are mid points (VLM) or bottom points (3DPanels)
-	//SideA_T, SideB_T, are top points (3DPanels);
 	SideA.clear();
 	SideA_T.clear();
 	SideA_B.clear();
@@ -980,101 +909,59 @@ void Surface::SetSidePoints(Body * pBody, double dx, double dz)
 		SideB_T.append(CVector(0,0,0));
 	}
 
-	if(m_pFoilA && m_pFoilB)
+	for (l=0; l<=m_NXPanels; l++)
 	{
-		zA = m_pFoilA->lowerY(m_xPointA[0])*chordA;
-		zB = m_pFoilB->lowerY(m_xPointB[0])*chordB;
-		SideA_B[0] = m_TA + NormalA * zA/cosdA;
-		SideB_B[0] = m_TB + NormalB * zB/cosdB;
+		xLA = m_xPointA[l];
 
-		zA = m_pFoilA->upperY(m_xPointA[0])*chordA;
-		zB = m_pFoilB->upperY(m_xPointB[0])*chordB;
-		SideA_T[0] = m_TA + NormalA * zA/cosdA;
-		SideB_T[0] = m_TB + NormalB * zB/cosdB;
+		getSurfacePoint(xLA, xLA, 0.0, MIDSURFACE, SideA[l], N);
+		getSurfacePoint(xLA, xLA, 0.0, TOPSURFACE, SideA_T[l], N);
+		getSurfacePoint(xLA, xLA, 0.0, BOTSURFACE, SideA_B[l], N);
 
-		zA = m_pFoilA->midY(m_xPointA[0])*chordA;
-		zB = m_pFoilB->midY(m_xPointB[0])*chordB;
-		SideA[0]   = m_TA + NormalA * zA/cosdA;
-		SideB[0]   = m_TB + NormalB * zB/cosdB;
-	}
-	else
-	{
-		SideA[0]   = m_TA;
-		SideB[0]   = m_TB;
-		SideA_T[0] = m_TA;
-		SideB_T[0] = m_TB;
-		SideA_B[0] = m_TA;
-		SideB_B[0] = m_TB;
-	}
+		//scale the thickness
+		SideA[l].y   = m_LA.y +(SideA[l].y   - m_LA.y)/cosdA;
+		SideA[l].z   = m_LA.z +(SideA[l].z   - m_LA.z)/cosdA;
+		SideA_T[l].y = m_LA.y +(SideA_T[l].y - m_LA.y)/cosdA;
+		SideA_T[l].z = m_LA.z +(SideA_T[l].z - m_LA.z)/cosdA;
+		SideA_B[l].y = m_LA.y +(SideA_B[l].y - m_LA.y)/cosdA;
+		SideA_B[l].z = m_LA.z +(SideA_B[l].z - m_LA.z)/cosdA;
 
-	if(pBody && m_bIsCenterSurf && m_bIsLeftSurf)
-	{
-		if(TBody.intersect(SideA_B[0], SideB_B[0], SideB_B[0], false)) m_bJoinRight = false;
-		if(TBody.intersect(SideA_T[0], SideB_T[0], SideB_T[0], false)) m_bJoinRight = false;
-		if(TBody.intersect(SideA[0],   SideB[0],   SideB[0],   false)) m_bJoinRight = false;;
-	}
-	else if(pBody && m_bIsCenterSurf && m_bIsRightSurf)
-	{
-		TBody.intersect(SideA_B[0], SideB_B[0], SideA_B[0], true);
-		TBody.intersect(SideA_T[0], SideB_T[0], SideA_T[0], true);
-		TBody.intersect(SideA[0],   SideB[0],   SideA[0],   true);
-	}
+		//rotate the point
+		SideA[l].rotateX(m_LA, alpha_dA);
+		SideA_T[l].rotateX(m_LA, alpha_dA);
+		SideA_B[l].rotateX(m_LA, alpha_dA);
 
 
-	for (l=0; l<m_NXPanels; l++)
-	{
-		xLA = m_xPointA[l+1];
-		xLB = m_xPointB[l+1];
-		xTA = m_xPointA[l];
-		xTB = m_xPointB[l];
 
-		GetSurfacePoint(xLA, xLB, 0.0, LA, 0);
-		GetSurfacePoint(xTA, xTB, 0.0, TA, 0);
+		xLB = m_xPointB[l];
+		getSurfacePoint(xLB, xLB, 1.0, MIDSURFACE, SideB[l], N);
+		getSurfacePoint(xLB, xLB, 1.0, TOPSURFACE, SideB_T[l], N);
+		getSurfacePoint(xLB, xLB, 1.0, BOTSURFACE, SideB_B[l], N);
 
-		GetSurfacePoint(xLA, xLB, 1.0, LB, 0);
-		GetSurfacePoint(xTA, xTB, 1.0, TB, 0);
+		//scale the thickness
+		SideB[l].y   = m_LB.y +(SideB[l].y   - m_LB.y)/cosdB;
+		SideB[l].z   = m_LB.z +(SideB[l].z   - m_LB.z)/cosdB;
+		SideB_T[l].y = m_LB.y +(SideB_T[l].y - m_LB.y)/cosdB;
+		SideB_T[l].z = m_LB.z +(SideB_T[l].z - m_LB.z)/cosdB;
+		SideB_B[l].y = m_LB.y +(SideB_B[l].y - m_LB.y)/cosdB;
+		SideB_B[l].z = m_LB.z +(SideB_B[l].z - m_LB.z)/cosdB;
 
-		if (m_pFoilA && m_pFoilB)
-		{
-			//create bottom surface side points
-			zA = m_pFoilA->lowerY(xLA)*chordA;
-			zB = m_pFoilB->lowerY(xLB)*chordB;
-			SideA_B[l+1]   = LA + NormalA * zA/cosdA;
-			SideB_B[l+1]   = LB + NormalB * zB/cosdB;
+		//rotate the point
+		SideB[l].rotateX(m_LB, alpha_dB);
+		SideB_T[l].rotateX(m_LB, alpha_dB);
+		SideB_B[l].rotateX(m_LB, alpha_dB);
 
-			//create top surface side points
-			zA = m_pFoilA->upperY(xLA)*chordA;
-			zB = m_pFoilB->upperY(xLB)*chordB;
-			SideA_T[l+1] = LA + NormalA * zA/cosdA;
-			SideB_T[l+1] = LB + NormalB * zB/cosdB;
-
-			//create middle surface side points
-			zA = m_pFoilA->midY(xLA)*chordA;
-			zB = m_pFoilB->midY(xLB)*chordB;
-			SideA[l+1]   = LA + NormalA * zA/cosdA;
-			SideB[l+1]   = LB + NormalB * zB/cosdB;
-		}
-		else
-		{
-			SideA[l+1]   = LA;
-			SideB[l+1]   = LB;
-			SideA_T[l+1] = LA;
-			SideB_T[l+1] = LB;
-			SideA_B[l+1] = LA;
-			SideB_B[l+1] = LB;
-		}
 
 		if(pBody && m_bIsCenterSurf && m_bIsLeftSurf)
 		{
-			if(TBody.intersect(SideA_B[l+1], SideB_B[l+1], SideB_B[l+1], false)) m_bJoinRight = false;
-			if(TBody.intersect(SideA_T[l+1], SideB_T[l+1], SideB_T[l+1], false)) m_bJoinRight = false;
-			if(TBody.intersect(SideA[l+1],   SideB[l+1],   SideB[l+1],   false)) m_bJoinRight = false;
+			if(TBody.intersect(SideA_B[l], SideB_B[l], SideB_B[l], false)) m_bJoinRight = false;
+			if(TBody.intersect(SideA_T[l], SideB_T[l], SideB_T[l], false)) m_bJoinRight = false;
+			if(TBody.intersect(SideA[l],   SideB[l],   SideB[l],   false)) m_bJoinRight = false;
 		}
 		else if(pBody && m_bIsCenterSurf && m_bIsRightSurf)
 		{
-			TBody.intersect(SideA_B[l+1], SideB_B[l+1], SideA_B[l+1], true);
-			TBody.intersect(SideA_T[l+1], SideB_T[l+1], SideA_T[l+1], true);
-			TBody.intersect(SideA[l+1],   SideB[l+1],     SideA[l+1], true);
+			TBody.intersect(SideA_B[l], SideB_B[l], SideA_B[l], true);
+			TBody.intersect(SideA_T[l], SideB_T[l], SideA_T[l], true);
+			TBody.intersect(SideA[l],   SideB[l],     SideA[l], true);
 		}
 	}
 
@@ -1092,11 +979,67 @@ void Surface::SetSidePoints(Body * pBody, double dx, double dz)
 }
 
 
+
+/**
+ * Creates the master points on the left and right ends.
+ * One of the most difficult part of the code to implement. The algorithm still isn't very robust.
+ * @param pBody a pointer to the Body object, or NULL if none.
+ * @param dx the x-component of the translation to apply to the body.
+ * @param dz the z-component of the translation to apply to the body.
+ */
+void Surface::getSidePoints(enumPanelPosition pos,
+							Body * pBody,
+							CVector *PtA, CVector *PtB, int nPoints)
+{
+	double xRel, alpha_dA, alpha_dB, cosdA, cosdB;
+	CVector N;
+
+	cosdA = Normal.dot(NormalA);
+	cosdB = Normal.dot(NormalB);
+	alpha_dA = -acos(cosdA)*180.0/PI;
+	alpha_dB = acos(cosdB)*180.0/PI;
+//qDebug("%13.5f   %13.5f   %13.5f   %13.5f   ",alpha_dA,alpha_dB,cosdA, cosdB);
+	chordA  = chord(0.0);
+	chordB  = chord(1.0);
+
+	for(int i=0; i<nPoints; i++)
+	{
+		xRel = (double)i/(nPoints-1);
+
+		getSurfacePoint(xRel, xRel, 0.0, pos, PtA[i], N);
+
+		//scale the thickness
+		PtA[i].y   = m_LA.y +(PtA[i].y   - m_LA.y)/cosdA;
+		PtA[i].z   = m_LA.z +(PtA[i].z   - m_LA.z)/cosdA;
+
+		//rotate the point
+		PtA[i].rotateX(m_LA, alpha_dA);
+
+		getSurfacePoint(xRel, xRel, 1.0, pos, PtB[i], N);
+
+		//scale the thickness
+		PtB[i].y   = m_LB.y +(PtB[i].y   - m_LB.y)/cosdB;
+		PtB[i].z   = m_LB.z +(PtB[i].z   - m_LB.z)/cosdB;
+
+		//rotate the point
+		PtB[i].rotateX(m_LB, alpha_dB);
+		if(pBody && m_bIsCenterSurf && m_bIsLeftSurf)
+		{
+			pBody->intersect(PtA[i], PtB[i], PtB[i], false);
+		}
+		else if(pBody && m_bIsCenterSurf && m_bIsRightSurf)
+		{
+			pBody->intersect(PtA[i], PtB[i], PtA[i], true);
+		}
+	}
+}
+
+
 /**
  * Translates the entire Surface.
  * @param T the translation vector.
  */
-void Surface::Translate(CVector const &T)
+void Surface::translate(CVector const &T)
 {
 	m_LA.translate(T);
 	m_LB.translate(T);
@@ -1109,7 +1052,7 @@ void Surface::Translate(CVector const &T)
  * Translates the entire Surface.
  * @param tx the x-component of the translation.
  */
-void Surface::Translate(double tx, double ty, double tz)
+void Surface::translate(double tx, double ty, double tz)
 {
 	m_LA.translate(tx, ty, tz);
 	m_LB.translate(tx, ty, tz);
@@ -1120,11 +1063,11 @@ void Surface::Translate(double tx, double ty, double tz)
 
 
 /**
- * Creates relative position of the master points at the left and right tip of the Surface.
+ * Creates relative position of the master points at the left and right sides of the Surface.
  * The chordwise panel distribution is set i.a.w. with the flap hinges, if any.
  * The positions are stored in the member variables m_xPointA and m_xPointB.
  */
-void Surface::CreateXPoints()
+void Surface::createXPoints()
 {
 	int l;
 	int NXFlapA, NXFlapB, NXLeadA, NXLeadB;
@@ -1194,7 +1137,7 @@ void Surface::CreateXPoints()
 /**
  * Sets the surface twist - method 1
  */
-void Surface::SetTwist1()
+void Surface::setTwist1()
 {
 	static CVector A4, B4, L, U, T, O;
 	O.set(0.0,0.0,0.0);
@@ -1236,37 +1179,7 @@ void Surface::SetTwist1()
 }
 
 
-/**
- * Sets the surface twist - method 2, @deprecated
- */
-void Surface::SetTwist2()
-{
-	double xc4,zc4;
-	CVector O(0.0,0.0,0.0);
 
-	CVector LA = m_LA;
-	CVector TA = m_TA;
-	CVector LB = m_LB;
-	CVector TB = m_TB;
-
-	//"A" section first
-	xc4 = m_LA.x + (m_TA.x-m_LA.x)/4.0;
-	zc4 = m_LA.z + (m_TA.z-m_LA.z)/4.0;
-	m_LA.x = xc4 + (LA.x-xc4) * cos(m_TwistA *PI/180.0) - (LA.z-zc4) * sin(m_TwistA *PI/180.0);
-	m_LA.z = zc4 - (LA.x-xc4) * sin(m_TwistA *PI/180.0) + (LA.z-zc4) * cos(m_TwistA *PI/180.0);
-	m_TA.x = xc4 + (TA.x-xc4) * cos(m_TwistA *PI/180.0) - (TA.z-zc4) * sin(m_TwistA *PI/180.0);
-	m_TA.z = zc4 - (TA.x-xc4) * sin(m_TwistA *PI/180.0) + (TA.z-zc4) * cos(m_TwistA *PI/180.0);
-	NormalA.rotateY(O, m_TwistA);
-
-	//"B" Section next
-	xc4 = m_LB.x + (m_TB.x-m_LB.x)/4.0;
-	zc4 = m_LB.z + (m_TB.z-m_LB.z)/4.0;
-	m_LB.x = xc4 + (LB.x-xc4) * cos(m_TwistB *PI/180.0) - (LB.z-zc4) * sin(m_TwistB *PI/180.0);
-	m_LB.z = zc4 - (LB.x-xc4) * sin(m_TwistB *PI/180.0) + (LB.z-zc4) * cos(m_TwistB *PI/180.0);;
-	m_TB.x = xc4 + (TB.x-xc4) * cos(m_TwistB *PI/180.0) - (TB.z-zc4) * sin(m_TwistB *PI/180.0);;
-	m_TB.z = zc4 - (TB.x-xc4) * sin(m_TwistB *PI/180.0) + (TB.z-zc4) * cos(m_TwistB *PI/180.0);;
-	NormalB.rotateY(O, m_TwistB);
-}
 
 
 

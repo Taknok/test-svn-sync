@@ -774,7 +774,7 @@ void Plane::createSurfaces()
 		if(wing(iw))
 		{
 			for (int j=0; j<m_Wing[iw].m_Surface.size(); j++)
-				m_Wing[iw].m_Surface.at(j)->SetSidePoints(body(), bodyPos().x, bodyPos().z);
+				m_Wing[iw].m_Surface.at(j)->setSidePoints(body(), bodyPos().x, bodyPos().z);
 			m_Wing[iw].computeBodyAxisInertia();
 		}
 	}
