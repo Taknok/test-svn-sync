@@ -88,15 +88,14 @@ QXDirect::QXDirect(QWidget *parent) : QWidget(parent)
 {
 	setAttribute(Qt::WA_DeleteOnClose);
 
+        m_LineStyle.m_Style = 0;
+        m_LineStyle.m_Width = 1;
+        m_LineStyle.m_Color = QColor(0,0,0);
+        m_LineStyle.m_PointStyle = 0;
+
 	setupLayout();
 
 	m_pXFoil = new XFoil();
-
-	m_LineStyle.m_PointStyle = 0;
-	m_LineStyle.m_Width = 1;
-	m_LineStyle.m_Color = QColor(0,0,0);
-	m_LineStyle.m_PointStyle = 0;
-
 	m_pAnimateTimer = new QTimer(this);
 	m_posAnimate = 0; // no animation to start with
 	connectSignals();

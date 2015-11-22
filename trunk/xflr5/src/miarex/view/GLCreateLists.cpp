@@ -51,20 +51,21 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 	double xx;
 	for(int i=0; i<SIDEPOINTS; i++)
 	{
-		xx = (double)i/(double)(SIDEPOINTS-1);
+        xx = (double)i/(double)(SIDEPOINTS-1);
         xDistrib[i] = 1.0/2.0*(1.0-cos(xx*PI));
 	}
 
 
 	for(int iw=0; iw<MAXWINGS; iw++)
 	{
-		if(pWingList[iw])
+        if(glIsList(List+iw))          glDeleteLists(List+iw, 1);
+        if(glIsList(List+iw+MAXWINGS)) glDeleteLists(List+iw+MAXWINGS, 1);
+
+        if(pWingList[iw])
 		{
 			Wing *pWing  = pWingList[iw];
 
-			if(glIsList(List+iw)) glDeleteLists(List+iw, 1);
-
-			glNewList(List+iw, GL_COMPILE);
+            glNewList(List+iw, GL_COMPILE);
 			{
 				QMiarex::s_GLList++;
 
@@ -192,7 +193,6 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 			glEndList();
 
 			//OUTLINE
-			if(glIsList(List+iw+MAXWINGS)) glDeleteLists(List+iw+MAXWINGS, 1);
 			glNewList(List+iw+MAXWINGS,GL_COMPILE);
 			{
 				QMiarex::s_GLList++;
