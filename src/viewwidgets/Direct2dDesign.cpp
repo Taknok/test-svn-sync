@@ -63,6 +63,7 @@ void Direct2dDesign::setScale()
 
 void Direct2dDesign::paintEvent(QPaintEvent *event)
 {
+	Q_UNUSED(event);
 	QPainter painter(this);
 	painter.fillRect(rect(), Settings::s_BackgroundColor);
 

@@ -218,6 +218,7 @@ void FoilWidget::mouseReleaseEvent(QMouseEvent *event)
 
 void FoilWidget::paintEvent(QPaintEvent *event)
 {
+	Q_UNUSED(event);
 	QPainter painter(this);
 	painter.fillRect(rect(), Settings::backgroundColor());
 
@@ -230,6 +231,7 @@ void FoilWidget::paintEvent(QPaintEvent *event)
 
 void FoilWidget::resizeEvent (QResizeEvent *event)
 {
+	Q_UNUSED(event);
 	setFoilScale();
 }
 

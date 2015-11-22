@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	Miarex
-			Copyright (C) 2008-2014 Andre Deperrois adeperrois@xflr5.com
+			Copyright (C) 2008-2015 Andre Deperrois adeperrois@xflr5.com
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -1372,6 +1372,8 @@ void QMiarex::fillComboBoxes(bool bEnable)
 
 	m_pPointDelegate->setLineStyle(LineStyle);
 	m_pPointDelegate->setLineWidth(LineWidth);
+	for (int i=0; i<5;i++) LinePoints[i]=i;
+	m_pPointDelegate->setPointStyle(LinePoints);
 	m_pPointDelegate->setLineColor(m_LineStyle.m_Color);
 
 	m_pctrlCurveStyle->setLine( m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
@@ -2838,17 +2840,17 @@ void QMiarex::onAnalyze()
 		{
 			for (l=0; l<pWing(iw)->NWingSection(); l++)
 			{
-				if (!Foil::foil(pWing(iw)->RightFoil(l)))
+				if (!Foil::foil(pWing(iw)->rightFoil(l)))
 				{
 					QString strong;
-					strong = pWing(iw)->m_WingName + ": "+tr("Could not find the wing's foil ")+ pWing(iw)->RightFoil(l) +tr("...\nAborting Calculation");
+					strong = pWing(iw)->m_WingName + ": "+tr("Could not find the wing's foil ")+ pWing(iw)->rightFoil(l) +tr("...\nAborting Calculation");
 					QMessageBox::warning(pMainFrame, tr("Warning"), strong);
 					return;
 				}
-				if (!Foil::foil(pWing(iw)->LeftFoil(l)))
+				if (!Foil::foil(pWing(iw)->leftFoil(l)))
 				{
 					QString strong;
-					strong = pWing(iw)->m_WingName + ": "+tr("Could not find the wing's foil ")+ pWing(iw)->LeftFoil(l) +tr("...\nAborting Calculation");
+					strong = pWing(iw)->m_WingName + ": "+tr("Could not find the wing's foil ")+ pWing(iw)->leftFoil(l) +tr("...\nAborting Calculation");
 					QMessageBox::warning(pMainFrame, tr("Warning"), strong);
 					return;
 				}

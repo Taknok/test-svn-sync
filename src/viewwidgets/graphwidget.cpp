@@ -176,6 +176,7 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
 
 void GraphWidget::mouseDoubleClickEvent (QMouseEvent *event)
 {
+	Q_UNUSED(event);
 	setCursor(Qt::CrossCursor);
 	onGraphSettings();
 }

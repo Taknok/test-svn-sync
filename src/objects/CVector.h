@@ -213,9 +213,9 @@ public:
 	void rotateX(CVector const &O, double XTilt);
 	void rotateY(CVector const &O, double YTilt);
 	void rotateZ(CVector const &O, double ZTilt);
-	void rotateX(double Bank);
+//	void rotateX(double Bank);
 	void rotateY(double YTilt);
-	void rotateZ(double ZRot);
+//	void rotateZ(double ZRot);
 
  
 };

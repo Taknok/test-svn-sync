@@ -66,10 +66,14 @@ void CVector::rotate(CVector &O, CVector const &R, double Angle)
 	z = O.z + OP.z;
 }
 
-
+/**
+ * The vector is interpreted as a point.
+ * Rotates the point around the axis defined by point O and the x direction, by an angle XTilt
+ * @param O The origin of the rotation
+ * @param XTilt the angle of rotation in degrees
+*/
 void CVector::rotateX(CVector const &O, double XTilt)
 {
-	//Rotate the vector around the X-axis, by an angle XTilt
 	CVector OP;
 	OP.x = x-O.x;
 	OP.y = y-O.y;
@@ -80,6 +84,12 @@ void CVector::rotateX(CVector const &O, double XTilt)
 	z = O.z + OP.y * sin(XTilt) + OP.z * cos(XTilt);
 }
 
+/**
+ * The vector is interpreted as a point.
+ * Rotates the point around the axis defined by point O and the y direction, by an angle YTilt
+ * @param O The origin of the rotation
+ * @param YTilt the angle of rotation in degrees
+*/
 void CVector::rotateY(CVector const &O, double YTilt)
 {
 	//Rotate the vector around the Y-axis, by an angle YTilt
@@ -95,6 +105,12 @@ void CVector::rotateY(CVector const &O, double YTilt)
 }
 
 
+/**
+ * The vector is interpreted as a point.
+ * Rotates the point around the axis defined by point O and the z direction, by an angle ZTilt
+ * @param O The origin of the rotation
+ * @param ZTilt the angle of rotation in degrees
+*/
 void CVector::rotateZ(CVector const &O, double ZTilt)
 {
 	//Rotate the vector around the Z-axis, by an angle ZTilt

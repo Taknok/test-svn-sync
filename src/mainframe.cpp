@@ -2863,7 +2863,7 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString PathName)
 			setSaveState(false);
 			addRecentFile(PathName);
 
-			return XFLR5::XFOILANALYSIS;
+			return XFLR5::DIRECTDESIGN;
 		}
 	}
 	else if(end==".wpa")
@@ -2943,7 +2943,7 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString PathName)
 		XFile.close();
 
 		if(Objects3D::s_oaPlane.size()) return XFLR5::MIAREX;
-		else                            return XFLR5::XFOILANALYSIS;
+		else                            return XFLR5::DIRECTDESIGN;
 	}
 
 
@@ -3835,6 +3835,7 @@ void MainFrame::openRecentFile()
 	{
 		QAFoil *pAFoil = (QAFoil*)m_pAFoil;
 		pAFoil->setAFoilParams();
+		onAFoil();
 		updateView();
 	}
 	else if(m_iApp==XFLR5::INVERSEDESIGN)

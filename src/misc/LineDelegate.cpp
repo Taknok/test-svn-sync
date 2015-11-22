@@ -32,7 +32,7 @@ LineDelegate::LineDelegate(QObject *parent)
 	{
 		m_LineWidth[i]  = i+1;
 		m_LineStyle[i]  = i;
-		m_PointStyle[i] = i;
+		m_PointStyle[i] = 0;
 	}
 
 	m_LineColor = QColor(0,255,0);
