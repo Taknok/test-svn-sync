@@ -142,6 +142,12 @@ PanelAnalysis::~PanelAnalysis()
 	delete [] m_ICd;
 	delete [] m_F;
 	delete [] m_Vd;
+        for (int i=m_PlaneOppList.size()-1; i>=0; i--)
+        {
+                PlaneOpp *pObj = m_PlaneOppList.at(i);
+                m_PlaneOppList.removeAt(i);
+                delete (Polar*)pObj;
+        }
 }
 
 

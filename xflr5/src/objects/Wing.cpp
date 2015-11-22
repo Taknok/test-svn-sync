@@ -631,8 +631,8 @@ void Wing::createSurfaces(CVector const &T, double XTilt, double YTilt)
 	CVector O(0.0,0.0,0.0);
 	double MinPanelSize;
 
-	CVector VNormal[NWingSection()];
-	CVector VNSide[NWingSection()];
+    CVector *VNormal = new CVector[NWingSection()];
+    CVector *VNSide = new CVector[NWingSection()];
 
 	if(s_MinPanelSize>0.0) MinPanelSize = s_MinPanelSize;
 	else                   MinPanelSize = 0.0;
@@ -889,6 +889,9 @@ void Wing::createSurfaces(CVector const &T, double XTilt, double YTilt)
 	if(YPosition(0)>0.0001) 	m_Surface[(int)(NSurfaces/2)-1]->m_bJoinRight   = false;
 
 	if(m_bIsFin && m_bDoubleFin) m_Surface[(int)(NSurfaces/2)-1]->m_bJoinRight   = false;
+
+    delete[] VNormal;
+    delete[] VNSide;
 }
 
 
