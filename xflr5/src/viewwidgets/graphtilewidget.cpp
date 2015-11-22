@@ -116,6 +116,7 @@ void GraphTileWidget::setGraphCount(int nGraphs)
 
 void GraphTileWidget::showEvent(QShowEvent *event)
 {
+	Q_UNUSED(event);
 	setCursor(Qt::CrossCursor);
 }
 

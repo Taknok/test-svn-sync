@@ -153,7 +153,7 @@ void GL3dWingDlg::computeGeometry()
 	m_pWing->createSurfaces(CVector(0.0,0.0,0.0), 0.0, 0.0);
 
 	for (int j=0; j<m_pWing->m_Surface.size(); j++)
-		m_pWing->m_Surface.at(j)->SetSidePoints(NULL, 0.0, 0.0);
+		m_pWing->m_Surface.at(j)->setSidePoints(NULL, 0.0, 0.0);
 }
 
 
@@ -306,8 +306,8 @@ void GL3dWingDlg::fillTableRow(int row)
 	m_pWingModel->setData(ind, m_pWing->Twist(row));
 
 	ind = m_pWingModel->index(row, 5, QModelIndex());
-	if(m_bRightSide) m_pWingModel->setData(ind, m_pWing->RightFoil(row));
-	else             m_pWingModel->setData(ind, m_pWing->LeftFoil(row));
+	if(m_bRightSide) m_pWingModel->setData(ind, m_pWing->rightFoil(row));
+	else             m_pWingModel->setData(ind, m_pWing->leftFoil(row));
 
 	if(row<m_pWing->NWingSection())
 	{
@@ -376,7 +376,7 @@ void GL3dWingDlg::glCreateSectionHighlight()
 			{
 				for (int lx=0; lx<m_pWing->m_Surface.at(jSurf)->m_NXPanels; lx++)
 				{
-					m_pWing->m_Surface.at(jSurf)->GetPanel(m_pWing->m_Surface.at(jSurf)->m_NYPanels-1, lx, TOPSURFACE);
+					m_pWing->m_Surface.at(jSurf)->getPanel(m_pWing->m_Surface.at(jSurf)->m_NYPanels-1, lx, TOPSURFACE);
 					glVertex3d(m_pWing->m_Surface.at(jSurf)->TB.x,
 							   m_pWing->m_Surface.at(jSurf)->TB.y,
 							   m_pWing->m_Surface.at(jSurf)->TB.z);
@@ -388,7 +388,7 @@ void GL3dWingDlg::glCreateSectionHighlight()
 
 				for (int lx=m_pWing->m_Surface.at(jSurf)->m_NXPanels-1; lx>=0; lx--)
 				{
-					m_pWing->m_Surface.at(jSurf)->GetPanel(m_pWing->m_Surface.at(jSurf)->m_NYPanels-1, lx, BOTSURFACE);
+					m_pWing->m_Surface.at(jSurf)->getPanel(m_pWing->m_Surface.at(jSurf)->m_NYPanels-1, lx, BOTSURFACE);
 					glVertex3d(m_pWing->m_Surface.at(jSurf)->TB.x,
 							   m_pWing->m_Surface.at(jSurf)->TB.y,
 							   m_pWing->m_Surface.at(jSurf)->TB.z);
@@ -406,7 +406,7 @@ void GL3dWingDlg::glCreateSectionHighlight()
 				{
 					for (int lx=0; lx<m_pWing->m_Surface.at(jSurf)->m_NXPanels; lx++)
 					{
-						m_pWing->m_Surface.at(jSurf)->GetPanel(m_pWing->m_Surface.at(jSurf)->m_NYPanels-1, lx, TOPSURFACE);
+						m_pWing->m_Surface.at(jSurf)->getPanel(m_pWing->m_Surface.at(jSurf)->m_NYPanels-1, lx, TOPSURFACE);
 						glVertex3d(m_pWing->m_Surface.at(jSurf)->TB.x,
 								 m_pWing->m_Surface.at(jSurf)->TB.y,
 								 m_pWing->m_Surface.at(jSurf)->TB.z);
@@ -418,7 +418,7 @@ void GL3dWingDlg::glCreateSectionHighlight()
 
 					for (int lx=m_pWing->m_Surface.at(jSurf)->m_NXPanels-1; lx>=0; lx--)
 					{
-						m_pWing->m_Surface.at(jSurf)->GetPanel(m_pWing->m_Surface.at(jSurf)->m_NYPanels-1, lx, BOTSURFACE);
+						m_pWing->m_Surface.at(jSurf)->getPanel(m_pWing->m_Surface.at(jSurf)->m_NYPanels-1, lx, BOTSURFACE);
 						glVertex3d(m_pWing->m_Surface.at(jSurf)->TB.x,
 								 m_pWing->m_Surface.at(jSurf)->TB.y,
 								 m_pWing->m_Surface.at(jSurf)->TB.z);
@@ -437,7 +437,7 @@ void GL3dWingDlg::glCreateSectionHighlight()
 				{
 					for (int lx=0; lx<m_pWing->m_Surface.at(jSurf)->m_NXPanels; lx++)
 					{
-						m_pWing->m_Surface.at(jSurf)->GetPanel(0, lx, TOPSURFACE);
+						m_pWing->m_Surface.at(jSurf)->getPanel(0, lx, TOPSURFACE);
 						glVertex3d(m_pWing->m_Surface.at(jSurf)->TA.x,
 								   m_pWing->m_Surface.at(jSurf)->TA.y,
 								   m_pWing->m_Surface.at(jSurf)->TA.z);
@@ -449,7 +449,7 @@ void GL3dWingDlg::glCreateSectionHighlight()
 
 					for (int lx=m_pWing->m_Surface.at(jSurf)->m_NXPanels-1; lx>=0; lx--)
 					{
-						m_pWing->m_Surface.at(jSurf)->GetPanel(0, lx, BOTSURFACE);
+						m_pWing->m_Surface.at(jSurf)->getPanel(0, lx, BOTSURFACE);
 						glVertex3d(m_pWing->m_Surface.at(jSurf)->TA.x,
 								   m_pWing->m_Surface.at(jSurf)->TA.y,
 								   m_pWing->m_Surface.at(jSurf)->TA.z);
@@ -836,8 +836,8 @@ void GL3dWingDlg::onInsertBefore()
 	m_pWing->XPanelDist(n) = m_pWing->XPanelDist(n-1);
 	m_pWing->YPanelDist(n) = m_pWing->YPanelDist(n-1);
 
-	m_pWing->RightFoil(n) = m_pWing->RightFoil(n-1);
-	m_pWing->LeftFoil(n)  = m_pWing->LeftFoil(n-1);
+	m_pWing->rightFoil(n) = m_pWing->rightFoil(n-1);
+	m_pWing->leftFoil(n)  = m_pWing->leftFoil(n-1);
 
 	m_pWing->NXPanels(n)   = m_pWing->NXPanels(n-1);
 
@@ -893,8 +893,8 @@ void GL3dWingDlg::onInsertAfter()
 	m_pWing->NYPanels(n+1)   = m_pWing->NYPanels(n);
 	m_pWing->XPanelDist(n+1) = m_pWing->XPanelDist(n);
 	m_pWing->YPanelDist(n+1) = m_pWing->YPanelDist(n);
-	m_pWing->RightFoil(n+1)  = m_pWing->RightFoil(n);
-	m_pWing->LeftFoil(n+1)   = m_pWing->LeftFoil(n);
+	m_pWing->rightFoil(n+1)  = m_pWing->rightFoil(n);
+	m_pWing->leftFoil(n+1)   = m_pWing->leftFoil(n);
 
 	int ny = m_pWing->NYPanels(n);
 	m_pWing->NYPanels(n+1) = qMax(1,(int)(ny/2));
@@ -963,7 +963,7 @@ void GL3dWingDlg::onOK()
 	{
 		for (int i=0; i<m_pWing->NWingSection(); i++)
 		{
-			m_pWing->LeftFoil(i)   = m_pWing->RightFoil(i);
+			m_pWing->leftFoil(i)   = m_pWing->rightFoil(i);
 		}
 	}
 
@@ -1074,7 +1074,7 @@ void GL3dWingDlg::onSymetric()
 		m_pctrlRightSide->setChecked(true);
 		for(int i=0; i<m_pWing->NWingSection(); i++)
 		{
-			m_pWing->LeftFoil(i) = m_pWing->RightFoil(i);
+			m_pWing->leftFoil(i) = m_pWing->rightFoil(i);
 		}
 	}
 	else
@@ -1179,13 +1179,13 @@ void GL3dWingDlg::readSectionData(int sel)
 
 	if(m_pWing->m_bSymetric)
 	{
-		m_pWing->RightFoil(sel) = strong;
-		m_pWing->LeftFoil(sel)  = strong;
+		m_pWing->rightFoil(sel) = strong;
+		m_pWing->leftFoil(sel)  = strong;
 	}
 	else
 	{
-		if(m_bRightSide)	m_pWing->RightFoil(sel) = strong;
-		else                m_pWing->LeftFoil(sel)  = strong;
+		if(m_bRightSide)	m_pWing->rightFoil(sel) = strong;
+		else                m_pWing->leftFoil(sel)  = strong;
 	}
 
 	pItem = m_pWingModel->item(sel,6);

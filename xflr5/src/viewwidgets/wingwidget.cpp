@@ -85,6 +85,7 @@ void WingWidget::keyPressEvent(QKeyEvent *event)
 
 void WingWidget::mouseDoubleClickEvent (QMouseEvent *event)
 {
+	Q_UNUSED(event);
 
 }
 
@@ -131,12 +132,14 @@ void WingWidget::mousePressEvent(QMouseEvent *event)
 
 void WingWidget::mouseReleaseEvent(QMouseEvent *event)
 {
+	Q_UNUSED(event);
 	m_bTrans = false;
 }
 
 
 void WingWidget::paintEvent(QPaintEvent *event)
 {
+	Q_UNUSED(event);
 	QMiarex *pMiarex=(QMiarex*)s_pMiarex;
 	if(pMiarex->m_bResetTextLegend) pMiarex->drawTextLegend();
 
@@ -456,6 +459,7 @@ void WingWidget::paintXTr(QPainter & painter, QPointF ORef, double scale)
 
 void WingWidget::resizeEvent (QResizeEvent *event)
 {
+	Q_UNUSED(event);
 	QMiarex *pMiarex = (QMiarex*)s_pMiarex;
 	pMiarex->m_bResetTextLegend = true;
 	setWingScale();

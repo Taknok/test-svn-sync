@@ -67,6 +67,7 @@ void LegendWidget::setMiarexView(XFLR5::enumMiarexViews eMiarexView)
 
 void LegendWidget::paintEvent(QPaintEvent *event)
 {
+	Q_UNUSED(event);
 	QPainter painter(this);
 	painter.fillRect(rect(), Settings::backgroundColor());
 
@@ -883,6 +884,7 @@ void LegendWidget::mousePressEvent(QMouseEvent *event)
 
 void LegendWidget::mouseReleaseEvent(QMouseEvent *event)
 {
+	Q_UNUSED(event);
 	m_bTrans = false;
 	setCursor(Qt::CrossCursor);
 }

@@ -40,11 +40,11 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 	if(!pWingList) return;
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-	static int j, l ;
+	int j, l ;
 	static double x, xDistrib[SIDEPOINTS];
 	static CVector Pt, PtA, PtB, PtNormal, A, B, C, D, N, BD, AC;
-	static CVector PtILeft[2*SIDEPOINTS],PtIRight[2*SIDEPOINTS];
-	static Foil * pFoilA, *pFoilB;
+	static CVector PtILeft[SIDEPOINTS],PtIRight[SIDEPOINTS];
+	Foil * pFoilA, *pFoilB;
 
 	N.set(0.0, 0.0, 0.0);
 
@@ -85,75 +85,51 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 				glPolygonOffset(1.0, 1.0);
 
 				//top surface
+				PtNormal = CVector(0.0,0.0,1.0);
 				for (j=0; j<pWing->m_Surface.size(); j++)
 				{
+					pWing->m_Surface.at(j)->getSidePoints(TOPSURFACE, pBody, PtILeft, PtIRight, SIDEPOINTS);
 					glBegin(GL_QUAD_STRIP);
 					{
 						for (l=0; l<SIDEPOINTS; l++)
 						{
-							x = xDistrib[l];
-							pWing->m_Surface[j]->GetSurfacePointNormal(x,x,0.0,PtA, PtNormal,1);
-							pWing->m_Surface[j]->GetSurfacePointNormal(x,x,1.0,PtB, PtNormal,1);
-
-							if(pBody && pWing->m_Surface[j]->IsCenterSurf() && pWing->m_Surface[j]->IsLeftSurf())
-							{
-								pBody->intersect(PtA, PtB, PtB, false);
-								PtIRight[l] = PtB;
-							}
-							else if(pBody && pWing->m_Surface[j]->IsCenterSurf() && pWing->m_Surface[j]->IsRightSurf())
-							{
-								pBody->intersect(PtA, PtB, PtA, true);
-								PtILeft[l] = PtA;
-							}
-
 							glNormal3d(PtNormal.x, PtNormal.y, PtNormal.z);
-							glVertex3d(PtA.x, PtA.y, PtA.z);
-							glVertex3d(PtB.x, PtB.y, PtB.z);
+							glVertex3d(PtILeft[l].x, PtILeft[l].y, PtILeft[l].z);
+							glVertex3d(PtIRight[l].x, PtIRight[l].y, PtIRight[l].z);
 						}
 					}
 					glEnd();
 				}
 
+				PtNormal = CVector(0.0,0.0,-1.0);
 				//bottom surface
 				for (j=0; j<pWing->m_Surface.size(); j++)
 				{
+					pWing->m_Surface.at(j)->getSidePoints(BOTSURFACE, pBody, PtILeft, PtIRight, SIDEPOINTS);
 					glBegin(GL_QUAD_STRIP);
 					{
 						for (l=0; l<SIDEPOINTS; l++)
 						{
-							x = xDistrib[l];
-							pWing->m_Surface[j]->GetSurfacePointNormal(x,x,0.0,PtA, PtNormal,-1);
-							pWing->m_Surface[j]->GetSurfacePointNormal(x,x,1.0,PtB, PtNormal,-1);
-
-							if(pBody && pWing->m_Surface[j]->IsCenterSurf() && pWing->m_Surface[j]->IsLeftSurf())
-							{
-								pBody->intersect(PtA, PtB, PtB, false);
-								PtIRight[l+SIDEPOINTS] = PtB;
-							}
-							else if(pBody && pWing->m_Surface[j]->IsCenterSurf() && pWing->m_Surface[j]->IsRightSurf())
-							{
-								pBody->intersect(PtA, PtB, PtA, true);
-								PtILeft[l+SIDEPOINTS] = PtA;
-							}
 							glNormal3d(PtNormal.x, PtNormal.y, PtNormal.z);
-							glVertex3d(PtA.x, PtA.y, PtA.z);
-							glVertex3d(PtB.x, PtB.y, PtB.z);
+							glVertex3d(PtILeft[l].x, PtILeft[l].y, PtILeft[l].z);
+							glVertex3d(PtIRight[l].x, PtIRight[l].y, PtIRight[l].z);
 						}
 					}
 					glEnd();
 				}
 
+				//TIP SURFACES
 				for (j=0; j<pWing->m_Surface.size(); j++)
 				{
 					//Tip left surface
-					if(pWing->m_Surface[j]->IsTipLeft())
+					if(pWing->m_Surface[j]->isTipLeft())
 					{
 						glBegin(GL_QUAD_STRIP);
 						{
-							pWing->m_Surface[j]->GetPanel(0, 0, BOTSURFACE);
+							pWing->m_Surface[j]->getPanel(0, 0, BOTSURFACE);
 							C. copy(pWing->m_Surface[0]->LA);
 							D. copy(pWing->m_Surface[0]->TA);
-							pWing->m_Surface[j]->GetPanel(0, 0, TOPSURFACE);
+							pWing->m_Surface[j]->getPanel(0, 0, TOPSURFACE);
 							A. copy(pWing->m_Surface[0]->TA);
 							B. copy(pWing->m_Surface[0]->LA);
 
@@ -166,26 +142,26 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 							for (l=0; l<SIDEPOINTS; l++)
 							{
 								x = xDistrib[l];
-								pWing->m_Surface[j]->GetSurfacePointNormal(x,x,0.0,Pt, PtNormal,1);
+								pWing->m_Surface[j]->getSurfacePoint(x,x,0.0,TOPSURFACE, Pt, PtNormal);
 
 								glVertex3d(Pt.x, Pt.y, Pt.z);
 
-								pWing->m_Surface[j]->GetSurfacePointNormal(x,x,0.0,Pt, PtNormal,-1);
+								pWing->m_Surface[j]->getSurfacePoint(x,x,0.0,BOTSURFACE, Pt, PtNormal);
 								glVertex3d(Pt.x, Pt.y, Pt.z);
 							}
 						}
 						glEnd();
 					}
-					if (pWing->m_Surface[j]->IsTipRight() &&
+					if (pWing->m_Surface[j]->isTipRight() &&
 					   (!pWing->isFin() || (pWing->isFin()&&!pBody)) )
 					{
 						//Tip right surface
 						glBegin(GL_QUAD_STRIP);
 						{
-							pWing->m_Surface[j]->GetPanel(pWing->m_Surface[j]->m_NYPanels-1,0, TOPSURFACE);
+							pWing->m_Surface[j]->getPanel(pWing->m_Surface[j]->m_NYPanels-1,0, TOPSURFACE);
 							A. copy(pWing->m_Surface[0]->TB);
 							B. copy(pWing->m_Surface[0]->LB);
-							pWing->m_Surface[j]->GetPanel(pWing->m_Surface[j]->m_NYPanels-1,0, BOTSURFACE);
+							pWing->m_Surface[j]->getPanel(pWing->m_Surface[j]->m_NYPanels-1,0, BOTSURFACE);
 							C. copy(pWing->m_Surface[0]->LB);
 							D. copy(pWing->m_Surface[0]->TB);
 
@@ -198,11 +174,11 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 							for (l=0; l<SIDEPOINTS; l++)
 							{
 								x = xDistrib[l];
-								pWing->m_Surface[j]->GetSurfacePointNormal(x,x,1.0,Pt, PtNormal,1);
+								pWing->m_Surface[j]->getSurfacePoint(x,x,1.0,TOPSURFACE, Pt, PtNormal);
 
 								glVertex3d(Pt.x, Pt.y, Pt.z);
 
-								pWing->m_Surface[j]->GetSurfacePointNormal(x,x,1.0,Pt, PtNormal,-1);
+								pWing->m_Surface[j]->getSurfacePoint(x,x,1.0,BOTSURFACE, Pt, PtNormal);
 								glVertex3d(Pt.x, Pt.y, Pt.z);
 							}
 						}
@@ -230,132 +206,58 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 				else if(W3dPrefsDlg::s_OutlineStyle == 4) glLineStipple (1, 0x7E66);
 				else                                      glLineStipple (1, 0xFFFF);
 
-
 				glColor3d(W3dPrefsDlg::s_OutlineColor.redF(),W3dPrefsDlg::s_OutlineColor.greenF(),W3dPrefsDlg::s_OutlineColor.blueF());
 				glLineWidth((GLfloat)W3dPrefsDlg::s_OutlineWidth);
 
-				//TOP outline
 				for (j=0; j<pWing->m_Surface.size(); j++)
 				{
-					glBegin(GL_LINE_STRIP);
-					{
-						for (l=0; l<SIDEPOINTS; l++)
-						{
-							//top left surface outline
-							if(pBody && pWing->m_Surface[j]->IsCenterSurf() && pWing->m_Surface[j]->IsRightSurf())
-							{
-		//						pBody->Intersect(PtA, PtB, PtA, true);
-								PtA = PtILeft[l];
-							}
-							else
-							{
-								x = xDistrib[l];
-								pWing->m_Surface[j]->GetSurfacePointNormal(x ,x ,0.0, PtA, PtNormal, 1);
-								pWing->m_Surface[j]->GetSurfacePointNormal(x, x, 1.0, PtB, PtNormal, 1);
-							}
-							glVertex3d(PtA.x, PtA.y, PtA.z);
-						}
-					}
-					glEnd();
-					glBegin(GL_LINE_STRIP);
-					{
-						for (l=0; l<SIDEPOINTS; l++)
-						{
-							//bottom left surface outline
-							if(pBody && pWing->m_Surface[j]->IsCenterSurf() && pWing->m_Surface[j]->IsRightSurf())
-							{
-		//						pBody->Intersect(PtA, PtB, PtA, true);
-								PtA = PtILeft[l+SIDEPOINTS];
-							}
-							else
-							{
-								x = (double)l/(double)(SIDEPOINTS-1);
-								pWing->m_Surface[j]->GetSurfacePointNormal(x ,x ,0.0 ,PtA, PtNormal, -1);
-								pWing->m_Surface[j]->GetSurfacePointNormal(x, x, 1.0, PtB, PtNormal, -1);
-							}
+					pWing->m_Surface.at(j)->getSidePoints(TOPSURFACE, pBody, PtILeft, PtIRight, SIDEPOINTS);
 
-							glVertex3d(PtA.x, PtA.y, PtA.z);
-						}
+					// left foil
+					glBegin(GL_LINE_STRIP);
+					{
+						for (l=0; l<SIDEPOINTS; l++) glVertex3d(PtILeft[l].x, PtILeft[l].y, PtILeft[l].z);
 					}
 					glEnd();
 
+					//right foil
 					glBegin(GL_LINE_STRIP);
 					{
-						//top right surface outline
-						for (l=0; l<SIDEPOINTS; l++)
-						{
-							if(pBody && pWing->m_Surface[j]->IsCenterSurf() && pWing->m_Surface[j]->IsLeftSurf())
-							{
-		//						pBody->Intersect(PtA, PtB, PtB, false);
-								PtB = PtIRight[l];
-							}
-							else
-							{
-								x = xDistrib[l];
-								pWing->m_Surface[j]->GetSurfacePointNormal(x ,x ,0.0 ,PtA, PtNormal, 1);
-								pWing->m_Surface[j]->GetSurfacePointNormal(x, x, 1.0, PtB, PtNormal, 1);
-							}
-
-							glVertex3d(PtB.x, PtB.y, PtB.z);
-						}
+						for (l=0; l<SIDEPOINTS; l++) glVertex3d(PtIRight[l].x, PtIRight[l].y, PtIRight[l].z);
 					}
 					glEnd();
-					glBegin(GL_LINE_STRIP);
-					{
-						//bottom right surface outline
-						for (l=0; l<SIDEPOINTS; l++)
-						{
-							if(pBody && pWing->m_Surface[j]->IsCenterSurf() && pWing->m_Surface[j]->IsLeftSurf())
-							{
-		//						pBody->Intersect(PtA, PtB, PtB, false);
-								PtB = PtIRight[l+SIDEPOINTS];
-							}
-							else
-							{
-								x = xDistrib[l];
-								pWing->m_Surface[j]->GetSurfacePointNormal(x ,x ,0.0 ,PtA, PtNormal, -1);
-								pWing->m_Surface[j]->GetSurfacePointNormal(x, x, 1.0, PtB, PtNormal, -1);
-							}
 
-							glVertex3d(PtB.x, PtB.y, PtB.z);
-						}
-					}
-					glEnd();
-				}
-
-				//WingContour
-				//Leading edge outline
-				for (j=0; j<pWing->m_Surface.size(); j++)
-				{
+					//Leading edge
 					glBegin(GL_LINES);
 					{
-						pWing->m_Surface[j]->GetPanel(0,pWing->m_Surface[j]->m_NXPanels-1, MIDSURFACE);
-						glVertex3d(pWing->m_Surface[j]->LA.x,
-								   pWing->m_Surface[j]->LA.y,
-								   pWing->m_Surface[j]->LA.z);
-						pWing->m_Surface[j]->GetPanel( pWing->m_Surface[j]->m_NYPanels-1,pWing->m_Surface[j]->m_NXPanels-1, MIDSURFACE);
-						glVertex3d(pWing->m_Surface[j]->LB.x,
-								   pWing->m_Surface[j]->LB.y,
-								   pWing->m_Surface[j]->LB.z);
+						glVertex3d(PtILeft[0].x,  PtILeft[0].y,  PtILeft[0].z);
+						glVertex3d(PtIRight[0].x, PtIRight[0].y, PtIRight[0].z);
 					}
 					glEnd();
-				}
-				//Trailing edge outline
-				for (j=0; j<pWing->m_Surface.size(); j++)
-				{
+
 					glBegin(GL_LINES);
 					{
-						pWing->m_Surface[j]->GetPanel(0,0, MIDSURFACE);
-						glVertex3d(pWing->m_Surface[j]->TA.x,
-								   pWing->m_Surface[j]->TA.y,
-								   pWing->m_Surface[j]->TA.z);
-						pWing->m_Surface[j]->GetPanel( pWing->m_Surface[j]->m_NYPanels-1, 0, MIDSURFACE);
-						glVertex3d(pWing->m_Surface[j]->TB.x,
-								   pWing->m_Surface[j]->TB.y,
-								   pWing->m_Surface[j]->TB.z);
+						glVertex3d(PtILeft[SIDEPOINTS-1].x,  PtILeft[SIDEPOINTS-1].y,  PtILeft[SIDEPOINTS-1].z);
+						glVertex3d(PtIRight[SIDEPOINTS-1].x, PtIRight[SIDEPOINTS-1].y, PtIRight[SIDEPOINTS-1].z);
+					}
+					glEnd();
+
+					pWing->m_Surface.at(j)->getSidePoints(BOTSURFACE, pBody, PtILeft, PtIRight, SIDEPOINTS);
+					glBegin(GL_LINE_STRIP);
+					{
+						for (l=0; l<SIDEPOINTS; l++) glVertex3d(PtILeft[l].x, PtILeft[l].y, PtILeft[l].z);
+					}
+					glEnd();
+
+					glBegin(GL_LINE_STRIP);
+					{
+						for (l=0; l<SIDEPOINTS; l++) glVertex3d(PtIRight[l].x, PtIRight[l].y, PtIRight[l].z);
 					}
 					glEnd();
 				}
+
+
+
 				//flap outline....
 				for (j=0; j<pWing->m_Surface.size(); j++)
 				{
@@ -366,34 +268,34 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 						glBegin(GL_LINES);
 						{
 							if(pFoilA->m_bTEFlap)
-								pWing->m_Surface[j]->GetSurfacePoint(pWing->m_Surface[j]->m_pFoilA->m_TEXHinge/100.0,
-																	pWing->m_Surface[j]->m_pFoilA->m_TEXHinge/100.0,
-																	0.0, Pt, 1);
-							else 	pWing->m_Surface[j]->GetSurfacePoint(1.0, 1.0, 0.0, Pt, 1);
+								pWing->m_Surface[j]->getSurfacePoint(pWing->m_Surface[j]->m_pFoilA->m_TEXHinge/100.0,
+																	 pWing->m_Surface[j]->m_pFoilA->m_TEXHinge/100.0,
+																	 0.0, TOPSURFACE, Pt, N);
+							else pWing->m_Surface[j]->getSurfacePoint(1.0, 1.0, 0.0, TOPSURFACE, Pt, N);
 							glVertex3d(Pt.x, Pt.y, Pt.z);
 
 							if(pFoilB->m_bTEFlap)
-								pWing->m_Surface[j]->GetSurfacePoint(pWing->m_Surface[j]->m_pFoilB->m_TEXHinge/100.0,
-																	pWing->m_Surface[j]->m_pFoilB->m_TEXHinge/100.0,
-																	1.0, Pt, 1);
-							else 	pWing->m_Surface[j]->GetSurfacePoint(1.0, 1.0, 1.0, Pt, 1);
+								pWing->m_Surface[j]->getSurfacePoint(pWing->m_Surface[j]->m_pFoilB->m_TEXHinge/100.0,
+																	 pWing->m_Surface[j]->m_pFoilB->m_TEXHinge/100.0,
+																	 1.0, TOPSURFACE, Pt, N);
+							else pWing->m_Surface[j]->getSurfacePoint(1.0, 1.0, 1.0, TOPSURFACE, Pt, N);
 							glVertex3d(Pt.x, Pt.y, Pt.z);
 						}
 						glEnd();
 						glBegin(GL_LINES);
 						{
 							if(pFoilA->m_bTEFlap)
-								pWing->m_Surface[j]->GetSurfacePoint(pWing->m_Surface[j]->m_pFoilA->m_TEXHinge/100.0,
-																	pWing->m_Surface[j]->m_pFoilA->m_TEXHinge/100.0,
-																	0.0, Pt, -1);
-							else 	pWing->m_Surface[j]->GetSurfacePoint(1.0, 1.0, 0.0, Pt, -1);
+								pWing->m_Surface[j]->getSurfacePoint(pWing->m_Surface[j]->m_pFoilA->m_TEXHinge/100.0,
+																	 pWing->m_Surface[j]->m_pFoilA->m_TEXHinge/100.0,
+																	 0.0, BOTSURFACE, Pt, N);
+							else pWing->m_Surface[j]->getSurfacePoint(1.0, 1.0, 0.0, BOTSURFACE, Pt, N);
 							glVertex3d(Pt.x, Pt.y, Pt.z);
 
 							if(pFoilB->m_bTEFlap)
-								pWing->m_Surface[j]->GetSurfacePoint(pWing->m_Surface[j]->m_pFoilB->m_TEXHinge/100.0,
-																	pWing->m_Surface[j]->m_pFoilB->m_TEXHinge/100.0,
-																	1.0, Pt, -1);
-							else 	pWing->m_Surface[j]->GetSurfacePoint(1.0, 1.0, 1.0, Pt, -1);
+								pWing->m_Surface[j]->getSurfacePoint(pWing->m_Surface[j]->m_pFoilB->m_TEXHinge/100.0,
+																	 pWing->m_Surface[j]->m_pFoilB->m_TEXHinge/100.0,
+																	 1.0, BOTSURFACE, Pt, N);
+							else pWing->m_Surface[j]->getSurfacePoint(1.0, 1.0, 1.0, BOTSURFACE, Pt, N);
 							glVertex3d(Pt.x, Pt.y, Pt.z);
 						}
 						glEnd();
@@ -408,34 +310,34 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 						glBegin(GL_LINES);
 						{
 							if(pFoilA->m_bLEFlap)
-								pWing->m_Surface[j]->GetSurfacePoint(pWing->m_Surface[j]->m_pFoilA->m_LEXHinge/100.0,
-																	pWing->m_Surface[j]->m_pFoilA->m_LEXHinge/100.0,
-																	0.0, Pt, 1);
-							else 	pWing->m_Surface[j]->GetSurfacePoint(1.0, 1.0, 0.0, Pt, 1);
+								pWing->m_Surface[j]->getSurfacePoint(pWing->m_Surface[j]->m_pFoilA->m_LEXHinge/100.0,
+																	 pWing->m_Surface[j]->m_pFoilA->m_LEXHinge/100.0,
+																	 0.0, TOPSURFACE, Pt, N);
+							else pWing->m_Surface[j]->getSurfacePoint(1.0, 1.0, 0.0, TOPSURFACE, Pt, N);
 							glVertex3d(Pt.x, Pt.y, Pt.z);
 
 							if(pFoilB->m_bLEFlap)
-								pWing->m_Surface[j]->GetSurfacePoint(pWing->m_Surface[j]->m_pFoilB->m_LEXHinge/100.0,
-																	pWing->m_Surface[j]->m_pFoilB->m_LEXHinge/100.0,
-																	1.0, Pt, 1);
-							else 	pWing->m_Surface[j]->GetSurfacePoint(1.0, 1.0, 1.0, Pt, 1);
+								pWing->m_Surface[j]->getSurfacePoint(pWing->m_Surface[j]->m_pFoilB->m_LEXHinge/100.0,
+																	 pWing->m_Surface[j]->m_pFoilB->m_LEXHinge/100.0,
+																	 1.0, TOPSURFACE, Pt, N);
+							else pWing->m_Surface[j]->getSurfacePoint(1.0, 1.0, 1.0, TOPSURFACE, Pt, N);
 							glVertex3d(Pt.x, Pt.y, Pt.z);
 						}
 						glEnd();
 						glBegin(GL_LINES);
 						{
 							if(pFoilA->m_bLEFlap)
-								pWing->m_Surface[j]->GetSurfacePoint(pWing->m_Surface[j]->m_pFoilA->m_LEXHinge/100.0,
-																	pWing->m_Surface[j]->m_pFoilA->m_LEXHinge/100.0,
-																	0.0, Pt, -1);
-							else pWing->m_Surface[j]->GetSurfacePoint(1.0, 1.0, 0.0, Pt, -1);
+								pWing->m_Surface[j]->getSurfacePoint(pWing->m_Surface[j]->m_pFoilA->m_LEXHinge/100.0,
+																	 pWing->m_Surface[j]->m_pFoilA->m_LEXHinge/100.0,
+																	 0.0, BOTSURFACE, Pt, N);
+							else pWing->m_Surface[j]->getSurfacePoint(1.0, 1.0, 0.0, BOTSURFACE, Pt, N);
 							glVertex3d(Pt.x, Pt.y, Pt.z);
 
 							if(pFoilB->m_bLEFlap)
-								pWing->m_Surface[j]->GetSurfacePoint(pWing->m_Surface[j]->m_pFoilB->m_LEXHinge/100.0,
-																	pWing->m_Surface[j]->m_pFoilB->m_LEXHinge/100.0,
-																	1.0, Pt, -1);
-							else pWing->m_Surface[j]->GetSurfacePoint(1.0, 1.0, 1.0, Pt, -1);
+								pWing->m_Surface[j]->getSurfacePoint(pWing->m_Surface[j]->m_pFoilB->m_LEXHinge/100.0,
+																	 pWing->m_Surface[j]->m_pFoilB->m_LEXHinge/100.0,
+																	 1.0, BOTSURFACE, Pt, N);
+							else pWing->m_Surface[j]->getSurfacePoint(1.0, 1.0, 1.0, BOTSURFACE, Pt, N);
 							glVertex3d(Pt.x, Pt.y, Pt.z);
 						}
 						glEnd();
@@ -740,7 +642,7 @@ void GLCreateDownwash(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 					for (k=0; k< pWing->m_Surface[j]->m_NYPanels; k++)
 					{
 //						m_pSurface[j+surf0]->GetTrailingPt(k, C);
-						pWing->m_Surface[j]->GetTrailingPt(k, C);
+						pWing->m_Surface[j]->getTrailingPt(k, C);
 //						if (pWOpp->m_Vd[i].z>0) sign = 1.0; else sign = -1.0;
 						glBegin(GL_LINES);
 						{
@@ -958,7 +860,7 @@ void GLCreateDrag(Wing *pWing, WPolar* pWPolar, WingOpp *pWOpp, int List)
 					//All surfaces
 					for (k=0; k< pWing->m_Surface[j]->m_NYPanels; k++)
 					{
-						pWing->m_Surface[j]->GetTrailingPt(k, C);
+						pWing->m_Surface[j]->getTrailingPt(k, C);
 						amp1 = q0*pWOpp->m_ICd[i]*pWOpp->m_Chord[i]/pWing->m_MAChord*QMiarex::s_DragScale/coef;
 						amp2 = q0*pWOpp->m_PCd[i]*pWOpp->m_Chord[i]/pWing->m_MAChord*QMiarex::s_DragScale/coef;
 						if(QMiarex::s_bICd)
@@ -1019,7 +921,7 @@ void GLCreateDrag(Wing *pWing, WPolar* pWPolar, WingOpp *pWOpp, int List)
 							{
 								for (k=0; k< pWing->m_Surface[j]->m_NYPanels; k++)
 								{
-									pWing->m_Surface[j]->GetTrailingPt(k, C);
+									pWing->m_Surface[j]->getTrailingPt(k, C);
                                     amp = q0*(pWOpp->m_ICd[i]*pWOpp->m_Chord[i])/pWing->m_MAChord;
 									amp *= QMiarex::s_DragScale/coef;
 									glVertex3d(C.x + amp*cosa*cosb,
@@ -1043,7 +945,7 @@ void GLCreateDrag(Wing *pWing, WPolar* pWPolar, WingOpp *pWOpp, int List)
 							{
 								for (k=0; k< pWing->m_Surface[j]->m_NYPanels; k++)
 								{
-									pWing->m_Surface[j]->GetTrailingPt(k, C);
+									pWing->m_Surface[j]->getTrailingPt(k, C);
 									amp=0.0;
 									if(QMiarex::s_bICd) amp+=pWOpp->m_ICd[i];
 									amp +=pWOpp->m_PCd[i];
@@ -1074,7 +976,7 @@ void GLCreateDrag(Wing *pWing, WPolar* pWPolar, WingOpp *pWOpp, int List)
 							{
 								for (k=0; k< pWing->m_Surface[j]->m_NYPanels; k++)
 								{
-									pWing->m_Surface[j]->GetTrailingPt(k, C);
+									pWing->m_Surface[j]->getTrailingPt(k, C);
                                     amp = q0*(pWOpp->m_ICd[i]*pWOpp->m_Chord[i])/pWing->m_MAChord;
 									amp *= QMiarex::s_DragScale/coef;
 									glVertex3d(C.x + amp*cosa*cosb,
@@ -1098,7 +1000,7 @@ void GLCreateDrag(Wing *pWing, WPolar* pWPolar, WingOpp *pWOpp, int List)
 							{
 								for (k=0; k< pWing->m_Surface[j]->m_NYPanels; k++)
 								{
-									pWing->m_Surface[j]->GetTrailingPt(k, C);
+									pWing->m_Surface[j]->getTrailingPt(k, C);
 									amp=0.0;
 									if(QMiarex::s_bICd) amp+=pWOpp->m_ICd[i];
 									amp +=pWOpp->m_PCd[i];
@@ -1642,9 +1544,9 @@ void GLCreateLiftStrip(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 				{
 					for (k=0; k< pWing->m_Surface[j]->m_NYPanels; k++)
 					{
-						pWing->m_Surface[j]->GetLeadingPt(k, C);
-						amp = pWing->m_Surface[j]->GetChord(k) / pWOpp->m_StripArea[i] / pWing->m_MAChord * QMiarex::s_LiftScale/1000.0;
-						C.x += pWOpp->m_XCPSpanRel[i] * pWing->m_Surface[j]->GetChord(k);
+						pWing->m_Surface[j]->getLeadingPt(k, C);
+						amp = pWing->m_Surface[j]->chord(k) / pWOpp->m_StripArea[i] / pWing->m_MAChord * QMiarex::s_LiftScale/1000.0;
+						C.x += pWOpp->m_XCPSpanRel[i] * pWing->m_Surface[j]->chord(k);
 
 						glBegin(GL_LINES);
 						{
@@ -1670,9 +1572,9 @@ void GLCreateLiftStrip(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 							glVertex3d(CL.x, CL.y, CL.z);
 
 							k=0;
-							pWing->m_Surface[j]->GetLeadingPt(k, C);
-							amp = pWing->m_Surface[j]->GetChord(k) / pWOpp->m_StripArea[i] / pWing->m_MAChord * QMiarex::s_LiftScale/1000.0;
-							C.x += pWOpp->m_XCPSpanRel[i] * pWing->m_Surface[j]->GetChord(k);
+							pWing->m_Surface[j]->getLeadingPt(k, C);
+							amp = pWing->m_Surface[j]->chord(k) / pWOpp->m_StripArea[i] / pWing->m_MAChord * QMiarex::s_LiftScale/1000.0;
+							C.x += pWOpp->m_XCPSpanRel[i] * pWing->m_Surface[j]->chord(k);
 							glVertex3d(C.x + pWOpp->m_F[i].x*amp,
 									 C.y + pWOpp->m_F[i].y*amp,
 									 C.z + pWOpp->m_F[i].z*amp);
@@ -1684,9 +1586,9 @@ void GLCreateLiftStrip(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 					{
 						for (k=0; k< pWing->m_Surface[j]->m_NYPanels; k++)
 						{
-							pWing->m_Surface[j]->GetLeadingPt(k, C);
-							amp = pWing->m_Surface[j]->GetChord(k) / pWOpp->m_StripArea[i] / pWing->m_MAChord * QMiarex::s_LiftScale/1000.0;
-							C.x += pWOpp->m_XCPSpanRel[i] * pWing->m_Surface[j]->GetChord(k);
+							pWing->m_Surface[j]->getLeadingPt(k, C);
+							amp = pWing->m_Surface[j]->chord(k) / pWOpp->m_StripArea[i] / pWing->m_MAChord * QMiarex::s_LiftScale/1000.0;
+							C.x += pWOpp->m_XCPSpanRel[i] * pWing->m_Surface[j]->chord(k);
 							CL.x = C.x + pWOpp->m_F[i].x*amp;
 							CL.y = C.y + pWOpp->m_F[i].y*amp;
 							CL.z = C.z + pWOpp->m_F[i].z*amp;
@@ -1709,7 +1611,7 @@ void GLCreateTrans(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
     if(!pWing || !pWPolar || !pWOpp) return;
     int i,j,k,m, style;
     double yrel, xt, yt, zt, yob ;
-    CVector Pt;
+	CVector Pt, N;
 
 
     //TOP TRANSITION
@@ -1759,7 +1661,7 @@ void GLCreateTrans(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 							for(k=0; k<pWing->m_Surface[j]->m_NYPanels; k++)
 							{
 								yrel = pWing->yrel(pWOpp->m_SpanPos[m]);
-								pWing->m_Surface[j]->GetSurfacePoint(pWOpp->m_XTrTop[m],pWOpp->m_XTrTop[m],yrel,Pt,1);
+								pWing->m_Surface[j]->getSurfacePoint(pWOpp->m_XTrTop[m],pWOpp->m_XTrTop[m],yrel,TOPSURFACE,Pt,N);
 								glVertex3d(Pt.x, Pt.y, Pt.z);
 								m++;
 							}
@@ -1777,7 +1679,7 @@ void GLCreateTrans(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 							for(k=0; k<pWing->m_Surface[j]->m_NYPanels; k++)
 							{
 								yrel = pWing->yrel(pWOpp->m_SpanPos[m]);
-								pWing->m_Surface[j]->GetSurfacePoint(pWOpp->m_XTrTop[m],pWOpp->m_XTrTop[m],yrel,Pt,1);
+								pWing->m_Surface[j]->getSurfacePoint(pWOpp->m_XTrTop[m],pWOpp->m_XTrTop[m],yrel,TOPSURFACE,Pt,N);
 								glVertex3d(Pt.x, Pt.y, Pt.z);
 
 								m++;
@@ -1838,7 +1740,7 @@ void GLCreateTrans(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 							for(k=0; k<pWing->m_Surface[j]->m_NYPanels; k++)
 							{
 								yrel = pWing->yrel(pWOpp->m_SpanPos[m]);
-								pWing->m_Surface[j]->GetSurfacePoint(pWOpp->m_XTrBot[m],pWOpp->m_XTrBot[m],yrel,Pt,-1);
+								pWing->m_Surface[j]->getSurfacePoint(pWOpp->m_XTrBot[m],pWOpp->m_XTrBot[m],yrel,BOTSURFACE,Pt,N);
 								glVertex3d(Pt.x, Pt.y, Pt.z);
 								m++;
 							}
@@ -1856,7 +1758,7 @@ void GLCreateTrans(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 							for(k=0; k<pWing->m_Surface[j]->m_NYPanels; k++)
 							{
 								yrel = pWing->yrel(pWOpp->m_SpanPos[m]);
-								pWing->m_Surface[j]->GetSurfacePoint(pWOpp->m_XTrBot[m],pWOpp->m_XTrBot[m],yrel,Pt,-1);
+								pWing->m_Surface[j]->getSurfacePoint(pWOpp->m_XTrBot[m],pWOpp->m_XTrBot[m],yrel,BOTSURFACE,Pt,N);
 								glVertex3d(Pt.x, Pt.y, Pt.z);
 								m++;
 							}
@@ -2508,7 +2410,7 @@ void GLCreateMesh(Wing *pWingList[MAXWINGS])
 						{
 							for (l=0; l<pWing->m_Surface.at(j)->m_NXPanels; l++)
 							{
-								pWing->m_Surface.at(j)->GetPanel(k,l,TOPSURFACE);
+								pWing->m_Surface.at(j)->getPanel(k,l,TOPSURFACE);
 
 								LATB = pWing->m_Surface.at(j)->TB - pWing->m_Surface.at(j)->LA;
 								TALB = pWing->m_Surface.at(j)->LB - pWing->m_Surface.at(j)->TA;
@@ -2527,7 +2429,7 @@ void GLCreateMesh(Wing *pWingList[MAXWINGS])
 
 							for (l=pWing->m_Surface.at(j)->m_NXPanels-1; l>=0; l--)
 							{
-								pWing->m_Surface.at(j)->GetPanel(k,l,BOTSURFACE);
+								pWing->m_Surface.at(j)->getPanel(k,l,BOTSURFACE);
 
 								LATB = pWing->m_Surface.at(j)->TB - pWing->m_Surface.at(j)->LA;
 								TALB = pWing->m_Surface.at(j)->LB - pWing->m_Surface.at(j)->TA;
@@ -2556,16 +2458,16 @@ void GLCreateMesh(Wing *pWingList[MAXWINGS])
 				//tip patches
 				for (j=0; j<pWing->m_Surface.size(); j++)
 				{
-					if(pWing->m_Surface.at(j)->IsTipLeft())
+					if(pWing->m_Surface.at(j)->isTipLeft())
 					{
 						for (l=0; l<pWing->m_Surface.at(j)->m_NXPanels; l++)
 						{
 							glBegin(GL_QUADS);
 							{
-								pWing->m_Surface.at(j)->GetPanel(0,l,TOPSURFACE);
+								pWing->m_Surface.at(j)->getPanel(0,l,TOPSURFACE);
 								A = pWing->m_Surface.at(j)->TA;
 								B = pWing->m_Surface.at(j)->LA;
-								pWing->m_Surface.at(j)->GetPanel(0,l,BOTSURFACE);
+								pWing->m_Surface.at(j)->getPanel(0,l,BOTSURFACE);
 								C = pWing->m_Surface.at(j)->LA;
 								D = pWing->m_Surface.at(j)->TA;
 
@@ -2584,16 +2486,16 @@ void GLCreateMesh(Wing *pWingList[MAXWINGS])
 							glEnd();
 						}
 					}
-					if(pWing->m_Surface.at(j)->IsTipRight())
+					if(pWing->m_Surface.at(j)->isTipRight())
 					{
 						for (l=0; l<pWing->m_Surface.at(j)->m_NXPanels; l++)
 						{
 							glBegin(GL_QUADS);
 							{
-								pWing->m_Surface.at(j)->GetPanel(pWing->m_Surface.at(j)->m_NYPanels-1,l,TOPSURFACE);
+								pWing->m_Surface.at(j)->getPanel(pWing->m_Surface.at(j)->m_NYPanels-1,l,TOPSURFACE);
 								A = pWing->m_Surface.at(j)->TB;
 								B = pWing->m_Surface.at(j)->LB;
-								pWing->m_Surface.at(j)->GetPanel(pWing->m_Surface.at(j)->m_NYPanels-1,l,BOTSURFACE);
+								pWing->m_Surface.at(j)->getPanel(pWing->m_Surface.at(j)->m_NYPanels-1,l,BOTSURFACE);
 								C = pWing->m_Surface.at(j)->LB;
 								D = pWing->m_Surface.at(j)->TB;
 
@@ -2655,7 +2557,7 @@ void GLCreateMesh(Wing *pWingList[MAXWINGS])
 						{
 							for (l=0; l<pWing->m_Surface.at(j)->m_NXPanels; l++)
 							{
-								pWing->m_Surface.at(j)->GetPanel(k,l,TOPSURFACE);
+								pWing->m_Surface.at(j)->getPanel(k,l,TOPSURFACE);
 
 								LATB = pWing->m_Surface.at(j)->TB - pWing->m_Surface.at(j)->LA;
 								TALB = pWing->m_Surface.at(j)->LB - pWing->m_Surface.at(j)->TA;
@@ -2674,7 +2576,7 @@ void GLCreateMesh(Wing *pWingList[MAXWINGS])
 
 							for (l=pWing->m_Surface.at(j)->m_NXPanels-1; l>=0; l--)
 							{
-								pWing->m_Surface.at(j)->GetPanel(k,l,BOTSURFACE);
+								pWing->m_Surface.at(j)->getPanel(k,l,BOTSURFACE);
 
 								LATB = pWing->m_Surface.at(j)->TB - pWing->m_Surface.at(j)->LA;
 								TALB = pWing->m_Surface.at(j)->LB - pWing->m_Surface.at(j)->TA;
@@ -2703,16 +2605,16 @@ void GLCreateMesh(Wing *pWingList[MAXWINGS])
 
 				for (j=0; j<pWing->m_Surface.size(); j++)
 				{
-					if(pWing->m_Surface.at(j)->IsTipLeft())
+					if(pWing->m_Surface.at(j)->isTipLeft())
 					{
 						for (l=0; l<pWing->m_Surface.at(j)->m_NXPanels; l++)
 						{
 							glBegin(GL_QUADS);
 							{
-								pWing->m_Surface.at(j)->GetPanel(0,l,TOPSURFACE);
+								pWing->m_Surface.at(j)->getPanel(0,l,TOPSURFACE);
 								A = pWing->m_Surface.at(j)->TA;
 								B = pWing->m_Surface.at(j)->LA;
-								pWing->m_Surface.at(j)->GetPanel(0,l,BOTSURFACE);
+								pWing->m_Surface.at(j)->getPanel(0,l,BOTSURFACE);
 								C = pWing->m_Surface.at(j)->LA;
 								D = pWing->m_Surface.at(j)->TA;
 
@@ -2731,16 +2633,16 @@ void GLCreateMesh(Wing *pWingList[MAXWINGS])
 							glEnd();
 						}
 					}
-					if(pWing->m_Surface.at(j)->IsTipRight())
+					if(pWing->m_Surface.at(j)->isTipRight())
 					{
 						for (l=0; l<pWing->m_Surface.at(j)->m_NXPanels; l++)
 						{
 							glBegin(GL_QUADS);
 							{
-								pWing->m_Surface.at(j)->GetPanel(pWing->m_Surface.at(j)->m_NYPanels-1,l,TOPSURFACE);
+								pWing->m_Surface.at(j)->getPanel(pWing->m_Surface.at(j)->m_NYPanels-1,l,TOPSURFACE);
 								A = pWing->m_Surface.at(j)->TB;
 								B = pWing->m_Surface.at(j)->LB;
-								pWing->m_Surface.at(j)->GetPanel(pWing->m_Surface.at(j)->m_NYPanels-1,l,BOTSURFACE);
+								pWing->m_Surface.at(j)->getPanel(pWing->m_Surface.at(j)->m_NYPanels-1,l,BOTSURFACE);
 								C = pWing->m_Surface.at(j)->LB;
 								D = pWing->m_Surface.at(j)->TB;
 
@@ -2802,7 +2704,7 @@ void GLCreateSectionHighlight(int List, Wing *m_pWing, int highlightSection, boo
 			{
 				for (int lx=0; lx<m_pWing->m_Surface.at(jSurf)->m_NXPanels; lx++)
 				{
-					m_pWing->m_Surface.at(jSurf)->GetPanel(m_pWing->m_Surface.at(jSurf)->m_NYPanels-1, lx, TOPSURFACE);
+					m_pWing->m_Surface.at(jSurf)->getPanel(m_pWing->m_Surface.at(jSurf)->m_NYPanels-1, lx, TOPSURFACE);
 					glVertex3d(m_pWing->m_Surface.at(jSurf)->TB.x,
 							   m_pWing->m_Surface.at(jSurf)->TB.y,
 							   m_pWing->m_Surface.at(jSurf)->TB.z);
@@ -2814,7 +2716,7 @@ void GLCreateSectionHighlight(int List, Wing *m_pWing, int highlightSection, boo
 
 				for (int lx=m_pWing->m_Surface.at(jSurf)->m_NXPanels-1; lx>=0; lx--)
 				{
-					m_pWing->m_Surface.at(jSurf)->GetPanel(m_pWing->m_Surface.at(jSurf)->m_NYPanels-1, lx, BOTSURFACE);
+					m_pWing->m_Surface.at(jSurf)->getPanel(m_pWing->m_Surface.at(jSurf)->m_NYPanels-1, lx, BOTSURFACE);
 					glVertex3d(m_pWing->m_Surface.at(jSurf)->TB.x,
 							   m_pWing->m_Surface.at(jSurf)->TB.y,
 							   m_pWing->m_Surface.at(jSurf)->TB.z);
@@ -2832,7 +2734,7 @@ void GLCreateSectionHighlight(int List, Wing *m_pWing, int highlightSection, boo
 				{
 					for (int lx=0; lx<m_pWing->m_Surface.at(jSurf)->m_NXPanels; lx++)
 					{
-						m_pWing->m_Surface.at(jSurf)->GetPanel(m_pWing->m_Surface.at(jSurf)->m_NYPanels-1, lx, TOPSURFACE);
+						m_pWing->m_Surface.at(jSurf)->getPanel(m_pWing->m_Surface.at(jSurf)->m_NYPanels-1, lx, TOPSURFACE);
 						glVertex3d(m_pWing->m_Surface.at(jSurf)->TB.x,
 								 m_pWing->m_Surface.at(jSurf)->TB.y,
 								 m_pWing->m_Surface.at(jSurf)->TB.z);
@@ -2844,7 +2746,7 @@ void GLCreateSectionHighlight(int List, Wing *m_pWing, int highlightSection, boo
 
 					for (int lx=m_pWing->m_Surface.at(jSurf)->m_NXPanels-1; lx>=0; lx--)
 					{
-						m_pWing->m_Surface.at(jSurf)->GetPanel(m_pWing->m_Surface.at(jSurf)->m_NYPanels-1, lx, BOTSURFACE);
+						m_pWing->m_Surface.at(jSurf)->getPanel(m_pWing->m_Surface.at(jSurf)->m_NYPanels-1, lx, BOTSURFACE);
 						glVertex3d(m_pWing->m_Surface.at(jSurf)->TB.x,
 								 m_pWing->m_Surface.at(jSurf)->TB.y,
 								 m_pWing->m_Surface.at(jSurf)->TB.z);
@@ -2863,7 +2765,7 @@ void GLCreateSectionHighlight(int List, Wing *m_pWing, int highlightSection, boo
 				{
 					for (int lx=0; lx<m_pWing->m_Surface.at(jSurf)->m_NXPanels; lx++)
 					{
-						m_pWing->m_Surface.at(jSurf)->GetPanel(0, lx, TOPSURFACE);
+						m_pWing->m_Surface.at(jSurf)->getPanel(0, lx, TOPSURFACE);
 						glVertex3d(m_pWing->m_Surface.at(jSurf)->TA.x,
 								   m_pWing->m_Surface.at(jSurf)->TA.y,
 								   m_pWing->m_Surface.at(jSurf)->TA.z);
@@ -2875,7 +2777,7 @@ void GLCreateSectionHighlight(int List, Wing *m_pWing, int highlightSection, boo
 
 					for (int lx=m_pWing->m_Surface.at(jSurf)->m_NXPanels-1; lx>=0; lx--)
 					{
-						m_pWing->m_Surface.at(jSurf)->GetPanel(0, lx, BOTSURFACE);
+						m_pWing->m_Surface.at(jSurf)->getPanel(0, lx, BOTSURFACE);
 						glVertex3d(m_pWing->m_Surface.at(jSurf)->TA.x,
 								   m_pWing->m_Surface.at(jSurf)->TA.y,
 								   m_pWing->m_Surface.at(jSurf)->TA.z);

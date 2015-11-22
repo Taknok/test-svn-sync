@@ -514,6 +514,8 @@ void QXDirect::fillComboBoxes(bool bEnable)
 
 	m_pPointDelegate->setLineStyle(LineStyle); //the same selected style for all widths
 	m_pPointDelegate->setLineWidth(LineWidth); // the same selected width for all styles
+	for (int i=0; i<5;i++) PointStyle[i]=i;
+	m_pPointDelegate->setPointStyle(PointStyle);
 	m_pPointDelegate->setLineColor(m_LineStyle.m_Color);
 
 	m_pctrlCurveStyle->setLine(m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);

@@ -3019,8 +3019,8 @@ void PanelAnalysis::forces(double *Mu, double *Sigma, double alpha, double *VInf
 			{
 				//add the viscous drag component to force and moment
 				qdyn = 0.5 * m_pWPolar->density() * QInfStrip * QInfStrip;
-				m_ppSurface->at(j)->GetC4(k, PtC4, tau);
-				Re = m_ppSurface->at(j)->GetChord(tau) * QInfStrip /m_pWPolar->m_Viscosity;
+				m_ppSurface->at(j)->getC4(k, PtC4, tau);
+				Re = m_ppSurface->at(j)->chord(tau) * QInfStrip /m_pWPolar->m_Viscosity;
 				Cl = StripForce.dot(WindNormal)*m_pWPolar->density()/qdyn/StripArea;
 				PCd    = GetVar(2, m_ppSurface->at(j)->m_pFoilA, m_ppSurface->at(j)->m_pFoilB, Re, Cl, tau, bOutRe, bError);
 				PCd   *= StripArea * 1/2*QInfStrip*QInfStrip;                // Newtons/rho
@@ -3871,7 +3871,7 @@ void PanelAnalysis::computeControlDerivatives()
 				Quat.Set(SignedDeltaAngle*180.0/PI, m_ppSurface->at(j)->m_HingeVector);
 				for(p=0; p<m_MatSize;p++)
 				{
-					if(m_ppSurface->at(j)->IsFlapPanel(p))
+					if(m_ppSurface->at(j)->isFlapPanel(p))
 					{
 						m_pPanel[p].RotateBC(m_ppSurface->at(j)->m_HingePoint, Quat);
 					}

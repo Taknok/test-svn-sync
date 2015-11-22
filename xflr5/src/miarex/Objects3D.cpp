@@ -368,7 +368,7 @@ bool Objects3D::initializePanels(Plane *pPlane, WPolar *pWPolar)
 			pWingList[iw]->m_MatSize = 0;
 			for(int jSurf=0; jSurf<pWingList[iw]->m_Surface.size(); jSurf++)
 			{
-				pWingList[iw]->m_Surface.at(jSurf)->ResetFlap();
+				pWingList[iw]->m_Surface.at(jSurf)->resetFlap();
 				Nel = createWingElements(pPlane, pWPolar, pWingList[iw]->m_Surface.at(jSurf));
 				pWingList[iw]->m_MatSize += Nel;
 			}
@@ -1360,11 +1360,11 @@ int Objects3D::createWingElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurf
 			s_Panel[s_MatSize].m_bIsWakePanel   = false;
 			s_Panel[s_MatSize].m_bIsInSymPlane  = false; //even if part of a fin
 
-			pSurface->GetPanel(0, l, BOTSURFACE);
+			pSurface->getPanel(0, l, BOTSURFACE);
 			LA.copy(pSurface->LA);
 			TA.copy(pSurface->TA);
 
-			pSurface->GetPanel(0, l, TOPSURFACE);
+			pSurface->getPanel(0, l, TOPSURFACE);
 			LB.copy(pSurface->LA);
 			TB.copy(pSurface->TA);
 
@@ -1425,7 +1425,7 @@ int Objects3D::createWingElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurf
 		//from T.E. to L.E.
 		for (l=0; l<pSurface->m_NXPanels; l++)
 		{
-			pSurface->GetPanel(k,l,side);
+			pSurface->getPanel(k,l,side);
 
 			n0 = isNode(pSurface->LA);
 			n1 = isNode(pSurface->TA);
@@ -1529,7 +1529,7 @@ int Objects3D::createWingElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurf
 				}
 			}
 
-			if(l<pSurface->m_NXFlap) pSurface->AddFlapPanel(s_Panel+s_MatSize);
+			if(l<pSurface->m_NXFlap) pSurface->addFlapPanel(s_Panel+s_MatSize);
 
 			s_MatSize++;
 		}
@@ -1541,7 +1541,7 @@ int Objects3D::createWingElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurf
 			//from L.E. to T.E.
 			for (l=pSurface->m_NXPanels-1;l>=0; l--)
 			{
-				pSurface->GetPanel(k,l,side);
+				pSurface->getPanel(k,l,side);
 				n0 = isNode(pSurface->LA);
 				n1 = isNode(pSurface->TA);
 				n2 = isNode(pSurface->LB);
@@ -1616,7 +1616,7 @@ int Objects3D::createWingElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurf
 					createWakeElems(s_MatSize, pPlane, pWPolar);
 				}
 
-				if(l<pSurface->m_NXFlap) pSurface->AddFlapPanel(s_Panel+s_MatSize);
+				if(l<pSurface->m_NXFlap) pSurface->addFlapPanel(s_Panel+s_MatSize);
 				s_MatSize++;
 			}
 			s_NWakeColumn++;
@@ -1633,11 +1633,11 @@ int Objects3D::createWingElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurf
 			s_Panel[s_MatSize].m_bIsWakePanel   = false;
 			s_Panel[s_MatSize].m_bIsInSymPlane  = false;//even if part of a fin
 
-			pSurface->GetPanel(k,l,TOPSURFACE);
+			pSurface->getPanel(k,l,TOPSURFACE);
 			LA.copy(pSurface->LB);
 			TA.copy(pSurface->TB);
 
-			pSurface->GetPanel(k,l,BOTSURFACE);
+			pSurface->getPanel(k,l,BOTSURFACE);
 			LB.copy(pSurface->LB);
 			TB.copy(pSurface->TB);
 
@@ -2457,7 +2457,7 @@ WPolar* Objects3D::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar, bool bC
 				{
 					for(k=0; k<pWingList[iw]->m_Surface.at(j)->m_NYPanels; k++)
 					{
-						pWingList[iw]->m_SpanPos[m+NStation/2] = SpanPos + pWingList[iw]->m_Surface.at(j)->GetStripSpanPos(k);
+						pWingList[iw]->m_SpanPos[m+NStation/2] = SpanPos + pWingList[iw]->m_Surface.at(j)->stripSpanPos(k);
 						m++;
 					}
 					SpanPos += pWingList[iw]->m_Surface.at(j)->m_Length;
@@ -2772,7 +2772,7 @@ void Objects3D::setControlPositions(Plane *pPlane, WPolar *pWPolar, Panel *pPane
 							{
 								for(int p=0; p<s_MatSize; p++)
 								{
-									if(pWing->m_Surface.at(j)->IsFlapPanel(p))
+									if(pWing->m_Surface.at(j)->isFlapPanel(p))
 									{
 										memcpy(pPanel+p, s_MemPanel+p, sizeof(Panel));
 										pPanel[p].RotateBC(pWing->m_Surface.at(j)->m_HingePoint, Quat);
@@ -2783,7 +2783,7 @@ void Objects3D::setControlPositions(Plane *pPlane, WPolar *pWPolar, Panel *pPane
 							{
 								for(int n=0; n<s_nNodes; n++)
 								{
-									if(pWing->m_Surface.at(j)->IsFlapNode(n))
+									if(pWing->m_Surface.at(j)->isFlapNode(n))
 									{
 										pNode[n].copy(s_MemNode[n]);
 										W = pNode[n] - pWing->m_Surface.at(j)->m_HingePoint;
@@ -2793,7 +2793,7 @@ void Objects3D::setControlPositions(Plane *pPlane, WPolar *pWPolar, Panel *pPane
 								}
 								for(int p=0; p<s_MatSize; p++)
 								{
-									if(pWing->m_Surface.at(j)->IsFlapPanel(p)) s_Panel[p].SetPanelFrame();
+									if(pWing->m_Surface.at(j)->isFlapPanel(p)) s_Panel[p].SetPanelFrame();
 								}
 							}
 						}
@@ -2929,7 +2929,7 @@ Plane * Objects3D::setPlaneObject(QString PlaneName, Plane *pCurPlane)
 			else if(iw==3)   pPlane->wing(iw)->createSurfaces(pPlane->WingLE(iw), -90.0, pPlane->WingTiltAngle(iw));
 			for (j=0; j<pPlane->wing(iw)->m_Surface.size(); j++)
 			{
-				pPlane->wing(iw)->m_Surface.at(j)->SetSidePoints(pCurBody, dx, dz);
+				pPlane->wing(iw)->m_Surface.at(j)->setSidePoints(pCurBody, dx, dz);
 				s_SurfaceList.append(pPlane->wing(iw)->m_Surface.at(j));
 			}
 			pPlane->wing(iw)->computeBodyAxisInertia();

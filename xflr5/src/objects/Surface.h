@@ -108,61 +108,63 @@ public:
 
 	Surface();
 
-	void AddFlapPanel(Panel *pPanel);
-	void Copy(Surface *pSurface);
-	void GetC4(int k, CVector &Pt, double &tau);
-	void GetLeadingPt(int k, CVector &C);
-	void GetNormal(double yrel, CVector &N);
-	void GetTrailingPt(int k, CVector &C);
-	void GetPanel(int const &k, int const &l, const enumPanelPosition &pos);
-	void GetSurfacePoint(double const &xArel, double const &xBrel, double const &yrel, CVector &Point, int const &pos=0);
-	void GetSurfacePointNormal(double const &xArel, double const &xBrel, double const &yrel, CVector &Point, CVector &PtNormal, int const &pos=0);
-	void GetSection(double const &tau, double &Chord, double &Area, CVector &PtC4);
-	void GetyDist(int const &k, double &y1, double &y2);
-	void Init();
-	void ResetFlap();
-	void RotateX(CVector const &O, double XTilt);
-	void RotateY(CVector const &O, double YTilt);
-	void RotateZ(CVector const &O, double ZTilt);
-	void SetNormal();
-	void SetFlap();
-	void SetSidePoints(Body *pBody, double dx, double dz);
-	void SetTwist1();
-	void SetTwist2();
-	void Translate(CVector const &T);
-	void Translate(double tx, double ty, double tz);
-	void CreateXPoints();
+	void addFlapPanel(Panel *pPanel);
+	void copy(Surface *pSurface);
+	void getC4(int k, CVector &Pt, double &tau);
+	void getLeadingPt(int k, CVector &C);
+	void getNormal(double yrel, CVector &N);
+	void getTrailingPt(int k, CVector &C);
+	void getPanel(int const &k, int const &l, enumPanelPosition pos);
+	void getSurfacePoint(double xArel, double xBrel, double yrel, enumPanelPosition pos, CVector &Point, CVector &PtNormal);
+	void getSection(double const &tau, double &Chord, double &Area, CVector &PtC4);
+	void getYDist(int const &k, double &y1, double &y2);
+	void getSidePoints(enumPanelPosition pos, Body * pBody,  CVector *PtA, CVector *PtB, int nPoints);
+	void init();
+	void resetFlap();
+	void rotateX(CVector const &O, double XTilt);
+	void rotateY(CVector const &O, double YTilt);
+	void rotateZ(CVector const &O, double ZTilt);
+	void setCornerPoints(CVector LA, CVector TA, CVector LB, CVector TB);
+	void setNormal();
+	void setFlap();
+	void setSidePoints(Body *pBody, double dx, double dz);
+	void setTwist1();
+	void setTwist2();
+	void translate(CVector const &T);
+	void translate(double tx, double ty, double tz);
+	void createXPoints();
 
-	bool IsCenterSurf() {return m_bIsCenterSurf;}
-	bool IsLeftSurf()   {return m_bIsLeftSurf;}
-	bool IsRightSurf()  {return m_bIsRightSurf;}
-	bool IsTipLeft()    {return m_bIsTipLeft;}
-	bool IsTipRight()   {return m_bIsTipRight;}
-	bool IsInSymPlane() {return m_bIsInSymPlane;}
+	bool isCenterSurf() {return m_bIsCenterSurf;}
+	bool isLeftSurf()   {return m_bIsLeftSurf;}
+	bool isRightSurf()  {return m_bIsRightSurf;}
+	bool isTipLeft()    {return m_bIsTipLeft;}
+	bool isTipRight()   {return m_bIsTipRight;}
+	bool isInSymPlane() {return m_bIsInSymPlane;}
 
-	bool IsFlapPanel(int const &p);
-	bool IsFlapNode(int const &nNode);
-	bool RotateFlap(double const &Angle);
+	bool isFlapPanel(int p);
+	bool isFlapNode(int nNode);
+	bool rotateFlap(double Angle);
 //	bool RotateFlap(double const &Angle, CPanel *pPanel, CVector *pNode);
-	double GetTwist(int const &k);
-	double GetChord(int const &k);
-	double GetChord(double const &tau);
-	double GetOffset(double const &tau);
-	double GetStripSpanPos(int const &k);
-	double GetFoilArea(double const &tau);
-	double GetStripWidth(int const &k);
+	double twist(int k);
+	double chord(int k);
+	double chord(double tau);
+	double offset(double tau);
+	double stripSpanPos(int k);
+	double foilArea(double tau);
+	double stripWidth(int k);
 
 	Foil *foilA() {return m_pFoilA;}
 	Foil *foilB() {return m_pFoilB;}
 
+	QList<CVector> SideA;      /**< the array of panel points on the left foil's mid-line*/
+	QList<CVector> SideB;      /**< the array of panel points on the right foil's mid-line*/
+
 private :
-	QList<CVector> SideA;      /**< the array of points on the left foil's mid-line*/
-	QList<CVector> SideB;      /**< the array of points on the right foil's mid-line*/
-	QList<CVector> SideA_T;    /**< the array of points on the left foil's top-line*/
-	QList<CVector> SideB_T;    /**< the array of points on the right foil's top-line*/
-	QList<CVector> SideA_B;    /**< the array of points on the left foil's bottom-line*/
-	QList<CVector> SideB_B;    /**< the array of points on the right foil's bottom-line*/
-	static CVector VTemp;
+	QList<CVector> SideA_T;    /**< the array of panel points on the left foil's top-line*/
+	QList<CVector> SideB_T;    /**< the array of panel points on the right foil's top-line*/
+	QList<CVector> SideA_B;    /**< the array of panel points on the left foil's bottom-line*/
+	QList<CVector> SideB_B;    /**< the array of panel points on the right foil's bottom-line*/
+	CVector VTemp;
 	static Panel *s_pPanel;    /**< a pointer to the array of this Surface's panels, This array is a sub-array of the total array.*/
 	static CVector *s_pNode;   /**< a pointer to the array of this panel nodes.*/
 
@@ -215,11 +217,11 @@ private :
 
 public:
 	bool m_bJoinRight;             /**< true if the surface's right side should be connected to the next right surface's right left side - for panel analysis only */
-	static CVector LA, LB, TA, TB; /**< leading and trailing corners of strip k */
+	CVector LA, LB, TA, TB; /**< leading and trailing corners of strip k */
 	int m_NYPanels;                /**< the number of spanwise panels of this surface */
 	int m_NXPanels;                /**< the number of chordwise panels of this surface */
 	Foil *m_pFoilA;                /**< a pointer to the Surface's left Foil object */
 	Foil *m_pFoilB;                /**< a pointer to the Surface's right Foil object */
-	
+
 };
 #endif
