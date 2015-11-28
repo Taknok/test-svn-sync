@@ -1190,24 +1190,27 @@ void QXDirect::onAnalyze()
 
 	if(m_bSequence)
 	{
-		pXFADlg->SetAlpha(m_Alpha, m_AlphaMax, m_AlphaDelta);
+        pXFADlg->setAlpha(m_Alpha, m_AlphaMax, m_AlphaDelta);
 		pXFADlg->SetCl(m_Cl, m_ClMax, m_ClDelta);
-		pXFADlg->SetRe(m_Reynolds, m_ReynoldsMax, m_ReynoldsDelta);
+        pXFADlg->setRe(m_Reynolds, m_ReynoldsMax, m_ReynoldsDelta);
 	}
 	else
 	{
-		pXFADlg->SetAlpha(m_Alpha, m_Alpha, m_AlphaDelta);
+        pXFADlg->setAlpha(m_Alpha, m_Alpha, m_AlphaDelta);
 		pXFADlg->SetCl(m_Cl, m_Cl, m_ClDelta);
-		pXFADlg->SetRe(m_Reynolds, m_Reynolds, m_ReynoldsDelta);
+        pXFADlg->setRe(m_Reynolds, m_Reynolds, m_ReynoldsDelta);
 	}
 
 	pXFADlg->m_bAlpha = s_bAlpha;
 
-	pXFADlg->InitDialog();
+    pXFADlg->initDialog();
 	pXFADlg->show();
-	pXFADlg->Analyze();
+    pXFADlg->analyze();
 
 	if(!s_bKeepOpenErrors || !pXFADlg->m_bErrors) pXFADlg->hide();
+
+    //save the results for boudnary layer plots
+    memcpy(m_pXFoil, &pXFADlg->m_pXFoilTask->XFoilInstance, sizeof(XFoil));
 
 	delete pXFADlg;
 
@@ -1425,6 +1428,8 @@ void QXDirect::onCfPlot()
 	m_CpGraph.SetXScale();
 	setFoilScale();
 	setControls();
+    m_bResetCurves = false;
+
 	updateView();
 }
 
@@ -1470,6 +1475,8 @@ void QXDirect::onCtPlot()
 	m_CpGraph.SetXScale();
 	setFoilScale();
 	setControls();
+
+    m_bResetCurves = false;
 	updateView();
 
 }
@@ -1510,7 +1517,8 @@ void QXDirect::onDtPlot()
 	m_CpGraph.SetXScale();
 	setFoilScale();
 	setControls();
-	updateView();
+    m_bResetCurves = false;
+    updateView();
 }
 
 
@@ -1550,6 +1558,8 @@ void QXDirect::onDbPlot()
 	m_CpGraph.SetXScale();
 	setFoilScale();
 	setControls();
+    m_bResetCurves = false;
+
 	updateView();
 }
 
@@ -1600,6 +1610,8 @@ void QXDirect::onCdPlot()
 	m_CpGraph.SetXScale();
 	setFoilScale();
 	setControls();
+    m_bResetCurves = false;
+
 	updateView();
 }
 
@@ -1642,6 +1654,8 @@ void QXDirect::onHPlot()
 	m_CpGraph.SetXScale();
 	setFoilScale();
 	setControls();
+    m_bResetCurves = false;
+
 	updateView();
 }
 
@@ -1678,6 +1692,8 @@ void QXDirect::onRtPlot()
 	m_CpGraph.SetXScale();
 	setFoilScale();
 	setControls();
+    m_bResetCurves = false;
+
 	updateView();
 }
 
@@ -1721,6 +1737,8 @@ void QXDirect::onRtLPlot()
 	m_CpGraph.SetXScale();
 	setFoilScale();
 	setControls();
+    m_bResetCurves = false;
+
 	updateView();
 }
 
@@ -1774,6 +1792,8 @@ void QXDirect::onUePlot()
 	m_CpGraph.SetXScale();
 	setFoilScale();
 	setControls();
+    m_bResetCurves = false;
+
 	updateView();
 }
 
@@ -3401,6 +3421,8 @@ void QXDirect::onNPlot()
 	m_CpGraph.SetXScale();
 	setFoilScale();
 	setControls();
+    m_bResetCurves = false;
+
 	updateView();
 }
 

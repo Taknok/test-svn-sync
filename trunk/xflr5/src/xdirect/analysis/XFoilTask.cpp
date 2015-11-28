@@ -79,8 +79,8 @@ void XFoilTask::run()
 		return;
 	}
 
-	if(m_pPolar->m_PolarType!=XFLR5::FIXEDAOAPOLAR) AlphaSequence();
-	else                                            ReSequence();
+    if(m_pPolar->m_PolarType!=XFLR5::FIXEDAOAPOLAR) alphaSequence();
+    else                                            ReSequence();
 
 	m_bIsFinished = true;
 
@@ -88,7 +88,7 @@ void XFoilTask::run()
 	// Could emit a signal, but signals are converted to events anyway when sent across threads
 	QTimerEvent *event = new QTimerEvent(m_Id);
 	QApplication::postEvent(m_pParent, event);
-	//will be truly finished whent this message has been received by the parent batch analysis
+    //will be truly finished whent this message has been received by the parent analysis dialog
 }
 
 
@@ -98,7 +98,7 @@ void XFoilTask::run()
 * @param pPolar a pointer to the instance of the Polar object for which the calculation is run
 * @return true if the initialization of the Foil in XFoil has been sucessful, false otherwise
 */
-bool XFoilTask::InitializeTask(Foil *pFoil, Polar *pPolar, bool bViscous, bool bInitBL, bool bFromZero)
+bool XFoilTask::initializeTask(Foil *pFoil, Polar *pPolar, bool bViscous, bool bInitBL, bool bFromZero)
 {
 	s_bCancel = false;
 	s_bSkipOpp = s_bSkipPolar = false;
@@ -175,7 +175,7 @@ void XFoilTask::setGraphPointers(Graph *pGraph, Curve *pCurve0, Curve* pCurve1)
 * Performs a sequence of XFoil calculations for a range of aoa or lift coefficients
 * @return true if the calculation was successful
 */
-bool XFoilTask::AlphaSequence()
+bool XFoilTask::alphaSequence()
 {
 	QString str;
 
@@ -276,7 +276,7 @@ bool XFoilTask::AlphaSequence()
 
 			m_Iterations = 0;
 
-			while(!Iterate()){}
+            while(!iterate()){}
 
 			if(XFoilInstance.lvconv)
 			{
@@ -365,7 +365,7 @@ bool XFoilTask::ReSequence()
 		XFoilInstance.lwake = false;
 		XFoilInstance.lvconv = false;
 
-		while(!Iterate()){}
+        while(!iterate()){}
 		if(XFoilInstance.lvconv)
 		{
 			str = QString(QObject::tr("   ...converged after %1 iterations\n")).arg(m_Iterations);
@@ -401,7 +401,7 @@ bool XFoilTask::ReSequence()
 * Manages the viscous iterations of the XFoil calculation.
 * @return true if the analysis has been successful.
 */
-bool XFoilTask::Iterate()
+bool XFoilTask::iterate()
 {
 	if(!XFoilInstance.viscal())
 	{
