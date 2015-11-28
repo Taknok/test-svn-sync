@@ -17,6 +17,7 @@
 
 
 xflr5 v6.12 November xxxth, 2015
+        - restored the plot and export options of the boundary layer graphs after a converged xfoil analysis
 	- modified in depth the constuction of the wing geometry, to better account for flap with large deflections; 
           has an impact on results;
 	- corrected bugs in the import/export operation of body objects to xml files

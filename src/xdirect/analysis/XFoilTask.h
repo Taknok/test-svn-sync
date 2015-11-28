@@ -44,11 +44,12 @@ public:
 
 public:
 	void run();
-	bool AlphaSequence();
+	bool alphaSequence();
 	bool ReSequence();
+    bool isFinished(){return m_bIsFinished;}
 
-	bool InitializeTask(Foil *pFoil, Polar *pPolar, bool bViscous=true, bool bInitBL=true, bool bFromZero=false);
-	bool Iterate();
+	bool initializeTask(Foil *pFoil, Polar *pPolar, bool bViscous=true, bool bInitBL=true, bool bFromZero=false);
+	bool iterate();
 
 	void setSequence(double bAlpha, double SpMin, double SpMax, double SpInc);
 	void setReRange(double ReMin, double ReMax, double ReInc);

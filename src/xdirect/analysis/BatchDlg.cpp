@@ -370,7 +370,7 @@ void BatchDlg::AlphaLoop()
 		if(!pCurPolar) return;
 
 		m_pXFoilTask->setReRange(m_ReMin, m_ReMax, m_ReInc);
-		m_pXFoilTask->InitializeTask(m_pFoil, pCurPolar, QXDirect::s_bViscous, m_bInitBL, m_bFromZero);
+		m_pXFoilTask->initializeTask(m_pFoil, pCurPolar, QXDirect::s_bViscous, m_bInitBL, m_bFromZero);
 
 		m_pXFoilTask->run();
 
@@ -783,7 +783,7 @@ void BatchDlg::OnAnalyze()
 	else         m_pXFoilTask->setSequence(false, m_ClMin, m_ClMax, m_ClInc);
 
 	m_pXFoilTask->setReRange(m_ReMin, m_ReMax, m_ReInc);
-	m_pXFoilTask->InitializeTask(Foil::curFoil(), Polar::curPolar(),
+	m_pXFoilTask->initializeTask(Foil::curFoil(), Polar::curPolar(),
 						    QXDirect::s_bViscous, m_bInitBL, m_bFromZero);
 
 
@@ -1023,7 +1023,7 @@ void BatchDlg::ReLoop()
 		Polar *pCurPolar = CreatePolar(m_pFoil, Reynolds, Mach, NCrit);
 		if(!pCurPolar) return;
 
-		m_pXFoilTask->InitializeTask(m_pFoil, pCurPolar, QXDirect::s_bViscous, m_bInitBL, m_bFromZero);
+		m_pXFoilTask->initializeTask(m_pFoil, pCurPolar, QXDirect::s_bViscous, m_bInitBL, m_bFromZero);
 		m_pXFoilTask->run();
 
 		m_bErrors = m_bErrors || m_pXFoilTask->m_bErrors;
