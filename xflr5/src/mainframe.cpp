@@ -2851,17 +2851,20 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString PathName)
 			Polar::setCurPolar(NULL);
 			OpPoint::setCurOpp(NULL);
 
+            XFile.close();
+
+            setSaveState(false);
+            addRecentFile(PathName);
+
 			if(m_iApp==XFLR5::XFOILANALYSIS)
 			{
 				pXDirect->setControls();
 				pXDirect->setFoil(pFoil);
-			}
+
+                return XFLR5::XFOILANALYSIS;
+            }
 			else if(m_iApp==XFLR5::DIRECTDESIGN)  pAFoil->selectFoil(pFoil);
 
-			XFile.close();
-
-			setSaveState(false);
-			addRecentFile(PathName);
 
 			return XFLR5::DIRECTDESIGN;
 		}
@@ -2943,7 +2946,7 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString PathName)
 		XFile.close();
 
 		if(Objects3D::s_oaPlane.size()) return XFLR5::MIAREX;
-		else                            return XFLR5::DIRECTDESIGN;
+        else                            return XFLR5::XFOILANALYSIS;
 	}
 
 

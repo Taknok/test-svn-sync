@@ -52,7 +52,6 @@
 #include "./analysis/StabPolarDlg.h"
 #include "./analysis/EditPolarDefDlg.h"
 #include "../objects/PointMass.h"
-#include "../graph/GraphDlg.h"
 #include "../misc/ProgressDlg.h"
 #include "../misc/ModDlg.h"
 #include "../misc/RenameDlg.h"

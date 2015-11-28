@@ -38,7 +38,7 @@ QPoint XFoilAnalysisDlg::s_Position;
 XFoilAnalysisDlg::XFoilAnalysisDlg(QWidget *pParent) : QDialog(pParent)
 {
 	setWindowTitle(tr("XFoil Analysis"));
-	SetupLayout();
+    setupLayout();
 
 	m_pXFoilTask = new XFoilTask;
 	m_pXFoilTask->m_pParent = this;
@@ -90,7 +90,7 @@ XFoilAnalysisDlg::~XFoilAnalysisDlg()
 	if(m_pXFile) delete m_pXFile;
 }
 
-void XFoilAnalysisDlg::SetupLayout()
+void XFoilAnalysisDlg::setupLayout()
 {
 	m_pctrlTextOutput = new QTextEdit;
 	m_pctrlTextOutput->setReadOnly(true);
@@ -108,8 +108,8 @@ void XFoilAnalysisDlg::SetupLayout()
 		m_pctrlSkip   = new QPushButton(tr("Skip"));
 		m_pctrlCancel = new QPushButton(tr("Cancel"));
 
-		connect(m_pctrlSkip,   SIGNAL(clicked()), this, SLOT(OnSkipPoint()));
-		connect(m_pctrlCancel, SIGNAL(clicked()), this, SLOT(OnCancelAnalysis()));
+        connect(m_pctrlSkip,   SIGNAL(clicked()), this, SLOT(onSkipPoint()));
+        connect(m_pctrlCancel, SIGNAL(clicked()), this, SLOT(onCancelAnalysis()));
 		buttonsLayout->addStretch(1);
 		buttonsLayout->addWidget(m_pctrlSkip);
 		buttonsLayout->addStretch(1);
@@ -143,7 +143,7 @@ void XFoilAnalysisDlg::hideEvent(QHideEvent *event)
 
 
 
-void XFoilAnalysisDlg::InitDialog()
+void XFoilAnalysisDlg::initDialog()
 {	
 	QString FileName = QDir::tempPath() + "/XFLR5.log";
 	m_pXFile = new QFile(FileName);
@@ -155,11 +155,11 @@ void XFoilAnalysisDlg::InitDialog()
 	else         m_pXFoilTask->setSequence(false, m_ClMin, m_ClMax, m_ClDelta);
 
 	m_pXFoilTask->setReRange(m_ReMin, m_ReMax, m_ReDelta);
-	m_pXFoilTask->InitializeTask(Foil::curFoil(), Polar::curPolar(),
+    m_pXFoilTask->initializeTask(Foil::curFoil(), Polar::curPolar(),
 						    QXDirect::s_bViscous, QXDirect::s_bInitBL, false);
 
 
-	SetFileHeader();
+    setFileHeader();
 
 	QString str;
 	m_pRmsGraph->deleteCurves();
@@ -188,19 +188,19 @@ void XFoilAnalysisDlg::InitDialog()
 
 
 
-void XFoilAnalysisDlg::OnCancelAnalysis()
+void XFoilAnalysisDlg::onCancelAnalysis()
 {
 	XFoil::s_bCancel= true;
 	XFoilTask::s_bCancel = true;
 
-	if(m_pXFoilTask->m_bIsFinished) reject();
+    if(m_pXFoilTask->isFinished()) reject();
 }
 
 
 
 void XFoilAnalysisDlg::reject()
 {
-	if(!m_pXFoilTask->m_bIsFinished)
+    if(!m_pXFoilTask->isFinished())
 	{
 		XFoil::s_bCancel= true;
 		XFoilTask::s_bCancel = true;
@@ -231,13 +231,13 @@ void XFoilAnalysisDlg::accept()
 	QDialog::accept();
 }
 
-void XFoilAnalysisDlg::OnSkipPoint()
+void XFoilAnalysisDlg::onSkipPoint()
 {
 	XFoilTask::s_bSkipOpp= true;
 }
 
 
-void XFoilAnalysisDlg::ResetCurves()
+void XFoilAnalysisDlg::resetCurves()
 {
 	Curve*pCurve;
 	pCurve = m_pRmsGraph->curve(0);
@@ -247,7 +247,7 @@ void XFoilAnalysisDlg::ResetCurves()
 }
 
 
-void XFoilAnalysisDlg::SetAlpha(double AlphaMin, double AlphaMax, double AlphaDelta)
+void XFoilAnalysisDlg::setAlpha(double AlphaMin, double AlphaMax, double AlphaDelta)
 {
 	m_AlphaMin = AlphaMin;
 	m_AlphaMax = AlphaMax;
@@ -263,7 +263,7 @@ void XFoilAnalysisDlg::SetCl(double ClMin, double ClMax, double DeltaCl)
 }
 
 
-void XFoilAnalysisDlg::SetRe(double ReMin, double ReMax, double DeltaRe)
+void XFoilAnalysisDlg::setRe(double ReMin, double ReMax, double DeltaRe)
 {
 	m_ReMin = ReMin;
 	m_ReMax = ReMax;
@@ -271,7 +271,7 @@ void XFoilAnalysisDlg::SetRe(double ReMin, double ReMax, double DeltaRe)
 }
 
 
-void XFoilAnalysisDlg::SetFileHeader()
+void XFoilAnalysisDlg::setFileHeader()
 {
 	if(!m_pXFile) return;
 	QTextStream out(m_pXFile);
@@ -296,7 +296,7 @@ void XFoilAnalysisDlg::SetFileHeader()
 }
 
 
-void XFoilAnalysisDlg::Analyze()
+void XFoilAnalysisDlg::analyze()
 {
 	m_pctrlCancel->setText(tr("Cancel"));
 	m_pctrlSkip->setEnabled(true);
@@ -305,7 +305,7 @@ void XFoilAnalysisDlg::Analyze()
 
 	//create a timer to update the output at regular intervals
 	QTimer *pTimer = new QTimer;
-	connect(pTimer, SIGNAL(timeout()), this, SLOT(OnProgress()));
+    connect(pTimer, SIGNAL(timeout()), this, SLOT(onProgress()));
 	pTimer->setInterval(QXDirect::s_TimeUpdateInterval);
 	pTimer->start();
 
@@ -316,7 +316,7 @@ void XFoilAnalysisDlg::Analyze()
 	pTimer->stop();
 	delete pTimer;
 
-	OnProgress();
+    onProgress();
 	m_pXFoilTask->m_OutStream.flush();
 
 	m_bErrors = m_pXFoilTask->m_bErrors;
@@ -334,7 +334,7 @@ void XFoilAnalysisDlg::Analyze()
 
 
 
-void XFoilAnalysisDlg::OnProgress()
+void XFoilAnalysisDlg::onProgress()
 {
 	if(m_pXFoilTask->m_OutMessage.length())
 	{

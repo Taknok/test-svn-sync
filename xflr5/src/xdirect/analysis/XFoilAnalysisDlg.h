@@ -55,12 +55,12 @@ public:
 	XFoilAnalysisDlg(QWidget *pParent=NULL);
 	~XFoilAnalysisDlg();
 
-	void InitDialog();
+	void initDialog();
 
 private slots:
-	void OnCancelAnalysis();
-	void OnSkipPoint();
-	void OnProgress();
+	void onCancelAnalysis();
+	void onSkipPoint();
+	void onProgress();
 
 private:
 	void showEvent(QShowEvent *event);
@@ -69,13 +69,13 @@ private:
 	void accept();
 	void reject();
 
-	void ResetCurves();
-	void SetAlpha(double AlphaMin, double AlphaMax, double DeltaAlpha);
+	void resetCurves();
+	void setAlpha(double AlphaMin, double AlphaMax, double DeltaAlpha);
 	void SetCl(double ClMin, double ClMax, double DeltaCl);
-	void SetRe(double ReMin, double ReMax, double DeltaRe);
-	void SetFileHeader();
-	void SetupLayout();
-	void Analyze();
+	void setRe(double ReMin, double ReMax, double DeltaRe);
+	void setFileHeader();
+	void setupLayout();
+	void analyze();
 
 
 	//variables
