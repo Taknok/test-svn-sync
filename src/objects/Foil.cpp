@@ -645,6 +645,9 @@ CVector Foil::midYRel(double sRel)
 }
 
 
+
+
+
 /**
 * Returns the y-coordinate on the current foil's upper surface at the x position.
 * @param x the chordwise position
@@ -652,41 +655,46 @@ CVector Foil::midYRel(double sRel)
 */
 CVector Foil::upperYRel(double sRel)
 {
-	CVector upperY;
-	sRel *= m_iExt;
-	int iRel = (int)sRel;
-	double frac = sRel-iRel;
-	if(iRel==m_iExt) return m_rpExtrados[iRel];
-	else
+	double x = m_rpExtrados[0].x + sRel*(m_rpExtrados[m_iExt].x-m_rpExtrados[0].x);
+
+	if(x<=m_rpExtrados[0].x) return m_rpExtrados[0];
+
+	for (int i=0; i<m_iExt; i++)
 	{
-		upperY.x = m_rpExtrados[iRel].x * (1.0-frac) + m_rpExtrados[iRel+1].x * frac;
-		upperY.y = m_rpExtrados[iRel].y * (1.0-frac) + m_rpExtrados[iRel+1].y * frac;
-		return upperY;
+		if (m_rpExtrados[i].x < m_rpExtrados[i+1].x  &&
+			m_rpExtrados[i].x <= x && x<=m_rpExtrados[i+1].x )
+		{
+			return (m_rpExtrados[i] + (m_rpExtrados[i+1]-m_rpExtrados[i])
+									 /(m_rpExtrados[i+1].x-m_rpExtrados[i].x) * (x-m_rpExtrados[i].x));
+		}
 	}
+	return m_rpExtrados[m_iExt];
 }
 
 
 
 /**
-* Returns the y-coordinate on the current foil's upper surface at the x position.
+* Returns the y-coordinate on the current foil's lower surface at the x position.
 * @param x the chordwise position
 * @return the position on the upper surface
 */
 CVector Foil::lowerYRel(double sRel)
 {
-	CVector lowerY;
-	sRel *= m_iInt;
-	int iRel = (int)sRel;
-	double frac = sRel-iRel;
-	if(iRel==m_iInt) return m_rpIntrados[iRel];
-	else
-	{
-		lowerY.x = m_rpIntrados[iRel].x * (1.0-frac) + m_rpIntrados[iRel+1].x * frac;
-		lowerY.y = m_rpIntrados[iRel].y * (1.0-frac) + m_rpIntrados[iRel+1].y * frac;
-		return lowerY;
-	}
-}
+	double x = m_rpIntrados[0].x + sRel*(m_rpIntrados[m_iInt].x-m_rpIntrados[0].x);
 
+	if(x<=m_rpIntrados[0].x) return m_rpIntrados[0];
+
+	for (int i=0; i<m_iExt; i++)
+	{
+		if (m_rpIntrados[i].x < m_rpIntrados[i+1].x  &&
+			m_rpIntrados[i].x <= x && x<=m_rpIntrados[i+1].x )
+		{
+			return (m_rpIntrados[i] + (m_rpIntrados[i+1]-m_rpIntrados[i])
+									 /(m_rpIntrados[i+1].x-m_rpIntrados[i].x) * (x-m_rpIntrados[i].x));
+		}
+	}
+	return m_rpIntrados[m_iExt];
+}
 
 
 
@@ -701,7 +709,7 @@ void Foil::getLowerY(double x, double &y, double &normx, double &normy)
 {
 	double nabs;
 
-	x = m_rpIntrados[0].x + x*(m_rpIntrados[m_iInt].x-m_rpIntrados[0].x)*.999999999;//in case there is a flap which reduces the length
+	x = m_rpIntrados[0].x + x*(m_rpIntrados[m_iInt].x-m_rpIntrados[0].x);//in case there is a flap which reduces the length
 //	x = m_rpExtrados[0].x + x*.99999999;
 	for (int i=0; i<m_iInt; i++)
 	{

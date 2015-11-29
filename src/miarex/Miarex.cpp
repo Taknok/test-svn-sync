@@ -2196,6 +2196,7 @@ void QMiarex::keyPressEvent(QKeyEvent *event)
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 	bool bCtrl = false;
 	if(event->modifiers() & Qt::ControlModifier)   bCtrl =true;
+	m_p3dWidget->m_bArcball=false;
 
 	if(event->key()==Qt::Key_0 || event->text()=="0")
 	{

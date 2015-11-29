@@ -970,8 +970,7 @@ void Surface::setNormal()
 void Surface::setSidePoints(Body * pBody, double dx, double dz)
 {
 	int l;
-	double alpha_dA, alpha_dB;
-	double cosdA, cosdB;
+	double alpha_dA, alpha_dB, cosdA, cosdB;
     CVector N, A4, B4, TA4, TB4, U;
     Body TBody;
 	if(pBody)
@@ -1194,6 +1193,8 @@ void Surface::createXPoints()
 
 	m_xPointA[m_NXPanels] = 0.0;
 	m_xPointB[m_NXPanels] = 0.0;
+
+//	for(int i=0; i<=m_NXPanels;  i++)qDebug()<<m_xPointA[i] ;
 }
 
 
