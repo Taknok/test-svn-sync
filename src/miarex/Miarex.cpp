@@ -105,7 +105,6 @@ QList<void *> *QMiarex::m_poaPOpp = NULL;
 QList<void *> *QMiarex::m_poaBody = NULL;
 
 
-int QMiarex::s_GLList = 0;
 
 CVector *QMiarex::s_pNode = NULL;
 CVector *QMiarex::s_pMemNode = NULL;
@@ -250,9 +249,6 @@ QMiarex::QMiarex(QWidget *parent)
 
 
 	m_InducedDragPoint = 0;
-
-
-	s_GLList = 0;
 
 	m_pTimerWOpp= new QTimer(this);
 	m_posAnimateWOpp         = 0;
@@ -411,8 +407,6 @@ QMiarex::QMiarex(QWidget *parent)
 	m_iStabTimeView = XFLR5::FOURGRAPHS;
 
 	m_CpGraph.setGraphName(tr("Cp Graph"));
-
-	s_GLList = 0;
 
 	s_LiftScale = s_DragScale = s_VelocityScale = 0.7;
 
@@ -1827,7 +1821,6 @@ void QMiarex::glDraw3D()
 	if(!glIsList(GLLISTSPHERE))
 	{
 		m_p3dWidget->glCreateUnitSphere();
-		s_GLList++;
 	}
 
 
@@ -1837,7 +1830,6 @@ void QMiarex::glDraw3D()
 		{
 			glDeleteLists(BODYGEOMBASE,1);
 			glDeleteLists(BODYGEOMBASE+MAXBODIES,1);
-			s_GLList -=2;
 		}
 		if(pCurBody->m_LineType==XFLR5::BODYPANELTYPE)	     GLCreateBody3DFlatPanels(BODYGEOMBASE, pCurBody);
 		else if(pCurBody->m_LineType==XFLR5::BODYSPLINETYPE) GLCreateBody3DSplines(   BODYGEOMBASE, pCurBody, GL3dBodyDlg::s_NXPoints, GL3dBodyDlg::s_NHoopPoints);
@@ -1868,7 +1860,6 @@ void QMiarex::glDraw3D()
 		if(glIsList(WINGWAKEPANELS))
 		{
 			glDeleteLists(WINGWAKEPANELS,1);
-			s_GLList-=1;
 		}
 
 		if (m_pCurWPolar && m_pCurWPolar->analysisMethod()==XFLR5::PANELMETHOD)
@@ -1883,15 +1874,12 @@ void QMiarex::glDraw3D()
 		if(glIsList(MESHPANELS))
 		{
 			glDeleteLists(MESHPANELS,2);
-			s_GLList-=2;
 		}
 		GLCreateMesh(MESHPANELS, Objects3D::s_MatSize, s_pPanel, s_pNode, W3dPrefsDlg::s_VLMColor, Settings::s_BackgroundColor);
-		s_GLList+=2;
 
 		if(glIsList(VLMCTRLPTS))
 		{
 			glDeleteLists(VLMCTRLPTS,2);
-			s_GLList-=2;
 		}
 		double length = .01;
 		if(m_pCurPlane) length = m_pCurPlane->mac()/5.0;
@@ -1908,12 +1896,10 @@ void QMiarex::glDraw3D()
 		if(glIsList(LIFTFORCE))
 		{
 			glDeleteLists(LIFTFORCE,1);
-			s_GLList -=1;
 		}
 		if(glIsList(VLMMOMENTS))
 		{
 			glDeleteLists(VLMMOMENTS,1);
-			s_GLList -=1;
 		}
 
 		for(int iw=0; iw<MAXWINGS; iw++)
@@ -1921,13 +1907,11 @@ void QMiarex::glDraw3D()
 			if(glIsList(VLMWINGLIFT+iw))
 			{
 				glDeleteLists(VLMWINGLIFT+iw,1);
-				s_GLList -=1;
 			}
 			if(glIsList(VLMWINGTOPTRANS+iw))
 			{
 				glDeleteLists(VLMWINGTOPTRANS+iw,1);
 				glDeleteLists(VLMWINGTOPTRANS+iw+4,1);
-				s_GLList-=2;
 			}
 		}
 
@@ -1957,7 +1941,6 @@ void QMiarex::glDraw3D()
 			if(glIsList(VLMWINGDRAG+iw ))
 			{
 				glDeleteLists(VLMWINGDRAG+iw,1);
-				s_GLList -=1;
 			}
 		}
 
@@ -1979,7 +1962,6 @@ void QMiarex::glDraw3D()
 			if(glIsList(VLMWINGWASH+iw))
 			{
 				glDeleteLists(VLMWINGWASH+iw,1);
-				s_GLList--;
 			}
 		}
 		for(int iw=0; iw<MAXWINGS; iw++)
@@ -2000,7 +1982,6 @@ void QMiarex::glDraw3D()
 		if(glIsList(PANELFORCEARROWS))
 		{
 			glDeleteLists(PANELFORCEARROWS,1);
-			s_GLList -=1;
 		}
 		if (m_pCurPlane && m_pCurPOpp)
 		{
@@ -2016,7 +1997,6 @@ void QMiarex::glDraw3D()
 		if(glIsList(PANELCP))
 		{
 			glDeleteLists(PANELCP,1);
-			s_GLList-=1;
 		}
 
 		if (m_pCurPlane && m_pCurPOpp)
@@ -2032,7 +2012,6 @@ void QMiarex::glDraw3D()
 		if(glIsList(WOPPCPLEGENDCLR))
 		{
 			glDeleteLists(WOPPCPLEGENDCLR,1);
-			s_GLList -= 1;
 		}
 		if(m_pCurPOpp)
 		{
@@ -2046,7 +2025,6 @@ void QMiarex::glDraw3D()
 		if(glIsList(VLMSTREAMLINES))
 		{
 			glDeleteLists(VLMSTREAMLINES,1);
-			s_GLList -=1;
 		}
 		if(m_bStream)
 		{
@@ -2078,7 +2056,6 @@ void QMiarex::glDraw3D()
 		if(glIsList(SURFACESPEEDS))
 		{
 			glDeleteLists(SURFACESPEEDS,1);
-			s_GLList -=1;
 		}
 		if(m_bSurfVelocities)
 		{
