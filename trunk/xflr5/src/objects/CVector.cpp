@@ -30,7 +30,7 @@
 void CVector::rotate(CVector const &R, double Angle)
 {
 	//rotate the vector around R with an angle Angle
-	static double norm, ux, uy,uz, ca, sa, x0, y0, z0;
+    double norm, ux, uy,uz, ca, sa, x0, y0, z0;
 
 	ca = cos(Angle *PI/180.0);
 	sa = sin(Angle *PI/180.0);
@@ -47,14 +47,13 @@ void CVector::rotate(CVector const &R, double Angle)
 	x =     (ca+ux*ux*(1-ca))  *x0  +  (ux*uy*(1-ca)-uz*sa) *y0 +  (ux*uz*(1-ca)+uy*sa) *z0;
 	y =   (uy*ux*(1-ca)+uz*sa) *x0  +    (ca+uy*uy*(1-ca))  *y0 +  (uy*uz*(1-ca)-ux*sa) *z0;
 	z =   (uz*ux*(1-ca)-uy*sa) *x0  +  (uz*uy*(1-ca)+ux*sa) *y0 +    (ca+uz*uz*(1-ca))  *z0;
-
 }
 
 
 void CVector::rotate(CVector &O, CVector const &R, double Angle)
 {
 	//rotate the point defined by the vector around origin O, rotation vector R and angle Angle
-	static CVector OP;
+    CVector OP;
 	OP.x = x-O.x;
 	OP.y = y-O.y;
 	OP.z = z-O.z;
@@ -65,6 +64,7 @@ void CVector::rotate(CVector &O, CVector const &R, double Angle)
 	y = O.y + OP.y;
 	z = O.z + OP.z;
 }
+
 
 /**
  * The vector is interpreted as a point.

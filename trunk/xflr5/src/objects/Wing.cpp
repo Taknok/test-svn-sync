@@ -704,10 +704,6 @@ void Wing::createSurfaces(CVector const &T, double XTilt, double YTilt)
 			PTA.y =  PLA.y;	                PTB.y = PLB.y;
 			PTA.z =  0.0;                   PTB.z =  0.0;
 
-/*			m_Surface[iSurf]->m_LA.copy(PLA);
-			m_Surface[iSurf]->m_TA.copy(PTA);
-			m_Surface[iSurf]->m_LB.copy(PLB);
-			m_Surface[iSurf]->m_TB.copy(PTB);*/
 			m_Surface[iSurf]->setCornerPoints(PLA, PTA, PLB, PTB);
 			m_Surface[iSurf]->setNormal(); // is (0,0,1)
 
@@ -717,7 +713,7 @@ void Wing::createSurfaces(CVector const &T, double XTilt, double YTilt)
 
 			m_Surface[iSurf]->m_TwistA   =  Twist(jss+1);
 			m_Surface[iSurf]->m_TwistB   =  Twist(jss);
-			m_Surface[iSurf]->setTwist1();
+//			m_Surface[iSurf]->setTwist();
 
 
 			if(jss>0)
@@ -785,7 +781,7 @@ void Wing::createSurfaces(CVector const &T, double XTilt, double YTilt)
 
 				m_Surface[iSurf]->m_TwistA   =  Twist(jss);
 				m_Surface[iSurf]->m_TwistB   =  Twist(jss+1);
-				m_Surface[iSurf]->setTwist1();
+//				m_Surface[iSurf]->setTwist();
 
 				if(jss>0)
 				{
@@ -1158,7 +1154,7 @@ bool Wing::exportAVLWing(QTextStream &out, int index, double y, double Thetay)
 
 		//Remove the twist, since AVL processes it as a mod of the angle of attack thru the dAInc command
 		ASurface.m_TwistA = ASurface.m_TwistB = 0.0;
-		ASurface.setTwist1();
+		ASurface.setTwist();
 		out << ("#______________\nSECTION                                                     |  (keyword)\n");
 
 		strong = QString("%1 %2 %3 %4 %5  %6  %7   | Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]\n")

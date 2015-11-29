@@ -473,9 +473,6 @@ public:
 	double m_RampTime;          /**< defines the ramp time for the display of the dynamic response in stability time graphs */
 	double m_RampAmplitude;     /**< defines the ramp amplitude for the display of the dynamic response in stability time graphs */
 
-	static int s_GLList;               /**< the number of existing OpenGl list at a given time. @deprecated, for development purposes only */
-
-
 	double m_BellCurveExp;
 	bool m_bMaxCL;
 

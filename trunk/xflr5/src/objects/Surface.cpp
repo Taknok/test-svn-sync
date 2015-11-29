@@ -250,7 +250,7 @@ void Surface::getC4(int k, CVector &Pt, double &tau)
  */
 double Surface::chord(int k)
 {
-	static double y1, y2;
+    double y1, y2;
 	getYDist(k, y1, y2);
 	return chord((y1+y2)/2.0);
 }
@@ -264,8 +264,8 @@ double Surface::chord(int k)
 double Surface::chord(double tau)
 {
 	//assumes LA-TB have already been loaded
-	static CVector V1, V2;
-	static double ChordA, ChordB;
+    CVector V1, V2;
+    double ChordA, ChordB;
 
 	V1 = m_TA-m_LA;
 	V2 = m_TB-m_LB;
@@ -362,6 +362,7 @@ void Surface::getTrailingPt(int k, CVector &C)
  */
 void Surface::getPanel(int const &k, int const &l, enumPanelPosition pos)
 {
+    double y1, y2;
 	getYDist(k,y1,y2);
 	if(pos==MIDSURFACE)
 	{
@@ -429,6 +430,102 @@ double Surface::stripWidth(int k)
 
 
 /**
+ * Returns the position of a side point at the position specified by the input parameters.
+ * @param xRel the relative position along the chord
+ * @param bRight the left or right side of the surface on which the point is calculated
+ * @param pos the top, middle, or bottom surface on which the point is calculated
+ * @param Point a reference to the requested point's position
+ * @param PtNormal a reference to the vector normal to the sirface at that point
+ */
+void Surface::getSidePoint(double xRel, bool bRight, enumPanelPosition pos, CVector &Point, CVector &PtNormal)
+{
+    CVector foilPt;
+
+    if(!bRight)
+    {
+        if(pos==MIDSURFACE && m_pFoilA)      foilPt = m_pFoilA->midYRel(xRel);
+        else if(pos==TOPSURFACE && m_pFoilA) foilPt = m_pFoilA->upperYRel(xRel);
+        else if(pos==BOTSURFACE && m_pFoilA) foilPt = m_pFoilA->lowerYRel(xRel);
+
+        Point = m_LA * (1.0-foilPt.x) + m_TA * foilPt.x;
+        Point +=  Normal * foilPt.y*chord(0.0);
+        getNormal(0.0, PtNormal);
+    }
+    else
+    {
+        if(pos==MIDSURFACE && m_pFoilB)      foilPt = m_pFoilB->midYRel(xRel);
+        else if(pos==TOPSURFACE && m_pFoilB) foilPt = m_pFoilB->upperYRel(xRel);
+        else if(pos==BOTSURFACE && m_pFoilB) foilPt = m_pFoilB->lowerYRel(xRel);
+
+        Point = m_LB * (1.0-foilPt.x) + m_TB * foilPt.x;
+        Point +=  Normal * foilPt.y*chord(1.0);
+        getNormal(1.0, PtNormal);
+    }
+}
+
+
+/**
+ * Creates the master points on the left and right ends.
+ * One of the most difficult part of the code to implement.
+ * @param pBody a pointer to the Body object, or NULL if none.
+ * @param dx the x-component of the translation to apply to the body.
+ * @param dz the z-component of the translation to apply to the body.
+ */
+void Surface::getSidePoints(enumPanelPosition pos,
+							Body * pBody,
+							CVector *PtA, CVector *PtB, int nPoints)
+{
+	double xRel;
+	CVector N, A4, B4, TA4, TB4;
+
+	double cosdA = Normal.dot(NormalA);
+	double cosdB = Normal.dot(NormalB);
+	double alpha_dA = acos(cosdA)*180.0/PI;
+	double alpha_dB = -acos(cosdB)*180.0/PI;
+
+	//create the quarter chord centers of rotation for the twist
+	A4 = m_LA *3.0/4.0 + m_TA * 1/4.0;
+	B4 = m_LB *3.0/4.0 + m_TB * 1/4.0;
+
+	// create the vectors perpendicular to the side Normals and to the x-axis
+	TA4.x = 0.0;
+	TA4.y = +NormalA.z;
+	TA4.z = -NormalA.y;
+
+	TB4.x = 0.0;
+	TB4.y = +NormalB.z;
+	TB4.z = -NormalB.y;
+
+	for(int i=0; i<nPoints; i++)
+	{
+		xRel = (double)i/(nPoints-1);
+		getSidePoint(xRel, false, pos, PtA[i], N);
+		PtA[i].y   = m_LA.y +(PtA[i].y   - m_LA.y)/cosdA;
+		PtA[i].z   = m_LA.z +(PtA[i].z   - m_LA.z)/cosdA;
+		PtA[i].rotate(m_LA, m_LA-m_TA, alpha_dA);
+		PtA[i].rotate(A4, TA4, m_TwistA);
+
+		getSidePoint(xRel, true,  pos, PtB[i], N);
+		PtB[i].y   = m_LB.y +(PtB[i].y   - m_LB.y)/cosdB;
+		PtB[i].z   = m_LB.z +(PtB[i].z   - m_LB.z)/cosdB;
+		PtB[i].rotate(m_LB, m_LB-m_TB, alpha_dB);
+		PtB[i].rotate(B4, TB4, m_TwistB);
+
+		if(pBody && m_bIsCenterSurf && m_bIsLeftSurf)
+		{
+			pBody->intersect(PtA[i], PtB[i], PtB[i], false);
+		}
+		else if(pBody && m_bIsCenterSurf && m_bIsRightSurf)
+		{
+			pBody->intersect(PtA[i], PtB[i], PtA[i], true);
+		}
+	}
+}
+
+
+
+
+/**
  * Returns the position of a surface point at the position specified by the input parameters.
  * @param xArel the relative position at the left Foil
  * @param xBrel the relative position at the right Foil
@@ -438,44 +535,43 @@ double Surface::stripWidth(int k)
  */
 void Surface::getSurfacePoint(double xArel, double xBrel, double yrel, enumPanelPosition pos, CVector &Point, CVector &PtNormal)
 {
-	CVector APt, BPt, foilPt;
+    CVector APt, BPt, foilPt;
 
-	if(pos==MIDSURFACE && m_pFoilA && m_pFoilB)
-	{
-		foilPt = m_pFoilA->midYRel(xArel);
-		APt = m_LA * (1.0-foilPt.x) + m_TA * foilPt.x;
-		APt +=  Normal * foilPt.y*chord(0.0);
+    if(pos==MIDSURFACE && m_pFoilA && m_pFoilB)
+    {
+        foilPt = m_pFoilA->midYRel(xArel);
+        APt = m_LA * (1.0-foilPt.x) + m_TA * foilPt.x;
+        APt +=  Normal * foilPt.y*chord(0.0);
 
-		foilPt = m_pFoilB->midYRel(xBrel);
-		BPt = m_LB * (1.0-foilPt.x) + m_TB * foilPt.x;
-		BPt +=  Normal * foilPt.y*chord(1.0);
+        foilPt = m_pFoilB->midYRel(xBrel);
+        BPt = m_LB * (1.0-foilPt.x) + m_TB * foilPt.x;
+        BPt +=  Normal * foilPt.y*chord(1.0);
 
-	}
-	else if(pos==TOPSURFACE && m_pFoilA && m_pFoilB)
-	{
-		foilPt = m_pFoilA->upperYRel(xArel);
-		APt = m_LA * (1.0-foilPt.x) + m_TA * foilPt.x;
-		APt +=  Normal * foilPt.y*chord(0.0);
+    }
+    else if(pos==TOPSURFACE && m_pFoilA && m_pFoilB)
+    {
+        foilPt = m_pFoilA->upperYRel(xArel);
+        APt = m_LA * (1.0-foilPt.x) + m_TA * foilPt.x;
+        APt +=  Normal * foilPt.y*chord(0.0);
 
-		foilPt = m_pFoilB->upperYRel(xBrel);
-		BPt = m_LB * (1.0-foilPt.x) + m_TB * foilPt.x;
-		BPt +=  Normal * foilPt.y*chord(1.0);
+        foilPt = m_pFoilB->upperYRel(xBrel);
+        BPt = m_LB * (1.0-foilPt.x) + m_TB * foilPt.x;
+        BPt +=  Normal * foilPt.y*chord(1.0);
 
-	}
-	else if(pos==BOTSURFACE && m_pFoilA && m_pFoilB)
-	{
-		foilPt = m_pFoilA->lowerYRel(xArel);
-		APt = m_LA * (1.0-foilPt.x) + m_TA * foilPt.x;
-		APt +=  Normal * foilPt.y*chord(0.0);
+    }
+    else if(pos==BOTSURFACE && m_pFoilA && m_pFoilB)
+    {
+        foilPt = m_pFoilA->lowerYRel(xArel);
+        APt = m_LA * (1.0-foilPt.x) + m_TA * foilPt.x;
+        APt +=  Normal * foilPt.y*chord(0.0);
 
-		foilPt = m_pFoilB->lowerYRel(xBrel);
-		BPt = m_LB * (1.0-foilPt.x) + m_TB * foilPt.x;
-		BPt +=  Normal * foilPt.y*chord(1.0);
-	}
-	Point = APt * (1.0-yrel)+  BPt * yrel;
-	getNormal(yrel, PtNormal);
+        foilPt = m_pFoilB->lowerYRel(xBrel);
+        BPt = m_LB * (1.0-foilPt.x) + m_TB * foilPt.x;
+        BPt +=  Normal * foilPt.y*chord(1.0);
+    }
+    Point = APt * (1.0-yrel)+  BPt * yrel;
+    getNormal(yrel, PtNormal);
 }
-
 
 
 /**
@@ -601,9 +697,9 @@ void Surface::getYDist(int const &k, double &y1, double &y2)
  */
 void Surface::init()
 {
-	CVector DL, DC;
-	DL.set(m_LB.x-m_LA.x, m_LB.y-m_LA.y, m_LB.z-m_LA.z);
-	DC.set(m_TA.x-m_LA.x, m_TA.y-m_LA.y, m_TA.z-m_LA.z);
+//	CVector DL, DC;
+//	DL.set(m_LB.x-m_LA.x, m_LB.y-m_LA.y, m_LB.z-m_LA.z);
+//	DC.set(m_TA.x-m_LA.x, m_TA.y-m_LA.y, m_TA.z-m_LA.z);
 //	Length = DL.VAbs();
 //	Chord  = DC.VAbs();
 //	u.Set(DC.x/Chord,  DC.y/Chord,  DC.z/Chord);
@@ -614,12 +710,12 @@ void Surface::init()
 	m_bIsLeftSurf  = false;
 	m_bIsRightSurf = false;
 
-	CVector LATB, TALB;
+/*	CVector LATB, TALB;
 
 	LATB = m_TB - m_LA;
 	TALB = m_LB - m_TA;
 	Normal = LATB * TALB;
-	Normal.normalize();
+    Normal.normalize();*/
 }
 
 
@@ -856,7 +952,7 @@ void Surface::setFlap()
 /** Sets the surface average normal vector */
 void Surface::setNormal()
 {
-	static CVector LATB, TALB;
+    CVector LATB, TALB;
 	LATB = m_TB - m_LA;
 	TALB = m_LB - m_TA;
 	Normal = LATB * TALB;
@@ -876,8 +972,8 @@ void Surface::setSidePoints(Body * pBody, double dx, double dz)
 	int l;
 	double alpha_dA, alpha_dB;
 	double cosdA, cosdB;
-	CVector N;
-	static Body TBody;
+    CVector N, A4, B4, TA4, TB4, U;
+    Body TBody;
 	if(pBody)
 	{
 		TBody.duplicate(pBody);
@@ -886,11 +982,25 @@ void Surface::setSidePoints(Body * pBody, double dx, double dz)
 
 	cosdA = Normal.dot(NormalA);
 	cosdB = Normal.dot(NormalB);
-	alpha_dA = -acos(cosdA)*180.0/PI;
-	alpha_dB = acos(cosdB)*180.0/PI;
-//qDebug("%13.5f   %13.5f   %13.5f   %13.5f   ",alpha_dA,alpha_dB,cosdA, cosdB);
+    alpha_dA = acos(cosdA)*180.0/PI;
+    alpha_dB = -acos(cosdB)*180.0/PI;
+
 	chordA  = chord(0.0);
 	chordB  = chord(1.0);
+
+
+    //create the quarter chord centers of rotation for the twist
+    A4 = m_LA *3.0/4.0 + m_TA * 1/4.0;
+    B4 = m_LB *3.0/4.0 + m_TB * 1/4.0;
+
+    // create the vectors perpendicular to the side Normals and to the x-axis
+    TA4.x = 0.0;
+    TA4.y = +NormalA.z;
+    TA4.z = -NormalA.y;
+
+    TB4.x = 0.0;
+    TB4.y = +NormalB.z;
+    TB4.z = -NormalB.y;
 
 	SideA.clear();
 	SideA_T.clear();
@@ -911,11 +1021,9 @@ void Surface::setSidePoints(Body * pBody, double dx, double dz)
 
 	for (l=0; l<=m_NXPanels; l++)
 	{
-		xLA = m_xPointA[l];
-
-		getSurfacePoint(xLA, xLA, 0.0, MIDSURFACE, SideA[l], N);
-		getSurfacePoint(xLA, xLA, 0.0, TOPSURFACE, SideA_T[l], N);
-		getSurfacePoint(xLA, xLA, 0.0, BOTSURFACE, SideA_B[l], N);
+		getSidePoint(m_xPointA[l], false, MIDSURFACE, SideA[l], N);
+		getSidePoint(m_xPointA[l], false, TOPSURFACE, SideA_T[l], N);
+		getSidePoint(m_xPointA[l], false, BOTSURFACE, SideA_B[l], N);
 
 		//scale the thickness
 		SideA[l].y   = m_LA.y +(SideA[l].y   - m_LA.y)/cosdA;
@@ -925,17 +1033,20 @@ void Surface::setSidePoints(Body * pBody, double dx, double dz)
 		SideA_B[l].y = m_LA.y +(SideA_B[l].y - m_LA.y)/cosdA;
 		SideA_B[l].z = m_LA.z +(SideA_B[l].z - m_LA.z)/cosdA;
 
-		//rotate the point
-		SideA[l].rotateX(m_LA, alpha_dA);
-		SideA_T[l].rotateX(m_LA, alpha_dA);
-		SideA_B[l].rotateX(m_LA, alpha_dA);
+		//rotate the point about the foil's neutral line to account for dihedral
+		SideA[l].rotate(m_LA, m_LA-m_TA, alpha_dA);
+		SideA_T[l].rotate(m_LA, m_LA-m_TA, alpha_dA);
+		SideA_B[l].rotate(m_LA, m_LA-m_TA, alpha_dA);
 
+		//set the twist
+		SideA[l].rotate(A4, TA4, m_TwistA);
+		SideA_T[l].rotate(A4, TA4, m_TwistA);
+		SideA_B[l].rotate(A4, TA4, m_TwistA);
+		//        NormalA.rotate(TA4, m_TwistA);
 
-
-		xLB = m_xPointB[l];
-		getSurfacePoint(xLB, xLB, 1.0, MIDSURFACE, SideB[l], N);
-		getSurfacePoint(xLB, xLB, 1.0, TOPSURFACE, SideB_T[l], N);
-		getSurfacePoint(xLB, xLB, 1.0, BOTSURFACE, SideB_B[l], N);
+		getSidePoint(m_xPointB[l], true, MIDSURFACE, SideB[l], N);
+		getSidePoint(m_xPointB[l], true, TOPSURFACE, SideB_T[l], N);
+		getSidePoint(m_xPointB[l], true, BOTSURFACE, SideB_B[l], N);
 
 		//scale the thickness
 		SideB[l].y   = m_LB.y +(SideB[l].y   - m_LB.y)/cosdB;
@@ -945,10 +1056,16 @@ void Surface::setSidePoints(Body * pBody, double dx, double dz)
 		SideB_B[l].y = m_LB.y +(SideB_B[l].y - m_LB.y)/cosdB;
 		SideB_B[l].z = m_LB.z +(SideB_B[l].z - m_LB.z)/cosdB;
 
-		//rotate the point
-		SideB[l].rotateX(m_LB, alpha_dB);
-		SideB_T[l].rotateX(m_LB, alpha_dB);
-		SideB_B[l].rotateX(m_LB, alpha_dB);
+		//rotate the point about the foil's neutral line to account for dihedral
+		SideB[l].rotate(m_LB, m_LB-m_TB, alpha_dB);
+		SideB_T[l].rotate(m_LB, m_LB-m_TB, alpha_dB);
+		SideB_B[l].rotate(m_LB, m_LB-m_TB, alpha_dB);
+
+		//set the twist
+		SideB[l].rotate(B4, TB4, m_TwistB);
+		SideB_T[l].rotate(B4, TB4, m_TwistB);
+		SideB_B[l].rotate(B4, TB4, m_TwistB);
+//        NormalB.rotate(TB4, m_TwistB);
 
 
 		if(pBody && m_bIsCenterSurf && m_bIsLeftSurf)
@@ -979,60 +1096,6 @@ void Surface::setSidePoints(Body * pBody, double dx, double dz)
 }
 
 
-
-/**
- * Creates the master points on the left and right ends.
- * One of the most difficult part of the code to implement. The algorithm still isn't very robust.
- * @param pBody a pointer to the Body object, or NULL if none.
- * @param dx the x-component of the translation to apply to the body.
- * @param dz the z-component of the translation to apply to the body.
- */
-void Surface::getSidePoints(enumPanelPosition pos,
-							Body * pBody,
-							CVector *PtA, CVector *PtB, int nPoints)
-{
-	double xRel, alpha_dA, alpha_dB, cosdA, cosdB;
-	CVector N;
-
-	cosdA = Normal.dot(NormalA);
-	cosdB = Normal.dot(NormalB);
-	alpha_dA = -acos(cosdA)*180.0/PI;
-	alpha_dB = acos(cosdB)*180.0/PI;
-//qDebug("%13.5f   %13.5f   %13.5f   %13.5f   ",alpha_dA,alpha_dB,cosdA, cosdB);
-	chordA  = chord(0.0);
-	chordB  = chord(1.0);
-
-	for(int i=0; i<nPoints; i++)
-	{
-		xRel = (double)i/(nPoints-1);
-
-		getSurfacePoint(xRel, xRel, 0.0, pos, PtA[i], N);
-
-		//scale the thickness
-		PtA[i].y   = m_LA.y +(PtA[i].y   - m_LA.y)/cosdA;
-		PtA[i].z   = m_LA.z +(PtA[i].z   - m_LA.z)/cosdA;
-
-		//rotate the point
-		PtA[i].rotateX(m_LA, alpha_dA);
-
-		getSurfacePoint(xRel, xRel, 1.0, pos, PtB[i], N);
-
-		//scale the thickness
-		PtB[i].y   = m_LB.y +(PtB[i].y   - m_LB.y)/cosdB;
-		PtB[i].z   = m_LB.z +(PtB[i].z   - m_LB.z)/cosdB;
-
-		//rotate the point
-		PtB[i].rotateX(m_LB, alpha_dB);
-		if(pBody && m_bIsCenterSurf && m_bIsLeftSurf)
-		{
-			pBody->intersect(PtA[i], PtB[i], PtB[i], false);
-		}
-		else if(pBody && m_bIsCenterSurf && m_bIsRightSurf)
-		{
-			pBody->intersect(PtA[i], PtB[i], PtA[i], true);
-		}
-	}
-}
 
 
 /**
@@ -1137,15 +1200,12 @@ void Surface::createXPoints()
 /**
  * Sets the surface twist - method 1
  */
-void Surface::setTwist1()
+void Surface::setTwist()
 {
-	static CVector A4, B4, L, U, T, O;
-	O.set(0.0,0.0,0.0);
+    CVector A4, B4, U, T;
 
 	A4 = m_LA *3.0/4.0 + m_TA * 1/4.0;
 	B4 = m_LB *3.0/4.0 + m_TB * 1/4.0;
-	L = B4 - A4;
-	L.normalize();
 
 	// create a vector perpendicular to NormalA and x-axis
 	T.x = 0.0;
@@ -1154,13 +1214,13 @@ void Surface::setTwist1()
 	//rotate around this axis
 	U = m_LA-A4;
 	U.rotate(T, m_TwistA);
-	m_LA = A4+ U;
+    m_LA = A4+ U;
 
 	U = m_TA-A4;
 	U.rotate(T, m_TwistA);
 	m_TA = A4 + U;
 
-	NormalA.rotate(T, m_TwistA);
+    NormalA.rotate(T, m_TwistA);
 
 	// create a vector perpendicular to NormalB and x-axis
 	T.x = 0.0;
@@ -1175,7 +1235,7 @@ void Surface::setTwist1()
 	U.rotate(T, m_TwistB);
 	m_TB = B4 + U;
 
-	NormalB.rotate(T, m_TwistB);
+    NormalB.rotate(T, m_TwistB);
 }
 
 

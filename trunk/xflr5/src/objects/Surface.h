@@ -115,11 +115,12 @@ public:
 	void getNormal(double yrel, CVector &N);
 	void getTrailingPt(int k, CVector &C);
 	void getPanel(int const &k, int const &l, enumPanelPosition pos);
-	void getSurfacePoint(double xArel, double xBrel, double yrel, enumPanelPosition pos, CVector &Point, CVector &PtNormal);
-	void getSection(double const &tau, double &Chord, double &Area, CVector &PtC4);
+    void getSidePoint(double xRel, bool bRight, enumPanelPosition pos, CVector &Point, CVector &PtNormal);
+    void getSurfacePoint(double xArel, double xBrel, double yrel, enumPanelPosition pos, CVector &Point, CVector &PtNormal);
+    void getSection(double const &tau, double &Chord, double &Area, CVector &PtC4);
 	void getYDist(int const &k, double &y1, double &y2);
-	void getSidePoints(enumPanelPosition pos, Body * pBody,  CVector *PtA, CVector *PtB, int nPoints);
-	void init();
+	void getSidePoints(enumPanelPosition pos, Body * pBody, CVector *PtA, CVector *PtB, int nPoints);
+    void init();
 	void resetFlap();
 	void rotateX(CVector const &O, double XTilt);
 	void rotateY(CVector const &O, double YTilt);
@@ -128,7 +129,7 @@ public:
 	void setNormal();
 	void setFlap();
 	void setSidePoints(Body *pBody, double dx, double dz);
-	void setTwist1();
+	void setTwist();
 	void setTwist2();
 	void translate(CVector const &T);
 	void translate(double tx, double ty, double tz);
@@ -159,6 +160,16 @@ public:
 	QList<CVector> SideA;      /**< the array of panel points on the left foil's mid-line*/
 	QList<CVector> SideB;      /**< the array of panel points on the right foil's mid-line*/
 
+	CVector m_LA;              /**< the Surface's leading left point */
+	CVector m_LB;              /**< the Surface's leading right point */
+	CVector m_TA;              /**< the Surface's trailing left point */
+	CVector m_TB;              /**< the Surface's trailing right point */
+	CVector Normal;            /**< the Surface's normal vector */
+	CVector NormalA;           /**< the normal at the left tip, defined as the average of this Surface's normal and of the one adjacent on the left side, if any */
+	CVector NormalB;           /**< the normal at the right tip, defined as the average of this Surface's normal and of the one adjacent on the right side, if any */
+	double m_TwistA;           /**< the twist at side A in degrees */
+	double m_TwistB;           /**< the twist at side B in degrees */
+
 private :
 	QList<CVector> SideA_T;    /**< the array of panel points on the left foil's top-line*/
 	QList<CVector> SideB_T;    /**< the array of panel points on the right foil's top-line*/
@@ -176,16 +187,7 @@ private :
 	bool m_bIsTipRight;        /**< true if the Surface is built on the tip right wing */
 	bool m_bIsCenterSurf;      /**< true if the Surface is either a left or right center surface... need to connect to body */
 
-	CVector m_LA;              /**< the Surface's leading left point */
-	CVector m_LB;              /**< the Surface's leading right point */
-	CVector m_TA;              /**< the Surface's trailing left point */
-	CVector m_TB;              /**< the Surface's trailing right point */
-	CVector Normal;            /**< the Surface's normal vector */
-	CVector NormalA;           /**< the normal at the left tip, defined as the average of this Surface's normal and of the one adjacent on the left side, if any */
-	CVector NormalB;           /**< the normal at the right tip, defined as the average of this Surface's normal and of the one adjacent on the right side, if any */
 
-	double m_TwistA;           /**< the twist at side A in degrees */
-	double m_TwistB;           /**< the twist at side B in degrees */
 	double m_Length;           /**< the Surface's planform length from A to B*/
 	double chordA;             /**< the chord length at tip A */
 	double chordB;             /**< the chord length at tip B */
@@ -193,9 +195,6 @@ private :
 	double m_posATE, m_posBTE;      /**< the relative flap hinge positions at sides A and B */
 	QVarLengthArray<double> m_xPointA;        /**< the chordwise relative position of the VLM panel left corner points at side A */
 	QVarLengthArray<double> m_xPointB;        /**< the chordwise relative position of the VLM panel right corner points at side B */
-
-	double y1, y2, xLA, xTA, xLB, xTB;
-
 
 	XFLR5::enumPanelDistribution m_XDistType;            /**< the type of distribution along the Surface's x axis */
 	XFLR5::enumPanelDistribution m_YDistType;            /**< the type of distribution along the Surface's y axis */

@@ -41,20 +41,11 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	int j, l ;
-	static double x, xDistrib[SIDEPOINTS];
-	static CVector Pt, PtA, PtB, PtNormal, A, B, C, D, N, BD, AC;
-	static CVector PtILeft[SIDEPOINTS],PtIRight[SIDEPOINTS];
+	static CVector Pt, PtNormal, A, B, C, D, N, BD, AC, C4, TC4;
+	static CVector PtBotLeft[SIDEPOINTS], PtBotRight[SIDEPOINTS], PtTopLeft[SIDEPOINTS], PtTopRight[SIDEPOINTS];
 	Foil * pFoilA, *pFoilB;
 
 	N.set(0.0, 0.0, 0.0);
-
-	double xx;
-	for(int i=0; i<SIDEPOINTS; i++)
-	{
-        xx = (double)i/(double)(SIDEPOINTS-1);
-        xDistrib[i] = 1.0/2.0*(1.0-cos(xx*PI));
-	}
-
 
 	for(int iw=0; iw<MAXWINGS; iw++)
 	{
@@ -67,7 +58,6 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 
             glNewList(List+iw, GL_COMPILE);
 			{
-				QMiarex::s_GLList++;
 
 				if(Settings::s_bAlphaChannel)
 				{
@@ -85,44 +75,38 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 				glPolygonOffset(1.0, 1.0);
 
-				//top surface
-				PtNormal = CVector(0.0,0.0,1.0);
+
 				for (j=0; j<pWing->m_Surface.size(); j++)
 				{
-					pWing->m_Surface.at(j)->getSidePoints(TOPSURFACE, pBody, PtILeft, PtIRight, SIDEPOINTS);
+					//top surface
+					PtNormal = CVector(0.0,0.0,1.0);
+					pWing->m_Surface.at(j)->getSidePoints(TOPSURFACE, pBody, PtTopLeft, PtTopRight, SIDEPOINTS);
 					glBegin(GL_QUAD_STRIP);
 					{
 						for (l=0; l<SIDEPOINTS; l++)
 						{
 							glNormal3d(PtNormal.x, PtNormal.y, PtNormal.z);
-							glVertex3d(PtILeft[l].x, PtILeft[l].y, PtILeft[l].z);
-							glVertex3d(PtIRight[l].x, PtIRight[l].y, PtIRight[l].z);
+							glVertex3d(PtTopLeft[l].x, PtTopLeft[l].y, PtTopLeft[l].z);
+							glVertex3d(PtTopRight[l].x, PtTopRight[l].y, PtTopRight[l].z);
 						}
 					}
 					glEnd();
-				}
 
-				PtNormal = CVector(0.0,0.0,-1.0);
-				//bottom surface
-				for (j=0; j<pWing->m_Surface.size(); j++)
-				{
-					pWing->m_Surface.at(j)->getSidePoints(BOTSURFACE, pBody, PtILeft, PtIRight, SIDEPOINTS);
+					//bottom surface
+					PtNormal = CVector(0.0,0.0,-1.0);
+					pWing->m_Surface.at(j)->getSidePoints(BOTSURFACE, pBody, PtBotLeft, PtBotRight, SIDEPOINTS);
 					glBegin(GL_QUAD_STRIP);
 					{
 						for (l=0; l<SIDEPOINTS; l++)
 						{
 							glNormal3d(PtNormal.x, PtNormal.y, PtNormal.z);
-							glVertex3d(PtILeft[l].x, PtILeft[l].y, PtILeft[l].z);
-							glVertex3d(PtIRight[l].x, PtIRight[l].y, PtIRight[l].z);
+							glVertex3d(PtBotLeft[l].x,  PtBotLeft[l].y,  PtBotLeft[l].z);
+							glVertex3d(PtBotRight[l].x, PtBotRight[l].y, PtBotRight[l].z);
 						}
 					}
 					glEnd();
-				}
 
-				//TIP SURFACES
-				for (j=0; j<pWing->m_Surface.size(); j++)
-				{
-					//Tip left surface
+					//tip patches
 					if(pWing->m_Surface[j]->isTipLeft())
 					{
 						glBegin(GL_QUAD_STRIP);
@@ -142,19 +126,14 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 
 							for (l=0; l<SIDEPOINTS; l++)
 							{
-								x = xDistrib[l];
-								pWing->m_Surface[j]->getSurfacePoint(x,x,0.0,TOPSURFACE, Pt, PtNormal);
-
-								glVertex3d(Pt.x, Pt.y, Pt.z);
-
-								pWing->m_Surface[j]->getSurfacePoint(x,x,0.0,BOTSURFACE, Pt, PtNormal);
-								glVertex3d(Pt.x, Pt.y, Pt.z);
+								glVertex3d(PtBotLeft[l].x, PtBotLeft[l].y, PtBotLeft[l].z);
+								glVertex3d(PtTopLeft[l].x, PtTopLeft[l].y, PtTopLeft[l].z);
 							}
 						}
 						glEnd();
 					}
-					if (pWing->m_Surface[j]->isTipRight() &&
-					   (!pWing->isFin() || (pWing->isFin()&&!pBody)) )
+
+					if (pWing->m_Surface[j]->isTipRight() &&  (!pWing->isFin() || (pWing->isFin()&&!pBody)) )
 					{
 						//Tip right surface
 						glBegin(GL_QUAD_STRIP);
@@ -174,18 +153,14 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 
 							for (l=0; l<SIDEPOINTS; l++)
 							{
-								x = xDistrib[l];
-								pWing->m_Surface[j]->getSurfacePoint(x,x,1.0,TOPSURFACE, Pt, PtNormal);
-
-								glVertex3d(Pt.x, Pt.y, Pt.z);
-
-								pWing->m_Surface[j]->getSurfacePoint(x,x,1.0,BOTSURFACE, Pt, PtNormal);
-								glVertex3d(Pt.x, Pt.y, Pt.z);
+								glVertex3d(PtBotRight[l].x, PtBotRight[l].y, PtBotRight[l].z);
+								glVertex3d(PtTopRight[l].x, PtTopRight[l].y, PtTopRight[l].z);
 							}
 						}
 						glEnd();
 					}
 				}
+
 				glDisable(GL_DEPTH_TEST);
 				glDisable(GL_POLYGON_OFFSET_FILL);
 				glDisable(GL_BLEND);
@@ -195,7 +170,6 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 			//OUTLINE
 			glNewList(List+iw+MAXWINGS,GL_COMPILE);
 			{
-				QMiarex::s_GLList++;
 
 				glEnable(GL_DEPTH_TEST);
 				glEnable (GL_LINE_STIPPLE);
@@ -211,51 +185,50 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 
 				for (j=0; j<pWing->m_Surface.size(); j++)
 				{
-					pWing->m_Surface.at(j)->getSidePoints(TOPSURFACE, pBody, PtILeft, PtIRight, SIDEPOINTS);
+					pWing->m_Surface.at(j)->getSidePoints(TOPSURFACE, pBody, PtTopLeft, PtTopRight, SIDEPOINTS);
 
 					// left foil
 					glBegin(GL_LINE_STRIP);
 					{
-						for (l=0; l<SIDEPOINTS; l++) glVertex3d(PtILeft[l].x, PtILeft[l].y, PtILeft[l].z);
+						for (l=0; l<SIDEPOINTS; l++) glVertex3d(PtTopLeft[l].x, PtTopLeft[l].y, PtTopLeft[l].z);
 					}
 					glEnd();
 
 					//right foil
 					glBegin(GL_LINE_STRIP);
 					{
-						for (l=0; l<SIDEPOINTS; l++) glVertex3d(PtIRight[l].x, PtIRight[l].y, PtIRight[l].z);
+						for (l=0; l<SIDEPOINTS; l++) glVertex3d(PtTopRight[l].x, PtTopRight[l].y, PtTopRight[l].z);
 					}
 					glEnd();
 
 					//Leading edge
 					glBegin(GL_LINES);
 					{
-						glVertex3d(PtILeft[0].x,  PtILeft[0].y,  PtILeft[0].z);
-						glVertex3d(PtIRight[0].x, PtIRight[0].y, PtIRight[0].z);
+						glVertex3d(PtTopLeft[0].x,  PtTopLeft[0].y,  PtTopLeft[0].z);
+						glVertex3d(PtTopRight[0].x, PtTopRight[0].y, PtTopRight[0].z);
 					}
 					glEnd();
 
 					glBegin(GL_LINES);
 					{
-						glVertex3d(PtILeft[SIDEPOINTS-1].x,  PtILeft[SIDEPOINTS-1].y,  PtILeft[SIDEPOINTS-1].z);
-						glVertex3d(PtIRight[SIDEPOINTS-1].x, PtIRight[SIDEPOINTS-1].y, PtIRight[SIDEPOINTS-1].z);
+						glVertex3d(PtTopLeft[SIDEPOINTS-1].x,  PtTopLeft[SIDEPOINTS-1].y,  PtTopLeft[SIDEPOINTS-1].z);
+						glVertex3d(PtTopRight[SIDEPOINTS-1].x, PtTopRight[SIDEPOINTS-1].y, PtTopRight[SIDEPOINTS-1].z);
 					}
 					glEnd();
 
-					pWing->m_Surface.at(j)->getSidePoints(BOTSURFACE, pBody, PtILeft, PtIRight, SIDEPOINTS);
+					pWing->m_Surface.at(j)->getSidePoints(BOTSURFACE, pBody, PtTopLeft, PtTopRight, SIDEPOINTS);
 					glBegin(GL_LINE_STRIP);
 					{
-						for (l=0; l<SIDEPOINTS; l++) glVertex3d(PtILeft[l].x, PtILeft[l].y, PtILeft[l].z);
+						for (l=0; l<SIDEPOINTS; l++) glVertex3d(PtTopLeft[l].x, PtTopLeft[l].y, PtTopLeft[l].z);
 					}
 					glEnd();
 
 					glBegin(GL_LINE_STRIP);
 					{
-						for (l=0; l<SIDEPOINTS; l++) glVertex3d(PtIRight[l].x, PtIRight[l].y, PtIRight[l].z);
+						for (l=0; l<SIDEPOINTS; l++) glVertex3d(PtTopRight[l].x, PtTopRight[l].y, PtTopRight[l].z);
 					}
 					glEnd();
 				}
-
 
 
 				//flap outline....
@@ -378,7 +351,6 @@ void GLCreateCp(int nPanels, int nNodes, CVector *pNode, Panel *pPanel, PlaneOpp
 
 	glNewList(PANELCP, GL_COMPILE);
 	{
-		QMiarex::s_GLList++;
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_POLYGON_OFFSET_FILL);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -526,7 +498,6 @@ void GLCreateCpLegendClr(QRect cltRect)
 
 	glNewList(WOPPCPLEGENDCLR,GL_COMPILE);
 	{
-        QMiarex::s_GLList++;
 		glDisable(GL_LIGHTING);
 		glDisable(GL_LIGHT0);
 
@@ -573,7 +544,6 @@ void GLCreateDownwash(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 	//DOWNWASH
 	glNewList(List,GL_COMPILE);
 	{
-        QMiarex::s_GLList++;
 
 		glEnable (GL_LINE_STIPPLE);
 
@@ -737,7 +707,6 @@ void GLCreateDrag(Wing *pWing, WPolar* pWPolar, WingOpp *pWOpp, int List)
 	//DRAGLINE
 	glNewList(List,GL_COMPILE);
 	{
-		QMiarex::s_GLList++;
 		glEnable (GL_LINE_STIPPLE);
 		glLineStipple (1, IDash);// Solid
 		glLineWidth((GLfloat)(Iwidth));
@@ -1131,8 +1100,6 @@ void GLCreateVortices(int nPanels, Panel *pPanel, CVector *pNode, WPolar *pWPola
 
 	glNewList(VLMVORTICES,GL_COMPILE);
 	{
-		QMiarex::s_GLList++;
-
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_LINE_STIPPLE);
 		glLineStipple (1, 0xFFFF);
@@ -1237,7 +1204,6 @@ void GLCreateLiftForce(WPolar *pWPolar, PlaneOpp *pPOpp)
 
 	glNewList(LIFTFORCE, GL_COMPILE);
 	{
-		QMiarex::s_GLList++;
 		glEnable (GL_LINE_STIPPLE);
 
 		style = W3dPrefsDlg::s_XCPStyle;
@@ -1313,7 +1279,6 @@ void GLCreateMoments(Wing *pWing, WPolar *pWPolar, PlaneOpp *pPOpp)
 
 	glNewList(VLMMOMENTS, GL_COMPILE);
 	{
-		QMiarex::s_GLList++;
 		glEnable (GL_LINE_STIPPLE);
 
 		color = W3dPrefsDlg::s_MomentColor;
@@ -1477,7 +1442,6 @@ void GLCreateLiftStrip(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 	//LIFTLINE
 	glNewList(List,GL_COMPILE);
 	{
-		QMiarex::s_GLList++;
 		glEnable (GL_LINE_STIPPLE);
 
 		color = W3dPrefsDlg::s_XCPColor;
@@ -1617,8 +1581,6 @@ void GLCreateTrans(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
     //TOP TRANSITION
 	glNewList(List,GL_COMPILE);
 	{
-		QMiarex::s_GLList++;
-
 		glEnable(GL_DEPTH_TEST);
 		glEnable (GL_LINE_STIPPLE);
 
@@ -1698,7 +1660,6 @@ void GLCreateTrans(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 	//BOTTOM TRANSITION
 	glNewList(List+MAXWINGS,GL_COMPILE);
 	{
-		QMiarex::s_GLList++;
 		glEnable (GL_LINE_STIPPLE);
 		glEnable(GL_DEPTH_TEST);
 		style = W3dPrefsDlg::s_BotStyle;
@@ -1780,7 +1741,6 @@ bool GLCreateStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPolar *pWPo
 	if(!PlaneWing[0] || !pPOpp || !pWPolar || pWPolar->analysisMethod()==XFLR5::LLTMETHOD  || !Objects3D::s_MatSize)
 	{
 		glNewList(VLMSTREAMLINES,GL_COMPILE); glEndList();
-		QMiarex::s_GLList++;
 		return false;
 	}
 
@@ -1809,8 +1769,6 @@ bool GLCreateStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPolar *pWPo
 
 	glNewList(VLMSTREAMLINES,GL_COMPILE);
 	{
-		QMiarex::s_GLList++;
-
 		glEnable (GL_LINE_STIPPLE);
 
 		style = W3dPrefsDlg::s_StreamLinesStyle;
@@ -1981,7 +1939,6 @@ bool GLCreateSurfSpeeds(Panel *pPanel, WPolar *pWPolar, PlaneOpp *pPOpp)
 	if(!pWPolar || !pPOpp || pPOpp->analysisMethod()==XFLR5::LLTMETHOD || !pPanel || !Objects3D::s_MatSize)
 	{
 		glNewList(SURFACESPEEDS, GL_COMPILE);
-		QMiarex::s_GLList++;
 		glEndList();
 		return false;
 	}
@@ -2004,8 +1961,6 @@ bool GLCreateSurfSpeeds(Panel *pPanel, WPolar *pWPolar, PlaneOpp *pPOpp)
 
 	glNewList(SURFACESPEEDS, GL_COMPILE);
 	{
-		QMiarex::s_GLList++;
-
 		glEnable (GL_LINE_STIPPLE);
 
 		glLineWidth(W3dPrefsDlg::s_WakeWidth);
@@ -2148,7 +2103,6 @@ void GLCreatePanelForce(int nPanels, Panel *pPanel, WPolar *pWPolar, PlaneOpp *p
 
 	glNewList(PANELFORCEARROWS, GL_COMPILE);
 	{
-		QMiarex::s_GLList++;
 		glLineWidth(1.0);
 
 		for (p=0; p<nPanels; p++)
@@ -2305,14 +2259,11 @@ void GLCreateCtrlPts(int nPanels, Panel *pPanel, double normalLength)
 
 	glNewList(VLMCTRLPTS,GL_COMPILE);
 	{
-		QMiarex::s_GLList++;
 		glEnable(GL_DEPTH_TEST);
 		glLineWidth(1.0);
 		glColor3d(0.0, 0.5, 0.5);
 		for (int p=0; p<nPanels; p++)
 		{
-
-
 			// Rotate the reference arrow to align it with the panel normal
 			if(R==P)
 			{
