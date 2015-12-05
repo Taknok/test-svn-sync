@@ -41,8 +41,8 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	int j, l ;
-	static CVector Pt, PtNormal, A, B, C, D, N, BD, AC, C4, TC4;
-	static CVector PtBotLeft[SIDEPOINTS], PtBotRight[SIDEPOINTS], PtTopLeft[SIDEPOINTS], PtTopRight[SIDEPOINTS];
+	static CVector Pt, A, B, C, D, N, BD, AC;
+	static CVector Normal[SIDEPOINTS], PtBotLeft[SIDEPOINTS], PtBotRight[SIDEPOINTS], PtTopLeft[SIDEPOINTS], PtTopRight[SIDEPOINTS];
 	Foil * pFoilA, *pFoilB;
 
 	N.set(0.0, 0.0, 0.0);
@@ -79,13 +79,12 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 				for (j=0; j<pWing->m_Surface.size(); j++)
 				{
 					//top surface
-					PtNormal = CVector(0.0,0.0,1.0);
-					pWing->m_Surface.at(j)->getSidePoints(TOPSURFACE, pBody, PtTopLeft, PtTopRight, SIDEPOINTS);
+					pWing->m_Surface.at(j)->getSidePoints(TOPSURFACE, pBody, PtTopLeft, PtTopRight, Normal, SIDEPOINTS);
 					glBegin(GL_QUAD_STRIP);
 					{
 						for (l=0; l<SIDEPOINTS; l++)
 						{
-							glNormal3d(PtNormal.x, PtNormal.y, PtNormal.z);
+							glNormal3d(Normal[l].x, Normal[l].y, Normal[l].z);
 							glVertex3d(PtTopLeft[l].x, PtTopLeft[l].y, PtTopLeft[l].z);
 							glVertex3d(PtTopRight[l].x, PtTopRight[l].y, PtTopRight[l].z);
 						}
@@ -93,13 +92,12 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 					glEnd();
 
 					//bottom surface
-					PtNormal = CVector(0.0,0.0,-1.0);
-					pWing->m_Surface.at(j)->getSidePoints(BOTSURFACE, pBody, PtBotLeft, PtBotRight, SIDEPOINTS);
+					pWing->m_Surface.at(j)->getSidePoints(BOTSURFACE, pBody, PtBotLeft, PtBotRight, Normal, SIDEPOINTS);
 					glBegin(GL_QUAD_STRIP);
 					{
 						for (l=0; l<SIDEPOINTS; l++)
 						{
-							glNormal3d(PtNormal.x, PtNormal.y, PtNormal.z);
+							glNormal3d(Normal[l].x, Normal[l].y, Normal[l].z);
 							glVertex3d(PtBotLeft[l].x,  PtBotLeft[l].y,  PtBotLeft[l].z);
 							glVertex3d(PtBotRight[l].x, PtBotRight[l].y, PtBotRight[l].z);
 						}
@@ -185,7 +183,7 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 
 				for (j=0; j<pWing->m_Surface.size(); j++)
 				{
-					pWing->m_Surface.at(j)->getSidePoints(TOPSURFACE, pBody, PtTopLeft, PtTopRight, SIDEPOINTS);
+					pWing->m_Surface.at(j)->getSidePoints(TOPSURFACE, pBody, PtTopLeft, PtTopRight, Normal, SIDEPOINTS);
 
 					// left foil
 					glBegin(GL_LINE_STRIP);
@@ -216,7 +214,7 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 					}
 					glEnd();
 
-					pWing->m_Surface.at(j)->getSidePoints(BOTSURFACE, pBody, PtTopLeft, PtTopRight, SIDEPOINTS);
+					pWing->m_Surface.at(j)->getSidePoints(BOTSURFACE, pBody, PtTopLeft, PtTopRight, Normal, SIDEPOINTS);
 					glBegin(GL_LINE_STRIP);
 					{
 						for (l=0; l<SIDEPOINTS; l++) glVertex3d(PtTopLeft[l].x, PtTopLeft[l].y, PtTopLeft[l].z);

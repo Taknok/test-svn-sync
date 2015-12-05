@@ -19,15 +19,11 @@
 
 *****************************************************************************/
 
-#include "../mainframe.h"
 #include "Body.h"
 #include "../globals.h"
 #include <math.h>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QtDebug>
 
-void *Body::s_pMainFrame;
+
 double Body::s_XPanelPos[300];
 
 /**
@@ -61,8 +57,6 @@ Body::Body()
 	clearPointMasses();
 
 	m_Bunch  = 0.0;
-
-	eps = 1.0e-06;
 
 	m_SplineSurface.m_iuDegree = 3;
 	m_SplineSurface.m_ivDegree = 3;
@@ -501,7 +495,7 @@ double Body::getv(double u, CVector r, bool bRight)
  * Imports the definition from a text file. cf. Export the definition for details.
  * @return true if the Body definition was correctly imported, false otherwise.
  */
-bool Body::importDefinition(QTextStream &inStream, double mtoUnit)
+bool Body::importDefinition(QTextStream &inStream, double mtoUnit, QString &errorMessage)
 {
 	int res, i, j, Line, NSideLines;
 	QString strong;
@@ -573,9 +567,7 @@ bool Body::importDefinition(QTextStream &inStream, double mtoUnit)
 	{
 		if(m_SplineSurface.m_pFrame[i]->m_CtrlPoint.size() != m_SplineSurface.m_pFrame[i-1]->m_CtrlPoint.size())
 		{
-			MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-			QString strong = QObject::tr("Error reading ")+m_BodyName+QObject::tr("\nFrames have different number of side points");
-			QMessageBox::warning(pMainFrame, QObject::tr("Error"),strong); //TODO
+			errorMessage = QObject::tr("Error reading ")+m_BodyName+QObject::tr("\nFrames have different number of side points");
 			return false;
 		}
 	}
@@ -603,18 +595,6 @@ bool Body::importDefinition(QTextStream &inStream, double mtoUnit)
  */
 int Body::InsertPoint(CVector Real)
 {
-	//Real is to be inserted in the current frame
-	if(!activeFrame())
-	{
-		QMessageBox msgBox;
-		msgBox.setStandardButtons(QMessageBox::Ok);
-		msgBox.setWindowTitle(QObject::tr("Warning"));
-		msgBox.setText(QObject::tr("Please select a Frame before inserting a point"));
-		msgBox.exec();
-
-		return -1;
-	}
-
 	int i, n;
 
 
