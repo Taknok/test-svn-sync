@@ -1785,14 +1785,17 @@ void GL3dWingDlg::onImportWing()
 												QString("Open File"), 
 												Settings::s_LastDirName,
 												QString("XFLR5 Wing file (*.xwimp)"));
-	m_pWing->importDefinition(path_to_file);
-	this->initDialog(m_pWing);
-	this->readParams();
-	this->setWingData();
+	QString errorMsg;
+	if(!m_pWing->importDefinition(path_to_file, errorMsg))
+	{
+		QMessageBox::warning(this, tr("Warning"), errorMsg);
+	}
+	initDialog(m_pWing);
+	readParams();
+	setWingData();
 	m_bChanged = true;
 	m_bResetglWing = true;
-	this->m_pGLWidget->update();
-	
+	m_pGLWidget->update();
 }
 
 
@@ -1806,7 +1809,11 @@ void GL3dWingDlg::onExportWing()
 	if (!path_to_file.endsWith(".xwimp")) {
 		path_to_file.append(".xwimp");
 	}
-	m_pWing->exportDefinition(path_to_file);
+	QString errorMsg;
+	if(!m_pWing->exportDefinition(path_to_file, errorMsg))
+	{
+		QMessageBox::warning(this, tr("Warning"), errorMsg);
+	}
 }
 
 

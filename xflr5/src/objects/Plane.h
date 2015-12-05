@@ -165,7 +165,6 @@ public:
 
 public:
 	Wing m_Wing[MAXWINGS];                      /**< the array of Wing objects used to define this Plane */
-	static void * s_pMainFrame;                 /**< a void static pointer to the MainFrame object */
 
 private:
 

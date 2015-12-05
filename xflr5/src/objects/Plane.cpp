@@ -24,7 +24,6 @@
 #include "../globals.h"
 #include <math.h>
 
-void*	Plane::s_pMainFrame;
 
 /** The public constructor. */
 Plane::Plane()

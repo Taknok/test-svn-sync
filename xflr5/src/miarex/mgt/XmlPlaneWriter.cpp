@@ -93,6 +93,7 @@ void XMLPlaneWriter::writeXMLPlane(Plane *m_pPlane)
 				writeStartElement("wing");
 				{
 					writeTextElement("Name", m_pPlane->wing(iw)->wingName());
+					writeTextElement("Type",   wingType(m_pPlane->wing(iw)->wingType()));
 					writeColor(m_pPlane->wing(iw)->wingColor());
 					writeTextElement("Description", m_pPlane->wing(iw)->WingDescription());
 					writeTextElement("Position",QString("%1, %2, %3").arg(m_pPlane->WingLE(iw).x*Units::mtoUnit(), 11,'g',5)
