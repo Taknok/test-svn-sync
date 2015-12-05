@@ -439,7 +439,7 @@ double Surface::stripWidth(int k)
  */
 void Surface::getSidePoint(double xRel, bool bRight, enumPanelPosition pos, CVector &Point, CVector &PtNormal)
 {
-    CVector foilPt;
+	CVector foilPt(xRel,0.0,0.0);
 
     if(!bRight)
     {
@@ -465,18 +465,21 @@ void Surface::getSidePoint(double xRel, bool bRight, enumPanelPosition pos, CVec
 
 
 /**
- * Creates the master points on the left and right ends.
- * One of the most difficult part of the code to implement.
+ * Creates the master points on the left and right ends. Used to create the 3d OpengGL view lists.
  * @param pBody a pointer to the Body object, or NULL if none.
  * @param dx the x-component of the translation to apply to the body.
  * @param dz the z-component of the translation to apply to the body.
+ * @param PtA a pointer to the array to fill with the points on the Surface's left tip
+ * @param PtB a pointer to the array to fill with the points on the Surface's right tip
+ * @param N a pointer to the array to fill with the vectors normal to the surface
+ * @param nPoints the number of side points to define on each tip
  */
 void Surface::getSidePoints(enumPanelPosition pos,
 							Body * pBody,
-							CVector *PtA, CVector *PtB, int nPoints)
+							CVector *PtA, CVector *PtB, CVector *N, int nPoints)
 {
 	double xRel;
-	CVector N, A4, B4, TA4, TB4;
+	CVector A4, B4, TA4, TB4;
 
 	double cosdA = Normal.dot(NormalA);
 	double cosdB = Normal.dot(NormalB);
@@ -499,13 +502,13 @@ void Surface::getSidePoints(enumPanelPosition pos,
 	for(int i=0; i<nPoints; i++)
 	{
 		xRel = (double)i/(nPoints-1);
-		getSidePoint(xRel, false, pos, PtA[i], N);
+		getSidePoint(xRel, false, pos, PtA[i], N[i]);
 		PtA[i].y   = m_LA.y +(PtA[i].y   - m_LA.y)/cosdA;
 		PtA[i].z   = m_LA.z +(PtA[i].z   - m_LA.z)/cosdA;
 		PtA[i].rotate(m_LA, m_LA-m_TA, alpha_dA);
 		PtA[i].rotate(A4, TA4, m_TwistA);
 
-		getSidePoint(xRel, true,  pos, PtB[i], N);
+		getSidePoint(xRel, true,  pos, PtB[i], N[i]);
 		PtB[i].y   = m_LB.y +(PtB[i].y   - m_LB.y)/cosdB;
 		PtB[i].z   = m_LB.z +(PtB[i].z   - m_LB.z)/cosdB;
 		PtB[i].rotate(m_LB, m_LB-m_TB, alpha_dB);

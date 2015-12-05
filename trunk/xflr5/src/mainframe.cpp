@@ -753,8 +753,6 @@ void MainFrame::createDockWindows()
 	QXInverse::s_pMainFrame        = this;
 	QMiarex::s_pMainFrame          = this;
 	ThreeDWidget::s_pMainFrame     = this;
-	Body::s_pMainFrame             = this;
-	Plane::s_pMainFrame            = this;
 	Section2dWidget::s_pMainFrame  = this;
 	GraphWidget::s_pMainFrame      = this;
 	FoilWidget::s_pMainFrame       = this;

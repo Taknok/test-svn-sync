@@ -86,8 +86,8 @@ public:
 	Wing();
 	~Wing();
 
-	void importDefinition(QString path_to_file);
-	void exportDefinition(QString path_to_file);
+	bool importDefinition(QString path_to_file, QString errorMessage);
+	bool exportDefinition(QString path_to_file, QString errorMessage);
 
 	void getViewYZPos(double xrel, double y, double &yv, double &zv, int pos);
 

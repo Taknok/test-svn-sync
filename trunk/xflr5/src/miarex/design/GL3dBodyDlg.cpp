@@ -2461,9 +2461,10 @@ void GL3dBodyDlg::onImportBodyDef()
 	}
 
 	QTextStream in(&XFile);
-
-	if(!m_pBody->importDefinition(in, mtoUnit))
+	QString errorMsg;
+	if(!m_pBody->importDefinition(in, mtoUnit, errorMsg))
 	{
+		QMessageBox::warning(this, QObject::tr("Warning"), errorMsg);
 		m_pBody->duplicate(&memBody);
 		return;
 	}
@@ -2642,7 +2643,15 @@ void GL3dBodyDlg::insert(CVector Pt)
 
 		if(Real.y<0.0) return;
 
-		m_pBody->InsertPoint(Real);
+		if(m_pBody->activeFrame()) m_pBody->InsertPoint(Real);
+		else
+		{
+			QMessageBox msgBox;
+			msgBox.setStandardButtons(QMessageBox::Ok);
+			msgBox.setWindowTitle(QObject::tr("Warning"));
+			msgBox.setText(QObject::tr("Please select a Frame before inserting a point"));
+			msgBox.exec();
+		}
 		m_bResetglBody   = true;
 		m_bResetglBody2D = true;
 		fillPointDataTable();

@@ -82,6 +82,10 @@ void XMLPlaneReader::readXMLPlaneFile()
 void XMLPlaneReader::readPlane(Plane *pPlane, double lengthUnit, double massUnit)
 {
 	int iw=0;
+	pPlane->hasElevator() = false;
+	pPlane->hasSecondWing() = false;
+	pPlane->hasFin() = false;
+
 	while(!atEnd() && !hasError() && readNextStartElement() && iw<MAXWINGS)
 	{
 		if (name().toString().compare("name",Qt::CaseInsensitive) ==0)
@@ -96,7 +100,7 @@ void XMLPlaneReader::readPlane(Plane *pPlane, double lengthUnit, double massUnit
 		{
 			pPlane->rPlaneDescription() = readElementText();
 		}
-		else if (name().compare("Inertia",         Qt::CaseInsensitive)==0)
+		else if (name().compare("inertia",         Qt::CaseInsensitive)==0)
 		{
 			while(!atEnd() && !hasError() && readNextStartElement() )
 			{
@@ -120,6 +124,7 @@ void XMLPlaneReader::readPlane(Plane *pPlane, double lengthUnit, double massUnit
 			double xw=0.0, zw=0.0, ta=0.0;
 			Wing newWing;
 			{
+				newWing.wingType() = XFLR5::OTHERWING;
 				newWing.m_WingSection.clear();
 
 				while(!atEnd() && !hasError() && readNextStartElement() )
@@ -127,6 +132,13 @@ void XMLPlaneReader::readPlane(Plane *pPlane, double lengthUnit, double massUnit
 					if (name().compare("name",                 Qt::CaseInsensitive)==0)
 					{
 						newWing.rWingName() = readElementText();
+					}
+					else if (name().compare("type",        Qt::CaseInsensitive)==0)
+					{
+						newWing.wingType() = wingType(readElementText());
+						if(newWing.wingType()==XFLR5::ELEVATOR)   pPlane->hasElevator() = true;
+						else if(newWing.wingType()==XFLR5::SECONDWING) pPlane->hasSecondWing() = true;
+						else if(newWing.wingType()==XFLR5::FIN)        pPlane->hasFin() = true;
 					}
 					else if (name().compare("color",           Qt::CaseInsensitive)==0)
 					{
@@ -252,9 +264,45 @@ void XMLPlaneReader::readPlane(Plane *pPlane, double lengthUnit, double massUnit
 				}
 
 				int iWing = 0;
-				if(newWing.isFin()) iWing = 3;
-				else if(iw==0)      iWing = 0;
-				else if(iw==1)      iWing = 2;
+				if(newWing.wingType()==XFLR5::OTHERWING)
+				{
+					if(newWing.isFin())
+					{
+						newWing.wingType() = XFLR5::FIN;
+						pPlane->hasFin() = true;
+						iWing = 3;
+					}
+					else if(iw==0)
+					{
+						newWing.wingType() = XFLR5::MAINWING;
+						iWing = 0;
+					}
+					else if(iw==1)
+					{
+						newWing.wingType() = XFLR5::ELEVATOR;
+						pPlane->hasElevator() = true;
+						iWing = 2;
+					}
+				}
+				else
+				{
+					if(newWing.wingType()==XFLR5::MAINWING) iWing = 0;
+					else if(newWing.wingType()==XFLR5::SECONDWING)
+					{
+						iWing = 1;
+						pPlane->hasSecondWing() = true;
+					}
+					else if(newWing.wingType()==XFLR5::ELEVATOR)
+					{
+						iWing = 2;
+						pPlane->hasElevator() = true;
+					}
+					else if(newWing.wingType()==XFLR5::FIN)
+					{
+						iWing = 3;
+						pPlane->hasFin() = true;
+					}
+				}
 
 				pPlane->m_Wing[iWing].duplicate(&newWing);
 				pPlane->WingLE(iWing).x      = xw;

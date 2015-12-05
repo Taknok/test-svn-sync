@@ -215,6 +215,8 @@ void MiarexTileWidget::setMiarexGraphList(XFLR5::enumMiarexViews miarexView, QLi
 
 void MiarexTileWidget::onSplitterMoved(int pos, int index)
 {
+	Q_UNUSED(pos);
+	Q_UNUSED(index);
 	if(m_MiarexView==XFLR5::WOPPVIEW)
 	{
 		m_pWingWidget->setWingScale();

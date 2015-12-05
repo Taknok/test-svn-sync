@@ -57,7 +57,7 @@ public:
 	bool intersectNURBS(CVector A, CVector B, CVector &I, bool bRight);
 	bool serializeBodyWPA(QDataStream &ar, bool bIsStoring);
 	bool serializeBodyXFL(QDataStream &ar, bool bIsStoring);
-	bool importDefinition(QTextStream &inStream, double mtoUnit);
+	bool importDefinition(QTextStream &inStream, double mtoUnit, QString &errorMessage);
 	bool exportBodyDefinition(QTextStream &outStream, double mtoUnit);
 
 	int insertFrame(CVector Real);
@@ -118,7 +118,6 @@ public:
 	NURBSSurface *splineSurface() {return &m_SplineSurface;}
 
 	//____________________VARIABLES_____________________________________________
-	static void* s_pMainFrame;                /**< a void pointer to the application's MainFrame window */
 
 	QString m_BodyName;                       /**< the Body's name, used as its reference */
 	QString m_BodyDescription;                /**< a free description for the Body */
@@ -160,7 +159,7 @@ public:
 
 	//allocate temporary variables to
 	//avoid lengthy memory allocation times on the stack
-	double value, eps, bs, cs;
+	double value, bs, cs;
 	CVector t_R, t_Prod, t_Q, t_r, t_N;
 //	CVector P0, P1, P2, PI;
 	static double s_XPanelPos[300];

@@ -22,7 +22,6 @@
 
 #include <math.h>
 #include <QFile>
-#include <QMessageBox>
 #include <QtDebug>
 
 #include "Wing.h"
@@ -172,7 +171,7 @@ void Wing::clearPointMasses()
  * Imports the wing geometry from a text file.
  * @param path_to_file the path to the filename as a QString
  */
-void Wing::importDefinition(QString path_to_file)
+bool Wing::importDefinition(QString path_to_file, QString errorMessage)
 {
 	QFile fp(path_to_file);
 	double ypos;
@@ -192,10 +191,12 @@ void Wing::importDefinition(QString path_to_file)
 
 	
 	try{
-		if (!fp.open(QIODevice::ReadOnly)) {
-			QMessageBox::warning(0, QObject::tr("Warning"), QObject::tr("Could not open the file for reading"));
-			return;
-		} else {
+		if (!fp.open(QIODevice::ReadOnly))
+		{
+			errorMessage = "Could not open the file for reading";
+			return false;
+		}
+		else {
 			QTextStream infile(&fp);
 			clearWingSections();
 			this->m_WingName = infile.readLine();
@@ -250,9 +251,12 @@ void Wing::importDefinition(QString path_to_file)
 			XPanelDist(is) =  XFLR5::COSINE;
 		}
 	}
-	catch (iostream::failure e){
-		QMessageBox::warning(0,QObject::tr("Warning"),QObject::tr("Unable to import wing definition\n"));
+	catch (iostream::failure e)
+	{
+		errorMessage = "Unable to import wing definition\n";
+		return false;
 	}
+	return true;
 }
 
 
@@ -260,13 +264,13 @@ void Wing::importDefinition(QString path_to_file)
  * Exports the wing geometry to a text file.
  * @param path_to_file the path to the filename as a QString
  */
-void Wing::exportDefinition(QString path_to_file)
+bool Wing::exportDefinition(QString path_to_file, QString errorMessage)
 {
 	try{
 		QFile fp(path_to_file);
 		if (!fp.open(QIODevice::WriteOnly)) {
-			QMessageBox::warning(0, QObject::tr("Warning"), QObject::tr("Could not open the file for writing"));
-			return;
+			errorMessage = "Could not open the file for writing";
+			return false;
 		} else {
 			QTextStream out_file(&fp);
 			//Iterate the wing sections are write out the data...
@@ -328,8 +332,10 @@ void Wing::exportDefinition(QString path_to_file)
 		}
 	}
 	catch (iostream::failure e){
-		QMessageBox::warning(0,QObject::tr("Warning"),QObject::tr("Unable to import wing definition\n"));
+		errorMessage = "Unable to import wing definition\n";
+		return false;
 	}
+	return true;
 }
 
 
