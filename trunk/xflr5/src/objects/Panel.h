@@ -71,21 +71,21 @@ public:
 	Panel();
 
 	void VLMCmn(CVector const &C, CVector &VTest, bool const &bAll);
-	void DoubletNASA4023(CVector const &C, CVector &VTest, double &phi, bool bWake);
-	void SourceNASA4023(CVector const &C, CVector &VTest, double &phi);
+	void doubletNASA4023(CVector const &C, CVector &VTest, double &phi, bool bWake);
+	void sourceNASA4023(CVector const &C, CVector &VTest, double &phi);
 
-	void RotateBC(CVector const &HA, Quaternion & Qt);
-	void Reset();
-	void SetPanelFrame();
-	void SetPanelFrame(CVector const &LA, CVector const &LB, CVector const &TA, CVector const &TB);
-	bool Intersect(CVector const &A, CVector const &U, CVector &I, double &dist);
-	bool Invert33(double *l);
-	CVector GlobalToLocal(CVector const &VTest);
-	CVector GlobalToLocal(double const &Vx, double const &Vy, double const &Vz);
-	CVector LocalToGlobal(CVector const &VTest);
+	void rotateBC(CVector const &HA, Quaternion & Qt);
+	void reset();
+	void setPanelFrame();
+	void setPanelFrame(CVector const &LA, CVector const &LB, CVector const &TA, CVector const &TB);
+	bool intersect(CVector const &A, CVector const &U, CVector &I, double &dist);
+	bool invert33(double *l);
+	CVector globalToLocal(CVector const &VTest);
+	CVector globalToLocal(double const &Vx, double const &Vy, double const &Vz);
+	CVector localToGlobal(CVector const &VTest);
 
-	double Width();
-	double GetArea();
+	double width();
+	double area(){return Area;}
 
 	static void setCoreSize(double CoreSize) { s_CoreSize=CoreSize;	}
 	static double coreSize() { return s_CoreSize; }

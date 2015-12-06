@@ -343,6 +343,7 @@ void GLLightDlg::readParams(void)
 	s_MatAmbient    = (float)m_pctrlMatAmbient->value()    /100.0f;
 	s_MatSpecular   = (float)m_pctrlMatSpecular->value()   /100.0f;
 	s_MatDiffuse    = (float)m_pctrlMatDiffuse->value()    /100.0f;
+
 	s_MatEmission   = (float)m_pctrlMatEmission->value()   /100.0f;
 	s_iMatShininess = m_pctrlMatShininess->value();
 
@@ -402,17 +403,18 @@ bool GLLightDlg::loadSettings(QSettings *pSettings)
 	pSettings->beginGroup("GLLight");
 	{
 	//  we're reading/loading
-		s_Diffuse           = pSettings->value("Diffuse",0.26).toDouble();
+		s_Diffuse           = pSettings->value("Diffuse",0.53).toDouble();
 		s_Ambient           = pSettings->value("Ambient",0.18).toDouble();
 		s_Specular          = pSettings->value("Specular",0.05).toDouble();
+
 		s_MatAmbient        = pSettings->value("MatAmbient",-0.51).toDouble();
 		s_MatDiffuse        = pSettings->value("MatDiffuse",-0.43).toDouble();
 		s_MatSpecular       = pSettings->value("MatSpecular",-0.08).toDouble();
-		s_MatEmission       = pSettings->value("MatEmission",-0.04).toDouble();
+		s_MatEmission       = pSettings->value("MatEmission",-0.06).toDouble();
 		s_iMatShininess     = pSettings->value("MatShininess",0).toDouble();
 		s_XLight            = pSettings->value("XLight", 0.56).toDouble();
 		s_YLight            = pSettings->value("YLight", 0.02).toDouble();
-		s_ZLight            = pSettings->value("ZLight", 0.68).toDouble();
+		s_ZLight            = pSettings->value("ZLight", 5.0).toDouble();
 		s_Red               = pSettings->value("RedLight",1.0).toDouble();
 		s_Green             = pSettings->value("GreenLight",1.0).toDouble();
 		s_Blue              = pSettings->value("BlueLight",1.0).toDouble();
@@ -435,7 +437,7 @@ void GLLightDlg::setDefaults(double)
 	s_Green = 1.0f;
 	s_Blue  = 1.0f;
 
-	s_Diffuse      = 0.83f;
+	s_Diffuse      = 0.53f;
 	s_Ambient      = 0.18f;
 	s_Specular     = 0.05f;
 
@@ -496,7 +498,7 @@ void GLLightDlg::showEvent(QShowEvent *event)
 {
 	setParams();
 	setEnabled();
-	apply();
+//	apply();
 	event->accept();
 }
 

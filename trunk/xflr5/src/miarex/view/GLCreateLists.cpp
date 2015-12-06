@@ -32,7 +32,7 @@
 #include <QProgressDialog>
 
 
-#define SIDEPOINTS 73
+#define SIDEPOINTS 113
 
 
 void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
@@ -41,8 +41,8 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	int j, l ;
-	static CVector Pt, A, B, C, D, N, BD, AC;
-	static CVector Normal[SIDEPOINTS], PtBotLeft[SIDEPOINTS], PtBotRight[SIDEPOINTS], PtTopLeft[SIDEPOINTS], PtTopRight[SIDEPOINTS];
+	CVector Pt, A, B, C, D, N, BD, AC;
+	CVector Normal[SIDEPOINTS], PtBotLeft[SIDEPOINTS], PtBotRight[SIDEPOINTS], PtTopLeft[SIDEPOINTS], PtTopRight[SIDEPOINTS];
 	Foil * pFoilA, *pFoilB;
 
 	N.set(0.0, 0.0, 0.0);
@@ -80,6 +80,8 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 				{
 					//top surface
 					pWing->m_Surface.at(j)->getSidePoints(TOPSURFACE, pBody, PtTopLeft, PtTopRight, Normal, SIDEPOINTS);
+//					qDebug("top ____ Surface %d", j);
+//					for(int is=0; is<SIDEPOINTS; is++) qDebug("%13.5f   %13.5f   %13.5f",  Normal[is].x,  Normal[is].y,  Normal[is].z);
 					glBegin(GL_QUAD_STRIP);
 					{
 						for (l=0; l<SIDEPOINTS; l++)
@@ -93,6 +95,8 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 
 					//bottom surface
 					pWing->m_Surface.at(j)->getSidePoints(BOTSURFACE, pBody, PtBotLeft, PtBotRight, Normal, SIDEPOINTS);
+//					qDebug("bot ____ Surface %d", j);
+//					for(int is=0; is<SIDEPOINTS; is++) qDebug("%13.5f   %13.5f   %13.5f",  Normal[is].x,  Normal[is].y,  Normal[is].z);
 					glBegin(GL_QUAD_STRIP);
 					{
 						for (l=0; l<SIDEPOINTS; l++)
@@ -665,10 +669,10 @@ void GLCreateDrag(Wing *pWing, WPolar* pWPolar, WingOpp *pWOpp, int List)
 
 	GLushort IDash, VDash;
 
-	static double Ir,Ig,Ib, Vr, Vg, Vb;
-	static double amp, amp1, amp2;
-	static double yob, xt, yt, zt, dih;
-	static double cosa, cosb, sina, sinb;
+	double Ir,Ig,Ib, Vr, Vg, Vb;
+	double amp, amp1, amp2;
+	double yob, xt, yt, zt, dih;
+	double cosa, cosb, sina, sinb;
 	cosa =  cos(pWOpp->m_Alpha * PI/180.0);
 	sina = -sin(pWOpp->m_Alpha * PI/180.0);
 	cosb =  cos(pWPolar->sideSlip()*PI/180.0);
@@ -2089,8 +2093,8 @@ void GLCreatePanelForce(int nPanels, Panel *pPanel, WPolar *pWPolar, PlaneOpp *p
 
 	for (int p=0; p<nPanels; p++)
 	{
-		rmax = qMax(rmax, Cp[p] * pPanel[p].GetArea());
-		rmin = qMin(rmin, Cp[p] * pPanel[p].GetArea());
+		rmax = qMax(rmax, Cp[p] * pPanel[p].area());
+		rmin = qMin(rmin, Cp[p] * pPanel[p].area());
 	}
 
 
@@ -2106,7 +2110,7 @@ void GLCreatePanelForce(int nPanels, Panel *pPanel, WPolar *pWPolar, PlaneOpp *p
 		for (p=0; p<nPanels; p++)
 		{
 			// plot Cp? f? f/s=q.Cp?
-			force = 0.5*pWPolar->density() *pPOpp->m_QInf*pPOpp->m_QInf * Cp[p]*pPanel[p].GetArea();
+			force = 0.5*pWPolar->density() *pPOpp->m_QInf*pPOpp->m_QInf * Cp[p]*pPanel[p].area();
 			force *= QMiarex::s_LiftScale *coef;
 			color = (force-rmin)/range;
 			glColor3d(GLGetRed(color),GLGetGreen(color),GLGetBlue(color));

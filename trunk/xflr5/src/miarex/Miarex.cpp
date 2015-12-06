@@ -738,7 +738,7 @@ void QMiarex::createCpCurves()
 		{
 			if(m_pCurPlane->m_Wing[0].m_pWingPanel[p].m_bIsTrailing && m_pCurPlane->m_Wing[0].m_pWingPanel[p].m_Pos<=MIDSURFACE)
 			{
-				SpanInc += m_pCurPlane->m_Wing[0].m_pWingPanel[p].Width();
+				SpanInc += m_pCurPlane->m_Wing[0].m_pWingPanel[p].width();
 				if(SpanPos<=SpanInc || qAbs(SpanPos-SpanInc)/m_pCurPlane->planformSpan()<0.001)
 				{
 					bFound = true;
@@ -759,7 +759,7 @@ void QMiarex::createCpCurves()
 				{
 					if(pWing(iw)->m_pWingPanel[p].m_bIsTrailing && pWing(iw)->m_pWingPanel[p].m_Pos<=MIDSURFACE)
 					{
-						SpanInc += pWing(iw)->m_pWingPanel[p].Width();
+						SpanInc += pWing(iw)->m_pWingPanel[p].width();
 						if(SpanPos<=SpanInc || qAbs(SpanPos-SpanInc)/pWing(iw)->m_PlanformSpan<0.001)
 						{
 							bFound = true;
@@ -3931,13 +3931,15 @@ void QMiarex::onDuplicateCurPlane()
 {
 	if(!m_pCurPlane) return;
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-	m_pCurPlane = Objects3D::duplicatePlane(m_pCurPlane);
-	pMainFrame->updatePlaneListBox();
-	setPlane(m_pCurPlane->planeName());
-	emit projectModified();
+	Plane *pPlane = Objects3D::duplicatePlane(m_pCurPlane);
+	if(pPlane)
+	{
+		m_pCurPlane = pPlane;
+		pMainFrame->updatePlaneListBox();
+		setPlane(m_pCurPlane->planeName());
+		emit projectModified();
+	}
 }
-
-
 
 
 
@@ -6949,21 +6951,20 @@ void QMiarex::set3DScale()
 	if(m_iView==XFLR5::W3DVIEW) m_bResetglLegend = true;
 	if(m_bIs3DScaleSet && !m_bAutoScales) return;
 
-	m_p3dWidget->rect() = m_p3dWidget->geometry();
-
 	if(m_pCurPlane)
 	{
-		//wing along X axis will take 3/4 of the screen
-		m_p3dWidget->m_glScaled = (GLfloat)(3./4.*2.0/m_pCurPlane->planformSpan());
-
+		//wing along X axis will take 4/5 of the screen
+		m_p3dWidget->m_glScaledRef = (GLfloat)(4./5.*2.0/m_pCurPlane->planformSpan());
 		m_p3dWidget->m_glViewportTrans.set(0.0,0.0,0.0);
+
+		m_p3dWidget->m_glScaled = m_p3dWidget->m_glScaledRef;
 		m_bIs3DScaleSet = true;
 	}
 }
 
 
 /**
- * Initializes the input parameters depending onthe type of the active polar
+ * Initializes the input parameters depending on the type of the active polar
  */
 void QMiarex::setAnalysisParams()
 {
@@ -8156,8 +8157,8 @@ void QMiarex::paintPanelForceLegendText(QPainter &painter)
 		{
 			for (p=0; p<pWing(iw)->m_MatSize; p++)
 			{
-				rmax = qMax(rmax, pWOppList[iw]->m_dCp[p]*pWing(iw)->m_pWingPanel[p].GetArea());
-				rmin = qMin(rmin, pWOppList[iw]->m_dCp[p]*pWing(iw)->m_pWingPanel[p].GetArea());
+				rmax = qMax(rmax, pWOppList[iw]->m_dCp[p]*pWing(iw)->m_pWingPanel[p].area());
+				rmin = qMin(rmin, pWOppList[iw]->m_dCp[p]*pWing(iw)->m_pWingPanel[p].area());
 			}
 		}
 	}

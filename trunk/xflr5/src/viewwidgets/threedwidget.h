@@ -197,7 +197,7 @@ private:
 
 
 	double m_ClipPlanePos;      /**< the z-position of the clip plane in viewport coordinates */
-	double m_glScaled;//zoom factor for UFO
+	double m_glScaled, m_glScaledRef;
 	double MatIn[4][4], MatOut[4][4];
 
 

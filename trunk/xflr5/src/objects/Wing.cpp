@@ -721,7 +721,6 @@ void Wing::createSurfaces(CVector const &T, double XTilt, double YTilt)
 			m_Surface[iSurf]->m_TwistB   =  Twist(jss);
 //			m_Surface[iSurf]->setTwist();
 
-
 			if(jss>0)
 			{
 				//translate the surface to the left tip of the previous surface
