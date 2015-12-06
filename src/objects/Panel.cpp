@@ -42,14 +42,14 @@ CVector *Panel::s_pNode, *Panel::s_pWakeNode;
 */
 Panel::Panel()
 {
-	Reset();
+	reset();
 }
 
 
 /**
 * Resets the panel geometry to default initialization values
 */
-void Panel::Reset()
+void Panel::reset()
 {
 	dl     = 0.0;
 	Size   = 0.0;
@@ -83,10 +83,10 @@ void Panel::Reset()
 /**
 * Defines the vortex and panel geometrical properties necessary for the VLM and panel calculations.
 */
-void Panel::SetPanelFrame()
+void Panel::setPanelFrame()
 {
 	//set the boundary conditions from existing nodes
-	SetPanelFrame(s_pNode[m_iLA], s_pNode[m_iLB], s_pNode[m_iTA], s_pNode[m_iTB]);
+	setPanelFrame(s_pNode[m_iLA], s_pNode[m_iLB], s_pNode[m_iTA], s_pNode[m_iTB]);
 }
 
 
@@ -99,7 +99,7 @@ void Panel::SetPanelFrame()
 * @param TA the position of the trailing edge left node.
 * @param TB the position of the trailing edge rightt node.
 */
-void Panel::SetPanelFrame(CVector const &LA, CVector const &LB, CVector const &TA, CVector const &TB)
+void Panel::setPanelFrame(CVector const &LA, CVector const &LB, CVector const &TA, CVector const &TB)
 {
 	static CVector TALB, LATB, MidA, MidB;
 	static CVector smp, smq;
@@ -195,7 +195,7 @@ void Panel::SetPanelFrame(CVector const &LA, CVector const &LB, CVector const &T
 	lij[6]=l.z;
 	lij[7]=m.z;
 	lij[8]=Normal.z;
-	Invert33(lij);
+	invert33(lij);
 
 	if(m_Pos>MIDSURFACE)
 	{
@@ -233,7 +233,7 @@ void Panel::SetPanelFrame(CVector const &LA, CVector const &LB, CVector const &T
 /**
 * Inverts in place a 3x3 matrix
 */
-bool Panel::Invert33(double *l)
+bool Panel::invert33(double *l)
 {
 	memcpy(mat,l,sizeof(mat));
 /*		a0 b1 c2
@@ -270,7 +270,7 @@ a(ei-fh) - b(di-fg) + c(dh-eg)      (dh-eg)   (bg-ah)   (ae-bd)*/
 *@return The CVector holding the local coordinates
 *@todo check if a reference of the vector can be returned instead of a new instance, in order to speed up calculations.
 */
-CVector Panel::GlobalToLocal(CVector const &V)
+CVector Panel::globalToLocal(CVector const &V)
 {
 	CVector L;
 	L.x = lij[0]*V.x +lij[1]*V.y +lij[2]*V.z;
@@ -287,7 +287,7 @@ CVector Panel::GlobalToLocal(CVector const &V)
 *@return The CVector holding the local coordinates
 *@todo check if a reference of the vector can be returned instead of a new instance, in order to speed up calculations.
 */
-CVector Panel::GlobalToLocal(double const &Vx, double const &Vy, double const &Vz)
+CVector Panel::globalToLocal(double const &Vx, double const &Vy, double const &Vz)
 {
 	CVector L;
 	L.x = lij[0]*Vx +lij[1]*Vy +lij[2]*Vz;
@@ -303,7 +303,7 @@ CVector Panel::GlobalToLocal(double const &Vx, double const &Vy, double const &V
 *@return The CVector holding the global coordinates
 *@todo check if a reference of the vector can be returned instead of a new instance, in order to speed up calculations.
 */
-CVector Panel::LocalToGlobal(CVector const &V)
+CVector Panel::localToGlobal(CVector const &V)
 {
 	CVector L;
 	L.x = V.x * l.x + V.y * m.x + V.z * Normal.x;
@@ -321,7 +321,7 @@ CVector Panel::LocalToGlobal(CVector const &V)
 *@param I the intersection point
 *@param dist the distance of A to the panel in the direction of the panel's normal
 */
-bool Panel::Intersect(CVector const &A, CVector const &U, CVector &I, double &dist)
+bool Panel::intersect(CVector const &A, CVector const &U, CVector &I, double &dist)
 {
 	static CVector ILA, ILB, ITA, ITB;
 	static CVector T, V, W, P;
@@ -401,30 +401,24 @@ bool Panel::Intersect(CVector const &A, CVector const &U, CVector &I, double &di
 	return false;
 }
 
-/**
-*Returns the panel's area
-*@return the panel's area
-*/
-double Panel::GetArea()
-{
-	return Area;
-}
+
 
 /**
 *Returns the panel's width, measured at the leading edge 
 */
-double Panel::Width()
+double Panel::width()
 {
 	return sqrt( (s_pNode[m_iLB].y - s_pNode[m_iLA].y)*(s_pNode[m_iLB].y - s_pNode[m_iLA].y)
 	            +(s_pNode[m_iLB].z - s_pNode[m_iLA].z)*(s_pNode[m_iLB].z - s_pNode[m_iLA].z));
 }
+
 
 /**
 *Rotates the boundary condition properties which are used in stability analysis with variable control positions.
 *@param HA is the center of rotation
 *@param Qt the quaternion which defines the 3D rotation
 */
-void Panel::RotateBC(CVector const &HA, Quaternion &Qt)
+void Panel::rotateBC(CVector const &HA, Quaternion &Qt)
 {
 //	Qt.Conjugate(Vortex);
 	static CVector WTest;
@@ -489,7 +483,7 @@ void Panel::RotateBC(CVector const &HA, Quaternion &Qt)
 *@param V the perturbation velocity at point C
 *@param phi the potential at point C
 */
-void Panel::SourceNASA4023(CVector const &C,  CVector &V, double &phi)
+void Panel::sourceNASA4023(CVector const &C,  CVector &V, double &phi)
 {
 	int i;
 	static double RNUM, DNOM, pjk, CJKi;
@@ -641,7 +635,7 @@ void Panel::SourceNASA4023(CVector const &C,  CVector &V, double &phi)
 *@param phi the potential at point C
 *@param bWake true if the panel is a wake panel, false if it is a surface panel
 */
-void Panel::DoubletNASA4023(CVector const &C, CVector &V, double &phi, bool bWake)
+void Panel::doubletNASA4023(CVector const &C, CVector &V, double &phi, bool bWake)
 {
 	int i;
 	static CVector *m_pR[5];

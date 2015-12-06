@@ -93,6 +93,7 @@ ThreeDWidget::ThreeDWidget(QWidget *parent)
 
 	m_ClipPlanePos  = 5.0;
 	m_glScaled      = 1.0;
+	m_glScaledRef   = 1.0;
 
 	m_bTrans                   = false;
 	m_bArcball                 = false;
@@ -960,7 +961,7 @@ void ThreeDWidget::glRenderView()
 				glTranslated( m_glLightDlg.s_XLight, m_glLightDlg.s_YLight, m_glLightDlg.s_ZLight);
 				double radius = (m_glLightDlg.s_ZLight+2.0)/73.0;
 				glColor3d(m_glLightDlg.s_Red, m_glLightDlg.s_Green, m_glLightDlg.s_Blue);
-				glRenderSphere(radius/m_glScaled);
+				glRenderSphere(radius);
 			}
 			glPopMatrix();
 		}
@@ -1101,20 +1102,22 @@ void ThreeDWidget::glSetupLight(double Offset_y, double LightFactor)
 
 	if(LightFactor>1.0) LightFactor = 1.0f;
 
+	double scaleFactor = sqrt(m_glScaled/m_glScaledRef);
+
 	// the ambient light conditions.
-	fLightAmbient0[0] = LightFactor*GLLightDlg::s_Ambient * GLLightDlg::s_Red; // red component
-	fLightAmbient0[1] = LightFactor*GLLightDlg::s_Ambient * GLLightDlg::s_Green; // green component
-	fLightAmbient0[2] = LightFactor*GLLightDlg::s_Ambient * GLLightDlg::s_Blue; // blue component
+	fLightAmbient0[0] = LightFactor*GLLightDlg::s_Ambient * GLLightDlg::s_Red * scaleFactor;
+	fLightAmbient0[1] = LightFactor*GLLightDlg::s_Ambient * GLLightDlg::s_Green * scaleFactor;
+	fLightAmbient0[2] = LightFactor*GLLightDlg::s_Ambient * GLLightDlg::s_Blue * scaleFactor;
 	fLightAmbient0[3] = 1.0; // alpha
 
-	fLightDiffuse0[0] = LightFactor*GLLightDlg::s_Diffuse * GLLightDlg::s_Red; // red component
-	fLightDiffuse0[1] = LightFactor*GLLightDlg::s_Diffuse * GLLightDlg::s_Green; // green component
-	fLightDiffuse0[2] = LightFactor*GLLightDlg::s_Diffuse * GLLightDlg::s_Blue; // blue component
+	fLightDiffuse0[0] = LightFactor*GLLightDlg::s_Diffuse * GLLightDlg::s_Red * scaleFactor;
+	fLightDiffuse0[1] = LightFactor*GLLightDlg::s_Diffuse * GLLightDlg::s_Green * scaleFactor;
+	fLightDiffuse0[2] = LightFactor*GLLightDlg::s_Diffuse * GLLightDlg::s_Blue * scaleFactor;
 	fLightDiffuse0[3] = 1.0; // alpha
 
-	fLightSpecular0[0] = LightFactor*GLLightDlg::s_Specular * GLLightDlg::s_Red; // red component
-	fLightSpecular0[1] = LightFactor*GLLightDlg::s_Specular * GLLightDlg::s_Green; // green component
-	fLightSpecular0[2] = LightFactor*GLLightDlg::s_Specular * GLLightDlg::s_Blue; // blue component
+	fLightSpecular0[0] = LightFactor*GLLightDlg::s_Specular * GLLightDlg::s_Red * scaleFactor;
+	fLightSpecular0[1] = LightFactor*GLLightDlg::s_Specular * GLLightDlg::s_Green * scaleFactor;
+	fLightSpecular0[2] = LightFactor*GLLightDlg::s_Specular * GLLightDlg::s_Blue * scaleFactor;
 	fLightSpecular0[3] = 1.0; // alpha
 
 	// And finally, its position

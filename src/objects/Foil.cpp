@@ -653,9 +653,9 @@ CVector Foil::midYRel(double sRel)
 * @param x the chordwise position
 * @return the position on the upper surface
 */
-CVector Foil::upperYRel(double sRel)
+CVector Foil::upperYRel(double xRel)
 {
-	double x = m_rpExtrados[0].x + sRel*(m_rpExtrados[m_iExt].x-m_rpExtrados[0].x);
+	double x = m_rpExtrados[0].x + xRel*(m_rpExtrados[m_iExt].x-m_rpExtrados[0].x);
 
 	if(x<=m_rpExtrados[0].x) return m_rpExtrados[0];
 
@@ -678,9 +678,9 @@ CVector Foil::upperYRel(double sRel)
 * @param x the chordwise position
 * @return the position on the upper surface
 */
-CVector Foil::lowerYRel(double sRel)
+CVector Foil::lowerYRel(double xRel)
 {
-	double x = m_rpIntrados[0].x + sRel*(m_rpIntrados[m_iInt].x-m_rpIntrados[0].x);
+	double x = m_rpIntrados[0].x + xRel*(m_rpIntrados[m_iInt].x-m_rpIntrados[0].x);
 
 	if(x<=m_rpIntrados[0].x) return m_rpIntrados[0];
 
@@ -708,14 +708,23 @@ CVector Foil::lowerYRel(double sRel)
 void Foil::getLowerY(double x, double &y, double &normx, double &normy)
 {
 	double nabs;
+	x = m_rpIntrados[0].x + x*(m_rpIntrados[m_iInt].x-m_rpIntrados[0].x);
 
-	x = m_rpIntrados[0].x + x*(m_rpIntrados[m_iInt].x-m_rpIntrados[0].x);//in case there is a flap which reduces the length
-//	x = m_rpExtrados[0].x + x*.99999999;
+	if(x<=m_rpIntrados[0].x)
+	{
+		normx = -1.0;
+		normy = 0.0;
+		y = m_rpIntrados[0].y;
+		return;
+	}
+
 	for (int i=0; i<m_iInt; i++)
 	{
 		if (m_rpIntrados[i].x <m_rpIntrados[i+1].x  &&  m_rpIntrados[i].x <= x && x<=m_rpIntrados[i+1].x )
 		{
-			y = (m_rpIntrados[i].y 	+ (m_rpIntrados[i+1].y-m_rpIntrados[i].y) /(m_rpIntrados[i+1].x-m_rpIntrados[i].x)*(x-m_rpIntrados[i].x));
+			y = (m_rpIntrados[i].y 	+ (m_rpIntrados[i+1].y-m_rpIntrados[i].y)
+									 /(m_rpIntrados[i+1].x-m_rpIntrados[i].x) * (x-m_rpIntrados[i].x));
+
 			nabs = sqrt(  (m_rpIntrados[i+1].x-m_rpIntrados[i].x) * (m_rpIntrados[i+1].x-m_rpIntrados[i].x)
 					  + (m_rpIntrados[i+1].y-m_rpIntrados[i].y) * (m_rpIntrados[i+1].y-m_rpIntrados[i].y));
 			normx = ( m_rpIntrados[i+1].y - m_rpIntrados[i].y)/nabs;
@@ -737,15 +746,23 @@ void Foil::getLowerY(double x, double &y, double &normx, double &normy)
 void Foil::getUpperY(double x, double &y, double &normx, double &normy)
 {
 	double nabs;
+	x = m_rpExtrados[0].x + x*(m_rpExtrados[m_iExt].x-m_rpExtrados[0].x);
 
-	// Returns the y-coordinate on the current foil's upper surface at the x position
-	x = m_rpExtrados[0].x + x*(m_rpExtrados[m_iExt].x-m_rpExtrados[0].x)*.999999999;//in case there is a flap which reduces the length
+	if(x<=m_rpIntrados[0].x)
+	{
+		normx = -1.0;
+		normy =  0.0;
+		y = m_rpExtrados[0].y;
+		return;
+	}
 
 	for (int i=0; i<m_iExt; i++)
 	{
 		if (m_rpExtrados[i].x <m_rpExtrados[i+1].x  &&  m_rpExtrados[i].x <= x && x<=m_rpExtrados[i+1].x )
 		{
-			y = (m_rpExtrados[i].y 	+ (m_rpExtrados[i+1].y-m_rpExtrados[i].y) / (m_rpExtrados[i+1].x-m_rpExtrados[i].x)*(x-m_rpExtrados[i].x));
+			y = (m_rpExtrados[i].y 	+ (m_rpExtrados[i+1].y-m_rpExtrados[i].y)
+									/ (m_rpExtrados[i+1].x-m_rpExtrados[i].x) * (x-m_rpExtrados[i].x));
+
 			nabs = sqrt((m_rpExtrados[i+1].x-m_rpExtrados[i].x) * (m_rpExtrados[i+1].x-m_rpExtrados[i].x)
 					  + (m_rpExtrados[i+1].y-m_rpExtrados[i].y) * (m_rpExtrados[i+1].y-m_rpExtrados[i].y));
 			normx = (-m_rpExtrados[i+1].y + m_rpExtrados[i].y)/nabs;

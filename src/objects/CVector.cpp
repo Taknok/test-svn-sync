@@ -23,8 +23,7 @@
 
 #include <math.h>
 #include "CVector.h"
-
-#define PI             3.14159265358979
+#include "params.h"
 
 
 void CVector::rotate(CVector const &R, double Angle)
@@ -124,6 +123,18 @@ void CVector::rotateZ(CVector const &O, double ZTilt)
 	x = O.x + OP.x * cos(ZTilt) - OP.y * sin(ZTilt);
 	y = O.y + OP.x * sin(ZTilt) + OP.y * cos(ZTilt);
 }
+
+
+void  CVector::rotateX(double delta)
+{
+	delta *=PI/180.0;
+
+	double yo = y;
+	double zo = z;
+	y =  yo * cos(delta) - zo * sin(delta);
+	z =  yo * sin(delta) + zo * cos(delta);
+}
+
 
 
 void  CVector::rotateY(double YTilt)

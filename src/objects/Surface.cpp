@@ -444,22 +444,32 @@ void Surface::getSidePoint(double xRel, bool bRight, enumPanelPosition pos, CVec
     if(!bRight)
     {
         if(pos==MIDSURFACE && m_pFoilA)      foilPt = m_pFoilA->midYRel(xRel);
-        else if(pos==TOPSURFACE && m_pFoilA) foilPt = m_pFoilA->upperYRel(xRel);
-        else if(pos==BOTSURFACE && m_pFoilA) foilPt = m_pFoilA->lowerYRel(xRel);
+		else if(pos==TOPSURFACE && m_pFoilA)
+		{
+			m_pFoilA->getUpperY(xRel, foilPt.y, PtNormal.x, PtNormal.z);
+		}
+		else if(pos==BOTSURFACE && m_pFoilA)
+		{
+			m_pFoilA->getLowerY(xRel, foilPt.y, PtNormal.x, PtNormal.z);
+		}
 
         Point = m_LA * (1.0-foilPt.x) + m_TA * foilPt.x;
         Point +=  Normal * foilPt.y*chord(0.0);
-        getNormal(0.0, PtNormal);
     }
     else
     {
         if(pos==MIDSURFACE && m_pFoilB)      foilPt = m_pFoilB->midYRel(xRel);
-        else if(pos==TOPSURFACE && m_pFoilB) foilPt = m_pFoilB->upperYRel(xRel);
-        else if(pos==BOTSURFACE && m_pFoilB) foilPt = m_pFoilB->lowerYRel(xRel);
+		else if(pos==TOPSURFACE && m_pFoilB)
+		{
+			m_pFoilB->getUpperY(xRel, foilPt.y, PtNormal.x, PtNormal.z);
+		}
+		else if(pos==BOTSURFACE && m_pFoilB)
+		{
+			m_pFoilB->getLowerY(xRel, foilPt.y, PtNormal.x, PtNormal.z);
+		}
 
         Point = m_LB * (1.0-foilPt.x) + m_TB * foilPt.x;
         Point +=  Normal * foilPt.y*chord(1.0);
-        getNormal(1.0, PtNormal);
     }
 }
 
@@ -479,12 +489,13 @@ void Surface::getSidePoints(enumPanelPosition pos,
 							CVector *PtA, CVector *PtB, CVector *N, int nPoints)
 {
 	double xRel;
-	CVector A4, B4, TA4, TB4;
+	CVector A4, B4, TA4, TB4, X(1.0,0.0,0.0), NA, NB;
 
 	double cosdA = Normal.dot(NormalA);
 	double cosdB = Normal.dot(NormalB);
 	double alpha_dA = acos(cosdA)*180.0/PI;
 	double alpha_dB = -acos(cosdB)*180.0/PI;
+	double delta = -atan2(Normal.z,Normal.y)*180.0/PI;
 
 	//create the quarter chord centers of rotation for the twist
 	A4 = m_LA *3.0/4.0 + m_TA * 1/4.0;
@@ -501,16 +512,17 @@ void Surface::getSidePoints(enumPanelPosition pos,
 
 	for(int i=0; i<nPoints; i++)
 	{
-		xRel = (double)i/(nPoints-1);
-		getSidePoint(xRel, false, pos, PtA[i], N[i]);
-		PtA[i].y   = m_LA.y +(PtA[i].y   - m_LA.y)/cosdA;
-		PtA[i].z   = m_LA.z +(PtA[i].z   - m_LA.z)/cosdA;
+		xRel  = 1.0/2.0*(1.0-cos( (double)i*PI   /(double)(nPoints-1)));
+
+		getSidePoint(xRel, false, pos, PtA[i], NA);
+		PtA[i].y   = m_LA.y +(PtA[i].y - m_LA.y)/cosdA;
+		PtA[i].z   = m_LA.z +(PtA[i].z - m_LA.z)/cosdA;
 		PtA[i].rotate(m_LA, m_LA-m_TA, alpha_dA);
 		PtA[i].rotate(A4, TA4, m_TwistA);
 
-		getSidePoint(xRel, true,  pos, PtB[i], N[i]);
-		PtB[i].y   = m_LB.y +(PtB[i].y   - m_LB.y)/cosdB;
-		PtB[i].z   = m_LB.z +(PtB[i].z   - m_LB.z)/cosdB;
+		getSidePoint(xRel, true,  pos, PtB[i], NB);
+		PtB[i].y   = m_LB.y +(PtB[i].y - m_LB.y)/cosdB;
+		PtB[i].z   = m_LB.z +(PtB[i].z - m_LB.z)/cosdB;
 		PtB[i].rotate(m_LB, m_LB-m_TB, alpha_dB);
 		PtB[i].rotate(B4, TB4, m_TwistB);
 
@@ -522,6 +534,10 @@ void Surface::getSidePoints(enumPanelPosition pos,
 		{
 			pBody->intersect(PtA[i], PtB[i], PtA[i], true);
 		}
+
+		N[i] = (NA + NB)/2.0;
+		N[i].normalize();
+		N[i].rotateX(delta);
 	}
 }
 
@@ -833,7 +849,7 @@ bool Surface::rotateFlap(double Angle)
 			k = m_FlapPanel[l];
 			if(s_pPanel[k].m_Pos==BOTSURFACE)
 			{
-				s_pPanel[k].SetPanelFrame(
+				s_pPanel[k].setPanelFrame(
 					s_pNode[s_pPanel[k].m_iLB],
 					s_pNode[s_pPanel[k].m_iLA],
 					s_pNode[s_pPanel[k].m_iTB],
@@ -841,7 +857,7 @@ bool Surface::rotateFlap(double Angle)
 			}
 			else
 			{
-				s_pPanel[k].SetPanelFrame(
+				s_pPanel[k].setPanelFrame(
 					s_pNode[s_pPanel[k].m_iLA],
 					s_pNode[s_pPanel[k].m_iLB],
 					s_pNode[s_pPanel[k].m_iTA],
@@ -868,11 +884,10 @@ void Surface::rotateX(CVector const&O, double XTilt)
 	m_TB.rotateX(O, XTilt);
 	m_HingePoint.rotateX(O, XTilt);
 
-	CVector Origin(0.0,0.0,0.0);
-	Normal.rotateX(Origin, XTilt);
-	NormalA.rotateX(Origin, XTilt);
-	NormalB.rotateX(Origin, XTilt);
-	m_HingeVector.rotateX(Origin, XTilt);
+	Normal.rotateX(XTilt);
+	NormalA.rotateX(XTilt);
+	NormalB.rotateX(XTilt);
+	m_HingeVector.rotateX(XTilt);
 }
 
 
@@ -1197,7 +1212,6 @@ void Surface::createXPoints()
 	m_xPointA[m_NXPanels] = 0.0;
 	m_xPointB[m_NXPanels] = 0.0;
 
-//	for(int i=0; i<=m_NXPanels;  i++)qDebug()<<m_xPointA[i] ;
 }
 
 
