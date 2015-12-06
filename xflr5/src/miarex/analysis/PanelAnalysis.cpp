@@ -1788,8 +1788,8 @@ void PanelAnalysis::getDoubletDerivative(const int &p, double *Mu, double &Cp, C
 	//find middle of side 2
 	S2 = (m_pNode[m_pPanel[p].m_iTA] + m_pNode[m_pPanel[p].m_iTB])/2.0 - m_pPanel[p].CollPt;
 	//convert to local coordinates
-	Sl2   = m_pPanel[p].GlobalToLocal(S2);
-	VTot  = m_pPanel[p].GlobalToLocal(Vx, Vy, Vz);
+	Sl2   = m_pPanel[p].globalToLocal(S2);
+	VTot  = m_pPanel[p].globalToLocal(Vx, Vy, Vz);
 
 	//in panel referential
 	VLocal.x = -4.0*PI*(m_pPanel[p].SMP*DELP - Sl2.y*DELQ)/Sl2.x;
@@ -1842,7 +1842,7 @@ void PanelAnalysis::computeOnBodyCp(double V0, double VDelta, int nval)
 			{
 				if(m_pPanel[p].m_Pos!=MIDSURFACE)
 				{
-					VLocal  = m_pPanel[p].GlobalToLocal(VInf);
+					VLocal  = m_pPanel[p].globalToLocal(VInf);
 					VLocal += m_uVl[p]*cosa*m_3DQInf[q] + m_wVl[p]*sina*m_3DQInf[q];
 					Speed2 = VLocal.x*VLocal.x + VLocal.y*VLocal.y;
 					Cp[p]  = 1.0-Speed2/m_3DQInf[q]/m_3DQInf[q];
@@ -1907,7 +1907,7 @@ void PanelAnalysis::computeOnBodyCp(double V0, double VDelta, int nval)
 void PanelAnalysis::getDoubletInfluence(CVector const &C, Panel *pPanel, CVector &V, double &phi, bool bWake, bool bAll)
 {
 	if(pPanel->m_Pos!=MIDSURFACE || pPanel->m_bIsWakePanel)
-		pPanel->DoubletNASA4023(C, V, phi, bWake);
+		pPanel->doubletNASA4023(C, V, phi, bWake);
 	else
 	{
 		VLMGetVortexInfluence(pPanel, C, V, bAll);
@@ -1918,7 +1918,7 @@ void PanelAnalysis::getDoubletInfluence(CVector const &C, Panel *pPanel, CVector
 	{
 		CG.set(C.x, C.y, -C.z-2.0*m_pWPolar->m_Height);
 
-		if(pPanel->m_Pos!=MIDSURFACE || pPanel->m_bIsWakePanel)	pPanel->DoubletNASA4023(CG, VG, phiG, bWake);
+		if(pPanel->m_Pos!=MIDSURFACE || pPanel->m_bIsWakePanel)	pPanel->doubletNASA4023(CG, VG, phiG, bWake);
 		else
 		{
 			VLMGetVortexInfluence(pPanel, CG, VG, bAll);
@@ -1943,12 +1943,12 @@ void PanelAnalysis::getDoubletInfluence(CVector const &C, Panel *pPanel, CVector
 void PanelAnalysis::getSourceInfluence(CVector const &C, Panel *pPanel, CVector &V, double &phi)
 {
 
-	pPanel->SourceNASA4023(C, V, phi);
+	pPanel->sourceNASA4023(C, V, phi);
 
 	if(m_pWPolar->bGround())
 	{
 		CG.set(C.x, C.y, -C.z-2.0*m_pWPolar->m_Height);
-		pPanel->SourceNASA4023(CG, VG, phiG);
+		pPanel->sourceNASA4023(CG, VG, phiG);
 		V.x += VG.x;
 		V.y += VG.y;
 		V.z -= VG.z;
@@ -3831,7 +3831,7 @@ void PanelAnalysis::computeControlDerivatives()
 
 			for(p=0; p<m_pWingList[0]->m_MatSize; p++)
 			{
-				(m_pWingList[0]->m_pWingPanel+p)->RotateBC(m_pPlane->WingLE(0), Quat);
+				(m_pWingList[0]->m_pWingPanel+p)->rotateBC(m_pPlane->WingLE(0), Quat);
 			}
 		}
 
@@ -3854,7 +3854,7 @@ void PanelAnalysis::computeControlDerivatives()
 
 			for(p=0; p<m_pWingList[2]->m_MatSize; p++)
 			{
-				(m_pWingList[2]->m_pWingPanel+p)->RotateBC(m_pPlane->WingLE(2), Quat);
+				(m_pWingList[2]->m_pWingPanel+p)->rotateBC(m_pPlane->WingLE(2), Quat);
 			}
 		}
 		pos += m_pWingList[2]->m_MatSize;
@@ -3879,7 +3879,7 @@ void PanelAnalysis::computeControlDerivatives()
 				{
 					if(m_ppSurface->at(j)->isFlapPanel(p))
 					{
-						m_pPanel[p].RotateBC(m_ppSurface->at(j)->m_HingePoint, Quat);
+						m_pPanel[p].rotateBC(m_ppSurface->at(j)->m_HingePoint, Quat);
 					}
 				}
 			}
@@ -3948,7 +3948,7 @@ double PanelAnalysis::computeCm(double Alpha)
 		if(m_pPanel[p].m_Pos!=MIDSURFACE)
 		{
 			//first calculate Cp for this angle
-			VLocal  = m_pPanel[p].GlobalToLocal(VInf);
+			VLocal  = m_pPanel[p].globalToLocal(VInf);
 			VLocal += m_uVl[p]*cosa + m_wVl[p]*sina;
 			Speed2 = VLocal.x*VLocal.x + VLocal.y*VLocal.y;
 			Cp  = 1.0-Speed2; // QInf=unit, /1.0/1.0;

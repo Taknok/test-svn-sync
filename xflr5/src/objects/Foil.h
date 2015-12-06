@@ -105,8 +105,8 @@ public:
 	double baseUpperY(double x);
 	double baseLowerY(double x);
 	CVector midYRel(double sRel);
-	CVector lowerYRel(double sRel);
-	CVector upperYRel(double sRel);
+	CVector lowerYRel(double xRel);
+	CVector upperYRel(double xRel);
 	double camber(double x);
 	double camberSlope(double x);
 	double length();

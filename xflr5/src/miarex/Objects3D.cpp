@@ -438,8 +438,8 @@ void Objects3D::rotateGeomZ(Panel *pPanel, CVector *pNode, Panel *pWakePanel, CV
 		iTA = pPanel[p].m_iTA; iTB = pPanel[p].m_iTB;
 
 		//set the new panel geometry
-		if(pPanel[p].m_Pos>=MIDSURFACE)       pPanel[p].SetPanelFrame(pNode[iLA], pNode[iLB], pNode[iTA], pNode[iTB]);
-		else if (pPanel[p].m_Pos==BOTSURFACE) pPanel[p].SetPanelFrame(pNode[iLB], pNode[iLA], pNode[iTB], pNode[iTA]);
+		if(pPanel[p].m_Pos>=MIDSURFACE)       pPanel[p].setPanelFrame(pNode[iLA], pNode[iLB], pNode[iTA], pNode[iTB]);
+		else if (pPanel[p].m_Pos==BOTSURFACE) pPanel[p].setPanelFrame(pNode[iLB], pNode[iLA], pNode[iTB], pNode[iTA]);
 	}
 
 	// the wake array is not rotated but translated to remain at the wing's trailing edge and aligned with the freestream velocity vector
@@ -486,7 +486,7 @@ void Objects3D::rotateGeomZ(Panel *pPanel, CVector *pNode, Panel *pWakePanel, CV
 		iTA = pWakePanel[pw].m_iTA; iTB = pWakePanel[pw].m_iTB;
 		
 		//set the new panel geometry
-		pWakePanel[pw].SetPanelFrame(pWakeNode[iLA], pWakeNode[iLB], pWakeNode[iTA], pWakeNode[iTB]);
+		pWakePanel[pw].setPanelFrame(pWakeNode[iLA], pWakeNode[iLB], pWakeNode[iTA], pWakeNode[iTB]);
 	}
 }
 
@@ -517,8 +517,8 @@ void Objects3D::rotateGeomY(Panel *pPanel, CVector *pNode, Panel *pWakePanel, CV
 		LATB = pNode[iLA] - pNode[iTB];
 		TALB = pNode[iTA] - pNode[iLB];
 
-		if(pPanel[p].m_Pos==MIDSURFACE || pPanel[p].m_Pos==TOPSURFACE) pPanel[p].SetPanelFrame(pNode[iLA], pNode[iLB], pNode[iTA], pNode[iTB]);
-		else if (pPanel[p].m_Pos==BOTSURFACE)                          pPanel[p].SetPanelFrame(pNode[iLB], pNode[iLA], pNode[iTB], pNode[iTA]);
+		if(pPanel[p].m_Pos==MIDSURFACE || pPanel[p].m_Pos==TOPSURFACE) pPanel[p].setPanelFrame(pNode[iLA], pNode[iLB], pNode[iTA], pNode[iTB]);
+		else if (pPanel[p].m_Pos==BOTSURFACE)                          pPanel[p].setPanelFrame(pNode[iLB], pNode[iLA], pNode[iTB], pNode[iTA]);
 	}
 
 	// the wake array is not rotated but translated to remain at the wing's trailing edge
@@ -562,7 +562,7 @@ void Objects3D::rotateGeomY(Panel *pPanel, CVector *pNode, Panel *pWakePanel, CV
 	{
 		iLA = pWakePanel[pw].m_iLA; iLB = pWakePanel[pw].m_iLB;
 		iTA = pWakePanel[pw].m_iTA; iTB = pWakePanel[pw].m_iTB;
-		pWakePanel[pw].SetPanelFrame(pWakeNode[iLA], pWakeNode[iLB], pWakeNode[iTA], pWakeNode[iTB]);
+		pWakePanel[pw].setPanelFrame(pWakeNode[iLA], pWakeNode[iLB], pWakeNode[iTA], pWakeNode[iTB]);
 	}
 }
 
@@ -1084,7 +1084,7 @@ int Objects3D::createBodyElements(Plane *pCurPlane)
 						s_Panel[s_MatSize].m_Pos = BODYSURFACE;
 						s_Panel[s_MatSize].m_iElement = s_MatSize;
 						s_Panel[s_MatSize].m_bIsLeftPanel  = true;
-						s_Panel[s_MatSize].SetPanelFrame(LA, LB, TA, TB);
+						s_Panel[s_MatSize].setPanelFrame(LA, LB, TA, TB);
 
 						// set neighbour panels
 
@@ -1193,7 +1193,7 @@ int Objects3D::createBodyElements(Plane *pCurPlane)
 				s_Panel[s_MatSize].m_Pos = BODYSURFACE;
 				s_Panel[s_MatSize].m_iElement = s_MatSize;
 				s_Panel[s_MatSize].m_bIsLeftPanel  = true;
-				s_Panel[s_MatSize].SetPanelFrame(LA, LB, TA, TB);
+				s_Panel[s_MatSize].setPanelFrame(LA, LB, TA, TB);
 
 				// set neighbour panels
 
@@ -1288,7 +1288,7 @@ int Objects3D::createBodyElements(Plane *pCurPlane)
 			s_Panel[s_MatSize].m_Pos = BODYSURFACE;
 			s_Panel[s_MatSize].m_iElement = s_MatSize;
 			s_Panel[s_MatSize].m_bIsLeftPanel  = false;
-			s_Panel[s_MatSize].SetPanelFrame(LA, LB, TA, TB);
+			s_Panel[s_MatSize].setPanelFrame(LA, LB, TA, TB);
 
 			// set neighbour panels
 			// valid only for Panel Analysis
@@ -1403,7 +1403,7 @@ int Objects3D::createWingElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurf
 			s_Panel[s_MatSize].m_Pos = SIDESURFACE;
 			s_Panel[s_MatSize].m_iElement = s_MatSize;
 			s_Panel[s_MatSize].m_bIsLeftPanel  = pSurface->m_bIsLeftSurf;
-			s_Panel[s_MatSize].SetPanelFrame(LA, LB, TA, TB);
+			s_Panel[s_MatSize].setPanelFrame(LA, LB, TA, TB);
 			s_Panel[s_MatSize].m_iWake = -1;
 
 			s_Panel[s_MatSize].m_iPD = s_MatSize-1;
@@ -1485,8 +1485,8 @@ int Objects3D::createWingElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurf
 			s_Panel[s_MatSize].m_iElement = s_MatSize;
 			s_Panel[s_MatSize].m_bIsLeftPanel  = pSurface->m_bIsLeftSurf;
 
-			if(side==MIDSURFACE)        s_Panel[s_MatSize].SetPanelFrame(pSurface->LA, pSurface->LB, pSurface->TA, pSurface->TB);
-			else if (side==BOTSURFACE)  s_Panel[s_MatSize].SetPanelFrame(pSurface->LB, pSurface->LA, pSurface->TB, pSurface->TA);
+			if(side==MIDSURFACE)        s_Panel[s_MatSize].setPanelFrame(pSurface->LA, pSurface->LB, pSurface->TA, pSurface->TB);
+			else if (side==BOTSURFACE)  s_Panel[s_MatSize].setPanelFrame(pSurface->LB, pSurface->LA, pSurface->TB, pSurface->TA);
 
 			// set neighbour panels
 			// valid only for Panel 2-sided Analysis
@@ -1588,7 +1588,7 @@ int Objects3D::createWingElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurf
 				s_Panel[s_MatSize].m_iElement = s_MatSize;
 				s_Panel[s_MatSize].m_bIsLeftPanel  = pSurface->m_bIsLeftSurf;
 
-				s_Panel[s_MatSize].SetPanelFrame(pSurface->LA, pSurface->LB, pSurface->TA, pSurface->TB);
+				s_Panel[s_MatSize].setPanelFrame(pSurface->LA, pSurface->LB, pSurface->TA, pSurface->TB);
 
 				// set neighbour panels
 				// valid only for Panel 2-sided Analysis
@@ -1681,7 +1681,7 @@ int Objects3D::createWingElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurf
 			s_Panel[s_MatSize].m_Pos = SIDESURFACE;
 			s_Panel[s_MatSize].m_iElement = s_MatSize;
 			s_Panel[s_MatSize].m_bIsLeftPanel  = pSurface->m_bIsLeftSurf;
-			s_Panel[s_MatSize].SetPanelFrame(LA, LB, TA, TB);
+			s_Panel[s_MatSize].setPanelFrame(LA, LB, TA, TB);
 			s_Panel[s_MatSize].m_iWake = -1;
 			s_MatSize++;
 		}
@@ -1797,7 +1797,7 @@ bool Objects3D::createWakeElems(int PanelIndex, Plane *pPlane, WPolar* pWPolar)
 		s_WakePanel[mw].m_bIsWakePanel = true;
 		s_WakePanel[mw].Area =  s_WakePanel[mw].Normal.VAbs()/2.0;
 		s_WakePanel[mw].Normal.normalize();
-		s_WakePanel[mw].SetPanelFrame(LA,LB, TA, TB);
+		s_WakePanel[mw].setPanelFrame(LA,LB, TA, TB);
 		s_WakePanel[mw].m_bIsLeftPanel  = false;
 
 		if(l==0)					s_WakePanel[mw].m_iPD = -1;// no panel downstream
@@ -2672,7 +2672,7 @@ void Objects3D::setControlPositions(Plane *pPlane, WPolar *pWPolar, Panel *pPane
 				for(int p=0; p<pPlane->wing()->m_MatSize; p++)
 				{
 					memcpy(pPanel+p, s_MemPanel+p, sizeof(Panel));
-					(pPanel+p)->RotateBC(pPlane->WingLE(0), Quat);
+					(pPanel+p)->rotateBC(pPlane->WingLE(0), Quat);
 				}
 			}
 			else
@@ -2689,7 +2689,7 @@ void Objects3D::setControlPositions(Plane *pPlane, WPolar *pWPolar, Panel *pPane
 				}
 				for(int p=0; p<s_MatSize; p++)
 				{
-					if(pPlane->wing()->isWingPanel(p)) s_Panel[p].SetPanelFrame();
+					if(pPlane->wing()->isWingPanel(p)) s_Panel[p].setPanelFrame();
 				}
 			}
 		}
@@ -2723,14 +2723,14 @@ void Objects3D::setControlPositions(Plane *pPlane, WPolar *pWPolar, Panel *pPane
 					}
 					for(int p=0; p<s_MatSize; p++)
 					{
-						if(pWingList[2]->isWingPanel(p)) s_Panel[p].SetPanelFrame();
+						if(pWingList[2]->isWingPanel(p)) s_Panel[p].setPanelFrame();
 					}
 				}
 				else
 				{
 					for(int p=0; p<pPlane->stab()->m_MatSize; p++)
 					{
-						pPlane->stab()->m_pWingPanel[p].RotateBC(pPlane->WingLE(2), Quat);
+						pPlane->stab()->m_pWingPanel[p].rotateBC(pPlane->WingLE(2), Quat);
 					}
 				}
 			}
@@ -2775,7 +2775,7 @@ void Objects3D::setControlPositions(Plane *pPlane, WPolar *pWPolar, Panel *pPane
 									if(pWing->m_Surface.at(j)->isFlapPanel(p))
 									{
 										memcpy(pPanel+p, s_MemPanel+p, sizeof(Panel));
-										pPanel[p].RotateBC(pWing->m_Surface.at(j)->m_HingePoint, Quat);
+										pPanel[p].rotateBC(pWing->m_Surface.at(j)->m_HingePoint, Quat);
 									}
 								}
 							}
@@ -2793,7 +2793,7 @@ void Objects3D::setControlPositions(Plane *pPlane, WPolar *pWPolar, Panel *pPane
 								}
 								for(int p=0; p<s_MatSize; p++)
 								{
-									if(pWing->m_Surface.at(j)->isFlapPanel(p)) s_Panel[p].SetPanelFrame();
+									if(pWing->m_Surface.at(j)->isFlapPanel(p)) s_Panel[p].setPanelFrame();
 								}
 							}
 						}

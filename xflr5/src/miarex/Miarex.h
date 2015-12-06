@@ -82,7 +82,6 @@ class QMiarex : public QWidget
 	friend class TwoDWidget;
 	friend class GL3DScales;
 	friend class GL3dBodyDlg;
-	friend class GLLightDlg;
 	friend class WingDlg;
 	friend class Wing;
 	friend class LLTAnalysisDlg;
