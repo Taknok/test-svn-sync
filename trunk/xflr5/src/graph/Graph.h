@@ -63,9 +63,9 @@ public:
 	Curve * getClosestPoint(double const &x, double const &y, double &xSel, double &ySel, int &nSel);
 	void resetLimits();
 	void resetCurves();
-	void scale(double zoom);
-	void Scalex(double zoom);
-	void Scaley(double zoom);
+	void scaleAxes(double zoom);
+	void scaleXAxis(double zoom);
+	void scaleYAxis(double zoom);
 	void setAutoXMinUnit(bool bAuto);
 	void setAutoYMinUnit(bool bAuto);
 	void setAutoXUnit();
@@ -104,7 +104,7 @@ public:
 	void setAxisWidth(int Width);
 	void setTitleColor(QColor crColor);
 	void setLabelColor(QColor crColor);
-	void SetWindow(double x1, double x2, double y1, double y2);
+	void setWindow(double x1, double x2, double y1, double y2);
 
 	QColor axisColor();
 	QColor titleColor();
@@ -133,9 +133,9 @@ public:
 	bool yMajGrid();
 	bool bXMinGrid();
 	bool bYMinGrid();
-	bool SelectPoint(QString const &CurveName, int sel);
-	bool SetXScale();
-	bool SetYScale();
+	bool selectPoint(QString const &CurveName, int sel);
+	bool setXScale();
+	bool setYScale();
 	
 	void setXMajGrid(bool const &bGrid);
 	void setYMajGrid(bool const &bGrid);

@@ -357,7 +357,7 @@ private:
 	QAction *m_pXDirectStyleAct;
 	QAction *XDirectPolarFilter;
 	QAction *setQVarGraph, *setCpVarGraph;
-	QAction *CurXFoilResExport, * CurXFoilCtPlot, *CurXFoilDbPlot, *CurXFoilDtPlot, *CurXFoilRtLPlot;
+	QAction *m_pExportCurXFoilRes, * CurXFoilCtPlot, *CurXFoilDbPlot, *CurXFoilDtPlot, *CurXFoilRtLPlot;
 	QAction *CurXFoilRtPlot, *CurXFoilNPlot, *CurXFoilCdPlot, *CurXFoilCfPlot, *CurXFoilUePlot, *CurXFoilHPlot;
 	QAction *ManageFoilsAct, *RenamePolarAct;
 	QAction *m_pImportJavaFoilPolar, *m_pImportXFoilPolar;

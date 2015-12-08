@@ -373,8 +373,9 @@ QMAKE_CFLAGS_WARN_ON += -W4
 
 #QMAKE_LFLAGS_WINDOWS += Wl, -heap, 500000000
 
-#QMAKE_CFLAGS+=-pg
+#profiling flags
 #QMAKE_CXXFLAGS+=-pg
 #QMAKE_LFLAGS+=-pg
+
 #QMAKE_CXXFLAGS += -Wall
 

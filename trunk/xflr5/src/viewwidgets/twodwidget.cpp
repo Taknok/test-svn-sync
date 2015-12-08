@@ -153,7 +153,7 @@ void TwoDWidget::resizeEvent(QResizeEvent *event)
 
 	if(m_pXInverse)
 	{
-		pXInverse->SetScale(rect());
+		pXInverse->setXInverseScale(rect());
 	}
 	event->accept();
 }
@@ -202,7 +202,7 @@ void TwoDWidget::paintEvent(QPaintEvent *event)
 	{
 		QXInverse *pXInverse= (QXInverse*)m_pXInverse;
 		QPainter painter(this);
-		pXInverse->PaintView(painter);
+		pXInverse->paintView(painter);
 	}
 	else
 	{

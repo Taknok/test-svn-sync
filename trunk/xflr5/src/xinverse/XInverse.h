@@ -63,31 +63,30 @@ public:
 	QXInverse(QWidget *parent = NULL);
 	~QXInverse();
 
-	void SetupLayout();
-	void InitDialog();
+	void setupLayout();
  
 signals:
 	void projectModified();
 
 private slots:
-	void OnCpxx();
-	void OnInverseApp();
-	void OnMarkSegment();
-	void OnInverseStyles();
-	void OnTangentSpline();
-	void OnShowSpline();
-	void OnNewSpline();
-	void OnApplySpline();
-	void OnSpecal();
+	void onCpxx();
+	void onInverseApp();
+	void onMarkSegment();
+	void onInverseStyles();
+	void onTangentSpline();
+	void onShowSpline();
+	void onNewSpline();
+	void onApplySpline();
+	void onSpecal();
 	void onQReset();
-	void OnFilter();
-	void OnSmooth();
-	void OnSymm() ;
-	void OnExecute();
-	void OnStoreFoil();
-	void OnExtractFoil();
-	void OnResetFoilScale();
-	void OnInsertCtrlPt();
+	void onFilter();
+	void onSmooth();
+	void onSymm() ;
+	void onExecute();
+	void onStoreFoil();
+	void onExtractFoil();
+	void onResetFoilScale();
+	void onInsertCtrlPt();
 	void onPertubate();
 	void onExportQGraph();
 	void onQGraphSettings();
@@ -97,10 +96,10 @@ private slots:
 	void onQPoints();
 	void onQReflected();
 	void onRemoveCtrlPt();
-	void OnSpecInv() ;
-	void OnZoomIn();
-	void OnZoomX();
-	void OnZoomY();
+	void onSpecInv() ;
+	void onZoomIn();
+	void onZoomX();
+	void onZoomY();
 
 private:
 	void updateView();
@@ -114,40 +113,40 @@ private:
 	void doubleClickEvent(QPoint pos);
 	void zoomEvent(QPoint pos, double zoomFactor);
 
-	void CheckActions();
-	void DrawGrid(QPainter &painter, double scale);
-	void PaintView(QPainter &painter);
-	void PaintGraph(QPainter &painter);
-	void PaintFoil(QPainter &painter);
-	void SetScale(QRect CltRect);
-	void ResetQ();
-	void ResetScale();
-	void ResetMixedQ();
-	void ReleaseZoom();
-	void Smooth(int Pos1 = -1, int Pos2 = -1);
-	void Clear();
-	void Connect();
-	void CreateMCurve();
-	void CreateQCurve();
-	void CancelMark();
-	void CancelSpline();
-	void CancelSmooth();
-	void SetFoil();
-	void SetTAngle(double a);
-	void SetTGap(double tr, double ti);
+	void checkActions();
+	void drawGrid(QPainter &painter, double scale);
+	void paintView(QPainter &painter);
+	void paintGraph(QPainter &painter);
+	void paintFoil(QPainter &painter);
+	void setXInverseScale(QRect CltRect);
+	void resetQ();
+	void resetScale();
+	void resetMixedQ();
+	void releaseZoom();
+	void smooth(int Pos1 = -1, int Pos2 = -1);
+	void clear();
+	void connectSignals();
+	void createMCurve();
+	void createQCurve();
+	void cancelMark();
+	void cancelSpline();
+	void cancelSmooth();
+	void setFoil();
+	void setTAngle(double a);
+	void setTGap(double tr, double ti);
 
-	void ExecMDES();
+	void execMDES();
 	void loadSettings(QSettings *pSettings);
-	void SaveSettings(QSettings *pSettings);
+	void saveSettings(QSettings *pSettings);
 
-	bool ExecQDES();
-	bool SetParams();
-	bool InitXFoil(Foil * pFoil);
+	bool execQDES();
+	bool setParams();
+	bool initXFoil(Foil * pFoil);
 
 
 	double qincom(double qc, double qinf, double tklam);
 
-	CVector MousetoReal(QPoint point);
+	CVector mousetoReal(QPoint point);
 
 private:
 

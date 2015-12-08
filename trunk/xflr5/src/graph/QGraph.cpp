@@ -28,7 +28,7 @@
 #include <QFontMetrics>
 #include <Settings.h>
 #include <QFileDialog>
-#include <QtDebug>
+
 
 void *QGraph::s_pMainFrame = NULL;
 
@@ -58,7 +58,7 @@ void QGraph::drawGraph(QRect const &rect, QPainter &painter)
 
 void QGraph::drawGraph(QPainter &painter)
 {
-	static QColor color;
+	QColor color;
 	painter.save();
 
 //	Draw Border
@@ -101,10 +101,10 @@ void QGraph::drawGraph(QPainter &painter)
 void QGraph::drawCurve(int nIndex, QPainter &painter)
 {
 	painter.save();
-	static double scaley;
-	static int i, ptside;
-	static QPoint From, To, Min, Max;
-	static QRect rViewRect;
+	double scaley;
+	int i, ptside;
+	QPoint From, To, Min, Max;
+	QRect rViewRect;
 
 	ptside = 5;
 	Curve* pCurve = curve(nIndex);
@@ -205,8 +205,8 @@ void QGraph::drawCurve(int nIndex, QPainter &painter)
 
 void QGraph::drawAxes(QPainter &painter)
 {
-	static double xp, yp, scaley;
-	static QPen AxesPen;
+	double xp, yp, scaley;
+	QPen AxesPen;
 	scaley = m_scaley;
 	painter.save();
 
@@ -239,9 +239,9 @@ void QGraph::drawAxes(QPainter &painter)
 void QGraph::drawTitles(QPainter &painter)
 {
 	//draws the x & y axis name
-	static double scaley;
-	static int XPosXTitle, YPosXTitle, XPosYTitle, YPosYTitle;
-	static double xp, yp;
+	double scaley;
+	int XPosXTitle, YPosXTitle, XPosYTitle, YPosYTitle;
+	double xp, yp;
 
 	scaley = m_scaley;
 	painter.save();
@@ -274,8 +274,8 @@ void QGraph::drawTitles(QPainter &painter)
 
 void QGraph::drawXTicks(QPainter &painter)
 {
-	static double main, scaley, xt, yp;
-	static int exp, TickSize, height, yExpOff, nx;
+	double main, scaley, xt, yp;
+	int exp, TickSize, height, yExpOff, nx;
 
 	exp=0;
 
@@ -366,8 +366,8 @@ void QGraph::drawXTicks(QPainter &painter)
 
 void QGraph::drawYTicks(QPainter &painter)
 {
-	static double scaley, xp, main, yt;
-	static int TickSize, fmheight, fmheight4, exp;
+	double scaley, xp, main, yt;
+	int TickSize, fmheight, fmheight4, exp;
 	if(qAbs(xunit)<0.00000001) return;
 	if(qAbs(ymax-ymin)/yunit>30.0) return;
 	scaley = m_scaley;

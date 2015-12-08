@@ -126,7 +126,7 @@ double GetPlrPointFromAlpha(Foil *pFoil, double Re, double Alpha, int PlrVar, bo
 void GetLinearizedPolar(Foil *pFoil0, Foil *pFoil1, double Re, double Tau, double &Alpha0, double &Slope);
 
 bool SplineInterpolation(int n, double *x, double *y,  double *a, double *b, double *c, double *d);
-double SplineBlend(int const &index, int const &p, double const &t, double *knots);
+double splineBlend(int const &index, int const &p, double const &t, double *knots);
 
 
 int Compare(complex<double> a, complex<double>b);
