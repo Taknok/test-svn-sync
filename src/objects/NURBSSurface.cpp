@@ -93,10 +93,10 @@ double NURBSSurface::Getu(double pos, double v)
 			zh = 0.0;
 			for(int jv=0; jv<FramePointCount(); jv++)
 			{
-				c =  SplineBlend(jv, m_ivDegree, v, m_vKnots);
+				c =  splineBlend(jv, m_ivDegree, v, m_vKnots);
 				zh += m_pFrame[iu]->m_Position[m_uAxis] * c;
 			}
-			b = SplineBlend(iu, m_iuDegree, u, m_uKnots);
+			b = splineBlend(iu, m_iuDegree, u, m_uKnots);
 			zz += zh * b;
 		}
 		if(zz>pos) u2 = u;
@@ -172,7 +172,7 @@ void NURBSSurface::GetPoint(double u, double v, CVector &Pt)
 		wx = 0.0;
 		for(int jv=0; jv<FramePointCount(); jv++)
 		{
-			cs = SplineBlend(jv, m_ivDegree, v, m_vKnots) * Weight(m_EdgeWeightv, jv, FramePointCount());
+			cs = splineBlend(jv, m_ivDegree, v, m_vKnots) * Weight(m_EdgeWeightv, jv, FramePointCount());
 
 			Vv.x += m_pFrame[iu]->m_CtrlPoint[jv].x * cs;
 			Vv.y += m_pFrame[iu]->m_CtrlPoint[jv].y * cs;
@@ -180,7 +180,7 @@ void NURBSSurface::GetPoint(double u, double v, CVector &Pt)
 
 			wx += cs;
 		}
-		bs = SplineBlend(iu, m_iuDegree, u, m_uKnots) * Weight(m_EdgeWeightu, iu, frameCount());
+		bs = splineBlend(iu, m_iuDegree, u, m_uKnots) * Weight(m_EdgeWeightu, iu, frameCount());
 
 		V.x += Vv.x * bs;
 		V.y += Vv.y * bs;
@@ -221,7 +221,7 @@ CVector NURBSSurface::Point(double u, double v)
 		wx = 0.0;
 		for(int jv=0; jv<FramePointCount(); jv++)
 		{
-			cs = SplineBlend(jv, m_ivDegree, v, m_vKnots) * Weight(m_EdgeWeightv, jv, FramePointCount());
+			cs = splineBlend(jv, m_ivDegree, v, m_vKnots) * Weight(m_EdgeWeightv, jv, FramePointCount());
 
 			Vv.x += m_pFrame[iu]->m_CtrlPoint[jv].x * cs;
 			Vv.y += m_pFrame[iu]->m_CtrlPoint[jv].y * cs;
@@ -229,7 +229,7 @@ CVector NURBSSurface::Point(double u, double v)
 
 			wx += cs;
 		}
-		bs = SplineBlend(iu, m_iuDegree, u, m_uKnots) * Weight(m_EdgeWeightu, iu, frameCount());
+		bs = splineBlend(iu, m_iuDegree, u, m_uKnots) * Weight(m_EdgeWeightu, iu, frameCount());
 
 		V.x += Vv.x * bs;
 		V.y += Vv.y * bs;

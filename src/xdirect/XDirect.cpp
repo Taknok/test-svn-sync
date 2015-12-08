@@ -32,8 +32,8 @@
 #include <QtDebug>
 #include <math.h>
 
-#include "../globals.h"
-#include "../mainframe.h"
+#include <globals.h>
+#include <mainframe.h>
 #include "../misc/Settings.h"
 #include "XDirect.h"
 
@@ -268,6 +268,9 @@ void QXDirect::setControls()
 	pMainFrame->CurXFoilCfPlot->setChecked(!m_bPolarView  && OppVar==2 && m_XFoilVar ==8);
 	pMainFrame->CurXFoilUePlot->setChecked(!m_bPolarView  && OppVar==2 && m_XFoilVar ==9);
 	pMainFrame->CurXFoilHPlot->setChecked(!m_bPolarView   && OppVar==2 && m_XFoilVar ==10);
+
+	pMainFrame->m_pCurXFoilResults->setEnabled(m_pXFoil->lvconv);
+	pMainFrame->m_pExportCurXFoilRes->setEnabled(m_pXFoil->lvconv);
 
 	m_pctrlShowPressure->setEnabled(!m_bPolarView && OpPoint::curOpp());
 	m_pctrlShowBL->setEnabled(!m_bPolarView && OpPoint::curOpp());
@@ -1425,7 +1428,7 @@ void QXDirect::onCfPlot()
 	{
 		pBotCurve->appendPoint(x[i][2], y[i][2]);
 	}
-	m_CpGraph.SetXScale();
+	m_CpGraph.setXScale();
 	setFoilScale();
 	setControls();
     m_bResetCurves = false;
@@ -1472,7 +1475,7 @@ void QXDirect::onCtPlot()
 	for (i=it2; i<=nside2-1; i++)	pCurve2->appendPoint(x[i][2], m_pXFoil->ctau[i][2]);
 	for (i=2; i<=nside2-1; i++)		pCurve3->appendPoint(x[i][2], m_pXFoil->ctq[i][2]);
 
-	m_CpGraph.SetXScale();
+	m_CpGraph.setXScale();
 	setFoilScale();
 	setControls();
 
@@ -1514,7 +1517,7 @@ void QXDirect::onDtPlot()
 		pCurve2->appendPoint(x[i][1], m_pXFoil->thet[i][1]);
 	}
 
-	m_CpGraph.SetXScale();
+	m_CpGraph.setXScale();
 	setFoilScale();
 	setControls();
     m_bResetCurves = false;
@@ -1555,7 +1558,7 @@ void QXDirect::onDbPlot()
 		pCurve2->appendPoint(x[i][2], m_pXFoil->thet[i][2]);
 	}
 
-	m_CpGraph.SetXScale();
+	m_CpGraph.setXScale();
 	setFoilScale();
 	setControls();
     m_bResetCurves = false;
@@ -1607,7 +1610,7 @@ void QXDirect::onCdPlot()
 	{
 		pBotCurve->appendPoint(x[i][2], y[i][2]);
 	}
-	m_CpGraph.SetXScale();
+	m_CpGraph.setXScale();
 	setFoilScale();
 	setControls();
     m_bResetCurves = false;
@@ -1651,7 +1654,7 @@ void QXDirect::onHPlot()
 		pBotCurve->appendPoint(x[i][2], y[i][2]);
 	}
 
-	m_CpGraph.SetXScale();
+	m_CpGraph.setXScale();
 	setFoilScale();
 	setControls();
     m_bResetCurves = false;
@@ -1689,7 +1692,7 @@ void QXDirect::onRtPlot()
 	for (i=2; i<=nside1-1; i++)	pTopCurve->appendPoint(x[i][1], y[i][1]);
 	for (i=2; i<=nside2-1; i++) pBotCurve->appendPoint(x[i][2], y[i][2]);
 
-	m_CpGraph.SetXScale();
+	m_CpGraph.setXScale();
 	setFoilScale();
 	setControls();
     m_bResetCurves = false;
@@ -1734,7 +1737,7 @@ void QXDirect::onRtLPlot()
 		else             y[i][2] = 0.0;
 		pBotCurve->appendPoint(x[i][2], y[i][2]);
 	}
-	m_CpGraph.SetXScale();
+	m_CpGraph.setXScale();
 	setFoilScale();
 	setControls();
     m_bResetCurves = false;
@@ -1789,7 +1792,7 @@ void QXDirect::onUePlot()
 	{
 		pBotCurve->appendPoint(x[i][2], y[i][2]);
 	}
-	m_CpGraph.SetXScale();
+	m_CpGraph.setXScale();
 	setFoilScale();
 	setControls();
     m_bResetCurves = false;
@@ -1818,7 +1821,7 @@ void QXDirect::onCpGraph()
 	m_CpGraph.setYTitle(tr("Cp"));
 
 	setControls();
-	m_CpGraph.SetXScale();
+	m_CpGraph.setXScale();
 	setFoilScale();
 	updateView();
 }
@@ -2301,7 +2304,7 @@ void QXDirect::onExportCurXFoilResults()
 	double que = 0.5*m_pXFoil->qinf*m_pXFoil->qinf;
 	double qrf = m_pXFoil->qinf;
 	int nside1, nside2, ibl;
-	int type = 1;
+	XFLR5::enumTextFileType type = XFLR5::TXT;
 
 	FileName = Foil::curFoil()->foilName();
 	FileName.replace("/", " ");
@@ -2315,7 +2318,7 @@ void QXDirect::onExportCurXFoilResults()
 	if(pos>0) Settings::s_LastDirName = FileName.left(pos);
 
 	pos  = FileName.lastIndexOf(".csv");
-	if(pos>0) type = 2;
+	if(pos>0) type = XFLR5::CSV;
 
 	QFile DestFile(FileName);
 
@@ -2328,7 +2331,7 @@ void QXDirect::onExportCurXFoilResults()
 	strong = Foil::curFoil()->m_FoilName+ "\n";
 	out << (strong);
 
-	if(type==1)
+	if(type==XFLR5::TXT)
 		strong = QString("Alpha = %1,  Re = %2,  Ma= %3,  ACrit=%4\n\n")
 						 .arg(m_pXFoil->alfa*180./PI, 5, 'f',1)
 						 .arg(m_pXFoil->reinf1, 8, 'f',0)
@@ -2380,14 +2383,14 @@ void QXDirect::onExportCurXFoilResults()
 	}
 
 	out << tr("\nTop Side\n");
-	if(type==1) OutString = QString(tr("    x         Hk     Ue/Vinf      Cf        Cd     A/A0       D*       Theta      CTq\n"));
-	else        OutString = QString(tr("x,Hk,Ue/Vinf,Cf,Cd,A/A0,D*,Theta,CTq\n"));
+	if(type==XFLR5::TXT) OutString = QString(tr("    x         Hk     Ue/Vinf      Cf        Cd     A/A0       D*       Theta      CTq\n"));
+	else                 OutString = QString(tr("x,Hk,Ue/Vinf,Cf,Cd,A/A0,D*,Theta,CTq\n"));
 	out << (OutString);
 	for (ibl=2; ibl<nside1; ibl++)
 	{
-		if(type==1)
+		if(type==XFLR5::TXT)
 			OutString = QString("%1  %2  %3  %4 %5 %6  %7  %8  %9\n")
-							.arg(x[ibl][1])
+							.arg(x[ibl][1],8,'f',5)
 							.arg(Hk[ibl][1],8,'f',5)
 							.arg(UeVinf[ibl][1],8,'f',5)
 							.arg(Cf[ibl][1],8,'f',5)
@@ -2398,7 +2401,7 @@ void QXDirect::onExportCurXFoilResults()
 							.arg(m_pXFoil->ctq[ibl][1],8,'f',5);
 		else
 			OutString = QString("%1, %2, %3, %4, %5, %6, %7, %8, %9\n")
-							.arg(x[ibl][1])
+							.arg(x[ibl][1],8,'f',5)
 							.arg(Hk[ibl][1],8,'f',5)
 							.arg(UeVinf[ibl][1],8,'f',5)
 							.arg(Cf[ibl][1],8,'f',5)
@@ -2410,14 +2413,14 @@ void QXDirect::onExportCurXFoilResults()
 		out << (OutString);
 	}
 	out << tr("\n\nBottom Side\n");
-	if(type==1) OutString = QString(tr("    x         Hk     Ue/Vinf      Cf        Cd     A/A0       D*       Theta      CTq\n"));
+	if(type==XFLR5::TXT) OutString = QString(tr("    x         Hk     Ue/Vinf      Cf        Cd     A/A0       D*       Theta      CTq\n"));
 	else        OutString = QString(tr("x,Hk,Ue/Vinf,Cf,Cd,A/A0,D*,Theta,CTq\n"));
 	out << (OutString);
 	for (ibl=2; ibl<nside2; ibl++)
 	{
-		if(type==1)
+		if(type==XFLR5::TXT)
 			OutString = QString("%1  %2  %3  %4 %5 %6  %7  %8  %9\n")
-							.arg(x[ibl][2])
+							.arg(x[ibl][2],8,'f',5)
 							.arg(Hk[ibl][2],8,'f',5)
 							.arg(UeVinf[ibl][2],8,'f',5)
 							.arg(Cf[ibl][2],8,'f',5)
@@ -2428,7 +2431,7 @@ void QXDirect::onExportCurXFoilResults()
 							.arg(m_pXFoil->ctq[ibl][2],8,'f',5);
 		else
 			OutString = QString("%1, %2, %3, %4, %5, %6, %7, %8, %9\n")
-							.arg(x[ibl][2])
+							.arg(x[ibl][2],8,'f',5)
 							.arg(Hk[ibl][2],8,'f',5)
 							.arg(UeVinf[ibl][2],8,'f',5)
 							.arg(Cf[ibl][2],8,'f',5)
@@ -3418,7 +3421,7 @@ void QXDirect::onNPlot()
 	{
 		pBotCurve->appendPoint(x[i][2], y[i][2]);
 	}
-	m_CpGraph.SetXScale();
+	m_CpGraph.setXScale();
 	setFoilScale();
 	setControls();
     m_bResetCurves = false;
@@ -3563,7 +3566,7 @@ void QXDirect::onQGraph()
 
 	setControls();
 
-	m_CpGraph.SetXScale();
+	m_CpGraph.setXScale();
 	setFoilScale();
 	updateView();
 }
@@ -5117,8 +5120,14 @@ void QXDirect::setGraphTiles()
 
 
 
+
+/**
+ * Sets the Foil scale in the OpPoint view.
+ */
 void QXDirect::setFoilScale()
 {
-	/** @todo set foil scale */
+	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
+	pMainFrame->m_pXDirectTileWidget->foilWidget()->setFoilScale();
 }
+
 

@@ -221,7 +221,7 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 		ymin = m_pGraph->yMin() - yu+y1;
 		ymax = m_pGraph->yMax() - yu+y1;
 
-		m_pGraph->SetWindow(xmin, xmax, ymin, ymax);
+		m_pGraph->setWindow(xmin, xmax, ymin, ymax);
 		update();
 	}
 
@@ -230,8 +230,8 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 	{
 		//zoom graph
 		m_pGraph->setAuto(false);
-		if(point.y()-m_LastPoint.y()<0) m_pGraph->scale(1.02);
-		else                            m_pGraph->scale(1.0/1.02);
+		if(point.y()-m_LastPoint.y()<0) m_pGraph->scaleAxes(1.02);
+		else                            m_pGraph->scaleAxes(1.0/1.02);
 
 		update();
 	}
@@ -242,8 +242,8 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 		{
 			//zoom graph
 			m_pGraph->setAuto(false);
-			if(point.y()-m_LastPoint.y()<0) m_pGraph->scale(1.02);
-			else                            m_pGraph->scale(1.0/1.02);
+			if(point.y()-m_LastPoint.y()<0) m_pGraph->scaleAxes(1.02);
+			else                            m_pGraph->scaleAxes(1.0/1.02);
 			update();
 		}
 
@@ -308,19 +308,19 @@ void GraphWidget::wheelEvent (QWheelEvent *event)
 		{
 			//zoom x scale
 			m_pGraph->setAutoX(false);
-			m_pGraph->Scalex(1./zoomFactor);
+			m_pGraph->scaleXAxis(1./zoomFactor);
 		}
 		else if(m_bYPressed)
 		{
 			//zoom y scale
 			m_pGraph->setAutoY(false);
-			m_pGraph->Scaley(1./zoomFactor);
+			m_pGraph->scaleYAxis(1./zoomFactor);
 		}
 		else
 		{
 			//zoom both
 			m_pGraph->setAuto(false);
-			m_pGraph->scale(1./zoomFactor);
+			m_pGraph->scaleAxes(1./zoomFactor);
 		}
 
 		m_pGraph->setAutoXUnit();

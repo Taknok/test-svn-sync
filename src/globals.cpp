@@ -73,8 +73,8 @@ void ExpFormat(double &f, int &exp)
 */
 bool Gauss(double *A, int n, double *B, int m, bool *pbCancel)
 {
-	static int row, i, j, pivot_row, k;
-	static double max, dum, *pa, *pA, *A_pivot_row;
+	int row, i, j, pivot_row, k;
+	double max, dum, *pa, *pA, *A_pivot_row;
 	// for each variable find pivot row and perform forward substitution
 	pa = A;
 	for (row = 0; row < (n - 1); row++, pa += n)
@@ -935,8 +935,8 @@ double Det44(double *aij)
 {
 //	returns the determinant of a 4x4 matrix
 
-	static int i,j,k,l,p,q;
-	static double det, sign, a33[16];
+	int i,j,k,l,p,q;
+	double det, sign, a33[16];
 
 	det = 0.0;
 	for(i=0; i<4; i++)
@@ -1021,8 +1021,8 @@ complex<double> Det33(complex<double> *aij)
 complex<double> Cofactor44(complex<double> *aij, int &i, int &j)
 {
 	//returns the complex cofactor	of element i,j, in the 4x4 matrix aij
-	static int k,l,p,q;
-	static complex<double> a33[9];
+	int k,l,p,q;
+	complex<double> a33[9];
 
 	p = 0;
 	for(k=0; k<4; k++)
@@ -1053,9 +1053,9 @@ complex<double> Det44(complex<double> *aij)
 {
 //	returns the determinant of a 4x4 matrix
 
-	static int i,j,k,l,p,q;
-	static double sign;
-	static complex<double> det, a33[16];
+	int i,j,k,l,p,q;
+	double sign;
+	complex<double> det, a33[16];
 	det = 0.0;
 
 	i=0;
@@ -1094,9 +1094,9 @@ complex<double> Det44(complex<double> *aij)
 bool Invert44(complex<double> *ain, complex<double> *aout)
 {
 	//small size, use the direct method
-	static int i,j;
-	static complex<double> det;
-	static double sign;
+	int i,j;
+	complex<double> det;
+	double sign;
 
 	det = Det44(ain);
 
@@ -1260,8 +1260,8 @@ void TestEigen()
 *________________________________________________________________________ */
 bool Eigenvector(double a[][4], complex<double> lambda, complex<double> *V)
 {
-	static complex<double> detm, detr;
-	static complex<double> r[9], m[9];
+	complex<double> detm, detr;
+	complex<double> r[9], m[9];
 	int ii, jj, i, j, kp;
 
 	// first find a pivot for which the  associated n-1 determinant is not zero
@@ -2872,7 +2872,7 @@ void ComplexSort(complex<double>*array, int ub)
 bool Intersect(CVector const &LA, CVector const &LB, CVector const &TA, CVector const &TB, CVector const &Normal,
 			   CVector const &A,  CVector const &U,  CVector &I, double &dist)
 {
-	static CVector P, W, V, T;
+	CVector P, W, V, T;
 	bool b1, b2, b3, b4;
 	double r,s;
 
@@ -2944,39 +2944,38 @@ bool Intersect(CVector const &LA, CVector const &LB, CVector const &TA, CVector 
 	return false;
 }
 
-/**
-*	Calculates the blending value of a point on a BSpline. This is done recursively.
-*	If the numerator and denominator are 0 the expression is 0.
-*	If the denominator is 0 the expression is 0
-*
-*	   index   is the control point's index
-*	   p       is the spline's degree
-*	   t       is the spline parameter
-*/
-double SplineBlend(int const &index, int const &p, double const &t, double *knots)
-{
-	static double eps = 1.e-6;
-	double value;
 
+/**
+* Calculates the blending value of a point on a BSpline. This is done recursively.
+* If the numerator and denominator are 0 the expression is 0.
+* If the denominator is 0 the expression is 0
+*
+* @param index   the control point's index
+* @param p       the spline's degree
+* @param t       the spline parameter
+* @param knots   a pointer to the vector of knots
+* @return the spline function value
+*/
+#define EPS 0.0001
+double splineBlend(int const &index, int const &p, double const &t, double *knots)
+{
 	if(p==0)
 	{
-		if ((knots[index] <= t) && (t < knots[index+1]) ) value = 1.0;
-//		else if (abs(knots[index]-knots[index+1])<pres)   value = 0.0;
-		else                                              value = 0.0;
+		if ((knots[index] <= t) && (t < knots[index+1]) ) return 1.0;
+		else                                              return 0.0;
 	}
 	else
 	{
-		if (qAbs(knots[index+p] - knots[index])<eps && qAbs(knots[index+p+1] - knots[index+1])<eps)
-			value = 0.0;
-		else if (qAbs(knots[index+p] - knots[index])<eps)
-			value = (knots[index+p+1]-t) / (knots[index+p+1]-knots[index+1])  * SplineBlend(index+1, p-1, t, knots);
-		else if (qAbs(knots[index+p+1] - knots[index+1])<eps)
-			value = (t-knots[index])     / (knots[index+p] - knots[index])    * SplineBlend(index,   p-1, t, knots);
+		if (qAbs(knots[index+p] - knots[index])<EPS && qAbs(knots[index+p+1] - knots[index+1])<EPS)
+			return 0.0;
+		else if (qAbs(knots[index+p] - knots[index])<EPS)
+			return (knots[index+p+1]-t) / (knots[index+p+1]-knots[index+1])  * splineBlend(index+1, p-1, t, knots);
+		else if (qAbs(knots[index+p+1] - knots[index+1])<EPS)
+			return (t-knots[index])     / (knots[index+p] - knots[index])    * splineBlend(index,   p-1, t, knots);
 		else
-			value = (t-knots[index])     / (knots[index+p]  -knots[index])    * SplineBlend(index,   p-1, t, knots) +
-					(knots[index+p+1]-t) / (knots[index+p+1]-knots[index+1])  * SplineBlend(index+1 ,p-1, t, knots);
+			return (t-knots[index])     / (knots[index+p] - knots[index])    * splineBlend(index,   p-1, t, knots) +
+					(knots[index+p+1]-t) / (knots[index+p+1]-knots[index+1]) * splineBlend(index+1 ,p-1, t, knots);
 	}
-	return value;
 }
 
 

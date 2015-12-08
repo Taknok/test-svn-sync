@@ -1853,9 +1853,9 @@ void MainFrame::createXDirectActions()
 	setQVarGraph->setStatusTip(tr("Sets Speed vs. chord graph"));
 	connect(setQVarGraph, SIGNAL(triggered()), pXDirect, SLOT(onQGraph()));
 
-	CurXFoilResExport = new QAction(tr("Export Cur. XFoil Results"), this);
-	CurXFoilResExport->setStatusTip(tr("Sets Speed vs. chord graph"));
-	connect(CurXFoilResExport, SIGNAL(triggered()), pXDirect, SLOT(onExportCurXFoilResults()));
+	m_pExportCurXFoilRes = new QAction(tr("Export Cur. XFoil Results"), this);
+	m_pExportCurXFoilRes->setStatusTip(tr("Sets Speed vs. chord graph"));
+	connect(m_pExportCurXFoilRes, SIGNAL(triggered()), pXDirect, SLOT(onExportCurXFoilResults()));
 
 	CurXFoilCtPlot = new QAction(tr("Max. Shear Coefficient"), this);
 	CurXFoilCtPlot->setCheckable(true);
@@ -1971,6 +1971,8 @@ void MainFrame::createXDirectMenus()
 //		XFoilAnalysisMenu->addAction(resetXFoil);
 		m_pXFoilAnalysisMenu->addAction(viewXFoilAdvanced);
 		m_pXFoilAnalysisMenu->addAction(viewLogFile);
+		m_pXFoilAnalysisMenu->addSeparator();
+		m_pXFoilAnalysisMenu->addAction(m_pExportCurXFoilRes);
 	}
 
 	m_pPolarMenu = menuBar()->addMenu(tr("&Polars"));
@@ -2033,7 +2035,6 @@ void MainFrame::createXDirectMenus()
 			m_pXDirectCpGraphMenu->addSeparator();
 			m_pCurXFoilResults = m_pXDirectCpGraphMenu->addMenu(tr("Current XFoil Results"));
 			{
-				m_pCurXFoilResults->addAction(CurXFoilResExport);
 				m_pCurXFoilResults->addSeparator();
 				m_pCurXFoilResults->addAction(CurXFoilCtPlot);
 				m_pCurXFoilResults->addAction(CurXFoilDbPlot);
@@ -2134,22 +2135,22 @@ void MainFrame::createXInverseActions()
 
 	StoreFoil = new QAction(QIcon(":/images/OnStoreFoil.png"), tr("Store Foil"), this);
 	StoreFoil->setStatusTip(tr("Store Foil in database"));
-	connect(StoreFoil, SIGNAL(triggered()), pXInverse, SLOT(OnStoreFoil()));
+	connect(StoreFoil, SIGNAL(triggered()), pXInverse, SLOT(onStoreFoil()));
 
 	ExtractFoil = new QAction(QIcon(":/images/OnExtractFoil.png"),tr("Extract Foil"), this);
 	ExtractFoil->setStatusTip(tr("Extract a Foil from the database for modification"));
-	connect(ExtractFoil, SIGNAL(triggered()), pXInverse, SLOT(OnExtractFoil()));
+	connect(ExtractFoil, SIGNAL(triggered()), pXInverse, SLOT(onExtractFoil()));
 
 	m_pXInverseStyles = new QAction(tr("Define Styles"), this);
 	m_pXInverseStyles->setStatusTip(tr("Define the styles for this view"));
-	connect(m_pXInverseStyles, SIGNAL(triggered()), pXInverse, SLOT(OnInverseStyles()));
+	connect(m_pXInverseStyles, SIGNAL(triggered()), pXInverse, SLOT(onInverseStyles()));
 
 	m_pXInverseResetFoilScale = new QAction(QIcon(":/images/OnResetFoilScale.png"), tr("Reset foil scale")+"\t(R)", this);
 	m_pXInverseResetFoilScale->setStatusTip(tr("Resets the scale to fit the screen size"));
-	connect(m_pXInverseResetFoilScale, SIGNAL(triggered()), pXInverse, SLOT(OnResetFoilScale()));
+	connect(m_pXInverseResetFoilScale, SIGNAL(triggered()), pXInverse, SLOT(onResetFoilScale()));
 
 	InverseInsertCtrlPt = new QAction(tr("Insert Control Point")+"\tShift+Click", this);
-	connect(InverseInsertCtrlPt, SIGNAL(triggered()), pXInverse, SLOT(OnInsertCtrlPt()));
+	connect(InverseInsertCtrlPt, SIGNAL(triggered()), pXInverse, SLOT(onInsertCtrlPt()));
 
 	InverseRemoveCtrlPt = new QAction(tr("Remove Control Point")+"\tCtrl+Click", this);
 	connect(InverseRemoveCtrlPt, SIGNAL(triggered()), pXInverse, SLOT(onRemoveCtrlPt()));
@@ -2176,15 +2177,15 @@ void MainFrame::createXInverseActions()
 
 	InverseZoomIn = new QAction(QIcon(":/images/OnZoomIn.png"), tr("Zoom in"), this);
 	InverseZoomIn->setStatusTip(tr("Zoom the view by drawing a rectangle in the client area"));
-	connect(InverseZoomIn, SIGNAL(triggered()), pXInverse, SLOT(OnZoomIn()));
+	connect(InverseZoomIn, SIGNAL(triggered()), pXInverse, SLOT(onZoomIn()));
 
 	InverseZoomX = new QAction(QIcon(":/images/OnZoomGraphX.png"), tr("Zoom X Scale"), this);
 	InverseZoomX->setStatusTip(tr("Zoom X Scale Only"));
-	connect(InverseZoomX, SIGNAL(triggered()), pXInverse, SLOT(OnZoomX()));
+	connect(InverseZoomX, SIGNAL(triggered()), pXInverse, SLOT(onZoomX()));
 
 	InverseZoomY = new QAction(QIcon(":/images/OnZoomGraphY.png"), tr("Zoom Y Scale"), this);
 	InverseZoomY->setStatusTip(tr("Zoom Y Scale Only"));
-	connect(InverseZoomY, SIGNAL(triggered()), pXInverse, SLOT(OnZoomY()));
+	connect(InverseZoomY, SIGNAL(triggered()), pXInverse, SLOT(onZoomY()));
 }
 
 
@@ -2238,8 +2239,8 @@ void MainFrame::createXInverseToolbar()
 	m_pctrlFullInverse  = new QRadioButton(tr("Full Inverse"));
 	m_pctrlMixedInverse = new QRadioButton(tr("Mixed Inverse"));
 	QXInverse *pXInverse = (QXInverse*)m_pXInverse;
-	connect(m_pctrlFullInverse,  SIGNAL(clicked()), pXInverse, SLOT(OnInverseApp()));
-	connect(m_pctrlMixedInverse, SIGNAL(clicked()), pXInverse, SLOT(OnInverseApp()));
+	connect(m_pctrlFullInverse,  SIGNAL(clicked()), pXInverse, SLOT(onInverseApp()));
+	connect(m_pctrlMixedInverse, SIGNAL(clicked()), pXInverse, SLOT(onInverseApp()));
 
 	m_pctrlXInverseToolBar = addToolBar(tr("XInverse"));
 	m_pctrlXInverseToolBar->addAction(newProjectAct);
@@ -2336,7 +2337,7 @@ void MainFrame::deleteProject(bool bClosing)
 
 
 		QXInverse *pXInverse =(QXInverse*)m_pXInverse;
-		pXInverse->Clear();
+		pXInverse->clear();
 
 		setProjectName("");
 		setSaveState(true);
@@ -3708,8 +3709,10 @@ void MainFrame::onXDirect()
 	setMainFrameCentralWidget();
 	setMenus();
 	checkGraphActions();
+
 	pXDirect->setControls();
 	pXDirect->updateView();
+	m_pXDirectTileWidget->foilWidget()->setFoilScale();
 }
 
 
@@ -3765,7 +3768,7 @@ void MainFrame::onXInverse()
 	setMainFrameCentralWidget();
 	setMenus();
 	checkGraphActions();
-	pXInverse->SetParams();
+	pXInverse->setParams();
 	pXInverse->updateView();
 }
 
@@ -3794,7 +3797,7 @@ void MainFrame::onXInverseMixed()
 	setMainFrameCentralWidget();
 	setMenus();
 	checkGraphActions();
-	pXInverse->SetParams();
+	pXInverse->setParams();
 	pXInverse->updateView();
 }
 
@@ -3824,9 +3827,8 @@ void MainFrame::openRecentFile()
 			if(pXDirect->m_bPolarView) pXDirect->createPolarCurves();
 			else                       pXDirect->createOppCurves();
 		}
-		onXDirect();
 		updateFoilListBox();
-		updateView();
+		onXDirect();
 	}
 	else if(m_iApp==XFLR5::MIAREX)
 	{
@@ -4362,7 +4364,7 @@ void MainFrame::SaveSettings()
 	pAFoil->SaveSettings(&settings);
 	pXDirect->saveSettings(&settings);
 	pMiarex->saveSettings(&settings);
-	pXInverse->SaveSettings(&settings);
+	pXInverse->saveSettings(&settings);
 	GL3DScales::SaveSettings(&settings);
 	W3dPrefsDlg::SaveSettings(&settings);
 }
@@ -5949,7 +5951,7 @@ void MainFrame::onResetCurGraphScales()
 		{
 			QXInverse *pXInverse = (QXInverse*)m_pXInverse;
 			pXInverse->m_QGraph.setAuto(true);
-			pXInverse->ReleaseZoom();
+			pXInverse->releaseZoom();
 			pXInverse->updateView();
 			return;
 		}
