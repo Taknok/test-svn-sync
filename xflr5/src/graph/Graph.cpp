@@ -516,8 +516,8 @@ bool Graph::initializeGraph()
 	m_w =  m_rCltRect.width()  -2*m_iMargin;
 	m_h =  m_rCltRect.height() -2*m_iMargin;
 
-	SetXScale();
-	SetYScale();
+	setXScale();
+	setYScale();
 
 	if(m_bXAutoMinGrid) m_XMinorUnit = xunit/5.0;
 	if(m_bYAutoMinGrid) m_YMinorUnit = yunit/5.0;
@@ -579,7 +579,7 @@ void Graph::resetYLimits()
 }
 
 
-void Graph::scale(double zoom)
+void Graph::scaleAxes(double zoom)
 {
 	if (zoom<0.01) zoom =0.01;
 	m_bAutoX = false;
@@ -595,7 +595,7 @@ void Graph::scale(double zoom)
 }
 
 
-void Graph::Scalex(double zoom)
+void Graph::scaleXAxis(double zoom)
 {
 	if (zoom<0.01) zoom =0.01;
 	m_bAutoX = false;
@@ -606,7 +606,7 @@ void Graph::Scalex(double zoom)
 
 }
 
-void Graph::Scaley(double zoom)
+void Graph::scaleYAxis(double zoom)
 {
 	if (zoom<0.01) zoom =0.01;
 	m_bAutoY = false;
@@ -837,7 +837,7 @@ void Graph::setVariables(int const & X, int const & Y)
 }
 
 
-void Graph::SetWindow(double x1, double x2, double y1, double y2)
+void Graph::setWindow(double x1, double x2, double y1, double y2)
 {
 	m_bAutoX = false;
 	m_bAutoY = false;
@@ -874,12 +874,14 @@ void Graph::setXMinGrid(bool const &bGrid)
 
 
 
-void Graph::setXMax(double f){
+void Graph::setXMax(double f)
+{
 	xmax = f;
 }
 
 
-void Graph::setXMin(double f){
+void Graph::setXMin(double f)
+{
 	xmin = f;
 }
 
@@ -895,12 +897,13 @@ void Graph::setXMinGrid(bool state, bool bAuto, QColor clr, int style, int width
 
 
 
-void Graph::setXMinorUnit(double f){
+void Graph::setXMinorUnit(double f)
+{
 	m_XMinorUnit = f;
 }
 
 
-bool Graph::SetXScale()
+bool Graph::setXScale()
 {
 	Curve *pCurve;
 	int nc;
@@ -1066,7 +1069,7 @@ void Graph::setYUnit(double f){
 
 
 
-bool Graph::SetYScale()
+bool Graph::setYScale()
 {
 	int nc;
 	Curve *pCurve;
@@ -1299,7 +1302,7 @@ Curve* Graph::getCurvePoint(const int &xClt, const int &yClt,int &nSel)
 }
 
 
-bool Graph::SelectPoint(QString const &CurveName, int sel)
+bool Graph::selectPoint(QString const &CurveName, int sel)
 {
 	QString str;
 	Curve *pCurve = NULL;

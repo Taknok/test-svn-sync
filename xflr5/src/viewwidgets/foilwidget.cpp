@@ -48,7 +48,7 @@ FoilWidget::FoilWidget(QWidget *pParent) : QWidget(pParent)
 	m_crBLColor = QColor(200,70,70);
 	m_iBLStyle = 1;
 	m_iBLWidth = 1;
-	m_crPressureColor= QColor(0,255,0);
+	m_crPressureColor= QColor(100,150,100);
 	m_iPressureStyle = 0;
 	m_iPressureWidth = 1;
 
@@ -60,8 +60,8 @@ FoilWidget::FoilWidget(QWidget *pParent) : QWidget(pParent)
 
 FoilWidget::~FoilWidget()
 {
-
 }
+
 
 void FoilWidget::contextMenuEvent (QContextMenuEvent *event)
 {
@@ -844,7 +844,6 @@ void FoilWidget::paintBL(QPainter &painter, OpPoint* pOpPoint, double scale)
 
 
 
-
 /**
  * Sets the Foil scale in the OpPoint view.
  */
@@ -866,6 +865,7 @@ void FoilWidget::setFoilScale()
 
 
 
+
 /**
  * The user has requested to reset the scale of the foil to its automatic default value
  */
@@ -873,7 +873,7 @@ void FoilWidget::onResetFoilScale()
 {
 	setFoilScale();
 //	if(!m_pFoilWidget->m_bAnimate)
-		update();
+	update();
 
 }
 
