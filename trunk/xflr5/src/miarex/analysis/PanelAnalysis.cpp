@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	PanelAnalysis Class
-	Copyright (C) 2006-2014 Andre Deperrois adeperrois@xflr5.com
+	Copyright (C) 2006-2015 Andre Deperrois adeperrois@xflr5.com
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -142,12 +142,12 @@ PanelAnalysis::~PanelAnalysis()
 	delete [] m_ICd;
 	delete [] m_F;
 	delete [] m_Vd;
-    for (int i=m_PlaneOppList.size()-1; i>=0; i--)
-    {
-        PlaneOpp *pObj = m_PlaneOppList.at(i);
-        m_PlaneOppList.removeAt(i);
-        delete pObj;
-    }
+/*	for (int i=m_PlaneOppList.size()-1; i>=0; i--)
+	{
+		PlaneOpp *pObj = m_PlaneOppList.at(i);
+		m_PlaneOppList.removeAt(i);
+		delete pObj;
+	}*/
 }
 
 
@@ -1077,7 +1077,7 @@ void PanelAnalysis::createWakeContribution(double *pWakeContrib, CVector WindDir
 {
 	int kw, lw, pw, p, pp;
 
-	static CVector V, C, CC, TrPt;
+	CVector V, C, CC, TrPt;
 	double phi;
 	double* PHC = new double[m_NWakeColumn];
 	CVector* VHC = new CVector[m_NWakeColumn];
@@ -1620,7 +1620,7 @@ void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
 */
 void PanelAnalysis::getVortexCp(const int &p, double *Gamma, double *Cp, CVector &VInf)
 {
-	static CVector PanelForce, Force;
+	CVector PanelForce, Force;
 	// for each panel along the chord, add the lift coef
 	PanelForce  = VInf * m_pPanel[p].Vortex;
 	PanelForce *= Gamma[p] * m_pWPolar->density();                 //Newtons
@@ -1650,10 +1650,10 @@ void PanelAnalysis::getVortexCp(const int &p, double *Gamma, double *Cp, CVector
 */
 void PanelAnalysis::getDoubletDerivative(const int &p, double *Mu, double &Cp, CVector &VLocal, double const &QInf, double Vx, double Vy, double Vz)
 {
-	static int PL,PR, PU, PD;
-	static double DELQ, DELP, mu0,mu1,mu2, x0,x1,x2, Speed2;
-	static CVector VTot;//total local panel speed
-	static CVector S2, Sl2;
+	int PL,PR, PU, PD;
+	double DELQ, DELP, mu0,mu1,mu2, x0,x1,x2, Speed2;
+	CVector VTot;//total local panel speed
+	CVector S2, Sl2;
 
 	PL = m_pPanel[p].m_iPL;
 	PR = m_pPanel[p].m_iPR;
@@ -1816,10 +1816,9 @@ void PanelAnalysis::computeOnBodyCp(double V0, double VDelta, int nval)
 	//following VSAERO theory manual
 	//the on-body tangential perturbation speed is the derivative of the doublet strength
 	int p, q;
-	static double Alpha, *Mu, *Cp;
-	static CVector WindDirection, VInf, VLocal;
+	double Alpha, *Mu, *Cp;
+	CVector WindDirection, VInf, VLocal;
 	double Speed2, cosa, sina;
-
 	//______________________________________________________________________________________
 	traceLog("      Computing On-Body Speeds...\n");
 
@@ -1942,7 +1941,6 @@ void PanelAnalysis::getDoubletInfluence(CVector const &C, Panel *pPanel, CVector
 */
 void PanelAnalysis::getSourceInfluence(CVector const &C, Panel *pPanel, CVector &V, double &phi)
 {
-
 	pPanel->sourceNASA4023(C, V, phi);
 
 	if(m_pWPolar->bGround())
@@ -2366,8 +2364,8 @@ bool PanelAnalysis::unitLoop()
 */
 void PanelAnalysis::VLMGetVortexInfluence(Panel *pPanel, CVector const &C, CVector &V, bool bAll)
 {
-	static int lw, pw, p;
-	static CVector AA1, BB1, VT;
+	int lw, pw, p;
+	CVector AA1, BB1, VT;
 
 	p = pPanel->m_iElement; 
 
@@ -2658,8 +2656,8 @@ bool PanelAnalysis::controlLoop()
 bool PanelAnalysis::solveEigenvalues()
 {
 	// Finds the eigenvalues and eigenvectors of the state matrices ALong and ALat
-	static double pLong[5], pLat[5];//the coefficients of the characteristic polynomial
-	static int i;
+	double pLong[5], pLat[5];//the coefficients of the characteristic polynomial
+	int i;
 	QString str;
 
 	CharacteristicPol(m_ALong, pLong);
@@ -2908,12 +2906,12 @@ void PanelAnalysis::forces(double *Mu, double *Sigma, double alpha, double *VInf
 {
 	if(!m_pPanel || !m_pWPolar) return;
 
-	static bool bOutRe, bError, bOut, bOutCl;
-	static int j, k, l, p, pp, m, nw, iTA, iTB;
-	static double cosa, sina, Re, PCd, Cl, Cp, tau, StripArea, ViscousDrag;
-	static double QInf, QInfStrip, qdyn, GammaStrip;
-	static CVector  C, PtC4, LeverArm, WindDirection, WindNormal, PanelLeverArm, Wg;
-	static CVector Velocity, StripForce, ViscousMoment, dF, PanelForce, PanelForcep1;
+	bool bOutRe, bError, bOut, bOutCl;
+	int j, k, l, p, pp, m, nw, iTA, iTB;
+	double cosa, sina, Re, PCd, Cl, Cp, tau, StripArea, ViscousDrag;
+	double QInf, QInfStrip, qdyn, GammaStrip;
+	CVector  C, PtC4, LeverArm, WindDirection, WindNormal, PanelLeverArm, Wg;
+	CVector Velocity, StripForce, ViscousMoment, dF, PanelForce, PanelForcep1;
 
 	bOut = bOutCl = bError = false;
 
@@ -3026,7 +3024,7 @@ void PanelAnalysis::forces(double *Mu, double *Sigma, double alpha, double *VInf
 				//add the viscous drag component to force and moment
 				qdyn = 0.5 * m_pWPolar->density() * QInfStrip * QInfStrip;
 				m_ppSurface->at(j)->getC4(k, PtC4, tau);
-				Re = m_ppSurface->at(j)->chord(tau) * QInfStrip /m_pWPolar->m_Viscosity;
+				Re = m_ppSurface->at(j)->chord(tau) * QInfStrip /m_pWPolar->viscosity();
 				Cl = StripForce.dot(WindNormal)*m_pWPolar->density()/qdyn/StripArea;
 				PCd    = GetVar(2, m_ppSurface->at(j)->m_pFoilA, m_ppSurface->at(j)->m_pFoilB, Re, Cl, tau, bOutRe, bError);
 				PCd   *= StripArea * 1/2*QInfStrip*QInfStrip;                // Newtons/rho
@@ -3086,9 +3084,9 @@ void PanelAnalysis::forces(double *Mu, double *Sigma, double alpha, double *VInf
 */
 bool PanelAnalysis::getZeroMomentAngle()
 {
-	static int iter;
-	static double a, a0, a1, Cm, Cm0, Cm1, tmp;
-	static double eps = 1.e-7;
+	int iter;
+	double a, a0, a1, Cm, Cm0, Cm1, tmp;
+	double eps = 1.e-7;
 
 	iter = 0;
 	a0 = -PI/4.0;
@@ -3161,9 +3159,9 @@ bool PanelAnalysis::getZeroMomentAngle()
 */
 void PanelAnalysis::buildStateMatrices()
 {
-	static int i;
-	static double Ipxx, Ipzz, Ipzx;
-	static double Ixx,Iyy,Izz, Izx;
+	int i;
+	double Ipxx, Ipzz, Ipzx;
+	double Ixx,Iyy,Izz, Izx;
 	QString strange;
 
 	//use inertia measured in stability axis, CoG origin
@@ -3320,8 +3318,8 @@ bool PanelAnalysis::computeTrimmedConditions()
 {
 	QString strong, strange;
 	int p;
-	static double Lift, phi, VerticalCl;
-	static CVector VInf, Force, Moment, WindNormal;
+	double Lift, phi, VerticalCl;
+	CVector VInf, Force, Moment, WindNormal;
 
 	// find aoa such that Cm=0;
 
@@ -3491,9 +3489,9 @@ bool PanelAnalysis::computeTrimmedConditions()
 */
 void PanelAnalysis::computeStabilityDerivatives()
 {
-	static CVector V0, Force, Moment, CGM, is, js, ks, Vi, Vj, Vk, Ris, Rjs, Rks, WindDirection, WindNormal;
-	static int p;
-	static double alpha, sina, cosa, deltaspeed, deltarotation;
+	CVector V0, Force, Moment, CGM, is, js, ks, Vi, Vj, Vk, Ris, Rjs, Rks, WindDirection, WindNormal;
+	int p;
+	double alpha, sina, cosa, deltaspeed, deltarotation;
 	QString strong;
 	int Size= m_MatSize;
 //	if(m_b3DSymetric) Size = m_SymSize;
@@ -3696,7 +3694,7 @@ void PanelAnalysis::computeStabilityDerivatives()
 	Normally, only the Cm_alphadot derivative is significant, and slightly augments the pitch-damping
 	derivative Cm_q. Leaving it out therefore underpredicts pitch damping slightly, so this is a
 	conservative approximation. And pitch damping is not a major concern in any case.
-	Simple static pitch stability is more important, and that's not affected by alphadot.
+	Simple pitch stability is more important, and that's not affected by alphadot.
 
 	All this is for a conventional configuration. Not sure what the impact is on the pitch damping of flying wings. */
 }
@@ -3716,8 +3714,8 @@ void PanelAnalysis::computeStabilityDerivatives()
 void PanelAnalysis::computeStabilityInertia()
 {
 
-	static int i,j;
-	static double tR[3][3], tmp[3][3];
+	int i,j;
+	double tR[3][3], tmp[3][3];
 
 	tR[0][0] = m_R[0][0];
 	tR[0][1] = m_R[1][0];
@@ -3772,8 +3770,8 @@ void PanelAnalysis::computeStabilityInertia()
 void PanelAnalysis::computeControlDerivatives()
 {
 	CVector WindDirection, H, Force, Moment, V0, is, js, ks;
-	static int j, p, pos, NCtrls;
-	static double DeltaAngle, SignedDeltaAngle, cosa, sina;
+	int j, p, pos, NCtrls;
+	double DeltaAngle, SignedDeltaAngle, cosa, sina;
 //	double q, S, b, mac;
 	QString str;
 	Quaternion Quat;
@@ -3930,9 +3928,9 @@ void PanelAnalysis::computeControlDerivatives()
 */
 double PanelAnalysis::computeCm(double Alpha)
 {
-	static int p;
-	static double Cm, cosa, sina, Gamma, Gammap1;
-	static CVector VInf, Force, PanelLeverArm, ForcePt, PanelForce, WindDirection, VLocal;
+	int p;
+	double Cm, cosa, sina, Gamma, Gammap1;
+	CVector VInf, Force, PanelLeverArm, ForcePt, PanelForce, WindDirection, VLocal;
 	double Speed2, Cp;
 
 	// Define the wind axis

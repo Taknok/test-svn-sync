@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	GLCreateLists 
-	Copyright (C) 2010-2014 Andre Deperrois adeperrois@xflr5.com
+	Copyright (C) 2010-2015 Andre Deperrois adeperrois@xflr5.com
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -325,7 +325,6 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 		}
 	}
 	QApplication::restoreOverrideCursor();
-
 }
 
 
