@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	PanelAnalysisDlg Class
-	Copyright (C) 2009-2014 Andre Deperrois adeperrois@xflr5.com
+	Copyright (C) 2009-2015 Andre Deperrois adeperrois@xflr5.com
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -218,10 +218,16 @@ void PanelAnalysisDlg::analyze()
 		{
 			//add the data to the polar object
 			PlaneOpp *pPOpp = m_pPanelAnalysis->m_PlaneOppList.at(iPOpp);
-			if(PlaneOpp::s_bKeepOutOpps || !pPOpp->isOut())
-				Objects3D::insertPOpp(pPOpp);
+			if(PlaneOpp::s_bKeepOutOpps || !pPOpp->isOut())	Objects3D::insertPOpp(pPOpp);
+			else
+			{
+				delete pPOpp;
+				pPOpp = NULL;
+			}
 		}
 	}
+	m_pPanelAnalysis->m_PlaneOppList.clear();
+
 	pTimer->stop();
 
 
