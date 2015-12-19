@@ -26,9 +26,13 @@
 #include "params.h"
 
 
+
+/** Rotates this vector around the axis defined by the vector R and by the angle Angle
+* @param R the axis of rotation
+* @param Angle the angle of rotation in degrees
+*/
 void CVector::rotate(CVector const &R, double Angle)
 {
-	//rotate the vector around R with an angle Angle
     double norm, ux, uy,uz, ca, sa, x0, y0, z0;
 
 	ca = cos(Angle *PI/180.0);
@@ -49,9 +53,13 @@ void CVector::rotate(CVector const &R, double Angle)
 }
 
 
+/** Rotates the point defined by this vector around origin O, the rotation axis defined by vector R, and by the angle Angle
+* @param O the center of rotation
+* @param R the axis of rotation
+* @param Angle the angle of rotation in degrees
+*/
 void CVector::rotate(CVector &O, CVector const &R, double Angle)
 {
-	//rotate the point defined by the vector around origin O, rotation vector R and angle Angle
     CVector OP;
 	OP.x = x-O.x;
 	OP.y = y-O.y;
