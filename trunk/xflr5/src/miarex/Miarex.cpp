@@ -8397,12 +8397,19 @@ void QMiarex::onImportPlanefromXML()
  * @param U the Vector which defines the line's direction
  * @param I the point of intersection
  * @return true if an intersection point has been found, false otherwise
- * @todo move method to Plane class
  */
 bool QMiarex::intersectObject(CVector O,  CVector U, CVector &I)
 {
 	if(!m_pCurPlane) return false;
 	Wing *pWingList[MAXWINGS] = {m_pCurPlane->wing(), m_pCurPlane->wing2(), m_pCurPlane->stab(), m_pCurPlane->fin()};
+
+	if(m_pCurPOpp)
+	{
+		CVector Origin(0.0,0.0,0.0);
+		CVector Y(0.0,1.0,0.0);
+		O.rotate(Origin, Y, -m_pCurPOpp->alpha());
+		U.rotate(Y, -m_pCurPOpp->alpha());
+	}
 
 	for(int iw=0; iw<MAXWINGS; iw++)
 	{
