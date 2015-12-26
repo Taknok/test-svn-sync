@@ -601,6 +601,11 @@ void QMiarex::setControls()
 	pMainFrame->showFinCurve->setEnabled(  pWing(3) && (m_iView==XFLR5::WOPPVIEW || m_iView==XFLR5::WCPVIEW));
 	pMainFrame->showAllWPlrOpps->setEnabled(m_iView==XFLR5::WOPPVIEW);
 	pMainFrame->hideAllWPlrOpps->setEnabled(m_iView==XFLR5::WOPPVIEW);
+	pMainFrame->showPlaneWPlrsOnly->setEnabled(m_iView==XFLR5::WPOLARVIEW);
+	pMainFrame->showPlaneWPlrs->setEnabled(m_iView==XFLR5::WPOLARVIEW);
+	pMainFrame->hidePlaneWPlrs->setEnabled(m_iView==XFLR5::WPOLARVIEW);
+	pMainFrame->showPlaneWOpps->setEnabled(m_iView==XFLR5::WOPPVIEW);
+	pMainFrame->hidePlaneWOpps->setEnabled(m_iView==XFLR5::WOPPVIEW);
 
 	m_pctrlLift->setEnabled( (m_iView==XFLR5::WOPPVIEW||m_iView==XFLR5::W3DVIEW) && m_pCurPOpp);
 	m_pctrlTrans->setEnabled((m_iView==XFLR5::WOPPVIEW||m_iView==XFLR5::W3DVIEW) && m_pCurPOpp);

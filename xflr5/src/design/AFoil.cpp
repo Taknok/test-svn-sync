@@ -1539,7 +1539,6 @@ void QAFoil::selectFoil(Foil* pFoil)
 
 
 
-
 /**
  * Initializes the Foil table, the QWidget and the QAction objects from the data.
  * Selects the current foil in the table
@@ -1552,6 +1551,7 @@ void QAFoil::setAFoilParams()
 	selectFoil(Foil::curFoil());
 	setControls();
 }
+
 
 /**
  * Turns on or off the display of the current Foil object.
@@ -1695,7 +1695,7 @@ void QAFoil::onAFoilTableColumns()
 	dlg.m_bLEXHinge    = !m_pctrlFoilTable->isColumnHidden(10);
 	dlg.m_bLEYHinge    = !m_pctrlFoilTable->isColumnHidden(11);
 
-	dlg.InitDialog();
+	dlg.initDialog();
 
 	if(dlg.exec()==QDialog::Accepted)
 	{
