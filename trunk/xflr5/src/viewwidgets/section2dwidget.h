@@ -88,7 +88,7 @@ private:
 	void drawXMinGrid(QPainter &painter, double scalex, double scaley, QPointF Offset);
 	void drawYMinGrid(QPainter &painter, double scalex, double scaley, QPointF Offset);
 
-	void ReleaseZoom();
+	void releaseZoom();
 
 	void paintGrids(QPainter &painter);
 

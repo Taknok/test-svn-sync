@@ -163,6 +163,7 @@ QSize Section2dWidget::minimumSizeHint() const
 
 void Section2dWidget::paintEvent(QPaintEvent *event)
 {
+	Q_UNUSED(event);
 	QPainter painter(this);
 	painter.save();
 	painter.fillRect(rect(), Settings::s_BackgroundColor);
@@ -224,7 +225,7 @@ void Section2dWidget::keyPressEvent(QKeyEvent *event)
 		{
 			if(m_bZoomPlus)
 			{
-				ReleaseZoom();
+				releaseZoom();
 				event->accept();
 			}
 			else if(m_bZoomYOnly)
@@ -232,6 +233,7 @@ void Section2dWidget::keyPressEvent(QKeyEvent *event)
 				m_bZoomYOnly = false;
 				event->accept();
 			}
+			m_bXDown = m_bYDown = m_bZDown = false;
 			break;
 		}
 
@@ -294,6 +296,19 @@ void Section2dWidget::onClearBackImage()
 
 void Section2dWidget::keyReleaseEvent(QKeyEvent *event)
 {
+
+	switch (event->key())
+	{
+		case Qt::Key_X:
+			m_bXDown = false;
+			break;
+		case Qt::Key_Y:
+			m_bYDown = false;
+			break;
+		case Qt::Key_Z:
+			m_bZDown = false;
+			break;
+	}
 	event->ignore();
 }
 
@@ -486,12 +501,12 @@ void Section2dWidget::mouseReleaseEvent(QMouseEvent *event)
 		else
 		{
 			m_ZoomRect.setBottomRight(m_ZoomRect.topLeft());
-			ReleaseZoom();
+			releaseZoom();
 		}
 	}
 	else if(m_bZoomPlus && !rect().contains(point))
 	{
-		ReleaseZoom();
+		releaseZoom();
 	}
 	else if(m_bTrans)
 	{
@@ -529,8 +544,6 @@ void Section2dWidget::wheelEvent (QWheelEvent *event)
 {
 	double zoomFactor=1.0;
 
-	QPoint pt(event->x(), event->y()); //client coordinates
-
 	if(event->delta()>0)
 	{
 		if(!Settings::s_bReverseZoom) zoomFactor = 1./1.06;
@@ -543,7 +556,7 @@ void Section2dWidget::wheelEvent (QWheelEvent *event)
 	}
 
 	m_ZoomRect.setBottomRight(m_ZoomRect.topLeft());
-	ReleaseZoom();
+	releaseZoom();
 
 	double  scale = m_fScale;
 
@@ -641,6 +654,7 @@ void Section2dWidget::paintGrids(QPainter &painter)
  */
 void Section2dWidget::drawXGrid(QPainter &painter, double scalex, double scaley, QPointF Offset)
 {
+	Q_UNUSED(scaley);
 	painter.save();
 	QPen GridPen(m_XGridColor);
 	GridPen.setStyle(getStyle(m_XGridStyle));
@@ -685,6 +699,8 @@ void Section2dWidget::drawXGrid(QPainter &painter, double scalex, double scaley,
  */
 void Section2dWidget::drawYGrid(QPainter &painter, double scalex, double scaley, QPointF Offset)
 {
+	Q_UNUSED(scalex);
+
 	painter.save();
 	QPen GridPen(m_YGridColor);
 	GridPen.setStyle(getStyle(m_YGridStyle));
@@ -893,7 +909,7 @@ void Section2dWidget::drawScale(QPainter &painter, double scalex)
 /**
  * Ends the zoom-in action.
  */
-void Section2dWidget::ReleaseZoom()
+void Section2dWidget::releaseZoom()
 {
 //	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 //	pMainFrame->zoomInAct->setChecked(false);
@@ -929,7 +945,7 @@ CVector Section2dWidget::mousetoReal(QPoint &point)
 void Section2dWidget::onResetXScale()
 {
 	setScale();
-	ReleaseZoom();
+	releaseZoom();
 	update();
 }
 
@@ -950,7 +966,7 @@ void Section2dWidget::onResetScales()
 {
 	m_fScaleY = 1.0;
 	setScale();
-	ReleaseZoom();
+	releaseZoom();
 	update();
 }
 
@@ -1087,12 +1103,12 @@ void Section2dWidget::onZoomIn()
 		}
 		else
 		{
-			ReleaseZoom();
+			releaseZoom();
 		}
 	}
 	else
 	{
-		ReleaseZoom();
+		releaseZoom();
 	}
 }
 
@@ -1115,7 +1131,7 @@ void Section2dWidget::onZoomYOnly()
 void Section2dWidget::onZoomLess()
 {
 	// can't do two things at the same time can we ?
-	ReleaseZoom();
+	releaseZoom();
 
 	double ZoomFactor = 0.8;
 	double newScale = qMax(ZoomFactor*m_fScale, m_fRefScale);
