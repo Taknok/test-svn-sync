@@ -30,7 +30,7 @@ AFoilTableDlg::AFoilTableDlg(QWidget *pParent): QDialog(pParent)
 {
 	setWindowTitle(tr("Foil Table Columns"));
 
-	SetupLayout();
+	setupLayout();
 
 	m_bFoilName = m_bPoints = true;
 	m_bThickness = m_bThicknessAt = m_bCamber = m_bCamberAt = true;
@@ -67,7 +67,7 @@ void AFoilTableDlg::keyPressEvent(QKeyEvent *event)
 }
 
 
-void AFoilTableDlg::InitDialog()
+void AFoilTableDlg::initDialog()
 {
 	m_pctrlFoilName->setChecked(m_bFoilName);
 	m_pctrlThickness->setChecked(m_bThickness);
@@ -84,52 +84,59 @@ void AFoilTableDlg::InitDialog()
 }
 
 
-void AFoilTableDlg::SetupLayout()
+void AFoilTableDlg::setupLayout()
 {
-	QVBoxLayout *ColumnsLayout = new QVBoxLayout;
-	m_pctrlFoilName    = new QCheckBox(tr("Foil Name"));
-	m_pctrlThickness   = new QCheckBox(tr("Thickness"));
-	m_pctrlThicknessAt = new QCheckBox(tr("Thickness max. position"));
-	m_pctrlCamber      = new QCheckBox(tr("Camber"));
-	m_pctrlCamberAt    = new QCheckBox(tr("Camber max. position"));
-	m_pctrlPoints      = new QCheckBox(tr("Number of points"));
-	m_pctrlTEFlapAngle = new QCheckBox(tr("Trailing edge flap angle"));
-	m_pctrlTEXHinge    = new QCheckBox(tr("Trailing edge hinge x-position"));
-	m_pctrlTEYHinge    = new QCheckBox(tr("Trailing edge hinge y-position"));
-	m_pctrlLEFlapAngle = new QCheckBox(tr("Leading edge flap angle"));
-	m_pctrlLEXHinge    = new QCheckBox(tr("Leading edge hinge x-position"));
-	m_pctrlLEYHinge    = new QCheckBox(tr("Leading edge hinge y-position"));
+	QVBoxLayout *pColumnsLayout = new QVBoxLayout;
+	{
+		m_pctrlFoilName    = new QCheckBox(tr("Foil Name"));
+		m_pctrlThickness   = new QCheckBox(tr("Thickness"));
+		m_pctrlThicknessAt = new QCheckBox(tr("Thickness max. position"));
+		m_pctrlCamber      = new QCheckBox(tr("Camber"));
+		m_pctrlCamberAt    = new QCheckBox(tr("Camber max. position"));
+		m_pctrlPoints      = new QCheckBox(tr("Number of points"));
+		m_pctrlTEFlapAngle = new QCheckBox(tr("Trailing edge flap angle"));
+		m_pctrlTEXHinge    = new QCheckBox(tr("Trailing edge hinge x-position"));
+		m_pctrlTEYHinge    = new QCheckBox(tr("Trailing edge hinge y-position"));
+		m_pctrlLEFlapAngle = new QCheckBox(tr("Leading edge flap angle"));
+		m_pctrlLEXHinge    = new QCheckBox(tr("Leading edge hinge x-position"));
+		m_pctrlLEYHinge    = new QCheckBox(tr("Leading edge hinge y-position"));
 
-	ColumnsLayout->addWidget(m_pctrlFoilName);
-	ColumnsLayout->addWidget(m_pctrlThickness);
-	ColumnsLayout->addWidget(m_pctrlThicknessAt);
-	ColumnsLayout->addWidget(m_pctrlCamber);
-	ColumnsLayout->addWidget(m_pctrlCamberAt);
-	ColumnsLayout->addWidget(m_pctrlPoints);
-	ColumnsLayout->addWidget(m_pctrlTEFlapAngle);
-	ColumnsLayout->addWidget(m_pctrlTEXHinge);
-	ColumnsLayout->addWidget(m_pctrlTEYHinge);
-	ColumnsLayout->addWidget(m_pctrlLEFlapAngle);
-	ColumnsLayout->addWidget(m_pctrlLEXHinge);
-	ColumnsLayout->addWidget(m_pctrlLEYHinge);
+		pColumnsLayout->addWidget(m_pctrlFoilName);
+		pColumnsLayout->addWidget(m_pctrlThickness);
+		pColumnsLayout->addWidget(m_pctrlThicknessAt);
+		pColumnsLayout->addWidget(m_pctrlCamber);
+		pColumnsLayout->addWidget(m_pctrlCamberAt);
+		pColumnsLayout->addWidget(m_pctrlPoints);
+		pColumnsLayout->addWidget(m_pctrlTEFlapAngle);
+		pColumnsLayout->addWidget(m_pctrlTEXHinge);
+		pColumnsLayout->addWidget(m_pctrlTEYHinge);
+		pColumnsLayout->addWidget(m_pctrlLEFlapAngle);
+		pColumnsLayout->addWidget(m_pctrlLEXHinge);
+		pColumnsLayout->addWidget(m_pctrlLEYHinge);
+	}
 
-	QHBoxLayout *CommandButtons = new QHBoxLayout;
-	OKButton      = new QPushButton(tr("OK"));
-	CancelButton  = new QPushButton(tr("Cancel"));
-	CommandButtons->addWidget(OKButton);
-	CommandButtons->addWidget(CancelButton);
+	QHBoxLayout *pCommandButtons = new QHBoxLayout;
+	{
+		OKButton      = new QPushButton(tr("OK"));
+		CancelButton  = new QPushButton(tr("Cancel"));
+		pCommandButtons->addWidget(OKButton);
+		pCommandButtons->addWidget(CancelButton);
+	}
 
-	QVBoxLayout *MainLayout = new QVBoxLayout;
-	MainLayout->addLayout(ColumnsLayout);
-	MainLayout->addStretch(1);
-	MainLayout->addLayout(CommandButtons);
-	setLayout(MainLayout);
+	QVBoxLayout *pMainLayout = new QVBoxLayout;
+	{
+		pMainLayout->addLayout(pColumnsLayout);
+		pMainLayout->addStretch(1);
+		pMainLayout->addLayout(pCommandButtons);
+	}
+	setLayout(pMainLayout);
 
-	connect(OKButton, SIGNAL(clicked()),this, SLOT(OnOK()));
+	connect(OKButton, SIGNAL(clicked()),this, SLOT(onOK()));
 	connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 }
 
-void AFoilTableDlg::OnOK()
+
+void AFoilTableDlg::onOK()
 {
 	m_bFoilName    = m_pctrlFoilName->isChecked();
 	m_bThickness   = m_pctrlThickness->isChecked();

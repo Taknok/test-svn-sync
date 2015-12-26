@@ -36,14 +36,14 @@ class AFoilTableDlg : public QDialog
 
 public:
     AFoilTableDlg(QWidget *pParent);
-	void InitDialog();
+	void initDialog();
 
 private slots:
-	void OnOK();
+	void onOK();
 
 
 private:
-	void SetupLayout();
+	void setupLayout();
 	void keyPressEvent(QKeyEvent *event);
 
 
