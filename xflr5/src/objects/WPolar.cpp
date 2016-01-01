@@ -1,7 +1,7 @@
 /****************************************************************************
 
     WPolar Class
-	Copyright (C) 2005-2015 Andre Deperrois adeperrois@xflr5.com
+	Copyright (C) 2005-2016 Andre Deperrois adeperrois@xflr5.com
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,7 +26,6 @@
 #include "../miarex/Objects3D.h"
 #include "../misc/Units.h"
 #include <math.h>
-
 
 
 /**
@@ -81,6 +80,8 @@ WPolar::WPolar()
 	m_CoG.set(0.0,0.0,0.0);
 
 	for(int i=0; i<7; i++) m_inertiaGain[i] = 0.0;
+	for(int i=0; i<MAXEXTRADRAG; i++) m_ExtraDragArea[i] = 0.0;
+	for(int i=0; i<MAXEXTRADRAG; i++) m_ExtraDragCoef[i] = 0.0;
 }
 
 
@@ -96,7 +97,6 @@ void WPolar::replacePOppDataAt(int pos, PlaneOpp *pPOpp)
 	m_ICd[pos]        =  pPOpp->m_ICD;
 	m_PCd[pos]        =  pPOpp->m_VCD;
 	m_TCd[pos]        =  pPOpp->m_ICD + pPOpp->m_VCD;
-
 	m_GCm[pos]        =  pPOpp->m_GCm;
 	m_VCm[pos]        =  pPOpp->m_VCm;
 	m_ICm[pos]        =  pPOpp->m_ICm;
@@ -169,6 +169,7 @@ void WPolar::insertPOppDataAt(int pos, PlaneOpp *pPOpp)
 	m_1Cl.insert(pos,0.0);
 	m_ClCd.insert(pos,0.0);
 	m_Cl32Cd.insert(pos,0.0);
+	m_ExtraDrag.insert(pos,0.0);
 	m_Vx.insert(pos,0.0);
 	m_Vz.insert(pos,0.0);
 	m_FZ.insert(pos,0.0);
@@ -231,6 +232,7 @@ void WPolar::insertDataAt(int pos, double Alpha, double Beta, double QInf, doubl
 	m_1Cl.insert(pos, 0.0);
 	m_ClCd.insert(pos, 0.0);
 	m_Cl32Cd.insert(pos, 0.0);
+	m_ExtraDrag.insert(pos,0.0);
 	m_Vx.insert(pos, 0.0);
 	m_Vz.insert(pos, 0.0);
 	m_FZ.insert(pos, 0.0);
@@ -354,66 +356,72 @@ void WPolar::addPlaneOpPoint(PlaneOpp *pPOpp)
  * for horizontal flight, efficiency coefficient, mode frequencies and amping factors.
  * @param i the index of the point for which the values are to be calculated
  */
-void WPolar::calculatePoint(int i)
+void WPolar::calculatePoint(int iPt)
 {
 	//finish calculations
 //	double cl = m_CL[i];
 //	double tcd = m_TCd[i];
 //	double Qinf =  m_QInfinite[i];
+	//dynamic pressure
+	double q =  0.5 * m_Density * m_QInfinite[iPt]*m_QInfinite[iPt];
 
 	double mass = m_Mass;
 	if(qAbs(m_inertiaGain[0])>PRECISION)
 	{
-		mass += m_Ctrl[i]*m_inertiaGain[0];
+		mass += m_Ctrl[iPt]*m_inertiaGain[0];
 	}
 
-	if(i>=m_CL.count()) return;
+	if(iPt>=m_CL.count()) return;
 
-	m_ClCd[i]   =  m_CL[i]/m_TCd[i];
+	m_ClCd[iPt]   =  m_CL[iPt]/m_TCd[iPt];
 
-	if(m_CL[i]>0.0) {
-		m_1Cl[i]    = (double)(1./sqrt(m_CL[i]));
+	if(m_CL[iPt]>0.0) {
+		m_1Cl[iPt]    = (double)(1./sqrt(m_CL[iPt]));
 //		m_Cl32Cd[i] = (double)pow(m_CL[i],1.5)/m_TCd[i];
-		m_Cl32Cd[i] = sqrt(m_CL[i]*m_CL[i]*m_CL[i])/m_TCd[i];
+		m_Cl32Cd[iPt] = sqrt(m_CL[iPt]*m_CL[iPt]*m_CL[iPt])/m_TCd[iPt];
 	}
 	else {
-		m_1Cl[i]    = -1.0;//will not be plotted
+		m_1Cl[iPt]    = -1.0;//will not be plotted
 //		m_Cl32Cd[i] =  -(double)pow(-m_CL[i],1.5)/m_TCd[i];
-		m_Cl32Cd[i] = -sqrt(-m_CL[i]*m_CL[i]*m_CL[i])/m_TCd[i];
+		m_Cl32Cd[iPt] = -sqrt(-m_CL[iPt]*m_CL[iPt]*m_CL[iPt])/m_TCd[iPt];
 	}
 
-	if(qAbs(m_CL[i])>0.) m_Gamma[i]  =  atan(m_TCd[i]/m_CL[i]) * 180.0/PI;
-	else m_Gamma[i] = 90.0;
-	m_Vz[i] = (double)sqrt(2*mass*9.81/m_Density/m_referenceArea)/m_Cl32Cd[i];
-	m_Vx[i] = m_QInfinite[i] * (double)cos(m_Gamma[i]*PI/180.0);
+	m_ExtraDrag[iPt] = 0.0;
+	for(int i=0; i<MAXEXTRADRAG; i++) m_ExtraDrag[iPt] += m_ExtraDragArea[i]*m_ExtraDragCoef[i];
+	m_ExtraDrag[iPt] *= q;
 
-	//dynamic pressure
-	double q =  0.5 * m_Density * m_QInfinite[i]*m_QInfinite[i];
+	if(qAbs(m_CL[iPt])>0.) m_Gamma[iPt]  =  atan(m_TCd[iPt]/m_CL[iPt]) * 180.0/PI;
+	else m_Gamma[iPt] = 90.0;
 
-	m_FZ[i]  = q * m_CL[i]*m_referenceArea;
-	m_FY[i]  = q * m_CY[i]*m_referenceArea;
-	m_FX[i]  = q * m_TCd[i]*m_referenceArea;
+	m_Vz[iPt] = (double)sqrt(2*mass*9.81/m_Density/m_referenceArea)/m_Cl32Cd[iPt];
+	m_Vx[iPt] = m_QInfinite[iPt] * (double)cos(m_Gamma[iPt]*PI/180.0);
 
-	m_Rm[i] = q * m_referenceArea * m_GRm[i] * m_referenceSpanLength;// in N.m
-	m_Ym[i] = q * m_referenceArea * m_GYm[i] * m_referenceSpanLength;// in N.m
-	m_Pm[i] = q * m_referenceArea * m_GCm[i] * m_referenceChordLength;// in N.m
+	m_FZ[iPt]  = q * m_CL[iPt]*m_referenceArea;
+	m_FY[iPt]  = q * m_CY[iPt]*m_referenceArea;
+	m_FX[iPt]  = q * m_TCd[iPt]*m_referenceArea;
+
+	for(int iExtra=0; iExtra<MAXEXTRADRAG; iExtra++) m_FX[iPt] += m_ExtraDragArea[iExtra] * m_ExtraDragCoef[iExtra] *q;
+
+	m_Rm[iPt] = q * m_referenceArea * m_GRm[iPt] * m_referenceSpanLength;// in N.m
+	m_Ym[iPt] = q * m_referenceArea * m_GYm[iPt] * m_referenceSpanLength;// in N.m
+	m_Pm[iPt] = q * m_referenceArea * m_GCm[iPt] * m_referenceChordLength;// in N.m
 
 	//power for horizontal flight
-	m_VertPower[i] = mass * 9.81 * m_Vz[i];
-	m_HorizontalPower[i] = m_FX[i] * m_Vx[i];
+	m_VertPower[iPt] = mass * 9.81 * m_Vz[iPt];
+	m_HorizontalPower[iPt] = m_FX[iPt] * m_Vx[iPt];
 
 	double AR      = m_referenceSpanLength*m_referenceSpanLength/m_referenceArea;
 
-	if(m_ICd[i]==0.0)	m_Oswald[i] = 0.0;
-	else				m_Oswald[i] = m_CL[i]*m_CL[i]/PI/m_ICd[i]/AR;
+	if(m_ICd[iPt]==0.0)	m_Oswald[iPt] = 0.0;
+	else				m_Oswald[iPt] = m_CL[iPt]*m_CL[iPt]/PI/m_ICd[iPt]/AR;
 
-	m_SM[i]        = (m_XCP[i]-m_CoG.x)/m_referenceChordLength *100.00;
+	m_SM[iPt]        = (m_XCP[iPt]-m_CoG.x)/m_referenceChordLength *100.00;
 
 	complex<double> c;
 	double OmegaN, Omega1, Dsi, Sigma1;
 	double sum, prod;
 
-	c = m_EigenValue[2][i];
+	c = m_EigenValue[2][iPt];
 	sum  = c.real() * 2.0;                          // is a real number
 	prod = c.real()*c.real() + c.imag()*c.imag();  // is a positive real number
 	OmegaN = qAbs(c.imag());
@@ -422,10 +430,10 @@ void WPolar::calculatePoint(int i)
 	Sigma1 = sum /2.0;
 	if(Omega1 > PRECISION) Dsi = -Sigma1/Omega1;
 	else                   Dsi = 0.0;
-	m_PhugoidDamping[i] = Dsi;
-    m_PhugoidFrequency[i] = qAbs(c.imag()/2.0/PI);
+	m_PhugoidDamping[iPt] = Dsi;
+	m_PhugoidFrequency[iPt] = qAbs(c.imag()/2.0/PI);
 
-	c = m_EigenValue[0][i];
+	c = m_EigenValue[0][iPt];
 	sum  = c.real() * 2.0;                          // is a real number
 	prod = c.real()*c.real() + c.imag()*c.imag();  // is a positive real number
     OmegaN = qAbs(c.imag());
@@ -434,10 +442,10 @@ void WPolar::calculatePoint(int i)
 	Sigma1 = sum /2.0;
 	if(Omega1 > PRECISION) Dsi = -Sigma1/Omega1;
 	else                   Dsi = 0.0;
-	m_ShortPeriodDamping[i] = Dsi;
-    m_ShortPeriodFrequency[i] = qAbs(c.imag()/2.0/PI);
+	m_ShortPeriodDamping[iPt] = Dsi;
+	m_ShortPeriodFrequency[iPt] = qAbs(c.imag()/2.0/PI);
 
-	c = m_EigenValue[5][i];
+	c = m_EigenValue[5][iPt];
 	sum  = c.real() * 2.0;                          // is a real number
 	prod = c.real()*c.real() + c.imag()*c.imag();  // is a positive real number
     OmegaN = qAbs(c.imag());
@@ -446,11 +454,11 @@ void WPolar::calculatePoint(int i)
 	Sigma1 = sum /2.0;
 	if(Omega1 > PRECISION) Dsi = -Sigma1/Omega1;
 	else                   Dsi = 0.0;
-	m_DutchRollDamping[i] = Dsi;
-    m_DutchRollFrequency[i] = qAbs(c.imag()/2.0/PI);
+	m_DutchRollDamping[iPt] = Dsi;
+	m_DutchRollFrequency[iPt] = qAbs(c.imag()/2.0/PI);
 
-	m_RollDamping[i]= m_EigenValue[4][i].real();
-	m_SpiralDamping[i]= m_EigenValue[7][i].real();
+	m_RollDamping[iPt]= m_EigenValue[4][iPt].real();
+	m_SpiralDamping[iPt]= m_EigenValue[7][iPt].real();
 }
 
 
@@ -525,6 +533,9 @@ void WPolar::duplicateSpec(WPolar *pWPolar)
 	m_CoG = pWPolar->m_CoG;
 
 	for(int i=0; i<7; i++) m_inertiaGain[i] = pWPolar->m_inertiaGain[i];
+	for (int i=0; i<MAXEXTRADRAG; i++) m_ExtraDragArea[i] = pWPolar->m_ExtraDragArea[i];
+	for (int i=0; i<MAXEXTRADRAG; i++) m_ExtraDragCoef[i] = pWPolar->m_ExtraDragCoef[i];
+
 }
 
 
@@ -789,6 +800,9 @@ void * WPolar::getWPlrVariable(int iVar)
 		case 44:
 			pVar = &m_HorizontalPower;
 			break;
+		case 45:
+			pVar = &m_ExtraDrag;
+			break;
 		default:
 			pVar = &m_Alpha;
 			break;
@@ -951,6 +965,10 @@ QString WPolar::variableName(int iVar)
 		case 44:
 			return "Fx.Vx (W)";
 			break;
+		case 45:
+			if(Units::forceUnitIndex()==0) return "Extra drag (N)";
+			else                           return "Extra drag (lbf)";
+			break;
 		default:
 			return "";
 	}
@@ -1023,6 +1041,7 @@ void WPolar::remove(int i)
 	m_ClCd.removeAt(i);
 	m_1Cl.removeAt(i);
 	m_Cl32Cd.removeAt(i);
+	m_ExtraDrag.removeAt(i);
 
 	m_QInfinite.removeAt(i);
 	m_Gamma.removeAt(i);
@@ -1090,6 +1109,7 @@ void WPolar::clearData()
 	m_ClCd.clear();
 	m_1Cl.clear();
 	m_Cl32Cd.clear();
+	m_ExtraDrag.clear();
 
 	m_QInfinite.clear();
 	m_Gamma.clear();
@@ -1400,6 +1420,7 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
 			m_1Cl.append(0.0);
 			m_ClCd.append(0.0);
 			m_Cl32Cd.append(0.0);
+			m_ExtraDrag.append(0.0);
 			m_Vx.append(0.0);
 			m_Vz.append(0.0);
 			m_FZ.append(0.0);
@@ -1782,11 +1803,22 @@ void WPolar::getPolarProperties(QString &polarProps, bool bData)
 	polarProps += strong;
 
 	strong  = QString(QObject::tr("Viscosity =")+"%1").arg(m_Viscosity,12,'g',4);
-	strong +=  "m"+QString::fromUtf8("²")+"/s\n";
+	strong += QString::fromUtf8("m²/s\n");
 	polarProps += strong;
 
 	strong = QString(QObject::tr("Data points") +" = %1\n").arg(m_Alpha.size());
 	polarProps += "\n"+strong;
+
+	for(int ix=0; ix<MAXEXTRADRAG; ix++)
+	{
+		if(fabs(m_ExtraDragArea[ix])>PRECISION && fabs(m_ExtraDragCoef[ix])>PRECISION)
+		{
+			strong = QString("Extra drag: area=%1 ").arg(m_ExtraDragArea[ix]*Units::m2toUnit(), 7,'f',3)+Units::areaUnitLabel();
+			strong +="  //  ";
+			strong += QString("coeff.=%1").arg(m_ExtraDragCoef[ix], 7,'f',3);
+			polarProps += "\n"+strong;
+		}
+	}
 
 	if(!bData || m_Alpha.size()==0) return;
 	QTextStream out;
@@ -1915,7 +1947,9 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 		// space allocation for the future storage of more data, without need to change the format
 		for (int i=0; i<19; i++) ar << 0;
 		ar << m_LineStyle.m_PointStyle;
-		for (int i=0; i<43; i++) ar << 0.0;
+		for (int i=0; i<35; i++) ar << 0.0;
+		for (int ix=0; ix<MAXEXTRADRAG; ix++) ar << m_ExtraDragArea[ix];
+		for (int ix=0; ix<MAXEXTRADRAG; ix++) ar << m_ExtraDragCoef[ix];
 		for (int i=0; i<7; i++) ar << m_inertiaGain[i];
 
 		return true;
@@ -2034,7 +2068,6 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 			m_EigenValue[6][i] = complex<double>(r6, i6);
 			m_EigenValue[7][i] = complex<double>(r7, i7);
 
-			calculatePoint(i);
 		}
 	}
 
@@ -2042,12 +2075,17 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 	for (int i=0; i<19; i++) ar >> k;
 	ar >> m_LineStyle.m_PointStyle;
 
-	for (int i=0; i<43; i++) ar >> dble;
+	for (int i=0; i<35; i++) ar >> dble;
+	for (int ix=0; ix<MAXEXTRADRAG; ix++) ar>> m_ExtraDragArea[ix];
+	for (int ix=0; ix<MAXEXTRADRAG; ix++) ar>> m_ExtraDragCoef[ix];
 	for (int i=0; i<7; i++)
 	{
 		ar >> m_inertiaGain[i];
 		if(m_inertiaGain[i]>42 && m_inertiaGain[i]<51) m_inertiaGain[i] = 0.0; //correcting some former bad programming
 	}
+
+	for(int iPt=0; iPt<m_Alpha.size(); iPt++)	calculatePoint(iPt);
+
 	return true;
 }
 
@@ -2107,6 +2145,7 @@ void WPolar::copy(WPolar *pWPolar)
 		m_ClCd.append(      pWPolar-> m_ClCd[i]);
 		m_1Cl.append(       pWPolar-> m_1Cl[i]);
 		m_Cl32Cd.append(    pWPolar-> m_Cl32Cd[i]);
+		m_ExtraDrag.append( pWPolar-> m_ExtraDrag[i]);
 
 		m_Vx.append(        pWPolar-> m_Vx[i]);
 		m_Vz.append(        pWPolar-> m_Vz[i]);

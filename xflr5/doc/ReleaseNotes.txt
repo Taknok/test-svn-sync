@@ -7,7 +7,7 @@
                      A tool for the design of Airfoils, Wings and Planes
                           operating at low Reynolds numbers
 
-				 Copyright (C) 2003-2015
+								Copyright (C) 2003-2016
 
                                      Andre Deperrois
 
@@ -16,10 +16,10 @@
 
 
 
-xflr5 v6.12 November xxxth, 2015
-        - restored the plot and export options of the boundary layer graphs after a converged xfoil analysis
-	- modified in depth the constuction of the wing geometry, to better account for flap with large deflections; 
-          has an impact on results;
+xflr5 v6.12 January xxxth, 2016
+	- introduced an option to add extra drag to polar objects, to account for surfaces not included in the plane object
+	- restored the plot and export options of the boundary layer graphs after a converged xfoil analysis
+	- modified in depth the constuction of the wing geometry, to better account for flap with large deflections; has an impact on results;
 	- corrected bugs in the import/export operation of body objects to xml files
 	- enabled the LE points of the spline foil to be dragged in Direct Design
 	- corrected other minor things
@@ -45,11 +45,11 @@ xflr5 v6.11 August 8th, 2015
 xflr5 v6.10.04 April 12th, 2015
 	- Corrected a potential crash bug when deleting a plane with polars
 	- Added a standard ISA model for the calculation of air properties
-        - Corrected the issues with the reference lengths after wing scaling
-        - Fixed the bugs related to the import operation of a body definition from a text file
-        - Fix for retina displays on OS X
-        - Corrected the export of plane polars to text files to include the sideslip variable
-        - Other minor corrections and improvements
+	- Corrected the issues with the reference lengths after wing scaling
+	- Fixed the bugs related to the import operation of a body definition from a text file
+	- Fix for retina displays on OS X
+	- Corrected the export of plane polars to text files to include the sideslip variable
+	- Other minor corrections and improvements
 
 
 

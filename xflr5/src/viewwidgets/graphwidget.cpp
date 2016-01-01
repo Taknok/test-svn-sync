@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	GraphWidget Class
-		Copyright (C) 2008-2015 Andre Deperrois adeperrois@xflr5.com
+		Copyright (C) 2008-2016 Andre Deperrois adeperrois@xflr5.com
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -118,6 +118,11 @@ void GraphWidget::resizeEvent ( QResizeEvent * event )
 
 	m_LegendOrigin = QPoint(r.center().x(), r.top()+20);
 
+	if(m_pGraph)
+	{
+		m_pGraph->initializeGraph();
+		emit graphResized(m_pGraph);
+	}
 	event->accept();
 }
 

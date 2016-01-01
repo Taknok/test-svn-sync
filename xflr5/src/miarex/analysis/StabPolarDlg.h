@@ -91,10 +91,12 @@ private slots:
 private:
 	void enableControls();
 	void fillControlList();
+	void fillExtraDragList();
 	void fillInertiaPage();
 	void readCtrlData();
+	void readExtraDragData();
 	void readInertiaData();
-	void readParams();
+	void readData();
 	void setDensity();
 	void setWPolarName();
 	void setViscous();
@@ -108,6 +110,9 @@ private:
 
 	QTableView *m_pAngleControlTable;
 	CtrlTableModel *m_pAngleControlModel;
+
+	QTableView *m_pExtraDragControlTable;
+	CtrlTableModel *m_pExtraDragControlModel;
 
 	DoubleEdit *m_pctrlDensity;
 	DoubleEdit *m_pctrlViscosity;

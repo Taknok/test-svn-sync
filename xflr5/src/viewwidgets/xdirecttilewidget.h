@@ -36,7 +36,7 @@ public:
 	~XDirectTileWidget();
 
 public:
-	void Connect();
+	void connectSignals();
 	void adjustLayout();
 	void setGraphList(QList<QGraph*>pGraphList, int nGraphs, int iGraphWidget, Qt::Orientation orientation =Qt::Horizontal);
 

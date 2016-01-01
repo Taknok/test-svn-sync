@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	Body Class
-	Copyright (C) 2007-2015 Andre Deperrois adeperrois@xflr5.com
+	Copyright (C) 2007-2016 Andre Deperrois adeperrois@xflr5.com
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -486,7 +486,6 @@ double Body::getv(double u, CVector r, bool bRight)
 		}
 		iter++;
 	}
-//qDebug()<<"new"<<iter<<v<<v1<<v2;
 	return (v1+v2)/2.0;
 }
 

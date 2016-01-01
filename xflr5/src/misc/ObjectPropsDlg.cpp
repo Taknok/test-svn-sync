@@ -31,42 +31,42 @@
 
 ObjectPropsDlg::ObjectPropsDlg(QWidget *pParent) : QDialog(pParent)
 {
-	SetupLayout();
+	setupLayout();
 }
 
 
-void ObjectPropsDlg::SetupLayout()
+void ObjectPropsDlg::setupLayout()
 {
-	setMinimumHeight(400);
+	setMinimumHeight(550);
 	setMinimumWidth(700);
 
 
-	QHBoxLayout *CommandButtons = new QHBoxLayout;
+	QHBoxLayout *pCommandButtonsLayout = new QHBoxLayout;
 	{
 		QPushButton *OKButton = new QPushButton(tr("OK"));
-		CommandButtons->addStretch(1);
-		CommandButtons->addWidget(OKButton);
-		CommandButtons->addStretch(1);
+		pCommandButtonsLayout->addStretch(1);
+		pCommandButtonsLayout->addWidget(OKButton);
+		pCommandButtonsLayout->addStretch(1);
 		connect(OKButton, SIGNAL(clicked()),this, SLOT(accept()));
 	}
 
-	QVBoxLayout * MainLayout = new QVBoxLayout(this);
+	QVBoxLayout * pMainLayout = new QVBoxLayout(this);
 	{
 		m_pctrlDescription = new QTextEdit;
 		m_pctrlDescription->setFontFamily("Courier");
 		m_pctrlDescription->setReadOnly(true);
 		m_pctrlDescription->setLineWrapMode(QTextEdit::NoWrap);
 		m_pctrlDescription->setWordWrapMode(QTextOption::NoWrap);
-		MainLayout->addWidget(m_pctrlDescription);
-		MainLayout->addSpacing(20);
-		MainLayout->addLayout(CommandButtons);
+		pMainLayout->addWidget(m_pctrlDescription);
+		pMainLayout->addSpacing(20);
+		pMainLayout->addLayout(pCommandButtonsLayout);
 	}
 
-	setLayout(MainLayout);
+	setLayout(pMainLayout);
 }
 
 
-void ObjectPropsDlg::InitDialog(QString title, QString props)
+void ObjectPropsDlg::initDialog(QString title, QString props)
 {
 	QString strange;
 

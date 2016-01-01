@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	WPolarDlg Class
-	Copyright (C) 2009-2015 Andre Deperrois adeperrois@xflr5.com
+	Copyright (C) 2009-2016 Andre Deperrois adeperrois@xflr5.com
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -31,6 +31,8 @@
 #include <QLabel>
 #include <QStackedWidget>
 #include <QRadioButton>
+#include <QTableView>
+#include "CtrlTableDelegate.h"
 #include "../../misc/DoubleEdit.h"
 #include "../../objects/Plane.h"
 
@@ -56,9 +58,12 @@ private:
 
 	void connectSignals();
 	void enableControls();
+	void fillExtraDragList();
 	void initDialog(Plane *pPlane, WPolar *pWPolar=NULL);
 	void keyPressEvent(QKeyEvent *event);
+	void readExtraDragData();
 	void readValues();
+	void resizeColumns();
 	void setDensity();
 	void setReynolds();
 	void setupLayout();
@@ -81,6 +86,7 @@ private slots:
 	void onPolarType();
 	void onEditingFinished();
 	void onPlaneInertia();
+	void onTabChanged(int index);
 
 private:
 	static WPolar s_WPolar;
@@ -124,6 +130,11 @@ private:
 	QLabel *m_pctrlDensityUnit, *m_pctrlViscosityUnit;
 
 	QPushButton	*OKButton, *CancelButton;
+
+	int  *m_anglePrecision, *m_massPrecision;
+
+	QTableView *m_pExtraDragControlTable;
+	QStandardItemModel *m_pExtraDragControlModel;
 
 };
 

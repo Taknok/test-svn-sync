@@ -31,6 +31,8 @@
 Direct2dDesign::Direct2dDesign(QWidget *pParent) : Section2dWidget(pParent)
 {
 	m_bNeutralLine = true;
+	m_bLECircle      = false;
+	m_LERad   = 1.0;
 
 	m_pSF = NULL;
 	m_poaFoil = NULL;
@@ -70,13 +72,33 @@ void Direct2dDesign::paintEvent(QPaintEvent *event)
 	drawScaleLegend(painter);
 	drawBackImage(painter);
 
+
 	paintGrids(painter);
+	paintLECircle(painter);
 	paintSplines(painter);
 	paintFoils(painter);
 	paintLegend(painter);
 }
 
 
+/**
+ * Draws a dashed circle located at the leading edge of the foil.
+ * @param painter a reference to the QPainter object with which to draw.
+ */
+void Direct2dDesign::paintLECircle(QPainter &painter)
+{
+	if(m_bLECircle)
+	{
+		int rx = (int)(m_LERad/100.0 * m_fScale);
+		int ry = (int)(m_LERad/100.0 * m_fScale * m_fScaleY);
+		QRect rc(m_ptOffset.x(), m_ptOffset.y() - ry,  2*rx, 2*ry);
+
+		QPen CirclePen(QColor(128,128,128));
+		CirclePen.setStyle(Qt::DashLine);
+		painter.setPen(CirclePen);
+		painter.drawEllipse(rc);
+	}
+}
 
 
 /**
@@ -142,7 +164,6 @@ void Direct2dDesign::paintFoils(QPainter &painter)
 			painter.setPen(FoilPen);
 
 			pFoil->drawFoil(painter, 0.0, m_fScale, m_fScale*m_fScaleY,m_ptOffset);
-
 			if (pFoil->showCenterLine())
 			{
 				CenterPen.setColor(pFoil->foilColor());

@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	Miarex
-			Copyright (C) 2008-2015 Andre Deperrois adeperrois@xflr5.com
+			Copyright (C) 2008-2016 Andre Deperrois adeperrois@xflr5.com
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -8043,7 +8043,7 @@ void QMiarex::onWPolarProperties()
 	ObjectPropsDlg opDlg((MainFrame*)s_pMainFrame);
 	QString strangeProps;
 	m_pCurWPolar->getPolarProperties(strangeProps);
-	opDlg.InitDialog(tr("Polar properties"), strangeProps);
+	opDlg.initDialog(tr("Polar properties"), strangeProps);
 	opDlg.exec();
 }
 
@@ -8057,7 +8057,7 @@ void QMiarex::onPlaneOppProperties()
 	ObjectPropsDlg opDlg((MainFrame*)s_pMainFrame);
 	QString strangeProps;
 	m_pCurPOpp->getPlaneOppProperties(strangeProps);
-	opDlg.InitDialog(tr("Operating point Properties"), strangeProps);
+	opDlg.initDialog(tr("Operating point Properties"), strangeProps);
 	opDlg.exec();
 }
 
