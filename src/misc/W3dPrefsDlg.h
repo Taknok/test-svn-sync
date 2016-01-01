@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	W3dPrefsDlg Class
-    Copyright (C) 2009-2015 Andre Deperrois XFLR5@yahoo.com
+    Copyright (C) 2009-2016 Andre Deperrois XFLR5@yahoo.com
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by

@@ -30,6 +30,7 @@
 class CtrlTableDelegate : public QItemDelegate
 {
 	Q_OBJECT
+	friend class WPolarDlg;
 	friend class StabPolarDlg;
 	friend class StabViewDlg;
 public:

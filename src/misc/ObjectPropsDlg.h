@@ -30,10 +30,10 @@ class ObjectPropsDlg : public QDialog
 
 public:
     ObjectPropsDlg(QWidget *pParent);
-	void InitDialog(QString title, QString props);
+	void initDialog(QString title, QString props);
 
 private:
-	void SetupLayout();
+	void setupLayout();
 
 	QTextEdit *m_pctrlDescription;
 

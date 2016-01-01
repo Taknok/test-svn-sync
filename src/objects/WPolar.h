@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	WPolar Class
-	Copyright (C) 2005-2015 Andre Deperrois adeperrois@xflr5.com
+	Copyright (C) 2005-2016 Andre Deperrois adeperrois@xflr5.com
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -50,6 +50,7 @@
 #include <QVarLengthArray>
 
 #define MAXPOLARPOINTS   1000     /**< The max number of points on a polar. */
+#define MAXEXTRADRAG 4
 
 class WPolar
 {
@@ -65,7 +66,7 @@ public:
 	void insertDataAt(int pos, double Alpha, double Beta, double QInf, double Ctrl, double Cl, double CY, double ICd, double PCd, double GCm,
 						  double ICm, double VCm, double GRm, double GYm, double IYm, double VYm, double XCP, double YCP,
 						  double ZCP, double Cb, double XNP);
-	void calculatePoint(int i);
+	void calculatePoint(int iPt);
 	void copy(WPolar *pWPolar);
 	void duplicateSpec(WPolar *pWPolar);
 	void exportToTextFile(QTextStream &out, XFLR5::enumTextFileType FileType, bool bDataOnly=false);
@@ -246,6 +247,10 @@ public:
 	QList <double>  m_YCP;        /**< the centre of pressure Y-position relative to the wing's root LE */
 	QList <double>  m_Ym;         /**< the total yawing moment */
 	QList <double>  m_ZCP;        /**< the centre of pressure Z-position relative to the wing's root LE */
+
+	QList <double>  m_ExtraDrag;
+
+	double m_ExtraDragArea[MAXEXTRADRAG], m_ExtraDragCoef[MAXEXTRADRAG];
 };
 
 #endif

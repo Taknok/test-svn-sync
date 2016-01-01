@@ -54,6 +54,7 @@ class Section2dWidget : public QWidget
 	friend class BodyLineWidget;
 	friend class BodyFrameWidget;
 	friend class Direct2dDesign;
+	friend class QAFoil;
 
 	Q_OBJECT
 public:
@@ -134,7 +135,7 @@ private:
 	bool m_bNeutralLine;        /**< true if the neutral line should be displayed */
 	bool m_bTrans;              /**< true if the view is being dragged by the user */
 	bool m_bDrag;               /**< true if a point is being dragged by the user */
-	bool m_bShowLegend;         /**< true is the legend should be shown */
+	bool m_bShowLegend;         /**< true if the legend should be shown */
 	bool m_bXDown;              /**< true if the 'X' key is pressed */
 	bool m_bYDown;              /**< true if the 'Y' key is pressed */
 	bool m_bZDown;              /**< true if the 'Z' key is pressed */

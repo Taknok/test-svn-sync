@@ -49,12 +49,17 @@ private:
 	void paintSplines(QPainter &painter);
 	void paintFoils(QPainter &painter);
 	void paintLegend(QPainter &painter);
+	void paintLECircle(QPainter &painter);
 
 
 private:
 	QList<void *> *m_poaFoil;   /**< a pointer to the array of Foil objects */
 	SplineFoil *m_pSF;          /**< a pointer to the SplineFoil object */
 	Foil *m_pBufferFoil;
+
+public:
+	bool m_bLECircle;           /**< true if the leading edge circle should be displayed >*/
+	double m_LERad;             /**< the radius of the leading edge circle to draw >*/
 
 };
 

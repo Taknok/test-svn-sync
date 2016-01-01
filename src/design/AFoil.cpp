@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	AFoil Class
-	Copyright (C) 2009-2015 Andre Deperrois adeperrois@xflr5.com
+	Copyright (C) 2009-2016 Andre Deperrois adeperrois@xflr5.com
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -84,10 +84,7 @@ QAFoil::QAFoil(QWidget *parent)
 	clearStack();
 	takePicture();
 
-	m_bLECircle      = false;
 	m_bStored        = false;
-	m_bShowLegend    = true;
-	m_LERad   = 1.0;
 
 
 	m_pBufferFoil = new Foil();
@@ -139,7 +136,7 @@ void QAFoil::setControls()
 	pMainFrame->AFoilSetLERadius->setEnabled(Foil::curFoil());
 	pMainFrame->AFoilSetTEGap->setEnabled(Foil::curFoil());
 
-	pMainFrame->m_pShowLegend->setChecked(m_bShowLegend);
+	pMainFrame->m_pShowLegend->setChecked(m_p2DWidget->m_bShowLegend);
 
 	pMainFrame->m_pAFoilSplineMenu->setEnabled(!Foil::curFoil());
 	pMainFrame->InsertSplinePt->setEnabled(!Foil::curFoil());
@@ -411,8 +408,8 @@ void QAFoil::loadSettings(QSettings *pSettings)
 		m_pSF->m_Intrados.splineCurve();
 
 
-		m_bLECircle          = pSettings->value("LECircle").toBool();
-		m_bShowLegend        = pSettings->value("Legend").toBool();
+		m_p2DWidget->m_bLECircle          = pSettings->value("LECircle").toBool();
+		m_p2DWidget->m_bShowLegend        = pSettings->value("Legend").toBool();
 
 		QString str;
 		for(int i=0; i<16; i++)
@@ -539,15 +536,15 @@ void QAFoil::onAFoilCadd()
 void QAFoil::onAFoilLECircle()
 {
     LECircleDlg LECircleDlg(this);
-	LECircleDlg.m_Radius      = m_LERad;
-	LECircleDlg.m_bShowRadius = m_bLECircle;
+	LECircleDlg.m_Radius      = m_p2DWidget->m_LERad;
+	LECircleDlg.m_bShowRadius = m_p2DWidget->m_bLECircle;
 	LECircleDlg.m_pAFoil      = this;
 	LECircleDlg.InitDialog();
 
 	if(LECircleDlg.exec()==QDialog::Accepted)
 	{
-		m_LERad = LECircleDlg.m_Radius;
-		m_bLECircle = LECircleDlg.m_bShowRadius;
+		m_p2DWidget->m_LERad = LECircleDlg.m_Radius;
+		m_p2DWidget->m_bLECircle = LECircleDlg.m_bShowRadius;
 	}
 	m_p2DWidget->update();;
 }
@@ -1305,7 +1302,7 @@ void QAFoil::onShowCurrentFoil()
  */
 void QAFoil::onShowLegend()
 {
-	m_bShowLegend = !m_bShowLegend;
+	m_p2DWidget->m_bShowLegend = !m_p2DWidget->m_bShowLegend;
 	m_p2DWidget->update();;
 	setControls();
 }
@@ -1387,8 +1384,8 @@ void QAFoil::SaveSettings(QSettings *pSettings)
 		pSettings->setValue("LowerRes", m_pSF->m_Intrados.m_iRes);
 		pSettings->setValue("UpperRes", m_pSF->m_Extrados.m_iRes);
 
-		pSettings->setValue("LECircle", m_bLECircle);
-		pSettings->setValue("Legend", m_bShowLegend );
+		pSettings->setValue("LECircle", m_p2DWidget->m_bLECircle);
+		pSettings->setValue("Legend", m_p2DWidget->m_bShowLegend );
 		
 		QString str;
 		for(int i=0; i<16; i++)

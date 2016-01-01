@@ -54,7 +54,7 @@ MiarexTileWidget::~MiarexTileWidget()
 }
 
 
-void MiarexTileWidget::Connect()
+void MiarexTileWidget::connectSignals()
 {
 	for(int igw=0; igw<m_GraphWidget.count(); igw++)
 	{

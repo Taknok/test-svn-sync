@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	AFoil Class
-	Copyright (C) 2009-2015 Andre Deperrois adeperrois@xflr5.com
+	Copyright (C) 2009-2016 Andre Deperrois adeperrois@xflr5.com
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -150,11 +150,8 @@ private:
 	int *m_precision;           /**< the array of digit numbers for each column of the Foil table >*/
 
 
-	bool m_bLECircle;           /**< true if the leading edge circle should be displayed >*/
 	bool m_bStored;             /**< true if the current Picture has been stored on the Undo stack >*/
-	bool m_bShowLegend;         /**< true if the foil legend should be displayed in the 2d display area >*/
 
-	double m_LERad;             /**< the radius of the leading edge circle to draw >*/
 
 	QList<void *> *m_poaFoil;   /**< a pointer to the array of Foil objects >*/
 	void *m_pXFoil;             /**< a void pointer to the XFoil object >*/

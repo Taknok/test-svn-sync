@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	StabPolarDlg Class
-	Copyright (C) 2010-2015 Andre Deperrois adeperrois@xflr5.com
+	Copyright (C) 2010-2016 Andre Deperrois adeperrois@xflr5.com
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -217,6 +217,11 @@ void StabPolarDlg::resizeColumns()
 	m_pAngleControlTable->setColumnWidth(0, wCols);
 	m_pAngleControlTable->setColumnWidth(1, wCols);
 
+	double wxd = (double)m_pExtraDragControlTable->width()*.97;
+	wCols  = (int)(wxd/3);
+	m_pExtraDragControlTable->setColumnWidth(0, wCols);
+	m_pExtraDragControlTable->setColumnWidth(1, wCols);
+	m_pExtraDragControlTable->setColumnWidth(2, wCols);
 }
 
 
@@ -428,6 +433,8 @@ void StabPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
 	m_pctrlAutoPlaneInertia->setChecked(s_StabPolar.bAutoInertia());
 	fillInertiaPage();
 
+	fillExtraDragList();
+
 	setWPolarName();
 
 	m_pAngleControlTable->setFocus();
@@ -447,6 +454,8 @@ void StabPolarDlg::keyPressEvent(QKeyEvent *event)
 			if(!OKButton->hasFocus() && !CancelButton->hasFocus())
 			{
 				readCtrlData();
+				readInertiaData();
+				readExtraDragData();
 				setWPolarName();
 				OKButton->setFocus();
 				return;
@@ -523,7 +532,7 @@ void StabPolarDlg::onInertiaCellChanged(QWidget *)
 
 void StabPolarDlg::onEditingFinished()
 {
-	readParams();
+	readData();
 	setWPolarName();
 }
 
@@ -553,7 +562,8 @@ void StabPolarDlg::onOK()
 {
 	readCtrlData();
 	readInertiaData();
-	readParams();
+	readExtraDragData();
+	readData();
 
 	if(qAbs(s_StabPolar.mass())<PRECISION)
 	{
@@ -666,7 +676,7 @@ void StabPolarDlg::readInertiaData()
 }
 
 
-void StabPolarDlg::readParams()
+void StabPolarDlg::readData()
 {
 	if(m_pctrlUnit1->isChecked())
 	{
@@ -737,7 +747,7 @@ void StabPolarDlg::setDensity()
 
 void StabPolarDlg::onTabChanged(int index)
 {
-	if(index==2 || index==3)
+	if(index==2 || index==3 || index==5)
 	{
 		resizeColumns();
 	}
@@ -768,6 +778,7 @@ void StabPolarDlg::setupLayout()
 	QWidget  *pOptionPage       = new QWidget(this);
 	QWidget  *pMassControlPage  = new QWidget(this);
 	QWidget  *pAngleControlPage = new QWidget(this);
+	QWidget  *pExtraDragPage = new QWidget(this);
 
 
 	QVBoxLayout *pMethodPageLayout = new QVBoxLayout;
@@ -1050,11 +1061,53 @@ void StabPolarDlg::setupLayout()
 		pOptionPage->setLayout(pOptionPageLayout);
 	}
 
+	QVBoxLayout *pExtraDragPageLayout  = new QVBoxLayout;
+	{
+		m_pExtraDragControlTable = new QTableView(this);
+		m_pExtraDragControlTable->setFont(Settings::s_TableFont);
+
+		m_pExtraDragControlTable->setWindowTitle(tr("Extra drag"));
+		m_pExtraDragControlTable->setMinimumWidth(400);
+		m_pExtraDragControlTable->setMinimumHeight(150);
+		m_pExtraDragControlTable->setSelectionMode(QAbstractItemView::SingleSelection);
+		m_pExtraDragControlTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+		m_pExtraDragControlTable->horizontalHeader()->setStretchLastSection(true);
+
+		m_pExtraDragControlModel = new CtrlTableModel(this);
+		m_pExtraDragControlModel->setColumnCount(3);
+		m_pExtraDragControlModel->setHeaderData(0, Qt::Horizontal, tr("Extra drag"));
+		m_pExtraDragControlModel->setHeaderData(1, Qt::Horizontal, tr("Extra area")+" ("+Units::areaUnitLabel()+")");
+		m_pExtraDragControlModel->setHeaderData(2, Qt::Horizontal, tr("Extra drag coef."));
+
+
+		m_pExtraDragControlTable->setModel(m_pExtraDragControlModel);
+
+		CtrlTableDelegate *pCtrlDelegate;
+		pCtrlDelegate = new CtrlTableDelegate(this);
+		m_pExtraDragControlTable->setItemDelegate(pCtrlDelegate);
+		pCtrlDelegate->m_pCtrlModel = m_pExtraDragControlModel;
+
+		m_anglePrecision = new int[3];
+		m_anglePrecision[0]  = 0;
+		m_anglePrecision[1]  = 3;
+		m_anglePrecision[2]  = 5;
+
+		pCtrlDelegate->m_Precision = m_anglePrecision;
+
+		QLabel* pExtraLabel = new QLabel(QString::fromUtf8("D = 1/2 rho V² ( S (CD_induced+CD_Visc) + S_Extra1.CD_Extra1 + ... + S_ExtraN.Cd_ExtraN)"));
+
+		pExtraDragPageLayout->addWidget(m_pExtraDragControlTable);
+		pExtraDragPageLayout->addWidget(pExtraLabel);
+		pExtraDragPage->setLayout(pExtraDragPageLayout);
+	}
+
+
 	m_pTabWidget->addTab(pMethodPage,       tr("Analysis"));
 	m_pTabWidget->addTab(pCoefficientPage,  tr("Ref. dimensions"));
 	m_pTabWidget->addTab(pMassControlPage,  tr("Mass and inertia"));
 	m_pTabWidget->addTab(pAngleControlPage, tr("Control parameters"));
 	m_pTabWidget->addTab(pOptionPage,       tr("Aero data"));
+	m_pTabWidget->addTab(pExtraDragPage,    tr("Extra drag"));
 
 	m_pTabWidget->setCurrentIndex(0);
 
@@ -1091,6 +1144,38 @@ void StabPolarDlg::setupLayout()
 	setLayout(pMainLayout);
 }
 
+
+
+void StabPolarDlg::readExtraDragData()
+{
+	for(int i=0; i<MAXEXTRADRAG; i++)
+	{
+		s_StabPolar.m_ExtraDragArea[i]= m_pExtraDragControlModel->index(i, 1, QModelIndex()).data().toDouble()/Units::m2toUnit();
+		s_StabPolar.m_ExtraDragCoef[i]= m_pExtraDragControlModel->index(i, 2, QModelIndex()).data().toDouble();
+	}
+}
+
+
+
+void StabPolarDlg::fillExtraDragList()
+{
+	m_pExtraDragControlModel->setRowCount(MAXEXTRADRAG);
+	QString str;
+	QModelIndex ind;
+	Units::getLengthUnitLabel(str);
+
+	for(int i=0; i<MAXEXTRADRAG; i++)
+	{
+		ind = m_pExtraDragControlModel->index(i, 0, QModelIndex());
+		m_pExtraDragControlModel->setData(ind, QString("Extra %1").arg(i));
+		ind = m_pExtraDragControlModel->index(i, 1, QModelIndex());
+		m_pExtraDragControlModel->setData(ind, s_StabPolar.m_ExtraDragArea[i]*Units::m2toUnit());
+		ind = m_pExtraDragControlModel->index(i, 2, QModelIndex());
+		m_pExtraDragControlModel->setData(ind, s_StabPolar.m_ExtraDragCoef[i]);
+	}
+
+	m_pExtraDragControlTable->resizeColumnsToContents();
+}
 
 
 void StabPolarDlg::onAeroData()
