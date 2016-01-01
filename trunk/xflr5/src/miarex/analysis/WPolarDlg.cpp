@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	WPolarDlg Class
-	Copyright (C) 2009-2015 Andre Deperrois adeperrois@xflr5.com
+	Copyright (C) 2009-2016 Andre Deperrois adeperrois@xflr5.com
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -22,10 +22,11 @@
 #include "../../globals.h"
 #include "../../objects/WPolar.h"
 #include "../../misc/Units.h"
+#include <Settings.h>
 #include "../Miarex.h"
 #include "WPolarDlg.h"
 #include "AeroDataDlg.h"
-
+#include <QHeaderView>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QGridLayout>
@@ -309,7 +310,7 @@ void WPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
 	setWingLoad();
 	setReynolds();
 	setWPolarName();
-
+	fillExtraDragList();
 	enableControls();
 
 	m_pctrlQInf->setSelection(0,-1);
@@ -331,6 +332,7 @@ void WPolarDlg::keyPressEvent(QKeyEvent *event)
 		{
 			if(!OKButton->hasFocus() && !CancelButton->hasFocus())
 			{
+				readExtraDragData();
 				readValues();
 				setWPolarName();
 				OKButton->setFocus();
@@ -385,6 +387,7 @@ void WPolarDlg::onArea()
 
 void WPolarDlg::onEditingFinished()
 {
+	readExtraDragData();
 	readValues();
 	setReynolds();
 	setWPolarName();
@@ -486,6 +489,16 @@ void WPolarDlg::onMethod()
 }
 
 
+void WPolarDlg::readExtraDragData()
+{
+	for(int i=0; i<MAXEXTRADRAG; i++)
+	{
+		s_WPolar.m_ExtraDragArea[i]= m_pExtraDragControlModel->index(i, 1, QModelIndex()).data().toDouble()/Units::m2toUnit();
+		s_WPolar.m_ExtraDragCoef[i]= m_pExtraDragControlModel->index(i, 2, QModelIndex()).data().toDouble();
+	}
+}
+
+
 void WPolarDlg::onOK()
 {
 	if(!m_pctrlWPolarName->text().length())
@@ -503,6 +516,8 @@ void WPolarDlg::onOK()
 		return;
 	}
 	if(!m_pPlane->isWing() && s_WPolar.analysisMethod()==XFLR5::PANELMETHOD) s_WPolar.bThinSurfaces() = true;
+
+	readExtraDragData();
 
 	accept();
 }
@@ -658,10 +673,9 @@ void WPolarDlg::setDensity()
 
 void WPolarDlg::setupLayout()
 {
-	QString strSpeedUnit, strAreaUnit, strLengthUnit, strWeightUnit;
+	QString strSpeedUnit, strLengthUnit, strWeightUnit;
 
 	Units::getSpeedUnitLabel(strSpeedUnit);
-	Units::getAreaUnitLabel(strAreaUnit);
 	Units::getLengthUnitLabel(strLengthUnit);
 	Units::getWeightUnitLabel(strWeightUnit);
 
@@ -679,6 +693,7 @@ void WPolarDlg::setupLayout()
 	QWidget *pInertiaPage = new QWidget(this);
 	QWidget *pCoefficientPage = new QWidget(this);
 	QWidget *pOptionPage = new QWidget(this);
+	QWidget *pAngleControlPage = new QWidget(this);
 
 
 	QVBoxLayout *pPolarTypePageLayout = new QVBoxLayout;
@@ -865,9 +880,9 @@ void WPolarDlg::setupLayout()
 					m_pctrlRefArea  = new DoubleEdit(0.0, 3);
 					m_pctrlRefChord = new DoubleEdit(0.0, 3);
 					m_pctrlRefSpan  = new DoubleEdit(0.0, 3);
-					QLabel *labAreaUnit = new QLabel(strAreaUnit);
-					QLabel *labLengthUnit4 = new QLabel(strLengthUnit);
-					QLabel *labLengthUnit5 = new QLabel(strLengthUnit);
+					QLabel *labAreaUnit = new QLabel(Units::areaUnitLabel());
+					QLabel *labLengthUnit4 = new QLabel(Units::lengthUnitLabel());
+					QLabel *labLengthUnit5 = new QLabel(Units::lengthUnitLabel());
 
 					labRefArea->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 					labRefSpan->setAlignment(Qt::AlignRight | Qt::AlignCenter);
@@ -984,15 +999,55 @@ void WPolarDlg::setupLayout()
 		pOptionPage->setLayout(pOptionPageLayout);
 	}
 
+	QVBoxLayout *pExtraDragPageLayout  = new QVBoxLayout;
+	{
+		m_pExtraDragControlTable = new QTableView(this);
+		m_pExtraDragControlTable->setFont(Settings::s_TableFont);
+
+		m_pExtraDragControlTable->setWindowTitle(tr("Extra drag"));
+		m_pExtraDragControlTable->setMinimumWidth(400);
+		m_pExtraDragControlTable->setMinimumHeight(150);
+		m_pExtraDragControlTable->setSelectionMode(QAbstractItemView::SingleSelection);
+		m_pExtraDragControlTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+		m_pExtraDragControlTable->horizontalHeader()->setStretchLastSection(true);
+
+		m_pExtraDragControlModel = new QStandardItemModel(this);
+		m_pExtraDragControlModel->setColumnCount(3);
+		m_pExtraDragControlModel->setHeaderData(0, Qt::Horizontal, tr("Extra drag"));
+		m_pExtraDragControlModel->setHeaderData(1, Qt::Horizontal, tr("Extra area")+" ("+Units::areaUnitLabel()+")");
+		m_pExtraDragControlModel->setHeaderData(2, Qt::Horizontal, tr("Extra drag coef."));
+
+
+		m_pExtraDragControlTable->setModel(m_pExtraDragControlModel);
+
+		CtrlTableDelegate *pCtrlDelegate;
+		pCtrlDelegate = new CtrlTableDelegate(this);
+		m_pExtraDragControlTable->setItemDelegate(pCtrlDelegate);
+		pCtrlDelegate->m_pCtrlModel = m_pExtraDragControlModel;
+
+		m_anglePrecision = new int[3];
+		m_anglePrecision[0]  = 0;
+		m_anglePrecision[1]  = 3;
+		m_anglePrecision[2]  = 5;
+
+		pCtrlDelegate->m_Precision = m_anglePrecision;
+
+		QLabel* pExtraLabel = new QLabel(QString::fromUtf8("D = 1/2 rho V² ( S (CD_induced+CD_Visc) + S_Extra1.CD_Extra1 + ... + S_ExtraN.Cd_ExtraN)"));
+
+		pExtraDragPageLayout->addWidget(m_pExtraDragControlTable);
+		pExtraDragPageLayout->addWidget(pExtraLabel);
+		pAngleControlPage->setLayout(pExtraDragPageLayout);
+	}
 
 	pTabWidget->addTab(pPolarTypePage, tr("Polar Type"));
 	pTabWidget->addTab(pMethodPage, tr("Analysis"));
 	pTabWidget->addTab(pInertiaPage, tr("Inertia"));
 	pTabWidget->addTab(pCoefficientPage, tr("Ref. dimensions"));
 	pTabWidget->addTab(pOptionPage, tr("Aero data"));
+	pTabWidget->addTab(pAngleControlPage, tr("Extra drag"));
 
 	pTabWidget->setCurrentIndex(0);
-//	connect(m_pTabWidget, SIGNAL(currentChanged (int)), this, SLOT(OnActivePage(int)));
+	connect(pTabWidget, SIGNAL(currentChanged(int)), this, SLOT(onTabChanged(int)));
 
 	QHBoxLayout *pCommandButtons = new QHBoxLayout;
 	{
@@ -1025,6 +1080,48 @@ void WPolarDlg::setupLayout()
 	setLayout(pMainLayout);
 }
 
+
+
+void WPolarDlg::fillExtraDragList()
+{
+	m_pExtraDragControlModel->setRowCount(MAXEXTRADRAG);
+	QString str;
+	QModelIndex ind;
+	Units::getLengthUnitLabel(str);
+
+	for(int i=0; i<MAXEXTRADRAG; i++)
+	{
+		ind = m_pExtraDragControlModel->index(i, 0, QModelIndex());
+		m_pExtraDragControlModel->setData(ind, QString("Extra %1").arg(i));
+		ind = m_pExtraDragControlModel->index(i, 1, QModelIndex());
+		m_pExtraDragControlModel->setData(ind, s_WPolar.m_ExtraDragArea[i]*Units::m2toUnit());
+		ind = m_pExtraDragControlModel->index(i, 2, QModelIndex());
+		m_pExtraDragControlModel->setData(ind, s_WPolar.m_ExtraDragCoef[i]);
+	}
+
+	m_pExtraDragControlTable->resizeColumnsToContents();
+}
+
+
+
+void WPolarDlg::onTabChanged(int index)
+{
+	if(index==5)
+	{
+		resizeColumns();
+	}
+}
+
+
+void WPolarDlg::resizeColumns()
+{
+	double wc = (double)m_pExtraDragControlTable->width()*.97;
+	int wCols  = (int)(wc/3);
+	m_pExtraDragControlTable->setColumnWidth(0, wCols);
+	m_pExtraDragControlTable->setColumnWidth(1, wCols);
+	m_pExtraDragControlTable->setColumnWidth(2, wCols);
+
+}
 
 
 void WPolarDlg::setWPolarName()

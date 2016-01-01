@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	QXDirect Class
-	Copyright (C) 2008-2015 Andre Deperrois adeperrois@xflr5.com
+	Copyright (C) 2008-2016 Andre Deperrois adeperrois@xflr5.com
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -3696,7 +3696,7 @@ void QXDirect::onOpPointProps()
 	ObjectPropsDlg opDlg((MainFrame*)s_pMainFrame);
 	QString strangeProps;
 	OpPoint::curOpp()->getOppProperties(strangeProps);
-	opDlg.InitDialog(tr("Operating point properties"), strangeProps);
+	opDlg.initDialog(tr("Operating point properties"), strangeProps);
 	opDlg.exec();
 }
 
@@ -3712,7 +3712,7 @@ void QXDirect::onPolarProps()
 	ObjectPropsDlg opDlg((MainFrame*)s_pMainFrame);
 	QString strangeProps;
 	Polar::curPolar()->getPolarProperties(strangeProps);
-	opDlg.InitDialog(tr("Polar properties"), strangeProps);
+	opDlg.initDialog(tr("Polar properties"), strangeProps);
 	opDlg.exec();
 }
 

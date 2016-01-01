@@ -35,7 +35,7 @@ public:
 	~MiarexTileWidget();
 
 public:
-	void Connect();
+	void connectSignals();
 	void adjustLayout();
 	void setMiarexGraphList(XFLR5::enumMiarexViews miarexView, QList<QGraph*>pGraphList, int nGraphs, int iGraphWidget=0, Qt::Orientation orientation =Qt::Horizontal);
 	WingWidget *pWingWidget(){return m_pWingWidget;}

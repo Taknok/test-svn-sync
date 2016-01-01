@@ -57,7 +57,7 @@ public:
 
 
 	virtual void setGraphList(QList<QGraph*>pGraphList, int nGraphs, int iGraphWidget, Qt::Orientation orientation =Qt::Horizontal);
-	virtual void Connect() = 0;
+	virtual void connectSignals() = 0;
 
 
 	GraphWidget *graphWidget(QGraph *pGraph);

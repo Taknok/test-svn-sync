@@ -223,17 +223,8 @@ void FoilWidget::paintEvent(QPaintEvent *event)
 	painter.fillRect(rect(), Settings::backgroundColor());
 
 	paintOpPoint(painter);
-//	paintPressure(painter, m_fScale);
-//	paintBL(painter, OpPoint::curOpp(), m_fScale);
 }
 
-
-
-void FoilWidget::resizeEvent (QResizeEvent *event)
-{
-	Q_UNUSED(event);
-	setFoilScale();
-}
 
 
 /**

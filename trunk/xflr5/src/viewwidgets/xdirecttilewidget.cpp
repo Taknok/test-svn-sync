@@ -57,7 +57,7 @@ XDirectTileWidget::~XDirectTileWidget()
 }
 
 
-void XDirectTileWidget::Connect()
+void XDirectTileWidget::connectSignals()
 {
 	MainFrame*pMainFrame = (MainFrame*)s_pMainFrame;
 	connect(pMainFrame->m_pResetFoilScale,  SIGNAL(triggered()), m_pFoilWidget, SLOT(onResetFoilScale()));
@@ -69,6 +69,9 @@ void XDirectTileWidget::Connect()
 	{
 		connect(m_GraphWidget.at(igw), SIGNAL(graphChanged(QGraph*)), this, SLOT(onResetCurves(QGraph*)));
 	}
+
+	connect(m_GraphWidget.at(0), SIGNAL(graphResized(QGraph*)), m_pFoilWidget, SLOT(onResetFoilScale()));
+
 }
 
 

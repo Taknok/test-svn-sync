@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	MainFrame  Class
-	Copyright (C) 2008-2015 Andre Deperrois adeperrois@xflr5.com
+	Copyright (C) 2008-2016 Andre Deperrois adeperrois@xflr5.com
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -211,8 +211,8 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 	createToolbars();
 	createStatusBar();
 
-	m_pXDirectTileWidget->Connect();
-	m_pMiarexTileWidget->Connect();
+	m_pXDirectTileWidget->connectSignals();
+	m_pMiarexTileWidget->connectSignals();
 
 	s_ColorList.append(QColor(255,0,0));
 	s_ColorList.append(QColor(0,255,0));
@@ -3248,7 +3248,7 @@ void MainFrame::onOpenGLInfo()
 	else if(fmt.profile()== QSurfaceFormat::CompatibilityProfile) strongProps += QString("Opengl::CompatibilityProfile::CompatibilityProfile");
 
 	ObjectPropsDlg dlg(this);
-	dlg.InitDialog(tr("Support for OpenGL provided by your system:"), strongProps);
+	dlg.initDialog(tr("Support for OpenGL provided by your system:"), strongProps);
 	dlg.exec();
 }
 
@@ -3712,7 +3712,6 @@ void MainFrame::onXDirect()
 
 	pXDirect->setControls();
 	pXDirect->updateView();
-	m_pXDirectTileWidget->foilWidget()->setFoilScale();
 }
 
 
