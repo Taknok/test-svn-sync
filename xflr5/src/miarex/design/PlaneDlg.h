@@ -56,6 +56,7 @@ private slots:
 	void onDefineStab();
 	void onDefineFin();
 	void onDefineBody();
+	void onDefineBodyObject();
 	void onChanged();
 	void onDescriptionChanged();
 	void onImportWing();
@@ -141,8 +142,7 @@ private:
 	QPushButton	*m_pctrlDefineFin;
 	QPushButton	*m_pctrlVTail;
 	QPushButton	*m_pctrlDefineStab;
-	QPushButton *m_pctrlDefineBody;
-	QPushButton *m_pctrlImportBody;
+	QPushButton *m_pctrlBodyActions;
 	QPushButton *m_pctrlPlaneInertia;
 	QPushButton *OKButton;
 	QPushButton *CancelButton;

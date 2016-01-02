@@ -660,7 +660,6 @@ void Wing::createSurfaces(CVector const &T, double XTilt, double YTilt)
 		}
 	}
 
-
 	clearSurfaces();
 	for(int jss=0; jss<nSurf; jss++)
 	{
