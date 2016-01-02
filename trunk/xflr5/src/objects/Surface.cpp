@@ -493,6 +493,12 @@ void Surface::getSidePoints(enumPanelPosition pos,
 
 	double cosdA = Normal.dot(NormalA);
 	double cosdB = Normal.dot(NormalB);
+
+	if(cosdA>1.0) cosdA = 1.0;
+	if(cosdB>1.0) cosdB = 1.0;
+	if(cosdA<-1.0) cosdA = -1.0;
+	if(cosdB<-1.0) cosdB = -1.0;
+
 	double alpha_dA = acos(cosdA)*180.0/PI;
 	double alpha_dB = -acos(cosdB)*180.0/PI;
 	double delta = -atan2(Normal.z,Normal.y)*180.0/PI;
@@ -999,9 +1005,14 @@ void Surface::setSidePoints(Body * pBody, double dx, double dz)
 
 	cosdA = Normal.dot(NormalA);
 	cosdB = Normal.dot(NormalB);
+
+	if(cosdA>1.0) cosdA = 1.0;
+	if(cosdB>1.0) cosdB = 1.0;
+	if(cosdA<-1.0) cosdA = -1.0;
+	if(cosdB<-1.0) cosdB = -1.0;
+
     alpha_dA = acos(cosdA)*180.0/PI;
     alpha_dB = -acos(cosdB)*180.0/PI;
-
 	chordA  = chord(0.0);
 	chordB  = chord(1.0);
 

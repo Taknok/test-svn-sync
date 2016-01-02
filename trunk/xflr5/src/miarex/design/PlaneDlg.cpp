@@ -37,6 +37,7 @@
 #include "PlaneDlg.h"
 #include "GL3dWingDlg.h"
 #include "GL3dBodyDlg.h"
+#include "EditBodyDlg.h"
 #include "InertiaDlg.h"
 
 
@@ -73,7 +74,6 @@ PlaneDlg::PlaneDlg(QWidget *parent) :QDialog(parent)
 	connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 
 	connect(m_pctrlBody,       SIGNAL(clicked()), this, SLOT(onBodyCheck()));
-	connect(m_pctrlDefineBody, SIGNAL(clicked()), this, SLOT(onDefineBody()));
 
 	connect(m_pctrlPlaneDescription, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()));
 
@@ -212,8 +212,7 @@ void PlaneDlg::onBodyCheck()
 
 	m_pctrlXBody->setEnabled(m_pctrlBody->isChecked());
 	m_pctrlZBody->setEnabled(m_pctrlBody->isChecked());
-	m_pctrlDefineBody->setEnabled(m_pctrlBody->isChecked());
-	m_pctrlImportBody->setEnabled(m_pctrlBody->isChecked());
+	m_pctrlBodyActions->setEnabled(m_pctrlBody->isChecked());
 
 	setResults();
 }
@@ -363,6 +362,34 @@ void PlaneDlg::onDefineBody()
 	else m_pPlane->body()->duplicate(&memBody);
  //   m_pPlane->m_pBody->Translate(m_pPlane->BodyPos(),false);
 }
+
+
+
+/**
+ * The user has requested an edition of the current body
+ * Launch the edition interface, and on return, insert the body i.a.w. user instructions
+ */
+void PlaneDlg::onDefineBodyObject()
+{
+	if(!m_pPlane->body()) return;
+
+	Body memBody;
+	memBody.duplicate(m_pPlane->body());
+
+	EditBodyDlg ebDlg(this);
+	ebDlg.initDialog(m_pPlane->body());
+	ebDlg.move(GL3dBodyDlg::s_WindowPos);
+	ebDlg.resize(GL3dBodyDlg::s_WindowSize);
+	if(GL3dBodyDlg::s_bWindowMaximized) ebDlg.setWindowState(Qt::WindowMaximized);
+
+
+	if(ebDlg.exec() == QDialog::Accepted)
+	{
+		m_bChanged = true;
+		setResults();
+	}
+	else m_pPlane->body()->duplicate(&memBody);}
+
 
 
 
@@ -701,8 +728,7 @@ void PlaneDlg::setParams()
 	m_pctrlBody->setEnabled(true);
 	m_pctrlXBody->setEnabled(m_pPlane->m_bBody);
 	m_pctrlZBody->setEnabled(m_pPlane->m_bBody);
-	m_pctrlDefineBody->setEnabled(m_pPlane->m_bBody);
-	m_pctrlImportBody->setEnabled(m_pPlane->m_bBody);
+	m_pctrlBodyActions->setEnabled(m_pPlane->m_bBody);
 
 	m_pctrlPlaneName->setText(m_pPlane->planeName());
 	m_pctrlWingTilt->setValue(m_pPlane->m_WingTiltAngle[0]);
@@ -959,25 +985,30 @@ void PlaneDlg::setupLayout()
 		{
 			m_pctrlBody = new QCheckBox(tr("Body"));
 
+			QAction *pDefineBody= new QAction(tr("Define"), this);
+			connect(pDefineBody, SIGNAL(triggered()), this, SLOT(onDefineBody()));
 
-			QAction *m_pImportXMLBody= new QAction(tr("Import body definition from an XML file"), this);
-			connect(m_pImportXMLBody, SIGNAL(triggered()), this, SLOT(onImportXMLBody()));
+			QAction *pDefineBodyObject= new QAction(tr("Define (Advanced users)"), this);
+			connect(pDefineBodyObject, SIGNAL(triggered()), this, SLOT(onDefineBodyObject()));
 
-			QAction *m_pImportPlaneBody= new QAction(tr("Import body definition from another plane"), this);
-			connect(m_pImportPlaneBody, SIGNAL(triggered()), this, SLOT(onImportPlaneBody()));
+			QAction *pImportXMLBody= new QAction(tr("Import body definition from an XML file"), this);
+			connect(pImportXMLBody, SIGNAL(triggered()), this, SLOT(onImportXMLBody()));
+
+			QAction *pImportPlaneBody= new QAction(tr("Import body definition from another plane"), this);
+			connect(pImportPlaneBody, SIGNAL(triggered()), this, SLOT(onImportPlaneBody()));
 
 
-			m_pctrlDefineBody = new QPushButton(tr("Define"));
-			m_pctrlImportBody = new QPushButton(tr("Import"));
+			m_pctrlBodyActions = new QPushButton(tr("Actions..."));
 
 			QMenu *pBodyMenu = new QMenu(tr("Actions..."),this);
-			pBodyMenu->addAction(m_pImportXMLBody);
-			pBodyMenu->addAction(m_pImportPlaneBody);
-			m_pctrlImportBody->setMenu(pBodyMenu);
+			pBodyMenu->addAction(pDefineBody);
+			pBodyMenu->addAction(pDefineBodyObject);
+			pBodyMenu->addAction(pImportXMLBody);
+			pBodyMenu->addAction(pImportPlaneBody);
+			m_pctrlBodyActions->setMenu(pBodyMenu);
 
 			pBodyNameLayout->addWidget(m_pctrlBody);
-			pBodyNameLayout->addWidget(m_pctrlDefineBody);
-			pBodyNameLayout->addWidget(m_pctrlImportBody);
+			pBodyNameLayout->addWidget(m_pctrlBodyActions);
 			pBodyNameLayout->addStretch(1);
 		}
 		QGridLayout *pBodyPos = new QGridLayout;
