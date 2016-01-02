@@ -940,7 +940,7 @@ void ThreeDWidget::glRenderView()
 	glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	static GLdouble pts[4];
+	GLdouble pts[4];
 	pts[0]= 0.0; pts[1]=0.0; pts[2]=-1.0; pts[3]= m_ClipPlanePos;  //x=m_VerticalSplit
 	glClipPlane(GL_CLIP_PLANE1, pts);
 
@@ -1184,7 +1184,7 @@ void ThreeDWidget::screenToViewport(QPoint const &point, CVector &real)
 	// In input, takes the 2D point in screen client area coordinates
 	// In output, returns the 2D OpenGL point
 	//
-	static double h2, w2;
+	double h2, w2;
 	h2 = (double)geometry().height() /2.0;
 	w2 = (double)geometry().width()  /2.0;
 
@@ -1212,7 +1212,7 @@ void ThreeDWidget::viewportToScreen(CVector const &real, QPoint &point)
 	//
 	//converts an opengl 2D vector to screen client coordinates
 	//
-	static double dx, dy, h2, w2;
+	double dx, dy, h2, w2;
 
 	h2 = m_GLViewRect.height() /2.0;
 	w2 = m_GLViewRect.width()  /2.0;
@@ -1246,7 +1246,7 @@ void ThreeDWidget::viewportToScreen(double const &x, double const &y, QPoint &po
     //
     //converts an opengl 2D vector to screen client coordinates
     //
-    static double dx, dy, h2, w2;
+	double dx, dy, h2, w2;
 
     h2 = m_GLViewRect.height() /2.0;
     w2 = m_GLViewRect.width()  /2.0;

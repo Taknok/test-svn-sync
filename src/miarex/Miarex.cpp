@@ -2125,7 +2125,7 @@ void QMiarex::glDrawMasses()
 		glColor3d(1.0, 0.5, 0.5);
 		m_p3dWidget->glRenderSphere(W3dPrefsDlg::s_MassRadius*2.0/m_p3dWidget->m_glScaled);
 
-		m_p3dWidget->glRenderText(m_pCurPlane->CoG().x, m_pCurPlane->CoG().y, m_pCurPlane->CoG().z+delta,
+		m_p3dWidget->glRenderText(0.0, 0.0, 0.0 + delta,
 								  "CoG "+QString("%1").arg(m_pCurPlane->totalMass()*Units::kgtoUnit(), 7,'g',3)
 								  +Units::weightUnitLabel(), W3dPrefsDlg::s_MassColor.lighter(125));
 	}
@@ -4030,6 +4030,7 @@ void QMiarex::onEditCurBody()
 	s_bResetCurves = true;
 	updateView();
 }
+
 
 /**
  * The user has requested an edition of the current body

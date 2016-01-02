@@ -614,7 +614,7 @@ bool GL3dWingDlg::initDialog(Wing *pWing)
 	m_pWingModel->setHeaderData(0, Qt::Horizontal, tr("y (")+str+")");
 	m_pWingModel->setHeaderData(1, Qt::Horizontal, tr("chord (")+str+")");
 	m_pWingModel->setHeaderData(2, Qt::Horizontal, tr("offset (")+str+")");
-	m_pWingModel->setHeaderData(3, Qt::Horizontal, QObject::tr("dihedral"));
+	m_pWingModel->setHeaderData(3, Qt::Horizontal, QObject::tr("dihedral")+QString::fromUtf8("(°)"));
 	m_pWingModel->setHeaderData(4, Qt::Horizontal, QObject::tr("twist")+QString::fromUtf8("(°)"));
 	m_pWingModel->setHeaderData(5, Qt::Horizontal, QObject::tr("foil"));
 	m_pWingModel->setHeaderData(6, Qt::Horizontal, QObject::tr("X-panels"));

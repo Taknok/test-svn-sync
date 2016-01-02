@@ -54,7 +54,7 @@ EditBodyDlg::EditBodyDlg(QWidget *pParent) : QDialog(pParent)
 	m_bResetglBody             = true;
 	m_bChanged                 = false;
 
-	m_pInsertBefore  = new QAction(tr("Insert Before"), this);
+	m_pInsertBefore  = new QAction(tr("Insert before"), this);
 	m_pInsertAfter   = new QAction(tr("Insert after"), this);
 	m_pDeleteItem = new QAction(tr("Delete"), this);
 
@@ -323,8 +323,6 @@ void EditBodyDlg::setupLayout()
 					}
 					QVBoxLayout *pRightColLayout = new QVBoxLayout;
 					{
-
-
 						QHBoxLayout *pClipLayout = new QHBoxLayout;
 						{
 							QLabel *ClipLabel = new QLabel(tr("Clip:"));
@@ -339,7 +337,6 @@ void EditBodyDlg::setupLayout()
 						}
 
 						m_pctrlReset = new QPushButton(tr("Reset view"));
-
 
 						pRightColLayout->addWidget(m_pctrlReset);
 						pRightColLayout->addLayout(pClipLayout);
@@ -1070,7 +1067,7 @@ void EditBodyDlg::readBodyFrameTree(Frame *pFrame, QModelIndex indexLevel)
 {
 	QString object, field, value;
 	QModelIndex dataIndex;
-	double x;
+	double xPt = 0.0;
 
 	do
 	{
@@ -1081,7 +1078,7 @@ void EditBodyDlg::readBodyFrameTree(Frame *pFrame, QModelIndex indexLevel)
 		dataIndex = indexLevel.sibling(indexLevel.row(),2);
 
 		if (field.compare("Lengthwise panels (FLATPANELS case)", Qt::CaseInsensitive)==0)   m_pBody->m_xPanels.append(dataIndex.data().toInt());
-		else if (object.compare("x_Position", Qt::CaseInsensitive)==0) x = dataIndex.data().toDouble()/Units::mtoUnit();
+		else if (object.compare("x_Position", Qt::CaseInsensitive)==0) xPt = dataIndex.data().toDouble()/Units::mtoUnit();
 		else if (object.indexOf("Point", Qt::CaseInsensitive)==0)
 		{
 			CVector Pt;
@@ -1091,7 +1088,7 @@ void EditBodyDlg::readBodyFrameTree(Frame *pFrame, QModelIndex indexLevel)
 		indexLevel = indexLevel.sibling(indexLevel.row()+1,0);
 	} while(indexLevel.isValid());
 
-	pFrame->setuPosition(x);
+	pFrame->setuPosition(xPt);
 }
 
 
