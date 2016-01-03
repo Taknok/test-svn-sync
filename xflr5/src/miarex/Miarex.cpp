@@ -1111,13 +1111,13 @@ void QMiarex::createStabTimeCurves()
 */
 void QMiarex::createStabRungeKuttaCurves()
 {
-	static int i, TotalPoints, PlotInterval;
+	int i, TotalPoints, PlotInterval;
 
-	static double t, dt, ctrl_t;
-	static Curve *pCurve0, *pCurve1, *pCurve2, *pCurve3;
-	static double A[4][4], B[4];
-	static double m[5][4];
-	static double y[4], yp[4];
+	double t, dt, ctrl_t;
+	Curve *pCurve0, *pCurve1, *pCurve2, *pCurve3;
+	double A[4][4], B[4];
+	double m[5][4];
+	double y[4], yp[4];
 
 	QString CurveTitle;
 
@@ -1570,8 +1570,8 @@ void QMiarex::fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 */
 void QMiarex::fillStabCurve(Curve *pCurve, WPolar *pWPolar, int iMode)
 {
-	static int i;
-	static double x,y;
+	int i;
+	double x,y;
 
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 	StabViewDlg *pStabView =(StabViewDlg*)pMainFrame->m_pStabView;
@@ -1612,8 +1612,8 @@ void QMiarex::fillWPlrCurve(Curve *pCurve, WPolar *pWPolar, int XVar, int YVar)
 	double x,y;
 	QString PlaneName;
 	if(m_pCurPlane)     PlaneName=m_pCurPlane->planeName();
-	static QList <double> *pX;
-	static QList <double> *pY;
+	QList <double> *pX;
+	QList <double> *pY;
 	pX = (QList <double> *) pWPolar->getWPlrVariable(XVar);
 	pY = (QList <double> *) pWPolar->getWPlrVariable(YVar);
 
@@ -2935,7 +2935,7 @@ void QMiarex::onAnimateWOpp()
 */
 void QMiarex::onAnimateModeSingle(bool bStep)
 {
-	static double t, sigma, s2, omega, o2, theta_sum, psi_sum, norm;
+	double t, sigma, s2, omega, o2, theta_sum, psi_sum, norm;
 	double *vabs, *phi;
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 	StabViewDlg *pStabView =(StabViewDlg*)pMainFrame->m_pStabView;
@@ -3032,9 +3032,9 @@ void QMiarex::onAnimateModeSingle(bool bStep)
 */
 void QMiarex::onAnimateWOppSingle()
 {
-	static bool bIsValid, bSkipOne;
-    static int size;
-	static PlaneOpp *pPOpp;
+	bool bIsValid, bSkipOne;
+	int size;
+	PlaneOpp *pPOpp;
 
 	//KickIdle
 	if(m_iView!=XFLR5::W3DVIEW && m_iView !=XFLR5::WOPPVIEW) return; //nothing to animate
@@ -3089,6 +3089,7 @@ void QMiarex::onAnimateWOppSingle()
 				m_bResetglDrag     = true;
 				m_bResetglWake     = true;
 				m_bResetglLegend   = true;
+				m_bResetglStream   = true;
 
 				updateView();
 			}

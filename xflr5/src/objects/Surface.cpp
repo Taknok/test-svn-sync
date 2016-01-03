@@ -446,11 +446,13 @@ void Surface::getSidePoint(double xRel, bool bRight, enumPanelPosition pos, CVec
         if(pos==MIDSURFACE && m_pFoilA)      foilPt = m_pFoilA->midYRel(xRel);
 		else if(pos==TOPSURFACE && m_pFoilA)
 		{
-			m_pFoilA->getUpperY(xRel, foilPt.y, PtNormal.x, PtNormal.z);
+//			m_pFoilA->getUpperY(xRel, foilPt.y, PtNormal.x, PtNormal.z);
+			foilPt = m_pFoilA->upperYRel(xRel, PtNormal.x, PtNormal.z);
 		}
 		else if(pos==BOTSURFACE && m_pFoilA)
 		{
 			m_pFoilA->getLowerY(xRel, foilPt.y, PtNormal.x, PtNormal.z);
+			foilPt = m_pFoilA->lowerYRel(xRel, PtNormal.x, PtNormal.z);
 		}
 
         Point = m_LA * (1.0-foilPt.x) + m_TA * foilPt.x;
@@ -461,11 +463,13 @@ void Surface::getSidePoint(double xRel, bool bRight, enumPanelPosition pos, CVec
         if(pos==MIDSURFACE && m_pFoilB)      foilPt = m_pFoilB->midYRel(xRel);
 		else if(pos==TOPSURFACE && m_pFoilB)
 		{
-			m_pFoilB->getUpperY(xRel, foilPt.y, PtNormal.x, PtNormal.z);
+//			m_pFoilB->getUpperY(xRel, foilPt.y, PtNormal.x, PtNormal.z);
+			foilPt = m_pFoilB->upperYRel(xRel, PtNormal.x, PtNormal.z);
 		}
 		else if(pos==BOTSURFACE && m_pFoilB)
 		{
-			m_pFoilB->getLowerY(xRel, foilPt.y, PtNormal.x, PtNormal.z);
+//			m_pFoilB->getLowerY(xRel, foilPt.y, PtNormal.x, PtNormal.z);
+			foilPt = m_pFoilB->lowerYRel(xRel, PtNormal.x, PtNormal.z);
 		}
 
         Point = m_LB * (1.0-foilPt.x) + m_TB * foilPt.x;
@@ -501,7 +505,7 @@ void Surface::getSidePoints(enumPanelPosition pos,
 
 	double alpha_dA = acos(cosdA)*180.0/PI;
 	double alpha_dB = -acos(cosdB)*180.0/PI;
-	double delta = -atan2(Normal.z,Normal.y)*180.0/PI;
+//	double delta = -atan2(Normal.z,Normal.y)*180.0/PI;
 
 	//create the quarter chord centers of rotation for the twist
 	A4 = m_LA *3.0/4.0 + m_TA * 1/4.0;
@@ -524,13 +528,13 @@ void Surface::getSidePoints(enumPanelPosition pos,
 		PtA[i].y   = m_LA.y +(PtA[i].y - m_LA.y)/cosdA;
 		PtA[i].z   = m_LA.z +(PtA[i].z - m_LA.z)/cosdA;
 		PtA[i].rotate(m_LA, m_LA-m_TA, alpha_dA);
-		PtA[i].rotate(A4, TA4, m_TwistA);
+//		PtA[i].rotate(A4, TA4, m_TwistA);
 
 		getSidePoint(xRel, true,  pos, PtB[i], NB);
 		PtB[i].y   = m_LB.y +(PtB[i].y - m_LB.y)/cosdB;
 		PtB[i].z   = m_LB.z +(PtB[i].z - m_LB.z)/cosdB;
 		PtB[i].rotate(m_LB, m_LB-m_TB, alpha_dB);
-		PtB[i].rotate(B4, TB4, m_TwistB);
+//		PtB[i].rotate(B4, TB4, m_TwistB);
 
 		if(pBody && m_bIsCenterSurf && m_bIsLeftSurf)
 		{
@@ -543,7 +547,7 @@ void Surface::getSidePoints(enumPanelPosition pos,
 
 		N[i] = (NA + NB)/2.0;
 		N[i].normalize();
-		N[i].rotateX(delta);
+//		N[i].rotateX(delta);
 	}
 }
 
@@ -561,7 +565,7 @@ void Surface::getSidePoints(enumPanelPosition pos,
 void Surface::getSurfacePoint(double xArel, double xBrel, double yrel, enumPanelPosition pos, CVector &Point, CVector &PtNormal)
 {
     CVector APt, BPt, foilPt;
-
+	double nx, ny;
     if(pos==MIDSURFACE && m_pFoilA && m_pFoilB)
     {
         foilPt = m_pFoilA->midYRel(xArel);
@@ -575,22 +579,22 @@ void Surface::getSurfacePoint(double xArel, double xBrel, double yrel, enumPanel
     }
     else if(pos==TOPSURFACE && m_pFoilA && m_pFoilB)
     {
-        foilPt = m_pFoilA->upperYRel(xArel);
+		foilPt = m_pFoilA->upperYRel(xArel, nx, ny);
         APt = m_LA * (1.0-foilPt.x) + m_TA * foilPt.x;
         APt +=  Normal * foilPt.y*chord(0.0);
 
-        foilPt = m_pFoilB->upperYRel(xBrel);
+		foilPt = m_pFoilB->upperYRel(xBrel, nx, ny);
         BPt = m_LB * (1.0-foilPt.x) + m_TB * foilPt.x;
         BPt +=  Normal * foilPt.y*chord(1.0);
 
     }
     else if(pos==BOTSURFACE && m_pFoilA && m_pFoilB)
     {
-        foilPt = m_pFoilA->lowerYRel(xArel);
+		foilPt = m_pFoilA->lowerYRel(xArel, nx, ny);
         APt = m_LA * (1.0-foilPt.x) + m_TA * foilPt.x;
         APt +=  Normal * foilPt.y*chord(0.0);
 
-        foilPt = m_pFoilB->lowerYRel(xBrel);
+		foilPt = m_pFoilB->lowerYRel(xBrel, nx, ny);
         BPt = m_LB * (1.0-foilPt.x) + m_TB * foilPt.x;
         BPt +=  Normal * foilPt.y*chord(1.0);
     }
@@ -1067,9 +1071,9 @@ void Surface::setSidePoints(Body * pBody, double dx, double dz)
 		SideA_B[l].rotate(m_LA, m_LA-m_TA, alpha_dA);
 
 		//set the twist
-		SideA[l].rotate(A4, TA4, m_TwistA);
-		SideA_T[l].rotate(A4, TA4, m_TwistA);
-		SideA_B[l].rotate(A4, TA4, m_TwistA);
+//		SideA[l].rotate(A4, TA4, m_TwistA);
+//		SideA_T[l].rotate(A4, TA4, m_TwistA);
+//		SideA_B[l].rotate(A4, TA4, m_TwistA);
 		//        NormalA.rotate(TA4, m_TwistA);
 
 		getSidePoint(m_xPointB[l], true, MIDSURFACE, SideB[l], N);
@@ -1090,9 +1094,9 @@ void Surface::setSidePoints(Body * pBody, double dx, double dz)
 		SideB_B[l].rotate(m_LB, m_LB-m_TB, alpha_dB);
 
 		//set the twist
-		SideB[l].rotate(B4, TB4, m_TwistB);
-		SideB_T[l].rotate(B4, TB4, m_TwistB);
-		SideB_B[l].rotate(B4, TB4, m_TwistB);
+//		SideB[l].rotate(B4, TB4, m_TwistB);
+//		SideB_T[l].rotate(B4, TB4, m_TwistB);
+//		SideB_B[l].rotate(B4, TB4, m_TwistB);
 //        NormalB.rotate(TB4, m_TwistB);
 
 
@@ -1269,6 +1273,10 @@ void Surface::setTwist()
 
 
 
+double Surface::spanLength()
+{
+	return qAbs(m_LB.y - m_LA.y);
+}
 
 
 

@@ -629,8 +629,6 @@ void ThreeDWidget::resizeGL(int width, int height)
 
 void ThreeDWidget::setupViewPort(int width, int height)
 {
-//	makeCurrent();
-
 	glViewport(0,0, width, height);
 
 	glMatrixMode(GL_PROJECTION);

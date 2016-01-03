@@ -89,8 +89,6 @@ public:
 	bool importDefinition(QString path_to_file, QString errorMessage);
 	bool exportDefinition(QString path_to_file, QString errorMessage);
 
-	void getViewYZPos(double xrel, double y, double &yv, double &zv, int pos);
-
 	void createSurfaces(CVector const &T, double XTilt, double YTilt);//generic surface, LLT, VLM or Panel
 
 	int  VLMPanelTotal(bool bThinSurface);
@@ -125,6 +123,8 @@ public:
 	void scaleChord(double NewChord);
 	void scaleArea(double newArea);
 	void scaleAR(double newAR);
+
+	void surfacePoint(double xRel, double yob, enumPanelPosition pos, CVector &Point, CVector &PtNormal);
 
 	bool serializeWingWPA(QDataStream &ar, bool bIsStoring);
 	bool serializeWingXFL(QDataStream &ar, bool bIsStoring);
