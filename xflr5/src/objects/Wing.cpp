@@ -1476,7 +1476,7 @@ void Wing::surfacePoint(double xRel, double yob, enumPanelPosition pos, CVector 
 
 	for (int is=0; is<NWingSection()-1; is++)
 	{
-		if(fabs(YPosition(is+1)-YPosition(is+1)>s_MinPanelSize))
+		if(qAbs(YPosition(is+1)-YPosition(is+1))>s_MinPanelSize)
 		{
 			if(YPosition(is)< fy && fy<=YPosition(is+1))
 			{

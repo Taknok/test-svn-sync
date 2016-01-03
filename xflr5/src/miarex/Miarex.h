@@ -346,7 +346,6 @@ public:
 	bool m_bInitLLTCalc;               /**< true if the LLT parameters should be set to default prior to the analysis. Otherwise, the iterations will start at the results of the previous calculation */
 	bool m_bIs2DScaleSet;              /**< true if the 2D scale has been set, false if needs to be reset */
 	bool m_bIs3DScaleSet;              /**< true if the 3D scale has been set, false if needs to be reset */
-	bool m_bLogFile;			       /**< true if the log file warning is turned on */
 	bool m_bLongitudinal;              /**< true if longitudinal stability results are to be displayed, false if lateral */
 	bool m_bMoments;                   /**< true if the arrows representing moments are to be displayed on the 3D openGl view */
 	bool m_bPanelForce;                /**< true if the forces acting on the panels are to be displayed in the 3D view */
@@ -374,6 +373,9 @@ public:
 	bool m_bXTop;                      /**< true if the transition on the top surface should be displayed in the operating point or in 3D view */
 	bool m_bXPressed;                  /**< true if the X key is pressed */
 	bool m_bYPressed;                  /**< true if the Y key is pressed */
+
+	static bool m_bLogFile;			       /**< true if the log file warning is turned on */
+
 
 	static bool m_bResetglGeom;               /**< true if the geometry OpenGL list needs to be re-generated */
 	static bool m_bResetglMesh;               /**< true if the mesh OpenGL list needs to be re-generated */

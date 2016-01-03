@@ -32,6 +32,7 @@
 
 #include <QDialog>
 #include <QPushButton>
+#include <QCheckBox>
 #include <QString>
 #include <QFile>
 #include <QTextEdit>
@@ -74,8 +75,9 @@ public:
 	void UpdateGraph(int x, double y);
 
 private slots:
-	void OnCancelAnalysis();
-	void OnProgress();
+	void onCancelAnalysis();
+	void onProgress();
+	void onLogFile();
 
 private:
 	void keyPressEvent(QKeyEvent *event);
@@ -84,14 +86,13 @@ private:
 
 	bool AlphaLoop();
 	bool QInfLoop();
-	void ResetCurves();
-	void SetupLayout();
-	void Analyze();
-	void UpdateView();
-	void UpdateOutput(QString &strong);
+	void resetCurves();
+	void setupLayout();
+	void analyze();
+	void updateView();
+	void updateOutput(QString &strong);
 
 
-	static void *s_pPrePost3D;     /**< A static pointer to the unique instance of the pre/post processing class. */
 	static QPoint s_Position;   /**< the position on the client area of he dialog's topleft corner */
 
 	LLTAnalysis *m_pLLT;          /**< The unique instance of the LLTAnalysis class, called to perform each OpPOint calculation */
@@ -109,6 +110,7 @@ private:
 	QPushButton *m_pctrlCancel;
 	GraphWidget * m_pGraphWidget;
 	QTextEdit *m_pctrlTextOutput;
+	QCheckBox * m_pctrlLogFile;
 };
 
 #endif
