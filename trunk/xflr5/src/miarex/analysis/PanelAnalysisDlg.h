@@ -32,6 +32,7 @@
 
 #include <QDialog>
 #include <QProgressBar>
+#include <QCheckBox>
 #include <QGLWidget>
 #include <QString>
 #include <QFile>
@@ -67,16 +68,16 @@ public:
 	bool initDialog();
 
 private slots:
-	void OnCancelAnalysis();
+	void onCancelAnalysis();
 	void onProgress();
-
+	void onLogFile();
 
 private:
 	void showEvent(QShowEvent *event);
 	void hideEvent(QHideEvent *event);
 	void keyPressEvent(QKeyEvent *event);
 
-	void SetupLayout();
+	void setupLayout();
 	void analyze();
 
 	void UpdateView();
@@ -84,6 +85,7 @@ private:
 private:
 	QTextEdit *m_pctrlTextOutput;
 	QPushButton *m_pctrlCancel;
+	QCheckBox * m_pctrlLogFile;
 	QProgressBar *m_pctrlProgress;
 
 	static QPoint s_Position;        /**< the position on the client area of he dialog's topleft corner */
