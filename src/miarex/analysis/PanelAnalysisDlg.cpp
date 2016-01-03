@@ -31,6 +31,7 @@
 #include <QKeyEvent>
 #include <math.h>
 
+#include "miarex/Miarex.h"
 #include "PanelAnalysisDlg.h"
 #include "../../misc/Settings.h"
 #include "../../globals.h"
@@ -47,7 +48,7 @@ QPoint PanelAnalysisDlg::s_Position;
 PanelAnalysisDlg::PanelAnalysisDlg(QWidget *pParent, PanelAnalysis *pPanelAnalysis) : QDialog(pParent)
 {
 	setWindowTitle(tr("3D Panel Analysis"));
-	SetupLayout();
+	setupLayout();
 	m_pPanelAnalysis = pPanelAnalysis;
 }
 
@@ -75,6 +76,8 @@ bool PanelAnalysisDlg::initDialog()
 	m_pctrlProgress->setMinimum(0);
 	m_pctrlProgress->setMaximum(100);
 
+	m_pctrlLogFile->setChecked(QMiarex::m_bLogFile);
+
 	return true;
 }
 
@@ -86,7 +89,7 @@ void PanelAnalysisDlg::keyPressEvent(QKeyEvent *event)
 	{
 		case Qt::Key_Escape:
 		{
-			OnCancelAnalysis();
+			onCancelAnalysis();
 			event->accept();
 			return;
 		}
@@ -97,12 +100,21 @@ void PanelAnalysisDlg::keyPressEvent(QKeyEvent *event)
 
 
 /** The user has requested to cancel the on-going analysis*/
-void PanelAnalysisDlg::OnCancelAnalysis()
+void PanelAnalysisDlg::onCancelAnalysis()
 {
 	PanelAnalysis::s_bCancel = true;
-	if(m_bIsFinished) { PanelAnalysis::s_bCancel = false; done(1); }
+	if(m_bIsFinished)
+	{
+		PanelAnalysis::s_bCancel = false;
+		done(1);
+	}
 }
 
+
+void PanelAnalysisDlg::onLogFile()
+{
+	QMiarex::m_bLogFile = m_pctrlLogFile->isChecked();
+}
 
 
 /**Updates the progress of the analysis in the slider widget */
@@ -121,7 +133,7 @@ void PanelAnalysisDlg::onProgress()
 
 
 /**  Sets up the GUI */
-void PanelAnalysisDlg::SetupLayout()
+void PanelAnalysisDlg::setupLayout()
 {
 	QDesktopWidget desktop;
 	QRect r = desktop.geometry();
@@ -140,21 +152,24 @@ void PanelAnalysisDlg::SetupLayout()
 	m_pctrlProgress->setMaximum(100);
 	m_pctrlProgress->setValue(0);
 
-	m_pctrlCancel = new QPushButton(tr("Cancel"),this);
-	connect(m_pctrlCancel, SIGNAL(clicked()), this, SLOT(OnCancelAnalysis()));
 
-	QHBoxLayout *pButtonLayout = new QHBoxLayout;
+	QHBoxLayout *pctrlLayout = new QHBoxLayout;
 	{
-		pButtonLayout->addStretch(1);
-		pButtonLayout->addWidget(m_pctrlCancel);
-		pButtonLayout->addStretch(1);
+		m_pctrlCancel = new QPushButton(tr("Cancel"));
+		connect(m_pctrlCancel, SIGNAL(clicked()), this, SLOT(onCancelAnalysis()));
+
+		m_pctrlLogFile = new QCheckBox(tr("Keep this window opened on errors"));
+		connect(m_pctrlLogFile, SIGNAL(toggled(bool)), this, SLOT(onLogFile()));
+		pctrlLayout->addWidget(m_pctrlLogFile);
+		pctrlLayout->addStretch();
+		pctrlLayout->addWidget(m_pctrlCancel);
 	}
 
 	QVBoxLayout *pMainLayout = new QVBoxLayout;
 	{
 		pMainLayout->addWidget(m_pctrlTextOutput);
 		pMainLayout->addWidget(m_pctrlProgress);
-		pMainLayout->addLayout(pButtonLayout);
+		pMainLayout->addLayout(pctrlLayout);
 	}
 	setLayout(pMainLayout);
 }

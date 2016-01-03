@@ -97,7 +97,7 @@ bool QMiarex::m_bResetglBodyMesh = true;
 bool QMiarex::m_bResetglSurfVelocities = true;
 
 bool QMiarex::s_bResetCurves = true;
-
+bool QMiarex::m_bLogFile = true;
 
 QList<void *> *QMiarex::m_poaPlane = NULL;
 QList<void *> *QMiarex::m_poaWPolar = NULL;
@@ -177,7 +177,6 @@ QMiarex::QMiarex(QWidget *parent)
 	s_bVCd               = false;
 	m_bTrans             = false;
 	m_bInitLLTCalc       = true;
-	m_bLogFile           = true;
 	m_bTransGraph        = true;
 	m_bPanelForce        = false;
 	m_bLongitudinal      = true;
@@ -2431,9 +2430,10 @@ void QMiarex::LLTAnalyze(double V0, double VMax, double VDelta, bool bSequence, 
 	m_pLLT->setLLTRange(V0, VMax, VDelta, bSequence);
 	m_pLLT->setLLTData(m_pCurPlane, m_pCurWPolar);
 
+
 	m_pLLTDlg->initDialog();
 	m_pLLTDlg->show();
-	m_pLLTDlg->Analyze();
+	m_pLLTDlg->analyze();
 
 	if(m_bLogFile && (m_pLLT->m_bError || m_pLLT->m_bWarning))
 	{
@@ -2442,6 +2442,7 @@ void QMiarex::LLTAnalyze(double V0, double VMax, double VDelta, bool bSequence, 
 	{
 		m_pLLTDlg->hide();
 	}
+
 
 	setPlaneOpp(false, V0);
 	pMainFrame->updatePOppListBox();

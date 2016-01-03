@@ -33,10 +33,9 @@
 #include "LLTAnalysisDlg.h"
 #include "../Objects3D.h"
 #include "../../misc/Settings.h"
+#include "miarex/Miarex.h"
 
 
-
-void *LLTAnalysisDlg::s_pPrePost3D;
 QPoint LLTAnalysisDlg::s_Position;
 
 
@@ -47,7 +46,7 @@ LLTAnalysisDlg::LLTAnalysisDlg(QWidget *pParent, LLTAnalysis *pLLTAnalysis) : QD
 {
 	setWindowTitle(tr("LLT Analysis"));
 
-	SetupLayout();
+	setupLayout();
 
 	m_pLLT = pLLTAnalysis;
 
@@ -73,7 +72,6 @@ LLTAnalysisDlg::LLTAnalysisDlg(QWidget *pParent, LLTAnalysis *pLLTAnalysis) : QD
 	m_pIterGraph->setType(1);
 
 	m_pIterGraph->setYTitle("|Da|");
-
 
 	m_bCancel     = false;
 	m_bFinished   = false;
@@ -111,8 +109,13 @@ void LLTAnalysisDlg::initDialog()
 	m_pIterGraph->setYMin(0.0);
 	m_pIterGraph->setYMax(1.0);
 
+	m_pctrlLogFile->setChecked(QMiarex::m_bLogFile);
 }
 
+void LLTAnalysisDlg::onLogFile()
+{
+	QMiarex::m_bLogFile = m_pctrlLogFile->isChecked();
+}
 
 
 /** Overrides and handles the keyPressEvent sent by Qt */
@@ -122,7 +125,7 @@ void LLTAnalysisDlg::keyPressEvent(QKeyEvent *event)
 	{
 		case Qt::Key_Escape:
 		{
-			OnCancelAnalysis();
+			onCancelAnalysis();
 			event->accept();
 			return;
 		}
@@ -134,7 +137,7 @@ void LLTAnalysisDlg::keyPressEvent(QKeyEvent *event)
 
 
 /** The user has requested the cancellation of the analysis*/
-void LLTAnalysisDlg::OnCancelAnalysis()
+void LLTAnalysisDlg::onCancelAnalysis()
 {
 	m_bCancel = true;
 
@@ -147,7 +150,7 @@ void LLTAnalysisDlg::OnCancelAnalysis()
 /**
 *Clears the content of the graph's curve prior to the start of the calculation of the next operating point.
 */
-void LLTAnalysisDlg::ResetCurves()
+void LLTAnalysisDlg::resetCurves()
 {
 	Curve*pCurve;
 	pCurve = m_pIterGraph->curve(0);
@@ -161,7 +164,7 @@ void LLTAnalysisDlg::ResetCurves()
 /**
 * Initializes the interface of the dialog box
 */
-void LLTAnalysisDlg::SetupLayout()
+void LLTAnalysisDlg::setupLayout()
 {
 	QDesktopWidget desktop;
 	QRect r = desktop.geometry();
@@ -186,15 +189,23 @@ void LLTAnalysisDlg::SetupLayout()
 	m_pGraphWidget->showLegend(true);
 
 
-	m_pctrlCancel = new QPushButton(tr("Cancel"));
-	connect(m_pctrlCancel, SIGNAL(clicked()), this, SLOT(OnCancelAnalysis()));
+	QHBoxLayout *pctrlLayout = new QHBoxLayout;
+	{
+		m_pctrlCancel = new QPushButton(tr("Cancel"));
+		connect(m_pctrlCancel, SIGNAL(clicked()), this, SLOT(onCancelAnalysis()));
 
+		m_pctrlLogFile = new QCheckBox(tr("Keep this window opened on errors"));
+		connect(m_pctrlLogFile, SIGNAL(toggled(bool)), this, SLOT(onLogFile()));
+		pctrlLayout->addWidget(m_pctrlLogFile);
+		pctrlLayout->addStretch();
+		pctrlLayout->addWidget(m_pctrlCancel);
+	}
 
 	QVBoxLayout *pMainLayout = new QVBoxLayout;
 	{
 		pMainLayout->addWidget(m_pctrlTextOutput);
 		pMainLayout->addWidget(m_pGraphWidget,2);
-		pMainLayout->addWidget(m_pctrlCancel);
+		pMainLayout->addLayout(pctrlLayout);
 	}
 	setLayout(pMainLayout);
 }
@@ -206,7 +217,7 @@ void LLTAnalysisDlg::SetupLayout()
 * The LLTAnalysis object has been created and the input data has been loaded.
 * Depending on the type of polar, the method launches either a loop over aoa or velocity values.
 */
-void LLTAnalysisDlg::Analyze()
+void LLTAnalysisDlg::analyze()
 {
 	if(!m_pLLT->m_pWing || !m_pLLT->m_pWPolar) return;
 	//all set to launch the analysis
@@ -217,7 +228,7 @@ void LLTAnalysisDlg::Analyze()
 
 
 	QTimer *pTimer = new QTimer(this);
-	connect(pTimer, SIGNAL(timeout()), this, SLOT(OnProgress()));
+	connect(pTimer, SIGNAL(timeout()), this, SLOT(onProgress()));
 	pTimer->setInterval(100);
 	pTimer->start();
 
@@ -225,20 +236,20 @@ void LLTAnalysisDlg::Analyze()
 
 	QString strange;
 	strange = 	m_pLLT->m_pWing->wingName()+"\n";
-	UpdateOutput(strange);
+	updateOutput(strange);
 	strange = m_pLLT->m_pWPolar->polarName()+"\n";
-	UpdateOutput(strange);
+	updateOutput(strange);
 
 	strange = tr("Launching analysis....")+"\n\n";
-	UpdateOutput(strange);
+	updateOutput(strange);
 	strange = QString(tr("Max iterations     = %1")+"\n").arg(LLTAnalysis::s_IterLim);
-	UpdateOutput(strange);
+	updateOutput(strange);
 	strange = QString(tr("Alpha precision    = %1 deg")+"\n").arg(LLTAnalysis::s_CvPrec,0,'f',6);
-	UpdateOutput(strange);
+	updateOutput(strange);
 	strange = QString(tr("Number of stations = %1")+"\n").arg(LLTAnalysis::s_NLLTStations);
-	UpdateOutput(strange);
+	updateOutput(strange);
 	strange = QString(tr("Relaxation factor  = %1")+"\n\n").arg(LLTAnalysis::s_RelaxMax,0,'f',1);
-	UpdateOutput(strange);
+	updateOutput(strange);
 
 	m_pIterGraph->resetLimits();
 	m_pIterGraph->setXMax((double)LLTAnalysis::s_IterLim);
@@ -266,7 +277,7 @@ void LLTAnalysisDlg::Analyze()
 	strange+= "\n";
 
 	m_pLLT->traceLog(strange);
-	OnProgress();
+	onProgress();
 
 	QString FileName = QDir::tempPath() + "/XFLR5.log";
 	QFile *pXFile = new QFile(FileName);
@@ -295,14 +306,14 @@ void LLTAnalysisDlg::Analyze()
 * Updates the graph widget. Called after each iteration of the LLTAnalysis. 
 * Time consuming, but it's necessary to provide the user with visual feedback on the progress of the analysis
 */
-void LLTAnalysisDlg::UpdateView()
+void LLTAnalysisDlg::updateView()
 {
 	m_pGraphWidget->update();
 	repaint();
 }
 
 /**Updates the progress of the analysis in the slider widget */
-void LLTAnalysisDlg::OnProgress()
+void LLTAnalysisDlg::onProgress()
 {
 	if(m_pLLT->m_OutMessage.length())
 	{
@@ -319,7 +330,7 @@ void LLTAnalysisDlg::OnProgress()
 * Updates the text output in the dialog box and the log file.
 *@param strong the text message to append to the output widget and to the log file.
 */
-void LLTAnalysisDlg::UpdateOutput(QString &strong)
+void LLTAnalysisDlg::updateOutput(QString &strong)
 {
 	m_pctrlTextOutput->insertPlainText(strong);
 	m_pctrlTextOutput->ensureCursorVisible();
@@ -335,7 +346,7 @@ void LLTAnalysisDlg::UpdateGraph(int x, double y)
 {
 	Curve *pCurve = m_pIterGraph->curve(0);
 	if(pCurve) pCurve->appendPoint((double)x,y);
-	UpdateView();
+	updateView();
 }
 
 
