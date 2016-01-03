@@ -348,6 +348,8 @@ int Direct2dDesign::selectPoint(CVector real)
 
 void Direct2dDesign::dragSelectedPoint(double x, double y)
 {
+	Q_UNUSED(x);
+	Q_UNUSED(y);
 	if(!m_pSF->isVisible()) return;
 
 	// user is dragging the point

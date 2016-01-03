@@ -32,7 +32,7 @@
 #include <QProgressDialog>
 
 
-#define SIDEPOINTS 113
+#define SIDEPOINTS 13
 
 
 void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
@@ -58,7 +58,6 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 
             glNewList(List+iw, GL_COMPILE);
 			{
-
 				if(Settings::s_bAlphaChannel)
 				{
 					glColor4d(pWing->wingColor().redF(),pWing->wingColor().greenF(),pWing->wingColor().blueF(), pWing->wingColor().alphaF());
@@ -80,8 +79,6 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 				{
 					//top surface
 					pWing->m_Surface.at(j)->getSidePoints(TOPSURFACE, pBody, PtTopLeft, PtTopRight, Normal, SIDEPOINTS);
-//					qDebug("top ____ Surface %d", j);
-//					for(int is=0; is<SIDEPOINTS; is++) qDebug("%13.5f   %13.5f   %13.5f",  Normal[is].x,  Normal[is].y,  Normal[is].z);
 					glBegin(GL_QUAD_STRIP);
 					{
 						for (l=0; l<SIDEPOINTS; l++)
@@ -95,8 +92,6 @@ void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
 
 					//bottom surface
 					pWing->m_Surface.at(j)->getSidePoints(BOTSURFACE, pBody, PtBotLeft, PtBotRight, Normal, SIDEPOINTS);
-//					qDebug("bot ____ Surface %d", j);
-//					for(int is=0; is<SIDEPOINTS; is++) qDebug("%13.5f   %13.5f   %13.5f",  Normal[is].x,  Normal[is].y,  Normal[is].z);
 					glBegin(GL_QUAD_STRIP);
 					{
 						for (l=0; l<SIDEPOINTS; l++)
@@ -524,28 +519,23 @@ void GLCreateCpLegendClr(QRect cltRect)
 
 void GLCreateDownwash(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 {
-	// pWing is either the Wing, the stab, or the fin
-	// pWOpp is related to the pWing
-
-
 	if(!pWing || !pWPolar || !pWOpp) return;
 	
 	QColor color;
 	int style, width;
 	int i,j,k,p;
-	double dih, xt, yt, zt, yob;
+	double dih, yob;
 	double y1, y2, z1, z2, xs, ys, zs;
-	CVector C;
+	CVector C, Pt, PtNormal;
 	double factor, amp;
 
 	double sina = -sin(pWOpp->m_Alpha*PI/180.0);
 	double cosa =  cos(pWOpp->m_Alpha*PI/180.0);
 	factor = QMiarex::s_VelocityScale/5.0;
 
-	//DOWNWASH
 	glNewList(List,GL_COMPILE);
 	{
-
+		glEnable(GL_DEPTH_TEST);
 		glEnable (GL_LINE_STIPPLE);
 
 		color = W3dPrefsDlg::s_DownwashColor;
@@ -562,7 +552,6 @@ void GLCreateDownwash(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 		else if(style == 4) 	glLineStipple (1, 0x7E66);
 		else					glLineStipple (1, 0xFFFF);
 
-
 		if(pWOpp)
 		{
 			if(pWPolar->analysisMethod()==XFLR5::LLTMETHOD)
@@ -570,18 +559,19 @@ void GLCreateDownwash(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 				for (i=1; i<pWOpp->m_NStation; i++)
 				{
 					yob = 2.0*pWOpp->m_SpanPos[i]/pWOpp->m_Span;
-					xt = pWing->getOffset(yob) + pWing->getChord(yob);
-					pWing->getViewYZPos(1., pWOpp->m_SpanPos[i], yt,zt,0);
+//					xt = pWing->getOffset(yob) + pWing->getChord(yob);
+//					pWing->getViewYZPos(1., pWOpp->m_SpanPos[i], yt, zt, 0);
+					pWing->surfacePoint(1.0, yob, MIDSURFACE, Pt, PtNormal);
 
 					dih = -pWing->Dihedral(yob)*PI/180.0;
 					amp = pWOpp->m_QInf*sin(pWOpp->m_Ai[i]*PI/180.0);
 					amp *= factor;
 					glBegin(GL_LINES);
 					{
-						glVertex3d(xt, yt, zt);
-						glVertex3d(xt + amp * cos(dih)* sina,
-								   yt + amp * sin(dih),
-								   zt + amp * cos(dih)* cosa);
+						glVertex3d(Pt.x, Pt.y, Pt.z);
+						glVertex3d(Pt.x + amp * cos(dih)* sina,
+								   Pt.y + amp * sin(dih),
+								   Pt.z + amp * cos(dih)* cosa);
 					}
 					glEnd();
 				}
@@ -590,16 +580,17 @@ void GLCreateDownwash(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 					for (i=1; i<pWOpp->m_NStation; i++)
 					{
 						yob = 2.0*pWOpp->m_SpanPos[i]/pWOpp->m_Span;
-						xt = pWing->getOffset(yob) + pWing->getChord(yob);
-						pWing->getViewYZPos(1., pWOpp->m_SpanPos[i], yt,zt,0);
+//						xt = pWing->getOffset(yob) + pWing->getChord(yob);
+//						pWing->getViewYZPos(1., pWOpp->m_SpanPos[i], yt,zt,0);
+						pWing->surfacePoint(1.0, yob, MIDSURFACE, Pt, PtNormal);
 
 						dih = -pWing->Dihedral(yob)*PI/180.0;
 						amp = pWOpp->m_QInf*sin(pWOpp->m_Ai[i]*PI/180.0);
 						amp *= factor;
 
-						glVertex3d(xt + amp * cos(dih)* sina,
-								   yt + amp * sin(dih),
-								   zt + amp * cos(dih)* cosa);
+						glVertex3d(Pt.x + amp * cos(dih)* sina,
+								   Pt.y + amp * sin(dih),
+								   Pt.z + amp * cos(dih)* cosa);
 					}
 				}
 				glEnd();
@@ -659,7 +650,7 @@ void GLCreateDownwash(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 void GLCreateDrag(Wing *pWing, WPolar* pWPolar, WingOpp *pWOpp, int List)
 {
 	if(!pWing || !pWPolar || !pWOpp) return;
-	CVector C;
+	CVector C, Pt, PtNormal;
 	int i,j,k;
 	int Istyle, Iwidth, Vstyle, Vwidth;
 	QColor Icolor, Vcolor;
@@ -670,7 +661,7 @@ void GLCreateDrag(Wing *pWing, WPolar* pWPolar, WingOpp *pWOpp, int List)
 
 	double Ir,Ig,Ib, Vr, Vg, Vb;
 	double amp, amp1, amp2;
-	double yob, xt, yt, zt, dih;
+	double yob, dih;
 	double cosa, cosb, sina, sinb;
 	cosa =  cos(pWOpp->m_Alpha * PI/180.0);
 	sina = -sin(pWOpp->m_Alpha * PI/180.0);
@@ -708,6 +699,7 @@ void GLCreateDrag(Wing *pWing, WPolar* pWPolar, WingOpp *pWOpp, int List)
 	//DRAGLINE
 	glNewList(List,GL_COMPILE);
 	{
+		glEnable(GL_DEPTH_TEST);
 		glEnable (GL_LINE_STIPPLE);
 		glLineStipple (1, IDash);// Solid
 		glLineWidth((GLfloat)(Iwidth));
@@ -723,8 +715,10 @@ void GLCreateDrag(Wing *pWing, WPolar* pWPolar, WingOpp *pWOpp, int List)
 				{
 					yob = 2.0*pWOpp->m_SpanPos[i]/pWOpp->m_Span;
 
-					xt = pWing->getChord(yob) + pWing->getOffset(yob);
-					pWing->getViewYZPos(1.0, pWOpp->m_SpanPos[i],yt,zt,0);
+//					xt = pWing->getChord(yob) + pWing->getOffset(yob);
+//					pWing->getViewYZPos(1.0, pWOpp->m_SpanPos[i],yt,zt,0);
+					pWing->surfacePoint(1.0, yob, MIDSURFACE, Pt, PtNormal);
+
 					dih = pWing->Dihedral(yob)*PI/180.0;
 					amp1 = q0*pWOpp->m_ICd[i]*pWing->getChord(yob)/pWOpp->m_MAChord*QMiarex::s_DragScale/coef;
 					amp2 = q0*pWOpp->m_PCd[i]*pWing->getChord(yob)/pWOpp->m_MAChord*QMiarex::s_DragScale/coef;
@@ -735,10 +729,10 @@ void GLCreateDrag(Wing *pWing, WPolar* pWPolar, WingOpp *pWOpp, int List)
 						glLineWidth((GLfloat)(Iwidth));
 						glBegin(GL_LINES);
 						{
-							glVertex3d(xt, yt, zt);
-							glVertex3d(	xt + amp1 * cos(dih)*cosa,
-										yt,
-										zt - amp1 * cos(dih)*sina);
+							glVertex3d(Pt.x, Pt.y, Pt.z);
+							glVertex3d(Pt.x + amp1 * cos(dih)*cosa,
+									   Pt.y,
+									   Pt.z - amp1 * cos(dih)*sina);
 						}
 						glEnd();
 					}
@@ -751,18 +745,18 @@ void GLCreateDrag(Wing *pWing, WPolar* pWPolar, WingOpp *pWOpp, int List)
 						{
 							if(!QMiarex::s_bICd)
 							{
-								glVertex3d(xt, yt,zt);
-								glVertex3d(xt + amp2 * cos(dih)*cosa,
-										   yt,
-										   zt - amp2 * cos(dih)*sina);
+								glVertex3d(Pt.x, Pt.y, Pt.z);
+								glVertex3d(Pt.x + amp2 * cos(dih)*cosa,
+										   Pt.y,
+										   Pt.z - amp2 * cos(dih)*sina);
 							}
 							else {
-								glVertex3d(xt + amp1 * cos(dih)*cosa,
-										   yt,
-										   zt - amp1 * cos(dih)*sina);
-								glVertex3d(xt + (amp1+amp2) * cos(dih)*cosa,
-										   yt,
-										   zt - (amp1+amp2) * cos(dih)*sina);
+								glVertex3d(Pt.x + amp1 * cos(dih)*cosa,
+										   Pt.y,
+										   Pt.z - amp1 * cos(dih)*sina);
+								glVertex3d(Pt.x + (amp1+amp2) * cos(dih)*cosa,
+										   Pt.y,
+										   Pt.z - (amp1+amp2) * cos(dih)*sina);
 							}
 						}
 						glEnd();
@@ -778,17 +772,18 @@ void GLCreateDrag(Wing *pWing, WPolar* pWPolar, WingOpp *pWOpp, int List)
 						for (i=1; i<pWOpp->m_NStation; i++)
 						{
 							yob = 2.0*pWOpp->m_SpanPos[i]/pWOpp->m_Span;
-							xt = pWing->getOffset(yob) + pWing->getChord(yob);
-							pWing->getViewYZPos(1.0, pWOpp->m_SpanPos[i],yt,zt,0);
+//							xt = pWing->getOffset(yob) + pWing->getChord(yob);
+//							pWing->getViewYZPos(1.0, pWOpp->m_SpanPos[i],yt,zt,0);
+							pWing->surfacePoint(1.0, yob, MIDSURFACE, Pt, PtNormal);
 
 							dih = pWing->Dihedral(yob)*PI/180.0;
 
 							amp  = q0*pWOpp->m_ICd[i]*pWing->getChord(yob)/pWOpp->m_MAChord;
 							amp *= QMiarex::s_DragScale/coef;
 
-							glVertex3d(xt + amp * cos(dih)*cosa,
-									   yt,
-									   zt - amp * cos(dih)*sina);
+							glVertex3d(Pt.x + amp * cos(dih)*cosa,
+									   Pt.y,
+									   Pt.z - amp * cos(dih)*sina);
 						}
 					}
 					glEnd();
@@ -803,8 +798,9 @@ void GLCreateDrag(Wing *pWing, WPolar* pWPolar, WingOpp *pWOpp, int List)
 						for (i=1; i<pWOpp->m_NStation; i++)
 						{
 							yob = 2.0*pWOpp->m_SpanPos[i]/pWOpp->m_Span;
-							xt = pWing->getOffset(yob) + pWing->getChord(yob);
-							pWing->getViewYZPos(1.0, pWOpp->m_SpanPos[i],yt,zt,0);
+//							xt = pWing->getOffset(yob) + pWing->getChord(yob);
+//							pWing->getViewYZPos(1.0, pWOpp->m_SpanPos[i],yt,zt,0);
+							pWing->surfacePoint(1.0, yob, MIDSURFACE, Pt, PtNormal);
 
 							dih = pWing->Dihedral(yob)*PI/180.0;
 							amp=0.0;
@@ -813,9 +809,9 @@ void GLCreateDrag(Wing *pWing, WPolar* pWPolar, WingOpp *pWOpp, int List)
 							amp *= q0*pWing->getChord(yob)/pWOpp->m_MAChord;
 							amp *= QMiarex::s_DragScale/coef;
 
-							glVertex3d( xt + amp * cos(dih)*cosa,
-										yt ,
-										zt - amp * cos(dih)*sina);
+							glVertex3d(Pt.x + amp * cos(dih)*cosa,
+									   Pt.y,
+									   Pt.z - amp * cos(dih)*sina);
 						}
 					}
 					glEnd();
@@ -1432,17 +1428,18 @@ void GLCreateLiftStrip(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 	if(!pWing || !pWPolar || !pWOpp) return;
 	int i,j,k;
 	int style, width;
-	CVector C, CL;
+	CVector C, CL, Pt, PtNormal;
 
 	QColor color;
 
-	double amp, yob, xt, yt, zt, dih;
+	double amp, yob, dih;
 	double cosa =  cos(pWOpp->m_Alpha * PI/180.0);
 	double sina = -sin(pWOpp->m_Alpha * PI/180.0);
 	
 	//LIFTLINE
 	glNewList(List,GL_COMPILE);
 	{
+		glEnable(GL_DEPTH_TEST);
 		glEnable (GL_LINE_STIPPLE);
 
 		color = W3dPrefsDlg::s_XCPColor;
@@ -1468,18 +1465,19 @@ void GLCreateLiftStrip(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 				for (i=1; i<pWOpp->m_NStation; i++)
 				{
 					yob = 2.0*pWOpp->m_SpanPos[i]/pWOpp->m_Span;
-					xt = pWing->getOffset(yob) + pWOpp->m_XCPSpanRel[i]*pWing->getChord(yob);
-					pWing->getViewYZPos(pWOpp->m_XCPSpanRel[i], pWOpp->m_SpanPos[i], yt, zt, 0);
+//					xt = pWing->getOffset(yob) + pWOpp->m_XCPSpanRel[i]*pWing->getChord(yob);
+//					pWing->getViewYZPos(pWOpp->m_XCPSpanRel[i], pWOpp->m_SpanPos[i], yt, zt, 0);
+					pWing->surfacePoint(pWOpp->m_XCPSpanRel[i], yob, MIDSURFACE, Pt, PtNormal);
 					dih = -pWing->Dihedral(yob)*PI/180.0;
 					amp = q0*pWOpp->m_Cl[i]*pWing->getChord(yob)/pWOpp->m_MAChord;
 					amp *= QMiarex::s_LiftScale/1000.0;
 
 					glBegin(GL_LINES);
 					{
-						glVertex3d(xt, yt, zt);
-						glVertex3d((xt + amp * cos(dih)*sina),
-								  yt + amp * sin(dih),
-								  zt + amp * cos(dih)*cosa);
+						glVertex3d(Pt.x, Pt.y, Pt.z);
+						glVertex3d((Pt.x + amp * cos(dih)*sina),
+									Pt.y + amp * sin(dih),
+									Pt.z + amp * cos(dih)*cosa);
 					}
 					glEnd();
 				}
@@ -1488,16 +1486,17 @@ void GLCreateLiftStrip(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 					for (i=1; i<pWOpp->m_NStation; i++)
 					{
 						yob = 2.0*pWOpp->m_SpanPos[i]/pWOpp->m_Span;
-						xt = pWing->getOffset(yob) + pWOpp->m_XCPSpanRel[i]*pWing->getChord(yob);
-						pWing->getViewYZPos(pWOpp->m_XCPSpanRel[i], pWOpp->m_SpanPos[i],yt,zt,0);
+//						xt = pWing->getOffset(yob) + pWOpp->m_XCPSpanRel[i]*pWing->getChord(yob);
+//						pWing->getViewYZPos(pWOpp->m_XCPSpanRel[i], pWOpp->m_SpanPos[i],yt,zt,0);
+						pWing->surfacePoint(pWOpp->m_XCPSpanRel[i], yob, MIDSURFACE, Pt, PtNormal);
 
 						dih = -pWing->Dihedral(yob)*PI/180.0;
 						amp = q0*pWOpp->m_Cl[i]*pWing->getChord(yob)/pWOpp->m_MAChord;
 						amp *= QMiarex::s_LiftScale/1000.0;
 
-						glVertex3d(xt + amp * cos(dih)*sina,
-								 yt + amp * sin(dih),
-								 zt + amp * cos(dih)*cosa);
+						glVertex3d(Pt.x + amp * cos(dih)*sina,
+								   Pt.y + amp * sin(dih),
+								   Pt.z + amp * cos(dih)*cosa);
 					}
 				}
 				glEnd();
@@ -1575,7 +1574,7 @@ void GLCreateTrans(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 {
     if(!pWing || !pWPolar || !pWOpp) return;
     int i,j,k,m, style;
-    double yrel, xt, yt, zt, yob ;
+	double yrel, yob ;
 	CVector Pt, N;
 
 
@@ -1604,10 +1603,11 @@ void GLCreateTrans(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 					for (i=1; i<pWOpp->m_NStation; i++)
 					{
 						yob = 2.0*pWOpp->m_SpanPos[i]/pWOpp->m_Span;
-						xt = pWing->getOffset(yob) + pWOpp->m_XTrTop[i]*pWing->getChord(yob);
-						pWing->getViewYZPos(pWOpp->m_XTrTop[i], pWOpp->m_SpanPos[i],yt,zt,0);
+//						xt = pWing->getOffset(yob) + pWOpp->m_XTrTop[i]*pWing->getChord(yob);
+//						pWing->getViewYZPos(pWOpp->m_XTrTop[i], pWOpp->m_SpanPos[i],yt,zt,0);
+						pWing->surfacePoint(pWOpp->m_XTrTop[i], yob, TOPSURFACE, Pt, N);
 
-						glVertex3d(xt,yt,zt);
+						glVertex3d(Pt.x, Pt.y, Pt.z);
 					}
 				}
 				glEnd();
@@ -1682,10 +1682,12 @@ void GLCreateTrans(Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, int List)
 					for (i=1; i<pWOpp->m_NStation; i++)
 					{
 						yob = 2.0*pWOpp->m_SpanPos[i]/pWOpp->m_Span;
-						xt = pWing->getOffset(yob) + pWOpp->m_XTrBot[i]*pWing->getChord(yob);
-						pWing->getViewYZPos(pWOpp->m_XTrBot[i], pWOpp->m_SpanPos[i],yt,zt,0);
+//						xt = pWing->getOffset(yob) + pWOpp->m_XTrBot[i]*pWing->getChord(yob);
+//						pWing->getViewYZPos(pWOpp->m_XTrBot[i], pWOpp->m_SpanPos[i],yt,zt,0);
+						pWing->surfacePoint(pWOpp->m_XTrBot[i], yob, BOTSURFACE, Pt, N);
 
-						glVertex3d(xt,yt, zt);
+						glVertex3d(Pt.x, Pt.y, Pt.z);
+
 					}
 				}
 				glEnd();

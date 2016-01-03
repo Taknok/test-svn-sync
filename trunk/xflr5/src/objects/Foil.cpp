@@ -652,21 +652,32 @@ CVector Foil::midYRel(double sRel)
 * @param x the chordwise position
 * @return the position on the upper surface
 */
-CVector Foil::upperYRel(double xRel)
+CVector Foil::upperYRel(double xRel, double &normx, double &normy)
 {
 	double x = m_rpExtrados[0].x + xRel*(m_rpExtrados[m_iExt].x-m_rpExtrados[0].x);
 
-	if(x<=m_rpExtrados[0].x) return m_rpExtrados[0];
+	if(x<=m_rpExtrados[0].x)
+	{
+		normx = -1.0;
+		normy = 0.0;
+		return m_rpExtrados[0];
+	}
 
 	for (int i=0; i<m_iExt; i++)
 	{
-		if (m_rpExtrados[i].x < m_rpExtrados[i+1].x  &&
-			m_rpExtrados[i].x <= x && x<=m_rpExtrados[i+1].x )
+		if (m_rpExtrados[i].x < m_rpExtrados[i+1].x && m_rpExtrados[i].x <= x && x<=m_rpExtrados[i+1].x )
 		{
+			double nabs = sqrt((m_rpExtrados[i+1].x-m_rpExtrados[i].x) * (m_rpExtrados[i+1].x-m_rpExtrados[i].x)
+							 + (m_rpExtrados[i+1].y-m_rpExtrados[i].y) * (m_rpExtrados[i+1].y-m_rpExtrados[i].y));
+			normx = (-m_rpExtrados[i+1].y + m_rpExtrados[i].y)/nabs;
+			normy = ( m_rpExtrados[i+1].x - m_rpExtrados[i].x)/nabs;
+
 			return (m_rpExtrados[i] + (m_rpExtrados[i+1]-m_rpExtrados[i])
 									 /(m_rpExtrados[i+1].x-m_rpExtrados[i].x) * (x-m_rpExtrados[i].x));
 		}
 	}
+	normx = 1.0;
+	normy = 0.0;
 	return m_rpExtrados[m_iExt];
 }
 
@@ -677,25 +688,35 @@ CVector Foil::upperYRel(double xRel)
 * @param x the chordwise position
 * @return the position on the upper surface
 */
-CVector Foil::lowerYRel(double xRel)
+CVector Foil::lowerYRel(double xRel, double &normx, double &normy)
 {
 	double x = m_rpIntrados[0].x + xRel*(m_rpIntrados[m_iInt].x-m_rpIntrados[0].x);
 
-	if(x<=m_rpIntrados[0].x) return m_rpIntrados[0];
+	if(x<=m_rpIntrados[0].x)
+	{
+		normx = -1.0;
+		normy = 0.0;
+		return m_rpIntrados[0];
+	}
 
 	for (int i=0; i<m_iExt; i++)
 	{
-		if (m_rpIntrados[i].x < m_rpIntrados[i+1].x  &&
-			m_rpIntrados[i].x <= x && x<=m_rpIntrados[i+1].x )
+		if (m_rpIntrados[i].x < m_rpIntrados[i+1].x && m_rpIntrados[i].x <= x && x<=m_rpIntrados[i+1].x )
 		{
+			double nabs = sqrt((m_rpIntrados[i+1].x-m_rpIntrados[i].x) * (m_rpIntrados[i+1].x-m_rpIntrados[i].x)
+							 + (m_rpIntrados[i+1].y-m_rpIntrados[i].y) * (m_rpIntrados[i+1].y-m_rpIntrados[i].y));
+			normx = ( m_rpIntrados[i+1].y - m_rpIntrados[i].y)/nabs;
+			normy = (-m_rpIntrados[i+1].x + m_rpIntrados[i].x)/nabs;
+
 			return (m_rpIntrados[i] + (m_rpIntrados[i+1]-m_rpIntrados[i])
 									 /(m_rpIntrados[i+1].x-m_rpIntrados[i].x) * (x-m_rpIntrados[i].x));
 		}
 	}
+
+	normx = 1.0;
+	normy = 0.0;
 	return m_rpIntrados[m_iExt];
 }
-
-
 
 /**
 * Returns the y-coordinate and the normal to the surface on the foil's lower surface at the x position.

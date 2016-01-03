@@ -718,7 +718,7 @@ void Wing::createSurfaces(CVector const &T, double XTilt, double YTilt)
 
 			m_Surface[iSurf]->m_TwistA   =  Twist(jss+1);
 			m_Surface[iSurf]->m_TwistB   =  Twist(jss);
-//			m_Surface[iSurf]->setTwist();
+			m_Surface[iSurf]->setTwist();
 
 			if(jss>0)
 			{
@@ -785,7 +785,7 @@ void Wing::createSurfaces(CVector const &T, double XTilt, double YTilt)
 
 				m_Surface[iSurf]->m_TwistA   =  Twist(jss);
 				m_Surface[iSurf]->m_TwistB   =  Twist(jss+1);
-//				m_Surface[iSurf]->setTwist();
+				m_Surface[iSurf]->setTwist();
 
 				if(jss>0)
 				{
@@ -1462,72 +1462,44 @@ double Wing::totalMass()
 
 
 
-/**
-*Returns the wing's absolute positions yv and zv from the relative value xrel and the planform span y
-*Used for display purposes only
-*@param xrel the relative position along the chord, in %
-*@param y the planform (2D) span position where the y and z positions will be calculated
-*@param &yv the 3D y-position of the point
-*@param &zv the 3D z-position of the point
-*/
-void Wing::getViewYZPos(double xrel, double y, double &yv, double &zv, int pos)
-{
-	double tau;
-	double twist, chord;
-	double z0, z1, nx, ny;
-	zv = 0.0;
-	yv = 0.0;
-	double fy = qAbs(y);
-	double sign;
-	if(fy<1.0e-10) sign = 1.0;
-	else sign = y/fy;
 
-//	if(fy<=0.0) return 0.0;
+void Wing::surfacePoint(double xRel, double yob, enumPanelPosition pos, CVector &Point, CVector &PtNormal)
+{
+	Surface *pSurface = NULL;
+	double fy = qAbs(yob);
+	double sign;
+	if(fy<PRECISION) sign = 1.0;
+	else             sign = yob/fy;
+	int iSurf = 0;
+
+	double yl = 0.0;
+
 	for (int is=0; is<NWingSection()-1; is++)
 	{
-		if(YPosition(is)< fy && fy<=YPosition(is+1))
+		if(fabs(YPosition(is+1)-YPosition(is+1)>s_MinPanelSize))
 		{
-			for (int ks=0; ks<is; ks++)
+			if(YPosition(is)< fy && fy<=YPosition(is+1))
 			{
-				//TODO Potential bug, check original
-				yv += Length(ks+1) * cos(Dihedral(ks)*PI/180.0);
-				zv += Length(ks+1) * sin(Dihedral(ks)*PI/180.0);
+				break;
 			}
-			tau = (fy - YPosition(is))/(YPosition(is+1)-YPosition(is));
-			yv += tau * Length(is+1) * cos(Dihedral(is)*PI/180.0);
-			zv += tau * Length(is+1) * sin(Dihedral(is)*PI/180.0);
-
-			yv *= sign;
-			//	add washout calculated about chord quarter line :
-			twist = getTwist(fy)*PI/180.;
-			chord = getChord(fy*2./m_PlanformSpan);
-			zv -= (xrel-0.25)*chord*sin(twist);
-
-			Foil *pFoil0 = NULL;
-			Foil *pFoil1 = NULL;
-			getFoils(&pFoil0, &pFoil1, y,  tau);
-
-			if(!pFoil0 || !pFoil1) return;
-
-			if(pos==1)
-			{
-				pFoil0->getUpperY(xrel, z0, nx, ny) ;
-				pFoil1->getUpperY(xrel, z1, nx, ny) ;
-				z0 *= chord;
-				z1 *= chord;
-				zv += z0 + (z1-z0)*tau;
-			}
-			else if(pos==-1)
-			{
-				pFoil0->getLowerY(xrel, z0, nx, ny);
-				pFoil1->getLowerY(xrel, z1, nx, ny);
-				z0 *= chord;
-				z1 *= chord;
-				zv += z0 + (z1-z0)*tau;
-			}
+			yl += m_Surface.at(iSurf)->spanLength();
+			iSurf++;
 		}
 	}
+	if(sign>=0.0)
+	{
+		pSurface = m_Surface.at(m_Surface.size()/2 + iSurf);
+		double yRel = (yob-yl)/pSurface->spanLength();
+		pSurface->getSurfacePoint(xRel, xRel, yRel, pos, Point, PtNormal);
+	}
+	else
+	{
+		pSurface = m_Surface.at(m_Surface.size()/2 - iSurf -1);
+		double yRel = (yl+pSurface->spanLength() + yob)/pSurface->spanLength();
+		pSurface->getSurfacePoint(xRel, xRel, yRel, pos, Point, PtNormal);
+	}
 }
+
 
 /**
  * Returns the relative position in % of a given absolute span position
