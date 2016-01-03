@@ -16,7 +16,7 @@
 
 
 
-xflr5 v6.12 January xxxth, 2016
+xflr5 v6.12 January 2nd, 2016
 	- introduced an option to add extra drag to polar objects, to account for surfaces not included in the plane object
 	- restored the plot and export options of the boundary layer graphs after a converged xfoil analysis
 	- modified in depth the constuction of the wing geometry, to better account for flap with large deflections; has an impact on results;

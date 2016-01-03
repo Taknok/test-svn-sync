@@ -153,6 +153,8 @@ public:
 	double stripSpanPos(int k);
 	double foilArea(double tau);
 	double stripWidth(int k);
+	double spanLength();
+
 
 	Foil *foilA() {return m_pFoilA;}
 	Foil *foilB() {return m_pFoilB;}
