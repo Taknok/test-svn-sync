@@ -61,43 +61,44 @@ class BatchThreadDlg : public QDialog
 public:
 	BatchThreadDlg(QWidget *pParent=NULL);
 	~BatchThreadDlg();
-	void InitDialog();
+	void initDialog();
 
 private:
 
-	void SetupLayout();
-	void CleanUp();
-	Polar * CreatePolar(Foil *pFoil, double Re, double Mach, double NCrit);
+	void setupLayout();
+	void cleanUp();
+	Polar * createPolar(Foil *pFoil, double Re, double Mach, double NCrit);
 
 	void keyPressEvent(QKeyEvent *event);
 	void showEvent(QShowEvent *event);
 	void hideEvent(QHideEvent *event);
+	void reject();
 
 
 	void outputFoilList();
 	void outputReList();
-	void ReadParams();
-	void SetFileHeader();
-	void SetPlrName(Polar *pNewPolar);
-	void StartAnalysis();
-	void StartThread();
-	void UpdateOutput(QString &str);
-	void WriteString(QString &strong);
+	void readParams();
+	void setFileHeader();
+	void setPlrName(Polar *pNewPolar);
+	void startAnalysis();
+	void startThread();
+	void updateOutput(QString &str);
+	void writeString(QString &strong);
 
 	void timerEvent(QTimerEvent *event);
 
 private slots:
-	void OnSpecChanged();
-	void OnAnalyze();
-	void OnRange();
-	void OnAcl();
-	void OnEditReList();
-	void OnClose();
-	void OnFromZero(int);
-	void OnInitBL(int);
-	void OnFoilList();
-	void OnFoilSelectionType();
-	void OnAdvancedSettings();
+	void onSpecChanged();
+	void onAnalyze();
+	void onRange();
+	void onAcl();
+	void onEditReList();
+	void onClose();
+	void onFromZero(int);
+	void onInitBL(int);
+	void onFoilList();
+	void onFoilSelectionType();
+	void onAdvancedSettings();
 
 
 private:

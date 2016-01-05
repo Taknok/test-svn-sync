@@ -81,21 +81,21 @@ BatchThreadDlg::BatchThreadDlg(QWidget *pParent) : QDialog(pParent)
 	XFoilTask::s_bSkipOpp = false;
 	XFoilTask::s_bSkipPolar = false;
 
-	SetupLayout();
-	connect(m_pctrlFoil1, SIGNAL(clicked()), this, SLOT(OnFoilSelectionType()));
-	connect(m_pctrlFoil2, SIGNAL(clicked()), this, SLOT(OnFoilSelectionType()));
-	connect(m_pctrlFoilList, SIGNAL(clicked()), this, SLOT(OnFoilList()));
-	connect(m_pctrlClose, SIGNAL(clicked()), this, SLOT(OnClose()));
-	connect(m_pctrlAnalyze, SIGNAL(clicked()), this, SLOT(OnAnalyze()));
-	connect(m_pctrlAlpha, SIGNAL(toggled(bool)), this, SLOT(OnAcl()));
-	connect(m_pctrlCl, SIGNAL(toggled(bool)), this, SLOT(OnAcl()));
-	connect(m_rbRange1, SIGNAL(toggled(bool)), this, SLOT(OnRange()));
+	setupLayout();
+	connect(m_pctrlFoil1, SIGNAL(clicked()), this, SLOT(onFoilSelectionType()));
+	connect(m_pctrlFoil2, SIGNAL(clicked()), this, SLOT(onFoilSelectionType()));
+	connect(m_pctrlFoilList, SIGNAL(clicked()), this, SLOT(onFoilList()));
+	connect(m_pctrlClose, SIGNAL(clicked()), this, SLOT(onClose()));
+	connect(m_pctrlAnalyze, SIGNAL(clicked()), this, SLOT(onAnalyze()));
+	connect(m_pctrlAlpha, SIGNAL(toggled(bool)), this, SLOT(onAcl()));
+	connect(m_pctrlCl, SIGNAL(toggled(bool)), this, SLOT(onAcl()));
+	connect(m_rbRange1, SIGNAL(toggled(bool)), this, SLOT(onRange()));
 //	connect(m_rbRange2, SIGNAL(toggled(bool)), this, SLOT(OnRange()));
-	connect(m_pctrlEditList, SIGNAL(clicked()), this, SLOT(OnEditReList()));
-	connect(m_pctrlFromZero, SIGNAL(stateChanged(int)), this, SLOT(OnFromZero(int)));
-	connect(m_pctrlSpecMin, SIGNAL(editingFinished()), this, SLOT(OnSpecChanged()));
-	connect(m_pctrlSpecMax, SIGNAL(editingFinished()), this, SLOT(OnSpecChanged()));
-	connect(m_pctrlSpecDelta, SIGNAL(editingFinished()), this, SLOT(OnSpecChanged()));
+	connect(m_pctrlEditList, SIGNAL(clicked()), this, SLOT(onEditReList()));
+	connect(m_pctrlFromZero, SIGNAL(stateChanged(int)), this, SLOT(onFromZero(int)));
+	connect(m_pctrlSpecMin, SIGNAL(editingFinished()), this, SLOT(onSpecChanged()));
+	connect(m_pctrlSpecMax, SIGNAL(editingFinished()), this, SLOT(onSpecChanged()));
+	connect(m_pctrlSpecDelta, SIGNAL(editingFinished()), this, SLOT(onSpecChanged()));
 }
 
 
@@ -122,7 +122,7 @@ BatchThreadDlg::~BatchThreadDlg()
 /**
  * Sets up the GUI
  */
-void BatchThreadDlg::SetupLayout()
+void BatchThreadDlg::setupLayout()
 {
 	QSizePolicy szPolicyExpanding;
 	szPolicyExpanding.setHorizontalPolicy(QSizePolicy::Expanding);
@@ -286,7 +286,7 @@ void BatchThreadDlg::SetupLayout()
 	QHBoxLayout *CommandButtons = new QHBoxLayout;
 	{
 		QPushButton *pAdvancedSettings =  new QPushButton(tr("Advanced Settings"));
-		connect(pAdvancedSettings, SIGNAL(clicked()), this, SLOT(OnAdvancedSettings()));
+		connect(pAdvancedSettings, SIGNAL(clicked()), this, SLOT(onAdvancedSettings()));
 
 		m_pctrlClose     = new QPushButton(tr("Close"));
 		m_pctrlAnalyze   = new QPushButton(tr("Analyze"))	;
@@ -350,7 +350,7 @@ void BatchThreadDlg::SetupLayout()
 /**
  * Clean-up performed when all the threads are terminated
  */
-void BatchThreadDlg::CleanUp()
+void BatchThreadDlg::cleanUp()
 {
 	if(m_pXFile->isOpen())
 	{
@@ -377,7 +377,7 @@ void BatchThreadDlg::CleanUp()
  * @param NCrit the value of the transition criterion
  * @return a pointer to the Polar object which has been created
  */
-Polar * BatchThreadDlg::CreatePolar(Foil *pFoil, double Re, double Mach, double NCrit)
+Polar * BatchThreadDlg::createPolar(Foil *pFoil, double Re, double Mach, double NCrit)
 {
 	if(!pFoil) return NULL;
 
@@ -419,7 +419,7 @@ Polar * BatchThreadDlg::CreatePolar(Foil *pFoil, double Re, double Mach, double 
 	pNewPolar->m_XBot  = m_XBot;
 
 
-	SetPlrName(pNewPolar);
+	setPlrName(pNewPolar);
 	Polar *pOldPolar = Polar::getPolar(pFoil, pNewPolar->m_PlrName);
 
 	if(pOldPolar)
@@ -445,7 +445,7 @@ void BatchThreadDlg::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_Enter:
 		{
 			if(m_pctrlClose->hasFocus())	     done(1);
-			else if(m_pctrlAnalyze->hasFocus())  OnAnalyze();
+			else if(m_pctrlAnalyze->hasFocus())  onAnalyze();
 			else                                 m_pctrlAnalyze->setFocus();
 			break;
 		}
@@ -459,7 +459,7 @@ void BatchThreadDlg::keyPressEvent(QKeyEvent *event)
 			}
 			else
 			{
-				OnClose(); // will close the dialog box
+				onClose(); // will close the dialog box
 			}
 			break;
 		}
@@ -473,7 +473,7 @@ void BatchThreadDlg::keyPressEvent(QKeyEvent *event)
 /**
  * Initializes the dialog and the GUI interface
  */
-void BatchThreadDlg::InitDialog()
+void BatchThreadDlg::initDialog()
 {
 	if(!Foil::curFoil()) return;
 	blockSignals(true);
@@ -490,7 +490,7 @@ void BatchThreadDlg::InitDialog()
 
 	m_pctrlFoil1->setChecked(s_bCurrentFoil);
 	m_pctrlFoil2->setChecked(!s_bCurrentFoil);
-	OnFoilSelectionType();
+	onFoilSelectionType();
 	
 	m_pctrlReMin->setPrecision(0);
 	m_pctrlReMax->setPrecision(0);
@@ -515,7 +515,7 @@ void BatchThreadDlg::InitDialog()
 
 	if(m_bAlpha) m_pctrlAlpha->setChecked(true);
 	else         m_pctrlCl->setChecked(m_bAlpha);
-	OnAcl();
+	onAcl();
 
 
 	if(!m_bFromList)  m_rbRange1->setChecked(true);
@@ -542,7 +542,7 @@ void BatchThreadDlg::InitDialog()
  * The user has switched between aoa and lift coeficient.
  * Initializes the interface with the corresponding values.
  */
-void BatchThreadDlg::OnAcl()
+void BatchThreadDlg::onAcl()
 {
 	if(m_PolarType==XFLR5::FIXEDAOAPOLAR) return;
 	m_bAlpha = m_pctrlAlpha->isChecked();
@@ -569,9 +569,9 @@ void BatchThreadDlg::OnAcl()
 /**
  * The user has changed the range of Re values to analyze
  */
-void BatchThreadDlg::OnSpecChanged()
+void BatchThreadDlg::onSpecChanged()
 {
-	ReadParams();
+	readParams();
 }
 
 
@@ -579,7 +579,7 @@ void BatchThreadDlg::OnSpecChanged()
  * If an analysis is running, cancels the XFoilTask and returns.
  * It not, launches the analysis.
  */
-void BatchThreadDlg::OnAnalyze()
+void BatchThreadDlg::onAnalyze()
 {
 	if(m_bIsRunning)
 	{
@@ -598,20 +598,20 @@ void BatchThreadDlg::OnAnalyze()
 	m_pXFile = new QFile(FileName);
 	if (!m_pXFile->open(QIODevice::WriteOnly | QIODevice::Text)) m_pXFile = NULL;
 
-	ReadParams();
+	readParams();
 
-	SetFileHeader();
+	setFileHeader();
 	m_bInitBL = m_pctrlInitBL->isChecked();
 
 	m_pctrlAnalyze->setFocus();
-	StartAnalysis();
+	startAnalysis();
 }
 
 
 /**
  * The user has requested to quit the dialog box
  */
-void BatchThreadDlg::OnClose()
+void BatchThreadDlg::onClose()
 {
 	if(m_bIsRunning) return;
 
@@ -619,7 +619,7 @@ void BatchThreadDlg::OnClose()
 	m_bCancel = true;
 	XFoilTask::s_bCancel = true;
 	QThreadPool::globalInstance()->waitForDone();
-	ReadParams();
+	readParams();
 
 	QXDirect::s_refPolar.m_ACrit    = m_ACrit;
 	QXDirect::s_refPolar.m_XBot     = m_XBot;
@@ -632,9 +632,30 @@ void BatchThreadDlg::OnClose()
 
 
 /**
+ * Overrides the base class reject() method, to prevent window closure when an analysis is running.
+ * If the analysis is running, cancels it and returns.
+ * If not, closes the window.
+ */
+void BatchThreadDlg::reject()
+{
+	if(m_bIsRunning)
+	{
+		m_bCancel    = true;
+		XFoil::s_bCancel = true;
+	}
+	else
+	{
+		QDialog::reject();
+		//close the dialog box
+	}
+}
+
+
+
+/**
  * The user has requested an edition of the Re list
 */
-void BatchThreadDlg::OnEditReList()
+void BatchThreadDlg::onEditReList()
 {
 	ReListDlg dlg(this);
 	dlg.initDialog(QXDirect::s_ReList,QXDirect::s_MachList, QXDirect::s_NCritList);
@@ -655,7 +676,7 @@ void BatchThreadDlg::OnEditReList()
 /**
  * The user has requested an edition of the list of Foil objects to analyze
  */
-void BatchThreadDlg::OnFoilList()
+void BatchThreadDlg::onFoilList()
 {
 	FoilSelectionDlg dlg(this);
 //	dlg.SetSelectionMode(true);
@@ -678,7 +699,7 @@ void BatchThreadDlg::OnFoilList()
 /**
  *The user has changed between single Foil and list of Foil objects to analyze
  */
-void BatchThreadDlg::OnFoilSelectionType()
+void BatchThreadDlg::onFoilSelectionType()
 {
 	s_bCurrentFoil = m_pctrlFoil1->isChecked();
 	m_pctrlFoilList->setEnabled(!s_bCurrentFoil);
@@ -696,7 +717,7 @@ void BatchThreadDlg::OnFoilSelectionType()
  * The user has clicked the "start from zero" checkbox
  * @param state the new state of the checkbox
  */
-void BatchThreadDlg::OnFromZero(int )
+void BatchThreadDlg::onFromZero(int )
 {
 	if(m_pctrlFromZero->isChecked()) m_bFromZero = true;
 	else                             m_bFromZero = false;
@@ -706,7 +727,7 @@ void BatchThreadDlg::OnFromZero(int )
 /**
  * The user has clicked the checkbox which specifies the initialization of the boundary layer
  **/
-void BatchThreadDlg::OnInitBL(int)
+void BatchThreadDlg::onInitBL(int)
 {
 	if (m_pctrlInitBL->isChecked()) m_bInitBL = true;
 	else                            m_bInitBL = false;
@@ -715,7 +736,7 @@ void BatchThreadDlg::OnInitBL(int)
 /**
  * The user has clicked the checkbox specifying which range of Re should be analyzed
  */
-void BatchThreadDlg::OnRange()
+void BatchThreadDlg::onRange()
 {
 	if(m_rbRange1->isChecked())
 		m_bFromList = false;
@@ -734,7 +755,7 @@ void BatchThreadDlg::OnRange()
 /**
  * Reads the value of the input parameters from the widgets and maps the data
  */
-void BatchThreadDlg::ReadParams()
+void BatchThreadDlg::readParams()
 {
 	m_bAlpha = m_pctrlAlpha->isChecked();
 
@@ -772,7 +793,7 @@ void BatchThreadDlg::ReadParams()
 /**
  * Initializes the header of the log file
  */
-void BatchThreadDlg::SetFileHeader()
+void BatchThreadDlg::setFileHeader()
 {
 	if(!m_pXFile) return;
 	QTextStream out(m_pXFile);
@@ -800,7 +821,7 @@ void BatchThreadDlg::SetFileHeader()
  * Creates the polar name for the input Polar
  * @param pNewPolar a pointer to the Polar object to name
  */
-void BatchThreadDlg::SetPlrName(Polar *pNewPolar)
+void BatchThreadDlg::setPlrName(Polar *pNewPolar)
 {
 	if(!pNewPolar) return;
 	pNewPolar->setAutoPolarName();
@@ -811,7 +832,7 @@ void BatchThreadDlg::SetPlrName(Polar *pNewPolar)
  * Adds a text message to the ouput widget
  * @param str the message to output
  */
-void BatchThreadDlg::UpdateOutput(QString &str)
+void BatchThreadDlg::updateOutput(QString &str)
 {
 	m_pctrlTextOutput->insertPlainText(str);
 	m_pctrlTextOutput->ensureCursorVisible();
@@ -823,7 +844,7 @@ void BatchThreadDlg::UpdateOutput(QString &str)
  * Adds a text message to the log file
  * @param str the message to output
  */
-void BatchThreadDlg::WriteString(QString &strong)
+void BatchThreadDlg::writeString(QString &strong)
 {
 	if(!m_pXFile || !m_pXFile->isOpen()) return;
 	QTextStream ds(m_pXFile);
@@ -836,7 +857,7 @@ void BatchThreadDlg::WriteString(QString &strong)
  * First, creates a pool list of all (Foil, pairs) to analyze.
  * Then, starts the threads which will pick the pairs from the pool and remove them once the analayis is finished.
  */
-void BatchThreadDlg::StartAnalysis()
+void BatchThreadDlg::startAnalysis()
 {
 	Foil *pFoil;
 	Polar *pPolar;
@@ -852,14 +873,14 @@ void BatchThreadDlg::StartAnalysis()
 	if(!m_FoilList.count())
 	{
 		strong ="No foil defined for analysis\n\n";
-		UpdateOutput(strong);
-		CleanUp();
+		updateOutput(strong);
+		cleanUp();
 		return;
 	}
 
 	m_pctrlAnalyze->setText(tr("Cancel"));
 	strong ="Launching multi-threaded batch analysis\n\n";
-	UpdateOutput(strong);
+	updateOutput(strong);
 
 	if(!m_bFromList) nRe = (int)qAbs((m_ReMax-m_ReMin)/m_ReInc)+1;
 	else             nRe = QXDirect::s_ReList.count();
@@ -880,8 +901,8 @@ void BatchThreadDlg::StartAnalysis()
 				m_AnalysisPair.append(pAnalysis);
 				pAnalysis->pFoil = pFoil;
 
-				if(!m_bFromList) pPolar = CreatePolar(pFoil, m_ReMin + iRe *m_ReInc, m_Mach, m_ACrit);
-				else             pPolar = CreatePolar(pFoil, QXDirect::s_ReList[iRe], QXDirect::s_MachList[iRe], QXDirect::s_NCritList[iRe]);
+				if(!m_bFromList) pPolar = createPolar(pFoil, m_ReMin + iRe *m_ReInc, m_Mach, m_ACrit);
+				else             pPolar = createPolar(pFoil, QXDirect::s_ReList[iRe], QXDirect::s_MachList[iRe], QXDirect::s_NCritList[iRe]);
 				pAnalysis->pPolar=pPolar;
 
 				m_nAnalysis++;
@@ -889,7 +910,7 @@ void BatchThreadDlg::StartAnalysis()
 		}
 	}
 	strong = QString("Found %1 foil/polar pairs to analyze\n").arg(m_nAnalysis);
-	UpdateOutput(strong);
+	updateOutput(strong);
 
 	//Start as many threads as the system will support
 	m_nThreads = min(QThread::idealThreadCount(), nRe);
@@ -900,9 +921,9 @@ void BatchThreadDlg::StartAnalysis()
 	XFoilTask::s_bCancel = false;
 
 	strong = QString("Using %1 threads\n\n").arg(m_nThreads);
-	UpdateOutput(strong);
+	updateOutput(strong);
 
-	for(int it=0; it<m_nThreads; it++)	StartThread();
+	for(int it=0; it<m_nThreads; it++)	startThread();
 }
 
 
@@ -919,7 +940,7 @@ void BatchThreadDlg::timerEvent(QTimerEvent *event)
 		QString str = "   ...Finished "+m_pXFoilTask[event->timerId()].m_pFoil->m_FoilName+" / "
 								 +m_pXFoilTask[event->timerId()].m_pPolar->m_PlrName+"\n";
 
-		UpdateOutput(str);
+		updateOutput(str);
 		m_pXFoilTask[event->timerId()].m_bIsFinished = true;
 	}
 
@@ -956,9 +977,9 @@ void BatchThreadDlg::timerEvent(QTimerEvent *event)
 
 				if(m_bCancel) strong = "\n_____Analysis cancelled_____\n";
 				else          strong = "\n_____Analysis completed_____\n";
-				UpdateOutput(strong);
+				updateOutput(strong);
 
-				CleanUp();
+				cleanUp();
 				if(pXDirect->m_bPolarView)
 				{
 					pXDirect->createPolarCurves();
@@ -970,7 +991,7 @@ void BatchThreadDlg::timerEvent(QTimerEvent *event)
 	else if(m_bIsRunning)
 	{
 		//need to check if we are still running in case a timer event arrives after a cancellation for instance.
-		StartThread(); // analyze a new pair
+		startThread(); // analyze a new pair
 	}
 }
 
@@ -978,7 +999,7 @@ void BatchThreadDlg::timerEvent(QTimerEvent *event)
 /**
  * Starts an individual thread
  */
-void BatchThreadDlg::StartThread()
+void BatchThreadDlg::startThread()
 {
 	Analysis *pAnalysis;
 	QString strong;
@@ -1005,7 +1026,7 @@ void BatchThreadDlg::StartThread()
 
 				//launch it
 				strong = "Starting "+pAnalysis->pFoil->m_FoilName+" / "+pAnalysis->pPolar->m_PlrName+"\n";
-				UpdateOutput(strong);
+				updateOutput(strong);
 				QThreadPool::globalInstance()->start(m_pXFoilTask+it);
 
 				//remove it from the array of pairs to analyze
@@ -1084,7 +1105,7 @@ void BatchThreadDlg::hideEvent(QHideEvent *event)
 }
 
 
-void BatchThreadDlg::OnAdvancedSettings()
+void BatchThreadDlg::onAdvancedSettings()
 {
 	XFoilAdvancedDlg xfaDlg(this);
 	xfaDlg.m_IterLimit   = XFoilTask::s_IterLim;

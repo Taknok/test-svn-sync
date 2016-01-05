@@ -1346,7 +1346,7 @@ void QXDirect::onMultiThreadedBatchAnalysis()
 
 	pBatchThreadDlg->m_bFromList = m_bFromList;
 	pBatchThreadDlg->m_bFromZero = s_bFromZero;
-	pBatchThreadDlg->InitDialog();
+	pBatchThreadDlg->initDialog();
 
 	pBatchThreadDlg->exec();
 
