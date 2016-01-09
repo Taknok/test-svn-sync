@@ -186,11 +186,11 @@ private:
 	CVector m_TE;                        /**< the trailing edge point */
 	CVector m_LE;                        /**< the leading edge point */
 
-	CVector m_rpBaseMid[MIDPOINTCOUNT+1];          /**< the mid camber line points of the base geometry */
+	CVector m_rpBaseMid[MIDPOINTCOUNT];          /**< the mid camber line points of the base geometry */
 	CVector m_BaseExtrados[IQX];	       /**< the upper surface points of the base geometry */
 	CVector m_BaseIntrados[IQX];    	  /**< the lower surface points of the base geometry */
 
-	CVector m_rpMid[MIDPOINTCOUNT+1];              /**< the mid camber line points */
+	CVector m_rpMid[MIDPOINTCOUNT];              /**< the mid camber line points */
 	CVector m_rpExtrados[IQX];	       /**< the upper surface points */
 	CVector m_rpIntrados[IQX];	       /**< the lower surface points */
 

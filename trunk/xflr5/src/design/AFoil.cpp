@@ -76,7 +76,7 @@ QAFoil::QAFoil(QWidget *parent)
 
 	m_pSF = new SplineFoil();
 	m_pSF->m_bModified = false;
-	m_pSF->InitSplineFoil();
+	m_pSF->initSplineFoil();
 
 	MainFrame *pMainFrame =(MainFrame*)parent;
 	pMainFrame->UndoAFoilAct = pMainFrame->RedoAFoilAct = NULL;
@@ -1079,7 +1079,7 @@ void QAFoil::onExportSplinesToFile()
 	strOut = FoilName + "\n";
 	out << strOut;
 
-	m_pSF->ExportToFile(out);
+	m_pSF->exportToFile(out);
 	XFile.close();
 }
 
@@ -1228,7 +1228,7 @@ void QAFoil::onNewSplines()
 			return;
 		}
 	}
-	m_pSF->InitSplineFoil();
+	m_pSF->initSplineFoil();
 
 	m_StackPos  = 0;
 	clearStack(0);
@@ -1330,7 +1330,7 @@ void QAFoil::onStoreSplines()
 
 
 	Foil *pNewFoil = new Foil();
-	m_pSF->ExportToBuffer(pNewFoil);
+	m_pSF->exportToBuffer(pNewFoil);
 	pNewFoil->m_FoilName = m_pSF->m_strFoilName;
 	addNewFoil(pNewFoil);
 	fillFoilTable();
@@ -1352,13 +1352,13 @@ void QAFoil::onSplineControls()
 	dlg.initDialog();
 
 	SplineFoil memSF;
-	memSF.Copy(m_pSF);
+	memSF.copy(m_pSF);
 
 	if(dlg.exec() == QDialog::Accepted)
 	{
 		takePicture();
 	}
-	else m_pSF->Copy(&memSF);
+	else m_pSF->copy(&memSF);
 }
 
 
@@ -1595,12 +1595,12 @@ void QAFoil::takePicture()
 void QAFoil::setPicture()
 {
 	SplineFoil SF = m_UndoStack.at(m_StackPos);
-	m_pSF->Copy(&SF);
+	m_pSF->copy(&SF);
 	m_pSF->m_Intrados.SplineKnots();
 	m_pSF->m_Intrados.splineCurve();
 	m_pSF->m_Extrados.SplineKnots();
 	m_pSF->m_Extrados.splineCurve();
-	m_pSF->UpdateSplineFoil();
+	m_pSF->updateSplineFoil();
 
 	m_p2DWidget->update();;
 }

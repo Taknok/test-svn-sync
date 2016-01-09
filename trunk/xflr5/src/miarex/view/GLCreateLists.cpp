@@ -32,7 +32,7 @@
 #include <QProgressDialog>
 
 
-#define SIDEPOINTS 13
+#define SIDEPOINTS 113
 
 
 void GLCreateGeom(int List, Wing *pWingList[MAXWINGS], Body *pBody)
