@@ -126,13 +126,13 @@
         <key>CFBundlePackageType</key>
         <string>APPL</string>
         <key>CFBundleShortVersionString</key>
-        <string>6.11</string>
+        <string>6.12</string>
         <key>CFBundleSignature</key>
         <string>XFLR</string>
         <key>CFBundleInfoDictionaryVersion</key>
         <string>6.0</string>
         <key>CFBundleVersion</key>
-        <string>6.11.741</string>
+        <string>6.12.766</string>
         <key>NSPrincipalClass</key>
         <string>NSApplication</string>
         <key>NSHighResolutionCapable</key>
