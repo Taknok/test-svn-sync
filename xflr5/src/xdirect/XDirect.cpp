@@ -4329,9 +4329,9 @@ void QXDirect::setAnalysisParams()
 	{
 		if(Polar::curPolar()->polarType()!=XFLR5::FIXEDAOAPOLAR)
 		{
-			m_pctrlAlphaMin->setPrecision(2);
-			m_pctrlAlphaMax->setPrecision(2);
-			m_pctrlAlphaDelta->setPrecision(2);
+			m_pctrlAlphaMin->setPrecision(3);
+			m_pctrlAlphaMax->setPrecision(3);
+			m_pctrlAlphaDelta->setPrecision(3);
 			if(s_bAlpha) m_pctrlSpec1->setChecked(true);
 			else         m_pctrlSpec2->setChecked(true);
 			m_pctrlSpec3->setEnabled(false);
@@ -4762,9 +4762,9 @@ void QXDirect::setupLayout()
 				m_pctrlUnit2 = new QLabel(QString::fromUtf8("°"));
 				m_pctrlUnit3 = new QLabel(QString::fromUtf8("°"));
 
-				m_pctrlAlphaMin   = new DoubleEdit();
-				m_pctrlAlphaMax   = new DoubleEdit();
-				m_pctrlAlphaDelta = new DoubleEdit();
+				m_pctrlAlphaMin   = new DoubleEdit(0,3);
+				m_pctrlAlphaMax   = new DoubleEdit(0,3);
+				m_pctrlAlphaDelta = new DoubleEdit(0,3);
 				m_pctrlAlphaMin->setMinimumHeight(20);
 				m_pctrlAlphaMax->setMinimumHeight(20);
 				m_pctrlAlphaDelta->setMinimumHeight(20);

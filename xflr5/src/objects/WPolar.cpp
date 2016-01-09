@@ -26,7 +26,7 @@
 #include "../miarex/Objects3D.h"
 #include "../misc/Units.h"
 #include <math.h>
-
+#include <QtDebug>
 
 /**
  * The public constructor

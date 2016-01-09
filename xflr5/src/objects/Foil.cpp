@@ -118,8 +118,6 @@ void Foil::compMidLine(bool bParams)
 	for (l=0; l<MIDPOINTCOUNT; l++)
 	{
 		xt = m_rpExtrados[0].x + l*step;
-		if(l==MIDPOINTCOUNT-1)
-			int nada=0;
 		getUpperY((double)l*step, yex, nx, ny);
 		getLowerY((double)l*step, yin, nx, ny);
 
