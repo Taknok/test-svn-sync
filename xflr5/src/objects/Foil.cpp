@@ -113,11 +113,13 @@ void Foil::compMidLine(bool bParams)
 		m_fXThickness = 0.0;
 	}
 
-	step = (m_rpExtrados[m_iExt].x-m_rpExtrados[0].x)/(double)MIDPOINTCOUNT;
+	step = (m_rpExtrados[m_iExt].x-m_rpExtrados[0].x)/(double)(MIDPOINTCOUNT-1);
 
-	for (l=0; l<=MIDPOINTCOUNT; l++)
+	for (l=0; l<MIDPOINTCOUNT; l++)
 	{
 		xt = m_rpExtrados[0].x + l*step;
+		if(l==MIDPOINTCOUNT-1)
+			int nada=0;
 		getUpperY((double)l*step, yex, nx, ny);
 		getLowerY((double)l*step, yin, nx, ny);
 
@@ -370,7 +372,7 @@ void Foil::drawMidLine(QPainter &painter, double const &scalex, double const &sc
 	From.ry() = (-m_rpMid[0].y*scaley)  +Offset.y();
 
 
-	for (k=0; k<=MIDPOINTCOUNT; k++)
+	for (k=0; k<MIDPOINTCOUNT; k++)
 	{
 		To.rx() = ( m_rpMid[k].x*scalex)+Offset.x();
 		To.ry() = (-m_rpMid[k].y*scaley)+Offset.y();
@@ -573,7 +575,7 @@ double Foil::topSlope(double const &x)
 double Foil::camber(double x)
 {
 	//returns the camber value at position x
-	for (int i=0; i<MIDPOINTCOUNT; i++)
+	for (int i=0; i<MIDPOINTCOUNT-1; i++)
 	{
 		if ((m_rpMid[i].x <= x) && (x < m_rpMid[i+1].x))
 		{
@@ -631,15 +633,11 @@ double Foil::length()
 CVector Foil::midYRel(double sRel)
 {
 	CVector midY;
-	sRel *= MIDPOINTCOUNT;
+	sRel *= (MIDPOINTCOUNT-1);
 	int iRel = (int)sRel;
 	double frac = sRel-iRel;
-	if(iRel==MIDPOINTCOUNT) midY =  m_rpMid[iRel];
-	else
-	{
-		midY.x = m_rpMid[iRel].x * (1.0-frac) + m_rpMid[iRel+1].x * frac;
-		midY.y = m_rpMid[iRel].y * (1.0-frac) + m_rpMid[iRel+1].y * frac;
-	}
+	midY.x = m_rpMid[iRel].x * (1.0-frac) + m_rpMid[iRel+1].x * frac;
+	midY.y = m_rpMid[iRel].y * (1.0-frac) + m_rpMid[iRel+1].y * frac;	
 	return midY;
 }
 
@@ -752,6 +750,12 @@ void Foil::getLowerY(double x, double &y, double &normx, double &normy)
 			return;
 		}
 	}
+
+	y = m_rpIntrados[m_iInt].y;
+	nabs = sqrt((m_rpIntrados[m_iInt].x-m_rpIntrados[m_iInt-1].x) * (m_rpIntrados[m_iInt].x-m_rpIntrados[m_iInt-1].x)
+			  + (m_rpIntrados[m_iInt].y-m_rpIntrados[m_iInt-1].y) * (m_rpIntrados[m_iInt].y-m_rpIntrados[m_iInt-1].y));
+	normx = (-m_rpIntrados[m_iInt].y + m_rpIntrados[m_iInt-1].y)/nabs;
+	normy = ( m_rpIntrados[m_iInt].x - m_rpIntrados[m_iInt-1].x)/nabs;
 }
 
 
@@ -790,6 +794,13 @@ void Foil::getUpperY(double x, double &y, double &normx, double &normy)
 			return;
 		}
 	}
+
+	y = m_rpExtrados[m_iExt].y;
+	nabs = sqrt((m_rpExtrados[m_iExt].x-m_rpExtrados[m_iExt-1].x) * (m_rpExtrados[m_iExt].x-m_rpExtrados[m_iExt-1].x)
+			  + (m_rpExtrados[m_iExt].y-m_rpExtrados[m_iExt-1].y) * (m_rpExtrados[m_iExt].y-m_rpExtrados[m_iExt-1].y));
+	normx = (-m_rpExtrados[m_iExt].y + m_rpExtrados[m_iExt-1].y)/nabs;
+	normy = ( m_rpExtrados[m_iExt].x - m_rpExtrados[m_iExt-1].x)/nabs;
+
 }
 
 
@@ -1815,7 +1826,7 @@ void Foil::setFlap()
 
 		CVector hinge(xh, yh, 0.0);
 
-		while(im<=MIDPOINTCOUNT)
+		while(im<MIDPOINTCOUNT)
 		{
 			if(m_rpMid[im].x>=hinge.x)
 			{

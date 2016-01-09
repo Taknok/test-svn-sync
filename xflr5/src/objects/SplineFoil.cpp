@@ -50,7 +50,7 @@ SplineFoil::SplineFoil()
  */
 SplineFoil::SplineFoil(SplineFoil *pSF)
 {
-	Copy(pSF);
+	copy(pSF);
 }
 
 
@@ -72,7 +72,7 @@ void SplineFoil::SetCurveParams(int style, int width, QColor color)
 /**
  * Initializes the SplineFoil object with stock data.
  */
-void SplineFoil::InitSplineFoil()
+void SplineFoil::initSplineFoil()
 {
 	m_bModified   = false;
 	m_strFoilName = QObject::tr("Spline Foil");
@@ -97,7 +97,7 @@ void SplineFoil::InitSplineFoil()
 	m_Intrados.InsertPoint(0.736139 , -0.0269428);
 	m_Intrados.InsertPoint(1. , 0.);
 
-	CompMidLine();
+	compMidLine();
 	m_OutPoints = m_Extrados.m_iRes + m_Intrados.m_iRes;
 
 }
@@ -106,7 +106,7 @@ void SplineFoil::InitSplineFoil()
  * Calculates the SplineFoil's mid-camber line and stores the resutls in the memeber array.
  * @return
  */
-void SplineFoil::CompMidLine()
+void SplineFoil::compMidLine()
 {
 	double x, yex, yin;
 	m_fThickness = 0.0;
@@ -146,7 +146,7 @@ void SplineFoil::CompMidLine()
  * Initializes this SplineFoil object with the data from another.
  * @param pSF a pointer to the source SplineFoil object.
  */
-void SplineFoil::Copy(SplineFoil* pSF)
+void SplineFoil::copy(SplineFoil* pSF)
 {
 	m_FoilColor = pSF->m_FoilColor;
 	m_FoilStyle = pSF->m_FoilStyle;
@@ -166,7 +166,7 @@ void SplineFoil::Copy(SplineFoil* pSF)
  * Exports the current SplineFoil to a Foil object.
  * @param pFoil a pointer to the existing Foil object to be loaded with the SplineFoil points.
  */
-void SplineFoil::ExportToBuffer(void *pFoilPtr)
+void SplineFoil::exportToBuffer(void *pFoilPtr)
 {
 	if(!pFoilPtr) return;
 
@@ -195,7 +195,7 @@ void SplineFoil::ExportToBuffer(void *pFoilPtr)
  * Exports the SplineFoil's output points to a text file.
  * @param out the QTextStream to which the output is directed.
  */
-void SplineFoil::ExportToFile(QTextStream &out)
+void SplineFoil::exportToFile(QTextStream &out)
 {
 	m_Extrados.Export(out, true);
 	m_Intrados.Export(out, false);
@@ -208,7 +208,7 @@ void SplineFoil::ExportToFile(QTextStream &out)
  * @param bIsStoring true if saving the data, false if loading
  * @return true if the operation was successful, false otherwise
  */
-bool SplineFoil::Serialize(QDataStream &ar, bool bIsStoring)
+bool SplineFoil::serialize(QDataStream &ar, bool bIsStoring)
 {
 	float f,x,y;
 	int ArchiveFormat,k,n;
@@ -282,7 +282,7 @@ bool SplineFoil::Serialize(QDataStream &ar, bool bIsStoring)
 		m_Intrados.SplineKnots();
 		m_Intrados.splineCurve();
 
-		UpdateSplineFoil();
+		updateSplineFoil();
 
 	}
 	m_bModified = false;
@@ -296,7 +296,7 @@ bool SplineFoil::Serialize(QDataStream &ar, bool bIsStoring)
  * @param bIsStoring true if saving the data, false if loading
  * @return true if the operation was successful, false otherwise
  */
-bool SplineFoil::SerializeXFL(QDataStream &ar, bool bIsStoring)
+bool SplineFoil::serializeXFL(QDataStream &ar, bool bIsStoring)
 {
 	double dble, x,y;
 	int ArchiveFormat,k,n;
@@ -367,7 +367,7 @@ bool SplineFoil::SerializeXFL(QDataStream &ar, bool bIsStoring)
 		m_Intrados.SplineKnots();
 		m_Intrados.splineCurve();
 
-		UpdateSplineFoil();
+		updateSplineFoil();
 
 	}
 	m_bModified = false;
@@ -378,9 +378,9 @@ bool SplineFoil::SerializeXFL(QDataStream &ar, bool bIsStoring)
 /**
  * Updates the mid camber line and the number of points after a modification.
  */
-void SplineFoil::UpdateSplineFoil()
+void SplineFoil::updateSplineFoil()
 {
-	CompMidLine();
+	compMidLine();
 	m_OutPoints = m_Extrados.m_iRes + m_Intrados.m_iRes;
 }
 

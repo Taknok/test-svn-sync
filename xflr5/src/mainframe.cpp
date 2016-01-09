@@ -4269,7 +4269,7 @@ bool MainFrame::SerializePlaneProject(QDataStream &ar)
 	ar << 0; //no need to save the operating points
 
 	// and the spline foil whilst we're at it
-	pAFoil->m_pSF->Serialize(ar, bIsStoring);
+	pAFoil->m_pSF->serialize(ar, bIsStoring);
 
 	return true;
 }
@@ -4725,7 +4725,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 		else ar << 0;
 
 		// and the spline foil whilst we're at it
-		pAFoil->m_pSF->Serialize(ar, bIsStoring);
+		pAFoil->m_pSF->serialize(ar, bIsStoring);
 
 		//add provisions
 		// space allocation for the future storage of more data, without need to change the format
@@ -4886,7 +4886,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 
 
 		// and the spline foil whilst we're at it
-		pAFoil->m_pSF->Serialize(ar, bIsStoring);
+		pAFoil->m_pSF->serialize(ar, bIsStoring);
 
 		// space allocation
 /*		int k ;
@@ -5209,7 +5209,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 		}
 		pMiarex->m_pCurPOpp = NULL;
 
-		pAFoil->m_pSF->Serialize(ar, bIsStoring);
+		pAFoil->m_pSF->serialize(ar, bIsStoring);
 
 		if(m_iApp==XFLR5::MIAREX) pMiarex->setPlane();
 
