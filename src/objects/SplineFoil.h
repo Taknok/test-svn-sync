@@ -45,7 +45,6 @@ The foil is contructed based on one spline for the upper surface and one spline 
 class SplineFoil
 {
 	friend class QAFoil;
-	friend class MainFrame;
 	friend class SplineCtrlsDlg;
 	friend class FoilTableDelegate;
 
@@ -71,21 +70,21 @@ public:
 
 	void setVisible(bool bVisible){m_bVisible = bVisible;}
 
-	void CompMidLine();
+	void compMidLine();
 
-	void InitSplineFoil();
+	void initSplineFoil();
 
-	bool Serialize(QDataStream &ar, bool bIsStoring);
-	bool SerializeXFL(QDataStream &ar, bool bIsStoring);
+	bool serialize(QDataStream &ar, bool bIsStoring);
+	bool serializeXFL(QDataStream &ar, bool bIsStoring);
 
-	void Copy(SplineFoil* pSF);
+	void copy(SplineFoil* pSF);
 	void drawCtrlPoints(QPainter &painter, double scalex, double scaley, QPointF Offset);
 	void drawMidLine(QPainter &painter, double scalex, double scaley, QPointF Offset);
 	void drawFoil(QPainter &painter, double scalex, double scaley, QPointF Offset);
 	void drawOutPoints(QPainter &painter, double scalex, double scaley, QPointF Offset);
-	void ExportToBuffer(void *pFoilPtr);
-	void ExportToFile(QTextStream &out);
-	void UpdateSplineFoil();
+	void exportToBuffer(void *pFoilPtr);
+	void exportToFile(QTextStream &out);
+	void updateSplineFoil();
 	void SetCurveParams(int style, int width, QColor color);
 
 
