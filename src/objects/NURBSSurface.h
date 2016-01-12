@@ -52,21 +52,21 @@ public:
 
 	void   appendFrame(Frame*pFrame);
 	Frame *appendNewFrame();
-	void   ClearFrames();
+	void   clearFrames();
 	Frame *frameAt(int iFrame) {return m_pFrame.at(iFrame);}
 	int    frameCount() {return m_pFrame.size();}
-	int    FramePointCount() {return m_pFrame.first()->PointCount();}
-	double Getu(double pos, double v);
-	double Getv(double u, CVector r);
-	void   GetPoint(double u, double v, CVector &Pt);
-	CVector Point(double u, double v);
-	void   InsertFrame(Frame *pNewFrame);
-	bool   IntersectNURBS(CVector A, CVector B, CVector &I);
-	void   RemoveFrame(int iFrame);
-	void   SetKnots();
-	int    SetvDegree(int nvDegree);
-	int    SetuDegree(int nuDegree);
-	double Weight(const double &d, int const &i, int const &N);
+	int    framePointCount() {return m_pFrame.first()->PointCount();}
+	double getu(double pos, double v);
+	double getv(double u, CVector r);
+	void   getPoint(double u, double v, CVector &Pt);
+	CVector point(double u, double v);
+	void   insertFrame(Frame *pNewFrame);
+	bool   intersectNURBS(CVector A, CVector B, CVector &I);
+	void   removeFrame(int iFrame);
+	void   setKnots();
+	int    setvDegree(int nvDegree);
+	int    setuDegree(int nuDegree);
+	double weight(const double &d, int const &i, int const &N);
 	int    uDegree(){return m_iuDegree;}
 	int    vDegree(){return m_ivDegree;}
 

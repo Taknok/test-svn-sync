@@ -408,15 +408,15 @@ void Direct2dDesign::onInsertPt()
 
 	if(Real.y>=0)
 	{
-		m_pSF->extrados()->InsertPoint(Real.x,Real.y);
-		m_pSF->extrados()->SplineKnots();
+		m_pSF->extrados()->insertPoint(Real.x,Real.y);
+		m_pSF->extrados()->splineKnots();
 		m_pSF->extrados()->splineCurve();
 		m_pSF->updateSplineFoil();
 	}
 	else
 	{
-		m_pSF->intrados()->InsertPoint(Real.x,Real.y);
-		m_pSF->intrados()->SplineKnots();
+		m_pSF->intrados()->insertPoint(Real.x,Real.y);
+		m_pSF->intrados()->splineKnots();
 		m_pSF->intrados()->splineCurve();
 		m_pSF->updateSplineFoil();
 	}
@@ -438,12 +438,12 @@ void Direct2dDesign::onRemovePt()
 	int n =  m_pSF->extrados()->isControlPoint(Real, m_fScale/m_fRefScale);
 	if (n>=0)
 	{
-		if(!m_pSF->extrados()->RemovePoint(n))
+		if(!m_pSF->extrados()->removePoint(n))
 		{
 			QMessageBox::warning(this, tr("Warning"), tr("The minimum number of control points has been reached for this spline degree"));
 			return;
 		}
-		m_pSF->extrados()->SplineKnots();
+		m_pSF->extrados()->splineKnots();
 		m_pSF->extrados()->splineCurve();
 		m_pSF->updateSplineFoil();
 	}
@@ -452,12 +452,12 @@ void Direct2dDesign::onRemovePt()
 		int n=m_pSF->intrados()->isControlPoint(Real, m_fScale/m_fRefScale);
 		if (n>=0)
 		{
-			if(!m_pSF->intrados()->RemovePoint(n))
+			if(!m_pSF->intrados()->removePoint(n))
 			{
 				QMessageBox::warning(this, tr("Warning"), tr("The minimum number of control points has been reached for this spline degree"));
 				return;
 			}
-			m_pSF->intrados()->SplineKnots();
+			m_pSF->intrados()->splineKnots();
 			m_pSF->intrados()->splineCurve();
 			m_pSF->updateSplineFoil();
 		}

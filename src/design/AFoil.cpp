@@ -1596,9 +1596,9 @@ void QAFoil::setPicture()
 {
 	SplineFoil SF = m_UndoStack.at(m_StackPos);
 	m_pSF->copy(&SF);
-	m_pSF->m_Intrados.SplineKnots();
+	m_pSF->m_Intrados.splineKnots();
 	m_pSF->m_Intrados.splineCurve();
-	m_pSF->m_Extrados.SplineKnots();
+	m_pSF->m_Extrados.splineKnots();
 	m_pSF->m_Extrados.splineCurve();
 	m_pSF->updateSplineFoil();
 

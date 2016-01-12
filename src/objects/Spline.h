@@ -60,24 +60,24 @@ public:
 	void drawCtrlPoints(QPainter & painter, double const &scalex, double const &scaley, QPointF const &Offset);
 	void drawOutputPoints(QPainter & painter, double const &scalex, double const &scaley, QPointF const &Offset);
 
-	bool InsertPoint(double const &x, double const &y);
-	bool RemovePoint(int const &k);
+	bool insertPoint(double const &x, double const &y);
+	bool removePoint(int const &k);
 	int isControlPoint(CVector const &Real);
 	int isControlPoint(double const &x, double const &y, double const &zx, double const &zy);
 	int isControlPoint(CVector const &Real, double const &ZoomFactor);
-	double SplineBlend(int const &i, int const &p, double const &t);
-	double GetY(double const &x);
+	double splineBlend(int const &i, int const &p, double const &t);
+	double getY(double const &x);
 
-	void Copy(Spline *pSpline);
-	void CopySymetric(Spline *pSpline);
-	void Export(QTextStream &out, bool bExtrados);
+	void copy(Spline *pSpline);
+	void copySymetric(Spline *pSpline);
+	void exportSpline(QTextStream &out, bool bExtrados);
 	void splineCurve();
-	void SplineKnots();
+	void splineKnots();
 	
 	void setStyle(int style);
 	void setWidth(int width);
 	void setColor(QColor color);
-	void SetSplineParams(int style, int width, QColor color);
+	void setSplineParams(int style, int width, QColor color);
 	QColor color() {return m_Color;}
 	int style() {return m_Style;}
 	int width() {return m_Width;}

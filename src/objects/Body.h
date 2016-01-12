@@ -102,8 +102,8 @@ public:
 
 	double framePosition(int iFrame);
 	int frameSize()       {return m_SplineSurface.frameCount();}
-	int framePointCount() {return m_SplineSurface.FramePointCount();}
-	int sideLineCount()   {return m_SplineSurface.FramePointCount();}// same as FramePointCount();
+	int framePointCount() {return m_SplineSurface.framePointCount();}
+	int sideLineCount()   {return m_SplineSurface.framePointCount();}// same as FramePointCount();
 
 	void computeBodyAxisInertia();
 	void computeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz);

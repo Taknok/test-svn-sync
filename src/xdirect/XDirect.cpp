@@ -1908,7 +1908,7 @@ void QXDirect::onDefinePolar()
 
 	FoilPolarDlg fpDlg(pMainFrame);
 
-	fpDlg.InitDialog();
+	fpDlg.initDialog();
 
 	int res = fpDlg.exec();
 	if (res == QDialog::Accepted)
@@ -4335,6 +4335,9 @@ void QXDirect::setAnalysisParams()
 			if(s_bAlpha) m_pctrlSpec1->setChecked(true);
 			else         m_pctrlSpec2->setChecked(true);
 			m_pctrlSpec3->setEnabled(false);
+			m_pctrlUnit1->setText(QString::fromUtf8("°"));
+			m_pctrlUnit2->setText(QString::fromUtf8("°"));
+			m_pctrlUnit3->setText(QString::fromUtf8("°"));
 		}
 		else
 		{
@@ -4343,6 +4346,9 @@ void QXDirect::setAnalysisParams()
 			m_pctrlAlphaMin->setPrecision(0);
 			m_pctrlAlphaMax->setPrecision(0);
 			m_pctrlAlphaDelta->setPrecision(0);
+			m_pctrlUnit1->setText(" ");
+			m_pctrlUnit2->setText(" ");
+			m_pctrlUnit3->setText(" ");
 		}
 	}
 	else
@@ -4352,8 +4358,18 @@ void QXDirect::setAnalysisParams()
 		m_pctrlSpec3->setEnabled(false);
 	}
 	setOpPointSequence();
+	if(Polar::curPolar())
+	{
+		if(Polar::curPolar()->polarType()!=XFLR5::FIXEDAOAPOLAR)
+		{
 
-	setCurveParams();
+		}
+		else
+		{
+
+		}
+	}
+
 }
 
 
@@ -4413,21 +4429,6 @@ void QXDirect::setCurveParams()
 		else
 		{
 			fillComboBoxes(false);
-		}
-	}
-	if(Polar::curPolar())
-	{
-		if(Polar::curPolar()->polarType()!=XFLR5::FIXEDAOAPOLAR)
-		{
-			m_pctrlUnit1->setText(QString::fromUtf8("°"));
-			m_pctrlUnit2->setText(QString::fromUtf8("°"));
-			m_pctrlUnit3->setText(QString::fromUtf8("°"));
-		}
-		else
-		{
-			m_pctrlUnit1->setText("");
-			m_pctrlUnit2->setText("");
-			m_pctrlUnit3->setText("");
 		}
 	}
 }
@@ -4590,6 +4591,7 @@ OpPoint * QXDirect::setOpp(double Alpha)
 				OpPoint *pOldOpp = (OpPoint*)OpPoint::s_oaOpp.at(iOpp);
 				if(pOldOpp->foilName()==Foil::curFoil()->foilName() && pOldOpp->polarName()==Polar::curPolar()->polarName())
 				{
+					pOpp = pOldOpp;
 					break;
 				}
 			}

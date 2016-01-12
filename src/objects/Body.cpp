@@ -139,7 +139,7 @@ Body::~Body()
 
 void Body::setNURBSKnots()
 {
-	m_SplineSurface.SetKnots();
+	m_SplineSurface.setKnots();
 }
 
 
@@ -209,7 +209,7 @@ void Body::duplicate(Body *pBody)
 	m_LineType        = pBody->m_LineType;
 	m_BodyDescription = pBody->m_BodyDescription;
 
-	m_SplineSurface.ClearFrames();
+	m_SplineSurface.clearFrames();
 	m_xPanels.clear();
 	for(int i=0; i<pBody->frameSize(); i++)
 	{
@@ -410,7 +410,7 @@ CVector Body::centerPoint(double u)
  */
 void Body::getPoint(double u, double v, bool bRight, CVector &Pt)
 {
-	m_SplineSurface.GetPoint(u, v, Pt);
+	m_SplineSurface.getPoint(u, v, Pt);
 	if(!bRight)  Pt.y = -Pt.y;
 }
 
@@ -424,7 +424,7 @@ void Body::getPoint(double u, double v, bool bRight, CVector &Pt)
  */
 CVector Body::Point(double u, double v, bool bRight)
 {
-	CVector Pt = m_SplineSurface.Point(u, v);
+	CVector Pt = m_SplineSurface.point(u, v);
 	if(!bRight)  Pt.y = -Pt.y;
 	return Pt;
 }
@@ -437,7 +437,7 @@ CVector Body::Point(double u, double v, bool bRight)
  */
 double Body::getu(double x)
 {
-	return m_SplineSurface.Getu(x,0.0);
+	return m_SplineSurface.getu(x,0.0);
 }
 
 /**
@@ -505,7 +505,7 @@ bool Body::importDefinition(QTextStream &inStream, double mtoUnit, QString &erro
 	Line = 0;
 	bRead  = ReadAVLString(inStream, Line, strong);
 	m_BodyName = strong.trimmed();
-	m_SplineSurface.ClearFrames();
+	m_SplineSurface.clearFrames();
 	m_xPanels.clear();
 	m_hPanels.clear();
 	//Header data
@@ -553,7 +553,7 @@ bool Body::importDefinition(QTextStream &inStream, double mtoUnit, QString &erro
 
 			if (NSideLines)
 			{
-				m_SplineSurface.InsertFrame(pNewFrame);
+				m_SplineSurface.insertFrame(pNewFrame);
 				m_xPanels.append(3);
 				m_hPanels.append(7);
 			}
@@ -580,7 +580,7 @@ bool Body::importDefinition(QTextStream &inStream, double mtoUnit, QString &erro
 		}
 	}
 
-	m_SplineSurface.SetKnots();
+	m_SplineSurface.setKnots();
 	return true;
 }
 
@@ -1115,7 +1115,7 @@ int Body::removeFrame(int n)
  */
 void Body::removeActiveFrame()
 {
-	m_SplineSurface.RemoveFrame(m_iActiveFrame);
+	m_SplineSurface.removeFrame(m_iActiveFrame);
 
 
 	m_iHighlight = -1;
@@ -1232,7 +1232,7 @@ bool Body::serializeBodyWPA(QDataStream &ar, bool bIsStoring)
 		ar >> k; // m_bClosedSurface
 		if(k!=0 && k!=1) return false;
 
-		m_SplineSurface.ClearFrames();
+		m_SplineSurface.clearFrames();
 		for(k=0; k<nStations; k++)
 		{
 			m_SplineSurface.m_pFrame.append(new Frame);
@@ -1379,7 +1379,7 @@ bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
 			m_hPanels.append(p);
 		}
 
-		m_SplineSurface.ClearFrames();
+		m_SplineSurface.clearFrames();
 		m_xPanels.clear();
 		ar >> n;
 		for(k=0; k<n; k++)

@@ -342,7 +342,7 @@ void SplineCtrlsDlg::readData()
 
 	if(m_pSF->m_bSymetric)
 	{
-		m_pSF->m_Intrados.CopySymetric(&m_pSF->m_Extrados);
+		m_pSF->m_Intrados.copySymetric(&m_pSF->m_Extrados);
 	}
 
 	double w = (double)m_pctrlPtWeight->value();
@@ -416,9 +416,9 @@ void SplineCtrlsDlg::onUpdate()
 
 void SplineCtrlsDlg::updateSplines()
 {
-	m_pSF->m_Extrados.SplineKnots();
+	m_pSF->m_Extrados.splineKnots();
 	m_pSF->m_Extrados.splineCurve();
-	m_pSF->m_Intrados.SplineKnots();
+	m_pSF->m_Intrados.splineKnots();
 	m_pSF->m_Intrados.splineCurve();
 	m_pSF->updateSplineFoil();
 	QAFoil *pAFoil = (QAFoil*)s_pAFoil;

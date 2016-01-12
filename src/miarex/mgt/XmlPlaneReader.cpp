@@ -347,7 +347,7 @@ void XMLPlaneReader::readPointMass(PointMass *ppm, double massUnit, double lengt
 
 void XMLPlaneReader::readBody(Body *pBody, CVector &position, double lengthUnit, double massUnit)
 {
-	pBody->splineSurface()->ClearFrames();
+	pBody->splineSurface()->clearFrames();
 
 	while(!atEnd() && !hasError() && readNextStartElement() )
 	{

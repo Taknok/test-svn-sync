@@ -28,7 +28,7 @@
 #include <QFontMetrics>
 #include <Settings.h>
 #include <QFileDialog>
-
+#include <QtDebug>
 
 void *QGraph::s_pMainFrame = NULL;
 
@@ -126,22 +126,19 @@ void QGraph::drawCurve(int nIndex, QPainter &painter)
 	rViewRect.setTopLeft(Min);
 	rViewRect.setBottomRight(Max);
 
+	QPointF *pts = new QPointF[pCurve->count()];
+
 	if(pCurve->size()>=1)
 	{
-		From.setX(int(pCurve->x[0]/m_scalex+m_ptoffset.x()));
-		From.setY(int(pCurve->y[0]/scaley  +m_ptoffset.y()));
-
 		if(pCurve->isVisible())
 		{
-			for (i=1; i<pCurve->size();i++)
+			for (i=0; i<pCurve->size();i++)
 			{
-				To.setX(int(pCurve->x[i]/m_scalex+m_ptoffset.x()));
-				To.setY(int(pCurve->y[i]/scaley  +m_ptoffset.y()));
-				painter.drawLine(From, To);
+				pts[i] = QPointF(pCurve->x[i]/m_scalex+m_ptoffset.x(), pCurve->y[i]/scaley  +m_ptoffset.y());
 
-				From = To;
 			}
 		}
+		painter.drawPolyline(pts, pCurve->count());
 
 		if(pCurve->pointsVisible())
 		{
