@@ -2111,7 +2111,8 @@ void GLCreatePanelForce(int nPanels, Panel *pPanel, WPolar *pWPolar, PlaneOpp *p
 		for (p=0; p<nPanels; p++)
 		{
 			// plot Cp? f? f/s=q.Cp?
-			force = 0.5*pWPolar->density() *pPOpp->m_QInf*pPOpp->m_QInf * Cp[p]*pPanel[p].area();
+//			force = 0.5*pWPolar->density() *pPOpp->m_QInf*pPOpp->m_QInf * Cp[p]*pPanel[p].area();
+			force = 0.5*pWPolar->density() *pPOpp->m_QInf*pPOpp->m_QInf * Cp[p]/500.0;
 			force *= QMiarex::s_LiftScale *coef;
 			color = (force-rmin)/range;
 			glColor3d(GLGetRed(color),GLGetGreen(color),GLGetBlue(color));
