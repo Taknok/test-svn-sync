@@ -103,8 +103,9 @@ void QGraph::drawCurve(int nIndex, QPainter &painter)
 	painter.save();
 	double scaley;
 	int i, ptside;
-	QPoint From, To, Min, Max;
-	QRect rViewRect;
+	QPointF From, To;
+/*	QPoint Min, Max;
+	QRect rViewRect;*/
 
 	ptside = 5;
 	Curve* pCurve = curve(nIndex);
@@ -119,32 +120,35 @@ void QGraph::drawCurve(int nIndex, QPainter &painter)
 	CurvePen.setWidth((int)pCurve->width());
 	painter.setPen(CurvePen);
 
-	Min.setX(int(xmin/m_scalex) +m_ptoffset.x());
+/*	Min.setX(int(xmin/m_scalex) +m_ptoffset.x());
 	Min.setY(int(ymin/scaley) +m_ptoffset.y());
 	Max.setX(int(xmax/m_scalex) +m_ptoffset.x());
 	Max.setY(int(ymax/scaley) +m_ptoffset.y());
 	rViewRect.setTopLeft(Min);
-	rViewRect.setBottomRight(Max);
-
-	QPointF *pts = new QPointF[pCurve->count()];
+	rViewRect.setBottomRight(Max);*/
 
 	if(pCurve->size()>=1)
 	{
+
 		if(pCurve->isVisible())
 		{
-			for (i=0; i<pCurve->size();i++)
+			From.setX(pCurve->pt[0].x()/m_scalex+m_ptoffset.x());
+			From.setY(pCurve->pt[0].y()/scaley  +m_ptoffset.y());
+			for (i=1; i<pCurve->size();i++)
 			{
-				pts[i] = QPointF(pCurve->x[i]/m_scalex+m_ptoffset.x(), pCurve->y[i]/scaley  +m_ptoffset.y());
+				To.setX(pCurve->pt[i].x()/m_scalex+m_ptoffset.x());
+				To.setY(pCurve->pt[i].y()/scaley  +m_ptoffset.y());
+				painter.drawLine(From, To);
 
+				From = To;
 			}
 		}
-		painter.drawPolyline(pts, pCurve->count());
 
 		if(pCurve->pointsVisible())
 		{
 			for (i=0; i<pCurve->size();i++)
 			{
-				QPoint pt(int(pCurve->x[i]/m_scalex+m_ptoffset.x()), int(pCurve->y[i]/  scaley+m_ptoffset.y()));
+				QPointF pt(pCurve->pt[i].x()/m_scalex+m_ptoffset.x(), pCurve->pt[i].y()/  scaley+m_ptoffset.y());
 
 				switch(pCurve->pointStyle())
 				{
@@ -191,8 +195,8 @@ void QGraph::drawCurve(int nIndex, QPainter &painter)
 			CurvePen.setWidth((int)pCurve->width());
 			CurvePen.setColor(HighColor);
 			painter.setPen(CurvePen);
-			To.setX(int(pCurve->x[point]/m_scalex+m_ptoffset.x()));
-			To.setY(int(pCurve->y[point]/scaley  +m_ptoffset.y()));
+			To.setX(int(pCurve->pt[point].x()/m_scalex+m_ptoffset.x()));
+			To.setY(int(pCurve->pt[point].y()/scaley  +m_ptoffset.y()));
 			painter.drawRect(To.x()-ptside-1,To.y()-ptside-1, 2*(ptside+1),2*(ptside+1));
 		}
 	}
@@ -718,9 +722,9 @@ void QGraph::exportToFile(QFile &XFile, XFLR5::enumTextFileType FileType)
 			if(pCurve && j<pCurve->size())
 			{
 				if(FileType==XFLR5::TXT) strong= QString("%1     %2  ")
-												.arg(pCurve->x[j],13,'g',7).arg(pCurve->y[j],13,'g',7);
+												.arg(pCurve->pt[j].x(),13,'g',7).arg(pCurve->pt[j].y(),13,'g',7);
 				else                     strong= QString("%1, %2, , ")
-												.arg(pCurve->x[j],13,'g',7).arg(pCurve->y[j],13,'g',7);
+												.arg(pCurve->pt[j].x(),13,'g',7).arg(pCurve->pt[j].y(),13,'g',7);
 			}
 			else
 			{
@@ -749,8 +753,8 @@ void QGraph::highlight(QPainter &painter, Curve *pCurve, int ref)
 	if(ref<0 || ref>pCurve->size()-1) return;
 
 	painter.save();
-	int x = int(pCurve->x[ref]/m_scalex)  +m_ptoffset.x();
-	int y = int(pCurve->y[ref]/m_scaley)  +m_ptoffset.y();
+	int x = int(pCurve->pt[ref].x()/m_scalex)  +m_ptoffset.x();
+	int y = int(pCurve->pt[ref].y()/m_scaley)  +m_ptoffset.y();
 
 	QPen HighlightPen(QColor(255,100,100));
 	HighlightPen.setWidth(2);

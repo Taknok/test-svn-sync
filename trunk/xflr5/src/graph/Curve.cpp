@@ -48,9 +48,8 @@ Curve::Curve()
  */
 int Curve::appendPoint(double xn, double yn)
 {
-	x.append(xn);
-	y.append(yn);
-	return size();
+	pt.append(QPointF(xn,yn));
+	return pt.count();
 }
 
 
@@ -80,8 +79,7 @@ void Curve::copyData(Curve *pCurve)
 
 	for (int i=0; i<pCurve->size() ;i++)
 	{
-		x.append(pCurve->x[i]);
-		y.append(pCurve->y[i]);
+		pt.append(QPointF(pCurve->pt[i].x(), pCurve->pt[i].y()));
 	}
 }
 
@@ -98,15 +96,15 @@ void Curve::copyData(Curve *pCurve)
 int Curve::closestPoint(double xs, double ys, double &dist )
 {
 	Graph *pGraph = (Graph*)m_pParentGraph;
-	static int ref;
-	static double d2;
+	int ref;
+	double d2;
 	ref = -1;
 	dist = 1.e10;
 	if (size()<1) return -1;
 	for(int i=0; i<size(); i++)
 	{
-		d2 =   (xs-x[i])*(xs-x[i])/pGraph->xScale()/pGraph->xScale() 
-			 + (ys-y[i])*(ys-y[i])/pGraph->yScale()/pGraph->yScale();
+		d2 =   (xs-pt[i].x())*(xs-pt[i].x())/pGraph->xScale()/pGraph->xScale()
+			 + (ys-pt[i].y())*(ys-pt[i].y())/pGraph->yScale()/pGraph->yScale();
 		if (d2<dist)
 		{
 			dist = d2;
@@ -129,13 +127,13 @@ int Curve::closestPoint(double xs, double ys, double &dist )
 void Curve::closestPoint(double xs, double ys, double &dist, int &n)
 {
 	Graph *pGraph = (Graph*)m_pParentGraph;
-	static double d2;
+	double d2;
 	dist = 1.e10;
 	if (n<1) return;
 	for(int i=0; i<n; i++)
 	{
-		d2 =   (xs-x[i])*(xs-x[i])/pGraph->xScale()/pGraph->xScale()
-			 + (ys-y[i])*(ys-y[i])/pGraph->yScale()/pGraph->yScale();
+		d2 =   (xs-pt[i].x())*(xs-pt[i].x())/pGraph->xScale()/pGraph->xScale()
+			 + (ys-pt[i].y())*(ys-pt[i].y())/pGraph->yScale()/pGraph->yScale();
 		if (d2<dist)
 		{
 			dist = d2;
@@ -156,17 +154,17 @@ void Curve::closestPoint(double xs, double ys, double &dist, int &n)
  */
 void Curve::closestPoint(double const &xs, double const &ys, double &xSel, double &ySel, double &dist, int &nSel)
 {
-	static double d2;
+	double d2;
 	dist = 1.e40;
 
 	for(int i=0; i<size(); i++)
 	{
-		d2 =   (xs-x[i])*(xs-x[i]) + (ys-y[i])*(ys-y[i]);
+		d2 =   (xs-pt[i].x())*(xs-pt[i].x()) + (ys-pt[i].y())*(ys-pt[i].y());
 		if (d2<dist)
 		{
 			dist = d2;
-			xSel = x[i];
-			ySel = y[i];
+			xSel = pt[i].x();
+			ySel = pt[i].y();
 			nSel = i;
 		}
 	}
@@ -183,7 +181,7 @@ double Curve::xMin()
 //	if(n==0) xmin = .0; 
 //	else
 		for(int i=0; i<size();i++)
-			xMin = qMin(xMin, x[i]);
+			xMin = qMin(xMin, pt[i].x());
 	return xMin;
 }
 
@@ -198,7 +196,7 @@ double Curve::xMax()
 //	if(n==0) xmax = 1.0; 
 //	else
 	for(int i=0; i<size();i++)
-			xMax = qMax(xMax, x[i]);
+			xMax = qMax(xMax, pt[i].x());
 	return xMax;
 }
 
@@ -213,7 +211,7 @@ double Curve::yMin()
 //	if(n==0) ymin = .0; 
 //	else
 	for(int i=0; i<size();i++)
-			yMin = qMin(yMin, y[i]);
+			yMin = qMin(yMin, pt[i].y());
 	return yMin;
 }
 
@@ -228,7 +226,7 @@ double Curve::yMax()
 //	if(n==0) ymax = 1.0; 
 //	else
 		for(int i=0; i<size();i++)
-			yMax = qMax(yMax, y[i]);
+			yMax = qMax(yMax, pt[i].y());
 	return yMax;
 }
 
