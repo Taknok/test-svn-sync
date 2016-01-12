@@ -7307,7 +7307,7 @@ void QMiarex::setupLayout()
 	{
 		QGridLayout *pCheckDispLayout = new QGridLayout;
 		{
-			m_pctrlPanelForce = new QCheckBox(tr("Panel Forces"));
+			m_pctrlPanelForce = new QCheckBox("F/s=q.Cp");
 			m_pctrlPanelForce->setToolTip(tr("Display the force 1/2.rho.V2.S.Cp acting on the panel"));
 			m_pctrlLift           = new QCheckBox(tr("Lift"));
 			m_pctrlIDrag          = new QCheckBox(tr("Ind. Drag"));

@@ -649,7 +649,7 @@ void ThreeDWidget::setupViewPort(int width, int height)
 void ThreeDWidget::glCreateArcballList(ArcBall &ArcBall, double GLScale)
 {
 	int row, col, NumAngles, NumCircles;
-	double Radius, lat_incr, lon_incr, phi, theta;
+	double Radius=0.1, lat_incr, lon_incr, phi, theta;
 //	ArcBall.GetMatrix();
 	CVector eye(0.0,0.0,1.0);
 	CVector up(0.0,1.0,0.0);
