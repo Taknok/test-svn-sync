@@ -12,7 +12,7 @@
 #define PARAMS_H
 
 
-#define VERSIONNAME     "xflr5 v6.12"
+#define VERSIONNAME     "xflr5 v6.13"
 
 //General
 #define PI             3.14159265358979  

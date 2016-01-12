@@ -73,7 +73,7 @@ NURBSSurface::~NURBSSurface()
  * @param v the specified value of the v-parameter
  * @return the value of the u-parameter
  */
-double NURBSSurface::Getu(double pos, double v)
+double NURBSSurface::getu(double pos, double v)
 {
 	if(pos<=m_pFrame.first()->m_Position[m_uAxis]) return 0.0;
 	if(pos>=m_pFrame.last()->m_Position[m_uAxis])  return 1.0;
@@ -91,7 +91,7 @@ double NURBSSurface::Getu(double pos, double v)
 		for(int iu=0; iu<frameCount(); iu++) //browse all points
 		{
 			zh = 0.0;
-			for(int jv=0; jv<FramePointCount(); jv++)
+			for(int jv=0; jv<framePointCount(); jv++)
 			{
 				c =  splineBlend(jv, m_ivDegree, v, m_vKnots);
 				zh += m_pFrame[iu]->m_Position[m_uAxis] * c;
@@ -115,7 +115,7 @@ double NURBSSurface::Getu(double pos, double v)
  * @return the value of the v-parameter
  */
 
-double NURBSSurface::Getv(double u, CVector r)
+double NURBSSurface::getv(double u, CVector r)
 {
 	double sine = 10000.0;
 
@@ -132,7 +132,7 @@ double NURBSSurface::Getv(double u, CVector r)
 	while(qAbs(sine)>1.0e-4 && iter<200)
 	{
 		v=(v1+v2)/2.0;
-		GetPoint(u, v, t_R);
+		getPoint(u, v, t_R);
 		t_R.x = 0.0;
 		t_R.normalize();//t_R is the unit radial vector for u,v
 
@@ -157,22 +157,22 @@ double NURBSSurface::Getv(double u, CVector r)
  * @param v the specified v-parameter
  * @param Pt a reference to the point defined by the pair (u,v)
 */
-void NURBSSurface::GetPoint(double u, double v, CVector &Pt)
+void NURBSSurface::getPoint(double u, double v, CVector &Pt)
 {
 	CVector V, Vv;
-	double wx, weight;
+	double wx, totalweight;
 
 	if(u>=1.0) u=0.99999999999;
 	if(v>=1.0) v=0.99999999999;
 
-	weight = 0.0;
+	totalweight = 0.0;
 	for(int iu=0; iu<frameCount(); iu++)
 	{
 		Vv.set(0.0,0.0,0.0);
 		wx = 0.0;
-		for(int jv=0; jv<FramePointCount(); jv++)
+		for(int jv=0; jv<framePointCount(); jv++)
 		{
-			cs = splineBlend(jv, m_ivDegree, v, m_vKnots) * Weight(m_EdgeWeightv, jv, FramePointCount());
+			cs = splineBlend(jv, m_ivDegree, v, m_vKnots) * weight(m_EdgeWeightv, jv, framePointCount());
 
 			Vv.x += m_pFrame[iu]->m_CtrlPoint[jv].x * cs;
 			Vv.y += m_pFrame[iu]->m_CtrlPoint[jv].y * cs;
@@ -180,18 +180,18 @@ void NURBSSurface::GetPoint(double u, double v, CVector &Pt)
 
 			wx += cs;
 		}
-		bs = splineBlend(iu, m_iuDegree, u, m_uKnots) * Weight(m_EdgeWeightu, iu, frameCount());
+		bs = splineBlend(iu, m_iuDegree, u, m_uKnots) * weight(m_EdgeWeightu, iu, frameCount());
 
 		V.x += Vv.x * bs;
 		V.y += Vv.y * bs;
 		V.z += Vv.z * bs;
 
-		weight += wx * bs;
+		totalweight += wx * bs;
 	}
 
-	Pt.x = V.x / weight;
-	Pt.y = V.y / weight;
-	Pt.z = V.z / weight;
+	Pt.x = V.x / totalweight;
+	Pt.y = V.y / totalweight;
+	Pt.z = V.z / totalweight;
 }
 
 
@@ -206,22 +206,22 @@ void NURBSSurface::GetPoint(double u, double v, CVector &Pt)
  * @param v the specified v-parameter
  * @param Pt a reference to the point defined by the pair (u,v)
 */
-CVector NURBSSurface::Point(double u, double v)
+CVector NURBSSurface::point(double u, double v)
 {
 	CVector V, Vv;
-	double wx, weight;
+	double wx, totalweight;
 
 	if(u>=1.0) u=0.99999999999;
 	if(v>=1.0) v=0.99999999999;
 
-	weight = 0.0;
+	totalweight = 0.0;
 	for(int iu=0; iu<frameCount(); iu++)
 	{
 		Vv.set(0.0,0.0,0.0);
 		wx = 0.0;
-		for(int jv=0; jv<FramePointCount(); jv++)
+		for(int jv=0; jv<framePointCount(); jv++)
 		{
-			cs = splineBlend(jv, m_ivDegree, v, m_vKnots) * Weight(m_EdgeWeightv, jv, FramePointCount());
+			cs = splineBlend(jv, m_ivDegree, v, m_vKnots) * weight(m_EdgeWeightv, jv, framePointCount());
 
 			Vv.x += m_pFrame[iu]->m_CtrlPoint[jv].x * cs;
 			Vv.y += m_pFrame[iu]->m_CtrlPoint[jv].y * cs;
@@ -229,16 +229,16 @@ CVector NURBSSurface::Point(double u, double v)
 
 			wx += cs;
 		}
-		bs = splineBlend(iu, m_iuDegree, u, m_uKnots) * Weight(m_EdgeWeightu, iu, frameCount());
+		bs = splineBlend(iu, m_iuDegree, u, m_uKnots) * weight(m_EdgeWeightu, iu, frameCount());
 
 		V.x += Vv.x * bs;
 		V.y += Vv.y * bs;
 		V.z += Vv.z * bs;
 
-		weight += wx * bs;
+		totalweight += wx * bs;
 	}
 
-	return V/weight;
+	return V/totalweight;
 }
 
 
@@ -249,7 +249,7 @@ CVector NURBSSurface::Point(double u, double v)
 *  @param N the total number of points along the edge
 *  @return the point's weight
 **/
-double NURBSSurface::Weight(double const &d, const int &i, int const &N)
+double NURBSSurface::weight(double const &d, const int &i, int const &N)
 {
 	if(qAbs(d-1.0)<PRECISION) return 1.0;
 	if(i<(N+1)/2)             return pow(d, i);
@@ -276,7 +276,7 @@ double NURBSSurface::Weight(int i, int N)
  *@param I the intersection point
  *@return true if an intersection point could be determined
  */
-bool NURBSSurface::IntersectNURBS(CVector A, CVector B, CVector &I)
+bool NURBSSurface::intersectNURBS(CVector A, CVector B, CVector &I)
 {
 	CVector  tmp, M0, M1;
 	double u, v, dist, t, tp;
@@ -303,11 +303,11 @@ bool NURBSSurface::IntersectNURBS(CVector A, CVector B, CVector &I)
 	{
 		//first we get the u parameter corresponding to point I
 		tp = t;
-		u = Getu(I.z, 0.0);
+		u = getu(I.z, 0.0);
 		t_Q.set(I.x, 0.0, 0.0);
 		t_r = (I-t_Q);
-		v = Getv(u, t_r);
-		GetPoint(u, v, t_N);
+		v = getv(u, t_r);
+		getPoint(u, v, t_N);
 
 		//project t_N on M0M1 line
 		t = - ( (M0.x - t_N.x) * (M1.x-M0.x) + (M0.y - t_N.y) * (M1.y-M0.y) + (M0.z - t_N.z)*(M1.z-M0.z))
@@ -329,12 +329,12 @@ bool NURBSSurface::IntersectNURBS(CVector A, CVector B, CVector &I)
 /**
  * Creates the knot array for the two directions
  */
-void NURBSSurface::SetKnots()
+void NURBSSurface::setKnots()
 {
 	int j;
 	double b;
 	if(!frameCount())return;
-	if(!FramePointCount())return;
+	if(!framePointCount())return;
 
 	m_iuDegree = qMin(m_iuDegree, frameCount());
 	m_nuKnots  = m_iuDegree + frameCount() + 1;
@@ -356,7 +356,7 @@ void NURBSSurface::SetKnots()
 
 	m_ivDegree = qMin(m_ivDegree, m_pFrame.first()->m_CtrlPoint.size());
 
-	m_nvKnots  = m_ivDegree + FramePointCount() + 1;
+	m_nvKnots  = m_ivDegree + framePointCount() + 1;
 	b = (double)(m_nvKnots-2*m_ivDegree-1);
 
 	for (j=0; j<m_nvKnots; j++)
@@ -364,7 +364,7 @@ void NURBSSurface::SetKnots()
 		if (j<m_ivDegree+1)  m_vKnots[j] = 0.0;
 		else
 		{
-			if (j<FramePointCount())
+			if (j<framePointCount())
 			{
 				if(qAbs(b)>0.0) m_vKnots[j] = (double)(j-m_ivDegree)/b;
 				else            m_vKnots[j] = 1.0;
@@ -382,10 +382,10 @@ void NURBSSurface::SetKnots()
  * @param nvDegree the specified degree
  * @return the degree which has been set
  */
-int NURBSSurface::SetvDegree(int nvDegree)
+int NURBSSurface::setvDegree(int nvDegree)
 {
-	if(FramePointCount()>nvDegree) m_ivDegree = nvDegree;
-	else                           m_ivDegree = FramePointCount()-1;
+	if(framePointCount()>nvDegree) m_ivDegree = nvDegree;
+	else                           m_ivDegree = framePointCount()-1;
 	return m_ivDegree;
 }
 
@@ -400,7 +400,7 @@ int NURBSSurface::SetvDegree(int nvDegree)
  * @param nuDegree the specified degree
  * @return the degree which has been set
  */
-int NURBSSurface::SetuDegree(int nuDegree)
+int NURBSSurface::setuDegree(int nuDegree)
 {
 	if(frameCount()>nuDegree) m_iuDegree = nuDegree;
 	else                     m_iuDegree = frameCount()-1;
@@ -412,7 +412,7 @@ int NURBSSurface::SetuDegree(int nuDegree)
  * Removes a Frame from the array
  * @param iFrame the index of the frame to remove
  */
-void NURBSSurface::RemoveFrame(int iFrame)
+void NURBSSurface::removeFrame(int iFrame)
 {
 	delete m_pFrame.at(iFrame);
 	m_pFrame.removeAt(iFrame);
@@ -423,12 +423,12 @@ void NURBSSurface::RemoveFrame(int iFrame)
 /**
  * Removes all the Frame objects from the array
  */
-void NURBSSurface::ClearFrames()
+void NURBSSurface::clearFrames()
 {
 	if(!frameCount()) return;
 	for(int ifr=frameCount()-1; ifr>=0; ifr--)
 	{
-		RemoveFrame(ifr);
+		removeFrame(ifr);
 	}
 }
 
@@ -436,7 +436,7 @@ void NURBSSurface::ClearFrames()
  * Inserts a Frame in the array. The Frame is positioned in crescending position along the u-axis
  * @param pNewFrame a pointer to the Frame object to insert.
  */
-void NURBSSurface::InsertFrame(Frame *pNewFrame)
+void NURBSSurface::insertFrame(Frame *pNewFrame)
 {
 	for(int ifr=0; ifr<frameCount(); ifr++)
 	{

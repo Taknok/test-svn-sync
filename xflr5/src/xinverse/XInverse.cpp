@@ -82,12 +82,12 @@ QXInverse::QXInverse(QWidget *parent)
 	m_pModFoil->m_FoilStyle = 0;
 	m_pModFoil->m_FoilWidth = 1;
 
-	m_Spline.InsertPoint(0.0,  0.0);
-	m_Spline.InsertPoint(0.25, 0.0);
-	m_Spline.InsertPoint(0.5,  0.0);
-	m_Spline.InsertPoint(0.75, 0.0);
-	m_Spline.InsertPoint(1.0,  0.0);
-	m_Spline.SplineKnots();
+	m_Spline.insertPoint(0.0,  0.0);
+	m_Spline.insertPoint(0.25, 0.0);
+	m_Spline.insertPoint(0.5,  0.0);
+	m_Spline.insertPoint(0.75, 0.0);
+	m_Spline.insertPoint(1.0,  0.0);
+	m_Spline.splineKnots();
 	m_Spline.splineCurve();
 
 	m_Spline.setStyle(0);
@@ -269,7 +269,7 @@ void QXInverse::createQCurve()
 	m_pQCurve->clear();
 
 	int points;
-	if(m_bFullInverse) points = 257;
+	if(m_bFullInverse) points = ICX;
 	else points  = pXFoil->n;
 
 	for (int i=1; i<=points; i++)
@@ -291,7 +291,7 @@ void QXInverse::createMCurve()
 	m_pMCurve->clear();
 	m_pReflectedCurve->clear();
 
-	if(m_bFullInverse) points = 257;
+	if(m_bFullInverse) points = ICX;
 	else               points = pXFoil->n;
 
 	for (i=1; i<=points; i++)
@@ -750,10 +750,10 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 {
 //	if(!hasFocus()) setFocus();
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
-	static double x1,y1, xmin, xmax, ymin,  ymax, xpt, ypt, scale, ux, uy, unorm, vx, vy, vnorm, scal;
-	static double xx0,xx1,xx2,yy0,yy1,yy2, dist;
-	static int a, n, ipt;
-	static QPoint point;
+	double x1,y1, xmin, xmax, ymin,  ymax, xpt, ypt, scale, ux, uy, unorm, vx, vy, vnorm, scal;
+	double xx0,xx1,xx2,yy0,yy1,yy2, dist;
+	int a, n, ipt = 0;
+	QPoint point;
 	point = event->pos();
 
 	if(m_bGetPos)
@@ -987,6 +987,19 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 	}
 	else
 	{
+		if(m_QGraph.isInDrawRect(point))
+		{
+			pMainFrame->statusBar()->showMessage(QString("X = %1, Y = %2").arg(m_QGraph.clientTox(event->x())).arg(m_QGraph.clientToy(event->y())));
+			m_pCurGraph = &m_QGraph;
+		}
+		else
+		{
+			m_pCurGraph = NULL;
+			//convert screen coordinates to foil coordinates
+			CVector real = mousetoReal((event->pos()));
+			pMainFrame->statusBar()->showMessage(QString("X = %1, Y = %2").arg(real.x).arg(real.y));
+		}
+
 		// highlight if mouse passe over a point
 		if(m_bSpline)
 		{
@@ -1002,18 +1015,6 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 		}
 	}
 
-	if(m_QGraph.isInDrawRect(point))
-	{
-		pMainFrame->statusBar()->showMessage(QString("X = %1, Y = %2").arg(m_QGraph.clientTox(event->x())).arg(m_QGraph.clientToy(event->y())));
-		m_pCurGraph = &m_QGraph;
-	}
-	else
-	{
-		m_pCurGraph = NULL;
-		//convert screen coordinates to foil coordinates
-		CVector real = mousetoReal((event->pos()));
-		pMainFrame->statusBar()->showMessage(QString("X = %1, Y = %2").arg(real.x).arg(real.y));
-	}
 }
 
 
@@ -1065,20 +1066,20 @@ void QXInverse::mousePressEvent(QMouseEvent *event)
 						{
 							if (m_Spline.m_iSelect>=0) 
 							{
-								if(!m_Spline.RemovePoint(m_Spline.m_iSelect))
+								if(!m_Spline.removePoint(m_Spline.m_iSelect))
 								{
 									QMessageBox::warning(p2DWidget,tr("Warning"), tr("The minimum number of control points has been reached for this spline degree"));
 									return;
 								}
-								m_Spline.SplineKnots();
+								m_Spline.splineKnots();
 								m_Spline.splineCurve();
 							}
 						}
 					}
 					else if (bShift) 
 					{
-						m_Spline.InsertPoint(xd,yd);
-						m_Spline.SplineKnots();
+						m_Spline.insertPoint(xd,yd);
+						m_Spline.splineKnots();
 						m_Spline.splineCurve();
 					}
 					if(CtrlPt>=0) return;
@@ -1217,20 +1218,20 @@ void QXInverse::mouseReleaseEvent(QMouseEvent *event)
 				m_SplineRightPos = m_Pos2;
 
 				m_Spline.m_CtrlPoint.clear();
-				m_Spline.InsertPoint(m_pMCurve->x[m_Pos1], m_pMCurve->y[m_Pos1]);
-				m_Spline.InsertPoint(m_pMCurve->x[m_Pos2], m_pMCurve->y[m_Pos2]);
+				m_Spline.insertPoint(m_pMCurve->x[m_Pos1], m_pMCurve->y[m_Pos1]);
+				m_Spline.insertPoint(m_pMCurve->x[m_Pos2], m_pMCurve->y[m_Pos2]);
 
 				x = (3.0*m_pMCurve->x[m_Pos1] + m_pMCurve->x[m_Pos2])/4.0;
 				y = (3.0*m_pMCurve->y[m_Pos1] + m_pMCurve->y[m_Pos2])/4.0;
-				m_Spline.InsertPoint(x,y);
+				m_Spline.insertPoint(x,y);
 
 				x = (m_pMCurve->x[m_Pos1] + m_pMCurve->x[m_Pos2])/2.0;
 				y = (m_pMCurve->y[m_Pos1] + m_pMCurve->y[m_Pos2])/2.0;
-				m_Spline.InsertPoint(x,y);
+				m_Spline.insertPoint(x,y);
 
 				x = (m_pMCurve->x[m_Pos1] + 3.0*m_pMCurve->x[m_Pos2])/4.0;
 				y = (m_pMCurve->y[m_Pos1] + 3.0*m_pMCurve->y[m_Pos2])/4.0;
-				m_Spline.InsertPoint(x,y);
+				m_Spline.insertPoint(x,y);
 
 
 				if (m_bTangentSpline)
@@ -1262,7 +1263,7 @@ void QXInverse::mouseReleaseEvent(QMouseEvent *event)
 					m_Spline.m_CtrlPoint[m_Spline.m_CtrlPoint.size()-2].y = m_Spline.m_CtrlPoint[m_Spline.m_CtrlPoint.size()-1].y + (ux*xpt + uy*ypt) * uy;
 				}	
 
-				m_Spline.SplineKnots();
+				m_Spline.splineKnots();
 				m_Spline.splineCurve();
 				if(m_bFullInverse)
 				{
@@ -1339,7 +1340,7 @@ void QXInverse::onApplySpline()
 				xx < m_Spline.m_CtrlPoint.last().x )
 			{
 				//interpolate spline at xx
-				m_pMCurve->y[i] = m_Spline.GetY(xx);
+				m_pMCurve->y[i] = m_Spline.getY(xx);
 			}
 		}
 
@@ -1501,8 +1502,8 @@ void QXInverse::onInsertCtrlPt()
 	if(xd < m_Spline.m_CtrlPoint.first().x) return;
 	if(xd > m_Spline.m_CtrlPoint.last().x) return;
 
-	m_Spline.InsertPoint(xd,yd);
-	m_Spline.SplineKnots();
+	m_Spline.insertPoint(xd,yd);
+	m_Spline.splineKnots();
 	m_Spline.splineCurve();
 	updateView();
 }
@@ -1698,7 +1699,7 @@ void QXInverse::onRemoveCtrlPt()
 {
 	if (m_Spline.m_iHighlight>=0)
 	{
-		if(!m_Spline.RemovePoint(m_Spline.m_iHighlight))
+		if(!m_Spline.removePoint(m_Spline.m_iHighlight))
 		{
 			MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 			QMessageBox::warning(pMainFrame,tr("Warning"), tr("The minimum number of control points has been reached for this spline degree"));

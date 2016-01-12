@@ -45,11 +45,11 @@ FoilPolarDlg::FoilPolarDlg(QWidget *pParent) : QDialog(pParent)
 	m_Reynolds  = 100000.0;
 	m_ASpec     = 0.0;
 	m_bAutoName = true;
-	SetupLayout();
+	setupLayout();
 }
 
 
-void FoilPolarDlg::SetupLayout()
+void FoilPolarDlg::setupLayout()
 {
 	QFont SymbolFont("Symbol");
 
@@ -136,7 +136,7 @@ void FoilPolarDlg::SetupLayout()
 						m_pctrlRho->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 						m_pctrlNu->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 						m_pctrlViscosity = new DoubleEdit(1.500e-5,3);
-						m_pctrlViscosityUnit = new QLabel("m2/s");
+						m_pctrlViscosityUnit = new QLabel(QString::fromUtf8("m²/s"));
 						m_pctrlRho->setFont(SymbolFont);
 						m_pctrlNu->setFont(SymbolFont);
 						m_pctrlDensity->setPrecision(5);
@@ -162,8 +162,10 @@ void FoilPolarDlg::SetupLayout()
 
 			QHBoxLayout *pReMachValuesLayout= new QHBoxLayout;
 			{
-				m_pctrlReLabel   = new QLabel(tr("  Re ="));
+				m_pctrlReLabel  = new QLabel(tr("  Re ="));
 				m_pctrlReLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+				m_pctrlReUnit  = new QLabel(tr(" "));
+				m_pctrlReUnit->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 				m_pctrlMachLabel = new QLabel(tr("Mach ="));
 				m_pctrlMachLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 				m_pctrlReynolds = new DoubleEdit();
@@ -174,6 +176,7 @@ void FoilPolarDlg::SetupLayout()
 				pReMachValuesLayout->addStretch(1);
 				pReMachValuesLayout->addWidget(m_pctrlReLabel);
 				pReMachValuesLayout->addWidget(m_pctrlReynolds);
+				pReMachValuesLayout->addWidget(m_pctrlReUnit);
 				pReMachValuesLayout->addStretch(1);
 				pReMachValuesLayout->addWidget(m_pctrlMachLabel);
 				pReMachValuesLayout->addWidget(m_pctrlMach);
@@ -197,7 +200,7 @@ void FoilPolarDlg::SetupLayout()
         CommandButtons->addStretch(1);
         CommandButtons->addWidget(CancelButton);
         CommandButtons->addStretch(1);
-        connect(OKButton, SIGNAL(clicked()),this, SLOT(OnOK()));
+		connect(OKButton, SIGNAL(clicked()),this, SLOT(onOK()));
         connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
     }
 
@@ -267,41 +270,41 @@ void FoilPolarDlg::SetupLayout()
 	m_pctrlMach->setMin(0.0);
 	m_pctrlMach->setMax(1000.0);
 
-	connect(m_pctrlAuto1, SIGNAL(clicked()), this, SLOT(OnAutoName()));
-	connect(m_pctrlAuto2, SIGNAL(clicked()), this, SLOT(OnAutoName()));
+	connect(m_pctrlAuto1, SIGNAL(clicked()), this, SLOT(onAutoName()));
+	connect(m_pctrlAuto2, SIGNAL(clicked()), this, SLOT(onAutoName()));
 
-	connect(m_rbtype1, SIGNAL(clicked()), this, SLOT(OnPolarType()));
-	connect(m_rbtype2, SIGNAL(clicked()), this, SLOT(OnPolarType()));
-	connect(m_rbtype3, SIGNAL(clicked()), this, SLOT(OnPolarType()));
-	connect(m_rbtype4, SIGNAL(clicked()), this, SLOT(OnPolarType()));
+	connect(m_rbtype1, SIGNAL(clicked()), this, SLOT(onPolarType()));
+	connect(m_rbtype2, SIGNAL(clicked()), this, SLOT(onPolarType()));
+	connect(m_rbtype3, SIGNAL(clicked()), this, SLOT(onPolarType()));
+	connect(m_rbtype4, SIGNAL(clicked()), this, SLOT(onPolarType()));
 
-	connect(m_pctrlReynolds, SIGNAL(editingFinished()), this, SLOT(EditingFinished()));
-	connect(m_pctrlMach, SIGNAL(editingFinished()), this, SLOT(EditingFinished()));
-	connect(m_pctrlNCrit, SIGNAL(editingFinished()), this, SLOT(EditingFinished()));
-	connect(m_pctrlTopTrans, SIGNAL(editingFinished()), this, SLOT(EditingFinished()));
-	connect(m_pctrlBotTrans, SIGNAL(editingFinished()), this, SLOT(EditingFinished()));
+	connect(m_pctrlReynolds, SIGNAL(editingFinished()), this, SLOT(editingFinished()));
+	connect(m_pctrlMach, SIGNAL(editingFinished()), this, SLOT(editingFinished()));
+	connect(m_pctrlNCrit, SIGNAL(editingFinished()), this, SLOT(editingFinished()));
+	connect(m_pctrlTopTrans, SIGNAL(editingFinished()), this, SLOT(editingFinished()));
+	connect(m_pctrlBotTrans, SIGNAL(editingFinished()), this, SLOT(editingFinished()));
 
-	connect(m_pctrlAnalysisName, SIGNAL(textEdited (const QString &)), this, SLOT(OnNameChanged()));
+	connect(m_pctrlAnalysisName, SIGNAL(textEdited (const QString &)), this, SLOT(onNameChanged()));
 
-	connect(m_pctrlUnit1, SIGNAL(toggled(bool)), this, SLOT(OnUnit()));
-	connect(m_pctrlUnit2, SIGNAL(toggled(bool)), this, SLOT(OnUnit()));
+	connect(m_pctrlUnit1, SIGNAL(toggled(bool)), this, SLOT(onUnit()));
+	connect(m_pctrlUnit2, SIGNAL(toggled(bool)), this, SLOT(onUnit()));
 
-	connect(m_pctrlChord, SIGNAL(editingFinished()), this, SLOT(OnEditingFinished()));
-	connect(m_pctrlSpan, SIGNAL(editingFinished()), this, SLOT(OnEditingFinished()));
-	connect(m_pctrlMass, SIGNAL(editingFinished()), this, SLOT(OnEditingFinished()));
-	connect(m_pctrlViscosity, SIGNAL(editingFinished()), this, SLOT(OnEditingFinished()));
-	connect(m_pctrlDensity, SIGNAL(editingFinished()), this, SLOT(OnEditingFinished()));
+	connect(m_pctrlChord, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+	connect(m_pctrlSpan, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+	connect(m_pctrlMass, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+	connect(m_pctrlViscosity, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+	connect(m_pctrlDensity, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
 }
 
 
-void FoilPolarDlg::EditingFinished()
+void FoilPolarDlg::editingFinished()
 {
-	SetPlrName();
+	setPlrName();
 //	OKButton->setFocus();
 }
 
 
-void FoilPolarDlg::InitDialog()
+void FoilPolarDlg::initDialog()
 {
 	if(Foil::curFoil()) m_FoilName = Foil::curFoil()->foilName();
 	else                m_FoilName = "";
@@ -364,13 +367,13 @@ void FoilPolarDlg::InitDialog()
 	m_pctrlUnit2->setChecked(s_UnitType!=1);
 	m_pctrlViscosity->setValue(s_Viscosity);
 	m_pctrlDensity->setValue(s_Density);
-	OnUnit();
+	onUnit();
 
 	m_pctrlMass->setValue(s_Mass);
 	m_pctrlSpan->setValue(s_Span);
 	m_pctrlChord->setValue(s_Chord);
 
-	OnPolarType();	
+	onPolarType();
 
 	m_bAutoName = true;
 	m_pctrlAuto1->setChecked(true);
@@ -388,14 +391,14 @@ void FoilPolarDlg::keyPressEvent(QKeyEvent *event)
 		{
 			if(!OKButton->hasFocus() && !CancelButton->hasFocus())
 			{
-				ReadParams();
-				SetPlrName();
+				readParams();
+				setPlrName();
 				OKButton->setFocus();
 				return;
 			}
 			else if(OKButton->hasFocus())
 			{
-				OnOK();
+				onOK();
 				return;
 			}
 			break;
@@ -411,7 +414,7 @@ void FoilPolarDlg::keyPressEvent(QKeyEvent *event)
 }
 
 
-void FoilPolarDlg::OnAutoName()
+void FoilPolarDlg::onAutoName()
 {
 	if(m_pctrlAuto2->isChecked())
 	{
@@ -422,12 +425,12 @@ void FoilPolarDlg::OnAutoName()
 	else
 	{
 		m_bAutoName = true;
-		SetPlrName();
+		setPlrName();
 	}
 }
 
 
-void FoilPolarDlg::OnNameChanged()
+void FoilPolarDlg::onNameChanged()
 {
 	m_bAutoName = false;
 	m_pctrlAuto1->setChecked(false);
@@ -435,7 +438,7 @@ void FoilPolarDlg::OnNameChanged()
 }
 
 
-void FoilPolarDlg::OnOK()
+void FoilPolarDlg::onOK()
 {
 	m_PlrName = m_pctrlAnalysisName->text();
 
@@ -451,11 +454,12 @@ void FoilPolarDlg::OnOK()
 }
 
 
-void FoilPolarDlg::OnPolarType()
+void FoilPolarDlg::onPolarType()
 {
 	if(m_rbtype1->isChecked())
 	{
 		m_pctrlReLabel->setText(tr("Reynolds ="));
+		m_pctrlReUnit->setText(" ");
 		m_pctrlMachLabel->setText(tr("Mach ="));
 		m_pctrlReynolds->setPrecision(0);
 		m_pctrlReynolds->setValue(m_Reynolds);
@@ -464,6 +468,7 @@ void FoilPolarDlg::OnPolarType()
 	else if(m_rbtype2->isChecked())
 	{
 		m_pctrlReLabel->setText(tr("Re.sqrt(Cl) ="));
+		m_pctrlReUnit->setText(" ");
 		m_pctrlMachLabel->setText(tr("Ma.sqrt(Cl) ="));
 		m_pctrlReynolds->setPrecision(0);
 		m_pctrlReynolds->setValue(m_Reynolds);		
@@ -472,6 +477,7 @@ void FoilPolarDlg::OnPolarType()
 	else if(m_rbtype3->isChecked())
 	{
 		m_pctrlReLabel->setText(tr("Re.Cl ="));
+		m_pctrlReUnit->setText(" ");
 		m_pctrlMachLabel->setText(tr("Mach ="));
 		m_pctrlReynolds->setPrecision(0);
 		m_pctrlReynolds->setValue(m_Reynolds);
@@ -480,6 +486,7 @@ void FoilPolarDlg::OnPolarType()
 	else if(m_rbtype4->isChecked())
 	{
 		m_pctrlReLabel->setText(tr("Alpha ="));
+		m_pctrlReUnit->setText(QString::fromUtf8("°"));
 		m_pctrlMachLabel->setText(tr("Mach ="));
 		m_pctrlReynolds->setPrecision(2);
 		m_pctrlReynolds->setValue(m_ASpec);
@@ -494,13 +501,13 @@ void FoilPolarDlg::OnPolarType()
 	m_pctrlUnit1->setEnabled(m_PolarType==XFLR5::FIXEDLIFTPOLAR);
 	m_pctrlUnit2->setEnabled(m_PolarType==XFLR5::FIXEDLIFTPOLAR);
 
-	SetPlrName();
+	setPlrName();
 }
 
 
-void FoilPolarDlg::SetPlrName()
+void FoilPolarDlg::setPlrName()
 {
-	ReadParams();
+	readParams();
 
 	if(m_bAutoName)
 	{
@@ -511,7 +518,7 @@ void FoilPolarDlg::SetPlrName()
 
 
 
-void FoilPolarDlg::OnUnit()
+void FoilPolarDlg::onUnit()
 {
 	if(m_pctrlUnit1->isChecked())
 	{
@@ -527,11 +534,11 @@ void FoilPolarDlg::OnUnit()
 		m_pctrlDensityUnit->setText("slugs/ft3");
 		m_pctrlViscosityUnit->setText("ft"+QString::fromUtf8("²")+"/s");
 	}
-	SetDensity();
+	setDensity();
 }
 
 
-void FoilPolarDlg::ReadParams()
+void FoilPolarDlg::readParams()
 {
 	bool bOK;
     QString str;
@@ -557,7 +564,7 @@ void FoilPolarDlg::ReadParams()
 
 
 
-void FoilPolarDlg::SetDensity()
+void FoilPolarDlg::setDensity()
 {
 	int exp, precision;
 	if(m_pctrlUnit1->isChecked())
@@ -582,9 +589,9 @@ void FoilPolarDlg::SetDensity()
 
 
 
-void FoilPolarDlg::OnEditingFinished()
+void FoilPolarDlg::onEditingFinished()
 {
-	ReadParams();
+	readParams();
 	if(m_PolarType==XFLR5::FIXEDLIFTPOLAR)
 	{
 		//compute Re.sqrt(Cl)

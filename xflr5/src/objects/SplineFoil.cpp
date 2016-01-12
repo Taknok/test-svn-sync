@@ -39,8 +39,8 @@ SplineFoil::SplineFoil()
 	m_bOutPoints   = false;
 	m_bModified    = false;
 	m_bCenterLine  = false;
-	m_Intrados.SetSplineParams(m_FoilStyle, m_FoilWidth, m_FoilColor);
-	m_Extrados.SetSplineParams(m_FoilStyle, m_FoilWidth, m_FoilColor);
+	m_Intrados.setSplineParams(m_FoilStyle, m_FoilWidth, m_FoilColor);
+	m_Extrados.setSplineParams(m_FoilStyle, m_FoilWidth, m_FoilColor);
 	m_bSymetric = false;
 }
 
@@ -65,8 +65,8 @@ void SplineFoil::SetCurveParams(int style, int width, QColor color)
 	m_FoilStyle = style;
 	m_FoilWidth = width;
 	m_FoilColor = color;
-	m_Intrados.SetSplineParams(style, width, color);
-	m_Extrados.SetSplineParams(style, width, color);
+	m_Intrados.setSplineParams(style, width, color);
+	m_Extrados.setSplineParams(style, width, color);
 }
 
 /**
@@ -77,25 +77,25 @@ void SplineFoil::initSplineFoil()
 	m_bModified   = false;
 	m_strFoilName = QObject::tr("Spline Foil");
 	
-	m_Extrados.SetSplineParams(m_FoilStyle, m_FoilWidth, m_FoilColor);
+	m_Extrados.setSplineParams(m_FoilStyle, m_FoilWidth, m_FoilColor);
 	m_Extrados.m_CtrlPoint.clear();
-	m_Extrados.InsertPoint(0.0 , 0.0);
-	m_Extrados.InsertPoint(0.0 , 0.00774066);
-	m_Extrados.InsertPoint(0.0306026, 0.0343829);
-	m_Extrados.InsertPoint(0.289036 , 0.0504014);
-	m_Extrados.InsertPoint(0.576000,  0.0350933);
-	m_Extrados.InsertPoint(0.736139 , 0.0269428);
-	m_Extrados.InsertPoint(1. , 0.);
+	m_Extrados.insertPoint(0.0 , 0.0);
+	m_Extrados.insertPoint(0.0 , 0.00774066);
+	m_Extrados.insertPoint(0.0306026, 0.0343829);
+	m_Extrados.insertPoint(0.289036 , 0.0504014);
+	m_Extrados.insertPoint(0.576000,  0.0350933);
+	m_Extrados.insertPoint(0.736139 , 0.0269428);
+	m_Extrados.insertPoint(1. , 0.);
 
-	m_Intrados.SetSplineParams(m_FoilStyle, m_FoilWidth, m_FoilColor);
+	m_Intrados.setSplineParams(m_FoilStyle, m_FoilWidth, m_FoilColor);
 	m_Intrados.m_CtrlPoint.clear();
-	m_Intrados.InsertPoint(0. , 0.);
-	m_Intrados.InsertPoint(0. , -0.00774066);
-	m_Intrados.InsertPoint(0.0306026, -0.0343829);
-	m_Intrados.InsertPoint(0.289036 , -0.0504014);
-	m_Intrados.InsertPoint(0.576000,  -0.0350933);
-	m_Intrados.InsertPoint(0.736139 , -0.0269428);
-	m_Intrados.InsertPoint(1. , 0.);
+	m_Intrados.insertPoint(0. , 0.);
+	m_Intrados.insertPoint(0. , -0.00774066);
+	m_Intrados.insertPoint(0.0306026, -0.0343829);
+	m_Intrados.insertPoint(0.289036 , -0.0504014);
+	m_Intrados.insertPoint(0.576000,  -0.0350933);
+	m_Intrados.insertPoint(0.736139 , -0.0269428);
+	m_Intrados.insertPoint(1. , 0.);
 
 	compMidLine();
 	m_OutPoints = m_Extrados.m_iRes + m_Intrados.m_iRes;
@@ -122,8 +122,8 @@ void SplineFoil::compMidLine()
 	for (int k=0; k<MIDPOINTCOUNT; k++)
 	{
 		x = k*step;
-		yex = m_Extrados.GetY(x);
-		yin = m_Intrados.GetY(x);
+		yex = m_Extrados.getY(x);
+		yin = m_Intrados.getY(x);
 		m_rpMid[k].x = x;
 		m_rpMid[k].y = (yex+yin)/2.0;
 		if(qAbs(yex-yin)>m_fThickness)
@@ -151,8 +151,8 @@ void SplineFoil::copy(SplineFoil* pSF)
 	m_FoilColor = pSF->m_FoilColor;
 	m_FoilStyle = pSF->m_FoilStyle;
 	m_FoilWidth = pSF->m_FoilWidth;
-	m_Extrados.Copy(&pSF->m_Extrados);
-	m_Intrados.Copy(&pSF->m_Intrados);
+	m_Extrados.copy(&pSF->m_Extrados);
+	m_Intrados.copy(&pSF->m_Intrados);
 	m_OutPoints  = pSF->m_OutPoints;
 	m_fCamber    = pSF->m_fCamber;
 	m_fThickness = pSF->m_fThickness;
@@ -197,8 +197,8 @@ void SplineFoil::exportToBuffer(void *pFoilPtr)
  */
 void SplineFoil::exportToFile(QTextStream &out)
 {
-	m_Extrados.Export(out, true);
-	m_Intrados.Export(out, false);
+	m_Extrados.exportSpline(out, true);
+	m_Intrados.exportSpline(out, false);
 }
 
 
@@ -226,8 +226,8 @@ bool SplineFoil::serialize(QDataStream &ar, bool bIsStoring)
 		readCOLORREF(ar, m_FoilColor);
 		ar >>m_FoilStyle >> m_FoilWidth;
 
-		m_Extrados.SetSplineParams(m_FoilStyle, m_FoilWidth, m_FoilColor);
-		m_Intrados.SetSplineParams(m_FoilStyle, m_FoilWidth, m_FoilColor);
+		m_Extrados.setSplineParams(m_FoilStyle, m_FoilWidth, m_FoilColor);
+		m_Intrados.setSplineParams(m_FoilStyle, m_FoilWidth, m_FoilColor);
 
 		ar >> n;// m_Extrados.m_iCtrlPoints;
 		m_Extrados.m_CtrlPoint.clear();
@@ -277,9 +277,9 @@ bool SplineFoil::serialize(QDataStream &ar, bool bIsStoring)
 		if(k) m_bCenterLine = true; else m_bCenterLine = false;
 
 
-		m_Extrados.SplineKnots();
+		m_Extrados.splineKnots();
 		m_Extrados.splineCurve();
-		m_Intrados.SplineKnots();
+		m_Intrados.splineKnots();
 		m_Intrados.splineCurve();
 
 		updateSplineFoil();
@@ -362,9 +362,9 @@ bool SplineFoil::serializeXFL(QDataStream &ar, bool bIsStoring)
 		for (int i=0; i<10; i++) ar >> k;
 		for (int i=0; i<10; i++) ar >> dble;
 
-		m_Extrados.SplineKnots();
+		m_Extrados.splineKnots();
 		m_Extrados.splineCurve();
-		m_Intrados.SplineKnots();
+		m_Intrados.splineKnots();
 		m_Intrados.splineCurve();
 
 		updateSplineFoil();

@@ -58,7 +58,7 @@ Spline::Spline()
 * Copies the data from an existing Spline.
 * @param pSpline a pointer to an existing Spline object.
 */
-void Spline::Copy(Spline *pSpline)
+void Spline::copy(Spline *pSpline)
 {
 	if(!pSpline) return;
 	
@@ -73,7 +73,7 @@ void Spline::Copy(Spline *pSpline)
 	m_iRes        = pSpline->m_iRes;
 	m_iSelect     = pSpline->m_iSelect;
 
-	SplineKnots();
+	splineKnots();
 	splineCurve();
 }
 
@@ -82,7 +82,7 @@ void Spline::Copy(Spline *pSpline)
 * Creates a symetric spline w.r.t. the axis y=0, from an existing Spline.
 * @param pSpline a pointer to an existing Spline object.
 */
-void Spline::CopySymetric(Spline *pSpline)
+void Spline::copySymetric(Spline *pSpline)
 {
 	if(!pSpline) return;
 	
@@ -228,7 +228,7 @@ void Spline::drawSpline(QPainter & painter, double const &scalex, double const &
 * @param out the stream to which the data is directed
 * @param bExtrados true if the data should be written from end to beginning, false if written from beginning to end. This is the order required by foil files.
 */
-void Spline::Export(QTextStream &out, bool bExtrados)
+void Spline::exportSpline(QTextStream &out, bool bExtrados)
 {
 	int k;
 	QString strOut;
@@ -255,7 +255,7 @@ void Spline::Export(QTextStream &out, bool bExtrados)
  *@param x the x-coordinate
  *@return the y-value
  */
-double Spline::GetY(double const &x)
+double Spline::getY(double const &x)
 {
 	static int i;
 	static double y;
@@ -281,7 +281,7 @@ double Spline::GetY(double const &x)
 * @param y the y-coordinate of the point to insert
 * @return true unless the max number of points has been reached
 */
-bool Spline::InsertPoint(double const &x, double const &y)
+bool Spline::insertPoint(double const &x, double const &y)
 {
 	static int k;
 
@@ -321,7 +321,7 @@ bool Spline::InsertPoint(double const &x, double const &y)
 			}
 		}
 	}
-	SplineKnots();
+	splineKnots();
 	splineCurve();
 	return true;
 }
@@ -382,14 +382,14 @@ int Spline::isControlPoint(double const &x, double const &y, double const &zx, d
 *@param k the index of the control point to remove in the array
 *@return false if the remaining number of points is equal or less than the spline's degree, true otherwise.
 */
-bool Spline::RemovePoint(int const &k)
+bool Spline::removePoint(int const &k)
 {
 	if(m_CtrlPoint.size()<=m_iDegree+1) return false; // no less...
 
 	if (k>0 && k<m_CtrlPoint.size())
 	{
 		m_CtrlPoint.removeAt(k);
-		SplineKnots();
+		splineKnots();
 		splineCurve();
 	}
 	return true;
@@ -430,7 +430,7 @@ void Spline::setColor(QColor color)
 *@param width the width of the spline
 *@param color the spline's color
 */
-void Spline::SetSplineParams(int style, int width, QColor color)
+void Spline::setSplineParams(int style, int width, QColor color)
 {
 	m_Width = width;
 	m_Style = style;
@@ -448,7 +448,7 @@ void Spline::SetSplineParams(int style, int width, QColor color)
  * @param  t   the spline parameter
  * @return the blending value for this control point and the pair of degree and parameter values.
 */
-double Spline::SplineBlend(int const &i,  int const &p, double const &t)
+double Spline::splineBlend(int const &i,  int const &p, double const &t)
 {
 
 	static double pres = 1.e-6; //same for all the recursive calls...
@@ -471,14 +471,14 @@ double Spline::SplineBlend(int const &i,  int const &p, double const &t)
 			return  0.0;
 
 		else if (qAbs(m_knot[i+p] - m_knot[i])<pres)
-			return  (m_knot[i+p+1]-t) / (m_knot[i+p+1]-m_knot[i+1]) * SplineBlend(i+1, p-1, t);
+			return  (m_knot[i+p+1]-t) / (m_knot[i+p+1]-m_knot[i+1]) * splineBlend(i+1, p-1, t);
 
 		else if (qAbs(m_knot[i+p+1]-m_knot[i+1])<pres)
-			return  (t - m_knot[i])   / (m_knot[i+p] - m_knot[i])   * SplineBlend(i,   p-1, t);
+			return  (t - m_knot[i])   / (m_knot[i+p] - m_knot[i])   * splineBlend(i,   p-1, t);
 
 		else
-			return  (t - m_knot[i])   / (m_knot[i+p]-m_knot[i])	    * SplineBlend(i,   p-1, t) +
-					(m_knot[i+p+1]-t) / (m_knot[i+p+1]-m_knot[i+1]) * SplineBlend(i+1 ,p-1, t);
+			return  (t - m_knot[i])   / (m_knot[i+p]-m_knot[i])	    * splineBlend(i,   p-1, t) +
+					(m_knot[i+p+1]-t) / (m_knot[i+p+1]-m_knot[i+1]) * splineBlend(i+1 ,p-1, t);
 	}
 }
 
@@ -504,7 +504,7 @@ void Spline::splineCurve()
 
 			for (i=0; i<m_CtrlPoint.size(); i++)
 			{
-				b = SplineBlend(i, m_iDegree, t);
+				b = splineBlend(i, m_iDegree, t);
 				if(i!=0 && i!=m_CtrlPoint.size()-1) b *= m_PtWeight;
 
 				m_Output[j].x += m_CtrlPoint[i].x * b;
@@ -523,7 +523,7 @@ void Spline::splineCurve()
 /**
 *Generates an array of standard knot values for this spline.
 */
-void Spline::SplineKnots()
+void Spline::splineKnots()
 {
 	static double a,b;
 	static int j, iDegree;

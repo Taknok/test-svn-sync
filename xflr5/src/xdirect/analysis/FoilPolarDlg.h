@@ -33,25 +33,33 @@
 
 class FoilPolarDlg : public QDialog
 {
-    friend class QOperWidget;
-
     Q_OBJECT
 
 public:
 	FoilPolarDlg(QWidget *pParent=NULL);
 
-	void ReadParams();
+	void readParams();
 	void keyPressEvent(QKeyEvent *event);
-	void InitDialog();
-	void SetPlrName();
-	void SetupLayout();
-	void SetDensity();
+	void initDialog();
+	void setPlrName();
+	void setupLayout();
+	void setDensity();
 
+public slots:
+	void onAutoName();
+	void onOK();
+	void onPolarType();
+	void onNameChanged();
+	void editingFinished();
+	void onUnit();
+	void onEditingFinished();
+
+public:
 
 	QRadioButton *m_pctrlAuto1;
 	QRadioButton *m_pctrlAuto2;
 
-	QLabel *m_pctrlReLabel;
+	QLabel *m_pctrlReLabel, *m_pctrlReUnit;
 	QLabel *m_pctrlMachLabel;
 
 	QLineEdit *m_pctrlAnalysisName;
@@ -94,14 +102,6 @@ public:
 	QString m_FoilName;
 	QString m_PlrName;
 
-public slots:
-	void OnAutoName();
-	void OnOK();
-	void OnPolarType();
-	void OnNameChanged();
-	void EditingFinished();
-	void OnUnit();
-	void OnEditingFinished();
 };
 
 #endif // FOILPOLARDLG_H
