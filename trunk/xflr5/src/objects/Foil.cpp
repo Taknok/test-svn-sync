@@ -1419,10 +1419,10 @@ void Foil::setLEFlap()
 		if(M.x <= m_rpIntrados[iLowerh-1].x || M.x >= m_rpIntrados[iLowerh].x)
 			M = (m_rpIntrados[iLowerh-1] + m_rpIntrados[iLowerh])/2.0;
 
-		LinkSpline.InsertPoint(m_rpIntrados[iLowerh-1].x,m_rpIntrados[iLowerh-1].y);
-		LinkSpline.InsertPoint(M.x, M.y);
-		LinkSpline.InsertPoint(m_rpIntrados[iLowerh].x,m_rpIntrados[iLowerh].y);
-		LinkSpline.SplineKnots();
+		LinkSpline.insertPoint(m_rpIntrados[iLowerh-1].x,m_rpIntrados[iLowerh-1].y);
+		LinkSpline.insertPoint(M.x, M.y);
+		LinkSpline.insertPoint(m_rpIntrados[iLowerh].x,m_rpIntrados[iLowerh].y);
+		LinkSpline.splineKnots();
 		LinkSpline.splineCurve();
 		//retrieve point 1 and 2 and insert them
 		for (i=m_iInt; i>=iLowerh; i--)
@@ -1449,10 +1449,10 @@ void Foil::setLEFlap()
 		if(M.x <= m_rpExtrados[iUpperh-1].x || M.x >= m_rpExtrados[iUpperh].x)
 			M = (m_rpExtrados[iUpperh-1] + m_rpExtrados[iUpperh])/2.0;
 
-		LinkSpline.InsertPoint(m_rpExtrados[iUpperh-1].x,m_rpExtrados[iUpperh-1].y);
-		LinkSpline.InsertPoint(M.x, M.y);
-		LinkSpline.InsertPoint(m_rpExtrados[iUpperh].x,m_rpExtrados[iUpperh].y);
-		LinkSpline.SplineKnots();
+		LinkSpline.insertPoint(m_rpExtrados[iUpperh-1].x,m_rpExtrados[iUpperh-1].y);
+		LinkSpline.insertPoint(M.x, M.y);
+		LinkSpline.insertPoint(m_rpExtrados[iUpperh].x,m_rpExtrados[iUpperh].y);
+		LinkSpline.splineKnots();
 		LinkSpline.splineCurve();
 		//retrieve point 1 and 2 and insert them
 		for (i=m_iExt; i>=iUpperh; i--)
@@ -1664,10 +1664,10 @@ void Foil::setTEFlap()
 		if(M.x <= m_rpIntrados[iLowerh].x || M.x >= m_rpIntrados[iLowerh+1].x)
 			M = (m_rpIntrados[iLowerh] + m_rpIntrados[iLowerh+1])/2.0;
 
-		LinkSpline.InsertPoint(m_rpIntrados[iLowerh].x,m_rpIntrados[iLowerh].y);
-		LinkSpline.InsertPoint(M.x, M.y);
-		LinkSpline.InsertPoint(m_rpIntrados[iLowerh+1].x,m_rpIntrados[iLowerh+1].y);
-		LinkSpline.SplineKnots();
+		LinkSpline.insertPoint(m_rpIntrados[iLowerh].x,m_rpIntrados[iLowerh].y);
+		LinkSpline.insertPoint(M.x, M.y);
+		LinkSpline.insertPoint(m_rpIntrados[iLowerh+1].x,m_rpIntrados[iLowerh+1].y);
+		LinkSpline.splineKnots();
 		LinkSpline.splineCurve();
 		//retrieve point 1 and 2 and insert them
 		for (i=m_iInt; i>=iLowerh+1; i--)
@@ -1693,10 +1693,10 @@ void Foil::setTEFlap()
 		if(M.x <= m_rpExtrados[iUpperh].x || M.x >= m_rpExtrados[iUpperh+1].x)
 			M = (m_rpExtrados[iUpperh] + m_rpExtrados[iUpperh+1])/2.0;
 
-		LinkSpline.InsertPoint(m_rpExtrados[iUpperh].x,m_rpExtrados[iUpperh].y);
-		LinkSpline.InsertPoint(M.x, M.y);
-		LinkSpline.InsertPoint(m_rpExtrados[iUpperh+1].x,m_rpExtrados[iUpperh+1].y);
-		LinkSpline.SplineKnots();
+		LinkSpline.insertPoint(m_rpExtrados[iUpperh].x,m_rpExtrados[iUpperh].y);
+		LinkSpline.insertPoint(M.x, M.y);
+		LinkSpline.insertPoint(m_rpExtrados[iUpperh+1].x,m_rpExtrados[iUpperh+1].y);
+		LinkSpline.splineKnots();
 		LinkSpline.splineCurve();
 
 		//retrieve point 1 and 2 and insert them

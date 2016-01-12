@@ -15,6 +15,10 @@
 *******************************************************************************
 
 
+xflr5 v6.13 January xxxth, 2016
+	- Fixed the issue of slow display in Inverse design
+
+
 
 xflr5 v6.12 January 9th, 2016
 	- introduced an option to add extra drag to polar objects, to account for surfaces not included in the plane object

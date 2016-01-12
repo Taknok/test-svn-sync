@@ -999,8 +999,8 @@ void EditBodyDlg::readBodyTree(QModelIndex indexLevel)
 
 					dataIndex = subIndex.sibling(subIndex.row(),2);
 
-					if(field.compare("NURBS degree (lengthwise)", Qt::CaseInsensitive)==0)     m_pBody->splineSurface()->SetuDegree(dataIndex.data().toInt());
-					else if(field.compare("NURBS degree (hoop)", Qt::CaseInsensitive)==0)      m_pBody->splineSurface()->SetvDegree(dataIndex.data().toInt());
+					if(field.compare("NURBS degree (lengthwise)", Qt::CaseInsensitive)==0)     m_pBody->splineSurface()->setuDegree(dataIndex.data().toInt());
+					else if(field.compare("NURBS degree (hoop)", Qt::CaseInsensitive)==0)      m_pBody->splineSurface()->setvDegree(dataIndex.data().toInt());
 					else if(field.compare("Mesh panels (lengthwise)", Qt::CaseInsensitive)==0) m_pBody->m_nxPanels = dataIndex.data().toInt();
 					else if(field.compare("Mesh panels (hoop)", Qt::CaseInsensitive)==0)       m_pBody->m_nhPanels = dataIndex.data().toInt();
 
@@ -1027,7 +1027,7 @@ void EditBodyDlg::readBodyTree(QModelIndex indexLevel)
 			}
 			else if(object.compare("Frames", Qt::CaseInsensitive)==0)
 			{
-				m_pBody->m_SplineSurface.ClearFrames();
+				m_pBody->m_SplineSurface.clearFrames();
 				QModelIndex subIndex = indexLevel.child(0,0);
 				do
 				{
