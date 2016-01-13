@@ -16,8 +16,9 @@
 
 
 xflr5 v6.13 January xxxth, 2016
-	-Changed the panel force display to q.Cp instead of q.S.panel_area; this is more significant since the arrow lengths are now mesh independent.
-	- Fixed the issue of slow display in Inverse design
+	- changed the panel force display to q.Cp instead of q.S.panel_area; this is more significant since the arrow lengths are now mesh independent.
+	- added the extra drag in the calculation of the plane's total drag coefficient
+	- fixed the issue of slow display in Inverse design
 
 
 

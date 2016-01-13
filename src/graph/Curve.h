@@ -33,7 +33,6 @@
 #include "../params.h"
 #include <QVarLengthArray>
 #include <QColor>
-#include <QPointF>
 #include <objects/linestyle.h>
 
 
@@ -55,7 +54,11 @@ public:
 	/**
 	 * Resets the content of the curve.
 	 */
-	void clear() {pt.clear();}
+	void    clear()
+	{
+		x.clear();
+		y.clear();
+	}
 
 	int     closestPoint(double xs, double ys, double &dist);
 	void    closestPoint(double xs, double ys, double &dist, int &n);
@@ -120,10 +123,10 @@ public:
 	bool pointsVisible() {return m_curveStyle.m_PointStyle>0; }
 
 	/** Returns the Curve's number of points. */
-	int size() {return pt.count();}
+	int size() {return x.count();}
 
 	/** Returns the Curve's number of points. */
-	int count() {return pt.size();}
+	int count() {return x.size();}
 
 	/** Returns the Curve style*/
 	int style() {return m_curveStyle.m_Style;}
@@ -150,9 +153,8 @@ public:
 
 public:
 	//	Curve Data
-//	QVarLengthArray<double,  1024> x;          /**< the array of the points x-coordinates */
-//	QVarLengthArray<double,  1024> y;          /**< the array of the points y-coordinates */
-	QVarLengthArray<QPointF, 1024> pt;         /**< the array of curve points >*/
+	QVarLengthArray<double,  1024> x;          /**< the array of the points x-coordinates */
+	QVarLengthArray<double,  1024> y;          /**< the array of the points y-coordinates */
 
 
 private:	

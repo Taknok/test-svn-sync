@@ -118,13 +118,13 @@ void Spline::drawCtrlPoints(QPainter &painter, double const &scalex, double cons
 {
 	painter.save();
 
-	static QPointF pt;
-	static int i, width;
+	QPointF pt;
+	int i, width;
 
 	width  = 3;
 
-	static QPen PointPen;
-	static QBrush NoBrush(Qt::NoBrush);
+	QPen PointPen;
+	QBrush NoBrush(Qt::NoBrush);
 	PointPen.setWidth(1);
 
 	painter.setPen(PointPen);
@@ -165,9 +165,9 @@ void Spline::drawOutputPoints(QPainter & painter, double const &scalex, double c
 {
 	painter.save();
 
-	static QPointF pt;
-	static int i, width;
-	static QPen OutPen;
+	QPointF pt;
+	int i, width;
+	QPen OutPen;
 
 	width = 2;
 
@@ -257,8 +257,8 @@ void Spline::exportSpline(QTextStream &out, bool bExtrados)
  */
 double Spline::getY(double const &x)
 {
-	static int i;
-	static double y;
+	int i;
+	double y;
 
 	if(x<=0.0 || x>=1.0) return 0.0;
 
@@ -283,7 +283,7 @@ double Spline::getY(double const &x)
 */
 bool Spline::insertPoint(double const &x, double const &y)
 {
-	static int k;
+	int k;
 
 	if (x>=0.0 && x<=1.0)
 	{ 
@@ -333,7 +333,7 @@ bool Spline::insertPoint(double const &x, double const &y)
 */
 int Spline::isControlPoint(CVector const &Real)
 {
-	static int k;
+	int k;
 	for (k=0; k<m_CtrlPoint.size(); k++)
 	{
 		if(qAbs(Real.x-m_CtrlPoint[k].x)<0.005 && qAbs(Real.y-m_CtrlPoint[k].y)<0.005) return k;
@@ -350,7 +350,7 @@ int Spline::isControlPoint(CVector const &Real)
 */
 int Spline::isControlPoint(CVector const &Real, double const &ZoomFactor)
 {
-	static int k;
+	int k;
 	for (k=0; k<m_CtrlPoint.size(); k++)
 	{
 		if (qAbs(Real.x-m_CtrlPoint[k].x)<0.006/ZoomFactor && qAbs(Real.y-m_CtrlPoint[k].y)<0.006/ZoomFactor) return k;
@@ -369,10 +369,10 @@ int Spline::isControlPoint(CVector const &Real, double const &ZoomFactor)
 */
 int Spline::isControlPoint(double const &x, double const &y, double const &zx, double const &zy)
 {
-	static int k;
+	int k;
 	for (k=0; k<m_CtrlPoint.size(); k++)
 	{
-		if(qAbs((x-m_CtrlPoint[k].x)/zx)<4.0 && qAbs((y-m_CtrlPoint[k].y)/zy)<4.0) return k;
+		if(qAbs((x-m_CtrlPoint[k].x)/zx)<11.0 && qAbs((y-m_CtrlPoint[k].y)/zy)<11.0) return k;
 	}
 	return -10;
 }
@@ -451,7 +451,7 @@ void Spline::setSplineParams(int style, int width, QColor color)
 double Spline::splineBlend(int const &i,  int const &p, double const &t)
 {
 
-	static double pres = 1.e-6; //same for all the recursive calls...
+	double pres = 1.e-6; //same for all the recursive calls...
 
 	if(i+p+1>=m_knot.size())
 	{
@@ -488,8 +488,8 @@ double Spline::splineBlend(int const &i,  int const &p, double const &t)
 */
 void Spline::splineCurve()
 {
-	static double t, increment, b, w;
-	static int i,j;
+	double t, increment, b, w;
+	int i,j;
 
 	if (m_CtrlPoint.size()>=3)
 	{
@@ -525,8 +525,8 @@ void Spline::splineCurve()
 */
 void Spline::splineKnots()
 {
-	static double a,b;
-	static int j, iDegree;
+	double a,b;
+	int j, iDegree;
 
 	iDegree = qMin(m_iDegree, m_CtrlPoint.size());
 

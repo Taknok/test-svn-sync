@@ -964,8 +964,8 @@ bool Graph::setXScale()
 				pCurve = (Curve*)m_oaCurves[nc];
 				if ((pCurve->isVisible() ||pCurve->pointsVisible())  && pCurve->size()>0)
 				{
-					xmin = qMin(xmin, pCurve->pt[0].x());
-					xmax = qMax(xmax, pCurve->pt[0].x());
+					xmin = qMin(xmin, pCurve->x[0]);
+					xmax = qMax(xmax, pCurve->x[0]);
 				}
 			}
 		}
@@ -1129,8 +1129,8 @@ bool Graph::setYScale()
 				pCurve = (Curve*)m_oaCurves[nc];
 				if ((pCurve->isVisible() ||pCurve->pointsVisible())  && pCurve->size()>0)
 				{
-					ymin = qMin(ymin, pCurve->pt[0].y());
-					ymax = qMax(ymax, pCurve->pt[0].y());
+					ymin = qMin(ymin, pCurve->y[0]);
+					ymax = qMax(ymax, pCurve->y[0]);
 				}
 			}
 		}
