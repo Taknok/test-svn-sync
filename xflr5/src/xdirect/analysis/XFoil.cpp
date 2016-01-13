@@ -11117,8 +11117,7 @@ void XFoil::piqsum()
 	for(int ic=1; ic <= nc; ic++){
 		zsum = complex<double>(0.0,0.0);
 		for(int m=0; m<= mc; m++){
-//			zsum = zsum + cn[m]*conjg(eiw[ic][m]);
-			zsum = zsum + cn[m]*complex<double>(eiw[ic][m].real(), -eiw[ic][m].imag());
+			zsum = zsum + cn[m]*conjg(eiw[ic][m]);
 		}
 		piq[ic] = zsum;
 	}
@@ -11213,13 +11212,9 @@ void XFoil::zccalc(int mtest){
 		dz_piq1 = 0.5*(dzdw1      )*dwc;
 		dz_piq2 = 0.5*(      dzdw2)*dwc;
 		
-		for (int m=1; m<= mtest; m++)
-		{
-//			zc_cn[ic][m] = dz_piq1*conjg(eiw[ic-1][m])
-//			             + dz_piq2*conjg(eiw[ic][m])
-//						 + zc_cn[ic-1][m];
-			zc_cn[ic][m] = dz_piq1*complex<double>(eiw[ic-1][m].real(), -eiw[ic-1][m].imag())
-						 + dz_piq2*complex<double>(eiw[ic][m].real(),   -eiw[ic-1][m].imag())
+		for (int m=1; m<= mtest; m++){
+			zc_cn[ic][m] = dz_piq1*conjg(eiw[ic-1][m])
+			             + dz_piq2*conjg(eiw[ic][m]) 
 						 + zc_cn[ic-1][m];
 		}
 		
@@ -11453,10 +11448,8 @@ void XFoil::qccalc(int ispec,double *alfa, double *cl, double *cm,
 			za = (zc[icp] + zc[ic])*0.5 - complex<double>(0.25,0.0);
 			dz =  zc[icp] - zc[ic];
 			
-//			cmt   = cmt   - 0.5*(cpcom1 + cpcom2)*dz*conjg(za)
-//						  +     (cpcom1 - cpcom2)*dz*conjg(dz)/12.0;
-			cmt   = cmt   - 0.5*(cpcom1 + cpcom2)*dz*complex<double>(za.real(), -za.imag())
-						  +     (cpcom1 - cpcom2)*dz*complex<double>(dz.real(), -dz.imag())/12.0;
+			cmt   = cmt   - 0.5*(cpcom1 + cpcom2)*dz*conjg(za)
+						  +      (cpcom1 - cpcom2)*dz*conjg(dz)/12.0;
 			cft   = cft   + 0.5*(cpcom1 + cpcom2)*dz;
 			cft_a = cft_a + 0.5*(cpc_a1 + cpc_a2)*dz;
 			

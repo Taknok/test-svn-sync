@@ -201,7 +201,6 @@ void WPolar::insertDataAt(int pos, double Alpha, double Beta, double QInf, doubl
 	m_CY.insert(pos, CY);
 	m_ICd.insert(pos, ICd);
 	m_PCd.insert(pos, PCd);
-	m_TCd.insert(pos, ICd+PCd);
 
 	m_GCm.insert(pos, GCm);
 	m_VCm.insert(pos, VCm);
@@ -220,6 +219,7 @@ void WPolar::insertDataAt(int pos, double Alpha, double Beta, double QInf, doubl
 	m_Ctrl.insert(pos, Ctrl);
 	m_XNP.insert(pos, XNP);
 
+	m_TCd.insert(pos, 0.0);
 	m_PhugoidDamping.insert(pos, 0.0);
 	m_PhugoidFrequency.insert(pos, 0.0);
 	m_ShortPeriodDamping.insert(pos, 0.0);
@@ -398,9 +398,11 @@ void WPolar::calculatePoint(int iPt)
 
 	m_FZ[iPt]  = q * m_CL[iPt]*m_referenceArea;
 	m_FY[iPt]  = q * m_CY[iPt]*m_referenceArea;
-	m_FX[iPt]  = q * m_TCd[iPt]*m_referenceArea;
+	m_FX[iPt]  = q * (m_ICd[iPt]+m_PCd[iPt])*m_referenceArea;
 
 	for(int iExtra=0; iExtra<MAXEXTRADRAG; iExtra++) m_FX[iPt] += m_ExtraDragArea[iExtra] * m_ExtraDragCoef[iExtra] *q;
+
+	m_TCd[iPt] = m_FX[iPt]/q/m_referenceArea;
 
 	m_Rm[iPt] = q * m_referenceArea * m_GRm[iPt] * m_referenceSpanLength;// in N.m
 	m_Ym[iPt] = q * m_referenceArea * m_GYm[iPt] * m_referenceSpanLength;// in N.m

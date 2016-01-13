@@ -269,7 +269,7 @@ void QXInverse::createQCurve()
 	m_pQCurve->clear();
 
 	int points;
-	if(m_bFullInverse) points = ICX;
+	if(m_bFullInverse) points = 257;
 	else points  = pXFoil->n;
 
 	for (int i=1; i<=points; i++)
@@ -291,7 +291,7 @@ void QXInverse::createMCurve()
 	m_pMCurve->clear();
 	m_pReflectedCurve->clear();
 
-	if(m_bFullInverse) points = ICX;
+	if(m_bFullInverse) points = 257;
 	else               points = pXFoil->n;
 
 	for (i=1; i<=points; i++)
@@ -387,7 +387,7 @@ void QXInverse::execMDES()
 	for (i=1; i<= pXFoil->nsp; i++)
 	{
 //		isp = pXFoil->nsp - i + 1;
-		qscom =  pXFoil->qinf*m_pMCurve->pt[i-1].y();
+		qscom =  pXFoil->qinf*m_pMCurve->y[i-1];
 		pXFoil->qspec[1][i] = qincom(qscom, pXFoil->qinf, pXFoil->tklam);
 	}
 	pXFoil->ExecMDES();
@@ -434,7 +434,7 @@ bool QXInverse::execQDES()
 	for (i=1; i<= pXFoil->nsp; i++)
 	{
 //		isp = pXFoil->nsp - i + 1;
-		qscom =  pXFoil->qinf*m_pMCurve->pt[i-1].y();
+		qscom =  pXFoil->qinf*m_pMCurve->y[i-1];
 		pXFoil->qspec[1][i] = qincom(qscom, pXFoil->qinf, pXFoil->tklam);
 	}
 	bool bRes =  pXFoil->ExecQDES();
@@ -750,10 +750,10 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 {
 //	if(!hasFocus()) setFocus();
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
-	double x1,y1, xmin, xmax, ymin,  ymax, xpt, ypt, scale, ux, uy, unorm, vx, vy, vnorm, scal;
-	double xx0,xx1,xx2,yy0,yy1,yy2, dist;
-	int a, n, ipt = 0;
-	QPoint point;
+	static double x1,y1, xmin, xmax, ymin,  ymax, xpt, ypt, scale, ux, uy, unorm, vx, vy, vnorm, scal;
+	static double xx0,xx1,xx2,yy0,yy1,yy2, dist;
+	static int a, n, ipt;
+	static QPoint point;
 	point = event->pos();
 
 	if(m_bGetPos)
@@ -809,8 +809,8 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 				// find closest graph point
 				ipt = m_pMCurve->closestPoint(m_QGraph.clientTox(point.x()), m_QGraph.clientToy(point.y()), dist);
 				m_SplineLeftPos = ipt;
-				xpt = m_pMCurve->pt[ipt].x();
-				ypt = m_pMCurve->pt[ipt].y();
+				xpt = m_pMCurve->x[ipt];
+				ypt = m_pMCurve->y[ipt];
 				// check for inversion
 				if(xpt> m_Spline.m_CtrlPoint.last().x)
 				{
@@ -833,8 +833,8 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 				// find closest graph point
 				ipt = m_pMCurve->closestPoint(m_QGraph.clientTox(point.x()), m_QGraph.clientToy(point.y()), dist);
 				m_SplineRightPos = ipt;
-				xpt = m_pMCurve->pt[ipt].x();
-				ypt = m_pMCurve->pt[ipt].y();
+				xpt = m_pMCurve->x[ipt];
+				ypt = m_pMCurve->y[ipt];
 				// check for inversion
 				if(xpt< m_Spline.m_CtrlPoint[0].x)
 				{
@@ -857,9 +857,9 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 				// difficulty is that we are working in non-normal coordinates
 
 				tanpt = point;
-				P0 = QPoint(m_QGraph.xToClient(m_pMCurve->pt[m_SplineLeftPos-1].x()), m_QGraph.yToClient(m_pMCurve->pt[m_SplineLeftPos-1].y()));
-				P1 = QPoint(m_QGraph.xToClient(m_pMCurve->pt[m_SplineLeftPos].x()),   m_QGraph.yToClient(m_pMCurve->pt[m_SplineLeftPos].y()));
-				P2 = QPoint(m_QGraph.xToClient(m_pMCurve->pt[m_SplineLeftPos+1].x()), m_QGraph.yToClient(m_pMCurve->pt[m_SplineLeftPos+1].y()));
+				P0 = QPoint(m_QGraph.xToClient(m_pMCurve->x[m_SplineLeftPos-1]), m_QGraph.yToClient(m_pMCurve->y[m_SplineLeftPos-1]));
+				P1 = QPoint(m_QGraph.xToClient(m_pMCurve->x[m_SplineLeftPos]),   m_QGraph.yToClient(m_pMCurve->y[m_SplineLeftPos]));
+				P2 = QPoint(m_QGraph.xToClient(m_pMCurve->x[m_SplineLeftPos+1]), m_QGraph.yToClient(m_pMCurve->y[m_SplineLeftPos+1]));
 
 				//v is the tangent to the curve in screen coordinates
 				vx = (double)((P0.x()-P1.x())*(P0.x()-P2.x())*(P1.x()-P2.x())*(P2.x()-P0.x()));
@@ -876,12 +876,12 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 				x1 =  m_QGraph.clientTox(tanpt.x()) ;
 				y1 =  m_QGraph.clientToy(tanpt.y()) ;
 
-				xx0 = m_pMCurve->pt[m_SplineLeftPos-1].x();
-				xx1 = m_pMCurve->pt[m_SplineLeftPos].x();
-				xx2 = m_pMCurve->pt[m_SplineLeftPos+1].x();
-				yy0 = m_pMCurve->pt[m_SplineLeftPos-1].y();
-				yy1 = m_pMCurve->pt[m_SplineLeftPos].y();
-				yy2 = m_pMCurve->pt[m_SplineLeftPos+1].y();
+				xx0 = m_pMCurve->x[m_SplineLeftPos-1];
+				xx1 = m_pMCurve->x[m_SplineLeftPos];
+				xx2 = m_pMCurve->x[m_SplineLeftPos+1];
+				yy0 = m_pMCurve->y[m_SplineLeftPos-1];
+				yy1 = m_pMCurve->y[m_SplineLeftPos];
+				yy2 = m_pMCurve->y[m_SplineLeftPos+1];
 
 				ux = (xx0-xx1)*(xx0-xx2)*(xx1-xx2)*(xx2-xx0);
 				uy =	  yy0 *(xx1-xx2)         * (xx1-xx2) * (xx2-xx0)         
@@ -907,9 +907,9 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 				//penultimate point must remain on tangent to curve
 				// difficulty is that we are working in non-normal coordinates
 				tanpt = QPoint(point.x(), point.y());
-				P0 = QPoint(m_QGraph.xToClient(m_pMCurve->pt[m_SplineRightPos-1].x()), m_QGraph.yToClient(m_pMCurve->pt[m_SplineRightPos-1].y()));
-				P1 = QPoint(m_QGraph.xToClient(m_pMCurve->pt[m_SplineRightPos].x()),   m_QGraph.yToClient(m_pMCurve->pt[m_SplineRightPos].y()));
-				P2 = QPoint(m_QGraph.xToClient(m_pMCurve->pt[m_SplineRightPos+1].x()), m_QGraph.yToClient(m_pMCurve->pt[m_SplineRightPos+1].y()));
+				P0 = QPoint(m_QGraph.xToClient(m_pMCurve->x[m_SplineRightPos-1]), m_QGraph.yToClient(m_pMCurve->y[m_SplineRightPos-1]));
+				P1 = QPoint(m_QGraph.xToClient(m_pMCurve->x[m_SplineRightPos]),   m_QGraph.yToClient(m_pMCurve->y[m_SplineRightPos]));
+				P2 = QPoint(m_QGraph.xToClient(m_pMCurve->x[m_SplineRightPos+1]), m_QGraph.yToClient(m_pMCurve->y[m_SplineRightPos+1]));
 				//v is the tangent to the curve in screen coordinates
 				vx = (double)((P0.x()-P1.x())*(P0.x()-P2.x())*(P1.x()-P2.x())*(P2.x()-P0.x()));
 
@@ -926,12 +926,12 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 				x1 =  m_QGraph.clientTox(tanpt.x()) ;
 				y1 =  m_QGraph.clientToy(tanpt.y()) ;
 
-				xx0 = m_pMCurve->pt[m_SplineRightPos-1].x();
-				xx1 = m_pMCurve->pt[m_SplineRightPos].x();
-				xx2 = m_pMCurve->pt[m_SplineRightPos+1].x();
-				yy0 = m_pMCurve->pt[m_SplineRightPos-1].y();
-				yy1 = m_pMCurve->pt[m_SplineRightPos].y();
-				yy2 = m_pMCurve->pt[m_SplineRightPos+1].y();
+				xx0 = m_pMCurve->x[m_SplineRightPos-1];
+				xx1 = m_pMCurve->x[m_SplineRightPos];
+				xx2 = m_pMCurve->x[m_SplineRightPos+1];
+				yy0 = m_pMCurve->y[m_SplineRightPos-1];
+				yy1 = m_pMCurve->y[m_SplineRightPos];
+				yy2 = m_pMCurve->y[m_SplineRightPos+1];
 
 				ux = (xx0-xx1)*(xx0-xx2)*(xx1-xx2)*(xx2-xx0);
 				uy =	  yy0 *(xx1-xx2)         * (xx1-xx2) * (xx2-xx0)         
@@ -1014,6 +1014,7 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 			updateView();
 		}
 	}
+
 
 }
 
@@ -1204,8 +1205,8 @@ void QXInverse::mouseReleaseEvent(QMouseEvent *event)
 			}
 			else if(m_bSpline) 
 			{
-				x1 = m_pMCurve->pt[m_Pos1].x();
-				x2 = m_pMCurve->pt[m_Pos2].x();
+				x1 = m_pMCurve->x[m_Pos1];
+				x2 = m_pMCurve->x[m_Pos2];
 				if(qAbs(x2-x1)<0.00001) return;
 				if(x2<x1)
 				{
@@ -1218,27 +1219,27 @@ void QXInverse::mouseReleaseEvent(QMouseEvent *event)
 				m_SplineRightPos = m_Pos2;
 
 				m_Spline.m_CtrlPoint.clear();
-				m_Spline.insertPoint(m_pMCurve->pt[m_Pos1].x(), m_pMCurve->pt[m_Pos1].y());
-				m_Spline.insertPoint(m_pMCurve->pt[m_Pos2].x(), m_pMCurve->pt[m_Pos2].y());
+				m_Spline.insertPoint(m_pMCurve->x[m_Pos1], m_pMCurve->y[m_Pos1]);
+				m_Spline.insertPoint(m_pMCurve->x[m_Pos2], m_pMCurve->y[m_Pos2]);
 
-				x = (3.0*m_pMCurve->pt[m_Pos1].x() + m_pMCurve->pt[m_Pos2].x())/4.0;
-				y = (3.0*m_pMCurve->pt[m_Pos1].y() + m_pMCurve->pt[m_Pos2].y())/4.0;
+				x = (3.0*m_pMCurve->x[m_Pos1] + m_pMCurve->x[m_Pos2])/4.0;
+				y = (3.0*m_pMCurve->y[m_Pos1] + m_pMCurve->y[m_Pos2])/4.0;
 				m_Spline.insertPoint(x,y);
 
-				x = (m_pMCurve->pt[m_Pos1].x() + m_pMCurve->pt[m_Pos2].x())/2.0;
-				y = (m_pMCurve->pt[m_Pos1].y() + m_pMCurve->pt[m_Pos2].y())/2.0;
+				x = (m_pMCurve->x[m_Pos1] + m_pMCurve->x[m_Pos2])/2.0;
+				y = (m_pMCurve->y[m_Pos1] + m_pMCurve->y[m_Pos2])/2.0;
 				m_Spline.insertPoint(x,y);
 
-				x = (m_pMCurve->pt[m_Pos1].x() + 3.0*m_pMCurve->pt[m_Pos2].x())/4.0;
-				y = (m_pMCurve->pt[m_Pos1].y() + 3.0*m_pMCurve->pt[m_Pos2].y())/4.0;
+				x = (m_pMCurve->x[m_Pos1] + 3.0*m_pMCurve->x[m_Pos2])/4.0;
+				y = (m_pMCurve->y[m_Pos1] + 3.0*m_pMCurve->y[m_Pos2])/4.0;
 				m_Spline.insertPoint(x,y);
 
 
 				if (m_bTangentSpline)
 				{
 					//Second point must remain on tangent to curve
-					ux = m_pMCurve->pt[m_Pos1+1].x() - m_pMCurve->pt[m_Pos1].x();
-					uy = m_pMCurve->pt[m_Pos1+1].y() - m_pMCurve->pt[m_Pos1].y();
+					ux = m_pMCurve->x[m_Pos1+1] - m_pMCurve->x[m_Pos1];
+					uy = m_pMCurve->y[m_Pos1+1] - m_pMCurve->y[m_Pos1];
 					norm = sqrt(ux*ux+uy*uy);
 					ux /= norm;
 					uy /= norm;
@@ -1250,8 +1251,8 @@ void QXInverse::mouseReleaseEvent(QMouseEvent *event)
 				
 
 					//penultimate point must remain on tangent to curve
-					ux = m_pMCurve->pt[m_Pos2].x() - m_pMCurve->pt[m_Pos2-1].x();
-					uy = m_pMCurve->pt[m_Pos2].y() - m_pMCurve->pt[m_Pos2-1].y();
+					ux = m_pMCurve->x[m_Pos2] - m_pMCurve->x[m_Pos2-1];
+					uy = m_pMCurve->y[m_Pos2] - m_pMCurve->y[m_Pos2-1];
 					norm = sqrt(ux*ux+uy*uy);
 					ux /= norm;
 					uy /= norm;
@@ -1335,25 +1336,25 @@ void QXInverse::onApplySpline()
 		double qscom, xx;
 		for (i=1; i<m_pMCurve->size()-1; i++)
 		{
-			xx = m_pMCurve->pt[i].x();
+			xx = m_pMCurve->x[i];
 			if (xx > m_Spline.m_CtrlPoint.first().x &&
 				xx < m_Spline.m_CtrlPoint.last().x )
 			{
 				//interpolate spline at xx
-				m_pMCurve->pt[i].ry() = m_Spline.getY(xx);
+				m_pMCurve->y[i] = m_Spline.getY(xx);
 			}
 		}
 
 		for (i=1; i<m_pMCurve->size()-1; i++)
 		{
-			m_pReflectedCurve->pt[i].ry() = -m_pMCurve->pt[i].y();
+			m_pReflectedCurve->y[i] = -m_pMCurve->y[i];
 		}
 
 		m_bSplined = true;
 		for (i=1; i<= pXFoil->nsp; i++)
 		{
 //			isp = pXFoil->nsp - i + 1;
-			qscom =  pXFoil->qinf*m_pMCurve->pt[i-1].y();
+			qscom =  pXFoil->qinf*m_pMCurve->y[i-1];
 			pXFoil->qspec[1][i] = qincom(qscom,pXFoil->qinf,pXFoil->tklam);
 		}
 
@@ -1953,10 +1954,10 @@ void QXInverse::paintGraph(QPainter &painter)
 	if(m_bMarked)
 	{
 		QPoint ptl, ptr;
-		ptl.rx() = m_QGraph.xToClient(m_pMCurve->pt[m_Mk1].x());
-		ptr.rx() = m_QGraph.xToClient(m_pMCurve->pt[m_Mk2].x());
-		ptl.ry() = m_QGraph.yToClient(m_pMCurve->pt[m_Mk1].y());
-		ptr.ry() = m_QGraph.yToClient(m_pMCurve->pt[m_Mk2].y());
+		ptl.rx() = m_QGraph.xToClient(m_pMCurve->x[m_Mk1]);
+		ptr.rx() = m_QGraph.xToClient(m_pMCurve->x[m_Mk2]);
+		ptl.ry() = m_QGraph.yToClient(m_pMCurve->y[m_Mk1]);
+		ptr.ry() = m_QGraph.yToClient(m_pMCurve->y[m_Mk2]);
 
 		QPen MarkPen(QColor(175,30,30));
 		MarkPen.setStyle(Qt::SolidLine);
@@ -2141,7 +2142,7 @@ void QXInverse::resetMixedQ()
 	m_pMCurve->clear();
 	for (int i=0; i<=m_pQCurve->size(); i++)
 	{
-		m_pMCurve->appendPoint(m_pQCurve->pt[i].x(), m_pQCurve->pt[i].y());
+		m_pMCurve->appendPoint(m_pQCurve->x[i], m_pQCurve->y[i]);
 	}
 
 //	m_pXFoil->gamqsp(1);
