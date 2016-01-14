@@ -121,6 +121,7 @@ private slots:
 	void onAnimateWOppSingle();
 	void onAnimateWOppSpeed(int val);
 	void onAnimateModeSingle(bool bStep=true);
+	void onCheckViewIcons();
 	void onCpSectionSlider(int pos);
 	void onCpPosition();
 	void onCpView();

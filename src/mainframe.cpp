@@ -143,12 +143,15 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 	m_ImageFormat = XFLR5::PNG;
 	Settings::s_ExportFileType = XFLR5::TXT;
 
+	m_bAutoSave     = true;
 	m_bSaveOpps     = false;
 	m_bSaveWOpps    = true;
 	m_bSaveSettings = true;
 
+	m_SaveInterval = 10;
 	m_GraphExportFilter = "Comma Separated Values (*.csv)";
 
+	m_pSaveTimer = NULL;
 
 	QAFoil *pAFoil       = (QAFoil*)m_pAFoil;
 	QXDirect *pXDirect   = (QXDirect*)m_pXDirect;
@@ -202,6 +205,12 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 		GL3DScales::loadSettings(&settings);
 		W3dPrefsDlg::loadSettings(&settings);
 	}
+
+	if(m_pSaveTimer) m_pSaveTimer->stop();
+	m_pSaveTimer = new QTimer(this);
+	m_pSaveTimer->setInterval(m_SaveInterval*60*1000);
+	m_pSaveTimer->start();
+	connect(m_pSaveTimer, SIGNAL(timeout()), this, SLOT(onSaveProject()));
 
 	setupDataDir();
 
@@ -327,7 +336,7 @@ void MainFrame::closeEvent (QCloseEvent * event)
 	}
 	deleteProject(true);
 
-	SaveSettings();
+	saveSettings();
 	event->accept();//continue closing
 }
 
@@ -2740,7 +2749,7 @@ bool MainFrame::loadSettings()
 		Units::s_SpeedUnit   = settings.value("SpeedUnit").toInt();
 		Units::s_ForceUnit   = settings.value("ForceUnit").toInt();
 		Units::s_MomentUnit  = settings.value("MomentUnit").toInt();
-		Units::SetUnitConversionFactors();
+		Units::setUnitConversionFactors();
 
 
 		switch(settings.value("ImageFormat").toInt())
@@ -2761,6 +2770,9 @@ bool MainFrame::loadSettings()
 
 		m_bSaveOpps   = settings.value("SaveOpps").toBool();
 		m_bSaveWOpps  = settings.value("SaveWOpps").toBool();
+
+		m_bAutoSave = settings.value("AutoSaveProject").toBool();
+		m_SaveInterval = settings.value("AutoSaveInterval", 10).toInt();
 
 //		a = settings.value("RecentFileSize").toInt();
 		QString RecentF,strange;
@@ -3343,11 +3355,22 @@ void MainFrame::onRestoreToolbars()
 void MainFrame::onSaveOptions()
 {
     SaveOptionsDlg soDlg(this);
-    soDlg.InitDialog(m_bSaveOpps, m_bSaveWOpps);
+	soDlg.initDialog(m_bSaveOpps, m_bSaveWOpps, m_bAutoSave, m_SaveInterval);
     if(soDlg.exec()==QDialog::Accepted)
 	{
-        m_bSaveOpps  = soDlg.m_bOpps;
-        m_bSaveWOpps = soDlg.m_bWOpps;
+		m_bAutoSave    = soDlg.m_bAutoSave;
+		m_SaveInterval = soDlg.m_SaveInterval;
+		m_bSaveOpps    = soDlg.m_bOpps;
+		m_bSaveWOpps   = soDlg.m_bWOpps;
+
+		if(m_bAutoSave)
+		{
+			if(m_pSaveTimer) m_pSaveTimer->stop();
+			m_pSaveTimer = new QTimer(this);
+			m_pSaveTimer->setInterval(m_SaveInterval*60*1000);
+			m_pSaveTimer->start();
+			connect(m_pSaveTimer, SIGNAL(timeout()), this, SLOT(onSaveProject()));
+		}
 	}
 }
 
@@ -4076,7 +4099,7 @@ bool MainFrame::saveProject(QString PathName)
 	m_FileName = PathName;
 	fp.close();
 
-	SaveSettings();
+	saveSettings();
 
 	setSaveState(true);
 
@@ -4275,7 +4298,7 @@ bool MainFrame::SerializePlaneProject(QDataStream &ar)
 }
 
 
-void MainFrame::SaveSettings()
+void MainFrame::saveSettings()
 {
 	QAFoil *pAFoil = (QAFoil*)m_pAFoil;
 	QMiarex *pMiarex = (QMiarex*)m_pMiarex;
@@ -4336,6 +4359,8 @@ void MainFrame::SaveSettings()
 
 		settings.setValue("LanguageFilePath", s_LanguageFilePath);
 		settings.setValue("ImageFormat", m_ImageFormat);
+		settings.setValue("AutoSaveProject", m_bAutoSave);
+		settings.setValue("AutoSaveInterval", m_SaveInterval);
 		settings.setValue("SaveOpps", m_bSaveOpps);
 		settings.setValue("SaveWOpps", m_bSaveWOpps);
 		settings.setValue("RecentFileSize", m_RecentFiles.size());
@@ -4359,7 +4384,7 @@ void MainFrame::SaveSettings()
 	settings.endGroup();
 
 
-	Settings::SaveSettings(&settings);
+	Settings::saveSettings(&settings);
 	pAFoil->SaveSettings(&settings);
 	pXDirect->saveSettings(&settings);
 	pMiarex->saveSettings(&settings);
@@ -4749,7 +4774,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 		ar >> Units::s_MomentUnit;
 
 
-		Units::SetUnitConversionFactors();
+		Units::setUnitConversionFactors();
 
 
 		//Load the default Polar data. Not in the Settings, since this is Project dependant
@@ -4951,7 +4976,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 				ar >> Units::s_MomentUnit;
 			}
 
-			Units::SetUnitConversionFactors();
+			Units::setUnitConversionFactors();
 
 			if(ArchiveFormat>=100004)
 			{

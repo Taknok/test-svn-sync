@@ -90,7 +90,7 @@ private slots:
 	void onRefillBodyTree();
 	void onItemClicked(const QModelIndex &index);
 	void onResize();
-
+	void onCheckViewIcons();
 
 	void onInsertBefore();
 	void onInsertAfter();
