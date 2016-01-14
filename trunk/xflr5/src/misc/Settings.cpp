@@ -68,24 +68,24 @@ Settings::Settings(QWidget *pParent) : QDialog(pParent)
 	m_StyleSheetDir.setPath("/usr/share/xflr5");
 #endif
 
-	SetupLayout();
+	setupLayout();
 
-	connect(m_pctrlStyles, SIGNAL(activated(const QString &)),this, SLOT(OnStyleChanged(const QString &)));
+	connect(m_pctrlStyles, SIGNAL(activated(const QString &)),this, SLOT(onStyleChanged(const QString &)));
 
 	connect(m_pctrlBackColor, SIGNAL(clicked()),this, SLOT(onBackgroundColor()));
 	connect(m_pctrlGraphSettings, SIGNAL(clicked()),this, SLOT(onGraphSettings()));
 	connect(m_pctrlTextClr, SIGNAL(clickedTB()),this, SLOT(onTextColor()));
 	connect(m_pctrlTextFont, SIGNAL(clicked()),this, SLOT(onTextFont()));
-	connect(m_pctrlTableFont, SIGNAL(clicked()),this, SLOT(OnTableFont()));
+	connect(m_pctrlTableFont, SIGNAL(clicked()),this, SLOT(onTableFont()));
 
-	connect(m_pctrlReverseZoom, SIGNAL(clicked()), this, SLOT(OnReverseZoom()));
-	connect(m_pctrlAlphaChannel, SIGNAL(clicked()), this, SLOT(OnAlphaChannel()));
+	connect(m_pctrlReverseZoom, SIGNAL(clicked()), this, SLOT(onReverseZoom()));
+	connect(m_pctrlAlphaChannel, SIGNAL(clicked()), this, SLOT(onAlphaChannel()));
 
 	connect(OKButton, SIGNAL(clicked()),this, SLOT(accept()));
 }
 
 
-void Settings::SetupLayout()
+void Settings::setupLayout()
 {
 	m_pctrlStyles = new QComboBox;
 
@@ -113,27 +113,27 @@ void Settings::SetupLayout()
 	}
 
 
-	QGroupBox *GraphBox = new QGroupBox(tr("Graph Settings"));
+	QGroupBox *pGraphBox = new QGroupBox(tr("Graph Settings"));
 	{
-		QHBoxLayout *GraphLayout = new QHBoxLayout;
+		QHBoxLayout *pGraphLayout = new QHBoxLayout;
 		{
 			m_pctrlGraphSettings  = new QPushButton(tr("All Graph Settings"));
 			m_pctrlGraphSettings->setMinimumWidth(120);
-			GraphLayout->addWidget(m_pctrlGraphSettings);
+			pGraphLayout->addWidget(m_pctrlGraphSettings);
 		}
-		GraphBox->setLayout(GraphLayout);
+		pGraphBox->setLayout(pGraphLayout);
 	}
 
 
-	QGroupBox *BackBox = new QGroupBox(tr("Background Color"));
+	QGroupBox *pBackBox = new QGroupBox(tr("Background Color"));
 	{
-		QHBoxLayout *BackLayout = new QHBoxLayout;
+		QHBoxLayout *pBackLayout = new QHBoxLayout;
 		{
 			m_pctrlBackColor      = new ColorButton(this);
 			m_pctrlBackColor->setMinimumWidth(120);
-			BackLayout->addWidget(m_pctrlBackColor);
+			pBackLayout->addWidget(m_pctrlBackColor);
 		}
-		BackBox->setLayout(BackLayout);
+		pBackBox->setLayout(pBackLayout);
 	}
 
 	QGroupBox *pFontBox = new QGroupBox(tr("Fonts"));
@@ -158,13 +158,13 @@ void Settings::SetupLayout()
 	}
 
 
-	QHBoxLayout *CommandButtons = new QHBoxLayout;
+	QHBoxLayout *pCommandButtons = new QHBoxLayout;
 	{
 		OKButton = new QPushButton(tr("Close"));
 		OKButton->setAutoDefault(false);
-		CommandButtons->addStretch(1);
-		CommandButtons->addWidget(OKButton);
-		CommandButtons->addStretch(1);
+		pCommandButtons->addStretch(1);
+		pCommandButtons->addWidget(OKButton);
+		pCommandButtons->addStretch(1);
 	}
 
 	QVBoxLayout *pMainLayout = new QVBoxLayout;
@@ -174,18 +174,18 @@ void Settings::SetupLayout()
 		pMainLayout->addStretch(1);
 		pMainLayout->addWidget(m_pctrlStyles);
 		pMainLayout->addStretch(1);
-		pMainLayout->addWidget(BackBox);
+		pMainLayout->addWidget(pBackBox);
 		pMainLayout->addStretch(1);
 		pMainLayout->addWidget(pFontBox);
 		pMainLayout->addStretch(1);
-		pMainLayout->addWidget(GraphBox);
+		pMainLayout->addWidget(pGraphBox);
 		pMainLayout->addStretch(1);
 		pMainLayout->addWidget(m_pctrlReverseZoom);
 		pMainLayout->addStretch(1);
 		pMainLayout->addWidget(m_pctrlAlphaChannel);
 		pMainLayout->addSpacing(20);
 		pMainLayout->addStretch(1);
-		pMainLayout->addLayout(CommandButtons);
+		pMainLayout->addLayout(pCommandButtons);
 		pMainLayout->addStretch(1);
 	}
 
@@ -223,7 +223,7 @@ void Settings::initDialog()
 
 
 
-void Settings::OnStyleChanged(const QString &StyleName)
+void Settings::onStyleChanged(const QString &StyleName)
 {
 	//test for style sheet
 	QString fileName = "*.qss";
@@ -361,7 +361,7 @@ void Settings::onTextFont()
 
 
 
-void Settings::OnTableFont()
+void Settings::onTableFont()
 {
 	bool bOK;
 	QFont TableFont;
@@ -387,7 +387,7 @@ void Settings::OnTableFont()
 
 
 
-void Settings::SaveSettings(QSettings *pSettings)
+void Settings::saveSettings(QSettings *pSettings)
 {
 	pSettings->beginGroup("global_settings");
 	{
@@ -448,13 +448,13 @@ void Settings::loadSettings(QSettings *pSettings)
 
 
 
-void Settings::OnReverseZoom()
+void Settings::onReverseZoom()
 {
 	s_bReverseZoom = m_pctrlReverseZoom->isChecked();
 }
 
 
-void Settings::OnAlphaChannel()
+void Settings::onAlphaChannel()
 {
 	s_bAlphaChannel = m_pctrlAlphaChannel->isChecked();
 }

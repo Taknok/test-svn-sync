@@ -43,11 +43,11 @@ Units::Units(QWidget *parent): QDialog(parent)
 	m_bLengthOnly = false;
 	m_Question = tr("Select the units for this project :");
 	setWindowTitle(tr("Units Dialog"));
-	SetupLayout();
+	setupLayout();
 }
 
 
-void Units::SetupLayout()
+void Units::setupLayout()
 {
 	QFont fixedWidthFont("Courier");
 
@@ -178,12 +178,12 @@ void Units::SetupLayout()
 	connect(OKButton,     SIGNAL(clicked()), this, SLOT(accept()));
 	connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 
-	connect(m_pctrlLength,  SIGNAL(activated(const QString &)),this, SLOT(OnSelChanged(const QString &)));
-	connect(m_pctrlSurface, SIGNAL(activated(const QString &)),this, SLOT(OnSelChanged(const QString &)));
-	connect(m_pctrlSpeed,   SIGNAL(activated(const QString &)),this, SLOT(OnSelChanged(const QString &)));
-	connect(m_pctrlWeight,  SIGNAL(activated(const QString &)),this, SLOT(OnSelChanged(const QString &)));
-	connect(m_pctrlForce,   SIGNAL(activated(const QString &)),this, SLOT(OnSelChanged(const QString &)));
-	connect(m_pctrlMoment,  SIGNAL(activated(const QString &)),this, SLOT(OnSelChanged(const QString &)));
+	connect(m_pctrlLength,  SIGNAL(activated(const QString &)),this, SLOT(onSelChanged(const QString &)));
+	connect(m_pctrlSurface, SIGNAL(activated(const QString &)),this, SLOT(onSelChanged(const QString &)));
+	connect(m_pctrlSpeed,   SIGNAL(activated(const QString &)),this, SLOT(onSelChanged(const QString &)));
+	connect(m_pctrlWeight,  SIGNAL(activated(const QString &)),this, SLOT(onSelChanged(const QString &)));
+	connect(m_pctrlForce,   SIGNAL(activated(const QString &)),this, SLOT(onSelChanged(const QString &)));
+	connect(m_pctrlMoment,  SIGNAL(activated(const QString &)),this, SLOT(onSelChanged(const QString &)));
 }
 
 
@@ -232,7 +232,7 @@ void Units::initDialog()
 	m_pctrlMoment->setCurrentIndex(s_MomentUnit);
 
 	m_pctrlLength->setFocus();
-	OnSelChanged(" ");
+	onSelChanged(" ");
 
 	if(m_bLengthOnly)
 	{
@@ -246,7 +246,7 @@ void Units::initDialog()
 }
 
 
-void Units::OnSelChanged(const QString &)
+void Units::onSelChanged(const QString &)
 {
 	QString str, strange, strUnit;
 	int len1 = 11;
@@ -259,7 +259,7 @@ void Units::OnSelChanged(const QString &)
 	s_ForceUnit   = m_pctrlForce->currentIndex();
 	s_MomentUnit  = m_pctrlMoment->currentIndex();
 
-	SetUnitConversionFactors();
+	setUnitConversionFactors();
 
 
 	getLengthUnitLabel(str);
@@ -544,7 +544,7 @@ void Units::getWeightUnitLabel(QString &str)
 /**
 * Initializes the conversion factors for all user-defined units
 */
-void Units::SetUnitConversionFactors()
+void Units::setUnitConversionFactors()
 {
 	switch(s_LengthUnit)
 	{

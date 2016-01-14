@@ -20,6 +20,7 @@
 *****************************************************************************/
 
 #include "SaveOptionsDlg.h"
+#include <QGroupBox>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -30,50 +31,108 @@ SaveOptionsDlg::SaveOptionsDlg(QWidget *pParent) : QDialog(pParent)
 	setWindowTitle(tr("Save Options"));
 	m_bOpps = false;
 	m_bWOpps = true;
-	SetupLayout();
+	m_bAutoSave = true;
+	m_SaveInterval = 13;
+	setupLayout();
 }
 
-void SaveOptionsDlg::SetupLayout()
+void SaveOptionsDlg::setupLayout()
 {
-	QLabel *label = new QLabel(tr("Save:"));
-	m_pctrlOpps  = new QCheckBox(tr("Foil Operating Points"));
-	m_pctrlWOpps = new QCheckBox(tr("Wing and Plane Operating Points"));
 
-	QHBoxLayout *CommandButtons = new QHBoxLayout;
-	QPushButton *OKButton = new QPushButton(tr("OK"));
-	OKButton->setAutoDefault(false);
-	QPushButton *CancelButton = new QPushButton(tr("Cancel"));
-	CancelButton->setAutoDefault(false);
-	CommandButtons->addStretch(1);
-	CommandButtons->addWidget(OKButton);
-	CommandButtons->addStretch(1);
-	CommandButtons->addWidget(CancelButton);
-	CommandButtons->addStretch(1);
-	connect(OKButton, SIGNAL(clicked()),this, SLOT(OnOK()));
-	connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+	QGroupBox *pSaveOppBox = new QGroupBox(tr("Operating point save"));
+	{
+		QVBoxLayout *pSaveOppLayout = new QVBoxLayout;
+		{
+			QLabel *label = new QLabel(tr("Save:"));
+			m_pctrlOpps  = new QCheckBox(tr("Foil Operating Points"));
+			m_pctrlWOpps = new QCheckBox(tr("Wing and Plane Operating Points"));
+			pSaveOppLayout->addWidget(label);
+			pSaveOppLayout->addWidget(m_pctrlOpps);
+			pSaveOppLayout->addWidget(m_pctrlWOpps);
+		}
+		pSaveOppBox->setLayout(pSaveOppLayout);
+	}
 
-	QVBoxLayout *MainLayout = new QVBoxLayout;
-	MainLayout->addWidget(label);
-	MainLayout->addWidget(m_pctrlOpps);
-	MainLayout->addWidget(m_pctrlWOpps);
-	MainLayout->addStretch(1);
-	MainLayout->addLayout(CommandButtons);
-	setLayout(MainLayout);
+	QGroupBox *pSaveTimerBox = new QGroupBox(tr("Autosave setting"));
+	{
+		QHBoxLayout *pSaveTimerLayout = new QHBoxLayout;
+		{
+			m_pctrlAutoSave = new QCheckBox("Autosave");
+			QLabel *pctrlIntervalLabel = new QLabel(tr("Every"));
+			m_pctrlInterval = new IntEdit(m_SaveInterval);
+			QLabel *pctrlMinutes = new QLabel("mn");
+			pSaveTimerLayout->addWidget(m_pctrlAutoSave);
+			pSaveTimerLayout->addWidget(pctrlIntervalLabel);
+			pSaveTimerLayout->addWidget(m_pctrlInterval);
+			pSaveTimerLayout->addWidget(pctrlMinutes);
+
+			connect(m_pctrlAutoSave, SIGNAL(clicked(bool)), m_pctrlInterval, SLOT(setEnabled(bool)));
+
+		}
+		pSaveTimerBox->setLayout(pSaveTimerLayout);
+	}
+
+
+	QHBoxLayout *pCommandButtons = new QHBoxLayout;
+	{
+		QPushButton *pOKButton = new QPushButton(tr("OK"));
+		pOKButton->setAutoDefault(false);
+		QPushButton *pCancelButton = new QPushButton(tr("Cancel"));
+		pCancelButton->setAutoDefault(false);
+		pCommandButtons->addStretch(1);
+		pCommandButtons->addWidget(pOKButton);
+		pCommandButtons->addStretch(1);
+		pCommandButtons->addWidget(pCancelButton);
+		pCommandButtons->addStretch(1);
+		connect(pOKButton, SIGNAL(clicked()),this, SLOT(onOK()));
+		connect(pCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+	}
+
+
+
+	QVBoxLayout *pMainLayout = new QVBoxLayout;
+	{
+		pMainLayout->addWidget(pSaveTimerBox);
+		pMainLayout->addStretch(1);
+		pMainLayout->addWidget(pSaveOppBox);
+		pMainLayout->addStretch(1);
+		pMainLayout->addLayout(pCommandButtons);
+	}
+	setLayout(pMainLayout);
 }
 
-void SaveOptionsDlg::InitDialog(bool bOpps, bool bWOpps)
+void SaveOptionsDlg::initDialog(bool bOpps, bool bWOpps, bool bAutoSave, int saveInterval)
 {
+	m_bAutoSave = bAutoSave;
+	m_SaveInterval = saveInterval;
 	m_bOpps  = bOpps;
 	m_bWOpps = bWOpps;
 	m_pctrlOpps->setChecked(m_bOpps);
 	m_pctrlWOpps->setChecked(m_bWOpps);
+
+	m_pctrlAutoSave->setChecked(m_bAutoSave);
+	m_pctrlInterval->setValue(m_SaveInterval);
+	m_pctrlInterval->setEnabled(m_bAutoSave);
 }
 
 
 
-void SaveOptionsDlg::OnOK()
+void SaveOptionsDlg::onOK()
 {
 	m_bOpps = m_pctrlOpps->isChecked();
 	m_bWOpps = m_pctrlWOpps->isChecked();
+	m_bAutoSave = m_pctrlAutoSave->isChecked();
+	m_SaveInterval = m_pctrlInterval->value();
 	accept();
 }
+
+
+
+
+
+
+
+
+
+
+

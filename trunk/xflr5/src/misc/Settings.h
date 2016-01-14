@@ -44,7 +44,7 @@ public:
 	Settings(QWidget *pParent);
 	void initDialog();
 	static void loadSettings(QSettings *settings);
-	static void SaveSettings(QSettings *settings);
+	static void saveSettings(QSettings *settings);
 
 	static QColor &backgroundColor(){return s_BackgroundColor;}
 	static QColor &textColor(){return s_TextColor;}
@@ -54,18 +54,18 @@ public:
 	static QFont &tableFont(){return s_TableFont;}
 
 private slots:
-	void OnStyleChanged(const QString &StyleName);
+	void onStyleChanged(const QString &StyleName);
 	void onBackgroundColor();
 	void onGraphSettings();
 	void onTextColor();
 	void onTextFont();
-	void OnTableFont();
-	void OnReverseZoom();
-	void OnAlphaChannel();
+	void onTableFont();
+	void onReverseZoom();
+	void onAlphaChannel();
 
 private:
 	void reject();
-	void SetupLayout();
+	void setupLayout();
 
 	ColorButton *m_pctrlBackColor;
 	TextClrBtn *m_pctrlTextClr;

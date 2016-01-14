@@ -92,6 +92,7 @@ public:
 private slots:
 	void on3DReset();
 	void onAutoRedraw();
+	void onCheckViewIcons();
 	void onDelete();
 	void onEndEdit();
 	void onInsertBefore();

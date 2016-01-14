@@ -978,7 +978,22 @@ void EditPlaneDlg::connectSignals()
 	connect(m_pctrlClipPlanePos, SIGNAL(sliderMoved(int)), m_pGLWidget, SLOT(onClipPlane(int)));
 
 	connect(m_pHorizontalSplitter, SIGNAL(splitterMoved(int,int)), this, SLOT(onResize()));
+
+	connect(m_pGLWidget, SIGNAL(viewModified()), this, SLOT(onCheckViewIcons()));
 }
+
+
+/**
+ * Unselects all the 3D-view icons.
+ */
+void EditPlaneDlg::onCheckViewIcons()
+{
+	m_pctrlIso->setChecked(false);
+	m_pctrlX->setChecked(false);
+	m_pctrlY->setChecked(false);
+	m_pctrlZ->setChecked(false);
+}
+
 
 
 

@@ -86,6 +86,7 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
 {
 	setWindowTitle(tr("Body Edition"));
 	setWindowFlags(Qt::Window);
+	setMouseTracking(true);
 
 	m_MousePos.setX(-1);
 	m_MousePos.setY(-1);
@@ -244,8 +245,9 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
 	connect(m_pctrlOK, SIGNAL(clicked()),this, SLOT(OnOK()));
 	connect(m_pctrlCancel, SIGNAL(clicked()),this, SLOT(reject()));
 
-	setMouseTracking(true);
 }
+
+
 
 
 void GL3dBodyDlg::setTableUnits()

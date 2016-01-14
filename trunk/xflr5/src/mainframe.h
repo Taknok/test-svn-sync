@@ -29,6 +29,7 @@
 
 #include <QWidget>
 #include <QDir>
+#include <QTimer>
 #include <QStringList>
 #include <QStackedWidget>
 #include <QComboBox>
@@ -193,7 +194,7 @@ public:
 	void* readFoilFile(QTextStream &ar);
 	void readPolarFile(QDataStream &ar);
 	bool saveProject(QString PathName="");
-	void SaveSettings();
+	void saveSettings();
 	void selectFoil(void *pFoilPtr);
 	void selectPolar(void *pPolarPtr);
 	void selectOpPoint(void *pOppPtr);
@@ -379,12 +380,14 @@ private:
 	XFLR5::enumApp m_iApp;                 /**< The identification number of the active app. */
 
 	static bool s_bSaved;       /**< true if the project has not been modified since the last save operation. */
-	bool m_bSaveOpps;           /**< true if foil operating points should be serialized in the project file */
-	bool m_bSaveWOpps;          /**< true if wing operating points should be serialized in the project file */
+	bool m_bSaveOpps;           /**< true if the foil operating points should be serialized in the project file */
+	bool m_bSaveWOpps;          /**< true if the wing operating points should be serialized in the project file */
+	bool m_bAutoSave;           /**< true if the project should be auto-saved on regular intervals */
 	bool m_bSaveSettings;       /**< true if user-defined settings should be saved on exit. */
 	bool m_bHighlightOpp;       /**< true if the active OpPoint should be highlighted on the polar curve. */
 	bool m_bHighlightWOpp;      /**< true if the active WingOpp should be highlighted on the polar curve. */
 
+	int m_SaveInterval;         /**< the time interval in muinutes between two project auto-saves */
 
 	static QDir s_StylesheetDir;
 	static QDir s_TranslationDir;
@@ -398,6 +401,7 @@ private:
 	QString m_GraphExportFilter;
 
 	XFLR5::enumImageFormat m_ImageFormat;   /**< The index of the type of image file which should be used. */
+	QTimer *m_pSaveTimer;          /**< The timer which triggers the autosaving of the project at given intervals */
 
 public:
 	static bool s_bTrace;
