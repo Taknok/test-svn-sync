@@ -1503,6 +1503,7 @@ void ThreeDWidget::on3DIso()
 	m_ArcBall.ab_quat[15]	=  1.0f;
 
 	reset3DRotationCenter();
+	emit(viewModified());
 	update();
 }
 
@@ -1512,6 +1513,7 @@ void ThreeDWidget::on3DTop()
 {
 	m_ArcBall.setQuat(sqrt(2.0)/2.0, 0.0, 0.0, -sqrt(2.0)/2.0);
 	reset3DRotationCenter();
+	emit(viewModified());
 	update();
 }
 
@@ -1520,6 +1522,7 @@ void ThreeDWidget::on3DLeft()
 {
 	m_ArcBall.setQuat(sqrt(2.0)/2.0, -sqrt(2.0)/2.0, 0.0, 0.0);// rotate by 90° around x
 	reset3DRotationCenter();
+	emit(viewModified());
 	update();
 }
 
@@ -1531,6 +1534,7 @@ void ThreeDWidget::on3DFront()
 
 	m_ArcBall.setQuat(Qt1 * Qt2);
 	reset3DRotationCenter();
+	emit(viewModified());
 	update();
 }
 

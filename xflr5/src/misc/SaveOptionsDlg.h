@@ -23,6 +23,8 @@
 #ifndef SAVEOPTIONSDLG_H
 #define SAVEOPTIONSDLG_H
 
+#include "IntEdit.h"
+
 #include <QDialog>
 #include <QCheckBox>
 
@@ -34,16 +36,20 @@ class SaveOptionsDlg : public QDialog
 
 public:
     SaveOptionsDlg(QWidget *pParent);
-	void InitDialog(bool bOpps=false, bool bWOpps = true);
+	void initDialog(bool bOpps=false, bool bWOpps = true, bool bAutoSave=true, int saveInterval=10);
 
 private slots:
-	void OnOK();
+	void onOK();
 
 private:
-	void SetupLayout();
-	void ReadParams();
-	bool m_bOpps, m_bWOpps;
+	void setupLayout();
+	void readParams();
+
+	IntEdit *m_pctrlInterval;
+	bool m_bOpps, m_bWOpps, m_bAutoSave;
+	int m_SaveInterval;
 	QCheckBox *m_pctrlOpps, *m_pctrlWOpps;
+	QCheckBox *m_pctrlAutoSave;
 };
 
 #endif // SAVEOPTIONSDLG_H

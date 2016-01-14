@@ -67,7 +67,7 @@ public:
 private slots:
 	void onAxes();
 	void on3DReset();
-
+	void onCheckViewIcons();
 	void onSurfaces();
 	void onOutline();
 	void onPanels();

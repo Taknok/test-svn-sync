@@ -126,6 +126,8 @@ public:
 	void worldToViewport(const CVector &V, double &Vx, double &Vy);
 	void viewportToWorld(CVector vp, CVector &w);
 
+signals:
+	void viewModified();
 
 private slots:
 	void on3DIso();

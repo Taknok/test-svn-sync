@@ -72,10 +72,10 @@ public:
 	static void setForcehUnitFactor( double NToUnit)  {s_ForceUnit  = NToUnit;}
 	static void setMomenthUnitFactor(double NMToUnit) {s_MomentUnit = NMToUnit;}
 
-    static void SetUnitConversionFactors();
+    static void setUnitConversionFactors();
 
 private slots:
-	void OnSelChanged(const QString &);
+	void onSelChanged(const QString &);
 
 private:
 	QPushButton *OKButton, *CancelButton;
@@ -95,7 +95,7 @@ private:
 
 private:
 	void initDialog();
-	void SetupLayout();
+	void setupLayout();
 
 	bool m_bLengthOnly;
 	static int s_LengthUnit;    /**< The index of the user selected unit in the array of length units. @todo use an enumeration instead. */

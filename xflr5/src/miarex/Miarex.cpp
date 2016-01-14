@@ -515,12 +515,25 @@ void QMiarex::connectSignals()
 	connect(m_pctrlZ,     SIGNAL(clicked()), m_p3dWidget, SLOT(on3DTop()));
 	connect(m_pctrlReset, SIGNAL(clicked()), SLOT(on3DReset()));
 
+
 	connect(m_pctrlAlphaMin,   SIGNAL(editingFinished()), this, SLOT(onReadAnalysisData()));
 	connect(m_pctrlAlphaMax,   SIGNAL(editingFinished()), this, SLOT(onReadAnalysisData()));
 	connect(m_pctrlAlphaDelta, SIGNAL(editingFinished()), this, SLOT(onReadAnalysisData()));
+
+	connect(m_p3dWidget, SIGNAL(viewModified()), this, SLOT(onCheckViewIcons()));
 }
 
 
+/**
+ * Unselects all the 3D-view icons.
+ */
+void QMiarex::onCheckViewIcons()
+{
+	m_pctrlIso->setChecked(false);
+	m_pctrlX->setChecked(false);
+	m_pctrlY->setChecked(false);
+	m_pctrlZ->setChecked(false);
+}
 
 
 /**

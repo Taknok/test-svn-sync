@@ -203,7 +203,21 @@ void GL3dWingDlg::connectSignals()
 	connect(m_pScaleWing,     SIGNAL(triggered()), this, SLOT(onScaleWing()));
 	connect(m_pImportWingAct, SIGNAL(triggered()),this, SLOT(onImportWing()));
 	connect(m_pExportWingAct, SIGNAL(triggered()),this, SLOT(onExportWing()));
+	connect(m_pGLWidget, SIGNAL(viewModified()), this, SLOT(onCheckViewIcons()));
 }
+
+
+/**
+ * Unselects all the 3D-view icons.
+ */
+void GL3dWingDlg::onCheckViewIcons()
+{
+	m_pctrlIso->setChecked(false);
+	m_pctrlX->setChecked(false);
+	m_pctrlY->setChecked(false);
+	m_pctrlZ->setChecked(false);
+}
+
 
 
 void GL3dWingDlg::createXPoints(int NXPanels, int XDist, Foil *pFoilA, Foil *pFoilB, double *xPointA, double *xPointB, int &NXLead, int &NXFlap)
