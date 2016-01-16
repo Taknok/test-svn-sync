@@ -143,7 +143,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 	m_ImageFormat = XFLR5::PNG;
 	Settings::s_ExportFileType = XFLR5::TXT;
 
-	m_bAutoSave     = true;
+	m_bAutoSave     = false;
 	m_bSaveOpps     = false;
 	m_bSaveWOpps    = true;
 	m_bSaveSettings = true;
@@ -206,11 +206,15 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 		W3dPrefsDlg::loadSettings(&settings);
 	}
 
-	if(m_pSaveTimer) m_pSaveTimer->stop();
+	if(m_pSaveTimer)
+	{
+		m_pSaveTimer->stop();
+		delete m_pSaveTimer;
+	}
 	m_pSaveTimer = new QTimer(this);
 	m_pSaveTimer->setInterval(m_SaveInterval*60*1000);
 	m_pSaveTimer->start();
-	connect(m_pSaveTimer, SIGNAL(timeout()), this, SLOT(onSaveProject()));
+	connect(m_pSaveTimer, SIGNAL(timeout()), this, SLOT(onSaveTimer()));
 
 	setupDataDir();
 
@@ -2771,7 +2775,7 @@ bool MainFrame::loadSettings()
 		m_bSaveOpps   = settings.value("SaveOpps").toBool();
 		m_bSaveWOpps  = settings.value("SaveWOpps").toBool();
 
-		m_bAutoSave = settings.value("AutoSaveProject").toBool();
+		m_bAutoSave = settings.value("AutoSaveProject", false).toBool();
 		m_SaveInterval = settings.value("AutoSaveInterval", 10).toInt();
 
 //		a = settings.value("RecentFileSize").toInt();
@@ -3365,15 +3369,27 @@ void MainFrame::onSaveOptions()
 
 		if(m_bAutoSave)
 		{
-			if(m_pSaveTimer) m_pSaveTimer->stop();
+			if(m_pSaveTimer)
+			{
+				m_pSaveTimer->stop();
+				delete m_pSaveTimer;
+			}
 			m_pSaveTimer = new QTimer(this);
 			m_pSaveTimer->setInterval(m_SaveInterval*60*1000);
 			m_pSaveTimer->start();
-			connect(m_pSaveTimer, SIGNAL(timeout()), this, SLOT(onSaveProject()));
+			connect(m_pSaveTimer, SIGNAL(timeout()), this, SLOT(onSaveTimer()));
 		}
 	}
 }
 
+void MainFrame::onSaveTimer()
+{
+	if (!s_ProjectName.length() || s_ProjectName=="*")
+	{
+		return;
+	}
+	else onSaveProject();
+}
 
 void MainFrame::onSaveProject()
 {

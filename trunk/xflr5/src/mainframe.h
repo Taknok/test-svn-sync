@@ -145,6 +145,7 @@ private slots:
 	void onRestoreToolbars();
 	void onSaveOptions();
 	bool onSaveProjectAs();
+	void onSaveTimer();
 	void onSaveViewToImageFile();
 	void onSelChangeFoil(int sel);
 	void onSelChangePolar(int sel);

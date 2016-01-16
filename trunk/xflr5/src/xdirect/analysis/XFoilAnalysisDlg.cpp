@@ -103,26 +103,26 @@ void XFoilAnalysisDlg::setupLayout()
 	m_pGraphWidget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 
 
-	QHBoxLayout *buttonsLayout = new QHBoxLayout;
+	QHBoxLayout *pButtonsLayout = new QHBoxLayout;
 	{
 		m_pctrlSkip   = new QPushButton(tr("Skip"));
 		m_pctrlCancel = new QPushButton(tr("Cancel"));
 
         connect(m_pctrlSkip,   SIGNAL(clicked()), this, SLOT(onSkipPoint()));
         connect(m_pctrlCancel, SIGNAL(clicked()), this, SLOT(onCancelAnalysis()));
-		buttonsLayout->addStretch(1);
-		buttonsLayout->addWidget(m_pctrlSkip);
-		buttonsLayout->addStretch(1);
-		buttonsLayout->addWidget(m_pctrlCancel);
-		buttonsLayout->addStretch(1);
+		pButtonsLayout->addStretch(1);
+		pButtonsLayout->addWidget(m_pctrlSkip);
+		pButtonsLayout->addStretch(1);
+		pButtonsLayout->addWidget(m_pctrlCancel);
+		pButtonsLayout->addStretch(1);
 	}
 
-	QVBoxLayout *mainLayout = new QVBoxLayout;
+	QVBoxLayout *pMainLayout = new QVBoxLayout;
 	{
-		mainLayout->addWidget(m_pctrlTextOutput);
-		mainLayout->addWidget(m_pGraphWidget);
-		mainLayout->addLayout(buttonsLayout);
-		setLayout(mainLayout);
+		pMainLayout->addWidget(m_pctrlTextOutput);
+		pMainLayout->addWidget(m_pGraphWidget);
+		pMainLayout->addLayout(pButtonsLayout);
+		setLayout(pMainLayout);
 	}
 }
 

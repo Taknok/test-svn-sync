@@ -234,7 +234,7 @@ void FoilGeomDlg::Apply()
 	QString strange;
 
 	XFoil *pXFoil = (XFoil*)s_pXFoil;
-	pXFoil->m_OutStream.setString(&strange);
+	pXFoil->m_OutMessage.clear();
 
 	//reset everything and retry
 	int i,j;
