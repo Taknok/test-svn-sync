@@ -293,6 +293,13 @@ bool XFoilTask::alphaSequence()
 
 			OpPoint::addOpPoint(m_pFoil, m_pPolar, &XFoilInstance);
 
+			if(XFoil::s_bFullReport)
+			{
+				traceLog(XFoilInstance.m_OutMessage);
+				XFoilInstance.m_OutMessage.clear();
+			}
+
+
 			if(m_pGraph)
 			{
 				m_pGraph->resetYLimits();
@@ -384,6 +391,12 @@ bool XFoilTask::ReSequence()
 		m_Iterations = 0;
 
 		OpPoint::addOpPoint(m_pFoil, m_pPolar, &XFoilInstance);
+
+		if(XFoil::s_bFullReport)
+		{
+			traceLog(XFoilInstance.m_OutMessage);
+			XFoilInstance.m_OutMessage.clear();
+		}
 
 		if(m_pGraph)
 		{

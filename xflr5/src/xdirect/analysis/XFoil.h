@@ -38,8 +38,7 @@ This is a translation to C++ of the original Fortran code of Mark Drela and Haro
 See http://raphael.mit.edu/xfoil for more information.
 */
 
-
-#include <QTextStream>
+#include <QString>
 #include <math.h>
 #include <complex>
 
@@ -259,8 +258,8 @@ public:
 	double minf, reinf;
 	double minf_cl, reinf_cl;
 	double angtol;
-	QTextStream m_OutStream;
 
+	QString m_OutMessage;
 
 //____________FUNCTION & METHODS___________________________________________________
 public:

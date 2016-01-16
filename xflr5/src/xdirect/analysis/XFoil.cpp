@@ -1981,8 +1981,8 @@ bool XFoil::cpcalc(int n, double q[], double qinf, double minf, double cp[])
 void XFoil::WriteString(QString str, bool bFullReport)
 {
 	if(!bFullReport && !s_bFullReport) return;
-	if(m_OutStream.device()!=NULL)         m_OutStream << str;
-	else if(m_OutStream.string()!=NULL)    m_OutStream << str;
+
+	m_OutMessage += str;
 }
 
 
@@ -4055,6 +4055,8 @@ bool XFoil::InitXFoilAnalysis(void *pPolarPtr, bool bViscous)
 {
 	//Sets Analysis parameters in XFoil
 	if(!pPolarPtr) return false;
+
+	m_OutMessage.clear();
 
 	Polar *pPolar = (Polar*)pPolarPtr;
 

@@ -2140,7 +2140,7 @@ void QXInverse::releaseZoom()
 void QXInverse::resetMixedQ()
 {
 	m_pMCurve->clear();
-	for (int i=0; i<=m_pQCurve->size(); i++)
+	for (int i=0; i<m_pQCurve->size(); i++)
 	{
 		m_pMCurve->appendPoint(m_pQCurve->x[i], m_pQCurve->y[i]);
 	}
@@ -2237,7 +2237,7 @@ void QXInverse::setFoil()
 		pXFile = new QFile(FileName);
 		if (!pXFile->open(QIODevice::WriteOnly | QIODevice::Text)) pXFile = NULL;
 
-		pXFoil->m_OutStream.setDevice(pXFile);
+//		pXFoil->m_pOutStream->setDevice(pXFile);
 
 		pXFoil->InitQDES();
 
