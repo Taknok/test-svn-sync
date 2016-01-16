@@ -373,8 +373,6 @@ void WPolar::calculatePoint(int iPt)
 
 	if(iPt>=m_CL.count()) return;
 
-	m_ClCd[iPt]   =  m_CL[iPt]/m_TCd[iPt];
-
 	if(m_CL[iPt]>0.0) {
 		m_1Cl[iPt]    = (double)(1./sqrt(m_CL[iPt]));
 //		m_Cl32Cd[i] = (double)pow(m_CL[i],1.5)/m_TCd[i];
@@ -403,6 +401,7 @@ void WPolar::calculatePoint(int iPt)
 	for(int iExtra=0; iExtra<MAXEXTRADRAG; iExtra++) m_FX[iPt] += m_ExtraDragArea[iExtra] * m_ExtraDragCoef[iExtra] *q;
 
 	m_TCd[iPt] = m_FX[iPt]/q/m_referenceArea;
+	m_ClCd[iPt]   =  m_CL[iPt]/m_TCd[iPt];
 
 	m_Rm[iPt] = q * m_referenceArea * m_GRm[iPt] * m_referenceSpanLength;// in N.m
 	m_Ym[iPt] = q * m_referenceArea * m_GYm[iPt] * m_referenceSpanLength;// in N.m
