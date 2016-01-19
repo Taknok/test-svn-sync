@@ -276,10 +276,10 @@ void QAFoil::fillTableRow(int row)
 		m_pFoilModel->setData(ind,pFoil->m_LEYHinge/100.0);
 	}
 
-/*	ind = m_pFoilModel->index(row, 12, QModelIndex());
+	ind = m_pFoilModel->index(row, 12, QModelIndex());
 	if(pFoil->m_bVisible) m_pFoilModel->setData(ind, Qt::Checked, Qt::CheckStateRole);
 	else                  m_pFoilModel->setData(ind, Qt::Unchecked, Qt::CheckStateRole);
-	pItem = m_pFoilModel->item(row,12);
+	QStandardItem *pItem = m_pFoilModel->item(row,12);
 	if(pItem) pItem->setFlags(Qt::ItemIsEnabled|Qt::ItemIsUserCheckable);
 	
 	ind = m_pFoilModel->index(row, 13, QModelIndex());
@@ -292,7 +292,7 @@ void QAFoil::fillTableRow(int row)
 	if(pFoil->m_bCenterLine) m_pFoilModel->setData(ind, Qt::Checked, Qt::CheckStateRole);
 	else                     m_pFoilModel->setData(ind, Qt::Unchecked, Qt::CheckStateRole);
 	pItem = m_pFoilModel->item(row,14);
-	if(pItem) pItem->setFlags(Qt::ItemIsEnabled|Qt::ItemIsUserCheckable);*/
+	if(pItem) pItem->setFlags(Qt::ItemIsEnabled|Qt::ItemIsUserCheckable);
 }
 
 
