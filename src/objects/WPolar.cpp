@@ -373,6 +373,18 @@ void WPolar::calculatePoint(int iPt)
 
 	if(iPt>=m_CL.count()) return;
 
+	m_FZ[iPt]  = q * m_CL[iPt]*m_referenceArea;
+	m_FY[iPt]  = q * m_CY[iPt]*m_referenceArea;
+	m_FX[iPt]  = q * (m_ICd[iPt]+m_PCd[iPt])*m_referenceArea;
+
+	for(int iExtra=0; iExtra<MAXEXTRADRAG; iExtra++) m_FX[iPt] += m_ExtraDragArea[iExtra] * m_ExtraDragCoef[iExtra] *q;
+
+	m_ExtraDrag[iPt] = 0.0;
+	for(int i=0; i<MAXEXTRADRAG; i++) m_ExtraDrag[iPt] += m_ExtraDragArea[i]*m_ExtraDragCoef[i];
+	m_ExtraDrag[iPt] *= q;
+
+	m_TCd[iPt] = m_FX[iPt]/q/m_referenceArea;
+
 	if(m_CL[iPt]>0.0) {
 		m_1Cl[iPt]    = (double)(1./sqrt(m_CL[iPt]));
 //		m_Cl32Cd[i] = (double)pow(m_CL[i],1.5)/m_TCd[i];
@@ -384,9 +396,6 @@ void WPolar::calculatePoint(int iPt)
 		m_Cl32Cd[iPt] = -sqrt(-m_CL[iPt]*m_CL[iPt]*m_CL[iPt])/m_TCd[iPt];
 	}
 
-	m_ExtraDrag[iPt] = 0.0;
-	for(int i=0; i<MAXEXTRADRAG; i++) m_ExtraDrag[iPt] += m_ExtraDragArea[i]*m_ExtraDragCoef[i];
-	m_ExtraDrag[iPt] *= q;
 
 	if(qAbs(m_CL[iPt])>0.) m_Gamma[iPt]  =  atan(m_TCd[iPt]/m_CL[iPt]) * 180.0/PI;
 	else m_Gamma[iPt] = 90.0;
@@ -394,13 +403,6 @@ void WPolar::calculatePoint(int iPt)
 	m_Vz[iPt] = (double)sqrt(2*mass*9.81/m_Density/m_referenceArea)/m_Cl32Cd[iPt];
 	m_Vx[iPt] = m_QInfinite[iPt] * (double)cos(m_Gamma[iPt]*PI/180.0);
 
-	m_FZ[iPt]  = q * m_CL[iPt]*m_referenceArea;
-	m_FY[iPt]  = q * m_CY[iPt]*m_referenceArea;
-	m_FX[iPt]  = q * (m_ICd[iPt]+m_PCd[iPt])*m_referenceArea;
-
-	for(int iExtra=0; iExtra<MAXEXTRADRAG; iExtra++) m_FX[iPt] += m_ExtraDragArea[iExtra] * m_ExtraDragCoef[iExtra] *q;
-
-	m_TCd[iPt] = m_FX[iPt]/q/m_referenceArea;
 	m_ClCd[iPt]   =  m_CL[iPt]/m_TCd[iPt];
 
 	m_Rm[iPt] = q * m_referenceArea * m_GRm[iPt] * m_referenceSpanLength;// in N.m
