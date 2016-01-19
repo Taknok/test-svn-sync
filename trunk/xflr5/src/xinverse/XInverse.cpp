@@ -2421,7 +2421,7 @@ void QXInverse::setXInverseScale(QRect CltRect)
 	int h4 = (int)(h/3.0);
 	int w = CltRect.width();
 	int w20 = (int)(w/20);
-	m_rGraphRect = QRect(w20, 10, + m_rCltRect.width()-2*w20, m_rCltRect.height()-h4);
+	m_rGraphRect = QRect(0, 0, + m_rCltRect.width(), m_rCltRect.height()-h4);
 	m_QGraph.setMargin(50);
 	m_QGraph.setDrawRect(m_rGraphRect);
 
