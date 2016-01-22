@@ -723,6 +723,15 @@ void QMiarex::createCpCurves()
 	Curve *pCurve = NULL;
 	QString str2, str3;
 
+	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
+
+	if(!m_pCurPOpp || !m_pCurWPolar) return;
+	if(m_pCurWPolar->analysisMethod()==XFLR5::LLTMETHOD)
+	{
+		pMainFrame->statusBar()->showMessage(tr("Cp Curves are only available for VLM and panel methods"));
+		return;
+	}
+
 	for (i=0; i<MAXWINGS; i++)
 	{
 		// the first four curves are necessarily the current opPoint's main wing, second wing, elevator and fin
@@ -885,7 +894,6 @@ void QMiarex::createWOppCurves()
 					y = maxlift*sqrt(1.0 - x*x/m_pCurPlane->span()/m_pCurPlane->span()*4.0);
 					pCurve->appendPoint(x*Units::mtoUnit(),y);
 				}
-
 			}
 		}*/
 		for(int ig=0; ig<MAXGRAPHS; ig++)
