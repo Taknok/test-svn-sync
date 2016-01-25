@@ -558,6 +558,9 @@ void QXInverse::keyPressEvent(QKeyEvent *event)
 			}
 			else if(m_bGetPos)
 			{
+				m_pctrlMark->setChecked(false);
+				m_pctrlNewSpline->setChecked(false);
+				m_pctrlMNewSpline->setChecked(false);
 				m_bGetPos = false;
 				m_bSpline = false;
 				m_bSmooth = false;
@@ -750,22 +753,20 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 {
 //	if(!hasFocus()) setFocus();
 	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
-	static double x1,y1, xmin, xmax, ymin,  ymax, xpt, ypt, scale, ux, uy, unorm, vx, vy, vnorm, scal;
-	static double xx0,xx1,xx2,yy0,yy1,yy2, dist;
-	static int a, n, ipt;
-	static QPoint point;
+	double x1,y1, xmin, xmax, ymin,  ymax, xpt, ypt, scale, ux, uy, unorm, vx, vy, vnorm, scal;
+	double xx0,xx1,xx2,yy0,yy1,yy2, dist;
+	int a, n, ipt;
+	QPoint point;
 	point = event->pos();
 
 	if(m_bGetPos)
 	{
 		m_tmpPos = m_pMCurve->closestPoint(m_QGraph.clientTox(point.x()), m_QGraph.clientToy(point.y()), dist);
-		updateView();
 	}
 	else if(m_bZoomPlus && (event->buttons() & Qt::LeftButton))
 	{
 		m_ZoomRect.setRight(point.x());
 		m_ZoomRect.setBottom(point.y());
-		updateView();
 	}
 	else if(m_rCltRect.contains(point) && (event->buttons() & Qt::LeftButton) && m_bTrans)
 	{
@@ -791,8 +792,6 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 			m_ptOffset.rx() += point.x() - m_PointDown.x();
 			m_ptOffset.ry() += point.y() - m_PointDown.y();
 		}
-		updateView();
-		m_PointDown = point;
 	}
 	else if ((event->buttons() & Qt::LeftButton)  && !m_bZoomPlus && m_bSpline && m_Spline.m_iSelect>=0) 
 	{
@@ -958,7 +957,6 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 				m_Spline.splineCurve();
 				m_bSplined = false;
 			}
-			updateView();
 		}
 	}
 	else if((event->buttons() & Qt::MidButton)  || event->modifiers().testFlag(Qt::AltModifier))
@@ -982,14 +980,12 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 			a = (int)((m_rCltRect.right()+m_rCltRect.left())/2);
 			m_ptOffset.rx() = a + (int)((m_ptOffset.x()-a)*m_fScale/scale);
 		}
-		updateView();
-		m_PointDown = point;
 	}
 	else
 	{
 		if(m_QGraph.isInDrawRect(point))
 		{
-			pMainFrame->statusBar()->showMessage(QString("X = %1, Y = %2").arg(m_QGraph.clientTox(event->x())).arg(m_QGraph.clientToy(event->y())));
+//			pMainFrame->statusBar()->showMessage(QString("X = %1, Y = %2").arg(m_QGraph.clientTox(event->x())).arg(m_QGraph.clientToy(event->y())));
 			m_pCurGraph = &m_QGraph;
 		}
 		else
@@ -1011,11 +1007,10 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 				m_Spline.m_iHighlight = n;
 			}
 			else m_Spline.m_iHighlight = -1;
-			updateView();
 		}
 	}
-
-
+	m_PointDown = point;
+	updateView();
 }
 
 
@@ -1126,10 +1121,10 @@ void QXInverse::mouseReleaseEvent(QMouseEvent *event)
 	TwoDWidget *p2DWidget = (TwoDWidget*)s_p2DWidget;
 	m_bTrans = false;
 
-	static int tmp, width, height;
-	static double x1,x2,w,h,xw,yh,xm,ym, dist;
-	static double xmin, ymin, xmax, ymax;
-	static double ratio,x, y, ux, uy, xpt, ypt, norm;
+	int tmp, width, height;
+	double x1,x2,w,h,xw,yh,xm,ym, dist;
+	double xmin, ymin, xmax, ymax;
+	double ratio,x, y, ux, uy, xpt, ypt, norm;
 
 	QPoint point = event->pos();
 
@@ -1974,6 +1969,20 @@ void QXInverse::paintGraph(QPainter &painter)
 		}
 	}
 
+
+	if(m_QGraph.isInDrawRect(m_PointDown) && MainFrame::s_bShowMousePos)
+	{
+		QPen textPen(Settings::textColor());
+		QFontMetrics fm(Settings::textFont());
+
+		int fmheight  = fm.height();
+
+		painter.setPen(textPen);
+		TwoDWidget *p2DWidget = (TwoDWidget*)s_p2DWidget;
+
+		painter.drawText(p2DWidget->width()-12*fm.averageCharWidth(),fmheight, QString("x = %1").arg(m_QGraph.clientTox(m_PointDown.x()),7,'f',3));
+		painter.drawText(p2DWidget->width()-12*fm.averageCharWidth(),2*fmheight, QString("y = %1").arg(m_QGraph.clientToy(m_PointDown.y()),7,'f',3));
+	}
 	painter.restore();
 }
 

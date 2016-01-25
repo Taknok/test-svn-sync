@@ -17,9 +17,9 @@
 
 
 Name:           xflr5
-Version:        6.10.04
+Version:        6.13
 Release:        0
-%define short_version 6.10
+%define short_version 6.13
 Summary:        Analysis tool for airfoils and planes operating at low Re numbers
 License:        GPL-2.0
 Group:          Productivity/Scientific/Other
@@ -29,7 +29,8 @@ Source0:        %{name}-%{version}_src.tar.gz
 Source1:        %{name}.desktop
 #BuildRequires:  Mesa-devel
 BuildRequires:  gcc-c++
-BuildRequires:  libqt4-devel >= 4.7.0
+BuildRequires:  libqt4-devel >= 4.8.0
+BuildRequires:  libQt5OpenGL-devel >= 5.2.0
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
 %description
@@ -47,7 +48,7 @@ cp %{SOURCE1} .
 sed -i 's/\r$//' {License.txt,doc/ReleaseNotes.txt}
 
 %build
-qmake -o Makefile %{name}_%{short_version}.pro
+qmake -o Makefile %{name}-%{short_version}.pro
 make %{?_smp_mflags}
 lrelease %{name}_%{short_version}.pro
 

@@ -159,6 +159,7 @@ private slots:
 	void onManageFoils();
 	void onSavePlaneAsProject();
 	void openRecentFile();
+	void onShowMousePos();
 
 protected:
 	void keyPressEvent(QKeyEvent *event);
@@ -268,7 +269,7 @@ private:
 
 	//  XFoilAnalysis Menus
 	QMenu * m_pXDirectViewMenu;
-	QMenu *m_pXDirectFoilMenu, *m_pCurGraphCtxMenu, *m_pCurOppCtxMenu;
+	QMenu *m_pXDirectFoilMenu, *m_pCurOppCtxMenu;
 	QMenu *m_pCurrentFoilMenu;
 	QMenu *m_pDesignMenu;
 	QMenu *m_pXFoilAnalysisMenu;
@@ -297,9 +298,11 @@ private:
 	QAction *recentFileActs[MAXRECENTFILES];
 	QAction *separatorAct;
 	QAction *saveViewToImageFileAct, *resetSettingsAct;
+
+	//Graph Actions
 	QAction *m_pSingleGraph[MAXGRAPHS], *m_pTwoGraphs, *m_pFourGraphs, *m_pAllGraphs;
 	QAction *m_pGraphDlgAct;
-
+	QAction *m_pShowMousePosAct;
 
 	//AFoil Actions
 	QAction *zoomInAct, *ResetXScaleAct, *ResetYScaleAct, *ResetXYScaleAct;
@@ -406,6 +409,7 @@ private:
 
 public:
 	static bool s_bTrace;
+	static bool s_bShowMousePos;
 	static QFile *s_pTraceFile;
 	static QString s_ProjectName;      /**< The Project's name. */
 
