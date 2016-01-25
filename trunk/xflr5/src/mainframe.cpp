@@ -90,7 +90,7 @@ QString MainFrame::s_LanguageFilePath = "";
 QDir MainFrame::s_StylesheetDir;
 QDir MainFrame::s_TranslationDir;
 
-
+bool MainFrame::s_bShowMousePos = true;
 bool MainFrame::s_bTrace = false;
 bool MainFrame::s_bSaved = true;
 QFile *MainFrame::s_pTraceFile = NULL;
@@ -958,6 +958,9 @@ void MainFrame::createMenus()
 		m_pGraphMenu->addAction(m_pAllGraphsScalesAct);
 		m_pGraphMenu->addSeparator();
 		m_pGraphMenu->addAction(m_pHighlightWOppAct);
+		m_pGraphMenu->addSeparator();
+		m_pGraphMenu->addAction(m_pShowMousePosAct);
+
 	}
 
 	m_pHelpMenu = menuBar()->addMenu(tr("&?"));
@@ -1027,6 +1030,14 @@ void MainFrame::createGraphActions()
 	m_pHighlightWOppAct->setCheckable(true);
 	m_pHighlightWOppAct->setStatusTip(tr("Highlights on the polar curve the currently selected operating point"));
 	connect(m_pHighlightWOppAct, SIGNAL(triggered()), pMiarex, SLOT(onHighlightWOpp()));
+
+
+	m_pShowMousePosAct	 = new QAction(tr("Display mouse coordinates"), this);
+	m_pShowMousePosAct->setCheckable(true);
+	m_pShowMousePosAct->setChecked(s_bShowMousePos);
+	m_pShowMousePosAct->setStatusTip(tr("Display the coordinates of the mouse on the top right corner of the graph"));
+	connect(m_pShowMousePosAct, SIGNAL(triggered()), this, SLOT(onShowMousePos()));
+
 }
 
 
@@ -1503,6 +1514,13 @@ void MainFrame::createMiarexMenus()
 		m_pWPlrCtxMenu->addSeparator();
 		m_pWPlrCtxMenu->addAction(hideAllWPlrs);
 		m_pWPlrCtxMenu->addAction(showAllWPlrs);
+		m_pWPlrCtxMenu->addSeparator();
+		QMenu *pCurGraphCtxMenu = m_pWPlrCtxMenu->addMenu(tr("Current Graph"));
+		{
+			pCurGraphCtxMenu->addAction(m_pResetCurGraphScales);
+			pCurGraphCtxMenu->addAction(m_pCurGraphDlgAct);
+			pCurGraphCtxMenu->addAction(m_pExportCurGraphAct);
+		}
 		m_pWPlrCtxMenu->addSeparator();
 		m_pWPlrCtxMenu->addAction(viewLogFile);
 		m_pWPlrCtxMenu->addAction(saveViewToImageFileAct);
@@ -2061,7 +2079,7 @@ void MainFrame::createXDirectMenus()
 				m_pCurXFoilResults->addAction(CurXFoilHPlot);
 			}
 			m_pXDirectCpGraphMenu->addSeparator();
-//			m_pXDirectCpGraphMenu->addAction(resetCurGraphScales);
+			m_pXDirectCpGraphMenu->addAction(m_pResetCurGraphScales);
 //			m_pXDirectCpGraphMenu->addAction(exportCurGraphAct);
 		}
 		m_pOpPointMenu->addSeparator();
@@ -2085,6 +2103,8 @@ void MainFrame::createXDirectMenus()
 			m_pCurOppCtxMenu->addAction(deleteCurOpp);
 			m_pCurOppCtxMenu->addAction(getOppProps);
 		}
+		m_pOperFoilCtxMenu->addAction(m_pShowMousePosAct);
+
 		m_pOperFoilCtxMenu->addSeparator();//_______________
 	//	CurGraphCtxMenu = OperFoilCtxMenu->addMenu(tr("Cp graph"));
 		m_pOperFoilCtxMenu->addMenu(m_pXDirectCpGraphMenu);
@@ -2117,14 +2137,15 @@ void MainFrame::createXDirectMenus()
 		m_pOperPolarCtxMenu->addMenu(m_pCurrentFoilMenu);
 		m_pOperPolarCtxMenu->addMenu(m_pCurrentPolarMenu);
 		m_pOperPolarCtxMenu->addSeparator();//_______________
-		m_pCurGraphCtxMenu = m_pOperPolarCtxMenu->addMenu(tr("Current Graph"));
+		QMenu *pCurGraphCtxMenu = m_pOperPolarCtxMenu->addMenu(tr("Current Graph"));
 		{
-			m_pCurGraphCtxMenu->addAction(m_pResetCurGraphScales);
-			m_pCurGraphCtxMenu->addAction(m_pCurGraphDlgAct);
-			m_pCurGraphCtxMenu->addAction(m_pExportCurGraphAct);
+			pCurGraphCtxMenu->addAction(m_pResetCurGraphScales);
+			pCurGraphCtxMenu->addAction(m_pCurGraphDlgAct);
+			pCurGraphCtxMenu->addAction(m_pExportCurGraphAct);
 		}
 		m_pOperPolarCtxMenu->addAction(m_pAllGraphsSettings);
 		m_pOperPolarCtxMenu->addAction(m_pAllGraphsScalesAct);
+		m_pOperPolarCtxMenu->addAction(m_pShowMousePosAct);
 		m_pOperPolarCtxMenu->addSeparator();//_______________
 		m_pOperPolarCtxMenu->addAction(m_pDefinePolarAct);
 		m_pOperPolarCtxMenu->addAction(m_pBatchAnalysisAct);
@@ -2234,6 +2255,7 @@ void MainFrame::createXInverseMenus()
 	m_pInverseContextMenu->addAction(m_pCurGraphDlgAct);
 	m_pInverseContextMenu->addAction(m_pResetCurGraphScales);
 	m_pInverseContextMenu->addAction(m_pExportCurGraphAct);
+	m_pInverseContextMenu->addAction(m_pShowMousePosAct);
 	m_pInverseContextMenu->addSeparator();
 	m_pInverseContextMenu->addAction(InverseInsertCtrlPt);
 	m_pInverseContextMenu->addAction(InverseRemoveCtrlPt);
@@ -2797,6 +2819,8 @@ bool MainFrame::loadSettings()
 
 		Settings::s_bStyleSheets  = settings.value("ShowStyleSheets", false).toBool();
 		Settings::s_StyleSheetName = settings.value("StyleSheetName", "xflr5_style").toString();
+		s_bShowMousePos = settings.value("ShowMousePosition", true).toBool();
+
 	}
 
 	return true;
@@ -3678,6 +3702,12 @@ void MainFrame::onSelChangeOpp(int sel)
 }
 
 
+void MainFrame::onShowMousePos()
+{
+	s_bShowMousePos = !s_bShowMousePos;
+	m_pShowMousePosAct->setChecked(s_bShowMousePos);
+}
+
 
 void MainFrame::onStyleSettings()
 {
@@ -4383,6 +4413,7 @@ void MainFrame::saveSettings()
 		settings.setValue("ShowStyleSheets", Settings::s_bStyleSheets);
 		settings.setValue("StyleSheetName", Settings::s_StyleSheetName);
 
+		settings.setValue("ShowMousePosition", s_bShowMousePos);
 
 		QString RecentF;
 		for(int i=0; i<m_RecentFiles.size() && i<MAXRECENTFILES; i++)

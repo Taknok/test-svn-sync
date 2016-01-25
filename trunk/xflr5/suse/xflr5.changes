@@ -1,9 +1,42 @@
 -------------------------------------------------------------------
+Sat Jan  9 12:00:00 UTC 2016 - techwinder@gmail.com
+
+- Update to version 6.12
+    * introduced an option to add extra drag to polar objects, to account for surfaces not included in the plane object
+    * restored the plot and export options of the boundary layer graphs after a converged xfoil analysis
+    * modified in depth the constuction of the wing geometry, to better account for flap with large deflections; has an impact on results;
+    * corrected bugs in the import/export operation of body objects to xml files
+    * enabled the LE points of the spline foil to be dragged in Direct Design
+    * corrected a minor error in the construction of the foil's mid camber line; potential small impact on VLM results
+    * corrected other minor things
+
+
+-------------------------------------------------------------------
+Sat Aug  8 12:00:00 UTC 2015 - techwinder@gmail.com
+
+- Update to version 6.11
+    * added an option to customize the target lift distribution curve in the wing's operating point view
+    * added inertia data as parameters in stability analysis
+    * added more display options for curve points
+    * replaced the deprecated QGLWidget by the new QOpenGLWidget recommended in Qt5.4
+    * added a new editor for the plane object
+    * added a new editor for the body object
+    * reviewed in depth the 2D rendering system to separate viewing operations from the analysis part
+    * replaced the rendertext methods in OpenGL by custom implementations to improve the rendering quality
+    * improved the issue of the plane-fin intersection when the body is translated
+    * enabled launching xflr5 from a project file, and opening the model
+    * added an import/export option of a plane definition to an xml file
+    * added an import/export option for body objects to an xml file
+    * deeeeep code cleaning
+    * other minor corrections and improvements
+
+
+-------------------------------------------------------------------
 Sat Apr 18 12:30:00 UTC 2015 - techwinder@gmail.com
 
 - Update to version 6.10.04.
-  	* Corrected a potential crash bug when deleting a plane with polars
-	* Added a standard ISA model for the calculation of air properties
+    * Corrected a potential crash bug when deleting a plane with polars
+    * Added a standard ISA model for the calculation of air properties
     * Corrected the issues with the reference lengths after wing scaling
     * Fixed the bugs related to the import operation of a body definition from a text file
     * Fix for retina displays on OS X
@@ -16,10 +49,11 @@ Mon Mar  2 16:07:00 UTC 2015 - sfalken@opensuse.org
 
 - Changed Category in .desktop file to clear brp-check-suse failure 
 
+
 -------------------------------------------------------------------
 Sat Jun 28 14:39:59 UTC 2014 - dmitry_r@opensuse.org
 
-- Update to version 6.10.03. Changes sinse version 6.09:
+- Update to version 6.10.03. Changes since version 6.09:
   * Created a new binary .xfl projet file format. Replaces once and
     for all the awful .wpa format
   * Removed the option for independent wing analysis
