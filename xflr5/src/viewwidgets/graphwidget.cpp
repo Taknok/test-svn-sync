@@ -102,10 +102,20 @@ void GraphWidget::paintEvent(QPaintEvent *  event )
 	painter.setBrush(Qt::NoBrush);
 	painter.drawRect(QRect(0, 0, width() - 1, height() - 1));
 */
-	painter.drawText(m_TitlePosition, m_GraphTitle);
+//	painter.drawText(m_TitlePosition, m_GraphTitle);
 
 	if(m_bDrawLegend) m_pGraph->drawLegend(painter, m_LegendOrigin, Settings::textFont(), Settings::textColor());
+	if(hasFocus() && MainFrame::s_bShowMousePos)
+	{
+		QPen textPen(Settings::textColor());
+		QFontMetrics fm(Settings::textFont());
 
+		int fmheight  = fm.height();
+
+		painter.setPen(textPen);
+		painter.drawText(width()-14*fm.averageCharWidth(),fmheight, QString("x = %1").arg(m_pGraph->clientTox(m_LastPoint.x()),9,'f',3));
+		painter.drawText(width()-14*fm.averageCharWidth(),2*fmheight, QString("y = %1").arg(m_pGraph->clientToy(m_LastPoint.y()),9,'f',3));
+	}
 	painter.restore();
 }
 
@@ -251,13 +261,16 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 			else                            m_pGraph->scaleAxes(1.0/1.02);
 			update();
 		}
-
-		m_LastPoint = point;
 	}
 	else if(m_pGraph->isInDrawRect(point))
 	{
-		MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
-		pMainFrame->statusBar()->showMessage(QString("X =%1, Y = %2").arg(m_pGraph->clientTox(event->x())).arg(m_pGraph->clientToy(event->y())));
+//		MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
+//		pMainFrame->statusBar()->showMessage(QString("X =%1, Y = %2").arg(m_pGraph->clientTox(event->x())).arg(m_pGraph->clientToy(event->y())));
+		update();
+	}
+	else
+	{
+//		update();
 	}
 
 	m_LastPoint = point;
