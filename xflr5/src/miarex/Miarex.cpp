@@ -577,23 +577,23 @@ void QMiarex::setControls()
 
 	m_pctrlInitLLTCalc->setEnabled(m_pCurWPolar && m_pCurWPolar->analysisMethod()==XFLR5::LLTMETHOD);
 
-	pMainFrame->WOppAct->setChecked(m_iView==XFLR5::WOPPVIEW);
-	pMainFrame->WPolarAct->setChecked(m_iView==XFLR5::WPOLARVIEW);
-	pMainFrame->W3DAct->setChecked(m_iView==XFLR5::W3DVIEW);
-	pMainFrame->CpViewAct->setChecked(m_iView==XFLR5::WCPVIEW);
+	pMainFrame->m_pWOppAct->setChecked(m_iView==XFLR5::WOPPVIEW);
+	pMainFrame->m_pWPolarAct->setChecked(m_iView==XFLR5::WPOLARVIEW);
+	pMainFrame->m_pW3DAct->setChecked(m_iView==XFLR5::W3DVIEW);
+	pMainFrame->m_pCpViewAct->setChecked(m_iView==XFLR5::WCPVIEW);
 
-	pMainFrame->WOppAct->setChecked(m_iView==XFLR5::WOPPVIEW);
-	pMainFrame->WPolarAct->setChecked(m_iView==XFLR5::WPOLARVIEW);
-	pMainFrame->W3DAct->setChecked(m_iView==XFLR5::W3DVIEW);
-	pMainFrame->CpViewAct->setChecked(m_iView==XFLR5::WCPVIEW);
-	pMainFrame->StabTimeAct->setChecked(m_iView==XFLR5::STABTIMEVIEW);
-	pMainFrame->RootLocusAct->setChecked(m_iView==XFLR5::STABPOLARVIEW);
+	pMainFrame->m_pWOppAct->setChecked(m_iView==XFLR5::WOPPVIEW);
+	pMainFrame->m_pWPolarAct->setChecked(m_iView==XFLR5::WPOLARVIEW);
+	pMainFrame->m_pW3DAct->setChecked(m_iView==XFLR5::W3DVIEW);
+	pMainFrame->m_pCpViewAct->setChecked(m_iView==XFLR5::WCPVIEW);
+	pMainFrame->m_pStabTimeAct->setChecked(m_iView==XFLR5::STABTIMEVIEW);
+	pMainFrame->m_pRootLocusAct->setChecked(m_iView==XFLR5::STABPOLARVIEW);
 
-	pMainFrame->showWing2Curve->setChecked(m_bShowWingCurve[1]);
-	pMainFrame->showStabCurve->setChecked(m_bShowWingCurve[2]);
-	pMainFrame->showFinCurve->setChecked(m_bShowWingCurve[3]);
+	pMainFrame->m_pShowWing2Curve->setChecked(m_bShowWingCurve[1]);
+	pMainFrame->m_pShowStabCurve->setChecked(m_bShowWingCurve[2]);
+	pMainFrame->m_pShowFinCurve->setChecked(m_bShowWingCurve[3]);
 
-	pMainFrame->showCurWOppOnly->setChecked(m_bCurPOppOnly);
+	pMainFrame->m_pShowCurWOppOnly->setChecked(m_bCurPOppOnly);
 
 	m_pctrlAnalyze->setEnabled(m_pCurWPolar);
 	m_pctrlAlphaMin->setEnabled(m_pCurWPolar);
@@ -603,21 +603,21 @@ void QMiarex::setControls()
 
 	m_pctrlStoreWOpp->setEnabled(m_pCurWPolar);
 
-	pMainFrame->showCurWOppOnly->setEnabled(m_iView==XFLR5::WOPPVIEW);
-	pMainFrame->showAllWOpps->setEnabled(m_iView==XFLR5::WOPPVIEW);
-	pMainFrame->hideAllWOpps->setEnabled(m_iView==XFLR5::WOPPVIEW);
-	pMainFrame->showTargetCurve->setEnabled(m_iView==XFLR5::WOPPVIEW);
-	pMainFrame->showXCmRefLocation->setEnabled(m_iView==XFLR5::WOPPVIEW);
-	pMainFrame->showWing2Curve->setEnabled(pWing(1) && (m_iView==XFLR5::WOPPVIEW || m_iView==XFLR5::WCPVIEW));
-	pMainFrame->showStabCurve->setEnabled( pWing(2) && (m_iView==XFLR5::WOPPVIEW || m_iView==XFLR5::WCPVIEW));
-	pMainFrame->showFinCurve->setEnabled(  pWing(3) && (m_iView==XFLR5::WOPPVIEW || m_iView==XFLR5::WCPVIEW));
-	pMainFrame->showAllWPlrOpps->setEnabled(m_iView==XFLR5::WOPPVIEW);
-	pMainFrame->hideAllWPlrOpps->setEnabled(m_iView==XFLR5::WOPPVIEW);
-	pMainFrame->showPlaneWPlrsOnly->setEnabled(m_iView==XFLR5::WPOLARVIEW);
-	pMainFrame->showPlaneWPlrs->setEnabled(m_iView==XFLR5::WPOLARVIEW);
-	pMainFrame->hidePlaneWPlrs->setEnabled(m_iView==XFLR5::WPOLARVIEW);
-	pMainFrame->showPlaneWOpps->setEnabled(m_iView==XFLR5::WOPPVIEW);
-	pMainFrame->hidePlaneWOpps->setEnabled(m_iView==XFLR5::WOPPVIEW);
+	pMainFrame->m_pShowCurWOppOnly->setEnabled(m_iView==XFLR5::WOPPVIEW);
+	pMainFrame->m_pShowAllWOpps->setEnabled(m_iView==XFLR5::WOPPVIEW);
+	pMainFrame->m_pHideAllWOpps->setEnabled(m_iView==XFLR5::WOPPVIEW);
+	pMainFrame->m_pShowTargetCurve->setEnabled(m_iView==XFLR5::WOPPVIEW);
+	pMainFrame->m_pShowXCmRefLocation->setEnabled(m_iView==XFLR5::WOPPVIEW);
+	pMainFrame->m_pShowWing2Curve->setEnabled(pWing(1) && (m_iView==XFLR5::WOPPVIEW || m_iView==XFLR5::WCPVIEW));
+	pMainFrame->m_pShowStabCurve->setEnabled( pWing(2) && (m_iView==XFLR5::WOPPVIEW || m_iView==XFLR5::WCPVIEW));
+	pMainFrame->m_pShowFinCurve->setEnabled(  pWing(3) && (m_iView==XFLR5::WOPPVIEW || m_iView==XFLR5::WCPVIEW));
+	pMainFrame->m_pShowAllWPlrOpps->setEnabled(m_iView==XFLR5::WOPPVIEW);
+	pMainFrame->m_pHideAllWPlrOpps->setEnabled(m_iView==XFLR5::WOPPVIEW);
+	pMainFrame->m_pShowPlaneWPlrsOnly->setEnabled(m_iView==XFLR5::WPOLARVIEW);
+	pMainFrame->m_pShowPlaneWPlrs->setEnabled(m_iView==XFLR5::WPOLARVIEW);
+	pMainFrame->m_pHidePlaneWPlrs->setEnabled(m_iView==XFLR5::WPOLARVIEW);
+	pMainFrame->m_pShowPlaneWOpps->setEnabled(m_iView==XFLR5::WOPPVIEW);
+	pMainFrame->m_pHidePlaneWOpps->setEnabled(m_iView==XFLR5::WOPPVIEW);
 
 	m_pctrlLift->setEnabled( (m_iView==XFLR5::WOPPVIEW||m_iView==XFLR5::W3DVIEW) && m_pCurPOpp);
 	m_pctrlTrans->setEnabled((m_iView==XFLR5::WOPPVIEW||m_iView==XFLR5::W3DVIEW) && m_pCurPOpp);
@@ -637,15 +637,15 @@ void QMiarex::setControls()
 
 	pMainFrame->m_pHighlightWOppAct->setChecked(m_bHighlightOpp);
 
-	pMainFrame->defineWPolar->setEnabled(m_pCurPlane);
-	pMainFrame->defineStabPolar->setEnabled(m_pCurPlane);
+	pMainFrame->m_pDefineWPolar->setEnabled(m_pCurPlane);
+	pMainFrame->m_pDefineStabPolar->setEnabled(m_pCurPlane);
 
 	pMainFrame->m_pCurrentPlaneMenu->setEnabled(m_pCurPlane);
 	pMainFrame->m_pCurWPlrMenu->setEnabled(m_pCurWPolar);
 	pMainFrame->m_pCurWOppMenu->setEnabled(m_pCurPOpp);
 
 	//	pMainFrame->CurBodyMenu->setVisible(m_pCurPlane!=NULL);
-	pMainFrame->editWingAct->setEnabled(m_pCurPlane);
+	pMainFrame->m_pEditWingAct->setEnabled(m_pCurPlane);
 	pMainFrame->m_pEditBodyAct->setEnabled(m_pCurPlane && m_pCurPlane->body());
 	pMainFrame->m_pEditBodyObjectAct->setEnabled(m_pCurPlane && m_pCurPlane->body());
 
@@ -654,7 +654,7 @@ void QMiarex::setControls()
 	m_pctrlSpanPos->setValue(m_CurSpanPos);
 	m_pctrlCpSectionSlider->setValue((int)(m_CurSpanPos*100.0));
 
-	pMainFrame->W3DScalesAct->setChecked(pMainFrame->m_pctrl3DScalesWidget->isVisible());
+	pMainFrame->m_pW3DScalesAct->setChecked(pMainFrame->m_pctrl3DScalesWidget->isVisible());
 
 	ThreeDWidget *p3dWidget = (ThreeDWidget*)m_p3dWidget;
 	m_pctrlAxes->setChecked(p3dWidget->s_bAxes);
@@ -5033,7 +5033,7 @@ void QMiarex::onGL3DScale()
 	if(pMainFrame->m_pctrl3DScalesWidget->isVisible()) pMainFrame->m_pctrl3DScalesWidget->hide();
 	else                                               pMainFrame->m_pctrl3DScalesWidget->show();
 
-	pMainFrame->W3DScalesAct->setChecked(pMainFrame->m_pctrl3DScalesWidget->isVisible());
+	pMainFrame->m_pW3DScalesAct->setChecked(pMainFrame->m_pctrl3DScalesWidget->isVisible());
 //	if(m_pctrl3DSettings->isChecked()) pMainFrame->m_pctrl3DScalesWidget->show();
 //	else                               pMainFrame->m_pctrl3DScalesWidget->hide();
 }
@@ -5750,7 +5750,7 @@ void QMiarex::onShowAllWOpps()
 	int i;
 	//Switch all WOpps view to on for all Plane and WPolar
 	m_bCurPOppOnly = false;
-	pMainFrame->showCurWOppOnly->setChecked(false);
+	pMainFrame->m_pShowCurWOppOnly->setChecked(false);
 
 	PlaneOpp *pPOpp;
 	for (i=0; i< m_poaPOpp->size(); i++)

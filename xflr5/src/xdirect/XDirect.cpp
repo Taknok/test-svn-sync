@@ -246,28 +246,28 @@ void QXDirect::setControls()
 	}
 	else m_pctrlPolarProps->clear();
 
-	pMainFrame->OpPointsAct->setChecked(!m_bPolarView);
-	pMainFrame->PolarsAct->setChecked(m_bPolarView);
+	pMainFrame->m_pOpPointsAct->setChecked(!m_bPolarView);
+	pMainFrame->m_pPolarsAct->setChecked(m_bPolarView);
 
 	pMainFrame->m_pShowPanels->setChecked(m_bShowPanels);
 	pMainFrame->m_pShowNeutralLine->setChecked(m_bNeutralLine);
-	pMainFrame->showInviscidCurve->setChecked(m_bShowInviscid);
-	pMainFrame->showCurOppOnly->setChecked(m_bCurOppOnly);
+	pMainFrame->m_pShowInviscidCurve->setChecked(m_bShowInviscid);
+	pMainFrame->m_pShowCurOppOnly->setChecked(m_bCurOppOnly);
 
-	pMainFrame->setCpVarGraph->setChecked(m_CpGraph.yVariable()==0);
-	pMainFrame->setQVarGraph->setChecked(m_CpGraph.yVariable()==1);
+	pMainFrame->m_psetCpVarGraph->setChecked(m_CpGraph.yVariable()==0);
+	pMainFrame->m_psetQVarGraph->setChecked(m_CpGraph.yVariable()==1);
 
 	int OppVar = m_CpGraph.yVariable();
-	pMainFrame->CurXFoilCtPlot->setChecked(!m_bPolarView  && OppVar==2 && m_XFoilVar ==1);
-	pMainFrame->CurXFoilDbPlot->setChecked(!m_bPolarView  && OppVar==2 && m_XFoilVar ==2);
-	pMainFrame->CurXFoilDtPlot->setChecked(!m_bPolarView  && OppVar==2 && m_XFoilVar ==3);
-	pMainFrame->CurXFoilRtLPlot->setChecked(!m_bPolarView && OppVar==2 && m_XFoilVar ==4);
-	pMainFrame->CurXFoilRtPlot->setChecked(!m_bPolarView  && OppVar==2 && m_XFoilVar ==5);
-	pMainFrame->CurXFoilNPlot->setChecked(!m_bPolarView   && OppVar==2 && m_XFoilVar ==6);
-	pMainFrame->CurXFoilCdPlot->setChecked(!m_bPolarView  && OppVar==2 && m_XFoilVar ==7);
-	pMainFrame->CurXFoilCfPlot->setChecked(!m_bPolarView  && OppVar==2 && m_XFoilVar ==8);
-	pMainFrame->CurXFoilUePlot->setChecked(!m_bPolarView  && OppVar==2 && m_XFoilVar ==9);
-	pMainFrame->CurXFoilHPlot->setChecked(!m_bPolarView   && OppVar==2 && m_XFoilVar ==10);
+	pMainFrame->m_pCurXFoilCtPlot->setChecked(!m_bPolarView  && OppVar==2 && m_XFoilVar ==1);
+	pMainFrame->m_CurXFoilDbPlot->setChecked(!m_bPolarView  && OppVar==2 && m_XFoilVar ==2);
+	pMainFrame->m_pCurXFoilDtPlot->setChecked(!m_bPolarView  && OppVar==2 && m_XFoilVar ==3);
+	pMainFrame->m_pCurXFoilRtLPlot->setChecked(!m_bPolarView && OppVar==2 && m_XFoilVar ==4);
+	pMainFrame->m_pCurXFoilRtPlot->setChecked(!m_bPolarView  && OppVar==2 && m_XFoilVar ==5);
+	pMainFrame->m_pCurXFoilNPlot->setChecked(!m_bPolarView   && OppVar==2 && m_XFoilVar ==6);
+	pMainFrame->m_pCurXFoilCdPlot->setChecked(!m_bPolarView  && OppVar==2 && m_XFoilVar ==7);
+	pMainFrame->m_pCurXFoilCfPlot->setChecked(!m_bPolarView  && OppVar==2 && m_XFoilVar ==8);
+	pMainFrame->m_pCurXFoilUePlot->setChecked(!m_bPolarView  && OppVar==2 && m_XFoilVar ==9);
+	pMainFrame->m_pCurXFoilHPlot->setChecked(!m_bPolarView   && OppVar==2 && m_XFoilVar ==10);
 
 	pMainFrame->m_pCurXFoilResults->setEnabled(m_pXFoil->lvconv);
 	pMainFrame->m_pExportCurXFoilRes->setEnabled(m_pXFoil->lvconv);
@@ -281,38 +281,38 @@ void QXDirect::setControls()
 	pMainFrame->m_pCurrentFoilMenu->setEnabled(Foil::curFoil());
 	pMainFrame->m_pCurrentPolarMenu->setEnabled(Polar::curPolar());
 
-	pMainFrame->renameCurFoil->setEnabled(Foil::curFoil());
-	pMainFrame->pDirectDuplicateCurFoil->setEnabled(Foil::curFoil());
-	pMainFrame->deleteCurFoil->setEnabled(Foil::curFoil());
-	pMainFrame->exportCurFoil->setEnabled(Foil::curFoil());
-	pMainFrame->renameCurFoil->setEnabled(Foil::curFoil());
-	pMainFrame->setCurFoilStyle->setEnabled(Foil::curFoil());
+	pMainFrame->m_pRenameCurFoil->setEnabled(Foil::curFoil());
+	pMainFrame->m_pDirectDuplicateCurFoil->setEnabled(Foil::curFoil());
+	pMainFrame->m_pDeleteCurFoil->setEnabled(Foil::curFoil());
+	pMainFrame->m_pExportCurFoil->setEnabled(Foil::curFoil());
+	pMainFrame->m_pRenameCurFoil->setEnabled(Foil::curFoil());
+	pMainFrame->m_pSetCurFoilStyle->setEnabled(Foil::curFoil());
 	pMainFrame->m_pDefinePolarAct->setEnabled(Foil::curFoil());
 	pMainFrame->m_pBatchAnalysisAct->setEnabled(Foil::curFoil());
-	pMainFrame->deleteFoilOpps->setEnabled(Foil::curFoil());
-	pMainFrame->deleteFoilPolars->setEnabled(Foil::curFoil());
+	pMainFrame->m_pDeleteFoilOpps->setEnabled(Foil::curFoil());
+	pMainFrame->m_pDeleteFoilPolars->setEnabled(Foil::curFoil());
 
-	pMainFrame->editCurPolar->setEnabled(Polar::curPolar());
-	pMainFrame->deletePolar->setEnabled(Polar::curPolar());
-	pMainFrame->exportCurPolar->setEnabled(Polar::curPolar());
-	pMainFrame->hidePolarOpps->setEnabled(Polar::curPolar());
-	pMainFrame->showPolarOpps->setEnabled(Polar::curPolar());
-	pMainFrame->deletePolarOpps->setEnabled(Polar::curPolar());
+	pMainFrame->m_pEditCurPolar->setEnabled(Polar::curPolar());
+	pMainFrame->m_pDeletePolar->setEnabled(Polar::curPolar());
+	pMainFrame->m_pExportCurPolar->setEnabled(Polar::curPolar());
+	pMainFrame->m_pHidePolarOpps->setEnabled(Polar::curPolar());
+	pMainFrame->m_pShowPolarOpps->setEnabled(Polar::curPolar());
+	pMainFrame->m_pDeletePolarOpps->setEnabled(Polar::curPolar());
 
-	pMainFrame->DerotateFoil->setEnabled(Foil::curFoil());
-	pMainFrame->NormalizeFoil->setEnabled(Foil::curFoil());
-	pMainFrame->RefineLocalFoil->setEnabled(Foil::curFoil());
-	pMainFrame->RefineGlobalFoil->setEnabled(Foil::curFoil());
-	pMainFrame->EditCoordsFoil->setEnabled(Foil::curFoil());
-	pMainFrame->ScaleFoil->setEnabled(Foil::curFoil());
-	pMainFrame->SetLERadius->setEnabled(Foil::curFoil());
-	pMainFrame->SetTEGap->setEnabled(Foil::curFoil());
-	pMainFrame->SetFlap->setEnabled(Foil::curFoil());
-	pMainFrame->InterpolateFoils->setEnabled(Foil::curFoil());
+	pMainFrame->m_pDerotateFoil->setEnabled(Foil::curFoil());
+	pMainFrame->m_pNormalizeFoil->setEnabled(Foil::curFoil());
+	pMainFrame->m_pRefineLocalFoil->setEnabled(Foil::curFoil());
+	pMainFrame->m_pRefineGlobalFoil->setEnabled(Foil::curFoil());
+	pMainFrame->m_pEditCoordsFoil->setEnabled(Foil::curFoil());
+	pMainFrame->m_pScaleFoil->setEnabled(Foil::curFoil());
+	pMainFrame->m_pSetLERadius->setEnabled(Foil::curFoil());
+	pMainFrame->m_pSetTEGap->setEnabled(Foil::curFoil());
+	pMainFrame->m_pSetFlap->setEnabled(Foil::curFoil());
+	pMainFrame->m_pInterpolateFoils->setEnabled(Foil::curFoil());
 
 	pMainFrame->m_pCurrentOppMenu->setEnabled(OpPoint::curOpp());
-	pMainFrame->deleteCurOpp->setEnabled(OpPoint::curOpp());
-	pMainFrame->exportCurOpp->setEnabled(OpPoint::curOpp());
+	pMainFrame->m_pDeleteCurOpp->setEnabled(OpPoint::curOpp());
+	pMainFrame->m_pExportCurOpp->setEnabled(OpPoint::curOpp());
 
 	pMainFrame->checkGraphActions();
 }
@@ -1846,7 +1846,7 @@ void QXDirect::onCpi()
 void QXDirect::onCurOppOnly()
 {
 	m_bCurOppOnly = !m_bCurOppOnly;
-	((MainFrame*)s_pMainFrame)->showCurOppOnly->setChecked(m_bCurOppOnly);
+	((MainFrame*)s_pMainFrame)->m_pShowCurOppOnly->setChecked(m_bCurOppOnly);
 
 	if(OpPoint::curOpp()) OpPoint::curOpp()->lineStyle().m_bIsVisible = true;
 	m_bResetCurves = true;
@@ -2832,7 +2832,7 @@ void QXDirect::onHighlightOpp()
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 	m_bHighlightOpp = !m_bHighlightOpp;
 
-	pMainFrame->highlightOppAct->setChecked(m_bHighlightOpp);
+	pMainFrame->m_phighlightOppAct->setChecked(m_bHighlightOpp);
 	for(int ig=0; ig<m_PlrGraph.count(); ig++)
 		m_PlrGraph[ig]->m_bHighlightPoint = m_bHighlightOpp;
 
@@ -3967,7 +3967,7 @@ void QXDirect::onShowAllOpps()
 	OpPoint *pOpp;
 
 	m_bCurOppOnly = false;
-	((MainFrame*)s_pMainFrame)->showCurOppOnly->setChecked(m_bCurOppOnly);
+	((MainFrame*)s_pMainFrame)->m_pShowCurOppOnly->setChecked(m_bCurOppOnly);
 
 	for (int i=0; i<m_poaOpp->size(); i++)
 	{
@@ -4079,7 +4079,7 @@ void QXDirect::onShowFoilOpps()
 	OpPoint *pOpp;
 
 	m_bCurOppOnly = false;
-	((MainFrame*)s_pMainFrame)->showCurOppOnly->setChecked(m_bCurOppOnly);
+	((MainFrame*)s_pMainFrame)->m_pShowCurOppOnly->setChecked(m_bCurOppOnly);
 
 	for(int i=0; i<m_poaOpp->size(); i++)
 	{
@@ -4106,7 +4106,7 @@ void QXDirect::onShowPolarOpps()
 	OpPoint *pOpp;
 
 	m_bCurOppOnly = false;
-	((MainFrame*)s_pMainFrame)->showCurOppOnly->setChecked(m_bCurOppOnly);
+	((MainFrame*)s_pMainFrame)->m_pShowCurOppOnly->setChecked(m_bCurOppOnly);
 
 	for(int i=0; i<m_poaOpp->size(); i++)
 	{

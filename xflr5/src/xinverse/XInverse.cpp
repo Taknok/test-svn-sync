@@ -191,11 +191,11 @@ void QXInverse::cancelSpline()
 void QXInverse::checkActions()
 {
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-	pMainFrame->InvQInitial->setChecked(m_pQCurve->isVisible());
-	pMainFrame->InvQSpec->setChecked(m_pMCurve->isVisible());
-	pMainFrame->InvQViscous->setChecked(m_pQVCurve->isVisible());
-	pMainFrame->InvQPoints->setChecked(m_bShowPoints);
-	pMainFrame->InvQReflected->setChecked(m_bReflected);
+	pMainFrame->m_pInvQInitial->setChecked(m_pQCurve->isVisible());
+	pMainFrame->m_pInvQSpec->setChecked(m_pMCurve->isVisible());
+	pMainFrame->m_pInvQViscous->setChecked(m_pQVCurve->isVisible());
+	pMainFrame->m_pInvQPoints->setChecked(m_bShowPoints);
+	pMainFrame->m_pInvQReflected->setChecked(m_bReflected);
 
 	if(m_bFullInverse)
 	{
@@ -684,13 +684,13 @@ void QXInverse::keyReleaseEvent(QKeyEvent *event)
 			{
 				m_bZoomXOnly = false;
 				MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-				pMainFrame->InverseZoomX->setChecked(false);
+				pMainFrame->m_pInverseZoomX->setChecked(false);
 			}
 			if(m_bZoomYOnly)
 			{
 				m_bZoomYOnly = false;
 				MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-				pMainFrame->InverseZoomY->setChecked(false);
+				pMainFrame->m_pInverseZoomY->setChecked(false);
 			}
 			break;
 		}
@@ -1849,7 +1849,7 @@ void QXInverse::onZoomIn()
 		{
 			m_bZoomPlus = true;
 			MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-			pMainFrame->InverseZoomIn->setChecked(true);
+			pMainFrame->m_pInverseZoomIn->setChecked(true);
 		}
 		else
 		{
@@ -1869,8 +1869,8 @@ void QXInverse::onZoomX()
 	m_bZoomYOnly = false;
 	m_bZoomXOnly = !m_bZoomXOnly;
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-	pMainFrame->InverseZoomX->setChecked(m_bZoomXOnly);
-	pMainFrame->InverseZoomY->setChecked(m_bZoomYOnly);
+	pMainFrame->m_pInverseZoomX->setChecked(m_bZoomXOnly);
+	pMainFrame->m_pInverseZoomY->setChecked(m_bZoomYOnly);
 }
 
 
@@ -1881,8 +1881,8 @@ void QXInverse::onZoomY()
 	m_bZoomXOnly = false;
 	m_bZoomYOnly = !m_bZoomYOnly;
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-	pMainFrame->InverseZoomX->setChecked(m_bZoomXOnly);
-	pMainFrame->InverseZoomY->setChecked(m_bZoomYOnly);
+	pMainFrame->m_pInverseZoomX->setChecked(m_bZoomXOnly);
+	pMainFrame->m_pInverseZoomY->setChecked(m_bZoomYOnly);
 }
 
 
@@ -2139,7 +2139,7 @@ void QXInverse::releaseZoom()
 	m_ZoomRect.setRight(m_ZoomRect.left()-1);
 	m_ZoomRect.setTop(m_ZoomRect.bottom()+1);
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-	pMainFrame->InverseZoomIn->setChecked(false);
+	pMainFrame->m_pInverseZoomIn->setChecked(false);
 }
 
 
