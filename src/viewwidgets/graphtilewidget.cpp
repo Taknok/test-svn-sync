@@ -406,7 +406,10 @@ void GraphTileWidget::onAllGraphs()
 void GraphTileWidget::onCurGraphSettings()
 {
 	if(!isVisible()) return;
-	activeGraphWidget()->onGraphSettings();
+	if(activeGraphWidget())
+	{
+		activeGraphWidget()->onGraphSettings();
+	}
 	setFocus();
 
 }
@@ -415,7 +418,10 @@ void GraphTileWidget::onCurGraphSettings()
 void GraphTileWidget::onResetCurGraphScales()
 {
 	if(!isVisible()) return;
-	activeGraphWidget()->onResetGraphScales();
+	if(activeGraphWidget())
+	{
+		activeGraphWidget()->onResetGraphScales();
+	}
 	setFocus();
 }
 

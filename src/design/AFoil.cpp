@@ -79,7 +79,7 @@ QAFoil::QAFoil(QWidget *parent)
 	m_pSF->initSplineFoil();
 
 	MainFrame *pMainFrame =(MainFrame*)parent;
-	pMainFrame->UndoAFoilAct = pMainFrame->RedoAFoilAct = NULL;
+	pMainFrame->m_pUndoAFoilAct = pMainFrame->m_pRedoAFoilAct = NULL;
 
 	clearStack();
 	takePicture();
@@ -118,32 +118,32 @@ void QAFoil::setControls()
 {
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 
-	pMainFrame->AFoilDelete->setEnabled(Foil::curFoil());
-	pMainFrame->AFoilRename->setEnabled(Foil::curFoil());
-	pMainFrame->AFoilExport->setEnabled(Foil::curFoil());
-	pMainFrame->pAFoilDuplicateFoil->setEnabled(Foil::curFoil());
-	pMainFrame->ShowCurrentFoil->setEnabled(Foil::curFoil());
-	pMainFrame->HideCurrentFoil->setEnabled(Foil::curFoil());
+	pMainFrame->m_pAFoilDelete->setEnabled(Foil::curFoil());
+	pMainFrame->m_pAFoilRename->setEnabled(Foil::curFoil());
+	pMainFrame->m_pAFoilExport->setEnabled(Foil::curFoil());
+	pMainFrame->m_pAFoilDuplicateFoil->setEnabled(Foil::curFoil());
+	pMainFrame->m_pShowCurrentFoil->setEnabled(Foil::curFoil());
+	pMainFrame->m_pHideCurrentFoil->setEnabled(Foil::curFoil());
 
-	pMainFrame->AFoilDerotateFoil->setEnabled(Foil::curFoil());
-	pMainFrame->AFoilEditCoordsFoil->setEnabled(Foil::curFoil());
-	pMainFrame->AFoilInterpolateFoils->setEnabled(Foil::curFoil());
-	pMainFrame->AFoilNormalizeFoil->setEnabled(Foil::curFoil());
-	pMainFrame->AFoilRefineGlobalFoil->setEnabled(Foil::curFoil());
-	pMainFrame->AFoilRefineLocalFoil->setEnabled(Foil::curFoil());
-	pMainFrame->AFoilScaleFoil->setEnabled(Foil::curFoil());
-	pMainFrame->AFoilSetFlap->setEnabled(Foil::curFoil());
-	pMainFrame->AFoilSetLERadius->setEnabled(Foil::curFoil());
-	pMainFrame->AFoilSetTEGap->setEnabled(Foil::curFoil());
+	pMainFrame->m_pAFoilDerotateFoil->setEnabled(Foil::curFoil());
+	pMainFrame->m_pAFoilEditCoordsFoil->setEnabled(Foil::curFoil());
+	pMainFrame->m_pAFoilInterpolateFoils->setEnabled(Foil::curFoil());
+	pMainFrame->m_pAFoilNormalizeFoil->setEnabled(Foil::curFoil());
+	pMainFrame->m_pAFoilRefineGlobalFoil->setEnabled(Foil::curFoil());
+	pMainFrame->m_pAFoilRefineLocalFoil->setEnabled(Foil::curFoil());
+	pMainFrame->m_pAFoilScaleFoil->setEnabled(Foil::curFoil());
+	pMainFrame->m_pAFoilSetFlap->setEnabled(Foil::curFoil());
+	pMainFrame->m_pAFoilSetLERadius->setEnabled(Foil::curFoil());
+	pMainFrame->m_pAFoilSetTEGap->setEnabled(Foil::curFoil());
 
 	pMainFrame->m_pShowLegend->setChecked(m_p2DWidget->m_bShowLegend);
 
 	pMainFrame->m_pAFoilSplineMenu->setEnabled(!Foil::curFoil());
-	pMainFrame->InsertSplinePt->setEnabled(!Foil::curFoil());
-	pMainFrame->RemoveSplinePt->setEnabled(!Foil::curFoil());
+	pMainFrame->m_pInsertSplinePt->setEnabled(!Foil::curFoil());
+	pMainFrame->m_pRemoveSplinePt->setEnabled(!Foil::curFoil());
 
-	pMainFrame->UndoAFoilAct->setEnabled(m_StackPos>0);
-	pMainFrame->RedoAFoilAct->setEnabled(m_StackPos<m_UndoStack.size()-1);
+	pMainFrame->m_pUndoAFoilAct->setEnabled(m_StackPos>0);
+	pMainFrame->m_pRedoAFoilAct->setEnabled(m_StackPos<m_UndoStack.size()-1);
 	pMainFrame->statusBar()->clearMessage();
 }
 
@@ -1580,10 +1580,10 @@ void QAFoil::takePicture()
 	m_bStored = true;
 
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-	if(s_pMainFrame && pMainFrame->UndoAFoilAct && pMainFrame->RedoAFoilAct)
+	if(s_pMainFrame && pMainFrame->m_pUndoAFoilAct && pMainFrame->m_pRedoAFoilAct)
 	{
-		pMainFrame->UndoAFoilAct->setEnabled(m_StackPos>0);
-		pMainFrame->RedoAFoilAct->setEnabled(m_StackPos<m_UndoStack.size()-1);
+		pMainFrame->m_pUndoAFoilAct->setEnabled(m_StackPos>0);
+		pMainFrame->m_pRedoAFoilAct->setEnabled(m_StackPos<m_UndoStack.size()-1);
 	}
 }
 
@@ -1617,8 +1617,8 @@ void QAFoil::onUndo()
 	{
 		m_StackPos--;
 		setPicture();
-		pMainFrame->UndoAFoilAct->setEnabled(m_StackPos>0);
-		pMainFrame->RedoAFoilAct->setEnabled(m_StackPos<m_UndoStack.size()-1);
+		pMainFrame->m_pUndoAFoilAct->setEnabled(m_StackPos>0);
+		pMainFrame->m_pRedoAFoilAct->setEnabled(m_StackPos<m_UndoStack.size()-1);
 	}
 	else
 	{
@@ -1637,8 +1637,8 @@ void QAFoil::onRedo()
 	{
 		m_StackPos++;
 		setPicture();
-		pMainFrame->UndoAFoilAct->setEnabled(m_StackPos>0);
-		pMainFrame->RedoAFoilAct->setEnabled(m_StackPos<m_UndoStack.size()-1);
+		pMainFrame->m_pUndoAFoilAct->setEnabled(m_StackPos>0);
+		pMainFrame->m_pRedoAFoilAct->setEnabled(m_StackPos<m_UndoStack.size()-1);
 	}
 }
 
