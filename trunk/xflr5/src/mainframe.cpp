@@ -348,91 +348,91 @@ void MainFrame::closeEvent (QCloseEvent * event)
 
 void MainFrame::createActions()
 {
-	newProjectAct = new QAction(QIcon(":/images/new.png"), tr("New Project"), this);
-	newProjectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_N));
-	newProjectAct->setStatusTip(tr("Save and close the current project, create a new project"));
-	connect(newProjectAct, SIGNAL(triggered()), this, SLOT(onNewProject()));
+	m_pNewProjectAct = new QAction(QIcon(":/images/new.png"), tr("New Project"), this);
+	m_pNewProjectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_N));
+	m_pNewProjectAct->setStatusTip(tr("Save and close the current project, create a new project"));
+	connect(m_pNewProjectAct, SIGNAL(triggered()), this, SLOT(onNewProject()));
 
-	closeProjectAct = new QAction(QIcon(":/images/new.png"), tr("Close the Project"), this);
-	closeProjectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_W));
-	closeProjectAct->setStatusTip(tr("Save and close the current project"));
-	connect(closeProjectAct, SIGNAL(triggered()), this, SLOT(onNewProject()));
+	m_pCloseProjectAct = new QAction(QIcon(":/images/new.png"), tr("Close the Project"), this);
+	m_pCloseProjectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_W));
+	m_pCloseProjectAct->setStatusTip(tr("Save and close the current project"));
+	connect(m_pCloseProjectAct, SIGNAL(triggered()), this, SLOT(onNewProject()));
 
-	openAct = new QAction(QIcon(":/images/open.png"), tr("&Open..."), this);
-	openAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
-	openAct->setStatusTip(tr("Open an existing file"));
-	connect(openAct, SIGNAL(triggered()), this, SLOT(onLoadFile()));
+	m_pOpenAct = new QAction(QIcon(":/images/open.png"), tr("&Open..."), this);
+	m_pOpenAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
+	m_pOpenAct->setStatusTip(tr("Open an existing file"));
+	connect(m_pOpenAct, SIGNAL(triggered()), this, SLOT(onLoadFile()));
 
-	insertAct = new QAction(tr("&Insert Project..."), this);
-	insertAct->setStatusTip(tr("Insert an existing project in the current project"));
-	connect(insertAct, SIGNAL(triggered()), this, SLOT(onInsertProject()));
+	m_pInsertAct = new QAction(tr("&Insert Project..."), this);
+	m_pInsertAct->setStatusTip(tr("Insert an existing project in the current project"));
+	connect(m_pInsertAct, SIGNAL(triggered()), this, SLOT(onInsertProject()));
 
-	onAFoilAct = new QAction(tr("&Direct Foil Design"), this);
-	onAFoilAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_1));
-	onAFoilAct->setStatusTip(tr("Open Foil Design application"));
-	connect(onAFoilAct, SIGNAL(triggered()), this, SLOT(onAFoil()));
+	m_pOnAFoilAct = new QAction(tr("&Direct Foil Design"), this);
+	m_pOnAFoilAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_1));
+	m_pOnAFoilAct->setStatusTip(tr("Open Foil Design application"));
+	connect(m_pOnAFoilAct, SIGNAL(triggered()), this, SLOT(onAFoil()));
 
-	onXInverseAct = new QAction(tr("&XFoil Inverse Design"), this);
-	onXInverseAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_3));
-	onXInverseAct->setStatusTip(tr("Open XFoil inverse analysis application"));
-	connect(onXInverseAct, SIGNAL(triggered()), this, SLOT(onXInverse()));
+	m_pOnXInverseAct = new QAction(tr("&XFoil Inverse Design"), this);
+	m_pOnXInverseAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_3));
+	m_pOnXInverseAct->setStatusTip(tr("Open XFoil inverse analysis application"));
+	connect(m_pOnXInverseAct, SIGNAL(triggered()), this, SLOT(onXInverse()));
 
-	onMixedInverseAct = new QAction(tr("&XFoil Mixed Inverse Design"), this);
-	onMixedInverseAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_4));
-	onMixedInverseAct->setStatusTip(tr("Open XFoil Mixed Inverse analysis application"));
-	connect(onMixedInverseAct, SIGNAL(triggered()), this, SLOT(onXInverseMixed()));
+	m_pOnMixedInverseAct = new QAction(tr("&XFoil Mixed Inverse Design"), this);
+	m_pOnMixedInverseAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_4));
+	m_pOnMixedInverseAct->setStatusTip(tr("Open XFoil Mixed Inverse analysis application"));
+	connect(m_pOnMixedInverseAct, SIGNAL(triggered()), this, SLOT(onXInverseMixed()));
 
-	onXDirectAct = new QAction(tr("&XFoil Direct Analysis"), this);
-	onXDirectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_5));
-	onXDirectAct->setStatusTip(tr("Open XFoil direct analysis application"));
-	connect(onXDirectAct, SIGNAL(triggered()), this, SLOT(onXDirect()));
+	m_pOnXDirectAct = new QAction(tr("&XFoil Direct Analysis"), this);
+	m_pOnXDirectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_5));
+	m_pOnXDirectAct->setStatusTip(tr("Open XFoil direct analysis application"));
+	connect(m_pOnXDirectAct, SIGNAL(triggered()), this, SLOT(onXDirect()));
 
-	onMiarexAct = new QAction(tr("&Wing and Plane Design"), this);
-	onMiarexAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_6));
-	onMiarexAct->setStatusTip(tr("Open Wing/plane design and analysis application"));
-	connect(onMiarexAct, SIGNAL(triggered()), this, SLOT(onMiarex()));
+	m_pOnMiarexAct = new QAction(tr("&Wing and Plane Design"), this);
+	m_pOnMiarexAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_6));
+	m_pOnMiarexAct->setStatusTip(tr("Open Wing/plane design and analysis application"));
+	connect(m_pOnMiarexAct, SIGNAL(triggered()), this, SLOT(onMiarex()));
 
-	saveAct = new QAction(QIcon(":/images/save.png"), tr("Save"), this);
-	saveAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
-	saveAct->setStatusTip(tr("Save the project to disk"));
-	connect(saveAct, SIGNAL(triggered()), this, SLOT(onSaveProject()));
+	m_pSaveAct = new QAction(QIcon(":/images/save.png"), tr("Save"), this);
+	m_pSaveAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
+	m_pSaveAct->setStatusTip(tr("Save the project to disk"));
+	connect(m_pSaveAct, SIGNAL(triggered()), this, SLOT(onSaveProject()));
 
-	saveProjectAsAct = new QAction(tr("Save Project As..."), this);
-	saveProjectAsAct->setStatusTip(tr("Save the current project under a new name"));
-	connect(saveProjectAsAct, SIGNAL(triggered()), this, SLOT(onSaveProjectAs()));
+	m_pSaveProjectAsAct = new QAction(tr("Save Project As..."), this);
+	m_pSaveProjectAsAct->setStatusTip(tr("Save the current project under a new name"));
+	connect(m_pSaveProjectAsAct, SIGNAL(triggered()), this, SLOT(onSaveProjectAs()));
 
-	saveOptionsAct = new QAction(tr("Save Options"), this);
-	saveOptionsAct->setStatusTip(tr("Define the save options for operating points"));
-	connect(saveOptionsAct, SIGNAL(triggered()), this, SLOT(onSaveOptions()));
+	m_pSaveOptionsAct = new QAction(tr("Save Options"), this);
+	m_pSaveOptionsAct->setStatusTip(tr("Define the save options for operating points"));
+	connect(m_pSaveOptionsAct, SIGNAL(triggered()), this, SLOT(onSaveOptions()));
 
-	unitsAct = new QAction(tr("Units..."), this);
-	unitsAct->setStatusTip(tr("Define the units for this project"));
-	connect(unitsAct, SIGNAL(triggered()), this, SLOT(onUnits()));
+	m_pUnitsAct = new QAction(tr("Units..."), this);
+	m_pUnitsAct->setStatusTip(tr("Define the units for this project"));
+	connect(m_pUnitsAct, SIGNAL(triggered()), this, SLOT(onUnits()));
 
-	languageAct = new QAction(tr("Language..."), this);
-	languageAct->setStatusTip(tr("Define the default language for the application"));
-	connect(languageAct, SIGNAL(triggered()), this, SLOT(onLanguage()));
+	m_pLanguageAct = new QAction(tr("Language..."), this);
+	m_pLanguageAct->setStatusTip(tr("Define the default language for the application"));
+	connect(m_pLanguageAct, SIGNAL(triggered()), this, SLOT(onLanguage()));
 
-	restoreToolbarsAct	 = new QAction(tr("Restore toolbars"), this);
-	restoreToolbarsAct->setStatusTip(tr("Restores the toolbars to their original state"));
-	connect(restoreToolbarsAct, SIGNAL(triggered()), this, SLOT(onRestoreToolbars()));
+	m_pRestoreToolbarsAct	 = new QAction(tr("Restore toolbars"), this);
+	m_pRestoreToolbarsAct->setStatusTip(tr("Restores the toolbars to their original state"));
+	connect(m_pRestoreToolbarsAct, SIGNAL(triggered()), this, SLOT(onRestoreToolbars()));
 
-	saveViewToImageFileAct = new QAction(tr("Save View to Image File"), this);
-	saveViewToImageFileAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_I));
-	saveViewToImageFileAct->setStatusTip(tr("Saves the current view to a file on disk"));
-	connect(saveViewToImageFileAct, SIGNAL(triggered()), this, SLOT(onSaveViewToImageFile()));
+	m_pSaveViewToImageFileAct = new QAction(tr("Save View to Image File"), this);
+	m_pSaveViewToImageFileAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_I));
+	m_pSaveViewToImageFileAct->setStatusTip(tr("Saves the current view to a file on disk"));
+	connect(m_pSaveViewToImageFileAct, SIGNAL(triggered()), this, SLOT(onSaveViewToImageFile()));
 
 
-	resetSettingsAct = new QAction(tr("Reset Default Settings"), this);
-	resetSettingsAct->setStatusTip(tr("will revert to default settings at the next session"));
-	connect(resetSettingsAct, SIGNAL(triggered()), this, SLOT(onResetSettings()));
+	m_pResetSettingsAct = new QAction(tr("Reset Default Settings"), this);
+	m_pResetSettingsAct->setStatusTip(tr("will revert to default settings at the next session"));
+	connect(m_pResetSettingsAct, SIGNAL(triggered()), this, SLOT(onResetSettings()));
 
 
 	for (int i = 0; i < MAXRECENTFILES; ++i)
 	{
-		recentFileActs[i] = new QAction(this);
-		recentFileActs[i]->setVisible(false);
-		connect(recentFileActs[i], SIGNAL(triggered()), this, SLOT(openRecentFile()));
+		m_pRecentFileActs[i] = new QAction(this);
+		m_pRecentFileActs[i]->setVisible(false);
+		connect(m_pRecentFileActs[i], SIGNAL(triggered()), this, SLOT(openRecentFile()));
 	}
 
 	m_pExportCurGraphAct = new QAction(tr("Export Graph"), this);
@@ -446,24 +446,24 @@ void MainFrame::createActions()
 	m_pCurGraphDlgAct = new QAction(tr("Define Graph Settings")+"\t(G)", this);
 	connect(m_pCurGraphDlgAct, SIGNAL(triggered()), this, SLOT(onCurGraphSettings()));
 
-	styleAct = new QAction(tr("General Display Settings"), this);
-	styleAct->setStatusTip(tr("Define the color and font options for all views and graphs"));
-	connect(styleAct, SIGNAL(triggered()), this, SLOT(onStyleSettings()));
+	m_pStyleAct = new QAction(tr("General Display Settings"), this);
+	m_pStyleAct->setStatusTip(tr("Define the color and font options for all views and graphs"));
+	connect(m_pStyleAct, SIGNAL(triggered()), this, SLOT(onStyleSettings()));
 
-	exitAct = new QAction(tr("E&xit"), this);
-	exitAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
-	exitAct->setStatusTip(tr("Exit the application"));
-	connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
+	m_pExitAct = new QAction(tr("E&xit"), this);
+	m_pExitAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
+	m_pExitAct->setStatusTip(tr("Exit the application"));
+	connect(m_pExitAct, SIGNAL(triggered()), this, SLOT(close()));
 
-	openGLAct = new QAction(tr("OpenGL info"), this);
-	connect(openGLAct, SIGNAL(triggered()), this, SLOT(onOpenGLInfo()));
+	m_pOpenGLAct = new QAction(tr("OpenGL info"), this);
+	connect(m_pOpenGLAct, SIGNAL(triggered()), this, SLOT(onOpenGLInfo()));
 
-	aboutAct = new QAction(tr("&About"), this);
-	aboutAct->setStatusTip(tr("More information about XFLR5"));
-	connect(aboutAct, SIGNAL(triggered()), this, SLOT(aboutXFLR5()));
+	m_pAboutAct = new QAction(tr("&About"), this);
+	m_pAboutAct->setStatusTip(tr("More information about XFLR5"));
+	connect(m_pAboutAct, SIGNAL(triggered()), this, SLOT(aboutXFLR5()));
 
-	aboutQtAct = new QAction(tr("About Qt"), this);
-	connect(aboutQtAct, SIGNAL(triggered()), this, SLOT(aboutQt()));
+	m_pAboutQtAct = new QAction(tr("About Qt"), this);
+	connect(m_pAboutQtAct, SIGNAL(triggered()), this, SLOT(aboutQt()));
 
 	createGraphActions();
 	createAFoilActions();
@@ -477,145 +477,145 @@ void MainFrame::createAFoilActions()
 {
 	QAFoil *pAFoil = (QAFoil*)m_pAFoil;
 
-	storeSplineAct= new QAction(QIcon(":/images/OnStoreFoil.png"), tr("Store Splines as Foil"), this);
-	storeSplineAct->setStatusTip(tr("Store the current splines in the foil database"));
-	connect(storeSplineAct, SIGNAL(triggered()), pAFoil, SLOT(onStoreSplines()));
+	m_pStoreSplineAct= new QAction(QIcon(":/images/OnStoreFoil.png"), tr("Store Splines as Foil"), this);
+	m_pStoreSplineAct->setStatusTip(tr("Store the current splines in the foil database"));
+	connect(m_pStoreSplineAct, SIGNAL(triggered()), pAFoil, SLOT(onStoreSplines()));
 
-	splineControlsAct= new QAction(tr("Splines Params"), this);
-	splineControlsAct->setStatusTip(tr("Define parameters for the splines : degree, number of out points"));
-	connect(splineControlsAct, SIGNAL(triggered()), pAFoil, SLOT(onSplineControls()));
+	m_pSplineControlsAct= new QAction(tr("Splines Params"), this);
+	m_pSplineControlsAct->setStatusTip(tr("Define parameters for the splines : degree, number of out points"));
+	connect(m_pSplineControlsAct, SIGNAL(triggered()), pAFoil, SLOT(onSplineControls()));
 
-	exportSplinesToFileAct= new QAction(tr("Export Splines To File"), this);
-	exportSplinesToFileAct->setStatusTip(tr("Define parameters for the splines : degree, number of out points"));
-	connect(exportSplinesToFileAct, SIGNAL(triggered()), pAFoil, SLOT(onExportSplinesToFile()));
+	m_pExportSplinesToFileAct= new QAction(tr("Export Splines To File"), this);
+	m_pExportSplinesToFileAct->setStatusTip(tr("Define parameters for the splines : degree, number of out points"));
+	connect(m_pExportSplinesToFileAct, SIGNAL(triggered()), pAFoil, SLOT(onExportSplinesToFile()));
 
-	newSplinesAct= new QAction(tr("New Splines"), this);
-	newSplinesAct->setStatusTip(tr("Reset the splines"));
-	connect(newSplinesAct, SIGNAL(triggered()), pAFoil, SLOT(onNewSplines()));
+	m_pNewSplinesAct= new QAction(tr("New Splines"), this);
+	m_pNewSplinesAct->setStatusTip(tr("Reset the splines"));
+	connect(m_pNewSplinesAct, SIGNAL(triggered()), pAFoil, SLOT(onNewSplines()));
 
-	UndoAFoilAct= new QAction(QIcon(":/images/OnUndo.png"), tr("Undo"), this);
-	UndoAFoilAct->setShortcut(Qt::CTRL + Qt::Key_Z);
-	UndoAFoilAct->setStatusTip(tr("Cancels the last modification"));
-	connect(UndoAFoilAct, SIGNAL(triggered()), pAFoil, SLOT(onUndo()));
+	m_pUndoAFoilAct= new QAction(QIcon(":/images/OnUndo.png"), tr("Undo"), this);
+	m_pUndoAFoilAct->setShortcut(Qt::CTRL + Qt::Key_Z);
+	m_pUndoAFoilAct->setStatusTip(tr("Cancels the last modification"));
+	connect(m_pUndoAFoilAct, SIGNAL(triggered()), pAFoil, SLOT(onUndo()));
 
-	RedoAFoilAct= new QAction(QIcon(":/images/OnRedo.png"), tr("Redo"), this);
-	RedoAFoilAct->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_Z);
-	RedoAFoilAct->setStatusTip(tr("Restores the last cancelled modification"));
-	connect(RedoAFoilAct, SIGNAL(triggered()), pAFoil, SLOT(onRedo()));
+	m_pRedoAFoilAct= new QAction(QIcon(":/images/OnRedo.png"), tr("Redo"), this);
+	m_pRedoAFoilAct->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_Z);
+	m_pRedoAFoilAct->setStatusTip(tr("Restores the last cancelled modification"));
+	connect(m_pRedoAFoilAct, SIGNAL(triggered()), pAFoil, SLOT(onRedo()));
 
-	ShowAllFoils= new QAction(tr("Show All Foils"), this);
-	connect(ShowAllFoils, SIGNAL(triggered()), pAFoil, SLOT(onShowAllFoils()));
-	HideAllFoils= new QAction(tr("Hide All Foils"), this);
-	connect(HideAllFoils, SIGNAL(triggered()), pAFoil, SLOT(onHideAllFoils()));
+	m_pShowAllFoils= new QAction(tr("Show All Foils"), this);
+	connect(m_pShowAllFoils, SIGNAL(triggered()), pAFoil, SLOT(onShowAllFoils()));
+	m_pHideAllFoils= new QAction(tr("Hide All Foils"), this);
+	connect(m_pHideAllFoils, SIGNAL(triggered()), pAFoil, SLOT(onHideAllFoils()));
 
 
-	AFoilDelete = new QAction(tr("Delete..."), this);
-	connect(AFoilDelete, SIGNAL(triggered()), pAFoil, SLOT(onDeleteCurFoil()));
+	m_pAFoilDelete = new QAction(tr("Delete..."), this);
+	connect(m_pAFoilDelete, SIGNAL(triggered()), pAFoil, SLOT(onDeleteCurFoil()));
 
-	AFoilRename = new QAction(tr("Rename..."), this);
-	AFoilRename->setShortcut(Qt::Key_F2);
-	connect(AFoilRename, SIGNAL(triggered()), pAFoil, SLOT(onRenameFoil()));
+	m_pAFoilRename = new QAction(tr("Rename..."), this);
+	m_pAFoilRename->setShortcut(Qt::Key_F2);
+	connect(m_pAFoilRename, SIGNAL(triggered()), pAFoil, SLOT(onRenameFoil()));
 
-	AFoilExport = new QAction(tr("Export..."), this);
-	connect(AFoilExport, SIGNAL(triggered()), pAFoil, SLOT(onExportCurFoil()));
+	m_pAFoilExport = new QAction(tr("Export..."), this);
+	connect(m_pAFoilExport, SIGNAL(triggered()), pAFoil, SLOT(onExportCurFoil()));
 
-	pAFoilDuplicateFoil = new QAction(tr("Duplicate..."), this);
-	connect(pAFoilDuplicateFoil, SIGNAL(triggered()), pAFoil, SLOT(onDuplicate()));
+	m_pAFoilDuplicateFoil = new QAction(tr("Duplicate..."), this);
+	connect(m_pAFoilDuplicateFoil, SIGNAL(triggered()), pAFoil, SLOT(onDuplicate()));
 
-	ShowCurrentFoil= new QAction(tr("Show Current Foil"), this);
-	connect(ShowCurrentFoil, SIGNAL(triggered()), pAFoil, SLOT(onShowCurrentFoil()));
+	m_pShowCurrentFoil= new QAction(tr("Show Current Foil"), this);
+	connect(m_pShowCurrentFoil, SIGNAL(triggered()), pAFoil, SLOT(onShowCurrentFoil()));
 
-	HideCurrentFoil= new QAction(tr("Hide Current Foil"), this);
-	connect(HideCurrentFoil, SIGNAL(triggered()), pAFoil, SLOT(onHideCurrentFoil()));
+	m_pHideCurrentFoil= new QAction(tr("Hide Current Foil"), this);
+	connect(m_pHideCurrentFoil, SIGNAL(triggered()), pAFoil, SLOT(onHideCurrentFoil()));
 
-	AFoilDerotateFoil = new QAction(tr("De-rotate the Foil"), this);
-	connect(AFoilDerotateFoil, SIGNAL(triggered()), pAFoil, SLOT(onAFoilDerotateFoil()));
+	m_pAFoilDerotateFoil = new QAction(tr("De-rotate the Foil"), this);
+	connect(m_pAFoilDerotateFoil, SIGNAL(triggered()), pAFoil, SLOT(onAFoilDerotateFoil()));
 
-	AFoilNormalizeFoil = new QAction(tr("Normalize the Foil"), this);
-	connect(AFoilNormalizeFoil, SIGNAL(triggered()), pAFoil, SLOT(onAFoilNormalizeFoil()));
+	m_pAFoilNormalizeFoil = new QAction(tr("Normalize the Foil"), this);
+	connect(m_pAFoilNormalizeFoil, SIGNAL(triggered()), pAFoil, SLOT(onAFoilNormalizeFoil()));
 
-	AFoilRefineGlobalFoil = new QAction(tr("Refine Globally")+"\t(F3)", this);
-	connect(AFoilRefineGlobalFoil, SIGNAL(triggered()), pAFoil, SLOT(onAFoilPanels()));
+	m_pAFoilRefineGlobalFoil = new QAction(tr("Refine Globally")+"\t(F3)", this);
+	connect(m_pAFoilRefineGlobalFoil, SIGNAL(triggered()), pAFoil, SLOT(onAFoilPanels()));
 
-	AFoilRefineLocalFoil = new QAction(tr("Refine Locally")+"\t(Shift+F3)", this);
-	connect(AFoilRefineLocalFoil, SIGNAL(triggered()), pAFoil, SLOT(onAFoilCadd()));
+	m_pAFoilRefineLocalFoil = new QAction(tr("Refine Locally")+"\t(Shift+F3)", this);
+	connect(m_pAFoilRefineLocalFoil, SIGNAL(triggered()), pAFoil, SLOT(onAFoilCadd()));
 
-	AFoilEditCoordsFoil = new QAction(tr("Edit Foil Coordinates"), this);
-	connect(AFoilEditCoordsFoil, SIGNAL(triggered()), pAFoil, SLOT(onAFoilFoilCoordinates()));
+	m_pAFoilEditCoordsFoil = new QAction(tr("Edit Foil Coordinates"), this);
+	connect(m_pAFoilEditCoordsFoil, SIGNAL(triggered()), pAFoil, SLOT(onAFoilFoilCoordinates()));
 
-	AFoilScaleFoil = new QAction(tr("Scale camber and thickness")+"\t(F9)", this);
-	connect(AFoilScaleFoil, SIGNAL(triggered()), pAFoil, SLOT(onAFoilFoilGeom()));
+	m_pAFoilScaleFoil = new QAction(tr("Scale camber and thickness")+"\t(F9)", this);
+	connect(m_pAFoilScaleFoil, SIGNAL(triggered()), pAFoil, SLOT(onAFoilFoilGeom()));
 
-	AFoilSetTEGap = new QAction(tr("Set T.E. Gap"), this);
-	connect(AFoilSetTEGap, SIGNAL(triggered()), pAFoil, SLOT(onAFoilSetTEGap()));
+	m_pAFoilSetTEGap = new QAction(tr("Set T.E. Gap"), this);
+	connect(m_pAFoilSetTEGap, SIGNAL(triggered()), pAFoil, SLOT(onAFoilSetTEGap()));
 
-	AFoilSetLERadius = new QAction(tr("Set L.E. Radius"), this);
-	connect(AFoilSetLERadius, SIGNAL(triggered()), pAFoil, SLOT(onAFoilSetLERadius()));
+	m_pAFoilSetLERadius = new QAction(tr("Set L.E. Radius"), this);
+	connect(m_pAFoilSetLERadius, SIGNAL(triggered()), pAFoil, SLOT(onAFoilSetLERadius()));
 
-	AFoilLECircle = new QAction(tr("Show LE Circle"), this);
-	connect(AFoilLECircle, SIGNAL(triggered()), pAFoil, SLOT(onAFoilLECircle()));
+	m_pAFoilLECircle = new QAction(tr("Show LE Circle"), this);
+	connect(m_pAFoilLECircle, SIGNAL(triggered()), pAFoil, SLOT(onAFoilLECircle()));
 
 	m_pShowLegend = new QAction(tr("Show Legend"), this);
 	m_pShowLegend->setCheckable(true);
 	connect(m_pShowLegend, SIGNAL(triggered()), pAFoil, SLOT(onShowLegend()));
 
-	AFoilSetFlap = new QAction(tr("Set Flap")+"\t(F10)", this);
-	connect(AFoilSetFlap, SIGNAL(triggered()), pAFoil, SLOT(onAFoilSetFlap()));
+	m_pAFoilSetFlap = new QAction(tr("Set Flap")+"\t(F10)", this);
+	connect(m_pAFoilSetFlap, SIGNAL(triggered()), pAFoil, SLOT(onAFoilSetFlap()));
 
-	AFoilInterpolateFoils = new QAction(tr("Interpolate Foils")+"\t(F11)", this);
-	connect(AFoilInterpolateFoils, SIGNAL(triggered()), pAFoil, SLOT(onAFoilInterpolateFoils()));
+	m_pAFoilInterpolateFoils = new QAction(tr("Interpolate Foils")+"\t(F11)", this);
+	connect(m_pAFoilInterpolateFoils, SIGNAL(triggered()), pAFoil, SLOT(onAFoilInterpolateFoils()));
 
-	AFoilNacaFoils = new QAction(tr("Naca Foils"), this);
-	connect(AFoilNacaFoils, SIGNAL(triggered()), pAFoil, SLOT(onAFoilNacaFoils()));
+	m_pAFoilNacaFoils = new QAction(tr("Naca Foils"), this);
+	connect(m_pAFoilNacaFoils, SIGNAL(triggered()), pAFoil, SLOT(onAFoilNacaFoils()));
 
-	AFoilTableColumns = new QAction(tr("Set Table Columns"), this);
-	connect(AFoilTableColumns, SIGNAL(triggered()), pAFoil, SLOT(onAFoilTableColumns()));
+	m_pAFoilTableColumns = new QAction(tr("Set Table Columns"), this);
+	connect(m_pAFoilTableColumns, SIGNAL(triggered()), pAFoil, SLOT(onAFoilTableColumns()));
 
-	AFoilTableColumnWidths = new QAction(tr("Reset column widths"), this);
-	connect(AFoilTableColumnWidths, SIGNAL(triggered()), pAFoil, SLOT(onResetColumnWidths()));
-
-
-
-	AFoilGridAct= new QAction(tr("Grid Settings"), this);
-	AFoilGridAct->setStatusTip(tr("Define the grid settings for the view"));
-	connect(AFoilGridAct, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onGridSettings()));
-
-	InsertSplinePt = new QAction(tr("Insert Control Point")+"\tShift+Click", this);
-	connect(InsertSplinePt, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onInsertPt()));
-
-	RemoveSplinePt = new QAction(tr("Remove Control Point")+"\tCtrl+Click", this);
-	connect(RemoveSplinePt, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onRemovePt()));
-
-	ResetXScaleAct= new QAction(QIcon(":/images/OnResetXScale.png"), tr("Reset X Scale"), this);
-	ResetXScaleAct->setStatusTip(tr("Resets the scale to fit the current screen width"));
-	connect(ResetXScaleAct, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onResetXScale()));
-
-	ResetXYScaleAct= new QAction(QIcon(":/images/OnResetFoilScale.png"), tr("Reset Scales")+"\t(R)", this);
-	ResetXYScaleAct->setStatusTip(tr("Resets the x and y scales to screen size"));
-	connect(ResetXYScaleAct, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onResetScales()));
+	m_pAFoilTableColumnWidths = new QAction(tr("Reset column widths"), this);
+	connect(m_pAFoilTableColumnWidths, SIGNAL(triggered()), pAFoil, SLOT(onResetColumnWidths()));
 
 
-	AFoilLoadImage = new QAction(tr("Load background image")   +"\tCtrl+Shift+I", this);
-	connect(AFoilLoadImage, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onLoadBackImage()));
-	AFoilClearImage = new QAction(tr("Clear background image") +"\tCtrl+Shift+I", this);
 
-	connect(AFoilClearImage, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onClearBackImage()));
+	m_pAFoilGridAct= new QAction(tr("Grid Settings"), this);
+	m_pAFoilGridAct->setStatusTip(tr("Define the grid settings for the view"));
+	connect(m_pAFoilGridAct, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onGridSettings()));
+
+	m_pInsertSplinePt = new QAction(tr("Insert Control Point")+"\tShift+Click", this);
+	connect(m_pInsertSplinePt, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onInsertPt()));
+
+	m_pRemoveSplinePt = new QAction(tr("Remove Control Point")+"\tCtrl+Click", this);
+	connect(m_pRemoveSplinePt, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onRemovePt()));
+
+	m_pResetXScaleAct= new QAction(QIcon(":/images/OnResetXScale.png"), tr("Reset X Scale"), this);
+	m_pResetXScaleAct->setStatusTip(tr("Resets the scale to fit the current screen width"));
+	connect(m_pResetXScaleAct, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onResetXScale()));
+
+	m_pResetXYScaleAct= new QAction(QIcon(":/images/OnResetFoilScale.png"), tr("Reset Scales")+"\t(R)", this);
+	m_pResetXYScaleAct->setStatusTip(tr("Resets the x and y scales to screen size"));
+	connect(m_pResetXYScaleAct, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onResetScales()));
 
 
-	ResetYScaleAct= new QAction(tr("Reset Y Scale"), this);
-	connect(ResetYScaleAct, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onResetYScale()));
+	m_pAFoilLoadImage = new QAction(tr("Load background image")   +"\tCtrl+Shift+I", this);
+	connect(m_pAFoilLoadImage, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onLoadBackImage()));
+	m_pAFoilClearImage = new QAction(tr("Clear background image") +"\tCtrl+Shift+I", this);
 
-	zoomInAct= new QAction(QIcon(":/images/OnZoomIn.png"), tr("Zoom in"), this);
-	zoomInAct->setStatusTip(tr("Zoom the view by drawing a rectangle in the client area"));
-	connect(zoomInAct, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onZoomIn()));
+	connect(m_pAFoilClearImage, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onClearBackImage()));
 
-	zoomLessAct= new QAction(QIcon(":/images/OnZoomLess.png"), tr("Zoom Less"), this);
-	zoomLessAct->setStatusTip(tr("Zoom Less"));
-	connect(zoomLessAct, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onZoomLess()));
 
-	zoomYAct= new QAction(QIcon(":/images/OnZoomYScale.png"), tr("Zoom Y Scale Only"), this);
-	zoomYAct->setStatusTip(tr("Zoom Y scale Only"));
-	connect(zoomYAct, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onZoomYOnly()));
+	m_pResetYScaleAct= new QAction(tr("Reset Y Scale"), this);
+	connect(m_pResetYScaleAct, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onResetYScale()));
+
+	m_pZoomInAct= new QAction(QIcon(":/images/OnZoomIn.png"), tr("Zoom in"), this);
+	m_pZoomInAct->setStatusTip(tr("Zoom the view by drawing a rectangle in the client area"));
+	connect(m_pZoomInAct, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onZoomIn()));
+
+	m_pZoomLessAct= new QAction(QIcon(":/images/OnZoomLess.png"), tr("Zoom Less"), this);
+	m_pZoomLessAct->setStatusTip(tr("Zoom Less"));
+	connect(m_pZoomLessAct, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onZoomLess()));
+
+	m_pZoomYAct= new QAction(QIcon(":/images/OnZoomYScale.png"), tr("Zoom Y Scale Only"), this);
+	m_pZoomYAct->setStatusTip(tr("Zoom Y scale Only"));
+	connect(m_pZoomYAct, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onZoomYOnly()));
 }
 
 
@@ -624,65 +624,65 @@ void MainFrame::createAFoilMenus()
 {
 	m_pAFoilViewMenu = menuBar()->addMenu(tr("&View"));
 	{
-		m_pAFoilViewMenu->addAction(ShowCurrentFoil);
-		m_pAFoilViewMenu->addAction(HideCurrentFoil);
-		m_pAFoilViewMenu->addAction(ShowAllFoils);
-		m_pAFoilViewMenu->addAction(HideAllFoils);
+		m_pAFoilViewMenu->addAction(m_pShowCurrentFoil);
+		m_pAFoilViewMenu->addAction(m_pHideCurrentFoil);
+		m_pAFoilViewMenu->addAction(m_pShowAllFoils);
+		m_pAFoilViewMenu->addAction(m_pHideAllFoils);
 		m_pAFoilViewMenu->addSeparator();
-		m_pAFoilViewMenu->addAction(zoomInAct);
-		m_pAFoilViewMenu->addAction(zoomLessAct);
-		m_pAFoilViewMenu->addAction(ResetXScaleAct);
-		m_pAFoilViewMenu->addAction(ResetYScaleAct);
-		m_pAFoilViewMenu->addAction(ResetXYScaleAct);
+		m_pAFoilViewMenu->addAction(m_pZoomInAct);
+		m_pAFoilViewMenu->addAction(m_pZoomLessAct);
+		m_pAFoilViewMenu->addAction(m_pResetXScaleAct);
+		m_pAFoilViewMenu->addAction(m_pResetYScaleAct);
+		m_pAFoilViewMenu->addAction(m_pResetXYScaleAct);
 		m_pAFoilViewMenu->addSeparator();
 		m_pAFoilViewMenu->addAction(m_pShowLegend);
-		m_pAFoilViewMenu->addAction(AFoilLECircle);
-		m_pAFoilViewMenu->addAction(AFoilGridAct);
+		m_pAFoilViewMenu->addAction(m_pAFoilLECircle);
+		m_pAFoilViewMenu->addAction(m_pAFoilGridAct);
 		m_pAFoilViewMenu->addSeparator();
-		m_pAFoilViewMenu->addAction(AFoilLoadImage);
-		m_pAFoilViewMenu->addAction(AFoilClearImage);
+		m_pAFoilViewMenu->addAction(m_pAFoilLoadImage);
+		m_pAFoilViewMenu->addAction(m_pAFoilClearImage);
 		m_pAFoilViewMenu->addSeparator();
-		m_pAFoilViewMenu->addAction(saveViewToImageFileAct);
+		m_pAFoilViewMenu->addAction(m_pSaveViewToImageFileAct);
 	}
 
 	m_pAFoilDesignMenu = menuBar()->addMenu(tr("F&oil"));
 	{
-		m_pAFoilDesignMenu->addAction(AFoilRename);
-		m_pAFoilDesignMenu->addAction(AFoilDelete);
-		m_pAFoilDesignMenu->addAction(AFoilExport);
-		m_pAFoilDesignMenu->addAction(pAFoilDuplicateFoil);
+		m_pAFoilDesignMenu->addAction(m_pAFoilRename);
+		m_pAFoilDesignMenu->addAction(m_pAFoilDelete);
+		m_pAFoilDesignMenu->addAction(m_pAFoilExport);
+		m_pAFoilDesignMenu->addAction(m_pAFoilDuplicateFoil);
 		m_pAFoilDesignMenu->addSeparator();
-		m_pAFoilDesignMenu->addAction(HideAllFoils);
-		m_pAFoilDesignMenu->addAction(ShowAllFoils);
+		m_pAFoilDesignMenu->addAction(m_pHideAllFoils);
+		m_pAFoilDesignMenu->addAction(m_pShowAllFoils);
 		m_pAFoilDesignMenu->addSeparator();
-		m_pAFoilDesignMenu->addAction(AFoilNormalizeFoil);
-		m_pAFoilDesignMenu->addAction(AFoilDerotateFoil);
-		m_pAFoilDesignMenu->addAction(AFoilRefineLocalFoil);
-		m_pAFoilDesignMenu->addAction(AFoilRefineGlobalFoil);
-		m_pAFoilDesignMenu->addAction(AFoilEditCoordsFoil);
-		m_pAFoilDesignMenu->addAction(AFoilScaleFoil);
-		m_pAFoilDesignMenu->addAction(AFoilSetTEGap);
-		m_pAFoilDesignMenu->addAction(AFoilSetLERadius);
-		m_pAFoilDesignMenu->addAction(AFoilSetFlap);
+		m_pAFoilDesignMenu->addAction(m_pAFoilNormalizeFoil);
+		m_pAFoilDesignMenu->addAction(m_pAFoilDerotateFoil);
+		m_pAFoilDesignMenu->addAction(m_pAFoilRefineLocalFoil);
+		m_pAFoilDesignMenu->addAction(m_pAFoilRefineGlobalFoil);
+		m_pAFoilDesignMenu->addAction(m_pAFoilEditCoordsFoil);
+		m_pAFoilDesignMenu->addAction(m_pAFoilScaleFoil);
+		m_pAFoilDesignMenu->addAction(m_pAFoilSetTEGap);
+		m_pAFoilDesignMenu->addAction(m_pAFoilSetLERadius);
+		m_pAFoilDesignMenu->addAction(m_pAFoilSetFlap);
 		m_pAFoilDesignMenu->addSeparator();
-		m_pAFoilDesignMenu->addAction(AFoilInterpolateFoils);
-		m_pAFoilDesignMenu->addAction(AFoilNacaFoils);
-		m_pAFoilDesignMenu->addAction(ManageFoilsAct);
+		m_pAFoilDesignMenu->addAction(m_pAFoilInterpolateFoils);
+		m_pAFoilDesignMenu->addAction(m_pAFoilNacaFoils);
+		m_pAFoilDesignMenu->addAction(m_pManageFoilsAct);
 	}
 
 
 	m_pAFoilSplineMenu = menuBar()->addMenu(tr("&Splines"));
 	{
-		m_pAFoilSplineMenu->addAction(InsertSplinePt);
-		m_pAFoilSplineMenu->addAction(RemoveSplinePt);
+		m_pAFoilSplineMenu->addAction(m_pInsertSplinePt);
+		m_pAFoilSplineMenu->addAction(m_pRemoveSplinePt);
 		m_pAFoilSplineMenu->addSeparator();
-		m_pAFoilSplineMenu->addAction(UndoAFoilAct);
-		m_pAFoilSplineMenu->addAction(RedoAFoilAct);
+		m_pAFoilSplineMenu->addAction(m_pUndoAFoilAct);
+		m_pAFoilSplineMenu->addAction(m_pRedoAFoilAct);
 		m_pAFoilSplineMenu->addSeparator();
-		m_pAFoilSplineMenu->addAction(newSplinesAct);
-		m_pAFoilSplineMenu->addAction(splineControlsAct);
-		m_pAFoilSplineMenu->addAction(storeSplineAct);
-		m_pAFoilSplineMenu->addAction(exportSplinesToFileAct);
+		m_pAFoilSplineMenu->addAction(m_pNewSplinesAct);
+		m_pAFoilSplineMenu->addAction(m_pSplineControlsAct);
+		m_pAFoilSplineMenu->addAction(m_pStoreSplineAct);
+		m_pAFoilSplineMenu->addAction(m_pExportSplinesToFileAct);
 	}
 
 	//AFoil Context Menu
@@ -692,47 +692,47 @@ void MainFrame::createAFoilMenus()
 		m_pAFoilCtxMenu->addSeparator();
 		m_pAFoilCtxMenu->addMenu(m_pAFoilSplineMenu);
 		m_pAFoilCtxMenu->addSeparator();
-		m_pAFoilCtxMenu->addAction(ShowAllFoils);
-		m_pAFoilCtxMenu->addAction(HideAllFoils);
+		m_pAFoilCtxMenu->addAction(m_pShowAllFoils);
+		m_pAFoilCtxMenu->addAction(m_pHideAllFoils);
 		m_pAFoilCtxMenu->addSeparator();
-		m_pAFoilCtxMenu->addAction(ResetXScaleAct);
-		m_pAFoilCtxMenu->addAction(ResetYScaleAct);
-		m_pAFoilCtxMenu->addAction(ResetXYScaleAct);
+		m_pAFoilCtxMenu->addAction(m_pResetXScaleAct);
+		m_pAFoilCtxMenu->addAction(m_pResetYScaleAct);
+		m_pAFoilCtxMenu->addAction(m_pResetXYScaleAct);
 		m_pAFoilCtxMenu->addSeparator();
 		m_pAFoilCtxMenu->addAction(m_pShowLegend);
-		m_pAFoilCtxMenu->addAction(AFoilLECircle);
-		m_pAFoilCtxMenu->addAction(AFoilGridAct);
+		m_pAFoilCtxMenu->addAction(m_pAFoilLECircle);
+		m_pAFoilCtxMenu->addAction(m_pAFoilGridAct);
 		m_pAFoilCtxMenu->addSeparator();
-		m_pAFoilCtxMenu->addAction(AFoilLoadImage);
-		m_pAFoilCtxMenu->addAction(AFoilClearImage);
+		m_pAFoilCtxMenu->addAction(m_pAFoilLoadImage);
+		m_pAFoilCtxMenu->addAction(m_pAFoilClearImage);
 		m_pAFoilCtxMenu->addSeparator();
-		m_pAFoilCtxMenu->addAction(saveViewToImageFileAct);
+		m_pAFoilCtxMenu->addAction(m_pSaveViewToImageFileAct);
 		m_pAFoilCtxMenu->addSeparator();
-		m_pAFoilCtxMenu->addAction(AFoilTableColumns);
-		m_pAFoilCtxMenu->addAction(AFoilTableColumnWidths);
+		m_pAFoilCtxMenu->addAction(m_pAFoilTableColumns);
+		m_pAFoilCtxMenu->addAction(m_pAFoilTableColumnWidths);
 	}
 	m_pDirect2dWidget->setContextMenu(m_pAFoilCtxMenu);
 
 	//Context menu to be displayed when user right clicks on a foil in the table
 	m_pAFoilTableCtxMenu = new QMenu(tr("Foil Actions"),this);
 	{
-		m_pAFoilTableCtxMenu->addAction(AFoilRename);
-		m_pAFoilTableCtxMenu->addAction(AFoilDelete);
-		m_pAFoilTableCtxMenu->addAction(AFoilExport);
-		m_pAFoilTableCtxMenu->addAction(pAFoilDuplicateFoil);
+		m_pAFoilTableCtxMenu->addAction(m_pAFoilRename);
+		m_pAFoilTableCtxMenu->addAction(m_pAFoilDelete);
+		m_pAFoilTableCtxMenu->addAction(m_pAFoilExport);
+		m_pAFoilTableCtxMenu->addAction(m_pAFoilDuplicateFoil);
 		m_pAFoilTableCtxMenu->addSeparator();
-		m_pAFoilTableCtxMenu->addAction(AFoilNormalizeFoil);
-		m_pAFoilTableCtxMenu->addAction(AFoilDerotateFoil);
-		m_pAFoilTableCtxMenu->addAction(AFoilRefineLocalFoil);
-		m_pAFoilTableCtxMenu->addAction(AFoilRefineGlobalFoil);
-		m_pAFoilTableCtxMenu->addAction(AFoilEditCoordsFoil);
-		m_pAFoilTableCtxMenu->addAction(AFoilScaleFoil);
-		m_pAFoilTableCtxMenu->addAction(AFoilSetTEGap);
-		m_pAFoilTableCtxMenu->addAction(AFoilSetLERadius);
-		m_pAFoilTableCtxMenu->addAction(AFoilSetFlap);
+		m_pAFoilTableCtxMenu->addAction(m_pAFoilNormalizeFoil);
+		m_pAFoilTableCtxMenu->addAction(m_pAFoilDerotateFoil);
+		m_pAFoilTableCtxMenu->addAction(m_pAFoilRefineLocalFoil);
+		m_pAFoilTableCtxMenu->addAction(m_pAFoilRefineGlobalFoil);
+		m_pAFoilTableCtxMenu->addAction(m_pAFoilEditCoordsFoil);
+		m_pAFoilTableCtxMenu->addAction(m_pAFoilScaleFoil);
+		m_pAFoilTableCtxMenu->addAction(m_pAFoilSetTEGap);
+		m_pAFoilTableCtxMenu->addAction(m_pAFoilSetLERadius);
+		m_pAFoilTableCtxMenu->addAction(m_pAFoilSetFlap);
 		m_pAFoilTableCtxMenu->addSeparator();
-		m_pAFoilTableCtxMenu->addAction(AFoilTableColumns);
-		m_pAFoilTableCtxMenu->addAction(AFoilTableColumnWidths);
+		m_pAFoilTableCtxMenu->addAction(m_pAFoilTableColumns);
+		m_pAFoilTableCtxMenu->addAction(m_pAFoilTableColumnWidths);
 	}
 }
 
@@ -740,21 +740,21 @@ void MainFrame::createAFoilMenus()
 void MainFrame::createAFoilToolbar()
 {
 	m_pctrlAFoilToolBar = addToolBar(tr("Foil"));
-	m_pctrlAFoilToolBar->addAction(newProjectAct);
-	m_pctrlAFoilToolBar->addAction(openAct);
-	m_pctrlAFoilToolBar->addAction(saveAct);	
+	m_pctrlAFoilToolBar->addAction(m_pNewProjectAct);
+	m_pctrlAFoilToolBar->addAction(m_pOpenAct);
+	m_pctrlAFoilToolBar->addAction(m_pSaveAct);
 	m_pctrlAFoilToolBar->addSeparator();
-	m_pctrlAFoilToolBar->addAction(zoomInAct);
-	m_pctrlAFoilToolBar->addAction(zoomLessAct);
-	m_pctrlAFoilToolBar->addAction(ResetXYScaleAct);
-	m_pctrlAFoilToolBar->addAction(ResetXScaleAct);
-	m_pctrlAFoilToolBar->addAction(zoomYAct);
+	m_pctrlAFoilToolBar->addAction(m_pZoomInAct);
+	m_pctrlAFoilToolBar->addAction(m_pZoomLessAct);
+	m_pctrlAFoilToolBar->addAction(m_pResetXYScaleAct);
+	m_pctrlAFoilToolBar->addAction(m_pResetXScaleAct);
+	m_pctrlAFoilToolBar->addAction(m_pZoomYAct);
 	m_pctrlAFoilToolBar->addSeparator();
-	m_pctrlAFoilToolBar->addAction(UndoAFoilAct);
-	m_pctrlAFoilToolBar->addAction(RedoAFoilAct);
+	m_pctrlAFoilToolBar->addAction(m_pUndoAFoilAct);
+	m_pctrlAFoilToolBar->addAction(m_pRedoAFoilAct);
 
 	m_pctrlAFoilToolBar->addSeparator();
-	m_pctrlAFoilToolBar->addAction(storeSplineAct);
+	m_pctrlAFoilToolBar->addAction(m_pStoreSplineAct);
 }
 
 
@@ -909,40 +909,40 @@ void MainFrame::createMenus()
 {
 	m_pFileMenu = menuBar()->addMenu(tr("&File"));
 	{
-		m_pFileMenu->addAction(newProjectAct);
-		m_pFileMenu->addAction(openAct);
-		m_pFileMenu->addAction(insertAct);
-		m_pFileMenu->addAction(closeProjectAct);
+		m_pFileMenu->addAction(m_pNewProjectAct);
+		m_pFileMenu->addAction(m_pOpenAct);
+		m_pFileMenu->addAction(m_pInsertAct);
+		m_pFileMenu->addAction(m_pCloseProjectAct);
 		m_pFileMenu->addSeparator();
-		m_pFileMenu->addAction(saveAct);
-		m_pFileMenu->addAction(saveProjectAsAct);
+		m_pFileMenu->addAction(m_pSaveAct);
+		m_pFileMenu->addAction(m_pSaveProjectAsAct);
 		m_pFileMenu->addSeparator();
-		m_pFileMenu->addAction(onAFoilAct);
-		m_pFileMenu->addAction(onXInverseAct);
-		m_pFileMenu->addAction(onXDirectAct);
-		m_pFileMenu->addAction(onMiarexAct);
-		separatorAct = m_pFileMenu->addSeparator();
+		m_pFileMenu->addAction(m_pOnAFoilAct);
+		m_pFileMenu->addAction(m_pOnXInverseAct);
+		m_pFileMenu->addAction(m_pOnXDirectAct);
+		m_pFileMenu->addAction(m_pOnMiarexAct);
+		m_pSeparatorAct = m_pFileMenu->addSeparator();
 		for (int i = 0; i < MAXRECENTFILES; ++i)
-			m_pFileMenu->addAction(recentFileActs[i]);
+			m_pFileMenu->addAction(m_pRecentFileActs[i]);
 		m_pFileMenu->addSeparator();
-		m_pFileMenu->addAction(exitAct);
+		m_pFileMenu->addAction(m_pExitAct);
 		updateRecentFileActions();
 	}
 
 	m_pOptionsMenu = menuBar()->addMenu(tr("O&ptions"));
 	{
 		m_pOptionsMenu->addSeparator();
-		m_pOptionsMenu->addAction(languageAct);
+		m_pOptionsMenu->addAction(m_pLanguageAct);
 		m_pOptionsMenu->addSeparator();
-		m_pOptionsMenu->addAction(unitsAct);
+		m_pOptionsMenu->addAction(m_pUnitsAct);
 		m_pOptionsMenu->addSeparator();
-		m_pOptionsMenu->addAction(styleAct);
+		m_pOptionsMenu->addAction(m_pStyleAct);
 		m_pOptionsMenu->addSeparator();
-		m_pOptionsMenu->addAction(saveOptionsAct);
+		m_pOptionsMenu->addAction(m_pSaveOptionsAct);
 		m_pOptionsMenu->addSeparator();
-		m_pOptionsMenu->addAction(restoreToolbarsAct);
+		m_pOptionsMenu->addAction(m_pRestoreToolbarsAct);
 		m_pOptionsMenu->addSeparator();
-		m_pOptionsMenu->addAction(resetSettingsAct);
+		m_pOptionsMenu->addAction(m_pResetSettingsAct);
 	}
 
 	m_pGraphMenu = menuBar()->addMenu(tr("&Graphs"));
@@ -965,9 +965,9 @@ void MainFrame::createMenus()
 
 	m_pHelpMenu = menuBar()->addMenu(tr("&?"));
 	{
-		m_pHelpMenu->addAction(openGLAct);
-		m_pHelpMenu->addAction(aboutQtAct);
-		m_pHelpMenu->addAction(aboutAct);
+		m_pHelpMenu->addAction(m_pOpenGLAct);
+		m_pHelpMenu->addAction(m_pAboutQtAct);
+		m_pHelpMenu->addAction(m_pAboutAct);
 	}
 
 
@@ -1045,82 +1045,82 @@ void MainFrame::createMiarexActions()
 {
 	QMiarex *pMiarex = (QMiarex*)m_pMiarex;
 
-	WOppAct = new QAction(QIcon(":/images/OnWOppView.png"), tr("OpPoint View")+"\tF5", this);
-	WOppAct->setCheckable(true);
-	WOppAct->setStatusTip(tr("Switch to the Operating point view"));
+	m_pWOppAct = new QAction(QIcon(":/images/OnWOppView.png"), tr("OpPoint View")+"\tF5", this);
+	m_pWOppAct->setCheckable(true);
+	m_pWOppAct->setStatusTip(tr("Switch to the Operating point view"));
 //	WOppAct->setShortcut(Qt::Key_F5);
-	connect(WOppAct, SIGNAL(triggered()), pMiarex, SLOT(onWOppView()));
+	connect(m_pWOppAct, SIGNAL(triggered()), pMiarex, SLOT(onWOppView()));
 
-	WPolarAct = new QAction(QIcon(":/images/OnPolarView.png"), tr("Polar View")+"\tF8", this);
-	WPolarAct->setCheckable(true);
-	WPolarAct->setStatusTip(tr("Switch to the Polar view"));
+	m_pWPolarAct = new QAction(QIcon(":/images/OnPolarView.png"), tr("Polar View")+"\tF8", this);
+	m_pWPolarAct->setCheckable(true);
+	m_pWPolarAct->setStatusTip(tr("Switch to the Polar view"));
 //	WPolarAct->setShortcut(Qt::Key_F8);
-	connect(WPolarAct, SIGNAL(triggered()), pMiarex, SLOT(onWPolarView()));
+	connect(m_pWPolarAct, SIGNAL(triggered()), pMiarex, SLOT(onWPolarView()));
 
-	StabTimeAct = new QAction(QIcon(":/images/OnStabView.png"),tr("Time Response Vew")+"\tShift+F8", this);
-	StabTimeAct->setCheckable(true);
-	StabTimeAct->setStatusTip(tr("Switch to stability analysis post-processing"));
+	m_pStabTimeAct = new QAction(QIcon(":/images/OnStabView.png"),tr("Time Response Vew")+"\tShift+F8", this);
+	m_pStabTimeAct->setCheckable(true);
+	m_pStabTimeAct->setStatusTip(tr("Switch to stability analysis post-processing"));
 //	StabTimeAct->setShortcut(tr("Shift+F8"));
-	connect(StabTimeAct, SIGNAL(triggered()), pMiarex, SLOT(onStabTimeView()));
+	connect(m_pStabTimeAct, SIGNAL(triggered()), pMiarex, SLOT(onStabTimeView()));
 
-	RootLocusAct = new QAction(QIcon(":/images/OnRootLocus.png"),tr("Root Locus View")+"\tCtrl+F8", this);
-	RootLocusAct->setCheckable(true);
-	RootLocusAct->setStatusTip(tr("Switch to root locus view"));
-	connect(RootLocusAct, SIGNAL(triggered()), pMiarex, SLOT(onRootLocusView()));
+	m_pRootLocusAct = new QAction(QIcon(":/images/OnRootLocus.png"),tr("Root Locus View")+"\tCtrl+F8", this);
+	m_pRootLocusAct->setCheckable(true);
+	m_pRootLocusAct->setStatusTip(tr("Switch to root locus view"));
+	connect(m_pRootLocusAct, SIGNAL(triggered()), pMiarex, SLOT(onRootLocusView()));
 
-	W3DAct = new QAction(QIcon(":/images/On3DView.png"), tr("3D View")+"\tF4", this);
-	W3DAct->setCheckable(true);
-	W3DAct->setStatusTip(tr("Switch to the 3D view"));
-	connect(W3DAct, SIGNAL(triggered()), pMiarex, SLOT(on3DView()));
+	m_pW3DAct = new QAction(QIcon(":/images/On3DView.png"), tr("3D View")+"\tF4", this);
+	m_pW3DAct->setCheckable(true);
+	m_pW3DAct->setStatusTip(tr("Switch to the 3D view"));
+	connect(m_pW3DAct, SIGNAL(triggered()), pMiarex, SLOT(on3DView()));
 
-	CpViewAct = new QAction(QIcon(":/images/OnCpView.png"), tr("Cp View")+"\tF9", this);
-	CpViewAct->setCheckable(true);
-	CpViewAct->setStatusTip(tr("Switch to the Cp view"));
-	connect(CpViewAct, SIGNAL(triggered()), pMiarex, SLOT(onCpView()));
+	m_pCpViewAct = new QAction(QIcon(":/images/OnCpView.png"), tr("Cp View")+"\tF9", this);
+	m_pCpViewAct->setCheckable(true);
+	m_pCpViewAct->setStatusTip(tr("Switch to the Cp view"));
+	connect(m_pCpViewAct, SIGNAL(triggered()), pMiarex, SLOT(onCpView()));
 
-	W3DPrefsAct = new QAction(tr("3D Color Preferences"), this);
-	W3DPrefsAct->setStatusTip(tr("Define the style and color preferences for the 3D view"));
-	connect(W3DPrefsAct, SIGNAL(triggered()), pMiarex, SLOT(on3DPrefs()));
+	m_pW3DPrefsAct = new QAction(tr("3D Color Preferences"), this);
+	m_pW3DPrefsAct->setStatusTip(tr("Define the style and color preferences for the 3D view"));
+	connect(m_pW3DPrefsAct, SIGNAL(triggered()), pMiarex, SLOT(on3DPrefs()));
 
-	MiarexPolarFilter = new QAction(tr("Polar Filter"), this);
-	MiarexPolarFilter->setStatusTip(tr("Define which type of polars should be shown or hidden"));
-	connect(MiarexPolarFilter, SIGNAL(triggered()), pMiarex, SLOT(onPolarFilter()));
+	m_pMiarexPolarFilter = new QAction(tr("Polar Filter"), this);
+	m_pMiarexPolarFilter->setStatusTip(tr("Define which type of polars should be shown or hidden"));
+	connect(m_pMiarexPolarFilter, SIGNAL(triggered()), pMiarex, SLOT(onPolarFilter()));
 
-	W3DScalesAct = new QAction(tr("3D Scales"), this);
-	W3DScalesAct->setStatusTip(tr("Define the scales for the 3D display of lift, moment, drag, and downwash"));
-	W3DScalesAct->setCheckable(true);
-	connect(W3DScalesAct, SIGNAL(triggered()), pMiarex, SLOT(onGL3DScale()));
+	m_pW3DScalesAct = new QAction(tr("3D Scales"), this);
+	m_pW3DScalesAct->setStatusTip(tr("Define the scales for the 3D display of lift, moment, drag, and downwash"));
+	m_pW3DScalesAct->setCheckable(true);
+	connect(m_pW3DScalesAct, SIGNAL(triggered()), pMiarex, SLOT(onGL3DScale()));
 
-	W3DLightAct = new QAction(tr("3D Light Options"), this);
-	W3DLightAct->setStatusTip(tr("Define the light options in 3D view"));
-	connect(W3DLightAct, SIGNAL(triggered()), pMiarex, SLOT(onSetupLight()));
+	m_pW3DLightAct = new QAction(tr("3D Light Options"), this);
+	m_pW3DLightAct->setStatusTip(tr("Define the light options in 3D view"));
+	connect(m_pW3DLightAct, SIGNAL(triggered()), pMiarex, SLOT(onSetupLight()));
 
-	definePlaneAct = new QAction(tr("Define a New Plane")+"\tF3", this);
-	definePlaneAct->setStatusTip(tr("Shows a dialogbox to create a new plane definition"));
-	connect(definePlaneAct, SIGNAL(triggered()), pMiarex, SLOT(onNewPlane()));
+	m_pDefinePlaneAct = new QAction(tr("Define a New Plane")+"\tF3", this);
+	m_pDefinePlaneAct->setStatusTip(tr("Shows a dialogbox to create a new plane definition"));
+	connect(m_pDefinePlaneAct, SIGNAL(triggered()), pMiarex, SLOT(onNewPlane()));
 
-	definePlaneObjectAct = new QAction(tr("Define... (Advanced users)")+"\tF3", this);
-	definePlaneObjectAct->setStatusTip(tr("Shows a dialogbox to create a new plane definition"));
-	connect(definePlaneObjectAct, SIGNAL(triggered()), pMiarex, SLOT(onNewPlaneObject()));
+	m_pDefinePlaneObjectAct = new QAction(tr("Define... (Advanced users)")+"\tF3", this);
+	m_pDefinePlaneObjectAct->setStatusTip(tr("Shows a dialogbox to create a new plane definition"));
+	connect(m_pDefinePlaneObjectAct, SIGNAL(triggered()), pMiarex, SLOT(onNewPlaneObject()));
 
-	editPlaneAct = new QAction(tr("Edit...")+"\tShift+F3", this);
-	editPlaneAct->setStatusTip(tr("Shows a form to edit the currently selected plane"));
-	connect(editPlaneAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurPlane()));
+	m_pEditPlaneAct = new QAction(tr("Edit...")+"\tShift+F3", this);
+	m_pEditPlaneAct->setStatusTip(tr("Shows a form to edit the currently selected plane"));
+	connect(m_pEditPlaneAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurPlane()));
 
-	editObjectAct = new QAction(tr("Edit... (advanced users)")+"\tCtrl+F3", this);
-	editObjectAct->setStatusTip(tr("Shows a form to edit the currently selected plane"));
-	connect(editObjectAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurObject()));
+	m_pEditObjectAct = new QAction(tr("Edit... (advanced users)")+"\tCtrl+F3", this);
+	m_pEditObjectAct->setStatusTip(tr("Shows a form to edit the currently selected plane"));
+	connect(m_pEditObjectAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurObject()));
 
-	exporttoXML = new QAction(tr("Export to xml file"), this);
-	connect(exporttoXML, SIGNAL(triggered()), pMiarex, SLOT(onExportPlanetoXML()));
+	m_pExporttoXML = new QAction(tr("Export to xml file"), this);
+	connect(m_pExporttoXML, SIGNAL(triggered()), pMiarex, SLOT(onExportPlanetoXML()));
 
-	importXMLPlaneAct = new QAction(tr("Import plane from xml file"), this);
-	connect(importXMLPlaneAct, SIGNAL(triggered()), pMiarex, SLOT(onImportPlanefromXML()));
+	m_pImportXMLPlaneAct = new QAction(tr("Import plane from xml file"), this);
+	connect(m_pImportXMLPlaneAct, SIGNAL(triggered()), pMiarex, SLOT(onImportPlanefromXML()));
 
-	editWingAct = new QAction(tr("Edit wing..."), this);
-	editWingAct->setStatusTip(tr("Shows a form to edit the wing of the currently selected plane"));
-	editWingAct->setShortcut(QKeySequence(Qt::Key_F10));
-	connect(editWingAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurWing()));
+	m_pEditWingAct = new QAction(tr("Edit wing..."), this);
+	m_pEditWingAct->setStatusTip(tr("Shows a form to edit the wing of the currently selected plane"));
+	m_pEditWingAct->setShortcut(QKeySequence(Qt::Key_F10));
+	connect(m_pEditWingAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurWing()));
 
 	m_pEditBodyAct = new QAction(tr("Edit body..."), this);
 	m_pEditBodyAct->setStatusTip(tr("Shows a form to edit the body of the currently selected plane"));
@@ -1131,27 +1131,27 @@ void MainFrame::createMiarexActions()
 	m_pEditBodyObjectAct->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_F11));
 	connect(m_pEditBodyObjectAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurBodyObject()));
 
-	renameCurPlaneAct = new QAction(tr("Rename...")+"\tF2", this);
-	renameCurPlaneAct->setStatusTip(tr("Rename the currently selected object"));
-	connect(renameCurPlaneAct, SIGNAL(triggered()), pMiarex, SLOT(onRenameCurPlane()));
+	m_pRenameCurPlaneAct = new QAction(tr("Rename...")+"\tF2", this);
+	m_pRenameCurPlaneAct->setStatusTip(tr("Rename the currently selected object"));
+	connect(m_pRenameCurPlaneAct, SIGNAL(triggered()), pMiarex, SLOT(onRenameCurPlane()));
 
-	exporttoAVL = new QAction(tr("Export to AVL..."), this);
-	exporttoAVL->setStatusTip(tr("Export the current plane or wing to a text file in the format required by AVL"));
-	connect(exporttoAVL, SIGNAL(triggered()), pMiarex, SLOT(onExporttoAVL()));
+	m_pExporttoAVL = new QAction(tr("Export to AVL..."), this);
+	m_pExporttoAVL->setStatusTip(tr("Export the current plane or wing to a text file in the format required by AVL"));
+	connect(m_pExporttoAVL, SIGNAL(triggered()), pMiarex, SLOT(onExporttoAVL()));
 
-	exportCurWOpp = new QAction(tr("Export..."), this);
-	exportCurWOpp->setStatusTip(tr("Export the current operating point to a text or csv file"));
-	connect(exportCurWOpp, SIGNAL(triggered()), pMiarex, SLOT(onExportCurPOpp()));
+	m_pExportCurWOpp = new QAction(tr("Export..."), this);
+	m_pExportCurWOpp->setStatusTip(tr("Export the current operating point to a text or csv file"));
+	connect(m_pExportCurWOpp, SIGNAL(triggered()), pMiarex, SLOT(onExportCurPOpp()));
 
 
-	scaleWingAct = new QAction(tr("Scale Wing"), this);
-	scaleWingAct->setStatusTip(tr("Scale the dimensions of the currently selected wing"));
-	connect(scaleWingAct, SIGNAL(triggered()), pMiarex, SLOT(onScaleWing()));
+	m_pScaleWingAct = new QAction(tr("Scale Wing"), this);
+	m_pScaleWingAct->setStatusTip(tr("Scale the dimensions of the currently selected wing"));
+	connect(m_pScaleWingAct, SIGNAL(triggered()), pMiarex, SLOT(onScaleWing()));
 
-	managePlanesAct = new QAction(tr("Manage objects"), this);
-	managePlanesAct->setStatusTip(tr("Rename or delete the planes and wings stored in the database"));
-	managePlanesAct->setShortcut(Qt::Key_F7);
-	connect(managePlanesAct, SIGNAL(triggered()), pMiarex, SLOT(onManagePlanes()));
+	m_pManagePlanesAct = new QAction(tr("Manage objects"), this);
+	m_pManagePlanesAct->setStatusTip(tr("Rename or delete the planes and wings stored in the database"));
+	m_pManagePlanesAct->setShortcut(Qt::Key_F7);
+	connect(m_pManagePlanesAct, SIGNAL(triggered()), pMiarex, SLOT(onManagePlanes()));
 
 	m_pImportWPolar = new QAction(tr("Import Polar"), this);
 	m_pImportWPolar->setStatusTip(tr("Import a polar from a text file"));
@@ -1161,163 +1161,163 @@ void MainFrame::createMiarexActions()
 	m_pPlaneInertia->setStatusTip(tr("Define the inertia for the current plane or wing"));
 	connect(m_pPlaneInertia, SIGNAL(triggered()), pMiarex, SLOT(onPlaneInertia()));
 
-	showCurWOppOnly = new QAction(tr("Show Current OpPoint Only"), this);
-	showCurWOppOnly->setStatusTip(tr("Hide all the curves except for the one corresponding to the currently selected operating point"));
-	showCurWOppOnly->setCheckable(true);
-	connect(showCurWOppOnly, SIGNAL(triggered()), pMiarex, SLOT(onCurWOppOnly()));
+	m_pShowCurWOppOnly = new QAction(tr("Show Current OpPoint Only"), this);
+	m_pShowCurWOppOnly->setStatusTip(tr("Hide all the curves except for the one corresponding to the currently selected operating point"));
+	m_pShowCurWOppOnly->setCheckable(true);
+	connect(m_pShowCurWOppOnly, SIGNAL(triggered()), pMiarex, SLOT(onCurWOppOnly()));
 
-	showAllWOpps = new QAction(tr("Show All OpPoints"), this);
-	showAllWOpps->setStatusTip(tr("Show the graph curves of all operating points"));
-	connect(showAllWOpps, SIGNAL(triggered()), pMiarex, SLOT(onShowAllWOpps()));
+	m_pShowAllWOpps = new QAction(tr("Show All OpPoints"), this);
+	m_pShowAllWOpps->setStatusTip(tr("Show the graph curves of all operating points"));
+	connect(m_pShowAllWOpps, SIGNAL(triggered()), pMiarex, SLOT(onShowAllWOpps()));
 
-	hideAllWOpps = new QAction(tr("Hide All OpPoints"), this);
-	hideAllWOpps->setStatusTip(tr("Hide the graph curves of all operating points"));
-	connect(hideAllWOpps, SIGNAL(triggered()), pMiarex, SLOT(onHideAllWOpps()));
+	m_pHideAllWOpps = new QAction(tr("Hide All OpPoints"), this);
+	m_pHideAllWOpps->setStatusTip(tr("Hide the graph curves of all operating points"));
+	connect(m_pHideAllWOpps, SIGNAL(triggered()), pMiarex, SLOT(onHideAllWOpps()));
 
-	deleteAllWOpps = new QAction(tr("Delete All OpPoints"), this);
-	deleteAllWOpps->setStatusTip(tr("Delete all the operating points of all planes and polars"));
-	connect(deleteAllWOpps, SIGNAL(triggered()), pMiarex, SLOT(onDeleteAllWOpps()));
+	m_pDeleteAllWOpps = new QAction(tr("Delete All OpPoints"), this);
+	m_pDeleteAllWOpps->setStatusTip(tr("Delete all the operating points of all planes and polars"));
+	connect(m_pDeleteAllWOpps, SIGNAL(triggered()), pMiarex, SLOT(onDeleteAllWOpps()));
 
-	showAllWPlrOpps = new QAction(tr("Show Associated OpPoints"), this);
-	showAllWPlrOpps->setStatusTip(tr("Show the curves of all the operating points of the currently selected polar"));
-	connect(showAllWPlrOpps, SIGNAL(triggered()), pMiarex, SLOT(onShowAllWPlrOpps()));
+	m_pShowAllWPlrOpps = new QAction(tr("Show Associated OpPoints"), this);
+	m_pShowAllWPlrOpps->setStatusTip(tr("Show the curves of all the operating points of the currently selected polar"));
+	connect(m_pShowAllWPlrOpps, SIGNAL(triggered()), pMiarex, SLOT(onShowAllWPlrOpps()));
 	
-	hideAllWPlrOpps = new QAction(tr("Hide Associated OpPoints"), this);
-	hideAllWPlrOpps->setStatusTip(tr("Hide the curves of all the operating points of the currently selected polar"));
-	connect(hideAllWPlrOpps, SIGNAL(triggered()), pMiarex, SLOT(onHideAllWPlrOpps()));
+	m_pHideAllWPlrOpps = new QAction(tr("Hide Associated OpPoints"), this);
+	m_pHideAllWPlrOpps->setStatusTip(tr("Hide the curves of all the operating points of the currently selected polar"));
+	connect(m_pHideAllWPlrOpps, SIGNAL(triggered()), pMiarex, SLOT(onHideAllWPlrOpps()));
 	
-	deleteAllWPlrOpps = new QAction(tr("Delete Associated OpPoints"), this);
-	deleteAllWPlrOpps->setStatusTip(tr("Delete all the operating points of the currently selected polar"));
-	connect(deleteAllWPlrOpps, SIGNAL(triggered()), pMiarex, SLOT(onDeleteAllWPlrOpps()));
-	showTargetCurve = new QAction(tr("Show Target Curve"), this);
-	showTargetCurve->setCheckable(false);
-	connect(showTargetCurve, SIGNAL(triggered()), pMiarex, SLOT(onShowTargetCurve()));
+	m_pDeleteAllWPlrOpps = new QAction(tr("Delete Associated OpPoints"), this);
+	m_pDeleteAllWPlrOpps->setStatusTip(tr("Delete all the operating points of the currently selected polar"));
+	connect(m_pDeleteAllWPlrOpps, SIGNAL(triggered()), pMiarex, SLOT(onDeleteAllWPlrOpps()));
+	m_pShowTargetCurve = new QAction(tr("Show Target Curve"), this);
+	m_pShowTargetCurve->setCheckable(false);
+	connect(m_pShowTargetCurve, SIGNAL(triggered()), pMiarex, SLOT(onShowTargetCurve()));
 
-	showXCmRefLocation = new QAction(tr("Show XCG location"), this);
-	showXCmRefLocation->setStatusTip(tr("Show the position of the center of gravity defined in the analysis"));
-	showXCmRefLocation->setCheckable(true);
-	connect(showXCmRefLocation, SIGNAL(triggered()), pMiarex, SLOT(onShowXCmRef()));
+	m_pShowXCmRefLocation = new QAction(tr("Show XCG location"), this);
+	m_pShowXCmRefLocation->setStatusTip(tr("Show the position of the center of gravity defined in the analysis"));
+	m_pShowXCmRefLocation->setCheckable(true);
+	connect(m_pShowXCmRefLocation, SIGNAL(triggered()), pMiarex, SLOT(onShowXCmRef()));
 
-	showStabCurve = new QAction(tr("Show Elevator Curve"), this);
-	showStabCurve->setStatusTip(tr("Show the graph curves for the elevator"));
-	showStabCurve->setCheckable(true);
-	connect(showStabCurve, SIGNAL(triggered()), pMiarex, SLOT(onStabCurve()));
+	m_pShowStabCurve = new QAction(tr("Show Elevator Curve"), this);
+	m_pShowStabCurve->setStatusTip(tr("Show the graph curves for the elevator"));
+	m_pShowStabCurve->setCheckable(true);
+	connect(m_pShowStabCurve, SIGNAL(triggered()), pMiarex, SLOT(onStabCurve()));
 
-	showFinCurve = new QAction(tr("Show Fin Curve"), this);
-	showFinCurve->setStatusTip(tr("Show the graph curves for the fin"));
-	showFinCurve->setCheckable(true);
-	connect(showFinCurve, SIGNAL(triggered()), pMiarex, SLOT(onFinCurve()));
+	m_pShowFinCurve = new QAction(tr("Show Fin Curve"), this);
+	m_pShowFinCurve->setStatusTip(tr("Show the graph curves for the fin"));
+	m_pShowFinCurve->setCheckable(true);
+	connect(m_pShowFinCurve, SIGNAL(triggered()), pMiarex, SLOT(onFinCurve()));
 
-	showWing2Curve = new QAction(tr("Show Second Wing Curve"), this);
-	showWing2Curve->setStatusTip(tr("Show the graph curves for the second wing"));
-	showWing2Curve->setCheckable(true);
-	connect(showWing2Curve, SIGNAL(triggered()), pMiarex, SLOT(onWing2Curve()));
+	m_pShowWing2Curve = new QAction(tr("Show Second Wing Curve"), this);
+	m_pShowWing2Curve->setStatusTip(tr("Show the graph curves for the second wing"));
+	m_pShowWing2Curve->setCheckable(true);
+	connect(m_pShowWing2Curve, SIGNAL(triggered()), pMiarex, SLOT(onWing2Curve()));
 
-	defineWPolar = new QAction(tr("Define an Analysis")+" \t(F6)", this);
-	defineWPolar->setStatusTip(tr("Define an analysis for the current wing or plane"));
-	connect(defineWPolar, SIGNAL(triggered()), pMiarex, SLOT(onDefineWPolar()));
+	m_pDefineWPolar = new QAction(tr("Define an Analysis")+" \t(F6)", this);
+	m_pDefineWPolar->setStatusTip(tr("Define an analysis for the current wing or plane"));
+	connect(m_pDefineWPolar, SIGNAL(triggered()), pMiarex, SLOT(onDefineWPolar()));
 
-	defineWPolarObjectAct = new QAction(tr("Define an Analysis (advanced users)")+" \t(Ctrl+F6)", this);
-	defineWPolarObjectAct->setStatusTip(tr("Shows a form to edit a new polar object"));
-	connect(defineWPolarObjectAct, SIGNAL(triggered()), pMiarex, SLOT(onDefineWPolarObject()));
+	m_pDefineWPolarObjectAct = new QAction(tr("Define an Analysis (advanced users)")+" \t(Ctrl+F6)", this);
+	m_pDefineWPolarObjectAct->setStatusTip(tr("Shows a form to edit a new polar object"));
+	connect(m_pDefineWPolarObjectAct, SIGNAL(triggered()), pMiarex, SLOT(onDefineWPolarObject()));
 
-	editWPolarAct = new QAction(tr("Edit..."), this);
-	editWPolarAct->setStatusTip(tr("Modify the analysis parameters of this polar"));
-	connect(editWPolarAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurWPolar()));
+	m_pEditWPolarAct = new QAction(tr("Edit..."), this);
+	m_pEditWPolarAct->setStatusTip(tr("Modify the analysis parameters of this polar"));
+	connect(m_pEditWPolarAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurWPolar()));
 
-	editWPolarObjectAct = new QAction(tr("Edit object (advanced users)"), this);
-	editWPolarObjectAct->setStatusTip(tr("Shows a form to edit the currently selected polar"));
-	connect(editWPolarObjectAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurWPolarObject()));
+	m_pEditWPolarObjectAct = new QAction(tr("Edit object (advanced users)"), this);
+	m_pEditWPolarObjectAct->setStatusTip(tr("Shows a form to edit the currently selected polar"));
+	connect(m_pEditWPolarObjectAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurWPolarObject()));
 
-	editWPolarPts = new QAction(tr("Edit data points..."), this);
-	editWPolarPts->setStatusTip(tr("Modify the data points of this polar"));
-	connect(editWPolarPts, SIGNAL(triggered()), pMiarex, SLOT(onEditCurWPolarPts()));
+	m_pEditWPolarPts = new QAction(tr("Edit data points..."), this);
+	m_pEditWPolarPts->setStatusTip(tr("Modify the data points of this polar"));
+	connect(m_pEditWPolarPts, SIGNAL(triggered()), pMiarex, SLOT(onEditCurWPolarPts()));
 
-	defineStabPolar = new QAction(tr("Define a Stability Analysis")+"\t(Shift+F6)", this);
-	defineStabPolar->setStatusTip(tr("Define a stability analysis for the current wing or plane"));
+	m_pDefineStabPolar = new QAction(tr("Define a Stability Analysis")+"\t(Shift+F6)", this);
+	m_pDefineStabPolar->setStatusTip(tr("Define a stability analysis for the current wing or plane"));
 //	defineStabPolar->setShortcut(tr("Ctrl+F6"));
-	connect(defineStabPolar, SIGNAL(triggered()), pMiarex, SLOT(onDefineStabPolar()));
+	connect(m_pDefineStabPolar, SIGNAL(triggered()), pMiarex, SLOT(onDefineStabPolar()));
 
-	hidePlaneWPlrs = new QAction(tr("Hide Associated Polars"), this);
-	hidePlaneWPlrs->setStatusTip(tr("Hide all the polar curves associated to the currently selected wing or plane"));
-	connect(hidePlaneWPlrs, SIGNAL(triggered()), pMiarex, SLOT(onHidePlaneWPolars()));
+	m_pHidePlaneWPlrs = new QAction(tr("Hide Associated Polars"), this);
+	m_pHidePlaneWPlrs->setStatusTip(tr("Hide all the polar curves associated to the currently selected wing or plane"));
+	connect(m_pHidePlaneWPlrs, SIGNAL(triggered()), pMiarex, SLOT(onHidePlaneWPolars()));
 	
-	showPlaneWPlrsOnly = new QAction(tr("Show Only Associated Polars"), this);
-	connect(showPlaneWPlrsOnly, SIGNAL(triggered()), pMiarex, SLOT(onShowPlaneWPolarsOnly()));
+	m_pShowPlaneWPlrsOnly = new QAction(tr("Show Only Associated Polars"), this);
+	connect(m_pShowPlaneWPlrsOnly, SIGNAL(triggered()), pMiarex, SLOT(onShowPlaneWPolarsOnly()));
 
-	showPlaneWPlrs = new QAction(tr("Show Associated Polars"), this);
-	showPlaneWPlrs->setStatusTip(tr("Show all the polar curves associated to the currently selected wing or plane"));
-	connect(showPlaneWPlrs, SIGNAL(triggered()), pMiarex, SLOT(onShowPlaneWPolars()));
+	m_pShowPlaneWPlrs = new QAction(tr("Show Associated Polars"), this);
+	m_pShowPlaneWPlrs->setStatusTip(tr("Show all the polar curves associated to the currently selected wing or plane"));
+	connect(m_pShowPlaneWPlrs, SIGNAL(triggered()), pMiarex, SLOT(onShowPlaneWPolars()));
 
-	deletePlaneWPlrs = new QAction(tr("Delete Associated Polars"), this);
-	deletePlaneWPlrs->setStatusTip(tr("Delete all the polars associated to the currently selected wing or plane"));
-	connect(deletePlaneWPlrs, SIGNAL(triggered()), pMiarex, SLOT(onDeletePlaneWPolars()));
+	m_pDeletePlaneWPlrs = new QAction(tr("Delete Associated Polars"), this);
+	m_pDeletePlaneWPlrs->setStatusTip(tr("Delete all the polars associated to the currently selected wing or plane"));
+	connect(m_pDeletePlaneWPlrs, SIGNAL(triggered()), pMiarex, SLOT(onDeletePlaneWPolars()));
 
-	hideAllWPlrs = new QAction(tr("Hide All Polars"), this);
-	hideAllWPlrs->setStatusTip(tr("Hide all the polar curves of all wings and planes"));
-	connect(hideAllWPlrs, SIGNAL(triggered()), pMiarex, SLOT(onHideAllWPolars()));
+	m_pHideAllWPlrs = new QAction(tr("Hide All Polars"), this);
+	m_pHideAllWPlrs->setStatusTip(tr("Hide all the polar curves of all wings and planes"));
+	connect(m_pHideAllWPlrs, SIGNAL(triggered()), pMiarex, SLOT(onHideAllWPolars()));
 	
-	showAllWPlrs = new QAction(tr("Show All Polars"), this);
-	showAllWPlrs->setStatusTip(tr("Show all the polar curves of all wings and planes"));
-	connect(showAllWPlrs, SIGNAL(triggered()), pMiarex, SLOT(onShowAllWPolars()));
+	m_pShowAllWPlrs = new QAction(tr("Show All Polars"), this);
+	m_pShowAllWPlrs->setStatusTip(tr("Show all the polar curves of all wings and planes"));
+	connect(m_pShowAllWPlrs, SIGNAL(triggered()), pMiarex, SLOT(onShowAllWPolars()));
 
-	hidePlaneWOpps = new QAction(tr("Hide Associated OpPoints"), this);
-	hidePlaneWOpps->setStatusTip(tr("Hide all the operating point curves of the currently selected wing or plane"));
-	connect(hidePlaneWOpps, SIGNAL(triggered()), pMiarex, SLOT(onHidePlaneOpps()));
+	m_pHidePlaneWOpps = new QAction(tr("Hide Associated OpPoints"), this);
+	m_pHidePlaneWOpps->setStatusTip(tr("Hide all the operating point curves of the currently selected wing or plane"));
+	connect(m_pHidePlaneWOpps, SIGNAL(triggered()), pMiarex, SLOT(onHidePlaneOpps()));
 	
-	showPlaneWOpps = new QAction(tr("Show Associated OpPoints"), this);
-	showPlaneWOpps->setStatusTip(tr("Show all the operating point curves of the currently selected wing or plane"));
-	connect(showPlaneWOpps, SIGNAL(triggered()), pMiarex, SLOT(onShowPlaneOpps()));
+	m_pShowPlaneWOpps = new QAction(tr("Show Associated OpPoints"), this);
+	m_pShowPlaneWOpps->setStatusTip(tr("Show all the operating point curves of the currently selected wing or plane"));
+	connect(m_pShowPlaneWOpps, SIGNAL(triggered()), pMiarex, SLOT(onShowPlaneOpps()));
 	
-	deletePlaneWOpps = new QAction(tr("Delete Associated OpPoints"), this);
-	deletePlaneWOpps->setStatusTip(tr("Delete all the operating points of the currently selected wing or plane"));
-	connect(deletePlaneWOpps, SIGNAL(triggered()), pMiarex, SLOT(onDeletePlaneOpps()));
+	m_pDeletePlaneWOpps = new QAction(tr("Delete Associated OpPoints"), this);
+	m_pDeletePlaneWOpps->setStatusTip(tr("Delete all the operating points of the currently selected wing or plane"));
+	connect(m_pDeletePlaneWOpps, SIGNAL(triggered()), pMiarex, SLOT(onDeletePlaneOpps()));
 
-	deleteCurPlane = new QAction(tr("Delete..."), this);
-	deleteCurPlane->setStatusTip(tr("Delete the currently selected wing or plane"));
-	connect(deleteCurPlane, SIGNAL(triggered()), pMiarex, SLOT(onDeleteCurPlane()));
+	m_pDeleteCurPlane = new QAction(tr("Delete..."), this);
+	m_pDeleteCurPlane->setStatusTip(tr("Delete the currently selected wing or plane"));
+	connect(m_pDeleteCurPlane, SIGNAL(triggered()), pMiarex, SLOT(onDeleteCurPlane()));
 
-	duplicateCurPlane = new QAction(tr("Duplicate..."), this);
-	duplicateCurPlane->setStatusTip(tr("Duplicate the currently selected wing or plane"));
-	connect(duplicateCurPlane, SIGNAL(triggered()), pMiarex, SLOT(onDuplicateCurPlane()));
+	m_pDuplicateCurPlane = new QAction(tr("Duplicate..."), this);
+	m_pDuplicateCurPlane->setStatusTip(tr("Duplicate the currently selected wing or plane"));
+	connect(m_pDuplicateCurPlane, SIGNAL(triggered()), pMiarex, SLOT(onDuplicateCurPlane()));
 
-	savePlaneAsProjectAct = new QAction(tr("Save as Project..."), this);
-	savePlaneAsProjectAct->setStatusTip(tr("Save the currently selected wing or plane as a new separate project"));
-	connect(savePlaneAsProjectAct, SIGNAL(triggered()), this, SLOT(onSavePlaneAsProject()));
+	m_pSavePlaneAsProjectAct = new QAction(tr("Save as Project..."), this);
+	m_pSavePlaneAsProjectAct->setStatusTip(tr("Save the currently selected wing or plane as a new separate project"));
+	connect(m_pSavePlaneAsProjectAct, SIGNAL(triggered()), this, SLOT(onSavePlaneAsProject()));
 
-	renameCurWPolar = new QAction(tr("Rename..."), this);
-	renameCurWPolar->setStatusTip(tr("Rename the currently selected polar"));
-	connect(renameCurWPolar, SIGNAL(triggered()), pMiarex, SLOT(onRenameCurWPolar()));
+	m_pRrenameCurWPolar = new QAction(tr("Rename..."), this);
+	m_pRrenameCurWPolar->setStatusTip(tr("Rename the currently selected polar"));
+	connect(m_pRrenameCurWPolar, SIGNAL(triggered()), pMiarex, SLOT(onRenameCurWPolar()));
 
-	exportCurWPolar = new QAction(tr("Export ..."), this);
-	exportCurWPolar->setStatusTip(tr("Export the currently selected polar to a text or csv file"));
-	connect(exportCurWPolar, SIGNAL(triggered()), pMiarex, SLOT(onExportCurWPolar()));
+	m_pExportCurWPolar = new QAction(tr("Export ..."), this);
+	m_pExportCurWPolar->setStatusTip(tr("Export the currently selected polar to a text or csv file"));
+	connect(m_pExportCurWPolar, SIGNAL(triggered()), pMiarex, SLOT(onExportCurWPolar()));
 
-	resetCurWPolar = new QAction(tr("Reset ..."), this);
-	resetCurWPolar->setStatusTip(tr("Delete all the points of the currently selected polar, but keep the analysis settings"));
-	connect(resetCurWPolar, SIGNAL(triggered()), pMiarex, SLOT(onResetCurWPolar()));
+	m_pResetCurWPolar = new QAction(tr("Reset ..."), this);
+	m_pResetCurWPolar->setStatusTip(tr("Delete all the points of the currently selected polar, but keep the analysis settings"));
+	connect(m_pResetCurWPolar, SIGNAL(triggered()), pMiarex, SLOT(onResetCurWPolar()));
 
-	deleteCurWPolar = new QAction(tr("Delete ..."), this);
-	deleteCurWPolar->setStatusTip(tr("Delete the currently selected polar"));
-	connect(deleteCurWPolar, SIGNAL(triggered()), pMiarex, SLOT(onDeleteCurWPolar()));
+	m_pDeleteCurWPolar = new QAction(tr("Delete ..."), this);
+	m_pDeleteCurWPolar->setStatusTip(tr("Delete the currently selected polar"));
+	connect(m_pDeleteCurWPolar, SIGNAL(triggered()), pMiarex, SLOT(onDeleteCurWPolar()));
 
-	deleteCurWOpp = new QAction(tr("Delete..."), this);
-	deleteCurWOpp->setStatusTip(tr("Delete the currently selected operating point"));
-	connect(deleteCurWOpp, SIGNAL(triggered()), pMiarex, SLOT(onDeleteCurWOpp()));
+	m_pDeleteCurWOpp = new QAction(tr("Delete..."), this);
+	m_pDeleteCurWOpp->setStatusTip(tr("Delete the currently selected operating point"));
+	connect(m_pDeleteCurWOpp, SIGNAL(triggered()), pMiarex, SLOT(onDeleteCurWOpp()));
 
-	advancedSettings = new QAction(tr("Advanced Settings..."), this);
-	advancedSettings->setStatusTip(tr("Define the settings for LLT, VLM and Panel analysis"));
-	connect(advancedSettings, SIGNAL(triggered()), pMiarex, SLOT(onAdvancedSettings()));
+	m_pAadvancedSettings = new QAction(tr("Advanced Settings..."), this);
+	m_pAadvancedSettings->setStatusTip(tr("Define the settings for LLT, VLM and Panel analysis"));
+	connect(m_pAadvancedSettings, SIGNAL(triggered()), pMiarex, SLOT(onAdvancedSettings()));
 
-	ShowPolarProps = new QAction(tr("Properties"), this);
-	ShowPolarProps->setStatusTip(tr("Show the properties of the currently selected polar"));
-	ShowPolarProps->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Return));
-	connect(ShowPolarProps, SIGNAL(triggered()), pMiarex, SLOT(onWPolarProperties()));
+	m_pShowPolarProps = new QAction(tr("Properties"), this);
+	m_pShowPolarProps->setStatusTip(tr("Show the properties of the currently selected polar"));
+	m_pShowPolarProps->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Return));
+	connect(m_pShowPolarProps, SIGNAL(triggered()), pMiarex, SLOT(onWPolarProperties()));
 
-	ShowWOppProps = new QAction(tr("Properties"), this);
-	ShowWOppProps->setStatusTip(tr("Show the properties of the currently selected operating point"));
-	ShowWOppProps->setShortcut(QKeySequence(Qt::ALT + Qt::SHIFT + Qt::Key_Return));
-	connect(ShowWOppProps, SIGNAL(triggered()), pMiarex, SLOT(onPlaneOppProperties()));
+	m_pShowWOppProps = new QAction(tr("Properties"), this);
+	m_pShowWOppProps->setStatusTip(tr("Show the properties of the currently selected operating point"));
+	m_pShowWOppProps->setShortcut(QKeySequence(Qt::ALT + Qt::SHIFT + Qt::Key_Return));
+	connect(m_pShowWOppProps, SIGNAL(triggered()), pMiarex, SLOT(onPlaneOppProperties()));
 }
 
 
@@ -1326,90 +1326,90 @@ void MainFrame::createMiarexMenus()
 	//MainMenu for Miarex Application
 	m_pMiarexViewMenu = menuBar()->addMenu(tr("&View"));
 	{
-		m_pMiarexViewMenu->addAction(WOppAct);
-		m_pMiarexViewMenu->addAction(WPolarAct);
-		m_pMiarexViewMenu->addAction(W3DAct);
-		m_pMiarexViewMenu->addAction(CpViewAct);
-		m_pMiarexViewMenu->addAction(StabTimeAct);
-		m_pMiarexViewMenu->addAction(RootLocusAct);
+		m_pMiarexViewMenu->addAction(m_pWOppAct);
+		m_pMiarexViewMenu->addAction(m_pWPolarAct);
+		m_pMiarexViewMenu->addAction(m_pW3DAct);
+		m_pMiarexViewMenu->addAction(m_pCpViewAct);
+		m_pMiarexViewMenu->addAction(m_pStabTimeAct);
+		m_pMiarexViewMenu->addAction(m_pRootLocusAct);
 		m_pMiarexViewMenu->addSeparator();
-		m_pMiarexViewMenu->addAction(W3DPrefsAct);
-		m_pMiarexViewMenu->addAction(W3DLightAct);
-		m_pMiarexViewMenu->addAction(W3DScalesAct);
+		m_pMiarexViewMenu->addAction(m_pW3DPrefsAct);
+		m_pMiarexViewMenu->addAction(m_pW3DLightAct);
+		m_pMiarexViewMenu->addAction(m_pW3DScalesAct);
 		m_pMiarexViewMenu->addSeparator();
-		m_pMiarexViewMenu->addAction(saveViewToImageFileAct);
+		m_pMiarexViewMenu->addAction(m_pSaveViewToImageFileAct);
 	}
 
 
 	m_pPlaneMenu = menuBar()->addMenu(tr("&Plane"));
 	{
-		m_pPlaneMenu->addAction(definePlaneAct);
-		m_pPlaneMenu->addAction(definePlaneObjectAct);
-		m_pPlaneMenu->addAction(managePlanesAct);
+		m_pPlaneMenu->addAction(m_pDefinePlaneAct);
+		m_pPlaneMenu->addAction(m_pDefinePlaneObjectAct);
+		m_pPlaneMenu->addAction(m_pManagePlanesAct);
 		m_pCurrentPlaneMenu = m_pPlaneMenu->addMenu(tr("Current Plane"));
 		{
 			QMenu *pAnalysisMenu = m_pCurrentPlaneMenu->addMenu(tr("Analysis"));
 			{
-				pAnalysisMenu->addAction(defineWPolar);
-				pAnalysisMenu->addAction(defineWPolarObjectAct);
-				pAnalysisMenu->addAction(defineStabPolar);
+				pAnalysisMenu->addAction(m_pDefineWPolar);
+				pAnalysisMenu->addAction(m_pDefineWPolarObjectAct);
+				pAnalysisMenu->addAction(m_pDefineStabPolar);
 			}
 			m_pCurrentPlaneMenu->addSeparator();
-			m_pCurrentPlaneMenu->addAction(editPlaneAct);
-			m_pCurrentPlaneMenu->addAction(editObjectAct);
-			m_pCurrentPlaneMenu->addAction(editWingAct);
+			m_pCurrentPlaneMenu->addAction(m_pEditPlaneAct);
+			m_pCurrentPlaneMenu->addAction(m_pEditObjectAct);
+			m_pCurrentPlaneMenu->addAction(m_pEditWingAct);
 			m_pCurrentPlaneMenu->addAction(m_pEditBodyAct);
 			m_pCurrentPlaneMenu->addAction(m_pEditBodyObjectAct);
 			m_pCurrentPlaneMenu->addSeparator();
-			m_pCurrentPlaneMenu->addAction(renameCurPlaneAct);
-			m_pCurrentPlaneMenu->addAction(duplicateCurPlane);
-			m_pCurrentPlaneMenu->addAction(deleteCurPlane);
-			m_pCurrentPlaneMenu->addAction(savePlaneAsProjectAct);
+			m_pCurrentPlaneMenu->addAction(m_pRenameCurPlaneAct);
+			m_pCurrentPlaneMenu->addAction(m_pDuplicateCurPlane);
+			m_pCurrentPlaneMenu->addAction(m_pDeleteCurPlane);
+			m_pCurrentPlaneMenu->addAction(m_pSavePlaneAsProjectAct);
 			m_pCurrentPlaneMenu->addSeparator();
-			m_pCurrentPlaneMenu->addAction(scaleWingAct);
+			m_pCurrentPlaneMenu->addAction(m_pScaleWingAct);
 			m_pCurrentPlaneMenu->addSeparator();
 			m_pCurrentPlaneMenu->addAction(m_pPlaneInertia);
 			m_pCurrentPlaneMenu->addSeparator();
-			m_pCurrentPlaneMenu->addAction(exporttoAVL);
-			m_pCurrentPlaneMenu->addAction(exporttoXML);
+			m_pCurrentPlaneMenu->addAction(m_pExporttoAVL);
+			m_pCurrentPlaneMenu->addAction(m_pExporttoXML);
 			m_pCurrentPlaneMenu->addSeparator();
-			m_pCurrentPlaneMenu->addAction(showPlaneWPlrsOnly);
-			m_pCurrentPlaneMenu->addAction(showPlaneWPlrs);
-			m_pCurrentPlaneMenu->addAction(hidePlaneWPlrs);
-			m_pCurrentPlaneMenu->addAction(deletePlaneWPlrs);
+			m_pCurrentPlaneMenu->addAction(m_pShowPlaneWPlrsOnly);
+			m_pCurrentPlaneMenu->addAction(m_pShowPlaneWPlrs);
+			m_pCurrentPlaneMenu->addAction(m_pHidePlaneWPlrs);
+			m_pCurrentPlaneMenu->addAction(m_pDeletePlaneWPlrs);
 			m_pCurrentPlaneMenu->addSeparator();
-			m_pCurrentPlaneMenu->addAction(hidePlaneWOpps);
-			m_pCurrentPlaneMenu->addAction(showPlaneWOpps);
-			m_pCurrentPlaneMenu->addAction(deletePlaneWOpps);
+			m_pCurrentPlaneMenu->addAction(m_pHidePlaneWOpps);
+			m_pCurrentPlaneMenu->addAction(m_pShowPlaneWOpps);
+			m_pCurrentPlaneMenu->addAction(m_pDeletePlaneWOpps);
 		}
-		m_pPlaneMenu->addAction(importXMLPlaneAct);
+		m_pPlaneMenu->addAction(m_pImportXMLPlaneAct);
 	}
 
 	m_pMiarexWPlrMenu = menuBar()->addMenu(tr("&Polars"));
 	{
 		m_pCurWPlrMenu = m_pMiarexWPlrMenu->addMenu(tr("Current Polar"));
 		{
-			m_pCurWPlrMenu->addAction(ShowPolarProps);
-			m_pCurWPlrMenu->addAction(editWPolarAct);
-			m_pCurWPlrMenu->addAction(editWPolarObjectAct);
-			m_pCurWPlrMenu->addAction(editWPolarPts);
-			m_pCurWPlrMenu->addAction(renameCurWPolar);
-			m_pCurWPlrMenu->addAction(deleteCurWPolar);
-			m_pCurWPlrMenu->addAction(exportCurWPolar);
-			m_pCurWPlrMenu->addAction(resetCurWPolar);
+			m_pCurWPlrMenu->addAction(m_pShowPolarProps);
+			m_pCurWPlrMenu->addAction(m_pEditWPolarAct);
+			m_pCurWPlrMenu->addAction(m_pEditWPolarObjectAct);
+			m_pCurWPlrMenu->addAction(m_pEditWPolarPts);
+			m_pCurWPlrMenu->addAction(m_pRrenameCurWPolar);
+			m_pCurWPlrMenu->addAction(m_pDeleteCurWPolar);
+			m_pCurWPlrMenu->addAction(m_pExportCurWPolar);
+			m_pCurWPlrMenu->addAction(m_pResetCurWPolar);
 			m_pCurWPlrMenu->addSeparator();
-			m_pCurWPlrMenu->addAction(showAllWPlrOpps);
-			m_pCurWPlrMenu->addAction(hideAllWPlrOpps);
-			m_pCurWPlrMenu->addAction(deleteAllWPlrOpps);
+			m_pCurWPlrMenu->addAction(m_pShowAllWPlrOpps);
+			m_pCurWPlrMenu->addAction(m_pHideAllWPlrOpps);
+			m_pCurWPlrMenu->addAction(m_pDeleteAllWPlrOpps);
 		}
 
 		m_pMiarexWPlrMenu->addSeparator();
 		m_pMiarexWPlrMenu->addAction(m_pImportWPolar);
 		m_pMiarexWPlrMenu->addSeparator();
-		m_pMiarexWPlrMenu->addAction(MiarexPolarFilter);
+		m_pMiarexWPlrMenu->addAction(m_pMiarexPolarFilter);
 		m_pMiarexWPlrMenu->addSeparator();
-		m_pMiarexWPlrMenu->addAction(hideAllWPlrs);
-		m_pMiarexWPlrMenu->addAction(showAllWPlrs);
+		m_pMiarexWPlrMenu->addAction(m_pHideAllWPlrs);
+		m_pMiarexWPlrMenu->addAction(m_pShowAllWPlrs);
 		m_pMiarexWPlrMenu->addSeparator();
 	}
 
@@ -1417,32 +1417,32 @@ void MainFrame::createMiarexMenus()
 	{
 		m_pCurWOppMenu = m_pMiarexWOppMenu->addMenu(tr("Current OpPoint"));
 		{
-			m_pCurWOppMenu->addAction(ShowWOppProps);
-			m_pCurWOppMenu->addAction(exportCurWOpp);
-			m_pCurWOppMenu->addAction(deleteCurWOpp);
+			m_pCurWOppMenu->addAction(m_pShowWOppProps);
+			m_pCurWOppMenu->addAction(m_pExportCurWOpp);
+			m_pCurWOppMenu->addAction(m_pDeleteCurWOpp);
 		}
 		m_pMiarexWOppMenu->addSeparator();
-		m_pMiarexWOppMenu->addAction(showCurWOppOnly);
-		m_pMiarexWOppMenu->addAction(showAllWOpps);
-		m_pMiarexWOppMenu->addAction(hideAllWOpps);
-		m_pMiarexWOppMenu->addAction(deleteAllWOpps);
+		m_pMiarexWOppMenu->addAction(m_pShowCurWOppOnly);
+		m_pMiarexWOppMenu->addAction(m_pShowAllWOpps);
+		m_pMiarexWOppMenu->addAction(m_pHideAllWOpps);
+		m_pMiarexWOppMenu->addAction(m_pDeleteAllWOpps);
 		m_pMiarexWOppMenu->addSeparator();
-		m_pMiarexWOppMenu->addAction(showTargetCurve);
-		m_pMiarexWOppMenu->addAction(showXCmRefLocation);
-		m_pMiarexWOppMenu->addAction(showWing2Curve);
-		m_pMiarexWOppMenu->addAction(showStabCurve);
-		m_pMiarexWOppMenu->addAction(showFinCurve);
+		m_pMiarexWOppMenu->addAction(m_pShowTargetCurve);
+		m_pMiarexWOppMenu->addAction(m_pShowXCmRefLocation);
+		m_pMiarexWOppMenu->addAction(m_pShowWing2Curve);
+		m_pMiarexWOppMenu->addAction(m_pShowStabCurve);
+		m_pMiarexWOppMenu->addAction(m_pShowFinCurve);
 	}
 
 	//Miarex Analysis Menu
 	m_pMiarexAnalysisMenu  = menuBar()->addMenu(tr("&Analysis"));
 	{
-		m_pMiarexAnalysisMenu->addAction(defineWPolar);
-		m_pMiarexAnalysisMenu->addAction(defineWPolarObjectAct);
-		m_pMiarexAnalysisMenu->addAction(defineStabPolar);
+		m_pMiarexAnalysisMenu->addAction(m_pDefineWPolar);
+		m_pMiarexAnalysisMenu->addAction(m_pDefineWPolarObjectAct);
+		m_pMiarexAnalysisMenu->addAction(m_pDefineStabPolar);
 		m_pMiarexAnalysisMenu->addSeparator();
-		m_pMiarexAnalysisMenu->addAction(viewLogFile);
-		m_pMiarexAnalysisMenu->addAction(advancedSettings);
+		m_pMiarexAnalysisMenu->addAction(m_pViewLogFile);
+		m_pMiarexAnalysisMenu->addAction(m_pAadvancedSettings);
 	}
 
 
@@ -1455,19 +1455,27 @@ void MainFrame::createMiarexMenus()
 		m_pWOppCtxMenu->addSeparator();
 		m_pWOppCtxMenu->addMenu(m_pCurWOppMenu);
 		m_pWOppCtxMenu->addSeparator();
-		m_pWOppCtxMenu->addAction(showCurWOppOnly);
-		m_pWOppCtxMenu->addAction(showAllWOpps);
-		m_pWOppCtxMenu->addAction(hideAllWOpps);
-		m_pWOppCtxMenu->addAction(deleteAllWOpps);
+		m_pWOppCtxMenu->addAction(m_pShowCurWOppOnly);
+		m_pWOppCtxMenu->addAction(m_pShowAllWOpps);
+		m_pWOppCtxMenu->addAction(m_pHideAllWOpps);
+		m_pWOppCtxMenu->addAction(m_pDeleteAllWOpps);
 		m_pWOppCtxMenu->addSeparator();
-		m_pWOppCtxMenu->addAction(showTargetCurve);
-		m_pWOppCtxMenu->addAction(showXCmRefLocation);
-		m_pWOppCtxMenu->addAction(showWing2Curve);
-		m_pWOppCtxMenu->addAction(showStabCurve);
-		m_pWOppCtxMenu->addAction(showFinCurve);
+		m_pWOppCtxMenu->addAction(m_pShowTargetCurve);
+		m_pWOppCtxMenu->addAction(m_pShowXCmRefLocation);
+		m_pWOppCtxMenu->addAction(m_pShowWing2Curve);
+		m_pWOppCtxMenu->addAction(m_pShowStabCurve);
+		m_pWOppCtxMenu->addAction(m_pShowFinCurve);
 		m_pWOppCtxMenu->addSeparator();
-		m_pWOppCtxMenu->addAction(viewLogFile);
-		m_pWOppCtxMenu->addAction(saveViewToImageFileAct);
+		QMenu *pCurGraphCtxMenu = m_pWOppCtxMenu->addMenu(tr("Current Graph"));
+		{
+			pCurGraphCtxMenu->addAction(m_pResetCurGraphScales);
+			pCurGraphCtxMenu->addAction(m_pCurGraphDlgAct);
+			pCurGraphCtxMenu->addAction(m_pExportCurGraphAct);
+		}
+		m_pWOppCtxMenu->addAction(m_pShowMousePosAct);
+		m_pWOppCtxMenu->addSeparator();
+		m_pWOppCtxMenu->addAction(m_pViewLogFile);
+		m_pWOppCtxMenu->addAction(m_pSaveViewToImageFileAct);
 	}
 
 	//WOpp View Context Menu
@@ -1479,12 +1487,12 @@ void MainFrame::createMiarexMenus()
 		m_pWCpCtxMenu->addSeparator();
 		m_pWCpCtxMenu->addMenu(m_pCurWOppMenu);
 		m_pWCpCtxMenu->addSeparator();
-		m_pWCpCtxMenu->addAction(showWing2Curve);
-		m_pWCpCtxMenu->addAction(showStabCurve);
-		m_pWCpCtxMenu->addAction(showFinCurve);
+		m_pWCpCtxMenu->addAction(m_pShowWing2Curve);
+		m_pWCpCtxMenu->addAction(m_pShowStabCurve);
+		m_pWCpCtxMenu->addAction(m_pShowFinCurve);
 		m_pWCpCtxMenu->addSeparator();
-		m_pWCpCtxMenu->addAction(viewLogFile);
-		m_pWCpCtxMenu->addAction(saveViewToImageFileAct);
+		m_pWCpCtxMenu->addAction(m_pViewLogFile);
+		m_pWCpCtxMenu->addAction(m_pSaveViewToImageFileAct);
 	}
 
 	//WTime View Context Menu
@@ -1496,13 +1504,13 @@ void MainFrame::createMiarexMenus()
 		m_pWTimeCtxMenu->addSeparator();
 		m_pWTimeCtxMenu->addMenu(m_pCurWOppMenu);
 		m_pWTimeCtxMenu->addSeparator();
-		m_pWTimeCtxMenu->addAction(showCurWOppOnly);
-		m_pWTimeCtxMenu->addAction(showAllWOpps);
-		m_pWTimeCtxMenu->addAction(hideAllWOpps);
-		m_pWTimeCtxMenu->addAction(deleteAllWOpps);
+		m_pWTimeCtxMenu->addAction(m_pShowCurWOppOnly);
+		m_pWTimeCtxMenu->addAction(m_pShowAllWOpps);
+		m_pWTimeCtxMenu->addAction(m_pHideAllWOpps);
+		m_pWTimeCtxMenu->addAction(m_pDeleteAllWOpps);
 		m_pWTimeCtxMenu->addSeparator();
-		m_pWTimeCtxMenu->addAction(viewLogFile);
-		m_pWTimeCtxMenu->addAction(saveViewToImageFileAct);
+		m_pWTimeCtxMenu->addAction(m_pViewLogFile);
+		m_pWTimeCtxMenu->addAction(m_pSaveViewToImageFileAct);
 	}
 
 	//Polar View Context Menu
@@ -1512,8 +1520,8 @@ void MainFrame::createMiarexMenus()
 		m_pWPlrCtxMenu->addSeparator();
 		m_pWPlrCtxMenu->addMenu(m_pCurWPlrMenu);
 		m_pWPlrCtxMenu->addSeparator();
-		m_pWPlrCtxMenu->addAction(hideAllWPlrs);
-		m_pWPlrCtxMenu->addAction(showAllWPlrs);
+		m_pWPlrCtxMenu->addAction(m_pHideAllWPlrs);
+		m_pWPlrCtxMenu->addAction(m_pShowAllWPlrs);
 		m_pWPlrCtxMenu->addSeparator();
 		QMenu *pCurGraphCtxMenu = m_pWPlrCtxMenu->addMenu(tr("Current Graph"));
 		{
@@ -1521,9 +1529,10 @@ void MainFrame::createMiarexMenus()
 			pCurGraphCtxMenu->addAction(m_pCurGraphDlgAct);
 			pCurGraphCtxMenu->addAction(m_pExportCurGraphAct);
 		}
+		m_pWPlrCtxMenu->addAction(m_pShowMousePosAct);
 		m_pWPlrCtxMenu->addSeparator();
-		m_pWPlrCtxMenu->addAction(viewLogFile);
-		m_pWPlrCtxMenu->addAction(saveViewToImageFileAct);
+		m_pWPlrCtxMenu->addAction(m_pViewLogFile);
+		m_pWPlrCtxMenu->addAction(m_pSaveViewToImageFileAct);
 	}
 
 	//W3D View Context Menu
@@ -1535,13 +1544,13 @@ void MainFrame::createMiarexMenus()
 		m_pW3DCtxMenu->addSeparator();
 		m_pW3DCtxMenu->addMenu(m_pCurWOppMenu);
 		m_pW3DCtxMenu->addSeparator();
-		m_pW3DCtxMenu->addAction(deleteAllWOpps);
+		m_pW3DCtxMenu->addAction(m_pDeleteAllWOpps);
 		m_pW3DCtxMenu->addSeparator();
-		m_pW3DCtxMenu->addAction(W3DScalesAct);
-		m_pW3DCtxMenu->addAction(W3DLightAct);
+		m_pW3DCtxMenu->addAction(m_pW3DScalesAct);
+		m_pW3DCtxMenu->addAction(m_pW3DLightAct);
 		m_pW3DCtxMenu->addSeparator();
-		m_pW3DCtxMenu->addAction(viewLogFile);
-		m_pW3DCtxMenu->addAction(saveViewToImageFileAct);
+		m_pW3DCtxMenu->addAction(m_pViewLogFile);
+		m_pW3DCtxMenu->addAction(m_pSaveViewToImageFileAct);
 	}
 
 	//W3D Stab View Context Menu
@@ -1553,10 +1562,10 @@ void MainFrame::createMiarexMenus()
 		m_pW3DStabCtxMenu->addSeparator();
 		m_pW3DStabCtxMenu->addMenu(m_pCurWOppMenu);
 		m_pW3DStabCtxMenu->addSeparator();
-		m_pW3DStabCtxMenu->addAction(W3DLightAct);
+		m_pW3DStabCtxMenu->addAction(m_pW3DLightAct);
 		m_pW3DStabCtxMenu->addSeparator();
-		m_pW3DStabCtxMenu->addAction(viewLogFile);
-		m_pW3DStabCtxMenu->addAction(saveViewToImageFileAct);
+		m_pW3DStabCtxMenu->addAction(m_pViewLogFile);
+		m_pW3DStabCtxMenu->addAction(m_pSaveViewToImageFileAct);
 	}
 }
 
@@ -1589,16 +1598,16 @@ void MainFrame::createMiarexToolbar()
 	m_pctrlPlaneOpp->setMaxVisibleItems(23);
 
 	m_pctrlMiarexToolBar = addToolBar(tr("Plane"));
-	m_pctrlMiarexToolBar->addAction(newProjectAct);
-	m_pctrlMiarexToolBar->addAction(openAct);
-	m_pctrlMiarexToolBar->addAction(saveAct);
+	m_pctrlMiarexToolBar->addAction(m_pNewProjectAct);
+	m_pctrlMiarexToolBar->addAction(m_pOpenAct);
+	m_pctrlMiarexToolBar->addAction(m_pSaveAct);
 	m_pctrlMiarexToolBar->addSeparator();
-	m_pctrlMiarexToolBar->addAction(WOppAct);
-	m_pctrlMiarexToolBar->addAction(WPolarAct);
-	m_pctrlMiarexToolBar->addAction(W3DAct);
-	m_pctrlMiarexToolBar->addAction(CpViewAct);
-	m_pctrlMiarexToolBar->addAction(RootLocusAct);
-	m_pctrlMiarexToolBar->addAction(StabTimeAct);
+	m_pctrlMiarexToolBar->addAction(m_pWOppAct);
+	m_pctrlMiarexToolBar->addAction(m_pWPolarAct);
+	m_pctrlMiarexToolBar->addAction(m_pW3DAct);
+	m_pctrlMiarexToolBar->addAction(m_pCpViewAct);
+	m_pctrlMiarexToolBar->addAction(m_pRootLocusAct);
+	m_pctrlMiarexToolBar->addAction(m_pStabTimeAct);
 
 	m_pctrlMiarexToolBar->addSeparator();
 	m_pctrlMiarexToolBar->addWidget(m_pctrlPlane);
@@ -1655,12 +1664,12 @@ void MainFrame::createXDirectToolbar()
 	m_pctrlOpPoint->setSizeAdjustPolicy(QComboBox::AdjustToContents);
 
 	m_pctrlXDirectToolBar = addToolBar(tr("Foil"));
-	m_pctrlXDirectToolBar->addAction(newProjectAct);
-	m_pctrlXDirectToolBar->addAction(openAct);
-	m_pctrlXDirectToolBar->addAction(saveAct);
+	m_pctrlXDirectToolBar->addAction(m_pNewProjectAct);
+	m_pctrlXDirectToolBar->addAction(m_pOpenAct);
+	m_pctrlXDirectToolBar->addAction(m_pSaveAct);
 	m_pctrlXDirectToolBar->addSeparator();
-	m_pctrlXDirectToolBar->addAction(OpPointsAct);
-	m_pctrlXDirectToolBar->addAction(PolarsAct);
+	m_pctrlXDirectToolBar->addAction(m_pOpPointsAct);
+	m_pctrlXDirectToolBar->addAction(m_pPolarsAct);
 	m_pctrlXDirectToolBar->addSeparator();
 	m_pctrlXDirectToolBar->addWidget(m_pctrlFoil);
 	m_pctrlXDirectToolBar->addWidget(m_pctrlPolar);
@@ -1678,76 +1687,76 @@ void MainFrame::createXDirectActions()
 {
 	QXDirect *pXDirect = (QXDirect*)m_pXDirect;
 
-	OpPointsAct = new QAction(QIcon(":/images/OnCpView.png"), tr("OpPoint view")+"\tF5", this);
-	OpPointsAct->setCheckable(true);
-	OpPointsAct->setStatusTip(tr("Show Operating point view"));
-	connect(OpPointsAct, SIGNAL(triggered()), pXDirect, SLOT(onOpPointView()));
+	m_pOpPointsAct = new QAction(QIcon(":/images/OnCpView.png"), tr("OpPoint view")+"\tF5", this);
+	m_pOpPointsAct->setCheckable(true);
+	m_pOpPointsAct->setStatusTip(tr("Show Operating point view"));
+	connect(m_pOpPointsAct, SIGNAL(triggered()), pXDirect, SLOT(onOpPointView()));
 
-	PolarsAct = new QAction(QIcon(":/images/OnPolarView.png"), tr("Polar view")+"\tF8", this);
-	PolarsAct->setCheckable(true);
-	PolarsAct->setStatusTip(tr("Show Polar view"));
-	connect(PolarsAct, SIGNAL(triggered()), pXDirect, SLOT(onPolarView()));
+	m_pPolarsAct = new QAction(QIcon(":/images/OnPolarView.png"), tr("Polar view")+"\tF8", this);
+	m_pPolarsAct->setCheckable(true);
+	m_pPolarsAct->setStatusTip(tr("Show Polar view"));
+	connect(m_pPolarsAct, SIGNAL(triggered()), pXDirect, SLOT(onPolarView()));
 
-	XDirectPolarFilter = new QAction(tr("Polar Filter"), this);
-	connect(XDirectPolarFilter, SIGNAL(triggered()), pXDirect, SLOT(onPolarFilter()));
+	m_pXDirectPolarFilter = new QAction(tr("Polar Filter"), this);
+	connect(m_pXDirectPolarFilter, SIGNAL(triggered()), pXDirect, SLOT(onPolarFilter()));
 
-	highlightOppAct	 = new QAction(tr("Highlight Current OpPoint")+"\t(Ctrl+H)", this);
-	highlightOppAct->setCheckable(true);
-	highlightOppAct->setStatusTip(tr("Highlights on the polar curve the currently selected operating point"));
-	connect(highlightOppAct, SIGNAL(triggered()), pXDirect, SLOT(onHighlightOpp()));
+	m_phighlightOppAct	 = new QAction(tr("Highlight Current OpPoint")+"\t(Ctrl+H)", this);
+	m_phighlightOppAct->setCheckable(true);
+	m_phighlightOppAct->setStatusTip(tr("Highlights on the polar curve the currently selected operating point"));
+	connect(m_phighlightOppAct, SIGNAL(triggered()), pXDirect, SLOT(onHighlightOpp()));
 
 
-	deleteCurFoil = new QAction(tr("Delete..."), this);
-	connect(deleteCurFoil, SIGNAL(triggered()), pXDirect, SLOT(onDeleteCurFoil()));
+	m_pDeleteCurFoil = new QAction(tr("Delete..."), this);
+	connect(m_pDeleteCurFoil, SIGNAL(triggered()), pXDirect, SLOT(onDeleteCurFoil()));
 
-	renameCurFoil = new QAction(tr("Rename...")+"\tF2", this);
-	connect(renameCurFoil, SIGNAL(triggered()), pXDirect, SLOT(onRenameCurFoil()));
+	m_pRenameCurFoil = new QAction(tr("Rename...")+"\tF2", this);
+	connect(m_pRenameCurFoil, SIGNAL(triggered()), pXDirect, SLOT(onRenameCurFoil()));
 
-	exportCurFoil = new QAction(tr("Export..."), this);
-	connect(exportCurFoil, SIGNAL(triggered()), pXDirect, SLOT(onExportCurFoil()));
+	m_pExportCurFoil = new QAction(tr("Export..."), this);
+	connect(m_pExportCurFoil, SIGNAL(triggered()), pXDirect, SLOT(onExportCurFoil()));
 
-	pDirectDuplicateCurFoil = new QAction(tr("Duplicate..."), this);
-	connect(pDirectDuplicateCurFoil, SIGNAL(triggered()), pXDirect, SLOT(onDuplicateFoil()));
+	m_pDirectDuplicateCurFoil = new QAction(tr("Duplicate..."), this);
+	connect(m_pDirectDuplicateCurFoil, SIGNAL(triggered()), pXDirect, SLOT(onDuplicateFoil()));
 
-	setCurFoilStyle = new QAction(tr("Set Style..."), this);
-	connect(setCurFoilStyle, SIGNAL(triggered()), this, SLOT(onCurFoilStyle()));
+	m_pSetCurFoilStyle = new QAction(tr("Set Style..."), this);
+	connect(m_pSetCurFoilStyle, SIGNAL(triggered()), this, SLOT(onCurFoilStyle()));
 
-	deleteFoilPolars = new QAction(tr("Delete associated polars"), this);
-	deleteFoilPolars->setStatusTip(tr("Delete all the polars associated to this foil"));
-	connect(deleteFoilPolars, SIGNAL(triggered()), pXDirect, SLOT(onDeleteFoilPolars()));
+	m_pDeleteFoilPolars = new QAction(tr("Delete associated polars"), this);
+	m_pDeleteFoilPolars->setStatusTip(tr("Delete all the polars associated to this foil"));
+	connect(m_pDeleteFoilPolars, SIGNAL(triggered()), pXDirect, SLOT(onDeleteFoilPolars()));
 
-	showFoilPolarsOnly = new QAction(tr("Show only associated polars"), this);
-	connect(showFoilPolarsOnly, SIGNAL(triggered()), pXDirect, SLOT(onShowFoilPolarsOnly()));
+	m_pShowFoilPolarsOnly = new QAction(tr("Show only associated polars"), this);
+	connect(m_pShowFoilPolarsOnly, SIGNAL(triggered()), pXDirect, SLOT(onShowFoilPolarsOnly()));
 
-	showFoilPolars = new QAction(tr("Show associated polars"), this);
-	connect(showFoilPolars, SIGNAL(triggered()), pXDirect, SLOT(onShowFoilPolars()));
+	m_pShowFoilPolars = new QAction(tr("Show associated polars"), this);
+	connect(m_pShowFoilPolars, SIGNAL(triggered()), pXDirect, SLOT(onShowFoilPolars()));
 
-	hideFoilPolars = new QAction(tr("Hide associated polars"), this);
-	connect(hideFoilPolars, SIGNAL(triggered()), pXDirect, SLOT(onHideFoilPolars()));
+	m_pHideFoilPolars = new QAction(tr("Hide associated polars"), this);
+	connect(m_pHideFoilPolars, SIGNAL(triggered()), pXDirect, SLOT(onHideFoilPolars()));
 
-	saveFoilPolars = new QAction(tr("Save associated polars"), this);
-	connect(saveFoilPolars, SIGNAL(triggered()), pXDirect, SLOT(onSavePolars()));
+	m_pSaveFoilPolars = new QAction(tr("Save associated polars"), this);
+	connect(m_pSaveFoilPolars, SIGNAL(triggered()), pXDirect, SLOT(onSavePolars()));
 
-	hidePolarOpps = new QAction(tr("Hide associated OpPoints"), this);
-	connect(hidePolarOpps, SIGNAL(triggered()), pXDirect, SLOT(onHidePolarOpps()));
+	m_pHidePolarOpps = new QAction(tr("Hide associated OpPoints"), this);
+	connect(m_pHidePolarOpps, SIGNAL(triggered()), pXDirect, SLOT(onHidePolarOpps()));
 
-	showPolarOpps = new QAction(tr("Show associated OpPoints"), this);
-	connect(showPolarOpps, SIGNAL(triggered()), pXDirect, SLOT(onShowPolarOpps()));
+	m_pShowPolarOpps = new QAction(tr("Show associated OpPoints"), this);
+	connect(m_pShowPolarOpps, SIGNAL(triggered()), pXDirect, SLOT(onShowPolarOpps()));
 
-	deletePolarOpps = new QAction(tr("Delete associated OpPoints"), this);
-	connect(deletePolarOpps, SIGNAL(triggered()), pXDirect, SLOT(onDeletePolarOpps()));
+	m_pDeletePolarOpps = new QAction(tr("Delete associated OpPoints"), this);
+	connect(m_pDeletePolarOpps, SIGNAL(triggered()), pXDirect, SLOT(onDeletePolarOpps()));
 
-	exportPolarOpps = new QAction(tr("Export associated OpPoints"), this);
-	connect(exportPolarOpps, SIGNAL(triggered()), pXDirect, SLOT(onExportPolarOpps()));
+	m_pExportPolarOpps = new QAction(tr("Export associated OpPoints"), this);
+	connect(m_pExportPolarOpps, SIGNAL(triggered()), pXDirect, SLOT(onExportPolarOpps()));
 
-	hideFoilOpps = new QAction(tr("Hide associated OpPoints"), this);
-	connect(hideFoilOpps, SIGNAL(triggered()), pXDirect, SLOT(onHideFoilOpps()));
+	m_pHideFoilOpps = new QAction(tr("Hide associated OpPoints"), this);
+	connect(m_pHideFoilOpps, SIGNAL(triggered()), pXDirect, SLOT(onHideFoilOpps()));
 
-	showFoilOpps = new QAction(tr("Show associated OpPoints"), this);
-	connect(showFoilOpps, SIGNAL(triggered()), pXDirect, SLOT(onShowFoilOpps()));
+	m_pShowFoilOpps = new QAction(tr("Show associated OpPoints"), this);
+	connect(m_pShowFoilOpps, SIGNAL(triggered()), pXDirect, SLOT(onShowFoilOpps()));
 
-	deleteFoilOpps = new QAction(tr("Delete associated OpPoints"), this);
-	connect(deleteFoilOpps, SIGNAL(triggered()), pXDirect, SLOT(onDeleteFoilOpps()));
+	m_pDeleteFoilOpps = new QAction(tr("Delete associated OpPoints"), this);
+	connect(m_pDeleteFoilOpps, SIGNAL(triggered()), pXDirect, SLOT(onDeleteFoilOpps()));
 
 	m_pDefinePolarAct = new QAction(tr("Define an Analysis")+"\tF6", this);
 	m_pDefinePolarAct->setStatusTip(tr("Defines a single analysis/polar"));
@@ -1757,27 +1766,27 @@ void MainFrame::createXDirectActions()
 	m_pBatchAnalysisAct->setStatusTip(tr("Launches a batch of analysis calculation for a specified range or list of Reynolds numbers"));
 	connect(m_pBatchAnalysisAct, SIGNAL(triggered()), pXDirect, SLOT(onBatchAnalysis()));
 
-	MultiThreadedBatchAct = new QAction(tr("Multi-threaded Batch Analysis")+"\tCtrl+F6", this);
-	MultiThreadedBatchAct->setStatusTip(tr("Launches a batch of analysis calculation using all available computer CPU cores"));
-	connect(MultiThreadedBatchAct, SIGNAL(triggered()), pXDirect, SLOT(onMultiThreadedBatchAnalysis()));
+	m_pMultiThreadedBatchAct = new QAction(tr("Multi-threaded Batch Analysis")+"\tCtrl+F6", this);
+	m_pMultiThreadedBatchAct->setStatusTip(tr("Launches a batch of analysis calculation using all available computer CPU cores"));
+	connect(m_pMultiThreadedBatchAct, SIGNAL(triggered()), pXDirect, SLOT(onMultiThreadedBatchAnalysis()));
 
-	deletePolar = new QAction(tr("Delete"), this);
-	deletePolar->setStatusTip(tr("Deletes the currently selected polar"));
-	connect(deletePolar, SIGNAL(triggered()), pXDirect, SLOT(onDeleteCurPolar()));
+	m_pDeletePolar = new QAction(tr("Delete"), this);
+	m_pDeletePolar->setStatusTip(tr("Deletes the currently selected polar"));
+	connect(m_pDeletePolar, SIGNAL(triggered()), pXDirect, SLOT(onDeleteCurPolar()));
 
-	resetCurPolar = new QAction(tr("Reset"), this);
-	resetCurPolar->setStatusTip(tr("Deletes the contents of the currently selected polar"));
-	connect(resetCurPolar, SIGNAL(triggered()), pXDirect, SLOT(onResetCurPolar()));
+	m_pResetCurPolar = new QAction(tr("Reset"), this);
+	m_pResetCurPolar->setStatusTip(tr("Deletes the contents of the currently selected polar"));
+	connect(m_pResetCurPolar, SIGNAL(triggered()), pXDirect, SLOT(onResetCurPolar()));
 
-	editCurPolar = new QAction(tr("Edit"), this);
-	editCurPolar->setStatusTip(tr("Remove the unconverged or erroneaous points of the currently selected polar"));
-	connect(editCurPolar, SIGNAL(triggered()), pXDirect, SLOT(onEditCurPolar()));
+	m_pEditCurPolar = new QAction(tr("Edit"), this);
+	m_pEditCurPolar->setStatusTip(tr("Remove the unconverged or erroneaous points of the currently selected polar"));
+	connect(m_pEditCurPolar, SIGNAL(triggered()), pXDirect, SLOT(onEditCurPolar()));
 
-	exportCurPolar = new QAction(tr("Export"), this);
-	connect(exportCurPolar, SIGNAL(triggered()), pXDirect, SLOT(onExportCurPolar()));
+	m_pExportCurPolar = new QAction(tr("Export"), this);
+	connect(m_pExportCurPolar, SIGNAL(triggered()), pXDirect, SLOT(onExportCurPolar()));
 
-	exportAllPolars = new QAction(tr("Export all polars"), this);
-	connect(exportAllPolars, SIGNAL(triggered()), pXDirect, SLOT(onExportAllPolars()));
+	m_pExportAllPolars = new QAction(tr("Export all polars"), this);
+	connect(m_pExportAllPolars, SIGNAL(triggered()), pXDirect, SLOT(onExportAllPolars()));
 
 	m_pXDirectStyleAct = new QAction(tr("Define Styles"), this);
 	m_pXDirectStyleAct->setStatusTip(tr("Define the style for the boundary layer and the pressure arrows"));
@@ -1792,141 +1801,141 @@ void MainFrame::createXDirectActions()
 	m_pResetFoilScale = new QAction(tr("Reset Foil Scale"), this);
 	m_pResetFoilScale->setStatusTip(tr("Resets the foil's scale to original size"));
 
-	ManageFoilsAct = new QAction(tr("Manage Foils"), this);
-	ManageFoilsAct->setShortcut(Qt::Key_F7);
-	connect(ManageFoilsAct, SIGNAL(triggered()), this, SLOT(onManageFoils()));
+	m_pManageFoilsAct = new QAction(tr("Manage Foils"), this);
+	m_pManageFoilsAct->setShortcut(Qt::Key_F7);
+	connect(m_pManageFoilsAct, SIGNAL(triggered()), this, SLOT(onManageFoils()));
 
-	RenamePolarAct = new QAction(tr("Rename"), this);
-	connect(RenamePolarAct, SIGNAL(triggered()), pXDirect, SLOT(onRenamePolar()));
-
-
-	showInviscidCurve = new QAction(tr("Show Inviscid Curve"), this);
-	showInviscidCurve->setCheckable(true);
-	showInviscidCurve->setStatusTip(tr("Display the Opp's inviscid curve"));
-	connect(showInviscidCurve, SIGNAL(triggered()), pXDirect, SLOT(onCpi()));
+	m_pRenamePolarAct = new QAction(tr("Rename"), this);
+	connect(m_pRenamePolarAct, SIGNAL(triggered()), pXDirect, SLOT(onRenamePolar()));
 
 
-	showAllPolars = new QAction(tr("Show All Polars"), this);
-	connect(showAllPolars, SIGNAL(triggered()), pXDirect, SLOT(onShowAllPolars()));
+	m_pShowInviscidCurve = new QAction(tr("Show Inviscid Curve"), this);
+	m_pShowInviscidCurve->setCheckable(true);
+	m_pShowInviscidCurve->setStatusTip(tr("Display the Opp's inviscid curve"));
+	connect(m_pShowInviscidCurve, SIGNAL(triggered()), pXDirect, SLOT(onCpi()));
 
-	hideAllPolars = new QAction(tr("Hide All Polars"), this);
-	connect(hideAllPolars, SIGNAL(triggered()), pXDirect, SLOT(onHideAllPolars()));
 
-	showCurOppOnly = new QAction(tr("Show Current Opp Only"), this);
-	showCurOppOnly->setCheckable(true);
-	connect(showCurOppOnly, SIGNAL(triggered()), pXDirect, SLOT(onCurOppOnly()));
+	m_pShowAllPolars = new QAction(tr("Show All Polars"), this);
+	connect(m_pShowAllPolars, SIGNAL(triggered()), pXDirect, SLOT(onShowAllPolars()));
 
-	showAllOpPoints = new QAction(tr("Show All Opps"), this);
-	connect(showAllOpPoints, SIGNAL(triggered()), pXDirect, SLOT(onShowAllOpps()));
+	m_pHideAllPolars = new QAction(tr("Hide All Polars"), this);
+	connect(m_pHideAllPolars, SIGNAL(triggered()), pXDirect, SLOT(onHideAllPolars()));
 
-	hideAllOpPoints = new QAction(tr("Hide All Opps"), this);
-	connect(hideAllOpPoints, SIGNAL(triggered()), pXDirect, SLOT(onHideAllOpps()));
+	m_pShowCurOppOnly = new QAction(tr("Show Current Opp Only"), this);
+	m_pShowCurOppOnly->setCheckable(true);
+	connect(m_pShowCurOppOnly, SIGNAL(triggered()), pXDirect, SLOT(onCurOppOnly()));
 
-	exportCurOpp = new QAction(tr("Export"), this);
-	connect(exportCurOpp, SIGNAL(triggered()), pXDirect, SLOT(onExportCurOpp()));
+	m_pShowAllOpPoints = new QAction(tr("Show All Opps"), this);
+	connect(m_pShowAllOpPoints, SIGNAL(triggered()), pXDirect, SLOT(onShowAllOpps()));
 
-	deleteCurOpp = new QAction(tr("Delete"), this);
-	connect(deleteCurOpp, SIGNAL(triggered()), pXDirect, SLOT(onDelCurOpp()));
+	m_pHideAllOpPoints = new QAction(tr("Hide All Opps"), this);
+	connect(m_pHideAllOpPoints, SIGNAL(triggered()), pXDirect, SLOT(onHideAllOpps()));
 
-	getOppProps = new QAction(tr("Properties"), this);
-	connect(getOppProps, SIGNAL(triggered()), pXDirect, SLOT(onOpPointProps()));
+	m_pExportCurOpp = new QAction(tr("Export"), this);
+	connect(m_pExportCurOpp, SIGNAL(triggered()), pXDirect, SLOT(onExportCurOpp()));
 
-	getPolarProps = new QAction(tr("Properties"), this);
-	connect(getPolarProps, SIGNAL(triggered()), pXDirect, SLOT(onPolarProps()));
+	m_pDeleteCurOpp = new QAction(tr("Delete"), this);
+	connect(m_pDeleteCurOpp, SIGNAL(triggered()), pXDirect, SLOT(onDelCurOpp()));
 
-	viewXFoilAdvanced = new QAction(tr("XFoil Advanced Settings"), this);
+	m_pGetOppProps = new QAction(tr("Properties"), this);
+	connect(m_pGetOppProps, SIGNAL(triggered()), pXDirect, SLOT(onOpPointProps()));
+
+	m_pGetPolarProps = new QAction(tr("Properties"), this);
+	connect(m_pGetPolarProps, SIGNAL(triggered()), pXDirect, SLOT(onPolarProps()));
+
+	m_pViewXFoilAdvanced = new QAction(tr("XFoil Advanced Settings"), this);
 	m_pBatchAnalysisAct->setStatusTip(tr("Tip : you don't want to use that option..."));
-	connect(viewXFoilAdvanced, SIGNAL(triggered()), pXDirect, SLOT(onXFoilAdvanced()));
+	connect(m_pViewXFoilAdvanced, SIGNAL(triggered()), pXDirect, SLOT(onXFoilAdvanced()));
  
-	viewLogFile = new QAction(tr("View Log File")+"\t(L)", this);
-	connect(viewLogFile, SIGNAL(triggered()), this, SLOT(onLogFile()));
+	m_pViewLogFile = new QAction(tr("View Log File")+"\t(L)", this);
+	connect(m_pViewLogFile, SIGNAL(triggered()), this, SLOT(onLogFile()));
 
-	DerotateFoil = new QAction(tr("De-rotate the Foil"), this);
-	connect(DerotateFoil, SIGNAL(triggered()), pXDirect, SLOT(onDerotateFoil()));
+	m_pDerotateFoil = new QAction(tr("De-rotate the Foil"), this);
+	connect(m_pDerotateFoil, SIGNAL(triggered()), pXDirect, SLOT(onDerotateFoil()));
 
-	NormalizeFoil = new QAction(tr("Normalize the Foil"), this);
-	connect(NormalizeFoil, SIGNAL(triggered()), pXDirect, SLOT(onNormalizeFoil()));
+	m_pNormalizeFoil = new QAction(tr("Normalize the Foil"), this);
+	connect(m_pNormalizeFoil, SIGNAL(triggered()), pXDirect, SLOT(onNormalizeFoil()));
 
-	RefineLocalFoil = new QAction(tr("Refine Locally")+"\t(Shift+F3)", this);
-	connect(RefineLocalFoil, SIGNAL(triggered()), pXDirect, SLOT(onCadd()));
+	m_pRefineLocalFoil = new QAction(tr("Refine Locally")+"\t(Shift+F3)", this);
+	connect(m_pRefineLocalFoil, SIGNAL(triggered()), pXDirect, SLOT(onCadd()));
 
-	RefineGlobalFoil = new QAction(tr("Refine Globally")+"\t(F3)", this);
-	connect(RefineGlobalFoil, SIGNAL(triggered()), pXDirect, SLOT(onRefinePanelsGlobally()));
+	m_pRefineGlobalFoil = new QAction(tr("Refine Globally")+"\t(F3)", this);
+	connect(m_pRefineGlobalFoil, SIGNAL(triggered()), pXDirect, SLOT(onRefinePanelsGlobally()));
 
-	EditCoordsFoil = new QAction(tr("Edit Foil Coordinates"), this);
-	connect(EditCoordsFoil, SIGNAL(triggered()), pXDirect, SLOT(onFoilCoordinates()));
+	m_pEditCoordsFoil = new QAction(tr("Edit Foil Coordinates"), this);
+	connect(m_pEditCoordsFoil, SIGNAL(triggered()), pXDirect, SLOT(onFoilCoordinates()));
 
-	ScaleFoil = new QAction(tr("Scale camber and thickness")+"\t(F9)", this);
-	connect(ScaleFoil, SIGNAL(triggered()), pXDirect, SLOT(onFoilGeom()));
+	m_pScaleFoil = new QAction(tr("Scale camber and thickness")+"\t(F9)", this);
+	connect(m_pScaleFoil, SIGNAL(triggered()), pXDirect, SLOT(onFoilGeom()));
 
-	SetTEGap = new QAction(tr("Set T.E. Gap"), this);
-	connect(SetTEGap, SIGNAL(triggered()), pXDirect, SLOT(onSetTEGap()));
+	m_pSetTEGap = new QAction(tr("Set T.E. Gap"), this);
+	connect(m_pSetTEGap, SIGNAL(triggered()), pXDirect, SLOT(onSetTEGap()));
 
-	SetLERadius = new QAction(tr("Set L.E. Radius"), this);
-	connect(SetLERadius, SIGNAL(triggered()), pXDirect, SLOT(onSetLERadius()));
+	m_pSetLERadius = new QAction(tr("Set L.E. Radius"), this);
+	connect(m_pSetLERadius, SIGNAL(triggered()), pXDirect, SLOT(onSetLERadius()));
 
-	SetFlap = new QAction(tr("Set Flap")+"\t(F10)", this);
-	connect(SetFlap, SIGNAL(triggered()), pXDirect, SLOT(onSetFlap()));
+	m_pSetFlap = new QAction(tr("Set Flap")+"\t(F10)", this);
+	connect(m_pSetFlap, SIGNAL(triggered()), pXDirect, SLOT(onSetFlap()));
 
-	InterpolateFoils = new QAction(tr("Interpolate Foils")+"\t(F11)", this);
-	connect(InterpolateFoils, SIGNAL(triggered()), pXDirect, SLOT(onInterpolateFoils()));
+	m_pInterpolateFoils = new QAction(tr("Interpolate Foils")+"\t(F11)", this);
+	connect(m_pInterpolateFoils, SIGNAL(triggered()), pXDirect, SLOT(onInterpolateFoils()));
 
-	NacaFoils = new QAction(tr("Naca Foils"), this);
-	connect(NacaFoils, SIGNAL(triggered()), pXDirect, SLOT(onNacaFoils()));
+	m_pNacaFoils = new QAction(tr("Naca Foils"), this);
+	connect(m_pNacaFoils, SIGNAL(triggered()), pXDirect, SLOT(onNacaFoils()));
 
-	setCpVarGraph = new QAction(tr("Cp Variable"), this);
-	setCpVarGraph->setCheckable(true);
-	setCpVarGraph->setStatusTip(tr("Sets Cp vs. chord graph"));
-	connect(setCpVarGraph, SIGNAL(triggered()), pXDirect, SLOT(onCpGraph()));
+	m_psetCpVarGraph = new QAction(tr("Cp Variable"), this);
+	m_psetCpVarGraph->setCheckable(true);
+	m_psetCpVarGraph->setStatusTip(tr("Sets Cp vs. chord graph"));
+	connect(m_psetCpVarGraph, SIGNAL(triggered()), pXDirect, SLOT(onCpGraph()));
 
-	setQVarGraph = new QAction(tr("Q Variable"), this);
-	setQVarGraph->setCheckable(true);
-	setQVarGraph->setStatusTip(tr("Sets Speed vs. chord graph"));
-	connect(setQVarGraph, SIGNAL(triggered()), pXDirect, SLOT(onQGraph()));
+	m_psetQVarGraph = new QAction(tr("Q Variable"), this);
+	m_psetQVarGraph->setCheckable(true);
+	m_psetQVarGraph->setStatusTip(tr("Sets Speed vs. chord graph"));
+	connect(m_psetQVarGraph, SIGNAL(triggered()), pXDirect, SLOT(onQGraph()));
 
 	m_pExportCurXFoilRes = new QAction(tr("Export Cur. XFoil Results"), this);
 	m_pExportCurXFoilRes->setStatusTip(tr("Sets Speed vs. chord graph"));
 	connect(m_pExportCurXFoilRes, SIGNAL(triggered()), pXDirect, SLOT(onExportCurXFoilResults()));
 
-	CurXFoilCtPlot = new QAction(tr("Max. Shear Coefficient"), this);
-	CurXFoilCtPlot->setCheckable(true);
-	connect(CurXFoilCtPlot, SIGNAL(triggered()), pXDirect, SLOT(onCtPlot()));
+	m_pCurXFoilCtPlot = new QAction(tr("Max. Shear Coefficient"), this);
+	m_pCurXFoilCtPlot->setCheckable(true);
+	connect(m_pCurXFoilCtPlot, SIGNAL(triggered()), pXDirect, SLOT(onCtPlot()));
 
-	CurXFoilDbPlot = new QAction(tr("Bottom Side D* and Theta"), this);
-	CurXFoilDbPlot->setCheckable(true);
-	connect(CurXFoilDbPlot, SIGNAL(triggered()), pXDirect, SLOT(onDbPlot()));
+	m_CurXFoilDbPlot = new QAction(tr("Bottom Side D* and Theta"), this);
+	m_CurXFoilDbPlot->setCheckable(true);
+	connect(m_CurXFoilDbPlot, SIGNAL(triggered()), pXDirect, SLOT(onDbPlot()));
 
-	CurXFoilDtPlot = new QAction(tr("Top Side D* and Theta"), this);
-	CurXFoilDtPlot->setCheckable(true);
-	connect(CurXFoilDtPlot, SIGNAL(triggered()), pXDirect, SLOT(onDtPlot()));
+	m_pCurXFoilDtPlot = new QAction(tr("Top Side D* and Theta"), this);
+	m_pCurXFoilDtPlot->setCheckable(true);
+	connect(m_pCurXFoilDtPlot, SIGNAL(triggered()), pXDirect, SLOT(onDtPlot()));
 
-	CurXFoilRtLPlot = new QAction(tr("Log(Re_Theta)"), this);
-	CurXFoilRtLPlot->setCheckable(true);
-	connect(CurXFoilRtLPlot, SIGNAL(triggered()), pXDirect, SLOT(onRtLPlot()));
+	m_pCurXFoilRtLPlot = new QAction(tr("Log(Re_Theta)"), this);
+	m_pCurXFoilRtLPlot->setCheckable(true);
+	connect(m_pCurXFoilRtLPlot, SIGNAL(triggered()), pXDirect, SLOT(onRtLPlot()));
 
-	CurXFoilRtPlot = new QAction(tr("Re_Theta"), this);
-	CurXFoilRtPlot->setCheckable(true);
-	connect(CurXFoilRtPlot, SIGNAL(triggered()), pXDirect, SLOT(onRtPlot()));
+	m_pCurXFoilRtPlot = new QAction(tr("Re_Theta"), this);
+	m_pCurXFoilRtPlot->setCheckable(true);
+	connect(m_pCurXFoilRtPlot, SIGNAL(triggered()), pXDirect, SLOT(onRtPlot()));
 
-	CurXFoilNPlot = new QAction(tr("Amplification Ratio"), this);
-	CurXFoilNPlot->setCheckable(true);
-	connect(CurXFoilNPlot, SIGNAL(triggered()), pXDirect, SLOT(onNPlot()));
+	m_pCurXFoilNPlot = new QAction(tr("Amplification Ratio"), this);
+	m_pCurXFoilNPlot->setCheckable(true);
+	connect(m_pCurXFoilNPlot, SIGNAL(triggered()), pXDirect, SLOT(onNPlot()));
 
-	CurXFoilCdPlot = new QAction(tr("Dissipation Coefficient"), this);
-	CurXFoilCdPlot->setCheckable(true);
-	connect(CurXFoilCdPlot, SIGNAL(triggered()), pXDirect, SLOT(onCdPlot()));
+	m_pCurXFoilCdPlot = new QAction(tr("Dissipation Coefficient"), this);
+	m_pCurXFoilCdPlot->setCheckable(true);
+	connect(m_pCurXFoilCdPlot, SIGNAL(triggered()), pXDirect, SLOT(onCdPlot()));
 
-	CurXFoilCfPlot = new QAction(tr("Skin Friction Coefficient"), this);
-	CurXFoilCfPlot->setCheckable(true);
-	connect(CurXFoilCfPlot, SIGNAL(triggered()), pXDirect, SLOT(onCfPlot()));
+	m_pCurXFoilCfPlot = new QAction(tr("Skin Friction Coefficient"), this);
+	m_pCurXFoilCfPlot->setCheckable(true);
+	connect(m_pCurXFoilCfPlot, SIGNAL(triggered()), pXDirect, SLOT(onCfPlot()));
 
-	CurXFoilUePlot = new QAction(tr("Edge Velocity"), this);
-	CurXFoilUePlot->setCheckable(true);
-	connect(CurXFoilUePlot, SIGNAL(triggered()), pXDirect, SLOT(onUePlot()));
+	m_pCurXFoilUePlot = new QAction(tr("Edge Velocity"), this);
+	m_pCurXFoilUePlot->setCheckable(true);
+	connect(m_pCurXFoilUePlot, SIGNAL(triggered()), pXDirect, SLOT(onUePlot()));
 
-	CurXFoilHPlot = new QAction(tr("Kinematic Shape Parameter"), this);
-	CurXFoilHPlot->setCheckable(true);
-	connect(CurXFoilHPlot, SIGNAL(triggered()), pXDirect, SLOT(onHPlot()));
+	m_pCurXFoilHPlot = new QAction(tr("Kinematic Shape Parameter"), this);
+	m_pCurXFoilHPlot->setCheckable(true);
+	connect(m_pCurXFoilHPlot, SIGNAL(triggered()), pXDirect, SLOT(onHPlot()));
 
 //	m_pImportJavaFoilPolar = new QAction(tr("Import JavaFoil Polar"), this);
 //	connect(m_pImportJavaFoilPolar, SIGNAL(triggered()), pXDirect, SLOT(onImportJavaFoilPolar()));
@@ -1941,34 +1950,34 @@ void MainFrame::createXDirectMenus()
 	//MainMenu for XDirect Application
 	m_pXDirectViewMenu = menuBar()->addMenu(tr("&View"));
 	{
-		m_pXDirectViewMenu->addAction(OpPointsAct);
-		m_pXDirectViewMenu->addAction(PolarsAct);
+		m_pXDirectViewMenu->addAction(m_pOpPointsAct);
+		m_pXDirectViewMenu->addAction(m_pPolarsAct);
 		m_pXDirectViewMenu->addSeparator();
-		m_pXDirectViewMenu->addAction(saveViewToImageFileAct);
+		m_pXDirectViewMenu->addAction(m_pSaveViewToImageFileAct);
 	}
 
 	m_pXDirectFoilMenu = menuBar()->addMenu(tr("&Foil"));
 	{
-		m_pXDirectFoilMenu->addAction(ManageFoilsAct);
+		m_pXDirectFoilMenu->addAction(m_pManageFoilsAct);
 		m_pXDirectFoilMenu->addSeparator();
 		m_pCurrentFoilMenu = m_pXDirectFoilMenu->addMenu(tr("Current Foil"));
 		{
-			m_pCurrentFoilMenu->addAction(setCurFoilStyle);
+			m_pCurrentFoilMenu->addAction(m_pSetCurFoilStyle);
 			m_pCurrentFoilMenu->addSeparator();
-			m_pCurrentFoilMenu->addAction(exportCurFoil);
-			m_pCurrentFoilMenu->addAction(renameCurFoil);
-			m_pCurrentFoilMenu->addAction(deleteCurFoil);
-			m_pCurrentFoilMenu->addAction(pDirectDuplicateCurFoil);
+			m_pCurrentFoilMenu->addAction(m_pExportCurFoil);
+			m_pCurrentFoilMenu->addAction(m_pRenameCurFoil);
+			m_pCurrentFoilMenu->addAction(m_pDeleteCurFoil);
+			m_pCurrentFoilMenu->addAction(m_pDirectDuplicateCurFoil);
 			m_pCurrentFoilMenu->addSeparator();
-			m_pCurrentFoilMenu->addAction(showFoilPolarsOnly);
-			m_pCurrentFoilMenu->addAction(showFoilPolars);
-			m_pCurrentFoilMenu->addAction(hideFoilPolars);
-			m_pCurrentFoilMenu->addAction(deleteFoilPolars);
-			m_pCurrentFoilMenu->addAction(saveFoilPolars);
+			m_pCurrentFoilMenu->addAction(m_pShowFoilPolarsOnly);
+			m_pCurrentFoilMenu->addAction(m_pShowFoilPolars);
+			m_pCurrentFoilMenu->addAction(m_pHideFoilPolars);
+			m_pCurrentFoilMenu->addAction(m_pDeleteFoilPolars);
+			m_pCurrentFoilMenu->addAction(m_pSaveFoilPolars);
 			m_pCurrentFoilMenu->addSeparator();
-			m_pCurrentFoilMenu->addAction(showFoilOpps);
-			m_pCurrentFoilMenu->addAction(hideFoilOpps);
-			m_pCurrentFoilMenu->addAction(deleteFoilOpps);
+			m_pCurrentFoilMenu->addAction(m_pShowFoilOpps);
+			m_pCurrentFoilMenu->addAction(m_pHideFoilOpps);
+			m_pCurrentFoilMenu->addAction(m_pDeleteFoilOpps);
 		}
 		m_pXDirectFoilMenu->addSeparator();
 		m_pXDirectFoilMenu->addAction(m_pResetFoilScale);
@@ -1979,29 +1988,29 @@ void MainFrame::createXDirectMenus()
 
 	m_pDesignMenu = menuBar()->addMenu(tr("&Design"));
 	{
-		m_pDesignMenu->addAction(NormalizeFoil);
-		m_pDesignMenu->addAction(DerotateFoil);
-		m_pDesignMenu->addAction(RefineGlobalFoil);
-		m_pDesignMenu->addAction(RefineLocalFoil);
-		m_pDesignMenu->addAction(EditCoordsFoil);
-		m_pDesignMenu->addAction(ScaleFoil);
-		m_pDesignMenu->addAction(SetTEGap);
-		m_pDesignMenu->addAction(SetLERadius);
-		m_pDesignMenu->addAction(SetFlap);
+		m_pDesignMenu->addAction(m_pNormalizeFoil);
+		m_pDesignMenu->addAction(m_pDerotateFoil);
+		m_pDesignMenu->addAction(m_pRefineGlobalFoil);
+		m_pDesignMenu->addAction(m_pRefineLocalFoil);
+		m_pDesignMenu->addAction(m_pEditCoordsFoil);
+		m_pDesignMenu->addAction(m_pScaleFoil);
+		m_pDesignMenu->addAction(m_pSetTEGap);
+		m_pDesignMenu->addAction(m_pSetLERadius);
+		m_pDesignMenu->addAction(m_pSetFlap);
 		m_pDesignMenu->addSeparator();
-		m_pDesignMenu->addAction(InterpolateFoils);
-		m_pDesignMenu->addAction(NacaFoils);
+		m_pDesignMenu->addAction(m_pInterpolateFoils);
+		m_pDesignMenu->addAction(m_pNacaFoils);
 	}
 
 	m_pXFoilAnalysisMenu = menuBar()->addMenu(tr("Analysis"));
 	{
 		m_pXFoilAnalysisMenu->addAction(m_pDefinePolarAct);
 		m_pXFoilAnalysisMenu->addAction(m_pBatchAnalysisAct);
-		m_pXFoilAnalysisMenu->addAction(MultiThreadedBatchAct);
+		m_pXFoilAnalysisMenu->addAction(m_pMultiThreadedBatchAct);
 		m_pXFoilAnalysisMenu->addSeparator();
 //		XFoilAnalysisMenu->addAction(resetXFoil);
-		m_pXFoilAnalysisMenu->addAction(viewXFoilAdvanced);
-		m_pXFoilAnalysisMenu->addAction(viewLogFile);
+		m_pXFoilAnalysisMenu->addAction(m_pViewXFoilAdvanced);
+		m_pXFoilAnalysisMenu->addAction(m_pViewLogFile);
 		m_pXFoilAnalysisMenu->addSeparator();
 		m_pXFoilAnalysisMenu->addAction(m_pExportCurXFoilRes);
 	}
@@ -2010,28 +2019,28 @@ void MainFrame::createXDirectMenus()
 	{
 		m_pCurrentPolarMenu = m_pPolarMenu->addMenu(tr("Current Polar"));
 		{
-			m_pCurrentPolarMenu->addAction(getPolarProps);
-			m_pCurrentPolarMenu->addAction(editCurPolar);
-			m_pCurrentPolarMenu->addAction(resetCurPolar);
-			m_pCurrentPolarMenu->addAction(deletePolar);
-			m_pCurrentPolarMenu->addAction(RenamePolarAct);
-			m_pCurrentPolarMenu->addAction(exportCurPolar);
+			m_pCurrentPolarMenu->addAction(m_pGetPolarProps);
+			m_pCurrentPolarMenu->addAction(m_pEditCurPolar);
+			m_pCurrentPolarMenu->addAction(m_pResetCurPolar);
+			m_pCurrentPolarMenu->addAction(m_pDeletePolar);
+			m_pCurrentPolarMenu->addAction(m_pRenamePolarAct);
+			m_pCurrentPolarMenu->addAction(m_pExportCurPolar);
 			m_pCurrentPolarMenu->addSeparator();
-			m_pCurrentPolarMenu->addAction(showPolarOpps);
-			m_pCurrentPolarMenu->addAction(hidePolarOpps);
-			m_pCurrentPolarMenu->addAction(deletePolarOpps);
-			m_pCurrentPolarMenu->addAction(exportPolarOpps);
+			m_pCurrentPolarMenu->addAction(m_pShowPolarOpps);
+			m_pCurrentPolarMenu->addAction(m_pHidePolarOpps);
+			m_pCurrentPolarMenu->addAction(m_pDeletePolarOpps);
+			m_pCurrentPolarMenu->addAction(m_pExportPolarOpps);
 		}
 		m_pPolarMenu->addSeparator();
 		m_pPolarMenu->addAction(m_pImportXFoilPolar);
 	//	PolarMenu->addAction(m_pImportJavaFoilPolar);
 		m_pPolarMenu->addSeparator();
-		m_pPolarMenu->addAction(exportAllPolars);
+		m_pPolarMenu->addAction(m_pExportAllPolars);
 		m_pPolarMenu->addSeparator();
-		m_pPolarMenu->addAction(XDirectPolarFilter);
+		m_pPolarMenu->addAction(m_pXDirectPolarFilter);
 		m_pPolarMenu->addSeparator();
-		m_pPolarMenu->addAction(showAllPolars);
-		m_pPolarMenu->addAction(hideAllPolars);
+		m_pPolarMenu->addAction(m_pShowAllPolars);
+		m_pPolarMenu->addAction(m_pHideAllPolars);
 		m_pPolarMenu->addSeparator();
 /*		m_pGraphPolarMenu = m_pPolarMenu->addMenu(tr("Polar Graphs"));
 		{
@@ -2053,39 +2062,41 @@ void MainFrame::createXDirectMenus()
 	{
 		m_pCurrentOppMenu = m_pOpPointMenu->addMenu(tr("Current OpPoint"));
 		{
-			m_pCurrentOppMenu->addAction(exportCurOpp);
-			m_pCurrentOppMenu->addAction(deleteCurOpp);
-			m_pCurrentOppMenu->addAction(getOppProps);
+			m_pCurrentOppMenu->addAction(m_pExportCurOpp);
+			m_pCurrentOppMenu->addAction(m_pDeleteCurOpp);
+			m_pCurrentOppMenu->addAction(m_pGetOppProps);
 		}
+		m_pOpPointMenu->addSeparator();
 		m_pXDirectCpGraphMenu = m_pOpPointMenu->addMenu(tr("Cp Graph"));
 		{
-			m_pXDirectCpGraphMenu->addAction(setCpVarGraph);
-			m_pXDirectCpGraphMenu->addAction(setQVarGraph);
+			m_pXDirectCpGraphMenu->addAction(m_psetCpVarGraph);
+			m_pXDirectCpGraphMenu->addAction(m_psetQVarGraph);
 			m_pXDirectCpGraphMenu->addSeparator();
-			m_pXDirectCpGraphMenu->addAction(showInviscidCurve);
+			m_pXDirectCpGraphMenu->addAction(m_pShowInviscidCurve);
 			m_pXDirectCpGraphMenu->addSeparator();
 			m_pCurXFoilResults = m_pXDirectCpGraphMenu->addMenu(tr("Current XFoil Results"));
 			{
 				m_pCurXFoilResults->addSeparator();
-				m_pCurXFoilResults->addAction(CurXFoilCtPlot);
-				m_pCurXFoilResults->addAction(CurXFoilDbPlot);
-				m_pCurXFoilResults->addAction(CurXFoilDtPlot);
-				m_pCurXFoilResults->addAction(CurXFoilRtLPlot);
-				m_pCurXFoilResults->addAction(CurXFoilRtPlot);
-				m_pCurXFoilResults->addAction(CurXFoilNPlot);
-				m_pCurXFoilResults->addAction(CurXFoilCdPlot);
-				m_pCurXFoilResults->addAction(CurXFoilCfPlot);
-				m_pCurXFoilResults->addAction(CurXFoilUePlot);
-				m_pCurXFoilResults->addAction(CurXFoilHPlot);
+				m_pCurXFoilResults->addAction(m_pCurXFoilCtPlot);
+				m_pCurXFoilResults->addAction(m_CurXFoilDbPlot);
+				m_pCurXFoilResults->addAction(m_pCurXFoilDtPlot);
+				m_pCurXFoilResults->addAction(m_pCurXFoilRtLPlot);
+				m_pCurXFoilResults->addAction(m_pCurXFoilRtPlot);
+				m_pCurXFoilResults->addAction(m_pCurXFoilNPlot);
+				m_pCurXFoilResults->addAction(m_pCurXFoilCdPlot);
+				m_pCurXFoilResults->addAction(m_pCurXFoilCfPlot);
+				m_pCurXFoilResults->addAction(m_pCurXFoilUePlot);
+				m_pCurXFoilResults->addAction(m_pCurXFoilHPlot);
 			}
 			m_pXDirectCpGraphMenu->addSeparator();
 			m_pXDirectCpGraphMenu->addAction(m_pResetCurGraphScales);
 //			m_pXDirectCpGraphMenu->addAction(exportCurGraphAct);
 		}
+		m_pOpPointMenu->addAction(m_pShowMousePosAct);
 		m_pOpPointMenu->addSeparator();
-		m_pOpPointMenu->addAction(showCurOppOnly);
-		m_pOpPointMenu->addAction(hideAllOpPoints);
-		m_pOpPointMenu->addAction(showAllOpPoints);
+		m_pOpPointMenu->addAction(m_pShowCurOppOnly);
+		m_pOpPointMenu->addAction(m_pHideAllOpPoints);
+		m_pOpPointMenu->addAction(m_pShowAllOpPoints);
 	}
 
 	//XDirect foil Context Menu
@@ -2099,9 +2110,9 @@ void MainFrame::createXDirectMenus()
 		m_pOperFoilCtxMenu->addSeparator();//_______________
 		m_pCurOppCtxMenu = m_pOperFoilCtxMenu->addMenu(tr("Current OpPoint"));
 		{
-			m_pCurOppCtxMenu->addAction(exportCurOpp);
-			m_pCurOppCtxMenu->addAction(deleteCurOpp);
-			m_pCurOppCtxMenu->addAction(getOppProps);
+			m_pCurOppCtxMenu->addAction(m_pExportCurOpp);
+			m_pCurOppCtxMenu->addAction(m_pDeleteCurOpp);
+			m_pCurOppCtxMenu->addAction(m_pGetOppProps);
 		}
 		m_pOperFoilCtxMenu->addAction(m_pShowMousePosAct);
 
@@ -2112,21 +2123,21 @@ void MainFrame::createXDirectMenus()
 		m_pOperFoilCtxMenu->addSeparator();//_______________
 		m_pOperFoilCtxMenu->addAction(m_pDefinePolarAct);
 		m_pOperFoilCtxMenu->addAction(m_pBatchAnalysisAct);
-		m_pOperFoilCtxMenu->addAction(MultiThreadedBatchAct);
+		m_pOperFoilCtxMenu->addAction(m_pMultiThreadedBatchAct);
 		m_pOperFoilCtxMenu->addSeparator();//_______________
-		m_pOperFoilCtxMenu->addAction(showAllPolars);
-		m_pOperFoilCtxMenu->addAction(hideAllPolars);
+		m_pOperFoilCtxMenu->addAction(m_pShowAllPolars);
+		m_pOperFoilCtxMenu->addAction(m_pHideAllPolars);
 		m_pOperFoilCtxMenu->addSeparator();//_______________
-		m_pOperFoilCtxMenu->addAction(showCurOppOnly);
-		m_pOperFoilCtxMenu->addAction(showAllOpPoints);
-		m_pOperFoilCtxMenu->addAction(hideAllOpPoints);
+		m_pOperFoilCtxMenu->addAction(m_pShowCurOppOnly);
+		m_pOperFoilCtxMenu->addAction(m_pShowAllOpPoints);
+		m_pOperFoilCtxMenu->addAction(m_pHideAllOpPoints);
 		m_pOperFoilCtxMenu->addSeparator();//_______________
 		m_pOperFoilCtxMenu->addAction(m_pResetFoilScale);
 		m_pOperFoilCtxMenu->addAction(m_pShowPanels);
 		m_pOperFoilCtxMenu->addAction(m_pShowNeutralLine);
 		m_pOperFoilCtxMenu->addAction(m_pXDirectStyleAct);
 		m_pOperFoilCtxMenu->addSeparator();//_______________
-		m_pOperFoilCtxMenu->addAction(saveViewToImageFileAct);
+		m_pOperFoilCtxMenu->addAction(m_pSaveViewToImageFileAct);
 	}
 	//End XDirect foil Context Menu
 
@@ -2149,14 +2160,14 @@ void MainFrame::createXDirectMenus()
 		m_pOperPolarCtxMenu->addSeparator();//_______________
 		m_pOperPolarCtxMenu->addAction(m_pDefinePolarAct);
 		m_pOperPolarCtxMenu->addAction(m_pBatchAnalysisAct);
-		m_pOperPolarCtxMenu->addAction(MultiThreadedBatchAct);
+		m_pOperPolarCtxMenu->addAction(m_pMultiThreadedBatchAct);
 		m_pOperPolarCtxMenu->addSeparator();//_______________
-		m_pOperPolarCtxMenu->addAction(showAllPolars);
-		m_pOperPolarCtxMenu->addAction(hideAllPolars);
-		m_pOperPolarCtxMenu->addAction(showAllOpPoints);
-		m_pOperPolarCtxMenu->addAction(hideAllOpPoints);
+		m_pOperPolarCtxMenu->addAction(m_pShowAllPolars);
+		m_pOperPolarCtxMenu->addAction(m_pHideAllPolars);
+		m_pOperPolarCtxMenu->addAction(m_pShowAllOpPoints);
+		m_pOperPolarCtxMenu->addAction(m_pHideAllOpPoints);
 		m_pOperPolarCtxMenu->addSeparator();//_______________
-		m_pOperPolarCtxMenu->addAction(saveViewToImageFileAct);
+		m_pOperPolarCtxMenu->addAction(m_pSaveViewToImageFileAct);
 	}
 
 	//End XDirect polar Context Menu
@@ -2167,13 +2178,13 @@ void MainFrame::createXInverseActions()
 {
 	QXInverse *pXInverse = (QXInverse*)m_pXInverse;
 
-	StoreFoil = new QAction(QIcon(":/images/OnStoreFoil.png"), tr("Store Foil"), this);
-	StoreFoil->setStatusTip(tr("Store Foil in database"));
-	connect(StoreFoil, SIGNAL(triggered()), pXInverse, SLOT(onStoreFoil()));
+	m_pStoreFoil = new QAction(QIcon(":/images/OnStoreFoil.png"), tr("Store Foil"), this);
+	m_pStoreFoil->setStatusTip(tr("Store Foil in database"));
+	connect(m_pStoreFoil, SIGNAL(triggered()), pXInverse, SLOT(onStoreFoil()));
 
-	ExtractFoil = new QAction(QIcon(":/images/OnExtractFoil.png"),tr("Extract Foil"), this);
-	ExtractFoil->setStatusTip(tr("Extract a Foil from the database for modification"));
-	connect(ExtractFoil, SIGNAL(triggered()), pXInverse, SLOT(onExtractFoil()));
+	m_pExtractFoil = new QAction(QIcon(":/images/OnExtractFoil.png"),tr("Extract Foil"), this);
+	m_pExtractFoil->setStatusTip(tr("Extract a Foil from the database for modification"));
+	connect(m_pExtractFoil, SIGNAL(triggered()), pXInverse, SLOT(onExtractFoil()));
 
 	m_pXInverseStyles = new QAction(tr("Define Styles"), this);
 	m_pXInverseStyles->setStatusTip(tr("Define the styles for this view"));
@@ -2183,43 +2194,43 @@ void MainFrame::createXInverseActions()
 	m_pXInverseResetFoilScale->setStatusTip(tr("Resets the scale to fit the screen size"));
 	connect(m_pXInverseResetFoilScale, SIGNAL(triggered()), pXInverse, SLOT(onResetFoilScale()));
 
-	InverseInsertCtrlPt = new QAction(tr("Insert Control Point")+"\tShift+Click", this);
-	connect(InverseInsertCtrlPt, SIGNAL(triggered()), pXInverse, SLOT(onInsertCtrlPt()));
+	m_pInverseInsertCtrlPt = new QAction(tr("Insert Control Point")+"\tShift+Click", this);
+	connect(m_pInverseInsertCtrlPt, SIGNAL(triggered()), pXInverse, SLOT(onInsertCtrlPt()));
 
-	InverseRemoveCtrlPt = new QAction(tr("Remove Control Point")+"\tCtrl+Click", this);
-	connect(InverseRemoveCtrlPt, SIGNAL(triggered()), pXInverse, SLOT(onRemoveCtrlPt()));
+	m_pInverseRemoveCtrlPt = new QAction(tr("Remove Control Point")+"\tCtrl+Click", this);
+	connect(m_pInverseRemoveCtrlPt, SIGNAL(triggered()), pXInverse, SLOT(onRemoveCtrlPt()));
 
-	InvQInitial = new QAction(tr("Show Q-Initial"), this);
-	InvQInitial->setCheckable(true);
-	connect(InvQInitial, SIGNAL(triggered()), pXInverse, SLOT(onQInitial()));
+	m_pInvQInitial = new QAction(tr("Show Q-Initial"), this);
+	m_pInvQInitial->setCheckable(true);
+	connect(m_pInvQInitial, SIGNAL(triggered()), pXInverse, SLOT(onQInitial()));
 
-	InvQSpec = new QAction(tr("Show Q-Spec"), this);
-	InvQSpec->setCheckable(true);
-	connect(InvQSpec, SIGNAL(triggered()), pXInverse, SLOT(onQSpec()));
+	m_pInvQSpec = new QAction(tr("Show Q-Spec"), this);
+	m_pInvQSpec->setCheckable(true);
+	connect(m_pInvQSpec, SIGNAL(triggered()), pXInverse, SLOT(onQSpec()));
 
-	InvQViscous = new QAction(tr("Show Q-Viscous"), this);
-	InvQViscous->setCheckable(true);
-	connect(InvQViscous, SIGNAL(triggered()), pXInverse, SLOT(onQViscous()));
+	m_pInvQViscous = new QAction(tr("Show Q-Viscous"), this);
+	m_pInvQViscous->setCheckable(true);
+	connect(m_pInvQViscous, SIGNAL(triggered()), pXInverse, SLOT(onQViscous()));
 
-	InvQPoints = new QAction(tr("Show Points"), this);
-	InvQPoints->setCheckable(true);
-	connect(InvQPoints, SIGNAL(triggered()), pXInverse, SLOT(onQPoints()));
+	m_pInvQPoints = new QAction(tr("Show Points"), this);
+	m_pInvQPoints->setCheckable(true);
+	connect(m_pInvQPoints, SIGNAL(triggered()), pXInverse, SLOT(onQPoints()));
 
-	InvQReflected = new QAction(tr("Show Reflected"), this);
-	InvQReflected->setCheckable(true);
-	connect(InvQReflected, SIGNAL(triggered()), pXInverse, SLOT(onQReflected()));
+	m_pInvQReflected = new QAction(tr("Show Reflected"), this);
+	m_pInvQReflected->setCheckable(true);
+	connect(m_pInvQReflected, SIGNAL(triggered()), pXInverse, SLOT(onQReflected()));
 
-	InverseZoomIn = new QAction(QIcon(":/images/OnZoomIn.png"), tr("Zoom in"), this);
-	InverseZoomIn->setStatusTip(tr("Zoom the view by drawing a rectangle in the client area"));
-	connect(InverseZoomIn, SIGNAL(triggered()), pXInverse, SLOT(onZoomIn()));
+	m_pInverseZoomIn = new QAction(QIcon(":/images/OnZoomIn.png"), tr("Zoom in"), this);
+	m_pInverseZoomIn->setStatusTip(tr("Zoom the view by drawing a rectangle in the client area"));
+	connect(m_pInverseZoomIn, SIGNAL(triggered()), pXInverse, SLOT(onZoomIn()));
 
-	InverseZoomX = new QAction(QIcon(":/images/OnZoomGraphX.png"), tr("Zoom X Scale"), this);
-	InverseZoomX->setStatusTip(tr("Zoom X Scale Only"));
-	connect(InverseZoomX, SIGNAL(triggered()), pXInverse, SLOT(onZoomX()));
+	m_pInverseZoomX = new QAction(QIcon(":/images/OnZoomGraphX.png"), tr("Zoom X Scale"), this);
+	m_pInverseZoomX->setStatusTip(tr("Zoom X Scale Only"));
+	connect(m_pInverseZoomX, SIGNAL(triggered()), pXInverse, SLOT(onZoomX()));
 
-	InverseZoomY = new QAction(QIcon(":/images/OnZoomGraphY.png"), tr("Zoom Y Scale"), this);
-	InverseZoomY->setStatusTip(tr("Zoom Y Scale Only"));
-	connect(InverseZoomY, SIGNAL(triggered()), pXInverse, SLOT(onZoomY()));
+	m_pInverseZoomY = new QAction(QIcon(":/images/OnZoomGraphY.png"), tr("Zoom Y Scale"), this);
+	m_pInverseZoomY->setStatusTip(tr("Zoom Y Scale Only"));
+	connect(m_pInverseZoomY, SIGNAL(triggered()), pXInverse, SLOT(onZoomY()));
 }
 
 
@@ -2229,7 +2240,7 @@ void MainFrame::createXInverseMenus()
 	m_pXInverseViewMenu = menuBar()->addMenu(tr("&View"));
 	m_pXInverseViewMenu->addAction(m_pXInverseStyles);
 	m_pXInverseViewMenu->addSeparator();
-	m_pXInverseViewMenu->addAction(saveViewToImageFileAct);
+	m_pXInverseViewMenu->addAction(m_pSaveViewToImageFileAct);
 
 	m_pXInverseGraphMenu = menuBar()->addMenu(tr("&Graph"));
 	m_pXInverseGraphMenu->addAction(m_pCurGraphDlgAct);
@@ -2237,15 +2248,15 @@ void MainFrame::createXInverseMenus()
 	m_pXInverseGraphMenu->addAction(m_pExportCurGraphAct);
 
 	m_pXInverseFoilMenu = menuBar()->addMenu(tr("&Foil"));
-	m_pXInverseFoilMenu->addAction(StoreFoil);
-	m_pXInverseFoilMenu->addAction(ExtractFoil);
+	m_pXInverseFoilMenu->addAction(m_pStoreFoil);
+	m_pXInverseFoilMenu->addAction(m_pExtractFoil);
 	m_pXInverseFoilMenu->addAction(m_pXInverseResetFoilScale);
 	m_pXInverseFoilMenu->addSeparator();
-	m_pXInverseFoilMenu->addAction(InvQInitial);
-	m_pXInverseFoilMenu->addAction(InvQSpec);
-	m_pXInverseFoilMenu->addAction(InvQViscous);
-	m_pXInverseFoilMenu->addAction(InvQPoints);
-	m_pXInverseFoilMenu->addAction(InvQReflected);
+	m_pXInverseFoilMenu->addAction(m_pInvQInitial);
+	m_pXInverseFoilMenu->addAction(m_pInvQSpec);
+	m_pXInverseFoilMenu->addAction(m_pInvQViscous);
+	m_pXInverseFoilMenu->addAction(m_pInvQPoints);
+	m_pXInverseFoilMenu->addAction(m_pInvQReflected);
 
 	//Context Menu for XInverse Application
 	m_pInverseContextMenu = new QMenu(tr("Context Menu"),this);
@@ -2254,17 +2265,23 @@ void MainFrame::createXInverseMenus()
 	m_pInverseContextMenu->addSeparator();
 	m_pInverseContextMenu->addAction(m_pCurGraphDlgAct);
 	m_pInverseContextMenu->addAction(m_pResetCurGraphScales);
-	m_pInverseContextMenu->addAction(m_pExportCurGraphAct);
 	m_pInverseContextMenu->addAction(m_pShowMousePosAct);
 	m_pInverseContextMenu->addSeparator();
-	m_pInverseContextMenu->addAction(InverseInsertCtrlPt);
-	m_pInverseContextMenu->addAction(InverseRemoveCtrlPt);
+	m_pInverseContextMenu->addAction(m_pInverseInsertCtrlPt);
+	m_pInverseContextMenu->addAction(m_pInverseRemoveCtrlPt);
 	m_pInverseContextMenu->addSeparator();
-	m_pInverseContextMenu->addAction(InvQInitial);
-	m_pInverseContextMenu->addAction(InvQSpec);
-	m_pInverseContextMenu->addAction(InvQViscous);
-	m_pInverseContextMenu->addAction(InvQPoints);
-	m_pInverseContextMenu->addAction(InvQReflected);
+	m_pInverseContextMenu->addAction(m_pInvQInitial);
+	m_pInverseContextMenu->addAction(m_pInvQSpec);
+	m_pInverseContextMenu->addAction(m_pInvQViscous);
+	m_pInverseContextMenu->addAction(m_pInvQPoints);
+	m_pInverseContextMenu->addAction(m_pInvQReflected);
+	m_pInverseContextMenu->addSeparator();
+	m_pInverseContextMenu->addAction(m_pStoreFoil);
+	m_pInverseContextMenu->addAction(m_pExtractFoil);
+	m_pInverseContextMenu->addSeparator();
+
+	m_pInverseContextMenu->addSeparator();
+	m_pInverseContextMenu->addAction(m_pXInverseResetFoilScale);
 }
 
 
@@ -2278,19 +2295,19 @@ void MainFrame::createXInverseToolbar()
 	connect(m_pctrlMixedInverse, SIGNAL(clicked()), pXInverse, SLOT(onInverseApp()));
 
 	m_pctrlXInverseToolBar = addToolBar(tr("XInverse"));
-	m_pctrlXInverseToolBar->addAction(newProjectAct);
-	m_pctrlXInverseToolBar->addAction(openAct);
-	m_pctrlXInverseToolBar->addAction(saveAct);
+	m_pctrlXInverseToolBar->addAction(m_pNewProjectAct);
+	m_pctrlXInverseToolBar->addAction(m_pOpenAct);
+	m_pctrlXInverseToolBar->addAction(m_pSaveAct);
 	m_pctrlXInverseToolBar->addSeparator();
 	m_pctrlXInverseToolBar->addWidget(m_pctrlFullInverse);
 	m_pctrlXInverseToolBar->addWidget(m_pctrlMixedInverse);
 	m_pctrlXInverseToolBar->addSeparator();
-	m_pctrlXInverseToolBar->addAction(ExtractFoil);
-	m_pctrlXInverseToolBar->addAction(StoreFoil);
+	m_pctrlXInverseToolBar->addAction(m_pExtractFoil);
+	m_pctrlXInverseToolBar->addAction(m_pStoreFoil);
 	m_pctrlXInverseToolBar->addSeparator();
-	m_pctrlXInverseToolBar->addAction(InverseZoomIn);
-	m_pctrlXInverseToolBar->addAction(InverseZoomX);
-	m_pctrlXInverseToolBar->addAction(InverseZoomY);
+	m_pctrlXInverseToolBar->addAction(m_pInverseZoomIn);
+	m_pctrlXInverseToolBar->addAction(m_pInverseZoomX);
+	m_pctrlXInverseToolBar->addAction(m_pInverseZoomY);
 	m_pctrlXInverseToolBar->addAction(m_pResetCurGraphScales);
 	m_pctrlXInverseToolBar->addAction(m_pXInverseResetFoilScale);
 }
@@ -5697,14 +5714,14 @@ void MainFrame::updateRecentFileActions()
 	for (int i = 0; i < numRecentFiles; ++i)
 	{
 		text = tr("&%1 %2").arg(i + 1).arg(shortenFileName(m_RecentFiles[i]));
-		recentFileActs[i]->setText(text);
-		recentFileActs[i]->setData(m_RecentFiles[i]);
-		recentFileActs[i]->setVisible(true);
+		m_pRecentFileActs[i]->setText(text);
+		m_pRecentFileActs[i]->setData(m_RecentFiles[i]);
+		m_pRecentFileActs[i]->setVisible(true);
 	}
 	for (int j = numRecentFiles; j < MAXRECENTFILES; ++j)
-		recentFileActs[j]->setVisible(false);
+		m_pRecentFileActs[j]->setVisible(false);
 
-	separatorAct->setVisible(numRecentFiles > 0);
+	m_pSeparatorAct->setVisible(numRecentFiles > 0);
 }
 
 

@@ -260,7 +260,7 @@ private:
 	QToolBar *m_pctrlAFoilToolBar;
 
 	//Common Menus
-	QMenu * MainMenu;
+	QMenu *m_pMainMenu;
 	QMenu *m_pFileMenu, *m_pOptionsMenu, *m_pHelpMenu, *m_pGraphMenu;
 
 	//AFoilMenus
@@ -268,7 +268,7 @@ private:
 	QMenu *m_pAFoilCtxMenu,*m_pAFoilCurrentFoilMenu, *m_pAFoilTableCtxMenu;
 
 	//  XFoilAnalysis Menus
-	QMenu * m_pXDirectViewMenu;
+	QMenu *m_pXDirectViewMenu;
 	QMenu *m_pXDirectFoilMenu, *m_pCurOppCtxMenu;
 	QMenu *m_pCurrentFoilMenu;
 	QMenu *m_pDesignMenu;
@@ -288,16 +288,16 @@ private:
 	QMenu *m_pWPlrCtxMenu, *m_pWOppCtxMenu, *m_pW3DCtxMenu, *m_pWCpCtxMenu, *m_pWTimeCtxMenu, *m_pW3DStabCtxMenu;
 
 	//MainFrame actions
-	QAction *onXDirectAct, *onMiarexAct, *onAFoilAct, *onXInverseAct, *onMixedInverseAct;
-	QAction *openAct, *insertAct, *styleAct;
-	QAction *saveAct, *saveProjectAsAct,*newProjectAct, *closeProjectAct, *saveOptionsAct;
-	QAction *unitsAct;
-	QAction *languageAct;
-	QAction *exitAct;
-	QAction *aboutAct, *aboutQtAct, *openGLAct;
-	QAction *recentFileActs[MAXRECENTFILES];
-	QAction *separatorAct;
-	QAction *saveViewToImageFileAct, *resetSettingsAct;
+	QAction *m_pOnXDirectAct, *m_pOnMiarexAct, *m_pOnAFoilAct, *m_pOnXInverseAct, *m_pOnMixedInverseAct;
+	QAction *m_pOpenAct, *m_pInsertAct, *m_pStyleAct;
+	QAction *m_pSaveAct, *m_pSaveProjectAsAct,*m_pNewProjectAct, *m_pCloseProjectAct, *m_pSaveOptionsAct;
+	QAction *m_pUnitsAct;
+	QAction *m_pLanguageAct;
+	QAction *m_pExitAct;
+	QAction *m_pAboutAct, *m_pAboutQtAct, *m_pOpenGLAct;
+	QAction *m_pRecentFileActs[MAXRECENTFILES];
+	QAction *m_pSeparatorAct;
+	QAction *m_pSaveViewToImageFileAct, *m_pResetSettingsAct;
 
 	//Graph Actions
 	QAction *m_pSingleGraph[MAXGRAPHS], *m_pTwoGraphs, *m_pFourGraphs, *m_pAllGraphs;
@@ -305,68 +305,68 @@ private:
 	QAction *m_pShowMousePosAct;
 
 	//AFoil Actions
-	QAction *zoomInAct, *ResetXScaleAct, *ResetYScaleAct, *ResetXYScaleAct;
-	QAction *zoomYAct, *zoomLessAct, *AFoilGridAct;
-	QAction *AFoilDelete, *AFoilRename, *AFoilExport, *pAFoilDuplicateFoil;
-	QAction *AFoilSetTEGap, *AFoilSetLERadius, *AFoilSetFlap, *AFoilInterpolateFoils, *AFoilNacaFoils;
-	QAction *AFoilDerotateFoil, *AFoilNormalizeFoil, *AFoilRefineLocalFoil, *AFoilRefineGlobalFoil;
-	QAction *AFoilEditCoordsFoil, *AFoilScaleFoil;
-	QAction *AFoilLECircle, *m_pShowLegend;
-	QAction *UndoAFoilAct, *RedoAFoilAct;
-	QAction *HideAllFoils, *ShowAllFoils, *ShowCurrentFoil, *HideCurrentFoil;
-	QAction *storeSplineAct, *newSplinesAct, *splineControlsAct, *exportSplinesToFileAct;
-	QAction *InsertSplinePt, *RemoveSplinePt;
-	QAction *AFoilTableColumns, *AFoilTableColumnWidths;
-	QAction *AFoilLoadImage, *AFoilClearImage;
+	QAction *m_pZoomInAct, *m_pResetXScaleAct, *m_pResetYScaleAct, *m_pResetXYScaleAct;
+	QAction *m_pZoomYAct, *m_pZoomLessAct, *m_pAFoilGridAct;
+	QAction *m_pAFoilDelete, *m_pAFoilRename, *m_pAFoilExport, *m_pAFoilDuplicateFoil;
+	QAction *m_pAFoilSetTEGap, *m_pAFoilSetLERadius, *m_pAFoilSetFlap, *m_pAFoilInterpolateFoils, *m_pAFoilNacaFoils;
+	QAction *m_pAFoilDerotateFoil, *m_pAFoilNormalizeFoil, *m_pAFoilRefineLocalFoil, *m_pAFoilRefineGlobalFoil;
+	QAction *m_pAFoilEditCoordsFoil, *m_pAFoilScaleFoil;
+	QAction *m_pAFoilLECircle, *m_pShowLegend;
+	QAction *m_pUndoAFoilAct, *m_pRedoAFoilAct;
+	QAction *m_pHideAllFoils, *m_pShowAllFoils, *m_pShowCurrentFoil, *m_pHideCurrentFoil;
+	QAction *m_pStoreSplineAct, *m_pNewSplinesAct, *m_pSplineControlsAct, *m_pExportSplinesToFileAct;
+	QAction *m_pInsertSplinePt, *m_pRemoveSplinePt;
+	QAction *m_pAFoilTableColumns, *m_pAFoilTableColumnWidths;
+	QAction *m_pAFoilLoadImage, *m_pAFoilClearImage;
 
 	//Miarex Actions
-	QAction *WPolarAct, *WOppAct, *W3DAct, *CpViewAct, *StabTimeAct, *RootLocusAct;
-	QAction *W3DPrefsAct, *W3DLightAct, *W3DScalesAct;
-	QAction *definePlaneAct, *definePlaneObjectAct, *editPlaneAct, *editWingAct, *m_pEditBodyAct, *m_pEditBodyObjectAct, *savePlaneAsProjectAct;
-	QAction *renameCurPlaneAct, *deleteCurPlane, *duplicateCurPlane;
-	QAction *renameCurWPolar, *editWPolarAct, *editWPolarPts, *exportCurWPolar, *resetCurWPolar;
-	QAction *ShowPolarProps, *ShowWOppProps;
-	QAction *deleteCurWPolar, *deleteCurWOpp;
+	QAction *m_pWPolarAct, *m_pWOppAct, *m_pW3DAct, *m_pCpViewAct, *m_pStabTimeAct, *m_pRootLocusAct;
+	QAction *m_pW3DPrefsAct, *m_pW3DLightAct, *m_pW3DScalesAct;
+	QAction *m_pDefinePlaneAct, *m_pDefinePlaneObjectAct, *m_pEditPlaneAct, *m_pEditWingAct, *m_pEditBodyAct, *m_pEditBodyObjectAct;
+	QAction *m_pSavePlaneAsProjectAct, *m_pRenameCurPlaneAct, *m_pDeleteCurPlane, *m_pDuplicateCurPlane;
+	QAction *m_pRrenameCurWPolar, *m_pEditWPolarAct, *m_pEditWPolarPts, *m_pExportCurWPolar, *m_pResetCurWPolar;
+	QAction *m_pShowPolarProps, *m_pShowWOppProps;
+	QAction *m_pDeleteCurWPolar, *m_pDeleteCurWOpp;
 	QAction *m_pHighlightWOppAct;
-	QAction *editObjectAct, *editWPolarObjectAct, *exporttoXML, *importXMLPlaneAct ;
+	QAction *m_pEditObjectAct, *m_pEditWPolarObjectAct, *m_pExporttoXML, *m_pImportXMLPlaneAct ;
 
-	QAction *MiarexPolarFilter;
+	QAction *m_pMiarexPolarFilter;
 	QAction *m_pAllGraphsScalesAct, *m_pAllGraphsSettings;
-	QAction *hideAllWPlrs, *showAllWPlrs;
-	QAction *hidePlaneWPlrs, *showPlaneWPlrs, *showPlaneWPlrsOnly, *deletePlaneWPlrs;
-	QAction *hidePlaneWOpps, *showPlaneWOpps, *deletePlaneWOpps;
-	QAction *exportCurWOpp, *showCurWOppOnly, *hideAllWOpps, *showAllWOpps, *deleteAllWOpps;
-	QAction *showAllWPlrOpps, *hideAllWPlrOpps, * deleteAllWPlrOpps;
-	QAction *defineWPolar, *defineStabPolar, *defineWPolarObjectAct, *advancedSettings;
-	QAction *showTargetCurve, *showXCmRefLocation, *showStabCurve, *showFinCurve, *showWing2Curve;
-	QAction *exporttoAVL, *scaleWingAct;
-	QAction *managePlanesAct;
+	QAction *m_pHideAllWPlrs, *m_pShowAllWPlrs;
+	QAction *m_pHidePlaneWPlrs, *m_pShowPlaneWPlrs, *m_pShowPlaneWPlrsOnly, *m_pDeletePlaneWPlrs;
+	QAction *m_pHidePlaneWOpps, *m_pShowPlaneWOpps, *m_pDeletePlaneWOpps;
+	QAction *m_pExportCurWOpp, *m_pShowCurWOppOnly, *m_pHideAllWOpps, *m_pShowAllWOpps, *m_pDeleteAllWOpps;
+	QAction *m_pShowAllWPlrOpps, *m_pHideAllWPlrOpps, * m_pDeleteAllWPlrOpps;
+	QAction *m_pDefineWPolar, *m_pDefineStabPolar, *m_pDefineWPolarObjectAct, *m_pAadvancedSettings;
+	QAction *m_pShowTargetCurve, *m_pShowXCmRefLocation, *m_pShowStabCurve, *m_pShowFinCurve, *m_pShowWing2Curve;
+	QAction *m_pExporttoAVL, *m_pScaleWingAct;
+	QAction *m_pManagePlanesAct;
 	QAction *m_pImportWPolar, *m_pPlaneInertia;
 
 	//XDirect Actions
-	QAction *PolarsAct, *OpPointsAct, *deletePolar, *m_pDefinePolarAct, *editCurPolar, *m_pBatchAnalysisAct, *resetCurPolar;
-	QAction *MultiThreadedBatchAct;
-	QAction *restoreToolbarsAct;
-	QAction *exportCurPolar, *exportAllPolars, *hideFoilPolars, *showFoilPolars, *showFoilPolarsOnly, *saveFoilPolars,*deleteFoilPolars;
-	QAction *showAllPolars, *hideAllPolars, *showCurOppOnly, *showAllOpPoints, *hideAllOpPoints, *exportPolarOpps;
-	QAction *hideFoilOpps, *showFoilOpps, *deleteFoilOpps;
-	QAction *hidePolarOpps, *showPolarOpps, *deletePolarOpps;
-	QAction *exportCurOpp, *deleteCurOpp, *getOppProps, *getPolarProps;
-	QAction *viewXFoilAdvanced, *viewLogFile, *m_pShowPanels, *m_pShowNeutralLine, *m_pResetFoilScale, *showInviscidCurve;
-	QAction *exportCurFoil, *deleteCurFoil, *renameCurFoil, *setCurFoilStyle;
-	QAction *DerotateFoil, *NormalizeFoil, *RefineLocalFoil, *RefineGlobalFoil , *EditCoordsFoil, *ScaleFoil;
-	QAction *SetTEGap, *SetLERadius, *SetFlap, *InterpolateFoils, *NacaFoils, *pDirectDuplicateCurFoil;
+	QAction *m_pPolarsAct, *m_pOpPointsAct, *m_pDeletePolar, *m_pDefinePolarAct, *m_pEditCurPolar, *m_pBatchAnalysisAct, *m_pResetCurPolar;
+	QAction *m_pMultiThreadedBatchAct;
+	QAction *m_pRestoreToolbarsAct;
+	QAction *m_pExportCurPolar, *m_pExportAllPolars, *m_pHideFoilPolars, *m_pShowFoilPolars, *m_pShowFoilPolarsOnly, *m_pSaveFoilPolars,*m_pDeleteFoilPolars;
+	QAction *m_pShowAllPolars, *m_pHideAllPolars, *m_pShowCurOppOnly, *m_pShowAllOpPoints, *m_pHideAllOpPoints, *m_pExportPolarOpps;
+	QAction *m_pHideFoilOpps, *m_pShowFoilOpps, *m_pDeleteFoilOpps;
+	QAction *m_pHidePolarOpps, *m_pShowPolarOpps, *m_pDeletePolarOpps;
+	QAction *m_pExportCurOpp, *m_pDeleteCurOpp, *m_pGetOppProps, *m_pGetPolarProps;
+	QAction *m_pViewXFoilAdvanced, *m_pViewLogFile, *m_pShowPanels, *m_pShowNeutralLine, *m_pResetFoilScale, *m_pShowInviscidCurve;
+	QAction *m_pExportCurFoil, *m_pDeleteCurFoil, *m_pRenameCurFoil, *m_pSetCurFoilStyle;
+	QAction *m_pDerotateFoil, *m_pNormalizeFoil, *m_pRefineLocalFoil, *m_pRefineGlobalFoil , *m_pEditCoordsFoil, *m_pScaleFoil;
+	QAction *m_pSetTEGap, *m_pSetLERadius, *m_pSetFlap, *m_pInterpolateFoils, *m_pNacaFoils, *m_pDirectDuplicateCurFoil;
 
 	QAction *m_pCurGraphDlgAct,*m_pExportCurGraphAct, *m_pResetCurGraphScales;
 
 	QAction *m_pXDirectStyleAct;
-	QAction *XDirectPolarFilter;
-	QAction *setQVarGraph, *setCpVarGraph;
-	QAction *m_pExportCurXFoilRes, * CurXFoilCtPlot, *CurXFoilDbPlot, *CurXFoilDtPlot, *CurXFoilRtLPlot;
-	QAction *CurXFoilRtPlot, *CurXFoilNPlot, *CurXFoilCdPlot, *CurXFoilCfPlot, *CurXFoilUePlot, *CurXFoilHPlot;
-	QAction *ManageFoilsAct, *RenamePolarAct;
+	QAction *m_pXDirectPolarFilter;
+	QAction *m_psetQVarGraph, *m_psetCpVarGraph;
+	QAction *m_pExportCurXFoilRes, * m_pCurXFoilCtPlot, *m_CurXFoilDbPlot, *m_pCurXFoilDtPlot, *m_pCurXFoilRtLPlot;
+	QAction *m_pCurXFoilRtPlot, *m_pCurXFoilNPlot, *m_pCurXFoilCdPlot, *m_pCurXFoilCfPlot, *m_pCurXFoilUePlot, *m_pCurXFoilHPlot;
+	QAction *m_pManageFoilsAct, *m_pRenamePolarAct;
 	QAction *m_pImportJavaFoilPolar, *m_pImportXFoilPolar;
-	QAction *highlightOppAct;
+	QAction *m_phighlightOppAct;
 
 	QComboBox *m_pctrlFoil, *m_pctrlPolar, * m_pctrlOpPoint;
 	QComboBox *m_pctrlPlane, *m_pctrlPlanePolar, * m_pctrlPlaneOpp;
@@ -374,10 +374,10 @@ private:
 	static QLabel *m_pctrlProjectName;
 
 	//XInverse Actions
-	QAction *StoreFoil, *ExtractFoil, *m_pXInverseStyles, *m_pXInverseResetFoilScale, *InverseInsertCtrlPt, *InverseRemoveCtrlPt;
-	QAction *InvQInitial, *InvQSpec, *InvQViscous, *InvQPoints, *InvQReflected;
+	QAction *m_pStoreFoil, *m_pExtractFoil, *m_pXInverseStyles, *m_pXInverseResetFoilScale, *m_pInverseInsertCtrlPt, *m_pInverseRemoveCtrlPt;
+	QAction *m_pInvQInitial, *m_pInvQSpec, *m_pInvQViscous, *m_pInvQPoints, *m_pInvQReflected;
 //	QAction *InverseResetGraphScale, *XInverseGraphDlg;
-	QAction *InverseZoomIn, *InverseZoomX, *InverseZoomY;
+	QAction *m_pInverseZoomIn, *m_pInverseZoomX, *m_pInverseZoomY;
 
 	QStringList m_RecentFiles;
 
