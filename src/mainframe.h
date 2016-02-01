@@ -41,7 +41,7 @@
 #include <QList>
 #include "xflr5.h"
 #include "params.h"
-#include "twodwidget.h"
+#include "inverseviewwidget.h"
 #include "threedwidget.h"
 #include "graph/QGraph.h"
 #include "Direct2dDesign.h"
@@ -62,7 +62,7 @@
 */
 class MainFrame : public QMainWindow
 {
-	friend class TwoDWidget;
+	friend class InverseViewWidget;
 	friend class ThreeDWidget;
 	friend class QXDirect;
 	friend class QMiarex;
@@ -107,7 +107,7 @@ class MainFrame : public QMainWindow
 	friend class GraphTileWidget;
 	friend class MiarexTileWidget;
 	friend class XDirectTileWidget;
-	friend class FoilWidget;
+	friend class OpPointWidget;
 
 	Q_OBJECT
 
@@ -244,7 +244,7 @@ private:
 	static QPointer<MainFrame> _self; /**< necessary for MacOS >*/
 
 	QStackedWidget *m_pctrlCentralWidget;  /** The stacked widget which is loaded at the center of the display area. The stack holds one TwoDWidget and one ThreeDWidget and sxwitches between the two depending on the user's request. */
-	TwoDWidget *m_p2dWidget;        /** A pointer to the instance of the TwoDWidget which is used to perform 2d drawings */
+	InverseViewWidget *m_p2dWidget;        /** A pointer to the instance of the TwoDWidget which is used to perform 2d drawings */
 	Direct2dDesign *m_pDirect2dWidget;        /** A pointer to the instance of the TwoDWidget which is used to perform 2d drawings of foils in Direct Design */
 	ThreeDWidget *m_p3dWidget;   /** A pointer to the instance of the ThreeDWidget  3d calculations and rendering are performed */
 	MiarexTileWidget *m_pMiarexTileWidget;
@@ -377,7 +377,7 @@ private:
 	QAction *m_pStoreFoil, *m_pExtractFoil, *m_pXInverseStyles, *m_pXInverseResetFoilScale, *m_pInverseInsertCtrlPt, *m_pInverseRemoveCtrlPt;
 	QAction *m_pInvQInitial, *m_pInvQSpec, *m_pInvQViscous, *m_pInvQPoints, *m_pInvQReflected;
 //	QAction *InverseResetGraphScale, *XInverseGraphDlg;
-	QAction *m_pInverseZoomIn, *m_pInverseZoomX, *m_pInverseZoomY;
+	QAction *m_pInverseZoomIn;
 
 	QStringList m_RecentFiles;
 

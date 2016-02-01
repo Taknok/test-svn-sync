@@ -54,7 +54,7 @@ class QXInverse : public QWidget
 	Q_OBJECT
 
 	friend class MainFrame;
-	friend class TwoDWidget;
+	friend class InverseViewWidget;
 	friend class InverseOptionsDlg;
 	friend class FoilSelectionDlg;
 	friend class Settings;
@@ -98,8 +98,7 @@ private slots:
 	void onRemoveCtrlPt();
 	void onSpecInv() ;
 	void onZoomIn();
-	void onZoomX();
-	void onZoomY();
+
 
 private:
 	void updateView();
@@ -196,8 +195,6 @@ private:
 	bool m_bSplined;            /**< true if the velocity curve has been modified by application of the spline */
 	bool m_bSmooth;             /**< true if the user is in the process of smoothing the curve */
 	bool m_bZoomPlus;           /**< true if the user is in the process of zooming in by drawing a rectangle */
-	bool m_bZoomXOnly;          /**< true if only the x-axis should be scaled */
-	bool m_bZoomYOnly;          /**< true if only the y-axis should be scaled */
 	bool m_bFullInverse;        /**< true if the full inverse method is selected, false if mixed-inverse */
 	bool m_bReflected;          /**< true if the reflected curve should be displayed */
 
@@ -210,6 +207,7 @@ private:
 
 	double m_fRefScale;        /**< the default scale for the display of the Foil, for the current window size */
 	double m_fScale;           /**< the current scale for the Foil display */
+	double m_fYScale;
 
 	int m_ReflectedStyle;      /**< the index of the reflected curve's style */
 	int m_ReflectedWidth;      /**< the reflected curve's width */

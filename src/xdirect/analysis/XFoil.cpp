@@ -4965,7 +4965,6 @@ stop100:
 			}//end itbl loop
 
 
-			//TRACE(" mrchue: convergence failed at %d,  side %d, res = %f\n", ibl, is, dmax);
 			str = QString(QObject::tr("     mrchue: convergence failed at %1,  side %2, res = %3\n")).arg( ibl).arg( is).arg( dmax,0,'f',3);
 			WriteString(str, true);
 

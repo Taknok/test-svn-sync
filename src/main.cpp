@@ -32,9 +32,6 @@
 */
 int main(int argc, char *argv[])
 {
-#if QT_VERSION >= 0x040600
-//	QGL::setPreferredPaintEngine (QPaintEngine::OpenGL);
-#endif
 #ifdef Q_OS_MACX
     /*
     if ( QSysInfo::MacintoshVersion > QSysInfo::MV_10_8 )

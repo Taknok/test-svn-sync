@@ -53,7 +53,7 @@ class Polar
 	friend class EditPlrDlg;
 	friend class ObjectPropsDlg;
 	friend class XFoil;
-	friend class FoilWidget;
+	friend class OpPointWidget;
 
 
 public:

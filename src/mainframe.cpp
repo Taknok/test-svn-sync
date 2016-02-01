@@ -63,7 +63,6 @@
 #include "xdirect/analysis/FoilPolarDlg.h"
 #include "xinverse/XInverse.h"
 #include "objects/Polar.h"
-#include "viewwidgets/foilwidget.h"
 
 #include <QMessageBox>
 #include <QtCore>
@@ -768,7 +767,7 @@ void MainFrame::createDockWindows()
 	ThreeDWidget::s_pMainFrame     = this;
 	Section2dWidget::s_pMainFrame  = this;
 	GraphWidget::s_pMainFrame      = this;
-	FoilWidget::s_pMainFrame       = this;
+	OpPointWidget::s_pMainFrame       = this;
 	WingWidget::s_pMainFrame       = this;
 	QGraph::s_pMainFrame           = this;
 
@@ -789,7 +788,7 @@ void MainFrame::createDockWindows()
 	m_pctrlAFoilWidget->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
 	addDockWidget(Qt::BottomDockWidgetArea, m_pctrlAFoilWidget);
 
-	m_p2dWidget = new TwoDWidget(this);
+	m_p2dWidget = new InverseViewWidget(this);
 	m_p3dWidget = new ThreeDWidget(this);
 	m_pDirect2dWidget = new Direct2dDesign(this);
 	m_pXDirectTileWidget = new XDirectTileWidget(this);
@@ -2223,14 +2222,6 @@ void MainFrame::createXInverseActions()
 	m_pInverseZoomIn = new QAction(QIcon(":/images/OnZoomIn.png"), tr("Zoom in"), this);
 	m_pInverseZoomIn->setStatusTip(tr("Zoom the view by drawing a rectangle in the client area"));
 	connect(m_pInverseZoomIn, SIGNAL(triggered()), pXInverse, SLOT(onZoomIn()));
-
-	m_pInverseZoomX = new QAction(QIcon(":/images/OnZoomGraphX.png"), tr("Zoom X Scale"), this);
-	m_pInverseZoomX->setStatusTip(tr("Zoom X Scale Only"));
-	connect(m_pInverseZoomX, SIGNAL(triggered()), pXInverse, SLOT(onZoomX()));
-
-	m_pInverseZoomY = new QAction(QIcon(":/images/OnZoomGraphY.png"), tr("Zoom Y Scale"), this);
-	m_pInverseZoomY->setStatusTip(tr("Zoom Y Scale Only"));
-	connect(m_pInverseZoomY, SIGNAL(triggered()), pXInverse, SLOT(onZoomY()));
 }
 
 
@@ -2306,13 +2297,9 @@ void MainFrame::createXInverseToolbar()
 	m_pctrlXInverseToolBar->addAction(m_pStoreFoil);
 	m_pctrlXInverseToolBar->addSeparator();
 	m_pctrlXInverseToolBar->addAction(m_pInverseZoomIn);
-	m_pctrlXInverseToolBar->addAction(m_pInverseZoomX);
-	m_pctrlXInverseToolBar->addAction(m_pInverseZoomY);
 	m_pctrlXInverseToolBar->addAction(m_pResetCurGraphScales);
 	m_pctrlXInverseToolBar->addAction(m_pXInverseResetFoilScale);
 }
-
-
 
 
 

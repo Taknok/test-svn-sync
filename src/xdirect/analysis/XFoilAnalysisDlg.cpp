@@ -211,6 +211,7 @@ void XFoilAnalysisDlg::reject()
 	XFoil::s_bCancel = true;
 	if(m_pXFile)
 	{
+
 		m_pXFoilTask->m_OutStream.flush();
 		m_pXFile->close();
 	}
@@ -255,7 +256,7 @@ void XFoilAnalysisDlg::setAlpha(double AlphaMin, double AlphaMax, double AlphaDe
 }
 
 
-void XFoilAnalysisDlg::SetCl(double ClMin, double ClMax, double DeltaCl)
+void XFoilAnalysisDlg::setCl(double ClMin, double ClMax, double DeltaCl)
 {
 	m_ClMin = ClMin;
 	m_ClMax = ClMax;
@@ -352,7 +353,6 @@ void XFoilAnalysisDlg::onProgress()
 	pXDirect->createPolarCurves();
 	pXDirect->updateView();
 }
-
 
 
 

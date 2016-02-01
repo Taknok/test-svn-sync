@@ -36,13 +36,13 @@ public:
     InverseOptionsDlg(QWidget *pParent);
 
 private slots:
-	void OnRefStyle();
-	void OnModStyle();
-	void OnSplineStyle();
-	void OnReflectedStyle();
+	void onRefStyle();
+	void onModStyle();
+	void onSplineStyle();
+	void onReflectedStyle();
 
 private:
-	void SetupLayout();
+	void setupLayout();
 	void initDialog();
 
 	LineBtn *m_pctrlRefFoil, *m_pctrlModFoil, *m_pctrlSpline, *m_pctrlReflected;

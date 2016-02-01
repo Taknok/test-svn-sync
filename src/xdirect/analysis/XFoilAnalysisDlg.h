@@ -71,7 +71,7 @@ private:
 
 	void resetCurves();
 	void setAlpha(double AlphaMin, double AlphaMax, double DeltaAlpha);
-	void SetCl(double ClMin, double ClMax, double DeltaCl);
+	void setCl(double ClMin, double ClMax, double DeltaCl);
 	void setRe(double ReMin, double ReMax, double DeltaRe);
 	void setFileHeader();
 	void setupLayout();

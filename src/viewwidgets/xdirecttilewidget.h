@@ -23,7 +23,7 @@
 #define XDIRECTTILEWIDGET_H
 
 #include "graphtilewidget.h"
-#include "foilwidget.h"
+#include "oppointwidget.h"
 #include <QStackedWidget>
 #include <QGridLayout>
 
@@ -40,15 +40,16 @@ public:
 	void adjustLayout();
 	void setGraphList(QList<QGraph*>pGraphList, int nGraphs, int iGraphWidget, Qt::Orientation orientation =Qt::Horizontal);
 
-    FoilWidget *foilWidget(){return m_pFoilWidget;}
+	OpPointWidget *opPointWidget(){return m_pOpPointWidget;}
 
+public slots:
+	void onResetCurGraphScales();
 
 private:
 	void setupMainLayout();
 
 //	QStackedWidget *m_pLegendStack;
-	FoilWidget *m_pFoilWidget;
-
+	OpPointWidget *m_pOpPointWidget;
 
 	QGridLayout *m_pMainGridLayout;
 };
