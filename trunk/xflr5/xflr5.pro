@@ -148,14 +148,14 @@ SOURCES += \
 	src/design/SplineCtrlsDlg.cpp \
 	src/design/AFoilTableDlg.cpp \
 	src/design/GridSettingsDlg.cpp \
-	src/viewwidgets/foilwidget.cpp \
 	src/viewwidgets/BodyFrameWidget.cpp \
 	src/viewwidgets/BodyLineWidget.cpp \
 	src/viewwidgets/Direct2dDesign.cpp \
 	src/viewwidgets/miarextilewidget.cpp \
 	src/viewwidgets/xdirecttilewidget.cpp \
 	src/viewwidgets/wingwidget.cpp \
-	src/viewwidgets/twodwidget.cpp
+    src/viewwidgets/oppointwidget.cpp \
+    src/viewwidgets/inverseviewwidget.cpp
 
 
 HEADERS += \
@@ -286,14 +286,14 @@ HEADERS += \
 	src/design/FoilTableDelegate.h \
 	src/design/AFoilTableDlg.h \
 	src/design/GridSettingsDlg.h \
-	src/viewwidgets/foilwidget.h \
 	src/viewwidgets/BodyFrameWidget.h \
 	src/viewwidgets/BodyLineWidget.h \
 	src/viewwidgets/Direct2dDesign.h \
 	src/viewwidgets/miarextilewidget.h \
 	src/viewwidgets/xdirecttilewidget.h \
 	src/viewwidgets/wingwidget.h \
-	src/viewwidgets/twodwidget.h
+    src/viewwidgets/oppointwidget.h \
+    src/viewwidgets/inverseviewwidget.h
 
 
 TRANSLATIONS = translations/xflr5v6.ts \
@@ -306,13 +306,8 @@ RESOURCES += xflr5.qrc
 win32 {
     TARGET = XFLR5
     RC_FILE = win/xflr5.rc
-#win32 compiler
-QMAKE_LFLAGS_WINDOWS += -Wl,--large-address-aware
-}
-
-win64 {
-	TARGET = XFLR5
-	RC_FILE = win/xflr5.rc
+	LIBS += -lopenGL32
+#QMAKE_LFLAGS_WINDOWS += -Wl,--large-address-aware
 }
 
 unix{

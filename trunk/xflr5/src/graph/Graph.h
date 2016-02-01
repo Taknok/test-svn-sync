@@ -32,10 +32,11 @@
 
 class Graph 
 {
-	friend class GLGraph;
 	friend class QGraph;
 	friend class GraphWidget;
-	friend class QXDirect;
+//	friend class OpPointWidget;
+//	friend class QXDirect;
+
 public:
 
 	bool bAutoX();
@@ -148,7 +149,7 @@ public:
 	QString xTitle(){return m_XTitle;}
 	QString yTitle(){return m_YTitle;}
 
-	void clientRect(QRect &Rect);
+	QRect *clientRect();
 
 	void setGraphDefaults();
 	void setGraphName(QString GraphName);

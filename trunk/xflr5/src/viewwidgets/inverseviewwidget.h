@@ -24,21 +24,21 @@
 *@brief This file contains the declaration of the class TwoDWidget,
 *used for 2d drawing in the central area of the application's MainFrame.
 */
-#ifndef TWODWIDGET_H
-#define TWODWIDGET_H
+#ifndef INVERSEVIEWDWIDGET_H
+#define INVERSEVIEWDWIDGET_H
 
 #include <QWidget>
 #include "params.h"
 
 /**
-*@class TwoDWidget 
+*@class InverseViewWidget
 * @brief This class is used for 2d drawing in the central area of the application's MainFrame.
 
 * There is a unique instance of this class, attached to the QStackedWidget of the MainFrame.
 * Depending on the active application, this class calls the drawings methods in QAFoil, QXDirect, QXInverse or QMiarex.
 * All Qt events received by this widget are sent to the child applications for handling.
 */
-class TwoDWidget : public QWidget
+class InverseViewWidget : public QWidget
 {
     Q_OBJECT
 
@@ -46,7 +46,7 @@ class TwoDWidget : public QWidget
 
 
 public:
-	TwoDWidget(QWidget *parent = 0);
+	InverseViewWidget(QWidget *parent = 0);
 
 protected:
 	void contextMenuEvent (QContextMenuEvent *event);

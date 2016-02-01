@@ -197,6 +197,7 @@ void GraphDlg::reject()
 void GraphDlg::showEvent(QShowEvent *event)
 {
 	m_pTabWidget->setCurrentIndex(s_iActivePage);
+	event->ignore();
 }
 
 

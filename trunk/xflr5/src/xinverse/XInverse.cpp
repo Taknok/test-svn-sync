@@ -23,7 +23,6 @@
 #include <QGridLayout>
 #include <QAction>
 #include <QMessageBox>
-#include <QStatusBar>
 #include <QtDebug>
 
 #include "XInverse.h" 
@@ -56,8 +55,6 @@ QXInverse::QXInverse(QWidget *parent)
 	m_bTransGraph    = false;
 	m_bLoaded        = false;
 	m_bZoomPlus      = false;
-	m_bZoomXOnly     = false;
-	m_bZoomYOnly     = false;
 	m_bShowPoints    = false;
 	m_bTangentSpline = false;
 	m_bReflected     = false;
@@ -72,6 +69,8 @@ QXInverse::QXInverse(QWidget *parent)
 	m_bMarked  = false;
 	m_bSmooth  = false;
 	m_bXPressed = m_bYPressed = false;
+
+	m_fRefScale = m_fScale = m_fYScale = 1.0;
 
 	m_pRefFoil = new Foil();
 	m_pModFoil = new Foil();
@@ -675,31 +674,15 @@ void QXInverse::keyPressEvent(QKeyEvent *event)
  */
 void QXInverse::keyReleaseEvent(QKeyEvent *event)
 {
+	m_bXPressed = m_bYPressed = false;
 	switch (event->key())
 	{
 		case Qt::Key_Escape:
 		{
 			if(m_bZoomPlus) releaseZoom();
-			if(m_bZoomXOnly)
-			{
-				m_bZoomXOnly = false;
-				MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-				pMainFrame->m_pInverseZoomX->setChecked(false);
-			}
-			if(m_bZoomYOnly)
-			{
-				m_bZoomYOnly = false;
-				MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-				pMainFrame->m_pInverseZoomY->setChecked(false);
-			}
 			break;
 		}
-		case Qt::Key_X:
-			if(!event->isAutoRepeat()) m_bXPressed = false;
-			break;
-		case Qt::Key_Y:
-			if(!event->isAutoRepeat()) m_bYPressed = false;
-			break;
+
 		default:
 			QWidget::keyReleaseEvent(event);
 	}
@@ -751,8 +734,6 @@ void QXInverse::doubleClickEvent(QPoint pos)
  */
 void QXInverse::mouseMoveEvent(QMouseEvent *event)
 {
-//	if(!hasFocus()) setFocus();
-	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
 	double x1,y1, xmin, xmax, ymin,  ymax, xpt, ypt, scale, ux, uy, unorm, vx, vy, vnorm, scal;
 	double xx0,xx1,xx2,yy0,yy1,yy2, dist;
 	int a, n, ipt;
@@ -991,9 +972,6 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 		else
 		{
 			m_pCurGraph = NULL;
-			//convert screen coordinates to foil coordinates
-			CVector real = mousetoReal((event->pos()));
-			pMainFrame->statusBar()->showMessage(QString("X = %1, Y = %2").arg(real.x).arg(real.y));
 		}
 
 		// highlight if mouse passe over a point
@@ -1024,7 +1002,7 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
  */
 void QXInverse::mousePressEvent(QMouseEvent *event)
 {
-	TwoDWidget *p2DWidget = (TwoDWidget*)s_p2DWidget;
+	InverseViewWidget *p2DWidget = (InverseViewWidget*)s_p2DWidget;
 	bool bCtrl, bShift;
 	bCtrl = bShift = false;
 	if(event->modifiers() & Qt::ControlModifier) bCtrl  = true;
@@ -1118,7 +1096,7 @@ void QXInverse::mousePressEvent(QMouseEvent *event)
 void QXInverse::mouseReleaseEvent(QMouseEvent *event)
 {
 	XFoil *pXFoil = (XFoil*)m_pXFoil;
-	TwoDWidget *p2DWidget = (TwoDWidget*)s_p2DWidget;
+	InverseViewWidget *p2DWidget = (InverseViewWidget*)s_p2DWidget;
 	m_bTrans = false;
 
 	int tmp, width, height;
@@ -1535,6 +1513,16 @@ void QXInverse::onInverseStyles()
 	m_pXInverseStyleDlg->m_pXInverse = this;
 	m_pXInverseStyleDlg->initDialog();
 	m_pXInverseStyleDlg->exec();
+
+	m_pQCurve->setStyle(m_pRefFoil->foilStyle());
+	m_pQCurve->setWidth(m_pRefFoil->foilWidth());
+	m_pQCurve->setColor(m_pRefFoil->foilColor());
+
+	m_pMCurve->setStyle(m_pModFoil->foilStyle());
+	m_pMCurve->setWidth(m_pModFoil->foilWidth());
+	m_pMCurve->setColor(m_pModFoil->foilColor());
+
+	updateView();
 }
 
 
@@ -1862,29 +1850,6 @@ void QXInverse::onZoomIn()
 }
 
 
-/** The user has requested to zoom the x-axis only */
-void QXInverse::onZoomX()
-{
-	releaseZoom();
-	m_bZoomYOnly = false;
-	m_bZoomXOnly = !m_bZoomXOnly;
-	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-	pMainFrame->m_pInverseZoomX->setChecked(m_bZoomXOnly);
-	pMainFrame->m_pInverseZoomY->setChecked(m_bZoomYOnly);
-}
-
-
-/** The user has requested to zoom the y-axis only */
-void QXInverse::onZoomY()
-{
-	releaseZoom();
-	m_bZoomXOnly = false;
-	m_bZoomYOnly = !m_bZoomYOnly;
-	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-	pMainFrame->m_pInverseZoomX->setChecked(m_bZoomXOnly);
-	pMainFrame->m_pInverseZoomY->setChecked(m_bZoomYOnly);
-}
-
 
 /** The user has toggled the requirement for a spline tangent to the specification curve */
 void QXInverse::onTangentSpline()
@@ -1978,7 +1943,7 @@ void QXInverse::paintGraph(QPainter &painter)
 		int fmheight  = fm.height();
 
 		painter.setPen(textPen);
-		TwoDWidget *p2DWidget = (TwoDWidget*)s_p2DWidget;
+		InverseViewWidget *p2DWidget = (InverseViewWidget*)s_p2DWidget;
 
 		painter.drawText(p2DWidget->width()-12*fm.averageCharWidth(),fmheight, QString("x = %1").arg(m_QGraph.clientTox(m_PointDown.x()),7,'f',3));
 		painter.drawText(p2DWidget->width()-12*fm.averageCharWidth(),2*fmheight, QString("y = %1").arg(m_QGraph.clientToy(m_PointDown.y()),7,'f',3));
@@ -2016,7 +1981,7 @@ void QXInverse::paintFoil(QPainter &painter)
 		FoilPen.setWidth(m_pRefFoil->m_FoilWidth);
 		painter.setPen(FoilPen);
 
-		m_pRefFoil->drawFoil(painter, -alpha, m_fScale, m_fScale, m_ptOffset);
+		m_pRefFoil->drawFoil(painter, -alpha, m_fScale, m_fScale*m_fYScale, m_ptOffset);
 		painter.drawLine(20, m_rGraphRect.bottom()+20, 40, m_rGraphRect.bottom()+20);
 		painter.setPen(TextPen);
 		painter.drawText(50, m_rGraphRect.bottom()+25, m_pRefFoil->m_FoilName);
@@ -2029,7 +1994,7 @@ void QXInverse::paintFoil(QPainter &painter)
 		ModPen.setWidth(m_pModFoil->m_FoilWidth);
 		painter.setPen(ModPen);
 
-		m_pModFoil->drawFoil(painter, -alpha, m_fScale, m_fScale, m_ptOffset);
+		m_pModFoil->drawFoil(painter, -alpha, m_fScale, m_fScale*m_fYScale, m_ptOffset);
 		painter.drawLine(20, m_rGraphRect.bottom()+35, 40, m_rGraphRect.bottom()+35);
 		painter.setPen(TextPen);
 		painter.drawText(50, m_rGraphRect.bottom()+40, m_pModFoil->m_FoilName);
@@ -2085,6 +2050,16 @@ void QXInverse::paintFoil(QPainter &painter)
 	else str2 = "";
 	painter.drawText(LeftPos,ZPos+D, str1+str2);
 	D += dD;
+
+	//convert screen coordinates to foil coordinates
+
+	CVector real = mousetoReal(m_PointDown);
+	painter.drawText(m_QGraph.clientRect()->width()-12*fm.averageCharWidth(),
+					 m_QGraph.clientRect()->height() + dD, QString("x = %1")
+					 .arg(real.x,7,'f',3));
+	painter.drawText(m_QGraph.clientRect()->width()-12*fm.averageCharWidth(),
+					 m_QGraph.clientRect()->height() + 2*dD, QString("y = %1")
+					 .arg(real.y,7,'f',3));
 
 	painter.restore();
 }
@@ -2183,6 +2158,7 @@ void QXInverse::resetScale()
 
 	m_ptOffset.ry() = m_rCltRect.bottom()-h4/2;
 	m_fScale = m_fRefScale;
+	m_fYScale = 1.0;
 }
 
 
@@ -2197,7 +2173,7 @@ void QXInverse::saveSettings(QSettings *pSettings)
 		pSettings->setValue("FullInverse", m_bFullInverse);
 		pSettings->setValue("SplineColor", m_Spline.color());
 		pSettings->setValue("SplineStyle", m_Spline.style());
-		pSettings->setValue("SplineWdth", m_Spline.width());
+		pSettings->setValue("SplineWdth",  m_Spline.width());
 		pSettings->setValue("BaseFoilColor", m_pRefFoil->m_FoilColor);
 		pSettings->setValue("BaseFoilStyle", m_pRefFoil->m_FoilStyle);
 		pSettings->setValue("BaseFoilWidth", m_pRefFoil->m_FoilWidth);
@@ -2428,8 +2404,6 @@ void QXInverse::setXInverseScale(QRect CltRect)
 
 	int h = CltRect.height();
 	int h4 = (int)(h/3.0);
-	int w = CltRect.width();
-	int w20 = (int)(w/20);
 	m_rGraphRect = QRect(0, 0, + m_rCltRect.width(), m_rCltRect.height()-h4);
 	m_QGraph.setMargin(50);
 	m_QGraph.setDrawRect(m_rGraphRect);
@@ -2703,12 +2677,13 @@ void QXInverse::smooth(int Pos1, int Pos2)
 	updateView();
 }
 
+
 /**
  * Refreshes the display
  */
 void QXInverse::updateView()
 {
-	TwoDWidget *p2DWidget = (TwoDWidget*)s_p2DWidget;
+	InverseViewWidget *p2DWidget = (InverseViewWidget*)s_p2DWidget;
 	if(s_p2DWidget)
 	{
 		p2DWidget->update();
@@ -2727,13 +2702,13 @@ void QXInverse::zoomEvent(QPoint pos, double zoomFactor)
 
 	if(m_QGraph.isInDrawRect(pos))
 	{
-		if (m_bXPressed || m_bZoomXOnly)
+		if (m_bXPressed)
 		{
 			//zoom x scale
 			m_QGraph.setAutoX(false);
 			m_QGraph.scaleXAxis(1.0/zoomFactor);
 		}
-		else if(m_bYPressed || m_bZoomYOnly)
+		else if(m_bYPressed)
 		{
 			//zoom y scale
 			m_QGraph.setAutoY(false);
@@ -2752,11 +2727,16 @@ void QXInverse::zoomEvent(QPoint pos, double zoomFactor)
 	{
 		double scale = m_fScale;
 
-		m_fScale *= zoomFactor;
-
-
-		int a = (int)((m_rCltRect.right() + m_rCltRect.left())/2);
-		m_ptOffset.rx() = a + (int)((m_ptOffset.x()-a)*m_fScale/scale);
+		if(m_bYPressed)
+		{
+			m_fYScale *= zoomFactor;
+		}
+		else
+		{
+			m_fScale *= zoomFactor;
+			int a = (int)((m_rCltRect.right() + m_rCltRect.left())/2);
+			m_ptOffset.rx() = a + (int)((m_ptOffset.x()-a)*m_fScale/scale);
+		}
 	}
 	updateView();
 }

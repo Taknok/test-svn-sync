@@ -57,7 +57,7 @@ class OpPoint
 	friend class Polar;
 	friend class QXDirect;
 	friend class ObjectPropsDlg;
-	friend class FoilWidget;
+	friend class OpPointWidget;
 
 public:
 	OpPoint();

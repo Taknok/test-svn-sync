@@ -85,8 +85,8 @@ class Foil
 	friend class FoilSelectionDlg;
 	friend class ManageFoilsDlg;
 	friend class FoilTableDelegate;
-	friend class FoilWidget;
-	
+	friend class OpPointWidget;
+
 public:
 	Foil();
 
