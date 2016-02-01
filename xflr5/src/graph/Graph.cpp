@@ -330,9 +330,9 @@ bool Graph::hasBorder()
 }
 
 
-void Graph::clientRect(QRect &Rect)
+QRect * Graph::clientRect()
 {
-	Rect = m_rCltRect;
+	return &m_rCltRect;
 }
 
 

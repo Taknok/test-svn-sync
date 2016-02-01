@@ -350,8 +350,8 @@ void QXDirect::connectSignals()
 	connect(m_pAnimateTimer, SIGNAL(timeout()), this, SLOT(onAnimateSingle()));
 
 
-    connect(m_pctrlShowBL,       SIGNAL(clicked(bool)), pMainFrame->m_pXDirectTileWidget->foilWidget(), SLOT(onShowBL(bool)));
-    connect(m_pctrlShowPressure, SIGNAL(clicked(bool)), pMainFrame->m_pXDirectTileWidget->foilWidget(), SLOT(onShowPressure(bool)));
+	connect(m_pctrlShowBL,       SIGNAL(clicked(bool)), pMainFrame->m_pXDirectTileWidget->opPointWidget(), SLOT(onShowBL(bool)));
+	connect(m_pctrlShowPressure, SIGNAL(clicked(bool)), pMainFrame->m_pXDirectTileWidget->opPointWidget(), SLOT(onShowPressure(bool)));
 }
 
 
@@ -1194,13 +1194,13 @@ void QXDirect::onAnalyze()
 	if(m_bSequence)
 	{
         pXFADlg->setAlpha(m_Alpha, m_AlphaMax, m_AlphaDelta);
-		pXFADlg->SetCl(m_Cl, m_ClMax, m_ClDelta);
+		pXFADlg->setCl(m_Cl, m_ClMax, m_ClDelta);
         pXFADlg->setRe(m_Reynolds, m_ReynoldsMax, m_ReynoldsDelta);
 	}
 	else
 	{
         pXFADlg->setAlpha(m_Alpha, m_Alpha, m_AlphaDelta);
-		pXFADlg->SetCl(m_Cl, m_Cl, m_ClDelta);
+		pXFADlg->setCl(m_Cl, m_Cl, m_ClDelta);
         pXFADlg->setRe(m_Reynolds, m_Reynolds, m_ReynoldsDelta);
 	}
 
@@ -5129,7 +5129,7 @@ void QXDirect::setGraphTiles()
 void QXDirect::setFoilScale()
 {
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-	pMainFrame->m_pXDirectTileWidget->foilWidget()->setFoilScale();
+	pMainFrame->m_pXDirectTileWidget->opPointWidget()->setFoilScale();
 }
 
 

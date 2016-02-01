@@ -27,62 +27,67 @@ InverseOptionsDlg::InverseOptionsDlg(QWidget *pParent) : QDialog(pParent)
 {
 	setWindowTitle(tr("XInverse Style"));
 	m_pXInverse = NULL;
-	SetupLayout();
-
+	setupLayout();
 }
 
-void InverseOptionsDlg::SetupLayout()
+
+void InverseOptionsDlg::setupLayout()
 {
-	m_pctrlRefFoil   = new LineBtn(this);
-	m_pctrlModFoil   = new LineBtn(this);
-	m_pctrlSpline    = new LineBtn(this);
-	m_pctrlReflected = new LineBtn(this);
+	QGridLayout *pStyleLayout = new QGridLayout;
+	{
+		QLabel * lab1 = new QLabel(tr("Reference Foil"));
+		QLabel * lab2 = new QLabel(tr("Modified Foil"));
+		QLabel * lab3 = new QLabel(tr("Spline"));
+		QLabel * lab4 = new QLabel(tr("Reflected Curve"));
+		lab1->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+		lab2->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+		lab3->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+		lab4->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
-	QLabel * lab1 = new QLabel(tr("Reference Foil"));
-	QLabel * lab2 = new QLabel(tr("Modified Foil"));
-	QLabel * lab3 = new QLabel(tr("Spline"));
-	QLabel * lab4 = new QLabel(tr("Reflected Curve"));
-	lab1->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-	lab2->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-	lab3->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-	lab4->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
-	QGridLayout *StyleLayout = new QGridLayout;
-	StyleLayout->addWidget(lab1,1,1);
-	StyleLayout->addWidget(lab2,2,1);
-	StyleLayout->addWidget(lab3,3,1);
-	StyleLayout->addWidget(lab4,4,1);
-	StyleLayout->addWidget(m_pctrlRefFoil,1,2);
-	StyleLayout->addWidget(m_pctrlModFoil,2,2);
-	StyleLayout->addWidget(m_pctrlSpline,3,2);
-	StyleLayout->addWidget(m_pctrlReflected,4,2);
+		m_pctrlRefFoil   = new LineBtn(this);
+		m_pctrlModFoil   = new LineBtn(this);
+		m_pctrlSpline    = new LineBtn(this);
+		m_pctrlReflected = new LineBtn(this);
 
-	QHBoxLayout *CommandButtons = new QHBoxLayout;
-	QPushButton *OKButton      = new QPushButton(tr("OK"));
-	QPushButton *CancelButton  = new QPushButton(tr("Cancel"));
-	CommandButtons->addStretch(1);
-	CommandButtons->addWidget(OKButton);
-	CommandButtons->addStretch(1);
-	CommandButtons->addWidget(CancelButton);
-	CommandButtons->addStretch(1);
-	connect(OKButton, SIGNAL(clicked()),this, SLOT(accept()));
-	connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+		pStyleLayout->addWidget(lab1,1,1);
+		pStyleLayout->addWidget(lab2,2,1);
+		pStyleLayout->addWidget(lab3,3,1);
+		pStyleLayout->addWidget(lab4,4,1);
+		pStyleLayout->addWidget(m_pctrlRefFoil,1,2);
+		pStyleLayout->addWidget(m_pctrlModFoil,2,2);
+		pStyleLayout->addWidget(m_pctrlSpline,3,2);
+		pStyleLayout->addWidget(m_pctrlReflected,4,2);
+	}
 
-	QVBoxLayout *MainLayout = new QVBoxLayout;
-	MainLayout->addLayout(StyleLayout);
-	MainLayout->addLayout(CommandButtons);
+	QHBoxLayout *pCommandButtons = new QHBoxLayout;
+	{
+		QPushButton *pOKButton      = new QPushButton(tr("OK"));
+		QPushButton *pCancelButton  = new QPushButton(tr("Cancel"));
+		pCommandButtons->addStretch(1);
+		pCommandButtons->addWidget(pOKButton);
+		pCommandButtons->addStretch(1);
+		pCommandButtons->addWidget(pCancelButton);
+		pCommandButtons->addStretch(1);
 
-	setLayout(MainLayout);
+		connect(pOKButton, SIGNAL(clicked()),this, SLOT(accept()));
+		connect(pCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+	}
 
-    connect(m_pctrlRefFoil,   SIGNAL(clickedLB()),this, SLOT(OnRefStyle()));
-    connect(m_pctrlModFoil,   SIGNAL(clickedLB()),this, SLOT(OnModStyle()));
-    connect(m_pctrlSpline,    SIGNAL(clickedLB()),this, SLOT(OnSplineStyle()));
-    connect(m_pctrlReflected, SIGNAL(clickedLB()),this, SLOT(OnReflectedStyle()));
+	QVBoxLayout *pMainLayout = new QVBoxLayout;
+	{
+		pMainLayout->addLayout(pStyleLayout);
+		pMainLayout->addLayout(pCommandButtons);
+	}
 
-	connect(OKButton, SIGNAL(clicked()),this, SLOT(accept()));
-	connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+	setLayout(pMainLayout);
 
+	connect(m_pctrlRefFoil,   SIGNAL(clickedLB()), this, SLOT(onRefStyle()));
+	connect(m_pctrlModFoil,   SIGNAL(clickedLB()), this, SLOT(onModStyle()));
+	connect(m_pctrlSpline,    SIGNAL(clickedLB()), this, SLOT(onSplineStyle()));
+	connect(m_pctrlReflected, SIGNAL(clickedLB()), this, SLOT(onReflectedStyle()));
 }
+
 
 void InverseOptionsDlg::initDialog()
 {
@@ -93,7 +98,8 @@ void InverseOptionsDlg::initDialog()
 	m_pctrlReflected->setStyle(pXInverse->m_ReflectedStyle, pXInverse->m_ReflectedWidth, pXInverse->m_ReflectedClr,0);
 }
 
-void InverseOptionsDlg::OnRefStyle()
+
+void InverseOptionsDlg::onRefStyle()
 {
 	QXInverse *pXInverse = (QXInverse*)m_pXInverse;
     LinePickerDlg dlg(this);
@@ -104,12 +110,12 @@ void InverseOptionsDlg::OnRefStyle()
 		m_pctrlRefFoil->setStyle(dlg.setStyle(),dlg.width(),dlg.setColor(),0);
 		pXInverse->m_pRefFoil->m_FoilStyle = dlg.setStyle();
 		pXInverse->m_pRefFoil->m_FoilWidth = dlg.width();
-		pXInverse->m_pRefFoil->m_FoilColor  = dlg.setColor();
+		pXInverse->m_pRefFoil->m_FoilColor = dlg.setColor();
 	}
 }
 
 
-void InverseOptionsDlg::OnModStyle()
+void InverseOptionsDlg::onModStyle()
 {
 	QXInverse *pXInverse = (QXInverse*)m_pXInverse;
     LinePickerDlg dlg(this);
@@ -124,7 +130,8 @@ void InverseOptionsDlg::OnModStyle()
 	}
 }
 
-void InverseOptionsDlg::OnSplineStyle()
+
+void InverseOptionsDlg::onSplineStyle()
 {
 	QXInverse *pXInverse = (QXInverse*)m_pXInverse;
     LinePickerDlg dlg(this);
@@ -139,7 +146,8 @@ void InverseOptionsDlg::OnSplineStyle()
 	}
 }
 
-void InverseOptionsDlg::OnReflectedStyle()
+
+void InverseOptionsDlg::onReflectedStyle()
 {
 	QXInverse *pXInverse = (QXInverse*)m_pXInverse;
     LinePickerDlg dlg(this);

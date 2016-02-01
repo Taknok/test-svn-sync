@@ -28,16 +28,16 @@
 class XDirectStyleDlg : public QDialog
 {
 	Q_OBJECT
-	friend class FoilWidget;
+	friend class OpPointWidget;
 
 public:
 	XDirectStyleDlg(QWidget *pParent=NULL);
 
 private slots:
-	void OnRestoreDefaults();
-	void OnNeutralStyle();
-	void OnBLStyle();
-	void OnPressureStyle();
+	void onRestoreDefaults();
+	void onNeutralStyle();
+	void onBLStyle();
+	void onPressureStyle();
 
 private:
 	void keyPressEvent(QKeyEvent *event);

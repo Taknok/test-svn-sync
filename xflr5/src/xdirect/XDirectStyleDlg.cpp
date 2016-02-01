@@ -22,7 +22,7 @@
 #include "XDirectStyleDlg.h"
 #include "XDirect.h"
 #include "../misc/LinePickerDlg.h"
-#include "viewwidgets/foilwidget.h"
+#include "viewwidgets/oppointwidget.h"
 #include <QGridLayout>
 #include <QLabel>
 
@@ -33,18 +33,18 @@ XDirectStyleDlg::XDirectStyleDlg(QWidget *pParent) : QDialog(pParent)
 	setWindowTitle(tr("XDirect Styles"));
 	m_pParent = pParent;
 
-	FoilWidget *pFoilWidget = (FoilWidget*)m_pParent;
-	m_iNeutralStyle  = pFoilWidget->m_iNeutralStyle;
-	m_iNeutralWidth  = pFoilWidget->m_iNeutralWidth;
-	m_crNeutralColor = pFoilWidget->m_crNeutralColor;
+	OpPointWidget *pOpPointWidget = (OpPointWidget*)m_pParent;
+	m_iNeutralStyle  = pOpPointWidget->m_iNeutralStyle;
+	m_iNeutralWidth  = pOpPointWidget->m_iNeutralWidth;
+	m_crNeutralColor = pOpPointWidget->m_crNeutralColor;
 
-	m_iBLStyle  = pFoilWidget->m_iBLStyle;
-	m_iBLWidth  = pFoilWidget->m_iBLWidth;
-	m_crBLColor = pFoilWidget->m_crBLColor;
+	m_iBLStyle  = pOpPointWidget->m_iBLStyle;
+	m_iBLWidth  = pOpPointWidget->m_iBLWidth;
+	m_crBLColor = pOpPointWidget->m_crBLColor;
 
-	m_iPressureStyle  = pFoilWidget->m_iPressureStyle;
-	m_iPressureWidth  = pFoilWidget->m_iPressureWidth;
-	m_crPressureColor = pFoilWidget->m_crPressureColor;
+	m_iPressureStyle  = pOpPointWidget->m_iPressureStyle;
+	m_iPressureWidth  = pOpPointWidget->m_iPressureWidth;
+	m_crPressureColor = pOpPointWidget->m_crPressureColor;
 
 	setupLayout();
 
@@ -52,7 +52,7 @@ XDirectStyleDlg::XDirectStyleDlg(QWidget *pParent) : QDialog(pParent)
 	m_pctrlBL->setStyle(m_iBLStyle, m_iBLWidth, m_crBLColor,0);
 	m_pctrlPressure->setStyle(m_iPressureStyle, m_iPressureWidth, m_crPressureColor,0);
 
-	OnRestoreDefaults();
+	onRestoreDefaults();
 }
 
 
@@ -72,9 +72,9 @@ void XDirectStyleDlg::setupLayout()
 		StyleLayout->addWidget(m_pctrlNeutral,1,2);
 		StyleLayout->addWidget(m_pctrlBL,2,2);
 		StyleLayout->addWidget(m_pctrlPressure,3,2);
-        connect(m_pctrlNeutral,  SIGNAL(clickedLB()),this, SLOT(OnNeutralStyle()));
-        connect(m_pctrlBL,       SIGNAL(clickedLB()),this, SLOT(OnBLStyle()));
-        connect(m_pctrlPressure, SIGNAL(clickedLB()),this, SLOT(OnPressureStyle()));
+        connect(m_pctrlNeutral,  SIGNAL(clickedLB()),this, SLOT(onNeutralStyle()));
+        connect(m_pctrlBL,       SIGNAL(clickedLB()),this, SLOT(onBLStyle()));
+        connect(m_pctrlPressure, SIGNAL(clickedLB()),this, SLOT(onPressureStyle()));
 	}
 
 	QHBoxLayout *CommandButtons = new QHBoxLayout;
@@ -90,7 +90,7 @@ void XDirectStyleDlg::setupLayout()
 		CommandButtons->addWidget(CancelButton);
 		CommandButtons->addStretch(1);
 		connect(OKButton, SIGNAL(clicked()),this, SLOT(accept()));
-		connect(DefaultsButton, SIGNAL(clicked()),this, SLOT(OnRestoreDefaults()));
+		connect(DefaultsButton, SIGNAL(clicked()),this, SLOT(onRestoreDefaults()));
 		connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 	}
 
@@ -109,7 +109,7 @@ void XDirectStyleDlg::setupLayout()
 }
 
 
-void XDirectStyleDlg::OnNeutralStyle()
+void XDirectStyleDlg::onNeutralStyle()
 {
     LinePickerDlg dlg(this);
 	dlg.initDialog(m_iNeutralStyle, m_iNeutralWidth, m_crNeutralColor);
@@ -125,7 +125,7 @@ void XDirectStyleDlg::OnNeutralStyle()
 }
 
 
-void XDirectStyleDlg::OnPressureStyle()
+void XDirectStyleDlg::onPressureStyle()
 {
     LinePickerDlg dlg(this);
 	dlg.initDialog(m_iPressureStyle, m_iPressureWidth, m_crPressureColor);
@@ -141,7 +141,7 @@ void XDirectStyleDlg::OnPressureStyle()
 }
 
 
-void XDirectStyleDlg::OnBLStyle()
+void XDirectStyleDlg::onBLStyle()
 {
     LinePickerDlg dlg(this);
 	dlg.initDialog(m_iBLStyle, m_iBLWidth, m_crBLColor);
@@ -160,7 +160,7 @@ void XDirectStyleDlg::OnBLStyle()
 
 
 
-void XDirectStyleDlg::OnRestoreDefaults()
+void XDirectStyleDlg::onRestoreDefaults()
 {
 	m_iNeutralStyle = 2;
 	m_iNeutralWidth = 1;
