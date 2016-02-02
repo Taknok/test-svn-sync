@@ -2052,16 +2052,13 @@ void QXInverse::paintFoil(QPainter &painter)
 
 	//convert screen coordinates to foil coordinates
 
-	if(!m_QGraph.isInDrawRect(m_PointDown))
-	{
-		CVector real = mousetoReal(m_PointDown);
-		painter.drawText(m_QGraph.clientRect()->width()-12*fm.averageCharWidth(),
-						 m_QGraph.clientRect()->height() + dD, QString("x = %1")
-						 .arg(real.x,7,'f',3));
-		painter.drawText(m_QGraph.clientRect()->width()-12*fm.averageCharWidth(),
-						 m_QGraph.clientRect()->height() + 2*dD, QString("y = %1")
-						 .arg(real.y,7,'f',3));
-	}
+	CVector real = mousetoReal(m_PointDown);
+	painter.drawText(m_QGraph.clientRect()->width()-12*fm.averageCharWidth(),
+					 m_QGraph.clientRect()->height() + dD, QString("x = %1")
+					 .arg(real.x,7,'f',3));
+	painter.drawText(m_QGraph.clientRect()->width()-12*fm.averageCharWidth(),
+					 m_QGraph.clientRect()->height() + 2*dD, QString("y = %1")
+					 .arg(real.y,7,'f',3));
 
 	painter.restore();
 }
