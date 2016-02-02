@@ -35,6 +35,7 @@ double XFoil::vaccel = 0.01;
 
 XFoil::XFoil()
 {
+	m_pFoil = NULL;
 //------ primary dimensioning limit parameters
 
 	//------ derived dimensioning limit parameters
@@ -1982,7 +1983,7 @@ void XFoil::WriteString(QString str, bool bFullReport)
 {
 	if(!bFullReport && !s_bFullReport) return;
 
-	m_OutMessage += str;
+	*m_pOutStream << str;
 }
 
 
@@ -4007,17 +4008,17 @@ bool XFoil::InitXFoilGeometry(void *pFoilPtr)
 
 	if(!pFoilPtr) return false;
 
-	Foil *pFoil = (Foil*)pFoilPtr;
+	m_pFoil = (Foil*)pFoilPtr;
 
 	int i, k;
 
-	for (i =0; i<pFoil->n; i++)
+	for (i =0; i<m_pFoil->n; i++)
 	{
-		xb[i+1] = pFoil->x[i];
-		yb[i+1] = pFoil->y[i];
+		xb[i+1] = m_pFoil->x[i];
+		yb[i+1] = m_pFoil->y[i];
 	}
 
-	nb = pFoil->n;
+	nb = m_pFoil->n;
 	lflap  = false;
 	lbflap = false;
 
@@ -4035,15 +4036,15 @@ bool XFoil::InitXFoilGeometry(void *pFoilPtr)
 		CheckAngles();
 		for (k=0; k<n;k++)
 		{
-			pFoil->nx[k] = nx[k+1];
-			pFoil->ny[k] = ny[k+1];
+			m_pFoil->nx[k] = nx[k+1];
+			m_pFoil->ny[k] = ny[k+1];
 		}
-		pFoil->n = n;
+		m_pFoil->n = n;
 		return true;
 	}
 	else
 	{
-		QString str = QObject::tr("Unrecognized foil format")+" "+pFoil->m_FoilName;
+		QString str = QObject::tr("Unrecognized foil format")+" "+m_pFoil->foilName();
 		WriteString(str);
 		return false;
 	}
@@ -4051,12 +4052,12 @@ bool XFoil::InitXFoilGeometry(void *pFoilPtr)
 
 
 
-bool XFoil::InitXFoilAnalysis(void *pPolarPtr, bool bViscous)
+bool XFoil::InitXFoilAnalysis(void *pPolarPtr, bool bViscous, QTextStream &outStream)
 {
 	//Sets Analysis parameters in XFoil
 	if(!pPolarPtr) return false;
 
-	m_OutMessage.clear();
+	m_pOutStream = &outStream;
 
 	Polar *pPolar = (Polar*)pPolarPtr;
 
@@ -13400,6 +13401,7 @@ void XFoil::FillHk(double ws[IVX][3], int nside1, int nside2)
 		}
 	}
 }
+
 
 void XFoil::FillRTheta(double ws[IVX][3], int nside1, int nside2)
 {

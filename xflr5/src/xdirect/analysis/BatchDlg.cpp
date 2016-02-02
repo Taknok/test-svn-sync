@@ -88,6 +88,8 @@ BatchDlg::BatchDlg(QWidget *pParent) : QDialog(pParent)
 
 	m_pRmsGraph = new QGraph;
 	m_pctrlGraphOutput->setGraph(m_pRmsGraph);
+	m_pctrlGraphOutput->m_bShowMousePos = false;
+
 //	m_pRmsGraph->CopySettings(&Settings::s_RefGraph, false);
 
 	m_pRmsGraph->setXTitle(tr("Iter"));

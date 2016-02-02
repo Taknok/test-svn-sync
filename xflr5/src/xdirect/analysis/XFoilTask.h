@@ -71,6 +71,8 @@ public:
 
 	QTextStream m_OutStream;
 	QString m_OutMessage;
+	QString m_XFoilLog;
+	QTextStream m_XFoilStream;
 
 	Graph *m_pGraph;
 	Curve *m_pCurve0, *m_pCurve1;

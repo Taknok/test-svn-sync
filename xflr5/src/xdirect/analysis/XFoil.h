@@ -38,11 +38,13 @@ This is a translation to C++ of the original Fortran code of Mark Drela and Haro
 See http://raphael.mit.edu/xfoil for more information.
 */
 
-#include <QString>
+#include <QTextStream>
 #include <math.h>
 #include <complex>
 
 #include "../../params.h"
+#include <Foil.h>
+
 
 using namespace std;
 	//------ derived dimensioning limit parameters
@@ -146,7 +148,7 @@ public:
 	double  thick, xthick, cambr, xcambr;
 	int ncam, nthk;
 
-	QString m_FoilName;
+	Foil * m_pFoil;
 
 //	complex<double> zcoldw, dzte, chordz, zleold, zc, zc_cn, piq, cn, eiw;
 
@@ -213,7 +215,7 @@ public:
 	bool fcpmin();
 	bool Initialize();
 	bool InitXFoilGeometry(void *pFoilPtr);
-	bool InitXFoilAnalysis(void *pPolarPtr, bool bViscous);
+	bool InitXFoilAnalysis(void *pPolarPtr, bool bViscous, QTextStream &outStream);
 	void pangen();
 	bool Preprocess();
 	bool restoreblData(int icom);
@@ -259,7 +261,7 @@ public:
 	double minf_cl, reinf_cl;
 	double angtol;
 
-	QString m_OutMessage;
+	QTextStream *m_pOutStream;
 
 //____________FUNCTION & METHODS___________________________________________________
 public:
@@ -481,7 +483,7 @@ private:
 //	double  xoff,yoff,xgmin,xgmax,ygmin,ygmax,dxyg,xcmin,xcmax,ycmin,ycmax,dxyc,dyoffc,xpmin,xpmax,ypmin,ypmax,dxyp,dyoffp,ysfp,gtick;
 	int imxbl,ismxbl;
 	double  xsf,ysf;
-	QString vmxbl;
+//	QString vmxbl;
 
 //	double cpol[800][iptot][9],cpolsd[800][3][jptot][9];//what's iptot ???
 //	double xpref[300],cpref[300], verspol[9],cpolxy[300][2][9]

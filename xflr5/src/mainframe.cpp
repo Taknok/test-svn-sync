@@ -2360,7 +2360,6 @@ void MainFrame::deleteProject(bool bClosing)
 		if(m_iApp==XFLR5::MIAREX) pMiarex->setControls();
 
 		QXDirect *pXDirect = (QXDirect*)m_pXDirect;
-		pXDirect->m_pXFoil->m_FoilName = "";
 		Foil::setCurFoil(NULL);
 		Polar::setCurPolar(NULL);
 		OpPoint::setCurOpp(NULL);
