@@ -156,7 +156,6 @@ private slots:
 	void onExportPlanetoXML();
 	void onImportPlanefromXML();
 	void onFinCurve();
-	void onFourGraphs();
 	void onGL3DScale();
 	void onHideAllWOpps();
 	void onHideAllWPlrOpps();
@@ -174,6 +173,8 @@ private slots:
 	void onNewPlane();
 	void onNewPlaneObject();
 	void onPanelForce();
+	void onPlaneOppProperties();
+	void onPlaneInertia();
 	void onPolarFilter();
 	void onReadAnalysisData();
 	void onRenameCurPlane();
@@ -204,12 +205,9 @@ private slots:
 	void onSurfaces();
 	void onSurfaceSpeeds();
 	void onStabTimeView();
-	void onTwoGraphs();
-	void onPlaneInertia();
 	void onVortices();
 	void onNormals();
 	void onWing2Curve();
-	void onPlaneOppProperties();
 	void onWOppView();
 	void onWPolarView();
 	void onWPolarProperties();

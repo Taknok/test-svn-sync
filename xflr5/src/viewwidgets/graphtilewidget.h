@@ -49,7 +49,6 @@ public:
 
 	int graphWidgetCount(){return m_GraphWidget.count();}
 	int activeGraphIndex(){return m_iActiveGraphWidget;}
-	void setGraphCount(int nGraphs);
 
 	void keyPressEvent(QKeyEvent *event);
 	void contextMenuEvent (QContextMenuEvent *event);

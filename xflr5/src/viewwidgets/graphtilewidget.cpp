@@ -107,11 +107,6 @@ void GraphTileWidget::setGraphList(QList<QGraph*>pGraphList, int nGraphs, int iG
 }
 
 
-void GraphTileWidget::setGraphCount(int nGraphs)
-{
-	m_nGraphWidgets =  qMin(nGraphs,MAXGRAPHS);
-	update();
-}
 
 
 void GraphTileWidget::showEvent(QShowEvent *event)
@@ -178,7 +173,6 @@ void GraphTileWidget::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_3:
 		case Qt::Key_4:
 		case Qt::Key_5:
-		case Qt::Key_6:
 		{
 			if(bCtrl)
 			{
@@ -189,7 +183,6 @@ void GraphTileWidget::keyPressEvent(QKeyEvent *event)
 			{
 				int iGraph = event->text().toInt()-1;
 
-
 				if(m_xflr5App==XFLR5::XFOILANALYSIS)
 				{
 					QXDirect *pXDirect = (QXDirect*)s_pXDirect;
@@ -198,8 +191,8 @@ void GraphTileWidget::keyPressEvent(QKeyEvent *event)
 				else if(m_xflr5App==XFLR5::MIAREX)
 				{
 					QMiarex *pMiarex = (QMiarex*)s_pMiarex;
-					if (pMiarex->m_iView==XFLR5::STABPOLARVIEW && iGraph>1)
-						return; //only case whare there is only one graph to display
+					if (pMiarex->m_iView==XFLR5::STABPOLARVIEW && iGraph>1)	return;
+					if (pMiarex->m_iView==XFLR5::STABTIMEVIEW && iGraph>3)	return;
 					pMiarex->setView(XFLR5::ONEGRAPH);
 				}
 
@@ -353,7 +346,10 @@ void GraphTileWidget::onFourGraphs()
 	{
 		QMiarex *pMiarex = (QMiarex*)s_pMiarex;
 		if (pMiarex->m_iView==XFLR5::STABPOLARVIEW)
-			return; //only case whare there is only one graph to display
+		{
+			onTwoGraphs(); //there are only two graphs to display
+			return;
+		}
 		m_nGraphWidgets = 4;
 		m_iActiveGraphWidget = 0;
 		m_pLegendWidget->setGraph(m_GraphWidget.at(0)->graph());
@@ -386,7 +382,15 @@ void GraphTileWidget::onAllGraphs()
 		QMiarex *pMiarex = (QMiarex*)s_pMiarex;
 
 		if (pMiarex->m_iView==XFLR5::STABPOLARVIEW)
-			return; //only case whare there is only one graph to display
+		{
+			onTwoGraphs(); //there are only two graphs to display
+			return;
+		}
+		else if (pMiarex->m_iView==XFLR5::STABTIMEVIEW)
+		{
+			onFourGraphs(); //there are only two graphs to display
+			return;
+		}
 
 		pMiarex->setView(XFLR5::ALLGRAPHS);
 

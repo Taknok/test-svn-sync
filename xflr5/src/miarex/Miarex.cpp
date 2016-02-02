@@ -264,7 +264,7 @@ QMiarex::QMiarex(QWidget *parent)
 	m_RampAmplitude = 1.;//CtrlUnit;
 
 	m_WingGraph.clear();
-	for(int ig=0; ig<MAXGRAPHS; ig++)
+	for(int ig=0; ig<MAXWINGGRAPHS; ig++)
 	{
 		m_WingGraph.append(new QGraph);
 		m_WingGraph[ig]->setGraphName(QString("Wing_Graph_%1").arg(ig));
@@ -322,11 +322,11 @@ QMiarex::QMiarex(QWidget *parent)
 	m_CpGraph.setMargin(50);
 	m_CpGraph.setInverted(true);
 
-	for(int i=0; i<MAXGRAPHS;i++) m_CpGraph.addCurve(); // four curves, one for each of the plane's wings
+	for(int i=0; i<MAXWINGS;i++) m_CpGraph.addCurve(); // four curves, one for each of the plane's wings
 
 	//set the default settings for the time response graphs
 	m_TimeGraph.clear();
-	for(int ig=0; ig<MAXGRAPHS; ig++)
+	for(int ig=0; ig<MAXTIMEGRAPHS; ig++)
 	{
 		m_TimeGraph.append(new QGraph);
 		m_TimeGraph[ig]->graphType() = QGRAPH::STABTIMEGRAPH;
@@ -824,11 +824,11 @@ void QMiarex::createWOppCurves()
 {
 //	WingOpp *pWOpp = NULL;;
 	PlaneOpp *pPOpp = NULL;
-	Curve *pWingCurve[MAXWINGS][MAXGRAPHS];
+	Curve *pWingCurve[MAXWINGS][MAXWINGGRAPHS];
 
 	int i,k;
 
-	for(int ig=0; ig<MAXGRAPHS; ig++) m_WingGraph[ig]->deleteCurves();
+	for(int ig=0; ig<MAXWINGGRAPHS; ig++) m_WingGraph[ig]->deleteCurves();
 
 	// Browse through the array of plane operating points
 	// add a curve for those selected, and fill them with data
@@ -880,7 +880,7 @@ void QMiarex::createWOppCurves()
 		}
 
 
-/*		for(int ig=0; ig<MAXGRAPHS; ig++)
+/*		for(int ig=0; ig<MAXWINGGRAPHS; ig++)
 		{
 			if(m_WingGraph[ig]->yVariable()==3)
 			{
@@ -895,7 +895,7 @@ void QMiarex::createWOppCurves()
 				}
 			}
 		}*/
-		for(int ig=0; ig<MAXGRAPHS; ig++)
+		for(int ig=0; ig<MAXWINGGRAPHS; ig++)
 		{
 			if(m_WingGraph[ig]->yVariable()==3)
 			{
@@ -932,7 +932,7 @@ void QMiarex::createWOppCurves()
 			maxlift = m_pCurPOpp->m_CL / lift * m_pCurPlane->planformArea();
 		}
 
-		for(int ig=0; ig<MAXGRAPHS; ig++)
+		for(int ig=0; ig<MAXWINGGRAPHS; ig++)
 		{
 			if(m_WingGraph[ig]->yVariable()==3)
 			{
@@ -959,7 +959,7 @@ void QMiarex::createWOppCurves()
 void QMiarex::createWPolarCurves()
 {
 	WPolar *pWPolar;
-	Curve *pCurve[MAXGRAPHS];
+	Curve *pCurve[MAXPOLARGRAPHS];
 
 	for(int ig=0; ig<m_WPlrGraph.count(); ig++) m_WPlrGraph[ig]->deleteCurves();
 
@@ -2647,16 +2647,20 @@ bool QMiarex::loadSettings(QSettings *pSettings)
 
 	m_CpGraph.loadSettings(pSettings);
 
-	for(int ig=0; ig<MAXGRAPHS; ig++)
+	for(int ig=0; ig<MAXWINGGRAPHS; ig++)
 	{
-		m_TimeGraph[ig]->loadSettings(pSettings);
 		m_WingGraph[ig]->loadSettings(pSettings);
 	}
 	for(int ig=0; ig<MAXPOLARGRAPHS; ig++)
 	{
 		m_WPlrGraph[ig]->loadSettings(pSettings);
 		setWGraphTitles(m_WPlrGraph[ig]);
-	}	m_StabPlrGraph.at(0)->loadSettings(pSettings);
+	}
+	for(int ig=0; ig<MAXTIMEGRAPHS; ig++)
+	{
+		m_TimeGraph[ig]->loadSettings(pSettings);
+	}
+	m_StabPlrGraph.at(0)->loadSettings(pSettings);
 	m_StabPlrGraph.at(1)->loadSettings(pSettings);
 
 	setStabGraphTitles();
@@ -3169,7 +3173,7 @@ void QMiarex::onAdjustToWing()
 
 	double halfspan = m_pCurPlane->planformSpan()/2.0;
 	double xmin = -halfspan*Units::mtoUnit();
-	for(int ig=0; ig<MAXGRAPHS; ig++)
+	for(int ig=0; ig<MAXWINGGRAPHS; ig++)
 	{
 		m_WingGraph[ig]->setAutoX(false);
 		m_WingGraph[ig]->setXMax( halfspan*Units::mtoUnit());
@@ -5180,7 +5184,7 @@ void QMiarex::onHighlightWOpp()
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 	pMainFrame->m_pHighlightWOppAct->setChecked(m_bHighlightOpp);
 
-	for(int ig=0; ig<m_WPlrGraph.count(); ig++)
+	for(int ig=0; ig<MAXPOLARGRAPHS; ig++)
 		m_WPlrGraph[ig]->m_bHighlightPoint = m_bHighlightOpp;
 
 	s_bResetCurves = true;
@@ -6019,7 +6023,7 @@ void QMiarex::onStabilityDirection()
 	
 	m_bLongitudinal = pStabView->m_pctrlLongDynamics->isChecked();
 
-	for(int ig=0; ig<MAXGRAPHS; ig++) m_TimeGraph[ig]->deleteCurves();
+	for(int ig=0; ig<MAXTIMEGRAPHS; ig++) m_TimeGraph[ig]->deleteCurves();
 
 	pStabView->m_pCurve = NULL;
 	pStabView->fillCurveList();
@@ -6179,32 +6183,6 @@ void QMiarex::onStoreWOpp()
 	PlaneOpp::s_bStoreOpps = m_pctrlStoreWOpp->isChecked();
 }
 
-
-
-/**
- * The user has requested to switch to the two graph view top-left and top-right
- */
-void QMiarex::onTwoGraphs()
-{
-	MainFrame*pMainFrame = (MainFrame*)s_pMainFrame;
-	pMainFrame->m_pMiarexTileWidget->setGraphCount(2);
-	updateView();
-	setControls();
-
-}
-
-
-/**
- * The user has requested to switch to the four graph view
- */
-void QMiarex::onFourGraphs()
-{
-	MainFrame*pMainFrame = (MainFrame*)s_pMainFrame;
-	pMainFrame->m_pMiarexTileWidget->setGraphCount(4);
-	updateView();
-	setControls();
-
-}
 
 
 /**
@@ -7587,7 +7565,7 @@ void QMiarex::setWGraphScale()
 {
 	if(!m_pCurPlane)
 	{
-		for(int ig=0; ig<MAXGRAPHS; ig++)
+		for(int ig=0; ig<MAXWINGGRAPHS; ig++)
 		{
 			m_WingGraph[ig]->setAuto(false);
 			m_WingGraph[ig]->setXUnit(10.0);
@@ -7599,7 +7577,7 @@ void QMiarex::setWGraphScale()
 	{
 		double halfspan = m_pCurPlane->planformSpan()/2.0;
 
-		for(int ig=0; ig<MAXGRAPHS; ig++)
+		for(int ig=0; ig<MAXWINGGRAPHS; ig++)
 		{
 			m_WingGraph[ig]->setAutoX(false);
 			m_WingGraph[ig]->setXMin(-halfspan*Units::mtoUnit());
@@ -8480,7 +8458,7 @@ void QMiarex::setGraphTiles()
 					pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WPlrGraph, 4);
 					break;
 				case XFLR5::ALLGRAPHS:
-					pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WPlrGraph, m_WPlrGraph.count());
+					pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WPlrGraph, MAXPOLARGRAPHS);
 					break;
 			}
 			break;
@@ -8500,7 +8478,7 @@ void QMiarex::setGraphTiles()
 					pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WingGraph, 4);
 					break;
 				case XFLR5::ALLGRAPHS:
-					pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WingGraph, MAXGRAPHS);
+					pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WingGraph, MAXWINGGRAPHS);
 					break;
 			}
 			break;

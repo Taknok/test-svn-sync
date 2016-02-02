@@ -182,7 +182,6 @@ void MiarexTileWidget::adjustLayout()
 		m_pMainGridLayout->setColumnStretch(3,1);
 	}
 
-
 	blockSignals(false);
 }
 
