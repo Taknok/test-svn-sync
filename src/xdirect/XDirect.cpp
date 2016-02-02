@@ -164,13 +164,12 @@ QXDirect::QXDirect(QWidget *parent) : QWidget(parent)
 		m_PlrGraph[ig]->setBorderStyle(0);
 		m_PlrGraph[ig]->setBorderWidth(3);
 		m_PlrGraph[ig]->setMargin(50);
-		if(ig==0) m_PlrGraph[ig]->setVariables(2,1);
-		if(ig==1) m_PlrGraph[ig]->setVariables(0,1);
-		if(ig==2) m_PlrGraph[ig]->setVariables(0,5);
-		if(ig==3) m_PlrGraph[ig]->setVariables(6,1);
-		if(ig==4) m_PlrGraph[ig]->setVariables(0,10);
-		if(ig==5) m_PlrGraph[ig]->setVariables(0,11);
 	}
+	m_PlrGraph[0]->setVariables(2,1);
+	m_PlrGraph[1]->setVariables(0,1);
+	m_PlrGraph[2]->setVariables(0,5);
+	m_PlrGraph[3]->setVariables(6,1);
+	m_PlrGraph[4]->setVariables(0,10);
 
 	for(int ig=0; ig<MAXPOLARGRAPHS; ig++) setGraphTitles(m_PlrGraph[ig]);
 
@@ -2794,7 +2793,7 @@ void QXDirect::onFoilGeom()
 	FoilGeomDlg fgeDlg(pMainFrame);
 	fgeDlg.m_pMemFoil = Foil::curFoil();
 	fgeDlg.m_pBufferFoil = &m_BufferFoil;
-	fgeDlg.InitDialog();
+	fgeDlg.initDialog();
 
 	if(fgeDlg.exec() == QDialog::Accepted)
 	{
@@ -3271,7 +3270,7 @@ void QXDirect::onInterpolateFoils()
 	InterpolateFoilsDlg ifDlg(pMainFrame);
 	ifDlg.m_poaFoil     = m_poaFoil;
 	ifDlg.m_pBufferFoil = &m_BufferFoil;// work on the buffer foil
-	ifDlg.InitDialog();
+	ifDlg.initDialog();
 
 	if(ifDlg.exec() == QDialog::Accepted)
 	{

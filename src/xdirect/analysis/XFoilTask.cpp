@@ -113,8 +113,9 @@ bool XFoilTask::initializeTask(Foil *pFoil, Polar *pPolar, bool bViscous, bool b
 
 	m_bIsFinished = false;
 
+	m_XFoilStream.setString(&m_XFoilLog);
 	if(!XFoilInstance.InitXFoilGeometry(m_pFoil))  return false;
-	if(!XFoilInstance.InitXFoilAnalysis(m_pPolar, bViscous)) return false;
+	if(!XFoilInstance.InitXFoilAnalysis(m_pPolar, bViscous, m_XFoilStream)) return false;
 
 	return true;
 }
@@ -295,8 +296,9 @@ bool XFoilTask::alphaSequence()
 
 			if(XFoil::s_bFullReport)
 			{
-				traceLog(XFoilInstance.m_OutMessage);
-				XFoilInstance.m_OutMessage.clear();
+				m_XFoilStream.flush();
+				traceLog(m_XFoilLog);
+				m_XFoilLog.clear();
 			}
 
 
@@ -394,8 +396,9 @@ bool XFoilTask::ReSequence()
 
 		if(XFoil::s_bFullReport)
 		{
-			traceLog(XFoilInstance.m_OutMessage);
-			XFoilInstance.m_OutMessage.clear();
+			m_XFoilStream.flush();
+			traceLog(m_XFoilLog);
+			m_XFoilLog.clear();
 		}
 
 		if(m_pGraph)

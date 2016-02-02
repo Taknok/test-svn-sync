@@ -51,6 +51,7 @@ GraphWidget::GraphWidget(QWidget *pParent) : QWidget(pParent)
 	m_bResetCurves = true;
 	m_bTransGraph = false;
 	m_bXPressed = m_bYPressed = false;
+	m_bShowMousePos = true;
 
 	m_pGraph = NULL;
 }
@@ -105,7 +106,7 @@ void GraphWidget::paintEvent(QPaintEvent *  event )
 //	painter.drawText(m_TitlePosition, m_GraphTitle);
 
 	if(m_bDrawLegend) m_pGraph->drawLegend(painter, m_LegendOrigin, Settings::textFont(), Settings::textColor());
-	if(hasFocus() && MainFrame::s_bShowMousePos)
+	if(hasFocus() && MainFrame::s_bShowMousePos && m_bShowMousePos)
 	{
 		QPen textPen(Settings::textColor());
 		QFontMetrics fm(Settings::textFont());
