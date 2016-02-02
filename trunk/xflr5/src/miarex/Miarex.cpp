@@ -285,7 +285,7 @@ QMiarex::QMiarex(QWidget *parent)
 	}
 
 	m_WPlrGraph.clear();
-	for(int ig=0; ig<MAXGRAPHS; ig++)
+	for(int ig=0; ig<MAXPOLARGRAPHS; ig++)
 	{
 		m_WPlrGraph.append(new QGraph);
 		m_WPlrGraph[ig]->graphType() = QGRAPH::WPOLARGRAPH;
@@ -305,9 +305,8 @@ QMiarex::QMiarex(QWidget *parent)
 	m_WPlrGraph[2]->setVariables(0,7);
 	m_WPlrGraph[3]->setVariables(0,14);
 	m_WPlrGraph[4]->setVariables(0,15);
-	m_WPlrGraph[5]->setVariables(0,22);
 
-	for(int ig=0; ig<MAXGRAPHS; ig++) setWGraphTitles(m_WPlrGraph[ig]);
+	for(int ig=0; ig<MAXPOLARGRAPHS; ig++) setWGraphTitles(m_WPlrGraph[ig]);
 
 
 	m_CpGraph.graphType() = QGRAPH::CPGRAPH;
@@ -2652,10 +2651,12 @@ bool QMiarex::loadSettings(QSettings *pSettings)
 	{
 		m_TimeGraph[ig]->loadSettings(pSettings);
 		m_WingGraph[ig]->loadSettings(pSettings);
+	}
+	for(int ig=0; ig<MAXPOLARGRAPHS; ig++)
+	{
 		m_WPlrGraph[ig]->loadSettings(pSettings);
 		setWGraphTitles(m_WPlrGraph[ig]);
-	}
-	m_StabPlrGraph.at(0)->loadSettings(pSettings);
+	}	m_StabPlrGraph.at(0)->loadSettings(pSettings);
 	m_StabPlrGraph.at(1)->loadSettings(pSettings);
 
 	setStabGraphTitles();
@@ -5179,7 +5180,7 @@ void QMiarex::onHighlightWOpp()
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 	pMainFrame->m_pHighlightWOppAct->setChecked(m_bHighlightOpp);
 
-	for(int ig=0; ig<MAXGRAPHS; ig++)
+	for(int ig=0; ig<m_WPlrGraph.count(); ig++)
 		m_WPlrGraph[ig]->m_bHighlightPoint = m_bHighlightOpp;
 
 	s_bResetCurves = true;
@@ -8479,7 +8480,7 @@ void QMiarex::setGraphTiles()
 					pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WPlrGraph, 4);
 					break;
 				case XFLR5::ALLGRAPHS:
-					pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WPlrGraph, MAXGRAPHS);
+					pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WPlrGraph, m_WPlrGraph.count());
 					break;
 			}
 			break;

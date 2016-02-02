@@ -40,26 +40,26 @@ class FoilGeomDlg : public QDialog
 
 public:
 	FoilGeomDlg(QWidget *pParent);
-	void InitDialog();
+	void initDialog();
 
 private slots:
-	void OnRestore();
-	void OnOK();
+	void onRestore();
+	void onOK();
 
-	void OnCamberSlide(int pos);
-	void OnXCamberSlide(int pos);
-	void OnThickSlide(int pos);
-	void OnXThickSlide(int pos);
-	void OnCamber();
-	void OnXCamber();
-	void OnThickness();
-	void OnXThickness();
+	void onCamberSlide(int pos);
+	void onXCamberSlide(int pos);
+	void onThickSlide(int pos);
+	void onXThickSlide(int pos);
+	void onCamber();
+	void onXCamber();
+	void onThickness();
+	void onXThickness();
 
 
 private:
 	void keyPressEvent(QKeyEvent *event);
-	void SetupLayout();
-	void Apply();
+	void setupLayout();
+	void apply();
 
 private:
 	QSlider	*m_pctrlCamberSlide, *m_pctrlThickSlide, *m_pctrlXThickSlide, *m_pctrlXCamberSlide;

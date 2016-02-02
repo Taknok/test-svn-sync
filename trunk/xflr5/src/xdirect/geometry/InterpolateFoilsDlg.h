@@ -39,16 +39,16 @@ class InterpolateFoilsDlg : public QDialog
 
 public:
 	InterpolateFoilsDlg(QWidget *pParent);
-	void InitDialog();
-	void SetupLayout();
-	void Update();
+	void initDialog();
+	void setupLayout();
+	void update();
 
 private slots:
-	void OnSelChangeFoil1(int);
-	void OnSelChangeFoil2(int);
-	void OnFrac();
-	void OnOK();
-	void OnVScroll(int val);
+	void onSelChangeFoil1(int);
+	void onSelChangeFoil2(int);
+	void onFrac();
+	void onOK();
+	void onVScroll(int val);
 
 	void keyPressEvent(QKeyEvent *event);
 

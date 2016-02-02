@@ -38,18 +38,18 @@ InterpolateFoilsDlg::InterpolateFoilsDlg(QWidget *pParent) : QDialog(pParent)
 	m_poaFoil = NULL;
 
 
-	SetupLayout();
+	setupLayout();
 
-	connect(m_pctrlFoil1,  SIGNAL(activated(int)),    this, SLOT(OnSelChangeFoil1(int)));
-	connect(m_pctrlFoil2,  SIGNAL(activated(int)),    this, SLOT(OnSelChangeFoil2(int)));
-	connect(m_pctrlFrac,   SIGNAL(editingFinished()), this, SLOT(OnFrac()));
-	connect(m_pctrlSlider, SIGNAL(sliderMoved(int)),  this, SLOT(OnVScroll(int)));
+	connect(m_pctrlFoil1,  SIGNAL(activated(int)),    this, SLOT(onSelChangeFoil1(int)));
+	connect(m_pctrlFoil2,  SIGNAL(activated(int)),    this, SLOT(onSelChangeFoil2(int)));
+	connect(m_pctrlFrac,   SIGNAL(editingFinished()), this, SLOT(onFrac()));
+	connect(m_pctrlSlider, SIGNAL(sliderMoved(int)),  this, SLOT(onVScroll(int)));
 }
 
 
-void InterpolateFoilsDlg::SetupLayout()
+void InterpolateFoilsDlg::setupLayout()
 {
-	QVBoxLayout *LeftSide = new QVBoxLayout;
+	QVBoxLayout *pLeftSide = new QVBoxLayout;
 	{
 		m_pctrlFoil1 = new QComboBox;
 		m_pctrlFoil1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -62,13 +62,13 @@ void InterpolateFoilsDlg::SetupLayout()
 		m_pctrlCamb2->setMinimumWidth(250);
 		m_pctrlThick1->setMinimumWidth(250);
 		m_pctrlThick2->setMinimumWidth(250);
-		LeftSide->addWidget(m_pctrlFoil1);
-		LeftSide->addWidget(m_pctrlCamb1);
-		LeftSide->addWidget(m_pctrlThick1);
-		LeftSide->addStretch(1);
-		LeftSide->addWidget(m_pctrlFoil2);
-		LeftSide->addWidget(m_pctrlCamb2);
-		LeftSide->addWidget(m_pctrlThick2);
+		pLeftSide->addWidget(m_pctrlFoil1);
+		pLeftSide->addWidget(m_pctrlCamb1);
+		pLeftSide->addWidget(m_pctrlThick1);
+		pLeftSide->addStretch(1);
+		pLeftSide->addWidget(m_pctrlFoil2);
+		pLeftSide->addWidget(m_pctrlCamb2);
+		pLeftSide->addWidget(m_pctrlThick2);
 	}
 
 
@@ -80,7 +80,7 @@ void InterpolateFoilsDlg::SetupLayout()
 	m_pctrlSlider->setTickPosition(QSlider::TicksLeft);
 
 
-	QVBoxLayout *Foil3Layout = new QVBoxLayout;
+	QVBoxLayout *pFoil3Layout = new QVBoxLayout;
 	{
 		m_pctrlFrac = new DoubleEdit;
 		m_pctrlCamb3 = new QLabel(tr("Camb3"));
@@ -90,39 +90,39 @@ void InterpolateFoilsDlg::SetupLayout()
 		m_pctrlFrac->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 		m_pctrlCamb3->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 		m_pctrlThick3->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-		Foil3Layout->addStretch();
-		Foil3Layout->addWidget(m_pctrlFrac);
-		Foil3Layout->addWidget(m_pctrlCamb3);
-		Foil3Layout->addWidget(m_pctrlThick3);
-		Foil3Layout->addStretch();
+		pFoil3Layout->addStretch();
+		pFoil3Layout->addWidget(m_pctrlFrac);
+		pFoil3Layout->addWidget(m_pctrlCamb3);
+		pFoil3Layout->addWidget(m_pctrlThick3);
+		pFoil3Layout->addStretch();
 	}
 
-	QHBoxLayout *CommandButtons = new QHBoxLayout;
+	QHBoxLayout *pCommandButtons = new QHBoxLayout;
 	{
 		OKButton = new QPushButton(tr("OK"));
 		CancelButton = new QPushButton(tr("Cancel"));
-		CommandButtons->addStretch(1);
-		CommandButtons->addWidget(OKButton);
-		CommandButtons->addStretch(1);
-		CommandButtons->addWidget(CancelButton);
-		CommandButtons->addStretch(1);
-		connect(OKButton, SIGNAL(clicked()),this, SLOT(OnOK()));
+		pCommandButtons->addStretch(1);
+		pCommandButtons->addWidget(OKButton);
+		pCommandButtons->addStretch(1);
+		pCommandButtons->addWidget(CancelButton);
+		pCommandButtons->addStretch(1);
+		connect(OKButton, SIGNAL(clicked()),this, SLOT(onOK()));
 		connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 	}
 
 
 	QHBoxLayout *pColumnLayout = new QHBoxLayout;
 	{
-		pColumnLayout->addLayout(LeftSide);
+		pColumnLayout->addLayout(pLeftSide);
 		pColumnLayout->addStretch(1);
 		pColumnLayout->addWidget(m_pctrlSlider);
-		pColumnLayout->addLayout(Foil3Layout);
+		pColumnLayout->addLayout(pFoil3Layout);
 	}
 
 	QVBoxLayout *pMainLayout = new QVBoxLayout;
 	{
 		pMainLayout->addLayout(pColumnLayout);
-		pMainLayout->addLayout(CommandButtons);
+		pMainLayout->addLayout(pCommandButtons);
 	}
 
 	setLayout(pMainLayout);
@@ -131,7 +131,7 @@ void InterpolateFoilsDlg::SetupLayout()
 }
 
 
-void InterpolateFoilsDlg::InitDialog()
+void InterpolateFoilsDlg::initDialog()
 {
 	int i;
 	Foil* pFoil;
@@ -153,8 +153,8 @@ void InterpolateFoilsDlg::InitDialog()
 	m_pctrlFrac->setValue(100);
 	m_pctrlSlider->setSliderPosition(SLIDERSCALE);
 
-	OnSelChangeFoil1(0);
-	OnSelChangeFoil2(1);
+	onSelChangeFoil1(0);
+	onSelChangeFoil2(1);
 }
 
 
@@ -169,12 +169,12 @@ void InterpolateFoilsDlg::keyPressEvent(QKeyEvent *event)
 		{
 			if(!OKButton->hasFocus() && !CancelButton->hasFocus())
 			{
-				Update();
+				update();
 				OKButton->setFocus();
 			}
 			else if (OKButton->hasFocus())
 			{
-				OnOK();
+				onOK();
 			}
 			break;
 		}
@@ -189,7 +189,7 @@ void InterpolateFoilsDlg::keyPressEvent(QKeyEvent *event)
 }
 
 
-void InterpolateFoilsDlg::OnSelChangeFoil1(int)
+void InterpolateFoilsDlg::onSelChangeFoil1(int)
 {
 	QString strong  = m_pctrlFoil1->currentText();
 
@@ -214,11 +214,11 @@ void InterpolateFoilsDlg::OnSelChangeFoil1(int)
 
 		m_NewFoilName = pFoil->m_FoilName;
 	}
-	Update();
+	update();
 }
 
 
-void InterpolateFoilsDlg::OnSelChangeFoil2(int)
+void InterpolateFoilsDlg::onSelChangeFoil2(int)
 {
 	QString strong  = m_pctrlFoil2->currentText();
 
@@ -241,11 +241,11 @@ void InterpolateFoilsDlg::OnSelChangeFoil2(int)
 		str+=strong;
 		m_pctrlThick2->setText(str);
 	}
-	Update();
+	update();
 }
 
 
-void InterpolateFoilsDlg::Update()
+void InterpolateFoilsDlg::update()
 {
 	XFoil *pXFoil = (XFoil*)s_pXFoil;
 	QString strong;
@@ -293,17 +293,17 @@ void InterpolateFoilsDlg::Update()
 }
 
 
-void InterpolateFoilsDlg::OnFrac()
+void InterpolateFoilsDlg::onFrac()
 {
 	m_Frac = m_pctrlFrac->value();
 	m_pctrlSlider->setSliderPosition((int)(m_Frac/100.0*SLIDERSCALE));
 	m_Frac = 100.0 - m_Frac;
 
-	Update();
+	update();
 }
 
 
-void InterpolateFoilsDlg::OnOK()
+void InterpolateFoilsDlg::onOK()
 {
 	m_pBufferFoil->m_FoilName = m_NewFoilName;
 
@@ -311,12 +311,12 @@ void InterpolateFoilsDlg::OnOK()
 }
 
 
-void InterpolateFoilsDlg::OnVScroll(int val)
+void InterpolateFoilsDlg::onVScroll(int val)
 {
 	val = m_pctrlSlider->sliderPosition();
 	m_Frac = (SLIDERSCALE - (double)val)/SLIDERSCALE*100.0;
 	m_pctrlFrac->setValue(100.0-m_Frac);
-	Update();
+	update();
 }
 
 

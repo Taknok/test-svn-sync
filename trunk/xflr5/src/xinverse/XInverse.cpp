@@ -492,7 +492,6 @@ bool QXInverse::initXFoil(Foil * pFoil)
 	XFoil *pXFoil = (XFoil*)m_pXFoil;
 
 	m_pModFoil->m_FoilName = pFoil->m_FoilName + tr(" Modified");
-	pXFoil->m_FoilName = m_pRefFoil->m_FoilName ;
 
 	pXFoil->Initialize();
 	for(int i =0; i<pFoil->n; i++)
@@ -2053,13 +2052,16 @@ void QXInverse::paintFoil(QPainter &painter)
 
 	//convert screen coordinates to foil coordinates
 
-	CVector real = mousetoReal(m_PointDown);
-	painter.drawText(m_QGraph.clientRect()->width()-12*fm.averageCharWidth(),
-					 m_QGraph.clientRect()->height() + dD, QString("x = %1")
-					 .arg(real.x,7,'f',3));
-	painter.drawText(m_QGraph.clientRect()->width()-12*fm.averageCharWidth(),
-					 m_QGraph.clientRect()->height() + 2*dD, QString("y = %1")
-					 .arg(real.y,7,'f',3));
+	if(!m_QGraph.isInDrawRect(m_PointDown))
+	{
+		CVector real = mousetoReal(m_PointDown);
+		painter.drawText(m_QGraph.clientRect()->width()-12*fm.averageCharWidth(),
+						 m_QGraph.clientRect()->height() + dD, QString("x = %1")
+						 .arg(real.x,7,'f',3));
+		painter.drawText(m_QGraph.clientRect()->width()-12*fm.averageCharWidth(),
+						 m_QGraph.clientRect()->height() + 2*dD, QString("y = %1")
+						 .arg(real.y,7,'f',3));
+	}
 
 	painter.restore();
 }
@@ -2331,7 +2333,7 @@ bool QXInverse::setParams()
 
 	onSpecal();
 	//is a foil set as current in the mainframe ?
-	if (Foil::curFoil() && pXFoil->m_FoilName==Foil::curFoil()->m_FoilName && pXFoil->lqspec)
+	if (Foil::curFoil() && pXFoil->m_pFoil==Foil::curFoil()&& pXFoil->lqspec)
 	{
 		m_pRefFoil->copyFoil(Foil::curFoil());
 		m_pRefFoil->m_FoilColor = m_pQCurve->color();
@@ -2339,7 +2341,7 @@ bool QXInverse::setParams()
 //		InitXFoil(m_pRefFoil);
 
 	}
-	else if(!pXFoil->m_FoilName.length())
+	else if(!pXFoil->m_pFoil)
 	{
 		// XFoil is not initialized
 		//is there anything in the database ?
@@ -2348,7 +2350,7 @@ bool QXInverse::setParams()
 			pFoil = (Foil*)m_poaFoil->at(0);
 			m_pRefFoil->copyFoil(pFoil);
 			m_pRefFoil->m_FoilColor = m_pQCurve->color();
-			pXFoil->m_FoilName      = m_pRefFoil->m_FoilName ;
+			pXFoil->m_pFoil = m_pRefFoil;
 			initXFoil(m_pRefFoil);
 		}
 		else
@@ -2384,9 +2386,9 @@ bool QXInverse::setParams()
 
 	m_pRefFoil->n          = pXFoil->n;
 	m_pRefFoil->nb         = pXFoil->n;
-	m_pRefFoil->m_FoilName = pXFoil->m_FoilName;
+	m_pRefFoil->m_FoilName = pXFoil->m_pFoil->foilName();
 	m_pRefFoil->initFoil();
-	m_pModFoil->m_FoilName = pXFoil->m_FoilName + tr(" Modified");
+	m_pModFoil->m_FoilName = pXFoil->m_pFoil->foilName() + tr(" Modified");
 
 	setFoil();
 	checkActions();

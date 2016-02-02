@@ -47,6 +47,7 @@ XFoilAnalysisDlg::XFoilAnalysisDlg(QWidget *pParent) : QDialog(pParent)
 
 	m_pRmsGraph = new QGraph;
 	m_pGraphWidget->setGraph(m_pRmsGraph);
+	m_pGraphWidget->m_bShowMousePos = false;
 
 	m_pRmsGraph->setXTitle(tr("Iter"));
 	m_pRmsGraph->setYTitle("");//Change from BL newton system solution
@@ -88,6 +89,7 @@ XFoilAnalysisDlg::~XFoilAnalysisDlg()
 //	Trace("Destroying XFoilAnalysisDlg");
 	if(m_pXFoilTask) delete m_pXFoilTask;
 	if(m_pXFile) delete m_pXFile;
+	if(m_pRmsGraph) delete m_pRmsGraph;
 }
 
 void XFoilAnalysisDlg::setupLayout()

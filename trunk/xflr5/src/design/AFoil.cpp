@@ -523,7 +523,7 @@ void QAFoil::onAFoilCadd()
 	{
 		fillFoilTable();
 		selectFoil(Foil::curFoil());
-		((XFoil*)m_pXFoil)->m_FoilName ="";
+		((XFoil*)m_pXFoil)->m_pFoil=NULL;
 
 	}
 	m_pBufferFoil->m_bVisible = false;
@@ -642,7 +642,7 @@ void QAFoil::onAFoilFoilCoordinates()
 	{
 		fillFoilTable();
 		selectFoil(Foil::curFoil());
-		((XFoil*)m_pXFoil)->m_FoilName ="";
+		((XFoil*)m_pXFoil)->m_pFoil=NULL;
 	}
 	m_pBufferFoil->m_bVisible = false;
 	m_p2DWidget->update();;
@@ -670,7 +670,7 @@ void QAFoil::onAFoilFoilGeom()
     FoilGeomDlg fgeDlg(pMainFrame);
 	fgeDlg.m_pMemFoil    = Foil::curFoil();
     fgeDlg.m_pBufferFoil = m_pBufferFoil;
-    fgeDlg.InitDialog();
+    fgeDlg.initDialog();
 
     if(QDialog::Accepted == fgeDlg.exec())
 	{
@@ -827,7 +827,7 @@ void QAFoil::onAFoilInterpolateFoils()
 	InterpolateFoilsDlg ifDlg(pMainFrame);
     ifDlg.m_poaFoil = m_poaFoil;
     ifDlg.m_pBufferFoil = m_pBufferFoil;
-    ifDlg.InitDialog();
+    ifDlg.initDialog();
 
     if(QDialog::Accepted == ifDlg.exec())
 	{
@@ -902,8 +902,7 @@ void QAFoil::onAFoilNacaFoils()
 	{
 		fillFoilTable();;
 		if(Foil::curFoil()) selectFoil(Foil::curFoil());
-		((XFoil*)m_pXFoil)->m_FoilName ="";
-
+		((XFoil*)m_pXFoil)->m_pFoil=NULL;
 	}
 
 	m_pBufferFoil->m_bVisible = false;
@@ -952,7 +951,7 @@ void QAFoil::onAFoilSetFlap()
 	{
 		fillFoilTable();
 		selectFoil(Foil::curFoil());
-		((XFoil*)m_pXFoil)->m_FoilName ="";
+		((XFoil*)m_pXFoil)->m_pFoil=NULL;
 	}
 	m_pBufferFoil->m_bVisible = false;
 	m_p2DWidget->update();;
