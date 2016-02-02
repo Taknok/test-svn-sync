@@ -52,8 +52,6 @@ LLTAnalysisDlg::LLTAnalysisDlg(QWidget *pParent, LLTAnalysis *pLLTAnalysis) : QD
 
 	m_pIterGraph = new QGraph();
 	m_pGraphWidget->setGraph(m_pIterGraph);
-	m_pGraphWidget->m_bShowMousePos = false;
-
 	m_pIterGraph->copySettings(&Settings::s_RefGraph, false);
 //	m_pIterGraph->SetXTitle(tr("Iterations"));
 	m_pIterGraph->setYTitle("");

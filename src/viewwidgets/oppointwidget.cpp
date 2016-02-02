@@ -170,7 +170,6 @@ void OpPointWidget::mouseMoveEvent(QMouseEvent *event)
 	{
 		if(m_bTransGraph)
 		{
-			bool bCtrl;
 			QPoint point;
 			double xu, yu, x1, y1, xmin, xmax, ymin, ymax;
 
@@ -235,7 +234,6 @@ void OpPointWidget::resizeEvent(QResizeEvent *event)
 	{
 		int h = rect().height();
 		int h4 = (int)(h/3.0);
-		int w = rect().width();
 		QRect rGraphRect = QRect(0, 0, + rect().width(), rect().height()-h4);
 		m_pCpGraph->setMargin(50);
 		m_pCpGraph->setDrawRect(rGraphRect);

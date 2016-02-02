@@ -969,8 +969,6 @@ void MainFrame::createMenus()
 		m_pHelpMenu->addAction(m_pAboutAct);
 	}
 
-
-
 	//Create Application-Specific Menus
 	createXDirectMenus();
 	createXInverseMenus();

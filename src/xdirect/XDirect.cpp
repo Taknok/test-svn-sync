@@ -164,12 +164,13 @@ QXDirect::QXDirect(QWidget *parent) : QWidget(parent)
 		m_PlrGraph[ig]->setBorderStyle(0);
 		m_PlrGraph[ig]->setBorderWidth(3);
 		m_PlrGraph[ig]->setMargin(50);
+		if(ig==0) m_PlrGraph[ig]->setVariables(2,1);
+		if(ig==1) m_PlrGraph[ig]->setVariables(0,1);
+		if(ig==2) m_PlrGraph[ig]->setVariables(0,5);
+		if(ig==3) m_PlrGraph[ig]->setVariables(6,1);
+		if(ig==4) m_PlrGraph[ig]->setVariables(0,10);
+		if(ig==5) m_PlrGraph[ig]->setVariables(0,11);
 	}
-	m_PlrGraph[0]->setVariables(2,1);
-	m_PlrGraph[1]->setVariables(0,1);
-	m_PlrGraph[2]->setVariables(0,5);
-	m_PlrGraph[3]->setVariables(6,1);
-	m_PlrGraph[4]->setVariables(0,10);
 
 	for(int ig=0; ig<MAXPOLARGRAPHS; ig++) setGraphTitles(m_PlrGraph[ig]);
 
