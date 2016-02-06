@@ -192,7 +192,7 @@ public:
 	void pert_process(int kqsp);
 	void pert_init(int kqsp);
 	void cnfilt(double ffilt);
-	void Filter(double cfilt);
+	void HanningFilter(double cfilt, QTextStream &ts);
 	void smooq(int kq1,int kq2,int kqsp);
 	void ExecMDES();
 	bool ExecQDES();

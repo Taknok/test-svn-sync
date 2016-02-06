@@ -34,7 +34,7 @@ DoubleEdit::DoubleEdit(QWidget *pParent)  : QLineEdit(pParent)
 	m_pDV->setDecimals(2);
 	setValidator(m_pDV);
 	setAlignment(Qt::AlignRight);
-	setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding));
+	setSizePolicy(QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 	formatValue();
 }
 
@@ -50,7 +50,7 @@ DoubleEdit::DoubleEdit(double val, int decimals, QWidget *pParent)
 	m_pDV->setDecimals(decimals);
 	setValidator(m_pDV);
 	setAlignment(Qt::AlignRight);
-	setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding));
+	setSizePolicy(QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 	formatValue();
 }
 

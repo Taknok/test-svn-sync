@@ -38,6 +38,7 @@ public:
 
 	void focusOutEvent ( QFocusEvent * event );
 	void keyPressEvent(QKeyEvent *event);
+	QSize sizeHint() const;
 
 
 	int value(){return m_Value;}

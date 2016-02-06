@@ -1747,6 +1747,9 @@ bool GLCreateStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPolar *pWPo
 		return false;
 	}
 
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+
 	double memcoresize = Panel::coreSize();
 	Panel::setCoreSize(0.0005); //mm, just for the time needed to build the streamlines which are very sensitive to trailing vortex interference
 
@@ -1816,6 +1819,7 @@ bool GLCreateStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPolar *pWPo
 						D.set(0.0, pNode[pWing->m_pWingPanel[p].m_iLB].y, 0.0);
 						bFound = true;
 					}
+
 
 					if(bFound)
 					{
@@ -1930,6 +1934,7 @@ bool GLCreateStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPolar *pWPo
 
 	//restore things as they were
 	Panel::setCoreSize(memcoresize);
+	QApplication::restoreOverrideCursor();
 
 	if(dlg.wasCanceled()) return false;
 	return true;
