@@ -15,13 +15,14 @@
 *******************************************************************************
 
 
-xflr5 v6.13 January xxxth, 2016
+xflr5 v6.13 Debruary xxxth, 2016
 	- added an option to autosave the project at regular time intervals
 	- changed the panel force display to q.Cp instead of q.S.panel_area; this is more significant since the arrow lengths are now mesh independent.
 	- added the extra drag in the calculation of the plane's total drag coefficient
 	- fixed the issue of slow display in Inverse design
 	- fixed some stability issues in Inverse design
 	- fixed some minor issues in XInverse design
+	- interface improvements in XInverse design
 	- changed the display in the foil OpPoint view so that the foil can be overlayed on the graph
 	- code cleaning
 

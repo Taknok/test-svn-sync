@@ -157,7 +157,6 @@ private:
 	DoubleEdit *m_pctrlSpec, *m_pctrlFilterParam, *m_pctrlTGapy, *m_pctrlTGapx, *m_pctrlTAngle;
 
 	QLineEdit *m_pctrlMAlphaSpec, *m_pctrlMClSpec;
-	MinTextEdit *m_pctrlMOutput;
 	IntEdit *m_pctrlIter;
 	QPushButton *m_pctrlMark;
 	QCheckBox *m_pctrlCpxx;

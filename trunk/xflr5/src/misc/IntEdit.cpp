@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 #include "IntEdit.h"
-
+#include "Settings.h"
 
 
 IntEdit::IntEdit(QWidget *pParent)
@@ -31,6 +31,7 @@ IntEdit::IntEdit(QWidget *pParent)
 	m_pDV = new QIntValidator(this);
 	setValidator(m_pDV);
 	setAlignment(Qt::AlignRight);
+	setSizePolicy(QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 }
 
 
@@ -42,6 +43,7 @@ IntEdit::IntEdit(int val, QWidget *pParent)
 	m_pDV = new QIntValidator(this);
 	setValidator(m_pDV);
 	setAlignment(Qt::AlignRight);
+	setSizePolicy(QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
 	formatValue();
 }
 
@@ -115,3 +117,12 @@ void IntEdit::setValueNoFormat(int val)
 }
 
 
+
+
+QSize IntEdit::sizeHint() const
+{
+	QFontMetrics fm(Settings::s_TextFont);
+	int w = 11 * fm.averageCharWidth();
+	int h = fm.height();
+	return QSize(w, h);
+}

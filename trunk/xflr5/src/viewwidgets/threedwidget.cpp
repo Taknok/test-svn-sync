@@ -1393,7 +1393,7 @@ void ThreeDWidget::glDrawFoils(void *pWingPtr)
 
 		if(pFoil) glRenderText(pWing->m_Surface.at(j)->m_TA.x, pWing->m_Surface.at(j)->m_TA.y, pWing->m_Surface.at(j)->m_TA.z,
 							   pFoil->foilName(),
-							   QColor(Qt::yellow).lighter(175));
+							   QColor(Qt::cyan).lighter(175));
 
 	}
 
@@ -1401,7 +1401,7 @@ void ThreeDWidget::glDrawFoils(void *pWingPtr)
 	pFoil = pWing->m_Surface.at(j)->foilB();
 	if(pFoil) glRenderText(pWing->m_Surface.at(j)->m_TB.x, pWing->m_Surface.at(j)->m_TB.y, pWing->m_Surface.at(j)->m_TB.z,
 						 pFoil->foilName(),
-						 QColor(Qt::yellow).lighter(175));
+						 QColor(Qt::cyan).lighter(175));
 }
 
 
