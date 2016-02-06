@@ -163,6 +163,7 @@ void QXInverse::cancelSmooth()
 	m_bSmooth = false;
 	m_bGetPos = false;
 	m_pctrlSmooth->setChecked(false);
+	m_pctrlMSmooth->setChecked(false);
 }
 
 /**
@@ -170,10 +171,8 @@ void QXInverse::cancelSmooth()
  */
 void QXInverse::cancelSpline()
 {
-	m_pctrlOutput->setPlainText(" ");
 //	m_bSpline  = false;
 	m_bSplined = false;
-//	m_ctrlShowSpline.SetCheck(0);
 	m_pctrlNewSpline->setChecked(false);
 	m_bSmooth = false;
 	m_bGetPos = false;
@@ -242,6 +241,7 @@ void QXInverse::connectSignals()
 	connect(m_pctrlTangentSpline, SIGNAL(clicked()), this, SLOT(onTangentSpline()));
 	connect(m_pctrlResetQSpec,    SIGNAL(clicked()), this, SLOT(onQReset()));
 	connect(m_pctrlSmooth,        SIGNAL(clicked()), this, SLOT(onSmooth()));
+	connect(m_pctrlMSmooth,        SIGNAL(clicked()), this, SLOT(onSmooth()));
 	connect(m_pctrlPert,          SIGNAL(clicked()), this, SLOT(onPertubate()));
 	connect(m_pctrlFilter,        SIGNAL(clicked()), this, SLOT(onFilter()));
 	connect(m_pctrlSymm,          SIGNAL(clicked()), this, SLOT(onSymm()));
@@ -378,6 +378,7 @@ void QXInverse::drawGrid(QPainter &painter, double scale)
 void QXInverse::execMDES()
 {
 //----- put modified info back into global arrays
+	m_pctrlOutput->append("executing...");
 
 	XFoil *pXFoil = (XFoil*)m_pXFoil;
 
@@ -423,9 +424,12 @@ bool QXInverse::execQDES()
 	if(!m_bMarked)
 	{
 		 // || !pXFoil->liqset
-		m_pctrlMOutput->setPlainText(tr("Must mark off target segment first"));
+		m_pctrlOutput->setTextColor(Qt::red);
+		m_pctrlOutput->append(tr("Must mark off target segment first"));
+		m_pctrlOutput->setTextColor(Qt::black);
 		return false;
 	}
+	m_pctrlOutput->append("executing...");
 
 //----- put modified info back into global arrays
 //	int isp;
@@ -443,20 +447,23 @@ bool QXInverse::execQDES()
 	strong = "   dNMax       dGMax\n";
 	for(int l=1; l<=pXFoil->QMax; l++)
 	{
-		str = QString("%1e  %2\n").arg(pXFoil->dnTrace[l],7,'e',3).arg(pXFoil->dgTrace[l],7,'e',3);
-		strong += str;
+		str = QString("%1e  %2").arg(pXFoil->dnTrace[l],7,'e',3).arg(pXFoil->dgTrace[l],7,'e',3);
+		m_pctrlOutput->append(str);
 	}
 
 	if(bRes)
 	{
-		strong += tr("Converged");
-		m_pctrlMOutput->setPlainText(strong);
+		m_pctrlOutput->setTextColor(QColor(Qt::green).darker(175));
+		strong = tr("Converged");
 	}
 	else
 	{
-		strong += tr("Unconverged");
-		m_pctrlMOutput->setPlainText(strong);
+		m_pctrlOutput->setTextColor(Qt::red);
+		strong = tr("Unconverged");
 	}
+	m_pctrlOutput->append(strong);
+	m_pctrlOutput->append("\n");
+	m_pctrlOutput->setTextColor(Qt::black);
 
 	for (i=1; i<=pXFoil->n; i++)
 	{
@@ -1041,7 +1048,9 @@ void QXInverse::mousePressEvent(QMouseEvent *event)
 							{
 								if(!m_Spline.removePoint(m_Spline.m_iSelect))
 								{
-									QMessageBox::warning(p2DWidget,tr("Warning"), tr("The minimum number of control points has been reached for this spline degree"));
+									m_pctrlOutput->append(tr("The minimum number of control points has been reached for this spline degree"));
+									m_pctrlOutput->append("\n");
+
 									return;
 								}
 								m_Spline.splineKnots();
@@ -1172,7 +1181,7 @@ void QXInverse::mouseReleaseEvent(QMouseEvent *event)
 		{
 			if(m_bSmooth) 
 			{
-				m_pctrlOutput->setPlainText(" ");
+				m_pctrlOutput->append("\n");
 				smooth(m_Pos1, m_Pos2);
 			}
 			else if(m_bSpline) 
@@ -1241,19 +1250,17 @@ void QXInverse::mouseReleaseEvent(QMouseEvent *event)
 				if(m_bFullInverse)
 				{
 					m_pctrlNewSpline->setChecked(0);
-					m_pctrlOutput->setPlainText(
-						tr("Drag points to modify splines, Apply, and Execute to generate the new geometry"));
 				}
 				else
 				{
 					m_pctrlMNewSpline->setChecked(0);
-					m_pctrlMOutput->setPlainText(
-						tr("Drag points to modify splines, Apply, and Execute to generate the new geometry"));
 				}
+				m_pctrlOutput->append(
+					tr("Drag the points to modify the spline, Apply, and Execute to generate the new geometry"));
 			}
 			else if(m_bMark)
 			{
-				m_pctrlOutput->setPlainText(" ");
+//				m_pctrlOutput->append(" ");
 				if (m_Pos1 == m_Pos2) return;
 
 				m_Mk1 = m_Pos1;
@@ -1341,6 +1348,7 @@ void QXInverse::onApplySpline()
 	m_Pos1    = -1;
 	m_Pos2    = -1;
 
+	m_pctrlOutput->append(tr("Spline is applied"));
 	updateView();
 	emit projectModified();
 }
@@ -1375,13 +1383,13 @@ void QXInverse::onExecute()
 	{
 		setTAngle(m_pctrlTAngle->value());
 		setTGap(m_pctrlTGapx->value(), m_pctrlTGapy->value());
-		m_pctrlOutput->setPlainText(" ");
+//		m_pctrlOutput->append("\n");
 		execMDES();
 	}
 	else
 	{
 		pXFoil->niterq = m_pctrlIter->value();
-		m_pctrlMOutput->setPlainText(" ");
+//		m_pctrlOutput->append("\n");
 		execQDES();
 	}
 	updateView();
@@ -1433,7 +1441,12 @@ void QXInverse::onFilter()
 	if (m_bZoomPlus) releaseZoom();
 
 	double filt = m_pctrlFilterParam->value();
-	pXFoil->Filter(filt);
+	QString strong;
+	QTextStream ts(&strong);
+	pXFoil->HanningFilter(filt, ts);
+	m_pctrlOutput->append("Hanning filter:");
+	m_pctrlOutput->append(strong);
+	m_pctrlOutput->append("\n");
 	createMCurve();
 
 	updateView();
@@ -1535,7 +1548,10 @@ void QXInverse::onMarkSegment()
 
 	if (m_bZoomPlus) releaseZoom();
 
-	if(m_pctrlMark->isChecked()) m_pctrlMOutput->setPlainText(tr("Mark target segment for modification"));
+	if(m_pctrlMark->isChecked())
+	{
+		m_pctrlOutput->append(tr("Mark target segment for modification"));
+	}
 
 	m_tmpPos  = -1;
 	m_bMark   = true;
@@ -1561,7 +1577,9 @@ void QXInverse::onNewSpline()
 	{
 		cancelSmooth();
 		cancelMark();
-		m_pctrlOutput->setPlainText(tr("Mark spline endpoints"));
+
+		m_pctrlOutput->append(tr("Mark spline endpoints"));
+
 		m_bSpline = true;
 		m_bSplined = false;
 		if(m_bFullInverse) m_pctrlShowSpline->setChecked(true);
@@ -1684,8 +1702,11 @@ void QXInverse::onRemoveCtrlPt()
 	{
 		if(!m_Spline.removePoint(m_Spline.m_iHighlight))
 		{
-			MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-			QMessageBox::warning(pMainFrame,tr("Warning"), tr("The minimum number of control points has been reached for this spline degree"));
+//			MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
+
+			m_pctrlOutput->append(tr("The minimum number of control points has been reached for this spline degree"));
+			m_pctrlOutput->append(tr("\n"));
+
 			return;
 		}
 	}
@@ -1758,13 +1779,15 @@ void QXInverse::onShowSpline()
 	updateView();
 }
 
+
 /** The user has requested a smoothing operation on the curve */
 void QXInverse::onSmooth()
 {
 	cancelSpline();
-	if(m_pctrlSmooth->isChecked())
+	if(m_pctrlSmooth->isChecked() || m_pctrlMSmooth->isChecked())
 	{
-		m_pctrlOutput->setPlainText(tr("Mark target segment for smoothing, or type 'Return' to smooth the entire distribution"));
+		m_pctrlOutput->append(tr("Mark target segment for smoothing, or type 'Return' to smooth the entire distribution, then Execute"));
+		m_pctrlOutput->append("\n");
 
 		m_bSpline = false;
 		m_bSmooth = true;
@@ -1791,17 +1814,17 @@ void QXInverse::onStoreFoil()
 	memcpy(pNewFoil->xb, m_pModFoil->x, sizeof(m_pModFoil->x));
 	memcpy(pNewFoil->yb, m_pModFoil->y, sizeof(m_pModFoil->y));
 	pNewFoil->nb = m_pModFoil->n;
-	pNewFoil->m_FoilName = m_pRefFoil->m_FoilName;
+	pNewFoil->setFoilName(m_pRefFoil->foilName());
 
 	QStringList NameList;
 	for(int k=0; k<Foil::s_oaFoil.size(); k++)
 	{
 		Foil *pOldFoil = (Foil*)Foil::s_oaFoil.at(k);
-		NameList.append(pOldFoil->m_FoilName);
+		NameList.append(pOldFoil->foilName());
 	}
 
 	RenameDlg renDlg(pMainFrame);
-	renDlg.InitDialog(&NameList, Foil::curFoil()->foilName(), tr("Enter the foil's new name"));
+	renDlg.InitDialog(&NameList, m_pRefFoil->foilName(), tr("Enter the foil's new name"));
 	if(renDlg.exec() !=QDialog::Rejected)
 	{
 		pNewFoil->setFoilName(renDlg.newName());
@@ -2432,6 +2455,7 @@ void QXInverse::setTGap(double tr, double ti)
 	pXFoil->dzte = complex<double>(tr,ti);
 }
 
+
 /**
  * Sets up the interface
  */
@@ -2464,6 +2488,13 @@ void QXInverse::setupLayout()
 			m_pctrlApplySpline   = new QPushButton(tr("Apply Spline"));
 			m_pctrlResetQSpec    = new QPushButton(tr("Reset QSpec"));
 			m_pctrlPert          = new QPushButton(tr("Pert"));
+			QString strong = "XFoil doc: \n"
+				"The PERT command allows manual input of the complex mapping coefficients\n"
+				"Cn which determine the geometry.  These coefficients are normally determined\n"
+				"from Qspec(s) (this is the essence of the inverse method).  The PERT command is\n"
+				"provided simply as a means of allowing generation of geometric perturbation  modes,\n"
+				"possibly for external optimization or whatever.";
+			m_pctrlPert->setToolTip(strong);
 			m_pctrlNewSpline->setCheckable(true);
 			pModLayout->addWidget(m_pctrlShowSpline,1,1);
 			pModLayout->addWidget(m_pctrlTangentSpline,1,2);
@@ -2480,10 +2511,32 @@ void QXInverse::setupLayout()
 		QGridLayout *pSmoothLayout = new QGridLayout;
 		{
 			m_pctrlSmooth = new QPushButton(tr("Smooth QSpec"));
+			QString strong = "XFoil doc: \n"
+							 "Qspec can be smoothed with the SMOO command, which normally operates on the entire\n"
+							 "distribution, but can be confined to a target segment whose endpoints are selected\n"
+							 "with the MARK command.  The smoothing acts to alleviate second derivatives in Qspec(s),\n"
+							 "so that with many consecutive SMOO commands Qspec(s) will approach a straight line over\n"
+							 "the target segment.  If the slope-matching flag is set, the endpoint slopes are preserved. ";
+			m_pctrlSmooth->setToolTip(strong);
+			m_pctrlSmooth->setCheckable(true);
 			m_pctrlFilter = new QPushButton(tr("Hanning Filter"));
+			strong= "XFoil doc: \n"
+					"The FILT command is an alternative smoothing procedure which acts on the Fourier \n"
+					"coefficients of Qspec directly, and is global in its effect. It is useful for \n"
+					"\"cleaning up\" the entire Qspec(s) distribution if noise is present from some geometric\n"
+					"glitch on the airfoil  surface. Also, unintended noise might be introduced into Qspec \n"
+					"from a poor modification via the cursor.\n";
+			strong += "FILT acts by multiplying the Fourier coefficients by a Hanning window filter function \n"
+					  "raised to the power of a filter parameter \"F\".  This tapers off the high frequencies \n"
+					  "of Qspec to varying degrees.  A value of F = 0.0 gives no filtering, F = 1.0 gives the \n"
+					  "standard Hanning filter, F = 2.0 applies the Hanning filter twice, etc. The standard \n"
+					  "Hanning filter appears to be a bit too drastic, so a filter parameter of F = 0.2 is \n"
+					  "currently used.  Hence, issuing FILT five times corresponds to the standard Hanning filter.\n";
+			m_pctrlFilter->setToolTip(strong);
 			QLabel *lab0 = new QLabel(tr("Filter parameter"));
 			lab0->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
 			m_pctrlFilterParam = new DoubleEdit(0.1,3);
+			m_pctrlFilterParam->setToolTip(strong);
 			pSmoothLayout->addWidget(m_pctrlSmooth,1,1);
 			pSmoothLayout->addWidget(m_pctrlFilter,1,2);
 			pSmoothLayout->addWidget(lab0,2,1);
@@ -2505,6 +2558,17 @@ void QXInverse::setupLayout()
 			m_pctrlTAngle = new DoubleEdit(0.000, 3);
 			m_pctrlTGapx  = new DoubleEdit(0.000, 3);
 			m_pctrlTGapy  = new DoubleEdit(0.000, 3);
+			QString strong ="XFoil doc: \n"
+							"The trailing edge gap is initialized from the initial airfoil and can \n"
+							"be changed with TGAP.  To reduce the \"corrupting\" effect of the \n"
+							"constraint-driven corrections, a good rule of thumb is that the \n"
+							"Qspec distribution should be modified so as to preserve the total CL.\n"
+							"The CL is simply twice the area under the Qspec(s) curve (=  2 x circulation),\n"
+							"so that this area should be preserved.";
+			m_pctrlTGapx->setToolTip(strong);
+			m_pctrlTGapy->setToolTip(strong);
+
+
 			pTELayout->addWidget(lab1,1,1);
 			pTELayout->addWidget(lab2,2,1);
 			pTELayout->addWidget(lab3,3,1);
@@ -2512,6 +2576,17 @@ void QXInverse::setupLayout()
 			pTELayout->addWidget(m_pctrlTGapx, 2, 2);
 			pTELayout->addWidget(m_pctrlTGapy, 3, 2);
 			m_pctrlSymm = new QCheckBox(tr("Symmetric foil"));
+			strong ="XFoil doc: \n"
+					"The symmetry-forcing option (SYMM toggle) is useful when a symmetric\n"
+					"airfoil is being designed.  If active, this option zeroes out all\n"
+					"antisymmetric (camber) Qspec changes, and doubles all symmetric \n"
+					"(thickness) changes.  This unfortunately has the annoying side \n"
+					"effect of also doubling the numerical roundoff noise in Qspec \n"
+					"every time a MODI operation is performed.  This noise sooner or later\n"
+					"becomes visible as high-frequency wiggles which double with each \n"
+					"MODI command.  Issuing FILT occasionally keeps this parasitic \n"
+					"noise growth under control.";
+			m_pctrlSymm->setToolTip(strong);
 		}
 		QVBoxLayout *pConstraintsLayout = new QVBoxLayout;
 		{
@@ -2527,16 +2602,12 @@ void QXInverse::setupLayout()
 		{
 			m_pctrlExec = new QPushButton(tr("Execute"));
 
-			m_pctrlOutput = new MinTextEdit(this);
-			m_pctrlOutput->setEnabled(false);
-
 			pFInvLayout->addWidget(pSpecBox);
 			pFInvLayout->addWidget(pModBox);
 			pFInvLayout->addWidget(pSmoothBox);
 			pFInvLayout->addWidget(pConstraintsBox);
 			pFInvLayout->addWidget(m_pctrlExec);
-			pFInvLayout->addWidget(m_pctrlOutput);
-			pFInvLayout->addStretch(1);
+//			pFInvLayout->addStretch(1);
 		}
 		m_pctrlFInvWidget->setLayout(pFInvLayout);
 	}
@@ -2562,6 +2633,15 @@ void QXInverse::setupLayout()
 			m_pctrlMNewSpline     = new QPushButton(tr("New Spline"));
 			m_pctrlMApplySpline   = new QPushButton(tr("Apply Spline"));
 			m_pctrlMSmooth        = new QPushButton(tr("Smooth"));
+			QString strong = "XFoil doc: \n"
+							 "Qspec can be smoothed with the SMOO command, which normally operates \n"
+							 "on the entire distribution, but can be confined to a target segment whose\n"
+							 "endpoints are selectedwith the MARK command.  The smoothing acts to alleviate\n"
+							 "second derivatives in Qspec(s), so that with many consecutive SMOO commands\n"
+							 "Qspec(s) will approach a straight line over the target segment.  If the\n"
+							 "slope-matching flag is set, the endpoint slopes are preserved.\n";
+			m_pctrlMSmooth->setToolTip(strong);
+			m_pctrlMSmooth->setCheckable(true);
 			m_pctrlMResetQSpec    = new QPushButton(tr("Reset QSpec"));
 			m_pctrlMNewSpline->setCheckable(true);
 			m_pctrlMark->setCheckable(true);
@@ -2581,6 +2661,15 @@ void QXInverse::setupLayout()
 		QVBoxLayout *pFoilLayout = new QVBoxLayout;
 		{
 			m_pctrlCpxx           = new QCheckBox(tr("End Point Constraint"));
+			QString strong = "XFoil doc: \n"
+				"If extra smoothness in the surface speed is required, the CPXX command\n"
+				"just before EXEC will enable the addition of two additional modes which\n"
+				"allow the second derivative in the pressure at the endpoints to be\n"
+				"unchanged from the starting airfoil.  The disadvantage of this option is\n"
+				"that the resulting surface speed Q will now deviate more from the\n"
+				"specified speed Qspec.  It is allowable to repeatedly modify Qspec,\n"
+				"set or reset the CPXX option, and issue the EXEC command in any order.\n";
+			m_pctrlCpxx->setToolTip(strong);
 			m_pctrlMExec          = new QPushButton(tr("Execute"));
 			pFoilLayout->addWidget(m_pctrlCpxx);
 			pFoilLayout->addWidget(m_pctrlMExec);
@@ -2589,11 +2678,17 @@ void QXInverse::setupLayout()
 				pMaxIterLayout->addStretch();
 				QLabel *lab10 = new QLabel(tr("Max Iterations"));
 				m_pctrlIter = new IntEdit(this);
+				QString strong = "XFoil doc: \n"
+					"EXEC requests the number of Newton iterations to be performed in the inverse calculation.\n"
+					"Although as many as six iterations may be required for convergence to machine zero,\n"
+					"it is _not_ necessary to fully converge a Mixed-Inverse case.  Two iterations are usually\n"
+					"sufficient to get very close to the new geometry.";
+				m_pctrlIter->setToolTip(strong);
 				pMaxIterLayout->addWidget(lab10);
 				pMaxIterLayout->addWidget(m_pctrlIter);
 			}
 			pFoilLayout->addLayout(pMaxIterLayout);
-			pFoilLayout->addStretch();
+//			pFoilLayout->addStretch();
 		}
 		pFoilBox->setLayout(pFoilLayout);
 	}
@@ -2602,14 +2697,10 @@ void QXInverse::setupLayout()
 	{
 		QVBoxLayout *pMInvLayout = new QVBoxLayout;
 		{
-			m_pctrlMOutput = new MinTextEdit(this);
-			m_pctrlMOutput->setEnabled(false);
-
 			pMInvLayout->addLayout(pMSpecLayout);
 			pMInvLayout->addWidget(pMSplinesBox);
 			pMInvLayout->addWidget(pFoilBox);
-			pMInvLayout->addWidget(m_pctrlMOutput);
-//			pMInvLayout->addStretch(1);
+			pMInvLayout->addStretch();
 		}
 		m_pctrlMInvWidget->setLayout(pMInvLayout);
 	}
@@ -2623,7 +2714,12 @@ void QXInverse::setupLayout()
 	QVBoxLayout *pMainLayout = new QVBoxLayout;
 	{
 		pMainLayout->addWidget(m_pctrlStackedInv);
-		pMainLayout->addStretch(1);
+//		pMainLayout->addStretch(1);
+
+		m_pctrlOutput = new MinTextEdit(this);
+//		m_pctrlOutput->setEnabled(true);
+		m_pctrlOutput->setAcceptRichText(true);
+		pMainLayout->addWidget(m_pctrlOutput);
 	}
 	setLayout(pMainLayout);
 
@@ -2644,9 +2740,13 @@ void QXInverse::smooth(int Pos1, int Pos2)
 	if(Pos1 ==-1)
 	{
 		//smooth it all
+		m_pctrlOutput->append(tr("Smoothing the entire distribution.\n"));
 		Pos1 = 1;
 		Pos2 = pXFoil->nsp;
 	}
+	else
+		m_pctrlOutput->append(tr("Smoothing the selected portion.\n"));
+
 	m_bGetPos = false;
 	if (abs(Pos2-Pos1)<=2) return;
 	if (Pos1>Pos2)
