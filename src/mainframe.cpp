@@ -2986,7 +2986,7 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString PathName)
 		XFile.close();
 
 		if(Objects3D::s_oaPlane.size()) return XFLR5::MIAREX;
-		else                            return XFLR5::INVERSEDESIGN;
+		else                            return XFLR5::XFOILANALYSIS;
 	}
 
 
