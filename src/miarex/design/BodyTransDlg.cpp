@@ -37,11 +37,11 @@ BodyTransDlg::BodyTransDlg(QWidget *pParent): QDialog(pParent)
 	m_bFrameOnly = false;
 	m_FrameID = 1;
 
-	SetupLayout();
+	setupLayout();
 }
 
 
-void BodyTransDlg::InitDialog()
+void BodyTransDlg::initDialog()
 {
 	m_pctrlXTransFactor->setValue(m_XTrans);
 	m_pctrlYTransFactor->setValue(m_YTrans);
@@ -69,14 +69,14 @@ void BodyTransDlg::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_Return:
 		case Qt::Key_Enter:
 		{
-			if(!OKButton->hasFocus() && !CancelButton->hasFocus())
+			if(!m_pOKButton->hasFocus() && !m_pCancelButton->hasFocus())
 			{
-				OKButton->setFocus();
+				m_pOKButton->setFocus();
 				return;
 			}
 			else
 			{
-				OnOK();
+				onOK();
 				return;
 			}
 			break;
@@ -92,7 +92,7 @@ void BodyTransDlg::keyPressEvent(QKeyEvent *event)
 }
 
 
-void BodyTransDlg::OnOK()
+void BodyTransDlg::onOK()
 {
 	m_bFrameOnly = m_pctrlFrameOnly->isChecked();
 	m_FrameID    = m_pctrlFrameID->value()-1;
@@ -104,7 +104,7 @@ void BodyTransDlg::OnOK()
 
 
 
-void BodyTransDlg::OnFrameOnly()
+void BodyTransDlg::onFrameOnly()
 {
 	m_bFrameOnly = m_pctrlFrameOnly->isChecked();
 	m_pctrlFrameID->setEnabled(m_bFrameOnly);
@@ -112,54 +112,62 @@ void BodyTransDlg::OnFrameOnly()
 
 
 
-void BodyTransDlg::SetupLayout()
+void BodyTransDlg::setupLayout()
 {
-	QHBoxLayout *FrameID = new QHBoxLayout;
-	m_pctrlFrameOnly = new QCheckBox(tr("Frame Only"));
-	m_pctrlFrameID = new DoubleEdit(0.0,0);
-	FrameID->addWidget(m_pctrlFrameOnly);
-	FrameID->addWidget(m_pctrlFrameID);
+	QHBoxLayout *pFrameIDLayout = new QHBoxLayout;
+	{
+		m_pctrlFrameOnly = new QCheckBox(tr("Frame Only"));
+		m_pctrlFrameID = new DoubleEdit(0.0,0);
+		pFrameIDLayout->addWidget(m_pctrlFrameOnly);
+		pFrameIDLayout->addWidget(m_pctrlFrameID);
+	}
 
-	QGridLayout *TransLayout = new QGridLayout;
-	QLabel * XTrans = new QLabel(tr("X Translation"));
-	QLabel * YTrans = new QLabel(tr("Y Translation"));
-	QLabel * ZTrans = new QLabel(tr("Z Translation"));
-	m_pctrlXTransFactor = new DoubleEdit(0.0,3);
-	m_pctrlYTransFactor = new DoubleEdit(0.0,3);
-	m_pctrlZTransFactor = new DoubleEdit(0.0,3);
-	m_pctrlLength1 = new QLabel("m");
-	m_pctrlLength2 = new QLabel("m");
-	m_pctrlLength3 = new QLabel("m");
-	TransLayout->addWidget(XTrans,1,1);
-	TransLayout->addWidget(YTrans,2,1);
-	TransLayout->addWidget(ZTrans,3,1);
-	TransLayout->addWidget(m_pctrlXTransFactor,1,2);
-	TransLayout->addWidget(m_pctrlYTransFactor,2,2);
-	TransLayout->addWidget(m_pctrlZTransFactor,3,2);
-	TransLayout->addWidget(m_pctrlLength1,1,3);
-	TransLayout->addWidget(m_pctrlLength2,2,3);
-	TransLayout->addWidget(m_pctrlLength3,3,3);
+	QGridLayout *pTransLayout = new QGridLayout;
+	{
+		QLabel * XTrans = new QLabel(tr("X Translation"));
+		QLabel * YTrans = new QLabel(tr("Y Translation"));
+		QLabel * ZTrans = new QLabel(tr("Z Translation"));
+		m_pctrlXTransFactor = new DoubleEdit(0.0,3);
+		m_pctrlYTransFactor = new DoubleEdit(0.0,3);
+		m_pctrlZTransFactor = new DoubleEdit(0.0,3);
+		m_pctrlLength1 = new QLabel("m");
+		m_pctrlLength2 = new QLabel("m");
+		m_pctrlLength3 = new QLabel("m");
+		pTransLayout->addWidget(XTrans,1,1);
+		pTransLayout->addWidget(YTrans,2,1);
+		pTransLayout->addWidget(ZTrans,3,1);
+		pTransLayout->addWidget(m_pctrlXTransFactor,1,2);
+		pTransLayout->addWidget(m_pctrlYTransFactor,2,2);
+		pTransLayout->addWidget(m_pctrlZTransFactor,3,2);
+		pTransLayout->addWidget(m_pctrlLength1,1,3);
+		pTransLayout->addWidget(m_pctrlLength2,2,3);
+		pTransLayout->addWidget(m_pctrlLength3,3,3);
+	}
 
-	QHBoxLayout *CommandButtons = new QHBoxLayout;
-	OKButton       = new QPushButton(tr("OK"));
-	CancelButton   = new QPushButton(tr("Cancel"));
-	CommandButtons->addStretch(1);
-	CommandButtons->addWidget(OKButton);
-	CommandButtons->addStretch(1);
-	CommandButtons->addWidget(CancelButton);
-	CommandButtons->addStretch(1);
-	connect(OKButton, SIGNAL(clicked()),this, SLOT(OnOK()));
-	connect(CancelButton,   SIGNAL(clicked()), this, SLOT(reject()));
+	QHBoxLayout *pCommandButtons = new QHBoxLayout;
+	{
+		m_pOKButton       = new QPushButton(tr("OK"));
+		m_pCancelButton   = new QPushButton(tr("Cancel"));
+		pCommandButtons->addStretch(1);
+		pCommandButtons->addWidget(m_pOKButton);
+		pCommandButtons->addStretch(1);
+		pCommandButtons->addWidget(m_pCancelButton);
+		pCommandButtons->addStretch(1);
+		connect(m_pOKButton, SIGNAL(clicked()),this, SLOT(onOK()));
+		connect(m_pCancelButton,   SIGNAL(clicked()), this, SLOT(reject()));
+	}
 
-	QVBoxLayout *MainLayout = new QVBoxLayout;
-	MainLayout->addLayout(FrameID);
-	MainLayout->addLayout(TransLayout);
-	MainLayout->addStretch(1);
-	MainLayout->addLayout(CommandButtons);
+	QVBoxLayout *pMainLayout = new QVBoxLayout;
+	{
+		pMainLayout->addLayout(pFrameIDLayout);
+		pMainLayout->addLayout(pTransLayout);
+		pMainLayout->addStretch(1);
+		pMainLayout->addLayout(pCommandButtons);
+	}
 
-	setLayout(MainLayout);
+	setLayout(pMainLayout);
 
-	connect(m_pctrlFrameOnly, SIGNAL(clicked()), SLOT(OnFrameOnly()));
+	connect(m_pctrlFrameOnly, SIGNAL(clicked()), SLOT(onFrameOnly()));
 
 }
 

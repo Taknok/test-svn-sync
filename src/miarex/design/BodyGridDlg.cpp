@@ -66,12 +66,12 @@ BodyGridDlg::BodyGridDlg(QWidget *pParent):QDialog(pParent)
 {
 	setWindowTitle(tr("Body Grid Dialog"));
 
-	SetupLayout();
+	setupLayout();
 }
 
 
 
-void BodyGridDlg::InitDialog()
+void BodyGridDlg::initDialog()
 {
 	QString length;
 	Units::getLengthUnitLabel(length);
@@ -103,12 +103,12 @@ void BodyGridDlg::InitDialog()
 	m_pctrlUnit2->setValue(s_Unit2*Units::mtoUnit());
 	m_pctrlMinUnit2->setValue(s_MinorUnit2*Units::mtoUnit());
 
-	EnableControls();
+	enableControls();
 }
 
 
 
-void BodyGridDlg::SetupLayout()
+void BodyGridDlg::setupLayout()
 {
 	setWindowTitle(tr("Grid Parameters"));
 
@@ -179,7 +179,7 @@ void BodyGridDlg::SetupLayout()
 		pCommandButtons->addStretch(1);
 		pCommandButtons->addWidget(Cancel);
 		pCommandButtons->addStretch(1);
-		connect(OKButton, SIGNAL(clicked()),this, SLOT(OnOK()));
+		connect(OKButton, SIGNAL(clicked()),this, SLOT(onOK()));
 		connect(Cancel, SIGNAL(clicked()), this, SLOT(reject()));
 	}
 
@@ -198,19 +198,19 @@ void BodyGridDlg::SetupLayout()
 	setLayout(pMainLayout);
 
 
-	connect(m_pctrlGrid, SIGNAL(clicked()), this, SLOT(OnGrid()));
-	connect(m_pctrlMinGrid, SIGNAL(clicked()), this, SLOT(OnMinGrid()));
-	connect(m_pctrlGrid2, SIGNAL(clicked()), this, SLOT(OnGrid2()));
-	connect(m_pctrlMinGrid2, SIGNAL(clicked()), this, SLOT(OnMinGrid2()));
+	connect(m_pctrlGrid, SIGNAL(clicked()), this, SLOT(onGrid()));
+	connect(m_pctrlMinGrid, SIGNAL(clicked()), this, SLOT(onMinGrid()));
+	connect(m_pctrlGrid2, SIGNAL(clicked()), this, SLOT(onGrid2()));
+	connect(m_pctrlMinGrid2, SIGNAL(clicked()), this, SLOT(onMinGrid2()));
 
-	connect(m_pctrlLine, SIGNAL(clickedLB()), this, SLOT(OnLineStyle()));
-	connect(m_pctrlLine2, SIGNAL(clickedLB()), this, SLOT(OnLine2Style()));
-	connect(m_pctrlMinLine, SIGNAL(clickedLB()), this, SLOT(OnMinLineStyle()));
-	connect(m_pctrlMinLine2, SIGNAL(clickedLB()), this, SLOT(OnMinLine2Style()));
+	connect(m_pctrlLine, SIGNAL(clickedLB()), this, SLOT(onLineStyle()));
+	connect(m_pctrlLine2, SIGNAL(clickedLB()), this, SLOT(onLine2Style()));
+	connect(m_pctrlMinLine, SIGNAL(clickedLB()), this, SLOT(onMinLineStyle()));
+	connect(m_pctrlMinLine2, SIGNAL(clickedLB()), this, SLOT(onMinLine2Style()));
 }
 
 
-void BodyGridDlg::EnableControls()
+void BodyGridDlg::enableControls()
 {
 	m_pctrlLine->setEnabled(s_bGrid);
 	m_pctrlUnit->setEnabled(s_bGrid);
@@ -225,7 +225,7 @@ void BodyGridDlg::EnableControls()
 
 
 
-void BodyGridDlg::OnOK()
+void BodyGridDlg::onOK()
 {
 	s_bScale = m_pctrlScales->isChecked();
 	accept();
@@ -233,34 +233,34 @@ void BodyGridDlg::OnOK()
 
 
 
-void BodyGridDlg::OnGrid()
+void BodyGridDlg::onGrid()
 {
 	s_bGrid = m_pctrlGrid->isChecked();
-	EnableControls();
+	enableControls();
 }
 
 
-void BodyGridDlg::OnGrid2()
+void BodyGridDlg::onGrid2()
 {
 	s_bGrid2 = m_pctrlGrid2->isChecked();
-	EnableControls();
+	enableControls();
 }
 
-void BodyGridDlg::OnMinGrid()
+void BodyGridDlg::onMinGrid()
 {
 	s_bMinGrid = m_pctrlMinGrid->isChecked();
-	EnableControls();
+	enableControls();
 }
 
 
-void BodyGridDlg::OnMinGrid2()
+void BodyGridDlg::onMinGrid2()
 {
 	s_bMinGrid2 = m_pctrlMinGrid2->isChecked();
-	EnableControls();
+	enableControls();
 }
 
 
-void BodyGridDlg::OnLineStyle()
+void BodyGridDlg::onLineStyle()
 {
 	LinePickerDlg dlg(this);
 	dlg.initDialog(s_Style, s_Width, s_Color);
@@ -277,7 +277,7 @@ void BodyGridDlg::OnLineStyle()
 }
 
 
-void BodyGridDlg::OnLine2Style()
+void BodyGridDlg::onLine2Style()
 {
 	LinePickerDlg dlg(this);
 	dlg.initDialog(s_Style2, s_Width2, s_Color2);
@@ -294,7 +294,7 @@ void BodyGridDlg::OnLine2Style()
 }
 
 
-void BodyGridDlg::OnMinLineStyle()
+void BodyGridDlg::onMinLineStyle()
 {
 	LinePickerDlg dlg(this);
 	dlg.initDialog(s_MinStyle, s_MinWidth, s_MinColor);
@@ -311,7 +311,7 @@ void BodyGridDlg::OnMinLineStyle()
 }
 
 
-void BodyGridDlg::OnMinLine2Style()
+void BodyGridDlg::onMinLine2Style()
 {
 	LinePickerDlg dlg(this);
 	dlg.initDialog(s_MinStyle2, s_MinWidth2, s_MinColor2);
@@ -329,7 +329,7 @@ void BodyGridDlg::OnMinLine2Style()
 
 
 
-void BodyGridDlg::LoadSettings (QSettings *pSettings)
+void BodyGridDlg::loadSettings (QSettings *pSettings)
 {
 	pSettings->beginGroup("GL3dBodyGrid");
 	{
@@ -358,7 +358,8 @@ void BodyGridDlg::LoadSettings (QSettings *pSettings)
 	pSettings->endGroup();
 }
 
-void BodyGridDlg::SaveSettings (QSettings *pSettings)
+
+void BodyGridDlg::saveSettings (QSettings *pSettings)
 {
 	pSettings->beginGroup("GL3dBodyGrid");
 	{

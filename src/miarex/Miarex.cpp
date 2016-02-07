@@ -6264,7 +6264,7 @@ void QMiarex::onPlaneInertia()
 		}
 	}
 
-	iDlg.InitDialog();
+	iDlg.initDialog();
 
 	ModDlg mdDlg(pMainFrame);
 

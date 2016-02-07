@@ -550,7 +550,7 @@ void PlaneDlg::onInertia()
 		memPtMass.append(new PointMass(m_pPlane->m_PointMass[im]));
 	}
 	
-	dlg.InitDialog();
+	dlg.initDialog();
 	if(dlg.exec()==QDialog::Accepted)
 	{
 		if(dlg.m_bChanged) m_bChanged = true;

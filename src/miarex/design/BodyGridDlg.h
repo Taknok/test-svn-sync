@@ -42,24 +42,24 @@ class BodyGridDlg : public QDialog
 
 public:
 	BodyGridDlg(QWidget *pParent);
-	static void LoadSettings (QSettings *pSettings);
-	static void SaveSettings (QSettings *pSettings);
+	static void loadSettings (QSettings *pSettings);
+	static void saveSettings (QSettings *pSettings);
 
 private slots:
-	void OnOK();
-	void OnGrid();
-	void OnGrid2();
-	void OnMinGrid();
-	void OnMinGrid2();
-	void OnLineStyle();
-	void OnLine2Style();
-	void OnMinLineStyle();
-	void OnMinLine2Style();
+	void onOK();
+	void onGrid();
+	void onGrid2();
+	void onMinGrid();
+	void onMinGrid2();
+	void onLineStyle();
+	void onLine2Style();
+	void onMinLineStyle();
+	void onMinLine2Style();
 
 private:
-	void SetupLayout();
-	void InitDialog();
-	void EnableControls();
+	void setupLayout();
+	void initDialog();
+	void enableControls();
 
 private:
 	QCheckBox *m_pctrlScales;

@@ -40,7 +40,7 @@ public:
 				   const QModelIndex &index) const;
 	void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 	void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-	void SetPrecision(int*PrecisionTable);
+	void setPrecision(int*PrecisionTable);
 
 private:
 	int *m_Precision; ///table of float precisions for each column

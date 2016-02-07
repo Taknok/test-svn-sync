@@ -832,13 +832,13 @@ void QXDirect::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_5:
 			break;
 		case Qt::Key_6:
-
 			if(bCtrl)
 			{
 				pMainFrame->onMiarex();
 				event->accept();
 				return;
 			}
+			break;
 		case Qt::Key_F2:
 		{
 			onRenameCurFoil();
