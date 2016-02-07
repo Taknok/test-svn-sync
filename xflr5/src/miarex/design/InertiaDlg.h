@@ -49,20 +49,20 @@ public:
     InertiaDlg(QWidget *pParent);
 	~InertiaDlg();
 
-	void InitDialog();
+	void initDialog();
 
 private slots:
-	void OnOK();
-	void OnBodyInertia();
-	void OnWingInertia();
-	void OnWing2Inertia();
-	void OnStabInertia();
-	void OnFinInertia();
-	void OnCellChanged(QWidget *);
-	void OnExportToAVL();
-	void OnInsertMassRow();
-	void OnDeleteMassRow();
-	void OnVolumeMass();
+	void onOK();
+	void onBodyInertia();
+	void onWingInertia();
+	void onWing2Inertia();
+	void onStabInertia();
+	void onFinInertia();
+	void onCellChanged(QWidget *);
+	void onExportToAVL();
+	void onInsertMassRow();
+	void onDeleteMassRow();
+	void onVolumeMass();
 
 private:
 	void contextMenuEvent(QContextMenuEvent *event);
@@ -71,12 +71,12 @@ private:
 	void showEvent(QShowEvent *event);
 	void hideEvent(QHideEvent *event);
 
-	void FillMassModel();
-	void ClearPointMasses();
-	void ComputeInertia();
-	void ComputeBodyAxisInertia();
-	void SetupLayout();
-	void ReadData();
+	void fillMassModel();
+	void clearPointMasses();
+	void computeInertia();
+	void computeBodyAxisInertia();
+	void setupLayout();
+	void readData();
 
 	//layout widget variables
 	QStackedWidget *m_pctrlTopStack;

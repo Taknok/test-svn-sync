@@ -21,6 +21,7 @@
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QtDebug>
 #include "PertDlg.h"
 #include "../misc/Settings.h"
 
@@ -36,48 +37,77 @@ PertDlg::PertDlg(QWidget *pParent) : QDialog(pParent)
 	memset(m_backr, 0, sizeof(m_backr));
 	memset(m_backi, 0, sizeof(m_backi));
 
-	SetupLayout();
+//	m_pCnModel = NULL;
+	m_precision = NULL;
+	m_pFloatDelegate = NULL;
 
-	connect(RestoreButton, SIGNAL(clicked()),this, SLOT(OnRestore()));
-	connect(ApplyButton, SIGNAL(clicked()),this, SLOT(OnApply()));
-	connect(OKButton, SIGNAL(clicked()),this, SLOT(accept()));
-	connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+	setupLayout();
+
+	connect(pRestoreButton, SIGNAL(clicked()),this, SLOT(onRestore()));
+	connect(pApplyButton, SIGNAL(clicked()),this, SLOT(onApply()));
+	connect(pOKButton, SIGNAL(clicked()),this, SLOT(accept()));
+	connect(pCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 }
 
 PertDlg::~PertDlg()
 {
-	delete [] m_precision;
+	if(m_precision)       delete [] m_precision;
+//	if(m_pCnModel)        delete m_pCnModel;
+	if (m_pFloatDelegate) delete m_pFloatDelegate;
 }
 
 
-void PertDlg::SetupLayout()
+void PertDlg::setupLayout()
 {
-	QVBoxLayout *CommandButtons = new QVBoxLayout;
-	RestoreButton	= new QPushButton(tr("Restore"));
-	ApplyButton	= new QPushButton(tr("Apply"));
-	OKButton        = new QPushButton(tr("OK"));
-	CancelButton    = new QPushButton(tr("Cancel"));
-	CommandButtons->addStretch(1);
-	CommandButtons->addWidget(RestoreButton);
-	CommandButtons->addWidget(ApplyButton);
-	CommandButtons->addStretch(2);
-	CommandButtons->addWidget(OKButton);
-	CommandButtons->addWidget(CancelButton);
-	CommandButtons->addStretch(1);
+	m_CnModel.setRowCount(10);//temporary
+	m_CnModel.setColumnCount(3);
+	m_CnModel.setHeaderData(0, Qt::Horizontal, QObject::tr("i"));
+	m_CnModel.setHeaderData(1, Qt::Horizontal, QObject::tr("Cn"));
+	m_CnModel.setHeaderData(2, Qt::Horizontal, QObject::tr("Ci"));
+
+	m_pFloatDelegate = new FloatEditDelegate(this);
+	m_precision = new int[3];
+	m_precision[0] = 0;
+	m_precision[1] = 5;
+	m_precision[2] = 5;
+	m_pFloatDelegate->setPrecision(m_precision);
 
 	m_pctrlCnTable = new QTableView(this);
 	m_pctrlCnTable->setFont(Settings::s_TableFont);
 	m_pctrlCnTable->setWindowTitle(tr("Cn List"));
 	m_pctrlCnTable->setMinimumHeight(500);
 	m_pctrlCnTable->setMinimumWidth(350);
+	m_pctrlCnTable->setColumnWidth(0,30);
+	m_pctrlCnTable->setColumnWidth(1,100);
+	m_pctrlCnTable->setColumnWidth(2,100);
 
-	m_pCnModel = new QStandardItemModel;
-	m_pCnModel->setColumnCount(3);
+	m_pctrlCnTable->setModel(&m_CnModel);
+	m_pctrlCnTable->setItemDelegate(m_pFloatDelegate);
 
-	QHBoxLayout * MainLayout = new QHBoxLayout(this);
-	MainLayout->addWidget(m_pctrlCnTable);
-	MainLayout->addLayout(CommandButtons);
-	setLayout(MainLayout);
+
+	connect(m_pFloatDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(onCellChanged(QWidget *)));
+
+	QVBoxLayout *pCommandButtons = new QVBoxLayout;
+	{
+		pRestoreButton	= new QPushButton(tr("Restore"));
+		pApplyButton    = new QPushButton(tr("Apply"));
+		pOKButton       = new QPushButton(tr("OK"));
+		pCancelButton   = new QPushButton(tr("Cancel"));
+		pCommandButtons->addStretch(1);
+		pCommandButtons->addWidget(pRestoreButton);
+		pCommandButtons->addWidget(pApplyButton);
+		pCommandButtons->addStretch(2);
+		pCommandButtons->addWidget(pOKButton);
+		pCommandButtons->addWidget(pCancelButton);
+		pCommandButtons->addStretch(1);
+	}
+
+	QHBoxLayout * pMainLayout = new QHBoxLayout(this);
+	{
+		pMainLayout->addWidget(m_pctrlCnTable);
+		pMainLayout->addLayout(pCommandButtons);
+	}
+	setLayout(pMainLayout);
 }
 
 
@@ -94,11 +124,11 @@ void PertDlg::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_Return:
 		case Qt::Key_Enter:
 		{
-			if(!OKButton->hasFocus() && !CancelButton->hasFocus())
+			if(!pOKButton->hasFocus() && !pCancelButton->hasFocus())
 			{
-				OKButton->setFocus();
+				pOKButton->setFocus();
 			}
-			else if(CancelButton->hasFocus())
+			else if(pCancelButton->hasFocus())
 			{
 				reject();
 				return;
@@ -116,77 +146,53 @@ void PertDlg::keyPressEvent(QKeyEvent *event)
 	}
 }
 
-void PertDlg::OnApply()
+void PertDlg::onApply()
 {
-	ReadData();
-	OKButton->setFocus();
+	readData();
+	pOKButton->setFocus();
 
 }
 
 
-void PertDlg::OnOK()
+void PertDlg::onOK()
 {
-	ReadData();
+	readData();
 	accept();
 }
 
 
-void PertDlg::ReadData()
+void PertDlg::readData()
 {
 	int pos;
 	bool bOK;
 	QString strong;
 	QStandardItem *pItem;
 
-	for (pos=0; pos<m_pCnModel->rowCount(); pos++)
+	for (pos=0; pos<m_CnModel.rowCount(); pos++)
 	{
-		pItem = m_pCnModel->item(pos,1);
+		pItem = m_CnModel.item(pos,1);
 		strong =pItem->text();
 		m_cnr[pos]=strong.toDouble(&bOK);
 
-		pItem = m_pCnModel->item(pos,2);
+		pItem = m_CnModel.item(pos,2);
 		strong =pItem->text();
 		m_cni[pos]=strong.toDouble(&bOK);
 	}
 }
 
 
-void PertDlg::InitDialog() 
+void PertDlg::initDialog()
 {
 	memcpy(m_backr, m_cnr, sizeof(m_cnr));
 	memcpy(m_backi, m_cni, sizeof(m_cni));
 
-	m_pCnModel = new QStandardItemModel(this);
-	m_pCnModel->setRowCount(10);//temporary
-	m_pCnModel->setColumnCount(3);
-
-	m_pCnModel->setHeaderData(0, Qt::Horizontal, QObject::tr("i"));
-	m_pCnModel->setHeaderData(1, Qt::Horizontal, QObject::tr("Cn"));
-	m_pCnModel->setHeaderData(2, Qt::Horizontal, QObject::tr("Ci"));
-
-	m_pctrlCnTable->setModel(m_pCnModel);
-	m_pctrlCnTable->setColumnWidth(0,30);
-	m_pctrlCnTable->setColumnWidth(1,100);
-	m_pctrlCnTable->setColumnWidth(2,100);
-
-	m_pFloatDelegate = new FloatEditDelegate(this);
-	m_pctrlCnTable->setItemDelegate(m_pFloatDelegate);
-
-	m_precision = new int[3];
-	m_precision[0] = 0;
-	m_precision[1] = 5;
-	m_precision[2] = 5;
-	m_pFloatDelegate->SetPrecision(m_precision);
-
-	connect(m_pFloatDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(OnCellChanged(QWidget *)));
-
-	FillCnModel();
+	fillCnModel();
 
 	m_pctrlCnTable->setFocus();
 }
 
 
-void PertDlg::OnCellChanged(QWidget *)
+void PertDlg::onCellChanged(QWidget *)
 {
 	QModelIndex index = m_pctrlCnTable->currentIndex();
 	int pos = index.row();
@@ -195,37 +201,37 @@ void PertDlg::OnCellChanged(QWidget *)
 	bool bOK;
 	QString strong;
 	QStandardItem *pItem;
-	pItem = m_pCnModel->item(pos,1);
+	pItem = m_CnModel.item(pos,1);
 	strong =pItem->text();
 	m_cnr[pos]=strong.toDouble(&bOK);
 
-	pItem = m_pCnModel->item(pos,2);
+	pItem = m_CnModel.item(pos,2);
 	strong =pItem->text();
 	m_cni[pos]=strong.toDouble(&bOK);
 
-	FillCnModel();
+	fillCnModel();
 }
 
 
-void PertDlg::FillCnModel() 
+void PertDlg::fillCnModel()
 {
-	m_pCnModel->setRowCount(m_nc);
+	m_CnModel.setRowCount(m_nc);
 
 	for (int i=0; i<m_nc; i++)
 	{
-		QModelIndex Xindex = m_pCnModel->index(i, 0, QModelIndex());
-		m_pCnModel->setData(Xindex, i);
+		QModelIndex Xindex = m_CnModel.index(i, 0, QModelIndex());
+		m_CnModel.setData(Xindex, i);
 
-		QModelIndex Yindex =m_pCnModel->index(i, 1, QModelIndex());
-		m_pCnModel->setData(Yindex, m_cnr[i]);
+		QModelIndex Yindex =m_CnModel.index(i, 1, QModelIndex());
+		m_CnModel.setData(Yindex, m_cnr[i]);
 
-		QModelIndex Zindex =m_pCnModel->index(i, 2, QModelIndex());
-		m_pCnModel->setData(Zindex, m_cni[i]);
+		QModelIndex Zindex =m_CnModel.index(i, 2, QModelIndex());
+		m_CnModel.setData(Zindex, m_cni[i]);
 	}
 }
 
 
-void PertDlg::OnRestore() 
+void PertDlg::onRestore()
 {
 	for (int i=0; i<m_nc; i++)
 	{
@@ -234,7 +240,7 @@ void PertDlg::OnRestore()
 //		m_backi[i] = m_cni[i];
 	}
 
-	FillCnModel();
+	fillCnModel();
 }
 
 

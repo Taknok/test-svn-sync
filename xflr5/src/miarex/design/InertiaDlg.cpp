@@ -53,7 +53,7 @@ InertiaDlg::InertiaDlg(QWidget *pParent) : QDialog(pParent)
 
 	m_VolumeMass = 0.0;
 
-	ClearPointMasses();
+	clearPointMasses();
 
 	m_bChanged = false;
 
@@ -65,19 +65,19 @@ InertiaDlg::InertiaDlg(QWidget *pParent) : QDialog(pParent)
 	m_pContextMenu->addAction(m_pDeleteMassRow);
 
 
-	SetupLayout();
+	setupLayout();
 }
 
 
 InertiaDlg::~InertiaDlg()
 {
-	ClearPointMasses();
+	clearPointMasses();
 	delete m_pMassModel;
 	delete [] m_precision;
 }
 
 /** Destroys the PointMass objects in good order to avoid memory leaks */
-void InertiaDlg::ClearPointMasses()
+void InertiaDlg::clearPointMasses()
 {
 	for(int ipm=m_PointMass.size()-1; ipm>=0; ipm--)
 	{
@@ -87,7 +87,7 @@ void InertiaDlg::ClearPointMasses()
 }
 
 
-void InertiaDlg::ComputeBodyAxisInertia()
+void InertiaDlg::computeBodyAxisInertia()
 {
 	if(m_pPlane)     m_pPlane->computeBodyAxisInertia();
 	else if(m_pWing) m_pWing->computeBodyAxisInertia();
@@ -100,7 +100,7 @@ void InertiaDlg::ComputeBodyAxisInertia()
 *
 * Assumes that the data has been read.
 */
-void InertiaDlg::ComputeInertia()
+void InertiaDlg::computeInertia()
 {
 	int i, iw;
 	double TotalMass, TotalIxx, TotalIyy, TotalIzz, TotalIxz;
@@ -268,7 +268,7 @@ void InertiaDlg::contextMenuEvent(QContextMenuEvent *event)
 /**
 * Fills the table with the object's point masses.
 */
-void InertiaDlg::FillMassModel()
+void InertiaDlg::fillMassModel()
 {
 	QModelIndex index;
 	
@@ -314,7 +314,7 @@ void InertiaDlg::FillMassModel()
 }
 
 
-void InertiaDlg::InitDialog()
+void InertiaDlg::initDialog()
 {
 	QString strong, strMass, strLength;
 
@@ -345,7 +345,7 @@ void InertiaDlg::InitDialog()
 	int rc = m_pMassModel->rowCount();
 	m_pMassModel->removeRows(0, rc);
 
-	ClearPointMasses();
+	clearPointMasses();
 
 	if(m_pWing)
 	{
@@ -398,8 +398,8 @@ void InertiaDlg::InitDialog()
 	if(m_pPlane) m_pctrlTopStack->setCurrentIndex(1);
 	else         m_pctrlTopStack->setCurrentIndex(0);
 
-	FillMassModel();
-	ComputeInertia();
+	fillMassModel();
+	computeInertia();
 	setFocus();
 }
 
@@ -427,20 +427,20 @@ void InertiaDlg::keyPressEvent(QKeyEvent *event)
 }
 
 
-void InertiaDlg::OnCellChanged(QWidget *)
+void InertiaDlg::onCellChanged(QWidget *)
 {
-	ReadData();
-	ComputeInertia();
+	readData();
+	computeInertia();
 	m_bChanged = true;
-	FillMassModel();//to add an empty line
+	fillMassModel();//to add an empty line
 }
 
 
 
-void InertiaDlg::OnVolumeMass()
+void InertiaDlg::onVolumeMass()
 {
-	ReadData();
-	ComputeInertia();
+	readData();
+	computeInertia();
 	m_bChanged = true;
 }
 
@@ -448,7 +448,7 @@ void InertiaDlg::OnVolumeMass()
 /**
 * Exports the mass and inertia data to AVL format
 */
-void InertiaDlg::OnExportToAVL()
+void InertiaDlg::onExportToAVL()
 {
 	if (!m_pWing && !m_pBody && !m_pPlane) return;
 	QString filter =".mass";
@@ -677,14 +677,14 @@ void InertiaDlg::OnExportToAVL()
 }
 
 
-void InertiaDlg::OnInsertMassRow()
+void InertiaDlg::onInsertMassRow()
 {
 	int sel;
 	sel = m_pctrlMassTable->currentIndex().row();
 
 	m_PointMass.insert(sel, new PointMass(0.0, CVector(0.0,0.0,0.0), ""));
 
-	FillMassModel();
+	fillMassModel();
 	m_pctrlMassTable->closePersistentEditor(m_pctrlMassTable->currentIndex());
 
 	QModelIndex index = m_pMassModel->index(sel, 0, QModelIndex());
@@ -693,7 +693,7 @@ void InertiaDlg::OnInsertMassRow()
 }
 
 
-void InertiaDlg::OnDeleteMassRow()
+void InertiaDlg::onDeleteMassRow()
 {
 	int sel;
 	m_pctrlMassTable->closePersistentEditor(m_pctrlMassTable->currentIndex());
@@ -701,15 +701,15 @@ void InertiaDlg::OnDeleteMassRow()
 
 	m_PointMass.removeAt(sel);
 
-	FillMassModel();
+	fillMassModel();
 }
 
 
 
-void InertiaDlg::OnOK()
+void InertiaDlg::onOK()
 {
 	int i;
-	ReadData();
+	readData();
 
 	if(m_pWing)
 	{
@@ -750,13 +750,13 @@ void InertiaDlg::OnOK()
 		}
 	}
 
-	ComputeBodyAxisInertia();
+	computeBodyAxisInertia();
 
 	accept();
 }
 
 
-void InertiaDlg::ReadData()
+void InertiaDlg::readData()
 {
 	QModelIndex index;
 	bool bOK;
@@ -764,7 +764,7 @@ void InertiaDlg::ReadData()
 	int i;
 	QString tag;
 
-	ClearPointMasses();
+	clearPointMasses();
 
 	for (i=0; i<m_pMassModel->rowCount(); i++)
 	{
@@ -796,7 +796,7 @@ void InertiaDlg::ReadData()
 
 
 
-void InertiaDlg::SetupLayout()
+void InertiaDlg::setupLayout()
 {
 	QString strMass, strLength;
 	Units::getWeightUnitLabel(strMass);
@@ -1000,9 +1000,9 @@ void InertiaDlg::SetupLayout()
 	m_precision[2] = 3;
 	m_precision[3] = 3;
 	m_precision[4] = -1;// Not a number, will be detected as such by FloatEditDelegate
-	m_pFloatDelegate->SetPrecision(m_precision);
+	m_pFloatDelegate->setPrecision(m_precision);
 
-	connect(m_pFloatDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(OnCellChanged(QWidget *)));
+	connect(m_pFloatDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(onCellChanged(QWidget *)));
 
 	//________________Total Mass, Center of gravity, and inertias__________
 	QGroupBox *TotalMassBox = new QGroupBox(tr("Total Mass = Volume + point masses"));
@@ -1105,7 +1105,7 @@ void InertiaDlg::SetupLayout()
 		OKButton = new QPushButton(tr("OK"));
 		QPushButton *CancelButton = new QPushButton(tr("Cancel"));
 		connect(CancelButton,        SIGNAL(clicked()), this, SLOT(reject()));
-		connect(ExportAVLButton,     SIGNAL(clicked()), this, SLOT(OnExportToAVL()));
+		connect(ExportAVLButton,     SIGNAL(clicked()), this, SLOT(onExportToAVL()));
 
 		CommandButtons->addStretch(1);
 		CommandButtons->addWidget(ExportAVLButton);
@@ -1132,92 +1132,92 @@ void InertiaDlg::SetupLayout()
 	}
 	setLayout(MainLayout);
 
-	connect(m_pctrlWingInertia,  SIGNAL(clicked()), this, SLOT(OnWingInertia()));
-	connect(m_pctrlWing2Inertia, SIGNAL(clicked()), this, SLOT(OnWing2Inertia()));
-	connect(m_pctrlStabInertia,  SIGNAL(clicked()), this, SLOT(OnStabInertia()));
-	connect(m_pctrlFinInertia,   SIGNAL(clicked()), this, SLOT(OnFinInertia()));
-	connect(m_pctrlBodyInertia,  SIGNAL(clicked()), this, SLOT(OnBodyInertia()));
-	connect(OKButton,            SIGNAL(clicked()),this, SLOT(OnOK()));
-	connect(m_pctrlVolumeMass,   SIGNAL(editingFinished()), SLOT(OnVolumeMass()));
-	connect(m_pInsertMassRow,    SIGNAL(triggered()), SLOT(OnInsertMassRow()));
-	connect(m_pDeleteMassRow,    SIGNAL(triggered()), SLOT(OnDeleteMassRow()));
+	connect(m_pctrlWingInertia,  SIGNAL(clicked()), this, SLOT(onWingInertia()));
+	connect(m_pctrlWing2Inertia, SIGNAL(clicked()), this, SLOT(onWing2Inertia()));
+	connect(m_pctrlStabInertia,  SIGNAL(clicked()), this, SLOT(onStabInertia()));
+	connect(m_pctrlFinInertia,   SIGNAL(clicked()), this, SLOT(onFinInertia()));
+	connect(m_pctrlBodyInertia,  SIGNAL(clicked()), this, SLOT(onBodyInertia()));
+	connect(OKButton,            SIGNAL(clicked()),this, SLOT(onOK()));
+	connect(m_pctrlVolumeMass,   SIGNAL(editingFinished()), SLOT(onVolumeMass()));
+	connect(m_pInsertMassRow,    SIGNAL(triggered()), SLOT(onInsertMassRow()));
+	connect(m_pDeleteMassRow,    SIGNAL(triggered()), SLOT(onDeleteMassRow()));
 }
 
 
 
 
-void InertiaDlg::OnWingInertia()
+void InertiaDlg::onWingInertia()
 {
     InertiaDlg dlg(this);
 	if(!m_pPlane->wing()) return;
 	dlg.m_pWing  = m_pPlane->wing();
 	dlg.m_pPlane = NULL;
 	dlg.m_pBody  = NULL;
-	dlg.InitDialog();
+	dlg.initDialog();
 	dlg.s_Position += QPoint(43, 19);
 	if(dlg.exec()==QDialog::Accepted) m_bChanged=true;
 	dlg.s_Position = pos();
-	ComputeInertia();
+	computeInertia();
 }
 
 
-void InertiaDlg::OnWing2Inertia()
+void InertiaDlg::onWing2Inertia()
 {
 	if(!m_pPlane->BiPlane()) return;
     InertiaDlg dlg(this);
 	dlg.m_pWing  = m_pPlane->wing2();
 	dlg.m_pPlane = NULL;
 	dlg.m_pBody  = NULL;
-	dlg.InitDialog();
+	dlg.initDialog();
 	dlg.s_Position += QPoint(43, 19);
 	if(dlg.exec()==QDialog::Accepted) m_bChanged=true;
 	dlg.s_Position = pos();
-	ComputeInertia();
+	computeInertia();
 }
 
 
-void InertiaDlg::OnStabInertia()
+void InertiaDlg::onStabInertia()
 {
 	if(!m_pPlane->stab()) return;
     InertiaDlg dlg(this);
 	dlg.m_pWing  = m_pPlane->stab();
 	dlg.m_pPlane = NULL;
 	dlg.m_pBody  = NULL;
-	dlg.InitDialog();
+	dlg.initDialog();
 	dlg.s_Position += QPoint(43, 19);
 	if(dlg.exec()==QDialog::Accepted) m_bChanged=true;
 	dlg.s_Position = pos();
-	ComputeInertia();
+	computeInertia();
 }
 
 
-void InertiaDlg::OnFinInertia()
+void InertiaDlg::onFinInertia()
 {
 	if(!m_pPlane->fin()) return;
     InertiaDlg dlg(this);
 	dlg.m_pWing  = m_pPlane->fin();
 	dlg.m_pPlane = NULL;
 	dlg.m_pBody  = NULL;
-	dlg.InitDialog();
+	dlg.initDialog();
 	dlg.s_Position += QPoint(43, 19);
 	if(dlg.exec()==QDialog::Accepted) m_bChanged=true;
 	dlg.s_Position = pos();
-	ComputeInertia();
+	computeInertia();
 }
 
 
-void InertiaDlg::OnBodyInertia()
+void InertiaDlg::onBodyInertia()
 {
 	if(!m_pPlane->body()) return;
     InertiaDlg dlg(this);
 	dlg.m_pBody  = m_pPlane->body();
 	dlg.m_pPlane = NULL;
 	dlg.m_pWing  = NULL;
-	dlg.InitDialog();
+	dlg.initDialog();
 	dlg.s_Position += QPoint(43, 19);
 	if(dlg.exec()==QDialog::Accepted) m_bChanged=true;
 	dlg.s_Position = pos();
-	ComputeInertia();
+	computeInertia();
 }
 
 

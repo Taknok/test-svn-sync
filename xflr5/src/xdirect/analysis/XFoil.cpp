@@ -36,6 +36,7 @@ double XFoil::vaccel = 0.01;
 XFoil::XFoil()
 {
 	m_pFoil = NULL;
+	m_pOutStream = NULL;
 //------ primary dimensioning limit parameters
 
 	//------ derived dimensioning limit parameters
@@ -84,7 +85,6 @@ XFoil::XFoil()
 
 	//---- drop tolerance for bl system solver
 	vaccel = 0.01;
-
 	//---- default viscous parameters
 	retyp = 1;
 	reinf1 = 0.0;
@@ -3727,6 +3727,7 @@ bool XFoil::Initialize()
 	ist = 0;
 	nb =0;
 
+	iacqsp = 1;
 
 	dwte = 0.0;
 	qinfbl = 0.0;

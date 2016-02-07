@@ -629,7 +629,7 @@ void StabViewDlg::setupLayout()
 			m_precision[1]  = 3;
 			m_precision[2]  = 3;
 
-			m_pCtrlDelegate->SetPrecision(m_precision);
+			m_pCtrlDelegate->setPrecision(m_precision);
 			m_pctrlControlTable->setItemDelegate(m_pCtrlDelegate);
 //			m_pCtrlDelegate->m_pCtrlModel = m_pControlModel;
 

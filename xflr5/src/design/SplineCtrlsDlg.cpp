@@ -104,8 +104,8 @@ void SplineCtrlsDlg::initDialog()
 	m_precision[0] = 0;
 	m_precision[1] = 5;
 	m_precision[2] = 5;
-	m_pUpperFloatDelegate->SetPrecision(m_precision);
-	m_pLowerFloatDelegate->SetPrecision(m_precision);
+	m_pUpperFloatDelegate->setPrecision(m_precision);
+	m_pLowerFloatDelegate->setPrecision(m_precision);
 
 	connect(m_pUpperFloatDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(onUpdate()));
 	connect(m_pLowerFloatDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(onUpdate()));

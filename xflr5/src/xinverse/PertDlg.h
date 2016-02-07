@@ -45,30 +45,29 @@ public:
 
 
 private slots:
-	void OnCellChanged(QWidget *);
-	void OnRestore();
-	void OnApply();
-	void OnOK();
+	void onCellChanged(QWidget *);
+	void onRestore();
+	void onApply();
+	void onOK();
 
 private:
-	void SetupLayout();
-	void InitDialog();
-	void FillCnModel() ;
-	void ReadData();
+	void setupLayout();
+	void initDialog();
+	void fillCnModel() ;
+	void readData();
 
 private:
 
-	QPushButton *OKButton, *CancelButton, *ApplyButton, *RestoreButton;
+	QPushButton *pOKButton, *pCancelButton, *pApplyButton, *pRestoreButton;
 
 	QTableView *m_pctrlCnTable;
-	QStandardItemModel *m_pCnModel;
+	QStandardItemModel m_CnModel;
 	FloatEditDelegate *m_pFloatDelegate;
 
 	int *m_precision;
 
 protected:
 	void keyPressEvent(QKeyEvent *event);
-
 
 
 private:

@@ -39,15 +39,15 @@ class BodyTransDlg : public QDialog
 
 public:
     BodyTransDlg(QWidget *pParent);
-	void InitDialog();
+	void initDialog();
 
 private slots:
-	void OnOK();
-	void OnFrameOnly();
+	void onOK();
+	void onFrameOnly();
 
 private:
 	void keyPressEvent(QKeyEvent *event);
-	void SetupLayout();
+	void setupLayout();
 
     DoubleEdit *m_pctrlXTransFactor;
     DoubleEdit *m_pctrlYTransFactor;
@@ -57,7 +57,7 @@ private:
 	QLabel *m_pctrlLength1;
 	QLabel *m_pctrlLength2;
 	QLabel *m_pctrlLength3;
-	QPushButton *OKButton, *CancelButton;
+	QPushButton *m_pOKButton, *m_pCancelButton;
 
 	double m_XTrans, m_YTrans, m_ZTrans;
 	bool   m_bFrameOnly;

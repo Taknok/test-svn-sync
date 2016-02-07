@@ -40,8 +40,8 @@ public:
 	void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
 	void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 	void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-	void SetPointers(int *PrecisionTable, int *pNRows);
-	void SetPointer(int *PrecisionTable);
+	void setPointers(int *PrecisionTable, int *pNRows);
+	void setPointer(int *PrecisionTable);
 
 private:
 	int *m_pNRows;

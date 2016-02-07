@@ -110,7 +110,7 @@ void EditPlrDlg::initDialog(void *pXDirect, Polar* pPolar, void *pMiarex, WPolar
 	m_precision[12] = 3;
 	m_precision[13] = 0;
 
-	m_pFloatDelegate->SetPrecision(m_precision);
+	m_pFloatDelegate->setPrecision(m_precision);
 
 	if(m_pXDirect && pPolar)        fillPolarData();
 	else if(m_pMiarex && m_pWPolar) fillWPolarData();

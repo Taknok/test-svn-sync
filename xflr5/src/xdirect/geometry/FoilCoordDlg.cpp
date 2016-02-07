@@ -88,7 +88,7 @@ void FoilCoordDlg::InitDialog()
 	m_precision = new int[2];
 	m_precision[0] = 5;//five digits for x and y coordinates
 	m_precision[1] = 5;
-	m_pFloatDelegate->SetPrecision(m_precision);
+	m_pFloatDelegate->setPrecision(m_precision);
 
 //void QAbstractItemDelegate::closeEditor ( QWidget * editor, QAbstractItemDelegate::EndEditHint hint = NoHint )
 	connect(m_pFloatDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(OnCellChanged(QWidget *)));
