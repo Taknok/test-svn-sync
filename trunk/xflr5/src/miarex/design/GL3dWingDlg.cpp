@@ -810,7 +810,7 @@ void GL3dWingDlg::onInertia()
 		PtMass.append(m_pWing->m_PointMass.at(i));
 	}
 
-	dlg.InitDialog();
+	dlg.initDialog();
 	if(dlg.exec() == QDialog::Accepted)
 	{
 		if(dlg.m_bChanged) m_bChanged = true;

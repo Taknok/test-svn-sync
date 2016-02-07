@@ -75,7 +75,7 @@ void BodyTableDelegate::updateEditorGeometry(QWidget *editor, const QStyleOption
 }
 
 
-void BodyTableDelegate::SetPointers(int *PrecisionTable, int *pNRows)
+void BodyTableDelegate::setPointers(int *PrecisionTable, int *pNRows)
 {
 	m_Precision = PrecisionTable;
 	m_pNRows = pNRows;
@@ -83,7 +83,7 @@ void BodyTableDelegate::SetPointers(int *PrecisionTable, int *pNRows)
 
 
 
-void BodyTableDelegate::SetPointer(int *PrecisionTable)
+void BodyTableDelegate::setPointer(int *PrecisionTable)
 {
 	m_Precision = PrecisionTable;
 }

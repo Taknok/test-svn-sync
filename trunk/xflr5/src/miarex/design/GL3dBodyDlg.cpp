@@ -2316,7 +2316,7 @@ void GL3dBodyDlg::OnBodyInertia()
 	dlg.m_pBody  = m_pBody;
 	dlg.m_pPlane = NULL;
 	dlg.m_pWing  = NULL;
-	dlg.InitDialog();
+	dlg.initDialog();
 	dlg.move(pos().x()+25, pos().y()+25);
 	if(dlg.exec()==QDialog::Accepted) m_bChanged=true;
 	m_pBody->computeBodyAxisInertia();
@@ -2593,7 +2593,7 @@ void GL3dBodyDlg::OnFrameItemClicked(const QModelIndex &index)
 
 void GL3dBodyDlg::OnGrid()
 {
-	m_pBodyGridDlg->InitDialog();
+	m_pBodyGridDlg->initDialog();
 	m_pBodyGridDlg->exec();
 	m_bResetglBody2D = true;
 
@@ -2846,7 +2846,7 @@ void GL3dBodyDlg::OnScaleBody()
 		dlg.m_bFrameOnly = true;
 	}
 	dlg.m_FrameID = m_pBody->m_iActiveFrame;
-	dlg.InitDialog();
+	dlg.initDialog();
 
 	if(dlg.exec()==QDialog::Accepted)
 	{
@@ -2955,7 +2955,7 @@ void GL3dBodyDlg::OnTranslateBody()
 
     BodyTransDlg dlg(this);
 	dlg.m_FrameID    = m_pBody->m_iActiveFrame;
-	dlg.InitDialog();
+	dlg.initDialog();
 
 	if(dlg.exec()==QDialog::Accepted)
 	{
@@ -3056,7 +3056,7 @@ bool GL3dBodyDlg::loadSettings(QSettings *pSettings)
 		s_WindowSize = pSettings->value("BodyWindowSize", QSize(900,700)).toSize();
 	}
 	pSettings->endGroup();
-	BodyGridDlg::LoadSettings(pSettings);
+	BodyGridDlg::loadSettings(pSettings);
 	return true;
 }
 
@@ -3070,7 +3070,7 @@ bool GL3dBodyDlg::saveSettings(QSettings *pSettings)
 
 	}
 	pSettings->endGroup();
-	BodyGridDlg::SaveSettings(pSettings);
+	BodyGridDlg::saveSettings(pSettings);
 	return true;
 }
 
@@ -3714,7 +3714,7 @@ void GL3dBodyDlg::setupLayout()
 	m_pFramePrecision = new int[2];
 	m_pFramePrecision[0] = 3;//five digits for x and y coordinates
 	m_pFramePrecision[1] = 0;
-	m_pFrameDelegate->SetPointer(m_pFramePrecision);
+	m_pFrameDelegate->setPointer(m_pFramePrecision);
 
 	//Setup Point Table
 	m_pctrlPointTable->horizontalHeader()->setStretchLastSection(true);
@@ -3732,7 +3732,7 @@ void GL3dBodyDlg::setupLayout()
 	m_pPointPrecision[0] = 3;//five digits for x and y coordinates
 	m_pPointPrecision[1] = 3;
 	m_pPointPrecision[2] = 0;
-	m_pPointDelegate->SetPointer(m_pPointPrecision);
+	m_pPointDelegate->setPointer(m_pPointPrecision);
 }
 
 

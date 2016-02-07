@@ -90,7 +90,7 @@ void FloatEditDelegate::updateEditorGeometry(QWidget *editor, const QStyleOption
 
 
 
-void FloatEditDelegate::SetPrecision(int *PrecisionTable)
+void FloatEditDelegate::setPrecision(int *PrecisionTable)
 {
 	m_Precision = PrecisionTable;
 }

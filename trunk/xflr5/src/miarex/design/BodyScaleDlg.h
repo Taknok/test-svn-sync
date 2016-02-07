@@ -43,20 +43,20 @@ public:
     BodyScaleDlg(QWidget *pParent);
 
 private slots:
-	void OnOK();
-	void OnRadio();
-	void OnEditingFinished();
+	void onOK();
+	void onRadio();
+	void onEditingFinished();
 
 private:
-	void SetupLayout();
-	void InitDialog();
-	void EnableControls();
+	void setupLayout();
+	void initDialog();
+	void enableControls();
 	void keyPressEvent(QKeyEvent *event);
 
 private:
 	static void *s_pMainFrame;
 
-	QPushButton *OKButton, *CancelButton;
+	QPushButton *m_pOKButton, *m_pCancelButton;
 	QRadioButton *m_pctrlBody, *m_pctrlFrame;
     DoubleEdit *m_pctrlXScaleFactor;
     DoubleEdit *m_pctrlYScaleFactor;

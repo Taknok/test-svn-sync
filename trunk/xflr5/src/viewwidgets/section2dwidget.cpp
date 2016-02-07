@@ -41,13 +41,14 @@ Section2dWidget::Section2dWidget(QWidget *parent) : QWidget(parent)
 
 	m_objectScale = 1.0;
 
-	m_bZoomPlus    = false;
-	m_bZoomYOnly   = false;
-	m_bTrans       = false;
-	m_bDrag        = false;
-	m_bNeutralLine = true;
-	m_bScale       = false;
-	m_bShowLegend  = true;
+	m_bZoomPlus      = false;
+	m_bZoomYOnly     = false;
+	m_bTrans         = false;
+	m_bDrag          = false;
+	m_bNeutralLine   = true;
+	m_bScale         = false;
+	m_bShowLegend    = true;
+	m_bIsImageLoaded = false;
 	m_bXDown = m_bYDown = m_bZDown = false;
 
 	m_bXGrid     = false;

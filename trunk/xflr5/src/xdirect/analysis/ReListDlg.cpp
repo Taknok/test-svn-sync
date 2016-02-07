@@ -87,7 +87,7 @@ void ReListDlg::initDialog(QList<double> ReList, QList<double> MachList, QList<d
 	m_Precision[0] = 0;//no digits for Re Number
 	m_Precision[1] = 2;//two digits for Mach and NCrit
 	m_Precision[2] = 2;//two digits for Mach and NCrit
-	m_pFloatDelegate->SetPrecision(m_Precision);
+	m_pFloatDelegate->setPrecision(m_Precision);
 
 //	connect(m_pFloatDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(onCellChanged(QWidget *)));
 	connect(m_pReModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(onCellChanged(QModelIndex ,QModelIndex)));
