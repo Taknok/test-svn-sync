@@ -36,7 +36,7 @@
 
 void *ThreeDWidget::s_pMiarex;
 void *ThreeDWidget::s_pMainFrame;
-
+GLLightDlg *ThreeDWidget::s_pglLightDlg = NULL;
 /*
 bool ThreeDWidget::s_bOutline = true;
 bool ThreeDWidget::s_bSurfaces = true;
@@ -108,8 +108,6 @@ ThreeDWidget::ThreeDWidget(QWidget *parent)
 	memset(MatIn,  0, 16*sizeof(double));
 	memset(MatOut, 0, 16*sizeof(double));
 
-	m_glLightDlg.m_p3dWidget = this;
-
 	m_ArcBall.m_p3dWidget = this;
 }
 
@@ -172,7 +170,7 @@ void ThreeDWidget::mousePressEvent(QMouseEvent *event)
 		if (event->buttons() & Qt::MidButton)
 		{
 			m_bArcball = true;
-			m_ArcBall.Start(event->pos().x(), m_rCltRect.height()-event->pos().y());
+			m_ArcBall.start(event->pos().x(), m_rCltRect.height()-event->pos().y());
 			m_bCrossPoint = true;
 
 			reset3DRotationCenter();
@@ -185,7 +183,7 @@ void ThreeDWidget::mousePressEvent(QMouseEvent *event)
 
 				if(geometry().contains(glPoint))
 				{
-					m_ArcBall.Start(point.x(), m_rCltRect.height()-point.y());
+					m_ArcBall.start(point.x(), m_rCltRect.height()-point.y());
 					m_bCrossPoint = true;
 					reset3DRotationCenter();
 					if (!bCtrl)
@@ -653,7 +651,7 @@ void ThreeDWidget::glCreateArcballList(ArcBall &ArcBall, double GLScale)
 //	ArcBall.GetMatrix();
 	CVector eye(0.0,0.0,1.0);
 	CVector up(0.0,1.0,0.0);
-	ArcBall.SetZoom(0.45,eye,up);
+	ArcBall.setZoom(0.45,eye,up);
 
 	if(!glIsList(ARCBALLLIST))
 	{
@@ -950,15 +948,15 @@ void ThreeDWidget::glRenderView()
 		glSetupLight(0.0, 1.0);
 		glDisable(GL_LIGHTING);
 		glDisable(GL_LIGHT0);
-		if(m_glLightDlg.isVisible())
+		if(s_pglLightDlg->isVisible())
 		{
 			glDisable(GL_LIGHTING);
 			glDisable(GL_LIGHT0);
 			glPushMatrix();
 			{
-				glTranslated( m_glLightDlg.s_XLight, m_glLightDlg.s_YLight, m_glLightDlg.s_ZLight);
-				double radius = (m_glLightDlg.s_ZLight+2.0)/73.0;
-				glColor3d(m_glLightDlg.s_Red, m_glLightDlg.s_Green, m_glLightDlg.s_Blue);
+				glTranslated( s_pglLightDlg->s_XLight, s_pglLightDlg->s_YLight, s_pglLightDlg->s_ZLight);
+				double radius = (s_pglLightDlg->s_ZLight+2.0)/73.0;
+				glColor3d(s_pglLightDlg->s_Red, s_pglLightDlg->s_Green, s_pglLightDlg->s_Blue);
 				glRenderSphere(radius);
 			}
 			glPopMatrix();

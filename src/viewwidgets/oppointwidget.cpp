@@ -107,6 +107,7 @@ void OpPointWidget::keyPressEvent(QKeyEvent *event)
 */
 void OpPointWidget::keyReleaseEvent(QKeyEvent *event)
 {
+	Q_UNUSED(event);
 	m_bXPressed = m_bYPressed = false;
 }
 
@@ -230,6 +231,7 @@ void OpPointWidget::mouseMoveEvent(QMouseEvent *event)
 */
 void OpPointWidget::resizeEvent(QResizeEvent *event)
 {
+	Q_UNUSED(event);
 	if(m_pCpGraph)
 	{
 		int h = rect().height();

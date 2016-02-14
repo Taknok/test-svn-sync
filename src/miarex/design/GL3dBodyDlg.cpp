@@ -1348,7 +1348,7 @@ void GL3dBodyDlg::GLDraw3D()
 		//		m_ArcBall.GetMatrix();
 		CVector eye(0.0,0.0,1.0);
 		CVector up(0.0,1.0,0.0);
-		m_ArcBall.SetZoom(0.3,eye,up);
+		m_ArcBall.setZoom(0.3,eye,up);
 
 		if(glIsList(ARCBALLLIST))
 		{
@@ -2022,7 +2022,7 @@ void GL3dBodyDlg::mousePressEvent(QMouseEvent *event)
 		if(m_BodyRect.contains(point))
 		{
 			m_bArcball = true;
-			m_ArcBall.Start(event->pos().x(), m_3dWidget.geometry().height()-event->pos().y());
+			m_ArcBall.start(event->pos().x(), m_3dWidget.geometry().height()-event->pos().y());
 			m_bCrossPoint = true;
 
 			set3DRotationCenter();
@@ -2035,7 +2035,7 @@ void GL3dBodyDlg::mousePressEvent(QMouseEvent *event)
 		m_bTrans=true;
 		if(m_pBody && m_BodyRect.contains(point))
 		{
-			m_ArcBall.Start(point.x(), m_3dWidget.geometry().height()-point.y());
+			m_ArcBall.start(point.x(), m_3dWidget.geometry().height()-point.y());
 			m_bCrossPoint = true;
 			set3DRotationCenter();
 			if (!bCtrl)
@@ -3342,7 +3342,7 @@ void GL3dBodyDlg::setBodyScale()
 //	m_ArcBall.GetMatrix();
 	CVector eye(0.0,0.0,1.0);
 	CVector up(0.0,1.0,0.0);
-	m_ArcBall.SetZoom(0.3,eye,up);
+	m_ArcBall.setZoom(0.3,eye,up);
 
 	set3DRotationCenter();
 }

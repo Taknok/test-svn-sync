@@ -43,6 +43,7 @@
 #include "params.h"
 #include "inverseviewwidget.h"
 #include "threedwidget.h"
+#include "gl3widget.h"
 #include "graph/QGraph.h"
 #include "Direct2dDesign.h"
 #include "xdirecttilewidget.h"
@@ -64,6 +65,7 @@ class MainFrame : public QMainWindow
 {
 	friend class InverseViewWidget;
 	friend class ThreeDWidget;
+	friend class GL3Widget;
 	friend class QXDirect;
 	friend class QMiarex;
 	friend class Objects3D;
@@ -127,6 +129,7 @@ public slots:
 	void onXInverseMixed();
 	void onMiarex();
 
+
 private slots:
 	void aboutQt();
 	void aboutXFLR5();
@@ -139,6 +142,7 @@ private slots:
 	void onLoadFile();
 	void onLogFile();
 	void onOpenGLInfo();
+	void onOpenGLxflr5();
 	void onProjectModified();
 	void onResetCurGraphScales();
 	void onResetSettings();
@@ -241,15 +245,18 @@ private:
 	void *m_pXDirect;   /**< A void pointer to the instance of the QXDirect application. The pointer will be cast to the QXDirect type at runtime. This is necessary to prevent loop includes of header files. */
 	void *m_pStabView;  /** < A void pointer to the instance of the StabViewDlg window. */
 	
+	GLLightDlg m_glLightDlg;
+
+
 	static QPointer<MainFrame> _self; /**< necessary for MacOS >*/
 
-	QStackedWidget *m_pctrlCentralWidget;  /** The stacked widget which is loaded at the center of the display area. The stack holds one TwoDWidget and one ThreeDWidget and sxwitches between the two depending on the user's request. */
+	QStackedWidget *m_pctrlCentralWidget;  /** The stacked widget which is loaded at the center of the display area. The stack switches between the widgets depending on the user's request. */
 	InverseViewWidget *m_p2dWidget;        /** A pointer to the instance of the TwoDWidget which is used to perform 2d drawings */
 	Direct2dDesign *m_pDirect2dWidget;        /** A pointer to the instance of the TwoDWidget which is used to perform 2d drawings of foils in Direct Design */
 	ThreeDWidget *m_p3dWidget;   /** A pointer to the instance of the ThreeDWidget  3d calculations and rendering are performed */
+	GL3Widget *m_pGL3Widget;
 	MiarexTileWidget *m_pMiarexTileWidget;
 	XDirectTileWidget *m_pXDirectTileWidget;
-
 
 	QDockWidget *m_pctrlXDirectWidget, *m_pctrlMiarexWidget, *m_pctrlAFoilWidget, *m_pctrlXInverseWidget;
 	QDockWidget *m_pctrl3DScalesWidget, *m_pctrlStabViewWidget;

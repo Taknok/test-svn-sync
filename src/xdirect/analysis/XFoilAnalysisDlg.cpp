@@ -111,6 +111,11 @@ void XFoilAnalysisDlg::setupLayout()
 
         connect(m_pctrlSkip,   SIGNAL(clicked()), this, SLOT(onSkipPoint()));
         connect(m_pctrlCancel, SIGNAL(clicked()), this, SLOT(onCancelAnalysis()));
+
+		m_pctrlLogFile = new QCheckBox(tr("Keep this window opened on errors"));
+		connect(m_pctrlLogFile, SIGNAL(toggled(bool)), this, SLOT(onLogFile(bool)));
+
+		pButtonsLayout->addWidget(m_pctrlLogFile);
 		pButtonsLayout->addStretch(1);
 		pButtonsLayout->addWidget(m_pctrlSkip);
 		pButtonsLayout->addStretch(1);
@@ -136,16 +141,11 @@ void XFoilAnalysisDlg::showEvent(QShowEvent *event)
 }
 
 
-void XFoilAnalysisDlg::hideEvent(QHideEvent *event)
-{
-	s_Position = pos();
-	event->accept();
-}
-
-
 
 void XFoilAnalysisDlg::initDialog()
-{	
+{
+	m_pctrlLogFile->setChecked(QXDirect::s_bKeepOpenErrors);
+
 	QString FileName = QDir::tempPath() + "/XFLR5.log";
 	m_pXFile = new QFile(FileName);
 	if (!m_pXFile->open(QIODevice::WriteOnly | QIODevice::Text)) m_pXFile = NULL;
@@ -191,6 +191,7 @@ void XFoilAnalysisDlg::initDialog()
 
 void XFoilAnalysisDlg::onCancelAnalysis()
 {
+	qDebug("Cancelling");
 	XFoil::s_bCancel= true;
 	XFoilTask::s_bCancel = true;
 
@@ -201,6 +202,7 @@ void XFoilAnalysisDlg::onCancelAnalysis()
 
 void XFoilAnalysisDlg::reject()
 {
+	qDebug("Rejecting");
     if(!m_pXFoilTask->isFinished())
 	{
 		XFoil::s_bCancel= true;
@@ -216,12 +218,14 @@ void XFoilAnalysisDlg::reject()
 		m_pXFoilTask->m_OutStream.flush();
 		m_pXFile->close();
 	}
+	s_Position = pos();
 	QDialog::reject();
 }
 
 
 void XFoilAnalysisDlg::accept()
 {
+	qDebug("accepting");
 	XFoilTask::s_bCancel = true;
 	XFoil::s_bCancel = true;
 	if(m_pXFile)
@@ -230,7 +234,14 @@ void XFoilAnalysisDlg::accept()
 		m_pXFile->close();
 	}
 
+	s_Position = pos();
 	QDialog::accept();
+}
+
+
+void XFoilAnalysisDlg::onLogFile(bool bChecked)
+{
+	QXDirect::s_bKeepOpenErrors = bChecked;
 }
 
 void XFoilAnalysisDlg::onSkipPoint()
@@ -331,7 +342,7 @@ void XFoilAnalysisDlg::analyze()
 	m_pctrlCancel->setText(tr("Close"));
 	m_pctrlSkip->setEnabled(false);
 	update();
-
+	s_Position = pos();
 }
 
 

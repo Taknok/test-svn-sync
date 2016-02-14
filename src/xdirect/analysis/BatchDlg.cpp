@@ -84,7 +84,7 @@ BatchDlg::BatchDlg(QWidget *pParent) : QDialog(pParent)
 
 	XFoil::s_bCancel = false;
 
-	SetupLayout();
+	setupLayout();
 
 	m_pRmsGraph = new QGraph;
 	m_pctrlGraphOutput->setGraph(m_pRmsGraph);
@@ -105,25 +105,25 @@ BatchDlg::BatchDlg(QWidget *pParent) : QDialog(pParent)
 	m_pRmsGraph->setType(1);
 	m_pRmsGraph->setMargin(40);
 
-	connect(m_pctrlFoil1, SIGNAL(clicked()), this, SLOT(OnFoilSelectionType()));
-	connect(m_pctrlFoil2, SIGNAL(clicked()), this, SLOT(OnFoilSelectionType()));
-	connect(m_pctrlFoilList, SIGNAL(clicked()), this, SLOT(OnFoilList()));
-	connect(m_pctrlClose, SIGNAL(clicked()), this, SLOT(OnClose()));
-	connect(m_pctrlAnalyze, SIGNAL(clicked()), this, SLOT(OnAnalyze()));
-	connect(m_pctrlSkipOpp, SIGNAL(clicked()), this, SLOT(OnSkipPoint()));
-	connect(m_pctrlSkipPolar, SIGNAL(clicked()), this, SLOT(OnSkipPolar()));
-	connect(m_rbtype1, SIGNAL(clicked()), this, SLOT(OnPolarType()));
-	connect(m_rbtype2, SIGNAL(clicked()), this, SLOT(OnPolarType()));
-	connect(m_rbtype3, SIGNAL(clicked()), this, SLOT(OnPolarType()));
-	connect(m_rbtype4, SIGNAL(clicked()), this, SLOT(OnPolarType()));
-	connect(m_rbspec1, SIGNAL(toggled(bool)), this, SLOT(OnAcl()));
-	connect(m_rbspec2, SIGNAL(toggled(bool)), this, SLOT(OnAcl()));
-	connect(m_rbRange1, SIGNAL(toggled(bool)), this, SLOT(OnRange()));
-	connect(m_rbRange2, SIGNAL(toggled(bool)), this, SLOT(OnRange()));
-	connect(m_pctrlEditList, SIGNAL(clicked()), this, SLOT(OnEditReList()));
-	connect(m_pctrlInitBLOpp, SIGNAL(toggled(bool)), this, SLOT(OnAnalysisSettings()));
-	connect(m_pctrlInitBLPolar, SIGNAL(toggled(bool)), this, SLOT(OnAnalysisSettings()));
-	connect(m_pctrlMaxIter, SIGNAL(editingFinished()), this, SLOT(OnAnalysisSettings()));
+	connect(m_pctrlFoil1, SIGNAL(clicked()), this, SLOT(onFoilSelectionType()));
+	connect(m_pctrlFoil2, SIGNAL(clicked()), this, SLOT(onFoilSelectionType()));
+	connect(m_pctrlFoilList, SIGNAL(clicked()), this, SLOT(onFoilList()));
+	connect(m_pctrlClose, SIGNAL(clicked()), this, SLOT(onClose()));
+	connect(m_pctrlAnalyze, SIGNAL(clicked()), this, SLOT(onAnalyze()));
+	connect(m_pctrlSkipOpp, SIGNAL(clicked()), this, SLOT(onSkipPoint()));
+	connect(m_pctrlSkipPolar, SIGNAL(clicked()), this, SLOT(onSkipPolar()));
+	connect(m_rbtype1, SIGNAL(clicked()), this, SLOT(onPolarType()));
+	connect(m_rbtype2, SIGNAL(clicked()), this, SLOT(onPolarType()));
+	connect(m_rbtype3, SIGNAL(clicked()), this, SLOT(onPolarType()));
+	connect(m_rbtype4, SIGNAL(clicked()), this, SLOT(onPolarType()));
+	connect(m_rbspec1, SIGNAL(toggled(bool)), this, SLOT(onAcl()));
+	connect(m_rbspec2, SIGNAL(toggled(bool)), this, SLOT(onAcl()));
+	connect(m_rbRange1, SIGNAL(toggled(bool)), this, SLOT(onRange()));
+	connect(m_rbRange2, SIGNAL(toggled(bool)), this, SLOT(onRange()));
+	connect(m_pctrlEditList, SIGNAL(clicked()), this, SLOT(onEditReList()));
+	connect(m_pctrlInitBLOpp, SIGNAL(toggled(bool)), this, SLOT(onAnalysisSettings()));
+	connect(m_pctrlInitBLPolar, SIGNAL(toggled(bool)), this, SLOT(onAnalysisSettings()));
+	connect(m_pctrlMaxIter, SIGNAL(editingFinished()), this, SLOT(onAnalysisSettings()));
 }
 
 
@@ -136,7 +136,7 @@ BatchDlg::~BatchDlg()
 /**
  * Sets up the GUI
  */
-void BatchDlg::SetupLayout()
+void BatchDlg::setupLayout()
 {
 	QGroupBox *pFoilBox = new QGroupBox(tr("Foil Selection"));
 	{
@@ -347,7 +347,7 @@ void BatchDlg::SetupLayout()
  * Used in the case of Type 4 analysis, to loop over the specified aoa range.
  * For each aoa, initializes the XFoilTask with the specified Re range, and launches the task.
  */
-void BatchDlg::AlphaLoop()
+void BatchDlg::alphaLoop()
 {
 	QString str;
 	int iAlpha, nAlpha;
@@ -364,9 +364,9 @@ void BatchDlg::AlphaLoop()
 		
 		alphadeg = m_SpMin + iAlpha*m_SpInc;
 		str = QString("Alpha = %1\n").arg(alphadeg,0,'f',2);
-		OutputMsg(str);
+		outputMsg(str);
 
-		Polar *pCurPolar = CreatePolar(m_pFoil, alphadeg, m_Mach, m_ACrit);// Do something
+		Polar *pCurPolar = createPolar(m_pFoil, alphadeg, m_Mach, m_ACrit);// Do something
 		if(!pCurPolar) return;
 
 		m_pXFoilTask->setReRange(m_ReMin, m_ReMax, m_ReInc);
@@ -385,7 +385,7 @@ void BatchDlg::AlphaLoop()
 		if(m_bCancel)
 		{
 			str = tr("Analysis interrupted")+"\n";
-			OutputMsg(str);
+			outputMsg(str);
 			break;
 		}
 	}//end Re loop
@@ -413,9 +413,9 @@ void BatchDlg::reject()
 /**
  * Cleans up the GUI and paramters at the end of the Analysis.
  */
-void BatchDlg::CleanUp()
+void BatchDlg::cleanUp()
 {
-	ResetCurves();
+	resetCurves();
 	if(m_pXFile->isOpen())	m_pXFile->close();
 	m_pctrlClose->setEnabled(true);
 	m_pctrlSkipOpp->setEnabled(false);
@@ -436,7 +436,7 @@ void BatchDlg::CleanUp()
  * @param NCrit the transition parameter
  * @return a pointer to the created Polar object
  */
-Polar *BatchDlg::CreatePolar(Foil *pFoil, double Spec, double Mach, double NCrit)
+Polar *BatchDlg::createPolar(Foil *pFoil, double Spec, double Mach, double NCrit)
 {
 	if(!pFoil) return NULL;
 
@@ -483,7 +483,7 @@ Polar *BatchDlg::CreatePolar(Foil *pFoil, double Spec, double Mach, double NCrit
 	pPolar->m_XTop  = m_XTop;
 	pPolar->m_XBot  = m_XBot;
 
-	SetPlrName(pPolar);
+	setPlrName(pPolar);
 	Polar *pOldPolar = Polar::getPolar(m_pFoil, pPolar->m_PlrName);
 
 	if(pOldPolar)
@@ -510,7 +510,7 @@ void BatchDlg::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_Enter:
 		{
 			if(m_pctrlClose->hasFocus())	     done(1);
-			else if(m_pctrlAnalyze->hasFocus())  OnAnalyze();
+			else if(m_pctrlAnalyze->hasFocus())  onAnalyze();
 			else                                 m_pctrlAnalyze->setFocus();
 			break;
 		}
@@ -518,7 +518,7 @@ void BatchDlg::keyPressEvent(QKeyEvent *event)
 		{
 			if(m_bIsRunning)
 			{
-				OnAnalyze();
+				onAnalyze();
 			}
 			else
 			{
@@ -535,7 +535,7 @@ void BatchDlg::keyPressEvent(QKeyEvent *event)
 /**
  * Initializes the GUI with the stored values.
  */
-void BatchDlg::InitDialog()
+void BatchDlg::initDialog()
 {
 	if(!m_pFoil) return;
 
@@ -610,18 +610,18 @@ void BatchDlg::InitDialog()
 
 	if(m_bAlpha) m_rbspec1->setChecked(true);
 	else         m_rbspec2->setChecked(true);
-	OnAcl();
+	onAcl();
 
 	if(m_PolarType==XFLR5::FIXEDSPEEDPOLAR)       m_rbtype1->setChecked(true);
 	else if(m_PolarType==XFLR5::FIXEDLIFTPOLAR)   m_rbtype2->setChecked(true);
 	else if(m_PolarType==XFLR5::RUBBERCHORDPOLAR) m_rbtype3->setChecked(true);
 	else if(m_PolarType==XFLR5::FIXEDAOAPOLAR)    m_rbtype4->setChecked(true);
-	OnPolarType();
+	onPolarType();
 
 
 	if(!m_bFromList)  m_rbRange1->setChecked(!m_bFromList);
 	else              m_rbRange2->setChecked(m_bFromList);
-	OnRange();
+	onRange();
 
 	if(m_bFromZero)  m_pctrlFromZero->setChecked(true);
 	else             m_pctrlFromZero->setChecked(false);
@@ -633,7 +633,7 @@ void BatchDlg::InitDialog()
 	m_pctrlSkipOpp->setEnabled(false);
 	m_pctrlSkipPolar->setEnabled(false);
 
-	ResetCurves();
+	resetCurves();
 }
 
 
@@ -642,7 +642,7 @@ void BatchDlg::InitDialog()
  * The user has changed the type of range between aoa and lift coefficient.
  * Updates and initializes the GUI accordingly.
  */
-void BatchDlg::OnAcl()
+void BatchDlg::onAcl()
 {
 	if(m_PolarType==XFLR5::FIXEDAOAPOLAR) return;
 	if(m_rbspec1->isChecked())
@@ -669,7 +669,7 @@ void BatchDlg::OnAcl()
 /**
  * The user has changed the type of Polar. Updates and initializes the GUI accordingly.
  */
-void BatchDlg::OnPolarType()
+void BatchDlg::onPolarType()
 {
 	if(m_rbtype1->isChecked())
 	{
@@ -712,7 +712,7 @@ void BatchDlg::OnPolarType()
 		m_rbspec1->setEnabled(true);
 		m_rbspec2->setEnabled(true);
 		m_rbRange2->setEnabled(true);
-		OnAcl();
+		onAcl();
 
 		m_pctrlReMin->setValue(m_ReMin);
 		m_pctrlReMax->setValue(m_ReMax);
@@ -754,7 +754,7 @@ void BatchDlg::OnPolarType()
  * If the analysis is running, cancels the XFoilTask and returns.
  * If not, initializes the XFoilTask and launches it.
  */
-void BatchDlg::OnAnalyze()
+void BatchDlg::onAnalyze()
 {
 	if(m_bIsRunning)
 	{
@@ -768,13 +768,13 @@ void BatchDlg::OnAnalyze()
 	m_bErrors    = false;
 
 	//read data specification
-	ReadParams();
+	readParams();
 
 	//set output file
 	QString FileName = QDir::tempPath() + "/XFLR5.log";
 	m_pXFile = new QFile(FileName);
 	if (!m_pXFile->open(QIODevice::WriteOnly | QIODevice::Text)) m_pXFile = NULL;
-	SetFileHeader();
+	setFileHeader();
 
 	//initialize XFoil task
 	m_pXFoilTask->m_OutStream.setDevice(m_pXFile);
@@ -795,7 +795,7 @@ void BatchDlg::OnAnalyze()
 	m_pctrlClose->setEnabled(false);
 	m_pctrlAnalyze->setFocus();
 
-	Analyze();
+	analyze();
 }
 
 
@@ -803,7 +803,7 @@ void BatchDlg::OnAnalyze()
 /**
  * The user has requested to quit the analysis.
  */
-void BatchDlg::OnClose()
+void BatchDlg::onClose()
 {
 	if(m_bIsRunning)
 	{
@@ -813,7 +813,7 @@ void BatchDlg::OnClose()
 		return;
 	}
 
-	ReadParams();
+	readParams();
 
 	QXDirect::s_refPolar.m_ACrit    = m_ACrit;
 	QXDirect::s_refPolar.m_XBot     = m_XBot;
@@ -828,7 +828,7 @@ void BatchDlg::OnClose()
 /**
  * The user has requested the edition of the list of Re values to analyze.
  */
-void BatchDlg::OnEditReList()
+void BatchDlg::onEditReList()
 {
 	ReListDlg dlg(this);
 	dlg.initDialog(QXDirect::s_ReList,QXDirect::s_MachList, QXDirect::s_NCritList);
@@ -849,7 +849,7 @@ void BatchDlg::OnEditReList()
 /**
  * The user has requested the edition of the list of foils to analyze.
  */
-void BatchDlg::OnFoilList()
+void BatchDlg::onFoilList()
 {
 	QXDirect  *pXDirect   = (QXDirect*)s_pXDirect;
     FoilSelectionDlg dlg(this);
@@ -877,7 +877,7 @@ void BatchDlg::OnFoilList()
 /**
  * The user has toggled the radio button between the analysis of the current Foil or a list of Foils.
  */
-void BatchDlg::OnFoilSelectionType()
+void BatchDlg::onFoilSelectionType()
 {
 	s_bCurrentFoil = m_pctrlFoil1->isChecked();
 	m_pctrlFoilList->setEnabled(!s_bCurrentFoil);
@@ -888,7 +888,7 @@ void BatchDlg::OnFoilSelectionType()
 /**
  * The user has toggled the radio button between range of Re and list of Re values.
  */
-void BatchDlg::OnRange()
+void BatchDlg::onRange()
 {
 	if(m_rbRange1->isChecked())
 		m_bFromList = false;
@@ -908,7 +908,7 @@ void BatchDlg::OnRange()
 /**
  * The user has requested to skip the current analysis of the current aoa.
  */
-void BatchDlg::OnSkipPoint()
+void BatchDlg::onSkipPoint()
 {
 	XFoilTask::s_bSkipOpp = true;
 }
@@ -917,7 +917,7 @@ void BatchDlg::OnSkipPoint()
 /**
  * The user has requested to skip the current analysis of the current polar.
  */
-void BatchDlg::OnSkipPolar()
+void BatchDlg::onSkipPolar()
 {
 	XFoilTask::s_bSkipOpp   = true;
 	XFoilTask::s_bSkipPolar = true;
@@ -927,7 +927,7 @@ void BatchDlg::OnSkipPolar()
 /**
  * Reads the data from the GUI
  */
-void BatchDlg::ReadParams()
+void BatchDlg::readParams()
 {
 	m_bAlpha = m_rbspec1->isChecked();
 
@@ -1018,9 +1018,9 @@ void BatchDlg::ReLoop()
 			NCrit    = QXDirect::s_NCritList[iRe];
 		}
 		str = QString("Re=%1   Ma=%2   Nc=%3\n").arg(Reynolds,8,'f',0).arg(Mach,5,'f',3).arg(NCrit,5,'f',2);
-		OutputMsg(str);
+		outputMsg(str);
 
-		Polar *pCurPolar = CreatePolar(m_pFoil, Reynolds, Mach, NCrit);
+		Polar *pCurPolar = createPolar(m_pFoil, Reynolds, Mach, NCrit);
 		if(!pCurPolar) return;
 
 		m_pXFoilTask->initializeTask(m_pFoil, pCurPolar, QXDirect::s_bViscous, m_bInitBL, m_bFromZero);
@@ -1028,7 +1028,7 @@ void BatchDlg::ReLoop()
 
 		m_bErrors = m_bErrors || m_pXFoilTask->m_bErrors;
 		str = "\n";
-		OutputMsg(str);
+		outputMsg(str);
 
 		if(pXDirect->m_bPolarView)
 		{
@@ -1039,7 +1039,7 @@ void BatchDlg::ReLoop()
 		if(m_bCancel)
 		{
 			str = tr("Analysis interrupted")+"\n";
-			OutputMsg(str);
+			outputMsg(str);
 			break;
 		}
 	}//end Re loop
@@ -1050,7 +1050,7 @@ void BatchDlg::ReLoop()
 /**
  * Clears the content of the Graph's Curve, and resets the scales.
  */
-void BatchDlg::ResetCurves()
+void BatchDlg::resetCurves()
 {
 	m_pRmsGraph->deleteCurves();
 	Curve *pCurve0 = m_pRmsGraph->addCurve();
@@ -1075,7 +1075,7 @@ void BatchDlg::ResetCurves()
 /**
  * Initializes the header of the log file
  */
-void BatchDlg::SetFileHeader()
+void BatchDlg::setFileHeader()
 {
 	if(!m_pXFile) return;
 	QTextStream out(m_pXFile);
@@ -1098,7 +1098,7 @@ void BatchDlg::SetFileHeader()
  * Sets the polar name
  * @param pPolar a pointer to the Polar object to name.
  */
-void BatchDlg::SetPlrName(Polar *pPolar)
+void BatchDlg::setPlrName(Polar *pPolar)
 {
 	if(!pPolar) return;
 	pPolar->setAutoPolarName();
@@ -1113,7 +1113,7 @@ void BatchDlg::SetPlrName(Polar *pPolar)
  * Launches the ReLoop() or the AlphaLoop() depending on the Polar type.
  * At the end of the analysis, performs a CleanUp() sequence.
  */
-void BatchDlg::Analyze()
+void BatchDlg::analyze()
 {
 	QString strong;
 
@@ -1121,14 +1121,14 @@ void BatchDlg::Analyze()
 
 	//create a timer to update the output at regular intervals
 	QTimer *pTimer = new QTimer;
-	connect(pTimer, SIGNAL(timeout()), this, SLOT(OnProgress()));
+	connect(pTimer, SIGNAL(timeout()), this, SLOT(onProgress()));
 	pTimer->setInterval(QXDirect::s_TimeUpdateInterval);
 	pTimer->start();
 
 	if(s_bCurrentFoil)
 	{
 		if(m_PolarType!=XFLR5::FIXEDAOAPOLAR) ReLoop();
-		else                                  AlphaLoop();
+		else                                  alphaLoop();
 	}
 	else
 	{
@@ -1137,11 +1137,11 @@ void BatchDlg::Analyze()
 			m_pFoil = Foil::foil(m_FoilList.at(i));
 
 			strong = tr("Analyzing ")+m_pFoil->m_FoilName+("\n");
-			OutputMsg(strong);
+			outputMsg(strong);
 			if(m_PolarType!=XFLR5::FIXEDAOAPOLAR) ReLoop();
-			else                                  AlphaLoop();
+			else                                  alphaLoop();
 			strong = "\n\n";
-			OutputMsg(strong);
+			outputMsg(strong);
 			if(m_bCancel) break;
 		}
 	}
@@ -1149,7 +1149,7 @@ void BatchDlg::Analyze()
 	pTimer->stop();
 	delete pTimer;
 
-	OnProgress();
+	onProgress();
 
 
 	if(!m_bCancel)
@@ -1157,17 +1157,17 @@ void BatchDlg::Analyze()
 		if(m_bErrors)
 		{
 			strong = tr(" ...some points are unconverged") + "\n";
-			OutputMsg(strong);
+			outputMsg(strong);
 		}
 		strong = tr("Analysis completed")+"\n";
-		OutputMsg(strong);
+		outputMsg(strong);
 	}
 
 	m_pXFoilTask->m_OutStream.flush();
 
-	OnProgress();
+	onProgress();
 
-	CleanUp();
+	cleanUp();
 }
 
 
@@ -1176,7 +1176,7 @@ void BatchDlg::Analyze()
  * Gets the message from the XFoilTask and copies it to the output text window.
  * Updates the graph output.
  */
-void BatchDlg::OnProgress()
+void BatchDlg::onProgress()
 {
 	m_pctrlGraphOutput->update();
 
@@ -1192,7 +1192,7 @@ void BatchDlg::OnProgress()
  * Sends the specified message to the output.
  * The message is output through the XFoil task, to ensure it is in correct output order.
  */ 
-void BatchDlg::OutputMsg(QString &msg)
+void BatchDlg::outputMsg(QString &msg)
 {
 	if(!msg.length()) return;
 	m_pXFoilTask->traceLog(msg);
@@ -1225,7 +1225,7 @@ void BatchDlg::hideEvent(QHideEvent *event)
  * The user has modified the settings for the analysis.
  * Read the values and update the variables.
  */
-void BatchDlg::OnAnalysisSettings()
+void BatchDlg::onAnalysisSettings()
 {
 	m_bInitBL = m_pctrlInitBLPolar->isChecked();
 	XFoilTask::s_bAutoInitBL = m_pctrlInitBLOpp->isChecked();
