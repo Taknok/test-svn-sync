@@ -11,7 +11,7 @@ namespace XFLR5
 	typedef enum {FIXEDSPEEDPOLAR, FIXEDLIFTPOLAR, RUBBERCHORDPOLAR, FIXEDAOAPOLAR, STABILITYPOLAR, BETAPOLAR} enumPolarType;
 
 	/** @enum The different applications available to the user */
-	typedef enum {NOAPP, XFOILANALYSIS, DIRECTDESIGN, INVERSEDESIGN, MIAREX}	enumApp;
+	typedef enum {NOAPP, XFOILANALYSIS, DIRECTDESIGN, INVERSEDESIGN, MIAREX, OPENGL3}	enumApp;
 
 	/**< @enum The different image formats usable to export screen captures*/
 	typedef enum {PNG, JPEG, BMP}	enumImageFormat;

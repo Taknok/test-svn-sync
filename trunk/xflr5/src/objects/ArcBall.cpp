@@ -131,7 +131,7 @@ void ArcBall::move(int mx, int my)
 {
 	if(ab_planar)
 	{
-		PlanarCoords(mx,my, ab_curr);
+		planarCoords(mx,my, ab_curr);
 		if(ab_curr == ab_start) return;
 
 		// d is motion since the last position
@@ -149,16 +149,16 @@ void ArcBall::move(int mx, int my)
 		quatToMatrix(ab_next, Quat);
 		quatNext(ab_quat,ab_last,ab_next);
 		// planar style only ever relates to the last point
-		QuatCopy(ab_last,ab_quat);
+		quatCopy(ab_last,ab_quat);
 		ab_start = ab_curr;
 	} 
 	else
 	{
-		SphereCoords((double)mx,(double)my, ab_curr);
+		sphereCoords((double)mx,(double)my, ab_curr);
 		if(ab_curr == ab_start)
 		{ 
 			// avoid potential rare divide by tiny
-			QuatCopy(ab_quat,ab_last);
+			quatCopy(ab_quat,ab_last);
 			return;
 		}
 
@@ -195,7 +195,7 @@ void ArcBall::quatIdentity(float* q)
 
 
 /** copy a rotation matrix*/
-void ArcBall::QuatCopy(float* dst, float* src)
+void ArcBall::quatCopy(float* dst, float* src)
 {
 	dst[0]=src[0]; dst[1]=src[1]; dst[2] =src[2];
 	dst[4]=src[4]; dst[5]=src[5]; dst[6] =src[6];
@@ -299,7 +299,7 @@ void ArcBall::setQuat(double r, double qx, double qy, double qz)
 }
 
 
-void ArcBall::SetZoom(double radius, CVector eye, CVector up)
+void ArcBall::setZoom(double radius, CVector eye, CVector up)
 {
 	ab_eye     = eye; // store eye vector
 	ab_zoom2   = ab_eye.dot(ab_eye);
@@ -321,9 +321,9 @@ void ArcBall::SetZoom(double radius, CVector eye, CVector up)
 }
 
 
-void ArcBall::PlanarCoords(int const &mx, int const &my, CVector &V)
+void ArcBall::planarCoords(int const &mx, int const &my, CVector &V)
 {
-	ClientToGL(mx, my, ax, ay);
+	clientToGL(mx, my, ax, ay);
 
 	m.set(ax- ab_eye.x, ay- ab_eye.y, az- ab_eye.z);
 	// intersect the point with the trackball plane
@@ -334,11 +334,11 @@ void ArcBall::PlanarCoords(int const &mx, int const &my, CVector &V)
 }
 
 
-void ArcBall::SphereCoords(int const &mx, int const &my, CVector &V)
+void ArcBall::sphereCoords(int const &mx, int const &my, CVector &V)
 {
 	// find the intersection with the sphere
 
-	ClientToGL(mx, my, ax, ay);
+	clientToGL(mx, my, ax, ay);
 	if(ab_sphere2>ax*ax+ay*ay) V.set(ax,ay,sqrt(ab_sphere2-ax*ax-ay*ay));
 	else                       V.set(ax,ay,0.0);
 //	else return EdgeCoords(ax, ay);
@@ -349,20 +349,20 @@ void ArcBall::SphereCoords(int const &mx, int const &my, CVector &V)
 
 
 /** begin arcball rotation*/
-void ArcBall::Start(int mx, int my)
+void ArcBall::start(int mx, int my)
 {
 	// saves a copy of the current rotation for comparison
-	QuatCopy(ab_last,ab_quat);
+	quatCopy(ab_last,ab_quat);
 	if(ab_planar)
-		PlanarCoords(mx, my, ab_start);
+		planarCoords(mx, my, ab_start);
 	else
-		SphereCoords(mx, my, ab_start);
+		sphereCoords(mx, my, ab_start);
 	ab_curr = ab_start;
 }
 
 
 /** Convert screen coordinates to GL view coordinates*/
-void ArcBall::ClientToGL(int const &x, int const &y, double &glx, double &gly)
+void ArcBall::clientToGL(int const &x, int const &y, double &glx, double &gly)
 {
 	double h2, w2;
 

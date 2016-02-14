@@ -27,5 +27,6 @@
         <file>images/OnIsoView.png</file>
         <file>images/OnUndo.png</file>
         <file>images/splash.png</file>
+        <file>images/xflr5_full.png</file>
     </qresource>
 </RCC>

@@ -53,7 +53,7 @@
 
 
 
-void *QAFoil::s_pMainFrame = NULL;
+MainFrame *QAFoil::s_pMainFrame = NULL;
 
 /**
  * The public constructor
@@ -66,9 +66,7 @@ QAFoil::QAFoil(QWidget *parent)
 
 	m_p2DWidget = NULL;
 
-
 	m_StackPos = 0;
-
 
 	m_poaFoil  = NULL;
 	m_pctrlFoilTable = NULL;
@@ -78,8 +76,7 @@ QAFoil::QAFoil(QWidget *parent)
 	m_pSF->m_bModified = false;
 	m_pSF->initSplineFoil();
 
-	MainFrame *pMainFrame =(MainFrame*)parent;
-	pMainFrame->m_pUndoAFoilAct = pMainFrame->m_pRedoAFoilAct = NULL;
+	s_pMainFrame->m_pUndoAFoilAct = s_pMainFrame->m_pRedoAFoilAct = NULL;
 
 	clearStack();
 	takePicture();
@@ -116,35 +113,33 @@ QAFoil::~QAFoil()
  */
 void QAFoil::setControls()
 {
-	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
+	s_pMainFrame->m_pAFoilDelete->setEnabled(Foil::curFoil());
+	s_pMainFrame->m_pAFoilRename->setEnabled(Foil::curFoil());
+	s_pMainFrame->m_pAFoilExport->setEnabled(Foil::curFoil());
+	s_pMainFrame->m_pAFoilDuplicateFoil->setEnabled(Foil::curFoil());
+	s_pMainFrame->m_pShowCurrentFoil->setEnabled(Foil::curFoil());
+	s_pMainFrame->m_pHideCurrentFoil->setEnabled(Foil::curFoil());
 
-	pMainFrame->m_pAFoilDelete->setEnabled(Foil::curFoil());
-	pMainFrame->m_pAFoilRename->setEnabled(Foil::curFoil());
-	pMainFrame->m_pAFoilExport->setEnabled(Foil::curFoil());
-	pMainFrame->m_pAFoilDuplicateFoil->setEnabled(Foil::curFoil());
-	pMainFrame->m_pShowCurrentFoil->setEnabled(Foil::curFoil());
-	pMainFrame->m_pHideCurrentFoil->setEnabled(Foil::curFoil());
+	s_pMainFrame->m_pAFoilDerotateFoil->setEnabled(Foil::curFoil());
+	s_pMainFrame->m_pAFoilEditCoordsFoil->setEnabled(Foil::curFoil());
+	s_pMainFrame->m_pAFoilInterpolateFoils->setEnabled(Foil::curFoil());
+	s_pMainFrame->m_pAFoilNormalizeFoil->setEnabled(Foil::curFoil());
+	s_pMainFrame->m_pAFoilRefineGlobalFoil->setEnabled(Foil::curFoil());
+	s_pMainFrame->m_pAFoilRefineLocalFoil->setEnabled(Foil::curFoil());
+	s_pMainFrame->m_pAFoilScaleFoil->setEnabled(Foil::curFoil());
+	s_pMainFrame->m_pAFoilSetFlap->setEnabled(Foil::curFoil());
+	s_pMainFrame->m_pAFoilSetLERadius->setEnabled(Foil::curFoil());
+	s_pMainFrame->m_pAFoilSetTEGap->setEnabled(Foil::curFoil());
 
-	pMainFrame->m_pAFoilDerotateFoil->setEnabled(Foil::curFoil());
-	pMainFrame->m_pAFoilEditCoordsFoil->setEnabled(Foil::curFoil());
-	pMainFrame->m_pAFoilInterpolateFoils->setEnabled(Foil::curFoil());
-	pMainFrame->m_pAFoilNormalizeFoil->setEnabled(Foil::curFoil());
-	pMainFrame->m_pAFoilRefineGlobalFoil->setEnabled(Foil::curFoil());
-	pMainFrame->m_pAFoilRefineLocalFoil->setEnabled(Foil::curFoil());
-	pMainFrame->m_pAFoilScaleFoil->setEnabled(Foil::curFoil());
-	pMainFrame->m_pAFoilSetFlap->setEnabled(Foil::curFoil());
-	pMainFrame->m_pAFoilSetLERadius->setEnabled(Foil::curFoil());
-	pMainFrame->m_pAFoilSetTEGap->setEnabled(Foil::curFoil());
+	s_pMainFrame->m_pShowLegend->setChecked(m_p2DWidget->m_bShowLegend);
 
-	pMainFrame->m_pShowLegend->setChecked(m_p2DWidget->m_bShowLegend);
+	s_pMainFrame->m_pAFoilSplineMenu->setEnabled(!Foil::curFoil());
+	s_pMainFrame->m_pInsertSplinePt->setEnabled(!Foil::curFoil());
+	s_pMainFrame->m_pRemoveSplinePt->setEnabled(!Foil::curFoil());
 
-	pMainFrame->m_pAFoilSplineMenu->setEnabled(!Foil::curFoil());
-	pMainFrame->m_pInsertSplinePt->setEnabled(!Foil::curFoil());
-	pMainFrame->m_pRemoveSplinePt->setEnabled(!Foil::curFoil());
-
-	pMainFrame->m_pUndoAFoilAct->setEnabled(m_StackPos>0);
-	pMainFrame->m_pRedoAFoilAct->setEnabled(m_StackPos<m_UndoStack.size()-1);
-	pMainFrame->statusBar()->clearMessage();
+	s_pMainFrame->m_pUndoAFoilAct->setEnabled(m_StackPos>0);
+	s_pMainFrame->m_pRedoAFoilAct->setEnabled(m_StackPos<m_UndoStack.size()-1);
+	s_pMainFrame->statusBar()->clearMessage();
 }
 
 
@@ -303,7 +298,6 @@ void QAFoil::fillTableRow(int row)
  */
 void QAFoil::keyPressEvent(QKeyEvent *event)
 {
-	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 	bool bShift = false;
 	if(event->modifiers() & Qt::ShiftModifier)   bShift =true;
 	bool bCtrl = false;
@@ -349,28 +343,28 @@ void QAFoil::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_3:
 			if(bCtrl)
 			{
-				pMainFrame->onXInverse();
+				s_pMainFrame->onXInverse();
 				return;
 			}
 
 		case Qt::Key_4:
 			if(bCtrl)
 			{
-				pMainFrame->onXInverseMixed();
+				s_pMainFrame->onXInverseMixed();
 				return;
 			}
 
 		case Qt::Key_5:
 			if(bCtrl)
 			{
-				pMainFrame->onXDirect();
+				s_pMainFrame->onXDirect();
 				return;
 			}
 
 		case Qt::Key_6:
 			if(bCtrl)
 			{
-				pMainFrame->onMiarex();
+				s_pMainFrame->onMiarex();
 				return;
 			}
 
@@ -444,8 +438,7 @@ void QAFoil::onAFoilDerotateFoil()
 
 	double angle = m_pBufferFoil->derotate();
 	QString str = QString(tr("Foil has been de-rotated by %1 degrees")).arg(angle,6,'f',3);
-	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
-	pMainFrame->statusBar()->showMessage(str);
+	s_pMainFrame->statusBar()->showMessage(str);
 
 	//then duplicate the buffer foil and add it
 	Foil *pNewFoil = new Foil();
@@ -474,8 +467,7 @@ void QAFoil::onAFoilNormalizeFoil()
 	Foil::curFoil()->initFoil();
 	QString str = QString(tr("Foil has been normalized from %1  to 1.000")).arg(length,7,'f',3);
 
-	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
-	pMainFrame->statusBar()->showMessage(str);
+	s_pMainFrame->statusBar()->showMessage(str);
 
 	m_p2DWidget->update();;
 }
@@ -488,8 +480,6 @@ void QAFoil::onAFoilCadd()
 {
 	if(!Foil::curFoil()) return;
 
-	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
-
 	m_pBufferFoil->copyFoil(Foil::curFoil());
 	m_pBufferFoil->m_FoilName   = Foil::curFoil()->m_FoilName;
 	m_pBufferFoil->m_FoilColor  = QColor(160,160,160);
@@ -500,7 +490,7 @@ void QAFoil::onAFoilCadd()
 
 	m_p2DWidget->update();;
 
-	CAddDlg caDlg(pMainFrame);
+	CAddDlg caDlg(s_pMainFrame);
 	caDlg.m_pBufferFoil = m_pBufferFoil;
 	caDlg.m_pMemFoil    = Foil::curFoil();
 	caDlg.InitDialog();
@@ -557,8 +547,6 @@ void QAFoil::onAFoilPanels()
 {
 	if(!Foil::curFoil()) return;
 
-	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
-
 	m_pBufferFoil->copyFoil(Foil::curFoil());
 	m_pBufferFoil->m_FoilName  = Foil::curFoil()->m_FoilName;
 	m_pBufferFoil->m_FoilColor  = QColor(160,160,160);
@@ -569,7 +557,7 @@ void QAFoil::onAFoilPanels()
 
 	m_p2DWidget->update();;
 
-    TwoDPanelDlg tdpDlg(pMainFrame);
+	TwoDPanelDlg tdpDlg(s_pMainFrame);
     tdpDlg.m_pBufferFoil = m_pBufferFoil;
 	tdpDlg.m_pMemFoil    = Foil::curFoil();
     tdpDlg.InitDialog();
@@ -606,7 +594,6 @@ void QAFoil::onAFoilPanels()
 void QAFoil::onAFoilFoilCoordinates()
 {
 	if(!Foil::curFoil()) return;
-	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
 
 	m_pBufferFoil->copyFoil(Foil::curFoil());
 	m_pBufferFoil->m_bPoints  = true;
@@ -618,7 +605,7 @@ void QAFoil::onAFoilFoilCoordinates()
 
 	m_p2DWidget->update();;
 
-    FoilCoordDlg fcDlg(pMainFrame);
+	FoilCoordDlg fcDlg(s_pMainFrame);
 	fcDlg.m_pMemFoil    = Foil::curFoil();
     fcDlg.m_pBufferFoil = m_pBufferFoil;
 	fcDlg.InitDialog();
@@ -655,7 +642,6 @@ void QAFoil::onAFoilFoilCoordinates()
 void QAFoil::onAFoilFoilGeom()
 {
 	if(!Foil::curFoil()) return;
-	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
 
 	m_pBufferFoil->copyFoil(Foil::curFoil());
 	m_pBufferFoil->m_bPoints  = true;
@@ -667,7 +653,7 @@ void QAFoil::onAFoilFoilGeom()
 
 	m_p2DWidget->update();;
 
-    FoilGeomDlg fgeDlg(pMainFrame);
+	FoilGeomDlg fgeDlg(s_pMainFrame);
 	fgeDlg.m_pMemFoil    = Foil::curFoil();
     fgeDlg.m_pBufferFoil = m_pBufferFoil;
     fgeDlg.initDialog();
@@ -704,8 +690,6 @@ void QAFoil::onAFoilSetTEGap()
 {
 	if(!Foil::curFoil()) return;
 
-	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
-
 	m_pBufferFoil->copyFoil(Foil::curFoil());
 	m_pBufferFoil->m_bPoints    = false;
 	m_pBufferFoil->m_bVisible   = true;
@@ -716,7 +700,7 @@ void QAFoil::onAFoilSetTEGap()
 
 	m_p2DWidget->update();;
 
-    TEGapDlg teDlg(pMainFrame);
+	TEGapDlg teDlg(s_pMainFrame);
     teDlg.m_pBufferFoil = m_pBufferFoil;
 	teDlg.m_pMemFoil    = Foil::curFoil();
 	teDlg.InitDialog();
@@ -756,8 +740,6 @@ void QAFoil::onAFoilSetLERadius()
 {
 	if(!Foil::curFoil()) return;
 
-	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
-
 	m_pBufferFoil->copyFoil(Foil::curFoil());
 	m_pBufferFoil->m_bVisible   = true;
 	m_pBufferFoil->m_bPoints    = false;
@@ -768,7 +750,7 @@ void QAFoil::onAFoilSetLERadius()
 
 	m_p2DWidget->update();;
 
-    LEDlg leDlg(pMainFrame);
+	LEDlg leDlg(s_pMainFrame);
     leDlg.m_pBufferFoil = m_pBufferFoil;
 	leDlg.m_pMemFoil    = Foil::curFoil();
     leDlg.InitDialog();
@@ -805,10 +787,9 @@ void QAFoil::onAFoilSetLERadius()
  */
 void QAFoil::onAFoilInterpolateFoils()
 {
-	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
 	if(m_poaFoil->size()<2)
 	{
-		QMessageBox::warning(pMainFrame,tr("Warning"), tr("At least two foils are required"));
+		QMessageBox::warning(s_pMainFrame,tr("Warning"), tr("At least two foils are required"));
 		return;
 	}
 
@@ -824,7 +805,7 @@ void QAFoil::onAFoilInterpolateFoils()
 
 	m_p2DWidget->update();;
 
-	InterpolateFoilsDlg ifDlg(pMainFrame);
+	InterpolateFoilsDlg ifDlg(s_pMainFrame);
     ifDlg.m_poaFoil = m_poaFoil;
     ifDlg.m_pBufferFoil = m_pBufferFoil;
     ifDlg.initDialog();
@@ -860,8 +841,6 @@ void QAFoil::onAFoilInterpolateFoils()
  */
 void QAFoil::onAFoilNacaFoils()
 {
-	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
-
 	m_pBufferFoil->setNaca009();
 	m_pBufferFoil->m_bPoints  = true;
 	m_pBufferFoil->m_bVisible = true;
@@ -872,7 +851,7 @@ void QAFoil::onAFoilNacaFoils()
 
 	m_p2DWidget->update();;
 
-    NacaFoilDlg nacaDlg(pMainFrame);
+	NacaFoilDlg nacaDlg(s_pMainFrame);
     nacaDlg.m_pBufferFoil = m_pBufferFoil;
 
     if(QDialog::Accepted == nacaDlg.exec())
@@ -917,8 +896,6 @@ void QAFoil::onAFoilSetFlap()
 {
 	if(!Foil::curFoil()) return;
 
-	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
-
 	m_pBufferFoil->copyFoil(Foil::curFoil());
 	m_pBufferFoil->m_bVisible = true;
 	m_pBufferFoil->m_FoilName = Foil::curFoil()->m_FoilName;
@@ -928,7 +905,7 @@ void QAFoil::onAFoilSetFlap()
 
 	m_p2DWidget->update();;
 
-    FlapDlg flDlg(pMainFrame);
+	FlapDlg flDlg(s_pMainFrame);
 	flDlg.m_pXFoil      = m_pXFoil;
 	flDlg.m_pMemFoil    = Foil::curFoil();
     flDlg.m_pBufferFoil = m_pBufferFoil;
@@ -969,7 +946,7 @@ void QAFoil::onDeleteCurFoil()
 	strong = tr("Are you sure you want to delete")  +"\n"+ Foil::curFoil()->foilName() +"\n";
 	strong+= tr("and all associated OpPoints and Polars ?");
 
-	int resp = QMessageBox::question((MainFrame*)s_pMainFrame, tr("Question"), strong,  QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+	int resp = QMessageBox::question(s_pMainFrame, tr("Question"), strong,  QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
 	if(resp != QMessageBox::Yes) return;
 
 	Foil*pNextFoil = Foil::deleteFoil(Foil::curFoil());
@@ -1036,8 +1013,6 @@ void QAFoil::onExportSplinesToFile()
 	QString FileName, strong;
 	QString strOut;
 
-	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-
 	// deselect points so as not to interfere with other mouse commands
 	m_pSF->m_Intrados.m_iSelect = -10;
 	m_pSF->m_Extrados.m_iSelect = -10;
@@ -1047,13 +1022,13 @@ void QAFoil::onExportSplinesToFile()
 	if(m_pSF->m_Extrados.m_iRes>IQX2)
 	{
 		strong = QString(tr("Too many output points on upper surface\n Max =%1")).arg(IQX2);
-		QMessageBox::warning(pMainFrame, tr("Warning"), strong, QMessageBox::Ok);
+		QMessageBox::warning(s_pMainFrame, tr("Warning"), strong, QMessageBox::Ok);
 		return;
 	}
 	if(m_pSF->m_Intrados.m_iRes>IQX2)
 	{
 		strong = QString(tr("Too many output points on lower surface\n Max =%1")).arg(IQX2);
-		QMessageBox::warning(pMainFrame, tr("Warning"), strong, QMessageBox::Ok);
+		QMessageBox::warning(s_pMainFrame, tr("Warning"), strong, QMessageBox::Ok);
 		return;
 	}
 
@@ -1218,10 +1193,9 @@ void QAFoil::onHideCurrentFoil()
  */
 void QAFoil::onNewSplines()
 {
-	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 	if(m_pSF->m_bModified)
 	{
-		if (QMessageBox::Yes != QMessageBox::question(pMainFrame, tr("Question"), tr("Discard changes to Splines ?"),
+		if (QMessageBox::Yes != QMessageBox::question(s_pMainFrame, tr("Question"), tr("Discard changes to Splines ?"),
 													  QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel))
 		{
 			return;
@@ -1312,18 +1286,16 @@ void QAFoil::onShowLegend()
  */
 void QAFoil::onStoreSplines()
 {
-	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-
 	if(m_pSF->m_Extrados.m_iRes>IQX2)
 	{
 		QString strong = QString(tr("Too many output points on upper surface\n Max =%1")).arg(IQX2);
-		QMessageBox::warning(pMainFrame, tr("Warning"), strong, QMessageBox::Ok);
+		QMessageBox::warning(s_pMainFrame, tr("Warning"), strong, QMessageBox::Ok);
 		return;
 	}
 	if(m_pSF->m_Intrados.m_iRes>IQX2)
 	{
 		QString strong = QString(tr("Too many output points on lower surface\n Max =%1")).arg(IQX2);
-		QMessageBox::warning(pMainFrame, tr("Warning"), strong, QMessageBox::Ok);
+		QMessageBox::warning(s_pMainFrame, tr("Warning"), strong, QMessageBox::Ok);
 		return;
 	}
 
@@ -1413,8 +1385,7 @@ void QAFoil::SaveSettings(QSettings *pSettings)
 void QAFoil::onFoilTableCtxMenu(const QPoint &)
 {
 //	m_CurrentColumn = m_pctrlFoilTable->columnAt(position.x());
-	MainFrame* pMainFrame = (MainFrame*)s_pMainFrame;
-	pMainFrame->m_pAFoilTableCtxMenu->exec(cursor().pos());
+	s_pMainFrame->m_pAFoilTableCtxMenu->exec(cursor().pos());
 }
 
 
@@ -1497,7 +1468,7 @@ void QAFoil::setupLayout()
 	m_pFoilDelegate->m_Precision = m_precision;
 //	connect(m_pFoilDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(OnCellChanged(QWidget *)));
 
-	connect(this, SIGNAL(projectModified()), (MainFrame*)s_pMainFrame, SLOT(onProjectModified()));
+	connect(this, SIGNAL(projectModified()), s_pMainFrame, SLOT(onProjectModified()));
 }
 
 
@@ -1578,11 +1549,10 @@ void QAFoil::takePicture()
 
 	m_bStored = true;
 
-	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-	if(s_pMainFrame && pMainFrame->m_pUndoAFoilAct && pMainFrame->m_pRedoAFoilAct)
+	if(s_pMainFrame && s_pMainFrame->m_pUndoAFoilAct && s_pMainFrame->m_pRedoAFoilAct)
 	{
-		pMainFrame->m_pUndoAFoilAct->setEnabled(m_StackPos>0);
-		pMainFrame->m_pRedoAFoilAct->setEnabled(m_StackPos<m_UndoStack.size()-1);
+		s_pMainFrame->m_pUndoAFoilAct->setEnabled(m_StackPos>0);
+		s_pMainFrame->m_pRedoAFoilAct->setEnabled(m_StackPos<m_UndoStack.size()-1);
 	}
 }
 
@@ -1610,14 +1580,12 @@ void QAFoil::setPicture()
  */
 void QAFoil::onUndo()
 {
-	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-
 	if(m_StackPos>0)
 	{
 		m_StackPos--;
 		setPicture();
-		pMainFrame->m_pUndoAFoilAct->setEnabled(m_StackPos>0);
-		pMainFrame->m_pRedoAFoilAct->setEnabled(m_StackPos<m_UndoStack.size()-1);
+		s_pMainFrame->m_pUndoAFoilAct->setEnabled(m_StackPos>0);
+		s_pMainFrame->m_pRedoAFoilAct->setEnabled(m_StackPos<m_UndoStack.size()-1);
 	}
 	else
 	{
@@ -1631,13 +1599,12 @@ void QAFoil::onUndo()
  */
 void QAFoil::onRedo()
 {
-	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 	if(m_StackPos<m_UndoStack.size()-1)
 	{
 		m_StackPos++;
 		setPicture();
-		pMainFrame->m_pUndoAFoilAct->setEnabled(m_StackPos>0);
-		pMainFrame->m_pRedoAFoilAct->setEnabled(m_StackPos<m_UndoStack.size()-1);
+		s_pMainFrame->m_pUndoAFoilAct->setEnabled(m_StackPos>0);
+		s_pMainFrame->m_pRedoAFoilAct->setEnabled(m_StackPos<m_UndoStack.size()-1);
 	}
 }
 
@@ -1676,7 +1643,7 @@ void QAFoil::onResetColumnWidths()
  */
 void QAFoil::onAFoilTableColumns()
 {
-	AFoilTableDlg dlg((MainFrame*)s_pMainFrame);
+	AFoilTableDlg dlg(s_pMainFrame);
 
 	dlg.m_bFoilName    = !m_pctrlFoilTable->isColumnHidden(0);
 	dlg.m_bThickness   = !m_pctrlFoilTable->isColumnHidden(1);
@@ -1750,7 +1717,7 @@ Foil* QAFoil::addNewFoil(Foil *pFoil)
 		NameList.append(pOldFoil->m_FoilName);
 	}
 
-	RenameDlg renDlg((MainFrame*)s_pMainFrame);
+	RenameDlg renDlg(s_pMainFrame);
 	renDlg.InitDialog(&NameList, pFoil->foilName(), tr("Enter the foil's new name"));
 
 	if(renDlg.exec() != QDialog::Rejected)

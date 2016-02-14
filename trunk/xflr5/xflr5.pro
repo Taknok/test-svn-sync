@@ -24,6 +24,7 @@ INCLUDEPATH += $$PWD/src/viewwidgets
 INCLUDEPATH += $$PWD/src/objects
 INCLUDEPATH += $$PWD/src/graph
 INCLUDEPATH += $$PWD/src/misc
+INCLUDEPATH += $$PWD/src/glcontextinfo
 
 SOURCES += \
 	src/XFLR5Application.cpp \
@@ -155,7 +156,12 @@ SOURCES += \
 	src/viewwidgets/xdirecttilewidget.cpp \
 	src/viewwidgets/wingwidget.cpp \
     src/viewwidgets/oppointwidget.cpp \
-    src/viewwidgets/inverseviewwidget.cpp
+    src/viewwidgets/inverseviewwidget.cpp \
+    src/glcontextinfo/glrenderwindow.cpp \
+    src/glcontextinfo/openglinfodlg.cpp \
+    src/glcontextinfo/gltexturewidget.cpp \
+    src/glcontextinfo/glwindow.cpp \
+    src/viewwidgets/gl3widget.cpp
 
 
 HEADERS += \
@@ -293,7 +299,12 @@ HEADERS += \
 	src/viewwidgets/xdirecttilewidget.h \
 	src/viewwidgets/wingwidget.h \
     src/viewwidgets/oppointwidget.h \
-    src/viewwidgets/inverseviewwidget.h
+    src/viewwidgets/inverseviewwidget.h \
+    src/glcontextinfo/glrenderwindow.h \
+    src/glcontextinfo/openglinfodlg.h \
+    src/glcontextinfo/gltexturewidget.h \
+    src/glcontextinfo/glwindow.h \
+    src/viewwidgets/gl3widget.h
 
 
 TRANSLATIONS = translations/xflr5v6.ts \

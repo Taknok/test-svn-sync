@@ -38,7 +38,7 @@
 #include "../xdirect/analysis/XFoil.h"
 
 
-void *QXInverse::s_pMainFrame;
+MainFrame *QXInverse::s_pMainFrame;
 void *QXInverse::s_p2DWidget;
 
 /** The public contructor */
@@ -188,12 +188,11 @@ void QXInverse::cancelSpline()
  */
 void QXInverse::checkActions()
 {
-	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-	pMainFrame->m_pInvQInitial->setChecked(m_pQCurve->isVisible());
-	pMainFrame->m_pInvQSpec->setChecked(m_pMCurve->isVisible());
-	pMainFrame->m_pInvQViscous->setChecked(m_pQVCurve->isVisible());
-	pMainFrame->m_pInvQPoints->setChecked(m_bShowPoints);
-	pMainFrame->m_pInvQReflected->setChecked(m_bReflected);
+	s_pMainFrame->m_pInvQInitial->setChecked(m_pQCurve->isVisible());
+	s_pMainFrame->m_pInvQSpec->setChecked(m_pMCurve->isVisible());
+	s_pMainFrame->m_pInvQViscous->setChecked(m_pQVCurve->isVisible());
+	s_pMainFrame->m_pInvQPoints->setChecked(m_bShowPoints);
+	s_pMainFrame->m_pInvQReflected->setChecked(m_bReflected);
 
 	if(m_bFullInverse)
 	{
@@ -230,7 +229,7 @@ void QXInverse::clear()
  */
 void QXInverse::connectSignals()
 {
-	connect(this, SIGNAL(projectModified()), (MainFrame*)s_pMainFrame, SLOT(onProjectModified()));
+	connect(this, SIGNAL(projectModified()), s_pMainFrame, SLOT(onProjectModified()));
 
 	connect(m_pctrlSpecAlpha,     SIGNAL(clicked()), this, SLOT(onSpecal()));
 	connect(m_pctrlSpecCl,        SIGNAL(clicked()), this, SLOT(onSpecal()));
@@ -495,7 +494,6 @@ bool QXInverse::initXFoil(Foil * pFoil)
 	//loads pFoil in XFoil, calculates normal vectors, and sets results in current foil
 	if(!pFoil) return  false;
 
-	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 	XFoil *pXFoil = (XFoil*)m_pXFoil;
 
 	m_pModFoil->m_FoilName = pFoil->m_FoilName + tr(" Modified");
@@ -530,7 +528,7 @@ bool QXInverse::initXFoil(Foil * pFoil)
 	}
 	else
 	{
-		QMessageBox::warning(pMainFrame,tr("Warning"),tr("Unrecognized foil format"));
+		QMessageBox::warning(s_pMainFrame,tr("Warning"),tr("Unrecognized foil format"));
 		return false;
 	}
 }
@@ -543,7 +541,6 @@ bool QXInverse::initXFoil(Foil * pFoil)
  */
 void QXInverse::keyPressEvent(QKeyEvent *event)
 {
-	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 	bool bCtrl = false;
 	if(event->modifiers() & Qt::ControlModifier)   bCtrl =true;
 	switch (event->key())
@@ -629,42 +626,42 @@ void QXInverse::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_1:
 			if(bCtrl)
 			{
-				pMainFrame->onAFoil();
+				s_pMainFrame->onAFoil();
 				return;
 			}
 
 		case Qt::Key_2:
 			if(bCtrl)
 			{
-				pMainFrame->onAFoil();
+				s_pMainFrame->onAFoil();
 				return;
 			}
 
 		case Qt::Key_3:
 			if(bCtrl)
 			{
-				pMainFrame->onXInverse();
+				s_pMainFrame->onXInverse();
 				return;
 			}
 
 		case Qt::Key_4:
 			if(bCtrl)
 			{
-				pMainFrame->onXInverseMixed();
+				s_pMainFrame->onXInverseMixed();
 				return;
 			}
 
 		case Qt::Key_5:
 			if(bCtrl)
 			{
-				pMainFrame->onXDirect();
+				s_pMainFrame->onXDirect();
 				return;
 			}
 
 		case Qt::Key_6:
 			if(bCtrl)
 			{
-				pMainFrame->onMiarex();
+				s_pMainFrame->onMiarex();
 				return;
 			}
 		default:
@@ -972,7 +969,7 @@ void QXInverse::mouseMoveEvent(QMouseEvent *event)
 	{
 		if(m_QGraph.isInDrawRect(point))
 		{
-//			pMainFrame->statusBar()->showMessage(QString("X = %1, Y = %2").arg(m_QGraph.clientTox(event->x())).arg(m_QGraph.clientToy(event->y())));
+//			s_pMainFrame->statusBar()->showMessage(QString("X = %1, Y = %2").arg(m_QGraph.clientTox(event->x())).arg(m_QGraph.clientToy(event->y())));
 			m_pCurGraph = &m_QGraph;
 		}
 		else
@@ -1458,8 +1455,7 @@ void QXInverse::onFilter()
 */
 void QXInverse::onQGraphSettings()
 {
-	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-	GraphDlg *m_pGraphDlg = new GraphDlg(pMainFrame);
+	GraphDlg *m_pGraphDlg = new GraphDlg(s_pMainFrame);
 
 	m_pGraphDlg->XSel() = 0;
 	m_pGraphDlg->YSel() = 0;
@@ -1500,8 +1496,7 @@ void QXInverse::onInsertCtrlPt()
  */
 void QXInverse::onInverseApp()
 {
-	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-	m_bFullInverse = pMainFrame->m_pctrlFullInverse->isChecked();
+	m_bFullInverse = s_pMainFrame->m_pctrlFullInverse->isChecked();
 
 	if(m_bFullInverse)
 	{
@@ -1521,7 +1516,7 @@ void QXInverse::onInverseApp()
  */
 void QXInverse::onInverseStyles()
 {
-	InverseOptionsDlg *m_pXInverseStyleDlg = new InverseOptionsDlg((MainFrame*)s_pMainFrame);
+	InverseOptionsDlg *m_pXInverseStyleDlg = new InverseOptionsDlg(s_pMainFrame);
 	m_pXInverseStyleDlg->m_pXInverse = this;
 	m_pXInverseStyleDlg->initDialog();
 	m_pXInverseStyleDlg->exec();
@@ -1608,7 +1603,7 @@ void QXInverse::onPertubate()
 	int m;
 	pXFoil->pert_init(1);
 
-	PertDlg PerturbDlg((MainFrame*)s_pMainFrame);
+	PertDlg PerturbDlg(s_pMainFrame);
 
 	for (m=0; m<=qMin(32, pXFoil->nc); m++)
 	{
@@ -1702,8 +1697,6 @@ void QXInverse::onRemoveCtrlPt()
 	{
 		if(!m_Spline.removePoint(m_Spline.m_iHighlight))
 		{
-//			MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-
 			m_pctrlOutput->append(tr("The minimum number of control points has been reached for this spline degree"));
 			m_pctrlOutput->append(tr("\n"));
 
@@ -1807,7 +1800,6 @@ void QXInverse::onSmooth()
 void QXInverse::onStoreFoil()
 {
 	if(!m_bLoaded) return;
-	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 
 	Foil* pNewFoil = new Foil();
 	pNewFoil->copyFoil(m_pModFoil);
@@ -1825,7 +1817,7 @@ void QXInverse::onStoreFoil()
 		NameList.append(pOldFoil->foilName());
 	}
 
-	RenameDlg renDlg(pMainFrame);
+	RenameDlg renDlg(s_pMainFrame);
 	renDlg.InitDialog(&NameList, m_pRefFoil->foilName(), tr("Enter the foil's new name"));
 	if(renDlg.exec() !=QDialog::Rejected)
 	{
@@ -1860,8 +1852,7 @@ void QXInverse::onZoomIn()
 		if(m_fScale/m_fRefScale <32.0)
 		{
 			m_bZoomPlus = true;
-			MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-			pMainFrame->m_pInverseZoomIn->setChecked(true);
+			s_pMainFrame->m_pInverseZoomIn->setChecked(true);
 		}
 		else
 		{
@@ -2137,8 +2128,7 @@ void QXInverse::releaseZoom()
 	m_bZoomPlus  = false;
 	m_ZoomRect.setRight(m_ZoomRect.left()-1);
 	m_ZoomRect.setTop(m_ZoomRect.bottom()+1);
-	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-	pMainFrame->m_pInverseZoomIn->setChecked(false);
+	s_pMainFrame->m_pInverseZoomIn->setChecked(false);
 }
 
 
@@ -2304,20 +2294,19 @@ void QXInverse::setFoil()
  */
 bool QXInverse::setParams()
 {
-	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 	XFoil *pXFoil = (XFoil*)m_pXFoil;
 	Foil*pFoil;
 
 	if(m_bFullInverse)
 	{
-		pMainFrame->m_pctrlFullInverse->setChecked(true);
-		pMainFrame->m_pctrlMixedInverse->setChecked(false);
+		s_pMainFrame->m_pctrlFullInverse->setChecked(true);
+		s_pMainFrame->m_pctrlMixedInverse->setChecked(false);
 		m_pctrlStackedInv->setCurrentIndex(0);
 	}
 	else
 	{
-		pMainFrame->m_pctrlFullInverse->setChecked(false);
-		pMainFrame->m_pctrlMixedInverse->setChecked(true);
+		s_pMainFrame->m_pctrlFullInverse->setChecked(false);
+		s_pMainFrame->m_pctrlMixedInverse->setChecked(true);
 		m_pctrlStackedInv->setCurrentIndex(1);
 	}
 

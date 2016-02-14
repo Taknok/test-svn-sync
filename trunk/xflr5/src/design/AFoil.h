@@ -44,7 +44,7 @@
 #include "../objects/Foil.h"
 #include "../objects/SplineFoil.h"
 
-
+class MainFrame;
 
 /**
  * @brief the QAFoil class used as the interface for direct Foil design
@@ -145,7 +145,7 @@ private:
 	QStandardItemModel *m_pFoilModel;
 	FoilTableDelegate *m_pFoilDelegate;
 
-	static void *s_pMainFrame;  /**< a static pointer to the instance of the application's MainFrame object >*/
+	static MainFrame *s_pMainFrame;  /**< a static pointer to the instance of the application's MainFrame object >*/
 
 	int *m_precision;           /**< the array of digit numbers for each column of the Foil table >*/
 

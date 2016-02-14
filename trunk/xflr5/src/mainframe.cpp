@@ -63,6 +63,9 @@
 #include "xdirect/analysis/FoilPolarDlg.h"
 #include "xinverse/XInverse.h"
 #include "objects/Polar.h"
+#include "openglinfodlg.h"
+#include "gltexturewidget.h"
+#include "glwindow.h"
 
 #include <QMessageBox>
 #include <QtCore>
@@ -790,6 +793,8 @@ void MainFrame::createDockWindows()
 
 	m_p2dWidget = new InverseViewWidget(this);
 	m_p3dWidget = new ThreeDWidget(this);
+	m_pGL3Widget = new GL3Widget(this);
+
 	m_pDirect2dWidget = new Direct2dDesign(this);
 	m_pXDirectTileWidget = new XDirectTileWidget(this);
 	m_pMiarexTileWidget  = new MiarexTileWidget(this);
@@ -842,6 +847,7 @@ void MainFrame::createDockWindows()
 	m_pctrlCentralWidget = new QStackedWidget;
 	m_pctrlCentralWidget->addWidget(m_p2dWidget);
 	m_pctrlCentralWidget->addWidget(m_p3dWidget);
+	m_pctrlCentralWidget->addWidget(m_pGL3Widget);
 	m_pctrlCentralWidget->addWidget(m_pDirect2dWidget);
 	m_pctrlCentralWidget->addWidget(m_pXDirectTileWidget);
 	m_pctrlCentralWidget->addWidget(m_pMiarexTileWidget);
@@ -879,6 +885,8 @@ void MainFrame::createDockWindows()
 	LLTAnalysis::s_poaPolar = &Polar::s_oaPolar;
 
 	ThreeDWidget::s_pMiarex       = m_pMiarex;
+	ThreeDWidget::s_pglLightDlg   = &m_glLightDlg;
+
 	WingWidget::s_pMiarex         = m_pMiarex;
 	XFoilAnalysisDlg::s_pXDirect  = m_pXDirect;
 	NacaFoilDlg::s_pXFoil         = pXDirect->m_pXFoil;
@@ -898,6 +906,8 @@ void MainFrame::createDockWindows()
 	LegendWidget::s_pMainFrame = this;
 	LegendWidget::s_pMiarex    = m_pMiarex;
 	LegendWidget::s_pXDirect   = m_pXDirect;
+
+
 
 	pMiarex->connectSignals();
 }
@@ -2516,9 +2526,23 @@ void MainFrame::keyPressEvent(QKeyEvent *event)
 				if(bCtrl) onXDirect();
 				break;
 		    }
-		    case Qt::Key_6:
-		    {
+			case Qt::Key_6:
+			{
 				if(bCtrl) onMiarex();
+				break;
+			}
+			case Qt::Key_7:
+			{
+				if(bCtrl) onOpenGLxflr5();
+				break;
+			}
+			case Qt::Key_8:
+			{
+				if(bCtrl)
+				{
+					m_pctrlCentralWidget->setCurrentWidget(m_pGL3Widget);
+					m_pGL3Widget->setFocus();
+				}
 				break;
 			}
 			case Qt::Key_L:
@@ -3265,32 +3289,20 @@ void MainFrame::onNewProject()
 
 void MainFrame::onOpenGLInfo()
 {
-    QSurfaceFormat fmt = m_p3dWidget->format();
-	QString strongProps;
+	OpenGLInfoDlg w;
+	w.resize(700, 800);
+	w.exec();
+}
 
 
-	strongProps += QString("OpenGl::majorVersion      = %1\n").arg(fmt.majorVersion());
-	strongProps += QString("OpenGl::minorVersion      = %1\n").arg(fmt.minorVersion());
+void MainFrame::onOpenGLxflr5()
+{
+	QSurfaceFormat format;
+	format.setDepthBufferSize(24);
+	QSurfaceFormat::setDefaultFormat(format);
 
-
-	if(fmt.stereo())            strongProps += QString("OpenGl::stereo            = enabled\n");
-	else                        strongProps += QString("OpenGl::stereo            = disabled\n");
-
-
-	if(fmt.swapInterval()==-1)  strongProps += QString("OpenGl::swapInterval      = supported\n");
-	else                        strongProps += QString("OpenGl::swapInterval      = not supported\n");
-
-	strongProps += QString("OpenGl::depthBufferSize   = %1\n").arg(fmt.depthBufferSize());
-	strongProps += QString("OpenGl::samplesPerPixel   = %1\n").arg(fmt.samples());
-
-
-	if(fmt.profile() == QSurfaceFormat::NoProfile)                strongProps += QString("Opengl::CompatibilityProfile::NoProfile");
-	else if(fmt.profile() == QSurfaceFormat::CoreProfile)         strongProps += QString("Opengl::CompatibilityProfile::CoreProfile");
-	else if(fmt.profile()== QSurfaceFormat::CompatibilityProfile) strongProps += QString("Opengl::CompatibilityProfile::CompatibilityProfile");
-
-	ObjectPropsDlg dlg(this);
-	dlg.initDialog(tr("Support for OpenGL provided by your system:"), strongProps);
-	dlg.exec();
+	GLWindow window(this);
+	window.exec();
 }
 
 
@@ -3785,6 +3797,8 @@ void MainFrame::onXDirect()
 }
 
 
+
+
 void MainFrame::onMiarex()
 {
 	QXDirect *pXDirect = (QXDirect*)m_pXDirect;
@@ -3811,6 +3825,8 @@ void MainFrame::onMiarex()
 	pMiarex->setCurveParams();
 	updateView();
 }
+
+
 
 void MainFrame::onXInverse()
 {
@@ -4431,7 +4447,6 @@ void MainFrame::saveSettings()
 	}
 	settings.endGroup();
 
-
 	Settings::saveSettings(&settings);
 	pAFoil->SaveSettings(&settings);
 	pXDirect->saveSettings(&settings);
@@ -4444,7 +4459,6 @@ void MainFrame::saveSettings()
 
 void MainFrame::setMainFrameCentralWidget()
 {
-
 	if(m_iApp==XFLR5::MIAREX)
 	{
 		QMiarex *pMiarex = (QMiarex*)m_pMiarex;

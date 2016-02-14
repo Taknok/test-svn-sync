@@ -33,6 +33,7 @@
 #include <QFile>
 #include <QTextEdit>
 #include <QPushButton>
+#include <QCheckBox>
 #include <QPoint>
 #include "../../graph/QGraph.h"
 #include "graphwidget.h"
@@ -59,12 +60,12 @@ public:
 
 private slots:
 	void onCancelAnalysis();
+	void onLogFile(bool bChecked);
 	void onSkipPoint();
 	void onProgress();
 
 private:
 	void showEvent(QShowEvent *event);
-	void hideEvent(QHideEvent *event);
 
 	void accept();
 	void reject();
@@ -82,6 +83,7 @@ private:
 	GraphWidget * m_pGraphWidget;
 	QTextEdit *m_pctrlTextOutput;
 	QPushButton* m_pctrlCancel, *m_pctrlSkip;
+	QCheckBox* m_pctrlLogFile;
 
 	static void* s_pXDirect;     /**< a void pointer to the instance of the QXDirect object >*/
 	static QPoint s_Position;   /**< the position on the client area of he dialog's topleft corner */

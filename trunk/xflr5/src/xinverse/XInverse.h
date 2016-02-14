@@ -44,6 +44,9 @@
 #include "../objects/Foil.h"
 #include "../objects/Spline.h"
 
+class MainFrame;
+
+
 /**
  * @brief This class implements the interface for the inverse Foil design.
  *
@@ -168,7 +171,7 @@ private:
 	QStackedWidget *m_pctrlStackedInv;
 
 
-	static void *s_pMainFrame;  /**< a static pointer to the instance of the application's MainFrame object */
+	static MainFrame *s_pMainFrame;  /**< a static pointer to the instance of the application's MainFrame object */
 	static void *s_p2DWidget;   /**< a static pointer to the instance of the application's central widget used for 2D drawings */
 
 	void *m_pXFoil;             /**< a void pointer to the unique instance of the XFoil object */

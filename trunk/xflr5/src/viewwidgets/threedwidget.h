@@ -36,7 +36,6 @@
 #include "objects/CRectangle.h"
 #include <ArcBall.h>
 #include <PointMass.h>
-#include "misc/GLLightDlg.h"
 
 
 #define GLLISTSPHERE             531
@@ -184,8 +183,7 @@ private:
 	 bool s_bFoilNames;                 /**< true if the foil names are to be displayed on the openGL 3D view */
 
 
-	GLLightDlg m_glLightDlg;
-
+	static GLLightDlg* s_pglLightDlg;
 
 	QRect m_rCltRect;           /**< The client window rectangle  */
 	CRectangle m_GLViewRect;    /**< The OpenGl viewport.*/
