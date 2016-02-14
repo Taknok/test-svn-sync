@@ -665,8 +665,6 @@ bool PanelAnalysis::alphaLoop()
 
 	createUnitRHS();
 	if (s_bCancel) return true;
-//	for(int p=0; p<m_MatSize; p++) qDebug()<<m_uRHS[p];
-
 
 	if(!m_pWPolar->bThinSurfaces())
 	{

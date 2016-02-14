@@ -42,6 +42,8 @@ public:
 	void readParams(void);
 	void setDefaults(double size);
 	void setParams(void);
+	void set3dWidget(void*p3DWidget) {m_p3dWidget = p3DWidget;}
+
 	static bool loadSettings(QSettings *pSettings);
 	static bool saveSettings(QSettings *pSettings);
 

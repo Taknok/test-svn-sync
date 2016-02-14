@@ -29,7 +29,7 @@
 #ifndef QMIAREX_H
 #define QMIAREX_H
 
-
+class MainFrame;
 
 #include "../params.h"
 #include "threedwidget.h"
@@ -59,6 +59,7 @@
 #include <WPolar.h>
 #include <WingOpp.h>
 #include <PlaneOpp.h>
+#include <GLLightDlg.h>
 #include <QGraph.h>
 #include "graphtilewidget.h"
 
@@ -289,6 +290,7 @@ public:
 
 	PanelAnalysisDlg *m_pPanelAnalysisDlg;        /**< the dialog class which manages the 3D VLM and Panel calculations */
 
+
 	// Widget variables ... self explicit, not documented
 	QPushButton *m_pctrlKeepCpSection, *m_pctrlResetCpSection;
 	QSlider *m_pctrlCpSectionSlider;
@@ -486,7 +488,7 @@ public:
 	QPixmap m_PixText;
 
 public:
-	static void *s_pMainFrame;          /**< a pointer to the frame class */
+	static MainFrame *s_pMainFrame;          /**< a pointer to the frame class */
 	ThreeDWidget *m_p3dWidget;            /**< a pointer to the openGL widget where 3d calculations and rendering are performed */
 
 	static CVector *s_pNode;              /**< a static pointer to the node array for the currently loaded Plane*/

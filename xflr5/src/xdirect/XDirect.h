@@ -44,8 +44,9 @@
 #include "../objects/OpPoint.h"
 #include "../graph/QGraph.h"
 #include "analysis/XFoil.h"
+#include "analysis/XFoilAnalysisDlg.h"
 
-
+class MainFrame; // to shut the compiler up
 
 /**
 * @class QXDirect
@@ -249,13 +250,15 @@ private:
 
 	LineDelegate *m_pStyleDelegate, *m_pWidthDelegate, *m_pPointDelegate;
 
-	static void *s_pMainFrame;  /**< a static pointer to the instance of the application's MainFrame object */
+	static MainFrame *s_pMainFrame;  /**< a static pointer to the instance of the application's MainFrame object */
 
 	static bool s_bViscous;           /**< true if performing a viscous calculation, false if inviscid */
 	static bool s_bAlpha;             /**< true if performing an analysis based on aoa, false if based on Cl */
 	static bool s_bInitBL;            /**< true if the boundary layer should be initialized for the next xfoil calculation */
 	static bool s_bFromZero;          /**< true if the batch analysis should start from Alpha=0 */
 	static bool s_bKeepOpenErrors; /**< true if the XfoilAnalysisDlg should be kept open if errors occured in the XFoil calculation */
+
+	XFoilAnalysisDlg *m_pXFADlg;
 
 	bool m_bPolarView;         /**< true if the polar view is selected, false if the operating point view is selected */
 	bool m_bShowUserGraph;     /**< true if the 5th polar graph should be displayed */

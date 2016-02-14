@@ -61,33 +61,33 @@ private:
 	void hideEvent(QHideEvent *event);
 	void reject();
 
-	void AlphaLoop();
-	void CleanUp();
-	Polar* CreatePolar(Foil *pFoil, double Spec, double Mach, double NCrit);
-	void SetupLayout();
-	void InitDialog();
-	void ReadParams();
+	void alphaLoop();
+	void cleanUp();
+	Polar* createPolar(Foil *pFoil, double Spec, double Mach, double NCrit);
+	void setupLayout();
+	void initDialog();
+	void readParams();
 	void ReLoop();
-	void ResetCurves();
-	void SetFileHeader();
-	void SetPlrName(Polar *pPolar);
-	void Analyze();
-	void OutputMsg(QString &msg);
+	void resetCurves();
+	void setFileHeader();
+	void setPlrName(Polar *pPolar);
+	void analyze();
+	void outputMsg(QString &msg);
 
 
 private slots:
-	void OnAnalyze();
-	void OnRange();
-	void OnAcl();
-	void OnEditReList();
-	void OnPolarType();
-	void OnClose();
-	void OnSkipPoint();
-	void OnSkipPolar();
-	void OnFoilList();
-	void OnFoilSelectionType();
-	void OnProgress();
-	void OnAnalysisSettings();
+	void onAnalyze();
+	void onRange();
+	void onAcl();
+	void onEditReList();
+	void onPolarType();
+	void onClose();
+	void onSkipPoint();
+	void onSkipPolar();
+	void onFoilList();
+	void onFoilSelectionType();
+	void onProgress();
+	void onAnalysisSettings();
 
 private:
     static QPoint s_Position;   /**< the position on the client area of the dialog's topleft corner */
