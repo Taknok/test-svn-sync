@@ -28,7 +28,10 @@
 #include "../globals.h"
 #include "../miarex/Objects3D.h"
 #include "../misc/Units.h"
-
+#include "WPolar.h"
+#include "Surface.h"
+#include "Panel.h"
+#include "PointMass.h"
 
 double Wing::s_MinPanelSize = 0.0001;
 
@@ -69,6 +72,7 @@ Wing::Wing()
 
 	clearPointMasses();
 
+	m_bTextures     = false;
 	m_bIsFin        = false;
 	m_bDoubleFin    = false;
 	m_bSymFin       = false;
@@ -747,6 +751,8 @@ void Wing::createSurfaces(CVector const &T, double XTilt, double YTilt)
 			m_Surface[iSurf]->init();
 			m_Surface[iSurf]->m_bIsLeftSurf   = true;
 			m_Surface[iSurf]->m_bIsInSymPlane = false;
+			m_Surface[iSurf]->m_innerSection = jss;
+			m_Surface[iSurf]->m_outerSection = jss+1;
 			--iSurf;
 		}
 	}
@@ -809,6 +815,10 @@ void Wing::createSurfaces(CVector const &T, double XTilt, double YTilt)
 				m_Surface[iSurf]->m_bIsLeftSurf   = false;
 				m_Surface[iSurf]->m_bIsRightSurf  = true;
 				m_Surface[iSurf]->m_bIsInSymPlane = false;
+
+				m_Surface[iSurf]->m_innerSection = jss;
+				m_Surface[iSurf]->m_outerSection = jss+1;
+
 				iSurf++;
 			}
 		}
@@ -830,6 +840,7 @@ void Wing::createSurfaces(CVector const &T, double XTilt, double YTilt)
 				m_Surface[jSurf]->m_bIsRightSurf  = false;
 			}
 		}
+		m_Surface[NSurfaces-1]->m_bIsTipRight = true;
 	}
 	else
 	{
@@ -1036,6 +1047,7 @@ void Wing::duplicate(Wing *pWing)
 	m_bIsFin        = pWing->m_bIsFin;
 	m_bSymFin       = pWing->m_bSymFin;
 	m_bDoubleFin    = pWing->m_bDoubleFin;
+	m_bTextures     = pWing->m_bTextures;
 //	m_bDoubleSymFin = pWing->m_bDoubleSymFin;
 
 	clearWingSections();
@@ -2241,8 +2253,9 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
 			ar << m_PointMass.at(i)->tag();
 		}
 
+		if(m_bTextures) ar<<1 ; else ar<<0;
 		// space allocation for the future storage of more data, without need to change the format
-		for (int i=0; i<20; i++) ar << 0;
+		for (int i=1; i<20; i++) ar << 0;
 		for (int i=0; i<50; i++) ar << 0.0;
 
 		return true;
@@ -2298,8 +2311,9 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
 			m_PointMass.append(new PointMass(dm, CVector(px, py, pz), tag));
 		}
 
+		ar>>k; if(k) m_bTextures=true; else m_bTextures=false;
 		// space allocation
-		for (int i=0; i<20; i++) ar >> k;
+		for (int i=1; i<20; i++) ar >> k;
 		for (int i=0; i<50; i++) ar >> dble;
 
 		computeGeometry();
@@ -2854,6 +2868,69 @@ bool Wing::intersectWing(CVector O,  CVector U, CVector &I)
 	}
 	return false;
 }
+
+
+
+void Wing::getTextureUV(int iSurf, double *leftV, double *rightV, double &leftU, double &rightU, int nPoints)
+{
+	double xRel, xA, xB, yA, yB;
+	double xMin=100000, xMax=-100000, yMin, yMax;
+	int iSectionA=0, iSectionB=1;
+	if(m_Surface[iSurf]->isLeftSurf())
+	{
+		iSectionB = m_Surface[iSurf]->innerSection();
+		iSectionA = m_Surface[iSurf]->outerSection();
+	}
+	else
+	{
+		iSectionA = m_Surface[iSurf]->innerSection();
+		iSectionB = m_Surface[iSurf]->outerSection();
+	}
+
+	for(int is=0; is<m_WingSection.count(); is++)
+	{
+		xMin = min(xMin, m_WingSection.at(is)->m_Offset);
+		xMax = max(xMax, m_WingSection.at(is)->m_Offset + m_WingSection.at(is)->m_Chord);
+	}
+
+	for(int i=0; i<nPoints; i++)
+	{
+		xRel  = 1.0/2.0*(1.0-cos( (double)i*PI   /(double)(nPoints-1)));
+		xA = m_WingSection.at(iSectionA)->m_Offset + m_WingSection.at(iSectionA)->m_Chord*xRel;
+		xB = m_WingSection.at(iSectionB)->m_Offset + m_WingSection.at(iSectionB)->m_Chord*xRel;
+
+		leftV[i]  = (xA-xMin)/(xMax-xMin);
+		rightV[i] = (xB-xMin)/(xMax-xMin);
+//		qDebug("%13.7f    //    %13.7f  ",	leftV[i],rightV[i]);
+	}
+
+
+	yMin = m_WingSection.first()->m_YPosition;
+	yMax = m_WingSection.last()->m_YPosition;
+
+	yA = m_WingSection.at(iSectionA)->m_YPosition;
+	yB = m_WingSection.at(iSectionB)->m_YPosition;
+	if(m_Surface[iSurf]->isLeftSurf())
+	{
+		leftU = 1.0-(yA-yMin)/(yMax-yMin);
+		rightU  = 1.0-(yB-yMin)/(yMax-yMin);
+	}
+	else
+	{
+		leftU  = (yA-yMin)/(yMax-yMin);
+		rightU = (yB-yMin)/(yMax-yMin);
+	}
+}
+
+
+
+
+
+
+
+
+
+
 
 
 

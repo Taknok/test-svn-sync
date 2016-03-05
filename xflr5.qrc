@@ -28,5 +28,17 @@
         <file>images/OnUndo.png</file>
         <file>images/splash.png</file>
         <file>images/xflr5_full.png</file>
+        <file>src/viewwidgets/shaders/line_fragmentshader.glsl</file>
+        <file>src/viewwidgets/shaders/line_vertexshader.glsl</file>
+        <file>src/viewwidgets/shaders/text_fragmentshader.glsl</file>
+        <file>src/viewwidgets/shaders/text_vertexshader.glsl</file>
+        <file>images/body_right.png</file>
+        <file>images/body_left.png</file>
+        <file>src/viewwidgets/shaders/gradient_fragmentshader.glsl</file>
+        <file>src/viewwidgets/shaders/gradient_vertexshader.glsl</file>
+        <file>images/wing_bottom_left.png</file>
+        <file>images/wing_bottom_right.png</file>
+        <file>images/wing_top_left.png</file>
+        <file>images/wing_top_right.png</file>
     </qresource>
 </RCC>

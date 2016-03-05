@@ -29,7 +29,7 @@
 #include <QTreeView>
 #include <QStandardItemModel>
 #include <QToolButton>
-#include <threedwidget.h>
+#include <gl3widget.h>
 #include "../../objects/Plane.h"
 #include "EditObjectDelegate.h"
 
@@ -45,6 +45,7 @@ class EditPlaneDlg : public QDialog
 	friend class Wing;
 	friend class Plane;
 	friend class QMiarex;
+	friend class GL3Widget;
 
 public:
 	EditPlaneDlg(QWidget *pParent = NULL);
@@ -57,8 +58,7 @@ public:
 
 	bool intersectObject(CVector AA,  CVector U, CVector &I);
 	void connectSignals();
-	void glDraw3D();
-	void glRenderView();
+	void glMake3DObjects();
 	void glCreateWingSectionHighlight(Wing *pWing);
 	void glCreateBodyFrameHighlight(Body *pBody, CVector bodyPos, int iFrame);
 	void identifySelection(const QModelIndex &indexSel);
@@ -120,7 +120,8 @@ private:
 	EditObjectDelegate *m_pDelegate;
 	QStandardItemModel *m_pModel;
 
-	ThreeDWidget *m_pGLWidget;
+//	ThreeDWidget *m_pgl1Widget;
+	GL3Widget *m_pgl3Widget;
 
 	QCheckBox *m_pctrlAxes, *m_pctrlLight, *m_pctrlSurfaces, *m_pctrlOutline, *m_pctrlPanels;
 	QCheckBox *m_pctrlFoilNames, *m_pctrlShowMasses;

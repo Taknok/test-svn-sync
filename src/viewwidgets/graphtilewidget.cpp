@@ -19,6 +19,7 @@
 
 *****************************************************************************/
 #include <QtDebug>
+#include <QMenu>
 #include <QSplitter>
 #include <QHBoxLayout>
 #include <QGridLayout>

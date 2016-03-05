@@ -23,7 +23,8 @@
 #include <math.h>
 #include "LLTAnalysis.h"
 #include "LLTAnalysisDlg.h"
-#include "../../misc/Units.h"
+#include <objects/PlaneOpp.h>
+#include <misc/Units.h>
 #include <QString>
 
 

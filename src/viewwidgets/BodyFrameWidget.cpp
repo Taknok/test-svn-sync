@@ -129,7 +129,7 @@ void BodyFrameWidget::drawFrameLines()
 	framePen.setWidth(1);
 	painter.setPen(framePen);
 
-	for(int j=0; j<m_pBody->frameSize(); j++)
+	for(int j=0; j<m_pBody->frameCount(); j++)
 	{
 		if(m_pBody->frame(j)!=m_pBody->activeFrame())
 		{
@@ -240,7 +240,7 @@ void BodyFrameWidget::onRemovePt()
 		int n =   m_pBody->activeFrame()->isPoint(Real, m_fScale/m_fRefScale);
 		if (n>=0)
 		{
-			for (int i=0; i<m_pBody->frameSize();i++)
+			for (int i=0; i<m_pBody->frameCount();i++)
 			{
 				m_pBody->frame(i)->removePoint(n);
 			}

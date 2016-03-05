@@ -31,10 +31,8 @@
 #define SURFACE_H
 
 #include <QVarLengthArray>
-#include "Foil.h"
-#include "Body.h"
-#include "CVector.h"
-#include "WingSection.h"
+#include <globals.h>
+#include <objects/Panel.h>
 
 #define VLMHALF 2500
 
@@ -87,9 +85,13 @@
  Angular data is stored in degrees.
 
 
-
-
 */
+
+class WingSection;
+class Foil;
+class Body;
+class CVector;
+
 class Surface
 {
 	friend class Wing;
@@ -102,7 +104,6 @@ class Surface
 	friend class InertiaDlg;
 	friend class WPolar;
 	friend class ViewObjectDlg;
-	friend class ThreeDWidget;
 
 public:
 
@@ -119,7 +120,7 @@ public:
     void getSurfacePoint(double xArel, double xBrel, double yrel, enumPanelPosition pos, CVector &Point, CVector &PtNormal);
     void getSection(double const &tau, double &Chord, double &Area, CVector &PtC4);
 	void getYDist(int const &k, double &y1, double &y2);
-	void getSidePoints(enumPanelPosition pos, Body * pBody, CVector *PtA, CVector *PtB, CVector *N, int nPoints);
+	void getSidePoints(enumPanelPosition pos, Body * pBody, CVector *PtA, CVector *PtB, CVector *NA, CVector *NB, int nPoints);
     void init();
 	void resetFlap();
 	void rotateX(CVector const &O, double XTilt);
@@ -155,6 +156,8 @@ public:
 	double stripWidth(int k);
 	double spanLength();
 
+	int innerSection(){return m_innerSection;}
+	int outerSection(){return m_outerSection;}
 
 	Foil *foilA() {return m_pFoilA;}
 	Foil *foilB() {return m_pFoilB;}
@@ -215,6 +218,8 @@ private :
 	Surface *m_pLeftSurface;    /**< a pointer to this Surface's left neighbour, or NULL if none */
 	Surface *m_pRightSurface;   /**< a pointer to this Surface's right neighbour, or NULL if none */
 
+	int m_innerSection;         /**< the index of the inner wing's section corresponding to this surface */
+	int m_outerSection;         /**< the index of the outer wing's section corresponding to this surface */
 
 public:
 	bool m_bJoinRight;             /**< true if the surface's right side should be connected to the next right surface's right left side - for panel analysis only */

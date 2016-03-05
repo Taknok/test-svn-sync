@@ -22,7 +22,8 @@
 #include "WingOpp.h"
 
 #include "Plane.h"
-#include "../globals.h"
+#include <globals.h>
+#include <objects/WPolar.h>
 #include <math.h>
 #include <QTextStream>
 

@@ -38,8 +38,8 @@
 #include <QSplitter>
 
 #include "WingDelegate.h"
+#include <gl3widget.h>
 #include "../../objects/ArcBall.h"
-#include "threedwidget.h"
 #include "../../misc/DoubleEdit.h"
 #include "../../misc/ColorButton.h"
 #include "../../objects/Wing.h"
@@ -52,7 +52,7 @@ class GL3dWingDlg: public QDialog
 
 	friend class MainFrame;
 	friend class QMiarex;
-	friend class ThreeDWidget;
+	friend class GL3Widget;
 	friend class Wing;
 	friend class GLLightDlg;
 	friend class PlaneDlg;
@@ -79,6 +79,7 @@ private slots:
 	void onCellChanged(QWidget *);
 	void onItemClicked(const QModelIndex &index);
 	void onWingColor();
+	void onTextures();
 	void onSide();
 	void onSymetric();
 	void onInsertBefore();
@@ -117,13 +118,9 @@ private:
 	bool initDialog(Wing *pWing);
 	void connectSignals();
 	void setupLayout();
-	void GLRenderView();
-	void glCreateSectionHighlight();
-	void glCallViewLists();
-	void glDraw3D();
+	void glMake3DObjects();
+	void glMakeSectionHighlight(QOpenGLBuffer &vbo, int &nStrips, int &stripSize);
 	void setWingScale();
-
-
 
 private:
 	static QList <void*> *s_poaFoil;
@@ -131,8 +128,7 @@ private:
 	static QSize  s_WindowSize;
 	static bool s_bWindowMaximized;
 
-
-	ThreeDWidget *m_pGLWidget;
+	GL3Widget *m_pgl3Widget;              /**< a pointer to the openGL 3.0 widget where 3d calculations and rendering are performed */
 
 	QLineEdit *m_pctrlWingName;
 	QTextEdit *m_pctrlWingDescription;
@@ -156,6 +152,7 @@ private:
     QCheckBox *m_pctrlAxes, *m_pctrlSurfaces, *m_pctrlOutline, *m_pctrlPanels, *m_pctrlFoilNames;
 	QCheckBox *m_pctrlShowMasses;
 	QPushButton *m_pctrlReset;
+	QRadioButton *m_pctrlColor, *m_pctrlTextures;
 
 	QToolButton *m_pctrlX, *m_pctrlY, *m_pctrlZ, *m_pctrlIso;
 	QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView;
@@ -185,7 +182,6 @@ private:
 
 
 	int m_iSection;
-	int m_GLList;
 
 
 	QPoint m_MousePos;

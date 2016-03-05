@@ -148,6 +148,7 @@ void GLRenderWindow::setupVertexAttribs()
     m_vbo.release();
 }
 
+
 void GLRenderWindow::render()
 {
 	if (!m_pContext->makeCurrent(this)) {

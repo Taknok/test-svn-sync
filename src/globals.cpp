@@ -34,7 +34,7 @@
 #include <QDateTime> 
 #include <QByteArray>
 #include <math.h>
-
+#include <qopengl.h>
 
 
 /** 
@@ -509,7 +509,7 @@ void Trace(QString msg, double f)
 *@param tau the input parameter between 0 and 1.
 *@return the red component of the color
 */
-double GLGetRed(double tau)
+float GLGetRed(double tau)
 {
 	if(tau>2.0/3.0)      return 1.0;
 	else if(tau>1.0/3.0) return (3.0*(tau-1.0/3.0));
@@ -523,7 +523,7 @@ double GLGetRed(double tau)
 *@param tau the input parameter between 0 and 1.
 *@return the green component of the color
 */
-double GLGetGreen(double tau)
+float GLGetGreen(double tau)
 {
 	if(tau<0.f || tau>1.0) 	return 0.0;
 	else if(tau<1.0/4.0) 	return (4.0*tau);
@@ -538,7 +538,7 @@ double GLGetGreen(double tau)
 *@param tau the input parameter between 0 and 1.
 *@return the blue component of the color
 */
-double GLGetBlue(double tau)
+float GLGetBlue(double tau)
 {
 	if(tau>2.0/3.0)      return 0.0;
 	else if(tau>1.0/3.0) return (1.0-3.0*(tau-1.0/3.0));
@@ -3164,5 +3164,35 @@ bool stringToBool(QString str)
 }
 
 
+CVector normalVector(double p1[], double p2[],  double p3[])
+{
+	double n[3];
+	GLdouble v1[3], v2[3], d;
+	v1[0] = p3[0] - p1[0];
+	v1[1] = p3[1] - p1[1];
+	v1[2] = p3[2] - p1[2];
+	v2[0] = p3[0] - p2[0];
+	v2[1] = p3[1] - p2[1];
+	v2[2] = p3[2] - p2[2];
+
+	// calculate the cross product of the two vectors
+	n[0] = v1[1] * v2[2] - v2[1] * v1[2];
+	n[1] = v1[2] * v2[0] - v2[2] * v1[0];
+	n[2] = v1[0] * v2[1] - v2[0] * v1[1];
+
+	// normalize the vector
+	d = ( n[0] * n[0] + n[1] * n[1] + n[2] * n[2] );
+	// try to catch very small vectors
+	if (d < (GLdouble)0.00000001)
+	{
+		d = (GLdouble)100000000.0;
+	}
+	else
+	{
+		d = (GLdouble)1.0 / sqrt(d);
+	}
+
+	return CVector(n[0]*d, n[1]*d, n[1]*d);
+}
 
 

@@ -31,7 +31,6 @@ SOURCES += \
 	src/globals.cpp \
 	src/main.cpp \
 	src/mainframe.cpp \
-	src/viewwidgets/threedwidget.cpp \
 	src/viewwidgets/section2dwidget.cpp \
 	src/viewwidgets/graphwidget.cpp \
 	src/viewwidgets/graphtilewidget.cpp \
@@ -88,8 +87,6 @@ SOURCES += \
 	src/miarex/design/EditBodyDlg.cpp \
 	src/miarex/design/wingseldlg.cpp \
 	src/miarex/view/TargetCurveDlg.cpp \
-	src/miarex/view/GLCreateLists.cpp \
-	src/miarex/view/GLCreateBodyLists.cpp \
 	src/miarex/view/GL3DScales.cpp \
 	src/miarex/view/StabViewDlg.cpp \
 	src/miarex/mgt/ImportObjectDlg.cpp\
@@ -161,7 +158,7 @@ SOURCES += \
     src/glcontextinfo/openglinfodlg.cpp \
     src/glcontextinfo/gltexturewidget.cpp \
     src/glcontextinfo/glwindow.cpp \
-    src/viewwidgets/gl3widget.cpp
+	src/viewwidgets/gl3widget.cpp
 
 
 HEADERS += \
@@ -171,7 +168,6 @@ HEADERS += \
 	src/mainframe.h \
 	src/XFLR5Application.h \
 	src/viewwidgets/section2dwidget.h \
-	src/viewwidgets/threedwidget.h \
 	src/viewwidgets/graphwidget.h \
 	src/viewwidgets/graphtilewidget.h \
 	src/viewwidgets/legendwidget.h \
@@ -227,8 +223,6 @@ HEADERS += \
 	src/miarex/design/EditBodyDlg.h \
 	src/miarex/design/wingseldlg.h \
 	src/miarex/view/TargetCurveDlg.h \
-	src/miarex/view/GLCreateLists.h \
-	src/miarex/view/GLCreateBodyLists.h \
 	src/miarex/view/GL3DScales.h \
 	src/miarex/view/StabViewDlg.h \
 	src/miarex/mgt/ImportObjectDlg.h \
@@ -384,4 +378,9 @@ QMAKE_CFLAGS_WARN_ON += -W4
 #QMAKE_LFLAGS+=-pg
 
 #QMAKE_CXXFLAGS += -Wall
+
+DISTFILES += \
+    images/wing_left_bottom.png \
+    images/wing_right_bottom.png \
+    images/wing_right_top.png
 

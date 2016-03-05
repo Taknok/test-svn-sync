@@ -20,7 +20,8 @@
 *****************************************************************************/
 
 #include "GLLightDlg.h"
-#include "threedwidget.h"
+#include <Units.h>
+#include <gl3widget.h>
 #include <QGroupBox>
 #include <QGridLayout>
 #include <QVBoxLayout>
@@ -28,20 +29,17 @@
 #include <QLabel>
 #include <QShowEvent>
 
-float GLLightDlg::s_Ambient, GLLightDlg::s_Diffuse, GLLightDlg::s_Specular;
-float GLLightDlg::s_MatAmbient, GLLightDlg::s_MatDiffuse, GLLightDlg::s_MatSpecular, GLLightDlg::s_MatEmission;
-float GLLightDlg::s_Red, GLLightDlg::s_Green, GLLightDlg::s_Blue;
-float GLLightDlg::s_XLight, GLLightDlg::s_YLight, GLLightDlg::s_ZLight;
-int GLLightDlg::s_iMatShininess;
-bool GLLightDlg::s_bCullFaces, GLLightDlg::s_bShade, GLLightDlg::s_bSmooth, GLLightDlg::s_bLocalView, GLLightDlg::s_bDepthTest;
-bool GLLightDlg::s_bColorMaterial;
-bool GLLightDlg::s_bLight;
+
+
+Light GLLightDlg::s_Light;
+Material GLLightDlg::s_Material;
+Attenuation GLLightDlg::s_Attenuation;
 
 
 GLLightDlg::GLLightDlg(QWidget *pParent) : QDialog(pParent)
 {
-	m_Size = 5.0;
-	setDefaults(m_Size);
+	m_ModelSize = 3.0;
+	setDefaults();
 
 	setWindowTitle(tr("OpenGL Light Options"));
     setModal(false);
@@ -49,112 +47,36 @@ GLLightDlg::GLLightDlg(QWidget *pParent) : QDialog(pParent)
 
 	setupLayout();
 
-	connect(m_pctrlClose, SIGNAL(clicked()),this, SLOT(accept()));
+	connect(m_pctrlLight,    SIGNAL(clicked()), this, SLOT(onLight()));
+	connect(m_pctrlClose,    SIGNAL(clicked()), this, SLOT(accept()));
 	connect(m_pctrlDefaults, SIGNAL(clicked()), this, SLOT(onDefaults()));
-	connect(m_pctrlRed, SIGNAL(sliderMoved(int)), this, SLOT(onSlider(int)));
-	connect(m_pctrlGreen, SIGNAL(sliderMoved(int)), this, SLOT(onSlider(int)));
-	connect(m_pctrlBlue, SIGNAL(sliderMoved(int)), this, SLOT(onSlider(int)));
-	connect(m_pctrlAmbient, SIGNAL(sliderMoved(int)), this, SLOT(onSlider(int)));
-	connect(m_pctrlDiffuse, SIGNAL(sliderMoved(int)), this, SLOT(onSlider(int)));
-	connect(m_pctrlSpecular, SIGNAL(sliderMoved(int)), this, SLOT(onSlider(int)));
-	connect(m_pctrlMatAmbient, SIGNAL(sliderMoved(int)), this, SLOT(onSlider(int)));
-	connect(m_pctrlMatDiffuse, SIGNAL(sliderMoved(int)), this, SLOT(onSlider(int)));
-	connect(m_pctrlMatSpecular, SIGNAL(sliderMoved(int)), this, SLOT(onSlider(int)));
-	connect(m_pctrlMatShininess, SIGNAL(sliderMoved(int)), this, SLOT(onSlider(int)));
-	connect(m_pctrlMatEmission, SIGNAL(sliderMoved(int)), this, SLOT(onSlider(int)));
-	connect(m_pctrlXLight, SIGNAL(sliderMoved(int)), this, SLOT(onSlider(int)));
-	connect(m_pctrlYLight, SIGNAL(sliderMoved(int)), this, SLOT(onSlider(int)));
-	connect(m_pctrlZLight, SIGNAL(sliderMoved(int)), this, SLOT(onSlider(int)));
 
-	connect(m_pctrlColorMaterial, SIGNAL(clicked()), this, SLOT(onChanged()));
-	connect(m_pctrlDepthTest, SIGNAL(clicked()), this, SLOT(onChanged()));
-	connect(m_pctrlCullFaces, SIGNAL(clicked()), this, SLOT(onChanged()));
-	connect(m_pctrlShade, SIGNAL(clicked()), this, SLOT(onChanged()));
-	connect(m_pctrlSmooth, SIGNAL(clicked()), this, SLOT(onChanged()));
-	connect(m_pctrlLocalView, SIGNAL(clicked()), this, SLOT(onChanged()));
+	connect(m_pctrlRed,           SIGNAL(sliderMoved(int)), this, SLOT(onChanged()));
+	connect(m_pctrlGreen,         SIGNAL(sliderMoved(int)), this, SLOT(onChanged()));
+	connect(m_pctrlBlue,          SIGNAL(sliderMoved(int)), this, SLOT(onChanged()));
+	connect(m_pctrlLightAmbient,  SIGNAL(sliderMoved(int)), this, SLOT(onChanged()));
+	connect(m_pctrlLightDiffuse,  SIGNAL(sliderMoved(int)), this, SLOT(onChanged()));
+	connect(m_pctrlLightSpecular, SIGNAL(sliderMoved(int)), this, SLOT(onChanged()));
+	connect(m_pctrlXLight,        SIGNAL(sliderMoved(int)), this, SLOT(onChanged()));
+	connect(m_pctrlYLight,        SIGNAL(sliderMoved(int)), this, SLOT(onChanged()));
+	connect(m_pctrlZLight,        SIGNAL(sliderMoved(int)), this, SLOT(onChanged()));
 
-	connect(m_pctrlLight, SIGNAL(clicked()), this, SLOT(onLight()));
+	connect(m_pctrlMatAmbient,    SIGNAL(sliderMoved(int)), this, SLOT(onChanged()));
+	connect(m_pctrlMatDiffuse,    SIGNAL(sliderMoved(int)), this, SLOT(onChanged()));
+	connect(m_pctrlMatSpecular,   SIGNAL(sliderMoved(int)), this, SLOT(onChanged()));
+	connect(m_pctrlMatShininess,  SIGNAL(sliderMoved(int)), this, SLOT(onChanged()));
+
+	connect(m_pctrlConstantAttenuation,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlLinearAttenuation,    SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlQuadAttenuation,      SIGNAL(editingFinished()), this, SLOT(onChanged()));
+
+	m_pgl3Widget = NULL;
 }
+
 
 
 void GLLightDlg::setupLayout()
 {
-	m_pctrlDiffuse      = new QSlider(Qt::Horizontal);
-	m_pctrlAmbient      = new QSlider(Qt::Horizontal);
-	m_pctrlSpecular     = new QSlider(Qt::Horizontal);
-	m_pctrlRed          = new QSlider(Qt::Horizontal);
-	m_pctrlGreen        = new QSlider(Qt::Horizontal);
-	m_pctrlBlue         = new QSlider(Qt::Horizontal);
-	m_pctrlXLight       = new QSlider(Qt::Horizontal);
-	m_pctrlYLight       = new QSlider(Qt::Horizontal);
-	m_pctrlZLight       = new QSlider(Qt::Horizontal);
-	m_pctrlMatDiffuse   = new QSlider(Qt::Horizontal);
-	m_pctrlMatAmbient   = new QSlider(Qt::Horizontal);
-	m_pctrlMatSpecular  = new QSlider(Qt::Horizontal);
-	m_pctrlMatEmission  = new QSlider(Qt::Horizontal);
-	m_pctrlMatShininess = new QSlider(Qt::Horizontal);
-	m_pctrlDiffuse->setTickPosition(QSlider::TicksBelow);
-	m_pctrlAmbient->setTickPosition(QSlider::TicksBelow);
-	m_pctrlSpecular->setTickPosition(QSlider::TicksBelow);
-	m_pctrlRed->setTickPosition(QSlider::TicksBelow);
-	m_pctrlGreen->setTickPosition(QSlider::TicksBelow);
-	m_pctrlBlue->setTickPosition(QSlider::TicksBelow);
-	m_pctrlXLight->setTickPosition(QSlider::TicksBelow);
-	m_pctrlYLight->setTickPosition(QSlider::TicksBelow);
-	m_pctrlZLight->setTickPosition(QSlider::TicksBelow);
-	m_pctrlMatDiffuse->setTickPosition(QSlider::TicksBelow);
-	m_pctrlMatAmbient->setTickPosition(QSlider::TicksBelow);
-	m_pctrlMatSpecular->setTickPosition(QSlider::TicksBelow);
-	m_pctrlMatEmission->setTickPosition(QSlider::TicksBelow);
-	m_pctrlMatShininess->setTickPosition(QSlider::TicksBelow);
-
-	m_pctrlRed->setMinimum(0);
-	m_pctrlRed->setMaximum(100);
-	m_pctrlRed->setTickInterval(10);
-	m_pctrlGreen->setMinimum(0);
-	m_pctrlGreen->setMaximum(100);
-	m_pctrlGreen->setTickInterval(10);
-	m_pctrlBlue->setMinimum(0);
-	m_pctrlBlue->setMaximum(100);
-	m_pctrlBlue->setTickInterval(10);
-
-	m_pctrlAmbient->setMinimum(0);
-	m_pctrlAmbient->setMaximum(100);
-	m_pctrlAmbient->setTickInterval(10);
-	m_pctrlDiffuse->setMinimum(0);
-	m_pctrlDiffuse->setMaximum(100);
-	m_pctrlDiffuse->setTickInterval(10);
-	m_pctrlSpecular->setMinimum(0);
-	m_pctrlSpecular->setMaximum(100);
-	m_pctrlSpecular->setTickInterval(10);
-
-	m_pctrlMatAmbient->setMinimum(-100);
-	m_pctrlMatAmbient->setMaximum(100);
-	m_pctrlMatAmbient->setTickInterval(20);
-	m_pctrlMatDiffuse->setMinimum(-100);
-	m_pctrlMatDiffuse->setMaximum(100);
-	m_pctrlMatDiffuse->setTickInterval(20);
-	m_pctrlMatSpecular->setMinimum(-100);
-	m_pctrlMatSpecular->setMaximum(100);
-	m_pctrlMatSpecular->setTickInterval(20);
-	m_pctrlMatEmission->setMinimum(-100);
-	m_pctrlMatEmission->setMaximum(100);
-	m_pctrlMatEmission->setTickInterval(20);
-	m_pctrlMatShininess->setMinimum(0);
-	m_pctrlMatShininess->setMaximum(128);
-	m_pctrlMatShininess->setTickInterval(16);
-
-
-	m_pctrlXLight->setMinimum(0);
-	m_pctrlXLight->setMaximum(100);
-	m_pctrlXLight->setTickInterval(10);
-	m_pctrlYLight->setMinimum(0);
-	m_pctrlYLight->setMaximum(100);
-	m_pctrlYLight->setTickInterval(10);
-	m_pctrlZLight->setMinimum(0);
-	m_pctrlZLight->setMaximum(100);
-	m_pctrlZLight->setTickInterval(10);
-
 	QGroupBox *pLightIntensityBox = new QGroupBox(tr("Light Intensity"));
 	{
 		QGridLayout *pLightIntensity = new QGridLayout;
@@ -162,12 +84,47 @@ void GLLightDlg::setupLayout()
 			QLabel *lab1 = new QLabel(tr("Diffuse"));
 			QLabel *lab2 = new QLabel(tr("Ambient"));
 			QLabel *lab3 = new QLabel(tr("Specular"));
-			pLightIntensity->addWidget(lab1,1,1);
-			pLightIntensity->addWidget(lab2,2,1);
+
+			m_pctrlLightAmbient      = new QSlider(Qt::Horizontal);
+			m_pctrlLightAmbient->setToolTip("Ambient:\n"
+									   "Bounced light which has been scattered so much that it\n"
+									   "is impossible to tell the direction to its source.\n"
+									   "It is not attenuated by distance, and disappears if\n"
+									   "the light is turned off.");
+			m_pctrlLightDiffuse      = new QSlider(Qt::Horizontal);
+			m_pctrlLightDiffuse->setToolTip("Diffuse:\n"
+									   "Directional light which is brighter on perpendicular\n"
+									   "surfaces. Its reflection is scattered evenly.");
+			m_pctrlLightSpecular     = new QSlider(Qt::Horizontal);
+			m_pctrlLightSpecular->setToolTip("Specular:\n"
+										"Directional light which tends to reflect in a preferred\n"
+										"direction. It is associated with shininess.");
+
+			m_pctrlLightAmbient->setMinimum(0);
+			m_pctrlLightAmbient->setMaximum(100);
+			m_pctrlLightAmbient->setTickInterval(10);
+			m_pctrlLightDiffuse->setMinimum(0);
+			m_pctrlLightDiffuse->setMaximum(100);
+			m_pctrlLightDiffuse->setTickInterval(10);
+			m_pctrlLightSpecular->setMinimum(0);
+			m_pctrlLightSpecular->setMaximum(100);
+			m_pctrlLightSpecular->setTickInterval(10);
+			m_pctrlLightDiffuse->setTickPosition(QSlider::TicksBelow);
+			m_pctrlLightAmbient->setTickPosition(QSlider::TicksBelow);
+			m_pctrlLightSpecular->setTickPosition(QSlider::TicksBelow);
+
+			m_pctrlLightAmbientLabel = new QLabel;
+			m_pctrlLightDiffuseLabel = new QLabel;
+			m_pctrlLightSpecularLabel = new QLabel;
+			pLightIntensity->addWidget(lab2,1,1);
+			pLightIntensity->addWidget(lab1,2,1);
 			pLightIntensity->addWidget(lab3,3,1);
-			pLightIntensity->addWidget(m_pctrlDiffuse,1,2);
-			pLightIntensity->addWidget(m_pctrlAmbient,2,2);
-			pLightIntensity->addWidget(m_pctrlSpecular,3,2);
+			pLightIntensity->addWidget(m_pctrlLightAmbient,1,2);
+			pLightIntensity->addWidget(m_pctrlLightDiffuse,2,2);
+			pLightIntensity->addWidget(m_pctrlLightSpecular,3,2);
+			pLightIntensity->addWidget(m_pctrlLightAmbientLabel,1,3);
+			pLightIntensity->addWidget(m_pctrlLightDiffuseLabel,2,3);
+			pLightIntensity->addWidget(m_pctrlLightSpecularLabel,3,3);
 			pLightIntensityBox->setLayout(pLightIntensity);
 		}
 	}
@@ -179,12 +136,35 @@ void GLLightDlg::setupLayout()
 			QLabel *lab11 = new QLabel(tr("Red"));
 			QLabel *lab12 = new QLabel(tr("Green"));
 			QLabel *lab13 = new QLabel(tr("Blue"));
+			m_pctrlRed    = new QSlider(Qt::Horizontal);
+			m_pctrlGreen  = new QSlider(Qt::Horizontal);
+			m_pctrlBlue   = new QSlider(Qt::Horizontal);
+			m_pctrlRed->setMinimum(0);
+			m_pctrlRed->setMaximum(100);
+			m_pctrlRed->setTickInterval(10);
+			m_pctrlGreen->setMinimum(0);
+			m_pctrlGreen->setMaximum(100);
+			m_pctrlGreen->setTickInterval(10);
+			m_pctrlBlue->setMinimum(0);
+			m_pctrlBlue->setMaximum(100);
+			m_pctrlBlue->setTickInterval(10);
+			m_pctrlRed->setTickPosition(QSlider::TicksBelow);
+			m_pctrlGreen->setTickPosition(QSlider::TicksBelow);
+			m_pctrlBlue->setTickPosition(QSlider::TicksBelow);
+
+			m_pctrlLightRed   = new QLabel;
+			m_pctrlLightGreen = new QLabel;
+			m_pctrlLightBlue  = new QLabel;
+
 			pLightColor->addWidget(lab11,1,1);
 			pLightColor->addWidget(lab12,2,1);
 			pLightColor->addWidget(lab13,3,1);
 			pLightColor->addWidget(m_pctrlRed,1,2);
 			pLightColor->addWidget(m_pctrlGreen,2,2);
 			pLightColor->addWidget(m_pctrlBlue,3,2);
+			pLightColor->addWidget(m_pctrlLightRed,1,3);
+			pLightColor->addWidget(m_pctrlLightGreen,2,3);
+			pLightColor->addWidget(m_pctrlLightBlue,3,3);
 			pLightColorBox->setLayout(pLightColor);
 		}
 	}
@@ -196,63 +176,115 @@ void GLLightDlg::setupLayout()
 			QLabel *lab21 = new QLabel(tr("x"));
 			QLabel *lab22 = new QLabel(tr("y"));
 			QLabel *lab23 = new QLabel(tr("z"));
+
+			m_pctrlXLight = new QSlider(Qt::Horizontal);
+			m_pctrlYLight = new QSlider(Qt::Horizontal);
+			m_pctrlZLight = new QSlider(Qt::Horizontal);
+			m_pctrlXLight->setMinimum(0);
+			m_pctrlXLight->setMaximum(100);
+			m_pctrlXLight->setTickInterval(10);
+			m_pctrlYLight->setMinimum(0);
+			m_pctrlYLight->setMaximum(100);
+			m_pctrlYLight->setTickInterval(10);
+			m_pctrlZLight->setMinimum(0);
+			m_pctrlZLight->setMaximum(100);
+			m_pctrlZLight->setTickInterval(10);
+			m_pctrlXLight->setTickPosition(QSlider::TicksBelow);
+			m_pctrlYLight->setTickPosition(QSlider::TicksBelow);
+			m_pctrlZLight->setTickPosition(QSlider::TicksBelow);
+			m_pctrlposXValue = new QLabel(Units::lengthUnitLabel());
+			m_pctrlposYValue = new QLabel(Units::lengthUnitLabel());
+			m_pctrlposZValue = new QLabel(Units::lengthUnitLabel());
+
 			pLightPosition->addWidget(lab21,1,1);
 			pLightPosition->addWidget(lab22,2,1);
 			pLightPosition->addWidget(lab23,3,1);
 			pLightPosition->addWidget(m_pctrlXLight,1,2);
 			pLightPosition->addWidget(m_pctrlYLight,2,2);
 			pLightPosition->addWidget(m_pctrlZLight,3,2);
+			pLightPosition->addWidget(m_pctrlposXValue,1,3);
+			pLightPosition->addWidget(m_pctrlposYValue,2,3);
+			pLightPosition->addWidget(m_pctrlposZValue,3,3);
 			pLightPositionBox->setLayout(pLightPosition);
 		}
+	}
+
+	QGroupBox *pAttenuationBox = new QGroupBox(tr("Attenuation factors"));
+	{
+		QGridLayout *pAttLayout = new QGridLayout;
+		{
+			QLabel *pConstant = new QLabel(tr("Constant"));
+			QLabel *pLinear = new QLabel(tr("Linear"));
+			QLabel *pQuadratic = new QLabel(tr("Quadratic"));
+			m_pctrlConstantAttenuation = new DoubleEdit(0.0);
+			m_pctrlLinearAttenuation = new DoubleEdit(0.0);
+			m_pctrlQuadAttenuation = new DoubleEdit(0.0);
+			m_pctrlAttenuation = new QLabel(QString::fromUtf8("Attenuation factor = 1.0/(1.0+2.0*d+3.0*d²)"));
+			m_pctrlAttenuation->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
+			pAttLayout->addWidget(pConstant,1,1);
+			pAttLayout->addWidget(pLinear,2,1);
+			pAttLayout->addWidget(pQuadratic,3,1);
+			pAttLayout->addWidget(m_pctrlConstantAttenuation,1,2);
+			pAttLayout->addWidget(m_pctrlLinearAttenuation,2,2);
+			pAttLayout->addWidget(m_pctrlQuadAttenuation,3,2);
+			pAttLayout->addWidget(m_pctrlAttenuation,4,1,1,2);
+		}
+		pAttenuationBox->setLayout(pAttLayout);
 	}
 
 	QGroupBox *pMaterialDataBox = new QGroupBox(tr("Material"));
 	{
 		QGridLayout *pMaterialData = new QGridLayout;
 		{
+			m_pctrlMatDiffuse   = new QSlider(Qt::Horizontal);
+			m_pctrlMatAmbient   = new QSlider(Qt::Horizontal);
+			m_pctrlMatSpecular  = new QSlider(Qt::Horizontal);
+			m_pctrlMatShininess = new QSlider(Qt::Horizontal);
+			m_pctrlMatAmbient->setRange(0, 100);
+			m_pctrlMatAmbient->setTickInterval(10);
+			m_pctrlMatDiffuse->setRange(0, 100);
+			m_pctrlMatDiffuse->setTickInterval(10);
+			m_pctrlMatSpecular->setRange(0, 100);
+			m_pctrlMatSpecular->setTickInterval(10);
+			m_pctrlMatShininess->setRange(0, 64);
+			m_pctrlMatShininess->setTickInterval(2);
+			m_pctrlMatDiffuse->setTickPosition(QSlider::TicksBelow);
+			m_pctrlMatAmbient->setTickPosition(QSlider::TicksBelow);
+			m_pctrlMatSpecular->setTickPosition(QSlider::TicksBelow);
+			m_pctrlMatShininess->setTickPosition(QSlider::TicksBelow);
+
+
 			QLabel *lab31 = new QLabel(tr("Diffuse"));
 			QLabel *lab32 = new QLabel(tr("Ambient"));
 			QLabel *lab33 = new QLabel(tr("Specular"));
-			QLabel *lab34 = new QLabel(tr("Emissions"));
 			QLabel *lab35 = new QLabel(tr("Shininess"));
+			m_pctrlMatDiffuseLabel   = new QLabel("1.0");
+			m_pctrlMatAmbientLabel   = new QLabel("1.0");
+			m_pctrlMatSpecularLabel  = new QLabel("1.0");
+			m_pctrlMatShininessLabel = new QLabel("1");
 			pMaterialData->addWidget(lab31,1,1);
 			pMaterialData->addWidget(lab32,2,1);
 			pMaterialData->addWidget(lab33,3,1);
-			pMaterialData->addWidget(lab34,4,1);
-			pMaterialData->addWidget(lab35,5,1);
+			pMaterialData->addWidget(lab35,4,1);
 			pMaterialData->addWidget(m_pctrlMatDiffuse,1,2);
 			pMaterialData->addWidget(m_pctrlMatAmbient,2,2);
 			pMaterialData->addWidget(m_pctrlMatSpecular,3,2);
-			pMaterialData->addWidget(m_pctrlMatEmission,4,2);
-			pMaterialData->addWidget(m_pctrlMatShininess,5,2);
+			pMaterialData->addWidget(m_pctrlMatShininess,4,2);
+			pMaterialData->addWidget(m_pctrlMatDiffuseLabel,1,3);
+			pMaterialData->addWidget(m_pctrlMatAmbientLabel,2,3);
+			pMaterialData->addWidget(m_pctrlMatSpecularLabel,3,3);
+			pMaterialData->addWidget(m_pctrlMatShininessLabel,4,3);
 			pMaterialDataBox->setLayout(pMaterialData);
 		}
 	}
-
-	QGroupBox *pCheckBoxes = new QGroupBox(tr("Options"));
-	{
-		QVBoxLayout *pCheckLayout = new QVBoxLayout;
-		{
-			m_pctrlColorMaterial = new QCheckBox(tr("Color Material"));
-			m_pctrlCullFaces     = new QCheckBox(tr("Cull Faces"));
-			m_pctrlSmooth        = new QCheckBox(tr("Smooth Quads"));
-			m_pctrlDepthTest     = new QCheckBox(tr("Depth Test"));
-			m_pctrlShade         = new QCheckBox(tr("Smooth Shading"));
-			m_pctrlLocalView     = new QCheckBox(tr("Local View"));
-			pCheckLayout->addWidget(m_pctrlColorMaterial);
-			pCheckLayout->addWidget(m_pctrlCullFaces);
-			pCheckLayout->addWidget(m_pctrlSmooth);
-			pCheckLayout->addWidget(m_pctrlDepthTest);
-			pCheckLayout->addWidget(m_pctrlShade);
-			pCheckLayout->addWidget(m_pctrlLocalView);
-			pCheckBoxes->setLayout(pCheckLayout);
-		}
-	}
-
 	QHBoxLayout *pCommandButtons = new QHBoxLayout;
 	{
 		m_pctrlClose = new QPushButton(tr("Close"));
 		m_pctrlDefaults = new QPushButton(tr("Reset Defaults"));
+		m_pctrlDefaults->setDefault(false);
+		m_pctrlDefaults->setAutoDefault(false);
+		m_pctrlClose->setDefault(false);
+		m_pctrlClose->setAutoDefault(false);
 		pCommandButtons->addStretch(1);
 		pCommandButtons->addWidget(m_pctrlDefaults);
 		pCommandButtons->addStretch(1);
@@ -260,37 +292,27 @@ void GLLightDlg::setupLayout()
 		pCommandButtons->addStretch(1);
 	}
 
-	QVBoxLayout *pLeftSide = new QVBoxLayout;
+	QVBoxLayout *pSliderLayout = new QVBoxLayout;
 	{
-		pLeftSide->addStretch(1);
-		pLeftSide->addWidget(pLightIntensityBox);
-		pLeftSide->addStretch(1);
-		pLeftSide->addWidget(pLightColorBox);
-		pLeftSide->addStretch(1);
-		pLeftSide->addWidget(pLightPositionBox);
-		pLeftSide->addStretch(1);
+		pSliderLayout->addStretch(1);
+		pSliderLayout->addWidget(pLightIntensityBox);
+		pSliderLayout->addStretch(1);
+		pSliderLayout->addWidget(pLightColorBox);
+		pSliderLayout->addStretch(1);
+		pSliderLayout->addWidget(pLightPositionBox);
+		pSliderLayout->addStretch(1);
+		pSliderLayout->addWidget(pMaterialDataBox);
+		pSliderLayout->addStretch(1);
+		pSliderLayout->addWidget(pAttenuationBox);
+		pSliderLayout->addStretch(1);
 	}
 
-	QVBoxLayout *pRightSide = new QVBoxLayout;
-	{
-		pRightSide->addStretch(1);
-		pRightSide->addWidget(pMaterialDataBox);
-		pRightSide->addStretch(1);
-		pRightSide->addWidget(pCheckBoxes);
-		pRightSide->addStretch(1);
-	}
-
-	QHBoxLayout *pTopLayout = new QHBoxLayout;
-	{
-		pTopLayout->addLayout(pLeftSide);
-		pTopLayout->addLayout(pRightSide);
-	}
 
 	QVBoxLayout *pMainLayout = new QVBoxLayout;
 	{
 		m_pctrlLight = new QCheckBox(tr("Light"));
 		pMainLayout->addWidget(m_pctrlLight);
-		pMainLayout->addLayout(pTopLayout);
+		pMainLayout->addLayout(pSliderLayout);
 		pMainLayout->addLayout(pCommandButtons);
 	}
 
@@ -298,19 +320,20 @@ void GLLightDlg::setupLayout()
 }
 
 
+
 void GLLightDlg::apply()
 {
 	readParams();
+	setLabels();
 
-	ThreeDWidget *p3dWidget = (ThreeDWidget*)m_p3dWidget;
-	p3dWidget->update();
+	if(m_pgl3Widget)
+	{
+		GL3Widget *pgl3Widget =(GL3Widget*)m_pgl3Widget;
+		pgl3Widget->glSetupLight();
+		pgl3Widget->update();
+	}
 }
 
-
-void GLLightDlg::onSlider(int)
-{
-	apply();
-}
 
 
 void GLLightDlg::onChanged()
@@ -321,172 +344,210 @@ void GLLightDlg::onChanged()
 
 void GLLightDlg::onDefaults()
 {
-	ThreeDWidget *p3dWidget = (ThreeDWidget*)m_p3dWidget;
-
-	setDefaults(m_Size);
-
+	setDefaults();
 	setParams();
 	setEnabled();
-	p3dWidget->update();
+
+	if(m_pgl3Widget)
+	{
+		GL3Widget *pgl3Widget =(GL3Widget*)m_pgl3Widget;
+		pgl3Widget->glSetupLight();
+		pgl3Widget->update();
+	}
 }
 
 
 
 void GLLightDlg::readParams(void)
 {
-	s_bLight = m_pctrlLight->isChecked();
+	s_Light.m_bIsLightOn = m_pctrlLight->isChecked();
 
-	s_Red     = (float)m_pctrlRed->value()    /100.0f;
-	s_Green   = (float)m_pctrlGreen->value()  /100.0f;
-	s_Blue    = (float)m_pctrlBlue->value()   /100.0f;
+	s_Light.m_Red     = (float)m_pctrlRed->value()    /100.0f;
+	s_Light.m_Green   = (float)m_pctrlGreen->value()  /100.0f;
+	s_Light.m_Blue    = (float)m_pctrlBlue->value()   /100.0f;
 
-	s_MatAmbient    = (float)m_pctrlMatAmbient->value()    /100.0f;
-	s_MatSpecular   = (float)m_pctrlMatSpecular->value()   /100.0f;
-	s_MatDiffuse    = (float)m_pctrlMatDiffuse->value()    /100.0f;
-
-	s_MatEmission   = (float)m_pctrlMatEmission->value()   /100.0f;
-	s_iMatShininess = m_pctrlMatShininess->value();
-
-	s_bCullFaces     = m_pctrlCullFaces->isChecked();
-	s_bColorMaterial = m_pctrlColorMaterial->isChecked();
-	s_bSmooth        = m_pctrlSmooth->isChecked();
-	s_bShade         = m_pctrlShade->isChecked();
-	s_bLocalView     = m_pctrlLocalView->isChecked();
-	s_bDepthTest     = m_pctrlDepthTest->isChecked();
 
 	float factor = 10.0f;
-	s_XLight  = ((float)m_pctrlXLight->value()-50.0f)/factor;
-	s_YLight  = ((float)m_pctrlYLight->value()-50.0f)/factor;
-	s_ZLight  = ((float)m_pctrlZLight->value())/factor;
+	s_Light.m_X  = (float)m_pctrlXLight->value()/factor-5.0f;
+	s_Light.m_Y  = (float)m_pctrlYLight->value()/factor-5.0f;
+	s_Light.m_Z  = (float)m_pctrlZLight->value()/factor;
 
-	s_Ambient     = (float)m_pctrlAmbient->value()  / 100.0f;
-	s_Diffuse     = (float)m_pctrlDiffuse->value()  / 100.0f;
-	s_Specular    = (float)m_pctrlSpecular->value() / 100.0f;
+	s_Light.m_Ambient     = (float)m_pctrlLightAmbient->value()  / 20.0f;
+	s_Light.m_Diffuse     = (float)m_pctrlLightDiffuse->value()  / 20.0f;
+	s_Light.m_Specular    = (float)m_pctrlLightSpecular->value() / 20.0f;
+
+
+	s_Material.m_Ambient      = (float)m_pctrlMatAmbient->value()   /100.0f;
+	s_Material.m_Diffuse      = (float)m_pctrlMatDiffuse->value()   /100.0f;
+	s_Material.m_Specular     = (float)m_pctrlMatSpecular->value()  /100.0f;
+	s_Material.m_iShininess   = m_pctrlMatShininess->value();
+
+	s_Attenuation.m_Constant  = m_pctrlConstantAttenuation->value();
+	s_Attenuation.m_Linear    = m_pctrlLinearAttenuation->value();
+	s_Attenuation.m_Quadratic = m_pctrlQuadAttenuation->value();
 }
 
 
 void GLLightDlg::setParams(void)
 {
-	m_pctrlLight->setChecked(s_bLight);
+	m_pctrlLight->setChecked(s_Light.m_bIsLightOn);
 
-	m_pctrlAmbient->setValue(   (int)(s_Ambient  *100.0));
-	m_pctrlDiffuse->setValue(   (int)(s_Diffuse  *100.0));
-	m_pctrlSpecular->setValue(  (int)(s_Specular *100.0));
+	m_pctrlLightAmbient->setValue(   (int)(s_Light.m_Ambient  *20.0));
+	m_pctrlLightDiffuse->setValue(   (int)(s_Light.m_Diffuse  *20.0));
+	m_pctrlLightSpecular->setValue(  (int)(s_Light.m_Specular *20.0));
 
 	float factor = 10.0f;
-	m_pctrlXLight->setValue((int)((s_XLight+5.0)*factor));
-	m_pctrlYLight->setValue((int)((s_YLight+5.0)*factor));
-	m_pctrlZLight->setValue((int)((s_ZLight)*factor));
+	m_pctrlXLight->setValue((int)((s_Light.m_X+5.0)*factor));
+	m_pctrlYLight->setValue((int)((s_Light.m_Y+5.0)*factor));
+	m_pctrlZLight->setValue((int)((s_Light.m_Z)*factor));
 
-	m_pctrlRed->setValue(  (int)(s_Red  *100.0));
-	m_pctrlGreen->setValue((int)(s_Green*100.0));
-	m_pctrlBlue->setValue( (int)(s_Blue *100.0));
 
-	m_pctrlMatAmbient->setValue(   (int)(s_MatAmbient *100.0));
-	m_pctrlMatDiffuse->setValue(   (int)(s_MatDiffuse *100.0));
-	m_pctrlMatSpecular->setValue(  (int)(s_MatSpecular*100.0));
-	m_pctrlMatEmission->setValue(  (int)(s_MatEmission*100.0));
-	m_pctrlMatShininess->setValue(s_iMatShininess);
+	m_pctrlRed->setValue(  (int)(s_Light.m_Red  *100.0));
+	m_pctrlGreen->setValue((int)(s_Light.m_Green*100.0));
+	m_pctrlBlue->setValue( (int)(s_Light.m_Blue *100.0));
 
-	m_pctrlCullFaces->setChecked(s_bCullFaces);
-	m_pctrlSmooth->setChecked(s_bSmooth);
-	m_pctrlShade->setChecked(s_bShade);
-	m_pctrlLocalView->setChecked(s_bLocalView);
-	m_pctrlDepthTest->setChecked(s_bDepthTest);
-	m_pctrlColorMaterial->setChecked(s_bColorMaterial);
+	m_pctrlMatAmbient->setValue(   (int)(s_Material.m_Ambient  *100.0));
+	m_pctrlMatDiffuse->setValue(   (int)(s_Material.m_Diffuse  *100.0));
+	m_pctrlMatSpecular->setValue(  (int)(s_Material.m_Specular *100.0));
+	m_pctrlMatShininess->setValue(s_Material.m_iShininess);
+
+	m_pctrlConstantAttenuation->setValue(s_Attenuation.m_Constant);
+	m_pctrlLinearAttenuation->setValue(s_Attenuation.m_Linear);
+	m_pctrlQuadAttenuation->setValue(s_Attenuation.m_Quadratic);
+
+	setLabels();
+}
+
+
+void GLLightDlg::setModelSize(double span)
+{
+	m_ModelSize = span;
+}
+
+
+void GLLightDlg::setLabels()
+{
+	QString strong;
+
+	strong.sprintf("%7.1f", s_Light.m_Ambient);
+	m_pctrlLightAmbientLabel->setText(strong);
+	strong.sprintf("%7.1f", s_Light.m_Diffuse);
+	m_pctrlLightDiffuseLabel->setText(strong);
+	strong.sprintf("%7.1f", s_Light.m_Specular);
+	m_pctrlLightSpecularLabel->setText(strong);	strong.sprintf("%7.1f", s_Light.m_X*Units::mtoUnit());
+	m_pctrlposXValue->setText(strong + Units::lengthUnitLabel());
+	strong.sprintf("%7.1f", s_Light.m_Y*Units::mtoUnit());
+	m_pctrlposYValue->setText(strong + Units::lengthUnitLabel());
+	strong.sprintf("%7.1f", s_Light.m_Z*Units::mtoUnit());
+	m_pctrlposZValue->setText(strong + Units::lengthUnitLabel());	strong.sprintf("%7.1f", s_Light.m_Red);
+	m_pctrlLightRed->setText(strong);
+	strong.sprintf("%7.1f", s_Light.m_Green);
+	m_pctrlLightGreen->setText(strong);
+	strong.sprintf("%7.1f", s_Light.m_Blue);
+	m_pctrlLightBlue->setText(strong);
+
+	strong.sprintf("%7.1f", s_Material.m_Ambient);
+	m_pctrlMatAmbientLabel->setText(strong);
+	strong.sprintf("%7.1f", s_Material.m_Diffuse);
+	m_pctrlMatDiffuseLabel->setText(strong);
+	strong.sprintf("%7.1f", s_Material.m_Specular);
+	m_pctrlMatSpecularLabel->setText(strong);
+	strong.sprintf("%d", s_Material.m_iShininess);
+	m_pctrlMatShininessLabel->setText(strong);
+
+	strong.sprintf("Attenuation factor = 1.0/(%4.1f+%4.1f*d+%4.1f*d²)",
+				   s_Attenuation.m_Constant,s_Attenuation.m_Linear, s_Attenuation.m_Quadratic);
+	m_pctrlAttenuation->setText(strong);
 }
 
 
 
 bool GLLightDlg::loadSettings(QSettings *pSettings)
 {
-	pSettings->beginGroup("GLLight");
+	pSettings->beginGroup("GLLight3");
 	{
 	//  we're reading/loading
-		s_Diffuse           = pSettings->value("Diffuse",0.53).toDouble();
-		s_Ambient           = pSettings->value("Ambient",0.18).toDouble();
-		s_Specular          = pSettings->value("Specular",0.05).toDouble();
+		s_Light.m_Ambient           = pSettings->value("Ambient",0.3).toDouble();
+		s_Light.m_Diffuse           = pSettings->value("Diffuse",1.2).toDouble();
+		s_Light.m_Specular          = pSettings->value("Specular",0.50).toDouble();
 
-		s_MatAmbient        = pSettings->value("MatAmbient",-0.51).toDouble();
-		s_MatDiffuse        = pSettings->value("MatDiffuse",-0.43).toDouble();
-		s_MatSpecular       = pSettings->value("MatSpecular",-0.08).toDouble();
-		s_MatEmission       = pSettings->value("MatEmission",-0.06).toDouble();
-		s_iMatShininess     = pSettings->value("MatShininess",0).toDouble();
-		s_XLight            = pSettings->value("XLight", 0.56).toDouble();
-		s_YLight            = pSettings->value("YLight", 0.02).toDouble();
-		s_ZLight            = pSettings->value("ZLight", 5.0).toDouble();
-		s_Red               = pSettings->value("RedLight",1.0).toDouble();
-		s_Green             = pSettings->value("GreenLight",1.0).toDouble();
-		s_Blue              = pSettings->value("BlueLight",1.0).toDouble();
-		s_bCullFaces        = pSettings->value("CullFaces",false).toBool();
-		s_bSmooth           = pSettings->value("Smooth",true).toBool();
-		s_bShade            = pSettings->value("Shade",true).toBool();
-		s_bLocalView        = pSettings->value("LocalView",true).toBool();
-		s_bDepthTest        = pSettings->value("DepthTest",true).toBool();
-		s_bColorMaterial    = pSettings->value("ColorMaterial",true).toBool();
-		s_bLight            = pSettings->value("bLight", true).toBool();
+		s_Light.m_X                 = pSettings->value("XLight", 0.300).toDouble();
+		s_Light.m_Y                 = pSettings->value("YLight", 0.300).toDouble();
+		s_Light.m_Z                 = pSettings->value("ZLight", 3.000).toDouble();
+
+		s_Light.m_Red               = pSettings->value("RedLight",1.0).toDouble();
+		s_Light.m_Green             = pSettings->value("GreenLight",1.0).toDouble();
+		s_Light.m_Blue              = pSettings->value("BlueLight",1.0).toDouble();
+
+		s_Material.m_Ambient        = pSettings->value("MatAmbient",1.0).toDouble();
+		s_Material.m_Diffuse        = pSettings->value("MatDiffuser",1.0).toDouble();
+		s_Material.m_Specular       = pSettings->value("MatSpecular",1.0).toDouble();
+		s_Material.m_iShininess     = pSettings->value("MatShininess", 5).toInt();
+
+		s_Attenuation.m_Constant    = pSettings->value("ConstantAtt",2.0).toDouble();
+		s_Attenuation.m_Linear      = pSettings->value("LinearAtt",1.0).toDouble();
+		s_Attenuation.m_Quadratic   = pSettings->value("QuadraticAtt",.5).toDouble();
+
+		s_Light.m_bIsLightOn        = pSettings->value("bLight", true).toBool();
 	}
 	pSettings->endGroup();
 	return true;
 }
 
 
-void GLLightDlg::setDefaults(double)
+void GLLightDlg::setDefaults()
 {
-	s_Red   = 1.0f;
-	s_Green = 1.0f;
-	s_Blue  = 1.0f;
+	s_Light.m_Red   = 1.0f;
+	s_Light.m_Green = 1.0f;
+	s_Light.m_Blue  = 1.0f;
 
-	s_Diffuse      = 0.53f;
-	s_Ambient      = 0.18f;
-	s_Specular     = 0.05f;
+	s_Light.m_Ambient      = 0.3f;
+	s_Light.m_Diffuse      = 1.20f;
+	s_Light.m_Specular     = 0.50f;
 
-	s_MatAmbient   = -0.51f;
-	s_MatDiffuse   = -0.43f;
-	s_MatSpecular  = -0.08f;
-	s_MatEmission  = -0.06f;
-	s_iMatShininess = 0;
+	s_Light.m_X   =  0.1f * m_ModelSize;
+	s_Light.m_Y   =  0.1f * m_ModelSize;
+	s_Light.m_Z   =  m_ModelSize;
 
-	s_XLight   =  0.56f * m_Size;//.2
-	s_YLight   =  0.02f * m_Size;//1.2
-	s_ZLight   =  5.0f * m_Size;//20
+	s_Material.m_Ambient   = 1.0f;
+	s_Material.m_Diffuse   = 1.0f;
+	s_Material.m_Specular  = 1.0f;
+	s_Material.m_iShininess = 5;
 
-	s_bLight = true;
-	s_bCullFaces = false;
-	s_bShade     = true;
-	s_bSmooth    = true;
-	s_bLocalView = true;
-	s_bDepthTest = true;
-	s_bColorMaterial = true;
+	s_Attenuation.m_Constant  = 1.0;
+	s_Attenuation.m_Linear    = 0.5;
+	s_Attenuation.m_Quadratic = 0.0;
+
+	s_Light.m_bIsLightOn = true;
 }
 
 
 
 bool GLLightDlg::saveSettings(QSettings *pSettings)
 {
-	pSettings->beginGroup("GLLight");
+	pSettings->beginGroup("GLLight3");
 	{
-		pSettings->setValue("Ambient",s_Ambient);
-		pSettings->setValue("Diffuse",s_Diffuse);
-		pSettings->setValue("Specular",s_Specular);
-		pSettings->setValue("MatAmbient",s_MatAmbient);
-		pSettings->setValue("MatDiffuse",s_MatDiffuse);
-		pSettings->setValue("MatSpecular",s_MatSpecular );
-		pSettings->setValue("MatEmission",s_MatEmission);
-		pSettings->setValue("MatShininess",s_iMatShininess);
-		pSettings->setValue("XLight",s_XLight);
-		pSettings->setValue("YLight",s_YLight);
-		pSettings->setValue("ZLight",s_ZLight);
-		pSettings->setValue("RedLight",s_Red);
-		pSettings->setValue("GreenLight",s_Green);
-		pSettings->setValue("BlueLight",s_Blue);
-		pSettings->setValue("CullFaces",s_bCullFaces);
-		pSettings->setValue("Smooth",s_bSmooth);
-		pSettings->setValue("Shade",s_bShade);
-		pSettings->setValue("LocalView",s_bLocalView);
-		pSettings->setValue("DepthTest",s_bDepthTest);
-		pSettings->setValue("ColorMaterial",s_bColorMaterial);
-		pSettings->setValue("bLight", s_bLight);
+		pSettings->setValue("Ambient",      s_Light.m_Ambient);
+		pSettings->setValue("Diffuse",      s_Light.m_Diffuse);
+		pSettings->setValue("Specular",     s_Light.m_Specular);
+
+		pSettings->setValue("XLight",       s_Light.m_X);
+		pSettings->setValue("YLight",       s_Light.m_Y);
+		pSettings->setValue("ZLight",       s_Light.m_Z);
+		pSettings->setValue("RedLight",     s_Light.m_Red);
+		pSettings->setValue("GreenLight",   s_Light.m_Green);
+		pSettings->setValue("BlueLight",    s_Light.m_Blue);
+		pSettings->setValue("bLight",       s_Light.m_bIsLightOn);
+
+		pSettings->setValue("MatAmbient",   s_Material.m_Ambient);
+		pSettings->setValue("MatDiffuser",  s_Material.m_Diffuse);
+		pSettings->setValue("MatSpecular",  s_Material.m_Specular);
+		pSettings->setValue("MatShininess", s_Material.m_iShininess);
+
+		pSettings->setValue("ConstantAtt",  s_Attenuation.m_Constant);
+		pSettings->setValue("LinearAtt",    s_Attenuation.m_Linear);
+		pSettings->setValue("QuadraticAtt", s_Attenuation.m_Quadratic);
+
 	}
 	pSettings->endGroup();
 
@@ -503,9 +564,22 @@ void GLLightDlg::showEvent(QShowEvent *event)
 }
 
 
+
+QSize GLLightDlg::minimumSizeHint() const
+{
+	return QSize(250, 350);
+}
+
+
+QSize GLLightDlg::sizeHint() const
+{
+	return QSize(350, 400);
+}
+
+
 void GLLightDlg::onLight()
 {
-	s_bLight = m_pctrlLight->isChecked();
+	s_Light.m_bIsLightOn = m_pctrlLight->isChecked();
 	setEnabled();
 	apply();
 }
@@ -513,31 +587,22 @@ void GLLightDlg::onLight()
 
 void GLLightDlg::setEnabled()
 {
-	m_pctrlRed->setEnabled(s_bLight);
-	m_pctrlGreen->setEnabled(s_bLight);
-	m_pctrlBlue->setEnabled(s_bLight);
+	m_pctrlRed->setEnabled(s_Light.m_bIsLightOn);
+	m_pctrlGreen->setEnabled(s_Light.m_bIsLightOn);
+	m_pctrlBlue->setEnabled(s_Light.m_bIsLightOn);
 
-	m_pctrlAmbient->setEnabled(s_bLight);
-	m_pctrlDiffuse->setEnabled(s_bLight);
-	m_pctrlSpecular->setEnabled(s_bLight);
+	m_pctrlLightAmbient->setEnabled(s_Light.m_bIsLightOn);
+	m_pctrlLightDiffuse->setEnabled(s_Light.m_bIsLightOn);
+	m_pctrlLightSpecular->setEnabled(s_Light.m_bIsLightOn);
 
-	m_pctrlMatAmbient->setEnabled(s_bLight);
-	m_pctrlMatSpecular->setEnabled(s_bLight);
-	m_pctrlMatDiffuse->setEnabled(s_bLight);
-	m_pctrlMatEmission->setEnabled(s_bLight);
-	m_pctrlMatShininess->setEnabled(s_bLight);
+	m_pctrlXLight->setEnabled(s_Light.m_bIsLightOn);
+	m_pctrlYLight->setEnabled(s_Light.m_bIsLightOn);
+	m_pctrlZLight->setEnabled(s_Light.m_bIsLightOn);
 
-	m_pctrlCullFaces->setEnabled(s_bLight);
-	m_pctrlColorMaterial->setEnabled(s_bLight);
-	m_pctrlSmooth->setEnabled(s_bLight);
-	m_pctrlShade->setEnabled(s_bLight);
-	m_pctrlLocalView->setEnabled(s_bLight);
-	m_pctrlDepthTest->setEnabled(s_bLight);
-
-	m_pctrlXLight->setEnabled(s_bLight);
-	m_pctrlYLight->setEnabled(s_bLight);
-	m_pctrlZLight->setEnabled(s_bLight);
-
+	m_pctrlMatAmbient->setEnabled(false);
+	m_pctrlMatDiffuse->setEnabled(false);
+	m_pctrlMatSpecular->setEnabled(false);
+	m_pctrlMatShininess->setEnabled(s_Light.m_bIsLightOn);
 }
 
 

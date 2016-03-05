@@ -58,7 +58,6 @@ class Foil
 	friend class QAFoil;
 	friend class SplineFoil;
 	friend class Surface;
-	friend class ThreeDWidget;
 	friend class QXDirect;
 	friend class QXInverse;
 	friend class QMiarex;

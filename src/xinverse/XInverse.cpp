@@ -26,6 +26,7 @@
 #include <QtDebug>
 
 #include "XInverse.h" 
+#include <viewwidgets/inverseviewwidget.h>
 #include "FoilSelectionDlg.h"
 #include "PertDlg.h"
 #include "InverseOptionsDlg.h"

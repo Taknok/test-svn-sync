@@ -26,80 +26,94 @@
 
 #include <QDialog>
 #include <QCheckBox>
+#include <QLabel>
 #include <QPushButton>
 #include <QSlider>
 #include <QSettings>
+#include "DoubleEdit.h"
+
+struct Light
+{
+	float m_Ambient, m_Diffuse, m_Specular;
+	float m_Red, m_Green, m_Blue;
+	float m_X, m_Y, m_Z;
+	bool m_bIsLightOn;
+};
+
+
+struct Material
+{
+	float m_Ambient, m_Diffuse, m_Specular;
+	int m_iShininess;
+};
+
+struct Attenuation
+{
+	float m_Constant, m_Linear, m_Quadratic;
+};
+
 
 class GLLightDlg : public QDialog
 {
 	Q_OBJECT
 	friend class QMiarex;
-	friend class ThreeDWidget;
+	friend class GL3Widget;
 
 public:
     GLLightDlg(QWidget *pParent=NULL);
 	void apply();
 	void readParams(void);
-	void setDefaults(double size);
+	void setDefaults();
+	void setModelSize(double span);
 	void setParams(void);
-	void set3dWidget(void*p3DWidget) {m_p3dWidget = p3DWidget;}
+	void setgl3Widget(void*pgl3Widget) {m_pgl3Widget = pgl3Widget;}
+
+	QSize minimumSizeHint() const;
+	QSize sizeHint() const;
 
 	static bool loadSettings(QSettings *pSettings);
 	static bool saveSettings(QSettings *pSettings);
 
-	static bool isLightOn() {return s_bLight;}
-	static void SetLightOn(bool bLight) {s_bLight = bLight;}
+	static bool isLightOn() {return s_Light.m_bIsLightOn;}
+	static void setLightOn(bool bLight) {s_Light.m_bIsLightOn = bLight;}
 
 private:
 	void setupLayout();
 	void showEvent(QShowEvent *event);
 	void setEnabled();
-
+	void setLabels();
 
 private slots:
-	void onSlider(int);
 	void onChanged();
 	void onDefaults();
 	void onLight();
 
 private:
-	QSlider *m_pctrlRed;
-	QSlider *m_pctrlGreen;
-	QSlider *m_pctrlBlue;
-	QSlider *m_pctrlAmbient;
-	QSlider *m_pctrlDiffuse;
-	QSlider *m_pctrlSpecular;
-	QSlider *m_pctrlMatAmbient;
-	QSlider *m_pctrlMatDiffuse;
-	QSlider *m_pctrlMatSpecular;
-	QSlider *m_pctrlMatShininess;
-	QSlider *m_pctrlMatEmission;
-	QSlider *m_pctrlXLight;
-	QSlider *m_pctrlYLight;
-	QSlider *m_pctrlZLight;
-	QCheckBox *m_pctrlColorMaterial;
-	QCheckBox *m_pctrlDepthTest;
-	QCheckBox *m_pctrlCullFaces;
-	QCheckBox *m_pctrlShade;
-	QCheckBox *m_pctrlSmooth;
-	QCheckBox *m_pctrlLocalView;
+	QSlider *m_pctrlRed, *m_pctrlGreen, *m_pctrlBlue;
+	QSlider *m_pctrlLightAmbient, *m_pctrlLightDiffuse, *m_pctrlLightSpecular;
+	QSlider *m_pctrlXLight, *m_pctrlYLight, *m_pctrlZLight;
+	QSlider *m_pctrlMatAmbient, *m_pctrlMatDiffuse, *m_pctrlMatSpecular, *m_pctrlMatShininess;
+
 	QCheckBox *m_pctrlLight;
+	QLabel *m_pctrlLightAmbientLabel, *m_pctrlLightDiffuseLabel, *m_pctrlLightSpecularLabel;
+	QLabel *m_pctrlposXValue, *m_pctrlposYValue, *m_pctrlposZValue;
+	QLabel *m_pctrlLightRed, *m_pctrlLightGreen, *m_pctrlLightBlue;
+	QLabel *m_pctrlMatAmbientLabel, *m_pctrlMatDiffuseLabel, *m_pctrlMatSpecularLabel, *m_pctrlMatShininessLabel;
 
 	QPushButton *m_pctrlDefaults, *m_pctrlClose;
 
+	DoubleEdit *m_pctrlConstantAttenuation , *m_pctrlLinearAttenuation , *m_pctrlQuadAttenuation ;
+	QLabel *m_pctrlAttenuation;
+
+
 private:
-	void *m_p3dWidget;
+	void *m_pgl3Widget;
 
-	static float s_Ambient, s_Diffuse, s_Specular;
-	static float s_MatAmbient, s_MatDiffuse, s_MatSpecular, s_MatEmission;
-	static float s_Red, s_Green, s_Blue;
-	static float s_XLight, s_YLight, s_ZLight;
-	static int s_iMatShininess;
-	static bool s_bCullFaces, s_bShade, s_bSmooth, s_bLocalView, s_bDepthTest;
-	static bool s_bColorMaterial;
-	static bool s_bLight;
+	static Light s_Light;
+	static Material s_Material;
+	static Attenuation s_Attenuation;
 
-	double m_Size;
+	double m_ModelSize;
 
 };
 

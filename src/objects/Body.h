@@ -59,6 +59,8 @@ public:
 	bool serializeBodyXFL(QDataStream &ar, bool bIsStoring);
 	bool importDefinition(QTextStream &inStream, double mtoUnit, QString &errorMessage);
 	bool exportBodyDefinition(QTextStream &outStream, double mtoUnit);
+	bool textures(){return m_bTextures;}
+
 
 	int insertFrame(CVector Real);
 	int insertFrameBefore(int iFrame);
@@ -101,7 +103,7 @@ public:
 
 
 	double framePosition(int iFrame);
-	int frameSize()       {return m_SplineSurface.frameCount();}
+	int frameCount()       {return m_SplineSurface.frameCount();}
 	int framePointCount() {return m_SplineSurface.framePointCount();}
 	int sideLineCount()   {return m_SplineSurface.framePointCount();}// same as FramePointCount();
 
@@ -109,6 +111,9 @@ public:
 	void computeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz);
 	double totalMass();
 	double &volumeMass(){return m_VolumeMass;}
+
+	CVector CoG() {return m_CoG;}
+
 
 	QString &bodyName(){return m_BodyName;}
 	QString &bodyDescription() {return m_BodyDescription;}
@@ -129,7 +134,6 @@ public:
 
 	int m_iActiveFrame;		                  /**< the currently selected frame for display */
 	int m_iHighlight;                         /**< the currently selected point to highlight */
-	int m_iRes;                               /**< the number of output points in one direction of the NURBS surface */
 	int m_NElements;                          /**< the number of mesh elements for this Body object = m_nxPanels * m_nhPanels *2 */
 	int m_nxPanels;                           /**< For a NURBS body, the number of mesh elements in the direction of the x-axis */
 	int m_nhPanels;                           /**< For a NURBS body, the number of mesh elements in the hoop direction */
@@ -163,6 +167,8 @@ public:
 	CVector t_R, t_Prod, t_Q, t_r, t_N;
 //	CVector P0, P1, P2, PI;
 	static double s_XPanelPos[300];
+
+	bool m_bTextures;
 
 };
 #endif

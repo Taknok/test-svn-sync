@@ -21,10 +21,11 @@
 
 
 #include "WPolar.h"
-#include "../globals.h"
-#include "../misc/Settings.h"
-#include "../miarex/Objects3D.h"
-#include "../misc/Units.h"
+#include <globals.h>
+#include <misc/Settings.h>
+#include <miarex/Objects3D.h>
+#include <misc/Units.h>
+#include <objects/Surface.h>
 #include <math.h>
 #include <QtDebug>
 

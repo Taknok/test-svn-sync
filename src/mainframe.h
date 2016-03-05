@@ -39,15 +39,19 @@
 #include <QTranslator>
 #include <QMainWindow>
 #include <QList>
-#include "xflr5.h"
-#include "params.h"
-#include "inverseviewwidget.h"
-#include "threedwidget.h"
-#include "gl3widget.h"
-#include "graph/QGraph.h"
-#include "Direct2dDesign.h"
-#include "xdirecttilewidget.h"
-#include "miarextilewidget.h"
+#include <xflr5.h>
+#include <params.h>
+#include <QGraph.h>
+#include <GLLightDlg.h>
+
+class GL3Widget;
+class InverseViewWidget;
+class QGraph;
+class Direct2dDesign;
+class XDirectTileWidget;
+class MiarexTileWidget;
+class CVector;
+class GLLightDlg;
 
 /**
 *@class MainFrame
@@ -64,7 +68,6 @@
 class MainFrame : public QMainWindow
 {
 	friend class InverseViewWidget;
-	friend class ThreeDWidget;
 	friend class GL3Widget;
 	friend class QXDirect;
 	friend class QMiarex;
@@ -250,11 +253,10 @@ private:
 
 	static QPointer<MainFrame> _self; /**< necessary for MacOS >*/
 
-	QStackedWidget *m_pctrlCentralWidget;  /** The stacked widget which is loaded at the center of the display area. The stack switches between the widgets depending on the user's request. */
-	InverseViewWidget *m_p2dWidget;        /** A pointer to the instance of the TwoDWidget which is used to perform 2d drawings */
+	QStackedWidget *m_pctrlCentralWidget;     /** The stacked widget which is loaded at the center of the display area. The stack switches between the widgets depending on the user's request. */
+	InverseViewWidget *m_p2dWidget;           /** A pointer to the instance of the TwoDWidget which is used to perform 2d drawings */
 	Direct2dDesign *m_pDirect2dWidget;        /** A pointer to the instance of the TwoDWidget which is used to perform 2d drawings of foils in Direct Design */
-	ThreeDWidget *m_p3dWidget;   /** A pointer to the instance of the ThreeDWidget  3d calculations and rendering are performed */
-	GL3Widget *m_pGL3Widget;
+	GL3Widget *m_pgl3Widget;                  /** A pointer to the instance of the OpenGL 3.0 widget where 3d calculations and rendering are performed */
 	MiarexTileWidget *m_pMiarexTileWidget;
 	XDirectTileWidget *m_pXDirectTileWidget;
 

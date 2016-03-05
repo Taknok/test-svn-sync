@@ -22,6 +22,7 @@
 #include "../misc/RenameDlg.h"
 
 #include "Objects3D.h"
+#include <objects/Surface.h>
 #include <QApplication>
 #include <QMessageBox>
 #include <QLocale>
@@ -987,14 +988,14 @@ int Objects3D::createBodyElements(Plane *pCurPlane)
 	if(pCurBody->m_LineType==XFLR5::BODYPANELTYPE)
 	{
 		nx = 0;
-		for(i=0; i<pCurBody->frameSize()-1; i++) nx+=pCurBody->m_xPanels[i];
+		for(i=0; i<pCurBody->frameCount()-1; i++) nx+=pCurBody->m_xPanels[i];
 		nh = 0;
 		for(i=0; i<pCurBody->sideLineCount()-1; i++) nh+=pCurBody->m_hPanels[i];
 		FullSize = nx*nh*2;
 		pCurBody->m_nxPanels = nx;
 		pCurBody->m_nhPanels = nh;
 
-		for (i=0; i<pCurBody->frameSize()-1; i++)
+		for (i=0; i<pCurBody->frameCount()-1; i++)
 		{
 			for (j=0; j<pCurBody->m_xPanels[i]; j++)
 			{
@@ -1852,7 +1853,7 @@ int Objects3D::calculateMatSize(Plane *pPlane, WPolar *pWPolar)
 			if(pCurBody->m_LineType==XFLR5::BODYPANELTYPE)
 			{
 				nx = 0;
-				for(int i=0; i<pCurBody->frameSize()-1; i++) nx+=pCurBody->m_xPanels[i];
+				for(int i=0; i<pCurBody->frameCount()-1; i++) nx+=pCurBody->m_xPanels[i];
 				nh = 0;
 				for(int i=0; i<pCurBody->sideLineCount()-1; i++) nh+=pCurBody->m_hPanels[i];
 				PanelArraySize += nx*nh*2;

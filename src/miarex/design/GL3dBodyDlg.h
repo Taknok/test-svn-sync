@@ -33,16 +33,21 @@
 #include <QTableView>
 #include <QPushButton>
 #include <QToolButton>
+#include <QSplitter>
 #include <QSettings>
 #include <QPixmap>
 
 #include "BodyGridDlg.h"
 #include "BodyTableDelegate.h"
 #include "../../misc/DoubleEdit.h"
-#include "../../misc/LineBtn.h"
+#include "../../misc/ColorButton.h"
 #include "../../objects/ArcBall.h"
 #include "../../objects/Body.h"
-#include "threedwidget.h"
+#include "gl3widget.h"
+#include "BodyLineWidget.h"
+#include "BodyFrameWidget.h"
+
+#define SECTIONHIGHLIGHT    1702
 
 
 class GL3dBodyDlg : public QDialog
@@ -51,63 +56,50 @@ class GL3dBodyDlg : public QDialog
 	friend class MainFrame;
 	friend class QSail7;
 	friend class QMiarex;
-	friend class ThreeDWidget;
 	friend class GLLightDlg;
 	friend class BodyScaleDlg;
 	friend class ManageBodiesDlg;
 	friend class BoatDlg;
 	friend class PlaneDlg;
+	friend class GL3Widget;
 
 public:
     GL3dBodyDlg(QWidget *pParent=NULL);
     ~GL3dBodyDlg();
 
 private slots:
-	void OnAxes();
-	void On3DIso();
-	void On3DTop();
-	void On3DLeft();
-	void On3DFront();
-	void On3DReset();
-	void On3DPickCenter();
-	void OnBodyStyle();
-	void OnBodyInertia();
-	void OnEdgeWeight();
-	void OnExportBodyDef();
-	void OnExportBodyGeom();
-	void OnExportBodyXML();
+	void onBodyColor();
+	void onTextures();
+	void onBodyInertia();
+	void onCheckViewIcons();
+	void onEdgeWeight();
+	void onExportBodyDef();
+	void onExportBodyGeom();
+	void onExportBodyXML();
 	void onImportBodyDef() ;
 	void onImportBodyXML();
-	void OnTranslateBody();
-	void OnGrid();
-	void OnClipPlane();
-	void OnLight();
-	void OnSurfaces();
-	void OnOutline();
-	void OnPanels();
-	void OnLineType();
-	void OnNURBSPanels();
-	void OnInsert();
-	void OnResetScales();
-	void OnShowCurFrameOnly();
-	void OnRemove();
-	void OnFrameCellChanged(QWidget *);
-	void OnFrameItemClicked(const QModelIndex &index);
-	void OnPointCellChanged(QWidget *);
-	void OnPointItemClicked(const QModelIndex &index);
-	void OnScaleBody();
-	void OnUndo();
-	void OnRedo();
-	void OnBodyName();
-	void OnShowMasses();
-	void OnSelChangeXDegree(int sel);
-	void OnSelChangeHoopDegree(int sel);
-	void OnOK();
+	void onTranslateBody();
+	void onGrid();
+	void onLineType();
+	void onNURBSPanels();
+	void onInsert();
+	void onResetScales();
+	void onShowCurFrameOnly();
+	void onRemove();
+	void onFrameCellChanged(QWidget *);
+	void onFrameItemClicked(const QModelIndex &index);
+	void onPointCellChanged(QWidget *);
+	void onPointItemClicked(const QModelIndex &index);
+	void onScaleBody();
+	void onUndo();
+	void onRedo();
+	void onBodyName();
+	void onSelChangeXDegree(int sel);
+	void onSelChangeHoopDegree(int sel);
+	void onOK();
+	void onUpdateBody();
 
 private:
-	void mouseMoveEvent(QMouseEvent *event);
-	void mousePressEvent(QMouseEvent *event);
-	void mouseReleaseEvent(QMouseEvent *event);
 	void keyPressEvent(QKeyEvent *event);
 	void keyReleaseEvent(QKeyEvent *event);
 	void resizeEvent(QResizeEvent *event);
@@ -115,10 +107,7 @@ private:
 	void hideEvent(QHideEvent *event);
 	void reject();
 
-	void zoomEvent(QPoint pos, double zoomFactor);
-	void doubleClickEvent(QPoint point);
-
-	void ShowContextMenu(QContextMenuEvent * event);
+	void showContextMenu(QContextMenuEvent * event);
 
 	void blockSignalling(bool bBlock);
 
@@ -139,27 +128,9 @@ private:
 	void setViewControls();
 	void setTableUnits();
 
-	void GLInverseMatrix();
-	void GLCreateBody2DBodySection();
-	void GLCreateBodyPoints();
-	void GLCreateBodyFrames();
-	void GLCreateBodyGrid();
-	void GLRenderBody();
-	void GLCallViewLists();
-	void GLDraw3D();
-	void GLDrawBodyLegend();
-	void GLDrawBodyLineScale();
-	void GLDrawBodyFrameScale();
-	void GLDrawMasses();
-	void paintBodyLegend(QPainter &painter);
+	void glMake3DObjects();
 	void setControls();
 	void setScales();
-	void setRectangles();
-	void setBodyScale();
-	void setBodyLineScale();
-	void setFrameScale();
-	void set3DRotationCenter();
-	void set3DRotationCenter(QPoint point);
 	void updateView();
 
 	bool initDialog(Body *pBody);
@@ -175,12 +146,12 @@ private:
 	void setPicture();
 	void takePicture();
 
-	void insert(CVector Pt);
-	void remove(CVector Pt);
 
 
 private:
-	ThreeDWidget m_3dWidget;
+	GL3Widget m_gl3Widget;
+	BodyLineWidget *m_pBodyLineWidget;
+	BodyFrameWidget *m_pFrameWidget;
 
 	static QPoint s_WindowPos;
 	static QSize  s_WindowSize;
@@ -190,10 +161,13 @@ private:
 
 	QWidget *m_pctrlControlsWidget;
 
-	QCheckBox *m_pctrlAxes, *m_pctrlLight, *m_pctrlSurfaces, *m_pctrlOutline, *m_pctrlPanels, *m_pctrlShowMasses;
+	QSplitter *m_pLeftSplitter, *m_pHorizontalSplitter, *m_pVerticalSplitter;
+	static QByteArray m_VerticalSplitterSizes, m_HorizontalSplitterSizes, m_LeftSplitterSizes;
+
+	QCheckBox *m_pctrlAxes, *m_pctrlSurfaces, *m_pctrlOutline, *m_pctrlPanels, *m_pctrlShowMasses;
 	QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView;
 	QToolButton *m_pctrlX, *m_pctrlY, *m_pctrlZ, *m_pctrlIso;
-	QPushButton *m_pctrlReset, *m_pctrlPickCenter;
+	QPushButton *m_pctrlReset;
 	QPushButton *m_pctrlUndo, *m_pctrlRedo;
 	QPushButton *m_pctrlOK, *m_pctrlCancel;
 
@@ -205,7 +179,8 @@ private:
 	QTextEdit *m_pctrlBodyDescription;
 
 	QRadioButton *m_pctrlFlatPanels, *m_pctrlBSplines;
-	LineBtn *m_pctrlBodyStyle;
+	ColorButton *m_pctrlBodyColor;
+	QRadioButton *m_pctrlColor, *m_pctrlTextures;
 	DoubleEdit *m_pctrlNXPanels, *m_pctrlNHoopPanels;
 	QComboBox *m_pctrlXDegree, *m_pctrlHoopDegree;
 	QPushButton *m_pctrlMenuButton;
@@ -235,12 +210,10 @@ private:
 
 //	bool m_bStored;
 	bool m_bResetFrame;
+	bool m_bResetglFrameHighlight;
 
 	bool m_bChanged;
 
-	QPoint m_MousePos;
-	QPoint m_ptPopUp;
-	CVector m_RealPopUp;
 
 	Frame *m_pFrame;
 	Body *m_pBody;
@@ -248,57 +221,14 @@ private:
 	BodyGridDlg *m_pBodyGridDlg;
 
 
-	ArcBall m_ArcBall;
-	QPoint m_LastPoint, m_PointDown;
-
-	//make static to keep settings across multiple calls
-	static bool s_bglLight;
-	static bool s_bOutline;                   /**< true if the surface outlines are to be displayed in the 3D view*/
-	static bool s_bSurfaces;                  /**< true if the surfaces are to be displayed in the 3D view*/
-	static bool s_bVLMPanels;                 /**< true if the panels are to be displayed in the 3D view*/
-	static bool s_bAxes;                      /**< true if the axes are to be displayed in the 3D view*/
-	static bool s_bShowMasses;                /**< true if the point masses are to be displayed on the openGL 3D view */
-
-
 	bool m_bEnableName;
-	bool m_bTrans;
-	bool m_bDragPoint;
-	bool m_bArcball;			//true if the arcball is to be displayed
-	bool m_bCrossPoint;			//true if the control point on the arcball is to be displayed
-	bool m_bPickCenter;			//true if the user is in the process of picking a new center for OpenGL display
 	bool m_bResetglBody;
-	bool m_bResetglBodyMesh;
-	bool m_bResetglBody2D;
-	bool m_bResetglBodyPoints;
-	bool m_bIs3DScaleSet;		// true if the 3D scale has been set, false if needs to be reset
-	bool m_bShowLight;			// true if the virtual light is to be displayed
 	bool m_bCurFrameOnly;
 
-	int m_GLList;
-	static int s_NHoopPoints;			//hoop resolution for NURBS bodies
-	static int s_NXPoints;				//longitudinal resolution for NURBS Bodies
+	CVector m_RealPopUp;
+	QPoint m_ptPopUp;
 
-	double m_ClipPlanePos;
-	double MatIn[4][4], MatOut[4][4];
-
-	double m_glTop, m_HorizontalSplit, m_VerticalSplit;//screen split ratio for body 3D view
-	double m_glScaled;//zoom factor for UFO
-	double m_BodyScale, m_FrameScale, m_BodyRefScale, m_FrameRefScale;			// scale for 3D display
-
-	CVector m_UFOOffset;
-	CVector m_BodyOffset;
-	CVector m_FrameOffset;
-
-	CVector m_BodyScalingCenter, m_BodyScaledOffset;
-	CVector m_FrameScalingCenter, m_FrameScaledOffset;
-
-
-	CVector m_glViewportTrans;// the translation vector in gl viewport coordinates
-	CVector m_glRotCenter;    // the center of rotation in object coordinates... is also the opposite of the translation vector
-	QRect m_BodyLineRect;
-	QRect m_FrameRect;
-	QRect m_BodyRect;
-	QRect m_rCltRect;
+//	QRect m_rCltRect;
 
 };
 

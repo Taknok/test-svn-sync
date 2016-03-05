@@ -37,7 +37,6 @@ Body::Body()
 	m_BodyStyle = 0;
 	m_BodyWidth = 1;
 
-
 	m_iActiveFrame =  1;
 	m_iHighlight   = -1;
 	m_LineType     =  XFLR5::BODYSPLINETYPE;
@@ -48,7 +47,8 @@ Body::Body()
 	m_pBodyPanel = NULL; 
 	m_NElements = m_nxPanels * m_nhPanels * 2;
 
-	m_iRes = 31;
+
+	m_bTextures = false;
 
 //	m_BodyLEPosition.Set(0.0,0.0,0.0);
 	m_CoG.set(0.0,0.0,0.0);
@@ -204,6 +204,7 @@ void Body::duplicate(Body *pBody)
 
 	m_BodyName        = pBody->m_BodyName;
 	m_BodyColor       = pBody->m_BodyColor;
+	m_bTextures       = pBody->m_bTextures;
 	m_nxPanels        = pBody->m_nxPanels;
 	m_nhPanels        = pBody->m_nhPanels;
 	m_LineType        = pBody->m_LineType;
@@ -211,7 +212,7 @@ void Body::duplicate(Body *pBody)
 
 	m_SplineSurface.clearFrames();
 	m_xPanels.clear();
-	for(int i=0; i<pBody->frameSize(); i++)
+	for(int i=0; i<pBody->frameCount(); i++)
 	{
 		m_SplineSurface.m_pFrame.append(new Frame);
 		m_SplineSurface.m_pFrame[i]->copyFrame(pBody->m_SplineSurface.m_pFrame[i]);
@@ -265,7 +266,7 @@ bool Body::exportBodyDefinition(QTextStream &outStream, double mtoUnit)
 	outStream << ("OFFSET\n");
 	outStream << ("0.0     0.0     0.0     #Total body offset (Y-coord is ignored)\n\n");
 
-	for(i=0; i<frameSize(); i++)
+	for(i=0; i<frameCount(); i++)
 	{
 		outStream << ("FRAME\n");
 		for(j=0;j<sideLineCount(); j++)
@@ -562,7 +563,7 @@ bool Body::importDefinition(QTextStream &inStream, double mtoUnit, QString &erro
 
 
 
-	for(i=1; i<frameSize(); i++)
+	for(i=1; i<frameCount(); i++)
 	{
 		if(m_SplineSurface.m_pFrame[i]->m_CtrlPoint.size() != m_SplineSurface.m_pFrame[i-1]->m_CtrlPoint.size())
 		{
@@ -571,7 +572,7 @@ bool Body::importDefinition(QTextStream &inStream, double mtoUnit, QString &erro
 		}
 	}
 
-	for(i=0; i<frameSize(); i++)
+	for(i=0; i<frameCount(); i++)
 	{
 		m_SplineSurface.m_pFrame[i]->m_Position.x =  m_SplineSurface.m_pFrame[i]->m_CtrlPoint[0].x + xo;
 		for(j=0; j<sideLineCount(); j++)
@@ -598,7 +599,7 @@ int Body::InsertPoint(CVector Real)
 
 
 	n = activeFrame()->insertPoint(Real, 3);
-	for (i=0; i<frameSize(); i++)
+	for (i=0; i<frameCount(); i++)
 	{
 		Frame *pFrame = m_SplineSurface.m_pFrame[i];
 		if(pFrame != activeFrame())
@@ -656,7 +657,7 @@ int Body::insertFrameBefore(int iFrame)
 int Body::insertFrameAfter(int iFrame)
 {
 	Frame *pFrame = new Frame(sideLineCount());
-	if(iFrame==frameSize()-1)
+	if(iFrame==frameCount()-1)
 	{
 		pFrame->setuPosition(frame(iFrame)->position().x+0.1);
 		m_SplineSurface.m_pFrame.append(pFrame);
@@ -714,7 +715,7 @@ int Body::insertFrame(CVector Real)
 	}
 	else
 	{
-		for (n=0; n<frameSize()-1; n++)
+		for (n=0; n<frameCount()-1; n++)
 		{
 			if(m_SplineSurface.m_pFrame[n]->m_Position.x<=Real.x  &&  Real.x<m_SplineSurface.m_pFrame[n+1]->m_Position.x)
 			{
@@ -730,7 +731,7 @@ int Body::insertFrame(CVector Real)
 				break;
 			}
 		}
-		if(n+1<frameSize())
+		if(n+1<frameCount())
 		{
 			m_SplineSurface.m_pFrame[n+1]->setuPosition(Real.x);
 			double trans = Real.z - (m_SplineSurface.m_pFrame[n+1]->m_CtrlPoint[0].z + m_SplineSurface.m_pFrame[n+1]->m_CtrlPoint.last().z)/2.0;
@@ -743,7 +744,7 @@ int Body::insertFrame(CVector Real)
 
 	m_iActiveFrame = n+1;
 
-	if(n>=frameSize())	m_iActiveFrame = frameSize();
+	if(n>=frameCount())	m_iActiveFrame = frameCount();
 	if(n<=0)			m_iActiveFrame = 0;
 	m_iHighlight = -1;
 
@@ -860,7 +861,7 @@ bool Body::intersectFlatPanels(CVector A, CVector B, CVector &I)
 	U = B-A;
 	U.normalize();
 
-	for (i=0; i<frameSize()-1; i++)
+	for (i=0; i<frameCount()-1; i++)
 	{
 		for (k=0; k<sideLineCount()-1; k++)
 		{
@@ -1000,7 +1001,7 @@ bool Body::intersectFlatPanels(CVector A, CVector B, CVector &I)
 int Body::isFramePos(CVector Real, double ZoomFactor)
 {
 	int k;
-	for (k=0; k<frameSize(); k++)
+	for (k=0; k<frameCount(); k++)
 	{
 		if (qAbs(Real.x-m_SplineSurface.m_pFrame[k]->m_Position.x) < 0.01 *Length()/ZoomFactor &&
 			qAbs(Real.z-m_SplineSurface.m_pFrame[k]->zPos())       < 0.01 *Length()/ZoomFactor)
@@ -1147,7 +1148,7 @@ void Body::removeSideLine(int SideLine)
 void Body::scale(double XFactor, double YFactor, double ZFactor, bool bFrameOnly, int FrameID)
 {
 	int i,j;
-	for (i=0; i<frameSize(); i++)
+	for (i=0; i<frameCount(); i++)
 	{
 		if((bFrameOnly &&  i==FrameID) || !bFrameOnly)
 		{
@@ -1204,7 +1205,7 @@ bool Body::serializeBodyWPA(QDataStream &ar, bool bIsStoring)
 		else     m_LineType = XFLR5::BODYSPLINETYPE;
 		ar >> NSideLines;
 		ar >> nStations;
-		ar >> m_iRes;
+		ar >> k; //m_iRes
 		ar >> k >> k; //ar >> m_nxDegree >> m_nhDegree;
 		ar >> m_nxPanels >> m_nhPanels;
 
@@ -1326,15 +1327,15 @@ bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
 		if(m_LineType==XFLR5::BODYPANELTYPE) ar << 1;
 		else                                 ar << 2;
 
-		ar << m_iRes;
+		ar << 0;
 		ar << m_nxPanels << m_nhPanels;
 		ar << m_Bunch;
 
 		ar << sideLineCount();
 		for(k=0; k<sideLineCount(); k++) ar << m_hPanels[k];
 
-		ar << frameSize();
-		for(k=0; k<frameSize(); k++)
+		ar << frameCount();
+		for(k=0; k<frameCount(); k++)
 		{
 			ar << m_xPanels[k];
 			ar << framePosition(k);
@@ -1351,7 +1352,8 @@ bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
 		}
 
 		// space allocation for the future storage of more data, without need to change the format
-		for (int i=0; i<20; i++) ar << 0;
+		if(m_bTextures) ar << 1; else ar <<0;
+		for (int i=1; i<20; i++) ar << 0;
 		for (int i=0; i<50; i++) ar << (double)0.0;
 	}
 	else
@@ -1368,7 +1370,7 @@ bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
 		if(k==1) m_LineType = XFLR5::BODYPANELTYPE;
 		else     m_LineType = XFLR5::BODYSPLINETYPE;
 
-		ar >> m_iRes;
+		ar >> k; //m_iRes
 		ar >> m_nxPanels >> m_nhPanels;
 		ar >> m_Bunch;
 
@@ -1412,7 +1414,9 @@ bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
 		}
 
 		// space allocation
-		for (int i=0; i<20; i++) ar >> k;
+		ar >>k;
+		if(k) m_bTextures = true; else m_bTextures = false;
+		for (int i=1; i<20; i++) ar >> k;
 		for (int i=0; i<50; i++) ar >> dble;
 	}
 	return true;
@@ -1459,7 +1463,7 @@ void Body::setPanelPos()
 void Body::translate(double XTrans, double , double ZTrans, bool bFrameOnly, int FrameID)
 {
 	int i,j;
-	for (i=0; i<frameSize(); i++)
+	for (i=0; i<frameCount(); i++)
 	{
 		if((bFrameOnly &&  i==FrameID) || !bFrameOnly)
 		{
@@ -1500,7 +1504,7 @@ void Body::translate(CVector T, bool bFrameOnly, int FrameID)
  */
 Frame *Body::frame(int iFrame)
 {
-	if(iFrame>=0 && iFrame<frameSize()) return m_SplineSurface.m_pFrame[iFrame];
+	if(iFrame>=0 && iFrame<frameCount()) return m_SplineSurface.m_pFrame[iFrame];
 	return NULL;
 }
 
@@ -1522,7 +1526,7 @@ double Body::framePosition(int iFrame)
  */
 Frame *Body::activeFrame()
 {
-	if(m_iActiveFrame>=0 && m_iActiveFrame<frameSize()) return m_SplineSurface.m_pFrame[m_iActiveFrame];
+	if(m_iActiveFrame>=0 && m_iActiveFrame<frameCount()) return m_SplineSurface.m_pFrame[m_iActiveFrame];
 	else                                                return NULL;
 }
 
@@ -1633,7 +1637,7 @@ void Body::computeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, do
 		// we use the panel division
 		//first get the wetted area
 
-		for (i=0; i<frameSize()-1; i++)
+		for (i=0; i<frameCount()-1; i++)
 		{
 			for (k=0; k<sideLineCount()-1; k++)
 			{
@@ -1664,7 +1668,7 @@ void Body::computeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, do
 		BodyArea *= 2.0;
 		rho = m_VolumeMass/BodyArea;
 		//First get the CoG position
-		for (i=0; i<frameSize()-1; i++)
+		for (i=0; i<frameCount()-1; i++)
 		{
 			for (j=0; j<m_xPanels[i]; j++)
 			{
@@ -1713,7 +1717,7 @@ void Body::computeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, do
 
 		//Then Get Inertias
 		// we could do it one calculation, for CG and inertia, by using Hyghens/steiner theorem
-		for (i=0; i<frameSize()-1; i++)
+		for (i=0; i<frameCount()-1; i++)
 		{
 			for (j=0; j<m_xPanels[i]; j++)
 			{
