@@ -20,7 +20,6 @@
 *****************************************************************************/
 
 
-#include "threedwidget.h"
 #include "../../globals.h"
 #include "../../misc/LinePickerDlg.h"
 #include "../../misc/GLLightDlg.h"
@@ -32,9 +31,10 @@
 #include "./InertiaDlg.h"
 #include "./BodyScaleDlg.h"
 #include "./GL3dBodyDlg.h"
-#include "../view/GLCreateBodyLists.h"
 #include "../mgt/XmlPlaneReader.h"
 #include "../mgt/XmlPlaneWriter.h"
+#include <QFileDialog>
+#include <QColorDialog>
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -45,41 +45,17 @@
 #include <QHeaderView>
 #include <math.h>
 
-//2D
-#define BODYAXIALLINES      1304
-#define BODYFRAME		    1305
-#define BODYFRAME3D         1306
-#define BODYFRAMEGRID		1307
-#define BODYLINEGRID		1308
 
-#define BODYPOINTS			1309
-#define FRAMEPOINTS			1310
+QByteArray GL3dBodyDlg::m_VerticalSplitterSizes;
+QByteArray GL3dBodyDlg::m_HorizontalSplitterSizes;
+QByteArray GL3dBodyDlg::m_LeftSplitterSizes;
 
-#define BODYFRAMESCALES		1316
-#define BODYLINESCALES		1317
-
-
-
-bool GL3dBodyDlg::s_bglLight = true;
-bool GL3dBodyDlg::s_bOutline = true;
-bool GL3dBodyDlg::s_bSurfaces = true;
-bool GL3dBodyDlg::s_bVLMPanels = false;
-bool GL3dBodyDlg::s_bAxes = true;
-bool GL3dBodyDlg::s_bShowMasses = false;
-
-
-int GL3dBodyDlg::s_NHoopPoints = 37;
-int GL3dBodyDlg::s_NXPoints = 47;
-
+#define NHOOPPOINTS 67
+#define NXPOINTS 97
 
 QPoint GL3dBodyDlg::s_WindowPos=QPoint(20,20);
 QSize  GL3dBodyDlg::s_WindowSize=QSize(900, 700);
-#ifdef Q_OS_MAC
 bool GL3dBodyDlg::s_bWindowMaximized=true;
-#else
-bool GL3dBodyDlg::s_bWindowMaximized=false;
-#endif
-
 
 
 GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
@@ -88,14 +64,13 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
 	setWindowFlags(Qt::Window);
 	setMouseTracking(true);
 
-	m_MousePos.setX(-1);
-	m_MousePos.setY(-1);
-
-
 	m_pBodyGridDlg = new BodyGridDlg(this);
 	m_pBody = NULL;
 	m_pPointPrecision = NULL;
 	m_pFramePrecision = NULL;
+
+	m_pPointDelegate = NULL;
+	m_pFrameDelegate = NULL;
 
 	//create a default pix from a random image - couldn't find a better way to do this
 	m_pixTextLegend = QPixmap(":/images/xflr5_64.png");
@@ -107,56 +82,19 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
 	QRect rect(0,0,w,h);
 	m_pixTextLegend = m_pixTextLegend.scaled(rect.size());
 
-	m_BodyOffset.set( 0.20, -0.12, 0.0);
-	m_FrameOffset.set(0.80, -0.50, 0.0);
-	m_HorizontalSplit = -0.45;
-	m_VerticalSplit   =  0.35;
 
 	m_bCurFrameOnly = false;
 
-	m_GLList = 0;
-
-	m_ClipPlanePos = 5.0;
-
-	m_glViewportTrans.x  = 0.0;
-	m_glViewportTrans.y  = 0.0;
-	m_glViewportTrans.z  = 0.0;
-	m_glScaled      = 1.0;
-	m_glTop = 0.0;
 
 	m_StackPos  = 0; //the current position on the stack
 	m_bResetFrame = true;
+	m_bResetglFrameHighlight   = true;
 
-	m_BodyScale     = 1.0;
-	m_BodyRefScale  = 1.0;
-	m_FrameScale    = 1.0;
-	m_FrameRefScale = 1.0;
 
 	m_bChanged    = false;
 	m_bEnableName = true;
 
 	m_bResetglBody        = true;//otherwise endless repaint if no body present
-	m_bResetglBody2D      = true;//
-	m_bResetglBodyPoints  = true;
-	m_bResetglBody2D      = true;
-	m_bResetglBodyMesh    = true;
-
-	m_bTrans             = false;
-	m_bDragPoint         = false;
-	m_bArcball           = false;
-	m_bCrossPoint        = false;
-	s_bglLight           = true;
-	m_bPickCenter        = false;
-	m_bShowLight         = false;
-	m_bIs3DScaleSet      = false;
-
-	m_LastPoint.setX(0);
-	m_LastPoint.setY(0);
-	m_PointDown.setX(0);
-	m_PointDown.setY(0);
-
-	memset(MatIn, 0, 16*sizeof(double));
-	memset(MatOut, 0, 16*sizeof(double));
 
 	m_pInsertPoint      = new QAction(tr("Insert Point") + QString("\tShift+Click"), this);
 	m_pRemovePoint      = new QAction(tr("Remove Point") + QString("\tCtrl+Click"), this);
@@ -169,21 +107,21 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
 	m_pUndo= new QAction(QIcon(":/images/OnUndo.png"), tr("Undo"), this);
 	m_pUndo->setStatusTip(tr("Cancels the last modification"));
 	m_pUndo->setShortcut(Qt::CTRL + Qt::Key_Z);
-	connect(m_pUndo, SIGNAL(triggered()), this, SLOT(OnUndo()));
+	connect(m_pUndo, SIGNAL(triggered()), this, SLOT(onUndo()));
 
 	m_pRedo = new QAction(QIcon(":/images/OnRedo.png"), tr("Redo"), this);
 	m_pRedo->setStatusTip(tr("Restores the last cancelled modification"));
 	m_pRedo->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_Z);
-	connect(m_pRedo, SIGNAL(triggered()), this, SLOT(OnRedo()));
+	connect(m_pRedo, SIGNAL(triggered()), this, SLOT(onRedo()));
 
 	m_pExportBodyGeom = new QAction(tr("Export Body Geometry to text File"), this);
-	connect(m_pExportBodyGeom, SIGNAL(triggered()), this, SLOT(OnExportBodyGeom()));
+	connect(m_pExportBodyGeom, SIGNAL(triggered()), this, SLOT(onExportBodyGeom()));
 
 	m_pExportBodyDef = new QAction(tr("Export Body Definition to txt File"), this);
-	connect(m_pExportBodyDef, SIGNAL(triggered()), this, SLOT(OnExportBodyDef()));
+	connect(m_pExportBodyDef, SIGNAL(triggered()), this, SLOT(onExportBodyDef()));
 
 	m_pExportBodyXML= new QAction(tr("Export body definition to an XML file"), this);
-	connect(m_pExportBodyXML, SIGNAL(triggered()), this, SLOT(OnExportBodyXML()));
+	connect(m_pExportBodyXML, SIGNAL(triggered()), this, SLOT(onExportBodyXML()));
 
 	m_pImportBodyDef = new QAction(tr("Import Body Definition from a text file"), this);
 	connect(m_pImportBodyDef, SIGNAL(triggered()), this, SLOT(onImportBodyDef()));
@@ -192,62 +130,68 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
 	connect(m_pImportBodyXML, SIGNAL(triggered()), this, SLOT(onImportBodyXML()));
 
 	m_pBodyInertia = new QAction(tr("Define Inertia")+"\tF12", this);
-	connect(m_pBodyInertia, SIGNAL(triggered()), this, SLOT(OnBodyInertia()));
+	connect(m_pBodyInertia, SIGNAL(triggered()), this, SLOT(onBodyInertia()));
 
 	m_pTranslateBody = new QAction(tr("Translate"), this);
-	connect(m_pTranslateBody, SIGNAL(triggered()), this, SLOT(OnTranslateBody()));
+	connect(m_pTranslateBody, SIGNAL(triggered()), this, SLOT(onTranslateBody()));
 	setupLayout();
 	setTableUnits();
 
-	connect(m_pInsertPoint,      SIGNAL(triggered()), this, SLOT(OnInsert()));
-	connect(m_pRemovePoint,      SIGNAL(triggered()), this, SLOT(OnRemove()));
-	connect(m_pScaleBody,        SIGNAL(triggered()), this, SLOT(OnScaleBody()));
-	connect(m_pShowCurFrameOnly, SIGNAL(triggered()), this, SLOT(OnShowCurFrameOnly()));
-	connect(m_pResetScales,      SIGNAL(triggered()), this, SLOT(OnResetScales()));
-	connect(m_pGrid,             SIGNAL(triggered()), this, SLOT(OnGrid()));
+	connect(m_pInsertPoint,      SIGNAL(triggered()), this, SLOT(onInsert()));
+	connect(m_pRemovePoint,      SIGNAL(triggered()), this, SLOT(onRemove()));
+	connect(m_pScaleBody,        SIGNAL(triggered()), this, SLOT(onScaleBody()));
+	connect(m_pShowCurFrameOnly, SIGNAL(triggered()), this, SLOT(onShowCurFrameOnly()));
+	connect(m_pResetScales,      SIGNAL(triggered()), this, SLOT(onResetScales()));
+	connect(m_pGrid,             SIGNAL(triggered()), this, SLOT(onGrid()));
 
-	connect(m_pctrlIso, SIGNAL(clicked()),this, SLOT(On3DIso()));
-	connect(m_pctrlX, SIGNAL(clicked()),this, SLOT(On3DFront()));
-	connect(m_pctrlY, SIGNAL(clicked()),this, SLOT(On3DLeft()));
-	connect(m_pctrlZ, SIGNAL(clicked()),this, SLOT(On3DTop()));
-	connect(m_pctrlReset, SIGNAL(clicked()),this, SLOT(On3DReset()));
-	connect(m_pctrlPickCenter, SIGNAL(clicked()),this, SLOT(On3DPickCenter()));
 
-	connect(m_pctrlClipPlanePos, SIGNAL(sliderMoved(int)), this, SLOT(OnClipPlane()));
-	connect(m_pctrlClipPlanePos, SIGNAL(sliderReleased()), this, SLOT(OnClipPlane()));
-	connect(m_pctrlEdgeWeight, SIGNAL(sliderReleased()), this, SLOT(OnEdgeWeight()));
-	connect(m_pctrlPanelBunch, SIGNAL(sliderMoved(int)), this, SLOT(OnNURBSPanels()));
+	connect(m_pctrlReset,      SIGNAL(clicked()), this, SLOT(onResetScales()));
 
-	connect(m_pctrlAxes,       SIGNAL(clicked()), this, SLOT(OnAxes()));
-	connect(m_pctrlPanels,     SIGNAL(clicked()), this, SLOT(OnPanels()));
-	connect(m_pctrlLight,      SIGNAL(clicked()), this, SLOT(OnLight()));
-	connect(m_pctrlShowMasses, SIGNAL(clicked()), this, SLOT(OnShowMasses()));
-	connect(m_pctrlSurfaces,   SIGNAL(clicked()), this, SLOT(OnSurfaces()));
-	connect(m_pctrlOutline,    SIGNAL(clicked()), this, SLOT(OnOutline()));
-	connect(m_pctrlFlatPanels, SIGNAL(clicked()), this, SLOT(OnLineType()));
-	connect(m_pctrlBSplines,   SIGNAL(clicked()), this, SLOT(OnLineType()));
-	connect(m_pctrlBodyStyle,  SIGNAL(clickedLB()), this, SLOT(OnBodyStyle()));
+	connect(m_pctrlAxes,       SIGNAL(clicked(bool)), &m_gl3Widget, SLOT(onAxes(bool)));
+	connect(m_pctrlPanels,     SIGNAL(clicked(bool)), &m_gl3Widget, SLOT(onPanels(bool)));
+	connect(m_pctrlSurfaces,   SIGNAL(clicked(bool)), &m_gl3Widget, SLOT(onSurfaces(bool)));
+	connect(m_pctrlOutline,    SIGNAL(clicked(bool)), &m_gl3Widget, SLOT(onOutline(bool)));
+	connect(m_pctrlShowMasses, SIGNAL(clicked(bool)), &m_gl3Widget, SLOT(onShowMasses(bool)));
 
-	connect(m_pctrlBodyName,   SIGNAL(editingFinished()), this, SLOT(OnBodyName()));
-	connect(m_pctrlNHoopPanels,SIGNAL(editingFinished()), this, SLOT(OnNURBSPanels()));
-	connect(m_pctrlNXPanels,   SIGNAL(editingFinished()), this, SLOT(OnNURBSPanels()));
-	connect(m_pctrlXDegree,    SIGNAL(activated(int)), this, SLOT(OnSelChangeXDegree(int)));
-	connect(m_pctrlHoopDegree, SIGNAL(activated(int)), this, SLOT(OnSelChangeHoopDegree(int)));
+	connect(m_pctrlIso,        SIGNAL(clicked()), &m_gl3Widget, SLOT(on3DIso()));
+	connect(m_pctrlX,          SIGNAL(clicked()), &m_gl3Widget, SLOT(on3DFront()));
+	connect(m_pctrlY,          SIGNAL(clicked()), &m_gl3Widget, SLOT(on3DLeft()));
+	connect(m_pctrlZ,          SIGNAL(clicked()), &m_gl3Widget, SLOT(on3DTop()));
 
-	connect(m_pctrlUndo, SIGNAL(clicked()),this, SLOT(OnUndo()));
-	connect(m_pctrlRedo, SIGNAL(clicked()),this, SLOT(OnRedo()));
+	connect(m_pctrlClipPlanePos, SIGNAL(sliderMoved(int)), &m_gl3Widget, SLOT(onClipPlane(int)));
 
-	connect(m_pSelectionModelFrame, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(OnFrameItemClicked(QModelIndex)));
-	connect(m_pFrameDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(OnFrameCellChanged(QWidget *)));
-	connect(m_pSelectionModelPoint, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(OnPointItemClicked(QModelIndex)));
-	connect(m_pPointDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(OnPointCellChanged(QWidget *)));
+	connect(&m_gl3Widget, SIGNAL(viewModified()), this, SLOT(onCheckViewIcons()));
 
-	connect(m_pctrlOK, SIGNAL(clicked()),this, SLOT(OnOK()));
+	connect(m_pctrlEdgeWeight, SIGNAL(sliderReleased()), this, SLOT(onEdgeWeight()));
+	connect(m_pctrlPanelBunch, SIGNAL(sliderMoved(int)), this, SLOT(onNURBSPanels()));
+
+	connect(m_pctrlFlatPanels, SIGNAL(clicked()), this, SLOT(onLineType()));
+	connect(m_pctrlBSplines,   SIGNAL(clicked()), this, SLOT(onLineType()));
+	connect(m_pctrlBodyColor,  SIGNAL(clicked()), this, SLOT(onBodyColor()));
+
+	connect(m_pctrlBodyName,   SIGNAL(editingFinished()), this, SLOT(onBodyName()));
+	connect(m_pctrlTextures,   SIGNAL(clicked()), this, SLOT(onTextures()));
+	connect(m_pctrlColor,      SIGNAL(clicked()), this, SLOT(onTextures()));
+
+	connect(m_pctrlNHoopPanels,SIGNAL(editingFinished()), this, SLOT(onNURBSPanels()));
+	connect(m_pctrlNXPanels,   SIGNAL(editingFinished()), this, SLOT(onNURBSPanels()));
+	connect(m_pctrlXDegree,    SIGNAL(activated(int)), this, SLOT(onSelChangeXDegree(int)));
+	connect(m_pctrlHoopDegree, SIGNAL(activated(int)), this, SLOT(onSelChangeHoopDegree(int)));
+
+	connect(m_pctrlUndo, SIGNAL(clicked()),this, SLOT(onUndo()));
+	connect(m_pctrlRedo, SIGNAL(clicked()),this, SLOT(onRedo()));
+
+	connect(m_pSelectionModelFrame, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(onFrameItemClicked(QModelIndex)));
+	connect(m_pFrameDelegate,       SIGNAL(closeEditor(QWidget *)), this, SLOT(onFrameCellChanged(QWidget *)));
+	connect(m_pSelectionModelPoint, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(onPointItemClicked(QModelIndex)));
+	connect(m_pPointDelegate,       SIGNAL(closeEditor(QWidget *)), this, SLOT(onPointCellChanged(QWidget *)));
+
+	connect(m_pctrlOK,     SIGNAL(clicked()),this, SLOT(onOK()));
 	connect(m_pctrlCancel, SIGNAL(clicked()),this, SLOT(reject()));
 
+	connect(m_pBodyLineWidget, SIGNAL(objectModified()), this, SLOT(onUpdateBody()));
+	connect(m_pFrameWidget,    SIGNAL(objectModified()), this, SLOT(onUpdateBody()));
 }
-
-
 
 
 void GL3dBodyDlg::setTableUnits()
@@ -267,6 +211,11 @@ GL3dBodyDlg::~GL3dBodyDlg()
 {
 	clearStack(-1);
 	delete m_pBodyGridDlg;
+	if(m_pFramePrecision) delete [] m_pFramePrecision;
+	if(m_pFrameDelegate)  delete m_pFrameDelegate;
+
+	if(m_pPointPrecision) delete [] m_pPointPrecision;
+	if(m_pPointDelegate)  delete m_pPointDelegate;
 }
 
 
@@ -301,9 +250,9 @@ void GL3dBodyDlg::fillFrameDataTable()
 	if(!m_pBody) return;
 	int i;
 
-	m_pFrameModel->setRowCount(m_pBody->frameSize());
+	m_pFrameModel->setRowCount(m_pBody->frameCount());
 
-	for(i=0; i<m_pBody->frameSize(); i++)
+	for(i=0; i<m_pBody->frameCount(); i++)
 	{
 		fillFrameTableRow(i);
 	}
@@ -390,1341 +339,28 @@ void GL3dBodyDlg::fillPointTableRow(int row)
 
 
 
-void GL3dBodyDlg::GLCreateBody2DBodySection()
-{
-	int i,k, width;
-	double zpos;
-	QColor color;
-
-	if(!m_pBody)
-	{
-		glNewList(BODYAXIALLINES,GL_COMPILE);
-		m_GLList++;
-		glEndList();
-		return;
-	}
-
-	glNewList(BODYAXIALLINES,GL_COMPILE);
-	{
-		m_GLList++;
-
-		glEnable(GL_DEPTH_TEST);
-		glEnable (GL_LINE_STIPPLE);
-
-		color = m_pBody->m_BodyColor;
-		width = 1;
-		glLineWidth(width);
-
-		glColor3d(color.redF(), color.greenF(), color.blueF());
-
-		//Middle Line
-//		style = Qt::DashLine;
-		glLineStipple (1, 0xCFCF);
-		glBegin(GL_LINE_STRIP);
-		{
-			for (k=0; k<m_pBody->frameSize();k++)
-			{
-				zpos = (m_pBody->frame(k)->m_CtrlPoint.first().z +m_pBody->frame(k)->m_CtrlPoint.last().z )/2.0;
-				glVertex3d(m_pBody->frame(k)->m_Position.x,
-						   zpos	,
-						   0.0);
-			}
-		}
-		glEnd();
-
-        glDisable(GL_LINE_STIPPLE);
-
-		if(m_pBody->m_LineType==XFLR5::BODYPANELTYPE)
-		{
-			//Top Line
-			glBegin(GL_LINE_STRIP);
-			{
-				for (k=0; k<m_pBody->frameSize();k++)
-					glVertex3d(m_pBody->frame(k)->m_Position.x,
-							   m_pBody->frame(k)->m_CtrlPoint[0].z,
-							   0.0);
-			}
-			glEnd();
-
-			//Bottom Line
-			glBegin(GL_LINE_STRIP);
-			{
-				for (k=0; k<m_pBody->frameSize();k++)
-					glVertex3d(m_pBody->frame(k)->m_Position.x,
-							   m_pBody->frame(k)->m_CtrlPoint[ m_pBody->frame(k)->PointCount()-1].z,
-							   0.0);
-			}
-			glEnd();
-		}
-		else
-		{
-			CVector Point;
-			double xinc, u, v;
-
-			int nh = 50;
-			xinc = 1./(double)(nh-1);
-			u=0.0; v = 0.0;
-
-			//top line
-			u=0.0;
-			glBegin(GL_LINE_STRIP);
-			{
-				v = 0.0;
-				for (i=0; i<=nh; i++)
-				{
-					m_pBody->getPoint(u,v,true, Point);
-					glVertex3d(Point.x, Point.z, Point.y);
-					u += xinc;
-				}
-			}
-			glEnd();
-
-			//bot line
-			u=0.0;
-			glBegin(GL_LINE_STRIP);
-			{
-				v = 1.0;
-				for (i=0; i<=nh; i++)
-				{
-					m_pBody->getPoint(u,v,true, Point);
-					glVertex3d(Point.x, Point.z, Point.y);
-					u += xinc;
-				}
-			}
-			glEnd();
-		}
-        glDisable(GL_DEPTH_TEST);
-        glDisable (GL_LINE_STIPPLE);
-	}
-	glEndList();
-}
-
-
-void GL3dBodyDlg::GLCreateBodyPoints()
-{
-	int k,width;
-	double zpos;
-
-	if(!m_pBody)
-	{
-		glNewList(BODYPOINTS,GL_COMPILE); glEndList();
-		glNewList(FRAMEPOINTS,GL_COMPILE); glEndList();
-		m_GLList+=2;
-		return;
-	}
-
-	glNewList(BODYPOINTS,GL_COMPILE);
-	{
-		m_GLList++;
-
-		glEnable(GL_DEPTH_TEST);
-		glEnable (GL_LINE_STIPPLE);
-		glPolygonMode(GL_FRONT,GL_LINE);
-
-		width = 1;
-		glLineWidth(width);
-
-		glDisable(GL_LINE_STIPPLE);
-        glColor3d(m_pBody->m_BodyColor.redF(), m_pBody->m_BodyColor.greenF(), m_pBody->m_BodyColor.blueF());
-
-
-		for (k=0; k<m_pBody->frameSize();k++)
-		{
-			if(m_pBody->m_iActiveFrame==k)
-			{
-				glLineWidth(2.0);
-				glColor3d(0.,0.,1.0);
-			}
-			else if(m_pBody->m_iHighlight==k)
-			{
-				glLineWidth(2.0);
-				glColor3d(1.,0.,0.0);
-			}
-			else
-			{
-				glLineWidth(1.0);
-                glColor3d(m_pBody->m_BodyColor.redF(), m_pBody->m_BodyColor.greenF(), m_pBody->m_BodyColor.blueF());
-			}
-			zpos = (m_pBody->frame(k)->m_CtrlPoint.first().z + m_pBody->frame(k)->m_CtrlPoint.last().z ) /2.0;
-			glRectd(m_pBody->frame(k)->m_Position.x -0.006/m_BodyScale,
-                    zpos                               -0.006/m_BodyScale,
-					m_pBody->frame(k)->m_Position.x +0.006/m_BodyScale,
-                    zpos                               +0.006/m_BodyScale);
-		}
-		glPolygonMode(GL_FRONT,GL_FILL);
-		glDisable(GL_DEPTH_TEST);
-    }
-	glEndList();
-
-	if(!m_pFrame) return;
-
-	glNewList(FRAMEPOINTS,GL_COMPILE);
-	{
-		m_GLList++;
-
-		glEnable(GL_DEPTH_TEST);
-		glEnable (GL_LINE_STIPPLE);
-		glPolygonMode(GL_FRONT,GL_LINE);
-
-		width = 1;
-
-		glLineWidth(width);
-
-		glDisable(GL_LINE_STIPPLE);
-
-		for (k=0; k<m_pFrame->PointCount();k++)
-		{
-			if(m_pFrame->s_iSelect==k)
-			{
-				glLineWidth(2.0);
-				glColor3d(0.0,0.0,1.0);
-			}
-			else if(m_pFrame->s_iHighlight==k)
-			{
-				glLineWidth(2.0);
-				glColor3d(1.,0.,0.0);
-			}
-			else
-			{
-				glLineWidth(1.0);
-                glColor3d(m_pBody->m_BodyColor.redF(), m_pBody->m_BodyColor.greenF(), m_pBody->m_BodyColor.blueF());
-			}
-			glRectd(m_pFrame->m_CtrlPoint[k].y-0.006/m_FrameScale,
-					m_pFrame->m_CtrlPoint[k].z-0.006/m_FrameScale,
-					m_pFrame->m_CtrlPoint[k].y+0.006/m_FrameScale,
-					m_pFrame->m_CtrlPoint[k].z+0.006/m_FrameScale);
-		}
-		glPolygonMode(GL_FRONT,GL_FILL);
-		glDisable(GL_DEPTH_TEST);
-	}
-	glEndList();
-
-}
-
-
-void GL3dBodyDlg::GLCreateBodyFrames()
-{
-	int j,k;
-	CVector Point;
-	double hinc, u, v;
-	int nh,style, width;
-	QColor color;
-
-	if(!m_pBody || ! m_pFrame || (m_pBody && m_pBody->m_iActiveFrame<0))
-	{
-        glNewList(BODYFRAME,GL_COMPILE);
-        m_GLList++;
-        glEndList();
-        glNewList(BODYFRAME3D,GL_COMPILE);
-        m_GLList++;
-        glEndList();
-        return;
-	}
-
-	nh = 23;
-//	xinc = 0.1;
-	hinc = 1.0/(double)(nh-1);
-
-	glNewList(BODYFRAME,GL_COMPILE);//create 2D Splines or Lines
-	{
-		m_GLList++;
-
-		glEnable(GL_DEPTH_TEST);
-		glEnable (GL_LINE_STIPPLE);
-
-		color = m_pBody->m_BodyColor;
-		style = 0;
-		width = 1;
-
-		glLineWidth(width);
-
-		GLLineStipple(style);
-
-		glColor3d(color.redF(), color.greenF(), color.blueF());
-
-		if(m_pBody->m_LineType ==XFLR5::BODYSPLINETYPE)
-		{
-			if(m_pBody->activeFrame())
-			{
-				u = m_pBody->getu(m_pBody->activeFrame()->m_Position.x);
-
-				glBegin(GL_LINE_STRIP);
-				{
-					v = 0.0;
-					for (k=0; k<nh; k++)
-					{
-						m_pBody->getPoint(u,v,true, Point);
-						glVertex3d(Point.y, Point.z, 0.0);
-						v += hinc;
-					}
-				}
-				glEnd();
-				glBegin(GL_LINE_STRIP);
-				{
-					v = 0.0;
-					for (k=0; k<nh; k++)
-					{
-						m_pBody->getPoint(u,v,false, Point);
-						glVertex3d(Point.y, Point.z, 0.0);
-						v += hinc;
-					}
-				}
-				glEnd();
-			}
-		}
-		else
-		{
-			glBegin(GL_LINE_STRIP);
-			{
-				for (k=0; k<m_pFrame->PointCount();k++)
-					glVertex3d(m_pFrame->m_CtrlPoint[k].y,
-							   m_pFrame->m_CtrlPoint[k].z,
-							   0.0);
-			}
-			glEnd();
-			glBegin(GL_LINE_STRIP);
-			{
-				for (k=0; k<m_pFrame->PointCount();k++)
-					glVertex3d(-m_pFrame->m_CtrlPoint[k].y,
-								m_pFrame->m_CtrlPoint[k].z,
-								0.0);
-			}
-			glEnd();
-		}
-
-		glDisable(GL_LINE_STIPPLE);
-
-		if(!m_bCurFrameOnly)
-		{
-			glEnable (GL_LINE_STIPPLE);
-			glLineStipple (1, 0x0F0F);
-			glLineWidth(1.0);
-			for(j=0; j<m_pBody->frameSize(); j++)
-			{
-				if(j!=m_pBody->m_iActiveFrame)
-				{
-					if(m_pBody->m_LineType ==XFLR5::BODYSPLINETYPE)
-					{
-						u = m_pBody->getu(m_pBody->frame(j)->m_Position.x);
-
-						glBegin(GL_LINE_STRIP);
-						{
-							v = 0.0;
-							for (k=0; k<nh; k++)
-							{
-								m_pBody->getPoint(u,v,true, Point);
-								glVertex3d(Point.y, Point.z, 0.0);
-								v += hinc;
-							}
-						}
-						glEnd();
-						glBegin(GL_LINE_STRIP);
-						{
-							v = 0.0;
-							for (k=0; k<nh; k++)
-							{
-								m_pBody->getPoint(u,v,false, Point);
-								glVertex3d(Point.y, Point.z, 0.0);
-								v += hinc;
-							}
-						}
-						glEnd();
-					}
-					else
-					{
-						glBegin(GL_LINE_STRIP);
-						{
-							for (k=0; k<m_pBody->sideLineCount();k++)
-								glVertex3d(m_pBody->frame(j)->m_CtrlPoint[k].y,
-										   m_pBody->frame(j)->m_CtrlPoint[k].z,
-										   0.0);
-						}
-						glEnd();
-						glBegin(GL_LINE_STRIP);
-						{
-							for (k=0; k<m_pBody->sideLineCount();k++)
-								glVertex3d(m_pBody->frame(j)->m_CtrlPoint[k].y,
-										   m_pBody->frame(j)->m_CtrlPoint[k].z,
-										   0.0);
-						}
-						glEnd();
-					}
-				}
-			}
-			glDisable(GL_LINE_STIPPLE);
-		}
-        glDisable(GL_DEPTH_TEST);
-	}
-	glEndList();
-
-
-	//create 3D Splines or Lines to overlay on the body
-	glNewList(BODYFRAME3D,GL_COMPILE);
-	{
-		m_GLList++;
-
-		glEnable(GL_DEPTH_TEST);
-		glEnable (GL_LINE_STIPPLE);
-
-		color = QColor(0,0,255);
-		style = 0;
-		width = 3;
-		glLineWidth(width);
-
-
-		GLLineStipple(style);
-
-		glColor3d(color.redF(), color.greenF(), color.blueF());
-
-		if(m_pBody->m_LineType ==XFLR5::BODYSPLINETYPE)
-		{
-			if(m_pBody->activeFrame())
-			{
-				u = m_pBody->getu(m_pBody->activeFrame()->m_Position.x);
-
-				glBegin(GL_LINE_STRIP);
-				{
-					v = 0.0;
-					for (k=0; k<nh; k++)
-					{
-						m_pBody->getPoint(u,v,true, Point);
-						glVertex3d(Point.x, Point.y, Point.z);
-						v += hinc;
-					}
-				}
-				glEnd();
-				glBegin(GL_LINE_STRIP);
-				{
-					v = 0.0;
-					for (k=0; k<nh; k++)
-					{
-						m_pBody->getPoint(u,v,false, Point);
-						glVertex3d(Point.x, Point.y, Point.z);
-						v += hinc;
-					}
-				}
-				glEnd();
-			}
-		}
-		else
-		{
-			glBegin(GL_LINE_STRIP);
-			{
-				for (k=0; k<m_pFrame->PointCount();k++)
-					glVertex3d( m_pBody->activeFrame()->m_Position.x,
-					m_pFrame->m_CtrlPoint[k].y, m_pFrame->m_CtrlPoint[k].z);
-			}
-			glEnd();
-			glBegin(GL_LINE_STRIP);
-			{
-				for (k=0; k<m_pFrame->PointCount();k++)
-					glVertex3d( m_pBody->activeFrame()->m_Position.x,
-					-m_pFrame->m_CtrlPoint[k].y, m_pFrame->m_CtrlPoint[k].z);
-			}
-			glEnd();
-		}
-		glDisable (GL_LINE_STIPPLE);
-		glDisable(GL_DEPTH_TEST);
-	}
-	glEndList();
-}
-
-
-void GL3dBodyDlg::GLDrawBodyFrameScale()
-{
-	int i;
-	QString strong;
-
-	double unit = m_pBodyGridDlg->s_Unit2 * Units::mtoUnit();
-
-
-	glEnable(GL_DEPTH_TEST);
-	glDisable (GL_LINE_STIPPLE);
-
-
-	glColor3d(W3dPrefsDlg::s_3DAxisColor.redF(), W3dPrefsDlg::s_3DAxisColor.greenF(), W3dPrefsDlg::s_3DAxisColor.blueF());
-	glLineWidth(W3dPrefsDlg::s_3DAxisWidth);
-
-	// Horizontal scale____________
-	if(qAbs(1.0-m_VerticalSplit)/m_pBodyGridDlg->s_Unit2/m_FrameScale<20)
-	{
-		glBegin(GL_LINES);
-		{
-			for(i=0; i<qAbs(1.0-m_FrameScaledOffset.x)/m_pBodyGridDlg->s_Unit2/m_FrameScale; i++)
-			{
-				glVertex2d(m_FrameScaledOffset.x+(double)i*m_pBodyGridDlg->s_Unit2*m_FrameScale, m_FrameScaledOffset.y+0.00);
-				glVertex2d(m_FrameScaledOffset.x+(double)i*m_pBodyGridDlg->s_Unit2*m_FrameScale, m_FrameScaledOffset.y-0.02);
-			}
-			for(i=1; i<qAbs(m_FrameScaledOffset.x-m_VerticalSplit)/m_pBodyGridDlg->s_Unit2/m_FrameScale; i++)
-			{
-				glVertex2d(m_FrameScaledOffset.x-(double)i*m_pBodyGridDlg->s_Unit2*m_FrameScale, m_FrameScaledOffset.y+0.00);
-				glVertex2d(m_FrameScaledOffset.x-(double)i*m_pBodyGridDlg->s_Unit2*m_FrameScale, m_FrameScaledOffset.y-0.02);
-			}
-		}
-		glEnd();
-
-		glColor3d(Settings::s_TextColor.redF(),Settings::s_TextColor.greenF(),Settings::s_TextColor.blueF());
-		for(i=0; i<qAbs(1.0-m_FrameScaledOffset.x)/m_pBodyGridDlg->s_Unit2/m_FrameScale; i++)
-		{
-			strong = QString("%1").arg((double)i*unit, 6,'f', 2);
-/*            m_3dWidget.renderText(m_FrameScaledOffset.x+(double)i*m_BodyGridDlg->m_Unit2*m_FrameScale-LabelWidth/2,
-									m_FrameScaledOffset.y-0.04,
-									0.0,
-									strong,
-                                    Settings::m_TextFont);*/
-		}
-		for(i=1; i<qAbs(m_FrameScaledOffset.x-(m_VerticalSplit))/m_pBodyGridDlg->s_Unit2/m_FrameScale; i++)
-		{
-			strong = QString("%1").arg(-(double)i*unit, 6,'f', 2);
-/*            m_3dWidget.renderText(m_FrameScaledOffset.x-(double)i*m_BodyGridDlg->m_Unit2*m_FrameScale-LabelWidth/2,
-									m_FrameScaledOffset.y-0.04,
-									0.0,
-									strong,
-                                    Settings::m_TextFont);*/
-		}
-	}
-
-	// Vertical scale____________
-	if(qAbs(m_glTop+1.0)/m_pBodyGridDlg->s_Unit2/m_FrameScale<100)
-	{
-		glBegin(GL_LINES);
-		{
-			for(i=0; i<qAbs(m_glTop-m_FrameScaledOffset.y)/m_pBodyGridDlg->s_Unit2/m_FrameScale; i++)
-			{
-				glVertex2d(m_FrameScaledOffset.x+ 0.00, m_FrameScaledOffset.y+(double)i*m_pBodyGridDlg->s_Unit2*m_FrameScale);
-				glVertex2d(m_FrameScaledOffset.x- 0.02, m_FrameScaledOffset.y+(double)i*m_pBodyGridDlg->s_Unit2*m_FrameScale);
-			}
-			for(i=1; i<qAbs(-1.0-m_FrameScaledOffset.y)/m_pBodyGridDlg->s_Unit2/m_FrameScale; i++)
-			{
-				glVertex2d(m_FrameScaledOffset.x+ 0.00, m_FrameScaledOffset.y-(double)i*m_pBodyGridDlg->s_Unit2*m_FrameScale);
-				glVertex2d(m_FrameScaledOffset.x- 0.02, m_FrameScaledOffset.y-(double)i*m_pBodyGridDlg->s_Unit2*m_FrameScale);
-			}
-		}
-		glEnd();
-
-		glColor3d(Settings::s_TextColor.redF(),Settings::s_TextColor.greenF(),Settings::s_TextColor.blueF());
-		for(i=0; i<qAbs(m_glTop-m_FrameScaledOffset.y)/m_pBodyGridDlg->s_Unit2/m_FrameScale; i++)
-		{
-			strong = QString("%1").arg((double)i*unit, 6,'f', 2);
-/*            m_3dWidget.renderText(m_FrameScaledOffset.x- 0.02 -LabelWidth,
-                                  m_FrameScaledOffset.y+(double)i*m_BodyGridDlg->m_Unit2*m_FrameScale,
-                                  0.0,
-                                  strong);*/
-		}
-		for(i=1; i<qAbs(-1.0-m_FrameScaledOffset.y)/m_pBodyGridDlg->s_Unit2/m_FrameScale; i++)
-		{
-			strong = QString("%1").arg(-(double)i*unit, 6,'f', 2);
-/*			m_3dWidget.renderText(m_FrameScaledOffset.x- 0.02 -LabelWidth,
-                                  m_FrameScaledOffset.y-(double)i*m_BodyGridDlg->m_Unit2*m_FrameScale,
-                                  0.0,
-                                  strong);*/
-		}
-	}
-    glDisable(GL_DEPTH_TEST);
-
-}
-
-
-void GL3dBodyDlg::GLDrawBodyLineScale()
-{
-	int i;
-	QString strong;
-
-	double unit = m_pBodyGridDlg->s_Unit * Units::mtoUnit();
-
-	glEnable(GL_DEPTH_TEST);
-	glDisable (GL_LINE_STIPPLE);
-
-	glColor3d(W3dPrefsDlg::s_3DAxisColor.redF(), W3dPrefsDlg::s_3DAxisColor.greenF(), W3dPrefsDlg::s_3DAxisColor.blueF());
-	glLineWidth(W3dPrefsDlg::s_3DAxisWidth);
-	// Horizontal scale____________
-
-	if(qAbs(m_VerticalSplit+1.0)/m_pBodyGridDlg->s_Unit/m_BodyScale < 50)
-	{
-		glBegin(GL_LINES);
-		{
-			for(i=0;  i<qAbs(m_VerticalSplit-m_BodyScaledOffset.x)/m_pBodyGridDlg->s_Unit/m_BodyScale; i++)
-			{
-				glVertex2d(m_BodyScaledOffset.x+(double)i*m_pBodyGridDlg->s_Unit*m_BodyScale, m_BodyScaledOffset.y+0.00);
-				glVertex2d(m_BodyScaledOffset.x+(double)i*m_pBodyGridDlg->s_Unit*m_BodyScale, m_BodyScaledOffset.y-0.02);
-			}
-			for(i=1; i<qAbs(m_BodyScaledOffset.x-(-1.0))/m_pBodyGridDlg->s_Unit/m_BodyScale; i++)
-			{
-				glVertex2d(m_BodyScaledOffset.x-(double)i*m_pBodyGridDlg->s_Unit*m_BodyScale,m_BodyScaledOffset.y+0.00);
-				glVertex2d(m_BodyScaledOffset.x-(double)i*m_pBodyGridDlg->s_Unit*m_BodyScale,m_BodyScaledOffset.y-0.02);
-			}
-		}
-		glEnd();
-
-		glColor3d(Settings::s_TextColor.redF(),Settings::s_TextColor.greenF(),Settings::s_TextColor.blueF());
-		for(i=0; i<qAbs(m_VerticalSplit-m_BodyScaledOffset.x)/m_pBodyGridDlg->s_Unit/m_BodyScale; i++)
-		{
-			strong = QString("%1").arg((double)i*unit, 6,'f', 2);
-/*            m_3dWidget.renderText(m_BodyScaledOffset.x+(double)i*m_BodyGridDlg->m_Unit*m_BodyScale - LabelWidth/2.0,
-                                  m_BodyScaledOffset.y-0.04,
-                                  0.0,
-                                  strong);*/
-		}
-		for(i=1; i<qAbs(m_BodyScaledOffset.x-(-1.0))/m_pBodyGridDlg->s_Unit/m_BodyScale; i++)
-		{
-			strong = QString("%1").arg(-(double)i*unit, 6,'f', 2);
-/*            m_3dWidget.renderText(m_BodyScaledOffset.x-(double)i*m_BodyGridDlg->m_Unit*m_BodyScale - LabelWidth/2.0,
-                                  m_BodyScaledOffset.y-0.04,
-                                  0.0,
-                                  strong);*/
-		}
-	}
-
-	// Vertical scale____________
-	if(qAbs(m_glTop-m_HorizontalSplit)/m_BodyScale/m_pBodyGridDlg->s_Unit<50)
-	{
-		glColor3d(W3dPrefsDlg::s_3DAxisColor.redF(), W3dPrefsDlg::s_3DAxisColor.greenF(), W3dPrefsDlg::s_3DAxisColor.blueF());
-		glBegin(GL_LINES);
-		{
-			for(i=0; i<qAbs(m_glTop-m_BodyScaledOffset.y)/m_BodyScale/m_pBodyGridDlg->s_Unit; i++)
-			{
-				glVertex2d(m_BodyScaledOffset.x+ 0.00, m_BodyScaledOffset.y+(double)i*m_pBodyGridDlg->s_Unit*m_BodyScale);
-				glVertex2d(m_BodyScaledOffset.x- 0.02, m_BodyScaledOffset.y+(double)i*m_pBodyGridDlg->s_Unit*m_BodyScale);
-			}
-			for(i=1; i<qAbs(m_HorizontalSplit-m_BodyScaledOffset.y)/m_BodyScale/m_pBodyGridDlg->s_Unit; i++)
-			{
-				glVertex2d(m_BodyScaledOffset.x+ 0.00, m_BodyScaledOffset.y-(double)i*m_pBodyGridDlg->s_Unit*m_BodyScale);
-				glVertex2d(m_BodyScaledOffset.x- 0.02, m_BodyScaledOffset.y-(double)i*m_pBodyGridDlg->s_Unit*m_BodyScale);
-			}
-		}
-		glEnd();
-		glColor3d(Settings::s_TextColor.redF(),Settings::s_TextColor.greenF(),Settings::s_TextColor.blueF());
-		for(i=0; i<qAbs(m_glTop-m_BodyScaledOffset.y)/m_BodyScale/m_pBodyGridDlg->s_Unit; i++)
-		{
-			strong = QString("%1").arg((double)i*unit, 6,'f', 2);
-/*			m_3dWidget.renderText(m_BodyScaledOffset.x- 0.02 - LabelWidth,
-                                    m_BodyScaledOffset.y+(double)i*m_BodyGridDlg->m_Unit*m_BodyScale,
-									0.0,
-                                    strong);*/
-		}
-		for(i=1; i<qAbs(m_HorizontalSplit-m_BodyScaledOffset.y)/m_BodyScale/m_pBodyGridDlg->s_Unit; i++)
-		{
-			strong = QString("%1").arg(-(double)i*unit, 6,'f', 2);
-/*			m_3dWidget.renderText(m_BodyScaledOffset.x- 0.02 - LabelWidth,
-                                    m_BodyScaledOffset.y-(double)i*m_BodyGridDlg->m_Unit*m_BodyScale,
-									0.0,
-                                    strong);*/
-		}
-	}
-    glDisable(GL_DEPTH_TEST);
-
-}
-
-
-void GL3dBodyDlg::GLCreateBodyGrid()
-{
-	int i;
-	double nLines;
-
-	int style = W3dPrefsDlg::s_3DAxisStyle;
-	int MaxLines = 150;
-	int start = 0;
-	if(s_bAxes) start = 1;
-
-	glNewList(BODYFRAMEGRID,GL_COMPILE);
-	{
-		m_GLList++;
-
-		glEnable(GL_DEPTH_TEST);
-		glEnable (GL_LINE_STIPPLE);
-
-		if(s_bAxes)
-		{
-			// Frame axis____________
-			glColor3d(W3dPrefsDlg::s_3DAxisColor.redF(), W3dPrefsDlg::s_3DAxisColor.greenF(), W3dPrefsDlg::s_3DAxisColor.blueF());
-			glLineWidth(W3dPrefsDlg::s_3DAxisWidth);
-
-			GLLineStipple(style);
-
-			glBegin(GL_LINES);
-			{
-				//vertical line
-				glVertex2d(0.0, (-1.0-m_FrameScaledOffset.y)/m_FrameScale);
-				glVertex2d(0.0,	(m_glTop-m_FrameScaledOffset.y)   /m_FrameScale);
-				//horizontal Line
-				glVertex2d((m_VerticalSplit-m_FrameScaledOffset.x)/m_FrameScale, 0.0);
-				glVertex2d(( 1.0 -m_FrameScaledOffset.x)          /m_FrameScale, 0.0);
-			}
-			glEnd();
-		}
-
-		// Frame grid____________
-
-		//Main Grid
-
-		glColor3d(m_pBodyGridDlg->s_Color2.redF(), m_pBodyGridDlg->s_Color2.greenF(), m_pBodyGridDlg->s_Color2.blueF());
-		glLineWidth(m_pBodyGridDlg->s_Width2);
-
-		style = m_pBodyGridDlg->s_Style2;
-
-		GLLineStipple(style);
-
-		glBegin(GL_LINES);
-		{
-			if(m_pBodyGridDlg->s_bGrid2)
-			{
-				//Main X Grid
-				nLines = (1.0 - m_VerticalSplit)/m_pBodyGridDlg->s_Unit2/m_FrameScale;
-				if(nLines < MaxLines)
-				{
-					for(i=start; i<qAbs(1.0-m_FrameScaledOffset.x)/m_pBodyGridDlg->s_Unit2/m_FrameScale; i++)
-					{
-						glVertex2d(+(double)i*m_pBodyGridDlg->s_Unit2,
-						(-1.0-m_FrameScaledOffset.y)    /m_FrameScale);
-						glVertex2d(+(double)i*m_pBodyGridDlg->s_Unit2,
-						(m_glTop-m_FrameScaledOffset.y) /m_FrameScale);
-					}
-					for(i=start; i<qAbs(m_FrameScaledOffset.x-m_VerticalSplit)/m_pBodyGridDlg->s_Unit2/m_FrameScale; i++)
-					{
-						glVertex2d((-(double)i*m_pBodyGridDlg->s_Unit2),
-						(-1.0-m_FrameScaledOffset.y)    /m_FrameScale);
-						glVertex2d((-(double)i*m_pBodyGridDlg->s_Unit2),
-						(m_glTop-m_FrameScaledOffset.y) /m_FrameScale);
-					}
-				}
-				//Main Y Grid
-				nLines = (m_glTop+1.0)/m_pBodyGridDlg->s_Unit2/m_FrameScale;
-				if(nLines < MaxLines)
-				{
-					for(i=start; i<qAbs(m_glTop-m_FrameScaledOffset.y)/m_pBodyGridDlg->s_Unit2/m_FrameScale; i++)
-					{
-						glVertex2d((m_VerticalSplit-m_FrameScaledOffset.x)/m_FrameScale,
-						+(double)i*m_pBodyGridDlg->s_Unit2);
-						glVertex2d(( 1.0 -m_FrameScaledOffset.x)          /m_FrameScale,
-						+(double)i*m_pBodyGridDlg->s_Unit2);
-					}
-
-					for(i=start; i<qAbs(-1.0-m_FrameScaledOffset.y)/m_pBodyGridDlg->s_Unit2/m_FrameScale; i++)
-					{
-						glVertex2d((m_VerticalSplit-m_FrameScaledOffset.x)/m_FrameScale,
-						-(double)i*m_pBodyGridDlg->s_Unit2);
-						glVertex2d(( 1.0 -m_FrameScaledOffset.x)          /m_FrameScale,
-						-(double)i*m_pBodyGridDlg->s_Unit2);
-					}
-				}
-			}
-		}
-		glEnd();
-
-		//Minor Grid
-		glColor3d(m_pBodyGridDlg->s_MinColor2.redF(), m_pBodyGridDlg->s_MinColor2.greenF(), m_pBodyGridDlg->s_MinColor2.blueF());
-		glLineWidth(m_pBodyGridDlg->s_MinWidth2);
-
-		GLLineStipple(m_pBodyGridDlg->s_MinStyle2);
-
-		glBegin(GL_LINES);
-		{
-			if(m_pBodyGridDlg->s_bMinGrid2)
-			{
-				//Minor X Grid
-				nLines = (1.0 - m_VerticalSplit)/m_pBodyGridDlg->s_MinorUnit2/m_FrameScale;
-				if(nLines < MaxLines)
-				{
-					for(i=start; i<qAbs(1.0-m_FrameScaledOffset.x)/m_pBodyGridDlg->s_MinorUnit2/m_FrameScale; i++)
-					{
-						glVertex2d(+(double)i*m_pBodyGridDlg->s_MinorUnit2,
-						(-1.0-m_FrameScaledOffset.y)/m_FrameScale);
-						glVertex2d(+(double)i*m_pBodyGridDlg->s_MinorUnit2,
-						(m_glTop-m_FrameScaledOffset.y)     /m_FrameScale);
-					}
-					for(i=start; i<qAbs(m_FrameScaledOffset.x-(m_VerticalSplit))/m_pBodyGridDlg->s_MinorUnit2/m_FrameScale; i++)
-					{
-						glVertex2d((-(double)i*m_pBodyGridDlg->s_MinorUnit2),
-						(-1.0-m_FrameScaledOffset.y)  /m_FrameScale);
-						glVertex2d((-(double)i*m_pBodyGridDlg->s_MinorUnit2),
-						(m_glTop-m_FrameScaledOffset.y) /m_FrameScale);
-					}
-				}
-				//Minor Y Grid
-				nLines = (m_glTop+1.0)/m_pBodyGridDlg->s_MinorUnit2/m_FrameScale;
-				if(nLines < MaxLines)
-				{
-					for(i=start; i<qAbs(m_glTop-m_FrameScaledOffset.y)/m_pBodyGridDlg->s_MinorUnit2/m_FrameScale; i++)
-					{
-						glVertex2d((m_VerticalSplit-m_FrameScaledOffset.x)/m_FrameScale,
-						+(double)i*m_pBodyGridDlg->s_MinorUnit2);
-						glVertex2d(( 1.0 -m_FrameScaledOffset.x)          /m_FrameScale,
-						+(double)i*m_pBodyGridDlg->s_MinorUnit2);
-					}
-
-					for(i=start; i<qAbs(-1.0-m_FrameScaledOffset.y)/m_pBodyGridDlg->s_MinorUnit2/m_FrameScale; i++)
-					{
-						glVertex2d((m_VerticalSplit-m_FrameScaledOffset.x)/m_FrameScale,
-						-(double)i*m_pBodyGridDlg->s_MinorUnit2);
-						glVertex2d(( 1.0 -m_FrameScaledOffset.x)          /m_FrameScale,
-						-(double)i*m_pBodyGridDlg->s_MinorUnit2);
-					}
-				}
-			}
-		}
-		glEnd();
-
-		glDisable(GL_LINE_STIPPLE);
-		glDisable(GL_DEPTH_TEST);
-	}
-	glEndList();
-
-	glNewList(BODYLINEGRID,GL_COMPILE);
-	{
-		m_GLList++;
-
-		glEnable(GL_DEPTH_TEST);
-		glEnable (GL_LINE_STIPPLE);
-
-		if(s_bAxes)
-		{
-			// Frame axis____________
-			glColor3d(W3dPrefsDlg::s_3DAxisColor.redF(), W3dPrefsDlg::s_3DAxisColor.greenF(), W3dPrefsDlg::s_3DAxisColor.blueF());
-			glLineWidth(W3dPrefsDlg::s_3DAxisWidth);
-
-			GLLineStipple(W3dPrefsDlg::s_3DAxisStyle);
-
-
-			// BodyLine axis____________
-
-			glBegin(GL_LINES);
-			{
-				//horizontal Line
-				glVertex2d((m_VerticalSplit- m_BodyScaledOffset.x)/m_BodyScale, 0.0);
-				glVertex2d((-1.0           - m_BodyScaledOffset.x)/m_BodyScale, 0.0);
-				//vertical Line
-				glVertex2d(0.0,	(m_HorizontalSplit-m_BodyScaledOffset.y)/m_BodyScale);
-				glVertex2d(0.0,	(m_glTop          -m_BodyScaledOffset.y)/m_BodyScale);
-			}
-			glEnd();
-		}
-
-		// BodyLine grid____________
-
-		//Main Grid
-		glColor3d(m_pBodyGridDlg->s_Color.redF(), m_pBodyGridDlg->s_Color.greenF(), m_pBodyGridDlg->s_Color.blueF());
-		glLineWidth(m_pBodyGridDlg->s_Width);
-
-		style = m_pBodyGridDlg->s_Style;
-		GLLineStipple(style);
-
-
-		glBegin(GL_LINES);
-		{
-			if(m_pBodyGridDlg->s_bGrid)
-			{
-				//Main X Grid
-				nLines = (m_VerticalSplit+1.0)/m_BodyScale/m_pBodyGridDlg->s_Unit;
-				if(nLines<MaxLines)
-				{
-					for(i=start; i<qAbs(m_VerticalSplit-m_BodyScaledOffset.x)/m_BodyScale/m_pBodyGridDlg->s_Unit; i++)
-					{
-						glVertex2d(+(double)i*m_pBodyGridDlg->s_Unit, (m_HorizontalSplit-m_BodyScaledOffset.y)/m_BodyScale);
-						glVertex2d(+(double)i*m_pBodyGridDlg->s_Unit, (m_glTop-m_BodyScaledOffset.y)          /m_BodyScale);
-					}
-					for(i=start; i<qAbs(m_BodyScaledOffset.x-(-1.0))/m_BodyScale/m_pBodyGridDlg->s_Unit; i++)
-					{
-						glVertex2d((-(double)i*m_pBodyGridDlg->s_Unit),(m_HorizontalSplit-m_BodyScaledOffset.y)/m_BodyScale);
-						glVertex2d((-(double)i*m_pBodyGridDlg->s_Unit),(m_glTop-m_BodyScaledOffset.y)          /m_BodyScale);
-					}
-				}
-				//Main Y Grid
-
-				nLines = (m_glTop-m_HorizontalSplit)/m_BodyScale/m_pBodyGridDlg->s_Unit;
-				if(nLines<MaxLines)
-				{
-					for(i=start; i<qAbs(m_glTop-m_BodyScaledOffset.y)/m_BodyScale/m_pBodyGridDlg->s_Unit; i++)
-					{
-						glVertex2d((m_VerticalSplit-m_BodyScaledOffset.x)/m_BodyScale, +(double)i*m_pBodyGridDlg->s_Unit);
-						glVertex2d((-1.0 -m_BodyScaledOffset.x)          /m_BodyScale, +(double)i*m_pBodyGridDlg->s_Unit);
-					}
-
-					for(i=start; i<qAbs(m_HorizontalSplit-m_BodyScaledOffset.y)/m_BodyScale/m_pBodyGridDlg->s_Unit; i++)
-					{
-						glVertex2d((m_VerticalSplit-m_BodyScaledOffset.x)/m_BodyScale, -(double)i*m_pBodyGridDlg->s_Unit);
-						glVertex2d((-1.0 -m_BodyScaledOffset.x)          /m_BodyScale, -(double)i*m_pBodyGridDlg->s_Unit);
-					}
-				}
-			}
-		}
-		glEnd();
-
-		//Minor Grid
-		glColor3d(m_pBodyGridDlg->s_MinColor.redF(), m_pBodyGridDlg->s_MinColor.greenF(), m_pBodyGridDlg->s_MinColor.blueF());
-
-		glLineWidth(m_pBodyGridDlg->s_MinWidth);
-
-		style = m_pBodyGridDlg->s_MinStyle;
-		GLLineStipple(style);
-
-
-		glBegin(GL_LINES);
-		{
-			if(m_pBodyGridDlg->s_bMinGrid)
-			{
-				//Minor X Grid
-				nLines = (m_VerticalSplit+1.0)/m_BodyScale/m_pBodyGridDlg->s_MinorUnit;
-				if(nLines<MaxLines)
-				{
-					for(i=start; i<qAbs(m_VerticalSplit-m_BodyScaledOffset.x)/m_BodyScale/m_pBodyGridDlg->s_MinorUnit; i++)
-					{
-						glVertex2d(+(double)i*m_pBodyGridDlg->s_MinorUnit,(m_HorizontalSplit-m_BodyScaledOffset.y)/m_BodyScale);
-						glVertex2d(+(double)i*m_pBodyGridDlg->s_MinorUnit,(m_glTop          -m_BodyScaledOffset.y)/m_BodyScale);
-					}
-					for(i=start; i<qAbs(m_BodyScaledOffset.x-(-1.0))/m_BodyScale/m_pBodyGridDlg->s_MinorUnit; i++)
-					{
-						glVertex2d((-(double)i*m_pBodyGridDlg->s_MinorUnit),(m_HorizontalSplit-m_BodyScaledOffset.y)/m_BodyScale);
-						glVertex2d((-(double)i*m_pBodyGridDlg->s_MinorUnit),(m_glTop          -m_BodyScaledOffset.y)/m_BodyScale);
-					}
-				}
-				//Minor Y Grid
-
-				nLines = (m_glTop-m_HorizontalSplit)/m_BodyScale/m_pBodyGridDlg->s_MinorUnit;
-				if(nLines<MaxLines)
-				{
-					for(i=start; i<qAbs(m_glTop-m_BodyScaledOffset.y)/m_BodyScale/m_pBodyGridDlg->s_MinorUnit; i++)
-					{
-						glVertex2d((m_VerticalSplit -m_BodyScaledOffset.x)/m_BodyScale, +(double)i*m_pBodyGridDlg->s_MinorUnit);
-						glVertex2d((-1.0            -m_BodyScaledOffset.x)/m_BodyScale, +(double)i*m_pBodyGridDlg->s_MinorUnit);
-					}
-
-					for(i=start; i<qAbs(m_HorizontalSplit-m_BodyScaledOffset.y)/m_BodyScale/m_pBodyGridDlg->s_MinorUnit; i++)
-					{
-						glVertex2d((m_VerticalSplit -m_BodyScaledOffset.x)/m_BodyScale,  -(double)i*m_pBodyGridDlg->s_MinorUnit);
-						glVertex2d((-1.0            -m_BodyScaledOffset.x)/m_BodyScale, -(double)i*m_pBodyGridDlg->s_MinorUnit);
-					}
-				}
-			}
-		}
-		glEnd();
-		glDisable(GL_LINE_STIPPLE);
-		glDisable(GL_DEPTH_TEST);
-	}
-	glEndList();
-}
-
-
-
-
-void GL3dBodyDlg::GLDraw3D()
-{
-	m_3dWidget.makeCurrent();
-
-	glClearColor(Settings::s_BackgroundColor.redF(), Settings::s_BackgroundColor.greenF(), Settings::s_BackgroundColor.blueF(),0.0);
-
-	if(!glIsList(GLLISTSPHERE))
-	{
-		m_3dWidget.glCreateUnitSphere();
-		m_GLList++;
-	}
-
-	if((m_bResetglBody2D || m_bResetglBodyPoints) && m_pBody)
-	{
-		if(glIsList(BODYPOINTS))
-		{
-			glDeleteLists(BODYPOINTS,2);
-			m_GLList -=2;
-		}
-		GLCreateBodyPoints();
-		m_bResetglBodyPoints = false;
-	}
-
-
-	if(m_bResetglBody2D && m_pBody)
-	{
-		if(glIsList(BODYAXIALLINES))
-		{
-			glDeleteLists(BODYAXIALLINES,5);
-			m_GLList -=5;
-		}
-
-		GLCreateBody2DBodySection();
-		GLCreateBodyFrames();
-		GLCreateBodyGrid();
-		m_bResetglBody2D = false;
-	}
-	if(m_bResetglBody )
-	{
-		//		m_ArcBall.GetMatrix();
-		CVector eye(0.0,0.0,1.0);
-		CVector up(0.0,1.0,0.0);
-		m_ArcBall.setZoom(0.3,eye,up);
-
-		if(glIsList(ARCBALLLIST))
-		{
-			glDeleteLists(ARCBALLLIST,2);
-			m_GLList-=2;
-		}
-		m_3dWidget.glCreateArcballList(m_ArcBall, 1.0);
-		m_GLList+=2;
-	}
-
-	if(m_bResetglBody && m_pBody)
-	{
-		if(glIsList(BODYGEOMBASE))
-		{
-			glDeleteLists(BODYGEOMBASE,1);
-			glDeleteLists(BODYGEOMBASE+MAXBODIES,1);
-			m_GLList -=2;
-		}
-		if(m_pBody->m_LineType==XFLR5::BODYPANELTYPE)	    GLCreateBody3DFlatPanels(BODYGEOMBASE, m_pBody);
-		else if(m_pBody->m_LineType==XFLR5::BODYSPLINETYPE) GLCreateBody3DSplines(BODYGEOMBASE, m_pBody, s_NXPoints, s_NHoopPoints);
-
-		m_bResetglBody = false;
-		if(glIsList(BODYMESHBASE))
-		{
-			glDeleteLists(BODYMESHBASE,1);
-			glDeleteLists(BODYMESHBASE+MAXBODIES,1);
-			m_GLList -=2;
-		}
-		GLCreateBodyMesh(BODYMESHBASE, m_pBody);
-		m_bResetglBodyMesh = false;
-	}
-}
-
-
-void GL3dBodyDlg::GLDrawBodyLegend()
-{
-	QString strong, strLengthUnit;
-
-	int width;
-	QColor color;
-
-	Units::getLengthUnitLabel(strLengthUnit);
-
-//	glNewList(BODYLEGEND,GL_COMPILE);//create 2D Splines or Lines
-
-	//draw view rectangles
-
-	glEnable(GL_DEPTH_TEST);
-	glEnable (GL_LINE_STIPPLE);
-
-	color = Settings::s_TextColor;
-//	style = 0;
-	width = 3;
-
-	glLineWidth((float)width);
-	glLineStipple (1, 0xFFFF);// Solid
-	glColor3d(color.redF(),color.greenF(),color.blueF());
-
-	glBegin(GL_LINES);
-    {
-		glVertex2d(           -1.0, m_HorizontalSplit);
-		glVertex2d(m_VerticalSplit, m_HorizontalSplit);
-    }
-	glEnd();
-
-	glBegin(GL_LINES);
-    {
-		glVertex2d(m_VerticalSplit, m_3dWidget.m_GLViewRect.bottom);
-		glVertex2d(m_VerticalSplit, m_3dWidget.m_GLViewRect.top );
-    }
-	glEnd();
-
-
-	if(m_pBody)
-	{
-		//draw the legend
-		glDisable(GL_LIGHTING);
-		glDisable(GL_LIGHT0);
-
-		// Draw the labels
-		CVector real;
-		m_3dWidget.screenToViewport(m_MousePos, real);
-		QFontMetrics fm(Settings::s_TextFont);
-		int dD = fm.height();
-
-		strong = QString(tr("Frame %1")).arg(m_pBody->m_iActiveFrame+1,2);
-        m_3dWidget.glRenderText(m_FrameRect.left() +dD ,dD,strong);
-
-		strong = QString(tr("Scale = %1")).arg(m_FrameScale/m_BodyRefScale,4,'f',2);
-        m_3dWidget.glRenderText(m_FrameRect.left() +dD ,2*dD,strong);
-
-		strong = QString(tr("Scale = %1")).arg(m_BodyScale/m_BodyRefScale,4,'f',2);
-        m_3dWidget.glRenderText(m_BodyLineRect.left() +dD ,dD,strong);
-
-		if(m_FrameRect.contains(m_MousePos))
-		{
-			real.x =  (real.x - m_FrameScaledOffset.x)/m_FrameScale;
-			real.y =  (real.y - m_FrameScaledOffset.y)/m_FrameScale;
-			real.z = 0.0;
-
-			strong = QString("y = %1 ").arg(real.x * Units::mtoUnit(),9,'f',3);
-			strong += strLengthUnit;
-            m_3dWidget.glRenderText(m_FrameRect.left() +dD ,3*dD,strong);
-
-			strong = QString("z = %1 ").arg(real.y * Units::mtoUnit(),9,'f',3);
-			strong += strLengthUnit;
-            m_3dWidget.glRenderText(m_FrameRect.left() +dD ,4*dD,strong);
-		}
-		else if(m_BodyLineRect.contains(m_MousePos))
-		{
-			real.x =  (real.x - m_BodyScaledOffset.x)/m_BodyScale;
-			real.y =  (real.y - m_BodyScaledOffset.y)/m_BodyScale;
-			real.z = 0.0;
-
-			strong = QString("x = %1 ").arg(real.x * Units::mtoUnit(),9,'f',3);
-			strong += strLengthUnit;
-            m_3dWidget.glRenderText(m_BodyLineRect.left() +dD ,2*dD,strong);
-
-			strong = QString("z = %1 ").arg(real.y * Units::mtoUnit(),9,'f',3);
-			strong += strLengthUnit;
-            m_3dWidget.glRenderText(m_BodyLineRect.left() +dD ,3*dD,strong);
-		}
-	}
-    glDisable(GL_DEPTH_TEST);
-    glDisable (GL_LINE_STIPPLE);
-
-}
-
-
-
-void GL3dBodyDlg::GLInverseMatrix()
-{
-	//Step 1. Transpose the 3x3 rotation portion of the 4x4 matrix to get the inverse rotation
-	int i,j;
-
-	for(i=0 ; i<3; i++)
-	{
-		for(j=0; j<3; j++)
-		{
-			MatOut[j][i] = MatIn[i][j];
-		}
-	}
-}
-
-
-void GL3dBodyDlg::GLRenderBody()
-{
-//	int width;
-    m_3dWidget.makeCurrent();
-
-	GLdouble pts[4];
-
-	pts[0]= 1.0; pts[1]=0.0; pts[2]=0.0; pts[3]=-m_VerticalSplit;		//x=m_VerticalSplit
-	glClipPlane(GL_CLIP_PLANE1, pts);
-
-	pts[0]=0.0; pts[1]= 1.0; pts[2]=0.0; pts[3]=-m_HorizontalSplit;	//y=m_HorizontalSplit
-	glClipPlane(GL_CLIP_PLANE2, pts);
-
-	pts[0]=-1.0; pts[1]=0.0; pts[2]=0.0; pts[3]=m_VerticalSplit;		//x=m_VerticalSplit
-	glClipPlane(GL_CLIP_PLANE3, pts);
-
-	pts[0]=0.0; pts[1]=-1.0; pts[2]=0.0; pts[3]=m_HorizontalSplit;	//y=m_HorizontalSplit
-	glClipPlane(GL_CLIP_PLANE4, pts);
-
-	pts[0]= 0.0; pts[1]=0.0; pts[2]=-1.0; pts[3]= m_ClipPlanePos;
-	glClipPlane(GL_CLIP_PLANE5, pts);
-
-//	width = m_rCltRect.width();
-
-	glPushMatrix();
-	{
-		glFlush();
-		glEnable(GL_DEPTH_TEST);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-//Display 2D View
-		glDisable(GL_LIGHTING);
-		glDisable(GL_LIGHT0);
-
-		glDisable(GL_CLIP_PLANE1);
-		glDisable(GL_CLIP_PLANE2);
-		glDisable(GL_CLIP_PLANE3);
-		glDisable(GL_CLIP_PLANE4);
-		glDisable(GL_CLIP_PLANE5);
-
-
-		glLineWidth(3);
-		glColor3d(.83,.83,.83);
-		glBegin(GL_LINES);
-		{
-			glVertex2d(           -1.0, m_HorizontalSplit);
-			glVertex2d(m_VerticalSplit, m_HorizontalSplit);
-		}
-		glEnd();
-
-		glBegin(GL_LINES);
-		{
-			glVertex2d(m_VerticalSplit, m_3dWidget.m_GLViewRect.bottom);
-			glVertex2d(m_VerticalSplit, m_3dWidget.m_GLViewRect.top );
-		}
-		glEnd();
-
-//        GLDrawBodyLegend();
-
-		if(m_pBodyGridDlg->s_bScale) GLDrawBodyLineScale();
-
-		glEnable(GL_CLIP_PLANE3);
-		glEnable(GL_CLIP_PLANE2);
-
-
-		glPushMatrix();
-		{
-			glTranslated(m_BodyOffset.x, m_BodyOffset.y, 0.0);
-
-			glTranslated(-m_BodyOffset.x + m_BodyScalingCenter.x, -m_BodyOffset.y + m_BodyScalingCenter.y, 0.0);
-			glScaled(m_BodyScale, m_BodyScale,0.0);
-			glTranslated(+m_BodyOffset.x + -m_BodyScalingCenter.x, +m_BodyOffset.y + -m_BodyScalingCenter.y, 0.0);
-
-            glCallList(BODYLINEGRID);
-            glCallList(BODYPOINTS);
-            glCallList(BODYAXIALLINES);
-		}
-		glPopMatrix();
-
-		
-		glDisable(GL_CLIP_PLANE1);
-		glDisable(GL_CLIP_PLANE2);
-		glDisable(GL_CLIP_PLANE3);
-		glDisable(GL_CLIP_PLANE4);
-
-		if(m_pFrame)
-		{
-			if(m_pBodyGridDlg->s_bScale) GLDrawBodyFrameScale();
-			glEnable(GL_CLIP_PLANE1);
-			glPushMatrix();
-			{
-				glTranslated(m_FrameOffset.x, m_FrameOffset.y, 0.0);
-
-				glTranslated(-m_FrameOffset.x +  m_FrameScalingCenter.x, -m_FrameOffset.y + m_FrameScalingCenter.y, 0.0);
-				glScaled(m_FrameScale, m_FrameScale,0.0);
-				glTranslated(+m_FrameOffset.x + -m_FrameScalingCenter.x, +m_FrameOffset.y + -m_FrameScalingCenter.y, 0.0);
-
-                glCallList(FRAMEPOINTS);
-                glCallList(BODYFRAME);
-                glCallList(BODYFRAMEGRID);
-			}
-			glPopMatrix();
-		}
-		glDisable(GL_CLIP_PLANE1);
-		glDisable(GL_CLIP_PLANE2);
-		glDisable(GL_CLIP_PLANE3);
-		glDisable(GL_CLIP_PLANE4);
-
-		glEnable(GL_CLIP_PLANE3);
-		glEnable(GL_CLIP_PLANE4);
-		if(m_ClipPlanePos>4.9999) 	glDisable(GL_CLIP_PLANE5);
-		else						glEnable(GL_CLIP_PLANE5);
-
-		glPushMatrix();
-		{
-			m_3dWidget.glSetupLight(m_BodyOffset.y, 1.0);
-
-			glLoadIdentity();
-
-			glDisable(GL_LIGHTING);
-			glDisable(GL_LIGHT0);
-
-			if(m_bCrossPoint && m_bArcball)
-			{
-				glPushMatrix();
-				{
-					glTranslated(m_UFOOffset.x, m_UFOOffset.y,  0.0);
-					m_ArcBall.rotateCrossPoint();
-					glRotated(m_ArcBall.angle, m_ArcBall.p.x, m_ArcBall.p.y, m_ArcBall.p.z);
-					glCallList(ARCPOINTLIST);
-				}
-				glPopMatrix();
-			}
-			if(m_bArcball)
-			{
-				glPushMatrix();
-				{
-					glTranslated(m_UFOOffset.x, m_UFOOffset.y,  0.0);
-					m_ArcBall.rotate();
-					glCallList(ARCBALLLIST);
-				}
-				glPopMatrix();
-			}
-
-			glTranslated(m_UFOOffset.x, m_UFOOffset.y,  0.0);
-
-			m_ArcBall.rotate();
-
-			glScaled(m_glScaled, m_glScaled, m_glScaled);
-			glTranslated(m_glRotCenter.x, m_glRotCenter.y, m_glRotCenter.z);
-
-			if(s_bAxes)  m_3dWidget.glDrawAxes(1.0, W3dPrefsDlg::s_3DAxisColor, W3dPrefsDlg::s_3DAxisStyle, W3dPrefsDlg::s_3DAxisWidth);
-
-
-			if(s_bglLight)
-			{
-				glEnable(GL_LIGHTING);
-				glEnable(GL_LIGHT0);
-			}
-			else {
-				glDisable(GL_LIGHTING);
-				glDisable(GL_LIGHT0);
-			}
-
-			if(s_bSurfaces && m_pBody)	glCallList(BODYGEOMBASE);
-
-			glDisable(GL_LIGHTING);
-			glDisable(GL_LIGHT0);
-
-			if(m_pBody && m_pFrame && (s_bOutline||s_bSurfaces)) glCallList(BODYFRAME3D);
-			if(s_bOutline && m_pBody)	glCallList(BODYGEOMBASE+MAXBODIES);
-			if(s_bVLMPanels && m_pBody)
-            {
-                glCallList(BODYMESHBASE);
-				if(!s_bSurfaces) glCallList(BODYMESHBASE+MAXBODIES);
-            }
-
-			glDisable(GL_CLIP_PLANE1);
-			glDisable(GL_CLIP_PLANE2);
-			glDisable(GL_CLIP_PLANE3);
-			glDisable(GL_CLIP_PLANE4);
-
-			if(s_bShowMasses) GLDrawMasses();
-		}
-		glPopMatrix();
-
-	}
-	glPopMatrix();
-	glFinish();
-}
-
-
 /**
-* Draws the point masses, the object masses, and the CG position on the OpenGL viewport.
-**/
-void GL3dBodyDlg::GLDrawMasses()
+* Creates the VertexBufferObjects for OpenGL 3.0
+*/
+void GL3dBodyDlg::glMake3DObjects()
 {
-	QString MassUnit;
-	Units::getWeightUnitLabel(MassUnit);
-//	double zdist = 25.0/(double)m_r3DCltRect.width();
+//	m_pgl3Widget->makeCurrent();
 
-	if(m_pBody)
+	if(m_bResetglFrameHighlight || m_bResetglBody)
 	{
-		glPushMatrix();
+		if(m_pBody->activeFrame())
 		{
-			glColor3d(0.5, 1.0, 0.5);
-            m_3dWidget.glRenderText(m_pBody->Length()/2., 0.0, m_pBody->Length()/20,
-								  m_pBody->m_BodyName +
-								  QString(" %1").arg(m_pBody->m_VolumeMass*Units::kgtoUnit(), 7,'g',3)+
-								  MassUnit);
-		}
-		glPopMatrix();
-
-		for(int im=0; im<m_pBody->m_PointMass.size(); im++)
-		{
-			glPushMatrix();
-			{
-				glTranslated(m_pBody->m_PointMass[im]->position().x,m_pBody->m_PointMass[im]->position().y,m_pBody->m_PointMass[im]->position().z);
-				glColor3d(W3dPrefsDlg::s_MassColor.redF(), W3dPrefsDlg::s_MassColor.greenF(), W3dPrefsDlg::s_MassColor.blueF());
-				m_3dWidget.glRenderSphere(W3dPrefsDlg::s_MassRadius/m_glScaled);
-				glColor3d(Settings::s_TextColor.redF(), Settings::s_TextColor.greenF(), Settings::s_TextColor.blueF());
-                m_3dWidget.glRenderText(0.0, 0.0, 0.0+.02,
-									  m_pBody->m_PointMass[im]->tag()
-									  +QString(" %1").arg(m_pBody->m_PointMass[im]->mass()*Units::kgtoUnit(), 7,'g',3)
-									  +MassUnit);
-			}
-			glPopMatrix();
+			m_gl3Widget.glMakeBodyFrameHighlight(m_pBody,CVector(0.0,0.0,0.0), m_pBody->m_iActiveFrame);
+			m_bResetglFrameHighlight = false;
 		}
 	}
-}
 
+	if(m_bResetglBody)
+	{
+		m_bResetglBody = false;
+		m_gl3Widget.glMakeBody(m_pBody);
+	}
+}
 
 
 void GL3dBodyDlg::keyPressEvent(QKeyEvent *event)
@@ -1742,27 +378,19 @@ void GL3dBodyDlg::keyPressEvent(QKeyEvent *event)
 			{
 				if(bShift)
 				{
-					OnRedo();
+					onRedo();
 				}
-				else OnUndo();
+				else onUndo();
 				event->accept();
 			}
 			else event->ignore();
-			break;
-		}
-		case Qt::Key_R:
-		{
-			if(m_FrameRect.contains(m_LastPoint))          setFrameScale();
-			else if(m_BodyLineRect.contains(m_LastPoint))  setBodyLineScale();
-			else                                           setBodyScale();
-			updateView();
 			break;
 		}
 		case Qt::Key_Y:
 		{
 			if(bCtrl)
 			{
-				OnRedo();
+				onRedo();
 				event->accept();
 			}
 			else event->ignore();
@@ -1772,7 +400,7 @@ void GL3dBodyDlg::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_Enter:
 		{
 			if(!m_pctrlOK->hasFocus() && !m_pctrlCancel->hasFocus()) m_pctrlOK->setFocus();
-			else if(m_pctrlOK->hasFocus()) OnOK();
+			else if(m_pctrlOK->hasFocus()) onOK();
 			else if(m_pctrlCancel->hasFocus()) reject();
 			break;
 		}
@@ -1781,15 +409,9 @@ void GL3dBodyDlg::keyPressEvent(QKeyEvent *event)
 			reject();
 			return;
 		}
-		case Qt::Key_Control:
-		{
-			m_bArcball = true;
-			updateView();
-			break;
-		}
 		case Qt::Key_F12:
 		{
-			OnBodyInertia();
+			onBodyInertia();
 			break;
 		}
 		default:
@@ -1802,437 +424,11 @@ void GL3dBodyDlg::keyReleaseEvent(QKeyEvent *event)
 {
 	switch (event->key())
 	{
-		case Qt::Key_Control:
-		{
-			m_bArcball = false;
-			updateView();
-			break;
-		}
 		default:
 			event->ignore();
 	}
 }
 
-
-void GL3dBodyDlg::doubleClickEvent(QPoint point)
-{
-	CVector Real;
-	m_3dWidget.screenToViewport(point, Real);
-
-	if(m_3dWidget.geometry().contains(point)) m_3dWidget.setFocus();
-
-	set3DRotationCenter(point);
-	m_bPickCenter = false;
-	m_pctrlPickCenter->setChecked(false);
-}
-
-
-void GL3dBodyDlg::mouseMoveEvent(QMouseEvent *event)
-{
-	int n;
-	CVector Real;
-	QPoint Delta, point;
-
-	blockSignalling(true);
-
-	point = event->pos();
-
-	m_MousePos = event->pos();
-
-	Delta.setX(point.x() - m_LastPoint.x());
-	Delta.setY(point.y() - m_LastPoint.y());
-	m_3dWidget.screenToViewport(point, Real);
-
-
-//	if(!m_3dWidget.hasFocus()) m_3dWidget.setFocus();
-
-	bool bCtrl = false;
-
-	if (event->modifiers() & Qt::ControlModifier) bCtrl =true;
-
-	if (event->buttons()   & Qt::LeftButton)
-	{
-		if(bCtrl&& m_BodyRect.contains(point))
-		{
-			//rotate
-			m_ArcBall.move(point.x(), m_3dWidget.geometry().height()-point.y());
-			updateView();
-		}
-		else if(m_bTrans)
-		{
-			//translate
-			if(m_BodyRect.contains(point))
-			{
-				m_glViewportTrans.x += (GLfloat)(Delta.x()*2.0/m_glScaled/m_3dWidget.geometry().width());
-				m_glViewportTrans.y += (GLfloat)(Delta.y()*2.0/m_glScaled/m_3dWidget.geometry().width());
-
-				m_glRotCenter.x = MatOut[0][0]*(m_glViewportTrans.x) + MatOut[0][1]*(-m_glViewportTrans.y) + MatOut[0][2]*m_glViewportTrans.z;
-				m_glRotCenter.y = MatOut[1][0]*(m_glViewportTrans.x) + MatOut[1][1]*(-m_glViewportTrans.y) + MatOut[1][2]*m_glViewportTrans.z;
-				m_glRotCenter.z = MatOut[2][0]*(m_glViewportTrans.x) + MatOut[2][1]*(-m_glViewportTrans.y) + MatOut[2][2]*m_glViewportTrans.z;
-
-				updateView();
-			}
-			else if (m_BodyLineRect.contains(point) && m_pBody)
-			{
-				m_BodyOffset.x  +=  (double)Delta.x()*2.0/(double)m_3dWidget.geometry().width()/m_BodyScale;
-				m_BodyOffset.y  += -(double)Delta.y()*2.0/(double)m_3dWidget.geometry().width()/m_BodyScale;
-				m_BodyScaledOffset.set((1.0-m_BodyScale)*m_BodyScalingCenter.x + m_BodyScale * m_BodyOffset.x,
-									   (1.0-m_BodyScale)*m_BodyScalingCenter.y + m_BodyScale * m_BodyOffset.y,
-										0.0);
-				updateView();
-			}
-			else if(m_FrameRect.contains(point) && m_pFrame)
-			{
-				m_FrameOffset.x +=  (double)Delta.x()*2.0/(double)m_3dWidget.geometry().width()/m_FrameScale;
-				m_FrameOffset.y += -(double)Delta.y()*2.0/(double)m_3dWidget.geometry().width()/m_FrameScale;
-				m_FrameScaledOffset.set((1.0-m_FrameScale)*m_FrameScalingCenter.x + m_FrameScale * m_FrameOffset.x,
-										(1.0-m_FrameScale)*m_FrameScalingCenter.y + m_FrameScale * m_FrameOffset.y,
-										 0.0);
-				updateView();
-			}
-		}
-		else if (m_BodyLineRect.contains(point) && m_pBody)
-		{
-			Real.x = (Real.x - m_BodyScaledOffset.x)/m_BodyScale;
-			Real.z = (Real.y - m_BodyScaledOffset.y)/m_BodyScale;
-			Real.y = 0.0;
-
-			int n = m_pBody->m_iActiveFrame;
-			if (n>=0 && n<=m_pBody->frameSize() && !m_bTrans && m_bDragPoint)
-			{
-				//dragging a point
-				m_pFrame = m_pBody->activeFrame();
-				m_pBody->frame(n)->m_Position.x = Real.x;
-
-				double zpos = (m_pBody->frame(n)->m_CtrlPoint.first().z + m_pBody->frame(n)->m_CtrlPoint.last().z)/2.0;
-				for(int ic=0; ic<m_pBody->frame(n)->PointCount(); ic++)
-				{
-					m_pBody->frame(n)->m_CtrlPoint[ic].x  = Real.x;
-					m_pBody->frame(n)->m_CtrlPoint[ic].z += Real.z-zpos;
-				}
-				m_bTrans = false;
-				m_bResetglBody2D = true;
-			}
-
-			updateView();
-		}
-		else if(m_FrameRect.contains(point) && m_pFrame)
-		{
-			Real.x =  (Real.x - m_FrameScaledOffset.x)/m_FrameScale;
-			Real.y =  (Real.y - m_FrameScaledOffset.y)/m_FrameScale;
-			Real.z =   m_pFrame->m_Position.x;
-
-			if(m_pFrame)	n = m_pFrame->s_iSelect;
-			else			n = -10;
-			if (n>0 && n<m_pFrame->PointCount()-1 && !m_bTrans && m_bDragPoint)
-			{
-				//dragging a point
-				if(Real.x<0.0) 	m_pFrame->m_CtrlPoint[n].y = 0.0;
-				else            m_pFrame->m_CtrlPoint[n].y = Real.x;
-				m_pFrame->m_CtrlPoint[n].z = Real.y;
-				m_bTrans = false;
-				m_bResetglBody2D = true;
-			}
-			else if ((n==0 || n==m_pFrame->PointCount()-1)  && !m_bTrans && m_bDragPoint)
-			{
-				//dragging a point
-				m_pFrame->m_CtrlPoint[n].y = 0.0;
-				m_pFrame->m_CtrlPoint[n].y = Real.x;//TODO : remove
-				m_pFrame->m_CtrlPoint[n].z = Real.y;
-				m_bTrans = false;
-				m_bResetglBody2D = true;
-			}
-
-			if(m_pFrame->m_CtrlPoint[n].y<0.0) m_pFrame->m_CtrlPoint[n].y=0.0;
-
-			updateView();
-		}
-	}
-	else if (event->buttons() & Qt::MidButton)
-	{
-		if(m_BodyRect.contains(point))
-		{
-			//rotate
-			m_ArcBall.move(point.x(), m_3dWidget.geometry().height()-point.y());
-			updateView();
-		}
-	}
-	else 
-	{
-		//Highlight points
-		if (m_BodyLineRect.contains(point) && m_pBody)
-		{
-			Real.x = (Real.x - m_BodyScaledOffset.x)/m_BodyScale;
-			Real.z = (Real.y - m_BodyScaledOffset.y)/m_BodyScale;
-			Real.y = 0.0;
-			int n = m_pBody->isFramePos(Real, m_BodyScale/m_BodyRefScale);
-			m_pBody->m_iHighlight = -10;
-			if (n>=0 && n<=m_pBody->frameSize())
-			{
-				m_pBody->m_iHighlight = n;
-			}
-			m_bResetglBodyPoints = true;
-			updateView();
-		}
-		else if (m_pFrame && m_FrameRect.contains(point))
-		{
-			Real.z = (Real.y - m_FrameScaledOffset.y)/m_FrameScale;
-			Real.y = (Real.x - m_FrameScaledOffset.x)/m_FrameScale;
-			Real.x = m_pFrame->m_Position.x;
-
-			int n = m_pFrame->isPoint(Real, m_FrameScale/m_FrameRefScale);
-			m_pFrame->s_iHighlight = -10;
-			if (n>=0 && n<=m_pFrame->PointCount())
-			{
-				m_pFrame->s_iHighlight = n;
-			}
-			m_bResetglBodyPoints = true;
-			updateView();
-		}
-	}
-	m_LastPoint = point;
-
-	blockSignalling(false);
-}
-
-
-void GL3dBodyDlg::mousePressEvent(QMouseEvent *event)
-{
-	int iFrame;
-	QPoint point(event->pos().x(), event->pos().y());
-
-	CVector Real;
-	bool bCtrl = false;
-	bool bShift = false;
-	if(event->modifiers() & Qt::ControlModifier) bCtrl =true;
-	if(event->modifiers() & Qt::ShiftModifier) bShift =true;
-
-	m_3dWidget.screenToViewport(point, Real);
-
-	if(m_3dWidget.geometry().contains(point)) m_3dWidget.setFocus();
-
-	if(m_bPickCenter)
-	{
-		set3DRotationCenter(point);
-		m_bPickCenter = false;
-		m_pctrlPickCenter->setChecked(false);
-	}
-	if (event->buttons() & Qt::MidButton)
-	{
-		if(m_BodyRect.contains(point))
-		{
-			m_bArcball = true;
-			m_ArcBall.start(event->pos().x(), m_3dWidget.geometry().height()-event->pos().y());
-			m_bCrossPoint = true;
-
-			set3DRotationCenter();
-			updateView();
-		}
-	}
-	else if (event->buttons() & Qt::LeftButton)
-	{
-		m_ptPopUp = event->pos();
-		m_bTrans=true;
-		if(m_pBody && m_BodyRect.contains(point))
-		{
-			m_ArcBall.start(point.x(), m_3dWidget.geometry().height()-point.y());
-			m_bCrossPoint = true;
-			set3DRotationCenter();
-			if (!bCtrl)
-			{
-				m_bTrans = true;
-				m_3dWidget.setCursor(Qt::ClosedHandCursor);
-			}
-			else
-			{
-				m_bArcball = true;
-			}
-			updateView();
-		}
-		else if(bShift)  insert(Real);
-		else if(bCtrl)   remove(Real);
-		else if(m_pBody && m_BodyLineRect.contains(point))
-		{
-			Real.x =  (Real.x - m_BodyScaledOffset.x)/m_BodyScale;
-			Real.z =  (Real.y - m_BodyScaledOffset.y)/m_BodyScale;
-			Real.y = 0.0;
-
-			iFrame = m_pBody->isFramePos(Real, m_BodyScale/m_BodyRefScale);
-			if(iFrame >=0)
-			{
-				m_pBody->m_iActiveFrame = iFrame;
-				m_pFrame = m_pBody->activeFrame();
-
-				setFrame(m_pBody->m_iActiveFrame);
-				if(iFrame>=0 && iFrame<m_pFrameModel->rowCount()) m_pctrlFrameTable->selectRow(iFrame);
-
-				if(m_pFrame && m_pFrame->s_iSelect>=0 && m_pFrame->s_iSelect<m_pPointModel->rowCount())
-					m_pctrlPointTable->selectRow(m_pFrame->s_iSelect);
-
-				m_bTrans = false;
-				m_bDragPoint  = true;
-
-				updateView();
-			}
-		}
-		else if(m_pFrame && m_FrameRect.contains(point))
-		{
-			Real.z =  (Real.y - m_FrameScaledOffset.y)/m_FrameScale;
-			Real.y =  (Real.x - m_FrameScaledOffset.x)/m_FrameScale;
-			Real.x = m_pFrame->m_Position.x;
-
-			m_pFrame->s_iSelect = m_pFrame->isPoint(Real, m_FrameScale/m_FrameRefScale);
-			if(m_pFrame->s_iSelect >=0)
-			{
-				m_bTrans = false;
-				m_bDragPoint  = true;
-
-				if(m_pFrame->s_iSelect<m_pPointModel->rowCount()) m_pctrlPointTable->selectRow(m_pFrame->s_iSelect);
-			}
-		}
-		if(m_bTrans && !bCtrl)	m_3dWidget.setCursor(Qt::ClosedHandCursor);
-	}
-	
-
-	m_bPickCenter = false;
-	m_pctrlPickCenter->setChecked(false);
-	m_PointDown = point;
-	m_LastPoint = point;
-
-}
-
-
-
-void GL3dBodyDlg::mouseReleaseEvent(QMouseEvent *event)
-{
-	QPoint point(event->pos().x(), event->pos().y());
-
-	m_3dWidget.setCursor(Qt::CrossCursor);
-
-	blockSignalling(true);
-
-	if(!m_bTrans)
-	{
-		if(point==m_PointDown)
-		{
-			m_bResetglBodyPoints = true;
-		}
-		else
-		{
-			int n1, n2;
-			n1 = m_pBody->m_iActiveFrame;
-			if(m_pFrame)	n2 = m_pFrame->s_iSelect;
-			else			n2 = -10;
-
-			if (m_BodyLineRect.contains(point) && n1>=0 && n1<m_pBody->frameSize())
-			{
-				//the user has been dragging a point
-				fillFrameCell(n1,0);
-				fillFrameCell(n1,1);
-				setFrame(n1);
-				m_bResetglBody     = true;
-				m_bResetglBodyMesh = true;
-				m_bResetglBody2D   = true;
-			}
-			else if (m_FrameRect.contains(point) && n2>=0 && n2<m_pFrame->PointCount())
-			{
-				//the user has been dragging a point
-				fillFrameCell(n1,0);
-				fillFrameCell(n1,1);
-				fillPointCell(n2,0);
-				fillPointCell(n2,1);
-				takePicture();
-				m_bResetglBody     = true;
-				m_bResetglBodyMesh = true;
-				m_bResetglBody2D   = true;
-			}
-		}
-	}
-	else m_bResetglBody2D   = true;
-
-	
-	m_bTrans = false;
-	m_bDragPoint  = false;
-
-	m_bArcball    = false;
-	m_bCrossPoint = false;
-	updateView();
-
-//	We need to re-calculate the translation vector
-	int i,j;
-	for(i=0; i<4; i++)
-		for(j=0; j<4; j++)
-			MatIn[i][j] =  m_ArcBall.ab_quat[i*4+j];
-
-	GLInverseMatrix();
-	m_glViewportTrans.x =  (MatOut[0][0]*m_glRotCenter.x + MatOut[0][1]*m_glRotCenter.y + MatOut[0][2]*m_glRotCenter.z);
-	m_glViewportTrans.y = -(MatOut[1][0]*m_glRotCenter.x + MatOut[1][1]*m_glRotCenter.y + MatOut[1][2]*m_glRotCenter.z);
-	m_glViewportTrans.z =  (MatOut[2][0]*m_glRotCenter.x + MatOut[2][1]*m_glRotCenter.y + MatOut[2][2]*m_glRotCenter.z);
-
-	blockSignalling(false);
-}
-
-
-
-void GL3dBodyDlg::On3DIso()
-{
-	setViewControls();
-	m_pctrlIso->setChecked(true);
-
-	m_ArcBall.ab_quat[0]	= -0.65987748f;
-	m_ArcBall.ab_quat[1]	=  0.38526487f;
-	m_ArcBall.ab_quat[2]	= -0.64508355f;
-	m_ArcBall.ab_quat[3]	=  0.0f;
-	m_ArcBall.ab_quat[4]	= -0.75137258f;
-	m_ArcBall.ab_quat[5]	= -0.33720365f;
-	m_ArcBall.ab_quat[6]	=  0.56721509f;
-	m_ArcBall.ab_quat[7]	=  0.0f;
-	m_ArcBall.ab_quat[8]	=  0.000f;
-	m_ArcBall.ab_quat[9]	=  0.85899049f;
-	m_ArcBall.ab_quat[10]	=  0.51199043f;
-	m_ArcBall.ab_quat[11]	=  0.0f;
-	m_ArcBall.ab_quat[12]	=  0.0f;
-	m_ArcBall.ab_quat[13]	=  0.0f;
-	m_ArcBall.ab_quat[14]	=  0.0f;
-	m_ArcBall.ab_quat[15]	=  1.0f;
-
-	set3DRotationCenter();
-	updateView();
-}
-
-
-
-void GL3dBodyDlg::On3DTop()
-{
-	setViewControls();
-	m_pctrlZ->setChecked(true);
-	m_ArcBall.setQuat(sqrt(2.0)/2.0, 0.0, 0.0, -sqrt(2.0)/2.0);
-	set3DRotationCenter();
-	updateView();
-}
-
-
-void GL3dBodyDlg::On3DLeft()
-{
-	setViewControls();
-	m_pctrlY->setChecked(true);
-	m_ArcBall.setQuat(sqrt(2.0)/2.0, -sqrt(2.0)/2.0, 0.0, 0.0);// rotate by 90 deg around x
-	set3DRotationCenter();
-	updateView();
-}
-
-
-void GL3dBodyDlg::On3DFront()
-{
-	setViewControls();
-	m_pctrlX->setChecked(true);
-	Quaternion Qt1(sqrt(2.0)/2.0, 0.0,           -sqrt(2.0)/2.0, 0.0);// rotate by 90 deg around y
-	Quaternion Qt2(sqrt(2.0)/2.0, -sqrt(2.0)/2.0, 0.0,           0.0);// rotate by 90 deg around x
-
-	m_ArcBall.setQuat(Qt1 * Qt2);
-	set3DRotationCenter();
-	updateView();
-}
 
 
 void GL3dBodyDlg::setViewControls()
@@ -2244,36 +440,7 @@ void GL3dBodyDlg::setViewControls()
 }
 
 
-
-void GL3dBodyDlg::On3DReset()
-{
-	m_glViewportTrans.set(0.0, 0.0, 0.0);
-	m_bPickCenter   = false;
-	m_pctrlPickCenter->setChecked(false);
-	m_bIs3DScaleSet = false;
-	m_bResetglBody2D = true;
-
-	setBodyScale();
-	updateView();
-}
-
-
-void GL3dBodyDlg::On3DPickCenter()
-{
-	m_bPickCenter = true;
-	m_pctrlPickCenter->setChecked(true);
-}
-
-
-
-void GL3dBodyDlg::OnAxes()
-{
-	s_bAxes = m_pctrlAxes->isChecked();
-//	m_bResetglBody2D = true;
-	updateView();
-}
-
-void GL3dBodyDlg::OnBodyName()
+void GL3dBodyDlg::onBodyName()
 {
 	if(m_pBody)
 	{
@@ -2283,33 +450,42 @@ void GL3dBodyDlg::OnBodyName()
 }
 
 
-void GL3dBodyDlg::OnBodyStyle()
+void GL3dBodyDlg::onTextures()
 {
-    LinePickerDlg dlg(this);
-	int s,w;
-	QColor color;
-	s = m_pBody->m_BodyStyle;
-	w = m_pBody->m_BodyWidth;
-	color = m_pBody->m_BodyColor;
-	dlg.initDialog(s,w,color);
+	if(m_pBody) m_pBody->m_bTextures = m_pctrlTextures->isChecked();
+	m_bResetglBody = true;
+	setControls();
+	update();
+}
 
-	if(QDialog::Accepted==dlg.exec())
+
+void GL3dBodyDlg::onBodyColor()
+{
+	QColor Color = QColorDialog::getColor(m_pBody->bodyColor());
+	if(Color.isValid())
 	{
-		m_bChanged = true;
-		m_pBody->m_BodyStyle = dlg.setStyle();
-		m_pBody->m_BodyWidth = dlg.width();
-		m_pBody->m_BodyColor = dlg.setColor();
-		m_pctrlBodyStyle->setStyle(dlg.setStyle());
-		m_pctrlBodyStyle->setWidth(dlg.width());
-		m_pctrlBodyStyle->setColor(dlg.setColor());
-		m_bResetglBody2D = true;
-		m_bResetglBody = true;
-		updateView();
+		m_pBody->bodyColor() = Color;
+		m_bResetglBody= true;
+		m_pctrlBodyColor->setColor(Color);
+		update();
 	}
 }
 
 
-void GL3dBodyDlg::OnBodyInertia()
+/**
+ * Unselects all the 3D-view icons.
+ */
+void GL3dBodyDlg::onCheckViewIcons()
+{
+	m_pctrlIso->setChecked(false);
+	m_pctrlX->setChecked(false);
+	m_pctrlY->setChecked(false);
+	m_pctrlZ->setChecked(false);
+}
+
+
+
+void GL3dBodyDlg::onBodyInertia()
 {
 	if(!m_pBody) return;
 	InertiaDlg dlg(this);
@@ -2323,16 +499,8 @@ void GL3dBodyDlg::OnBodyInertia()
 }
 
 
-void GL3dBodyDlg::OnClipPlane()
-{
-	double planepos =  (double)m_pctrlClipPlanePos->sliderPosition()/100.0;
-	m_ClipPlanePos = sinh(planepos) * 0.5;
-	updateView();
-}
 
-
-
-void GL3dBodyDlg::OnExportBodyXML()
+void GL3dBodyDlg::onExportBodyXML()
 {
 	if(!m_pBody)return ;// is there anything to export ?
 
@@ -2365,7 +533,7 @@ void GL3dBodyDlg::OnExportBodyXML()
 
 
 
-void GL3dBodyDlg::OnExportBodyDef()
+void GL3dBodyDlg::onExportBodyDef()
 {
 	if(!m_pBody) return;
 
@@ -2392,7 +560,7 @@ void GL3dBodyDlg::OnExportBodyDef()
 }
 
 
-void GL3dBodyDlg::OnExportBodyGeom()
+void GL3dBodyDlg::onExportBodyGeom()
 {
 	if(!m_pBody) return;
 	QString LengthUnit, FileName;
@@ -2423,7 +591,7 @@ void GL3dBodyDlg::OnExportBodyGeom()
 
 	QTextStream out(&XFile);
 
-	m_pBody->exportGeometry(out, Units::mtoUnit(), type, s_NXPoints, s_NHoopPoints);
+	m_pBody->exportGeometry(out, Units::mtoUnit(), type, NXPOINTS, NHOOPPOINTS);
 }
 
 
@@ -2475,10 +643,7 @@ void GL3dBodyDlg::onImportBodyDef()
 
 	setBody();
 
-	m_bResetglBodyPoints = true;
 	m_bResetglBody       = true;
-	m_bResetglBody2D     = true;
-	m_bResetglBodyMesh   = true;
 
 	m_bChanged = true;
 
@@ -2525,10 +690,7 @@ void GL3dBodyDlg::onImportBodyXML()
 	m_pBody->duplicate(a_plane.body());
 	setBody();
 
-	m_bResetglBodyPoints = true;
 	m_bResetglBody       = true;
-	m_bResetglBody2D     = true;
-	m_bResetglBodyMesh   = true;
 
 	m_bChanged = true;
 
@@ -2536,15 +698,13 @@ void GL3dBodyDlg::onImportBodyXML()
 }
 
 
-void GL3dBodyDlg::OnFrameCellChanged(QWidget *)
+void GL3dBodyDlg::onFrameCellChanged(QWidget *)
 {
 	takePicture();
 	m_bChanged = true;
 //	int n = m_pBody->m_iActiveFrame;
 	readFrameSectionData(m_pBody->m_iActiveFrame);
 	m_bResetglBody   = true;
-	m_bResetglBody2D = true;
-	m_bResetglBodyMesh = true;
 
 	updateView();
 }
@@ -2582,7 +742,7 @@ void GL3dBodyDlg::readFrameSectionData(int sel)
 
 
 
-void GL3dBodyDlg::OnFrameItemClicked(const QModelIndex &index)
+void GL3dBodyDlg::onFrameItemClicked(const QModelIndex &index)
 {
 	m_pBody->m_iActiveFrame = index.row();
 	setFrame(m_pBody->m_iActiveFrame);
@@ -2591,95 +751,22 @@ void GL3dBodyDlg::OnFrameItemClicked(const QModelIndex &index)
 
 
 
-void GL3dBodyDlg::OnGrid()
+void GL3dBodyDlg::onGrid()
 {
 	m_pBodyGridDlg->initDialog();
 	m_pBodyGridDlg->exec();
-	m_bResetglBody2D = true;
 
 	updateView();
 }
 
 
 
-void GL3dBodyDlg::OnInsert()
+void GL3dBodyDlg::onInsert()
 {
-	insert(m_RealPopUp);
 }
 
 
-
-void GL3dBodyDlg::insert(CVector Pt)
-{
-	CVector Real;
-	m_bChanged = true;
-	int FrameSel = 0;
-	if(m_BodyLineRect.contains(m_ptPopUp))
-	{
-		takePicture();
-
-		Real.x = (Pt.x - m_BodyScaledOffset.x)/m_BodyScale;
-		Real.z = (Pt.y - m_BodyScaledOffset.y)/m_BodyScale;
-		Real.y = 0.0;
-
-		if(m_pFrame)
-		{
-			FrameSel = m_pBody->insertFrame(Real);
-			if(FrameSel>0) m_pFrame = m_pBody->frame(FrameSel);
-			else           m_pFrame = NULL;
-		}
-
-		m_bResetglBody   = true;
-		m_bResetglBody2D = true;
-		fillFrameDataTable();
-		setFrame(FrameSel);
-		updateView();
-	}
-	else if(m_FrameRect.contains(m_ptPopUp) && m_pFrame)
-	{
-		takePicture();
-
-		Real.x = m_pFrame->m_CtrlPoint.first().x;
-		Real.y = (Pt.x - m_FrameScaledOffset.x)/m_FrameScale;
-		Real.z = (Pt.y - m_FrameScaledOffset.y)/m_FrameScale;
-
-		if(Real.y<0.0) return;
-
-		if(m_pBody->activeFrame()) m_pBody->InsertPoint(Real);
-		else
-		{
-			QMessageBox msgBox;
-			msgBox.setStandardButtons(QMessageBox::Ok);
-			msgBox.setWindowTitle(QObject::tr("Warning"));
-			msgBox.setText(QObject::tr("Please select a Frame before inserting a point"));
-			msgBox.exec();
-		}
-		m_bResetglBody   = true;
-		m_bResetglBody2D = true;
-		fillPointDataTable();
-//		SetPointSel(point);
-		updateView();
-	}
-}
-
-
-
-void GL3dBodyDlg::OnLight()
-{
-	s_bglLight = m_pctrlLight->isChecked();
-	updateView();
-}
-
-
-
-void GL3dBodyDlg::OnShowMasses()
-{
-	s_bShowMasses = m_pctrlShowMasses->isChecked();
-	updateView();
-}
-
-
-void GL3dBodyDlg::OnLineType()
+void GL3dBodyDlg::onLineType()
 {
 	m_bChanged = true;
 	if(m_pctrlFlatPanels->isChecked())
@@ -2698,153 +785,67 @@ void GL3dBodyDlg::OnLineType()
 		m_pctrlXDegree->setEnabled(true);
 		m_pctrlHoopDegree->setEnabled(true);
 	}
-	m_bResetglBody2D = true;
 	m_bResetglBody = true;
 	updateView();
 }
 
 
-void GL3dBodyDlg::OnOK()
+void GL3dBodyDlg::onOK()
 {
 	if(m_pBody)
 	{
 		m_pBody->m_BodyDescription = m_pctrlBodyDescription->toPlainText();
-		m_pBody->m_BodyColor = m_pctrlBodyStyle->color();
-		m_pBody->m_BodyStyle = m_pctrlBodyStyle->lineStyle();
-		m_pBody->m_BodyWidth = m_pctrlBodyStyle->width();
+		m_pBody->m_BodyColor = m_pctrlBodyColor->color();
 	}
 
 	accept();
 }
 
 
-void GL3dBodyDlg::OnOutline()
-{
-	s_bOutline = m_pctrlOutline->isChecked();
-	updateView();
-}
 
-
-void GL3dBodyDlg::OnPanels()
-{
-	s_bVLMPanels = m_pctrlPanels->isChecked();
-	updateView();
-}
-
-
-
-void GL3dBodyDlg::OnPointCellChanged(QWidget *)
+void GL3dBodyDlg::onPointCellChanged(QWidget *)
 {
 	if(!m_pFrame) return;
 
 	takePicture();
 	m_bChanged = true;
 	readPointSectionData(m_pFrame->s_iSelect);
-	m_bResetglBodyPoints = true;
 	m_bResetglBody       = true;
-	m_bResetglBody2D     = true;
-	m_bResetglBodyMesh   = true;
 
 	updateView();
 }
 
 
-void GL3dBodyDlg::OnPointItemClicked(const QModelIndex &index)
+void GL3dBodyDlg::onPointItemClicked(const QModelIndex &index)
 {
 	if(!m_pFrame) return;
 	m_pFrame->s_iSelect = index.row();
 	m_pFrame->s_iHighlight = index.row();
-	m_bResetglBodyPoints = true;
 	updateView();
 }
 
 
 
-
-void GL3dBodyDlg::OnRemove()
+void GL3dBodyDlg::onRemove()
 {
-	remove(m_RealPopUp);
 }
 
 
-void GL3dBodyDlg::remove(CVector Pt)
+void GL3dBodyDlg::onResetScales()
 {
-	int i,n;
-	CVector Real;
-
-	Frame *pBodyFrame;
-
-	if(m_BodyLineRect.contains(m_ptPopUp))
-	{
-
-		Real.x =  (Pt.x - m_BodyScaledOffset.x)/m_BodyScale;
-		Real.z =  (Pt.z - m_BodyScaledOffset.y)/m_BodyScale;
-		Real.y = 0.0;
-
-		n =  m_pBody->isFramePos(Real, m_BodyScale/m_BodyRefScale);
-		if (n>=0)
-		{
-			takePicture();
-
-			n = m_pBody->removeFrame(n);
-			fillFrameDataTable();
-			setFrame(n);
-			m_bResetglBody   = true;
-			m_bResetglBody2D = true;
-		}
-
-		updateView();
-	}
-	else if(m_FrameRect.contains(m_ptPopUp) && m_pFrame)
-	{
-
-		Real.x = m_pFrame->m_CtrlPoint.first().x;
-		Real.y = (Pt.x - m_FrameScaledOffset.x)/m_FrameScale;
-		Real.z = (Pt.y - m_FrameScaledOffset.y)/m_FrameScale;
-
-		n =   m_pFrame->isPoint(Real, m_FrameScale/m_FrameRefScale);
-		if (n>=0)
-		{
-			takePicture();
-
-			for (i=0; i<m_pBody->frameSize();i++)
-			{
-				pBodyFrame = m_pBody->frame(i);
-				pBodyFrame->removePoint(n);
-			}
-			m_pBody->setNURBSKnots();
-			setFrame(m_pBody->m_iActiveFrame);
-			m_bResetglBody   = true;
-			m_bResetglBody2D = true;
-		}
-
-		updateView();
-	}
-}
-
-
-
-void GL3dBodyDlg::OnResetScales()
-{
-	m_bIs3DScaleSet  = false;
-	m_bResetglBody2D = true;
-	if(m_FrameRect.contains(m_ptPopUp))         setFrameScale();
-	else if(m_BodyLineRect.contains(m_ptPopUp)) setBodyLineScale();
-	else                                        setBodyScale();
-
+	m_gl3Widget.on3DReset();
+	m_pBodyLineWidget->onResetScales();
+	m_pFrameWidget->onResetScales();
 	updateView();
 }
 
 
-void GL3dBodyDlg::OnScaleBody()
+void GL3dBodyDlg::onScaleBody()
 {
 	if(!m_pBody) return;
 
 	BodyScaleDlg dlg(this);
-	if(m_FrameRect.contains(m_ptPopUp))
-	{
-		dlg.m_bFrameOnly = true;
-	}
+
 	dlg.m_FrameID = m_pBody->m_iActiveFrame;
 	dlg.initDialog();
 
@@ -2853,15 +854,24 @@ void GL3dBodyDlg::OnScaleBody()
 		takePicture();
 		m_pBody->scale(dlg.m_XFactor, dlg.m_YFactor, dlg.m_ZFactor, dlg.m_bFrameOnly, dlg.m_FrameID);
 		m_bResetglBody     = true;
-		m_bResetglBodyMesh = true;
-		m_bResetglBody2D   = true;
+		fillFrameDataTable();
+		fillPointDataTable();
 
 		updateView();
 	}
 }
 
 
-void GL3dBodyDlg::OnSelChangeXDegree(int sel)
+void GL3dBodyDlg::onUpdateBody()
+{
+	m_bResetglBody     = true;
+	fillFrameDataTable();
+	fillPointDataTable();
+	updateView();
+}
+
+
+void GL3dBodyDlg::onSelChangeXDegree(int sel)
 {
 	if(!m_pBody) return;
 	if (sel <0) return;
@@ -2872,12 +882,11 @@ void GL3dBodyDlg::OnSelChangeXDegree(int sel)
 	m_pBody->m_SplineSurface.m_iuDegree = sel+1;
 	m_pBody->setNURBSKnots();
 	m_bResetglBody   = true;
-	m_bResetglBody2D = true;
 	updateView();
 }
 
 
-void GL3dBodyDlg::OnSelChangeHoopDegree(int sel)
+void GL3dBodyDlg::onSelChangeHoopDegree(int sel)
 {
 	if(!m_pBody) return;
 	if (sel <0) return;
@@ -2889,12 +898,11 @@ void GL3dBodyDlg::OnSelChangeHoopDegree(int sel)
 	m_pBody->m_SplineSurface.m_ivDegree = sel+1;
 	m_pBody->setNURBSKnots();
 	m_bResetglBody   = true;
-	m_bResetglBody2D = true;
 	updateView();
 }
 
 
-void GL3dBodyDlg::OnEdgeWeight()
+void GL3dBodyDlg::onEdgeWeight()
 {
 	if(!m_pBody) return;
 
@@ -2905,14 +913,12 @@ void GL3dBodyDlg::OnEdgeWeight()
 	m_pBody->setEdgeWeight(w, w);
 
 	m_bResetglBody   = true;
-	m_bResetglBody2D = true;
-	m_bResetglBodyMesh = true;
 	updateView();
 }
 
 
 
-void GL3dBodyDlg::OnNURBSPanels()
+void GL3dBodyDlg::onNURBSPanels()
 {
 	if(!m_pBody) return;
 
@@ -2926,30 +932,21 @@ void GL3dBodyDlg::OnNURBSPanels()
 	m_pBody->setPanelPos();
 
 	m_bResetglBody   = true;
-	m_bResetglBody2D = true;
-	m_bResetglBodyMesh = true;
 	updateView();
 }
 
 
 
-void GL3dBodyDlg::OnShowCurFrameOnly()
+void GL3dBodyDlg::onShowCurFrameOnly()
 {
 	m_bCurFrameOnly = !m_bCurFrameOnly;
-	m_bResetglBody2D = true;
 	m_pShowCurFrameOnly->setChecked(m_bCurFrameOnly);
 	updateView();
 }
 
 
-void GL3dBodyDlg::OnSurfaces()
-{
-	s_bSurfaces = m_pctrlSurfaces->isChecked();
-	updateView();
-}
 
-
-void GL3dBodyDlg::OnTranslateBody()
+void GL3dBodyDlg::onTranslateBody()
 {
 	if(!m_pBody) return;
 
@@ -2965,8 +962,6 @@ void GL3dBodyDlg::OnTranslateBody()
 		fillPointDataTable();
 
 		m_bResetglBody     = true;
-		m_bResetglBodyMesh = true;
-		m_bResetglBody2D   = true;
 		updateView();
 	}
 }
@@ -3036,10 +1031,6 @@ void GL3dBodyDlg::reject()
 
 void GL3dBodyDlg::resizeEvent(QResizeEvent *event)
 {
-	m_bResetglBody2D = true;
-
-	m_bIs3DScaleSet = false;
-	m_bResetglBody2D = true;
 //	SetBodyScale();
 //	SetRectangles();
 
@@ -3054,6 +1045,9 @@ bool GL3dBodyDlg::loadSettings(QSettings *pSettings)
 	{
 		s_WindowPos =  pSettings->value("BodyWindowPos", QPoint(20,20)).toPoint();
 		s_WindowSize = pSettings->value("BodyWindowSize", QSize(900,700)).toSize();
+		s_bWindowMaximized        = pSettings->value("WindowMaximized", false).toBool();
+		m_HorizontalSplitterSizes = pSettings->value("HorizontalSplitterSizes").toByteArray();
+		m_LeftSplitterSizes = pSettings->value("LeftSplitterSizes").toByteArray();
 	}
 	pSettings->endGroup();
 	BodyGridDlg::loadSettings(pSettings);
@@ -3067,6 +1061,9 @@ bool GL3dBodyDlg::saveSettings(QSettings *pSettings)
 	{
 		pSettings->setValue("BodyWindowPos",s_WindowPos);
 		pSettings->setValue("BodyWindowSize",s_WindowSize);
+		pSettings->setValue("WindowMaximized", s_bWindowMaximized);
+		pSettings->setValue("HorizontalSplitterSizes", m_HorizontalSplitterSizes);
+		pSettings->setValue("LeftSplitterSizes", m_LeftSplitterSizes);
 
 	}
 	pSettings->endGroup();
@@ -3075,102 +1072,19 @@ bool GL3dBodyDlg::saveSettings(QSettings *pSettings)
 }
 
 
-void GL3dBodyDlg::set3DRotationCenter()
-{
-	//adjust the new rotation center after a translation or a rotation
-
-	int i,j;
-
-	for(i=0; i<4; i++)
-		for(j=0; j<4; j++)
-			MatOut[i][j] =  m_ArcBall.ab_quat[i*4+j];
-
-	m_glRotCenter.x = MatOut[0][0]*(m_glViewportTrans.x) + MatOut[0][1]*(-m_glViewportTrans.y) + MatOut[0][2]*m_glViewportTrans.z;
-	m_glRotCenter.y = MatOut[1][0]*(m_glViewportTrans.x) + MatOut[1][1]*(-m_glViewportTrans.y) + MatOut[1][2]*m_glViewportTrans.z;
-	m_glRotCenter.z = MatOut[2][0]*(m_glViewportTrans.x) + MatOut[2][1]*(-m_glViewportTrans.y) + MatOut[2][2]*m_glViewportTrans.z;
-}
-
-
-void GL3dBodyDlg::set3DRotationCenter(QPoint point)
-{
-	//adjusts the new rotation center after the user has picked a point on the screen
-	//finds the closest panel under the point,
-	//and changes the rotation vector and viewport translation
-
-	int  i, j;
-	CVector  A, B, AA, BB, PP, U;
-
-	i=-1;
-
-	m_3dWidget.screenToViewport(point, B);
-
-	B.x += -m_UFOOffset.x - m_glViewportTrans.x*m_glScaled;
-	B.y += -m_UFOOffset.y + m_glViewportTrans.y*m_glScaled;
-
-	B *= 1.0/m_glScaled;
-
-	A.set(B.x, B.y, +1.0);
-	B.z = -1.0;
-
-	for(i=0; i<4; i++)
-		for(j=0; j<4; j++)
-			MatIn[i][j] =  m_ArcBall.ab_quat[i*4+j];
-
-	//convert screen to model coordinates
-	AA.x = MatIn[0][0]*A.x + MatIn[0][1]*A.y + MatIn[0][2]*A.z;
-	AA.y = MatIn[1][0]*A.x + MatIn[1][1]*A.y + MatIn[1][2]*A.z;
-	AA.z = MatIn[2][0]*A.x + MatIn[2][1]*A.y + MatIn[2][2]*A.z;
-
-	BB.x = MatIn[0][0]*B.x + MatIn[0][1]*B.y + MatIn[0][2]*B.z;
-	BB.y = MatIn[1][0]*B.x + MatIn[1][1]*B.y + MatIn[1][2]*B.z;
-	BB.z = MatIn[2][0]*B.x + MatIn[2][1]*B.y + MatIn[2][2]*B.z;
-
-
-	U.set(BB.x-AA.x, BB.y-AA.y, BB.z-AA.z);
-	U.normalize();
-
-	bool bIntersect = false;
-
-	bIntersect = m_pBody->intersect(AA,BB, PP, true);
-	if(!bIntersect) bIntersect = m_pBody->intersect(AA,BB, PP, false);
-
-	if(bIntersect)
-	{
-//		smooth visual transition
-		GLInverseMatrix();
-
-		U.x = (-PP.x -m_glRotCenter.x)/30.0;
-		U.y = (-PP.y -m_glRotCenter.y)/30.0;
-		U.z = (-PP.z -m_glRotCenter.z)/30.0;
-
-		for(i=0; i<30; i++)
-		{
-			m_glRotCenter +=U;
-			m_glViewportTrans.x =  (MatOut[0][0]*m_glRotCenter.x + MatOut[0][1]*m_glRotCenter.y + MatOut[0][2]*m_glRotCenter.z);
-			m_glViewportTrans.y = -(MatOut[1][0]*m_glRotCenter.x + MatOut[1][1]*m_glRotCenter.y + MatOut[1][2]*m_glRotCenter.z);
-			m_glViewportTrans.z=   (MatOut[2][0]*m_glRotCenter.x + MatOut[2][1]*m_glRotCenter.y + MatOut[2][2]*m_glRotCenter.z);
-
-			updateView();
-		}
-	}
-}
-
-
-
 
 void GL3dBodyDlg::setControls()
 {
 	m_pctrlBodyName->setEnabled(m_bEnableName);
 
-	m_pctrlOutline->setChecked(s_bOutline);
-	m_pctrlPanels->setChecked(s_bVLMPanels);
-	m_pctrlAxes->setChecked(s_bAxes);
-	m_pctrlLight->setChecked(s_bglLight);
-	m_pctrlShowMasses->setChecked(s_bShowMasses);
-	m_pctrlSurfaces->setChecked(s_bSurfaces);
-	m_pctrlOutline->setChecked(s_bOutline);
-	m_pctrlClipPlanePos->setValue((int)(m_ClipPlanePos*100.0));
-	m_pctrlSurfaces->setChecked(s_bSurfaces);
+	m_pctrlBodyColor->setEnabled(m_pctrlColor->isChecked());
+
+	m_pctrlOutline->setChecked(m_gl3Widget.m_bOutline);
+	m_pctrlPanels->setChecked(m_gl3Widget.m_bVLMPanels);
+	m_pctrlAxes->setChecked(m_gl3Widget.m_bAxes);
+	m_pctrlShowMasses->setChecked(m_gl3Widget.m_bShowMasses);
+	m_pctrlSurfaces->setChecked(m_gl3Widget.m_bSurfaces);
+	m_pctrlClipPlanePos->setValue((int)(m_gl3Widget.m_ClipPlanePos*100.0));
 
 	m_pctrlPanelBunch->setSliderPosition((int)(m_pBody->m_Bunch*100.0));
 
@@ -3194,9 +1108,7 @@ void GL3dBodyDlg::setControls()
 		m_pctrlHoopDegree->setEnabled(true);
 	}
 
-	m_pctrlBodyStyle->setStyle(m_pBody->m_BodyStyle);
-	m_pctrlBodyStyle->setWidth(m_pBody->m_BodyWidth);
-	m_pctrlBodyStyle->setColor(m_pBody->m_BodyColor);
+	m_pctrlBodyColor->setColor(m_pBody->m_BodyColor);
 
 	m_pctrlNXPanels->setValue(m_pBody->m_nxPanels);
 	m_pctrlNHoopPanels->setValue(m_pBody->m_nhPanels);
@@ -3213,6 +1125,7 @@ bool GL3dBodyDlg::initDialog(Body *pBody)
 	m_pctrlFrameTable->setFont(Settings::s_TableFont);
 	m_pctrlPointTable->setFont(Settings::s_TableFont);
 
+
 	return setBody(pBody);
 }
 
@@ -3221,12 +1134,16 @@ bool GL3dBodyDlg::setBody(Body *pBody)
 {
 	if(pBody) m_pBody = pBody;
 
-	if(m_pBody->m_LineType==XFLR5::BODYPANELTYPE)       m_pctrlFlatPanels->setChecked(true);
-	else if(m_pBody->m_LineType==XFLR5::BODYSPLINETYPE) m_pctrlBSplines->setChecked(true);
+	m_pctrlColor->setChecked(!pBody->textures());
+	m_pctrlTextures->setChecked(pBody->textures());
 
+	m_pctrlFlatPanels->setChecked(m_pBody->m_LineType==XFLR5::BODYPANELTYPE);
+	m_pctrlBSplines->setChecked(m_pBody->m_LineType==XFLR5::BODYSPLINETYPE);
+
+	m_pBodyLineWidget->setBody(m_pBody);
+	m_pFrameWidget->setBody(m_pBody);
 
 	m_pFrame = m_pBody->activeFrame();
-	m_bResetglBody2D = true;
 
 	setControls();
 	fillFrameDataTable();
@@ -3240,119 +1157,11 @@ bool GL3dBodyDlg::setBody(Body *pBody)
 }
 
 
-
-void GL3dBodyDlg::setBodyLineScale()
-{
-	if(m_pBody) m_BodyScale = (m_VerticalSplit-m_3dWidget.m_GLViewRect.left)*.7/m_pBody->Length();
-	else        return;
-
-	m_BodyOffset.set((m_3dWidget.m_GLViewRect.left+m_VerticalSplit)/2.0-m_pBody->Length()/2.0-m_pBody->leadingPoint().x,
-					 (m_3dWidget.m_GLViewRect.top+m_HorizontalSplit)/2.0,
-					  0.0);
-
-	m_BodyScaledOffset.set((1.0 - m_BodyScale)*m_BodyScalingCenter.x + m_BodyScale * m_BodyOffset.x,
-						   (1.0 - m_BodyScale)*m_BodyScalingCenter.y + m_BodyScale * m_BodyOffset.y,
-							0.0);
-	m_BodyRefScale  = m_BodyScale;
-	m_BodyScalingCenter.x  = (m_VerticalSplit              + m_3dWidget.m_GLViewRect.left)   /2.0;
-	m_BodyScalingCenter.y  = (m_3dWidget.m_GLViewRect.top  + m_HorizontalSplit)              /2.0;
-}
-
-
-
-void GL3dBodyDlg::setFrameScale()
-{
-	int k;
-	double height;
-	if(m_pBody)
-	{
-		height = 0.0;
-		for(k=0; k<m_pBody->frameSize(); k++)
-		{
-			height = qMax(height,m_pBody->frame(k)->height());
-		}
-		m_FrameScale = (1.0-0.5)/height;
-	}
-	else m_FrameScale = 1.0;
-
-	m_FrameOffset.set((m_VerticalSplit + m_3dWidget.m_GLViewRect.right)/2.0,
-					  (m_3dWidget.m_GLViewRect.top +m_3dWidget.m_GLViewRect.bottom)/2.0,
-					   0.0);
-
-
-	m_FrameScaledOffset.set((1.0 - m_FrameScale)*m_FrameScalingCenter.x + m_FrameScale * m_FrameOffset.x,
-							(1.0 - m_FrameScale)*m_FrameScalingCenter.y + m_FrameScale * m_FrameOffset.y,
-							 0.0);
-
-	m_FrameRefScale = m_FrameScale;
-	m_FrameScalingCenter.x = (m_VerticalSplit              + m_3dWidget.m_GLViewRect.right)  /2.0;
-	m_FrameScalingCenter.y = (m_3dWidget.m_GLViewRect.top  + m_3dWidget.m_GLViewRect.bottom) /2.0;
-}
-
-
-void GL3dBodyDlg::setRectangles()
-{
-	CVector V1, V2;
-	QPoint P1, P2;
-
-	m_glTop = m_3dWidget.m_GLViewRect.top;
-
-	m_VerticalSplit     = m_3dWidget.m_GLViewRect.width()  /6.0;
-	m_HorizontalSplit   = m_3dWidget.m_GLViewRect.height() /6.0;
-
-	V1.set(m_3dWidget.m_GLViewRect.left, m_3dWidget.m_GLViewRect.top, 0.0);
-	V2.set(m_VerticalSplit,                m_HorizontalSplit,             0.0);
-	m_3dWidget.viewportToScreen(V1, P1);
-	m_3dWidget.viewportToScreen(V2, P2);
-	m_BodyLineRect.setTopLeft(P1);
-	m_BodyLineRect.setBottomRight(P2);
-
-	V1.set(m_VerticalSplit,                 m_3dWidget.m_GLViewRect.top,    0.0);
-	V2.set(m_3dWidget.m_GLViewRect.right, m_3dWidget.m_GLViewRect.bottom, 0.0);
-	m_3dWidget.viewportToScreen(V1, P1);
-	m_3dWidget.viewportToScreen(V2, P2);
-	m_FrameRect.setTopLeft(P1);
-	m_FrameRect.setBottomRight(P2);
-
-	V1.set(m_3dWidget.m_GLViewRect.left, m_HorizontalSplit,                0.0);
-	V2.set(m_VerticalSplit,                m_3dWidget.m_GLViewRect.bottom, 0.0);
-	m_3dWidget.viewportToScreen(V1, P1);
-	m_3dWidget.viewportToScreen(V2, P2);
-	m_BodyRect.setTopLeft(P1);
-	m_BodyRect.setBottomRight(P2);
-}
-
-
-void GL3dBodyDlg::setBodyScale()
-{
-	if(!m_pBody) return;
-//	if(m_bIs3DScaleSet /*&& !m_bAutoScales*/) return;
-
-	m_glViewportTrans.x = 0.0;
-	m_glViewportTrans.y = 0.0;
-	m_glViewportTrans.z = 0.0;
-	m_bIs3DScaleSet = true;
-
-
-	m_UFOOffset.x = (GLfloat)(m_3dWidget.m_GLViewRect.left + m_VerticalSplit  )/2.0;
-	m_UFOOffset.y = (GLfloat)(m_3dWidget.m_GLViewRect.bottom + m_HorizontalSplit)/2.0;
-  
-	m_glScaled = (GLfloat)(3./4.* (m_VerticalSplit+1.0) / m_pBody->Length());
-
-//	m_ArcBall.GetMatrix();
-	CVector eye(0.0,0.0,1.0);
-	CVector up(0.0,1.0,0.0);
-	m_ArcBall.setZoom(0.3,eye,up);
-
-	set3DRotationCenter();
-}
-
-
 void GL3dBodyDlg::setScales()
 {
-	setBodyScale();
-	setFrameScale();
-	setBodyLineScale();
+//	setBodyScale();
+//	setFrameScale();
+//	setBodyLineScale();
 }
 
 
@@ -3360,13 +1169,12 @@ void GL3dBodyDlg::setScales()
 void GL3dBodyDlg::setFrame(int iFrame)
 {
 	if(!m_pBody) return;
-	if(iFrame<0 || iFrame>=m_pBody->frameSize()) m_pFrame = NULL;
-	else                                         m_pFrame = m_pBody->frame(iFrame);
+	if(iFrame<0 || iFrame>=m_pBody->frameCount()) m_pFrame = NULL;
+	else                                          m_pFrame = m_pBody->frame(iFrame);
 	m_pBody->m_iActiveFrame = iFrame;
 
+	m_bResetglFrameHighlight = true;
 	fillPointDataTable();;
-
-	m_bResetglBody2D = true;
 }
 
 void GL3dBodyDlg::setFrame(Frame *pFrame)
@@ -3375,9 +1183,8 @@ void GL3dBodyDlg::setFrame(Frame *pFrame)
 
 	m_pBody->setActiveFrame(pFrame);
 
+	m_bResetglFrameHighlight = true;
 	fillPointDataTable();;
-
-	m_bResetglBody2D = true;
 }
 
 
@@ -3399,36 +1206,30 @@ void GL3dBodyDlg::setupLayout()
 	szPolicyMaximum.setHorizontalPolicy(QSizePolicy::Maximum);
 	szPolicyMaximum.setVerticalPolicy(QSizePolicy::Maximum);
 
-	m_3dWidget.m_pParent = this;
-	m_3dWidget.m_iView = GLBODYVIEW;
-	m_ArcBall.m_p3dWidget = &m_3dWidget;
+	m_gl3Widget.m_pParent = this;
+	m_gl3Widget.m_iView = XFLR5::GLBODYVIEW;
 
-
-	QVBoxLayout *ControlsLayout = new QVBoxLayout;
+	QVBoxLayout *pControlsLayout = new QVBoxLayout;
 	{
-		QGridLayout *ThreeDParams = new QGridLayout;
+		QGridLayout *pThreeDParamsLayout = new QGridLayout;
 		{
 			m_pctrlAxes       = new QCheckBox(tr("Axes"));
-			m_pctrlLight      = new QCheckBox(tr("Light"));
 			m_pctrlSurfaces   = new QCheckBox(tr("Surfaces"));
 			m_pctrlOutline    = new QCheckBox(tr("Outline"));
 			m_pctrlPanels     = new QCheckBox(tr("Panels"));
 			m_pctrlShowMasses = new QCheckBox(tr("Masses"));
 			m_pctrlAxes->setSizePolicy(szPolicyMinimum);
-			m_pctrlLight->setSizePolicy(szPolicyMinimum);
 			m_pctrlSurfaces->setSizePolicy(szPolicyMinimum);
 			m_pctrlOutline->setSizePolicy(szPolicyMinimum);
 			m_pctrlPanels->setSizePolicy(szPolicyMinimum);
-			ThreeDParams->addWidget(m_pctrlAxes, 1,1);
-			ThreeDParams->addWidget(m_pctrlPanels, 1,2);
-			ThreeDParams->addWidget(m_pctrlLight, 1,3);
-			ThreeDParams->addWidget(m_pctrlSurfaces, 2,1);
-			ThreeDParams->addWidget(m_pctrlOutline, 2,2);
-			ThreeDParams->addWidget(m_pctrlShowMasses, 2,3);
-
+			pThreeDParamsLayout->addWidget(m_pctrlAxes, 1,1);
+			pThreeDParamsLayout->addWidget(m_pctrlPanels, 1,2);
+			pThreeDParamsLayout->addWidget(m_pctrlSurfaces, 2,1);
+			pThreeDParamsLayout->addWidget(m_pctrlOutline, 2,2);
+			pThreeDParamsLayout->addWidget(m_pctrlShowMasses, 2,3);
 		}
 
-		QHBoxLayout*AxisView = new QHBoxLayout;
+		QHBoxLayout *pAxisViewLayout = new QHBoxLayout;
 		{
 			m_pctrlX          = new QToolButton;
 			m_pctrlY          = new QToolButton;
@@ -3455,25 +1256,21 @@ void GL3dBodyDlg::setupLayout()
 			m_pctrlZ->setDefaultAction(m_pZView);
 			m_pctrlIso->setDefaultAction(m_pIsoView);
 
-			AxisView->addWidget(m_pctrlX);
-			AxisView->addWidget(m_pctrlY);
-			AxisView->addWidget(m_pctrlZ);
-			AxisView->addWidget(m_pctrlIso);
+			pAxisViewLayout->addWidget(m_pctrlX);
+			pAxisViewLayout->addWidget(m_pctrlY);
+			pAxisViewLayout->addWidget(m_pctrlZ);
+			pAxisViewLayout->addWidget(m_pctrlIso);
 		}
 
-		QHBoxLayout* ThreeDView = new QHBoxLayout;
+		QHBoxLayout* pThreeDViewLayout = new QHBoxLayout;
 		{
-			m_pctrlPickCenter = new QPushButton(tr("Pick Center"));
-			m_pctrlPickCenter->setSizePolicy(szPolicyMinimum);
-			m_pctrlPickCenter->setCheckable(true);
 			m_pctrlReset      = new QPushButton(tr("Reset Scales"));
 			m_pctrlReset->setSizePolicy(szPolicyMinimum);
 
-			ThreeDView->addWidget(m_pctrlReset);
-			ThreeDView->addWidget(m_pctrlPickCenter);
+			pThreeDViewLayout->addWidget(m_pctrlReset);
 		}
 
-		QHBoxLayout *ThreeDViewControls = new QHBoxLayout;
+		QHBoxLayout *pThreeDViewControlsLayout = new QHBoxLayout;
 		{
 			QLabel *ClipLabel = new QLabel(tr("Clip Plane"));
 			ClipLabel->setSizePolicy(szPolicyMaximum);
@@ -3484,11 +1281,11 @@ void GL3dBodyDlg::setupLayout()
 			m_pctrlClipPlanePos->setTickInterval(30);
 			m_pctrlClipPlanePos->setTickPosition(QSlider::TicksBelow);
 			m_pctrlClipPlanePos->setSizePolicy(szPolicyMinimum);
-			ThreeDViewControls->addWidget(ClipLabel);
-			ThreeDViewControls->addWidget(m_pctrlClipPlanePos);
+			pThreeDViewControlsLayout->addWidget(ClipLabel);
+			pThreeDViewControlsLayout->addWidget(m_pctrlClipPlanePos);
 		}
 
-		QHBoxLayout *ActionButtons = new QHBoxLayout;
+		QHBoxLayout *pActionButtonsLayout = new QHBoxLayout;
 		{
 			m_pctrlUndo = new QPushButton(QIcon(":/images/OnUndo.png"), tr("Undo"));
 			m_pctrlRedo = new QPushButton(QIcon(":/images/OnRedo.png"), tr("Redo"));
@@ -3514,60 +1311,69 @@ void GL3dBodyDlg::setupLayout()
 			BodyMenu->addSeparator();
 			m_pctrlMenuButton->setMenu(BodyMenu);
 
-			ActionButtons->addWidget(m_pctrlUndo);
-			ActionButtons->addWidget(m_pctrlRedo);
-			ActionButtons->addWidget(m_pctrlMenuButton);
+			pActionButtonsLayout->addWidget(m_pctrlUndo);
+			pActionButtonsLayout->addWidget(m_pctrlRedo);
+			pActionButtonsLayout->addWidget(m_pctrlMenuButton);
 		}
 
-		QHBoxLayout *CommandButtons = new QHBoxLayout;
+		QHBoxLayout *pCommandButtonsLayout = new QHBoxLayout;
 		{
 			m_pctrlOK = new QPushButton(tr("Save and Close"));
 			m_pctrlOK->setAutoDefault(true);
 			m_pctrlCancel = new QPushButton(tr("Cancel"));
 			m_pctrlCancel->setAutoDefault(false);
-			CommandButtons->addWidget(m_pctrlOK);
-			CommandButtons->addWidget(m_pctrlCancel);
+			pCommandButtonsLayout->addWidget(m_pctrlOK);
+			pCommandButtonsLayout->addWidget(m_pctrlCancel);
 		}
 
-		ControlsLayout->addLayout(AxisView);
-		ControlsLayout->addLayout(ThreeDViewControls);
-		ControlsLayout->addLayout(ThreeDParams);
-		ControlsLayout->addLayout(ThreeDView);
-		ControlsLayout->addStretch(1);
-		ControlsLayout->addLayout(ActionButtons);
-		ControlsLayout->addStretch(1);
-		ControlsLayout->addLayout(CommandButtons);
+		pControlsLayout->addLayout(pAxisViewLayout);
+		pControlsLayout->addLayout(pThreeDViewControlsLayout);
+		pControlsLayout->addLayout(pThreeDParamsLayout);
+		pControlsLayout->addLayout(pThreeDViewLayout);
+		pControlsLayout->addStretch(1);
+		pControlsLayout->addLayout(pActionButtonsLayout);
+		pControlsLayout->addStretch(1);
+		pControlsLayout->addLayout(pCommandButtonsLayout);
 	}
 
 
-	QVBoxLayout *BodyParams = new QVBoxLayout;
+	QVBoxLayout *pBodyParamsLayout = new QVBoxLayout;
 	{
-		QHBoxLayout *BodyDef = new QHBoxLayout;
-		{
-			m_pctrlBodyName = new QLineEdit(tr("BodyName"));
-			m_pctrlBodyStyle = new LineBtn(this);
-			m_pctrlBodyStyle->setSizePolicy(szPolicyMinimum);
-			BodyDef->addWidget(m_pctrlBodyName);
-			BodyDef->addWidget(m_pctrlBodyStyle);
-		}
+		m_pctrlBodyName = new QLineEdit(tr("BodyName"));
 
+		QGroupBox *pStyleBox = new QGroupBox(tr("Style"));
+		{
+			QHBoxLayout *pStyleLayout = new QHBoxLayout;
+			{
+				m_pctrlTextures = new QRadioButton(tr("Textures"));
+				m_pctrlColor    = new QRadioButton(tr("Color"));
+				pStyleLayout->addWidget(m_pctrlTextures);
+				pStyleLayout->addWidget(m_pctrlColor);
+
+				m_pctrlBodyColor = new ColorButton(this);
+				m_pctrlBodyColor->setSizePolicy(szPolicyMinimum);
+				pStyleLayout->addStretch();
+				pStyleLayout->addWidget(m_pctrlBodyColor);
+			}
+			pStyleBox->setLayout(pStyleLayout);
+		}
 		QLabel *BodyDes = new QLabel(tr("Description:"));
 
 		m_pctrlBodyDescription = new QTextEdit();
 		m_pctrlBodyDescription->setToolTip(tr("Enter here a short description for the body"));
-		BodyParams->setStretchFactor(m_pctrlBodyDescription,1);
+		pBodyParamsLayout->setStretchFactor(m_pctrlBodyDescription,1);
 
-		QHBoxLayout *BodyType = new QHBoxLayout;
+		QHBoxLayout *pBodyType = new QHBoxLayout;
 		{
 			m_pctrlFlatPanels = new QRadioButton(tr("Flat Panels"));
 			m_pctrlBSplines = new QRadioButton(tr("BSplines"));
 			m_pctrlFlatPanels->setSizePolicy(szPolicyMinimum);
 			m_pctrlBSplines->setSizePolicy(szPolicyMinimum);
-			BodyType->addWidget(m_pctrlFlatPanels);
-			BodyType->addWidget(m_pctrlBSplines);
+			pBodyType->addWidget(m_pctrlFlatPanels);
+			pBodyType->addWidget(m_pctrlBSplines);
 		}
 
-		QGridLayout *SplineParams = new QGridLayout;
+		QGridLayout *pSplineParams = new QGridLayout;
 		{
 			QLabel *lab1 = new QLabel(tr("x"));
 			QLabel *lab2 = new QLabel(tr("Hoop"));
@@ -3606,37 +1412,38 @@ void GL3dBodyDlg::setupLayout()
 			m_pctrlNHoopPanels->setSizePolicy(szPolicyMinimum);
 			m_pctrlNXPanels->setPrecision(0);
 			m_pctrlNHoopPanels->setPrecision(0);
-			SplineParams->addWidget(lab1,1,2, Qt::AlignCenter);
-			SplineParams->addWidget(lab2,1,3, Qt::AlignCenter);
-			SplineParams->addWidget(lab3,2,1, Qt::AlignRight);
-			SplineParams->addWidget(lab4,3,1, Qt::AlignRight);
-			SplineParams->addWidget(m_pctrlXDegree,2,2);
-			SplineParams->addWidget(m_pctrlHoopDegree,2,3);
-			SplineParams->addWidget(m_pctrlNXPanels,3,2);
-			SplineParams->addWidget(m_pctrlNHoopPanels,3,3);
+			pSplineParams->addWidget(lab1,1,2, Qt::AlignCenter);
+			pSplineParams->addWidget(lab2,1,3, Qt::AlignCenter);
+			pSplineParams->addWidget(lab3,2,1, Qt::AlignRight);
+			pSplineParams->addWidget(lab4,3,1, Qt::AlignRight);
+			pSplineParams->addWidget(m_pctrlXDegree,2,2);
+			pSplineParams->addWidget(m_pctrlHoopDegree,2,3);
+			pSplineParams->addWidget(m_pctrlNXPanels,3,2);
+			pSplineParams->addWidget(m_pctrlNHoopPanels,3,3);
 //			SplineParams->addWidget(labWeight,4,1);
 //			SplineParams->addWidget(m_pctrlEdgeWeight,4,2,1,2);
-			SplineParams->addWidget(labBunch,5,1);
-			SplineParams->addWidget(m_pctrlPanelBunch,5,2,1,2);
+			pSplineParams->addWidget(labBunch,5,1);
+			pSplineParams->addWidget(m_pctrlPanelBunch,5,2,1,2);
 		}
 
-		BodyParams->addLayout(BodyDef);
-		BodyParams->addWidget(BodyDes);
-		BodyParams->addWidget(m_pctrlBodyDescription);
-		BodyParams->addStretch(1);
-		BodyParams->addLayout(BodyType);
-		BodyParams->addLayout(SplineParams);
+		pBodyParamsLayout->addWidget(m_pctrlBodyName);
+		pBodyParamsLayout->addWidget(pStyleBox);
+		pBodyParamsLayout->addWidget(BodyDes);
+		pBodyParamsLayout->addWidget(m_pctrlBodyDescription);
+		pBodyParamsLayout->addStretch(1);
+		pBodyParamsLayout->addLayout(pBodyType);
+		pBodyParamsLayout->addLayout(pSplineParams);
 	}
 
 
-	QVBoxLayout * FramePosLayout = new QVBoxLayout;
+	QVBoxLayout * pFramePosLayout = new QVBoxLayout;
 	{
 		m_pctrlFrameTable = new QTableView;
 	//	m_pctrlFrameTable->setSizePolicy(szPolicyMinimum);
 		m_pctrlFrameTable->setWindowTitle(tr("Frames"));
 		QLabel *LabelFrame = new QLabel(tr("Frame Positions"));
 		LabelFrame->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
-		FramePosLayout->addWidget(LabelFrame);
+		pFramePosLayout->addWidget(LabelFrame);
 	//	FramePosLayout->addStretch(1);
 		m_pctrlFrameTable->setSelectionMode(QAbstractItemView::SingleSelection);
 		m_pctrlFrameTable->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -3645,18 +1452,18 @@ void GL3dBodyDlg::setupLayout()
 										   QAbstractItemView::SelectedClicked |
 										   QAbstractItemView::EditKeyPressed |
 										   QAbstractItemView::AnyKeyPressed);
-		FramePosLayout->addWidget(m_pctrlFrameTable);
+		pFramePosLayout->addWidget(m_pctrlFrameTable);
 	}
 
 
-	QVBoxLayout * FramePointLayout = new QVBoxLayout;
+	QVBoxLayout * pFramePointLayout = new QVBoxLayout;
 	{
 		m_pctrlPointTable = new QTableView;
 	//	m_pctrlPointTable->setSizePolicy(szPolicyMinimum);
 		m_pctrlPointTable->setWindowTitle(tr("Points"));
 		QLabel *LabelPoints = new QLabel(tr("Current Frame Definition"));
 		LabelPoints->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
-		FramePointLayout->addWidget(LabelPoints);
+		pFramePointLayout->addWidget(LabelPoints);
 	//	FramePointLayout->addStretch(1);
 		m_pctrlPointTable->setSelectionMode(QAbstractItemView::SingleSelection);
 		m_pctrlPointTable->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -3665,30 +1472,52 @@ void GL3dBodyDlg::setupLayout()
 										   QAbstractItemView::SelectedClicked |
 										   QAbstractItemView::EditKeyPressed |
 										   QAbstractItemView::AnyKeyPressed);
-		FramePointLayout->addWidget(m_pctrlPointTable);
+		pFramePointLayout->addWidget(m_pctrlPointTable);
 	}
 
 	m_pctrlControlsWidget = new QWidget;
 	{
-		QHBoxLayout *AllControls = new QHBoxLayout;
+		QHBoxLayout *pAllControls = new QHBoxLayout;
 		{
-			AllControls->addLayout(BodyParams);
-			AllControls->addStretch(1);
-			AllControls->addLayout(FramePosLayout);
-			AllControls->addStretch(1);
-			AllControls->addLayout(FramePointLayout);
-			AllControls->addStretch(1);
-			AllControls->addLayout(ControlsLayout);
+			pAllControls->addLayout(pBodyParamsLayout);
+			pAllControls->addStretch(1);
+			pAllControls->addLayout(pFramePosLayout);
+			pAllControls->addStretch(1);
+			pAllControls->addLayout(pFramePointLayout);
+			pAllControls->addStretch(1);
+			pAllControls->addLayout(pControlsLayout);
 		}
-		m_pctrlControlsWidget->setLayout(AllControls);
+		m_pctrlControlsWidget->setLayout(pAllControls);
 	}
 
 
-	QVBoxLayout *MainLayout = new QVBoxLayout;
-	MainLayout->addWidget(&m_3dWidget,2);
-	MainLayout->addWidget(m_pctrlControlsWidget,1);
+	m_pHorizontalSplitter = new QSplitter(Qt::Horizontal, this);
+	{
+		m_pLeftSplitter = new QSplitter(Qt::Vertical, this);
+		{
+			m_pBodyLineWidget = new BodyLineWidget(this);
+			m_pBodyLineWidget->setSizePolicy(szPolicyMaximum);
+			m_pBodyLineWidget->sizePolicy().setVerticalStretch(2);
 
-	setLayout(MainLayout);
+			m_pLeftSplitter->addWidget(m_pBodyLineWidget);
+			m_pLeftSplitter->addWidget(&m_gl3Widget);
+		}
+		m_pFrameWidget = new BodyFrameWidget(this);
+		m_pHorizontalSplitter->addWidget(m_pLeftSplitter);
+		m_pHorizontalSplitter->addWidget(m_pFrameWidget);
+	}
+
+	m_pVerticalSplitter = new QSplitter(Qt::Vertical, this);
+	{
+		m_pVerticalSplitter->addWidget(m_pHorizontalSplitter);
+		m_pVerticalSplitter->addWidget(m_pctrlControlsWidget);
+	}
+
+	QVBoxLayout *pMainLayout = new QVBoxLayout;
+	{
+		pMainLayout->addWidget(m_pVerticalSplitter);
+	}
+	setLayout(pMainLayout);
 
 	for (i=1; i<6; i++)
 	{
@@ -3737,7 +1566,7 @@ void GL3dBodyDlg::setupLayout()
 
 
 
-void GL3dBodyDlg::ShowContextMenu(QContextMenuEvent * event)
+void GL3dBodyDlg::showContextMenu(QContextMenuEvent * event)
 {
 	m_pShowCurFrameOnly->setChecked(m_bCurFrameOnly);
 	QMenu *CtxMenu = new QMenu(tr("Context Menu"),this);
@@ -3767,11 +1596,11 @@ void GL3dBodyDlg::ShowContextMenu(QContextMenuEvent * event)
 	QPoint CltPt = event->pos();
 	m_ptPopUp.rx() = CltPt.x();
 	m_ptPopUp.ry() = CltPt.y();
-	m_3dWidget.screenToViewport(m_ptPopUp, m_RealPopUp);
+	m_gl3Widget.screenToViewport(event->pos(), m_RealPopUp);
 
 	CtxMenu->exec(event->globalPos());
 
-	m_3dWidget.setCursor(Qt::CrossCursor);
+	m_gl3Widget.setCursor(Qt::CrossCursor);
 }
 
 
@@ -3781,11 +1610,16 @@ void GL3dBodyDlg::showEvent(QShowEvent *event)
 	move(s_WindowPos);
 	resize(s_WindowSize);
 	if(s_bWindowMaximized) setWindowState(Qt::WindowMaximized);
+	if(m_VerticalSplitterSizes.length()>0)
+		m_pHorizontalSplitter->restoreState(m_VerticalSplitterSizes);
+	if(m_HorizontalSplitterSizes.length()>0)
+		m_pHorizontalSplitter->restoreState(m_HorizontalSplitterSizes);
+	if(m_LeftSplitterSizes.length()>0)
+		m_pLeftSplitter->restoreState(m_LeftSplitterSizes);
 
 	setTableUnits();
 	m_bChanged    = false;
 	m_bResetglBody = true;
-	m_bIs3DScaleSet = false;
 	setScales();
 
 	resizeTables();
@@ -3795,15 +1629,20 @@ void GL3dBodyDlg::showEvent(QShowEvent *event)
 	event->accept();
 }
 
+/**
+ * Overrides the base class hideEvent method. Stores the window's current position.
+ * @param event the hideEvent.
+ */
 void GL3dBodyDlg::hideEvent(QHideEvent *event)
 {
 	s_WindowPos = pos();
 	s_WindowSize = size();
 	s_bWindowMaximized = isMaximized();
+	m_VerticalSplitterSizes  = m_pVerticalSplitter->saveState();
+	m_HorizontalSplitterSizes  = m_pHorizontalSplitter->saveState();
+	m_LeftSplitterSizes  = m_pLeftSplitter->saveState();
 	event->accept();
 }
-
-
 
 
 void GL3dBodyDlg::resizeTables()
@@ -3847,7 +1686,6 @@ void GL3dBodyDlg::setPicture()
 	m_pFrame = m_pBody->activeFrame();
 	fillPointDataTable();
 	m_bResetglBody   = true;
-	m_bResetglBody2D = true;
 
 	updateView();
 }
@@ -3876,7 +1714,7 @@ void GL3dBodyDlg::takePicture()
 }
 
 
-void GL3dBodyDlg::OnRedo()
+void GL3dBodyDlg::onRedo()
 {
 	if(m_StackPos<m_UndoStack.size()-1)
 	{
@@ -3888,7 +1726,7 @@ void GL3dBodyDlg::OnRedo()
 }
 
 
-void GL3dBodyDlg::OnUndo()
+void GL3dBodyDlg::onUndo()
 {
 	if(m_StackPos>0)
 	{
@@ -3908,40 +1746,9 @@ void GL3dBodyDlg::OnUndo()
 
 void GL3dBodyDlg::updateView()
 {
-	if(isVisible()) m_3dWidget.update();
-}
-
-
-void GL3dBodyDlg::zoomEvent(QPoint pos, double zoomFactor)
-{
-	QPoint point(pos.x() - m_3dWidget.geometry().x(), pos.y() - m_3dWidget.geometry().y());
-	//The mouse button has been wheeled
-	//Process the message
-//	point is in client coordinates
-
-	if(m_BodyRect.contains(point))
-	{
-		m_glScaled *= zoomFactor;
-	}
-	else if(m_BodyLineRect.contains(point))
-	{
-		m_BodyScale *= zoomFactor;
-		m_BodyScaledOffset.set((1.0 - m_BodyScale)*m_BodyScalingCenter.x + m_BodyScale * m_BodyOffset.x,
-						   (1.0 - m_BodyScale)*m_BodyScalingCenter.y + m_BodyScale * m_BodyOffset.y,
-						   0.0);
-		m_bResetglBody2D=true;
-	}
-	else if(m_FrameRect.contains(point))
-	{
-		m_FrameScale *= zoomFactor;
-		m_FrameScaledOffset.set((1.0 - m_FrameScale)*m_FrameScalingCenter.x + m_FrameScale * m_FrameOffset.x,
-								(1.0 - m_FrameScale)*m_FrameScalingCenter.y + m_FrameScale * m_FrameOffset.y,
-								 0.0);
-
-		m_bResetglBody2D=true;
-	}
-	updateView();
-	
+	if(isVisible()) m_gl3Widget.update();
+	m_pFrameWidget->update();
+	m_pBodyLineWidget->update();
 }
 
 
@@ -3958,70 +1765,3 @@ void GL3dBodyDlg::blockSignalling(bool bBlock)
 	m_pSelectionModelFrame->blockSignals(bBlock);
 }
 
-
-
-void GL3dBodyDlg::paintBodyLegend(QPainter &painter)
-{
-	if(!m_pBody) return;
-
-	QString strong, strLengthUnit;
-	Units::getLengthUnitLabel(strLengthUnit);
-
-	m_pixTextLegend.fill(Qt::transparent);
-	QPainter pixPainter(&m_pixTextLegend);
-
-	pixPainter.save();
-	pixPainter.setFont(Settings::s_TextFont);
-	pixPainter.setRenderHint(QPainter::Antialiasing);
-	QPen textPen(Settings::s_TextColor);
-	pixPainter.setPen(textPen);
-
-	// Draw the labels
-	CVector real;
-	m_3dWidget.screenToViewport(m_MousePos, real);
-	QFontMetrics fm(Settings::s_TextFont);
-	int dD = fm.height();
-
-
-	if(m_FrameRect.contains(m_MousePos))
-	{
-		strong = QString(tr("Frame %1")).arg(m_pBody->m_iActiveFrame+1,2);
-		pixPainter.drawText(m_FrameRect.left() +dD ,dD,strong);
-		strong = QString(tr("Scale = %1")).arg(m_FrameScale/m_BodyRefScale,4,'f',2);
-		painter.drawText(m_FrameRect.left() +dD ,2*dD,strong);
-
-		real.x =  (real.x - m_FrameScaledOffset.x)/m_FrameScale;
-		real.y =  (real.y - m_FrameScaledOffset.y)/m_FrameScale;
-		real.z = 0.0;
-
-		strong = QString("y = %1 ").arg(real.x * Units::mtoUnit(),9,'f',3);
-		strong += strLengthUnit;
-		pixPainter.drawText(dD ,3*dD,strong);
-
-		strong = QString("z = %1 ").arg(real.y * Units::mtoUnit(),9,'f',3);
-		strong += strLengthUnit;
-		pixPainter.drawText(dD ,4*dD,strong);
-
-		painter.drawPixmap(m_FrameRect.left(),m_FrameRect.top(), m_pixTextLegend);
-	}
-	else if(m_BodyLineRect.contains(m_MousePos))
-	{
-		strong = QString(tr("Scale = %1")).arg(m_BodyScale/m_BodyRefScale,4,'f',2);
-		pixPainter.drawText(m_BodyLineRect.left() +dD ,dD,strong);
-
-		real.x =  (real.x - m_BodyScaledOffset.x)/m_BodyScale;
-		real.y =  (real.y - m_BodyScaledOffset.y)/m_BodyScale;
-		real.z = 0.0;
-
-		strong = QString("x = %1 ").arg(real.x * Units::mtoUnit(),9,'f',3);
-		strong += strLengthUnit;
-		pixPainter.drawText(dD ,2*dD,strong);
-
-		strong = QString("z = %1 ").arg(real.y * Units::mtoUnit(),9,'f',3);
-		strong += strLengthUnit;
-		pixPainter.drawText(dD ,3*dD,strong);
-
-		painter.drawPixmap(m_BodyLineRect.left(),m_BodyLineRect.top(), m_pixTextLegend);
-	}
-	pixPainter.restore();
-}

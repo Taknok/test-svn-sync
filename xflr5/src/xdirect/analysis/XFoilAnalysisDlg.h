@@ -35,11 +35,11 @@
 #include <QPushButton>
 #include <QCheckBox>
 #include <QPoint>
-#include "../../graph/QGraph.h"
-#include "graphwidget.h"
-#include "XFoil.h"
-#include "XFoilTask.h"
 
+class XFoil;
+class XFoilTask;
+class GraphWidget;
+class QGraph;
 
 /**
 * @class XFoilAnalysisDlg

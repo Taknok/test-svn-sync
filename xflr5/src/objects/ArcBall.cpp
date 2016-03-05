@@ -21,7 +21,6 @@
 *****************************************************************************/
 
 
-#include "threedwidget.h"
 #include "ArcBall.h"
 #include <QtOpenGL>
 #include "math.h"
@@ -29,9 +28,6 @@
 
 ArcBall::ArcBall(void)
 {
-	m_p3dWidget = NULL;
-
-
 	angle = 0.0;
 	Quat.a  = 0.0;
 
@@ -127,11 +123,11 @@ void ArcBall::edgeCoords(CVector m, CVector &V)
 
 
 /** update current arcball rotation*/
-void ArcBall::move(int mx, int my)
+void ArcBall::move(double ax, double ay)
 {
 	if(ab_planar)
 	{
-		planarCoords(mx,my, ab_curr);
+		planarCoords(ax,ay, ab_curr);
 		if(ab_curr == ab_start) return;
 
 		// d is motion since the last position
@@ -154,7 +150,7 @@ void ArcBall::move(int mx, int my)
 	} 
 	else
 	{
-		sphereCoords((double)mx,(double)my, ab_curr);
+		sphereCoords(ax,ay, ab_curr);
 		if(ab_curr == ab_start)
 		{ 
 			// avoid potential rare divide by tiny
@@ -321,10 +317,21 @@ void ArcBall::setZoom(double radius, CVector eye, CVector up)
 }
 
 
-void ArcBall::planarCoords(int const &mx, int const &my, CVector &V)
+/** begin arcball rotation*/
+void ArcBall::start(double ax, double ay)
 {
-	clientToGL(mx, my, ax, ay);
+	// saves a copy of the current rotation for comparison
+	quatCopy(ab_last,ab_quat);
+	if(ab_planar)
+		planarCoords(ax, ay, ab_start);
+	else
+		sphereCoords(ax, ay, ab_start);
+	ab_curr = ab_start;
+}
 
+
+void ArcBall::planarCoords(double const &ax, double const &ay, CVector &V)
+{
 	m.set(ax- ab_eye.x, ay- ab_eye.y, az- ab_eye.z);
 	// intersect the point with the trackball plane
 	t = (ab_planedist - ab_zoom)*1.0 / (ab_eyedir.dot(m));
@@ -334,57 +341,16 @@ void ArcBall::planarCoords(int const &mx, int const &my, CVector &V)
 }
 
 
-void ArcBall::sphereCoords(int const &mx, int const &my, CVector &V)
+void ArcBall::sphereCoords(double const &ax, double const &ay, CVector &V)
 {
 	// find the intersection with the sphere
 
-	clientToGL(mx, my, ax, ay);
 	if(ab_sphere2>ax*ax+ay*ay) V.set(ax,ay,sqrt(ab_sphere2-ax*ax-ay*ay));
 	else                       V.set(ax,ay,0.0);
 //	else return EdgeCoords(ax, ay);
 
 	V.normalize();
 }
-
-
-
-/** begin arcball rotation*/
-void ArcBall::start(int mx, int my)
-{
-	// saves a copy of the current rotation for comparison
-	quatCopy(ab_last,ab_quat);
-	if(ab_planar)
-		planarCoords(mx, my, ab_start);
-	else
-		sphereCoords(mx, my, ab_start);
-	ab_curr = ab_start;
-}
-
-
-/** Convert screen coordinates to GL view coordinates*/
-void ArcBall::clientToGL(int const &x, int const &y, double &glx, double &gly)
-{
-	double h2, w2;
-
-	if(!m_p3dWidget) return;
-	ThreeDWidget *p3dWidget = (ThreeDWidget*)m_p3dWidget;
-
-	h2 = (double)p3dWidget->m_rCltRect.height() /2.0;
-	w2 = (double)p3dWidget->m_rCltRect.width()  /2.0;
-
-	if(w2>h2)
-	{
-		glx = ((double)x - w2) / w2;
-		gly = ((double)y - h2) / w2;
-	}
-	else
-	{
-		glx = ((double)x - w2) / h2;
-		gly = ((double)y - h2) / h2;
-	}
-}
-
-
 
 
 

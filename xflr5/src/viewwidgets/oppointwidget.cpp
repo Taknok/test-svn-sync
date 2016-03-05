@@ -26,7 +26,8 @@
 #include <QMenu>
 #include <QtDebug>
 #include <QStatusBar>
-#include "mainframe.h"
+#include <mainframe.h>
+#include <globals.h>
 #include "misc/Settings.h"
 #include "graph/QGraph.h"
 #include "graph/Curve.h"

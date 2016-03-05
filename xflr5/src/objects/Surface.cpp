@@ -24,7 +24,10 @@
 #include <math.h>
 #include "Surface.h"
 #include "../objects/Quaternion.h"
-
+#include "Foil.h"
+#include "Body.h"
+#include "CVector.h"
+#include "WingSection.h"
 
 CVector *Surface::s_pNode;
 Panel *Surface::s_pPanel;
@@ -490,10 +493,10 @@ void Surface::getSidePoint(double xRel, bool bRight, enumPanelPosition pos, CVec
  */
 void Surface::getSidePoints(enumPanelPosition pos,
 							Body * pBody,
-							CVector *PtA, CVector *PtB, CVector *N, int nPoints)
+							CVector *PtA, CVector *PtB, CVector *NA, CVector *NB, int nPoints)
 {
 	double xRel;
-	CVector A4, B4, TA4, TB4, X(1.0,0.0,0.0), NA, NB;
+	CVector A4, B4, TA4, TB4;
 
 	double cosdA = Normal.dot(NormalA);
 	double cosdB = Normal.dot(NormalB);
@@ -505,8 +508,8 @@ void Surface::getSidePoints(enumPanelPosition pos,
 
 	double alpha_dA = acos(cosdA)*180.0/PI;
 	double alpha_dB = -acos(cosdB)*180.0/PI;
-//	double delta = -atan2(Normal.z,Normal.y)*180.0/PI;
-
+	double delta = -atan(Normal.y / Normal.z)*180.0/PI;
+//qDebug("delta=%13.7f  N = %13.7f  %13.7f  %13.7f", delta, Normal.x, Normal.y, Normal.z);
 	//create the quarter chord centers of rotation for the twist
 	A4 = m_LA *3.0/4.0 + m_TA * 1/4.0;
 	B4 = m_LB *3.0/4.0 + m_TB * 1/4.0;
@@ -524,16 +527,22 @@ void Surface::getSidePoints(enumPanelPosition pos,
 	{
 		xRel  = 1.0/2.0*(1.0-cos( (double)i*PI   /(double)(nPoints-1)));
 
-		getSidePoint(xRel, false, pos, PtA[i], NA);
+		NA[i].set(0.0,0.0,0.0);
+		getSidePoint(xRel, false, pos, PtA[i], NA[i]);
 		PtA[i].y   = m_LA.y +(PtA[i].y - m_LA.y)/cosdA;
 		PtA[i].z   = m_LA.z +(PtA[i].z - m_LA.z)/cosdA;
 		PtA[i].rotate(m_LA, m_LA-m_TA, alpha_dA);
+//		NA[i].rotate(m_LA, m_LA-m_TA, alpha_dA);
+		NA[i].rotate(CVector(1.0,0.0,0.0), delta);
 //		PtA[i].rotate(A4, TA4, m_TwistA);
 
-		getSidePoint(xRel, true,  pos, PtB[i], NB);
+		NB[i].set(0.0,0.0,0.0);
+		getSidePoint(xRel, true,  pos, PtB[i], NB[i]);
 		PtB[i].y   = m_LB.y +(PtB[i].y - m_LB.y)/cosdB;
 		PtB[i].z   = m_LB.z +(PtB[i].z - m_LB.z)/cosdB;
 		PtB[i].rotate(m_LB, m_LB-m_TB, alpha_dB);
+//		NB[i].rotate(m_LB, m_LB-m_TB, alpha_dB);
+		NB[i].rotate(CVector(1.0,0.0,0.0), delta);
 //		PtB[i].rotate(B4, TB4, m_TwistB);
 
 		if(pBody && m_bIsCenterSurf && m_bIsLeftSurf)
@@ -544,10 +553,6 @@ void Surface::getSidePoints(enumPanelPosition pos,
 		{
 			pBody->intersect(PtA[i], PtB[i], PtA[i], true);
 		}
-
-		N[i] = (NA + NB)/2.0;
-		N[i].normalize();
-//		N[i].rotateX(delta);
 	}
 }
 
@@ -1114,7 +1119,7 @@ void Surface::setSidePoints(Body * pBody, double dx, double dz)
 		}
 	}
 
-	//merge trailing edge points in case the foil has a T.E. gap
+	//merge trailing edge nodes in case the foil has a T.E. gap
 
 	CVector Node;
 

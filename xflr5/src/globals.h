@@ -67,9 +67,9 @@ void ReynoldsFormat(QString &str, double f);
 bool Gauss(double *A, int n, double *B, int m, bool *pbCancel=NULL);
 
 
-double GLGetRed(double tau);
-double GLGetGreen(double tau);
-double GLGetBlue(double tau);
+float GLGetRed(double tau);
+float GLGetGreen(double tau);
+float GLGetBlue(double tau);
 
 double IntegralC2(double y1, double y2, double c1, double c2);
 double IntegralCy(double y1, double y2, double c1, double c2);
@@ -161,6 +161,8 @@ QString wingType(XFLR5::enumWingType wingType);
 
 XFLR5::enumBC boundaryCondition(QString strBC);
 QString boundaryCondition(XFLR5::enumBC boundaryCondition);
+
+CVector normalVector(double p1[3], double p2[3],  double p3[3]);
 
 
 #endif // FUNCTIONS_H

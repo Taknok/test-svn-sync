@@ -32,7 +32,7 @@
 
 bool W3dPrefsDlg::s_bWakePanels = false;
 
-double W3dPrefsDlg::s_MassRadius = .01;
+double W3dPrefsDlg::s_MassRadius = .017;
 QColor W3dPrefsDlg::s_MassColor = QColor(130, 170, 130);
 
 int W3dPrefsDlg::s_VLMStyle       = 0;

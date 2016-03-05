@@ -25,6 +25,7 @@
 #include "graphwidget.h"
 #include "graphtilewidget.h"
 #include "GraphDlg.h"
+#include <Polar.h>
 #include <WPolar.h>
 #include <QPen>
 #include <QPainterPath>

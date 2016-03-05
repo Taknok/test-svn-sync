@@ -94,18 +94,17 @@ public:
 	void setZoom(double radius, CVector eye, CVector up);
 	void rotate();
 	void reset();
-	void start(int mx, int my);
-	void move(int mx, int my);
+	void start(double ax, double ay);
+	void move(double ax, double ay);
 	void getMatrix();
-	void sphereCoords(int const &mx, int const &my, CVector &V);// find the intersection with the sphere
-	void planarCoords(int const &mx, int const &my, CVector &V);// get intersection with plane for "trackball" style rotation
+	void sphereCoords(double const &ax, double const &ay, CVector &V);// find the intersection with the sphere
+	void planarCoords(double const &ax, double const &ay, CVector &V);// get intersection with plane for "trackball" style rotation
 	void edgeCoords(CVector m, CVector &V);	// find the intersection with the plane through the visible edge
 	void rotateCrossPoint();
 	void quatIdentity(float* q);	// reset the rotation matrix
 	void quatCopy(float* dst, float* src);// copy a rotation matrix
 	void quatToMatrix(float* q, Quaternion Qt);// convert the quaternion into a rotation matrix
 	void quatNext(float* dest, float* left, float* right);// multiply two rotation matrices
-	void clientToGL(int const &x, int const &y, double &glx, double &gly);
 
 	float ab_quat[16];
 	float ab_last[16];
@@ -124,8 +123,6 @@ public:
 	// whether we are using a sphere or plane
 	bool ab_planar;
 	double ab_planedist;
-
-	void *m_p3dWidget;
 
 	CVector ab_start;
 	CVector ab_curr;

@@ -23,7 +23,8 @@
 #include <QApplication>
 #include "../../globals.h"
 #include "../Objects3D.h"
-#include "../../misc/Units.h"
+#include <misc/Units.h>
+#include <objects/Surface.h>
 #include "PanelAnalysis.h"
 
 

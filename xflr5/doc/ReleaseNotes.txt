@@ -15,7 +15,7 @@
 *******************************************************************************
 
 
-xflr5 v6.13 Debruary xxxth, 2016
+xflr5 v6.13 February xxxth, 2016
 	- added an option to autosave the project at regular time intervals
 	- changed the panel force display to q.Cp instead of q.S.panel_area; this is more significant since the arrow lengths are now mesh independent.
 	- added the extra drag in the calculation of the plane's total drag coefficient
@@ -25,7 +25,9 @@ xflr5 v6.13 Debruary xxxth, 2016
 	- interface improvements in XInverse design
 	- changed the display in the foil OpPoint view so that the foil can be overlayed on the graph
 	- fixed some issues with light settings in 3d views
-	- initialized the transition from the deprecated OpenGl 1.0 to OpenGL 3.0+
+	- upgraded to OpenGL 3.0+ from the deprecated OpenGl 1.0
+	- improved the lighting on options in 3D view
+	- added an option to paint textures on plane surfaces
 	- code cleaning
 
 

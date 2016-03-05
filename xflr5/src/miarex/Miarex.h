@@ -32,7 +32,7 @@
 class MainFrame;
 
 #include "../params.h"
-#include "threedwidget.h"
+#include "gl3widget.h"
 #include <QWidget>
 #include <QPixmap>
 #include <QLabel>
@@ -79,7 +79,6 @@ class MainFrame;
 class QMiarex : public QWidget
 {
 	friend class MainFrame;
-	friend class ThreeDWidget;
 	friend class TwoDWidget;
 	friend class GL3DScales;
 	friend class GL3dBodyDlg;
@@ -206,8 +205,6 @@ private slots:
 	void onSurfaces();
 	void onSurfaceSpeeds();
 	void onStabTimeView();
-	void onVortices();
-	void onNormals();
 	void onWing2Curve();
 	void onWOppView();
 	void onWPolarView();
@@ -221,8 +218,6 @@ public:
 
 public:
 	//class methods
-	void doubleClickEvent(QPoint pos);
-
 	WPolar* AddWPolar(WPolar* pWPolar);
 	int CalculateMatSize();
 	void connectSignals();
@@ -240,10 +235,8 @@ public:
 	void fillWPlrCurve(Curve *pCurve, WPolar *pWPolar, int XVar, int YVar);
 	void fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve);
 	void fillStabCurve(Curve *pCurve, WPolar *pWPolar, int iMode);
-	void glCallViewLists();
-	void glDraw3D();
+	void glMake3DObjects();
 	void glDrawMasses();
-	void glRenderView();
 	bool intersectObject(CVector O,  CVector U, CVector &I);
 	void LLTAnalyze(double V0, double VMax, double VDelta, bool bSequence, bool bInitCalc);	
 	bool loadSettings(QSettings *pSettings);
@@ -313,7 +306,7 @@ public:
 	LineDelegate *m_pStyleDelegate, *m_pWidthDelegate, *m_pPointDelegate;
 
 	QCheckBox *m_pctrlAxes, *m_pctrlLight, *m_pctrlSurfaces, *m_pctrlOutline, *m_pctrlPanels;
-	QCheckBox *m_pctrlFoilNames, *m_pctrlVortices, *m_pctrlPanelNormals, *m_pctrlMasses;
+	QCheckBox *m_pctrlFoilNames, *m_pctrlMasses;
 
 	QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView;
 	QToolButton *m_pctrlX, *m_pctrlY, *m_pctrlZ, *m_pctrlIso;
@@ -334,6 +327,8 @@ public:
 // Class variables
 
 	bool m_b3DCp;                      /**< true if the Cp Colors are to be displayed on the 3D openGl view */
+	bool m_bICd;                       /**< true if the induced drag forces should be displayed in the operating point or 3D view*/
+	bool m_bVCd;                       /**< true if the viscous drag forces should be displayed in the operating point or 3D view*/
 	bool m_bAnimateWOpp;               /**< true if there is an animation going on for an operating point */
 	bool m_bAnimateMode;               /**< true if there is an animation going on for a Mode */
 	bool m_bAnimateWOppPlus;           /**< true if the animation is going in aoa crescending order */
@@ -366,7 +361,6 @@ public:
 	bool m_bType2;                     /**< true if polars of type 2 are to be displayed */
 	bool m_bType4;                     /**< true if polars of type 4 are to be displayed */
 	bool m_bType7;                     /**< true if polars of type 71 are to be displayed */
-	bool m_bVortices;                  /**< true if the panel vortices should be displayed */
 	bool m_bPanelNormals;              /**< true if the panel normals should be displayed */
 	bool m_bXCmRef; 	               /**< true if the position of the reference point for the moments should be displayed in the operating point view*/
 	bool m_bXBot;                      /**< true if the transition on the bottom surface should be displayed in the operating point or in 3D view*/
@@ -394,9 +388,6 @@ public:
 	static bool m_bResetglSurfVelocities;     /**< true if the crossflow OpenGL list needs to be refreshed */
 
 	static bool s_bResetCurves;               /**< true if the curves of the active view should be regenerated before the next view update >*/
-
-	static bool s_bICd;                       /**< true if the induced drag forces should be displayed in the operating point or 3D view*/
-	static bool s_bVCd;                       /**< true if the viscous drag forces should be displayed in the operating point or 3D view*/
 
 	static bool s_bAutoCpScale;		          /**< true if the Cp scale should be set automatically */
 	static double s_LegendMin;                /**< minimum value of the Cp scale in 3D view */
@@ -488,8 +479,8 @@ public:
 	QPixmap m_PixText;
 
 public:
-	static MainFrame *s_pMainFrame;          /**< a pointer to the frame class */
-	ThreeDWidget *m_p3dWidget;            /**< a pointer to the openGL widget where 3d calculations and rendering are performed */
+	static MainFrame *s_pMainFrame;       /**< a pointer to the frame class */
+	GL3Widget *m_pgl3Widget;              /**< a pointer to the openGL 3.0 widget where 3d calculations and rendering are performed */
 
 	static CVector *s_pNode;              /**< a static pointer to the node array for the currently loaded Plane*/
 	static CVector *s_pMemNode;           /**< a static pointer to used if the analysis should be performed on the tilted geometry */

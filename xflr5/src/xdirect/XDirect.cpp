@@ -36,7 +36,7 @@
 #include <mainframe.h>
 #include "../misc/Settings.h"
 #include "XDirect.h"
-
+#include <viewwidgets/xdirecttilewidget.h>
 #include "../graph/GraphDlg.h"
 
 #include "../misc/PolarFilterDlg.h"

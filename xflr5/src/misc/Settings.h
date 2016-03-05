@@ -27,6 +27,7 @@
 #include <QDir>
 #include <QDialog>
 #include <QPushButton>
+#include <QRadioButton>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QLabel>
@@ -76,6 +77,8 @@ private:
 
 	QComboBox *m_pctrlStyles;
 	QPushButton *OK, *Cancel;
+
+
 
 	void *m_pMainFrame;
 	QDir m_StyleSheetDir;

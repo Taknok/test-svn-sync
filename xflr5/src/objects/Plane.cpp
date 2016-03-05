@@ -20,8 +20,9 @@
 *****************************************************************************/
 
 #include "Plane.h"
-#include "../miarex/Objects3D.h"
-#include "../globals.h"
+#include <miarex/Objects3D.h>
+#include <objects/Surface.h>
+#include <globals.h>
 #include <math.h>
 
 
