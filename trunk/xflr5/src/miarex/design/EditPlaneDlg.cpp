@@ -19,14 +19,20 @@
 
 *****************************************************************************/
 
-#include "../../misc/Units.h"
-#include "../../misc/Settings.h"
-#include "../../miarex/view/GLCreateLists.h"
-#include "../../misc/GLLightDlg.h"
-#include "../../misc/W3dPrefsDlg.h"
-#include "../view/GLCreateBodyLists.h"
+#include <misc/Units.h>
+#include <misc/Settings.h>
+#include <misc/GLLightDlg.h>
+#include <misc/W3dPrefsDlg.h>
+#include <objects/Surface.h>
 #include "wingseldlg.h"
 #include "EditPlaneDlg.h"
+#include <QApplication>
+#include <QAction>
+#include <QMenu>
+#include <QHeaderView>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QMessageBox>
 
 QSize EditPlaneDlg::s_WindowSize(1031,783);
 QPoint EditPlaneDlg::s_WindowPosition(131, 77);
@@ -87,7 +93,7 @@ void EditPlaneDlg::showEvent(QShowEvent *event)
 	resizeTreeView();
 	if(s_bWindowMaximized) setWindowState(Qt::WindowMaximized);
 
-	m_pGLWidget->update();
+	m_pgl3Widget->update();
 	event->accept();
 }
 
@@ -143,13 +149,13 @@ void EditPlaneDlg::resizeTreeView()
 void EditPlaneDlg::resize3DView()
 {
 
-	if(m_pGLWidget->width()>0 && m_pGLWidget->height()>0)
+	if(m_pgl3Widget->width()>0 && m_pgl3Widget->height()>0)
 	{
-		m_PixText = m_PixText.scaled(m_pGLWidget->rect().size());
+		m_PixText = m_PixText.scaled(m_pgl3Widget->rect().size());
 		m_PixText.fill(Qt::transparent);
 
 		QPainter paint(&m_PixText);
-		paintPlaneLegend(paint, m_pPlane, m_pGLWidget->rect());
+		paintPlaneLegend(paint, m_pPlane, m_pgl3Widget->rect());
 
 	}
 }
@@ -273,8 +279,8 @@ void EditPlaneDlg::setupLayout()
 	{
 		m_pRightSideSplitter = new QSplitter(Qt::Vertical, this);
 		{
-			m_pGLWidget = new ThreeDWidget(this);
-			m_pGLWidget->m_iView = GLPLANEVIEW;
+			m_pgl3Widget = new GL3Widget(this);
+			m_pgl3Widget->m_iView = XFLR5::GLPLANEVIEW;
 
 			QWidget *p3DCtrlBox = new QWidget;
 			{
@@ -364,10 +370,10 @@ void EditPlaneDlg::setupLayout()
 				}
 				p3DCtrlBox->setLayout(pThreeDViewControlsLayout);
 			}
-			m_pGLWidget->sizePolicy().setVerticalStretch(5);
+			m_pgl3Widget->sizePolicy().setVerticalStretch(5);
 			p3DCtrlBox->sizePolicy().setVerticalStretch(1);
 
-			m_pRightSideSplitter->addWidget(m_pGLWidget);
+			m_pRightSideSplitter->addWidget(m_pgl3Widget);
 			m_pRightSideSplitter->addWidget(p3DCtrlBox);
 		}
 
@@ -420,6 +426,42 @@ void EditPlaneDlg::setupLayout()
 //	resize(s_Size);
 }
 
+
+/**
+* Creates the VertexBufferObjects for OpenGL 3.0
+*/
+void EditPlaneDlg::glMake3DObjects()
+{
+	Body *pCurBody = NULL;
+	if(!m_pPlane) return;
+
+	pCurBody = m_pPlane->body();
+
+//	m_pgl3Widget->makeCurrent();
+
+	if(m_bResetglBody && pCurBody)
+	{
+		m_pgl3Widget->glMakeBody(pCurBody);
+		m_bResetglBody = false;
+	}
+
+	if(m_bResetglPlane)
+	{
+		Body TranslatedBody;
+		if(m_pPlane->body())
+		{
+			TranslatedBody.duplicate(m_pPlane->body());
+			TranslatedBody.translate(m_pPlane->bodyPos());
+		}
+
+		for(int iw=0; iw<MAXWINGS; iw++)
+		{
+			if(m_pPlane->wing(iw)) m_pgl3Widget->glMakeWing(iw, m_pPlane->wing(iw), m_pPlane->body());
+		}
+
+		m_bResetglPlane = false;
+	}
+}
 
 
 void EditPlaneDlg::onOK()
@@ -476,15 +518,15 @@ void EditPlaneDlg::initDialog(Plane *pPlane)
 	m_pPlane->createSurfaces();
 	fillPlaneTreeView();
 
-	m_pGLWidget->setScale(qMax(m_pPlane->wing()->planformSpan(), m_pPlane->body() ? m_pPlane->body()->Length() : 1.0));
+	m_pgl3Widget->setScale(qMax(m_pPlane->wing()->planformSpan(), m_pPlane->body() ? m_pPlane->body()->Length() : 1.0));
 
-	m_pctrlSurfaces->setChecked(m_pGLWidget->s_bSurfaces);
-	m_pctrlOutline->setChecked(m_pGLWidget->s_bOutline);
-	m_pctrlAxes->setChecked(m_pGLWidget->s_bAxes);
-	m_pctrlPanels->setChecked(m_pGLWidget->s_bVLMPanels);
-	m_pctrlFoilNames->setChecked(m_pGLWidget->s_bFoilNames);
-	m_pctrlShowMasses->setChecked(m_pGLWidget->s_bShowMasses);
-	m_pctrlClipPlanePos->setValue((int)(m_pGLWidget->m_ClipPlanePos*100.0));
+	m_pctrlSurfaces->setChecked(m_pgl3Widget->m_bSurfaces);
+	m_pctrlOutline->setChecked(m_pgl3Widget->m_bOutline);
+	m_pctrlAxes->setChecked(m_pgl3Widget->m_bAxes);
+	m_pctrlPanels->setChecked(m_pgl3Widget->m_bVLMPanels);
+	m_pctrlFoilNames->setChecked(m_pgl3Widget->m_bFoilNames);
+	m_pctrlShowMasses->setChecked(m_pgl3Widget->m_bShowMasses);
+	m_pctrlClipPlanePos->setValue((int)(m_pgl3Widget->m_ClipPlanePos*100.0));
 
 	m_pctrlAutoRedraw->setChecked(s_bAutoRedraw);
 	m_pctrlRedraw->setEnabled(!s_bAutoRedraw);
@@ -548,196 +590,6 @@ void EditPlaneDlg::reject()
 
 //	reject();
 	done(QDialog::Rejected);
-}
-
-
-
-void EditPlaneDlg::glDraw3D()
-{
-//	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-	m_pGLWidget->makeCurrent();
-	glClearColor(Settings::s_BackgroundColor.redF(), Settings::s_BackgroundColor.greenF(), Settings::s_BackgroundColor.blueF(),0.0);
-
-	if(m_bResetglSectionHighlight || m_bResetglPlane)
-	{
-		if(glIsList(SECTIONHIGHLIGHT))
-		{
-			glDeleteLists(SECTIONHIGHLIGHT,1);
-		}
-		if(m_iActiveSection>=0)
-		{
-			switch(m_enumActiveWingType)
-			{
-				case XFLR5::MAINWING:   glCreateWingSectionHighlight(m_pPlane->wing());  break;
-				case XFLR5::SECONDWING: glCreateWingSectionHighlight(m_pPlane->wing2()); break;
-				case XFLR5::ELEVATOR:   glCreateWingSectionHighlight(m_pPlane->stab());  break;
-				case XFLR5::FIN:        glCreateWingSectionHighlight(m_pPlane->fin());   break;
-				case XFLR5::OTHERWING: break;
-			}
-			m_bResetglSectionHighlight = false;
-		}
-		else if(m_iActiveFrame>=0)
-		{
-			glCreateBodyFrameHighlight(m_pPlane->body(),m_pPlane->bodyPos(), m_iActiveFrame);
-			m_bResetglSectionHighlight = false;
-		}
-	}
-
-	if(m_pPlane->body())
-	{
-		if(m_bResetglPlane || m_bResetglBody)
-		{
-			if(glIsList(BODYGEOMBASE))
-			{
-				glDeleteLists(BODYGEOMBASE,1);
-				glDeleteLists(BODYGEOMBASE+MAXBODIES,1);
-			}
-			if(m_pPlane->body()->bodyType()==XFLR5::BODYPANELTYPE)	     GLCreateBody3DFlatPanels(BODYGEOMBASE, m_pPlane->body());
-			else if(m_pPlane->body()->bodyType()==XFLR5::BODYSPLINETYPE) GLCreateBody3DSplines(   BODYGEOMBASE, m_pPlane->body(), 47, 37);
-
-			m_bResetglBody = false;
-			if(glIsList(BODYMESHBASE))
-			{
-				glDeleteLists(BODYMESHBASE,1);
-				glDeleteLists(BODYMESHBASE+MAXBODIES,1);
-			}
-			GLCreateBodyMesh(BODYMESHBASE, m_pPlane->body());
-		}
-	}
-
-	if(m_bResetglPlane)
-	{
-		Wing *pWingList[MAXWINGS] = {m_pPlane->wing(), m_pPlane->wing2(), m_pPlane->stab(), m_pPlane->fin()};
-
-		if(m_pPlane->body())
-		{
-			Body TranslatedBody;
-			TranslatedBody.duplicate(m_pPlane->body());
-			TranslatedBody.translate(m_pPlane->bodyPos());
-			GLCreateGeom(WINGSURFACES, pWingList, &TranslatedBody);
-		}
-		else GLCreateGeom(WINGSURFACES, pWingList, NULL);
-
-		if(glIsList(MESHPANELS))
-		{
-			glDeleteLists(MESHPANELS,2);
-		}
-
-		GLCreateMesh(pWingList);
-
-		m_bResetglPlane = false;
-	}
-//	QApplication::restoreOverrideCursor();
-}
-
-
-
-void EditPlaneDlg::glRenderView()
-{
-	QString MassUnit;
-	Units::getWeightUnitLabel(MassUnit);
-
-	Wing *pWingList[MAXWINGS] = {m_pPlane->wing(), m_pPlane->wing2(), m_pPlane->stab(), m_pPlane->fin()};
-
-
-	glDisable(GL_LIGHTING);
-	glDisable(GL_LIGHT0);
-
-	if(m_pGLWidget->s_bOutline)
-	{
-		for(int iw=0;iw<MAXWINGS; iw++)
-			if(pWingList[iw]) glCallList(WINGSURFACES+iw+4);
-
-		if(m_pPlane->body())
-		{
-			glTranslated((m_pPlane)->bodyPos().x, 0.0, (m_pPlane)->bodyPos().z);
-			glCallList(BODYGEOMBASE+MAXBODIES);
-			glTranslated(-(m_pPlane)->bodyPos().x, 0.0, -(m_pPlane)->bodyPos().z);
-		}
-	}
-
-	if(m_iActiveSection>=0 || m_iActiveFrame>=0)
-	{
-		glCallList(SECTIONHIGHLIGHT);
-	}
-
-	if(GLLightDlg::isLightOn())
-	{
-		glEnable(GL_LIGHTING);
-		glEnable(GL_LIGHT0);
-	}
-	else
-	{
-		glDisable(GL_LIGHTING);
-		glDisable(GL_LIGHT0);
-	}
-
-	if(m_pGLWidget->s_bSurfaces)
-	{
-		for(int iw=0;iw<MAXWINGS; iw++)
-			if(pWingList[iw]) glCallList(WINGSURFACES+iw);
-		if(m_pPlane->body())
-		{
-			glTranslated((m_pPlane)->bodyPos().x, 0.0, (m_pPlane)->bodyPos().z);
-			glCallList(BODYGEOMBASE);
-			glTranslated(-(m_pPlane)->bodyPos().x, 0.0, -(m_pPlane)->bodyPos().z);
-		}
-	}
-
-	glDisable(GL_LIGHTING);
-	glDisable(GL_LIGHT0);
-
-	if(m_pGLWidget->s_bVLMPanels)
-	{
-		if(!m_pGLWidget->s_bSurfaces) glCallList(MESHBACK);
-		glCallList(MESHPANELS);
-		if(m_pPlane->body())
-		{
-			glCallList(BODYMESHBASE);
-			if(!m_pGLWidget->s_bSurfaces) glCallList(BODYMESHBASE+MAXBODIES);
-		}
-	}
-
-	if(m_pGLWidget->s_bFoilNames)
-	{
-		for(int iw=0;iw<MAXWINGS; iw++)
-			if(pWingList[iw]) m_pGLWidget->glDrawFoils(pWingList[iw]);
-	}
-
-	if(m_pGLWidget->s_bShowMasses)
-	{
-		for(int iw=0; iw<MAXWINGS; iw++)
-		{
-			if(pWingList[iw])
-			{
-				m_pGLWidget->glDrawMasses(pWingList[iw]->volumeMass(), m_pPlane->WingLE(iw).translated(0.0,0.0,0.02), pWingList[iw]->wingName(),pWingList[iw]->m_PointMass);
-			}
-		}
-
-			m_pGLWidget->glDrawMasses(0.0, CVector(0.0,0.0,0.0),"",m_pPlane->m_PointMass);
-
-		if(m_pPlane->body())
-		{
-			Body *pCurBody = m_pPlane->body();
-
-			m_pGLWidget->glDrawMasses(pCurBody->volumeMass(),
-									  m_pPlane->bodyPos().translated(m_pPlane->body()->Length()/5,0.0,0.0),
-									  pCurBody->bodyName(),
-									  pCurBody->m_PointMass);
-		}
-
-		//plot CG
-		glPushMatrix();
-		{
-			glTranslated(m_pPlane->CoG().x,m_pPlane->CoG().y,m_pPlane->CoG().z);
-			glColor3d(1.0, 0.5, 0.5);
-			m_pGLWidget->glRenderSphere(W3dPrefsDlg::s_MassRadius*2.0/m_pGLWidget->m_glScaled);
-
-			m_pGLWidget->glRenderText(m_pPlane->CoG().x, m_pPlane->CoG().y, m_pPlane->CoG().z+.02,
-									"CoG "+QString("%1").arg(m_pPlane->totalMass()*Units::kgtoUnit(), 7,'g',3)
-									+Units::weightUnitLabel());
-		}
-		glPopMatrix();	}
 }
 
 
@@ -961,25 +813,25 @@ void EditPlaneDlg::connectSignals()
 	connect(m_pctrlRedraw,     SIGNAL(clicked()), this, SLOT(onRedraw()));
 	connect(m_pctrlReset,      SIGNAL(clicked()), this, SLOT(on3DReset()));
 
-	connect(m_pctrlReset,      SIGNAL(clicked()), m_pGLWidget, SLOT(on3DReset()));
+	connect(m_pctrlReset,      SIGNAL(clicked()), m_pgl3Widget, SLOT(on3DReset()));
 
-	connect(m_pctrlAxes,       SIGNAL(clicked(bool)), m_pGLWidget, SLOT(onAxes(bool)));
-	connect(m_pctrlPanels,     SIGNAL(clicked(bool)), m_pGLWidget, SLOT(onPanels(bool)));
-	connect(m_pctrlSurfaces,   SIGNAL(clicked(bool)), m_pGLWidget, SLOT(onSurfaces(bool)));
-	connect(m_pctrlOutline,    SIGNAL(clicked(bool)), m_pGLWidget, SLOT(onOutline(bool)));
-	connect(m_pctrlFoilNames,  SIGNAL(clicked(bool)), m_pGLWidget, SLOT(onFoilNames(bool)));
-	connect(m_pctrlShowMasses, SIGNAL(clicked(bool)), m_pGLWidget, SLOT(onShowMasses(bool)));
+	connect(m_pctrlAxes,       SIGNAL(clicked(bool)), m_pgl3Widget, SLOT(onAxes(bool)));
+	connect(m_pctrlPanels,     SIGNAL(clicked(bool)), m_pgl3Widget, SLOT(onPanels(bool)));
+	connect(m_pctrlSurfaces,   SIGNAL(clicked(bool)), m_pgl3Widget, SLOT(onSurfaces(bool)));
+	connect(m_pctrlOutline,    SIGNAL(clicked(bool)), m_pgl3Widget, SLOT(onOutline(bool)));
+	connect(m_pctrlFoilNames,  SIGNAL(clicked(bool)), m_pgl3Widget, SLOT(onFoilNames(bool)));
+	connect(m_pctrlShowMasses, SIGNAL(clicked(bool)), m_pgl3Widget, SLOT(onShowMasses(bool)));
 
-	connect(m_pctrlIso,        SIGNAL(clicked()), m_pGLWidget, SLOT(on3DIso()));
-	connect(m_pctrlX,          SIGNAL(clicked()), m_pGLWidget, SLOT(on3DFront()));
-	connect(m_pctrlY,          SIGNAL(clicked()), m_pGLWidget, SLOT(on3DLeft()));
-	connect(m_pctrlZ,          SIGNAL(clicked()), m_pGLWidget, SLOT(on3DTop()));
+	connect(m_pctrlIso,        SIGNAL(clicked()), m_pgl3Widget, SLOT(on3DIso()));
+	connect(m_pctrlX,          SIGNAL(clicked()), m_pgl3Widget, SLOT(on3DFront()));
+	connect(m_pctrlY,          SIGNAL(clicked()), m_pgl3Widget, SLOT(on3DLeft()));
+	connect(m_pctrlZ,          SIGNAL(clicked()), m_pgl3Widget, SLOT(on3DTop()));
 
-	connect(m_pctrlClipPlanePos, SIGNAL(sliderMoved(int)), m_pGLWidget, SLOT(onClipPlane(int)));
+	connect(m_pctrlClipPlanePos, SIGNAL(sliderMoved(int)), m_pgl3Widget, SLOT(onClipPlane(int)));
 
 	connect(m_pHorizontalSplitter, SIGNAL(splitterMoved(int,int)), this, SLOT(onResize()));
 
-	connect(m_pGLWidget, SIGNAL(viewModified()), this, SLOT(onCheckViewIcons()));
+	connect(m_pgl3Widget, SIGNAL(viewModified()), this, SLOT(onCheckViewIcons()));
 }
 
 
@@ -999,8 +851,8 @@ void EditPlaneDlg::onCheckViewIcons()
 
 void EditPlaneDlg::on3DReset()
 {
-	m_pGLWidget->setScale(qMax(m_pPlane->wing()->planformSpan(), m_pPlane->body() ? m_pPlane->body()->Length() : 1.0));
-	m_pGLWidget->on3DReset();
+	m_pgl3Widget->setScale(qMax(m_pPlane->wing()->planformSpan(), m_pPlane->body() ? m_pPlane->body()->Length() : 1.0));
+	m_pgl3Widget->on3DReset();
 }
 
 
@@ -1027,9 +879,9 @@ void EditPlaneDlg::onRedraw()
 
 	m_PixText.fill(Qt::transparent);
 	QPainter paint(&m_PixText);
-	paintPlaneLegend(paint, m_pPlane, m_pGLWidget->rect());
+	paintPlaneLegend(paint, m_pPlane, m_pgl3Widget->rect());
 
-	m_pGLWidget->repaint();
+	m_pgl3Widget->repaint();
 	QApplication::restoreOverrideCursor();
 
 }
@@ -1975,7 +1827,7 @@ void EditPlaneDlg::readVectorTree(CVector &V, QModelIndex indexLevel)
 void EditPlaneDlg::onItemClicked(const QModelIndex &index)
 {
 	identifySelection(index);
-	m_pGLWidget->update();
+	m_pgl3Widget->update();
 }
 
 
@@ -2126,7 +1978,7 @@ void EditPlaneDlg::onInsertBefore()
 		m_bChanged = true;
 		m_bResetglSectionHighlight = true;
 		m_bResetglPlane = true;
-		m_pGLWidget->update();
+		m_pgl3Widget->update();
 	}
 	else if(m_pPlane->body() && m_iActiveFrame>=0)
 	{
@@ -2140,7 +1992,7 @@ void EditPlaneDlg::onInsertBefore()
 		m_bResetglSectionHighlight = true;
 		m_bResetglPlane = true;
 		m_bResetglBody   = true;
-		m_pGLWidget->update();
+		m_pgl3Widget->update();
 	}
 	else if(m_enumActiveObject!=NOOBJECT && m_iActivePointMass>=0)
 	{
@@ -2164,7 +2016,7 @@ void EditPlaneDlg::onInsertBefore()
 
 		m_bChanged = true;
 		m_bResetglSectionHighlight = true;
-		m_pGLWidget->update();
+		m_pgl3Widget->update();
 
 	}
 }
@@ -2221,7 +2073,7 @@ void EditPlaneDlg::onInsertAfter()
 		m_bChanged = true;
 		m_bResetglSectionHighlight = true;
 		m_bResetglPlane = true;
-		m_pGLWidget->update();
+		m_pgl3Widget->update();
 	}
 	else if(m_pPlane->body() && m_iActiveFrame>=0)
 	{
@@ -2236,7 +2088,7 @@ void EditPlaneDlg::onInsertAfter()
 		m_bResetglSectionHighlight = true;
 		m_bResetglPlane = true;
 		m_bResetglBody   = true;
-		m_pGLWidget->update();
+		m_pgl3Widget->update();
 	}
 	else if(m_enumActiveObject!=NOOBJECT && m_iActivePointMass>=0)
 	{
@@ -2263,7 +2115,7 @@ void EditPlaneDlg::onInsertAfter()
 
 		m_bChanged = true;
 		m_bResetglSectionHighlight = true;
-		m_pGLWidget->update();
+		m_pgl3Widget->update();
 
 	}
 }
@@ -2299,7 +2151,7 @@ void EditPlaneDlg::onDelete()
 		m_bChanged = true;
 		m_bResetglSectionHighlight = true;
 		m_bResetglPlane = true;
-		m_pGLWidget->update();
+		m_pgl3Widget->update();
 	}
 	else if(m_pPlane->body() && m_iActiveFrame>=0)
 	{
@@ -2313,7 +2165,7 @@ void EditPlaneDlg::onDelete()
 		m_bResetglSectionHighlight = true;
 		m_bResetglPlane = true;
 		m_bResetglBody   = true;
-		m_pGLWidget->update();
+		m_pgl3Widget->update();
 	}
 	else if(m_enumActiveObject!=NOOBJECT && m_iActivePointMass>=0)
 	{
@@ -2337,7 +2189,7 @@ void EditPlaneDlg::onDelete()
 
 		m_bChanged = true;
 		m_bResetglSectionHighlight = true;
-		m_pGLWidget->update();
+		m_pgl3Widget->update();
 	}
 }
 

@@ -167,10 +167,20 @@ void Settings::setupLayout()
 		pCommandButtons->addStretch(1);
 	}
 
+
+	QGroupBox *pOpenGLBox = new QGroupBox(tr("OpenGL"));
+	{
+		QVBoxLayout *pOpenGLLayout = new QVBoxLayout;
+		{
+			m_pctrlAlphaChannel = new QCheckBox(tr("Enable 3D transparency"));
+			pOpenGLLayout->addWidget(m_pctrlAlphaChannel);
+		}
+		pOpenGLBox->setLayout(pOpenGLLayout);
+	}
+
 	QVBoxLayout *pMainLayout = new QVBoxLayout;
 	{
 		m_pctrlReverseZoom = new QCheckBox(tr("Reverse zoom direction using mouse wheel"));
-		m_pctrlAlphaChannel = new QCheckBox(tr("Enable 3D transparency"));
 		pMainLayout->addStretch(1);
 		pMainLayout->addWidget(m_pctrlStyles);
 		pMainLayout->addStretch(1);
@@ -180,9 +190,9 @@ void Settings::setupLayout()
 		pMainLayout->addStretch(1);
 		pMainLayout->addWidget(pGraphBox);
 		pMainLayout->addStretch(1);
-		pMainLayout->addWidget(m_pctrlReverseZoom);
+		pMainLayout->addWidget(pOpenGLBox);
 		pMainLayout->addStretch(1);
-		pMainLayout->addWidget(m_pctrlAlphaChannel);
+		pMainLayout->addWidget(m_pctrlReverseZoom);
 		pMainLayout->addSpacing(20);
 		pMainLayout->addStretch(1);
 		pMainLayout->addLayout(pCommandButtons);
@@ -274,14 +284,20 @@ void Settings::reject()
 	pXDirect->m_CpGraph.copySettings(&m_MemGraph);
 	pXDirect->m_CpGraph.setInverted(true);
 
-	for(int ig=0; ig<qMax(MAXPOLARGRAPHS,pXDirect->m_PlrGraph.count()); ig++)
+	for(int ig=0; ig<pXDirect->m_PlrGraph.count(); ig++)
 		pXDirect->m_PlrGraph[ig]->copySettings(&m_MemGraph);
 
-	for(int ig=0; ig<MAXGRAPHS; ig++)
+	for(int ig=0; ig<pMiarex->m_WingGraph.count(); ig++)
 	{
 		pMiarex->m_WingGraph[ig]->copySettings(&m_MemGraph);
-		pMiarex->m_TimeGraph[ig]->copySettings(&m_MemGraph);
+	}
+	for(int ig=0; ig<pMiarex->m_WPlrGraph.count(); ig++)
+	{
 		pMiarex->m_WPlrGraph[ig]->copySettings(&m_MemGraph);
+	}
+	for(int ig=0; ig<pMiarex->m_TimeGraph.count(); ig++)
+	{
+		pMiarex->m_TimeGraph[ig]->copySettings(&m_MemGraph);
 	}
 
 	pXInverse->m_QGraph.copySettings(&m_MemGraph);
@@ -439,7 +455,6 @@ void Settings::loadSettings(QSettings *pSettings)
 		s_bReverseZoom  = pSettings->value("ReverseZoom", false).toBool();
 		s_bAlphaChannel = pSettings->value("AlphaChannel", true).toBool();
 
-
 		s_RefGraph.loadSettings(pSettings);
 	}
 	pSettings->endGroup();
@@ -458,3 +473,22 @@ void Settings::onAlphaChannel()
 {
 	s_bAlphaChannel = m_pctrlAlphaChannel->isChecked();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

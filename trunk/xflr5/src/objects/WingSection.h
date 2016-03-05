@@ -48,14 +48,14 @@ public:
 		m_XPanelDist = XFLR5::COSINE;
 		m_YPanelDist = XFLR5::COSINE;
 
-		m_Chord    = 0.0;
-		m_Length   = 0.0;
-		m_YPosition      = 0.0;
-		m_YProj    = 0.0;
-		m_Offset   = 0.0;
-		m_Dihedral = 0.0;
-		m_ZPos     = 0.0;
-		m_Twist    = 0.0;
+		m_Chord     = 0.0;
+		m_Length    = 0.0;
+		m_YPosition = 0.0;
+		m_YProj     = 0.0;
+		m_Offset    = 0.0;
+		m_Dihedral  = 0.0;
+		m_ZPos      = 0.0;
+		m_Twist     = 0.0;
 
 		m_RightFoilName.clear();
 		m_LeftFoilName.clear();
@@ -77,9 +77,6 @@ public:
 
 	QString m_LeftFoilName;  /**< The name of the foil on the leftt side of the section */
 	QString m_RightFoilName; /**< The name of the foil on the right side of the section */
-
-
-
 
 	QString xDistributionType() {return distributionType(m_XPanelDist);}
 	QString yDistributionType() {return distributionType(m_YPanelDist);}

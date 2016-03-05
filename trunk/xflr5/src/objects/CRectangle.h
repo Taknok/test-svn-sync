@@ -52,7 +52,7 @@ public:
 			bottom = BottomRight.y;
 	};
 
-	void CopyRect(CRectangle *pRect)
+	void copyRect(CRectangle *pRect)
 	{
 		left   = pRect->left;
 		right  = pRect->right;
@@ -71,20 +71,20 @@ public:
 //	~CRectangle(void);
 
 
-	bool IsRectEmpty()
+	bool isRectEmpty()
 	{
 		if(bottom==top && right==left) return true;
 		else                           return false;
 	};
-	bool PtInRect(CVector const &pt)
+	bool ptInRect(CVector const &pt)
 	{
 		if(left<pt.x && pt.x<right && bottom<pt.y && pt.y<top ) return true;
 		return false;
 	};
 	double width(){return (right-left);};
 	double height(){return(top-bottom);};
-	void SetRectEmpty(){left = right = top = bottom = 0;};
-	void DeflateRect(double const &x, double const&y)
+	void setRectEmpty(){left = right = top = bottom = 0;};
+	void deflateRect(double const &x, double const&y)
 	{
 		//DeflateRect adds units to the left and top and subtracts units from the right and bottom
 		left   +=x;
@@ -93,7 +93,7 @@ public:
 		bottom -=y;
 	};
 
-	void DeflateRect(double const &l, double const &t, double const&r, double const&b)
+	void deflateRect(double const &l, double const &t, double const&r, double const&b)
 	{
 		//DeflateRect adds units to the left and top and subtracts units from the right and bottom
 		left   +=l;
@@ -102,7 +102,7 @@ public:
 		bottom -=b;
 	};
 
-	void InflateRect(double const &x, double const&y)
+	void inflateRect(double const &x, double const&y)
 	{
 		//InflateRect subtracts units from the left and top and adds units to the right and bottom
 		left   -=x;
@@ -110,7 +110,7 @@ public:
 		top    -=y;
 		bottom +=y;
 	};
-	void InflateRect(double const &l, double const &t, double const&r, double const&b)
+	void inflateRect(double const &l, double const &t, double const&r, double const&b)
 	{
 		//InflateRect subtracts units from the left and top and adds units to the right and bottom
 		left   -=l;
@@ -118,21 +118,21 @@ public:
 		top    -=t;
 		bottom +=b;
 	};
-	void SetRect(double const &l, double const &t, double const&r, double const&b)
+	void setRect(double const &l, double const &t, double const&r, double const&b)
 	{
 		left   =l;
 		right  =r;
 		top    =t;
 		bottom =b;
 	};
-	void SetRect(CRectangle const &Rect)
+	void setRect(CRectangle const &Rect)
 	{
 		left   = Rect.left;
 		right  = Rect.right;
 		top    = Rect.top;
 		bottom = Rect.bottom;
 	};
-	void NormalizeRect()
+	void normalizeRect()
 	{
 		double tmp;
 		if (left > right)

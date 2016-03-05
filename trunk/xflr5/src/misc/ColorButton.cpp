@@ -39,7 +39,7 @@ ColorButton::ColorButton(QWidget *pParent) : QAbstractButton(pParent)
 QSize ColorButton::sizeHint() const
 {
 	QFontMetrics fm(Settings::s_TextFont);
-	int w = 5 * fm.averageCharWidth();
+	int w = 10 * fm.averageCharWidth();
 	int h = fm.height()*3/2;
 	return QSize(w, h);
 }

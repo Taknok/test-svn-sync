@@ -18,13 +18,16 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 *****************************************************************************/
-
-#include "../../misc/Units.h"
-#include "../../misc/Settings.h"
-#include "../../miarex/view/GLCreateLists.h"
-#include "../../misc/GLLightDlg.h"
-#include "../../misc/W3dPrefsDlg.h"
-#include "../view/GLCreateBodyLists.h"
+#include <globals.h>
+#include <misc/Units.h>
+#include <misc/Settings.h>
+#include <misc/GLLightDlg.h>
+#include <misc/W3dPrefsDlg.h>
+#include <QHeaderView>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QMessageBox>
+#include <QPainter>
 
 #include "EditBodyDlg.h"
 
@@ -83,7 +86,7 @@ void EditBodyDlg::showEvent(QShowEvent *event)
 	resizeTreeView();
 	if(s_bWindowMaximized) setWindowState(Qt::WindowMaximized);
 
-	m_pGLWidget->update();
+	m_pgl3Widget->update();
 
 	event->accept();
 }
@@ -107,9 +110,9 @@ void EditBodyDlg::hideEvent(QHideEvent *event)
 void EditBodyDlg::resizeEvent(QResizeEvent *event)
 {
 	resizeTreeView();
-	if(m_pGLWidget->width()>0 && m_pGLWidget->height()>0)
+	if(m_pgl3Widget->width()>0 && m_pgl3Widget->height()>0)
 	{
-		m_PixText = m_PixText.scaled(m_pGLWidget->rect().size());
+		m_PixText = m_PixText.scaled(m_pgl3Widget->rect().size());
 		m_PixText.fill(Qt::transparent);
 	}
 	event->accept();
@@ -144,8 +147,6 @@ void EditBodyDlg::resizeTreeView()
 	m_pStruct->setColumnWidth(2,ColumnWidth*3);
 
 }
-
-
 
 
 
@@ -258,12 +259,6 @@ void EditBodyDlg::setupLayout()
 
 		m_pMiddleSplitter = new QSplitter(Qt::Vertical, this);
 		{
-			m_pBodyLineWidget = new BodyLineWidget(this);
-			m_pBodyLineWidget->setSizePolicy(szPolicyMaximum);
-
-			m_pGLWidget = new ThreeDWidget(this);
-			m_pGLWidget->m_iView = GLEDITBODYVIEW;
-
 			QWidget *p3DCtrlBox = new QWidget;
 			{
 				p3DCtrlBox->setSizePolicy(szPolicyMaximum);
@@ -350,12 +345,17 @@ void EditBodyDlg::setupLayout()
 				}
 				p3DCtrlBox->setLayout(pThreeDViewControlsLayout);
 			}
+			m_pBodyLineWidget = new BodyLineWidget(this);
+			m_pBodyLineWidget->setSizePolicy(szPolicyMaximum);
 			m_pBodyLineWidget->sizePolicy().setVerticalStretch(2);
-			m_pGLWidget->sizePolicy().setVerticalStretch(5);
+
+			m_pgl3Widget = new GL3Widget(this);
+			m_pgl3Widget->m_iView = XFLR5::GLEDITBODYVIEW;
+			m_pgl3Widget->sizePolicy().setVerticalStretch(5);
 			p3DCtrlBox->sizePolicy().setVerticalStretch(2);
 
 			m_pMiddleSplitter->addWidget(m_pBodyLineWidget);
-			m_pMiddleSplitter->addWidget(m_pGLWidget);
+			m_pMiddleSplitter->addWidget(m_pgl3Widget);
 			m_pMiddleSplitter->addWidget(p3DCtrlBox);
 		}
 
@@ -409,17 +409,17 @@ void EditBodyDlg::initDialog(Body *pBody)
 {
 	m_pBody = pBody;
 	m_pBodyLineWidget->setBody(pBody);
-	m_pFrameWidget->setBody(m_pBody);
-	m_pGLWidget->setScale(m_pBody->Length());
+	m_pFrameWidget->setBody(pBody);
+	m_pgl3Widget->setScale(pBody->Length());
 
 	fillBodyTreeView();
 
-	m_pctrlSurfaces->setChecked(m_pGLWidget->s_bSurfaces);
-	m_pctrlOutline->setChecked(m_pGLWidget->s_bOutline);
-	m_pctrlAxes->setChecked(m_pGLWidget->s_bAxes);
-	m_pctrlPanels->setChecked(m_pGLWidget->s_bVLMPanels);
-	m_pctrlShowMasses->setChecked(m_pGLWidget->s_bShowMasses);
-	m_pctrlClipPlanePos->setValue((int)(m_pGLWidget->m_ClipPlanePos*100.0));
+	m_pctrlSurfaces->setChecked(m_pgl3Widget->m_bSurfaces);
+	m_pctrlOutline->setChecked(m_pgl3Widget->m_bOutline);
+	m_pctrlAxes->setChecked(m_pgl3Widget->m_bAxes);
+	m_pctrlPanels->setChecked(m_pgl3Widget->m_bVLMPanels);
+	m_pctrlShowMasses->setChecked(m_pgl3Widget->m_bShowMasses);
+	m_pctrlClipPlanePos->setValue((int)(m_pgl3Widget->m_ClipPlanePos*100.0));
 }
 
 
@@ -485,101 +485,19 @@ void EditBodyDlg::reject()
 
 
 
-void EditBodyDlg::glDraw3D()
+/**
+* Creates the VertexBufferObjects for OpenGL 3.0
+*/
+void EditBodyDlg::glMake3DObjects()
 {
-	m_pGLWidget->makeCurrent();
-	glClearColor(Settings::s_BackgroundColor.redF(), Settings::s_BackgroundColor.greenF(), Settings::s_BackgroundColor.blueF(),0.0);
-
-
-	if(m_bResetglFrameHighlight || m_bResetglBody)
-	{
-		if(glIsList(SECTIONHIGHLIGHT))
-		{
-			glDeleteLists(SECTIONHIGHLIGHT,1);
-		}
-		if(m_pBody->activeFrame())
-		{
-			glCreateBodyFrameHighlight(m_pBody,CVector(0.0,0.0,0.0), m_pBody->m_iActiveFrame);
-			m_bResetglFrameHighlight = false;
-		}
-	}
-
-
 	if(m_bResetglBody)
 	{
-		if(glIsList(BODYGEOMBASE))
-		{
-			glDeleteLists(BODYGEOMBASE,1);
-			glDeleteLists(BODYGEOMBASE+MAXBODIES,1);
-		}
-		if(m_pBody->bodyType()==XFLR5::BODYPANELTYPE)	    GLCreateBody3DFlatPanels(BODYGEOMBASE, m_pBody);
-		else if(m_pBody->bodyType()==XFLR5::BODYSPLINETYPE) GLCreateBody3DSplines(   BODYGEOMBASE, m_pBody, 47, 37);
-
 		m_bResetglBody = false;
-		if(glIsList(BODYMESHBASE))
-		{
-			glDeleteLists(BODYMESHBASE,1);
-			glDeleteLists(BODYMESHBASE+MAXBODIES,1);
-		}
-		GLCreateBodyMesh(BODYMESHBASE, m_pBody);
+		m_pgl3Widget->glMakeBody(m_pBody);
 	}
 }
 
 
-
-void EditBodyDlg::glRenderView()
-{
-	QString MassUnit;
-	Units::getWeightUnitLabel(MassUnit);
-
-
-	glDisable(GL_LIGHTING);
-	glDisable(GL_LIGHT0);
-
-	if(m_pGLWidget->s_bOutline)
-	{
-		glCallList(BODYGEOMBASE+MAXBODIES);
-	}
-
-	if(m_pBody->activeFrame())
-	{
-		glCallList(SECTIONHIGHLIGHT);
-	}
-
-	if(GLLightDlg::isLightOn())
-	{
-		glEnable(GL_LIGHTING);
-		glEnable(GL_LIGHT0);
-	}
-	else
-	{
-		glDisable(GL_LIGHTING);
-		glDisable(GL_LIGHT0);
-	}
-
-	if(m_pGLWidget->s_bSurfaces)
-	{
-		glCallList(BODYGEOMBASE);
-	}
-
-	glDisable(GL_LIGHTING);
-	glDisable(GL_LIGHT0);
-
-	if(m_pGLWidget->s_bVLMPanels)
-	{
-		glCallList(BODYMESHBASE);
-		if(!m_pGLWidget->s_bSurfaces) glCallList(BODYMESHBASE+MAXBODIES);
-	}
-
-
-	if(m_pGLWidget->s_bShowMasses)
-	{
-		m_pGLWidget->glDrawMasses(m_pBody->volumeMass(),
-								  CVector(0.0,0.0,0.0),
-								  m_pBody->bodyName(),
-								  m_pBody->m_PointMass);
-	}
-}
 
 
 void EditBodyDlg::glCreateBodyFrameHighlight(Body *pBody, CVector bodyPos, int iFrame)
@@ -683,23 +601,23 @@ void EditBodyDlg::connectSignals()
 
 	connect(m_pctrlRedraw,     SIGNAL(clicked()), this, SLOT(onRedraw()));
 
-	connect(m_pctrlReset,      SIGNAL(clicked()), m_pGLWidget, SLOT(on3DReset()));
+	connect(m_pctrlReset,      SIGNAL(clicked()), m_pgl3Widget, SLOT(on3DReset()));
 
-	connect(m_pctrlAxes,       SIGNAL(clicked(bool)), m_pGLWidget, SLOT(onAxes(bool)));
-	connect(m_pctrlPanels,     SIGNAL(clicked(bool)), m_pGLWidget, SLOT(onPanels(bool)));
-	connect(m_pctrlSurfaces,   SIGNAL(clicked(bool)), m_pGLWidget, SLOT(onSurfaces(bool)));
-	connect(m_pctrlOutline,    SIGNAL(clicked(bool)), m_pGLWidget, SLOT(onOutline(bool)));
-	connect(m_pctrlShowMasses, SIGNAL(clicked(bool)), m_pGLWidget, SLOT(onShowMasses(bool)));
+	connect(m_pctrlAxes,       SIGNAL(clicked(bool)), m_pgl3Widget, SLOT(onAxes(bool)));
+	connect(m_pctrlPanels,     SIGNAL(clicked(bool)), m_pgl3Widget, SLOT(onPanels(bool)));
+	connect(m_pctrlSurfaces,   SIGNAL(clicked(bool)), m_pgl3Widget, SLOT(onSurfaces(bool)));
+	connect(m_pctrlOutline,    SIGNAL(clicked(bool)), m_pgl3Widget, SLOT(onOutline(bool)));
+	connect(m_pctrlShowMasses, SIGNAL(clicked(bool)), m_pgl3Widget, SLOT(onShowMasses(bool)));
 
-	connect(m_pctrlIso,        SIGNAL(clicked()), m_pGLWidget, SLOT(on3DIso()));
-	connect(m_pctrlX,          SIGNAL(clicked()), m_pGLWidget, SLOT(on3DFront()));
-	connect(m_pctrlY,          SIGNAL(clicked()), m_pGLWidget, SLOT(on3DLeft()));
-	connect(m_pctrlZ,          SIGNAL(clicked()), m_pGLWidget, SLOT(on3DTop()));
+	connect(m_pctrlIso,        SIGNAL(clicked()), m_pgl3Widget, SLOT(on3DIso()));
+	connect(m_pctrlX,          SIGNAL(clicked()), m_pgl3Widget, SLOT(on3DFront()));
+	connect(m_pctrlY,          SIGNAL(clicked()), m_pgl3Widget, SLOT(on3DLeft()));
+	connect(m_pctrlZ,          SIGNAL(clicked()), m_pgl3Widget, SLOT(on3DTop()));
 
-	connect(m_pctrlClipPlanePos, SIGNAL(sliderMoved(int)), m_pGLWidget, SLOT(onClipPlane(int)));
+	connect(m_pctrlClipPlanePos, SIGNAL(sliderMoved(int)), m_pgl3Widget, SLOT(onClipPlane(int)));
 	connect(m_pHorizontalSplitter, SIGNAL(splitterMoved(int,int)), this, SLOT(onResize()));
 
-	connect(m_pGLWidget, SIGNAL(viewModified()), this, SLOT(onCheckViewIcons()));
+	connect(m_pgl3Widget, SIGNAL(viewModified()), this, SLOT(onCheckViewIcons()));
 }
 
 
@@ -938,7 +856,7 @@ void EditBodyDlg::fillBodyTreeView()
 
 void EditBodyDlg::updateViews()
 {
-	m_pGLWidget->update();
+	m_pgl3Widget->update();
 	m_pFrameWidget->update();
 	m_pBodyLineWidget->update();
 
@@ -961,7 +879,7 @@ void EditBodyDlg::onRefillBodyTree()
 {
 	fillBodyTreeView();
 	m_bResetglBody = true;
-	m_pGLWidget->update();
+	m_pgl3Widget->update();
 	m_pBodyLineWidget->update();
 	m_pFrameWidget->update();
 }
@@ -1253,7 +1171,7 @@ void EditBodyDlg::setActiveFrame(int iFrame)
 {
 	m_pBody->setActiveFrame(m_pBody->frame(iFrame));
 	m_bResetglFrameHighlight = true;
-	m_pGLWidget->update();
+	m_pgl3Widget->update();
 }
 
 
@@ -1269,7 +1187,7 @@ void EditBodyDlg::onInsertBefore()
 		m_bChanged = true;
 		m_bResetglFrameHighlight = true;
 		m_bResetglBody   = true;
-		m_pGLWidget->update();
+		m_pgl3Widget->update();
 	}
 	else if(m_iActivePointMass>=0)
 	{
@@ -1279,7 +1197,7 @@ void EditBodyDlg::onInsertBefore()
 
 		m_bChanged = true;
 		m_bResetglFrameHighlight = true;
-		m_pGLWidget->update();
+		m_pgl3Widget->update();
 
 	}
 }
@@ -1299,7 +1217,7 @@ void EditBodyDlg::onInsertAfter()
 		m_bChanged = true;
 		m_bResetglFrameHighlight = true;
 		m_bResetglBody   = true;
-		m_pGLWidget->update();
+		m_pgl3Widget->update();
 	}
 	else if(m_iActivePointMass>=0)
 	{
@@ -1315,7 +1233,7 @@ void EditBodyDlg::onInsertAfter()
 
 		m_bChanged = true;
 		m_bResetglFrameHighlight = true;
-		m_pGLWidget->update();
+		m_pgl3Widget->update();
 
 	}
 }
@@ -1333,7 +1251,7 @@ void EditBodyDlg::onDelete()
 		m_bChanged = true;
 		m_bResetglFrameHighlight = true;
 		m_bResetglBody   = true;
-		m_pGLWidget->update();
+		m_pgl3Widget->update();
 	}
 	else if(m_iActivePointMass>=0)
 	{
@@ -1348,7 +1266,7 @@ void EditBodyDlg::onDelete()
 
 		m_bChanged = true;
 		m_bResetglFrameHighlight = true;
-		m_pGLWidget->update();
+		m_pgl3Widget->update();
 	}
 }
 

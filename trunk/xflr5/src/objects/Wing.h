@@ -27,13 +27,7 @@
 #define WING_H
 
 #include <QVarLengthArray>
-#include "WPolar.h"
-#include "Surface.h"
-#include "Panel.h"
 #include "WingSection.h"
-#include "PointMass.h"
-
-
 /**
  * @class Wing
  * @brief  This class defines the wing object, provides the methods for the calculation of the wing geometric properties, and
@@ -54,6 +48,12 @@
  *
  * The data is stored in International Standard Units, i.e. meters, kg, and seconds. Angular data is stored in degrees.
 */
+
+class PointMass;
+class WPolar;
+class Surface;
+class Panel;
+
 class Wing
 {
 	friend class Objects3D;
@@ -79,6 +79,7 @@ class Wing
 	friend class StabViewDlg;
 	friend class EditPlaneDlg;
 	friend class EditBodyDlg;
+	friend class GL3Widget;
 
 
 public:
@@ -154,7 +155,7 @@ public:
 	XFLR5::enumPanelDistribution &YPanelDist(const int &iSection);
 
 	bool isWingFoil(Foil *pFoil);
-
+	bool textures(){return m_bTextures;}
 	double rootChord()     {return m_WingSection.first()->m_Chord;}
 	double tipChord()      {return m_WingSection.last()->m_Chord;}
 	double tipTwist()      {return m_WingSection.last()->m_Twist;}
@@ -203,6 +204,8 @@ public:
 
 	XFLR5::enumWingType &wingType() {return m_WingType;}
 
+	void getTextureUV(int iSurf, double *leftV, double *rightV, double &leftU, double &rightU, int nPoints);
+
 //__________________________Variables_______________________
 private:
 	QString m_WingName;	                       /**< the Wing's name; this name is used to identify the wing and as a reference for child Polar and WingOpp objects. */
@@ -213,6 +216,7 @@ private:
 
 	static double s_MinPanelSize;      /**< wing minimum panel size ; panels of less length are ignored */
 
+	bool m_bTextures;
 	bool m_bWingOut;	             /**< true if the wing OpPoint is outside the flight envelope of the available Type 1 polar mesh */
 	bool m_bSymetric;	             /**< true if the wing's geometry is symetric */
 	bool m_bIsFin;                   /**< true if this wing describes a fin */

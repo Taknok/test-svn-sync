@@ -48,11 +48,16 @@
 	The analysis is managed from the instance of the LLTAnalysisDlg class.
 	All the data is in International Standard units kg, m, s.
  */
+
+class PlaneOpp;
+
 class LLTAnalysis
 {
 	friend class MainFrame;
 	friend class QMiarex;
 	friend class LLTAnalysisDlg;
+	friend class GL3Widget;
+
 public:
 	LLTAnalysis();
 

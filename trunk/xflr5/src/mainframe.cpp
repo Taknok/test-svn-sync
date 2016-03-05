@@ -67,6 +67,12 @@
 #include "gltexturewidget.h"
 #include "glwindow.h"
 
+#include "inverseviewwidget.h"
+#include "gl3widget.h"
+#include "Direct2dDesign.h"
+#include "xdirecttilewidget.h"
+#include "miarextilewidget.h"
+
 #include <QMessageBox>
 #include <QtCore>
 #include <QToolBar>
@@ -767,10 +773,10 @@ void MainFrame::createDockWindows()
 	QXDirect::s_pMainFrame         = this;
 	QXInverse::s_pMainFrame        = this;
 	QMiarex::s_pMainFrame          = this;
-	ThreeDWidget::s_pMainFrame     = this;
+	GL3Widget::s_pMainFrame        = this;
 	Section2dWidget::s_pMainFrame  = this;
 	GraphWidget::s_pMainFrame      = this;
-	OpPointWidget::s_pMainFrame       = this;
+	OpPointWidget::s_pMainFrame    = this;
 	WingWidget::s_pMainFrame       = this;
 	QGraph::s_pMainFrame           = this;
 
@@ -792,8 +798,7 @@ void MainFrame::createDockWindows()
 	addDockWidget(Qt::BottomDockWidgetArea, m_pctrlAFoilWidget);
 
 	m_p2dWidget = new InverseViewWidget(this);
-	m_p3dWidget = new ThreeDWidget(this);
-	m_pGL3Widget = new GL3Widget(this);
+	m_pgl3Widget = new GL3Widget(this);
 
 	m_pDirect2dWidget = new Direct2dDesign(this);
 	m_pXDirectTileWidget = new XDirectTileWidget(this);
@@ -846,8 +851,7 @@ void MainFrame::createDockWindows()
 
 	m_pctrlCentralWidget = new QStackedWidget;
 	m_pctrlCentralWidget->addWidget(m_p2dWidget);
-	m_pctrlCentralWidget->addWidget(m_p3dWidget);
-	m_pctrlCentralWidget->addWidget(m_pGL3Widget);
+	m_pctrlCentralWidget->addWidget(m_pgl3Widget);
 	m_pctrlCentralWidget->addWidget(m_pDirect2dWidget);
 	m_pctrlCentralWidget->addWidget(m_pXDirectTileWidget);
 	m_pctrlCentralWidget->addWidget(m_pMiarexTileWidget);
@@ -864,8 +868,7 @@ void MainFrame::createDockWindows()
 	m_p2dWidget->m_pXInverse  = pXInverse;
 	m_p2dWidget->m_pMainFrame = this;
 
-	pMiarex->m_p3dWidget = m_p3dWidget;
-
+	pMiarex->m_pgl3Widget = m_pgl3Widget;
 
 	pXDirect->m_CpGraph.m_pParent    = m_p2dWidget;
 	pXDirect->m_poaFoil  = &Foil::s_oaFoil;
@@ -884,8 +887,7 @@ void MainFrame::createDockWindows()
 
 	LLTAnalysis::s_poaPolar = &Polar::s_oaPolar;
 
-	ThreeDWidget::s_pMiarex       = m_pMiarex;
-	ThreeDWidget::s_pglLightDlg   = &m_glLightDlg;
+	GL3Widget::s_pMiarex = m_pMiarex;
 
 	WingWidget::s_pMiarex         = m_pMiarex;
 	XFoilAnalysisDlg::s_pXDirect  = m_pXDirect;
@@ -2540,8 +2542,9 @@ void MainFrame::keyPressEvent(QKeyEvent *event)
 			{
 				if(bCtrl)
 				{
-					m_pctrlCentralWidget->setCurrentWidget(m_pGL3Widget);
-					m_pGL3Widget->setFocus();
+					loadXFLR5File(m_RecentFiles.at(0));
+					m_pctrlCentralWidget->setCurrentWidget(m_pgl3Widget);
+					m_pgl3Widget->setFocus();
 				}
 				break;
 			}
@@ -2741,7 +2744,6 @@ bool MainFrame::loadSettings()
 		SettingsFormat = settings.value("SettingsFormat").toInt();
 		if(SettingsFormat != SETTINGSFORMAT) return false;
 
-
 		Settings::s_StyleName = settings.value("StyleName","").toString();
 		int k = settings.value("ExportFileType", 0).toInt();
 		if (k==0) Settings::s_ExportFileType = XFLR5::TXT;
@@ -2844,8 +2846,7 @@ bool MainFrame::loadSettings()
 
 		Settings::s_bStyleSheets  = settings.value("ShowStyleSheets", false).toBool();
 		Settings::s_StyleSheetName = settings.value("StyleSheetName", "xflr5_style").toString();
-		s_bShowMousePos = settings.value("ShowMousePosition", true).toBool();
-
+		s_bShowMousePos = settings.value("ShowMousePosition", true).toBool();	
 	}
 
 	return true;
@@ -3540,19 +3541,19 @@ void MainFrame::onSaveViewToImageFile()
 				QMessageBox::StandardButton reply = QMessageBox::question(this, "3D save option", tr("Set a transparent background ?"), QMessageBox::Yes|QMessageBox::No);
 				if (reply == QMessageBox::Yes)
 				{
-					QPixmap outPix = m_p3dWidget->grab();
+					QPixmap outPix = m_pgl3Widget->grab();
 					QPainter painter(&outPix);
 					painter.drawPixmap(0,0, pMiarex->m_PixText);
-					painter.drawPixmap(0,0, m_p3dWidget->m_PixText);
+					painter.drawPixmap(0,0, m_pgl3Widget->m_PixTextOverlay);
 
 					outPix.save(FileName);
 				}
 				else
 				{
-					QImage outImg = m_p3dWidget->grabFramebuffer();
+					QImage outImg = m_pgl3Widget->grabFramebuffer();
 					QPainter painter(&outImg);
 					painter.drawPixmap(0,0, pMiarex->m_PixText);
-					painter.drawPixmap(0,0, m_p3dWidget->m_PixText);
+					painter.drawPixmap(0,0, m_pgl3Widget->m_PixTextOverlay);
 
 					outImg.save(FileName);
 				}
@@ -3745,6 +3746,9 @@ void MainFrame::onStyleSettings()
 
 	pXDirect->m_CpGraph.setInverted(true);
 	pMiarex->m_CpGraph.setInverted(true);
+
+	setMainFrameCentralWidget();
+
 	updateView();
 }
 
@@ -3893,7 +3897,7 @@ void MainFrame::openRecentFile()
 	if (!action) return;
 
 	QXDirect *pXDirect = (QXDirect*) m_pXDirect;
-	
+
 	XFLR5::enumApp App = loadXFLR5File(action->data().toString());
 	if(m_iApp==XFLR5::NOAPP) m_iApp = App;
 
@@ -4471,8 +4475,8 @@ void MainFrame::setMainFrameCentralWidget()
 		}
 		else if(pMiarex->m_iView==XFLR5::W3DVIEW)
 		{
-			m_pctrlCentralWidget->setCurrentWidget(m_p3dWidget);
-			m_p3dWidget->setFocus();
+			m_pctrlCentralWidget->setCurrentWidget(m_pgl3Widget);
+			m_pgl3Widget->setFocus();
 		}
 	}
 	else if(m_iApp==XFLR5::DIRECTDESIGN)

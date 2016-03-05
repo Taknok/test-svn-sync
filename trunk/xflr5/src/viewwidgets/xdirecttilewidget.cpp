@@ -22,9 +22,11 @@
 #include <mainframe.h>
 #include "xdirecttilewidget.h"
 #include "xdirect/XDirect.h"
+#include <viewwidgets/oppointwidget.h>
 #include <QHBoxLayout>
 #include <QGridLayout>
 #include <QSplitter>
+#include <QAction>
 #include <QtDebug>
 
 
