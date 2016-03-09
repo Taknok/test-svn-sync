@@ -441,7 +441,7 @@ void EditPlaneDlg::glMake3DObjects()
 
 	if(m_bResetglBody && pCurBody)
 	{
-		m_pgl3Widget->glMakeBody(pCurBody);
+		m_pgl3Widget->glMakeBodySplines(pCurBody);
 		m_bResetglBody = false;
 	}
 
@@ -663,14 +663,14 @@ void EditPlaneDlg::glCreateBodyFrameHighlight(Body *pBody, CVector bodyPos, int 
 		{
 			glBegin(GL_LINE_STRIP);
 			{
-				for (k=0; k<pFrame->PointCount();k++)
+				for (k=0; k<pFrame->pointCount();k++)
 					glVertex3d( pFrame->m_Position.x+bodyPos.x,
 								pFrame->m_CtrlPoint[k].y, pFrame->m_CtrlPoint[k].z+bodyPos.z);
 			}
 			glEnd();
 			glBegin(GL_LINE_STRIP);
 			{
-				for (k=0; k<pFrame->PointCount();k++)
+				for (k=0; k<pFrame->pointCount();k++)
 					glVertex3d(pFrame->m_Position.x+bodyPos.x,
 							  -pFrame->m_CtrlPoint[k].y, pFrame->m_CtrlPoint[k].z+bodyPos.z);
 			}
@@ -1375,12 +1375,12 @@ void EditPlaneDlg::fillBodyTreeView(QStandardItem*planeRootItem)
 				QList<QStandardItem*> dataItem = prepareDoubleRow("x_Position", "x", pFrame->m_Position.x*Units::mtoUnit(), Units::lengthUnitLabel());
 				sectionFolder.first()->appendRow(dataItem);
 
-				for(int iPt=0; iPt<pFrame->PointCount(); iPt++)
+				for(int iPt=0; iPt<pFrame->pointCount(); iPt++)
 				{
 					QList<QStandardItem*> pointFolder = prepareRow(QString("Point %1").arg(iPt+1));
 					sectionFolder.first()->appendRow(pointFolder);
 					{
-						CVector Pt(pFrame->Point(iPt));
+						CVector Pt(pFrame->point(iPt));
 						QList<QStandardItem*> dataItem = prepareDoubleRow("", "x", Pt.x*Units::mtoUnit(), Units::lengthUnitLabel());
 						pointFolder.first()->appendRow(dataItem);
 

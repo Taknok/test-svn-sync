@@ -1,3 +1,5 @@
+#version 130
+
 uniform bool lightOn;
 uniform bool hasTexture;
 uniform vec3 LightPosition_worldspace;
@@ -8,12 +10,12 @@ uniform int MaterialShininess;
 uniform sampler2D textureSampler;
 
 
-varying mediump vec3 Position_worldspace;
-varying mediump vec3 Normal_cameraspace;
-varying mediump vec3 EyeDirection_cameraspace;
-varying mediump vec3 LightDirection_cameraspace;
-varying mediump vec4 vertexcolor;
-varying mediump vec2 UV;
+varying vec3 Position_worldspace;
+varying vec3 Normal_cameraspace;
+varying vec3 EyeDirection_cameraspace;
+varying vec3 LightDirection_cameraspace;
+varying vec4 vertexcolor;
+varying vec2 UV;
 
 
 void main()

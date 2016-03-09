@@ -143,10 +143,10 @@ void BodyScaleDlg::setupLayout()
 	connect(m_pctrlBody, SIGNAL(clicked()), this, SLOT(onRadio()));
 	connect(m_pctrlFrame, SIGNAL(clicked()), this, SLOT(onRadio()));
 
-	connect(m_pctrlXScaleFactor, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-	connect(m_pctrlYScaleFactor, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-	connect(m_pctrlZScaleFactor, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-	connect(m_pctrlFrameID, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+//	connect(m_pctrlXScaleFactor, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+//	connect(m_pctrlYScaleFactor, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+//	connect(m_pctrlZScaleFactor, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+//	connect(m_pctrlFrameID, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
 }
 
 

@@ -125,7 +125,7 @@ public:
 	void scaleArea(double newArea);
 	void scaleAR(double newAR);
 
-	void surfacePoint(double xRel, double yob, enumPanelPosition pos, CVector &Point, CVector &PtNormal);
+	void surfacePoint(double xRel, double ypos, enumPanelPosition pos, CVector &Point, CVector &PtNormal);
 
 	bool serializeWingWPA(QDataStream &ar, bool bIsStoring);
 	bool serializeWingXFL(QDataStream &ar, bool bIsStoring);

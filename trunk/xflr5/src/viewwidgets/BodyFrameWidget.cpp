@@ -21,6 +21,7 @@
 
 #include "Settings.h"
 #include "BodyFrameWidget.h"
+#include <misc/Units.h>
 #include <QPainter>
 #include <QtDebug>
 
@@ -60,6 +61,7 @@ void BodyFrameWidget::setScale()
 */
 void BodyFrameWidget::resizeEvent (QResizeEvent *event)
 {
+	Q_UNUSED(event);
 	setScale();
 }
 
@@ -67,6 +69,7 @@ void BodyFrameWidget::resizeEvent (QResizeEvent *event)
 
 void BodyFrameWidget::paintEvent(QPaintEvent *event)
 {
+	Q_UNUSED(event);
 	QPainter painter(this);
 	painter.save();
 	painter.fillRect(rect(), Settings::s_BackgroundColor);
@@ -181,7 +184,7 @@ void BodyFrameWidget::drawFramePoints()
 	QPen pointPen(m_pBody->bodyColor());
 
 
-	for (int k=0; k<m_pFrame->PointCount();k++)
+	for (int k=0; k<m_pFrame->pointCount();k++)
 	{
 		if(Frame::s_iSelect==k)
 		{
@@ -275,7 +278,7 @@ int BodyFrameWidget::selectPoint(CVector real)
 		real.z = real.y;
 		real.y = real.x;
 		real.x = m_pBody->activeFrame()->position().x;
-		Frame::s_iSelect =   m_pBody->activeFrame()->isPoint(real, m_fScale/m_fRefScale);
+		Frame::s_iSelect = m_pBody->activeFrame()->isPoint(real, m_fScale/m_fRefScale);
 	}
 	return Frame::s_iSelect;
 }
@@ -284,11 +287,39 @@ int BodyFrameWidget::selectPoint(CVector real)
 
 void BodyFrameWidget::dragSelectedPoint(double x, double y)
 {
-	if (!m_pBody->activeFrame() || (Frame::s_iSelect<0) ||  (Frame::s_iSelect > m_pBody->activeFrame()->PointCount())) return;
+	if (!m_pBody->activeFrame() || (Frame::s_iSelect<0) ||  (Frame::s_iSelect > m_pBody->activeFrame()->pointCount())) return;
 
 	m_pBody->activeFrame()->selectedPoint().set(m_pBody->activeFrame()->position().x, qMax(x,0.0), y);
 
 }
+
+
+void BodyFrameWidget::drawScaleLegend(QPainter &painter)
+{
+	painter.save();
+	QPen TextPen(Settings::s_TextColor);
+	painter.setPen(TextPen);
+	painter.drawText(5,10, QString("X-Scale = %1").arg(m_fScale/m_fRefScale,4,'f',1));
+	painter.drawText(5,22, QString("Y-Scale = %1").arg(m_fScaleY*m_fScale/m_fRefScale,4,'f',1));
+	painter.drawText(5,34, QString("x  = %1").arg(m_MousePos.x * Units::mtoUnit(),7,'f',2) + Units::lengthUnitLabel());
+	painter.drawText(5,46, QString("y  = %1").arg(m_MousePos.y * Units::mtoUnit(),7,'f',2) + Units::lengthUnitLabel());
+	painter.restore();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

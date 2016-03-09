@@ -33,6 +33,7 @@ public:
 	void setBody(Body *pBody);
 	void drawBodyLines();
 	void drawBodyPoints();
+	void drawScaleLegend(QPainter &painter);
 
 	void paintEvent(QPaintEvent *event);
 	void resizeEvent (QResizeEvent *event);

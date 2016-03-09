@@ -64,8 +64,6 @@
 #include "xinverse/XInverse.h"
 #include "objects/Polar.h"
 #include "openglinfodlg.h"
-#include "gltexturewidget.h"
-#include "glwindow.h"
 
 #include "inverseviewwidget.h"
 #include "gl3widget.h"
@@ -2535,17 +2533,16 @@ void MainFrame::keyPressEvent(QKeyEvent *event)
 			}
 			case Qt::Key_7:
 			{
-				if(bCtrl) onOpenGLxflr5();
+				if(bCtrl)
+				{
+					loadXFLR5File(m_RecentFiles.at(0));
+					onMiarex();
+				}
 				break;
 			}
 			case Qt::Key_8:
 			{
-				if(bCtrl)
-				{
-					loadXFLR5File(m_RecentFiles.at(0));
-					m_pctrlCentralWidget->setCurrentWidget(m_pgl3Widget);
-					m_pgl3Widget->setFocus();
-				}
+				if(bCtrl) onOpenGLInfo();
 				break;
 			}
 			case Qt::Key_L:
@@ -3295,16 +3292,6 @@ void MainFrame::onOpenGLInfo()
 	w.exec();
 }
 
-
-void MainFrame::onOpenGLxflr5()
-{
-	QSurfaceFormat format;
-	format.setDepthBufferSize(24);
-	QSurfaceFormat::setDefaultFormat(format);
-
-	GLWindow window(this);
-	window.exec();
-}
 
 
 
