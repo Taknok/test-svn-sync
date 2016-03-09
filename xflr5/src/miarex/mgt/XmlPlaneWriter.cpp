@@ -235,9 +235,9 @@ void XMLPlaneWriter::writeBody(Body *pBody, CVector position, double lengthUnit,
 																 .arg(pFrame->m_Position.y*lengthUnit, 11,'g',5)
 																 .arg(pFrame->m_Position.z*lengthUnit, 11,'g',5));
 
-				for(int iPt=0; iPt<pFrame->PointCount(); iPt++)
+				for(int iPt=0; iPt<pFrame->pointCount(); iPt++)
 				{
-					CVector Pt(pFrame->Point(iPt));
+					CVector Pt(pFrame->point(iPt));
 					writeTextElement("point",QString("%1, %2, %3").arg(Pt.x*lengthUnit, 11,'g',5)
 																	  .arg(Pt.y*lengthUnit, 11,'g',5)
 																	  .arg(Pt.z*lengthUnit, 11,'g',5));

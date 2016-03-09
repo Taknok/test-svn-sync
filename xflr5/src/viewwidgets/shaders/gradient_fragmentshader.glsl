@@ -1,5 +1,6 @@
+#version 130
 
-varying mediump vec4 outColor;
+varying vec4 outColor;
 
 void main()
 {

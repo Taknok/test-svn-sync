@@ -44,12 +44,12 @@ public:
 	void    copyFrame(Frame *pFrame);
 	void    copyPoints(QList<CVector> *pPointList);
 	double  height();
-	int     isPoint(CVector const &Point, double const &ZoomFactor);
+	int     isPoint(CVector const &point, double const &ZoomFactor);
 	void    insertPoint(int n);
 	void    insertPoint(int n, const CVector &Pt);
 	int     insertPoint(CVector const &Real, int iAxis);
-	CVector Point(int iPt) {return m_CtrlPoint.at(iPt);}
-	int     PointCount() {return m_CtrlPoint.size();}
+	CVector point(int iPt) {return m_CtrlPoint.at(iPt);}
+	int     pointCount() {return m_CtrlPoint.size();}
 	bool    removePoint(int n);
 	void    rotateFrameY(double Angle);
 	bool    serializeFrame(QDataStream &ar, bool bIsStoring);
@@ -59,7 +59,7 @@ public:
 	void    setwPosition(double w);
 	double  zPos();
 
-	CVector & position(){return m_Position;}
+	CVector &position(){return m_Position;}
 	CVector &selectedPoint(){return m_CtrlPoint[s_iSelect];}
 
 	QList <CVector> m_CtrlPoint;	/**< the array of points which define the frame.  */

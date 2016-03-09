@@ -495,6 +495,8 @@ void QMiarex::connectSignals()
 	connect(m_pctrlFoilNames, SIGNAL(clicked(bool)), m_pgl3Widget, SLOT(onFoilNames(bool)));
 	connect(m_pctrlMasses,    SIGNAL(clicked(bool)), m_pgl3Widget, SLOT(onShowMasses(bool)));
 
+
+
 	connect(m_pctrlKeepCpSection,   SIGNAL(clicked()),         this, SLOT(onKeepCpSection()));
 	connect(m_pctrlResetCpSection,  SIGNAL(clicked()),         this, SLOT(onResetCpSection()));
 	connect(m_pctrlCpSectionSlider, SIGNAL(sliderMoved(int)),  this, SLOT(onCpSectionSlider(int)));
@@ -505,7 +507,9 @@ void QMiarex::connectSignals()
 	connect(m_pctrlX,     SIGNAL(clicked()),     m_pgl3Widget, SLOT(on3DFront()));
 	connect(m_pctrlY,     SIGNAL(clicked()),     m_pgl3Widget, SLOT(on3DLeft()));
 	connect(m_pctrlZ,     SIGNAL(clicked()),     m_pgl3Widget, SLOT(on3DTop()));
-	connect(m_pctrlReset, SIGNAL(clicked()), SLOT(on3DReset()));
+	connect(m_pctrlClipPlanePos, SIGNAL(sliderMoved(int)), m_pgl3Widget, SLOT(onClipPlane(int)));
+
+	connect(m_pctrlReset, SIGNAL(clicked()), this, SLOT(on3DReset()));
 
 
 	connect(m_pctrlAlphaMin,   SIGNAL(editingFinished()), this, SLOT(onReadAnalysisData()));
@@ -526,6 +530,7 @@ void QMiarex::onCheckViewIcons()
 	m_pctrlY->setChecked(false);
 	m_pctrlZ->setChecked(false);
 }
+
 
 
 /**
@@ -1685,7 +1690,8 @@ void QMiarex::glMake3DObjects()
 
 	if(m_bResetglBody && pCurBody)
 	{
-		m_pgl3Widget->glMakeBody(pCurBody);
+		if(pCurBody->isSplineType())         m_pgl3Widget->glMakeBodySplines(pCurBody);
+		else if(pCurBody->isFlatPanelType()) m_pgl3Widget->glMakeBody3DFlatPanels(pCurBody);
 		m_bResetglBody = false;
 	}
 
@@ -1709,15 +1715,27 @@ void QMiarex::glMake3DObjects()
 
 	if(m_bResetglMesh)
 	{
-		m_pgl3Widget->glMakePanelCP(m_pgl3Widget->m_vboMesh, Objects3D::s_MatSize, Objects3D::s_nNodes, s_pNode, s_pPanel, NULL);
+		m_pgl3Widget->glMakePanels(m_pgl3Widget->m_vboMesh, Objects3D::s_MatSize, Objects3D::s_nNodes, s_pNode, s_pPanel, NULL);
 		m_bResetglMesh = false;
 	}
 
 	if(m_bResetglPanelCp || m_bResetglOpp)
 	{
         if(m_pCurWPolar && m_pCurWPolar->analysisMethod()!=XFLR5::LLTMETHOD)
-			m_pgl3Widget->glMakePanelCP(m_pgl3Widget->m_vboPanelCp, Objects3D::s_MatSize, Objects3D::s_nNodes, s_pNode, s_pPanel, m_pCurPOpp);
+			m_pgl3Widget->glMakePanels(m_pgl3Widget->m_vboPanelCp, Objects3D::s_MatSize, Objects3D::s_nNodes, s_pNode, s_pPanel, m_pCurPOpp);
 		m_bResetglPanelCp = false;
+	}
+
+
+	if((m_bResetglPanelForce || m_bResetglOpp)
+		&& m_iView==XFLR5::W3DVIEW
+		&& m_pCurWPolar && m_pCurWPolar->analysisMethod()!=XFLR5::LLTMETHOD)
+	{
+		if (m_pCurPlane && m_pCurPOpp)
+		{
+			m_pgl3Widget->glMakePanelForces(m_pgl3Widget->m_vboPanelForces, Objects3D::s_MatSize, s_pPanel, m_pCurWPolar, m_pCurPOpp);
+		}
+		m_bResetglPanelForce = false;
 	}
 
 
@@ -1730,12 +1748,26 @@ void QMiarex::glMake3DObjects()
 				if(pWing(iw))
 				{
 					m_pgl3Widget->glMakeLiftStrip( iw, pWing(iw), m_pCurWPolar, m_pWOpp[iw]);
-					m_pgl3Widget->glMakeDragStrip( iw, pWing(iw), m_pCurWPolar, m_pWOpp[iw]);
 					m_pgl3Widget->glMakeTransistions(iw, pWing(iw), m_pCurWPolar, m_pWOpp[iw]);
 				}
 			}
 //			GLCreateLiftForce(m_pCurWPolar, m_pCurPOpp);
 //			GLCreateMoments(m_pCurPlane->m_Wing, m_pCurWPolar, m_pCurPOpp);
+		}
+		m_bResetglLift = false;
+	}
+
+	if((m_bResetglDrag || m_bResetglOpp) && m_iView==XFLR5::W3DVIEW)
+	{
+		if (m_pCurPOpp)
+		{
+			for(int iw=0; iw<MAXWINGS; iw++)
+			{
+				if(pWing(iw))
+				{
+					m_pgl3Widget->glMakeDragStrip( iw, pWing(iw), m_pCurWPolar, m_pWOpp[iw]);
+				}
+			}
 		}
 		m_bResetglLift = false;
 	}
@@ -1823,17 +1855,12 @@ void QMiarex::glDrawMasses()
 	}
 
 	//plot CG
-/*	glPushMatrix();
-	{
-		glTranslated(m_pCurPlane->CoG().x,m_pCurPlane->CoG().y,m_pCurPlane->CoG().z);
-		glColor3d(1.0, 0.5, 0.5);
-//		m_pgl3Widget->glRenderSphere(W3dPrefsDlg::s_MassRadius*2.0/m_pgl1Widget->m_glScaled);
+	CVector Place(m_pCurPlane->CoG().x, m_pCurPlane->CoG().y, m_pCurPlane->CoG().z);
+	m_pgl3Widget->paintSphere(Place, W3dPrefsDlg::s_MassRadius*2.0/m_pgl3Widget->m_glScaled, W3dPrefsDlg::s_MassColor, true);
 
-		m_pgl3Widget->glRenderText(0.0, 0.0, 0.0 + delta,
-								  "CoG "+QString("%1").arg(m_pCurPlane->totalMass()*Units::kgtoUnit(), 7,'g',3)
-								  +Units::weightUnitLabel(), W3dPrefsDlg::s_MassColor.lighter(125));
-	}
-	glPopMatrix();*/
+	m_pgl3Widget->glRenderText(m_pCurPlane->CoG().x, m_pCurPlane->CoG().y, m_pCurPlane->CoG().z + delta,
+							  "CoG "+QString("%1").arg(m_pCurPlane->totalMass()*Units::kgtoUnit(), 7,'g',3)
+							  +Units::weightUnitLabel(), W3dPrefsDlg::s_MassColor.lighter(125));
 }
 
 
@@ -1917,6 +1944,17 @@ void QMiarex::keyPressEvent(QKeyEvent *event)
 			s_pMainFrame->onXDirect();
 			event->accept();
 			return;
+		}
+	}
+	else if(event->key()==Qt::Key_7 || event->text()=="7")
+	{
+		if(bCtrl)
+		{
+			s_pMainFrame->loadXFLR5File(s_pMainFrame->m_RecentFiles.at(0));
+
+			s_pMainFrame->updatePlaneListBox();
+			setPlane();
+			updateView();
 		}
 	}
 
@@ -3597,7 +3635,11 @@ void QMiarex::onEditCurBody()
 	glbDlg.resize(GL3dBodyDlg::s_WindowSize);
 	if(GL3dBodyDlg::s_bWindowMaximized) glbDlg.setWindowState(Qt::WindowMaximized);
 
-	if(glbDlg.exec()!=QDialog::Accepted) return;
+	if(glbDlg.exec()!=QDialog::Accepted)
+	{
+		delete pModPlane;
+		return;
+	}
 
 	ModDlg mdDlg(s_pMainFrame);
 
@@ -3627,6 +3669,8 @@ void QMiarex::onEditCurBody()
 
 	//then modifications are automatically recorded
 	m_pCurPlane->duplicate(pModPlane);
+	delete pModPlane; // clean up, we don't need it any more
+
 	Objects3D::deletePlaneResults(m_pCurPlane, false);// will also set new surface and Aerochord in WPolars
 	m_pCurWPolar = NULL;
 	m_pCurPOpp = NULL;
@@ -3679,7 +3723,13 @@ void QMiarex::onEditCurBodyObject()
 	ebDlg.resize(GL3dBodyDlg::s_WindowSize);
 	if(GL3dBodyDlg::s_bWindowMaximized) ebDlg.setWindowState(Qt::WindowMaximized);
 
-	if(ebDlg.exec()!=QDialog::Accepted) return;
+	if(ebDlg.exec()!=QDialog::Accepted)
+	{
+		delete pModPlane;
+		return;
+	}
+
+	emit projectModified();
 
 	ModDlg mdDlg(s_pMainFrame);
 
@@ -3709,6 +3759,7 @@ void QMiarex::onEditCurBodyObject()
 
 	//then modifications are automatically recorded
 	m_pCurPlane->duplicate(pModPlane);
+	delete pModPlane;
 	Objects3D::deletePlaneResults(m_pCurPlane, false);// will also set new surface and Aerochord in WPolars
 	m_pCurWPolar = NULL;
 	m_pCurPOpp = NULL;
@@ -7641,13 +7692,11 @@ void QMiarex::paintPanelForceLegendText(QPainter &painter)
 	if(!m_pCurWPolar || !m_pCurPOpp) return;
 	if(!m_bPanelForce || m_pCurPOpp->analysisMethod()<XFLR5::VLMMETHOD) return;
 
-	QString strForce, strong;
+	QString strPressure, strong;
 	int p, i;
 	int labellength;
 	double f;
 	double rmin, rmax, range, delta;
-
-	Units::getForceUnitLabel(strForce);
 
 	painter.save();
 	painter.setFont(Settings::s_TextFont);
@@ -7676,8 +7725,8 @@ void QMiarex::paintPanelForceLegendText(QPainter &painter)
 			}
 		}
 	}
-	rmin *= 0.5*m_pCurWPolar->density() *pWOppList[0]->m_QInf*pWOppList[0]->m_QInf  *Units::NtoUnit();
-	rmax *= 0.5*m_pCurWPolar->density() *pWOppList[0]->m_QInf*pWOppList[0]->m_QInf  *Units::NtoUnit();
+	rmin *= 0.5*m_pCurWPolar->density() *pWOppList[0]->m_QInf*pWOppList[0]->m_QInf  *Units::PatoUnit();
+	rmax *= 0.5*m_pCurWPolar->density() *pWOppList[0]->m_QInf*pWOppList[0]->m_QInf  *Units::PatoUnit();
 	range = rmax - rmin;
 
 
@@ -7697,15 +7746,14 @@ void QMiarex::paintPanelForceLegendText(QPainter &painter)
 
 	delta = range / 20.0;
 
-
-	labellength = fm.width(strForce)+5;
-	painter.drawText(ixPos-labellength, iyPos-dy, strForce);
-
+	strPressure = Units::pressureUnitLabel();
+	labellength = fm.width(strPressure)+2+5;
+	painter.drawText(ixPos-labellength, iyPos-dy, "("+strPressure+")");
 
 	for (i=0; i<=20; i++)
 	{
 		f = rmin + (double)i * delta;
-		strong = QString("%1").arg(f, 5,'f',2);
+		strong.sprintf("%6.3f", f);
 		labellength = (fm.width(strong)+5);
 		painter.drawText(ixPos-labellength, iyPos+i*dy, strong);
 	}

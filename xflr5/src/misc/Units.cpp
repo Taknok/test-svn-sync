@@ -30,12 +30,14 @@ double Units::s_m2toUnit = 1.0;
 double Units::s_kgtoUnit = 1.0;
 double Units::s_NtoUnit  = 1.0;
 double Units::s_NmtoUnit = 1.0;
+double Units::s_PatoUnit = 1.0;
 int Units::s_LengthUnit = 3;
 int Units::s_SpeedUnit  = 0;
 int Units::s_AreaUnit   = 3;
 int Units::s_WeightUnit = 1;
 int Units::s_ForceUnit  = 0;
 int Units::s_MomentUnit = 0;
+int Units::s_PressureUnit = 0;
 
 
 Units::Units(QWidget *parent): QDialog(parent)
@@ -59,33 +61,38 @@ void Units::setupLayout()
 		QLabel *lab4 = new QLabel(tr("Mass")+":");
 		QLabel *lab5 = new QLabel(tr("Force")+":");
 		QLabel *lab6 = new QLabel(tr("Moment")+":");
+		QLabel *lab7 = new QLabel(tr("Pressure")+":");
 		lab1->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 		lab2->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 		lab3->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 		lab4->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 		lab5->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 		lab6->setAlignment(Qt::AlignRight | Qt::AlignCenter);
+		lab7->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 		lab1->setFont(fixedWidthFont);
 		lab2->setFont(fixedWidthFont);
 		lab3->setFont(fixedWidthFont);
 		lab4->setFont(fixedWidthFont);
 		lab5->setFont(fixedWidthFont);
 		lab6->setFont(fixedWidthFont);
+		lab7->setFont(fixedWidthFont);
 		pUnitsLayout->addWidget(lab1, 1,1);
 		pUnitsLayout->addWidget(lab2, 2,1);
 		pUnitsLayout->addWidget(lab3, 3,1);
 		pUnitsLayout->addWidget(lab4, 4,1);
 		pUnitsLayout->addWidget(lab5, 5,1);
 		pUnitsLayout->addWidget(lab6, 6,1);
+		pUnitsLayout->addWidget(lab7, 7,1);
 
 		m_pctrlQuestion = new QLabel(tr("Define the project units"));
 
-		m_pctrlLengthFactor = new QLabel(" ");
-		m_pctrlSurfaceFactor = new QLabel(" ");
-		m_pctrlWeightFactor = new QLabel(" ");
-		m_pctrlSpeedFactor = new QLabel(" ");
-		m_pctrlForceFactor = new QLabel(" ");
-		m_pctrlMomentFactor = new QLabel(" ");
+		m_pctrlLengthFactor   = new QLabel(" ");
+		m_pctrlSurfaceFactor  = new QLabel(" ");
+		m_pctrlWeightFactor   = new QLabel(" ");
+		m_pctrlSpeedFactor    = new QLabel(" ");
+		m_pctrlForceFactor    = new QLabel(" ");
+		m_pctrlMomentFactor   = new QLabel(" ");
+		m_pctrlPressureFactor = new QLabel(" ");
 
 		m_pctrlLengthFactor->setFont(fixedWidthFont);
 		m_pctrlSurfaceFactor->setFont(fixedWidthFont);
@@ -93,47 +100,54 @@ void Units::setupLayout()
 		m_pctrlSpeedFactor->setFont(fixedWidthFont);
 		m_pctrlForceFactor->setFont(fixedWidthFont);
 		m_pctrlMomentFactor->setFont(fixedWidthFont);
+		m_pctrlPressureFactor->setFont(fixedWidthFont);
 		m_pctrlLengthFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 		m_pctrlSurfaceFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 		m_pctrlWeightFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 		m_pctrlSpeedFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 		m_pctrlForceFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 		m_pctrlMomentFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
+		m_pctrlPressureFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 
 
-		pUnitsLayout->addWidget(m_pctrlLengthFactor, 1,2);
-		pUnitsLayout->addWidget(m_pctrlSurfaceFactor, 2,2);
-		pUnitsLayout->addWidget(m_pctrlSpeedFactor, 3,2);
-		pUnitsLayout->addWidget(m_pctrlWeightFactor, 4,2);
-		pUnitsLayout->addWidget(m_pctrlForceFactor, 5,2);
-		pUnitsLayout->addWidget(m_pctrlMomentFactor, 6,2);
+		pUnitsLayout->addWidget(m_pctrlLengthFactor,   1,2);
+		pUnitsLayout->addWidget(m_pctrlSurfaceFactor,  2,2);
+		pUnitsLayout->addWidget(m_pctrlSpeedFactor,    3,2);
+		pUnitsLayout->addWidget(m_pctrlWeightFactor,   4,2);
+		pUnitsLayout->addWidget(m_pctrlForceFactor,    5,2);
+		pUnitsLayout->addWidget(m_pctrlMomentFactor,   6,2);
+		pUnitsLayout->addWidget(m_pctrlPressureFactor, 7,2);
 
-		m_pctrlLength  = new QComboBox;
-		m_pctrlSurface = new QComboBox;
-		m_pctrlSpeed   = new QComboBox;
-		m_pctrlWeight  = new QComboBox;
-		m_pctrlForce   = new QComboBox;
-		m_pctrlMoment  = new QComboBox;
-		pUnitsLayout->addWidget(m_pctrlLength,  1,3);
-		pUnitsLayout->addWidget(m_pctrlSurface, 2,3);
-		pUnitsLayout->addWidget(m_pctrlSpeed,   3,3);
-		pUnitsLayout->addWidget(m_pctrlWeight,  4,3);
-		pUnitsLayout->addWidget(m_pctrlForce,   5,3);
-		pUnitsLayout->addWidget(m_pctrlMoment,  6,3);
+		m_pctrlLength    = new QComboBox;
+		m_pctrlSurface   = new QComboBox;
+		m_pctrlSpeed     = new QComboBox;
+		m_pctrlWeight    = new QComboBox;
+		m_pctrlForce     = new QComboBox;
+		m_pctrlMoment    = new QComboBox;
+		m_pctrlPressure  = new QComboBox;
+		pUnitsLayout->addWidget(m_pctrlLength,   1,3);
+		pUnitsLayout->addWidget(m_pctrlSurface,  2,3);
+		pUnitsLayout->addWidget(m_pctrlSpeed,    3,3);
+		pUnitsLayout->addWidget(m_pctrlWeight,   4,3);
+		pUnitsLayout->addWidget(m_pctrlForce,    5,3);
+		pUnitsLayout->addWidget(m_pctrlMoment,   6,3);
+		pUnitsLayout->addWidget(m_pctrlPressure, 7,3);
 
 
-		m_pctrlLengthInvFactor = new QLabel(" ");
+		m_pctrlLengthInvFactor  = new QLabel(" ");
 		m_pctrlSurfaceInvFactor = new QLabel(" ");
-		m_pctrlWeightInvFactor = new QLabel(" ");
-		m_pctrlSpeedInvFactor = new QLabel(" ");
-		m_pctrlForceInvFactor = new QLabel(" ");
-		m_pctrlMomentInvFactor = new QLabel(" ");
+		m_pctrlWeightInvFactor  = new QLabel(" ");
+		m_pctrlSpeedInvFactor   = new QLabel(" ");
+		m_pctrlForceInvFactor   = new QLabel(" ");
+		m_pctrlMomentInvFactor  = new QLabel(" ");
+		m_pctrlPressureInvFactor  = new QLabel(" ");
 		m_pctrlLengthInvFactor->setFont(fixedWidthFont);
 		m_pctrlSurfaceInvFactor->setFont(fixedWidthFont);
 		m_pctrlWeightInvFactor->setFont(fixedWidthFont);
 		m_pctrlSpeedInvFactor->setFont(fixedWidthFont);
 		m_pctrlForceInvFactor->setFont(fixedWidthFont);
 		m_pctrlMomentInvFactor->setFont(fixedWidthFont);
+		m_pctrlPressureInvFactor->setFont(fixedWidthFont);
 
 		m_pctrlLengthInvFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 		m_pctrlSurfaceInvFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
@@ -141,12 +155,14 @@ void Units::setupLayout()
 		m_pctrlSpeedInvFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 		m_pctrlForceInvFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 		m_pctrlMomentInvFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
+		m_pctrlPressureInvFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 		pUnitsLayout->addWidget(m_pctrlLengthInvFactor, 1,4);
 		pUnitsLayout->addWidget(m_pctrlSurfaceInvFactor, 2,4);
 		pUnitsLayout->addWidget(m_pctrlSpeedInvFactor, 3,4);
 		pUnitsLayout->addWidget(m_pctrlWeightInvFactor, 4,4);
 		pUnitsLayout->addWidget(m_pctrlForceInvFactor, 5,4);
 		pUnitsLayout->addWidget(m_pctrlMomentInvFactor, 6,4);
+		pUnitsLayout->addWidget(m_pctrlPressureInvFactor, 7,4);
 		pUnitsLayout->setColumnStretch(4,2);
 //		UnitsLayout->setColumnMinimumWidth(4,220);
 	}
@@ -178,12 +194,13 @@ void Units::setupLayout()
 	connect(OKButton,     SIGNAL(clicked()), this, SLOT(accept()));
 	connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 
-	connect(m_pctrlLength,  SIGNAL(activated(const QString &)),this, SLOT(onSelChanged(const QString &)));
-	connect(m_pctrlSurface, SIGNAL(activated(const QString &)),this, SLOT(onSelChanged(const QString &)));
-	connect(m_pctrlSpeed,   SIGNAL(activated(const QString &)),this, SLOT(onSelChanged(const QString &)));
-	connect(m_pctrlWeight,  SIGNAL(activated(const QString &)),this, SLOT(onSelChanged(const QString &)));
-	connect(m_pctrlForce,   SIGNAL(activated(const QString &)),this, SLOT(onSelChanged(const QString &)));
-	connect(m_pctrlMoment,  SIGNAL(activated(const QString &)),this, SLOT(onSelChanged(const QString &)));
+	connect(m_pctrlLength,   SIGNAL(activated(const QString &)),this, SLOT(onSelChanged(const QString &)));
+	connect(m_pctrlSurface,  SIGNAL(activated(const QString &)),this, SLOT(onSelChanged(const QString &)));
+	connect(m_pctrlSpeed,    SIGNAL(activated(const QString &)),this, SLOT(onSelChanged(const QString &)));
+	connect(m_pctrlWeight,   SIGNAL(activated(const QString &)),this, SLOT(onSelChanged(const QString &)));
+	connect(m_pctrlForce,    SIGNAL(activated(const QString &)),this, SLOT(onSelChanged(const QString &)));
+	connect(m_pctrlMoment,   SIGNAL(activated(const QString &)),this, SLOT(onSelChanged(const QString &)));
+	connect(m_pctrlPressure, SIGNAL(activated(const QString &)),this, SLOT(onSelChanged(const QString &)));
 }
 
 
@@ -203,26 +220,35 @@ void Units::initDialog()
 	m_pctrlSurface->addItem(QString::fromUtf8("ft²"));		//5
 
 	m_pctrlSpeed->clear();
-	m_pctrlSpeed->addItem("m/s");		//0
-	m_pctrlSpeed->addItem("km/h");		//1
-	m_pctrlSpeed->addItem("ft/s");		//2
-	m_pctrlSpeed->addItem("kt (int.)");	//3
-	m_pctrlSpeed->addItem("mph");		//4
+	m_pctrlSpeed->addItem("m/s");       //0
+	m_pctrlSpeed->addItem("km/h");      //1
+	m_pctrlSpeed->addItem("ft/s");      //2
+	m_pctrlSpeed->addItem("kt (int.)"); //3
+	m_pctrlSpeed->addItem("mph");       //4
 
 	m_pctrlWeight->clear();
-	m_pctrlWeight->addItem("g");		//0
-	m_pctrlWeight->addItem("kg");		//1
-	m_pctrlWeight->addItem("oz");		//2
-	m_pctrlWeight->addItem("lb");		//3
+	m_pctrlWeight->addItem("g");        //0
+	m_pctrlWeight->addItem("kg");       //1
+	m_pctrlWeight->addItem("oz");       //2
+	m_pctrlWeight->addItem("lb");       //3
 
 	m_pctrlForce->clear();
-	m_pctrlForce->addItem("N");		//0
+	m_pctrlForce->addItem("N");	        //0
 	m_pctrlForce->addItem("lbf");		//1
 
 	m_pctrlMoment->clear();
-	m_pctrlMoment->addItem("N.m");	//0
+	m_pctrlMoment->addItem("N.m");	    //0
 	m_pctrlMoment->addItem("lbf.in");	//1
 	m_pctrlMoment->addItem("lbf.ft");	//2
+
+	m_pctrlPressure->clear();
+	m_pctrlPressure->addItem("Pa");     //0
+	m_pctrlPressure->addItem("hPa");    //1
+	m_pctrlPressure->addItem("kPa");    //2
+	m_pctrlPressure->addItem("MPa");    //3
+	m_pctrlPressure->addItem("bar");    //4
+	m_pctrlPressure->addItem("psi");    //5
+	m_pctrlPressure->addItem("ksi");    //6
 
 	m_pctrlLength->setCurrentIndex(s_LengthUnit);
 	m_pctrlWeight->setCurrentIndex(s_WeightUnit);
@@ -230,6 +256,7 @@ void Units::initDialog()
 	m_pctrlSpeed->setCurrentIndex(s_SpeedUnit);
 	m_pctrlForce->setCurrentIndex(s_ForceUnit);
 	m_pctrlMoment->setCurrentIndex(s_MomentUnit);
+	m_pctrlMoment->setCurrentIndex(s_PressureUnit);
 
 	m_pctrlLength->setFocus();
 	onSelChanged(" ");
@@ -241,6 +268,7 @@ void Units::initDialog()
 		m_pctrlWeight->setEnabled(false);
 		m_pctrlForce->setEnabled(false);
 		m_pctrlMoment->setEnabled(false);
+		m_pctrlPressure->setEnabled(false);
 	}
 	m_pctrlQuestion->setText(m_Question);
 }
@@ -248,67 +276,76 @@ void Units::initDialog()
 
 void Units::onSelChanged(const QString &)
 {
-	QString str, strange, strUnit;
+	QString strUnitLabel, strange, strUnit;
 	int len1 = 11;
 	int len2 = 17;
 
-	s_LengthUnit  = m_pctrlLength->currentIndex();
-	s_AreaUnit    = m_pctrlSurface->currentIndex();
-	s_WeightUnit  = m_pctrlWeight->currentIndex();
-	s_SpeedUnit   = m_pctrlSpeed->currentIndex();
-	s_ForceUnit   = m_pctrlForce->currentIndex();
-	s_MomentUnit  = m_pctrlMoment->currentIndex();
+	s_LengthUnit   = m_pctrlLength->currentIndex();
+	s_AreaUnit     = m_pctrlSurface->currentIndex();
+	s_WeightUnit   = m_pctrlWeight->currentIndex();
+	s_SpeedUnit    = m_pctrlSpeed->currentIndex();
+	s_ForceUnit    = m_pctrlForce->currentIndex();
+	s_MomentUnit   = m_pctrlMoment->currentIndex();
+	s_PressureUnit = m_pctrlPressure->currentIndex();
 
 	setUnitConversionFactors();
 
 
-	getLengthUnitLabel(str);
+	getLengthUnitLabel(strUnitLabel);
 	strange= QString("1 m = %1").arg(s_mtoUnit,11,'f',5);
 	m_pctrlLengthFactor->setText(strange);
 	strUnit = QString("%1 m").arg(1./s_mtoUnit,11,'f',5);
-	str = "1 "+str;
-	strange= str.rightJustified(len1) +" = " + strUnit.leftJustified(len2);
+	strUnitLabel = "1 "+strUnitLabel;
+	strange= strUnitLabel.rightJustified(len1) +" = " + strUnit.leftJustified(len2);
 	m_pctrlLengthInvFactor->setText(strange);
 
-	getAreaUnitLabel(str);
+	getAreaUnitLabel(strUnitLabel);
 	strange= QString(QString::fromUtf8("1 m² = %1")).arg(s_m2toUnit,11,'f',5);
 	m_pctrlSurfaceFactor->setText(strange);
 	strUnit = QString("%1 m").arg(1./s_m2toUnit,11,'f',5) + QString::fromUtf8("²");
-	str = "1 "+str;
-	strange= str.rightJustified(len1) +" = " + strUnit.leftJustified(len2);
+	strUnitLabel = "1 "+strUnitLabel;
+	strange= strUnitLabel.rightJustified(len1) +" = " + strUnit.leftJustified(len2);
 	m_pctrlSurfaceInvFactor->setText(strange);
 
-	getSpeedUnitLabel(str);
+	getSpeedUnitLabel(strUnitLabel);
 	strange= QString("1 m/s = %1").arg(s_mstoUnit,11,'f',5);
 	m_pctrlSpeedFactor->setText(strange);
 	strUnit = QString("%1 m/s").arg(1./s_mstoUnit,11,'f',5);
-	str = "1 "+str;
-	strange= str.rightJustified(len1) +" = " + strUnit.leftJustified(len2);
+	strUnitLabel = "1 "+strUnitLabel;
+	strange= strUnitLabel.rightJustified(len1) +" = " + strUnit.leftJustified(len2);
 	m_pctrlSpeedInvFactor->setText(strange);
 
-	getWeightUnitLabel(str);
+	getWeightUnitLabel(strUnitLabel);
 	strange= QString("1 kg = %1").arg(s_kgtoUnit,11,'f',5);
 	m_pctrlWeightFactor->setText(strange);
 	strUnit = QString("%1 kg").arg(1./s_kgtoUnit,11,'f',5);
-	str = "1 "+str;
-	strange= str.rightJustified(len1) +" = " + strUnit.leftJustified(len2);
+	strUnitLabel = "1 "+strUnitLabel;
+	strange= strUnitLabel.rightJustified(len1) +" = " + strUnit.leftJustified(len2);
 	m_pctrlWeightInvFactor->setText(strange);
 
-	getForceUnitLabel(str);
+	getForceUnitLabel(strUnitLabel);
 	strange= QString("1 N = %1").arg(s_NtoUnit,11,'f',5);
 	m_pctrlForceFactor->setText(strange);
 	strUnit = QString("%1 N").arg(1./s_NtoUnit,11,'f',5);
-	str = "1 "+str;
-	strange= str.rightJustified(len1) +" = " + strUnit.leftJustified(len2);
+	strUnitLabel = "1 "+strUnitLabel;
+	strange= strUnitLabel.rightJustified(len1) +" = " + strUnit.leftJustified(len2);
 	m_pctrlForceInvFactor->setText(strange);
 
-	getMomentUnitLabel(str);
+	getMomentUnitLabel(strUnitLabel);
 	strange= QString("1 N.m = %1").arg(s_NmtoUnit,11,'f',5);
 	m_pctrlMomentFactor->setText(strange);
 	strUnit = QString("%1 N.m").arg(1./s_NmtoUnit,11,'f',5);
-	str = "1 "+str;
-	strange= str.rightJustified(len1) +" = " + strUnit.leftJustified(len2);
+	strUnitLabel = "1 "+strUnitLabel;
+	strange= strUnitLabel.rightJustified(len1) +" = " + strUnit.leftJustified(len2);
 	m_pctrlMomentInvFactor->setText(strange);
+
+	strUnitLabel = pressureUnitLabel();
+	strange.sprintf("1 Pa = %11.5g",s_PatoUnit);
+	m_pctrlPressureFactor->setText(strange);
+	strUnit.sprintf("%11.5g Pa",1./s_PatoUnit);
+	strUnitLabel = "1 "+strUnitLabel;
+	strange= strUnitLabel.rightJustified(len1) +" = " + strUnit.leftJustified(len2);
+	m_pctrlPressureInvFactor->setText(strange);
 }
 
 
@@ -542,14 +579,67 @@ void Units::getWeightUnitLabel(QString &str)
 
 
 /**
+ * Returns the name of the custom pressure unit, based on its index in the array.
+ *@param str the reference of the QString to be filled with the name of the pressure unit
+ *@param unit the index of the pressure unit
+ */
+void Units::getPressureUnitLabel(QString &str)
+{
+	switch(s_PressureUnit)
+	{
+		case 0:
+		{
+			str="Pa";
+			break;
+		}
+		case 1:
+		{
+			str="hPa";
+			break;
+		}
+		case 2:
+		{
+			str="kPa";
+			break;
+		}
+		case 3:
+		{
+			str="MPa";
+			break;
+		}
+		case 4:
+		{
+			str="bar";
+			break;
+		}
+		case 5:
+		{
+			str="psi";
+			break;
+		}
+		case 6:
+		{
+			str="ksi";
+			break;
+		}
+		default:
+		{
+			str=" ";
+			break;
+		}
+	}
+}
+
+
+
+/**
 * Initializes the conversion factors for all user-defined units
 */
 void Units::setUnitConversionFactors()
 {
 	switch(s_LengthUnit)
 	{
-		case 0:
-		{//mdm
+		case 0:{//mm
 			s_mtoUnit  = 1000.0;
 			break;
 		}
@@ -693,6 +783,41 @@ void Units::setUnitConversionFactors()
 			break;
 		}
 	}
+	switch(s_PressureUnit)
+	{
+		case 0:{//Pa
+			s_PatoUnit = 1.0;
+			break;
+		}
+		case 1:{//hPa
+			s_PatoUnit = 1.0/100.0;
+			break;
+		}
+		case 2:{//kPa
+			s_PatoUnit = 1.0/1000.0;
+			break;
+		}
+		case 3:{//MPa
+			s_PatoUnit = 1.0/1000000;
+			break;
+		}
+		case 4:{//bar
+			s_PatoUnit = 1.0/100000;
+			break;
+		}
+		case 5:{//psi
+			s_PatoUnit = 0.000145038;
+			break;
+		}
+		case 6:{//ksi
+			s_PatoUnit = 0.000000145038;
+			break;
+		}
+		default:{
+			s_PatoUnit = 1.0;
+			break;
+		}
+	}
 }
 
 
@@ -742,4 +867,11 @@ QString Units::forceUnitLabel()
 	return str;
 }
 
+
+QString Units::pressureUnitLabel()
+{
+	QString str;
+	getPressureUnitLabel(str);
+	return str;
+}
 

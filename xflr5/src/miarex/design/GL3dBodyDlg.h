@@ -171,7 +171,6 @@ private:
 	QPushButton *m_pctrlUndo, *m_pctrlRedo;
 	QPushButton *m_pctrlOK, *m_pctrlCancel;
 
-	QSlider *m_pctrlClipPlanePos;
 	QSlider *m_pctrlEdgeWeight;
 	QSlider *m_pctrlPanelBunch;
 

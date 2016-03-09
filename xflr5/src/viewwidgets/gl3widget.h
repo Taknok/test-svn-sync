@@ -105,16 +105,19 @@ private:
 	void glMakeUnitSphere();
 	void glMakeArcPoint();
 	void glMakeArcBall();
-	void glMakeBody(Body *pBody);
+	void glMakeBody3DFlatPanels(Body *pBody);
+	void glMakeBodySplines(Body *pBody);
 	void glMakeCpLegendClr();
-	void glMakePanelCP(QOpenGLBuffer &vbo, int nPanels, int nNodes, CVector *pNode, Panel *pPanel, PlaneOpp *pPOpp);
+	void glMakePanels(QOpenGLBuffer &vbo, int nPanels, int nNodes, CVector *pNode, Panel *pPanel, PlaneOpp *pPOpp);
+	void glMakePanelForces(QOpenGLBuffer &vbo, int nPanels, Panel *pPanel, WPolar *pWPolar, PlaneOpp *pPOpp);
 	void glMakeWing(      int iWing, Wing *pWing, Body *pBody);
-	void glMakeDownwash( int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
+	void glMakeDownwash(  int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
 	void glMakeLiftStrip( int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
 	void glMakeTransistions(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
 	void glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
 	bool glMakeStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPolar *pWPolar, PlaneOpp *pPOpp);
 	void glMakeWingMesh(Wing *pWing);
+	void glMakeBodyMesh(Body *pBody);
 	void glMakeWingSectionHighlight(Wing *pWing, int iSectionHighLight, bool bRightSide);
 	void glMakeBodyFrameHighlight(Body *pBody, CVector bodyPos, int iFrame);
 	void glRenderText(int x, int y, const QString & str, QColor textColor = QColor(Qt::white));
@@ -136,7 +139,9 @@ private:
 	void paintStreamLines();
 	void paintTransitions(int iWing);
 	void paintPanelCp();
+	void paintPanelForces();
 	void paintMesh();
+	void paintBodyMesh(Body *pBody);
 	void paintWingMesh(Wing *pWing);
 	void paintSectionHighlight();
 	void paintBody(Body *pBody);
@@ -158,9 +163,9 @@ private:
 
 
 	QOpenGLBuffer m_vboArcBall, m_vboArcPoint, m_vboBody, m_vboWing[MAXWINGS];
-	QOpenGLBuffer m_vboWingMesh;
+	QOpenGLBuffer m_vboEditMesh;
 	QOpenGLBuffer m_vboHighlight;
-	QOpenGLBuffer m_vboMesh, m_vboPanelCp, m_vboStreamLines, m_vboLegendColor;
+	QOpenGLBuffer m_vboMesh, m_vboPanelCp, m_vboPanelForces, m_vboStreamLines, m_vboLegendColor;
 	QOpenGLBuffer m_vboICd[MAXWINGS], m_vboVCd[MAXWINGS], m_vboLift[MAXWINGS], m_vboTransitions[MAXWINGS], m_vboDownwash[MAXWINGS];
 	QOpenGLBuffer m_vboSphere;
 	QOpenGLTexture 	*m_pLeftBodyTexture, *m_pRightBodyTexture;
@@ -168,10 +173,13 @@ private:
 
 	int m_VertexLocationGradient, m_MatrixLocationGradient, m_ColorLocationGradient;
 
-	int m_VertexLocationLine, m_MatrixLocationLine, m_ColorLocationLine;
+	int m_VertexLocationLine, m_ColorLocationLine;
+	int m_pvmMatrixLocationLine, m_vMatrixLocationLine, m_mMatrixLocationLine;
+	int m_ClipPlaneLocationLine;
 
 	int m_VertexLocationTexture, m_NormalLocationTexture, m_UVLocationTexture;
 	int m_LightLocationTexture, m_TextureLocationTexture, m_ColorLocationTexture;
+	int m_ClipPlaneLocationTexture;
 	int m_vMatrixLocationTexture, m_mMatrixLocationTexture, m_pvmMatrixLocationTexture;
 	int m_LightPosLocationTexture;
 	int m_LightColorLocationTexture, m_LightAmbientLocationTexture, m_LightDiffuseLocationTexture, m_LightSpecularLocationTexture;
@@ -229,6 +237,8 @@ private:
 	int m_Ny[MAXWINGS];
 	int m_NStreamLines;
 	int m_nHighlightLines, m_HighlightLineSize;
+
+	int m_iBodyMeshLines;
 };
 
 #endif // GL3WIDGET_H

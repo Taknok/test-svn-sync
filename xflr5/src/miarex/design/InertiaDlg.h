@@ -30,17 +30,18 @@
 #include <QTableView>
 #include <QStandardItemModel>
 
-#include "../../params.h"
-#include "../../misc/FloatEditDelegate.h"
-#include "../../misc/DoubleEdit.h"
-#include "../../objects/CVector.h"
-#include "../../objects/Plane.h"
+#include <params.h>
+#include <misc/FloatEditDelegate.h>
+#include <misc/DoubleEdit.h>
+#include <objects/CVector.h>
+#include <objects/Plane.h>
 
 class InertiaDlg : public QDialog
 {
 	Q_OBJECT
 	friend class GL3dWingDlg;
 	friend class GL3dBodyDlg;
+	friend class EditBodyDlg;
 	friend class PlaneDlg;
 	friend class QMiarex;
 	friend class MainFrame;

@@ -45,6 +45,7 @@
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer>
 #include <QTextStream>
+#include <QOpenGLTexture>
 
 QT_FORWARD_DECLARE_CLASS(QOpenGLContext)
 QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram)
@@ -55,6 +56,7 @@ class GLRenderWindow : public QWindow
 
 public:
 	GLRenderWindow(const QSurfaceFormat &format);
+	~GLRenderWindow();
 	QOpenGLContext *context() { return m_pContext; }
 	void exposeEvent(QExposeEvent *) Q_DECL_OVERRIDE;
 	void setForceGLSL110(bool enable) { m_forceGLSL110 = enable; }
@@ -69,15 +71,20 @@ private slots:
 private:
 	void init();
 	void setupVertexAttribs();
+	void makeObject();
+	void rotateBy(int xAngle, int yAngle, int zAngle);
 
 	QOpenGLContext *m_pContext;
+	QOpenGLTexture *m_pOpenGLTexture;
+	QOpenGLShaderProgram *m_pShaderProgram;
+
 	bool m_initialized;
 	bool m_forceGLSL110;
-	QOpenGLShaderProgram *m_pShaderProgram;
 	int m_posAttr, m_colAttr, m_matrixUniform;
 	QOpenGLVertexArrayObject m_vao;
 	QOpenGLBuffer m_vbo;
 	float m_angle;
+	int xRot, yRot, zRot;
 };
 
 #endif // RENDERWINDOW_H

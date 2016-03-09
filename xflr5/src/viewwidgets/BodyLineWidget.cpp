@@ -103,7 +103,7 @@ void BodyLineWidget::drawBodyLines()
 		for (k=0; k<m_pBody->frameCount();k++)
 		{
 			botLine.append(QPointF(m_pBody->frame(k)->m_Position.x*m_fScale + m_ptOffset.x(),
-								   m_pBody->frame(k)->m_CtrlPoint[ m_pBody->frame(k)->PointCount()-1].z*-m_fScale + m_ptOffset.y()));
+								   m_pBody->frame(k)->m_CtrlPoint[ m_pBody->frame(k)->pointCount()-1].z*-m_fScale + m_ptOffset.y()));
 		}
 	}
 	else
@@ -191,6 +191,7 @@ void BodyLineWidget::setBody(Body *pBody)
 
 void BodyLineWidget::paintEvent(QPaintEvent *event)
 {
+	Q_UNUSED(event);
 	QPainter painter(this);
 	painter.save();
 	painter.fillRect(rect(), Settings::s_BackgroundColor);
@@ -251,6 +252,18 @@ void BodyLineWidget::dragSelectedPoint(double x, double y)
 	m_pBody->activeFrame()->setPosition(CVector(x,0,y));
 }
 
+
+void BodyLineWidget::drawScaleLegend(QPainter &painter)
+{
+	painter.save();
+	QPen TextPen(Settings::s_TextColor);
+	painter.setPen(TextPen);
+	painter.drawText(5,10, QString("X-Scale = %1").arg(m_fScale/m_fRefScale,4,'f',1));
+	painter.drawText(5,22, QString("Y-Scale = %1").arg(m_fScaleY*m_fScale/m_fRefScale,4,'f',1));
+	painter.drawText(5,34, QString("x  = %1").arg(m_MousePos.x * Units::mtoUnit(),7,'f',2) + Units::lengthUnitLabel());
+	painter.drawText(5,46, QString("y  = %1").arg(m_MousePos.y * Units::mtoUnit(),7,'f',2) + Units::lengthUnitLabel());
+	painter.restore();
+}
 
 
 

@@ -145,7 +145,6 @@ private slots:
 	void onLoadFile();
 	void onLogFile();
 	void onOpenGLInfo();
-	void onOpenGLxflr5();
 	void onProjectModified();
 	void onResetCurGraphScales();
 	void onResetSettings();
