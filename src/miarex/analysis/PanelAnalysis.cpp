@@ -566,13 +566,13 @@ bool PanelAnalysis::initializeAnalysis()
 	}
 
 	QString strUnitLabel;
-	Units::getAreaUnitLabel(strUnitLabel);
+	strUnitLabel= Units::areaUnitLabel();
 	strange =QString("Ref. area  = %1 ").arg(m_pWPolar->referenceArea()*Units::m2toUnit(),9,'f',3)+strUnitLabel;
 	traceLog(strange+"\n");
-	Units::getLengthUnitLabel(strUnitLabel);
+	strUnitLabel = Units::lengthUnitLabel();
 	strange =QString("Ref. span  = %1 ").arg(m_pWPolar->referenceSpanLength()*Units::mtoUnit(),9,'f',3)+strUnitLabel;
 	traceLog(strange+"\n");
-	Units::getLengthUnitLabel(strUnitLabel);
+	strUnitLabel = Units::lengthUnitLabel();
 	strange =QString("Ref. chord = %1 ").arg(m_pWPolar->referenceChordLength()*Units::mtoUnit(),9,'f',3)+strUnitLabel;
 	traceLog(strange+"\n"+"\n");
 
@@ -2909,7 +2909,7 @@ void PanelAnalysis::forces(double *Mu, double *Sigma, double alpha, double *VInf
 	bool bOutRe, bError, bOut, bOutCl;
 	int j, k, l, p, pp, m, nw, iTA, iTB;
 	double cosa, sina, Re, PCd, Cl, Cp, tau, StripArea, ViscousDrag;
-	double QInf, QInfStrip, qdyn, GammaStrip;
+	double QInf, QInfStrip=0.0, qdyn, GammaStrip;
 	CVector  C, PtC4, LeverArm, WindDirection, WindNormal, PanelLeverArm, Wg;
 	CVector Velocity, StripForce, ViscousMoment, dF, PanelForce, PanelForcep1;
 

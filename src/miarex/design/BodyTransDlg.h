@@ -36,6 +36,7 @@ class BodyTransDlg : public QDialog
 	friend class QMiarex;
 	friend class Body;
 	friend class GL3dBodyDlg;
+	friend class EditBodyDlg;
 
 public:
     BodyTransDlg(QWidget *pParent);

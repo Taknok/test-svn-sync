@@ -1118,8 +1118,8 @@ int Objects3D::createBodyElements(Plane *pCurPlane)
 		//start with left side... same as for wings
 		for (k=0; k<nx; k++)
 		{
-			uk  = pCurBody->s_XPanelPos[k];
-			uk1 = pCurBody->s_XPanelPos[k+1];
+			uk  = pCurBody->m_XPanelPos[k];
+			uk1 = pCurBody->m_XPanelPos[k+1];
 
 			pCurBody->getPoint(uk,  0, false, LB);
 			pCurBody->getPoint(uk1, 0, false, TB);

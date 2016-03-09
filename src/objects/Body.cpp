@@ -24,8 +24,6 @@
 #include <math.h>
 
 
-double Body::s_XPanelPos[300];
-
 /**
  * The public constructor
  */
@@ -92,7 +90,7 @@ Body::Body()
 	frame(0)->m_CtrlPoint[3].set(-0.243, 0.0, -0.0172);
 	frame(0)->m_CtrlPoint[4].set(-0.243, 0.0, -0.0172);
 
-	frame(1)->m_CtrlPoint[0].set(-0.228, 0.000,  0.001);
+	frame(1)->m_CtrlPoint[0].set(-0.228, 0.000,  0.005);
 	frame(1)->m_CtrlPoint[1].set(-0.228, 0.011,  0.004);
 	frame(1)->m_CtrlPoint[2].set(-0.228, 0.013, -0.018);
 	frame(1)->m_CtrlPoint[3].set(-0.228, 0.011, -0.030);
@@ -1446,7 +1444,7 @@ void Body::setPanelPos()
 	{
 		x = (double)(i)/(double)m_nxPanels;
 		y = 1.0/(1.0+exp((0.5-x)*a));
-		s_XPanelPos[i] =0.5-((0.5-y)/(0.5-norm))/2.0;
+		m_XPanelPos[i] =0.5-((0.5-y)/(0.5-norm))/2.0;
 	}
 }
 

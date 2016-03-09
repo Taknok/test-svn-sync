@@ -25,9 +25,9 @@ xflr5 v6.13 February xxxth, 2016
 	- interface improvements in XInverse design
 	- changed the display in the foil OpPoint view so that the foil can be overlayed on the graph
 	- fixed some issues with light settings in 3d views
-	- upgraded to OpenGL 3.0+ from the deprecated OpenGl 1.0
-	- improved the lighting on options in 3D view
-	- added an option to paint textures on plane surfaces
+	- upgraded to OpenGL 3.0+ from the deprecated OpenGL 1.0
+	- improved the lighting options in 3D view
+	- added an option to paint textures on the plane's surfaces
 	- code cleaning
 
 

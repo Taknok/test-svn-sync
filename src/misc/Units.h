@@ -43,34 +43,39 @@ public:
 	static void getAreaUnitLabel(  QString &str);
 	static void getMomentUnitLabel(QString &str);
 	static void getForceUnitLabel( QString &str);
+	static void getPressureUnitLabel( QString &str);
 
 	static QString lengthUnitLabel();
     static QString speedUnitLabel();
     static QString weightUnitLabel();
     static QString areaUnitLabel();
     static QString momentUnitLabel();
-    static QString forceUnitLabel();
+	static QString forceUnitLabel();
+	static QString pressureUnitLabel();
 
     static double mtoUnit()  {return s_mtoUnit;}
     static double mstoUnit() {return s_mstoUnit;}
     static double m2toUnit() {return s_m2toUnit;}
     static double kgtoUnit() {return s_kgtoUnit;}
     static double NtoUnit()  {return s_NtoUnit;}
-    static double NmtoUnit() {return s_NmtoUnit;}
+	static double NmtoUnit() {return s_NmtoUnit;}
+	static double PatoUnit() {return s_PatoUnit;}
 
-    static int lengthUnitIndex() {return s_LengthUnit;}
-    static int areaUnitIndex()   {return s_AreaUnit;}
-    static int weightUnitIndex() {return s_WeightUnit;}
-    static int speedUnitIndex()  {return s_SpeedUnit;}
-    static int forceUnitIndex()  {return s_ForceUnit;}
-	static int momentUnitIndex() {return s_MomentUnit;}
+	static int lengthUnitIndex()   {return s_LengthUnit;}
+	static int areaUnitIndex()     {return s_AreaUnit;}
+	static int weightUnitIndex()   {return s_WeightUnit;}
+	static int speedUnitIndex()    {return s_SpeedUnit;}
+	static int forceUnitIndex()    {return s_ForceUnit;}
+	static int momentUnitIndex()   {return s_MomentUnit;}
+	static int pressureUnitIndex() {return s_PressureUnit;}
 
-	static void setLengthUnitFactor( double mToUnit)  {s_mtoUnit    = mToUnit;}
-	static void setAreaUnitFactor(   double m2ToUnit) {s_m2toUnit   = m2ToUnit;}
-	static void setWeightUnitFactor( double kgToUnit) {s_kgtoUnit   = kgToUnit;}
-	static void setSpeedhUnitFactor( double msToUnit) {s_SpeedUnit  = msToUnit;}
-	static void setForcehUnitFactor( double NToUnit)  {s_ForceUnit  = NToUnit;}
-	static void setMomenthUnitFactor(double NMToUnit) {s_MomentUnit = NMToUnit;}
+	static void setLengthUnitFactor(   double mToUnit)  {s_mtoUnit      = mToUnit;}
+	static void setAreaUnitFactor(     double m2ToUnit) {s_m2toUnit     = m2ToUnit;}
+	static void setWeightUnitFactor(   double kgToUnit) {s_kgtoUnit     = kgToUnit;}
+	static void setSpeedhUnitFactor(   double msToUnit) {s_SpeedUnit    = msToUnit;}
+	static void setForcehUnitFactor(   double NToUnit)  {s_ForceUnit    = NToUnit;}
+	static void setMomenthUnitFactor(  double NmToUnit) {s_MomentUnit   = NmToUnit;}
+	static void setPressurehUnitFactor(double PaToUnit) {s_PressureUnit = PaToUnit;}
 
     static void setUnitConversionFactors();
 
@@ -85,12 +90,14 @@ private:
 	QComboBox	*m_pctrlSpeed;
 	QComboBox	*m_pctrlLength;
 	QComboBox	*m_pctrlForce;
-	QLabel *m_pctrlForceFactor, *m_pctrlForceInvFactor;
-	QLabel *m_pctrlLengthFactor, *m_pctrlLengthInvFactor;
-	QLabel *m_pctrlSpeedFactor, *m_pctrlSpeedInvFactor;
-	QLabel *m_pctrlSurfaceFactor, *m_pctrlSurfaceInvFactor;
-	QLabel *m_pctrlWeightFactor, *m_pctrlWeightInvFactor;
-	QLabel *m_pctrlMomentFactor, *m_pctrlMomentInvFactor;
+	QComboBox   *m_pctrlPressure;
+	QLabel *m_pctrlForceFactor,    *m_pctrlForceInvFactor;
+	QLabel *m_pctrlLengthFactor,   *m_pctrlLengthInvFactor;
+	QLabel *m_pctrlSpeedFactor,    *m_pctrlSpeedInvFactor;
+	QLabel *m_pctrlSurfaceFactor,  *m_pctrlSurfaceInvFactor;
+	QLabel *m_pctrlWeightFactor,   *m_pctrlWeightInvFactor;
+	QLabel *m_pctrlMomentFactor,   *m_pctrlMomentInvFactor;
+	QLabel *m_pctrlPressureFactor, *m_pctrlPressureInvFactor;
 	QLabel *m_pctrlQuestion;
 
 private:
@@ -98,20 +105,21 @@ private:
 	void setupLayout();
 
 	bool m_bLengthOnly;
-	static int s_LengthUnit;    /**< The index of the user selected unit in the array of length units. @todo use an enumeration instead. */
-	static int s_AreaUnit;      /**< The index of the user selected unit in the array of area units. */
-	static int s_WeightUnit;    /**< The index of the user selected unit in the array of mass units. */
-	static int s_MomentUnit;    /**< The index of the user selected unit in the array of moment units. */
-	static int s_SpeedUnit;     /**< The index of the user selected unit in the array of speed units. */
-	static int s_ForceUnit;     /**< The index of the user selected unit in the array of force units. */
+	static int s_LengthUnit;    /**< The index of the custom unit in the array of length units. @todo use an enumeration instead. */
+	static int s_AreaUnit;      /**< The index of the custom unit in the array of area units. */
+	static int s_WeightUnit;    /**< The index of the custom unit in the array of mass units. */
+	static int s_MomentUnit;    /**< The index of the custom unit in the array of moment units. */
+	static int s_SpeedUnit;     /**< The index of the custom unit in the array of speed units. */
+	static int s_ForceUnit;     /**< The index of the custom unit in the array of force units. */
+	static int s_PressureUnit;  /**< The index of the custom unit in the array of pressure units. */
 
-	static double s_mtoUnit;    /**< Conversion factor from meters to the user selected length unit. */
-	static double s_mstoUnit;   /**< Conversion factor from m/s to the user selected speed unit. */
-	static double s_m2toUnit;   /**< Conversion factor from square meters to the user selected area unit. */
-	static double s_kgtoUnit;   /**< Conversion factor from kg to the user selected mass unit. */
-	static double s_NtoUnit;    /**< Conversion factor from Newtons to the user selected force unit. */
-	static double s_NmtoUnit;   /**< Conversion factor from N.m to the user selected unit for moments. */
-
+	static double s_mtoUnit;    /**< Conversion factor from meters to the custom length unit. */
+	static double s_mstoUnit;   /**< Conversion factor from m/s to the custom speed unit. */
+	static double s_m2toUnit;   /**< Conversion factor from square meters to the custom area unit. */
+	static double s_kgtoUnit;   /**< Conversion factor from kg to the custom mass unit. */
+	static double s_NtoUnit;    /**< Conversion factor from Newtons to the custom force unit. */
+	static double s_NmtoUnit;   /**< Conversion factor from N.m to the custom unit for moments. */
+	static double s_PatoUnit;   /**< Conversion factor from Pascal to the custom unit for pressures. */
 
 public:
 

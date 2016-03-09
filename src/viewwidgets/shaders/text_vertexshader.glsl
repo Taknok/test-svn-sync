@@ -1,30 +1,35 @@
+#version 130
 
 // Input vertex data, different for all executions of this shader.
-attribute highp vec4 vertexPosition_modelspace;
-attribute mediump vec3 vertexNormal_modelspace;
-attribute mediump vec2 vertexUV;
-uniform lowp vec4 incolor;
+attribute vec4 vertexPosition_modelspace;
+attribute vec3 vertexNormal_modelspace;
+attribute vec2 vertexUV;
+uniform  vec4 incolor;
 
 // Values that stay constant for the whole mesh.
 uniform mat4 pvmMatrix;
 uniform mat4 vMatrix;
 uniform mat4 mMatrix;
+uniform vec4 clipPlane0; // defined in view-space
+
 uniform vec3 LightPosition_worldspace;
 
-
 // Output data; will be interpolated for each fragment.
-varying mediump vec3 Position_worldspace;
-varying mediump vec3 Normal_cameraspace;
-varying mediump vec3 EyeDirection_cameraspace;
-varying mediump vec3 LightDirection_cameraspace;
-varying mediump vec4 vertexcolor;
-varying mediump vec2 UV;
+varying vec3 Position_worldspace;
+varying vec3 Normal_cameraspace;
+varying vec3 EyeDirection_cameraspace;
+varying vec3 LightDirection_cameraspace;
+varying vec4 vertexcolor;
+varying vec2 UV;
 
 
 void main()
 {
 	// Output position of the vertex, in clip space : MVP * position
 	gl_Position =  pvmMatrix * vec4(vertexPosition_modelspace);
+
+	vec4 vsPos = vMatrix * mMatrix * vertexPosition_modelspace; // position of vertex in viewspace
+	gl_ClipDistance[0] = dot(clipPlane0,vsPos);
 
 	// Position of the vertex, in worldspace : M * position
 	Position_worldspace = (mMatrix * vec4(vertexPosition_modelspace)).xyz;

@@ -72,6 +72,9 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
 	m_pPointDelegate = NULL;
 	m_pFrameDelegate = NULL;
 
+	m_pPointModel = NULL;
+	m_pFrameModel = NULL;
+
 	//create a default pix from a random image - couldn't find a better way to do this
 	m_pixTextLegend = QPixmap(":/images/xflr5_64.png");
 	m_pixTextLegend.fill(Qt::transparent);
@@ -158,11 +161,9 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
 	connect(m_pctrlY,          SIGNAL(clicked()), &m_gl3Widget, SLOT(on3DLeft()));
 	connect(m_pctrlZ,          SIGNAL(clicked()), &m_gl3Widget, SLOT(on3DTop()));
 
-	connect(m_pctrlClipPlanePos, SIGNAL(sliderMoved(int)), &m_gl3Widget, SLOT(onClipPlane(int)));
-
 	connect(&m_gl3Widget, SIGNAL(viewModified()), this, SLOT(onCheckViewIcons()));
 
-	connect(m_pctrlEdgeWeight, SIGNAL(sliderReleased()), this, SLOT(onEdgeWeight()));
+//	connect(m_pctrlEdgeWeight, SIGNAL(sliderReleased()), this, SLOT(onEdgeWeight()));
 	connect(m_pctrlPanelBunch, SIGNAL(sliderMoved(int)), this, SLOT(onNURBSPanels()));
 
 	connect(m_pctrlFlatPanels, SIGNAL(clicked()), this, SLOT(onLineType()));
@@ -216,6 +217,8 @@ GL3dBodyDlg::~GL3dBodyDlg()
 
 	if(m_pPointPrecision) delete [] m_pPointPrecision;
 	if(m_pPointDelegate)  delete m_pPointDelegate;
+	delete m_pFrameModel;
+	delete m_pPointModel;
 }
 
 
@@ -358,7 +361,9 @@ void GL3dBodyDlg::glMake3DObjects()
 	if(m_bResetglBody)
 	{
 		m_bResetglBody = false;
-		m_gl3Widget.glMakeBody(m_pBody);
+		if(m_pBody->isSplineType())         m_gl3Widget.glMakeBodySplines(m_pBody);
+		else if(m_pBody->isFlatPanelType()) m_gl3Widget.glMakeBody3DFlatPanels(m_pBody);
+		m_gl3Widget.glMakeBodyMesh(m_pBody);
 	}
 }
 
@@ -728,7 +733,7 @@ void GL3dBodyDlg::readFrameSectionData(int sel)
 	x = strong.toDouble(&bOK);
 	if(bOK) m_pBody->frame(sel)->setuPosition(x / Units::mtoUnit());
 
-	for(int ic=0; ic<m_pBody->frame(sel)->PointCount(); ic++)
+	for(int ic=0; ic<m_pBody->frame(sel)->pointCount(); ic++)
 	{
 		m_pBody->frame(sel)->m_CtrlPoint[ic].x  = x / Units::mtoUnit();
 	}
@@ -794,8 +799,8 @@ void GL3dBodyDlg::onOK()
 {
 	if(m_pBody)
 	{
-		m_pBody->m_BodyDescription = m_pctrlBodyDescription->toPlainText();
-		m_pBody->m_BodyColor = m_pctrlBodyColor->color();
+		m_pBody->bodyDescription() = m_pctrlBodyDescription->toPlainText();
+		m_pBody->bodyColor() = m_pctrlBodyColor->color();
 	}
 
 	accept();
@@ -809,8 +814,9 @@ void GL3dBodyDlg::onPointCellChanged(QWidget *)
 
 	takePicture();
 	m_bChanged = true;
-	readPointSectionData(m_pFrame->s_iSelect);
-	m_bResetglBody       = true;
+	for(int ip=0; ip<m_pPointModel->rowCount(); ip++)
+		readPointSectionData(ip);
+	m_bResetglBody = true;
 
 	updateView();
 }
@@ -904,7 +910,7 @@ void GL3dBodyDlg::onSelChangeHoopDegree(int sel)
 
 void GL3dBodyDlg::onEdgeWeight()
 {
-	if(!m_pBody) return;
+/*	if(!m_pBody) return;
 
 	m_bChanged = true;
 	takePicture();
@@ -913,7 +919,7 @@ void GL3dBodyDlg::onEdgeWeight()
 	m_pBody->setEdgeWeight(w, w);
 
 	m_bResetglBody   = true;
-	updateView();
+	updateView();*/
 }
 
 
@@ -968,8 +974,6 @@ void GL3dBodyDlg::onTranslateBody()
 
 
 
-
-
 void GL3dBodyDlg::readPointSectionData(int sel)
 {
 	if(sel>=m_pPointModel->rowCount()) return;
@@ -1003,6 +1007,8 @@ void GL3dBodyDlg::readPointSectionData(int sel)
 }
 
 
+
+
 void GL3dBodyDlg::reject()
 {
 	if(m_bChanged)
@@ -1029,6 +1035,7 @@ void GL3dBodyDlg::reject()
 }
 
 
+
 void GL3dBodyDlg::resizeEvent(QResizeEvent *event)
 {
 //	SetBodyScale();
@@ -1037,6 +1044,7 @@ void GL3dBodyDlg::resizeEvent(QResizeEvent *event)
 	resizeTables();
 	event->accept();
 }
+
 
 
 bool GL3dBodyDlg::loadSettings(QSettings *pSettings)
@@ -1053,6 +1061,7 @@ bool GL3dBodyDlg::loadSettings(QSettings *pSettings)
 	BodyGridDlg::loadSettings(pSettings);
 	return true;
 }
+
 
 
 bool GL3dBodyDlg::saveSettings(QSettings *pSettings)
@@ -1084,14 +1093,13 @@ void GL3dBodyDlg::setControls()
 	m_pctrlAxes->setChecked(m_gl3Widget.m_bAxes);
 	m_pctrlShowMasses->setChecked(m_gl3Widget.m_bShowMasses);
 	m_pctrlSurfaces->setChecked(m_gl3Widget.m_bSurfaces);
-	m_pctrlClipPlanePos->setValue((int)(m_gl3Widget.m_ClipPlanePos*100.0));
 
 	m_pctrlPanelBunch->setSliderPosition((int)(m_pBody->m_Bunch*100.0));
 
 	m_pctrlUndo->setEnabled(m_StackPos>0);
 	m_pctrlRedo->setEnabled(m_StackPos<m_UndoStack.size()-1);
 
-	m_pctrlEdgeWeight->setSliderPosition((int)((m_pBody->m_SplineSurface.m_EdgeWeightu-1.0)*100.0));
+//	m_pctrlEdgeWeight->setSliderPosition((int)((m_pBody->m_SplineSurface.m_EdgeWeightu-1.0)*100.0));
 
 	if(m_pBody && m_pBody->m_LineType==XFLR5::BODYPANELTYPE)
 	{
@@ -1270,20 +1278,6 @@ void GL3dBodyDlg::setupLayout()
 			pThreeDViewLayout->addWidget(m_pctrlReset);
 		}
 
-		QHBoxLayout *pThreeDViewControlsLayout = new QHBoxLayout;
-		{
-			QLabel *ClipLabel = new QLabel(tr("Clip Plane"));
-			ClipLabel->setSizePolicy(szPolicyMaximum);
-			m_pctrlClipPlanePos = new QSlider(Qt::Horizontal);
-			m_pctrlClipPlanePos->setMinimum(-300);
-			m_pctrlClipPlanePos->setMaximum(300);
-			m_pctrlClipPlanePos->setSliderPosition(0);
-			m_pctrlClipPlanePos->setTickInterval(30);
-			m_pctrlClipPlanePos->setTickPosition(QSlider::TicksBelow);
-			m_pctrlClipPlanePos->setSizePolicy(szPolicyMinimum);
-			pThreeDViewControlsLayout->addWidget(ClipLabel);
-			pThreeDViewControlsLayout->addWidget(m_pctrlClipPlanePos);
-		}
 
 		QHBoxLayout *pActionButtonsLayout = new QHBoxLayout;
 		{
@@ -1327,7 +1321,6 @@ void GL3dBodyDlg::setupLayout()
 		}
 
 		pControlsLayout->addLayout(pAxisViewLayout);
-		pControlsLayout->addLayout(pThreeDViewControlsLayout);
 		pControlsLayout->addLayout(pThreeDParamsLayout);
 		pControlsLayout->addLayout(pThreeDViewLayout);
 		pControlsLayout->addStretch(1);
@@ -1363,14 +1356,28 @@ void GL3dBodyDlg::setupLayout()
 		m_pctrlBodyDescription->setToolTip(tr("Enter here a short description for the body"));
 		pBodyParamsLayout->setStretchFactor(m_pctrlBodyDescription,1);
 
-		QHBoxLayout *pBodyType = new QHBoxLayout;
+		pBodyParamsLayout->addWidget(m_pctrlBodyName);
+		pBodyParamsLayout->addWidget(pStyleBox);
+		pBodyParamsLayout->addWidget(BodyDes);
+		pBodyParamsLayout->addWidget(m_pctrlBodyDescription);
+		pBodyParamsLayout->addStretch(1);
+	}
+
+
+	QVBoxLayout *pBodySettingsLayout = new QVBoxLayout;
+	{
+		QGroupBox *pBodyTypeBox = new QGroupBox(tr("Type"));
 		{
-			m_pctrlFlatPanels = new QRadioButton(tr("Flat Panels"));
-			m_pctrlBSplines = new QRadioButton(tr("BSplines"));
-			m_pctrlFlatPanels->setSizePolicy(szPolicyMinimum);
-			m_pctrlBSplines->setSizePolicy(szPolicyMinimum);
-			pBodyType->addWidget(m_pctrlFlatPanels);
-			pBodyType->addWidget(m_pctrlBSplines);
+			QHBoxLayout *pBodyTypeLayout = new QHBoxLayout;
+			{
+				m_pctrlFlatPanels = new QRadioButton(tr("Flat Panels"));
+				m_pctrlBSplines   = new QRadioButton(tr("BSplines"));
+				m_pctrlFlatPanels->setSizePolicy(szPolicyMinimum);
+				m_pctrlBSplines->setSizePolicy(szPolicyMinimum);
+				pBodyTypeLayout->addWidget(m_pctrlFlatPanels);
+				pBodyTypeLayout->addWidget(m_pctrlBSplines);
+			}
+			pBodyTypeBox->setLayout(pBodyTypeLayout);
 		}
 
 		QGridLayout *pSplineParams = new QGridLayout;
@@ -1383,15 +1390,15 @@ void GL3dBodyDlg::setupLayout()
 
 			m_pctrlXDegree = new QComboBox;
 			m_pctrlHoopDegree = new QComboBox;
-            m_pctrlNXPanels = new DoubleEdit;
-            m_pctrlNHoopPanels = new DoubleEdit;
-			m_pctrlEdgeWeight = new QSlider(Qt::Horizontal);
+			m_pctrlNXPanels = new DoubleEdit;
+			m_pctrlNHoopPanels = new DoubleEdit;
+/*			m_pctrlEdgeWeight = new QSlider(Qt::Horizontal);
 			m_pctrlEdgeWeight->setMinimum(0);
 			m_pctrlEdgeWeight->setMaximum(100);
 			m_pctrlEdgeWeight->setSliderPosition(1);
 			m_pctrlEdgeWeight->setTickInterval(10);
 			m_pctrlEdgeWeight->setTickPosition(QSlider::TicksBelow);
-			m_pctrlEdgeWeight->setSizePolicy(szPolicyMinimum);
+			m_pctrlEdgeWeight->setSizePolicy(szPolicyMinimum);*/
 
 			m_pctrlPanelBunch= new QSlider(Qt::Horizontal);
 			m_pctrlPanelBunch->setMinimum(0	);
@@ -1426,13 +1433,9 @@ void GL3dBodyDlg::setupLayout()
 			pSplineParams->addWidget(m_pctrlPanelBunch,5,2,1,2);
 		}
 
-		pBodyParamsLayout->addWidget(m_pctrlBodyName);
-		pBodyParamsLayout->addWidget(pStyleBox);
-		pBodyParamsLayout->addWidget(BodyDes);
-		pBodyParamsLayout->addWidget(m_pctrlBodyDescription);
-		pBodyParamsLayout->addStretch(1);
-		pBodyParamsLayout->addLayout(pBodyType);
-		pBodyParamsLayout->addLayout(pSplineParams);
+		pBodySettingsLayout->addWidget(pBodyTypeBox);
+		pBodySettingsLayout->addStretch();
+		pBodySettingsLayout->addLayout(pSplineParams);
 	}
 
 
@@ -1480,6 +1483,8 @@ void GL3dBodyDlg::setupLayout()
 		QHBoxLayout *pAllControls = new QHBoxLayout;
 		{
 			pAllControls->addLayout(pBodyParamsLayout);
+			pAllControls->addStretch(1);
+			pAllControls->addLayout(pBodySettingsLayout);
 			pAllControls->addStretch(1);
 			pAllControls->addLayout(pFramePosLayout);
 			pAllControls->addStretch(1);

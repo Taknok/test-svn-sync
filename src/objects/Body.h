@@ -103,7 +103,7 @@ public:
 
 
 	double framePosition(int iFrame);
-	int frameCount()       {return m_SplineSurface.frameCount();}
+	int frameCount()      {return m_SplineSurface.frameCount();}
 	int framePointCount() {return m_SplineSurface.framePointCount();}
 	int sideLineCount()   {return m_SplineSurface.framePointCount();}// same as FramePointCount();
 
@@ -120,6 +120,9 @@ public:
 	QColor &bodyColor(){return m_BodyColor;}
 
 	XFLR5::enumBodyLineType &bodyType(){return m_LineType;}
+	bool isFlatPanelType() {return m_LineType==XFLR5::BODYPANELTYPE;}
+	bool isSplineType()    {return m_LineType==XFLR5::BODYSPLINETYPE;}
+
 	NURBSSurface *splineSurface() {return &m_SplineSurface;}
 
 	//____________________VARIABLES_____________________________________________
@@ -166,7 +169,7 @@ public:
 	double value, bs, cs;
 	CVector t_R, t_Prod, t_Q, t_r, t_N;
 //	CVector P0, P1, P2, PI;
-	static double s_XPanelPos[300];
+	double m_XPanelPos[300];
 
 	bool m_bTextures;
 

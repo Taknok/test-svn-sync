@@ -40,6 +40,7 @@ public:
 	void setBody(Body *pBody);
 	void drawFrameLines();
 	void drawFramePoints();
+	void drawScaleLegend(QPainter &painter);
 
 	void setScale();
 	void paintEvent(QPaintEvent *event);

@@ -1,7 +1,9 @@
-attribute highp vec4 vertexPosition_modelspace;
-attribute lowp vec4 vertexColor;
+#version 130
 
-varying mediump vec4 outColor;
+attribute vec4 vertexPosition_modelspace;
+attribute vec4 vertexColor;
+
+varying vec4 outColor;
 
 uniform mat4 pvmMatrix;
 

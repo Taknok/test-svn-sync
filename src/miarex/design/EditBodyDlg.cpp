@@ -28,9 +28,13 @@
 #include <QGridLayout>
 #include <QMessageBox>
 #include <QPainter>
-
+#include <QFileDialog>
 #include "EditBodyDlg.h"
-
+#include <miarex/mgt/XmlPlaneReader.h>
+#include <miarex/mgt/XmlPlaneWriter.h>
+#include "./BodyScaleDlg.h"
+#include "./BodyTransDlg.h"
+#include "./InertiaDlg.h"
 
 QSize EditBodyDlg::s_WindowSize(1031,783);
 QPoint EditBodyDlg::s_WindowPosition(131, 77);
@@ -69,9 +73,31 @@ EditBodyDlg::EditBodyDlg(QWidget *pParent) : QDialog(pParent)
 	m_PixText = QPixmap(107, 97);
 	m_PixText.fill(Qt::transparent);
 
+	createActions();
 	setupLayout();
 }
 
+void EditBodyDlg::createActions()
+{
+	m_pScaleBody        = new QAction(tr("Scale"), this);
+	connect(m_pScaleBody,        SIGNAL(triggered()), this, SLOT(onScaleBody()));
+
+	m_pExportBodyGeom = new QAction(tr("Export Body Geometry to text File"), this);
+	connect(m_pExportBodyGeom, SIGNAL(triggered()), this, SLOT(onExportBodyGeom()));
+
+	m_pExportBodyXML= new QAction(tr("Export body definition to an XML file"), this);
+	connect(m_pExportBodyXML, SIGNAL(triggered()), this, SLOT(onExportBodyXML()));
+
+
+	m_pImportBodyXML= new QAction(tr("Import body definition from an XML file"), this);
+	connect(m_pImportBodyXML, SIGNAL(triggered()), this, SLOT(onImportBodyXML()));
+
+	m_pBodyInertia = new QAction(tr("Define Inertia")+"\tF12", this);
+	connect(m_pBodyInertia, SIGNAL(triggered()), this, SLOT(onBodyInertia()));
+
+	m_pTranslateBody = new QAction(tr("Translate"), this);
+	connect(m_pTranslateBody, SIGNAL(triggered()), this, SLOT(onTranslateBody()));
+}
 
 /**
  * Overrides the base class showEvent method. Moves the window to its former location.
@@ -234,18 +260,38 @@ void EditBodyDlg::setupLayout()
 				QHBoxLayout *pCommandLayout = new QHBoxLayout;
 				{
 					m_pctrlRedraw = new QPushButton(tr("Regenerate") + "\t(F4)");
+
+					m_pctrlMenuButton = new QPushButton(tr("Actions"));
+
+					QMenu *pBodyMenu = new QMenu(tr("Actions..."),this);
+
+					pBodyMenu->addAction(m_pImportBodyXML);
+					pBodyMenu->addAction(m_pExportBodyXML);
+					pBodyMenu->addSeparator();
+					pBodyMenu->addAction(m_pExportBodyGeom);
+					pBodyMenu->addSeparator();
+					pBodyMenu->addAction(m_pBodyInertia);
+					pBodyMenu->addSeparator();
+					pBodyMenu->addAction(m_pTranslateBody);
+					pBodyMenu->addAction(m_pScaleBody);
+					pBodyMenu->addSeparator();
+					m_pctrlMenuButton->setMenu(pBodyMenu);
+
+
 					pOKButton = new QPushButton(tr("Save and Close"));
 					pOKButton->setAutoDefault(true);
 					QPushButton *pCancelButton = new QPushButton(tr("Cancel"));
 					pCancelButton->setAutoDefault(false);
 
-					m_pctrlRedraw->setSizePolicy(szPolicyMaximum);
+/*					m_pctrlRedraw->setSizePolicy(szPolicyMaximum);
 					pOKButton->setSizePolicy(szPolicyMaximum);
-					pCancelButton->setSizePolicy(szPolicyMaximum);
+					pCancelButton->setSizePolicy(szPolicyMaximum);*/
 
-					pCommandLayout->addWidget(m_pctrlRedraw);
+//					pCommandLayout->addWidget(m_pctrlRedraw);
 					pCommandLayout->addWidget(pOKButton);
 					pCommandLayout->addWidget(pCancelButton);
+					pCommandLayout->addStretch();
+					pCommandLayout->addWidget(m_pctrlMenuButton);
 					connect(pOKButton, SIGNAL(clicked()),this, SLOT(onOK()));
 					connect(pCancelButton, SIGNAL(clicked()),this, SLOT(reject()));
 				}
@@ -316,31 +362,14 @@ void EditBodyDlg::setupLayout()
 						pAxisViewLayout->addWidget(m_pctrlZ);
 						pAxisViewLayout->addWidget(m_pctrlIso);
 					}
-					QVBoxLayout *pRightColLayout = new QVBoxLayout;
-					{
-						QHBoxLayout *pClipLayout = new QHBoxLayout;
-						{
-							QLabel *ClipLabel = new QLabel(tr("Clip:"));
-							m_pctrlClipPlanePos = new QSlider(Qt::Horizontal);
-							m_pctrlClipPlanePos->setMinimum(-300);
-							m_pctrlClipPlanePos->setMaximum(300);
-							m_pctrlClipPlanePos->setSliderPosition(0);
-							m_pctrlClipPlanePos->setTickInterval(30);
-							m_pctrlClipPlanePos->setTickPosition(QSlider::TicksBelow);
-							pClipLayout->addWidget(ClipLabel);
-							pClipLayout->addWidget(m_pctrlClipPlanePos,1);
-						}
 
-						m_pctrlReset = new QPushButton(tr("Reset view"));
 
-						pRightColLayout->addWidget(m_pctrlReset);
-						pRightColLayout->addLayout(pClipLayout);
-					}
+					m_pctrlReset = new QPushButton(tr("Reset view"));
 					pThreeDViewControlsLayout->addLayout(pThreeDParamsLayout);
 					pThreeDViewControlsLayout->addStretch();
 					pThreeDViewControlsLayout->addLayout(pAxisViewLayout);
 					pThreeDViewControlsLayout->addStretch();
-					pThreeDViewControlsLayout->addLayout(pRightColLayout);
+					pThreeDViewControlsLayout->addWidget(m_pctrlReset);
 
 				}
 				p3DCtrlBox->setLayout(pThreeDViewControlsLayout);
@@ -419,7 +448,6 @@ void EditBodyDlg::initDialog(Body *pBody)
 	m_pctrlAxes->setChecked(m_pgl3Widget->m_bAxes);
 	m_pctrlPanels->setChecked(m_pgl3Widget->m_bVLMPanels);
 	m_pctrlShowMasses->setChecked(m_pgl3Widget->m_bShowMasses);
-	m_pctrlClipPlanePos->setValue((int)(m_pgl3Widget->m_ClipPlanePos*100.0));
 }
 
 
@@ -493,7 +521,9 @@ void EditBodyDlg::glMake3DObjects()
 	if(m_bResetglBody)
 	{
 		m_bResetglBody = false;
-		m_pgl3Widget->glMakeBody(m_pBody);
+		if(m_pBody->isSplineType())          m_pgl3Widget->glMakeBodySplines(m_pBody);
+		else if(m_pBody->isFlatPanelType())  m_pgl3Widget->glMakeBody3DFlatPanels(m_pBody);
+		m_pgl3Widget->glMakeBodyMesh(m_pBody);
 	}
 }
 
@@ -570,14 +600,14 @@ void EditBodyDlg::glCreateBodyFrameHighlight(Body *pBody, CVector bodyPos, int i
 		{
 			glBegin(GL_LINE_STRIP);
 			{
-				for (k=0; k<pFrame->PointCount();k++)
+				for (k=0; k<pFrame->pointCount();k++)
 					glVertex3d( pFrame->m_Position.x+bodyPos.x,
 								pFrame->m_CtrlPoint[k].y, pFrame->m_CtrlPoint[k].z+bodyPos.z);
 			}
 			glEnd();
 			glBegin(GL_LINE_STRIP);
 			{
-				for (k=0; k<pFrame->PointCount();k++)
+				for (k=0; k<pFrame->pointCount();k++)
 					glVertex3d(pFrame->m_Position.x+bodyPos.x,
 							  -pFrame->m_CtrlPoint[k].y, pFrame->m_CtrlPoint[k].z+bodyPos.z);
 			}
@@ -614,7 +644,6 @@ void EditBodyDlg::connectSignals()
 	connect(m_pctrlY,          SIGNAL(clicked()), m_pgl3Widget, SLOT(on3DLeft()));
 	connect(m_pctrlZ,          SIGNAL(clicked()), m_pgl3Widget, SLOT(on3DTop()));
 
-	connect(m_pctrlClipPlanePos, SIGNAL(sliderMoved(int)), m_pgl3Widget, SLOT(onClipPlane(int)));
 	connect(m_pHorizontalSplitter, SIGNAL(splitterMoved(int,int)), this, SLOT(onResize()));
 
 	connect(m_pgl3Widget, SIGNAL(viewModified()), this, SLOT(onCheckViewIcons()));
@@ -830,14 +859,14 @@ void EditBodyDlg::fillBodyTreeView()
 				QList<QStandardItem*> dataItem = prepareDoubleRow("x_Position", "x", pFrame->m_Position.x*Units::mtoUnit(), Units::lengthUnitLabel());
 				sectionFolder.first()->appendRow(dataItem);
 
-				for(int iPt=0; iPt<pFrame->PointCount(); iPt++)
+				for(int iPt=0; iPt<pFrame->pointCount(); iPt++)
 				{
 					QList<QStandardItem*> pointFolder = prepareRow(QString("Point %1").arg(iPt+1));
 					sectionFolder.first()->appendRow(pointFolder);
 					{
 						if(Frame::s_iSelect==iPt) m_pStruct->expand(m_pModel->indexFromItem(pointFolder.first()));
 
-						CVector Pt(pFrame->Point(iPt));
+						CVector Pt(pFrame->point(iPt));
 						QList<QStandardItem*> dataItem = prepareDoubleRow("", "x", Pt.x*Units::mtoUnit(), Units::lengthUnitLabel());
 						pointFolder.first()->appendRow(dataItem);
 
@@ -1325,6 +1354,162 @@ bool EditBodyDlg::saveSettings(QSettings *pSettings)
 
 	return true;
 }
+
+
+
+
+
+void EditBodyDlg::onExportBodyXML()
+{
+	if(!m_pBody)return ;// is there anything to export ?
+
+	QString filter = "XML file (*.xml)";
+	QString FileName, strong;
+
+	strong = m_pBody->bodyName();
+	FileName = QFileDialog::getSaveFileName(this, tr("Export plane definition to xml file"),
+											Settings::s_LastDirName +'/'+strong,
+											filter,
+											&filter);
+
+	if(!FileName.length()) return;
+	int pos = FileName.lastIndexOf("/");
+	if(pos>0) Settings::s_LastDirName = FileName.left(pos);
+
+	pos = FileName.indexOf(".xùl", Qt::CaseInsensitive);
+	if(pos<0) FileName += ".xùl";
+
+
+	QFile XFile(FileName);
+	if (!XFile.open(QIODevice::WriteOnly | QIODevice::Text)) return ;
+
+	XMLPlaneWriter planeWriter(XFile);
+
+	planeWriter.writeXMLBody(m_pBody);
+
+	XFile.close();
+}
+
+
+void EditBodyDlg::onImportBodyXML()
+{
+//	Body memBody;
+//	memBody.duplicate(m_pBody);
+
+	QString PathName;
+	PathName = QFileDialog::getOpenFileName(this, tr("Open XML File"),
+											Settings::s_LastDirName,
+											tr("Plane XML file")+"(*.xml)");
+	if(!PathName.length())		return ;
+	int pos = PathName.lastIndexOf("/");
+	if(pos>0) Settings::s_LastDirName = PathName.left(pos);
+
+	QFile XFile(PathName);
+	if (!XFile.open(QIODevice::ReadOnly))
+	{
+		QString strange = tr("Could not read the file\n")+PathName;
+		QMessageBox::warning(this, tr("Warning"), strange);
+		return;
+	}
+
+	Plane a_plane;
+	XMLPlaneReader planeReader(XFile, &a_plane);
+	planeReader.readXMLPlaneFile();
+
+	XFile.close();
+
+	if(planeReader.hasError())
+	{
+		QString errorMsg = planeReader.errorString() + QString("\nline %1 column %2").arg(planeReader.lineNumber()).arg(planeReader.columnNumber());
+		QMessageBox::warning(this, "XML read", errorMsg, QMessageBox::Ok);
+//		m_pBody->duplicate(&memBody);
+		return;
+	}
+
+	m_pBody->duplicate(a_plane.body());
+	initDialog(m_pBody);
+
+	m_bResetglBody       = true;
+
+	m_bChanged = true;
+
+	updateViews();
+}
+
+
+
+
+void EditBodyDlg::onScaleBody()
+{
+	if(!m_pBody) return;
+
+	BodyScaleDlg dlg(this);
+
+	dlg.m_FrameID = m_pBody->m_iActiveFrame;
+	dlg.initDialog();
+
+	if(dlg.exec()==QDialog::Accepted)
+	{
+		m_bChanged = true;
+		m_pBody->scale(dlg.m_XFactor, dlg.m_YFactor, dlg.m_ZFactor, dlg.m_bFrameOnly, dlg.m_FrameID);
+		m_bResetglBody = true;
+		fillBodyTreeView();
+
+		updateViews();
+	}
+}
+
+
+
+void EditBodyDlg::onTranslateBody()
+{
+	if(!m_pBody) return;
+
+	BodyTransDlg dlg(this);
+	dlg.m_FrameID    = m_pBody->m_iActiveFrame;
+	dlg.initDialog();
+
+	if(dlg.exec()==QDialog::Accepted)
+	{
+		m_bChanged = true;
+		m_pBody->translate(dlg.m_XTrans, dlg.m_YTrans, dlg.m_ZTrans, dlg.m_bFrameOnly, dlg.m_FrameID);
+		fillBodyTreeView();
+
+		m_bResetglBody = true;
+		updateViews();
+	}
+}
+
+
+
+void EditBodyDlg::onBodyInertia()
+{
+	if(!m_pBody) return;
+	InertiaDlg dlg(this);
+	dlg.m_pBody  = m_pBody;
+	dlg.m_pPlane = NULL;
+	dlg.m_pWing  = NULL;
+	dlg.initDialog();
+	dlg.move(pos().x()+25, pos().y()+25);
+	if(dlg.exec()==QDialog::Accepted) m_bChanged=true;
+	m_pBody->computeBodyAxisInertia();
+	fillBodyTreeView();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

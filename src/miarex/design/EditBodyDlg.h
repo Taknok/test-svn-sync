@@ -95,11 +95,17 @@ private slots:
 	void onInsertBefore();
 	void onInsertAfter();
 	void onDelete();
+	void onExportBodyXML();
+	void onImportBodyXML();
+	void onScaleBody();
+	void onTranslateBody();
+	void onBodyInertia();
 
 
 private:
 	void reject();
 	void paintBodyLegend(QPainter &painter);
+	void createActions();
 
 public:
 	static bool s_bWindowMaximized;
@@ -123,6 +129,11 @@ private:
 	QCheckBox *m_pctrlAxes, *m_pctrlLight, *m_pctrlSurfaces, *m_pctrlOutline, *m_pctrlPanels;
 	QCheckBox *m_pctrlShowMasses;
 
+	QAction *m_pExportBodyGeom, *m_pBodyInertia;// *m_pSetupLight;
+	QAction *m_pExportBodyXML, *m_pImportBodyXML;
+	QAction *m_pScaleBody, *m_pTranslateBody;
+
+
 	QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView;
 	QToolButton *m_pctrlX, *m_pctrlY, *m_pctrlZ, *m_pctrlIso;
 
@@ -131,10 +142,9 @@ private:
 
 	QSplitter *m_pHorizontalSplitter, *m_pLeftSplitter, *m_pMiddleSplitter;
 
-	QPushButton *m_pctrlRedraw;
+	QPushButton *m_pctrlRedraw, *m_pctrlMenuButton;
 	QPushButton *m_pctrlReset;
 	QPushButton *pOKButton;
-	QSlider *m_pctrlClipPlanePos;
 
 	bool m_bChanged;
 	bool m_bResetglFrameHighlight;

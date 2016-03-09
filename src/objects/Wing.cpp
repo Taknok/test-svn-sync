@@ -1473,22 +1473,18 @@ double Wing::totalMass()
 
 
 
-
-
-void Wing::surfacePoint(double xRel, double yob, enumPanelPosition pos, CVector &Point, CVector &PtNormal)
+void Wing::surfacePoint(double xRel, double ypos, enumPanelPosition pos, CVector &Point, CVector &PtNormal)
 {
 	Surface *pSurface = NULL;
-	double fy = qAbs(yob);
-	double sign;
-	if(fy<PRECISION) sign = 1.0;
-	else             sign = yob/fy;
+	double fy = qAbs(ypos);
+
 	int iSurf = 0;
 
 	double yl = 0.0;
 
 	for (int is=0; is<NWingSection()-1; is++)
 	{
-		if(qAbs(YPosition(is+1)-YPosition(is+1))>s_MinPanelSize)
+		if(qAbs(YPosition(is+1)-YPosition(is))>s_MinPanelSize)
 		{
 			if(YPosition(is)< fy && fy<=YPosition(is+1))
 			{
@@ -1498,18 +1494,12 @@ void Wing::surfacePoint(double xRel, double yob, enumPanelPosition pos, CVector 
 			iSurf++;
 		}
 	}
-	if(sign>=0.0)
-	{
-		pSurface = m_Surface.at(m_Surface.size()/2 + iSurf);
-		double yRel = (yob-yl)/pSurface->spanLength();
-		pSurface->getSurfacePoint(xRel, xRel, yRel, pos, Point, PtNormal);
-	}
-	else
-	{
-		pSurface = m_Surface.at(m_Surface.size()/2 - iSurf -1);
-		double yRel = (yl+pSurface->spanLength() + yob)/pSurface->spanLength();
-		pSurface->getSurfacePoint(xRel, xRel, yRel, pos, Point, PtNormal);
-	}
+
+	pSurface = m_Surface.at(m_Surface.size()/2 + iSurf);
+	double yRel = ypos-yl/pSurface->spanLength();
+	pSurface->getSurfacePoint(xRel, xRel, yRel, pos, Point, PtNormal);
+
+//	if(sign<0) Point.y = -Point.y;
 }
 
 
