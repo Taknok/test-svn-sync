@@ -216,6 +216,9 @@ void GLLightDlg::setupLayout()
 			QLabel *pConstant = new QLabel(tr("Constant"));
 			QLabel *pLinear = new QLabel(tr("Linear"));
 			QLabel *pQuadratic = new QLabel(tr("Quadratic"));
+			pConstant->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+			pLinear->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+			pQuadratic->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 			m_pctrlConstantAttenuation = new DoubleEdit(0.0);
 			m_pctrlLinearAttenuation = new DoubleEdit(0.0);
 			m_pctrlQuadAttenuation = new DoubleEdit(0.0);
@@ -277,6 +280,7 @@ void GLLightDlg::setupLayout()
 			pMaterialDataBox->setLayout(pMaterialData);
 		}
 	}
+
 	QHBoxLayout *pCommandButtons = new QHBoxLayout;
 	{
 		m_pctrlClose = new QPushButton(tr("Close"));
@@ -292,27 +296,26 @@ void GLLightDlg::setupLayout()
 		pCommandButtons->addStretch(1);
 	}
 
-	QVBoxLayout *pSliderLayout = new QVBoxLayout;
+	QHBoxLayout *pTopLayout = new QHBoxLayout;
 	{
-		pSliderLayout->addStretch(1);
-		pSliderLayout->addWidget(pLightIntensityBox);
-		pSliderLayout->addStretch(1);
-		pSliderLayout->addWidget(pLightColorBox);
-		pSliderLayout->addStretch(1);
-		pSliderLayout->addWidget(pLightPositionBox);
-		pSliderLayout->addStretch(1);
-		pSliderLayout->addWidget(pMaterialDataBox);
-		pSliderLayout->addStretch(1);
-		pSliderLayout->addWidget(pAttenuationBox);
-		pSliderLayout->addStretch(1);
+		pTopLayout->addWidget(pLightIntensityBox);
+		pTopLayout->addWidget(pLightColorBox);
 	}
 
+	QHBoxLayout *pMidLayout = new QHBoxLayout;
+	{
+		pMidLayout->addWidget(pLightPositionBox);
+		pMidLayout->addWidget(pMaterialDataBox);
+
+	}
 
 	QVBoxLayout *pMainLayout = new QVBoxLayout;
 	{
 		m_pctrlLight = new QCheckBox(tr("Light"));
 		pMainLayout->addWidget(m_pctrlLight);
-		pMainLayout->addLayout(pSliderLayout);
+		pMainLayout->addLayout(pTopLayout);
+		pMainLayout->addLayout(pMidLayout);
+		pMainLayout->addWidget(pAttenuationBox);
 		pMainLayout->addLayout(pCommandButtons);
 	}
 
@@ -567,13 +570,13 @@ void GLLightDlg::showEvent(QShowEvent *event)
 
 QSize GLLightDlg::minimumSizeHint() const
 {
-	return QSize(250, 350);
+	return QSize(400, 350);
 }
 
 
 QSize GLLightDlg::sizeHint() const
 {
-	return QSize(350, 400);
+	return QSize(500, 400);
 }
 
 
