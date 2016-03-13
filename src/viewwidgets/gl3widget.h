@@ -58,7 +58,6 @@ class GL3Widget : public QOpenGLWidget
 public:
 	GL3Widget(QWidget *pParent = NULL);
 	~GL3Widget();
-	void setClearColor(const QColor &color);
 
 signals:
 	void viewModified();
@@ -98,8 +97,8 @@ public:
 	void glSetupLight();
 
 private:
-	void glDrawFoils(void *pWingPtr);
-	void glDrawMasses(double volumeMass, CVector pos, QString tag, QList<PointMass*> ptMasses);
+	void paintFoilNames(void *pWingPtr);
+	void paintMasses(double volumeMass, CVector pos, QString tag, QList<PointMass*> ptMasses);
 	void getGLError();
 	void glInverseMatrix();
 	void glMakeUnitSphere();
@@ -158,7 +157,6 @@ private:
 	QPoint worldToScreen(CVector v);
 	QPoint worldToScreen(QVector4D v4);
 
-	QColor m_clearColor;
 	QOpenGLShaderProgram m_ShaderProgramLine, m_ShaderProgramTexture, m_ShaderProgramGradient;
 
 

@@ -1,9 +1,11 @@
-#version 130
+#version 110
 
 // Input vertex data, different for all executions of this shader.
 attribute vec4 vertexPosition_modelspace;
 attribute vec3 vertexNormal_modelspace;
 attribute vec2 vertexUV;
+varying vec3 vPosition;
+
 uniform  vec4 incolor;
 
 // Values that stay constant for the whole mesh.
@@ -29,7 +31,8 @@ void main()
 	gl_Position =  pvmMatrix * vec4(vertexPosition_modelspace);
 
 	vec4 vsPos = vMatrix * mMatrix * vertexPosition_modelspace; // position of vertex in viewspace
-	gl_ClipDistance[0] = dot(clipPlane0,vsPos);
+//	gl_ClipDistance[0] = dot(clipPlane0,vsPos);
+	vPosition = vsPos.xyz / vsPos.w;
 
 	// Position of the vertex, in worldspace : M * position
 	Position_worldspace = (mMatrix * vec4(vertexPosition_modelspace)).xyz;

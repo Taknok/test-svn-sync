@@ -66,7 +66,6 @@ GL3Widget::GL3Widget(QWidget *pParent) : QOpenGLWidget(pParent)
 
 	m_pParent = pParent;
 
-	m_clearColor = Qt::black;
 	m_glScaled = m_glScaledRef = 1.0f;
 
 	m_bArcball = m_bCrossPoint = false;
@@ -117,10 +116,6 @@ GL3Widget::GL3Widget(QWidget *pParent) : QOpenGLWidget(pParent)
 
 	memset(MatIn,  0, 16*sizeof(double));
 	memset(MatOut, 0, 16*sizeof(double));
-
-#ifdef QT_DEBUG
-	printFormat(format());
-#endif
 }
 
 
@@ -1010,13 +1005,6 @@ static GLfloat const z_axis[] = {
 
 
 
-void GL3Widget::setClearColor(const QColor &color)
-{
-	m_clearColor = color;
-	update();
-}
-
-
 #define NUMANGLES     10
 #define NUMCIRCLES     6
 #define NUMPERIM      35
@@ -1043,7 +1031,8 @@ void GL3Widget::glMakeArcPoint()
 
 	int iv=0;
 
-	float *arcPointVertexArray = new float[NUMARCPOINTS*2*2*3];
+	int bufferSize = NUMARCPOINTS*2*2*3;
+	float *arcPointVertexArray = new float[bufferSize];
 
 	//ARCPOINT
 	lat_incr = 30.0 / NUMARCPOINTS;
@@ -1066,10 +1055,12 @@ void GL3Widget::glMakeArcPoint()
 		arcPointVertexArray[iv++] = Radius * sin(phi) * cos(theta)*GLScale;
 	}
 
+	Q_ASSERT(iv==bufferSize);
+
 	m_vboArcPoint.destroy();
 	m_vboArcPoint.create();
 	m_vboArcPoint.bind();
-	m_vboArcPoint.allocate(arcPointVertexArray, iv * sizeof(GLfloat));
+	m_vboArcPoint.allocate(arcPointVertexArray, bufferSize * sizeof(GLfloat));
 	m_vboArcPoint.release();
 
 	delete [] arcPointVertexArray;
@@ -1440,6 +1431,7 @@ void GL3Widget::glMakeBodySplines(Body *pBody)
 		pBodyVertexArray[iv++] = (float)iu/(float)NX;
 		pBodyVertexArray[iv++] = v;
 	}
+	Q_ASSERT(iv==bodyVertexSize);
 
 
 	//Create triangles
@@ -1507,6 +1499,29 @@ void GL3Widget::glMakeBodySplines(Body *pBody)
 
 void GL3Widget::initializeGL()
 {
+
+#ifdef QT_DEBUG
+	printFormat(format());
+	QString vendor, renderer, version, glslVersion;
+	const GLubyte *p;
+	if ((p = glGetString(GL_VENDOR)))
+		vendor = QString::fromLatin1(reinterpret_cast<const char *>(p));
+	if ((p = glGetString(GL_RENDERER)))
+		renderer = QString::fromLatin1(reinterpret_cast<const char *>(p));
+	if ((p = glGetString(GL_VERSION)))
+		version = QString::fromLatin1(reinterpret_cast<const char *>(p));
+	if ((p = glGetString(GL_SHADING_LANGUAGE_VERSION)))
+		glslVersion = QString::fromLatin1(reinterpret_cast<const char *>(p));
+
+	qDebug()<<"*** Default Context information ***";
+	qDebug()<<QString("   Vendor: %1").arg(vendor);
+	qDebug()<<QString("   Renderer: %1").arg(renderer);
+	qDebug()<<QString("   OpenGL version: %1").arg(version);
+	qDebug()<<QString("   GLSL version: %1").arg(glslVersion);
+#endif
+
+	makeCurrent();
+
 	glMakeUnitSphere();
 	glMakeArcBall();
 	glMakeArcPoint();
@@ -1700,7 +1715,7 @@ void GL3Widget::paintGL3()
 	makeCurrent();
 
 	int width, height;
-	glClearColor(m_clearColor.redF(), m_clearColor.greenF(), m_clearColor.blueF(), m_clearColor.alphaF());
+	glClearColor(Settings::backgroundColor().redF(), Settings::backgroundColor().greenF(), Settings::backgroundColor().blueF(), 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// Enable blending
 	glEnable(GL_BLEND);
@@ -1814,7 +1829,7 @@ void GL3Widget::glRenderMiarexView()
 			if(pWing)
 			{
 				paintWing(iw, pWing);
-				if(m_bFoilNames) glDrawFoils(pWing);
+				if(m_bFoilNames) paintFoilNames(pWing);
 			}
 		}
 		paintBody(pMiarex->m_pCurPlane->body());
@@ -1897,7 +1912,7 @@ void GL3Widget::glRenderPlaneView()
 			if(pWing)
 			{
 				paintWing(iw, pWing);
-				if(m_bFoilNames) glDrawFoils(pWing);
+				if(m_bFoilNames) paintFoilNames(pWing);
 			}
 		}
 		if(m_bShowMasses) pMiarex->glDrawMasses();
@@ -1916,7 +1931,7 @@ void GL3Widget::glRenderGL3DBodyView()
 		if(m_bVLMPanels) paintBodyMesh(pDlg->m_pBody);
 	}
 
-	if(m_bShowMasses) glDrawMasses(pBody->volumeMass(), pDlg->m_pBody->CoG(), "Structural mass", pBody->m_PointMass);
+	if(m_bShowMasses) paintMasses(pBody->volumeMass(), pDlg->m_pBody->CoG(), "Structural mass", pBody->m_PointMass);
 }
 
 
@@ -1932,7 +1947,7 @@ void GL3Widget::glRenderEditBodyView()
 		if(m_bVLMPanels) paintBodyMesh(pDlg->m_pBody);
 	}
 
-	if(m_bShowMasses) glDrawMasses(pBody->volumeMass(), pDlg->m_pBody->CoG(), "Structural mass", pBody->m_PointMass );
+	if(m_bShowMasses) paintMasses(pBody->volumeMass(), pDlg->m_pBody->CoG(), "Structural mass", pBody->m_PointMass );
 }
 
 
@@ -1945,9 +1960,10 @@ void GL3Widget::glRenderWingView()
 	if(pWing)
 	{
 		paintWing(0, pWing);
-		if(m_bFoilNames) glDrawFoils(pWing);
+		if(m_bFoilNames) paintFoilNames(pWing);
 		if(m_bVLMPanels) paintWingMesh(pWing);
-		if(m_bShowMasses) glDrawMasses(pWing->volumeMass(), pWing->CoG(), "Structural mass", pWing->m_PointMass);
+		if(m_bShowMasses)
+			paintMasses(pWing->volumeMass(), pWing->CoG(), "Structural mass", pWing->m_PointMass);
 		if(pDlg->m_iSection>=0) paintSectionHighlight();
 	}
 }
@@ -1964,7 +1980,7 @@ void GL3Widget::setScale(double refLength)
 
 
 
-void GL3Widget::glDrawFoils(void *pWingPtr)
+void GL3Widget::paintFoilNames(void *pWingPtr)
 {
 	int j;
 	Foil *pFoil;
@@ -1989,7 +2005,7 @@ void GL3Widget::glDrawFoils(void *pWingPtr)
 
 
 
-void GL3Widget::glDrawMasses(double volumeMass, CVector pos, QString tag, QList<PointMass*> ptMasses)
+void GL3Widget::paintMasses(double volumeMass, CVector pos, QString tag, QList<PointMass*> ptMasses)
 {
 	if(qAbs(volumeMass)>PRECISION)
 	{
@@ -1999,7 +2015,10 @@ void GL3Widget::glDrawMasses(double volumeMass, CVector pos, QString tag, QList<
 
 	for(int im=0; im<ptMasses.size(); im++)
 	{
-		paintSphere(ptMasses[im]->position(), W3dPrefsDlg::s_MassRadius/m_glScaled, W3dPrefsDlg::s_MassColor, true);
+		paintSphere(ptMasses[im]->position(),
+					W3dPrefsDlg::s_MassRadius/m_glScaled,
+					W3dPrefsDlg::s_MassColor.lighter(),
+					true);
 		glRenderText(ptMasses[im]->position().x,
 					 ptMasses[im]->position().y,
 					 ptMasses[im]->position().z +.02/m_glScaled,
@@ -2506,16 +2525,18 @@ void GL3Widget::glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp
 	cosb =  cos(pWPolar->sideSlip()*PI/180.0);
 	sinb =  sin(pWPolar->sideSlip()*PI/180.0);
 
-	pICdVertexArray = new float[m_Ny[iWing]*9];
-	pVCdVertexArray = new float[m_Ny[iWing]*9];
+	int bufferSize = m_Ny[iWing]*9;
+	pICdVertexArray = new float[bufferSize];
+	pVCdVertexArray = new float[bufferSize];
 
 	//DRAGLINE
 	double q0 = 0.5 * pWPolar->density() * pWPolar->referenceArea() * pWOpp->m_QInf * pWOpp->m_QInf;
 
+	int ii, iv;
 	if(pWPolar->analysisMethod()==XFLR5::LLTMETHOD)
 	{
-		int ii=0;
-		int iv=0;
+		ii=0;
+		iv=0;
 		for (i=1; i<pWOpp->m_NStation; i++)
 		{
 			yob = 2.0*pWOpp->m_SpanPos[i]/pWOpp->m_Span;
@@ -2596,8 +2617,8 @@ void GL3Widget::glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp
 	{
 		//Panel type drag
 		i = 0;
-		int ii=0;
-		int iv=0;
+		ii=0;
+		iv=0;
 		for (j=0; j<pWing->m_Surface.size(); j++)
 		{
 			//All surfaces
@@ -2724,21 +2745,25 @@ void GL3Widget::glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp
 			}
 		}
 	}
+	if(pMiarex->m_bICd) Q_ASSERT(ii==bufferSize);
+	if(pMiarex->m_bVCd) Q_ASSERT(iv==bufferSize);
+
 
 	m_vboICd[iWing].destroy();
 	m_vboICd[iWing].create();
 	m_vboICd[iWing].bind();
-	m_vboICd[iWing].allocate(pICdVertexArray, m_Ny[iWing] *9 * sizeof(GLfloat));
+	m_vboICd[iWing].allocate(pICdVertexArray, bufferSize * sizeof(GLfloat));
 	m_vboICd[iWing].release();
 	delete [] pICdVertexArray;
 
 	m_vboVCd[iWing].destroy();
 	m_vboVCd[iWing].create();
 	m_vboVCd[iWing].bind();
-	m_vboVCd[iWing].allocate(pVCdVertexArray, m_Ny[iWing] *9 * sizeof(GLfloat));
+	m_vboVCd[iWing].allocate(pVCdVertexArray, bufferSize * sizeof(GLfloat));
 	m_vboVCd[iWing].release();
 	delete [] pVCdVertexArray;
 }
+
 
 void GL3Widget::setSpanStations(Plane *pPlane, WPolar *pWPolar, PlaneOpp *pPOpp)
 {
@@ -2790,7 +2815,8 @@ void GL3Widget::glMakeDownwash(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp 
 	double cosa =  cos(pWOpp->m_Alpha*PI/180.0);
 	factor = QMiarex::s_VelocityScale/5.0;
 
-	float *pDownWashVertexArray = new float[m_Ny[iWing]*18];
+	int bufferSize = m_Ny[iWing]*18;
+	float *pDownWashVertexArray = new float[bufferSize];
 	int iv = 0;
 	if(pWPolar->analysisMethod()==XFLR5::LLTMETHOD)
 	{
@@ -2842,9 +2868,9 @@ void GL3Widget::glMakeDownwash(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp 
 		{
 			for (k=0; k< pWing->m_Surface[j]->m_NYPanels; k++)
 			{
-//						m_pSurface[j+surf0]->GetTrailingPt(k, C);
+//				m_pSurface[j+surf0]->GetTrailingPt(k, C);
 				pWing->m_Surface[j]->getTrailingPt(k, C);
-//						if (pWOpp->m_Vd[i].z>0) sign = 1.0; else sign = -1.0;
+//				if (pWOpp->m_Vd[i].z>0) sign = 1.0; else sign = -1.0;
 				pDownWashVertexArray[iv++] = C.x;
 				pDownWashVertexArray[iv++] = C.y;
 				pDownWashVertexArray[iv++] = C.z;
@@ -2880,10 +2906,12 @@ void GL3Widget::glMakeDownwash(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp 
 		}
 	}
 
+	Q_ASSERT(iv==bufferSize);
+
 	m_vboDownwash[iWing].destroy();
 	m_vboDownwash[iWing].create();
 	m_vboDownwash[iWing].bind();
-	m_vboDownwash[iWing].allocate(pDownWashVertexArray, m_Ny[iWing]*18 * sizeof(GLfloat));
+	m_vboDownwash[iWing].allocate(pDownWashVertexArray, bufferSize * sizeof(GLfloat));
 	m_vboDownwash[iWing].release();
 	delete [] pDownWashVertexArray;
 }
@@ -2938,11 +2966,10 @@ void GL3Widget::glMakeLiftStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp
 	double q0 = 0.5 * pWPolar->density() * pWOpp->m_QInf * pWOpp->m_QInf;
 	float *pLiftVertexArray = new float[m_Ny[iWing]*9];
 
+	int iv;
 	if(pWPolar->analysisMethod()==XFLR5::LLTMETHOD)
 	{
-
-		int iv=0;
-
+		iv=0;
 		for (i=1; i<pWOpp->m_NStation; i++)
 		{
 			yob = 2.0*pWOpp->m_SpanPos[i]/pWOpp->m_Span;
@@ -2977,7 +3004,7 @@ void GL3Widget::glMakeLiftStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp
 	else
 	{
 		i = 0;
-		int iv=0;
+		iv=0;
 		//lift lines
 		for (j=0; j<pWing->m_Surface.size(); j++)
 		{
@@ -3034,6 +3061,7 @@ void GL3Widget::glMakeLiftStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp
 			}
 		}
 	}
+	Q_ASSERT(iv==m_Ny[iWing]*9);
 
 	m_vboLift[iWing].destroy();
 	m_vboLift[iWing].create();
@@ -3297,7 +3325,8 @@ void GL3Widget::glMakeArcBall()
 
 	int iv=0;
 
-	float *arcBallVertexArray  = new float[((NUMCIRCLES*2)*(NUMANGLES-2) + (NUMPERIM-1)*2)*3];
+	int bufferSize = ((NUMCIRCLES*2)*(NUMANGLES-2) + (NUMPERIM-1)*2)*3;
+	float *arcBallVertexArray  = new float[bufferSize];
 
 	//ARCBALL
 	for (col=0; col<NUMCIRCLES; col++)
@@ -3343,6 +3372,7 @@ void GL3Widget::glMakeArcBall()
 		arcBallVertexArray[iv++] = Radius * sin(theta)*GLScale;
 		arcBallVertexArray[iv++] = Radius * sin(-phi) * cos(theta)*GLScale;
 	}
+	Q_ASSERT(iv==bufferSize);
 
 	m_vboArcBall.destroy();
 	m_vboArcBall.create();
@@ -3371,8 +3401,9 @@ void GL3Widget::glMakeUnitSphere()
 	lat_incr = 180.0 / (NUMLAT-1) * PI/180.0;
 	lon_incr = 360.0 / (NUMLONG-1) * PI/180.0;
 
-	GLfloat *sphereVertexArray = new GLfloat[NUMLONG * NUMLAT * 2 *3];
-	m_SphereIndicesArray  = new unsigned short[NUMLONG * NUMLAT * 2];
+	int bufferSize = NUMLONG * NUMLAT * 2 *3;
+	GLfloat *sphereVertexArray = new GLfloat[bufferSize];
+	m_SphereIndicesArray  = new unsigned short[(NUMLONG-1) * NUMLAT * 2];
 
 	int iv = 0;
 
@@ -3393,6 +3424,8 @@ void GL3Widget::glMakeUnitSphere()
 		}
 	}
 
+	Q_ASSERT(iv==bufferSize);
+
 	int in=0;
 	for (iLong=0; iLong<NUMLONG-1; iLong++)
 	{
@@ -3402,6 +3435,7 @@ void GL3Widget::glMakeUnitSphere()
 			m_SphereIndicesArray[in++] =  (iLong+1)*NUMLAT  + iLat;
 		}
 	}
+	Q_ASSERT(in==(NUMLONG-1) * NUMLAT * 2);
 
 	m_vboSphere.create();
 	m_vboSphere.bind();
@@ -3421,17 +3455,15 @@ void GL3Widget::paintSphere(CVector place, double radius, QColor sphereColor, bo
 	m_vboSphere.bind();
 	m_ShaderProgramTexture.setAttributeBuffer(m_VertexLocationTexture, GL_FLOAT, 0, 3, 6 * sizeof(GLfloat));
 	m_ShaderProgramTexture.setAttributeBuffer(m_NormalLocationTexture, GL_FLOAT, 3* sizeof(GLfloat), 3, 6 * sizeof(GLfloat));
-	m_ShaderProgramTexture.setUniformValue(m_LightLocationTexture, bLight);
 
-	QMatrix4x4 mSphere, pvmSphere;
-	mSphere.setToIdentity(); //redundant with constructor
+	QMatrix4x4 mSphere; //is identity
 	mSphere.translate(place.x, place.y, place.z);
 	mSphere.scale(radius);
 
-	pvmSphere = m_pvmMatrix * mSphere;
-
-	m_ShaderProgramTexture.setUniformValue(m_pvmMatrixLocationTexture, pvmSphere);
+	m_ShaderProgramTexture.setUniformValue(m_pvmMatrixLocationTexture, m_pvmMatrix * mSphere);
 	m_ShaderProgramTexture.setUniformValue(m_ColorLocationTexture, sphereColor);
+	m_ShaderProgramTexture.setUniformValue(m_LightLocationTexture, bLight);
+	m_ShaderProgramTexture.setUniformValue(m_TextureLocationTexture, false);
 
 	for(int iLong=0; iLong<NUMLONG-1; iLong++)
 	{
@@ -4086,6 +4118,7 @@ void GL3Widget::glMakeWing(int iWing, Wing *pWing, Body *pBody)
 		wingVertexArray[iv++] = 0;
 	}
 
+	Q_ASSERT(iv==bufferSize);
 
 	//indices array size:
 	//  Top & bottom surfaces
@@ -4104,7 +4137,7 @@ void GL3Widget::glMakeWing(int iWing, Wing *pWing, Body *pBody)
 	if(m_WingIndicesArray[iWing]) delete[] m_WingIndicesArray[iWing];
 	m_WingIndicesArray[iWing] = new unsigned short[m_iWingElems[iWing]];
 	unsigned short *wingIndicesArray = m_WingIndicesArray[iWing];
-	int ii = 0;
+	uint ii = 0;
 	int nV=0;
 	for (j=0; j<pWing->m_Surface.count(); j++)
 	{
@@ -4196,6 +4229,7 @@ void GL3Widget::glMakeWing(int iWing, Wing *pWing, Body *pBody)
 		}
 	}
 
+	Q_ASSERT(ii==m_iWingElems[iWing]);
 	m_pWingTopLeftTexture  = new QOpenGLTexture(QImage(QString(":/images/wing_top_left.png")));
 	m_pWingTopRightTexture = new QOpenGLTexture(QImage(QString(":/images/wing_top_right.png")));
 	m_pWingBotLeftTexture  = new QOpenGLTexture(QImage(QString(":/images/wing_bottom_left.png")));
@@ -4454,7 +4488,7 @@ void GL3Widget::glMakeWingMesh(Wing *pWing)
 
 
 
-//	Q_ASSERT(iv==bufferSize);
+	Q_ASSERT(iv==bufferSize);
 
 //	m_iWingMeshElems = ii/3;
 	m_vboEditMesh.destroy();
@@ -4498,7 +4532,9 @@ void GL3Widget::glMakeCpLegendClr()
 	Right2  = XPos - 3 * fmw/w;
 
 	int colorLegendSize = MAXCPCOLORS*2*6;
-	float *pColorVertexArray = new float[(MAXCPCOLORS+1)*2*6];
+
+	int bufferSize = MAXCPCOLORS*2*6;
+	float *pColorVertexArray = new float[bufferSize];
 
 	int iv = 0;
 	for (i=0; i<MAXCPCOLORS; i++)
@@ -4520,6 +4556,8 @@ void GL3Widget::glMakeCpLegendClr()
 		pColorVertexArray[iv++] = GLGetGreen(color);
 		pColorVertexArray[iv++] = GLGetBlue(color);
 	}
+	Q_ASSERT(iv==bufferSize);
+
 	m_vboLegendColor.destroy();
 	m_vboLegendColor.create();
 	m_vboLegendColor.bind();
@@ -4564,7 +4602,7 @@ bool GL3Widget::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPo
 	m_NStreamLines = 0;
 	for(int iw=0; iw<MAXWINGS; iw++)
 	{
-		if(PlaneWing[iw]) m_NStreamLines += m_Ny[iw]+2;
+		if(PlaneWing[iw]) m_NStreamLines += m_Ny[iw]+2; //in case there is a body in the middle, other wise Ny+1
 	}
 
 	int streamArraySize = 	m_NStreamLines * GL3DScales::s_NX * 3;
@@ -4633,7 +4671,6 @@ bool GL3Widget::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPo
 						VA.rotateY(pPOpp->alpha());
 						VB.rotateY(pPOpp->alpha());
 					}
-
 
 					if(!C.isSame(D1))
 					{
@@ -4717,6 +4754,8 @@ bool GL3Widget::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPo
 		if(dlg.wasCanceled()) break;
 	}
 
+	m_NStreamLines = iv / GL3DScales::s_NX / 3;
+
 	//restore things as they were
 	Panel::setCoreSize(memcoresize);
 	QApplication::restoreOverrideCursor();
@@ -4742,7 +4781,8 @@ void GL3Widget::glMakeTransistions(int iWing, Wing *pWing, WPolar *pWPolar, Wing
 	CVector Pt, N;
 
 	float *pTransVertexArray = NULL;
-	pTransVertexArray = new float[m_Ny[iWing]*6];
+	int bufferSize = m_Ny[iWing]*6;
+	pTransVertexArray = new float[bufferSize];
 	int iv=0;
 	if(pWPolar->analysisMethod()==XFLR5::LLTMETHOD)
 	{
@@ -4754,6 +4794,7 @@ void GL3Widget::glMakeTransistions(int iWing, Wing *pWing, WPolar *pWPolar, Wing
 			pTransVertexArray[iv++] = Pt.y;
 			pTransVertexArray[iv++] = Pt.z;
 		}
+
 	}
 	else
 	{
@@ -4839,12 +4880,13 @@ void GL3Widget::glMakeTransistions(int iWing, Wing *pWing, WPolar *pWPolar, Wing
 		}
 	}
 
+	Q_ASSERT(iv==m_Ny[iWing]*6);
 
 
 	m_vboTransitions[iWing].destroy();
 	m_vboTransitions[iWing].create();
 	m_vboTransitions[iWing].bind();
-	m_vboTransitions[iWing].allocate(pTransVertexArray, m_Ny[iWing]*3 * sizeof(GLfloat));
+	m_vboTransitions[iWing].allocate(pTransVertexArray, bufferSize * sizeof(GLfloat));
 	m_vboTransitions[iWing].release();
 	delete [] pTransVertexArray;
 }
@@ -5220,36 +5262,6 @@ void GL3Widget::paintBodyMesh(Body *pBody)
 	if(!pBody) return;
 	if(pBody->isFlatPanelType())
 	{
-/*		m_ShaderProgramTexture.bind();
-		m_ShaderProgramTexture.enableAttributeArray(m_VertexLocationTexture);
-		m_ShaderProgramTexture.enableAttributeArray(m_NormalLocationTexture);
-		m_ShaderProgramTexture.enableAttributeArray(m_UVLocationTexture);
-
-		m_ShaderProgramTexture.setAttributeBuffer(m_VertexLocationTexture, GL_FLOAT, 0,                  3, 8 * sizeof(GLfloat));
-		m_ShaderProgramTexture.setAttributeBuffer(m_NormalLocationTexture, GL_FLOAT, 3* sizeof(GLfloat), 3, 8 * sizeof(GLfloat));
-		m_ShaderProgramTexture.setAttributeBuffer(m_UVLocationTexture,     GL_FLOAT, 6* sizeof(GLfloat), 2, 8 * sizeof(GLfloat));
-
-		glEnable(GL_POLYGON_OFFSET_FILL);
-		glPolygonOffset(1.0, 1.0);
-//		m_ShaderProgramTexture.setUniformValue(m_ColorLocationTexture, Settings::backgroundColor());
-		m_ShaderProgramTexture.setUniformValue(m_ColorLocationTexture, QColor(255,0,0));
-		m_ShaderProgramTexture.setUniformValue(m_TextureLocationTexture, false);
-		m_vboBody.bind();
-
-		m_pRightBodyTexture->bind();
-		glDrawElements(GL_TRIANGLES, m_iBodyElems*3/2, GL_UNSIGNED_SHORT, m_BodyIndicesArray);
-		m_pRightBodyTexture->release();
-		m_pLeftBodyTexture->bind();
-		glDrawElements(GL_TRIANGLES, m_iBodyElems*3/2, GL_UNSIGNED_SHORT, m_BodyIndicesArray+m_iBodyElems*3/2);
-		m_pLeftBodyTexture->release();
-
-		glDisable(GL_POLYGON_OFFSET_FILL);
-		m_vboBody.release();
-		m_ShaderProgramTexture.disableAttributeArray(m_VertexLocationTexture);
-		m_ShaderProgramTexture.disableAttributeArray(m_NormalLocationTexture);
-		m_ShaderProgramTexture.disableAttributeArray(m_UVLocationTexture);
-		m_ShaderProgramTexture.release();*/
-
 		m_ShaderProgramLine.bind();
 		m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
 		m_vboEditMesh.bind();
