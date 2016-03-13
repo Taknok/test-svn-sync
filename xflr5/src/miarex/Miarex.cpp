@@ -1835,20 +1835,20 @@ void QMiarex::glDrawMasses()
 	{
 		if(pWing(iw))
 		{
-			m_pgl3Widget->glDrawMasses(pWing(iw)->m_VolumeMass, m_pCurPlane->WingLE(iw).translated(0.0,0.0,delta), pWing(iw)->m_WingName,pWing(iw)->m_PointMass);
+			m_pgl3Widget->paintMasses(pWing(iw)->m_VolumeMass, m_pCurPlane->WingLE(iw).translated(0.0,0.0,delta), pWing(iw)->m_WingName,pWing(iw)->m_PointMass);
 		}
 	}
 
 	if(m_pCurPlane)
 	{
-		m_pgl3Widget->glDrawMasses(0.0, CVector(0.0,0.0,0.0),"",m_pCurPlane->m_PointMass);
+		m_pgl3Widget->paintMasses(0.0, CVector(0.0,0.0,0.0),"",m_pCurPlane->m_PointMass);
 	}
 
 	if(m_pCurPlane && m_pCurPlane->body())
 	{
 		Body *pCurBody = m_pCurPlane->body();
 
-		m_pgl3Widget->glDrawMasses(pCurBody->m_VolumeMass,
+		m_pgl3Widget->paintMasses(pCurBody->m_VolumeMass,
 								  m_pCurPlane->bodyPos().translated(m_pCurPlane->body()->Length()/5,0.0,0.0),
 								  pCurBody->m_BodyName,
 								  pCurBody->m_PointMass);
@@ -1856,7 +1856,9 @@ void QMiarex::glDrawMasses()
 
 	//plot CG
 	CVector Place(m_pCurPlane->CoG().x, m_pCurPlane->CoG().y, m_pCurPlane->CoG().z);
-	m_pgl3Widget->paintSphere(Place, W3dPrefsDlg::s_MassRadius*2.0/m_pgl3Widget->m_glScaled, W3dPrefsDlg::s_MassColor, true);
+	m_pgl3Widget->paintSphere(Place,
+							  W3dPrefsDlg::s_MassRadius*2.0/m_pgl3Widget->m_glScaled,
+							  W3dPrefsDlg::s_MassColor.lighter());
 
 	m_pgl3Widget->glRenderText(m_pCurPlane->CoG().x, m_pCurPlane->CoG().y, m_pCurPlane->CoG().z + delta,
 							  "CoG "+QString("%1").arg(m_pCurPlane->totalMass()*Units::kgtoUnit(), 7,'g',3)
@@ -1879,12 +1881,6 @@ void QMiarex::keyPressEvent(QKeyEvent *event)
 
 	if(event->key()==Qt::Key_0 || event->text()=="0")
 	{
-/*		if(m_iView==WSTABVIEW)
-		{
-			m_iStabilityView  = XFLR5::STABTIMEVIEW;
-			SetWPlrLegendPos();
-			UpdateView();
-		}*/
 		return;
 	}
 	else if(event->key()==Qt::Key_1 || event->text()=="1")
