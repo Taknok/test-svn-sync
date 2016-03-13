@@ -24,8 +24,8 @@
 #include "XFLR5Application.h"
 #include "mainframe.h"
 #include <QSplashScreen>
-#include <QMessageBox>
-
+#include <QDebug>
+#include <QSurfaceFormat>
 
 /**
 *The app's point of entry !
@@ -42,6 +42,7 @@ int main(int argc, char *argv[])
 	}
     */
 #endif
+
 	XFLR5Application app(argc, argv);
 	return app.exec();
 }

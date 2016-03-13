@@ -1,4 +1,4 @@
-#version 130
+#version 110
 
 uniform bool lightOn;
 uniform bool hasTexture;
@@ -8,6 +8,7 @@ uniform float LightAmbient, LightDiffuse, LightSpecular;
 uniform float Kc, Kl, Kq;
 uniform int MaterialShininess;
 uniform sampler2D textureSampler;
+uniform vec4 clipPlane0; // defined in view-space
 
 
 varying vec3 Position_worldspace;
@@ -16,12 +17,19 @@ varying vec3 EyeDirection_cameraspace;
 varying vec3 LightDirection_cameraspace;
 varying vec4 vertexcolor;
 varying vec2 UV;
+varying vec3 vPosition;
 
 
 void main()
 {
 	// Material properties
 	vec4 MaterialAmbientColor, MaterialDiffuseColor, MaterialSpecularColor;
+
+	if (vPosition.z > clipPlane0.w)
+	{
+	  discard;
+	  return;
+	}
 
 	if(lightOn)
 	{
