@@ -1,4 +1,4 @@
-#version 110
+#version 120
 
 uniform bool lightOn;
 uniform bool hasTexture;
@@ -25,11 +25,11 @@ void main()
 	// Material properties
 	vec4 MaterialAmbientColor, MaterialDiffuseColor, MaterialSpecularColor;
 
-	if (vPosition.z > clipPlane0.w)
+        if (vPosition.z > clipPlane0.w)
 	{
 	  discard;
 	  return;
-	}
+        }
 
 	if(lightOn)
 	{
