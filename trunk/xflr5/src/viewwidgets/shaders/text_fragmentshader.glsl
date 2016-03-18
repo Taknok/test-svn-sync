@@ -1,4 +1,4 @@
-#version 120
+#version 130
 
 uniform bool lightOn;
 uniform bool hasTexture;
@@ -11,25 +11,26 @@ uniform sampler2D textureSampler;
 uniform vec4 clipPlane0; // defined in view-space
 
 
-varying vec3 Position_worldspace;
-varying vec3 Normal_cameraspace;
-varying vec3 EyeDirection_cameraspace;
-varying vec3 LightDirection_cameraspace;
-varying vec4 vertexcolor;
-varying vec2 UV;
-varying vec3 vPosition;
+in vec3 Position_worldspace;
+in vec3 Normal_cameraspace;
+in vec3 EyeDirection_cameraspace;
+in vec3 LightDirection_cameraspace;
+in vec4 vertexcolor;
+in vec2 UV;
+in vec3 vPosition;
 
+out vec4 fragColor;
 
 void main()
 {
 	// Material properties
 	vec4 MaterialAmbientColor, MaterialDiffuseColor, MaterialSpecularColor;
 
-        if (vPosition.z > clipPlane0.w)
+	if (vPosition.z > clipPlane0.w)
 	{
-	  discard;
-	  return;
-        }
+		discard;
+		return;
+	}
 
 	if(lightOn)
 	{
@@ -75,7 +76,7 @@ void main()
 
 		float attenuation_factor = 1.0/(Kc + Kl*distance + Kq*distance*distance);
 
-		gl_FragColor =
+		fragColor =
 			MaterialAmbientColor * LightColor +
 			(MaterialDiffuseColor  * LightDiffuse * cosTheta  +	MaterialSpecularColor  * LightSpecular * pow(cosAlpha, MaterialShininess))
 				 * LightColor * attenuation_factor;
@@ -84,11 +85,11 @@ void main()
 	{
 		if(hasTexture)
 		{
-			gl_FragColor  = vec4(texture2D(textureSampler, UV).rgb, vertexcolor.a) ;
+			fragColor  = vec4(texture2D(textureSampler, UV).rgb, vertexcolor.a) ;
 		}
 		else
 		{
-			gl_FragColor  = vertexcolor;
+			fragColor  = vertexcolor;
 		}
 	}
 }

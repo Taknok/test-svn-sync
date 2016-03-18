@@ -1,11 +1,11 @@
-#version 110
+#version 130
 
-attribute vec4 vertex;
+in vec4 vertex;
 uniform mat4 pvmMatrix;
 uniform mat4 mMatrix;
 uniform mat4 vMatrix;
 uniform vec4 clipPlane0; // defined in view-space
-varying vec3 vPosition;
+out vec3 vPosition;
 
 void main(void)
 {

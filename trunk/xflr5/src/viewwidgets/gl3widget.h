@@ -108,13 +108,14 @@ private:
 	void glMakeBodySplines(Body *pBody);
 	void glMakeCpLegendClr();
 	void glMakePanels(QOpenGLBuffer &vbo, int nPanels, int nNodes, CVector *pNode, Panel *pPanel, PlaneOpp *pPOpp);
-	void glMakePanelForces(QOpenGLBuffer &vbo, int nPanels, Panel *pPanel, WPolar *pWPolar, PlaneOpp *pPOpp);
+	void glMakePanelForces(int nPanels, Panel *pPanel, WPolar *pWPolar, PlaneOpp *pPOpp);
 	void glMakeWing(      int iWing, Wing *pWing, Body *pBody);
 	void glMakeDownwash(  int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
 	void glMakeLiftStrip( int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
 	void glMakeTransistions(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
 	void glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
 	bool glMakeStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPolar *pWPolar, PlaneOpp *pPOpp);
+	void glMakeSurfVelocities(Panel *pPanel, WPolar *pWPolar, PlaneOpp *pPOpp);
 	void glMakeWingMesh(Wing *pWing);
 	void glMakeBodyMesh(Body *pBody);
 	void glMakeWingSectionHighlight(Wing *pWing, int iSectionHighLight, bool bRightSide);
@@ -136,6 +137,7 @@ private:
 	void paintDownwash(int iWing);
 	void paintLift(int iWing);
 	void paintStreamLines();
+	void paintSurfaceVelocities();
 	void paintTransitions(int iWing);
 	void paintPanelCp();
 	void paintPanelForces();
@@ -163,13 +165,13 @@ private:
 	QOpenGLBuffer m_vboArcBall, m_vboArcPoint, m_vboBody, m_vboWing[MAXWINGS];
 	QOpenGLBuffer m_vboEditMesh;
 	QOpenGLBuffer m_vboHighlight;
-	QOpenGLBuffer m_vboMesh, m_vboPanelCp, m_vboPanelForces, m_vboStreamLines, m_vboLegendColor;
+	QOpenGLBuffer m_vboMesh, m_vboPanelCp, m_vboPanelForces, m_vboStreamLines, m_vboLegendColor, m_vboSurfaceVelocities;
 	QOpenGLBuffer m_vboICd[MAXWINGS], m_vboVCd[MAXWINGS], m_vboLift[MAXWINGS], m_vboTransitions[MAXWINGS], m_vboDownwash[MAXWINGS];
 	QOpenGLBuffer m_vboSphere;
 	QOpenGLTexture 	*m_pLeftBodyTexture, *m_pRightBodyTexture;
 	QOpenGLTexture 	*m_pWingTopLeftTexture, *m_pWingTopRightTexture, *m_pWingBotLeftTexture, *m_pWingBotRightTexture;
 
-	int m_VertexLocationGradient, m_MatrixLocationGradient, m_ColorLocationGradient;
+	int m_VertexLocationGradient, m_pvmMatrixLocationGradient, m_ColorLocationGradient;
 
 	int m_VertexLocationLine, m_ColorLocationLine;
 	int m_pvmMatrixLocationLine, m_vMatrixLocationLine, m_mMatrixLocationLine;

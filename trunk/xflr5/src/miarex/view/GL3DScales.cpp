@@ -51,21 +51,21 @@ GL3DScales::GL3DScales(QWidget *)
 	s_XOffset   =  0.0;
 	s_ZOffset   =  0.0;
 
-	SetupLayout();
+	setupLayout();
 
-	connect(ApplyButton, SIGNAL(clicked()),this, SLOT(OnApply()));
+	connect(ApplyButton, SIGNAL(clicked()),this, SLOT(onApply()));
 
-	connect(m_pctrlAutoCpScale, SIGNAL(clicked()), this, SLOT(OnCpScale()));
-	connect(m_pctrlLegendMin, SIGNAL(editingFinished()), this, SLOT(OnCpScale()));
-	connect(m_pctrlLegendMax, SIGNAL(editingFinished()), this, SLOT(OnCpScale()));
+	connect(m_pctrlAutoCpScale, SIGNAL(clicked()), this, SLOT(onCpScale()));
+	connect(m_pctrlLegendMin, SIGNAL(editingFinished()), this, SLOT(onCpScale()));
+	connect(m_pctrlLegendMax, SIGNAL(editingFinished()), this, SLOT(onCpScale()));
 
-	connect(m_pctrlLiftScaleSlider, SIGNAL(sliderMoved(int)), this, SLOT(OnLiftScale(int)));
-	connect(m_pctrlDragScaleSlider, SIGNAL(sliderMoved(int)), this, SLOT(OnDragScale(int)));
-	connect(m_pctrlVelocityScaleSlider, SIGNAL(sliderMoved(int)), this, SLOT(OnVelocityScale(int)));
+	connect(m_pctrlLiftScaleSlider, SIGNAL(sliderMoved(int)), this, SLOT(onLiftScale(int)));
+	connect(m_pctrlDragScaleSlider, SIGNAL(sliderMoved(int)), this, SLOT(onDragScale(int)));
+	connect(m_pctrlVelocityScaleSlider, SIGNAL(sliderMoved(int)), this, SLOT(onVelocityScale(int)));
 }
 
 
-void GL3DScales::SetupLayout()
+void GL3DScales::setupLayout()
 {
 	QSizePolicy szPolicyMinimum;
 	szPolicyMinimum.setHorizontalPolicy(QSizePolicy::Minimum);
@@ -239,7 +239,7 @@ void GL3DScales::SetupLayout()
 }
 
 
-void GL3DScales::InitDialog()
+void GL3DScales::initDialog()
 {
 	QString str;
 
@@ -279,7 +279,7 @@ void GL3DScales::InitDialog()
 }
 
 
-void GL3DScales::OnCpScale()
+void GL3DScales::onCpScale()
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
     QMiarex::s_bAutoCpScale = m_pctrlAutoCpScale->isChecked();
@@ -294,19 +294,19 @@ void GL3DScales::OnCpScale()
 }
 
 
-void GL3DScales::OnApply()
+void GL3DScales::onApply()
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 	QMiarex::s_LegendMax = m_pctrlLegendMax->value();
 	QMiarex::s_LegendMin = m_pctrlLegendMin->value();
 	QMiarex::s_bAutoCpScale = m_pctrlAutoCpScale->isChecked();
-	ReadStreamParams();
+	readStreamParams();
 	pMiarex->m_bResetglStream = true;
 	pMiarex->updateView();
 }
 
 
-void GL3DScales::OnLiftScale(int pos)
+void GL3DScales::onLiftScale(int pos)
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 	pMiarex->s_LiftScale    = pos/100.0/sqrt(1.01-pos/100.0);
@@ -316,7 +316,7 @@ void GL3DScales::OnLiftScale(int pos)
 }
 
 
-void GL3DScales::OnDragScale(int pos)
+void GL3DScales::onDragScale(int pos)
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 	pMiarex->s_DragScale    = pos/100.0/sqrt(1.01-pos/100.0);
@@ -325,23 +325,24 @@ void GL3DScales::OnDragScale(int pos)
 }
 
 
-void GL3DScales::OnVelocityScale(int pos)
+void GL3DScales::onVelocityScale(int pos)
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 	pMiarex->s_VelocityScale    = pos/100.0/sqrt(1.01-pos/100.0);
 	pMiarex->m_bResetglDownwash = true;
+	pMiarex->m_bResetglSurfVelocities = true;
 	pMiarex->updateView();
 }
 
 
 void GL3DScales::showEvent(QShowEvent *event)
 {
-	InitDialog();
+	initDialog();
 	event->accept();
 }
 
 
-void GL3DScales::ReadStreamParams()
+void GL3DScales::readStreamParams()
 {
 	s_NX = m_pctrlNXPoint->value();
 	s_XOffset = m_pctrlXOffset->value() / Units::mtoUnit();
@@ -371,12 +372,11 @@ bool GL3DScales::loadSettings(QSettings *pSettings)
 		s_ZOffset = pSettings->value("ZOffset").toDouble();
 	}
 	pSettings->endGroup();
-
 	return true;
 }
 
 
-bool GL3DScales::SaveSettings(QSettings *pSettings)
+bool GL3DScales::saveSettings(QSettings *pSettings)
 {
 	pSettings->beginGroup("GL3DScales");
 	{

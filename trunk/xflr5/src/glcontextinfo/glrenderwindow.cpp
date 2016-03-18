@@ -52,14 +52,6 @@ void GLRenderWindow::exposeEvent(QExposeEvent *)
 // ES needs the precision qualifiers.
 // On desktop GL QOpenGLShaderProgram inserts dummy defines for highp/mediump/lowp.
 static const char *vertexShaderSource110 =
-/*    "attribute highp vec4 posAttr;\n"
-    "attribute lowp vec4 colAttr;\n"
-    "varying lowp vec4 col;\n"
-    "uniform highp mat4 matrix;\n"
-    "void main() {\n"
-    "   col = colAttr;\n"
-    "   gl_Position = matrix * posAttr;\n"
-	"}\n";*/
 	"attribute highp vec4 vertex;\n"
 	"attribute mediump vec4 texCoord;\n"
 	"varying mediump vec4 texc;\n"
@@ -70,10 +62,6 @@ static const char *vertexShaderSource110 =
 	"    texc = texCoord;\n"
 	"}\n";
 static const char *fragmentShaderSource110 =
-/*    "varying lowp vec4 col;\n"
-    "void main() {\n"
-    "   gl_FragColor = col;\n"
-	"}\n";*/
 	"uniform sampler2D texture;\n"
 	"varying mediump vec4 texc;\n"
 	"void main(void)\n"
@@ -82,16 +70,7 @@ static const char *fragmentShaderSource110 =
 	"}\n";
 
 static const char *vertexShaderSource =
-    "#version 150\n"
-/*    "in vec4 posAttr;\n"
-    "in vec4 colAttr;\n"
-    "out vec4 col;\n"
-    "uniform mat4 matrix;\n"
-    "void main() {\n"
-    "   col = colAttr;\n"
-    "   gl_Position = matrix * posAttr;\n"
-	"}\n";*/
-
+	"#version 150\n"
 	"in vec4 vertex;\n"
 	"in vec4 texCoord;\n"
 	"out vec4 texc;\n"
@@ -103,12 +82,7 @@ static const char *vertexShaderSource =
 	"}\n";
 
 static const char *fragmentShaderSource =
-    "#version 150\n"
-/*    "in vec4 col;\n"
-    "out vec4 fragColor;\n"
-    "void main() {\n"
-    "   fragColor = col;\n"
-	"}\n";*/
+	"#version 150\n"
 	"uniform sampler2D texture;\n"
 	"in vec4 texc;\n"
 	"out vec4 fragColor;\n"
@@ -124,7 +98,6 @@ void GLRenderWindow::rotateBy(int xAngle, int yAngle, int zAngle)
 	xRot += xAngle;
 	yRot += yAngle;
 	zRot += zAngle;
-//	update();
 }
 
 
@@ -143,8 +116,6 @@ void GLRenderWindow::init()
 
     const char *vsrc = useNewStyleShader ? vertexShaderSource : vertexShaderSource110;
     const char *fsrc = useNewStyleShader ? fragmentShaderSource : fragmentShaderSource110;
-//	if(m_pOutStream) *m_pOutStream << "Using version %s shader", useNewStyleShader ? "150" : "110";
-//	else
 	QString strong = "Using version %s shader" +  useNewStyleShader ? "150" : "110";
 	qDebug("Using version %s shader", useNewStyleShader ? "150" : "110");
 
@@ -163,15 +134,8 @@ void GLRenderWindow::init()
 
 	m_pShaderProgram->attributeLocation("vertex");
 	m_pShaderProgram->attributeLocation("texCoord");
-//	m_posAttr = m_pShaderProgram->attributeLocation("posAttr");
-//	m_colAttr = m_pShaderProgram->attributeLocation("colAttr");
 	m_matrixUniform = m_pShaderProgram->uniformLocation("matrix");
 
-/*	m_vbo.create();
-	m_vbo.bind();
-	m_vbo.allocate(vertices, sizeof(vertices) + sizeof(colors));
-	m_vbo.write(sizeof(vertices), colors, sizeof(colors));
-	m_vbo.release();*/
 	makeObject();
 
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
@@ -183,11 +147,6 @@ void GLRenderWindow::init()
 void GLRenderWindow::setupVertexAttribs()
 {
     m_vbo.bind();
-//	m_pShaderProgram->setAttributeBuffer(m_posAttr, GL_FLOAT, 0, 2);
-//	m_pShaderProgram->setAttributeBuffer(m_colAttr, GL_FLOAT, sizeof(vertices), 3);
-//	m_pShaderProgram->enableAttributeArray(m_posAttr);
-//	m_pShaderProgram->enableAttributeArray(m_colAttr);
-
 	m_pShaderProgram->enableAttributeArray("vertex");
 	m_pShaderProgram->enableAttributeArray("texCoord");
 	m_pShaderProgram->setAttributeBuffer("vertex", GL_FLOAT, 0, 3, 5 * sizeof(GLfloat));
@@ -221,11 +180,7 @@ void GLRenderWindow::render()
     f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	m_pShaderProgram->bind();
-/*	QMatrix4x4 matrix;
-	matrix.perspective(60.0f, 4.0f / 3.0f, 0.1f, 100.0f);
-	matrix.translate(0.0f, 0.0f, -2.0f);
-	matrix.rotate(m_angle, 0.0f, 1.0f, 0.0f);
-*/
+
 	rotateBy(13, 15, 17);
 
 	QMatrix4x4 pvmMatrix;
@@ -241,8 +196,6 @@ void GLRenderWindow::render()
         m_vao.bind();
     else // no VAO support, set the vertex attribute arrays now
         setupVertexAttribs();
-
-//    f->glDrawArrays(GL_TRIANGLES, 0, 3);
 
 	m_pOpenGLTexture->bind();
 	f->glDrawArrays(GL_TRIANGLE_FAN, 0, 4);

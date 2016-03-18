@@ -72,20 +72,6 @@ static struct Option options[] = {
 };
 
 
-struct Renderable {
-	const char *str;
-	QSurfaceFormat::RenderableType renderable;
-};
-
-
-static struct Renderable renderables[] = {
-	{ "default", QSurfaceFormat::DefaultRenderableType },
-	{ "OpenGL", QSurfaceFormat::OpenGL },
-	{ "OpenGL ES", QSurfaceFormat::OpenGLES }
-};
-
-
-
 OpenGLInfoDlg::OpenGLInfoDlg(QWidget *pParent) : QDialog(pParent)
 {
 	setWindowTitle("OpenGL context info");
@@ -152,21 +138,6 @@ void OpenGLInfoDlg::addOptions(QLayout *layout)
 	layout->addWidget(pGroupBox);
 }
 
-void OpenGLInfoDlg::addRenderableTypes(QLayout *layout)
-{
-	QGroupBox *pGroupBox = new QGroupBox(tr("Renderable type"));
-	{
-		QVBoxLayout *pVBoxLayout = new QVBoxLayout;
-		{
-			for (size_t i = 0; i < sizeof(renderables) / sizeof(Renderable); ++i)
-				pVBoxLayout->addWidget(new QRadioButton(QString::fromLatin1(renderables[i].str)));
-			static_cast<QRadioButton *>(pVBoxLayout->itemAt(0)->widget())->setChecked(true);
-		}
-		pGroupBox->setLayout(pVBoxLayout);
-		m_renderables = pVBoxLayout;
-	}
-	layout->addWidget(pGroupBox);
-}
 
 
 void OpenGLInfoDlg::addRenderWindow()
@@ -198,7 +169,6 @@ void OpenGLInfoDlg::setupLayout()
 					addVersions(pSettingsLayout);
 					addProfiles(pSettingsLayout);
 					addOptions(pSettingsLayout);
-					addRenderableTypes(pSettingsLayout);
 				}
 				pHSplit->addWidget(widgetWithLayout(pSettingsLayout));
 
@@ -221,7 +191,7 @@ void OpenGLInfoDlg::setupLayout()
 
 			m_renderWindowLayout = new QVBoxLayout;
 			pVSplit->addWidget(widgetWithLayout(m_renderWindowLayout));
-			pVSplit->setStretchFactor(1, 5);
+			pVSplit->setStretchFactor(1, 7);
 		}
 
 		m_renderWindowContainer = new QWidget;
@@ -256,11 +226,7 @@ void OpenGLInfoDlg::start()
 				forceGLSL110 = true;
 		}
 
-	for (size_t i=0; i<sizeof(renderables)/sizeof(Renderable); ++i)
-		if (static_cast<QRadioButton *>(m_renderables->itemAt(int(i))->widget())->isChecked()) {
-			fmt.setRenderableType(renderables[i].renderable);
-			break;
-		}
+	fmt.setRenderableType(QSurfaceFormat::OpenGL);
 
 	// The example rendering will need a depth buffer.
 	fmt.setDepthBufferSize(16);
@@ -307,12 +273,6 @@ void OpenGLInfoDlg::printFormat(const QSurfaceFormat &format)
 		if (format.testOption(options[i].option))
 			opts += QString::fromLatin1(options[i].str) + QStringLiteral(" ");
 	m_glOutput->append(tr("Options: %1").arg(opts));
-
-	for (size_t i = 0; i < sizeof(renderables) / sizeof(Renderable); ++i)
-		if (renderables[i].renderable == format.renderableType()) {
-			m_glOutput->append(tr("Renderable type: %1").arg(QString::fromLatin1(renderables[i].str)));
-			break;
-		}
 
 	m_glOutput->append(tr("Depth buffer size: %1").arg(QString::number(format.depthBufferSize())));
 	m_glOutput->append(tr("Stencil buffer size: %1").arg(QString::number(format.stencilBufferSize())));

@@ -153,14 +153,14 @@ void GL3Widget::printFormat(const QSurfaceFormat &format)
 		default:
 			break;
 	}
-	qDebug()<<tr("Depth buffer size: %1").arg(QString::number(format.depthBufferSize()));
+/*	qDebug()<<tr("Depth buffer size: %1").arg(QString::number(format.depthBufferSize()));
 	qDebug()<<tr("Stencil buffer size: %1").arg(QString::number(format.stencilBufferSize()));
 	qDebug()<<tr("Samples: %1").arg(QString::number(format.samples()));
 	qDebug()<<tr("Red buffer size: %1").arg(QString::number(format.redBufferSize()));
 	qDebug()<<tr("Green buffer size: %1").arg(QString::number(format.greenBufferSize()));
 	qDebug()<<tr("Blue buffer size: %1").arg(QString::number(format.blueBufferSize()));
 	qDebug()<<tr("Alpha buffer size: %1").arg(QString::number(format.alphaBufferSize()));
-	qDebug()<<tr("Swap interval: %1").arg(QString::number(format.swapInterval()));
+	qDebug()<<tr("Swap interval: %1").arg(QString::number(format.swapInterval()));*/
 }
 
 
@@ -185,6 +185,7 @@ GL3Widget::~GL3Widget()
 	m_vboEditMesh.destroy();
 	m_vboPanelCp.destroy();
 	m_vboPanelForces.destroy();
+	m_vboSurfaceVelocities.destroy();
 
 	for(int iWing=0; iWing<MAXWINGS; iWing++)
 	{
@@ -944,13 +945,13 @@ void GL3Widget::getGLError()
 			break;
 
 		case GL_INVALID_VALUE:
-			qDebug()<<"A numeric argument is out of range. The offending command is ignored and has no other"
-					  " side effect than to set the error flag.";
+			qDebug()<<"A numeric argument is out of range. The offending command is ignored and has no other "
+					  "side effect than to set the error flag.";
 			break;
 
 		case GL_INVALID_OPERATION:
-			qDebug()<<"The specified operation is not allowed in the current state. The offending command is"
-					  " ignored and has no other side effect than to set the error flag.";
+			qDebug()<<"The specified operation is not allowed in the current state. The offending command is "
+					  "ignored and has no other side effect than to set the error flag.";
 			break;
 
 		case GL_INVALID_FRAMEBUFFER_OPERATION:
@@ -1499,8 +1500,12 @@ void GL3Widget::glMakeBodySplines(Body *pBody)
 
 void GL3Widget::initializeGL()
 {
+//	makeCurrent();
 
 #ifdef QT_DEBUG
+	qDebug()<<"";
+	qDebug()<<"Initializing GL";
+
 	printFormat(format());
 	QString vendor, renderer, version, glslVersion;
 	const GLubyte *p;
@@ -1520,7 +1525,6 @@ void GL3Widget::initializeGL()
 	qDebug()<<QString("   GLSL version: %1").arg(glslVersion);
 #endif
 
-	makeCurrent();
 
 	glMakeUnitSphere();
 	glMakeArcBall();
@@ -1558,11 +1562,9 @@ void GL3Widget::initializeGL()
 	m_ShaderProgramGradient.link();
 	m_ShaderProgramGradient.bind();
 	m_VertexLocationGradient = m_ShaderProgramGradient.attributeLocation("vertexPosition_modelspace");
-	m_MatrixLocationGradient = m_ShaderProgramGradient.uniformLocation("pvmMatrix");
+	m_pvmMatrixLocationGradient = m_ShaderProgramGradient.uniformLocation("pvmMatrix");
 	m_ColorLocationGradient  = m_ShaderProgramGradient.attributeLocation("vertexColor");
 	m_ShaderProgramGradient.release();
-
-
 
 
 	//setup the shader to paint colored and textured surfaces
@@ -1712,7 +1714,8 @@ void GL3Widget::paintGL()
 
 void GL3Widget::paintGL3()
 {
-	makeCurrent();
+//	makeCurrent();
+
 
 	int width, height;
 	glClearColor(Settings::backgroundColor().redF(), Settings::backgroundColor().greenF(), Settings::backgroundColor().blueF(), 1.0f);
@@ -1721,6 +1724,10 @@ void GL3Widget::paintGL3()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_DEPTH_TEST);
+
+
+	QVector4D clipPlane(0.0,0.0,-1,m_ClipPlanePos);
+
 
 	double s, pixelRatio;
 	s = 1.0;
@@ -1741,6 +1748,9 @@ void GL3Widget::paintGL3()
 	m_pvmMatrix = m_OrthoMatrix * m_viewMatrix * modelMatrix;
 	m_ShaderProgramLine.bind();
 	m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
+	m_ShaderProgramLine.setUniformValue(m_ClipPlaneLocationLine, clipPlane);
+	m_ShaderProgramLine.release();
+
 	if(m_bArcball) paintArcBall();
 
 	m_viewMatrix.scale(m_glScaled, m_glScaled, m_glScaled);
@@ -1751,6 +1761,7 @@ void GL3Widget::paintGL3()
 	m_ShaderProgramTexture.bind();
 	m_ShaderProgramTexture.setUniformValue(m_mMatrixLocationTexture, modelMatrix);
 	m_ShaderProgramTexture.setUniformValue(m_vMatrixLocationTexture, m_viewMatrix);
+	m_ShaderProgramTexture.setUniformValue(m_ClipPlaneLocationTexture, clipPlane);
 	m_ShaderProgramTexture.setUniformValue(m_pvmMatrixLocationTexture, m_pvmMatrix);
 	m_ShaderProgramTexture.release();
 
@@ -1793,27 +1804,21 @@ void GL3Widget::glRenderMiarexView()
 	QMiarex* pMiarex = (QMiarex*)s_pMiarex;
 	if(pMiarex->m_iView!=XFLR5::W3DVIEW) return;
 
-	QVector4D clipPlane(0.0,0.0,-1,m_ClipPlanePos);
-
-
 	QMatrix4x4 modelMatrix;//keep identity
-	if(pMiarex->m_pCurPOpp)
-		modelMatrix.rotate(pMiarex->m_pCurPOpp->alpha(),0.0,1.0,0.0);
+	if(pMiarex->m_pCurPOpp)	modelMatrix.rotate(pMiarex->m_pCurPOpp->alpha(),0.0,1.0,0.0);
 	m_pvmMatrix = m_OrthoMatrix * m_viewMatrix * modelMatrix;
+
 	m_ShaderProgramTexture.bind();
 	m_ShaderProgramTexture.setUniformValue(m_mMatrixLocationTexture, modelMatrix);
 	m_ShaderProgramTexture.setUniformValue(m_vMatrixLocationTexture, m_viewMatrix);
 	m_ShaderProgramTexture.setUniformValue(m_pvmMatrixLocationTexture, m_pvmMatrix);
-	m_ShaderProgramTexture.setUniformValue(m_ClipPlaneLocationTexture, clipPlane);
 	m_ShaderProgramTexture.release();
 
 	m_ShaderProgramLine.bind();
 	m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, modelMatrix);
 	m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
 	m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
-	m_ShaderProgramLine.setUniformValue(m_ClipPlaneLocationLine, clipPlane);
 	m_ShaderProgramLine.release();
-
 
 	glEnable(GL_CLIP_PLANE0);
 
@@ -1891,6 +1896,10 @@ void GL3Widget::glRenderMiarexView()
 			{
 				paintCpLegendClr();
 			}
+
+			if(pMiarex->m_pCurPOpp && pMiarex->m_bSurfVelocities && pMiarex->m_pCurPOpp->analysisMethod()!=XFLR5::LLTMETHOD)
+				paintSurfaceVelocities();
+
 		}
 	}
 	glDisable(GL_CLIP_PLANE0);
@@ -1956,6 +1965,7 @@ void GL3Widget::glRenderWingView()
 {
 	GL3dWingDlg *pDlg = (GL3dWingDlg*)m_pParent;
 	Wing *pWing = pDlg->m_pWing;
+
 
 	if(pWing)
 	{
@@ -2032,7 +2042,7 @@ void GL3Widget::paintPanelCp()
 	m_ShaderProgramGradient.bind();
 	m_ShaderProgramGradient.enableAttributeArray(m_VertexLocationGradient);
 	m_ShaderProgramGradient.enableAttributeArray(m_ColorLocationGradient);
-	m_ShaderProgramGradient.setUniformValue(m_MatrixLocationGradient, m_pvmMatrix);
+	m_ShaderProgramGradient.setUniformValue(m_pvmMatrixLocationGradient, m_pvmMatrix);
 	m_vboPanelCp.bind();
 	m_ShaderProgramGradient.setAttributeBuffer(m_VertexLocationGradient, GL_FLOAT, 0,                  3, 6 * sizeof(GLfloat));
 	m_ShaderProgramGradient.setAttributeBuffer(m_ColorLocationGradient,  GL_FLOAT, 3* sizeof(GLfloat), 3, 6 * sizeof(GLfloat));
@@ -2054,11 +2064,12 @@ void GL3Widget::paintPanelForces()
 	m_ShaderProgramGradient.bind();
 	m_ShaderProgramGradient.enableAttributeArray(m_VertexLocationGradient);
 	m_ShaderProgramGradient.enableAttributeArray(m_ColorLocationGradient);
-	m_ShaderProgramGradient.setUniformValue(m_MatrixLocationGradient, m_pvmMatrix);
+	m_ShaderProgramGradient.setUniformValue(m_pvmMatrixLocationGradient, m_pvmMatrix);
 	m_vboPanelForces.bind();
 	m_ShaderProgramGradient.setAttributeBuffer(m_VertexLocationGradient, GL_FLOAT, 0,                  3, 6 * sizeof(GLfloat));
 	m_ShaderProgramGradient.setAttributeBuffer(m_ColorLocationGradient,  GL_FLOAT, 3* sizeof(GLfloat), 3, 6 * sizeof(GLfloat));
 
+	glLineWidth(W3dPrefsDlg::s_XCPWidth);
 	glEnable(GL_DEPTH_TEST);
 	glDrawArrays(GL_LINES, 0, Objects3D::s_MatSize*3*2);
 
@@ -2069,12 +2080,32 @@ void GL3Widget::paintPanelForces()
 }
 
 
+void GL3Widget::paintSurfaceVelocities()
+{
+	m_ShaderProgramLine.bind();
+	m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
+	m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_WakeColor);
+	m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
+	m_vboSurfaceVelocities.bind();
+	m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3, 3 * sizeof(GLfloat));
+
+	glLineWidth(W3dPrefsDlg::s_WakeWidth);
+	glEnable(GL_DEPTH_TEST);
+	glDrawArrays(GL_LINES, 0, Objects3D::s_MatSize*3*2);
+
+	m_ShaderProgramLine.disableAttributeArray(m_ColorLocationLine);
+	m_ShaderProgramLine.disableAttributeArray(m_VertexLocationLine);
+	m_vboSurfaceVelocities.release();
+	m_ShaderProgramLine.release();
+}
+
+
 void GL3Widget::paintCpLegendClr()
 {
 	m_ShaderProgramGradient.bind();
 	m_ShaderProgramGradient.enableAttributeArray(m_VertexLocationGradient);
 	m_ShaderProgramGradient.enableAttributeArray(m_ColorLocationGradient);
-	m_ShaderProgramGradient.setUniformValue(m_MatrixLocationGradient, m_OrthoMatrix);
+	m_ShaderProgramGradient.setUniformValue(m_pvmMatrixLocationGradient, m_OrthoMatrix);
 	m_vboLegendColor.bind();
 	m_ShaderProgramGradient.setAttributeBuffer(m_VertexLocationGradient, GL_FLOAT, 0,                  3, 6 * sizeof(GLfloat));
 	m_ShaderProgramGradient.setAttributeBuffer(m_ColorLocationGradient,  GL_FLOAT, 3* sizeof(GLfloat), 3, 6 * sizeof(GLfloat));
@@ -2328,10 +2359,13 @@ void GL3Widget::paintArcBall()
 void GL3Widget::paintAxes()
 {
 	m_ShaderProgramLine.bind();
+
 	m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
 	m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3, 0);
 	m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_3DAxisColor);
+
 	m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
+
 
 	//draw Axis
 	glLineWidth(W3dPrefsDlg::s_3DAxisWidth);
@@ -3478,7 +3512,7 @@ void GL3Widget::paintSphere(CVector place, double radius, QColor sphereColor, bo
 
 
 
-void GL3Widget::glMakePanelForces(QOpenGLBuffer &vbo, int nPanels, Panel *pPanel, WPolar *pWPolar, PlaneOpp *pPOpp)
+void GL3Widget::glMakePanelForces(int nPanels, Panel *pPanel, WPolar *pWPolar, PlaneOpp *pPOpp)
 {
 	if( !pPOpp || !pWPolar || !pPanel || !nPanels) return;
 
@@ -3729,15 +3763,120 @@ void GL3Widget::glMakePanelForces(QOpenGLBuffer &vbo, int nPanels, Panel *pPanel
 	}
 	Q_ASSERT(iv==forceVertexSize);
 
-	vbo.destroy();
-	vbo.create();
-	vbo.bind();
-	vbo.allocate(forceVertexArray, forceVertexSize * sizeof(GLfloat));
-	vbo.release();
+	m_vboPanelForces.destroy();
+	m_vboPanelForces.create();
+	m_vboPanelForces.bind();
+	m_vboPanelForces.allocate(forceVertexArray, forceVertexSize * sizeof(GLfloat));
+	m_vboPanelForces.release();
 
 	delete [] forceVertexArray;
 }
 
+
+
+void GL3Widget::glMakeSurfVelocities(Panel *pPanel, WPolar *pWPolar, PlaneOpp *pPOpp)
+{
+	if(!pWPolar || !pPOpp || pPOpp->analysisMethod()==XFLR5::LLTMETHOD || !pPanel || !Objects3D::s_MatSize)
+		return;
+
+	double factor;
+	double length, sinT, cosT;
+
+	double *Mu, *Sigma;
+	double x1, x2, y1, y2, z1, z2, xe, ye, ze, dlx, dlz;
+	CVector C, V, VT;
+	CVector RefPoint(0.0,0.0,0.0);
+
+	factor = QMiarex::s_VelocityScale/100.0;
+
+	Mu    = pPOpp->m_dG;
+	Sigma = pPOpp->m_dSigma;
+
+	// vertices array size:
+	//		nPanels x 1 arrow
+	//      x3 lines per arrow
+	//      x2 vertices per line
+	//		x3 = 3 vertex components
+
+	int velocityVertexSize = Objects3D::s_MatSize * 3 * 2 * 3;
+	float *velocityVertexArray = new float[velocityVertexSize];
+
+	int iv=0;
+	for (int p=0; p<Objects3D::s_MatSize; p++)
+	{
+		VT.set(pPOpp->m_QInf,0.0,0.0);
+
+		if(pWPolar->analysisMethod()==XFLR5::PANELMETHOD)
+		{
+			if(pPanel[p].m_Pos==MIDSURFACE) C.copy(pPanel[p].CtrlPt);
+			else                            C.copy(pPanel[p].CollPt);
+			Objects3D::s_pPanelAnalysis->getSpeedVector(C, Mu, Sigma, V);
+
+			VT += V;
+//			if(!pWPolar->m_bTiltedGeom)
+			C.rotateY(RefPoint, pPOpp->alpha());
+			//Tilt the geometry w.r.t. sideslip
+//			C.RotateZ(RefPoint, -pWOpp->m_Beta);
+		}
+		length = VT.VAbs()*factor;
+		xe     = C.x+factor*VT.x;
+		ye     = C.y+factor*VT.y;
+		ze     = C.z+factor*VT.z;
+		if(length>0.0)
+		{
+			cosT   = (xe-C.x)/length;
+			sinT   = (ze-C.z)/length;
+			dlx    = 0.15*length;
+			dlz    = 0.07*length;
+		}
+		else
+		{
+			cosT   = 0.0;
+			sinT   = 0.0;
+			dlx    = 0.0;
+			dlz    = 0.0;
+		}
+
+		x1 = xe -dlx*cosT - dlz*sinT;
+		y1 = ye;
+		z1 = ze -dlx*sinT + dlz*cosT;
+
+		x2 = xe -dlx*cosT + dlz*sinT;
+		y2 = ye;
+		z2 = ze -dlx*sinT - dlz*cosT;
+
+		velocityVertexArray[iv++] = C.x;
+		velocityVertexArray[iv++] = C.y;
+		velocityVertexArray[iv++] = C.z;
+		velocityVertexArray[iv++] = xe;
+		velocityVertexArray[iv++] = ye;
+		velocityVertexArray[iv++] = ze;
+
+		velocityVertexArray[iv++] = xe;
+		velocityVertexArray[iv++] = ye;
+		velocityVertexArray[iv++] = ze;
+		velocityVertexArray[iv++] = x1;
+		velocityVertexArray[iv++] = y1;
+		velocityVertexArray[iv++] = z1;
+
+		velocityVertexArray[iv++] = xe;
+		velocityVertexArray[iv++] = ye;
+		velocityVertexArray[iv++] = ze;
+		velocityVertexArray[iv++] = x2;
+		velocityVertexArray[iv++] = y2;
+		velocityVertexArray[iv++] = z2;
+	}
+
+	Q_ASSERT(iv==velocityVertexSize);
+
+	m_vboSurfaceVelocities.destroy();
+	m_vboSurfaceVelocities.create();
+	m_vboSurfaceVelocities.bind();
+	m_vboSurfaceVelocities.allocate(velocityVertexArray, velocityVertexSize * sizeof(GLfloat));
+	m_vboSurfaceVelocities.release();
+
+	delete [] velocityVertexArray;
+}
 
 
 void GL3Widget::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int nNodes, CVector *pNode, Panel *pPanel, PlaneOpp *pPOpp)
