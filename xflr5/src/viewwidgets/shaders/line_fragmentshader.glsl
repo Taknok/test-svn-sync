@@ -1,14 +1,17 @@
-#version 110
+#version 130
 
 uniform vec4 color;
-varying vec3 vPosition;
 uniform vec4 clipPlane0; // defined in view-space
+
+in vec3 vPosition;
+
+out vec4 fragColor;
 
 void main(void)
 {
 	if (vPosition.z > clipPlane0.w) {
 	  discard;
 	} else {
-		gl_FragColor = color;
+		fragColor = color;
 	}
 }

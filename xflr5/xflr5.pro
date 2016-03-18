@@ -156,7 +156,8 @@ SOURCES += \
     src/viewwidgets/inverseviewwidget.cpp \
     src/glcontextinfo/glrenderwindow.cpp \
     src/glcontextinfo/openglinfodlg.cpp \
-	src/viewwidgets/gl3widget.cpp
+	src/viewwidgets/gl3widget.cpp \
+    src/glcontextinfo/qwidgetdlg.cpp
 
 
 HEADERS += \
@@ -294,7 +295,8 @@ HEADERS += \
     src/viewwidgets/inverseviewwidget.h \
     src/glcontextinfo/glrenderwindow.h \
     src/glcontextinfo/openglinfodlg.h \
-    src/viewwidgets/gl3widget.h
+    src/viewwidgets/gl3widget.h \
+    src/glcontextinfo/qwidgetdlg.h
 
 
 TRANSLATIONS = translations/xflr5v6.ts \

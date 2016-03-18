@@ -43,6 +43,43 @@ int main(int argc, char *argv[])
     */
 #endif
 
+/* Note: Calling QSurfaceFormat::setDefaultFormat() before constructing the QApplication instance
+ * is mandatory on some platforms (for example, OS X) when an OpenGL core profile context is requested.
+ * This is to ensure that resource sharing between contexts stays functional as all internal contexts
+ *  are created using the correct version and profile.
+ * */
+
+#ifdef QT_DEBUG
+	QString strange;
+	strange.sprintf("Default OpengGl format:%d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
+	qDebug()<<strange;
+#endif
+
+/*	QSurfaceFormat defaultFormat = QSurfaceFormat::defaultFormat();
+	defaultFormat.setVersion(3, 0);
+	defaultFormat.setProfile(QSurfaceFormat::CompatibilityProfile);
+	QSurfaceFormat::setDefaultFormat(defaultFormat);
+
+#ifdef QT_DEBUG
+	strange.sprintf("App default OpengGl format:%d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
+	qDebug()<<strange;
+	switch (QSurfaceFormat::defaultFormat().profile()) {
+		case QSurfaceFormat::NoProfile:
+				qDebug()<<"   No Profile";
+			break;
+		case QSurfaceFormat::CoreProfile:
+				qDebug()<<"   Core Profile";
+			break;
+		case QSurfaceFormat::CompatibilityProfile:
+				qDebug()<<"   Compatibility Profile";
+			break;
+		default:
+			break;
+	}
+	qDebug()<<"/main";
+	qDebug()<<"";
+#endif
+*/
 	XFLR5Application app(argc, argv);
 	return app.exec();
 }

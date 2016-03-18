@@ -1733,7 +1733,7 @@ void QMiarex::glMake3DObjects()
 	{
 		if (m_pCurPlane && m_pCurPOpp)
 		{
-			m_pgl3Widget->glMakePanelForces(m_pgl3Widget->m_vboPanelForces, Objects3D::s_MatSize, s_pPanel, m_pCurWPolar, m_pCurPOpp);
+			m_pgl3Widget->glMakePanelForces(Objects3D::s_MatSize, s_pPanel, m_pCurWPolar, m_pCurPOpp);
 		}
 		m_bResetglPanelForce = false;
 	}
@@ -1819,6 +1819,16 @@ void QMiarex::glMake3DObjects()
 		}
 		m_bResetglLegend = false;
 	}
+
+	if((m_bResetglSurfVelocities || m_bResetglOpp) && m_iView==XFLR5::W3DVIEW && m_bSurfVelocities)
+	{
+		if(m_pCurPlane && m_pCurPOpp && m_pCurPOpp->analysisMethod()>=XFLR5::VLMMETHOD)
+		{
+			m_pgl3Widget->glMakeSurfVelocities(s_pPanel, m_pCurWPolar, m_pCurPOpp);
+			m_bResetglSurfVelocities = false;
+		}
+	}
+
 	m_bResetglOpp = false;
 }
 
@@ -7812,7 +7822,7 @@ bool QMiarex::setPlaneOpp(bool bCurrent, double x)
 	m_bResetglMesh = true;
 	m_bResetglOpp    = true;
 	m_bResetglStream = true;
-	m_bResetglSurfVelocities   = true;
+	m_bResetglSurfVelocities = true;
 	m_bResetglLegend = true;
 
 	setControls();
