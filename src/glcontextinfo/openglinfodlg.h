@@ -24,7 +24,6 @@ private:
 	void addVersions(QLayout *layout);
 	void addProfiles(QLayout *layout);
 	void addOptions(QLayout *layout);
-	void addRenderableTypes(QLayout *layout);
 	void addRenderWindow();
 	void printFormat(const QSurfaceFormat &format);
 	void setupLayout();
@@ -32,7 +31,6 @@ private:
 	QComboBox *m_version;
 	QLayout *m_profiles;
 	QLayout *m_options;
-	QLayout *m_renderables;
 	QTextEdit *m_glOutput;
 	QTextEdit *m_extensions;
 	QVBoxLayout *m_renderWindowLayout;

@@ -39,25 +39,25 @@ class GL3DScales : public QWidget
 
 public:
 	GL3DScales(QWidget *);
-	void InitDialog();
+	void initDialog();
 
 private slots:
-	void OnCpScale();
-	void OnApply();
-	void OnLiftScale(int pos);
-	void OnDragScale(int pos);
-	void OnVelocityScale(int pos);
+	void onCpScale();
+	void onApply();
+	void onLiftScale(int pos);
+	void onDragScale(int pos);
+	void onVelocityScale(int pos);
 
 
 private:
 	void showEvent(QShowEvent *event);
 	void keyPressEvent(QKeyEvent *event);
 
-	void SetupLayout();
-	void ReadStreamParams();
+	void setupLayout();
+	void readStreamParams();
 
 	static bool loadSettings(QSettings *pSettings);
-	static bool SaveSettings(QSettings *pSettings);
+	static bool saveSettings(QSettings *pSettings);
 
 	QSlider *m_pctrlLiftScaleSlider, *m_pctrlDragScaleSlider, *m_pctrlVelocityScaleSlider;
 	QPushButton *ApplyButton;
