@@ -26,10 +26,10 @@
 #include <QPushButton>
 #include <QRadioButton>
 #include <QCheckBox>
-#include <QSlider>
 #include <QLabel>
 #include <QSettings>
-#include "../../misc/DoubleEdit.h"
+#include <misc/exponentialslider.h>
+#include <misc/DoubleEdit.h>
 
 class GL3DScales : public QWidget
 {
@@ -44,9 +44,9 @@ public:
 private slots:
 	void onCpScale();
 	void onApply();
-	void onLiftScale(int pos);
-	void onDragScale(int pos);
-	void onVelocityScale(int pos);
+	void onLiftScale();
+	void onDragScale();
+	void onVelocityScale();
 
 
 private:
@@ -59,7 +59,7 @@ private:
 	static bool loadSettings(QSettings *pSettings);
 	static bool saveSettings(QSettings *pSettings);
 
-	QSlider *m_pctrlLiftScaleSlider, *m_pctrlDragScaleSlider, *m_pctrlVelocityScaleSlider;
+	ExponentialSlider *m_pctrlLiftScaleSlider, *m_pctrlDragScaleSlider, *m_pctrlVelocityScaleSlider;
 	QPushButton *ApplyButton;
 	QCheckBox *m_pctrlAutoCpScale;
 	DoubleEdit	*m_pctrlLegendMin, *m_pctrlLegendMax;

@@ -21,7 +21,6 @@
 #include <globals.h>
 #include <misc/Units.h>
 #include <misc/Settings.h>
-#include <misc/GLLightDlg.h>
 #include <misc/W3dPrefsDlg.h>
 #include <QHeaderView>
 #include <QHBoxLayout>

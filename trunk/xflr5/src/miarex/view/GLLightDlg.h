@@ -31,12 +31,14 @@
 #include <QSlider>
 #include <QSettings>
 #include "DoubleEdit.h"
+#include "exponentialslider.h"
+
 
 struct Light
 {
-	float m_Ambient, m_Diffuse, m_Specular;
-	float m_Red, m_Green, m_Blue;
-	float m_X, m_Y, m_Z;
+	float m_Ambient, m_Diffuse, m_Specular; // the light intensities
+	float m_Red, m_Green, m_Blue; // the color of light
+	float m_X, m_Y, m_Z; // coordinates in camera space
 	bool m_bIsLightOn;
 };
 
@@ -90,9 +92,9 @@ private slots:
 
 private:
 	QSlider *m_pctrlRed, *m_pctrlGreen, *m_pctrlBlue;
-	QSlider *m_pctrlLightAmbient, *m_pctrlLightDiffuse, *m_pctrlLightSpecular;
-	QSlider *m_pctrlXLight, *m_pctrlYLight, *m_pctrlZLight;
 	QSlider *m_pctrlMatAmbient, *m_pctrlMatDiffuse, *m_pctrlMatSpecular, *m_pctrlMatShininess;
+	ExponentialSlider *m_pctrlLightAmbient, *m_pctrlLightDiffuse, *m_pctrlLightSpecular;
+	ExponentialSlider *m_pctrlXLight, *m_pctrlYLight, *m_pctrlZLight;
 
 	QCheckBox *m_pctrlLight;
 	QLabel *m_pctrlLightAmbientLabel, *m_pctrlLightDiffuseLabel, *m_pctrlLightSpecularLabel;

@@ -59,7 +59,7 @@ class MainFrame;
 #include <WPolar.h>
 #include <WingOpp.h>
 #include <PlaneOpp.h>
-#include <GLLightDlg.h>
+#include "view/GLLightDlg.h"
 #include <QGraph.h>
 #include "graphtilewidget.h"
 

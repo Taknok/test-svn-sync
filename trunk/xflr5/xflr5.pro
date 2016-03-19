@@ -35,6 +35,7 @@ SOURCES += \
 	src/viewwidgets/graphwidget.cpp \
 	src/viewwidgets/graphtilewidget.cpp \
 	src/viewwidgets/legendwidget.cpp \
+	src/viewwidgets/gl3widget.cpp \
 	src/misc/Settings.cpp \
 	src/misc/SaveOptionsDlg.cpp \
 	src/misc/ProgressDlg.cpp \
@@ -49,7 +50,6 @@ SOURCES += \
 	src/misc/ColorButton.cpp \
 	src/misc/DoubleEdit.cpp \
 	src/misc/IntEdit.cpp \
-	src/misc/GLLightDlg.cpp \
 	src/misc/AboutQ5.cpp \
 	src/misc/NewNameDlg.cpp \
 	src/misc/ObjectPropsDlg.cpp \
@@ -60,6 +60,7 @@ SOURCES += \
 	src/misc/EditPlrDlg.cpp \
 	src/misc/Units.cpp \
 	src/misc/LengthUnitDlg.cpp \
+	src/misc/exponentialslider.cpp \
 	src/miarex/Miarex.cpp \
 	src/miarex/Objects3D.cpp \
 	src/miarex/analysis/StabPolarDlg.cpp \
@@ -90,6 +91,7 @@ SOURCES += \
 	src/miarex/view/GL3DScales.cpp \
 	src/miarex/view/StabViewDlg.cpp \
 	src/miarex/mgt/ImportObjectDlg.cpp\
+	src/miarex/view/GLLightDlg.cpp \
 	src/miarex/mgt/ManagePlanesDlg.cpp \
 	src/miarex/mgt/PlaneTableDelegate.cpp \
 	src/miarex/mgt/XmlPlaneReader.cpp \
@@ -152,12 +154,10 @@ SOURCES += \
 	src/viewwidgets/miarextilewidget.cpp \
 	src/viewwidgets/xdirecttilewidget.cpp \
 	src/viewwidgets/wingwidget.cpp \
-    src/viewwidgets/oppointwidget.cpp \
-    src/viewwidgets/inverseviewwidget.cpp \
-    src/glcontextinfo/glrenderwindow.cpp \
-    src/glcontextinfo/openglinfodlg.cpp \
-	src/viewwidgets/gl3widget.cpp \
-    src/glcontextinfo/qwidgetdlg.cpp
+	src/viewwidgets/oppointwidget.cpp \
+	src/viewwidgets/inverseviewwidget.cpp \
+	src/glcontextinfo/glrenderwindow.cpp \
+	src/glcontextinfo/openglinfodlg.cpp
 
 
 HEADERS += \
@@ -170,6 +170,7 @@ HEADERS += \
 	src/viewwidgets/graphwidget.h \
 	src/viewwidgets/graphtilewidget.h \
 	src/viewwidgets/legendwidget.h \
+	src/viewwidgets/gl3widget.h \
 	src/misc/Settings.h \
 	src/misc/SaveOptionsDlg.h \
 	src/misc/ModDlg.h \
@@ -185,7 +186,6 @@ HEADERS += \
 	src/misc/AboutQ5.h \
 	src/misc/DoubleEdit.h \
 	src/misc/IntEdit.h \
-	src/misc/GLLightDlg.h \
 	src/misc/ProgressDlg.h \
 	src/misc/NewNameDlg.h \
 	src/misc/ObjectPropsDlg.h \
@@ -195,6 +195,7 @@ HEADERS += \
 	src/misc/EditPlrDlg.h \
 	src/misc/Units.h \
 	src/misc/LengthUnitDlg.h \
+	src/misc/exponentialslider.h \
 	src/miarex/Miarex.h \
 	src/miarex/Objects3D.h \
 	src/miarex/analysis/WAdvancedDlg.h \
@@ -224,6 +225,7 @@ HEADERS += \
 	src/miarex/view/TargetCurveDlg.h \
 	src/miarex/view/GL3DScales.h \
 	src/miarex/view/StabViewDlg.h \
+	src/miarex/view/GLLightDlg.h \
 	src/miarex/mgt/ImportObjectDlg.h \
 	src/miarex/mgt/ManagePlanesDlg.h \
 	src/miarex/mgt/PlaneTableDelegate.h \
@@ -291,12 +293,10 @@ HEADERS += \
 	src/viewwidgets/miarextilewidget.h \
 	src/viewwidgets/xdirecttilewidget.h \
 	src/viewwidgets/wingwidget.h \
-    src/viewwidgets/oppointwidget.h \
-    src/viewwidgets/inverseviewwidget.h \
-    src/glcontextinfo/glrenderwindow.h \
-    src/glcontextinfo/openglinfodlg.h \
-    src/viewwidgets/gl3widget.h \
-    src/glcontextinfo/qwidgetdlg.h
+	src/viewwidgets/oppointwidget.h \
+	src/viewwidgets/inverseviewwidget.h \
+	src/glcontextinfo/glrenderwindow.h \
+	src/glcontextinfo/openglinfodlg.h
 
 
 TRANSLATIONS = translations/xflr5v6.ts \

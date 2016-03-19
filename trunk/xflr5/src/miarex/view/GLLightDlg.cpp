@@ -30,7 +30,6 @@
 #include <QShowEvent>
 
 
-
 Light GLLightDlg::s_Light;
 Material GLLightDlg::s_Material;
 Attenuation GLLightDlg::s_Attenuation;
@@ -38,14 +37,14 @@ Attenuation GLLightDlg::s_Attenuation;
 
 GLLightDlg::GLLightDlg(QWidget *pParent) : QDialog(pParent)
 {
-	m_ModelSize = 3.0;
-	setDefaults();
+	m_ModelSize = 300.0; //in cm, to get sufficient range on the light position slider
 
 	setWindowTitle(tr("OpenGL Light Options"));
     setModal(false);
     setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
 
 	setupLayout();
+	setDefaults();
 
 	connect(m_pctrlLight,    SIGNAL(clicked()), this, SLOT(onLight()));
 	connect(m_pctrlClose,    SIGNAL(clicked()), this, SLOT(accept()));
@@ -85,17 +84,17 @@ void GLLightDlg::setupLayout()
 			QLabel *lab2 = new QLabel(tr("Ambient"));
 			QLabel *lab3 = new QLabel(tr("Specular"));
 
-			m_pctrlLightAmbient      = new QSlider(Qt::Horizontal);
+			m_pctrlLightAmbient      = new ExponentialSlider(false, 2.0, Qt::Horizontal);
 			m_pctrlLightAmbient->setToolTip("Ambient:\n"
 									   "Bounced light which has been scattered so much that it\n"
 									   "is impossible to tell the direction to its source.\n"
 									   "It is not attenuated by distance, and disappears if\n"
 									   "the light is turned off.");
-			m_pctrlLightDiffuse      = new QSlider(Qt::Horizontal);
+			m_pctrlLightDiffuse      = new ExponentialSlider(false, 2.0, Qt::Horizontal);
 			m_pctrlLightDiffuse->setToolTip("Diffuse:\n"
 									   "Directional light which is brighter on perpendicular\n"
 									   "surfaces. Its reflection is scattered evenly.");
-			m_pctrlLightSpecular     = new QSlider(Qt::Horizontal);
+			m_pctrlLightSpecular     = new ExponentialSlider(false, 2.0, Qt::Horizontal);
 			m_pctrlLightSpecular->setToolTip("Specular:\n"
 										"Directional light which tends to reflect in a preferred\n"
 										"direction. It is associated with shininess.");
@@ -177,18 +176,9 @@ void GLLightDlg::setupLayout()
 			QLabel *lab22 = new QLabel(tr("y"));
 			QLabel *lab23 = new QLabel(tr("z"));
 
-			m_pctrlXLight = new QSlider(Qt::Horizontal);
-			m_pctrlYLight = new QSlider(Qt::Horizontal);
-			m_pctrlZLight = new QSlider(Qt::Horizontal);
-			m_pctrlXLight->setMinimum(0);
-			m_pctrlXLight->setMaximum(100);
-			m_pctrlXLight->setTickInterval(10);
-			m_pctrlYLight->setMinimum(0);
-			m_pctrlYLight->setMaximum(100);
-			m_pctrlYLight->setTickInterval(10);
-			m_pctrlZLight->setMinimum(0);
-			m_pctrlZLight->setMaximum(100);
-			m_pctrlZLight->setTickInterval(10);
+			m_pctrlXLight = new ExponentialSlider(true, 2.0, Qt::Horizontal);
+			m_pctrlYLight = new ExponentialSlider(true, 2.0, Qt::Horizontal);
+			m_pctrlZLight = new ExponentialSlider(true, 2.0, Qt::Horizontal);
 			m_pctrlXLight->setTickPosition(QSlider::TicksBelow);
 			m_pctrlYLight->setTickPosition(QSlider::TicksBelow);
 			m_pctrlZLight->setTickPosition(QSlider::TicksBelow);
@@ -360,7 +350,6 @@ void GLLightDlg::onDefaults()
 }
 
 
-
 void GLLightDlg::readParams(void)
 {
 	s_Light.m_bIsLightOn = m_pctrlLight->isChecked();
@@ -369,16 +358,14 @@ void GLLightDlg::readParams(void)
 	s_Light.m_Green   = (float)m_pctrlGreen->value()  /100.0f;
 	s_Light.m_Blue    = (float)m_pctrlBlue->value()   /100.0f;
 
+	s_Light.m_X  = m_pctrlXLight->expValue()/100.0;
+	s_Light.m_Y  = m_pctrlYLight->expValue()/100.0;
+	s_Light.m_Z  = m_pctrlZLight->expValue()/100.0;
 
-	float factor = 10.0f;
-	s_Light.m_X  = (float)m_pctrlXLight->value()/factor-5.0f;
-	s_Light.m_Y  = (float)m_pctrlYLight->value()/factor-5.0f;
-	s_Light.m_Z  = (float)m_pctrlZLight->value()/factor;
-
-	s_Light.m_Ambient     = (float)m_pctrlLightAmbient->value()  / 20.0f;
-	s_Light.m_Diffuse     = (float)m_pctrlLightDiffuse->value()  / 20.0f;
-	s_Light.m_Specular    = (float)m_pctrlLightSpecular->value() / 20.0f;
-
+	//	qDebug("Expvalue= %8.1f   %8.1f   %8.1f   ",m_pctrlLightAmbient->expValue(),m_pctrlLightDiffuse->expValue(),m_pctrlLightSpecular->expValue());
+	s_Light.m_Ambient     = m_pctrlLightAmbient->expValue()  / 20.0f;
+	s_Light.m_Diffuse     = m_pctrlLightDiffuse->expValue()  / 20.0f;
+	s_Light.m_Specular    = m_pctrlLightSpecular->expValue() / 20.0f;
 
 	s_Material.m_Ambient      = (float)m_pctrlMatAmbient->value()   /100.0f;
 	s_Material.m_Diffuse      = (float)m_pctrlMatDiffuse->value()   /100.0f;
@@ -395,15 +382,13 @@ void GLLightDlg::setParams(void)
 {
 	m_pctrlLight->setChecked(s_Light.m_bIsLightOn);
 
-	m_pctrlLightAmbient->setValue(   (int)(s_Light.m_Ambient  *20.0));
-	m_pctrlLightDiffuse->setValue(   (int)(s_Light.m_Diffuse  *20.0));
-	m_pctrlLightSpecular->setValue(  (int)(s_Light.m_Specular *20.0));
+	m_pctrlLightAmbient->setExpValue( s_Light.m_Ambient  *20.0);
+	m_pctrlLightDiffuse->setExpValue( s_Light.m_Diffuse  *20.0);
+	m_pctrlLightSpecular->setExpValue(s_Light.m_Specular *20.0);
 
-	float factor = 10.0f;
-	m_pctrlXLight->setValue((int)((s_Light.m_X+5.0)*factor));
-	m_pctrlYLight->setValue((int)((s_Light.m_Y+5.0)*factor));
-	m_pctrlZLight->setValue((int)((s_Light.m_Z)*factor));
-
+	m_pctrlXLight->setExpValue(s_Light.m_X*100.0);
+	m_pctrlYLight->setExpValue(s_Light.m_Y*100.0);
+	m_pctrlZLight->setExpValue(s_Light.m_Z*100.0);
 
 	m_pctrlRed->setValue(  (int)(s_Light.m_Red  *100.0));
 	m_pctrlGreen->setValue((int)(s_Light.m_Green*100.0));
@@ -424,7 +409,7 @@ void GLLightDlg::setParams(void)
 
 void GLLightDlg::setModelSize(double span)
 {
-	m_ModelSize = span;
+	m_ModelSize = span * 100.0; //in cm, to get sufficient range on the light position slider
 }
 
 
@@ -508,10 +493,15 @@ void GLLightDlg::setDefaults()
 	s_Light.m_Diffuse      = 1.20f;
 	s_Light.m_Specular     = 0.50f;
 
-	s_Light.m_X   =  0.1f * m_ModelSize;
-	s_Light.m_Y   =  0.1f * m_ModelSize;
-	s_Light.m_Z   =  m_ModelSize;
-
+	s_Light.m_X   =  0.1f * m_ModelSize/100.0;
+	s_Light.m_Y   =  0.1f * m_ModelSize/100.0;
+	s_Light.m_Z   =  m_ModelSize/100.0;
+	m_pctrlXLight->setRange(-(int)m_ModelSize, (int)m_ModelSize);
+	m_pctrlYLight->setRange(-(int)m_ModelSize, (int)m_ModelSize);
+	m_pctrlZLight->setRange(-(int)m_ModelSize, (int)m_ModelSize);
+	m_pctrlXLight->setTickInterval((int)((double)m_ModelSize/10.0));
+	m_pctrlYLight->setTickInterval((int)((double)m_ModelSize/10.0));
+	m_pctrlZLight->setTickInterval((int)((double)m_ModelSize/10.0));
 	s_Material.m_Ambient   = 1.0f;
 	s_Material.m_Diffuse   = 1.0f;
 	s_Material.m_Specular  = 1.0f;
@@ -562,7 +552,7 @@ void GLLightDlg::showEvent(QShowEvent *event)
 {
 	setParams();
 	setEnabled();
-//	apply();
+
 	event->accept();
 }
 
