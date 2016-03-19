@@ -20,13 +20,12 @@
 *****************************************************************************/
 
 
-#include "../../globals.h"
-#include "../../misc/LinePickerDlg.h"
-#include "../../misc/GLLightDlg.h"
-#include "../../misc/W3dPrefsDlg.h"
-#include "../../misc/Settings.h"
-#include "../../misc/LengthUnitDlg.h"
-#include "../../misc/Units.h"
+#include <globals.h>
+#include <misc/LinePickerDlg.h>
+#include <misc/W3dPrefsDlg.h>
+#include <misc/Settings.h>
+#include <misc/LengthUnitDlg.h>
+#include <misc/Units.h>
 #include "./BodyTransDlg.h"
 #include "./InertiaDlg.h"
 #include "./BodyScaleDlg.h"

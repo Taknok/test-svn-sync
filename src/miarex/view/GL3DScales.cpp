@@ -59,9 +59,9 @@ GL3DScales::GL3DScales(QWidget *)
 	connect(m_pctrlLegendMin, SIGNAL(editingFinished()), this, SLOT(onCpScale()));
 	connect(m_pctrlLegendMax, SIGNAL(editingFinished()), this, SLOT(onCpScale()));
 
-	connect(m_pctrlLiftScaleSlider, SIGNAL(sliderMoved(int)), this, SLOT(onLiftScale(int)));
-	connect(m_pctrlDragScaleSlider, SIGNAL(sliderMoved(int)), this, SLOT(onDragScale(int)));
-	connect(m_pctrlVelocityScaleSlider, SIGNAL(sliderMoved(int)), this, SLOT(onVelocityScale(int)));
+	connect(m_pctrlLiftScaleSlider, SIGNAL(sliderMoved(int)), this, SLOT(onLiftScale()));
+	connect(m_pctrlDragScaleSlider, SIGNAL(sliderMoved(int)), this, SLOT(onDragScale()));
+	connect(m_pctrlVelocityScaleSlider, SIGNAL(sliderMoved(int)), this, SLOT(onVelocityScale()));
 }
 
 
@@ -107,19 +107,19 @@ void GL3DScales::setupLayout()
 		{
 			QVBoxLayout *pSliderLayout = new QVBoxLayout;
 			{
-				m_pctrlLiftScaleSlider  = new QSlider(Qt::Horizontal);
+				m_pctrlLiftScaleSlider  = new ExponentialSlider(false, 3.0, Qt::Horizontal);
 				m_pctrlLiftScaleSlider->setMinimum(0);
 				m_pctrlLiftScaleSlider->setMaximum(100);
 				m_pctrlLiftScaleSlider->setSliderPosition(50);
 				m_pctrlLiftScaleSlider->setTickInterval(5);
 				m_pctrlLiftScaleSlider->setTickPosition(QSlider::TicksBelow);
-				m_pctrlDragScaleSlider = new QSlider(Qt::Horizontal);
+				m_pctrlDragScaleSlider = new ExponentialSlider(false, 3.0, Qt::Horizontal);
 				m_pctrlDragScaleSlider->setMinimum(0);
 				m_pctrlDragScaleSlider->setMaximum(100);
 				m_pctrlDragScaleSlider->setSliderPosition(50);
 				m_pctrlDragScaleSlider->setTickInterval(5);
 				m_pctrlDragScaleSlider->setTickPosition(QSlider::TicksBelow);
-				m_pctrlVelocityScaleSlider  = new QSlider(Qt::Horizontal);
+				m_pctrlVelocityScaleSlider  = new ExponentialSlider(false, 3.0, Qt::Horizontal);
 				m_pctrlVelocityScaleSlider->setMinimum(0);
 				m_pctrlVelocityScaleSlider->setMaximum(100);
 				m_pctrlVelocityScaleSlider->setSliderPosition(50);
@@ -254,18 +254,9 @@ void GL3DScales::initDialog()
 	m_pctrlLegendMin->setEnabled(!QMiarex::s_bAutoCpScale);
 	m_pctrlLegendMax->setEnabled(!QMiarex::s_bAutoCpScale);
 
-	double pos;
-	pos = -QMiarex::s_LiftScale*QMiarex::s_LiftScale + QMiarex::s_LiftScale*sqrt(QMiarex::s_LiftScale*QMiarex::s_LiftScale+4.0*1.01);
-	pos = pos/2.0/1.01;
-	m_pctrlLiftScaleSlider->setSliderPosition((int)(pos*100.0));
-
-	pos = -QMiarex::s_DragScale*QMiarex::s_DragScale + QMiarex::s_DragScale*sqrt(QMiarex::s_DragScale*QMiarex::s_DragScale+4.0*1.01);
-	pos = pos/2.0/1.01;
-	m_pctrlDragScaleSlider->setSliderPosition((int)(pos*100.0));
-
-	pos = -QMiarex::s_VelocityScale*QMiarex::s_VelocityScale + QMiarex::s_VelocityScale*sqrt(QMiarex::s_VelocityScale*QMiarex::s_VelocityScale+4.0*1.01);
-	pos = pos/2.0/1.01;
-	m_pctrlVelocityScaleSlider->setSliderPosition((int)(pos*100.0));
+	m_pctrlLiftScaleSlider->setExpValue(QMiarex::s_LiftScale);
+	m_pctrlDragScaleSlider->setExpValue(QMiarex::s_DragScale);
+	m_pctrlVelocityScaleSlider->setExpValue(QMiarex::s_VelocityScale);
 
 	if(s_pos==0)	    m_pctrlLE->setChecked(true);
 	else if(s_pos==1)	m_pctrlTE->setChecked(true);
@@ -306,29 +297,29 @@ void GL3DScales::onApply()
 }
 
 
-void GL3DScales::onLiftScale(int pos)
+void GL3DScales::onLiftScale()
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
-	pMiarex->s_LiftScale    = pos/100.0/sqrt(1.01-pos/100.0);
+	pMiarex->s_LiftScale    = m_pctrlLiftScaleSlider->expValue();
 	pMiarex->m_bResetglLift = true;
 	pMiarex->m_bResetglPanelForce = true;
 	pMiarex->updateView();
 }
 
 
-void GL3DScales::onDragScale(int pos)
+void GL3DScales::onDragScale()
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
-	pMiarex->s_DragScale    = pos/100.0/sqrt(1.01-pos/100.0);
+	pMiarex->s_DragScale    = m_pctrlDragScaleSlider->expValue();
 	pMiarex->m_bResetglDrag = true;
 	pMiarex->updateView();
 }
 
 
-void GL3DScales::onVelocityScale(int pos)
+void GL3DScales::onVelocityScale()
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
-	pMiarex->s_VelocityScale    = pos/100.0/sqrt(1.01-pos/100.0);
+	pMiarex->s_VelocityScale    = m_pctrlVelocityScaleSlider->expValue();
 	pMiarex->m_bResetglDownwash = true;
 	pMiarex->m_bResetglSurfVelocities = true;
 	pMiarex->updateView();

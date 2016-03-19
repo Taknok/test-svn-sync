@@ -28,7 +28,7 @@
 #include <QOpenGLTexture>
 #include "params.h"
 #include "xflr5.h"
-#include "misc/GLLightDlg.h"
+#include <miarex/view/GLLightDlg.h>
 #include "objects/CRectangle.h"
 #include <ArcBall.h>
 #include <PointMass.h>

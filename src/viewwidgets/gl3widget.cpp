@@ -48,13 +48,14 @@
 #define CHORDPOINTS 29
 
 
-#define NH  39
-#define NX  59
+#define NH  17
+#define NX  39
 
 
 
 void *GL3Widget::s_pMiarex;
 void *GL3Widget::s_pMainFrame;
+
 GLLightDlg *GL3Widget::s_pglLightDlg = NULL;
 
 
@@ -1314,9 +1315,9 @@ void GL3Widget::glMakeBodySplines(Body *pBody)
 				N.normalize();
 			}
 
-			pBodyVertexArray[iv++] = N.x;
-			pBodyVertexArray[iv++] = N.y;
-			pBodyVertexArray[iv++] = N.z;
+			pBodyVertexArray[iv++] =  N.x;
+			pBodyVertexArray[iv++] =  N.y;
+			pBodyVertexArray[iv++] =  N.z;
 
 			pBodyVertexArray[iv++] = (float)(NX-k)/(float)NX;
 			pBodyVertexArray[iv++] = (float)l/(float)NH;
@@ -1346,9 +1347,9 @@ void GL3Widget::glMakeBodySplines(Body *pBody)
 				N = TALB * LATB;
 				N.normalize();
 			}
-			pBodyVertexArray[iv++] = N.x;
-			pBodyVertexArray[iv++] = N.y;
-			pBodyVertexArray[iv++] = N.z;
+			pBodyVertexArray[iv++] =  N.x;
+			pBodyVertexArray[iv++] = -N.y;
+			pBodyVertexArray[iv++] =  N.z;
 
 			pBodyVertexArray[iv++] = (float)k/(float)NX;
 			pBodyVertexArray[iv++] = (float)l/(float)NH;
@@ -1374,9 +1375,9 @@ void GL3Widget::glMakeBodySplines(Body *pBody)
 
 			N = CVector(0.0, Point.y, Point.z);
 			N.normalize();
-			pBodyVertexArray[iv++] = N.x;
-			pBodyVertexArray[iv++] = N.y;
-			pBodyVertexArray[iv++] = N.z;
+			pBodyVertexArray[iv++] =  N.x;
+			pBodyVertexArray[iv++] =  N.y;
+			pBodyVertexArray[iv++] =  N.z;
 
 			pBodyVertexArray[iv++] = u;
 			pBodyVertexArray[iv++] = v;
@@ -1391,9 +1392,9 @@ void GL3Widget::glMakeBodySplines(Body *pBody)
 			pBodyVertexArray[iv++] = Point.z;
 			N = CVector(0.0, Point.y, Point.z);
 			N.normalize();
-			pBodyVertexArray[iv++] = N.x;
-			pBodyVertexArray[iv++] = N.y;
-			pBodyVertexArray[iv++] = N.z;
+			pBodyVertexArray[iv++] =  N.x;
+			pBodyVertexArray[iv++] =  N.y;
+			pBodyVertexArray[iv++] =  N.z;
 
 			pBodyVertexArray[iv++] = u;
 			pBodyVertexArray[iv++] = v;
@@ -1715,8 +1716,6 @@ void GL3Widget::paintGL()
 void GL3Widget::paintGL3()
 {
 //	makeCurrent();
-
-
 	int width, height;
 	glClearColor(Settings::backgroundColor().redF(), Settings::backgroundColor().greenF(), Settings::backgroundColor().blueF(), 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -1725,9 +1724,7 @@ void GL3Widget::paintGL3()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_DEPTH_TEST);
 
-
 	QVector4D clipPlane(0.0,0.0,-1,m_ClipPlanePos);
-
 
 	double s, pixelRatio;
 	s = 1.0;
@@ -1739,13 +1736,12 @@ void GL3Widget::paintGL3()
 	m_OrthoMatrix.setToIdentity();
 	m_OrthoMatrix.ortho(-s,s,-(height*s)/width,(height*s)/width,-50.0*s,50.0*s);
 
-	QMatrix4x4 mat44(m_ArcBall.ab_quat);
-
+	QMatrix4x4 matQuat(m_ArcBall.ab_quat);
 
 	QMatrix4x4 modelMatrix;//keep identity
-	m_viewMatrix.setToIdentity();
-	m_viewMatrix *= mat44.transposed();
+	m_viewMatrix= matQuat.transposed();
 	m_pvmMatrix = m_OrthoMatrix * m_viewMatrix * modelMatrix;
+
 	m_ShaderProgramLine.bind();
 	m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
 	m_ShaderProgramLine.setUniformValue(m_ClipPlaneLocationLine, clipPlane);
@@ -1753,17 +1749,41 @@ void GL3Widget::paintGL3()
 
 	if(m_bArcball) paintArcBall();
 
-	m_viewMatrix.scale(m_glScaled, m_glScaled, m_glScaled);
-	m_viewMatrix.translate(m_glRotCenter.x, m_glRotCenter.y, m_glRotCenter.z);
-	m_pvmMatrix = m_OrthoMatrix * m_viewMatrix * modelMatrix;
-	if(m_bAxes)    paintAxes();
 
 	m_ShaderProgramTexture.bind();
 	m_ShaderProgramTexture.setUniformValue(m_mMatrixLocationTexture, modelMatrix);
-	m_ShaderProgramTexture.setUniformValue(m_vMatrixLocationTexture, m_viewMatrix);
 	m_ShaderProgramTexture.setUniformValue(m_ClipPlaneLocationTexture, clipPlane);
-	m_ShaderProgramTexture.setUniformValue(m_pvmMatrixLocationTexture, m_pvmMatrix);
 	m_ShaderProgramTexture.release();
+
+	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
+	if(pMainFrame->m_glLightDlg.isVisible())
+	{
+		CVector lightPos(GLLightDlg::s_Light.m_X, GLLightDlg::s_Light.m_Y, GLLightDlg::s_Light.m_Z);
+		double radius = (GLLightDlg::s_Light.m_Z+2.0)/73.0;
+		QColor lightColor;
+		lightColor.setRedF(GLLightDlg::s_Light.m_Red);
+		lightColor.setGreenF(GLLightDlg::s_Light.m_Green);
+		lightColor.setBlueF(GLLightDlg::s_Light.m_Blue);
+		lightColor.setAlphaF(1.0);
+		m_ShaderProgramTexture.bind();
+		QMatrix4x4 idMatrix;//keep identity
+		m_ShaderProgramTexture.setUniformValue(m_vMatrixLocationTexture, idMatrix);
+		m_pvmMatrix = m_OrthoMatrix;
+		m_ShaderProgramTexture.setUniformValue(m_pvmMatrixLocationTexture,  m_pvmMatrix);
+		m_ShaderProgramTexture.release();
+
+		paintSphere(lightPos, radius, lightColor, false);
+	}
+
+	m_ShaderProgramTexture.bind();
+	m_ShaderProgramTexture.setUniformValue(m_vMatrixLocationTexture, m_viewMatrix);
+	m_ShaderProgramTexture.setUniformValue(m_pvmMatrixLocationTexture, m_pvmMatrix);
+	m_viewMatrix.scale(m_glScaled, m_glScaled, m_glScaled);
+	m_viewMatrix.translate(m_glRotCenter.x, m_glRotCenter.y, m_glRotCenter.z);
+	m_pvmMatrix = m_OrthoMatrix * m_viewMatrix * modelMatrix;
+	m_ShaderProgramTexture.release();
+
+	if(m_bAxes)    paintAxes();
 
 	switch(m_iView)
 	{
@@ -3522,7 +3542,7 @@ void GL3Widget::glMakePanelForces(int nPanels, Panel *pPanel, WPolar *pWPolar, P
 	double rmin, rmax, range;
 	double coef = 1.;
 	Quaternion Qt; // Quaternion operator to align the reference arrow to the panel's normal
-	CVector Omega; //rotation vector to align the reference arrow to the panel's normal
+	CVector Omega; // rotation vector to align the reference arrow to the panel's normal
 	CVector O;
 	//The vectors defining the reference arrow
 	CVector R(0.0,0.0,1.0);
