@@ -36,8 +36,7 @@
 #include "./analysis/AeroDataDlg.h"
 #include "./view/TargetCurveDlg.h"
 #include "../mainframe.h"
-#include "misc/Settings.h"
-#include "globals.h"
+#include <globals.h>
 #include "./mgt/ManagePlanesDlg.h"
 #include "./mgt/XmlPlaneReader.h"
 #include "./mgt/XmlPlaneWriter.h"
@@ -55,17 +54,17 @@
 #include "./analysis/WPolarDlg.h"
 #include "./analysis/StabPolarDlg.h"
 #include "./analysis/EditPolarDefDlg.h"
-#include "../objects/PointMass.h"
-#include "../objects/Surface.h"
-#include "../misc/ProgressDlg.h"
-#include "../misc/ModDlg.h"
-#include "../misc/RenameDlg.h"
-#include "../misc/PolarFilterDlg.h"
-#include "../misc/ObjectPropsDlg.h"
-#include "../misc/Units.h"
-#include "../misc/W3dPrefsDlg.h"
-#include "../misc/GLLightDlg.h"
-#include "../misc/EditPlrDlg.h"
+#include <objects/PointMass.h>
+#include <objects/Surface.h>
+#include <misc/Settings.h>
+#include <misc/ProgressDlg.h>
+#include <misc/ModDlg.h>
+#include <misc/RenameDlg.h>
+#include <misc/PolarFilterDlg.h>
+#include <misc/ObjectPropsDlg.h>
+#include <misc/Units.h>
+#include <misc/W3dPrefsDlg.h>
+#include <misc/EditPlrDlg.h>
 
 #ifdef Q_OS_WIN
 #include <windows.h> // for Sleep
@@ -1690,23 +1689,30 @@ void QMiarex::glMake3DObjects()
 
 	if(m_bResetglBody && pCurBody)
 	{
-		if(pCurBody->isSplineType())         m_pgl3Widget->glMakeBodySplines(pCurBody);
-		else if(pCurBody->isFlatPanelType()) m_pgl3Widget->glMakeBody3DFlatPanels(pCurBody);
+		Body translatedBody;
+		translatedBody.duplicate(pCurBody);
+		translatedBody.translate(m_pCurPlane->m_BodyPos);
+		if(pCurBody->isSplineType())         m_pgl3Widget->glMakeBodySplines(&translatedBody);
+		else if(pCurBody->isFlatPanelType()) m_pgl3Widget->glMakeBody3DFlatPanels(&translatedBody);
 		m_bResetglBody = false;
 	}
 
 	if(m_bResetglGeom  && m_pCurPlane && m_iView==XFLR5::W3DVIEW)
 	{
-		Body TranslatedBody;
+		Body translatedBody;
 		if(m_pCurPlane->body())
 		{
-			TranslatedBody.duplicate(m_pCurPlane->body());
-			TranslatedBody.translate(m_pCurPlane->bodyPos());
+			translatedBody.duplicate(m_pCurPlane->body());
+			translatedBody.translate(m_pCurPlane->bodyPos());
 		}
 
 		for(int iw=0; iw<MAXWINGS; iw++)
 		{
-			if(m_pCurPlane->wing(iw)) m_pgl3Widget->glMakeWing(iw, m_pCurPlane->wing(iw), m_pCurPlane->body());
+			if(m_pCurPlane->wing(iw))
+			{
+				if(m_pCurPlane->body())  m_pgl3Widget->glMakeWing(iw, m_pCurPlane->wing(iw), &translatedBody);
+				else                     m_pgl3Widget->glMakeWing(iw, m_pCurPlane->wing(iw), NULL);
+			}
 		}
 
 		m_bResetglGeom = false;
@@ -1993,6 +1999,11 @@ void QMiarex::keyPressEvent(QKeyEvent *event)
 
 			if(s_pMainFrame->m_pctrl3DScalesWidget->isVisible()) s_pMainFrame->m_pctrl3DScalesWidget->hide();
 			updateView();
+			break;
+		}
+		case Qt::Key_A:
+		{
+			onGL3DScale();
 			break;
 		}
 
@@ -4663,14 +4674,12 @@ void QMiarex::onGL3DScale()
 		return;
 	}
 	if(s_pMainFrame->m_pctrl3DScalesWidget->isVisible()) s_pMainFrame->m_pctrl3DScalesWidget->hide();
-	else                                               s_pMainFrame->m_pctrl3DScalesWidget->show();
+	else                                                 s_pMainFrame->m_pctrl3DScalesWidget->show();
 
 	s_pMainFrame->m_pW3DScalesAct->setChecked(s_pMainFrame->m_pctrl3DScalesWidget->isVisible());
 //	if(m_pctrl3DSettings->isChecked()) s_pMainFrame->m_pctrl3DScalesWidget->show();
 //	else                               s_pMainFrame->m_pctrl3DScalesWidget->hide();
 }
-
-
 
 
 
@@ -5777,13 +5786,6 @@ void QMiarex::onSetupLight()
 
 	s_pMainFrame->m_glLightDlg.setgl3Widget(m_pgl3Widget);
 	s_pMainFrame->m_glLightDlg.show();
-
-//	double LightFactor;
-//	if(m_pCurPlane) LightFactor =  (GLfloat)pow(m_pCurPlane->planformSpan()/2.0,0.1);
-//	else            LightFactor = 1.0;
-//	m_pgl1Widget->glSetupLight(0.0, LightFactor);
-//	m_pgl3Widget->glSetupLight();
-//	updateView();
 }
 
 

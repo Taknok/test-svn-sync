@@ -42,7 +42,7 @@
 #include <xflr5.h>
 #include <params.h>
 #include <QGraph.h>
-#include <GLLightDlg.h>
+#include <miarex/view/GLLightDlg.h>
 
 class GL3Widget;
 class InverseViewWidget;

@@ -21,7 +21,6 @@
 
 #include <misc/Units.h>
 #include <misc/Settings.h>
-#include <misc/GLLightDlg.h>
 #include <misc/W3dPrefsDlg.h>
 #include <objects/Surface.h>
 #include "wingseldlg.h"

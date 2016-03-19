@@ -22,7 +22,6 @@
 #include <globals.h>
 #include <misc/Settings.h>
 #include <misc/Units.h>
-#include <misc/GLLightDlg.h>
 #include <misc/W3dPrefsDlg.h>
 #include <objects/Surface.h>
 #include "../Objects3D.h"

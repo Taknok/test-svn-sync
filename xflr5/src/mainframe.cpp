@@ -64,7 +64,6 @@
 #include "xinverse/XInverse.h"
 #include "objects/Polar.h"
 #include "openglinfodlg.h"
-#include <qwidgetdlg.h>
 
 #include "inverseviewwidget.h"
 #include "gl3widget.h"
@@ -2546,15 +2545,7 @@ void MainFrame::keyPressEvent(QKeyEvent *event)
 				if(bCtrl) onOpenGLInfo();
 				break;
 			}
-			case Qt::Key_9:
-			{
-				if(bCtrl)
-				{
-					QWidgetDlg dlg;
-					dlg.exec();
-				}
-				break;
-			}
+
 			case Qt::Key_L:
 			{
 				onLogFile();
