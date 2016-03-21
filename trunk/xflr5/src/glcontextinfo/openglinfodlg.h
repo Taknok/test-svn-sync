@@ -32,7 +32,6 @@ private:
 	QLayout *m_profiles;
 	QLayout *m_options;
 	QTextEdit *m_glOutput;
-	QTextEdit *m_extensions;
 	QVBoxLayout *m_renderWindowLayout;
 	QWidget *m_renderWindowContainer;
 	QSurface *m_surface;

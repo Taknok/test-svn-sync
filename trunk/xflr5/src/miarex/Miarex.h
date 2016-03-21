@@ -236,7 +236,6 @@ public:
 	void fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve);
 	void fillStabCurve(Curve *pCurve, WPolar *pWPolar, int iMode);
 	void glMake3DObjects();
-	void glDrawMasses();
 	bool intersectObject(CVector O,  CVector U, CVector &I);
 	void LLTAnalyze(double V0, double VMax, double VDelta, bool bSequence, bool bInitCalc);	
 	bool loadSettings(QSettings *pSettings);

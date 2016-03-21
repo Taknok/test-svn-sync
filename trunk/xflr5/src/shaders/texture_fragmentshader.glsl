@@ -44,7 +44,7 @@ void main()
 			MaterialAmbientColor  = vec4(vertexcolor.rgb * LightAmbient, vertexcolor.a);
 			MaterialDiffuseColor  = vec4(vertexcolor.rgb * LightDiffuse, vertexcolor.a);
 		}
-		MaterialSpecularColor = vec4(LightSpecular, LightSpecular, LightSpecular, 1.0);
+		MaterialSpecularColor = vec4(1.0, 1.0, 1.0, 1.0);
 
 		// Distance to the light
 		float distance = length(LightPosition_worldspace - Position_worldspace);

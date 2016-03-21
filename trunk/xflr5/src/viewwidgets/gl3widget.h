@@ -97,8 +97,10 @@ public:
 	void glSetupLight();
 
 private:
-	void paintFoilNames(void *pWingPtr);
-	void paintMasses(double volumeMass, CVector pos, QString tag, QList<PointMass*> ptMasses);
+
+	void glDrawMasses(Plane *pPlane);
+	void glDrawMasses(Body *pBody);
+	void glDrawMasses(Wing *pWing);
 	void getGLError();
 	void glInverseMatrix();
 	void glMakeUnitSphere();
@@ -129,6 +131,8 @@ private:
 	void glRenderWingView();
 
 	void paintGL3();
+	void paintFoilNames(void *pWingPtr);
+	void paintMasses(double volumeMass, CVector pos, QString tag, const QList<PointMass *> &ptMasses);
 	void paintOverlay();
 	void paintArcBall();
     void paintAxes();
@@ -218,6 +222,8 @@ private:
 
 	double m_ClipPlanePos;      /**< the z-position of the clip plane in viewport coordinates */
 	double MatIn[4][4], MatOut[4][4];
+
+	bool m_bUse110StyleShaders;
 
 	QMatrix4x4 m_OrthoMatrix;
 	QMatrix4x4 m_pvmMatrix;

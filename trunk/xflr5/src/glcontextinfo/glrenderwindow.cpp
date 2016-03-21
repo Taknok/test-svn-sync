@@ -70,7 +70,7 @@ static const char *fragmentShaderSource110 =
 	"}\n";
 
 static const char *vertexShaderSource =
-	"#version 150\n"
+	"#version 330\n"
 	"in vec4 vertex;\n"
 	"in vec4 texCoord;\n"
 	"out vec4 texc;\n"
@@ -82,7 +82,7 @@ static const char *vertexShaderSource =
 	"}\n";
 
 static const char *fragmentShaderSource =
-	"#version 150\n"
+	"#version 330\n"
 	"uniform sampler2D texture;\n"
 	"in vec4 texc;\n"
 	"out vec4 fragColor;\n"
@@ -116,7 +116,7 @@ void GLRenderWindow::init()
 
     const char *vsrc = useNewStyleShader ? vertexShaderSource : vertexShaderSource110;
     const char *fsrc = useNewStyleShader ? fragmentShaderSource : fragmentShaderSource110;
-	QString strong = "Using version %s shader" +  useNewStyleShader ? "150" : "110";
+	QString strong = "Using version %s shader" +  useNewStyleShader ? "330" : "110";
 	qDebug("Using version %s shader", useNewStyleShader ? "150" : "110");
 
 	if (!m_pShaderProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, vsrc)) {

@@ -47,7 +47,17 @@ int main(int argc, char *argv[])
  * is mandatory on some platforms (for example, OS X) when an OpenGL core profile context is requested.
  * This is to ensure that resource sharing between contexts stays functional as all internal contexts
  *  are created using the correct version and profile.
+ *
  * */
+/*
+ *  https://www.opengl.org/wiki/Core_And_Compatibility_in_Contexts
+ *  Platform Issue (MacOSX): When MacOSX 10.7 introduced support for OpenGL beyond 2.1, they also
+ *  introduced the core/compatibility dichotomy. However, they did not introduce support for the
+ *  compatibility profile itself. Instead, MacOSX gives you a choice: core profile for versions 3.2 or
+ *  higher, or just version 2.1.
+ *  There is no way to get access to features after 2.1 and still access the Fixed Function Pipeline.
+ */
+
 
 #ifdef QT_DEBUG
 	QString strange;
@@ -78,8 +88,8 @@ int main(int argc, char *argv[])
 	}
 	qDebug()<<"/main";
 	qDebug()<<"";
-#endif
-*/
+#endif*/
+
 	XFLR5Application app(argc, argv);
 	return app.exec();
 }
