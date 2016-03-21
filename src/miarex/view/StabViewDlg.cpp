@@ -60,7 +60,6 @@ StabViewDlg::StabViewDlg(QWidget *parent) : QWidget(parent)
 
 StabViewDlg::~StabViewDlg()
 {
-	Trace("Destroying StabviewDlg");
 	delete [] m_precision;
 }
 

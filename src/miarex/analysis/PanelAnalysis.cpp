@@ -164,7 +164,7 @@ bool PanelAnalysis::allocateMatrix(int matSize, int &memsize)
 
 	releaseArrays();
 
-	Trace("PanelAnalysis::Allocating matrix arrays");
+//	Trace("PanelAnalysis::Allocating matrix arrays");
 
 	int size2 = matSize * matSize;
 	try
@@ -191,9 +191,9 @@ bool PanelAnalysis::allocateMatrix(int matSize, int &memsize)
 	{
 		releaseArrays();
 		s_MaxMatSize = 0;
-		Trace(e.what());
+//		Trace(e.what());
 		strange = "Memory allocation error: the request for additional memory has been denied.\nPlease reduce the model's size.";
-		Trace(strange);
+//		Trace(strange);
 		return false;
 	}
 
@@ -205,7 +205,7 @@ bool PanelAnalysis::allocateMatrix(int matSize, int &memsize)
 	memsize += sizeof(int)     * 1 * matSize;
 
 	strange = QString("PanelAnalysis::Memory allocation for the matrix arrays is %1 MB").arg((double)memsize/1024./1024., 7, 'f', 2);
-	Trace(strange);
+//	Trace(strange);
 
 	memset(m_aij,     0, size2 * sizeof(double));
 	memset(m_aijWake, 0, size2 * sizeof(double));
@@ -238,7 +238,7 @@ bool PanelAnalysis::allocateMatrix(int matSize, int &memsize)
 	memsize += RHSSize;
 
 	strange = QString("PanelAnalysis::Memory allocation for the analysis arrays is %1 MB").arg((double)memsize/1024./1024., 7, 'f', 2);
-	Trace(strange);
+//	Trace(strange);
 
 	return true;
 }
@@ -250,7 +250,7 @@ bool PanelAnalysis::allocateMatrix(int matSize, int &memsize)
  */
 bool PanelAnalysis::allocateRHS(int matSize, int &memsize)
 {
-	Trace("PanelAnalysis::Allocating RHS arrays");
+//	Trace("PanelAnalysis::Allocating RHS arrays");
 	int size = matSize * s_MaxRHSSize;
 
 	if(size==0) return false;
@@ -269,7 +269,7 @@ bool PanelAnalysis::allocateRHS(int matSize, int &memsize)
 	catch(std::exception &e)
 	{
 		releaseArrays();
-		Trace(e.what());
+//		Trace(e.what());
 		return false;
 	}
 
@@ -285,7 +285,7 @@ bool PanelAnalysis::allocateRHS(int matSize, int &memsize)
 	memset(m_3DQInf, 0, s_MaxRHSSize*sizeof(double));
 
 	QString strange = QString("PanelAnalysis::Memory allocation for the RHS arrays is %1 MB").arg((double)memsize/1024./1024., 7, 'f', 2);
-	Trace(strange);
+//	Trace(strange);
 
 
 	return true;
@@ -297,8 +297,6 @@ bool PanelAnalysis::allocateRHS(int matSize, int &memsize)
  */
 void PanelAnalysis::releaseArrays()
 {
-	Trace("PanelAnalysis::Releasing Matrix and RHS arrays");
-
 	if(m_aij)     delete [] m_aij;
 	if(m_aijWake) delete [] m_aijWake;
 	m_aij = m_aijWake = NULL;

@@ -389,7 +389,6 @@ void ReynoldsFormat(QString &str, double f)
 /**
 * Outputs in a debug file the current time and the value of the integer passed as an input parameter.
 * The file is in the user's default temporary directory with the name Trace.log
-* The file is in the user's default temporary directory with the name Trace.log. 
 * Used for debugging.
 *@param n the integer to output
 */
@@ -441,6 +440,7 @@ void Trace(QString msg)
 	{
 		QTextStream ts(MainFrame::s_pTraceFile);
 		ts<<str<<"\n";
+		ts.flush();
 	}
 	qDebug()<<str;
 }

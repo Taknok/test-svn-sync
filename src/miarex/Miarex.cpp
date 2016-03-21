@@ -27,7 +27,7 @@
 #include <QAction>
 #include <QFileDialog>
 #include <QColorDialog>
-#include <QXmlStreamWriter>
+#include <QDesktopServices>
 #include <math.h>
 
 #include "Miarex.h"
@@ -419,8 +419,6 @@ QMiarex::QMiarex(QWidget *parent)
  */
 QMiarex::~QMiarex()
 {
-	Trace("Destroying Miarex");
-
 	if(m_pLLTDlg) delete m_pLLTDlg;
 	if(m_pLLT)    delete m_pLLT;
 	if(m_pPanelAnalysisDlg) delete m_pPanelAnalysisDlg;
@@ -1840,48 +1838,6 @@ void QMiarex::glMake3DObjects()
 
 
 
-/**
- * Draws the point masses, the object masses, and the CG position in the OpenGL viewport
-*/
-void QMiarex::glDrawMasses()
-{
-	double delta = 0.02/m_pgl3Widget->m_glScaled;
-
-	for(int iw=0; iw<MAXWINGS; iw++)
-	{
-		if(pWing(iw))
-		{
-			m_pgl3Widget->paintMasses(pWing(iw)->m_VolumeMass, m_pCurPlane->WingLE(iw).translated(0.0,0.0,delta), pWing(iw)->m_WingName,pWing(iw)->m_PointMass);
-		}
-	}
-
-	if(m_pCurPlane)
-	{
-		m_pgl3Widget->paintMasses(0.0, CVector(0.0,0.0,0.0),"",m_pCurPlane->m_PointMass);
-	}
-
-	if(m_pCurPlane && m_pCurPlane->body())
-	{
-		Body *pCurBody = m_pCurPlane->body();
-
-		m_pgl3Widget->paintMasses(pCurBody->m_VolumeMass,
-								  m_pCurPlane->bodyPos().translated(m_pCurPlane->body()->Length()/5,0.0,0.0),
-								  pCurBody->m_BodyName,
-								  pCurBody->m_PointMass);
-	}
-
-	//plot CG
-	CVector Place(m_pCurPlane->CoG().x, m_pCurPlane->CoG().y, m_pCurPlane->CoG().z);
-	m_pgl3Widget->paintSphere(Place,
-							  W3dPrefsDlg::s_MassRadius*2.0/m_pgl3Widget->m_glScaled,
-							  W3dPrefsDlg::s_MassColor.lighter());
-
-	m_pgl3Widget->glRenderText(m_pCurPlane->CoG().x, m_pCurPlane->CoG().y, m_pCurPlane->CoG().z + delta,
-							  "CoG "+QString("%1").arg(m_pCurPlane->totalMass()*Units::kgtoUnit(), 7,'g',3)
-							  +Units::weightUnitLabel(), W3dPrefsDlg::s_MassColor.lighter(125));
-}
-
-
 
 
 /**
@@ -2007,6 +1963,15 @@ void QMiarex::keyPressEvent(QKeyEvent *event)
 			break;
 		}
 
+		case Qt::Key_D:
+		{
+			if(MainFrame::s_bTrace)
+			{
+				QString FileName = QDir::tempPath() + "/Trace.log";
+				QDesktopServices::openUrl(QUrl::fromLocalFile(FileName));
+			}
+			break;
+		}
 		case Qt::Key_L:
 		{
 			s_pMainFrame->onLogFile();
@@ -2085,7 +2050,11 @@ void QMiarex::keyPressEvent(QKeyEvent *event)
 			}*/
 			break;
 		}
-
+		case Qt::Key_8:
+		{
+			if(bCtrl) s_pMainFrame->onOpenGLInfo();
+			break;
+		}
 		default:
 			//			QWidget::keyPressEvent(event);
 			event->ignore();

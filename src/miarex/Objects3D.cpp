@@ -109,7 +109,7 @@ bool Objects3D::allocatePanelArrays(int &memsize)
 	memsize  = sizeof(CVector) * 8 * 2 * s_MaxPanelSize; //bytes
 	memsize += sizeof(Panel)   * 8 * 2 * s_MaxPanelSize; //bytes
 
-	Trace(QString("Objects3D::   ...Allocated %1MB for the panel and node arrays").arg((double)memsize/1024./1024.));
+//	Trace(QString("Objects3D::   ...Allocated %1MB for the panel and node arrays").arg((double)memsize/1024./1024.));
 
 	Panel::s_pNode = s_Node;
 	Panel::s_pWakeNode = s_WakeNode;
@@ -131,8 +131,6 @@ bool Objects3D::allocatePanelArrays(int &memsize)
  */
 void Objects3D::releasePanelMemory()
 {
-	Trace("Objects3D::ReleasingPanelMemory()");
-
 	if(s_Node)        delete[] s_Node;
 	if(s_MemNode)     delete[] s_MemNode;
 	if(s_WakeNode)    delete[] s_WakeNode;
@@ -307,8 +305,7 @@ bool Objects3D::initializePanels(Plane *pPlane, WPolar *pWPolar)
 
 	if(PanelArraySize>s_MaxPanelSize)
 	{
-
-		Trace(QString("Objects3D::Requesting additional memory for %1 panels").arg(PanelArraySize));
+//		Trace(QString("Objects3D::Requesting additional memory for %1 panels").arg(PanelArraySize));
 
 		// allocate 10% more than needed to avoid repeating the operation if the user requirement increases sightly again.
 		s_MaxPanelSize = (int)((double)PanelArraySize *1.1);
@@ -332,7 +329,7 @@ bool Objects3D::initializePanels(Plane *pPlane, WPolar *pWPolar)
 			return false;
 		}
 
-		Trace("");
+//		Trace("");
 		memsize += MatrixSize;
 	}
 
@@ -2233,7 +2230,7 @@ WPolar* Objects3D::insertNewWPolar(WPolar *pNewWPolar, Plane *pCurPlane)
 		pOldWPolar = (WPolar*)s_oaWPolar.at(ip);
 		if(pOldWPolar==pNewWPolar)
 		{
-			Trace("this WPolar is already in the array, nothing inserted");
+//			Trace("this WPolar is already in the array, nothing inserted");
 			return NULL;
 		}
 	}

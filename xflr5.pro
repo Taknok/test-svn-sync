@@ -304,7 +304,10 @@ TRANSLATIONS = translations/xflr5v6.ts \
     translations/xflr5v6_fr.ts \
     translations/xflr5v6_ja.ts
 
-RESOURCES += xflr5.qrc
+RESOURCES += \
+	images.qrc \
+	shaders.qrc \
+	textures.qrc
 
 win32 {
     TARGET = XFLR5

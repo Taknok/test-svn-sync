@@ -92,7 +92,7 @@ void OpenGLInfoDlg::addVersions(QLayout *layout)
 		pHBoxLayout->addWidget(m_version);
 		for (size_t i = 0; i < sizeof(versions) / sizeof(Version); ++i) {
 			m_version->addItem(QString::fromLatin1(versions[i].str));
-			if (versions[i].major == 2 && versions[i].minor == 0)
+			if (versions[i].major == 3 && versions[i].minor == 3)
 				m_version->setCurrentIndex(m_version->count() - 1);
 		}
 
@@ -172,16 +172,10 @@ void OpenGLInfoDlg::setupLayout()
 				}
 				pHSplit->addWidget(widgetWithLayout(pSettingsLayout));
 
-				QVBoxLayout *pOutputLayout = new QVBoxLayout;
-				{
-					m_glOutput = new QTextEdit;
-					m_glOutput->setReadOnly(true);
-					pOutputLayout->addWidget(m_glOutput);
-					m_extensions = new QTextEdit;
-					m_extensions->setReadOnly(true);
-					pOutputLayout->addWidget(m_extensions);
-				}
-				pHSplit->addWidget(widgetWithLayout(pOutputLayout));
+
+				m_glOutput = new QTextEdit;
+				m_glOutput->setReadOnly(true);
+				pHSplit->addWidget(m_glOutput);
 
 				pHSplit->setStretchFactor(0, 4);
 				pHSplit->setStretchFactor(1, 6);
@@ -232,7 +226,6 @@ void OpenGLInfoDlg::start()
 	fmt.setDepthBufferSize(16);
 
 	m_glOutput->clear();
-	m_extensions->clear();
 //	qDebug()<<"Requesting surface format:"<<fmt;
 
 	m_renderWindowLayout->removeWidget(m_renderWindowContainer);
@@ -321,17 +314,13 @@ void OpenGLInfoDlg::renderWindowReady()
 	m_glOutput->append(tr("Qt OpenGL library handle: %1")
 					 .arg(QString::number(qintptr(QOpenGLContext::openGLModuleHandle()), 16)));
 
-	QList<QByteArray> extensionList = context->extensions().toList();
-	std::sort(extensionList.begin(), extensionList.end());
-	m_extensions->append(tr("Found %1 extensions:").arg(extensionList.count()));
-	Q_FOREACH (const QByteArray &ext, extensionList)
-		m_extensions->append(QString::fromLatin1(ext));
-
 	m_glOutput->moveCursor(QTextCursor::Start);
-	m_extensions->moveCursor(QTextCursor::Start);
 }
+
 
 void OpenGLInfoDlg::renderWindowError(const QString &msg)
 {
 	m_glOutput->append(tr("An error has occurred:\n%1").arg(msg));
 }
+
+

@@ -137,7 +137,6 @@ QXInverse::QXInverse(QWidget *parent)
  */
 QXInverse::~QXInverse()
 {
-	Trace("Destroying XInverse");
 	delete m_pModFoil;
 	delete m_pRefFoil;
 //	delete m_pPertDlg;
