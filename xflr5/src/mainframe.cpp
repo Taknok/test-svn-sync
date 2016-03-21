@@ -83,6 +83,7 @@
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QStyledItemDelegate>
+#include <QOpenGLContext>
 
 #ifdef Q_OS_MAC
 	#include <CoreFoundation/CoreFoundation.h>
@@ -97,8 +98,13 @@ QDir MainFrame::s_StylesheetDir;
 QDir MainFrame::s_TranslationDir;
 
 bool MainFrame::s_bShowMousePos = true;
-bool MainFrame::s_bTrace = false;
 bool MainFrame::s_bSaved = true;
+#ifdef QT_DEBUG
+	bool MainFrame::s_bTrace = true;
+#else
+	bool MainFrame::s_bTrace = false;
+#endif
+
 QFile *MainFrame::s_pTraceFile = NULL;
 
 QLabel *MainFrame::m_pctrlProjectName = NULL;
@@ -109,12 +115,13 @@ QList <QColor> MainFrame::s_ColorList;
 MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(parent, flags)
 {
 	setAttribute(Qt::WA_DeleteOnClose);
-
 	if(s_bTrace)
 	{
-		QString FileName = QDir::homePath() + "/Trace.log";
-		s_pTraceFile = new QFile(FileName);
-		if (!s_pTraceFile->open(QIODevice::ReadWrite | QIODevice::Text)) s_bTrace = false;
+            QString FileName = QDir::tempPath() + "/Trace.log";
+            s_pTraceFile = new QFile(FileName);
+
+            if (!s_pTraceFile->open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text)) s_bTrace = false;
+            s_pTraceFile->reset();
 	}
 
 	setWindowTitle(VERSIONNAME);
@@ -264,8 +271,6 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 
 MainFrame::~MainFrame()
 {
-	Trace("Destroying mainframe");
-
 	if(s_pTraceFile) s_pTraceFile->close();
 
 	for(int ioa=Foil::s_oaFoil.size()-1; ioa>=0; ioa--)
@@ -2552,6 +2557,7 @@ void MainFrame::keyPressEvent(QKeyEvent *event)
 				break;
 			}
 
+
 			default:
 				event->ignore();
 		}
@@ -3200,10 +3206,9 @@ void MainFrame::onLoadFile()
 	if(m_iApp==XFLR5::NOAPP)
 	{
 		m_iApp = App;
-//		QString strange = PathName.right(4);
-//		strange = strange.toLower();
+
 		if(m_iApp==XFLR5::MIAREX) onMiarex();
-		else               onXDirect();
+                else                      onXDirect();
 	}
 
 	if(App==0)
@@ -3734,6 +3739,17 @@ void MainFrame::onStyleSettings()
 
 	pXDirect->m_CpGraph.setInverted(true);
 	pMiarex->m_CpGraph.setInverted(true);
+
+
+	if(Settings::s_bForceOpenGL33)
+	{
+		QSurfaceFormat format33;
+		format33.setVersion(3,3);
+		QSurfaceFormat::setDefaultFormat(format33);
+		QString strange;
+		strange.sprintf("Requesting OpengGl format:%d.%d", format33.majorVersion(),format33.minorVersion());
+		Trace(strange);
+	}
 
 	setMainFrameCentralWidget();
 

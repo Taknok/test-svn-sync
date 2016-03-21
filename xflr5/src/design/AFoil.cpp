@@ -99,8 +99,6 @@ QAFoil::QAFoil(QWidget *parent)
  */
 QAFoil::~QAFoil()
 {
-	Trace("Destroying AFoil");
-
 	clearStack(-1);
 	if(m_pSF) delete m_pSF;
 	if(m_pBufferFoil) delete m_pBufferFoil;

@@ -71,6 +71,8 @@ GL3Widget::GL3Widget(QWidget *pParent) : QOpenGLWidget(pParent)
 
 	m_bArcball = m_bCrossPoint = false;
 
+	m_bUse110StyleShaders = true;
+
 	for(int iw=0; iw<MAXWINGS; iw++)
 	{
 		m_WingIndicesArray[iw] = NULL;
@@ -122,17 +124,17 @@ GL3Widget::GL3Widget(QWidget *pParent) : QOpenGLWidget(pParent)
 
 void GL3Widget::printFormat(const QSurfaceFormat &format)
 {
-	qDebug()<<tr("OpenGL version: %1.%2").arg(format.majorVersion()).arg(format.minorVersion());
+	Trace(QString("OpenGL version: %1.%2").arg(format.majorVersion()).arg(format.minorVersion()));
 
 	switch (format.profile()) {
 		case QSurfaceFormat::NoProfile:
-				qDebug()<<"No Profile";
+				Trace("No Profile");
 			break;
 		case QSurfaceFormat::CoreProfile:
-				qDebug()<<"Core Profile";
+				Trace("Core Profile");
 			break;
 		case QSurfaceFormat::CompatibilityProfile:
-				qDebug()<<"Compatibility Profile";
+				Trace("Compatibility Profile");
 			break;
 		default:
 			break;
@@ -140,28 +142,20 @@ void GL3Widget::printFormat(const QSurfaceFormat &format)
 	switch (format.renderableType())
 	{
 		case QSurfaceFormat::DefaultRenderableType:
-				qDebug()<<"DefaultRenderableType: The default, unspecified rendering method";
+				Trace("DefaultRenderableType: The default, unspecified rendering method");
 			break;
 		case QSurfaceFormat::OpenGL:
-				qDebug()<<"OpenGL: Desktop OpenGL rendering";
+				Trace("OpenGL: Desktop OpenGL rendering");
 			break;
 		case QSurfaceFormat::OpenGLES:
-				qDebug()<<"OpenGLES: OpenGL ES 2.0 rendering";
+				Trace("OpenGLES: OpenGL ES 2.0 rendering");
 			break;
 		case QSurfaceFormat::OpenVG:
-				qDebug()<<"OpenVG: Open Vector Graphics rendering";
+				Trace("OpenVG: Open Vector Graphics rendering");
 			break;
 		default:
 			break;
 	}
-/*	qDebug()<<tr("Depth buffer size: %1").arg(QString::number(format.depthBufferSize()));
-	qDebug()<<tr("Stencil buffer size: %1").arg(QString::number(format.stencilBufferSize()));
-	qDebug()<<tr("Samples: %1").arg(QString::number(format.samples()));
-	qDebug()<<tr("Red buffer size: %1").arg(QString::number(format.redBufferSize()));
-	qDebug()<<tr("Green buffer size: %1").arg(QString::number(format.greenBufferSize()));
-	qDebug()<<tr("Blue buffer size: %1").arg(QString::number(format.blueBufferSize()));
-	qDebug()<<tr("Alpha buffer size: %1").arg(QString::number(format.alphaBufferSize()));
-	qDebug()<<tr("Swap interval: %1").arg(QString::number(format.swapInterval()));*/
 }
 
 
@@ -481,18 +475,37 @@ void GL3Widget::mouseMoveEvent(QMouseEvent *event)
 	{
 		double zoomFactor=1.0;
 
-		if(point.y()-m_LastPoint.y()<0) zoomFactor = 1./1.06;
-		else                            zoomFactor = 1.06;
+		if(point.y()-m_LastPoint.y()<0) zoomFactor = 1./1.025;
+		else                            zoomFactor = 1.025;
 
-		if(m_iView == XFLR5::GLMIAREXVIEW)
-		{
-			m_glScaled *= zoomFactor;
-			update();
-		}
+		m_glScaled *= zoomFactor;
+		update();
 	}
 	m_LastPoint = point;
 }
 
+
+
+/**
+*Overrides the wheelEvent method of the base class.
+*Dispatches the handling to the active child application.
+*/
+void GL3Widget::wheelEvent(QWheelEvent *event)
+{
+	double zoomFactor=1.0;
+	if(event->delta()>0)
+	{
+		if(!Settings::s_bReverseZoom) zoomFactor = 1./1.06;
+		else                          zoomFactor = 1.06;
+	}
+	else
+	{
+		if(!Settings::s_bReverseZoom) zoomFactor = 1.06;
+		else                          zoomFactor = 1./1.06;
+	}
+	m_glScaled *= zoomFactor;
+	update();
+}
 
 
 void GL3Widget::mouseReleaseEvent(QMouseEvent * event )
@@ -521,36 +534,6 @@ void GL3Widget::mouseReleaseEvent(QMouseEvent * event )
 }
 
 
-
-/**
-*Overrides the wheelEvent method of the base class.
-*Dispatches the handling to the active child application.
-*/
-void GL3Widget::wheelEvent(QWheelEvent *event)
-{
-	double zoomFactor=1.0;
-	if(event->delta()>0)
-	{
-		if(!Settings::s_bReverseZoom) zoomFactor = 1./1.06;
-		else                          zoomFactor = 1.06;
-	}
-	else
-	{
-		if(!Settings::s_bReverseZoom) zoomFactor = 1.06;
-		else                          zoomFactor = 1./1.06;
-	}
-	m_glScaled *= zoomFactor;
-	update();
-
-	QPoint glPoint(event->pos().x() + geometry().x(), event->pos().y()+geometry().y());
-
-	if(geometry().contains(glPoint))
-	{
-		setFocus();	//The mouse button has been wheeled
-		m_glScaled *= zoomFactor;
-	}
-	update();
-}
 
 
 
@@ -937,42 +920,42 @@ void GL3Widget::getGLError()
 	switch(glGetError())
 	{
 		case GL_NO_ERROR:
-			qDebug()<<"No error has been recorded. The value of this symbolic constant is guaranteed to be 0.";
+			Trace("No error has been recorded. The value of this symbolic constant is guaranteed to be 0.");
 			break;
 
 		case GL_INVALID_ENUM:
-			qDebug()<<"An unacceptable value is specified for an enumerated argument. "
-					  "The offending command is ignored and has no other side effect than to set the error flag.";
+			Trace("An unacceptable value is specified for an enumerated argument. "
+					  "The offending command is ignored and has no other side effect than to set the error flag.");
 			break;
 
 		case GL_INVALID_VALUE:
-			qDebug()<<"A numeric argument is out of range. The offending command is ignored and has no other "
-					  "side effect than to set the error flag.";
+			Trace("A numeric argument is out of range. The offending command is ignored and has no other "
+					  "side effect than to set the error flag.");
 			break;
 
 		case GL_INVALID_OPERATION:
-			qDebug()<<"The specified operation is not allowed in the current state. The offending command is "
-					  "ignored and has no other side effect than to set the error flag.";
+			Trace("The specified operation is not allowed in the current state. The offending command is "
+					  "ignored and has no other side effect than to set the error flag.");
 			break;
 
 		case GL_INVALID_FRAMEBUFFER_OPERATION:
-			qDebug()<<"The command is trying to render to or read from the framebuffer while the currently "
+			Trace("The command is trying to render to or read from the framebuffer while the currently "
 					  "bound framebuffer is not framebuffer complete (i.e. the return value from glCheckFramebufferStatus "
 					  "is not GL_FRAMEBUFFER_COMPLETE). The offending command is ignored and has no other side effect than "
-					  "to set the error flag.";
+					  "to set the error flag.");
 			break;
 
 		case GL_OUT_OF_MEMORY:
-			qDebug()<<"There is not enough memory left to execute the command. The state of the GL is "
-					  "undefined, except for the state of the error flags, after this error is recorded.";
+			Trace("There is not enough memory left to execute the command. The state of the GL is "
+					  "undefined, except for the state of the error flags, after this error is recorded.");
 			break;
 
 		case GL_STACK_UNDERFLOW:
-			qDebug()<<"An attempt has been made to perform an operation that would cause an internal stack to underflow.";
+			Trace("An attempt has been made to perform an operation that would cause an internal stack to underflow.");
 			break;
 
 		case GL_STACK_OVERFLOW:
-			qDebug()<<"An attempt has been made to perform an operation that would cause an internal stack to overflow.";
+			Trace("An attempt has been made to perform an operation that would cause an internal stack to overflow.");
 			break;
 	}
 }
@@ -1501,13 +1484,46 @@ void GL3Widget::glMakeBodySplines(Body *pBody)
 
 void GL3Widget::initializeGL()
 {
-//	makeCurrent();
+	QSurfaceFormat ctxtFormat = format();
+	m_bUse110StyleShaders = (ctxtFormat.majorVersion()*10+ctxtFormat.minorVersion())<33;
 
-#ifdef QT_DEBUG
-	qDebug()<<"";
-	qDebug()<<"Initializing GL";
+	Trace("");
+	Trace("****************GL3Widget********************");
+	Trace("Initializing GL");
 
+	switch (m_iView) {
+		case XFLR5::GLMIAREXVIEW:
+		{
+			Trace("Miarex view");
+			break;
+		}
+		case XFLR5::GLWINGVIEW:
+		{
+			Trace("Wing view");
+			break;
+		}
+		case XFLR5::GLPLANEVIEW:
+		{
+			Trace("Plane view");
+			break;
+		}
+		case XFLR5::GLBODYVIEW:
+		{
+			Trace("Body view");
+			break;
+		}
+		case XFLR5::GLEDITBODYVIEW:
+		{
+			Trace("EditBody view");
+			break;
+		}
+		default:
+			break;
+	}
+	Trace("");
+	Trace("gl3Widget format:");
 	printFormat(format());
+
 	QString vendor, renderer, version, glslVersion;
 	const GLubyte *p;
 	if ((p = glGetString(GL_VENDOR)))
@@ -1519,12 +1535,14 @@ void GL3Widget::initializeGL()
 	if ((p = glGetString(GL_SHADING_LANGUAGE_VERSION)))
 		glslVersion = QString::fromLatin1(reinterpret_cast<const char *>(p));
 
-	qDebug()<<"*** Default Context information ***";
-	qDebug()<<QString("   Vendor: %1").arg(vendor);
-	qDebug()<<QString("   Renderer: %1").arg(renderer);
-	qDebug()<<QString("   OpenGL version: %1").arg(version);
-	qDebug()<<QString("   GLSL version: %1").arg(glslVersion);
-#endif
+	Trace("   *** Context information ***");
+	Trace(QString("   Vendor: %1").arg(vendor));
+	Trace(QString("   Renderer: %1").arg(renderer));
+	Trace(QString("   OpenGL version: %1").arg(version));
+	Trace(QString("   GLSL version: %1").arg(glslVersion));
+	if(m_bUse110StyleShaders) Trace("Using glsl v110 style shaders");
+	else                      Trace("Using glsl v330 style shaders");
+	Trace("/****************GL3Widget********************");
 
 
 	glMakeUnitSphere();
@@ -1532,14 +1550,13 @@ void GL3Widget::initializeGL()
 	glMakeArcPoint();
 
 	//setup the shader to paint lines
-	m_ShaderProgramLine.addShaderFromSourceFile(QOpenGLShader::Vertex, QString(":/src/viewwidgets/shaders/line_vertexshader.glsl"));
-#ifdef QT_DEBUG
-	qDebug()<<m_ShaderProgramLine.log();
-#endif
-	m_ShaderProgramLine.addShaderFromSourceFile(QOpenGLShader::Fragment, QString(":/src/viewwidgets/shaders/line_fragmentshader.glsl"));
-#ifdef QT_DEBUG
-	qDebug()<<m_ShaderProgramLine.log();
-#endif
+	QString vsrc = m_bUse110StyleShaders ? ":/src/shaders/line_vertexshader_110.glsl" : ":/src/shaders/line_vertexshader.glsl";
+	QString fsrc = m_bUse110StyleShaders ? ":/src/shaders/line_fragmentshader_110.glsl" : ":/src/shaders/line_fragmentshader.glsl";
+
+	m_ShaderProgramLine.addShaderFromSourceFile(QOpenGLShader::Vertex, (vsrc));
+	if(m_ShaderProgramLine.log().length()) Trace("Line vertex shader log:"+m_ShaderProgramLine.log());
+	m_ShaderProgramLine.addShaderFromSourceFile(QOpenGLShader::Fragment, (fsrc));
+	if(m_ShaderProgramLine.log().length()) Trace("Line fragment shader log:"+m_ShaderProgramLine.log());
 	m_ShaderProgramLine.link();
 	m_ShaderProgramLine.bind();
 	m_VertexLocationLine       = m_ShaderProgramLine.attributeLocation("vertex");
@@ -1552,14 +1569,14 @@ void GL3Widget::initializeGL()
 
 
 	//setup the shader to paint the Cp and other gradients
-	m_ShaderProgramGradient.addShaderFromSourceFile(QOpenGLShader::Vertex, QString(":/src/viewwidgets/shaders/gradient_vertexshader.glsl"));
-#ifdef QT_DEBUG
-	qDebug()<<m_ShaderProgramGradient.log();
-#endif
-	m_ShaderProgramGradient.addShaderFromSourceFile(QOpenGLShader::Fragment, QString(":/src/viewwidgets/shaders/gradient_fragmentshader.glsl"));
-#ifdef QT_DEBUG
-	qDebug()<<m_ShaderProgramGradient.log();
-#endif
+	vsrc = m_bUse110StyleShaders ? ":/src/shaders/gradient_vertexshader_110.glsl" : ":/src/shaders/gradient_vertexshader.glsl";
+	fsrc = m_bUse110StyleShaders ? ":/src/shaders/gradient_fragmentshader_110.glsl" : ":/src/shaders/gradient_fragmentshader.glsl";
+	m_ShaderProgramGradient.addShaderFromSourceFile(QOpenGLShader::Vertex, vsrc);
+	if(m_ShaderProgramGradient.log().length()) Trace("Gradient vertex shader log:"+m_ShaderProgramGradient.log());
+
+	m_ShaderProgramGradient.addShaderFromSourceFile(QOpenGLShader::Fragment, fsrc);
+	if(m_ShaderProgramGradient.log().length()) Trace("Gradient fragment shader log:"+m_ShaderProgramGradient.log());
+
 	m_ShaderProgramGradient.link();
 	m_ShaderProgramGradient.bind();
 	m_VertexLocationGradient = m_ShaderProgramGradient.attributeLocation("vertexPosition_modelspace");
@@ -1569,14 +1586,14 @@ void GL3Widget::initializeGL()
 
 
 	//setup the shader to paint colored and textured surfaces
-	m_ShaderProgramTexture.addShaderFromSourceFile(QOpenGLShader::Vertex, QString(":/src/viewwidgets/shaders/text_vertexshader.glsl"));
-#ifdef QT_DEBUG
-	qDebug()<<m_ShaderProgramTexture.log();
-#endif
-	m_ShaderProgramTexture.addShaderFromSourceFile(QOpenGLShader::Fragment, QString(":/src/viewwidgets/shaders/text_fragmentshader.glsl"));
-#ifdef QT_DEBUG
-	qDebug()<<m_ShaderProgramTexture.log();
-#endif
+	vsrc = m_bUse110StyleShaders ? ":/src/shaders/texture_vertexshader_110.glsl" : ":/src/shaders/texture_vertexshader.glsl";
+	fsrc = m_bUse110StyleShaders ? ":/src/shaders/texture_fragmentshader_110.glsl" : ":/src/shaders/texture_fragmentshader.glsl";
+	m_ShaderProgramTexture.addShaderFromSourceFile(QOpenGLShader::Vertex, vsrc);
+	if(m_ShaderProgramTexture.log().length()) Trace("Texture vertex shader log:"+m_ShaderProgramTexture.log());
+
+	m_ShaderProgramTexture.addShaderFromSourceFile(QOpenGLShader::Fragment, fsrc);
+	if(m_ShaderProgramTexture.log().length()) Trace("Texture fragment shader log:"+m_ShaderProgramTexture.log());
+
 	m_ShaderProgramTexture.link();
 
 	m_ShaderProgramTexture.bind();
@@ -1715,7 +1732,7 @@ void GL3Widget::paintGL()
 
 void GL3Widget::paintGL3()
 {
-//	makeCurrent();
+	makeCurrent();
 	int width, height;
 	glClearColor(Settings::backgroundColor().redF(), Settings::backgroundColor().greenF(), Settings::backgroundColor().blueF(), 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -1844,7 +1861,7 @@ void GL3Widget::glRenderMiarexView()
 
 	if(pMiarex->m_pCurPlane)
 	{
-		if(m_bShowMasses) pMiarex->glDrawMasses();
+		if(m_bShowMasses) glDrawMasses(pMiarex->m_pCurPlane);
 		if(m_bVLMPanels)  paintMesh();
 
 
@@ -1929,24 +1946,24 @@ void GL3Widget::glRenderMiarexView()
 
 void GL3Widget::glRenderPlaneView()
 {
-	QMiarex* pMiarex = (QMiarex*)s_pMiarex;
-	if(pMiarex->m_iView!=XFLR5::W3DVIEW) return;
+	EditPlaneDlg *pEPdlg = (EditPlaneDlg*)m_pParent;
 
-	if(pMiarex->m_pCurPlane)
+	if(pEPdlg->m_pPlane)
 	{
-		paintBody(pMiarex->m_pCurPlane->body());
+		paintBody(pEPdlg->m_pPlane->body());
 		for(int iw=0; iw<MAXWINGS; iw++)
 		{
-			Wing * pWing = pMiarex->m_pCurPlane->wing(iw);
+			Wing * pWing = pEPdlg->m_pPlane->wing(iw);
 			if(pWing)
 			{
 				paintWing(iw, pWing);
 				if(m_bFoilNames) paintFoilNames(pWing);
 			}
 		}
-		if(m_bShowMasses) pMiarex->glDrawMasses();
+		if(m_bShowMasses) glDrawMasses(pEPdlg->m_pPlane);
 	}
 }
+
 
 void GL3Widget::glRenderGL3DBodyView()
 {
@@ -2035,7 +2052,74 @@ void GL3Widget::paintFoilNames(void *pWingPtr)
 
 
 
-void GL3Widget::paintMasses(double volumeMass, CVector pos, QString tag, QList<PointMass*> ptMasses)
+/**
+ * Draws the point masses, the object masses, and the CG position in the OpenGL viewport
+*/
+void GL3Widget::glDrawMasses(Plane *pPlane)
+{
+	if(!pPlane) return;
+	double delta = 0.02/m_glScaled;
+
+	for(int iw=0; iw<MAXWINGS; iw++)
+	{
+		if(pPlane->wing(iw))
+		{
+			paintMasses(pPlane->wing(iw)->m_VolumeMass, pPlane->WingLE(iw).translated(0.0,0.0,delta),
+						pPlane->wing(iw)->m_WingName, pPlane->wing(iw)->m_PointMass);
+		}
+	}
+
+	paintMasses(0.0, CVector(0.0,0.0,0.0),"",pPlane->m_PointMass);
+
+
+	if(pPlane->body())
+	{
+		Body *pCurBody = pPlane->body();
+
+		paintMasses(pCurBody->m_VolumeMass,
+				  pPlane->bodyPos().translated(pPlane->body()->Length()/5,0.0,0.0),
+				  pCurBody->m_BodyName,
+				  pCurBody->m_PointMass);
+	}
+
+	//plot CG
+	CVector Place(pPlane->CoG().x, pPlane->CoG().y, pPlane->CoG().z);
+	paintSphere(Place,
+							  W3dPrefsDlg::s_MassRadius*2.0/m_glScaled,
+							  W3dPrefsDlg::s_MassColor.lighter());
+
+	glRenderText(pPlane->CoG().x, pPlane->CoG().y, pPlane->CoG().z + delta,
+							  "CoG "+QString("%1").arg(pPlane->totalMass()*Units::kgtoUnit(), 7,'g',3)
+							  +Units::weightUnitLabel(), W3dPrefsDlg::s_MassColor.lighter(125));
+}
+
+
+
+void GL3Widget::glDrawMasses(Wing *pWing)
+{
+	double delta = 0.02/m_glScaled;
+
+	if(pWing)
+	{
+		paintMasses(pWing->volumeMass(), CVector(0.0,0.0,delta), pWing->wingName(), pWing->m_PointMass);
+	}
+}
+
+
+void GL3Widget::glDrawMasses(Body *pBody)
+{
+	if(pBody)
+	{
+		paintMasses(pBody->volumeMass(),
+				  CVector(pBody->Length()/5,0.0,0.0),
+				  pBody->bodyName(),
+				  pBody->m_PointMass);
+	}
+}
+
+
+
+void GL3Widget::paintMasses(double volumeMass, CVector pos, QString tag, const QList<PointMass*> &ptMasses)
 {
 	if(qAbs(volumeMass)>PRECISION)
 	{
@@ -4389,6 +4473,10 @@ void GL3Widget::glMakeWing(int iWing, Wing *pWing, Body *pBody)
 	}
 
 	Q_ASSERT(ii==m_iWingElems[iWing]);
+	if(m_pWingTopLeftTexture)  delete m_pWingTopLeftTexture;
+	if(m_pWingBotLeftTexture)  delete m_pWingBotLeftTexture;
+	if(m_pWingTopRightTexture) delete m_pWingTopRightTexture;
+	if(m_pWingBotRightTexture) delete m_pWingBotRightTexture;
 	m_pWingTopLeftTexture  = new QOpenGLTexture(QImage(QString(":/images/wing_top_left.png")));
 	m_pWingTopRightTexture = new QOpenGLTexture(QImage(QString(":/images/wing_top_right.png")));
 	m_pWingBotLeftTexture  = new QOpenGLTexture(QImage(QString(":/images/wing_bottom_left.png")));
