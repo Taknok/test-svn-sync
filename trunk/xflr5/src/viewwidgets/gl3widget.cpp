@@ -4376,17 +4376,19 @@ void GL3Widget::glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody)
 
 		if(pWing->m_Surface.at(j)->isTipRight())
 		{
+			if(!pWing->m_Surface.at(j)->isTipLeft()) nV += CHORDPOINTS;
+
 			for (l=0; l<CHORDPOINTS-1; l++)
 			{
 				//first triangle
-				wingIndicesArray[ii]   = nV+CHORDPOINTS;
-				wingIndicesArray[ii+1] = nV+1+CHORDPOINTS;
-				wingIndicesArray[ii+2] = nV+2*CHORDPOINTS+CHORDPOINTS;
+				wingIndicesArray[ii]   = nV;
+				wingIndicesArray[ii+1] = nV+1;
+				wingIndicesArray[ii+2] = nV+2*CHORDPOINTS;
 
 				//second triangle
-				wingIndicesArray[ii+3] = nV+2*CHORDPOINTS+CHORDPOINTS;
-				wingIndicesArray[ii+4] = nV+1+CHORDPOINTS;
-				wingIndicesArray[ii+5] = nV+2*CHORDPOINTS+1+CHORDPOINTS;
+				wingIndicesArray[ii+3] = nV+2*CHORDPOINTS;
+				wingIndicesArray[ii+4] = nV+1;
+				wingIndicesArray[ii+5] = nV+2*CHORDPOINTS+1;
 				ii += 6;
 				nV++; //move one vertex
 			}
