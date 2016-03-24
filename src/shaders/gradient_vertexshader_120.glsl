@@ -1,4 +1,4 @@
-#version 110
+#version 120
 
 attribute vec4 vertexPosition_modelspace;
 attribute vec4 vertexColor;

@@ -1,4 +1,4 @@
-#version 130
+#version 330
 
 // Input vertex data, different for all executions of this shader.
 in vec4 vertexPosition_modelspace;

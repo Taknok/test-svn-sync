@@ -455,7 +455,10 @@ void EditPlaneDlg::glMake3DObjects()
 
 		for(int iw=0; iw<MAXWINGS; iw++)
 		{
-			if(m_pPlane->wing(iw)) m_pgl3Widget->glMakeWing(iw, m_pPlane->wing(iw), m_pPlane->body());
+			if(m_pPlane->wing(iw))
+			{
+				m_pgl3Widget->glMakeWingGeometry(iw, m_pPlane->wing(iw), m_pPlane->body());
+			}
 		}
 
 		m_bResetglPlane = false;
