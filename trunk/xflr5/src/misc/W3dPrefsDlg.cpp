@@ -33,7 +33,7 @@
 bool W3dPrefsDlg::s_bWakePanels = false;
 
 double W3dPrefsDlg::s_MassRadius = .017;
-QColor W3dPrefsDlg::s_MassColor = QColor(130, 170, 130);
+QColor W3dPrefsDlg::s_MassColor = QColor(67, 151, 169);
 
 int W3dPrefsDlg::s_VLMStyle       = 0;
 int W3dPrefsDlg::s_VLMWidth       = 1;
@@ -83,26 +83,26 @@ W3dPrefsDlg::W3dPrefsDlg(QWidget *pParent) : QDialog(pParent)
 	setWindowTitle(tr("3D Styles"));
 //	s_pSail7  = NULL;
 
-	SetupLayout();
+	setupLayout();
 
 	connect(m_pctrlAxis, SIGNAL(clickedLB()), SLOT(on3DAxis()));
 	connect(m_pctrlOutline, SIGNAL(clickedLB()), SLOT(onOutline()));
 	connect(m_pctrlVLMMesh, SIGNAL(clickedLB()), SLOT(onVLMMesh()));
 	connect(m_pctrlTopTrans, SIGNAL(clickedLB()), SLOT(onTopTrans()));
 	connect(m_pctrlBotTrans, SIGNAL(clickedLB()), SLOT(onBotTrans()));
-	connect(m_pctrlLift, SIGNAL(clickedLB()), SLOT(OnXCP()));
-	connect(m_pctrlMoments, SIGNAL(clickedLB()), SLOT(OnMoments()));
-	connect(m_pctrlInducedDrag, SIGNAL(clickedLB()), SLOT(OnIDrag()));
-	connect(m_pctrlViscousDrag, SIGNAL(clickedLB()), SLOT(OnVDrag()));
-	connect(m_pctrlDownwash, SIGNAL(clickedLB()), SLOT(OnDownwash()));
-	connect(m_pctrlStreamLines, SIGNAL(clickedLB()), SLOT(OnStreamLines()));
-	connect(m_pctrlWakePanels, SIGNAL(clickedLB()), SLOT(OnWakePanels()));
+	connect(m_pctrlLift, SIGNAL(clickedLB()), SLOT(onXCP()));
+	connect(m_pctrlMoments, SIGNAL(clickedLB()), SLOT(onMoments()));
+	connect(m_pctrlInducedDrag, SIGNAL(clickedLB()), SLOT(onIDrag()));
+	connect(m_pctrlViscousDrag, SIGNAL(clickedLB()), SLOT(onVDrag()));
+	connect(m_pctrlDownwash, SIGNAL(clickedLB()), SLOT(onDownwash()));
+	connect(m_pctrlStreamLines, SIGNAL(clickedLB()), SLOT(onStreamLines()));
+	connect(m_pctrlWakePanels, SIGNAL(clickedLB()), SLOT(onWakePanels()));
 	connect(m_pctrlShowWake, SIGNAL(clicked()), SLOT(onShowWake()));
 	connect(m_pctrlMassColor, SIGNAL(clicked()), SLOT(onMasses()));
 }
 
 
-void W3dPrefsDlg::InitDialog()
+void W3dPrefsDlg::initDialog()
 {
 	m_pctrlAxis->setStyle(s_3DAxisStyle,s_3DAxisWidth, s_3DAxisColor, 0);
 	m_pctrlOutline->setStyle(s_OutlineStyle, s_OutlineWidth, s_OutlineColor, 0);
@@ -123,7 +123,7 @@ void W3dPrefsDlg::InitDialog()
 
 
 
-void W3dPrefsDlg::SetupLayout()
+void W3dPrefsDlg::setupLayout()
 {
 	QLabel *lab1 = new QLabel(tr("Axis"));
 	QLabel *lab2 = new QLabel(tr("Outline"));
@@ -213,7 +213,7 @@ void W3dPrefsDlg::SetupLayout()
         CommandButtons->addStretch(1);
         CommandButtons->addWidget(OKButton);
         CommandButtons->addStretch(1);
-        connect(ResetButton, SIGNAL(clicked()),this, SLOT(OnResetDefaults()));
+		connect(ResetButton, SIGNAL(clicked()),this, SLOT(onResetDefaults()));
         connect(OKButton, SIGNAL(clicked()),this, SLOT(accept()));
     }
 
@@ -297,7 +297,7 @@ void W3dPrefsDlg::onBotTrans()
 	}
 }
 
-void W3dPrefsDlg::OnIDrag()
+void W3dPrefsDlg::onIDrag()
 {
     LinePickerDlg LPdlg(this);
 	LPdlg.setColor(s_IDragColor);
@@ -314,7 +314,7 @@ void W3dPrefsDlg::OnIDrag()
 	}
 }
 
-void W3dPrefsDlg::OnVDrag()
+void W3dPrefsDlg::onVDrag()
 {
     LinePickerDlg LPdlg(this);
 	LPdlg.setColor(s_VDragColor);
@@ -331,7 +331,7 @@ void W3dPrefsDlg::OnVDrag()
 	}
 }
 
-void W3dPrefsDlg::OnXCP()
+void W3dPrefsDlg::onXCP()
 {
     LinePickerDlg LPdlg(this);
 	LPdlg.setColor(s_XCPColor);
@@ -348,7 +348,7 @@ void W3dPrefsDlg::OnXCP()
     }
 }
 
-void W3dPrefsDlg::OnMoments()
+void W3dPrefsDlg::onMoments()
 {
     LinePickerDlg LPdlg(this);
 	LPdlg.setColor(s_MomentColor);
@@ -365,7 +365,7 @@ void W3dPrefsDlg::OnMoments()
     }
 }
 
-void W3dPrefsDlg::OnDownwash()
+void W3dPrefsDlg::onDownwash()
 {
     LinePickerDlg LPdlg(this);
 	LPdlg.setColor(s_DownwashColor);
@@ -382,7 +382,7 @@ void W3dPrefsDlg::OnDownwash()
 	}
 }
 
-void W3dPrefsDlg::OnStreamLines()
+void W3dPrefsDlg::onStreamLines()
 {
     LinePickerDlg LPdlg(this);
 	LPdlg.setColor(s_StreamLinesColor);
@@ -399,7 +399,7 @@ void W3dPrefsDlg::OnStreamLines()
 	}
 }
 
-void W3dPrefsDlg::OnWakePanels()
+void W3dPrefsDlg::onWakePanels()
 {
     LinePickerDlg LPdlg(this);
 	LPdlg.setColor(s_WakeColor);
@@ -458,7 +458,7 @@ void W3dPrefsDlg::onShowWake()
 }
 
 
-void W3dPrefsDlg::SaveSettings(QSettings *pSettings)
+void W3dPrefsDlg::saveSettings(QSettings *pSettings)
 {
 	pSettings->beginGroup("3DPrefs");
 	{
@@ -515,6 +515,8 @@ void W3dPrefsDlg::SaveSettings(QSettings *pSettings)
 		pSettings->setValue("StreamLinesColor", s_StreamLinesColor);
 
 		pSettings->setValue("showWakePanels", s_bWakePanels);
+
+		pSettings->setValue("MassColor", s_MassColor);
 	}
 	pSettings->endGroup();
 }
@@ -522,7 +524,7 @@ void W3dPrefsDlg::SaveSettings(QSettings *pSettings)
 
 void W3dPrefsDlg::loadSettings(QSettings *pSettings)
 {
-	ResetDefaults();
+	resetDefaults();
 	pSettings->beginGroup("3DPrefs");
 	{
 		s_3DAxisStyle   = pSettings->value("3DAxisStyle", 3).toInt();
@@ -577,23 +579,25 @@ void W3dPrefsDlg::loadSettings(QSettings *pSettings)
 		s_StreamLinesWidth = pSettings->value("StreamLinesWidth", 1).toInt();
 		s_StreamLinesColor = pSettings->value("StreamLinesColor", QColor(150, 140, 255)).value<QColor>();
 
+		s_MassColor = pSettings->value("MassColor", QColor(67, 151, 169)).value<QColor>();
 		s_bWakePanels = pSettings->value("showWakePanels", true).toBool();
 	}
 	pSettings->endGroup();
 }
 
 
-void W3dPrefsDlg::OnResetDefaults()
+void W3dPrefsDlg::onResetDefaults()
 {
-	ResetDefaults();
-	InitDialog();
+	resetDefaults();
+	initDialog();
 }
 
-void W3dPrefsDlg::ResetDefaults()
+
+void W3dPrefsDlg::resetDefaults()
 {
 	s_bWakePanels = false;
 
-    s_MassColor = QColor(130, 170, 130);
+	s_MassColor = QColor(67, 151, 169);
 
     s_VLMStyle       = 0;
     s_VLMWidth       = 1;

@@ -43,7 +43,6 @@ QFont Settings::s_TableFont;
 QColor Settings::s_BackgroundColor = QColor(3, 9, 9);
 QColor Settings::s_TextColor=QColor(221,221,221);
 bool Settings::s_bReverseZoom = false;
-bool Settings::s_bForceOpenGL33 = false;
 bool Settings::s_bAlphaChannel = true;
 QGraph Settings::s_RefGraph;
 XFLR5::enumTextFileType Settings::s_ExportFileType;  /**< Defines if the list separator for the output text files should be a space or a comma. */
@@ -81,7 +80,6 @@ Settings::Settings(QWidget *pParent) : QDialog(pParent)
 	connect(m_pctrlTableFont, SIGNAL(clicked()),this, SLOT(onTableFont()));
 
 	connect(m_pctrlReverseZoom, SIGNAL(clicked()), this, SLOT(onReverseZoom()));
-	connect(m_pctrlForceOpenGl33, SIGNAL(clicked()), this, SLOT(onOpenGL33()));
 	connect(m_pctrlAlphaChannel, SIGNAL(clicked()), this, SLOT(onAlphaChannel()));
 
 	connect(OKButton, SIGNAL(clicked()),this, SLOT(accept()));
@@ -175,23 +173,7 @@ void Settings::setupLayout()
 	{
 		QVBoxLayout *pOpenGLLayout = new QVBoxLayout;
 		{
-			m_pctrlForceOpenGl33 = new QCheckBox(tr("Request OpenGl 3.3+ context"));
-			QString strange = "Use this option to request a v3.3 context, otherwise the system's default OpenGl context \n"
-							  "will be used, which may be any version starting at OpenGL 2.0.\n"
-							  "The requested and the actual format may differ. \n"
-							  "Requesting a given OpenGL version does not mean the resulting context will target exactly \n"
-							  "the requested version. It is only guaranteed that the version/profile/options combination \n"
-							  "for the created context is compatible with the request, as long as the driver is able to \n"
-							  "provide such a context. For example, requesting an OpenGL version 3.x core profile context \n"
-							  "may result in an OpenGL 4.x core profile context. Similarly, a request for OpenGL 2.1 may \n"
-							  "result in an OpenGL 3.0 context with deprecated functions enabled. Finally, depending on \n"
-							  "the driver, unsupported versions may result in either a context creation failure or in a \n"
-							  "context for the highest supported version. Similar differences are possible in the buffer \n"
-							  "sizes, for example, the resulting context may have a larger depth buffer than requested. \n"
-							  "This is perfectly normal.";
-			m_pctrlForceOpenGl33->setToolTip(strange);
 			m_pctrlAlphaChannel = new QCheckBox(tr("Enable 3D transparency"));
-			pOpenGLLayout->addWidget(m_pctrlForceOpenGl33);
 			pOpenGLLayout->addWidget(m_pctrlAlphaChannel);
 		}
 		pOpenGLBox->setLayout(pOpenGLLayout);
@@ -247,7 +229,6 @@ void Settings::initDialog()
 		m_pctrlStyles->setCurrentIndex(m_pctrlStyles->findText(s_StyleSheetName));
 
 	m_pctrlReverseZoom->setChecked(s_bReverseZoom);
-	m_pctrlForceOpenGl33->setChecked(s_bForceOpenGL33);
 	m_pctrlAlphaChannel->setChecked(s_bAlphaChannel);
 }
 
@@ -443,7 +424,6 @@ void Settings::saveSettings(QSettings *pSettings)
 		pSettings->setValue("TableFontBold", s_TableFont.bold());
 
 		pSettings->setValue("ReverseZoom", s_bReverseZoom);
-		pSettings->setValue("ForceOpenGL33", s_bForceOpenGL33);
 		pSettings->setValue("AlphaChannel", s_bAlphaChannel);
 		s_RefGraph.saveSettings(pSettings);
 	}
@@ -474,24 +454,11 @@ void Settings::loadSettings(QSettings *pSettings)
 		s_TableFont.setBold(pSettings->value("TableFontBold", false).toBool());
 
 		s_bReverseZoom   = pSettings->value("ReverseZoom", false).toBool();
-		s_bForceOpenGL33 = pSettings->value("ForceOpenGL33", false).toBool();
 		s_bAlphaChannel  = pSettings->value("AlphaChannel", true).toBool();
 
 		s_RefGraph.loadSettings(pSettings);
 	}
 	pSettings->endGroup();
-
-
-
-	if(s_bForceOpenGL33)
-	{
-		QSurfaceFormat format33;
-		format33.setVersion(3,3);
-		QSurfaceFormat::setDefaultFormat(format33);
-		QString strange;
-		strange.sprintf("Settings::Requesting OpengGl format:%d.%d", format33.majorVersion(),format33.minorVersion());
-		Trace(strange);
-	}
 }
 
 
@@ -509,12 +476,6 @@ void Settings::onAlphaChannel()
 
 
 
-void Settings::onOpenGL33()
-{
-	s_bForceOpenGL33 = m_pctrlForceOpenGl33->isChecked();
-	QMessageBox::warning(this,tr("OpenGL Settings"), tr("The settings will be reset at the next session"));
-
-}
 
 
 

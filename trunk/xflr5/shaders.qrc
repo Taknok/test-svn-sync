@@ -6,11 +6,11 @@
         <file>src/shaders/line_vertexshader.glsl</file>
         <file>src/shaders/texture_fragmentshader.glsl</file>
         <file>src/shaders/texture_vertexshader.glsl</file>
-        <file>src/shaders/gradient_fragmentshader_110.glsl</file>
-        <file>src/shaders/gradient_vertexshader_110.glsl</file>
-        <file>src/shaders/line_fragmentshader_110.glsl</file>
-        <file>src/shaders/line_vertexshader_110.glsl</file>
-        <file>src/shaders/texture_fragmentshader_110.glsl</file>
-        <file>src/shaders/texture_vertexshader_110.glsl</file>
+        <file>src/shaders/gradient_fragmentshader_120.glsl</file>
+        <file>src/shaders/gradient_vertexshader_120.glsl</file>
+        <file>src/shaders/line_fragmentshader_120.glsl</file>
+        <file>src/shaders/line_vertexshader_120.glsl</file>
+        <file>src/shaders/texture_fragmentshader_120.glsl</file>
+        <file>src/shaders/texture_vertexshader_120.glsl</file>
     </qresource>
 </RCC>

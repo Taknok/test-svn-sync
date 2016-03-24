@@ -111,9 +111,9 @@ private:
 	void glMakeCpLegendClr();
 	void glMakePanels(QOpenGLBuffer &vbo, int nPanels, int nNodes, CVector *pNode, Panel *pPanel, PlaneOpp *pPOpp);
 	void glMakePanelForces(int nPanels, Panel *pPanel, WPolar *pWPolar, PlaneOpp *pPOpp);
-	void glMakeWing(      int iWing, Wing *pWing, Body *pBody);
-	void glMakeDownwash(  int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
-	void glMakeLiftStrip( int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
+	void glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody);
+	void glMakeDownwash(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
+	void glMakeLiftStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
 	void glMakeTransistions(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
 	void glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
 	bool glMakeStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPolar *pWPolar, PlaneOpp *pPOpp);
@@ -166,7 +166,8 @@ private:
 	QOpenGLShaderProgram m_ShaderProgramLine, m_ShaderProgramTexture, m_ShaderProgramGradient;
 
 
-	QOpenGLBuffer m_vboArcBall, m_vboArcPoint, m_vboBody, m_vboWing[MAXWINGS];
+	QOpenGLBuffer m_vboArcBall, m_vboArcPoint, m_vboBody;
+	QOpenGLBuffer m_vboWingSurface[MAXWINGS], m_vboWingOutline[MAXWINGS];
 	QOpenGLBuffer m_vboEditMesh;
 	QOpenGLBuffer m_vboHighlight;
 	QOpenGLBuffer m_vboMesh, m_vboPanelCp, m_vboPanelForces, m_vboStreamLines, m_vboLegendColor, m_vboSurfaceVelocities;
@@ -223,7 +224,7 @@ private:
 	double m_ClipPlanePos;      /**< the z-position of the clip plane in viewport coordinates */
 	double MatIn[4][4], MatOut[4][4];
 
-	bool m_bUse110StyleShaders;
+	bool m_bUse120StyleShaders;
 
 	QMatrix4x4 m_OrthoMatrix;
 	QMatrix4x4 m_pvmMatrix;
@@ -245,6 +246,7 @@ private:
 	int m_nHighlightLines, m_HighlightLineSize;
 
 	int m_iBodyMeshLines;
+	int m_iWingOutlinePoints[MAXWINGS];
 };
 
 #endif // GL3WIDGET_H
