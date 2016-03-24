@@ -1,4 +1,4 @@
-#version 110
+#version 120
 
 uniform bool lightOn;
 uniform bool hasTexture;
@@ -75,7 +75,6 @@ void main()
 			  MaterialAmbientColor  * LightColor +
 			 (MaterialDiffuseColor  * LightDiffuse  * cosTheta)                         * LightColor * attenuation_factor
 			+(MaterialSpecularColor * LightSpecular * pow(cosAlpha, MaterialShininess)) * LightColor * attenuation_factor;
-//		fragColor = vec4(cosAlpha,cosAlpha,cosAlpha,1.0);
 	}
 	else
 	{

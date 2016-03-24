@@ -1,4 +1,4 @@
-#version 130
+#version 330
 
 in vec4 vertexPosition_modelspace;
 in vec4 vertexColor;

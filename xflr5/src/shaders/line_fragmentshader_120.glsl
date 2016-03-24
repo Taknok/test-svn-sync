@@ -1,4 +1,4 @@
-#version 110
+#version 120
 
 uniform vec4 color;
 uniform vec4 clipPlane0; // defined in view-space

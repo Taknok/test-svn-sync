@@ -123,6 +123,9 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
             if (!s_pTraceFile->open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text)) s_bTrace = false;
             s_pTraceFile->reset();
 	}
+	QString strange;
+	strange.sprintf("Default OpengGl format:%d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
+	Trace(strange);
 
 	setWindowTitle(VERSIONNAME);
 	setWindowIcon(QIcon(":/images/xflr5_64.png"));
@@ -150,7 +153,6 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 		QMessageBox::warning(this, tr("Warning"), tr("Your system does not provide support for OpenGL.\nXFLR5 will not operate correctly."));
 	}
 	
-
 	createDockWindows();
 
 	m_ImageFormat = XFLR5::PNG;
@@ -266,6 +268,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 	}
 
     Objects3D::setStaticPointers();
+
 }
 
 
@@ -3740,17 +3743,6 @@ void MainFrame::onStyleSettings()
 	pXDirect->m_CpGraph.setInverted(true);
 	pMiarex->m_CpGraph.setInverted(true);
 
-
-	if(Settings::s_bForceOpenGL33)
-	{
-		QSurfaceFormat format33;
-		format33.setVersion(3,3);
-		QSurfaceFormat::setDefaultFormat(format33);
-		QString strange;
-		strange.sprintf("Requesting OpengGl format:%d.%d", format33.majorVersion(),format33.minorVersion());
-		Trace(strange);
-	}
-
 	setMainFrameCentralWidget();
 
 	updateView();
@@ -4461,7 +4453,7 @@ void MainFrame::saveSettings()
 	pMiarex->saveSettings(&settings);
 	pXInverse->saveSettings(&settings);
 	GL3DScales::saveSettings(&settings);
-	W3dPrefsDlg::SaveSettings(&settings);
+	W3dPrefsDlg::saveSettings(&settings);
 }
 
 

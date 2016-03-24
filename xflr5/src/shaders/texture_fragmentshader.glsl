@@ -1,4 +1,4 @@
-#version 130
+#version 330
 
 uniform bool lightOn;
 uniform bool hasTexture;
@@ -36,8 +36,8 @@ void main()
 	{
 		if(hasTexture)
 		{
-			MaterialAmbientColor  = vec4(texture2D(textureSampler, UV).rgb*LightAmbient, vertexcolor.a) ;
-			MaterialDiffuseColor  = vec4(texture2D(textureSampler, UV).rgb*LightDiffuse, vertexcolor.a);
+			MaterialAmbientColor  = vec4(texture(textureSampler, UV).rgb*LightAmbient, vertexcolor.a) ;
+			MaterialDiffuseColor  = vec4(texture(textureSampler, UV).rgb*LightDiffuse, vertexcolor.a);
 		}
 		else
 		{
@@ -83,7 +83,7 @@ void main()
 	{
 		if(hasTexture)
 		{
-			fragColor  = vec4(texture2D(textureSampler, UV).rgb, vertexcolor.a) ;
+			fragColor  = vec4(texture(textureSampler, UV).rgb, vertexcolor.a) ;
 		}
 		else
 		{

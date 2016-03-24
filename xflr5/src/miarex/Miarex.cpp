@@ -1708,8 +1708,14 @@ void QMiarex::glMake3DObjects()
 		{
 			if(m_pCurPlane->wing(iw))
 			{
-				if(m_pCurPlane->body())  m_pgl3Widget->glMakeWing(iw, m_pCurPlane->wing(iw), &translatedBody);
-				else                     m_pgl3Widget->glMakeWing(iw, m_pCurPlane->wing(iw), NULL);
+				if(m_pCurPlane->body())
+				{
+					m_pgl3Widget->glMakeWingGeometry(iw, m_pCurPlane->wing(iw), &translatedBody);
+				}
+				else
+				{
+					m_pgl3Widget->glMakeWingGeometry(iw, m_pCurPlane->wing(iw), NULL);
+				}
 			}
 		}
 
@@ -2388,7 +2394,7 @@ void QMiarex::on3DReset()
 void QMiarex::on3DPrefs()
 {
 	W3dPrefsDlg w3dDlg(s_pMainFrame);
-	w3dDlg.InitDialog();
+	w3dDlg.initDialog();
 
 	w3dDlg.exec();
 	m_bResetglWake = true;

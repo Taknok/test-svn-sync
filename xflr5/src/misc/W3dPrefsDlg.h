@@ -41,30 +41,30 @@ class W3dPrefsDlg : public QDialog
 
 public:
     W3dPrefsDlg(QWidget *pParent);
-	void InitDialog();
+	void initDialog();
 
 private slots:
 	void on3DAxis();
 	void onOutline();
 	void onTopTrans();
 	void onBotTrans();
-	void OnXCP();
-	void OnMoments();
-	void OnIDrag();
-	void OnVDrag();
-	void OnDownwash();
-	void OnWakePanels();
-	void OnStreamLines();
+	void onXCP();
+	void onMoments();
+	void onIDrag();
+	void onVDrag();
+	void onDownwash();
+	void onWakePanels();
+	void onStreamLines();
 	void onVLMMesh();
 	void onShowWake();
 	void onMasses();
-    void OnResetDefaults();
+    void onResetDefaults();
 
 private:
-	void SetupLayout();
-	static void SaveSettings(QSettings *pSettings);
+	void setupLayout();
+	static void saveSettings(QSettings *pSettings);
 	static void loadSettings(QSettings *pSettings);
-	static void ResetDefaults();
+	static void resetDefaults();
 
 	LineBtn *m_pctrlAxis, *m_pctrlOutline, *m_pctrlVLMMesh, *m_pctrlTopTrans, *m_pctrlBotTrans;
 	LineBtn *m_pctrlLift, *m_pctrlMoments, *m_pctrlInducedDrag, *m_pctrlViscousDrag, *m_pctrlDownwash;
