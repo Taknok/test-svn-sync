@@ -363,6 +363,7 @@ void Section2dWidget::mouseMoveEvent(QMouseEvent *event)
 	{
 		// user is dragging the point
 		dragSelectedPoint(m_MousePos.x, m_MousePos.y);
+		emit objectModified();
 	}
 	else if ((event->buttons() & Qt::MidButton))
 	{

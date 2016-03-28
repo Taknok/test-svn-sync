@@ -1154,10 +1154,13 @@ void MainFrame::createMiarexActions()
 	m_pExporttoAVL->setStatusTip(tr("Export the current plane or wing to a text file in the format required by AVL"));
 	connect(m_pExporttoAVL, SIGNAL(triggered()), pMiarex, SLOT(onExporttoAVL()));
 
+	m_pExporttoSTL = new QAction(tr("Export to STL..."), this);
+	m_pExporttoSTL->setStatusTip(tr("Export the current wing to a file in the STL format"));
+	connect(m_pExporttoSTL, SIGNAL(triggered()), pMiarex, SLOT(onExporttoSTL()));
+
 	m_pExportCurWOpp = new QAction(tr("Export..."), this);
 	m_pExportCurWOpp->setStatusTip(tr("Export the current operating point to a text or csv file"));
 	connect(m_pExportCurWOpp, SIGNAL(triggered()), pMiarex, SLOT(onExportCurPOpp()));
-
 
 	m_pScaleWingAct = new QAction(tr("Scale Wing"), this);
 	m_pScaleWingAct->setStatusTip(tr("Scale the dimensions of the currently selected wing"));
@@ -1386,6 +1389,7 @@ void MainFrame::createMiarexMenus()
 			m_pCurrentPlaneMenu->addAction(m_pPlaneInertia);
 			m_pCurrentPlaneMenu->addSeparator();
 			m_pCurrentPlaneMenu->addAction(m_pExporttoAVL);
+			m_pCurrentPlaneMenu->addAction(m_pExporttoSTL);
 			m_pCurrentPlaneMenu->addAction(m_pExporttoXML);
 			m_pCurrentPlaneMenu->addSeparator();
 			m_pCurrentPlaneMenu->addAction(m_pShowPlaneWPlrsOnly);
@@ -3418,7 +3422,7 @@ void MainFrame::onSaveOptions()
 
 void MainFrame::onSaveTimer()
 {
-	if (!s_ProjectName.length() || s_ProjectName=="*")
+	if (!s_ProjectName.length())
 	{
 		return;
 	}
@@ -3427,7 +3431,7 @@ void MainFrame::onSaveTimer()
 
 void MainFrame::onSaveProject()
 {
-	if (!s_ProjectName.length() || s_ProjectName=="*")
+	if (!s_ProjectName.length())
 	{
 		onSaveProjectAs();
 		return;
@@ -4130,8 +4134,6 @@ bool MainFrame::saveProject(QString PathName)
 
 	if(!PathName.length())
 	{
-		if(FileName.right(1)=="*") 	FileName = FileName.left(FileName.length()-1);
-
         PathName = QFileDialog::getSaveFileName(this, tr("Save the Project File"),
 												Settings::s_LastDirName+"/"+FileName,
 												"XFLR5 v6 Project File (*.xfl)",
@@ -5385,14 +5387,10 @@ void MainFrame::setProjectName(QString PathName)
 void MainFrame::setSaveState(bool bSave)
 {
 	s_bSaved = bSave;
-
-	int len = s_ProjectName.length();
-	if(s_ProjectName.right(1)=="*") s_ProjectName = s_ProjectName.left(len-1);
-	if (!bSave)
-	{
-		s_ProjectName += "*";
-	}
-	m_pctrlProjectName->setText(s_ProjectName);
+	if(bSave)
+		m_pctrlProjectName->setText(s_ProjectName);
+	else
+		m_pctrlProjectName->setText(s_ProjectName+ "*");
 }
 
 

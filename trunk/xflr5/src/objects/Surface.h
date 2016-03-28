@@ -159,6 +159,9 @@ public:
 	int innerSection(){return m_innerSection;}
 	int outerSection(){return m_outerSection;}
 
+	int NXPanels(){return m_NXPanels;}
+	int NYPanels(){return m_NYPanels;}
+
 	Foil *foilA() {return m_pFoilA;}
 	Foil *foilB() {return m_pFoilB;}
 
@@ -220,12 +223,12 @@ private :
 
 	int m_innerSection;         /**< the index of the inner wing's section corresponding to this surface */
 	int m_outerSection;         /**< the index of the outer wing's section corresponding to this surface */
+	int m_NYPanels;                /**< the number of spanwise panels of this surface */
+	int m_NXPanels;                /**< the number of chordwise panels of this surface */
 
 public:
 	bool m_bJoinRight;             /**< true if the surface's right side should be connected to the next right surface's right left side - for panel analysis only */
 	CVector LA, LB, TA, TB; /**< leading and trailing corners of strip k */
-	int m_NYPanels;                /**< the number of spanwise panels of this surface */
-	int m_NXPanels;                /**< the number of chordwise panels of this surface */
 	Foil *m_pFoilA;                /**< a pointer to the Surface's left Foil object */
 	Foil *m_pFoilB;                /**< a pointer to the Surface's right Foil object */
 

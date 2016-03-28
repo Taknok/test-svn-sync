@@ -50,9 +50,10 @@ XFoilTask::XFoilTask(QWidget *pParent)
 	m_ClMin    = m_ClMax    = m_ClInc    = 0.0;
 	m_ReMin    = m_ReMax    = m_ReInc    = 0.0;
 
-	m_bAlpha = true;
+	m_bAlpha    = true;
 	m_bFromZero = false;
-	m_bInitBL = true;
+	m_bInitBL   = true;
+	m_bStoreOpp = false;
 
 	m_OutMessage.clear();
 	m_OutStream.setDevice(NULL);
@@ -98,10 +99,11 @@ void XFoilTask::run()
 * @param pPolar a pointer to the instance of the Polar object for which the calculation is run
 * @return true if the initialization of the Foil in XFoil has been sucessful, false otherwise
 */
-bool XFoilTask::initializeTask(Foil *pFoil, Polar *pPolar, bool bViscous, bool bInitBL, bool bFromZero)
+bool XFoilTask::initializeTask(Foil *pFoil, Polar *pPolar, bool bStoreOpp, bool bViscous, bool bInitBL, bool bFromZero)
 {
 	s_bCancel = false;
 	s_bSkipOpp = s_bSkipPolar = false;
+	m_bStoreOpp = bStoreOpp;
 
 	XFoil::s_bCancel = false;
 	m_bErrors = false;
@@ -292,7 +294,7 @@ bool XFoilTask::alphaSequence()
 				m_bErrors = true;
 			}
 
-			OpPoint::addOpPoint(m_pFoil, m_pPolar, &XFoilInstance);
+			OpPoint::addOpPoint(m_pFoil, m_pPolar, &XFoilInstance, m_bStoreOpp);
 
 			if(XFoil::s_bFullReport)
 			{
@@ -392,7 +394,7 @@ bool XFoilTask::ReSequence()
 
 		m_Iterations = 0;
 
-		OpPoint::addOpPoint(m_pFoil, m_pPolar, &XFoilInstance);
+		OpPoint::addOpPoint(m_pFoil, m_pPolar, &XFoilInstance, m_bStoreOpp);
 
 		if(XFoil::s_bFullReport)
 		{

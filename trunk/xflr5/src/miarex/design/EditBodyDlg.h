@@ -85,7 +85,6 @@ public:
 	static bool saveSettings(QSettings *pSettings);
 
 private slots:
-	void onOK();
 	void onRedraw();
 	void onRefillBodyTree();
 	void onItemClicked(const QModelIndex &index);
@@ -95,6 +94,7 @@ private slots:
 	void onInsertBefore();
 	void onInsertAfter();
 	void onDelete();
+	void onExportBodyGeom();
 	void onExportBodyXML();
 	void onImportBodyXML();
 	void onScaleBody();
@@ -103,6 +103,7 @@ private slots:
 
 
 private:
+	void accept();
 	void reject();
 	void paintBodyLegend(QPainter &painter);
 	void createActions();
@@ -117,6 +118,13 @@ public:
 
 private:
 	Body *m_pBody;
+
+	static bool s_bOutline;
+	static bool s_bSurfaces;
+	static bool s_bVLMPanels;
+	static bool s_bAxes;
+	static bool s_bShowMasses;
+	static bool s_bFoilNames;
 
 	QTreeView * m_pStruct;
 	EditObjectDelegate *m_pDelegate;

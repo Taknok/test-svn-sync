@@ -58,7 +58,7 @@ int Frame::isPoint(const CVector &Point, const double &ZoomFactor)
 	{
 		if(sqrt(  (Point.x-m_CtrlPoint[l].x)*(Point.x-m_CtrlPoint[l].x)
 				+ (Point.y-m_CtrlPoint[l].y)*(Point.y-m_CtrlPoint[l].y)
-				+ (Point.z-m_CtrlPoint[l].z)*(Point.z-m_CtrlPoint[l].z))<0.05*height()/ZoomFactor)
+				+ (Point.z-m_CtrlPoint[l].z)*(Point.z-m_CtrlPoint[l].z))<0.002/ZoomFactor)
 			  return l;
 //        if (qAbs(Point.x-m_CtrlPoint[l].y)<0.005/ZoomFactor && qAbs(Point.y-m_CtrlPoint[l].z)<0.005/ZoomFactor) return l;
 	}

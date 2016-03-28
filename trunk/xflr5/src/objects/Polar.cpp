@@ -472,8 +472,8 @@ bool Polar::serialize(QDataStream &ar, bool bIsStoring)
         ar << 1004; // identifies the format of the file
 		// 1004 : added XCp
 		// 1003 : re-instated NCrit, XtopTr and XBotTr with polar
-		WriteCString(ar, m_FoilName);
-		WriteCString(ar, m_PlrName);
+		writeCString(ar, m_FoilName);
+		writeCString(ar, m_PlrName);
 
 		if(m_PolarType==XFLR5::FIXEDSPEEDPOLAR)       ar<<1;
 		else if(m_PolarType==XFLR5::FIXEDLIFTPOLAR)   ar<<2;
@@ -516,8 +516,8 @@ bool Polar::serialize(QDataStream &ar, bool bIsStoring)
 			return false;
 		}
 
-		ReadCString(ar, m_FoilName);
-		ReadCString(ar, m_PlrName);
+		readCString(ar, m_FoilName);
+		readCString(ar, m_PlrName);
 
 		if(m_FoilName =="" || m_PlrName =="" )
 		{

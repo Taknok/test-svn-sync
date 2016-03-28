@@ -370,7 +370,7 @@ void BatchDlg::alphaLoop()
 		if(!pCurPolar) return;
 
 		m_pXFoilTask->setReRange(m_ReMin, m_ReMax, m_ReInc);
-		m_pXFoilTask->initializeTask(m_pFoil, pCurPolar, QXDirect::s_bViscous, m_bInitBL, m_bFromZero);
+		m_pXFoilTask->initializeTask(m_pFoil, pCurPolar, QXDirect::s_bStoreOpp, QXDirect::s_bViscous, m_bInitBL, m_bFromZero);
 
 		m_pXFoilTask->run();
 
@@ -628,7 +628,7 @@ void BatchDlg::initDialog()
 
 	m_pctrlInitBLPolar->setChecked(m_bInitBL);
 	m_pctrlInitBLOpp->setChecked(XFoilTask::s_bAutoInitBL);
-	m_pctrlStoreOpp->setChecked(OpPoint::s_bStoreOpp);
+	m_pctrlStoreOpp->setChecked(QXDirect::s_bStoreOpp);
 
 	m_pctrlSkipOpp->setEnabled(false);
 	m_pctrlSkipPolar->setEnabled(false);
@@ -784,7 +784,7 @@ void BatchDlg::onAnalyze()
 
 	m_pXFoilTask->setReRange(m_ReMin, m_ReMax, m_ReInc);
 	m_pXFoilTask->initializeTask(Foil::curFoil(), Polar::curPolar(),
-						    QXDirect::s_bViscous, m_bInitBL, m_bFromZero);
+							QXDirect::s_bStoreOpp, QXDirect::s_bViscous, m_bInitBL, m_bFromZero);
 
 
 	//prepare button state for analysis
@@ -976,7 +976,7 @@ void BatchDlg::readParams()
 	m_XTop   = m_pctrlXTopTr->value();
 	m_XBot   = m_pctrlXBotTr->value();
 	
-	OpPoint::s_bStoreOpp = m_pctrlStoreOpp->isChecked();
+	QXDirect::s_bStoreOpp = m_pctrlStoreOpp->isChecked();
 	m_bInitBL = m_pctrlInitBLPolar->isChecked();
 	XFoilTask::s_bAutoInitBL = m_pctrlInitBLOpp->isChecked();
 	m_bFromZero = m_pctrlFromZero->isChecked();
@@ -988,7 +988,7 @@ void BatchDlg::readParams()
 /**
  * For Type 1, 2 and 3 Polar objects
  * Loops through all the specified Relist, and for each element of the list:
- *- creates a Polar object
+ *  - creates a Polar object
  *  - initializes the XFoilTask object
  *  - launches the XFoilTask whcih will loop over the specified aoa or Cl range
  */
@@ -1023,7 +1023,7 @@ void BatchDlg::ReLoop()
 		Polar *pCurPolar = createPolar(m_pFoil, Reynolds, Mach, NCrit);
 		if(!pCurPolar) return;
 
-		m_pXFoilTask->initializeTask(m_pFoil, pCurPolar, QXDirect::s_bViscous, m_bInitBL, m_bFromZero);
+		m_pXFoilTask->initializeTask(m_pFoil, pCurPolar, QXDirect::s_bStoreOpp, QXDirect::s_bViscous, m_bInitBL, m_bFromZero);
 		m_pXFoilTask->run();
 
 		m_bErrors = m_bErrors || m_pXFoilTask->m_bErrors;

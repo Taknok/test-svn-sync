@@ -85,6 +85,7 @@ public:
 
 	XFLR5::enumPolarType &polarType()           {return m_WPolarType;}       /**< returns the type of the polar as an index in the enumeration. */
 	XFLR5::enumAnalysisMethod &analysisMethod() {return m_AnalysisMethod;}   /**< returns the analysis method of the polar as an index in the enumeration. */
+	bool isLLTMethod(){return m_AnalysisMethod==XFLR5::LLTMETHOD;}
 
 	QString &polarName()                 {return m_WPlrName;}       /**< returns the polar's name as a QString object. */
 	QString &planeName()                 {return m_PlaneName;}      /**< returns the name of the polar's parent object as a QString object. */

@@ -94,6 +94,7 @@ private slots:
 
 
 private:
+	void accept();
 	void reject();
 
 	void keyPressEvent(QKeyEvent *event);
@@ -127,6 +128,13 @@ private:
 	static QPoint s_WindowPos;
 	static QSize  s_WindowSize;
 	static bool s_bWindowMaximized;
+
+	static bool s_bOutline;
+	static bool s_bSurfaces;
+	static bool s_bVLMPanels;
+	static bool s_bAxes;
+	static bool s_bShowMasses;
+	static bool s_bFoilNames;
 
 	GL3Widget *m_pgl3Widget;              /**< a pointer to the openGL 3.0 widget where 3d calculations and rendering are performed */
 

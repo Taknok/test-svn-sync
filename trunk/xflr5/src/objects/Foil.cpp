@@ -1027,8 +1027,8 @@ bool Foil::serialize(QDataStream &ar, bool bIsStoring)
 	if(bIsStoring)
 	{
 		ar << ArchiveFormat;
-		WriteCString(ar, m_FoilName);
-		WriteCString(ar, m_FoilDescription);
+		writeCString(ar, m_FoilName);
+		writeCString(ar, m_FoilDescription);
 		ar << m_FoilStyle << m_FoilWidth;
 		WriteCOLORREF(ar, m_FoilColor);
 		if (m_bVisible)		ar << 1; else ar << 0;
@@ -1057,10 +1057,10 @@ bool Foil::serialize(QDataStream &ar, bool bIsStoring)
 		if(ArchiveFormat<1000||ArchiveFormat>1010)
 			return false;
 
-		ReadCString(ar, m_FoilName);
+		readCString(ar, m_FoilName);
 		if(ArchiveFormat>=1006)
 		{
-			ReadCString(ar, m_FoilDescription);
+			readCString(ar, m_FoilDescription);
 		}
 		if(ArchiveFormat>=1002)
 		{

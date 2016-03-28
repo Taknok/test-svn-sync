@@ -130,6 +130,8 @@ public:
 	bool serializeWingWPA(QDataStream &ar, bool bIsStoring);
 	bool serializeWingXFL(QDataStream &ar, bool bIsStoring);
 	bool exportAVLWing(QTextStream &out, int index, double y, double Thetay);
+	void exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANELS);
+	void exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS);
 
 	bool isWingOut()      {return m_bWingOut;}
 	bool &isFin()          {return m_bIsFin;}

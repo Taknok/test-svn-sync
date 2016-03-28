@@ -48,7 +48,7 @@ public:
 	bool ReSequence();
     bool isFinished(){return m_bIsFinished;}
 
-	bool initializeTask(Foil *pFoil, Polar *pPolar, bool bViscous=true, bool bInitBL=true, bool bFromZero=false);
+	bool initializeTask(Foil *pFoil, Polar *pPolar, bool bStoreOpp, bool bViscous=true, bool bInitBL=true, bool bFromZero=false);
 	bool iterate();
 
 	void setSequence(double bAlpha, double SpMin, double SpMax, double SpInc);
@@ -82,6 +82,8 @@ public:
 	double m_ReMin, m_ReMax, m_ReInc;
 
 	bool m_bAlpha, m_bFromZero, m_bInitBL, m_bErrors;
+
+	bool m_bStoreOpp;
 
 	QList<OpPoint*> m_OppList;
 
