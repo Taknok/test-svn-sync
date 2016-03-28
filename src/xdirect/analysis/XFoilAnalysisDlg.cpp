@@ -160,8 +160,8 @@ void XFoilAnalysisDlg::initDialog()
 	else         m_pXFoilTask->setSequence(false, m_ClMin, m_ClMax, m_ClDelta);
 
 	m_pXFoilTask->setReRange(m_ReMin, m_ReMax, m_ReDelta);
-    m_pXFoilTask->initializeTask(Foil::curFoil(), Polar::curPolar(),
-						    QXDirect::s_bViscous, QXDirect::s_bInitBL, false);
+	m_pXFoilTask->initializeTask(Foil::curFoil(), Polar::curPolar(),
+								 QXDirect::s_bStoreOpp, QXDirect::s_bViscous, QXDirect::s_bInitBL, false);
 
 
     setFileHeader();

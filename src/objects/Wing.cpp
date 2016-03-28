@@ -193,7 +193,7 @@ bool Wing::importDefinition(QString path_to_file, QString errorMessage)
 
 	unsigned counter = 0;
 
-	
+
 	try{
 		if (!fp.open(QIODevice::ReadOnly))
 		{
@@ -641,8 +641,8 @@ void Wing::createSurfaces(CVector const &T, double XTilt, double YTilt)
 	CVector O(0.0,0.0,0.0);
 	double MinPanelSize;
 
-    CVector *VNormal = new CVector[NWingSection()];
-    CVector *VNSide = new CVector[NWingSection()];
+	CVector *VNormal = new CVector[NWingSection()];
+	CVector *VNSide = new CVector[NWingSection()];
 
 	if(s_MinPanelSize>0.0) MinPanelSize = s_MinPanelSize;
 	else                   MinPanelSize = 0.0;
@@ -836,8 +836,8 @@ void Wing::createSurfaces(CVector const &T, double XTilt, double YTilt)
 			if(m_bIsFin && m_bSymFin)
 			{
 				m_Surface[jSurf]->m_bIsInSymPlane = true;
-				m_Surface[jSurf]->m_bIsLeftSurf   = true;
-				m_Surface[jSurf]->m_bIsRightSurf  = false;
+//				m_Surface[jSurf]->m_bIsLeftSurf   = true;
+//				m_Surface[jSurf]->m_bIsRightSurf  = false;
 			}
 		}
 		m_Surface[NSurfaces-1]->m_bIsTipRight = true;
@@ -867,7 +867,7 @@ void Wing::createSurfaces(CVector const &T, double XTilt, double YTilt)
 				m_Surface[jSurf]->translate(offset);
 				m_Surface[jSurf]->m_bIsInSymPlane = false;
 			}
-			m_Surface[ns2-1]->m_bIsTipRight = true;
+/*			m_Surface[ns2-1]->m_bIsTipRight = true;
 			m_Surface[ns2-1]->m_bIsTipLeft  = true;
 			m_Surface[0]->m_bIsTipRight   = true;
 			m_Surface[0]->m_bIsTipLeft    = true;
@@ -875,7 +875,7 @@ void Wing::createSurfaces(CVector const &T, double XTilt, double YTilt)
 			m_Surface[ns2]->m_bIsTipRight        = true;
 			m_Surface[ns2]->m_bIsTipLeft         = true;
 			m_Surface[NSurfaces-1]->m_bIsTipRight  = true;
-			m_Surface[NSurfaces-1]->m_bIsTipLeft   = true;
+			m_Surface[NSurfaces-1]->m_bIsTipLeft   = true;*/
 		}
 		else
 		{
@@ -901,8 +901,8 @@ void Wing::createSurfaces(CVector const &T, double XTilt, double YTilt)
 
 	if(m_bIsFin && m_bDoubleFin) m_Surface[(int)(NSurfaces/2)-1]->m_bJoinRight   = false;
 
-    delete[] VNormal;
-    delete[] VNSide;
+	delete[] VNormal;
+	delete[] VNSide;
 }
 
 
@@ -1094,6 +1094,7 @@ void Wing::duplicate(Wing *pWing)
 	m_WingDescription = pWing->m_WingDescription;
 	m_WingColor       = pWing->m_WingColor;
 }
+
 
 
 
@@ -1749,12 +1750,12 @@ void Wing::panelComputeBending(bool bThinSurface)
 			{
 				ypos.append(m_pWingPanel[p].CollPt.y);
 				zpos.append(m_pWingPanel[p].CollPt.z);
- 			}
+			}
 			else
 			{
 				ypos.append(m_pWingPanel[p].VortexPos.y);
 				zpos.append(m_pWingPanel[p].Vortex.z);
- 			}
+			}
 
 			p += coef*m_Surface.at(j)->m_NXPanels;
 		}
@@ -1960,12 +1961,12 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
 			return false;
 		}
 
-		ReadCString(ar,m_WingName);
+		readCString(ar,m_WingName);
 		if (m_WingName.length() ==0) return false;
 
 		if (ArchiveFormat >=1008)
 		{
-			ReadCString(ar, m_WingDescription);
+			readCString(ar, m_WingDescription);
 		}
 
 		ar >> k;
@@ -1994,12 +1995,12 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
 
 		for (int is=0; is<=NPanel; is++)
 		{
-			ReadCString(ar, strFoil);
+			readCString(ar, strFoil);
 			rightFoil(is) = strFoil;
 		}
 		for (int is=0; is<=NPanel; is++)
 		{
-			ReadCString(ar, strFoil);
+			readCString(ar, strFoil);
 			leftFoil(is) = strFoil;
 		}
 
@@ -2136,7 +2137,7 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
 			for(int im=0; im<nMass; im++)
 			{
 				tag.append("");
-				ReadCString(ar, tag[im]);
+				readCString(ar, tag[im]);
 			}
 
 			clearPointMasses();
@@ -2915,6 +2916,598 @@ void Wing::getTextureUV(int iSurf, double *leftV, double *rightV, double &leftU,
 
 
 
+/**
+ * Export the wing geometry to a binary file in STL Format.
+ * @param out the instance of the QTextStream to which the output will be directed
+ */
+void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANELS)
+{
+	/***
+	 *  UINT8[80] – Header
+	 * 	UINT32 – Number of triangles
+	 *
+	 * 	foreach triangle
+	 * 	REAL32[3] – Normal vector
+	 * 	REAL32[3] – Vertex 1
+	 * 	REAL32[3] – Vertex 2
+	 * 	REAL32[3] – Vertex 3
+	 * 	UINT16 – Attribute byte count
+	 * 	end
+	*/
+
+	CVector N, Pt;
+	CVector NormalA[CHORDPANELS+1], NormalB[CHORDPANELS+1];
+	CVector PtLeft[CHORDPANELS+1], PtRight[CHORDPANELS+1];
+	CVector PtBotLeft[CHORDPANELS+1], PtBotRight[CHORDPANELS+1];
+
+	memset(NormalA, 0, sizeof(NormalA));
+	memset(NormalB, 0, sizeof(NormalB));
+
+
+//	80 character header, avoid word "solid"
+//                       0123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789
+	QString strong = 	"binary STL file                                                                ";
+	writeCString(outStream, strong);
+
+	//Number of triangles
+	// nSurfaces
+	//   *CHORDPANELS*SPANPANELS   quads
+	//   *2                        2 triangles/quad
+	//   *2                        top and bottom surfaces
+	// 2 Tip patches
+	//   1 LE triangle
+	//   1 TE triangle
+	//   CHORDPANELS-1  quads
+	//   *2 triangles/quad
+
+	uint nTriangles = m_Surface.count() * CHORDPANELS * SPANPANELS * 2 *2
+						 + 2* ((CHORDPANELS-2) * 2 + 2);
+	outStream << nTriangles;
+
+	short zero = 0;
+
+	N.set(0.0, 0.0, 0.0);
+	int iTriangles = 0;
+
+	char buffer[12];
+
+	for (int j=0; j<m_Surface.size(); j++)
+	{
+		//top surface
+		for(int is=0; is<SPANPANELS; is++)
+		{
+			m_Surface.at(j)->getSidePoints(TOPSURFACE, NULL, PtLeft, PtRight,
+										   NormalA, NormalB, CHORDPANELS+1);
+
+			double tauA = (double)is    /(double)SPANPANELS;
+			double tauB = (double)(is+1)/(double)SPANPANELS;
+			double tau = (tauA+tauB)/2.0;
+			for(int ic=0; ic<CHORDPANELS; ic++)
+			{
+				//left side vertices
+				N = NormalA[ic] * (1.0-tau) + NormalB[ic] * tau;
+				//1st triangle
+				writeFloat(outStream, (float)N.x);
+				writeFloat(outStream, (float)N.y);
+				writeFloat(outStream, (float)N.z);
+				Pt = PtLeft[ic]   * (1.0-tauA) + PtRight[ic]   * tauA;
+				writeFloat(outStream, (float)Pt.x);
+				writeFloat(outStream, (float)Pt.y);
+				writeFloat(outStream, (float)Pt.z);
+				Pt = PtLeft[ic+1] * (1.0-tauA) + PtRight[ic+1] * tauA;
+				writeFloat(outStream, (float)Pt.x);
+				writeFloat(outStream, (float)Pt.y);
+				writeFloat(outStream, (float)Pt.z);
+				Pt = PtLeft[ic]   * (1.0-tauB) + PtRight[ic]   * tauB;
+				writeFloat(outStream, (float)Pt.x);
+				writeFloat(outStream, (float)Pt.y);
+				writeFloat(outStream, (float)Pt.z);
+
+				memcpy(buffer, &zero, sizeof(short));
+				outStream.writeRawData(buffer, 2);
+
+
+				//2nd triangle
+				writeFloat(outStream, (float)N.x);
+				writeFloat(outStream, (float)N.y);
+				writeFloat(outStream, (float)N.z);
+				Pt = PtLeft[ic+1] * (1.0-tauA) + PtRight[ic+1] * tauA;
+				writeFloat(outStream, (float)Pt.x);
+				writeFloat(outStream, (float)Pt.y);
+				writeFloat(outStream, (float)Pt.z);
+				Pt = PtLeft[ic+1] * (1.0-tauB) + PtRight[ic+1] * tauB;
+				writeFloat(outStream, (float)Pt.x);
+				writeFloat(outStream, (float)Pt.y);
+				writeFloat(outStream, (float)Pt.z);
+				Pt = PtLeft[ic]   * (1.0-tauB) + PtRight[ic]   * tauB;
+				writeFloat(outStream, (float)Pt.x);
+				writeFloat(outStream, (float)Pt.y);
+				writeFloat(outStream, (float)Pt.z);
+
+				memcpy(buffer, &zero, sizeof(short));
+				outStream.writeRawData(buffer, 2);
+
+				iTriangles +=2;
+			}
+		}
+
+
+		//bottom surface
+		for(int is=0; is<SPANPANELS; is++)
+		{
+			m_Surface.at(j)->getSidePoints(BOTSURFACE, NULL, PtLeft, PtRight,
+										   NormalA, NormalB, CHORDPANELS+1);
+
+			double tauA = (double)is    /(double)SPANPANELS;
+			double tauB = (double)(is+1)/(double)SPANPANELS;
+			double tau = (tauA+tauB)/2.0;
+			for(int ic=0; ic<CHORDPANELS; ic++)
+			{
+				N = NormalA[ic] * (1.0-tau) + NormalB[ic] * tau;
+
+				//1st triangle
+				writeFloat(outStream, (float)N.x);
+				writeFloat(outStream, (float)N.y);
+				writeFloat(outStream, (float)N.z);
+				Pt = PtLeft[ic]   * (1.0-tauA) + PtRight[ic]   * tauA;
+				writeFloat(outStream, (float)Pt.x);
+				writeFloat(outStream, (float)Pt.y);
+				writeFloat(outStream, (float)Pt.z);
+				Pt = PtLeft[ic+1] * (1.0-tauA) + PtRight[ic+1] * tauA;
+				writeFloat(outStream, (float)Pt.x);
+				writeFloat(outStream, (float)Pt.y);
+				writeFloat(outStream, (float)Pt.z);
+				Pt = PtLeft[ic]   * (1.0-tauB) + PtRight[ic]   * tauB;
+				writeFloat(outStream, (float)Pt.x);
+				writeFloat(outStream, (float)Pt.y);
+				writeFloat(outStream, (float)Pt.z);
+
+				memcpy(buffer, &zero, sizeof(short));
+				outStream.writeRawData(buffer, 2);
+
+				//2nd triangle
+				writeFloat(outStream, (float)N.x);
+				writeFloat(outStream, (float)N.y);
+				writeFloat(outStream, (float)N.z);
+				Pt = PtLeft[ic+1] * (1.0-tauA) + PtRight[ic+1] * tauA;
+				writeFloat(outStream, (float)Pt.x);
+				writeFloat(outStream, (float)Pt.y);
+				writeFloat(outStream, (float)Pt.z);
+				Pt = PtLeft[ic+1] * (1.0-tauB) + PtRight[ic+1] * tauB;
+				writeFloat(outStream, (float)Pt.x);
+				writeFloat(outStream, (float)Pt.y);
+				writeFloat(outStream, (float)Pt.z);
+				Pt = PtLeft[ic]   * (1.0-tauB) + PtRight[ic]   * tauB;
+				writeFloat(outStream, (float)Pt.x);
+				writeFloat(outStream, (float)Pt.y);
+				writeFloat(outStream, (float)Pt.z);
+
+				memcpy(buffer, &zero, sizeof(short));
+				outStream.writeRawData(buffer, 2);
+
+				iTriangles +=2;
+			}
+		}
+	}
+
+	Q_ASSERT(iTriangles==m_Surface.count() * CHORDPANELS * SPANPANELS * 2 *2);
+
+	//TIP PATCHES
+
+	for (int j=0; j<m_Surface.size(); j++)
+	{
+		if(m_Surface.at(j)->isTipLeft())
+		{
+			m_Surface.at(j)->getSidePoints(TOPSURFACE, NULL, PtLeft, PtRight,
+										   NormalA, NormalB, CHORDPANELS+1);
+			m_Surface.at(j)->getSidePoints(BOTSURFACE, NULL, PtBotLeft, PtBotRight,
+										   NormalA, NormalB, CHORDPANELS+1);
+
+			N = m_Surface.at(j)->Normal;
+			N.rotateX(90.0);
+
+			//L.E. triangle
+			writeFloat(outStream, (float)N.x);
+			writeFloat(outStream, (float)N.y);
+			writeFloat(outStream, (float)N.z);
+			writeFloat(outStream, (float)PtBotLeft[0].x);
+			writeFloat(outStream, (float)PtBotLeft[0].y);
+			writeFloat(outStream, (float)PtBotLeft[0].z);
+			writeFloat(outStream, (float)PtLeft[1].x);
+			writeFloat(outStream, (float)PtLeft[1].y);
+			writeFloat(outStream, (float)PtLeft[1].z);
+			writeFloat(outStream, (float)PtBotLeft[1].x);
+			writeFloat(outStream, (float)PtBotLeft[1].y);
+			writeFloat(outStream, (float)PtBotLeft[1].z);
+			memcpy(buffer, &zero, sizeof(short));
+			outStream.writeRawData(buffer, 2);
+
+			iTriangles +=1;
+
+			for(int ic=1; ic<CHORDPANELS-1; ic++)
+			{
+				//1st triangle
+				writeFloat(outStream, (float)N.x);
+				writeFloat(outStream, (float)N.y);
+				writeFloat(outStream, (float)N.z);
+				writeFloat(outStream, (float)PtBotLeft[ic].x);
+				writeFloat(outStream, (float)PtBotLeft[ic].y);
+				writeFloat(outStream, (float)PtBotLeft[ic].z);
+				writeFloat(outStream, (float)PtLeft[ic].x);
+				writeFloat(outStream, (float)PtLeft[ic].y);
+				writeFloat(outStream, (float)PtLeft[ic].z);
+				writeFloat(outStream, (float)PtLeft[ic+1].x);
+				writeFloat(outStream, (float)PtLeft[ic+1].y);
+				writeFloat(outStream, (float)PtLeft[ic+1].z);
+				memcpy(buffer, &zero, sizeof(short));
+				outStream.writeRawData(buffer, 2);
+
+				//2nd triangle
+				writeFloat(outStream, (float)N.x);
+				writeFloat(outStream, (float)N.y);
+				writeFloat(outStream, (float)N.z);
+				writeFloat(outStream, (float)PtBotLeft[ic].x);
+				writeFloat(outStream, (float)PtBotLeft[ic].y);
+				writeFloat(outStream, (float)PtBotLeft[ic].z);
+				writeFloat(outStream, (float)PtLeft[ic+1].x);
+				writeFloat(outStream, (float)PtLeft[ic+1].y);
+				writeFloat(outStream, (float)PtLeft[ic+1].z);
+				writeFloat(outStream, (float)PtBotLeft[ic+1].x);
+				writeFloat(outStream, (float)PtBotLeft[ic+1].y);
+				writeFloat(outStream, (float)PtBotLeft[ic+1].z);
+				memcpy(buffer, &zero, sizeof(short));
+				outStream.writeRawData(buffer, 2);
+
+				iTriangles +=2;
+			}
+
+			//T.E. triangle
+			int ic = CHORDPANELS-1;
+			writeFloat(outStream, (float)N.x);
+			writeFloat(outStream, (float)N.y);
+			writeFloat(outStream, (float)N.z);
+			writeFloat(outStream, (float)PtBotLeft[ic].x);
+			writeFloat(outStream, (float)PtBotLeft[ic].y);
+			writeFloat(outStream, (float)PtBotLeft[ic].z);
+			writeFloat(outStream, (float)PtLeft[ic].x);
+			writeFloat(outStream, (float)PtLeft[ic].y);
+			writeFloat(outStream, (float)PtLeft[ic].z);
+			writeFloat(outStream, (float)PtBotLeft[ic+1].x);
+			writeFloat(outStream, (float)PtBotLeft[ic+1].y);
+			writeFloat(outStream, (float)PtBotLeft[ic+1].z);
+			memcpy(buffer, &zero, sizeof(short));
+			outStream.writeRawData(buffer, 2);
+
+			iTriangles +=1;
+		}
+
+		if(m_Surface.at(j)->isTipRight())
+		{
+			m_Surface.at(j)->getSidePoints(TOPSURFACE, NULL, PtLeft, PtRight,
+										   NormalA, NormalB, CHORDPANELS+1);
+			m_Surface.at(j)->getSidePoints(BOTSURFACE, NULL, PtBotLeft, PtBotRight,
+										   NormalA, NormalB, CHORDPANELS+1);
+
+			N = m_Surface.at(j)->Normal;
+			N.rotateX(-90.0);
+
+			//L.E. triangle
+			writeFloat(outStream, (float)N.x);
+			writeFloat(outStream, (float)N.y);
+			writeFloat(outStream, (float)N.z);
+			writeFloat(outStream, (float)PtBotRight[0].x);
+			writeFloat(outStream, (float)PtBotRight[0].y);
+			writeFloat(outStream, (float)PtBotRight[0].z);
+			writeFloat(outStream, (float)PtRight[1].x);
+			writeFloat(outStream, (float)PtRight[1].y);
+			writeFloat(outStream, (float)PtRight[1].z);
+			writeFloat(outStream, (float)PtBotRight[1].x);
+			writeFloat(outStream, (float)PtBotRight[1].y);
+			writeFloat(outStream, (float)PtBotRight[1].z);
+			memcpy(buffer, &zero, sizeof(short));
+			outStream.writeRawData(buffer, 2);
+			iTriangles +=1;
+
+			for(int ic=1; ic<CHORDPANELS-1; ic++)
+			{
+				//1st triangle
+				writeFloat(outStream, (float)N.x);
+				writeFloat(outStream, (float)N.y);
+				writeFloat(outStream, (float)N.z);
+				writeFloat(outStream, (float)PtBotRight[ic].x);
+				writeFloat(outStream, (float)PtBotRight[ic].y);
+				writeFloat(outStream, (float)PtBotRight[ic].z);
+				writeFloat(outStream, (float)PtRight[ic].x);
+				writeFloat(outStream, (float)PtRight[ic].y);
+				writeFloat(outStream, (float)PtRight[ic].z);
+				writeFloat(outStream, (float)PtRight[ic+1].x);
+				writeFloat(outStream, (float)PtRight[ic+1].y);
+				writeFloat(outStream, (float)PtRight[ic+1].z);
+				memcpy(buffer, &zero, sizeof(short));
+				outStream.writeRawData(buffer, 2);
+
+				//2nd triangle
+				writeFloat(outStream, (float)N.x);
+				writeFloat(outStream, (float)N.y);
+				writeFloat(outStream, (float)N.z);
+				writeFloat(outStream, (float)PtBotRight[ic].x);
+				writeFloat(outStream, (float)PtBotRight[ic].y);
+				writeFloat(outStream, (float)PtBotRight[ic].z);
+				writeFloat(outStream, (float)PtRight[ic+1].x);
+				writeFloat(outStream, (float)PtRight[ic+1].y);
+				writeFloat(outStream, (float)PtRight[ic+1].z);
+				writeFloat(outStream, (float)PtBotRight[ic+1].x);
+				writeFloat(outStream, (float)PtBotRight[ic+1].y);
+				writeFloat(outStream, (float)PtBotRight[ic+1].z);
+
+				memcpy(buffer, &zero, sizeof(short));
+				outStream.writeRawData(buffer, 2);
+				iTriangles +=2;
+			}
+
+			//T.E. triangle
+			int ic = CHORDPANELS-1;
+			writeFloat(outStream, (float)N.x);
+			writeFloat(outStream, (float)N.y);
+			writeFloat(outStream, (float)N.z);
+			writeFloat(outStream, (float)PtBotRight[ic].x);
+			writeFloat(outStream, (float)PtBotRight[ic].y);
+			writeFloat(outStream, (float)PtBotRight[ic].z);
+			writeFloat(outStream, (float)PtRight[ic].x);
+			writeFloat(outStream, (float)PtRight[ic].y);
+			writeFloat(outStream, (float)PtRight[ic].z);
+			writeFloat(outStream, (float)PtBotRight[ic+1].x);
+			writeFloat(outStream, (float)PtBotRight[ic+1].y);
+			writeFloat(outStream, (float)PtBotRight[ic+1].z);
+			memcpy(buffer, &zero, sizeof(short));
+			outStream.writeRawData(buffer, 2);
+
+			iTriangles +=1;
+		}
+	}
+	Q_ASSERT(iTriangles==nTriangles);
+}
+
+
+
+/**
+ * Export the wing geometry to a binary file in STL Format.
+ * @param out the instance of the QTextStream to which the output will be directed
+ */
+void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS)
+{
+	/***
+	 * solid name
+	 *
+	 * 	  facet normal ni nj nk
+	 * 	    outer loop
+	 * 	      vertex v1x v1y v1z
+	 * 	      vertex v2x v2y v2z
+	 * 	      vertex v3x v3y v3z
+	 *      endloop
+	 *   endfacet
+	 *
+	 * endsolid name
+	*/
+	QString name = wingName();
+	name.replace(" ","");
+	QString strong = "solid " + name + "\n";
+	outStream << strong;
+
+	CVector N, Pt;
+	CVector NormalA[CHORDPANELS+1], NormalB[CHORDPANELS+1];
+	CVector PtLeft[CHORDPANELS+1], PtRight[CHORDPANELS+1];
+	CVector PtBotLeft[CHORDPANELS+1], PtBotRight[CHORDPANELS+1];
+
+	memset(NormalA, 0, sizeof(NormalA));
+	memset(NormalB, 0, sizeof(NormalB));
+
+	//Number of triangles
+	// nSurfaces
+	//   *CHORDPANELS*SPANPANELS   quads
+	//   *2                        2 triangles/quad
+	//   *2                        top and bottom surfaces
+	// 2 Tip patches
+	//   1 LE triangle
+	//   1 TE triangle
+	//   CHORDPANELS-1  quads
+	//   *2 triangles/quad
+
+	quint32 nTriangles = m_Surface.count() * CHORDPANELS * SPANPANELS * 2 *2
+						 + 2* ((CHORDPANELS-2) * 2 + 2);
+	N.set(0.0, 0.0, 0.0);
+	int iTriangles = 0;
+
+	for (int j=0; j<m_Surface.size(); j++)
+	{
+		//top surface
+		for(int is=0; is<SPANPANELS; is++)
+		{
+			m_Surface.at(j)->getSidePoints(TOPSURFACE, NULL, PtLeft, PtRight,
+										   NormalA, NormalB, CHORDPANELS+1);
+
+			double tauA = (double)is    /(double)SPANPANELS;
+			double tauB = (double)(is+1)/(double)SPANPANELS;
+			double tau = (tauA+tauB)/2.0;
+			for(int ic=0; ic<CHORDPANELS; ic++)
+			{
+				N = (NormalA[ic]+NormalA[ic+1]) * (1.0-tau) + (NormalB[ic]+NormalB[ic+1]) * tau;
+				N.normalize();
+
+				//1st triangle
+				outStream << strong.sprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
+				outStream << "    outer loop\n";
+				Pt = PtLeft[ic]   * (1.0-tauA) + PtRight[ic]   * tauA;
+				outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
+				Pt = PtLeft[ic+1] * (1.0-tauA) + PtRight[ic+1] * tauA;
+				outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
+				Pt = PtLeft[ic]   * (1.0-tauB) + PtRight[ic]   * tauB;
+				outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
+				outStream << "    endloop\n  endfacet\n";
+
+				//2nd triangle
+				outStream << strong.sprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
+				outStream << "    outer loop\n";
+				Pt = PtLeft[ic]   * (1.0-tauB) + PtRight[ic]   * tauB;
+				outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
+				Pt = PtLeft[ic+1] * (1.0-tauA) + PtRight[ic+1] * tauA;
+				outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
+				Pt = PtLeft[ic+1] * (1.0-tauB) + PtRight[ic+1] * tauB;
+				outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
+				outStream << "    endloop\n  endfacet\n";
+				iTriangles +=2;
+			}
+		}
+
+		//bottom surface
+		for(int is=0; is<SPANPANELS; is++)
+		{
+			m_Surface.at(j)->getSidePoints(BOTSURFACE, NULL, PtLeft, PtRight,
+										   NormalA, NormalB, CHORDPANELS+1);
+
+			double tauA = (double)is    /(double)SPANPANELS;
+			double tauB = (double)(is+1)/(double)SPANPANELS;
+			double tau = (tauA+tauB)/2.0;
+			for(int ic=0; ic<CHORDPANELS; ic++)
+			{
+				//left side vertices
+				N = (NormalA[ic]+NormalA[ic+1]) * (1.0-tau) + (NormalB[ic]+NormalB[ic+1]) * tau;
+				N.normalize();
+
+				//1st triangle
+				outStream << strong.sprintf("facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
+				outStream << "    outer loop\n";
+				Pt = PtLeft[ic]   * (1.0-tauA) + PtRight[ic]   * tauA;
+				outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
+				Pt = PtLeft[ic+1] * (1.0-tauA) + PtRight[ic+1] * tauA;
+				outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
+				Pt = PtLeft[ic]   * (1.0-tauB) + PtRight[ic]   * tauB;
+				outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
+				outStream << "    endloop\n  endfacet\n";
+
+				//2nd triangle
+				outStream << strong.sprintf("facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
+				outStream << "    outer loop\n";
+				Pt = PtLeft[ic+1] * (1.0-tauA) + PtRight[ic+1] * tauA;
+				outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
+				Pt = PtLeft[ic+1] * (1.0-tauB) + PtRight[ic+1] * tauB;
+				outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
+				Pt = PtLeft[ic]   * (1.0-tauB) + PtRight[ic]   * tauB;
+				outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
+				outStream << "    endloop\n  endfacet\n";
+				iTriangles +=2;
+			}
+		}
+	}
+
+	Q_ASSERT(iTriangles==m_Surface.count() * CHORDPANELS * SPANPANELS * 2 *2);
+
+	//TIP PATCHES
+
+	for (int j=0; j<m_Surface.size(); j++)
+	{
+		if(m_Surface.at(j)->isTipLeft())
+		{
+			m_Surface.at(j)->getSidePoints(TOPSURFACE, NULL, PtLeft, PtRight,
+										   NormalA, NormalB, CHORDPANELS+1);
+			m_Surface.at(j)->getSidePoints(BOTSURFACE, NULL, PtBotLeft, PtBotRight,
+										   NormalA, NormalB, CHORDPANELS+1);
+
+			N = m_Surface.at(j)->Normal;
+			N.rotateX(90.0);
+
+			//L.E. triangle
+			outStream << strong.sprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
+			outStream << "    outer loop\n";
+			outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[0].x, PtBotLeft[0].y, PtBotLeft[0].z);
+			outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtLeft[1].x, PtLeft[1].y, PtLeft[1].z);
+			outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[1].x, PtBotLeft[1].y, PtBotLeft[1].z);
+			outStream << "    endloop\n  endfacet\n";
+			iTriangles +=1;
+
+			for(int ic=1; ic<CHORDPANELS-1; ic++)
+			{
+				//1st triangle
+				outStream << strong.sprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
+				outStream << "    outer loop\n";
+				outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[ic].x, PtBotLeft[ic].y, PtBotLeft[ic].z);
+				outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtLeft[ic].x, PtLeft[ic].y, PtLeft[ic].z);
+				outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[ic+1].x, PtBotLeft[ic+1].y, PtBotLeft[ic+1].z);
+				outStream << "    endloop\n  endfacet\n";
+				//2nd triangle
+				outStream << strong.sprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
+				outStream << "    outer loop\n";
+				outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[ic+1].x, PtBotLeft[ic+1].y, PtBotLeft[ic+1].z);
+				outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtLeft[ic].x, PtLeft[ic].y, PtLeft[ic].z);
+				outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtLeft[ic+1].x, PtLeft[ic+1].y, PtLeft[ic+1].z);
+				outStream << "    endloop\n  endfacet\n";
+				iTriangles +=2;
+			}
+			//T.E. triangle
+			int ic = CHORDPANELS-1;
+			outStream << strong.sprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
+			outStream << "    outer loop\n";
+			outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[ic].x, PtBotLeft[ic].y, PtBotLeft[ic].z);
+			outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtLeft[ic].x, PtLeft[ic].y, PtLeft[ic].z);
+			outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[ic+1].x, PtBotLeft[ic+1].y, PtBotLeft[ic+1].z);
+			outStream << "    endloop\n  endfacet\n";
+			iTriangles +=1;
+		}
+
+		if(m_Surface.at(j)->isTipRight())
+		{
+			m_Surface.at(j)->getSidePoints(TOPSURFACE, NULL, PtLeft, PtRight,
+										   NormalA, NormalB, CHORDPANELS+1);
+			m_Surface.at(j)->getSidePoints(BOTSURFACE, NULL, PtBotLeft, PtBotRight,
+										   NormalA, NormalB, CHORDPANELS+1);
+
+			N = m_Surface.at(j)->Normal;
+			N.rotateX(-90.0);
+
+			//L.E. triangle
+			outStream << strong.sprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
+			outStream << "    outer loop\n";
+			outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[0].x, PtBotRight[0].y, PtBotRight[0].z);
+			outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtRight[1].x, PtRight[1].y, PtRight[1].z);
+			outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[1].x, PtBotRight[1].y, PtBotRight[1].z);
+			outStream << "    endloop\n  endfacet\n";
+			iTriangles +=1;
+
+			for(int ic=1; ic<CHORDPANELS-1; ic++)
+			{
+				//1st triangle
+				outStream << strong.sprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
+				outStream << "    outer loop\n";
+				outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[ic].x, PtBotRight[ic].y, PtBotRight[ic].z);
+				outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtRight[ic].x, PtRight[ic].y, PtRight[ic].z);
+				outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[ic+1].x, PtBotRight[ic+1].y, PtBotRight[ic+1].z);
+				outStream << "    endloop\n  endfacet\n";
+				//2nd triangle
+				outStream << strong.sprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
+				outStream << "    outer loop\n";
+				outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[ic+1].x, PtBotRight[ic+1].y, PtBotRight[ic+1].z);
+				outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtRight[ic].x, PtRight[ic].y, PtRight[ic].z);
+				outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtRight[ic+1].x, PtRight[ic+1].y, PtRight[ic+1].z);
+				outStream << "    endloop\n  endfacet\n";
+				iTriangles +=2;
+			}
+			//T.E. triangle
+			int ic = CHORDPANELS-1;
+			outStream << strong.sprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
+			outStream << "    outer loop\n";
+			outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[ic].x, PtBotRight[ic].y, PtBotRight[ic].z);
+			outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtRight[ic].x, PtRight[ic].y, PtRight[ic].z);
+			outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[ic+1].x, PtBotRight[ic+1].y, PtBotRight[ic+1].z);
+			outStream << "    endloop\n  endfacet\n";
+			iTriangles +=1;
+		}
+	}
+
+	Q_ASSERT(iTriangles==nTriangles);
+
+	strong = "endsolid " + name + "\n";
+	outStream << strong;
+}
 
 
 

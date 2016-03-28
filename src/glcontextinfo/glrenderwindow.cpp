@@ -48,9 +48,6 @@ void GLRenderWindow::exposeEvent(QExposeEvent *)
 }
 
 
-
-// ES needs the precision qualifiers.
-// On desktop GL QOpenGLShaderProgram inserts dummy defines for highp/mediump/lowp.
 static const char *vertexShaderSource110 =
 	"attribute vec4 vertex;\n"
 	"attribute vec4 texCoord;\n"
@@ -62,11 +59,11 @@ static const char *vertexShaderSource110 =
 	"    texc = texCoord;\n"
 	"}\n";
 static const char *fragmentShaderSource110 =
-	"uniform sampler2D texture2Dsampleer;\n"
+	"uniform sampler2D texture2Dsampler;\n"
 	"varying vec4 texc;\n"
 	"void main(void)\n"
 	"{\n"
-	"    gl_FragColor = texture(texture2DSampler, texc.st);\n"
+	"    gl_FragColor = texture2D(texture2Dsampler, texc.st);\n"
 	"}\n";
 
 static const char *vertexShaderSource =
@@ -83,12 +80,12 @@ static const char *vertexShaderSource =
 
 static const char *fragmentShaderSource =
 	"#version 330\n"
-	"uniform sampler2D texture2DSampler;\n"
+	"uniform sampler2D texture2Dsampler;\n"
 	"in vec4 texc;\n"
 	"out vec4 fragColor;\n"
 	"void main(void)\n"
 	"{\n"
-	"    fragColor = texture(texture2DSampler, texc.st);\n"
+	"    fragColor = texture(texture2Dsampler, texc.st);\n"
 	"}\n";
 
 

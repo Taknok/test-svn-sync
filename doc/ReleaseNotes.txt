@@ -19,6 +19,7 @@ xflr5 v6.13 March xxxth, 2016
 	- upgraded to OpenGL 3.0+ from the deprecated OpenGL 1.0
 	- improved the lighting options in 3D view
 	- added an option to paint textures on the plane's surfaces
+	- added an option to export 3D object geometries to binary stl format
 	- added an option to autosave the project at regular time intervals
 	- changed the panel force display to q.Cp instead of q.S.panel_area; this is more significant since the arrow lengths are now mesh independent.
 	- added the extra drag in the calculation of the plane's total drag coefficient

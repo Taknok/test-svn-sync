@@ -36,6 +36,10 @@
 #include <QVarLengthArray>
 #include <QColor>
 
+#define NHOOPPOINTS 67  //used for display and to export the geometry
+#define NXPOINTS 97     //used for display and to export the geometry
+
+
 /**
  * This class :
  *	 - defines the body object,
@@ -84,6 +88,9 @@ public:
 				  double &GCm, double &GRm, double &GYm, double &Alpha, CVector &CoG);
 	void duplicate(Body *pBody);
 	void exportGeometry(QTextStream &outStream, int type, double mtoUnit, int nx, int nh);
+	void exportSTLBinary(QDataStream &outStream, int nXPanels, int nHoopPanels);
+	void exportSTLBinarySplines(QDataStream &outStream, int nXPanels, int nHoopPanels);
+	void exportSTLBinaryFlatPanels(QDataStream &outStream, int nXPanels, int nHoopPanels);
 	void getPoint(double u, double v, bool bRight, CVector &Pt);
 	CVector Point(double u, double v, bool bRight);
 	void removeActiveFrame();

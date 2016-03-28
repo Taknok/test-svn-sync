@@ -76,10 +76,13 @@ double IntegralCy(double y1, double y2, double c1, double c2);
 
 QColor randomColor();
 
-void ReadCString(QDataStream &ar, QString &strong);
-void WriteCString(QDataStream &ar, QString const &strong);
+void readCString(QDataStream &ar, QString &strong);
+void writeCString(QDataStream &ar, QString const &strong);
 void readCOLORREF(QDataStream &ar, QColor &color);
 void WriteCOLORREF(QDataStream &ar, QColor const &color);
+
+void readFloat(QDataStream &inStream, float &f);
+void writeFloat(QDataStream &outStream, float f);
 
 void Trace(int n);
 void Trace(QString msg);

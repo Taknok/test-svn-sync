@@ -73,6 +73,7 @@ bool QXDirect::s_bAlpha = true;
 bool QXDirect::s_bInitBL = true;
 bool QXDirect::s_bKeepOpenErrors = true;
 bool QXDirect::s_bFromZero = false;
+bool QXDirect::s_bStoreOpp = true;
 
 int QXDirect::s_TimeUpdateInterval = 100;
 
@@ -109,6 +110,7 @@ QXDirect::QXDirect(QWidget *parent) : QWidget(parent)
 	m_bShowUserGraph  = true;
 	m_bSequence       = false;
 	m_bHighlightOpp   = false;
+	s_bStoreOpp       = false;
 
 	m_bXPressed = m_bYPressed = false;
 
@@ -925,7 +927,7 @@ void QXDirect::loadSettings(QSettings *pSettings)
 
 	pSettings->beginGroup("XDirect");
 	{
-		OpPoint::s_bStoreOpp       = pSettings->value("StoreOpp").toBool();
+		s_bStoreOpp       = pSettings->value("StoreOpp").toBool();
 		s_bAlpha          = pSettings->value("AlphaSpec").toBool();
 		s_bViscous        = pSettings->value("ViscousAnalysis").toBool();
 		s_bInitBL         = pSettings->value("InitBL").toBool();
@@ -1320,7 +1322,6 @@ void QXDirect::onMultiThreadedBatchAnalysis()
 		return;
 	}
 
-	m_bPolarView = true;
 	onPolarView();
 	updateView();
 
@@ -1372,8 +1373,8 @@ void QXDirect::onMultiThreadedBatchAnalysis()
 
 	setOpp();
 
-
 	setControls();
+
 	updateView();
 
 	emit projectModified();
@@ -3444,6 +3445,7 @@ void QXDirect::onPolarView()
 	updateView();
 }
 
+
 /**
  * The user has requested the launch of the interface used to filter the type of polars to be displayed.
  */
@@ -4106,7 +4108,7 @@ void QXDirect::onSpec()
  */
 void QXDirect::onStoreOpp()
 {
-	OpPoint::s_bStoreOpp = m_pctrlStoreOpp->isChecked();
+	s_bStoreOpp = m_pctrlStoreOpp->isChecked();
 }
 
 
@@ -4180,7 +4182,7 @@ void QXDirect::readParams()
 	m_bSequence = m_pctrlSequence->isChecked();
 	s_bInitBL   = m_pctrlInitBL->isChecked();
 	s_bViscous  = m_pctrlViscous->isChecked();
-	OpPoint::s_bStoreOpp = m_pctrlStoreOpp->isChecked();
+	s_bStoreOpp = m_pctrlStoreOpp->isChecked();
 }
 
 
@@ -4194,7 +4196,7 @@ void QXDirect::saveSettings(QSettings *pSettings)
 	pSettings->beginGroup("XDirect");
 	{
 		pSettings->setValue("AlphaSpec", s_bAlpha);
-		pSettings->setValue("StoreOpp", OpPoint::s_bStoreOpp);
+		pSettings->setValue("StoreOpp", s_bStoreOpp);
 		pSettings->setValue("ViscousAnalysis", s_bViscous);
 		pSettings->setValue("InitBL", s_bInitBL);
 		pSettings->setValue("PolarView", m_bPolarView);
@@ -4290,7 +4292,7 @@ void QXDirect::setAnalysisParams()
 {
 	m_pctrlViscous->setChecked(s_bViscous);
 	m_pctrlInitBL->setChecked(s_bInitBL);
-	m_pctrlStoreOpp->setChecked(OpPoint::s_bStoreOpp);
+	m_pctrlStoreOpp->setChecked(s_bStoreOpp);
 //	m_pctrlShowPressure->setChecked(m_bPressure);
 //	m_pctrlShowBL->setChecked(m_bBL);
 

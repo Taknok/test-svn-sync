@@ -67,7 +67,7 @@ public:
 	static void setCurOpp(OpPoint* pOpp) {s_pCurOpp = pOpp;}
 	static void deleteOpp(OpPoint *pOpp);
 	static void insertOpPoint(OpPoint *pNewPoint);
-	static OpPoint* addOpPoint(void *pFoilPtr, void *pPolarPtr, void *pXFoilPtr);
+	static OpPoint* addOpPoint(void *pFoilPtr, void *pPolarPtr, void *pXFoilPtr, bool bStoreOpp);
 
 	void addXFoilData(void *pXFoilPtr);
 	void setHingeMoments();
@@ -139,8 +139,6 @@ private:
 
 public:
 	static QList <void *> s_oaOpp;     /**< The array of void pointers to the foil operating point objects. */
-	static bool s_bStoreOpp;          /**< true if operating points should be stored after an analysis */
-
 };
 
 #endif

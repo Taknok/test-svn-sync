@@ -347,8 +347,8 @@ private:
 	QAction *m_pShowAllWPlrOpps, *m_pHideAllWPlrOpps, * m_pDeleteAllWPlrOpps;
 	QAction *m_pDefineWPolar, *m_pDefineStabPolar, *m_pDefineWPolarObjectAct, *m_pAadvancedSettings;
 	QAction *m_pShowTargetCurve, *m_pShowXCmRefLocation, *m_pShowStabCurve, *m_pShowFinCurve, *m_pShowWing2Curve;
-	QAction *m_pExporttoAVL, *m_pScaleWingAct;
-	QAction *m_pManagePlanesAct;
+	QAction *m_pExporttoAVL, *m_pExporttoSTL;
+	QAction *m_pManagePlanesAct, *m_pScaleWingAct;
 	QAction *m_pImportWPolar, *m_pPlaneInertia;
 
 	//XDirect Actions

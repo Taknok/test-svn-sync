@@ -301,7 +301,7 @@ void WriteCOLORREF(QDataStream &ar, QColor const &color)
 *@param ar the binary datastream
 *@param strong the QString read from the stream
 */
-void ReadCString(QDataStream &ar, QString &strong)
+void readCString(QDataStream &ar, QString &strong)
 {
 	qint8 qi, ch;
 	char c;
@@ -322,7 +322,7 @@ void ReadCString(QDataStream &ar, QString &strong)
 *@param ar the binary datastream
 *@param strong the QString to output to the stream
 */
-void WriteCString(QDataStream &ar, QString const &strong)
+void writeCString(QDataStream &ar, QString const &strong)
 {
 	qint8 qi = strong.length();
 
@@ -334,6 +334,21 @@ void WriteCString(QDataStream &ar, QString const &strong)
 	ar.writeRawData(text, qi);
 }
 
+
+void readFloat(QDataStream &inStream, float &f)
+{
+	char buffer[4];
+	inStream.readRawData(buffer, 4);
+	memcpy(&f, buffer, sizeof(float));
+}
+
+
+void writeFloat(QDataStream &outStream, float f)
+{
+	char buffer[4];
+	memcpy(buffer, &f, sizeof(float));
+	outStream.writeRawData(buffer, 4);
+}
 
 
 

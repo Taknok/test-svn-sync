@@ -257,6 +257,7 @@ private:
 	static bool s_bInitBL;            /**< true if the boundary layer should be initialized for the next xfoil calculation */
 	static bool s_bFromZero;          /**< true if the batch analysis should start from Alpha=0 */
 	static bool s_bKeepOpenErrors; /**< true if the XfoilAnalysisDlg should be kept open if errors occured in the XFoil calculation */
+	static bool s_bStoreOpp;          /**< true if the operating points should be stored */
 
 	XFoilAnalysisDlg *m_pXFADlg;
 
@@ -281,7 +282,6 @@ private:
 	bool m_bYPressed;          /**< true if the 'Y' key is pressed */
 	bool m_bHighlightOpp;      /**< true if the active operating point should be highlighted on the curves of the polar graphs */
 	bool m_bResetCurves;       /**< true if the graph curves need to be redrawn before the next view update */
-
 
 	int m_posAnimate;          /**< the current aoa in the animation */
 	int m_XFoilVar;            /**< defines the variable for current XFoil results */

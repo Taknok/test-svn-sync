@@ -1185,8 +1185,8 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
 			m_WPlrName ="";
 			return false;
 		}
-		ReadCString(ar, m_PlaneName);
-		ReadCString(ar, m_WPlrName);
+		readCString(ar, m_PlaneName);
+		readCString(ar, m_WPlrName);
 
 		ar>> f;
 		m_referenceArea = f;

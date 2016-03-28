@@ -263,7 +263,7 @@ int BodyFrameWidget::highlightPoint(CVector real)
 		real.z = real.y;
 		real.y = real.x;
 		real.x = m_pBody->activeFrame()->position().x;
-		Frame::s_iHighlight =   m_pBody->activeFrame()->isPoint(real, m_fScale/m_fRefScale);
+		Frame::s_iHighlight = m_pBody->activeFrame()->isPoint(real, m_fScale/m_fRefScale);
 	}
 	return Frame::s_iHighlight;
 }

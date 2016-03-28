@@ -87,6 +87,7 @@ PlaneDlg::PlaneDlg(QWidget *parent) :QDialog(parent)
 	connect(m_pctrlXLEStab,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
 	connect(m_pctrlZLEStab,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
 	connect(m_pctrlXLEFin,   SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlYLEFin,   SIGNAL(editingFinished()), this, SLOT(onChanged()));
 	connect(m_pctrlZLEFin,   SIGNAL(editingFinished()), this, SLOT(onChanged()));
 	connect(m_pctrlXBody,    SIGNAL(editingFinished()), this, SLOT(onChanged()));
 	connect(m_pctrlZBody,    SIGNAL(editingFinished()), this, SLOT(onChanged()));

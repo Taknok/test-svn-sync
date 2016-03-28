@@ -40,8 +40,16 @@ QPoint EditBodyDlg::s_WindowPosition(131, 77);
 bool EditBodyDlg::s_bWindowMaximized =false;
 QByteArray EditBodyDlg::m_HorizontalSplitterSizes;
 
-#define SECTIONHIGHLIGHT    1702
 
+bool EditBodyDlg::s_bOutline    = true;
+bool EditBodyDlg::s_bSurfaces   = true;
+bool EditBodyDlg::s_bVLMPanels  = false;
+bool EditBodyDlg::s_bAxes       = true;
+bool EditBodyDlg::s_bShowMasses = false;
+bool EditBodyDlg::s_bFoilNames  = false;
+
+
+#define SECTIONHIGHLIGHT    1702
 
 
 EditBodyDlg::EditBodyDlg(QWidget *pParent) : QDialog(pParent)
@@ -291,7 +299,7 @@ void EditBodyDlg::setupLayout()
 					pCommandLayout->addWidget(pCancelButton);
 					pCommandLayout->addStretch();
 					pCommandLayout->addWidget(m_pctrlMenuButton);
-					connect(pOKButton, SIGNAL(clicked()),this, SLOT(onOK()));
+					connect(pOKButton, SIGNAL(clicked()),this, SLOT(accept()));
 					connect(pCancelButton, SIGNAL(clicked()),this, SLOT(reject()));
 				}
 				pCommandBox->setLayout(pCommandLayout);
@@ -362,7 +370,6 @@ void EditBodyDlg::setupLayout()
 						pAxisViewLayout->addWidget(m_pctrlIso);
 					}
 
-
 					m_pctrlReset = new QPushButton(tr("Reset view"));
 					pThreeDViewControlsLayout->addLayout(pThreeDParamsLayout);
 					pThreeDViewControlsLayout->addStretch();
@@ -379,6 +386,13 @@ void EditBodyDlg::setupLayout()
 
 			m_pgl3Widget = new GL3Widget(this);
 			m_pgl3Widget->m_iView = XFLR5::GLEDITBODYVIEW;
+			m_pgl3Widget->m_bOutline    = s_bOutline;
+			m_pgl3Widget->m_bSurfaces   = s_bSurfaces;
+			m_pgl3Widget->m_bVLMPanels  = s_bVLMPanels;
+			m_pgl3Widget->m_bAxes       = s_bAxes;
+			m_pgl3Widget->m_bShowMasses = s_bShowMasses;
+			m_pgl3Widget->m_bFoilNames  = s_bFoilNames;
+
 			m_pgl3Widget->sizePolicy().setVerticalStretch(5);
 			p3DCtrlBox->sizePolicy().setVerticalStretch(2);
 
@@ -418,17 +432,6 @@ void EditBodyDlg::setupLayout()
 	setLayout(pMainLayout);
 	connectSignals();
 //	resize(s_Size);
-}
-
-
-
-void EditBodyDlg::onOK()
-{
-	s_bWindowMaximized= isMaximized();
-	s_WindowPosition = pos();
-	s_WindowSize = size();
-
-	accept();
 }
 
 
@@ -487,6 +490,23 @@ void EditBodyDlg::keyPressEvent(QKeyEvent *event)
 
 
 
+void EditBodyDlg::accept()
+{
+	s_bWindowMaximized= isMaximized();
+	s_WindowPosition = pos();
+	s_WindowSize = size();
+
+	s_bOutline    = m_pgl3Widget->m_bOutline;
+	s_bSurfaces   = m_pgl3Widget->m_bSurfaces;
+	s_bVLMPanels  = m_pgl3Widget->m_bVLMPanels;
+	s_bAxes       = m_pgl3Widget->m_bAxes;
+	s_bShowMasses = m_pgl3Widget->m_bShowMasses;
+	s_bFoilNames  = m_pgl3Widget->m_bFoilNames;
+
+	done(QDialog::Accepted);
+}
+
+
 void EditBodyDlg::reject()
 {
 	s_bWindowMaximized= isMaximized();
@@ -500,16 +520,22 @@ void EditBodyDlg::reject()
 										QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
 		if (QMessageBox::Yes == Ans)
 		{
-			onOK();
+			accept();
 			return;
 		}
 		else if(QMessageBox::Cancel == Ans) return;
 	}
 
-//	reject();
+
+	s_bOutline    = m_pgl3Widget->m_bOutline;
+	s_bSurfaces   = m_pgl3Widget->m_bSurfaces;
+	s_bVLMPanels  = m_pgl3Widget->m_bVLMPanels;
+	s_bAxes       = m_pgl3Widget->m_bAxes;
+	s_bShowMasses = m_pgl3Widget->m_bShowMasses;
+	s_bFoilNames  = m_pgl3Widget->m_bFoilNames;
+
 	done(QDialog::Rejected);
 }
-
 
 
 /**
@@ -1354,6 +1380,41 @@ bool EditBodyDlg::saveSettings(QSettings *pSettings)
 	return true;
 }
 
+
+
+void EditBodyDlg::onExportBodyGeom()
+{
+	if(!m_pBody) return;
+	QString LengthUnit, FileName;
+
+	Units::getLengthUnitLabel(LengthUnit);
+
+	FileName = m_pBody->m_BodyName;
+	FileName.replace("/", " ");
+
+	int type = 1;
+
+	QString filter =".csv";
+
+	FileName = QFileDialog::getSaveFileName(this, QObject::tr("Export Body Geometry"),
+											Settings::s_LastDirName ,
+											QObject::tr("Text File (*.txt);;Comma Separated Values (*.csv)"),
+											&filter);
+	if(!FileName.length()) return;
+
+	int pos = FileName.lastIndexOf("/");
+	if(pos>0) Settings::s_LastDirName = FileName.left(pos);
+	pos = FileName.lastIndexOf(".csv");
+	if (pos>0) type = 2;
+
+	QFile XFile(FileName);
+
+	if (!XFile.open(QIODevice::WriteOnly | QIODevice::Text)) return ;
+
+	QTextStream out(&XFile);
+
+	m_pBody->exportGeometry(out, Units::mtoUnit(), type, NXPOINTS, NHOOPPOINTS);
+}
 
 
 

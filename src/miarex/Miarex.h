@@ -151,6 +151,8 @@ private slots:
 	void onEditCurObject();
 	void onEditCurWPolarObject();
 	void onExporttoAVL();
+	void onExporttoSTL();
+	void onImportSTLFile();
 	void onExportCurPOpp();
 	void onExportCurWPolar();
 	void onExportPlanetoXML();

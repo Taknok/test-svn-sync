@@ -96,7 +96,6 @@ private slots:
 	void onBodyName();
 	void onSelChangeXDegree(int sel);
 	void onSelChangeHoopDegree(int sel);
-	void onOK();
 	void onUpdateBody();
 
 private:
@@ -105,6 +104,7 @@ private:
 	void resizeEvent(QResizeEvent *event);
 	void showEvent(QShowEvent *event);
 	void hideEvent(QHideEvent *event);
+	void accept();
 	void reject();
 
 	void showContextMenu(QContextMenuEvent * event);
@@ -156,6 +156,14 @@ private:
 	static QPoint s_WindowPos;
 	static QSize  s_WindowSize;
 	static bool s_bWindowMaximized;
+
+	static bool s_bOutline;
+	static bool s_bSurfaces;
+	static bool s_bVLMPanels;
+	static bool s_bAxes;
+	static bool s_bShowMasses;
+	static bool s_bFoilNames;
+
 
 	QPixmap m_pixTextLegend;
 

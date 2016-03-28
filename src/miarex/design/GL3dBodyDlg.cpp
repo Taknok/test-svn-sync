@@ -49,13 +49,19 @@ QByteArray GL3dBodyDlg::m_VerticalSplitterSizes;
 QByteArray GL3dBodyDlg::m_HorizontalSplitterSizes;
 QByteArray GL3dBodyDlg::m_LeftSplitterSizes;
 
-#define NHOOPPOINTS 67
-#define NXPOINTS 97
+
 
 QPoint GL3dBodyDlg::s_WindowPos=QPoint(20,20);
 QSize  GL3dBodyDlg::s_WindowSize=QSize(900, 700);
 bool GL3dBodyDlg::s_bWindowMaximized=true;
 
+
+bool GL3dBodyDlg::s_bOutline    = true;
+bool GL3dBodyDlg::s_bSurfaces   = true;
+bool GL3dBodyDlg::s_bVLMPanels  = false;
+bool GL3dBodyDlg::s_bAxes       = true;
+bool GL3dBodyDlg::s_bShowMasses = false;
+bool GL3dBodyDlg::s_bFoilNames  = false;
 
 GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
 {
@@ -186,7 +192,7 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
 	connect(m_pSelectionModelPoint, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(onPointItemClicked(QModelIndex)));
 	connect(m_pPointDelegate,       SIGNAL(closeEditor(QWidget *)), this, SLOT(onPointCellChanged(QWidget *)));
 
-	connect(m_pctrlOK,     SIGNAL(clicked()),this, SLOT(onOK()));
+	connect(m_pctrlOK,     SIGNAL(clicked()),this, SLOT(accept()));
 	connect(m_pctrlCancel, SIGNAL(clicked()),this, SLOT(reject()));
 
 	connect(m_pBodyLineWidget, SIGNAL(objectModified()), this, SLOT(onUpdateBody()));
@@ -404,7 +410,7 @@ void GL3dBodyDlg::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_Enter:
 		{
 			if(!m_pctrlOK->hasFocus() && !m_pctrlCancel->hasFocus()) m_pctrlOK->setFocus();
-			else if(m_pctrlOK->hasFocus()) onOK();
+			else if(m_pctrlOK->hasFocus()) accept();
 			else if(m_pctrlCancel->hasFocus()) reject();
 			break;
 		}
@@ -794,19 +800,6 @@ void GL3dBodyDlg::onLineType()
 }
 
 
-void GL3dBodyDlg::onOK()
-{
-	if(m_pBody)
-	{
-		m_pBody->bodyDescription() = m_pctrlBodyDescription->toPlainText();
-		m_pBody->bodyColor() = m_pctrlBodyColor->color();
-	}
-
-	accept();
-}
-
-
-
 void GL3dBodyDlg::onPointCellChanged(QWidget *)
 {
 	if(!m_pFrame) return;
@@ -869,6 +862,7 @@ void GL3dBodyDlg::onScaleBody()
 
 void GL3dBodyDlg::onUpdateBody()
 {
+	m_bChanged = true;
 	m_bResetglBody     = true;
 	fillFrameDataTable();
 	fillPointDataTable();
@@ -1006,10 +1000,42 @@ void GL3dBodyDlg::readPointSectionData(int sel)
 }
 
 
+void GL3dBodyDlg::accept()
+{
+	if(m_pBody)
+	{
+		m_pBody->bodyDescription() = m_pctrlBodyDescription->toPlainText();
+		m_pBody->bodyColor() = m_pctrlBodyColor->color();
+	}
+
+	s_bWindowMaximized= isMaximized();
+	s_WindowPos = pos();
+	s_WindowSize = size();
+
+	s_bOutline    = m_gl3Widget.m_bOutline;
+	s_bSurfaces   = m_gl3Widget.m_bSurfaces;
+	s_bVLMPanels  = m_gl3Widget.m_bVLMPanels;
+	s_bAxes       = m_gl3Widget.m_bAxes;
+	s_bShowMasses = m_gl3Widget.m_bShowMasses;
+	s_bFoilNames  = m_gl3Widget.m_bFoilNames;
+
+	done(QDialog::Accepted);
+}
 
 
 void GL3dBodyDlg::reject()
 {
+	s_bWindowMaximized= isMaximized();
+	s_WindowPos = pos();
+	s_WindowSize = size();
+
+	s_bOutline    = m_gl3Widget.m_bOutline;
+	s_bSurfaces   = m_gl3Widget.m_bSurfaces;
+	s_bVLMPanels  = m_gl3Widget.m_bVLMPanels;
+	s_bAxes       = m_gl3Widget.m_bAxes;
+	s_bShowMasses = m_gl3Widget.m_bShowMasses;
+	s_bFoilNames  = m_gl3Widget.m_bFoilNames;
+
 	if(m_bChanged)
 	{
 		m_pBody->m_BodyName = m_pctrlBodyName->text();
@@ -1215,6 +1241,12 @@ void GL3dBodyDlg::setupLayout()
 
 	m_gl3Widget.m_pParent = this;
 	m_gl3Widget.m_iView = XFLR5::GLBODYVIEW;
+	m_gl3Widget.m_bOutline    = s_bOutline;
+	m_gl3Widget.m_bSurfaces   = s_bSurfaces;
+	m_gl3Widget.m_bVLMPanels  = s_bVLMPanels;
+	m_gl3Widget.m_bAxes       = s_bAxes;
+	m_gl3Widget.m_bShowMasses = s_bShowMasses;
+	m_gl3Widget.m_bFoilNames  = s_bFoilNames;
 
 	QVBoxLayout *pControlsLayout = new QVBoxLayout;
 	{
