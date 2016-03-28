@@ -2936,9 +2936,12 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
 	*/
 
 	CVector N, Pt;
-	CVector NormalA[CHORDPANELS+1], NormalB[CHORDPANELS+1];
-	CVector PtLeft[CHORDPANELS+1], PtRight[CHORDPANELS+1];
-	CVector PtBotLeft[CHORDPANELS+1], PtBotRight[CHORDPANELS+1];
+	CVector *NormalA    = new CVector[CHORDPANELS+1];
+	CVector *NormalB    = new CVector[CHORDPANELS+1];
+	CVector *PtLeft     = new CVector[CHORDPANELS+1];
+	CVector *PtRight    = new CVector[CHORDPANELS+1];
+	CVector *PtBotLeft  = new CVector[CHORDPANELS+1];
+	CVector *PtBotRight = new CVector[CHORDPANELS+1];
 
 	memset(NormalA, 0, sizeof(NormalA));
 	memset(NormalB, 0, sizeof(NormalB));
@@ -3266,6 +3269,12 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
 		}
 	}
 	Q_ASSERT(iTriangles==nTriangles);
+	delete [] NormalA;
+	delete [] NormalB;
+	delete [] PtLeft;
+	delete [] PtRight;
+	delete [] PtBotLeft;
+	delete [] PtBotRight;
 }
 
 
@@ -3295,9 +3304,13 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
 	outStream << strong;
 
 	CVector N, Pt;
-	CVector NormalA[CHORDPANELS+1], NormalB[CHORDPANELS+1];
-	CVector PtLeft[CHORDPANELS+1], PtRight[CHORDPANELS+1];
-	CVector PtBotLeft[CHORDPANELS+1], PtBotRight[CHORDPANELS+1];
+	CVector *NormalA    = new CVector[CHORDPANELS+1];
+	CVector *NormalB    = new CVector[CHORDPANELS+1];
+	CVector *PtLeft     = new CVector[CHORDPANELS+1];
+	CVector *PtRight    = new CVector[CHORDPANELS+1];
+	CVector *PtBotLeft  = new CVector[CHORDPANELS+1];
+	CVector *PtBotRight = new CVector[CHORDPANELS+1];
+
 
 	memset(NormalA, 0, sizeof(NormalA));
 	memset(NormalB, 0, sizeof(NormalB));
@@ -3507,6 +3520,12 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
 
 	strong = "endsolid " + name + "\n";
 	outStream << strong;
+	delete [] NormalA;
+	delete [] NormalB;
+	delete [] PtLeft;
+	delete [] PtRight;
+	delete [] PtBotLeft;
+	delete [] PtBotRight;
 }
 
 
