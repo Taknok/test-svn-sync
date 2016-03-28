@@ -558,8 +558,7 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
 
 	D = 0;
 	Back = 6;
-
-	if(OpPoint::curOpp())
+	if(Polar::curPolar() && OpPoint::curOpp())
 	{
 		Back = 12;
 		if(OpPoint::curOpp()->m_bTEFlap) Back++;

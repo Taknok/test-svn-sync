@@ -193,8 +193,8 @@ bool WingOpp::serializeWingOppWPA(QDataStream &ar, bool bIsStoring)
 		ar >> ArchiveFormat;
 		if(ArchiveFormat<1001|| ArchiveFormat>1100) return false;
 		//read variables
-		ReadCString(ar, m_WingName);
-		ReadCString(ar, m_PlrName);
+		readCString(ar, m_WingName);
+		readCString(ar, m_PlrName);
 
 		ar >> a;
 		if (a!=0 && a!=1) return false;

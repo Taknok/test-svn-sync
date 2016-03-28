@@ -49,6 +49,12 @@ QPoint GL3dWingDlg::s_WindowPos=QPoint(75,55);
 QSize  GL3dWingDlg::s_WindowSize=QSize(1200, 900);
 bool GL3dWingDlg::s_bWindowMaximized=false;
 
+bool GL3dWingDlg::s_bOutline    = true;
+bool GL3dWingDlg::s_bSurfaces   = true;
+bool GL3dWingDlg::s_bVLMPanels  = false;
+bool GL3dWingDlg::s_bAxes       = true;
+bool GL3dWingDlg::s_bShowMasses = false;
+bool GL3dWingDlg::s_bFoilNames  = false;
 
 GL3dWingDlg::GL3dWingDlg(QWidget *pParent) : QDialog(pParent)
 {
@@ -75,11 +81,11 @@ GL3dWingDlg::GL3dWingDlg(QWidget *pParent) : QDialog(pParent)
 	m_LastPoint.setX(0);
 	m_LastPoint.setY(0);
 
-	m_pResetScales   = new QAction(tr("Reset Scales"), this);
-	m_pInsertBefore  = new QAction(tr("Insert Before"), this);
-	m_pInsertAfter   = new QAction(tr("Insert after"), this);
+	m_pResetScales   = new QAction(tr("Reset Scales"),   this);
+	m_pInsertBefore  = new QAction(tr("Insert Before"),  this);
+	m_pInsertAfter   = new QAction(tr("Insert after"),   this);
 	m_pDeleteSection = new QAction(tr("Delete section"), this);
-	m_pResetSection  = new QAction(tr("Reset section"), this);
+	m_pResetSection  = new QAction(tr("Reset section"),  this);
 
 	m_pContextMenu = new QMenu(tr("Section"),this);
 	m_pContextMenu->addAction(m_pInsertBefore);
@@ -800,10 +806,6 @@ void GL3dWingDlg::onOK()
 	m_pWing->computeGeometry();
 	m_pWing->computeBodyAxisInertia();
 
-	s_bWindowMaximized= isMaximized();
-	s_WindowPos = pos();
-	s_WindowSize = size();
-
 	accept();
 }
 
@@ -1060,6 +1062,23 @@ void GL3dWingDlg::readSectionData(int sel)
 }
 
 
+void GL3dWingDlg::accept()
+{
+	s_bWindowMaximized= isMaximized();
+	s_WindowPos = pos();
+	s_WindowSize = size();
+
+	s_bOutline    = m_pgl3Widget->m_bOutline;
+	s_bSurfaces   = m_pgl3Widget->m_bSurfaces;
+	s_bVLMPanels  = m_pgl3Widget->m_bVLMPanels;
+	s_bAxes       = m_pgl3Widget->m_bAxes;
+	s_bShowMasses = m_pgl3Widget->m_bShowMasses;
+	s_bFoilNames  = m_pgl3Widget->m_bFoilNames;
+
+	done(QDialog::Accepted);
+}
+
+
 void GL3dWingDlg::reject()
 {
 	if(m_bChanged)
@@ -1078,7 +1097,14 @@ void GL3dWingDlg::reject()
 	s_bWindowMaximized= isMaximized();
 	s_WindowPos = pos();
 	s_WindowSize = size();
-//	reject();
+
+	s_bOutline    = m_pgl3Widget->m_bOutline;
+	s_bSurfaces   = m_pgl3Widget->m_bSurfaces;
+	s_bVLMPanels  = m_pgl3Widget->m_bVLMPanels;
+	s_bAxes       = m_pgl3Widget->m_bAxes;
+	s_bShowMasses = m_pgl3Widget->m_bShowMasses;
+	s_bFoilNames  = m_pgl3Widget->m_bFoilNames;
+
 	done(QDialog::Rejected);
 }
 
@@ -1187,8 +1213,14 @@ void GL3dWingDlg::setupLayout()
 
 	m_pgl3Widget = new GL3Widget(this);
 	m_pgl3Widget->m_iView = XFLR5::GLWINGVIEW;
+	m_pgl3Widget->m_bOutline    = s_bOutline;
+	m_pgl3Widget->m_bSurfaces   = s_bSurfaces;
+	m_pgl3Widget->m_bVLMPanels  = s_bVLMPanels;
+	m_pgl3Widget->m_bAxes       = s_bAxes;
+	m_pgl3Widget->m_bShowMasses = s_bShowMasses;
+	m_pgl3Widget->m_bFoilNames  = s_bFoilNames;
 
-   /*_____________Start Top Layout Here____________*/
+	/*_____________Start Top Layout Here____________*/
 
 	m_pLeftSideSplitter = new QSplitter(Qt::Vertical, this);
 	{

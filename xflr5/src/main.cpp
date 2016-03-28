@@ -66,8 +66,8 @@ int main(int argc, char *argv[])
 #endif
 
 /*	QSurfaceFormat defaultFormat = QSurfaceFormat::defaultFormat();
-	defaultFormat.setVersion(3, 0);
-	defaultFormat.setProfile(QSurfaceFormat::CompatibilityProfile);
+	defaultFormat.setVersion(3, 3);
+	defaultFormat.setProfile(QSurfaceFormat::CompatibilityProfile); //only relevant for 3.2+
 	QSurfaceFormat::setDefaultFormat(defaultFormat);
 
 #ifdef QT_DEBUG
@@ -88,8 +88,8 @@ int main(int argc, char *argv[])
 	}
 	qDebug()<<"/main";
 	qDebug()<<"";
-#endif*/
-
+#endif
+*/
 	XFLR5Application app(argc, argv);
 	return app.exec();
 }

@@ -475,10 +475,10 @@ bool Plane::serializePlaneWPA(QDataStream &ar, bool bIsStoring)
 			return false;
 		}
 
-		ReadCString(ar,m_PlaneName);
+		readCString(ar,m_PlaneName);
 		if (m_PlaneName.length() ==0) return false;
 
-		if(ArchiveFormat>=1011) ReadCString(ar, m_PlaneDescription);
+		if(ArchiveFormat>=1011) readCString(ar, m_PlaneDescription);
 
 		/**@todo remove non active wings from serialization */
 		m_Wing[0].serializeWingWPA(ar, false);
@@ -552,7 +552,7 @@ bool Plane::serializePlaneWPA(QDataStream &ar, bool bIsStoring)
 		{
 			ar >> k;
 			if(k)  m_bBody=true; else m_bBody=false;
-			ReadCString(ar,strong);
+			readCString(ar,strong);
 			m_BodyName = strong;
 			if(m_BodyName.length()) m_Body.duplicate(Objects3D::getBody(strong));
 		}
@@ -579,7 +579,7 @@ bool Plane::serializePlaneWPA(QDataStream &ar, bool bIsStoring)
 			for(int im=0; im<nMass; im++)
 			{
 				tag << "";
-				ReadCString(ar, tag[im]);
+				readCString(ar, tag[im]);
 			}
 
 			clearPointMasses();

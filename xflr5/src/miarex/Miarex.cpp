@@ -65,6 +65,7 @@
 #include <misc/Units.h>
 #include <misc/W3dPrefsDlg.h>
 #include <misc/EditPlrDlg.h>
+#include <misc/stlexportdialog.h>
 
 #ifdef Q_OS_WIN
 #include <windows.h> // for Sleep
@@ -222,7 +223,7 @@ QMiarex::QMiarex(QWidget *parent)
 	m_bHighlightOpp = false;
 
 	m_bDirichlet = true;
-	
+
 
 	m_CurSpanPos    = 0.0;
 
@@ -441,14 +442,14 @@ QMiarex::~QMiarex()
 
 	for(int ig=m_StabPlrGraph.count()-1; ig>=0; ig--)
 	{
-	    delete m_StabPlrGraph.at(ig);
-	    m_StabPlrGraph.removeAt(ig);
+		delete m_StabPlrGraph.at(ig);
+		m_StabPlrGraph.removeAt(ig);
 	}
 
 	for(int ig=m_TimeGraph.count()-1; ig>=0; ig--)
 	{
-	    delete m_TimeGraph.at(ig);
-	    m_TimeGraph.removeAt(ig);
+		delete m_TimeGraph.at(ig);
+		m_TimeGraph.removeAt(ig);
 	}
 }
 
@@ -841,7 +842,7 @@ void QMiarex::createWOppCurves()
 			}
 		}
 	}
-	
+
 	//if the elliptic curve is requested, and if the graph variable is local lift, then add the curve
 	if(m_bShowEllipticCurve && m_pCurPOpp)
 	{
@@ -1013,7 +1014,7 @@ void QMiarex::createStabTimeCurves()
 
 	StabViewDlg *pStabView =(StabViewDlg*)s_pMainFrame->m_pStabView;
 	CurveTitle = pStabView->m_pctrlCurveList->currentText();
-	
+
 	pCurve0 = m_TimeGraph[0]->curve(CurveTitle);
 	if(pCurve0) pCurve0->clear();
 	else return;
@@ -1026,7 +1027,7 @@ void QMiarex::createStabTimeCurves()
 	pCurve3 = m_TimeGraph[3]->curve(CurveTitle);
 	if(pCurve3) pCurve3->clear();
 	else return;
-	
+
 	if(!m_pCurPOpp || !m_pCurPOpp->isVisible()) return;
 
 	strong = pStabView->m_pctrlCurveList->currentText();
@@ -1058,8 +1059,8 @@ void QMiarex::createStabTimeCurves()
 		in[1] = m_pCurPOpp->m_EigenVector[pStabView->m_iCurrentMode][1];
 		in[2] = m_pCurPOpp->m_EigenVector[pStabView->m_iCurrentMode][2];
 		in[3] = m_pCurPOpp->m_EigenVector[pStabView->m_iCurrentMode][3];
-	}	
-	
+	}
+
 	//fill the modal matrix
 	if(m_bLongitudinal) k=0; else k=1;
 	for (i=0; i<4; i++)
@@ -1081,7 +1082,7 @@ void QMiarex::createStabTimeCurves()
 		q0[1] = InvM[4] * in[0] + InvM[5] * in[1] + InvM[6] * in[2] + InvM[7] * in[3];
 		q0[2] = InvM[8] * in[0] + InvM[9] * in[1] + InvM[10]* in[2] + InvM[11]* in[3];
 		q0[3] = InvM[12]* in[0] + InvM[13]* in[1] + InvM[14]* in[2] + InvM[15]* in[3];
-		
+
 		for(i=0; i<TotalPoints; i++)
 		{
 			t = (double)i * dt;
@@ -1297,7 +1298,7 @@ void QMiarex::createStabRLCurves()
 	// declare a curve for each
 	Curve *pLongCurve[4];
 	Curve *pLatCurve [4];
-	
+
 	m_StabPlrGraph.at(0)->deleteCurves();
 	m_StabPlrGraph.at(1)->deleteCurves();
 
@@ -1731,7 +1732,7 @@ void QMiarex::glMake3DObjects()
 
 	if(m_bResetglPanelCp || m_bResetglOpp)
 	{
-        if(m_pCurWPolar && m_pCurWPolar->analysisMethod()!=XFLR5::LLTMETHOD)
+		if(m_pCurWPolar && m_pCurWPolar->analysisMethod()!=XFLR5::LLTMETHOD)
 			m_pgl3Widget->glMakePanels(m_pgl3Widget->m_vboPanelCp, Objects3D::s_MatSize, Objects3D::s_nNodes, s_pNode, s_pPanel, m_pCurPOpp);
 		m_bResetglPanelCp = false;
 	}
@@ -1761,8 +1762,8 @@ void QMiarex::glMake3DObjects()
 					m_pgl3Widget->glMakeTransistions(iw, pWing(iw), m_pCurWPolar, m_pWOpp[iw]);
 				}
 			}
-//			GLCreateLiftForce(m_pCurWPolar, m_pCurPOpp);
-//			GLCreateMoments(m_pCurPlane->m_Wing, m_pCurWPolar, m_pCurPOpp);
+			m_pgl3Widget->glMakeLiftForce(m_pCurWPolar, m_pCurPOpp);
+			m_pgl3Widget->glMakeMoments(pWing(0), m_pCurWPolar, m_pCurPOpp);
 		}
 		m_bResetglLift = false;
 	}
@@ -2061,6 +2062,16 @@ void QMiarex::keyPressEvent(QKeyEvent *event)
 			if(bCtrl) s_pMainFrame->onOpenGLInfo();
 			break;
 		}
+		case Qt::Key_9:
+		{
+			if(bCtrl) onExporttoSTL();
+			break;
+		}
+		case Qt::Key_M:
+		{
+//			if(bCtrl) onImportSTLFile();
+			break;
+		}
 		default:
 			//			QWidget::keyPressEvent(event);
 			event->ignore();
@@ -2123,7 +2134,7 @@ void QMiarex::LLTAnalyze(double V0, double VMax, double VDelta, bool bSequence, 
 	setPlaneOpp(false, V0);
 	s_pMainFrame->updatePOppListBox();
 
-    emit projectModified();
+	emit projectModified();
 }
 
 
@@ -2432,7 +2443,7 @@ void QMiarex::onAnalyze()
 		QMessageBox::warning(s_pMainFrame, tr("Warning"), tr("Please define an analysis/polar before running a calculation"));
 		return;
 	}
-	
+
 	//prevent an automatic and lengthy redraw of the streamlines after the calculation
 	m_bStream = m_bSurfVelocities = false;
 	m_pctrlStream->setChecked(false);
@@ -2666,17 +2677,17 @@ void QMiarex::onAnimateModeSingle(bool bStep)
 	else
 	{
 		//something went wrong somewhere
-        m_ModeState[0] = 0.0;
-        m_ModeState[1] = 0.0;
+		m_ModeState[0] = 0.0;
+		m_ModeState[1] = 0.0;
 		m_ModeState[2] = 0.0;
 		m_ModeState[3] = 0.0;
 		m_ModeState[4] = 0.0;
 		m_ModeState[5] = 0.0;
 	}
-	
+
 	//increase the time for the next update
 	if(bStep) m_ModeTime += m_Modedt;
-	
+
 	updateView();
 }
 
@@ -3418,11 +3429,11 @@ void QMiarex::onDeleteCurPlane()
 	if(m_pCurPlane) strong = tr("Are you sure you want to delete the plane :\n") +  m_pCurPlane->planeName() +"?\n";
 	if (QMessageBox::Yes != QMessageBox::question(s_pMainFrame, tr("Question"), strong, QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel)) return;
 
-    Objects3D::deletePlaneResults(m_pCurPlane, true);
-    Objects3D::deletePlane(m_pCurPlane);
+	Objects3D::deletePlaneResults(m_pCurPlane, true);
+	Objects3D::deletePlane(m_pCurPlane);
 	m_pCurPlane = NULL;
-    m_pCurWPolar = NULL;
-    m_pCurPOpp = NULL;
+	m_pCurWPolar = NULL;
+	m_pCurPOpp = NULL;
 
 	setPlane();
 	s_pMainFrame->updatePlaneListBox();
@@ -3632,6 +3643,7 @@ void QMiarex::onEditCurBody()
 		delete pModPlane;
 		return;
 	}
+	emit projectModified();
 
 	ModDlg mdDlg(s_pMainFrame);
 
@@ -4299,10 +4311,10 @@ void QMiarex::onExportCurPOpp()
 			double u0 = m_pCurPOpp->m_QInf;
 			double mac = m_pCurWPolar->referenceArea();
 			double b = m_pCurWPolar->referenceSpanLength();
-			
+
 			strong = "\n\n   ___Longitudinal modes____\n\n";
 			out << strong;
-		
+
 			strong = QString("      Eigenvalue:  %1+%2i   |   %3+%4i   |   %5+%6i   |   %7+%8i\n")
 				  .arg(m_pCurPOpp->m_EigenValue[0].real(),9, 'g', 4).arg(m_pCurPOpp->m_EigenValue[0].imag(),9, 'g', 4)
 				  .arg(m_pCurPOpp->m_EigenValue[1].real(),9, 'g', 4).arg(m_pCurPOpp->m_EigenValue[1].imag(),9, 'g', 4)
@@ -4311,7 +4323,7 @@ void QMiarex::onExportCurPOpp()
 			out << strong;
 			strong=("                    _____________________________________________________________________________________________________\n");
 			out << strong;
-		
+
 			strong = QString("             u/u0: %1+%2i   |   %3+%4i   |   %5+%6i   |   %7+%8i\n")
 					  .arg(m_pCurPOpp->m_EigenVector[0][0].real()/u0, 9, 'g', 4).arg(m_pCurPOpp->m_EigenVector[0][0].imag()/u0, 9, 'g', 4)
 					  .arg(m_pCurPOpp->m_EigenVector[1][0].real()/u0, 9, 'g', 4).arg(m_pCurPOpp->m_EigenVector[1][0].imag()/u0, 9, 'g', 4)
@@ -4339,11 +4351,11 @@ void QMiarex::onExportCurPOpp()
 
 			strong = "\n";
 			out << strong;
-	
-			
+
+
 			strong = "\n\n   ___Lateral modes____\n\n";
 			out << strong;
-		
+
 			strong = QString("      Eigenvalue:  %1+%2i   |   %3+%4i   |   %5+%6i   |   %7+%8i\n")
 				  .arg(m_pCurPOpp->m_EigenValue[4].real(),9, 'g', 4).arg(m_pCurPOpp->m_EigenValue[4].imag(),9, 'g', 4)
 				  .arg(m_pCurPOpp->m_EigenValue[5].real(),9, 'g', 4).arg(m_pCurPOpp->m_EigenValue[5].imag(),9, 'g', 4)
@@ -4353,7 +4365,7 @@ void QMiarex::onExportCurPOpp()
 
 			strong=("                    _____________________________________________________________________________________________________\n");
 			out << strong;
-		
+
 			strong = QString("            v/u0 : %1+%2i   |   %3+%4i   |   %5+%6i   |   %7+%8i\n")
 					  .arg(m_pCurPOpp->m_EigenVector[4][0].real()/u0, 9, 'g', 4).arg(m_pCurPOpp->m_EigenVector[4][0].imag()/u0, 9, 'g', 4)
 					  .arg(m_pCurPOpp->m_EigenVector[5][0].real()/u0, 9, 'g', 4).arg(m_pCurPOpp->m_EigenVector[5][0].imag()/u0, 9, 'g', 4)
@@ -4384,8 +4396,8 @@ void QMiarex::onExportCurPOpp()
 		}
 		out << "\n\n";
 	}
-	
-	
+
+
 	for(int iw=0; iw<MAXWINGS; iw++)
 	{
 		if(pWing(iw))
@@ -4528,6 +4540,7 @@ void QMiarex::onExportCurWPolar()
 }
 
 
+
 /**
  * Exports the geometrical data of the acitve wing or plane to a text file readable by AVL
  *@todo AVL expects consistency of the units, need to check all lines and cases
@@ -4556,7 +4569,7 @@ void QMiarex::onExporttoAVL()
 
 	QFile XFile(FileName);
 
-	if (!XFile.open(QIODevice::WriteOnly | QIODevice::Text)) return ;
+	if (!XFile.open(QIODevice::WriteOnly)) return;
 
 	QTextStream out(&XFile);
 	out << "# \n";
@@ -5276,7 +5289,7 @@ void QMiarex::onRenameCurPlane()
 	m_bResetTextLegend = true;
 	updateView();
 
-    emit projectModified();
+	emit projectModified();
 }
 
 
@@ -5620,14 +5633,14 @@ void QMiarex::onStabilityDirection()
 	//the user has clicked either the longitudinal or lateral mode display
 	//so update the view accordingly
 	StabViewDlg *pStabView =(StabViewDlg*)s_pMainFrame->m_pStabView;
-	
+
 	m_bLongitudinal = pStabView->m_pctrlLongDynamics->isChecked();
 
 	for(int ig=0; ig<MAXTIMEGRAPHS; ig++) m_TimeGraph[ig]->deleteCurves();
 
 	pStabView->m_pCurve = NULL;
 	pStabView->fillCurveList();
-	
+
 //	if(m_bLongitudinal) m_pCurRLStabGraph = m_StabPlrGraph.at(0);
 //	else                m_pCurRLStabGraph = m_StabPlrGraph.at(1);
 
@@ -5657,7 +5670,7 @@ void QMiarex::onStabTimeView()
 
 	m_bResetTextLegend = true;
 
-	
+
 	setGraphTiles();
 	s_pMainFrame->setMainFrameCentralWidget();
 
@@ -6118,97 +6131,97 @@ void QMiarex::paintPlaneOppLegend(QPainter &painter, QRect drawRect)
 	if(m_pCurPOpp && m_pCurPOpp->analysisMethod()!=XFLR5::LLTMETHOD)  ZPos -= dheight*m_pCurPOpp->m_pPlaneWOpp[0]->m_nFlaps;
 
 
-    if(m_pCurPOpp->m_bOut)
-    {
-        Result = tr("Point is out of the flight envelope");
-        painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
-        D+=dheight;
-    }
+	if(m_pCurPOpp->m_bOut)
+	{
+		Result = tr("Point is out of the flight envelope");
+		painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
+		D+=dheight;
+	}
 
-    Units::getSpeedUnitLabel(str);
-    int l = str.length();
-    if(l==2)      Result = QString("V = %1 ").arg(m_pCurPOpp->m_QInf*Units::mstoUnit(),8,'f',3);
-    else if(l==3) Result = QString("V = %1 ").arg(m_pCurPOpp->m_QInf*Units::mstoUnit(),7,'f',2);
-    else if(l==4) Result = QString("V = %1 ").arg(m_pCurPOpp->m_QInf*Units::mstoUnit(),6,'f',1);
-    else          Result = "No unit defined for speed...";
+	Units::getSpeedUnitLabel(str);
+	int l = str.length();
+	if(l==2)      Result = QString("V = %1 ").arg(m_pCurPOpp->m_QInf*Units::mstoUnit(),8,'f',3);
+	else if(l==3) Result = QString("V = %1 ").arg(m_pCurPOpp->m_QInf*Units::mstoUnit(),7,'f',2);
+	else if(l==4) Result = QString("V = %1 ").arg(m_pCurPOpp->m_QInf*Units::mstoUnit(),6,'f',1);
+	else          Result = "No unit defined for speed...";
 
-    Result += str;
-    painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
+	Result += str;
+	painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
 
-    int e = 8, f=3;
+	int e = 8, f=3;
 
 
-    Result = QString("Alpha = %1").arg(m_pCurPOpp->m_Alpha, e,'f',f) + QString::fromUtf8("°  ");
-    D+=dheight;
-    painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
+	Result = QString("Alpha = %1").arg(m_pCurPOpp->m_Alpha, e,'f',f) + QString::fromUtf8("°  ");
+	D+=dheight;
+	painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
 
-    Result = QString("Beta = %1").arg(m_pCurPOpp->m_Beta, e,'f',f) + QString::fromUtf8("°  ");
-    D+=dheight;
-    painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
+	Result = QString("Beta = %1").arg(m_pCurPOpp->m_Beta, e,'f',f) + QString::fromUtf8("°  ");
+	D+=dheight;
+	painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
 
-    Result = QString("CL = %1   ").arg(m_pCurPOpp->m_CL, e,'f',f);
-    D+=dheight;
-    painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
+	Result = QString("CL = %1   ").arg(m_pCurPOpp->m_CL, e,'f',f);
+	D+=dheight;
+	painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
 
-    Result = QString("CD = %1   " ).arg(m_pCurPOpp->m_VCD+m_pCurPOpp->m_ICD, e,'f',f);
-    D+=dheight;
-    painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
+	Result = QString("CD = %1   " ).arg(m_pCurPOpp->m_VCD+m_pCurPOpp->m_ICD, e,'f',f);
+	D+=dheight;
+	painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
 
-    /*		oswald=CZ^2/CXi/PI/allongement;*/
-    double cxielli=m_pCurPOpp->m_CL*m_pCurPOpp->m_CL/PI/m_pCurPlane->m_Wing[0].m_AR;
-    Result = QString("Efficiency = %1   ").arg(cxielli/m_pCurPOpp->m_ICD, e,'f',f);
-    D+=dheight;
-    painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
+	/*		oswald=CZ^2/CXi/PI/allongement;*/
+	double cxielli=m_pCurPOpp->m_CL*m_pCurPOpp->m_CL/PI/m_pCurPlane->m_Wing[0].m_AR;
+	Result = QString("Efficiency = %1   ").arg(cxielli/m_pCurPOpp->m_ICD, e,'f',f);
+	D+=dheight;
+	painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
 
-    Result = QString("CL/CD = %1   ").arg(m_pCurPOpp->m_CL/(m_pCurPOpp->m_ICD+m_pCurPOpp->m_VCD), e,'f',f);
-    D+=dheight;
-    painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
+	Result = QString("CL/CD = %1   ").arg(m_pCurPOpp->m_CL/(m_pCurPOpp->m_ICD+m_pCurPOpp->m_VCD), e,'f',f);
+	D+=dheight;
+	painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
 
-    Result = QString("Cm = %1   ").arg(m_pCurPOpp->m_GCm, e,'f',f);
-    D+=dheight;
-    painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
+	Result = QString("Cm = %1   ").arg(m_pCurPOpp->m_GCm, e,'f',f);
+	D+=dheight;
+	painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
 
-    Result = QString("Cl = %1   ").arg(m_pCurPOpp->m_GRm, e,'f',f);
-    D+=dheight;
-    painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
+	Result = QString("Cl = %1   ").arg(m_pCurPOpp->m_GRm, e,'f',f);
+	D+=dheight;
+	painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
 
-    Result = QString("Cn = %1   ").arg(m_pCurPOpp->m_GYm, e,'f',f);
-    D+=dheight;
-    painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
+	Result = QString("Cn = %1   ").arg(m_pCurPOpp->m_GYm, e,'f',f);
+	D+=dheight;
+	painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
 
-    Units::getLengthUnitLabel(str);
-    l = str.length();
-    int c=8, d=3;
-    if(l==1)  str+=" ";
+	Units::getLengthUnitLabel(str);
+	l = str.length();
+	int c=8, d=3;
+	if(l==1)  str+=" ";
 	if(m_pCurPOpp->m_WPolarType==XFLR5::STABILITYPOLAR)
-    {
-        Result = QString("X_NP = %1 ").arg(m_pCurPOpp->m_XNP*Units::mtoUnit(), c,'f',d);
-        Result += str;
-        D+=dheight;
-        painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
-    }
+	{
+		Result = QString("X_NP = %1 ").arg(m_pCurPOpp->m_XNP*Units::mtoUnit(), c,'f',d);
+		Result += str;
+		D+=dheight;
+		painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
+	}
 
-    Result = QString("X_CP = %1 ").arg(m_pCurPOpp->m_CP.x*Units::mtoUnit(), c, 'f', d);
-    Result += str;
-    D+=dheight;
-    painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
+	Result = QString("X_CP = %1 ").arg(m_pCurPOpp->m_CP.x*Units::mtoUnit(), c, 'f', d);
+	Result += str;
+	D+=dheight;
+	painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
 
 	Result = QString("X_CG = %1 ").arg(m_pCurWPolar->CoG().x*Units::mtoUnit(), c, 'f', d);
-    Result += str;
-    D+=dheight;
-    painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
+	Result += str;
+	D+=dheight;
+	painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
 
 	if(m_pCurPOpp->analysisMethod()!=XFLR5::LLTMETHOD)
-    {
-	    for(i=0; i<m_pCurPOpp->m_pPlaneWOpp[0]->m_nFlaps; i++)
-	    {
+	{
+		for(i=0; i<m_pCurPOpp->m_pPlaneWOpp[0]->m_nFlaps; i++)
+		{
 		   Result = QString("Flap %1 Moment =%2 ").arg(i+1).arg(m_pCurPOpp->m_pPlaneWOpp[0]->m_FlapMoment[i]*Units::NmtoUnit(),8,'f',4);
 		   Units::getMomentUnitLabel(str);
 		   Result += str;
 		   D+=dheight;
 		   painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
-	    }
-    }
+		}
+	}
 
 	painter.restore();
 }
@@ -6262,7 +6275,7 @@ void QMiarex::panelAnalyze(double V0, double VMax, double VDelta, bool bSequence
 
 	m_bResetglWake=true; //TODO remove
 
-    emit projectModified();
+	emit projectModified();
 }
 
 
@@ -6630,7 +6643,7 @@ void QMiarex::setCurveParams()
 			m_LineStyle.m_PointStyle = pStabView->m_pCurve->pointStyle();
 			m_pctrlShowCurve->setChecked(pStabView->m_pCurve->isVisible());
 			fillComboBoxes();
-		}		
+		}
 	}
 	else if(m_iView==XFLR5::WOPPVIEW)
 	{
@@ -6819,9 +6832,9 @@ void QMiarex::setupLayout()
 				AlphaDeltaLab->setAlignment(Qt::AlignRight);
 				AlphaMinLab->setAlignment(Qt::AlignRight);
 				AlphaMaxLab->setAlignment(Qt::AlignRight);
-                m_pctrlAlphaMin     = new DoubleEdit(0.0, 3);
-                m_pctrlAlphaMax     = new DoubleEdit(1., 3);
-                m_pctrlAlphaDelta   = new DoubleEdit(0.5, 3);
+				m_pctrlAlphaMin     = new DoubleEdit(0.0, 3);
+				m_pctrlAlphaMax     = new DoubleEdit(1., 3);
+				m_pctrlAlphaDelta   = new DoubleEdit(0.5, 3);
 
 				m_pctrlUnit1 = new QLabel(QString::fromUtf8("°"));
 				m_pctrlUnit2 = new QLabel(QString::fromUtf8("°"));
@@ -6926,7 +6939,7 @@ void QMiarex::setupLayout()
 			m_pctrlCurvePoints->showPoints(true);
 			m_pctrlCurveColor  = new LineBtn();
 
-            for (int i=0; i<5; i++)
+			for (int i=0; i<5; i++)
 			{
 				m_pctrlCurveStyle->addItem(tr("item"));
 				m_pctrlCurveWidth->addItem(tr("item"));
@@ -6983,7 +6996,7 @@ void QMiarex::setupLayout()
 			QHBoxLayout *CpPos = new QHBoxLayout;
 			{
 				QLabel *label1000 = new QLabel(tr("Span Position"));
-                m_pctrlSpanPos = new DoubleEdit(0.0, 3);
+				m_pctrlSpanPos = new DoubleEdit(0.0, 3);
 				CpPos->addWidget(label1000);
 				CpPos->addWidget(m_pctrlSpanPos);
 			}
@@ -8072,6 +8085,161 @@ Wing *QMiarex::pWing(int iw)
 	return m_pCurPlane->wing(iw);
 }
 
+
+/**
+ * Exports the geometrical data of the acitve wing or plane to a text file readable by AVL
+ *@todo AVL expects consistency of the units, need to check all lines and cases
+ */
+void QMiarex::onExporttoSTL()
+{
+	if (!m_pCurPlane) return;
+	QString filter ="STL File (*.stl)";
+	QString FileName;
+
+	FileName = m_pCurPlane->planeName();
+	FileName.replace("/", " ");
+
+	STLExportDialog dlg;
+	if(dlg.exec()==QDialog::Rejected) return;
+
+	QFileDialog Fdlg(this);
+	FileName = Fdlg.getSaveFileName(this, tr("Export to STL File"),
+									Settings::s_LastDirName + "/"+FileName+".stl",
+									tr("STL File (*.stl)"),
+									&filter, QFileDialog::DontConfirmOverwrite);
+
+	if(!FileName.length()) return;
+
+
+	bool bBinary = STLExportDialog::s_bBinary;
+
+	int pos = FileName.lastIndexOf("/");
+	if(pos>0) Settings::s_LastDirName = FileName.left(pos);
+
+	pos = FileName.indexOf(".stl", Qt::CaseInsensitive);
+	if(pos<0) FileName += ".stl";
+
+	QFile XFile(FileName);
+
+	if(STLExportDialog::s_iObject>0)
+	{
+		if(bBinary)
+		{
+			if (!XFile.open(QIODevice::WriteOnly)) return ;
+			QDataStream out(&XFile);
+			out.setByteOrder(QDataStream::LittleEndian);
+			pWing(STLExportDialog::s_iObject-1)->exportSTLBinary(out, STLExportDialog::s_iChordPanels, STLExportDialog::s_iSpanPanels);
+		}
+		else
+		{
+			if (!XFile.open(QIODevice::WriteOnly | QIODevice::Text)) return ;
+			QTextStream out(&XFile);
+			pWing(STLExportDialog::s_iObject-1)->exportSTLText(out, STLExportDialog::s_iChordPanels, STLExportDialog::s_iSpanPanels);
+		}
+	}
+	else if(STLExportDialog::s_iObject==0 && m_pCurPlane->body())
+	{
+		if(bBinary)
+		{
+			if (!XFile.open(QIODevice::WriteOnly)) return ;
+			QDataStream out(&XFile);
+			out.setByteOrder(QDataStream::LittleEndian);
+			m_pCurPlane->body()->exportSTLBinary(out, STLExportDialog::s_iChordPanels, STLExportDialog::s_iSpanPanels);
+		}
+		else
+		{
+			if (!XFile.open(QIODevice::WriteOnly | QIODevice::Text)) return ;
+			QTextStream out(&XFile);
+		}
+	}
+
+	XFile.close();
+}
+
+
+
+void QMiarex::onImportSTLFile()
+{
+	if (!m_pCurPlane) return;
+	QString filter ="STL Binary File (*.stl)";
+	QString FileName;
+
+	FileName = m_pCurPlane->planeName();
+	FileName.replace("/", " ");
+/*	QFileDialog dlg(this);
+	FileName = dlg.getOpenFileName(this, tr("Import stl"),
+									Settings::s_LastDirName + "/"+FileName+".stl",
+									tr("STL Text File (*.stl);;STL Binary File (*.stl)"),
+									&filter);
+
+	if(!FileName.length()) return;
+
+	int pos = FileName.lastIndexOf("/");
+	if(pos>0) Settings::s_LastDirName = FileName.left(pos);
+
+	pos = FileName.indexOf(".stl", Qt::CaseInsensitive);
+	if(pos<0) FileName += ".stl";*/
+	FileName = Settings::s_LastDirName + "/" + "0zPlane.stl";
+	qDebug()<<FileName;
+
+	QFile XFile(FileName);
+
+	if (!XFile.open(QIODevice::ReadOnly)) return ;
+	QDataStream inStream(&XFile);
+
+
+
+	inStream.setByteOrder(QDataStream::LittleEndian);
+//	uint u = inStream.byteOrder();
+//qDebug()<<in.byteOrder()<<QDataStream::BigEndian<<QDataStream::LittleEndian;
+
+	//80 character header, avoid word "solid"
+	//                       0123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789
+
+	QString strong;
+	qint8  ch;
+	strong.clear();
+	for(int j=0; j<80;j++)
+	{
+		strong += " ";
+		inStream >> ch;
+		strong[j] = char(ch);
+	}
+
+qDebug()<<strong;
+
+	int nTriangles=0;
+	inStream >> nTriangles;
+qDebug()<<"triangles"<<nTriangles;
+
+	float f,g,h;
+
+	char buffer[12];
+	for (int j=0; j<nTriangles; j++)
+	{
+		readFloat(inStream, f);
+		readFloat(inStream, g);
+		readFloat(inStream, h);
+		qDebug()<<"Normal"<<f<<g<<h;
+		readFloat(inStream, f);
+		readFloat(inStream, g);
+		readFloat(inStream, h);
+		qDebug()<<"V1"<<f<<g<<h;
+		readFloat(inStream, f);
+		readFloat(inStream, g);
+		readFloat(inStream, h);
+		qDebug()<<"V2"<<f<<g<<h;
+		readFloat(inStream, f);
+		readFloat(inStream, g);
+		readFloat(inStream, h);
+		qDebug()<<"V3"<<f<<g<<h;
+		inStream.readRawData(buffer, 2);
+		if(j>2) break;
+	}
+
+
+	XFile.close();
+}
 
 
 

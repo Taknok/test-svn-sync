@@ -25,8 +25,6 @@
 
 QList <void *> OpPoint::s_oaOpp;
 OpPoint *OpPoint::s_pCurOpp=NULL;
-bool OpPoint::s_bStoreOpp = true;
-
 
 
 /**
@@ -100,8 +98,8 @@ bool OpPoint::serializeOppWPA(QDataStream &ar, bool bIsStoring, int ArchiveForma
 		if(ArchiveFormat>=100002) ar>>Format;
 		else Format = 0;
 		//read variables
-		ReadCString(ar, m_strFoilName);
-		ReadCString(ar, m_strPlrName);
+		readCString(ar, m_strFoilName);
+		readCString(ar, m_strPlrName);
 
 		ar >> f; Reynolds =f;
 		ar >> f; Mach = f;
@@ -734,7 +732,7 @@ void OpPoint::insertOpPoint(OpPoint *pNewPoint)
 * @param pPolarPtr a point to the parent Polar object to which the OpPoint should be attached.
 * @return a pointer to the OpPoint which has been created, or NULL if it wasn't stored.
 */
-OpPoint* OpPoint::addOpPoint(void *pFoilPtr, void *pPolarPtr, void *pXFoilPtr)
+OpPoint* OpPoint::addOpPoint(void *pFoilPtr, void *pPolarPtr, void *pXFoilPtr, bool bStoreOpp)
 {
 	if(!pFoilPtr || !pXFoilPtr) return NULL;
 
@@ -765,7 +763,7 @@ OpPoint* OpPoint::addOpPoint(void *pFoilPtr, void *pPolarPtr, void *pXFoilPtr)
 		pNewPoint->addXFoilData(pXFoil);
 	}
 
-	if(s_bStoreOpp)
+	if(bStoreOpp)
 	{
 		//insert the OpPoint in the Operating points array
 		OpPoint::insertOpPoint(pNewPoint);
@@ -788,12 +786,11 @@ OpPoint* OpPoint::addOpPoint(void *pFoilPtr, void *pPolarPtr, void *pXFoilPtr)
 		}
 	}
 
-	if(!OpPoint::s_bStoreOpp)
+	if(!bStoreOpp)
 	{
 		delete pNewPoint;
 		pNewPoint = NULL;
 	}
-	OpPoint::setCurOpp(pNewPoint);
 
 	return pNewPoint;
 }

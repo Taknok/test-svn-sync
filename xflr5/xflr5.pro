@@ -157,7 +157,8 @@ SOURCES += \
 	src/viewwidgets/oppointwidget.cpp \
 	src/viewwidgets/inverseviewwidget.cpp \
 	src/glcontextinfo/glrenderwindow.cpp \
-	src/glcontextinfo/openglinfodlg.cpp
+	src/glcontextinfo/openglinfodlg.cpp \
+    src/misc/stlexportdialog.cpp
 
 
 HEADERS += \
@@ -296,7 +297,8 @@ HEADERS += \
 	src/viewwidgets/oppointwidget.h \
 	src/viewwidgets/inverseviewwidget.h \
 	src/glcontextinfo/glrenderwindow.h \
-	src/glcontextinfo/openglinfodlg.h
+	src/glcontextinfo/openglinfodlg.h \
+    src/misc/stlexportdialog.h
 
 
 TRANSLATIONS = translations/xflr5v6.ts \

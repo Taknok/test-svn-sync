@@ -39,6 +39,15 @@ bool EditPlaneDlg::s_bWindowMaximized =false;
 bool EditPlaneDlg::s_bAutoRedraw = true;
 QByteArray EditPlaneDlg::m_HorizontalSplitterSizes;
 
+
+bool EditPlaneDlg::s_bOutline    = true;
+bool EditPlaneDlg::s_bSurfaces   = true;
+bool EditPlaneDlg::s_bVLMPanels  = false;
+bool EditPlaneDlg::s_bAxes       = true;
+bool EditPlaneDlg::s_bShowMasses = false;
+bool EditPlaneDlg::s_bFoilNames  = false;
+
+
 #define SECTIONHIGHLIGHT    1702
 
 
@@ -280,6 +289,12 @@ void EditPlaneDlg::setupLayout()
 		{
 			m_pgl3Widget = new GL3Widget(this);
 			m_pgl3Widget->m_iView = XFLR5::GLPLANEVIEW;
+			m_pgl3Widget->m_bOutline    = s_bOutline;
+			m_pgl3Widget->m_bSurfaces   = s_bSurfaces;
+			m_pgl3Widget->m_bVLMPanels  = s_bVLMPanels;
+			m_pgl3Widget->m_bAxes       = s_bAxes;
+			m_pgl3Widget->m_bShowMasses = s_bShowMasses;
+			m_pgl3Widget->m_bFoilNames  = s_bFoilNames;
 
 			QWidget *p3DCtrlBox = new QWidget;
 			{
@@ -505,10 +520,6 @@ void EditPlaneDlg::onOK()
 
 	m_pPlane->computeBodyAxisInertia();
 
-	s_bWindowMaximized= isMaximized();
-	s_WindowPosition = pos();
-	s_WindowSize = size();
-
 	accept();
 }
 
@@ -571,6 +582,23 @@ void EditPlaneDlg::keyPressEvent(QKeyEvent *event)
 
 
 
+void EditPlaneDlg::accept()
+{
+	s_bWindowMaximized= isMaximized();
+	s_WindowPosition = pos();
+	s_WindowSize = size();
+
+	s_bOutline    = m_pgl3Widget->m_bOutline;
+	s_bSurfaces   = m_pgl3Widget->m_bSurfaces;
+	s_bVLMPanels  = m_pgl3Widget->m_bVLMPanels;
+	s_bAxes       = m_pgl3Widget->m_bAxes;
+	s_bShowMasses = m_pgl3Widget->m_bShowMasses;
+	s_bFoilNames  = m_pgl3Widget->m_bFoilNames;
+
+	done(QDialog::Accepted);
+}
+
+
 void EditPlaneDlg::reject()
 {
 	s_bWindowMaximized= isMaximized();
@@ -590,7 +618,13 @@ void EditPlaneDlg::reject()
 		else if(QMessageBox::Cancel == Ans) return;
 	}
 
-//	reject();
+	s_bOutline    = m_pgl3Widget->m_bOutline;
+	s_bSurfaces   = m_pgl3Widget->m_bSurfaces;
+	s_bVLMPanels  = m_pgl3Widget->m_bVLMPanels;
+	s_bAxes       = m_pgl3Widget->m_bAxes;
+	s_bShowMasses = m_pgl3Widget->m_bShowMasses;
+	s_bFoilNames  = m_pgl3Widget->m_bFoilNames;
+
 	done(QDialog::Rejected);
 }
 
@@ -715,9 +749,9 @@ void EditPlaneDlg::glCreateWingSectionHighlight(Wing *pWing)
 			//plot B side outline
 			glBegin(GL_LINE_STRIP);
 			{
-				for (int lx=0; lx<pWing->m_Surface.at(jSurf)->m_NXPanels; lx++)
+				for (int lx=0; lx<pWing->m_Surface.at(jSurf)->NXPanels(); lx++)
 				{
-					pWing->m_Surface.at(jSurf)->getPanel(pWing->m_Surface.at(jSurf)->m_NYPanels-1, lx, TOPSURFACE);
+					pWing->m_Surface.at(jSurf)->getPanel(pWing->m_Surface.at(jSurf)->NYPanels()-1, lx, TOPSURFACE);
 					glVertex3d(pWing->m_Surface.at(jSurf)->TB.x,
 							   pWing->m_Surface.at(jSurf)->TB.y,
 							   pWing->m_Surface.at(jSurf)->TB.z);
@@ -727,9 +761,9 @@ void EditPlaneDlg::glCreateWingSectionHighlight(Wing *pWing)
 						   pWing->m_Surface.at(jSurf)->LB.y,
 						   pWing->m_Surface.at(jSurf)->LB.z);
 
-				for (int lx=pWing->m_Surface.at(jSurf)->m_NXPanels-1; lx>=0; lx--)
+				for (int lx=pWing->m_Surface.at(jSurf)->NXPanels()-1; lx>=0; lx--)
 				{
-					pWing->m_Surface.at(jSurf)->getPanel(pWing->m_Surface.at(jSurf)->m_NYPanels-1, lx, BOTSURFACE);
+					pWing->m_Surface.at(jSurf)->getPanel(pWing->m_Surface.at(jSurf)->NYPanels()-1, lx, BOTSURFACE);
 					glVertex3d(pWing->m_Surface.at(jSurf)->TB.x,
 							   pWing->m_Surface.at(jSurf)->TB.y,
 							   pWing->m_Surface.at(jSurf)->TB.z);
@@ -745,9 +779,9 @@ void EditPlaneDlg::glCreateWingSectionHighlight(Wing *pWing)
 
 				glBegin(GL_LINE_STRIP);
 				{
-					for (int lx=0; lx<pWing->m_Surface.at(jSurf)->m_NXPanels; lx++)
+					for (int lx=0; lx<pWing->m_Surface.at(jSurf)->NXPanels(); lx++)
 					{
-						pWing->m_Surface.at(jSurf)->getPanel(pWing->m_Surface.at(jSurf)->m_NYPanels-1, lx, TOPSURFACE);
+						pWing->m_Surface.at(jSurf)->getPanel(pWing->m_Surface.at(jSurf)->NYPanels()-1, lx, TOPSURFACE);
 						glVertex3d(pWing->m_Surface.at(jSurf)->TB.x,
 								 pWing->m_Surface.at(jSurf)->TB.y,
 								 pWing->m_Surface.at(jSurf)->TB.z);
@@ -757,9 +791,9 @@ void EditPlaneDlg::glCreateWingSectionHighlight(Wing *pWing)
 							 pWing->m_Surface.at(jSurf)->LB.y,
 							 pWing->m_Surface.at(jSurf)->LB.z);
 
-					for (int lx=pWing->m_Surface.at(jSurf)->m_NXPanels-1; lx>=0; lx--)
+					for (int lx=pWing->m_Surface.at(jSurf)->NXPanels()-1; lx>=0; lx--)
 					{
-						pWing->m_Surface.at(jSurf)->getPanel(pWing->m_Surface.at(jSurf)->m_NYPanels-1, lx, BOTSURFACE);
+						pWing->m_Surface.at(jSurf)->getPanel(pWing->m_Surface.at(jSurf)->NYPanels()-1, lx, BOTSURFACE);
 						glVertex3d(pWing->m_Surface.at(jSurf)->TB.x,
 								 pWing->m_Surface.at(jSurf)->TB.y,
 								 pWing->m_Surface.at(jSurf)->TB.z);
@@ -776,7 +810,7 @@ void EditPlaneDlg::glCreateWingSectionHighlight(Wing *pWing)
 				//plot A side outline
 				glBegin(GL_LINE_STRIP);
 				{
-					for (int lx=0; lx<pWing->m_Surface.at(jSurf)->m_NXPanels; lx++)
+					for (int lx=0; lx<pWing->m_Surface.at(jSurf)->NXPanels(); lx++)
 					{
 						pWing->m_Surface.at(jSurf)->getPanel(0, lx, TOPSURFACE);
 						glVertex3d(pWing->m_Surface.at(jSurf)->TA.x,
@@ -788,7 +822,7 @@ void EditPlaneDlg::glCreateWingSectionHighlight(Wing *pWing)
 							   pWing->m_Surface.at(jSurf)->LA.y,
 							   pWing->m_Surface.at(jSurf)->LA.z);
 
-					for (int lx=pWing->m_Surface.at(jSurf)->m_NXPanels-1; lx>=0; lx--)
+					for (int lx=pWing->m_Surface.at(jSurf)->NXPanels()-1; lx>=0; lx--)
 					{
 						pWing->m_Surface.at(jSurf)->getPanel(0, lx, BOTSURFACE);
 						glVertex3d(pWing->m_Surface.at(jSurf)->TA.x,

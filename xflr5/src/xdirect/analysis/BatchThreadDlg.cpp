@@ -1022,7 +1022,7 @@ void BatchThreadDlg::startThread()
 				else         m_pXFoilTask[it].setSequence(false, m_ClMin, m_ClMax, m_ClInc);
 
 
-				m_pXFoilTask[it].initializeTask(pAnalysis->pFoil, pAnalysis->pPolar, true, m_bInitBL, m_bFromZero);
+				m_pXFoilTask[it].initializeTask(pAnalysis->pFoil, pAnalysis->pPolar, false, true, m_bInitBL, m_bFromZero);
 
 				//launch it
 				strong = "Starting "+pAnalysis->pFoil->m_FoilName+" / "+pAnalysis->pPolar->m_PlrName+"\n";

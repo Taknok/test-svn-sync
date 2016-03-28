@@ -221,7 +221,7 @@ bool SplineFoil::serialize(QDataStream &ar, bool bIsStoring)
 	{
 		ar >> ArchiveFormat;
 		if(ArchiveFormat < 100000 || ArchiveFormat > 110000) return false;
-		ReadCString(ar, m_strFoilName);
+		readCString(ar, m_strFoilName);
 		m_strFoilName = QObject::tr("Spline Foil");
 		readCOLORREF(ar, m_FoilColor);
 		ar >>m_FoilStyle >> m_FoilWidth;

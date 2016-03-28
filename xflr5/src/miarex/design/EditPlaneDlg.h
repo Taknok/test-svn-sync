@@ -103,6 +103,7 @@ private slots:
 	void onResize();
 
 private:
+	void accept();
 	void reject();
 	void paintPlaneLegend(QPainter &painter, Plane *pPlane, QRect drawRect);
 
@@ -144,6 +145,13 @@ private:
 	bool m_bResetglSectionHighlight;
 	bool m_bResetglPlane, m_bResetglBody;
 	static bool s_bAutoRedraw;
+
+	static bool s_bOutline;
+	static bool s_bSurfaces;
+	static bool s_bVLMPanels;
+	static bool s_bAxes;
+	static bool s_bShowMasses;
+	static bool s_bFoilNames;
 
 	enumObjectType m_enumActiveObject;
 	XFLR5::enumWingType m_enumActiveWingType;

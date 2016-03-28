@@ -490,8 +490,8 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
 		ar >> ArchiveFormat;
 		if(ArchiveFormat<1000 || ArchiveFormat>1100) return false;
 		//read variables
-		ReadCString(ar, m_PlaneName);
-		ReadCString(ar, m_WPlrName);
+		readCString(ar, m_PlaneName);
+		readCString(ar, m_WPlrName);
 
 		//always a main wing
 		if(m_pPlaneWOpp[0]!=NULL) delete m_pPlaneWOpp[0];

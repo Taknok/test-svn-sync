@@ -76,6 +76,8 @@ public:
 	QString title();
 	double alpha() {return m_Alpha;}
 	XFLR5::enumAnalysisMethod analysisMethod() {return m_AnalysisMethod;}
+	bool isLLTMethod(){return m_AnalysisMethod==XFLR5::LLTMETHOD;}
+
 	QString &planeName(){return m_PlaneName;}
 	QString &polarName(){return m_WPlrName;}
 	XFLR5::enumPolarType polarType(){return m_WPolarType;}

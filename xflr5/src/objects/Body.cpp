@@ -22,7 +22,7 @@
 #include "Body.h"
 #include "../globals.h"
 #include <math.h>
-
+#include <QtDebug>
 
 /**
  * The public constructor
@@ -1194,8 +1194,8 @@ bool Body::serializeBodyWPA(QDataStream &ar, bool bIsStoring)
 		ar >> ArchiveFormat;
 		if(ArchiveFormat<1000 || ArchiveFormat>1100) return false;
 
-		ReadCString(ar, m_BodyName);
-		if(ArchiveFormat>=1003) ReadCString(ar, m_BodyDescription);
+		readCString(ar, m_BodyName);
+		if(ArchiveFormat>=1003) readCString(ar, m_BodyDescription);
 
 		readCOLORREF(ar, m_BodyColor);
 		ar >> k;
@@ -1272,7 +1272,7 @@ bool Body::serializeBodyWPA(QDataStream &ar, bool bIsStoring)
 			for(int im=0; im<nMass; im++)
 			{
 				tag.append("");
-				ReadCString(ar, tag[im]);
+				readCString(ar, tag[im]);
 			}
 
 			clearPointMasses();
@@ -1858,6 +1858,331 @@ void Body::clearPointMasses()
 
 
 
+/**
+ * Export the wing geometry to a binary file in STL Format.
+ * @param out the instance of the QTextStream to which the output will be directed
+ */
+void Body::exportSTLBinary(QDataStream &outStream, int nXPanels, int nHoopPanels)
+{
+	/***
+	 *  UINT8[80] – Header
+	 * 	UINT32 – Number of triangles
+	 *
+	 * 	foreach triangle
+	 * 	REAL32[3] – Normal vector
+	 * 	REAL32[3] – Vertex 1
+	 * 	REAL32[3] – Vertex 2
+	 * 	REAL32[3] – Vertex 3
+	 * 	UINT16 – Attribute byte count
+	 * 	end
+	*/
+
+//	80 character header, avoid word "solid"
+//                       0123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789
+	QString strong = 	"binary STL file                                                                ";
+	writeCString(outStream, strong);
+
+	if(m_LineType==XFLR5::BODYSPLINETYPE) exportSTLBinarySplines(outStream, nXPanels, nHoopPanels);
+	else                                  exportSTLBinaryFlatPanels(outStream, nXPanels, nHoopPanels);
+
+}
+
+
+void Body::exportSTLBinarySplines(QDataStream &outStream, int nXPanels, int nHoopPanels)
+{
+	CVector N, Pt;
+	CVector *m_T = new CVector[(nXPanels+1)*(nHoopPanels+1)]; //temporary points to save calculation times for body NURBS surfaces
+	CVector TALB, LATB;
+
+	int p = 0;
+	for (int k=0; k<=nXPanels; k++)
+	{
+		double u = (double)k / (double)nXPanels;
+		for (int l=0; l<=nHoopPanels; l++)
+		{
+			double v = (double)l / (double)nHoopPanels;
+			getPoint(u,  v, true, m_T[p]);
+
+			p++;
+		}
+	}
+
+
+	//Number of triangles
+	//     NX*NH : quads
+	//     x2 : 2 triangles/quad
+	//     x2 : 2 sides
+
+	uint nTriangles = nXPanels *nHoopPanels *2*2;
+	outStream << nTriangles;
+
+	short zero = 0;
+
+	N.set(0.0, 0.0, 0.0);
+	int iTriangles = 0;
+
+	char buffer[12];
+
+	//right side first;
+	p=0;
+	for (int k=0; k<nXPanels; k++)
+	{
+		for (int l=0; l<nHoopPanels; l++)
+		{
+			LATB = m_T[p+nHoopPanels+1] - m_T[p+1];     //	LATB = TB - LA;
+			TALB = m_T[p+nHoopPanels+2] - m_T[p];      //	TALB = LB - TA;
+			N = TALB * LATB;
+			N.normalize();
+
+			//1st triangle
+			writeFloat(outStream, (float)N.x);
+			writeFloat(outStream, (float)N.y);
+			writeFloat(outStream, (float)N.z);
+			Pt = m_T[p];
+			writeFloat(outStream, (float)Pt.x);
+			writeFloat(outStream, (float)Pt.y);
+			writeFloat(outStream, (float)Pt.z);
+			Pt = m_T[p+1];
+			writeFloat(outStream, (float)Pt.x);
+			writeFloat(outStream, (float)Pt.y);
+			writeFloat(outStream, (float)Pt.z);
+			Pt = m_T[p+nHoopPanels+1];
+			writeFloat(outStream, (float)Pt.x);
+			writeFloat(outStream, (float)Pt.y);
+			writeFloat(outStream, (float)Pt.z);
+
+			memcpy(buffer, &zero, sizeof(short));
+			outStream.writeRawData(buffer, 2);
+
+			//2nd triangle
+			writeFloat(outStream, (float)N.x);
+			writeFloat(outStream, (float)N.y);
+			writeFloat(outStream, (float)N.z);
+			Pt = m_T[p+nHoopPanels+1];
+			writeFloat(outStream, (float)Pt.x);
+			writeFloat(outStream, (float)Pt.y);
+			writeFloat(outStream, (float)Pt.z);
+			Pt = m_T[p+1];
+			writeFloat(outStream, (float)Pt.x);
+			writeFloat(outStream, (float)Pt.y);
+			writeFloat(outStream, (float)Pt.z);
+			Pt = m_T[p+nHoopPanels+2];
+			writeFloat(outStream, (float)Pt.x);
+			writeFloat(outStream, (float)Pt.y);
+			writeFloat(outStream, (float)Pt.z);
+
+			memcpy(buffer, &zero, sizeof(short));
+			outStream.writeRawData(buffer, 2);
+
+			iTriangles+=2;
+			p++;
+		}
+		p++;
+	}
+
+	//left side next;
+	p=0;
+	for (int k=0; k<nXPanels; k++)
+	{
+		for (int l=0; l<nHoopPanels; l++)
+		{
+			LATB = m_T[p+nHoopPanels+1] - m_T[p+1];     //	LATB = TB - LA;
+			TALB = m_T[p+nHoopPanels+2] - m_T[p];      //	TALB = LB - TA;
+			N = TALB * LATB;
+			N.normalize();
+			//1st triangle
+			writeFloat(outStream, (float)N.x);
+			writeFloat(outStream, (float)N.y);
+			writeFloat(outStream, (float)N.z);
+			Pt = m_T[p];
+			writeFloat(outStream, (float)Pt.x);
+			writeFloat(outStream, (float)(-Pt.y));
+			writeFloat(outStream, (float)Pt.z);
+			Pt = m_T[p+1];
+			writeFloat(outStream, (float)Pt.x);
+			writeFloat(outStream, (float)(-Pt.y));
+			writeFloat(outStream, (float)Pt.z);
+			Pt = m_T[p+nHoopPanels+1];
+			writeFloat(outStream, (float)Pt.x);
+			writeFloat(outStream, (float)(-Pt.y));
+			writeFloat(outStream, (float)Pt.z);
+
+			memcpy(buffer, &zero, sizeof(short));
+			outStream.writeRawData(buffer, 2);
+
+			//2nd triangle
+			writeFloat(outStream, (float)N.x);
+			writeFloat(outStream, (float)N.y);
+			writeFloat(outStream, (float)N.z);
+			Pt = m_T[p+nHoopPanels+1];
+			writeFloat(outStream, (float)Pt.x);
+			writeFloat(outStream, (float)(-Pt.y));
+			writeFloat(outStream, (float)Pt.z);
+			Pt = m_T[p+1];
+			writeFloat(outStream, (float)Pt.x);
+			writeFloat(outStream, (float)(-Pt.y));
+			writeFloat(outStream, (float)Pt.z);
+			Pt = m_T[p+nHoopPanels+2];
+			writeFloat(outStream, (float)Pt.x);
+			writeFloat(outStream, (float)(-Pt.y));
+			writeFloat(outStream, (float)Pt.z);
+
+			memcpy(buffer, &zero, sizeof(short));
+			outStream.writeRawData(buffer, 2);
+
+			iTriangles+=2;
+			p++;
+		}
+		p++;
+	}
+
+
+	Q_ASSERT(iTriangles==nTriangles);
+	delete [] m_T;
+}
+
+
+void Body::exportSTLBinaryFlatPanels(QDataStream &outStream, int nXPanels, int nHoopPanels)
+{
+	int j,k;
+
+	CVector P1, P2, P3, P4, N, P1P3, P2P4;
+
+	int nTriangles = (sideLineCount()-1) * (frameCount()-1); //quads
+	nTriangles *= 2;  // two triangles per quad
+	nTriangles *= 2;  // two sides
+	outStream << nTriangles;
+	short zero = 0;
+
+	N.set(0.0, 0.0, 0.0);
+	int iTriangles = 0;
+
+	char buffer[12];
+
+
+	//right side
+	for (k=0; k<sideLineCount()-1;k++)
+	{
+		for (j=0; j<frameCount()-1;j++)
+		{
+			P1 = frame(j)->m_CtrlPoint[k];       P1.x = frame(j)->m_Position.x;
+			P2 = frame(j+1)->m_CtrlPoint[k];     P2.x = frame(j+1)->m_Position.x;
+			P3 = frame(j+1)->m_CtrlPoint[k+1];   P3.x = frame(j+1)->m_Position.x;
+			P4 = frame(j)->m_CtrlPoint[k+1];     P4.x = frame(j)->m_Position.x;
+
+			P1P3 = P3-P1;
+			P2P4 = P4-P2;
+			N = P1P3 * P2P4;
+			N.normalize();
+
+			// 1st triangle
+			writeFloat(outStream, (float)N.x);
+			writeFloat(outStream, (float)N.y);
+			writeFloat(outStream, (float)N.z);
+
+			writeFloat(outStream, (float)P1.x);
+			writeFloat(outStream, (float)P1.y);
+			writeFloat(outStream, (float)P1.z);
+
+			writeFloat(outStream, (float)P2.x);
+			writeFloat(outStream, (float)P2.y);
+			writeFloat(outStream, (float)P2.z);
+
+			writeFloat(outStream, (float)P4.x);
+			writeFloat(outStream, (float)P4.y);
+			writeFloat(outStream, (float)P4.z);
+
+			memcpy(buffer, &zero, sizeof(short));
+			outStream.writeRawData(buffer, 2);
+
+			// 2nd triangle
+			writeFloat(outStream, (float)N.x);
+			writeFloat(outStream, (float)N.y);
+			writeFloat(outStream, (float)N.z);
+
+			writeFloat(outStream, (float)P4.x);
+			writeFloat(outStream, (float)P4.y);
+			writeFloat(outStream, (float)P4.z);
+
+			writeFloat(outStream, (float)P2.x);
+			writeFloat(outStream, (float)P2.y);
+			writeFloat(outStream, (float)P2.z);
+
+			writeFloat(outStream, (float)P3.x);
+			writeFloat(outStream, (float)P3.y);
+			writeFloat(outStream, (float)P3.z);
+
+			memcpy(buffer, &zero, sizeof(short));
+			outStream.writeRawData(buffer, 2);
+			iTriangles +=2;
+		}
+	}
+
+	//left side
+	for (k=0; k<sideLineCount()-1;k++)
+	{
+		for (j=0; j<frameCount()-1;j++)
+		{
+			P1 = frame(j)->m_CtrlPoint[k];       P1.x = frame(j)->m_Position.x;
+			P2 = frame(j+1)->m_CtrlPoint[k];     P2.x = frame(j+1)->m_Position.x;
+			P3 = frame(j+1)->m_CtrlPoint[k+1];   P3.x = frame(j+1)->m_Position.x;
+			P4 = frame(j)->m_CtrlPoint[k+1];     P4.x = frame(j)->m_Position.x;
+
+			P1.y = -P1.y;
+			P2.y = -P2.y;
+			P3.y = -P3.y;
+			P4.y = -P4.y;
+
+			P1P3 = P3-P1;
+			P2P4 = P4-P2;
+			N = P1P3 * P2P4;
+			N.normalize();
+
+			// 1st triangle
+			writeFloat(outStream, (float)N.x);
+			writeFloat(outStream, (float)N.y);
+			writeFloat(outStream, (float)N.z);
+
+			writeFloat(outStream, (float)P1.x);
+			writeFloat(outStream, (float)P1.y);
+			writeFloat(outStream, (float)P1.z);
+
+			writeFloat(outStream, (float)P2.x);
+			writeFloat(outStream, (float)P2.y);
+			writeFloat(outStream, (float)P2.z);
+
+			writeFloat(outStream, (float)P4.x);
+			writeFloat(outStream, (float)P4.y);
+			writeFloat(outStream, (float)P4.z);
+
+			memcpy(buffer, &zero, sizeof(short));
+			outStream.writeRawData(buffer, 2);
+
+			// 2nd triangle
+			writeFloat(outStream, (float)N.x);
+			writeFloat(outStream, (float)N.y);
+			writeFloat(outStream, (float)N.z);
+
+			writeFloat(outStream, (float)P4.x);
+			writeFloat(outStream, (float)P4.y);
+			writeFloat(outStream, (float)P4.z);
+
+			writeFloat(outStream, (float)P2.x);
+			writeFloat(outStream, (float)P2.y);
+			writeFloat(outStream, (float)P2.z);
+
+			writeFloat(outStream, (float)P3.x);
+			writeFloat(outStream, (float)P3.y);
+			writeFloat(outStream, (float)P3.z);
+
+			memcpy(buffer, &zero, sizeof(short));
+			outStream.writeRawData(buffer, 2);
+			iTriangles +=2;
+		}
+	}
+
+	Q_ASSERT(iTriangles==nTriangles);
+}
 
 
 

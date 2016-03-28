@@ -509,7 +509,7 @@ void Surface::getSidePoints(enumPanelPosition pos,
 	double alpha_dA = acos(cosdA)*180.0/PI;
 	double alpha_dB = -acos(cosdB)*180.0/PI;
 	double delta = -atan(Normal.y / Normal.z)*180.0/PI;
-//qDebug("delta=%13.7f  N = %13.7f  %13.7f  %13.7f", delta, Normal.x, Normal.y, Normal.z);
+
 	//create the quarter chord centers of rotation for the twist
 	A4 = m_LA *3.0/4.0 + m_TA * 1/4.0;
 	B4 = m_LB *3.0/4.0 + m_TB * 1/4.0;
@@ -554,6 +554,7 @@ void Surface::getSidePoints(enumPanelPosition pos,
 			pBody->intersect(PtA[i], PtB[i], PtA[i], true);
 		}
 	}
+	int NADA = 0;
 }
 
 

@@ -97,7 +97,6 @@ public:
 	void glSetupLight();
 
 private:
-
 	void glDrawMasses(Plane *pPlane);
 	void glDrawMasses(Body *pBody);
 	void glDrawMasses(Wing *pWing);
@@ -114,6 +113,8 @@ private:
 	void glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody);
 	void glMakeDownwash(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
 	void glMakeLiftStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
+	void glMakeLiftForce(WPolar *pWPolar, PlaneOpp *pPOpp);
+	void glMakeMoments(Wing *pWing, WPolar *pWPolar, PlaneOpp *pPOpp);
 	void glMakeTransistions(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
 	void glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
 	bool glMakeStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPolar *pWPolar, PlaneOpp *pPOpp);
@@ -140,6 +141,7 @@ private:
 	void paintDrag(int iWing);
 	void paintDownwash(int iWing);
 	void paintLift(int iWing);
+	void paintMoments();
 	void paintStreamLines();
 	void paintSurfaceVelocities();
 	void paintTransitions(int iWing);
@@ -170,11 +172,13 @@ private:
 	QOpenGLBuffer m_vboWingSurface[MAXWINGS], m_vboWingOutline[MAXWINGS];
 	QOpenGLBuffer m_vboEditMesh;
 	QOpenGLBuffer m_vboHighlight;
-	QOpenGLBuffer m_vboMesh, m_vboPanelCp, m_vboPanelForces, m_vboStreamLines, m_vboLegendColor, m_vboSurfaceVelocities;
-	QOpenGLBuffer m_vboICd[MAXWINGS], m_vboVCd[MAXWINGS], m_vboLift[MAXWINGS], m_vboTransitions[MAXWINGS], m_vboDownwash[MAXWINGS];
+	QOpenGLBuffer m_vboMesh, m_vboPanelCp, m_vboPanelForces, m_vboStreamLines, m_vboLegendColor;
+	QOpenGLBuffer m_vboSurfaceVelocities;
+	QOpenGLBuffer m_vboLiftForce, m_vboMoments;
+	QOpenGLBuffer m_vboICd[MAXWINGS], m_vboVCd[MAXWINGS], m_vboLiftStrips[MAXWINGS], m_vboTransitions[MAXWINGS], m_vboDownwash[MAXWINGS];
 	QOpenGLBuffer m_vboSphere;
 	QOpenGLTexture 	*m_pLeftBodyTexture, *m_pRightBodyTexture;
-	QOpenGLTexture 	*m_pWingTopLeftTexture, *m_pWingTopRightTexture, *m_pWingBotLeftTexture, *m_pWingBotRightTexture;
+	QOpenGLTexture 	*m_pWingTopLeftTexture[MAXWINGS], *m_pWingTopRightTexture[MAXWINGS], *m_pWingBotLeftTexture[MAXWINGS], *m_pWingBotRightTexture[MAXWINGS];
 
 	int m_VertexLocationGradient, m_pvmMatrixLocationGradient, m_ColorLocationGradient;
 
@@ -247,6 +251,7 @@ private:
 
 	int m_iBodyMeshLines;
 	int m_iWingOutlinePoints[MAXWINGS];
+	int m_iMomentPoints;
 };
 
 #endif // GL3WIDGET_H
