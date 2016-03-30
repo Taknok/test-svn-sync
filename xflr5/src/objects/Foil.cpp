@@ -667,7 +667,8 @@ CVector Foil::upperYRel(double xRel, double &normx, double &normy)
 							 + (m_rpExtrados[i+1].y-m_rpExtrados[i].y) * (m_rpExtrados[i+1].y-m_rpExtrados[i].y));
 			normx = (-m_rpExtrados[i+1].y + m_rpExtrados[i].y)/nabs;
 			normy = ( m_rpExtrados[i+1].x - m_rpExtrados[i].x)/nabs;
-
+CVector nada = (m_rpExtrados[i] + (m_rpExtrados[i+1]-m_rpExtrados[i])
+		/(m_rpExtrados[i+1].x-m_rpExtrados[i].x) * (x-m_rpExtrados[i].x));
 			return (m_rpExtrados[i] + (m_rpExtrados[i+1]-m_rpExtrados[i])
 									 /(m_rpExtrados[i+1].x-m_rpExtrados[i].x) * (x-m_rpExtrados[i].x));
 		}
