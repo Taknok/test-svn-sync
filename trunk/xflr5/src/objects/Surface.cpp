@@ -1259,7 +1259,7 @@ void Surface::setTwist()
 	U.rotate(T, m_TwistA);
 	m_TA = A4 + U;
 
-    NormalA.rotate(T, m_TwistA);
+//    NormalA.rotate(T, m_TwistA);
 
 	// create a vector perpendicular to NormalB and x-axis
 	T.x = 0.0;
@@ -1274,14 +1274,14 @@ void Surface::setTwist()
 	U.rotate(T, m_TwistB);
 	m_TB = B4 + U;
 
-    NormalB.rotate(T, m_TwistB);
+//    NormalB.rotate(T, m_TwistB);
 }
 
 
 
 double Surface::spanLength()
 {
-	return qAbs(m_LB.y - m_LA.y);
+	return sqrt((m_LB.y - m_LA.y)*(m_LB.y - m_LA.y) + (m_LB.z - m_LA.z)*(m_LB.z - m_LA.z));
 }
 
 

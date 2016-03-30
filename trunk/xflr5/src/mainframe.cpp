@@ -117,15 +117,76 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 	setAttribute(Qt::WA_DeleteOnClose);
 	if(s_bTrace)
 	{
-            QString FileName = QDir::tempPath() + "/Trace.log";
-            s_pTraceFile = new QFile(FileName);
+		QString FileName = QDir::tempPath() + "/Trace.log";
+		s_pTraceFile = new QFile(FileName);
 
-            if (!s_pTraceFile->open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text)) s_bTrace = false;
-            s_pTraceFile->reset();
+		if (!s_pTraceFile->open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text)) s_bTrace = false;
+		s_pTraceFile->reset();
+
+		QSysInfo sysInfo;
+		switch(sysInfo.windowsVersion())
+		{
+			case QSysInfo::WV_32s:         Trace("Windows 3.1 with Win 32s"); break;
+			case QSysInfo::WV_95:          Trace("Windows 95"); break;
+			case QSysInfo::WV_98:          Trace("Windows 98"); break;
+			case QSysInfo::WV_Me:          Trace("Windows Me"); break;
+			case QSysInfo::WV_NT:	       Trace("Windows NT (operating system version 4.0)"); break;
+			case QSysInfo::WV_2000:	       Trace("Windows 2000 (operating system version 5.0)"); break;
+			case QSysInfo::WV_XP:	       Trace("Windows XP (operating system version 5.1)"); break;
+			case QSysInfo::WV_2003:	       Trace("Windows Server 2003, Windows Server 2003 R2, Windows Home Server, Windows XP Professional x64 Edition (operating system version 5.2)"); break;
+			case QSysInfo::WV_VISTA:	   Trace("Windows Vista, Windows Server 2008 (operating system version 6.0)"); break;
+			case QSysInfo::WV_WINDOWS7:    Trace("Windows 7, Windows Server 2008 R2 (operating system version 6.1)"); break;
+			case QSysInfo::WV_WINDOWS8:    Trace("Windows 8 (operating system version 6.2)"); break;
+			case QSysInfo::WV_WINDOWS8_1:  Trace("Windows 8.1 (operating system version 6.3), introduced in Qt 5.2"); break;
+			case QSysInfo::WV_WINDOWS10:   Trace("Windows 10 (operating system version 10.0), introduced in Qt 5.5"); break;
+		}
+		switch(sysInfo.macVersion())
+		{
+			case QSysInfo::MV_9:        Trace("Mac OS 9 (unsupported)"); break;
+			case QSysInfo::MV_Unknown:  Trace("An unknown and currently unsupported platform"); break;
+			case QSysInfo::MV_CHEETAH:  Trace("CHEETAH MV_10_0"); break;
+			case QSysInfo::MV_PUMA:     Trace("PUMA MV_10_1"); break;
+			case QSysInfo::MV_JAGUAR:   Trace("JAGUAR MV_10_2"); break;
+			case QSysInfo::MV_PANTHER:  Trace("PANTHER MV_10_3"); break;
+			case QSysInfo::MV_TIGER:    Trace("TIGER MV_10_4"); break;
+			case QSysInfo::MV_LEOPARD:  Trace("LEOPARD MV_10_5"); break;
+			case QSysInfo::MV_SNOWLEOPARD:  Trace("SNOWLEOPARD MV_10_6"); break;
+			case QSysInfo::MV_LION:         Trace("LION MV_10_7"); break;
+			case QSysInfo::MV_MOUNTAINLION: Trace("MOUNTAINLION MV_10_8"); break;
+			case QSysInfo::MV_MAVERICKS:    Trace("MAVERICKS MV_10_9"); break;
+			case QSysInfo::MV_YOSEMITE:     Trace("YOSEMITE MV_10_10"); break;
+			case QSysInfo::MV_ELCAPITAN:    Trace("ELCAPITAN MV_10_11"); break;
+			case QSysInfo::MV_IOS:          Trace("iOS (any)"); break;
+			case QSysInfo::MV_IOS_4_3:  Trace("iOS 4.3"); break;
+			case QSysInfo::MV_IOS_5_0:  Trace("iOS 5.0"); break;
+			case QSysInfo::MV_IOS_5_1:  Trace("iOS 5.1"); break;
+			case QSysInfo::MV_IOS_6_0:  Trace("iOS 6.0"); break;
+			case QSysInfo::MV_IOS_6_1:  Trace("iOS 6.1"); break;
+			case QSysInfo::MV_IOS_7_0:  Trace("iOS 7.0"); break;
+			case QSysInfo::MV_IOS_7_1:  Trace("iOS 7.1"); break;
+			case QSysInfo::MV_IOS_8_0:  Trace("iOS 8.0"); break;
+			case QSysInfo::MV_IOS_8_1:  Trace("iOS 8.1"); break;
+			case QSysInfo::MV_IOS_8_2:  Trace("iOS 8.2"); break;
+			case QSysInfo::MV_IOS_8_3:  Trace("iOS 8.3"); break;
+			case QSysInfo::MV_IOS_8_4:  Trace("iOS 8.4"); break;
+			case QSysInfo::MV_IOS_9_0:  Trace("iOS 9.0"); break;
+			case QSysInfo::MV_None:  Trace("Not a Darwin operating system"); break;
+		}
+		Trace("build ABI: " + sysInfo.buildAbi());
+		Trace("build CPU: " + sysInfo.buildCpuArchitecture());
+		Trace("current CPU: " + sysInfo.currentCpuArchitecture());
+		Trace("kernel type: "+sysInfo.kernelType());
+		Trace("kernel version: "+sysInfo.kernelVersion());
+		Trace("product name: "+sysInfo.prettyProductName());
+		Trace("product type: " +sysInfo.productType());
+		Trace("product version: " +sysInfo.productVersion());
+
+		QString strange;
+		strange.sprintf("Default OpengGl format:%d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
+		Trace(strange);
 	}
-	QString strange;
-	strange.sprintf("Default OpengGl format:%d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
-	Trace(strange);
+
+
 
 	setWindowTitle(VERSIONNAME);
 	setWindowIcon(QIcon(":/images/xflr5_64.png"));

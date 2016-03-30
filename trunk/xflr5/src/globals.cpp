@@ -410,24 +410,20 @@ void ReynoldsFormat(QString &str, double f)
 void Trace(int n)
 {
 	if(!MainFrame::s_bTrace) return;
-	QDateTime dt = QDateTime::currentDateTime();
-	QString str = dt.toString("hh:mm:ss  ");
 
 	if(MainFrame::s_pTraceFile && MainFrame::s_pTraceFile->isOpen())
 	{
 		QTextStream ts(MainFrame::s_pTraceFile);
-		ts << str << n << "\n";
+		ts << "Int value=" << n << "\n";
 	}
-	qDebug()<<str<<n;
+	qDebug()<<"Int value="<<n;
 }
 
 
 void Trace(QString msg, bool b)
 {
 	if(!MainFrame::s_bTrace) return;
-
-	QDateTime dt = QDateTime::currentDateTime();
-	QString str = dt.toString("hh:mm:ss  ");
+	QString str;
 	if(b) str += msg + "=true";
 	else  str += msg + "=false";
 
@@ -448,16 +444,14 @@ void Trace(QString msg, bool b)
 void Trace(QString msg)
 {
 	if(!MainFrame::s_bTrace) return;
-	QDateTime dt = QDateTime::currentDateTime();
-	QString str = dt.toString("hh:mm:ss  ")+ msg;
 
 	if(MainFrame::s_pTraceFile && MainFrame::s_pTraceFile->isOpen())
 	{
 		QTextStream ts(MainFrame::s_pTraceFile);
-		ts<<str<<"\n";
+		ts<<msg<<"\n";
 		ts.flush();
 	}
-	qDebug()<<str;
+	qDebug()<<msg;
 }
 
 
@@ -476,16 +470,14 @@ void Trace(QString msg, int n)
 	strong = QString("  %1").arg(n);
 	strong = msg + strong;
 
-	QDateTime dt = QDateTime::currentDateTime();
-	QString str = dt.toString("hh:mm:ss  ");
-	str += strong;
+
 
 	if(MainFrame::s_pTraceFile && MainFrame::s_pTraceFile->isOpen())
 	{
 		QTextStream ts(MainFrame::s_pTraceFile);
-		ts << str << "\n";
+		ts << strong << "\n";
 	}
-	qDebug()<<str;
+	qDebug()<<strong;
 }
 
 
@@ -504,17 +496,13 @@ void Trace(QString msg, double f)
 	strong = QString("  %1").arg(f);
 	strong = msg + strong;
 
-	QDateTime dt = QDateTime::currentDateTime();
-	QString str = dt.toString("hh:mm:ss  ");
-
-	str += strong;
 
 	if(MainFrame::s_pTraceFile && MainFrame::s_pTraceFile->isOpen())
 	{
 		QTextStream ts(MainFrame::s_pTraceFile);
-		ts << str << "\n";
+		ts << strong << "\n";
 	}
-	qDebug()<<str;
+	qDebug()<<strong;
 }
 
 

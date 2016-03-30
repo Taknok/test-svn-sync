@@ -1868,7 +1868,7 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 	double r0, r1, r2, r3, r4, r5, r6, r7;
 	double i0, i1, i2, i3, i4, i5, i6, i7;
 
-	m_PolarFormat = 200012;
+	m_PolarFormat = 200013;
 	// 200011 : v0.00
 
 	if(bIsStoring)
@@ -2082,6 +2082,15 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 	for (int i=0; i<35; i++) ar >> dble;
 	for (int ix=0; ix<MAXEXTRADRAG; ix++) ar>> m_ExtraDragArea[ix];
 	for (int ix=0; ix<MAXEXTRADRAG; ix++) ar>> m_ExtraDragCoef[ix];
+	if(m_PolarFormat<200013)
+	{
+		for (int ix=0; ix<MAXEXTRADRAG; ix++)
+		{
+			m_ExtraDragArea[ix] = 0.0;
+			m_ExtraDragCoef[ix] = 0.0;
+		}
+	}
+
 	for (int i=0; i<7; i++)
 	{
 		ar >> m_inertiaGain[i];
