@@ -60,9 +60,9 @@ int main(int argc, char *argv[])
 
 
 #ifdef QT_DEBUG
-	QString strange;
+/*	QString strange;
 	strange.sprintf("Default OpengGl format:%d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
-	qDebug()<<strange;
+	qDebug()<<strange;*/
 #endif
 
 /*	QSurfaceFormat defaultFormat = QSurfaceFormat::defaultFormat();

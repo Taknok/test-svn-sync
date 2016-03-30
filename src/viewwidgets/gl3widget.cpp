@@ -5373,7 +5373,7 @@ bool GL3Widget::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPo
 	m_NStreamLines = 0;
 	for(int iw=0; iw<MAXWINGS; iw++)
 	{
-		if(PlaneWing[iw]) m_NStreamLines += m_Ny[iw]+2; //in case there is a body in the middle, other wise Ny+1
+		if(PlaneWing[iw]) m_NStreamLines += m_Ny[iw]+20; //in case there is a body in the middle, other wise Ny+1
 	}
 
 	int streamArraySize = 	m_NStreamLines * GL3DScales::s_NX * 3;
@@ -5524,6 +5524,7 @@ bool GL3Widget::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPo
 		}
 		if(dlg.wasCanceled()) break;
 	}
+//	if(!dlg.wasCanceled()) Q_ASSERT(iv==streamArraySize);
 
 	m_NStreamLines = iv / GL3DScales::s_NX / 3;
 
