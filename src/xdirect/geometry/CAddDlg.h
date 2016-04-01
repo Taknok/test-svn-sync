@@ -51,15 +51,15 @@ class CAddDlg : public QDialog
 
 public:
 	CAddDlg(QWidget *pParent);
-	void InitDialog();
-	void SetupLayout();
+	void initDialog();
+	void setupLayout();
 
 private:
 	void keyPressEvent(QKeyEvent *event);
 
 private slots:
-	void OnApply();
-	void OnUniform();
+	void onApply();
+	void onUniform();
 
 
 private:

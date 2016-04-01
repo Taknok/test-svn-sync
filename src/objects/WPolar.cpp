@@ -183,6 +183,7 @@ void WPolar::insertPOppDataAt(int pos, PlaneOpp *pPOpp)
 	m_VertPower.insert(pos, 0.0);
 	m_HorizontalPower.insert(pos, 0.0);
 	m_Oswald.insert(pos, 0.0);
+	m_XCpCl.insert(pos, 0.0);
 	m_SM.insert(pos, 0.0);
 	
 	calculatePoint(pos);
@@ -246,6 +247,7 @@ void WPolar::insertDataAt(int pos, double Alpha, double Beta, double QInf, doubl
 	m_VertPower.insert(pos, 0.0);
 	m_HorizontalPower.insert(pos, 0.0);
 	m_Oswald.insert(pos, 0.0);
+	m_XCpCl.insert(pos, 0.0);
 	m_SM.insert(pos, 0.0);
 
 }
@@ -419,6 +421,7 @@ void WPolar::calculatePoint(int iPt)
 	if(m_ICd[iPt]==0.0)	m_Oswald[iPt] = 0.0;
 	else				m_Oswald[iPt] = m_CL[iPt]*m_CL[iPt]/PI/m_ICd[iPt]/AR;
 
+	m_XCpCl[iPt]     = m_XCP[iPt] * m_CL[iPt];
 	m_SM[iPt]        = (m_XCP[iPt]-m_CoG.x)/m_referenceChordLength *100.00;
 
 	complex<double> c;
@@ -769,42 +772,45 @@ void * WPolar::getWPlrVariable(int iVar)
 			pVar = &m_Oswald;
 			break;
 		case 33:
-			pVar = &m_SM;
+			pVar = &m_XCpCl;
 			break;
 		case 34:
-			pVar = &m_Ctrl;
+			pVar = &m_SM;
 			break;
 		case 35:
-			pVar = &m_XNP;
+			pVar = &m_Ctrl;
 			break;
 		case 36:
-			pVar = &m_PhugoidFrequency;
+			pVar = &m_XNP;
 			break;
 		case 37:
-			pVar = &m_PhugoidDamping;
+			pVar = &m_PhugoidFrequency;
 			break;
 		case 38:
-			pVar = &m_ShortPeriodFrequency;
+			pVar = &m_PhugoidDamping;
 			break;
 		case 39:
-			pVar = &m_ShortPeriodDamping;
+			pVar = &m_ShortPeriodFrequency;
 			break;
 		case 40:
-			pVar = &m_DutchRollFrequency;
+			pVar = &m_ShortPeriodDamping;
 			break;
 		case 41:
-			pVar = &m_DutchRollDamping;
+			pVar = &m_DutchRollFrequency;
 			break;
 		case 42:
-			pVar = &m_RollDamping;
+			pVar = &m_DutchRollDamping;
 			break;
 		case 43:
-			pVar = &m_SpiralDamping;
+			pVar = &m_RollDamping;
 			break;
 		case 44:
-			pVar = &m_HorizontalPower;
+			pVar = &m_SpiralDamping;
 			break;
 		case 45:
+			pVar = &m_HorizontalPower;
+			break;
+		case 46:
 			pVar = &m_ExtraDrag;
 			break;
 		default:
@@ -934,42 +940,45 @@ QString WPolar::variableName(int iVar)
 			return "Efficiency";
 			break;
 		case 33:
-			return "(XCp-XCG)/MAC(%)";
+			return "XCp.Cl";
 			break;
 		case 34:
-			return "ctrl";
+			return "(XCp-XCG)/MAC(%)";
 			break;
 		case 35:
-			return "XNP ("+ StrLength+")";
+			return "ctrl";
 			break;
 		case 36:
-			return "Phugoid Freq. (Hz)";
+			return "XNP ("+ StrLength+")";
 			break;
 		case 37:
-			return "Phugoid Damping";
+			return "Phugoid Freq. (Hz)";
 			break;
 		case 38:
-			return "Short Period Freq. (Hz)";
+			return "Phugoid Damping";
 			break;
 		case 39:
-			return "Short Period Damping";
+			return "Short Period Freq. (Hz)";
 			break;
 		case 40:
-			return "Dutch Roll Freq. (Hz)";
+			return "Short Period Damping";
 			break;
 		case 41:
-			return "Dutch Roll Damping";
+			return "Dutch Roll Freq. (Hz)";
 			break;
 		case 42:
-			return "Roll Damping";
+			return "Dutch Roll Damping";
 			break;
 		case 43:
-			return "Spiral Damping";
+			return "Roll Damping";
 			break;
 		case 44:
-			return "Fx.Vx (W)";
+			return "Spiral Damping";
 			break;
 		case 45:
+			return "Fx.Vx (W)";
+			break;
+		case 46:
 			if(Units::forceUnitIndex()==0) return "Extra drag (N)";
 			else                           return "Extra drag (lbf)";
 			break;
@@ -1029,6 +1038,7 @@ void WPolar::remove(int i)
 	m_HorizontalPower.removeAt(i);
 
 	m_Oswald.removeAt(i);
+	m_XCpCl.removeAt(i);
 	m_SM.removeAt(i);
 	m_Ctrl.removeAt(i);
 	m_XNP.removeAt(i);
@@ -1097,6 +1107,7 @@ void WPolar::clearData()
 	m_HorizontalPower.clear();
 
 	m_Oswald.clear();
+	m_XCpCl.clear();
 	m_SM.clear();
 	m_Ctrl.clear();
 	m_XNP.clear();
@@ -1437,6 +1448,7 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
 			m_VertPower.append(0.0);
 			m_HorizontalPower.append(0.0);
 			m_Oswald.append(0.0);
+			m_XCpCl.append(0.0);
 			m_SM.append(0.0);
 			
 	 /** @todo replace with InsertDataAt(i, ...); */
@@ -2175,6 +2187,7 @@ void WPolar::copy(WPolar *pWPolar)
 		m_HorizontalPower.append( pWPolar-> m_HorizontalPower[i]);
 
 		m_Oswald.append(    pWPolar-> m_Oswald[i]);
+		m_XCpCl.append(     pWPolar->m_XCpCl);
 		m_SM.append(        pWPolar-> m_SM[i]);
 
 		for(int l=0; l<8; l++)

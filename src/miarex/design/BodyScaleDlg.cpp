@@ -45,7 +45,7 @@ BodyScaleDlg::BodyScaleDlg(QWidget *pParent ): QDialog(pParent)
 
 
 
-void BodyScaleDlg::initDialog()
+void BodyScaleDlg::initDialog(bool bFrameOnly)
 {
 	m_pctrlXScaleFactor->setValue(m_XFactor);
 	m_pctrlYScaleFactor->setValue(m_YFactor);
@@ -57,6 +57,7 @@ void BodyScaleDlg::initDialog()
 	m_pctrlFrameID->setEnabled(false);
 	m_pctrlFrameID->setValue(m_FrameID+1);
 
+	m_bFrameOnly = bFrameOnly;
 	if(!m_bFrameOnly)
 	{
 		m_pctrlBody->setChecked(true);

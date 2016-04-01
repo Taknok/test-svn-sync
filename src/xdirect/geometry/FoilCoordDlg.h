@@ -42,22 +42,22 @@ public:
 	FoilCoordDlg(QWidget *pParent);
 	~FoilCoordDlg();
 
-	void InitDialog();
+	void initDialog();
 
 private slots:
-	void OnDeletePoint();
-	void OnInsertPoint();
-	void OnRestore();
-	void OnApply();
-	void OnCellChanged(QWidget *);
-	void OnItemClicked(QModelIndex);
+	void onDeletePoint();
+	void onInsertPoint();
+	void onRestore();
+	void onApply();
+	void onCellChanged(QWidget *);
+	void onItemClicked(QModelIndex);
 
 
 private:
 	void FillList();
-	void SetSelection(int sel);
-	void SetupLayout();
-	void ReadSectionData(int sel, double &X, double &Y);
+	void setSelection(int sel);
+	void setupLayout();
+	void readSectionData(int sel, double &X, double &Y);
 	void keyPressEvent(QKeyEvent *event);
 	void showEvent(QShowEvent *event);
 	void resizeEvent(QResizeEvent *event);

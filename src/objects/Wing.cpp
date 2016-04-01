@@ -724,7 +724,7 @@ void Wing::createSurfaces(CVector const &T, double XTilt, double YTilt)
 			m_Surface[iSurf]->m_TwistB   =  Twist(jss);
 			m_Surface[iSurf]->setTwist();
 
-			if(jss>0)
+			if(jss>0 && iSurf<m_Surface.count()-1)
 			{
 				//translate the surface to the left tip of the previous surface
 				T1 = m_Surface[iSurf+1]->m_LA - m_Surface[iSurf]->m_LB;
@@ -793,7 +793,7 @@ void Wing::createSurfaces(CVector const &T, double XTilt, double YTilt)
 				m_Surface[iSurf]->m_TwistB   =  Twist(jss+1);
 				m_Surface[iSurf]->setTwist();
 
-				if(jss>0)
+				if(jss>0 && iSurf>0)
 				{
 					//translate the surface to the left tip of the previous surface and merge points
 					T1 = m_Surface[iSurf-1]->m_LB - m_Surface[iSurf]->m_LA ;

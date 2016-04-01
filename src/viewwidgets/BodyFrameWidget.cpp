@@ -20,6 +20,7 @@
 *****************************************************************************/
 
 #include "Settings.h"
+#include <miarex/design/BodyScaleDlg.h>
 #include "BodyFrameWidget.h"
 #include <misc/Units.h>
 #include <QPainter>
@@ -30,6 +31,9 @@ BodyFrameWidget::BodyFrameWidget(QWidget *pParent, Body *pBody)
 	:Section2dWidget(pParent)
 {
 	m_pBody = pBody;
+	createActions();
+	createContextMenu();
+
 }
 
 
@@ -254,6 +258,23 @@ void BodyFrameWidget::onRemovePt()
 }
 
 
+void BodyFrameWidget::onScaleFrame()
+{
+	if(!m_pBody) return;
+
+	BodyScaleDlg dlg(this);
+
+	dlg.m_FrameID = m_pBody->m_iActiveFrame;
+	dlg.initDialog(true);
+
+	if(dlg.exec()==QDialog::Accepted)
+	{
+		m_pBody->scale(dlg.m_XFactor, dlg.m_YFactor, dlg.m_ZFactor, dlg.m_bFrameOnly, dlg.m_FrameID);
+		emit objectModified();
+
+	}
+}
+
 
 int BodyFrameWidget::highlightPoint(CVector real)
 {
@@ -307,6 +328,52 @@ void BodyFrameWidget::drawScaleLegend(QPainter &painter)
 }
 
 
+
+void BodyFrameWidget::createActions()
+{
+	m_ActionList.clear();
+
+
+	QAction *pScaleBody = new QAction(tr("Scale Frame"), this);
+	connect(pScaleBody,  SIGNAL(triggered()), this, SLOT(onScaleFrame()));
+	m_ActionList.append(pScaleBody);
+
+	QAction *pSeparator0 = new QAction(this);
+	pSeparator0->setSeparator(true);
+	m_ActionList.append(pSeparator0);
+
+	QAction *pInsertPt = new QAction(tr("Insert Control Point")+"\tShift+Click", this);
+	connect(pInsertPt, SIGNAL(triggered()), this, SLOT(onInsertPt()));
+	m_ActionList.append(pInsertPt);
+
+	QAction *pRemovePt = new QAction(tr("Remove Control Point")+"\tCtrl+Click", this);
+	connect(pRemovePt, SIGNAL(triggered()), this, SLOT(onRemovePt()));
+	m_ActionList.append(pRemovePt);
+
+	QAction *pSeparator1 = new QAction(this);
+	pSeparator1->setSeparator(true);
+	m_ActionList.append(pSeparator1);
+
+	QAction *pResetScaleAction = new QAction(tr("Reset Scales"), this);
+	connect(pResetScaleAction, SIGNAL(triggered()), this, SLOT(onResetScales()));
+	m_ActionList.append(pResetScaleAction);
+
+	QAction *pGridSettingsAction = new QAction(tr("Grid Settings"), this);
+	connect(pGridSettingsAction, SIGNAL(triggered()), this, SLOT(onGridSettings()));
+	m_ActionList.append(pGridSettingsAction);
+
+	QAction *pSeparator2 = new QAction(this);
+	pSeparator2->setSeparator(true);
+	m_ActionList.append(pSeparator2);
+
+	QAction *pLoadBackImage = new QAction(tr("Load background image")   +"\tCtrl+Shift+I", this);
+	connect(pLoadBackImage, SIGNAL(triggered()), this, SLOT(onLoadBackImage()));
+	m_ActionList.append(pLoadBackImage);
+
+	QAction *pClearBackImage = new QAction(tr("Clear background image") +"\tCtrl+Shift+I", this);
+	connect(pClearBackImage, SIGNAL(triggered()), this, SLOT(onClearBackImage()));
+	m_ActionList.append(pClearBackImage);
+}
 
 
 

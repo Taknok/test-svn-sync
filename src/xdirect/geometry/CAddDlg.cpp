@@ -38,14 +38,14 @@ CAddDlg::CAddDlg(QWidget *pParent) : QDialog(pParent)
 
 	m_iSplineType = 0;
 
-	SetupLayout();
+	setupLayout();
 
-	connect(ApplyButton, SIGNAL(clicked()),this, SLOT(OnApply()));
+	connect(ApplyButton, SIGNAL(clicked()),this, SLOT(onApply()));
 	connect(OKButton, SIGNAL(clicked()),this, SLOT(accept()));
 	connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 }
 
-void CAddDlg::SetupLayout()
+void CAddDlg::setupLayout()
 {
 	QGridLayout *pRefineGridLayout =new QGridLayout;
 	{
@@ -111,7 +111,7 @@ void CAddDlg::SetupLayout()
 }
 
 
-void CAddDlg::OnApply()
+void CAddDlg::onApply()
 {
 	XFoil *pXFoil = (XFoil*)s_pXFoil;
 	int i;
@@ -176,13 +176,14 @@ void CAddDlg::OnApply()
 }
 
 
-void CAddDlg::OnUniform()
+void CAddDlg::onUniform()
 {
 	if(m_pctrlrb1->isChecked()) m_iSplineType = 1;
 	else                      m_iSplineType = 2;
 }
 
-void CAddDlg::InitDialog()
+
+void CAddDlg::initDialog()
 {
 	XFoil *pXFoil = (XFoil*)s_pXFoil;
 
@@ -236,7 +237,7 @@ void CAddDlg::keyPressEvent(QKeyEvent *event)
 		{
 			if(!OKButton->hasFocus() && !CancelButton->hasFocus())
 			{
-				OnApply();
+				onApply();
 				OKButton->setFocus();
 			}
 			else
