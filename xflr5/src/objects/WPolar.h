@@ -232,7 +232,8 @@ public:
 	QList <double>  m_ShortPeriodDamping;      /**< the damping of the short period mode, as a result of stability analysis only */
 	QList <double>  m_ShortPeriodFrequency;    /**< the frequency of the short period mode, as a result of stability analysis only */
 
-	QList <double>  m_SM;                      /**< pseudo Static Margin = (XCP-XCmRef)/m.a.c; >*/
+	QList <double>  m_XCpCl;                   /**< XCp.Cl, used in calculation of neutral point position >*/
+	QList <double>  m_SM;                      /**< (XCP-XCmRef)/m.a.c; >*/
 	QList <double>  m_SpiralDamping;           /**< the damping of the spiral mode, as a result of stability analysis only >*/
 	QList <double>  m_TCd;                     /**< the total drag coeficient >*/
 	QList <double>  m_VCm;                     /**< the viscous Pitching Moment coefficient >*/

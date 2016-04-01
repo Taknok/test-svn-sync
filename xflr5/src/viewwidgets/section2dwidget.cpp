@@ -87,9 +87,6 @@ Section2dWidget::Section2dWidget(QWidget *parent) : QWidget(parent)
 	m_ptOffset.ry() = 0;
 
 	m_ViewportTrans = QPoint(0,0);
-
-	createActions();
-	createContextMenu();
 }
 
 

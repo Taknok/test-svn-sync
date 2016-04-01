@@ -37,7 +37,7 @@ FoilCoordDlg::FoilCoordDlg(QWidget *pParent) : QDialog(pParent)
 
 	m_pBufferFoil = NULL;
 	m_pMemFoil    = NULL;
-	SetupLayout();
+	setupLayout();
 
 	m_bApplied  = true;
 	m_bModified = false;
@@ -64,7 +64,7 @@ void FoilCoordDlg::FillList()
 }
 
 
-void FoilCoordDlg::InitDialog()
+void FoilCoordDlg::initDialog()
 {
 	if(!m_pMemFoil || !m_pBufferFoil) return;
 
@@ -91,19 +91,19 @@ void FoilCoordDlg::InitDialog()
 	m_pFloatDelegate->setPrecision(m_precision);
 
 //void QAbstractItemDelegate::closeEditor ( QWidget * editor, QAbstractItemDelegate::EndEditHint hint = NoHint )
-	connect(m_pFloatDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(OnCellChanged(QWidget *)));
+	connect(m_pFloatDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(onCellChanged(QWidget *)));
 
 	QItemSelectionModel *selectionModel = new QItemSelectionModel(m_pCoordModel);
 	m_pctrlCoordTable->setSelectionModel(selectionModel);
-	connect(selectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(OnItemClicked(QModelIndex)));
+	connect(selectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(onItemClicked(QModelIndex)));
 
 
 //void QAbstractItemView::activated ( const QModelIndex & index )   [signal]
 //void itemChanged ( QStandardItem * item )
-	connect(m_pctrlApply, SIGNAL(clicked()),this, SLOT(OnApply()));
-	connect(m_pctrlDeletePoint, SIGNAL(clicked()),this, SLOT(OnDeletePoint()));
-	connect(m_pctrlInsertPoint, SIGNAL(clicked()),this, SLOT(OnInsertPoint()));
-	connect(m_pctrlRestore, SIGNAL(clicked()),this, SLOT(OnRestore()));
+	connect(m_pctrlApply, SIGNAL(clicked()),this, SLOT(onApply()));
+	connect(m_pctrlDeletePoint, SIGNAL(clicked()),this, SLOT(onDeletePoint()));
+	connect(m_pctrlInsertPoint, SIGNAL(clicked()),this, SLOT(onInsertPoint()));
+	connect(m_pctrlRestore, SIGNAL(clicked()),this, SLOT(onRestore()));
 
 	connect(OKButton, SIGNAL(clicked()),this, SLOT(accept()));
 	connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
@@ -152,7 +152,7 @@ void FoilCoordDlg::keyPressEvent(QKeyEvent *event)
 }
 
 
-void FoilCoordDlg::OnApply()
+void FoilCoordDlg::onApply()
 {
 	if(m_bApplied) return;
 	m_bApplied = true;
@@ -161,7 +161,8 @@ void FoilCoordDlg::OnApply()
 	m_pParent->update();
 }
 
-void FoilCoordDlg::OnDeletePoint()
+
+void FoilCoordDlg::onDeletePoint()
 {
 	int i, sel;
 	QModelIndex index = m_pctrlCoordTable->currentIndex();
@@ -183,13 +184,14 @@ void FoilCoordDlg::OnDeletePoint()
 	m_pBufferFoil->n--;
 
 	FillList();
-	SetSelection(sel);
+	setSelection(sel);
 	m_bModified = true;
 
 	m_pParent->update();
 }
 
-void FoilCoordDlg::OnInsertPoint()
+
+void FoilCoordDlg::onInsertPoint()
 {
 	int i, sel;
 	sel = m_pctrlCoordTable->currentIndex().row();
@@ -217,7 +219,7 @@ void FoilCoordDlg::OnInsertPoint()
 	m_pBufferFoil->n++;
 
 	FillList();
-	SetSelection(sel);
+	setSelection(sel);
 
 	m_bModified = true;
 
@@ -227,7 +229,7 @@ void FoilCoordDlg::OnInsertPoint()
 
 
 
-void FoilCoordDlg::OnCellChanged(QWidget *)
+void FoilCoordDlg::onCellChanged(QWidget *)
 {
 	double X,Y;
 
@@ -245,11 +247,11 @@ void FoilCoordDlg::OnCellChanged(QWidget *)
 
 	m_bApplied = false;
 
-	OnApply();
+	onApply();
 }
 
 
-void FoilCoordDlg::OnItemClicked(QModelIndex)
+void FoilCoordDlg::onItemClicked(QModelIndex)
 {
 	int sel = m_pctrlCoordTable->currentIndex().row();
 	if(m_pBufferFoil)	m_pBufferFoil->m_iHighLight = sel;
@@ -259,7 +261,7 @@ void FoilCoordDlg::OnItemClicked(QModelIndex)
 
 
 
-void FoilCoordDlg::OnRestore()
+void FoilCoordDlg::onRestore()
 {
 	int i;
 
@@ -281,11 +283,12 @@ void FoilCoordDlg::OnRestore()
 	m_bApplied = true;
 	m_bModified = false;
 
-	SetSelection(0);
+	setSelection(0);
 	m_pParent->update();
 }
 
-void FoilCoordDlg::ReadSectionData(int sel, double &X, double &Y)
+
+void FoilCoordDlg::readSectionData(int sel, double &X, double &Y)
 {
 	QModelIndex XIndex =m_pCoordModel->index(sel, 0, QModelIndex());
 	X = XIndex.data().toDouble();
@@ -294,7 +297,7 @@ void FoilCoordDlg::ReadSectionData(int sel, double &X, double &Y)
 
 }
 
-void FoilCoordDlg::SetSelection(int sel)
+void FoilCoordDlg::setSelection(int sel)
 {
 	if(sel>=0)
 	{
@@ -303,7 +306,7 @@ void FoilCoordDlg::SetSelection(int sel)
 }
 
 
-void FoilCoordDlg::SetupLayout()
+void FoilCoordDlg::setupLayout()
 {
 	QVBoxLayout *CommandButtons = new QVBoxLayout;
 	m_pctrlInsertPoint	= new QPushButton(tr("Insert Point"));
@@ -343,3 +346,6 @@ void FoilCoordDlg::showEvent(QShowEvent *event)
 //	setWindowFlags(flags);
 	event->accept();
 }
+
+
+

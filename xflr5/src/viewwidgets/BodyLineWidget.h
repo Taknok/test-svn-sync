@@ -28,6 +28,8 @@
 
 class BodyLineWidget : public Section2dWidget
 {
+	Q_OBJECT
+
 public:
 	BodyLineWidget(QWidget *pParent, Body *pBody=NULL);
 	void setBody(Body *pBody);
@@ -42,10 +44,12 @@ public:
 	int highlightPoint(CVector real);
 	int selectPoint(CVector real);
 	void dragSelectedPoint(double x, double y);
+	void createActions();
 
 private slots:
 	void onInsertPt();
 	void onRemovePt();
+	void onScaleBody();
 
 
 private:
