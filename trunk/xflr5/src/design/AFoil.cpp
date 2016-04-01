@@ -491,7 +491,7 @@ void QAFoil::onAFoilCadd()
 	CAddDlg caDlg(s_pMainFrame);
 	caDlg.m_pBufferFoil = m_pBufferFoil;
 	caDlg.m_pMemFoil    = Foil::curFoil();
-	caDlg.InitDialog();
+	caDlg.initDialog();
 
 	if(QDialog::Accepted == caDlg.exec())
 	{
@@ -606,7 +606,7 @@ void QAFoil::onAFoilFoilCoordinates()
 	FoilCoordDlg fcDlg(s_pMainFrame);
 	fcDlg.m_pMemFoil    = Foil::curFoil();
     fcDlg.m_pBufferFoil = m_pBufferFoil;
-	fcDlg.InitDialog();
+	fcDlg.initDialog();
 
     if(QDialog::Accepted == fcDlg.exec())
 	{

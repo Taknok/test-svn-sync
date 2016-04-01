@@ -113,8 +113,9 @@ void GLRenderWindow::init()
 
     const char *vsrc = useNewStyleShader ? vertexShaderSource : vertexShaderSource110;
     const char *fsrc = useNewStyleShader ? fragmentShaderSource : fragmentShaderSource110;
-	QString strong = "Using version %s shader" +  useNewStyleShader ? "330" : "110";
-	qDebug("Using version %s shader", useNewStyleShader ? "150" : "110");
+	QString strong;
+	strong.sprintf("Using version %d shader", useNewStyleShader ? 330 : 110);
+	qDebug()<<strong;
 
 	if (!m_pShaderProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, vsrc)) {
 		emit error(m_pShaderProgram->log());

@@ -2172,7 +2172,7 @@ void QXDirect::onCadd()
 	CAddDlg caDlg(s_pMainFrame);
 	caDlg.m_pBufferFoil = &m_BufferFoil;
 	caDlg.m_pMemFoil    = Foil::curFoil();
-	caDlg.InitDialog();
+	caDlg.initDialog();
 
 
 	m_bShowPanels = true;
@@ -2713,7 +2713,7 @@ void QXDirect::onFoilCoordinates()
 	FoilCoordDlg fcoDlg(s_pMainFrame);
 	fcoDlg.m_pMemFoil    = Foil::curFoil();
 	fcoDlg.m_pBufferFoil = &m_BufferFoil;
-	fcoDlg.InitDialog();
+	fcoDlg.initDialog();
 
 	m_bShowPanels = true;
 	updateView();

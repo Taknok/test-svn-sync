@@ -38,6 +38,8 @@ class BodyScaleDlg : public QDialog
 	friend class GL3dBodyDlg;
 	friend class EditBodyDlg;
 	friend class Body;
+	friend class BodyFrameWidget;
+	friend class BodyLineWidget;
 
 public:
     BodyScaleDlg(QWidget *pParent);
@@ -49,7 +51,7 @@ private slots:
 
 private:
 	void setupLayout();
-	void initDialog();
+	void initDialog(bool bFrameOnly=false);
 	void enableControls();
 	void keyPressEvent(QKeyEvent *event);
 

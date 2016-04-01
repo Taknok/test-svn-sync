@@ -49,11 +49,12 @@ public:
 	int highlightPoint(CVector real);
 	int selectPoint(CVector real);
 	void dragSelectedPoint(double x, double y);
+	void createActions();
 
 private slots:
 	void onInsertPt();
 	void onRemovePt();
-
+	void onScaleFrame();
 private:
 	Body *m_pBody;
 

@@ -126,6 +126,14 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 		QSysInfo sysInfo;
 		switch(sysInfo.windowsVersion())
 		{
+			case QSysInfo::WV_CE:          Trace("Windows CE"); break;
+			case QSysInfo::WV_CENET:       Trace("Windows CE .NET"); break;
+			case QSysInfo::WV_CE_5:        Trace("Windows CE 5.x"); break;
+			case QSysInfo::WV_CE_6:        Trace("Windows CE 6.x"); break;
+			case QSysInfo::WV_DOS_based:   Trace("MS-DOS-based version of Windows"); break;
+			case QSysInfo::WV_NT_based:    Trace("NT-based version of Windows"); break;
+			case QSysInfo::WV_CE_based:    Trace("CE-based version of Windows"); break;
+			case QSysInfo::WV_None:        Trace("Operating system other than Windows."); break;
 			case QSysInfo::WV_32s:         Trace("Windows 3.1 with Win 32s"); break;
 			case QSysInfo::WV_95:          Trace("Windows 95"); break;
 			case QSysInfo::WV_98:          Trace("Windows 98"); break;
