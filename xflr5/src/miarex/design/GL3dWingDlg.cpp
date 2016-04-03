@@ -944,7 +944,7 @@ void GL3dWingDlg::onWingColor()
 #endif
 #endif
 	QColor WingColor = QColorDialog::getColor(m_pWing->wingColor(),
-                                      this, "Select the wing color", dialogOptions);
+									  this, "Color selection", dialogOptions);
 	if(WingColor.isValid())
 	{
 		m_pWing->setWingColor(WingColor);

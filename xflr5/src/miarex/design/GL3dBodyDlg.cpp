@@ -471,7 +471,16 @@ void GL3dBodyDlg::onTextures()
 
 void GL3dBodyDlg::onBodyColor()
 {
-	QColor Color = QColorDialog::getColor(m_pBody->bodyColor());
+	QColorDialog::ColorDialogOptions dialogOptions = QColorDialog::ShowAlphaChannel;
+#ifdef Q_OS_MAC
+#if QT_VERSION >= 0x040700
+	dialogOptions |= QColorDialog::DontUseNativeDialog;
+#endif
+#endif
+	QColor Color = QColorDialog::getColor(m_pBody->bodyColor(),
+									  this, "Color selection", dialogOptions);
+
+
 	if(Color.isValid())
 	{
 		m_pBody->bodyColor() = Color;
@@ -1112,6 +1121,7 @@ void GL3dBodyDlg::setControls()
 	m_pctrlBodyName->setEnabled(m_bEnableName);
 
 	m_pctrlBodyColor->setEnabled(m_pctrlColor->isChecked());
+	m_pctrlBodyColor->setColor(m_pBody->m_BodyColor);
 
 	m_pctrlOutline->setChecked(m_gl3Widget.m_bOutline);
 	m_pctrlPanels->setChecked(m_gl3Widget.m_bVLMPanels);
@@ -1141,7 +1151,6 @@ void GL3dBodyDlg::setControls()
 		m_pctrlHoopDegree->setEnabled(true);
 	}
 
-	m_pctrlBodyColor->setColor(m_pBody->m_BodyColor);
 
 	m_pctrlNXPanels->setValue(m_pBody->m_nxPanels);
 	m_pctrlNHoopPanels->setValue(m_pBody->m_nhPanels);

@@ -1,7 +1,7 @@
 #version 120
 
 uniform bool lightOn;
-uniform bool hasTexture;
+uniform int hasTexture;
 uniform vec3 LightPosition_worldspace;
 uniform vec4 LightColor;
 uniform float LightAmbient, LightDiffuse, LightSpecular;
@@ -32,16 +32,14 @@ void main()
 
 	if(lightOn)
 	{
-		if(hasTexture)
+		MaterialAmbientColor  = vec4(vertexcolor.rgb * LightAmbient, vertexcolor.a);
+		MaterialDiffuseColor  = vec4(vertexcolor.rgb * LightDiffuse, vertexcolor.a);
+		if(hasTexture>0)
 		{
 			MaterialAmbientColor  = vec4(texture2D(textureSampler, UV).rgb*LightAmbient, vertexcolor.a) ;
 			MaterialDiffuseColor  = vec4(texture2D(textureSampler, UV).rgb*LightDiffuse, vertexcolor.a);
 		}
-		else
-		{
-			MaterialAmbientColor  = vec4(vertexcolor.rgb * LightAmbient, vertexcolor.a);
-			MaterialDiffuseColor  = vec4(vertexcolor.rgb * LightDiffuse, vertexcolor.a);
-		}
+
 		MaterialSpecularColor = vec4(1.0, 1.0, 1.0, 1.0);
 
 		// Distance to the light
@@ -78,13 +76,10 @@ void main()
 	}
 	else
 	{
-		if(hasTexture)
+		gl_FragColor  = vertexcolor;
+		if(hasTexture>0)
 		{
 			gl_FragColor  = vec4(texture2D(textureSampler, UV).rgb, vertexcolor.a) ;
-		}
-		else
-		{
-			gl_FragColor  = vertexcolor;
 		}
 	}
 }

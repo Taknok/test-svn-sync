@@ -195,7 +195,6 @@ void XFoilAnalysisDlg::initDialog()
 
 void XFoilAnalysisDlg::onCancelAnalysis()
 {
-	qDebug("Cancelling");
 	XFoil::s_bCancel= true;
 	XFoilTask::s_bCancel = true;
 
@@ -206,7 +205,6 @@ void XFoilAnalysisDlg::onCancelAnalysis()
 
 void XFoilAnalysisDlg::reject()
 {
-	qDebug("Rejecting");
     if(!m_pXFoilTask->isFinished())
 	{
 		XFoil::s_bCancel= true;
@@ -218,7 +216,6 @@ void XFoilAnalysisDlg::reject()
 	XFoil::s_bCancel = true;
 	if(m_pXFile)
 	{
-
 		m_pXFoilTask->m_OutStream.flush();
 		m_pXFile->close();
 	}

@@ -1519,7 +1519,7 @@ void GL3Widget::initializeGL()
 	Trace("");
 	Trace("****************GL3Widget********************");
 	Trace("Initializing GL");
-	Trace("gl3Widget format:");
+
 	printFormat(format());
 
 	QString vendor, renderer, version, glslVersion;
@@ -1611,7 +1611,7 @@ void GL3Widget::initializeGL()
 	m_LightDiffuseLocationTexture  = m_ShaderProgramTexture.uniformLocation("LightDiffuse");
 	m_LightSpecularLocationTexture = m_ShaderProgramTexture.uniformLocation("LightSpecular");
 
-	m_ColorLocationTexture         = m_ShaderProgramTexture.uniformLocation("incolor");//unused
+	m_ColorLocationTexture         = m_ShaderProgramTexture.uniformLocation("incolor");
 	m_LightLocationTexture         = m_ShaderProgramTexture.uniformLocation("lightOn");
 	m_TextureLocationTexture       = m_ShaderProgramTexture.uniformLocation("hasTexture");
 
@@ -1823,6 +1823,7 @@ void GL3Widget::paintGL3()
 	glDisable(GL_DEPTH_TEST);
 }
 
+
 void GL3Widget::glRenderMiarexView()
 {
 	QMiarex* pMiarex = (QMiarex*)s_pMiarex;
@@ -1838,16 +1839,25 @@ void GL3Widget::glRenderMiarexView()
 	m_ShaderProgramTexture.setUniformValue(m_pvmMatrixLocationTexture, m_pvmMatrix);
 	m_ShaderProgramTexture.release();
 
-	m_ShaderProgramLine.bind();
-	m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, modelMatrix);
-	m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
-	m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
-	m_ShaderProgramLine.release();
+
 
 	glEnable(GL_CLIP_PLANE0);
 
 	if(pMiarex->m_pCurPlane)
 	{
+		//streamlines and velocities are rotated by aoa when constructed
+		if(pMiarex->m_pCurPOpp && pMiarex->m_bStream && pMiarex->m_pCurPOpp && !pMiarex->m_pCurPOpp->isLLTMethod() && !pMiarex->m_bResetglStream)
+			paintStreamLines();
+
+		if(pMiarex->m_pCurPOpp && pMiarex->m_bSurfVelocities && !pMiarex->m_pCurPOpp->isLLTMethod())
+			paintSurfaceVelocities();
+
+		m_ShaderProgramLine.bind();
+		m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, modelMatrix);
+		m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
+		m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
+		m_ShaderProgramLine.release();
+
 		if(m_bShowMasses) glDrawMasses(pMiarex->m_pCurPlane);
 		if(m_bVLMPanels)  paintMesh();
 
@@ -1906,11 +1916,6 @@ void GL3Widget::glRenderMiarexView()
 				}
 			}
 
-
-			if (pMiarex->m_bStream && pMiarex->m_pCurPOpp &&
-				pMiarex->m_pCurPOpp->analysisMethod()>=XFLR5::VLMMETHOD && !pMiarex->m_bResetglStream)
-				paintStreamLines();
-
 			if (pMiarex->m_b3DCp && pMiarex->m_pCurPOpp && pMiarex->m_pCurPOpp->analysisMethod()>=XFLR5::VLMMETHOD)
 			{
 				paintCpLegendClr();
@@ -1920,8 +1925,6 @@ void GL3Widget::glRenderMiarexView()
 				paintCpLegendClr();
 			}
 
-			if(pMiarex->m_pCurPOpp && pMiarex->m_bSurfVelocities && !pMiarex->m_pCurPOpp->isLLTMethod())
-				paintSurfaceVelocities();
 
 		}
 	}
@@ -2538,9 +2541,11 @@ void GL3Widget::paintDrag(int iWing)
 
 void GL3Widget::paintStreamLines()
 {
+	QMatrix4x4 idMatrix;
 	m_ShaderProgramLine.bind();
+	m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, idMatrix);
 	m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
-	m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
+	m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_OrthoMatrix * m_viewMatrix);
 
 	m_vboStreamLines.bind();
 	m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
@@ -3524,12 +3529,12 @@ void GL3Widget::paintBody(Body *pBody)
 	{
 		m_ShaderProgramTexture.enableAttributeArray(m_UVLocationTexture);
 		m_ShaderProgramTexture.setAttributeBuffer(m_UVLocationTexture, GL_FLOAT, 6* sizeof(GLfloat), 2, 8 * sizeof(GLfloat));
-		m_ShaderProgramTexture.setUniformValue(m_TextureLocationTexture, true);
+		m_ShaderProgramTexture.setUniformValue(m_TextureLocationTexture, 1);
 	}
 	else
 	{
 		m_ShaderProgramTexture.disableAttributeArray(m_UVLocationTexture);
-		m_ShaderProgramTexture.setUniformValue(m_TextureLocationTexture, false);
+		m_ShaderProgramTexture.setUniformValue(m_TextureLocationTexture, 0);
 	}
 
 	m_ShaderProgramTexture.setAttributeBuffer(m_VertexLocationTexture, GL_FLOAT, 0,                  3, 8 * sizeof(GLfloat));
@@ -3542,7 +3547,8 @@ void GL3Widget::paintBody(Body *pBody)
 		glEnable(GL_POLYGON_OFFSET_FILL);
 		glPolygonOffset(1.0, 1.0);
 		m_ShaderProgramTexture.setUniformValue(m_ColorLocationTexture, pBody->bodyColor());
-		m_ShaderProgramTexture.setUniformValue(m_TextureLocationTexture, pBody->textures());
+//		if(pBody->textures()) m_ShaderProgramTexture.setUniformValue(m_TextureLocationTexture, 1);
+//		else                  m_ShaderProgramTexture.setUniformValue(m_TextureLocationTexture, 0);
 
 		if(bTextures) m_pRightBodyTexture->bind();
 		glDrawElements(GL_TRIANGLES, m_iBodyElems*3/2, GL_UNSIGNED_SHORT, m_BodyIndicesArray);
@@ -3627,12 +3633,12 @@ void GL3Widget::paintWing(int iWing, Wing *pWing)
 		{
 			m_ShaderProgramTexture.enableAttributeArray(m_UVLocationTexture);
 			m_ShaderProgramTexture.setAttributeBuffer(m_UVLocationTexture, GL_FLOAT, 6* sizeof(GLfloat), 2, 8 * sizeof(GLfloat));
-			m_ShaderProgramTexture.setUniformValue(m_TextureLocationTexture, true);
+			m_ShaderProgramTexture.setUniformValue(m_TextureLocationTexture, 1);
 		}
 		else
 		{
 			m_ShaderProgramTexture.disableAttributeArray(m_UVLocationTexture);
-			m_ShaderProgramTexture.setUniformValue(m_TextureLocationTexture, false);
+			m_ShaderProgramTexture.setUniformValue(m_TextureLocationTexture, 0);
 		}
 
 		m_ShaderProgramTexture.setAttributeBuffer(m_VertexLocationTexture, GL_FLOAT, 0,                  3, 8 * sizeof(GLfloat));
@@ -3685,7 +3691,7 @@ void GL3Widget::paintWing(int iWing, Wing *pWing)
 		}
 
 		// no light, no textures, for the tip patches
-		m_ShaderProgramTexture.setUniformValue(m_TextureLocationTexture, false);
+		m_ShaderProgramTexture.setUniformValue(m_TextureLocationTexture, 0);
 		m_ShaderProgramTexture.setUniformValue(m_LightLocationTexture, false);
 		m_ShaderProgramTexture.setUniformValue(m_ColorLocationTexture, pWing->wingColor().darker());
 
@@ -3901,7 +3907,7 @@ void GL3Widget::paintSphere(CVector place, double radius, QColor sphereColor, bo
 
 	m_ShaderProgramTexture.setUniformValue(m_ColorLocationTexture, sphereColor);
 	m_ShaderProgramTexture.setUniformValue(m_LightLocationTexture, bLight);
-	m_ShaderProgramTexture.setUniformValue(m_TextureLocationTexture, false);
+	m_ShaderProgramTexture.setUniformValue(m_TextureLocationTexture, 0);
 
 	m_ShaderProgramTexture.enableAttributeArray(m_VertexLocationTexture);
 	m_ShaderProgramTexture.enableAttributeArray(m_NormalLocationTexture);
@@ -6065,7 +6071,7 @@ void GL3Widget::paintBodyMesh(Body *pBody)
 		glPolygonOffset(1.0, 1.0);
 
 		m_ShaderProgramTexture.setUniformValue(m_ColorLocationTexture, Settings::backgroundColor());
-		m_ShaderProgramTexture.setUniformValue(m_TextureLocationTexture, false);
+		m_ShaderProgramTexture.setUniformValue(m_TextureLocationTexture, 0);
 
 		m_pRightBodyTexture->bind();
 		glDrawElements(GL_TRIANGLES, m_iBodyElems*3/2, GL_UNSIGNED_SHORT, m_BodyIndicesArray);
