@@ -21,7 +21,7 @@ xflr5 v6.13 March xxxth, 2016
 	- added an option to paint textures on the plane's surfaces
 	- added an option to export 3D object geometries to binary stl format
 	- added an option to autosave the project at regular time intervals
-	- added XCp.Cl as a variable to the plane's polar graphs
+	- added XCp.Cl as a variable to the plane's polar graphs, and d(XCp.cl)/dCl = XNP to the plane's legend
 	- changed the panel force display to q.Cp instead of q.S.panel_area; this is more significant since the arrow lengths are now mesh independent.
 	- added the extra drag in the calculation of the plane's total drag coefficient
 	- fixed the issue of slow display in XInverse design

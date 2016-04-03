@@ -253,6 +253,8 @@ public:
 	QList <double>  m_ExtraDrag;
 
 	double m_ExtraDragArea[MAXEXTRADRAG], m_ExtraDragCoef[MAXEXTRADRAG];
+
+	double m_XNeutralPoint;       /**< Neutral point position, calculated from d(XCp.Cl)/dCl >*/
 };
 
 #endif
