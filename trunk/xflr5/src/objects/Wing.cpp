@@ -2943,8 +2943,8 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
 	CVector *PtBotLeft  = new CVector[CHORDPANELS+1];
 	CVector *PtBotRight = new CVector[CHORDPANELS+1];
 
-	memset(NormalA, 0, sizeof(NormalA));
-	memset(NormalB, 0, sizeof(NormalB));
+	memset(NormalA, 0, (CHORDPANELS+1) * sizeof(CVector));
+	memset(NormalB, 0, (CHORDPANELS+1) * sizeof(CVector));
 
 
 //	80 character header, avoid word "solid"
@@ -3312,8 +3312,8 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
 	CVector *PtBotRight = new CVector[CHORDPANELS+1];
 
 
-	memset(NormalA, 0, sizeof(NormalA));
-	memset(NormalB, 0, sizeof(NormalB));
+	memset(NormalA, 0, (CHORDPANELS+1) * sizeof(CVector));
+	memset(NormalB, 0, (CHORDPANELS+1) * sizeof(CVector));
 
 	//Number of triangles
 	// nSurfaces

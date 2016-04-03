@@ -121,10 +121,12 @@ void GLRenderWindow::init()
 		emit error(m_pShaderProgram->log());
         return;
     }
+
 	if (!m_pShaderProgram->addShaderFromSourceCode(QOpenGLShader::Fragment, fsrc)) {
 		emit error(m_pShaderProgram->log());
         return;
     }
+
 	if (!m_pShaderProgram->link()) {
 		emit error(m_pShaderProgram->log());
         return;

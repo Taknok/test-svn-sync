@@ -74,6 +74,8 @@ WPolar::WPolar()
 	m_ControlGain.clear();
 	m_ControlGain.resize(100);
 
+	m_XNeutralPoint = 0.0;
+
 	memset(m_EigenValue, 0, 2*8*MAXPOLARPOINTS*sizeof(double));
 	
 	m_bAutoInertia = true;
@@ -249,7 +251,6 @@ void WPolar::insertDataAt(int pos, double Alpha, double Beta, double QInf, doubl
 	m_Oswald.insert(pos, 0.0);
 	m_XCpCl.insert(pos, 0.0);
 	m_SM.insert(pos, 0.0);
-
 }
 
 
@@ -422,6 +423,13 @@ void WPolar::calculatePoint(int iPt)
 	else				m_Oswald[iPt] = m_CL[iPt]*m_CL[iPt]/PI/m_ICd[iPt]/AR;
 
 	m_XCpCl[iPt]     = m_XCP[iPt] * m_CL[iPt];
+
+	if(m_XCpCl.count()>1)
+	{
+		m_XNeutralPoint = (m_XCpCl.last()-m_XCpCl.first()) / (m_CL.last()-m_CL.first());
+	}
+
+
 	m_SM[iPt]        = (m_XCP[iPt]-m_CoG.x)/m_referenceChordLength *100.00;
 
 	complex<double> c;

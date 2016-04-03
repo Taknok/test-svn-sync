@@ -5315,7 +5315,7 @@ void QMiarex::onResetCurWPolar()
 	if (QMessageBox::Yes != QMessageBox::question(s_pMainFrame, tr("Question"), strong,
 												  QMessageBox::Yes|QMessageBox::No,
 												  QMessageBox::Yes)) return;
-
+	m_bResetTextLegend = true;
 	m_pCurWPolar->clearData();
 	PlaneOpp *pPOpp;
 	if(m_pCurPlane)
@@ -6009,7 +6009,11 @@ void QMiarex::paintPlaneLegend(QPainter &painter, Plane *pPlane, WPolar *pWPolar
 	int LeftPos = margin;
 	int ZPos    = drawRect.height()-13*dheight;
 
-	if(pWPolar) ZPos -= dheight;
+	if(pWPolar)
+	{
+		ZPos -= dheight;
+		if(pWPolar->m_Alpha.count()>1) ZPos -= dheight;
+	}
 
 //	double area = pPlane->m_Wing[0].s_RefArea;
 	if(pPlane && pWing(2)) ZPos -= dheight;
@@ -6087,8 +6091,16 @@ void QMiarex::paintPlaneLegend(QPainter &painter, Plane *pPlane, WPolar *pWPolar
 
 	if(pWPolar)
 	{
+		if(pWPolar->m_Alpha.count()>1)
+		{
+			str1.sprintf( "XNP = d(XCp.Cl)/dCl =%10.3f ", pWPolar->m_XNeutralPoint * Units::mtoUnit());
+			str1 += length;
+			painter.drawText(LeftPos, ZPos+D, str1);
+			D+=dheight;
+		}
 		str1 = QString(tr("Mesh elements  =")+"%1").arg(Objects3D::calculateMatSize(pPlane, pWPolar),6);
 		painter.drawText(LeftPos, ZPos+D, str1);
+		D+=dheight;
 	}
 	painter.restore();
 }
@@ -6127,7 +6139,7 @@ void QMiarex::paintPlaneOppLegend(QPainter &painter, QRect drawRect)
 	int ZPos	 = drawRect.height()-13*dheight;
 
 	if(m_pCurPOpp && m_pCurPOpp->m_WPolarType==XFLR5::STABILITYPOLAR) ZPos -= dheight;
-	if(m_pCurPOpp && m_pCurPOpp->m_bOut)                       ZPos -= dheight;
+	if(m_pCurPOpp && m_pCurPOpp->m_bOut)                              ZPos -= dheight;
 	if(m_pCurPOpp && m_pCurPOpp->analysisMethod()!=XFLR5::LLTMETHOD)  ZPos -= dheight*m_pCurPOpp->m_pPlaneWOpp[0]->m_nFlaps;
 
 

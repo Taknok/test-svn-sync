@@ -27,6 +27,7 @@
 #include "GraphDlg.h"
 #include <Polar.h>
 #include <WPolar.h>
+#include <Units.h>
 #include <QPen>
 #include <QPainterPath>
 #include <QPainter>
@@ -86,24 +87,7 @@ void GraphWidget::paintEvent(QPaintEvent *  event )
 	painter.setBackgroundMode(Qt::OpaqueMode);
 	painter.setBackground(BackBrush);
 
-	QPen mypen;
-	mypen.setColor(QColor(255,0,0));
-	mypen.setWidth(1);
-	mypen.setStyle(Qt::SolidLine);
-
-
-	painter.setPen(mypen);
-	painter.drawLine(39,78,200,302);
 	m_pGraph->drawGraph(painter);
-
-/*	QPen BorderPen;
-	BorderPen.setColor(m_pGraph->borderColor());
-	BorderPen.setWidth(7);
-	painter.setPen(BorderPen);
-	painter.setBrush(Qt::NoBrush);
-	painter.drawRect(QRect(0, 0, width() - 1, height() - 1));
-*/
-//	painter.drawText(m_TitlePosition, m_GraphTitle);
 
 	if(m_bDrawLegend) m_pGraph->drawLegend(painter, m_LegendOrigin, Settings::textFont(), Settings::textColor());
 	if(hasFocus() && MainFrame::s_bShowMousePos)
