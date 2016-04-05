@@ -165,8 +165,8 @@ private:
 	QPoint worldToScreen(CVector v);
 	QPoint worldToScreen(QVector4D v4);
 
-	QOpenGLShaderProgram m_ShaderProgramLine, m_ShaderProgramTexture, m_ShaderProgramGradient;
-
+	QOpenGLShaderProgram m_ShaderProgramLine,  m_ShaderProgramGradient;
+	QOpenGLShaderProgram m_ShaderProgramSurface, m_ShaderProgramTexture;
 
 	QOpenGLBuffer m_vboArcBall, m_vboArcPoint, m_vboBody;
 	QOpenGLBuffer m_vboWingSurface[MAXWINGS], m_vboWingOutline[MAXWINGS];
@@ -186,8 +186,18 @@ private:
 	int m_pvmMatrixLocationLine, m_vMatrixLocationLine, m_mMatrixLocationLine;
 	int m_ClipPlaneLocationLine;
 
+	int m_VertexLocationSurface, m_NormalLocationSurface;
+	int m_LightLocationSurface, m_SurfaceLocationSurface, m_ColorLocationSurface;
+	int m_ClipPlaneLocationSurface;
+	int m_vMatrixLocationSurface, m_mMatrixLocationSurface, m_pvmMatrixLocationSurface;
+	int m_LightPosLocationSurface;
+	int m_LightColorLocationSurface, m_LightAmbientLocationSurface, m_LightDiffuseLocationSurface, m_LightSpecularLocationSurface;
+	int m_AttenuationConstantSurface, m_AttenuationLinearSurface, m_AttenuationQuadraticSurface;
+	int m_MaterialShininessSurface;
+
+
 	int m_VertexLocationTexture, m_NormalLocationTexture, m_UVLocationTexture;
-	int m_LightLocationTexture, m_TextureLocationTexture, m_ColorLocationTexture;
+	int m_LightLocationTexture;
 	int m_ClipPlaneLocationTexture;
 	int m_vMatrixLocationTexture, m_mMatrixLocationTexture, m_pvmMatrixLocationTexture;
 	int m_LightPosLocationTexture;
@@ -233,6 +243,7 @@ private:
 	QMatrix4x4 m_OrthoMatrix;
 	QMatrix4x4 m_pvmMatrix;
 	QMatrix4x4 m_viewMatrix;
+	QMatrix4x4 m_modelMatrix;
 
 	QPoint m_ptPopUp;
 	QPoint m_LastPoint;

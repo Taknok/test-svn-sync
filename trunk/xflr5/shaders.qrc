@@ -12,5 +12,7 @@
         <file>src/shaders/line_vertexshader_120.glsl</file>
         <file>src/shaders/texture_fragmentshader_120.glsl</file>
         <file>src/shaders/texture_vertexshader_120.glsl</file>
+        <file>src/shaders/surface_fragmentshader_120.glsl</file>
+        <file>src/shaders/surface_vertexshader_120.glsl</file>
     </qresource>
 </RCC>

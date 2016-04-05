@@ -1,25 +1,20 @@
-#version 330
+#version 120
 
 uniform int lightOn;
-uniform bool hasTexture;
 uniform vec3 LightPosition_worldspace;
 uniform vec4 LightColor;
 uniform float LightAmbient, LightDiffuse, LightSpecular;
 uniform float Kc, Kl, Kq;
 uniform int MaterialShininess;
-uniform sampler2D textureSampler;
 uniform vec4 clipPlane0; // defined in view-space
 
 
-in vec3 Position_worldspace;
-in vec3 Normal_cameraspace;
-in vec3 EyeDirection_cameraspace;
-in vec3 LightDirection_cameraspace;
-in vec4 vertexcolor;
-in vec2 UV;
-in vec3 vPosition;
-
-out vec4 fragColor;
+varying vec3 Position_worldspace;
+varying vec3 Normal_cameraspace;
+varying vec3 EyeDirection_cameraspace;
+varying vec3 LightDirection_cameraspace;
+varying vec4 vertexcolor;
+varying vec3 vPosition;
 
 void main()
 {
@@ -36,12 +31,6 @@ void main()
 	{
 		MaterialAmbientColor  = vec4(vertexcolor.rgb * LightAmbient, vertexcolor.a);
 		MaterialDiffuseColor  = vec4(vertexcolor.rgb * LightDiffuse, vertexcolor.a);
-		if(hasTexture)
-		{
-			MaterialAmbientColor  = vec4(texture(textureSampler, UV).rgb*LightAmbient, vertexcolor.a) ;
-			MaterialDiffuseColor  = vec4(texture(textureSampler, UV).rgb*LightDiffuse, vertexcolor.a);
-		}
-
 		MaterialSpecularColor = vec4(1.0, 1.0, 1.0, 1.0);
 
 		// Distance to the light
@@ -71,19 +60,14 @@ void main()
 
 		float attenuation_factor = 1.0/(Kc + Kl*distance + Kq*distance*distance);
 
-		fragColor =
+		gl_FragColor =
 			  MaterialAmbientColor  * LightColor +
 			 (MaterialDiffuseColor  * LightDiffuse  * cosTheta)                         * LightColor * attenuation_factor
 			+(MaterialSpecularColor * LightSpecular * pow(cosAlpha, MaterialShininess)) * LightColor * attenuation_factor;
-//		fragColor = vec4(cosAlpha,cosAlpha,cosAlpha,1.0);
 	}
 	else
 	{
-		fragColor  = vertexcolor;
-		if(hasTexture)
-		{
-			fragColor  = vec4(texture(textureSampler, UV).rgb, vertexcolor.a) ;
-		}
+		gl_FragColor  = vertexcolor;
 	}
 }
 
