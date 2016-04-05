@@ -1,7 +1,6 @@
 #version 120
 
-uniform bool lightOn;
-uniform int hasTexture;
+uniform int lightOn;
 uniform vec3 LightPosition_worldspace;
 uniform vec4 LightColor;
 uniform float LightAmbient, LightDiffuse, LightSpecular;
@@ -10,12 +9,10 @@ uniform int MaterialShininess;
 uniform sampler2D textureSampler;
 uniform vec4 clipPlane0; // defined in view-space
 
-
 varying vec3 Position_worldspace;
 varying vec3 Normal_cameraspace;
 varying vec3 EyeDirection_cameraspace;
 varying vec3 LightDirection_cameraspace;
-varying vec4 vertexcolor;
 varying vec2 UV;
 varying vec3 vPosition;
 
@@ -30,15 +27,11 @@ void main()
 		return;
 	}
 
-	if(lightOn)
+	if(lightOn==1)
 	{
-		MaterialAmbientColor  = vec4(vertexcolor.rgb * LightAmbient, vertexcolor.a);
-		MaterialDiffuseColor  = vec4(vertexcolor.rgb * LightDiffuse, vertexcolor.a);
-		if(hasTexture>0)
-		{
-			MaterialAmbientColor  = vec4(texture2D(textureSampler, UV).rgb*LightAmbient, vertexcolor.a) ;
-			MaterialDiffuseColor  = vec4(texture2D(textureSampler, UV).rgb*LightDiffuse, vertexcolor.a);
-		}
+		MaterialAmbientColor  = vec4(texture2D(textureSampler, UV).rgb*LightAmbient, 1.0) ;
+		MaterialDiffuseColor  = vec4(texture2D(textureSampler, UV).rgb*LightDiffuse, 1.0);
+
 
 		MaterialSpecularColor = vec4(1.0, 1.0, 1.0, 1.0);
 
@@ -75,13 +68,8 @@ void main()
 			+(MaterialSpecularColor * LightSpecular * pow(cosAlpha, MaterialShininess)) * LightColor * attenuation_factor;
 	}
 	else
-	{
-		gl_FragColor  = vertexcolor;
-		if(hasTexture>0)
-		{
-			gl_FragColor  = vec4(texture2D(textureSampler, UV).rgb, vertexcolor.a) ;
-		}
-	}
+		gl_FragColor  = vec4(texture2D(textureSampler, UV).rgb, 1.0);
+
 }
 
 

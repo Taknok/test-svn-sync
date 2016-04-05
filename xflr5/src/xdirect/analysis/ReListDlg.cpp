@@ -121,11 +121,10 @@ void ReListDlg::keyPressEvent(QKeyEvent *event)
 
 void ReListDlg::onCellChanged(QModelIndex topLeft, QModelIndex botRight)
 {
+	Q_UNUSED(botRight);
 	if(topLeft.column()==0)
 		sortData();
 }
-
-
 
 
 void ReListDlg::setupLayout()

@@ -1069,12 +1069,23 @@ void GL3Widget::glMakeBody3DFlatPanels(Body *pBody)
 
 	if(m_pLeftBodyTexture)  delete m_pLeftBodyTexture;
 	if(m_pRightBodyTexture) delete m_pRightBodyTexture;
-	QImage leftTexture  = QImage(QString(":/images/body_left.png"));
-	if(leftTexture.isNull()) m_pLeftBodyTexture = NULL;
-	else                     m_pLeftBodyTexture  = new QOpenGLTexture(leftTexture);
-	QImage rightTexture  = QImage(QString(":/images/body_right.png"));
-	if(leftTexture.isNull()) m_pRightBodyTexture = NULL;
-	else                     m_pRightBodyTexture  = new QOpenGLTexture(rightTexture);
+
+	QString projectPath = Settings::s_LastDirName + "/" + MainFrame::s_ProjectName+ "_textures";
+	QString planeName;
+	QMiarex *pMiarex = (QMiarex*)s_pMiarex;
+	if(pMiarex && pMiarex->m_pCurPlane)
+	{
+		planeName = pMiarex->m_pCurPlane->planeName();
+	}
+	QString texturePath = projectPath+"/"+planeName+"/";
+
+	QImage leftTexture  = QImage(QString(texturePath+"body_left.png"));
+	if(leftTexture.isNull()) leftTexture = QImage(QString(":/default_textures/body_left.png"));
+	m_pLeftBodyTexture  = new QOpenGLTexture(leftTexture);
+	QImage rightTexture  = QImage(QString(texturePath+"body_right.png"));
+	if(rightTexture.isNull()) rightTexture = QImage(QString(":/default_textures/body_right.png"));
+	m_pRightBodyTexture  = new QOpenGLTexture(rightTexture);
+
 
 	int bufferSize = (pBody->sideLineCount()-1) * (pBody->frameCount()-1); //quads
 	bufferSize *= 2;  // two sides
@@ -1130,7 +1141,7 @@ void GL3Widget::glMakeBody3DFlatPanels(Body *pBody)
 			pBodyVertexArray[iv++] = N.x;
 			pBodyVertexArray[iv++] = N.y;
 			pBodyVertexArray[iv++] = N.z;
-			pBodyVertexArray[iv++] = (float)j/fnx;
+			pBodyVertexArray[iv++] = 1.0-(float)j/fnx;
 			pBodyVertexArray[iv++] = (float)k/fnh;
 			pBodyVertexArray[iv++] = P2.x;
 			pBodyVertexArray[iv++] = P2.y;
@@ -1138,7 +1149,7 @@ void GL3Widget::glMakeBody3DFlatPanels(Body *pBody)
 			pBodyVertexArray[iv++] = N.x;
 			pBodyVertexArray[iv++] = N.y;
 			pBodyVertexArray[iv++] = N.z;
-			pBodyVertexArray[iv++] = (float)(j+1)/fnx;
+			pBodyVertexArray[iv++] = 1.0-(float)(j+1)/fnx;
 			pBodyVertexArray[iv++] = (float)k/fnh;
 			pBodyVertexArray[iv++] = P3.x;
 			pBodyVertexArray[iv++] = P3.y;
@@ -1146,7 +1157,7 @@ void GL3Widget::glMakeBody3DFlatPanels(Body *pBody)
 			pBodyVertexArray[iv++] = N.x;
 			pBodyVertexArray[iv++] = N.y;
 			pBodyVertexArray[iv++] = N.z;
-			pBodyVertexArray[iv++] = (float)(j+1)/fnx;
+			pBodyVertexArray[iv++] = 1.0-(float)(j+1)/fnx;
 			pBodyVertexArray[iv++] = (float)(k+1)/fnh;
 			pBodyVertexArray[iv++] = P4.x;
 			pBodyVertexArray[iv++] = P4.y;
@@ -1154,7 +1165,7 @@ void GL3Widget::glMakeBody3DFlatPanels(Body *pBody)
 			pBodyVertexArray[iv++] = N.x;
 			pBodyVertexArray[iv++] = N.y;
 			pBodyVertexArray[iv++] = N.z;
-			pBodyVertexArray[iv++] = (float)j/fnx;
+			pBodyVertexArray[iv++] = 1.0-(float)j/fnx;
 			pBodyVertexArray[iv++] = (float)(k+1)/fnh;
 
 			//first triangle
@@ -1187,7 +1198,7 @@ void GL3Widget::glMakeBody3DFlatPanels(Body *pBody)
 			pBodyVertexArray[iv++] = N.x;
 			pBodyVertexArray[iv++] = N.y;
 			pBodyVertexArray[iv++] = N.z;
-			pBodyVertexArray[iv++] = (float)j/fnx;
+			pBodyVertexArray[iv++] = 1.0-(float)j/fnx;
 			pBodyVertexArray[iv++] = (float)k/fnh;
 			pBodyVertexArray[iv++] = P2.x;
 			pBodyVertexArray[iv++] = P2.y;
@@ -1195,7 +1206,7 @@ void GL3Widget::glMakeBody3DFlatPanels(Body *pBody)
 			pBodyVertexArray[iv++] = N.x;
 			pBodyVertexArray[iv++] = N.y;
 			pBodyVertexArray[iv++] = N.z;
-			pBodyVertexArray[iv++] = (float)(j+1)/fnx;
+			pBodyVertexArray[iv++] = 1.0-(float)(j+1)/fnx;
 			pBodyVertexArray[iv++] = (float)k/fnh;
 			pBodyVertexArray[iv++] = P3.x;
 			pBodyVertexArray[iv++] = P3.y;
@@ -1203,7 +1214,7 @@ void GL3Widget::glMakeBody3DFlatPanels(Body *pBody)
 			pBodyVertexArray[iv++] = N.x;
 			pBodyVertexArray[iv++] = N.y;
 			pBodyVertexArray[iv++] = N.z;
-			pBodyVertexArray[iv++] = (float)(j+1)/fnx;
+			pBodyVertexArray[iv++] = 1.0-(float)(j+1)/fnx;
 			pBodyVertexArray[iv++] = (float)(k+1)/fnh;
 			pBodyVertexArray[iv++] = P4.x;
 			pBodyVertexArray[iv++] = P4.y;
@@ -1211,7 +1222,7 @@ void GL3Widget::glMakeBody3DFlatPanels(Body *pBody)
 			pBodyVertexArray[iv++] = N.x;
 			pBodyVertexArray[iv++] = N.y;
 			pBodyVertexArray[iv++] = N.z;
-			pBodyVertexArray[iv++] = (float)j/fnx;
+			pBodyVertexArray[iv++] = 1.0-(float)j/fnx;
 			pBodyVertexArray[iv++] = (float)(k+1)/fnh;
 
 			//first triangle
@@ -1497,7 +1508,7 @@ void GL3Widget::glMakeBodySplines(Body *pBody)
 			ii += 6;
 		}
 	}
-	m_iBodyElems = ii/3;
+	m_iBodyElems = ii;
 
 	pBody = NULL;
 
@@ -1515,6 +1526,8 @@ void GL3Widget::initializeGL()
 {
 	QSurfaceFormat ctxtFormat = format();
 	m_bUse120StyleShaders = (ctxtFormat.majorVersion()*10+ctxtFormat.minorVersion())<33;
+
+	m_bUse120StyleShaders = true;
 
 	Trace("");
 	Trace("****************GL3Widget********************");
@@ -1583,7 +1596,38 @@ void GL3Widget::initializeGL()
 	m_ShaderProgramGradient.release();
 
 
-	//setup the shader to paint colored and textured surfaces
+	//setup the shader to paint colored surfaces
+	vsrc = m_bUse120StyleShaders ? ":/src/shaders/surface_vertexshader_120.glsl" : ":/src/shaders/surface_vertexshader.glsl";
+	fsrc = m_bUse120StyleShaders ? ":/src/shaders/surface_fragmentshader_120.glsl" : ":/src/shaders/surface_fragmentshader.glsl";
+	m_ShaderProgramSurface.addShaderFromSourceFile(QOpenGLShader::Vertex, vsrc);
+	if(m_ShaderProgramSurface.log().length()) Trace("Surface vertex shader log:"+m_ShaderProgramSurface.log());
+
+	m_ShaderProgramSurface.addShaderFromSourceFile(QOpenGLShader::Fragment, fsrc);
+	if(m_ShaderProgramSurface.log().length()) Trace("Surface fragment shader log:"+m_ShaderProgramSurface.log());
+
+	m_ShaderProgramSurface.link();
+	m_ShaderProgramSurface.bind();
+	m_VertexLocationSurface = m_ShaderProgramSurface.attributeLocation("vertexPosition_modelspace");
+	m_NormalLocationSurface = m_ShaderProgramSurface.attributeLocation("vertexNormal_modelspace");
+	m_ClipPlaneLocationSurface     = m_ShaderProgramSurface.uniformLocation("clipPlane0");
+	m_pvmMatrixLocationSurface     = m_ShaderProgramSurface.uniformLocation("pvmMatrix");
+	m_vMatrixLocationSurface       = m_ShaderProgramSurface.uniformLocation("vMatrix");
+	m_mMatrixLocationSurface       = m_ShaderProgramSurface.uniformLocation("mMatrix");
+	m_LightPosLocationSurface      = m_ShaderProgramSurface.uniformLocation("LightPosition_worldspace");
+	m_LightColorLocationSurface    = m_ShaderProgramSurface.uniformLocation("LightColor");
+	m_LightAmbientLocationSurface  = m_ShaderProgramSurface.uniformLocation("LightAmbient");
+	m_LightDiffuseLocationSurface  = m_ShaderProgramSurface.uniformLocation("LightDiffuse");
+	m_LightSpecularLocationSurface = m_ShaderProgramSurface.uniformLocation("LightSpecular");
+	m_ColorLocationSurface         = m_ShaderProgramSurface.uniformLocation("incolor");
+	m_LightLocationSurface         = m_ShaderProgramSurface.uniformLocation("lightOn");
+	m_SurfaceLocationSurface       = m_ShaderProgramSurface.uniformLocation("hasSurface");
+	m_MaterialShininessSurface     = m_ShaderProgramSurface.uniformLocation("MaterialShininess");
+	m_AttenuationConstantSurface   = m_ShaderProgramSurface.uniformLocation("Kc");
+	m_AttenuationLinearSurface     = m_ShaderProgramSurface.uniformLocation("Kl");
+	m_AttenuationQuadraticSurface  = m_ShaderProgramSurface.uniformLocation("Kq");
+	m_ShaderProgramSurface.release();
+
+	//setup the shader to paint textured surfaces
 	vsrc = m_bUse120StyleShaders ? ":/src/shaders/texture_vertexshader_120.glsl" : ":/src/shaders/texture_vertexshader.glsl";
 	fsrc = m_bUse120StyleShaders ? ":/src/shaders/texture_fragmentshader_120.glsl" : ":/src/shaders/texture_fragmentshader.glsl";
 	m_ShaderProgramTexture.addShaderFromSourceFile(QOpenGLShader::Vertex, vsrc);
@@ -1593,37 +1637,29 @@ void GL3Widget::initializeGL()
 	if(m_ShaderProgramTexture.log().length()) Trace("Texture fragment shader log:"+m_ShaderProgramTexture.log());
 
 	m_ShaderProgramTexture.link();
-
 	m_ShaderProgramTexture.bind();
-
 	m_VertexLocationTexture = m_ShaderProgramTexture.attributeLocation("vertexPosition_modelspace");
 	m_NormalLocationTexture = m_ShaderProgramTexture.attributeLocation("vertexNormal_modelspace");
 	m_UVLocationTexture     = m_ShaderProgramTexture.attributeLocation("vertexUV");
-
 	m_ClipPlaneLocationTexture     = m_ShaderProgramTexture.uniformLocation("clipPlane0");
 	m_pvmMatrixLocationTexture     = m_ShaderProgramTexture.uniformLocation("pvmMatrix");
 	m_vMatrixLocationTexture       = m_ShaderProgramTexture.uniformLocation("vMatrix");
 	m_mMatrixLocationTexture       = m_ShaderProgramTexture.uniformLocation("mMatrix");
-
 	m_LightPosLocationTexture      = m_ShaderProgramTexture.uniformLocation("LightPosition_worldspace");
 	m_LightColorLocationTexture    = m_ShaderProgramTexture.uniformLocation("LightColor");
 	m_LightAmbientLocationTexture  = m_ShaderProgramTexture.uniformLocation("LightAmbient");
 	m_LightDiffuseLocationTexture  = m_ShaderProgramTexture.uniformLocation("LightDiffuse");
 	m_LightSpecularLocationTexture = m_ShaderProgramTexture.uniformLocation("LightSpecular");
-
-	m_ColorLocationTexture         = m_ShaderProgramTexture.uniformLocation("incolor");
 	m_LightLocationTexture         = m_ShaderProgramTexture.uniformLocation("lightOn");
-	m_TextureLocationTexture       = m_ShaderProgramTexture.uniformLocation("hasTexture");
-
 	m_MaterialShininessTexture     = m_ShaderProgramTexture.uniformLocation("MaterialShininess");
-
 	m_AttenuationConstantTexture   = m_ShaderProgramTexture.uniformLocation("Kc");
 	m_AttenuationLinearTexture     = m_ShaderProgramTexture.uniformLocation("Kl");
 	m_AttenuationQuadraticTexture  = m_ShaderProgramTexture.uniformLocation("Kq");
-
 	m_ShaderProgramTexture.release();
+
 	glSetupLight();
 }
+
 
 
 void GL3Widget::glSetupLight()
@@ -1633,8 +1669,23 @@ void GL3Widget::glSetupLight()
 	LightColor.setGreenF(GLLightDlg::s_Light.m_Green);
 	LightColor.setBlueF( GLLightDlg::s_Light.m_Blue);
 
+	m_ShaderProgramSurface.bind();
+	if(GLLightDlg::s_Light.m_bIsLightOn) m_ShaderProgramSurface.setUniformValue(m_LightLocationSurface, 1);
+	else                                 m_ShaderProgramSurface.setUniformValue(m_LightLocationSurface, 0);
+	m_ShaderProgramSurface.setUniformValue(m_LightPosLocationSurface,      (GLfloat)(GLLightDlg::s_Light.m_X), (GLfloat)(GLLightDlg::s_Light.m_Y), (GLfloat)(GLLightDlg::s_Light.m_Z));
+	m_ShaderProgramSurface.setUniformValue(m_LightColorLocationSurface,    LightColor);
+	m_ShaderProgramSurface.setUniformValue(m_LightAmbientLocationSurface,  GLLightDlg::s_Light.m_Ambient);
+	m_ShaderProgramSurface.setUniformValue(m_LightDiffuseLocationSurface,  GLLightDlg::s_Light.m_Diffuse);
+	m_ShaderProgramSurface.setUniformValue(m_LightSpecularLocationSurface, GLLightDlg::s_Light.m_Specular);
+	m_ShaderProgramSurface.setUniformValue(m_MaterialShininessSurface,     GLLightDlg::s_Material.m_iShininess);
+	m_ShaderProgramSurface.setUniformValue(m_AttenuationConstantSurface,   GLLightDlg::s_Attenuation.m_Constant);
+	m_ShaderProgramSurface.setUniformValue(m_AttenuationLinearSurface,     GLLightDlg::s_Attenuation.m_Linear);
+	m_ShaderProgramSurface.setUniformValue(m_AttenuationQuadraticSurface,  GLLightDlg::s_Attenuation.m_Quadratic);
+	m_ShaderProgramSurface.release();
+
 	m_ShaderProgramTexture.bind();
-	m_ShaderProgramTexture.setUniformValue(m_LightLocationTexture,         GLLightDlg::s_Light.m_bIsLightOn);
+	if(GLLightDlg::s_Light.m_bIsLightOn) m_ShaderProgramTexture.setUniformValue(m_LightLocationTexture, 1);
+	else                                 m_ShaderProgramTexture.setUniformValue(m_LightLocationTexture, 0);
 	m_ShaderProgramTexture.setUniformValue(m_LightPosLocationTexture,      (GLfloat)(GLLightDlg::s_Light.m_X), (GLfloat)(GLLightDlg::s_Light.m_Y), (GLfloat)(GLLightDlg::s_Light.m_Z));
 	m_ShaderProgramTexture.setUniformValue(m_LightColorLocationTexture,    LightColor);
 	m_ShaderProgramTexture.setUniformValue(m_LightAmbientLocationTexture,  GLLightDlg::s_Light.m_Ambient);
@@ -1758,17 +1809,18 @@ void GL3Widget::paintGL3()
 	m_pvmMatrix = m_OrthoMatrix * m_viewMatrix * modelMatrix;
 
 	m_ShaderProgramLine.bind();
-	m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
 	m_ShaderProgramLine.setUniformValue(m_ClipPlaneLocationLine, clipPlane);
 	m_ShaderProgramLine.release();
 
-	if(m_bArcball) paintArcBall();
-
+	m_ShaderProgramSurface.bind();
+	m_ShaderProgramSurface.setUniformValue(m_ClipPlaneLocationSurface, clipPlane);
+	m_ShaderProgramSurface.release();
 
 	m_ShaderProgramTexture.bind();
-	m_ShaderProgramTexture.setUniformValue(m_mMatrixLocationTexture, modelMatrix);
 	m_ShaderProgramTexture.setUniformValue(m_ClipPlaneLocationTexture, clipPlane);
 	m_ShaderProgramTexture.release();
+
+	if(m_bArcball) paintArcBall();
 
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 	if(pMainFrame->m_glLightDlg.isVisible())
@@ -1829,16 +1881,9 @@ void GL3Widget::glRenderMiarexView()
 	QMiarex* pMiarex = (QMiarex*)s_pMiarex;
 	if(pMiarex->m_iView!=XFLR5::W3DVIEW) return;
 
-	QMatrix4x4 modelMatrix;//keep identity
-	if(pMiarex->m_pCurPOpp)	modelMatrix.rotate(pMiarex->m_pCurPOpp->alpha(),0.0,1.0,0.0);
-	m_pvmMatrix = m_OrthoMatrix * m_viewMatrix * modelMatrix;
-
-	m_ShaderProgramTexture.bind();
-	m_ShaderProgramTexture.setUniformValue(m_mMatrixLocationTexture, modelMatrix);
-	m_ShaderProgramTexture.setUniformValue(m_vMatrixLocationTexture, m_viewMatrix);
-	m_ShaderProgramTexture.setUniformValue(m_pvmMatrixLocationTexture, m_pvmMatrix);
-	m_ShaderProgramTexture.release();
-
+	m_modelMatrix.setToIdentity();//keep identity
+	if(pMiarex->m_pCurPOpp)	m_modelMatrix.rotate(pMiarex->m_pCurPOpp->alpha(),0.0,1.0,0.0);
+	m_pvmMatrix = m_OrthoMatrix * m_viewMatrix * m_modelMatrix;
 
 
 	glEnable(GL_CLIP_PLANE0);
@@ -1853,7 +1898,7 @@ void GL3Widget::glRenderMiarexView()
 			paintSurfaceVelocities();
 
 		m_ShaderProgramLine.bind();
-		m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, modelMatrix);
+		m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, m_modelMatrix);
 		m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
 		m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
 		m_ShaderProgramLine.release();
@@ -2394,6 +2439,7 @@ void GL3Widget::paintArcBall()
 	m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
 	m_vboArcBall.bind();
 	m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3, 0);
+	m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
 	m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, QColor(50,55,80,255));
 
 	glLineWidth(1.0);
@@ -3515,64 +3561,83 @@ void GL3Widget::paintBody(Body *pBody)
 {
 	if(!pBody) return;
 	int pos = 0;
-	m_ShaderProgramTexture.bind();
 
-	m_ShaderProgramTexture.setUniformValue(m_vMatrixLocationTexture, m_viewMatrix);
-	m_ShaderProgramTexture.setUniformValue(m_pvmMatrixLocationTexture, m_pvmMatrix);
-
-	m_ShaderProgramTexture.enableAttributeArray(m_VertexLocationTexture);
-	m_ShaderProgramTexture.enableAttributeArray(m_NormalLocationTexture);
-
-	m_vboBody.bind();
 	bool bTextures = pBody->textures() && (m_pLeftBodyTexture && m_pRightBodyTexture);
 	if(bTextures)
 	{
+		m_ShaderProgramTexture.bind();
+		m_vboBody.bind();
+
+		m_ShaderProgramTexture.setUniformValue(m_mMatrixLocationTexture, m_modelMatrix);
+		m_ShaderProgramTexture.setUniformValue(m_vMatrixLocationTexture, m_viewMatrix);
+		m_ShaderProgramTexture.setUniformValue(m_pvmMatrixLocationTexture, m_pvmMatrix);
+		if(GLLightDlg::s_Light.m_bIsLightOn) m_ShaderProgramTexture.setUniformValue(m_LightLocationTexture, 1);
+		else                                 m_ShaderProgramTexture.setUniformValue(m_LightLocationTexture, 0);
+		m_ShaderProgramTexture.enableAttributeArray(m_VertexLocationTexture);
+		m_ShaderProgramTexture.enableAttributeArray(m_NormalLocationTexture);
 		m_ShaderProgramTexture.enableAttributeArray(m_UVLocationTexture);
-		m_ShaderProgramTexture.setAttributeBuffer(m_UVLocationTexture, GL_FLOAT, 6* sizeof(GLfloat), 2, 8 * sizeof(GLfloat));
-		m_ShaderProgramTexture.setUniformValue(m_TextureLocationTexture, 1);
+		m_ShaderProgramTexture.setAttributeBuffer(m_VertexLocationTexture, GL_FLOAT, 0,                  3, 8 * sizeof(GLfloat));
+		m_ShaderProgramTexture.setAttributeBuffer(m_NormalLocationTexture, GL_FLOAT, 3* sizeof(GLfloat), 3, 8 * sizeof(GLfloat));
+		m_ShaderProgramTexture.setAttributeBuffer(m_UVLocationTexture,     GL_FLOAT, 6* sizeof(GLfloat), 2, 8 * sizeof(GLfloat));
 	}
 	else
 	{
-		m_ShaderProgramTexture.disableAttributeArray(m_UVLocationTexture);
-		m_ShaderProgramTexture.setUniformValue(m_TextureLocationTexture, 0);
-	}
+		m_ShaderProgramSurface.bind();
+		m_vboBody.bind();
 
-	m_ShaderProgramTexture.setAttributeBuffer(m_VertexLocationTexture, GL_FLOAT, 0,                  3, 8 * sizeof(GLfloat));
-	m_ShaderProgramTexture.setAttributeBuffer(m_NormalLocationTexture, GL_FLOAT, 3* sizeof(GLfloat), 3, 8 * sizeof(GLfloat));
-	m_ShaderProgramTexture.setUniformValue(m_LightLocationTexture, GLLightDlg::s_Light.m_bIsLightOn);
+		m_ShaderProgramSurface.setUniformValue(m_mMatrixLocationSurface, m_modelMatrix);
+		m_ShaderProgramSurface.setUniformValue(m_vMatrixLocationSurface, m_viewMatrix);
+		m_ShaderProgramSurface.setUniformValue(m_pvmMatrixLocationSurface, m_pvmMatrix);
+		if(GLLightDlg::s_Light.m_bIsLightOn) m_ShaderProgramSurface.setUniformValue(m_LightLocationSurface, 1);
+		else                                 m_ShaderProgramSurface.setUniformValue(m_LightLocationSurface, 0);
+		m_ShaderProgramSurface.setUniformValue(m_ColorLocationSurface, pBody->bodyColor());
+		m_ShaderProgramSurface.enableAttributeArray(m_VertexLocationSurface);
+		m_ShaderProgramSurface.enableAttributeArray(m_NormalLocationSurface);
+		m_ShaderProgramSurface.setAttributeBuffer(m_VertexLocationSurface, GL_FLOAT, 0,                  3, 8 * sizeof(GLfloat));
+		m_ShaderProgramSurface.setAttributeBuffer(m_NormalLocationSurface, GL_FLOAT, 3* sizeof(GLfloat), 3, 8 * sizeof(GLfloat));
+	}
 
 
 	if(m_bSurfaces)
 	{
 		glEnable(GL_POLYGON_OFFSET_FILL);
 		glPolygonOffset(1.0, 1.0);
-		m_ShaderProgramTexture.setUniformValue(m_ColorLocationTexture, pBody->bodyColor());
-//		if(pBody->textures()) m_ShaderProgramTexture.setUniformValue(m_TextureLocationTexture, 1);
-//		else                  m_ShaderProgramTexture.setUniformValue(m_TextureLocationTexture, 0);
 
 		if(bTextures) m_pRightBodyTexture->bind();
-		glDrawElements(GL_TRIANGLES, m_iBodyElems*3/2, GL_UNSIGNED_SHORT, m_BodyIndicesArray);
+		glDrawElements(GL_TRIANGLES, m_iBodyElems/2, GL_UNSIGNED_SHORT, m_BodyIndicesArray);
 		if(bTextures) m_pRightBodyTexture->release();
 		if(bTextures) m_pLeftBodyTexture->bind();
-		glDrawElements(GL_TRIANGLES, m_iBodyElems*3/2, GL_UNSIGNED_SHORT, m_BodyIndicesArray+m_iBodyElems*3/2);
+		glDrawElements(GL_TRIANGLES, m_iBodyElems/2, GL_UNSIGNED_SHORT, m_BodyIndicesArray+m_iBodyElems/2);
 		if(bTextures) m_pLeftBodyTexture->release();
 
 		glDisable(GL_POLYGON_OFFSET_FILL);
 	}
+	m_vboBody.release();
 
-	m_ShaderProgramTexture.disableAttributeArray(m_VertexLocationTexture);
-	m_ShaderProgramTexture.disableAttributeArray(m_NormalLocationTexture);
-	m_ShaderProgramTexture.disableAttributeArray(m_UVLocationTexture);
-	m_ShaderProgramTexture.release();
+	if(bTextures)
+	{
+		m_ShaderProgramTexture.disableAttributeArray(m_VertexLocationTexture);
+		m_ShaderProgramTexture.disableAttributeArray(m_NormalLocationTexture);
+		m_ShaderProgramTexture.disableAttributeArray(m_UVLocationTexture);
+		m_ShaderProgramTexture.release();
+	}
+	else
+	{
+		m_ShaderProgramSurface.disableAttributeArray(m_VertexLocationSurface);
+		m_ShaderProgramSurface.disableAttributeArray(m_NormalLocationSurface);
+		m_ShaderProgramSurface.release();
+	}
 
 
 	if(m_bOutline)
 	{
 		m_ShaderProgramLine.bind();
+		m_vboBody.bind();
 		m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
 		m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3, 8 * sizeof(GLfloat));
 		m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_OutlineColor);
 
+		m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, m_modelMatrix);
 		m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
 		m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
 
@@ -3601,11 +3666,9 @@ void GL3Widget::paintBody(Body *pBody)
 		}
 
 		m_ShaderProgramLine.disableAttributeArray(m_VertexLocationLine);
+		m_vboBody.release();
 		m_ShaderProgramLine.release();
 	}
-
-	m_vboBody.release();
-
 }
 
 
@@ -3618,33 +3681,44 @@ void GL3Widget::paintWing(int iWing, Wing *pWing)
 		unsigned short *wingIndicesArray = m_WingIndicesArray[iWing];
 
 		int pos = 0;
-		m_ShaderProgramTexture.bind();
-		m_ShaderProgramTexture.setUniformValue(m_vMatrixLocationTexture, m_viewMatrix);
-		m_ShaderProgramTexture.setUniformValue(m_pvmMatrixLocationTexture, m_pvmMatrix);
-
-		m_ShaderProgramTexture.enableAttributeArray(m_VertexLocationTexture);
-		m_ShaderProgramTexture.enableAttributeArray(m_NormalLocationTexture);
 
 		bool bTextures = pWing->textures() &&
 						 (m_pWingBotLeftTexture[iWing] && m_pWingBotRightTexture[iWing] && m_pWingTopLeftTexture[iWing] && m_pWingTopRightTexture[iWing]);
 
-		m_vboWingSurface[iWing].bind();
 		if(bTextures)
 		{
+			m_ShaderProgramTexture.bind();
+			m_vboWingSurface[iWing].bind();
+			m_ShaderProgramTexture.setUniformValue(m_mMatrixLocationTexture, m_modelMatrix);
+			m_ShaderProgramTexture.setUniformValue(m_vMatrixLocationTexture, m_viewMatrix);
+			m_ShaderProgramTexture.setUniformValue(m_pvmMatrixLocationTexture, m_pvmMatrix);
+			if(GLLightDlg::s_Light.m_bIsLightOn) m_ShaderProgramTexture.setUniformValue(m_LightLocationTexture, 1);
+			else                                 m_ShaderProgramTexture.setUniformValue(m_LightLocationTexture, 0);
+
+			m_ShaderProgramTexture.enableAttributeArray(m_VertexLocationTexture);
+			m_ShaderProgramTexture.enableAttributeArray(m_NormalLocationTexture);
 			m_ShaderProgramTexture.enableAttributeArray(m_UVLocationTexture);
-			m_ShaderProgramTexture.setAttributeBuffer(m_UVLocationTexture, GL_FLOAT, 6* sizeof(GLfloat), 2, 8 * sizeof(GLfloat));
-			m_ShaderProgramTexture.setUniformValue(m_TextureLocationTexture, 1);
+			m_ShaderProgramTexture.setAttributeBuffer(m_VertexLocationTexture, GL_FLOAT, 0,                  3, 8 * sizeof(GLfloat));
+			m_ShaderProgramTexture.setAttributeBuffer(m_NormalLocationTexture, GL_FLOAT, 3* sizeof(GLfloat), 3, 8 * sizeof(GLfloat));
+			m_ShaderProgramTexture.setAttributeBuffer(m_UVLocationTexture,     GL_FLOAT, 6* sizeof(GLfloat), 2, 8 * sizeof(GLfloat));
 		}
 		else
 		{
-			m_ShaderProgramTexture.disableAttributeArray(m_UVLocationTexture);
-			m_ShaderProgramTexture.setUniformValue(m_TextureLocationTexture, 0);
+			m_ShaderProgramSurface.bind();
+			m_vboWingSurface[iWing].bind();
+			m_ShaderProgramSurface.setUniformValue(m_mMatrixLocationSurface, m_modelMatrix);
+			m_ShaderProgramSurface.setUniformValue(m_vMatrixLocationSurface, m_viewMatrix);
+			m_ShaderProgramSurface.setUniformValue(m_pvmMatrixLocationSurface, m_pvmMatrix);
+			if(GLLightDlg::s_Light.m_bIsLightOn) m_ShaderProgramSurface.setUniformValue(m_LightLocationSurface, 1);
+			else                                 m_ShaderProgramSurface.setUniformValue(m_LightLocationSurface, 0);
+			m_ShaderProgramSurface.setUniformValue(m_ColorLocationSurface, pWing->wingColor());
+
+			m_ShaderProgramSurface.enableAttributeArray(m_VertexLocationSurface);
+			m_ShaderProgramSurface.enableAttributeArray(m_NormalLocationSurface);
+			m_ShaderProgramSurface.setAttributeBuffer(m_VertexLocationSurface, GL_FLOAT, 0,                  3, 8 * sizeof(GLfloat));
+			m_ShaderProgramSurface.setAttributeBuffer(m_NormalLocationSurface, GL_FLOAT, 3* sizeof(GLfloat), 3, 8 * sizeof(GLfloat));
 		}
 
-		m_ShaderProgramTexture.setAttributeBuffer(m_VertexLocationTexture, GL_FLOAT, 0,                  3, 8 * sizeof(GLfloat));
-		m_ShaderProgramTexture.setAttributeBuffer(m_NormalLocationTexture, GL_FLOAT, 3* sizeof(GLfloat), 3, 8 * sizeof(GLfloat));
-		m_ShaderProgramTexture.setUniformValue(m_LightLocationTexture, GLLightDlg::s_Light.m_bIsLightOn);
-		m_ShaderProgramTexture.setUniformValue(m_ColorLocationTexture, pWing->wingColor());
 
 		glEnable(GL_POLYGON_OFFSET_FILL);
 		glPolygonOffset(1.0, 1.0);
@@ -3660,7 +3734,6 @@ void GL3Widget::paintWing(int iWing, Wing *pWing)
 		pos = 0;
 		for (int j=0; j<pWing->m_Surface.count(); j++)
 		{
-
 			//top surface
 			if(bTextures)
 			{
@@ -3691,9 +3764,8 @@ void GL3Widget::paintWing(int iWing, Wing *pWing)
 		}
 
 		// no light, no textures, for the tip patches
-		m_ShaderProgramTexture.setUniformValue(m_TextureLocationTexture, 0);
-		m_ShaderProgramTexture.setUniformValue(m_LightLocationTexture, false);
-		m_ShaderProgramTexture.setUniformValue(m_ColorLocationTexture, pWing->wingColor().darker());
+		if(bTextures) m_ShaderProgramTexture.setUniformValue(m_LightLocationTexture, 0);
+		else          m_ShaderProgramSurface.setUniformValue(m_LightLocationSurface, 0);
 
 		for (int j=0; j<pWing->m_Surface.count(); j++)
 		{
@@ -3713,17 +3785,27 @@ void GL3Widget::paintWing(int iWing, Wing *pWing)
 
 		glDisable(GL_POLYGON_OFFSET_FILL);
 
-		m_ShaderProgramTexture.disableAttributeArray(m_VertexLocationTexture);
-		m_ShaderProgramTexture.disableAttributeArray(m_NormalLocationTexture);
-		m_ShaderProgramTexture.disableAttributeArray(m_UVLocationTexture);
-		m_ShaderProgramTexture.release();
 		m_vboWingSurface[iWing].release();
+		if(bTextures)
+		{
+			m_ShaderProgramTexture.disableAttributeArray(m_VertexLocationTexture);
+			m_ShaderProgramTexture.disableAttributeArray(m_NormalLocationTexture);
+			m_ShaderProgramTexture.disableAttributeArray(m_UVLocationTexture);
+			m_ShaderProgramTexture.release();
+		}
+		else
+		{
+			m_ShaderProgramSurface.disableAttributeArray(m_VertexLocationSurface);
+			m_ShaderProgramSurface.disableAttributeArray(m_NormalLocationSurface);
+			m_ShaderProgramSurface.release();
+		}
 	}
 
 	if(m_bOutline)
 	{
 		m_ShaderProgramLine.bind();
 		m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_OutlineColor);
+		m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, m_modelMatrix);
 		m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
 		m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
 
@@ -3749,7 +3831,6 @@ void GL3Widget::paintWing(int iWing, Wing *pWing)
 		m_ShaderProgramLine.release();
 	}
 	glDisable(GL_LINE_STIPPLE);
-
 }
 
 
@@ -3900,22 +3981,20 @@ void GL3Widget::paintSphere(CVector place, double radius, QColor sphereColor, bo
 	mSphere.translate(place.x, place.y, place.z);
 	mSphere.scale(radius);
 
-	m_ShaderProgramTexture.bind();
-	m_ShaderProgramTexture.setUniformValue(m_mMatrixLocationTexture, mSphere);
-	m_ShaderProgramTexture.setUniformValue(m_vMatrixLocationTexture, m_viewMatrix);
-	m_ShaderProgramTexture.setUniformValue(m_pvmMatrixLocationTexture, m_pvmMatrix * mSphere);
+	m_ShaderProgramSurface.bind();
+	m_ShaderProgramSurface.setUniformValue(m_mMatrixLocationSurface, mSphere);
+	m_ShaderProgramSurface.setUniformValue(m_vMatrixLocationSurface, m_viewMatrix);
+	m_ShaderProgramSurface.setUniformValue(m_pvmMatrixLocationSurface, m_pvmMatrix * mSphere);
+	if(bLight) m_ShaderProgramSurface.setUniformValue(m_LightLocationSurface, 1);
+	else       m_ShaderProgramSurface.setUniformValue(m_LightLocationSurface, 0);
+	m_ShaderProgramSurface.setUniformValue(m_ColorLocationSurface, sphereColor);
 
-	m_ShaderProgramTexture.setUniformValue(m_ColorLocationTexture, sphereColor);
-	m_ShaderProgramTexture.setUniformValue(m_LightLocationTexture, bLight);
-	m_ShaderProgramTexture.setUniformValue(m_TextureLocationTexture, 0);
-
-	m_ShaderProgramTexture.enableAttributeArray(m_VertexLocationTexture);
-	m_ShaderProgramTexture.enableAttributeArray(m_NormalLocationTexture);
-	m_ShaderProgramTexture.disableAttributeArray(m_UVLocationTexture);
+	m_ShaderProgramSurface.enableAttributeArray(m_VertexLocationSurface);
+	m_ShaderProgramSurface.enableAttributeArray(m_NormalLocationSurface);
 
 	m_vboSphere.bind();
-	m_ShaderProgramTexture.setAttributeBuffer(m_VertexLocationTexture, GL_FLOAT, 0,                  3, 6 * sizeof(GLfloat));
-	m_ShaderProgramTexture.setAttributeBuffer(m_NormalLocationTexture, GL_FLOAT, 3* sizeof(GLfloat), 3, 6 * sizeof(GLfloat));
+	m_ShaderProgramSurface.setAttributeBuffer(m_VertexLocationSurface, GL_FLOAT, 0,                  3, 6 * sizeof(GLfloat));
+	m_ShaderProgramSurface.setAttributeBuffer(m_NormalLocationSurface, GL_FLOAT, 3* sizeof(GLfloat), 3, 6 * sizeof(GLfloat));
 
 	for(int iLong=0; iLong<NUMLONG-1; iLong++)
 	{
@@ -3923,9 +4002,9 @@ void GL3Widget::paintSphere(CVector place, double radius, QColor sphereColor, bo
 	}
 	m_vboSphere.release();
 
-	m_ShaderProgramTexture.disableAttributeArray(m_VertexLocationTexture);
-	m_ShaderProgramTexture.disableAttributeArray(m_NormalLocationTexture);
-	m_ShaderProgramTexture.release();
+	m_ShaderProgramSurface.disableAttributeArray(m_VertexLocationSurface);
+	m_ShaderProgramSurface.disableAttributeArray(m_NormalLocationSurface);
+	m_ShaderProgramSurface.release();
 }
 
 
@@ -6057,21 +6136,16 @@ void GL3Widget::paintBodyMesh(Body *pBody)
 		int pos=0;
 
 		//mesh background
-		m_ShaderProgramTexture.bind();
-		m_ShaderProgramTexture.enableAttributeArray(m_VertexLocationTexture);
-		m_ShaderProgramTexture.enableAttributeArray(m_NormalLocationTexture);
-		m_ShaderProgramTexture.enableAttributeArray(m_UVLocationTexture);
+		m_ShaderProgramSurface.bind();
+		m_ShaderProgramSurface.enableAttributeArray(m_VertexLocationSurface);
+		m_ShaderProgramSurface.enableAttributeArray(m_NormalLocationSurface);
 
 		m_vboBody.bind();
-		m_ShaderProgramTexture.setAttributeBuffer(m_VertexLocationTexture, GL_FLOAT, 0,                  3, 8 * sizeof(GLfloat));
-		m_ShaderProgramTexture.setAttributeBuffer(m_NormalLocationTexture, GL_FLOAT, 3* sizeof(GLfloat), 3, 8 * sizeof(GLfloat));
-		m_ShaderProgramTexture.setAttributeBuffer(m_UVLocationTexture,     GL_FLOAT, 6* sizeof(GLfloat), 2, 8 * sizeof(GLfloat));
+		m_ShaderProgramSurface.setAttributeBuffer(m_VertexLocationSurface, GL_FLOAT, 0,                  3, 8 * sizeof(GLfloat));
+		m_ShaderProgramSurface.setAttributeBuffer(m_NormalLocationSurface, GL_FLOAT, 3* sizeof(GLfloat), 3, 8 * sizeof(GLfloat));
 
 		glEnable(GL_POLYGON_OFFSET_FILL);
 		glPolygonOffset(1.0, 1.0);
-
-		m_ShaderProgramTexture.setUniformValue(m_ColorLocationTexture, Settings::backgroundColor());
-		m_ShaderProgramTexture.setUniformValue(m_TextureLocationTexture, 0);
 
 		m_pRightBodyTexture->bind();
 		glDrawElements(GL_TRIANGLES, m_iBodyElems*3/2, GL_UNSIGNED_SHORT, m_BodyIndicesArray);
@@ -6082,10 +6156,9 @@ void GL3Widget::paintBodyMesh(Body *pBody)
 
 		glDisable(GL_POLYGON_OFFSET_FILL);
 
-		m_ShaderProgramTexture.disableAttributeArray(m_VertexLocationTexture);
-		m_ShaderProgramTexture.disableAttributeArray(m_NormalLocationTexture);
-		m_ShaderProgramTexture.disableAttributeArray(m_UVLocationTexture);
-		m_ShaderProgramTexture.release();
+		m_ShaderProgramSurface.disableAttributeArray(m_VertexLocationSurface);
+		m_ShaderProgramSurface.disableAttributeArray(m_NormalLocationSurface);
+		m_ShaderProgramSurface.release();
 
 
 		//panel lines
