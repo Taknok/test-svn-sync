@@ -441,7 +441,7 @@ void EditBodyDlg::initDialog(Body *pBody)
 	m_pBody = pBody;
 	m_pBodyLineWidget->setBody(pBody);
 	m_pFrameWidget->setBody(pBody);
-	m_pgl3Widget->setScale(pBody->Length());
+	m_pgl3Widget->setScale(pBody->length());
 
 	fillBodyTreeView();
 

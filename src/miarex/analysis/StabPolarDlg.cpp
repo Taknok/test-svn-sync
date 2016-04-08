@@ -955,7 +955,7 @@ void StabPolarDlg::setupLayout()
 		m_massPrecision = new int[3];
 		m_massPrecision[0]  = 1;
 		m_massPrecision[1]  = 2;
-		m_massPrecision[2]  = 0;
+		m_massPrecision[2]  = 2;
 
 		pCtrlDelegate->m_Precision = m_massPrecision;
 

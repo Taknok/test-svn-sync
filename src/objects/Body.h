@@ -69,12 +69,12 @@ public:
 	int insertFrame(CVector Real);
 	int insertFrameBefore(int iFrame);
 	int insertFrameAfter(int iFrame);
-	int InsertPoint(CVector Real);
+	int insertPoint(CVector Real);
 	int isFramePos(CVector Real, double ZoomFactor);
 	int removeFrame(int n);
 	int readFrame(QTextStream &in, int &Line, Frame *pFrame, double const &Unit);
 
-	double Length();
+	double length();
 
 	double getu(double x);
 	double getv(double u, CVector r, bool bRight);

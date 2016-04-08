@@ -531,7 +531,7 @@ void EditPlaneDlg::initDialog(Plane *pPlane)
 	m_pPlane->createSurfaces();
 	fillPlaneTreeView();
 
-	m_pgl3Widget->setScale(qMax(m_pPlane->wing()->planformSpan(), m_pPlane->body() ? m_pPlane->body()->Length() : 1.0));
+	m_pgl3Widget->setScale(qMax(m_pPlane->wing()->planformSpan(), m_pPlane->body() ? m_pPlane->body()->length() : 1.0));
 
 	m_pctrlSurfaces->setChecked(m_pgl3Widget->m_bSurfaces);
 	m_pctrlOutline->setChecked(m_pgl3Widget->m_bOutline);
@@ -887,7 +887,7 @@ void EditPlaneDlg::onCheckViewIcons()
 
 void EditPlaneDlg::on3DReset()
 {
-	m_pgl3Widget->setScale(qMax(m_pPlane->wing()->planformSpan(), m_pPlane->body() ? m_pPlane->body()->Length() : 1.0));
+	m_pgl3Widget->setScale(qMax(m_pPlane->wing()->planformSpan(), m_pPlane->body() ? m_pPlane->body()->length() : 1.0));
 	m_pgl3Widget->on3DReset();
 }
 

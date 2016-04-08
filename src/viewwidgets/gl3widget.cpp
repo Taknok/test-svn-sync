@@ -46,7 +46,7 @@
 #include <params.h>
 
 
-#define CHORDPOINTS 29
+#define CHORDPOINTS 43
 
 
 #define NH  17
@@ -1111,7 +1111,8 @@ void GL3Widget::glMakeBody3DFlatPanels(Body *pBody)
 	unsigned int ii=0;
 
 	float fnh = pBody->sideLineCount();
-	float fnx = pBody->frameCount();
+	float fLength = pBody->length();
+	float tip = pBody->frame(0)->m_Position.x;
 	//surfaces
 	for (int k=0; k<pBody->sideLineCount()-1;k++)
 	{
@@ -1141,7 +1142,7 @@ void GL3Widget::glMakeBody3DFlatPanels(Body *pBody)
 			pBodyVertexArray[iv++] = N.x;
 			pBodyVertexArray[iv++] = N.y;
 			pBodyVertexArray[iv++] = N.z;
-			pBodyVertexArray[iv++] = 1.0-(float)j/fnx;
+			pBodyVertexArray[iv++] = 1.0-(P1.x-tip)/fLength;
 			pBodyVertexArray[iv++] = (float)k/fnh;
 			pBodyVertexArray[iv++] = P2.x;
 			pBodyVertexArray[iv++] = P2.y;
@@ -1149,7 +1150,7 @@ void GL3Widget::glMakeBody3DFlatPanels(Body *pBody)
 			pBodyVertexArray[iv++] = N.x;
 			pBodyVertexArray[iv++] = N.y;
 			pBodyVertexArray[iv++] = N.z;
-			pBodyVertexArray[iv++] = 1.0-(float)(j+1)/fnx;
+			pBodyVertexArray[iv++] = 1.0-(P2.x-tip)/fLength;
 			pBodyVertexArray[iv++] = (float)k/fnh;
 			pBodyVertexArray[iv++] = P3.x;
 			pBodyVertexArray[iv++] = P3.y;
@@ -1157,7 +1158,7 @@ void GL3Widget::glMakeBody3DFlatPanels(Body *pBody)
 			pBodyVertexArray[iv++] = N.x;
 			pBodyVertexArray[iv++] = N.y;
 			pBodyVertexArray[iv++] = N.z;
-			pBodyVertexArray[iv++] = 1.0-(float)(j+1)/fnx;
+			pBodyVertexArray[iv++] = 1.0-(P3.x-tip)/fLength;
 			pBodyVertexArray[iv++] = (float)(k+1)/fnh;
 			pBodyVertexArray[iv++] = P4.x;
 			pBodyVertexArray[iv++] = P4.y;
@@ -1165,7 +1166,7 @@ void GL3Widget::glMakeBody3DFlatPanels(Body *pBody)
 			pBodyVertexArray[iv++] = N.x;
 			pBodyVertexArray[iv++] = N.y;
 			pBodyVertexArray[iv++] = N.z;
-			pBodyVertexArray[iv++] = 1.0-(float)j/fnx;
+			pBodyVertexArray[iv++] = 1.0-(P4.x-tip)/fLength;
 			pBodyVertexArray[iv++] = (float)(k+1)/fnh;
 
 			//first triangle
@@ -1178,19 +1179,35 @@ void GL3Widget::glMakeBody3DFlatPanels(Body *pBody)
 			m_BodyIndicesArray[ii+4] = i4;
 			m_BodyIndicesArray[ii+5] = i1;
 			ii += 6;
+		}
+	}
+	for (int k=0; k<pBody->sideLineCount()-1;k++)
+	{
+		for (int j=0; j<pBody->frameCount()-1;j++)
+		{
+			Tj.set(pBody->frame(j)->m_Position.x,     0.0, 0.0);
+			Tjp1.set(pBody->frame(j+1)->m_Position.x, 0.0, 0.0);
 
+			P1 = pBody->frame(j)->m_CtrlPoint[k];       P1.x = pBody->frame(j)->m_Position.x;
+			P2 = pBody->frame(j+1)->m_CtrlPoint[k];     P2.x = pBody->frame(j+1)->m_Position.x;
+			P3 = pBody->frame(j+1)->m_CtrlPoint[k+1];   P3.x = pBody->frame(j+1)->m_Position.x;
+			P4 = pBody->frame(j)->m_CtrlPoint[k+1];     P4.x = pBody->frame(j)->m_Position.x;
 
-			//and symetric quad
+			P1P3 = P3-P1;
+			P2P4 = P4-P2;
+			N = P1P3 * P2P4;
+			N.normalize();
+
 			P1.y = -P1.y;
 			P2.y = -P2.y;
 			P3.y = -P3.y;
 			P4.y = -P4.y;
 			N.y = -N.y;
 
-			i1 = iv/8;
-			i2 = i1+1;
-			i3 = i2+1;
-			i4 = i3+1;
+			int i1 = iv/8;
+			int i2 = i1+1;
+			int i3 = i2+1;
+			int i4 = i3+1;
 
 			pBodyVertexArray[iv++] = P1.x;
 			pBodyVertexArray[iv++] = P1.y;
@@ -1198,7 +1215,7 @@ void GL3Widget::glMakeBody3DFlatPanels(Body *pBody)
 			pBodyVertexArray[iv++] = N.x;
 			pBodyVertexArray[iv++] = N.y;
 			pBodyVertexArray[iv++] = N.z;
-			pBodyVertexArray[iv++] = 1.0-(float)j/fnx;
+			pBodyVertexArray[iv++] = (P1.x-tip)/fLength;
 			pBodyVertexArray[iv++] = (float)k/fnh;
 			pBodyVertexArray[iv++] = P2.x;
 			pBodyVertexArray[iv++] = P2.y;
@@ -1206,7 +1223,7 @@ void GL3Widget::glMakeBody3DFlatPanels(Body *pBody)
 			pBodyVertexArray[iv++] = N.x;
 			pBodyVertexArray[iv++] = N.y;
 			pBodyVertexArray[iv++] = N.z;
-			pBodyVertexArray[iv++] = 1.0-(float)(j+1)/fnx;
+			pBodyVertexArray[iv++] = (P2.x-tip)/fLength;
 			pBodyVertexArray[iv++] = (float)k/fnh;
 			pBodyVertexArray[iv++] = P3.x;
 			pBodyVertexArray[iv++] = P3.y;
@@ -1214,7 +1231,7 @@ void GL3Widget::glMakeBody3DFlatPanels(Body *pBody)
 			pBodyVertexArray[iv++] = N.x;
 			pBodyVertexArray[iv++] = N.y;
 			pBodyVertexArray[iv++] = N.z;
-			pBodyVertexArray[iv++] = 1.0-(float)(j+1)/fnx;
+			pBodyVertexArray[iv++] = (P3.x-tip)/fLength;
 			pBodyVertexArray[iv++] = (float)(k+1)/fnh;
 			pBodyVertexArray[iv++] = P4.x;
 			pBodyVertexArray[iv++] = P4.y;
@@ -1222,7 +1239,7 @@ void GL3Widget::glMakeBody3DFlatPanels(Body *pBody)
 			pBodyVertexArray[iv++] = N.x;
 			pBodyVertexArray[iv++] = N.y;
 			pBodyVertexArray[iv++] = N.z;
-			pBodyVertexArray[iv++] = 1.0-(float)j/fnx;
+			pBodyVertexArray[iv++] = (P4.x-tip)/fLength;
 			pBodyVertexArray[iv++] = (float)(k+1)/fnh;
 
 			//first triangle
@@ -1527,8 +1544,6 @@ void GL3Widget::initializeGL()
 	QSurfaceFormat ctxtFormat = format();
 	m_bUse120StyleShaders = (ctxtFormat.majorVersion()*10+ctxtFormat.minorVersion())<33;
 
-	m_bUse120StyleShaders = true;
-
 	Trace("");
 	Trace("****************GL3Widget********************");
 	Trace("Initializing GL");
@@ -1590,7 +1605,7 @@ void GL3Widget::initializeGL()
 
 	m_ShaderProgramGradient.link();
 	m_ShaderProgramGradient.bind();
-	m_VertexLocationGradient = m_ShaderProgramGradient.attributeLocation("vertexPosition_modelspace");
+	m_VertexLocationGradient = m_ShaderProgramGradient.attributeLocation("vertexPosition_modelSpace");
 	m_pvmMatrixLocationGradient = m_ShaderProgramGradient.uniformLocation("pvmMatrix");
 	m_ColorLocationGradient  = m_ShaderProgramGradient.attributeLocation("vertexColor");
 	m_ShaderProgramGradient.release();
@@ -1607,13 +1622,14 @@ void GL3Widget::initializeGL()
 
 	m_ShaderProgramSurface.link();
 	m_ShaderProgramSurface.bind();
-	m_VertexLocationSurface = m_ShaderProgramSurface.attributeLocation("vertexPosition_modelspace");
-	m_NormalLocationSurface = m_ShaderProgramSurface.attributeLocation("vertexNormal_modelspace");
+	m_VertexLocationSurface = m_ShaderProgramSurface.attributeLocation("vertexPosition_modelSpace");
+	m_NormalLocationSurface = m_ShaderProgramSurface.attributeLocation("vertexNormal_modelSpace");
 	m_ClipPlaneLocationSurface     = m_ShaderProgramSurface.uniformLocation("clipPlane0");
 	m_pvmMatrixLocationSurface     = m_ShaderProgramSurface.uniformLocation("pvmMatrix");
 	m_vMatrixLocationSurface       = m_ShaderProgramSurface.uniformLocation("vMatrix");
 	m_mMatrixLocationSurface       = m_ShaderProgramSurface.uniformLocation("mMatrix");
-	m_LightPosLocationSurface      = m_ShaderProgramSurface.uniformLocation("LightPosition_worldspace");
+	m_EyePosLocationSurface        = m_ShaderProgramSurface.uniformLocation("EyePosition_viewSpace");
+	m_LightPosLocationSurface      = m_ShaderProgramSurface.uniformLocation("LightPosition_viewSpace");
 	m_LightColorLocationSurface    = m_ShaderProgramSurface.uniformLocation("LightColor");
 	m_LightAmbientLocationSurface  = m_ShaderProgramSurface.uniformLocation("LightAmbient");
 	m_LightDiffuseLocationSurface  = m_ShaderProgramSurface.uniformLocation("LightDiffuse");
@@ -1638,14 +1654,15 @@ void GL3Widget::initializeGL()
 
 	m_ShaderProgramTexture.link();
 	m_ShaderProgramTexture.bind();
-	m_VertexLocationTexture = m_ShaderProgramTexture.attributeLocation("vertexPosition_modelspace");
-	m_NormalLocationTexture = m_ShaderProgramTexture.attributeLocation("vertexNormal_modelspace");
+	m_VertexLocationTexture = m_ShaderProgramTexture.attributeLocation("vertexPosition_modelSpace");
+	m_NormalLocationTexture = m_ShaderProgramTexture.attributeLocation("vertexNormal_modelSpace");
 	m_UVLocationTexture     = m_ShaderProgramTexture.attributeLocation("vertexUV");
 	m_ClipPlaneLocationTexture     = m_ShaderProgramTexture.uniformLocation("clipPlane0");
 	m_pvmMatrixLocationTexture     = m_ShaderProgramTexture.uniformLocation("pvmMatrix");
 	m_vMatrixLocationTexture       = m_ShaderProgramTexture.uniformLocation("vMatrix");
 	m_mMatrixLocationTexture       = m_ShaderProgramTexture.uniformLocation("mMatrix");
-	m_LightPosLocationTexture      = m_ShaderProgramTexture.uniformLocation("LightPosition_worldspace");
+	m_EyePosLocationTexture        = m_ShaderProgramTexture.uniformLocation("EyePosition_viewSpace");
+	m_LightPosLocationTexture      = m_ShaderProgramTexture.uniformLocation("LightPosition_viewSpace");
 	m_LightColorLocationTexture    = m_ShaderProgramTexture.uniformLocation("LightColor");
 	m_LightAmbientLocationTexture  = m_ShaderProgramTexture.uniformLocation("LightAmbient");
 	m_LightDiffuseLocationTexture  = m_ShaderProgramTexture.uniformLocation("LightDiffuse");
@@ -1677,7 +1694,7 @@ void GL3Widget::glSetupLight()
 	m_ShaderProgramSurface.setUniformValue(m_LightAmbientLocationSurface,  GLLightDlg::s_Light.m_Ambient);
 	m_ShaderProgramSurface.setUniformValue(m_LightDiffuseLocationSurface,  GLLightDlg::s_Light.m_Diffuse);
 	m_ShaderProgramSurface.setUniformValue(m_LightSpecularLocationSurface, GLLightDlg::s_Light.m_Specular);
-	m_ShaderProgramSurface.setUniformValue(m_MaterialShininessSurface,     GLLightDlg::s_Material.m_iShininess);
+	m_ShaderProgramSurface.setUniformValue(m_MaterialShininessSurface,     GLLightDlg::s_iShininess);
 	m_ShaderProgramSurface.setUniformValue(m_AttenuationConstantSurface,   GLLightDlg::s_Attenuation.m_Constant);
 	m_ShaderProgramSurface.setUniformValue(m_AttenuationLinearSurface,     GLLightDlg::s_Attenuation.m_Linear);
 	m_ShaderProgramSurface.setUniformValue(m_AttenuationQuadraticSurface,  GLLightDlg::s_Attenuation.m_Quadratic);
@@ -1691,7 +1708,7 @@ void GL3Widget::glSetupLight()
 	m_ShaderProgramTexture.setUniformValue(m_LightAmbientLocationTexture,  GLLightDlg::s_Light.m_Ambient);
 	m_ShaderProgramTexture.setUniformValue(m_LightDiffuseLocationTexture,  GLLightDlg::s_Light.m_Diffuse);
 	m_ShaderProgramTexture.setUniformValue(m_LightSpecularLocationTexture, GLLightDlg::s_Light.m_Specular);
-	m_ShaderProgramTexture.setUniformValue(m_MaterialShininessTexture,     GLLightDlg::s_Material.m_iShininess);
+	m_ShaderProgramTexture.setUniformValue(m_MaterialShininessTexture,     GLLightDlg::s_iShininess);
 	m_ShaderProgramTexture.setUniformValue(m_AttenuationConstantTexture,   GLLightDlg::s_Attenuation.m_Constant);
 	m_ShaderProgramTexture.setUniformValue(m_AttenuationLinearTexture,     GLLightDlg::s_Attenuation.m_Linear);
 	m_ShaderProgramTexture.setUniformValue(m_AttenuationQuadraticTexture,  GLLightDlg::s_Attenuation.m_Quadratic);
@@ -1801,6 +1818,13 @@ void GL3Widget::paintGL3()
 
 	m_OrthoMatrix.setToIdentity();
 	m_OrthoMatrix.ortho(-s,s,-(height*s)/width,(height*s)/width,-50.0*s,50.0*s);
+
+	m_ShaderProgramSurface.bind();
+	m_ShaderProgramSurface.setUniformValue(m_EyePosLocationSurface, QVector3D(0.0,0.0,50.0*s));
+	m_ShaderProgramSurface.release();
+	m_ShaderProgramTexture.bind();
+	m_ShaderProgramTexture.setUniformValue(m_EyePosLocationTexture, QVector3D(0.0,0.0,50.0*s));
+	m_ShaderProgramTexture.release();
 
 	QMatrix4x4 matQuat(m_ArcBall.ab_quat);
 
@@ -2011,7 +2035,7 @@ void GL3Widget::glRenderGL3DBodyView()
 		if(m_bVLMPanels) paintBodyMesh(pDlg->m_pBody);
 	}
 
-	if(m_bShowMasses) paintMasses(pBody->volumeMass(), pDlg->m_pBody->CoG(), "Structural mass", pBody->m_PointMass);
+	if(m_bShowMasses) paintMasses(pBody->volumeMass(), CVector(0.0,0.0,0.0), "Structural mass", pBody->m_PointMass);
 }
 
 
@@ -2027,7 +2051,7 @@ void GL3Widget::glRenderEditBodyView()
 		if(m_bVLMPanels) paintBodyMesh(pDlg->m_pBody);
 	}
 
-	if(m_bShowMasses) paintMasses(pBody->volumeMass(), pDlg->m_pBody->CoG(), "Structural mass", pBody->m_PointMass );
+	if(m_bShowMasses) paintMasses(pBody->volumeMass(), CVector(0.0,0.0,0.0), "Structural mass", pBody->m_PointMass );
 }
 
 
@@ -2037,19 +2061,16 @@ void GL3Widget::glRenderWingView()
 	GL3dWingDlg *pDlg = (GL3dWingDlg*)m_pParent;
 	Wing *pWing = pDlg->m_pWing;
 
-
 	if(pWing)
 	{
 		paintWing(0, pWing);
-		if(m_bFoilNames) paintFoilNames(pWing);
-		if(m_bVLMPanels) paintWingMesh(pWing);
+		if(m_bFoilNames)  paintFoilNames(pWing);
+		if(m_bVLMPanels)  paintWingMesh(pWing);
 		if(m_bShowMasses)
-			paintMasses(pWing->volumeMass(), pWing->CoG(), "Structural mass", pWing->m_PointMass);
+			paintMasses(pWing->volumeMass(), CVector(0.0,0.0,0.0), "Structural mass", pWing->m_PointMass);
 		if(pDlg->m_iSection>=0) paintSectionHighlight();
 	}
 }
-
-
 
 
 
@@ -2057,8 +2078,6 @@ void GL3Widget::setScale(double refLength)
 {
 	m_glScaled = 1.5/refLength;
 }
-
-
 
 
 void GL3Widget::paintFoilNames(void *pWingPtr)
@@ -2111,7 +2130,7 @@ void GL3Widget::glDrawMasses(Plane *pPlane)
 		Body *pCurBody = pPlane->body();
 
 		paintMasses(pCurBody->m_VolumeMass,
-				  pPlane->bodyPos().translated(pPlane->body()->Length()/5,0.0,0.0),
+				  pPlane->bodyPos().translated(pPlane->body()->length()/5,0.0,0.0),
 				  pCurBody->m_BodyName,
 				  pCurBody->m_PointMass);
 	}
@@ -2129,30 +2148,6 @@ void GL3Widget::glDrawMasses(Plane *pPlane)
 
 
 
-void GL3Widget::glDrawMasses(Wing *pWing)
-{
-	double delta = 0.02/m_glScaled;
-
-	if(pWing)
-	{
-		paintMasses(pWing->volumeMass(), CVector(0.0,0.0,delta), pWing->wingName(), pWing->m_PointMass);
-	}
-}
-
-
-void GL3Widget::glDrawMasses(Body *pBody)
-{
-	if(pBody)
-	{
-		paintMasses(pBody->volumeMass(),
-				  CVector(pBody->Length()/5,0.0,0.0),
-				  pBody->bodyName(),
-				  pBody->m_PointMass);
-	}
-}
-
-
-
 void GL3Widget::paintMasses(double volumeMass, CVector pos, QString tag, const QList<PointMass*> &ptMasses)
 {
 	if(qAbs(volumeMass)>PRECISION)
@@ -2163,13 +2158,13 @@ void GL3Widget::paintMasses(double volumeMass, CVector pos, QString tag, const Q
 
 	for(int im=0; im<ptMasses.size(); im++)
 	{
-		paintSphere(ptMasses[im]->position(),
+		paintSphere(ptMasses[im]->position() + pos,
 					W3dPrefsDlg::s_MassRadius/m_glScaled,
 					W3dPrefsDlg::s_MassColor.lighter(),
 					true);
-		glRenderText(ptMasses[im]->position().x,
-					 ptMasses[im]->position().y,
-					 ptMasses[im]->position().z +.02/m_glScaled,
+		glRenderText(ptMasses[im]->position().x + pos.x,
+					 ptMasses[im]->position().y + pos.y,
+					 ptMasses[im]->position().z + pos.z + .02/m_glScaled,
 					 ptMasses[im]->tag()+QString(" (%1").arg(ptMasses[im]->mass()*Units::kgtoUnit(), 0,'g',3)+Units::weightUnitLabel()+")", W3dPrefsDlg::s_MassColor.lighter(125));
 	}
 }

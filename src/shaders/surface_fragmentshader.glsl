@@ -1,4 +1,11 @@
-#version 120
+#version 330
+
+in vec3 Position_viewSpace;
+in vec3 Normal_viewSpace;
+in vec3 EyeDirection_viewSpace;
+in vec3 LightDirection_viewSpace;
+in vec3 vPosition;
+in vec4 vertexcolor;
 
 uniform int lightOn;
 uniform vec3 LightPosition_viewSpace;
@@ -6,15 +13,11 @@ uniform vec4 LightColor;
 uniform float LightAmbient, LightDiffuse, LightSpecular;
 uniform float Kc, Kl, Kq;
 uniform int MaterialShininess;
-uniform sampler2D textureSampler;
 uniform vec4 clipPlane0; // defined in view-space
 
-varying vec3 Position_worldSpace;
-varying vec3 Normal_viewSpace;
-varying vec3 EyeDirection_viewSpace;
-varying vec3 LightDirection_viewSpace;
-varying vec2 UV;
-varying vec3 vPosition;
+
+
+out vec4 fragColor;
 
 void main()
 {
@@ -29,29 +32,23 @@ void main()
 
 	if(lightOn==1)
 	{
-		MaterialAmbientColor  = vec4(texture2D(textureSampler, UV).rgb*LightAmbient, 1.0) ;
-		MaterialDiffuseColor  = vec4(texture2D(textureSampler, UV).rgb*LightDiffuse, 1.0);
-
-
+		MaterialAmbientColor  = vec4(vertexcolor.rgb * LightAmbient, vertexcolor.a);
+		MaterialDiffuseColor  = vec4(vertexcolor.rgb * LightDiffuse, vertexcolor.a);
 		MaterialSpecularColor = vec4(1.0, 1.0, 1.0, 1.0);
 
 		// Distance to the light
-		float distance = length(LightPosition_viewSpace - Position_worldSpace);
+		float distance = length(LightPosition_viewSpace - Position_viewSpace);
 
-		// Normal of the computed fragment, in camera space
+		// Normal of the computed fragment, in viewSpace
 		vec3 N = normalize(Normal_viewSpace);
 
-		// Direction of the light (from the fragment to the light)
+		// Direction from the fragment to the light
 		vec3 L = normalize(LightDirection_viewSpace);
 
-		// Cosine of the angle between the normal and the light direction,
-		// clamped above 0
-		//  - light is at the vertical of the triangle -> 1
-		//  - light is perpendicular to the triangle -> 0
-		//  - light is behind the triangle -> 0
+		// Cosine of the angle between the normal and the light direction, clamped above 0
 		float cosTheta = clamp(dot(N,L), 0.0, 1.0);
 
-		// Eye vector (towards the camera)
+		// Direction from the vertex to the eye, in view space.
 		vec3 E = normalize(EyeDirection_viewSpace);
 
 		// Direction in which the triangle reflects the light
@@ -68,8 +65,9 @@ void main()
 			+(MaterialSpecularColor * LightSpecular * pow(cosAlpha, MaterialShininess)) * LightColor * attenuation_factor;
 	}
 	else
-		gl_FragColor  = vec4(texture2D(textureSampler, UV).rgb, 1.0);
-
+	{
+		gl_FragColor  = vertexcolor;
+	}
 }
 
 

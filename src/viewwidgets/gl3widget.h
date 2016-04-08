@@ -98,8 +98,6 @@ public:
 
 private:
 	void glDrawMasses(Plane *pPlane);
-	void glDrawMasses(Body *pBody);
-	void glDrawMasses(Wing *pWing);
 	void getGLError();
 	void glInverseMatrix();
 	void glMakeUnitSphere();
@@ -190,7 +188,7 @@ private:
 	int m_LightLocationSurface, m_SurfaceLocationSurface, m_ColorLocationSurface;
 	int m_ClipPlaneLocationSurface;
 	int m_vMatrixLocationSurface, m_mMatrixLocationSurface, m_pvmMatrixLocationSurface;
-	int m_LightPosLocationSurface;
+	int m_EyePosLocationSurface, m_LightPosLocationSurface;
 	int m_LightColorLocationSurface, m_LightAmbientLocationSurface, m_LightDiffuseLocationSurface, m_LightSpecularLocationSurface;
 	int m_AttenuationConstantSurface, m_AttenuationLinearSurface, m_AttenuationQuadraticSurface;
 	int m_MaterialShininessSurface;
@@ -200,7 +198,7 @@ private:
 	int m_LightLocationTexture;
 	int m_ClipPlaneLocationTexture;
 	int m_vMatrixLocationTexture, m_mMatrixLocationTexture, m_pvmMatrixLocationTexture;
-	int m_LightPosLocationTexture;
+	int m_EyePosLocationTexture, m_LightPosLocationTexture;
 	int m_LightColorLocationTexture, m_LightAmbientLocationTexture, m_LightDiffuseLocationTexture, m_LightSpecularLocationTexture;
 	int m_AttenuationConstantTexture, m_AttenuationLinearTexture, m_AttenuationQuadraticTexture;
 	int m_MaterialShininessTexture;

@@ -47,7 +47,7 @@ void BodyFrameWidget::setScale()
 	}
 	else
 	{
-		m_fRefScale = ((double)rect().width())/(m_pBody->Length()/15.0);
+		m_fRefScale = ((double)rect().width())/(m_pBody->length()/15.0);
 		m_fScale = m_fRefScale;
 
 	}
@@ -128,6 +128,15 @@ void BodyFrameWidget::drawFrameLines()
 			}
 		}
 	}
+	else
+	{
+		Frame *pFrame = m_pBody->activeFrame();
+		for (k=0; k<m_pBody->sideLineCount();k++)
+		{
+			rightPolyline.append(QPointF( pFrame->m_CtrlPoint[k].y*m_fScale+m_ptOffset.x(), pFrame->m_CtrlPoint[k].z* -m_fScale + m_ptOffset.y()));
+			leftPolyline.append( QPointF(-pFrame->m_CtrlPoint[k].y*m_fScale+m_ptOffset.x(), pFrame->m_CtrlPoint[k].z* -m_fScale + m_ptOffset.y()));
+		}
+	}
 
 	painter.drawPolyline(rightPolyline);
 	painter.drawPolyline(leftPolyline);
@@ -159,7 +168,6 @@ void BodyFrameWidget::drawFrameLines()
 			}
 			else
 			{
-
 				for (k=0; k<m_pBody->sideLineCount();k++)
 				{
 					rightPolyline.append(QPointF( m_pBody->frame(j)->m_CtrlPoint[k].y*m_fScale+m_ptOffset.x(), m_pBody->frame(j)->m_CtrlPoint[k].z* -m_fScale + m_ptOffset.y()));
@@ -231,7 +239,7 @@ void BodyFrameWidget::onInsertPt()
 	if(Real.y<0.0) return;
 	if(m_pBody->activeFrame())
 	{
-		m_pBody->InsertPoint(Real);
+		m_pBody->insertPoint(Real);
 		emit objectModified();
 	}
 }
