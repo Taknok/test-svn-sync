@@ -509,6 +509,11 @@ void GL3dWingDlg::keyPressEvent(QKeyEvent *event)
 
 			break;
 		}
+		case Qt::Key_F12:
+		{
+			onInertia();
+			break;
+		}
 		case Qt::Key_Escape:
 		{
 			reject();
@@ -636,6 +641,7 @@ void GL3dWingDlg::onInertia()
 	if(dlg.exec() == QDialog::Accepted)
 	{
 		if(dlg.m_bChanged) m_bChanged = true;
+		m_pgl3Widget->update();
 	}
 	else
 	{

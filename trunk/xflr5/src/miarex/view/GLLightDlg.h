@@ -42,13 +42,6 @@ struct Light
 	bool m_bIsLightOn;
 };
 
-
-struct Material
-{
-	float m_Ambient, m_Diffuse, m_Specular;
-	int m_iShininess;
-};
-
 struct Attenuation
 {
 	float m_Constant, m_Linear, m_Quadratic;
@@ -92,7 +85,7 @@ private slots:
 
 private:
 	QSlider *m_pctrlRed, *m_pctrlGreen, *m_pctrlBlue;
-	QSlider *m_pctrlMatAmbient, *m_pctrlMatDiffuse, *m_pctrlMatSpecular, *m_pctrlMatShininess;
+	QSlider  *m_pctrlMatShininess;
 	ExponentialSlider *m_pctrlLightAmbient, *m_pctrlLightDiffuse, *m_pctrlLightSpecular;
 	ExponentialSlider *m_pctrlXLight, *m_pctrlYLight, *m_pctrlZLight;
 
@@ -100,21 +93,19 @@ private:
 	QLabel *m_pctrlLightAmbientLabel, *m_pctrlLightDiffuseLabel, *m_pctrlLightSpecularLabel;
 	QLabel *m_pctrlposXValue, *m_pctrlposYValue, *m_pctrlposZValue;
 	QLabel *m_pctrlLightRed, *m_pctrlLightGreen, *m_pctrlLightBlue;
-	QLabel *m_pctrlMatAmbientLabel, *m_pctrlMatDiffuseLabel, *m_pctrlMatSpecularLabel, *m_pctrlMatShininessLabel;
+	QLabel *m_pctrlMatShininessLabel;
 
 	QPushButton *m_pctrlDefaults, *m_pctrlClose;
 
 	DoubleEdit *m_pctrlConstantAttenuation , *m_pctrlLinearAttenuation , *m_pctrlQuadAttenuation ;
-	QLabel *m_pctrlAttenuation;
 
 
 private:
 	void *m_pgl3Widget;
 
 	static Light s_Light;
-	static Material s_Material;
 	static Attenuation s_Attenuation;
-
+	static int s_iShininess;
 	double m_ModelSize;
 
 };

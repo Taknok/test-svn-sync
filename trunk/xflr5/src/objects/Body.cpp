@@ -345,7 +345,7 @@ void Body::exportGeometry(QTextStream &outStream, int type, double mtoUnit, int 
  * Calculates and returns the length of the Body measured from nose to tail.
  * @return the Body length
  */
-double Body::Length()
+double Body::length()
 {
 	return qAbs(m_SplineSurface.m_pFrame.last()->m_Position.x - m_SplineSurface.m_pFrame.first()->m_Position.x);
 }
@@ -591,7 +591,7 @@ bool Body::importDefinition(QTextStream &inStream, double mtoUnit, QString &erro
  * @param Real the CVector which defines the point to insert
  * @return the index of the control point in the array; control points are indexed from bottom to top on the left side.
  */
-int Body::InsertPoint(CVector Real)
+int Body::insertPoint(CVector Real)
 {
 	int i, n;
 
@@ -1001,8 +1001,8 @@ int Body::isFramePos(CVector Real, double ZoomFactor)
 	int k;
 	for (k=0; k<frameCount(); k++)
 	{
-		if (qAbs(Real.x-m_SplineSurface.m_pFrame[k]->m_Position.x) < 0.01 *Length()/ZoomFactor &&
-			qAbs(Real.z-m_SplineSurface.m_pFrame[k]->zPos())       < 0.01 *Length()/ZoomFactor)
+		if (qAbs(Real.x-m_SplineSurface.m_pFrame[k]->m_Position.x) < 0.01 *length()/ZoomFactor &&
+			qAbs(Real.z-m_SplineSurface.m_pFrame[k]->zPos())       < 0.01 *length()/ZoomFactor)
 			return k;
 	}
 	return -10;
@@ -1765,7 +1765,7 @@ void Body::computeVolumeInertia(CVector &CoG, double &CoGIxx, double &CoGIyy, do
 	{
 		int NSections = 20;//why not ?
 		xpos = framePosition(0);
-		dl = Length()/(double)(NSections-1);
+		dl = length()/(double)(NSections-1);
 
 		for (j=0; j<NSections-1; j++)
 		{

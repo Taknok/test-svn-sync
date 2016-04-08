@@ -554,7 +554,6 @@ void Surface::getSidePoints(enumPanelPosition pos,
 			pBody->intersect(PtA[i], PtB[i], PtA[i], true);
 		}
 	}
-	int NADA = 0;
 }
 
 
