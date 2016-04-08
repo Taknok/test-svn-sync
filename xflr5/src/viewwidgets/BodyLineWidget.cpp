@@ -61,7 +61,7 @@ void BodyLineWidget::setScale()
 	}
 	else
 	{
-		m_fRefScale = ((double)rect().width()-150.0)/m_pBody->Length();
+		m_fRefScale = ((double)rect().width()-150.0)/m_pBody->length();
 		m_fScale = m_fRefScale;
 
 	}

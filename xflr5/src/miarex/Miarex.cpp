@@ -6799,6 +6799,8 @@ void QMiarex::setPlane(QString PlaneName)
 		setWPolar();
 	}
 
+	s_pMainFrame->m_glLightDlg.setModelSize(m_pCurPlane->planformSpan());
+
 	setScale();
 	setWGraphScale();
 

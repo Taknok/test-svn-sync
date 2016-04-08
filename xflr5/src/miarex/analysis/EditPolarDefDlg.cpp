@@ -419,7 +419,7 @@ void EditPolarDefDlg::fillInertiaData(QList<QStandardItem *> inertiaFolder)
 		inertiaTensorFolder.first()->appendRow(dataItem);
 		dataItem = prepareDoubleRow("", "Izz", m_pWPolar->CoGIzz(), QString::fromUtf8("kg.m²"));
 		inertiaTensorFolder.first()->appendRow(dataItem);
-		dataItem = prepareDoubleRow("", "Ixz", m_pWPolar->CoGIxx(), QString::fromUtf8("kg.m²"));
+		dataItem = prepareDoubleRow("", "Ixz", m_pWPolar->CoGIxz(), QString::fromUtf8("kg.m²"));
 		inertiaTensorFolder.first()->appendRow(dataItem);
 	}
 }
