@@ -111,6 +111,7 @@ public:
 
 	void addFlapPanel(Panel *pPanel);
 	void copy(Surface *pSurface);
+	void createXPoints();
 	void getC4(int k, CVector &Pt, double &tau);
 	void getLeadingPt(int k, CVector &C);
 	void getNormal(double yrel, CVector &N);
@@ -134,7 +135,6 @@ public:
 	void setTwist2();
 	void translate(CVector const &T);
 	void translate(double tx, double ty, double tz);
-	void createXPoints();
 
 	bool isCenterSurf() {return m_bIsCenterSurf;}
 	bool isLeftSurf()   {return m_bIsLeftSurf;}
@@ -146,7 +146,7 @@ public:
 	bool isFlapPanel(int p);
 	bool isFlapNode(int nNode);
 	bool rotateFlap(double Angle);
-//	bool RotateFlap(double const &Angle, CPanel *pPanel, CVector *pNode);
+
 	double twist(int k);
 	double chord(int k);
 	double chord(double tau);
@@ -155,15 +155,20 @@ public:
 	double foilArea(double tau);
 	double stripWidth(int k);
 	double spanLength();
+	double planformLength(){return m_Length;}
 
 	int innerSection(){return m_innerSection;}
 	int outerSection(){return m_outerSection;}
 
 	int NXPanels(){return m_NXPanels;}
 	int NYPanels(){return m_NYPanels;}
+	int NXFlap() {return m_NXFlap;}
+	int & NElements(){return m_NElements;}
 
 	Foil *foilA() {return m_pFoilA;}
 	Foil *foilB() {return m_pFoilB;}
+
+	static void setPanelPointers(Panel *pPanel, CVector *pNode);
 
 	QList<CVector> SideA;      /**< the array of panel points on the left foil's mid-line*/
 	QList<CVector> SideB;      /**< the array of panel points on the right foil's mid-line*/

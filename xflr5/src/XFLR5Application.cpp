@@ -24,7 +24,6 @@
 #include <QSplashScreen>
 #include <QDateTime>
 #include <QMessageBox>
-#include <QSurfaceFormat>
 #include <QtDebug>
 #include "XFLR5Application.h"
 #include "mainframe.h"

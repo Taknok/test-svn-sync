@@ -74,17 +74,22 @@ public:
 	void setTitleFont(QFont &font);
 	void exportGraph();
 
+	static void setOppHighlighting(bool bHighLight){s_bHighlightPoint = bHighLight;}
+	static bool isHighLighting(){return s_bHighlightPoint;}
+
 	QGRAPH::enumGraphType &graphType(){return m_graphType;}
 
 public:
 	static void *s_pMainFrame;
 	void *m_pParent;
-	bool m_bHighlightPoint;
 
 private:
 	QFont m_TitleFont;
 	QFont m_LabelFont;
 	QGRAPH::enumGraphType m_graphType;
+
+	static bool s_bHighlightPoint;       /**< true if the active OpPoint should be highlighted on the polar curve. */
+
 };
 
 #endif

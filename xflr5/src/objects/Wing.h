@@ -65,6 +65,7 @@ class Wing
 	friend class Plane;
 	friend class Surface;
 	friend class WingDlg;
+	friend class PlaneAnalysisTask;
 	friend class LLTAnalysisDlg;
 	friend class LLTAnalysis;
 	friend class PanelAnalysisDlg;

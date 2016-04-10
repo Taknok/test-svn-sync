@@ -31,11 +31,11 @@
 
 
 void *QGraph::s_pMainFrame = NULL;
+bool QGraph::s_bHighlightPoint = false;
+
 
 QGraph::QGraph()
 {
-	m_bHighlightPoint = false;
-
 	m_rCltRect.setRect(0,0, 200, 300);
 	m_graphType = QGRAPH::OTHERGRAPH;
 
@@ -88,7 +88,7 @@ void QGraph::drawGraph(QPainter &painter)
 
 	drawYTicks(painter);
 
-	for (int nc=0; nc < m_oaCurves.size(); nc++)	drawCurve(nc,painter);
+	for (int nc=0; nc < m_oaCurves.size(); nc++) drawCurve(nc,painter);
 
 	drawTitles(painter);
 
@@ -184,19 +184,19 @@ void QGraph::drawCurve(int nIndex, QPainter &painter)
 
 	}
 
-	if(m_bHighlightPoint)
+	if(s_bHighlightPoint)
 	{
 		int point = pCurve->selected();
 		if(point>=0)
 		{
 			//highlight
-			QColor HighColor(0,40, 150);
-			CurvePen.setWidth((int)pCurve->width());
+			QColor HighColor(200, 100, 77);
+			CurvePen.setWidth((int)pCurve->width()+1);
 			CurvePen.setColor(HighColor);
 			painter.setPen(CurvePen);
 			To.setX(int(pCurve->x[point]/m_scalex+m_ptoffset.x()));
 			To.setY(int(pCurve->y[point]/scaley  +m_ptoffset.y()));
-			painter.drawRect(To.x()-ptside-1,To.y()-ptside-1, 2*(ptside+1),2*(ptside+1));
+			painter.drawRect(To.x()-ptside,To.y()-ptside, 2*ptside,2*ptside);
 		}
 	}
 	painter.restore();

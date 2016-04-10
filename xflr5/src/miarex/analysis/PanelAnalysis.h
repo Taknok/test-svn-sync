@@ -46,9 +46,6 @@ public:
 
 	bool initializeAnalysis();
 
-
-
-private:
 	bool solveUnitRHS();
 
 	bool loop();
@@ -112,8 +109,6 @@ private:
 	void setWPolar(WPolar*pWPolar){m_pWPolar = pWPolar;}
 	PlaneOpp* createPlaneOpp(double *Cp, double *Gamma, double *Sigma);
 
-
-public:
 	void getSpeedVector(CVector const &C, double *Mu, double *Sigma, CVector &VT, bool bAll=true);
 
 private:

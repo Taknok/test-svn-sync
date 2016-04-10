@@ -395,6 +395,16 @@ void EditPolarDefDlg::fillInertiaData(QList<QStandardItem *> inertiaFolder)
 {
 	QList<QStandardItem*> dataItem;
 
+	if(m_pWPolar->m_bAutoInertia)
+	{
+		m_pWPolar->mass()   = m_pPlane->totalMass();
+		m_pWPolar->CoG()    = m_pPlane->CoG();
+		m_pWPolar->CoGIxx() = m_pPlane->m_CoGIxx;
+		m_pWPolar->CoGIyy() = m_pPlane->m_CoGIyy;
+		m_pWPolar->CoGIzz() = m_pPlane->m_CoGIzz;
+		m_pWPolar->CoGIxz() = m_pPlane->m_CoGIxz;
+	}
+
 	dataItem = prepareBoolRow("", "Use plane inertia", m_pWPolar->bAutoInertia());
 	inertiaFolder.first()->appendRow(dataItem);
 
@@ -413,15 +423,16 @@ void EditPolarDefDlg::fillInertiaData(QList<QStandardItem *> inertiaFolder)
 	QList<QStandardItem*> inertiaTensorFolder = prepareRow("Inertia tensor");
 	inertiaFolder.first()->appendRow(inertiaTensorFolder);
 	{
-		dataItem = prepareDoubleRow("", "Ixx", m_pWPolar->CoGIxx(), QString::fromUtf8("kg.m²"));
+		dataItem = prepareDoubleRow("", "Ixx", m_pWPolar->CoGIxx()*Units::kgm2toUnit(), Units::inertiaUnitLabel());
 		inertiaTensorFolder.first()->appendRow(dataItem);
-		dataItem = prepareDoubleRow("", "Iyy", m_pWPolar->CoGIyy(), QString::fromUtf8("kg.m²"));
+		dataItem = prepareDoubleRow("", "Iyy", m_pWPolar->CoGIyy()*Units::kgm2toUnit(), Units::inertiaUnitLabel());
 		inertiaTensorFolder.first()->appendRow(dataItem);
-		dataItem = prepareDoubleRow("", "Izz", m_pWPolar->CoGIzz(), QString::fromUtf8("kg.m²"));
+		dataItem = prepareDoubleRow("", "Izz", m_pWPolar->CoGIzz()*Units::kgm2toUnit(), Units::inertiaUnitLabel());
 		inertiaTensorFolder.first()->appendRow(dataItem);
-		dataItem = prepareDoubleRow("", "Ixz", m_pWPolar->CoGIxz(), QString::fromUtf8("kg.m²"));
+		dataItem = prepareDoubleRow("", "Ixz", m_pWPolar->CoGIxz()*Units::kgm2toUnit(), Units::inertiaUnitLabel());
 		inertiaTensorFolder.first()->appendRow(dataItem);
 	}
+qDebug()<<	Units::kgm2toUnit();
 }
 
 
@@ -534,10 +545,10 @@ void EditPolarDefDlg::readControlFields(QModelIndex indexLevel)
 					if     (childField.compare("Mass")==0)   m_pWPolar->m_inertiaGain[0]  = dataIndex.data().toInt()/Units::kgtoUnit();
 					else if(childField.compare("CoG.x")==0)  m_pWPolar->m_inertiaGain[1]  = dataIndex.data().toDouble()/Units::mtoUnit();
 					else if(childField.compare("CoG.z")==0)  m_pWPolar->m_inertiaGain[2]  = dataIndex.data().toDouble()/Units::mtoUnit();
-					else if(childField.compare("Ixx")==0)    m_pWPolar->m_inertiaGain[3]  = dataIndex.data().toDouble()/Units::kgtoUnit()/Units::mtoUnit()/Units::mtoUnit();
-					else if(childField.compare("Iyy")==0)    m_pWPolar->m_inertiaGain[4]  = dataIndex.data().toDouble()/Units::kgtoUnit()/Units::mtoUnit()/Units::mtoUnit();
-					else if(childField.compare("Izz")==0)    m_pWPolar->m_inertiaGain[5]  = dataIndex.data().toDouble()/Units::kgtoUnit()/Units::mtoUnit()/Units::mtoUnit();
-					else if(childField.compare("Ixz")==0)    m_pWPolar->m_inertiaGain[6]  = dataIndex.data().toDouble()/Units::kgtoUnit()/Units::mtoUnit()/Units::mtoUnit();
+					else if(childField.compare("Ixx")==0)    m_pWPolar->m_inertiaGain[3]  = dataIndex.data().toDouble()/Units::kgm2toUnit();
+					else if(childField.compare("Iyy")==0)    m_pWPolar->m_inertiaGain[4]  = dataIndex.data().toDouble()/Units::kgm2toUnit();
+					else if(childField.compare("Izz")==0)    m_pWPolar->m_inertiaGain[5]  = dataIndex.data().toDouble()/Units::kgm2toUnit();
+					else if(childField.compare("Ixz")==0)    m_pWPolar->m_inertiaGain[6]  = dataIndex.data().toDouble()/Units::kgm2toUnit();
 					childIndex = childIndex.sibling(childIndex.row()+1,0);
 
 				} while(childIndex.isValid());
@@ -627,28 +638,29 @@ void EditPolarDefDlg::readControlFields(QModelIndex indexLevel)
 void EditPolarDefDlg::fillControlFields(QList<QStandardItem*> stabControlFolder)
 {
 	QList<QStandardItem*> dataItem;
-	QString strLength, strMass;
+	QString strLength, strMass, strInertia;
 
 	int i;
-	strLength = Units::lengthUnitLabel();
-	strMass   = Units::weightUnitLabel();
+	strLength  = Units::lengthUnitLabel();
+	strMass    = Units::weightUnitLabel();
+	strInertia = Units::inertiaUnitLabel();
 
 	QList<QStandardItem*> massCtrlFolder = prepareRow("Mass gains");
 	stabControlFolder.first()->appendRow(massCtrlFolder);
 	{
-		dataItem = prepareDoubleRow("", "Mass",  m_pWPolar->m_inertiaGain[0], strMass+"/ctrl");
+		dataItem = prepareDoubleRow("", "Mass",  m_pWPolar->m_inertiaGain[0]*Units::kgtoUnit(), strMass+"/ctrl");
 		massCtrlFolder.first()->appendRow(dataItem);
-		dataItem = prepareDoubleRow("", "CoG.x", m_pWPolar->m_inertiaGain[1], strLength+"/ctrl");
+		dataItem = prepareDoubleRow("", "CoG.x", m_pWPolar->m_inertiaGain[1]*Units::mtoUnit(), strLength+"/ctrl");
 		massCtrlFolder.first()->appendRow(dataItem);
-		dataItem = prepareDoubleRow("", "CoG.z", m_pWPolar->m_inertiaGain[2], strLength+"/ctrl");
+		dataItem = prepareDoubleRow("", "CoG.z", m_pWPolar->m_inertiaGain[2]*Units::mtoUnit(), strLength+"/ctrl");
 		massCtrlFolder.first()->appendRow(dataItem);
-		dataItem = prepareDoubleRow("", "Ixx",   m_pWPolar->m_inertiaGain[3], strMass+"."+strLength+QString::fromUtf8("²/ctrl"));
+		dataItem = prepareDoubleRow("", "Ixx",   m_pWPolar->m_inertiaGain[3]*Units::kgm2toUnit(), strInertia+"/ctrl");
 		massCtrlFolder.first()->appendRow(dataItem);
-		dataItem = prepareDoubleRow("", "Iyy",   m_pWPolar->m_inertiaGain[4], strMass+"."+strLength+QString::fromUtf8("²/ctrl"));
+		dataItem = prepareDoubleRow("", "Iyy",   m_pWPolar->m_inertiaGain[4]*Units::kgm2toUnit(), strInertia+"/ctrl");
 		massCtrlFolder.first()->appendRow(dataItem);
-		dataItem = prepareDoubleRow("", "Izz",   m_pWPolar->m_inertiaGain[5], strMass+"."+strLength+QString::fromUtf8("²/ctrl"));
+		dataItem = prepareDoubleRow("", "Izz",   m_pWPolar->m_inertiaGain[5]*Units::kgm2toUnit(), strInertia+"/ctrl");
 		massCtrlFolder.first()->appendRow(dataItem);
-		dataItem = prepareDoubleRow("", "Ixz",   m_pWPolar->m_inertiaGain[6], strMass+"."+strLength+QString::fromUtf8("²/ctrl"));
+		dataItem = prepareDoubleRow("", "Ixz",   m_pWPolar->m_inertiaGain[6]*Units::kgm2toUnit(), strInertia+"/ctrl");
 		massCtrlFolder.first()->appendRow(dataItem);
 	}
 

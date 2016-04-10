@@ -38,6 +38,10 @@ ManagePlanesDlg::ManagePlanesDlg(QWidget *pParent) : QDialog(pParent)
 	setWindowTitle(tr("Plane Object Management"));
 
 	m_pPlane     = NULL;
+	m_pSelectionModel = NULL;
+	m_pUFODelegate = NULL;
+	m_pPrecision = NULL;
+
 	m_bChanged = false;
 
 	setupLayout();
@@ -49,6 +53,14 @@ ManagePlanesDlg::ManagePlanesDlg(QWidget *pParent) : QDialog(pParent)
 	connect(CloseButton, SIGNAL(clicked()),this, SLOT(accept()));
 }
 
+
+ManagePlanesDlg::~ManagePlanesDlg()
+{
+	if(m_pSelectionModel) delete m_pSelectionModel;
+	if(m_pUFODelegate)    delete m_pUFODelegate;
+	if(m_pPrecision)      delete [] m_pPrecision;
+	if(m_pUFOModel)       delete m_pUFOModel;
+}
 
 
 void ManagePlanesDlg::initDialog(QString &UFOName)
@@ -183,28 +195,29 @@ void ManagePlanesDlg::setupLayout()
 	m_pctrlUFOTable->setModel(m_pUFOModel);
 	m_pctrlUFOTable->setWindowTitle(tr("UFOs"));
 
-	QItemSelectionModel *selectionModel = new QItemSelectionModel(m_pUFOModel);
-	m_pctrlUFOTable->setSelectionModel(selectionModel);
-	connect(selectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(onUFOClicked(QModelIndex)));
+	m_pSelectionModel = new QItemSelectionModel(m_pUFOModel);
+	m_pctrlUFOTable->setSelectionModel(m_pSelectionModel);
+	connect(m_pSelectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(onPlaneClicked(QModelIndex)));
 
 	m_pUFODelegate = new PlaneTableDelegate;
 
 	m_pctrlUFOTable->setItemDelegate(m_pUFODelegate);
 	m_pUFODelegate->m_pUFOModel = m_pUFOModel;
 
-	int  *precision = new int[12];
-	precision[0]  = 2;
-	precision[1]  = 3;
-	precision[2]  = 3;
-	precision[3]  = 3;
-	precision[4]  = 2;
-	precision[5]  = 2;
-	precision[6]  = 1;
-	precision[7]  = 2;
-	precision[8]  = 3;
+	m_pPrecision = new int[12];
+	m_pPrecision[0]  = 2;
+	m_pPrecision[1]  = 3;
+	m_pPrecision[2]  = 3;
+	m_pPrecision[3]  = 3;
+	m_pPrecision[4]  = 2;
+	m_pPrecision[5]  = 2;
+	m_pPrecision[6]  = 1;
+	m_pPrecision[7]  = 2;
+	m_pPrecision[8]  = 3;
 
-	m_pUFODelegate->m_Precision = precision;
+	m_pUFODelegate->m_Precision = m_pPrecision;
 }
+
 
 
 void ManagePlanesDlg::fillUFOTable()
@@ -325,7 +338,7 @@ void ManagePlanesDlg::onDescriptionChanged()
 }
 
 
-void ManagePlanesDlg::onUFOClicked(QModelIndex index)
+void ManagePlanesDlg::onPlaneClicked(QModelIndex index)
 {
 	QStandardItem *pItem = m_pUFOModel->item(index.row(),0);
 	QString UFOName;
@@ -343,7 +356,6 @@ void ManagePlanesDlg::resizeEvent(QResizeEvent *event)
 {
 	int w = m_pctrlUFOTable->width();
 	int w8 = (int)((double)w/12.0);
-//	int w10 = (int)((double)w/10.0);
 
 	m_pctrlUFOTable->setColumnWidth(1,w8);
 	m_pctrlUFOTable->setColumnWidth(3,w8);

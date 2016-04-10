@@ -1567,7 +1567,7 @@ void WPolar::getPolarProperties(QString &polarProps, bool bData)
 
 	if(m_WPolarType==XFLR5::FIXEDSPEEDPOLAR)
 	{
-		strong  = QString(QObject::tr("VInf =")+"%1 ").arg(m_QInfSpec*Units::mstoUnit(),10,'g',2);
+		strong  = QString(QObject::tr("VInf =")+"%1 ").arg(m_QInfSpec*Units::mstoUnit(),7,'g',2);
 		polarProps += strong + speedunit+"\n";
 	}
 	else if(m_WPolarType==XFLR5::FIXEDAOAPOLAR)
@@ -1579,7 +1579,7 @@ void WPolar::getPolarProperties(QString &polarProps, bool bData)
 	{
 		strong  = QString(QObject::tr("Alpha =")+"%1").arg(m_AlphaSpec,7,'f',2);
 		polarProps += strong +QString::fromUtf8("°")+"\n";
-		strong  = QString(QObject::tr("VInf =")+"%1 ").arg(m_QInfSpec*Units::mstoUnit(),10,'g',2);
+		strong  = QString(QObject::tr("VInf =")+"%1 ").arg(m_QInfSpec*Units::mstoUnit(),7,'g',2);
 		polarProps += strong + speedunit+"\n";
 	}
 
@@ -1713,7 +1713,7 @@ void WPolar::getPolarProperties(QString &polarProps, bool bData)
 		polarProps += "Using plane inertia\n";
 	}
 
-	strong  = QString(QObject::tr("Mass")+" = %1 ").arg(m_Mass*Units::kgtoUnit(),10,'f',3);
+	strong  = QString(QObject::tr("Mass")+" = %1 ").arg(m_Mass*Units::kgtoUnit(),7,'f',3);
 	polarProps += strong + massunit;
 	if(qAbs(m_inertiaGain[0])>PRECISION)
 	{
@@ -1723,7 +1723,7 @@ void WPolar::getPolarProperties(QString &polarProps, bool bData)
 	}
 	else polarProps +="\n";
 
-	strong  = QString(QObject::tr("CoG.x")+" = %1 ").arg(m_CoG.x*Units::mtoUnit(),10,'g',4);
+	strong  = QString(QObject::tr("CoG.x")+" = %1 ").arg(m_CoG.x*Units::mtoUnit(),7,'g',4);
 	polarProps += strong + lenunit;
 
 	if(qAbs(m_inertiaGain[1])>PRECISION)
@@ -1734,7 +1734,7 @@ void WPolar::getPolarProperties(QString &polarProps, bool bData)
 	}
 	else polarProps +="\n";
 
-	strong  = QString(QObject::tr("CoG.z")+" = %1 ").arg(m_CoG.z*Units::mtoUnit(),10,'g',4);
+	strong  = QString(QObject::tr("CoG.z")+" = %1 ").arg(m_CoG.z*Units::mtoUnit(),7,'g',4);
 	polarProps += strong + lenunit + "\n";
 	if(qAbs(m_inertiaGain[2])>PRECISION)
 	{
@@ -1746,7 +1746,7 @@ void WPolar::getPolarProperties(QString &polarProps, bool bData)
 
 	if(m_WPolarType==XFLR5::STABILITYPOLAR)
 	{
-		strong  = QString("Ixx = %1 ").arg(m_CoGIxx*Units::mtoUnit()*Units::mtoUnit()*Units::kgtoUnit(),10,'g',4);
+		strong  = QString("Ixx = %1 ").arg(m_CoGIxx*Units::mtoUnit()*Units::mtoUnit()*Units::kgtoUnit(),7,'g',4);
 		polarProps += strong + inertiaunit;
 		if(qAbs(m_inertiaGain[3])>PRECISION)
 		{
@@ -1756,7 +1756,7 @@ void WPolar::getPolarProperties(QString &polarProps, bool bData)
 		}
 		else polarProps +="\n";
 
-		strong  = QString("Iyy = %1 ").arg(m_CoGIyy*Units::mtoUnit()*Units::mtoUnit()*Units::kgtoUnit(),10,'g',4);
+		strong  = QString("Iyy = %1 ").arg(m_CoGIyy*Units::mtoUnit()*Units::mtoUnit()*Units::kgtoUnit(),7,'g',4);
 		polarProps += strong + inertiaunit;
 		if(qAbs(m_inertiaGain[4])>PRECISION)
 		{
@@ -1766,7 +1766,7 @@ void WPolar::getPolarProperties(QString &polarProps, bool bData)
 		}
 		else polarProps +="\n";
 
-		strong  = QString("Izz = %1 ").arg(m_CoGIzz*Units::mtoUnit()*Units::mtoUnit()*Units::kgtoUnit(),10,'g',4);
+		strong  = QString("Izz = %1 ").arg(m_CoGIzz*Units::mtoUnit()*Units::mtoUnit()*Units::kgtoUnit(),7,'g',4);
 		polarProps += strong + inertiaunit;
 		if(qAbs(m_inertiaGain[5])>PRECISION)
 		{
@@ -1776,7 +1776,7 @@ void WPolar::getPolarProperties(QString &polarProps, bool bData)
 		}
 		else polarProps +="\n";
 
-		strong  = QString("Ixz = %1 ").arg(m_CoGIxz*Units::mtoUnit()*Units::mtoUnit()*Units::kgtoUnit(),10,'g',4);
+		strong  = QString("Ixz = %1 ").arg(m_CoGIxz*Units::mtoUnit()*Units::mtoUnit()*Units::kgtoUnit(),7,'g',4);
 		polarProps += strong + inertiaunit;
 		if(qAbs(m_inertiaGain[6])>PRECISION)
 		{
@@ -1801,18 +1801,18 @@ void WPolar::getPolarProperties(QString &polarProps, bool bData)
 
 	if(pPlane && pPlane->body())
 	{
-		polarProps += QObject::tr("Body option")+" = ";
-		if(m_bIgnoreBodyPanels) polarProps += QObject::tr("Body Panels Ignored");
-		//    else              PolarProperties += QObject::tr("Body Included")+"\n";
+		polarProps += QObject::tr("Body panels")+" = ";
+		if(m_bIgnoreBodyPanels) polarProps += QObject::tr("ignored");
+		else                    polarProps += QObject::tr("Included");
 		polarProps += "\n";
 	}
 
 	if(m_ReferenceDim==XFLR5::PLANFORMREFDIM)       polarProps += QObject::tr("Ref. dimensions = ")+QObject::tr("Planform")+"\n";
 	else if(m_ReferenceDim==XFLR5::PROJECTEDREFDIM) polarProps += QObject::tr("Ref. dimensions = ")+QObject::tr("Projected")+"\n";
 
-	polarProps += QObject::tr("Ref. area  = ") + QString("%1 ").arg(m_referenceArea*Units::m2toUnit(),9,'f',3) + areaunit +"\n";
-	polarProps += QObject::tr("Ref. span  = ") + QString("%1 ").arg(m_referenceSpanLength*Units::mtoUnit(),9,'f',3) +lenunit +"\n";
-	polarProps += QObject::tr("Ref. chord = ") + QString("%1 ").arg(m_referenceChordLength*Units::mtoUnit(),9,'f',3) + lenunit +"\n";
+	polarProps += QObject::tr("Ref. area  =") + QString("%1").arg(m_referenceArea*Units::m2toUnit(),7,'f',3) + areaunit +"\n";
+	polarProps += QObject::tr("Ref. span  =") + QString("%1").arg(m_referenceSpanLength*Units::mtoUnit(),7,'f',3) +lenunit +"\n";
+	polarProps += QObject::tr("Ref. chord =") + QString("%1").arg(m_referenceChordLength*Units::mtoUnit(),7,'f',3) + lenunit +"\n";
 
 
 	if(m_bTiltedGeom) polarProps += QObject::tr("Tilted geometry")+"\n";
@@ -1823,10 +1823,10 @@ void WPolar::getPolarProperties(QString &polarProps, bool bData)
 		polarProps += strong;
 	}
 
-	strong  = QString(QObject::tr("Density =")+"%1 kg/m3\n").arg(m_Density,12,'g',4);
+	strong  = QString(QObject::tr("Density =")+"%1 kg/m3\n").arg(m_Density,0,'g',4);
 	polarProps += strong;
 
-	strong  = QString(QObject::tr("Viscosity =")+"%1").arg(m_Viscosity,12,'g',4);
+	strong  = QString(QObject::tr("Viscosity =")+"%1").arg(m_Viscosity,0,'g',4);
 	strong += QString::fromUtf8("m²/s\n");
 	polarProps += strong;
 
@@ -2288,11 +2288,13 @@ void WPolar::setAutoWPolarName(void *ptrPlane)
 
 	if(isStabilityPolar())
 	{
+		QString pm=  QString::fromUtf8("\u2213");
+
 		if(!pPlane->isWing())
 		{
 			if(m_ControlGain.size()>0 && qAbs(m_ControlGain[0])>PRECISION)
 			{
-				strong = QString(QString::fromUtf8("-Wing(g%1)"))
+				strong = QString::fromUtf8("-Wing(g%1)")
 								   .arg(m_ControlGain[0],0,'f',1);
 				m_WPlrName += strong;
 			}
@@ -2303,7 +2305,7 @@ void WPolar::setAutoWPolarName(void *ptrPlane)
 		{
 			if(m_ControlGain.size()>1 && qAbs(m_ControlGain[1])>PRECISION)
 			{
-				strong = QString(QString::fromUtf8("-Elev(g%1)")).arg(m_ControlGain[1],0,'f',1);
+				strong = QString::fromUtf8("-Elev(g%1)").arg(m_ControlGain[1],0,'f',1);
 				m_WPlrName += strong;
 			}
 			nCtrl++;
@@ -2313,7 +2315,7 @@ void WPolar::setAutoWPolarName(void *ptrPlane)
 		{
 			if(m_ControlGain.size()>i+nCtrl && qAbs(m_ControlGain[i+nCtrl])>PRECISION)
 			{
-				strong = QString(QString::fromUtf8("-WF%1(g%2)"))
+				strong = QString::fromUtf8("-WF%1(g%2)")
 						 .arg(i+1)
 						 .arg(m_ControlGain[i+nCtrl],0,'f',1);
 				m_WPlrName += strong;
@@ -2327,7 +2329,7 @@ void WPolar::setAutoWPolarName(void *ptrPlane)
 			{
 				if(m_ControlGain.size()>i+nCtrl && qAbs(m_ControlGain[i+nCtrl])>PRECISION)
 				{
-					strong = QString(QString::fromUtf8("-EF%1(g%2)")).arg(i+1).arg(m_ControlGain[i+nCtrl]);
+					strong = QString::fromUtf8("-EF%1(g%2)").arg(i+1).arg(m_ControlGain[i+nCtrl]);
 					m_WPlrName += strong;
 				}
 			}
@@ -2340,7 +2342,7 @@ void WPolar::setAutoWPolarName(void *ptrPlane)
 			{
 				if(m_ControlGain.size()>i+nCtrl && qAbs(m_ControlGain[i+nCtrl])>PRECISION)
 				{
-					strong = QString(QString::fromUtf8("-FF%1(g%2)")).arg(i+1).arg(m_ControlGain[i+nCtrl]);
+					strong = QString::fromUtf8("-FF%1(g%2)").arg(i+1).arg(m_ControlGain[i+nCtrl]);
 					m_WPlrName += strong;
 				}
 			}
@@ -2362,17 +2364,25 @@ void WPolar::setAutoWPolarName(void *ptrPlane)
 
 	if(!m_bAutoInertia)
 	{
-		Units::getWeightUnitLabel(str);
-		strong = QString("-%1").arg(mass()*Units::kgtoUnit(),0,'f',1);
-		m_WPlrName += strong+str;
-		Units::getLengthUnitLabel(str);
-		strong = QString("-x%1").arg(CoG().x*Units::mtoUnit(),0,'f',1);
-		m_WPlrName += strong + str;
+		strong.sprintf("-%.1f", mass()*Units::kgtoUnit());
+		if(isStabilityPolar()&&fabs(m_inertiaGain[0])>PRECISION)
+			str.sprintf("\u2213%0.2f", m_inertiaGain[0]*Units::kgtoUnit());
+		else str.clear();
+		m_WPlrName += strong + str + Units::weightUnitLabel();
+
+		strong.sprintf("-x%.1f", CoG().x*Units::mtoUnit());
+		if(isStabilityPolar()&&fabs(m_inertiaGain[1])>PRECISION)
+			str.sprintf("\u2213%0.2f", m_inertiaGain[1]*Units::mtoUnit());
+		else str.clear();
+		m_WPlrName += strong + str + Units::lengthUnitLabel();
 
 		if(qAbs(CoG().z)>=.000001)
 		{
-			strong = QString("-z%1").arg(CoG().z*Units::mtoUnit(),0,'f',1);
-			m_WPlrName += strong + str;
+			strong.sprintf("-z%.1f", CoG().z*Units::mtoUnit());
+			if(isStabilityPolar()&&fabs(m_inertiaGain[2])>PRECISION)
+				str.sprintf("\u2213%0.2f", m_inertiaGain[2]*Units::mtoUnit());
+			else str.clear();
+			m_WPlrName += strong + str + Units::lengthUnitLabel();
 		}
 	}
 

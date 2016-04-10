@@ -284,7 +284,7 @@ bool PanelAnalysis::allocateRHS(int matSize, int &memsize)
 
 	memset(m_3DQInf, 0, s_MaxRHSSize*sizeof(double));
 
-	QString strange = QString("PanelAnalysis::Memory allocation for the RHS arrays is %1 MB").arg((double)memsize/1024./1024., 7, 'f', 2);
+//	QString strange = QString("PanelAnalysis::Memory allocation for the RHS arrays is %1 MB").arg((double)memsize/1024./1024., 7, 'f', 2);
 //	Trace(strange);
 
 

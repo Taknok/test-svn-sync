@@ -1944,7 +1944,7 @@ void Objects3D::deletePlaneResults(Plane *pPlane, bool bDeletePolars)
 		}
 	}
 
-	//next reset all WPolars associated to the plane
+	//next delete all WPolars associated to the plane
 	for (i=s_oaWPolar.size()-1; i>=0; i--)
 	{
 		pWPolar = (WPolar*)s_oaWPolar.at(i);
@@ -2658,7 +2658,7 @@ void Objects3D::setControlPositions(Plane *pPlane, WPolar *pWPolar, Panel *pPane
 			//wing tilt
 			angle = pWPolar->m_ControlGain[0] * t; //maxcontrol is the gain
 			TotalAngle = pPlane->WingTiltAngle(0) + angle;
-			strange = QString::fromUtf8("         Rotating the wing by %1°, total angle is %2°").arg(angle, 5, 'f',2).arg(TotalAngle, 5, 'f',2);
+			strange = QString::fromUtf8("    Rotating the wing by %1°, total angle is %2°").arg(angle, 5, 'f',2).arg(TotalAngle, 5, 'f',2);
 
 			strange += "\n";
 			out +=strange;

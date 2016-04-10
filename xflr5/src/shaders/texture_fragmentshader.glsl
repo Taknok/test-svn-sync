@@ -47,10 +47,6 @@ void main()
 		vec3 L = normalize(LightDirection_viewSpace);
 
 		// Cosine of the angle between the normal and the light direction,
-		// clamped above 0
-		//  - light is at the vertical of the triangle -> 1
-		//  - light is perpendicular to the triangle -> 0
-		//  - light is behind the triangle -> 0
 		float cosTheta = clamp(dot(N,L), 0.0, 1.0);
 
 		// Eye vector (towards the camera)
@@ -62,7 +58,7 @@ void main()
 		// Cosine of the angle between the Eye vector and the Reflect vector,
 		float cosAlpha = clamp(dot(E,R), 0.0, 1.0);
 
-		float attenuation_factor = 1.0/(Kc + Kl*distance + Kq*distance*distance);
+		float attenuation_factor = clamp(1.0/(Kc + Kl*distance + Kq*distance*distance), 0.00001, 1.0);
 
 		gl_FragColor =
 			  MaterialAmbientColor  * LightColor +
