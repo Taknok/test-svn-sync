@@ -101,7 +101,7 @@ public:
 	 * Sets the index of the currently selected point of this curve
 	 * @param n the point to select
 	 */
-	void setSelected(int n){	m_iSelected = n;}
+	void setSelected(int n){m_iSelected = n;}
 
 	/**
 	 *Sets the curve's width

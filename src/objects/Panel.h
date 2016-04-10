@@ -62,6 +62,7 @@ class Panel
 	friend class QMiarex;
 	friend class Objects3D;
 	friend class Body;
+	friend class PlaneAnalysisTask;
 	friend class PanelAnalysis;
 	friend class PanelAnalysisDlg;
 	friend class GL3dBodyDlg;

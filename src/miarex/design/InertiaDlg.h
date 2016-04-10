@@ -83,9 +83,12 @@ private:
 	QStackedWidget *m_pctrlTopStack;
 	QPushButton *m_pctrlWingInertia, *m_pctrlWing2Inertia, *m_pctrlStabInertia, *m_pctrlFinInertia, *m_pctrlBodyInertia;
 	QPushButton *OKButton;
-	QLabel *m_pctrlMassUnit, *m_pctrlMassUnit2, *m_pctrlLengthUnit, *m_pctrlLengthUnit2;
+	QLabel *m_pctrlMassUnit, *m_pctrlMassUnit2;
+	QLabel *m_pctrlLengthUnit10, *m_pctrlLengthUnit11, *m_pctrlLengthUnit12;
+	QLabel *m_pctrlLengthUnit20, *m_pctrlLengthUnit21, *m_pctrlLengthUnit22;
 	QLabel *m_pctrlVolumeMassLabel, *m_pctrlTotalMassLabel;
-	QLabel *m_pctrlInertiaUnit1, *m_pctrlInertiaUnit2;
+	QLabel *m_pctrlInertiaUnit1, *m_pctrlInertiaUnit2, *m_pctrlInertiaUnit3, *m_pctrlInertiaUnit4;
+	QLabel *m_pctrlInertiaUnit10, *m_pctrlInertiaUnit20, *m_pctrlInertiaUnit30, *m_pctrlInertiaUnit40;
 	QTableView *m_pctrlMassTable;
 	QStandardItemModel *m_pMassModel;
 	FloatEditDelegate *m_pFloatDelegate;

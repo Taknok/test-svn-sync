@@ -57,7 +57,7 @@ void main()
 		// Cosine of the angle between the Eye vector and the Reflect vector,
 		float cosAlpha = clamp(dot(E,R), 0.0, 1.0);
 
-		float attenuation_factor = 1.0/(Kc + Kl*distance + Kq*distance*distance);
+		float attenuation_factor = clamp(1.0/(Kc + Kl*distance + Kq*distance*distance), 0.00001, 1.0);
 
 		gl_FragColor =
 			  MaterialAmbientColor  * LightColor +

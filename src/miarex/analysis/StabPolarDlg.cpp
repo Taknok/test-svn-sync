@@ -111,9 +111,9 @@ void StabPolarDlg::connectSignals()
 void StabPolarDlg::fillInertiaPage()
 {
 	QString strLen, strMass, strInertia;
-	Units::getLengthUnitLabel(strLen);
-	Units::getWeightUnitLabel(strMass);
-	strInertia = strMass+"."+strLen+QString::fromUtf8("²");
+	strLen     = Units::lengthUnitLabel();
+	strMass    = Units::weightUnitLabel();
+	strInertia = Units::inertiaUnitLabel();
 
 	if(s_StabPolar.m_bAutoInertia)
 	{
@@ -167,45 +167,44 @@ void StabPolarDlg::fillInertiaPage()
 	ind = m_pInertiaControlModel->index(3, 0, QModelIndex());
 	m_pInertiaControlModel->setData(ind, tr("Ixx"));
 	ind = m_pInertiaControlModel->index(3, 1, QModelIndex());
-	m_pInertiaControlModel->setData(ind, s_StabPolar.m_CoGIxx*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit());
+	m_pInertiaControlModel->setData(ind, s_StabPolar.m_CoGIxx*Units::kgm2toUnit());
 	ind = m_pInertiaControlModel->index(3, 2, QModelIndex());
-	m_pInertiaControlModel->setData(ind, s_StabPolar.m_inertiaGain[3]*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit());
+	m_pInertiaControlModel->setData(ind, s_StabPolar.m_inertiaGain[3]*Units::kgm2toUnit());
 	ind = m_pInertiaControlModel->index(3, 3, QModelIndex());
 	m_pInertiaControlModel->setData(ind, strInertia);
 
 	ind = m_pInertiaControlModel->index(4, 0, QModelIndex());
 	m_pInertiaControlModel->setData(ind, tr("Iyy"));
 	ind = m_pInertiaControlModel->index(4, 1, QModelIndex());
-	m_pInertiaControlModel->setData(ind, s_StabPolar.m_CoGIyy*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit());
+	m_pInertiaControlModel->setData(ind, s_StabPolar.m_CoGIyy*Units::kgm2toUnit());
 	ind = m_pInertiaControlModel->index(4, 2, QModelIndex());
-	m_pInertiaControlModel->setData(ind, s_StabPolar.m_inertiaGain[4]*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit());
+	m_pInertiaControlModel->setData(ind, s_StabPolar.m_inertiaGain[4]*Units::kgm2toUnit());
 	ind = m_pInertiaControlModel->index(4, 3, QModelIndex());
 	m_pInertiaControlModel->setData(ind, strInertia);
 
 	ind = m_pInertiaControlModel->index(5, 0, QModelIndex());
 	m_pInertiaControlModel->setData(ind, tr("Izz"));
 	ind = m_pInertiaControlModel->index(5, 1, QModelIndex());
-	m_pInertiaControlModel->setData(ind, s_StabPolar.m_CoGIzz*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit());
+	m_pInertiaControlModel->setData(ind, s_StabPolar.m_CoGIzz*Units::kgm2toUnit());
 	ind = m_pInertiaControlModel->index(5, 2, QModelIndex());
-	m_pInertiaControlModel->setData(ind, s_StabPolar.m_inertiaGain[5]*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit());
+	m_pInertiaControlModel->setData(ind, s_StabPolar.m_inertiaGain[5]*Units::kgm2toUnit());
 	ind = m_pInertiaControlModel->index(5, 3, QModelIndex());
 	m_pInertiaControlModel->setData(ind, strInertia);
 
 	ind = m_pInertiaControlModel->index(6, 0, QModelIndex());
 	m_pInertiaControlModel->setData(ind, tr("Ixz"));
 	ind = m_pInertiaControlModel->index(6, 1, QModelIndex());
-	m_pInertiaControlModel->setData(ind, s_StabPolar.m_CoGIxz*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit());
+	m_pInertiaControlModel->setData(ind, s_StabPolar.m_CoGIxz*Units::kgm2toUnit());
 	ind = m_pInertiaControlModel->index(6, 2, QModelIndex());
-	m_pInertiaControlModel->setData(ind, s_StabPolar.m_inertiaGain[6]*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit());
+	m_pInertiaControlModel->setData(ind, s_StabPolar.m_inertiaGain[6]*Units::kgm2toUnit());
 	ind = m_pInertiaControlModel->index(6, 3, QModelIndex());
 	m_pInertiaControlModel->setData(ind, strInertia);
-
 }
 
 
 void StabPolarDlg::resizeColumns()
 {
-	double w = (double)m_pInertiaControlTable->width()*.97;
+	double w = (double)m_pInertiaControlTable->width()*.93;
 	int wCols  = (int)(w/4);
 	m_pInertiaControlTable->setColumnWidth(0, wCols);
 	m_pInertiaControlTable->setColumnWidth(1, wCols);
@@ -655,23 +654,21 @@ void StabPolarDlg::readInertiaData()
 	}
 	else
 	{
-
-		/** @todo watch for units */
 		s_StabPolar.mass()   = m_pInertiaControlModel->index(0, 1, QModelIndex()).data().toDouble() / Units::kgtoUnit();
 		s_StabPolar.CoG().x  = m_pInertiaControlModel->index(1, 1, QModelIndex()).data().toDouble() / Units::mtoUnit();
 		s_StabPolar.CoG().z  = m_pInertiaControlModel->index(2, 1, QModelIndex()).data().toDouble() / Units::mtoUnit();
-		s_StabPolar.CoGIxx() = m_pInertiaControlModel->index(3, 1, QModelIndex()).data().toDouble() / Units::kgtoUnit() / Units::mtoUnit() / Units::mtoUnit();
-		s_StabPolar.CoGIyy() = m_pInertiaControlModel->index(4, 1, QModelIndex()).data().toDouble() / Units::kgtoUnit() / Units::mtoUnit() / Units::mtoUnit();
-		s_StabPolar.CoGIzz() = m_pInertiaControlModel->index(5, 1, QModelIndex()).data().toDouble() / Units::kgtoUnit() / Units::mtoUnit() / Units::mtoUnit();
-		s_StabPolar.CoGIxz() = m_pInertiaControlModel->index(6, 1, QModelIndex()).data().toDouble() / Units::kgtoUnit() / Units::mtoUnit() / Units::mtoUnit();
+		s_StabPolar.CoGIxx() = m_pInertiaControlModel->index(3, 1, QModelIndex()).data().toDouble() / Units::kgm2toUnit();
+		s_StabPolar.CoGIyy() = m_pInertiaControlModel->index(4, 1, QModelIndex()).data().toDouble() / Units::kgm2toUnit();
+		s_StabPolar.CoGIzz() = m_pInertiaControlModel->index(5, 1, QModelIndex()).data().toDouble() / Units::kgm2toUnit();
+		s_StabPolar.CoGIxz() = m_pInertiaControlModel->index(6, 1, QModelIndex()).data().toDouble() / Units::kgm2toUnit();
 
 		s_StabPolar.m_inertiaGain[0] = m_pInertiaControlModel->index(0, 2, QModelIndex()).data().toDouble() / Units::kgtoUnit();
 		s_StabPolar.m_inertiaGain[1] = m_pInertiaControlModel->index(1, 2, QModelIndex()).data().toDouble() / Units::mtoUnit();
 		s_StabPolar.m_inertiaGain[2] = m_pInertiaControlModel->index(2, 2, QModelIndex()).data().toDouble() / Units::mtoUnit();
-		s_StabPolar.m_inertiaGain[3] = m_pInertiaControlModel->index(3, 2, QModelIndex()).data().toDouble() / Units::kgtoUnit() / Units::mtoUnit() / Units::mtoUnit();
-		s_StabPolar.m_inertiaGain[4] = m_pInertiaControlModel->index(4, 2, QModelIndex()).data().toDouble() / Units::kgtoUnit() / Units::mtoUnit() / Units::mtoUnit();
-		s_StabPolar.m_inertiaGain[5] = m_pInertiaControlModel->index(5, 2, QModelIndex()).data().toDouble() / Units::kgtoUnit() / Units::mtoUnit() / Units::mtoUnit();
-		s_StabPolar.m_inertiaGain[6] = m_pInertiaControlModel->index(6, 2, QModelIndex()).data().toDouble() / Units::kgtoUnit() / Units::mtoUnit() / Units::mtoUnit();
+		s_StabPolar.m_inertiaGain[3] = m_pInertiaControlModel->index(3, 2, QModelIndex()).data().toDouble() / Units::kgm2toUnit();
+		s_StabPolar.m_inertiaGain[4] = m_pInertiaControlModel->index(4, 2, QModelIndex()).data().toDouble() / Units::kgm2toUnit();
+		s_StabPolar.m_inertiaGain[5] = m_pInertiaControlModel->index(5, 2, QModelIndex()).data().toDouble() / Units::kgm2toUnit();
+		s_StabPolar.m_inertiaGain[6] = m_pInertiaControlModel->index(6, 2, QModelIndex()).data().toDouble() / Units::kgm2toUnit();
 	}
 }
 
@@ -953,9 +950,9 @@ void StabPolarDlg::setupLayout()
 		connect(pCtrlDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(onInertiaCellChanged(QWidget *)));
 
 		m_massPrecision = new int[3];
-		m_massPrecision[0]  = 1;
-		m_massPrecision[1]  = 2;
-		m_massPrecision[2]  = 2;
+		m_massPrecision[0]  = 2;
+		m_massPrecision[1]  = 3;
+		m_massPrecision[2]  = 3;
 
 		pCtrlDelegate->m_Precision = m_massPrecision;
 

@@ -36,10 +36,10 @@ class Objects3D
 public:
 	Objects3D();
 
-	static bool      allocatePanelArrays(int &memsize);
 	static void      addBody(Body *pBody);
 	static Plane *   addPlane(Plane *pPlane);
 	static void      addWPolar(WPolar *pWPolar);
+	static bool      allocatePanelArrays(int &memsize);
 	static int       calculateMatSize(Plane *pPlane, WPolar *pWPolar);
 	static int       createBodyElements(Plane *pCurPlane);
 	static bool      createWakeElems(int PanelIndex, Plane *pPlane, WPolar *pWPolar);
@@ -51,22 +51,22 @@ public:
 	static Plane *   duplicatePlane(Plane *pPlane);
 	static Body*     getBody(QString BodyName);
 	static Plane*    getPlane(QString PlaneName);
-	static Wing*     getWing(QString PlaneName);
 	static PlaneOpp* getPlaneOpp(Plane *pPlane, WPolar *pWPolar, double x);
+	static Wing*     getWing(QString PlaneName);
 	static WPolar*   getWPolar(Plane *pPlane, QString WPolarName);
 	static bool      initializePanels(Plane *pPlane, WPolar *pWPolar);
 	static void      initPanelAnalysis(Plane* pPlane, WPolar* pWPolar, double V0, double VMax, double VDelta, bool bSequence);
 	static void      insertPOpp(PlaneOpp *pPOpp);
+	static WPolar *  insertNewWPolar(WPolar *pModWPolar, Plane *pCurPlane);
 	static int       isNode(CVector &Pt);
 	static int       isWakeNode(CVector &Pt);
 	static void      joinSurfaces(WPolar*pWPolar, Surface *pLeftSurf, Surface *pRightSurf, int pl, int pr);
 	static bool      planeExists(QString planeName);
-	static void      rotateGeomY(Panel *pPanel, CVector *pNode, Panel *pWakePanel, CVector *pWakeNode, int nPanels, int nWakePanels, int nNodes, int nWakeNodes, int NWakeColumn, double const &Alpha, CVector const &P, int NXWakePanels);
-	static void      rotateGeomZ(Panel *pPanel, CVector *pNode, Panel *pWakePanel, CVector *pWakeNode, int nPanels, int nWakePanels, int nNodes, int nWakeNodes, int NWakeColumn, double const &Beta, CVector const &P, int NXWakePanels);
 	static void      releasePanelMemory();
 	static void      renamePlane(QString PlaneName);
+	static void      rotateGeomY(Panel *pPanel, CVector *pNode, Panel *pWakePanel, CVector *pWakeNode, int nPanels, int nWakePanels, int nNodes, int nWakeNodes, int NWakeColumn, double const &Alpha, CVector const &P, int NXWakePanels);
+	static void      rotateGeomZ(Panel *pPanel, CVector *pNode, Panel *pWakePanel, CVector *pWakeNode, int nPanels, int nWakePanels, int nNodes, int nWakeNodes, int NWakeColumn, double const &Beta, CVector const &P, int NXWakePanels);
 	static Plane *   setModPlane(Plane *pModPlane);
-	static WPolar *  insertNewWPolar(WPolar *pModWPolar, Plane *pCurPlane);
 	static void      setStaticPointers();
 	static WPolar *  setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar, bool bCurrentWPolar, QString WPlrName);
 	static PlaneOpp* setPlaneOppObject(Plane *pPlane, WPolar *pWPolar, PlaneOpp *pCurPOpp, bool bCurrent, double x=0);

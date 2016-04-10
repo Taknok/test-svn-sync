@@ -132,6 +132,9 @@ public:
 
 	NURBSSurface *splineSurface() {return &m_SplineSurface;}
 
+	int & nxPanels() {return m_nxPanels;}
+	int & nhPanels() {return m_nhPanels;}
+
 	//____________________VARIABLES_____________________________________________
 
 	QString m_BodyName;                       /**< the Body's name, used as its reference */

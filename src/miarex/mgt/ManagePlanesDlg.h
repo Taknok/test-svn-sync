@@ -41,12 +41,14 @@ class ManagePlanesDlg : public QDialog
 
 public:
 	ManagePlanesDlg(QWidget *pParent);
+	~ManagePlanesDlg();
+
 	void initDialog(QString &UFOName);
 
 private slots:
 	void onDelete();
 	void onRename();
-	void onUFOClicked(QModelIndex index);
+	void onPlaneClicked(QModelIndex index);
 	void onDoubleClickTable(const QModelIndex &index);
 	void onDescriptionChanged();
 
@@ -67,6 +69,9 @@ private:
 	QTableView *m_pctrlUFOTable;
 	QStandardItemModel *m_pUFOModel;
 	PlaneTableDelegate *m_pUFODelegate;
+	QItemSelectionModel *m_pSelectionModel;
+
+	int *m_pPrecision;
 
 	Plane *m_pPlane;
 	bool m_bChanged;

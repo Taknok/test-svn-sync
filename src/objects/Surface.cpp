@@ -827,7 +827,7 @@ bool Surface::rotateFlap(double Angle)
 	Quaternion Quat;
 	CVector R, S;
 	
-	p     = 0;
+	p = 0;
 
 	if(m_pFoilA && m_pFoilB)
 	{
@@ -1284,6 +1284,12 @@ double Surface::spanLength()
 }
 
 
+void Surface::setPanelPointers(Panel *pPanel, CVector *pNode)
+{
+	s_pPanel = pPanel;
+	s_pNode = pNode;
+
+}
 
 
 

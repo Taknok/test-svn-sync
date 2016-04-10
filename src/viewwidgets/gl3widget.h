@@ -97,6 +97,7 @@ public:
 	void glSetupLight();
 
 private:
+	void getTextureFile(QString planeName, QString surfaceName, QImage & textureImage);
 	void glDrawMasses(Plane *pPlane);
 	void getGLError();
 	void glInverseMatrix();

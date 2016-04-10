@@ -112,7 +112,7 @@ signals:
 private slots:
 	void on3DCp();
 	void on3DPrefs();
-	void on3DReset();
+	void on3DResetScale();
 	void on3DView();
 	void onAdjustToWing();
 	void onAdvancedSettings();
@@ -164,9 +164,7 @@ private slots:
 	void onHideAllWPolars();
 	void onHidePlaneOpps();
 	void onHidePlaneWPolars();
-	void onHighlightWOpp();
 	void onInitLLTCalc();
-//	void onLight();
 	void onImportWPolar();
 	void onKeepCpSection();
 	void onManagePlanes();
@@ -312,7 +310,7 @@ public:
 	QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView;
 	QToolButton *m_pctrlX, *m_pctrlY, *m_pctrlZ, *m_pctrlIso;
 
-	QPushButton *m_pctrlReset;
+	QPushButton *m_pctrl3DResetScale;
 	QSlider *m_pctrlClipPlanePos;
 
 	QLabel *m_pctrlUnit1, *m_pctrlUnit2, *m_pctrlUnit3;
@@ -339,7 +337,6 @@ public:
 	bool m_bCurFrameOnly;              /**< true if only the currently selected body frame is to be displayed */
 	bool m_bDirichlet;                 /**< true if Dirichlet BC are applied in 3D panel analysis, false if Neumann */
 	bool m_bDownwash;                  /**< true if the arrows represeting downwash are to be displayed on the 3D openGl view */
-	bool m_bHighlightOpp;              /**< true if the currently selected operating point is to be highlighted on the polar graph */
 	bool m_bInitLLTCalc;               /**< true if the LLT parameters should be set to default prior to the analysis. Otherwise, the iterations will start at the results of the previous calculation */
 	bool m_bIs2DScaleSet;              /**< true if the 2D scale has been set, false if needs to be reset */
 	bool m_bIs3DScaleSet;              /**< true if the 3D scale has been set, false if needs to be reset */

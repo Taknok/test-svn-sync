@@ -31,13 +31,16 @@ double Units::s_kgtoUnit = 1.0;
 double Units::s_NtoUnit  = 1.0;
 double Units::s_NmtoUnit = 1.0;
 double Units::s_PatoUnit = 1.0;
-int Units::s_LengthUnit = 3;
-int Units::s_SpeedUnit  = 0;
-int Units::s_AreaUnit   = 3;
-int Units::s_WeightUnit = 1;
-int Units::s_ForceUnit  = 0;
-int Units::s_MomentUnit = 0;
-int Units::s_PressureUnit = 0;
+double Units::s_kgm2toUnit = 1.0;
+
+int Units::s_LengthUnitIndex = 3;
+int Units::s_SpeedUnitIndex  = 0;
+int Units::s_AreaUnitIndex   = 3;
+int Units::s_WeightUnitIndex = 1;
+int Units::s_ForceUnitIndex  = 0;
+int Units::s_MomentUnitIndex = 0;
+int Units::s_PressureUnitIndex = 0;
+int Units::s_InertiaUnitIndex = 0;
 
 
 Units::Units(QWidget *parent): QDialog(parent)
@@ -62,6 +65,7 @@ void Units::setupLayout()
 		QLabel *lab5 = new QLabel(tr("Force")+":");
 		QLabel *lab6 = new QLabel(tr("Moment")+":");
 		QLabel *lab7 = new QLabel(tr("Pressure")+":");
+		QLabel *lab8 = new QLabel(tr("Inertia")+":");
 		lab1->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 		lab2->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 		lab3->setAlignment(Qt::AlignRight | Qt::AlignCenter);
@@ -69,6 +73,7 @@ void Units::setupLayout()
 		lab5->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 		lab6->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 		lab7->setAlignment(Qt::AlignRight | Qt::AlignCenter);
+		lab8->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 		lab1->setFont(fixedWidthFont);
 		lab2->setFont(fixedWidthFont);
 		lab3->setFont(fixedWidthFont);
@@ -76,6 +81,7 @@ void Units::setupLayout()
 		lab5->setFont(fixedWidthFont);
 		lab6->setFont(fixedWidthFont);
 		lab7->setFont(fixedWidthFont);
+		lab8->setFont(fixedWidthFont);
 		pUnitsLayout->addWidget(lab1, 1,1);
 		pUnitsLayout->addWidget(lab2, 2,1);
 		pUnitsLayout->addWidget(lab3, 3,1);
@@ -83,6 +89,7 @@ void Units::setupLayout()
 		pUnitsLayout->addWidget(lab5, 5,1);
 		pUnitsLayout->addWidget(lab6, 6,1);
 		pUnitsLayout->addWidget(lab7, 7,1);
+		pUnitsLayout->addWidget(lab8, 8,1);
 
 		m_pctrlQuestion = new QLabel(tr("Define the project units"));
 
@@ -93,6 +100,7 @@ void Units::setupLayout()
 		m_pctrlForceFactor    = new QLabel(" ");
 		m_pctrlMomentFactor   = new QLabel(" ");
 		m_pctrlPressureFactor = new QLabel(" ");
+		m_pctrlInertiaFactor  = new QLabel(" ");
 
 		m_pctrlLengthFactor->setFont(fixedWidthFont);
 		m_pctrlSurfaceFactor->setFont(fixedWidthFont);
@@ -101,6 +109,7 @@ void Units::setupLayout()
 		m_pctrlForceFactor->setFont(fixedWidthFont);
 		m_pctrlMomentFactor->setFont(fixedWidthFont);
 		m_pctrlPressureFactor->setFont(fixedWidthFont);
+		m_pctrlInertiaFactor->setFont(fixedWidthFont);
 		m_pctrlLengthFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 		m_pctrlSurfaceFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 		m_pctrlWeightFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
@@ -108,7 +117,7 @@ void Units::setupLayout()
 		m_pctrlForceFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 		m_pctrlMomentFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 		m_pctrlPressureFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
-
+		m_pctrlInertiaFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 
 		pUnitsLayout->addWidget(m_pctrlLengthFactor,   1,2);
 		pUnitsLayout->addWidget(m_pctrlSurfaceFactor,  2,2);
@@ -117,6 +126,7 @@ void Units::setupLayout()
 		pUnitsLayout->addWidget(m_pctrlForceFactor,    5,2);
 		pUnitsLayout->addWidget(m_pctrlMomentFactor,   6,2);
 		pUnitsLayout->addWidget(m_pctrlPressureFactor, 7,2);
+		pUnitsLayout->addWidget(m_pctrlInertiaFactor,  8,2);
 
 		m_pctrlLength    = new QComboBox;
 		m_pctrlSurface   = new QComboBox;
@@ -125,6 +135,7 @@ void Units::setupLayout()
 		m_pctrlForce     = new QComboBox;
 		m_pctrlMoment    = new QComboBox;
 		m_pctrlPressure  = new QComboBox;
+		m_pctrlInertia   = new QComboBox;
 		pUnitsLayout->addWidget(m_pctrlLength,   1,3);
 		pUnitsLayout->addWidget(m_pctrlSurface,  2,3);
 		pUnitsLayout->addWidget(m_pctrlSpeed,    3,3);
@@ -132,6 +143,7 @@ void Units::setupLayout()
 		pUnitsLayout->addWidget(m_pctrlForce,    5,3);
 		pUnitsLayout->addWidget(m_pctrlMoment,   6,3);
 		pUnitsLayout->addWidget(m_pctrlPressure, 7,3);
+		pUnitsLayout->addWidget(m_pctrlInertia, 8,3);
 
 
 		m_pctrlLengthInvFactor  = new QLabel(" ");
@@ -141,6 +153,7 @@ void Units::setupLayout()
 		m_pctrlForceInvFactor   = new QLabel(" ");
 		m_pctrlMomentInvFactor  = new QLabel(" ");
 		m_pctrlPressureInvFactor  = new QLabel(" ");
+		m_pctrlInertiaInvFactor  = new QLabel(" ");
 		m_pctrlLengthInvFactor->setFont(fixedWidthFont);
 		m_pctrlSurfaceInvFactor->setFont(fixedWidthFont);
 		m_pctrlWeightInvFactor->setFont(fixedWidthFont);
@@ -148,6 +161,7 @@ void Units::setupLayout()
 		m_pctrlForceInvFactor->setFont(fixedWidthFont);
 		m_pctrlMomentInvFactor->setFont(fixedWidthFont);
 		m_pctrlPressureInvFactor->setFont(fixedWidthFont);
+		m_pctrlInertiaInvFactor->setFont(fixedWidthFont);
 
 		m_pctrlLengthInvFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 		m_pctrlSurfaceInvFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
@@ -156,6 +170,7 @@ void Units::setupLayout()
 		m_pctrlForceInvFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 		m_pctrlMomentInvFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 		m_pctrlPressureInvFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
+		m_pctrlInertiaInvFactor->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 		pUnitsLayout->addWidget(m_pctrlLengthInvFactor, 1,4);
 		pUnitsLayout->addWidget(m_pctrlSurfaceInvFactor, 2,4);
 		pUnitsLayout->addWidget(m_pctrlSpeedInvFactor, 3,4);
@@ -163,6 +178,7 @@ void Units::setupLayout()
 		pUnitsLayout->addWidget(m_pctrlForceInvFactor, 5,4);
 		pUnitsLayout->addWidget(m_pctrlMomentInvFactor, 6,4);
 		pUnitsLayout->addWidget(m_pctrlPressureInvFactor, 7,4);
+		pUnitsLayout->addWidget(m_pctrlInertiaInvFactor, 8,4);
 		pUnitsLayout->setColumnStretch(4,2);
 //		UnitsLayout->setColumnMinimumWidth(4,220);
 	}
@@ -201,6 +217,7 @@ void Units::setupLayout()
 	connect(m_pctrlForce,    SIGNAL(activated(const QString &)),this, SLOT(onSelChanged(const QString &)));
 	connect(m_pctrlMoment,   SIGNAL(activated(const QString &)),this, SLOT(onSelChanged(const QString &)));
 	connect(m_pctrlPressure, SIGNAL(activated(const QString &)),this, SLOT(onSelChanged(const QString &)));
+	connect(m_pctrlInertia, SIGNAL(activated(const QString &)),this, SLOT(onSelChanged(const QString &)));
 }
 
 
@@ -250,13 +267,18 @@ void Units::initDialog()
 	m_pctrlPressure->addItem("psi");    //5
 	m_pctrlPressure->addItem("ksi");    //6
 
-	m_pctrlLength->setCurrentIndex(s_LengthUnit);
-	m_pctrlWeight->setCurrentIndex(s_WeightUnit);
-	m_pctrlSurface->setCurrentIndex(s_AreaUnit);
-	m_pctrlSpeed->setCurrentIndex(s_SpeedUnit);
-	m_pctrlForce->setCurrentIndex(s_ForceUnit);
-	m_pctrlMoment->setCurrentIndex(s_MomentUnit);
-	m_pctrlMoment->setCurrentIndex(s_PressureUnit);
+	m_pctrlInertia->clear();
+	m_pctrlInertia->addItem(QString::fromUtf8("kg.m²"));    //0
+	m_pctrlInertia->addItem(QString::fromUtf8("lbm.ft²"));	//1
+
+	m_pctrlLength->setCurrentIndex(s_LengthUnitIndex);
+	m_pctrlWeight->setCurrentIndex(s_WeightUnitIndex);
+	m_pctrlSurface->setCurrentIndex(s_AreaUnitIndex);
+	m_pctrlSpeed->setCurrentIndex(s_SpeedUnitIndex);
+	m_pctrlForce->setCurrentIndex(s_ForceUnitIndex);
+	m_pctrlMoment->setCurrentIndex(s_MomentUnitIndex);
+	m_pctrlPressure->setCurrentIndex(s_PressureUnitIndex);
+	m_pctrlInertia->setCurrentIndex(s_InertiaUnitIndex);
 
 	m_pctrlLength->setFocus();
 	onSelChanged(" ");
@@ -269,6 +291,7 @@ void Units::initDialog()
 		m_pctrlForce->setEnabled(false);
 		m_pctrlMoment->setEnabled(false);
 		m_pctrlPressure->setEnabled(false);
+		m_pctrlInertia->setEnabled(false);
 	}
 	m_pctrlQuestion->setText(m_Question);
 }
@@ -280,14 +303,14 @@ void Units::onSelChanged(const QString &)
 	int len1 = 11;
 	int len2 = 17;
 
-	s_LengthUnit   = m_pctrlLength->currentIndex();
-	s_AreaUnit     = m_pctrlSurface->currentIndex();
-	s_WeightUnit   = m_pctrlWeight->currentIndex();
-	s_SpeedUnit    = m_pctrlSpeed->currentIndex();
-	s_ForceUnit    = m_pctrlForce->currentIndex();
-	s_MomentUnit   = m_pctrlMoment->currentIndex();
-	s_PressureUnit = m_pctrlPressure->currentIndex();
-
+	s_LengthUnitIndex   = m_pctrlLength->currentIndex();
+	s_AreaUnitIndex     = m_pctrlSurface->currentIndex();
+	s_WeightUnitIndex   = m_pctrlWeight->currentIndex();
+	s_SpeedUnitIndex    = m_pctrlSpeed->currentIndex();
+	s_ForceUnitIndex    = m_pctrlForce->currentIndex();
+	s_MomentUnitIndex   = m_pctrlMoment->currentIndex();
+	s_PressureUnitIndex = m_pctrlPressure->currentIndex();
+	s_InertiaUnitIndex  = m_pctrlInertia->currentIndex();
 	setUnitConversionFactors();
 
 
@@ -302,7 +325,7 @@ void Units::onSelChanged(const QString &)
 	getAreaUnitLabel(strUnitLabel);
 	strange= QString(QString::fromUtf8("1 m² = %1")).arg(s_m2toUnit,11,'f',5);
 	m_pctrlSurfaceFactor->setText(strange);
-	strUnit = QString("%1 m").arg(1./s_m2toUnit,11,'f',5) + QString::fromUtf8("²");
+	strUnit = QString::fromUtf8("%1 m²").arg(1./s_m2toUnit,11,'f',5);
 	strUnitLabel = "1 "+strUnitLabel;
 	strange= strUnitLabel.rightJustified(len1) +" = " + strUnit.leftJustified(len2);
 	m_pctrlSurfaceInvFactor->setText(strange);
@@ -346,6 +369,14 @@ void Units::onSelChanged(const QString &)
 	strUnitLabel = "1 "+strUnitLabel;
 	strange= strUnitLabel.rightJustified(len1) +" = " + strUnit.leftJustified(len2);
 	m_pctrlPressureInvFactor->setText(strange);
+
+	strUnitLabel = inertiaUnitLabel();
+	strange= QString::fromUtf8("1 kg.m² = %1").arg(s_kgm2toUnit, 11,'f',5);
+	m_pctrlInertiaFactor->setText(strange);
+	strUnit = QString::fromUtf8("%1 kg.m²").arg(1./s_kgm2toUnit,11,'f',5);
+	strUnitLabel = "1 "+strUnitLabel;
+	strange= strUnitLabel.rightJustified(len1) +" = " + strUnit.leftJustified(len2);
+	m_pctrlInertiaInvFactor->setText(strange);
 }
 
 
@@ -358,7 +389,7 @@ void Units::onSelChanged(const QString &)
  */
 void Units::getAreaUnitLabel(QString &str)
 {
-	switch(s_AreaUnit)
+	switch(s_AreaUnitIndex)
 	{
 		case 0:
 		{
@@ -407,7 +438,7 @@ void Units::getAreaUnitLabel(QString &str)
  */
 void Units::getLengthUnitLabel(QString &str)
 {
-	switch(s_LengthUnit)
+	switch(s_LengthUnitIndex)
 	{
 		case 0:
 		{
@@ -455,7 +486,7 @@ void Units::getLengthUnitLabel(QString &str)
  */
 void Units::getForceUnitLabel(QString &str)
 {
-	switch(s_ForceUnit)
+	switch(s_ForceUnitIndex)
 	{
 		case 0:{
 			str="N";
@@ -481,7 +512,7 @@ void Units::getForceUnitLabel(QString &str)
  */
 void Units::getMomentUnitLabel(QString &str)
 {
-	switch(s_MomentUnit)
+	switch(s_MomentUnitIndex)
 	{
 		case 0:
 		{
@@ -515,7 +546,7 @@ void Units::getMomentUnitLabel(QString &str)
  */
 void Units::getSpeedUnitLabel(QString &str)
 {
-	switch(s_SpeedUnit){
+	switch(s_SpeedUnitIndex){
 		case 0:{
 			str="m/s";
 			break;
@@ -551,7 +582,7 @@ void Units::getSpeedUnitLabel(QString &str)
  */
 void Units::getWeightUnitLabel(QString &str)
 {
-	switch(s_WeightUnit)
+	switch(s_WeightUnitIndex)
 	{
 		case 0:{
 			str="g";
@@ -585,7 +616,7 @@ void Units::getWeightUnitLabel(QString &str)
  */
 void Units::getPressureUnitLabel(QString &str)
 {
-	switch(s_PressureUnit)
+	switch(s_PressureUnitIndex)
 	{
 		case 0:
 		{
@@ -631,194 +662,28 @@ void Units::getPressureUnitLabel(QString &str)
 }
 
 
-
 /**
-* Initializes the conversion factors for all user-defined units
-*/
-void Units::setUnitConversionFactors()
+ * Returns the name of the custom pressure unit, based on its index in the array.
+ *@param str the reference of the QString to be filled with the name of the pressure unit
+ *@param unit the index of the pressure unit
+ */
+void Units::getInertiaUnitLabel(QString &str)
 {
-	switch(s_LengthUnit)
+	switch(s_InertiaUnitIndex)
 	{
-		case 0:{//mm
-			s_mtoUnit  = 1000.0;
+		case 0:
+		{
+			str=QString::fromUtf8("kg.m²");
 			break;
 		}
-		case 1:{//cm
-			s_mtoUnit  = 100.0;
-			break;
-		}
-		case 2:{//dm
-			s_mtoUnit  = 10.0;
-			break;
-		}
-		case 3:{//m
-			s_mtoUnit  = 1.0;
-			break;
-		}
-		case 4:{//in
-			s_mtoUnit  = 1000.0/25.4;
-			break;
-		}
-		case 5:{///ft
-			s_mtoUnit  = 1000.0/25.4/12.0;
-			break;
-		}
-		default:{//m
-			s_mtoUnit  = 1.0;
-			break;
-		}
-	}
-	switch(s_AreaUnit)
-	{
-		case 0:{//mm²
-			s_m2toUnit = 1000000.0;
-			break;
-		}
-		case 1:{//cm²
-			s_m2toUnit = 10000.0;
-			break;
-		}
-		case 2:{//dm²
-			s_m2toUnit = 100.0;
-			break;
-		}
-		case 3:{//m²
-			s_m2toUnit = 1.0;
-			break;
-		}
-		case 4:{//in²
-			s_m2toUnit = 1./0.254/0.254*100.0;
-			break;
-		}
-		case 5:{//ft²
-			s_m2toUnit = 1./0.254/0.254/144.0*100.0;
-			break;
-		}
-		default:{
-			s_m2toUnit = 1.0;
-			break;
-		}
-	}
-
-	switch(s_WeightUnit){
-		case 0:{///g
-			s_kgtoUnit = 1000.0;
-			break;
-		}
-		case 1:{//kg
-			s_kgtoUnit = 1.0;
-
-			break;
-		}
-		case 2:{//oz
-			s_kgtoUnit = 1./ 2.83495e-2;
-			break;
-		}
-		case 3:{//lb
-			s_kgtoUnit = 1.0/0.45359237;
-			break;
-		}
-		default:{
-			s_kgtoUnit = 1.0;
-			break;
-		}
-	}
-	switch(s_SpeedUnit){
-		case 0:{// m/s
-			s_mstoUnit = 1.0;
-			break;
-		}
-		case 1:{// km/h
-			s_mstoUnit = 3600.0/1000.0;
-			break;
-		}
-		case 2:{// ft/s
-			s_mstoUnit = 100.0/2.54/12.0;
-			break;
-		}
-		case 3:{// kt (int.)
-			s_mstoUnit = 1.0/0.514444;
-			break;
-		}
-		case 4:{// mph
-			s_mstoUnit = 3600.0/1609.344;
-			break;
-		}
-		default:{
-			s_mstoUnit = 1.0;
-			break;
-		}
-	}
-
-	switch(s_ForceUnit){
-		case 0:{//N
-			s_NtoUnit = 1.0;
-			break;
-		}
-		case 1:{//lbf
-			s_NtoUnit = 1.0/4.44822;
-			break;
-		}
-		default:{
-			s_NtoUnit = 1.0;
-			break;
-		}
-	}
-	switch(s_MomentUnit)
-	{
-		case 0:{//N.m
-			s_NmtoUnit = 1.0;
-			break;
-		}
-		case 1:{//lbf.in
-			s_NmtoUnit = 1.0/4.44822/0.0254;
-			break;
-		}
-		case 2:{//lbf.0t
-			s_NmtoUnit = 1.0/4.44822/12.0/0.0254;
-			break;
-		}
-		default:{
-			s_NmtoUnit = 1.0;
-			break;
-		}
-	}
-	switch(s_PressureUnit)
-	{
-		case 0:{//Pa
-			s_PatoUnit = 1.0;
-			break;
-		}
-		case 1:{//hPa
-			s_PatoUnit = 1.0/100.0;
-			break;
-		}
-		case 2:{//kPa
-			s_PatoUnit = 1.0/1000.0;
-			break;
-		}
-		case 3:{//MPa
-			s_PatoUnit = 1.0/1000000;
-			break;
-		}
-		case 4:{//bar
-			s_PatoUnit = 1.0/100000;
-			break;
-		}
-		case 5:{//psi
-			s_PatoUnit = 0.000145038;
-			break;
-		}
-		case 6:{//ksi
-			s_PatoUnit = 0.000000145038;
-			break;
-		}
-		default:{
-			s_PatoUnit = 1.0;
+		case 1:
+		{
+			str=QString::fromUtf8("lbm.ft²");
 			break;
 		}
 	}
 }
+
 
 
 
@@ -874,4 +739,219 @@ QString Units::pressureUnitLabel()
 	getPressureUnitLabel(str);
 	return str;
 }
+
+
+
+QString Units::inertiaUnitLabel()
+{
+	QString str;
+	getInertiaUnitLabel(str);
+	return str;
+}
+
+
+/**
+* Initializes the conversion factors for all user-defined units
+*/
+void Units::setUnitConversionFactors()
+{
+	switch(s_LengthUnitIndex)
+	{
+		case 0:{//mm
+			s_mtoUnit  = 1000.0;
+			break;
+		}
+		case 1:{//cm
+			s_mtoUnit  = 100.0;
+			break;
+		}
+		case 2:{//dm
+			s_mtoUnit  = 10.0;
+			break;
+		}
+		case 3:{//m
+			s_mtoUnit  = 1.0;
+			break;
+		}
+		case 4:{//in
+			s_mtoUnit  = 1000.0/25.4;
+			break;
+		}
+		case 5:{//ft
+			s_mtoUnit  = 1000.0/25.4/12.0;
+			break;
+		}
+		default:{//m
+			s_mtoUnit  = 1.0;
+			break;
+		}
+	}
+	switch(s_AreaUnitIndex)
+	{
+		case 0:{//mm²
+			s_m2toUnit = 1000000.0;
+			break;
+		}
+		case 1:{//cm²
+			s_m2toUnit = 10000.0;
+			break;
+		}
+		case 2:{//dm²
+			s_m2toUnit = 100.0;
+			break;
+		}
+		case 3:{//m²
+			s_m2toUnit = 1.0;
+			break;
+		}
+		case 4:{//in²
+			s_m2toUnit = 1./0.254/0.254*100.0;
+			break;
+		}
+		case 5:{//ft²
+			s_m2toUnit = 1./0.254/0.254/144.0*100.0;
+			break;
+		}
+		default:{
+			s_m2toUnit = 1.0;
+			break;
+		}
+	}
+
+	switch(s_WeightUnitIndex){
+		case 0:{///g
+			s_kgtoUnit = 1000.0;
+			break;
+		}
+		case 1:{//kg
+			s_kgtoUnit = 1.0;
+
+			break;
+		}
+		case 2:{//oz
+			s_kgtoUnit = 1./ 2.83495e-2;
+			break;
+		}
+		case 3:{//lb
+			s_kgtoUnit = 1.0/0.45359237;
+			break;
+		}
+		default:{
+			s_kgtoUnit = 1.0;
+			break;
+		}
+	}
+
+	switch(s_SpeedUnitIndex){
+		case 0:{// m/s
+			s_mstoUnit = 1.0;
+			break;
+		}
+		case 1:{// km/h
+			s_mstoUnit = 3600.0/1000.0;
+			break;
+		}
+		case 2:{// ft/s
+			s_mstoUnit = 100.0/2.54/12.0;
+			break;
+		}
+		case 3:{// kt (int.)
+			s_mstoUnit = 1.0/0.514444;
+			break;
+		}
+		case 4:{// mph
+			s_mstoUnit = 3600.0/1609.344;
+			break;
+		}
+		default:{
+			s_mstoUnit = 1.0;
+			break;
+		}
+	}
+
+	switch(s_ForceUnitIndex){
+		case 0:{//N
+			s_NtoUnit = 1.0;
+			break;
+		}
+		case 1:{//lbf
+			s_NtoUnit = 1.0/4.44822;
+			break;
+		}
+		default:{
+			s_NtoUnit = 1.0;
+			break;
+		}
+	}
+
+	switch(s_MomentUnitIndex)
+	{
+		case 0:{//N.m
+			s_NmtoUnit = 1.0;
+			break;
+		}
+		case 1:{//lbf.in
+			s_NmtoUnit = 1.0/4.44822/0.0254;
+			break;
+		}
+		case 2:{//lbf.0t
+			s_NmtoUnit = 1.0/4.44822/12.0/0.0254;
+			break;
+		}
+		default:{
+			s_NmtoUnit = 1.0;
+			break;
+		}
+	}
+
+	switch(s_PressureUnitIndex)
+	{
+		case 0:{//Pa
+			s_PatoUnit = 1.0;
+			break;
+		}
+		case 1:{//hPa
+			s_PatoUnit = 1.0/100.0;
+			break;
+		}
+		case 2:{//kPa
+			s_PatoUnit = 1.0/1000.0;
+			break;
+		}
+		case 3:{//MPa
+			s_PatoUnit = 1.0/1000000;
+			break;
+		}
+		case 4:{//bar
+			s_PatoUnit = 1.0/100000;
+			break;
+		}
+		case 5:{//psi
+			s_PatoUnit = 0.000145038;
+			break;
+		}
+		case 6:{//ksi
+			s_PatoUnit = 0.000000145038;
+			break;
+		}
+		default:{
+			s_PatoUnit = 1.0;
+			break;
+		}
+	}
+
+	switch(s_InertiaUnitIndex)
+	{
+		case 0:{//Pa
+			s_kgm2toUnit = 1.0;
+			break;
+		}
+		case 1:{//hPa
+			s_kgm2toUnit = 1.0/0.45359237 * 1000.0/25.4/12.0 * 1000.0/25.4/12.0;
+			break;
+		}
+	}
+}
+
+
 
