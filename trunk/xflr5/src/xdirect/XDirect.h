@@ -151,7 +151,6 @@ private slots:
 	void onNacaFoils();
 	void onRenamePolar();
 	void onAnimateSingle();
-	void onHighlightOpp();
 
 	void onQGraph();
 	void onCpGraph();
@@ -280,7 +279,6 @@ private:
 	bool m_bSequence;          /**< true if a sequential analysis is to be performed */
 	bool m_bXPressed;          /**< true if the 'X' key is pressed */
 	bool m_bYPressed;          /**< true if the 'Y' key is pressed */
-	bool m_bHighlightOpp;      /**< true if the active operating point should be highlighted on the curves of the polar graphs */
 	bool m_bResetCurves;       /**< true if the graph curves need to be redrawn before the next view update */
 
 	int m_posAnimate;          /**< the current aoa in the animation */

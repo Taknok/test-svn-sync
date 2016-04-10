@@ -220,10 +220,7 @@ QMiarex::QMiarex(QWidget *parent)
 	m_bResetWake      = true;
 	m_bSequence       = false;
 
-	m_bHighlightOpp = false;
-
 	m_bDirichlet = true;
-
 
 	m_CurSpanPos    = 0.0;
 
@@ -296,6 +293,7 @@ QMiarex::QMiarex(QWidget *parent)
 		m_WPlrGraph[ig]->setYMax( 0.01);
 		m_WPlrGraph[ig]->setType(0);
 		m_WPlrGraph[ig]->setMargin(50);
+		m_WPlrGraph.at(ig)->setOppHighlighting(true);
 	}
 
 	m_WPlrGraph[0]->setVariables(3,2);
@@ -373,7 +371,7 @@ QMiarex::QMiarex(QWidget *parent)
 	m_StabPlrGraph.at(0)->setMargin(50);
 	m_StabPlrGraph.at(0)->setInverted(false);
 	m_StabPlrGraph.at(0)->setGraphName("Longitudinal Modes");
-	m_StabPlrGraph.at(0)->m_bHighlightPoint = true;
+	m_StabPlrGraph.at(0)->setOppHighlighting(true);
 
 	m_StabPlrGraph.at(1)->graphType() = QGRAPH::WPOLARGRAPH;
 	m_StabPlrGraph.at(1)->setXMajGrid(true, QColor(120,120,120),2,1);
@@ -388,7 +386,7 @@ QMiarex::QMiarex(QWidget *parent)
 	m_StabPlrGraph.at(1)->setMargin(50);
 	m_StabPlrGraph.at(1)->setInverted(false);
 	m_StabPlrGraph.at(1)->setGraphName("Lateral Modes");
-	m_StabPlrGraph.at(1)->m_bHighlightPoint = true;
+	m_StabPlrGraph.at(1)->setOppHighlighting(true);
 
 
 	m_CpLineStyle.m_Color = QColor(255,100,150);
@@ -507,8 +505,7 @@ void QMiarex::connectSignals()
 	connect(m_pctrlZ,     SIGNAL(clicked()),     m_pgl3Widget, SLOT(on3DTop()));
 	connect(m_pctrlClipPlanePos, SIGNAL(sliderMoved(int)), m_pgl3Widget, SLOT(onClipPlane(int)));
 
-	connect(m_pctrlReset, SIGNAL(clicked()), this, SLOT(on3DReset()));
-
+	connect(m_pctrl3DResetScale, SIGNAL(clicked()), this, SLOT(on3DResetScale()));
 
 	connect(m_pctrlAlphaMin,   SIGNAL(editingFinished()), this, SLOT(onReadAnalysisData()));
 	connect(m_pctrlAlphaMax,   SIGNAL(editingFinished()), this, SLOT(onReadAnalysisData()));
@@ -628,7 +625,7 @@ void QMiarex::setControls()
 	m_pctrlFoilNames->setChecked(m_pgl3Widget->m_bFoilNames);
 	m_pctrlMasses->setChecked(m_pgl3Widget->m_bShowMasses);
 
-	s_pMainFrame->m_pHighlightWOppAct->setChecked(m_bHighlightOpp);
+	s_pMainFrame->m_pHighlightOppAct->setChecked(QGraph::isHighLighting());
 
 	s_pMainFrame->m_pDefineWPolar->setEnabled(m_pCurPlane);
 	s_pMainFrame->m_pDefineStabPolar->setEnabled(m_pCurPlane);
@@ -1576,8 +1573,6 @@ void QMiarex::fillStabCurve(Curve *pCurve, WPolar *pWPolar, int iMode)
 	int i;
 	double x,y;
 
-	StabViewDlg *pStabView =(StabViewDlg*)s_pMainFrame->m_pStabView;
-
 	pCurve->setSelected(-1);
 
 	for (i=0; i<pWPolar->m_Ctrl.size(); i++)
@@ -1586,13 +1581,13 @@ void QMiarex::fillStabCurve(Curve *pCurve, WPolar *pWPolar, int iMode)
 		y = pWPolar->m_EigenValue[iMode][i].imag()/2./PI;
 
 		pCurve->appendPoint(x, y);
-		if(m_pCurPlane && m_pCurPOpp && m_bHighlightOpp)
+		if(m_pCurPlane && m_pCurPOpp && QGraph::isHighLighting())
 		{
 			if(qAbs(pWPolar->m_Ctrl[i]-m_pCurPOpp->m_Ctrl)<0.0001)
 			{
 				if((pWPolar->planeName()==m_pCurPlane->planeName()) && (m_pCurPOpp->polarName()==pWPolar->polarName()))
 				{
-					if(iMode==pStabView->m_iCurrentMode) pCurve->setSelected(i);
+					pCurve->setSelected(i);
 				}
 			}
 		}
@@ -1620,7 +1615,6 @@ void QMiarex::fillWPlrCurve(Curve *pCurve, WPolar *pWPolar, int XVar, int YVar)
 	pY = (QList <double> *) pWPolar->getWPlrVariable(YVar);
 
 	pCurve->setSelected(-1);
-
 	for (i=0; i<pWPolar->m_Alpha.size(); i++)
 	{
 		bAdd = true;
@@ -1653,7 +1647,7 @@ void QMiarex::fillWPlrCurve(Curve *pCurve, WPolar *pWPolar, int XVar, int YVar)
 		if(bAdd)
 		{
 			pCurve->appendPoint(x,y);
-			if(m_pCurPOpp && m_bHighlightOpp)
+			if(m_pCurPOpp && QGraph::isHighLighting())
 			{
 				if(qAbs(pWPolar->m_Alpha[i]-m_pCurPOpp->m_pPlaneWOpp[0]->m_Alpha)<0.0001)
 				{
@@ -1663,10 +1657,6 @@ void QMiarex::fillWPlrCurve(Curve *pCurve, WPolar *pWPolar, int XVar, int YVar)
 					{
 						pCurve->setSelected(i);
 					}
-					else if(m_pCurPOpp && m_pCurPlane
-							&& pWPolar->planeName() == m_pCurPlane->planeName()
-							&& pWPolar->polarName() == m_pCurPOpp->polarName())
-						pCurve->setSelected(i);
 				}
 			}
 		}
@@ -1995,7 +1985,7 @@ void QMiarex::keyPressEvent(QKeyEvent *event)
 		{
 			if((m_iView==XFLR5::WPOLARVIEW || m_iView==XFLR5::STABPOLARVIEW) && event->modifiers().testFlag(Qt::ControlModifier))
 			{
-				onHighlightWOpp();
+				s_pMainFrame->onHighlightOperatingPoint();
 			}
 			break;
 		}
@@ -2182,8 +2172,6 @@ bool QMiarex::loadSettings(QSettings *pSettings)
 
 		PlaneOpp::s_bStoreOpps    = pSettings->value("StoreWOpp").toBool();
 		m_bSequence     = pSettings->value("Sequence").toBool();
-		m_bHighlightOpp = pSettings->value("HighlightOpp").toBool();
-//		m_bHighlightOpp = false;
 
 		m_AlphaMin      = pSettings->value("AlphaMin").toDouble();
 		m_AlphaMax      = pSettings->value("AlphaMax").toDouble();
@@ -2389,7 +2377,7 @@ void QMiarex::on3DCp()
 /**
  * Updates the display after the user has requested a reset of the scales in the 3D view
 */
-void QMiarex::on3DReset()
+void QMiarex::on3DResetScale()
 {
 	m_bPickCenter   = false;
 	m_bIs3DScaleSet = false;
@@ -2430,8 +2418,8 @@ void QMiarex::onAnalyze()
 {
 	int l;
 	double V0, VMax, VDelta;
-	bool bHigh = m_bHighlightOpp;
-	m_bHighlightOpp = false;
+	bool bHigh = QGraph::isHighLighting();
+	QGraph::setOppHighlighting(false);
 
 	if(!m_pCurPlane)
 	{
@@ -2537,7 +2525,7 @@ void QMiarex::onAnalyze()
 	s_pMainFrame->m_pctrlPlaneOpp->setEnabled(true);
 
 	//restore things as they were
-	m_bHighlightOpp = bHigh;
+	QGraph::setOppHighlighting(bHigh);
 
 	//refresh the view
 	s_bResetCurves = true;
@@ -2616,7 +2604,6 @@ void QMiarex::onAnimateModeSingle(bool bStep)
 		m_pTimerMode->stop();
 		return; //nothing to animate
 	}
-
 	//read the data, since the user may have been playing with it
 	norm = m_ModeNorm * pStabView->m_ModeAmplitude;
 	vabs = pStabView->m_vabs;
@@ -2630,7 +2617,6 @@ void QMiarex::onAnimateModeSingle(bool bStep)
 	t=m_ModeTime;
 
 	if(t>=100) stopAnimate();
-
 
 	if(s2+o2>PRECISION)
 	{
@@ -4797,23 +4783,6 @@ void QMiarex::onHidePlaneWPolars()
 }
 
 
-/**
- * The user has requested that the current point be highlighted in the selected graph
- *@todo not quite robust - check and improve
- */
-void QMiarex::onHighlightWOpp()
-{
-	if(m_iView!=XFLR5::WPOLARVIEW && m_iView!=XFLR5::STABPOLARVIEW) return;
-	m_bHighlightOpp = !m_bHighlightOpp;
-	s_pMainFrame->m_pHighlightWOppAct->setChecked(m_bHighlightOpp);
-
-	for(int ig=0; ig<MAXPOLARGRAPHS; ig++)
-		m_WPlrGraph[ig]->m_bHighlightPoint = m_bHighlightOpp;
-
-	s_bResetCurves = true;
-	updateView();
-}
-
 
 /**
  * The user has requested the import of a polar definition from a text file.
@@ -4972,9 +4941,6 @@ void QMiarex::onKeepCpSection()
 
 
 
-
-
-
 /**
  * The user has requested the launch of the dialog box used to manage the array of planes
  */
@@ -4987,12 +4953,11 @@ void QMiarex::onManagePlanes()
 	uDlg.initDialog(PlaneName);
 	uDlg.exec();
 
-	if(uDlg.m_pPlane)     setPlane(uDlg.m_pPlane->planeName());
-	else
-	{
-		m_pCurPlane = NULL;
-		setPlane();
-	}
+	m_pCurPlane = NULL;
+	m_pCurWPolar = NULL;
+
+	if(uDlg.m_pPlane) setPlane(uDlg.m_pPlane->planeName());
+	else setPlane();
 
 	if(uDlg.m_bChanged) emit projectModified();
 
@@ -6015,6 +5980,7 @@ void QMiarex::paintPlaneLegend(QPainter &painter, Plane *pPlane, WPolar *pWPolar
 		if(pWPolar->m_Alpha.count()>1) ZPos -= dheight;
 	}
 
+
 //	double area = pPlane->m_Wing[0].s_RefArea;
 	if(pPlane && pWing(2)) ZPos -= dheight;
 
@@ -6339,7 +6305,6 @@ bool QMiarex::saveSettings(QSettings *pSettings)
 		pSettings->setValue("ShowFin", m_bShowWingCurve[3]);
 		pSettings->setValue("StoreWOpp", PlaneOpp::s_bStoreOpps);
 		pSettings->setValue("Sequence", m_bSequence );
-		pSettings->setValue("HighlightOpp", m_bHighlightOpp);
 		pSettings->setValue("AlphaMin", m_AlphaMin);
 		pSettings->setValue("AlphaMax", m_AlphaMax);
 		pSettings->setValue("AlphaDelta", m_AlphaDelta);
@@ -7088,8 +7053,9 @@ void QMiarex::setupLayout()
 				}
 
 				pThreeDViewLayout->addLayout(pAxisViewLayout);
-				m_pctrlReset = new QPushButton(tr("Reset view"));
-				pThreeDViewLayout->addWidget(m_pctrlReset);
+				m_pctrl3DResetScale = new QPushButton(tr("Reset view"));
+				m_pctrl3DResetScale->setStatusTip(tr("Resets the display scale so that the plane fits in the window"));
+				pThreeDViewLayout->addWidget(m_pctrl3DResetScale);
 			}
 
 			QHBoxLayout *pClipLayout = new QHBoxLayout;

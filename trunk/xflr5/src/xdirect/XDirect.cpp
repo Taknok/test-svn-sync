@@ -109,7 +109,6 @@ QXDirect::QXDirect(QWidget *parent) : QWidget(parent)
 	m_bShowPanels     = false;
 	m_bShowUserGraph  = true;
 	m_bSequence       = false;
-	m_bHighlightOpp   = false;
 	s_bStoreOpp       = false;
 
 	m_bXPressed = m_bYPressed = false;
@@ -662,7 +661,9 @@ void QXDirect::fillPolarCurve(Curve *pCurve, Polar *pPolar, int XVar, int YVar)
 				pCurve->appendPoint((*pX)[i]*fx, (*pY)[i]*fy);
 			}
 		}
-		if(OpPoint::curOpp() && m_bHighlightOpp)
+
+		if(OpPoint::curOpp() && QGraph::isHighLighting()
+		   && OpPoint::curOpp()->polarName()==Polar::curPolar()->polarName() && OpPoint::curOpp()->foilName()==Foil::curFoil()->foilName())
 		{
 			if(qAbs(pPolar->m_Alpha[i]-OpPoint::curOpp()->Alpha)<0.0001)
 			{
@@ -787,7 +788,7 @@ void QXDirect::keyPressEvent(QKeyEvent *event)
 		{
 			if(m_bPolarView && event->modifiers().testFlag(Qt::ControlModifier))
 			{
-				onHighlightOpp();
+				s_pMainFrame->onHighlightOperatingPoint();
 			}
 			break;
 		}
@@ -946,8 +947,6 @@ void QXDirect::loadSettings(QSettings *pSettings)
 		m_bShowInviscid   = pSettings->value("ShowInviscid", false).toBool();
 		m_bCpGraph        = pSettings->value("ShowCpGraph", true).toBool();
 		m_bSequence       = pSettings->value("Sequence", false).toBool();
-		m_bHighlightOpp   = pSettings->value("HighlightOpp", false).toBool();
-		m_bHighlightOpp = false;
 
 		m_XFoilVar       = pSettings->value("XFoilVar").toInt();
 		s_TimeUpdateInterval = pSettings->value("TimeUpdateInterval",100).toInt();
@@ -1184,8 +1183,8 @@ void QXDirect::onAnalyze()
 
 	m_pctrlAnalyze->setEnabled(false);
 
-	bool bHigh = m_bHighlightOpp;
-	m_bHighlightOpp = false;
+	bool bHigh = QGraph::isHighLighting();
+	QGraph::setOppHighlighting(false);
 
 	if(m_bSequence)
 	{
@@ -1230,7 +1229,7 @@ void QXDirect::onAnalyze()
 
 	setOpp();
 
-	m_bHighlightOpp = bHigh;
+	QGraph::setOppHighlighting(bHigh);
 
 	m_bResetCurves = true;
 
@@ -2807,21 +2806,6 @@ void QXDirect::onFoilGeom()
 }
 
 
-/**
- * The user has requested the highlighting of the current OpPoint on the polar curves
- */
-void QXDirect::onHighlightOpp()
-{
-	if(!m_bPolarView) return;
-	m_bHighlightOpp = !m_bHighlightOpp;
-
-	s_pMainFrame->m_phighlightOppAct->setChecked(m_bHighlightOpp);
-	for(int ig=0; ig<m_PlrGraph.count(); ig++)
-		m_PlrGraph[ig]->m_bHighlightPoint = m_bHighlightOpp;
-
-	m_bResetCurves = true;
-	updateView();
-}
 
 
 /**
@@ -4214,7 +4198,6 @@ void QXDirect::saveSettings(QSettings *pSettings)
 		pSettings->setValue("ShowInviscid", m_bShowInviscid);
 		pSettings->setValue("ShowCpGraph", m_bCpGraph);
 		pSettings->setValue("Sequence", m_bSequence);
-		pSettings->setValue("HighlightOpp",m_bHighlightOpp);
 		pSettings->setValue("XFoilVar", m_XFoilVar);
 		pSettings->setValue("TimeUpdateInterval", s_TimeUpdateInterval);
 		pSettings->setValue("BatchUpdatePolarView", BatchThreadDlg::s_bUpdatePolarView);

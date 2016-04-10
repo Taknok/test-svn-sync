@@ -463,7 +463,7 @@ void StabViewDlg::onModeSelection()
 	if(!pMiarex->m_bLongitudinal) m_iCurrentMode +=4;
 	setMode(m_iCurrentMode);
 
-	if(pMiarex->m_iView==XFLR5::STABPOLARVIEW && pMiarex->m_bHighlightOpp)
+	if(pMiarex->m_iView==XFLR5::STABPOLARVIEW && QGraph::isHighLighting())
 	{
 		pMiarex->createStabRLCurves();
 		pMiarex->updateView();

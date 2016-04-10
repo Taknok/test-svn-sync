@@ -319,7 +319,6 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 	s_ColorList.append(QColor(0,255,255));
 
 	s_bSaved     = true;
-	m_bHighlightOpp = m_bHighlightWOpp = false;
 
 	m_iApp = XFLR5::NOAPP;
 	m_pctrlAFoilToolBar->hide();
@@ -1043,7 +1042,7 @@ void MainFrame::createMenus()
 		m_pGraphMenu->addAction(m_pAllGraphsSettings);
 		m_pGraphMenu->addAction(m_pAllGraphsScalesAct);
 		m_pGraphMenu->addSeparator();
-		m_pGraphMenu->addAction(m_pHighlightWOppAct);
+		m_pGraphMenu->addAction(m_pHighlightOppAct);
 		m_pGraphMenu->addSeparator();
 		m_pGraphMenu->addAction(m_pShowMousePosAct);
 
@@ -1067,8 +1066,6 @@ void MainFrame::createMenus()
 
 void MainFrame::createGraphActions()
 {
-	QMiarex *pMiarex = (QMiarex*)m_pMiarex;
-
 	for (int ig=0; ig<MAXGRAPHS; ++ig)
 	{
 		m_pSingleGraph[ig] = new QAction(tr("Graph")+QString(" %1\t(%2)").arg(ig+1).arg(ig+1), this);
@@ -1109,12 +1106,6 @@ void MainFrame::createGraphActions()
 	m_pAllGraphsSettings->setStatusTip(tr("Define the settings of all graphs"));
 	connect(m_pAllGraphsSettings, SIGNAL(triggered()), m_pXDirectTileWidget, SLOT(onAllGraphSettings()));
 	connect(m_pAllGraphsSettings, SIGNAL(triggered()), m_pMiarexTileWidget, SLOT(onAllGraphSettings()));
-
-	m_pHighlightWOppAct	 = new QAction(tr("Highlight Current OpPoint")+"\t(Ctrl+H)", this);
-	m_pHighlightWOppAct->setCheckable(true);
-	m_pHighlightWOppAct->setStatusTip(tr("Highlights on the polar curve the currently selected operating point"));
-	connect(m_pHighlightWOppAct, SIGNAL(triggered()), pMiarex, SLOT(onHighlightWOpp()));
-
 
 	m_pShowMousePosAct	 = new QAction(tr("Display mouse coordinates"), this);
 	m_pShowMousePosAct->setCheckable(true);
@@ -1169,6 +1160,10 @@ void MainFrame::createMiarexActions()
 	m_pMiarexPolarFilter = new QAction(tr("Polar Filter"), this);
 	m_pMiarexPolarFilter->setStatusTip(tr("Define which type of polars should be shown or hidden"));
 	connect(m_pMiarexPolarFilter, SIGNAL(triggered()), pMiarex, SLOT(onPolarFilter()));
+
+	m_pReset3DScale = new QAction(tr("Reset view")+"\t(R)", this);
+	m_pReset3DScale->setStatusTip(tr("Resets the display scale so that the plane fits in the window"));
+	connect(m_pReset3DScale, SIGNAL(triggered()), pMiarex, SLOT(on3DResetScale()));
 
 	m_pW3DScalesAct = new QAction(tr("3D Scales"), this);
 	m_pW3DScalesAct->setStatusTip(tr("Define the scales for the 3D display of lift, moment, drag, and downwash"));
@@ -1322,7 +1317,6 @@ void MainFrame::createMiarexActions()
 
 	m_pDefineStabPolar = new QAction(tr("Define a Stability Analysis")+"\t(Shift+F6)", this);
 	m_pDefineStabPolar->setStatusTip(tr("Define a stability analysis for the current wing or plane"));
-//	defineStabPolar->setShortcut(tr("Ctrl+F6"));
 	connect(m_pDefineStabPolar, SIGNAL(triggered()), pMiarex, SLOT(onDefineStabPolar()));
 
 	m_pHidePlaneWPlrs = new QAction(tr("Hide Associated Polars"), this);
@@ -1616,6 +1610,7 @@ void MainFrame::createMiarexMenus()
 			pCurGraphCtxMenu->addAction(m_pResetCurGraphScales);
 			pCurGraphCtxMenu->addAction(m_pCurGraphDlgAct);
 			pCurGraphCtxMenu->addAction(m_pExportCurGraphAct);
+			pCurGraphCtxMenu->addAction(m_pHighlightOppAct);
 		}
 		m_pWPlrCtxMenu->addAction(m_pShowMousePosAct);
 		m_pWPlrCtxMenu->addSeparator();
@@ -1634,6 +1629,7 @@ void MainFrame::createMiarexMenus()
 		m_pW3DCtxMenu->addSeparator();
 		m_pW3DCtxMenu->addAction(m_pDeleteAllWOpps);
 		m_pW3DCtxMenu->addSeparator();
+		m_pW3DCtxMenu->addAction(m_pReset3DScale);
 		m_pW3DCtxMenu->addAction(m_pW3DScalesAct);
 		m_pW3DCtxMenu->addAction(m_pW3DLightAct);
 		m_pW3DCtxMenu->addSeparator();
@@ -1788,11 +1784,10 @@ void MainFrame::createXDirectActions()
 	m_pXDirectPolarFilter = new QAction(tr("Polar Filter"), this);
 	connect(m_pXDirectPolarFilter, SIGNAL(triggered()), pXDirect, SLOT(onPolarFilter()));
 
-	m_phighlightOppAct	 = new QAction(tr("Highlight Current OpPoint")+"\t(Ctrl+H)", this);
-	m_phighlightOppAct->setCheckable(true);
-	m_phighlightOppAct->setStatusTip(tr("Highlights on the polar curve the currently selected operating point"));
-	connect(m_phighlightOppAct, SIGNAL(triggered()), pXDirect, SLOT(onHighlightOpp()));
-
+	m_pHighlightOppAct	 = new QAction(tr("Highlight Current OpPoint")+"\t(Ctrl+H)", this);
+	m_pHighlightOppAct->setCheckable(true);
+	m_pHighlightOppAct->setStatusTip(tr("Highlights on the polar curve the currently selected operating point"));
+	connect(m_pHighlightOppAct, SIGNAL(triggered()), this, SLOT(onHighlightOperatingPoint()));
 
 	m_pDeleteCurFoil = new QAction(tr("Delete..."), this);
 	connect(m_pDeleteCurFoil, SIGNAL(triggered()), pXDirect, SLOT(onDeleteCurFoil()));
@@ -2443,9 +2438,16 @@ void MainFrame::deleteProject(bool bClosing)
 
 
 		pMiarex->setPlane();
-		if(pMiarex->m_iView==XFLR5::WPOLARVIEW)    pMiarex->createWPolarCurves(); /** @todo --> in miarex! */
-		else if(pMiarex->m_iView==XFLR5::WOPPVIEW) pMiarex->createWOppCurves();
-		else if(pMiarex->m_iView==XFLR5::WOPPVIEW) pMiarex->createCpCurves();
+/*		QMiarex *pMiarex = (QMiarex*)m_pMiarex;
+		switch(pMiarex->m_iView)
+		{
+			case XFLR5::WPOLARVIEW:    pMiarex->createWPolarCurves();    break;
+			case XFLR5::STABPOLARVIEW: pMiarex->createStabRLCurves();    break;
+			case XFLR5::STABTIMEVIEW:  pMiarex->createStabilityCurves(); break;
+			case XFLR5::WOPPVIEW:      pMiarex->createWOppCurves();      break;
+			case XFLR5::WCPVIEW:       pMiarex->createCpCurves();        break;
+			default: break;
+		}*/
 		if(m_iApp==XFLR5::MIAREX) pMiarex->setControls();
 
 		QXDirect *pXDirect = (QXDirect*)m_pXDirect;
@@ -2876,14 +2878,17 @@ bool MainFrame::loadSettings()
 		m_ImageDirName = settings.value("ImageDirName").toString();
 		m_ExportLastDirName = settings.value("ExportLastDirName").toString();
 
-		Units::s_LengthUnit  = settings.value("LengthUnit").toInt();
-		Units::s_AreaUnit    = settings.value("AreaUnit").toInt();
-		Units::s_WeightUnit  = settings.value("WeightUnit").toInt();
-		Units::s_SpeedUnit   = settings.value("SpeedUnit").toInt();
-		Units::s_ForceUnit   = settings.value("ForceUnit").toInt();
-		Units::s_MomentUnit  = settings.value("MomentUnit").toInt();
+		Units::setLengthUnitIndex(settings.value("LengthUnit").toInt());
+		Units::setAreaUnitIndex(settings.value("AreaUnit").toInt());
+		Units::setWeightUnitIndex(settings.value("WeightUnit").toInt());
+		Units::setSpeedUnitIndex(settings.value("SpeedUnit").toInt());
+		Units::setForceUnitIndex(settings.value("ForceUnit").toInt());
+		Units::setMomentUnitIndex(settings.value("MomentUnit").toInt());
+		Units::setPressureUnitIndex(settings.value("PressureUnit").toInt());
+		Units::setInertiaUnitIndex(settings.value("InertiaUnit").toInt());
 		Units::setUnitConversionFactors();
 
+		QGraph::setOppHighlighting(settings.value("HighlightOpp").toBool());
 
 		switch(settings.value("ImageFormat").toInt())
 		{
@@ -3204,9 +3209,15 @@ void MainFrame::onInsertProject()
 		updatePlaneListBox();
 		pMiarex->setPlane();
 
-		if(pMiarex->m_iView==XFLR5::WPOLARVIEW)    pMiarex->createWPolarCurves();
-		else if(pMiarex->m_iView==XFLR5::WOPPVIEW) pMiarex->createWOppCurves();
-		else if(pMiarex->m_iView==XFLR5::WCPVIEW)  pMiarex->createCpCurves();
+		switch(pMiarex->m_iView)
+		{
+			case XFLR5::WPOLARVIEW:    pMiarex->createWPolarCurves();    break;
+			case XFLR5::STABPOLARVIEW: pMiarex->createStabRLCurves();    break;
+			case XFLR5::STABTIMEVIEW:  pMiarex->createStabilityCurves(); break;
+			case XFLR5::WOPPVIEW:      pMiarex->createWOppCurves();      break;
+			case XFLR5::WCPVIEW:       pMiarex->createCpCurves();        break;
+			default: break;
+		}
 	}
 	else if(m_iApp == XFLR5::XFOILANALYSIS)
 	{
@@ -3223,6 +3234,25 @@ void MainFrame::onInsertProject()
 }
 
 
+void MainFrame::onHighlightOperatingPoint()
+{
+	m_pHighlightOppAct->setChecked(!m_pHighlightOppAct->isChecked());
+	QGraph::setOppHighlighting(m_pHighlightOppAct->isChecked());
+
+	if(m_iApp == XFLR5::MIAREX)
+	{
+		QMiarex *pMiarex = (QMiarex*)m_pMiarex;
+		QMiarex::s_bResetCurves = true;
+		pMiarex->updateView();
+	}
+	else if(m_iApp == XFLR5::XFOILANALYSIS)
+	{
+		QXDirect *pXDirect = (QXDirect*)m_pXDirect;
+		pXDirect->m_bResetCurves = true;
+		pXDirect->updateView();
+	}
+}
+
 
 void MainFrame::onLanguage()
 {
@@ -3232,8 +3262,6 @@ void MainFrame::onLanguage()
 	{
 	}
 }
-
-
 
 
 void MainFrame::onLoadFile()
@@ -4281,13 +4309,13 @@ void MainFrame::onSavePlaneAsProject()
 
 	QDataStream ar(&fp);
 
-	SerializePlaneProject(ar);
+	serializePlaneProject(ar);
 	fp.close();
 }
 
 
 
-bool MainFrame::SerializePlaneProject(QDataStream &ar)
+bool MainFrame::serializePlaneProject(QDataStream &ar)
 {
 	QMiarex * pMiarex = (QMiarex*)m_pMiarex;
 	if(!pMiarex->m_pCurPlane)
@@ -4312,12 +4340,13 @@ bool MainFrame::SerializePlaneProject(QDataStream &ar)
 	// 200001 : First instance of new ".xfl" format
 
 	//Save unit data
+	/** @todo add pressure and inertia units ? */
 	ar << Units::lengthUnitIndex();
 	ar << Units::areaUnitIndex();
 	ar << Units::weightUnitIndex();
-	ar << Units::s_SpeedUnit;
-	ar << Units::s_ForceUnit;
-	ar << Units::s_MomentUnit;
+	ar << Units::speedUnitIndex();
+	ar << Units::forceUnitIndex();
+	ar << Units::momentUnitIndex();
 
 	//Save default Polar data. Not in the Settings, since this is Project dependant
 	if(WPolarDlg::s_WPolar.polarType()==XFLR5::FIXEDSPEEDPOLAR)      ar<<1;
@@ -4484,12 +4513,14 @@ void MainFrame::saveSettings()
 		settings.setValue("ImageDirName", m_ImageDirName);
 		settings.setValue("ExportLastDirName", m_ExportLastDirName);
 
-		settings.setValue("LengthUnit",  Units::lengthUnitIndex());
-		settings.setValue("AreaUnit",    Units::areaUnitIndex());
-		settings.setValue("WeightUnit",  Units::weightUnitIndex());
-		settings.setValue("SpeedUnit",   Units::speedUnitIndex());
-		settings.setValue("ForceUnit",   Units::forceUnitIndex());
-		settings.setValue("MomentUnit",  Units::momentUnitIndex());
+		settings.setValue("LengthUnit",   Units::lengthUnitIndex());
+		settings.setValue("AreaUnit",     Units::areaUnitIndex());
+		settings.setValue("WeightUnit",   Units::weightUnitIndex());
+		settings.setValue("SpeedUnit",    Units::speedUnitIndex());
+		settings.setValue("ForceUnit",    Units::forceUnitIndex());
+		settings.setValue("MomentUnit",   Units::momentUnitIndex());
+		settings.setValue("PressureUnit", Units::pressureUnitIndex());
+		settings.setValue("InertiaUnit",  Units::inertiaUnitIndex());
 
 		settings.setValue("LanguageFilePath", s_LanguageFilePath);
 		settings.setValue("ImageFormat", m_ImageFormat);
@@ -4794,9 +4825,9 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 		ar << Units::lengthUnitIndex();
 		ar << Units::areaUnitIndex();
 		ar << Units::weightUnitIndex();
-		ar << Units::s_SpeedUnit;
-		ar << Units::s_ForceUnit;
-		ar << Units::s_MomentUnit;
+		ar << Units::speedUnitIndex();
+		ar << Units::forceUnitIndex();
+		ar << Units::momentUnitIndex();
 
 
 		//Save default Polar data. Not in the Settings, since this is Project dependant
@@ -4885,9 +4916,11 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 		// and the spline foil whilst we're at it
 		pAFoil->m_pSF->serialize(ar, bIsStoring);
 
+		ar << Units::pressureUnitIndex();
+		ar << Units::inertiaUnitIndex();
 		//add provisions
 		// space allocation for the future storage of more data, without need to change the format
-		for (int i=0; i<20; i++) ar << 0;
+		for (int i=2; i<20; i++) ar << 0;
 		for (int i=0; i<50; i++) ar << (double)0.0;
 	}
 	else
@@ -4899,12 +4932,13 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 		if(ArchiveFormat!=200001) return false;
 
 		//Load unit data
-		ar >> Units::s_LengthUnit;
-		ar >> Units::s_AreaUnit;
-		ar >> Units::s_WeightUnit;
-		ar >> Units::s_SpeedUnit;
-		ar >> Units::s_ForceUnit;
-		ar >> Units::s_MomentUnit;
+		ar >> n; Units::setLengthUnitIndex(n);
+		ar >> n; Units::setAreaUnitIndex(n);
+		ar >> n; Units::setWeightUnitIndex(n);
+		ar >> n; Units::setSpeedUnitIndex(n);
+		ar >> n; Units::setForceUnitIndex(n);
+		ar >> n; Units::setMomentUnitIndex(n);
+		//pressure and inertia units are added later on in the provisions.
 
 
 		Units::setUnitConversionFactors();
@@ -5044,13 +5078,16 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 
 
 		// and the spline foil whilst we're at it
-		pAFoil->m_pSF->serialize(ar, bIsStoring);
+//		pAFoil->m_pSF->serialize(ar, bIsStoring);
+
+		ar >> n; Units::setPressureUnitIndex(n);
+		ar >> n; Units::setInertiaUnitIndex(n);
 
 		// space allocation
-/*		int k ;
+		int k ;
 		double dble;
-		for (int i=0; i<20; i++) ar >> k;
-		for (int i=0; i<50; i++) ar >> dble;*/
+		for (int i=2; i<20; i++) ar >> k;
+		for (int i=0; i<50; i++) ar >> dble;
 	}
 
 	return true;
@@ -5098,15 +5135,15 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 		{
 		// then n is the ArchiveFormat number
 			ArchiveFormat = n;
-			ar >> Units::s_LengthUnit;
-			ar >> Units::s_AreaUnit;
-			ar >> Units::s_WeightUnit;
-			ar >> Units::s_SpeedUnit;
-			ar >> Units::s_ForceUnit;
+			ar >> n; Units::setLengthUnitIndex(n);
+			ar >> n; Units::setAreaUnitIndex(n);
+			ar >> n; Units::setWeightUnitIndex(n);
+			ar >> n; Units::setSpeedUnitIndex(n);
+			ar >> n; Units::setForceUnitIndex(n);
 
 			if(ArchiveFormat>=100005)
 			{
-				ar >> Units::s_MomentUnit;
+				ar >> n; Units::setMomentUnitIndex(n);
 			}
 
 			Units::setUnitConversionFactors();

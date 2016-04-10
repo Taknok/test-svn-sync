@@ -27,6 +27,7 @@ xflr5 v6.13 March xxxth, 2016
 	- fixed the issue of slow display in XInverse design
 	- fixed some stability issues in XInverse design
 	- interface improvements in XInverse design
+	- added a selection option for inertia units
 	- changed the display in the foil OpPoint view so that the foil can be overlayed on the graph
 	- code cleaning
 

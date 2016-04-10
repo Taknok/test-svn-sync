@@ -635,12 +635,12 @@ void GL3Widget::on3DReset()
 {
 //	if(m_iView == XFLR5::GLMIAREXVIEW || m_iView == XFLR5::GLWINGVIEW || m_iView == XFLR5::GLPLANEVIEW || m_iView == XFLR5::GLEDITBODYVIEW)
 
-/*	if(m_iView == XFLR5::GLMIAREXVIEW)
+	if(m_iView == XFLR5::GLMIAREXVIEW)
 	{
 		QMiarex *pMiarex = (QMiarex *)s_pMiarex;
 		pMiarex->m_bIs3DScaleSet = false;
 		pMiarex->set3DScale();
-	}*/
+	}
 
 	m_glViewportTrans.set(0.0, 0.0, 0.0);
 	reset3DRotationCenter();
@@ -1905,7 +1905,25 @@ void GL3Widget::glRenderMiarexView()
 	QMiarex* pMiarex = (QMiarex*)s_pMiarex;
 	if(pMiarex->m_iView!=XFLR5::W3DVIEW) return;
 
-	m_modelMatrix.setToIdentity();//keep identity
+	m_modelMatrix.setToIdentity();
+
+
+	if(pMiarex->m_pCurWPolar && pMiarex->m_pCurWPolar->isStabilityPolar())
+	{
+		if(pMiarex->m_pCurPOpp && pMiarex->m_pCurPOpp->polarType()==XFLR5::STABILITYPOLAR)
+		{
+			QString strong = QString(tr("Time =")+"%1s").arg(pMiarex->m_ModeTime,6,'f',3);
+			glRenderText(15, 15, strong);
+		}
+
+		m_modelMatrix.translate(pMiarex->m_ModeState[0], pMiarex->m_ModeState[1], pMiarex->m_ModeState[2]);
+		m_modelMatrix.rotate(pMiarex->m_ModeState[3]*180.0/PI, 1.0, 0.0 ,0.0);
+		m_modelMatrix.rotate(pMiarex->m_ModeState[4]*180.0/PI, 0.0, 1.0 ,0.0);
+		m_modelMatrix.rotate(pMiarex->m_ModeState[5]*180.0/PI, 0.0, 0.0 ,1.0);
+
+		if(qAbs(pMiarex->m_pCurWPolar->m_BetaSpec)>0.001) glRotated(pMiarex->m_pCurWPolar->m_BetaSpec, 0.0, 0.0, 1.0);
+	}
+
 	if(pMiarex->m_pCurPOpp)	m_modelMatrix.rotate(pMiarex->m_pCurPOpp->alpha(),0.0,1.0,0.0);
 	m_pvmMatrix = m_OrthoMatrix * m_viewMatrix * m_modelMatrix;
 
@@ -3758,10 +3776,6 @@ void GL3Widget::paintWing(int iWing, Wing *pWing)
 			pos += (CHORDPOINTS-1)*2*3;
 		}
 
-		// no light, no textures, for the tip patches
-		if(bTextures) m_ShaderProgramTexture.setUniformValue(m_LightLocationTexture, 0);
-		else          m_ShaderProgramSurface.setUniformValue(m_LightLocationSurface, 0);
-
 		for (int j=0; j<pWing->m_Surface.count(); j++)
 		{
 			//topsurface
@@ -4841,7 +4855,6 @@ void GL3Widget::glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody)
 	QString planeName;
 	QString textureName;
 	QMiarex *pMiarex = (QMiarex*)s_pMiarex;
-	QString projectPath = Settings::s_LastDirName + "/" + MainFrame::s_ProjectName+ "_textures";
 
 	if(pMiarex && pMiarex->m_pCurPlane)
 	{
@@ -4865,25 +4878,20 @@ void GL3Widget::glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody)
 			break;
 		}
 	}
-	QString texturePath = projectPath+"/"+planeName+"/"+textureName;
-	QImage topLeftTexture  = QImage(QString(texturePath+"top_left.png"));
-	if(topLeftTexture.isNull())
-		topLeftTexture = QImage(QString(":/default_textures/"+textureName+"top_left.png"));
+	QImage topLeftTexture;
+	getTextureFile(planeName, textureName+"top_left", topLeftTexture);
 	m_pWingTopLeftTexture[iWing] = new QOpenGLTexture(topLeftTexture);
 
-	QImage botLeftTexture  = QImage(QString(texturePath+"bottom_left.png"));
-	if(botLeftTexture.isNull())
-		botLeftTexture = QImage(QString(":/default_textures/"+textureName+"bottom_left.png"));
+	QImage botLeftTexture;
+	getTextureFile(planeName, textureName+"bottom_left", botLeftTexture);
 	m_pWingBotLeftTexture[iWing] = new QOpenGLTexture(botLeftTexture);
 
-	QImage topRightTexture  = QImage(QString(texturePath+"top_right.png"));
-	if(topRightTexture.isNull())
-		topRightTexture = QImage(QString(":/default_textures/"+textureName+"top_right.png"));
+	QImage topRightTexture;
+	getTextureFile(planeName, textureName+"top_right", topRightTexture);
 	m_pWingTopRightTexture[iWing] = new QOpenGLTexture(topRightTexture);
 
-	QImage botRightTexture  = QImage(QString(texturePath+"bottom_right.png"));
-	if(botRightTexture.isNull())
-		botRightTexture = QImage(QString(":/default_textures/"+textureName+"bottom_right.png"));
+	QImage botRightTexture;
+	getTextureFile(planeName, textureName+"bottom_right", botRightTexture);
 	m_pWingBotRightTexture[iWing] = new QOpenGLTexture(botRightTexture);
 
 	m_vboWingSurface[iWing].destroy();
@@ -5095,7 +5103,25 @@ void GL3Widget::glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody)
 }
 
 
+void GL3Widget::getTextureFile(QString planeName, QString surfaceName, QImage &textureImage)
+{
+	QString projectPath = Settings::s_LastDirName + "/" + MainFrame::s_ProjectName+ "_textures";
+	QString texturePath = projectPath+"/"+planeName+"/"+surfaceName;
 
+	textureImage =  QImage(QString(texturePath+".png"));
+	if(textureImage.isNull())
+	{
+		textureImage  = QImage(QString(texturePath+".jpg"));
+		if(textureImage.isNull())
+		{
+			textureImage  = QImage(QString(texturePath+".jpeg"));
+			if(textureImage.isNull())
+			{
+				textureImage = QImage(QString(":/default_textures/"+surfaceName+".png"));
+			}
+		}
+	}
+}
 
 
 /** Used in wing edition only */

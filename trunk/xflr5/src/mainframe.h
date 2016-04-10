@@ -140,6 +140,7 @@ private slots:
 	void onExportCurGraph();
 	void onCurGraphSettings();
 	void onInsertProject();
+	void onHighlightOperatingPoint();
 	void onNewProject();
 	void onLanguage();
 	void onLoadFile();
@@ -211,7 +212,7 @@ public:
 	void selectPlaneOpp(void *pPlaneOppPtr);
 	bool serializeProjectWPA(QDataStream &ar, bool bIsStoring);
 	bool serializeProjectXFL(QDataStream &ar, bool bIsStoring);
-	bool SerializePlaneProject(QDataStream &ar);
+	bool serializePlaneProject(QDataStream &ar);
 	void setMainFrameCentralWidget();
 	void setGraphSettings(QGraph *pGraph);
 	void setProjectName(QString PathName);
@@ -329,13 +330,12 @@ private:
 
 	//Miarex Actions
 	QAction *m_pWPolarAct, *m_pWOppAct, *m_pW3DAct, *m_pCpViewAct, *m_pStabTimeAct, *m_pRootLocusAct;
-	QAction *m_pW3DPrefsAct, *m_pW3DLightAct, *m_pW3DScalesAct;
+	QAction *m_pW3DPrefsAct, *m_pW3DLightAct, *m_pW3DScalesAct, *m_pReset3DScale;
 	QAction *m_pDefinePlaneAct, *m_pDefinePlaneObjectAct, *m_pEditPlaneAct, *m_pEditWingAct, *m_pEditBodyAct, *m_pEditBodyObjectAct;
 	QAction *m_pSavePlaneAsProjectAct, *m_pRenameCurPlaneAct, *m_pDeleteCurPlane, *m_pDuplicateCurPlane;
 	QAction *m_pRrenameCurWPolar, *m_pEditWPolarAct, *m_pEditWPolarPts, *m_pExportCurWPolar, *m_pResetCurWPolar;
 	QAction *m_pShowPolarProps, *m_pShowWOppProps;
 	QAction *m_pDeleteCurWPolar, *m_pDeleteCurWOpp;
-	QAction *m_pHighlightWOppAct;
 	QAction *m_pEditObjectAct, *m_pEditWPolarObjectAct, *m_pExporttoXML, *m_pImportXMLPlaneAct ;
 
 	QAction *m_pMiarexPolarFilter;
@@ -374,7 +374,7 @@ private:
 	QAction *m_pCurXFoilRtPlot, *m_pCurXFoilNPlot, *m_pCurXFoilCdPlot, *m_pCurXFoilCfPlot, *m_pCurXFoilUePlot, *m_pCurXFoilHPlot;
 	QAction *m_pManageFoilsAct, *m_pRenamePolarAct;
 	QAction *m_pImportJavaFoilPolar, *m_pImportXFoilPolar;
-	QAction *m_phighlightOppAct;
+	QAction *m_pHighlightOppAct;
 
 	QComboBox *m_pctrlFoil, *m_pctrlPolar, * m_pctrlOpPoint;
 	QComboBox *m_pctrlPlane, *m_pctrlPlanePolar, * m_pctrlPlaneOpp;
@@ -396,8 +396,6 @@ private:
 	bool m_bSaveWOpps;          /**< true if the wing operating points should be serialized in the project file */
 	bool m_bAutoSave;           /**< true if the project should be auto-saved on regular intervals */
 	bool m_bSaveSettings;       /**< true if user-defined settings should be saved on exit. */
-	bool m_bHighlightOpp;       /**< true if the active OpPoint should be highlighted on the polar curve. */
-	bool m_bHighlightWOpp;      /**< true if the active WingOpp should be highlighted on the polar curve. */
 
 	int m_SaveInterval;         /**< the time interval in muinutes between two project auto-saves */
 

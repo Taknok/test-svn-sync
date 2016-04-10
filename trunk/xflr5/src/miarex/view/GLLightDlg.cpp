@@ -36,7 +36,7 @@ int GLLightDlg::s_iShininess = 3;
 
 GLLightDlg::GLLightDlg(QWidget *pParent) : QDialog(pParent)
 {
-	m_ModelSize = 300.0; //in cm, to get sufficient range on the light position slider
+	m_ModelSize = 3.0; //meters
 
 	setWindowTitle(tr("OpenGL Light Options"));
     setModal(false);
@@ -74,7 +74,8 @@ void GLLightDlg::setupLayout()
 {
 	QGroupBox *pLightIntensityBox = new QGroupBox(tr("Light Intensity"));
 	{
-		QGridLayout *pLightIntensity = new QGridLayout;
+		QVBoxLayout *pLightIntensities = new QVBoxLayout;
+		QGridLayout *pLightIntensityLayout = new QGridLayout;
 		{
 			QLabel *lab1 = new QLabel(tr("Diffuse"));
 			QLabel *lab2 = new QLabel(tr("Ambient"));
@@ -111,17 +112,41 @@ void GLLightDlg::setupLayout()
 			m_pctrlLightAmbientLabel = new QLabel;
 			m_pctrlLightDiffuseLabel = new QLabel;
 			m_pctrlLightSpecularLabel = new QLabel;
-			pLightIntensity->addWidget(lab2,1,1);
-			pLightIntensity->addWidget(lab1,2,1);
-			pLightIntensity->addWidget(lab3,3,1);
-			pLightIntensity->addWidget(m_pctrlLightAmbient,1,2);
-			pLightIntensity->addWidget(m_pctrlLightDiffuse,2,2);
-			pLightIntensity->addWidget(m_pctrlLightSpecular,3,2);
-			pLightIntensity->addWidget(m_pctrlLightAmbientLabel,1,3);
-			pLightIntensity->addWidget(m_pctrlLightDiffuseLabel,2,3);
-			pLightIntensity->addWidget(m_pctrlLightSpecularLabel,3,3);
-			pLightIntensityBox->setLayout(pLightIntensity);
+			pLightIntensityLayout->addWidget(lab2,1,1);
+			pLightIntensityLayout->addWidget(lab1,2,1);
+			pLightIntensityLayout->addWidget(lab3,3,1);
+			pLightIntensityLayout->addWidget(m_pctrlLightAmbient,1,2);
+			pLightIntensityLayout->addWidget(m_pctrlLightDiffuse,2,2);
+			pLightIntensityLayout->addWidget(m_pctrlLightSpecular,3,2);
+			pLightIntensityLayout->addWidget(m_pctrlLightAmbientLabel,1,3);
+			pLightIntensityLayout->addWidget(m_pctrlLightDiffuseLabel,2,3);
+			pLightIntensityLayout->addWidget(m_pctrlLightSpecularLabel,3,3);
 		}
+
+		QHBoxLayout *pAttenuationLayout = new QHBoxLayout;
+		{
+			QLabel *pAtt = new QLabel(tr("Attenuation factor=1/("));
+			QLabel *pConstant = new QLabel("+");
+			QLabel *pLinear = new QLabel("xd +");
+			QLabel *pQuadratic = new QLabel(QString::fromUtf8("x d²)"));
+			pConstant->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+			pLinear->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+			pQuadratic->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+			m_pctrlConstantAttenuation = new DoubleEdit(0.0);
+			m_pctrlLinearAttenuation = new DoubleEdit(0.0);
+			m_pctrlQuadAttenuation = new DoubleEdit(0.0);
+
+			pAttenuationLayout->addWidget(pAtt);
+			pAttenuationLayout->addWidget(m_pctrlConstantAttenuation);
+			pAttenuationLayout->addWidget(pConstant);
+			pAttenuationLayout->addWidget(m_pctrlLinearAttenuation);
+			pAttenuationLayout->addWidget(pLinear);
+			pAttenuationLayout->addWidget(m_pctrlQuadAttenuation);
+			pAttenuationLayout->addWidget(pQuadratic);
+		}
+		pLightIntensities->addLayout(pLightIntensityLayout);
+		pLightIntensities->addLayout(pAttenuationLayout);
+		pLightIntensityBox->setLayout(pLightIntensities);
 	}
 
 	QGroupBox *pLightColorBox = new QGroupBox(tr("Light Color"));
@@ -195,37 +220,12 @@ void GLLightDlg::setupLayout()
 		}
 	}
 
-	QHBoxLayout *pAttenuationLayout = new QHBoxLayout;
-	{
-		QLabel *pAtt = new QLabel(tr("Attenuation factor=1/("));
-		QLabel *pConstant = new QLabel("+");
-		QLabel *pLinear = new QLabel("xd +");
-		QLabel *pQuadratic = new QLabel(QString::fromUtf8("x d²)"));
-		pConstant->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-		pLinear->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-		pQuadratic->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-		m_pctrlConstantAttenuation = new DoubleEdit(0.0);
-		m_pctrlLinearAttenuation = new DoubleEdit(0.0);
-		m_pctrlQuadAttenuation = new DoubleEdit(0.0);
-
-		pAttenuationLayout->addWidget(pAtt);
-		pAttenuationLayout->addWidget(m_pctrlConstantAttenuation);
-		pAttenuationLayout->addWidget(pConstant);
-		pAttenuationLayout->addWidget(m_pctrlLinearAttenuation);
-		pAttenuationLayout->addWidget(pLinear);
-		pAttenuationLayout->addWidget(m_pctrlQuadAttenuation);
-		pAttenuationLayout->addWidget(pQuadratic);
-
-	}
-
-
 	QHBoxLayout *pMaterialDataLayout = new QHBoxLayout;
 	{
 		m_pctrlMatShininess = new QSlider(Qt::Horizontal);
-		m_pctrlMatShininess->setRange(0, 64);
+		m_pctrlMatShininess->setRange(4, 64);
 		m_pctrlMatShininess->setTickInterval(2);
 		m_pctrlMatShininess->setTickPosition(QSlider::TicksBelow);
-
 
 		QLabel *lab35 = new QLabel(tr("Material Shininess"));
 		m_pctrlMatShininessLabel = new QLabel("1");
@@ -234,7 +234,6 @@ void GLLightDlg::setupLayout()
 		pMaterialDataLayout->addWidget(m_pctrlMatShininess);
 		pMaterialDataLayout->addWidget(m_pctrlMatShininessLabel);
 	}
-
 
 	QHBoxLayout *pCommandButtons = new QHBoxLayout;
 	{
@@ -251,7 +250,6 @@ void GLLightDlg::setupLayout()
 		pCommandButtons->addStretch(1);
 	}
 
-
 	QVBoxLayout *pMainLayout = new QVBoxLayout;
 	{
 		m_pctrlLight = new QCheckBox(tr("Light"));
@@ -266,9 +264,6 @@ void GLLightDlg::setupLayout()
 		pMainLayout->addStretch();
 		pMainLayout->addLayout(pMaterialDataLayout);
 		pMainLayout->addSpacing(11);
-		pMainLayout->addStretch();
-		pMainLayout->addLayout(pAttenuationLayout);
-		pMainLayout->addSpacing(29);
 		pMainLayout->addStretch();
 		pMainLayout->addLayout(pCommandButtons);
 	}
@@ -367,7 +362,7 @@ void GLLightDlg::setParams(void)
 
 void GLLightDlg::setModelSize(double span)
 {
-	m_ModelSize = span * 100.0; //in cm, to get sufficient range on the light position slider
+	m_ModelSize = span; //meters
 }
 
 
@@ -439,15 +434,15 @@ void GLLightDlg::setDefaults()
 	s_Light.m_Diffuse      = 1.20f;
 	s_Light.m_Specular     = 0.50f;
 
-	s_Light.m_X   =  0.1f * m_ModelSize/100.0;
-	s_Light.m_Y   =  0.3f * m_ModelSize/100.0;
-	s_Light.m_Z   =  m_ModelSize/100.0;
-	m_pctrlXLight->setRange(-(int)m_ModelSize, (int)m_ModelSize);
-	m_pctrlYLight->setRange(-(int)m_ModelSize, (int)m_ModelSize);
-	m_pctrlZLight->setRange(-(int)m_ModelSize, (int)m_ModelSize);
-	m_pctrlXLight->setTickInterval((int)((double)m_ModelSize/10.0));
-	m_pctrlYLight->setTickInterval((int)((double)m_ModelSize/10.0));
-	m_pctrlZLight->setTickInterval((int)((double)m_ModelSize/10.0));
+	s_Light.m_X   =  0.1f * m_ModelSize;
+	s_Light.m_Y   =  0.3f * m_ModelSize;
+	s_Light.m_Z   =  0.5f * m_ModelSize;
+	m_pctrlXLight->setRange(-(int)m_ModelSize*100, (int)m_ModelSize*100);
+	m_pctrlYLight->setRange(-(int)m_ModelSize*100, (int)m_ModelSize*100);
+	m_pctrlZLight->setRange(-(int)m_ModelSize*100, (int)m_ModelSize*100);
+	m_pctrlXLight->setTickInterval((int)((double)m_ModelSize*10.0));
+	m_pctrlYLight->setTickInterval((int)((double)m_ModelSize*10.0));
+	m_pctrlZLight->setTickInterval((int)((double)m_ModelSize*10.0));
 
 	s_iShininess = 5;
 

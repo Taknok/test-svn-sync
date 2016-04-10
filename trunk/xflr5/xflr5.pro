@@ -2,21 +2,23 @@
 # Project created by QtCreator 2009-02-14T15:30:46
 # -------------------------------------------------
 
+message(qmake version: $$[QMAKE_VERSION])
+message(Qt version: $$[QT_VERSION])
 
 #Qt5.4 required for QOpenGLWidget instead of QGLWidget
 lessThan(QT_MAJOR_VERSION, 5) {
-  error("Qt5.4 or greater is required")
+  error("Qt5.4 or greater is required for xflr5 v6.13")
 }
 else
 {
     lessThan(QT_MINOR_VERSION, 4) {
-	  error("Qt5.4 or greater is required")
+	  error("Qt5.4 or greater is required for xflr5 v6.13")
     }
 }
 
 
 CONFIG += qt
-QT += opengl xml
+QT += opengl
 TEMPLATE = app
 
 INCLUDEPATH += $$PWD/src
@@ -158,7 +160,8 @@ SOURCES += \
 	src/viewwidgets/inverseviewwidget.cpp \
 	src/glcontextinfo/glrenderwindow.cpp \
 	src/glcontextinfo/openglinfodlg.cpp \
-    src/misc/stlexportdialog.cpp
+    src/misc/stlexportdialog.cpp \
+    src/miarex/analysis/planeanalysistask.cpp
 
 
 HEADERS += \
@@ -298,7 +301,8 @@ HEADERS += \
 	src/viewwidgets/inverseviewwidget.h \
 	src/glcontextinfo/glrenderwindow.h \
 	src/glcontextinfo/openglinfodlg.h \
-    src/misc/stlexportdialog.h
+    src/misc/stlexportdialog.h \
+    src/miarex/analysis/planeanalysistask.h
 
 
 TRANSLATIONS = translations/xflr5v6.ts \
