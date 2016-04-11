@@ -1641,8 +1641,8 @@ void QMiarex::fillWPlrCurve(Curve *pCurve, WPolar *pWPolar, int XVar, int YVar)
 		if(XVar==30)                          x *= Units::NmtoUnit();//moment
 		if(YVar==30)                          y *= Units::NmtoUnit();//moment
 
-		if(XVar==35)                          x *= Units::mtoUnit();//length
-		if(YVar==35)                          y *= Units::mtoUnit();//length
+		if(XVar==36)                          x *= Units::mtoUnit();// XNP, length
+		if(YVar==36)                          y *= Units::mtoUnit();// XNP, length
 
 		if(bAdd)
 		{

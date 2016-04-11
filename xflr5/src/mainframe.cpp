@@ -84,6 +84,8 @@
 #include <QFileDialog>
 #include <QStyledItemDelegate>
 #include <QOpenGLContext>
+#include <QSysInfo>
+
 
 #ifdef Q_OS_MAC
 	#include <CoreFoundation/CoreFoundation.h>
@@ -123,6 +125,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 		if (!s_pTraceFile->open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text)) s_bTrace = false;
 		s_pTraceFile->reset();
 
+#if QT_VERSION >= 0x050500
 		QSysInfo sysInfo;
 		switch(sysInfo.windowsVersion())
 		{
@@ -180,6 +183,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 			case QSysInfo::MV_IOS_9_0:  Trace("iOS 9.0"); break;
 			case QSysInfo::MV_None:  Trace("Not a Darwin operating system"); break;
 		}
+
 		Trace("build ABI: " + sysInfo.buildAbi());
 		Trace("build CPU: " + sysInfo.buildCpuArchitecture());
 		Trace("current CPU: " + sysInfo.currentCpuArchitecture());
@@ -188,6 +192,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 		Trace("product name: "+sysInfo.prettyProductName());
 		Trace("product type: " +sysInfo.productType());
 		Trace("product version: " +sysInfo.productVersion());
+#endif
 
 		QString strange;
 		strange.sprintf("Default OpengGl format:%d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
