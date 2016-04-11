@@ -1,4 +1,24 @@
 -------------------------------------------------------------------
+Sun Apr 10 12:00:00 UTC 2016 - techwinder@gmail.com
+
+- Update to version 6.13
+    * upgraded to OpenGL 3.0+ from the deprecated OpenGL 1.0
+    * improved the lighting options in 3D view
+    * added an option to paint textures on the plane's surfaces
+    * added an option to export 3D object geometries to binary stl format
+    * added an option to autosave the project at regular time intervals
+    * added XCp.Cl as a variable to the plane's polar graphs, and d(XCp.cl)/dCl = XNP to the plane's legend
+    * changed the panel force display to q.Cp instead of q.S.panel_area; this is more significant since the arrow lengths are now mesh independent.
+    * added the extra drag in the calculation of the plane's total drag coefficient
+    * fixed the issue of slow display in XInverse design
+    * fixed some stability issues in XInverse design
+    * interface improvements in XInverse design
+    * added a selection option for inertia units
+    * changed the display in the foil OpPoint view so that the foil can be overlayed on the graph
+    * code cleaning
+
+
+-------------------------------------------------------------------
 Sat Jan  9 12:00:00 UTC 2016 - techwinder@gmail.com
 
 - Update to version 6.12

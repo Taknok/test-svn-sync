@@ -127,8 +127,8 @@ void GLLightDlg::setupLayout()
 		{
 			QLabel *pAtt = new QLabel(tr("Attenuation factor=1/("));
 			QLabel *pConstant = new QLabel("+");
-			QLabel *pLinear = new QLabel("xd +");
-			QLabel *pQuadratic = new QLabel(QString::fromUtf8("x d²)"));
+			QLabel *pLinear = new QLabel(".d +");
+			QLabel *pQuadratic = new QLabel(QString::fromUtf8(".d²)"));
 			pConstant->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 			pLinear->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 			pQuadratic->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
