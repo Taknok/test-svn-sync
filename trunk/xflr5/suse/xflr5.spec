@@ -21,16 +21,16 @@ Version:        6.13
 Release:        0
 %define short_version 6.13
 Summary:        Analysis tool for airfoils and planes operating at low Re numbers
-License:        GPL-2.0
+License:        GPL-3.0
 Group:          Productivity/Scientific/Other
 Url:            http://www.xflr5.com
 # Source0:        http://sourceforge.net/projects/%{name}/files/%{version}/%{name}-%{version}_src.tar.gz
 Source0:        %{name}-%{version}_src.tar.gz
 Source1:        %{name}.desktop
-#BuildRequires:  Mesa-devel
+
 BuildRequires:  gcc-c++
-BuildRequires:  libqt4-devel >= 4.8.0
-BuildRequires:  libQt5OpenGL-devel >= 5.2.0
+#BuildRequires:  libqt5 >= 5.4.0
+BuildRequires:  libQt5OpenGL-devel >= 5.4.0
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
 %description
@@ -48,22 +48,19 @@ cp %{SOURCE1} .
 sed -i 's/\r$//' {License.txt,doc/ReleaseNotes.txt}
 
 %build
-qmake -o Makefile %{name}-%{short_version}.pro
+qmake-qt5 -o Makefile %{name}-%{short_version}.pro
 make %{?_smp_mflags}
-lrelease %{name}_%{short_version}.pro
+
 
 %install
 install -Dm 755 %{name}               %{buildroot}%{_bindir}/%{name}
 install -Dm 644 images/%{name}.png    %{buildroot}%{_datadir}/pixmaps/%{name}.png
 install -Dm 644 %{name}.desktop       %{buildroot}%{_datadir}/applications/%{name}.desktop
-install -d %{buildroot}%{_datadir}/%{name}/translations
-install -m 644 translations/*.qm      %{buildroot}%{_datadir}/%{name}/translations
 
 %files
 %defattr(-,root,root)
-%doc License.txt doc/ReleaseNotes.txt doc/*.odt
+%doc License.txt doc/ReleaseNotes.txt doc/*.odt doc/*.odp
 %{_bindir}/%{name}
-%{_datadir}/%{name}/
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/pixmaps/%{name}.png
 

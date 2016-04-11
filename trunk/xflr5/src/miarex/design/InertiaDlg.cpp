@@ -995,11 +995,10 @@ void InertiaDlg::setupLayout()
 	//___________________Point Masses__________________________
 	QLabel *PointMasses = new QLabel(tr("Additional Point Masses"));
 	m_pctrlMassTable = new QTableView(this);
+	m_pctrlMassTable->setSizePolicy(szPolicyExpanding);
 	m_pctrlMassTable->setFont(Settings::s_TableFont);
-
 	m_pctrlMassTable->setMinimumHeight(150);
 	m_pctrlMassTable->horizontalHeader()->setStretchLastSection(true);
-
 	m_pctrlMassTable->setSelectionMode(QAbstractItemView::SingleSelection);
 	m_pctrlMassTable->setSelectionBehavior(QAbstractItemView::SelectRows);
 	m_pctrlMassTable->setEditTriggers(QAbstractItemView::CurrentChanged |
@@ -1150,16 +1149,11 @@ void InertiaDlg::setupLayout()
 
 	QVBoxLayout * MainLayout = new QVBoxLayout(this);
 	{
-		MainLayout->addStretch(1);
 		MainLayout->addLayout(MessageLayout);
-		MainLayout->addStretch(1);
 		MainLayout->addWidget(m_pctrlTopStack);
-		MainLayout->addStretch(1);
 		MainLayout->addWidget(PointMasses);
 		MainLayout->addWidget(m_pctrlMassTable);
-		MainLayout->addStretch(1);
 		MainLayout->addWidget(pTotalMassBox);
-		MainLayout->addStretch(1);
 		MainLayout->addLayout(CommandButtons);
 	}
 	setLayout(MainLayout);

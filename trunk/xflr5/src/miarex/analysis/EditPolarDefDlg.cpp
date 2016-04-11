@@ -495,10 +495,10 @@ void EditPolarDefDlg::readViewLevel(QModelIndex indexLevel)
 			else if(field.compare("Mass")==0)                    m_pWPolar->mass()                 = dataIndex.data().toDouble()/Units::kgtoUnit();
 			else if(field.compare("x")==0)                       m_pWPolar->CoG().x                = dataIndex.data().toDouble()/Units::mtoUnit();
 			else if(field.compare("z")==0)                       m_pWPolar->CoG().z                = dataIndex.data().toDouble()/Units::mtoUnit();
-			else if(field.compare("Ixx")==0)                     m_pWPolar->CoGIxx()               = dataIndex.data().toDouble();
-			else if(field.compare("Iyy")==0)                     m_pWPolar->CoGIyy()               = dataIndex.data().toDouble();
-			else if(field.compare("Izz")==0)                     m_pWPolar->CoGIzz()               = dataIndex.data().toDouble();
-			else if(field.compare("Ixz")==0)                     m_pWPolar->CoGIxz()               = dataIndex.data().toDouble();
+			else if(field.compare("Ixx")==0)                     m_pWPolar->CoGIxx()               = dataIndex.data().toDouble()/Units::kgm2toUnit();
+			else if(field.compare("Iyy")==0)                     m_pWPolar->CoGIyy()               = dataIndex.data().toDouble()/Units::kgm2toUnit();
+			else if(field.compare("Izz")==0)                     m_pWPolar->CoGIzz()               = dataIndex.data().toDouble()/Units::kgm2toUnit();
+			else if(field.compare("Ixz")==0)                     m_pWPolar->CoGIxz()               = dataIndex.data().toDouble()/Units::kgm2toUnit();
 			else if(field.compare("Area")==0)                    m_pWPolar->referenceArea()        = referenceDimension(value);
 			else if(field.compare("Reference Area")==0)          m_pWPolar->referenceArea()        = dataIndex.data().toDouble()/Units::m2toUnit();
 			else if(field.compare("Reference Span Length")==0)   m_pWPolar->referenceSpanLength()  = dataIndex.data().toDouble()/Units::mtoUnit();
