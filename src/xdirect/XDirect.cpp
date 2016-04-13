@@ -272,6 +272,8 @@ void QXDirect::setControls()
 	s_pMainFrame->m_pCurXFoilHPlot->setChecked(!m_bPolarView   && OppVar==2 && m_XFoilVar ==10);
 
 	s_pMainFrame->m_pCurXFoilResults->setEnabled(m_pXFoil->lvconv);
+    s_pMainFrame->m_pCurXFoilResults_OperPolarCtxMenu->setEnabled(m_pXFoil->lvconv);
+
 	s_pMainFrame->m_pExportCurXFoilRes->setEnabled(m_pXFoil->lvconv);
 
 	m_pctrlShowPressure->setEnabled(!m_bPolarView && OpPoint::curOpp());
@@ -281,7 +283,11 @@ void QXDirect::setControls()
 //	m_pctrlHighlightOpp->setEnabled(m_bPolar);
 
 	s_pMainFrame->m_pCurrentFoilMenu->setEnabled(Foil::curFoil());
+    s_pMainFrame->m_pCurrentFoilMenu_OperFoilCtxMenu->setEnabled(Foil::curFoil());
+    s_pMainFrame->m_pCurrentFoilMenu_OperPolarCtxMenu->setEnabled(Foil::curFoil());
 	s_pMainFrame->m_pCurrentPolarMenu->setEnabled(Polar::curPolar());
+    s_pMainFrame->m_pCurrentPolarMenu_OperFoilCtxMenu->setEnabled(Polar::curPolar());
+    s_pMainFrame->m_pCurrentPolarMenu_OperPolarCtxMenu->setEnabled(Polar::curPolar());
 
 	s_pMainFrame->m_pRenameCurFoil->setEnabled(Foil::curFoil());
 	s_pMainFrame->m_pDirectDuplicateCurFoil->setEnabled(Foil::curFoil());

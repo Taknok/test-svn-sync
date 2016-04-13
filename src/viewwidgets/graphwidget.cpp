@@ -97,6 +97,7 @@ void GraphWidget::paintEvent(QPaintEvent *  event )
 
 		int fmheight  = fm.height();
 
+        painter.setFont(Settings::textFont());
 		painter.setPen(textPen);
 		painter.drawText(width()-14*fm.averageCharWidth(),fmheight, QString("x = %1").arg(m_pGraph->clientTox(m_LastPoint.x()),9,'f',3));
 		painter.drawText(width()-14*fm.averageCharWidth(),2*fmheight, QString("y = %1").arg(m_pGraph->clientToy(m_LastPoint.y()),9,'f',3));
