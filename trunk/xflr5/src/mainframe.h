@@ -275,16 +275,18 @@ private:
 	//AFoilMenus
 	QMenu *m_pAFoilViewMenu, *m_pAFoilDesignMenu, *m_pAFoilSplineMenu;
 	QMenu *m_pAFoilCtxMenu,*m_pAFoilCurrentFoilMenu, *m_pAFoilTableCtxMenu;
+    QMenu *m_pAFoilDesignMenu_AFoilCtxMenu, *m_pAFoilSplineMenu_AFoilCtxMenu;
 
 	//  XFoilAnalysis Menus
 	QMenu *m_pXDirectViewMenu;
 	QMenu *m_pXDirectFoilMenu, *m_pCurOppCtxMenu;
-	QMenu *m_pCurrentFoilMenu;
-	QMenu *m_pDesignMenu;
+    QMenu *m_pCurrentFoilMenu, *m_pCurrentFoilMenu_OperFoilCtxMenu, *m_pCurrentFoilMenu_OperPolarCtxMenu;
+    QMenu *m_pDesignMenu, *m_pDesignMenu_OperPolarCtxMenu;
 	QMenu *m_pXFoilAnalysisMenu;
-	QMenu *m_pOpPointMenu, *m_pXDirectCpGraphMenu, *m_pCurrentOppMenu;
-	QMenu *m_pPolarMenu, *m_pCurrentPolarMenu, *m_pGraphPolarMenu, *CurPolarGraphMenu;
-	QMenu *m_pOperFoilCtxMenu, *m_pOperPolarCtxMenu, *m_pCurXFoilResults;
+    QMenu *m_pOpPointMenu, *m_pXDirectCpGraphMenu, *m_pXDirectCpGraphMenu_OperPolarCtxMenu, *m_pCurrentOppMenu;
+    QMenu *m_pPolarMenu, *m_pCurrentPolarMenu, *m_pCurrentPolarMenu_OperFoilCtxMenu, *m_pCurrentPolarMenu_OperPolarCtxMenu;
+    QMenu *m_pGraphPolarMenu, *CurPolarGraphMenu;
+    QMenu *m_pOperFoilCtxMenu, *m_pOperPolarCtxMenu, *m_pCurXFoilResults, *m_pCurXFoilResults_OperPolarCtxMenu;
 
 	//XInverse menu
 	QMenu *m_pXInverseViewMenu, *m_pXInverseFoilMenu, *m_pXInverseGraphMenu, *m_pInverseContextMenu;
@@ -293,7 +295,13 @@ private:
 	QMenu *m_pMiarexViewMenu;
 	QMenu *m_pMiarexAnalysisMenu;
 	QMenu *m_pPlaneMenu, *m_pCurrentPlaneMenu, *m_pCurWPlrMenu, *m_pCurWOppMenu;
-	QMenu *m_pMiarexWPlrMenu, *m_pMiarexWOppMenu;
+    QMenu *m_pCurrentPlaneMenu_WOppCtxMenu, *m_pCurrentPlaneMenu_WCpCtxMenu, *m_pCurrentPlaneMenu_WTimeCtxMenu;
+    QMenu *m_pCurrentPlaneMenu_WPlrCtxMenu, *m_pCurrentPlaneMenu_W3DCtxMenu, *m_pCurrentPlaneMenu_W3DStabCtxMenu;
+    QMenu *m_pCurWPlrMenu_WOppCtxMenu, *m_pCurWPlrMenu_WCpCtxMenu, *m_pCurWPlrMenu_WTimeCtxMenu;
+    QMenu *m_pCurWPlrMenu_WPlrCtxMenu, *m_pCurWPlrMenu_W3DCtxMenu, *m_pCurWPlrMenu_W3DStabCtxMenu;
+    QMenu *m_pCurWOppMenu_WOppCtxMenu, *m_pCurWOppMenu_WCpCtxMenu, *m_pCurWOppMenu_WTimeCtxMenu;
+    QMenu *m_pCurWOppMenu_W3DCtxMenu, *m_pCurWOppMenu_W3DStabCtxMenu;
+    QMenu *m_pMiarexWPlrMenu, *m_pMiarexWOppMenu;
 	QMenu *m_pWPlrCtxMenu, *m_pWOppCtxMenu, *m_pW3DCtxMenu, *m_pWCpCtxMenu, *m_pWTimeCtxMenu, *m_pW3DStabCtxMenu;
 
 	//MainFrame actions

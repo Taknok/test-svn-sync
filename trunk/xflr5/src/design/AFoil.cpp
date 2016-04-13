@@ -132,6 +132,7 @@ void QAFoil::setControls()
 	s_pMainFrame->m_pShowLegend->setChecked(m_p2DWidget->m_bShowLegend);
 
 	s_pMainFrame->m_pAFoilSplineMenu->setEnabled(!Foil::curFoil());
+    s_pMainFrame->m_pAFoilSplineMenu_AFoilCtxMenu->setEnabled(!Foil::curFoil());
 	s_pMainFrame->m_pInsertSplinePt->setEnabled(!Foil::curFoil());
 	s_pMainFrame->m_pRemoveSplinePt->setEnabled(!Foil::curFoil());
 
