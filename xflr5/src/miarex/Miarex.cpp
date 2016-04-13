@@ -631,8 +631,27 @@ void QMiarex::setControls()
 	s_pMainFrame->m_pDefineStabPolar->setEnabled(m_pCurPlane);
 
 	s_pMainFrame->m_pCurrentPlaneMenu->setEnabled(m_pCurPlane);
+    s_pMainFrame->m_pCurrentPlaneMenu_WOppCtxMenu->setEnabled(m_pCurPlane);
+    s_pMainFrame->m_pCurrentPlaneMenu_WCpCtxMenu->setEnabled(m_pCurPlane);
+    s_pMainFrame->m_pCurrentPlaneMenu_WTimeCtxMenu->setEnabled(m_pCurPlane);
+    s_pMainFrame->m_pCurrentPlaneMenu_WPlrCtxMenu->setEnabled(m_pCurPlane);
+    s_pMainFrame->m_pCurrentPlaneMenu_W3DCtxMenu->setEnabled(m_pCurPlane);
+    s_pMainFrame->m_pCurrentPlaneMenu_W3DStabCtxMenu->setEnabled(m_pCurPlane);
+
 	s_pMainFrame->m_pCurWPlrMenu->setEnabled(m_pCurWPolar);
+    s_pMainFrame->m_pCurWPlrMenu_WOppCtxMenu->setEnabled(m_pCurWPolar);
+    s_pMainFrame->m_pCurWPlrMenu_WCpCtxMenu->setEnabled(m_pCurWPolar);
+    s_pMainFrame->m_pCurWPlrMenu_WTimeCtxMenu->setEnabled(m_pCurWPolar);
+    s_pMainFrame->m_pCurWPlrMenu_WPlrCtxMenu->setEnabled(m_pCurWPolar);
+    s_pMainFrame->m_pCurWPlrMenu_W3DCtxMenu->setEnabled(m_pCurWPolar);
+    s_pMainFrame->m_pCurWPlrMenu_W3DStabCtxMenu->setEnabled(m_pCurWPolar);
+
 	s_pMainFrame->m_pCurWOppMenu->setEnabled(m_pCurPOpp);
+    s_pMainFrame->m_pCurWOppMenu_WOppCtxMenu->setEnabled(m_pCurPOpp);
+    s_pMainFrame->m_pCurWOppMenu_WCpCtxMenu->setEnabled(m_pCurPOpp);
+    s_pMainFrame->m_pCurWOppMenu_WTimeCtxMenu->setEnabled(m_pCurPOpp);
+    s_pMainFrame->m_pCurWOppMenu_W3DCtxMenu->setEnabled(m_pCurPOpp);
+    s_pMainFrame->m_pCurWOppMenu_W3DStabCtxMenu->setEnabled(m_pCurPOpp);
 
 	//	s_pMainFrame->CurBodyMenu->setVisible(m_pCurPlane!=NULL);
 	s_pMainFrame->m_pEditWingAct->setEnabled(m_pCurPlane);
