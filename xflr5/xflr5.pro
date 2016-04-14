@@ -358,7 +358,7 @@ macx {
     TARGET = XFLR5
     TEMPLATE = app
     CONFIG += i386
-    QMAKE_MAC_SDX = MacOSX10.11
+    QMAKE_MAC_SDK = macosx10.11
     #QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.4
     #QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.6.sdk
     OTHER_FILES += mac/Info.plist
