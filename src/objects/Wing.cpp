@@ -76,7 +76,6 @@ Wing::Wing()
 	m_bIsFin        = false;
 	m_bDoubleFin    = false;
 	m_bSymFin       = false;
-//	m_bDoubleSymFin = false;
 	m_bSymetric     = true;
 	m_bWingOut      = false;
 
@@ -1048,7 +1047,6 @@ void Wing::duplicate(Wing *pWing)
 	m_bSymFin       = pWing->m_bSymFin;
 	m_bDoubleFin    = pWing->m_bDoubleFin;
 	m_bTextures     = pWing->m_bTextures;
-//	m_bDoubleSymFin = pWing->m_bDoubleSymFin;
 
 	clearWingSections();
 

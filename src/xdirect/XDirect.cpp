@@ -4123,7 +4123,7 @@ void QXDirect::onXFoilAdvanced()
 	xfaDlg.m_bAutoInitBL     = XFoilTask::s_bAutoInitBL;
 	xfaDlg.m_VAccel      = XFoil::vaccel;
 	xfaDlg.m_bFullReport = XFoil::s_bFullReport;
-	xfaDlg.InitDialog();
+	xfaDlg.initDialog();
 
 	if (QDialog::Accepted == xfaDlg.exec())
 	{

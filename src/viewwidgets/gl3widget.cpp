@@ -1070,14 +1070,14 @@ void GL3Widget::glMakeBody3DFlatPanels(Body *pBody)
 	if(m_pLeftBodyTexture)  delete m_pLeftBodyTexture;
 	if(m_pRightBodyTexture) delete m_pRightBodyTexture;
 
-	QString projectPath = Settings::s_LastDirName + "/" + MainFrame::s_ProjectName+ "_textures";
+	QString projectPath = Settings::s_LastDirName + QDir::separator() + MainFrame::s_ProjectName+ "_textures";
 	QString planeName;
 	QMiarex *pMiarex = (QMiarex*)s_pMiarex;
 	if(pMiarex && pMiarex->m_pCurPlane)
 	{
 		planeName = pMiarex->m_pCurPlane->planeName();
 	}
-	QString texturePath = projectPath+"/"+planeName+"/";
+	QString texturePath = projectPath+QDir::separator()+planeName+QDir::separator();
 
 	QImage leftTexture  = QImage(QString(texturePath+"body_left.png"));
 	if(leftTexture.isNull()) leftTexture = QImage(QString(":/default_textures/body_left.png"));
@@ -1284,14 +1284,14 @@ void GL3Widget::glMakeBodySplines(Body *pBody)
 	if(m_pLeftBodyTexture)  delete m_pLeftBodyTexture;
 	if(m_pRightBodyTexture) delete m_pRightBodyTexture;
 
-	QString projectPath = Settings::s_LastDirName + "/" + MainFrame::s_ProjectName+ "_textures";
+	QString projectPath = Settings::s_LastDirName + QDir::separator() + MainFrame::s_ProjectName+ "_textures";
 	QString planeName;
 	QMiarex *pMiarex = (QMiarex*)s_pMiarex;
 	if(pMiarex && pMiarex->m_pCurPlane)
 	{
 		planeName = pMiarex->m_pCurPlane->planeName();
 	}
-	QString texturePath = projectPath+"/"+planeName+"/";
+	QString texturePath = projectPath+QDir::separator()+planeName+QDir::separator();
 
 	QImage leftTexture  = QImage(QString(texturePath+"body_left.png"));
 	if(leftTexture.isNull()) leftTexture = QImage(QString(":/default_textures/body_left.png"));
@@ -4026,7 +4026,7 @@ void GL3Widget::glMakePanelForces(int nPanels, Panel *pPanel, WPolar *pWPolar, P
 	double *Cp;
 	double force, cosa, sina2, cosa2, color;
 	double rmin, rmax, range;
-	double coef = 1.;
+
 	Quaternion Qt; // Quaternion operator to align the reference arrow to the panel's normal
 	CVector Omega; // rotation vector to align the reference arrow to the panel's normal
 	CVector O;
@@ -4065,10 +4065,11 @@ void GL3Widget::glMakePanelForces(int nPanels, Panel *pPanel, WPolar *pWPolar, P
 	int iv=0;
 	for (p=0; p<nPanels; p++)
 	{
-		force = 0.5*pWPolar->density() *pPOpp->m_QInf*pPOpp->m_QInf * Cp[p]*pPanel[p].area();
+		force = 0.5*pWPolar->density() *pPOpp->m_QInf*pPOpp->m_QInf * Cp[p];
 		color = (force-rmin)/range;
 
 		//scale force for display
+		double coef = .0001;
 		force *= QMiarex::s_LiftScale *coef;
 
 		double r= GLGetRed(color);
@@ -5105,8 +5106,8 @@ void GL3Widget::glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody)
 
 void GL3Widget::getTextureFile(QString planeName, QString surfaceName, QImage &textureImage)
 {
-	QString projectPath = Settings::s_LastDirName + "/" + MainFrame::s_ProjectName+ "_textures";
-	QString texturePath = projectPath+"/"+planeName+"/"+surfaceName;
+	QString projectPath = Settings::s_LastDirName + QDir::separator() + MainFrame::s_ProjectName+ "_textures";
+	QString texturePath = projectPath+QDir::separator()+planeName+QDir::separator()+surfaceName;
 
 	textureImage =  QImage(QString(texturePath+".png"));
 	if(textureImage.isNull())

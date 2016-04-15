@@ -62,7 +62,6 @@ private slots:
 	void onTextFont();
 	void onTableFont();
 	void onReverseZoom();
-	void onAlphaChannel();
 
 private:
 	void reject();
@@ -73,7 +72,7 @@ private:
 	QPushButton *m_pctrlTextFont, *m_pctrlTableFont;
 	QPushButton *m_pctrlGraphSettings;
 	QPushButton *OKButton;
-	QCheckBox *m_pctrlReverseZoom, *m_pctrlAlphaChannel;
+	QCheckBox *m_pctrlReverseZoom;
 
 	QComboBox *m_pctrlStyles;
 	QPushButton *OK, *Cancel;
@@ -92,7 +91,7 @@ public:
 	static QColor s_BackgroundColor;
 	static QColor s_TextColor;
 	static bool s_bStyleSheets;
-	static bool s_bReverseZoom, s_bAlphaChannel;
+	static bool s_bReverseZoom;
 	static XFLR5::enumTextFileType s_ExportFileType;  /**< Defines if the list separator for the output text files should be a space or a comma. */
 	static QGraph s_RefGraph;//Reference setttings
 	static QString s_LastDirName;

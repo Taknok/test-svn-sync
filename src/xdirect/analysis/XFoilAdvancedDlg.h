@@ -44,7 +44,7 @@ class XFoilAdvancedDlg : public QDialog
 
 public:
 	XFoilAdvancedDlg(QWidget *pParent=NULL);
-	void InitDialog();
+	void initDialog();
 
 
 private slots:

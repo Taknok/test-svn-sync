@@ -3445,12 +3445,12 @@ MainFrame* MainFrame::self() {
 }
 
 
-XFLR5::enumApp MainFrame::loadXFLR5File(QString PathName)
+XFLR5::enumApp MainFrame::loadXFLR5File(QString pathName)
 {
-	QFile XFile(PathName);
+	QFile XFile(pathName);
 	if (!XFile.open(QIODevice::ReadOnly))
 	{
-		QString strange = tr("Could not open the file\n")+PathName;
+		QString strange = tr("Could not open the file\n")+pathName;
 		QMessageBox::information(window(), tr("Info"), strange);
 		return XFLR5::NOAPP;
 	}
@@ -3458,12 +3458,13 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString PathName)
 	QAFoil *pAFoil= (QAFoil*)m_pAFoil;
 	QXDirect * pXDirect = (QXDirect*)m_pXDirect;
 
-	QString end = PathName.right(4).toLower();
+	QString end = pathName.right(4).toLower();
 
-	PathName.replace(QDir::separator(), "/"); // Qt sometimes uses the windows \ separator
+	pathName.replace(QDir::separator(), "/"); // Qt sometimes uses the windows \ separator
 
-	int pos = PathName.lastIndexOf("/");
-	if(pos>0) Settings::s_LastDirName = PathName.left(pos);
+	int pos = pathName.lastIndexOf("/");
+	if(pos>0) 	Settings::s_LastDirName = pathName.left(pos);
+
 	if(end==".plr")
 	{
 		QDataStream ar(&XFile);
@@ -3482,15 +3483,20 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString PathName)
 
 		XFile.close();
 
-		addRecentFile(PathName);
+		addRecentFile(pathName);
 		setSaveState(false);
 		pXDirect->setControls();
 		return XFLR5::XFOILANALYSIS;
 	}
 	else if(end==".dat")
 	{
+		QString fileName = pathName;
+		fileName.replace(".dat","");
+		int pos1 = fileName.lastIndexOf("hn");
+		fileName = fileName.right(fileName.length()-pos1);
+
 		QTextStream ar(&XFile);
-		Foil *pFoil = (Foil*)readFoilFile(ar);
+		Foil *pFoil = (Foil*)readFoilFile(ar, fileName);
 		XFile.close();
 
 		if(pFoil)
@@ -3503,7 +3509,7 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString PathName)
             XFile.close();
 
             setSaveState(false);
-            addRecentFile(PathName);
+			addRecentFile(pathName);
 
 			if(m_iApp==XFLR5::XFOILANALYSIS)
 			{
@@ -3549,10 +3555,10 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString PathName)
 			QMessageBox::warning(this,tr("Warning"), tr("Error reading the file")+"\n"+tr("Saved the valid part"));
 		}
 
-		addRecentFile(PathName);
+		addRecentFile(pathName);
 		setSaveState(true);
-		PathName.replace(".wpa", ".xfl", Qt::CaseInsensitive);
-		setProjectName(PathName);
+		pathName.replace(".wpa", ".xfl", Qt::CaseInsensitive);
+		setProjectName(pathName);
 
 		XFile.close();
 
@@ -3588,9 +3594,9 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString PathName)
 			QMessageBox::warning(this,tr("Warning"), tr("Error reading the file")+"\n"+tr("Saved the valid part"));
 		}
 
-		addRecentFile(PathName);
+		addRecentFile(pathName);
 		setSaveState(true);
-		setProjectName(PathName);
+		setProjectName(pathName);
 
 		XFile.close();
 
@@ -4534,7 +4540,7 @@ void MainFrame::openRecentFile()
 }
 
 
-void *MainFrame::readFoilFile(QTextStream &in)
+void *MainFrame::readFoilFile(QTextStream &in, QString fileName)
 {
 	QString strong;
 	QString tempStr;
@@ -4568,8 +4574,8 @@ void *MainFrame::readFoilFile(QTextStream &in)
 
 		if(readValues(strong,x,y,z)==2)
 		{
-			//there isn't a name on the first line
-			FoilName = "New Foil";
+			//there isn't a name on the first line, use the file's name
+			FoilName = fileName;
 			{
 				pFoil->xb[0] = x;
 				pFoil->yb[0] = y;

@@ -200,7 +200,6 @@ public:
 
 	bool m_bDoubleFin;                          /**< true if the plane has a double fin, i.e. left and right */
 	bool m_bSymFin;                             /**< true if the plane has a symetric fin, i.e. top and bottom */
-	bool m_bDoubleSymFin;                       /**< true if the plane has a double and symetric fin */
 
 
 };
