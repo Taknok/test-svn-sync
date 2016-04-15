@@ -81,6 +81,7 @@ class Wing
 	friend class EditPlaneDlg;
 	friend class EditBodyDlg;
 	friend class GL3Widget;
+	friend class XMLPlaneReader;
 
 
 public:
@@ -138,7 +139,6 @@ public:
 	bool &isFin()          {return m_bIsFin;}
 	bool &isDoubleFin()    {return m_bDoubleFin;}
 	bool &isSymFin()       {return m_bSymFin;}
-//	bool &isDoubleSymFin() {return m_bDoubleSymFin;}
 
 	void insertSection(int iSection);
 	bool appendWingSection();

@@ -95,7 +95,6 @@ Plane::Plane()
 	m_bDoubleFin    = false;
 	m_bSymFin       = false;
 	m_bStab         = true;
-	m_bDoubleSymFin = false;
 	m_bBiplane      = false;
 
 	clearPointMasses();
@@ -347,7 +346,6 @@ void Plane::duplicate(Plane *pPlane)
 	m_bFin          = pPlane->m_bFin;
 	m_bSymFin       = pPlane->m_bSymFin;
 	m_bDoubleFin    = pPlane->m_bDoubleFin;
-	m_bDoubleSymFin = pPlane->m_bDoubleSymFin;
 	m_bStab         = pPlane->m_bStab;
 	m_bBiplane      = pPlane->m_bBiplane;
 
@@ -503,7 +501,7 @@ bool Plane::serializePlaneWPA(QDataStream &ar, bool bIsStoring)
 		if(ArchiveFormat>=1005)
 		{
 			ar >>k;
-			if(k) m_bDoubleSymFin = true;  else m_bDoubleSymFin = false;
+//			if(k) m_bDoubleSymFin = true;  else m_bDoubleSymFin = false;
 //			m_Wing[3].m_bDoubleSymFin = m_bDoubleSymFin;
 		}
 		if(ArchiveFormat>=1007)
@@ -638,7 +636,8 @@ bool Plane::serializePlaneXFL(QDataStream &ar, bool bIsStoring)
 		m_Wing[2].serializeWingXFL(ar, bIsStoring);
 		m_Wing[3].serializeWingXFL(ar, bIsStoring);
 
-		ar << m_bBiplane<< m_bStab <<m_bFin << m_bDoubleFin << m_bSymFin << m_bDoubleSymFin;
+		bool bl;
+		ar << m_bBiplane<< m_bStab <<m_bFin << m_bDoubleFin << m_bSymFin << bl;//m_bDoubleSymFin;
 
 		for(int iw=0; iw<MAXWINGS; iw++)
 		{
@@ -689,7 +688,8 @@ bool Plane::serializePlaneXFL(QDataStream &ar, bool bIsStoring)
 		m_Wing[2].wingType() = XFLR5::ELEVATOR;
 		m_Wing[3].wingType() = XFLR5::FIN;
 
-		ar >> m_bBiplane>> m_bStab >>m_bFin >> m_bDoubleFin >> m_bSymFin >> m_bDoubleSymFin;
+		bool bl;
+		ar >> m_bBiplane>> m_bStab >>m_bFin >> m_bDoubleFin >> m_bSymFin >> bl; // m_bDoubleSymFin;
 
 		for(int iw=0; iw<MAXWINGS; iw++)
 		{

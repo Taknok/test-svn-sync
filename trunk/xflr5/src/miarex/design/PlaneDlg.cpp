@@ -131,7 +131,6 @@ void PlaneDlg::initDialog()
 	if(!m_bAcceptName) m_pctrlPlaneName->setEnabled(false);
 	m_bChanged = false;
 
-	m_pPlane->m_bDoubleSymFin = true;
 	m_pPlane->m_Wing[0].createSurfaces(m_pPlane->m_WingLE[0],   0.0, m_pPlane->m_WingTiltAngle[0]);//necessary for eventual inertia calculations
 	m_pPlane->m_Wing[1].createSurfaces(m_pPlane->m_WingLE[1],   0.0, m_pPlane->m_WingTiltAngle[1]);//necessary for eventual inertia calculations
 	m_pPlane->m_Wing[2].createSurfaces(m_pPlane->m_WingLE[2],   0.0, m_pPlane->m_WingTiltAngle[2]);//necessary for eventual inertia calculations
@@ -605,7 +604,7 @@ void PlaneDlg::onOK()
 		{
 			if(qAbs(m_pPlane->fin()->YPosition(j)-m_pPlane->fin()->YPosition(j+1)) > Wing::s_MinPanelSize)
 			{
-				if((m_pPlane->m_bSymFin) || (m_pPlane->m_bDoubleFin && m_pPlane->m_bDoubleSymFin))
+				if((m_pPlane->m_bSymFin) || m_pPlane->m_bDoubleFin)
 					nSurfaces += 2;
 				else
 					nSurfaces += 1;

@@ -7853,8 +7853,8 @@ void QMiarex::drawTextLegend()
 		paintPlaneOppLegend(paint, rect);
 		if(m_iView==XFLR5::W3DVIEW)
 		{
-			paintCpLegendText(paint);
-			paintPanelForceLegendText(paint);
+			if(m_b3DCp)            paintCpLegendText(paint);
+			else if(m_bPanelForce) paintPanelForceLegendText(paint);
 		}
 	}
 	m_bResetTextLegend = false;

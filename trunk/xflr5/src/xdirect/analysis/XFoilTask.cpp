@@ -22,10 +22,10 @@
 
 #include "BatchThreadDlg.h"
 #include "XFoilTask.h"
+#include "xfoiltaskevent.h"
 #include <QThread>
 #include <QCoreApplication>
 #include <QApplication>
-#include <QTimerEvent>
 #include <QtDebug>
 
 int XFoilTask::s_IterLim=100;
@@ -39,6 +39,7 @@ bool XFoilTask::s_bSkipPolar = false;
 */
 XFoilTask::XFoilTask(QWidget *pParent)
 {
+	setAutoDelete(true);
 	m_pParent = pParent;
 	m_Id = -1;
 	m_pFoil  = NULL;
@@ -61,8 +62,6 @@ XFoilTask::XFoilTask(QWidget *pParent)
 
 	m_pGraph = NULL;
 	m_pCurve0 = m_pCurve1 = NULL;
-
-	setAutoDelete(false);
 }
 
 
@@ -85,10 +84,7 @@ void XFoilTask::run()
 	m_bIsFinished = true;
 
 	// For multithreaded analysis, post an event to notify parent window.
-	// Could emit a signal, but signals are converted to events anyway when sent across threads
-	QTimerEvent *event = new QTimerEvent(m_Id);
-	QApplication::postEvent(m_pParent, event);
-    //will be truly finished whent this message has been received by the parent analysis dialog
+	QApplication::postEvent(m_pParent, new XFoilTaskEvent(m_pFoil, m_pPolar));
 }
 
 

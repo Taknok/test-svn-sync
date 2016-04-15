@@ -33,10 +33,11 @@
 #include <QRadioButton>
 #include <QTextEdit>
 
-#include "../../objects/Foil.h"
-#include "../../objects/Polar.h"
-#include "../../misc/DoubleEdit.h"
+#include <objects/Foil.h>
+#include <objects/Polar.h>
+#include <misc/DoubleEdit.h>
 #include "XFoilTask.h"
+#include "xfoiltaskevent.h"
 
 /**
  * @struct Analysis a pair of foil and polar used by a thread to perform one foil polar analysis.
@@ -85,7 +86,11 @@ private:
 	void updateOutput(QString &str);
 	void writeString(QString &strong);
 
-	void timerEvent(QTimerEvent *event);
+protected:
+	void customEvent(QEvent *event); // This overrides QObject::customEvent()
+
+private:
+	void handleXFoilTaskEvent(const XFoilTaskEvent *event);
 
 private slots:
 	void onSpecChanged();
@@ -99,6 +104,7 @@ private slots:
 	void onFoilList();
 	void onFoilSelectionType();
 	void onAdvancedSettings();
+	void onTimerEvent();
 
 
 private:
@@ -144,7 +150,8 @@ private:
 
 	int m_nAnalysis;            /**< the number of analysis pairs to run */
 	int m_nThreads;             /**< the number of available threads */
-
+	int m_nTaskStarted;         /**< the number of started tasks */
+	int m_nTaskDone;            /**< the number of finished tasks */
 	double m_Mach;              /**< the Mach number used if not from the list of Re numbers */
 	double m_ACrit;             /**< the transition criterion used if not from the list of Re numbers */
 
@@ -153,13 +160,15 @@ private:
 
 
 	QList<Analysis *> m_AnalysisPair;  /**< the list of all analysis to be performed. Once performed, an analysis is removed from the list. */
-	XFoilTask *m_pXFoilTask;           /**< the task for a thread */
+//	XFoilTask *m_pXFoilTask;           /**< the task for a thread */
 
 	QFile *m_pXFile;                   /**< a pointer to the output log file */
 
 	Foil *m_pCurFoil;                  /**< a pointer to the current Foil */
 
 	QStringList m_FoilList;            /**< the list of foils to analyze */
+
+	QTimer *m_pTimer;
 };
 
 #endif // BATCHTHREADDLG_H

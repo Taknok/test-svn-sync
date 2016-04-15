@@ -21,7 +21,7 @@
 
 #include "XmlPlaneReader.h"
 #include <QMessageBox>
-
+#include <QtDebug>
 
 XMLPlaneReader::XMLPlaneReader(QFile &file, Plane *pPlane)
 {
@@ -121,7 +121,7 @@ void XMLPlaneReader::readPlane(Plane *pPlane, double lengthUnit, double massUnit
 		}
 		else if (name().toString().compare("wing", Qt::CaseInsensitive)==0)
 		{
-			double xw=0.0, zw=0.0, ta=0.0;
+			double xw=0.0, yw=0.0, zw=0.0, ta=0.0;
 			Wing newWing;
 			{
 				newWing.wingType() = XFLR5::OTHERWING;
@@ -154,6 +154,7 @@ void XMLPlaneReader::readPlane(Plane *pPlane, double lengthUnit, double massUnit
 						if(coordList.length()>=3)
 						{
 							xw = coordList.at(0).toDouble()*lengthUnit;
+							yw = coordList.at(1).toDouble()*lengthUnit;
 							zw = coordList.at(2).toDouble()*lengthUnit;
 						}
 					}
@@ -306,6 +307,7 @@ void XMLPlaneReader::readPlane(Plane *pPlane, double lengthUnit, double massUnit
 
 				pPlane->m_Wing[iWing].duplicate(&newWing);
 				pPlane->WingLE(iWing).x      = xw;
+				pPlane->WingLE(iWing).y      = yw;
 				pPlane->WingLE(iWing).z      = zw;
 				pPlane->WingTiltAngle(iWing) = ta;
 
@@ -315,6 +317,9 @@ void XMLPlaneReader::readPlane(Plane *pPlane, double lengthUnit, double massUnit
 		else
 			skipCurrentElement();
 	}
+	if(pPlane->fin() && pPlane->fin()->m_bDoubleFin) pPlane->m_bDoubleFin = true;
+	if(pPlane->fin() && pPlane->fin()->m_bSymFin)    pPlane->m_bSymFin = true;
+//	pPlane->m_bDoubleSymFin = pPlane->m_bDoubleFin && pPlane->m_bSymFin;
 }
 
 
