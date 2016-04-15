@@ -200,7 +200,7 @@ public:
 	void GLToClient(CVector const &real, QPoint &point);
 	bool loadSettings();
 	bool loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
-	void* readFoilFile(QTextStream &ar);
+	void* readFoilFile(QTextStream &ar, QString fileName);
 	void readPolarFile(QDataStream &ar);
 	bool saveProject(QString PathName="");
 	void saveSettings();

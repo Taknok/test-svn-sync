@@ -71,7 +71,7 @@ public:
 	void readPlaneTree();
 	void readViewLevel(QModelIndex indexLevel);
 	void readBodyTree(Body *pBosy, QModelIndex indexLevel);
-	void readWingTree(Wing *pWing, CVector &pos, double &tiltAngle, QModelIndex indexLevel);
+	void readWingTree(Wing *pWing, CVector &wingLE, double &tiltAngle, QModelIndex indexLevel);
 	void readInertiaTree(double &volumeMass, QList<PointMass *> &pointMasses, QModelIndex indexLevel);
 	void readVectorTree(CVector &V, QModelIndex indexLevel);
 	void readWingSectionTree(Wing *pWing, QModelIndex indexLevel);

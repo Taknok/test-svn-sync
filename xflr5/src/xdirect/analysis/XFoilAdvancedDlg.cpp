@@ -121,11 +121,11 @@ void XFoilAdvancedDlg::OnDefaults()
 	m_bFullReport = false;
 	QXDirect::s_bKeepOpenErrors = true;
 	QXDirect::s_TimeUpdateInterval = 100;
-	InitDialog();
+	initDialog();
 }
 
 
-void XFoilAdvancedDlg::InitDialog()
+void XFoilAdvancedDlg::initDialog()
 {
 	m_pctrlVAccel->setValue(m_VAccel);
 	m_pctrlInitBL->setChecked(m_bAutoInitBL);

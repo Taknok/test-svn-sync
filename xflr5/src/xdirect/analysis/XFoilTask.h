@@ -42,6 +42,7 @@ class XFoilTask : public QRunnable
 public:
 	XFoilTask(QWidget *pParent = NULL);
 
+
 public:
 	void run();
 	bool alphaSequence();

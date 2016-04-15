@@ -510,7 +510,7 @@ void EditPlaneDlg::onOK()
 		{
 			if(qAbs(m_pPlane->fin()->YPosition(j)-m_pPlane->fin()->YPosition(j+1)) > Wing::s_MinPanelSize)
 			{
-				if((m_pPlane->m_bSymFin) || (m_pPlane->m_bDoubleFin && m_pPlane->m_bDoubleSymFin))
+				if((m_pPlane->m_bSymFin) || m_pPlane->m_bDoubleFin)
 					nSurfaces += 2;
 				else
 					nSurfaces += 1;
@@ -1169,6 +1169,10 @@ void EditPlaneDlg::fillWingTreeView(int iw, QList<QStandardItem*> &planeRootItem
 		dataItem.at(2)->setData(XFLR5::DOUBLE, Qt::UserRole);
 		wingPositionFolder.first()->appendRow(dataItem);
 
+		dataItem = prepareDoubleRow("", "y", m_pPlane->WingLE(iw).y*Units::mtoUnit(), Units::lengthUnitLabel());
+		dataItem.at(2)->setData(XFLR5::DOUBLE, Qt::UserRole);
+		wingPositionFolder.first()->appendRow(dataItem);
+
 		dataItem = prepareDoubleRow("", "z", m_pPlane->WingLE(iw).z*Units::mtoUnit(), Units::lengthUnitLabel());
 		dataItem.at(2)->setData(XFLR5::DOUBLE, Qt::UserRole);
 		wingPositionFolder.first()->appendRow(dataItem);
@@ -1526,7 +1530,7 @@ void EditPlaneDlg::readViewLevel(QModelIndex indexLevel)
 }
 
 
-void EditPlaneDlg::readWingTree(Wing *pWing, CVector &pos, double &tiltAngle, QModelIndex indexLevel)
+void EditPlaneDlg::readWingTree(Wing *pWing, CVector &wingLE, double &tiltAngle, QModelIndex indexLevel)
 {
 	QString object, field, value;
 
@@ -1536,7 +1540,7 @@ void EditPlaneDlg::readWingTree(Wing *pWing, CVector &pos, double &tiltAngle, QM
 		{
 			object = indexLevel.sibling(indexLevel.row(),0).data().toString();
 
-			if(object.compare("Position", Qt::CaseInsensitive)==0)      readVectorTree(pos, indexLevel.child(0,0));
+			if(object.compare("Position", Qt::CaseInsensitive)==0)      readVectorTree(wingLE, indexLevel.child(0,0));
 			else if(object.compare("Color", Qt::CaseInsensitive)==0)
 			{
 				QModelIndex subIndex = indexLevel.child(0,0);

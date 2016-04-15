@@ -43,7 +43,6 @@ QFont Settings::s_TableFont;
 QColor Settings::s_BackgroundColor = QColor(3, 9, 9);
 QColor Settings::s_TextColor=QColor(221,221,221);
 bool Settings::s_bReverseZoom = false;
-bool Settings::s_bAlphaChannel = true;
 QGraph Settings::s_RefGraph;
 XFLR5::enumTextFileType Settings::s_ExportFileType;  /**< Defines if the list separator for the output text files should be a space or a comma. */
 QString Settings::s_LastDirName = QDir::homePath();
@@ -80,7 +79,6 @@ Settings::Settings(QWidget *pParent) : QDialog(pParent)
 	connect(m_pctrlTableFont, SIGNAL(clicked()),this, SLOT(onTableFont()));
 
 	connect(m_pctrlReverseZoom, SIGNAL(clicked()), this, SLOT(onReverseZoom()));
-	connect(m_pctrlAlphaChannel, SIGNAL(clicked()), this, SLOT(onAlphaChannel()));
 
 	connect(OKButton, SIGNAL(clicked()),this, SLOT(accept()));
 }
@@ -168,17 +166,6 @@ void Settings::setupLayout()
 		pCommandButtons->addStretch(1);
 	}
 
-
-	QGroupBox *pOpenGLBox = new QGroupBox(tr("OpenGL"));
-	{
-		QVBoxLayout *pOpenGLLayout = new QVBoxLayout;
-		{
-			m_pctrlAlphaChannel = new QCheckBox(tr("Enable 3D transparency"));
-			pOpenGLLayout->addWidget(m_pctrlAlphaChannel);
-		}
-		pOpenGLBox->setLayout(pOpenGLLayout);
-	}
-
 	QVBoxLayout *pMainLayout = new QVBoxLayout;
 	{
 		m_pctrlReverseZoom = new QCheckBox(tr("Reverse zoom direction using mouse wheel"));
@@ -190,8 +177,6 @@ void Settings::setupLayout()
 		pMainLayout->addWidget(pFontBox);
 		pMainLayout->addStretch(1);
 		pMainLayout->addWidget(pGraphBox);
-		pMainLayout->addStretch(1);
-		pMainLayout->addWidget(pOpenGLBox);
 		pMainLayout->addStretch(1);
 		pMainLayout->addWidget(m_pctrlReverseZoom);
 		pMainLayout->addSpacing(20);
@@ -229,7 +214,6 @@ void Settings::initDialog()
 		m_pctrlStyles->setCurrentIndex(m_pctrlStyles->findText(s_StyleSheetName));
 
 	m_pctrlReverseZoom->setChecked(s_bReverseZoom);
-	m_pctrlAlphaChannel->setChecked(s_bAlphaChannel);
 }
 
 
@@ -424,7 +408,6 @@ void Settings::saveSettings(QSettings *pSettings)
 		pSettings->setValue("TableFontBold", s_TableFont.bold());
 
 		pSettings->setValue("ReverseZoom", s_bReverseZoom);
-		pSettings->setValue("AlphaChannel", s_bAlphaChannel);
 		s_RefGraph.saveSettings(pSettings);
 	}
 	pSettings->endGroup();
@@ -454,7 +437,6 @@ void Settings::loadSettings(QSettings *pSettings)
 		s_TableFont.setBold(pSettings->value("TableFontBold", false).toBool());
 
 		s_bReverseZoom   = pSettings->value("ReverseZoom", false).toBool();
-		s_bAlphaChannel  = pSettings->value("AlphaChannel", true).toBool();
 
 		s_RefGraph.loadSettings(pSettings);
 	}
@@ -467,16 +449,6 @@ void Settings::onReverseZoom()
 {
 	s_bReverseZoom = m_pctrlReverseZoom->isChecked();
 }
-
-
-void Settings::onAlphaChannel()
-{
-	s_bAlphaChannel = m_pctrlAlphaChannel->isChecked();
-}
-
-
-
-
 
 
 
