@@ -38,13 +38,13 @@ class TEGapDlg : public QDialog
 
 public:
 	TEGapDlg(QWidget *pParent);
-	void SetupLayout();
-	void InitDialog();
+	void setupLayout();
+	void initDialog();
 
 private slots:
-	void OnChanged();
-	void OnOK();
-	void OnApply();
+	void onChanged();
+	void onOK();
+	void onApply();
 
 private:
 	void keyPressEvent(QKeyEvent *event);

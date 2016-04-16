@@ -559,7 +559,7 @@ void QAFoil::onAFoilPanels()
 	TwoDPanelDlg tdpDlg(s_pMainFrame);
     tdpDlg.m_pBufferFoil = m_pBufferFoil;
 	tdpDlg.m_pMemFoil    = Foil::curFoil();
-    tdpDlg.InitDialog();
+	tdpDlg.initDialog();
 
     if(QDialog::Accepted == tdpDlg.exec())
 	{
@@ -702,7 +702,7 @@ void QAFoil::onAFoilSetTEGap()
 	TEGapDlg teDlg(s_pMainFrame);
     teDlg.m_pBufferFoil = m_pBufferFoil;
 	teDlg.m_pMemFoil    = Foil::curFoil();
-	teDlg.InitDialog();
+	teDlg.initDialog();
 
     if(QDialog::Accepted == teDlg.exec())
 	{
@@ -883,6 +883,7 @@ void QAFoil::onAFoilNacaFoils()
 		((XFoil*)m_pXFoil)->m_pFoil=NULL;
 	}
 
+	setControls();
 	m_pBufferFoil->m_bVisible = false;
 	m_p2DWidget->update();;
 }

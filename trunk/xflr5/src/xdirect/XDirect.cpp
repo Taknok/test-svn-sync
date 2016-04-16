@@ -3487,7 +3487,7 @@ void QXDirect::onRefinePanelsGlobally()
 	m_bShowPanels = true;
 	updateView();
 
-	tdpDlg.InitDialog();
+	tdpDlg.initDialog();
 
 	if(QDialog::Accepted == tdpDlg.exec())
 	{
@@ -3889,7 +3889,7 @@ void QXDirect::onSetTEGap()
 	tegDlg.m_pBufferFoil = &m_BufferFoil;
 	tegDlg.m_pMemFoil    = Foil::curFoil();
 	tegDlg.m_Gap         = Foil::curFoil()->m_Gap;
-	tegDlg.InitDialog();
+	tegDlg.initDialog();
 
 	if(QDialog::Accepted == tegDlg.exec())
 	{

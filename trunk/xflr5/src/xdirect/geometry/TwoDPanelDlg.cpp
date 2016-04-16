@@ -33,7 +33,7 @@ void *TwoDPanelDlg::s_pXFoil;
 
 TwoDPanelDlg::TwoDPanelDlg(QWidget *pParent) : QDialog(pParent)
 {
-	SetupLayout();
+	setupLayout();
 
 	m_pParent = pParent;
 
@@ -43,7 +43,7 @@ TwoDPanelDlg::TwoDPanelDlg(QWidget *pParent) : QDialog(pParent)
 
 
 
-void TwoDPanelDlg::SetupLayout()
+void TwoDPanelDlg::setupLayout()
 {
 	setWindowTitle(tr("Global Panel Refinement"));
 	QGridLayout *pInputDataLayout = new QGridLayout;
@@ -83,14 +83,14 @@ void TwoDPanelDlg::SetupLayout()
 		pInputDataLayout->addWidget(m_pctrlXpRef1,  6, 2);
 		pInputDataLayout->addWidget(m_pctrlXpRef2,  6, 3);
 
-		connect(m_pctrlNPanels, SIGNAL(editingFinished()), this, SLOT(OnChanged()));
-		connect(m_pctrlCVpar,   SIGNAL(editingFinished()), this, SLOT(OnChanged()));
-		connect(m_pctrlCTErat,  SIGNAL(editingFinished()), this, SLOT(OnChanged()));
-		connect(m_pctrlCTRrat,  SIGNAL(editingFinished()), this, SLOT(OnChanged()));
-		connect(m_pctrlXsRef1,  SIGNAL(editingFinished()), this, SLOT(OnChanged()));
-		connect(m_pctrlXsRef2,  SIGNAL(editingFinished()), this, SLOT(OnChanged()));
-		connect(m_pctrlXpRef1,  SIGNAL(editingFinished()), this, SLOT(OnChanged()));
-		connect(m_pctrlXpRef2,  SIGNAL(editingFinished()), this, SLOT(OnChanged()));
+		connect(m_pctrlNPanels, SIGNAL(editingFinished()), this, SLOT(onChanged()));
+		connect(m_pctrlCVpar,   SIGNAL(editingFinished()), this, SLOT(onChanged()));
+		connect(m_pctrlCTErat,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
+		connect(m_pctrlCTRrat,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
+		connect(m_pctrlXsRef1,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
+		connect(m_pctrlXsRef2,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
+		connect(m_pctrlXpRef1,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
+		connect(m_pctrlXpRef2,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
 	}
 
 	QHBoxLayout *pCommandButtonsLayout = new QHBoxLayout;
@@ -117,15 +117,15 @@ void TwoDPanelDlg::SetupLayout()
 		setLayout(pmainLayout);
 	}
 
-	connect(ApplyButton, SIGNAL(clicked()),this, SLOT(OnApply()));
-	connect(OKButton, SIGNAL(clicked()),this, SLOT(OnOK()));
+	connect(ApplyButton, SIGNAL(clicked()),this, SLOT(onApply()));
+	connect(OKButton, SIGNAL(clicked()),this, SLOT(onOK()));
 	connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 
 	setMinimumHeight(250);
 }
 
 
-void TwoDPanelDlg::InitDialog()
+void TwoDPanelDlg::initDialog()
 {
 	XFoil *pXFoil =(XFoil*)s_pXFoil;
 	Foil *pMemFoil = (Foil *)m_pMemFoil;
@@ -167,7 +167,7 @@ void TwoDPanelDlg::keyPressEvent(QKeyEvent *event)
 		{
 			if(!OKButton->hasFocus() && !CancelButton->hasFocus())
 			{
-				OnApply();
+				onApply();
 				OKButton->setFocus();
 				m_bApplied  = true;
 			}
@@ -185,15 +185,15 @@ void TwoDPanelDlg::keyPressEvent(QKeyEvent *event)
 
 
 
-void TwoDPanelDlg::OnChanged()
+void TwoDPanelDlg::onChanged()
 {
 	m_bApplied  = false;
-	OnApply();
+	onApply();
 }
 
 
 
-void TwoDPanelDlg::OnApply()
+void TwoDPanelDlg::onApply()
 {
 	if(m_bApplied) return;
 
@@ -223,7 +223,7 @@ void TwoDPanelDlg::OnApply()
 		return;
 	}
 
-	ReadParams();
+	readParams();
 
 	pXFoil->pangen();
 
@@ -258,7 +258,7 @@ void TwoDPanelDlg::OnApply()
 }
 
 
-void TwoDPanelDlg::OnOK()
+void TwoDPanelDlg::onOK()
 {
 	if(!m_bModified)
 	{
@@ -266,13 +266,13 @@ void TwoDPanelDlg::OnOK()
 	}
 	else
 	{
-		OnApply();
+		onApply();
 		done(1);
 	}
 }
 
 
-void TwoDPanelDlg::ReadParams()
+void TwoDPanelDlg::readParams()
 {
 	XFoil *pXFoil = (XFoil*)s_pXFoil;
 

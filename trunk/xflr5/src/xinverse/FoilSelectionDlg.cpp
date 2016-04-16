@@ -33,11 +33,11 @@ FoilSelectionDlg::FoilSelectionDlg(QWidget *pParent) : QDialog(pParent)
 	m_poaFoil = NULL;
 	m_FoilName = "";
 	m_FoilList.clear();
-	SetupLayout();
+	setupLayout();
 }
 
 
-void FoilSelectionDlg::SetupLayout()
+void FoilSelectionDlg::setupLayout()
 {
 	QVBoxLayout *MainLayout = new QVBoxLayout;
 	{
@@ -47,17 +47,21 @@ void FoilSelectionDlg::SetupLayout()
 
 		QHBoxLayout *CommandButtons = new QHBoxLayout;
 		{
-			QPushButton *OKButton = new QPushButton(tr("OK"));
-			OKButton->setAutoDefault(false);
-			QPushButton *CancelButton = new QPushButton(tr("Cancel"));
-			CancelButton->setAutoDefault(false);
+			QPushButton *pSelectAllBtn = new QPushButton(tr("Select All"));
+			QPushButton *pOKButton = new QPushButton(tr("OK"));
+			pOKButton->setAutoDefault(false);
+			QPushButton *pCancelButton = new QPushButton(tr("Cancel"));
+			pCancelButton->setAutoDefault(false);
 			CommandButtons->addStretch(1);
-			CommandButtons->addWidget(OKButton);
+			CommandButtons->addWidget(pSelectAllBtn);
 			CommandButtons->addStretch(1);
-			CommandButtons->addWidget(CancelButton);
+			CommandButtons->addWidget(pOKButton);
 			CommandButtons->addStretch(1);
-			connect(OKButton, SIGNAL(clicked()),this, SLOT(OnOK()));
-			connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+			CommandButtons->addWidget(pCancelButton);
+			CommandButtons->addStretch(1);
+			connect(pSelectAllBtn, SIGNAL(clicked()),this, SLOT(onSelectAll()));
+			connect(pOKButton, SIGNAL(clicked()),this, SLOT(onOK()));
+			connect(pCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 		}
 
 		MainLayout->addStretch(1);
@@ -67,15 +71,21 @@ void FoilSelectionDlg::SetupLayout()
 		MainLayout->addStretch(1);
 	}
 
-	connect(m_pctrlNameList, SIGNAL(itemClicked(QListWidgetItem *)),       this, SLOT(OnSelChangeList(QListWidgetItem *)));
-	connect(m_pctrlNameList, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(OnDoubleClickList(QListWidgetItem *)));
+	connect(m_pctrlNameList, SIGNAL(itemClicked(QListWidgetItem *)),       this, SLOT(onSelChangeList(QListWidgetItem *)));
+	connect(m_pctrlNameList, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(onDoubleClickList(QListWidgetItem *)));
 
 	setLayout(MainLayout);
 }
 
 
 
-void FoilSelectionDlg::OnOK()
+void FoilSelectionDlg::onSelectAll()
+{
+	m_pctrlNameList->selectAll();
+}
+
+
+void FoilSelectionDlg::onOK()
 {
 	QListWidgetItem *pItem =  m_pctrlNameList->currentItem();
 	m_FoilName = pItem->text();
@@ -94,19 +104,19 @@ void FoilSelectionDlg::OnOK()
 }
 
 
-void FoilSelectionDlg::OnSelChangeList(QListWidgetItem *pItem)
+void FoilSelectionDlg::onSelChangeList(QListWidgetItem *pItem)
 {
 	m_FoilName = pItem->text();
 }
 
 
-void FoilSelectionDlg::OnDoubleClickList(QListWidgetItem *)
+void FoilSelectionDlg::onDoubleClickList(QListWidgetItem *)
 {
-	OnOK();
+	onOK();
 }
 
 
-void FoilSelectionDlg::InitDialog()
+void FoilSelectionDlg::initDialog()
 {
 	if(!m_poaFoil) return;
 	Foil *pFoil;

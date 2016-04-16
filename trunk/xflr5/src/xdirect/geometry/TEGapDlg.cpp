@@ -39,17 +39,17 @@ TEGapDlg::TEGapDlg(QWidget *pParent) : QDialog(pParent)
 	m_bModified = false;
 	m_bApplied  = true;
 
-	SetupLayout();
+	setupLayout();
 
-	connect(m_pctrlGap, SIGNAL(editingFinished()), this, SLOT(OnChanged()));
-	connect(m_pctrlBlend, SIGNAL(editingFinished()), this, SLOT(OnChanged()));
-	connect(ApplyButton, SIGNAL(clicked()),this, SLOT(OnApply()));
-	connect(OKButton, SIGNAL(clicked()),this, SLOT(OnOK()));
+	connect(m_pctrlGap, SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlBlend, SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(ApplyButton, SIGNAL(clicked()),this, SLOT(onApply()));
+	connect(OKButton, SIGNAL(clicked()),this, SLOT(onOK()));
 	connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 }
 
 
-void TEGapDlg::SetupLayout()
+void TEGapDlg::setupLayout()
 {
 	QHBoxLayout *GapValue = new QHBoxLayout;
 	QLabel *lab1 = new QLabel(tr("T.E. Gap Value"));
@@ -111,7 +111,7 @@ void TEGapDlg::keyPressEvent(QKeyEvent *event)
 		{
 			if(!OKButton->hasFocus() && !CancelButton->hasFocus())
 			{
-				OnApply();
+				onApply();
 				OKButton->setFocus();
 				m_bApplied  = true;
 			}
@@ -129,7 +129,7 @@ void TEGapDlg::keyPressEvent(QKeyEvent *event)
 
 
 
-void TEGapDlg::InitDialog()
+void TEGapDlg::initDialog()
 {
 	m_pctrlGap->setMin(  0.0);
 	m_pctrlGap->setMax(100.0);
@@ -142,19 +142,19 @@ void TEGapDlg::InitDialog()
 
 }
 
-void TEGapDlg::OnChanged()
+void TEGapDlg::onChanged()
 {
 	m_bApplied = false;
 }
 
-void TEGapDlg::OnOK()
+void TEGapDlg::onOK()
 {
-	if(!m_bApplied)	OnApply();
+	if(!m_bApplied)	onApply();
 	if(!m_bModified) done(0);
 	else done(1);
 }
 
-void TEGapDlg::OnApply()
+void TEGapDlg::onApply()
 {
 	if(m_bApplied) return;
 	//reset everything and retry

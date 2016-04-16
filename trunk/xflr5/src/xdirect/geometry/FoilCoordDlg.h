@@ -54,7 +54,7 @@ private slots:
 
 
 private:
-	void FillList();
+	void fillList();
 	void setSelection(int sel);
 	void setupLayout();
 	void readSectionData(int sel, double &X, double &Y);

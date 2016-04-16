@@ -355,6 +355,7 @@ void GraphDlg::onLabelFont()
 	{
 		m_pctrlLabelButton->setFont(font);
 		m_pctrlLabelButton->setText(font.family()+QString(" %1").arg(font.pointSize()));
+		m_pctrlLabelClr->setFont(font);
 		m_pGraph->setLabelFont(font);
 		setApplied(false);
 	}
@@ -459,7 +460,7 @@ void GraphDlg::onTitleFont()
 	{
 		m_pctrlTitleButton->setFont(font);
 		m_pctrlTitleButton->setText(font.family()+QString(" %1").arg(font.pointSize()));
-
+		m_pctrlTitleClr->setFont(font);
 		m_pGraph->setTitleFont(font);
 		setApplied(false);
 	}
