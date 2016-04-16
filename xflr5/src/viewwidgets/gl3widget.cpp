@@ -4881,10 +4881,15 @@ void GL3Widget::glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody)
 				textureName = "fin_";
 				break;
 			default:
-				textureName="";
+				textureName="wing_";
 			break;
 		}
 	}
+	else
+	{
+		textureName="wing_";
+	}
+
 	QImage topLeftTexture;
 	getTextureFile(planeName, textureName+"top_left", topLeftTexture);
 	m_pWingTopLeftTexture[iWing] = new QOpenGLTexture(topLeftTexture);
