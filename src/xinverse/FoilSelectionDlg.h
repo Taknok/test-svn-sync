@@ -39,13 +39,14 @@ public:
     FoilSelectionDlg(QWidget *pParent);
 
 private slots:
-	void OnOK();
-	void OnSelChangeList(QListWidgetItem *);
-	void OnDoubleClickList(QListWidgetItem *);
+	void onOK();
+	void onSelChangeList(QListWidgetItem *);
+	void onDoubleClickList(QListWidgetItem *);
+	void onSelectAll();
 
 private:
-	void SetupLayout();
-	void InitDialog();
+	void setupLayout();
+	void initDialog();
 
 	QListWidget *m_pctrlNameList;
 	QString m_FoilName;

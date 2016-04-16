@@ -1401,7 +1401,7 @@ void QXInverse::onExtractFoil()
 {
     FoilSelectionDlg dlg(this);
 	dlg.m_poaFoil = m_poaFoil;
-	dlg.InitDialog();
+	dlg.initDialog();
 
 	if(m_bLoaded)
 	{
