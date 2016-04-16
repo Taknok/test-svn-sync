@@ -848,10 +848,14 @@ void GL3Widget::glRenderText(double x, double y, double z, const QString & str, 
 	if(z>m_ClipPlanePos) return;
 
 	point = worldToScreen(CVector(x,y,z));
+	point *= devicePixelRatio();
 	QPainter paint(&m_PixTextOverlay);
 	paint.save();
 	QPen textPen(textColor);
 	paint.setPen(textPen);
+	QFont font(paint.font());
+	font.setPointSize(paint.font().pointSize()*devicePixelRatio());
+	paint.setFont(font);
 	paint.drawText(point, str);
 	paint.restore();
 }
@@ -865,8 +869,10 @@ void GL3Widget::glRenderText(int x, int y, const QString & str, QColor textColor
 	paint.save();
 	QPen textPen(textColor);
 	paint.setPen(textPen);
-
-	paint.drawText(x,y, str);
+	QFont font(paint.font());
+	font.setPointSize(paint.font().pointSize()*devicePixelRatio());
+	paint.setFont(font);
+	paint.drawText(x*devicePixelRatio(),y*devicePixelRatio(), str);
 	paint.restore();
 }
 
@@ -1913,7 +1919,7 @@ void GL3Widget::glRenderMiarexView()
 		if(pMiarex->m_pCurPOpp && pMiarex->m_pCurPOpp->polarType()==XFLR5::STABILITYPOLAR)
 		{
 			QString strong = QString(tr("Time =")+"%1s").arg(pMiarex->m_ModeTime,6,'f',3);
-			glRenderText(15, 15, strong);
+			glRenderText(10, 15, strong);
 		}
 
 		m_modelMatrix.translate(pMiarex->m_ModeState[0], pMiarex->m_ModeState[1], pMiarex->m_ModeState[2]);
