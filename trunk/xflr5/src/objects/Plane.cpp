@@ -636,7 +636,7 @@ bool Plane::serializePlaneXFL(QDataStream &ar, bool bIsStoring)
 		m_Wing[2].serializeWingXFL(ar, bIsStoring);
 		m_Wing[3].serializeWingXFL(ar, bIsStoring);
 
-		bool bl;
+		bool bl = false;
 		ar << m_bBiplane<< m_bStab <<m_bFin << m_bDoubleFin << m_bSymFin << bl;//m_bDoubleSymFin;
 
 		for(int iw=0; iw<MAXWINGS; iw++)

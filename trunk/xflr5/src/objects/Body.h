@@ -63,8 +63,6 @@ public:
 	bool serializeBodyXFL(QDataStream &ar, bool bIsStoring);
 	bool importDefinition(QTextStream &inStream, double mtoUnit, QString &errorMessage);
 	bool exportBodyDefinition(QTextStream &outStream, double mtoUnit);
-	bool textures(){return m_bTextures;}
-
 
 	int insertFrame(CVector Real);
 	int insertFrameBefore(int iFrame);
@@ -125,6 +123,7 @@ public:
 	QString &bodyName(){return m_BodyName;}
 	QString &bodyDescription() {return m_BodyDescription;}
 	QColor &bodyColor(){return m_BodyColor;}
+	bool &textures(){return m_bTextures;}
 
 	XFLR5::enumBodyLineType &bodyType(){return m_LineType;}
 	bool isFlatPanelType() {return m_LineType==XFLR5::BODYPANELTYPE;}

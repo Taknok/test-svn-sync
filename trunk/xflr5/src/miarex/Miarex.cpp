@@ -3648,14 +3648,14 @@ void QMiarex::onEditCurBody()
 		delete pModPlane;
 		return;
 	}
-	emit projectModified();
+	if(glbDlg.m_bChanged) emit projectModified();
 
 	ModDlg mdDlg(s_pMainFrame);
 
-	if(bUsed)
+	if(bUsed && glbDlg.m_bChanged)
 	{
 		mdDlg.m_Question = tr("The modification will erase all results associated to this Plane.\nContinue ?");
-		mdDlg.InitDialog();
+		mdDlg.initDialog();
 		int Ans = mdDlg.exec();
 
 		if (Ans == QDialog::Rejected)
@@ -3674,15 +3674,26 @@ void QMiarex::onEditCurBody()
 			updateView();
 			return;
 		}
+		else
+		{
+			//then modifications are automatically recorded
+			m_pCurPlane->duplicate(pModPlane);
+			delete pModPlane; // clean up, we don't need it any more
+
+			//plane has been modified, old results are not consistent with new geometry, delete them
+			Objects3D::deletePlaneResults(m_pCurPlane, false);
+			m_pCurWPolar = NULL;
+			m_pCurPOpp = NULL;
+		}
 	}
 
-	//then modifications are automatically recorded
-	m_pCurPlane->duplicate(pModPlane);
-	delete pModPlane; // clean up, we don't need it any more
+	// in all cases copy new color and texture flag
+	if(m_pCurPlane->body())
+	{
+		m_pCurPlane->body()->bodyColor() = pModPlane->body()->bodyColor();
+		m_pCurPlane->body()->textures()  = pModPlane->body()->textures();
+	}
 
-	Objects3D::deletePlaneResults(m_pCurPlane, false);// will also set new surface and Aerochord in WPolars
-	m_pCurWPolar = NULL;
-	m_pCurPOpp = NULL;
 	setPlane();
 
 	s_bResetCurves = true;
@@ -3745,7 +3756,7 @@ void QMiarex::onEditCurBodyObject()
 	if(bUsed)
 	{
 		mdDlg.m_Question = tr("The modification will erase all results associated to this Plane.\nContinue ?");
-		mdDlg.InitDialog();
+		mdDlg.initDialog();
 		int Ans = mdDlg.exec();
 
 		if (Ans == QDialog::Rejected)
@@ -3829,7 +3840,7 @@ void QMiarex::onEditCurObject()
 			if(bHasResults)
 			{
 				mdDlg.m_Question = tr("The modification will erase all results associated to this Plane.\nContinue ?");
-				mdDlg.InitDialog();
+				mdDlg.initDialog();
 				int Ans = mdDlg.exec();
 
 				if (Ans == QDialog::Rejected)
@@ -3935,7 +3946,7 @@ void QMiarex::onEditCurPlane()
 			if(bHasResults)
 			{
 				mdDlg.m_Question = tr("The modification will erase all results associated to this Plane.\nContinue ?");
-				mdDlg.InitDialog();
+				mdDlg.initDialog();
 				int Ans = mdDlg.exec();
 
 				if (Ans == QDialog::Rejected)
@@ -4034,6 +4045,7 @@ void QMiarex::onEditCurWing()
 			emit projectModified();
 			m_pCurPlane->wing()->setWingColor(pModPlane->wing()->wingColor());
 			m_pCurPlane->wing()->m_WingDescription = pModPlane->wing()->WingDescription();
+			m_pCurPlane->wing()->textures() = pModPlane->wing()->textures();
 		}
 
 		if(plDlg.m_bChanged)
@@ -4042,7 +4054,7 @@ void QMiarex::onEditCurWing()
 			{
 				ModDlg mdDlg(s_pMainFrame);
 				mdDlg.m_Question = tr("The modification will erase all results associated to this Plane.\nContinue ?");
-				mdDlg.InitDialog();
+				mdDlg.initDialog();
 				int Ans = mdDlg.exec();
 
 				if (Ans == QDialog::Rejected)
@@ -4149,7 +4161,7 @@ void QMiarex::onScaleWing()
 			{
 				ModDlg mdDlg(s_pMainFrame);
 				mdDlg.m_Question = tr("The modification will erase all results associated to this Plane.\nContinue ?");
-				mdDlg.InitDialog();
+				mdDlg.initDialog();
 				int Ans = mdDlg.exec();
 
 				if (Ans == QDialog::Rejected)
@@ -5835,7 +5847,7 @@ void QMiarex::onPlaneInertia()
 		if(bHasResults)
 		{
 			mdDlg.m_Question = tr("The modification will erase all polar results associated to this Plane.\nContinue ?");
-			mdDlg.InitDialog();
+			mdDlg.initDialog();
 			int Ans = mdDlg.exec();
 
 			if (Ans == QDialog::Rejected)
