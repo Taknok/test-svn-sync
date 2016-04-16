@@ -37,21 +37,21 @@ class TwoDPanelDlg : public QDialog
 	friend class QXDirect;
 
 private slots:
-	void OnApply();
-	void OnOK();
-	void OnChanged();
+	void onApply();
+	void onOK();
+	void onChanged();
 
 public:
 	TwoDPanelDlg(QWidget *pParent);
 
 	static void *s_pXFoil;
 
-	void InitDialog();
+	void initDialog();
 
 private:
 	void keyPressEvent(QKeyEvent *event);
-	void SetupLayout();
-	void ReadParams();
+	void setupLayout();
+	void readParams();
 
 	QPushButton *OKButton, *CancelButton, *ApplyButton;
 

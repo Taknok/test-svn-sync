@@ -4046,17 +4046,18 @@ void GL3Widget::glMakePanelForces(int nPanels, Panel *pPanel, WPolar *pWPolar, P
 	//define the range of values to set the colors in accordance
 	rmin = 1.e10;
 	rmax = -rmin;
+	double coef = .0001;
 
 	Cp = pPOpp->m_dCp;
 
 	for (int p=0; p<nPanels; p++)
 	{
-		rmax = qMax(rmax, Cp[p] * pPanel[p].area());
-		rmin = qMin(rmin, Cp[p] * pPanel[p].area());
+		rmax = qMax(rmax, Cp[p] );
+		rmin = qMin(rmin, Cp[p] );
 	}
 
-	rmin *= 0.5*pWPolar->density() *pPOpp->m_QInf*pPOpp->m_QInf  * Units::PatoUnit();
-	rmax *= 0.5*pWPolar->density() *pPOpp->m_QInf*pPOpp->m_QInf  * Units::PatoUnit();
+	rmin *= 0.5*pWPolar->density() *pPOpp->m_QInf*pPOpp->m_QInf;
+	rmax *= 0.5*pWPolar->density() *pPOpp->m_QInf*pPOpp->m_QInf;
 	range = rmax - rmin;
 
 	// vertices array size:
@@ -4075,7 +4076,6 @@ void GL3Widget::glMakePanelForces(int nPanels, Panel *pPanel, WPolar *pWPolar, P
 		color = (force-rmin)/range;
 
 		//scale force for display
-		double coef = .0001;
 		force *= QMiarex::s_LiftScale *coef;
 
 		double r= GLGetRed(color);

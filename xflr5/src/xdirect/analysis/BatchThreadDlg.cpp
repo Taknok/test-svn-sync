@@ -145,20 +145,20 @@ void BatchThreadDlg::setupLayout()
 	{
 		QGroupBox *pFoilBox = new QGroupBox(tr("Foil Selection"));
 		{
-			QHBoxLayout *FoilLayout = new QHBoxLayout;
+			QHBoxLayout *pFoilLayout = new QHBoxLayout;
 			m_pctrlFoil1 = new QRadioButton(tr("Current foil only"), this);
 			m_pctrlFoil2 = new QRadioButton(tr("Foil list"), this);
 			m_pctrlFoilList = new QPushButton(tr("Foil list"), this);
-			FoilLayout->addWidget(m_pctrlFoil1);
-			FoilLayout->addWidget(m_pctrlFoil2);
-			FoilLayout->addStretch(1);
-			FoilLayout->addWidget(m_pctrlFoilList);
-			pFoilBox->setLayout(FoilLayout);
+			pFoilLayout->addWidget(m_pctrlFoil1);
+			pFoilLayout->addWidget(m_pctrlFoil2);
+			pFoilLayout->addStretch(1);
+			pFoilLayout->addWidget(m_pctrlFoilList);
+			pFoilBox->setLayout(pFoilLayout);
 		}
 
 		QGroupBox *pBatchVarsGroupBox = new QGroupBox(tr("Batch Variables"));
 		{
-			QGridLayout *BatchVarsLayout = new QGridLayout;
+			QGridLayout *pBatchVarsLayout = new QGridLayout;
 			{
 				m_rbRange1 = new QRadioButton(tr("Range"), this);
 				m_rbRange2 = new QRadioButton(tr("Re List"), this);
@@ -183,51 +183,51 @@ void BatchThreadDlg::setupLayout()
 				m_pctrlReDelta = new DoubleEdit(50000,0, this);
 				m_pctrlMach    = new DoubleEdit(0.00, 3, this);
 
-				BatchVarsLayout->addWidget(MinVal, 2, 2);
-				BatchVarsLayout->addWidget(MaxVal, 2, 3);
-				BatchVarsLayout->addWidget(DeltaVal, 2, 4);
-				BatchVarsLayout->addWidget(m_pctrlReType, 3, 1);
-				BatchVarsLayout->addWidget(m_pctrlReMin, 3, 2);
-				BatchVarsLayout->addWidget(m_pctrlReMax, 3, 3);
-				BatchVarsLayout->addWidget(m_pctrlReDelta, 3, 4);
-				BatchVarsLayout->addWidget(m_pctrlMaType, 4, 1);
-				BatchVarsLayout->addWidget(m_pctrlMach, 4, 2);
-				BatchVarsLayout->addWidget(NCritLabel, 5,1);
-				BatchVarsLayout->addWidget(m_pctrlACrit, 5, 2);
+				pBatchVarsLayout->addWidget(MinVal, 2, 2);
+				pBatchVarsLayout->addWidget(MaxVal, 2, 3);
+				pBatchVarsLayout->addWidget(DeltaVal, 2, 4);
+				pBatchVarsLayout->addWidget(m_pctrlReType, 3, 1);
+				pBatchVarsLayout->addWidget(m_pctrlReMin, 3, 2);
+				pBatchVarsLayout->addWidget(m_pctrlReMax, 3, 3);
+				pBatchVarsLayout->addWidget(m_pctrlReDelta, 3, 4);
+				pBatchVarsLayout->addWidget(m_pctrlMaType, 4, 1);
+				pBatchVarsLayout->addWidget(m_pctrlMach, 4, 2);
+				pBatchVarsLayout->addWidget(NCritLabel, 5,1);
+				pBatchVarsLayout->addWidget(m_pctrlACrit, 5, 2);
 			}
 
-			QHBoxLayout *RangeSpecLayout = new QHBoxLayout;
+			QHBoxLayout *pRangeSpecLayout = new QHBoxLayout;
 			{
-				RangeSpecLayout->addWidget(m_rbRange1);
-				RangeSpecLayout->addWidget(m_rbRange2);
-				RangeSpecLayout->addStretch(1);
-				RangeSpecLayout->addWidget(m_pctrlEditList);
+				pRangeSpecLayout->addWidget(m_rbRange1);
+				pRangeSpecLayout->addWidget(m_rbRange2);
+				pRangeSpecLayout->addStretch(1);
+				pRangeSpecLayout->addWidget(m_pctrlEditList);
 			}
 
-			QVBoxLayout *BatchVarsGroupLayout = new QVBoxLayout;
+			QVBoxLayout *pBatchVarsGroupLayout = new QVBoxLayout;
 			{
-				BatchVarsGroupLayout->addLayout(RangeSpecLayout);
-				BatchVarsGroupLayout->addLayout(BatchVarsLayout);
-				pBatchVarsGroupBox->setLayout(BatchVarsGroupLayout);
+				pBatchVarsGroupLayout->addLayout(pRangeSpecLayout);
+				pBatchVarsGroupLayout->addLayout(pBatchVarsLayout);
+				pBatchVarsGroupBox->setLayout(pBatchVarsGroupLayout);
 			}
 		}
 
 		QGroupBox *pRangeVarsGroupBox = new QGroupBox(tr("Analysis Range"));
 		{
-			QHBoxLayout *RangeSpecLayout = new QHBoxLayout;
+			QHBoxLayout *pRangeSpecLayout = new QHBoxLayout;
 			{
 				QLabel *Spec = new QLabel(tr("Specify:"));
 				m_pctrlAlpha = new QRadioButton(tr("Alpha"));
 				m_pctrlCl = new QRadioButton(tr("Cl"));
 				m_pctrlFromZero   = new QCheckBox(tr("From Zero"));
-				RangeSpecLayout->addWidget(Spec);
-				RangeSpecLayout->addWidget(m_pctrlAlpha);
-				RangeSpecLayout->addWidget(m_pctrlCl);
-				RangeSpecLayout->addStretch(1);
-				RangeSpecLayout->addWidget(m_pctrlFromZero);
+				pRangeSpecLayout->addWidget(Spec);
+				pRangeSpecLayout->addWidget(m_pctrlAlpha);
+				pRangeSpecLayout->addWidget(m_pctrlCl);
+				pRangeSpecLayout->addStretch(1);
+				pRangeSpecLayout->addWidget(m_pctrlFromZero);
 			}
 
-			QGridLayout *RangeVarsLayout = new QGridLayout;
+			QGridLayout *pRangeVarsLayout = new QGridLayout;
 			{
 				QLabel *SpecMin   = new QLabel(tr("Min"));
 				QLabel *SpecMax   = new QLabel(tr("Max"));
@@ -239,29 +239,29 @@ void BatchThreadDlg::setupLayout()
 				m_pctrlSpecMin    = new DoubleEdit(0.00);
 				m_pctrlSpecMax    = new DoubleEdit(1.00);
 				m_pctrlSpecDelta  = new DoubleEdit(0.50);
-				RangeVarsLayout->addWidget(SpecMin, 1, 2);
-				RangeVarsLayout->addWidget(SpecMax, 1, 3);
-				RangeVarsLayout->addWidget(SpecDelta, 1, 4);
-				RangeVarsLayout->addWidget(m_pctrlSpecVar, 2, 1);
-				RangeVarsLayout->addWidget(m_pctrlSpecMin, 2, 2);
-				RangeVarsLayout->addWidget(m_pctrlSpecMax, 2, 3);
-				RangeVarsLayout->addWidget(m_pctrlSpecDelta, 2, 4);
+				pRangeVarsLayout->addWidget(SpecMin, 1, 2);
+				pRangeVarsLayout->addWidget(SpecMax, 1, 3);
+				pRangeVarsLayout->addWidget(SpecDelta, 1, 4);
+				pRangeVarsLayout->addWidget(m_pctrlSpecVar, 2, 1);
+				pRangeVarsLayout->addWidget(m_pctrlSpecMin, 2, 2);
+				pRangeVarsLayout->addWidget(m_pctrlSpecMax, 2, 3);
+				pRangeVarsLayout->addWidget(m_pctrlSpecDelta, 2, 4);
 			}
 
-			QVBoxLayout *RangeVarsGroupLayout = new QVBoxLayout;
+			QVBoxLayout *pRangeVarsGroupLayout = new QVBoxLayout;
 			{
-				RangeVarsGroupLayout->addLayout(RangeSpecLayout);
-				RangeVarsGroupLayout->addLayout(RangeVarsLayout);
-				pRangeVarsGroupBox->setLayout(RangeVarsGroupLayout);
+				pRangeVarsGroupLayout->addLayout(pRangeSpecLayout);
+				pRangeVarsGroupLayout->addLayout(pRangeVarsLayout);
+				pRangeVarsGroupBox->setLayout(pRangeVarsGroupLayout);
 			}
 		}
 
 		QGroupBox *pTransVarsGroupBox = new QGroupBox(tr("Forced Transitions"));
 		{
-			QGridLayout *TransVars = new QGridLayout;
+			QGridLayout *pTransVars = new QGridLayout;
 			{
-				TransVars->setColumnStretch(0,4);
-				TransVars->setColumnStretch(1,1);
+				pTransVars->setColumnStretch(0,4);
+				pTransVars->setColumnStretch(1,1);
 				QLabel *TopTransLabel = new QLabel(tr("Top transition location (x/c)"));
 				QLabel *BotTransLabel = new QLabel(tr("Bottom transition location (x/c)"));
 				TopTransLabel->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
@@ -269,12 +269,12 @@ void BatchThreadDlg::setupLayout()
 				m_pctrlXTopTr = new DoubleEdit(1.00);
 				m_pctrlXBotTr = new DoubleEdit(1.00);
 
-				TransVars->addWidget(TopTransLabel, 2, 1);
-				TransVars->addWidget(m_pctrlXTopTr, 2, 2);
-				TransVars->addWidget(BotTransLabel, 3, 1);
-				TransVars->addWidget(m_pctrlXBotTr, 3, 2);
+				pTransVars->addWidget(TopTransLabel, 2, 1);
+				pTransVars->addWidget(m_pctrlXTopTr, 2, 2);
+				pTransVars->addWidget(BotTransLabel, 3, 1);
+				pTransVars->addWidget(m_pctrlXBotTr, 3, 2);
 			}
-			pTransVarsGroupBox->setLayout(TransVars);
+			pTransVarsGroupBox->setLayout(pTransVars);
 		}
 		QHBoxLayout *pCommandButtons = new QHBoxLayout;
 		{
@@ -304,16 +304,6 @@ void BatchThreadDlg::setupLayout()
 
 	QVBoxLayout *pRightSide = new QVBoxLayout;
 	{
-
-		QHBoxLayout *pOptionsLayout = new QHBoxLayout;
-		{
-			m_pctrlInitBL          = new QCheckBox(tr("Initialize BLs between polars"));
-			m_pctrlUpdatePolarView = new QCheckBox(tr("Update polar view"));
-			m_pctrlUpdatePolarView->setToolTip(tr("Update the polar graphs after the completion of each foil/polar pair"));
-			pOptionsLayout->addWidget(m_pctrlInitBL);
-			pOptionsLayout->addStretch(1);
-			pOptionsLayout->addWidget(m_pctrlUpdatePolarView);
-		}
 		m_pctrlTextOutput = new QTextEdit;
 		m_pctrlTextOutput->setReadOnly(true);
 		m_pctrlTextOutput->setLineWrapMode(QTextEdit::NoWrap);
@@ -324,6 +314,19 @@ void BatchThreadDlg::setupLayout()
 		QFontMetrics fm(Settings::s_TableFont);
 		m_pctrlTextOutput->setMinimumWidth(67*fm.averageCharWidth());
 
+		QHBoxLayout *pOptionsLayout = new QHBoxLayout;
+		{
+			m_pctrlInitBL          = new QCheckBox(tr("Initialize BLs between polars"));
+			m_pctrlUpdatePolarView = new QCheckBox(tr("Update polar view"));
+			m_pctrlUpdatePolarView->setToolTip(tr("Update the polar graphs after the completion of each foil/polar pair"));
+			QPushButton *pClearBtn = new QPushButton(tr("Clear Output"));
+			connect(pClearBtn, SIGNAL(clicked()), m_pctrlTextOutput, SLOT(clear()));
+			pOptionsLayout->addWidget(m_pctrlInitBL);
+			pOptionsLayout->addStretch(1);
+			pOptionsLayout->addWidget(m_pctrlUpdatePolarView);
+			pOptionsLayout->addStretch(1);
+			pOptionsLayout->addWidget(pClearBtn);
+		}
 		pRightSide->addLayout(pOptionsLayout);
 		pRightSide->addWidget(m_pctrlTextOutput,1);
 	}
@@ -681,7 +684,7 @@ void BatchThreadDlg::onFoilList()
 
 	dlg.m_FoilList.clear();
 	dlg.m_FoilList.append(m_FoilList);
-	dlg.InitDialog();
+	dlg.initDialog();
 
 	m_FoilList.clear();
 
@@ -914,17 +917,17 @@ void BatchThreadDlg::startAnalysis()
 	m_pctrlTextOutput->insertPlainText(strong);
 
 	//Start as many threads as the system will support
-	m_nThreads = min(QThread::idealThreadCount(), nRe);
+	m_nThreads = QThread::idealThreadCount();
 
 	XFoilTask::s_bCancel = false;
 
-	strong = QString("Using %1 threads\n\n").arg(m_nThreads);
+	strong = QString("Starting with %1 threads\n\n").arg(m_nThreads);
 	m_pctrlTextOutput->insertPlainText(strong);
 	m_pctrlTextOutput->insertPlainText("\nStarted/Done/Total\n");
 
 	m_pTimer = new QTimer(this);
 	connect(m_pTimer, SIGNAL(timeout()), this, SLOT(onTimerEvent()));
-	m_pTimer->start(250);
+	m_pTimer->start(100);
 }
 
 
@@ -949,6 +952,7 @@ void BatchThreadDlg::onTimerEvent()
 			if(m_bCancel) strong = "\n_____Analysis cancelled_____\n";
 			else          strong = "\n_____Analysis completed_____\n";
 			m_pctrlTextOutput->insertPlainText(strong);
+			m_pctrlTextOutput->ensureCursorVisible();
 
 			m_pTimer->stop();
 			cleanUp();
@@ -977,7 +981,9 @@ void BatchThreadDlg::startThread()
 	Analysis *pAnalysis;
 	QString strong;
 	//  browse through the array until we find an available thread
-	if(QThreadPool::globalInstance()->activeThreadCount()<m_nThreads && m_AnalysisPair.count())
+	m_nThreads = QThread::idealThreadCount();
+
+	if(QThreadPool::globalInstance()->activeThreadCount()<QThread::idealThreadCount() && m_AnalysisPair.count())
 	{
 		XFoilTask *pXFoilTask = new XFoilTask(this);
 

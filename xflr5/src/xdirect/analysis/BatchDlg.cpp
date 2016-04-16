@@ -861,7 +861,7 @@ void BatchDlg::onFoilList()
 	{
 		dlg.m_FoilList.append(m_FoilList.at(i));
 	}
-	dlg.InitDialog();
+	dlg.initDialog();
 
 	m_FoilList.clear();
 	if(QDialog::Accepted == dlg.exec())

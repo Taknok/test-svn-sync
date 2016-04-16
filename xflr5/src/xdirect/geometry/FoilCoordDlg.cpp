@@ -49,7 +49,7 @@ FoilCoordDlg::~FoilCoordDlg()
 	if(m_precision) delete [] m_precision;
 }
 
-void FoilCoordDlg::FillList()
+void FoilCoordDlg::fillList()
 {
 	m_pCoordModel->setRowCount(m_pBufferFoil->n);
 	m_pCoordModel->setColumnCount(2);
@@ -108,7 +108,7 @@ void FoilCoordDlg::initDialog()
 	connect(OKButton, SIGNAL(clicked()),this, SLOT(accept()));
 	connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 
-	FillList();
+	fillList();
 }
 
 
@@ -183,7 +183,7 @@ void FoilCoordDlg::onDeletePoint()
 	m_pBufferFoil->nb--;
 	m_pBufferFoil->n--;
 
-	FillList();
+	fillList();
 	setSelection(sel);
 	m_bModified = true;
 
@@ -218,7 +218,7 @@ void FoilCoordDlg::onInsertPoint()
 	m_pBufferFoil->nb++;
 	m_pBufferFoil->n++;
 
-	FillList();
+	fillList();
 	setSelection(sel);
 
 	m_bModified = true;
@@ -279,7 +279,7 @@ void FoilCoordDlg::onRestore()
 	m_pBufferFoil->n = m_pMemFoil->n;
 
 
-	FillList();
+	fillList();
 	m_bApplied = true;
 	m_bModified = false;
 
