@@ -4046,7 +4046,7 @@ void GL3Widget::glMakePanelForces(int nPanels, Panel *pPanel, WPolar *pWPolar, P
 	//define the range of values to set the colors in accordance
 	rmin = 1.e10;
 	rmax = -rmin;
-	double coef = .0001;
+	double coef = .0005;
 
 	Cp = pPOpp->m_dCp;
 
