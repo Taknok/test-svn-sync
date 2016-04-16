@@ -5979,15 +5979,19 @@ void QMiarex::paintPlaneLegend(QPainter &painter, Plane *pPlane, WPolar *pWPolar
 	QString Result, str, strong;
 	QString str1;
 	int margin,dheight;
+	float ratio = 1.0;
 
 	QPen textPen(Settings::s_TextColor);
 	painter.setPen(textPen);
-	painter.setFont(Settings::s_TextFont);
+	QFont font(Settings::s_TextFont);
+	ratio = m_pgl3Widget->devicePixelRatio();
+	font.setPointSize(Settings::s_TextFont.pointSize()*ratio);
+	painter.setFont(font);
 	painter.setRenderHint(QPainter::Antialiasing);
 
-	margin = 10;
+	margin = 10*ratio;
 
-	QFontMetrics fm(Settings::s_TextFont);
+	QFontMetrics fm(font);
 	dheight = fm.height();
 	int D = 0;
 	int LeftPos = margin;
@@ -6106,16 +6110,22 @@ void QMiarex::paintPlaneOppLegend(QPainter &painter, QRect drawRect)
 	int i;
 	int margin = 10;
 	int dwidth, dheight;
+	float ratio = 1.0;
 
 
 	QPen textPen(Settings::s_TextColor);
 	painter.setPen(textPen);
-
+	QFont font(Settings::s_TextFont);
+	if (m_iView == XFLR5::W3DVIEW)
+		ratio = m_pgl3Widget->devicePixelRatio();
+	margin *= ratio;
+	font.setPointSize(Settings::s_TextFont.pointSize()*ratio);
+	painter.setFont(font);
 	painter.setFont(Settings::s_TextFont);
 	painter.setRenderHint(QPainter::Antialiasing);
 
 
-	QFontMetrics fm(Settings::s_TextFont);
+	QFontMetrics fm(font);
 	dheight = fm.height();
 	dwidth = fm.averageCharWidth()*50;
 	int D = 0;
@@ -7634,22 +7644,26 @@ void QMiarex::paintCpLegendText(QPainter &painter)
 
 	double f;
 	double range, delta;
+	float ratio = 1.0;
 
 	painter.save();
 
-	painter.setFont(Settings::s_TextFont);
+	QFont font(Settings::s_TextFont);
+	ratio = m_pgl3Widget->devicePixelRatio();
+	font.setPointSize(Settings::s_TextFont.pointSize()*ratio);
+	painter.setFont(font);
 	painter.setRenderHint(QPainter::Antialiasing);
 
-	QFontMetrics fm(Settings::s_TextFont);
+	QFontMetrics fm(font);
 	int back = fm.averageCharWidth() * 5;
 
-	double h = m_pgl3Widget->rect().height();
+	double h = m_pgl3Widget->rect().height()*ratio;
 	double y0 = 2.*h/5.0;
 
 
 	int ixPos, iyPos, dy;
 
-	ixPos  = m_pgl3Widget->rect().width()-back;
+	ixPos  = m_pgl3Widget->rect().width()*ratio-back;
 
 	dy     = (int) (h/MAXCPCOLORS/2);
 	iyPos  = (int) (y0 - 12.0*dy);
@@ -7692,9 +7706,13 @@ void QMiarex::paintPanelForceLegendText(QPainter &painter)
 	int labellength;
 	double f;
 	double rmin, rmax, range, delta;
+	float ratio = 1.0;
 
 	painter.save();
-	painter.setFont(Settings::s_TextFont);
+	QFont font(Settings::s_TextFont);
+	ratio = m_pgl3Widget->devicePixelRatio();
+	font.setPointSize(Settings::s_TextFont.pointSize()*ratio);
+	painter.setFont(font);
 	painter.setRenderHint(QPainter::Antialiasing);
 	QPen textPen(Settings::s_TextColor);
 	painter.setPen(textPen);
@@ -7725,16 +7743,16 @@ void QMiarex::paintPanelForceLegendText(QPainter &painter)
 	range = rmax - rmin;
 
 
-	QFontMetrics fm(Settings::s_TextFont);
+	QFontMetrics fm(font);
 	int back = fm.averageCharWidth() * 5;
 
-	double h = (double)m_pgl3Widget->rect().height();
+	double h = (double)m_pgl3Widget->rect().height()*ratio;
 	double y0 = 2.*h/5.0;
 
 
 	int ixPos, iyPos, dy;
 
-	ixPos  = m_pgl3Widget->rect().width()-back;
+	ixPos  = m_pgl3Widget->rect().width()*ratio-back;
 
 	dy     = (int) (h/40.0);
 	iyPos  = (int) (y0 - 12.0*dy);
@@ -7838,7 +7856,10 @@ void QMiarex::drawTextLegend()
 	QRect rect;
 	if(m_iView==XFLR5::W3DVIEW)
 	{
-		rect = m_pgl3Widget->rect();
+		QRect tempRect = m_pgl3Widget->rect();
+		float ratio = m_pgl3Widget->devicePixelRatio();
+		rect.moveTopLeft(tempRect.topLeft()*ratio);
+		rect.setSize(tempRect.size()*ratio);
 	}
 	else if(m_iView==XFLR5::WOPPVIEW) rect = s_pMainFrame->m_pMiarexTileWidget->pWingWidget()->rect();
 
