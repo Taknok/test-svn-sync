@@ -6121,7 +6121,6 @@ void QMiarex::paintPlaneOppLegend(QPainter &painter, QRect drawRect)
 	margin *= ratio;
 	font.setPointSize(Settings::s_TextFont.pointSize()*ratio);
 	painter.setFont(font);
-	painter.setFont(Settings::s_TextFont);
 	painter.setRenderHint(QPainter::Antialiasing);
 
 
