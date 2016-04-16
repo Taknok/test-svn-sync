@@ -28,17 +28,17 @@ ModDlg::ModDlg(QWidget *pParent) : QDialog(pParent)
 {
 	setWindowTitle(tr("Modification"));
 	m_Question = "";
-	SetupLayout();
+	setupLayout();
 }
 
 
-void ModDlg::InitDialog()
+void ModDlg::initDialog()
 {
 	m_pctrlQuestion->setText(m_Question);
 }
 
 
-void ModDlg::SetupLayout()
+void ModDlg::setupLayout()
 {
 	m_pctrlQuestion = new QLabel("Question here");
 
@@ -56,7 +56,7 @@ void ModDlg::SetupLayout()
 
 	connect(OKButton, SIGNAL(clicked()),this, SLOT(accept()));
 	connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
-	connect(SaveNewButton, SIGNAL(clicked()), this, SLOT(OnSaveAsNew()));
+	connect(SaveNewButton, SIGNAL(clicked()), this, SLOT(onSaveAsNew()));
 
 	QVBoxLayout *MainLayout = new QVBoxLayout;
 	MainLayout->addWidget(m_pctrlQuestion);
@@ -67,7 +67,7 @@ void ModDlg::SetupLayout()
 }
 
 
-void ModDlg::OnSaveAsNew()
+void ModDlg::onSaveAsNew()
 {
 	done(20);
 }
