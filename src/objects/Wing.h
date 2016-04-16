@@ -158,7 +158,6 @@ public:
 	XFLR5::enumPanelDistribution &YPanelDist(const int &iSection);
 
 	bool isWingFoil(Foil *pFoil);
-	bool textures(){return m_bTextures;}
 	double rootChord()     {return m_WingSection.first()->m_Chord;}
 	double tipChord()      {return m_WingSection.last()->m_Chord;}
 	double tipTwist()      {return m_WingSection.last()->m_Twist;}
@@ -201,6 +200,8 @@ public:
 	QString &rightFoil(const int &iSection);
 	QString &leftFoil(const int &iSection);
 	QString& rWingDescription() {return m_WingDescription;}
+
+	bool &textures(){return m_bTextures;}
 
 	QColor &wingColor() {return m_WingColor;}
 	void setWingColor(QColor colour){m_WingColor= colour;}

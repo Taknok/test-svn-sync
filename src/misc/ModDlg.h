@@ -37,11 +37,11 @@ public:
     ModDlg(QWidget *pParent);
 
 private slots:
-	void OnSaveAsNew();
+	void onSaveAsNew();
 
 private:
-	void SetupLayout();
-	void InitDialog();
+	void setupLayout();
+	void initDialog();
 
 	QLabel * m_pctrlQuestion;
 

@@ -15,7 +15,7 @@
 *******************************************************************************
 
 
-xflr5 v6.13 March xxxth, 2016
+xflr5 v6.13 April 16th, 2016
 	- upgraded to OpenGL 3.0+ from the deprecated OpenGL 1.0
 	- improved the lighting options in 3D view
 	- added an option to paint textures on the plane's surfaces

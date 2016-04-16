@@ -933,7 +933,7 @@ void GL3dWingDlg::onTextures()
 {	
 	if(m_pWing) m_pWing->m_bTextures = m_pctrlTextures->isChecked();
 	m_bResetglWing = true;
-	m_bChanged = true;
+	m_bDescriptionChanged = true;
 	m_pctrlWingColor->setEnabled(m_pctrlColor->isChecked());
 	update();
 }
