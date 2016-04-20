@@ -2182,7 +2182,7 @@ void GL3Widget::paintMasses(double volumeMass, CVector pos, QString tag, const Q
 
 	for(int im=0; im<ptMasses.size(); im++)
 	{
-		paintSphere(ptMasses[im]->position() + pos,
+		paintSphere(ptMasses[im]->position(),
 					W3dPrefsDlg::s_MassRadius/m_glScaled,
 					W3dPrefsDlg::s_MassColor.lighter(),
 					true);

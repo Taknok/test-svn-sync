@@ -1654,14 +1654,19 @@ void QMiarex::fillWPlrCurve(Curve *pCurve, WPolar *pWPolar, int XVar, int YVar)
 		if(XVar==24 || XVar==25 || XVar==26)  x *= Units::NmtoUnit();//moment
 		if(YVar==24 || YVar==25 || YVar==26)  y *= Units::NmtoUnit();//moment
 
-		if(XVar==27 || XVar==28 || XVar==29 ) x *= Units::mtoUnit();//force
-		if(YVar==27 || YVar==28 || YVar==29 ) y *= Units::mtoUnit();//force
+		if(XVar==27 || XVar==28 || XVar==29 ) x *= Units::mtoUnit();//length
+		if(YVar==27 || YVar==28 || YVar==29 ) y *= Units::mtoUnit();//length
 
 		if(XVar==30)                          x *= Units::NmtoUnit();//moment
 		if(YVar==30)                          y *= Units::NmtoUnit();//moment
 
 		if(XVar==36)                          x *= Units::mtoUnit();// XNP, length
 		if(YVar==36)                          y *= Units::mtoUnit();// XNP, length
+
+		if(XVar==47)                          x *= Units::kgtoUnit(); //mass
+		if(YVar==47)                          y *= Units::kgtoUnit(); //mass
+		if(XVar==48 || XVar==49)              x *= Units::mtoUnit();//length
+		if(YVar==48 || YVar==49)              y *= Units::mtoUnit();//length
 
 		if(bAdd)
 		{
@@ -3674,18 +3679,16 @@ void QMiarex::onEditCurBody()
 			updateView();
 			return;
 		}
-		else
-		{
-			//then modifications are automatically recorded
-			m_pCurPlane->duplicate(pModPlane);
-			delete pModPlane; // clean up, we don't need it any more
-
-			//plane has been modified, old results are not consistent with new geometry, delete them
-			Objects3D::deletePlaneResults(m_pCurPlane, false);
-			m_pCurWPolar = NULL;
-			m_pCurPOpp = NULL;
-		}
 	}
+
+	//then modifications are automatically recorded
+	m_pCurPlane->duplicate(pModPlane);
+	delete pModPlane; // clean up, we don't need it any more
+
+	//plane has been modified, old results are not consistent with new geometry, delete them
+	Objects3D::deletePlaneResults(m_pCurPlane, false);
+	m_pCurWPolar = NULL;
+	m_pCurPOpp = NULL;
 
 	// in all cases copy new color and texture flag
 	if(m_pCurPlane->body())
