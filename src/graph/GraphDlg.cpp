@@ -159,7 +159,7 @@ void GraphDlg::fillVariableList()
 		case QGRAPH::WPOLARGRAPH:
 		{
 			//WingPolar Graph Variables
-			for(int iVar=0; iVar<47; iVar++)
+			for(int iVar=0; iVar<50; iVar++)
 			{
 				m_pctrlXSel->addItem(WPolar::variableName(iVar));
 				m_pctrlYSel->addItem(WPolar::variableName(iVar));
@@ -473,10 +473,11 @@ void GraphDlg::onVariableChanged()
 }
 
 
-void GraphDlg::OnMargin()
+void GraphDlg::onMargin()
 {
 	m_pGraph->setMargin(m_pctrlMargin->value());
 }
+
 
 void GraphDlg::onXMajGridStyle()
 {

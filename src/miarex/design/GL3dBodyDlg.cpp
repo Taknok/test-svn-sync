@@ -515,6 +515,8 @@ void GL3dBodyDlg::onBodyInertia()
 	dlg.move(pos().x()+25, pos().y()+25);
 	if(dlg.exec()==QDialog::Accepted) m_bChanged=true;
 	m_pBody->computeBodyAxisInertia();
+	m_bChanged = true;
+	updateView();
 }
 
 
