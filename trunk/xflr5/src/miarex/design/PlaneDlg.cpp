@@ -77,20 +77,21 @@ PlaneDlg::PlaneDlg(QWidget *parent) :QDialog(parent)
 
 	connect(m_pctrlPlaneDescription, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()));
 
-	connect(m_pctrlWingTilt, SIGNAL(editingFinished()), this, SLOT(onChanged()));
-	connect(m_pctrlStabTilt, SIGNAL(editingFinished()), this, SLOT(onChanged()));
-	connect(m_pctrlFinTilt,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
-	connect(m_pctrlXLEWing,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
-	connect(m_pctrlZLEWing,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
-	connect(m_pctrlXLEWing2, SIGNAL(editingFinished()), this, SLOT(onChanged()));
-	connect(m_pctrlZLEWing2, SIGNAL(editingFinished()), this, SLOT(onChanged()));
-	connect(m_pctrlXLEStab,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
-	connect(m_pctrlZLEStab,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
-	connect(m_pctrlXLEFin,   SIGNAL(editingFinished()), this, SLOT(onChanged()));
-	connect(m_pctrlYLEFin,   SIGNAL(editingFinished()), this, SLOT(onChanged()));
-	connect(m_pctrlZLEFin,   SIGNAL(editingFinished()), this, SLOT(onChanged()));
-	connect(m_pctrlXBody,    SIGNAL(editingFinished()), this, SLOT(onChanged()));
-	connect(m_pctrlZBody,    SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlWingTilt,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlWingTilt2, SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlStabTilt,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlFinTilt,   SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlXLEWing,   SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlZLEWing,   SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlXLEWing2,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlZLEWing2,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlXLEStab,   SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlZLEStab,   SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlXLEFin,    SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlYLEFin,    SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlZLEFin,    SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlXBody,     SIGNAL(editingFinished()), this, SLOT(onChanged()));
+	connect(m_pctrlZBody,     SIGNAL(editingFinished()), this, SLOT(onChanged()));
 }
 
 

@@ -68,7 +68,7 @@ private slots:
 	void onAutoY();
 	void onAutoMinGrid();
 	void onAxisStyle();
-	void OnMargin();
+	void onMargin();
 	void onXMajGridStyle();
 	void onXMinGridStyle();
 	void onYMajGridStyle();

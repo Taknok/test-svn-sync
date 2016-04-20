@@ -187,7 +187,10 @@ void WPolar::insertPOppDataAt(int pos, PlaneOpp *pPOpp)
 	m_Oswald.insert(pos, 0.0);
 	m_XCpCl.insert(pos, 0.0);
 	m_SM.insert(pos, 0.0);
-	
+	m_Mass_var.insert(pos, 0.0);
+	m_CoG_x.insert(pos, 0.0);
+	m_CoG_z.insert(pos, 0.0);
+
 	calculatePoint(pos);
 }
 
@@ -251,6 +254,10 @@ void WPolar::insertDataAt(int pos, double Alpha, double Beta, double QInf, doubl
 	m_Oswald.insert(pos, 0.0);
 	m_XCpCl.insert(pos, 0.0);
 	m_SM.insert(pos, 0.0);
+	m_Mass_var.insert(pos, 0.0);
+	m_CoG_x.insert(pos, 0.0);
+	m_CoG_z.insert(pos, 0.0);
+
 }
 
 
@@ -431,6 +438,9 @@ void WPolar::calculatePoint(int iPt)
 
 
 	m_SM[iPt]        = (m_XCP[iPt]-m_CoG.x)/m_referenceChordLength *100.00;
+	m_Mass_var[iPt]  = m_Mass + m_Ctrl[iPt] * m_inertiaGain[0];
+	m_CoG_x[iPt]  = m_CoG.x + m_Ctrl[iPt] * m_inertiaGain[1];
+	m_CoG_z[iPt]  = m_CoG.z + m_Ctrl[iPt] * m_inertiaGain[2];
 
 	complex<double> c;
 	double OmegaN, Omega1, Dsi, Sigma1;
@@ -821,6 +831,15 @@ void * WPolar::getWPlrVariable(int iVar)
 		case 46:
 			pVar = &m_ExtraDrag;
 			break;
+		case 47:
+			pVar = &m_Mass_var;
+			break;
+		case 48:
+			pVar = &m_CoG_x;
+			break;
+		case 49:
+			pVar = &m_CoG_z;
+			break;
 		default:
 			pVar = &m_Alpha;
 			break;
@@ -990,7 +1009,18 @@ QString WPolar::variableName(int iVar)
 			if(Units::forceUnitIndex()==0) return "Extra drag (N)";
 			else                           return "Extra drag (lbf)";
 			break;
-		default:
+		case 47:
+			return "Mass ("+ Units::weightUnitLabel()+")";
+			break;
+		case 48:
+			return "CoG_x ("+ StrLength+")";
+			break;
+		case 49:
+			return "CoG_z ("+ StrLength+")";
+			break;
+
+
+	default:
 			return "";
 	}
 	return "";
@@ -1048,6 +1078,9 @@ void WPolar::remove(int i)
 	m_Oswald.removeAt(i);
 	m_XCpCl.removeAt(i);
 	m_SM.removeAt(i);
+	m_Mass_var.removeAt(i);
+	m_CoG_x.removeAt(i);
+	m_CoG_z.removeAt(i);
 	m_Ctrl.removeAt(i);
 	m_XNP.removeAt(i);
 	m_ShortPeriodDamping.removeAt(i);
@@ -1117,6 +1150,9 @@ void WPolar::clearData()
 	m_Oswald.clear();
 	m_XCpCl.clear();
 	m_SM.clear();
+	m_Mass_var.clear();
+	m_CoG_x.clear();
+	m_CoG_z.clear();
 	m_Ctrl.clear();
 	m_XNP.clear();
 	m_ShortPeriodDamping.clear();
@@ -1458,7 +1494,10 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
 			m_Oswald.append(0.0);
 			m_XCpCl.append(0.0);
 			m_SM.append(0.0);
-			
+			m_Mass_var.append(0.0);
+			m_CoG_x.append(0.0);
+			m_CoG_z.append(0.0);
+
 	 /** @todo replace with InsertDataAt(i, ...); */
 
 		}
@@ -2197,6 +2236,9 @@ void WPolar::copy(WPolar *pWPolar)
 		m_Oswald.append(    pWPolar-> m_Oswald[i]);
 		m_XCpCl.append(     pWPolar->m_XCpCl);
 		m_SM.append(        pWPolar-> m_SM[i]);
+		m_Mass_var.append(  pWPolar-> m_Mass_var[i]);
+		m_CoG_x.append(     pWPolar-> m_CoG_x[i]);
+		m_CoG_z.append(     pWPolar-> m_CoG_z[i]);
 
 		for(int l=0; l<8; l++)
 			m_EigenValue[l][i] = pWPolar->m_EigenValue[l][i];
