@@ -250,11 +250,11 @@ public:
 	QList <double>  m_Ym;         /**< the total yawing moment */
 	QList <double>  m_ZCP;        /**< the centre of pressure Z-position relative to the wing's root LE */
 
-	QList <double>  m_ExtraDrag;
+	QList <double>  m_ExtraDrag;  /**< the custom extra drag in addition to the induced and viscous drag parts */
 
-	QList <double>  m_Mass_var;
-	QList <double>  m_CoG_x;
-	QList <double>  m_CoG_z;
+	QList <double>  m_Mass_var;   /**< the mass calculated as ref_mass + gain*control */
+	QList <double>  m_CoG_x;      /**< the CoG position calculated as ref_CoG_x + gain*control */
+	QList <double>  m_CoG_z;      /**< the CoG position calculated as ref_CoG_z + gain*control */
 
 	double m_ExtraDragArea[MAXEXTRADRAG], m_ExtraDragCoef[MAXEXTRADRAG];
 
