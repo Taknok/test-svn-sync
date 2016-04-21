@@ -2141,8 +2141,8 @@ void GL3Widget::glDrawMasses(Plane *pPlane)
 	{
 		if(pPlane->wing(iw))
 		{
-			paintMasses(pPlane->wing(iw)->m_VolumeMass, pPlane->WingLE(iw).translated(0.0,0.0,delta),
-						pPlane->wing(iw)->m_WingName, pPlane->wing(iw)->m_PointMass);
+			paintMasses(pPlane->wing(iw)->m_VolumeMass, pPlane->WingLE(iw),
+						pPlane->wing(iw)->m_WingName,   pPlane->wing(iw)->m_PointMass);
 		}
 	}
 
@@ -2154,41 +2154,41 @@ void GL3Widget::glDrawMasses(Plane *pPlane)
 		Body *pCurBody = pPlane->body();
 
 		paintMasses(pCurBody->m_VolumeMass,
-				  pPlane->bodyPos().translated(pPlane->body()->length()/5,0.0,0.0),
-				  pCurBody->m_BodyName,
-				  pCurBody->m_PointMass);
+					pPlane->bodyPos(),
+					pCurBody->m_BodyName,
+					pCurBody->m_PointMass);
 	}
 
 	//plot CG
 	CVector Place(pPlane->CoG().x, pPlane->CoG().y, pPlane->CoG().z);
-	paintSphere(Place,
-							  W3dPrefsDlg::s_MassRadius*2.0/m_glScaled,
-							  W3dPrefsDlg::s_MassColor.lighter());
+	paintSphere(Place, W3dPrefsDlg::s_MassRadius*2.0/m_glScaled,
+					   W3dPrefsDlg::s_MassColor.lighter());
 
 	glRenderText(pPlane->CoG().x, pPlane->CoG().y, pPlane->CoG().z + delta,
-							  "CoG "+QString("%1").arg(pPlane->totalMass()*Units::kgtoUnit(), 7,'g',3)
-							  +Units::weightUnitLabel(), W3dPrefsDlg::s_MassColor.lighter(125));
+				 "CoG "+QString("%1").arg(pPlane->totalMass()*Units::kgtoUnit(), 7,'g',3)
+				 +Units::weightUnitLabel(), W3dPrefsDlg::s_MassColor.lighter(125));
 }
 
 
 
 void GL3Widget::paintMasses(double volumeMass, CVector pos, QString tag, const QList<PointMass*> &ptMasses)
 {
+	double delta = 0.02/m_glScaled;
 	if(qAbs(volumeMass)>PRECISION)
-	{
-		glRenderText(pos.x, pos.y, pos.z,
+	{	
+		glRenderText(pos.x, pos.y, pos.z + delta,
 					 tag + QString(" (%1").arg(volumeMass*Units::kgtoUnit(), 0,'g',3) + Units::weightUnitLabel()+")", W3dPrefsDlg::s_MassColor.lighter(125));
 	}
 
 	for(int im=0; im<ptMasses.size(); im++)
 	{
-		paintSphere(ptMasses[im]->position(),
+		paintSphere(ptMasses[im]->position() +pos,
 					W3dPrefsDlg::s_MassRadius/m_glScaled,
 					W3dPrefsDlg::s_MassColor.lighter(),
 					true);
 		glRenderText(ptMasses[im]->position().x + pos.x,
 					 ptMasses[im]->position().y + pos.y,
-					 ptMasses[im]->position().z + pos.z + .02/m_glScaled,
+					 ptMasses[im]->position().z + pos.z + delta,
 					 ptMasses[im]->tag()+QString(" (%1").arg(ptMasses[im]->mass()*Units::kgtoUnit(), 0,'g',3)+Units::weightUnitLabel()+")", W3dPrefsDlg::s_MassColor.lighter(125));
 	}
 }
