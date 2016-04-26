@@ -177,7 +177,7 @@ void EditPlrDlg::fillWPolarData()
 	m_pPointModel->setColumnCount(4);
 	m_pPointModel->setRowCount(m_pWPolar->m_Alpha.size());
 	QModelIndex index;
-	for (int i=0; i<m_pWPolar->m_Alpha.size(); i++)
+	for (int i=0; i<m_pWPolar->dataSize(); i++)
 	{
 		index = m_pPointModel->index(i, 0, QModelIndex());
 		m_pPointModel->setData(index, m_pWPolar->m_Alpha.at(i));

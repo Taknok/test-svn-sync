@@ -72,7 +72,7 @@ WPolar::WPolar()
 
 	m_nControls = 0;
 	m_ControlGain.clear();
-	m_ControlGain.resize(100);
+	m_ControlGain.resize(MAXCONTROLS);
 
 	m_XNeutralPoint = 0.0;
 
@@ -159,15 +159,6 @@ void WPolar::insertPOppDataAt(int pos, PlaneOpp *pPOpp)
 	m_RollDamping.insert(pos,0.0);
 	m_SpiralDamping.insert(pos,0.0);
 
-	for(int l=0; l<8; l++)
-		for(int j=m_Alpha.size(); j>pos; j--)
-		{
-			m_EigenValue[l][j] = m_EigenValue[l][j-1];
-		}
-
-	//store the eigenthings
-	for(int l=0; l<8; l++)	m_EigenValue[l][pos] = pPOpp->m_EigenValue[l];
-
 	//make room for computed values
 	m_1Cl.insert(pos,0.0);
 	m_ClCd.insert(pos,0.0);
@@ -190,6 +181,15 @@ void WPolar::insertPOppDataAt(int pos, PlaneOpp *pPOpp)
 	m_Mass_var.insert(pos, 0.0);
 	m_CoG_x.insert(pos, 0.0);
 	m_CoG_z.insert(pos, 0.0);
+
+	for(int l=0; l<8; l++)
+		for(int j=m_Alpha.size(); j>pos; j--)
+		{
+			m_EigenValue[l][j] = m_EigenValue[l][j-1];
+		}
+
+	//store the eigenthings
+	for(int l=0; l<8; l++)	m_EigenValue[l][pos] = pPOpp->m_EigenValue[l];
 
 	calculatePoint(pos);
 }
@@ -538,9 +538,8 @@ void WPolar::duplicateSpec(WPolar *pWPolar)
 	m_bVLM1           = pWPolar->m_bVLM1;
 
 	m_nControls       = pWPolar->m_nControls;
-	m_ControlGain.clear();
-	for(int icg=0; icg<pWPolar->m_ControlGain.size(); icg++)
-		m_ControlGain.append(pWPolar->m_ControlGain.at(icg));
+	for(int icg=0; icg<MAXCONTROLS; icg++)
+		m_ControlGain[icg] = pWPolar->m_ControlGain.at(icg);
 
 	m_ReferenceDim = pWPolar->m_ReferenceDim;
 	m_referenceArea        = pWPolar->m_referenceArea;//for lift and drag calculations
@@ -1505,11 +1504,11 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
 		{
 			ar >> m_nControls;
 			if(abs(m_nControls)>1000) m_nControls = 0;
-			m_ControlGain.clear();
+//			m_ControlGain.clear();
 			for(i=0; i<m_nControls; i++)
 			{
 				ar >> f; //m_MinControl[i] = f;
-				ar >> f; m_ControlGain.append(f);
+				ar >> f; m_ControlGain[i] = f;
 			}
 			for(i=0; i<m_nControls; i++)
 			{
@@ -2086,11 +2085,11 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 		ar >> m_CoGIxx >> m_CoGIyy >> m_CoGIzz >> m_CoGIxz;
 
 		ar >> m_nControls;
-		m_ControlGain.clear();
-		for(i=0; i<m_nControls; i++)
+//		m_ControlGain.clear();
+		for(int icg=0; icg<m_nControls; icg++)
 		{
 			ar >> dble;
-			m_ControlGain.append(dble);
+			m_ControlGain[icg] = dble;
 		}
 
 		ar >> m_NXWakePanels >> m_TotalWakeLength >> m_WakePanelFactor;

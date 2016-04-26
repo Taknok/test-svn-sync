@@ -51,6 +51,8 @@
 
 #define MAXPOLARPOINTS   1000     /**< The max number of points on a polar. */
 #define MAXEXTRADRAG 4
+#define MAXCONTROLS 100
+
 
 class WPolar
 {
@@ -139,6 +141,8 @@ public:
 	int &curveStyle()      {return m_LineStyle.m_Style;}
 	int &curveWidth()      {return m_LineStyle.m_Width;}
 	QColor &curveColor()   {return m_LineStyle.m_Color;}
+
+	int dataSize(){return m_Alpha.size();}
 
 private:
 	bool     m_bVLM1;              /**< true if the analysis is performed with horseshoe vortices, flase if quad rings */
