@@ -184,7 +184,7 @@ void LegendWidget::drawWPolarLegend(QPainter &painter, QPointF place, int bottom
 		{
 			pWPolar = (WPolar*)Objects3D::s_oaWPolar.at(l);
 
-			if (pWPolar->m_Alpha.size() && pWPolar->isVisible()  && pWPolar->planeName()==strPlaneList.at(k))
+			if (pWPolar->dataSize() && pWPolar->isVisible()  && pWPolar->planeName()==strPlaneList.at(k))
 			{
 				if(m_MiarexView==XFLR5::WPOLARVIEW || (m_MiarexView==XFLR5::STABPOLARVIEW && pWPolar->isStabilityPolar()))
 					nPlanePlrs++;
@@ -213,7 +213,7 @@ void LegendWidget::drawWPolarLegend(QPainter &painter, QPointF place, int bottom
 				pWPolar = (WPolar*)Objects3D::s_oaWPolar.at(nc);
 				if(strPlaneList.at(k) == pWPolar->planeName())
 				{
-					if(!pWPolar->m_Alpha.size())
+					if(!pWPolar->dataSize())
 					{
 					}
 					else if(!pWPolar->isVisible())

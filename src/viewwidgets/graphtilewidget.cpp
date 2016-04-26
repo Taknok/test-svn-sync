@@ -52,6 +52,9 @@ GraphTileWidget::GraphTileWidget(QWidget *parent) : QWidget(parent)
 	m_xflr5App = XFLR5::NOAPP;
 	m_MiarexView = XFLR5::WPOLARVIEW;
 
+	m_iPOppIndex = m_iWPolarIndex = 0;
+	m_iStabPolarIndex = m_iStabTimeIndex = 0;
+
 	m_SingleGraphOrientation = Qt::Horizontal;
 }
 
@@ -192,11 +195,21 @@ void GraphTileWidget::keyPressEvent(QKeyEvent *event)
 				else if(m_xflr5App==XFLR5::MIAREX)
 				{
 					QMiarex *pMiarex = (QMiarex*)s_pMiarex;
-					if (pMiarex->m_iView==XFLR5::STABPOLARVIEW && iGraph>1)	return;
-					if (pMiarex->m_iView==XFLR5::STABTIMEVIEW && iGraph>3)	return;
+					if (pMiarex->m_iView==XFLR5::WOPPVIEW)   m_iPOppIndex = iGraph;
+					if (pMiarex->m_iView==XFLR5::WPOLARVIEW) m_iWPolarIndex = iGraph;
+					if (pMiarex->m_iView==XFLR5::WCPVIEW && iGraph>0)	return;
+					if (pMiarex->m_iView==XFLR5::STABPOLARVIEW)
+					{
+						if(iGraph>1) return;
+						else m_iStabPolarIndex = iGraph;
+					}
+					if (pMiarex->m_iView==XFLR5::STABTIMEVIEW)
+					{
+						if(iGraph>3) return;
+						else m_iStabTimeIndex = iGraph;
+					}
 					pMiarex->setView(XFLR5::ONEGRAPH);
 				}
-
 				m_nGraphWidgets = 1;
 				if(iGraph<m_GraphWidget.count())
 				{
@@ -286,9 +299,21 @@ void GraphTileWidget::onSingleGraph()
 	else if(m_xflr5App==XFLR5::MIAREX)
 	{
 		QMiarex *pMiarex = (QMiarex*)s_pMiarex;
-		if (pMiarex->m_iView==XFLR5::STABPOLARVIEW && iGraph>1)
-			return; //only case whare there is only one graph to display
-
+		if (pMiarex->m_iView==XFLR5::WCPVIEW && iGraph>0) return;
+		if (pMiarex->m_iView==XFLR5::STABPOLARVIEW)
+		{
+			if(iGraph>1) return;
+			else m_iStabPolarIndex = iGraph;
+		}
+		if (pMiarex->m_iView==XFLR5::STABTIMEVIEW)
+		{
+			if(iGraph>3) return;
+			else m_iStabTimeIndex = iGraph;
+		}
+		if(m_MiarexView==XFLR5::WOPPVIEW)        m_iPOppIndex = iGraph;
+		if(m_MiarexView==XFLR5::WPOLARVIEW)      m_iWPolarIndex = iGraph;
+		if(m_MiarexView == XFLR5::STABPOLARVIEW) m_iStabPolarIndex = iGraph;
+		if(m_MiarexView==XFLR5::STABTIMEVIEW)    m_iStabTimeIndex = iGraph;
 		m_nGraphWidgets = 1;
 		m_iActiveGraphWidget = iGraph;
 		m_pLegendWidget->setGraph(m_GraphWidget.at(iGraph)->graph());
@@ -307,9 +332,6 @@ void GraphTileWidget::onTwoGraphs()
 	if(!isVisible()) return;
 
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-	m_nGraphWidgets = 2;
-	m_iActiveGraphWidget = 0;
-	m_pLegendWidget->setGraph(m_GraphWidget.at(0)->graph());
 
 	if(m_xflr5App==XFLR5::XFOILANALYSIS)
 	{
@@ -319,8 +341,17 @@ void GraphTileWidget::onTwoGraphs()
 	else if(m_xflr5App==XFLR5::MIAREX)
 	{
 		QMiarex *pMiarex = (QMiarex*)s_pMiarex;
+		if(pMiarex->m_iView==XFLR5::WCPVIEW)
+		{
+			onSingleGraph();
+			return;
+		}
 		pMiarex->setView(XFLR5::TWOGRAPHS);
 	}
+
+	m_nGraphWidgets = 2;
+	m_iActiveGraphWidget = 0;
+	m_pLegendWidget->setGraph(m_GraphWidget.at(0)->graph());
 
 	adjustLayout();
 	pMainFrame->checkGraphActions();
@@ -349,6 +380,11 @@ void GraphTileWidget::onFourGraphs()
 		if (pMiarex->m_iView==XFLR5::STABPOLARVIEW)
 		{
 			onTwoGraphs(); //there are only two graphs to display
+			return;
+		}
+		else if(pMiarex->m_iView==XFLR5::WCPVIEW)
+		{
+			onSingleGraph();
 			return;
 		}
 		m_nGraphWidgets = 4;
@@ -390,6 +426,11 @@ void GraphTileWidget::onAllGraphs()
 		else if (pMiarex->m_iView==XFLR5::STABTIMEVIEW)
 		{
 			onFourGraphs(); //there are only two graphs to display
+			return;
+		}
+		else if(pMiarex->m_iView==XFLR5::WCPVIEW)
+		{
+			onSingleGraph();
 			return;
 		}
 
