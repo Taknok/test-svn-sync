@@ -969,7 +969,7 @@ void QMiarex::createWPolarCurves()
 	for (int k=0; k<m_poaWPolar->size(); k++)
 	{
 		pWPolar = (WPolar*)m_poaWPolar->at(k);
-		if (pWPolar->isVisible() && pWPolar->m_Alpha.size()>0 &&
+		if (pWPolar->isVisible() && pWPolar->dataSize()>0 &&
 			((m_bType1 && pWPolar->polarType()==XFLR5::FIXEDSPEEDPOLAR) ||
 			(m_bType2 && pWPolar->polarType()==XFLR5::FIXEDLIFTPOLAR) ||
 			(m_bType4 && pWPolar->polarType()==XFLR5::FIXEDAOAPOLAR) ||
@@ -1322,7 +1322,7 @@ void QMiarex::createStabRLCurves()
 	{
 		pWPolar = (WPolar*)m_poaWPolar->at(k);
 		if ((pWPolar->isVisible()||pWPolar->points())
-			&& pWPolar->m_Alpha.size()>0 && (m_bType7 && pWPolar->polarType()==XFLR5::STABILITYPOLAR))
+			&& pWPolar->dataSize()>0 && (m_bType7 && pWPolar->polarType()==XFLR5::STABILITYPOLAR))
 		{
 			for(int iCurve=0; iCurve<4; iCurve++)
 			{
@@ -1594,7 +1594,7 @@ void QMiarex::fillStabCurve(Curve *pCurve, WPolar *pWPolar, int iMode)
 
 	pCurve->setSelected(-1);
 
-	for (i=0; i<pWPolar->m_Ctrl.size(); i++)
+	for (i=0; i<pWPolar->dataSize(); i++)
 	{
 		x = pWPolar->m_EigenValue[iMode][i].real();
 		y = pWPolar->m_EigenValue[iMode][i].imag()/2./PI;
@@ -1634,7 +1634,7 @@ void QMiarex::fillWPlrCurve(Curve *pCurve, WPolar *pWPolar, int XVar, int YVar)
 	pY = (QList <double> *) pWPolar->getWPlrVariable(YVar);
 
 	pCurve->setSelected(-1);
-	for (i=0; i<pWPolar->m_Alpha.size(); i++)
+	for (i=0; i<pWPolar->dataSize(); i++)
 	{
 		bAdd = true;
 
@@ -1904,7 +1904,6 @@ void QMiarex::keyPressEvent(QKeyEvent *event)
 			event->accept();
 			return;
 		}
-
 	}
 	else if(event->key()==Qt::Key_4 || event->text()=="4")
 	{
@@ -3039,7 +3038,6 @@ void QMiarex::onDefineStabPolar()
 
 		pNewStabPolar->duplicateSpec(&StabPolarDlg::s_StabPolar);
 
-
 		if(pNewStabPolar->polarName().length()>60)
 		{
 			pNewStabPolar->polarName() = pNewStabPolar->polarName().left(60)+"..."+QString("(%1)").arg(m_poaWPolar->size());
@@ -3628,7 +3626,7 @@ void QMiarex::onEditCurBody()
 			for(int j=0; j<m_poaWPolar->size(); j++)
 			{
 				pWPolar = (WPolar*)m_poaWPolar->at(j);
-				if(pWPolar->planeName()==pPlane->planeName() && pWPolar->m_Alpha.size())
+				if(pWPolar->planeName()==pPlane->planeName() && pWPolar->dataSize())
 				{
 					bUsed = true;
 					break;
@@ -3727,7 +3725,7 @@ void QMiarex::onEditCurBodyObject()
 			for(int j=0; j<m_poaWPolar->size(); j++)
 			{
 				pWPolar = (WPolar*)m_poaWPolar->at(j);
-				if(pWPolar->planeName()==pPlane->planeName() && pWPolar->m_Alpha.size())
+				if(pWPolar->planeName()==pPlane->planeName() && pWPolar->dataSize())
 				{
 					bUsed = true;
 					break;
@@ -3809,7 +3807,7 @@ void QMiarex::onEditCurObject()
 	for (i=0; i< m_poaWPolar->size(); i++)
 	{
 		pWPolar = (WPolar*)m_poaWPolar->at(i);
-		if(pWPolar->m_Alpha.size() && pWPolar->planeName() == m_pCurPlane->planeName())
+		if(pWPolar->dataSize() && pWPolar->planeName() == m_pCurPlane->planeName())
 		{
 			bHasResults = true;
 			break;
@@ -3908,7 +3906,7 @@ void QMiarex::onEditCurPlane()
 	for (i=0; i< m_poaWPolar->size(); i++)
 	{
 		pWPolar = (WPolar*)m_poaWPolar->at(i);
-		if(pWPolar->m_Alpha.size() && pWPolar->planeName() == m_pCurPlane->planeName())
+		if(pWPolar->dataSize() && pWPolar->planeName() == m_pCurPlane->planeName())
 		{
 			bHasResults = true;
 			break;
@@ -4015,7 +4013,7 @@ void QMiarex::onEditCurWing()
 	for (i=0; i< m_poaWPolar->size(); i++)
 	{
 		pWPolar = (WPolar*)m_poaWPolar->at(i);
-		if(pWPolar->m_Alpha.size() && pWPolar->planeName() == m_pCurPlane->planeName())
+		if(pWPolar->dataSize() && pWPolar->planeName() == m_pCurPlane->planeName())
 		{
 			bHasResults = true;
 			break;
@@ -4120,7 +4118,7 @@ void QMiarex::onScaleWing()
 	for (int i=0; i< m_poaWPolar->size(); i++)
 	{
 		pWPolar = (WPolar*)m_poaWPolar->at(i);
-		if(pWPolar->m_Alpha.size() && pWPolar->planeName() == m_pCurPlane->planeName())
+		if(pWPolar->dataSize() && pWPolar->planeName() == m_pCurPlane->planeName())
 		{
 			bHasResults = true;
 			break;
@@ -5687,8 +5685,6 @@ void QMiarex::onRootLocusView()
 {
 	stopAnimate();
 	m_iView = XFLR5::STABPOLARVIEW;
-	setGraphTiles();
-
 	m_bResetTextLegend = true;
 
 	setGraphTiles();
@@ -5831,7 +5827,7 @@ void QMiarex::onPlaneInertia()
 	for (int i=0; i< m_poaWPolar->size(); i++)
 	{
 		pWPolar = (WPolar*)m_poaWPolar->at(i);
-		if(pWPolar->m_Alpha.size() && pWPolar->planeName()==PlaneName && pWPolar->m_bAutoInertia)
+		if(pWPolar->dataSize() && pWPolar->planeName()==PlaneName && pWPolar->m_bAutoInertia)
 		{
 //			if(pWPolar->polarType()==XFLR5::STABILITYPOLAR)
 //			{
@@ -5963,7 +5959,6 @@ void QMiarex::onWPolarView()
 		updateView();
 		return;
 	}
-
 	m_iView=XFLR5::WPOLARVIEW;
 	setGraphTiles();
 
@@ -6015,7 +6010,7 @@ void QMiarex::paintPlaneLegend(QPainter &painter, Plane *pPlane, WPolar *pWPolar
 	if(pWPolar)
 	{
 		ZPos -= dheight;
-		if(pWPolar->m_Alpha.count()>1) ZPos -= dheight;
+		if(pWPolar->dataSize()>1) ZPos -= dheight;
 	}
 
 
@@ -6095,7 +6090,7 @@ void QMiarex::paintPlaneLegend(QPainter &painter, Plane *pPlane, WPolar *pWPolar
 
 	if(pWPolar)
 	{
-		if(pWPolar->m_Alpha.count()>1)
+		if(pWPolar->dataSize()>1)
 		{
 			str1.sprintf( "XNP = d(XCp.Cl)/dCl =%10.3f ", pWPolar->m_XNeutralPoint * Units::mtoUnit());
 			str1 += length;
@@ -8028,7 +8023,7 @@ void QMiarex::setGraphTiles()
 			switch(m_iWPlrView)
 			{
 				case XFLR5::ONEGRAPH:
-					s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WPlrGraph, 1,0);
+					s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WPlrGraph, 1);
 					break;
 				case XFLR5::TWOGRAPHS:
 					s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WPlrGraph, 2);
@@ -8074,8 +8069,8 @@ void QMiarex::setGraphTiles()
 
 		case XFLR5::STABPOLARVIEW:
 		{
-			if(m_bLongitudinal)	s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_StabPlrGraph, 1,0);
-			else                s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_StabPlrGraph, 1,1);
+			if(m_bLongitudinal)	s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_StabPlrGraph, 1);
+			else                s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_StabPlrGraph, 1);
 			break;
 		}
 
@@ -8084,7 +8079,7 @@ void QMiarex::setGraphTiles()
 			switch(m_iStabTimeView)
 			{
 				case XFLR5::ONEGRAPH:
-					s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_TimeGraph, 1,0);
+					s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_TimeGraph, 1);
 					break;
 				case XFLR5::TWOGRAPHS:
 					s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_TimeGraph, 2);

@@ -610,10 +610,10 @@ void StabPolarDlg::onWPolarName()
 
 void StabPolarDlg::readCtrlData()
 {
-	s_StabPolar.m_ControlGain.clear();
-	for(int i=0; i<s_StabPolar.m_nControls; i++)
+//	s_StabPolar.m_ControlGain.clear();
+	for(int icg=0; icg<s_StabPolar.m_nControls; icg++)
 	{
-		s_StabPolar.m_ControlGain.append(m_pAngleControlModel->index(i, 1, QModelIndex()).data().toDouble()); //is the gain, AVL-like
+		s_StabPolar.m_ControlGain[icg] = m_pAngleControlModel->index(icg, 1, QModelIndex()).data().toDouble(); //is the gain, AVL-like
 	}
 
 	setViscous();

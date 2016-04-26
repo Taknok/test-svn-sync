@@ -98,6 +98,9 @@ private:
 	int m_nGraphWidgets;
 	int m_iActiveGraphWidget;
 
+	int m_iPOppIndex, m_iWPolarIndex, m_iStabPolarIndex, m_iStabTimeIndex;
+
+
 	XFLR5::enumApp m_xflr5App;
 	XFLR5::enumMiarexViews m_MiarexView;
 

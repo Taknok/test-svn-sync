@@ -20,7 +20,6 @@
 *****************************************************************************/
 
 #include "miarextilewidget.h"
-
 #include <QHBoxLayout>
 
 
@@ -38,10 +37,10 @@ MiarexTileWidget::MiarexTileWidget(QWidget *pParent) : GraphTileWidget(pParent)
 	m_pLegendWidget->setMiarexView(m_MiarexView);
 	m_pWingWidget = new WingWidget(this);
 
-
 	m_nGraphWidgets = MAXGRAPHS;
 
 	m_iActiveGraphWidget = 0;
+
 	m_SingleGraphOrientation = Qt::Horizontal;
 
 	setupMainLayout();
@@ -50,7 +49,6 @@ MiarexTileWidget::MiarexTileWidget(QWidget *pParent) : GraphTileWidget(pParent)
 
 MiarexTileWidget::~MiarexTileWidget()
 {
-
 }
 
 
@@ -188,10 +186,19 @@ void MiarexTileWidget::adjustLayout()
 
 
 
-void MiarexTileWidget::setMiarexGraphList(XFLR5::enumMiarexViews miarexView, QList<QGraph*>pGraphList, int nGraphs, int iGraphWidget, Qt::Orientation orientation)
+void MiarexTileWidget::setMiarexGraphList(XFLR5::enumMiarexViews miarexView, QList<QGraph*>pGraphList,
+										  int nGraphs, int iGraphWidget, Qt::Orientation orientation)
 {
 	m_nGraphWidgets = qMin(nGraphs,MAXGRAPHS);
-	m_iActiveGraphWidget = iGraphWidget;
+	if(iGraphWidget>=0)	m_iActiveGraphWidget = iGraphWidget;
+	else
+	{
+		//restore the previously selected graph
+		if(miarexView==XFLR5::WOPPVIEW)            m_iActiveGraphWidget = m_iPOppIndex;
+		else if(miarexView==XFLR5::WPOLARVIEW)     m_iActiveGraphWidget = m_iWPolarIndex;
+		else if (miarexView==XFLR5::STABPOLARVIEW) m_iActiveGraphWidget = m_iStabPolarIndex;
+		else if (miarexView==XFLR5::STABTIMEVIEW)  m_iActiveGraphWidget = m_iStabTimeIndex;
+	}
 	m_MiarexView = miarexView;
 	m_pLegendWidget->setMiarexView(m_MiarexView);
 
@@ -221,6 +228,9 @@ void MiarexTileWidget::onSplitterMoved(int pos, int index)
 //		update();
 	}
 }
+
+
+
 
 
 
