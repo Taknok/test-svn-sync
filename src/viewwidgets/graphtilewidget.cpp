@@ -202,6 +202,7 @@ void GraphTileWidget::keyPressEvent(QKeyEvent *event)
 					{
 						if(iGraph>1) return;
 						else m_iStabPolarIndex = iGraph;
+						pMiarex->m_bLongitudinal = (iGraph==0);
 					}
 					if (pMiarex->m_iView==XFLR5::STABTIMEVIEW)
 					{
@@ -303,17 +304,16 @@ void GraphTileWidget::onSingleGraph()
 		if (pMiarex->m_iView==XFLR5::STABPOLARVIEW)
 		{
 			if(iGraph>1) return;
-			else m_iStabPolarIndex = iGraph;
+			m_iStabPolarIndex = iGraph;
+			pMiarex->m_bLongitudinal = (iGraph==0);
 		}
 		if (pMiarex->m_iView==XFLR5::STABTIMEVIEW)
 		{
 			if(iGraph>3) return;
-			else m_iStabTimeIndex = iGraph;
+			m_iStabTimeIndex = iGraph;
 		}
 		if(m_MiarexView==XFLR5::WOPPVIEW)        m_iPOppIndex = iGraph;
 		if(m_MiarexView==XFLR5::WPOLARVIEW)      m_iWPolarIndex = iGraph;
-		if(m_MiarexView == XFLR5::STABPOLARVIEW) m_iStabPolarIndex = iGraph;
-		if(m_MiarexView==XFLR5::STABTIMEVIEW)    m_iStabTimeIndex = iGraph;
 		m_nGraphWidgets = 1;
 		m_iActiveGraphWidget = iGraph;
 		m_pLegendWidget->setGraph(m_GraphWidget.at(iGraph)->graph());
