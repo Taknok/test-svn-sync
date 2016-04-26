@@ -3031,7 +3031,7 @@ void QMiarex::onDefineStabPolar()
 		pNewStabPolar->planeName() = m_pCurPlane->planeName();
 		pNewStabPolar->curveColor() = MainFrame::getColor(4);
 		pNewStabPolar->curveWidth() = 2;
-		pNewStabPolar->points() = 0;
+		pNewStabPolar->points() = 1;
 		pNewStabPolar->isVisible()  = true;
 
 		pNewStabPolar->referenceChordLength()  = m_pCurPlane->mac();
@@ -8043,7 +8043,7 @@ void QMiarex::setGraphTiles()
 			switch(m_iWingView)
 			{
 				case XFLR5::ONEGRAPH:
-					s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WingGraph, 1, 0);
+					s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WingGraph, 1);
 					break;
 				case XFLR5::TWOGRAPHS:
 					s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_WingGraph, 2);
@@ -8069,8 +8069,8 @@ void QMiarex::setGraphTiles()
 
 		case XFLR5::STABPOLARVIEW:
 		{
-			if(m_bLongitudinal)	s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_StabPlrGraph, 1);
-			else                s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_StabPlrGraph, 1);
+			if(m_bLongitudinal)	s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_StabPlrGraph, 1, 0);
+			else                s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_StabPlrGraph, 1, 1);
 			break;
 		}
 
