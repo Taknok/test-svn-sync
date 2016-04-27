@@ -899,7 +899,7 @@ void GL3Widget::resizeGL(int width, int height)
 	if(w>h)	m_GLViewRect.setRect(-s, s*h/w, s, -s*h/w);
 	else    m_GLViewRect.setRect(-s*w/h, s, s*w/h, -s);
 
-	m_PixTextOverlay = m_PixTextOverlay.scaled(rect().size());
+	m_PixTextOverlay = m_PixTextOverlay.scaled(rect().size()*devicePixelRatio());
 	m_PixTextOverlay.fill(Qt::transparent);
 
 
