@@ -89,7 +89,7 @@ public:
 	void buildStateMatrices();
 	void computeControlDerivatives();
 	void computeNDStabDerivatives();
-	void forces(double *Mu, double *Sigma, double alpha, double *VInf, CVector &Force, CVector &Moment, bool bViscous);
+	void forces(double *Mu, double *Sigma, double alpha, CVector Vinc, double *VInf, CVector &Force, CVector &Moment);
 	double computeCm(double Alpha);
 
 	bool allocateMatrix(int matSize, int &memsize);
@@ -110,6 +110,8 @@ public:
 	PlaneOpp* createPlaneOpp(double *Cp, double *Gamma, double *Sigma);
 
 	void getSpeedVector(CVector const &C, double *Mu, double *Sigma, CVector &VT, bool bAll=true);
+	void computePhillipsFormulae();
+
 
 private:
 

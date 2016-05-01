@@ -1594,6 +1594,9 @@ void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
 		m_VYm *= 1.0 / m_pWPolar->referenceArea() /m_pWPolar->referenceSpanLength();
 		m_IYm *= 1.0 / m_pWPolar->referenceArea() /m_pWPolar->referenceSpanLength();
 
+
+		if(m_pWPolar->isStabilityPolar()) computePhillipsFormulae();
+
 		if(m_bPointOut) s_bWarning = true;
 
 		if(m_pWPolar->polarType()==XFLR5::STABILITYPOLAR) m_Alpha = m_AlphaEq; // so it is set by default at the end of the analyis
@@ -2900,13 +2903,13 @@ void PanelAnalysis::computeNDStabDerivatives()
 * @param Moment the resulting moment vector
 * @param bTilted  true if the calculation is performed on a tilted geometry
 */
-void PanelAnalysis::forces(double *Mu, double *Sigma, double alpha, double *VInf, CVector &Force, CVector &Moment, bool bViscous)
+void PanelAnalysis::forces(double *Mu, double *Sigma, double alpha, CVector Vinc, double *VInf, CVector &Force, CVector &Moment)
 {
 	if(!m_pPanel || !m_pWPolar) return;
 
 	bool bOutRe, bError, bOut, bOutCl;
 	int j, k, l, p, pp, m, nw, iTA, iTB;
-	double cosa, sina, Re, PCd, Cl, Cp, tau, StripArea, ViscousDrag;
+	double cosa, sina, Re, PCd, Cl, Cp, tau, StripArea, ViscousDrag, ExtraDrag;
 	double QInf, QInfStrip=0.0, qdyn, GammaStrip;
 	CVector  C, PtC4, LeverArm, WindDirection, WindNormal, PanelLeverArm, Wg;
 	CVector Velocity, StripForce, ViscousMoment, dF, PanelForce, PanelForcep1;
@@ -2929,6 +2932,8 @@ void PanelAnalysis::forces(double *Mu, double *Sigma, double alpha, double *VInf
 	Moment.set(0.0, 0.0, 0.0);
 	ViscousDrag = 0.0;
 	ViscousMoment.set(0.0,0.0,0.0);
+
+	ExtraDrag = 0.0;
 
 	for(j=0; j<m_ppSurface->size(); j++)
 	{
@@ -3017,7 +3022,7 @@ void PanelAnalysis::forces(double *Mu, double *Sigma, double alpha, double *VInf
 				}
 
 			}
-			if(bViscous)
+			if(m_pWPolar->bViscous())
 			{
 				//add the viscous drag component to force and moment
 				qdyn = 0.5 * m_pWPolar->density() * QInfStrip * QInfStrip;
@@ -3025,7 +3030,7 @@ void PanelAnalysis::forces(double *Mu, double *Sigma, double alpha, double *VInf
 				Re = m_ppSurface->at(j)->chord(tau) * QInfStrip /m_pWPolar->viscosity();
 				Cl = StripForce.dot(WindNormal)*m_pWPolar->density()/qdyn/StripArea;
 				PCd    = GetVar(2, m_ppSurface->at(j)->m_pFoilA, m_ppSurface->at(j)->m_pFoilB, Re, Cl, tau, bOutRe, bError);
-				PCd   *= StripArea * 1/2*QInfStrip*QInfStrip;                // Newtons/rho
+				PCd   *= StripArea * 1./2.*QInfStrip*QInfStrip;             // Newtons/rho
 				bOut = bOut || bOutRe || bError;
 				ViscousDrag += PCd ;                                         // Newtons/rho
 
@@ -3035,6 +3040,7 @@ void PanelAnalysis::forces(double *Mu, double *Sigma, double alpha, double *VInf
 				ViscousMoment.y += PCd * (WindDirection.z*LeverArm.x - WindDirection.x*LeverArm.z);
 				ViscousMoment.z += PCd * (WindDirection.x*LeverArm.y - WindDirection.y*LeverArm.x);
 			}
+
 			m++;
 		}
 	}
@@ -3062,13 +3068,21 @@ void PanelAnalysis::forces(double *Mu, double *Sigma, double alpha, double *VInf
 
 	if(m_pWPolar->bThinSurfaces()) Force -= WindDirection*Force.dot(WindDirection)/2.0;
 
-	if(bViscous)
+	if(m_pWPolar->bViscous())
 	{
 		Force += WindDirection * ViscousDrag;
 		Moment += ViscousMoment;
 	}
 
 	Force  *= m_pWPolar->density();                          // N
+
+	for(int iex=0; iex<MAXEXTRADRAG; iex++)
+	{
+		ExtraDrag += m_pWPolar->m_ExtraDragArea[iex] * m_pWPolar->m_ExtraDragCoef[iex];
+	}
+	ExtraDrag *= 1./2.*m_pWPolar->density()*Vinc.VAbs()*Vinc.VAbs();   // N
+	Force += WindDirection*ExtraDrag;
+
 	Moment *= m_pWPolar->density();                          // N.m
 }
 
@@ -3174,13 +3188,13 @@ void PanelAnalysis::buildStateMatrices()
 	m_ALong[0][2] = 0.0;
 	m_ALong[0][3] = -9.81*cos(Theta0*PI/180.0);
 
-	m_ALong[1][0] =  Zu                            /(m_Mass-Zwp);
-	m_ALong[1][1] =  Zw                            /(m_Mass-Zwp);
+	m_ALong[1][0] =  Zu                              /(m_Mass-Zwp);
+	m_ALong[1][1] =  Zw                              /(m_Mass-Zwp);
 	m_ALong[1][2] = (Zq+m_Mass*u0)                   /(m_Mass-Zwp);
 	m_ALong[1][3] = -9.81*m_Mass*sin(Theta0*PI/180.0)/(m_Mass-Zwp);
 
-	m_ALong[2][0] = (Mu + Mwp*Zu/(m_Mass-Zwp))                 /Iyy;
-	m_ALong[2][1] = (Mw + Mwp*Zw/(m_Mass-Zwp))                 /Iyy;
+	m_ALong[2][0] = (Mu + Mwp*Zu/(m_Mass-Zwp))                   /Iyy;
+	m_ALong[2][1] = (Mw + Mwp*Zw/(m_Mass-Zwp))                   /Iyy;
 	m_ALong[2][2] = (Mq + Mwp*(Zq+m_Mass*u0)/(m_Mass-Zwp))       /Iyy;
 	m_ALong[2][3] = (Mwp*(-m_Mass*9.81*sin(Theta0))/(m_Mass-Zwp))/Iyy;
 
@@ -3264,7 +3278,7 @@ void PanelAnalysis::buildStateMatrices()
 	strange = "       Longitudinal control matrix\n";
 	traceLog(strange);
 
-	strange = QString("        %1\n      %2\n      %3\n      %4\n\n")
+	strange = QString("      %1\n      %2\n      %3\n      %4\n\n")
 				.arg(m_BLong[0], 13, 'g', 7)
 				.arg(m_BLong[1], 13, 'g', 7)
 				.arg(m_BLong[2], 13, 'g', 7)
@@ -3273,7 +3287,7 @@ void PanelAnalysis::buildStateMatrices()
 	strange = "       Lateral control matrix\n";
 	traceLog(strange);
 
-	strange = QString("        %1\n      %2\n      %3\n      %4\n\n")
+	strange = QString("      %1\n      %2\n      %3\n      %4\n\n")
 				.arg(m_BLat[0], 13, 'g', 7)
 				.arg(m_BLat[1], 13, 'g', 7)
 				.arg(m_BLat[2], 13, 'g', 7)
@@ -3399,7 +3413,9 @@ bool PanelAnalysis::computeTrimmedConditions()
 	u0 = 1.0;
 
 
-	forces(m_Mu, m_Sigma, m_AlphaEq, m_RHS+50*m_MatSize, Force, Moment, m_pWPolar->bViscous());
+	//extra drag is useless when calculating lifting velocity
+	forces(m_Mu, m_Sigma, m_AlphaEq, CVector(0.0,0.0,0.0), m_RHS+50*m_MatSize, Force, Moment);
+
 
 	phi = m_pWPolar->m_BankAngle *PI/180.0;
 	Lift   = Force.dot(WindNormal);		//N/rho ; bank effect not included
@@ -3474,7 +3490,7 @@ bool PanelAnalysis::computeTrimmedConditions()
 
 	// Force0 and Moment0 are the reference values for forward differentiation
 	// Stability derivatives are inviscid
-	forces(m_Mu, m_Sigma, m_AlphaEq, m_RHS+50*m_MatSize, Force0, Moment0, false);
+	forces(m_Mu, m_Sigma, m_AlphaEq, VInf, m_RHS+50*m_MatSize, Force0, Moment0);
 	return true;
 }
 
@@ -3630,15 +3646,15 @@ void PanelAnalysis::computeStabilityDerivatives()
 	// 1st ORDER STABILITY DERIVATIVES
 	// x-derivatives________________________
 	alpha = atan2(Vi.z, Vi.x) * 180.0/PI;// =m_AlphaEq....
-	forces(m_uRHS, m_Sigma, alpha, m_RHS+50*m_MatSize, Force, Moment, false);
 
+	forces(m_uRHS, m_Sigma, alpha, Vi, m_RHS+50*m_MatSize, Force, Moment);
 	Xu = (Force - Force0).dot(is)   /deltaspeed;
 	Zu = (Force - Force0).dot(ks)   /deltaspeed;
 	Mu = (Moment- Moment0).dot(js)  /deltaspeed;
 
 	// y-derivatives________________________
 	alpha = atan2(Vj.z, Vj.x)*180.0/PI;// =m_AlphaEq....
-	forces(m_vRHS, m_Sigma+m_MatSize, alpha, m_RHS+53*m_MatSize, Force, Moment, false);
+	forces(m_vRHS, m_Sigma+m_MatSize, alpha, V0, m_RHS+53*m_MatSize, Force, Moment);
 	Yv = (Force - Force0).dot(js)   /deltaspeed;
 //	Lv = (Moment.dot(WindDirection) - Moment0.dot(is)) /deltaspeed;
 	Nv = (Moment.dot(WindNormal)    - Moment0.dot(ks)) /deltaspeed;
@@ -3647,7 +3663,7 @@ void PanelAnalysis::computeStabilityDerivatives()
 
 	// z-derivatives________________________
 	alpha = atan2(Vk.z, Vk.x)* 180.0/PI;
-	forces(m_wRHS, m_Sigma+2*m_MatSize, alpha, m_RHS+56*m_MatSize, Force, Moment, false);
+	forces(m_wRHS, m_Sigma+2*m_MatSize, alpha, V0, m_RHS+56*m_MatSize, Force, Moment);
 	Xw = (Force - Force0).dot(is)   /deltaspeed;
 	Zw = (Force - Force0).dot(ks)   /deltaspeed;
 	Mw = (Moment - Moment0).dot(js) /deltaspeed;
@@ -3656,19 +3672,19 @@ void PanelAnalysis::computeStabilityDerivatives()
 	qApp->processEvents();
 
 	// p-derivatives
-	forces(m_pRHS, m_Sigma+3*m_MatSize, m_AlphaEq, m_RHS+59*m_MatSize, Force, Moment, false);
+	forces(m_pRHS, m_Sigma+3*m_MatSize, m_AlphaEq, V0, m_RHS+59*m_MatSize, Force, Moment);
 	Yp = (Force-Force0).dot(js)   /deltarotation;
 	Lp = (Moment-Moment0).dot(is) /deltarotation;
 	Np = (Moment-Moment0).dot(ks) /deltarotation;
 
 	// q-derivatives
-	forces(m_qRHS, m_Sigma+4*m_MatSize, m_AlphaEq, m_RHS+62*m_MatSize, Force, Moment, false);
+	forces(m_qRHS, m_Sigma+4*m_MatSize, m_AlphaEq, V0, m_RHS+62*m_MatSize, Force, Moment);
 	Xq = (Force-Force0).dot(is)   /deltarotation;
 	Zq = (Force-Force0).dot(ks)   /deltarotation;
 	Mq = (Moment-Moment0).dot(js) /deltarotation;
 
 	// r-derivatives
-	forces(m_rRHS, m_Sigma+5*m_MatSize, m_AlphaEq, m_RHS+65*m_MatSize, Force, Moment, false);
+	forces(m_rRHS, m_Sigma+5*m_MatSize, m_AlphaEq, V0, m_RHS+65*m_MatSize, Force, Moment);
 	Yr = (Force-Force0).dot(js)   /deltarotation;
 	Lr = (Moment-Moment0).dot(is) /deltarotation;
 	Nr = (Moment-Moment0).dot(ks) /deltarotation;
@@ -3906,7 +3922,7 @@ void PanelAnalysis::computeControlDerivatives()
 	Crout_LU_with_Pivoting_Solve(m_aij, m_cRHS, m_Index, m_RHS, m_MatSize, &s_bCancel);
 	memcpy(m_cRHS, m_RHS, m_MatSize*sizeof(double));
 
-	forces(m_cRHS, m_Sigma, m_AlphaEq, m_RHS+50*m_MatSize, Force, Moment, false);
+	forces(m_cRHS, m_Sigma, m_AlphaEq, V0, m_RHS+50*m_MatSize, Force, Moment);
 
 	// make the forward difference with nominal results
 	// which gives the stability derivative for a rotation of control ic
@@ -4278,8 +4294,6 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double *Gamma, double *Sigma
 	pPOpp = new PlaneOpp(m_pPlane, m_pWPolar, m_MatSize);
 	if(!pPOpp) return NULL;
 
-//		pPOpp->m_Color = MainFrame::GetColor(6);
-
 	for(int iw=0; iw<MAXWINGS; iw++)
 	{
 		if(m_pWingList[iw])
@@ -4478,3 +4492,86 @@ void PanelAnalysis::traceLog(QString str)
 
 
 
+void PanelAnalysis::computePhillipsFormulae()
+{
+//	Phugoid Approximation for Conventional Airplanes, JOURNAL OF AIRCRAFT, 	Vol. 37, No. 1, January– February 2000
+//	Improved Closed-Form Approximation for Dutch Roll, JOURNAL OF AIRCRAFT,	Vol. 37, No. 3, May– June 2000
+
+	double MTOW_des,AWing,Vmax_C,Span,Chord,CL_C,CDtot_C,rho_C,Ixx,Iyy,Izz;
+	double Rx,Rz,Rg,Rgy,Rza;
+	double RDc,RDp,RDs,Rs,Rd,Rp;
+	double rlDR, ilDR, rlPH, ilPH;
+	double Rxa, Rma, Rmq, RYb, Rlb, Rnb, Rlp, Rnp, RYr, Rlr, Rnr;
+	double Fdr,zeta_dr,Fph,zeta_ph;
+
+	MTOW_des = AWing = Vmax_C = Span = Chord = CL_C = CDtot_C = rho_C = Ixx = Iyy = Izz=0.0;
+	Rx = Rz = Rg = Rgy = Rza = 0.0;
+	RDc = RDp = RDs = Rs = Rd = Rp = 0.0;
+	rlDR =  ilDR =  rlPH =  ilPH = 0.0;
+	Rxa =  Rma =  Rmq =  RYb =  Rlb =  Rnb =  Rlp =  Rnp =  RYr =  Rlr =  Rnr = 0.0;
+	Fdr = zeta_dr = Fph = zeta_ph = 0.0;
+
+
+	MTOW_des = m_pWPolar->mass();
+	AWing = m_pPlane->planformArea();
+	Vmax_C = m_QInf;
+	Span = m_pPlane->planformSpan();
+	Chord = m_pPlane->mac();
+	rho_C = m_pWPolar->density();
+	Ixx = m_Is[0][0];
+	Iyy = m_Is[1][1];
+	Izz = m_Is[2][2];
+	CL_C = m_CL;
+	CDtot_C = m_CX;  // need to add parasitic drag
+
+	Rx  =-CDtot_C*rho_C*AWing*Chord/(2*MTOW_des);
+	Rz  =-CL_C*rho_C*AWing*Chord/(2*MTOW_des);
+	Rg  = 9.81*Chord/(2*Vmax_C*Vmax_C);
+	Rgy = 9.81*Span/(2*Vmax_C*Vmax_C);
+	Rza = (rho_C*AWing*Chord/(4*MTOW_des))*(-CZa-CDtot_C);
+
+	Rxa = (rho_C*AWing*Chord/(4*MTOW_des))*CXa;
+	Rma = (rho_C*AWing*Chord*Chord*Chord/(8*Iyy))*Cma;
+	Rmq = (rho_C*AWing*Chord*Chord*Chord/(8*Iyy))*Cmq;
+	RYb = (rho_C*AWing*Span/(4*MTOW_des))*CYb;
+	Rlb = (rho_C*AWing*Span*Span*Span/(8*Ixx))*Clb;
+	Rnb = (rho_C*AWing*Span*Span*Span/(8*Izz))*Cnb;
+	Rlp = (rho_C*AWing*Span*Span*Span/(8*Ixx))*Clp;
+	Rnp = (rho_C*AWing*Span*Span*Span/(8*Izz))*Cnp;
+	RYr = (rho_C*AWing*Span/(4*MTOW_des))*CYr;
+	Rlr = (rho_C*AWing*Span*Span*Span/(8*Ixx))*Clr;
+	Rnr = (rho_C*AWing*Span*Span*Span/(8*Izz))*Cnr;
+
+	RDc = Rlr*Rnp/Rlp;
+	RDs = (Rlb*(Rgy-(1-RYr)*Rnp)-RYb*Rlr*Rnp)/Rlp;
+	RDp = (Rgy*(Rlr*Rnb-Rlb*Rnr))/(Rlp*(Rnb+RYb*Rnr))-RDs/Rlp;
+	Rs  = Rma/(Rma-Rza*Rmq);
+	Rd  = Rxa*Rmq/(Rma-Rza*Rmq);
+	Rp  = Rg*Rs*((Rza+Rmq)/(Rma-Rza*Rmq));
+
+	rlDR = (2*Vmax_C/Span)*(RYb+Rnr-RDc+RDp)/2;
+	ilDR = (2*Vmax_C/Span)*sqrt(fabs((1-RYr)*Rnb+RYb*Rnr+RDs-((RYb+Rnr)/2)*((RYb+Rnr)/2)));
+	rlPH = (9.81/Vmax_C)*(-CDtot_C/CL_C-Rd+Rp);
+	ilPH = (9.81/Vmax_C)*sqrt(fabs(2*Rs-((CDtot_C/CL_C)+Rd)*((CDtot_C/CL_C)+Rd)));
+
+	Fdr = sqrt(rlDR*rlDR+ilDR*ilDR)/(2.*PI);
+	zeta_dr = -rlDR/ilDR;
+	Fph = sqrt(rlPH*rlPH+ilPH*ilPH)/(2.*PI);
+	zeta_ph = -rlPH/ilPH;
+
+	QString strange;
+	traceLog("\n");
+	traceLog("   Phillips formulae:\n");
+	strange.sprintf("       Phugoid eigenvalue:     %9.5f+%9.5fi",rlPH, ilPH);
+	traceLog(strange+"\n");
+	strange.sprintf("               frequency:%7.2f Hz", Fph);
+	traceLog(strange+"\n");
+	strange.sprintf("               damping:  %7.2f", zeta_ph);
+	traceLog(strange+"\n");
+	strange.sprintf("       Dutch-Roll eigenvalue:  %9.5f+%9.5fi",rlDR, ilDR);
+	traceLog(strange+"\n");
+	strange.sprintf("               frequency:%7.2f Hz", Fdr);
+	traceLog(strange+"\n");
+	strange.sprintf("               damping:  %7.2f", zeta_dr);
+	traceLog(strange+"\n");
+}
