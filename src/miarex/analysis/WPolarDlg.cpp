@@ -51,6 +51,11 @@ WPolarDlg::WPolarDlg(QWidget *pParent) : QDialog(pParent)
 	connectSignals();
 }
 
+WPolarDlg::~WPolarDlg()
+{
+	delete m_pCtrlDelegate;
+}
+
 
 void WPolarDlg::connectSignals()
 {
@@ -1020,17 +1025,19 @@ void WPolarDlg::setupLayout()
 
 		m_pExtraDragControlTable->setModel(m_pExtraDragControlModel);
 
-		CtrlTableDelegate *pCtrlDelegate;
-		pCtrlDelegate = new CtrlTableDelegate(this);
-		m_pExtraDragControlTable->setItemDelegate(pCtrlDelegate);
-		pCtrlDelegate->m_pCtrlModel = m_pExtraDragControlModel;
+		m_pCtrlDelegate = new CtrlTableDelegate(this);
+		m_pExtraDragControlTable->setItemDelegate(m_pCtrlDelegate);
+		m_pCtrlDelegate->m_pCtrlModel = m_pExtraDragControlModel;
+
+		connect(m_pCtrlDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(onEditingFinished()));
+
 
 		m_anglePrecision = new int[3];
 		m_anglePrecision[0]  = 0;
 		m_anglePrecision[1]  = 3;
 		m_anglePrecision[2]  = 5;
 
-		pCtrlDelegate->m_Precision = m_anglePrecision;
+		m_pCtrlDelegate->m_Precision = m_anglePrecision;
 
 		QLabel* pExtraLabel = new QLabel(QString::fromUtf8("D = 1/2 rho V² ( S (CD_induced+CD_Visc) + S_Extra1.CD_Extra1 + ... + S_ExtraN.Cd_ExtraN)"));
 

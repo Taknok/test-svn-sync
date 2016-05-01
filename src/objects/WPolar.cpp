@@ -2437,7 +2437,14 @@ void WPolar::setAutoWPolarName(void *ptrPlane)
 	}
 	if(referenceDim()==XFLR5::PROJECTEDREFDIM) m_WPlrName += "-proj_area";
 
-
+	for(int i=0; i<MAXEXTRADRAG; i++)
+	{
+		if(fabs(m_ExtraDragCoef[i])>PRECISION && fabs(m_ExtraDragArea[i])>PRECISION)
+		{
+			m_WPlrName+="+Drag";
+			break;
+		}
+	}
 }
 
 

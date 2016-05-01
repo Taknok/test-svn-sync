@@ -101,8 +101,8 @@ void Panel::setPanelFrame()
 */
 void Panel::setPanelFrame(CVector const &LA, CVector const &LB, CVector const &TA, CVector const &TB)
 {
-	static CVector TALB, LATB, MidA, MidB;
-	static CVector smp, smq;
+	CVector TALB, LATB, MidA, MidB;
+	CVector smp, smq;
 
 	if(qAbs(LA.y)<1.e-5 && qAbs(TA.y)<1.e-5 && qAbs(LB.y)<1.e-5 && qAbs(TB.y)<1.e-5)
 		m_bIsInSymPlane = true;
@@ -323,10 +323,10 @@ CVector Panel::localToGlobal(CVector const &V)
 */
 bool Panel::intersect(CVector const &A, CVector const &U, CVector &I, double &dist)
 {
-	static CVector ILA, ILB, ITA, ITB;
-	static CVector T, V, W, P;
-	static bool b1, b2, b3, b4;
-	static double r,s;
+	CVector ILA, ILB, ITA, ITB;
+	CVector T, V, W, P;
+	bool b1, b2, b3, b4;
+	double r,s;
 
 	ILA.copy(s_pNode[m_iLA]);
 	ITA.copy(s_pNode[m_iTA]);
@@ -421,7 +421,7 @@ double Panel::width()
 void Panel::rotateBC(CVector const &HA, Quaternion &Qt)
 {
 //	Qt.Conjugate(Vortex);
-	static CVector WTest;
+	CVector WTest;
 	WTest.x = VortexPos.x - HA.x;
 	WTest.y = VortexPos.y - HA.y;
 	WTest.z = VortexPos.z - HA.z;
@@ -486,11 +486,11 @@ void Panel::rotateBC(CVector const &HA, Quaternion &Qt)
 void Panel::sourceNASA4023(CVector const &C,  CVector &V, double &phi)
 {
 	int i;
-	static double RNUM, DNOM, pjk, CJKi;
-	static double PN, A, B, PA, PB, SM, SL, AM, AL, Al;
-	static double side, sign, S, GL;
-	static CVector PJK, a, b, s, T1, T2, h;
-	static CVector *m_pR[5];
+	double RNUM, DNOM, pjk, CJKi;
+	double PN, A, B, PA, PB, SM, SL, AM, AL, Al;
+	double side, sign, S, GL;
+	CVector PJK, a, b, s, T1, T2, h;
+	CVector *m_pR[5];
 	//we use a default core size, unless the user has specified one
 	double CoreSize = 0.00000;
 	if(qAbs(s_CoreSize)>PRECISION) CoreSize = s_CoreSize;
@@ -638,11 +638,11 @@ void Panel::sourceNASA4023(CVector const &C,  CVector &V, double &phi)
 void Panel::doubletNASA4023(CVector const &C, CVector &V, double &phi, bool bWake)
 {
 	int i;
-	static CVector *m_pR[5];
-	static CVector PJK, a, b, s, T1, h;
-	static double RNUM, DNOM, pjk, CJKi;
-	static double PN, A, B, PA, PB, SM, SL, AM, AL, Al;
-	static double side, sign, GL;
+	CVector *m_pR[5];
+	CVector PJK, a, b, s, T1, h;
+	double RNUM, DNOM, pjk, CJKi;
+	double PN, A, B, PA, PB, SM, SL, AM, AL, Al;
+	double side, sign, GL;
 
 
 	//we use a default core size, unless the user has specified one

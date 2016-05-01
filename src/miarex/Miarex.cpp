@@ -1321,8 +1321,8 @@ void QMiarex::createStabRLCurves()
 	for (int k=0; k<m_poaWPolar->size(); k++)
 	{
 		pWPolar = (WPolar*)m_poaWPolar->at(k);
-		if ((pWPolar->isVisible()||pWPolar->points())
-			&& pWPolar->dataSize()>0 && (m_bType7 && pWPolar->polarType()==XFLR5::STABILITYPOLAR))
+		if ((pWPolar->isVisible())
+			&& pWPolar->dataSize()>0 && (m_bType7 && pWPolar->isStabilityPolar()))
 		{
 			for(int iCurve=0; iCurve<4; iCurve++)
 			{

@@ -421,7 +421,7 @@ void Surface::getPanel(int const &k, int const &l, enumPanelPosition pos)
 
 
 /**
- * Returns the strip width at a specified
+ * Returns the strip width at a specified index
  * @param k the index of the strip 0<=k<m_NYPanels
  * @return the strip width
  */
@@ -438,7 +438,7 @@ double Surface::stripWidth(int k)
  * @param bRight the left or right side of the surface on which the point is calculated
  * @param pos the top, middle, or bottom surface on which the point is calculated
  * @param Point a reference to the requested point's position
- * @param PtNormal a reference to the vector normal to the sirface at that point
+ * @param PtNormal a reference to the vector normal to the surface at that point
  */
 void Surface::getSidePoint(double xRel, bool bRight, enumPanelPosition pos, CVector &Point, CVector &PtNormal)
 {
@@ -449,12 +449,10 @@ void Surface::getSidePoint(double xRel, bool bRight, enumPanelPosition pos, CVec
         if(pos==MIDSURFACE && m_pFoilA)      foilPt = m_pFoilA->midYRel(xRel);
 		else if(pos==TOPSURFACE && m_pFoilA)
 		{
-//			m_pFoilA->getUpperY(xRel, foilPt.y, PtNormal.x, PtNormal.z);
 			foilPt = m_pFoilA->upperYRel(xRel, PtNormal.x, PtNormal.z);
 		}
 		else if(pos==BOTSURFACE && m_pFoilA)
 		{
-			m_pFoilA->getLowerY(xRel, foilPt.y, PtNormal.x, PtNormal.z);
 			foilPt = m_pFoilA->lowerYRel(xRel, PtNormal.x, PtNormal.z);
 		}
 
@@ -466,12 +464,10 @@ void Surface::getSidePoint(double xRel, bool bRight, enumPanelPosition pos, CVec
         if(pos==MIDSURFACE && m_pFoilB)      foilPt = m_pFoilB->midYRel(xRel);
 		else if(pos==TOPSURFACE && m_pFoilB)
 		{
-//			m_pFoilB->getUpperY(xRel, foilPt.y, PtNormal.x, PtNormal.z);
 			foilPt = m_pFoilB->upperYRel(xRel, PtNormal.x, PtNormal.z);
 		}
 		else if(pos==BOTSURFACE && m_pFoilB)
 		{
-//			m_pFoilB->getLowerY(xRel, foilPt.y, PtNormal.x, PtNormal.z);
 			foilPt = m_pFoilB->lowerYRel(xRel, PtNormal.x, PtNormal.z);
 		}
 
@@ -506,9 +502,13 @@ void Surface::getSidePoints(enumPanelPosition pos,
 	if(cosdA<-1.0) cosdA = -1.0;
 	if(cosdB<-1.0) cosdB = -1.0;
 
-	double alpha_dA = acos(cosdA)*180.0/PI;
+	CVector x(1.0,0.0,0.0);
+	double alpha_dA =  acos(cosdA)*180.0/PI;
+	alpha_dA =atan2((NormalA * Normal).dot(x), Normal.dot(NormalA))*180.0/PI;
 	double alpha_dB = -acos(cosdB)*180.0/PI;
+	alpha_dB =atan2((NormalB * Normal).dot(x), Normal.dot(NormalB))*180.0/PI;
 	double delta = -atan(Normal.y / Normal.z)*180.0/PI;
+//	double delta = -atan2(Normal.y,  Normal.z)*180.0/PI;
 
 	//create the quarter chord centers of rotation for the twist
 	A4 = m_LA *3.0/4.0 + m_TA * 1/4.0;

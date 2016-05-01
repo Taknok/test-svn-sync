@@ -98,8 +98,8 @@ void Curve::copyData(Curve *pCurve)
 int Curve::closestPoint(double xs, double ys, double &dist )
 {
 	Graph *pGraph = (Graph*)m_pParentGraph;
-	static int ref;
-	static double d2;
+	int ref;
+	double d2;
 	ref = -1;
 	dist = 1.e10;
 	if (size()<1) return -1;
@@ -129,7 +129,7 @@ int Curve::closestPoint(double xs, double ys, double &dist )
 void Curve::closestPoint(double xs, double ys, double &dist, int &n)
 {
 	Graph *pGraph = (Graph*)m_pParentGraph;
-	static double d2;
+	double d2;
 	dist = 1.e10;
 	if (n<1) return;
 	for(int i=0; i<n; i++)
@@ -156,7 +156,7 @@ void Curve::closestPoint(double xs, double ys, double &dist, int &n)
  */
 void Curve::closestPoint(double const &xs, double const &ys, double &xSel, double &ySel, double &dist, int &nSel)
 {
-	static double d2;
+	double d2;
 	dist = 1.e40;
 
 	for(int i=0; i<size(); i++)

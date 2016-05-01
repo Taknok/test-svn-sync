@@ -84,6 +84,7 @@ private slots:
 	void onUnit();
 	void onAngleCellChanged(QWidget *);
 	void onInertiaCellChanged(QWidget *);
+	void onDragCellChanged(QWidget *);
 	void onMethod();
 	void onAeroData();
 	void onTabChanged(int index);
@@ -113,6 +114,8 @@ private:
 
 	QTableView *m_pExtraDragControlTable;
 	CtrlTableModel *m_pExtraDragControlModel;
+
+	CtrlTableDelegate *m_pMassCtrlDelegate, *m_pAngleCtrlDelegate, *m_pDragCtrlDelegate;
 
 	DoubleEdit *m_pctrlDensity;
 	DoubleEdit *m_pctrlViscosity;
