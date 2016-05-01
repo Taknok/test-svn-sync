@@ -189,7 +189,6 @@ void PlaneOpp::getPlaneOppProperties(QString &PlaneOppProperties)
 	Units::getWeightUnitLabel(massunit);
 	Units::getSpeedUnitLabel(speedunit);
 
-
 	PlaneOppProperties.clear();
 
 	if(m_WPolarType==XFLR5::FIXEDSPEEDPOLAR)     strong += "Type 1 ("+QObject::tr("Fixed speed") +")\n";
@@ -375,6 +374,11 @@ void PlaneOpp::getPlaneOppProperties(QString &PlaneOppProperties)
 			strange = QString("  Damping Ratio              = %1 ").arg(Dsi, 8,'f',3);
 			PlaneOppProperties += strange +"\n";
 
+			if(fabs(c.real())>PRECISION)
+			{
+				strange.sprintf(  "  Time to double            = %8.3fs", log(2)/fabs(c.real()));
+				PlaneOppProperties += strange +"\n";
+			}
 
 			PlaneOppProperties += "  Normalized Eigenvector:\n";
 			angle = m_EigenVector[im][3];
@@ -425,6 +429,12 @@ void PlaneOpp::getPlaneOppProperties(QString &PlaneOppProperties)
 			strange = QString("  Damping Ratio              = %1 ").arg(Dsi, 8,'f',3);
 			PlaneOppProperties += strange +"\n";
 
+
+			if(fabs(c.real())>PRECISION)
+			{
+				strange.sprintf(  "  Time to double            = %8.3fs", log(2)/fabs(c.real()));
+				PlaneOppProperties += strange +"\n";
+			}
 
 			PlaneOppProperties += "  Normalized Eigenvector:\n";
 

@@ -450,14 +450,14 @@ double Body::getu(double x)
  */
 double Body::getv(double u, CVector r, bool bRight)
 {
-	static double sine = 10000.0;
+	double sine = 10000.0;
 
 	if(u<=0.0)          return 0.0;
 	if(u>=1.0)          return 0.0;
 	if(r.VAbs()<1.0e-5) return 0.0;
 
-	static int iter=0;
-	static double v, v1, v2;
+	int iter=0;
+	double v, v1, v2;
 
 	sine = 10000.0;
 	iter = 0;

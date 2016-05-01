@@ -44,6 +44,8 @@ StabPolarDlg::StabPolarDlg(QWidget *pParent) : QDialog(pParent)
 {
 	setWindowTitle(tr("Stability Polar Definition"));
 
+	s_StabPolar.points()=2;
+	s_StabPolar.curveWidth()=2;
 	m_bAutoName = true;
 	m_UnitType   = 1;
 
@@ -71,6 +73,9 @@ StabPolarDlg::~StabPolarDlg()
 {
 	delete [] m_anglePrecision;
 	delete [] m_massPrecision;
+	delete m_pMassCtrlDelegate;
+	delete m_pAngleCtrlDelegate;
+	delete m_pDragCtrlDelegate;
 }
 
 
@@ -101,6 +106,12 @@ void StabPolarDlg::connectSignals()
 	connect(m_pctrlAutoName, SIGNAL(toggled(bool)), this, SLOT(onAutoName()));
 
 	connect(m_pctrlAutoPlaneInertia, SIGNAL(clicked(bool)), this, SLOT(onAutoInertia(bool)));
+	connect(m_pTabWidget, SIGNAL(currentChanged(int)), this, SLOT(onTabChanged(int)));
+
+	connect(m_pMassCtrlDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(onInertiaCellChanged(QWidget *)));
+	connect(m_pAngleCtrlDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(onAngleCellChanged(QWidget *)));
+	connect(m_pDragCtrlDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(onDragCellChanged(QWidget *)));
+
 
 	connect(OKButton,     SIGNAL(clicked()), this, SLOT(onOK()));
 	connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
@@ -529,6 +540,13 @@ void StabPolarDlg::onInertiaCellChanged(QWidget *)
 }
 
 
+
+void StabPolarDlg::onDragCellChanged(QWidget *)
+{
+	readExtraDragData();
+	setWPolarName();
+}
+
 void StabPolarDlg::onEditingFinished()
 {
 	readData();
@@ -768,7 +786,6 @@ void StabPolarDlg::setupLayout()
 
 	m_pTabWidget = new QTabWidget(this);
 	m_pTabWidget->setMinimumWidth(fm.averageCharWidth() * 103);
-	connect(m_pTabWidget, SIGNAL(currentChanged(int)), this, SLOT(onTabChanged(int)));
 
 	QWidget  *pMethodPage       = new QWidget(this);
 	QWidget  *pCoefficientPage  = new QWidget(this);
@@ -943,18 +960,16 @@ void StabPolarDlg::setupLayout()
 
 		m_pInertiaControlTable->setModel(m_pInertiaControlModel);
 
-		CtrlTableDelegate *pCtrlDelegate;
-		pCtrlDelegate = new CtrlTableDelegate(this);
-		m_pInertiaControlTable->setItemDelegate(pCtrlDelegate);
-		pCtrlDelegate->m_pCtrlModel = m_pInertiaControlModel;
-		connect(pCtrlDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(onInertiaCellChanged(QWidget *)));
+		m_pMassCtrlDelegate = new CtrlTableDelegate(this);
+		m_pInertiaControlTable->setItemDelegate(m_pMassCtrlDelegate);
+		m_pMassCtrlDelegate->m_pCtrlModel = m_pInertiaControlModel;
 
 		m_massPrecision = new int[3];
 		m_massPrecision[0]  = 2;
 		m_massPrecision[1]  = 3;
 		m_massPrecision[2]  = 3;
 
-		pCtrlDelegate->m_Precision = m_massPrecision;
+		m_pMassCtrlDelegate->m_Precision = m_massPrecision;
 
 		pMassControlPageLayout->addWidget(m_pctrlAutoPlaneInertia);
 		pMassControlPageLayout->addWidget(m_pInertiaControlTable);
@@ -983,17 +998,15 @@ void StabPolarDlg::setupLayout()
 
 		m_pAngleControlTable->setModel(m_pAngleControlModel);
 
-		CtrlTableDelegate *pCtrlDelegate;
-		pCtrlDelegate = new CtrlTableDelegate(this);
-		m_pAngleControlTable->setItemDelegate(pCtrlDelegate);
-		pCtrlDelegate->m_pCtrlModel = m_pAngleControlModel;
-		connect(pCtrlDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(onAngleCellChanged(QWidget *)));
+		m_pAngleCtrlDelegate = new CtrlTableDelegate(this);
+		m_pAngleControlTable->setItemDelegate(m_pAngleCtrlDelegate);
+		m_pAngleCtrlDelegate->m_pCtrlModel = m_pAngleControlModel;
 
 		m_anglePrecision = new int[2];
 		m_anglePrecision[0]  = 1;
 		m_anglePrecision[1]  = 2;
 
-		pCtrlDelegate->m_Precision = m_anglePrecision;
+		m_pAngleCtrlDelegate->m_Precision = m_anglePrecision;
 
 
 		QLabel* SignLabel = new QLabel(tr("Note: + sign means trailing edge down"));
@@ -1079,17 +1092,16 @@ void StabPolarDlg::setupLayout()
 
 		m_pExtraDragControlTable->setModel(m_pExtraDragControlModel);
 
-		CtrlTableDelegate *pCtrlDelegate;
-		pCtrlDelegate = new CtrlTableDelegate(this);
-		m_pExtraDragControlTable->setItemDelegate(pCtrlDelegate);
-		pCtrlDelegate->m_pCtrlModel = m_pExtraDragControlModel;
+		m_pDragCtrlDelegate = new CtrlTableDelegate(this);
+		m_pExtraDragControlTable->setItemDelegate(m_pDragCtrlDelegate);
+		m_pDragCtrlDelegate->m_pCtrlModel = m_pExtraDragControlModel;
 
 		m_anglePrecision = new int[3];
 		m_anglePrecision[0]  = 0;
 		m_anglePrecision[1]  = 3;
 		m_anglePrecision[2]  = 5;
 
-		pCtrlDelegate->m_Precision = m_anglePrecision;
+		m_pDragCtrlDelegate->m_Precision = m_anglePrecision;
 
 		QLabel* pExtraLabel = new QLabel(QString::fromUtf8("D = 1/2 rho V² ( S (CD_induced+CD_Visc) + S_Extra1.CD_Extra1 + ... + S_ExtraN.Cd_ExtraN)"));
 

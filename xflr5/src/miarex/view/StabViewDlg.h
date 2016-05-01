@@ -103,7 +103,7 @@ private:
 	QComboBox *m_pctrlCurveList;
 
 	QLabel *m_pctrlUnit1, *m_pctrlUnit2, *m_pctrlUnit3;
-	DoubleEdit *m_pctrlFreqN, *m_pctrlFreq1, *m_pctrlDsi;
+	DoubleEdit *m_pctrlFreqN, *m_pctrlFreq1, *m_pctrlDsi, *m_pctrlT2, *m_pctrlTau;
 	QStackedWidget *m_pctrlStackWidget, *m_pctrlInitialConditionsWidget, *m_pctrlModeViewType;
 
 

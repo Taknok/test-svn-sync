@@ -53,6 +53,7 @@ class WPolarDlg : public QDialog
 
 public:
 	WPolarDlg(QWidget *pParent=NULL);
+	~WPolarDlg();
 
 private:
 
@@ -135,6 +136,7 @@ private:
 
 	QTableView *m_pExtraDragControlTable;
 	QStandardItemModel *m_pExtraDragControlModel;
+	CtrlTableDelegate *m_pCtrlDelegate;
 
 };
 

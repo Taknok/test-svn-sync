@@ -143,9 +143,8 @@ void StabViewDlg::readControlModelData()
 void StabViewDlg::fillEigenThings()
 {
     QMiarex * pMiarex = (QMiarex*)s_pMiarex;
-    complex<double> c;
-    double OmegaN, Omega1, Dsi, Sigma1;
-    double sum, prod;
+	complex<double> eigenvalue;
+	double OmegaN, Omega1, Dsi;
     QString strange;
     double u0, mac, span;
     complex<double> angle;
@@ -159,56 +158,86 @@ void StabViewDlg::fillEigenThings()
 		mac  = pMiarex->m_pCurPlane->m_Wing[0].m_MAChord;
 		span = pMiarex->m_pCurPlane->m_Wing[0].m_PlanformSpan;
 
-		c = pMiarex->m_pCurPOpp->m_EigenValue[m_iCurrentMode];
-		if(c.imag()>=0.0) strange = QString("%1+%2i").arg(c.real(),9,'f',4).arg(c.imag(),9,'f',4);
-		else              strange = QString("%1-%2i").arg(c.real(),9,'f',4).arg(qAbs(c.imag()),9,'f',4);
+		eigenvalue = pMiarex->m_pCurPOpp->m_EigenValue[m_iCurrentMode];
+		if(eigenvalue.imag()>=0.0) strange.sprintf("%9.4f+%9.4fi", eigenvalue.real(), eigenvalue.imag());
+		else                       strange.sprintf("%9.4f-%9.4fi", eigenvalue.real(), eigenvalue.imag());
 		m_pctrlEigenValue->setText(strange);
         ModeDescription.append("Lambda="+strange+"<br/>");
 
-        sum  = c.real() * 2.0;                          // is a real number
-        prod = c.real()*c.real() + c.imag()*c.imag();  // is a positive real number
-        OmegaN = qAbs(c.imag());
-        if(OmegaN>PRECISION) Omega1 = sqrt(prod);
-        else                 Omega1 = 0.0;
-        Sigma1 = sum /2.0;
-        if(Omega1 > PRECISION) Dsi = -Sigma1/Omega1;
-        else                   Dsi = 0.0;
+		Omega1 = qAbs(eigenvalue.imag());
+		if(Omega1>PRECISION)
+		{
+			m_pctrlFreq1->setValue(Omega1/2.0/PI);
+			strange.sprintf("Fd=%6.3f Hz", Omega1/2.0/PI);
+			ModeDescription.append(strange+"<br/>");
+		}
+		else
+		{
+			m_pctrlFreq1->clear();
+		}
 
-		m_pctrlFreqN->setValue(OmegaN/2.0/PI);
-		m_pctrlFreq1->setValue(Omega1/2.0/PI);
-		m_pctrlDsi->setValue(Dsi);
-		strange = QString("FN=%1 Hz").arg(OmegaN/2.0/PI,6,'f',3);
-        ModeDescription.append(strange+"<br/>");
-		strange = QString("F1=%1 Hz").arg(Omega1/2.0/PI,6,'f',3);
-        ModeDescription.append(strange+"<br/>");
-		strange = QString("Xi=%1").arg(Dsi,6,'f',3);
-        ModeDescription.append(strange+"<br/>");
+		if(Omega1 > PRECISION)
+		{
+			OmegaN = sqrt(eigenvalue.real()*eigenvalue.real()+Omega1*Omega1);
+			Dsi = -eigenvalue.real()/OmegaN;
+			m_pctrlFreqN->setValue(OmegaN/2.0/PI);
+			m_pctrlDsi->setValue(Dsi);
+			strange.sprintf("FN=%6.3f Hz",OmegaN/2.0/PI);
+			ModeDescription.append(strange+"<br/>");
+			strange.sprintf("Xi=%6.3f",Dsi);
+			ModeDescription.append(strange+"<br/>");
+		}
+		else
+		{
+			m_pctrlFreq1->clear();
+			m_pctrlDsi->clear();
+		}
+
+		if(fabs(eigenvalue.real())>PRECISION && fabs(eigenvalue.imag())<PRECISION)
+		{
+			strange.sprintf("T2=%6.3f s", log(2)/fabs(eigenvalue.real()));
+			ModeDescription.append(strange+"<br/>");
+			m_pctrlT2->setValue(log(2)/fabs(eigenvalue.real()));
+			if(eigenvalue.real()<0.0)
+			{
+				m_pctrlTau->setValue(-1.0/eigenvalue.real());
+				strange.sprintf("tau=%6.3f", -1.0/eigenvalue.real());
+				ModeDescription.append(strange+"<br/>");
+			}
+			else
+				m_pctrlTau->clear();
+		}
+		else
+		{
+			m_pctrlT2->clear();
+			m_pctrlTau->clear();
+		}
 
 
 		if(pMiarex->m_bLongitudinal && pMiarex->m_pCurPOpp)
 		{
 			angle = pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][3];
-			c = pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][0]/u0;
-			if(c.imag()>=0.0) strange = QString("%1+%2i").arg(c.real(),10,'f',5).arg(c.imag(),10,'f',5);
-			else              strange = QString("%1-%2i").arg(c.real(),10,'f',5).arg(qAbs(c.imag()),10,'f',5);
+			eigenvalue = pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][0]/u0;
+			if(eigenvalue.imag()>=0.0) strange.sprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
+			else                       strange.sprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
 			m_pctrlEigenVector1->setText(strange);
             ModeDescription.append("v1="+strange+"<br/>");
 
-			c = pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][1]/u0;
-			if(c.imag()>=0.0) strange = QString("%1+%2i").arg(c.real(),10,'f',5).arg(c.imag(),10,'f',5);
-			else              strange = QString("%1-%2i").arg(c.real(),10,'f',5).arg(qAbs(c.imag()),10,'f',5);
+			eigenvalue = pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][1]/u0;
+			if(eigenvalue.imag()>=0.0) strange.sprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
+			else                       strange.sprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
 			m_pctrlEigenVector2->setText(strange);
             ModeDescription.append("v2="+strange+"<br/>");
 
-			c = pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][2]/(2.0*u0/mac);
-			if(c.imag()>=0.0) strange = QString("%1+%2i").arg(c.real(),10,'f',5).arg(c.imag(),10,'f',5);
-			else              strange = QString("%1-%2i").arg(c.real(),10,'f',5).arg(qAbs(c.imag()),10,'f',5);
+			eigenvalue = pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][2]/(2.0*u0/mac);
+			if(eigenvalue.imag()>=0.0) strange.sprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
+			else                       strange.sprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
 			m_pctrlEigenVector3->setText(strange);
             ModeDescription.append("v3="+strange+"<br/>");
 
-			c = pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][3]/angle;
-			if(c.imag()>=0.0) strange = QString("%1+%2i").arg(c.real(),10,'f',5).arg(c.imag(),10,'f',5);
-			else              strange = QString("%1-%2i").arg(c.real(),10,'f',5).arg(qAbs(c.imag()),10,'f',5);
+			eigenvalue = pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][3]/angle;
+			if(eigenvalue.imag()>=0.0) strange.sprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
+			else                       strange.sprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
 			m_pctrlEigenVector4->setText(strange);
             ModeDescription.append("v4="+strange);
 		}
@@ -216,27 +245,27 @@ void StabViewDlg::fillEigenThings()
 		{
 			angle = pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][3];
 
-			c = pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][0]/u0;
-			if(c.imag()>=0.0) strange = QString("%1+%2i").arg(c.real(),10,'f',5).arg(c.imag(),10,'f',5);
-			else              strange = QString("%1-%2i").arg(c.real(),10,'f',5).arg(qAbs(c.imag()),10,'f',5);
+			eigenvalue = pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][0]/u0;
+			if(eigenvalue.imag()>=0.0) strange.sprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
+			else                       strange.sprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
 			m_pctrlEigenVector1->setText(strange);
             ModeDescription.append("v1="+strange+"<br/>");
 
-			c = pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][1]/(2.0*u0/span);
-			if(c.imag()>=0.0) strange = QString("%1+%2i").arg(c.real(),10,'f',5).arg(c.imag(),10,'f',5);
-			else              strange = QString("%1-%2i").arg(c.real(),10,'f',5).arg(qAbs(c.imag()),10,'f',5);
+			eigenvalue = pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][1]/(2.0*u0/span);
+			if(eigenvalue.imag()>=0.0) strange.sprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
+			else                       strange.sprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
 			m_pctrlEigenVector2->setText(strange);
             ModeDescription.append("v2="+strange+"<br/>");
 
-			c = pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][2]/(2.0*u0/span);
-			if(c.imag()>=0.0) strange = QString("%1+%2i").arg(c.real(),10,'f',5).arg(c.imag(),10,'f',5);
-			else              strange = QString("%1-%2i").arg(c.real(),10,'f',5).arg(qAbs(c.imag()),10,'f',5);
+			eigenvalue = pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][2]/(2.0*u0/span);
+			if(eigenvalue.imag()>=0.0) strange.sprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
+			else                       strange.sprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
 			m_pctrlEigenVector3->setText(strange);
             ModeDescription.append("v3="+strange+"<br/>");
 
-			c = pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][3]/angle;
-			if(c.imag()>=0.0) strange = QString("%1+%2i").arg(c.real(),10,'f',5).arg(c.imag(),10,'f',5);
-			else              strange = QString("%1-%2i").arg(c.real(),10,'f',5).arg(qAbs(c.imag()),10,'f',5);
+			eigenvalue = pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][3]/angle;
+			if(eigenvalue.imag()>=0.0) strange.sprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
+			else                       strange.sprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
 			m_pctrlEigenVector4->setText(strange);
             ModeDescription.append("v4="+strange);
 
@@ -254,6 +283,8 @@ void StabViewDlg::fillEigenThings()
         m_pctrlFreqN->clear();
         m_pctrlFreq1->clear();
         m_pctrlDsi->clear();
+		m_pctrlT2->clear();
+		m_pctrlTau->clear();
         m_pctrlModeProperties->clear();
     }
 }
@@ -747,31 +778,68 @@ void StabViewDlg::setupLayout()
 		QGroupBox *pFreakBox = new QGroupBox(tr("Mode properties"));
 		{
 			QLabel *FreqNLab = new QLabel("F =");
-			QLabel *Freq1Lab = new QLabel(tr("F1 ="));
-			QLabel *DsiLab   = new QLabel(tr("z ="));
+			QLabel *Freq1Lab = new QLabel("F1 =");
+			QLabel *DsiLab   = new QLabel("z =");
+			QLabel *T2lab    = new QLabel("t2 =");
+			QLabel *tauLab   = new QLabel("t =");
 			FreqNLab->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
 			Freq1Lab->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
 			DsiLab->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
+			T2lab->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
+			tauLab->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
 			DsiLab->setFont(SymbolFont);
+			tauLab->setFont(SymbolFont);
 
-			m_pctrlFreqN  = new DoubleEdit(0.0,3);
-			m_pctrlFreq1  = new DoubleEdit(0.0,3);
-			m_pctrlDsi    = new DoubleEdit(0.0,3);
+			m_pctrlFreqN  = new DoubleEdit(0.0, 3);
+			m_pctrlFreq1  = new DoubleEdit(0.0, 3);
+			m_pctrlDsi    = new DoubleEdit(0.0, 3);
+			m_pctrlT2     = new DoubleEdit(0.0, 3);
+			m_pctrlTau    = new DoubleEdit(0.0, 3);
+
+			QString strong;
+			strong = tr("Natural frequency");
+			FreqNLab->setToolTip(strong);
+			m_pctrlFreqN->setToolTip(strong);
+
+			strong = tr("Damped natural frequency");
+			Freq1Lab->setToolTip(strong);
+			m_pctrlFreq1->setToolTip(strong);
+
+			strong = tr("Damping ratio");
+			DsiLab->setToolTip(strong);
+			m_pctrlDsi->setToolTip(strong);
+
+			strong = tr("Time to double");
+			T2lab->setToolTip(strong);
+			m_pctrlT2->setToolTip(strong);
+
+			strong = tr("Time constant") + "= (1-1/e)/|real(lambda)|";
+			tauLab->setToolTip(strong);
+			m_pctrlTau->setToolTip(strong);
+
 			m_pctrlFreqN->setEnabled(false);
 			m_pctrlFreq1->setEnabled(false);
 			m_pctrlDsi->setEnabled(false);
+			m_pctrlT2->setEnabled(false);
+			m_pctrlTau->setEnabled(false);
 			QLabel *FreqUnit1 = new QLabel("Hz");
 			QLabel *FreqUnit2 = new QLabel("Hz");
+			QLabel *T2Unit    = new QLabel("s");
 			QGridLayout *pFreakLayout = new QGridLayout;
 			{
 				pFreakLayout->addWidget(FreqNLab,1,1);
 				pFreakLayout->addWidget(Freq1Lab,2,1);
 				pFreakLayout->addWidget(DsiLab,3,1);
+				pFreakLayout->addWidget(T2lab, 4, 1);
+				pFreakLayout->addWidget(tauLab, 5, 1);
 				pFreakLayout->addWidget(m_pctrlFreqN,1,2);
 				pFreakLayout->addWidget(m_pctrlFreq1,2,2);
 				pFreakLayout->addWidget(m_pctrlDsi,3,2);
+				pFreakLayout->addWidget(m_pctrlT2,4,2);
+				pFreakLayout->addWidget(m_pctrlTau,5,2);
 				pFreakLayout->addWidget(FreqUnit1,1,3);
 				pFreakLayout->addWidget(FreqUnit2,2,3);
+				pFreakLayout->addWidget(T2Unit,4,3);
 
 				pFreakBox->setLayout(pFreakLayout);
 			}
