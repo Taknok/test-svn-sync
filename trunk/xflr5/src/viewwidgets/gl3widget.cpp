@@ -641,7 +641,26 @@ void GL3Widget::on3DReset()
 		pMiarex->m_bIs3DScaleSet = false;
 		pMiarex->set3DScale();
 	}
-
+	else if(m_iView==XFLR5::GLWINGVIEW)
+	{
+		GL3dWingDlg *pDlg = (GL3dWingDlg*)m_pParent;
+		pDlg->setWingScale();
+	}
+	else if(m_iView == XFLR5::GLPLANEVIEW)
+	{
+		EditPlaneDlg *pDlg = (EditPlaneDlg*)m_pParent;
+		pDlg->setPlaneScale();
+	}
+	else if(m_iView == XFLR5::GLEDITBODYVIEW)
+	{
+		EditBodyDlg *pDlg = (EditBodyDlg*)m_pParent;
+		pDlg->set3dScale();
+	}
+	else if(m_iView == XFLR5::GLBODYVIEW)
+	{
+		GL3dBodyDlg *pDlg = (GL3dBodyDlg*)m_pParent;
+		pDlg->set3dScale();
+	}
 	m_glViewportTrans.set(0.0, 0.0, 0.0);
 	reset3DRotationCenter();
 	update();

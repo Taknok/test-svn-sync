@@ -79,6 +79,7 @@ public:
 	void readBodyFrameTree(Body *pBody, Frame *pFrame, QModelIndex indexLevel);
 	void resize3DView();
 	void resizeTreeView();
+	void setPlaneScale();
 
 	QList<QStandardItem *> prepareRow(const QString &first, const QString &second="", const QString &third="",  const QString &fourth="");
 	QList<QStandardItem *> prepareBoolRow(const QString &first, const QString &second, const bool &third);

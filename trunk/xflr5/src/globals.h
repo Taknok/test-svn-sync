@@ -166,6 +166,7 @@ XFLR5::enumBC boundaryCondition(QString strBC);
 QString boundaryCondition(XFLR5::enumBC boundaryCondition);
 
 CVector normalVector(double p1[3], double p2[3],  double p3[3]);
+void modeProperties(complex<double> lambda, double &omegaN, double &omega1, double &dsi);
 
 
 #endif // FUNCTIONS_H

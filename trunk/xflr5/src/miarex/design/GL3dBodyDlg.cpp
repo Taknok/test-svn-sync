@@ -1201,11 +1201,10 @@ bool GL3dBodyDlg::setBody(Body *pBody)
 }
 
 
-void GL3dBodyDlg::setScales()
+void GL3dBodyDlg::set3dScale()
 {
-//	setBodyScale();
-//	setFrameScale();
-//	setBodyLineScale();
+	m_gl3Widget.m_glScaled = (GLfloat)(3./4.*2.0/m_pBody->length());
+	m_gl3Widget.m_glViewportTrans.set(0.0,0.0,0.0);
 }
 
 
@@ -1667,7 +1666,6 @@ void GL3dBodyDlg::showEvent(QShowEvent *event)
 	setTableUnits();
 	m_bChanged    = false;
 	m_bResetglBody = true;
-	setScales();
 
 	resizeTables();
 
