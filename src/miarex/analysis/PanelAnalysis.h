@@ -257,6 +257,9 @@ public: //stability analysis method and variables
 	complex<double> m_vLong[16];  /**< complex longitudinal eigenvectors resulting from the stability analysis*/
 	complex<double> m_vLat[16];   /**< complex lateral eigenvectors resulting from the stability analysis*/
 
+	complex<double> m_phiPH;      /**< complex phugoid eigenvalue computed using Phillip's formula */
+	complex<double> m_phiDR;      /**< complex Dutch roll eigenvalue computed using Phillip's formula */
+
 	double m_AlphaEq;             /**< the balance aoa, calculated in stability analysis */
 	double m_Ctrl;                /**< the control parameter, which defines the position of the control surfaces */
 

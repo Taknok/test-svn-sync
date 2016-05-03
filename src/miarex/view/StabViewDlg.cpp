@@ -149,6 +149,8 @@ void StabViewDlg::fillEigenThings()
     double u0, mac, span;
     complex<double> angle;
 
+	OmegaN = Omega1 = Dsi = u0 = mac = span = 0;
+
     QString ModeDescription = tr("<small>Mode Properties:")+"<br/>";
 
 	if(pMiarex->m_pCurPlane && pMiarex->m_pCurPOpp && pMiarex->m_pCurWPolar->polarType()==XFLR5::STABILITYPOLAR)
@@ -164,7 +166,12 @@ void StabViewDlg::fillEigenThings()
 		m_pctrlEigenValue->setText(strange);
         ModeDescription.append("Lambda="+strange+"<br/>");
 
-		Omega1 = qAbs(eigenvalue.imag());
+		modeProperties(eigenvalue, OmegaN, Omega1, Dsi);
+//		Omega1 = qAbs(eigenvalue.imag());
+//		OmegaN = sqrt(eigenvalue.real()*eigenvalue.real()+Omega1*Omega1);
+//		Dsi = -eigenvalue.real()/Omega1;
+
+
 		if(Omega1>PRECISION)
 		{
 			m_pctrlFreq1->setValue(Omega1/2.0/PI);
@@ -178,8 +185,6 @@ void StabViewDlg::fillEigenThings()
 
 		if(Omega1 > PRECISION)
 		{
-			OmegaN = sqrt(eigenvalue.real()*eigenvalue.real()+Omega1*Omega1);
-			Dsi = -eigenvalue.real()/OmegaN;
 			m_pctrlFreqN->setValue(OmegaN/2.0/PI);
 			m_pctrlDsi->setValue(Dsi);
 			strange.sprintf("FN=%6.3f Hz",OmegaN/2.0/PI);
@@ -189,7 +194,7 @@ void StabViewDlg::fillEigenThings()
 		}
 		else
 		{
-			m_pctrlFreq1->clear();
+			m_pctrlFreqN->clear();
 			m_pctrlDsi->clear();
 		}
 

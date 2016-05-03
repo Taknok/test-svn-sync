@@ -4349,7 +4349,7 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double *Gamma, double *Sigma
 		pPOpp->m_CP                  = m_CP;
 
 		if(m_pWPolar->polarType()!=XFLR5::BETAPOLAR) pPOpp->m_Beta = m_pWPolar->m_BetaSpec;
-		else                                  pPOpp->m_Beta = m_OpBeta;
+		else                                         pPOpp->m_Beta = m_OpBeta;
 
 		if(m_pWPolar->polarType()==XFLR5::STABILITYPOLAR)
 		{
@@ -4419,13 +4419,11 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double *Gamma, double *Sigma
 			pPOpp->CMe = Cme;
 			pPOpp->CNe = Cne;
 
-
 			memcpy(pPOpp->m_ALong, m_ALong, 16*sizeof(double));
 			memcpy(pPOpp->m_ALat,  m_ALat,  16*sizeof(double));
 
 			memcpy(pPOpp->m_BLong, m_BLong, 4*sizeof(double));
 			memcpy(pPOpp->m_BLat,  m_BLat,  4*sizeof(double));
-
 		}
 		else
 		{
@@ -4473,12 +4471,16 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double *Gamma, double *Sigma
 		}
 	}
 
+	pPOpp->m_phiPH = m_phiPH;
+	pPOpp->m_phiDR = m_phiDR;
+
 	//add the data to the polar object
 	if(PlaneOpp::s_bKeepOutOpps || !pPOpp->isOut())
 		m_pWPolar->addPlaneOpPoint(pPOpp);
 
 	return pPOpp;
 }
+
 
 /**
  * Adds the input message to the ouput message. The message is read and cleared from the calling dialog class.
@@ -4513,22 +4515,29 @@ void PanelAnalysis::computePhillipsFormulae()
 
 
 	MTOW_des = m_pWPolar->mass();
-	AWing = m_pPlane->planformArea();
-	Vmax_C = m_QInf;
-	Span = m_pPlane->planformSpan();
-	Chord = m_pPlane->mac();
-	rho_C = m_pWPolar->density();
-	Ixx = m_Is[0][0];
-	Iyy = m_Is[1][1];
-	Izz = m_Is[2][2];
-	CL_C = m_CL;
-	CDtot_C = m_CX;  // need to add parasitic drag
+	AWing    = m_pPlane->planformArea();
+	Vmax_C   = m_QInf;
+	Span     = m_pPlane->planformSpan();
+	Chord    = m_pPlane->mac();
+	rho_C    = m_pWPolar->density();
+	Ixx      = m_Is[0][0];
+	Iyy      = m_Is[1][1];
+	Izz      = m_Is[2][2];
+	CL_C     = m_CL;
+	CDtot_C  = m_CX;
+	for(int i=0; i<MAXEXTRADRAG; i++)
+	{
+		if(fabs(m_pWPolar->m_ExtraDragCoef[i])>PRECISION && fabs(m_pWPolar->m_ExtraDragArea[i])>PRECISION)
+		{
+			CDtot_C += m_pWPolar->m_ExtraDragCoef[i] * m_pWPolar->m_ExtraDragArea[i] / AWing;
+		}
+	}
 
-	Rx  =-CDtot_C*rho_C*AWing*Chord/(2*MTOW_des);
+	Rx  =-CDtot_C*rho_C*AWing*Chord/(2*MTOW_des); //unused
 	Rz  =-CL_C*rho_C*AWing*Chord/(2*MTOW_des);
 	Rg  = 9.81*Chord/(2*Vmax_C*Vmax_C);
 	Rgy = 9.81*Span/(2*Vmax_C*Vmax_C);
-	Rza = (rho_C*AWing*Chord/(4*MTOW_des))*(-CZa-CDtot_C);
+	Rza = (rho_C*AWing*Chord/(4*MTOW_des))*(+CZa-CDtot_C); /** @todo check issue with sign of CZa */
 
 	Rxa = (rho_C*AWing*Chord/(4*MTOW_des))*CXa;
 	Rma = (rho_C*AWing*Chord*Chord*Chord/(8*Iyy))*Cma;
@@ -4559,19 +4568,25 @@ void PanelAnalysis::computePhillipsFormulae()
 	Fph = sqrt(rlPH*rlPH+ilPH*ilPH)/(2.*PI);
 	zeta_ph = -rlPH/ilPH;
 
+	m_phiPH = complex<double>(rlPH, ilPH);
+	m_phiDR = complex<double>(rlDR, ilDR);
+
 	QString strange;
 	traceLog("\n");
 	traceLog("   Phillips formulae:\n");
 	strange.sprintf("       Phugoid eigenvalue:     %9.5f+%9.5fi",rlPH, ilPH);
 	traceLog(strange+"\n");
-	strange.sprintf("               frequency:%7.2f Hz", Fph);
+	strange.sprintf("               frequency:%7.3f Hz", Fph);
 	traceLog(strange+"\n");
-	strange.sprintf("               damping:  %7.2f", zeta_ph);
+	strange.sprintf("               damping:  %7.3f", zeta_ph);
 	traceLog(strange+"\n");
 	strange.sprintf("       Dutch-Roll eigenvalue:  %9.5f+%9.5fi",rlDR, ilDR);
 	traceLog(strange+"\n");
-	strange.sprintf("               frequency:%7.2f Hz", Fdr);
+	strange.sprintf("               frequency:%7.3f Hz", Fdr);
 	traceLog(strange+"\n");
-	strange.sprintf("               damping:  %7.2f", zeta_dr);
+	strange.sprintf("               damping:  %7.3f", zeta_dr);
 	traceLog(strange+"\n");
 }
+
+
+

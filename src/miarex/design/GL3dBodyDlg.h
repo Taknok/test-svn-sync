@@ -130,7 +130,7 @@ private:
 
 	void glMake3DObjects();
 	void setControls();
-	void setScales();
+	void set3dScale();
 	void updateView();
 
 	bool initDialog(Body *pBody);
