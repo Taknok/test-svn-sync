@@ -3199,3 +3199,48 @@ CVector normalVector(double p1[], double p2[],  double p3[])
 }
 
 
+void modeProperties(complex<double> lambda, double &omegaN, double &omega1, double &dsi)
+{
+	omega1 = fabs(lambda.imag());
+
+	if(omega1 > PRECISION)
+	{
+		omegaN = sqrt(lambda.real()*lambda.real()+omega1*omega1);
+		dsi = -lambda.real()/omega1;
+	}
+	else
+	{
+		omegaN = 0.0;
+		dsi = 0.0;
+	}
+
+/*	double sum, prod, sigma1;
+	sum  = lambda.real() * 2.0;                         // is a real number
+	prod = lambda.real()*lambda.real() + lambda.imag()*lambda.imag();  // is a positive real number
+	omegaN = fabs(lambda.imag());
+	if(omegaN>PRECISION)	omega1 = sqrt(prod);
+	else                    omega1 = 0.0;
+	sigma1 = sum /2.0;
+	if(omega1>PRECISION) dsi = -sigma1/omega1;
+	else                 dsi = 0.0;
+	qDebug("old   %13.7f  %13.7f  %13.7f", omegaN/2/PI, omega1/2/PI, dsi);*/
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

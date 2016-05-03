@@ -49,7 +49,7 @@
 #include "PlaneOpp.h"
 #include <QVarLengthArray>
 
-#define MAXPOLARPOINTS   1000     /**< The max number of points on a polar. */
+#define MAXPOLARPOINTS   5000     /**< The max number of points on a polar. */
 #define MAXEXTRADRAG 4
 #define MAXCONTROLS 100
 
@@ -207,11 +207,8 @@ public:
 
 	QList <double>  m_Ctrl;       /**< Ctrl variable */
 	QList <double>  m_CY;         /**< Side Force */
-	QList <double>  m_DutchRollDamping;        /**< the damping of the Dutch roll mode, as a result of stability analysis only */
-	QList <double>  m_DutchRollFrequency;      /**< the frequency of the Dutch roll mode, as a result of stability analysis only */
 	QList <double>  m_FX;         /**< the total drag */
 
-	complex<double> m_EigenValue[8][MAXPOLARPOINTS]; /**< until we have a QList<complex<double>> ? */
 
 	QList <double>  m_FY;         /**< the total side force */
 	QList <double>  m_FZ;         /**< the total wing lift */
@@ -230,15 +227,18 @@ public:
 	QList <double>  m_Oswald;     /**< Oswald's efficiency factor */
 	QList <double>  m_PCd;        /**< profile drag coef. */
 
+	complex<double> m_EigenValue[8][MAXPOLARPOINTS]; /**< until we have a QList<complex<double>> ? */
 	QList <double>  m_PhugoidFrequency;        /**< the phugoid's frequency, as a result of stability analysis only */
 	QList <double>  m_PhugoidDamping;          /**< the phugoid's damping factor, as a result of stability analysis only */
 	QList <double>  m_RollDamping;             /**< the damping of the roll-damping mode, as a result of stability analysis only */
 	QList <double>  m_ShortPeriodDamping;      /**< the damping of the short period mode, as a result of stability analysis only */
 	QList <double>  m_ShortPeriodFrequency;    /**< the frequency of the short period mode, as a result of stability analysis only */
+	QList <double>  m_DutchRollDamping;        /**< the damping of the Dutch roll mode, as a result of stability analysis only */
+	QList <double>  m_DutchRollFrequency;      /**< the frequency of the Dutch roll mode, as a result of stability analysis only */
+	QList <double>  m_SpiralDamping;           /**< the damping of the spiral mode, as a result of stability analysis only >*/
 
 	QList <double>  m_XCpCl;                   /**< XCp.Cl, used in calculation of neutral point position >*/
 	QList <double>  m_SM;                      /**< (XCP-XCmRef)/m.a.c; >*/
-	QList <double>  m_SpiralDamping;           /**< the damping of the spiral mode, as a result of stability analysis only >*/
 	QList <double>  m_TCd;                     /**< the total drag coeficient >*/
 	QList <double>  m_VCm;                     /**< the viscous Pitching Moment coefficient >*/
 	QList <double>  m_VertPower;               /**< the power for steady horizontal flight = m.g.Vz >*/

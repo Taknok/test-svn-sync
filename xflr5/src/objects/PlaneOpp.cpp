@@ -75,6 +75,9 @@ PlaneOpp::PlaneOpp(void *pPlanePtr, void *pWPolarPtr, int PanelArraySize)
 	memset(m_EigenValue, 0, sizeof(m_EigenValue)); //four longitudinal and four lateral modes
 	memset(m_EigenVector, 0, sizeof(m_EigenVector));
 
+	m_phiPH = complex<double>(0.0, 0.0);
+	m_phiDR = complex<double>(0.0, 0.0);
+
 	CXu = CZu = Cmu = 0.0;
 	CXa = CLa = Cma = CXq = CLq = Cmq = CYb = CYp = CYr = Clb = Clp = Clr = Cnb = Cnp = Cnr = 0.0;
 
@@ -113,7 +116,7 @@ PlaneOpp::PlaneOpp(void *pPlanePtr, void *pWPolarPtr, int PanelArraySize)
 		m_bTiltedGeom     = pWPolar->bTilted();
 		m_WPolarType      = pWPolar->polarType();
 		m_AnalysisMethod  = pWPolar->analysisMethod();
-	}	
+	}
 }
 
 
@@ -342,7 +345,7 @@ void PlaneOpp::getPlaneOppProperties(QString &PlaneOppProperties)
 		}*/
 
 		complex<double> c, angle;
-		double OmegaN, Omega1, Dsi, Sigma1, sum, prod, u0, mac, span;
+		double OmegaN, Omega1, Dsi, u0, mac, span;
 		u0   = m_QInf;
 		mac  = m_MAChord;
 		span = m_Span;
@@ -352,14 +355,7 @@ void PlaneOpp::getPlaneOppProperties(QString &PlaneOppProperties)
 		for(int im=0; im<4; im++)
 		{
 			c = m_EigenValue[im];
-			sum  = c.real() * 2.0;                         // is a real number
-			prod = c.real()*c.real() + c.imag()*c.imag();  // is a positive real number
-			OmegaN = qAbs(c.imag());
-			if(OmegaN>PRECISION)	Omega1 = sqrt(prod);
-			else                    Omega1 = 0.0;
-			Sigma1 = sum /2.0;
-			if(Omega1>PRECISION) Dsi = -Sigma1/Omega1;
-			else                 Dsi = 0.0;
+			modeProperties(c, OmegaN, Omega1, Dsi);
 
 			if(c.imag()>=0.0) strange = QString("  Eigenvalue    = %1+%2i").arg(c.real(),10,'f',5).arg(c.imag(),10,'f',5);
 			else              strange = QString("  Eigenvalue    = %1-%2i").arg(c.real(),10,'f',5).arg(qAbs(c.imag()),10,'f',5);
@@ -373,12 +369,6 @@ void PlaneOpp::getPlaneOppProperties(QString &PlaneOppProperties)
 
 			strange = QString("  Damping Ratio              = %1 ").arg(Dsi, 8,'f',3);
 			PlaneOppProperties += strange +"\n";
-
-			if(fabs(c.real())>PRECISION)
-			{
-				strange.sprintf(  "  Time to double            = %8.3fs", log(2)/fabs(c.real()));
-				PlaneOppProperties += strange +"\n";
-			}
 
 			PlaneOppProperties += "  Normalized Eigenvector:\n";
 			angle = m_EigenVector[im][3];
@@ -407,14 +397,7 @@ void PlaneOpp::getPlaneOppProperties(QString &PlaneOppProperties)
 		for(int im=4; im<8; im++)
 		{
 			c = m_EigenValue[im];
-			sum  = c.real() * 2.0;                         // is a real number
-			prod = c.real()*c.real() + c.imag()*c.imag();  // is a positive real number
-			OmegaN = qAbs(c.imag());
-			if(OmegaN>PRECISION)	Omega1 = sqrt(prod);
-			else                    Omega1 = 0.0;
-			Sigma1 = sum /2.0;
-			if(Omega1>PRECISION) Dsi = -Sigma1/Omega1;
-			else                 Dsi = 0.0;
+			modeProperties(c, OmegaN, Omega1, Dsi);
 
 			if(c.imag()>=0.0) strange = QString("  Eigenvalue    = %1+%2i").arg(c.real(),10,'f',5).arg(c.imag(),10,'f',5);
 			else              strange = QString("  Eigenvalue    = %1-%2i").arg(c.real(),10,'f',5).arg(qAbs(c.imag()),10,'f',5);
@@ -430,11 +413,17 @@ void PlaneOpp::getPlaneOppProperties(QString &PlaneOppProperties)
 			PlaneOppProperties += strange +"\n";
 
 
-			if(fabs(c.real())>PRECISION)
+			if(fabs(c.real())>PRECISION && fabs(c.imag())<PRECISION)
 			{
-				strange.sprintf(  "  Time to double            = %8.3fs", log(2)/fabs(c.real()));
+				strange.sprintf(   "  Time to double            = %8.3fs", log(2)/fabs(c.real()));
 				PlaneOppProperties += strange +"\n";
+				if(c.real()<0.0)
+				{
+					strange.sprintf("  Time constant              =%8.3f", -1.0/c.real());
+					PlaneOppProperties += strange +"\n";
+				}
 			}
+
 
 			PlaneOppProperties += "  Normalized Eigenvector:\n";
 
@@ -461,6 +450,38 @@ void PlaneOpp::getPlaneOppProperties(QString &PlaneOppProperties)
 			PlaneOppProperties += strange +"\n\n";
 		}
 
+		modeProperties(m_phiPH, OmegaN, Omega1, Dsi);
+
+		PlaneOppProperties += "Phillips Phugoid eq.38 JOURNAL OF AIRCRAFT Vol. 37, No. 1, January–February 2000\n";
+		if(c.imag()>=0.0) strange.sprintf("  Eigenvalue    = %9.5f+%9.5fi", m_phiPH.real(), m_phiPH.imag());
+		else              strange.sprintf("  Eigenvalue    = %9.5f-%9.5fi", m_phiPH.real(), m_phiPH.imag());
+		PlaneOppProperties += strange +"\n";
+
+		strange.sprintf("     Undamped Natural Frequency = %8.3f Hz",OmegaN/2.0/PI);
+		PlaneOppProperties += strange +"\n";
+
+		strange.sprintf("     Damped Natural Frequency   = %8.3f Hz",Omega1/2.0/PI);
+		PlaneOppProperties += strange +"\n";
+
+		strange.sprintf("     Damping Ratio              = %8.3f ", Dsi);
+		PlaneOppProperties += strange +"\n";
+
+
+		modeProperties(m_phiDR, OmegaN, Omega1, Dsi);
+
+		PlaneOppProperties += "Phillips Dutch-Roll eq. 28 JOURNAL OF AIRCRAFT Vol. 37, No. 3, May–June 2000\n";
+		if(c.imag()>=0.0) strange.sprintf("  Eigenvalue    = %9.5f+%9.5fi", m_phiDR.real(), m_phiDR.imag());
+		else              strange.sprintf("  Eigenvalue    = %9.5f-%9.5fi", m_phiDR.real(), m_phiDR.imag());
+		PlaneOppProperties += strange +"\n";
+
+		strange.sprintf("     Undamped Natural Frequency = %8.3f Hz",OmegaN/2.0/PI);
+		PlaneOppProperties += strange +"\n";
+
+		strange.sprintf("     Damped Natural Frequency   = %8.3f Hz",Omega1/2.0/PI);
+		PlaneOppProperties += strange +"\n";
+
+		strange.sprintf("     Damping Ratio              = %8.3f ", Dsi);
+		PlaneOppProperties += strange +"\n";
 	}
 }
 
@@ -906,7 +927,9 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
 		ar << m_LineStyle.m_PointStyle;
 
 		ar << m_MAChord<<m_Span;
-		for (int i=2; i<50; i++) ar << 0.0;
+		ar << m_phiPH.real() << m_phiPH.imag();
+		ar << m_phiDR.real() << m_phiDR.imag();
+		for (int i=6; i<50; i++) ar << 0.0;
 	}
 	else
 	{
@@ -1027,7 +1050,14 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
 		ar >> m_LineStyle.m_PointStyle;
 
 		ar>>m_MAChord>>m_Span;
-		for (int i=2; i<50; i++) ar >> dble;
+
+		double real, imag;
+		ar >> real >> imag;
+		m_phiPH = complex<double>(real, imag);
+		ar >> real >> imag;
+		m_phiDR = complex<double>(real, imag);
+
+		for (int i=6; i<50; i++) ar >> dble;
 	}
 	return true;
 }

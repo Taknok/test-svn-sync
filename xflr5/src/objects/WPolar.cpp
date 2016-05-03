@@ -90,7 +90,7 @@ WPolar::WPolar()
 
 void WPolar::replacePOppDataAt(int pos, PlaneOpp *pPOpp)
 {
-	if(pos<0 || pos>= m_Alpha.size()) return;
+	if(pos<0 || pos>= dataSize()) return;
 
 	m_Alpha[pos]      =  pPOpp->m_Alpha;
 	m_Beta[pos]       =  pPOpp->m_Beta;
@@ -124,7 +124,7 @@ void WPolar::replacePOppDataAt(int pos, PlaneOpp *pPOpp)
 
 void WPolar::insertPOppDataAt(int pos, PlaneOpp *pPOpp)
 {
-	if(pos<0 || pos> m_Alpha.size()) return; // if(pos==size), then the data is appended
+	if(pos<0 || pos> dataSize()) return; // if(pos==size), then the data is appended
 	
 	m_Alpha.insert(pos, pPOpp->m_Alpha);
 	m_Beta.insert(pos, pPOpp->m_Beta);
@@ -183,7 +183,7 @@ void WPolar::insertPOppDataAt(int pos, PlaneOpp *pPOpp)
 	m_CoG_z.insert(pos, 0.0);
 
 	for(int l=0; l<8; l++)
-		for(int j=m_Alpha.size(); j>pos; j--)
+		for(int j=dataSize(); j>pos; j--)
 		{
 			m_EigenValue[l][j] = m_EigenValue[l][j-1];
 		}
@@ -200,7 +200,7 @@ void WPolar::insertDataAt(int pos, double Alpha, double Beta, double QInf, doubl
 							double ICm, double VCm, double GRm, double GYm, double IYm, double VYm, double XCP, double YCP,
 							double ZCP, double Cb, double XNP)
 {
-	if(pos<0 || pos>m_Alpha.size()) return;
+	if(pos<0 || pos>dataSize()) return;
 	
 	m_Alpha.insert(pos, Alpha);
 	m_Beta.insert(pos, Beta);
@@ -274,7 +274,7 @@ void WPolar::addPlaneOpPoint(PlaneOpp *pPOpp)
 {
 	bool bInserted = false;
 	int i;
-	int size = m_Alpha.size();
+	int size = dataSize();
 
 	if(size)
 	{
@@ -355,7 +355,7 @@ void WPolar::addPlaneOpPoint(PlaneOpp *pPOpp)
 	if(!bInserted)
 	{
 		// data is appended at the end
-		int size = m_Alpha.size();
+		int size = dataSize();
 		insertPOppDataAt(size, pPOpp);
 	}
 }
@@ -442,45 +442,18 @@ void WPolar::calculatePoint(int iPt)
 	m_CoG_x[iPt]  = m_CoG.x + m_Ctrl[iPt] * m_inertiaGain[1];
 	m_CoG_z[iPt]  = m_CoG.z + m_Ctrl[iPt] * m_inertiaGain[2];
 
-	complex<double> c;
-	double OmegaN, Omega1, Dsi, Sigma1;
-	double sum, prod;
-
-	c = m_EigenValue[2][iPt];
-	sum  = c.real() * 2.0;                          // is a real number
-	prod = c.real()*c.real() + c.imag()*c.imag();  // is a positive real number
-	OmegaN = qAbs(c.imag());
-	if(OmegaN>PRECISION) Omega1 = sqrt(prod);
-	else                 Omega1 = 0.0;
-	Sigma1 = sum /2.0;
-	if(Omega1 > PRECISION) Dsi = -Sigma1/Omega1;
-	else                   Dsi = 0.0;
+	double OmegaN, Omega1, Dsi;
+	modeProperties(m_EigenValue[2][iPt], Omega1, OmegaN, Dsi);
 	m_PhugoidDamping[iPt] = Dsi;
-	m_PhugoidFrequency[iPt] = qAbs(c.imag()/2.0/PI);
+	m_PhugoidFrequency[iPt] = Omega1/2.0/PI;
 
-	c = m_EigenValue[0][iPt];
-	sum  = c.real() * 2.0;                          // is a real number
-	prod = c.real()*c.real() + c.imag()*c.imag();  // is a positive real number
-    OmegaN = qAbs(c.imag());
-	if(OmegaN>PRECISION) Omega1 = sqrt(prod);
-	else                 Omega1 = 0.0;
-	Sigma1 = sum /2.0;
-	if(Omega1 > PRECISION) Dsi = -Sigma1/Omega1;
-	else                   Dsi = 0.0;
-	m_ShortPeriodDamping[iPt] = Dsi;
-	m_ShortPeriodFrequency[iPt] = qAbs(c.imag()/2.0/PI);
+	modeProperties(m_EigenValue[0][iPt], Omega1, OmegaN, Dsi);
+	m_ShortPeriodFrequency[iPt] = Omega1/2.0/PI;
+	m_ShortPeriodDamping[iPt]   = Dsi;
 
-	c = m_EigenValue[5][iPt];
-	sum  = c.real() * 2.0;                          // is a real number
-	prod = c.real()*c.real() + c.imag()*c.imag();  // is a positive real number
-    OmegaN = qAbs(c.imag());
-	if(OmegaN>PRECISION) Omega1 = sqrt(prod);
-	else                 Omega1 = 0.0;
-	Sigma1 = sum /2.0;
-	if(Omega1 > PRECISION) Dsi = -Sigma1/Omega1;
-	else                   Dsi = 0.0;
-	m_DutchRollDamping[iPt] = Dsi;
-	m_DutchRollFrequency[iPt] = qAbs(c.imag()/2.0/PI);
+	modeProperties(m_EigenValue[5][iPt], Omega1, OmegaN, Dsi);
+	m_DutchRollFrequency[iPt] = Omega1;
+	m_DutchRollDamping[iPt]   = Dsi;
 
 	m_RollDamping[iPt]= m_EigenValue[4][iPt].real();
 	m_SpiralDamping[iPt]= m_EigenValue[7][iPt].real();
@@ -608,7 +581,7 @@ void WPolar::exportToTextFile(QTextStream &out, XFLR5::enumTextFileType FileType
 
 		Header = "   alpha      Beta       CL          CDi        CDv        CD         CY         Cl         Cm         Cn        Cni       QInf        XCP\n";
 		out << Header;
-		for (j=0; j<m_Alpha.size(); j++)
+		for (j=0; j<dataSize(); j++)
 		{
 			strong = QString(" %1  %2  %3  %4  %5  %6  %7  %8  %9  %10  %11  %12  %13\n")
 					 .arg(m_Alpha[j],8,'f',3)
@@ -651,7 +624,7 @@ void WPolar::exportToTextFile(QTextStream &out, XFLR5::enumTextFileType FileType
 
 		Header = "alpha, Beta, CL, CDi, CDv, CD, CY, Cl, Cm, Cn, Cni, QInf, XCP\n";
 		out << Header;
-		for (j=0; j<m_Alpha.size(); j++)
+		for (j=0; j<dataSize(); j++)
 		{
 //			strong.Format(" %8.3f,  %9.6f,  %9.6f,  %9.6f,  %9.6f,  %9.6f,  %9.6f,  %9.6f,  %9.6f,  %9.6f,  %8.4f,  %9.4f\n",
 			strong = QString(" %1,  %2,  %3,  %4,  %5,  %6,  %7,  %8,  %9,  %10,  %11,  %12, %13\n")
@@ -1033,7 +1006,7 @@ QString WPolar::variableName(int iVar)
  **/
 void WPolar::remove(double alpha)
 {
-	for(int ia=0;ia<m_Alpha.size(); ia++)
+	for(int ia=0;ia<dataSize(); ia++)
 	{
         if(qAbs(m_Alpha.at(ia)-alpha)<PRECISION)
 		{
@@ -1050,7 +1023,7 @@ void WPolar::remove(double alpha)
  **/
 void WPolar::remove(int i)
 {
-	int size = m_Alpha.size();
+	int size = dataSize();
 	m_Alpha.removeAt(i);
 	m_Beta.removeAt(i);
 	m_CL.removeAt(i);
@@ -1122,7 +1095,7 @@ void WPolar::remove(int i)
 */
 void WPolar::clearData()
 {
-	int size = m_Alpha.size();
+	int size = dataSize();
 	m_Alpha.clear();
 	m_Beta.clear();
 	m_CL.clear();
@@ -1421,7 +1394,7 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
 
 			if(m_WPolarType!=XFLR5::FIXEDAOAPOLAR)
 			{
-				for (j=0; j<m_Alpha.size(); j++)
+				for (j=0; j<dataSize(); j++)
 				{
                     if(qAbs(Alpha-m_Alpha[j])<0.001)
 					{
@@ -1431,7 +1404,7 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
 			}
 			else
 			{
-				for (j=0; j<m_Alpha.size(); j++)
+				for (j=0; j<dataSize(); j++)
 				{
                     if(qAbs(QInfinite-m_QInfinite[j])<0.001)
 					{
@@ -1521,7 +1494,7 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
 		}
 		if(m_PolarFormat>=1019)
 		{
-			n = m_Alpha.size();
+			n = dataSize();
 
 			for(i=0; i<n; i++)
 			{
@@ -1868,7 +1841,7 @@ void WPolar::getPolarProperties(QString &polarProps, bool bData)
 	strong += QString::fromUtf8("m²/s\n");
 	polarProps += strong;
 
-	strong = QString(QObject::tr("Data points") +" = %1\n").arg(m_Alpha.size());
+	strong = QString(QObject::tr("Data points") +" = %1\n").arg(dataSize());
 	polarProps += "\n"+strong;
 
 	for(int ix=0; ix<MAXEXTRADRAG; ix++)
@@ -1882,7 +1855,7 @@ void WPolar::getPolarProperties(QString &polarProps, bool bData)
 		}
 	}
 
-	if(!bData || m_Alpha.size()==0) return;
+	if(!bData || dataSize()==0) return;
 	QTextStream out;
 	strong.clear();
 	out.setString(&strong);
@@ -1988,8 +1961,8 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 		ar << m_BetaSpec;
 
 		// Last store the array data
-		ar <<m_Alpha.size();
-		for (i=0; i< m_Alpha.size(); i++)
+		ar <<dataSize();
+		for (i=0; i< dataSize(); i++)
 		{
 			ar << m_Alpha[i] << m_Beta[i] << m_QInfinite[i] << m_Ctrl[i];
 			ar << m_CL[i] << m_CY[i] << m_ICd[i] << m_PCd[i] ;
@@ -2155,7 +2128,7 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 		if(m_inertiaGain[i]>42 && m_inertiaGain[i]<51) m_inertiaGain[i] = 0.0; //correcting some former bad programming
 	}
 
-	for(int iPt=0; iPt<m_Alpha.size(); iPt++)	calculatePoint(iPt);
+	for(int iPt=0; iPt<dataSize(); iPt++)	calculatePoint(iPt);
 
 	return true;
 }
@@ -2177,7 +2150,7 @@ void WPolar::copy(WPolar *pWPolar)
 
 	clearData();
 
-	for(i=0; i<pWPolar->m_Alpha.size(); i++)
+	for(i=0; i<pWPolar->dataSize(); i++)
 	{
 		m_Alpha.append(     pWPolar->m_Alpha[i]);
 		m_Beta.append(      pWPolar->m_Beta[i]);

@@ -2376,5 +2376,12 @@ bool EditPlaneDlg::saveSettings(QSettings *pSettings)
 
 
 
+void EditPlaneDlg::setPlaneScale()
+{
+	//wing along X axis will take 3/4 of the screen
+	m_pgl3Widget->m_glScaled = (GLfloat)(3./4.*2.0/m_pPlane->planformSpan());
+	m_pgl3Widget->m_glViewportTrans.set(0.0,0.0,0.0);
+}
+
 
 

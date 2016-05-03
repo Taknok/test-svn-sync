@@ -71,6 +71,7 @@ public:
 	void readPointMassTree(PointMass *ppm, QModelIndex indexLevel);
 	void readBodyFrameTree(Frame *pFrame, QModelIndex indexLevel);
 	void resizeTreeView();
+	void set3dScale();
 	void setActiveFrame(int iFrame);
 	void updateViews();
 

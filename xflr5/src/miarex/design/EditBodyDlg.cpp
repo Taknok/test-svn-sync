@@ -1559,6 +1559,13 @@ void EditBodyDlg::onBodyInertia()
 
 
 
+void EditBodyDlg::set3dScale()
+{
+	m_pgl3Widget->m_glScaled = (GLfloat)(3./4.*2.0/m_pBody->length());
+	m_pgl3Widget->m_glViewportTrans.set(0.0,0.0,0.0);
+}
+
+
 
 
 
