@@ -2165,8 +2165,6 @@ Plane * Objects3D::setModPlane(Plane *pModPlane)
 		else if(resp ==10)
 		{
 			//the user wants to overwrite the old plane/wing
-			if (OldName == renDlg.newName()) return pModPlane;//don't bother to overwrite itself
-
 			pPlane = getPlane(renDlg.newName());
 			deletePlane(pPlane);
 
