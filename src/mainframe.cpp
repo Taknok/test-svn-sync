@@ -453,6 +453,7 @@ void MainFrame::createActions()
 
 	m_pInsertAct = new QAction(tr("&Insert Project..."), this);
 	m_pInsertAct->setStatusTip(tr("Insert an existing project in the current project"));
+	m_pInsertAct->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_I));
 	connect(m_pInsertAct, SIGNAL(triggered()), this, SLOT(onInsertProject()));
 
 	m_pOnAFoilAct = new QAction(tr("&Direct Foil Design"), this);

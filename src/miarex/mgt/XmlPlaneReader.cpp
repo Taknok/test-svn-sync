@@ -31,7 +31,7 @@ XMLPlaneReader::XMLPlaneReader(QFile &file, Plane *pPlane)
 
 
 
-void XMLPlaneReader::readXMLPlaneFile()
+bool XMLPlaneReader::readXMLPlaneFile()
 {
 	double lengthunit = 1.0;
 	double massunit = 1.0;
@@ -73,13 +73,14 @@ void XMLPlaneReader::readXMLPlaneFile()
 		else
 			raiseError(QObject::tr("The file is not an xflr5 plane version 1.0 file."));
 	}
+	return(hasError());
 }
 
 
 
 
 /** */
-void XMLPlaneReader::readPlane(Plane *pPlane, double lengthUnit, double massUnit)
+bool XMLPlaneReader::readPlane(Plane *pPlane, double lengthUnit, double massUnit)
 {
 	int iw=0;
 	pPlane->hasElevator() = false;
@@ -123,6 +124,9 @@ void XMLPlaneReader::readPlane(Plane *pPlane, double lengthUnit, double massUnit
 		{
 			double xw=0.0, yw=0.0, zw=0.0, ta=0.0;
 			Wing newWing;
+			newWing.clearPointMasses();
+			newWing.clearSurfaces();
+			newWing.clearWingSections();
 			{
 				newWing.wingType() = XFLR5::OTHERWING;
 				newWing.m_WingSection.clear();
@@ -305,12 +309,14 @@ void XMLPlaneReader::readPlane(Plane *pPlane, double lengthUnit, double massUnit
 					}
 				}
 
-				pPlane->m_Wing[iWing].duplicate(&newWing);
-				pPlane->WingLE(iWing).x      = xw;
-				pPlane->WingLE(iWing).y      = yw;
-				pPlane->WingLE(iWing).z      = zw;
-				pPlane->WingTiltAngle(iWing) = ta;
-
+				if(!hasError())
+				{
+					pPlane->m_Wing[iWing].duplicate(&newWing);
+					pPlane->WingLE(iWing).x      = xw;
+					pPlane->WingLE(iWing).y      = yw;
+					pPlane->WingLE(iWing).z      = zw;
+					pPlane->WingTiltAngle(iWing) = ta;
+				}
 				iw++;
 			}
 		}
@@ -319,14 +325,15 @@ void XMLPlaneReader::readPlane(Plane *pPlane, double lengthUnit, double massUnit
 	}
 	if(pPlane->fin() && pPlane->fin()->m_bDoubleFin) pPlane->m_bDoubleFin = true;
 	if(pPlane->fin() && pPlane->fin()->m_bSymFin)    pPlane->m_bSymFin = true;
-//	pPlane->m_bDoubleSymFin = pPlane->m_bDoubleFin && pPlane->m_bSymFin;
+
+	return(hasError());
 }
 
 
 
-void XMLPlaneReader::readPointMass(PointMass *ppm, double massUnit, double lengthUnit)
+bool XMLPlaneReader::readPointMass(PointMass *ppm, double massUnit, double lengthUnit)
 {
-	while (readNextStartElement())
+	while(!atEnd() && !hasError() && readNextStartElement() )
 	{
 		if (name().compare("tag", Qt::CaseInsensitive)==0)       ppm->tag() = readElementText();
 		else if (name().compare("mass", Qt::CaseInsensitive)==0) ppm->mass() =  readElementText().toDouble()*massUnit;
@@ -340,17 +347,14 @@ void XMLPlaneReader::readPointMass(PointMass *ppm, double massUnit, double lengt
 				ppm->position().z = coordList.at(2).toDouble()*lengthUnit;
 			}
 		}
-//		else if (name().compare("x", Qt::CaseInsensitive)==0)    ppm->m_Position.x =  readElementText().toDouble()*lengthUnit;
-//		else if (name().compare("y", Qt::CaseInsensitive)==0)    ppm->m_Position.y =  readElementText().toDouble()*lengthUnit;
-//		else if (name().compare("z", Qt::CaseInsensitive)==0)    ppm->m_Position.z =  readElementText().toDouble()*lengthUnit;
 		else skipCurrentElement();
-
 	}
+	return(hasError());
 }
 
 
 
-void XMLPlaneReader::readBody(Body *pBody, CVector &position, double lengthUnit, double massUnit)
+bool XMLPlaneReader::readBody(Body *pBody, CVector &position, double lengthUnit, double massUnit)
 {
 	pBody->splineSurface()->clearFrames();
 
@@ -436,21 +440,22 @@ void XMLPlaneReader::readBody(Body *pBody, CVector &position, double lengthUnit,
 			}
 		}
 	}
+	return(hasError());
 }
 
 
 
 
-void XMLPlaneReader::readColor(QColor &color)
+bool XMLPlaneReader::readColor(QColor &color)
 {
 	color.setRgb(0,0,0,255);
-	while (readNextStartElement())
+	while(!atEnd() && !hasError() && readNextStartElement() )
 	{
 		if (name().compare("red", Qt::CaseInsensitive)==0)         color.setRed(readElementText().toInt());
 		else if (name().compare("green", Qt::CaseInsensitive)==0)  color.setGreen(readElementText().toInt());
 		else if (name().compare("blue", Qt::CaseInsensitive)==0)   color.setBlue(readElementText().toInt());
 		else if (name().compare("alpha", Qt::CaseInsensitive)==0)  color.setAlpha(readElementText().toInt());
 		else skipCurrentElement();
-
 	}
+	return(hasError());
 }
