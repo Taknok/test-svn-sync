@@ -3266,7 +3266,7 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
 			iTriangles +=1;
 		}
 	}
-	Q_ASSERT(iTriangles==nTriangles);
+	Q_ASSERT((uint)iTriangles==nTriangles);
 	delete [] NormalA;
 	delete [] NormalB;
 	delete [] PtLeft;
@@ -3324,7 +3324,7 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
 	//   CHORDPANELS-1  quads
 	//   *2 triangles/quad
 
-	quint32 nTriangles = m_Surface.count() * CHORDPANELS * SPANPANELS * 2 *2
+	uint nTriangles = m_Surface.count() * CHORDPANELS * SPANPANELS * 2 *2
 						 + 2* ((CHORDPANELS-2) * 2 + 2);
 	N.set(0.0, 0.0, 0.0);
 	int iTriangles = 0;
@@ -3514,7 +3514,7 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
 		}
 	}
 
-	Q_ASSERT(iTriangles==nTriangles);
+	Q_ASSERT((uint)iTriangles==nTriangles);
 
 	strong = "endsolid " + name + "\n";
 	outStream << strong;

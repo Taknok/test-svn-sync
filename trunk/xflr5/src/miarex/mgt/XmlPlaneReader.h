@@ -31,13 +31,13 @@ class XMLPlaneReader : public QXmlStreamReader
 public:
 	XMLPlaneReader(QFile &file, Plane *pPlane);
 
-	void readXMLPlaneFile();
+	bool readXMLPlaneFile();
 
 private:
-	void readPlane(Plane *pPlane, double lengthUnit, double massUnit);
-	void readBody(Body *pBody, CVector &position, double lengthUnit, double massUnit);
-	void readPointMass(PointMass *ppm, double massUnit, double lengthUnit);
-	void readColor(QColor &color);
+	bool readPlane(Plane *pPlane, double lengthUnit, double massUnit);
+	bool readBody(Body *pBody, CVector &position, double lengthUnit, double massUnit);
+	bool readPointMass(PointMass *ppm, double massUnit, double lengthUnit);
+	bool readColor(QColor &color);
 
 	Plane *m_pPlane;
 };
