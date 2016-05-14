@@ -87,20 +87,22 @@ BatchThreadDlg::BatchThreadDlg(QWidget *pParent) : QDialog(pParent)
 	XFoilTask::s_bSkipPolar = false;
 
 	setupLayout();
-	connect(m_pctrlFoil1, SIGNAL(clicked()), this, SLOT(onFoilSelectionType()));
-	connect(m_pctrlFoil2, SIGNAL(clicked()), this, SLOT(onFoilSelectionType()));
-	connect(m_pctrlFoilList, SIGNAL(clicked()), this, SLOT(onFoilList()));
-	connect(m_pctrlClose, SIGNAL(clicked()), this, SLOT(onClose()));
-	connect(m_pctrlAnalyze, SIGNAL(clicked()), this, SLOT(onAnalyze()));
-	connect(m_pctrlAlpha, SIGNAL(toggled(bool)), this, SLOT(onAcl()));
-	connect(m_pctrlCl, SIGNAL(toggled(bool)), this, SLOT(onAcl()));
-	connect(m_rbRange1, SIGNAL(toggled(bool)), this, SLOT(onRange()));
+	connect(m_pctrlFoil1,           SIGNAL(clicked()),         this, SLOT(onFoilSelectionType()));
+	connect(m_pctrlFoil2,           SIGNAL(clicked()),         this, SLOT(onFoilSelectionType()));
+	connect(m_pctrlFoilList,        SIGNAL(clicked()),         this, SLOT(onFoilList()));
+	connect(m_pctrlClose,           SIGNAL(clicked()),         this, SLOT(onClose()));
+	connect(m_pctrlAnalyze,         SIGNAL(clicked()),         this, SLOT(onAnalyze()));
+	connect(m_pctrlAlpha,           SIGNAL(toggled(bool)),     this, SLOT(onAcl()));
+	connect(m_pctrlCl,              SIGNAL(toggled(bool)),     this, SLOT(onAcl()));
+	connect(m_rbRange1,             SIGNAL(toggled(bool)),     this, SLOT(onRange()));
 //	connect(m_rbRange2, SIGNAL(toggled(bool)), this, SLOT(OnRange()));
-	connect(m_pctrlEditList, SIGNAL(clicked()), this, SLOT(onEditReList()));
-	connect(m_pctrlFromZero, SIGNAL(stateChanged(int)), this, SLOT(onFromZero(int)));
-	connect(m_pctrlSpecMin, SIGNAL(editingFinished()), this, SLOT(onSpecChanged()));
-	connect(m_pctrlSpecMax, SIGNAL(editingFinished()), this, SLOT(onSpecChanged()));
-	connect(m_pctrlSpecDelta, SIGNAL(editingFinished()), this, SLOT(onSpecChanged()));
+	connect(m_pctrlEditList,        SIGNAL(clicked()),         this, SLOT(onEditReList()));
+	connect(m_pctrlFromZero,        SIGNAL(stateChanged(int)), this, SLOT(onFromZero(int)));
+	connect(m_pctrlSpecMin,         SIGNAL(editingFinished()), this, SLOT(onSpecChanged()));
+	connect(m_pctrlSpecMax,         SIGNAL(editingFinished()), this, SLOT(onSpecChanged()));
+	connect(m_pctrlSpecDelta,       SIGNAL(editingFinished()), this, SLOT(onSpecChanged()));
+	connect(m_pctrlUpdatePolarView, SIGNAL(clicked(bool)),     this, SLOT(onUpdatePolarView()));
+	connect(m_pctrlShowPolars,      SIGNAL(clicked(bool)),     this, SLOT(onShowPolars(bool)));
 }
 
 
@@ -313,20 +315,21 @@ void BatchThreadDlg::setupLayout()
 		m_pctrlTextOutput->setFont(Settings::s_TableFont);
 		QFontMetrics fm(Settings::s_TableFont);
 		m_pctrlTextOutput->setMinimumWidth(67*fm.averageCharWidth());
+		m_pctrlInitBL          = new QCheckBox(tr("Initialize BLs between polars"));
 
 		QHBoxLayout *pOptionsLayout = new QHBoxLayout;
 		{
-			m_pctrlInitBL          = new QCheckBox(tr("Initialize BLs between polars"));
 			m_pctrlUpdatePolarView = new QCheckBox(tr("Update polar view"));
-			m_pctrlUpdatePolarView->setToolTip(tr("Update the polar graphs after the completion of each foil/polar pair"));
+			m_pctrlUpdatePolarView->setToolTip(tr("Update the polar graphs after the completion of each foil/polar pair.\nUncheck for increased analysis speed."));
+			m_pctrlShowPolars   = new QCheckBox(tr("Show generated polars"));
 			QPushButton *pClearBtn = new QPushButton(tr("Clear Output"));
 			connect(pClearBtn, SIGNAL(clicked()), m_pctrlTextOutput, SLOT(clear()));
-			pOptionsLayout->addWidget(m_pctrlInitBL);
-			pOptionsLayout->addStretch(1);
 			pOptionsLayout->addWidget(m_pctrlUpdatePolarView);
+			pOptionsLayout->addWidget(m_pctrlShowPolars);
 			pOptionsLayout->addStretch(1);
 			pOptionsLayout->addWidget(pClearBtn);
 		}
+		pRightSide->addWidget(m_pctrlInitBL);
 		pRightSide->addLayout(pOptionsLayout);
 		pRightSide->addWidget(m_pctrlTextOutput,1);
 	}
@@ -383,8 +386,7 @@ Polar * BatchThreadDlg::createPolar(Foil *pFoil, double Re, double Mach, double 
 
 	Polar *pNewPolar = new Polar;
 	pNewPolar->m_FoilName   = pFoil->m_FoilName;
-	pNewPolar->lineStyle().m_bIsVisible = true;
-
+	pNewPolar->lineStyle().m_bIsVisible = QXDirect::s_bShowBatchPolars;
 	pNewPolar->m_PolarType = m_PolarType;
 
 	switch (pNewPolar->m_PolarType)
@@ -533,7 +535,7 @@ void BatchThreadDlg::initDialog()
 
 	m_pctrlInitBL->setChecked(true);
 	m_pctrlUpdatePolarView->setChecked(s_bUpdatePolarView);
-
+	m_pctrlShowPolars->setChecked(QXDirect::s_bShowBatchPolars);
 	blockSignals(false);
 }
 
@@ -615,7 +617,6 @@ void BatchThreadDlg::onClose()
 {
 	if(m_bIsRunning) return;
 
-	s_bUpdatePolarView = m_pctrlUpdatePolarView->isChecked();
 	m_bCancel = true;
 	XFoilTask::s_bCancel = true;
 	QThreadPool::globalInstance()->waitForDone();
@@ -958,8 +959,9 @@ void BatchThreadDlg::onTimerEvent()
 			cleanUp();
 
 			QXDirect *pXDirect = (QXDirect*)s_pXDirect;
-			if(pXDirect->m_bPolarView)
+			if(pXDirect->m_bPolarView && s_bUpdatePolarView)
 			{
+				qDebug()<<"updating...";
 				pXDirect->createPolarCurves();
 				pXDirect->updateView();
 			}
@@ -989,6 +991,8 @@ void BatchThreadDlg::startThread()
 
 		//take the last analysis in the array
 		pAnalysis = (Analysis*)m_AnalysisPair.at(m_AnalysisPair.size()-1);
+
+		pAnalysis->pPolar->lineStyle().m_bIsVisible = QXDirect::s_bShowBatchPolars;
 
 		//initiate the task
 		if(m_bAlpha) pXFoilTask->setSequence(true,  m_AlphaMin, m_AlphaMax, m_AlphaInc);
@@ -1033,7 +1037,7 @@ void BatchThreadDlg::handleXFoilTaskEvent(const XFoilTaskEvent *event)
 
 
 	QXDirect *pXDirect = (QXDirect*)s_pXDirect;
-	if(m_pctrlUpdatePolarView->isChecked())
+	if(s_bUpdatePolarView)
 	{
 		pXDirect->createPolarCurves();
 		pXDirect->updateView();
@@ -1125,6 +1129,18 @@ void BatchThreadDlg::onAdvancedSettings()
 		XFoilTask::s_bAutoInitBL  = xfaDlg.m_bAutoInitBL;
 		XFoilTask::s_IterLim      = xfaDlg.m_IterLimit;
 	}
+}
+
+void BatchThreadDlg::onUpdatePolarView()
+{
+	s_bUpdatePolarView = m_pctrlUpdatePolarView->isChecked();
+}
+
+
+
+void BatchThreadDlg::onShowPolars(bool bShow)
+{
+	QXDirect::s_bShowBatchPolars = bShow;
 }
 
 

@@ -124,6 +124,7 @@ BatchDlg::BatchDlg(QWidget *pParent) : QDialog(pParent)
 	connect(m_pctrlInitBLOpp, SIGNAL(toggled(bool)), this, SLOT(onAnalysisSettings()));
 	connect(m_pctrlInitBLPolar, SIGNAL(toggled(bool)), this, SLOT(onAnalysisSettings()));
 	connect(m_pctrlMaxIter, SIGNAL(editingFinished()), this, SLOT(onAnalysisSettings()));
+	connect(m_pctrlShowPolars, SIGNAL(clicked(bool)), this, SLOT(onShowPolars(bool)));
 }
 
 
@@ -213,6 +214,26 @@ void BatchDlg::setupLayout()
 		pBatchVarsGroupBox->setLayout(pBatchVarsLayout);
 	}
 
+	QGroupBox *pTransVarsGroupBox = new QGroupBox(tr("Forced transitions"));
+	{
+		QGridLayout *pTransVarsLayout = new QGridLayout;
+		{
+			pTransVarsLayout->setColumnStretch(0,4);
+			pTransVarsLayout->setColumnStretch(1,1);
+			QLabel *TopTransLabel = new QLabel(tr("Top transition location (x/c)"));
+			QLabel *BotTransLabel = new QLabel(tr("Bottom transition location (x/c)"));
+			TopTransLabel->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
+			BotTransLabel->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
+			m_pctrlXTopTr = new DoubleEdit(1.00);
+			m_pctrlXBotTr = new DoubleEdit(1.00);
+			pTransVarsLayout->addWidget(TopTransLabel, 1, 1);
+			pTransVarsLayout->addWidget(m_pctrlXTopTr, 1, 2);
+			pTransVarsLayout->addWidget(BotTransLabel, 2, 1);
+			pTransVarsLayout->addWidget(m_pctrlXBotTr, 2, 2);
+		}
+		pTransVarsGroupBox->setLayout(pTransVarsLayout);
+	}
+
 	QGroupBox *pRangeVarsGroupBox = new QGroupBox(tr("Analysis Range"));
 	{
 		QGridLayout *pRangeVarsLayout = new QGridLayout;
@@ -246,24 +267,21 @@ void BatchDlg::setupLayout()
 		pRangeVarsGroupBox->setLayout(pRangeVarsLayout);
 	}
 
-	QGroupBox *pTransVarsGroupBox = new QGroupBox(tr("Forced transitions"));
+	QGroupBox *pConvergenceBox = new QGroupBox(tr("Iterations control"));
 	{
-		QGridLayout *pTransVarsLayout = new QGridLayout;
+		QHBoxLayout *pConvergenceLayout = new QHBoxLayout;
 		{
-			pTransVarsLayout->setColumnStretch(0,4);
-			pTransVarsLayout->setColumnStretch(1,1);
-			QLabel *TopTransLabel = new QLabel(tr("Top transition location (x/c)"));
-			QLabel *BotTransLabel = new QLabel(tr("Bottom transition location (x/c)"));
-			TopTransLabel->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
-			BotTransLabel->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
-			m_pctrlXTopTr = new DoubleEdit(1.00);
-			m_pctrlXBotTr = new DoubleEdit(1.00);
-			pTransVarsLayout->addWidget(TopTransLabel, 1, 1);
-			pTransVarsLayout->addWidget(m_pctrlXTopTr, 1, 2);
-			pTransVarsLayout->addWidget(BotTransLabel, 2, 1);
-			pTransVarsLayout->addWidget(m_pctrlXBotTr, 2, 2);
+			QLabel *pMaxIterLab	 = new QLabel(tr("Max. iterations"));
+			m_pctrlMaxIter = new IntEdit(XFoilTask::s_IterLim);
+			m_pctrlSkipOpp   = new QPushButton(tr("Skip Opp"));
+			m_pctrlSkipPolar = new QPushButton(tr("Skip Polar"));
+			pConvergenceLayout->addWidget(pMaxIterLab);
+			pConvergenceLayout->addWidget(m_pctrlMaxIter);
+			pConvergenceLayout->addStretch(1);
+			pConvergenceLayout->addWidget(m_pctrlSkipOpp);
+			pConvergenceLayout->addWidget(m_pctrlSkipPolar);
 		}
-		pTransVarsGroupBox->setLayout(pTransVarsLayout);
+		pConvergenceBox->setLayout(pConvergenceLayout);
 	}
 
 	QVBoxLayout *pOptionsLayout = new QVBoxLayout;
@@ -273,12 +291,12 @@ void BatchDlg::setupLayout()
 		QHBoxLayout *pSubOptionsLayout = new QHBoxLayout;
 		{
 			m_pctrlStoreOpp     = new QCheckBox(tr("Store OpPoints"));
-			QLabel *pMaxIterLab	 = new QLabel(tr("Max. iterations"));
-			m_pctrlMaxIter = new IntEdit(XFoilTask::s_IterLim);
+			m_pctrlShowPolars   = new QCheckBox(tr("Show generated polars"));
 			pSubOptionsLayout->addWidget(m_pctrlStoreOpp);
 			pSubOptionsLayout->addStretch();
-			pSubOptionsLayout->addWidget(pMaxIterLab);
-			pSubOptionsLayout->addWidget(m_pctrlMaxIter);
+			pSubOptionsLayout->addWidget(m_pctrlShowPolars);
+			pSubOptionsLayout->addStretch();
+
 		}
 		pOptionsLayout->addWidget(m_pctrlInitBLOpp);
 		pOptionsLayout->addWidget(m_pctrlInitBLPolar);
@@ -288,17 +306,12 @@ void BatchDlg::setupLayout()
 	QHBoxLayout *pCommandButtonsLayout = new QHBoxLayout;
 	{
 		m_pctrlClose     = new QPushButton(tr("Close"));
-		m_pctrlAnalyze   = new QPushButton(tr("Analyze"))	;
-		m_pctrlSkipOpp   = new QPushButton(tr("Skip Opp"));
-		m_pctrlSkipPolar = new QPushButton(tr("Skip Polar"));
+		m_pctrlAnalyze   = new QPushButton(tr("Analyze"));
 		m_pctrlAnalyze->setAutoDefault(true);
 
 		pCommandButtonsLayout->addStretch(1);
 		pCommandButtonsLayout->addWidget(m_pctrlAnalyze);
 		pCommandButtonsLayout->addStretch(1);
-		pCommandButtonsLayout->addWidget(m_pctrlSkipOpp);
-		pCommandButtonsLayout->addStretch(1);
-		pCommandButtonsLayout->addWidget(m_pctrlSkipPolar);
 		pCommandButtonsLayout->addStretch(1);
 		pCommandButtonsLayout->addWidget(m_pctrlClose);
 		pCommandButtonsLayout->addStretch(1);
@@ -311,6 +324,7 @@ void BatchDlg::setupLayout()
 		pLeftSideLayout->addWidget(pBatchVarsGroupBox);
 		pLeftSideLayout->addWidget(pTransVarsGroupBox);
 		pLeftSideLayout->addWidget(pRangeVarsGroupBox);
+		pLeftSideLayout->addWidget(pConvergenceBox);
 		pLeftSideLayout->addSpacing(20);
 		pLeftSideLayout->addStretch(1);
 		pLeftSideLayout->addLayout(pCommandButtonsLayout);
@@ -442,7 +456,7 @@ Polar *BatchDlg::createPolar(Foil *pFoil, double Spec, double Mach, double NCrit
 
 	Polar *pPolar = new Polar;
 	pPolar->m_FoilName   = pFoil->m_FoilName;
-	pPolar->lineStyle().m_bIsVisible = true;
+	pPolar->lineStyle().m_bIsVisible = QXDirect::s_bShowBatchPolars;
 
 	pPolar->m_PolarType = m_PolarType;
 
@@ -629,6 +643,7 @@ void BatchDlg::initDialog()
 	m_pctrlInitBLPolar->setChecked(m_bInitBL);
 	m_pctrlInitBLOpp->setChecked(XFoilTask::s_bAutoInitBL);
 	m_pctrlStoreOpp->setChecked(QXDirect::s_bStoreOpp);
+	m_pctrlShowPolars->setChecked(QXDirect::s_bShowBatchPolars);
 
 	m_pctrlSkipOpp->setEnabled(false);
 	m_pctrlSkipPolar->setEnabled(false);
@@ -1238,7 +1253,10 @@ void BatchDlg::onAnalysisSettings()
 
 
 
-
+void BatchDlg::onShowPolars(bool bShow)
+{
+	QXDirect::s_bShowBatchPolars = bShow;
+}
 
 
 

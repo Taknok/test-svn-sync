@@ -1083,10 +1083,10 @@ void InertiaDlg::setupLayout()
 		{
 			QGridLayout *pTotalInertiaLayout = new QGridLayout;
 			{
-				m_pctrlTotalIxx = new DoubleEdit(1.0,3);
-				m_pctrlTotalIyy = new DoubleEdit(1.2,3);
-				m_pctrlTotalIzz = new DoubleEdit(-1.5,3);
-				m_pctrlTotalIxz = new DoubleEdit(4.2,3);
+				m_pctrlTotalIxx = new DoubleEdit(1.0,5);
+				m_pctrlTotalIyy = new DoubleEdit(1.2,5);
+				m_pctrlTotalIzz = new DoubleEdit(-1.5,5);
+				m_pctrlTotalIxz = new DoubleEdit(4.2,5);
 				m_pctrlTotalIxx->setEnabled(false);
 				m_pctrlTotalIyy->setEnabled(false);
 				m_pctrlTotalIzz->setEnabled(false);

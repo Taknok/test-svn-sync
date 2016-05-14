@@ -257,6 +257,7 @@ private:
 	static bool s_bFromZero;          /**< true if the batch analysis should start from Alpha=0 */
 	static bool s_bKeepOpenErrors; /**< true if the XfoilAnalysisDlg should be kept open if errors occured in the XFoil calculation */
 	static bool s_bStoreOpp;          /**< true if the operating points should be stored */
+	static bool s_bShowBatchPolars;    /**< true if the default visibility of the generated polar curves should be turned on */
 
 	XFoilAnalysisDlg *m_pXFADlg;
 

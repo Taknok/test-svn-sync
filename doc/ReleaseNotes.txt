@@ -20,6 +20,7 @@ xflr5 v6.14 May xxxth, 2016
 	- added mass and CoG position to the list of variables for stability polar graphs
 	- corrected issues in the construction of wings with inverse dihedral
 	- corrected an error in the calculation of a mode's damped natural frequency
+	- made some adjustments to batch analysis of foils to speed up execution
 	- fixed a few minor bugs
 
 xflr5 v6.13 April 16th, 2016
