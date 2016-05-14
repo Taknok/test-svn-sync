@@ -74,6 +74,7 @@ bool QXDirect::s_bInitBL = true;
 bool QXDirect::s_bKeepOpenErrors = true;
 bool QXDirect::s_bFromZero = false;
 bool QXDirect::s_bStoreOpp = true;
+bool QXDirect::s_bShowBatchPolars = true;
 
 int QXDirect::s_TimeUpdateInterval = 100;
 
@@ -954,11 +955,12 @@ void QXDirect::loadSettings(QSettings *pSettings)
 		m_bCpGraph        = pSettings->value("ShowCpGraph", true).toBool();
 		m_bSequence       = pSettings->value("Sequence", false).toBool();
 
+
 		m_XFoilVar       = pSettings->value("XFoilVar").toInt();
 		s_TimeUpdateInterval = pSettings->value("TimeUpdateInterval",100).toInt();
 
 		BatchThreadDlg::s_bUpdatePolarView = pSettings->value("BatchUpdatePolarView", false).toBool();
-
+		s_bShowBatchPolars = pSettings->value("showBatchPolars", true).toBool();
 
 		m_iPlrGraph      = pSettings->value("PlrGraph").toInt();
 
@@ -4206,6 +4208,7 @@ void QXDirect::saveSettings(QSettings *pSettings)
 		pSettings->setValue("Sequence", m_bSequence);
 		pSettings->setValue("XFoilVar", m_XFoilVar);
 		pSettings->setValue("TimeUpdateInterval", s_TimeUpdateInterval);
+		pSettings->setValue("showBatchPolars", s_bShowBatchPolars);
 		pSettings->setValue("BatchUpdatePolarView", BatchThreadDlg::s_bUpdatePolarView);
 		pSettings->setValue("PlrGraph", m_iPlrGraph);
 

@@ -88,6 +88,7 @@ private slots:
 	void onFoilSelectionType();
 	void onProgress();
 	void onAnalysisSettings();
+	void onShowPolars(bool bShow);
 
 private:
     static QPoint s_Position;   /**< the position on the client area of the dialog's topleft corner */
@@ -106,6 +107,7 @@ private:
 	QLabel *m_pctrlMaType, *m_pctrlReType;
 	QCheckBox *m_pctrlInitBLOpp, *m_pctrlInitBLPolar;
 	QCheckBox *m_pctrlFromZero, *m_pctrlStoreOpp;
+	QCheckBox *m_pctrlShowPolars;
 	QPushButton *m_pctrlSkipOpp, *m_pctrlSkipPolar;
 	QPushButton *m_pctrlClose, *m_pctrlAnalyze;
 	QTextEdit *m_pctrlTextOutput;
