@@ -208,6 +208,7 @@ void PanelAnalysisDlg::analyze()
 
 	qApp->processEvents();
 
+
 	QString strong;
 	m_pctrlCancel->setText(tr("Cancel"));
 	m_bIsFinished = false;

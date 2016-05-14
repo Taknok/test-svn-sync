@@ -105,6 +105,8 @@ private slots:
 	void onFoilSelectionType();
 	void onAdvancedSettings();
 	void onTimerEvent();
+	void onUpdatePolarView();
+	void onShowPolars(bool bShow);
 
 
 private:
@@ -119,6 +121,8 @@ private:
 	QLabel *m_pctrlSpecVar;
 	QLabel *m_pctrlMaType, *m_pctrlReType;
 	QCheckBox *m_pctrlInitBL, *m_pctrlFromZero, *m_pctrlUpdatePolarView;
+	QCheckBox *m_pctrlShowPolars;
+
 	QPushButton *m_pctrlClose, *m_pctrlAnalyze;
 	QTextEdit *m_pctrlTextOutput;
 
@@ -126,7 +130,6 @@ private:
 	static bool s_bCurrentFoil;        /**< true if the analysis should be performed only for the current foil */
 	static bool s_bUpdatePolarView;    /**< true if the polar graphs should be updated during the analysis */
 	static QPoint s_Position;          /**< the position on the client area of the dialog's topleft corner */
-
 
 	double m_ReMin;             /**< the min Re for a range analysis */
 	double m_ReMax;             /**< the max Re for a range analysis */
