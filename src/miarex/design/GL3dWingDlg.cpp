@@ -124,7 +124,17 @@ bool GL3dWingDlg::checkWing()
 	{
 		if(m_pWing->YPosition(k)*1.00001 < m_pWing->YPosition(k-1))
 		{
-			QMessageBox::warning(this, tr("Warning"), tr("Warning : Panel sequence is inconsistent"));
+			QMessageBox::warning(this, tr("Warning"), tr("Warning : Panel sequence is inconsistent.")+
+								 tr("The sections whould be ordered from root to tip"));
+			return false;
+		}
+	}
+
+	for (int k=1; k<m_pWing->NWingSection(); k++)
+	{
+		if(fabs(m_pWing->Chord(k))<0.0001)
+		{
+			QMessageBox::warning(this, tr("Warning"), tr("Zero length chords will cause division by zero and are not allowed."));
 			return false;
 		}
 	}
