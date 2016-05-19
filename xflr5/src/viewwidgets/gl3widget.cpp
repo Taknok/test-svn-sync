@@ -69,6 +69,10 @@ GL3Widget::GL3Widget(QWidget *pParent) : QOpenGLWidget(pParent)
 	m_pParent = pParent;
 
 	m_glScaled = m_glScaledRef = 1.0f;
+	m_pRotTimer = NULL;
+	memset(ab_new, 0, 16*sizeof(float));
+	memset(ab_old, 0, 16*sizeof(float));
+	m_iRotInc = 0;
 
 	m_bArcball = m_bCrossPoint = false;
 
@@ -244,57 +248,67 @@ void GL3Widget::onClipPlane(int pos)
 
 void GL3Widget::on3DIso()
 {
-	m_ArcBall.ab_quat[0]	= -0.65987748f;
-	m_ArcBall.ab_quat[1]	=  0.38526487f;
-	m_ArcBall.ab_quat[2]	= -0.64508355f;
-	m_ArcBall.ab_quat[3]	=  0.0f;
-	m_ArcBall.ab_quat[4]	= -0.75137258f;
-	m_ArcBall.ab_quat[5]	= -0.33720365f;
-	m_ArcBall.ab_quat[6]	=  0.56721509f;
-	m_ArcBall.ab_quat[7]	=  0.0f;
-	m_ArcBall.ab_quat[8]	=  0.000f;
-	m_ArcBall.ab_quat[9]	=  0.85899049f;
-	m_ArcBall.ab_quat[10]	=  0.51199043f;
-	m_ArcBall.ab_quat[11]	=  0.0f;
-	m_ArcBall.ab_quat[12]	=  0.0f;
-	m_ArcBall.ab_quat[13]	=  0.0f;
-	m_ArcBall.ab_quat[14]	=  0.0f;
-	m_ArcBall.ab_quat[15]	=  1.0f;
+	memcpy(ab_old, m_ArcBall.ab_quat, 16*sizeof(float));
+	ab_new[0]	= -0.65987748f;
+	ab_new[1]	=  0.38526487f;
+	ab_new[2]	= -0.64508355f;
+	ab_new[3]	=  0.0f;
+	ab_new[4]	= -0.75137258f;
+	ab_new[5]	= -0.33720365f;
+	ab_new[6]	=  0.56721509f;
+	ab_new[7]	=  0.0f;
+	ab_new[8]	=  0.000f;
+	ab_new[9]	=  0.85899049f;
+	ab_new[10]	=  0.51199043f;
+	ab_new[11]	=  0.0f;
+	ab_new[12]	=  0.0f;
+	ab_new[13]	=  0.0f;
+	ab_new[14]	=  0.0f;
+	ab_new[15]	=  1.0f;
 
-	reset3DRotationCenter();
+
+	startRotationTimer();
 	emit(viewModified());
-	update();
+
 }
 
 
 
 void GL3Widget::on3DTop()
 {
+	memcpy(ab_old, m_ArcBall.ab_quat, 16*sizeof(float));
 	m_ArcBall.setQuat(sqrt(2.0)/2.0, 0.0, 0.0, -sqrt(2.0)/2.0);
-	reset3DRotationCenter();
+	memcpy(ab_new, m_ArcBall.ab_quat, 16*sizeof(float));
+
+	startRotationTimer();
 	emit(viewModified());
-	update();
 }
 
 
 void GL3Widget::on3DLeft()
 {
+	memcpy(ab_old, m_ArcBall.ab_quat, 16*sizeof(float));
 	m_ArcBall.setQuat(sqrt(2.0)/2.0, -sqrt(2.0)/2.0, 0.0, 0.0);// rotate by 90° around x
-	reset3DRotationCenter();
+	memcpy(ab_new, m_ArcBall.ab_quat, 16*sizeof(float));
+
+	startRotationTimer();
 	emit(viewModified());
-	update();
+
 }
 
 
 void GL3Widget::on3DFront()
 {
+	memcpy(ab_old, m_ArcBall.ab_quat, 16*sizeof(float));
 	Quaternion Qt1(sqrt(2.0)/2.0, 0.0,           -sqrt(2.0)/2.0, 0.0);// rotate by 90° around y
 	Quaternion Qt2(sqrt(2.0)/2.0, -sqrt(2.0)/2.0, 0.0,           0.0);// rotate by 90° around x
 
 	m_ArcBall.setQuat(Qt1 * Qt2);
-	reset3DRotationCenter();
+	memcpy(ab_new, m_ArcBall.ab_quat, 16*sizeof(float));
+
+	startRotationTimer();
 	emit(viewModified());
-	update();
+
 }
 
 
@@ -6258,7 +6272,33 @@ void GL3Widget::paintBodyMesh(Body *pBody)
 
 
 
+void GL3Widget::onRotationIncrement()
+{
+	if(m_iRotInc>=30)
+	{
+		m_pRotTimer->stop();
+		delete m_pRotTimer;
+		m_pRotTimer = NULL;
+		return;
+	}
+	for(int iq=0; iq<16; iq++)
+	{
+		m_ArcBall.ab_quat[iq] = ab_old[iq] + float(m_iRotInc)/29.0f * (ab_new[iq]-ab_old[iq]);
+	}
+	reset3DRotationCenter();
+	update();
+	m_iRotInc++;
+}
 
+
+void GL3Widget::startRotationTimer()
+{
+	m_iRotInc = 0;
+	if(m_pRotTimer) delete m_pRotTimer;
+	m_pRotTimer = new QTimer(this);
+	connect(m_pRotTimer, SIGNAL(timeout()), this, SLOT(onRotationIncrement()));
+	m_pRotTimer->start(10);//33 ms x 30 times is approximately one second
+}
 
 
 
