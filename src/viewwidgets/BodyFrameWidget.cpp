@@ -26,14 +26,16 @@
 #include <QPainter>
 #include <QtDebug>
 
+bool BodyFrameWidget::s_bCurFrameOnly = false;
 
 BodyFrameWidget::BodyFrameWidget(QWidget *pParent, Body *pBody)
 	:Section2dWidget(pParent)
 {
 	m_pBody = pBody;
+
+	m_pShowCurFrameOnly = NULL;
 	createActions();
 	createContextMenu();
-
 }
 
 
@@ -145,38 +147,41 @@ void BodyFrameWidget::drawFrameLines()
 	framePen.setWidth(1);
 	painter.setPen(framePen);
 
-	for(int j=0; j<m_pBody->frameCount(); j++)
+	if(!s_bCurFrameOnly)
 	{
-		if(m_pBody->frame(j)!=m_pBody->activeFrame())
+		for(int j=0; j<m_pBody->frameCount(); j++)
 		{
-			rightPolyline.clear();
-			leftPolyline.clear();
-
-			if(m_pBody->m_LineType ==XFLR5::BODYSPLINETYPE)
+			if(m_pBody->frame(j)!=m_pBody->activeFrame())
 			{
-				u = m_pBody->getu(m_pBody->frame(j)->m_Position.x);
+				rightPolyline.clear();
+				leftPolyline.clear();
 
-				v = 0.0;
-				for (k=0; k<nh; k++)
+				if(m_pBody->m_LineType ==XFLR5::BODYSPLINETYPE)
 				{
-					m_pBody->getPoint(u,v,true, Point);
-					rightPolyline.append(QPointF(Point.y*m_fScale+m_ptOffset.x(), Point.z* -m_fScale + m_ptOffset.y()));
-					leftPolyline.append(QPointF(-Point.y*m_fScale+m_ptOffset.x(), Point.z* -m_fScale + m_ptOffset.y()));
-					v += hinc;
+					u = m_pBody->getu(m_pBody->frame(j)->m_Position.x);
+
+					v = 0.0;
+					for (k=0; k<nh; k++)
+					{
+						m_pBody->getPoint(u,v,true, Point);
+						rightPolyline.append(QPointF(Point.y*m_fScale+m_ptOffset.x(), Point.z* -m_fScale + m_ptOffset.y()));
+						leftPolyline.append(QPointF(-Point.y*m_fScale+m_ptOffset.x(), Point.z* -m_fScale + m_ptOffset.y()));
+						v += hinc;
+					}
+
+				}
+				else
+				{
+					for (k=0; k<m_pBody->sideLineCount();k++)
+					{
+						rightPolyline.append(QPointF( m_pBody->frame(j)->m_CtrlPoint[k].y*m_fScale+m_ptOffset.x(), m_pBody->frame(j)->m_CtrlPoint[k].z* -m_fScale + m_ptOffset.y()));
+						leftPolyline.append( QPointF(-m_pBody->frame(j)->m_CtrlPoint[k].y*m_fScale+m_ptOffset.x(), m_pBody->frame(j)->m_CtrlPoint[k].z* -m_fScale + m_ptOffset.y()));
+					}
 				}
 
+				painter.drawPolyline(rightPolyline);
+				painter.drawPolyline(leftPolyline);
 			}
-			else
-			{
-				for (k=0; k<m_pBody->sideLineCount();k++)
-				{
-					rightPolyline.append(QPointF( m_pBody->frame(j)->m_CtrlPoint[k].y*m_fScale+m_ptOffset.x(), m_pBody->frame(j)->m_CtrlPoint[k].z* -m_fScale + m_ptOffset.y()));
-					leftPolyline.append( QPointF(-m_pBody->frame(j)->m_CtrlPoint[k].y*m_fScale+m_ptOffset.x(), m_pBody->frame(j)->m_CtrlPoint[k].z* -m_fScale + m_ptOffset.y()));
-				}
-			}
-
-			painter.drawPolyline(rightPolyline);
-			painter.drawPolyline(leftPolyline);
 		}
 	}
 	painter.restore();
@@ -235,11 +240,13 @@ void BodyFrameWidget::setBody(Body *pBody)
 
 void BodyFrameWidget::onInsertPt()
 {
-	CVector Real = mousetoReal(m_PointDown);
-	if(Real.y<0.0) return;
+	CVector real = mousetoReal(m_PointDown);
+	real.z = real.y;
+	real.y = real.x;
+	real.x = m_pBody->activeFrame()->position().x;
 	if(m_pBody->activeFrame())
 	{
-		m_pBody->insertPoint(Real);
+		m_pBody->insertPoint(real);
 		emit objectModified();
 	}
 }
@@ -247,12 +254,14 @@ void BodyFrameWidget::onInsertPt()
 
 void BodyFrameWidget::onRemovePt()
 {
-
 	if(m_pBody->activeFrame())
 	{
-		CVector Real = mousetoReal(m_PointDown);
+		CVector real = mousetoReal(m_PointDown);
+		real.z = real.y;
+		real.y = real.x;
+		real.x = m_pBody->activeFrame()->position().x;
 
-		int n =   m_pBody->activeFrame()->isPoint(Real, m_fScale/m_fRefScale);
+		int n =   m_pBody->activeFrame()->isPoint(real, m_fScale/m_fRefScale);
 		if (n>=0)
 		{
 			for (int i=0; i<m_pBody->frameCount();i++)
@@ -319,7 +328,6 @@ void BodyFrameWidget::dragSelectedPoint(double x, double y)
 	if (!m_pBody->activeFrame() || (Frame::s_iSelect<0) ||  (Frame::s_iSelect > m_pBody->activeFrame()->pointCount())) return;
 
 	m_pBody->activeFrame()->selectedPoint().set(m_pBody->activeFrame()->position().x, qMax(x,0.0), y);
-
 }
 
 
@@ -341,7 +349,6 @@ void BodyFrameWidget::createActions()
 {
 	m_ActionList.clear();
 
-
 	QAction *pScaleBody = new QAction(tr("Scale Frame"), this);
 	connect(pScaleBody,  SIGNAL(triggered()), this, SLOT(onScaleFrame()));
 	m_ActionList.append(pScaleBody);
@@ -362,6 +369,11 @@ void BodyFrameWidget::createActions()
 	pSeparator1->setSeparator(true);
 	m_ActionList.append(pSeparator1);
 
+	m_pShowCurFrameOnly = new QAction(tr("Show Current Frame Only"), this);
+	m_pShowCurFrameOnly->setCheckable(true);
+	connect(m_pShowCurFrameOnly, SIGNAL(triggered()), this, SLOT(onShowCurFrameOnly()));
+	m_ActionList.append(m_pShowCurFrameOnly);
+
 	QAction *pResetScaleAction = new QAction(tr("Reset Scales"), this);
 	connect(pResetScaleAction, SIGNAL(triggered()), this, SLOT(onResetScales()));
 	m_ActionList.append(pResetScaleAction);
@@ -381,19 +393,17 @@ void BodyFrameWidget::createActions()
 	QAction *pClearBackImage = new QAction(tr("Clear background image") +"\tCtrl+Shift+I", this);
 	connect(pClearBackImage, SIGNAL(triggered()), this, SLOT(onClearBackImage()));
 	m_ActionList.append(pClearBackImage);
+
 }
 
 
 
-
-
-
-
-
-
-
-
-
+void BodyFrameWidget::onShowCurFrameOnly()
+{
+	s_bCurFrameOnly = !s_bCurFrameOnly;
+	m_pShowCurFrameOnly->setChecked(s_bCurFrameOnly);
+	update();
+}
 
 
 

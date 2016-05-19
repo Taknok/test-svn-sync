@@ -90,10 +90,6 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
 	QRect rect(0,0,w,h);
 	m_pixTextLegend = m_pixTextLegend.scaled(rect.size());
 
-
-	m_bCurFrameOnly = false;
-
-
 	m_StackPos  = 0; //the current position on the stack
 	m_bResetFrame = true;
 	m_bResetglFrameHighlight   = true;
@@ -104,13 +100,9 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
 
 	m_bResetglBody        = true;//otherwise endless repaint if no body present
 
-	m_pInsertPoint      = new QAction(tr("Insert Point") + QString("\tShift+Click"), this);
-	m_pRemovePoint      = new QAction(tr("Remove Point") + QString("\tCtrl+Click"), this);
 	m_pScaleBody        = new QAction(tr("Scale"), this);
 	m_pGrid             = new QAction(tr("Grid Setup"), this);
 	m_pResetScales      = new QAction(tr("Reset Scales")+("\t(R)"), this);
-	m_pShowCurFrameOnly = new QAction(tr("Show Current Frame Only"), this);
-	m_pShowCurFrameOnly->setCheckable(true);
 
 	m_pUndo= new QAction(QIcon(":/images/OnUndo.png"), tr("Undo"), this);
 	m_pUndo->setStatusTip(tr("Cancels the last modification"));
@@ -145,13 +137,9 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
 	setupLayout();
 	setTableUnits();
 
-	connect(m_pInsertPoint,      SIGNAL(triggered()), this, SLOT(onInsert()));
-	connect(m_pRemovePoint,      SIGNAL(triggered()), this, SLOT(onRemove()));
 	connect(m_pScaleBody,        SIGNAL(triggered()), this, SLOT(onScaleBody()));
-	connect(m_pShowCurFrameOnly, SIGNAL(triggered()), this, SLOT(onShowCurFrameOnly()));
 	connect(m_pResetScales,      SIGNAL(triggered()), this, SLOT(onResetScales()));
 	connect(m_pGrid,             SIGNAL(triggered()), this, SLOT(onGrid()));
-
 
 	connect(m_pctrlReset,      SIGNAL(clicked()), this, SLOT(onResetScales()));
 
@@ -782,10 +770,6 @@ void GL3dBodyDlg::onGrid()
 
 
 
-void GL3dBodyDlg::onInsert()
-{
-}
-
 
 void GL3dBodyDlg::onLineType()
 {
@@ -833,11 +817,6 @@ void GL3dBodyDlg::onPointItemClicked(const QModelIndex &index)
 	updateView();
 }
 
-
-
-void GL3dBodyDlg::onRemove()
-{
-}
 
 
 void GL3dBodyDlg::onResetScales()
@@ -946,13 +925,6 @@ void GL3dBodyDlg::onNURBSPanels()
 }
 
 
-
-void GL3dBodyDlg::onShowCurFrameOnly()
-{
-	m_bCurFrameOnly = !m_bCurFrameOnly;
-	m_pShowCurFrameOnly->setChecked(m_bCurFrameOnly);
-	updateView();
-}
 
 
 
@@ -1614,37 +1586,33 @@ void GL3dBodyDlg::setupLayout()
 
 void GL3dBodyDlg::showContextMenu(QContextMenuEvent * event)
 {
-	m_pShowCurFrameOnly->setChecked(m_bCurFrameOnly);
-	QMenu *CtxMenu = new QMenu(tr("Context Menu"),this);
-	CtxMenu->addAction(m_pInsertPoint);
-	CtxMenu->addAction(m_pRemovePoint);
-	CtxMenu->addSeparator();
-	CtxMenu->addAction(m_pTranslateBody);
-	CtxMenu->addAction(m_pScaleBody);
-	CtxMenu->addSeparator();
-	CtxMenu->addAction(m_pShowCurFrameOnly);
-	CtxMenu->addSeparator();
-	CtxMenu->addAction(m_pResetScales);
-	CtxMenu->addSeparator();
-	CtxMenu->addAction(m_pGrid);
-	CtxMenu->addSeparator();
-	CtxMenu->addAction(m_pUndo);
-	CtxMenu->addAction(m_pRedo);
-	CtxMenu->addSeparator();
-	CtxMenu->addAction(m_pImportBodyDef);
-	CtxMenu->addAction(m_pExportBodyDef);
-	CtxMenu->addAction(m_pImportBodyXML);
-	CtxMenu->addAction(m_pExportBodyXML);
-	CtxMenu->addAction(m_pExportBodyGeom);
-	CtxMenu->addSeparator();
-	CtxMenu->addAction(m_pBodyInertia);;
+	QMenu *pCtxMenu = new QMenu(tr("Context Menu"),this);
+	pCtxMenu->addAction(m_pTranslateBody);
+	pCtxMenu->addAction(m_pScaleBody);
+	pCtxMenu->addSeparator();
+	pCtxMenu->addAction(m_pFrameWidget->m_pShowCurFrameOnly);
+	pCtxMenu->addSeparator();
+	pCtxMenu->addAction(m_pResetScales);
+	pCtxMenu->addSeparator();
+	pCtxMenu->addAction(m_pGrid);
+	pCtxMenu->addSeparator();
+	pCtxMenu->addAction(m_pUndo);
+	pCtxMenu->addAction(m_pRedo);
+	pCtxMenu->addSeparator();
+	pCtxMenu->addAction(m_pImportBodyDef);
+	pCtxMenu->addAction(m_pExportBodyDef);
+	pCtxMenu->addAction(m_pImportBodyXML);
+	pCtxMenu->addAction(m_pExportBodyXML);
+	pCtxMenu->addAction(m_pExportBodyGeom);
+	pCtxMenu->addSeparator();
+	pCtxMenu->addAction(m_pBodyInertia);;
 
 	QPoint CltPt = event->pos();
 	m_ptPopUp.rx() = CltPt.x();
 	m_ptPopUp.ry() = CltPt.y();
 	m_gl3Widget.screenToViewport(event->pos(), m_RealPopUp);
 
-	CtxMenu->exec(event->globalPos());
+	pCtxMenu->exec(event->globalPos());
 
 	m_gl3Widget.setCursor(Qt::CrossCursor);
 }
