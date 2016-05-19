@@ -82,10 +82,7 @@ private slots:
 	void onGrid();
 	void onLineType();
 	void onNURBSPanels();
-	void onInsert();
 	void onResetScales();
-	void onShowCurFrameOnly();
-	void onRemove();
 	void onFrameCellChanged(QWidget *);
 	void onFrameItemClicked(const QModelIndex &index);
 	void onPointCellChanged(QWidget *);
@@ -198,8 +195,8 @@ private:
 	BodyTableDelegate *m_pFrameDelegate, *m_pPointDelegate;
 	QItemSelectionModel *m_pSelectionModelPoint, *m_pSelectionModelFrame;
 
-	QAction *m_pInsertPoint, *m_pRemovePoint, *m_pScaleBody;
-	QAction *m_pShowCurFrameOnly, *m_pResetScales;
+	QAction *m_pScaleBody;
+	QAction *m_pResetScales;
 	QAction *m_pUndo, *m_pRedo;
 	QAction *m_pExportBodyDef, *m_pImportBodyDef, *m_pExportBodyGeom, *m_pTranslateBody, *m_pBodyInertia;// *m_pSetupLight;
 	QAction *m_pExportBodyXML, *m_pImportBodyXML;
@@ -230,7 +227,6 @@ private:
 
 	bool m_bEnableName;
 	bool m_bResetglBody;
-	bool m_bCurFrameOnly;
 
 	CVector m_RealPopUp;
 	QPoint m_ptPopUp;
