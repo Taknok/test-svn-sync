@@ -32,6 +32,7 @@
 #include "objects/CRectangle.h"
 #include <ArcBall.h>
 #include <PointMass.h>
+#include <QTimer>
 
 #define MAXCPCOLORS    21
 
@@ -91,6 +92,7 @@ private slots:
 	void onOutline(bool bChecked);
 	void onFoilNames(bool bChecked);
 	void onShowMasses(bool bChecked);
+	void onRotationIncrement();
 
 public:
 	void setScale(double refLength);
@@ -157,6 +159,7 @@ private:
 	void reset3DRotationCenter();
 	void set3DRotationCenter(QPoint point);
 	void setSpanStations(Plane *pPlane, WPolar *pWPolar, PlaneOpp *pPOpp);
+	void startRotationTimer();
 	void screenToViewport(QPoint const &point, CVector &real);
 	void viewportToScreen(CVector const &real, QPoint &point);
 	void viewportToWorld(CVector vp, CVector &w);
@@ -228,6 +231,7 @@ private:
 
 	CRectangle m_GLViewRect;    /**< The OpenGl viewport.*/
 
+	QTimer *m_pRotTimer;
 	XFLR5::enumGLView m_iView;         /**< The identification of the type of the calling parent widget*/
 
 	bool m_bTrans;
@@ -262,6 +266,9 @@ private:
 	int m_iBodyMeshLines;
 	int m_iWingOutlinePoints[MAXWINGS];
 	int m_iMomentPoints;
+
+	float ab_old[16], ab_new[16];
+	int m_iRotInc;
 };
 
 #endif // GL3WIDGET_H
