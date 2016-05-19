@@ -55,8 +55,12 @@ private slots:
 	void onInsertPt();
 	void onRemovePt();
 	void onScaleFrame();
+	void onShowCurFrameOnly();
+
 private:
 	Body *m_pBody;
+	QAction *m_pShowCurFrameOnly;
+	static bool s_bCurFrameOnly;
 
 };
 

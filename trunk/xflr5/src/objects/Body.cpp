@@ -1525,7 +1525,7 @@ double Body::framePosition(int iFrame)
 Frame *Body::activeFrame()
 {
 	if(m_iActiveFrame>=0 && m_iActiveFrame<frameCount()) return m_SplineSurface.m_pFrame[m_iActiveFrame];
-	else                                                return NULL;
+	else                                                 return NULL;
 }
 
 
