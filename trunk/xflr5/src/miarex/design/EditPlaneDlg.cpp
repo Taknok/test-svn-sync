@@ -21,7 +21,7 @@
 
 #include <misc/Units.h>
 #include <misc/Settings.h>
-#include <misc/W3dPrefsDlg.h>
+#include <miarex/view/W3dPrefsDlg.h>
 #include <objects/Surface.h>
 #include "wingseldlg.h"
 #include "EditPlaneDlg.h"

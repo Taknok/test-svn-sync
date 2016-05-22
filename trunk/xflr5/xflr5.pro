@@ -55,7 +55,6 @@ SOURCES += \
 	src/misc/AboutQ5.cpp \
 	src/misc/NewNameDlg.cpp \
 	src/misc/ObjectPropsDlg.cpp \
-	src/misc/W3dPrefsDlg.cpp \
 	src/misc/LineBtn.cpp \
 	src/misc/TextClrBtn.cpp \
 	src/misc/MinTextEdit.cpp \
@@ -63,6 +62,7 @@ SOURCES += \
 	src/misc/Units.cpp \
 	src/misc/LengthUnitDlg.cpp \
 	src/misc/exponentialslider.cpp \
+	src/misc/stlexportdialog.cpp \
 	src/miarex/Miarex.cpp \
 	src/miarex/Objects3D.cpp \
 	src/miarex/analysis/StabPolarDlg.cpp \
@@ -75,6 +75,7 @@ SOURCES += \
 	src/miarex/analysis/PanelAnalysis.cpp \
 	src/miarex/analysis/AeroDataDlg.cpp \
 	src/miarex/analysis/EditPolarDefDlg.cpp \
+	src/miarex/analysis/planeanalysistask.cpp \
 	src/miarex/design/GL3dWingDlg.cpp \
 	src/miarex/design/GL3dBodyDlg.cpp \
 	src/miarex/design/PlaneDlg.cpp \
@@ -92,6 +93,7 @@ SOURCES += \
 	src/miarex/view/TargetCurveDlg.cpp \
 	src/miarex/view/GL3DScales.cpp \
 	src/miarex/view/StabViewDlg.cpp \
+	src/miarex/view/W3dPrefsDlg.cpp \
 	src/miarex/mgt/ImportObjectDlg.cpp\
 	src/miarex/view/GLLightDlg.cpp \
 	src/miarex/mgt/ManagePlanesDlg.cpp \
@@ -159,9 +161,7 @@ SOURCES += \
 	src/viewwidgets/oppointwidget.cpp \
 	src/viewwidgets/inverseviewwidget.cpp \
 	src/glcontextinfo/glrenderwindow.cpp \
-	src/glcontextinfo/openglinfodlg.cpp \
-    src/misc/stlexportdialog.cpp \
-    src/miarex/analysis/planeanalysistask.cpp
+	src/glcontextinfo/openglinfodlg.cpp
 
 
 HEADERS += \
@@ -184,7 +184,6 @@ HEADERS += \
 	src/misc/LinePickerDlg.h \
 	src/misc/LineDelegate.h \
 	src/misc/FloatEditDelegate.h \
-	src/misc/W3dPrefsDlg.h \
 	src/misc/ColorButton.h \
 	src/misc/LineCbBox.h \
 	src/misc/AboutQ5.h \
@@ -200,6 +199,7 @@ HEADERS += \
 	src/misc/Units.h \
 	src/misc/LengthUnitDlg.h \
 	src/misc/exponentialslider.h \
+	src/misc/stlexportdialog.h \
 	src/miarex/Miarex.h \
 	src/miarex/Objects3D.h \
 	src/miarex/analysis/WAdvancedDlg.h \
@@ -212,6 +212,7 @@ HEADERS += \
 	src/miarex/analysis/PanelAnalysisDlg.h \
 	src/miarex/analysis/AeroDataDlg.h \
 	src/miarex/analysis/EditPolarDefDlg.h \
+	src/miarex/analysis/planeanalysistask.h \
 	src/miarex/design/InertiaDlg.h \
 	src/miarex/design/GL3dBodyDlg.h \
 	src/miarex/design/WingScaleDlg.h \
@@ -230,6 +231,7 @@ HEADERS += \
 	src/miarex/view/GL3DScales.h \
 	src/miarex/view/StabViewDlg.h \
 	src/miarex/view/GLLightDlg.h \
+	src/miarex/view/W3dPrefsDlg.h \
 	src/miarex/mgt/ImportObjectDlg.h \
 	src/miarex/mgt/ManagePlanesDlg.h \
 	src/miarex/mgt/PlaneTableDelegate.h \
@@ -246,6 +248,7 @@ HEADERS += \
 	src/xdirect/analysis/XFoilAdvancedDlg.h \
 	src/xdirect/analysis/XFoilAnalysisDlg.h \
 	src/xdirect/analysis/XFoilTask.h \
+	src/xdirect/analysis/xfoiltaskevent.h \
 	src/xdirect/geometry/CAddDlg.h \
 	src/xdirect/geometry/FlapDlg.h \
 	src/xdirect/geometry/FoilCoordDlg.h \
@@ -300,10 +303,7 @@ HEADERS += \
 	src/viewwidgets/oppointwidget.h \
 	src/viewwidgets/inverseviewwidget.h \
 	src/glcontextinfo/glrenderwindow.h \
-	src/glcontextinfo/openglinfodlg.h \
-    src/misc/stlexportdialog.h \
-    src/miarex/analysis/planeanalysistask.h \
-    src/xdirect/analysis/xfoiltaskevent.h
+	src/glcontextinfo/openglinfodlg.h
 
 
 TRANSLATIONS = translations/xflr5v6.ts \

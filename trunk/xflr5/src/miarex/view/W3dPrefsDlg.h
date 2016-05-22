@@ -26,9 +26,9 @@
 #include <QDialog>
 #include <QCheckBox>
 #include <QSettings>
-#include "../misc/LineBtn.h"
-#include "../misc/ColorButton.h"
-
+#include <misc/LineBtn.h>
+#include <misc/ColorButton.h>
+#include <misc/IntEdit.h>
 
 
 class W3dPrefsDlg : public QDialog
@@ -59,9 +59,11 @@ private slots:
 	void onShowWake();
 	void onMasses();
     void onResetDefaults();
+	void onOK();
 
 private:
 	void setupLayout();
+	void readSettings();
 	static void saveSettings(QSettings *pSettings);
 	static void loadSettings(QSettings *pSettings);
 	static void resetDefaults();
@@ -72,7 +74,8 @@ private:
 
 	ColorButton *m_pctrlMassColor;
 
-	QCheckBox *m_pctrlShowWake;
+	QCheckBox*m_pctrlAnimateTransitions;
+	IntEdit *m_pctrlChordwiseRes, *m_pctrlBodyAxialRes, *m_pctrlBodyHoopRes;
 
 public:
 	static double s_MassRadius;
@@ -109,6 +112,9 @@ public:
 	static QColor s_CpColor;
 
 	static bool s_bWakePanels;
+
+	static int s_iChordwiseRes,s_iBodyAxialRes, s_iBodyHoopRes;
+	static bool s_bAnimateTransitions;
 };
 
 #endif // W3DPREFSDLG_H

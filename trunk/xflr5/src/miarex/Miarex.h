@@ -218,8 +218,7 @@ public:
 
 public:
 	//class methods
-	WPolar* AddWPolar(WPolar* pWPolar);
-	int CalculateMatSize();
+	WPolar* addWPolar(WPolar* pWPolar);
 	void connectSignals();
 	void clearCpCurves();
 	void createCpCurves();
@@ -230,7 +229,6 @@ public:
 	void createStabTimeCurves();
 	void createStabRungeKuttaCurves();
 	void drawTextLegend();
-	void DuplicatePlane();
 	void fillComboBoxes(bool bEnable = true);
 	void fillWPlrCurve(Curve *pCurve, WPolar *pWPolar, int XVar, int YVar);
 	void fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve);

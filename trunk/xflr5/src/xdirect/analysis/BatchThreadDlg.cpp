@@ -102,7 +102,6 @@ BatchThreadDlg::BatchThreadDlg(QWidget *pParent) : QDialog(pParent)
 	connect(m_pctrlSpecMax,         SIGNAL(editingFinished()), this, SLOT(onSpecChanged()));
 	connect(m_pctrlSpecDelta,       SIGNAL(editingFinished()), this, SLOT(onSpecChanged()));
 	connect(m_pctrlUpdatePolarView, SIGNAL(clicked(bool)),     this, SLOT(onUpdatePolarView()));
-	connect(m_pctrlShowPolars,      SIGNAL(clicked(bool)),     this, SLOT(onShowPolars(bool)));
 }
 
 
@@ -321,11 +320,9 @@ void BatchThreadDlg::setupLayout()
 		{
 			m_pctrlUpdatePolarView = new QCheckBox(tr("Update polar view"));
 			m_pctrlUpdatePolarView->setToolTip(tr("Update the polar graphs after the completion of each foil/polar pair.\nUncheck for increased analysis speed."));
-			m_pctrlShowPolars   = new QCheckBox(tr("Show generated polars"));
 			QPushButton *pClearBtn = new QPushButton(tr("Clear Output"));
 			connect(pClearBtn, SIGNAL(clicked()), m_pctrlTextOutput, SLOT(clear()));
 			pOptionsLayout->addWidget(m_pctrlUpdatePolarView);
-			pOptionsLayout->addWidget(m_pctrlShowPolars);
 			pOptionsLayout->addStretch(1);
 			pOptionsLayout->addWidget(pClearBtn);
 		}
@@ -386,7 +383,7 @@ Polar * BatchThreadDlg::createPolar(Foil *pFoil, double Re, double Mach, double 
 
 	Polar *pNewPolar = new Polar;
 	pNewPolar->m_FoilName   = pFoil->m_FoilName;
-	pNewPolar->lineStyle().m_bIsVisible = QXDirect::s_bShowBatchPolars;
+	pNewPolar->lineStyle().m_bIsVisible = true;
 	pNewPolar->m_PolarType = m_PolarType;
 
 	switch (pNewPolar->m_PolarType)
@@ -535,7 +532,6 @@ void BatchThreadDlg::initDialog()
 
 	m_pctrlInitBL->setChecked(true);
 	m_pctrlUpdatePolarView->setChecked(s_bUpdatePolarView);
-	m_pctrlShowPolars->setChecked(QXDirect::s_bShowBatchPolars);
 	blockSignals(false);
 }
 
@@ -961,7 +957,6 @@ void BatchThreadDlg::onTimerEvent()
 			QXDirect *pXDirect = (QXDirect*)s_pXDirect;
 			if(pXDirect->m_bPolarView && s_bUpdatePolarView)
 			{
-				qDebug()<<"updating...";
 				pXDirect->createPolarCurves();
 				pXDirect->updateView();
 			}
@@ -992,7 +987,7 @@ void BatchThreadDlg::startThread()
 		//take the last analysis in the array
 		pAnalysis = (Analysis*)m_AnalysisPair.at(m_AnalysisPair.size()-1);
 
-		pAnalysis->pPolar->lineStyle().m_bIsVisible = QXDirect::s_bShowBatchPolars;
+		pAnalysis->pPolar->lineStyle().m_bIsVisible = true;
 
 		//initiate the task
 		if(m_bAlpha) pXFoilTask->setSequence(true,  m_AlphaMin, m_AlphaMax, m_AlphaInc);
@@ -1134,13 +1129,11 @@ void BatchThreadDlg::onAdvancedSettings()
 void BatchThreadDlg::onUpdatePolarView()
 {
 	s_bUpdatePolarView = m_pctrlUpdatePolarView->isChecked();
+	QXDirect *pXDirect = (QXDirect*)s_pXDirect;
+	pXDirect->updateView();
 }
 
 
 
-void BatchThreadDlg::onShowPolars(bool bShow)
-{
-	QXDirect::s_bShowBatchPolars = bShow;
-}
 
 

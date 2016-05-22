@@ -19,14 +19,15 @@
 
 *****************************************************************************/
 
+#include <QGroupBox>
 #include <QLabel>
 #include <QCheckBox>
 #include <QGridLayout>
 #include <QColorDialog>
 #include <QPushButton>
-#include "../params.h"
+#include <params.h>
 #include "W3dPrefsDlg.h"
-#include "../misc/LinePickerDlg.h"
+#include <misc/LinePickerDlg.h>
 
 
 
@@ -77,6 +78,10 @@ int W3dPrefsDlg::s_BotStyle = 1;
 int W3dPrefsDlg::s_BotWidth = 1;
 QColor W3dPrefsDlg::s_BotColor = QColor(171, 103, 220);
 
+int W3dPrefsDlg::s_iChordwiseRes=29;
+int W3dPrefsDlg::s_iBodyAxialRes=23;
+int W3dPrefsDlg::s_iBodyHoopRes = 17;
+bool W3dPrefsDlg::s_bAnimateTransitions = true;
 
 W3dPrefsDlg::W3dPrefsDlg(QWidget *pParent) : QDialog(pParent)
 {
@@ -85,20 +90,19 @@ W3dPrefsDlg::W3dPrefsDlg(QWidget *pParent) : QDialog(pParent)
 
 	setupLayout();
 
-	connect(m_pctrlAxis, SIGNAL(clickedLB()), SLOT(on3DAxis()));
-	connect(m_pctrlOutline, SIGNAL(clickedLB()), SLOT(onOutline()));
-	connect(m_pctrlVLMMesh, SIGNAL(clickedLB()), SLOT(onVLMMesh()));
-	connect(m_pctrlTopTrans, SIGNAL(clickedLB()), SLOT(onTopTrans()));
-	connect(m_pctrlBotTrans, SIGNAL(clickedLB()), SLOT(onBotTrans()));
-	connect(m_pctrlLift, SIGNAL(clickedLB()), SLOT(onXCP()));
-	connect(m_pctrlMoments, SIGNAL(clickedLB()), SLOT(onMoments()));
-	connect(m_pctrlInducedDrag, SIGNAL(clickedLB()), SLOT(onIDrag()));
-	connect(m_pctrlViscousDrag, SIGNAL(clickedLB()), SLOT(onVDrag()));
-	connect(m_pctrlDownwash, SIGNAL(clickedLB()), SLOT(onDownwash()));
-	connect(m_pctrlStreamLines, SIGNAL(clickedLB()), SLOT(onStreamLines()));
-	connect(m_pctrlWakePanels, SIGNAL(clickedLB()), SLOT(onWakePanels()));
-	connect(m_pctrlShowWake, SIGNAL(clicked()), SLOT(onShowWake()));
-	connect(m_pctrlMassColor, SIGNAL(clicked()), SLOT(onMasses()));
+	connect(m_pctrlAxis,               SIGNAL(clickedLB()),   SLOT(on3DAxis()));
+	connect(m_pctrlOutline,            SIGNAL(clickedLB()),   SLOT(onOutline()));
+	connect(m_pctrlVLMMesh,            SIGNAL(clickedLB()),   SLOT(onVLMMesh()));
+	connect(m_pctrlTopTrans,           SIGNAL(clickedLB()),   SLOT(onTopTrans()));
+	connect(m_pctrlBotTrans,           SIGNAL(clickedLB()),   SLOT(onBotTrans()));
+	connect(m_pctrlLift,               SIGNAL(clickedLB()),   SLOT(onXCP()));
+	connect(m_pctrlMoments,            SIGNAL(clickedLB()),   SLOT(onMoments()));
+	connect(m_pctrlInducedDrag,        SIGNAL(clickedLB()),   SLOT(onIDrag()));
+	connect(m_pctrlViscousDrag,        SIGNAL(clickedLB()),   SLOT(onVDrag()));
+	connect(m_pctrlDownwash,           SIGNAL(clickedLB()),   SLOT(onDownwash()));
+	connect(m_pctrlStreamLines,        SIGNAL(clickedLB()),   SLOT(onStreamLines()));
+	connect(m_pctrlWakePanels,         SIGNAL(clickedLB()),   SLOT(onWakePanels()));
+	connect(m_pctrlMassColor,          SIGNAL(clicked()),     SLOT(onMasses()));
 }
 
 
@@ -117,8 +121,11 @@ void W3dPrefsDlg::initDialog()
 	m_pctrlTopTrans->setStyle(s_TopStyle, s_TopWidth, s_TopColor, 0);
 	m_pctrlBotTrans->setStyle(s_BotStyle, s_BotWidth, s_BotColor, 0);
 
-	m_pctrlShowWake->setChecked(s_bWakePanels);
 	m_pctrlMassColor->setColor(s_MassColor);
+	m_pctrlAnimateTransitions->setChecked(s_bAnimateTransitions);
+	m_pctrlChordwiseRes->setValue(s_iChordwiseRes);
+	m_pctrlBodyAxialRes->setValue(s_iBodyAxialRes);
+	m_pctrlBodyHoopRes->setValue(s_iBodyHoopRes);
 }
 
 
@@ -166,67 +173,122 @@ void W3dPrefsDlg::setupLayout()
 	m_pctrlWakePanels  = new LineBtn(this);
 	m_pctrlStreamLines  = new LineBtn(this);
 	m_pctrlMassColor = new ColorButton;
-	m_pctrlShowWake = new QCheckBox(tr("Show Wake Panels"));
 
-	QGridLayout *PrefsLayout = new QGridLayout;
+	QGroupBox *pColorPrefsBox = new QGroupBox(tr("Color settings"));
+	{
+		QGridLayout *pColorPrefsLayout = new QGridLayout;
+		{
+			pColorPrefsLayout->setColumnStretch(1,1);
+			pColorPrefsLayout->setColumnStretch(2,2);
+			pColorPrefsLayout->setColumnStretch(3,1);
+			pColorPrefsLayout->setColumnStretch(4,2);
+			pColorPrefsLayout->addWidget(lab1,1,1);
+			pColorPrefsLayout->addWidget(lab2,2,1);
+			pColorPrefsLayout->addWidget(lab3,3,1);
+			pColorPrefsLayout->addWidget(lab4,4,1);
+			pColorPrefsLayout->addWidget(lab5,5,1);
+			pColorPrefsLayout->addWidget(lab6,6,1);
+			pColorPrefsLayout->addWidget(lab7,1,3);
+			pColorPrefsLayout->addWidget(lab8,2,3);
+			pColorPrefsLayout->addWidget(lab9,3,3);
+			pColorPrefsLayout->addWidget(lab10,4,3);
+			pColorPrefsLayout->addWidget(lab11,5,3);
+			pColorPrefsLayout->addWidget(lab12,6,3);
+			pColorPrefsLayout->addWidget(lab13,7,3);
+
+			pColorPrefsLayout->addWidget(m_pctrlAxis,1,2);
+			pColorPrefsLayout->addWidget(m_pctrlOutline,2,2);
+			pColorPrefsLayout->addWidget(m_pctrlVLMMesh,3,2);
+			pColorPrefsLayout->addWidget(m_pctrlTopTrans,4,2);
+			pColorPrefsLayout->addWidget(m_pctrlBotTrans,5,2);
+			pColorPrefsLayout->addWidget(m_pctrlLift,6,2);
+			pColorPrefsLayout->addWidget(m_pctrlMoments,1,4);
+			pColorPrefsLayout->addWidget(m_pctrlInducedDrag,2,4);
+			pColorPrefsLayout->addWidget(m_pctrlViscousDrag,3,4);
+			pColorPrefsLayout->addWidget(m_pctrlDownwash,4,4);
+			pColorPrefsLayout->addWidget(m_pctrlWakePanels,5,4);
+			pColorPrefsLayout->addWidget(m_pctrlStreamLines,6,4);
+			pColorPrefsLayout->addWidget(m_pctrlMassColor,7,4);
+		}
+		pColorPrefsBox->setLayout(pColorPrefsLayout);
+	}
+
+	QGroupBox *pTessBox = new QGroupBox(tr("Tessellation"));
+	{
+/*		QGridLayout *pTessLayout = new QGridLayout;
+		{
+			pTessLayout->addWidget(pTessBodyAxial,3,1);
+			pTessLayout->addWidget(m_pctrlBodyAxialRes,3,2);
+			pTessLayout->addWidget(pTessBodyHoop,4,1);
+			pTessLayout->addWidget(m_pctrlBodyHoopRes,4,2);
+		}*/
+
+		QVBoxLayout *pTessLayout = new QVBoxLayout;
+		{
+			QLabel *pTessLabel = new QLabel(tr("Increase the number of points to improve the resolution\n"
+											   "of the surfaces.This may reduce the display speed.\n"));
+			QLabel *pTessChords = new QLabel(tr("Wing chordwise direction"));
+			m_pctrlChordwiseRes = new IntEdit(37,this);
+			QLabel *pTessBodyAxial = new QLabel(tr("Body axial direction"));
+			m_pctrlBodyAxialRes = new IntEdit(29, this);
+			QLabel *pTessBodyHoop = new QLabel(tr("Body hoop direction"));
+			m_pctrlBodyHoopRes = new IntEdit(17,this);
+
+			QHBoxLayout *pChordResLayout = new QHBoxLayout;
+			{
+				pChordResLayout->addStretch();
+				pChordResLayout->addWidget(pTessChords);
+				pChordResLayout->addWidget(m_pctrlChordwiseRes);
+			}
+			QHBoxLayout *pAxialResLayout = new QHBoxLayout;
+			{
+				pAxialResLayout->addStretch();
+				pAxialResLayout->addWidget(pTessBodyAxial);
+				pAxialResLayout->addWidget(m_pctrlBodyAxialRes);
+			}
+			QHBoxLayout *pHoopResLayout = new QHBoxLayout;
+			{
+				pHoopResLayout->addStretch();
+				pHoopResLayout->addWidget(pTessBodyHoop);
+				pHoopResLayout->addWidget(m_pctrlBodyHoopRes);
+			}
+			pTessLayout->addWidget(pTessLabel);
+			pTessLayout->addLayout(pChordResLayout);
+			pTessLayout->addLayout(pAxialResLayout);
+			pTessLayout->addLayout(pHoopResLayout);
+		}
+		pTessBox->setLayout(pTessLayout);
+	}
+
+	m_pctrlAnimateTransitions = new QCheckBox("Animate view transitions");
+
+	QHBoxLayout *pCommandButtons = new QHBoxLayout;
     {
-        PrefsLayout->setColumnStretch(1,1);
-        PrefsLayout->setColumnStretch(2,2);
-        PrefsLayout->setColumnStretch(3,1);
-        PrefsLayout->setColumnStretch(4,2);
-        PrefsLayout->addWidget(lab1,1,1);
-        PrefsLayout->addWidget(lab2,2,1);
-        PrefsLayout->addWidget(lab3,3,1);
-        PrefsLayout->addWidget(lab4,4,1);
-        PrefsLayout->addWidget(lab5,5,1);
-        PrefsLayout->addWidget(lab6,6,1);
-        PrefsLayout->addWidget(lab7,1,3);
-        PrefsLayout->addWidget(lab8,2,3);
-        PrefsLayout->addWidget(lab9,3,3);
-        PrefsLayout->addWidget(lab10,4,3);
-        PrefsLayout->addWidget(lab11,5,3);
-        PrefsLayout->addWidget(lab12,6,3);
-        PrefsLayout->addWidget(lab13,7,3);
-
-        PrefsLayout->addWidget(m_pctrlAxis,1,2);
-        PrefsLayout->addWidget(m_pctrlOutline,2,2);
-        PrefsLayout->addWidget(m_pctrlVLMMesh,3,2);
-        PrefsLayout->addWidget(m_pctrlTopTrans,4,2);
-        PrefsLayout->addWidget(m_pctrlBotTrans,5,2);
-        PrefsLayout->addWidget(m_pctrlLift,6,2);
-        PrefsLayout->addWidget(m_pctrlShowWake,7,1,1,2);
-        PrefsLayout->addWidget(m_pctrlMoments,1,4);
-        PrefsLayout->addWidget(m_pctrlInducedDrag,2,4);
-        PrefsLayout->addWidget(m_pctrlViscousDrag,3,4);
-        PrefsLayout->addWidget(m_pctrlDownwash,4,4);
-        PrefsLayout->addWidget(m_pctrlWakePanels,5,4);
-        PrefsLayout->addWidget(m_pctrlStreamLines,6,4);
-        PrefsLayout->addWidget(m_pctrlMassColor,7,4);
+		QPushButton *pOKButton = new QPushButton(tr("Close"));
+		pOKButton->setDefault(true);
+		QPushButton *pResetButton = new QPushButton(tr("Reset Defaults"));
+		pCommandButtons->addStretch(1);
+		pCommandButtons->addWidget(pResetButton);
+		pCommandButtons->addStretch(1);
+		pCommandButtons->addWidget(pOKButton);
+		pCommandButtons->addStretch(1);
+		connect(pResetButton, SIGNAL(clicked()),this, SLOT(onResetDefaults()));
+		connect(pOKButton, SIGNAL(clicked()),this, SLOT(onOK()));
     }
 
-	QHBoxLayout *CommandButtons = new QHBoxLayout;
+	QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
-        QPushButton *OKButton = new QPushButton(tr("Close"));
-        QPushButton *ResetButton = new QPushButton(tr("Reset Defaults"));
-        CommandButtons->addStretch(1);
-        CommandButtons->addWidget(ResetButton);
-        CommandButtons->addStretch(1);
-        CommandButtons->addWidget(OKButton);
-        CommandButtons->addStretch(1);
-		connect(ResetButton, SIGNAL(clicked()),this, SLOT(onResetDefaults()));
-        connect(OKButton, SIGNAL(clicked()),this, SLOT(accept()));
+		pMainLayout->addStretch(1);
+		pMainLayout->addWidget(pColorPrefsBox);
+		pMainLayout->addStretch(1);
+		pMainLayout->addWidget(pTessBox);
+		pMainLayout->addStretch(1);
+		pMainLayout->addWidget(m_pctrlAnimateTransitions);
+		pMainLayout->addSpacing(20);
+		pMainLayout->addLayout(pCommandButtons);
+		pMainLayout->addStretch(1);
     }
-
-	QVBoxLayout *MainLayout = new QVBoxLayout;
-    {
-        MainLayout->addStretch(1);
-        MainLayout->addLayout(PrefsLayout);
-        MainLayout->addStretch(1);
-        MainLayout->addSpacing(20);
-        MainLayout->addLayout(CommandButtons);
-        MainLayout->addStretch(1);
-    }
-	setLayout(MainLayout);
+	setLayout(pMainLayout);
 }
 
 
@@ -454,7 +516,7 @@ void W3dPrefsDlg::onMasses()
 
 void W3dPrefsDlg::onShowWake()
 {
-	s_bWakePanels = m_pctrlShowWake->isChecked();
+//	s_bWakePanels = m_pctrlShowWake->isChecked();
 }
 
 
@@ -517,6 +579,12 @@ void W3dPrefsDlg::saveSettings(QSettings *pSettings)
 		pSettings->setValue("showWakePanels", s_bWakePanels);
 
 		pSettings->setValue("MassColor", s_MassColor);
+
+		pSettings->setValue("AnimateTransitions", s_bAnimateTransitions);
+		pSettings->setValue("ChordwiseRes", s_iChordwiseRes);
+		pSettings->setValue("BodyAxialRes", s_iBodyAxialRes);
+		pSettings->setValue("BodyHoopRes", s_iBodyHoopRes);
+
 	}
 	pSettings->endGroup();
 }
@@ -581,6 +649,11 @@ void W3dPrefsDlg::loadSettings(QSettings *pSettings)
 
 		s_MassColor = pSettings->value("MassColor", QColor(67, 151, 169)).value<QColor>();
 		s_bWakePanels = pSettings->value("showWakePanels", true).toBool();
+
+		s_bAnimateTransitions = pSettings->value("AnimateTransitions", true).toBool();
+		s_iChordwiseRes = pSettings->value("ChordwiseRes", 29).toInt();
+		s_iBodyAxialRes = pSettings->value("BodyAxialRes", 23).toInt();
+		s_iBodyHoopRes = pSettings->value("BodyHoopRes", 17).toInt();
 	}
 	pSettings->endGroup();
 }
@@ -642,10 +715,27 @@ void W3dPrefsDlg::resetDefaults()
     s_BotWidth = 1;
 	s_BotColor = QColor(171, 103, 220);
 
+	s_bAnimateTransitions = false;
+	s_iChordwiseRes=29;
+	s_iBodyAxialRes=23;
+	s_iBodyHoopRes = 17;
+
 }
 
 
+void W3dPrefsDlg::onOK()
+{
+	readSettings();
+	accept();
+}
 
+void W3dPrefsDlg::readSettings()
+{
+	s_bAnimateTransitions = m_pctrlAnimateTransitions->isChecked();
+	s_iChordwiseRes = m_pctrlChordwiseRes->value();
+	s_iBodyAxialRes = m_pctrlBodyAxialRes->value();
+	s_iBodyHoopRes  = m_pctrlBodyHoopRes->value();
+}
 
 
 
