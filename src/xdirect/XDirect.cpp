@@ -74,7 +74,6 @@ bool QXDirect::s_bInitBL = true;
 bool QXDirect::s_bKeepOpenErrors = true;
 bool QXDirect::s_bFromZero = false;
 bool QXDirect::s_bStoreOpp = true;
-bool QXDirect::s_bShowBatchPolars = true;
 
 int QXDirect::s_TimeUpdateInterval = 100;
 
@@ -121,7 +120,7 @@ QXDirect::QXDirect(QWidget *parent) : QWidget(parent)
 	m_bType2          = true;
 	m_bType3          = true;
 	m_bType4          = true;
-	m_bFromList       = false;
+	m_bFromList       = true;
 	m_bShowTextOutput = true;
 	m_bNeutralLine    = true;
 	m_bShowInviscid   = false;
@@ -847,6 +846,14 @@ void QXDirect::keyPressEvent(QKeyEvent *event)
 				return;
 			}
 			break;
+		case Qt::Key_7:
+			if(bCtrl)
+			{
+				s_pMainFrame->loadLastProject();
+				event->accept();
+				return;
+			}
+			break;
 		case Qt::Key_F2:
 		{
 			onRenameCurFoil();
@@ -946,8 +953,8 @@ void QXDirect::loadSettings(QSettings *pSettings)
 		m_bType2          = pSettings->value("Type2").toBool();
 		m_bType3          = pSettings->value("Type3").toBool();
 		m_bType4          = pSettings->value("Type4").toBool();
-		m_bFromList       = pSettings->value("FromList").toBool();
-		s_bFromZero       = pSettings->value("FromZero").toBool();
+		m_bFromList       = pSettings->value("FromList", true).toBool();
+		s_bFromZero       = pSettings->value("FromZero", true).toBool();
 		m_bShowTextOutput = pSettings->value("TextOutput").toBool();
 		m_bNeutralLine    = pSettings->value("NeutralLine").toBool();
 		m_bCurOppOnly     = pSettings->value("CurOppOnly").toBool();
@@ -960,7 +967,6 @@ void QXDirect::loadSettings(QSettings *pSettings)
 		s_TimeUpdateInterval = pSettings->value("TimeUpdateInterval",100).toInt();
 
 		BatchThreadDlg::s_bUpdatePolarView = pSettings->value("BatchUpdatePolarView", false).toBool();
-		s_bShowBatchPolars = pSettings->value("showBatchPolars", true).toBool();
 
 		m_iPlrGraph      = pSettings->value("PlrGraph").toInt();
 
@@ -4208,7 +4214,6 @@ void QXDirect::saveSettings(QSettings *pSettings)
 		pSettings->setValue("Sequence", m_bSequence);
 		pSettings->setValue("XFoilVar", m_XFoilVar);
 		pSettings->setValue("TimeUpdateInterval", s_TimeUpdateInterval);
-		pSettings->setValue("showBatchPolars", s_bShowBatchPolars);
 		pSettings->setValue("BatchUpdatePolarView", BatchThreadDlg::s_bUpdatePolarView);
 		pSettings->setValue("PlrGraph", m_iPlrGraph);
 

@@ -20,11 +20,11 @@
 *****************************************************************************/
 
 #include <globals.h>
+#include <miarex/Objects3D.h>
+#include <miarex/view/W3dPrefsDlg.h>
 #include <misc/Settings.h>
 #include <misc/Units.h>
-#include <misc/W3dPrefsDlg.h>
 #include <objects/Surface.h>
-#include "../Objects3D.h"
 #include "GL3dWingDlg.h"
 #include "WingScaleDlg.h"
 #include "InertiaDlg.h"
@@ -124,8 +124,7 @@ bool GL3dWingDlg::checkWing()
 	{
 		if(m_pWing->YPosition(k)*1.00001 < m_pWing->YPosition(k-1))
 		{
-			QMessageBox::warning(this, tr("Warning"), tr("Warning : Panel sequence is inconsistent.")+
-								 tr("The sections whould be ordered from root to tip"));
+			QMessageBox::warning(this, tr("Warning"), tr("Warning : Panel sequence is inconsistent. The sections should be ordered from root to tip"));
 			return false;
 		}
 	}
@@ -134,8 +133,27 @@ bool GL3dWingDlg::checkWing()
 	{
 		if(fabs(m_pWing->Chord(k))<0.0001)
 		{
-			QMessageBox::warning(this, tr("Warning"), tr("Zero length chords will cause division by zero and are not allowed."));
+			QMessageBox::warning(this, tr("Warning"), tr("Zero length chords will cause a division by zero and should be avoided."));
 			return false;
+		}
+		WingSection *pSection = m_pWing->m_WingSection.at(k);
+		Foil *pLeftFoil = Foil::foil(pSection->m_LeftFoilName);
+		Foil *pRightFoil = Foil::foil(pSection->m_RightFoilName);
+		if(pLeftFoil )
+		{
+			if((pLeftFoil->m_TEXHinge>=99&& pLeftFoil->m_bTEFlap) ||(pLeftFoil->m_LEXHinge<0.01&&pLeftFoil->m_bLEFlap))
+			{
+				QMessageBox::warning(this, tr("Warning"), pLeftFoil->foilName()+": "+tr("Zero length flaps will cause a division by zero and should be avoided."));
+				return false;
+			}
+		}
+		if(pRightFoil)
+		{
+			if((pRightFoil->m_TEXHinge>=99&& pRightFoil->m_bTEFlap) ||(pRightFoil->m_LEXHinge<0.01&&pRightFoil->m_bLEFlap))
+			{
+				QMessageBox::warning(this, tr("Warning"), pRightFoil->foilName()+": "+tr("Zero length flaps will cause a division by zero and should be avoided."));
+				return false;
+			}
 		}
 	}
 
@@ -144,7 +162,6 @@ bool GL3dWingDlg::checkWing()
 	{
 		NYPanels += m_pWing->NYPanels(j);
 	}
-
 
 	if(m_pWing->m_nFlaps>=20)
 	{

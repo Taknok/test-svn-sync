@@ -93,6 +93,7 @@ private slots:
 	void onFoilNames(bool bChecked);
 	void onShowMasses(bool bChecked);
 	void onRotationIncrement();
+	void onTranslationIncrement();
 
 public:
 	void setScale(double refLength);
@@ -160,6 +161,7 @@ private:
 	void set3DRotationCenter(QPoint point);
 	void setSpanStations(Plane *pPlane, WPolar *pWPolar, PlaneOpp *pPOpp);
 	void startRotationTimer();
+	void startTranslationTimer(CVector PP);
 	void screenToViewport(QPoint const &point, CVector &real);
 	void viewportToScreen(CVector const &real, QPoint &point);
 	void viewportToWorld(CVector vp, CVector &w);
@@ -231,7 +233,7 @@ private:
 
 	CRectangle m_GLViewRect;    /**< The OpenGl viewport.*/
 
-	QTimer *m_pRotTimer;
+	QTimer *m_pTransitionTimer;
 	XFLR5::enumGLView m_iView;         /**< The identification of the type of the calling parent widget*/
 
 	bool m_bTrans;
@@ -251,6 +253,8 @@ private:
 	QPoint m_ptPopUp;
 	QPoint m_LastPoint;
 
+	CVector m_transIncrement;
+
 	CVector m_RealPopUp;
 	CVector m_glViewportTrans;// the translation vector in gl viewport coordinates
 	CVector m_glRotCenter;    // the center of rotation in object coordinates... is also the opposite of the translation vector
@@ -268,7 +272,7 @@ private:
 	int m_iMomentPoints;
 
 	float ab_old[16], ab_new[16];
-	int m_iRotInc;
+	int m_iTransitionInc;
 };
 
 #endif // GL3WIDGET_H

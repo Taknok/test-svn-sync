@@ -23,7 +23,7 @@
 #include "wingwidget.h"
 #include "Settings.h"
 #include "miarex/Objects3D.h"
-#include "misc/W3dPrefsDlg.h"
+#include "miarex/view/W3dPrefsDlg.h"
 #include "miarex/Miarex.h"
 
 #include <QtDebug>

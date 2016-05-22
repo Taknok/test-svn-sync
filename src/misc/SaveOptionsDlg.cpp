@@ -32,13 +32,22 @@ SaveOptionsDlg::SaveOptionsDlg(QWidget *pParent) : QDialog(pParent)
 	m_bOpps = false;
 	m_bWOpps = true;
 	m_bAutoSave = true;
-	m_SaveInterval = 13;
+	m_bAutoLoadLast = false;
+	m_SaveInterval = 17;
 	setupLayout();
 }
 
 void SaveOptionsDlg::setupLayout()
 {
-
+	QGroupBox *pLoadBox = new QGroupBox(tr("Load options"));
+	{
+		QVBoxLayout *pLoadLayout = new QVBoxLayout;
+		{
+			m_pctrlAutoLoadLast = new QCheckBox(tr("Load last project on startup"));
+			pLoadLayout->addWidget(m_pctrlAutoLoadLast);
+		}
+		pLoadBox->setLayout(pLoadLayout);
+	}
 	QGroupBox *pSaveOppBox = new QGroupBox(tr("Operating point save"));
 	{
 		QVBoxLayout *pSaveOppLayout = new QVBoxLayout;
@@ -88,10 +97,9 @@ void SaveOptionsDlg::setupLayout()
 		connect(pCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 	}
 
-
-
 	QVBoxLayout *pMainLayout = new QVBoxLayout;
 	{
+		pMainLayout->addWidget(pLoadBox);
 		pMainLayout->addWidget(pSaveTimerBox);
 		pMainLayout->addStretch(1);
 		pMainLayout->addWidget(pSaveOppBox);
@@ -101,8 +109,10 @@ void SaveOptionsDlg::setupLayout()
 	setLayout(pMainLayout);
 }
 
-void SaveOptionsDlg::initDialog(bool bOpps, bool bWOpps, bool bAutoSave, int saveInterval)
+
+void SaveOptionsDlg::initDialog(bool bAutoLoadLast, bool bOpps, bool bWOpps, bool bAutoSave, int saveInterval)
 {
+	m_bAutoLoadLast = bAutoLoadLast;
 	m_bAutoSave = bAutoSave;
 	m_SaveInterval = saveInterval;
 	m_bOpps  = bOpps;
@@ -113,12 +123,14 @@ void SaveOptionsDlg::initDialog(bool bOpps, bool bWOpps, bool bAutoSave, int sav
 	m_pctrlAutoSave->setChecked(m_bAutoSave);
 	m_pctrlInterval->setValue(m_SaveInterval);
 	m_pctrlInterval->setEnabled(m_bAutoSave);
+
 }
 
 
 
 void SaveOptionsDlg::onOK()
 {
+	m_bAutoLoadLast = m_pctrlAutoLoadLast->isChecked();
 	m_bOpps = m_pctrlOpps->isChecked();
 	m_bWOpps = m_pctrlWOpps->isChecked();
 	m_bAutoSave = m_pctrlAutoSave->isChecked();

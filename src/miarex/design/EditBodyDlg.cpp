@@ -21,7 +21,6 @@
 #include <globals.h>
 #include <misc/Units.h>
 #include <misc/Settings.h>
-#include <misc/W3dPrefsDlg.h>
 #include <QHeaderView>
 #include <QHBoxLayout>
 #include <QGridLayout>
@@ -31,6 +30,7 @@
 #include "EditBodyDlg.h"
 #include <miarex/mgt/XmlPlaneReader.h>
 #include <miarex/mgt/XmlPlaneWriter.h>
+#include <miarex/view/W3dPrefsDlg.h>
 #include "./BodyScaleDlg.h"
 #include "./BodyTransDlg.h"
 #include "./InertiaDlg.h"
