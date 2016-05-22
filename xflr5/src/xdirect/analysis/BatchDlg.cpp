@@ -75,7 +75,7 @@ BatchDlg::BatchDlg(QWidget *pParent) : QDialog(pParent)
 	m_XBot = 1.0;
 
 	m_bAlpha          = true;
-	m_bFromList       = false;
+	m_bFromList       = true;
 	m_bFromZero       = false;
 	m_bInitBL         = false;
 	m_bCancel         = false;
@@ -124,7 +124,6 @@ BatchDlg::BatchDlg(QWidget *pParent) : QDialog(pParent)
 	connect(m_pctrlInitBLOpp, SIGNAL(toggled(bool)), this, SLOT(onAnalysisSettings()));
 	connect(m_pctrlInitBLPolar, SIGNAL(toggled(bool)), this, SLOT(onAnalysisSettings()));
 	connect(m_pctrlMaxIter, SIGNAL(editingFinished()), this, SLOT(onAnalysisSettings()));
-	connect(m_pctrlShowPolars, SIGNAL(clicked(bool)), this, SLOT(onShowPolars(bool)));
 }
 
 
@@ -291,10 +290,7 @@ void BatchDlg::setupLayout()
 		QHBoxLayout *pSubOptionsLayout = new QHBoxLayout;
 		{
 			m_pctrlStoreOpp     = new QCheckBox(tr("Store OpPoints"));
-			m_pctrlShowPolars   = new QCheckBox(tr("Show generated polars"));
 			pSubOptionsLayout->addWidget(m_pctrlStoreOpp);
-			pSubOptionsLayout->addStretch();
-			pSubOptionsLayout->addWidget(m_pctrlShowPolars);
 			pSubOptionsLayout->addStretch();
 
 		}
@@ -456,7 +452,7 @@ Polar *BatchDlg::createPolar(Foil *pFoil, double Spec, double Mach, double NCrit
 
 	Polar *pPolar = new Polar;
 	pPolar->m_FoilName   = pFoil->m_FoilName;
-	pPolar->lineStyle().m_bIsVisible = QXDirect::s_bShowBatchPolars;
+	pPolar->lineStyle().m_bIsVisible = true;
 
 	pPolar->m_PolarType = m_PolarType;
 
@@ -643,7 +639,6 @@ void BatchDlg::initDialog()
 	m_pctrlInitBLPolar->setChecked(m_bInitBL);
 	m_pctrlInitBLOpp->setChecked(XFoilTask::s_bAutoInitBL);
 	m_pctrlStoreOpp->setChecked(QXDirect::s_bStoreOpp);
-	m_pctrlShowPolars->setChecked(QXDirect::s_bShowBatchPolars);
 
 	m_pctrlSkipOpp->setEnabled(false);
 	m_pctrlSkipPolar->setEnabled(false);
@@ -1252,11 +1247,6 @@ void BatchDlg::onAnalysisSettings()
 
 
 
-
-void BatchDlg::onShowPolars(bool bShow)
-{
-	QXDirect::s_bShowBatchPolars = bShow;
-}
 
 
 

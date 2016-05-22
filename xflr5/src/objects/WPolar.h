@@ -93,7 +93,6 @@ public:
 	QString &planeName()                 {return m_PlaneName;}      /**< returns the name of the polar's parent object as a QString object. */
 
 	double &density()                    {return m_Density;}        /**< returns the fluid's density, in IS units. */
-	double &sideSlip()                   {return m_BetaSpec;}       /**< returns the sideslip angle, in degrees. */
 	double &viscosity()                  {return m_Viscosity;}      /**< returns the fluid's kinematic viscosity, in IS units. */
 
 	bool isSpeedPolar() {return m_WPolarType==XFLR5::FIXEDSPEEDPOLAR;}      /**< returns true if the polar is of the FIXEDSPEEDPOLAR type, false otherwise >*/
@@ -124,6 +123,7 @@ public:
 	double &velocity() {return m_QInfSpec;}
 	double &Alpha()    {return m_AlphaSpec;}
 	double &Beta()     {return m_BetaSpec;}
+	double &sideSlip() {return m_BetaSpec;}       /**< returns the sideslip angle, in degrees. */
 	double &Phi()      {return m_BankAngle;}
 	double &mass()     {return m_Mass;}
 	double &groundHeight() {return m_Height;}

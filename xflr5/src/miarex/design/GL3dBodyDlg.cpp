@@ -22,7 +22,6 @@
 
 #include <globals.h>
 #include <misc/LinePickerDlg.h>
-#include <misc/W3dPrefsDlg.h>
 #include <misc/Settings.h>
 #include <misc/LengthUnitDlg.h>
 #include <misc/Units.h>
@@ -30,8 +29,9 @@
 #include "./InertiaDlg.h"
 #include "./BodyScaleDlg.h"
 #include "./GL3dBodyDlg.h"
-#include "../mgt/XmlPlaneReader.h"
-#include "../mgt/XmlPlaneWriter.h"
+#include <miarex/mgt/XmlPlaneReader.h>
+#include <miarex/mgt/XmlPlaneWriter.h>
+#include <miarex/view/W3dPrefsDlg.h>
 #include <QFileDialog>
 #include <QColorDialog>
 #include <QGridLayout>

@@ -352,20 +352,26 @@ void QAFoil::keyPressEvent(QKeyEvent *event)
 				s_pMainFrame->onXInverseMixed();
 				return;
 			}
-
 		case Qt::Key_5:
 			if(bCtrl)
 			{
 				s_pMainFrame->onXDirect();
 				return;
 			}
-
 		case Qt::Key_6:
 			if(bCtrl)
 			{
 				s_pMainFrame->onMiarex();
 				return;
 			}
+		case Qt::Key_7:
+			if(bCtrl)
+			{
+				s_pMainFrame->loadLastProject();
+				event->accept();
+				return;
+			}
+			break;
 
 		default:
 			QWidget::keyPressEvent(event);

@@ -31,16 +31,15 @@
 #include <math.h>
 
 #include "Miarex.h"
-#include <viewwidgets/miarextilewidget.h>
-#include "./Objects3D.h"
-#include "./analysis/AeroDataDlg.h"
-#include "./view/TargetCurveDlg.h"
-#include "../mainframe.h"
+#include <mainframe.h>
 #include <globals.h>
+#include "./Objects3D.h"
 #include "./mgt/ManagePlanesDlg.h"
 #include "./mgt/XmlPlaneReader.h"
 #include "./mgt/XmlPlaneWriter.h"
 #include "./view/StabViewDlg.h"
+#include "./view/W3dPrefsDlg.h"
+#include "./view/TargetCurveDlg.h"
 #include "./design/EditPlaneDlg.h"
 #include "./design/EditBodyDlg.h"
 #include "./design/PlaneDlg.h"
@@ -48,6 +47,7 @@
 #include "./design/GL3dBodyDlg.h"
 #include "./design/WingScaleDlg.h"
 #include "./design/InertiaDlg.h"
+#include "./analysis/AeroDataDlg.h"
 #include "./analysis/PanelAnalysisDlg.h"
 #include "./analysis/StabPolarDlg.h"
 #include "./analysis/WAdvancedDlg.h"
@@ -63,9 +63,9 @@
 #include <misc/PolarFilterDlg.h>
 #include <misc/ObjectPropsDlg.h>
 #include <misc/Units.h>
-#include <misc/W3dPrefsDlg.h>
 #include <misc/EditPlrDlg.h>
 #include <misc/stlexportdialog.h>
+#include <viewwidgets/miarextilewidget.h>
 
 #ifdef Q_OS_WIN
 #include <windows.h> // for Sleep
@@ -1997,7 +1997,6 @@ void QMiarex::keyPressEvent(QKeyEvent *event)
 			s_pMainFrame->onLogFile();
 			break;
 		}
-
 		case Qt::Key_X:
 			m_bXPressed = true;
 			break;
@@ -4005,12 +4004,18 @@ void QMiarex::onEditCurWing()
 {
 	if(!m_pCurPlane) return;
 
-	int i;
+	int iWing;
+
+	QAction *pAction = qobject_cast<QAction *>(sender());
+	if (!pAction) iWing = 0;
+	else          iWing = pAction->data().toInt();
+
+	if(!m_pCurPlane->wing(iWing)) return;
 
 	WPolar *pWPolar;
 	PlaneOpp* pPOpp;
 	bool bHasResults = false;
-	for (i=0; i< m_poaWPolar->size(); i++)
+	for (int i=0; i< m_poaWPolar->size(); i++)
 	{
 		pWPolar = (WPolar*)m_poaWPolar->at(i);
 		if(pWPolar->dataSize() && pWPolar->planeName() == m_pCurPlane->planeName())
@@ -4020,7 +4025,7 @@ void QMiarex::onEditCurWing()
 		}
 	}
 
-	for (i=0; i<m_poaPOpp->size(); i++)
+	for (int i=0; i<m_poaPOpp->size(); i++)
 	{
 		pPOpp = (PlaneOpp*)m_poaPOpp->at(i);
 		if(pPOpp->planeName() == m_pCurPlane->planeName())
@@ -4036,7 +4041,7 @@ void QMiarex::onEditCurWing()
 
 	GL3dWingDlg plDlg(s_pMainFrame);
 	plDlg.m_bAcceptName = false;
-	plDlg.initDialog(pModPlane->wing());
+	plDlg.initDialog(pModPlane->wing(iWing));
 
 
 	if(QDialog::Accepted == plDlg.exec())
@@ -4044,9 +4049,9 @@ void QMiarex::onEditCurWing()
 		if(plDlg.m_bDescriptionChanged)
 		{
 			emit projectModified();
-			m_pCurPlane->wing()->setWingColor(pModPlane->wing()->wingColor());
-			m_pCurPlane->wing()->m_WingDescription = pModPlane->wing()->WingDescription();
-			m_pCurPlane->wing()->textures() = pModPlane->wing()->textures();
+			m_pCurPlane->wing(iWing)->setWingColor(pModPlane->wing(iWing)->wingColor());
+			m_pCurPlane->wing(iWing)->m_WingDescription = pModPlane->wing(iWing)->WingDescription();
+			m_pCurPlane->wing(iWing)->textures() = pModPlane->wing(iWing)->textures();
 		}
 
 		if(plDlg.m_bChanged)
@@ -4206,9 +4211,6 @@ void QMiarex::onScaleWing()
 
 	delete pModPlane; // Clean up
 }
-
-
-
 
 
 
@@ -8269,9 +8271,6 @@ qDebug()<<"triangles"<<nTriangles;
 
 	XFile.close();
 }
-
-
-
 
 
 

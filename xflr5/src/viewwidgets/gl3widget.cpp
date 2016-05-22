@@ -39,19 +39,11 @@
 #include <miarex/design/EditPlaneDlg.h>
 #include <miarex/analysis/LLTAnalysis.h>
 #include <miarex/view/GL3DScales.h>
-#include <misc/W3dPrefsDlg.h>
+#include <miarex/view/W3dPrefsDlg.h>
 #include <misc/Settings.h>
 #include <objects/WPolar.h>
 #include <objects/Surface.h>
 #include <params.h>
-
-
-#define CHORDPOINTS 43
-
-
-#define NH  17
-#define NX  39
-
 
 
 void *GL3Widget::s_pMiarex;
@@ -69,10 +61,10 @@ GL3Widget::GL3Widget(QWidget *pParent) : QOpenGLWidget(pParent)
 	m_pParent = pParent;
 
 	m_glScaled = m_glScaledRef = 1.0f;
-	m_pRotTimer = NULL;
+	m_pTransitionTimer = NULL;
 	memset(ab_new, 0, 16*sizeof(float));
 	memset(ab_old, 0, 16*sizeof(float));
-	m_iRotInc = 0;
+	m_iTransitionInc = 0;
 
 	m_bArcball = m_bCrossPoint = false;
 
@@ -702,7 +694,7 @@ void GL3Widget::set3DRotationCenter(QPoint point)
 	//adjusts the new rotation center after the user has picked a point on the screen
 	//finds the closest panel under the point,
 	//and changes the rotation vector and viewport translation
-	CVector I, A, B, AA, BB, PP, U;
+	CVector I, A, B, AA, BB, PP;
 
 	screenToViewport(point, B);
 	B.z = -1.0;
@@ -711,15 +703,15 @@ void GL3Widget::set3DRotationCenter(QPoint point)
 	viewportToWorld(A, AA);
 	viewportToWorld(B, BB);
 
-	U.set(BB.x-AA.x, BB.y-AA.y, BB.z-AA.z);
-	U.normalize();
+	m_transIncrement.set(BB.x-AA.x, BB.y-AA.y, BB.z-AA.z);
+	m_transIncrement.normalize();
 
 	bool bIntersect = false;
 
 	if(m_iView == XFLR5::GLWINGVIEW)
 	{
 		GL3dWingDlg *pDlg = (GL3dWingDlg*)m_pParent;
-		if(pDlg->intersectObject(AA, U, I))
+		if(pDlg->intersectObject(AA, m_transIncrement, I))
 		{
 			bIntersect = true;
 			PP.set(I);
@@ -728,7 +720,7 @@ void GL3Widget::set3DRotationCenter(QPoint point)
 	else if(m_iView == XFLR5::GLPLANEVIEW)
 	{
 		EditPlaneDlg *pDlg = (EditPlaneDlg*)m_pParent;
-		if(pDlg->intersectObject(AA, U, I))
+		if(pDlg->intersectObject(AA, m_transIncrement, I))
 		{
 			bIntersect = true;
 			PP.set(I);
@@ -737,7 +729,7 @@ void GL3Widget::set3DRotationCenter(QPoint point)
 	else if(m_iView == XFLR5::GLEDITBODYVIEW)
 	{
 		EditBodyDlg *pDlg = (EditBodyDlg*)m_pParent;
-		if(pDlg->intersectObject(AA, U, I))
+		if(pDlg->intersectObject(AA, m_transIncrement, I))
 		{
 			bIntersect = true;
 			PP.set(I);
@@ -746,7 +738,7 @@ void GL3Widget::set3DRotationCenter(QPoint point)
 	else if(m_iView == XFLR5::GLMIAREXVIEW)
 	{
 		QMiarex *pMiarex = (QMiarex*)s_pMiarex;
-		if(pMiarex->intersectObject(AA, U, I))
+		if(pMiarex->intersectObject(AA, m_transIncrement, I))
 		{
 			bIntersect = true;
 			PP.set(I);
@@ -755,26 +747,57 @@ void GL3Widget::set3DRotationCenter(QPoint point)
 
 	if(bIntersect)
 	{
-//		instantaneous visual transition
-//		m_glRotCenter -= PP * m_glScaled;
-
-//		smooth visual transition
-		glInverseMatrix();
-
-		U.x = (-PP.x -m_glRotCenter.x)/30.0;
-		U.y = (-PP.y -m_glRotCenter.y)/30.0;
-		U.z = (-PP.z -m_glRotCenter.z)/30.0;
-
-		for(int i=0; i<30; i++)
-		{
-			m_glRotCenter +=U;
-			m_glViewportTrans.x =  (MatOut[0][0]*m_glRotCenter.x + MatOut[0][1]*m_glRotCenter.y + MatOut[0][2]*m_glRotCenter.z);
-			m_glViewportTrans.y = -(MatOut[1][0]*m_glRotCenter.x + MatOut[1][1]*m_glRotCenter.y + MatOut[1][2]*m_glRotCenter.z);
-			m_glViewportTrans.z=   (MatOut[2][0]*m_glRotCenter.x + MatOut[2][1]*m_glRotCenter.y + MatOut[2][2]*m_glRotCenter.z);
-
-			update();
-		}
+		startTranslationTimer(PP);
 	}
+}
+
+
+void GL3Widget::startTranslationTimer(CVector PP)
+{
+	glInverseMatrix();
+	if(W3dPrefsDlg::s_bAnimateTransitions)
+	{
+		m_transIncrement.x = (-PP.x -m_glRotCenter.x)/30.0;
+		m_transIncrement.y = (-PP.y -m_glRotCenter.y)/30.0;
+		m_transIncrement.z = (-PP.z -m_glRotCenter.z)/30.0;
+
+		m_iTransitionInc = 0;
+		if(m_pTransitionTimer) delete m_pTransitionTimer;
+		m_pTransitionTimer = new QTimer(this);
+		connect(m_pTransitionTimer, SIGNAL(timeout()), this, SLOT(onTranslationIncrement()));
+		m_pTransitionTimer->start(10);//33 ms x 30 times is approximately one second
+	}
+	else
+	{
+		m_glRotCenter -= PP;
+		m_glViewportTrans.x =  (MatOut[0][0]*m_glRotCenter.x + MatOut[0][1]*m_glRotCenter.y + MatOut[0][2]*m_glRotCenter.z);
+		m_glViewportTrans.y = -(MatOut[1][0]*m_glRotCenter.x + MatOut[1][1]*m_glRotCenter.y + MatOut[1][2]*m_glRotCenter.z);
+		m_glViewportTrans.z=   (MatOut[2][0]*m_glRotCenter.x + MatOut[2][1]*m_glRotCenter.y + MatOut[2][2]*m_glRotCenter.z);
+
+		update();
+	}
+}
+
+
+
+void GL3Widget::onTranslationIncrement()
+{
+	if(m_iTransitionInc>=30)
+	{
+		m_pTransitionTimer->stop();
+		delete m_pTransitionTimer;
+		m_pTransitionTimer = NULL;
+		return;
+	}
+
+	m_glRotCenter +=m_transIncrement;
+	m_glViewportTrans.x =  (MatOut[0][0]*m_glRotCenter.x + MatOut[0][1]*m_glRotCenter.y + MatOut[0][2]*m_glRotCenter.z);
+	m_glViewportTrans.y = -(MatOut[1][0]*m_glRotCenter.x + MatOut[1][1]*m_glRotCenter.y + MatOut[1][2]*m_glRotCenter.z);
+	m_glViewportTrans.z=   (MatOut[2][0]*m_glRotCenter.x + MatOut[2][1]*m_glRotCenter.y + MatOut[2][2]*m_glRotCenter.z);
+
+
+	update();
+	m_iTransitionInc++;
 }
 
 
@@ -1309,7 +1332,9 @@ void GL3Widget::glMakeBody3DFlatPanels(Body *pBody)
 
 void GL3Widget::glMakeBodySplines(Body *pBody)
 {
-	CVector m_T[(NX+1)*(NH+1)]; //temporary points to save calculation times for body NURBS surfaces
+	int NXXXX = W3dPrefsDlg::s_iBodyAxialRes;
+	int NHOOOP = W3dPrefsDlg::s_iBodyAxialRes;
+	CVector *m_T = new CVector[(NXXXX+1)*(NHOOOP+1)]; //temporary points to save calculation times for body NURBS surfaces
 	CVector TALB, LATB;
 	int j, k, l, p;
 	double v;
@@ -1349,22 +1374,22 @@ void GL3Widget::glMakeBodySplines(Body *pBody)
 	//
 	// x8 : 3 vertices components, 3 normal components, 2 texture componenents
 	int bodyVertexSize;
-	bodyVertexSize  =   (NX+1)*(NH+1) *2             // side surfaces
-					  + pBody->frameCount()*(NH+1)*2 // frames
-					  + (NX+1)                       // top outline
-					  + (NX+1);                      // bot outline
+	bodyVertexSize  =   (NXXXX+1)*(NHOOOP+1) *2             // side surfaces
+					  + pBody->frameCount()*(NHOOOP+1)*2 // frames
+					  + (NXXXX+1)                       // top outline
+					  + (NXXXX+1);                      // bot outline
 
 	bodyVertexSize *= 8; // 3 vertex components, 3 normal components, 2 uv components
 
 	float *pBodyVertexArray = new float[bodyVertexSize];
 
 	p = 0;
-	for (k=0; k<=NX; k++)
+	for (k=0; k<=NXXXX; k++)
 	{
-		u = (double)k / (double)NX;
-		for (l=0; l<=NH; l++)
+		u = (double)k / (double)NXXXX;
+		for (l=0; l<=NHOOOP; l++)
 		{
-			v = (double)l / (double)NH;
+			v = (double)l / (double)NHOOOP;
 			pBody->getPoint(u,  v, true, m_T[p]);
 			p++;
 		}
@@ -1374,22 +1399,22 @@ void GL3Widget::glMakeBodySplines(Body *pBody)
 
 	//right side first;
 	p=0;
-	for (k=0; k<=NX; k++)
+	for (k=0; k<=NXXXX; k++)
 	{
-		for (l=0; l<=NH; l++)
+		for (l=0; l<=NHOOOP; l++)
 		{
 			pBodyVertexArray[iv++] = m_T[p].x;
 			pBodyVertexArray[iv++] = m_T[p].y;
 			pBodyVertexArray[iv++] = m_T[p].z;
 
 			if(k==0)       N.set(-1.0, 0.0, 0.0);
-			else if(k==NX) N.set(1.0, 0.0, 0.0);
+			else if(k==NXXXX) N.set(1.0, 0.0, 0.0);
 			else if(l==0)				N.set(0.0, 0.0, 1.0);
-			else if(l==NH)				N.set(0.0,0.0, -1.0);
+			else if(l==NHOOOP)				N.set(0.0,0.0, -1.0);
 			else
 			{
-				LATB = m_T[p+NH+1] - m_T[p+1];     //	LATB = TB - LA;
-				TALB = m_T[p]  - m_T[p+NH+2];      //	TALB = LB - TA;
+				LATB = m_T[p+NHOOOP+1] - m_T[p+1];     //	LATB = TB - LA;
+				TALB = m_T[p]  - m_T[p+NHOOOP+2];      //	TALB = LB - TA;
 				N = TALB * LATB;
 				N.normalize();
 			}
@@ -1398,8 +1423,8 @@ void GL3Widget::glMakeBodySplines(Body *pBody)
 			pBodyVertexArray[iv++] =  N.y;
 			pBodyVertexArray[iv++] =  N.z;
 
-			pBodyVertexArray[iv++] = (float)(NX-k)/(float)NX;
-			pBodyVertexArray[iv++] = (float)l/(float)NH;
+			pBodyVertexArray[iv++] = (float)(NXXXX-k)/(float)NXXXX;
+			pBodyVertexArray[iv++] = (float)l/(float)NHOOOP;
 			p++;
 		}
 	}
@@ -1407,22 +1432,22 @@ void GL3Widget::glMakeBodySplines(Body *pBody)
 
 	//left side next;
 	p=0;
-	for (k=0; k<=NX; k++)
+	for (k=0; k<=NXXXX; k++)
 	{
-		for (l=0; l<=NH; l++)
+		for (l=0; l<=NHOOOP; l++)
 		{
 			pBodyVertexArray[iv++] =  m_T[p].x;
 			pBodyVertexArray[iv++] = -m_T[p].y;
 			pBodyVertexArray[iv++] =  m_T[p].z;
 
 			if(k==0) N.set(-1.0, 0.0, 0.0);
-			else if(k==NX) N.set(1.0, 0.0, 0.0);
+			else if(k==NXXXX) N.set(1.0, 0.0, 0.0);
 			else if(l==0)  N.set(0.0, 0.0, 1.0);
-			else if(l==NH) N.set(0.0,0.0, -1.0);
+			else if(l==NHOOOP) N.set(0.0,0.0, -1.0);
 			else
 			{
-				LATB = m_T[p+NH+1] - m_T[p+1];     //	LATB = TB - LA;
-				TALB = m_T[p]  - m_T[p+NH+2];      //	TALB = LB - TA;
+				LATB = m_T[p+NHOOOP+1] - m_T[p+1];     //	LATB = TB - LA;
+				TALB = m_T[p]  - m_T[p+NHOOOP+2];      //	TALB = LB - TA;
 				N = TALB * LATB;
 				N.normalize();
 			}
@@ -1430,21 +1455,21 @@ void GL3Widget::glMakeBodySplines(Body *pBody)
 			pBodyVertexArray[iv++] = -N.y;
 			pBodyVertexArray[iv++] =  N.z;
 
-			pBodyVertexArray[iv++] = (float)k/(float)NX;
-			pBodyVertexArray[iv++] = (float)l/(float)NH;
+			pBodyVertexArray[iv++] = (float)k/(float)NXXXX;
+			pBodyVertexArray[iv++] = (float)l/(float)NHOOOP;
 			p++;
 		}
 	}
 
 	//OUTLINE
-	hinc=1./(double)NH;
+	hinc=1./(double)NHOOOP;
 	u=0.0; v = 0.0;
 
 	// frames : frameCount() x (NH+1)
 	for (int iFr=0; iFr<pBody->frameCount(); iFr++)
 	{
 		u = pBody->getu(pBody->frame(iFr)->m_Position.x);
-		for (j=0; j<=NH; j++)
+		for (j=0; j<=NHOOOP; j++)
 		{
 			v = (double)j*hinc;
 			pBody->getPoint(u,v,true, Point);
@@ -1462,7 +1487,7 @@ void GL3Widget::glMakeBodySplines(Body *pBody)
 			pBodyVertexArray[iv++] = v;
 		}
 
-		for (j=NH; j>=0; j--)
+		for (j=NHOOOP; j>=0; j--)
 		{
 			v = (double)j*hinc;
 			pBody->getPoint(u,v,false, Point);
@@ -1482,9 +1507,9 @@ void GL3Widget::glMakeBodySplines(Body *pBody)
 
 	//top line: NX+1
 	v = 0.0;
-	for (int iu=0; iu<=NX; iu++)
+	for (int iu=0; iu<=NXXXX; iu++)
 	{
-		pBody->getPoint((double)iu/(double)NX,v, true, Point);
+		pBody->getPoint((double)iu/(double)NXXXX,v, true, Point);
 		pBodyVertexArray[iv++] = Point.x;
 		pBodyVertexArray[iv++] = Point.y;
 		pBodyVertexArray[iv++] = Point.z;
@@ -1493,15 +1518,15 @@ void GL3Widget::glMakeBodySplines(Body *pBody)
 		pBodyVertexArray[iv++] = N.y;
 		pBodyVertexArray[iv++] = N.z;
 
-		pBodyVertexArray[iv++] = (float)iu/(float)NX;
+		pBodyVertexArray[iv++] = (float)iu/(float)NXXXX;
 		pBodyVertexArray[iv++] = v;
 	}
 
 	//bottom line: NX+1
 	v = 1.0;
-	for (int iu=0; iu<=NX; iu++)
+	for (int iu=0; iu<=NXXXX; iu++)
 	{
-		pBody->getPoint((double)iu/(double)NX,v, true, Point);
+		pBody->getPoint((double)iu/(double)NXXXX,v, true, Point);
 		pBodyVertexArray[iv++] = Point.x;
 		pBodyVertexArray[iv++] = Point.y;
 		pBodyVertexArray[iv++] = Point.z;
@@ -1509,7 +1534,7 @@ void GL3Widget::glMakeBodySplines(Body *pBody)
 		pBodyVertexArray[iv++] = N.y;
 		pBodyVertexArray[iv++] = N.z;
 
-		pBodyVertexArray[iv++] = (float)iu/(float)NX;
+		pBodyVertexArray[iv++] = (float)iu/(float)NXXXX;
 		pBodyVertexArray[iv++] = v;
 	}
 	Q_ASSERT(iv==bodyVertexSize);
@@ -1522,45 +1547,45 @@ void GL3Widget::glMakeBodySplines(Body *pBody)
 	//    3 indices/triangle
 	//    2 sides
 	if(m_BodyIndicesArray) delete[] m_BodyIndicesArray;
-	m_BodyIndicesArray = new unsigned short[NX*NH*2*3*2];
+	m_BodyIndicesArray = new unsigned short[NXXXX*NHOOOP*2*3*2];
 
 	int ii=0;
 	int nV;
 
 	//left side;
-	for (k=0; k<NX; k++)
+	for (k=0; k<NXXXX; k++)
 	{
-		for (l=0; l<NH; l++)
+		for (l=0; l<NHOOOP; l++)
 		{
-			nV = k*(NH+1)+l; // id of the vertex at the bottom left of the quad
+			nV = k*(NHOOOP+1)+l; // id of the vertex at the bottom left of the quad
 			//first triangle
 			m_BodyIndicesArray[ii]   = nV;
-			m_BodyIndicesArray[ii+1] = nV+NH+1;
+			m_BodyIndicesArray[ii+1] = nV+NHOOOP+1;
 			m_BodyIndicesArray[ii+2] = nV+1;
 
 			//second triangle
-			m_BodyIndicesArray[ii+3] = nV+NH+1;
+			m_BodyIndicesArray[ii+3] = nV+NHOOOP+1;
 			m_BodyIndicesArray[ii+4] = nV+1;
-			m_BodyIndicesArray[ii+5] = nV+NH+1+1;
+			m_BodyIndicesArray[ii+5] = nV+NHOOOP+1+1;
 			ii += 6;
 		}
 	}
 
 	//right side
-	for (k=0; k<NX; k++)
+	for (k=0; k<NXXXX; k++)
 	{
-		for (l=0; l<NH; l++)
+		for (l=0; l<NHOOOP; l++)
 		{
-			nV = (NX+1)*(NH+1) + k*(NH+1)+l; // id of the vertex at the bottom left of the quad
+			nV = (NXXXX+1)*(NHOOOP+1) + k*(NHOOOP+1)+l; // id of the vertex at the bottom left of the quad
 			//first triangle
 			m_BodyIndicesArray[ii]   = nV;
-			m_BodyIndicesArray[ii+1] = nV+NH+1;
+			m_BodyIndicesArray[ii+1] = nV+NHOOOP+1;
 			m_BodyIndicesArray[ii+2] = nV+1;
 
 			//second triangle
-			m_BodyIndicesArray[ii+3] = nV+NH+1;
+			m_BodyIndicesArray[ii+3] = nV+NHOOOP+1;
 			m_BodyIndicesArray[ii+4] = nV+1;
-			m_BodyIndicesArray[ii+5] = nV+NH+1+1;
+			m_BodyIndicesArray[ii+5] = nV+NHOOOP+1+1;
 			ii += 6;
 		}
 	}
@@ -1575,6 +1600,7 @@ void GL3Widget::glMakeBodySplines(Body *pBody)
 	m_vboBody.release();
 
 	delete [] pBodyVertexArray;
+	delete [] m_T;
 }
 
 
@@ -1944,8 +1970,7 @@ void GL3Widget::glRenderMiarexView()
 	QMiarex* pMiarex = (QMiarex*)s_pMiarex;
 	if(pMiarex->m_iView!=XFLR5::W3DVIEW) return;
 
-	m_modelMatrix.setToIdentity();
-
+	QMatrix4x4 modeMatrix;
 
 	if(pMiarex->m_pCurWPolar && pMiarex->m_pCurWPolar->isStabilityPolar())
 	{
@@ -1955,22 +1980,40 @@ void GL3Widget::glRenderMiarexView()
 			glRenderText(10, 15, strong);
 		}
 
-		m_modelMatrix.translate(pMiarex->m_ModeState[0], pMiarex->m_ModeState[1], pMiarex->m_ModeState[2]);
-		m_modelMatrix.rotate(pMiarex->m_ModeState[3]*180.0/PI, 1.0, 0.0 ,0.0);
-		m_modelMatrix.rotate(pMiarex->m_ModeState[4]*180.0/PI, 0.0, 1.0 ,0.0);
-		m_modelMatrix.rotate(pMiarex->m_ModeState[5]*180.0/PI, 0.0, 0.0 ,1.0);
-
-		if(qAbs(pMiarex->m_pCurWPolar->m_BetaSpec)>0.001) glRotated(pMiarex->m_pCurWPolar->m_BetaSpec, 0.0, 0.0, 1.0);
+		modeMatrix.translate(pMiarex->m_ModeState[0], pMiarex->m_ModeState[1], pMiarex->m_ModeState[2]);
+		modeMatrix.rotate(pMiarex->m_ModeState[3]*180.0/PI, 1.0, 0.0 ,0.0);
+		modeMatrix.rotate(pMiarex->m_ModeState[4]*180.0/PI, 0.0, 1.0 ,0.0);
+		modeMatrix.rotate(pMiarex->m_ModeState[5]*180.0/PI, 0.0, 0.0 ,1.0);
 	}
+	m_modelMatrix = modeMatrix;
 
 	if(pMiarex->m_pCurPOpp)	m_modelMatrix.rotate(pMiarex->m_pCurPOpp->alpha(),0.0,1.0,0.0);
-	m_pvmMatrix = m_OrthoMatrix * m_viewMatrix * m_modelMatrix;
+	m_pvmMatrix = m_OrthoMatrix * m_viewMatrix * m_modelMatrix * modeMatrix;
 
 
 	glEnable(GL_CLIP_PLANE0);
 
 	if(pMiarex->m_pCurPlane)
 	{
+		if(m_bVLMPanels)  paintMesh();
+		if(pMiarex->m_pCurPOpp)
+		{
+			if(pMiarex->m_b3DCp       && pMiarex->m_pCurPOpp->analysisMethod()>=XFLR5::VLMMETHOD)
+			{
+				paintPanelCp();
+			}
+			if(pMiarex->m_bPanelForce && pMiarex->m_pCurPOpp->analysisMethod()>=XFLR5::VLMMETHOD)
+			{
+				paintPanelForces();
+			}
+		}
+
+		m_modelMatrix = modeMatrix;
+		if(pMiarex->m_pCurPOpp)	m_modelMatrix.rotate(pMiarex->m_pCurPOpp->alpha(),0.0,1.0,0.0);
+		if(pMiarex->m_pCurWPolar && fabs(pMiarex->m_pCurWPolar->Beta())>0.001)
+			m_modelMatrix.rotate(pMiarex->m_pCurWPolar->Beta(), 0.0, 0.0, 1.0);
+		m_pvmMatrix = m_OrthoMatrix * m_viewMatrix * m_modelMatrix;
+
 		//streamlines and velocities are rotated by aoa when constructed
 		if(pMiarex->m_pCurPOpp && pMiarex->m_bStream && pMiarex->m_pCurPOpp && !pMiarex->m_pCurPOpp->isLLTMethod() && !pMiarex->m_bResetglStream)
 			paintStreamLines();
@@ -1985,7 +2028,6 @@ void GL3Widget::glRenderMiarexView()
 		m_ShaderProgramLine.release();
 
 		if(m_bShowMasses) glDrawMasses(pMiarex->m_pCurPlane);
-		if(m_bVLMPanels)  paintMesh();
 
 
 		for(int iw=0; iw<MAXWINGS; iw++)
@@ -2001,14 +2043,6 @@ void GL3Widget::glRenderMiarexView()
 
 		if(pMiarex->m_pCurPOpp)
 		{
-			if(pMiarex->m_b3DCp && pMiarex->m_pCurPOpp->analysisMethod()>=XFLR5::VLMMETHOD)
-			{
-				paintPanelCp();
-			}
-			if(pMiarex->m_bPanelForce && pMiarex->m_pCurPOpp && pMiarex->m_pCurPOpp->analysisMethod()>=XFLR5::VLMMETHOD)
-			{
-				paintPanelForces();
-			}
 			if(pMiarex->m_bXCP)
 			{
 				for(int iw=0; iw<MAXWINGS; iw++)
@@ -2745,8 +2779,8 @@ void GL3Widget::glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp
 	double amp, amp1, amp2, yob, dih, cosa, cosb, sina, sinb;
 	cosa =  cos(pWOpp->m_Alpha * PI/180.0);
 	sina = -sin(pWOpp->m_Alpha * PI/180.0);
-	cosb =  cos(pWPolar->sideSlip()*PI/180.0);
-	sinb =  sin(pWPolar->sideSlip()*PI/180.0);
+	cosb =  cos(-pWPolar->sideSlip()*PI/180.0);
+	sinb =  sin(-pWPolar->sideSlip()*PI/180.0);
 
 	int bufferSize = m_Ny[iWing]*9;
 	pICdVertexArray = new float[bufferSize];
@@ -3613,6 +3647,8 @@ void GL3Widget::paintBody(Body *pBody)
 {
 	if(!pBody) return;
 	int pos = 0;
+	int NXXXX = W3dPrefsDlg::s_iBodyAxialRes;
+	int NHOOOP = W3dPrefsDlg::s_iBodyAxialRes;
 
 	bool bTextures = pBody->textures() && (m_pLeftBodyTexture && m_pRightBodyTexture);
 	if(bTextures)
@@ -3697,15 +3733,15 @@ void GL3Widget::paintBody(Body *pBody)
 
 		if(pBody->isSplineType())
 		{
-			pos = (NX+1) * (NH+1) * 2;
+			pos = (NXXXX+1) * (NHOOOP+1) * 2;
 			for(int iFr=0; iFr<pBody->frameCount(); iFr++)
 			{
-				glDrawArrays(GL_LINE_STRIP, pos, (NH+1)*2);
-				pos += (NH+1)*2;
+				glDrawArrays(GL_LINE_STRIP, pos, (NHOOOP+1)*2);
+				pos += (NHOOOP+1)*2;
 			}
-			glDrawArrays(GL_LINE_STRIP, pos, NX+1);
-			pos += NX+1;
-			glDrawArrays(GL_LINE_STRIP, pos, NX+1);
+			glDrawArrays(GL_LINE_STRIP, pos, NXXXX+1);
+			pos += NXXXX+1;
+			glDrawArrays(GL_LINE_STRIP, pos, NXXXX+1);
 		}
 		else if(pBody->isFlatPanelType())
 		{
@@ -3727,6 +3763,8 @@ void GL3Widget::paintBody(Body *pBody)
 void GL3Widget::paintWing(int iWing, Wing *pWing)
 {
 	if(!pWing) return;
+
+	int CHORDPOINTS = W3dPrefsDlg::s_iChordwiseRes;
 
 	if(m_bSurfaces)
 	{
@@ -4668,19 +4706,23 @@ void GL3Widget::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int nNodes, CVecto
 
 void GL3Widget::glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody)
 {
+	int CHORDPOINTS = W3dPrefsDlg::s_iChordwiseRes;
+
 	int j, l ;
 	CVector N, Pt;
-	CVector NormalA[CHORDPOINTS], NormalB[CHORDPOINTS];
+	CVector *NormalA = new CVector[CHORDPOINTS];
+	CVector *NormalB = new CVector[CHORDPOINTS];
 	CVector *PtBotLeft, *PtBotRight, *PtTopLeft, *PtTopRight;
 	PtBotLeft  = new CVector[pWing->m_Surface.count() * CHORDPOINTS];
 	PtBotRight = new CVector[pWing->m_Surface.count() * CHORDPOINTS];
 	PtTopLeft  = new CVector[pWing->m_Surface.count() * CHORDPOINTS];
 	PtTopRight = new CVector[pWing->m_Surface.count() * CHORDPOINTS];
 
-	double leftV[CHORDPOINTS], rightV[CHORDPOINTS];
+	double *leftV= new double[CHORDPOINTS];
+	double *rightV = new double[CHORDPOINTS];
 	double leftU=0.0, rightU=1.0;
-	memset(NormalA, 0, sizeof(NormalA));
-	memset(NormalB, 0, sizeof(NormalB));
+	memset(NormalA, 0, sizeof(CHORDPOINTS*sizeof(CVector)));
+	memset(NormalB, 0, sizeof(CHORDPOINTS*sizeof(CVector)));
 	//vertices array size:
 	// surface:
 	//     pWing->NSurfaces
@@ -4709,6 +4751,9 @@ void GL3Widget::glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody)
 											  NormalA, NormalB, CHORDPOINTS);
 		pWing->getTextureUV(j, leftV, rightV, leftU, rightU, CHORDPOINTS);
 
+//		for(int p=0; p<CHORDPOINTS; p++)
+//			qDebug("   %11.7f;    %11.7f;   %11.7f;   %11.7f", PtTopLeft[j*CHORDPOINTS+p].x,NormalA[p].x, NormalA[p].y, NormalA[p].z);
+//			qDebug("   %11.7f;    %11.7f;   %11.7f;   %11.7f", PtTopRight[j*CHORDPOINTS+p].x,NormalB[p].x, NormalB[p].y, NormalB[p].z);
 		//left side vertices
 		for (l=0; l<CHORDPOINTS; l++)
 		{
@@ -5145,6 +5190,10 @@ void GL3Widget::glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody)
 	delete[] PtTopRight;
 	delete[] PtBotLeft;
 	delete[] PtBotRight;
+	delete[] NormalA;
+	delete[] NormalB;
+	delete[] leftV;
+	delete[] rightV;
 }
 
 
@@ -5818,6 +5867,8 @@ void GL3Widget::glMakeTransistions(int iWing, Wing *pWing, WPolar *pWPolar, Wing
 void GL3Widget::glMakeWingSectionHighlight(Wing *pWing, int iSectionHighLight, bool bRightSide)
 {
 	CVector Point, Normal;
+
+	int CHORDPOINTS = W3dPrefsDlg::s_iChordwiseRes;
 	int iSection = 0;
 	int jSurf = 0;
 	for(int jSection=0; jSection<pWing->NWingSection(); jSection++)
@@ -5921,6 +5972,8 @@ void GL3Widget::glMakeWingSectionHighlight(Wing *pWing, int iSectionHighLight, b
 
 void GL3Widget::glMakeBodyFrameHighlight(Body *pBody, CVector bodyPos, int iFrame)
 {
+//	int NXXXX = W3dPrefsDlg::s_iBodyAxialRes;
+	int NHOOOP = W3dPrefsDlg::s_iBodyAxialRes;
 	int k;
 	CVector Point;
 	double hinc, u, v;
@@ -5928,7 +5981,7 @@ void GL3Widget::glMakeBodyFrameHighlight(Body *pBody, CVector bodyPos, int iFram
 
 	Frame *pFrame = pBody->frame(iFrame);
 //	xinc = 0.1;
-	hinc = 1.0/(double)(NH-1);
+	hinc = 1.0/(double)(NHOOOP-1);
 
 	int bufferSize = 0;
 	float *pHighlightVertexArray = NULL;
@@ -5959,7 +6012,7 @@ void GL3Widget::glMakeBodyFrameHighlight(Body *pBody, CVector bodyPos, int iFram
 	}
 	else if(pBody->isSplineType())
 	{
-		m_HighlightLineSize = NH;
+		m_HighlightLineSize = NHOOOP;
 		bufferSize = m_nHighlightLines * m_HighlightLineSize *3 ;
 		pHighlightVertexArray = new float[bufferSize];
 
@@ -5967,7 +6020,7 @@ void GL3Widget::glMakeBodyFrameHighlight(Body *pBody, CVector bodyPos, int iFram
 		{
 			u = pBody->getu(pFrame->m_Position.x);
 			v = 0.0;
-			for (k=0; k<NH; k++)
+			for (k=0; k<NHOOOP; k++)
 			{
 				pBody->getPoint(u,v,true, Point);
 				pHighlightVertexArray[iv++] = Point.x+bodyPos.x;
@@ -5977,7 +6030,7 @@ void GL3Widget::glMakeBodyFrameHighlight(Body *pBody, CVector bodyPos, int iFram
 			}
 
 			v = 1.0;
-			for (k=0; k<NH; k++)
+			for (k=0; k<NHOOOP; k++)
 			{
 				pBody->getPoint(u,v,false, Point);
 				pHighlightVertexArray[iv++] = Point.x+bodyPos.x;
@@ -6003,6 +6056,8 @@ void GL3Widget::glMakeBodyFrameHighlight(Body *pBody, CVector bodyPos, int iFram
 void GL3Widget::glMakeBodyMesh(Body *pBody)
 {
 	if(!pBody) return;
+	int NXXXX = W3dPrefsDlg::s_iBodyAxialRes;
+	int NHOOOP = W3dPrefsDlg::s_iBodyAxialRes;
 	int nx, nh;
 	CVector Pt, N;
 	CVector P1, P2, P3, P4, PStart, PEnd;
@@ -6105,8 +6160,8 @@ void GL3Widget::glMakeBodyMesh(Body *pBody)
 		nh = pBody->m_nhPanels;
 
 		bufferSize = 0;
-		bufferSize += nh * NX; // nh longitudinal lines
-		bufferSize += nx * NH; // nx hoop line
+		bufferSize += nh * NXXXX; // nh longitudinal lines
+		bufferSize += nx * NHOOOP; // nx hoop line
 		bufferSize *= 2;       // two sides
 		bufferSize *= 3;       // 3 components/vertex;
 
@@ -6117,9 +6172,9 @@ void GL3Widget::glMakeBodyMesh(Body *pBody)
 		for (int l=0; l<nh; l++)
 		{
 			double v = (double)l/(double)(nh-1);
-			for (int k=0; k<NX; k++)
+			for (int k=0; k<NXXXX; k++)
 			{
-				double u = (double)k/(double)(NX-1);
+				double u = (double)k/(double)(NXXXX-1);
 				pBody->getPoint(u,  v, true, Pt);
 				meshVertexArray[iv++] = Pt.x;
 				meshVertexArray[iv++] = Pt.y;
@@ -6129,9 +6184,9 @@ void GL3Widget::glMakeBodyMesh(Body *pBody)
 		for (int l=0; l<nh; l++)
 		{
 			double v = (double)l/(double)(nh-1);
-			for (int k=0; k<NX; k++)
+			for (int k=0; k<NXXXX; k++)
 			{
-				double u = (double)k/(double)(NX-1);
+				double u = (double)k/(double)(NXXXX-1);
 				pBody->getPoint(u,  v, false, Pt);
 				meshVertexArray[iv++] = Pt.x;
 				meshVertexArray[iv++] = Pt.y;
@@ -6143,9 +6198,9 @@ void GL3Widget::glMakeBodyMesh(Body *pBody)
 		for (int k=0; k<nx; k++)
 		{
 			double uk = pBody->m_XPanelPos[k];
-			for (int l=0; l<NH; l++)
+			for (int l=0; l<NHOOOP; l++)
 			{
-				double v = (double)l/(double)(NH-1);
+				double v = (double)l/(double)(NHOOOP-1);
 				pBody->getPoint(uk,  v, true, Pt);
 				meshVertexArray[iv++] = Pt.x;
 				meshVertexArray[iv++] = Pt.y;
@@ -6155,9 +6210,9 @@ void GL3Widget::glMakeBodyMesh(Body *pBody)
 		for (int k=0; k<nx; k++)
 		{
 			double uk = pBody->m_XPanelPos[k];
-			for (int l=0; l<NH; l++)
+			for (int l=0; l<NHOOOP; l++)
 			{
-				double v = (double)l/(double)(NH-1);
+				double v = (double)l/(double)(NHOOOP-1);
 				pBody->getPoint(uk,  v, false, Pt);
 				meshVertexArray[iv++] = Pt.x;
 				meshVertexArray[iv++] = Pt.y;
@@ -6183,6 +6238,8 @@ void GL3Widget::glMakeBodyMesh(Body *pBody)
 void GL3Widget::paintBodyMesh(Body *pBody)
 {
 	if(!pBody) return;
+	int NXXXX = W3dPrefsDlg::s_iBodyAxialRes;
+	int NHOOOP = W3dPrefsDlg::s_iBodyAxialRes;
 	if(pBody->isFlatPanelType())
 	{
 		m_ShaderProgramLine.bind();
@@ -6250,15 +6307,15 @@ void GL3Widget::paintBodyMesh(Body *pBody)
 		//x-lines
 		for (int l=0; l<2*pBody->m_nhPanels; l++)
 		{
-			glDrawArrays(GL_LINE_STRIP, pos, NX);
-			pos += NX;
+			glDrawArrays(GL_LINE_STRIP, pos, NXXXX);
+			pos += NXXXX;
 		}
 
 		//hoop lines;
 		for (int k=0; k<2*pBody->m_nxPanels; k++)
 		{
-			glDrawArrays(GL_LINE_STRIP, pos, NH);
-			pos += NH;
+			glDrawArrays(GL_LINE_STRIP, pos, NHOOOP);
+			pos += NHOOOP;
 		}
 	}
 
@@ -6274,30 +6331,38 @@ void GL3Widget::paintBodyMesh(Body *pBody)
 
 void GL3Widget::onRotationIncrement()
 {
-	if(m_iRotInc>=30)
+	if(m_iTransitionInc>=30)
 	{
-		m_pRotTimer->stop();
-		delete m_pRotTimer;
-		m_pRotTimer = NULL;
+		m_pTransitionTimer->stop();
+		delete m_pTransitionTimer;
+		m_pTransitionTimer = NULL;
 		return;
 	}
 	for(int iq=0; iq<16; iq++)
 	{
-		m_ArcBall.ab_quat[iq] = ab_old[iq] + float(m_iRotInc)/29.0f * (ab_new[iq]-ab_old[iq]);
+		m_ArcBall.ab_quat[iq] = ab_old[iq] + float(m_iTransitionInc)/29.0f * (ab_new[iq]-ab_old[iq]);
 	}
 	reset3DRotationCenter();
 	update();
-	m_iRotInc++;
+	m_iTransitionInc++;
 }
 
 
 void GL3Widget::startRotationTimer()
 {
-	m_iRotInc = 0;
-	if(m_pRotTimer) delete m_pRotTimer;
-	m_pRotTimer = new QTimer(this);
-	connect(m_pRotTimer, SIGNAL(timeout()), this, SLOT(onRotationIncrement()));
-	m_pRotTimer->start(10);//33 ms x 30 times is approximately one second
+	if(W3dPrefsDlg::s_bAnimateTransitions)
+	{
+		m_iTransitionInc = 0;
+		if(m_pTransitionTimer) delete m_pTransitionTimer;
+		m_pTransitionTimer = new QTimer(this);
+		connect(m_pTransitionTimer, SIGNAL(timeout()), this, SLOT(onRotationIncrement()));
+		m_pTransitionTimer->start(10);//33 ms x 30 times is approximately one second
+	}
+	else
+	{
+		reset3DRotationCenter();
+		update();
+	}
 }
 
 

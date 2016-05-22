@@ -106,7 +106,6 @@ private slots:
 	void onAdvancedSettings();
 	void onTimerEvent();
 	void onUpdatePolarView();
-	void onShowPolars(bool bShow);
 
 
 private:
@@ -121,7 +120,6 @@ private:
 	QLabel *m_pctrlSpecVar;
 	QLabel *m_pctrlMaType, *m_pctrlReType;
 	QCheckBox *m_pctrlInitBL, *m_pctrlFromZero, *m_pctrlUpdatePolarView;
-	QCheckBox *m_pctrlShowPolars;
 
 	QPushButton *m_pctrlClose, *m_pctrlAnalyze;
 	QTextEdit *m_pctrlTextOutput;

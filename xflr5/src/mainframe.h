@@ -165,7 +165,7 @@ private slots:
 	void onUnits();
 	void onManageFoils();
 	void onSavePlaneAsProject();
-	void openRecentFile();
+	void onOpenRecentFile();
 	void onShowMousePos();
 
 protected:
@@ -198,6 +198,7 @@ public:
 	void createAFoilToolbar();
 	void deleteProject(bool bClosing=false);
 	void GLToClient(CVector const &real, QPoint &point);
+	void loadLastProject();
 	bool loadSettings();
 	bool loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
 	void* readFoilFile(QTextStream &ar, QString fileName);
@@ -339,7 +340,8 @@ private:
 	//Miarex Actions
 	QAction *m_pWPolarAct, *m_pWOppAct, *m_pW3DAct, *m_pCpViewAct, *m_pStabTimeAct, *m_pRootLocusAct;
 	QAction *m_pW3DPrefsAct, *m_pW3DLightAct, *m_pW3DScalesAct, *m_pReset3DScale;
-	QAction *m_pDefinePlaneAct, *m_pDefinePlaneObjectAct, *m_pEditPlaneAct, *m_pEditWingAct, *m_pEditBodyAct, *m_pEditBodyObjectAct;
+	QAction *m_pDefinePlaneAct, *m_pDefinePlaneObjectAct, *m_pEditPlaneAct, *m_pEditBodyAct, *m_pEditBodyObjectAct;
+	QAction *m_pEditWingAct, *m_pEditStabAct, *m_pEditFinAct;
 	QAction *m_pSavePlaneAsProjectAct, *m_pRenameCurPlaneAct, *m_pDeleteCurPlane, *m_pDuplicateCurPlane;
 	QAction *m_pRrenameCurWPolar, *m_pEditWPolarAct, *m_pEditWPolarPts, *m_pExportCurWPolar, *m_pResetCurWPolar;
 	QAction *m_pShowPolarProps, *m_pShowWOppProps;
@@ -400,6 +402,7 @@ private:
 	XFLR5::enumApp m_iApp;                 /**< The identification number of the active app. */
 
 	static bool s_bSaved;       /**< true if the project has not been modified since the last save operation. */
+	bool m_bAutoLoadLast;       /**< true if the last project should be loaded on startup */
 	bool m_bSaveOpps;           /**< true if the foil operating points should be serialized in the project file */
 	bool m_bSaveWOpps;          /**< true if the wing operating points should be serialized in the project file */
 	bool m_bAutoSave;           /**< true if the project should be auto-saved on regular intervals */

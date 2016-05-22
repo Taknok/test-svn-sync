@@ -664,6 +664,15 @@ void QXInverse::keyPressEvent(QKeyEvent *event)
 				s_pMainFrame->onMiarex();
 				return;
 			}
+		case Qt::Key_7:
+			if(bCtrl)
+			{
+				s_pMainFrame->loadLastProject();
+				event->accept();
+				return;
+			}
+			break;
+
 		default:
 			QWidget::keyPressEvent(event);
 	}

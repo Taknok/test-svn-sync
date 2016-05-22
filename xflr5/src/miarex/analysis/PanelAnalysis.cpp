@@ -661,7 +661,6 @@ bool PanelAnalysis::alphaLoop()
 	buildInfluenceMatrix();
 	if (s_bCancel) return true;
 
-
 	createUnitRHS();
 	if (s_bCancel) return true;
 
@@ -772,8 +771,10 @@ void PanelAnalysis::buildInfluenceMatrix()
 						phi += phiSym;
 					}*/
 
-					if(!m_pWPolar->bDirichlet() || m_pPanel[p].m_Pos==MIDSURFACE) m_aij[m*Size+mm] = V.dot(m_pPanel[p].Normal);
-					else if(m_pWPolar->bDirichlet())                              m_aij[m*Size+mm] = phi;
+					if(!m_pWPolar->bDirichlet() || m_pPanel[p].m_Pos==MIDSURFACE)
+						m_aij[m*Size+mm] = V.dot(m_pPanel[p].Normal);
+					else if(m_pWPolar->bDirichlet())
+						m_aij[m*Size+mm] = phi;
 
 					mm++;
 //				}
@@ -1544,7 +1545,6 @@ void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
 													XCP, YCP, ZCP, m_GCm, m_VCm, m_ICm, m_GRm, m_GYm, m_VYm, m_IYm,
 													m_pWPolar, m_CoG);
 
-
 				m_pWingList[iw]->panelComputeBending(m_pWPolar->bThinSurfaces());
 
 				pos += m_pWingList[iw]->m_MatSize;
@@ -1581,7 +1581,6 @@ void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
 		{
 			m_CP.set(0.0,0.0,0.0);
 		}
-
 
 
 		m_GCm *= 1.0 / m_pWPolar->referenceArea() /m_pWPolar->referenceChordLength();
@@ -4500,14 +4499,16 @@ void PanelAnalysis::computePhillipsFormulae()
 //	Improved Closed-Form Approximation for Dutch Roll, JOURNAL OF AIRCRAFT,	Vol. 37, No. 3, May– June 2000
 
 	double MTOW_des,AWing,Vmax_C,Span,Chord,CL_C,CDtot_C,rho_C,Ixx,Iyy,Izz;
-	double Rx,Rz,Rg,Rgy,Rza;
+//	double Rx,Rz;
+	double Rg,Rgy,Rza;
 	double RDc,RDp,RDs,Rs,Rd,Rp;
 	double rlDR, ilDR, rlPH, ilPH;
 	double Rxa, Rma, Rmq, RYb, Rlb, Rnb, Rlp, Rnp, RYr, Rlr, Rnr;
 	double Fdr,zeta_dr,Fph,zeta_ph;
 
 	MTOW_des = AWing = Vmax_C = Span = Chord = CL_C = CDtot_C = rho_C = Ixx = Iyy = Izz=0.0;
-	Rx = Rz = Rg = Rgy = Rza = 0.0;
+//	Rx = Rz =0.0;
+	Rg = Rgy = Rza = 0.0;
 	RDc = RDp = RDs = Rs = Rd = Rp = 0.0;
 	rlDR =  ilDR =  rlPH =  ilPH = 0.0;
 	Rxa =  Rma =  Rmq =  RYb =  Rlb =  Rnb =  Rlp =  Rnp =  RYr =  Rlr =  Rnr = 0.0;
@@ -4533,8 +4534,8 @@ void PanelAnalysis::computePhillipsFormulae()
 		}
 	}
 
-	Rx  =-CDtot_C*rho_C*AWing*Chord/(2*MTOW_des); //unused
-	Rz  =-CL_C*rho_C*AWing*Chord/(2*MTOW_des);
+//	Rx  =-CDtot_C*rho_C*AWing*Chord/(2*MTOW_des); //unused
+//	Rz  =-CL_C*rho_C*AWing*Chord/(2*MTOW_des);
 	Rg  = 9.81*Chord/(2*Vmax_C*Vmax_C);
 	Rgy = 9.81*Span/(2*Vmax_C*Vmax_C);
 	Rza = (rho_C*AWing*Chord/(4*MTOW_des))*(+CZa-CDtot_C); /** @todo check issue with sign of CZa */

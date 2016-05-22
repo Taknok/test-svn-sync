@@ -36,7 +36,7 @@ class SaveOptionsDlg : public QDialog
 
 public:
     SaveOptionsDlg(QWidget *pParent);
-	void initDialog(bool bOpps=false, bool bWOpps = true, bool bAutoSave=true, int saveInterval=10);
+	void initDialog(bool bAutoLoadLast=false, bool bOpps=false, bool bWOpps = true, bool bAutoSave=true, int saveInterval=10);
 
 private slots:
 	void onOK();
@@ -46,10 +46,10 @@ private:
 	void readParams();
 
 	IntEdit *m_pctrlInterval;
-	bool m_bOpps, m_bWOpps, m_bAutoSave;
+	bool m_bOpps, m_bWOpps, m_bAutoSave, m_bAutoLoadLast;
 	int m_SaveInterval;
 	QCheckBox *m_pctrlOpps, *m_pctrlWOpps;
-	QCheckBox *m_pctrlAutoSave;
+	QCheckBox *m_pctrlAutoSave, *m_pctrlAutoLoadLast;
 };
 
 #endif // SAVEOPTIONSDLG_H

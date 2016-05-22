@@ -447,14 +447,8 @@ void Surface::getSidePoint(double xRel, bool bRight, enumPanelPosition pos, CVec
     if(!bRight)
     {
         if(pos==MIDSURFACE && m_pFoilA)      foilPt = m_pFoilA->midYRel(xRel);
-		else if(pos==TOPSURFACE && m_pFoilA)
-		{
-			foilPt = m_pFoilA->upperYRel(xRel, PtNormal.x, PtNormal.z);
-		}
-		else if(pos==BOTSURFACE && m_pFoilA)
-		{
-			foilPt = m_pFoilA->lowerYRel(xRel, PtNormal.x, PtNormal.z);
-		}
+		else if(pos==TOPSURFACE && m_pFoilA) foilPt = m_pFoilA->upperYRel(xRel, PtNormal.x, PtNormal.z);
+		else if(pos==BOTSURFACE && m_pFoilA) foilPt = m_pFoilA->lowerYRel(xRel, PtNormal.x, PtNormal.z);
 
         Point = m_LA * (1.0-foilPt.x) + m_TA * foilPt.x;
         Point +=  Normal * foilPt.y*chord(0.0);
@@ -462,14 +456,8 @@ void Surface::getSidePoint(double xRel, bool bRight, enumPanelPosition pos, CVec
     else
     {
         if(pos==MIDSURFACE && m_pFoilB)      foilPt = m_pFoilB->midYRel(xRel);
-		else if(pos==TOPSURFACE && m_pFoilB)
-		{
-			foilPt = m_pFoilB->upperYRel(xRel, PtNormal.x, PtNormal.z);
-		}
-		else if(pos==BOTSURFACE && m_pFoilB)
-		{
-			foilPt = m_pFoilB->lowerYRel(xRel, PtNormal.x, PtNormal.z);
-		}
+		else if(pos==TOPSURFACE && m_pFoilB) foilPt = m_pFoilB->upperYRel(xRel, PtNormal.x, PtNormal.z);
+		else if(pos==BOTSURFACE && m_pFoilB) foilPt = m_pFoilB->lowerYRel(xRel, PtNormal.x, PtNormal.z);
 
         Point = m_LB * (1.0-foilPt.x) + m_TB * foilPt.x;
         Point +=  Normal * foilPt.y*chord(1.0);
@@ -532,18 +520,18 @@ void Surface::getSidePoints(enumPanelPosition pos,
 		PtA[i].y   = m_LA.y +(PtA[i].y - m_LA.y)/cosdA;
 		PtA[i].z   = m_LA.z +(PtA[i].z - m_LA.z)/cosdA;
 		PtA[i].rotate(m_LA, m_LA-m_TA, alpha_dA);
-//		NA[i].rotate(m_LA, m_LA-m_TA, alpha_dA);
 		NA[i].rotate(CVector(1.0,0.0,0.0), delta);
-//		PtA[i].rotate(A4, TA4, m_TwistA);
 
 		NB[i].set(0.0,0.0,0.0);
 		getSidePoint(xRel, true,  pos, PtB[i], NB[i]);
 		PtB[i].y   = m_LB.y +(PtB[i].y - m_LB.y)/cosdB;
 		PtB[i].z   = m_LB.z +(PtB[i].z - m_LB.z)/cosdB;
 		PtB[i].rotate(m_LB, m_LB-m_TB, alpha_dB);
-//		NB[i].rotate(m_LB, m_LB-m_TB, alpha_dB);
 		NB[i].rotate(CVector(1.0,0.0,0.0), delta);
-//		PtB[i].rotate(B4, TB4, m_TwistB);
+
+/*		double sweep_i = -atan2((PtB[i].x-PtA[i].x), (PtB[i].y-PtA[i].y)) * 180.0/PI;
+		NA[i].rotate(CVector(0.0,0.0,1.0), sweep_i);
+		NB[i].rotate(CVector(0.0,0.0,1.0), sweep_i);*/
 
 		if(pBody && m_bIsCenterSurf && m_bIsLeftSurf)
 		{
@@ -554,6 +542,7 @@ void Surface::getSidePoints(enumPanelPosition pos,
 			pBody->intersect(PtA[i], PtB[i], PtA[i], true);
 		}
 	}
+//	for(int ip=0;ip<nPoints; ip++)	qDebug("%d  %11.5f  %11.5f  %11.5f", ip, NA[ip].x, NA[ip].y, NA[ip].z);
 }
 
 
@@ -1258,7 +1247,7 @@ void Surface::setTwist()
 	U.rotate(T, m_TwistA);
 	m_TA = A4 + U;
 
-//    NormalA.rotate(T, m_TwistA);
+	NormalA.rotate(T, m_TwistA);
 
 	// create a vector perpendicular to NormalB and x-axis
 	T.x = 0.0;
@@ -1273,7 +1262,7 @@ void Surface::setTwist()
 	U.rotate(T, m_TwistB);
 	m_TB = B4 + U;
 
-//    NormalB.rotate(T, m_TwistB);
+	NormalB.rotate(T, m_TwistB);
 }
 
 
