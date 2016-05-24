@@ -200,13 +200,13 @@ void GL3dWingDlg::connectSignals()
 	connect(m_pDeleteSection, SIGNAL(triggered()), this, SLOT(onDeleteSection()));
 	connect(m_pResetSection,  SIGNAL(triggered()), this, SLOT(onResetSection()));
 
-	connect(m_pResetScales, SIGNAL(triggered()), this, SLOT(on3DReset()));
+	connect(m_pResetScales, SIGNAL(triggered()), m_pgl3Widget, SLOT(on3DReset()));
 
 	connect(m_pctrlIso,        SIGNAL(clicked()),m_pgl3Widget, SLOT(on3DIso()));
 	connect(m_pctrlX,          SIGNAL(clicked()),m_pgl3Widget, SLOT(on3DFront()));
 	connect(m_pctrlY,          SIGNAL(clicked()),m_pgl3Widget, SLOT(on3DLeft()));
 	connect(m_pctrlZ,          SIGNAL(clicked()),m_pgl3Widget, SLOT(on3DTop()));
-	connect(m_pctrlReset,      SIGNAL(clicked()),this, SLOT(on3DReset()));
+	connect(m_pctrlReset,      SIGNAL(clicked()),m_pgl3Widget, SLOT(on3DReset()));
 	connect(m_pctrlFoilNames,  SIGNAL(clicked()),this, SLOT(onFoilNames()));
 	connect(m_pctrlShowMasses, SIGNAL(clicked()),this, SLOT(onShowMasses()));
 
@@ -555,14 +555,6 @@ void GL3dWingDlg::keyPressEvent(QKeyEvent *event)
 		default:
 			event->ignore();
 	}
-}
-
-
-
-void GL3dWingDlg::on3DReset()
-{
-	setWingScale();
-	m_pgl3Widget->on3DReset();
 }
 
 
@@ -1174,15 +1166,6 @@ void GL3dWingDlg::setCurrentSection(int section)
 }
 
 
-void GL3dWingDlg::setWingScale()
-{
-	//wing along X axis will take 3/4 of the screen
-	m_pgl3Widget->m_glScaled = (GLfloat)(3./4.*2.0/m_pWing->planformSpan());
-	m_pgl3Widget->m_glViewportTrans.set(0.0,0.0,0.0);
-
-//	m_pGLWidget->Set3DRotationCenter();
-}
-
 
 void GL3dWingDlg::setWingData()
 {
@@ -1501,7 +1484,7 @@ void GL3dWingDlg::setupLayout()
 					pAxisViewLayout->addWidget(m_pctrlIso);
 				}
 
-				m_pctrlReset = new QPushButton(tr("Reset View"));
+				m_pctrlReset = new QPushButton(tr("Reset scale"));
 
 				pThreeDViewLayout->addStretch();
 				pThreeDViewLayout->addLayout(pAxisViewLayout);
@@ -1608,7 +1591,6 @@ void GL3dWingDlg::resizeEvent(QResizeEvent *event)
 		m_pLeftSideSplitter->setSizes(leftSideSizes);
 	}
 
-	setWingScale();
 
 	double w = (double)m_pctrlWingTable->width()*.97;
 	int wFoil  = (int)(w/5.);
@@ -1625,6 +1607,7 @@ void GL3dWingDlg::resizeEvent(QResizeEvent *event)
 	m_pctrlWingTable->setColumnWidth(8, wCols);
 	m_pctrlWingTable->setColumnWidth(9, wCols);
 
+	if(m_pWing)	m_pgl3Widget->set3DScale(m_pWing->planformSpan());
 	m_pgl3Widget->update();
 	event->accept();
 }

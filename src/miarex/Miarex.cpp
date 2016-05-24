@@ -185,10 +185,8 @@ QMiarex::QMiarex(QWidget *parent)
 	m_bCurFrameOnly      = true;
 	m_bType1 = m_bType2 = m_bType4 = m_bType7 = true;
 	m_bShowEllipticCurve = false;
-	m_bShowBellCurve   = false;
+	m_bShowBellCurve     = false;
 	m_bShowWingCurve[0] = m_bShowWingCurve[1] = m_bShowWingCurve[2] = m_bShowWingCurve[3] = true;
-	m_bAutoScales        = false;
-	m_bAutoScales        = false;
 	m_bAnimateWOpp       = false;
 	m_bAnimateWOppPlus   = true;
 	m_bAnimateMode       = false;
@@ -198,13 +196,12 @@ QMiarex::QMiarex(QWidget *parent)
 	m_bPickCenter        = false;
 	m_bShowCpScale       = true;
 	m_bIs2DScaleSet      = false;
-	m_bIs3DScaleSet      = false;
 	m_bResetTextLegend   = true;
 
 
-	m_LLTMaxIterations      = 100;
-	LLTAnalysis::s_CvPrec    =   0.01;
-	LLTAnalysis::s_RelaxMax  =  20.0;
+	m_LLTMaxIterations          = 100;
+	LLTAnalysis::s_CvPrec       =   0.01;
+	LLTAnalysis::s_RelaxMax     =  20.0;
 	LLTAnalysis::s_NLLTStations = 20;
 
 	Panel::s_VortexPos = 0.25;
@@ -2057,7 +2054,16 @@ void QMiarex::keyPressEvent(QKeyEvent *event)
 			onCpView();
 			break;
 		}
-
+		case Qt::Key_F10:
+		{
+			onEditCurWing();
+			break;
+		}
+		case Qt::Key_F11:
+		{
+			onEditCurBody();
+			break;
+		}
 
 		case Qt::Key_F1:
 		{
@@ -2364,8 +2370,6 @@ void QMiarex::on3DView()
 		return;
 	}
 
-	m_bIs3DScaleSet = false;
-
 	m_iView = XFLR5::W3DVIEW;
 	setControls();
 
@@ -2402,8 +2406,6 @@ void QMiarex::on3DCp()
 void QMiarex::on3DResetScale()
 {
 	m_bPickCenter   = false;
-	m_bIs3DScaleSet = false;
-	set3DScale();
 	m_pgl3Widget->on3DReset();
 }
 
@@ -3608,6 +3610,7 @@ void QMiarex::onDuplicateCurPlane()
  */
 void QMiarex::onEditCurBody()
 {
+	m_pgl3Widget->m_bArcball = false;
 	if(!m_pCurPlane || !m_pCurPlane->body()) return;
 
 	Body *pCurBody = m_pCurPlane->body();
@@ -3707,6 +3710,7 @@ void QMiarex::onEditCurBody()
  */
 void QMiarex::onEditCurBodyObject()
 {
+	m_pgl3Widget->m_bArcball = false;
 	if(!m_pCurPlane || !m_pCurPlane->body()) return;
 
 	Body *pCurBody = m_pCurPlane->body();
@@ -3796,8 +3800,8 @@ void QMiarex::onEditCurBodyObject()
  */
 void QMiarex::onEditCurObject()
 {
-	if(!m_pCurPlane) return;
 	m_pgl3Widget->m_bArcball = false;
+	if(!m_pCurPlane) return;
 	int i;
 
 	WPolar *pWPolar;
@@ -3895,6 +3899,7 @@ void QMiarex::onEditCurObject()
  */
 void QMiarex::onEditCurPlane()
 {
+	m_pgl3Widget->m_bArcball = false;
 	if(!m_pCurPlane) return;
 
 	int i;
@@ -4002,6 +4007,7 @@ void QMiarex::onEditCurPlane()
  */
 void QMiarex::onEditCurWing()
 {
+	m_pgl3Widget->m_bArcball = false;
 	if(!m_pCurPlane) return;
 
 	int iWing;
@@ -6531,36 +6537,11 @@ bool QMiarex::saveSettings(QSettings *pSettings)
 
 
 /**
- * Sets the scale for the 2d or 3d selected view
+ * Sets the scale for the 3d view
  */
 void QMiarex::setScale()
 {
-	if(m_iView==XFLR5::W3DVIEW) set3DScale();
-//	else                        Set2DScale();
-}
-
-
-/**
- * Sets an automatic scale for the wing or plane in the 3D view, depending on wing span.
- */
-void QMiarex::set3DScale()
-{
-	if(m_iView!=XFLR5::W3DVIEW ) return;
-	if(m_iView==XFLR5::W3DVIEW) m_bResetglLegend = true;
-	if(m_bIs3DScaleSet && !m_bAutoScales) return;
-
-	if(m_pCurPlane)
-	{
-		//wing along X axis will take 4/5 of the screen
-		m_pgl3Widget->m_glScaledRef = (GLfloat)(4./5.*2.0/m_pCurPlane->planformSpan());
-		m_pgl3Widget->m_glViewportTrans.set(0.0,0.0,0.0);
-
-		m_pgl3Widget->m_glScaled = m_pgl3Widget->m_glScaledRef;
-
-		m_bIs3DScaleSet = true;
-
-//		s_pMainFrame->m_glLightDlg.setModelSize(m_pCurPlane->wing()->planformSpan());
-	}
+	if(m_iView==XFLR5::W3DVIEW && m_pCurPlane) m_pgl3Widget->set3DScale(m_pCurPlane->span());
 }
 
 
@@ -7093,7 +7074,7 @@ void QMiarex::setupLayout()
 				}
 
 				pThreeDViewLayout->addLayout(pAxisViewLayout);
-				m_pctrl3DResetScale = new QPushButton(tr("Reset view"));
+				m_pctrl3DResetScale = new QPushButton(tr("Reset scale"));
 				m_pctrl3DResetScale->setStatusTip(tr("Resets the display scale so that the plane fits in the window"));
 				pThreeDViewLayout->addWidget(m_pctrl3DResetScale);
 			}

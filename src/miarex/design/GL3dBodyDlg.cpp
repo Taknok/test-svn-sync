@@ -1173,12 +1173,6 @@ bool GL3dBodyDlg::setBody(Body *pBody)
 }
 
 
-void GL3dBodyDlg::set3dScale()
-{
-	m_gl3Widget.m_glScaled = (GLfloat)(3./4.*2.0/m_pBody->length());
-	m_gl3Widget.m_glViewportTrans.set(0.0,0.0,0.0);
-}
-
 
 
 void GL3dBodyDlg::setFrame(int iFrame)
@@ -1285,7 +1279,7 @@ void GL3dBodyDlg::setupLayout()
 
 		QHBoxLayout* pThreeDViewLayout = new QHBoxLayout;
 		{
-			m_pctrlReset      = new QPushButton(tr("Reset Scales"));
+			m_pctrlReset      = new QPushButton(tr("Reset Scale"));
 			m_pctrlReset->setSizePolicy(szPolicyMinimum);
 
 			pThreeDViewLayout->addWidget(m_pctrlReset);

@@ -92,6 +92,7 @@ private slots:
 	void onOutline(bool bChecked);
 	void onFoilNames(bool bChecked);
 	void onShowMasses(bool bChecked);
+	void onResetIncrement();
 	void onRotationIncrement();
 	void onTranslationIncrement();
 
@@ -159,7 +160,9 @@ private:
 	void printFormat(const QSurfaceFormat &format);
 	void reset3DRotationCenter();
 	void set3DRotationCenter(QPoint point);
+	void set3DScale(double length=-1.0);
 	void setSpanStations(Plane *pPlane, WPolar *pWPolar, PlaneOpp *pPOpp);
+	void startResetTimer(double length);
 	void startRotationTimer();
 	void startTranslationTimer(CVector PP);
 	void screenToViewport(QPoint const &point, CVector &real);
@@ -254,6 +257,7 @@ private:
 	QPoint m_LastPoint;
 
 	CVector m_transIncrement;
+	double m_glScaleIncrement;
 
 	CVector m_RealPopUp;
 	CVector m_glViewportTrans;// the translation vector in gl viewport coordinates

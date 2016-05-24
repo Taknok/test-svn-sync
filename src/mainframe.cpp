@@ -455,7 +455,7 @@ void MainFrame::createActions()
 	connect(m_pNewProjectAct, SIGNAL(triggered()), this, SLOT(onNewProject()));
 
 	m_pCloseProjectAct = new QAction(QIcon(":/images/new.png"), tr("Close the Project"), this);
-	m_pCloseProjectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_W));
+	m_pCloseProjectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F4));
 	m_pCloseProjectAct->setStatusTip(tr("Save and close the current project"));
 	connect(m_pCloseProjectAct, SIGNAL(triggered()), this, SLOT(onNewProject()));
 
@@ -1237,12 +1237,14 @@ void MainFrame::createMiarexActions()
 	m_pDefinePlaneObjectAct->setStatusTip(tr("Shows a dialogbox to create a new plane definition"));
 	connect(m_pDefinePlaneObjectAct, SIGNAL(triggered()), pMiarex, SLOT(onNewPlaneObject()));
 
-	m_pEditPlaneAct = new QAction(tr("Edit...")+"\tShift+F3", this);
+	m_pEditPlaneAct = new QAction(tr("Edit..."), this);
 	m_pEditPlaneAct->setStatusTip(tr("Shows a form to edit the currently selected plane"));
+	m_pEditPlaneAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_P));
 	connect(m_pEditPlaneAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurPlane()));
 
-	m_pEditObjectAct = new QAction(tr("Edit... (advanced users)")+"\tCtrl+F3", this);
+	m_pEditObjectAct = new QAction(tr("Edit... (advanced users)"), this);
 	m_pEditObjectAct->setStatusTip(tr("Shows a form to edit the currently selected plane"));
+	m_pEditObjectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT+Qt::Key_P));
 	connect(m_pEditObjectAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurObject()));
 
 	m_pExporttoXML = new QAction(tr("Export to xml file"), this);
@@ -1253,7 +1255,7 @@ void MainFrame::createMiarexActions()
 
 	m_pEditWingAct = new QAction(tr("Edit wing..."), this);
 	m_pEditWingAct->setStatusTip(tr("Shows a form to edit the wing of the currently selected plane"));
-	m_pEditWingAct->setShortcut(QKeySequence(Qt::Key_F10));
+	m_pEditWingAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_W));
 	m_pEditWingAct->setData(0);
 	connect(m_pEditWingAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurWing()));
 
@@ -1269,11 +1271,11 @@ void MainFrame::createMiarexActions()
 
 	m_pEditBodyAct = new QAction(tr("Edit body..."), this);
 	m_pEditBodyAct->setStatusTip(tr("Shows a form to edit the body of the currently selected plane"));
-	m_pEditBodyAct->setShortcut(QKeySequence(Qt::Key_F11));
+	m_pEditBodyAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_B));
 	connect(m_pEditBodyAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurBody()));
 
 	m_pEditBodyObjectAct= new QAction(tr("Edit body (advanced users)"), this);
-	m_pEditBodyObjectAct->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_F11));
+	m_pEditBodyObjectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_B));
 	connect(m_pEditBodyObjectAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurBodyObject()));
 
 	m_pRenameCurPlaneAct = new QAction(tr("Rename...")+"\tF2", this);
