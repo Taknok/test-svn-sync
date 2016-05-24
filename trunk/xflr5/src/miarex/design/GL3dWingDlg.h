@@ -66,7 +66,6 @@ public:
 
 private slots:
 	void onAxes();
-	void on3DReset();
 	void onCheckViewIcons();
 	void onSurfaces();
 	void onOutline();
@@ -121,7 +120,6 @@ private:
 	void setupLayout();
 	void glMake3DObjects();
 	void glMakeSectionHighlight(QOpenGLBuffer &vbo, int &nStrips, int &stripSize);
-	void setWingScale();
 
 private:
 	static QList <void*> *s_poaFoil;
