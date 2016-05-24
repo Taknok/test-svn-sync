@@ -60,7 +60,6 @@ GL3Widget::GL3Widget(QWidget *pParent) : QOpenGLWidget(pParent)
 
 	m_pParent = pParent;
 
-	m_glScaled = m_glScaledRef = 1.0f;
 	m_pTransitionTimer = NULL;
 	memset(ab_new, 0, 16*sizeof(float));
 	memset(ab_old, 0, 16*sizeof(float));
@@ -105,9 +104,9 @@ GL3Widget::GL3Widget(QWidget *pParent) : QOpenGLWidget(pParent)
 	m_glViewportTrans.y  = 0.0;
 	m_glViewportTrans.z  = 0.0;
 
+	m_glScaled = m_glScaledRef = 1.0;
+	m_glScaleIncrement = 0.0;
 	m_ClipPlanePos  = 5.0;
-	m_glScaled      = 1.0;
-	m_glScaledRef   = 1.0;
 
 	m_bTrans = false;
 
@@ -643,33 +642,29 @@ void GL3Widget::on3DReset()
 
 	if(m_iView == XFLR5::GLMIAREXVIEW)
 	{
-		QMiarex *pMiarex = (QMiarex *)s_pMiarex;
-		pMiarex->m_bIs3DScaleSet = false;
-		pMiarex->set3DScale();
+		QMiarex *pMiarex = (QMiarex*)s_pMiarex;
+		if(pMiarex->m_pCurPlane) startResetTimer(pMiarex->m_pCurPlane->span());
 	}
 	else if(m_iView==XFLR5::GLWINGVIEW)
 	{
 		GL3dWingDlg *pDlg = (GL3dWingDlg*)m_pParent;
-		pDlg->setWingScale();
+		startResetTimer(pDlg->m_pWing->planformSpan());
 	}
 	else if(m_iView == XFLR5::GLPLANEVIEW)
 	{
 		EditPlaneDlg *pDlg = (EditPlaneDlg*)m_pParent;
-		pDlg->setPlaneScale();
+		startResetTimer(pDlg->m_pPlane->span());
 	}
 	else if(m_iView == XFLR5::GLEDITBODYVIEW)
 	{
 		EditBodyDlg *pDlg = (EditBodyDlg*)m_pParent;
-		pDlg->set3dScale();
+		startResetTimer(pDlg->m_pBody->length());
 	}
 	else if(m_iView == XFLR5::GLBODYVIEW)
 	{
 		GL3dBodyDlg *pDlg = (GL3dBodyDlg*)m_pParent;
-		pDlg->set3dScale();
+		startResetTimer(pDlg->m_pBody->length());
 	}
-	m_glViewportTrans.set(0.0, 0.0, 0.0);
-	reset3DRotationCenter();
-	update();
 }
 
 
@@ -752,53 +747,6 @@ void GL3Widget::set3DRotationCenter(QPoint point)
 }
 
 
-void GL3Widget::startTranslationTimer(CVector PP)
-{
-	glInverseMatrix();
-	if(W3dPrefsDlg::s_bAnimateTransitions)
-	{
-		m_transIncrement.x = (-PP.x -m_glRotCenter.x)/30.0;
-		m_transIncrement.y = (-PP.y -m_glRotCenter.y)/30.0;
-		m_transIncrement.z = (-PP.z -m_glRotCenter.z)/30.0;
-
-		m_iTransitionInc = 0;
-		if(m_pTransitionTimer) delete m_pTransitionTimer;
-		m_pTransitionTimer = new QTimer(this);
-		connect(m_pTransitionTimer, SIGNAL(timeout()), this, SLOT(onTranslationIncrement()));
-		m_pTransitionTimer->start(10);//33 ms x 30 times is approximately one second
-	}
-	else
-	{
-		m_glRotCenter -= PP;
-		m_glViewportTrans.x =  (MatOut[0][0]*m_glRotCenter.x + MatOut[0][1]*m_glRotCenter.y + MatOut[0][2]*m_glRotCenter.z);
-		m_glViewportTrans.y = -(MatOut[1][0]*m_glRotCenter.x + MatOut[1][1]*m_glRotCenter.y + MatOut[1][2]*m_glRotCenter.z);
-		m_glViewportTrans.z=   (MatOut[2][0]*m_glRotCenter.x + MatOut[2][1]*m_glRotCenter.y + MatOut[2][2]*m_glRotCenter.z);
-
-		update();
-	}
-}
-
-
-
-void GL3Widget::onTranslationIncrement()
-{
-	if(m_iTransitionInc>=30)
-	{
-		m_pTransitionTimer->stop();
-		delete m_pTransitionTimer;
-		m_pTransitionTimer = NULL;
-		return;
-	}
-
-	m_glRotCenter +=m_transIncrement;
-	m_glViewportTrans.x =  (MatOut[0][0]*m_glRotCenter.x + MatOut[0][1]*m_glRotCenter.y + MatOut[0][2]*m_glRotCenter.z);
-	m_glViewportTrans.y = -(MatOut[1][0]*m_glRotCenter.x + MatOut[1][1]*m_glRotCenter.y + MatOut[1][2]*m_glRotCenter.z);
-	m_glViewportTrans.z=   (MatOut[2][0]*m_glRotCenter.x + MatOut[2][1]*m_glRotCenter.y + MatOut[2][2]*m_glRotCenter.z);
-
-
-	update();
-	m_iTransitionInc++;
-}
 
 
 
@@ -964,10 +912,8 @@ void GL3Widget::resizeGL(int width, int height)
 		if(s_pMiarex)
 		{
 			QMiarex* pMiarex = (QMiarex*)s_pMiarex;
-	//		pMiarex->m_ArcBall.GetMatrix();
-			pMiarex->m_bIs3DScaleSet = false;
 			pMiarex->m_bResetTextLegend = true;
-			pMiarex->set3DScale();
+//			set3DScale();
 		}
 	}
 	else if(m_iView == XFLR5::GLWINGVIEW)
@@ -6366,10 +6312,106 @@ void GL3Widget::startRotationTimer()
 }
 
 
+void GL3Widget::startTranslationTimer(CVector PP)
+{
+	glInverseMatrix();
+	if(W3dPrefsDlg::s_bAnimateTransitions)
+	{
+		m_transIncrement.x = (-PP.x -m_glRotCenter.x)/30.0;
+		m_transIncrement.y = (-PP.y -m_glRotCenter.y)/30.0;
+		m_transIncrement.z = (-PP.z -m_glRotCenter.z)/30.0;
+
+		m_iTransitionInc = 0;
+		if(m_pTransitionTimer) delete m_pTransitionTimer;
+		m_pTransitionTimer = new QTimer(this);
+		connect(m_pTransitionTimer, SIGNAL(timeout()), this, SLOT(onTranslationIncrement()));
+		m_pTransitionTimer->start(10);//33 ms x 30 times is approximately one second
+	}
+	else
+	{
+		m_glRotCenter -= PP;
+		m_glViewportTrans.x =  (MatOut[0][0]*m_glRotCenter.x + MatOut[0][1]*m_glRotCenter.y + MatOut[0][2]*m_glRotCenter.z);
+		m_glViewportTrans.y = -(MatOut[1][0]*m_glRotCenter.x + MatOut[1][1]*m_glRotCenter.y + MatOut[1][2]*m_glRotCenter.z);
+		m_glViewportTrans.z=   (MatOut[2][0]*m_glRotCenter.x + MatOut[2][1]*m_glRotCenter.y + MatOut[2][2]*m_glRotCenter.z);
+
+		update();
+	}
+}
 
 
 
+void GL3Widget::onTranslationIncrement()
+{
+	if(m_iTransitionInc>=30)
+	{
+		m_pTransitionTimer->stop();
+		delete m_pTransitionTimer;
+		m_pTransitionTimer = NULL;
+		return;
+	}
 
+	m_glRotCenter +=m_transIncrement;
+	m_glViewportTrans.x =  (MatOut[0][0]*m_glRotCenter.x + MatOut[0][1]*m_glRotCenter.y + MatOut[0][2]*m_glRotCenter.z);
+	m_glViewportTrans.y = -(MatOut[1][0]*m_glRotCenter.x + MatOut[1][1]*m_glRotCenter.y + MatOut[1][2]*m_glRotCenter.z);
+	m_glViewportTrans.z=   (MatOut[2][0]*m_glRotCenter.x + MatOut[2][1]*m_glRotCenter.y + MatOut[2][2]*m_glRotCenter.z);
+
+
+	update();
+	m_iTransitionInc++;
+}
+
+
+/**
+ * Sets an automatic scale for the wing or plane in the 3D view, depending on wing span.
+ */
+void GL3Widget::set3DScale(double length)
+{
+	if(length>0.0) m_glScaledRef = (GLfloat)(4./5.*2.0/length);
+	m_glScaled = m_glScaledRef;
+	m_glViewportTrans.set(0.0, 0.0, 0.0);
+	reset3DRotationCenter();
+	update();
+}
+
+
+void GL3Widget::onResetIncrement()
+{
+	if(m_iTransitionInc>=30)
+	{
+		m_pTransitionTimer->stop();
+		delete m_pTransitionTimer;
+		m_pTransitionTimer = NULL;
+		return;
+	}
+
+	m_glScaled += m_glScaleIncrement;
+	m_glViewportTrans += m_transIncrement;
+
+	reset3DRotationCenter();
+	update();
+	m_iTransitionInc++;
+}
+
+
+void GL3Widget::startResetTimer(double length)
+{
+	if(W3dPrefsDlg::s_bAnimateTransitions)
+	{
+		m_iTransitionInc = 0;
+		if(m_pTransitionTimer) delete m_pTransitionTimer;
+		m_pTransitionTimer = new QTimer(this);
+		connect(m_pTransitionTimer, SIGNAL(timeout()), this, SLOT(onResetIncrement()));
+		m_pTransitionTimer->start(10);//33 ms x 30 times is approximately one second
+
+		m_glScaleIncrement = (m_glScaledRef-m_glScaled)/30.0f;
+		m_transIncrement = (CVector(0.0,0.0,0.0)-m_glViewportTrans)/30.0;
+	}
+	else
+	{
+		set3DScale(length);
+		update();
+	}
+}
 
 
 

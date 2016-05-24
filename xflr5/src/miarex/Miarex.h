@@ -244,7 +244,6 @@ public:
 	void paintPlaneOppLegend(QPainter &painter, QRect drawRect);
 	void renamePlane(QString PlaneName);
 	bool saveSettings(QSettings *pSettings);
-	void set3DScale();
 	void setAnalysisParams();
 	void setControls();
 	void setCurveParams();
@@ -329,7 +328,6 @@ public:
 	bool m_bAnimateWOpp;               /**< true if there is an animation going on for an operating point */
 	bool m_bAnimateMode;               /**< true if there is an animation going on for a Mode */
 	bool m_bAnimateWOppPlus;           /**< true if the animation is going in aoa crescending order */
-	bool m_bAutoScales;                /**< true if automatic scales are requested for the graphs */
 	bool m_bCrossPoint;                /**< true if the control point on the arcball is to be displayed */
 	bool m_bCurPOppOnly;               /**< true if only the current WOpp is to be displayed */
 	bool m_bCurFrameOnly;              /**< true if only the currently selected body frame is to be displayed */
@@ -337,7 +335,6 @@ public:
 	bool m_bDownwash;                  /**< true if the arrows represeting downwash are to be displayed on the 3D openGl view */
 	bool m_bInitLLTCalc;               /**< true if the LLT parameters should be set to default prior to the analysis. Otherwise, the iterations will start at the results of the previous calculation */
 	bool m_bIs2DScaleSet;              /**< true if the 2D scale has been set, false if needs to be reset */
-	bool m_bIs3DScaleSet;              /**< true if the 3D scale has been set, false if needs to be reset */
 	bool m_bLongitudinal;              /**< true if longitudinal stability results are to be displayed, false if lateral */
 	bool m_bMoments;                   /**< true if the arrows representing moments are to be displayed on the 3D openGl view */
 	bool m_bPanelForce;                /**< true if the forces acting on the panels are to be displayed in the 3D view */
