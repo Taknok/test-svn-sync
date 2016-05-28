@@ -495,9 +495,9 @@ void BatchThreadDlg::initDialog()
 	m_pctrlReMax->setPrecision(0);
 	m_pctrlReDelta->setPrecision(0);
 
-	m_pctrlSpecMin->setPrecision(1);
-	m_pctrlSpecMax->setPrecision(1);
-	m_pctrlSpecDelta->setPrecision(1);
+	m_pctrlSpecMin->setPrecision(2);
+	m_pctrlSpecMax->setPrecision(2);
+	m_pctrlSpecDelta->setPrecision(2);
 
 	if(m_ReMin<=0.0) m_ReMin = qAbs(m_ReInc);
 	m_pctrlReMin->setValue(m_ReMin);

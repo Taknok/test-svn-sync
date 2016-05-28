@@ -6152,8 +6152,12 @@ void QMiarex::paintPlaneOppLegend(QPainter &painter, QRect drawRect)
 
 	if(m_pCurPOpp && m_pCurPOpp->m_WPolarType==XFLR5::STABILITYPOLAR) ZPos -= dheight;
 	if(m_pCurPOpp && m_pCurPOpp->m_bOut)                              ZPos -= dheight;
-	if(m_pCurPOpp && m_pCurPOpp->analysisMethod()!=XFLR5::LLTMETHOD)  ZPos -= dheight*m_pCurPOpp->m_pPlaneWOpp[0]->m_nFlaps;
-
+	if(m_pCurPOpp && m_pCurPOpp->analysisMethod()!=XFLR5::LLTMETHOD)
+	{
+		if(m_pCurPOpp->m_pPlaneWOpp[0]) ZPos -= dheight*m_pCurPOpp->m_pPlaneWOpp[0]->m_nFlaps;
+		if(m_pCurPOpp->m_pPlaneWOpp[2]) ZPos -= dheight*m_pCurPOpp->m_pPlaneWOpp[2]->m_nFlaps;
+		if(m_pCurPOpp->m_pPlaneWOpp[3]) ZPos -= dheight*m_pCurPOpp->m_pPlaneWOpp[3]->m_nFlaps;
+	}
 
 	if(m_pCurPOpp->m_bOut)
 	{
@@ -6237,13 +6241,38 @@ void QMiarex::paintPlaneOppLegend(QPainter &painter, QRect drawRect)
 
 	if(m_pCurPOpp->analysisMethod()!=XFLR5::LLTMETHOD)
 	{
-		for(i=0; i<m_pCurPOpp->m_pPlaneWOpp[0]->m_nFlaps; i++)
+		if(m_pCurPOpp->m_pPlaneWOpp[0])
 		{
-		   Result = QString("Flap %1 Moment =%2 ").arg(i+1).arg(m_pCurPOpp->m_pPlaneWOpp[0]->m_FlapMoment[i]*Units::NmtoUnit(),8,'f',4);
-		   Units::getMomentUnitLabel(str);
-		   Result += str;
-		   D+=dheight;
-		   painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
+			for(i=0; i<m_pCurPOpp->m_pPlaneWOpp[0]->m_nFlaps; i++)
+			{
+			   Result.sprintf("Wing Flap %d Moment =%8.4f ", i+1, m_pCurPOpp->m_pPlaneWOpp[0]->m_FlapMoment[i]*Units::NmtoUnit());
+			   Units::getMomentUnitLabel(str);
+			   Result += str;
+			   D+=dheight;
+			   painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
+			}
+		}
+		if(m_pCurPOpp->m_pPlaneWOpp[2])
+		{
+			for(i=0; i<m_pCurPOpp->m_pPlaneWOpp[2]->m_nFlaps; i++)
+			{
+			   Result.sprintf("Elev Flap %d Moment =%8.4f ", i+1, m_pCurPOpp->m_pPlaneWOpp[2]->m_FlapMoment[i]*Units::NmtoUnit());
+			   Units::getMomentUnitLabel(str);
+			   Result += str;
+			   D+=dheight;
+			   painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
+			}
+		}
+		if(m_pCurPOpp->m_pPlaneWOpp[3])
+		{
+			for(i=0; i<m_pCurPOpp->m_pPlaneWOpp[3]->m_nFlaps; i++)
+			{
+			   Result.sprintf("Fin  Flap %d Moment =%8.4f ", i+1, m_pCurPOpp->m_pPlaneWOpp[3]->m_FlapMoment[i]*Units::NmtoUnit());
+			   Units::getMomentUnitLabel(str);
+			   Result += str;
+			   D+=dheight;
+			   painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
+			}
 		}
 	}
 
@@ -6766,8 +6795,9 @@ void QMiarex::setPlane(QString PlaneName)
 	}
 
 	// we have a plane, initialize the pointers and the  GUI
-	m_bResetglGeom   = true;
+	m_bResetglGeom = true;
 	m_bResetglMesh = true;
+	m_bResetTextLegend = true;
 
 	if(m_pCurPlane->body()) m_bResetglBody   = true;
 	else                    m_bResetglBody   = false;

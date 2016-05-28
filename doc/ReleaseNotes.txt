@@ -21,6 +21,7 @@ xflr5 v6.14 May xxxth, 2016
 	- corrected issues in the construction of wings with inverse dihedral
 	- corrected an error in the calculation of a mode's damped natural frequency
 	- made some adjustments to batch analysis of foils to speed up execution
+	- added some animations to the 3d view transitions
 	- removed the limitations inconsistent with the GPL in the credits window
 	- fixed a few minor bugs
 
