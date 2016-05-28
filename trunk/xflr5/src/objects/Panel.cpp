@@ -576,7 +576,8 @@ void Panel::sourceNASA4023(CVector const &C,  CVector &V, double &phi)
 		else
 		{
 			//first the potential
-			if(A+B-S>0.0)	GL = 1.0/S * log((A+B+S)/(A+B-S));
+			if(fabs(A+B-S>0.0))	GL = 1.0/S * log(fabs((A+B+S)/(A+B-S)));
+			else                GL = 0.0;
 
 			RNUM = SM*PN * (B*PA-A*PB);
 			DNOM = PA*PB + PN*PN*A*B*SM*SM;

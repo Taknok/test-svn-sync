@@ -248,9 +248,9 @@ void BatchDlg::setupLayout()
 			SpecMax->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
 			SpecDelta->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
 			m_pctrlSpecVar    = new QLabel(tr("Spec ="));
-			m_pctrlSpecMin    = new DoubleEdit(0.00);
-			m_pctrlSpecMax    = new DoubleEdit(1.00);
-			m_pctrlSpecDelta  = new DoubleEdit(0.50);
+			m_pctrlSpecMin    = new DoubleEdit(0.00,2);
+			m_pctrlSpecMax    = new DoubleEdit(1.00,2);
+			m_pctrlSpecDelta  = new DoubleEdit(0.50,2);
 			pRangeVarsLayout->addWidget(Spec, 1, 1);
 			pRangeVarsLayout->addWidget(m_rbspec1, 1, 2);
 			pRangeVarsLayout->addWidget(m_rbspec2, 1, 3);
@@ -581,9 +581,9 @@ void BatchDlg::initDialog()
 		m_pctrlReMax->setPrecision(0);
 		m_pctrlReDelta->setPrecision(0);
 
-		m_pctrlSpecMin->setPrecision(1);
-		m_pctrlSpecMax->setPrecision(1);
-		m_pctrlSpecDelta->setPrecision(1);
+		m_pctrlSpecMin->setPrecision(2);
+		m_pctrlSpecMax->setPrecision(2);
+		m_pctrlSpecDelta->setPrecision(2);
 
 		m_pctrlReMin->setValue(m_ReMin);
 		m_pctrlReMax->setValue(m_ReMax);
