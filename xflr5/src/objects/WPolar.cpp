@@ -224,7 +224,8 @@ void WPolar::insertDataAt(int pos, double Alpha, double Beta, double QInf, doubl
 	m_ZCP.insert(pos, ZCP);
 	m_MaxBending.insert(pos, Cb);
 	m_Ctrl.insert(pos, Ctrl);
-	m_XNP.insert(pos, XNP);
+	if(isStabilityPolar()) m_XNP.insert(pos, XNP);
+	else                   m_XNP.insert(pos, 0.0);
 
 	m_TCd.insert(pos, 0.0);
 	m_PhugoidDamping.insert(pos, 0.0);
@@ -431,10 +432,11 @@ void WPolar::calculatePoint(int iPt)
 
 	m_XCpCl[iPt]     = m_XCP[iPt] * m_CL[iPt];
 
-	if(m_XCpCl.count()>1)
+	if(m_XCpCl.count()>1 && !isStabilityPolar())
 	{
 		m_XNeutralPoint = (m_XCpCl.last()-m_XCpCl.first()) / (m_CL.last()-m_CL.first());
 	}
+	else m_XNeutralPoint = 0.0;
 
 
 	m_SM[iPt]        = (m_XCP[iPt]-m_CoG.x)/m_referenceChordLength *100.00;
@@ -2081,7 +2083,6 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 
 		for (i=0; i<n; i++)
 		{
-
 			for(int j=0; j<20; j++)
 			{
 				ar >> d[j];
@@ -2419,8 +2420,6 @@ void WPolar::setAutoWPolarName(void *ptrPlane)
 		}
 	}
 }
-
-
 
 
 

@@ -72,6 +72,8 @@ PlaneOpp::PlaneOpp(void *pPlanePtr, void *pWPolarPtr, int PanelArraySize)
 
 	m_CL=m_CX=m_CY=m_VCD=m_ICD=m_GCm=m_GRm=m_VCm=m_ICm=m_GYm=m_VYm=m_IYm=0.0;
 
+	m_XNP = 0.0;
+
 	memset(m_EigenValue, 0, sizeof(m_EigenValue)); //four longitudinal and four lateral modes
 	memset(m_EigenVector, 0, sizeof(m_EigenVector));
 
@@ -109,9 +111,9 @@ PlaneOpp::PlaneOpp(void *pPlanePtr, void *pWPolarPtr, int PanelArraySize)
 	if(pWPolarPtr)
 	{
 		WPolar *pWPolar = (WPolar*)pWPolarPtr;
-		m_WPlrName         = pWPolar->polarName();
+		m_WPlrName        = pWPolar->polarName();
 		m_bVLM1           = pWPolar->bVLM1();
-		m_WPlrName         = pWPolar->polarName();
+		m_WPlrName        = pWPolar->polarName();
 		m_bThinSurface    = pWPolar->bThinSurfaces();
 		m_bTiltedGeom     = pWPolar->bTilted();
 		m_WPolarType      = pWPolar->polarType();
@@ -1032,6 +1034,7 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
 		}
 
 		ar >> m_XNP;
+		if(m_WPolarType!=XFLR5::STABILITYPOLAR) m_XNP = 0.0;
 
 		for(int kv=0; kv<8;kv++)
 		{
