@@ -557,7 +557,7 @@ void Panel::sourceNASA4023(CVector const &C,  CVector &V, double &phi)
 		PA   = PN*PN*SL + Al*AM;
 		PB   = PA - Al*SM;
 
-	//get the distance of the TestPoint to the panel's side
+		//get the distance of the TestPoint to the panel's side
 		h.x =  a.y*s.z - a.z*s.y;
 		h.y = -a.x*s.z + a.z*s.x;
 		h.z =  a.x*s.y - a.y*s.x;
@@ -576,7 +576,7 @@ void Panel::sourceNASA4023(CVector const &C,  CVector &V, double &phi)
 		else
 		{
 			//first the potential
-			if(fabs(A+B-S>0.0))	GL = 1.0/S * log(fabs((A+B+S)/(A+B-S)));
+			if(fabs(A+B-S)>0.0)	GL = 1.0/S * log(fabs((A+B+S)/(A+B-S)));
 			else                GL = 0.0;
 
 			RNUM = SM*PN * (B*PA-A*PB);
