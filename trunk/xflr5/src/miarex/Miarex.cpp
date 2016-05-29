@@ -3357,6 +3357,7 @@ void QMiarex::onEditCurWPolarPts()
 	}
 	m_pCurWPolar->points() = bPoints;
 
+	m_bResetTextLegend = true;
 	s_bResetCurves = true;
 	updateView();
 	setControls();
@@ -6018,7 +6019,8 @@ void QMiarex::paintPlaneLegend(QPainter &painter, Plane *pPlane, WPolar *pWPolar
 	if(pWPolar)
 	{
 		ZPos -= dheight;
-		if(pWPolar->dataSize()>1) ZPos -= dheight;
+		if (pWPolar->dataSize()>1 && !pWPolar->isStabilityPolar())
+			ZPos -= dheight;
 	}
 
 
@@ -6098,13 +6100,14 @@ void QMiarex::paintPlaneLegend(QPainter &painter, Plane *pPlane, WPolar *pWPolar
 
 	if(pWPolar)
 	{
-		if(pWPolar->dataSize()>1)
+		if(pWPolar->dataSize()>1 && !pWPolar->isStabilityPolar())
 		{
-			str1.sprintf( "XNP = d(XCp.Cl)/dCl =%10.3f ", pWPolar->m_XNeutralPoint * Units::mtoUnit());
+			str1.sprintf( "XNP = d(XCp.Cl)/dCl =%9.3f ", pWPolar->m_XNeutralPoint * Units::mtoUnit());
 			str1 += length;
 			painter.drawText(LeftPos, ZPos+D, str1);
 			D+=dheight;
 		}
+
 		str1 = QString(tr("Mesh elements  =")+"%1").arg(Objects3D::calculateMatSize(pPlane, pWPolar),6);
 		painter.drawText(LeftPos, ZPos+D, str1);
 		D+=dheight;
