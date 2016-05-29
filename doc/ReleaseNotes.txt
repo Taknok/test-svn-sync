@@ -7,7 +7,7 @@
                      A tool for the design of Airfoils, Wings and Planes
                           operating at low Reynolds numbers
 
-								Copyright (C) 2003-2016
+                                 Copyright (C) 2003-2016
 
                                      Andre Deperrois
 
@@ -15,7 +15,7 @@
 *******************************************************************************
 
 
-xflr5 v6.14 May xxxth, 2016
+xflr5 v6.14 May 29th, 2016
 	- modified the calculation of stability derivatives to take into account viscous drag and extra drag
 	- added mass and CoG position to the list of variables for stability polar graphs
 	- corrected issues in the construction of wings with inverse dihedral
@@ -24,6 +24,7 @@ xflr5 v6.14 May xxxth, 2016
 	- added some animations to the 3d view transitions
 	- removed the limitations inconsistent with the GPL in the credits window
 	- fixed a few minor bugs
+
 
 xflr5 v6.13 April 16th, 2016
 	- upgraded to OpenGL 3.0+ from the deprecated OpenGL 1.0
