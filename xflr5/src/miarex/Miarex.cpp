@@ -3244,6 +3244,7 @@ void QMiarex::onEditCurWPolar()
 	if (res == QDialog::Accepted)
 	{
 		emit projectModified();
+		m_bResetTextLegend = true;
 
 		pNewWPolar->planeName() = m_pCurPlane->planeName();
 		pNewWPolar->polarName() = WPolarName;
@@ -3291,6 +3292,7 @@ void QMiarex::onEditCurWPolarObject()
 	if (vpDlg.exec() == QDialog::Accepted)
 	{
 		emit projectModified();
+		m_bResetTextLegend = true;
 
 		pNewWPolar->planeName() = m_pCurPlane->planeName();
 
@@ -3656,6 +3658,8 @@ void QMiarex::onEditCurBody()
 	}
 	if(glbDlg.m_bChanged) emit projectModified();
 
+	m_bResetTextLegend = true;
+
 	ModDlg mdDlg(s_pMainFrame);
 
 	if(bUsed && glbDlg.m_bChanged)
@@ -3756,6 +3760,8 @@ void QMiarex::onEditCurBodyObject()
 
 	emit projectModified();
 
+	m_bResetTextLegend = true;
+
 	ModDlg mdDlg(s_pMainFrame);
 
 	if(bUsed)
@@ -3839,6 +3845,7 @@ void QMiarex::onEditCurObject()
 	if(QDialog::Accepted == voDlg.exec())
 	{
 		emit projectModified();
+		m_bResetTextLegend = true;
 
 		if(voDlg.m_bChanged)
 		{
@@ -3941,6 +3948,7 @@ void QMiarex::onEditCurPlane()
 
 	if(QDialog::Accepted == plDlg.exec())
 	{
+		m_bResetTextLegend = true;
 		if(plDlg.m_bDescriptionChanged)
 		{
 			emit projectModified();
@@ -4053,6 +4061,8 @@ void QMiarex::onEditCurWing()
 
 	if(QDialog::Accepted == plDlg.exec())
 	{
+		m_bResetTextLegend = true;
+
 		if(plDlg.m_bDescriptionChanged)
 		{
 			emit projectModified();
