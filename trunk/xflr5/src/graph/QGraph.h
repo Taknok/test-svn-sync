@@ -34,7 +34,7 @@
 #define MAXTIMEGRAPHS  4  /**< The max number of graphs available for display in the stability time view. */
 #define MAXWINGGRAPHS  5  /**< The max number of graphs available for display in QXDirect. */
 #define MAXPOLARGRAPHS 5  /**< The max number of graphs available for display in QXDirect. */
-#define MAXGRAPHS      6  /**< The max number of graphs available for display at one time. */
+#define MAXGRAPHS      5  /**< The max number of graphs available for display at one time. */
 
 namespace QGRAPH
 {

@@ -165,7 +165,7 @@ void MiarexTileWidget::adjustLayout()
 	else
 	{
 		for(int igw=0; igw<m_GraphWidget.count(); igw++) m_GraphWidget.at(igw)->setVisible(true);
-		m_GraphWidget.at(5)->setVisible(false);
+//		m_GraphWidget.at(5)->setVisible(false);
 		m_pMainGridLayout->addWidget(m_GraphWidget.at(0),1,1);
 		m_pMainGridLayout->addWidget(m_GraphWidget.at(1),1,2);
 		m_pMainGridLayout->addWidget(m_GraphWidget.at(2),1,3);

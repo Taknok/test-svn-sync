@@ -15,6 +15,10 @@
 *******************************************************************************
 
 
+xflr5 v6.15 June xxxth, 2016
+	- minor bug corrections
+
+
 xflr5 v6.14 May 29th, 2016
 	- modified the calculation of stability derivatives to take into account viscous drag and extra drag
 	- added mass and CoG position to the list of variables for stability polar graphs
