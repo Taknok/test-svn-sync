@@ -926,7 +926,7 @@ void MainFrame::createDockWindows()
 	m_pctrlXDirectWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 	addDockWidget(Qt::RightDockWidgetArea, m_pctrlXDirectWidget);
 
-	m_pctrlXInverseWidget = new QDockWidget(tr("Inverse foil analysis"), this);
+	m_pctrlXInverseWidget = new QDockWidget(tr("Inverse foil design"), this);
 	m_pctrlXInverseWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 	addDockWidget(Qt::RightDockWidgetArea, m_pctrlXInverseWidget);
 
