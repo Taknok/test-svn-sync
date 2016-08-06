@@ -79,13 +79,13 @@ public:
 	void getOppProperties(QString &OpPointProperties, bool bData=false);
 
 
-	QString foilName()  {return m_FoilName;}
-	QString polarName() {return m_PlrName;}
+	QString &foilName()  {return m_FoilName;}
+	QString &polarName() {return m_PlrName;}
 
 	void setFoilName(QString newFoilName) {m_FoilName = newFoilName;}
 
-	bool bViscResults(){return m_bViscResults;}
-	bool bBL(){return m_bBL;}
+	bool &bViscResults(){return m_bViscResults;}
+	bool &bBL(){return m_bBL;}
 
 	int &oppStyle()        {return m_Style;}
 	int &oppWidth()        {return m_Width;}
