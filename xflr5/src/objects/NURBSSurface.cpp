@@ -472,7 +472,11 @@ void NURBSSurface::appendFrame(Frame*pFrame)
 }
 
 
-
+int NURBSSurface::framePointCount()
+{
+	if(m_pFrame.size())	return m_pFrame.first()->pointCount();
+	else return 0;
+}
 
 
 

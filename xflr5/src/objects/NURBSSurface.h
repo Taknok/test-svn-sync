@@ -55,7 +55,7 @@ public:
 	void   clearFrames();
 	Frame *frameAt(int iFrame) {return m_pFrame.at(iFrame);}
 	int    frameCount() {return m_pFrame.size();}
-	int    framePointCount() {return m_pFrame.first()->pointCount();}
+	int    framePointCount();
 	double getu(double pos, double v);
 	double getv(double u, CVector r);
 	void   getPoint(double u, double v, CVector &Pt);

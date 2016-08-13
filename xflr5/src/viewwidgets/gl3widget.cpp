@@ -1110,7 +1110,7 @@ void GL3Widget::glMakeBody3DFlatPanels(Body *pBody)
 	m_iBodyElems = (pBody->sideLineCount()-1) * (pBody->frameCount()-1); //quads
 	m_iBodyElems *= 2;    //two sides
 	m_iBodyElems *= 2;    //two triangles per quad
-	m_iBodyElems *= 3;    //three vertex per triangle
+	m_iBodyElems *= 3;    //three vertices per triangle
 
 	if(m_BodyIndicesArray) delete[] m_BodyIndicesArray;
 	m_BodyIndicesArray = new unsigned short[m_iBodyElems];
@@ -1120,7 +1120,10 @@ void GL3Widget::glMakeBody3DFlatPanels(Body *pBody)
 
 	float fnh = pBody->sideLineCount();
 	float fLength = pBody->length();
-	float tip = pBody->frame(0)->m_Position.x;
+
+	float tip = 0.0;
+	if(pBody->frameCount()) tip = pBody->frame(0)->m_Position.x;
+
 	//surfaces
 	for (int k=0; k<pBody->sideLineCount()-1;k++)
 	{
