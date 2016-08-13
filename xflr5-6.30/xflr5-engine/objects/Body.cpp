@@ -210,19 +210,27 @@ void Body::duplicate(Body *pBody)
 
 	m_SplineSurface.clearFrames();
 	m_xPanels.clear();
+
 	for(int i=0; i<pBody->frameCount(); i++)
 	{
 		m_SplineSurface.m_pFrame.append(new Frame);
 		m_SplineSurface.m_pFrame[i]->copyFrame(pBody->m_SplineSurface.m_pFrame[i]);
-		m_xPanels.append(pBody->m_xPanels.at(i));
 	}
-	setNURBSKnots();
+
+	m_xPanels.clear();
+	for(int i=0; i<pBody->m_xPanels.count(); i++)
+		m_xPanels.append(pBody->m_xPanels.at(i));
 
 	m_hPanels.clear();
-	for(int i=0; i<sideLineCount(); i++)
-	{
-		m_hPanels.append(pBody->m_hPanels[i]);
-	}
+	for(int i=0; i<pBody->m_hPanels.count(); i++)
+		m_hPanels.append(pBody->m_hPanels.at(i));
+
+	m_XPanelPos.clear();
+	for(int i=0; i<pBody->m_XPanelPos.count(); i++)
+		m_XPanelPos.append(pBody->m_XPanelPos.at(i));
+
+	setNURBSKnots();
+
 
 	clearPointMasses();
 	for(int im=0; im<pBody->m_PointMass.size(); im++)
@@ -242,8 +250,10 @@ void Body::duplicate(Body *pBody)
  */
 double Body::length()
 {
-	return qAbs(m_SplineSurface.m_pFrame.last()->m_Position.x - m_SplineSurface.m_pFrame.first()->m_Position.x);
+	if(m_SplineSurface.m_pFrame.size())	return qAbs(m_SplineSurface.m_pFrame.last()->m_Position.x - m_SplineSurface.m_pFrame.first()->m_Position.x);
+	else                                return 0.0;
 }
+
 
 /**
  * Returns the posistion of the Body nose
@@ -251,9 +261,13 @@ double Body::length()
  */
 CVector Body::leadingPoint()
 {
-	return CVector(m_SplineSurface.m_pFrame[0]->m_Position.x,
-				   0.0,
-				   (m_SplineSurface.m_pFrame[0]->m_CtrlPoint.first().z + m_SplineSurface.m_pFrame[0]->m_CtrlPoint.last().z)/2.0 );
+	if(m_SplineSurface.m_pFrame.size())
+	{
+		return CVector(m_SplineSurface.m_pFrame[0]->m_Position.x,
+					   0.0,
+					   (m_SplineSurface.m_pFrame[0]->m_CtrlPoint.first().z + m_SplineSurface.m_pFrame[0]->m_CtrlPoint.last().z)/2.0 );
+	}
+	else return CVector(0.0, 0.0, 0.0);
 }
 
 
@@ -942,11 +956,12 @@ void Body::setPanelPos()
 
 	double norm = 1/(1+exp(0.5*a));
 
+	m_XPanelPos.clear();
 	for(i=0; i<=m_nxPanels; i++)
 	{
 		x = (double)(i)/(double)m_nxPanels;
 		y = 1.0/(1.0+exp((0.5-x)*a));
-		m_XPanelPos[i] =0.5-((0.5-y)/(0.5-norm))/2.0;
+		m_XPanelPos.append(0.5-((0.5-y)/(0.5-norm))/2.0);
 	}
 }
 
@@ -2143,6 +2158,7 @@ bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
 		ar >> m_nxPanels >> m_nhPanels;
 		ar >> m_Bunch;
 
+		m_hPanels.clear();
 		ar >> n;
 		for(k=0; k<n; k++)
 		{
