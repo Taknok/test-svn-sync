@@ -185,6 +185,7 @@ void XMLPlaneWriter::writePointMass(PointMass *ppm, double massUnit, double leng
 
 
 
+
 void XMLPlaneWriter::writeBody(Body *pBody, CVector position, double lengthUnit, double massUnit)
 {
 	NURBSSurface *pSurface = pBody->splineSurface();
@@ -194,8 +195,8 @@ void XMLPlaneWriter::writeBody(Body *pBody, CVector position, double lengthUnit,
 		writeColor(pBody->bodyColor());
 		writeTextElement("Description", pBody->bodyDescription());
 		writeTextElement("Position",QString("%1, %2, %3").arg(position.x*lengthUnit, 11,'g',5)
-															 .arg(position.y*lengthUnit, 11,'g',5)
-															 .arg(position.z*lengthUnit, 11,'g',5));
+														 .arg(position.y*lengthUnit, 11,'g',5)
+														 .arg(position.z*lengthUnit, 11,'g',5));
 
 		writeTextElement("Type", pBody->bodyType()==XFLR5::BODYPANELTYPE ? "FLATPANELS" : "NURBS");
 		if(pBody->bodyType()==XFLR5::BODYSPLINETYPE && pSurface)
@@ -207,11 +208,14 @@ void XMLPlaneWriter::writeBody(Body *pBody, CVector position, double lengthUnit,
 		}
 		else
 		{
-			for(int isl=0; isl<pBody->sideLineCount(); isl++)
+			writeStartElement("Panel_Stripes");
 			{
-				writeTextElement("Hoop_panels_stripe_%1",  QString("%1").arg(pBody->m_hPanels.at(isl)));
+				for(int isl=0; isl<pBody->sideLineCount(); isl++)
+				{
+					writeTextElement(QString("stripe_%1").arg(isl),  QString("%1").arg(pBody->m_hPanels.at(isl)));
+				}
 			}
-
+			writeEndElement();
 		}
 		writeStartElement("Inertia");
 		{
@@ -231,7 +235,7 @@ void XMLPlaneWriter::writeBody(Body *pBody, CVector position, double lengthUnit,
 				if(pBody->bodyType()==XFLR5::BODYPANELTYPE)
 				{
 					writeTextElement("x_panels", QString("%1").arg(pBody->m_xPanels.at(iFrame)));
-					writeTextElement("h_panels", QString("%1").arg(pBody->m_xPanels.at(iFrame)));
+//					writeTextElement("h_panels", QString("%1").arg(pBody->m_xPanels.at(iFrame)));
 				}
 
 				writeTextElement("Position",QString("%1, %2, %3").arg(pFrame->m_Position.x*lengthUnit, 11,'g',5)
@@ -242,8 +246,8 @@ void XMLPlaneWriter::writeBody(Body *pBody, CVector position, double lengthUnit,
 				{
 					CVector Pt(pFrame->point(iPt));
 					writeTextElement("point",QString("%1, %2, %3").arg(Pt.x*lengthUnit, 11,'g',5)
-																	  .arg(Pt.y*lengthUnit, 11,'g',5)
-																	  .arg(Pt.z*lengthUnit, 11,'g',5));
+																  .arg(Pt.y*lengthUnit, 11,'g',5)
+																  .arg(Pt.z*lengthUnit, 11,'g',5));
 				}
 			}
 			writeEndElement();
@@ -251,6 +255,4 @@ void XMLPlaneWriter::writeBody(Body *pBody, CVector position, double lengthUnit,
 	}
 	writeEndElement();
 }
-
-
 
