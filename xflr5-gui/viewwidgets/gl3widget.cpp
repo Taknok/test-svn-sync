@@ -1123,7 +1123,10 @@ void GL3Widget::glMakeBody3DFlatPanels(Body *pBody)
 
 	float fnh = pBody->sideLineCount();
 	float fLength = pBody->length();
-	float tip = pBody->frame(0)->m_Position.x;
+
+	float tip = 0.0;
+	if(pBody->frameCount()) tip = pBody->frame(0)->m_Position.x;
+
 	//surfaces
 	for (int k=0; k<pBody->sideLineCount()-1;k++)
 	{

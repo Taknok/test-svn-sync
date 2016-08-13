@@ -355,9 +355,13 @@ bool XMLPlaneReader::readPointMass(PointMass *ppm, double massUnit, double lengt
 
 
 
+
 bool XMLPlaneReader::readBody(Body *pBody, CVector &position, double lengthUnit, double massUnit)
 {
 	pBody->splineSurface()->clearFrames();
+	pBody->m_xPanels.clear();
+	pBody->m_hPanels.clear();
+	pBody->m_XPanelPos.clear();
 
 	while(!atEnd() && !hasError() && readNextStartElement() )
 	{
@@ -373,7 +377,7 @@ bool XMLPlaneReader::readBody(Body *pBody, CVector &position, double lengthUnit,
 		{
 			pBody->bodyDescription() = readElementText();
 		}
-		else if (name().compare("Inertia",         Qt::CaseInsensitive)==0)
+		else if (name().compare("Inertia", Qt::CaseInsensitive)==0)
 		{
 			while(!atEnd() && !hasError() && readNextStartElement() )
 			{
@@ -399,24 +403,37 @@ bool XMLPlaneReader::readBody(Body *pBody, CVector &position, double lengthUnit,
 				position.x = coordList.at(0).toDouble()*lengthUnit;
 				position.z = coordList.at(2).toDouble()*lengthUnit;
 			}
-		}		else if (name().compare("type", Qt::CaseInsensitive)==0)
+		}
+		else if (name().compare("type", Qt::CaseInsensitive)==0)
 		{
 			if(readElementText().compare("NURBS", Qt::CaseInsensitive)==0) pBody->bodyType()=XFLR5::BODYSPLINETYPE;
-			else                                                               pBody->bodyType()=XFLR5::BODYPANELTYPE;
+			else                                                           pBody->bodyType()=XFLR5::BODYPANELTYPE;
 		}
 		else if (name().compare("x_degree",    Qt::CaseInsensitive)==0) pBody->splineSurface()->m_iuDegree = readElementText().toInt();
 		else if (name().compare("hoop_degree", Qt::CaseInsensitive)==0) pBody->splineSurface()->m_ivDegree = readElementText().toInt();
 		else if (name().compare("x_panels",    Qt::CaseInsensitive)==0) pBody->m_nxPanels = readElementText().toInt();
 		else if (name().compare("hoop_panels", Qt::CaseInsensitive)==0) pBody->m_nhPanels = readElementText().toInt();
-
+		else if (name().compare("Panel_Stripes", Qt::CaseInsensitive)==0)
+		{
+			while(!atEnd() && !hasError() && readNextStartElement() )
+			{
+				if (name().contains("stripe", Qt::CaseInsensitive))
+				{
+					pBody->m_hPanels.append(readElementText().toInt());
+				}
+			}
+		}
 		//read frames
 		else if (name().compare("frame", Qt::CaseInsensitive)==0)
 		{
 			Frame *pFrame = pBody->splineSurface()->appendNewFrame();
+			pBody->m_xPanels.append(1);
+			pBody->m_XPanelPos.append(0.0);
+
 			while(!atEnd() && !hasError() && readNextStartElement() )
 			{
-				if(name().compare("x_panels", Qt::CaseInsensitive)==0) pBody->m_xPanels.append(readElementText().toInt());
-				if(name().compare("h_panels", Qt::CaseInsensitive)==0) pBody->m_hPanels.append(readElementText().toInt());
+				if(name().compare("x_panels", Qt::CaseInsensitive)==0) pBody->m_xPanels[pBody->frameCount()-1] = readElementText().toInt();
+				if(name().compare("h_panels", Qt::CaseInsensitive)==0) pBody->m_hPanels[pBody->frameCount()-1] = readElementText().toInt();
 				else if (name().compare("position", Qt::CaseInsensitive)==0)
 				{
 					QStringList coordList = readElementText().split(",");
@@ -425,6 +442,7 @@ bool XMLPlaneReader::readBody(Body *pBody, CVector &position, double lengthUnit,
 						pFrame->m_Position.x = coordList.at(0).toDouble()*lengthUnit;
 						pFrame->m_Position.z = coordList.at(2).toDouble()*lengthUnit;
 					}
+					pBody->m_XPanelPos[pBody->frameCount()-1] = pFrame->m_Position.x;
 				}
 				else if (name().compare("point", Qt::CaseInsensitive)==0)
 				{
@@ -440,6 +458,11 @@ bool XMLPlaneReader::readBody(Body *pBody, CVector &position, double lengthUnit,
 				}
 			}
 		}
+	}
+	if(pBody->isSplineType())
+	{
+		for(int ifp=0; ifp<pBody->framePointCount(); ifp++)
+			pBody->m_hPanels.append(1);
 	}
 	return(hasError());
 }

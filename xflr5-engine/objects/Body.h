@@ -180,6 +180,7 @@ public:
 
 	QVarLengthArray<int> m_xPanels;              /**< the number of mesh panels between two frames */
 	QVarLengthArray<int> m_hPanels;              /**< the number of mesh panels in the hoop direction between two sidelines */
+	QVarLengthArray<double> m_XPanelPos;
 
 
 	Panel *m_pBodyPanel;                       /** A pointer to the first body panel in the array */
@@ -189,7 +190,6 @@ public:
 	double value, bs, cs;
 	CVector t_R, t_Prod, t_Q, t_r, t_N;
 //	CVector P0, P1, P2, PI;
-	double m_XPanelPos[300];
 
 	bool m_bTextures;
 

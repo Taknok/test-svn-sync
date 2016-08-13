@@ -526,8 +526,8 @@ void GL3dBodyDlg::onExportBodyXML()
 	int pos = FileName.lastIndexOf("/");
 	if(pos>0) Settings::s_LastDirName = FileName.left(pos);
 
-	pos = FileName.indexOf(".xùl", Qt::CaseInsensitive);
-	if(pos<0) FileName += ".xùl";
+	pos = FileName.indexOf(".xml", Qt::CaseInsensitive);
+	if(pos<0) FileName += ".xml";
 
 
 	QFile XFile(FileName);
@@ -1150,8 +1150,8 @@ bool GL3dBodyDlg::setBody(Body *pBody)
 {
 	if(pBody) m_pBody = pBody;
 
-	m_pctrlColor->setChecked(!pBody->textures());
-	m_pctrlTextures->setChecked(pBody->textures());
+	m_pctrlColor->setChecked(!m_pBody->textures());
+	m_pctrlTextures->setChecked(m_pBody->textures());
 
 	m_pctrlFlatPanels->setChecked(m_pBody->m_LineType==XFLR5::BODYPANELTYPE);
 	m_pctrlBSplines->setChecked(m_pBody->m_LineType==XFLR5::BODYSPLINETYPE);
