@@ -382,7 +382,7 @@ void QXDirect::createOppCurves(OpPoint *pOpp)
 		if(!pOpPoint || !pOpPoint->isVisible()) return;
 		pCurve1    = m_CpGraph.addCurve();
 		
-		pCurve1->setLineStyle(pOpp->oppStyle(), pOpp->oppWidth(), pOpp->oppColor(), pOpp->pointStyle(), pOpp->isVisible());
+		pCurve1->setLineStyle(pOpPoint->oppStyle(), pOpPoint->oppWidth(), pOpPoint->oppColor(), pOpPoint->pointStyle(), pOpPoint->isVisible());
 
 		str = QString("-Re=%1-Alpha=%2").arg(pOpPoint->Reynolds(),8,'f',0).arg(pOpPoint->aoa(),5,'f',2);
 		str = pOpPoint->foilName()+str;
@@ -4587,7 +4587,6 @@ OpPoint * QXDirect::setOpp(double Alpha)
 		s_pMainFrame->selectOpPoint(pOpp);
 	}
 	OpPoint::setCurOpp(pOpp);
-
 	m_bResetCurves = true;
 
 	setControls();
