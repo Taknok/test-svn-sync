@@ -505,9 +505,9 @@ void GraphTileWidget::onAllGraphSettings()
 		if(grDlg.exec() == QDialog::Accepted)
 		{
 			if(pMiarex->m_iView==XFLR5::WPOLARVIEW)
-				for(int ig=1; ig<MAXGRAPHS; ig++) pMiarex->m_WingGraph[ig]->copySettings(pMiarex->m_WingGraph[0]);
+				for(int ig=1; ig<pMiarex->m_WingGraph.size(); ig++) pMiarex->m_WingGraph[ig]->copySettings(pMiarex->m_WingGraph[0]);
 			else if(pMiarex->m_iView==XFLR5::WOPPVIEW)
-				for(int ig=1; ig<MAXGRAPHS; ig++) pMiarex->m_WPlrGraph[ig]->copySettings(pMiarex->m_WPlrGraph[0]);
+				for(int ig=1; ig<pMiarex->m_WPlrGraph.size(); ig++) pMiarex->m_WPlrGraph[ig]->copySettings(pMiarex->m_WPlrGraph[0]);
 		}
 	}
 	else if (m_xflr5App==XFLR5::XFOILANALYSIS)
@@ -543,7 +543,7 @@ void GraphTileWidget::onAllGraphScales()
 		QMiarex *pMiarex = (QMiarex*)s_pMiarex;
 		if(pMiarex->m_iView == XFLR5::WOPPVIEW)
 		{
-			for(int ig=0; ig<MAXGRAPHS; ig++)
+			for(int ig=0; ig<pMiarex->m_WingGraph.size(); ig++)
 			{
 				pMiarex->m_WingGraph[ig]->setAuto(true);
 				pMiarex->m_WingGraph[ig]->resetXLimits();
@@ -558,7 +558,7 @@ void GraphTileWidget::onAllGraphScales()
 		}
 		else if(pMiarex->m_iView==XFLR5::STABTIMEVIEW)
 		{
-			for(int ig=0; ig<MAXGRAPHS; ig++)
+			for(int ig=0; ig<pMiarex->m_TimeGraph.size(); ig++)
 			{
 				pMiarex->m_TimeGraph[ig]->setAuto(true);
 				pMiarex->m_TimeGraph[ig]->resetXLimits();
@@ -567,7 +567,7 @@ void GraphTileWidget::onAllGraphScales()
 		}
 		else if(pMiarex->m_iView==XFLR5::WPOLARVIEW)
 		{
-			for(int ig=0; ig<MAXGRAPHS; ig++)
+			for(int ig=0; ig<pMiarex->m_WPlrGraph.size(); ig++)
 			{
 				pMiarex->m_WPlrGraph[ig]->setAuto(true);
 				pMiarex->m_WPlrGraph[ig]->resetXLimits();
@@ -593,7 +593,7 @@ void GraphTileWidget::onAllGraphScales()
 		}
 		else
 		{
-			for(int ig=0; ig<MAXPOLARGRAPHS; ig++)
+			for(int ig=0; ig<pXDirect->PlrGraphSize(); ig++)
 			{
 				pXDirect->PlrGraph(ig)->setAuto(true);
 				pXDirect->PlrGraph(ig)->resetXLimits();
