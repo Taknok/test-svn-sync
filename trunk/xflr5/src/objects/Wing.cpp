@@ -655,7 +655,12 @@ void Wing::createSurfaces(CVector const &T, double XTilt, double YTilt)
 
 	for(int is=0; is<NWingSection()-1;is++)
 	{
-		if (qAbs(YPosition(is)-YPosition(is+1)) > MinPanelSize)
+		double panelLength = qAbs(YPosition(is)-YPosition(is+1));
+
+		if (panelLength < MinPanelSize ||  panelLength<planformSpan()/1000.0/2.0)
+		{
+		}
+		else
 		{
 			VNormal[nSurf].set(0.0, 0.0, 1.0);
 			VNormal[nSurf].rotateX(O, Dihedral(is));
@@ -698,7 +703,11 @@ void Wing::createSurfaces(CVector const &T, double XTilt, double YTilt)
 
 	for(int jss=0; jss<NWingSection()-1; jss++)
 	{
-		if(qAbs(YPosition(jss)-YPosition(jss+1)) > MinPanelSize)
+		double panelLength = qAbs(YPosition(jss)-YPosition(jss+1));
+		if (panelLength < MinPanelSize ||  panelLength<planformSpan()/1000.0/2.0)
+		{
+		}
+		else
 		{
 			m_Surface[iSurf]->m_pFoilA   = Foil::foil(leftFoil(jss+1));
 			m_Surface[iSurf]->m_pFoilB   = Foil::foil(leftFoil(jss));
@@ -767,7 +776,11 @@ void Wing::createSurfaces(CVector const &T, double XTilt, double YTilt)
 		iSurf = nSurf;
 		for (int jss=0; jss<NWingSection()-1; jss++)
 		{
-			if (qAbs(YPosition(jss)-YPosition(jss+1)) > MinPanelSize)
+			double panelLength = qAbs(YPosition(jss)-YPosition(jss+1));
+			if (panelLength < MinPanelSize ||  panelLength<planformSpan()/1000.0/2.0)
+			{
+			}
+			else
 			{
 				m_Surface[iSurf]->m_pFoilA   = Foil::foil(rightFoil(jss));
 				m_Surface[iSurf]->m_pFoilB   = Foil::foil(rightFoil(jss+1));
