@@ -72,53 +72,53 @@ void WAdvancedDlg::setupLayout()
 
 
 
-	QGroupBox *AllBox = new QGroupBox(tr("All Analysis"));
+	QGroupBox *pAllBox = new QGroupBox(tr("All Analysis"));
 	{
-		QHBoxLayout *AllLayout = new QHBoxLayout;
+		QHBoxLayout *pAllLayout = new QHBoxLayout;
 		{
 			m_pctrlLogFile     = new QCheckBox(tr("View Log File after errors"));
 			m_pctrlKeepOutOpps = new QCheckBox(tr("Store points outside the polar mesh"));
-			AllLayout->addWidget(m_pctrlLogFile);
-			AllLayout->addWidget(m_pctrlKeepOutOpps);
+			pAllLayout->addWidget(m_pctrlLogFile);
+			pAllLayout->addWidget(m_pctrlKeepOutOpps);
 		}
-		AllBox->setLayout(AllLayout);
+		pAllBox->setLayout(pAllLayout);
 	}
 
-	QGroupBox *VLMPanelBox = new QGroupBox(tr("VLM and Panel Methods"));
+	QGroupBox *pVLMPanelBox = new QGroupBox(tr("VLM and Panel Methods"));
 	{
-		QVBoxLayout *VLMPanelLayout = new QVBoxLayout;
+		QVBoxLayout *pVLMPanelLayout = new QVBoxLayout;
 		{
-			QHBoxLayout *WingPanelLayout = new QHBoxLayout;
+			QHBoxLayout *pWingPanelLayout = new QHBoxLayout;
 			{
-				m_pctrlMinPanelSize = new DoubleEdit(1.00,2);
+				m_pctrlMinPanelSize = new DoubleEdit(1.00,5);
 				m_pctrlLength  = new QLabel("");
 				QLabel *lab5 = new QLabel(tr("Ignore wing panels with span <"));
 				lab5->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-				WingPanelLayout->addStretch(1);
-				WingPanelLayout->addWidget(lab5);
-				WingPanelLayout->addWidget(m_pctrlMinPanelSize);
-				WingPanelLayout->addWidget(m_pctrlLength);
+				pWingPanelLayout->addStretch(1);
+				pWingPanelLayout->addWidget(lab5);
+				pWingPanelLayout->addWidget(m_pctrlMinPanelSize);
+				pWingPanelLayout->addWidget(m_pctrlLength);
 			}
-			QHBoxLayout *CoreSizeLayout = new QHBoxLayout;
+			QHBoxLayout *pCoreSizeLayout = new QHBoxLayout;
 			{
 				m_pctrlLength2 = new QLabel("");
 				m_pctrlCoreSize     = new DoubleEdit(.0001, 4);
 				QLabel *lab10 = new QLabel(tr("Core Size"));
 				lab10->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-				CoreSizeLayout->addStretch(1);
-				CoreSizeLayout->addWidget(lab10);
-				CoreSizeLayout->addWidget(m_pctrlCoreSize);
-				CoreSizeLayout->addWidget(m_pctrlLength2);
+				pCoreSizeLayout->addStretch(1);
+				pCoreSizeLayout->addWidget(lab10);
+				pCoreSizeLayout->addWidget(m_pctrlCoreSize);
+				pCoreSizeLayout->addWidget(m_pctrlLength2);
 			}
-			VLMPanelLayout->addLayout(WingPanelLayout);
-			VLMPanelLayout->addLayout(CoreSizeLayout);
+			pVLMPanelLayout->addLayout(pWingPanelLayout);
+			pVLMPanelLayout->addLayout(pCoreSizeLayout);
 		}
-		VLMPanelBox->setLayout(VLMPanelLayout);
+		pVLMPanelBox->setLayout(pVLMPanelLayout);
 	}
 
-	QGroupBox *VLMBox = new QGroupBox(tr("VLM Method"));
+	QGroupBox *pVLMBox = new QGroupBox(tr("VLM Method"));
 	{
-		QGridLayout *VLMLayout = new QGridLayout;
+		QGridLayout *pVLMLayout = new QGridLayout;
 		{
 			m_pctrlVortexPos    = new DoubleEdit(25.0, 2);
 			m_pctrlControlPos   = new DoubleEdit(75.0, 2);
@@ -130,19 +130,19 @@ void WAdvancedDlg::setupLayout()
 			lab7->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 			lab8->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 			lab9->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-			VLMLayout->addWidget(lab6,1,1);
-			VLMLayout->addWidget(lab7,2,1);
-			VLMLayout->addWidget(m_pctrlVortexPos,1,2);
-			VLMLayout->addWidget(m_pctrlControlPos,2,2);
-			VLMLayout->addWidget(lab8,1,3);
-			VLMLayout->addWidget(lab9,2,3);
+			pVLMLayout->addWidget(lab6,1,1);
+			pVLMLayout->addWidget(lab7,2,1);
+			pVLMLayout->addWidget(m_pctrlVortexPos,1,2);
+			pVLMLayout->addWidget(m_pctrlControlPos,2,2);
+			pVLMLayout->addWidget(lab8,1,3);
+			pVLMLayout->addWidget(lab9,2,3);
 		}
-		VLMBox->setLayout(VLMLayout);
+		pVLMBox->setLayout(pVLMLayout);
 	}
 
-	QGroupBox *LLTBox = new QGroupBox(tr("Lifting Line Method"));
+	QGroupBox *pLLTBox = new QGroupBox(tr("Lifting Line Method"));
 	{
-		QGridLayout *LLTLayout = new QGridLayout;
+		QGridLayout *pLLTLayout = new QGridLayout;
 		{
 			m_pctrlNStation     = new IntEdit(20, this);
 			m_pctrlRelax        = new DoubleEdit(20,1);
@@ -156,80 +156,80 @@ void WAdvancedDlg::setupLayout()
 			lab2->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 			lab3->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 			lab4->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-			LLTLayout->addWidget(lab1,1,1);
-			LLTLayout->addWidget(lab2,2,1);
-			LLTLayout->addWidget(lab3,3,1);
-			LLTLayout->addWidget(lab4,4,1);
-			LLTLayout->addWidget(m_pctrlNStation,1,2);
-			LLTLayout->addWidget(m_pctrlRelax,2,2);
-			LLTLayout->addWidget(m_pctrlAlphaPrec,3,2);
-			LLTLayout->addWidget(m_pctrlIterMax,4,2);
+			pLLTLayout->addWidget(lab1,1,1);
+			pLLTLayout->addWidget(lab2,2,1);
+			pLLTLayout->addWidget(lab3,3,1);
+			pLLTLayout->addWidget(lab4,4,1);
+			pLLTLayout->addWidget(m_pctrlNStation,1,2);
+			pLLTLayout->addWidget(m_pctrlRelax,2,2);
+			pLLTLayout->addWidget(m_pctrlAlphaPrec,3,2);
+			pLLTLayout->addWidget(m_pctrlIterMax,4,2);
 		}
-		LLTBox->setLayout(LLTLayout);
+		pLLTBox->setLayout(pLLTLayout);
 	}
 
-	QGroupBox *PanelBCBox = new QGroupBox(tr("3D Panel boundary conditions"));
+	QGroupBox *pPanelBCBox = new QGroupBox(tr("3D Panel boundary conditions"));
 	{
-		QVBoxLayout *PanelBCLayout = new QVBoxLayout;
+		QVBoxLayout *pPanelBCLayout = new QVBoxLayout;
 		{
 			m_pctrlDirichlet = new QRadioButton("Dirichlet (Recommended)");
 			m_pCtrlNeumann = new QRadioButton("Neumann");
-			PanelBCLayout->addWidget(m_pctrlDirichlet);
-			PanelBCLayout->addWidget(m_pCtrlNeumann);
+			pPanelBCLayout->addWidget(m_pctrlDirichlet);
+			pPanelBCLayout->addWidget(m_pCtrlNeumann);
 		}
-		PanelBCBox->setLayout((PanelBCLayout));
+		pPanelBCBox->setLayout((pPanelBCLayout));
 	}
 
-	QHBoxLayout *CommandButtons = new QHBoxLayout;
+	QHBoxLayout *pCommandButtons = new QHBoxLayout;
 	{
 		OKButton = new QPushButton(tr("OK"));
 		CancelButton = new QPushButton(tr("Cancel"));
 		QPushButton *ResetButton = new QPushButton(tr("Reset Defaults"));
-		CommandButtons->addStretch(1);
-		CommandButtons->addWidget(OKButton);
-		CommandButtons->addStretch(1);
-		CommandButtons->addWidget(CancelButton);
-		CommandButtons->addStretch(1);
-		CommandButtons->addWidget(ResetButton);
-		CommandButtons->addStretch(1);
+		pCommandButtons->addStretch(1);
+		pCommandButtons->addWidget(OKButton);
+		pCommandButtons->addStretch(1);
+		pCommandButtons->addWidget(CancelButton);
+		pCommandButtons->addStretch(1);
+		pCommandButtons->addWidget(ResetButton);
+		pCommandButtons->addStretch(1);
 		connect(OKButton, SIGNAL(clicked()),this, SLOT(onOK()));
 		connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 		connect(ResetButton, SIGNAL(clicked()), this, SLOT(onResetDefaults()));
 	}
 
-	QHBoxLayout *BothSides = new QHBoxLayout;
+	QHBoxLayout *pBothSides = new QHBoxLayout;
 	{
-		QVBoxLayout *LeftSide  = new QVBoxLayout;
+		QVBoxLayout *pLeftSide  = new QVBoxLayout;
 		{
-			LeftSide->addWidget(LLTBox);
-			LeftSide->addStretch(1);
-			LeftSide->addWidget(PanelBCBox);
-			LeftSide->addStretch(1);
+			pLeftSide->addWidget(pLLTBox);
+			pLeftSide->addStretch(1);
+			pLeftSide->addWidget(pPanelBCBox);
+			pLeftSide->addStretch(1);
 		}
-		QVBoxLayout *RightSide = new QVBoxLayout;
+		QVBoxLayout *pRightSide = new QVBoxLayout;
 		{
-			RightSide->addWidget(VLMBox);
-			RightSide->addStretch(1);
-			RightSide->addWidget(VLMPanelBox);
-			RightSide->addStretch(1);
+			pRightSide->addWidget(pVLMBox);
+			pRightSide->addStretch(1);
+			pRightSide->addWidget(pVLMPanelBox);
+			pRightSide->addStretch(1);
 		}
-		BothSides->addLayout(LeftSide);
-		BothSides->addLayout(RightSide);
+		pBothSides->addLayout(pLeftSide);
+		pBothSides->addLayout(pRightSide);
 	}
 
-	QVBoxLayout *MainLayout = new QVBoxLayout;
+	QVBoxLayout *pMainLayout = new QVBoxLayout;
 	{
-		MainLayout->addLayout(BothSides);
-		MainLayout->addStretch(1);
-		MainLayout->addWidget(AllBox);
-		MainLayout->addStretch(1);
-		MainLayout->addSpacing(30);
-		MainLayout->addLayout(CommandButtons);
+		pMainLayout->addLayout(pBothSides);
+		pMainLayout->addStretch(1);
+		pMainLayout->addWidget(pAllBox);
+		pMainLayout->addStretch(1);
+		pMainLayout->addSpacing(30);
+		pMainLayout->addLayout(pCommandButtons);
 	}
 
 	setSizePolicy(szPolicyMaximum);
 
-	setLayout(MainLayout);
+	setLayout(pMainLayout);
 }
 
 
