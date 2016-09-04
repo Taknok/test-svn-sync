@@ -169,6 +169,7 @@ void Surface::addFlapPanel(Panel *pPanel)
 	}
 }
 
+
 /**
  * Copy the data from another Surface object to this Surface
  * @param Surface the source Surface from which the data shall be duplicated
@@ -762,6 +763,22 @@ bool Surface::isFlapPanel(int p)
 	for(pp=0; pp<m_nFlapPanels; pp++)
 	{
 		if (p==m_FlapPanel[pp]) return true;
+	}
+	return false;
+}
+
+
+/**
+ * Returns true if the specified panel is located on the T.E. flap
+ * @param pPanel a pointer to the panel object
+ * @return true if the panel is located on the T.E. flap
+ */
+bool Surface::isFlapPanel(Panel *pPanel)
+{
+	int pp;
+	for(pp=0; pp<m_nFlapPanels; pp++)
+	{
+		if (pPanel->m_iElement==m_FlapPanel[pp]) return true;
 	}
 	return false;
 }
