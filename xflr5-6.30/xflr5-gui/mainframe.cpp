@@ -1426,7 +1426,7 @@ void MainFrame::createMiarexActions()
 	
 	m_pDeletePlaneWOpps = new QAction(tr("Delete Associated OpPoints"), this);
 	m_pDeletePlaneWOpps->setStatusTip(tr("Delete all the operating points of the currently selected wing or plane"));
-	connect(m_pDeletePlaneWOpps, SIGNAL(triggered()), pMiarex, SLOT(onDeletePlaneOpps()));
+	connect(m_pDeletePlaneWOpps, SIGNAL(triggered()), pMiarex, SLOT(onDeletePlanePOpps()));
 
 	m_pDeleteCurPlane = new QAction(tr("Delete..."), this);
 	m_pDeleteCurPlane->setStatusTip(tr("Delete the currently selected wing or plane"));

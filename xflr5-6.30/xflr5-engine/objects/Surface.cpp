@@ -765,6 +765,22 @@ bool Surface::isFlapPanel(int p)
 
 
 /**
+ * Returns true if the specified panel is located on the T.E. flap
+ * @param pPanel a pointer to the panel object
+ * @return true if the panel is located on the T.E. flap
+ */
+bool Surface::isFlapPanel(Panel *pPanel)
+{
+	int pp;
+	for(pp=0; pp<m_nFlapPanels; pp++)
+	{
+		if (pPanel->m_iElement==m_FlapPanel[pp]) return true;
+	}
+	return false;
+}
+
+
+/**
  * Returns true if the specified node is located on the T.E. flap
  * @param nNode the index of the node
  * @return true if the node is located on the T.E. flap
