@@ -143,6 +143,7 @@ public:
 	bool isTipRight()   {return m_bIsTipRight;}
 	bool isInSymPlane() {return m_bIsInSymPlane;}
 
+	bool isFlapPanel(Panel *pPanel);
 	bool isFlapPanel(int p);
 	bool isFlapNode(int nNode);
 	bool rotateFlap(double Angle);

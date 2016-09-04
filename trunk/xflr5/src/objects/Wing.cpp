@@ -2484,11 +2484,11 @@ void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double *Gam
 
 				if(m_Surface.at(j)->m_bTEFlap)
 				{
-					if(m_Surface.at(j)->isFlapPanel(p))
+					if(m_Surface.at(j)->isFlapPanel(m_pWingPanel[p].m_iElement))
 					{
 						//then p is on the flap, so add its contribution
 						HingeLeverArm = ForcePt - m_Surface.at(j)->m_HingePoint;
-						HingeMoment = HingeLeverArm * PanelForce;//N.m/q
+						HingeMoment = HingeLeverArm * PanelForce;                   //N.m/q
 						m_FlapMoment[nFlap] += HingeMoment.dot(m_Surface.at(j)->m_HingeVector)* pWPolar->density() * QInf * QInf/2.0;  //N.m
 					}
 				}
@@ -2525,7 +2525,10 @@ void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double *Gam
 		}
 		//do not consider right tip patch
 		if(!pWPolar->bThinSurfaces() && m_Surface.at(j)->m_bIsTipRight) p += m_Surface.at(j)->m_NXPanels;
-		if(m_Surface.at(j)->m_bTEFlap) nFlap++;
+		if(m_Surface.at(j)->m_bTEFlap)
+		{
+			nFlap++;
+		}
 	}
 
 

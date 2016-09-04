@@ -3403,7 +3403,7 @@ void QMiarex::onDeleteAllWPlrOpps()
 
 
 /**
- * The user has requested a deletion of all the WOpps or POpps
+ * The user has requested a deletion of all the POpps
  */
 void QMiarex::onDeleteAllWOpps()
 {
@@ -3519,6 +3519,7 @@ void QMiarex::onDeletePlaneOpps()
 		}
 	}
 	m_pCurPOpp = NULL;
+	m_bResetTextLegend = true;
 
 	emit projectModified();
 	s_pMainFrame->updatePOppListBox();
