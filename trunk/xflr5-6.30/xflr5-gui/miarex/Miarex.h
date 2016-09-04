@@ -139,7 +139,7 @@ private slots:
 	void onDeleteCurPlane();
 	void onDeleteCurWOpp();
 	void onDeleteCurWPolar();
-	void onDeletePlaneOpps();
+	void onDeletePlanePOpps();
 	void onDeletePlaneWPolars();
 	void onDownwash();
 	void onDuplicateCurPlane();

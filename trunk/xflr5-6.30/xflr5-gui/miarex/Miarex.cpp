@@ -3472,7 +3472,7 @@ void QMiarex::onDeleteCurWOpp()
 /**
 * The user has requested a deletion of all operating point associated to the wing or plane
 */
-void QMiarex::onDeletePlaneOpps()
+void QMiarex::onDeletePlanePOpps()
 {
 	PlaneOpp *pPOpp;
 	int i;
@@ -3491,6 +3491,7 @@ void QMiarex::onDeletePlaneOpps()
 	m_pCurPOpp = NULL;
 
 	emit projectModified();
+	m_bResetTextLegend = true;
 	s_pMainFrame->updatePOppListBox();
 	setControls();
 	s_bResetCurves = true;
