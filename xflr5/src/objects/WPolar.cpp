@@ -70,6 +70,8 @@ WPolar::WPolar()
 	m_Density   = 1.225;
 	m_Viscosity = 1.5e-5;//m2/s
 
+	m_XNeutralPoint = 0.0;
+
 	m_nControls = 0;
 	m_ControlGain.clear();
 	m_ControlGain.resize(MAXCONTROLS);
@@ -2089,7 +2091,6 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 			}
 			insertDataAt(i, d[0],  d[1],  d[2],  d[3],  d[4], d[5], d[6], d[7], d[8], d[9], d[10], d[11], d[12], d[13],
 							d[14], d[15], d[16], d[17], d[18], d[19]);
-
 
 			ar >> r0 >> r1 >>r2 >> r3;
 			ar >> i0 >> i1 >>i2 >> i3;

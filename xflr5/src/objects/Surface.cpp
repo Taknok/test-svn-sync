@@ -1010,40 +1010,46 @@ void Surface::setSidePoints(Body * pBody, double dx, double dz)
 {
 	int l;
 	double alpha_dA, alpha_dB, cosdA, cosdB;
-    CVector N, A4, B4, TA4, TB4, U;
-    Body TBody;
+	CVector N, A4, B4, TA4, TB4, U;
+	Body TBody;
 	if(pBody)
 	{
 		TBody.duplicate(pBody);
 		TBody.translate(dx, 0.0, dz);
 	}
 
-	cosdA = Normal.dot(NormalA);
-	cosdB = Normal.dot(NormalB);
+	CVector V = Normal * NormalA;
+	double sindA = -V.dot(CVector(1.0,0.0,0.0));
+	if(sindA> 1.0) sindA = 1.0;
+	if(sindA<-1.0) sindA = -1.0;
+	alpha_dA = asin(sindA);
+	cosdA = cos(alpha_dA);
+	alpha_dA *= 180.0/PI;
 
-	if(cosdA>1.0) cosdA = 1.0;
-	if(cosdB>1.0) cosdB = 1.0;
-	if(cosdA<-1.0) cosdA = -1.0;
-	if(cosdB<-1.0) cosdB = -1.0;
+	V = Normal * NormalB;
+	double sindB = -V.dot(CVector(1.0,0.0,0.0));
+	if(sindB> 1.0) sindB = 1.0;
+	if(sindB<-1.0) sindB = -1.0;
+	alpha_dB = asin(sindB);
+	cosdB = cos(alpha_dB);
+	alpha_dB *= 180.0/PI;
 
-    alpha_dA = acos(cosdA)*180.0/PI;
-    alpha_dB = -acos(cosdB)*180.0/PI;
+
 	chordA  = chord(0.0);
 	chordB  = chord(1.0);
 
+	//create the quarter chord centers of rotation for the twist
+	A4 = m_LA *3.0/4.0 + m_TA * 1/4.0;
+	B4 = m_LB *3.0/4.0 + m_TB * 1/4.0;
 
-    //create the quarter chord centers of rotation for the twist
-    A4 = m_LA *3.0/4.0 + m_TA * 1/4.0;
-    B4 = m_LB *3.0/4.0 + m_TB * 1/4.0;
+	// create the vectors perpendicular to the side Normals and to the x-axis
+	TA4.x = 0.0;
+	TA4.y = +NormalA.z;
+	TA4.z = -NormalA.y;
 
-    // create the vectors perpendicular to the side Normals and to the x-axis
-    TA4.x = 0.0;
-    TA4.y = +NormalA.z;
-    TA4.z = -NormalA.y;
-
-    TB4.x = 0.0;
-    TB4.y = +NormalB.z;
-    TB4.z = -NormalB.y;
+	TB4.x = 0.0;
+	TB4.y = +NormalB.z;
+	TB4.z = -NormalB.y;
 
 	SideA.clear();
 	SideA_T.clear();
