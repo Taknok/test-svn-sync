@@ -22,7 +22,8 @@
 #include <objects/Plane.h>
 #include <objects/WPolar.h>
 #include <objects/Surface.h>
-//#include <miarex/Objects3D.h>
+#include <QDebug>
+
 
 bool PlaneAnalysisTask::s_bCancel = false;
 
@@ -139,6 +140,8 @@ Plane * PlaneAnalysisTask::setPlaneObject(Plane *pPlane)
 //			if(!pPlane && iw==0)  pPlane->wing(iw)->CreateSurfaces(CVector(0,0,0), 0.0, 0.0);
 			if(iw<3)         pPlane->wing(iw)->createSurfaces(pPlane->WingLE(iw),   0.0, pPlane->WingTiltAngle(iw));
 			else if(iw==3)   pPlane->wing(iw)->createSurfaces(pPlane->WingLE(iw), -90.0, pPlane->WingTiltAngle(iw));
+
+			qDebug("Setting side points");
 			for (int j=0; j<pPlane->wing(iw)->m_Surface.size(); j++)
 			{
 				pPlane->wing(iw)->m_Surface.at(j)->setSidePoints(pCurBody, dx, dz);
