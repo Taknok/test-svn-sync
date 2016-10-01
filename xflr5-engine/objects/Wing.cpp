@@ -753,7 +753,7 @@ void Wing::createSurfaces(CVector const &T, double XTilt, double YTilt)
 			if(YPanelDist(jss) == XFLR5::SINE)              m_Surface[iSurf]->m_YDistType = XFLR5::INVERSESINE;
 			else if(YPanelDist(jss) ==  XFLR5::COSINE)      m_Surface[iSurf]->m_YDistType =  XFLR5::COSINE;
 			else if(YPanelDist(jss) == XFLR5::INVERSESINE)  m_Surface[iSurf]->m_YDistType =  XFLR5::SINE;
-			else                                     m_Surface[iSurf]->m_YDistType =  XFLR5::UNIFORM;
+			else                                            m_Surface[iSurf]->m_YDistType =  XFLR5::UNIFORM;
 
 			m_Surface[iSurf]->createXPoints();
 			m_Surface[iSurf]->setFlap();

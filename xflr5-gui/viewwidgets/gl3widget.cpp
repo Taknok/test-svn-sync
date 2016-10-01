@@ -119,6 +119,7 @@ GL3Widget::GL3Widget(QWidget *pParent) : QOpenGLWidget(pParent)
 	m_PixTextOverlay = QPixmap(107, 97);
 	m_PixTextOverlay.fill(Qt::transparent);
 
+	memset(m_Ny, 0, sizeof(m_Ny));
 	memset(MatIn,  0, 16*sizeof(double));
 	memset(MatOut, 0, 16*sizeof(double));
 }
@@ -3010,6 +3011,7 @@ void GL3Widget::setSpanStations(Plane *pPlane, WPolar *pWPolar, PlaneOpp *pPOpp)
 }
 
 
+
 void GL3Widget::glMakeDownwash(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp)
 {
 	if(!pWing || !pWPolar || !pWOpp) return;
@@ -5679,6 +5681,8 @@ bool GL3Widget::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPo
 
 	m_NStreamLines = iv / GL3DScales::s_NX / 3;
 
+qDebug() << iv << streamArraySize;
+
 	//restore things as they were
 	Panel::setCoreSize(memcoresize);
 	QApplication::restoreOverrideCursor();
@@ -5696,7 +5700,7 @@ bool GL3Widget::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPo
 
 
 
-void GL3Widget::glMakeTransistions(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp)
+void GL3Widget::glMakeTransitions(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp)
 {
 	if(!pWing || !pWPolar || !pWOpp) return;
 	int i,j,k,m;

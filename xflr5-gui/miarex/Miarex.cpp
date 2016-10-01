@@ -1755,7 +1755,7 @@ void QMiarex::glMake3DObjects()
 				if(pWing(iw))
 				{
 					m_pgl3Widget->glMakeLiftStrip( iw, pWing(iw), m_pCurWPolar, m_pWOpp[iw]);
-					m_pgl3Widget->glMakeTransistions(iw, pWing(iw), m_pCurWPolar, m_pWOpp[iw]);
+					m_pgl3Widget->glMakeTransitions(iw, pWing(iw), m_pCurWPolar, m_pWOpp[iw]);
 				}
 			}
 			m_pgl3Widget->glMakeLiftForce(m_pCurWPolar, m_pCurPOpp);
@@ -7350,6 +7350,8 @@ void QMiarex::setWPolar(bool bCurrent, QString WPlrName)
 		//if we know its name
 		pWPolar = Objects3D::getWPolar(m_pCurPlane, WPlrName);
 	}
+
+	m_pCurWPolar = pWPolar;
 
 	if(!pWPolar)
 	{
