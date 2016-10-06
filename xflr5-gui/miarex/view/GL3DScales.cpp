@@ -23,6 +23,7 @@
 #include <miarex/Miarex.h>
 #include <misc/Units.h>
 #include <globals.h>
+#include <Settings.h>
 
 #include <QGridLayout>
 #include <QGroupBox>
@@ -62,6 +63,11 @@ GL3DScales::GL3DScales(QWidget *)
 	connect(m_pctrlLiftScaleSlider, SIGNAL(sliderMoved(int)), this, SLOT(onLiftScale()));
 	connect(m_pctrlDragScaleSlider, SIGNAL(sliderMoved(int)), this, SLOT(onDragScale()));
 	connect(m_pctrlVelocityScaleSlider, SIGNAL(sliderMoved(int)), this, SLOT(onVelocityScale()));
+
+	connect(m_pctrlLiftScale, SIGNAL(editingFinished()), this, SLOT(onLiftEdit()));
+	connect(m_pctrlDragScale, SIGNAL(editingFinished()), this, SLOT(onDragEdit()));
+	connect(m_pctrlVelocityScale, SIGNAL(editingFinished()), this, SLOT(onVelocityEdit()));
+
 }
 
 
@@ -107,27 +113,50 @@ void GL3DScales::setupLayout()
 		{
 			QVBoxLayout *pSliderLayout = new QVBoxLayout;
 			{
-				m_pctrlLiftScaleSlider  = new ExponentialSlider(false, 3.0, Qt::Horizontal);
-				m_pctrlLiftScaleSlider->setMinimum(0);
-				m_pctrlLiftScaleSlider->setMaximum(100);
-				m_pctrlLiftScaleSlider->setSliderPosition(50);
-				m_pctrlLiftScaleSlider->setTickInterval(5);
-				m_pctrlLiftScaleSlider->setTickPosition(QSlider::TicksBelow);
-				m_pctrlDragScaleSlider = new ExponentialSlider(false, 3.0, Qt::Horizontal);
-				m_pctrlDragScaleSlider->setMinimum(0);
-				m_pctrlDragScaleSlider->setMaximum(100);
-				m_pctrlDragScaleSlider->setSliderPosition(50);
-				m_pctrlDragScaleSlider->setTickInterval(5);
-				m_pctrlDragScaleSlider->setTickPosition(QSlider::TicksBelow);
-				m_pctrlVelocityScaleSlider  = new ExponentialSlider(false, 3.0, Qt::Horizontal);
-				m_pctrlVelocityScaleSlider->setMinimum(0);
-				m_pctrlVelocityScaleSlider->setMaximum(100);
-				m_pctrlVelocityScaleSlider->setSliderPosition(50);
-				m_pctrlVelocityScaleSlider->setTickInterval(5);
-				m_pctrlVelocityScaleSlider->setTickPosition(QSlider::TicksBelow);
-				pSliderLayout->addWidget(m_pctrlLiftScaleSlider);
-				pSliderLayout->addWidget(m_pctrlDragScaleSlider);
-				pSliderLayout->addWidget(m_pctrlVelocityScaleSlider);
+				QFontMetrics fm(Settings::s_TextFont);
+				int w = 6 * fm.averageCharWidth();
+				QHBoxLayout *pLiftScaleLayout = new QHBoxLayout;
+				{
+					m_pctrlLiftScaleSlider  = new ExponentialSlider(false, 3.0, Qt::Horizontal);
+					m_pctrlLiftScaleSlider->setMinimum(0);
+					m_pctrlLiftScaleSlider->setMaximum(100);
+					m_pctrlLiftScaleSlider->setSliderPosition(50);
+					m_pctrlLiftScaleSlider->setTickInterval(5);
+					m_pctrlLiftScaleSlider->setTickPosition(QSlider::TicksBelow);
+					m_pctrlLiftScale = new DoubleEdit(0,1);
+					m_pctrlLiftScale->setMaximumWidth(w);
+					pLiftScaleLayout->addWidget(m_pctrlLiftScaleSlider);
+					pLiftScaleLayout->addWidget(m_pctrlLiftScale);
+				}
+				QHBoxLayout *pDragScaleLayout = new QHBoxLayout;
+				{
+					m_pctrlDragScaleSlider = new ExponentialSlider(false, 3.0, Qt::Horizontal);
+					m_pctrlDragScaleSlider->setMinimum(0);
+					m_pctrlDragScaleSlider->setMaximum(100);
+					m_pctrlDragScaleSlider->setSliderPosition(50);
+					m_pctrlDragScaleSlider->setTickInterval(5);
+					m_pctrlDragScaleSlider->setTickPosition(QSlider::TicksBelow);
+					m_pctrlDragScale = new DoubleEdit(0,1);
+					m_pctrlDragScale->setMaximumWidth(w);
+					pDragScaleLayout->addWidget(m_pctrlDragScaleSlider);
+					pDragScaleLayout->addWidget(m_pctrlDragScale);
+				}
+				QHBoxLayout *pVelocityScaleLayout = new QHBoxLayout;
+				{
+					m_pctrlVelocityScaleSlider  = new ExponentialSlider(false, 3.0, Qt::Horizontal);
+					m_pctrlVelocityScaleSlider->setMinimum(0);
+					m_pctrlVelocityScaleSlider->setMaximum(100);
+					m_pctrlVelocityScaleSlider->setSliderPosition(50);
+					m_pctrlVelocityScaleSlider->setTickInterval(5);
+					m_pctrlVelocityScaleSlider->setTickPosition(QSlider::TicksBelow);
+					m_pctrlVelocityScale = new DoubleEdit(0,1);
+					m_pctrlVelocityScale->setMaximumWidth(w);
+					pVelocityScaleLayout->addWidget(m_pctrlVelocityScaleSlider);
+					pVelocityScaleLayout->addWidget(m_pctrlVelocityScale);
+				}
+				pSliderLayout->addLayout(pLiftScaleLayout);
+				pSliderLayout->addLayout(pDragScaleLayout);
+				pSliderLayout->addLayout(pVelocityScaleLayout);
 			}
 
 			QVBoxLayout *pLabelLayout = new QVBoxLayout;
@@ -258,6 +287,11 @@ void GL3DScales::initDialog()
 	m_pctrlDragScaleSlider->setExpValue(QMiarex::s_DragScale);
 	m_pctrlVelocityScaleSlider->setExpValue(QMiarex::s_VelocityScale);
 
+	m_pctrlLiftScale->setValue(QMiarex::s_LiftScale);
+	m_pctrlDragScale->setValue(QMiarex::s_DragScale);
+	m_pctrlVelocityScale->setValue(QMiarex::s_VelocityScale);
+
+
 	if(s_pos==0)	    m_pctrlLE->setChecked(true);
 	else if(s_pos==1)	m_pctrlTE->setChecked(true);
 	else if(s_pos==2)	m_pctrlLine->setChecked(true);
@@ -297,10 +331,45 @@ void GL3DScales::onApply()
 }
 
 
+
+void GL3DScales::onLiftEdit()
+{
+	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
+	pMiarex->s_LiftScale = m_pctrlLiftScale->value();
+	m_pctrlLiftScaleSlider->setValue(pMiarex->s_LiftScale);
+	pMiarex->m_bResetglLift = true;
+	pMiarex->m_bResetglPanelForce = true;
+	pMiarex->updateView();
+}
+
+
+void GL3DScales::onDragEdit()
+{
+	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
+	pMiarex->s_DragScale = m_pctrlDragScale->value();
+	m_pctrlDragScaleSlider->setValue(pMiarex->s_DragScale);
+	pMiarex->m_bResetglDrag = true;
+	pMiarex->updateView();
+}
+
+
+void GL3DScales::onVelocityEdit()
+{
+	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
+	pMiarex->s_VelocityScale = m_pctrlVelocityScale->value();
+	m_pctrlVelocityScaleSlider->setValue(pMiarex->s_VelocityScale);
+	pMiarex->m_bResetglDownwash = true;
+	pMiarex->m_bResetglSurfVelocities = true;
+	pMiarex->updateView();
+
+}
+
+
 void GL3DScales::onLiftScale()
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 	pMiarex->s_LiftScale    = m_pctrlLiftScaleSlider->expValue();
+	m_pctrlLiftScale->setValue(pMiarex->s_LiftScale);
 	pMiarex->m_bResetglLift = true;
 	pMiarex->m_bResetglPanelForce = true;
 	pMiarex->updateView();
@@ -311,6 +380,7 @@ void GL3DScales::onDragScale()
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 	pMiarex->s_DragScale    = m_pctrlDragScaleSlider->expValue();
+	m_pctrlDragScale->setValue(pMiarex->s_DragScale);
 	pMiarex->m_bResetglDrag = true;
 	pMiarex->updateView();
 }
@@ -320,6 +390,7 @@ void GL3DScales::onVelocityScale()
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 	pMiarex->s_VelocityScale    = m_pctrlVelocityScaleSlider->expValue();
+	m_pctrlVelocityScale->setValue(pMiarex->s_VelocityScale);
 	pMiarex->m_bResetglDownwash = true;
 	pMiarex->m_bResetglSurfVelocities = true;
 	pMiarex->updateView();

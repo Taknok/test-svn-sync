@@ -223,6 +223,12 @@ void ArcBall::quatToMatrix(float* q, Quaternion Qt)
 	q[8] = (float)(2*xz + 2*wy);
 	q[9] = (float)(2*yz - 2*wx);
 	q[10]= (float)(1 - 2*x2 - 2*y2);
+
+	q[11] = 0.0;
+	q[12] = 0.0;
+	q[13] = 0.0;
+	q[14] = 0.0;
+	q[15] = 1.0;
 }
 
 /** multiply two rotation matrices*/
@@ -237,6 +243,11 @@ void ArcBall::quatNext(float* dest, float* left, float* right)
 	dest[8] = left[8]*right[0] + left[9]*right[4] + left[10]*right[8];
 	dest[9] = left[8]*right[1] + left[9]*right[5] + left[10]*right[9];
 	dest[10]= left[8]*right[2] + left[9]*right[6] + left[10]*right[10];
+	dest[11] = 0.0;
+	dest[12] = 0.0;
+	dest[13] = 0.0;
+	dest[14] = 0.0;
+	dest[15] = 1.0;
 }
 
 

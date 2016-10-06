@@ -74,7 +74,7 @@ private:
 
 	ColorButton *m_pctrlMassColor;
 
-	QCheckBox*m_pctrlAnimateTransitions;
+	QCheckBox*m_pctrlAnimateTransitions, *m_pctrlAutoAdjustScale;
 	IntEdit *m_pctrlChordwiseRes, *m_pctrlBodyAxialRes, *m_pctrlBodyHoopRes;
 
 public:
@@ -112,6 +112,8 @@ public:
 	static QColor s_CpColor;
 
 	static bool s_bWakePanels;
+
+	static bool s_bAutoAdjustScale;
 
 	static int s_iChordwiseRes,s_iBodyAxialRes, s_iBodyHoopRes;
 	static bool s_bAnimateTransitions;

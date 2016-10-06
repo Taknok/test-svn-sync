@@ -57,7 +57,6 @@ private:
 public:
 	double a, qx, qy,qz;
 	
-	void QuattoMat(double m[][4]);
 	void Normalize();
 
 
