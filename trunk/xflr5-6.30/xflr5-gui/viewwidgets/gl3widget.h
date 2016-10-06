@@ -81,6 +81,7 @@ protected:
 
 private slots:
 	void on3DIso();
+	void on3DFlip();
 	void on3DTop();
 	void on3DLeft();
 	void on3DFront();

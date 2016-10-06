@@ -5495,7 +5495,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 		else ar << 0;
 
 		// and the spline foil whilst we're at it
-		pAFoil->m_pSF->serialize(ar, bIsStoring);
+		pAFoil->m_pSF->serializeXFL(ar, bIsStoring);
 
 		ar << Units::pressureUnitIndex();
 		ar << Units::inertiaUnitIndex();
@@ -5676,7 +5676,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 
 
 		// and the spline foil whilst we're at it
-//		pAFoil->m_pSF->serialize(ar, bIsStoring);
+		pAFoil->m_pSF->serializeXFL(ar, bIsStoring);
 
 		ar >> n; Units::setPressureUnitIndex(n);
 		ar >> n; Units::setInertiaUnitIndex(n);

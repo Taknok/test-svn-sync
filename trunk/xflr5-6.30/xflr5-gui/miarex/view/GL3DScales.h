@@ -44,6 +44,9 @@ public:
 private slots:
 	void onCpScale();
 	void onApply();
+	void onLiftEdit();
+	void onDragEdit();
+	void onVelocityEdit();
 	void onLiftScale();
 	void onDragScale();
 	void onVelocityScale();
@@ -60,6 +63,7 @@ private:
 	static bool saveSettings(QSettings *pSettings);
 
 	ExponentialSlider *m_pctrlLiftScaleSlider, *m_pctrlDragScaleSlider, *m_pctrlVelocityScaleSlider;
+	DoubleEdit *m_pctrlLiftScale, *m_pctrlDragScale, *m_pctrlVelocityScale;
 	QPushButton *ApplyButton;
 	QCheckBox *m_pctrlAutoCpScale;
 	DoubleEdit	*m_pctrlLegendMin, *m_pctrlLegendMax;
