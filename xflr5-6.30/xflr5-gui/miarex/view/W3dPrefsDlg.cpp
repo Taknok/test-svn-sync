@@ -30,7 +30,7 @@
 #include <misc/LinePickerDlg.h>
 
 
-
+bool W3dPrefsDlg::s_bAutoAdjustScale = true;
 bool W3dPrefsDlg::s_bWakePanels = false;
 
 double W3dPrefsDlg::s_MassRadius = .017;
@@ -122,10 +122,12 @@ void W3dPrefsDlg::initDialog()
 	m_pctrlBotTrans->setStyle(s_BotStyle, s_BotWidth, s_BotColor, 0);
 
 	m_pctrlMassColor->setColor(s_MassColor);
-	m_pctrlAnimateTransitions->setChecked(s_bAnimateTransitions);
 	m_pctrlChordwiseRes->setValue(s_iChordwiseRes);
 	m_pctrlBodyAxialRes->setValue(s_iBodyAxialRes);
 	m_pctrlBodyHoopRes->setValue(s_iBodyHoopRes);
+
+	m_pctrlAnimateTransitions->setChecked(s_bAnimateTransitions);
+	m_pctrlAutoAdjustScale->setChecked(s_bAutoAdjustScale);
 }
 
 
@@ -260,7 +262,9 @@ void W3dPrefsDlg::setupLayout()
 		pTessBox->setLayout(pTessLayout);
 	}
 
-	m_pctrlAnimateTransitions = new QCheckBox("Animate view transitions");
+	m_pctrlAnimateTransitions = new QCheckBox(tr("Animate view transitions"));
+	m_pctrlAutoAdjustScale = new QCheckBox(tr("Auto Ajust 3D scale"));
+	m_pctrlAutoAdjustScale->setToolTip(tr("Automatically adjust the 3D scale to fit the plane in the display when switching between planes"));
 
 	QHBoxLayout *pCommandButtons = new QHBoxLayout;
     {
@@ -284,6 +288,8 @@ void W3dPrefsDlg::setupLayout()
 		pMainLayout->addWidget(pTessBox);
 		pMainLayout->addStretch(1);
 		pMainLayout->addWidget(m_pctrlAnimateTransitions);
+		pMainLayout->addStretch(1);
+		pMainLayout->addWidget(m_pctrlAutoAdjustScale);
 		pMainLayout->addSpacing(20);
 		pMainLayout->addLayout(pCommandButtons);
 		pMainLayout->addStretch(1);
@@ -580,6 +586,7 @@ void W3dPrefsDlg::saveSettings(QSettings *pSettings)
 
 		pSettings->setValue("MassColor", s_MassColor);
 
+		pSettings->setValue("AutoAdjustScale", s_bAutoAdjustScale);
 		pSettings->setValue("AnimateTransitions", s_bAnimateTransitions);
 		pSettings->setValue("ChordwiseRes", s_iChordwiseRes);
 		pSettings->setValue("BodyAxialRes", s_iBodyAxialRes);
@@ -650,6 +657,7 @@ void W3dPrefsDlg::loadSettings(QSettings *pSettings)
 		s_MassColor = pSettings->value("MassColor", QColor(67, 151, 169)).value<QColor>();
 		s_bWakePanels = pSettings->value("showWakePanels", true).toBool();
 
+		s_bAutoAdjustScale = pSettings->value("AutoAdjustScale", true).toBool();
 		s_bAnimateTransitions = pSettings->value("AnimateTransitions", true).toBool();
 		s_iChordwiseRes = pSettings->value("ChordwiseRes", 29).toInt();
 		s_iBodyAxialRes = pSettings->value("BodyAxialRes", 23).toInt();
@@ -732,6 +740,7 @@ void W3dPrefsDlg::onOK()
 void W3dPrefsDlg::readSettings()
 {
 	s_bAnimateTransitions = m_pctrlAnimateTransitions->isChecked();
+	s_bAutoAdjustScale = m_pctrlAutoAdjustScale->isChecked();
 	s_iChordwiseRes = m_pctrlChordwiseRes->value();
 	s_iBodyAxialRes = m_pctrlBodyAxialRes->value();
 	s_iBodyHoopRes  = m_pctrlBodyHoopRes->value();

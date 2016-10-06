@@ -261,10 +261,24 @@ void GL3Widget::on3DIso()
 	ab_new[14]	=  0.0f;
 	ab_new[15]	=  1.0f;
 
-
 	startRotationTimer();
 	emit(viewModified());
 
+}
+
+
+void GL3Widget::on3DFlip()
+{
+	memcpy(ab_old, m_ArcBall.ab_quat, 16*sizeof(float));
+
+	Quaternion qtflip(180.0, CVector(0.0,1.0,0.0));
+	float ab_flip[16];
+	memset(ab_flip, 0, 16*sizeof(float));
+	m_ArcBall.quatToMatrix(ab_flip, qtflip);
+	m_ArcBall.quatNext(ab_new, m_ArcBall.ab_quat, ab_flip);
+
+	startRotationTimer();
+	emit(viewModified());
 }
 
 

@@ -24,35 +24,6 @@
 #include <QtGlobal>
 
 
-void Quaternion::QuattoMat(double m[][4])
-{
-	if(qAbs(a)<=1.0) theta = 2.0 * acos(a);
-	else             theta = 0.0;
-
-	t1 =  cos(theta);
-	t2 =  1.0 - t1;
-	t3 =  qx*qx;
-	t6 =  t2*qx;
-	t7 =  t6*qy;
-	t8 =  sin(theta);
-	t9 =  t8*qz;
-	t11 = t6*qz;
-	t12 = t8*qy;
-	t15 = qy*qy;
-	t19 = t2*qy*qz;
-	t20 = t8*qx;
-	t24 = qz*qz;
-	m[0][0] = t1 + t2*t3;
-	m[0][1] = t7 - t9;
-	m[0][2] = t11 + t12;
-	m[1][0] = t7 + t9;
-	m[1][1] = t1 + t2*t15;
-	m[1][2] = t19 - t20;
-	m[2][0] = t11 - t12;
-	m[2][1] = t19 + t20;
-	m[2][2] = t1 + t2*t24;
-}	
-
 
 void Quaternion::operator *=(Quaternion Q)
 {
