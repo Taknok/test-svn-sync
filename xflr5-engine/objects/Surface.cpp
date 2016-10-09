@@ -23,7 +23,7 @@
 #include <math.h>
 #include "Surface.h"
 #include <objects/Quaternion.h>
-#include "Foil.h"
+#include <objects/Foil.h>
 #include "Body.h"
 #include "CVector.h"
 #include "WingSection.h"

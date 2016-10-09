@@ -41,6 +41,12 @@ PlaneAnalysisTask::PlaneAnalysisTask()
 	m_MaxPanelSize = 0;
 	m_bSequence = true;
 	m_bIsFinished = false;
+
+	m_WakeSize = 0;
+	m_MatSize = 0;
+
+	m_nNodes = m_nWakeNodes = m_NWakeColumn = 0;
+
 }
 
 /**
@@ -176,12 +182,10 @@ WPolar* PlaneAnalysisTask::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar)
 	m_pWPolar = pCurWPolar;
 	m_pPlane = pCurPlane;
 
+//	if(m_pWPolar && !m_pWPolar->isStabilityPolar())
+	if(!initializePanels()) return NULL;
+
 	if(!m_pWPolar) return NULL;
-
-
-	if(!m_pWPolar->isStabilityPolar())
-		if(!initializePanels()) return NULL;
-
 
 	//initialize the analysis pointers.
 	//do it now, in case the user asks for streamlines from an existing file
@@ -780,7 +784,7 @@ int PlaneAnalysisTask::createBodyElements(Plane *pCurPlane)
 int PlaneAnalysisTask::createWingElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurface)
 {
 	//TODO : for  a gap at the wing's center, need to separate m_iPL and m_iPR at the tips;
-	bool bNoJoinFlap;
+	bool bNoJoinFlap=true;
 	int k,l;
 	int n0, n1, n2, n3;
 

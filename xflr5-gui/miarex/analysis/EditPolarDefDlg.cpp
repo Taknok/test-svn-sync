@@ -307,7 +307,7 @@ void EditPolarDefDlg::showWPolar()
 	QList<QStandardItem*> polarTypeFolder = prepareRow("Polar Type");
 	rootItem->appendRow(polarTypeFolder);
 	{
-		dataItem = prepareRow("", "Type", polarType(m_pWPolar->polarType()));
+		dataItem = prepareRow("", "Type", WPolarType(m_pWPolar->polarType()));
 		dataItem.at(2)->setData(XFLR5::POLARTYPE, Qt::UserRole);
 		polarTypeFolder.first()->appendRow(dataItem);
 
@@ -485,7 +485,7 @@ void EditPolarDefDlg::readViewLevel(QModelIndex indexLevel)
 			QString value = indexLevel.sibling(indexLevel.row(),2).data().toString();
 
 			if     (field.compare("Name")==0)                    m_pWPolar->polarName()            = value;
-			else if(field.compare("Type")==0)                    m_pWPolar->polarType()            = polarType(value);
+			else if(field.compare("Type")==0)                    m_pWPolar->polarType()            = WPolarType(value);
 			else if(field.compare("Velocity")==0)                m_pWPolar->velocity()             = dataIndex.data().toDouble()/Units::mstoUnit();
 			else if(field.compare("Alpha")==0)                   m_pWPolar->Alpha()                = dataIndex.data().toDouble();
 			else if(field.compare("Beta")==0)                    m_pWPolar->Beta()                 = dataIndex.data().toDouble();

@@ -36,8 +36,8 @@
 #include <objects/Foil.h>
 #include <objects/Polar.h>
 #include <misc/DoubleEdit.h>
-#include <xfoil_analysis/XFoilTask.h>
-#include <xfoil_analysis/xfoiltaskevent.h>
+#include <XFoilTask.h>
+#include <xfoiltaskevent.h>
 
 
 /**
@@ -139,7 +139,7 @@ private:
 	bool m_bCancel;             /**< true if the user has clicked the cancel button */
 	bool m_bIsRunning;          /**< true until all the pairs of (foil, polar) have been calculated */
 
-	XFLR5::enumPolarType m_PolarType;  /**< the type of analysis to perform */
+	XFOIL::enumPolarType m_PolarType;  /**< the type of analysis to perform */
 
 	int m_nAnalysis;            /**< the number of analysis pairs to run */
 	int m_nThreads;             /**< the number of available threads */

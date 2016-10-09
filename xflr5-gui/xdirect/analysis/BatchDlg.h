@@ -37,8 +37,8 @@
 #include <objects/Polar.h>
 #include <misc/IntEdit.h>
 #include <misc/DoubleEdit.h>
-#include <xfoil_analysis/XFoilTask.h>
-#include <xfoil_analysis/xfoiltaskevent.h>
+#include <XFoilTask.h>
+#include <xfoiltaskevent.h>
 
 
 
@@ -118,7 +118,7 @@ private:
 
 	static void* s_pXDirect;     /**< a void pointer to the instance of the QXDirect object >*/
 	static bool s_bCurrentFoil;  /**< true if the analysis should be performed on the active Foil, false if on a list of Foils>*/
-	XFLR5::enumPolarType m_PolarType;   /**< the type of Polar to be created for the analysis>*/
+	XFOIL::enumPolarType m_PolarType;   /**< the type of Polar to be created for the analysis>*/
 
 	double m_Mach;               /**< the Mach number for the Polars and the analysis>*/
 

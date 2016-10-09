@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 #include "LEDlg.h"
-#include <xfoil_analysis/XFoil.h>
+#include <XFoil.h>
 #include <QMessageBox>
 #include <QHBoxLayout>
 #include <QLabel>

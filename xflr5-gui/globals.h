@@ -69,9 +69,7 @@ complex<double> Det44(complex<double> *aij);
 complex<double> Cofactor44(complex<double> *aij, int &i, int &j);
 bool Invert44(complex<double> *ain, complex<double> *aout);
 
-
 void GLLineStipple(int style);
-
 
 XFLR5::enumPanelDistribution distributionType(QString strDist);
 QString distributionType(XFLR5::enumPanelDistribution dist);
@@ -80,13 +78,15 @@ XFLR5::enumBodyLineType bodyPanelType(QString strPanelType);
 QString bodyPanelType(XFLR5::enumBodyLineType panelType);
 
 
-XFLR5::enumPolarType polarType(QString strPolarType);
-QString polarType(XFLR5::enumPolarType polarType);
+XFOIL::enumPolarType polarType(QString strPolarType);
+QString polarType(XFOIL::enumPolarType polarType);
+
+XFLR5::enumPolarType WPolarType(QString strPolarType);
+QString WPolarType(XFLR5::enumPolarType polarType);
 
 
 XFLR5::enumAnalysisMethod analysisMethod(QString strAnalysisMethod);
 QString analysisMethod(XFLR5::enumAnalysisMethod analysisMethod);
-
 
 void * readFoilFile(QFile &xFoilFile);
 void * readPolarFile(QFile &plrFile, QList<Polar*> &polarList);
@@ -107,6 +107,11 @@ void setAutoWPolarName(void * ptrWPolar, void *ptrPlane);
 
 void ReynoldsFormat(QString &str, double f);
 
+QColor getColor(int r, int g, int b, int a=255);
+QColor colour(OpPoint *pOpp);
+QColor colour(Polar *pPolar);
+QColor colour(Foil *pFoil);
+void setRandomFoilColor(Foil *pFoil);
 
 #endif // FUNCTIONS_H
  

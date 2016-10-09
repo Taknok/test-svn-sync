@@ -53,7 +53,7 @@ BatchThreadDlg::BatchThreadDlg(QWidget *pParent) : QDialog(pParent)
 
 	m_pXFile = NULL;
 
-	m_PolarType = XFLR5::FIXEDSPEEDPOLAR;
+	m_PolarType = XFOIL::FIXEDSPEEDPOLAR;
 
 	m_FoilList.clear();
 
@@ -387,28 +387,28 @@ Polar * BatchThreadDlg::createPolar(Foil *pFoil, double Re, double Mach, double 
 
 	switch (pNewPolar->polarType())
 	{
-		case 1:
-			pNewPolar->MaType() = 1;
-			pNewPolar->ReType() = 1;
-			break;
-		case 2:
-			pNewPolar->MaType() = 2;
-			pNewPolar->ReType() = 2;
-			break;
-		case 3:
-			pNewPolar->MaType() = 1;
-			pNewPolar->ReType() = 3;
-			break;
-		case 4:
-			pNewPolar->MaType() = 1;
-			pNewPolar->ReType() = 1;
-			break;
-		default:
-			pNewPolar->ReType() = 1;
-			pNewPolar->MaType() = 1;
-			break;
+	case XFOIL::FIXEDSPEEDPOLAR:
+		pNewPolar->MaType() = 1;
+		pNewPolar->ReType() = 1;
+		break;
+	case XFOIL::FIXEDLIFTPOLAR:
+		pNewPolar->MaType() = 2;
+		pNewPolar->ReType() = 2;
+		break;
+	case XFOIL::RUBBERCHORDPOLAR:
+		pNewPolar->MaType() = 1;
+		pNewPolar->ReType() = 3;
+		break;
+	case XFOIL::FIXEDAOAPOLAR:
+		pNewPolar->MaType() = 1;
+		pNewPolar->ReType() = 1;
+		break;
+	default:
+		pNewPolar->ReType() = 1;
+		pNewPolar->MaType() = 1;
+		break;
 	}
-	if(m_PolarType!=XFLR5::FIXEDAOAPOLAR)  pNewPolar->Reynolds() = Re;
+	if(m_PolarType!=XFOIL::FIXEDAOAPOLAR)  pNewPolar->Reynolds() = Re;
 	else                                   pNewPolar->aoa()    = 0.0;
 
 	pNewPolar->Mach()    = Mach;
@@ -484,7 +484,7 @@ void BatchThreadDlg::initDialog()
 	m_XTop      = QXDirect::s_refPolar.XtrTop();
 	m_Mach      = QXDirect::s_refPolar.Mach();
 
-	m_PolarType = XFLR5::FIXEDSPEEDPOLAR; //no choice...
+	m_PolarType = XFOIL::FIXEDSPEEDPOLAR; //no choice...
 
 	m_pctrlFoil1->setChecked(s_bCurrentFoil);
 	m_pctrlFoil2->setChecked(!s_bCurrentFoil);
@@ -541,7 +541,7 @@ void BatchThreadDlg::initDialog()
  */
 void BatchThreadDlg::onAcl()
 {
-	if(m_PolarType==XFLR5::FIXEDAOAPOLAR) return;
+	if(m_PolarType==XFOIL::FIXEDAOAPOLAR) return;
 	m_bAlpha = m_pctrlAlpha->isChecked();
 	if(m_bAlpha)
 	{
@@ -755,7 +755,7 @@ void BatchThreadDlg::readParams()
 {
 	m_bAlpha = m_pctrlAlpha->isChecked();
 
-	if(m_PolarType!=XFLR5::FIXEDAOAPOLAR)
+	if(m_PolarType!=XFOIL::FIXEDAOAPOLAR)
 	{
 		m_ReInc = m_pctrlReDelta->value();
 		m_ReMax = m_pctrlReMax->value();

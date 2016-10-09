@@ -20,7 +20,7 @@
 
 *****************************************************************************/
 
-#include <engine_globals.h>
+
 #include "Spline.h"
 #include "math.h"
 
@@ -32,10 +32,10 @@ Spline::Spline()
 {
 	m_Style = 0;
 	m_Width = 1;
-	m_Color.setHsv((int)(((double)qrand()/(double)RAND_MAX)*360),
-					 (int)(((double)qrand()/(double)RAND_MAX)*155)+100,
-					 (int)(((double)qrand()/(double)RAND_MAX)*155)+100,
-					  255);
+	m_red   = (int)(((double)rand()/(double)RAND_MAX)*200);
+	m_green = (int)(((double)rand()/(double)RAND_MAX)*200);
+	m_blue  = (int)(((double)rand()/(double)RAND_MAX)*200);
+	m_alphaChannel = 255;
 
 	m_CtrlPoint.clear();
 #if QT_VERSION >= 0x040700
@@ -377,4 +377,23 @@ void Spline::splineKnots()
 
 
 
+
+
+
+
+void Spline::getColor(int &r, int &g, int &b, int &a)
+{
+	r = m_red;
+	g = m_green;
+	b = m_blue;
+	a = m_alphaChannel;
+}
+
+void Spline::setColor(int r, int g, int b, int a)
+{
+	m_red = r;
+	m_green = g;
+	m_blue = b;
+	m_alphaChannel = a;
+}
 

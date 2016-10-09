@@ -19,9 +19,13 @@
 
 *****************************************************************************/
 
-#include <engine_globals.h>
-#include <xfoil_analysis/XFoil.h>
+
+#include <XFoil.h>
 #include "OpPoint.h"
+#include "Foil.h"
+#include "Polar.h"
+#include <xfoil_globals.h>
+
 
 QList <void *> OpPoint::s_oaOpp;
 OpPoint *OpPoint::s_pCurOpp=NULL;
@@ -67,11 +71,11 @@ OpPoint::OpPoint()
 	m_PointStyle = 0;
 	m_Style = 0;
 	m_Width = 1;
-	m_Color.setHsv((int)(((double)qrand()/(double)RAND_MAX)*360),
-				   (int)(((double)qrand()/(double)RAND_MAX)*155)+100,
-				   (int)(((double)qrand()/(double)RAND_MAX)*155)+100,
-					255);
 
+	m_red   = (int)(((double)rand()/(double)RAND_MAX)*200);
+	m_green = (int)(((double)rand()/(double)RAND_MAX)*200);
+	m_blue  = (int)(((double)rand()/(double)RAND_MAX)*200);
+	m_alphaChannel = 255;
 }
 
 
@@ -328,7 +332,7 @@ OpPoint *OpPoint::getOpp(double Alpha)
 		{
 			if (pOpPoint->polarName() == pCurPolar->polarName())
 			{
-				if(pCurPolar->polarType() != XFLR5::FIXEDAOAPOLAR)
+				if(pCurPolar->polarType() != XFOIL::FIXEDAOAPOLAR)
 				{
 					if(qAbs(pOpPoint->aoa() - Alpha) <0.001)
 					{
@@ -461,7 +465,7 @@ OpPoint* OpPoint::addOpPoint(void *pFoilPtr, void *pPolarPtr, void *pXFoilPtr, b
 
 	if(pXFoil->lvconv && pPolar)
 	{
-		if(pPolar->polarType()==XFLR5::FIXEDLIFTPOLAR || pPolar->polarType()==XFLR5::RUBBERCHORDPOLAR)
+		if(pPolar->polarType()==XFOIL::FIXEDLIFTPOLAR || pPolar->polarType()==XFOIL::RUBBERCHORDPOLAR)
 		{
 			if(pNewPoint && pNewPoint->Reynolds()<1.00e8)
 			{
@@ -492,7 +496,7 @@ OpPoint* OpPoint::addOpPoint(void *pFoilPtr, void *pPolarPtr, void *pXFoilPtr, b
  * @param bDataOnly true if the analysis parameters should not be output
  */
 
-void OpPoint::exportOpp(QTextStream &out, QString Version, XFLR5::enumTextFileType FileType, bool bDataOnly)
+void OpPoint::exportOpp(QTextStream &out, QString Version, bool bCSV, bool bDataOnly)
 {
 	int k;
 	QString strong;
@@ -506,21 +510,21 @@ void OpPoint::exportOpp(QTextStream &out, QString Version, XFLR5::enumTextFileTy
 		out<< strong;
 		strong = m_PlrName + "\n";
 		out<< strong;
-		if(FileType==XFLR5::TXT) strong=QString("Alpha = %1,  Re = %2,  Ma = %3,  ACrit =%4 \n\n")
+		if(!bCSV) strong=QString("Alpha = %1,  Re = %2,  Ma = %3,  ACrit =%4 \n\n")
 									   .arg(m_Alpha,5,'f',1).arg(m_Reynolds,8,'f',0).arg(m_Mach,6,'f',4).arg(ACrit,4,'f',1);
-		else              strong=QString("Alpha =, %1,  Re =, %2,  Ma =, %3,  ACrit =, %4 \n\n")
+		else      strong=QString("Alpha =, %1,  Re =, %2,  Ma =, %3,  ACrit =, %4 \n\n")
 									   .arg(m_Alpha,5,'f',1).arg(m_Reynolds,8,'f',0).arg(m_Mach,6,'f',4).arg(ACrit,4,'f',1);
 		out<< strong;
 	}
 
-	if(FileType==XFLR5::TXT) out << "   x        Cpi      Cpv        Qi        Qv\n";
-	else            out << "x,Cpi,Cpv,Qi,Qv\n";
+	if(!bCSV) out << "   x        Cpi      Cpv        Qi        Qv\n";
+	else      out << "x,Cpi,Cpv,Qi,Qv\n";
 
 	for (k=0; k<n; k++)
 	{
-		if(FileType==XFLR5::CSV) strong=QString("%1  %2   %3   %4   %5\n")
+		if(!bCSV) strong=QString("%1  %2   %3   %4   %5\n")
 									   .arg(pFoil->x[k],7,'f',4).arg(Cpi[k],7,'f',3).arg(Cpv[k],7,'f',3).arg(Qi[k],7,'f',3).arg(Qv[k],7,'f',3);
-		else              strong=QString("%1,%2,%3,%4,%5\n")
+		else      strong=QString("%1,%2,%3,%4,%5\n")
 									   .arg(pFoil->x[k],7,'f',4).arg(Cpi[k],7,'f',3).arg(Cpv[k],7,'f',3).arg(Qi[k],7,'f',3).arg(Qv[k],7,'f',3);
 		out<< strong;
 	}
@@ -590,7 +594,7 @@ void OpPoint::getOppProperties(QString &OpPointProperties, bool bData)
 	QTextStream out;
 	strong.clear();
 	out.setString(&strong);
-	exportOpp(out, "", XFLR5::TXT, true);
+	exportOpp(out, "", false, true);
 	OpPointProperties += "\n"+strong;
 }
 
@@ -675,7 +679,7 @@ bool OpPoint::serializeOppWPA(QDataStream &ar, bool bIsStoring, int ArchiveForma
 		if(ArchiveFormat>=100002)
 		{
 			ar>>m_Style>>m_Width;
-			readCOLORREF(ar, m_Color);
+			readCOLORREF(ar, m_red,m_green,m_blue);
 
 			ar >> a ;
 			if(a!=0 && a!=1) return false;
@@ -712,7 +716,7 @@ bool OpPoint::serializeOppXFL(QDataStream &ar, bool bIsStoring, int ArchiveForma
 		ar << m_PlrName;
 
 		ar << m_Style << m_Width;
-		ar << m_Color;
+		writeqColor(ar, m_red, m_green, m_blue, m_alphaChannel);
 		ar << m_bIsVisible << false;
 
 		ar << m_Reynolds << m_Mach << m_Alpha;
@@ -744,7 +748,7 @@ bool OpPoint::serializeOppXFL(QDataStream &ar, bool bIsStoring, int ArchiveForma
 		ar >> m_PlrName;
 
 		ar >> m_Style >> m_Width;
-		ar >> m_Color;
+		readqColor(ar, m_red, m_green, m_blue, m_alphaChannel);
 		ar >> m_bIsVisible >> boolean;
 
 		ar >> m_Reynolds >> m_Mach >> m_Alpha;
@@ -796,7 +800,21 @@ bool OpPoint::serializeOppXFL(QDataStream &ar, bool bIsStoring, int ArchiveForma
 }
 
 
+void OpPoint::getColor(int &r, int &g, int &b, int &a)
+{
+	r = m_red;
+	g = m_green;
+	b = m_blue;
+	a = m_alphaChannel;
+}
 
+void OpPoint::setColor(int r, int g, int b, int a)
+{
+	m_red = r;
+	m_green = g;
+	m_blue = b;
+	m_alphaChannel = a;
+}
 
 
 

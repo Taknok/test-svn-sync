@@ -28,7 +28,7 @@
 #include <objects/WPolar.h>
 
 #include <plane_analysis/planeanalysistask.h>
-#include <xfoil_analysis/XFoilTask.h>
+#include <XFoilTask.h>
 
 
 class XflScriptExec

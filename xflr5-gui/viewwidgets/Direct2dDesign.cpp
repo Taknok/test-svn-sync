@@ -160,20 +160,20 @@ void Direct2dDesign::paintFoils(QPainter &painter)
 		{
 			FoilPen.setStyle(getStyle(pFoil->foilStyle()));
 			FoilPen.setWidth(pFoil->foilWidth());
-			FoilPen.setColor(pFoil->foilColor());
+			FoilPen.setColor(colour(pFoil));
 			painter.setPen(FoilPen);
 
 			drawFoil(painter, pFoil, 0.0, m_fScale, m_fScale*m_fScaleY,m_ptOffset);
 			if (pFoil->showCenterLine())
 			{
-				CenterPen.setColor(pFoil->foilColor());
+				CenterPen.setColor(colour(pFoil));
 				CenterPen.setStyle(Qt::DashLine);
 				painter.setPen(CenterPen);
 				drawMidLine(painter, pFoil, m_fScale, m_fScale*m_fScaleY, m_ptOffset);
 			}
 			if (pFoil->showPoints())
 			{
-				CtrlPen.setColor(pFoil->foilColor());
+				CtrlPen.setColor(colour(pFoil));
 				painter.setPen(CtrlPen);
 				drawPoints(painter, pFoil, m_fScale,m_fScale*m_fScaleY, m_ptOffset);
 			}
@@ -185,14 +185,14 @@ void Direct2dDesign::paintFoils(QPainter &painter)
 
 		if (m_pBufferFoil->showCenterLine())
 		{
-			CenterPen.setColor(m_pBufferFoil->foilColor());
+			CenterPen.setColor(colour(m_pBufferFoil));
 			CenterPen.setStyle(Qt::DashLine);
 			painter.setPen(CenterPen);
 			drawMidLine(painter, m_pBufferFoil, m_fScale, m_fScale*m_fScaleY, m_ptOffset);
 		}
 		if (m_pBufferFoil->showPoints())
 		{
-			CtrlPen.setColor(m_pBufferFoil->foilColor());
+			CtrlPen.setColor(colour(m_pBufferFoil));
 			painter.setPen(CtrlPen);
 			drawPoints(painter, m_pBufferFoil, m_fScale,m_fScale*m_fScaleY, m_ptOffset);
 		}
@@ -262,7 +262,7 @@ void Direct2dDesign::paintLegend(QPainter &painter)
 					strong = pRefFoil->foilName();
 					if(strong.length())
 					{
-						LegendPen.setColor(pRefFoil->foilColor());
+						LegendPen.setColor(colour(pRefFoil));
 						LegendPen.setStyle(getStyle(pRefFoil->foilStyle()));
 						LegendPen.setWidth(pRefFoil->foilWidth());
 

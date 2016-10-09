@@ -193,6 +193,7 @@ private slots:
 	void onShowAllWPlrOpps();
 	void onShowAllWPolars();
 	void onShowCurve();
+	void onShowFlapMoments();
 	void onShowTargetCurve();
 	void onShowLift();
 	void onShowIDrag();
@@ -356,8 +357,9 @@ public:
 	bool m_bShowEllipticCurve;         /**< true if the elliptic loading should be displayed in the local lift graph */
 	bool m_bShowBellCurve;             /**< true if the bell distribution loading should be displayed in the local lift graph */
 	bool m_bShowWingCurve[MAXWINGS];   /**< true if various plane's wing curves shoud be displayed*/
+	bool m_bShowFlapMoments;           /**< true if the flap moment values should be display together with the operating point results*/
 	bool m_bSurfVelocities;            /**< true if the velocities should be displayed in the operating point or 3D view*/
-	bool m_bStream;                    /**< defines whether the streamlines should be displayed in the operating point or 3D view*/
+	bool m_bStream;                    /**< true if the streamlines should be displayed in the operating point or 3D view*/
 	bool m_bTrans;                     /**< true if the view is being dragged */
 	bool m_bTransGraph;	               /**< true if a graph is being dragged */
 	bool m_bType1;                     /**< true if polars of type 1 are to be displayed */

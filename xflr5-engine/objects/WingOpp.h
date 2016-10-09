@@ -33,8 +33,6 @@
 
 
 
-
-
 /**
 *@brief
 *	This class implements the operating point object which stores the data of plane analysis
@@ -78,7 +76,7 @@ private:
 
 	bool serializeWingOppWPA(QDataStream &ar, bool bIsStoring);
 	bool serializeWingOppXFL(QDataStream &ar, bool bIsStoring);
-	bool exportWOpp(QTextStream &out, XFLR5::enumTextFileType FileType);
+	bool exportWOpp(QTextStream &out, bool bCSV);
 	void GetWingOppProperties(QString &WingOppProperties);
 	double maxLift();
 	void createWOpp(void *pWingPtr, void *pWPolarPtr);

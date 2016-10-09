@@ -46,7 +46,12 @@ using namespace std;
 void readCString(QDataStream &ar, QString &strong);
 void writeCString(QDataStream &ar, QString const &strong);
 void readCOLORREF(QDataStream &ar, QColor &color);
+void readCOLORREF(QDataStream &ar, int &r, int &g, int &b);
 void WriteCOLORREF(QDataStream &ar, QColor const &color);
+void WriteCOLORREF(QDataStream &ar, int r, int g, int b);
+
+void readqColor(QDataStream &ar, int &r, int &g, int &b, int &a);
+void writeqColor(QDataStream &ar, int r, int g, int b, int a);
 
 void readFloat(QDataStream &inStream, float &f);
 void writeFloat(QDataStream &outStream, float f);

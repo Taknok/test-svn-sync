@@ -15,28 +15,22 @@ QT += gui
 DEFINES += ENGINE_XFLR5_LIB
 
 INCLUDEPATH += $$PWD/objects
-INCLUDEPATH += $$PWD/xfoil_analysis
+INCLUDEPATH += $$PWD/../XFoil-lib
 INCLUDEPATH += $$PWD/plane_analysis
 
 SOURCES += \
     objects/Body.cpp \
     objects/CVector.cpp \
-    objects/Foil.cpp \
     objects/Frame.cpp \
     objects/NURBSSurface.cpp \
-    objects/OpPoint.cpp \
     objects/Panel.cpp \
     objects/Plane.cpp \
     objects/PlaneOpp.cpp \
-    objects/Polar.cpp \
     objects/Quaternion.cpp \
-    objects/Spline.cpp \
     objects/Surface.cpp \
     objects/Wing.cpp \
     objects/WingOpp.cpp \
     objects/WPolar.cpp \
-    xfoil_analysis/XFoil.cpp \
-    xfoil_analysis/XFoilTask.cpp \
     plane_analysis/LLTAnalysis.cpp \
     plane_analysis/PanelAnalysis.cpp \
     plane_analysis/planeanalysistask.cpp \
@@ -46,25 +40,18 @@ HEADERS += \
     objects/Body.h \
     objects/CRectangle.h \
     objects/CVector.h \
-    objects/Foil.h \
     objects/Frame.h \
     objects/NURBSSurface.h \
-    objects/OpPoint.h \
     objects/Panel.h \
     objects/Plane.h \
     objects/PlaneOpp.h \
     objects/PointMass.h \
-    objects/Polar.h \
     objects/Quaternion.h \
-    objects/Spline.h \
     objects/Surface.h \
     objects/Wing.h \
     objects/WingOpp.h \
     objects/WingSection.h \
     objects/WPolar.h \
-    xfoil_analysis/XFoil.h \
-    xfoil_analysis/XFoilTask.h \
-    xfoil_analysis/xfoiltaskevent.h \
     plane_analysis/LLTAnalysis.h \
     plane_analysis/PanelAnalysis.h \
     plane_analysis/planeanalysistask.h \

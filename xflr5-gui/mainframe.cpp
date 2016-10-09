@@ -124,6 +124,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 {
 	setAttribute(Qt::WA_DeleteOnClose);
     s_bTrace = false;
+
 	if(s_bTrace)
 	{
 		QString FileName = QDir::tempPath() + "/Trace.log";
@@ -1232,6 +1233,11 @@ void MainFrame::createMiarexActions()
 	m_pReset3DScale->setStatusTip(tr("Resets the display scale so that the plane fits in the window"));
 	connect(m_pReset3DScale, SIGNAL(triggered()), pMiarex, SLOT(on3DResetScale()));
 
+	m_pShowFlapMoments = new QAction(tr("Show flap moments"), this);
+	m_pShowFlapMoments->setCheckable(true);
+	m_pShowFlapMoments->setStatusTip(tr("Display the flap moment values together with the other operating point results"));
+	connect(m_pShowFlapMoments, SIGNAL(triggered()), pMiarex, SLOT(onShowFlapMoments()));
+
 	m_pW3DScalesAct = new QAction(tr("3D Scales"), this);
 	m_pW3DScalesAct->setStatusTip(tr("Define the scales for the 3D display of lift, moment, drag, and downwash"));
 	m_pW3DScalesAct->setCheckable(true);
@@ -1607,6 +1613,7 @@ void MainFrame::createMiarexMenus()
 		m_pMiarexWOppMenu->addAction(m_pShowWing2Curve);
 		m_pMiarexWOppMenu->addAction(m_pShowStabCurve);
 		m_pMiarexWOppMenu->addAction(m_pShowFinCurve);
+		m_pMiarexWOppMenu->addAction(m_pShowFlapMoments);
 	}
 
 	//Miarex Analysis Menu
@@ -1704,6 +1711,7 @@ void MainFrame::createMiarexMenus()
 		m_pWOppCtxMenu->addAction(m_pShowWing2Curve);
 		m_pWOppCtxMenu->addAction(m_pShowStabCurve);
 		m_pWOppCtxMenu->addAction(m_pShowFinCurve);
+		m_pWOppCtxMenu->addAction(m_pShowFlapMoments);
 		m_pWOppCtxMenu->addSeparator();
 		QMenu *pCurGraphCtxMenu = m_pWOppCtxMenu->addMenu(tr("Current Graph"));
 		{
@@ -2036,6 +2044,7 @@ void MainFrame::createMiarexMenus()
 		m_pW3DCtxMenu->addAction(m_pReset3DScale);
 		m_pW3DCtxMenu->addAction(m_pW3DScalesAct);
 		m_pW3DCtxMenu->addAction(m_pW3DLightAct);
+		m_pW3DCtxMenu->addAction(m_pShowFlapMoments);
 		m_pW3DCtxMenu->addSeparator();
 		m_pW3DCtxMenu->addAction(m_pViewLogFile);
 		m_pW3DCtxMenu->addAction(m_pSaveViewToImageFileAct);
@@ -3080,7 +3089,7 @@ QColor MainFrame::getColor(int type)
 				{
 					pFoil = (Foil*)Foil::s_oaFoil.at(i);
 					bFound = false;
-					if(pFoil->foilColor() == s_ColorList.at(j))
+					if(colour(pFoil) == s_ColorList.at(j))
 					{
 						bFound = true;
 						break;
@@ -3099,7 +3108,7 @@ QColor MainFrame::getColor(int type)
 				{
 					pPolar = (Polar*)Polar::s_oaPolar.at(i);
 					bFound = false;
-					if(pPolar->polarColor() == s_ColorList.at(j))
+					if(colour(pPolar) == s_ColorList.at(j))
 					{
 						bFound = true;
 						break;
@@ -3118,7 +3127,10 @@ QColor MainFrame::getColor(int type)
 				{
 					pOpPoint = (OpPoint*)OpPoint::s_oaOpp.at(i);
 					bFound = false;
-					if(pOpPoint->oppColor() == s_ColorList.at(j))
+					int r,g,b,a;
+					pOpPoint->getColor(r,g,b,a);
+					QColor clr(r,g,b,a);
+					if(clr == s_ColorList.at(j))
 					{
 						bFound = true;
 						break;
@@ -3288,8 +3300,8 @@ bool MainFrame::loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFor
 	ar>>n;
 	for (i=0; i<n; i++)
 	{
-
-		pPolar->polarColor() = getColor(1);
+		QColor clr = getColor(1);
+		pPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
 		if (!pPolar->serialize(ar, bIsStoring))
 		{
 			delete pPolar;
@@ -3321,7 +3333,8 @@ bool MainFrame::loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFor
 			return false;
 		}
 
-		pOpp->oppColor() = s_ColorList[OpPoint::s_oaOpp.size()%24];
+		QColor clr = s_ColorList[OpPoint::s_oaOpp.size()%24];
+		pOpp->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
 		if(ArchiveFormat>=100002)
 		{
 			if (!pOpp->serializeOppWPA(ar, bIsStoring, 100002))
@@ -3529,6 +3542,19 @@ MainFrame* MainFrame::self() {
 
 XFLR5::enumApp MainFrame::loadXFLR5File(QString pathName)
 {
+/*	QString FileName = "/home/techwinder/download/save.bin";
+	QFile fp(FileName);
+	fp.open(QIODevice::ReadOnly);
+	QDataStream ar(&fp);
+	int r,g,b,a,i;
+	r=g=b=a=0;
+	ar>>i;
+	readqColor(ar, r,g,b,a);
+qDebug()<<r<<g<<b<<a;
+	readqColor(ar, r,g,b,a);
+qDebug()<<r<<g<<b<<a;
+	return XFLR5::NOAPP;*/
+
 	QFile XFile(pathName);
 	if (!XFile.open(QIODevice::ReadOnly))
 	{
@@ -3727,15 +3753,15 @@ void MainFrame::onCurFoilStyle()
 	if(!Foil::curFoil()) return;
 
 	LinePickerDlg dlg(this);
-	dlg.initDialog(Foil::curFoil()->foilStyle(), Foil::curFoil()->foilWidth(), Foil::curFoil()->foilColor());
+	dlg.initDialog(Foil::curFoil()->foilStyle(), Foil::curFoil()->foilWidth(), colour(Foil::curFoil()));
 
 	if(QDialog::Accepted==dlg.exec())
 	{
-		Foil::curFoil()->foilColor() = dlg.setColor();
+		Foil::curFoil()->setColor(dlg.setColor().red(), dlg.setColor().green(), dlg.setColor().blue(), dlg.setColor().alpha());
 		Foil::curFoil()->foilStyle() = dlg.setStyle();
 		Foil::curFoil()->foilWidth() = dlg.width();
 		QXDirect *pXDirect = (QXDirect*)m_pXDirect;
-		pXDirect->m_BufferFoil.foilColor() = Foil::curFoil()->foilColor();
+		pXDirect->m_BufferFoil.setColor(Foil::curFoil()->red(), Foil::curFoil()->green(), Foil::curFoil()->blue(), Foil::curFoil()->alphaChannel());
 		pXDirect->m_BufferFoil.foilStyle() = Foil::curFoil()->foilStyle();
 		pXDirect->m_BufferFoil.foilWidth() = Foil::curFoil()->foilWidth();
 		setSaveState(false);
@@ -4111,6 +4137,22 @@ void MainFrame::onSaveTimer()
 
 void MainFrame::onSaveProject()
 {
+/*	QString Filter = "XFLR5 v6 Project File (*.xfl)";
+
+	QString saveFileName = "/home/techwinder/download/save.bin";
+	QFile fp(saveFileName);
+	fp.open(QIODevice::WriteOnly);
+	QDataStream ar(&fp);
+
+	ar<<1025;
+	ar << QColor(159,158,157,156);
+
+	ar << QColor(7,6,5,4);
+	fp.close();
+	return;*/
+
+	QString FileName = s_ProjectName;
+
 	if (!s_ProjectName.length())
 	{
 		onSaveProjectAs();
@@ -4250,7 +4292,6 @@ void MainFrame::onSaveViewToImageFile()
 		default:
 			break;
 	}
-
 }
 
 
@@ -4476,6 +4517,7 @@ void MainFrame::onXDirect()
 	checkGraphActions();
 
 	pXDirect->setControls();
+	pXDirect->setFoilScale();
 	pXDirect->updateView();
 }
 
@@ -4733,7 +4775,8 @@ void *MainFrame::readFoilFile(QTextStream &in, QString fileName)
 	memcpy(pFoil->y, pFoil->yb, sizeof(pFoil->yb));
 	pFoil->n = pFoil->nb;
 
-	pFoil->foilColor() = getColor(0);
+	QColor clr = randomColor();
+	pFoil->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
 	pFoil->initFoil();
 
 	return pFoil;
@@ -4814,7 +4857,7 @@ bool MainFrame::saveProject(QString PathName)
 
 	if(!PathName.length())
 	{
-        PathName = QFileDialog::getSaveFileName(this, tr("Save the Project File"),
+		PathName = QFileDialog::getSaveFileName(this, tr("Save the Project File"),
 												Settings::s_LastDirName+"/"+FileName,
 												"XFLR5 v6 Project File (*.xfl)",
 												&Filter);
@@ -4824,9 +4867,9 @@ bool MainFrame::saveProject(QString PathName)
 		int pos = PathName.indexOf(".xfl", Qt::CaseInsensitive);
 		if(pos<0) PathName += ".xfl";
 
-        PathName.replace(QDir::separator(), "/"); // Qt sometimes uses the windows \ separator
+		PathName.replace(QDir::separator(), "/"); // Qt sometimes uses the windows \ separator
 
-        pos = PathName.lastIndexOf("/");
+		pos = PathName.lastIndexOf("/");
 		if(pos>0) Settings::s_LastDirName = PathName.left(pos);
 	}
 
@@ -5249,7 +5292,7 @@ void MainFrame::selectOpPoint(void *pOppPtr)
 
 		double val = locale().toDouble(strange, &bOK);
 
-		if(pCurPlr->polarType() == XFLR5::FIXEDAOAPOLAR)
+		if(pCurPlr->polarType() == XFOIL::FIXEDAOAPOLAR)
 		{
 			if(bOK && qAbs(val-pOpp->Reynolds())<1.0)
 			{
@@ -6382,7 +6425,7 @@ void MainFrame::updateOppListBox()
 			OpPoint *pOpp = (OpPoint*)OpPoint::s_oaOpp[iOpp];
 			if (pOpp->foilName()==Foil::curFoil()->foilName() && pOpp->polarName()==pCurPlr->polarName())
 			{
-				if (pCurPlr->polarType() != XFLR5::FIXEDAOAPOLAR)
+				if (pCurPlr->polarType() != XFOIL::FIXEDAOAPOLAR)
 					str = QString("%L1").arg(pOpp->aoa(),8,'f',3);
 				else
 					str = QString("%L1").arg(pOpp->Reynolds(),8,'f',0);
@@ -6851,7 +6894,5 @@ void MainFrame::onExecuteScript()
 //	scriptExecutor.runScript();
 
 }
-
-
 
 

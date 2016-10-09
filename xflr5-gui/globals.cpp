@@ -445,9 +445,9 @@ QColor randomColor()
 {
 	QColor clr;
 	clr.setHsv((int)(((double)qrand()/(double)RAND_MAX)*360),
-			 (int)(((double)qrand()/(double)RAND_MAX)*101)+ 99,
-			 (int)(((double)qrand()/(double)RAND_MAX)*100)+155,
-			 255);
+			   (int)(((double)qrand()/(double)RAND_MAX)*101)+ 99,
+			   (int)(((double)qrand()/(double)RAND_MAX)*100)+155,
+				255);
 	return clr;
 }
 
@@ -508,7 +508,30 @@ QString bodyPanelType(XFLR5::enumBodyLineType panelType)
 }
 
 
-XFLR5::enumPolarType polarType(QString strPolarType)
+XFOIL::enumPolarType polarType(QString strPolarType)
+{
+	if     (strPolarType.compare("FIXEDSPEEDPOLAR",   Qt::CaseInsensitive)==0) return XFOIL::FIXEDSPEEDPOLAR;
+	else if(strPolarType.compare("FIXEDLIFTPOLAR",    Qt::CaseInsensitive)==0) return XFOIL::FIXEDLIFTPOLAR;
+	else if(strPolarType.compare("RUBBERCHORDPOLAR",  Qt::CaseInsensitive)==0) return XFOIL::RUBBERCHORDPOLAR;
+	else if(strPolarType.compare("FIXEDAOAPOLAR",     Qt::CaseInsensitive)==0) return XFOIL::FIXEDAOAPOLAR;
+	else return XFOIL::FIXEDSPEEDPOLAR;
+}
+
+QString polarType(XFOIL::enumPolarType polarType)
+{
+	switch(polarType)
+	{
+		case XFOIL::FIXEDSPEEDPOLAR:  return "FIXEDSPEEDPOLAR";   break;
+		case XFOIL::FIXEDLIFTPOLAR:   return "FIXEDLIFTPOLAR";    break;
+		case XFOIL::RUBBERCHORDPOLAR: return "RUBBERCHORDPOLAR";  break;
+		case XFOIL::FIXEDAOAPOLAR:    return "FIXEDAOAPOLAR";     break;
+		default: return "";
+	}
+}
+
+
+
+XFLR5::enumPolarType WPolarType(QString strPolarType)
 {
 	if     (strPolarType.compare("FIXEDSPEEDPOLAR", Qt::CaseInsensitive)==0) return XFLR5::FIXEDSPEEDPOLAR;
 	else if(strPolarType.compare("FIXEDLIFTPOLAR",  Qt::CaseInsensitive)==0) return XFLR5::FIXEDLIFTPOLAR;
@@ -518,7 +541,7 @@ XFLR5::enumPolarType polarType(QString strPolarType)
 	else return XFLR5::FIXEDSPEEDPOLAR;
 }
 
-QString polarType(XFLR5::enumPolarType polarType)
+QString WPolarType(XFLR5::enumPolarType polarType)
 {
 	switch(polarType)
 	{
@@ -530,7 +553,6 @@ QString polarType(XFLR5::enumPolarType polarType)
 		default: return "";
 	}
 }
-
 
 
 XFLR5::enumAnalysisMethod analysisMethod(QString strAnalysisMethod)
@@ -708,7 +730,8 @@ void * readFoilFile(QFile &xFoilFile)
 	memcpy(pFoil->y, pFoil->yb, sizeof(pFoil->yb));
 	pFoil->n = pFoil->nb;
 
-	pFoil->foilColor() = randomColor();
+	QColor clr = randomColor();
+	pFoil->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
 	pFoil->initFoil();
 
 	return pFoil;
@@ -808,7 +831,7 @@ void drawFoil(QPainter &painter, Foil*pFoil, double const &alpha, double const &
 	int k;
 	QPen FoilPen, HighPen;
 
-	FoilPen.setColor(pFoil->foilColor());
+	FoilPen.setColor(colour(pFoil));
 	FoilPen.setWidth(pFoil->foilWidth());
 	FoilPen.setStyle(getStyle(pFoil->foilStyle()));
 	painter.setPen(FoilPen);
@@ -883,7 +906,7 @@ void drawMidLine(QPainter &painter, Foil*pFoil, double const &scalex, double con
 	int k;
 	QPen FoilPen;
 
-	FoilPen.setColor(pFoil->foilColor());
+	FoilPen.setColor(colour(pFoil));
 	FoilPen.setWidth(pFoil->foilWidth());
 	FoilPen.setStyle(Qt::DashLine);
 	painter.setPen(FoilPen);
@@ -923,7 +946,7 @@ void drawPoints(QPainter &painter, Foil*pFoil, double const &scalex, double cons
 	width = 2;
 
 	QPen FoilPen, HighPen;
-	FoilPen.setColor(pFoil->foilColor());
+	FoilPen.setColor(colour(pFoil));
 	FoilPen.setWidth(pFoil->foilWidth());
 	FoilPen.setStyle(Qt::SolidLine);
 	painter.setPen(FoilPen);
@@ -1214,8 +1237,37 @@ void ReynoldsFormat(QString &str, double f)
 }
 
 
+QColor getColor(int r, int g, int b, int a)
+{
+	r = min(r, 255);
+	r = max(r, 0);
+	g = min(g, 255);
+	g = max(g, 0);
+	b = min(b, 255);
+	b = max(b, 0);
+	a = min(a, 255);
+	a = max(a, 0);
+	return QColor(r,g,b,a);
+}
+
+QColor colour(OpPoint *pOpp)
+{
+	return QColor(pOpp->red(), pOpp->green(), pOpp->blue(), pOpp->alphaChannel());
+}
+
+QColor colour(Polar *pPolar)
+{
+	return QColor(pPolar->red(), pPolar->green(), pPolar->blue(), pPolar->alphaChannel());
+}
+
+QColor colour(Foil *pFoil)
+{
+	return QColor(pFoil->red(), pFoil->green(), pFoil->blue(), pFoil->alphaChannel());
+}
 
 
-
-
-
+void setRandomFoilColor(Foil *pFoil)
+{
+	QColor clr = randomColor();
+	pFoil->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
+}

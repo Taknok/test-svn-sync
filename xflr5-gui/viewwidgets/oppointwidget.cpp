@@ -261,7 +261,7 @@ void OpPointWidget::resetGraphScale()
  */
 void OpPointWidget::setFoilScale()
 {
-	int h, iMargin = 53;
+	int h, iMargin = 53;	
 	if(m_pCpGraph)
 	{
 		iMargin = m_pCpGraph->margin();
@@ -269,7 +269,7 @@ void OpPointWidget::setFoilScale()
 		m_FoilOffset.rx() = rect().left() + iMargin;
 		m_FoilOffset.ry() = (rect().height()+h)/2;
 		m_fScale = rect().width()-2.0*iMargin;
-		if(m_pCpGraph && m_pCpGraph->yVariable()>=2)
+		if(m_pCpGraph && m_pCpGraph->yVariable()<2)
 		{
 			double p0  = m_pCpGraph->xToClient(0.0);
 			double p1  = m_pCpGraph->xToClient(1.0);
@@ -564,8 +564,8 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
 		if(OpPoint::curOpp()->m_bTEFlap) Back++;
 		if(OpPoint::curOpp()->m_bLEFlap) Back++;
 		if(OpPoint::curOpp()->m_bViscResults && qAbs(OpPoint::curOpp()->Cd)>0.0) Back++;
-		if(Polar::curPolar()->polarType()==XFLR5::FIXEDLIFTPOLAR) Back++;
-		if(Polar::curPolar()->polarType()!=XFLR5::FIXEDSPEEDPOLAR && Polar::curPolar()->polarType()!=XFLR5::FIXEDAOAPOLAR) Back++;
+		if(Polar::curPolar()->polarType()==XFOIL::FIXEDLIFTPOLAR) Back++;
+		if(Polar::curPolar()->polarType()!=XFOIL::FIXEDSPEEDPOLAR && Polar::curPolar()->polarType()!=XFOIL::FIXEDAOAPOLAR) Back++;
 	}
 
 	int dwidth = fm.width(tr("TE Hinge Moment/span = 0123456789"));
@@ -577,14 +577,14 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
 
 	if(Polar::curPolar())
 	{
-		if(Polar::curPolar()->polarType()==XFLR5::FIXEDSPEEDPOLAR)       str1 = tr("Fixed speed polar");
-		else if(Polar::curPolar()->polarType()==XFLR5::FIXEDLIFTPOLAR)   str1 = tr("Fixed lift polar");
-		else if(Polar::curPolar()->polarType()==XFLR5::RUBBERCHORDPOLAR) str1 = tr("Rubber chord polar");
-		else if(Polar::curPolar()->polarType()==XFLR5::FIXEDAOAPOLAR)    str1 = tr("Fixed a.o.a. polar");
+		if(Polar::curPolar()->polarType()==XFOIL::FIXEDSPEEDPOLAR)       str1 = tr("Fixed speed polar");
+		else if(Polar::curPolar()->polarType()==XFOIL::FIXEDLIFTPOLAR)   str1 = tr("Fixed lift polar");
+		else if(Polar::curPolar()->polarType()==XFOIL::RUBBERCHORDPOLAR) str1 = tr("Rubber chord polar");
+		else if(Polar::curPolar()->polarType()==XFOIL::FIXEDAOAPOLAR)    str1 = tr("Fixed a.o.a. polar");
 
 		painter.drawText(XPos,ZPos, dwidth, dD, Qt::AlignRight | Qt::AlignTop, str1);
 		D += dD;
-		if(Polar::curPolar()->polarType() ==XFLR5::FIXEDSPEEDPOLAR)
+		if(Polar::curPolar()->polarType() ==XFOIL::FIXEDSPEEDPOLAR)
 		{
 			ReynoldsFormat(strong, Polar::curPolar()->Reynolds());
 			strong ="Reynolds = " + strong;
@@ -594,7 +594,7 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
 			painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, strong);
 			D += dD;
 		}
-		else if(Polar::curPolar()->polarType()==XFLR5::FIXEDLIFTPOLAR)
+		else if(Polar::curPolar()->polarType()==XFOIL::FIXEDLIFTPOLAR)
 		{
 			ReynoldsFormat(strong, Polar::curPolar()->Reynolds());
 			strong = tr("Re.sqrt(Cl) = ") + strong;
@@ -605,7 +605,7 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
 			painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, strong);
 			D += dD;
 		}
-		else if(Polar::curPolar()->polarType()==XFLR5::RUBBERCHORDPOLAR)
+		else if(Polar::curPolar()->polarType()==XFOIL::RUBBERCHORDPOLAR)
 		{
 			ReynoldsFormat(strong, Polar::curPolar()->Reynolds());
 			strong = tr("Re.sqrt(Cl) = ") + strong;
@@ -616,7 +616,7 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
 			painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, strong);
 			D += dD;
 		}
-		else if(Polar::curPolar()->polarType()==XFLR5::FIXEDAOAPOLAR)
+		else if(Polar::curPolar()->polarType()==XFOIL::FIXEDAOAPOLAR)
 		{
 			strong = QString("Alpha = %1 "+QString::fromUtf8("°")).arg(Polar::curPolar()->aoa(),10,'f',2);
 			painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, strong);
@@ -639,20 +639,20 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
 
 		if(OpPoint::curOpp())
 		{
-			if(Polar::curPolar()->polarType()!=XFLR5::FIXEDSPEEDPOLAR)
+			if(Polar::curPolar()->polarType()!=XFOIL::FIXEDSPEEDPOLAR)
 			{
 				ReynoldsFormat(Result, OpPoint::curOpp()->Reynolds());
 				Result = "Re = "+ Result;
 				painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, Result);
 				D += dD;
 			}
-			if(Polar::curPolar()->polarType()==XFLR5::FIXEDLIFTPOLAR)
+			if(Polar::curPolar()->polarType()==XFOIL::FIXEDLIFTPOLAR)
 			{
 				Result = QString("Ma = %1").arg(OpPoint::curOpp()->m_Mach, 9, 'f', 4);
 				painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, Result);
 				D += dD;
 			}
-			if(Polar::curPolar()->polarType()!=XFLR5::FIXEDAOAPOLAR)
+			if(Polar::curPolar()->polarType()!=XFOIL::FIXEDAOAPOLAR)
 			{
 				Result = QString(tr("Alpha = %1")+QString::fromUtf8("°")).arg(OpPoint::curOpp()->m_Alpha, 8, 'f', 2);
 				painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, Result);

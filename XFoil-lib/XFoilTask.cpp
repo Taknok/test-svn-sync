@@ -73,7 +73,7 @@ void XFoilTask::run()
 		return;
 	}
 
-	if(m_pPolar->polarType()!=XFLR5::FIXEDAOAPOLAR) alphaSequence();
+	if(m_pPolar->polarType()!=XFOIL::FIXEDAOAPOLAR) alphaSequence();
     else                                            ReSequence();
 
 	m_bIsFinished = true;
@@ -106,7 +106,7 @@ bool XFoilTask::initializeTask(Foil *pFoil, Polar *pPolar, bool bStoreOpp, bool 
 	m_bIsFinished = false;
 
 	m_XFoilStream.setString(&m_XFoilLog);
-	if(!XFoilInstance.InitXFoilGeometry(m_pFoil))  return false;
+	if(!XFoilInstance.InitXFoilGeometry(&m_pFoil->n, m_pFoil->x,m_pFoil->y, m_pFoil->nx, m_pFoil->ny))  return false;
 	if(!XFoilInstance.InitXFoilAnalysis(m_pPolar, bViscous, m_XFoilStream)) return false;
 
 	return true;
