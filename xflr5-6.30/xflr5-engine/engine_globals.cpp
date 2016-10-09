@@ -52,6 +52,27 @@ void readCOLORREF(QDataStream &ar, QColor &color)
 	color = QColor(r,g,b,255);
 }
 
+
+/**
+* Reads the RGB int values of a color from binary datastream and returns a QColor. Inherited from the MFC versions of XFLR5.
+*@param ar the binary datastream
+*@param r the red component
+*@param g the green component
+*@param b the blue component
+*/
+void readCOLORREF(QDataStream &ar, int &r, int &g, int &b)
+{
+	qint32 colorref;
+
+	ar >> colorref;
+	b = (int)(colorref/256/256);
+	colorref -= b*256*256;
+	g = (int)(colorref/256);
+	r = colorref - g*256;
+}
+
+
+
 /**
 * Writes the RGB int values of a color to a binary datastream. Inherited from the MFC versions of XFLR5.
 *@param ar the binary datastream
@@ -67,6 +88,78 @@ void WriteCOLORREF(QDataStream &ar, QColor const &color)
 	colorref = b*256*256+g*256+r;
 	ar << colorref;
 }
+
+
+
+/**
+* Writes the RGB int values of a color to a binary datastream. Inherited from the MFC versions of XFLR5.
+*@param ar the binary datastream
+*@param r the red component
+*@param g the green component
+*@param b the blue component
+
+*/
+void WriteCOLORREF(QDataStream &ar, int r, int g, int b)
+{
+	qint32 colorref;
+
+	colorref = b*256*256+g*256+r;
+	ar << colorref;
+}
+
+
+
+/**
+* Reads the RGB int values of a color from binary datastream and returns a QColor. Inherited from the MFC versions of XFLR5.
+*@param ar the binary datastream
+*@param r the red component
+*@param g the green component
+*@param b the blue component
+*@param a the alpha component
+*/
+void readqColor(QDataStream &ar, int &r, int &g, int &b, int &a)
+{
+	uchar byte=0;
+
+	ar>>byte;//probably a format identificator
+	ar>>byte>>byte;
+	a = (int)byte;
+	ar>>byte>>byte;
+	r = (int)byte;
+	ar>>byte>>byte;
+	g = (int)byte;
+	ar>>byte>>byte;
+	b = (int)byte;
+	ar>>byte>>byte; //
+}
+
+/**
+* Writes the RGB int values of a color to a binary datastream. Inherited from the MFC versions of XFLR5.
+*@param ar the binary datastream
+*@param r the red component
+*@param g the green component
+*@param b the blue component
+*@param a the alpha component
+*/
+void writeqColor(QDataStream &ar, int r, int g, int b, int a)
+{
+	uchar byte;
+
+	byte = 1;
+	ar<<byte;
+	byte = a & 0xFF;
+	ar << byte<<byte;
+	byte = r & 0xFF;
+	ar << byte<<byte;
+	byte = g & 0xFF;
+	ar << byte<<byte;
+	byte = b & 0xFF;
+	ar << byte<<byte;
+	byte = 0;
+	ar << byte<<byte;
+}
+
+
 
 
 /**
@@ -1161,7 +1254,7 @@ double GetPlrPointFromAlpha(Foil *pFoil, double Re, double Alpha, int PlrVar, bo
 	for (i=0; i<Polar::s_oaPolar.size(); i++)
 	{
 		pPolar = (Polar*)Polar::s_oaPolar.at(i);
-		if((pPolar->polarType()==XFLR5::FIXEDSPEEDPOLAR) && (pPolar->foilName() == pFoil->foilName()))
+		if((pPolar->polarType()==XFOIL::FIXEDSPEEDPOLAR) && (pPolar->foilName() == pFoil->foilName()))
 		{
 			n++;
 			if(n>=2) break;
@@ -1180,7 +1273,7 @@ double GetPlrPointFromAlpha(Foil *pFoil, double Re, double Alpha, int PlrVar, bo
 	for (i=0; i< nPolars; i++)
 	{
 		pPolar = (Polar*)Polar::s_oaPolar.at(i);
-		if((pPolar->polarType()==XFLR5::FIXEDSPEEDPOLAR) &&
+		if((pPolar->polarType()==XFOIL::FIXEDSPEEDPOLAR) &&
 			(pPolar->foilName() == pFoil->foilName()) &&
 			pPolar->m_Alpha.size()>0)
 		{
@@ -1224,7 +1317,7 @@ double GetPlrPointFromAlpha(Foil *pFoil, double Re, double Alpha, int PlrVar, bo
 	for (i=0; i< nPolars; i++)
 	{
 		pPolar = (Polar*)Polar::s_oaPolar.at(i);
-		if((pPolar->polarType()== XFLR5::FIXEDSPEEDPOLAR) &&
+		if((pPolar->polarType()== XFOIL::FIXEDSPEEDPOLAR) &&
 		   (pPolar->foilName() == pFoil->foilName())  &&
 			pPolar->m_Alpha.size()>0)
 		{
@@ -1426,7 +1519,7 @@ double GetPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bool &bO
 	for (i = 0; i< Polar::s_oaPolar.size(); i++)
 	{
 		pPolar = (Polar*)Polar::s_oaPolar.at(i);
-		if((pPolar->polarType()== XFLR5::FIXEDSPEEDPOLAR) && (pPolar->foilName() == pFoil->foilName()))
+		if((pPolar->polarType()== XFOIL::FIXEDSPEEDPOLAR) && (pPolar->foilName() == pFoil->foilName()))
 		{
 			n++;
 			if(n>=2) break;
@@ -1445,7 +1538,7 @@ double GetPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bool &bO
 	for (i=0; i< nPolars; i++)
 	{
 		pPolar = (Polar*)Polar::s_oaPolar.at(i);
-		if((pPolar->polarType()== XFLR5::FIXEDSPEEDPOLAR) &&
+		if((pPolar->polarType()== XFOIL::FIXEDSPEEDPOLAR) &&
 		   (pPolar->foilName() == pFoil->foilName()) &&
 			pPolar->m_Cl.size()>0)
 		{
@@ -1488,7 +1581,7 @@ double GetPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bool &bO
 	for (i=0; i< nPolars; i++)
 	{
 		pPolar = (Polar*)Polar::s_oaPolar.at(i);
-		if((pPolar->polarType()== XFLR5::FIXEDSPEEDPOLAR) && (pPolar->foilName() == pFoil->foilName())  && pPolar->m_Cl.size()>0)
+		if((pPolar->polarType()== XFOIL::FIXEDSPEEDPOLAR) && (pPolar->foilName() == pFoil->foilName())  && pPolar->m_Cl.size()>0)
 		{
 			// we have found the first type 1 polar for this foil
 			pPolar->getClLimits(Clmin, Clmax);

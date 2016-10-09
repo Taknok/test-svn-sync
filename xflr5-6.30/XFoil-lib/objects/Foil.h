@@ -31,14 +31,9 @@
 #ifndef FOIL_H
 #define FOIL_H
 
-
-
-
-#include <QColor>
 #include <QPoint>
-#include <engine_params.h>
+#include <xfoil_params.h>
 #include <objects/CVector.h>
-#include <objects/CRectangle.h>
 #include <QTextStream>
 
 
@@ -108,8 +103,14 @@ public:
 	bool &showCenterLine(){return m_bCenterLine;}
 	int &foilWidth(){return m_FoilWidth;}
 	int &foilStyle(){return m_FoilStyle;}
-	QColor &foilColor(){return m_FoilColor;}
 	QString &foilName(){return m_FoilName;}
+
+	void getColor(int &r, int &g, int &b, int &a);
+	void setColor(int r, int g, int b, int a=255);
+	int red() {return m_red;}
+	int green() {return m_green;}
+	int blue() {return m_blue;}
+	int alphaChannel(){return m_alphaChannel;}
 
 	QString foilDescription() {return m_FoilDescription;}
 
@@ -155,7 +156,7 @@ private:
 
 	int m_FoilStyle;                     /**< the index of the style with which to draw the Foil */
 	int m_FoilWidth;                     /**< the width with which to draw the Foil */
-	QColor m_FoilColor;                  /**< the color with which to draw the Foil */
+	int m_red, m_blue, m_green, m_alphaChannel;    /**< the color with which to draw the Foil */
 
 	int m_iHighLight;                    /**< the index of the point to highlight in the display */
 

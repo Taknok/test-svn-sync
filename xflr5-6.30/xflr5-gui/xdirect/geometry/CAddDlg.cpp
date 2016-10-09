@@ -23,7 +23,7 @@
 
 #include "CAddDlg.h"
 #include <QGridLayout>
-#include <xfoil_analysis/XFoil.h>
+#include <XFoil.h>
 
 
 

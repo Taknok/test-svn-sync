@@ -183,6 +183,7 @@ QMiarex::QMiarex(QWidget *parent)
 	m_bShowCpScale       = true;
 	m_bIs2DScaleSet      = false;
 	m_bResetTextLegend   = true;
+	m_bShowFlapMoments   = true;
 
 
 	m_LLTMaxIterations          = 100;
@@ -570,6 +571,8 @@ void QMiarex::setControls()
 	s_pMainFrame->m_pShowFinCurve->setChecked(m_bShowWingCurve[3]);
 
 	s_pMainFrame->m_pShowCurWOppOnly->setChecked(m_bCurPOppOnly);
+
+	s_pMainFrame->m_pShowFlapMoments->setChecked(m_bShowFlapMoments);
 
 	m_pctrlAnalyze->setEnabled(m_pCurWPolar);
 	m_pctrlAlphaMin->setEnabled(m_pCurWPolar);
@@ -3858,7 +3861,7 @@ void QMiarex::onEditCurObject()
 			m_pCurPOpp = NULL;
 		}
 
-		setPlane();
+		setPlane(m_pCurPlane->planeName());
 		s_pMainFrame->updatePlaneListBox();
 		m_bIs2DScaleSet = false;
 		setScale();
@@ -3962,10 +3965,9 @@ void QMiarex::onEditCurPlane()
 			Objects3D::deletePlaneResults(m_pCurPlane, false);// will also set new surface and Aerochord in WPolars
 			m_pCurWPolar = NULL;
 			m_pCurPOpp = NULL;
-
 		}
 
-		setPlane();
+		setPlane(m_pCurPlane->planeName());
 		s_pMainFrame->updatePlaneListBox();
 		m_bIs2DScaleSet = false;
 		setScale();
@@ -4082,7 +4084,7 @@ void QMiarex::onEditCurWing()
 
 		}
 
-		setPlane();
+		setPlane(m_pCurPlane->planeName());
 		s_pMainFrame->updatePlaneListBox();
 		m_bIs2DScaleSet = false;
 		setScale();
@@ -4420,7 +4422,8 @@ void QMiarex::onExportCurPOpp()
 				out << strong;
 			}
 			out << ("\n");
-			m_pWOpp[iw]->exportWOpp(out, exporttype);
+			bool bCSV = (exporttype != XFLR5::TXT);
+			m_pWOpp[iw]->exportWOpp(out, bCSV);
 		}
 	}
 
@@ -5657,6 +5660,16 @@ void QMiarex::onShowAllWPlrOpps()
 }
 
 
+/**
+ * The user has toggled the display of flap moment value together with the other
+ * operating point results in the 3D and operating point views
+ */
+void QMiarex::onShowFlapMoments()
+{
+	m_bShowFlapMoments = !m_bShowFlapMoments;
+	m_bResetTextLegend = true;
+	updateView();
+}
 
 
 /**
@@ -6289,7 +6302,7 @@ void QMiarex::paintPlaneOppLegend(QPainter &painter, QRect drawRect)
 
 	if(m_pCurPOpp && m_pCurPOpp->m_WPolarType==XFLR5::STABILITYPOLAR) ZPos -= dheight;
 	if(m_pCurPOpp && m_pCurPOpp->m_bOut)                              ZPos -= dheight;
-	if(m_pCurPOpp && m_pCurPOpp->analysisMethod()!=XFLR5::LLTMETHOD)
+	if(m_pCurPOpp && m_pCurPOpp->analysisMethod()!=XFLR5::LLTMETHOD && m_bShowFlapMoments)
 	{
 		if(m_pCurPOpp->m_pPlaneWOpp[0]) ZPos -= dheight*m_pCurPOpp->m_pPlaneWOpp[0]->m_nFlaps;
 		if(m_pCurPOpp->m_pPlaneWOpp[2]) ZPos -= dheight*m_pCurPOpp->m_pPlaneWOpp[2]->m_nFlaps;
@@ -6376,7 +6389,7 @@ void QMiarex::paintPlaneOppLegend(QPainter &painter, QRect drawRect)
 	D+=dheight;
 	painter.drawText(RightPos, ZPos+D, dwidth, dheight, Qt::AlignRight | Qt::AlignTop, Result);
 
-	if(m_pCurPOpp->analysisMethod()!=XFLR5::LLTMETHOD)
+	if(m_pCurPOpp->analysisMethod()!=XFLR5::LLTMETHOD && m_bShowFlapMoments)
 	{
 		if(m_pCurPOpp->m_pPlaneWOpp[0])
 		{

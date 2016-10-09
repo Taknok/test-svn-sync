@@ -35,7 +35,6 @@ double XFoil::vaccel = 0.01;
 
 XFoil::XFoil()
 {
-	m_pFoil = NULL;
 	m_pOutStream = NULL;
 //------ primary dimensioning limit parameters
 
@@ -44,7 +43,7 @@ XFoil::XFoil()
 //	npx=8;//number of polars and reference polars
 //	nfx=128;// number of points in one reference polar
 //	ncom = 73;
-	
+
 	// imx   number of complex mapping coefficients  cn
 	m_bTrace = false;
 	
@@ -4008,25 +4007,22 @@ bool XFoil::Initialize()
 
 
 
-bool XFoil::InitXFoilGeometry(void *pFoilPtr)
+bool XFoil::InitXFoilGeometry(int*fn, double*fx, double*fy, double*fnx, double*fny)
 {
-	//loads pFoil in XFoil,
+	//loads the Foil's geometry in XFoil,
 	//calculates normal vectors,
 	//and sets results in current foil
 
-	if(!pFoilPtr) return false;
-
-	m_pFoil = (Foil*)pFoilPtr;
 
 	int i, k;
 
-	for (i =0; i<m_pFoil->n; i++)
+	for (i =0; i<*fn; i++)
 	{
-		xb[i+1] = m_pFoil->x[i];
-		yb[i+1] = m_pFoil->y[i];
+		xb[i+1] = fx[i];
+		yb[i+1] = fy[i];
 	}
 
-	nb = m_pFoil->n;
+	nb = *fn;
 	lflap  = false;
 	lbflap = false;
 
@@ -4044,15 +4040,15 @@ bool XFoil::InitXFoilGeometry(void *pFoilPtr)
 		CheckAngles();
 		for (k=0; k<n;k++)
 		{
-			m_pFoil->nx[k] = nx[k+1];
-			m_pFoil->ny[k] = ny[k+1];
+			fnx[k] = nx[k+1];
+			fny[k] = ny[k+1];
 		}
-		m_pFoil->n = n;
+		*fn = n;
 		return true;
 	}
 	else
 	{
-		QString str = QObject::tr("Unrecognized foil format")+" "+m_pFoil->foilName();
+		QString str = QObject::tr("Unrecognized foil format");
 		WriteString(str);
 		return false;
 	}
@@ -4073,7 +4069,7 @@ bool XFoil::InitXFoilAnalysis(void *pPolarPtr, bool bViscous, QTextStream &outSt
 	lipan = false;
 
 	reinf1 = pPolar->Reynolds();
-	if (pPolar->polarType()==XFLR5::FIXEDAOAPOLAR) alfa = pPolar->aoa()*PI/180.0;
+	if (pPolar->polarType()==XFOIL::FIXEDAOAPOLAR) alfa = pPolar->aoa()*PI/180.0;
 
 	minf1  = pPolar->Mach();
 	retyp  = pPolar->ReType();
@@ -12933,7 +12929,7 @@ void XFoil::inter(double x0[], double xp0[], double y0[], double yp0[], double s
 
 
 
-void XFoil::Interpolate(double xf1[], double yf1[], int n1,
+void XFoil::interpolate(double xf1[], double yf1[], int n1,
 						double xf2[], double yf2[], int n2,
 						double mixt)
 {
@@ -13187,7 +13183,7 @@ void XFoil::lerscl(double *x, double *xp, double* y, double *yp,
 
 
 
-void XFoil::SetFoilFlap(void *pFoilPtr)
+void XFoil::setFoilFlap(void *pFoilPtr)
 {
 	if(!pFoilPtr) return;
 	Foil *pFoil = (Foil*)pFoilPtr;

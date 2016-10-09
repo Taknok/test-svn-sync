@@ -43,8 +43,8 @@
 #include <objects/Foil.h>
 #include <objects/OpPoint.h>
 #include <graph/QGraph.h>
-#include <xfoil_analysis/XFoil.h>
 #include "analysis/XFoilAnalysisDlg.h"
+#include <XFoil.h>
 
 class MainFrame; // to shut the compiler up
 

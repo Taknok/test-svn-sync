@@ -63,6 +63,7 @@
 
 #include "XDirectStyleDlg.h"
 
+
 Polar QXDirect::s_refPolar;
 
 QList<double> QXDirect::s_ReList;
@@ -381,8 +382,10 @@ void QXDirect::createOppCurves(OpPoint *pOpp)
 	{
 		if(!pOpPoint || !pOpPoint->isVisible()) return;
 		pCurve1    = m_CpGraph.addCurve();
-		
-		pCurve1->setLineStyle(pOpPoint->oppStyle(), pOpPoint->oppWidth(), pOpPoint->oppColor(), pOpPoint->pointStyle(), pOpPoint->isVisible());
+		int r,g,b,a;
+		pOpPoint->getColor(r,g,b,a);
+		QColor clr(r,g,b,a);
+		pCurve1->setLineStyle(pOpPoint->oppStyle(), pOpPoint->oppWidth(), colour(pOpPoint), pOpPoint->pointStyle(), pOpPoint->isVisible());
 
 		str = QString("-Re=%1-Alpha=%2").arg(pOpPoint->Reynolds(),8,'f',0).arg(pOpPoint->aoa(),5,'f',2);
 		str = pOpPoint->foilName()+str;
@@ -395,7 +398,7 @@ void QXDirect::createOppCurves(OpPoint *pOpp)
 			Curve *pCpi = m_CpGraph.addCurve();
 			pCpi->setPoints(pOpPoint->pointStyle());
 			pCpi->setStyle(1);
-			pCpi->setColor(pOpPoint->oppColor().darker(150));
+			pCpi->setColor(colour(pOpPoint).darker(150));
 			pCpi->setWidth(pOpPoint->oppWidth());
 			str= QString("-Re=%1-Alpha=%2_Inviscid").arg(pOpPoint->Reynolds(),8,'f',0).arg(pOpPoint->aoa(),5,'f',2);
 			str = pOpPoint->foilName()+str;
@@ -413,7 +416,7 @@ void QXDirect::createOppCurves(OpPoint *pOpp)
 				pCurve1    = m_CpGraph.addCurve();
 
 //				pCurve1->setPoints(pOpp->pointStyle());
-				pCurve1->setLineStyle(pOpp->oppStyle(), pOpp->oppWidth(), pOpp->oppColor(), pOpp->pointStyle(), pOpp->isVisible());
+				pCurve1->setLineStyle(pOpp->oppStyle(), pOpp->oppWidth(), colour(pOpp), pOpp->pointStyle(), pOpp->isVisible());
 
 				str= QString("-Re=%1-Alpha=%2").arg(pOpp->Reynolds(),8,'f',0).arg(pOpp->aoa(),5,'f',2);
 				str = pOpp->foilName()+str;
@@ -446,10 +449,10 @@ void QXDirect::createPolarCurves()
 
 		if (pPolar->isVisible() && pPolar->m_Alpha.size()>0)
 		{
-			if ((pPolar->polarType()==XFLR5::FIXEDSPEEDPOLAR  && m_bType1) ||
-				(pPolar->polarType()==XFLR5::FIXEDLIFTPOLAR   && m_bType2) ||
-				(pPolar->polarType()==XFLR5::RUBBERCHORDPOLAR && m_bType3) ||
-				(pPolar->polarType()==XFLR5::FIXEDAOAPOLAR    && m_bType4))
+			if ((pPolar->polarType()==XFOIL::FIXEDSPEEDPOLAR  && m_bType1) ||
+				(pPolar->polarType()==XFOIL::FIXEDLIFTPOLAR   && m_bType2) ||
+				(pPolar->polarType()==XFOIL::RUBBERCHORDPOLAR && m_bType3) ||
+				(pPolar->polarType()==XFOIL::FIXEDAOAPOLAR    && m_bType4))
 			{
 
 				Curve* pCurve[MAXPOLARGRAPHS];
@@ -461,7 +464,7 @@ void QXDirect::createPolarCurves()
 //					pCurve[ig]->setStyle(pPolar->polarStyle());
 //					pCurve[ig]->setWidth(pPolar->polarWidth());
 //					pCurve[ig]->setColor(pPolar->polarColor());
-					pCurve[ig]->setLineStyle(pPolar->polarStyle(), pPolar->polarWidth(), pPolar->polarColor(), pPolar->pointStyle(), pPolar->isVisible());
+					pCurve[ig]->setLineStyle(pPolar->polarStyle(), pPolar->polarWidth(), colour(pPolar), pPolar->pointStyle(), pPolar->isVisible());
 
 					fillPolarCurve(pCurve[ig], pPolar, m_PlrGraph[ig]->xVariable(), m_PlrGraph[ig]->yVariable());
 					pCurve[ig]->setCurveName(pPolar->polarName());
@@ -474,7 +477,7 @@ void QXDirect::createPolarCurves()
 						pTr2Curve->setStyle(1);
 						pTr2Curve->setWidth(pPolar->polarWidth());
 						pTr2Curve->setColor(pPolar->polarColor());*/
-						pTr2Curve[ig].setLineStyle(pPolar->polarStyle(), pPolar->polarWidth(), pPolar->polarColor(), pPolar->pointStyle(), pPolar->isVisible());
+						pTr2Curve[ig].setLineStyle(pPolar->polarStyle(), pPolar->polarWidth(), colour(pPolar), pPolar->pointStyle(), pPolar->isVisible());
 						fillPolarCurve(pTr2Curve, pPolar, m_PlrGraph[ig]->xVariable(), 7);
 
 						str = pPolar->polarName() + " / Xtr1";
@@ -1012,10 +1015,10 @@ void QXDirect::loadSettings(QSettings *pSettings)
 		s_refPolar.aoa()      = pSettings->value("ASpec").toDouble();
 
 		b = pSettings->value("Type").toInt();
-		if(b==1)      s_refPolar.setPolarType(XFLR5::FIXEDSPEEDPOLAR);
-		else if(b==2) s_refPolar.setPolarType(XFLR5::FIXEDLIFTPOLAR);
-		else if(b==3) s_refPolar.setPolarType(XFLR5::RUBBERCHORDPOLAR);
-		else if(b==4) s_refPolar.setPolarType(XFLR5::FIXEDAOAPOLAR);
+		if(b==1)      s_refPolar.setPolarType(XFOIL::FIXEDSPEEDPOLAR);
+		else if(b==2) s_refPolar.setPolarType(XFOIL::FIXEDLIFTPOLAR);
+		else if(b==3) s_refPolar.setPolarType(XFOIL::RUBBERCHORDPOLAR);
+		else if(b==4) s_refPolar.setPolarType(XFOIL::FIXEDAOAPOLAR);
 
 
 		int NRe = pSettings->value("NReynolds").toInt();
@@ -1160,8 +1163,8 @@ void QXDirect::onAnimateSingle()
 			OpPoint::setCurOpp(pOpPoint);
 
 			//select current OpPoint in Combobox
-			if(Polar::curPolar()->polarType()!=XFLR5::FIXEDAOAPOLAR) str = QString("%1").arg(OpPoint::curOpp()->m_Alpha,8,'f',2);
-			else                                              str = QString("%1").arg(OpPoint::curOpp()->Reynolds(),8,'f',2);
+			if(Polar::curPolar()->polarType()!=XFOIL::FIXEDAOAPOLAR) str = QString("%1").arg(OpPoint::curOpp()->m_Alpha,8,'f',2);
+			else                                                     str = QString("%1").arg(OpPoint::curOpp()->Reynolds(),8,'f',2);
 			indexCbBox = s_pMainFrame->m_pctrlOpPoint->findText(str);
 			if(indexCbBox>=0) s_pMainFrame->m_pctrlOpPoint->setCurrentIndex(indexCbBox);
 
@@ -1987,8 +1990,8 @@ void QXDirect::onDelCurOpp()
 	if (!pOpPoint) return;
 	QString strong,str;
 	strong = tr("Are you sure you want to delete the Operating Point\n");
-	if(Polar::curPolar()->polarType()!=XFLR5::FIXEDAOAPOLAR) str = QString("Alpha = %1").arg(pOpPoint->aoa(),0,'f',2);
-	else                                        str = QString("Reynolds = %1").arg(pOpPoint->Reynolds(),0,'f',0);
+	if(Polar::curPolar()->polarType()!=XFOIL::FIXEDAOAPOLAR) str = QString("Alpha = %1").arg(pOpPoint->aoa(),0,'f',2);
+	else                                                     str = QString("Reynolds = %1").arg(pOpPoint->Reynolds(),0,'f',0);
 	strong += str;
 	strong += "  ?";
 
@@ -2197,7 +2200,7 @@ void QXDirect::onCadd()
 	{
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(&m_BufferFoil);
-		pNewFoil->foilColor()  = MainFrame::getColor(0);
+		setRandomFoilColor(pNewFoil);
 		pNewFoil->foilStyle() = 1;
 		pNewFoil->foilWidth() = 1;
 		pNewFoil->showPoints() = false;
@@ -2212,7 +2215,8 @@ void QXDirect::onCadd()
 	{
 		OpPoint::setCurOpp((OpPoint*)ptr);
 		setBufferFoil();
-		m_pXFoil->InitXFoilGeometry(Foil::curFoil());
+		Foil *pFoil = Foil::curFoil();
+		m_pXFoil->InitXFoilGeometry(&pFoil->n, pFoil->x,pFoil->y, pFoil->nx, pFoil->ny);
 	}
 
 	m_bShowPanels = bState;
@@ -2235,7 +2239,7 @@ void QXDirect::onDerotateFoil()
 	pNewFoil->foilStyle() = 0;
 	pNewFoil->foilWidth() = 1;
 	pNewFoil->showPoints() = false;
-	pNewFoil->foilColor()  = MainFrame::getColor(0);
+	setRandomFoilColor(pNewFoil);
 
 	double angle = pNewFoil->deRotate();
 	str = QString(tr("The foil has been de-rotated by %1 degrees")).arg(angle,6,'f',3);
@@ -2272,7 +2276,7 @@ void QXDirect::onEditCurPolar()
 	LineStyle style;
 	style.m_Style = Polar::curPolar()->polarStyle();
 	style.m_Width= Polar::curPolar()->polarWidth();
-	style.m_Color= Polar::curPolar()->polarColor();
+	style.m_Color= colour(Polar::curPolar());
 	style.m_bIsVisible= Polar::curPolar()->isVisible();
 	style.m_PointStyle= Polar::curPolar()->pointStyle();
 
@@ -2291,7 +2295,7 @@ void QXDirect::onEditCurPolar()
 	}
 	Polar::curPolar()->polarStyle() = style.m_Style;
 	Polar::curPolar()->polarWidth() = style.m_Width;
-	Polar::curPolar()->polarColor() = style.m_Color;
+	Polar::curPolar()->setColor(style.m_Color.red(), style.m_Color.green(), style.m_Color.blue());
 	Polar::curPolar()->pointStyle() = style.m_PointStyle;
 	Polar::curPolar()->isVisible()  = style.m_bIsVisible;
 	m_bResetCurves = true;
@@ -2754,7 +2758,7 @@ void QXDirect::onFoilCoordinates()
 
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(&m_BufferFoil);
-		pNewFoil->foilColor()  = MainFrame::getColor(0);
+		setRandomFoilColor(pNewFoil);
 		pNewFoil->foilStyle() = 0;
 		pNewFoil->foilWidth() = 1;
 		pNewFoil->showPoints() = false;
@@ -2776,7 +2780,9 @@ void QXDirect::onFoilCoordinates()
 		m_BufferFoil.m_TEYHinge = Yh;
 //		SetFoilFlap(&m_BufferFoil);
 		setBufferFoil();
-		m_pXFoil->InitXFoilGeometry(Foil::curFoil());
+		Foil *pFoil = Foil::curFoil();
+		m_pXFoil->InitXFoilGeometry(&pFoil->n, pFoil->x,pFoil->y, pFoil->nx, pFoil->ny);
+
 	}
 
 	m_BufferFoil.setHighLight(-1);
@@ -2809,7 +2815,7 @@ void QXDirect::onFoilGeom()
 	{
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(&m_BufferFoil);
-		pNewFoil->foilColor()  = MainFrame::getColor(0);
+		setRandomFoilColor(pNewFoil);
 		pNewFoil->foilStyle() = 0;
 		pNewFoil->foilWidth() = 1;
 		pNewFoil->showPoints() = false;
@@ -2825,7 +2831,8 @@ void QXDirect::onFoilGeom()
 	{
 		OpPoint::setCurOpp((OpPoint*)ptr);
 		setBufferFoil();
-		m_pXFoil->InitXFoilGeometry(Foil::curFoil());
+		Foil *pFoil = Foil::curFoil();
+		m_pXFoil->InitXFoilGeometry(&pFoil->n, pFoil->x,pFoil->y, pFoil->nx, pFoil->ny);
 	}
 
 	updateView();
@@ -2993,10 +3000,10 @@ void QXDirect::onImportXFoilPolar()
 		QMessageBox::warning(s_pMainFrame, tr("Warning"), str);
 		return;
 	}
-	if     (pPolar->ReType() ==1 && pPolar->MaType() ==1) pPolar->polarType() = XFLR5::FIXEDSPEEDPOLAR;
-	else if(pPolar->ReType() ==2 && pPolar->MaType() ==2) pPolar->polarType() = XFLR5::FIXEDLIFTPOLAR;
-	else if(pPolar->ReType() ==3 && pPolar->MaType() ==1) pPolar->polarType() = XFLR5::RUBBERCHORDPOLAR;
-	else                                                  pPolar->polarType() = XFLR5::FIXEDSPEEDPOLAR;
+	if     (pPolar->ReType() ==1 && pPolar->MaType() ==1) pPolar->polarType() = XFOIL::FIXEDSPEEDPOLAR;
+	else if(pPolar->ReType() ==2 && pPolar->MaType() ==2) pPolar->polarType() = XFOIL::FIXEDLIFTPOLAR;
+	else if(pPolar->ReType() ==3 && pPolar->MaType() ==1) pPolar->polarType() = XFOIL::RUBBERCHORDPOLAR;
+	else                                                  pPolar->polarType() = XFOIL::FIXEDSPEEDPOLAR;
 
 
 	bRead  = ReadAVLString(in, Line, strong);
@@ -3117,7 +3124,8 @@ void QXDirect::onImportXFoilPolar()
 	str = QString("_N%1").arg(pPolar->NCrit(),0,'f',1);
 	pPolar->polarName() += str + "_Imported";
 
-	pPolar->polarColor() = MainFrame::getColor(1);
+	QColor clr = MainFrame::getColor(1);
+	pPolar->setColor(clr.red(), clr.green(), clr.blue());
 
 	Polar::addPolar(pPolar);
 
@@ -3203,7 +3211,8 @@ void QXDirect::onImportJavaFoilPolar()
 								.arg(pPolar->Reynolds()/1000000.0,0,'f',2)
 								.arg(pPolar->Mach(),0,'f',2);
 
-			pPolar->polarColor() = MainFrame::getColor(1);
+			QColor clr = MainFrame::getColor(1);
+			pPolar->setColor(clr.red(), clr.green(), clr.blue());
 			Polar::addPolar(pPolar);
 			Polar::setCurPolar(pPolar);
 			NPolars++;
@@ -3267,7 +3276,7 @@ void QXDirect::onInterpolateFoils()
 	{
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(&m_BufferFoil);
-		pNewFoil->foilColor()  = MainFrame::getColor(0);
+		setRandomFoilColor(pNewFoil);
 		pNewFoil->foilStyle() = 0;
 		pNewFoil->foilWidth() = 1;
 		pNewFoil->showPoints() = false;
@@ -3282,7 +3291,8 @@ void QXDirect::onInterpolateFoils()
 	else
 	{
 		setBufferFoil();// restore buffer foil.. from current foil
-		m_pXFoil->InitXFoilGeometry(Foil::curFoil());
+		Foil *pFoil = Foil::curFoil();
+		m_pXFoil->InitXFoilGeometry(&pFoil->n, pFoil->x,pFoil->y, pFoil->nx, pFoil->ny);
 	}
 
 	updateView();
@@ -3320,7 +3330,7 @@ void QXDirect::onNacaFoils()
 
 		Foil *pNewFoil = new Foil;
 		pNewFoil->copyFoil(&m_BufferFoil);
-		pNewFoil->foilColor()  = MainFrame::getColor(0);
+		setRandomFoilColor(pNewFoil);
 		pNewFoil->foilStyle() = 0;
 		pNewFoil->foilWidth() = 1;
 		pNewFoil->showPoints() = false;
@@ -3339,7 +3349,8 @@ void QXDirect::onNacaFoils()
 		Foil::setCurFoil((Foil*)ptr0);
 		OpPoint::setCurOpp((OpPoint*)ptr);
 		setBufferFoil();
-		m_pXFoil->InitXFoilGeometry(Foil::curFoil());
+		Foil *pFoil = Foil::curFoil();
+		m_pXFoil->InitXFoilGeometry(&pFoil->n, pFoil->x,pFoil->y, pFoil->nx, pFoil->ny);
 	}
 	setControls();
 	updateView();
@@ -3357,7 +3368,8 @@ void QXDirect::onNormalizeFoil()
 
 
 	double length = Foil::curFoil()->normalizeGeometry();
-	m_pXFoil->InitXFoilGeometry(Foil::curFoil());
+	Foil *pFoil = Foil::curFoil();
+	m_pXFoil->InitXFoilGeometry(&pFoil->n, pFoil->x,pFoil->y, pFoil->nx, pFoil->ny);
 	setBufferFoil();
 	str = QString(tr("The foil has been normalized from %1  to 1.000")).arg(length,7,'f',3);
 	emit projectModified();
@@ -3513,7 +3525,7 @@ void QXDirect::onRefinePanelsGlobally()
 	{
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(&m_BufferFoil);
-		pNewFoil->foilColor()  = MainFrame::getColor(0);
+		setRandomFoilColor(pNewFoil);
 		pNewFoil->foilStyle() = 0;
 		pNewFoil->foilWidth() = 1;
 		pNewFoil->showPoints() = true;
@@ -3528,7 +3540,8 @@ void QXDirect::onRefinePanelsGlobally()
 		//reset everything
 		OpPoint::setCurOpp((OpPoint*)ptr);
 		setBufferFoil();
-		m_pXFoil->InitXFoilGeometry(Foil::curFoil());
+		Foil *pFoil = Foil::curFoil();
+		m_pXFoil->InitXFoilGeometry(&pFoil->n, pFoil->x,pFoil->y, pFoil->nx, pFoil->ny);
 	}
 
 	m_bShowPanels = bState;//restore as it was
@@ -3820,7 +3833,7 @@ void QXDirect::onSetFlap()
 	{
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(&m_BufferFoil);
-		pNewFoil->foilColor()  = MainFrame::getColor(0);
+		setRandomFoilColor(pNewFoil);
 		pNewFoil->foilStyle() = 0;
 		pNewFoil->foilWidth() = 1;
 		pNewFoil->showPoints() = false;
@@ -3838,7 +3851,8 @@ void QXDirect::onSetFlap()
 		//reset everything
 		OpPoint::setCurOpp((OpPoint*)ptr);
 		setBufferFoil();
-		m_pXFoil->InitXFoilGeometry(Foil::curFoil());
+		Foil *pFoil = Foil::curFoil();
+		m_pXFoil->InitXFoilGeometry(&pFoil->n, pFoil->x,pFoil->y, pFoil->nx, pFoil->ny);
 	}
 
 	updateView();
@@ -3867,7 +3881,7 @@ void QXDirect::onSetLERadius()
 	{
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(&m_BufferFoil);
-		pNewFoil->foilColor()  = MainFrame::getColor(0);
+		setRandomFoilColor(pNewFoil);
 		pNewFoil->foilStyle() = 0;
 		pNewFoil->foilWidth() = 1;
 		pNewFoil->showPoints() = false;
@@ -3884,7 +3898,8 @@ void QXDirect::onSetLERadius()
 		//reset everything
 		OpPoint::setCurOpp((OpPoint*)ptr);
 		setBufferFoil();
-		m_pXFoil->InitXFoilGeometry(Foil::curFoil());
+		Foil *pFoil = Foil::curFoil();
+		m_pXFoil->InitXFoilGeometry(&pFoil->n, pFoil->x,pFoil->y, pFoil->nx, pFoil->ny);
 	}
 
 	updateView();
@@ -3915,7 +3930,7 @@ void QXDirect::onSetTEGap()
 	{
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(&m_BufferFoil);
-		pNewFoil->foilColor()  = MainFrame::getColor(0);
+		setRandomFoilColor(pNewFoil);
 		pNewFoil->foilStyle() = 0;
 		pNewFoil->foilWidth() = 1;
 		pNewFoil->showPoints() = false;
@@ -3932,7 +3947,8 @@ void QXDirect::onSetTEGap()
 		//reset everything
 		OpPoint::setCurOpp((OpPoint*)ptr);
 		setBufferFoil();
-		m_pXFoil->InitXFoilGeometry(Foil::curFoil());
+		Foil *pFoil = Foil::curFoil();
+		m_pXFoil->InitXFoilGeometry(&pFoil->n, pFoil->x,pFoil->y, pFoil->nx, pFoil->ny);
 	}
 
 	updateView();
@@ -4168,7 +4184,7 @@ void QXDirect::readParams()
 	else if (m_pctrlSpec3->isChecked()) s_bAlpha = false;
 
 
-	if(Polar::curPolar()->polarType()!=XFLR5::FIXEDAOAPOLAR)
+	if(Polar::curPolar()->polarType()!=XFOIL::FIXEDAOAPOLAR)
 	{
 		if(s_bAlpha)
 		{
@@ -4268,10 +4284,9 @@ void QXDirect::saveSettings(QSettings *pSettings)
 		pSettings->setValue("Mach", s_refPolar.Mach());
 		pSettings->setValue("ASpec", s_refPolar.aoa());
 
-		if(s_refPolar.polarType()==XFLR5::FIXEDSPEEDPOLAR)      pSettings->setValue("Type", 1);
-		else if(s_refPolar.polarType()==XFLR5::FIXEDSPEEDPOLAR) pSettings->setValue("Type", 2);
-		else if(s_refPolar.polarType()==XFLR5::FIXEDAOAPOLAR)   pSettings->setValue("Type", 4);
-		else if(s_refPolar.polarType()==XFLR5::STABILITYPOLAR)  pSettings->setValue("Type", 7);
+		if(s_refPolar.polarType()==XFOIL::FIXEDSPEEDPOLAR)       pSettings->setValue("Type", 1);
+		else if(s_refPolar.polarType()==XFOIL::RUBBERCHORDPOLAR) pSettings->setValue("Type", 2);
+		else if(s_refPolar.polarType()==XFOIL::FIXEDAOAPOLAR)    pSettings->setValue("Type", 4);
 
 		pSettings->setValue("NReynolds", s_ReList.count());
 		for (int i=0; i<s_ReList.count(); i++)
@@ -4307,7 +4322,7 @@ void QXDirect::setAnalysisParams()
 
 	if(Polar::curPolar())
 	{
-		if(Polar::curPolar()->polarType()!=XFLR5::FIXEDAOAPOLAR)
+		if(Polar::curPolar()->polarType()!=XFOIL::FIXEDAOAPOLAR)
 		{
 			m_pctrlAlphaMin->setPrecision(3);
 			m_pctrlAlphaMax->setPrecision(3);
@@ -4340,7 +4355,7 @@ void QXDirect::setAnalysisParams()
 	setOpPointSequence();
 	if(Polar::curPolar())
 	{
-		if(Polar::curPolar()->polarType()!=XFLR5::FIXEDAOAPOLAR)
+		if(Polar::curPolar()->polarType()!=XFOIL::FIXEDAOAPOLAR)
 		{
 
 		}
@@ -4365,7 +4380,7 @@ void QXDirect::setBufferFoil()
 	m_BufferFoil.copyFoil(Foil::curFoil());
 
 	m_BufferFoil.foilName()  = Foil::curFoil()->foilName();
-	m_BufferFoil.foilColor() = Foil::curFoil()->foilColor();
+	m_BufferFoil.setColor(Foil::curFoil()->red(), Foil::curFoil()->green(), Foil::curFoil()->blue(), Foil::curFoil()->alphaChannel());
 	m_BufferFoil.foilStyle() = Foil::curFoil()->foilStyle();
 	m_BufferFoil.foilWidth() = Foil::curFoil()->foilWidth();
 }
@@ -4382,7 +4397,7 @@ void QXDirect::setCurveParams()
 		{
 			if(Polar::curPolar()->isVisible())  m_pctrlShowCurve->setChecked(true);  else  m_pctrlShowCurve->setChecked(false);
 
-			m_LineStyle.m_Color = Polar::curPolar()->polarColor();
+			m_LineStyle.m_Color = colour(Polar::curPolar());
 			m_LineStyle.m_Style = Polar::curPolar()->polarStyle();
 			m_LineStyle.m_Width = Polar::curPolar()->polarWidth();
 			m_LineStyle.m_PointStyle = Polar::curPolar()->pointStyle();
@@ -4400,7 +4415,7 @@ void QXDirect::setCurveParams()
 		{
 			if(OpPoint::curOpp()->isVisible())  m_pctrlShowCurve->setChecked(true);  else  m_pctrlShowCurve->setChecked(false);
 
-			m_LineStyle.m_Color  = OpPoint::curOpp()->oppColor();
+			m_LineStyle.m_Color  = colour(OpPoint::curOpp());
 			m_LineStyle.m_Style  = OpPoint::curOpp()->oppStyle();
 			m_LineStyle.m_Width  = OpPoint::curOpp()->oppWidth();
 			m_LineStyle.m_PointStyle = OpPoint::curOpp()->pointStyle();
@@ -4437,8 +4452,11 @@ Foil* QXDirect::setFoil(Foil* pFoil)
 		}
 	}
 
+	Foil *pCurFoil = Foil::curFoil();
+	bool bRes = false;
+	if(pCurFoil) bRes = m_pXFoil->InitXFoilGeometry(&pCurFoil->n, pCurFoil->x,pCurFoil->y, pCurFoil->nx, pCurFoil->ny);
 
-	if(Foil::curFoil() && !m_pXFoil->InitXFoilGeometry(Foil::curFoil()))
+	if(pCurFoil && !bRes)
 	{
 		Foil::setCurFoil(NULL);
 	}
@@ -4627,7 +4645,7 @@ void QXDirect::setOpPointSequence()
 	}
 
 
-	if(Polar::curPolar() && Polar::curPolar()->polarType()!=XFLR5::FIXEDAOAPOLAR)
+	if(Polar::curPolar() && Polar::curPolar()->polarType()!=XFOIL::FIXEDAOAPOLAR)
 	{
 		if(m_pctrlSpec3->isChecked())
 		{
@@ -4651,7 +4669,7 @@ void QXDirect::setOpPointSequence()
 		m_pctrlSpec2->setEnabled(true);
 		m_pctrlSpec3->setEnabled(false);
 	}
-	else if(Polar::curPolar() && Polar::curPolar()->polarType()==XFLR5::FIXEDAOAPOLAR)
+	else if(Polar::curPolar() && Polar::curPolar()->polarType()==XFOIL::FIXEDAOAPOLAR)
 	{
 		m_pctrlSpec3->setChecked(true);
 		s_bAlpha = true;		// no choice with type 4 polars
@@ -4925,7 +4943,7 @@ void QXDirect::updateCurveStyle()
 {
 	if(m_bPolarView && Polar::curPolar())
 	{
-		Polar::curPolar()->polarColor() = m_LineStyle.m_Color;
+		Polar::curPolar()->setColor(m_LineStyle.m_Color.red(), m_LineStyle.m_Color.green(), m_LineStyle.m_Color.blue());
 		Polar::curPolar()->polarStyle() = m_LineStyle.m_Style;
 		Polar::curPolar()->polarWidth() = m_LineStyle.m_Width;
 		Polar::curPolar()->pointStyle() = m_LineStyle.m_PointStyle;
@@ -4933,7 +4951,7 @@ void QXDirect::updateCurveStyle()
 	}
 	else if (!m_bPolarView && OpPoint::curOpp())
 	{
-		OpPoint::curOpp()->oppColor() = m_LineStyle.m_Color;
+		OpPoint::curOpp()->setColor(m_LineStyle.m_Color.red(), m_LineStyle.m_Color.green(), m_LineStyle.m_Color.blue(), m_LineStyle.m_Color.alpha());
 		OpPoint::curOpp()->oppStyle() = m_LineStyle.m_Style;
 		OpPoint::curOpp()->oppWidth() = m_LineStyle.m_Width;
 		OpPoint::curOpp()->pointStyle() = m_LineStyle.m_PointStyle;

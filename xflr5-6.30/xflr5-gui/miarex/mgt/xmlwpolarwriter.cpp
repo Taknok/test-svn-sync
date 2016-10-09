@@ -45,8 +45,9 @@ void XmlWPolarWriter::writeHeader()
 		writeTextElement("inertia_unit_to_kgm2", QString("%1").arg(1./Units::kgm2toUnit()));
 	}
 	writeEndElement();
-
 }
+
+
 
 void XmlWPolarWriter::writeXMLWPolar(WPolar *pWPolar)
 {
@@ -59,7 +60,7 @@ void XmlWPolarWriter::writeXMLWPolar(WPolar *pWPolar)
 	{
 		writeTextElement("Polar_Name", pWPolar->polarName());
 		writeTextElement("Plane_Name", pWPolar->planeName());
-		writeTextElement("Type",   polarType(pWPolar->polarType()));
+		writeTextElement("Type",   WPolarType(pWPolar->polarType()));
 		writeTextElement("Method", analysisMethod(pWPolar->analysisMethod()));
 		writeTextElement("Ignore_Body_Panels", pWPolar->bIgnoreBodyPanels() ?  "true" : "false");
 		writeTextElement("Use_VLM1",           pWPolar->bVLM1() ?              "true" : "false");

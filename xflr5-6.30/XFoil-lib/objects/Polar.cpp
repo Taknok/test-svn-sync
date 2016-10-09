@@ -19,10 +19,12 @@
 
 *****************************************************************************/
 
-
+#include <QtDebug>
+#include "Foil.h"
 #include "Polar.h"
-#include <engine_globals.h>
-#include <xfoil_analysis/XFoil.h>
+#include <XFoil.h>
+#include <xfoil_globals.h>
+
 
 QList <void *> Polar::s_oaPolar;
 Polar* Polar::s_pCurPolar = NULL;
@@ -37,12 +39,14 @@ Polar::Polar()
 	m_PointStyle = 0;
 	m_Style = 0;// = PS_SOLID
 	m_Width = 1;
-	m_Color.setHsv((int)(((double)qrand()/(double)RAND_MAX)*360),
-				  (int)(((double)qrand()/(double)RAND_MAX)*155)+100,
-				  (int)(((double)qrand()/(double)RAND_MAX)*155)+100,
-				   255);
+
+	m_red   = (int)(((double)rand()/(double)RAND_MAX)*200);
+	m_green = (int)(((double)rand()/(double)RAND_MAX)*200);
+	m_blue  = (int)(((double)rand()/(double)RAND_MAX)*200);
+	m_alphaChannel = 255;
+
 	m_ASpec = 0.0;
-	m_PolarType = XFLR5::FIXEDSPEEDPOLAR;
+	m_PolarType = XFOIL::FIXEDSPEEDPOLAR;
 	m_ReType = 1;
 	m_MaType = 1;
 	m_Reynolds = 100000.0;
@@ -62,7 +66,7 @@ Polar::Polar()
  * @param FileType TXT if the data is separated by spaces, CSV for a comma separator
  * @param bDataOnly true if the analysis parameters should not be output
  */
-void Polar::exportPolar(QTextStream &out, QString versionName, XFLR5::enumTextFileType FileType, bool bDataOnly)
+void Polar::exportPolar(QTextStream &out, QString versionName, bool bCSV, bool bDataOnly)
 {
 	QString Header, strong;
 	int j;
@@ -97,25 +101,25 @@ void Polar::exportPolar(QTextStream &out, QString versionName, XFLR5::enumTextFi
 		out << strong;
 	}
 
-	if(m_PolarType!=XFLR5::FIXEDAOAPOLAR)
+	if(m_PolarType!=XFOIL::FIXEDAOAPOLAR)
 	{
-		if(FileType==XFLR5::TXT) Header = ("  alpha     CL        CD       CDp       Cm    Top Xtr Bot Xtr   Cpmin    Chinge    XCp    \n");
-		else              Header = ("alpha,CL,CD,CDp,Cm,Top Xtr,Bot Xtr,Cpmin,Chinge,XCp\n");
+		if(!bCSV) Header = ("  alpha     CL        CD       CDp       Cm    Top Xtr Bot Xtr   Cpmin    Chinge    XCp    \n");
+		else      Header = ("alpha,CL,CD,CDp,Cm,Top Xtr,Bot Xtr,Cpmin,Chinge,XCp\n");
 		out << Header;
-		if(FileType==XFLR5::TXT)
+		if(!bCSV)
 		{
 			Header=QString(" ------- -------- --------- --------- -------- ------- ------- -------- --------- ---------\n");
 			out << Header;
 		}
 		for (j=0; j<m_Alpha.size(); j++)
 		{
-			if(FileType==XFLR5::TXT) strong = QString(" %1  %2  %3  %4  %5")
+			if(!bCSV) strong = QString(" %1  %2  %3  %4  %5")
 											.arg(m_Alpha[j],7,'f',3)
 											.arg(m_Cl[j],7,'f',4)
 											.arg(m_Cd[j],8,'f',5)
 											.arg(m_Cdp[j],8,'f',5)
 											.arg(m_Cm[j],7,'f',4);
-			else              strong = QString("%1,%2,%3,%4,%5")
+			else      strong = QString("%1,%2,%3,%4,%5")
 											.arg(m_Alpha[j],7,'f',3)
 											.arg(m_Cl[j],7,'f',4)
 											.arg(m_Cd[j],8,'f',5)
@@ -125,35 +129,35 @@ void Polar::exportPolar(QTextStream &out, QString versionName, XFLR5::enumTextFi
 			out << strong;
 			if(m_XTr1[j]<990.0)
 			{
-				if(FileType==XFLR5::TXT) strong=QString("  %1  %2").arg(m_XTr1[j],6,'f',4).arg( m_XTr2[j],6,'f',4);
-				else              strong=QString(",%1,%2").arg(m_XTr1[j],6,'f',4).arg( m_XTr2[j],6,'f',4);
+				if(!bCSV) strong=QString("  %1  %2").arg(m_XTr1[j],6,'f',4).arg( m_XTr2[j],6,'f',4);
+				else      strong=QString(",%1,%2").arg(m_XTr1[j],6,'f',4).arg( m_XTr2[j],6,'f',4);
 				out << strong;
 			}
-			if(FileType==XFLR5::TXT) strong=QString("  %1  %2  %3\n").arg(m_Cpmn[j],7,'f',4).arg(m_HMom[j],7,'f',4).arg(m_XCp[j],7,'f',4);
-			else              strong=QString(",%1,%2,%3\n").arg(m_Cpmn[j],7,'f',4).arg(m_HMom[j],7,'f',4).arg(m_XCp[j],7,'f',4);
+			if(!bCSV) strong=QString("  %1  %2  %3\n").arg(m_Cpmn[j],7,'f',4).arg(m_HMom[j],7,'f',4).arg(m_XCp[j],7,'f',4);
+			else      strong=QString(",%1,%2,%3\n").arg(m_Cpmn[j],7,'f',4).arg(m_HMom[j],7,'f',4).arg(m_XCp[j],7,'f',4);
 			out << strong;
 			}
 	}
 	else 
 	{
-		if(FileType==XFLR5::TXT) Header=QString(("  alpha     Re      CL        CD       CDp       Cm    Top Xtr Bot Xtr   Cpmin    Chinge     XCp    \n"));
-		else              Header=QString(("alpha,Re,CL,CD,CDp,Cm,Top Xtr,Bot Xtr,Cpmin,Chinge,XCp\n"));
+		if(!bCSV) Header=QString(("  alpha     Re      CL        CD       CDp       Cm    Top Xtr Bot Xtr   Cpmin    Chinge     XCp    \n"));
+		else      Header=QString(("alpha,Re,CL,CD,CDp,Cm,Top Xtr,Bot Xtr,Cpmin,Chinge,XCp\n"));
 		out << Header;
-		if(FileType==XFLR5::TXT)
+		if(!bCSV)
 		{
 			Header=QString(" ------- -------- -------- --------- --------- -------- ------- ------- -------- --------- ---------\n");
 			out << Header;
 		}
 		for (j=0; j<m_Alpha.size(); j++)
 		{
-			if(FileType==XFLR5::TXT) strong=QString(" %1 %2  %3  %4  %5  %6")
+			if(!bCSV) strong=QString(" %1 %2  %3  %4  %5  %6")
 											.arg(m_Alpha[j],7,'f',3)
 											.arg( m_Re[j],8,'f',0)
 											.arg( m_Cl[j],7,'f',4)
 											.arg( m_Cd[j],8,'f',5)
 											.arg(m_Cdp[j],8,'f',5)
 											.arg(m_Cm[j],7,'f',4);
-			else              strong=QString(" %1,%2,%3,%4,%5,%6")
+			else      strong=QString(" %1,%2,%3,%4,%5,%6")
 											.arg(m_Alpha[j],7,'f',3)
 											.arg( m_Re[j],8,'f',0)
 											.arg( m_Cl[j],7,'f',4)
@@ -163,12 +167,12 @@ void Polar::exportPolar(QTextStream &out, QString versionName, XFLR5::enumTextFi
 			out << strong;
 			if(m_XTr1[j]<990.0)
 			{
-				if(FileType==XFLR5::TXT) strong=QString("  %1  %2").arg(m_XTr1[j],6,'f',4).arg(m_XTr2[j],6,'f',4);
-				else              strong=QString(",%1,%2").arg(m_XTr1[j],6,'f',4).arg(m_XTr2[j],6,'f',4);
+				if(!bCSV) strong=QString("  %1  %2").arg(m_XTr1[j],6,'f',4).arg(m_XTr2[j],6,'f',4);
+				else      strong=QString(",%1,%2").arg(m_XTr1[j],6,'f',4).arg(m_XTr2[j],6,'f',4);
 				out << strong;
 			}
-			if(FileType==XFLR5::TXT) strong=QString("  %1  %2  %3\n").arg(m_Cpmn[j],7,'f',4).arg(m_HMom[j],7,'f',4).arg(m_XCp[j],7,'f',4);
-			else              strong=QString(",%1,%2,%3\n").arg(m_Cpmn[j],7,'f',4).arg(m_HMom[j],7,'f',4).arg(m_XCp[j],7,'f',4);
+			if(!bCSV) strong=QString("  %1  %2  %3\n").arg(m_Cpmn[j],7,'f',4).arg(m_HMom[j],7,'f',4).arg(m_XCp[j],7,'f',4);
+			else      strong=QString(",%1,%2,%3\n").arg(m_Cpmn[j],7,'f',4).arg(m_HMom[j],7,'f',4).arg(m_XCp[j],7,'f',4);
 			out << strong;
         }
 	}
@@ -220,7 +224,7 @@ void Polar::addOpPointData(OpPoint *pOpPoint)
 	{
 		for (i=0; i<size; i++)
 		{
-			if(m_PolarType<XFLR5::FIXEDAOAPOLAR)
+			if(m_PolarType<XFOIL::FIXEDAOAPOLAR)
 			{
 				if (qAbs(pOpPoint->aoa()-m_Alpha[i]) < 0.001)
 				{
@@ -235,7 +239,7 @@ void Polar::addOpPointData(OpPoint *pOpPoint)
 					break;
 				}
 			}
-			else if(m_PolarType==XFLR5::FIXEDAOAPOLAR)
+			else if(m_PolarType==XFOIL::FIXEDAOAPOLAR)
 			{
 				// type 4, sort by speed
 				if (qAbs(pOpPoint->Reynolds() - m_Re[i]) < 0.1)
@@ -287,13 +291,13 @@ void Polar::replaceOppDataAt(int pos, OpPoint *pOpp)
 	if (pOpp->Cl>=0.0) m_Cl32Cd[pos] =  pow( pOpp->Cl, 1.5)/ pOpp->Cd;
 	else               m_Cl32Cd[pos] = -pow(-pOpp->Cl, 1.5)/ pOpp->Cd;
 
-	if(m_PolarType==XFLR5::FIXEDSPEEDPOLAR)  m_Re[pos] =  pOpp->Reynolds();
-	else if (m_PolarType==XFLR5::FIXEDLIFTPOLAR)
+	if(m_PolarType==XFOIL::FIXEDSPEEDPOLAR)  m_Re[pos] =  pOpp->Reynolds();
+	else if (m_PolarType==XFOIL::FIXEDLIFTPOLAR)
 	{
 		if(pOpp->Cl>0.0) m_Re[pos] =  pOpp->Reynolds()/ sqrt(pOpp->Cl);
 		else             m_Re[pos] = 0.0;
 	}
-	else if (m_PolarType==XFLR5::RUBBERCHORDPOLAR)
+	else if (m_PolarType==XFOIL::RUBBERCHORDPOLAR)
 	{
 		if(pOpp->Cl>0.0) m_Re[pos] =  pOpp->Reynolds()/(pOpp->Cl);
 		else             m_Re[pos] = 0.0;
@@ -322,18 +326,18 @@ void Polar::insertOppDataAt(int i, OpPoint *pOpp)
 	if (pOpp->Cl>=0.0) m_Cl32Cd.insert(i,pow( pOpp->Cl, 1.5) / pOpp->Cd);
 	else               m_Cl32Cd.insert(i,-pow(-pOpp->Cl, 1.5)/ pOpp->Cd);
 
-	if(m_PolarType==XFLR5::FIXEDSPEEDPOLAR)	 m_Re.insert(i, pOpp->Reynolds());
-	else if (m_PolarType==XFLR5::FIXEDLIFTPOLAR)
+	if(m_PolarType==XFOIL::FIXEDSPEEDPOLAR)	 m_Re.insert(i, pOpp->Reynolds());
+	else if (m_PolarType==XFOIL::FIXEDLIFTPOLAR)
 	{
 		if(pOpp->Cl>0) m_Re.insert(i, pOpp->Reynolds()/sqrt(pOpp->Cl));
 		else           m_Re[i] = 0.0;
 	}
-	else if (m_PolarType==XFLR5::RUBBERCHORDPOLAR)
+	else if (m_PolarType==XFOIL::RUBBERCHORDPOLAR)
 	{
 		if(pOpp->Cl>0.0) m_Re.insert(i, pOpp->Reynolds()/pOpp->Cl);
 		else             m_Re.insert(i, 0.0);
 	}
-	else if (m_PolarType==XFLR5::FIXEDAOAPOLAR)
+	else if (m_PolarType==XFOIL::FIXEDAOAPOLAR)
 	{
 		m_Re.insert(i, pOpp->Reynolds());
 	}
@@ -778,7 +782,7 @@ void Polar::addPolar(Polar *pPolar)
 				}
 				else if(pPolar->polarType() == pOldPlr->polarType())
 				{
-					if (pPolar->polarType() != XFLR5::FIXEDAOAPOLAR)
+					if (pPolar->polarType() != XFOIL::FIXEDAOAPOLAR)
 					{
 						//sort by re Nbr
 						if(pPolar->Reynolds() < pOldPlr->Reynolds())
@@ -811,24 +815,24 @@ void Polar::addPolar(Polar *pPolar)
 
 
 
-void Polar::setPolarType(XFLR5::enumPolarType type)
+void Polar::setPolarType(XFOIL::enumPolarType type)
 {
 	m_PolarType =type;
 	switch (m_PolarType)
 	{
-		case XFLR5::FIXEDSPEEDPOLAR:
+		case XFOIL::FIXEDSPEEDPOLAR:
 			m_MaType = 1;
 			m_ReType = 1;
 			break;
-		case XFLR5::FIXEDLIFTPOLAR:
+		case XFOIL::FIXEDLIFTPOLAR:
 			m_MaType = 2;
 			m_ReType = 2;
 			break;
-		case XFLR5::RUBBERCHORDPOLAR:
+		case XFOIL::RUBBERCHORDPOLAR:
 			m_MaType = 1;
 			m_ReType = 3;
 			break;
-		case XFLR5::FIXEDAOAPOLAR:
+		case XFOIL::FIXEDAOAPOLAR:
 			m_MaType = 1;
 			m_ReType = 1;
 			break;
@@ -898,28 +902,28 @@ void Polar::setAutoPolarName()
  * @param ASpec
  * @return
  */
-QString Polar::getAutoPolarName(XFLR5::enumPolarType polarType, double Re, double Mach, double NCrit, double ASpec)
+QString Polar::getAutoPolarName(XFOIL::enumPolarType polarType, double Re, double Mach, double NCrit, double ASpec)
 {
 	QString polarName;
 	Re = Re/1.e6;
 	switch(polarType)
 	{
-		case XFLR5::FIXEDSPEEDPOLAR:
+		case XFOIL::FIXEDSPEEDPOLAR:
 		{
 			polarName = QString("T1_Re%1_M%2").arg(Re,5,'f',3).arg(Mach,4,'f',2);
 			break;
 		}
-		case XFLR5::FIXEDLIFTPOLAR:
+		case XFOIL::FIXEDLIFTPOLAR:
 		{
 			polarName = QString("T2_Re%1_M%2").arg(Re,5,'f',3).arg(Mach,4,'f',2);
 			break;
 		}
-		case XFLR5::RUBBERCHORDPOLAR:
+		case XFOIL::RUBBERCHORDPOLAR:
 		{
 			polarName = QString("T3_Re%1_M%2").arg(Re,5,'f',3).arg(Mach,4,'f',2);
 			break;
 		}
-		case(XFLR5::FIXEDAOAPOLAR):
+		case(XFOIL::FIXEDAOAPOLAR):
 		{
 			polarName = QString("T4_Al%1_M%2").arg(ASpec,5,'f',2).arg(Mach,4,'f',2);
 			break;
@@ -963,10 +967,10 @@ bool Polar::serialize(QDataStream &ar, bool bIsStoring)
 		writeCString(ar, m_FoilName);
 		writeCString(ar, m_PlrName);
 
-		if(m_PolarType==XFLR5::FIXEDSPEEDPOLAR)       ar<<1;
-		else if(m_PolarType==XFLR5::FIXEDLIFTPOLAR)   ar<<2;
-		else if(m_PolarType==XFLR5::RUBBERCHORDPOLAR) ar<<3;
-		else if(m_PolarType==XFLR5::FIXEDAOAPOLAR)    ar<<4;
+		if(m_PolarType==XFOIL::FIXEDSPEEDPOLAR)       ar<<1;
+		else if(m_PolarType==XFOIL::FIXEDLIFTPOLAR)   ar<<2;
+		else if(m_PolarType==XFOIL::RUBBERCHORDPOLAR) ar<<3;
+		else if(m_PolarType==XFOIL::FIXEDAOAPOLAR)    ar<<4;
 		else                                   ar<<1;
 
 		ar << m_MaType << m_ReType  ;
@@ -974,7 +978,7 @@ bool Polar::serialize(QDataStream &ar, bool bIsStoring)
 		ar << (float)m_ASpec;
 		ar << n << (float)m_ACrit;
 		ar << (float)m_XTop << (float)m_XBot;
-		WriteCOLORREF(ar, m_Color);
+		WriteCOLORREF(ar, m_red, m_green, m_blue);
 
 		ar << m_Style << m_Width;
 		if (m_bIsVisible)  ar<<1; else ar<<0;
@@ -1013,11 +1017,11 @@ bool Polar::serialize(QDataStream &ar, bool bIsStoring)
 		}
 
 		ar >>k;
-		if(k==1)      m_PolarType = XFLR5::FIXEDSPEEDPOLAR;
-		else if(k==2) m_PolarType = XFLR5::FIXEDLIFTPOLAR;
-		else if(k==3) m_PolarType = XFLR5::RUBBERCHORDPOLAR;
-		else if(k==4) m_PolarType = XFLR5::FIXEDAOAPOLAR;
-		else          m_PolarType = XFLR5::FIXEDSPEEDPOLAR;
+		if(k==1)      m_PolarType = XFOIL::FIXEDSPEEDPOLAR;
+		else if(k==2) m_PolarType = XFOIL::FIXEDLIFTPOLAR;
+		else if(k==3) m_PolarType = XFOIL::RUBBERCHORDPOLAR;
+		else if(k==4) m_PolarType = XFOIL::FIXEDAOAPOLAR;
+		else          m_PolarType = XFOIL::FIXEDSPEEDPOLAR;
 
 
 		ar >> m_MaType >> m_ReType;
@@ -1042,7 +1046,7 @@ bool Polar::serialize(QDataStream &ar, bool bIsStoring)
 		ar >> f; m_XTop =f;
 		ar >> f; m_XBot =f;
 
-		readCOLORREF(ar, m_Color);
+		readCOLORREF(ar, m_red, m_green, m_blue);
 
 		ar >> m_Style >> m_Width;
 
@@ -1072,7 +1076,7 @@ bool Polar::serialize(QDataStream &ar, bool bIsStoring)
 			else                    XCp = 0.0;
 
 			bExists = false;
-			if(m_PolarType!=XFLR5::FIXEDAOAPOLAR)
+			if(m_PolarType!=XFOIL::FIXEDAOAPOLAR)
 			{
 				for (j=0; j<m_Alpha.size(); j++)
 				{
@@ -1124,33 +1128,33 @@ void Polar::getPolarProperties(QString &polarProps)
 	polarProps.clear();
 
 	strong = QString(QObject::tr("Type")+" = %1").arg(m_PolarType);
-	if(m_PolarType==XFLR5::FIXEDSPEEDPOLAR)      strong += " ("+QObject::tr("Fixed speed") +")\n";
-	else if(m_PolarType==XFLR5::FIXEDLIFTPOLAR) strong += " ("+QObject::tr("Fixed lift") +")\n";
-	else if(m_PolarType==XFLR5::FIXEDAOAPOLAR) strong += " ("+QObject::tr("Fixed angle of attack") +")\n";
+	if(m_PolarType==XFOIL::FIXEDSPEEDPOLAR)      strong += " ("+QObject::tr("Fixed speed") +")\n";
+	else if(m_PolarType==XFOIL::FIXEDLIFTPOLAR) strong += " ("+QObject::tr("Fixed lift") +")\n";
+	else if(m_PolarType==XFOIL::FIXEDAOAPOLAR) strong += " ("+QObject::tr("Fixed angle of attack") +")\n";
 	polarProps += strong;
 
-	if(m_PolarType==XFLR5::FIXEDSPEEDPOLAR)
+	if(m_PolarType==XFOIL::FIXEDSPEEDPOLAR)
 	{
 		strong = QString(QObject::tr("Reynolds number")+" = %L1\n").arg(m_Reynolds,0,'f',0);
 		polarProps += strong;
 		strong = QString(QObject::tr("Mach number") + " = %L1\n").arg(m_Mach,5,'f',2);
 		polarProps += strong;
 	}
-	else if(m_PolarType==XFLR5::FIXEDLIFTPOLAR)
+	else if(m_PolarType==XFOIL::FIXEDLIFTPOLAR)
 	{
 		strong = QString("Re.sqrt(Cl) = %L1\n").arg(m_Reynolds,0,'f',0);
 		polarProps += strong;
 		strong = QString("Ma.sqrt(Cl) = %L1\n").arg(m_Mach,5,'f',2);
 		polarProps += strong;
 	}
-	else if(m_PolarType==XFLR5::RUBBERCHORDPOLAR)
+	else if(m_PolarType==XFOIL::RUBBERCHORDPOLAR)
 	{
 		strong = QString(QObject::tr("Re.Cl")+" = %L1\n").arg(m_Reynolds,0,'f',0);
 		polarProps += strong;
 		strong = QString(QObject::tr("Mach number") + " = %L1\n").arg(m_Mach,5,'f',2);
 		polarProps += strong;
 	}
-	else if(m_PolarType==XFLR5::FIXEDAOAPOLAR)
+	else if(m_PolarType==XFOIL::FIXEDAOAPOLAR)
 	{
 		strong = QString(QObject::tr("Alpha")+" = %L1"+QString::fromUtf8("°")+"\n").arg(m_ASpec,7,'f',2);
 		polarProps += strong;
@@ -1194,15 +1198,15 @@ bool Polar::serializePolarXFL(QDataStream &ar, bool bIsStoring)
 		ar << m_PlrName;
 
 		ar << m_Style << m_Width;
-		ar << m_Color;
+		writeqColor(ar, m_red, m_green, m_blue, m_alphaChannel);
 		ar << m_bIsVisible << false;
 
 
-		if(m_PolarType==XFLR5::FIXEDSPEEDPOLAR)       ar<<1;
-		else if(m_PolarType==XFLR5::FIXEDLIFTPOLAR)   ar<<2;
-		else if(m_PolarType==XFLR5::RUBBERCHORDPOLAR) ar<<3;
-		else if(m_PolarType==XFLR5::FIXEDAOAPOLAR)    ar<<4;
-		else                                   ar<<1;
+		if(m_PolarType==XFOIL::FIXEDSPEEDPOLAR)       ar<<1;
+		else if(m_PolarType==XFOIL::FIXEDLIFTPOLAR)   ar<<2;
+		else if(m_PolarType==XFOIL::RUBBERCHORDPOLAR) ar<<3;
+		else if(m_PolarType==XFOIL::FIXEDAOAPOLAR)    ar<<4;
+		else                                          ar<<1;
 
 		ar << m_MaType << m_ReType;
 		ar << m_Reynolds << m_Mach;
@@ -1214,9 +1218,9 @@ bool Polar::serializePolarXFL(QDataStream &ar, bool bIsStoring)
 		for (i=0; i< m_Alpha.size(); i++)
 		{
 			ar << (float)m_Alpha[i] << (float)m_Cd[i] ;
-			ar << (float)m_Cdp[i] << (float)m_Cl[i] << (float)m_Cm[i];
-			ar << (float)m_XTr1[i] << (float)m_XTr2[i];
-			ar << (float)m_HMom[i] << (float)m_Cpmn[i];
+			ar << (float)m_Cdp[i]   << (float)m_Cl[i] << (float)m_Cm[i];
+			ar << (float)m_XTr1[i]  << (float)m_XTr2[i];
+			ar << (float)m_HMom[i]  << (float)m_Cpmn[i];
 			ar << (float)m_Re[i];
 			ar << (float)m_XCp[i];
 		}
@@ -1240,15 +1244,14 @@ bool Polar::serializePolarXFL(QDataStream &ar, bool bIsStoring)
 		ar >> m_PlrName;
 
 		ar >> polarStyle() >> polarWidth();
-		ar >> polarColor();
+		readqColor(ar, m_red, m_green, m_blue, m_alphaChannel);
 		ar >> m_bIsVisible >> boolean;
 
-
 		ar >> n;
-		if(n==1)      m_PolarType=XFLR5::FIXEDSPEEDPOLAR;
-		else if(n==2) m_PolarType=XFLR5::FIXEDLIFTPOLAR;
-		else if(n==3) m_PolarType=XFLR5::RUBBERCHORDPOLAR;
-		else if(n==4) m_PolarType=XFLR5::FIXEDAOAPOLAR;
+		if(n==1)      m_PolarType=XFOIL::FIXEDSPEEDPOLAR;
+		else if(n==2) m_PolarType=XFOIL::FIXEDLIFTPOLAR;
+		else if(n==3) m_PolarType=XFOIL::RUBBERCHORDPOLAR;
+		else if(n==4) m_PolarType=XFOIL::FIXEDAOAPOLAR;
 
 		ar >> m_MaType >> m_ReType;
 		ar >> m_Reynolds >> m_Mach;
@@ -1273,6 +1276,24 @@ bool Polar::serializePolarXFL(QDataStream &ar, bool bIsStoring)
 	return true;
 }
 
+
+
+
+void Polar::getColor(int &r, int &g, int &b, int &a)
+{
+	r = m_red;
+	g = m_green;
+	b = m_blue;
+	a = m_alphaChannel;
+}
+
+void Polar::setColor(int r, int g, int b, int a)
+{
+	m_red = r;
+	m_green = g;
+	m_blue = b;
+	m_alphaChannel = a;
+}
 
 
 

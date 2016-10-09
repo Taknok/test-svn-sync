@@ -86,7 +86,7 @@ public:
     DoubleEdit *m_pctrlBotTrans;
 
 	bool  m_bAutoName;
-	XFLR5::enumPolarType m_PolarType;
+	XFOIL::enumPolarType m_PolarType;
 	int m_MaTypDef, m_ReTypDef;
 
 	static int s_UnitType;

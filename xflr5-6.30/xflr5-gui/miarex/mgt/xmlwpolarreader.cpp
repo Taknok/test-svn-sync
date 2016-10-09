@@ -102,7 +102,7 @@ void XmlWPolarReader::readWPolar(WPolar *pWPolar, double lengthunit, double area
 		}
 		else if (name().toString().compare("type",Qt::CaseInsensitive) ==0)
 		{
-			pWPolar->polarType() = polarType(readElementText());
+			pWPolar->polarType() =WPolarType(readElementText());
 		}
 		else if (name().toString().compare("method", Qt::CaseInsensitive)==0)
 		{

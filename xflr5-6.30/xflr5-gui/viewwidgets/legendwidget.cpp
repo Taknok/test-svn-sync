@@ -786,7 +786,7 @@ void LegendWidget::drawPolarLegend(QPainter &painter, QPointF place, int bottom)
 				if (pPolar->m_Alpha.size() && pPolar->polarName().length() && pPolar->isVisible())
 				{
 					//is there anything to draw ?
-					LegendPen.setColor(pPolar->polarColor());
+					LegendPen.setColor(colour(pPolar));
 					LegendPen.setStyle(getStyle(pPolar->polarStyle()));
 					LegendPen.setWidth(pPolar->polarWidth());
 					painter.setPen(LegendPen);

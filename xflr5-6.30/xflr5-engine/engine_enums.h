@@ -25,8 +25,6 @@ namespace XFLR5
 	/** @enum The two types of boundary conditions for 3D panel analysis. VLM BC are of the NEUMANN type*/
 	typedef enum {DIRICHLET, NEUMANN} enumBC;
 
-	/** @enum The different formats usable to export data to text format files*/
-	typedef enum {TXT, CSV}	enumTextFileType;
 }
 
 #endif // ENGINE_ENUMS_H

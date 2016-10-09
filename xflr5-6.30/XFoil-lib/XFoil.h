@@ -30,9 +30,6 @@
 #define XFOIL_H
 
 
-
-
-
 /**
 *@class XFoil
 *@brief  The class which defines the XFoil object.
@@ -45,8 +42,7 @@ See http://raphael.mit.edu/xfoil for more information.
 #include <math.h>
 #include <complex>
 
-#include <engine_params.h>
-#include <objects/Foil.h>
+#include <xfoil_params.h>
 
 
 using namespace std;
@@ -76,36 +72,65 @@ struct blData
 
 class XFoil
 {
-	friend class QXDirect;
-	friend class QXInverse;
-	friend class FoilGeomDlg;
-	friend class TEGapDlg;
-	friend class LEDlg;
-	friend class NacaFoilDlg;
-	friend class XFoilAnalysisDlg;
-	friend class XFoilTask;
-	friend class BatchDlg;
-	friend class BatchThreadDlg;
-	friend class OpPoint;
-	friend class Polar;
 
-
-
-//-----Specific Inverse MDES-------------------------------
 public:
-	void inter(double x0[], double xp0[], double y0[], double yp0[], double s0[],int n0,double sle0,
-               double x1[], double xp1[], double y1[], double yp1[], double s1[],int n1,double sle1,
-               double x[], double y[], int n, double frac);
-	void tcset(double cnew, double tnew);
-	void thkcam(double tfac, double cfac);
-	void qspint(int kqsp, double &clq);
+	XFoil();
+	virtual ~XFoil();
+
+public:
+	void interpolate(double xf1[], double yf1[], int n1,
+					 double xf2[], double yf2[], int n2, double mixt);
+
+	bool CheckAngles();
+	void pangen();
+	bool Preprocess();
+	void pert_process(int kqsp);
+	void pert_init(int kqsp);
+	void HanningFilter(double cfilt, QTextStream &ts);
+	void smooq(int kq1,int kq2,int kqsp);
+	void ExecMDES();
+	bool ExecQDES();
+	bool Initialize();
+	bool InitXFoilGeometry(int *fn, double *fx, double *fy, double *fnx, double *fny);
+	bool InitXFoilAnalysis(void *pPolarPtr, bool bViscous, QTextStream &outStream);
 	void splqsp(int kqsp);
 	void qspcir();
 	void InitMDES();
 	bool InitQDES();
 	void cncalc(double qc[], bool lsymm);
-	double qincom(double qc, double qinf, double tklam);
 	double qcomp(double g);
+	bool clcalc(double xref, double yref);
+
+	void CreateXBL(double xs[IVX][3],int &nside1, int &nside2);
+	void FillHk(double ws[IVX][3], int nside1, int nside2);
+	void FillRTheta(double ws[IVX][3], int nside1, int nside2);
+	void WriteString(QString str, bool bFullReport = false);
+	double DeRotate();
+	bool specal();
+	bool speccl();
+	bool viscal();
+	bool ViscalEnd();
+	bool ViscousIter();
+	bool fcpmin();
+	int cadd(int ispl, double atol, double xrf1, double xrf2);
+	bool abcopy();
+	void tcset(double cnew, double tnew);
+	void hipnt(double xhc, double xht);
+	void lerad(double rfac, double blend);
+	void naca4(int ides, int nside);
+	bool naca5(int ides, int nside);
+	void tgap(double gapnew, double blend);
+
+
+
+private:
+	void inter(double x0[], double xp0[], double y0[], double yp0[], double s0[],int n0,double sle0,
+			   double x1[], double xp1[], double y1[], double yp1[], double s1[],int n1,double sle1,
+			   double x[], double y[], int n, double frac);
+	void thkcam(double tfac, double cfac);
+	void qspint(int kqsp, double &clq);
+
+	double qincom(double qc, double qinf, double tklam);
 	void qccalc(int ispec,double *alfa, double *cl, double *cm,double minf, double qinf, int *ncir, double xcir[], double ycir[], double scir[], double qcir[]);
 	void mapgam(int iac, double &alg, double &clg, double &cmg);
 	bool eiwset(int nc1);
@@ -117,160 +142,31 @@ public:
 	void ftp();
 	void scinit(int n, double x[], double xp[], double y[], double yp[], double s[], double sle);
 	void mapgen(int n, double x[],double y[]);
-	complex<double> conjg(complex<double> cplx);
 
-	bool m_bTrace;
-
-	bool lqspec, lsym,leiw,lqslop,lscini, lrecalc, lcnpl;
-	int nsp,nqsp,iacqsp;
-	int nc,nc1,mc,mct;
-	int iq1, iq2;
-//	int kqtarg,nname,nprefix;
-
-	double agte,ag0,qim0,qimold;
-	double ssple, dwc,algam,clgam,cmgam;
-	double wc[ICX+1],sc[ICX+1];
-	double scold[ICX+1],xcold[ICX+1],ycold[ICX+1];
-	double sspec[IBX+1],xspoc[IBX+1],yspoc[IBX+1], qgamm[IBX+1];
-	double qspec[IPX+1][IBX+1],qspecp[IPX+1][IBX+1];
-	double alqsp[IPX+1],clqsp[IPX+1],cmqsp[IPX+1];
-	double qf0[IQX+1],qf1[IQX+1],qf2[IQX+1],qf3[IQX+1];
-
-	double qdof0,qdof1,qdof2,qdof3,clspec,ffilt;
-
-	complex<double> dzte, chordz, zleold, zcoldw[ICX+1];
-	complex<double> zc[ICX+1], zc_cn[ICX+1][IMX4+1];
-	complex<double> piq[ICX+1], cn[IMX+1], eiw[ICX+1][IMX+1];
-	complex<double> cnsav[IMX+1];
-	double dnTrace[100];//... added techwinder
-	double dgTrace[100];//... added techwinder
-	int QMax;
-
-	// camber and thickness properties declared as member variables to access them from the Foil class
-	double xcam[IQX], ycam[IQX], xthk[IQX], ythk[IQX], ycamp[IQX], ythkp[IQX];
-	double  thick, xthick, cambr, xcambr;
-	int ncam, nthk;
-
-	Foil * m_pFoil;
-
-//	complex<double> zcoldw, dzte, chordz, zleold, zc, zc_cn, piq, cn, eiw;
-
-//----- CIRCLE.INC include file for circle-plane operations
-//   NC         number of circle plane points, must be 2**n + 1
-//   MC         number of Fourier harmonics of P(w) + iQ(w)
-//   MCT        number of Fourier harmonics for which dZC/dCN are calculated
-//
-//   PI         3.1415926
-//   AGTE       trailing edge angle/pi
-//   AG0        angle of airfoil surface at first point
-//   QIM0       Q(w) offset   = Q(0)
-//   QIMOLD     Q(w) offset for old airfoil
-//   DWC        increment of circle-plane coordinate w,  DWC = 2 pi/(NC-1)
-//   WC(.)      circle plane coordinate w for Fourier operations
-//   SC(.)      normalized arc length array s(w)
-//   SCOLD(.)   normalized arc length s(w) of old airfoil
-//   XCOLD(.)   x coordinate x(w) of old airfoil
-//   YCOLD(.)   y coordinate y(w) of old airfoil
-//
-//   DZTE       trailing edge gap specified in the complex plane
-//   CHORDZ     airfoil chord specified in the complex plane
-//   ZLEOLD     leading edge of old airfoil
-//   ZCOLDW(.)  d(x+iy)/dw of old airfoil
-//   ZC(.)      complex airfoil coordinates derived from P(w) + iQ(w)
-//   ZC_CN(..)  sensitivities dZC/dCN for driving geometry constraints
-//   PIQ(.)     complex harmonic function P(w) + iQ(w)
-//   CN(.)      Fourier coefficients of P(w) + iQ(w)
-//   EIW(..)    complex number  exp(inw)  array on the unit circle 
-
-//-----End Specific Inverse MDES-------------------------------
-
-
-public:
-	void SetFoilFlap(void *pFoil);
-	void Interpolate(double xf1[], double yf1[], int n1,
-					 double xf2[], double yf2[], int n2, double mixt);
+	//	int kqtarg,nname,nprefix;
+	void setFoilFlap(void *pFoil);
 	void gamlin(int i, int j, double coef);
 	bool mixed(int kqsp);
 	void gamqsp(int kqsp);
-	void pert_process(int kqsp);
-	void pert_init(int kqsp);
 	void cnfilt(double ffilt);
-	void HanningFilter(double cfilt, QTextStream &ts);
-	void smooq(int kq1,int kq2,int kqsp);
-	void ExecMDES();
-	bool ExecQDES();
 	void RestoreQDES();
 
-	bool CheckAngles();
 	bool SetMach();
 	void scheck(double x[], double y[], int *n, double stol, bool *lchange);
 	void sss(double ss, double *s1, double *s2, double del, double xbf, double ybf,	double x[], double xp[], double y[], double yp[], double s[],int n, int iside);
 	bool inside(double xb[], double yb[], int nb, double xbf, double ybf);
 	void flap();
-//____________FUNCTION & METHODS___________________________________________________
-	int cadd(int ispl, double atol, double xrf1, double xrf2);
 	int arefine(double x[],double y[], double s[], double xs[], double ys[],
 				 int n, double atol, int ndim, 
 				 double xnew[], double ynew[], double x1, double x2);
-	bool abcopy();
+
 	bool comset();
 	bool mrcl(double cls, double &m_cls, double &r_cls);
-	bool fcpmin();
-	bool Initialize();
-	bool InitXFoilGeometry(void *pFoilPtr);
-	bool InitXFoilAnalysis(void *pPolarPtr, bool bViscous, QTextStream &outStream);
-	void pangen();
-	bool Preprocess();
 	bool restoreblData(int icom);
 	bool saveblData(int icom);
-	bool specal();
-	bool speccl();
-	bool viscal();
-	bool ViscalEnd();
-	bool ViscousIter();
 
-	XFoil();
-	virtual ~XFoil();
 
-//____________VARIABLES___________________________________________________
 
-	static double vaccel;
-
-	double thickb,cambrb;
-
-	bool lalfa, lvisc, lvconv, lwake;
-	bool lbflap,lflap;
-	bool lblini, lipan,lcpxx,lqsym;
-	int n, nb,iblte[ISX],ipan[IVX][ISX],nbl[ISX];
-	int npan;
-	int imax;// needed for preprocessing
-	int retyp, matyp;
-	int niterq;
-	double x[IZX],y[IZX],xstrip[ISX],xoctr[ISX],yoctr[ISX];
-	double dstr[IVX][ISX];
-	double cl,cm,cd,cdp,cdf,cpi[IZX],cpv[IZX],acrit;
-	double xcp;
-	double amax;// needed for preprocessing
-	double cvpar,cterat,ctrrat,xsref1,xsref2,xpref1,xpref2;
-	double minf1;
-	double rmxbl,rlx;
-	double xbf,ybf;
-	double xb[IBX],yb[IBX],nx[IZX],ny[IZX];
-	double alfa, avisc, awake, reinf1, qinf, mvisc, rmsbl, ante;
-	double ddef; // flap angle
-	double hmom,hfx,hfy;
-	double cpmn;
-	double minf, reinf;
-	double minf_cl, reinf_cl;
-	double angtol;
-
-	QTextStream *m_pOutStream;
-
-//____________FUNCTION & METHODS___________________________________________________
-public:
-	double DeRotate();
-
-protected:
 	bool aecalc(int n, double x[], double y[], double t[], int itype, double &area,
 				double &xcen, double &ycen, double &ei11, double &ei22, double &apx1, double &apx2);
 	bool apcalc();
@@ -291,9 +187,8 @@ protected:
 	bool cdcalc();
 	bool cfl(double hk, double rt, double &cf, double &cf_hk, double &cf_rt, double &cf_msq);
 	bool cft(double hk, double rt, double msq, double &cf, double &cf_hk, double &cf_rt, double &cf_msq);
-	bool clcalc(double xref, double yref);
 	bool cpcalc(int n, double q[], double qinf, double minf, double cp[]);
-	bool dampl(double hk, double th, double rt, 
+	bool dampl(double hk, double th, double rt,
 			   double &ax, double &ax_hk, double &ax_th, double &ax_rt);
 	bool dil(double hk, double rt, double &di, double &di_hk, double &di_rt);
 	bool dilw(double hk, double rt, double &di, double &di_hk, double &di_rt);
@@ -305,14 +200,13 @@ protected:
 	bool geopar(double x[], double xp[], double y[], double yp[], double s[],
 			   int n, double t[], double &sle, double &chord,
 			   double &area, double &radle, double &angte,
-			   double &ei11a, double &ei22a, double &apx1a, double &apx2a, 
+			   double &ei11a, double &ei22a, double &apx1a, double &apx2a,
 			   double &ei11t, double &ei22t, double &apx1t, double &apx2t);
 	void sopps(double &sopp, double si, double x[], double xp[], double y[], double yp[], double s[],
 				  int n, double sle);
 	void getcam(double xcm[],double ycm[], int &ncm,double xtk[],double ytk[],int &ntk,
 					double x[],double xp[],double y[],double yp[],double s[],int n );
 	void getmax(double x[],double y[], double yp[], int n,double &xmax, double &ymax);
-	void hipnt(double xhc, double xht);
 	void xlfind(double &sle, double x[], double xp[], double y[], double yp[], double s[], int n);
 	void sortol(double tol,int &kk,double s[],double w[]);
 	bool getxyf(double x[],double xp[],double y[],double yp[],double s[], int n, double &tops, double &bots,double xf,double &yf);
@@ -344,8 +238,6 @@ protected:
 	bool sinvrt(double &si,double xi,double x[],double xs[],double s[],int n);
 
 	void splina(double x[], double xs[], double s[], int n);
-	void tgap(double gapnew, double blend);
-	void lerad(double rfac, double blend);
 	bool splind(double x[600], double xs[600], double s[600], int n, double xs1, double xs2);
 	bool stepbl();
 	bool stfind();
@@ -368,19 +260,98 @@ protected:
 	double deval(double ss, double x[], double xs[], double s[], int n);
 	double seval(double ss, double x[], double xs[], double s[], int n);
 	double sign(double a, double b);
-	void naca4(int ides, int nside);
-	bool naca5(int ides, int nside);
 
-private:
-	void CreateXBL(double xs[IVX][3],int &nside1, int &nside2);
-	void FillHk(double ws[IVX][3], int nside1, int nside2);
-	void FillRTheta(double ws[IVX][3], int nside1, int nside2);
-	void WriteString(QString str, bool bFullReport = false);
 
-//____________VARIABLES___________________________________________________		
+
+public:
+	static double vaccel;
+	static bool s_bCancel;
+	static bool s_bFullReport;	QTextStream *m_pOutStream;
+
+
+	double agte,ag0,qim0,qimold;
+	double ssple, dwc,algam,clgam,cmgam;
+	double clspec;
+	double sspec[IBX+1],xspoc[IBX+1],yspoc[IBX+1];
+	double qspec[IPX+1][IBX+1],qspecp[IPX+1][IBX+1];
+	double alqsp[IPX+1],clqsp[IPX+1],cmqsp[IPX+1];
+	complex<double> dzte, chordz, zleold, zcoldw[ICX+1];
+	complex<double> piq[ICX+1], cn[IMX+1], eiw[ICX+1][IMX+1];
+	double dnTrace[100];//... added techwinder
+	double dgTrace[100];//... added techwinder
+	int QMax;
+
+	bool lqspec, lsym,leiw,lqslop,lscini, lrecalc, lcnpl;
+	int nsp,nqsp,iacqsp;
+	int nc,nc1,mc,mct;
+	int iq1, iq2;
+	int imax;// needed for preprocessing
+
+	double thickb,cambrb;
+	double xb[IBX],yb[IBX],nx[IZX],ny[IZX];
+	double xpref1,xpref2;
+	double cvpar,cterat,ctrrat,xsref1,xsref2;
+	double dstr[IVX][ISX];
+	double cl,cm,cd,cdp,cdf,cpi[IZX],cpv[IZX],acrit;
+	double xcp;
+	double alfa, avisc, awake, reinf1, qinf, mvisc, rmsbl, ante;
+	double cpmn;
+	double minf, reinf;
+	bool lalfa, lvisc, lvconv, lwake;
+	double qgamm[IBX+1];
+	double hmom;
+	bool lcpxx;
+	int niterq;
+	double xbf,ybf;
+	double ddef; // flap angle
+	double rmxbl;
+
+	double amax;// needed for preprocessing
+	double minf1;
+	bool lblini, lipan,lqsym;
+	bool lbflap,lflap;
+	int n, nb,iblte[ISX],ipan[IVX][ISX],nbl[ISX];
+	int npan;
+	double x[IZX],y[IZX],xstrip[ISX],xoctr[ISX],yoctr[ISX];
+	double qvis[IZX];
+	bool liqset;
+	double adeg, xcmref, ycmref;
+	double tklam;
+	double xp[IZX],yp[IZX],s[IZX];
+	double dtor;
+
+	double thet[IVX][ISX],tau[IVX][ISX],ctau[IVX][ISX],ctq[IVX][ISX];
+	double dis[IVX][ISX],uedg[IVX][ISX];
+	int itran[3];
+
 	
 
+private:
+
+	double wc[ICX+1],sc[ICX+1];
+	double scold[ICX+1],xcold[ICX+1],ycold[ICX+1];
+	double qf0[IQX+1],qf1[IQX+1],qf2[IQX+1],qf3[IQX+1];
+
+	double qdof0,qdof1,qdof2,qdof3,ffilt;
+
+	complex<double> zc[ICX+1], zc_cn[ICX+1][IMX4+1];
+	complex<double> cnsav[IMX+1];
+
+	int retyp, matyp;
+	double rlx;
+
+	double hfx,hfy;
+	double minf_cl, reinf_cl;
+	double angtol;
+
+	double xcam[IQX], ycam[IQX], xthk[IQX], ythk[IQX], ycamp[IQX], ythkp[IQX];
+	double  thick, xthick, cambr, xcambr;
+	int ncam, nthk;
+
 	blData blsav[3];
+	complex<double> conjg(complex<double> cplx);
+
+	bool m_bTrace;
 
 //	int nax, npx, nfx;
 
@@ -392,8 +363,6 @@ private:
 //	QString name, namepol, codepol, nameref;
 //	QString ispars;
 
-	static bool s_bCancel;
-	static bool s_bFullReport;
 
 //	bool lpacc,lqvdes,,lqrefl,lcpref,lforef,lpfile,lpfilx;
 //	bool lppsho,lplot,lclip,lvlab,lcurs,lcminp, lhmomp,lland;
@@ -402,8 +371,6 @@ private:
 	bool lqinu,lgsame;// ???
 //	bool lgtick, lplegn,,lplist, lpgrid,lblgrd,lblsym,
 //	     lcpgrd,lggrid,lgeopl, lpcdw,lqsppl, liqset, lqgrid;
-	bool liqset;
-
 
 	double sccon, gacon, gbcon, gbc0, gbc1, gccon, dlcon, ctcon;
 
@@ -411,7 +378,7 @@ private:
 	double w1[6*IQX], w2[6*IQX], w3[6*IQX], w4[6*IQX];
 	double w5[6*IQX], w6[6*IQX], w7[6*IQX], w8[6*IQX];
 	int nsys;
-	int itran[3],isys[IVX][ISX];
+	double isys[IVX][ISX];
 	double xbp[IBX],ybp[IBX],sb[IBX],snew[4*IBX];
 	double xof,yof,sble,chordb;
 //	double xbmin,xbmax,ybmin,ybmax;
@@ -420,7 +387,8 @@ private:
 //	double xcm[1200],ycm[1200],scm[1200],xcmp[1200],ycmp[1200];
 //	double xtk[1200],ytk[1200],stk[1200];
 //	double xtkp[1200],ytkp[1200];
-	double xp[IZX],yp[IZX],s[IZX],sle,xle,yle,xte,yte;
+
+	double sle,xle,yle,xte,yte;
 	double chord,yimage,wgap[IWX],waklen;
 //	double size,scrnfr,plotar, pfac,qfac,vfac,xwind,ywind;
 //	double xpage,ypage,xmarg,ymarg, chg, chq,xofair,yofair,facair, xofa,yofa,faca,uprwt;
@@ -433,28 +401,29 @@ private:
 //	int kimage,nseqex;
 	int aijpiv[IQX];
 //	int idev,idevrp,ipslu,ncolor,icols[5],nover, ncm,ntk;
-	double adeg, xcmref, ycmref, cl_alf, cl_msq;
+
+	double cl_alf, cl_msq;
 	double psio,cosa,sina,gamma,gamm1;
 //	double circ;
-	double tklam,tkl_msq,cpstar,qstar,cpmni,cpmnv,xcpmni,xcpmnv;
+	double tkl_msq,cpstar,qstar;
+	double cpmni,cpmnv,xcpmni,xcpmnv;
 	double arad;//added arcds
-	double xssi[IVX][ISX],uedg[IVX][ISX],uinv[IVX][ISX],mass[IVX][ISX];
-	double thet[IVX][ISX],ctau[IVX][ISX],delt[IVX][ISX];
+	double xssi[IVX][ISX],uinv[IVX][ISX],mass[IVX][ISX];
+	double delt[IVX][ISX];
 	double uslp[IVX][ISX],guxq[IVX][ISX],guxd[IVX][ISX];
-	double dis[IVX][ISX],ctq[IVX][ISX],tau[IVX][ISX],vti[IVX][ISX];
-
+	double vti[IVX][ISX];
 	double xssitr[ISX],uinv_a[IVX][ISX];
 	double gam[IQX],gam_a[IQX],gamu[IQX][ISX],sig[IZX];
 	double apanel[IZX],sst,sst_go,sst_gp,gamte,sigte;
 //	double sigte_a,gamte_a;
 	double dste,aste;
-	double qinv[IZX],qvis[IZX],qinvu[IZX][3], qinv_a[IZX];
+	double qinv[IZX],qinvu[IZX][3], qinv_a[IZX];
 	double q[IQX][IQX],dq[IQX],dzdg[IQX],dzdn[IQX],dzdm[IZX],dqdg[IQX];
 	double dqdm[IZX],qtan1,qtan2,z_qinf,z_alfa,z_qdof0,z_qdof1,z_qdof2,z_qdof3;
 	double aij[IQX][IQX];
 	double bij[IQX][IZX],dij[IZX][IZX];
 	double cij[IWX][IQX];
-	double hopi,qopi,dtor;
+	double hopi,qopi;
 
    
 	double vs1[5][6],vs2[5][6],vsrez[5],vsr[5],vsm[5],vsx[5];
@@ -895,6 +864,37 @@ c   dxyg        airfoil grid-plot annotation increment
 c   gtick       airfoil-plot tick marks size [as fraction of arc length]
 */
 
+
+	//	complex<double> zcoldw, dzte, chordz, zleold, zc, zc_cn, piq, cn, eiw;
+
+	//----- CIRCLE.INC include file for circle-plane operations
+	//   NC         number of circle plane points, must be 2**n + 1
+	//   MC         number of Fourier harmonics of P(w) + iQ(w)
+	//   MCT        number of Fourier harmonics for which dZC/dCN are calculated
+	//
+	//   PI         3.1415926
+	//   AGTE       trailing edge angle/pi
+	//   AG0        angle of airfoil surface at first point
+	//   QIM0       Q(w) offset   = Q(0)
+	//   QIMOLD     Q(w) offset for old airfoil
+	//   DWC        increment of circle-plane coordinate w,  DWC = 2 pi/(NC-1)
+	//   WC(.)      circle plane coordinate w for Fourier operations
+	//   SC(.)      normalized arc length array s(w)
+	//   SCOLD(.)   normalized arc length s(w) of old airfoil
+	//   XCOLD(.)   x coordinate x(w) of old airfoil
+	//   YCOLD(.)   y coordinate y(w) of old airfoil
+	//
+	//   DZTE       trailing edge gap specified in the complex plane
+	//   CHORDZ     airfoil chord specified in the complex plane
+	//   ZLEOLD     leading edge of old airfoil
+	//   ZCOLDW(.)  d(x+iy)/dw of old airfoil
+	//   ZC(.)      complex airfoil coordinates derived from P(w) + iQ(w)
+	//   ZC_CN(..)  sensitivities dZC/dCN for driving geometry constraints
+	//   PIQ(.)     complex harmonic function P(w) + iQ(w)
+	//   CN(.)      Fourier coefficients of P(w) + iQ(w)
+	//   EIW(..)    complex number  exp(inw)  array on the unit circle
+
+	//-----End Specific Inverse MDES-------------------------------
 };
 
 #endif

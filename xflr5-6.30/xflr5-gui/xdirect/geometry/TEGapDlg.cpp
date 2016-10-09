@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 #include "TEGapDlg.h"
-#include <xfoil_analysis/XFoil.h>
+#include <XFoil.h>
 
 #include <QLabel>
 #include <QMessageBox>
