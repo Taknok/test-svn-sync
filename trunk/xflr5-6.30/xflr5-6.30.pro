@@ -1,7 +1,9 @@
 TEMPLATE = subdirs
 
 SUBDIRS = xflr5-engine \
-		xflr5-gui
+	XFoil-lib \
+	xflr5-gui
+
 
 
 TRANSLATIONS = translations/xflr5v6.ts \

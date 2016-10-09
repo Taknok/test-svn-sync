@@ -7,12 +7,12 @@
 
 #Qt5.4 required for QOpenGLWidget instead of QGLWidget
 lessThan(QT_MAJOR_VERSION, 5) {
-  error("Qt5.4 or greater is required for xflr5 v6.15")
+  error("Qt5.4 or greater is required for xflr5 v6.30")
 }
 else
 {
     lessThan(QT_MINOR_VERSION, 4) {
-	  error("Qt5.4 or greater is required for xflr5 v6.15")
+	  error("Qt5.4 or greater is required for xflr5 v6.30")
     }
 }
 
@@ -23,13 +23,14 @@ TEMPLATE = app
 
 
 INCLUDEPATH += $$PWD/viewwidgets
-INCLUDEPATH += $$PWD/objects
 INCLUDEPATH += $$PWD/graph
 INCLUDEPATH += $$PWD/misc
 INCLUDEPATH += $$PWD/glcontextinfo
 
 INCLUDEPATH += $$PWD/../xflr5-engine
 DEPENDPATH += $$PWD/../xflr5-engine
+INCLUDEPATH += $$PWD/../XFoil-lib
+DEPENDPATH += $$PWD/../XFoil-lib
 
 SOURCES += \
 	XFLR5Application.cpp \
@@ -41,6 +42,15 @@ SOURCES += \
 	viewwidgets/graphtilewidget.cpp \
 	viewwidgets/legendwidget.cpp \
 	viewwidgets/gl3widget.cpp \
+	viewwidgets/BodyFrameWidget.cpp \
+	viewwidgets/BodyLineWidget.cpp \
+	viewwidgets/Direct2dDesign.cpp \
+	viewwidgets/miarextilewidget.cpp \
+	viewwidgets/xdirecttilewidget.cpp \
+	viewwidgets/wingwidget.cpp \
+	viewwidgets/oppointwidget.cpp \
+	viewwidgets/inverseviewwidget.cpp \
+	viewwidgets/ArcBall.cpp \
 	misc/Settings.cpp \
 	misc/SaveOptionsDlg.cpp \
 	misc/ProgressDlg.cpp \
@@ -123,6 +133,7 @@ SOURCES += \
 	xdirect/geometry/TwoDPanelDlg.cpp \
 	xdirect/xmlpolarreader.cpp \
 	xdirect/xmlpolarwriter.cpp \
+	xdirect/objects2d.cpp \
 	graph/QGraph.cpp \
 	graph/GraphDlg.cpp \
 	graph/Graph.cpp \
@@ -137,22 +148,12 @@ SOURCES += \
 	design/SplineCtrlsDlg.cpp \
 	design/AFoilTableDlg.cpp \
 	design/GridSettingsDlg.cpp \
-	viewwidgets/BodyFrameWidget.cpp \
-	viewwidgets/BodyLineWidget.cpp \
-	viewwidgets/Direct2dDesign.cpp \
-	viewwidgets/miarextilewidget.cpp \
-	viewwidgets/xdirecttilewidget.cpp \
-	viewwidgets/wingwidget.cpp \
-	viewwidgets/oppointwidget.cpp \
-	viewwidgets/inverseviewwidget.cpp \
-	viewwidgets/ArcBall.cpp \
 	glcontextinfo/glrenderwindow.cpp \
 	glcontextinfo/openglinfodlg.cpp \
 	script/xflscriptexec.cpp \
 	script/xflscriptreader.cpp \
 	gui_objects/Spline5.cpp \
 	gui_objects/SplineFoil.cpp \
-    xdirect/objects2d.cpp
 
 
 HEADERS += \
@@ -164,6 +165,15 @@ HEADERS += \
 	viewwidgets/graphtilewidget.h \
 	viewwidgets/legendwidget.h \
 	viewwidgets/gl3widget.h \
+	viewwidgets/BodyFrameWidget.h \
+	viewwidgets/BodyLineWidget.h \
+	viewwidgets/Direct2dDesign.h \
+	viewwidgets/miarextilewidget.h \
+	viewwidgets/xdirecttilewidget.h \
+	viewwidgets/wingwidget.h \
+	viewwidgets/oppointwidget.h \
+	viewwidgets/inverseviewwidget.h \
+	viewwidgets/ArcBall.h \
 	misc/Settings.h \
 	misc/SaveOptionsDlg.h \
 	misc/ModDlg.h \
@@ -245,6 +255,7 @@ HEADERS += \
 	xdirect/geometry/TwoDPanelDlg.h \
 	xdirect/xmlpolarreader.h \
 	xdirect/xmlpolarwriter.h \
+	xdirect/objects2d.h \
 	xinverse/XInverse.h \
 	xinverse/InverseOptionsDlg.h \
 	xinverse/FoilSelectionDlg.h \
@@ -259,15 +270,6 @@ HEADERS += \
 	design/FoilTableDelegate.h \
 	design/AFoilTableDlg.h \
 	design/GridSettingsDlg.h \
-	viewwidgets/BodyFrameWidget.h \
-	viewwidgets/BodyLineWidget.h \
-	viewwidgets/Direct2dDesign.h \
-	viewwidgets/miarextilewidget.h \
-	viewwidgets/xdirecttilewidget.h \
-	viewwidgets/wingwidget.h \
-	viewwidgets/oppointwidget.h \
-	viewwidgets/inverseviewwidget.h \
-	viewwidgets/ArcBall.h \
 	glcontextinfo/glrenderwindow.h \
 	glcontextinfo/openglinfodlg.h \
 	script/xflscriptexec.h \
@@ -275,8 +277,7 @@ HEADERS += \
 	gui_objects/Spline5.h \
 	gui_objects/SplineFoil.h \
 	gui_enums.h \
-	gui_params.h \
-    xdirect/objects2d.h
+	gui_params.h
 
 	
 
@@ -350,6 +351,10 @@ message($$OUT_PWD/../xflr5-engine/)
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../xflr5-engine/release/ -lengine_xflr5
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../xflr5-engine/debug/ -lengine_xflr5
 else:unix: LIBS += -L$$OUT_PWD/../xflr5-engine/ -lengine_xflr5
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../XFoil-lib/release/ -lXFoil-lib
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../XFoil-lib/debug/ -lXFoil-lib
+else:unix: LIBS += -L$$OUT_PWD/../XFoil-lib/ -lXFoil-lib
 
 
 

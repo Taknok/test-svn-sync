@@ -18,7 +18,7 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 *****************************************************************************/
-
+#include "globals.h"
 #include "XInverse.h"
 #include "InverseOptionsDlg.h"
 #include <misc/LinePickerDlg.h>
@@ -92,8 +92,8 @@ void InverseOptionsDlg::setupLayout()
 void InverseOptionsDlg::initDialog()
 {
 	QXInverse *pXInverse = (QXInverse*)m_pXInverse;
-	m_pctrlRefFoil->setStyle(pXInverse->m_pRefFoil->foilStyle(), pXInverse->m_pRefFoil->foilWidth(), pXInverse->m_pRefFoil->foilColor(),0);
-	m_pctrlModFoil->setStyle(pXInverse->m_pModFoil->foilStyle(), pXInverse->m_pModFoil->foilWidth(), pXInverse->m_pModFoil->foilColor(),0);
+	m_pctrlRefFoil->setStyle(pXInverse->m_pRefFoil->foilStyle(), pXInverse->m_pRefFoil->foilWidth(), colour(pXInverse->m_pRefFoil),0);
+	m_pctrlModFoil->setStyle(pXInverse->m_pModFoil->foilStyle(), pXInverse->m_pModFoil->foilWidth(), colour(pXInverse->m_pModFoil),0);
 	m_pctrlSpline->setStyle(pXInverse->m_Spline.style(), pXInverse->m_Spline.width(), pXInverse->m_Spline.color(),0);
 	m_pctrlReflected->setStyle(pXInverse->m_ReflectedStyle, pXInverse->m_ReflectedWidth, pXInverse->m_ReflectedClr,0);
 }
@@ -103,14 +103,15 @@ void InverseOptionsDlg::onRefStyle()
 {
 	QXInverse *pXInverse = (QXInverse*)m_pXInverse;
     LinePickerDlg dlg(this);
-	dlg.initDialog(pXInverse->m_pRefFoil->foilStyle(), pXInverse->m_pRefFoil->foilWidth(), pXInverse->m_pRefFoil->foilColor());
+	dlg.initDialog(pXInverse->m_pRefFoil->foilStyle(), pXInverse->m_pRefFoil->foilWidth(), colour(pXInverse->m_pRefFoil));
 
 	if(QDialog::Accepted==dlg.exec())
 	{
 		m_pctrlRefFoil->setStyle(dlg.setStyle(),dlg.width(),dlg.setColor(),0);
 		pXInverse->m_pRefFoil->foilStyle() = dlg.setStyle();
 		pXInverse->m_pRefFoil->foilWidth() = dlg.width();
-		pXInverse->m_pRefFoil->foilColor() = dlg.setColor();
+		QColor clr = dlg.setColor();
+		pXInverse->m_pRefFoil->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
 	}
 }
 
@@ -119,14 +120,15 @@ void InverseOptionsDlg::onModStyle()
 {
 	QXInverse *pXInverse = (QXInverse*)m_pXInverse;
     LinePickerDlg dlg(this);
-	dlg.initDialog(pXInverse->m_pModFoil->foilStyle(), pXInverse->m_pModFoil->foilWidth(), pXInverse->m_pModFoil->foilColor());
+	dlg.initDialog(pXInverse->m_pModFoil->foilStyle(), pXInverse->m_pModFoil->foilWidth(), colour(pXInverse->m_pModFoil));
 
 	if(QDialog::Accepted==dlg.exec())
 	{
 		m_pctrlModFoil->setStyle(dlg.setStyle(),dlg.width(),dlg.setColor(),0);
 		pXInverse->m_pModFoil->foilStyle() = dlg.setStyle();
 		pXInverse->m_pModFoil->foilWidth() = dlg.width();
-		pXInverse->m_pModFoil->foilColor()  = dlg.setColor();
+		QColor clr = dlg.setColor();
+		pXInverse->m_pModFoil->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
 	}
 }
 

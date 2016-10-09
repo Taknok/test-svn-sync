@@ -22,7 +22,7 @@
 #include <QGroupBox>
 #include <QVBoxLayout>
 #include "InterpolateFoilsDlg.h"
-#include <xfoil_analysis/XFoil.h>
+#include <XFoil.h>
 
 
 void *InterpolateFoilsDlg::s_pXFoil;
@@ -258,7 +258,7 @@ void InterpolateFoilsDlg::update()
 
 	if(!pFoil1 || !pFoil2) return;
 
-	pXFoil->Interpolate(pFoil1->x, pFoil1->y, pFoil1->n,
+	pXFoil->interpolate(pFoil1->x, pFoil1->y, pFoil1->n,
 						pFoil2->x, pFoil2->y, pFoil2->n,
 						m_Frac/100.0);
 

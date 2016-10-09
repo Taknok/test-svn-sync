@@ -33,8 +33,8 @@
 #include <misc/Settings.h>
 #include <graph/QGraph.h>
 #include "graphwidget.h"
-#include <xfoil_analysis/XFoil.h>
-#include <xfoil_analysis/XFoilTask.h>
+#include <XFoil.h>
+#include <XFoilTask.h>
 
 void *XFoilAnalysisDlg::s_pXDirect;
 QPoint XFoilAnalysisDlg::s_Position;

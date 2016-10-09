@@ -22,10 +22,10 @@
 
 
 #include "Foil.h"
+#include <xfoil_globals.h>
 #include <objects/Spline.h>
 #include <objects/Polar.h>
 #include <math.h>
-#include <engine_globals.h>
 #include <QTextStream>
 #include <QtDebug>
 
@@ -39,10 +39,11 @@ Foil::Foil()
 {
 	m_FoilStyle = 0;
 	m_FoilWidth = 1;
-	m_FoilColor.setHsv((int)(((double)qrand()/(double)RAND_MAX)*360),
-								   (int)(((double)qrand()/(double)RAND_MAX)*155)+100,
-								   (int)(((double)qrand()/(double)RAND_MAX)*155)+100,
-									255);
+	m_red   = (int)(((double)rand()/(double)RAND_MAX)*200);
+	m_green = (int)(((double)rand()/(double)RAND_MAX)*200);
+	m_blue  = (int)(((double)rand()/(double)RAND_MAX)*200);
+	m_alphaChannel = 255;
+
 
 	m_iHighLight = -1;
 
@@ -190,7 +191,10 @@ void Foil::copyFoil(Foil *pSrcFoil)
 	m_TEXHinge    = pSrcFoil->m_TEXHinge;
 	m_TEYHinge    = pSrcFoil->m_TEYHinge;
 
-	m_FoilColor   = pSrcFoil->foilColor();
+	m_red          = pSrcFoil->m_red;
+	m_green        = pSrcFoil->m_green;
+	m_blue         = pSrcFoil->m_blue;
+	m_alphaChannel = pSrcFoil->m_alphaChannel;
 	m_FoilStyle   = pSrcFoil->foilStyle();
 	m_FoilWidth   = pSrcFoil->foilWidth();
 	m_bCenterLine = pSrcFoil->m_bCenterLine;
@@ -1601,7 +1605,10 @@ void Foil::insertThisFoil()
 		if(pOldFoil->foilName()==oldFoilName && pOldFoil!=this)
 		{
 			//copy the old foil's style
-			m_FoilColor = pOldFoil->foilColor();
+			m_red          = pOldFoil->m_red;
+			m_green        = pOldFoil->m_green;
+			m_blue         = pOldFoil->m_blue;
+			m_alphaChannel = pOldFoil->m_alphaChannel;
 			m_FoilStyle = pOldFoil->foilStyle();
 			m_FoilWidth = pOldFoil->foilWidth();
 
@@ -1811,7 +1818,8 @@ bool Foil::serialize(QDataStream &ar, bool bIsStoring)
 		writeCString(ar, m_FoilName);
 		writeCString(ar, m_FoilDescription);
 		ar << m_FoilStyle << m_FoilWidth;
-		WriteCOLORREF(ar, m_FoilColor);
+		WriteCOLORREF(ar, m_red, m_green, m_blue);
+
 		if (m_bIsFoilVisible)		ar << 1; else ar << 0;
 		if (m_bShowFoilPoints)		ar << 1; else ar << 0;//1004
 		if (m_bCenterLine)	ar << 1; else ar << 0;//1004
@@ -1846,8 +1854,7 @@ bool Foil::serialize(QDataStream &ar, bool bIsStoring)
 		if(ArchiveFormat>=1002)
 		{
 			ar >> m_FoilStyle >> m_FoilWidth;
-			readCOLORREF(ar, m_FoilColor);
-
+			readCOLORREF(ar, m_red, m_green, m_blue);
 		}
 		if(ArchiveFormat>=1003)
 		{
@@ -1939,7 +1946,8 @@ bool Foil::serializeFoilXFL(QDataStream &ar, bool bIsStoring)
 		ar << m_FoilName;
 		ar << m_FoilDescription;
 		ar << m_FoilStyle << m_FoilWidth;
-		ar <<  m_FoilColor;
+		writeqColor(ar, m_red, m_green, m_blue, m_alphaChannel);
+
 		ar << m_bIsFoilVisible << m_bShowFoilPoints << m_bCenterLine << m_bLEFlap << m_bTEFlap;
 		ar << m_LEFlapAngle << m_LEXHinge << m_LEYHinge;
 		ar << m_TEFlapAngle << m_TEXHinge << m_TEYHinge;
@@ -1956,7 +1964,7 @@ bool Foil::serializeFoilXFL(QDataStream &ar, bool bIsStoring)
 		ar >> m_FoilName;
 		ar >> m_FoilDescription;
 		ar >> m_FoilStyle >> m_FoilWidth;
-		ar >>  m_FoilColor;
+		readqColor(ar, m_red, m_green, m_blue, m_alphaChannel);
 		ar >> m_bIsFoilVisible >> m_bShowFoilPoints >> m_bCenterLine >> m_bLEFlap >> m_bTEFlap;
 		ar >> m_LEFlapAngle >> m_LEXHinge >> m_LEYHinge;
 		ar >> m_TEFlapAngle >> m_TEXHinge >> m_TEYHinge;
@@ -1975,5 +1983,25 @@ bool Foil::serializeFoilXFL(QDataStream &ar, bool bIsStoring)
 		return true;
 	}
 }
+
+
+
+
+void Foil::getColor(int &r, int &g, int &b, int &a)
+{
+	r = m_red;
+	g = m_green;
+	b = m_blue;
+	a = m_alphaChannel;
+}
+
+void Foil::setColor(int r, int g, int b, int a)
+{
+	m_red = r;
+	m_green = g;
+	m_blue = b;
+	m_alphaChannel = a;
+}
+
 
 

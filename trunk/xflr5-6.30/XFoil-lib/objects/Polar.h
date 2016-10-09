@@ -31,10 +31,9 @@
 
 
 
-
+#include <xfoil_enums.h>
 #include <objects/OpPoint.h>
 #include <QList>
-
 
 
 /**
@@ -55,7 +54,7 @@ public:
 
 	void addPoint(double Alpha, double Cd, double Cdp, double Cl, double Cm,
 				  double Xtr1, double Xtr2, double HMom, double Cpmn, double Reynolds, double XCp);
-	void exportPolar(QTextStream &out, QString versionName, XFLR5::enumTextFileType FileType, bool bDataOnly=false);
+	void exportPolar(QTextStream &out, QString versionName, bool bCSV, bool bDataOnly=false);
 	void resetPolar();
 
 
@@ -76,7 +75,7 @@ public:
 	QString &foilName() {return m_FoilName;}
 	QString &polarName() {return m_PlrName;}
 
-	void setPolarType(XFLR5::enumPolarType type);
+	void setPolarType(XFOIL::enumPolarType type);
 
 	void setFoilName(QString newFoilName) {m_FoilName = newFoilName;}
 	void setPolarName(QString newPolarName) {m_PlrName = newPolarName;}
@@ -89,7 +88,13 @@ public:
 
 	void getPolarProperties(QString &polarProps);
 
-	QColor &polarColor()   {return m_Color;}
+	void getColor(int &r, int &g, int &b, int &a);
+	void setColor(int r, int g, int b, int a=255);
+	int red() {return m_red;}
+	int green() {return m_green;}
+	int blue() {return m_blue;}
+	int alphaChannel(){return m_alphaChannel;}
+
 	int &polarStyle()      {return m_Style;}
 	int &polarWidth()      {return m_Width;}
 	bool &isVisible()      {return m_bIsVisible;}
@@ -103,9 +108,9 @@ public:
 	double &XtrBot()   {return m_XBot;}
 	int &ReType()      {return m_ReType;}
 	int &MaType()      {return m_MaType;}
-	XFLR5::enumPolarType &polarType() {return m_PolarType;}
+	XFOIL::enumPolarType &polarType() {return m_PolarType;}
 
-	static QString getAutoPolarName(XFLR5::enumPolarType polarType, double Re, double Mach, double NCrit, double ASpec=0.0);
+	static QString getAutoPolarName(XFOIL::enumPolarType polarType, double Re, double Mach, double NCrit, double ASpec=0.0);
 	static QString variableName(int iVar);
 	static Polar *curPolar() {return s_pCurPolar;}
 	static Polar *getPolar(void* pFoilPtr, QString PolarName);
@@ -141,10 +146,10 @@ private:
 
 	int m_Style, m_Width, m_PointStyle;
 	bool m_bIsVisible;
-	QColor m_Color;
+	int m_red, m_blue, m_green, m_alphaChannel;
 
 	//Analysis specification
-	XFLR5::enumPolarType m_PolarType;          /**< the Polar type */
+	XFOIL::enumPolarType m_PolarType;          /**< the Polar type */
 	int m_ReType;                       /**< the type of Reynolds number input, cf. XFoil documentation */
 	int m_MaType;                       /**< the type of Mach number input, cf. XFoil documentation */
 	double m_ASpec;                     /**< the specified aoa in the case of Type 4 polars */

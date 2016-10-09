@@ -19,7 +19,7 @@
 
 *****************************************************************************/
 
-#include <xfoil_analysis/XFoil.h>
+#include <XFoil.h>
 #include "NacaFoilDlg.h"
 #include <QGridLayout>
 #include <QFormLayout>

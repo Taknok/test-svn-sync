@@ -19,7 +19,7 @@
 
 *****************************************************************************/
 
-#include <xfoil_analysis/XFoil.h>
+#include <XFoil.h>
 #include "FoilGeomDlg.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>

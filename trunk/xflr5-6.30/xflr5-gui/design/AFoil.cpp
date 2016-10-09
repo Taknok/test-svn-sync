@@ -49,7 +49,7 @@
 #include <xdirect/geometry/FoilCoordDlg.h>
 #include <xdirect/geometry/FoilGeomDlg.h>
 #include <xdirect/geometry/InterpolateFoilsDlg.h>
-#include <xfoil_analysis/XFoil.h>
+#include <XFoil.h>
 
 
 
@@ -435,7 +435,7 @@ void QAFoil::onAFoilDerotateFoil()
 	m_pBufferFoil->copyFoil(Foil::curFoil());
 	m_pBufferFoil->isVisible() = true;
 	m_pBufferFoil->foilName() = Foil::curFoil()->foilName();
-	m_pBufferFoil->foilColor()  = QColor(160,160,160);
+	m_pBufferFoil->setColor(160,160,160);
 	m_pBufferFoil->foilStyle() = 1;
 	m_pBufferFoil->foilWidth() = 1;
 
@@ -448,7 +448,7 @@ void QAFoil::onAFoilDerotateFoil()
 	//then duplicate the buffer foil and add it
 	Foil *pNewFoil = new Foil();
 	pNewFoil->copyFoil(m_pBufferFoil);
-	pNewFoil->foilColor()  = MainFrame::getColor(0);
+	setRandomFoilColor(pNewFoil);
 	pNewFoil->foilStyle() = 0;
 	pNewFoil->foilWidth() = 1;
 
@@ -487,7 +487,7 @@ void QAFoil::onAFoilCadd()
 
 	m_pBufferFoil->copyFoil(Foil::curFoil());
 	m_pBufferFoil->foilName()   = Foil::curFoil()->foilName();
-	m_pBufferFoil->foilColor()  = QColor(160,160,160);
+	m_pBufferFoil->setColor(160,160,160);
 	m_pBufferFoil->foilStyle() = 1;
 	m_pBufferFoil->foilWidth() = 1;
 	m_pBufferFoil->showPoints()  = true;
@@ -505,7 +505,7 @@ void QAFoil::onAFoilCadd()
 		//then duplicate the buffer foil and add it
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(m_pBufferFoil);
-		pNewFoil->foilColor()  = MainFrame::getColor(0);
+		setRandomFoilColor(pNewFoil);
 		pNewFoil->foilStyle() = 0;
 		pNewFoil->foilWidth() = 1;
 		pNewFoil->showPoints() = false;
@@ -518,7 +518,6 @@ void QAFoil::onAFoilCadd()
 	{
 		fillFoilTable();
 		selectFoil(Foil::curFoil());
-		((XFoil*)m_pXFoil)->m_pFoil=NULL;
 
 	}
 	m_pBufferFoil->isVisible() = false;
@@ -554,7 +553,7 @@ void QAFoil::onAFoilPanels()
 
 	m_pBufferFoil->copyFoil(Foil::curFoil());
 	m_pBufferFoil->foilName()  = Foil::curFoil()->foilName();
-	m_pBufferFoil->foilColor()  = QColor(160,160,160);
+	m_pBufferFoil->setColor(160,160,160);
 	m_pBufferFoil->foilStyle() = 1;
 	m_pBufferFoil->foilWidth() = 1;
 	m_pBufferFoil->showPoints() = true;
@@ -572,7 +571,7 @@ void QAFoil::onAFoilPanels()
 		//then duplicate the buffer foil and add it
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(m_pBufferFoil);
-		pNewFoil->foilColor()  = MainFrame::getColor(0);
+		setRandomFoilColor(pNewFoil);
 		pNewFoil->foilStyle() = 0;
 		pNewFoil->foilWidth() = 1;
 		pNewFoil->showPoints() = false;
@@ -604,7 +603,7 @@ void QAFoil::onAFoilFoilCoordinates()
 	m_pBufferFoil->showPoints()  = true;
 	m_pBufferFoil->isVisible() = true;
 	m_pBufferFoil->foilName() = Foil::curFoil()->foilName();
-	m_pBufferFoil->foilColor()  = QColor(160,160,160);
+	m_pBufferFoil->setColor(160,160,160);
 	m_pBufferFoil->foilStyle() = 1;
 	m_pBufferFoil->foilWidth() = 1;
 
@@ -621,7 +620,7 @@ void QAFoil::onAFoilFoilCoordinates()
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(m_pBufferFoil);
 		pNewFoil->showPoints() = false;
-		pNewFoil->foilColor()  = MainFrame::getColor(0);
+		setRandomFoilColor(pNewFoil);
 		pNewFoil->foilStyle() = 0;
 		pNewFoil->foilWidth() = 1;
 		pNewFoil->setHighLight(-1);
@@ -634,7 +633,6 @@ void QAFoil::onAFoilFoilCoordinates()
 	{
 		fillFoilTable();
 		selectFoil(Foil::curFoil());
-		((XFoil*)m_pXFoil)->m_pFoil=NULL;
 	}
 	m_pBufferFoil->isVisible() = false;
 	m_p2DWidget->update();;
@@ -652,7 +650,7 @@ void QAFoil::onAFoilFoilGeom()
 	m_pBufferFoil->showPoints()  = true;
 	m_pBufferFoil->isVisible() = true;
 	m_pBufferFoil->foilName() = Foil::curFoil()->foilName();
-	m_pBufferFoil->foilColor()  = QColor(160,160,160);
+	m_pBufferFoil->setColor(160,160,160);
 	m_pBufferFoil->foilStyle() = 1;
 	m_pBufferFoil->foilWidth() = 1;
 
@@ -668,7 +666,7 @@ void QAFoil::onAFoilFoilGeom()
 		//then duplicate the buffer foil and add it
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(m_pBufferFoil);
-		pNewFoil->foilColor()  = MainFrame::getColor(0);
+		setRandomFoilColor(pNewFoil);
 		pNewFoil->foilStyle() = 0;
 		pNewFoil->foilWidth() = 1;
 		pNewFoil->showPoints() = false;
@@ -699,7 +697,7 @@ void QAFoil::onAFoilSetTEGap()
 	m_pBufferFoil->showPoints()  = false;
 	m_pBufferFoil->isVisible()   = true;
 	m_pBufferFoil->foilName()   = Foil::curFoil()->foilName();
-	m_pBufferFoil->foilColor()  = QColor(160,160,160);
+	m_pBufferFoil->setColor(160,160,160);
 	m_pBufferFoil->foilStyle() = 1;
 	m_pBufferFoil->foilWidth() = 1;
 
@@ -715,7 +713,7 @@ void QAFoil::onAFoilSetTEGap()
 		//then duplicate the buffer foil and add it
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(m_pBufferFoil);
-		pNewFoil->foilColor()  = MainFrame::getColor(0);
+		setRandomFoilColor(pNewFoil);
 		pNewFoil->foilStyle() = 0;
 		pNewFoil->foilWidth() = 1;
 		pNewFoil->showPoints() = false;
@@ -749,7 +747,7 @@ void QAFoil::onAFoilSetLERadius()
 	m_pBufferFoil->isVisible()   = true;
 	m_pBufferFoil->showPoints()    = false;
 	m_pBufferFoil->foilName()   = Foil::curFoil()->foilName();
-	m_pBufferFoil->foilColor()  = QColor(160,160,160);
+	m_pBufferFoil->setColor(160,160,160);
 	m_pBufferFoil->foilStyle() = 1;
 	m_pBufferFoil->foilWidth() = 1;
 
@@ -765,7 +763,7 @@ void QAFoil::onAFoilSetLERadius()
 		//then duplicate the buffer foil and add it
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(m_pBufferFoil);
-		pNewFoil->foilColor()  = MainFrame::getColor(0);
+		setRandomFoilColor(pNewFoil);
 		pNewFoil->foilStyle() = 0;
 		pNewFoil->foilWidth() = 1;
 		pNewFoil->showPoints()    = false;
@@ -802,7 +800,7 @@ void QAFoil::onAFoilInterpolateFoils()
 	if(!Foil::curFoil()) return;
 	m_pBufferFoil->copyFoil(Foil::curFoil());
 	m_pBufferFoil->foilName()  = Foil::curFoil()->foilName();
-	m_pBufferFoil->foilColor()  = QColor(160,160,160);
+	m_pBufferFoil->setColor(160,160,160);
 	m_pBufferFoil->foilStyle() = 1;
 	m_pBufferFoil->foilWidth() = 1;
 	m_pBufferFoil->showPoints()   = false;
@@ -820,7 +818,7 @@ void QAFoil::onAFoilInterpolateFoils()
 		//then duplicate the buffer foil and add it
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(m_pBufferFoil);
-		pNewFoil->foilColor()  = MainFrame::getColor(0);
+		setRandomFoilColor(pNewFoil);
 		pNewFoil->foilStyle() = 0;
 		pNewFoil->foilWidth() = 1;
 		pNewFoil->showPoints() = false;
@@ -850,7 +848,7 @@ void QAFoil::onAFoilNacaFoils()
 	m_pBufferFoil->showPoints()  = true;
 	m_pBufferFoil->isVisible() = true;
 	m_pBufferFoil->foilName() = "Naca xxxx";
-	m_pBufferFoil->foilColor()  = QColor(160,160,160);
+	m_pBufferFoil->setColor(160,160,160);
 	m_pBufferFoil->foilStyle() = 1;
 	m_pBufferFoil->foilWidth() = 1;
 
@@ -872,7 +870,7 @@ void QAFoil::onAFoilNacaFoils()
 
 		Foil *pNewFoil    = new Foil();
 		pNewFoil->copyFoil(m_pBufferFoil);
-		pNewFoil->foilColor()  = MainFrame::getColor(0);
+		setRandomFoilColor(pNewFoil);
 		pNewFoil->foilStyle() = 0;
 		pNewFoil->foilWidth() = 1;
 		pNewFoil->showPoints()    = false;
@@ -886,7 +884,6 @@ void QAFoil::onAFoilNacaFoils()
 	{
 		fillFoilTable();;
 		if(Foil::curFoil()) selectFoil(Foil::curFoil());
-		((XFoil*)m_pXFoil)->m_pFoil=NULL;
 	}
 
 	setControls();
@@ -905,7 +902,7 @@ void QAFoil::onAFoilSetFlap()
 	m_pBufferFoil->copyFoil(Foil::curFoil());
 	m_pBufferFoil->isVisible() = true;
 	m_pBufferFoil->foilName() = Foil::curFoil()->foilName();
-	m_pBufferFoil->foilColor()  = QColor(160,160,160);
+	m_pBufferFoil->setColor(160,160,160);
 	m_pBufferFoil->foilStyle() = 1;
 	m_pBufferFoil->foilWidth() = 1;
 
@@ -922,7 +919,7 @@ void QAFoil::onAFoilSetFlap()
 		//then duplicate the buffer foil and add it
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(m_pBufferFoil);
-		pNewFoil->foilColor()  = MainFrame::getColor(0);
+		setRandomFoilColor(pNewFoil);
 		pNewFoil->foilStyle() = 0;
 		pNewFoil->foilWidth() = 1;
 
@@ -934,7 +931,6 @@ void QAFoil::onAFoilSetFlap()
 	{
 		fillFoilTable();
 		selectFoil(Foil::curFoil());
-		((XFoil*)m_pXFoil)->m_pFoil=NULL;
 	}
 	m_pBufferFoil->isVisible() = false;
 	m_p2DWidget->update();;
@@ -971,7 +967,7 @@ void QAFoil::onDuplicate()
 	if(!Foil::curFoil()) return;
 	Foil *pNewFoil = new Foil;
 	pNewFoil->copyFoil(Foil::curFoil());
-	pNewFoil->foilColor() = MainFrame::getColor(0);
+	setRandomFoilColor(pNewFoil);
 	pNewFoil->initFoil();
 
 	addNewFoil(pNewFoil);
@@ -1149,14 +1145,15 @@ void QAFoil::onFoilStyle()
 	else
 	{
         LinePickerDlg dlg(this);
-		dlg.initDialog(Foil::curFoil()->foilStyle(), Foil::curFoil()->foilWidth(), Foil::curFoil()->foilColor());
+		dlg.initDialog(Foil::curFoil()->foilStyle(), Foil::curFoil()->foilWidth(), colour(Foil::curFoil()));
 
 		if(QDialog::Accepted==dlg.exec())
 		{
 			emit projectModified();
 			Foil::curFoil()->foilStyle() = dlg.setStyle();
 			Foil::curFoil()->foilWidth() = dlg.width();
-			Foil::curFoil()->foilColor() = dlg.setColor();
+			QColor clr = dlg.setColor();
+			Foil::curFoil()->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
 			m_p2DWidget->update();;
 		}
 	}

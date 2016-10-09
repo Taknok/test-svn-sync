@@ -110,21 +110,21 @@ WingOpp::~WingOpp()
  * @param FileType TXT if the data is separated by spaces, CSV for a comma separator
  * @return true if the export was successful, false otherwise.
  */
-bool WingOpp::exportWOpp(QTextStream &out, XFLR5::enumTextFileType FileType)
+bool WingOpp::exportWOpp(QTextStream &out, bool bCSV)
 {
 	QString Header, strong, Format;
 	int k;
 
-	if(FileType==XFLR5::TXT) Header = "  y-span        Chord      Ai         Cl        PCd          ICd        CmGeom    CmAirf@chord/4    XTrtop    XTrBot      XCP       BM\n";
-	else                     Header = "  y-span,Chord,Ai,Cl,PCd,ICd,CmGeom,CmAirf@chord/4,XTrtop,XTrBot,XCP,BM\n";
+	if(!bCSV) Header = "  y-span        Chord      Ai         Cl        PCd          ICd        CmGeom    CmAirf@chord/4    XTrtop    XTrBot      XCP       BM\n";
+	else      Header = "  y-span,Chord,Ai,Cl,PCd,ICd,CmGeom,CmAirf@chord/4,XTrtop,XTrBot,XCP,BM\n";
 	out << Header;
 
 	int nStart;
 	if(m_AnalysisMethod==XFLR5::LLTMETHOD) nStart = 1;
 	else                                   nStart = 0;
 
-	if(FileType==XFLR5::TXT) Format = "%1  %2   %3   %4   %5   %6   %7   %8    %9   %10   %11   %12\n";
-	else                     Format = "%1,%2,%3,%4,%5,%6,%7,%8,%9,%10,%11,%12\n";
+	if(!bCSV) Format = "%1  %2   %3   %4   %5   %6   %7   %8    %9   %10   %11   %12\n";
+	else      Format = "%1,%2,%3,%4,%5,%6,%7,%8,%9,%10,%11,%12\n";
 	for (k=nStart; k<m_NStation; k++)
 	{
 		strong = QString(Format)

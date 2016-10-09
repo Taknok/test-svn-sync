@@ -56,7 +56,7 @@ BatchDlg::BatchDlg(QWidget *pParent) : QDialog(pParent)
 
 	m_FoilList.clear();
 
-	m_PolarType = XFLR5::FIXEDSPEEDPOLAR;
+	m_PolarType = XFOIL::FIXEDSPEEDPOLAR;
 	
 	m_Mach  = 0.0;
 
@@ -454,24 +454,23 @@ Polar *BatchDlg::createPolar(Foil *pFoil, double Spec, double Mach, double NCrit
 	Polar *pPolar = new Polar;
 	pPolar->foilName()   = pFoil->foilName();
 	pPolar->isVisible() = true;
-
 	pPolar->polarType() = m_PolarType;
 
 	switch (pPolar->polarType())
 	{
-		case XFLR5::FIXEDSPEEDPOLAR:
+		case XFOIL::FIXEDSPEEDPOLAR:
 			pPolar->MaType() = 1;
 			pPolar->ReType() = 1;
 			break;
-		case XFLR5::FIXEDLIFTPOLAR:
+		case XFOIL::FIXEDLIFTPOLAR:
 			pPolar->MaType() = 2;
 			pPolar->ReType() = 2;
 			break;
-		case XFLR5::RUBBERCHORDPOLAR:
+		case XFOIL::RUBBERCHORDPOLAR:
 			pPolar->MaType() = 1;
 			pPolar->ReType() = 3;
 			break;
-		case XFLR5::FIXEDAOAPOLAR:
+		case XFOIL::FIXEDAOAPOLAR:
 			pPolar->MaType() = 1;
 			pPolar->ReType() = 1;
 			break;
@@ -481,7 +480,7 @@ Polar *BatchDlg::createPolar(Foil *pFoil, double Spec, double Mach, double NCrit
 			break;
 	}
 
-	if(m_PolarType!=XFLR5::FIXEDAOAPOLAR)
+	if(m_PolarType!=XFOIL::FIXEDAOAPOLAR)
 	{
 		pPolar->Reynolds() = Spec;
 	}
@@ -554,7 +553,7 @@ void BatchDlg::initDialog()
 	m_XBot      = QXDirect::s_refPolar.XtrBot();
 	m_XTop      = QXDirect::s_refPolar.XtrTop();
 	m_Mach      = QXDirect::s_refPolar.Mach();
-	m_PolarType = XFLR5::FIXEDSPEEDPOLAR;
+	m_PolarType = XFOIL::FIXEDSPEEDPOLAR;
 
 
 	m_pctrlFoil1->setChecked(s_bCurrentFoil);
@@ -576,7 +575,7 @@ void BatchDlg::initDialog()
 
 	if(m_ReMin<=0.0) m_ReMin = qAbs(m_ReInc);
 
-	if(m_PolarType!=XFLR5::FIXEDAOAPOLAR)
+	if(m_PolarType!=XFOIL::FIXEDAOAPOLAR)
 	{
 		m_pctrlReMin->setPrecision(0);
 		m_pctrlReMax->setPrecision(0);
@@ -623,10 +622,10 @@ void BatchDlg::initDialog()
 	else         m_rbspec2->setChecked(true);
 	onAcl();
 
-	if(m_PolarType==XFLR5::FIXEDSPEEDPOLAR)       m_rbtype1->setChecked(true);
-	else if(m_PolarType==XFLR5::FIXEDLIFTPOLAR)   m_rbtype2->setChecked(true);
-	else if(m_PolarType==XFLR5::RUBBERCHORDPOLAR) m_rbtype3->setChecked(true);
-	else if(m_PolarType==XFLR5::FIXEDAOAPOLAR)    m_rbtype4->setChecked(true);
+	if(m_PolarType==XFOIL::FIXEDSPEEDPOLAR)       m_rbtype1->setChecked(true);
+	else if(m_PolarType==XFOIL::FIXEDLIFTPOLAR)   m_rbtype2->setChecked(true);
+	else if(m_PolarType==XFOIL::RUBBERCHORDPOLAR) m_rbtype3->setChecked(true);
+	else if(m_PolarType==XFOIL::FIXEDAOAPOLAR)    m_rbtype4->setChecked(true);
 	onPolarType();
 
 
@@ -655,7 +654,7 @@ void BatchDlg::initDialog()
  */
 void BatchDlg::onAcl()
 {
-	if(m_PolarType==XFLR5::FIXEDAOAPOLAR) return;
+	if(m_PolarType==XFOIL::FIXEDAOAPOLAR) return;
 	if(m_rbspec1->isChecked())
 	{
 		m_pctrlSpecVar->setText(tr("Alpha ="));
@@ -687,21 +686,21 @@ void BatchDlg::onPolarType()
 		m_pctrlReType->setText(tr("Reynolds ="));
 		m_pctrlMaType->setText(tr("Mach ="));
 		m_pctrlEditList->setEnabled(true);
-		m_PolarType = XFLR5::FIXEDSPEEDPOLAR;
+		m_PolarType = XFOIL::FIXEDSPEEDPOLAR;
 	}
 	else if(m_rbtype2->isChecked())
 	{
 		m_pctrlReType->setText(tr("Re.sqrt(Cl) ="));
 		m_pctrlMaType->setText(tr("Ma.sqrt(Cl) ="));
 		m_pctrlEditList->setEnabled(true);
-		m_PolarType = XFLR5::FIXEDLIFTPOLAR;
+		m_PolarType = XFOIL::FIXEDLIFTPOLAR;
 	}
 	else if(m_rbtype3->isChecked())
 	{
 		m_pctrlReType->setText(tr("Re.Cl ="));
 		m_pctrlMaType->setText(tr("Mach ="));
 		m_pctrlEditList->setEnabled(true);
-		m_PolarType = XFLR5::RUBBERCHORDPOLAR;
+		m_PolarType = XFOIL::RUBBERCHORDPOLAR;
 	}
 	else if(m_rbtype4->isChecked())
 	{
@@ -709,10 +708,10 @@ void BatchDlg::onPolarType()
 		m_pctrlMaType->setText(tr("Mach ="));
 		m_pctrlEditList->setEnabled(false);
 		m_rbspec1->setChecked(true);
-		m_PolarType = XFLR5::FIXEDAOAPOLAR;
+		m_PolarType = XFOIL::FIXEDAOAPOLAR;
 	}
 
-	if(m_PolarType!=XFLR5::FIXEDAOAPOLAR)
+	if(m_PolarType!=XFOIL::FIXEDAOAPOLAR)
 	{
 		m_pctrlReMin->setPrecision(0);
 		m_pctrlReMax->setPrecision(0);
@@ -942,7 +941,7 @@ void BatchDlg::readParams()
 {
 	m_bAlpha = m_rbspec1->isChecked();
 
-	if(m_PolarType!=XFLR5::FIXEDAOAPOLAR)
+	if(m_PolarType!=XFOIL::FIXEDAOAPOLAR)
 	{
 		m_ReInc = m_pctrlReDelta->value();
 		m_ReMax = m_pctrlReMax->value();
@@ -1138,7 +1137,7 @@ void BatchDlg::analyze()
 
 	if(s_bCurrentFoil)
 	{
-		if(m_PolarType!=XFLR5::FIXEDAOAPOLAR) ReLoop();
+		if(m_PolarType!=XFOIL::FIXEDAOAPOLAR) ReLoop();
 		else                                  alphaLoop();
 	}
 	else
@@ -1149,7 +1148,7 @@ void BatchDlg::analyze()
 
 			strong = tr("Analyzing ")+m_pFoil->foilName()+("\n");
 			outputMsg(strong);
-			if(m_PolarType!=XFLR5::FIXEDAOAPOLAR) ReLoop();
+			if(m_PolarType!=XFOIL::FIXEDAOAPOLAR) ReLoop();
 			else                                  alphaLoop();
 			strong = "\n\n";
 			outputMsg(strong);

@@ -31,15 +31,10 @@
 #define SPLINE_H
 
 
-
-
-
-#include <QPainter>
-#include <QFile>
 #include <QList>
-#include <QTextStream>
+
 #include <objects/CVector.h>
-#include <engine_params.h>
+#include <xfoil_params.h>
 
 
 /**
@@ -75,7 +70,12 @@ public:
 	
 	void setStyle(int style){m_Style = style;}
 	void setWidth(int width){m_Width = width;}
-	void setColor(QColor color){m_Color = color;}
+	void getColor(int &r, int &g, int &b, int &a);
+	void setColor(int r, int g, int b, int a=255);
+	int red() {return m_red;}
+	int green() {return m_green;}
+	int blue() {return m_blue;}
+	int alphaChannel(){return m_alphaChannel;}
 
 
 	int m_iHighlight;                /**< the index of the currently highlighted control point, i.e. the point over which the mouse hovers, or -1 of none. */
@@ -87,12 +87,13 @@ public:
 
 	QList<double> m_knot;            /**< the array of the values of the spline's knot */
 	QList<CVector> m_CtrlPoint;      /**< the array of the positions of the spline's control points */
-	CVector m_Output[IQX2];          /**< the array of output points, size of which is m_iRes @todo use a QVarLengthArray or a QList*/
+	CVector m_Output[IQX2];          /**< the array of output points, size of which is m_iRes */
 
 
 	int m_Style, m_Width, m_PointStyle;
 	bool m_bIsVisible;
-	QColor m_Color;
+	int m_red, m_blue, m_green, m_alphaChannel;    /**< the color with which to draw the Foil */
+
 };
 
 

@@ -23,6 +23,8 @@ namespace XFLR5
 	typedef enum {GLMIAREXVIEW, GLBODYVIEW, GLWINGVIEW, GLPLANEVIEW, GLEDITBODYVIEW} enumGLView;
 
 
+	/** @enum The different formats usable to export data to text format files*/
+	typedef enum {TXT, CSV}	enumTextFileType;
 }
 
 #endif // GUI_ENUMS_H

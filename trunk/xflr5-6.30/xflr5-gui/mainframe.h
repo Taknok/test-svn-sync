@@ -363,6 +363,7 @@ private:
 	QAction *m_pExporttoAVL, *m_pExporttoSTL;
 	QAction *m_pManagePlanesAct, *m_pScaleWingAct;
 	QAction *m_pImportWPolar, *m_pPlaneInertia;
+	QAction *m_pShowFlapMoments;
 
 	//XDirect Actions
 	QAction *m_pPolarsAct, *m_pOpPointsAct, *m_pDeletePolar, *m_pDefinePolarAct, *m_pEditCurPolar, *m_pBatchAnalysisAct, *m_pResetCurPolar;

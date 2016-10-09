@@ -32,15 +32,8 @@
 #define OPPOINT_H
 
 
-
-
-
-
-
-#include <engine_params.h>
-#include <engine_enums.h>
+#include <xfoil_params.h>
 #include <QString>
-#include <QColor>
 #include <QTextStream>
 #include <QDataStream>
 
@@ -72,7 +65,7 @@ public:
 	void addXFoilData(void *pXFoilPtr);
 	void setHingeMoments();
 
-	void exportOpp(QTextStream &out, QString Version, XFLR5::enumTextFileType FileType, bool bDataOnly=false);
+	void exportOpp(QTextStream &out, QString Version, bool bCSV, bool bDataOnly=false);
 
 	bool serializeOppWPA(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
 	bool serializeOppXFL(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
@@ -89,14 +82,19 @@ public:
 
 	int &oppStyle()        {return m_Style;}
 	int &oppWidth()        {return m_Width;}
-	QColor &oppColor()     {return m_Color;}
 	bool &isVisible()      {return m_bIsVisible;}
 	int &pointStyle()      {return m_PointStyle;}
-
 
 	double &aoa() {return m_Alpha;}
 	double &Reynolds() {return m_Reynolds;}
 	double &Mach(){return m_Mach; }
+
+	void getColor(int &r, int &g, int &b, int &a);
+	void setColor(int r, int g, int b, int a);
+	int red() {return m_red;}
+	int green() {return m_green;}
+	int blue() {return m_blue;}
+	int alphaChannel(){return m_alphaChannel;}
 
 private:
 	bool m_bViscResults;        /**< true if viscous results are stored in this OpPoint */
@@ -106,7 +104,7 @@ private:
 
 	int m_Style, m_Width, m_PointStyle;
 	bool m_bIsVisible;
-	QColor m_Color;
+	int m_red, m_blue, m_green, m_alphaChannel;
 
 	int n, nd1, nd2, nd3;
 	double m_Reynolds;            /**< the Re number of the OpPoint */
