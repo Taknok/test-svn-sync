@@ -31,7 +31,6 @@
 #ifndef OPPOINT_H
 #define OPPOINT_H
 
-#include <gui_enums.h>
 #include <xfoil_params.h>
 #include <QString>
 #include <QTextStream>
@@ -65,7 +64,7 @@ public:
 	void addXFoilData(void *pXFoilPtr);
 	void setHingeMoments();
 
-	void exportOpp(QTextStream &out, QString Version, XFLR5::enumTextFileType FileType, bool bDataOnly=false);
+	void exportOpp(QTextStream &out, QString Version, bool bCSV, bool bDataOnly=false);
 
 	bool serializeOppWPA(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
 	bool serializeOppXFL(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);

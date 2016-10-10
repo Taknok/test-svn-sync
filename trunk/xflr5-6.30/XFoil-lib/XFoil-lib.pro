@@ -34,7 +34,6 @@ HEADERS += xfoil_lib.h\
     objects/OpPoint.h \
     objects/Polar.h \
     objects/Spline.h \
-    gui_enums.h \
     xfoil_globals.h \
     xfoil_enums.h
 

@@ -37,7 +37,6 @@
 #include <objects/CVector.h>
 #include <objects/Foil.h>
 #include <objects/Polar.h>
-#include <gui_enums.h>
 
 
 void readCString(QDataStream &ar, QString &strong);
