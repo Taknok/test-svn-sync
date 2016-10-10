@@ -42,7 +42,7 @@ See http://raphael.mit.edu/xfoil for more information.
 #include <math.h>
 #include <complex>
 
-#include <xfoil-lib_global.h>
+
 #include <xfoil_params.h>
 
 
@@ -71,7 +71,7 @@ struct blData
 
 
 
-class XFOILLIBSHARED_EXPORT XFoil
+class  XFoil
 {
 
 public:
