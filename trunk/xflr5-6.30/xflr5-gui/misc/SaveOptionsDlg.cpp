@@ -26,7 +26,6 @@
 #include <QLabel>
 #include <QPushButton>
 
-
 SaveOptionsDlg::SaveOptionsDlg(QWidget *pParent) : QDialog(pParent)
 {
 	setWindowTitle(tr("Save Options"));
@@ -37,7 +36,6 @@ SaveOptionsDlg::SaveOptionsDlg(QWidget *pParent) : QDialog(pParent)
 	m_SaveInterval = 17;
 	setupLayout();
 }
-
 
 void SaveOptionsDlg::setupLayout()
 {
@@ -126,7 +124,6 @@ void SaveOptionsDlg::initDialog(bool bAutoLoadLast, bool bOpps, bool bWOpps, boo
 	m_pctrlInterval->setValue(m_SaveInterval);
 	m_pctrlInterval->setEnabled(m_bAutoSave);
 
-	m_pctrlAutoLoadLast->setChecked(m_bAutoLoadLast);
 }
 
 

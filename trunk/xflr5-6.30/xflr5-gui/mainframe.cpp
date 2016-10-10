@@ -3841,8 +3841,8 @@ void MainFrame::onInsertProject()
 
 void MainFrame::onHighlightOperatingPoint()
 {
-	m_pHighlightOppAct->setChecked(!m_pHighlightOppAct->isChecked());
-	QGraph::setOppHighlighting(m_pHighlightOppAct->isChecked());
+	QGraph::setOppHighlighting(!QGraph::isHighLighting());
+	m_pHighlightOppAct->setChecked(QGraph::isHighLighting());
 
 	if(m_iApp == XFLR5::MIAREX)
 	{

@@ -27,6 +27,7 @@ SOURCES += \
     objects/Plane.cpp \
     objects/PlaneOpp.cpp \
     objects/Quaternion.cpp \
+    objects/Spline.cpp \
     objects/Surface.cpp \
     objects/Wing.cpp \
     objects/WingOpp.cpp \
@@ -47,6 +48,7 @@ HEADERS += \
     objects/PlaneOpp.h \
     objects/PointMass.h \
     objects/Quaternion.h \
+    objects/Spline.h \
     objects/Surface.h \
     objects/Wing.h \
     objects/WingOpp.h \
