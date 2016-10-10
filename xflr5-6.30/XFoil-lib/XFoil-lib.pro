@@ -9,12 +9,10 @@ QT       -= gui
 TARGET = XFoil-lib
 TEMPLATE = lib
 
-
-CONFIG += qt
-CONFIG += staticlib
+DEFINES += XFOILLIB_LIBRARY
 
 
-SOURCES += \
+SOURCES += xfoil_lib.cpp \
     XFoil.cpp \
     XFoilTask.cpp \
     objects/CVector.cpp \
@@ -24,16 +22,19 @@ SOURCES += \
     objects/Spline.cpp \
     xfoil_globals.cpp
 
-HEADERS +=\
+HEADERS += xfoil_lib.h\
+        xfoil-lib_global.h \
     XFoil.h \
     XFoilTask.h \
     xfoiltaskevent.h \
     xfoil_params.h \
+    objects/CRectangle.h \
     objects/CVector.h \
     objects/Foil.h \
     objects/OpPoint.h \
     objects/Polar.h \
     objects/Spline.h \
+    gui_enums.h \
     xfoil_globals.h \
     xfoil_enums.h
 
