@@ -6,6 +6,9 @@
 
 QT       -= gui
 
+CONFIG += qt
+CONFIG += staticlib
+
 TARGET = XFoil-lib
 TEMPLATE = lib
 
@@ -23,7 +26,6 @@ SOURCES += xfoil_lib.cpp \
     xfoil_globals.cpp
 
 HEADERS += xfoil_lib.h\
-        xfoil-lib_global.h \
     XFoil.h \
     XFoilTask.h \
     xfoiltaskevent.h \
