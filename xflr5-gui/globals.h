@@ -69,7 +69,9 @@ complex<double> Det44(complex<double> *aij);
 complex<double> Cofactor44(complex<double> *aij, int &i, int &j);
 bool Invert44(complex<double> *ain, complex<double> *aout);
 
+
 void GLLineStipple(int style);
+
 
 XFLR5::enumPanelDistribution distributionType(QString strDist);
 QString distributionType(XFLR5::enumPanelDistribution dist);
@@ -87,6 +89,7 @@ QString WPolarType(XFLR5::enumPolarType polarType);
 
 XFLR5::enumAnalysisMethod analysisMethod(QString strAnalysisMethod);
 QString analysisMethod(XFLR5::enumAnalysisMethod analysisMethod);
+
 
 void * readFoilFile(QFile &xFoilFile);
 void * readPolarFile(QFile &plrFile, QList<Polar*> &polarList);
@@ -112,6 +115,5 @@ QColor colour(OpPoint *pOpp);
 QColor colour(Polar *pPolar);
 QColor colour(Foil *pFoil);
 void setRandomFoilColor(Foil *pFoil);
-
 #endif // FUNCTIONS_H
  

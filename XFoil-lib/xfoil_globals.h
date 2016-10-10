@@ -28,8 +28,16 @@
 #ifndef XFOIL_GLOBALS_H
 #define XFOIL_GLOBALS_H
 
+#include <QFile>
+#include <QList>
 #include <QString>
-#include <QDataStream>
+#include <QTextStream>
+#include <complex>
+#include <xfoil_params.h>
+#include <objects/CVector.h>
+#include <objects/Foil.h>
+#include <objects/Polar.h>
+#include <gui_enums.h>
 
 
 void readCString(QDataStream &ar, QString &strong);

@@ -24,6 +24,12 @@
 /**@file This file contains the definitions of methods used throughout the program and not specific to one application. */
 
 #include <xfoil_globals.h>
+#include <QtDebug>
+#include <QFile>
+#include <QTextStream>
+#include <QByteArray>
+#include <math.h>
+#include <QtCore>
 
 
 

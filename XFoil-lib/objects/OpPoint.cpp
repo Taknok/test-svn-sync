@@ -496,7 +496,7 @@ OpPoint* OpPoint::addOpPoint(void *pFoilPtr, void *pPolarPtr, void *pXFoilPtr, b
  * @param bDataOnly true if the analysis parameters should not be output
  */
 
-void OpPoint::exportOpp(QTextStream &out, QString Version, bool bCSV, bool bDataOnly)
+void OpPoint::exportOpp(QTextStream &out, QString Version, XFLR5::enumTextFileType FileType, bool bDataOnly)
 {
 	int k;
 	QString strong;
@@ -510,21 +510,21 @@ void OpPoint::exportOpp(QTextStream &out, QString Version, bool bCSV, bool bData
 		out<< strong;
 		strong = m_PlrName + "\n";
 		out<< strong;
-		if(!bCSV) strong=QString("Alpha = %1,  Re = %2,  Ma = %3,  ACrit =%4 \n\n")
+		if(FileType==XFLR5::TXT) strong=QString("Alpha = %1,  Re = %2,  Ma = %3,  ACrit =%4 \n\n")
 									   .arg(m_Alpha,5,'f',1).arg(m_Reynolds,8,'f',0).arg(m_Mach,6,'f',4).arg(ACrit,4,'f',1);
-		else      strong=QString("Alpha =, %1,  Re =, %2,  Ma =, %3,  ACrit =, %4 \n\n")
+		else              strong=QString("Alpha =, %1,  Re =, %2,  Ma =, %3,  ACrit =, %4 \n\n")
 									   .arg(m_Alpha,5,'f',1).arg(m_Reynolds,8,'f',0).arg(m_Mach,6,'f',4).arg(ACrit,4,'f',1);
 		out<< strong;
 	}
 
-	if(!bCSV) out << "   x        Cpi      Cpv        Qi        Qv\n";
-	else      out << "x,Cpi,Cpv,Qi,Qv\n";
+	if(FileType==XFLR5::TXT) out << "   x        Cpi      Cpv        Qi        Qv\n";
+	else            out << "x,Cpi,Cpv,Qi,Qv\n";
 
 	for (k=0; k<n; k++)
 	{
-		if(!bCSV) strong=QString("%1  %2   %3   %4   %5\n")
+		if(FileType==XFLR5::CSV) strong=QString("%1  %2   %3   %4   %5\n")
 									   .arg(pFoil->x[k],7,'f',4).arg(Cpi[k],7,'f',3).arg(Cpv[k],7,'f',3).arg(Qi[k],7,'f',3).arg(Qv[k],7,'f',3);
-		else      strong=QString("%1,%2,%3,%4,%5\n")
+		else              strong=QString("%1,%2,%3,%4,%5\n")
 									   .arg(pFoil->x[k],7,'f',4).arg(Cpi[k],7,'f',3).arg(Cpv[k],7,'f',3).arg(Qi[k],7,'f',3).arg(Qv[k],7,'f',3);
 		out<< strong;
 	}
@@ -594,7 +594,7 @@ void OpPoint::getOppProperties(QString &OpPointProperties, bool bData)
 	QTextStream out;
 	strong.clear();
 	out.setString(&strong);
-	exportOpp(out, "", false, true);
+	exportOpp(out, "", XFLR5::TXT, true);
 	OpPointProperties += "\n"+strong;
 }
 

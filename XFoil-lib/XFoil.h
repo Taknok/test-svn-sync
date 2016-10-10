@@ -42,6 +42,7 @@ See http://raphael.mit.edu/xfoil for more information.
 #include <math.h>
 #include <complex>
 
+#include <xfoil-lib_global.h>
 #include <xfoil_params.h>
 
 
@@ -70,12 +71,20 @@ struct blData
 
 
 
-class XFoil
+class XFOILLIBSHARED_EXPORT XFoil
 {
 
 public:
 	XFoil();
 	virtual ~XFoil();
+
+
+
+
+
+
+
+
 
 public:
 	void interpolate(double xf1[], double yf1[], int n1,
