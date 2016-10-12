@@ -235,10 +235,12 @@ public:
 	void createStabRungeKuttaCurves();
 	void drawTextLegend();
 	void exportAVLWing(Wing *pWing, QTextStream &out, int index, double y, double Thetay);
+	void exportToTextStream(WPolar *pWPolar, QTextStream &out, XFLR5::enumTextFileType FileType, bool bDataOnly=false);
 	void fillComboBoxes(bool bEnable = true);
 	void fillWPlrCurve(Curve *pCurve, WPolar *pWPolar, int XVar, int YVar);
 	void fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve);
 	void fillStabCurve(Curve *pCurve, WPolar *pWPolar, int iMode);
+	void getPolarProperties(WPolar *pWPolar, QString &polarProps, bool bData=false);
 	void glMake3DObjects();
 	void importPlaneFromXML(QFile &xmlFile);
 	void importWPolarFromXML(QFile &xmlFile);

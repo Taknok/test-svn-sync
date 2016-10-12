@@ -1052,7 +1052,6 @@ void MainFrame::createDockWindows()
 	LegendWidget::s_pXDirect   = m_pXDirect;
 
 
-
 	pMiarex->connectSignals();
 }
 
@@ -1070,8 +1069,8 @@ void MainFrame::createMenus()
 		m_pFileMenu->addAction(m_pSaveAct);
 		m_pFileMenu->addAction(m_pSaveProjectAsAct);
 		m_pFileMenu->addSeparator();
-		m_pFileMenu->addAction(m_pExecScript);
-		m_pFileMenu->addSeparator();
+//		m_pFileMenu->addAction(m_pExecScript);
+//		m_pFileMenu->addSeparator();
 		m_pFileMenu->addAction(m_pOnAFoilAct);
 		m_pFileMenu->addAction(m_pOnXInverseAct);
 		m_pFileMenu->addAction(m_pOnXDirectAct);

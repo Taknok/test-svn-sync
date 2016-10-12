@@ -1159,13 +1159,6 @@ QString WPolar::variableName(int iVar)
 }
 
 
-void WPolar::getPolarProperties(QString &polarProps)
-{
-	polarProps = "Polar props";
-}
-
-
-
 
 /**
  * Loads or saves the data of this polar to a binary file

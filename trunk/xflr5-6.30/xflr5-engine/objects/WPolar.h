@@ -115,8 +115,6 @@ public:
 
 	int &polarFormat() {return m_PolarFormat;}
 
-	void getPolarProperties(QString &polarProps);
-
 	XFLR5::enumBC &boundaryCondition() {return m_BoundaryCondition;}
 	XFLR5::enumRefDimension  &referenceDim(){return m_ReferenceDim;}
 	double &referenceArea()  {return m_referenceArea;}
