@@ -49,6 +49,10 @@ XFLR5Application::XFLR5Application(int &argc, char** argv) : QApplication(argc, 
 	d=700;
 
 
+
+
+
+
 #ifdef Q_OS_MAC
     QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #else

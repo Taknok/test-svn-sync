@@ -18,6 +18,7 @@ INCLUDEPATH += $$PWD/objects
 INCLUDEPATH += $$PWD/../XFoil-lib
 INCLUDEPATH += $$PWD/plane_analysis
 
+
 SOURCES += \
     objects/Body.cpp \
     objects/CVector.cpp \
