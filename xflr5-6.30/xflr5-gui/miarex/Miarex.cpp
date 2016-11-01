@@ -7249,7 +7249,7 @@ void QMiarex::setupLayout()
 					m_pYView->setCheckable(true);
 					m_pZView->setCheckable(true);
 					m_pIsoView->setCheckable(true);
-					m_pFlipView->setCheckable(true);
+					m_pFlipView->setCheckable(false);
 
 					m_pctrlX->setDefaultAction(m_pXView);
 					m_pctrlY->setDefaultAction(m_pYView);
