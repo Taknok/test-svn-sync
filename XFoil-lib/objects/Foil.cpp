@@ -542,7 +542,7 @@ CVector Foil::lowerYRel(double xRel, double &normx, double &normy)
 		return m_rpIntrados[0];
 	}
 
-	for (int i=0; i<m_iExt; i++)
+	for (int i=0; i<m_iInt; i++)
 	{
 		if (m_rpIntrados[i].x < m_rpIntrados[i+1].x && m_rpIntrados[i].x <= x && x<=m_rpIntrados[i+1].x )
 		{
