@@ -611,6 +611,7 @@ void GL3Widget::keyPressEvent(QKeyEvent *event)
 {
 	switch (event->key())
 	{
+
 		case Qt::Key_Control:
 		{
 			m_bArcball = true;

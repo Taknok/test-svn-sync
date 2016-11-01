@@ -63,7 +63,7 @@ void Spline5::drawCtrlPoints(QPainter &painter, double const &scalex, double con
 		if (m_iSelect==i)
 		{
 			PointPen.setWidth(2);
-			PointPen.setColor(QColor(0,0,150));
+			PointPen.setColor(QColor(100,100,255));
 		}
 		else if(m_iHighlight==i)
 		{

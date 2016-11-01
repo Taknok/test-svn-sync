@@ -75,12 +75,12 @@ QXInverse::QXInverse(QWidget *parent)
 
 	m_pRefFoil = new Foil();
 	m_pModFoil = new Foil();
-	m_pRefFoil->setColor(255,0,0);
-	m_pRefFoil->foilStyle() = 0;
-	m_pRefFoil->foilWidth() = 0;
-	m_pModFoil->setColor(0,0,255);
-	m_pModFoil->foilStyle() = 0;
-	m_pModFoil->foilWidth() = 1;
+	m_pRefFoil->setColor(255,100,100);
+	m_pRefFoil->foilLineStyle() = 0;
+	m_pRefFoil->foilLineWidth() = 0;
+	m_pModFoil->setColor(100,100,255);
+	m_pModFoil->foilLineStyle() = 0;
+	m_pModFoil->foilLineWidth() = 1;
 
 	m_Spline.insertPoint(0.0,  0.0);
 	m_Spline.insertPoint(0.25, 0.0);
@@ -715,13 +715,13 @@ void QXInverse::loadSettings(QSettings *pSettings)
 		m_Spline.setWidth(pSettings->value("SplineWdth").toInt());
 		QColor clr  = pSettings->value("BaseFoilColor").value<QColor>();
 		m_pRefFoil->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
-		m_pRefFoil->foilStyle()  = pSettings->value("BaseFoilStyle").toInt();
-		m_pRefFoil->foilWidth()  = pSettings->value("BaseFoilWidth").toInt();
+		m_pRefFoil->foilLineStyle()  = pSettings->value("BaseFoilStyle").toInt();
+		m_pRefFoil->foilLineWidth()  = pSettings->value("BaseFoilWidth").toInt();
 
-		clr  = pSettings->value("BaseFoilColor").value<QColor>();
+		clr  = pSettings->value("ModFoilColor").value<QColor>();
 		m_pModFoil->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
-		m_pModFoil->foilStyle()  = pSettings->value("ModFoilStyle").toInt();
-		m_pModFoil->foilWidth()  = pSettings->value("ModFoilWidth").toInt();
+		m_pModFoil->foilLineStyle()  = pSettings->value("ModFoilStyle").toInt();
+		m_pModFoil->foilLineWidth()  = pSettings->value("ModFoilWidth").toInt();
 	}
 	pSettings->endGroup();
 	m_QGraph.loadSettings(pSettings);
@@ -1532,12 +1532,12 @@ void QXInverse::onInverseStyles()
 	m_pXInverseStyleDlg->initDialog();
 	m_pXInverseStyleDlg->exec();
 
-	m_pQCurve->setStyle(m_pRefFoil->foilStyle());
-	m_pQCurve->setWidth(m_pRefFoil->foilWidth());
+	m_pQCurve->setStyle(m_pRefFoil->foilLineStyle());
+	m_pQCurve->setWidth(m_pRefFoil->foilLineWidth());
 	m_pQCurve->setColor(colour(m_pRefFoil));
 
-	m_pMCurve->setStyle(m_pModFoil->foilStyle());
-	m_pMCurve->setWidth(m_pModFoil->foilWidth());
+	m_pMCurve->setStyle(m_pModFoil->foilLineStyle());
+	m_pMCurve->setWidth(m_pModFoil->foilLineWidth());
 	m_pMCurve->setColor(colour(m_pModFoil));
 
 	updateView();
@@ -1814,8 +1814,8 @@ void QXInverse::onStoreFoil()
 
 	Foil* pNewFoil = new Foil();
 	pNewFoil->copyFoil(m_pModFoil);
-	pNewFoil->foilStyle() = 0;
-	pNewFoil->foilWidth() = 1;
+	pNewFoil->foilLineStyle() = 0;
+	pNewFoil->foilLineWidth() = 1;
 	memcpy(pNewFoil->xb, m_pModFoil->x, sizeof(m_pModFoil->x));
 	memcpy(pNewFoil->yb, m_pModFoil->y, sizeof(m_pModFoil->y));
 	pNewFoil->nb = m_pModFoil->n;
@@ -1829,7 +1829,7 @@ void QXInverse::onStoreFoil()
 	}
 
 	RenameDlg renDlg(s_pMainFrame);
-	renDlg.initDialog(&NameList, m_pRefFoil->foilName(), tr("Enter the foil's new name"));
+	renDlg.initDialog(&NameList, m_pRefFoil->foilName() + " modified", tr("Enter the foil's new name"));
 	if(renDlg.exec() !=QDialog::Rejected)
 	{
 		pNewFoil->setFoilName(renDlg.newName());
@@ -1939,24 +1939,27 @@ void QXInverse::paintGraph(QPainter &painter)
 // Show marked segment if mixed-inverse design
 	if(m_bMarked)
 	{
-		QPoint ptl, ptr;
-		ptl.rx() = m_QGraph.xToClient(m_pMCurve->x[m_Mk1]);
-		ptr.rx() = m_QGraph.xToClient(m_pMCurve->x[m_Mk2]);
-		ptl.ry() = m_QGraph.yToClient(m_pMCurve->y[m_Mk1]);
-		ptr.ry() = m_QGraph.yToClient(m_pMCurve->y[m_Mk2]);
-
-		QPen MarkPen(QColor(175,30,30));
-		MarkPen.setStyle(Qt::SolidLine);
-		MarkPen.setWidth(2);
-		painter.setPen(MarkPen);
-
-		if(m_rGraphRect.contains(ptl))
+		if(m_Mk1<m_pMCurve->count() && m_Mk2<m_pMCurve->count())
 		{
-			painter.drawLine(ptl.x(), ptl.y()-20, ptl.x(), ptl.y()+20);
-		}
-		if(m_rGraphRect.contains(ptr))
-		{
-			painter.drawLine(ptr.x(), ptr.y()-20, ptr.x(), ptr.y()+20);
+			QPoint ptl, ptr;
+			ptl.rx() = m_QGraph.xToClient(m_pMCurve->x[m_Mk1]);
+			ptr.rx() = m_QGraph.xToClient(m_pMCurve->x[m_Mk2]);
+			ptl.ry() = m_QGraph.yToClient(m_pMCurve->y[m_Mk1]);
+			ptr.ry() = m_QGraph.yToClient(m_pMCurve->y[m_Mk2]);
+
+			QPen MarkPen(QColor(175,30,30));
+			MarkPen.setStyle(Qt::SolidLine);
+			MarkPen.setWidth(2);
+			painter.setPen(MarkPen);
+
+			if(m_rGraphRect.contains(ptl))
+			{
+				painter.drawLine(ptl.x(), ptl.y()-20, ptl.x(), ptl.y()+20);
+			}
+			if(m_rGraphRect.contains(ptr))
+			{
+				painter.drawLine(ptr.x(), ptr.y()-20, ptr.x(), ptr.y()+20);
+			}
 		}
 	}
 
@@ -2003,8 +2006,8 @@ void QXInverse::paintFoil(QPainter &painter)
 	if(m_bRefFoil && m_bLoaded)
 	{
 		QPen FoilPen(colour(m_pRefFoil));
-		FoilPen.setStyle(getStyle(m_pRefFoil->foilStyle()));
-		FoilPen.setWidth(m_pRefFoil->foilWidth());
+		FoilPen.setStyle(getStyle(m_pRefFoil->foilLineStyle()));
+		FoilPen.setWidth(m_pRefFoil->foilLineWidth());
 		painter.setPen(FoilPen);
 
 		drawFoil(painter, m_pRefFoil, -alpha, m_fScale, m_fScale*m_fYScale, m_ptOffset);
@@ -2016,8 +2019,8 @@ void QXInverse::paintFoil(QPainter &painter)
 	if(m_bModFoil && m_bLoaded) 
 	{
 		QPen ModPen(colour(m_pModFoil));
-		ModPen.setStyle(getStyle(m_pModFoil->foilStyle()));
-		ModPen.setWidth(m_pModFoil->foilWidth());
+		ModPen.setStyle(getStyle(m_pModFoil->foilLineStyle()));
+		ModPen.setWidth(m_pModFoil->foilLineWidth());
 		painter.setPen(ModPen);
 
 		drawFoil(painter, m_pModFoil, -alpha, m_fScale, m_fScale*m_fYScale, m_ptOffset);
@@ -2026,14 +2029,14 @@ void QXInverse::paintFoil(QPainter &painter)
 		painter.drawText(50, m_rGraphRect.bottom()+40, m_pModFoil->foilName());
 	}
 
-	if (m_pRefFoil->showPoints())
+	if (m_pRefFoil->foilPointStyle()>0)
 	{
 		QPen CtrlPen(colour(m_pRefFoil));
-		CtrlPen.setStyle(getStyle(m_pRefFoil->foilStyle()));
-		CtrlPen.setWidth(m_pRefFoil->foilWidth());
+		CtrlPen.setStyle(getStyle(m_pRefFoil->foilLineStyle()));
+		CtrlPen.setWidth(m_pRefFoil->foilLineWidth());
 		painter.setPen(CtrlPen);
 
-		drawPoints(painter, m_pRefFoil, 1.0,  1.0, m_ptOffset);
+		drawPoints(painter, m_pRefFoil, -alpha, 1.0,  1.0, m_ptOffset);
 	}
 
 	painter.setFont(Settings::s_TextFont);
@@ -2200,11 +2203,11 @@ void QXInverse::saveSettings(QSettings *pSettings)
 		pSettings->setValue("SplineStyle", m_Spline.style());
 		pSettings->setValue("SplineWdth",  m_Spline.width());
 		pSettings->setValue("BaseFoilColor", colour(m_pRefFoil));
-		pSettings->setValue("BaseFoilStyle", m_pRefFoil->foilStyle());
-		pSettings->setValue("BaseFoilWidth", m_pRefFoil->foilWidth());
+		pSettings->setValue("BaseFoilStyle", m_pRefFoil->foilLineStyle());
+		pSettings->setValue("BaseFoilWidth", m_pRefFoil->foilLineWidth());
 		pSettings->setValue("ModFoilColor", colour(m_pModFoil));
-		pSettings->setValue("ModFoilStyle", m_pModFoil->foilStyle());
-		pSettings->setValue("ModFoilWidth", m_pModFoil->foilWidth());
+		pSettings->setValue("ModFoilStyle", m_pModFoil->foilLineStyle());
+		pSettings->setValue("ModFoilWidth", m_pModFoil->foilLineWidth());
 	}
 	pSettings->endGroup();
 
@@ -2306,7 +2309,8 @@ void QXInverse::setFoil()
 bool QXInverse::setParams()
 {
 	XFoil *pXFoil = (XFoil*)m_pXFoil;
-	Foil*pFoil;
+	Foil *pFoil;
+	QString strFoilName;
 
 	if(m_bFullInverse)
 	{
@@ -2322,11 +2326,11 @@ bool QXInverse::setParams()
 	}
 
 	m_pQCurve->setColor(colour(m_pRefFoil));
-	m_pQCurve->setStyle(m_pRefFoil->foilStyle());
-	m_pQCurve->setWidth(m_pRefFoil->foilWidth());
+	m_pQCurve->setStyle(m_pRefFoil->foilLineStyle());
+	m_pQCurve->setWidth(m_pRefFoil->foilLineWidth());
 	m_pMCurve->setColor(colour(m_pModFoil));
-	m_pMCurve->setStyle(m_pModFoil->foilStyle());
-	m_pMCurve->setWidth(m_pModFoil->foilWidth());
+	m_pMCurve->setStyle(m_pModFoil->foilLineStyle());
+	m_pMCurve->setWidth(m_pModFoil->foilLineWidth());
 	m_pQCurve->setCurveName(tr("Q - Reference"));
 	m_pMCurve->setCurveName(tr("Q - Specification"));
 	m_pQVCurve->setCurveName(tr("Q - Viscous"));
@@ -2359,9 +2363,7 @@ bool QXInverse::setParams()
 	{
 		m_pRefFoil->copyFoil(Foil::curFoil());
 		m_pRefFoil->setColor(m_pQCurve->color().red(), m_pQCurve->color().green(), m_pQCurve->color().blue(), m_pQCurve->color().alpha());
-//		m_pXFoil->foilName()    = m_pRefFoil->foilName() ;
-//		InitXFoil(m_pRefFoil);
-
+		strFoilName = Foil::curFoil()->foilName();
 	}
 	else
 	{
@@ -2370,6 +2372,7 @@ bool QXInverse::setParams()
 		if(m_poaFoil->size())
 		{
 			pFoil = (Foil*)m_poaFoil->at(0);
+			strFoilName = pFoil->foilName();
 			m_pRefFoil->copyFoil(pFoil);
 			m_pRefFoil->setColor(m_pQCurve->color().red(), m_pQCurve->color().green(), m_pQCurve->color().blue(), m_pQCurve->color().alpha());
 			initXFoil(m_pRefFoil);
@@ -2407,9 +2410,9 @@ bool QXInverse::setParams()
 
 	m_pRefFoil->n          = pXFoil->n;
 	m_pRefFoil->nb         = pXFoil->n;
-	m_pRefFoil->foilName() = Foil::curFoil()->foilName();
+	m_pRefFoil->foilName() = strFoilName;
 	m_pRefFoil->initFoil();
-	m_pModFoil->foilName() = Foil::curFoil()->foilName() + tr(" Modified");
+	m_pModFoil->foilName() = strFoilName + tr(" Modified");
 
 	setFoil();
 	checkActions();

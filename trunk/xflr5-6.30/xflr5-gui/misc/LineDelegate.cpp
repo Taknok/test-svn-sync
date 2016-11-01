@@ -66,35 +66,8 @@ void LineDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, 
 
 	if(m_pCbBox && ((LineCbBox*)m_pCbBox)->points())
 	{
-		switch(m_PointStyle[index.row()])
-		{
-			case 0: break;
-			case 1:
-			{
-				int ptSide = 2;
-				painter->drawEllipse(option.rect.center().x()-ptSide, option.rect.center().y()-ptSide, 2*ptSide, 2*ptSide );
-				break;
-			}
-			case 2:
-			{
-				int ptSide = 4;
-				painter->drawEllipse(option.rect.center().x()-ptSide, option.rect.center().y()-ptSide, 2*ptSide, 2*ptSide );
-				break;
-			}
-			case 3:
-			{
-				int ptSide = 2;
-				painter->drawRect(option.rect.center().x()-ptSide, option.rect.center().y()-ptSide, 2*ptSide, 2*ptSide );
-				break;
-			}
-			case 4:
-			{
-				int ptSide = 4;
-				painter->drawRect(option.rect.center().x()-ptSide, option.rect.center().y()-ptSide, 2*ptSide, 2*ptSide );
-				break;
-			}
-			default: break;
-		}
+		drawPoint(*painter, m_PointStyle[index.row()], option.rect.center());
+
 	}
 	painter->restore();
 }

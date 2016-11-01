@@ -237,37 +237,8 @@ void LegendWidget::drawWPolarLegend(QPainter &painter, QPointF place, int bottom
 						{
 							x1 = place.x() + 1.0*LegendSize;
 							y1 = place.y() + 1.*ypos*ny;
-//							painter.drawRect(x1-2, place.y()-2 + (int)(1.*ypos*ny), 4, 4);
 
-							switch(pWPolar->points())
-							{
-								case 0: break;
-								case 1:
-								{
-									int ptSide = 2;
-									painter.drawEllipse(x1-ptSide, y1-ptSide, 2*ptSide, 2*ptSide );
-									break;
-								}
-								case 2:
-								{
-									int ptSide = 4;
-									painter.drawEllipse(x1-ptSide, y1-ptSide, 2*ptSide, 2*ptSide );
-									break;
-								}
-								case 3:
-								{
-									int ptSide = 2;
-									painter.drawEllipse(x1-ptSide, y1-ptSide, 2*ptSide, 2*ptSide );
-									break;
-								}
-								case 4:
-								{
-									int ptSide = 4;
-									painter.drawRect(x1-ptSide, y1-ptSide, 2*ptSide, 2*ptSide );
-									break;
-								}
-								default: break;
-							}
+							drawPoint(painter, pWPolar->points(), QPoint(x1, y1));
 						}
 
 						painter.setPen(TextPen);
@@ -369,35 +340,7 @@ void LegendWidget::drawPOppGraphLegend(QPainter &painter, QPointF place, double 
 			y1 = place.y() + 1.*ypos*ny;
 //			painter.drawRect(x1-2, place.y() + 1.*ypos*ny-2, 4, 4);
 
-			switch(pMiarex->curPOpp()->points())
-			{
-				case 0: break;
-				case 1:
-				{
-					int ptSide = 2;
-					painter.drawEllipse(x1-ptSide, y1-ptSide, 2*ptSide, 2*ptSide );
-					break;
-				}
-				case 2:
-				{
-					int ptSide = 4;
-					painter.drawEllipse(x1-ptSide, y1-ptSide, 2*ptSide, 2*ptSide );
-					break;
-				}
-				case 3:
-				{
-					int ptSide = 2;
-					painter.drawEllipse(x1-ptSide, y1-ptSide, 2*ptSide, 2*ptSide );
-					break;
-				}
-				case 4:
-				{
-					int ptSide = 4;
-					painter.drawRect(x1-ptSide, y1-ptSide, 2*ptSide, 2*ptSide );
-					break;
-				}
-				default: break;
-			}
+			drawPoint(painter, pMiarex->curPOpp()->points(), QPoint(x1,y1));
 		}
 
 		painter.setPen(TextPen);
@@ -429,7 +372,7 @@ void LegendWidget::drawPOppGraphLegend(QPainter &painter, QPointF place, double 
 				}
 				else
 				{
-				// move rigth if outside screen
+					// move right if outside screen
 					place.rx() += LegendWidth;
 					ny=1;
 					painter.drawText(place.x() + 1.0*LegendSize,
@@ -462,36 +405,7 @@ void LegendWidget::drawPOppGraphLegend(QPainter &painter, QPointF place, double 
 							x1 = place.x() + 2.0*LegendSize;
 							y1 = place.y() + 1.*ypos*ny;
 //							painter.drawRect(x1-2, place.y() + 1.*ypos*ny-2, 4, 4);
-							switch(pPOpp->points())
-							{
-								case 0: break;
-								case 1:
-								{
-									int ptSide = 2;
-									painter.drawEllipse(x1-ptSide, y1-ptSide, 2*ptSide, 2*ptSide );
-									break;
-								}
-								case 2:
-								{
-									int ptSide = 4;
-									painter.drawEllipse(x1-ptSide, y1-ptSide, 2*ptSide, 2*ptSide );
-									break;
-								}
-								case 3:
-								{
-									int ptSide = 2;
-									painter.drawEllipse(x1-ptSide, y1-ptSide, 2*ptSide, 2*ptSide );
-									break;
-								}
-								case 4:
-								{
-									int ptSide = 4;
-									painter.drawRect(x1-ptSide, y1-ptSide, 2*ptSide, 2*ptSide );
-									break;
-								}
-								default: break;
-							}
-
+							drawPoint(painter, pPOpp->points(), QPoint(x1,y1));
 						}
 
 
@@ -563,35 +477,7 @@ void LegendWidget::drawCpLegend(QPainter &painter, QGraph *pGraph, QPointF place
 				x1 = place.x() + 2.0*LegendSize;
 				y1 = place.y() + 1.*dny*ny;
 //				painter.drawRect(x1-2, place.y() + 1.*dny*ny-2,4,4);
-				switch(pCurve->pointStyle())
-				{
-					case 0: break;
-					case 1:
-					{
-						int ptSide = 2;
-						painter.drawEllipse(x1-ptSide, y1-ptSide, 2*ptSide, 2*ptSide );
-						break;
-					}
-					case 2:
-					{
-						int ptSide = 4;
-						painter.drawEllipse(x1-ptSide, y1-ptSide, 2*ptSide, 2*ptSide );
-						break;
-					}
-					case 3:
-					{
-						int ptSide = 2;
-						painter.drawEllipse(x1-ptSide, y1-ptSide, 2*ptSide, 2*ptSide );
-						break;
-					}
-					case 4:
-					{
-						int ptSide = 4;
-						painter.drawRect(x1-ptSide, y1-ptSide, 2*ptSide, 2*ptSide );
-						break;
-					}
-					default: break;
-				}
+				drawPoint(painter, pCurve->pointStyle(), QPoint(x1,y1));
 			}
 
 			pCurve->curveName(strong);
@@ -654,35 +540,7 @@ void LegendWidget::drawStabTimeLegend(QPainter &painter, QGraph *pGraph, QPointF
 				x1 = place.x() + (int)(2.0*LegendSize);
 				y1 = place.y() + 1.*dny*ny;
 //				painter.drawRect(x1-2, place.y() + 1.*dny*ny-2,4,4);
-				switch(pCurve->pointStyle())
-				{
-					case 0: break;
-					case 1:
-					{
-						int ptSide = 2;
-						painter.drawEllipse(x1-ptSide, y1-ptSide, 2*ptSide, 2*ptSide );
-						break;
-					}
-					case 2:
-					{
-						int ptSide = 4;
-						painter.drawEllipse(x1-ptSide, y1-ptSide, 2*ptSide, 2*ptSide );
-						break;
-					}
-					case 3:
-					{
-						int ptSide = 2;
-						painter.drawEllipse(x1-ptSide, y1-ptSide, 2*ptSide, 2*ptSide );
-						break;
-					}
-					case 4:
-					{
-						int ptSide = 4;
-						painter.drawRect(x1-ptSide, y1-ptSide, 2*ptSide, 2*ptSide );
-						break;
-					}
-					default: break;
-				}
+				drawPoint(painter, pCurve->pointStyle(), QPoint(x1,y1));
 			}
 
 			pCurve->curveName(strong);
@@ -798,35 +656,7 @@ void LegendWidget::drawPolarLegend(QPainter &painter, QPointF place, int bottom)
 						x1 = place.x() + 1.5*LegendSize;
 						y1 = place.y() + 1.*legendHeight*ny;
 //						painter.drawRect(x1-2, place.y() + 1.*legendHeight*ny, 4, 4);
-						switch(pPolar->polarStyle())
-						{
-							case 0: break;
-							case 1:
-							{
-								int ptSide = 2;
-								painter.drawEllipse(x1-ptSide, y1-ptSide, 2*ptSide, 2*ptSide );
-								break;
-							}
-							case 2:
-							{
-								int ptSide = 4;
-								painter.drawEllipse(x1-ptSide, y1-ptSide, 2*ptSide, 2*ptSide );
-								break;
-							}
-							case 3:
-							{
-								int ptSide = 2;
-								painter.drawEllipse(x1-ptSide, y1-ptSide, 2*ptSide, 2*ptSide );
-								break;
-							}
-							case 4:
-							{
-								int ptSide = 4;
-								painter.drawRect(x1-ptSide, y1-ptSide, 2*ptSide, 2*ptSide );
-								break;
-							}
-							default: break;
-						}
+						drawPoint(painter, pPolar->polarStyle(), QPoint(x1, y1));
 					}
 
 					painter.setPen(TextPen);

@@ -100,10 +100,11 @@ public:
 	Foil * deleteThisFoil();
 
 	bool &isVisible(){return m_bIsFoilVisible;}
-	bool &showPoints(){return m_bShowFoilPoints;}
+//	bool &showPoints(){return m_bShowFoilPoints;}
 	bool &showCenterLine(){return m_bCenterLine;}
-	int &foilWidth(){return m_FoilWidth;}
-	int &foilStyle(){return m_FoilStyle;}
+	int &foilLineWidth(){return m_FoilWidth;}
+	int &foilLineStyle(){return m_FoilStyle;}
+	int &foilPointStyle(){return m_PointStyle;}
 	QString &foilName(){return m_FoilName;}
 
 	void getColor(int &r, int &g, int &b, int &a);
@@ -147,7 +148,7 @@ private:
 
 	bool m_bIsFoilVisible;               /**< true if the foil is to be displayed */
 	bool m_bCenterLine;                  /**< true if the foil mid camber line is to be displayed */
-	bool m_bShowFoilPoints;              /**< true if the foil's panels are to be displayed */
+//	bool m_bShowFoilPoints;              /**< true if the foil's panels are to be displayed */
 
 	int m_iBaseInt;                      /**< the number of points on the lower surface of the base foil */
 	int m_iBaseExt;                      /**< the number of points on the upper surface of the base foil */
@@ -155,7 +156,8 @@ private:
 	int m_iInt;                          /**< the number of points on the lower surface of the current foil */
 	int m_iExt;                          /**< the number of points on the upper surface of the current foil */
 
-	int m_FoilStyle;                     /**< the index of the style with which to draw the Foil */
+	int m_PointStyle;                    /**< the index of the style for the foil's points*/
+	int m_FoilStyle;                     /**< the index of the style with which to draw the Foil contour*/
 	int m_FoilWidth;                     /**< the width with which to draw the Foil */
 	int m_red, m_blue, m_green, m_alphaChannel;    /**< the color with which to draw the Foil */
 

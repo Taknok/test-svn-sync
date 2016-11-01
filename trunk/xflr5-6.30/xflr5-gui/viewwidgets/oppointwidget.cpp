@@ -483,8 +483,15 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
 	Alpha = 0.0;
 	if(OpPoint::curOpp()) Alpha = OpPoint::curOpp()->aoa();
 
-	Foil::curFoil()->showPoints() = m_bShowPanels;
+
 	drawFoil(painter, Foil::curFoil(), -Alpha, m_fScale, m_fScale*m_fYScale, m_FoilOffset);
+	if(m_bShowPanels)
+	{
+		int memPts = Foil::curFoil()->foilPointStyle();
+		Foil::curFoil()->foilPointStyle() = qMax(memPts, 1);
+		drawPoints(painter, Foil::curFoil(), -Alpha, m_fScale, m_fScale*m_fYScale, m_FoilOffset);
+		Foil::curFoil()->foilPointStyle() = memPts;
+	}
 
 	if(m_bPressure && OpPoint::curOpp()) paintPressure(painter, m_fScale, m_fScale*m_fYScale);
 	if(m_bBL && OpPoint::curOpp())       paintBL(painter, OpPoint::curOpp(), m_fScale, m_fScale*m_fYScale);

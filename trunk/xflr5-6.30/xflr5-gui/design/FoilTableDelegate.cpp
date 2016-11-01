@@ -124,18 +124,6 @@ void FoilTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
 	{
 		if(pAFoil)
 		{
-			if(index.row()==0)	drawCheckBox(painter, myOption.rect, pAFoil->m_pSF->m_bOutPoints);
-			else
-			{
-				Foil *pFoil = (Foil*)Foil::s_oaFoil.at(index.row()-1);
-				drawCheckBox(painter, myOption.rect, pFoil->showPoints());
-			}
-		}
-	}
-	else if(index.column()==14)
-	{
-		if(pAFoil)
-		{
 			if(index.row()==0)	drawCheckBox(painter, myOption.rect, pAFoil->m_pSF->m_bCenterLine);
 			else
 			{
@@ -144,25 +132,28 @@ void FoilTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
 			}
 		}
 	}
-	else if(index.column()==15)
+	else if(index.column()==14)
 	{
 		if(pAFoil)
 		{
 			QColor color;
-			int style, width;
+			int pointStyle, lineStyle, lineWidth;
+
 
 			if(index.row()==0)
 			{
 				color = pAFoil->m_pSF->splineFoilColor();
-				style = pAFoil->m_pSF->splineFoilStyle();
-				width = pAFoil->m_pSF->splineFoilWidth();
+				pointStyle = pAFoil->m_pSF->splinePointStyle();
+				lineStyle = pAFoil->m_pSF->splineFoilStyle();
+				lineWidth = pAFoil->m_pSF->splineFoilWidth();
 			}
 			else
 			{
 				Foil *pFoil = (Foil*)Foil::s_oaFoil.at(index.row()-1);
 				color = colour(pFoil);
-				style = pFoil->foilStyle();
-				width = pFoil->foilWidth();
+				pointStyle = pFoil->foilPointStyle();
+				lineStyle = pFoil->foilLineStyle();
+				lineWidth = pFoil->foilLineWidth();
 			}
 			QRect r = option.rect;
 			r = pAFoil->m_pctrlFoilTable->visualRect(index);;
@@ -170,10 +161,42 @@ void FoilTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
 			painter->save();
 
 			QPen LinePen(color);
-			LinePen.setStyle(getStyle(style));
-			LinePen.setWidth(width);
+			LinePen.setStyle(getStyle(lineStyle));
+			LinePen.setWidth(lineWidth);
 			painter->setPen(LinePen);
 			painter->drawLine(r.left()+5, r.top()+r.height()/2, r.right()-5, r.top()+r.height()/2);
+
+			LinePen.setStyle(Qt::SolidLine);
+			painter->setPen(LinePen);
+			switch(pointStyle)
+			{
+				case 0: break;
+				case 1:
+				{
+					int ptSide = 2;
+					painter->drawEllipse(r.center().x()-ptSide, r.center().y()-ptSide, 2*ptSide, 2*ptSide );
+					break;
+				}
+				case 2:
+				{
+					int ptSide = 4;
+					painter->drawEllipse(r.center().x()-ptSide, r.center().y()-ptSide, 2*ptSide, 2*ptSide );
+					break;
+				}
+				case 3:
+				{
+					int ptSide = 2;
+					painter->drawEllipse(r.center().x()-ptSide, r.center().y()-ptSide, 2*ptSide, 2*ptSide );
+					break;
+				}
+				case 4:
+				{
+					int ptSide = 4;
+					painter->drawRect(r.center().x()-ptSide, r.center().y()-ptSide, 2*ptSide, 2*ptSide );
+					break;
+				}
+				default: break;
+			}
 
 			painter->restore();
 		}

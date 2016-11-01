@@ -307,9 +307,9 @@ void W3dPrefsDlg::onOutline()
 	LPdlg.initDialog();
 	if (QDialog::Accepted == LPdlg.exec())
 	{
-		s_OutlineColor = LPdlg.setColor();
-		s_OutlineStyle = LPdlg.setStyle();
-		s_OutlineWidth = LPdlg.width();
+		s_OutlineColor = LPdlg.lineColor();
+		s_OutlineStyle = LPdlg.lineStyle();
+		s_OutlineWidth = LPdlg.lineWidth();
 		m_pctrlOutline->setStyle(s_OutlineStyle, s_OutlineWidth, s_OutlineColor, 0);
 	}
 }
@@ -324,9 +324,9 @@ void W3dPrefsDlg::on3DAxis()
 
 	if (QDialog::Accepted == LPdlg.exec())
 	{
-		s_3DAxisColor = LPdlg.setColor();
-		s_3DAxisStyle = LPdlg.setStyle();
-		s_3DAxisWidth = LPdlg.width();
+		s_3DAxisColor = LPdlg.lineColor();
+		s_3DAxisStyle = LPdlg.lineStyle();
+		s_3DAxisWidth = LPdlg.lineWidth();
 		m_pctrlAxis->setStyle(s_3DAxisStyle, s_3DAxisWidth, s_3DAxisColor, 0);
 	}
 }
@@ -341,9 +341,9 @@ void W3dPrefsDlg::onTopTrans()
 
 	if (QDialog::Accepted == LPdlg.exec())
 	{
-		s_TopColor = LPdlg.setColor();
-		s_TopStyle = LPdlg.setStyle();
-		s_TopWidth = LPdlg.width();
+		s_TopColor = LPdlg.lineColor();
+		s_TopStyle = LPdlg.lineStyle();
+		s_TopWidth = LPdlg.lineWidth();
 		m_pctrlTopTrans->setStyle(s_TopStyle, s_TopWidth, s_TopColor, 0);
 	}
 }
@@ -358,9 +358,9 @@ void W3dPrefsDlg::onBotTrans()
 
 	if (QDialog::Accepted == LPdlg.exec())
 	{
-		s_BotColor = LPdlg.setColor();
-		s_BotStyle = LPdlg.setStyle();
-		s_BotWidth = LPdlg.width();
+		s_BotColor = LPdlg.lineColor();
+		s_BotStyle = LPdlg.lineStyle();
+		s_BotWidth = LPdlg.lineWidth();
 		m_pctrlBotTrans->setStyle(s_BotStyle, s_BotWidth, s_BotColor, 0);
 	}
 }
@@ -375,9 +375,9 @@ void W3dPrefsDlg::onIDrag()
 
 	if (QDialog::Accepted == LPdlg.exec())
 	{
-		s_IDragColor = LPdlg.setColor();
-		s_IDragStyle = LPdlg.setStyle();
-		s_IDragWidth = LPdlg.width();
+		s_IDragColor = LPdlg.lineColor();
+		s_IDragStyle = LPdlg.lineStyle();
+		s_IDragWidth = LPdlg.lineWidth();
 		m_pctrlInducedDrag->setStyle(s_IDragStyle, s_IDragWidth, s_IDragColor, 0);
 	}
 }
@@ -392,9 +392,9 @@ void W3dPrefsDlg::onVDrag()
 
 	if (QDialog::Accepted == LPdlg.exec())
 	{
-		s_VDragColor = LPdlg.setColor();
-		s_VDragStyle = LPdlg.setStyle();
-		s_VDragWidth = LPdlg.width();
+		s_VDragColor = LPdlg.lineColor();
+		s_VDragStyle = LPdlg.lineStyle();
+		s_VDragWidth = LPdlg.lineWidth();
 		m_pctrlViscousDrag->setStyle(s_VDragStyle, s_VDragWidth, s_VDragColor, 0);
 	}
 }
@@ -409,9 +409,9 @@ void W3dPrefsDlg::onXCP()
 
 	if (QDialog::Accepted == LPdlg.exec())
 	{
-		s_XCPColor = LPdlg.setColor();
-		s_XCPStyle = LPdlg.setStyle();
-		s_XCPWidth = LPdlg.width();
+		s_XCPColor = LPdlg.lineColor();
+		s_XCPStyle = LPdlg.lineStyle();
+		s_XCPWidth = LPdlg.lineWidth();
 		m_pctrlLift->setStyle(s_XCPStyle, s_XCPWidth, s_XCPColor, 0);
     }
 }
@@ -426,9 +426,9 @@ void W3dPrefsDlg::onMoments()
 
 	if (QDialog::Accepted == LPdlg.exec())
 	{
-		s_MomentColor = LPdlg.setColor();
-		s_MomentStyle = LPdlg.setStyle();
-		s_MomentWidth = LPdlg.width();
+		s_MomentColor = LPdlg.lineColor();
+		s_MomentStyle = LPdlg.lineStyle();
+		s_MomentWidth = LPdlg.lineWidth();
 		m_pctrlMoments->setStyle(s_MomentStyle, s_MomentWidth, s_MomentColor, 0);
     }
 }
@@ -443,9 +443,9 @@ void W3dPrefsDlg::onDownwash()
 
 	if (QDialog::Accepted == LPdlg.exec())
 	{
-		s_DownwashColor = LPdlg.setColor();
-		s_DownwashStyle = LPdlg.setStyle();
-		s_DownwashWidth = LPdlg.width();
+		s_DownwashColor = LPdlg.lineColor();
+		s_DownwashStyle = LPdlg.lineStyle();
+		s_DownwashWidth = LPdlg.lineWidth();
 		m_pctrlDownwash->setStyle(s_DownwashStyle, s_DownwashWidth,s_DownwashColor, 0);
 	}
 }
@@ -460,9 +460,9 @@ void W3dPrefsDlg::onStreamLines()
 
 	if (QDialog::Accepted == LPdlg.exec())
 	{
-		s_StreamLinesColor = LPdlg.setColor();
-		s_StreamLinesStyle = LPdlg.setStyle();
-		s_StreamLinesWidth = LPdlg.width();
+		s_StreamLinesColor = LPdlg.lineColor();
+		s_StreamLinesStyle = LPdlg.lineStyle();
+		s_StreamLinesWidth = LPdlg.lineWidth();
 		m_pctrlStreamLines->setStyle(s_StreamLinesStyle, s_StreamLinesWidth, s_StreamLinesColor, 0);
 	}
 }
@@ -477,9 +477,9 @@ void W3dPrefsDlg::onWakePanels()
 
 	if (QDialog::Accepted == LPdlg.exec())
 	{
-		s_WakeColor = LPdlg.setColor();
-		s_WakeStyle = LPdlg.setStyle();
-		s_WakeWidth = LPdlg.width();
+		s_WakeColor = LPdlg.lineColor();
+		s_WakeStyle = LPdlg.lineStyle();
+		s_WakeWidth = LPdlg.lineWidth();
 		m_pctrlWakePanels->setStyle(s_WakeStyle, s_WakeWidth, s_WakeColor, 0);
 	}
 }
@@ -494,9 +494,9 @@ void W3dPrefsDlg::onVLMMesh()
 
 	if (QDialog::Accepted == LPdlg.exec())
 	{
-		s_VLMColor = LPdlg.setColor();
-		s_VLMStyle = LPdlg.setStyle();
-		s_VLMWidth = LPdlg.width();
+		s_VLMColor = LPdlg.lineColor();
+		s_VLMStyle = LPdlg.lineStyle();
+		s_VLMWidth = LPdlg.lineWidth();
 		m_pctrlVLMMesh->setStyle(s_VLMStyle, s_VLMWidth, s_VLMColor, 0);
 	}
 	repaint();

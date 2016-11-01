@@ -275,14 +275,14 @@ void GraphDlg::onAutoY()
 void GraphDlg::onAxisStyle()
 {
     LinePickerDlg dlg(this);
-	dlg.initDialog(m_pGraph->axisStyle(), m_pGraph->axisWidth(), m_pGraph->axisColor());
+	dlg.initDialog(0, m_pGraph->axisStyle(), m_pGraph->axisWidth(), m_pGraph->axisColor());
 
 	if(QDialog::Accepted==dlg.exec())
 	{
-		m_pGraph->setAxisData(dlg.setStyle(), dlg.width(), dlg.setColor());
-		m_pctrlAxisStyle->setStyle(dlg.setStyle());
-		m_pctrlAxisStyle->setWidth(dlg.width());
-		m_pctrlAxisStyle->setColor(dlg.setColor());
+		m_pGraph->setAxisData(dlg.lineStyle(), dlg.lineWidth(), dlg.lineColor());
+		m_pctrlAxisStyle->setStyle(dlg.lineStyle());
+		m_pctrlAxisStyle->setWidth(dlg.lineWidth());
+		m_pctrlAxisStyle->setColor(dlg.lineColor());
 		setApplied(false);
 	}
 }
@@ -295,16 +295,16 @@ void GraphDlg::onBorderStyle()
 	s = m_pGraph->borderStyle();
 	w = m_pGraph->borderWidth();
 	color = m_pGraph->borderColor();
-	dlg.initDialog(s,w,color);
+	dlg.initDialog(0,s,w,color);
 
 	if(QDialog::Accepted==dlg.exec())
 	{
-		m_pGraph->setBorderColor(dlg.setColor());
-		m_pGraph->setBorderStyle(dlg.setStyle());
-		m_pGraph->setBorderWidth(dlg.width());
-		m_pctrlBorderStyle->setStyle(dlg.setStyle());
-		m_pctrlBorderStyle->setWidth(dlg.width());
-		m_pctrlBorderStyle->setColor(dlg.setColor());
+		m_pGraph->setBorderColor(dlg.lineColor());
+		m_pGraph->setBorderStyle(dlg.lineStyle());
+		m_pGraph->setBorderWidth(dlg.lineWidth());
+		m_pctrlBorderStyle->setStyle(dlg.lineStyle());
+		m_pctrlBorderStyle->setWidth(dlg.lineWidth());
+		m_pctrlBorderStyle->setColor(dlg.lineColor());
 		setApplied(false);
 	}
 }
@@ -486,14 +486,14 @@ void GraphDlg::onXMajGridStyle()
 	QColor color;
 	bool bShow;
 	m_pGraph->bXMajGrid(bShow,color,s,w);
-	dlg.initDialog(s,w,color);
+	dlg.initDialog(0,s,w,color);
 
 	if(QDialog::Accepted==dlg.exec())
 	{
-		m_pGraph->setXMajGrid(bShow, dlg.setColor(), dlg.setStyle(), dlg.width());
-		m_pctrlXMajGridStyle->setStyle(dlg.setStyle());
-		m_pctrlXMajGridStyle->setWidth(dlg.width());
-		m_pctrlXMajGridStyle->setColor(dlg.setColor());
+		m_pGraph->setXMajGrid(bShow, dlg.lineColor(), dlg.lineStyle(), dlg.lineWidth());
+		m_pctrlXMajGridStyle->setStyle(dlg.lineStyle());
+		m_pctrlXMajGridStyle->setWidth(dlg.lineWidth());
+		m_pctrlXMajGridStyle->setColor(dlg.lineColor());
 		setApplied(false);
 	}
 }
@@ -506,14 +506,14 @@ void GraphDlg::onXMinGridStyle()
 	bool bShow, bAuto;
 	double unit;
 	m_pGraph->bXMinGrid(bShow, bAuto,color,s,w,unit);
-	dlg.initDialog(s,w,color);
+	dlg.initDialog(0,s,w,color);
 
 	if(QDialog::Accepted==dlg.exec())
 	{
-		m_pGraph->setXMinGrid(bShow, bAuto, dlg.setColor(), dlg.setStyle(), dlg.width(),unit);
-		m_pctrlXMinGridStyle->setStyle(dlg.setStyle());
-		m_pctrlXMinGridStyle->setWidth(dlg.width());
-		m_pctrlXMinGridStyle->setColor(dlg.setColor());
+		m_pGraph->setXMinGrid(bShow, bAuto, dlg.lineColor(), dlg.lineStyle(), dlg.lineWidth(),unit);
+		m_pctrlXMinGridStyle->setStyle(dlg.lineStyle());
+		m_pctrlXMinGridStyle->setWidth(dlg.lineWidth());
+		m_pctrlXMinGridStyle->setColor(dlg.lineColor());
 		setApplied(false);
 	}
 
@@ -563,14 +563,14 @@ void GraphDlg::onYMajGridStyle()
 	QColor color;
 	bool bShow;
 	m_pGraph->yMajGrid(bShow,color,s,w);
-	dlg.initDialog(s,w,color);
+	dlg.initDialog(0,s,w,color);
 
 	if(QDialog::Accepted==dlg.exec())
 	{
-		m_pGraph->setYMajGrid(bShow, dlg.setColor(), dlg.setStyle(), dlg.width());
-		m_pctrlYMajGridStyle->setStyle(dlg.setStyle());
-		m_pctrlYMajGridStyle->setWidth(dlg.width());
-		m_pctrlYMajGridStyle->setColor(dlg.setColor());
+		m_pGraph->setYMajGrid(bShow, dlg.lineColor(), dlg.lineStyle(), dlg.lineWidth());
+		m_pctrlYMajGridStyle->setStyle(dlg.lineStyle());
+		m_pctrlYMajGridStyle->setWidth(dlg.lineWidth());
+		m_pctrlYMajGridStyle->setColor(dlg.lineColor());
 	}
 }
 
@@ -595,14 +595,14 @@ void GraphDlg::onYMinGridStyle()
 	bool bShow, bAuto;
 	double unit;
 	m_pGraph->bYMinGrid(bShow, bAuto,color,s,w,unit);
-	dlg.initDialog(s,w,color);
+	dlg.initDialog(0,s,w,color);
 
 	if(QDialog::Accepted==dlg.exec())
 	{
-		m_pGraph->setYMinGrid(bShow, bAuto, dlg.setColor(), dlg.setStyle(), dlg.width(),unit);
-		m_pctrlYMinGridStyle->setStyle(dlg.setStyle());
-		m_pctrlYMinGridStyle->setWidth(dlg.width());
-		m_pctrlYMinGridStyle->setColor(dlg.setColor());
+		m_pGraph->setYMinGrid(bShow, bAuto, dlg.lineColor(), dlg.lineStyle(), dlg.lineWidth(),unit);
+		m_pctrlYMinGridStyle->setStyle(dlg.lineStyle());
+		m_pctrlYMinGridStyle->setWidth(dlg.lineWidth());
+		m_pctrlYMinGridStyle->setColor(dlg.lineColor());
 		setApplied(false);
 	}
 }

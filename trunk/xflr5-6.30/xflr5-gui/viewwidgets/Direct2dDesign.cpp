@@ -26,7 +26,7 @@
 #include <globals.h>
 #include <QPainter>
 #include <QMessageBox>
-
+#include <QtDebug>
 
 Direct2dDesign::Direct2dDesign(QWidget *pParent) : Section2dWidget(pParent)
 {
@@ -158,8 +158,8 @@ void Direct2dDesign::paintFoils(QPainter &painter)
 		pFoil = (Foil*)m_poaFoil->at(k);
 		if (pFoil->isVisible())
 		{
-			FoilPen.setStyle(getStyle(pFoil->foilStyle()));
-			FoilPen.setWidth(pFoil->foilWidth());
+			FoilPen.setStyle(getStyle(pFoil->foilLineStyle()));
+			FoilPen.setWidth(pFoil->foilLineWidth());
 			FoilPen.setColor(colour(pFoil));
 			painter.setPen(FoilPen);
 
@@ -171,12 +171,9 @@ void Direct2dDesign::paintFoils(QPainter &painter)
 				painter.setPen(CenterPen);
 				drawMidLine(painter, pFoil, m_fScale, m_fScale*m_fScaleY, m_ptOffset);
 			}
-			if (pFoil->showPoints())
-			{
-				CtrlPen.setColor(colour(pFoil));
-				painter.setPen(CtrlPen);
-				drawPoints(painter, pFoil, m_fScale,m_fScale*m_fScaleY, m_ptOffset);
-			}
+
+			drawPoints(painter, pFoil, 0.0, m_fScale,m_fScale*m_fScaleY, m_ptOffset);
+
 		}
 	}
 	if (m_pBufferFoil->isVisible())
@@ -190,12 +187,11 @@ void Direct2dDesign::paintFoils(QPainter &painter)
 			painter.setPen(CenterPen);
 			drawMidLine(painter, m_pBufferFoil, m_fScale, m_fScale*m_fScaleY, m_ptOffset);
 		}
-		if (m_pBufferFoil->showPoints())
-		{
-			CtrlPen.setColor(colour(m_pBufferFoil));
-			painter.setPen(CtrlPen);
-			drawPoints(painter, m_pBufferFoil, m_fScale,m_fScale*m_fScaleY, m_ptOffset);
-		}
+
+		CtrlPen.setColor(colour(m_pBufferFoil));
+		painter.setPen(CtrlPen);
+		drawPoints(painter, m_pBufferFoil, 0.0, m_fScale,m_fScale*m_fScaleY, m_ptOffset);
+
 	}
 	painter.restore();
 }
@@ -214,12 +210,17 @@ void Direct2dDesign::paintLegend(QPainter &painter)
 
 	if(m_bShowLegend)
 	{
+		QFont fnt(Settings::s_TextFont); //valgrind
+		QFontMetrics fm(fnt);
+		int fmw = fm.averageCharWidth();
+
 		Foil* pRefFoil;
 		QString strong;
-		QPoint Place(rect().right()-250, 10);
+		QPoint Place(rect().right()-35*fmw, 10);
 		int LegendSize, ypos, x1, n, k, delta;
 
-		LegendSize = 20;
+
+		LegendSize = 10*fmw;
 		ypos = 15;
 		delta = 5;
 
@@ -227,6 +228,10 @@ void Direct2dDesign::paintLegend(QPainter &painter)
 
 		QPen TextPen(Settings::s_TextColor);
 		painter.setPen(TextPen);
+
+		QBrush FillBrush(Settings::s_BackgroundColor);
+		painter.setBrush(FillBrush);
+
 		QPen LegendPen;
 
 		k=0;
@@ -238,7 +243,7 @@ void Direct2dDesign::paintLegend(QPainter &painter)
 			LegendPen.setWidth(m_pSF->splineFoilWidth());
 
 			painter.setPen(LegendPen);
-			painter.drawLine(Place.x(), Place.y() + ypos*k, Place.x() + (int)(LegendSize), Place.y() + ypos*k);
+			painter.drawLine(Place.x(), Place.y() + ypos*k, Place.x() + LegendSize, Place.y() + ypos*k);
 			if(m_pSF->showOutPoints())
 			{
 //					x1 = Place.x + (int)(0.5*LegendSize);
@@ -247,7 +252,7 @@ void Direct2dDesign::paintLegend(QPainter &painter)
 				painter.drawRect(x1-2, Place.y() + ypos*k-2, 4,4);
 			}
 			painter.setPen(TextPen);
-			painter.drawText(Place.x() + (int)(1.5*LegendSize), Place.y() + ypos*k+delta, m_pSF->splineFoilName());
+			painter.drawText(Place.x() + LegendSize + fmw, Place.y() + ypos*k+delta, m_pSF->splineFoilName());
 		}
 
 		k++;
@@ -263,19 +268,20 @@ void Direct2dDesign::paintLegend(QPainter &painter)
 					if(strong.length())
 					{
 						LegendPen.setColor(colour(pRefFoil));
-						LegendPen.setStyle(getStyle(pRefFoil->foilStyle()));
-						LegendPen.setWidth(pRefFoil->foilWidth());
+						LegendPen.setStyle(getStyle(pRefFoil->foilLineStyle()));
+						LegendPen.setWidth(pRefFoil->foilLineWidth());
 
 						painter.setPen(LegendPen);
-						painter.drawLine(Place.x(), Place.y() + ypos*k, Place.x() + (int)(LegendSize), Place.y() + ypos*k);
+						painter.drawLine(Place.x(), Place.y() + ypos*k, Place.x() + LegendSize, Place.y() + ypos*k);
 
-						if(pRefFoil->showPoints())
+						x1 = Place.x() + (int)(0.5*LegendSize);
+/*						if(pRefFoil->showPoints())
 						{
-							x1 = Place.x() + (int)(0.5*LegendSize);
 							painter.drawRect(x1-2, Place.y() + ypos*k-2, 4,4);
-						}
+						}*/
+						drawPoint(painter, pRefFoil->foilPointStyle(), QPoint(x1, Place.y() + ypos*k));
 						painter.setPen(TextPen);
-						painter.drawText(Place.x() + (int)(1.5*LegendSize), Place.y() + ypos*k+delta, pRefFoil->foilName());
+						painter.drawText(Place.x() + LegendSize + fmw, Place.y() + ypos*k+delta, pRefFoil->foilName());
 						k++;
 					}
 				}

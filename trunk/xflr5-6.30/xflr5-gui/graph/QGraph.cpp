@@ -148,37 +148,7 @@ void QGraph::drawCurve(int nIndex, QPainter &painter)
 			for (i=0; i<pCurve->size();i++)
 			{
 				QPoint pt(int(pCurve->x[i]/m_scalex+m_ptoffset.x()), int(pCurve->y[i]/  scaley+m_ptoffset.y()));
-
-				switch(pCurve->pointStyle())
-				{
-					case 0: break;
-					case 1:
-					{
-						int ptSide = 2;
-						painter.drawEllipse(pt.x()-ptSide, pt.y()-ptSide, 2*ptSide, 2*ptSide );
-						break;
-					}
-					case 2:
-					{
-						int ptSide = 4;
-						painter.drawEllipse(pt.x()-ptSide, pt.y()-ptSide, 2*ptSide, 2*ptSide );
-						break;
-					}
-					case 3:
-					{
-						int ptSide = 2;
-						painter.drawRect(pt.x()-ptSide, pt.y()-ptSide, 2*ptSide, 2*ptSide );
-						break;
-					}
-					case 4:
-					{
-						int ptSide = 4;
-						painter.drawRect(pt.x()-ptSide, pt.y()-ptSide, 2*ptSide, 2*ptSide );
-						break;
-					}
-					default: break;
-				}
-
+				drawPoint(painter, pCurve->pointStyle(), pt);
 			}
 		}
 

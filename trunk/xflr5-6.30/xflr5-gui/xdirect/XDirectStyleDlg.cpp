@@ -112,13 +112,13 @@ void XDirectStyleDlg::setupLayout()
 void XDirectStyleDlg::onNeutralStyle()
 {
     LinePickerDlg dlg(this);
-	dlg.initDialog(m_iNeutralStyle, m_iNeutralWidth, m_crNeutralColor);
+	dlg.initDialog(0, m_iNeutralStyle, m_iNeutralWidth, m_crNeutralColor);
 
 	if(QDialog::Accepted==dlg.exec())
 	{
-		m_iNeutralStyle = dlg.setStyle();
-		m_iNeutralWidth = dlg.width();
-		m_crNeutralColor = dlg.setColor();
+		m_iNeutralStyle = dlg.lineStyle();
+		m_iNeutralWidth = dlg.lineWidth();
+		m_crNeutralColor = dlg.lineColor();
 		m_pctrlNeutral->setStyle(m_iNeutralStyle, m_iNeutralWidth, m_crNeutralColor,0);
 	}
 	OKButton->setFocus();
@@ -128,13 +128,13 @@ void XDirectStyleDlg::onNeutralStyle()
 void XDirectStyleDlg::onPressureStyle()
 {
     LinePickerDlg dlg(this);
-	dlg.initDialog(m_iPressureStyle, m_iPressureWidth, m_crPressureColor);
+	dlg.initDialog(0, m_iPressureStyle, m_iPressureWidth, m_crPressureColor);
 
 	if(QDialog::Accepted==dlg.exec())
 	{
-		m_iPressureStyle = dlg.setStyle();
-		m_iPressureWidth = dlg.width();
-		m_crPressureColor = dlg.setColor();
+		m_iPressureStyle = dlg.lineStyle();
+		m_iPressureWidth = dlg.lineWidth();
+		m_crPressureColor = dlg.lineColor();
 		m_pctrlPressure->setStyle(m_iPressureStyle, m_iPressureWidth, m_crPressureColor,0);
 	}
 	OKButton->setFocus();
@@ -144,13 +144,13 @@ void XDirectStyleDlg::onPressureStyle()
 void XDirectStyleDlg::onBLStyle()
 {
     LinePickerDlg dlg(this);
-	dlg.initDialog(m_iBLStyle, m_iBLWidth, m_crBLColor);
+	dlg.initDialog(0, m_iBLStyle, m_iBLWidth, m_crBLColor);
 
 	if(QDialog::Accepted==dlg.exec())
 	{
-		m_iBLStyle = dlg.setStyle();
-		m_iBLWidth = dlg.width();
-		m_crBLColor = dlg.setColor();
+		m_iBLStyle = dlg.lineStyle();
+		m_iBLWidth = dlg.lineWidth();
+		m_crBLColor = dlg.lineColor();
 		m_pctrlBL->setStyle(m_iBLStyle, m_iBLWidth, m_crBLColor,0);
 	}
 
