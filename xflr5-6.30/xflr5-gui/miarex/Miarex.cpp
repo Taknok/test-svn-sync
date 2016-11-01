@@ -1854,8 +1854,8 @@ void QMiarex::glMake3DObjects()
  */
 void QMiarex::keyPressEvent(QKeyEvent *event)
 {
-	bool bCtrl = false;
-	if(event->modifiers() & Qt::ControlModifier)   bCtrl =true;
+	bool bCtrl = (event->modifiers() & Qt::ControlModifier) ? true : false;
+
 	m_pgl3Widget->m_bArcball=false;
 
 	if(event->key()==Qt::Key_0 || event->text()=="0")
@@ -2015,6 +2015,10 @@ void QMiarex::keyPressEvent(QKeyEvent *event)
 		}
 		case Qt::Key_F4:
 		{
+			if(bCtrl)
+			{
+				s_pMainFrame->m_pCloseProjectAct->trigger();
+			}
 			on3DView();
 			break;
 		}

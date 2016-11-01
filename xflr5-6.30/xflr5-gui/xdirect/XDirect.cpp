@@ -2201,9 +2201,9 @@ void QXDirect::onCadd()
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(&m_BufferFoil);
 		setRandomFoilColor(pNewFoil);
-		pNewFoil->foilStyle() = 1;
-		pNewFoil->foilWidth() = 1;
-		pNewFoil->showPoints() = false;
+		pNewFoil->foilLineStyle() = 1;
+		pNewFoil->foilLineWidth() = 1;
+		pNewFoil->foilPointStyle() = 0;
 		OpPoint::setCurOpp((OpPoint*)ptr);
 
 		if(!addNewFoil(pNewFoil)) setBufferFoil();
@@ -2236,9 +2236,9 @@ void QXDirect::onDerotateFoil()
 
 	Foil *pNewFoil = new Foil;
 	pNewFoil->copyFoil(Foil::curFoil());
-	pNewFoil->foilStyle() = 0;
-	pNewFoil->foilWidth() = 1;
-	pNewFoil->showPoints() = false;
+	pNewFoil->foilLineStyle() = 0;
+	pNewFoil->foilLineWidth() = 1;
+	pNewFoil->foilPointStyle() = 0;
 	setRandomFoilColor(pNewFoil);
 
 	double angle = pNewFoil->deRotate();
@@ -2759,9 +2759,9 @@ void QXDirect::onFoilCoordinates()
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(&m_BufferFoil);
 		setRandomFoilColor(pNewFoil);
-		pNewFoil->foilStyle() = 0;
-		pNewFoil->foilWidth() = 1;
-		pNewFoil->showPoints() = false;
+		pNewFoil->foilLineStyle() = 0;
+		pNewFoil->foilLineWidth() = 1;
+		pNewFoil->foilPointStyle() = 0;
 		OpPoint::setCurOpp((OpPoint*)ptr);
 
 		if(!addNewFoil(pNewFoil)) setBufferFoil();
@@ -2816,9 +2816,9 @@ void QXDirect::onFoilGeom()
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(&m_BufferFoil);
 		setRandomFoilColor(pNewFoil);
-		pNewFoil->foilStyle() = 0;
-		pNewFoil->foilWidth() = 1;
-		pNewFoil->showPoints() = false;
+		pNewFoil->foilLineStyle() = 0;
+		pNewFoil->foilLineWidth() = 1;
+		pNewFoil->foilPointStyle() = 0;
 		OpPoint::setCurOpp((OpPoint*)ptr);
 
 		if(!addNewFoil(pNewFoil)) setBufferFoil();
@@ -3277,9 +3277,9 @@ void QXDirect::onInterpolateFoils()
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(&m_BufferFoil);
 		setRandomFoilColor(pNewFoil);
-		pNewFoil->foilStyle() = 0;
-		pNewFoil->foilWidth() = 1;
-		pNewFoil->showPoints() = false;
+		pNewFoil->foilLineStyle() = 0;
+		pNewFoil->foilLineWidth() = 1;
+		pNewFoil->foilPointStyle() = 0;
 		pNewFoil->foilName() = ifDlg.m_NewFoilName;
 
 		if(!addNewFoil(pNewFoil)) setBufferFoil();
@@ -3331,9 +3331,9 @@ void QXDirect::onNacaFoils()
 		Foil *pNewFoil = new Foil;
 		pNewFoil->copyFoil(&m_BufferFoil);
 		setRandomFoilColor(pNewFoil);
-		pNewFoil->foilStyle() = 0;
-		pNewFoil->foilWidth() = 1;
-		pNewFoil->showPoints() = false;
+		pNewFoil->foilLineStyle() = 0;
+		pNewFoil->foilLineWidth() = 1;
+		pNewFoil->foilPointStyle() = 0;
 		pNewFoil->foilName() = str;
 
 		OpPoint::setCurOpp((OpPoint*)ptr);
@@ -3526,9 +3526,9 @@ void QXDirect::onRefinePanelsGlobally()
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(&m_BufferFoil);
 		setRandomFoilColor(pNewFoil);
-		pNewFoil->foilStyle() = 0;
-		pNewFoil->foilWidth() = 1;
-		pNewFoil->showPoints() = true;
+		pNewFoil->foilLineStyle() = 0;
+		pNewFoil->foilLineWidth() = 1;
+		pNewFoil->foilPointStyle() = 0;
 		OpPoint::setCurOpp((OpPoint*)ptr);
 		if(!addNewFoil(pNewFoil))	setBufferFoil();
 		setFoil(pNewFoil);
@@ -3834,9 +3834,9 @@ void QXDirect::onSetFlap()
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(&m_BufferFoil);
 		setRandomFoilColor(pNewFoil);
-		pNewFoil->foilStyle() = 0;
-		pNewFoil->foilWidth() = 1;
-		pNewFoil->showPoints() = false;
+		pNewFoil->foilLineStyle() = 0;
+		pNewFoil->foilLineWidth() = 1;
+		pNewFoil->foilPointStyle() = 0;
 
 		OpPoint::setCurOpp((OpPoint*)ptr);
 
@@ -3882,9 +3882,9 @@ void QXDirect::onSetLERadius()
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(&m_BufferFoil);
 		setRandomFoilColor(pNewFoil);
-		pNewFoil->foilStyle() = 0;
-		pNewFoil->foilWidth() = 1;
-		pNewFoil->showPoints() = false;
+		pNewFoil->foilLineStyle() = 0;
+		pNewFoil->foilLineWidth() = 1;
+		pNewFoil->foilPointStyle() = 0;
 		OpPoint::setCurOpp((OpPoint*)ptr);
 
 		if(!addNewFoil(pNewFoil)) setBufferFoil();
@@ -3931,9 +3931,9 @@ void QXDirect::onSetTEGap()
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(&m_BufferFoil);
 		setRandomFoilColor(pNewFoil);
-		pNewFoil->foilStyle() = 0;
-		pNewFoil->foilWidth() = 1;
-		pNewFoil->showPoints() = false;
+		pNewFoil->foilLineStyle() = 0;
+		pNewFoil->foilLineWidth() = 1;
+		pNewFoil->foilPointStyle() = 0;
 		OpPoint::setCurOpp((OpPoint*)ptr);
 
 		if(!addNewFoil(pNewFoil)) setBufferFoil();
@@ -4381,8 +4381,8 @@ void QXDirect::setBufferFoil()
 
 	m_BufferFoil.foilName()  = Foil::curFoil()->foilName();
 	m_BufferFoil.setColor(Foil::curFoil()->red(), Foil::curFoil()->green(), Foil::curFoil()->blue(), Foil::curFoil()->alphaChannel());
-	m_BufferFoil.foilStyle() = Foil::curFoil()->foilStyle();
-	m_BufferFoil.foilWidth() = Foil::curFoil()->foilWidth();
+	m_BufferFoil.foilLineStyle() = Foil::curFoil()->foilLineStyle();
+	m_BufferFoil.foilLineWidth() = Foil::curFoil()->foilLineWidth();
 }
 
 

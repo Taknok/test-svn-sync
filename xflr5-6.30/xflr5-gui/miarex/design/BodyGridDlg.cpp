@@ -263,13 +263,13 @@ void BodyGridDlg::onMinGrid2()
 void BodyGridDlg::onLineStyle()
 {
 	LinePickerDlg dlg(this);
-	dlg.initDialog(s_Style, s_Width, s_Color);
+	dlg.initDialog(0, s_Style, s_Width, s_Color);
 
 	if(QDialog::Accepted==dlg.exec())
 	{
-		s_Style = dlg.setStyle();
-		s_Width = dlg.width();
-		s_Color = dlg.setColor();
+		s_Style = dlg.lineStyle();
+		s_Width = dlg.lineWidth();
+		s_Color = dlg.lineColor();
 		m_pctrlLine->setStyle(s_Style);
 		m_pctrlLine->setWidth(s_Width);
 		m_pctrlLine->setColor(s_Color);
@@ -280,13 +280,13 @@ void BodyGridDlg::onLineStyle()
 void BodyGridDlg::onLine2Style()
 {
 	LinePickerDlg dlg(this);
-	dlg.initDialog(s_Style2, s_Width2, s_Color2);
+	dlg.initDialog(0, s_Style2, s_Width2, s_Color2);
 
 	if(QDialog::Accepted==dlg.exec())
 	{
-		s_Style2 = dlg.setStyle();
-		s_Width2 = dlg.width();
-		s_Color2 = dlg.setColor();
+		s_Style2 = dlg.lineStyle();
+		s_Width2 = dlg.lineWidth();
+		s_Color2 = dlg.lineColor();
 		m_pctrlLine2->setStyle(s_Style2);
 		m_pctrlLine2->setWidth(s_Width2);
 		m_pctrlLine2->setColor(s_Color2);
@@ -297,13 +297,13 @@ void BodyGridDlg::onLine2Style()
 void BodyGridDlg::onMinLineStyle()
 {
 	LinePickerDlg dlg(this);
-	dlg.initDialog(s_MinStyle, s_MinWidth, s_MinColor);
+	dlg.initDialog(0, s_MinStyle, s_MinWidth, s_MinColor);
 
 	if(QDialog::Accepted==dlg.exec())
 	{
-		s_MinStyle = dlg.setStyle();
-		s_MinWidth = dlg.width();
-		s_MinColor = dlg.setColor();
+		s_MinStyle = dlg.lineStyle();
+		s_MinWidth = dlg.lineWidth();
+		s_MinColor = dlg.lineColor();
 		m_pctrlMinLine->setStyle(s_MinStyle);
 		m_pctrlMinLine->setWidth(s_MinWidth);
 		m_pctrlMinLine->setColor(s_MinColor);
@@ -314,13 +314,13 @@ void BodyGridDlg::onMinLineStyle()
 void BodyGridDlg::onMinLine2Style()
 {
 	LinePickerDlg dlg(this);
-	dlg.initDialog(s_MinStyle2, s_MinWidth2, s_MinColor2);
+	dlg.initDialog(0, s_MinStyle2, s_MinWidth2, s_MinColor2);
 
 	if(QDialog::Accepted==dlg.exec())
 	{
-		s_MinStyle2 = dlg.setStyle();
-		s_MinWidth2 = dlg.width();
-		s_MinColor2 = dlg.setColor();
+		s_MinStyle2 = dlg.lineStyle();
+		s_MinWidth2 = dlg.lineWidth();
+		s_MinColor2 = dlg.lineColor();
 		m_pctrlMinLine2->setStyle(s_MinStyle2);
 		m_pctrlMinLine2->setWidth(s_MinWidth2);
 		m_pctrlMinLine2->setColor(s_MinColor2);

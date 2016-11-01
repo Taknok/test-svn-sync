@@ -3756,23 +3756,22 @@ void MainFrame::onCurFoilStyle()
 	if(!Foil::curFoil()) return;
 
 	LinePickerDlg dlg(this);
-	dlg.initDialog(Foil::curFoil()->foilStyle(), Foil::curFoil()->foilWidth(), colour(Foil::curFoil()));
+	dlg.initDialog(Foil::curFoil()->foilPointStyle(), Foil::curFoil()->foilLineStyle(), Foil::curFoil()->foilLineWidth(), colour(Foil::curFoil()));
 
 	if(QDialog::Accepted==dlg.exec())
 	{
-		Foil::curFoil()->setColor(dlg.setColor().red(), dlg.setColor().green(), dlg.setColor().blue(), dlg.setColor().alpha());
-		Foil::curFoil()->foilStyle() = dlg.setStyle();
-		Foil::curFoil()->foilWidth() = dlg.width();
+		Foil::curFoil()->setColor(dlg.lineColor().red(), dlg.lineColor().green(), dlg.lineColor().blue(), dlg.lineColor().alpha());
+		Foil::curFoil()->foilLineStyle() = dlg.lineStyle();
+		Foil::curFoil()->foilLineWidth() = dlg.width();
 		QXDirect *pXDirect = (QXDirect*)m_pXDirect;
 		pXDirect->m_BufferFoil.setColor(Foil::curFoil()->red(), Foil::curFoil()->green(), Foil::curFoil()->blue(), Foil::curFoil()->alphaChannel());
-		pXDirect->m_BufferFoil.foilStyle() = Foil::curFoil()->foilStyle();
-		pXDirect->m_BufferFoil.foilWidth() = Foil::curFoil()->foilWidth();
+		pXDirect->m_BufferFoil.foilLineStyle() = Foil::curFoil()->foilLineStyle();
+		pXDirect->m_BufferFoil.foilLineWidth() = Foil::curFoil()->foilLineWidth();
 		setSaveState(false);
 	}
 
 	updateView();
 }
-
 
 
 void MainFrame::onInsertProject()

@@ -18,8 +18,9 @@
 xflr5 v6.30 October 10th, 2016
 	- separated the GUI from the analysis engines
 	- added an option to hide flap moments in the operating view
+	- added a style property for foil points
 	- code cleaning
-	- minor bug corrections and enhancements
+	- bug corrections and minor enhancements
 
 
 xflr5 v6.14 May 29th, 2016

@@ -637,11 +637,10 @@ void Surface::getSection(double const &tau, double &Chord, double &Area, CVector
  */
 double Surface::stripSpanPos(int k)
 {
-	int  l;
 	double YPos = 0.0;
 	double ZPos = 0.0;
 
-	for(l=0; l<m_NXPanels; l++)
+	for(int l=0; l<m_NXPanels; l++)
 	{
 		getPanel(k,l, MIDSURFACE);
 		YPos += (LA.y+LB.y+TA.y+TB.y)/4.0;

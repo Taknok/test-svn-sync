@@ -36,13 +36,14 @@ public:
     LinePickerDlg(QWidget *pParent);
 
 	void initDialog();
-	void initDialog(int style, int width, QColor color);
+	void initDialog(int pointStyle, int lineStyle, int width, QColor color, bool bAcceptPointStyle=false);
 
 	void keyPressEvent(QKeyEvent *event);
 
-	int &width();
-	int &setStyle();
-	QColor &setColor();
+	int &pointStyle();
+	int &lineStyle();
+	int &lineWidth();
+	QColor &lineColor();
 
 	void setColor(QColor color);
 	void setWidth(int width);
@@ -54,20 +55,22 @@ public:
 
 protected:
 	LineBtn *m_pctrlColor;
-	LineCbBox *m_pctrlWidth, *m_pctrlStyle;
+	LineCbBox *m_pctrlPoints, *m_pctrlWidth, *m_pctrlStyle;
 	QPushButton *OKButton, *CancelButton;
 
 private:
-	int m_Style;
+	int m_PointStyle;
+	int m_LineStyle;
 	int m_Width;
 	QColor m_Color;
 	void* m_pParent;
-	LineDelegate *m_pStyleDelegate, *m_pWidthDelegate;
+	LineDelegate *m_pPointStyleDelegate, *m_pLineStyleDelegate, *m_pWidthDelegate;
 
 
 private slots:
-	void onWidth(int val);
+	void onPoints(int val);
 	void onStyle(int val);
+	void onWidth(int val);
 	void onColor();
 
 };

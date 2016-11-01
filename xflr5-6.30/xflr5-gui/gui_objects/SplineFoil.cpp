@@ -31,6 +31,7 @@
  */
 SplineFoil::SplineFoil()
 {
+	m_PointStyle   = 0;
 	m_FoilStyle    = 0;
 	m_FoilWidth    = 1;
 	m_FoilColor    = QColor(119, 183, 83);

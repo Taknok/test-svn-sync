@@ -277,15 +277,9 @@ void QAFoil::fillTableRow(int row)
 	if(pItem) pItem->setFlags(Qt::ItemIsEnabled|Qt::ItemIsUserCheckable);
 	
 	ind = m_pFoilModel->index(row, 13, QModelIndex());
-	if(pFoil->showPoints()) m_pFoilModel->setData(ind, Qt::Checked, Qt::CheckStateRole);
-	else                    m_pFoilModel->setData(ind, Qt::Unchecked, Qt::CheckStateRole);
-	pItem = m_pFoilModel->item(row,13);
-	if(pItem) pItem->setFlags(Qt::ItemIsEnabled|Qt::ItemIsUserCheckable);
-
-	ind = m_pFoilModel->index(row, 14, QModelIndex());
 	if(pFoil->showCenterLine()) m_pFoilModel->setData(ind, Qt::Checked, Qt::CheckStateRole);
 	else                       m_pFoilModel->setData(ind, Qt::Unchecked, Qt::CheckStateRole);
-	pItem = m_pFoilModel->item(row,14);
+	pItem = m_pFoilModel->item(row,13);
 	if(pItem) pItem->setFlags(Qt::ItemIsEnabled|Qt::ItemIsUserCheckable);
 }
 
@@ -436,8 +430,8 @@ void QAFoil::onAFoilDerotateFoil()
 	m_pBufferFoil->isVisible() = true;
 	m_pBufferFoil->foilName() = Foil::curFoil()->foilName();
 	m_pBufferFoil->setColor(160,160,160);
-	m_pBufferFoil->foilStyle() = 1;
-	m_pBufferFoil->foilWidth() = 1;
+	m_pBufferFoil->foilLineStyle() = 1;
+	m_pBufferFoil->foilLineWidth() = 1;
 
 	m_p2DWidget->update();;
 
@@ -449,8 +443,8 @@ void QAFoil::onAFoilDerotateFoil()
 	Foil *pNewFoil = new Foil();
 	pNewFoil->copyFoil(m_pBufferFoil);
 	setRandomFoilColor(pNewFoil);
-	pNewFoil->foilStyle() = 0;
-	pNewFoil->foilWidth() = 1;
+	pNewFoil->foilLineStyle() = 0;
+	pNewFoil->foilLineWidth() = 1;
 
 	addNewFoil(pNewFoil);
 	fillFoilTable();
@@ -488,9 +482,9 @@ void QAFoil::onAFoilCadd()
 	m_pBufferFoil->copyFoil(Foil::curFoil());
 	m_pBufferFoil->foilName()   = Foil::curFoil()->foilName();
 	m_pBufferFoil->setColor(160,160,160);
-	m_pBufferFoil->foilStyle() = 1;
-	m_pBufferFoil->foilWidth() = 1;
-	m_pBufferFoil->showPoints()  = true;
+	m_pBufferFoil->foilLineStyle() = 1;
+	m_pBufferFoil->foilLineWidth() = 1;
+	m_pBufferFoil->foilPointStyle() = 1;
 	m_pBufferFoil->isVisible()   = true;
 
 	m_p2DWidget->update();;
@@ -506,9 +500,9 @@ void QAFoil::onAFoilCadd()
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(m_pBufferFoil);
 		setRandomFoilColor(pNewFoil);
-		pNewFoil->foilStyle() = 0;
-		pNewFoil->foilWidth() = 1;
-		pNewFoil->showPoints() = false;
+		pNewFoil->foilLineStyle() = 0;
+		pNewFoil->foilLineWidth() = 1;
+		pNewFoil->foilPointStyle() = 0;
 
 		addNewFoil(pNewFoil);
 		fillFoilTable();
@@ -554,9 +548,9 @@ void QAFoil::onAFoilPanels()
 	m_pBufferFoil->copyFoil(Foil::curFoil());
 	m_pBufferFoil->foilName()  = Foil::curFoil()->foilName();
 	m_pBufferFoil->setColor(160,160,160);
-	m_pBufferFoil->foilStyle() = 1;
-	m_pBufferFoil->foilWidth() = 1;
-	m_pBufferFoil->showPoints() = true;
+	m_pBufferFoil->foilLineStyle() = 1;
+	m_pBufferFoil->foilLineWidth() = 1;
+	m_pBufferFoil->foilPointStyle() = 1;
 	m_pBufferFoil->isVisible()  = true;
 
 	m_p2DWidget->update();;
@@ -572,9 +566,9 @@ void QAFoil::onAFoilPanels()
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(m_pBufferFoil);
 		setRandomFoilColor(pNewFoil);
-		pNewFoil->foilStyle() = 0;
-		pNewFoil->foilWidth() = 1;
-		pNewFoil->showPoints() = false;
+		pNewFoil->foilLineStyle() = 0;
+		pNewFoil->foilLineWidth() = 1;
+		pNewFoil->foilPointStyle() = 0;
 
 		addNewFoil(pNewFoil);
 		fillFoilTable();
@@ -600,12 +594,12 @@ void QAFoil::onAFoilFoilCoordinates()
 	if(!Foil::curFoil()) return;
 
 	m_pBufferFoil->copyFoil(Foil::curFoil());
-	m_pBufferFoil->showPoints()  = true;
+	m_pBufferFoil->foilPointStyle() = 1;
 	m_pBufferFoil->isVisible() = true;
 	m_pBufferFoil->foilName() = Foil::curFoil()->foilName();
 	m_pBufferFoil->setColor(160,160,160);
-	m_pBufferFoil->foilStyle() = 1;
-	m_pBufferFoil->foilWidth() = 1;
+	m_pBufferFoil->foilLineStyle() = 1;
+	m_pBufferFoil->foilLineWidth() = 1;
 
 	m_p2DWidget->update();;
 
@@ -619,10 +613,10 @@ void QAFoil::onAFoilFoilCoordinates()
 		//then duplicate the buffer foil and add it
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(m_pBufferFoil);
-		pNewFoil->showPoints() = false;
+		pNewFoil->foilPointStyle() = 0;
 		setRandomFoilColor(pNewFoil);
-		pNewFoil->foilStyle() = 0;
-		pNewFoil->foilWidth() = 1;
+		pNewFoil->foilLineStyle() = 0;
+		pNewFoil->foilLineWidth() = 1;
 		pNewFoil->setHighLight(-1);
 
 		addNewFoil(pNewFoil);
@@ -647,12 +641,12 @@ void QAFoil::onAFoilFoilGeom()
 	if(!Foil::curFoil()) return;
 
 	m_pBufferFoil->copyFoil(Foil::curFoil());
-	m_pBufferFoil->showPoints()  = true;
+	m_pBufferFoil->foilPointStyle() = 1;
 	m_pBufferFoil->isVisible() = true;
 	m_pBufferFoil->foilName() = Foil::curFoil()->foilName();
 	m_pBufferFoil->setColor(160,160,160);
-	m_pBufferFoil->foilStyle() = 1;
-	m_pBufferFoil->foilWidth() = 1;
+	m_pBufferFoil->foilLineStyle() = 1;
+	m_pBufferFoil->foilLineWidth() = 1;
 
 	m_p2DWidget->update();;
 
@@ -667,10 +661,9 @@ void QAFoil::onAFoilFoilGeom()
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(m_pBufferFoil);
 		setRandomFoilColor(pNewFoil);
-		pNewFoil->foilStyle() = 0;
-		pNewFoil->foilWidth() = 1;
-		pNewFoil->showPoints() = false;
-
+		pNewFoil->foilLineStyle() = 0;
+		pNewFoil->foilLineWidth() = 1;
+		pNewFoil->foilPointStyle() = 0;
 		addNewFoil(pNewFoil);
 		fillFoilTable();
 		selectFoil(pNewFoil);
@@ -694,12 +687,12 @@ void QAFoil::onAFoilSetTEGap()
 	if(!Foil::curFoil()) return;
 
 	m_pBufferFoil->copyFoil(Foil::curFoil());
-	m_pBufferFoil->showPoints()  = false;
+	m_pBufferFoil->foilPointStyle() = 1;
 	m_pBufferFoil->isVisible()   = true;
 	m_pBufferFoil->foilName()   = Foil::curFoil()->foilName();
 	m_pBufferFoil->setColor(160,160,160);
-	m_pBufferFoil->foilStyle() = 1;
-	m_pBufferFoil->foilWidth() = 1;
+	m_pBufferFoil->foilLineStyle() = 1;
+	m_pBufferFoil->foilLineWidth() = 1;
 
 	m_p2DWidget->update();;
 
@@ -714,9 +707,9 @@ void QAFoil::onAFoilSetTEGap()
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(m_pBufferFoil);
 		setRandomFoilColor(pNewFoil);
-		pNewFoil->foilStyle() = 0;
-		pNewFoil->foilWidth() = 1;
-		pNewFoil->showPoints() = false;
+		pNewFoil->foilLineStyle() = 0;
+		pNewFoil->foilLineWidth() = 1;
+		pNewFoil->foilPointStyle() = 0;
 
 		addNewFoil(pNewFoil);
 		fillFoilTable();
@@ -745,11 +738,11 @@ void QAFoil::onAFoilSetLERadius()
 
 	m_pBufferFoil->copyFoil(Foil::curFoil());
 	m_pBufferFoil->isVisible()   = true;
-	m_pBufferFoil->showPoints()    = false;
+	m_pBufferFoil->foilPointStyle() = 1;
 	m_pBufferFoil->foilName()   = Foil::curFoil()->foilName();
 	m_pBufferFoil->setColor(160,160,160);
-	m_pBufferFoil->foilStyle() = 1;
-	m_pBufferFoil->foilWidth() = 1;
+	m_pBufferFoil->foilLineStyle() = 1;
+	m_pBufferFoil->foilLineWidth() = 1;
 
 	m_p2DWidget->update();;
 
@@ -764,9 +757,9 @@ void QAFoil::onAFoilSetLERadius()
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(m_pBufferFoil);
 		setRandomFoilColor(pNewFoil);
-		pNewFoil->foilStyle() = 0;
-		pNewFoil->foilWidth() = 1;
-		pNewFoil->showPoints()    = false;
+		pNewFoil->foilLineStyle() = 0;
+		pNewFoil->foilLineWidth() = 1;
+		pNewFoil->foilPointStyle() = 0;
 
 		addNewFoil(pNewFoil);
 		fillFoilTable();
@@ -801,9 +794,9 @@ void QAFoil::onAFoilInterpolateFoils()
 	m_pBufferFoil->copyFoil(Foil::curFoil());
 	m_pBufferFoil->foilName()  = Foil::curFoil()->foilName();
 	m_pBufferFoil->setColor(160,160,160);
-	m_pBufferFoil->foilStyle() = 1;
-	m_pBufferFoil->foilWidth() = 1;
-	m_pBufferFoil->showPoints()   = false;
+	m_pBufferFoil->foilLineStyle() = 1;
+	m_pBufferFoil->foilLineWidth() = 1;
+	m_pBufferFoil->foilPointStyle() = 1;
 	m_pBufferFoil->isVisible()  = true;
 
 	m_p2DWidget->update();;
@@ -819,9 +812,9 @@ void QAFoil::onAFoilInterpolateFoils()
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(m_pBufferFoil);
 		setRandomFoilColor(pNewFoil);
-		pNewFoil->foilStyle() = 0;
-		pNewFoil->foilWidth() = 1;
-		pNewFoil->showPoints() = false;
+		pNewFoil->foilLineStyle() = 0;
+		pNewFoil->foilLineWidth() = 1;
+		pNewFoil->foilPointStyle() = 0;
         pNewFoil->foilName() = ifDlg.m_NewFoilName;
 
 		addNewFoil(pNewFoil);
@@ -845,12 +838,12 @@ void QAFoil::onAFoilInterpolateFoils()
 void QAFoil::onAFoilNacaFoils()
 {
 	m_pBufferFoil->setNaca009();
-	m_pBufferFoil->showPoints()  = true;
+	m_pBufferFoil->foilPointStyle() = 1;
 	m_pBufferFoil->isVisible() = true;
 	m_pBufferFoil->foilName() = "Naca xxxx";
 	m_pBufferFoil->setColor(160,160,160);
-	m_pBufferFoil->foilStyle() = 1;
-	m_pBufferFoil->foilWidth() = 1;
+	m_pBufferFoil->foilLineStyle() = 1;
+	m_pBufferFoil->foilLineWidth() = 1;
 
 	m_p2DWidget->update();;
 
@@ -871,9 +864,9 @@ void QAFoil::onAFoilNacaFoils()
 		Foil *pNewFoil    = new Foil();
 		pNewFoil->copyFoil(m_pBufferFoil);
 		setRandomFoilColor(pNewFoil);
-		pNewFoil->foilStyle() = 0;
-		pNewFoil->foilWidth() = 1;
-		pNewFoil->showPoints()    = false;
+		pNewFoil->foilLineStyle() = 0;
+		pNewFoil->foilLineWidth() = 1;
+		pNewFoil->foilPointStyle() = 0;
 		pNewFoil->foilName()   = str;
 
 		addNewFoil(pNewFoil);
@@ -903,8 +896,8 @@ void QAFoil::onAFoilSetFlap()
 	m_pBufferFoil->isVisible() = true;
 	m_pBufferFoil->foilName() = Foil::curFoil()->foilName();
 	m_pBufferFoil->setColor(160,160,160);
-	m_pBufferFoil->foilStyle() = 1;
-	m_pBufferFoil->foilWidth() = 1;
+	m_pBufferFoil->foilLineStyle() = 1;
+	m_pBufferFoil->foilLineWidth() = 1;
 
 	m_p2DWidget->update();;
 
@@ -920,8 +913,8 @@ void QAFoil::onAFoilSetFlap()
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(m_pBufferFoil);
 		setRandomFoilColor(pNewFoil);
-		pNewFoil->foilStyle() = 0;
-		pNewFoil->foilWidth() = 1;
+		pNewFoil->foilLineStyle() = 0;
+		pNewFoil->foilLineWidth() = 1;
 
 		addNewFoil(pNewFoil);
 		fillFoilTable();
@@ -1084,10 +1077,6 @@ void QAFoil::onFoilClicked(const QModelIndex& index)
 		}
 		else if(index.column()==13)
 		{
-			m_pSF->m_bOutPoints = !m_pSF->m_bOutPoints;
-		}
-		else if(index.column()==14)
-		{
 			m_pSF->m_bCenterLine = !m_pSF->m_bCenterLine;
 		}
 		m_p2DWidget->update();;
@@ -1105,10 +1094,6 @@ void QAFoil::onFoilClicked(const QModelIndex& index)
 			}
 			else if(index.column()==13)
 			{
-				pFoil->showPoints() = !pFoil->showPoints();
-			}
-			else if(index.column()==14)
-			{
 				pFoil->showCenterLine() = !pFoil->showCenterLine();
 			}
 		}
@@ -1116,7 +1101,7 @@ void QAFoil::onFoilClicked(const QModelIndex& index)
 		m_p2DWidget->update();;
 	}
 
-	if(index.column()==15) onFoilStyle();
+	if(index.column()==14) onFoilStyle();
 
 	setControls();
 
@@ -1134,25 +1119,26 @@ void QAFoil::onFoilStyle()
 	if(!Foil::curFoil())
 	{
         LinePickerDlg dlg(this);
-		dlg.initDialog(m_pSF->splineFoilStyle(), m_pSF->splineFoilWidth(), m_pSF->splineFoilColor());
+		dlg.initDialog(m_pSF->splineFoilStyle(), m_pSF->splineFoilStyle(), m_pSF->splineFoilWidth(), m_pSF->splineFoilColor());
 
 		if(QDialog::Accepted==dlg.exec())
 		{
-			m_pSF->setCurveParams(dlg.setStyle(), dlg.width(), dlg.setColor());
+			m_pSF->setCurveParams(dlg.lineStyle(), dlg.lineWidth(), dlg.lineColor());
 			m_p2DWidget->update();;
 		}
 	}
 	else
 	{
         LinePickerDlg dlg(this);
-		dlg.initDialog(Foil::curFoil()->foilStyle(), Foil::curFoil()->foilWidth(), colour(Foil::curFoil()));
+		dlg.initDialog(Foil::curFoil()->foilPointStyle(), Foil::curFoil()->foilLineStyle(), Foil::curFoil()->foilLineWidth(), colour(Foil::curFoil()));
 
 		if(QDialog::Accepted==dlg.exec())
 		{
 			emit projectModified();
-			Foil::curFoil()->foilStyle() = dlg.setStyle();
-			Foil::curFoil()->foilWidth() = dlg.width();
-			QColor clr = dlg.setColor();
+			Foil::curFoil()->foilPointStyle() = dlg.pointStyle();
+			Foil::curFoil()->foilLineStyle()  = dlg.lineStyle();
+			Foil::curFoil()->foilLineWidth()  = dlg.lineWidth();
+			QColor clr = dlg.lineColor();
 			Foil::curFoil()->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
 			m_p2DWidget->update();;
 		}
@@ -1415,7 +1401,7 @@ void QAFoil::setupLayout()
 
 	m_pFoilModel = new QStandardItemModel(this);
 	m_pFoilModel->setRowCount(10);//temporary
-	m_pFoilModel->setColumnCount(16);
+	m_pFoilModel->setColumnCount(15);
 
 	m_pFoilModel->setHeaderData(0,  Qt::Horizontal, tr("Name"));
 	m_pFoilModel->setHeaderData(1,  Qt::Horizontal, tr("Thickness (%)"));
@@ -1430,9 +1416,8 @@ void QAFoil::setupLayout()
 	m_pFoilModel->setHeaderData(10, Qt::Horizontal, tr("LE XHinge"));
 	m_pFoilModel->setHeaderData(11, Qt::Horizontal, tr("LE YHinge"));
 	m_pFoilModel->setHeaderData(12, Qt::Horizontal, tr("Show"));
-	m_pFoilModel->setHeaderData(13, Qt::Horizontal, tr("Points"));
-	m_pFoilModel->setHeaderData(14, Qt::Horizontal, tr("Centerline"));
-	m_pFoilModel->setHeaderData(15, Qt::Horizontal, tr("Style"));
+	m_pFoilModel->setHeaderData(13, Qt::Horizontal, tr("Centerline"));
+	m_pFoilModel->setHeaderData(14, Qt::Horizontal, tr("Style"));
 	m_pctrlFoilTable->setModel(m_pFoilModel);
 	m_pctrlFoilTable->setWindowTitle(tr("Foils"));
 	m_pctrlFoilTable->horizontalHeader()->setStretchLastSection(true);

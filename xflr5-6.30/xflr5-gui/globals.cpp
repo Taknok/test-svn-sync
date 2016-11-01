@@ -832,8 +832,8 @@ void drawFoil(QPainter &painter, Foil*pFoil, double const &alpha, double const &
 	QPen FoilPen, HighPen;
 
 	FoilPen.setColor(colour(pFoil));
-	FoilPen.setWidth(pFoil->foilWidth());
-	FoilPen.setStyle(getStyle(pFoil->foilStyle()));
+	FoilPen.setWidth(pFoil->foilLineWidth());
+	FoilPen.setStyle(getStyle(pFoil->foilLineStyle()));
 	painter.setPen(FoilPen);
 
 	HighPen.setColor(QColor(255,0,0));
@@ -846,7 +846,7 @@ void drawFoil(QPainter &painter, Foil*pFoil, double const &alpha, double const &
 	From.rx() = ( xa*scalex + Offset.x());
 	From.ry() = (-ya*scaley + Offset.y());
 
-	if(pFoil->showPoints())
+/*	if(pFoil->showPoints())
 	{
 		R.setLeft(( xa*scalex) + Offset.x() -2);
 		R.setTop( (-ya*scaley) + Offset.y() -2);
@@ -860,7 +860,7 @@ void drawFoil(QPainter &painter, Foil*pFoil, double const &alpha, double const &
 		painter.setPen(HighPen);
 		painter.drawRect(R);
 		painter.setPen(FoilPen);
-	}
+	}*/
 
 	for (k=1; k<pFoil->n; k++)
 	{
@@ -871,7 +871,7 @@ void drawFoil(QPainter &painter, Foil*pFoil, double const &alpha, double const &
 
 		painter.drawLine(From,To);
 
-		if(pFoil->showPoints())
+/*		if(pFoil->showPoints())
 		{
 			R.setLeft(  xa*scalex + Offset.x() -2);
 			R.setTop(  -ya*scaley + Offset.y() -2);
@@ -885,7 +885,7 @@ void drawFoil(QPainter &painter, Foil*pFoil, double const &alpha, double const &
 			painter.setPen(HighPen);
 			painter.drawRect(R);
 			painter.setPen(FoilPen);
-		}
+		}*/
 
 		From = To;
 	}
@@ -907,7 +907,7 @@ void drawMidLine(QPainter &painter, Foil*pFoil, double const &scalex, double con
 	QPen FoilPen;
 
 	FoilPen.setColor(colour(pFoil));
-	FoilPen.setWidth(pFoil->foilWidth());
+	FoilPen.setWidth(pFoil->foilLineWidth());
 	FoilPen.setStyle(Qt::DashLine);
 	painter.setPen(FoilPen);
 
@@ -938,42 +938,88 @@ void drawMidLine(QPainter &painter, Foil*pFoil, double const &scalex, double con
  * @param scaley the scaling factor in the y-direction
  * @param Offset the foil offset in the client area
  */
-void drawPoints(QPainter &painter, Foil*pFoil, double const &scalex, double const &scaley, QPointF const &Offset)
+void drawPoints(QPainter &painter, Foil*pFoil, double alpha, double const &scalex, double const &scaley, QPointF const &Offset)
 {
-	int width;
 	QPoint pt1;
-
-	width = 2;
 
 	QPen FoilPen, HighPen;
 	FoilPen.setColor(colour(pFoil));
-	FoilPen.setWidth(pFoil->foilWidth());
+	FoilPen.setWidth(pFoil->foilLineWidth());
 	FoilPen.setStyle(Qt::SolidLine);
 	painter.setPen(FoilPen);
 
 
 	HighPen.setColor(QColor(255,0,0));
 
-	for (int i=0; i<pFoil->n;i++)
+/*	for (int i=0; i<pFoil->n;i++)
 	{
 		pt1.rx() = ( pFoil->x[i]*scalex + Offset.x() - width);
 		pt1.ry() = (-pFoil->y[i]*scaley + Offset.y() - width);
 
 		painter.drawRect(pt1.x(), pt1.y(), 4, 4) ;
+	}*/
+
+	double xa, ya, cosa, sina;
+	cosa = cos(alpha*PI/180.0);
+	sina = sin(alpha*PI/180.0);
+
+	for (int i=0; i<pFoil->n;i++)
+	{
+		xa = (pFoil->x[i]-0.5)*cosa - pFoil->y[i]*sina + 0.5;
+		ya = (pFoil->x[i]-0.5)*sina + pFoil->y[i]*cosa;
+
+		QPoint pt( xa*scalex + Offset.x(), -ya*scaley + Offset.y());
+
+		drawPoint(painter, pFoil->foilPointStyle(), pt);
 	}
+
 	if(pFoil->iHighLight()>=0)
 	{
 		HighPen.setWidth(2);
 		painter.setPen(HighPen);
 
-		pt1.rx() = ( pFoil->x[pFoil->iHighLight()]*scalex + Offset.x() - width);
-		pt1.ry() = (-pFoil->y[pFoil->iHighLight()]*scaley + Offset.y() - width);
+		int ih = pFoil->iHighLight();
+		xa = (pFoil->x[ih]-0.5)*cosa - pFoil->y[ih]*sina + 0.5;
+		ya = (pFoil->x[ih]-0.5)*sina + pFoil->y[ih]*cosa;
 
-		painter.drawRect(pt1.x(), pt1.y(), 4, 4);
+		QPoint pt( xa*scalex + Offset.x(), -ya*scaley + Offset.y());
+
+		drawPoint(painter, pFoil->foilPointStyle(), pt);
 	}
 }
 
-
+void drawPoint(QPainter &painter, int pointStyle, QPoint pt)
+{
+	switch(pointStyle)
+	{
+		case 0: break;
+		case 1:
+		{
+			int ptSide = 2;
+			painter.drawEllipse(pt.x()-ptSide, pt.y()-ptSide, 2*ptSide, 2*ptSide );
+			break;
+		}
+		case 2:
+		{
+			int ptSide = 4;
+			painter.drawEllipse(pt.x()-ptSide, pt.y()-ptSide, 2*ptSide, 2*ptSide );
+			break;
+		}
+		case 3:
+		{
+			int ptSide = 2;
+			painter.drawRect(pt.x()-ptSide, pt.y()-ptSide, 2*ptSide, 2*ptSide );
+			break;
+		}
+		case 4:
+		{
+			int ptSide = 4;
+			painter.drawRect(pt.x()-ptSide, pt.y()-ptSide, 2*ptSide, 2*ptSide );
+			break;
+		}
+		default: break;
+	}
+}
 
 
 void setAutoWPolarName(void * ptrWPolar, void *ptrPlane)
