@@ -97,35 +97,10 @@ void LineCbBox::paintEvent (QPaintEvent *event)
 
 	if(m_bShowPoints)
 	{
-		switch(m_LineStyle.m_PointStyle)
-		{
-			case 0: break;
-			case 1:
-			{
-				int ptSide = 2;
-				painter.drawEllipse(r.center().x()-ptSide, r.center().y()-ptSide, 2*ptSide, 2*ptSide );
-				break;
-			}
-			case 2:
-			{
-				int ptSide = 4;
-				painter.drawEllipse(r.center().x()-ptSide, r.center().y()-ptSide, 2*ptSide, 2*ptSide );
-				break;
-			}
-			case 3:
-			{
-				int ptSide = 2;
-				painter.drawEllipse(r.center().x()-ptSide, r.center().y()-ptSide, 2*ptSide, 2*ptSide );
-				break;
-			}
-			case 4:
-			{
-				int ptSide = 4;
-				painter.drawRect(r.center().x()-ptSide, r.center().y()-ptSide, 2*ptSide, 2*ptSide );
-				break;
-			}
-			default: break;
-		}
+		LinePen.setStyle(Qt::SolidLine);
+		painter.setPen(LinePen);
+
+		drawPoint(painter, m_LineStyle.m_PointStyle, r.center());
 	}
 
 //	QPen ContourPen(ContourColor);

@@ -37,6 +37,7 @@ Foil *Foil::s_pCurFoil = NULL;
  */
 Foil::Foil()
 {
+	m_PointStyle = 0; //no points to start with
 	m_FoilStyle = 0;
 	m_FoilWidth = 1;
 	m_red   = (int)(((double)rand()/(double)RAND_MAX)*200);
@@ -47,8 +48,7 @@ Foil::Foil()
 
 	m_iHighLight = -1;
 
-	m_bCenterLine = false;
-	m_bShowFoilPoints     = false;
+	m_bCenterLine       = false;
 	m_bIsFoilVisible    = true;
 
 	m_FoilName = "";
@@ -195,10 +195,10 @@ void Foil::copyFoil(Foil *pSrcFoil)
 	m_green        = pSrcFoil->m_green;
 	m_blue         = pSrcFoil->m_blue;
 	m_alphaChannel = pSrcFoil->m_alphaChannel;
-	m_FoilStyle   = pSrcFoil->foilStyle();
-	m_FoilWidth   = pSrcFoil->foilWidth();
+	m_FoilStyle   = pSrcFoil->foilLineStyle();
+	m_FoilWidth   = pSrcFoil->foilLineWidth();
 	m_bCenterLine = pSrcFoil->m_bCenterLine;
-	m_bShowFoilPoints     = pSrcFoil->showPoints();
+	m_PointStyle  = pSrcFoil->foilPointStyle();
 }
 
 
@@ -1609,8 +1609,8 @@ void Foil::insertThisFoil()
 			m_green        = pOldFoil->m_green;
 			m_blue         = pOldFoil->m_blue;
 			m_alphaChannel = pOldFoil->m_alphaChannel;
-			m_FoilStyle = pOldFoil->foilStyle();
-			m_FoilWidth = pOldFoil->foilWidth();
+			m_FoilStyle = pOldFoil->foilLineStyle();
+			m_FoilWidth = pOldFoil->foilLineWidth();
 
 			//we overwrite the old foil and delete its children objects
 			deleteFoil(pOldFoil);
@@ -1820,12 +1820,12 @@ bool Foil::serialize(QDataStream &ar, bool bIsStoring)
 		ar << m_FoilStyle << m_FoilWidth;
 		WriteCOLORREF(ar, m_red, m_green, m_blue);
 
-		if (m_bIsFoilVisible)		ar << 1; else ar << 0;
-		if (m_bShowFoilPoints)		ar << 1; else ar << 0;//1004
-		if (m_bCenterLine)	ar << 1; else ar << 0;//1004
-		if (m_bLEFlap)		ar << 1; else ar << 0;
+		if (m_bIsFoilVisible) ar << 1; else ar << 0;
+		if (m_PointStyle>0)   ar << 1; else ar << 0;//1004
+		if (m_bCenterLine)    ar << 1; else ar << 0;//1004
+		if (m_bLEFlap)        ar << 1; else ar << 0;
 		ar << (float)m_LEFlapAngle << (float)m_LEXHinge << (float)m_LEYHinge;
-		if (m_bTEFlap)		ar << 1; else ar << 0;
+		if (m_bTEFlap)        ar << 1; else ar << 0;
 		ar << (float)m_TEFlapAngle << (float)m_TEXHinge << (float)m_TEYHinge;
 		ar << 1.f << 1.f << 9.f;//formerly transition parameters
 		ar << nb;
@@ -1864,7 +1864,7 @@ bool Foil::serialize(QDataStream &ar, bool bIsStoring)
 		if(ArchiveFormat>=1004)
 		{
 			ar >> p;
-			if(p) m_bShowFoilPoints = true; else m_bShowFoilPoints = false;
+			m_PointStyle = p;
 			ar >> p;
 			if(p) m_bCenterLine = true; else m_bCenterLine = false;
 		}
@@ -1927,6 +1927,7 @@ bool Foil::serialize(QDataStream &ar, bool bIsStoring)
 
 
 
+
 /**
  * Loads or Saves the data of this foil to a binary file.
  * @param ar the QDataStream object from/to which the data should be serialized
@@ -1936,6 +1937,7 @@ bool Foil::serialize(QDataStream &ar, bool bIsStoring)
 bool Foil::serializeFoilXFL(QDataStream &ar, bool bIsStoring)
 {
 	int j;
+	qint8 b = 0x00;
 
 	int ArchiveFormat = 100006;
 	// 100006 : first version of new xfl format
@@ -1948,7 +1950,11 @@ bool Foil::serializeFoilXFL(QDataStream &ar, bool bIsStoring)
 		ar << m_FoilStyle << m_FoilWidth;
 		writeqColor(ar, m_red, m_green, m_blue, m_alphaChannel);
 
-		ar << m_bIsFoilVisible << m_bShowFoilPoints << m_bCenterLine << m_bLEFlap << m_bTEFlap;
+		ar << m_bIsFoilVisible;
+//		ar << m_bShowFoilPoints;
+
+		ar << (qint8)m_PointStyle;
+		ar << m_bCenterLine << m_bLEFlap << m_bTEFlap;
 		ar << m_LEFlapAngle << m_LEXHinge << m_LEYHinge;
 		ar << m_TEFlapAngle << m_TEXHinge << m_TEYHinge;
 		ar << nb;
@@ -1965,7 +1971,10 @@ bool Foil::serializeFoilXFL(QDataStream &ar, bool bIsStoring)
 		ar >> m_FoilDescription;
 		ar >> m_FoilStyle >> m_FoilWidth;
 		readqColor(ar, m_red, m_green, m_blue, m_alphaChannel);
-		ar >> m_bIsFoilVisible >> m_bShowFoilPoints >> m_bCenterLine >> m_bLEFlap >> m_bTEFlap;
+		ar >> m_bIsFoilVisible;
+//		ar >> m_bShowFoilPoints;
+		ar >> b; m_PointStyle = (int)b;
+		ar >> m_bCenterLine >> m_bLEFlap >> m_bTEFlap;
 		ar >> m_LEFlapAngle >> m_LEXHinge >> m_LEYHinge;
 		ar >> m_TEFlapAngle >> m_TEXHinge >> m_TEYHinge;
 		ar >> nb;
@@ -1987,6 +1996,7 @@ bool Foil::serializeFoilXFL(QDataStream &ar, bool bIsStoring)
 
 
 
+
 void Foil::getColor(int &r, int &g, int &b, int &a)
 {
 	r = m_red;
@@ -1994,6 +2004,8 @@ void Foil::getColor(int &r, int &g, int &b, int &a)
 	b = m_blue;
 	a = m_alphaChannel;
 }
+
+
 
 void Foil::setColor(int r, int g, int b, int a)
 {

@@ -58,6 +58,7 @@ public:
 	bool showCenterLine(){return m_bCenterLine;}
 	int splineFoilWidth(){return m_FoilWidth;}
 	int splineFoilStyle(){return m_FoilStyle;}
+	int splinePointStyle(){return m_PointStyle;}
 	QColor splineFoilColor(){return m_FoilColor;}
 	QString splineFoilName(){return m_strFoilName;}
 
@@ -100,6 +101,7 @@ private:
 
 	int m_OutPoints;                 /**< the number of output points with which to draw the SplineFoil. */
 
+	int m_PointStyle;                /**< the index of the style for the SplineFoil's points*/
 	int m_FoilStyle;                 /**< the index of the style with which to draw the SplineFoil */
 	int m_FoilWidth;                 /**< the width with which to draw the SplineFoil */
 	QColor m_FoilColor;              /**< the color with which to draw the SplineFoil */

@@ -96,7 +96,8 @@ void * readPolarFile(QFile &plrFile, QList<Polar*> &polarList);
 
 void drawFoil(QPainter &painter, Foil*pFoil, double const &alpha, double const &scalex, double const &scaley, QPointF const &Offset);
 void drawMidLine(QPainter &painter, Foil*pFoil, double const &scalex, double const &scaley, QPointF const &Offset);
-void drawPoints(QPainter &painter, Foil*pFoil, double const &scalex, double const &scaley, QPointF const &Offset);
+void drawPoints(QPainter &painter, Foil*pFoil, double alpha, double const &scalex, double const &scaley, QPointF const &Offset);
+void drawPoint(QPainter &painter, int pointStyle, QPoint pt);
 
 bool stringToBool(QString str);
 QString referenceDimension(XFLR5::enumRefDimension refDimension);

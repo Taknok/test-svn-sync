@@ -211,16 +211,16 @@ void GridSettingsDlg::SetupLayout()
 void GridSettingsDlg::OnNeutralStyle()
 {
     LinePickerDlg dlg(this);
-	dlg.initDialog(m_NeutralStyle,m_NeutralWidth,m_NeutralColor);
+	dlg.initDialog(0,m_NeutralStyle,m_NeutralWidth,m_NeutralColor);
 
 	if(QDialog::Accepted==dlg.exec())
 	{
-		m_NeutralStyle = dlg.setStyle();
-		m_NeutralWidth = dlg.width();
-		m_NeutralColor = dlg.setColor();
-		m_pctrlNeutralStyle->setStyle(dlg.setStyle());
-		m_pctrlNeutralStyle->setWidth(dlg.width());
-		m_pctrlNeutralStyle->setColor(dlg.setColor());
+		m_NeutralStyle = dlg.lineStyle();
+		m_NeutralWidth = dlg.lineWidth();
+		m_NeutralColor = dlg.lineColor();
+		m_pctrlNeutralStyle->setStyle(dlg.lineStyle());
+		m_pctrlNeutralStyle->setWidth(dlg.lineWidth());
+		m_pctrlNeutralStyle->setColor(dlg.lineColor());
 	}
 }
 
@@ -228,32 +228,32 @@ void GridSettingsDlg::OnNeutralStyle()
 void GridSettingsDlg::OnXMajStyle()
 {
     LinePickerDlg dlg(this);
-	dlg.initDialog(m_XStyle,m_XWidth,m_XColor);
+	dlg.initDialog(0,m_XStyle,m_XWidth,m_XColor);
 
 	if(QDialog::Accepted==dlg.exec())
 	{
-		m_XStyle = dlg.setStyle();
-		m_XWidth = dlg.width();
-		m_XColor = dlg.setColor();
-		m_pctrlXMajStyle->setStyle(dlg.setStyle());
-		m_pctrlXMajStyle->setWidth(dlg.width());
-		m_pctrlXMajStyle->setColor(dlg.setColor());
+		m_XStyle = dlg.lineStyle();
+		m_XWidth = dlg.lineWidth();
+		m_XColor = dlg.lineColor();
+		m_pctrlXMajStyle->setStyle(dlg.lineStyle());
+		m_pctrlXMajStyle->setWidth(dlg.lineWidth());
+		m_pctrlXMajStyle->setColor(dlg.lineColor());
 	}
 }
 
 void GridSettingsDlg::OnXMinStyle()
 {
     LinePickerDlg dlg(this);
-	dlg.initDialog(m_XMinStyle,m_XMinWidth,m_XMinColor);
+	dlg.initDialog(0,m_XMinStyle,m_XMinWidth,m_XMinColor);
 
 	if(QDialog::Accepted==dlg.exec())
 	{
-		m_XMinStyle = dlg.setStyle();
-		m_XMinWidth = dlg.width();
-		m_XMinColor = dlg.setColor();
-		m_pctrlXMinStyle->setStyle(dlg.setStyle());
-		m_pctrlXMinStyle->setWidth(dlg.width());
-		m_pctrlXMinStyle->setColor(dlg.setColor());
+		m_XMinStyle = dlg.lineStyle();
+		m_XMinWidth = dlg.lineWidth();
+		m_XMinColor = dlg.lineColor();
+		m_pctrlXMinStyle->setStyle(dlg.lineStyle());
+		m_pctrlXMinStyle->setWidth(dlg.lineWidth());
+		m_pctrlXMinStyle->setColor(dlg.lineColor());
 	}
 
 }
@@ -262,16 +262,16 @@ void GridSettingsDlg::OnYMajStyle()
 {
     LinePickerDlg dlg(this);
 
-	dlg.initDialog(m_YStyle,m_YWidth,m_YColor);
+	dlg.initDialog(0,m_YStyle,m_YWidth,m_YColor);
 
 	if(QDialog::Accepted==dlg.exec())
 	{
-		m_YStyle = dlg.setStyle();
-		m_YWidth = dlg.width();
-		m_YColor = dlg.setColor();
-		m_pctrlYMajStyle->setStyle(dlg.setStyle());
-		m_pctrlYMajStyle->setWidth(dlg.width());
-		m_pctrlYMajStyle->setColor(dlg.setColor());
+		m_YStyle = dlg.lineStyle();
+		m_YWidth = dlg.lineWidth();
+		m_YColor = dlg.lineColor();
+		m_pctrlYMajStyle->setStyle(dlg.lineStyle());
+		m_pctrlYMajStyle->setWidth(dlg.lineWidth());
+		m_pctrlYMajStyle->setColor(dlg.lineColor());
 	}
 }
 
@@ -279,16 +279,16 @@ void GridSettingsDlg::OnYMinStyle()
 {
     LinePickerDlg dlg(this);
 
-	dlg.initDialog(m_YMinStyle,m_YMinWidth,m_YMinColor);
+	dlg.initDialog(0,m_YMinStyle,m_YMinWidth,m_YMinColor);
 
 	if(QDialog::Accepted==dlg.exec())
 	{
-		m_YMinStyle = dlg.setStyle();
-		m_YMinWidth = dlg.width();
-		m_YMinColor = dlg.setColor();
-		m_pctrlYMinStyle->setStyle(dlg.setStyle());
-		m_pctrlYMinStyle->setWidth(dlg.width());
-		m_pctrlYMinStyle->setColor(dlg.setColor());
+		m_YMinStyle = dlg.lineStyle();
+		m_YMinWidth = dlg.lineWidth();
+		m_YMinColor = dlg.lineColor();
+		m_pctrlYMinStyle->setStyle(dlg.lineStyle());
+		m_pctrlYMinStyle->setWidth(dlg.lineWidth());
+		m_pctrlYMinStyle->setColor(dlg.lineColor());
 	}
 }
 
