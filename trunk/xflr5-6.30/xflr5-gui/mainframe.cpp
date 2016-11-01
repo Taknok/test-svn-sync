@@ -1228,7 +1228,7 @@ void MainFrame::createMiarexActions()
 	m_pMiarexPolarFilter->setStatusTip(tr("Define which type of polars should be shown or hidden"));
 	connect(m_pMiarexPolarFilter, SIGNAL(triggered()), pMiarex, SLOT(onPolarFilter()));
 
-	m_pReset3DScale = new QAction(tr("Reset view")+"\t(R)", this);
+	m_pReset3DScale = new QAction(tr("Reset scale")+"\t(R)", this);
 	m_pReset3DScale->setStatusTip(tr("Resets the display scale so that the plane fits in the window"));
 	connect(m_pReset3DScale, SIGNAL(triggered()), pMiarex, SLOT(on3DResetScale()));
 
@@ -2122,7 +2122,10 @@ void MainFrame::createMiarexMenus()
         }
         //m_pW3DStabCtxMenu->addMenu(m_pCurWOppMenu);
 		m_pW3DStabCtxMenu->addSeparator();
+		m_pW3DStabCtxMenu->addAction(m_pReset3DScale);
+		m_pW3DStabCtxMenu->addAction(m_pW3DScalesAct);
 		m_pW3DStabCtxMenu->addAction(m_pW3DLightAct);
+		m_pW3DStabCtxMenu->addAction(m_pShowFlapMoments);
 		m_pW3DStabCtxMenu->addSeparator();
 		m_pW3DStabCtxMenu->addAction(m_pViewLogFile);
 		m_pW3DStabCtxMenu->addAction(m_pSaveViewToImageFileAct);
@@ -3299,6 +3302,7 @@ bool MainFrame::loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFor
 	ar>>n;
 	for (i=0; i<n; i++)
 	{
+		pPolar = new Polar();
 		QColor clr = getColor(1);
 		pPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
 		if (!pPolar->serialize(ar, bIsStoring))
