@@ -1658,7 +1658,6 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 	{
 		//input the variables from the stream
 		ar >> m_PolarFormat;
-qDebug()<<m_PolarFormat<< 		(m_PolarFormat<20000) << (m_PolarFormat>25000)<<(m_PolarFormat<20000 || m_PolarFormat>25000);
 		if(m_PolarFormat<200000 || m_PolarFormat>205000) return false;
 
 		ar >> m_PlaneName;
