@@ -60,9 +60,7 @@ void ExpFormat(double &f, int &exp)
 		exp = (int)log10(f1);
 
 	f = f/pow(10.0,exp);
-
 }
-
 
 
 /**
@@ -1051,7 +1049,7 @@ void setAutoWPolarName(void * ptrWPolar, void *ptrPlane)
 		}
 		case XFLR5::FIXEDAOAPOLAR:
 		{
-			pWPolar->polarName() = QString(QString::fromUtf8("T4-%1°")).arg(pWPolar->Alpha(),0,'f',3);
+			pWPolar->polarName() = QString(QString::fromUtf8("T4-%1°")).arg(pWPolar->Alpha(),0,'f',1);
 			break;
 		}
 		case XFLR5::BETAPOLAR:
@@ -1167,7 +1165,7 @@ void setAutoWPolarName(void * ptrWPolar, void *ptrPlane)
 	}
 
 
-	if(qAbs(pWPolar->Beta()) > .001)
+	if(qAbs(pWPolar->Beta()) > .001  && pWPolar->polarType()!=XFLR5::BETAPOLAR)
 	{
 		strong = QString(QString::fromUtf8("-b%1°")).arg(pWPolar->Beta(),0,'f',1);
 		pWPolar->polarName() += strong;

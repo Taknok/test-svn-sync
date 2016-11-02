@@ -45,20 +45,22 @@ public:
 	int &lineWidth();
 	QColor &lineColor();
 
-	void setColor(QColor color);
-	void setWidth(int width);
-	void setStyle(int style);
+	void setPointStyle(int pointStyle);
+	void setLineStyle(int lineStyle);
+	void setLineWidth(int width);
+	void setLineColor(QColor color);
 
 	void fillBoxes();
 	void setupLayout();
 
 
 protected:
-	LineBtn *m_pctrlColor;
-	LineCbBox *m_pctrlPoints, *m_pctrlWidth, *m_pctrlStyle;
+	LineBtn *m_pctrlLineColor;
+	LineCbBox *m_pctrlPointStyle, *m_pctrlLineWidth, *m_pctrlLineStyle;
 	QPushButton *OKButton, *CancelButton;
 
 private:
+	bool m_bAcceptPointStyle;
 	int m_PointStyle;
 	int m_LineStyle;
 	int m_Width;
@@ -68,10 +70,10 @@ private:
 
 
 private slots:
-	void onPoints(int val);
-	void onStyle(int val);
-	void onWidth(int val);
-	void onColor();
+	void onPointStyle(int val);
+	void onLineStyle(int val);
+	void onLineWidth(int val);
+	void onLineColor();
 
 };
 

@@ -31,15 +31,17 @@
 #include <QKeyEvent>
 #include <math.h>
 
-#include "miarex/Miarex.h"
 #include "PanelAnalysisDlg.h"
+#include <miarex/Miarex.h>
 #include <misc/Settings.h>
 #include <globals.h>
 #include <objects/CVector.h>
 #include <misc/Units.h>
 #include <miarex/Objects3D.h>
 
-QPoint PanelAnalysisDlg::s_Position;
+QPoint PanelAnalysisDlg::s_Position = QPoint(200,100);
+QSize  PanelAnalysisDlg::s_WindowSize = QSize(900,550);
+bool PanelAnalysisDlg::s_bWindowMaximized=false;
 
 
 /**
@@ -136,10 +138,11 @@ void PanelAnalysisDlg::onProgress()
 /**  Sets up the GUI */
 void PanelAnalysisDlg::setupLayout()
 {
-	QDesktopWidget desktop;
+/*	QDesktopWidget desktop;
 	QRect r = desktop.geometry();
 	setMinimumHeight(r.height()/2);
-	setMinimumWidth(r.width()/2);
+	setMinimumWidth(r.width()/2)*/
+
 
 	m_pctrlTextOutput = new QTextEdit(this);
 	m_pctrlTextOutput->setReadOnly(true);
@@ -294,11 +297,19 @@ void PanelAnalysisDlg::updateOutput(QString &strong)
 void PanelAnalysisDlg::showEvent(QShowEvent *event)
 {
     move(s_Position);
+	resize(s_WindowSize);
+	if(s_bWindowMaximized) setWindowState(Qt::WindowMaximized);
+
 	event->accept();
 }
 
+
+
 void PanelAnalysisDlg::hideEvent(QHideEvent *event)
 {
+	s_WindowSize = size();
+	s_bWindowMaximized = isMaximized();
     s_Position = pos();
+
 	event->accept();
 }

@@ -36,7 +36,9 @@
 #include "miarex/Miarex.h"
 
 
-QPoint LLTAnalysisDlg::s_Position;
+QPoint LLTAnalysisDlg::s_Position = QPoint(200,100);
+QSize  LLTAnalysisDlg::s_WindowSize = QSize(900,550);
+bool LLTAnalysisDlg::s_bWindowMaximized=false;
 
 
 /**
@@ -155,7 +157,7 @@ void LLTAnalysisDlg::setupLayout()
 	QDesktopWidget desktop;
 	QRect r = desktop.geometry();
 //	setMinimumHeight(r.height()*2/3);
-	setMinimumWidth((int)(r.width()*2.0/5.0));
+//	setMinimumWidth((int)(r.width()*2.0/5.0));
 
 	m_pctrlTextOutput = new QTextEdit;
 	QFont outFont;
@@ -330,12 +332,18 @@ void LLTAnalysisDlg::updateOutput(QString &strong)
 void LLTAnalysisDlg::showEvent(QShowEvent *event)
 {
 	move(s_Position);
+	resize(s_WindowSize);
+	if(s_bWindowMaximized) setWindowState(Qt::WindowMaximized);
+
 	event->accept();
 }
 
 void LLTAnalysisDlg::hideEvent(QHideEvent *event)
 {
+	s_WindowSize = size();
+	s_bWindowMaximized = isMaximized();
 	s_Position = pos();
+
 	event->accept();
 }
 

@@ -301,9 +301,9 @@ void W3dPrefsDlg::setupLayout()
 void W3dPrefsDlg::onOutline()
 {
     LinePickerDlg LPdlg(this);
-	LPdlg.setColor(s_OutlineColor);
-	LPdlg.setStyle(s_OutlineStyle);
-	LPdlg.setWidth(s_OutlineWidth);
+	LPdlg.setLineColor(s_OutlineColor);
+	LPdlg.setLineStyle(s_OutlineStyle);
+	LPdlg.setLineWidth(s_OutlineWidth);
 	LPdlg.initDialog();
 	if (QDialog::Accepted == LPdlg.exec())
 	{
@@ -317,9 +317,9 @@ void W3dPrefsDlg::onOutline()
 void W3dPrefsDlg::on3DAxis()
 {
     LinePickerDlg LPdlg(this);
-	LPdlg.setColor(s_3DAxisColor);
-	LPdlg.setStyle(s_3DAxisStyle);
-	LPdlg.setWidth(s_3DAxisWidth);
+	LPdlg.setLineColor(s_3DAxisColor);
+	LPdlg.setLineStyle(s_3DAxisStyle);
+	LPdlg.setLineWidth(s_3DAxisWidth);
 	LPdlg.initDialog();
 
 	if (QDialog::Accepted == LPdlg.exec())
@@ -334,9 +334,9 @@ void W3dPrefsDlg::on3DAxis()
 void W3dPrefsDlg::onTopTrans()
 {
     LinePickerDlg LPdlg(this);
-	LPdlg.setColor(s_TopColor);
-	LPdlg.setStyle(s_TopStyle);
-	LPdlg.setWidth(s_TopWidth);
+	LPdlg.setLineColor(s_TopColor);
+	LPdlg.setLineStyle(s_TopStyle);
+	LPdlg.setLineWidth(s_TopWidth);
 	LPdlg.initDialog();
 
 	if (QDialog::Accepted == LPdlg.exec())
@@ -351,9 +351,9 @@ void W3dPrefsDlg::onTopTrans()
 void W3dPrefsDlg::onBotTrans()
 {
     LinePickerDlg LPdlg(this);
-	LPdlg.setColor(s_BotColor);
-	LPdlg.setStyle(s_BotStyle);
-	LPdlg.setWidth(s_BotWidth);
+	LPdlg.setLineColor(s_BotColor);
+	LPdlg.setLineStyle(s_BotStyle);
+	LPdlg.setLineWidth(s_BotWidth);
 	LPdlg.initDialog();
 
 	if (QDialog::Accepted == LPdlg.exec())
@@ -368,9 +368,9 @@ void W3dPrefsDlg::onBotTrans()
 void W3dPrefsDlg::onIDrag()
 {
     LinePickerDlg LPdlg(this);
-	LPdlg.setColor(s_IDragColor);
-	LPdlg.setStyle(s_IDragStyle);
-	LPdlg.setWidth(s_IDragWidth);
+	LPdlg.setLineColor(s_IDragColor);
+	LPdlg.setLineStyle(s_IDragStyle);
+	LPdlg.setLineWidth(s_IDragWidth);
 	LPdlg.initDialog();
 
 	if (QDialog::Accepted == LPdlg.exec())
@@ -385,9 +385,9 @@ void W3dPrefsDlg::onIDrag()
 void W3dPrefsDlg::onVDrag()
 {
     LinePickerDlg LPdlg(this);
-	LPdlg.setColor(s_VDragColor);
-	LPdlg.setStyle(s_VDragStyle);
-	LPdlg.setWidth(s_VDragWidth);
+	LPdlg.setLineColor(s_VDragColor);
+	LPdlg.setLineStyle(s_VDragStyle);
+	LPdlg.setLineWidth(s_VDragWidth);
 	LPdlg.initDialog();
 
 	if (QDialog::Accepted == LPdlg.exec())
@@ -402,9 +402,9 @@ void W3dPrefsDlg::onVDrag()
 void W3dPrefsDlg::onXCP()
 {
     LinePickerDlg LPdlg(this);
-	LPdlg.setColor(s_XCPColor);
-	LPdlg.setStyle(s_XCPStyle);
-	LPdlg.setWidth(s_XCPWidth);
+	LPdlg.setLineColor(s_XCPColor);
+	LPdlg.setLineStyle(s_XCPStyle);
+	LPdlg.setLineWidth(s_XCPWidth);
 	LPdlg.initDialog();
 
 	if (QDialog::Accepted == LPdlg.exec())
@@ -419,9 +419,9 @@ void W3dPrefsDlg::onXCP()
 void W3dPrefsDlg::onMoments()
 {
     LinePickerDlg LPdlg(this);
-	LPdlg.setColor(s_MomentColor);
-	LPdlg.setStyle(s_MomentStyle);
-	LPdlg.setWidth(s_MomentWidth);
+	LPdlg.setLineColor(s_MomentColor);
+	LPdlg.setLineStyle(s_MomentStyle);
+	LPdlg.setLineWidth(s_MomentWidth);
 	LPdlg.initDialog();
 
 	if (QDialog::Accepted == LPdlg.exec())
@@ -436,9 +436,9 @@ void W3dPrefsDlg::onMoments()
 void W3dPrefsDlg::onDownwash()
 {
     LinePickerDlg LPdlg(this);
-	LPdlg.setColor(s_DownwashColor);
-	LPdlg.setStyle(s_DownwashStyle);
-	LPdlg.setWidth(s_DownwashWidth);
+	LPdlg.setLineColor(s_DownwashColor);
+	LPdlg.setLineStyle(s_DownwashStyle);
+	LPdlg.setLineWidth(s_DownwashWidth);
 	LPdlg.initDialog();
 
 	if (QDialog::Accepted == LPdlg.exec())
@@ -453,9 +453,9 @@ void W3dPrefsDlg::onDownwash()
 void W3dPrefsDlg::onStreamLines()
 {
     LinePickerDlg LPdlg(this);
-	LPdlg.setColor(s_StreamLinesColor);
-	LPdlg.setStyle(s_StreamLinesStyle);
-	LPdlg.setWidth(s_StreamLinesWidth);
+	LPdlg.setLineColor(s_StreamLinesColor);
+	LPdlg.setLineStyle(s_StreamLinesStyle);
+	LPdlg.setLineWidth(s_StreamLinesWidth);
 	LPdlg.initDialog();
 
 	if (QDialog::Accepted == LPdlg.exec())
@@ -470,9 +470,9 @@ void W3dPrefsDlg::onStreamLines()
 void W3dPrefsDlg::onWakePanels()
 {
     LinePickerDlg LPdlg(this);
-	LPdlg.setColor(s_WakeColor);
-	LPdlg.setStyle(s_WakeStyle);
-	LPdlg.setWidth(s_WakeWidth);
+	LPdlg.setLineColor(s_WakeColor);
+	LPdlg.setLineStyle(s_WakeStyle);
+	LPdlg.setLineWidth(s_WakeWidth);
 	LPdlg.initDialog();
 
 	if (QDialog::Accepted == LPdlg.exec())
@@ -487,9 +487,9 @@ void W3dPrefsDlg::onWakePanels()
 void W3dPrefsDlg::onVLMMesh()
 {
     LinePickerDlg LPdlg(this);
-	LPdlg.setColor(s_VLMColor);
-	LPdlg.setStyle(s_VLMStyle);
-	LPdlg.setWidth(s_VLMWidth);
+	LPdlg.setLineColor(s_VLMColor);
+	LPdlg.setLineStyle(s_VLMStyle);
+	LPdlg.setLineWidth(s_VLMWidth);
 	LPdlg.initDialog();
 
 	if (QDialog::Accepted == LPdlg.exec())
