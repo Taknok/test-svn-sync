@@ -226,7 +226,6 @@ void XFoilAnalysisDlg::reject()
 
 void XFoilAnalysisDlg::accept()
 {
-	qDebug("accepting");
 	XFoilTask::s_bCancel = true;
 	XFoil::s_bCancel = true;
 	if(m_pXFile)

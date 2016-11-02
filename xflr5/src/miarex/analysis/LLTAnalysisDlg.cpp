@@ -168,8 +168,8 @@ void LLTAnalysisDlg::setupLayout()
 {
 	QDesktopWidget desktop;
 	QRect r = desktop.geometry();
-//	setMinimumHeight(r.height()*2/3);
-	setMinimumWidth((int)(r.width()*2.0/5.0));
+	setMinimumHeight(450);
+	setMinimumWidth(700);
 
 	m_pctrlTextOutput = new QTextEdit;
 	QFont outFont;

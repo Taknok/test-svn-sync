@@ -2419,7 +2419,6 @@ void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double *Gam
 		if(m_Surface.at(j)->m_bTEFlap) m_FlapMoment.append(0.0);
 
 		SurfaceNormal = m_Surface.at(j)->Normal;
-
 		// consider each strip in turn
 		for (k=0; k<m_Surface.at(j)->m_NYPanels; k++)
 		{
@@ -2906,7 +2905,6 @@ void Wing::getTextureUV(int iSurf, double *leftV, double *rightV, double &leftU,
 
 		leftV[i]  = (xA-xMin)/(xMax-xMin);
 		rightV[i] = (xB-xMin)/(xMax-xMin);
-//		qDebug("%13.7f    //    %13.7f  ",	leftV[i],rightV[i]);
 	}
 
 

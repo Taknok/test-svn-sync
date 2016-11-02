@@ -432,7 +432,6 @@ void EditPolarDefDlg::fillInertiaData(QList<QStandardItem *> inertiaFolder)
 		dataItem = prepareDoubleRow("", "Ixz", m_pWPolar->CoGIxz()*Units::kgm2toUnit(), Units::inertiaUnitLabel());
 		inertiaTensorFolder.first()->appendRow(dataItem);
 	}
-qDebug()<<	Units::kgm2toUnit();
 }
 
 

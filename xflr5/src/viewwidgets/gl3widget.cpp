@@ -1937,7 +1937,7 @@ void GL3Widget::glRenderMiarexView()
 	m_modelMatrix = modeMatrix;
 
 	if(pMiarex->m_pCurPOpp)	m_modelMatrix.rotate(pMiarex->m_pCurPOpp->alpha(),0.0,1.0,0.0);
-	m_pvmMatrix = m_OrthoMatrix * m_viewMatrix * m_modelMatrix * modeMatrix;
+	m_pvmMatrix = m_OrthoMatrix * m_viewMatrix * m_modelMatrix;
 
 
 	glEnable(GL_CLIP_PLANE0);

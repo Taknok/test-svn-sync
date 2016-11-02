@@ -2015,6 +2015,7 @@ bool PanelAnalysis::QInfLoop()
 {
 	QString str;
 	double Alpha = 0.0;
+	setInertia(0.0);
 
 	m_QInf = m_vMin;
 

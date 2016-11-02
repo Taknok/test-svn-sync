@@ -2250,7 +2250,7 @@ void WPolar::setAutoWPolarName(void *ptrPlane)
 		}
 		case XFLR5::FIXEDAOAPOLAR:
 		{
-			m_WPlrName = QString(QString::fromUtf8("T4-%1°")).arg(m_AlphaSpec,0,'f',3);
+			m_WPlrName = QString(QString::fromUtf8("T4-a%1°")).arg(m_AlphaSpec,0,'f',3);
 			break;
 		}
 		case XFLR5::BETAPOLAR:

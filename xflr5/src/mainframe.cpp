@@ -117,6 +117,8 @@ QList <QColor> MainFrame::s_ColorList;
 MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(parent, flags)
 {
 	setAttribute(Qt::WA_DeleteOnClose);
+	QColor clr(255,0,0,101);
+
     s_bTrace = false;
 	if(s_bTrace)
 	{
