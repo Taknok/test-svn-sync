@@ -2014,6 +2014,8 @@ bool PanelAnalysis::QInfLoop()
 	QString str;
 	double Alpha = 0.0;
 
+	setInertia(0.0);
+
 	m_QInf = m_vMin;
 
 	if(!m_pWPolar->bThinSurfaces()) m_TotalTime +=1.0; //for wake contribution
@@ -2340,6 +2342,12 @@ bool PanelAnalysis::unitLoop()
 
 		computeAeroCoefs(0.0, m_vDelta, 1);
 	}
+
+	//restore the geometry
+	memcpy(m_pPanel,     m_pMemPanel,     m_MatSize    * sizeof(Panel));
+	memcpy(m_pNode,      m_pMemNode,      m_nNodes     * sizeof(CVector));
+	memcpy(m_pWakePanel, m_pRefWakePanel, m_WakeSize   * sizeof(Panel));
+	memcpy(m_pWakeNode,  m_pRefWakeNode,  m_nWakeNodes * sizeof(CVector));
 	return true;
 }
 
@@ -4415,10 +4423,10 @@ void PanelAnalysis::rotateGeomZ(double const &Beta, CVector const &P, int NXWake
 	int iLA, iLB, iTA, iTB;
 	CVector Pt, Trans;
 	// first restore the panel geometry
-	memcpy(m_pPanel,     m_pMemPanel,  m_MatSize    * sizeof(Panel));
+/*	memcpy(m_pPanel,     m_pMemPanel,  m_MatSize    * sizeof(Panel));
 	memcpy(m_pNode,      m_pMemNode,   m_nNodes     * sizeof(CVector));
 	memcpy(m_pWakePanel, m_pWakePanel, m_WakeSize   * sizeof(Panel));
-	memcpy(m_pWakeNode,  m_pWakeNode,  m_nWakeNodes * sizeof(CVector));
+	memcpy(m_pWakeNode,  m_pWakeNode,  m_nWakeNodes * sizeof(CVector));*/
 
 	for (n=0; n<m_nNodes; n++)	m_pNode[n].rotateZ(P, Beta);
 

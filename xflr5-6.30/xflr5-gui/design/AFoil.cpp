@@ -395,8 +395,9 @@ void QAFoil::loadSettings(QSettings *pSettings)
 		m_pSF->m_bOutPoints  = pSettings->value("SFOutPoints").toBool();
 		m_pSF->m_bCenterLine = pSettings->value("SFCenterLine").toBool();
 
-		m_pSF->m_Intrados.m_iRes =  pSettings->value("LowerRes",79).toInt();
-		m_pSF->m_Extrados.m_iRes =  pSettings->value("UpperRes",79).toInt();
+		m_pSF->m_Intrados.m_iRes =  qMax(pSettings->value("LowerRes",79).toInt(), 10);
+		m_pSF->m_Extrados.m_iRes =  qMax(pSettings->value("UpperRes",79).toInt(), 10);
+
 		m_pSF->m_Extrados.splineCurve();
 		m_pSF->m_Intrados.splineCurve();
 
@@ -1119,7 +1120,7 @@ void QAFoil::onFoilStyle()
 	if(!Foil::curFoil())
 	{
         LinePickerDlg dlg(this);
-		dlg.initDialog(m_pSF->splineFoilStyle(), m_pSF->splineFoilStyle(), m_pSF->splineFoilWidth(), m_pSF->splineFoilColor());
+		dlg.initDialog(m_pSF->splineFoilStyle(), m_pSF->splineFoilStyle(), m_pSF->splineFoilWidth(), m_pSF->splineFoilColor(), true);
 
 		if(QDialog::Accepted==dlg.exec())
 		{
@@ -1130,7 +1131,8 @@ void QAFoil::onFoilStyle()
 	else
 	{
         LinePickerDlg dlg(this);
-		dlg.initDialog(Foil::curFoil()->foilPointStyle(), Foil::curFoil()->foilLineStyle(), Foil::curFoil()->foilLineWidth(), colour(Foil::curFoil()));
+		dlg.initDialog(Foil::curFoil()->foilPointStyle(), Foil::curFoil()->foilLineStyle(),
+					   Foil::curFoil()->foilLineWidth(), colour(Foil::curFoil()), true);
 
 		if(QDialog::Accepted==dlg.exec())
 		{

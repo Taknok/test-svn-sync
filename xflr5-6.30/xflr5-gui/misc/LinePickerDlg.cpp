@@ -34,6 +34,7 @@ LinePickerDlg::LinePickerDlg(QWidget *pParent): QDialog(pParent)
 {
 	setWindowTitle(tr("Line Picker"));
 	m_pParent = pParent;
+	m_bAcceptPointStyle = false;
 	m_PointStyle = 0;
 	m_LineStyle  = 0;
 	m_Width  = 1;
@@ -44,14 +45,14 @@ LinePickerDlg::LinePickerDlg(QWidget *pParent): QDialog(pParent)
 	m_pLineStyleDelegate = new LineDelegate(this);//will intercept painting operations
 	m_pWidthDelegate = new LineDelegate(this);//will intercept painting operations
 
-	m_pctrlPoints->setItemDelegate(m_pPointStyleDelegate);
-	m_pctrlStyle->setItemDelegate(m_pLineStyleDelegate);
-	m_pctrlWidth->setItemDelegate(m_pWidthDelegate);
+	m_pctrlPointStyle->setItemDelegate(m_pPointStyleDelegate);
+	m_pctrlLineStyle->setItemDelegate(m_pLineStyleDelegate);
+	m_pctrlLineWidth->setItemDelegate(m_pWidthDelegate);
 
-	connect(m_pctrlPoints, SIGNAL(activated(int)), this, SLOT(onPoints(int)));
-	connect(m_pctrlStyle, SIGNAL(activated(int)), this, SLOT(onStyle(int)));
-	connect(m_pctrlWidth, SIGNAL(activated(int)), this, SLOT(onWidth(int)));
-	connect(m_pctrlColor, SIGNAL(clickedLB()), this, SLOT(onColor()));
+	connect(m_pctrlPointStyle, SIGNAL(activated(int)), this, SLOT(onPointStyle(int)));
+	connect(m_pctrlLineStyle, SIGNAL(activated(int)), this, SLOT(onLineStyle(int)));
+	connect(m_pctrlLineWidth, SIGNAL(activated(int)), this, SLOT(onLineWidth(int)));
+	connect(m_pctrlLineColor, SIGNAL(clickedLB()), this, SLOT(onLineColor()));
 
 	connect(OKButton, SIGNAL(clicked()),this, SLOT(accept()));
 	connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
@@ -60,9 +61,9 @@ LinePickerDlg::LinePickerDlg(QWidget *pParent): QDialog(pParent)
 
 void LinePickerDlg::fillBoxes()
 {
-	m_pctrlColor->setStyle(m_LineStyle);
-	m_pctrlColor->setWidth(m_Width);
-	m_pctrlColor->setColor(m_Color);
+	m_pctrlLineColor->setStyle(m_LineStyle);
+	m_pctrlLineColor->setWidth(m_Width);
+	m_pctrlLineColor->setColor(m_Color);
 
 
 	int LineStyle[5];
@@ -88,38 +89,25 @@ void LinePickerDlg::fillBoxes()
 	m_pPointStyleDelegate->setLineWidth(LineWidth);
 	m_pPointStyleDelegate->setLineColor(m_Color);
 
-	m_pctrlPoints->setLine(m_LineStyle, m_Width, m_Color, m_PointStyle);
-	m_pctrlStyle->setLine(m_LineStyle, m_Width, m_Color, 0);
-	m_pctrlWidth->setLine(m_LineStyle, m_Width, m_Color, 0);
+	m_pctrlPointStyle->setLine(m_LineStyle, m_Width, m_Color, m_PointStyle);
+	m_pctrlLineStyle->setLine(m_LineStyle, m_Width, m_Color, 0);
+	m_pctrlLineWidth->setLine(m_LineStyle, m_Width, m_Color, 0);
 
-	m_pctrlPoints->setCurrentIndex(m_PointStyle);
-	m_pctrlStyle->setCurrentIndex(m_LineStyle);
-	m_pctrlWidth->setCurrentIndex(m_Width-1);
+	m_pctrlPointStyle->setCurrentIndex(m_PointStyle);
+	m_pctrlLineStyle->setCurrentIndex(m_LineStyle);
+	m_pctrlLineWidth->setCurrentIndex(m_Width-1);
 }
 
 
 void LinePickerDlg::initDialog(int pointStyle, int lineStyle, int width, QColor color, bool bAcceptPointStyle)
 {
+	m_bAcceptPointStyle = bAcceptPointStyle;
 	m_PointStyle = pointStyle;
 	m_LineStyle = lineStyle;
 	m_Width = width;
 	m_Color = color;
 
-	QString str;
-	for (int i=0; i<5; i++)
-	{
-		str = QString("%1").arg(i);
-		m_pctrlWidth->addItem(str);
-		m_pctrlPoints->addItem(str);
-	}
-
-	m_pctrlStyle->addItem("solid");//string doesn't matter
-	m_pctrlStyle->addItem("dash");
-	m_pctrlStyle->addItem("dot");
-	m_pctrlStyle->addItem("dashdot");
-	m_pctrlStyle->addItem("dashdotdot");
-
-	fillBoxes();
+	initDialog();
 }
 
 
@@ -130,13 +118,10 @@ void LinePickerDlg::initDialog()
 	for (int i=0; i<5; i++)
 	{
 		str = QString("%1").arg(i);
-		m_pctrlWidth->addItem(str);
+		m_pctrlLineWidth->addItem(str);
+		m_pctrlPointStyle->addItem(str);//string doesn't matter, will be replaced when the boxes are filled
+		m_pctrlLineStyle->addItem(str);//string doesn't matter, will be replaced when the boxes are filled
 	}
-	m_pctrlStyle->addItem("solid");//string doesn't matter
-	m_pctrlStyle->addItem("dash");
-	m_pctrlStyle->addItem("dot");
-	m_pctrlStyle->addItem("dashdot");
-	m_pctrlStyle->addItem("dashdotdot");
 
 	fillBoxes();
 }
@@ -172,7 +157,7 @@ void LinePickerDlg::keyPressEvent(QKeyEvent *event)
 }
 
 
-void LinePickerDlg::onPoints(int val)
+void LinePickerDlg::onPointStyle(int val)
 {
 	m_PointStyle = val;
 	fillBoxes();
@@ -181,7 +166,7 @@ void LinePickerDlg::onPoints(int val)
 }
 
 
-void LinePickerDlg::onStyle(int val)
+void LinePickerDlg::onLineStyle(int val)
 {
 	m_LineStyle = val;
 	fillBoxes();
@@ -190,7 +175,7 @@ void LinePickerDlg::onStyle(int val)
 }
 
 
-void LinePickerDlg::onWidth(int val)
+void LinePickerDlg::onLineWidth(int val)
 {
 	m_Width = val+1;
 	fillBoxes();
@@ -199,7 +184,7 @@ void LinePickerDlg::onWidth(int val)
 }
 
 
-void LinePickerDlg::onColor()
+void LinePickerDlg::onLineColor()
 {
     QColorDialog::ColorDialogOptions dialogOptions = QColorDialog::ShowAlphaChannel;
 #ifdef Q_OS_MAC
@@ -239,7 +224,7 @@ QColor & LinePickerDlg::lineColor()
 	return m_Color;
 }
 
-void LinePickerDlg::setColor(QColor color)
+void LinePickerDlg::setLineColor(QColor color)
 {
 	m_Color = color;
 	fillBoxes();
@@ -247,9 +232,25 @@ void LinePickerDlg::setColor(QColor color)
 }
 
 
-void LinePickerDlg::setStyle(int style)
+void LinePickerDlg::setPointStyle(int pointStyle)
 {
-	m_LineStyle = style;
+	m_PointStyle = pointStyle;
+	fillBoxes();
+	repaint();
+}
+
+
+void LinePickerDlg::setLineStyle(int lineStyle)
+{
+	m_LineStyle = lineStyle;
+	fillBoxes();
+	repaint();
+}
+
+
+void LinePickerDlg::setLineWidth(int width)
+{
+	m_Width = width;
 	fillBoxes();
 	repaint();
 }
@@ -271,29 +272,29 @@ void LinePickerDlg::setupLayout()
 		lab1->setMinimumWidth(60);
 		lab2->setMinimumWidth(60);
 		lab3->setMinimumWidth(60);
-		m_pctrlPoints = new LineCbBox(this);
-		m_pctrlPoints->showPoints(true);
-		m_pctrlStyle = new LineCbBox;
-		m_pctrlWidth = new LineCbBox;
-		m_pctrlColor = new LineBtn;
+		m_pctrlPointStyle = new LineCbBox(this);
+		m_pctrlPointStyle->showPoints(true);
+		m_pctrlLineStyle = new LineCbBox;
+		m_pctrlLineWidth = new LineCbBox;
+		m_pctrlLineColor = new LineBtn;
 
 
 		QFontMetrics fm(Settings::s_TextFont);
 
-		m_pctrlPoints->setMinimumWidth(17*fm.averageCharWidth());
-		m_pctrlStyle->setMinimumWidth(17*fm.averageCharWidth());
-		m_pctrlWidth->setMinimumWidth(17*fm.averageCharWidth());
-		m_pctrlColor->setMinimumWidth(17*fm.averageCharWidth());
-		m_pctrlColor->setMinimumHeight(m_pctrlStyle->minimumSizeHint().height());
+		m_pctrlPointStyle->setMinimumWidth(17*fm.averageCharWidth());
+		m_pctrlLineStyle->setMinimumWidth(17*fm.averageCharWidth());
+		m_pctrlLineWidth->setMinimumWidth(17*fm.averageCharWidth());
+		m_pctrlLineColor->setMinimumWidth(17*fm.averageCharWidth());
+		m_pctrlLineColor->setMinimumHeight(m_pctrlLineStyle->minimumSizeHint().height());
 
 		pStyleLayout->addWidget(lab0,1,1);
 		pStyleLayout->addWidget(lab1,2,1);
 		pStyleLayout->addWidget(lab2,3,1);
 		pStyleLayout->addWidget(lab3,4,1);
-		pStyleLayout->addWidget(m_pctrlPoints,1,2);
-		pStyleLayout->addWidget(m_pctrlStyle, 2,2);
-		pStyleLayout->addWidget(m_pctrlWidth, 3,2);
-		pStyleLayout->addWidget(m_pctrlColor, 4,2);
+		pStyleLayout->addWidget(m_pctrlPointStyle,1,2);
+		pStyleLayout->addWidget(m_pctrlLineStyle, 2,2);
+		pStyleLayout->addWidget(m_pctrlLineWidth, 3,2);
+		pStyleLayout->addWidget(m_pctrlLineColor, 4,2);
 	}
 
 	QHBoxLayout *pCommandButtons = new QHBoxLayout;
@@ -322,12 +323,6 @@ void LinePickerDlg::setupLayout()
 
 
 
-void LinePickerDlg::setWidth(int width)
-{
-	m_Width = width;
-	fillBoxes();
-	repaint();
-}
 
 
 

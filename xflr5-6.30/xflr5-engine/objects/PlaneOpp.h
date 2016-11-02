@@ -73,6 +73,10 @@ public:
 
 
 	double &alpha() {return m_Alpha;}
+	double &beta()  {return m_Beta;}
+	double &phi()   {return m_Bank;}
+	double &ctrl()  {return m_Ctrl;}
+
 	XFLR5::enumAnalysisMethod analysisMethod() {return m_AnalysisMethod;}
 	bool isLLTMethod(){return m_AnalysisMethod==XFLR5::LLTMETHOD;}
 
