@@ -19,7 +19,7 @@
 
 *****************************************************************************/
 
-
+#include <QtDebug>
 #include "Polar.h"
 #include "../misc/Settings.h"
 #include "../globals.h"
@@ -688,7 +688,6 @@ bool Polar::serializePolarXFL(QDataStream &ar, bool bIsStoring)
 		ar >> polarStyle() >> polarWidth();
 		ar >> polarColor();
 		ar >> lineStyle().m_bIsVisible >> boolean;
-
 
 		ar >> n;
 		if(n==1)      m_PolarType=XFLR5::FIXEDSPEEDPOLAR;

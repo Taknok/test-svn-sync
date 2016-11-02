@@ -403,6 +403,10 @@ void QAFoil::loadSettings(QSettings *pSettings)
 
 		m_pSF->m_Intrados.m_iRes =  pSettings->value("LowerRes",79).toInt();
 		m_pSF->m_Extrados.m_iRes =  pSettings->value("UpperRes",79).toInt();
+
+		m_pSF->m_Intrados.m_iRes = qMax(m_pSF->m_Intrados.m_iRes,10);
+		m_pSF->m_Extrados.m_iRes = qMax(m_pSF->m_Intrados.m_iRes,10);
+
 		m_pSF->m_Extrados.splineCurve();
 		m_pSF->m_Intrados.splineCurve();
 

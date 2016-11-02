@@ -137,8 +137,8 @@ void PanelAnalysisDlg::setupLayout()
 {
 	QDesktopWidget desktop;
 	QRect r = desktop.geometry();
-	setMinimumHeight(r.height()/2);
-	setMinimumWidth(r.width()/2);
+	setMinimumHeight(450);
+	setMinimumWidth(700);
 
 	m_pctrlTextOutput = new QTextEdit(this);
 	m_pctrlTextOutput->setReadOnly(true);

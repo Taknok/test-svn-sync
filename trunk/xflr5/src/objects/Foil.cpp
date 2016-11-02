@@ -1157,7 +1157,7 @@ bool Foil::serializeFoilXFL(QDataStream &ar, bool bIsStoring)
 		ar << m_FoilName;
 		ar << m_FoilDescription;
 		ar << m_FoilStyle << m_FoilWidth;
-		ar <<  m_FoilColor;
+		ar << m_FoilColor;
 		ar << m_bVisible << m_bPoints << m_bCenterLine << m_bLEFlap << m_bTEFlap;
 		ar << m_LEFlapAngle << m_LEXHinge << m_LEYHinge;
 		ar << m_TEFlapAngle << m_TEXHinge << m_TEYHinge;
@@ -1174,7 +1174,7 @@ bool Foil::serializeFoilXFL(QDataStream &ar, bool bIsStoring)
 		ar >> m_FoilName;
 		ar >> m_FoilDescription;
 		ar >> m_FoilStyle >> m_FoilWidth;
-		ar >>  m_FoilColor;
+		ar >> m_FoilColor;
 		ar >> m_bVisible >> m_bPoints >> m_bCenterLine >> m_bLEFlap >> m_bTEFlap;
 		ar >> m_LEFlapAngle >> m_LEXHinge >> m_LEYHinge;
 		ar >> m_TEFlapAngle >> m_TEXHinge >> m_TEYHinge;

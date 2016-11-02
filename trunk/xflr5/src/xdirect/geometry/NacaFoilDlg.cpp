@@ -143,7 +143,6 @@ void NacaFoilDlg::generateFoil()
 	}
 	else
 	{
-qDebug("fakse");
 		m_pctrlNumber->selectAll();
 		m_pctrlMessage->setText(tr("Illegal NACA Number"));
 		m_bGenerated = false;
