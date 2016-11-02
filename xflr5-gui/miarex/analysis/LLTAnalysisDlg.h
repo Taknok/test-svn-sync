@@ -94,7 +94,9 @@ private:
 
 	PlaneAnalysisTask *m_pTheTask; /**< a pointer to the one and only instance of the PlaneAnalysisTask class */
 
-	static QPoint s_Position;   /**< the position on the client area of he dialog's topleft corner */
+	static QPoint s_Position;   /**< the position on the client area of the dialog's topleft corner */
+	static QSize  s_WindowSize;
+	static bool s_bWindowMaximized;
 
 	bool m_bCancel;             /**< true if the user has cancelled the analysis */
 	bool m_bFinished;           /**< true if the analysis is completed, false if it is running */

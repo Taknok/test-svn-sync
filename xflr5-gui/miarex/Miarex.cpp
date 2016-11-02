@@ -382,10 +382,11 @@ QMiarex::QMiarex(QWidget *parent)
 	m_CpLineStyle.m_PointStyle = 0;
 	m_bShowCp       = true;
 
-	m_iView         = XFLR5::W3DVIEW;
-	m_iWingView     = XFLR5::ONEGRAPH;
-	m_iWPlrView     = XFLR5::FOURGRAPHS;
-	m_iStabTimeView = XFLR5::FOURGRAPHS;
+	m_iView          = XFLR5::W3DVIEW;
+	m_iWingView      = XFLR5::ONEGRAPH;
+	m_iWPlrView      = XFLR5::FOURGRAPHS;
+	m_iRootLocusView = XFLR5::ONEGRAPH;
+	m_iStabTimeView  = XFLR5::FOURGRAPHS;
 
 	m_CpGraph.setGraphName(tr("Cp Graph"));
 
@@ -2228,6 +2229,12 @@ bool QMiarex::loadSettings(QSettings *pSettings)
 		else if(k==1) m_iWPlrView  = XFLR5::ONEGRAPH;
 		else if(k==2) m_iWPlrView  = XFLR5::TWOGRAPHS;
 		else if(k==4) m_iWPlrView  = XFLR5::FOURGRAPHS;
+
+		k = pSettings->value("iRootLocusView").toInt();
+		if(k==0)      m_iRootLocusView  = XFLR5::ALLGRAPHS;
+		else if(k==1) m_iRootLocusView  = XFLR5::ONEGRAPH;
+		else if(k==2) m_iRootLocusView  = XFLR5::TWOGRAPHS;
+		else if(k==4) m_iRootLocusView  = XFLR5::FOURGRAPHS;
 
 		k = pSettings->value("iStabTimeView").toInt();
 		if(k==0)      m_iStabTimeView  = XFLR5::ALLGRAPHS;
@@ -5799,6 +5806,8 @@ void QMiarex::onStabilityDirection()
 
 	m_bLongitudinal = pStabView->m_pctrlLongDynamics->isChecked();
 
+	m_iRootLocusView = XFLR5::ONEGRAPH;
+
 	for(int ig=0; ig<MAXTIMEGRAPHS; ig++) m_TimeGraph[ig]->deleteCurves();
 
 	pStabView->m_pCurve = NULL;
@@ -5843,6 +5852,7 @@ void QMiarex::onStabTimeView()
 	s_bResetCurves = true;
 	updateView();
 }
+
 
 /**
  * The user has requested to change the display of stability results to the root locus view
@@ -6626,6 +6636,21 @@ bool QMiarex::saveSettings(QSettings *pSettings)
 		}
 
 
+		switch(m_iRootLocusView)
+		{
+			case XFLR5::ONEGRAPH:
+				pSettings->setValue("iRootLocusView", 1);
+				break;
+			case XFLR5::TWOGRAPHS:
+				pSettings->setValue("iRootLocusView", 2);
+				break;
+			case XFLR5::FOURGRAPHS:
+				pSettings->setValue("iRootLocusView", 4);
+				break;
+			default:
+				pSettings->setValue("iRootLocusView", 0);
+				break;
+		}
 		switch(m_iStabTimeView)
 		{
 			case XFLR5::ONEGRAPH:
@@ -7799,9 +7824,11 @@ void QMiarex::setView(XFLR5::enumGraphView eView)
 			break;
 		}
 		case XFLR5::WPOLARVIEW:
+			m_iWPlrView = eView;
+			break;
 		case XFLR5::STABPOLARVIEW:
 		{
-			m_iWPlrView = eView;
+			m_iRootLocusView = eView;
 			break;
 		}
 		case XFLR5::STABTIMEVIEW:
@@ -8259,8 +8286,12 @@ void QMiarex::setGraphTiles()
 
 		case XFLR5::STABPOLARVIEW:
 		{
-			if(m_bLongitudinal)	s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_StabPlrGraph, 1, 0);
-			else                s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_StabPlrGraph, 1, 1);
+			if(m_iRootLocusView==XFLR5::TWOGRAPHS)
+			{
+				s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_StabPlrGraph, 2);
+			}
+			else if(m_bLongitudinal) s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_StabPlrGraph, 1, 0);
+			else                     s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, m_StabPlrGraph, 1, 1);
 			break;
 		}
 

@@ -433,6 +433,7 @@ public:
 
 	XFLR5::enumGraphView m_iWPlrView;              /**< defines how many graphs will be displayed in WPolar view */
 	XFLR5::enumGraphView m_iWingView;              /**< defines how many graphs will be displayed in the operating point view */
+	XFLR5::enumGraphView m_iRootLocusView;         /**< defines how many graphs will be displayed in the root locus view */
 	XFLR5::enumGraphView m_iStabTimeView;          /**< defines how many graphs will be displayed in the stability time view */
 
 	int m_InducedDragPoint;     /**< 0 if downwash is at panel's centroid, 1 if averaged over panel length; used in CWing::VLMTrefftz */

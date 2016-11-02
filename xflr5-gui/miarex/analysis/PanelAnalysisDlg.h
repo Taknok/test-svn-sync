@@ -90,7 +90,9 @@ private:
 	QCheckBox * m_pctrlLogFile;
 	QProgressBar *m_pctrlProgress;
 
-	static QPoint s_Position;        /**< the position on the client area of he dialog's topleft corner */
+	static QPoint s_Position;        /**< the position on the client area of the dialog's topleft corner */
+	static QSize  s_WindowSize;
+	static bool s_bWindowMaximized;
 
 	bool m_bIsFinished;         /**< true if the analysis is completed */
 	bool m_bPointOut;           /** true if an interpolation was outside the min or max Cl */

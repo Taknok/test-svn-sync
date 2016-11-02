@@ -1977,9 +1977,14 @@ void GL3Widget::glRenderMiarexView()
 		}
 
 		m_modelMatrix = modeMatrix;
-		if(pMiarex->m_pCurPOpp)	m_modelMatrix.rotate(pMiarex->m_pCurPOpp->alpha(),0.0,1.0,0.0);
-		if(pMiarex->m_pCurWPolar && fabs(pMiarex->m_pCurWPolar->Beta())>0.001)
-			m_modelMatrix.rotate(pMiarex->m_pCurWPolar->Beta(), 0.0, 0.0, 1.0);
+		if(pMiarex->m_pCurPOpp)
+		{
+			m_modelMatrix.rotate(pMiarex->m_pCurPOpp->alpha(),0.0,1.0,0.0);
+//			if(fabs(pMiarex->m_pCurPOpp->beta())>PRECISION)
+//				m_modelMatrix.rotate(pMiarex->m_pCurWPolar->Beta(), 0.0, 0.0, 1.0);
+		}
+//		if(pMiarex->m_pCurWPolar && fabs(pMiarex->m_pCurWPolar->Beta())>0.001)
+//			m_modelMatrix.rotate(pMiarex->m_pCurWPolar->Beta(), 0.0, 0.0, 1.0);
 		m_pvmMatrix = m_OrthoMatrix * m_viewMatrix * m_modelMatrix;
 
 		//streamlines and velocities are rotated by aoa when constructed
@@ -5694,7 +5699,7 @@ bool GL3Widget::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPo
 
 	m_NStreamLines = iv / GL3DScales::s_NX / 3;
 
-qDebug() << iv << streamArraySize;
+//qDebug() << iv << streamArraySize;
 
 	//restore things as they were
 	Panel::setCoreSize(memcoresize);

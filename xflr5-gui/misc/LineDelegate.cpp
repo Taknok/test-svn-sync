@@ -66,8 +66,9 @@ void LineDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, 
 
 	if(m_pCbBox && ((LineCbBox*)m_pCbBox)->points())
 	{
+		LinePen.setStyle(Qt::SolidLine);
+		painter->setPen(LinePen);
 		drawPoint(*painter, m_PointStyle[index.row()], option.rect.center());
-
 	}
 	painter->restore();
 }
