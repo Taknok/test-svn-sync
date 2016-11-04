@@ -609,12 +609,12 @@ bool PanelAnalysis::loop()
 {
 	if(m_pWPolar->polarType()<XFLR5::FIXEDAOAPOLAR)
 	{
-		if(m_pWPolar->bTilted() || fabs(m_pWPolar->Beta()>PRECISION)) return unitLoop();
+		if(m_pWPolar->bTilted() || fabs(m_pWPolar->Beta())>PRECISION) return unitLoop();
 		else                                                          return alphaLoop();
 	}
 	else if(m_pWPolar->polarType()==XFLR5::FIXEDAOAPOLAR)
 	{
-		if(m_pWPolar->bTilted() || fabs(m_pWPolar->Beta()>PRECISION)) return unitLoop();
+		if(m_pWPolar->bTilted() || fabs(m_pWPolar->Beta())>PRECISION) return unitLoop();
 		else                                                          return QInfLoop();
 	}
 	else if(m_pWPolar->polarType()==XFLR5::BETAPOLAR)
