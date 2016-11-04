@@ -1777,7 +1777,7 @@ void QMiarex::glMake3DObjects()
 			{
 				if(pWing(iw))
 				{
-					m_pgl3Widget->glMakeDragStrip( iw, pWing(iw), m_pCurWPolar, m_pWOpp[iw]);
+					m_pgl3Widget->glMakeDragStrip( iw, pWing(iw), m_pCurWPolar, m_pWOpp[iw], m_pCurPOpp->beta());
 				}
 			}
 		}
@@ -5201,9 +5201,6 @@ void QMiarex::onNewPlane()
 		setPlane();
 		s_pMainFrame->updatePlaneListBox();
 		m_bResetglLegend = true;
-		for(int iw=0; iw<MAXWINGS; iw++)
-			if(pPlane->wing(iw)) qDebug()	<< pPlane->wing(iw)->wingColor();
-
 	}
 	else
 	{
@@ -8136,10 +8133,10 @@ PlaneOpp* QMiarex::setPlaneOppObject(Plane *pPlane, WPolar *pWPolar, PlaneOpp *p
 		if(pWPolar->polarType()==XFLR5::BETAPOLAR)
 		{
 			//set sideslip
-			CVector RefPoint(0.0, 0.0, 0.0);
+//			CVector RefPoint(0.0, 0.0, 0.0);
 			// Standard Convention in mechanic of flight is to have Beta>0 with nose to the left
 			// The yaw moment has the opposite convention...
-			m_theTask.m_thePanelAnalysis.rotateGeomZ(pPOpp->m_Beta, RefPoint, pWPolar->m_NXWakePanels);
+//			m_theTask.m_thePanelAnalysis.rotateGeomZ(pPOpp->m_Beta, RefPoint, pWPolar->m_NXWakePanels);
 		}
 		else if(pWPolar->polarType()==XFLR5::STABILITYPOLAR)
 		{

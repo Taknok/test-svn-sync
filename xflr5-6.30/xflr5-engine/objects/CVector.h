@@ -217,8 +217,8 @@ public:
 	void rotateY(CVector const &O, double YTilt);
 	void rotateZ(CVector const &O, double ZTilt);
 	void rotateX(double delta);
-	void rotateY(double YTilt);
-//	void rotateZ(double ZRot);
+	void rotateY(double alpha);
+	void rotateZ(double beta);
 
  
 };

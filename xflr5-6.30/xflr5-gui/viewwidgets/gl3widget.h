@@ -120,7 +120,7 @@ private:
 	void glMakeLiftForce(WPolar *pWPolar, PlaneOpp *pPOpp);
 	void glMakeMoments(Wing *pWing, WPolar *pWPolar, PlaneOpp *pPOpp);
 	void glMakeTransitions(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
-	void glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
+	void glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, double beta);
 	bool glMakeStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPolar *pWPolar, PlaneOpp *pPOpp, int nPanels);
 	void glMakeSurfVelocities(Panel *pPanel, WPolar *pWPolar, PlaneOpp *pPOpp, int nPanels);
 	void glMakeWingMesh(Wing *pWing);
@@ -188,7 +188,8 @@ private:
 	QOpenGLTexture 	*m_pLeftBodyTexture, *m_pRightBodyTexture;
 	QOpenGLTexture 	*m_pWingTopLeftTexture[MAXWINGS], *m_pWingTopRightTexture[MAXWINGS], *m_pWingBotLeftTexture[MAXWINGS], *m_pWingBotRightTexture[MAXWINGS];
 
-	int m_VertexLocationGradient, m_pvmMatrixLocationGradient, m_ColorLocationGradient;
+	int m_VertexLocationGradient, m_ColorLocationGradient;
+	int m_pvmMatrixLocationGradient;
 
 	int m_VertexLocationLine, m_ColorLocationLine;
 	int m_pvmMatrixLocationLine, m_vMatrixLocationLine, m_mMatrixLocationLine;
@@ -196,6 +197,7 @@ private:
 
 	int m_VertexLocationSurface, m_NormalLocationSurface;
 	int m_LightLocationSurface, m_SurfaceLocationSurface, m_ColorLocationSurface;
+
 	int m_ClipPlaneLocationSurface;
 	int m_vMatrixLocationSurface, m_mMatrixLocationSurface, m_pvmMatrixLocationSurface;
 	int m_EyePosLocationSurface, m_LightPosLocationSurface;

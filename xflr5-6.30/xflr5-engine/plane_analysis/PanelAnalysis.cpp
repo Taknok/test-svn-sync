@@ -609,12 +609,13 @@ bool PanelAnalysis::loop()
 {
 	if(m_pWPolar->polarType()<XFLR5::FIXEDAOAPOLAR)
 	{
-		if(m_pWPolar->bTilted()) return unitLoop();
-		else                     return alphaLoop();
+		if(m_pWPolar->bTilted() || fabs(m_pWPolar->Beta()>PRECISION)) return unitLoop();
+		else                                                          return alphaLoop();
 	}
 	else if(m_pWPolar->polarType()==XFLR5::FIXEDAOAPOLAR)
 	{
-		return QInfLoop();
+		if(m_pWPolar->bTilted() || fabs(m_pWPolar->Beta()>PRECISION)) return unitLoop();
+		else                                                          return QInfLoop();
 	}
 	else if(m_pWPolar->polarType()==XFLR5::BETAPOLAR)
 	{
@@ -647,7 +648,7 @@ bool PanelAnalysis::alphaLoop()
 
 	if(!m_bSequence) m_nRHS = 1;
 
-	setInertia(0.0);
+	setInertia(0.0, 0.0, 0.0);
 
 	m_Progress = 0.0;
 //	qApp->processEvents();
@@ -1441,7 +1442,7 @@ void PanelAnalysis::computeAeroCoefs(double V0, double VDelta, int nrhs)
 			if(m_3DQInf[q]>0.0)
 			{
 				if(!m_pWPolar->bTilted()) str = QString("      Computing Plane for alpha=%1").arg(V0+q*VDelta,7,'f',2);
-				else                          str = QString("      Computing Plane for alpha=%1").arg(m_OpAlpha,7,'f',2);
+				else                      str = QString("      Computing Plane for alpha=%1").arg(m_OpAlpha,7,'f',2);
 				str += QString::fromUtf8("°\n");
 				traceLog(str);
 				computePlane(V0+q*VDelta, m_3DQInf[q], q);
@@ -1484,8 +1485,10 @@ void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
 
 	m_QInf      = QInf;
 
-	if(m_pWPolar->bTilted() || m_pWPolar->isBetaPolar()) Alpha = m_OpAlpha;
-	else                                                 m_OpAlpha = Alpha;
+	if(m_pWPolar->bTilted() || m_pWPolar->isBetaPolar() || fabs(m_pWPolar->Beta())>PRECISION)
+		Alpha = m_OpAlpha;
+	else
+		m_OpAlpha = Alpha;
 
 	for(int iw=0; iw<MAXWINGS; iw++)
 		if(m_pWingList[iw])m_pWingList[iw]->m_bWingOut = false;
@@ -2014,7 +2017,7 @@ bool PanelAnalysis::QInfLoop()
 	QString str;
 	double Alpha = 0.0;
 
-	setInertia(0.0);
+	setInertia(0.0, 0.0, 0.0);
 
 	m_QInf = m_vMin;
 
@@ -2244,21 +2247,37 @@ bool PanelAnalysis::unitLoop()
 	str = QString("   Solving the problem...\n");
 	traceLog("\n"+str);
 
-	setInertia(0.0);
 
 	for (n=0; n<m_nRHS; n++)
 	{
-		if(m_pWPolar->polarType() == XFLR5::FIXEDLIFTPOLAR || m_pWPolar->polarType() == XFLR5::FIXEDSPEEDPOLAR)
+		switch(m_pWPolar->polarType())
 		{
-			m_OpAlpha = m_vMin+n*m_vDelta;
-			m_OpBeta  = m_pWPolar->m_BetaSpec;
+			case XFLR5::BETAPOLAR:
+				m_OpAlpha = m_pWPolar->m_AlphaSpec;
+				m_OpBeta  = m_vMin+n*m_vDelta;
+				break;
+
+			case XFLR5::FIXEDSPEEDPOLAR:
+			case XFLR5::FIXEDLIFTPOLAR:
+				m_OpAlpha = m_vMin+n*m_vDelta;
+				m_OpBeta  = m_pWPolar->Beta();
+				break;
+
+			case XFLR5::FIXEDAOAPOLAR:
+				m_OpAlpha = m_pWPolar->Alpha();
+				m_OpBeta  = m_pWPolar->Beta();
+				m_QInf      = m_vMin+n*m_vDelta;
+				m_3DQInf[n] = m_vMin+n*m_vDelta;
+				break;
+
+			default:
+				m_OpAlpha = m_vMin+n*m_vDelta;
+				m_OpBeta  = m_pWPolar->Beta();
+				break;
 		}
-		else if(m_pWPolar->polarType() == XFLR5::BETAPOLAR)
-		{
-			m_OpAlpha = m_pWPolar->m_AlphaSpec;
-			m_OpBeta  = m_vMin+n*m_vDelta;
-		}	
-			
+
+		setInertia(0.0, m_OpAlpha, m_OpBeta);
+
 		if(m_pWPolar->polarType()!=XFLR5::BETAPOLAR) str = QString("      \n    Processing Alpha= %1\n").arg(m_OpAlpha,0,'f',1);
 		else                                         str = QString("      \n    Processing Beta= %1\n").arg(m_OpBeta,0,'f',1);
 		traceLog(str);
@@ -2272,7 +2291,8 @@ bool PanelAnalysis::unitLoop()
 		// Rotate the wing panels and translate the wake to the new T.E. position
 		rotateGeomY(m_OpAlpha, O, m_pWPolar->m_NXWakePanels);
 
-		if(m_pWPolar->polarType()==XFLR5::BETAPOLAR)
+//		if(m_pWPolar->polarType()==XFLR5::BETAPOLAR)
+		if(fabs(m_OpBeta)>PRECISION)
 		{
 			rotateGeomZ(m_OpBeta, O, m_pWPolar->m_NXWakePanels);
 		}
@@ -2340,14 +2360,32 @@ bool PanelAnalysis::unitLoop()
 //			if(MaxWakeIter>0 && m_pWPolar->bWakeRollUp()) RelaxWake();
 		}
 
-		computeAeroCoefs(0.0, m_vDelta, 1);
+		switch(m_pWPolar->polarType())
+		{
+			case XFLR5::BETAPOLAR:
+				computeAeroCoefs(0.0, m_vDelta, 1);
+				break;
+
+			case XFLR5::FIXEDSPEEDPOLAR:
+			case XFLR5::FIXEDLIFTPOLAR:
+				computeAeroCoefs(m_vMin, m_vDelta, 1);
+				break;
+
+			case XFLR5::FIXEDAOAPOLAR:
+				computeAeroCoefs(m_QInf, m_vDelta, 1);
+				break;
+
+			default:
+				break;
+		}
 	}
 
-	//restore the geometry
+	//leave things as they were
 	memcpy(m_pPanel,     m_pMemPanel,     m_MatSize    * sizeof(Panel));
 	memcpy(m_pNode,      m_pMemNode,      m_nNodes     * sizeof(CVector));
 	memcpy(m_pWakePanel, m_pRefWakePanel, m_WakeSize   * sizeof(Panel));
 	memcpy(m_pWakeNode,  m_pRefWakeNode,  m_nWakeNodes * sizeof(CVector));
+
 	return true;
 }
 
@@ -2460,10 +2498,11 @@ void PanelAnalysis::VLMGetVortexInfluence(Panel *pPanel, CVector const &C, CVect
  *
  * @param ctrl
  */
-void PanelAnalysis::setInertia(double ctrl)
+void PanelAnalysis::setInertia(double ctrl, double alpha, double beta)
 {
 	m_Mass       = m_pWPolar->mass()   + ctrl*m_pWPolar->m_inertiaGain[0];
 	m_CoG.x      = m_pWPolar->CoG().x  + ctrl*m_pWPolar->m_inertiaGain[1];
+	m_CoG.y      = m_pWPolar->CoG().y;
 	m_CoG.z      = m_pWPolar->CoG().z  + ctrl*m_pWPolar->m_inertiaGain[2];
 	m_Inertia[0] = m_pWPolar->CoGIxx() + ctrl*m_pWPolar->m_inertiaGain[3];
 	m_Inertia[1] = m_pWPolar->CoGIyy() + ctrl*m_pWPolar->m_inertiaGain[4];
@@ -2501,6 +2540,11 @@ void PanelAnalysis::setInertia(double ctrl)
 	traceLog(str+"\n");
 	str = QString::fromUtf8("    Ibxz=%1 kg.m²").arg(m_Ib[0][2], 12,'g',4);
 	traceLog(str+"\n\n");
+
+
+	// case of tilted geometry, unit loops:
+	m_CoG.rotateY(CVector(0.0,0.0,0.0), alpha);
+	m_CoG.rotateZ(CVector(0.0,0.0,0.0), beta);
 }
 
 
@@ -2559,7 +2603,7 @@ bool PanelAnalysis::controlLoop()
 		traceLog(str);
 		outString.clear();
 
-		setInertia(m_Ctrl);
+		setInertia(m_Ctrl, 0.0, 0.0);
 
 		setControlPositions(m_Ctrl, m_NCtrls, outString, true);
 

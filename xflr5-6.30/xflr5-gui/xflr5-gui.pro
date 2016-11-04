@@ -18,6 +18,7 @@ else
 
 
 CONFIG += qt
+CONFIG += link_prl
 QT += opengl
 TEMPLATE = app
 
@@ -28,9 +29,11 @@ INCLUDEPATH += $$PWD/misc
 INCLUDEPATH += $$PWD/glcontextinfo
 
 INCLUDEPATH += $$PWD/../xflr5-engine
-DEPENDPATH += $$PWD/../xflr5-engine
 INCLUDEPATH += $$PWD/../XFoil-lib
-DEPENDPATH += $$PWD/../XFoil-lib
+INCLUDEPATH += $$PWD/../xflr5-engine/objects
+INCLUDEPATH += $$PWD/../xflr5-engine/plane_analysis
+
+DEPENDPATH += $$OUT_PWD/../xflr5-engine/
 
 SOURCES += \
 	XFLR5Application.cpp \
