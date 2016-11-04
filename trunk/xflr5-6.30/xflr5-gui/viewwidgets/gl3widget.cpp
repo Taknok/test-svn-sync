@@ -1963,10 +1963,39 @@ void GL3Widget::glRenderMiarexView()
 
 	if(pMiarex->m_pCurPlane)
 	{
+		m_modelMatrix = modeMatrix;
+
+		// We use the model matrix to apply alpha and beta rotations to the geometry.
+		if(pMiarex->m_pCurPOpp)
+		{
+			//apply aoa rotation
+			m_modelMatrix.rotate(pMiarex->m_pCurPOpp->alpha(),0.0,1.0,0.0);
+
+			/* CP position alredy includes the sideslip geometry, shond't be rotated by sideslip*/
+			if(pMiarex->m_bXCP)
+			{
+				m_pvmMatrix = m_OrthoMatrix * m_viewMatrix * m_modelMatrix;
+				for(int iw=0; iw<MAXWINGS; iw++)
+				{
+					if(pMiarex->m_pCurPlane->wing(iw)) paintLift(iw);
+				}
+			}
+
+			// apply sideslip
+			if(fabs(pMiarex->m_pCurPOpp->beta())>PRECISION)
+				m_modelMatrix.rotate(pMiarex->m_pCurPOpp->beta(), 0.0, 0.0, 1.0);
+		}
+		else
+		{
+			if(pMiarex->m_pCurWPolar && fabs(pMiarex->m_pCurWPolar->Beta())>0.001)
+				m_modelMatrix.rotate(pMiarex->m_pCurWPolar->Beta(), 0.0, 0.0, 1.0);
+		}
+		m_pvmMatrix = m_OrthoMatrix * m_viewMatrix * m_modelMatrix;
+
 		if(m_bVLMPanels)  paintMesh(pMiarex->matSize());
 		if(pMiarex->m_pCurPOpp)
 		{
-			if(pMiarex->m_b3DCp       && pMiarex->m_pCurPOpp->analysisMethod()>=XFLR5::VLMMETHOD)
+			if(pMiarex->m_b3DCp && pMiarex->m_pCurPOpp->analysisMethod()>=XFLR5::VLMMETHOD)
 			{
 				paintPanelCp(pMiarex->matSize());
 			}
@@ -1976,16 +2005,6 @@ void GL3Widget::glRenderMiarexView()
 			}
 		}
 
-		m_modelMatrix = modeMatrix;
-		if(pMiarex->m_pCurPOpp)
-		{
-			m_modelMatrix.rotate(pMiarex->m_pCurPOpp->alpha(),0.0,1.0,0.0);
-//			if(fabs(pMiarex->m_pCurPOpp->beta())>PRECISION)
-//				m_modelMatrix.rotate(pMiarex->m_pCurWPolar->Beta(), 0.0, 0.0, 1.0);
-		}
-//		if(pMiarex->m_pCurWPolar && fabs(pMiarex->m_pCurWPolar->Beta())>0.001)
-//			m_modelMatrix.rotate(pMiarex->m_pCurWPolar->Beta(), 0.0, 0.0, 1.0);
-		m_pvmMatrix = m_OrthoMatrix * m_viewMatrix * m_modelMatrix;
 
 		//streamlines and velocities are rotated by aoa when constructed
 		if(pMiarex->m_pCurPOpp && pMiarex->m_bStream && pMiarex->m_pCurPOpp && !pMiarex->m_pCurPOpp->isLLTMethod() && !pMiarex->m_bResetglStream)
@@ -2016,13 +2035,13 @@ void GL3Widget::glRenderMiarexView()
 
 		if(pMiarex->m_pCurPOpp)
 		{
-			if(pMiarex->m_bXCP)
+/*			if(pMiarex->m_bXCP)
 			{
 				for(int iw=0; iw<MAXWINGS; iw++)
 				{
 					if(pMiarex->m_pCurPlane->wing(iw)) paintLift(iw);
 				}
-			}
+			}*/
 			if(pMiarex->m_bMoments)
 			{
 				paintMoments();
@@ -2738,7 +2757,7 @@ void GL3Widget::paintTransitions(int iWing)
 
 
 
-void GL3Widget::glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp)
+void GL3Widget::glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, double beta)
 {
 	if(!pWing || !pWPolar || !pWOpp) return;
 	CVector C, Pt, PtNormal;
@@ -2750,8 +2769,8 @@ void GL3Widget::glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp
 	double amp, amp1, amp2, yob, dih, cosa, cosb, sina, sinb;
 	cosa =  cos(pWOpp->m_Alpha * PI/180.0);
 	sina = -sin(pWOpp->m_Alpha * PI/180.0);
-	cosb =  cos(-pWPolar->sideSlip()*PI/180.0);
-	sinb =  sin(-pWPolar->sideSlip()*PI/180.0);
+	cosb =  cos(-beta*PI/180.0);
+	sinb =  sin(-beta*PI/180.0);
 
 	int bufferSize = m_Ny[iWing]*9;
 	pICdVertexArray = new float[bufferSize];
@@ -3545,6 +3564,7 @@ void GL3Widget::paintLift(int iWing)
 	m_ShaderProgramLine.bind();
 	m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
 	m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_XCPColor);
+	m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, m_modelMatrix);
 	m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
 	m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
 
@@ -4371,10 +4391,11 @@ void GL3Widget::glMakeSurfVelocities(Panel *pPanel, WPolar *pWPolar, PlaneOpp *p
 			pMiarex->m_theTask.m_thePanelAnalysis.getSpeedVector(C, Mu, Sigma, V);
 
 			VT += V;
-//			if(!pWPolar->m_bTiltedGeom)
+
+			//Tilt the geometry w.r.t. sideslip and aoa
+			C.rotateZ(RefPoint, pPOpp->beta());
 			C.rotateY(RefPoint, pPOpp->alpha());
-			//Tilt the geometry w.r.t. sideslip
-//			C.RotateZ(RefPoint, -pWOpp->m_Beta);
+
 		}
 		length = VT.VAbs()*factor;
 		xe     = C.x+factor*VT.x;
@@ -5584,8 +5605,14 @@ bool GL3Widget::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPo
 				{
 					TC = C;
 					TD = D;
+
+					//Tilt the geometry w.r.t. sideslip and aoa
+					TC.rotateZ(RefPoint, pPOpp->beta());
+					TD.rotateZ(RefPoint, pPOpp->beta());
 					TC.rotateY(RefPoint, pPOpp->alpha());
 					TD.rotateY(RefPoint, pPOpp->alpha());
+
+
 					TC -= C;
 					TD -= D;
 					if(GL3DScales::s_pos==1 && qAbs(GL3DScales::s_XOffset)<0.001 && qAbs(GL3DScales::s_ZOffset)<0.001)
@@ -5610,6 +5637,10 @@ bool GL3Widget::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPo
 							VB = VB+VBT;
 							VB.normalize();//VB is parallel to the bisector angle
 						}
+
+						//Tilt the geometry w.r.t. sideslip and aoa
+//						VA.rotateZ(pPOpp->beta());
+//						VB.rotateZ(pPOpp->beta());
 						VA.rotateY(pPOpp->alpha());
 						VB.rotateY(pPOpp->alpha());
 					}

@@ -145,14 +145,25 @@ void  CVector::rotateX(double delta)
 
 
 
-void  CVector::rotateY(double YTilt)
+void  CVector::rotateY(double alpha)
 {
-	YTilt *=PI/180.0;
+	alpha *=PI/180.0;
 
 	double xo = x;
 	double zo = z;
-	x =  xo * cos(YTilt) + zo * sin(YTilt);
-	z = -xo * sin(YTilt) + zo * cos(YTilt);
+	x =  xo * cos(alpha) + zo * sin(alpha);
+	z = -xo * sin(alpha) + zo * cos(alpha);
+}
+
+
+void  CVector::rotateZ(double beta)
+{
+	beta *=PI/180.0;
+
+	double xo = x;
+	double yo = y;
+	x =  xo * cos(beta) - yo * sin(beta);
+	y =  xo * sin(beta) + yo * cos(beta);
 }
 
 

@@ -9,6 +9,7 @@ TARGET = engine_xflr5
 TEMPLATE = lib
 CONFIG += qt
 CONFIG += staticlib
+CONFIG += create_prl
 
 QT += gui
 
