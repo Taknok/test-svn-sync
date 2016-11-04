@@ -3545,19 +3545,6 @@ MainFrame* MainFrame::self() {
 
 XFLR5::enumApp MainFrame::loadXFLR5File(QString pathName)
 {
-/*	QString FileName = "/home/techwinder/download/save.bin";
-	QFile fp(FileName);
-	fp.open(QIODevice::ReadOnly);
-	QDataStream ar(&fp);
-	int r,g,b,a,i;
-	r=g=b=a=0;
-	ar>>i;
-	readqColor(ar, r,g,b,a);
-qDebug()<<r<<g<<b<<a;
-	readqColor(ar, r,g,b,a);
-qDebug()<<r<<g<<b<<a;
-	return XFLR5::NOAPP;*/
-
 	QFile XFile(pathName);
 	if (!XFile.open(QIODevice::ReadOnly))
 	{

@@ -108,7 +108,7 @@ public:
 	void restorePanels();
 	void setArrayPointers(void *pPanel, void *pMemPanel, void *pWakePanel, void *pRefWakePanel, void *pNode, void *pMemNode, void *pWakeNode, void *pRefWakeNode);
 	void setArraySize(int MatSize, int WakeSize, int nNodes, int nWakeNodes, int NWakeColumn);
-	void setInertia(double ctrl);
+	void setInertia(double ctrl, double alpha, double beta);
 	void setObjectPointers(void *pPlane, void *pSurfaceList);
 	void setParams(int nMaxWakeIter);
 	void setRange(double vMin, double VMax, double vDelta, bool bSequence);
