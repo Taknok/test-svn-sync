@@ -13,8 +13,6 @@ CONFIG += create_prl
 
 QT += gui
 
-DEFINES += ENGINE_XFLR5_LIB
-
 INCLUDEPATH += $$PWD/objects
 INCLUDEPATH += $$PWD/../XFoil-lib
 INCLUDEPATH += $$PWD/plane_analysis

@@ -12,10 +12,7 @@ CONFIG += staticlib
 TARGET = XFoil-lib
 TEMPLATE = lib
 
-DEFINES += XFOILLIB_LIBRARY
-
-
-SOURCES += xfoil_lib.cpp \
+SOURCES += \
     XFoil.cpp \
     XFoilTask.cpp \
     objects/CVector.cpp \
@@ -25,7 +22,7 @@ SOURCES += xfoil_lib.cpp \
     objects/Spline.cpp \
     xfoil_globals.cpp
 
-HEADERS += xfoil_lib.h\
+HEADERS +=\
     XFoil.h \
     XFoilTask.h \
     xfoiltaskevent.h \
