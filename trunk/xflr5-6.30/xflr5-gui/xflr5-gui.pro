@@ -342,23 +342,22 @@ macx {
     CONFIG(debug, debug|release) { 
         OBJECTS_DIR = ./build/debug
         MOC_DIR = ./build/debug
-		RCC_DIR = ./build/debug
+                RCC_DIR = ./build/debug
         UI_HEADERS_DIR = ./build/debug
     }
+    DESTDIR = ../
     TARGET = XFLR5
     TEMPLATE = app
     CONFIG += i386
-    QMAKE_MAC_SDK = macosx10.11
+    QMAKE_MAC_SDK = macosx
     #QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.4
     #QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.6.sdk
-    OTHER_FILES += mac/Info.plist
+    OTHER_FILES += ./mac/Info.plist
     LIBS += -framework \
         CoreFoundation
-    QMAKE_INFO_PLIST = mac/Info.plist
-    ICON = mac/xflr5.icns
+    QMAKE_INFO_PLIST = ./mac/Info.plist
+    ICON = ./mac/xflr5.icns
 }
-
-
 
 QMAKE_CFLAGS_WARN_ON -= -W3
 QMAKE_CFLAGS_WARN_ON += -W4
