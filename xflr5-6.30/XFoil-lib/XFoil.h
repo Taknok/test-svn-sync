@@ -71,7 +71,7 @@ struct blData
 
 
 
-class  XFoil
+class XFoil
 {
 
 public:
