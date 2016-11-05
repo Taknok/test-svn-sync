@@ -1103,8 +1103,6 @@ void setAutoWPolarName(void * ptrWPolar, void *ptrPlane)
 
 	if(pWPolar->isStabilityPolar())
 	{
-		QString pm=  QString::fromUtf8("\u2213");
-
 		if(!pPlane->isWing())
 		{
 			if(pWPolar->m_ControlGain.size()>0 && qAbs(pWPolar->m_ControlGain[0])>PRECISION)
@@ -1181,13 +1179,13 @@ void setAutoWPolarName(void * ptrWPolar, void *ptrPlane)
 	{
 		strong.sprintf("-%.1f", pWPolar->mass()*Units::kgtoUnit());
 		if(pWPolar->isStabilityPolar()&&fabs(pWPolar->m_inertiaGain[0])>PRECISION)
-			str.sprintf("\u2213%0.2f", pWPolar->m_inertiaGain[0]*Units::kgtoUnit());
+			str.sprintf("/%0.2f", pWPolar->m_inertiaGain[0]*Units::kgtoUnit());
 		else str.clear();
 		pWPolar->polarName() += strong + str + Units::weightUnitLabel();
 
 		strong.sprintf("-x%.1f", pWPolar->CoG().x*Units::mtoUnit());
 		if(pWPolar->isStabilityPolar()&&fabs(pWPolar->m_inertiaGain[1])>PRECISION)
-			str.sprintf("\u2213%0.2f", pWPolar->m_inertiaGain[1]*Units::mtoUnit());
+			str.sprintf("/%0.2f", pWPolar->m_inertiaGain[1]*Units::mtoUnit());
 		else str.clear();
 		pWPolar->polarName() += strong + str + Units::lengthUnitLabel();
 
@@ -1195,7 +1193,7 @@ void setAutoWPolarName(void * ptrWPolar, void *ptrPlane)
 		{
 			strong.sprintf("-z%.1f", pWPolar->CoG().z*Units::mtoUnit());
 			if(pWPolar->isStabilityPolar()&&fabs(pWPolar->m_inertiaGain[2])>PRECISION)
-				str.sprintf("\u2213%0.2f", pWPolar->m_inertiaGain[2]*Units::mtoUnit());
+				str.sprintf("/%0.2f", pWPolar->m_inertiaGain[2]*Units::mtoUnit());
 			else str.clear();
 			pWPolar->polarName() += strong + str + Units::lengthUnitLabel();
 		}

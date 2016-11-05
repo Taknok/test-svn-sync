@@ -34,6 +34,7 @@ INCLUDEPATH += $$PWD/../xflr5-engine/objects
 INCLUDEPATH += $$PWD/../xflr5-engine/plane_analysis
 
 DEPENDPATH += $$OUT_PWD/../xflr5-engine/
+message($$OUT_PWD/../xflr5-engine/)
 
 SOURCES += \
 	XFLR5Application.cpp \
@@ -294,13 +295,26 @@ RESOURCES += \
 
 win32 {
     TARGET = XFLR5
+	CONFIG(release, debug|release){
+		LIBS += -L$$OUT_PWD/../xflr5-engine/release/ -lengine_xflr5
+		LIBS += -L$$OUT_PWD/../XFoil-lib/release/ -lXFoil-lib
+	}
+	CONFIG(debug, debug|release)
+	{
+		LIBS += -L$$OUT_PWD/../xflr5-engine/debug/ -lengine_xflr5
+		LIBS += -L$$OUT_PWD/../XFoil-lib/debug/ -lXFoil-lib
+	}
+
 	RC_FILE = ../win/xflr5.rc
 	LIBS += -lopenGL32
 }
 
 unix{
     TARGET = xflr5
-    
+
+	LIBS += -L$$OUT_PWD/../xflr5-engine/ -lengine_xflr5
+	LIBS += -L$$OUT_PWD/../XFoil-lib/ -lXFoil-lib
+
 #	release: DESTDIR = ../build/release
 #	debug:   DESTDIR = ../build/debug
 
@@ -348,17 +362,6 @@ macx {
 
 QMAKE_CFLAGS_WARN_ON -= -W3
 QMAKE_CFLAGS_WARN_ON += -W4
-
-message($$OUT_PWD/../xflr5-engine/)
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../xflr5-engine/release/ -lengine_xflr5
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../xflr5-engine/debug/ -lengine_xflr5
-else:unix: LIBS += -L$$OUT_PWD/../xflr5-engine/ -lengine_xflr5
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../XFoil-lib/release/ -lXFoil-lib
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../XFoil-lib/debug/ -lXFoil-lib
-else:unix: LIBS += -L$$OUT_PWD/../XFoil-lib/ -lXFoil-lib
-
 
 
 

@@ -19,7 +19,7 @@
 
 *****************************************************************************/
 /**
-  @file This file implements the CVetor class
+  @file This file implements the CVector class
   */
 
 #include <math.h>
