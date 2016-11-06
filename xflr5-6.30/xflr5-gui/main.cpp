@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
 	XFLR5Application app(argc, argv);
 	XFLR5Application::setApplicationDisplayName(VERSIONNAME);
 	XFLR5Application::setApplicationName(VERSIONNAME);
-	XFLR5Application::setDesktopFileName(VERSIONNAME);
+//	XFLR5Application::setDesktopFileName(VERSIONNAME);
 
 	return app.exec();
 }
