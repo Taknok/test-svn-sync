@@ -5544,6 +5544,7 @@ bool GL3Widget::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPo
 
 	QProgressDialog dlg(tr("Streamlines calculation"), tr("Abort"), 0, nPanels);
 	dlg.setWindowModality(Qt::WindowModal);
+	dlg.show();
 
 	bool bFound;
 	int i, m, p, iWing;
@@ -5720,6 +5721,7 @@ bool GL3Widget::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPo
 				dlg.setValue(m);
 				m++;
 
+				qApp->processEvents();
 				if(dlg.wasCanceled()) break;
 			}
 			if(dlg.wasCanceled()) break;

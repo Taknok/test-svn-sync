@@ -23,9 +23,11 @@
 
 #include "XFLR5Application.h"
 #include "mainframe.h"
+#include "gui_params.h"
 #include <QSplashScreen>
 #include <QtDebug>
 #include <QSurfaceFormat>
+#include <QCommandLineParser>
 
 /**
 *The app's point of entry !
@@ -90,7 +92,12 @@ int main(int argc, char *argv[])
 	qDebug()<<"";
 #endif
 */
+
 	XFLR5Application app(argc, argv);
+	XFLR5Application::setApplicationDisplayName(VERSIONNAME);
+	XFLR5Application::setApplicationName(VERSIONNAME);
+	XFLR5Application::setDesktopFileName(VERSIONNAME);
+
 	return app.exec();
 }
 

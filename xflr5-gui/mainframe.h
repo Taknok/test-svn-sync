@@ -174,7 +174,7 @@ protected:
 	void keyPressEvent(QKeyEvent *event);
 	void keyReleaseEvent(QKeyEvent *event);
 	void closeEvent (QCloseEvent * event);
-
+	void showEvent(QShowEvent *event);
 
 public:
 	void addRecentFile(const QString &PathNAme);

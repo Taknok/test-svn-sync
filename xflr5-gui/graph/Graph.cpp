@@ -510,11 +510,18 @@ int Graph::yVariable()
 }
 
 
-bool Graph::initializeGraph()
+bool Graph::initializeGraph(int width, int height)
 {
-	//graph width and height
-	m_w =  m_rCltRect.width()  -2*m_iMargin;
-	m_h =  m_rCltRect.height() -2*m_iMargin;
+	if(width>0 && height>0)
+	{
+		m_w =  width  -2*m_iMargin;
+		m_h =  height -2*m_iMargin;
+	}
+	else
+	{
+		m_w =  m_rCltRect.width()  -2*m_iMargin;
+		m_h =  m_rCltRect.height() -2*m_iMargin;
+	}
 
 	setXScale();
 	setYScale();

@@ -47,7 +47,7 @@ public:
 	bool bInverted();
 	bool isInDrawRect(int const &x, int const &y);
 	bool isInDrawRect(QPoint const &pt);
-	bool initializeGraph();
+	bool initializeGraph(int width=0, int height=0);
 
 	double clientTox(int x);
 	double clientToy(int y);
