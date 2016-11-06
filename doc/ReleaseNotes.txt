@@ -15,12 +15,12 @@
 *******************************************************************************
 
 
-xflr5 v6.30 November 7th, 2016
+xflr5 v6.30 November 6th, 2016
 	- updated the license from GPL v2 to v3
 	- separated the GUI from the analysis engines
 	- added an option to hide flap moments in the operating view
 	- added a style property for foil points
-	- corrected and improved the calculation and display of analysis with sideslip - impact on results
+	- corrected and improved the calculation and display of analysis with sideslip; impact on results
 	- code cleaning
 	- bug corrections and minor enhancements
 
