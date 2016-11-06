@@ -18,7 +18,6 @@ else
 
 
 CONFIG += qt
-CONFIG += link_prl
 QT += opengl
 TEMPLATE = app
 
