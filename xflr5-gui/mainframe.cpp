@@ -208,7 +208,6 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 	}
 
 
-
 	setWindowTitle(VERSIONNAME);
 	setWindowIcon(QIcon(":/images/xflr5_64.png"));
 
@@ -6867,10 +6866,6 @@ void MainFrame::loadLastProject()
 }
 
 
-
-
-
-
 void MainFrame::onExecuteScript()
 {
 	XflScriptExec scriptExecutor;
@@ -6881,7 +6876,14 @@ void MainFrame::onExecuteScript()
 	scriptExecutor.makePlaneAnalysisList();
 
 //	scriptExecutor.runScript();
-
 }
 
 
+void MainFrame::showEvent(QShowEvent *event)
+{
+	QXDirect *pXDirect = (QXDirect*)m_pXDirect;
+	// make sure the graph and foil scales have been initialized when we first display
+	// the foil operating point view
+	pXDirect->m_CpGraph.initializeGraph(m_pctrlCentralWidget->width(), m_pctrlCentralWidget->height());
+	event->ignore();
+}
