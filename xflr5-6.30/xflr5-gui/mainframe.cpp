@@ -255,7 +255,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 	QXInverse *pXInverse = (QXInverse*)m_pXInverse;
 	QMiarex *pMiarex     = (QMiarex*)m_pMiarex;
 
-#ifdef Q_OS_MAC
+#if defined Q_OS_MAC && defined MAC_NATIVE_PREFS
 		QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #else
 		QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
@@ -3410,8 +3410,8 @@ bool MainFrame::loadSettings()
 	QSize size;
 	
 
-#ifdef Q_OS_MAC
-        QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
+#if defined Q_OS_MAC && defined MAC_NATIVE_PREFS
+		QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #else
         QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
 #endif
@@ -4006,8 +4006,8 @@ void MainFrame::onResetSettings()
 	if(resp == QMessageBox::Yes)
 	{
 		QMessageBox::warning(this,tr("Default Settings"), tr("The settings will be reset at the next session"));
-#ifdef Q_OS_MAC
-        QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
+#if defined Q_OS_MAC && defined MAC_NATIVE_PREFS
+		QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #else
         QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
 #endif
@@ -5081,8 +5081,8 @@ void MainFrame::saveSettings()
 	QXInverse *pXInverse = (QXInverse*)m_pXInverse;
 
 	if(!m_bSaveSettings) return;
-#ifdef Q_OS_MAC
-        QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
+#if defined Q_OS_MAC && defined MAC_NATIVE_PREFS
+	QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #else
 	QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
 #endif
