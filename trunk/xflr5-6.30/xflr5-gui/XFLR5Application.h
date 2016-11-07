@@ -26,6 +26,7 @@
 #include <QApplication>
 #include "mainframe.h"
 
+
 class XFLR5Application : public QApplication
 {
     Q_OBJECT
