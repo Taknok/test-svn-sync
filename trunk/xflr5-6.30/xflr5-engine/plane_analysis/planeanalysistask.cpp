@@ -1609,8 +1609,6 @@ void PlaneAnalysisTask::LLTAnalyze()
 
 
 
-
-
 void PlaneAnalysisTask::PanelAnalyze()
 {
 	if(!m_thePanelAnalysis.m_pPlane || !m_thePanelAnalysis.m_pWPolar) return;

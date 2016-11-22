@@ -623,6 +623,7 @@ void WPolarDlg::readValues()
 		s_WPolar.viscosity() = m_pctrlViscosity->value() / 10.7182881;
 	}
 
+//    qDebug("%13.8g    %13.8g",m_pctrlViscosity->value(),s_WPolar.viscosity());
 
 	if(m_pctrlArea1->isChecked())
 	{
@@ -948,12 +949,12 @@ void WPolarDlg::setupLayout()
 					m_pctrlNu = new QLabel("n =");
 					m_pctrlRho->setAlignment(Qt::AlignRight | Qt::AlignCenter);
 					m_pctrlNu->setAlignment(Qt::AlignRight | Qt::AlignCenter);
-					m_pctrlViscosity = new DoubleEdit(1.500e-5,6);
+                    m_pctrlViscosity = new DoubleEdit(1.500e-5,3);
 					m_pctrlViscosityUnit = new QLabel("m2/s");
 					m_pctrlRho->setFont(symbolFont);
 					m_pctrlNu->setFont(symbolFont);
 					m_pctrlDensity->setPrecision(6);
-					m_pctrlViscosity->setPrecision(6);
+                    m_pctrlViscosity->setPrecision(3);
 					m_pctrlDensity->setMin(0.0);
 					m_pctrlViscosity->setMin(0.0);
 					pAeroDataValuesLayout->addWidget(m_pctrlRho,1,1);
