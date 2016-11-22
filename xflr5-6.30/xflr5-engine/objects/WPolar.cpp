@@ -897,9 +897,6 @@ void WPolar::retrieveInertia(void *ptr)
 }
 
 
-
-
-
 void WPolar::copy(WPolar *pWPolar)
 {
 	int i;
@@ -913,6 +910,9 @@ void WPolar::copy(WPolar *pWPolar)
 	m_WPolarType      = pWPolar->m_WPolarType;
 	m_bThinSurfaces   = pWPolar->bThinSurfaces();
 	m_nControls       = pWPolar->m_nControls;
+
+    m_Density         = pWPolar->m_Density;
+    m_Viscosity       = pWPolar->m_Viscosity;
 
 	clearData();
 
