@@ -533,6 +533,12 @@ bool PanelAnalysis::initializeAnalysis()
 	}
 	traceLog("\n");
 
+    strange = QString::fromUtf8("Density   = %1kg/m3").arg(m_pWPolar->density(), 11, 'g', 5);
+    traceLog(strange+"\n");
+    strange = QString::fromUtf8("Viscosity = %1m²/s").arg(m_pWPolar->viscosity(), 11, 'g', 5);
+    traceLog(strange+"\n\n");
+
+
 	// make sure the polar is up to date with the latest plane data
 	// should have been updated at the time when the polar was set
 	// but a user, who knows what he can do ?
@@ -552,13 +558,17 @@ bool PanelAnalysis::initializeAnalysis()
 	    {
 			m_pWPolar->referenceArea()       = m_pPlane->planformArea();
 			m_pWPolar->referenceSpanLength() = m_pPlane->planformSpan();
-	    }
+        }
 	    else if(m_pWPolar->referenceDim()==XFLR5::PLANFORMREFDIM)
 	    {
 			m_pWPolar->referenceArea()       = m_pPlane->projectedArea();
 			m_pWPolar->referenceSpanLength() = m_pPlane->projectedSpan();
 	    }
 	}
+    strange = QString::fromUtf8("Reference Area   = %1m²").arg(m_pWPolar->referenceArea(), 11, 'g', 5);
+    traceLog(strange+"\n");
+    strange = QString::fromUtf8("Reference length = %1m").arg(m_pWPolar->referenceSpanLength(), 11, 'g', 5);
+    traceLog(strange+"\n\n");
 
 /*	QString strUnitLabel;
 	strUnitLabel= Units::areaUnitLabel();
