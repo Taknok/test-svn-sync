@@ -1998,7 +1998,7 @@ void Wing::panelComputeViscous(double QInf, WPolar *pWPolar, double &WingVDrag, 
 
 	bOutRe = bError = bPointOutRe = bPointOutCl = false;
 
-	string = "m";
+	strLength = "m";
 
 	// Calculate the Reynolds number on each strip
 	for (m=0; m<m_NStation; m++)  m_Re[m] = m_Chord[m] * QInf /pWPolar->m_Viscosity;
@@ -2036,15 +2036,13 @@ void Wing::panelComputeViscous(double QInf, WPolar *pWPolar, double &WingVDrag, 
 
 			if(bPointOutCl)
 			{
-				/** @todo restore length unit */
 				strong = QString(QObject::tr("           Span pos = %1 ")).arg(m_SpanPos[m], 9,'f',2);
-				strong += string;
+				strong += strLength;
 				strong += ",  Re = ";
 				string.sprintf("%.0f", m_Re[m]);
 				strong += string;
 
-				string = QString(QObject::tr(",  Cl = %1 could not be interpolated")+"\n").arg(m_Cl[m],6,'f',2);
-				strong+= string;
+				strong+= QString(QObject::tr(",  Cl = %1 could not be interpolated")+"\n").arg(m_Cl[m],6,'f',2);
 				OutString += strong;
 
 				m_bWingOut = true;
@@ -2052,12 +2050,11 @@ void Wing::panelComputeViscous(double QInf, WPolar *pWPolar, double &WingVDrag, 
 			else if(bPointOutRe)
 			{
 				strong = QString(QObject::tr("           Span pos = %1 ")).arg(m_SpanPos[m],9,'f',2);
-				strong += string;
+				strong += strLength;
 				strong += ",  Re = ";
 				string.sprintf("%.0f", m_Re[m]);
 				strong += string;
-				string = QString(QObject::tr(",  Cl = %1 is outside the flight envelope")+"\n").arg(m_Cl[m],6,'f',2);
-				strong += string;
+				strong += QString(QObject::tr(",  Cl = %1 is outside the flight envelope")+"\n").arg(m_Cl[m],6,'f',2);
 				OutString += strong;
 
 				m_bWingOut = true;
