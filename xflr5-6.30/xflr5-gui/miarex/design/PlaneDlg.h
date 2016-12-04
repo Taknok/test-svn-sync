@@ -60,6 +60,7 @@ private slots:
 	void onChanged();
 	void onDescriptionChanged();
 	void onImportWing();
+	void onDefaultBody();
 	void onPlaneName();
 	void onSymFin();
 	void onDoubleFin();

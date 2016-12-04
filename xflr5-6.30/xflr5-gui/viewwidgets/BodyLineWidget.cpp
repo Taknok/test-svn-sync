@@ -165,7 +165,7 @@ void BodyLineWidget::drawBodyPoints()
 			pointPen.setWidth(4);
 			pointPen.setColor(Qt::red);
 		}
-		else if(m_pBody->m_iHighlight==k)
+		else if(m_pBody->m_iHighlightFrame==k)
 		{
 			pointPen.setWidth(4);
 			pointPen.setColor(m_pBody->m_BodyColor.lighter());
@@ -229,6 +229,7 @@ void BodyLineWidget::onScaleBody()
 	}
 }
 
+
 void BodyLineWidget::onInsertPt()
 {
 	CVector Real = mousetoReal(m_PointDown);
@@ -250,11 +251,10 @@ void BodyLineWidget::onRemovePt()
 }
 
 
-
 int BodyLineWidget::highlightPoint(CVector real)
 {
-	m_pBody->m_iHighlight = m_pBody->isFramePos(CVector(real.x, 0.0, real.y), m_fScale/m_fRefScale);
-	return m_pBody->m_iHighlight;
+	m_pBody->m_iHighlightFrame = m_pBody->isFramePos(CVector(real.x, 0.0, real.y), m_fScale/m_fRefScale);
+	return m_pBody->m_iHighlightFrame;
 }
 
 

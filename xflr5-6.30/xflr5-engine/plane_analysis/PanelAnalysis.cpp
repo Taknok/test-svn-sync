@@ -1232,12 +1232,15 @@ void PanelAnalysis::computeFarField(double QInf, double Alpha0, double AlphaDelt
 
 	for (q=0; q<nval;q++)
 	{
-		if(m_pWPolar->polarType()==XFLR5::FIXEDAOAPOLAR)       alpha = m_OpAlpha;
-		else if(m_pWPolar->polarType()==XFLR5::BETAPOLAR)      alpha = m_OpAlpha;
-		else if(m_pWPolar->polarType()==XFLR5::STABILITYPOLAR) alpha= m_OpAlpha;
-		else                                            alpha = Alpha0 + q*AlphaDelta;
-
-		WindNormal.set(-sin(alpha*PI/180.0),   0.0, cos(alpha*PI/180.0));
+		if(m_pWPolar->bTilted()) alpha = m_OpAlpha;
+		else
+		{
+			if(m_pWPolar->polarType()==XFLR5::FIXEDAOAPOLAR)       alpha = m_OpAlpha;
+			else if(m_pWPolar->polarType()==XFLR5::BETAPOLAR)      alpha = m_OpAlpha;
+			else if(m_pWPolar->polarType()==XFLR5::STABILITYPOLAR) alpha = m_OpAlpha;
+			else                                                   alpha = Alpha0 + q*AlphaDelta;
+		}
+		WindNormal.set(-sin(alpha*PI/180.0), 0.0, cos(alpha*PI/180.0));
 
 		pos = 0;
 		Mu     = m_Mu    + q*m_MatSize;
@@ -1426,7 +1429,7 @@ void PanelAnalysis::computeAeroCoefs(double V0, double VDelta, int nrhs)
 			if(s_bCancel) return;
 			str = QString("      Computing Plane for QInf=%1m/s").arg((V0+q*VDelta),7,'f',2);
 			traceLog(str);
-			computePlane(m_Alpha, V0+q*VDelta, q);
+			computePlane(m_OpAlpha, V0+q*VDelta, q);
 			m_Progress += 5.0*(double)nrhs /(double)nrhs;
 //			qApp->processEvents();
 		}
@@ -1439,7 +1442,7 @@ void PanelAnalysis::computeAeroCoefs(double V0, double VDelta, int nrhs)
 			str = QString("      Computing Plane for beta=%1").arg((m_OpBeta),0,'f',1);
 			str += QString::fromUtf8("°\n");
 			traceLog(str);
-			computePlane(m_Alpha, m_3DQInf[q], q);
+			computePlane(m_OpAlpha, m_3DQInf[q], q);
 			m_Progress += 5.0*(double)nrhs /(double)nrhs;
 //			qApp->processEvents();
 		}
@@ -2366,6 +2369,8 @@ bool PanelAnalysis::unitLoop()
 
 			computeOnBodyCp(0.0, m_vDelta, 1);
 			if (s_bCancel) return true;
+
+
 
 //			if(MaxWakeIter>0 && m_pWPolar->bWakeRollUp()) RelaxWake();
 		}
@@ -4408,7 +4413,7 @@ void PanelAnalysis::rotateGeomY(double const &Alpha, CVector const &P, int NXWak
 		TALB = m_pNode[iTA] - m_pNode[iLB];
 
 		if(m_pPanel[p].m_Pos==MIDSURFACE || m_pPanel[p].m_Pos==TOPSURFACE) m_pPanel[p].setPanelFrame(m_pNode[iLA], m_pNode[iLB], m_pNode[iTA], m_pNode[iTB]);
-		else if (m_pPanel[p].m_Pos==BOTSURFACE)                          m_pPanel[p].setPanelFrame(m_pNode[iLB], m_pNode[iLA], m_pNode[iTB], m_pNode[iTA]);
+		else if (m_pPanel[p].m_Pos==BOTSURFACE)                            m_pPanel[p].setPanelFrame(m_pNode[iLB], m_pNode[iLA], m_pNode[iTB], m_pNode[iTA]);
 	}
 
 	// the wake array is not rotated but translated to remain at the wing's trailing edge
@@ -4476,11 +4481,6 @@ void PanelAnalysis::rotateGeomZ(double const &Beta, CVector const &P, int NXWake
 	int n, p, pw, kw, lw;
 	int iLA, iLB, iTA, iTB;
 	CVector Pt, Trans;
-	// first restore the panel geometry
-/*	memcpy(m_pPanel,     m_pMemPanel,  m_MatSize    * sizeof(Panel));
-	memcpy(m_pNode,      m_pMemNode,   m_nNodes     * sizeof(CVector));
-	memcpy(m_pWakePanel, m_pWakePanel, m_WakeSize   * sizeof(Panel));
-	memcpy(m_pWakeNode,  m_pWakeNode,  m_nWakeNodes * sizeof(CVector));*/
 
 	for (n=0; n<m_nNodes; n++)	m_pNode[n].rotateZ(P, Beta);
 

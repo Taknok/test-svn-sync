@@ -514,9 +514,9 @@ void Section2dWidget::mouseReleaseEvent(QMouseEvent *event)
 	else if(m_bDrag)
 	{
 		// finished dragging a point
-		// notify the world
-		emit objectModified();
 	}
+	// notify the world
+	emit objectModified();
 
 	setCursor(m_hcCross);
 	m_bTrans = false;
