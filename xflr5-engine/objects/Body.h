@@ -150,13 +150,12 @@ public:
 	QString m_BodyName;                       /**< the Body's name, used as its reference */
 	QString m_BodyDescription;                /**< a free description for the Body */
 
-
 	NURBSSurface m_SplineSurface;             /**< the spline surface which defines the left (port) side of the body */
 
 	XFLR5::enumBodyLineType m_LineType;              /**< the type of body surfaces 1=PANELS  2=NURBS */
 
-	int m_iActiveFrame;		                  /**< the currently selected frame for display */
-	int m_iHighlight;                         /**< the currently selected point to highlight */
+	int m_iActiveFrame;		                  /**< the currently selected Frame for display */
+	int m_iHighlightFrame;                    /**< the currently selected Frame to highlight */
 	int m_NElements;                          /**< the number of mesh elements for this Body object = m_nxPanels * m_nhPanels *2 */
 	int m_nxPanels;                           /**< For a NURBS body, the number of mesh elements in the direction of the x-axis */
 	int m_nhPanels;                           /**< For a NURBS body, the number of mesh elements in the hoop direction */

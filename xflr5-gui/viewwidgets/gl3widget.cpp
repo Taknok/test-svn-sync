@@ -2112,7 +2112,9 @@ void GL3Widget::glRenderGL3DBodyView()
 	if(pBody)
 	{
 		paintBody(pDlg->m_pBody);
-		if(pDlg->m_pFrame) paintSectionHighlight();
+//		if(pDlg->m_pFrame)
+		if(pDlg->m_pBody->activeFrame())
+			paintSectionHighlight();
 		if(m_bVLMPanels) paintBodyMesh(pDlg->m_pBody);
 	}
 

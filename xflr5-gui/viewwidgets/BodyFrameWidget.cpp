@@ -133,10 +133,13 @@ void BodyFrameWidget::drawFrameLines()
 	else
 	{
 		Frame *pFrame = m_pBody->activeFrame();
-		for (k=0; k<m_pBody->sideLineCount();k++)
+		if(pFrame)
 		{
-			rightPolyline.append(QPointF( pFrame->m_CtrlPoint[k].y*m_fScale+m_ptOffset.x(), pFrame->m_CtrlPoint[k].z* -m_fScale + m_ptOffset.y()));
-			leftPolyline.append( QPointF(-pFrame->m_CtrlPoint[k].y*m_fScale+m_ptOffset.x(), pFrame->m_CtrlPoint[k].z* -m_fScale + m_ptOffset.y()));
+			for (k=0; k<m_pBody->sideLineCount();k++)
+			{
+				rightPolyline.append(QPointF( pFrame->m_CtrlPoint[k].y*m_fScale+m_ptOffset.x(), pFrame->m_CtrlPoint[k].z* -m_fScale + m_ptOffset.y()));
+				leftPolyline.append( QPointF(-pFrame->m_CtrlPoint[k].y*m_fScale+m_ptOffset.x(), pFrame->m_CtrlPoint[k].z* -m_fScale + m_ptOffset.y()));
+			}
 		}
 	}
 

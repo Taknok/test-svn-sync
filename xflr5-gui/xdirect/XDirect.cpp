@@ -1245,8 +1245,8 @@ void QXDirect::onAnalyze()
 	m_pctrlInitBL->setChecked(s_bInitBL);;
 
 	s_pMainFrame->updateOppListBox();
-
-	setOpp();
+	if(s_bAlpha) setOpp(m_Alpha);
+	else         setOpp();
 
 	QGraph::setOppHighlighting(bHigh);
 

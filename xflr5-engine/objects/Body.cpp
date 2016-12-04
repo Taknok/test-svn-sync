@@ -36,7 +36,7 @@ Body::Body()
 	m_BodyWidth = 1;
 
 	m_iActiveFrame =  1;
-	m_iHighlight   = -1;
+	m_iHighlightFrame   = -1;
 	m_LineType     =  XFLR5::BODYSPLINETYPE;
 
 	m_nxPanels = 19;
@@ -558,7 +558,7 @@ int Body::insertFrame(CVector Real)
 
 	if(n>=frameCount())	m_iActiveFrame = frameCount();
 	if(n<=0)			m_iActiveFrame = 0;
-	m_iHighlight = -1;
+	m_iHighlightFrame = -1;
 
 	m_xPanels.insert(n, 1);
 
@@ -875,7 +875,7 @@ int Body::removeFrame(int n)
 	m_SplineSurface.m_pFrame.removeAt(n);
 
 	m_iActiveFrame = qMin(n, m_SplineSurface.m_pFrame.size());
-	m_iHighlight = -1;
+	m_iHighlightFrame = -1;
 	setNURBSKnots();
 	return m_iActiveFrame;
 }
@@ -889,7 +889,7 @@ void Body::removeActiveFrame()
 	m_SplineSurface.removeFrame(m_iActiveFrame);
 
 
-	m_iHighlight = -1;
+	m_iHighlightFrame = -1;
 	setNURBSKnots();
 }
 

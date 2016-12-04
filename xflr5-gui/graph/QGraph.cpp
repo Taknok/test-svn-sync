@@ -467,7 +467,7 @@ void QGraph::drawYMajGrid(QPainter &painter)
 	if(qAbs(ymax-ymin)/yunit>30.0) return;
 
 	painter.save();
-	int width;
+	int width=1;
 	if(m_YMajWidth<=1) width = 1;
 
 	QPen GridPen(m_YMajClr);
