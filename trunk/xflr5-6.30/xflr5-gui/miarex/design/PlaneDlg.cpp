@@ -434,7 +434,6 @@ void PlaneDlg::onImportPlaneBody()
 
 	if(dlg.exec() == QDialog::Accepted)
 	{
-		m_bChanged = true;
 		Body *pOldBody = Objects3D::getBody(dlg.m_ObjectName);
 		if(pOldBody)
 		{
@@ -444,6 +443,18 @@ void PlaneDlg::onImportPlaneBody()
 		}
 	}
 }
+
+
+void PlaneDlg::onDefaultBody()
+{
+	QString strong = tr("Revert to the default body definition ?");
+	if (QMessageBox::Yes != QMessageBox::question(this, tr("Question"), strong, QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel)) return;
+
+	Body aNewBody;
+	m_pPlane->m_Body.duplicate(&aNewBody);
+	m_bChanged = true;
+}
+
 
 
 
@@ -986,11 +997,14 @@ void PlaneDlg::setupLayout()
 		{
 			m_pctrlBody = new QCheckBox(tr("Body"));
 
-			QAction *pDefineBody= new QAction(tr("Define"), this);
+			QAction *pDefineBody= new QAction(tr("Edit"), this);
 			connect(pDefineBody, SIGNAL(triggered()), this, SLOT(onDefineBody()));
 
 			QAction *pDefineBodyObject= new QAction(tr("Define (Advanced users)"), this);
 			connect(pDefineBodyObject, SIGNAL(triggered()), this, SLOT(onDefineBodyObject()));
+
+			QAction *pDefaultBody= new QAction(tr("Reset default"), this);
+			connect(pDefaultBody, SIGNAL(triggered()), this, SLOT(onDefaultBody()));
 
 			QAction *pImportXMLBody= new QAction(tr("Import body definition from an XML file"), this);
 			connect(pImportXMLBody, SIGNAL(triggered()), this, SLOT(onImportXMLBody()));
@@ -1004,6 +1018,7 @@ void PlaneDlg::setupLayout()
 			QMenu *pBodyMenu = new QMenu(tr("Actions..."),this);
 			pBodyMenu->addAction(pDefineBody);
 			pBodyMenu->addAction(pDefineBodyObject);
+			pBodyMenu->addAction(pDefaultBody);
 			pBodyMenu->addAction(pImportXMLBody);
 			pBodyMenu->addAction(pImportPlaneBody);
 			m_pctrlBodyActions->setMenu(pBodyMenu);

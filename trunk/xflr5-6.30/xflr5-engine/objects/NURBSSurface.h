@@ -32,8 +32,8 @@
 
 #include "Frame.h"
 
-#define MAXVLINES      17
-#define MAXULINES      19
+#define MAXVLINES      100
+#define MAXULINES      100
 
 
 /**

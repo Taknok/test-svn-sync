@@ -841,7 +841,7 @@ void GL3dBodyDlg::onScaleBody()
 	{
 		takePicture();
 		m_pBody->scale(dlg.m_XFactor, dlg.m_YFactor, dlg.m_ZFactor, dlg.m_bFrameOnly, dlg.m_FrameID);
-		m_bResetglBody     = true;
+		m_bResetglBody = true;
 		fillFrameDataTable();
 		fillPointDataTable();
 
@@ -853,7 +853,7 @@ void GL3dBodyDlg::onScaleBody()
 void GL3dBodyDlg::onUpdateBody()
 {
 	m_bChanged = true;
-	m_bResetglBody     = true;
+	m_bResetglBody = true;
 	fillFrameDataTable();
 	fillPointDataTable();
 	updateView();
@@ -1173,8 +1173,6 @@ bool GL3dBodyDlg::setBody(Body *pBody)
 }
 
 
-
-
 void GL3dBodyDlg::setFrame(int iFrame)
 {
 	if(!m_pBody) return;
@@ -1185,6 +1183,7 @@ void GL3dBodyDlg::setFrame(int iFrame)
 	m_bResetglFrameHighlight = true;
 	fillPointDataTable();;
 }
+
 
 void GL3dBodyDlg::setFrame(Frame *pFrame)
 {

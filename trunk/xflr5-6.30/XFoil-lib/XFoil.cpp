@@ -2344,7 +2344,6 @@ bool XFoil::Gauss(int nn, double z[][6], double r[5]){
  *                                                     *
  *                              mark drela  1984       *
  *******************************************************/
-// arcds : only one rhs is enough ! nrhs = 1
 // dimension z(nsiz,nsiz), r(nsiz,nrhs)
 
 	int loc;
