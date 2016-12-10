@@ -825,7 +825,7 @@ void drawFoil(QPainter &painter, Foil*pFoil, double const &alpha, double const &
 {
 	double xa, ya, sina, cosa;
 	QPointF From, To;
-	QRectF R;
+
 	int k;
 	QPen FoilPen, HighPen;
 
@@ -844,22 +844,6 @@ void drawFoil(QPainter &painter, Foil*pFoil, double const &alpha, double const &
 	From.rx() = ( xa*scalex + Offset.x());
 	From.ry() = (-ya*scaley + Offset.y());
 
-/*	if(pFoil->showPoints())
-	{
-		R.setLeft(( xa*scalex) + Offset.x() -2);
-		R.setTop( (-ya*scaley) + Offset.y() -2);
-		R.setWidth(4);
-		R.setHeight(4);
-		painter.drawRect(R);
-	}
-	if(pFoil->showPoints() && pFoil->iHighLight()==0)
-	{
-		HighPen.setWidth(2);
-		painter.setPen(HighPen);
-		painter.drawRect(R);
-		painter.setPen(FoilPen);
-	}*/
-
 	for (k=1; k<pFoil->n; k++)
 	{
 		xa = (pFoil->x[k]-0.5)*cosa - pFoil->y[k]*sina+ 0.5;
@@ -868,22 +852,6 @@ void drawFoil(QPainter &painter, Foil*pFoil, double const &alpha, double const &
 		To.ry() = -ya*scaley+Offset.y();
 
 		painter.drawLine(From,To);
-
-/*		if(pFoil->showPoints())
-		{
-			R.setLeft(  xa*scalex + Offset.x() -2);
-			R.setTop(  -ya*scaley + Offset.y() -2);
-			R.setWidth(3);
-			R.setHeight(3);
-			painter.drawRect(R);
-		}
-		if(pFoil->showPoints() && pFoil->iHighLight()==k)
-		{
-			HighPen.setWidth(2);
-			painter.setPen(HighPen);
-			painter.drawRect(R);
-			painter.setPen(FoilPen);
-		}*/
 
 		From = To;
 	}
@@ -938,8 +906,6 @@ void drawMidLine(QPainter &painter, Foil*pFoil, double const &scalex, double con
  */
 void drawPoints(QPainter &painter, Foil*pFoil, double alpha, double const &scalex, double const &scaley, QPointF const &Offset)
 {
-	QPoint pt1;
-
 	QPen FoilPen, HighPen;
 	FoilPen.setColor(colour(pFoil));
 	FoilPen.setWidth(pFoil->foilLineWidth());

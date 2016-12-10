@@ -253,7 +253,7 @@ void QXDirect::setControls()
 	s_pMainFrame->m_pOpPointsAct->setChecked(!m_bPolarView);
 	s_pMainFrame->m_pPolarsAct->setChecked(m_bPolarView);
 
-	s_pMainFrame->m_pShowPanels->setChecked(m_bShowPanels);
+//	s_pMainFrame->m_pShowPanels->setChecked(m_bShowPanels);
 	s_pMainFrame->m_pShowNeutralLine->setChecked(m_bNeutralLine);
 	s_pMainFrame->m_pShowInviscidCurve->setChecked(m_bShowInviscid);
 	s_pMainFrame->m_pShowCurOppOnly->setChecked(m_bCurOppOnly);
@@ -384,7 +384,7 @@ void QXDirect::createOppCurves(OpPoint *pOpp)
 		pCurve1    = m_CpGraph.addCurve();
 		int r,g,b,a;
 		pOpPoint->getColor(r,g,b,a);
-		QColor clr(r,g,b,a);
+//		QColor clr(r,g,b,a);
 		pCurve1->setLineStyle(pOpPoint->oppStyle(), pOpPoint->oppWidth(), colour(pOpPoint), pOpPoint->pointStyle(), pOpPoint->isVisible());
 
 		str = QString("-Re=%1-Alpha=%2").arg(pOpPoint->Reynolds(),8,'f',0).arg(pOpPoint->aoa(),5,'f',2);

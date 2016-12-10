@@ -55,7 +55,7 @@ OpPointWidget::OpPointWidget(QWidget *parent) : QWidget(parent)
 	m_bBL          = false;
 	m_bPressure    = false;
 	m_bNeutralLine = true;
-	m_bShowPanels  = false;
+//	m_bShowPanels  = false;
 	m_bXPressed = m_bYPressed = false;
 
 	m_iNeutralStyle = 2;
@@ -485,13 +485,15 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
 
 
 	drawFoil(painter, Foil::curFoil(), -Alpha, m_fScale, m_fScale*m_fYScale, m_FoilOffset);
-	if(m_bShowPanels)
+	if(Foil::curFoil()->foilPointStyle()>0) drawPoints(painter, Foil::curFoil(), -Alpha, m_fScale,m_fScale*m_fYScale, m_FoilOffset);
+
+/*	if(m_bShowPanels)
 	{
 		int memPts = Foil::curFoil()->foilPointStyle();
 		Foil::curFoil()->foilPointStyle() = qMax(memPts, 1);
 		drawPoints(painter, Foil::curFoil(), -Alpha, m_fScale, m_fScale*m_fYScale, m_FoilOffset);
 		Foil::curFoil()->foilPointStyle() = memPts;
-	}
+	}*/
 
 	if(m_bPressure && OpPoint::curOpp()) paintPressure(painter, m_fScale, m_fScale*m_fYScale);
 	if(m_bBL && OpPoint::curOpp())       paintBL(painter, OpPoint::curOpp(), m_fScale, m_fScale*m_fYScale);
@@ -707,6 +709,8 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
 			}
 		}
 	}
+
+
 	painter.restore();
 }
 
@@ -1015,13 +1019,13 @@ void OpPointWidget::onShowNeutralLine()
 /**
  * The user has toggled the display of the Foil's panels.
  */
-void OpPointWidget::onShowPanels()
+/*void OpPointWidget::onShowPanels()
 {
 	m_bShowPanels = !m_bShowPanels;
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 	pMainFrame->m_pShowPanels->setChecked(m_bShowPanels);
 	update();
-}
+}*/
 
 
 /**

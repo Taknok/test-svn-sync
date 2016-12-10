@@ -36,7 +36,7 @@ public:
     LinePickerDlg(QWidget *pParent);
 
 	void initDialog();
-	void initDialog(int pointStyle, int lineStyle, int width, QColor color, bool bAcceptPointStyle=false);
+	void initDialog(int pointStyle, int lineStyle, int lineWidth, QColor lineColor, bool bAcceptPointStyle=false);
 
 	void keyPressEvent(QKeyEvent *event);
 
@@ -63,8 +63,8 @@ private:
 	bool m_bAcceptPointStyle;
 	int m_PointStyle;
 	int m_LineStyle;
-	int m_Width;
-	QColor m_Color;
+	int m_LineWidth;
+	QColor m_LineColor;
 	void* m_pParent;
 	LineDelegate *m_pPointStyleDelegate, *m_pLineStyleDelegate, *m_pWidthDelegate;
 
