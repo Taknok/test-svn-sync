@@ -374,7 +374,7 @@ private:
 	QAction *m_pHideFoilOpps, *m_pShowFoilOpps, *m_pDeleteFoilOpps;
 	QAction *m_pHidePolarOpps, *m_pShowPolarOpps, *m_pDeletePolarOpps;
 	QAction *m_pExportCurOpp, *m_pDeleteCurOpp, *m_pGetOppProps, *m_pGetPolarProps;
-	QAction *m_pViewXFoilAdvanced, *m_pViewLogFile, *m_pShowPanels, *m_pShowNeutralLine, *m_pResetFoilScale, *m_pShowInviscidCurve;
+	QAction *m_pViewXFoilAdvanced, *m_pViewLogFile, *m_pShowNeutralLine, *m_pResetFoilScale, *m_pShowInviscidCurve;
 	QAction *m_pExportCurFoil, *m_pDeleteCurFoil, *m_pRenameCurFoil, *m_pSetCurFoilStyle;
 	QAction *m_pDerotateFoil, *m_pNormalizeFoil, *m_pRefineLocalFoil, *m_pRefineGlobalFoil , *m_pEditCoordsFoil, *m_pScaleFoil;
 	QAction *m_pSetTEGap, *m_pSetLERadius, *m_pSetFlap, *m_pInterpolateFoils, *m_pNacaFoils, *m_pDirectDuplicateCurFoil;

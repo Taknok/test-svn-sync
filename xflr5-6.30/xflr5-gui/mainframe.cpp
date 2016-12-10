@@ -2355,9 +2355,9 @@ void MainFrame::createXDirectActions()
 	m_pShowNeutralLine = new QAction(tr("Neutral Line"), this);
 	m_pShowNeutralLine->setCheckable(true);
 
-	m_pShowPanels = new QAction(tr("Show Panels"), this);
+/*	m_pShowPanels = new QAction(tr("Show Panels"), this);
 	m_pShowPanels->setCheckable(true);
-	m_pShowPanels->setStatusTip(tr("Show the foil's panels"));
+	m_pShowPanels->setStatusTip(tr("Show the foil's panels"));*/
 
 	m_pResetFoilScale = new QAction(tr("Reset Foil Scale"), this);
 	m_pResetFoilScale->setStatusTip(tr("Resets the foil's scale to original size"));
@@ -2550,7 +2550,7 @@ void MainFrame::createXDirectMenus()
 		}
 		m_pXDirectFoilMenu->addSeparator();
 		m_pXDirectFoilMenu->addAction(m_pResetFoilScale);
-		m_pXDirectFoilMenu->addAction(m_pShowPanels);
+//		m_pXDirectFoilMenu->addAction(m_pShowPanels);
 		m_pXDirectFoilMenu->addAction(m_pShowNeutralLine);
 		m_pXDirectFoilMenu->addAction(m_pXDirectStyleAct);
 	}
@@ -2764,7 +2764,7 @@ void MainFrame::createXDirectMenus()
 		m_pOperFoilCtxMenu->addAction(m_pHideAllOpPoints);
 		m_pOperFoilCtxMenu->addSeparator();//_______________
 		m_pOperFoilCtxMenu->addAction(m_pResetFoilScale);
-		m_pOperFoilCtxMenu->addAction(m_pShowPanels);
+//		m_pOperFoilCtxMenu->addAction(m_pShowPanels);
 		m_pOperFoilCtxMenu->addAction(m_pShowNeutralLine);
 		m_pOperFoilCtxMenu->addAction(m_pXDirectStyleAct);
 		m_pOperFoilCtxMenu->addSeparator();//_______________
@@ -3742,17 +3742,21 @@ void MainFrame::onCurFoilStyle()
 	if(!Foil::curFoil()) return;
 
 	LinePickerDlg dlg(this);
-	dlg.initDialog(Foil::curFoil()->foilPointStyle(), Foil::curFoil()->foilLineStyle(), Foil::curFoil()->foilLineWidth(), colour(Foil::curFoil()));
+	dlg.initDialog(Foil::curFoil()->foilPointStyle(), Foil::curFoil()->foilLineStyle(), Foil::curFoil()->foilLineWidth(),
+				   colour(Foil::curFoil()), true);
 
 	if(QDialog::Accepted==dlg.exec())
 	{
 		Foil::curFoil()->setColor(dlg.lineColor().red(), dlg.lineColor().green(), dlg.lineColor().blue(), dlg.lineColor().alpha());
 		Foil::curFoil()->foilLineStyle() = dlg.lineStyle();
-		Foil::curFoil()->foilLineWidth() = dlg.width();
+		Foil::curFoil()->foilLineWidth() = dlg.lineWidth();
+		Foil::curFoil()->foilPointStyle() = dlg.pointStyle();
+
 		QXDirect *pXDirect = (QXDirect*)m_pXDirect;
 		pXDirect->m_BufferFoil.setColor(Foil::curFoil()->red(), Foil::curFoil()->green(), Foil::curFoil()->blue(), Foil::curFoil()->alphaChannel());
-		pXDirect->m_BufferFoil.foilLineStyle() = Foil::curFoil()->foilLineStyle();
-		pXDirect->m_BufferFoil.foilLineWidth() = Foil::curFoil()->foilLineWidth();
+		pXDirect->m_BufferFoil.foilLineStyle()  = Foil::curFoil()->foilLineStyle();
+		pXDirect->m_BufferFoil.foilLineWidth()  = Foil::curFoil()->foilLineWidth();
+		pXDirect->m_BufferFoil.foilPointStyle() = Foil::curFoil()->foilPointStyle();
 		setSaveState(false);
 	}
 

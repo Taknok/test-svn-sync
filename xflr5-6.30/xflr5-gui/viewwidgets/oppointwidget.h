@@ -41,7 +41,7 @@ public:
 public slots:
 	void onXDirectStyle();
 	void onShowNeutralLine();
-	void onShowPanels();
+//	void onShowPanels();
 	void onResetFoilScale();
 
 	void onShowPressure(bool bPressure);
@@ -96,7 +96,7 @@ private:
 	bool m_bBL;                /**< true if the Boundary layer shoud be displayed */
 	bool m_bPressure;          /**< true if the pressure distirbution should be displayed */
 	bool m_bNeutralLine;
-	bool m_bShowPanels;
+//	bool m_bShowPanels;
 	bool m_bXPressed;                  /**< true if the X key is pressed */
 	bool m_bYPressed;                  /**< true if the Y key is pressed */
 
