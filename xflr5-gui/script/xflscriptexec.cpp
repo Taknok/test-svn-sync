@@ -198,7 +198,7 @@ void XflScriptExec::loadFoilPolarFiles()
 			}
 			else
 			{
-				traceLog("   failed to add the foil: "+pFoil->foilName());
+				traceLog("   failed to add the foil from: "+polarPathName);
 			}
 		}
 	}
@@ -227,7 +227,7 @@ void XflScriptExec::makeFoils()
 			}
 			else
 			{
-				traceLog("   failed to add the foil: "+pFoil->foilName());
+				traceLog("   failed to add the foil from "+foilPathName);
 			}
 		}
 	}

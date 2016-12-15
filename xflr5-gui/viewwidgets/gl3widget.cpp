@@ -1307,7 +1307,11 @@ void GL3Widget::glMakeBodySplines(Body *pBody)
 	int j, k, l, p;
 	double v;
 
-	if(!pBody) return;
+	if(!pBody)
+	{
+		delete [] m_T;
+		return;
+	}
 
 	CVector Point;
 	double hinc, u;
@@ -2115,10 +2119,10 @@ void GL3Widget::glRenderGL3DBodyView()
 //		if(pDlg->m_pFrame)
 		if(pDlg->m_pBody->activeFrame())
 			paintSectionHighlight();
-		if(m_bVLMPanels) paintBodyMesh(pDlg->m_pBody);
+		if(m_bVLMPanels) paintBodyMesh(pBody);
+		if(m_bShowMasses) paintMasses(pBody->volumeMass(), CVector(0.0,0.0,0.0), "Structural mass", pBody->m_PointMass);
 	}
 
-	if(m_bShowMasses) paintMasses(pBody->volumeMass(), CVector(0.0,0.0,0.0), "Structural mass", pBody->m_PointMass);
 }
 
 
@@ -2131,10 +2135,10 @@ void GL3Widget::glRenderEditBodyView()
 	if(pBody)
 	{
 		paintBody(pDlg->m_pBody);
-		if(m_bVLMPanels) paintBodyMesh(pDlg->m_pBody);
+		if(m_bVLMPanels) paintBodyMesh(pBody);
+		if(m_bShowMasses) paintMasses(pBody->volumeMass(), CVector(0.0,0.0,0.0), "Structural mass", pBody->m_PointMass );
 	}
 
-	if(m_bShowMasses) paintMasses(pBody->volumeMass(), CVector(0.0,0.0,0.0), "Structural mass", pBody->m_PointMass );
 }
 
 
@@ -3831,7 +3835,6 @@ void GL3Widget::paintWing(int iWing, Wing *pWing)
 				else                                     m_pWingTopRightTexture[iWing]->release();
 			}
 			pos += (CHORDPOINTS-1)*2*3;
-
 			// bottom surface
 			if(bTextures)
 			{
@@ -3849,7 +3852,7 @@ void GL3Widget::paintWing(int iWing, Wing *pWing)
 
 		for (int j=0; j<pWing->m_Surface.count(); j++)
 		{
-			//topsurface
+			//tip ssurface
 			if(pWing->m_Surface.at(j)->isTipLeft())
 			{
 				glDrawElements(GL_TRIANGLES, (CHORDPOINTS-1)*2*3, GL_UNSIGNED_SHORT, wingIndicesArray+pos);

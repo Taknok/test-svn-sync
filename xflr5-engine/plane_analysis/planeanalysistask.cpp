@@ -32,7 +32,6 @@ PlaneAnalysisTask::PlaneAnalysisTask()
 	m_pPlane = NULL;
 	m_pWPolar = NULL;
 
-
 	m_pParent = NULL;
 
 	m_Node = m_MemNode = m_WakeNode = m_RefWakeNode = NULL;
@@ -1376,7 +1375,7 @@ int PlaneAnalysisTask::isNode(CVector &Pt)
 
 /**
  * Reserves the memory necessary to all the arrays used in a Panel analysis.
- *@return true if the memory could be allocated, false otherwise.
+ * @return true if the memory could be allocated, false otherwise.
  */
 bool PlaneAnalysisTask::allocatePanelArrays(int &memsize)
 {

@@ -684,7 +684,12 @@ void Wing::createSurfaces(CVector const &T, double XTilt, double YTilt)
 	}
 
 
-	if(nSurf<=0) return;
+	if(nSurf<=0)
+	{
+		delete[] VNormal;
+		delete[] VNSide;
+		return;
+	}
 	int NSurfaces = nSurf;
 
 

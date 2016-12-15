@@ -940,8 +940,8 @@ void  Foil::setLEFlapData(bool bFlap, double xhinge, double yhinge, double angle
  */
 void Foil::setLEFlap()
 {
-	int i, j, k, l, p, i1, i2;
-	i=j=k=l=p=i1=i2=0;
+	int  j,k, l, p, i1, i2;
+	j=k=l=p=i1=i2=0;
 	double xh, yh, dx, dy;
 	CVector M;
 	bool bIntersect;
@@ -958,7 +958,7 @@ void Foil::setLEFlap()
 	// insert a breakpoint at xhinge location, if there isn't one already
 	int iUpperh = 0;
 	int iLowerh = 0;
-	for (i=0; i<m_iExt; i++)
+	for (int i=0; i<m_iExt; i++)
 	{
 		if(qAbs(m_rpExtrados[i].x-xh)<0.001)
 		{
@@ -983,7 +983,7 @@ void Foil::setLEFlap()
 		}
 	}
 
-	for (i=0; i<m_iInt; i++)
+	for (int i=0; i<m_iInt; i++)
 	{
 		if(qAbs(m_rpIntrados[i].x-xh)<0.001)
 		{
@@ -1011,7 +1011,7 @@ void Foil::setLEFlap()
 	if(m_LEFlapAngle>0.0)
 	{
 		//insert an extra point on intrados
-		for (i=m_iInt+1; i>iLowerh; i--)
+		for (int i=m_iInt+1; i>iLowerh; i--)
 		{
 			m_rpIntrados[i] = m_rpIntrados[i-1];
 		}
@@ -1029,7 +1029,7 @@ void Foil::setLEFlap()
 	if(m_LEFlapAngle<0.0)
 	{
 		//insert an extra point on extrados
-		for (i=m_iExt+1; i>iUpperh; i--)
+		for (int i=m_iExt+1; i>iUpperh; i--)
 		{
 			m_rpExtrados[i] = m_rpExtrados[i-1];
 		}
@@ -1044,14 +1044,14 @@ void Foil::setLEFlap()
 		m_rpExtrados[iUpperh].x   += 30.0 * (m_rpExtrados[iUpperh].x   - m_rpExtrados[iUpperh+1].x);
 		m_rpExtrados[iUpperh].y   += 30.0 * (m_rpExtrados[iUpperh].y   - m_rpExtrados[iUpperh+1].y);
 	}
-	for (i=0; i<iUpperh; i++)
+	for (int i=0; i<iUpperh; i++)
 	{
 		dx = m_rpExtrados[i].x-xh;
 		dy = m_rpExtrados[i].y-yh;
 		m_rpExtrados[i].x = xh + cosa * dx - sina * dy;
 		m_rpExtrados[i].y = yh + sina * dx + cosa * dy;
 	}
-	for (i=0; i<iLowerh; i++)
+	for (int i=0; i<iLowerh; i++)
 	{
 		dx = m_rpIntrados[i].x-xh;
 		dy = m_rpIntrados[i].y-yh;
@@ -1080,7 +1080,7 @@ void Foil::setLEFlap()
 		LinkSpline.splineKnots();
 		LinkSpline.splineCurve();
 		//retrieve point 1 and 2 and insert them
-		for (i=m_iInt; i>=iLowerh; i--)
+		for (int i=m_iInt; i>=iLowerh; i--)
 		{
 			m_rpIntrados[i+2].x = m_rpIntrados[i].x;
 			m_rpIntrados[i+2].y = m_rpIntrados[i].y;
@@ -1110,7 +1110,7 @@ void Foil::setLEFlap()
 		LinkSpline.splineKnots();
 		LinkSpline.splineCurve();
 		//retrieve point 1 and 2 and insert them
-		for (i=m_iExt; i>=iUpperh; i--)
+		for (int i=m_iExt; i>=iUpperh; i--)
 		{
 			m_rpExtrados[i+2].x = m_rpExtrados[i].x;
 			m_rpExtrados[i+2].y = m_rpExtrados[i].y;
