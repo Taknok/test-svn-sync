@@ -1095,7 +1095,6 @@ void GL3dBodyDlg::setControls()
 	m_pctrlBodyName->setEnabled(m_bEnableName);
 
 	m_pctrlBodyColor->setEnabled(m_pctrlColor->isChecked());
-	m_pctrlBodyColor->setColor(m_pBody->m_BodyColor);
 
 	m_pctrlOutline->setChecked(m_gl3Widget.m_bOutline);
 	m_pctrlPanels->setChecked(m_gl3Widget.m_bVLMPanels);
@@ -1103,7 +1102,6 @@ void GL3dBodyDlg::setControls()
 	m_pctrlShowMasses->setChecked(m_gl3Widget.m_bShowMasses);
 	m_pctrlSurfaces->setChecked(m_gl3Widget.m_bSurfaces);
 
-	m_pctrlPanelBunch->setSliderPosition((int)(m_pBody->m_Bunch*100.0));
 
 	m_pctrlUndo->setEnabled(m_StackPos>0);
 	m_pctrlRedo->setEnabled(m_StackPos<m_UndoStack.size()-1);
@@ -1125,12 +1123,17 @@ void GL3dBodyDlg::setControls()
 		m_pctrlHoopDegree->setEnabled(true);
 	}
 
+	if(m_pBody)
+	{
+		m_pctrlPanelBunch->setSliderPosition((int)(m_pBody->m_Bunch*100.0));
+		m_pctrlBodyColor->setColor(m_pBody->m_BodyColor);
 
-	m_pctrlNXPanels->setValue(m_pBody->m_nxPanels);
-	m_pctrlNHoopPanels->setValue(m_pBody->m_nhPanels);
+		m_pctrlNXPanels->setValue(m_pBody->m_nxPanels);
+		m_pctrlNHoopPanels->setValue(m_pBody->m_nhPanels);
 
-	m_pctrlXDegree->setCurrentIndex(m_pBody->m_SplineSurface.m_iuDegree-1);
-	m_pctrlHoopDegree->setCurrentIndex(m_pBody->m_SplineSurface.m_ivDegree-1);
+		m_pctrlXDegree->setCurrentIndex(m_pBody->m_SplineSurface.m_iuDegree-1);
+		m_pctrlHoopDegree->setCurrentIndex(m_pBody->m_SplineSurface.m_ivDegree-1);
+	}
 }
 
 

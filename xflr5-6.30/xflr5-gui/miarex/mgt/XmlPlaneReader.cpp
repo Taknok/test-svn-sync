@@ -65,8 +65,8 @@ bool XMLPlaneReader::readXMLPlaneFile()
 				}
 				else if (name().toString().compare("body", Qt::CaseInsensitive)==0)
 				{
-					if(m_pPlane->body()) delete m_pPlane->body();
-					m_pPlane->setBody(new Body);
+//					if(m_pPlane->body()) delete m_pPlane->body();
+//					m_pPlane->setBody(new Body);
 					readBody(m_pPlane->body(), m_pPlane->bodyPos(), lengthunit, massunit);
 				}
 			}
