@@ -114,7 +114,7 @@ void NacaFoilDlg::onEditingFinished()
 
 void NacaFoilDlg::generateFoil()
 {
-	int itype;
+	int itype = 0;
 
 	XFoil *pXFoil = (XFoil*)s_pXFoil;
 	pXFoil->lflap = false;

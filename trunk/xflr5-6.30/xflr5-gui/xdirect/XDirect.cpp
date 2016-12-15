@@ -2956,7 +2956,11 @@ void QXDirect::onImportXFoilPolar()
 	PathName = QFileDialog::getOpenFileName(s_pMainFrame, tr("Open File"),
 											Settings::s_LastDirName,
 											tr("XFoil Polar Format (*.*)"));
-	if(!PathName.length())		return ;
+	if(!PathName.length())
+	{
+		delete pPolar;
+		return ;
+	}
 	int pos = PathName.lastIndexOf("/");
 	if(pos>0) Settings::s_LastDirName = PathName.left(pos);
 
@@ -3384,7 +3388,7 @@ void QXDirect::onNormalizeFoil()
  */
 void QXDirect::onNPlot()
 {
-	if(!m_pXFoil->lvconv) return;
+	if(!m_pXFoil || !m_pXFoil->lvconv) return;
 	int i;
 	int nside1, nside2, ibl;
 
@@ -3647,7 +3651,7 @@ void QXDirect::onRenamePolar()
 			for (l=m_poaOpp->size()-1;l>=0; l--)
 			{
 				pOpp = (OpPoint*)m_poaOpp->at(l);
-				if (pOpp->polarName() == pPolar->polarName())
+				if (pOpp->polarName() == Polar::curPolar()->polarName())
 				{
 					m_poaOpp->removeAt(l);
 					if(pOpp==OpPoint::curOpp()) OpPoint::setCurOpp(NULL);

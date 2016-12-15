@@ -1231,7 +1231,8 @@ void EditBodyDlg::setActiveFrame(int iFrame)
 
 void EditBodyDlg::onInsertBefore()
 {
-	 if(m_pBody && m_pBody->activeFrame())
+	if(!m_pBody) return;
+	if( m_pBody->activeFrame())
 	{
 		m_pBody->insertFrameBefore(m_pBody->m_iActiveFrame);
 

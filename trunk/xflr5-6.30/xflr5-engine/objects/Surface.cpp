@@ -78,6 +78,11 @@ Surface::Surface()
 	m_xPointB.clear();
 	m_xPointB.insert(0, 1000, 0);
 
+	LA.set(0.0,0.0,0.0);
+	TA.set(0.0,0.0,0.0);
+	LB.set(0.0,0.0,0.0);
+	TB.set(0.0,0.0,0.0);
+
 }
 
 

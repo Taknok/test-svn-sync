@@ -5895,6 +5895,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 			pWOpp = new WingOpp();
 			if (ArchiveFormat<=100001)
 			{
+				if(pWOpp) delete pWOpp;
 				return false;
 			}
 			else

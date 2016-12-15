@@ -601,7 +601,7 @@ void QMiarex::setControls()
 
 	m_pctrlLift->setEnabled( (m_iView==XFLR5::WOPPVIEW||m_iView==XFLR5::W3DVIEW) && m_pCurPOpp);
 	m_pctrlTrans->setEnabled((m_iView==XFLR5::WOPPVIEW||m_iView==XFLR5::W3DVIEW) && m_pCurPOpp);
-	m_pctrlWOppAnimate->setEnabled((m_iView==XFLR5::WOPPVIEW||m_iView==XFLR5::W3DVIEW) && m_pCurPOpp && m_pCurWPolar->polarType()!=XFLR5::STABILITYPOLAR);
+	m_pctrlWOppAnimate->setEnabled((m_iView==XFLR5::WOPPVIEW||m_iView==XFLR5::W3DVIEW) && m_pCurPOpp && m_pCurPOpp->polarType()!=XFLR5::STABILITYPOLAR);
 	m_pctrlAnimateWOppSpeed->setEnabled((m_iView==XFLR5::WOPPVIEW||m_iView==XFLR5::W3DVIEW) && m_pCurPOpp);
 	m_pctrlIDrag->setEnabled(     m_iView==XFLR5::W3DVIEW && m_pCurPOpp);
 	m_pctrlVDrag->setEnabled(     m_iView==XFLR5::W3DVIEW && m_pCurPOpp);
@@ -859,7 +859,6 @@ void QMiarex::createWOppCurves()
 		int nStart;
 		if(m_pCurPOpp->analysisMethod()==XFLR5::LLTMETHOD) nStart = 1;
 		else                                               nStart = 0;
-
 		if(m_bMaxCL) maxlift = m_pCurPOpp->m_pPlaneWOpp[0]->maxLift();
 		else
 		{
@@ -873,39 +872,24 @@ void QMiarex::createWOppCurves()
 			maxlift = m_pCurPOpp->m_CL / lift * m_pCurPlane->planformArea();
 		}
 
-
-/*		for(int ig=0; ig<MAXWINGGRAPHS; ig++)
-		{
-			if(m_WingGraph[ig]->yVariable()==3)
-			{
-				Curve *pCurve = m_WingGraph[ig]->addCurve();
-				pCurve->setStyle(1);
-				pCurve->setColor(QColor(150, 150, 150));
-				for (i=nStart; i<m_pCurPOpp->m_NStation; i++)
-				{
-					x = m_pCurPOpp->m_pPlaneWOpp[0]->m_SpanPos[i];
-					y = maxlift*sqrt(1.0 - x*x/m_pCurPlane->span()/m_pCurPlane->span()*4.0);
-					pCurve->appendPoint(x*Units::mtoUnit(),y);
-				}
-			}
-		}*/
 		for(int ig=0; ig<MAXWINGGRAPHS; ig++)
 		{
 			if(m_WingGraph[ig]->yVariable()==3)
 			{
 				Curve *pCurve = m_WingGraph[ig]->addCurve();
 				pCurve->setStyle(1);
-				pCurve->setColor(QColor(150, 150, 150));
+				pCurve->setWidth(2);
+				pCurve->setColor(QColor(100, 100, 100));
 				for (double id=-50.0; id<=50.5; id+=1.0)
 				{
-					x = m_pCurPlane->span()/2.0 * cos(id*PI/50.0);
+					x = m_pCurPlane->span()/2.0 * cos(id*PI/50.0) * ( 1.0-PRECISION);
 					y = maxlift*sqrt(1.0 - x*x/m_pCurPlane->span()/m_pCurPlane->span()*4.0);
 					pCurve->appendPoint(x*Units::mtoUnit(),y);
 				}
 			}
 		}
 	}
-	//if the target elliptic curve is requested, and if the graph variable is local lift, then add the curve
+	//if the target bell curve is requested, and if the graph variable is local lift, then add the curve
 	if(m_bShowBellCurve && m_pCurPOpp)
 	{
 		int nStart;
@@ -932,7 +916,8 @@ void QMiarex::createWOppCurves()
 			{
 				Curve *pCurve = m_WingGraph[ig]->addCurve();
 				pCurve->setStyle(1);
-				pCurve->setColor(QColor(150, 150, 150));
+				pCurve->setWidth(2);
+				pCurve->setColor(QColor(100, 100, 100));
 				for (double id=-50.0; id<=50.5; id+=1.0)
 				{
 					x = m_pCurPlane->span()/2.0 * cos(id*PI/50.0);
@@ -3676,6 +3661,13 @@ void QMiarex::onEditCurBody()
 
 	//then modifications are automatically recorded
 	m_pCurPlane->duplicate(pModPlane);
+	// in all cases copy new color and texture flag
+	if(m_pCurPlane->body())
+	{
+		m_pCurPlane->body()->bodyColor() = pModPlane->body()->bodyColor();
+		m_pCurPlane->body()->textures()  = pModPlane->body()->textures();
+	}
+
 	delete pModPlane; // clean up, we don't need it any more
 
 	//plane has been modified, old results are not consistent with new geometry, delete them
@@ -3683,12 +3675,7 @@ void QMiarex::onEditCurBody()
 	m_pCurWPolar = NULL;
 	m_pCurPOpp = NULL;
 
-	// in all cases copy new color and texture flag
-	if(m_pCurPlane->body())
-	{
-		m_pCurPlane->body()->bodyColor() = pModPlane->body()->bodyColor();
-		m_pCurPlane->body()->textures()  = pModPlane->body()->textures();
-	}
+
 
 	setPlane();
 
@@ -4264,7 +4251,7 @@ void QMiarex::onExportCurPOpp()
 	out << VERSIONNAME;
 	out << "\n\n";
 
-	if(m_pCurPOpp)		out << m_pCurPOpp->planeName()<< "\n";
+	out << m_pCurPOpp->planeName()<< "\n";
 
 	strong = m_pCurPOpp->polarName() + "\n";
 	out << strong;
@@ -5003,7 +4990,11 @@ void QMiarex::onImportWPolar()
 	PathName = QFileDialog::getOpenFileName(s_pMainFrame, tr("Open File"),
 											Settings::s_LastDirName,
 											tr("Plane Polar Format (*.*)"));
-	if(!PathName.length())		return ;
+	if(!PathName.length())
+	{
+		delete pWPolar;
+		return ;
+	}
 	int pos = PathName.lastIndexOf("/");
 	if(pos>0) Settings::s_LastDirName = PathName.left(pos);
 
@@ -5012,6 +5003,7 @@ void QMiarex::onImportWPolar()
 	{
 		QString strange = tr("Could not read the file\n")+PathName;
 		QMessageBox::warning(s_pMainFrame, tr("Warning"), strange);
+		delete pWPolar;
 		return;
 	}
 
@@ -6850,7 +6842,7 @@ void QMiarex::setCurveParams()
 		{
 			m_pctrlShowCurve->setChecked(m_pCurPOpp->isVisible());
 
-			m_bCurveVisible     = m_pCurWPolar->isVisible();
+			m_bCurveVisible     = m_pCurPOpp->isVisible();
 			m_LineStyle.m_Color = m_pCurPOpp->color();
 			m_LineStyle.m_Style = m_pCurPOpp->style();
 			m_LineStyle.m_Width = m_pCurPOpp->width();
@@ -7462,7 +7454,7 @@ void QMiarex::setWPolar(bool bCurrent, QString WPlrName)
 	setPlaneOpp(false, x);
 
 
-	if(m_pCurWPolar)
+	if(m_pCurPlane && m_pCurWPolar)
 	{
 		m_bCurveVisible = m_pCurWPolar->isVisible();
 		m_LineStyle.m_PointStyle  = m_pCurWPolar->points();

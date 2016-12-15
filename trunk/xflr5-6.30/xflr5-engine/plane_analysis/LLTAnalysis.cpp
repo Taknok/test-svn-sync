@@ -621,7 +621,7 @@ bool LLTAnalysis::alphaLoop()
 	for (i=0; i<=m_nPoints; i++)
 	{
 		if(m_x) m_x->clear();
-		if(m_y) m_x->clear();
+		if(m_y) m_y->clear();
 
 		Alpha = m_vMin +(double)i * m_vDelta;
 		if(m_bCancel)
@@ -767,7 +767,7 @@ bool LLTAnalysis::QInfLoop()
 		qApp->processEvents();
 
 		if(m_x) m_x->clear();
-		if(m_y) m_x->clear();
+		if(m_y) m_y->clear();
 	}
 	return true;
 }
