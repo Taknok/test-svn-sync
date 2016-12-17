@@ -58,7 +58,7 @@ class LLTAnalysis
 	friend class MainFrame;
 	friend class QMiarex;
 	friend class LLTAnalysisDlg;
-	friend class GL3Widget;
+	friend class gl3dView;
 	friend class PlaneAnalysisTask;
 
 public:

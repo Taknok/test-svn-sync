@@ -31,7 +31,7 @@
 
 class MainFrame;
 
-#include "gl3widget.h"
+#include "gl3dmiarexview.h"
 #include <QWidget>
 #include <QPixmap>
 #include <QLabel>
@@ -491,7 +491,7 @@ public:
 
 public:
 	static MainFrame *s_pMainFrame;       /**< a pointer to the frame class */
-	GL3Widget *m_pgl3Widget;              /**< a pointer to the openGL 3.0 widget where 3d calculations and rendering are performed */
+	gl3dMiarexView *m_pGL3dView;              /**< a pointer to the openGL 3.0 widget where 3d calculations and rendering are performed */
 
 
 

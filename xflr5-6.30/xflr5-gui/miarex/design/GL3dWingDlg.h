@@ -38,7 +38,7 @@
 #include <QSplitter>
 
 #include "WingDelegate.h"
-#include <gl3widget.h>
+#include <gl3dwingview.h>
 #include <viewwidgets/ArcBall.h>
 #include <misc/DoubleEdit.h>
 #include <misc/ColorButton.h>
@@ -52,7 +52,8 @@ class GL3dWingDlg: public QDialog
 
 	friend class MainFrame;
 	friend class QMiarex;
-	friend class GL3Widget;
+	friend class gl3dView;
+	friend class gl3dWingView;
 	friend class Wing;
 	friend class GLLightDlg;
 	friend class PlaneDlg;
@@ -63,6 +64,9 @@ public:
 	~GL3dWingDlg();
 
 	bool intersectObject(CVector AA,  CVector U, CVector &I);
+	void glMake3DObjects();
+	void glMakeSectionHighlight(QOpenGLBuffer &vbo, int &nStrips, int &stripSize);
+	int iSection(){return m_iSection;}
 
 private slots:
 	void onAxes();
@@ -118,8 +122,7 @@ private:
 	bool initDialog(Wing *pWing);
 	void connectSignals();
 	void setupLayout();
-	void glMake3DObjects();
-	void glMakeSectionHighlight(QOpenGLBuffer &vbo, int &nStrips, int &stripSize);
+
 
 private:
 	static QList <void*> *s_poaFoil;
@@ -134,7 +137,7 @@ private:
 	static bool s_bShowMasses;
 	static bool s_bFoilNames;
 
-	GL3Widget *m_pgl3Widget;              /**< a pointer to the openGL 3.0 widget where 3d calculations and rendering are performed */
+	gl3dWingView *m_pglWingView;              /**< a pointer to the openGL 3.0 widget where 3d calculations and rendering are performed */
 
 	QLineEdit *m_pctrlWingName;
 	QTextEdit *m_pctrlWingDescription;

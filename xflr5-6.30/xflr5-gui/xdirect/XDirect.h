@@ -85,7 +85,7 @@ public slots:
 
 
 
-private slots:
+public slots:
 	void onXFoilAdvanced();
 
 	void onPolarFilter();

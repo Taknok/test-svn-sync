@@ -29,7 +29,7 @@
 #include <QTreeView>
 #include <QStandardItemModel>
 #include <QToolButton>
-#include <gl3widget.h>
+#include <gl3dbodyview.h>
 #include <objects/Body.h>
 #include "BodyLineWidget.h"
 #include "BodyFrameWidget.h"
@@ -45,7 +45,8 @@ class EditBodyDlg : public QDialog
 	friend class Wing;
 	friend class Plane;
 	friend class QMiarex;
-	friend class GL3Widget;
+	friend class gl3dBodyView;
+	friend class gl3dView;
 
 public:
 	EditBodyDlg(QWidget *pParent = NULL);
@@ -60,7 +61,6 @@ public:
 	bool intersectObject(CVector AA,  CVector U, CVector &I);
 	void connectSignals();
 	void glMake3DObjects();
-	void glCreateBodyFrameHighlight(Body *pBody, CVector bodyPos, int iFrame);
 	void identifySelection(const QModelIndex &indexSel);
 	void initDialog(Body *pBody);
 	void setupLayout();
@@ -130,7 +130,7 @@ private:
 	EditObjectDelegate *m_pDelegate;
 	QStandardItemModel *m_pModel;
 
-	GL3Widget *m_pgl3Widget;
+	gl3dBodyView *m_pglBodyView;
 	BodyLineWidget *m_pBodyLineWidget;
 	BodyFrameWidget *m_pFrameWidget;
 
