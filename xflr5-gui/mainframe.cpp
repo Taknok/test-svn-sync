@@ -68,7 +68,7 @@
 #include "openglinfodlg.h"
 
 #include "inverseviewwidget.h"
-#include "gl3widget.h"
+#include "gl3dmiarexview.h"
 #include "Direct2dDesign.h"
 #include "xdirecttilewidget.h"
 #include "miarextilewidget.h"
@@ -576,6 +576,9 @@ void MainFrame::createActions()
 	m_pAboutQtAct = new QAction(tr("About Qt"), this);
 	connect(m_pAboutQtAct, SIGNAL(triggered()), this, SLOT(aboutQt()));
 
+	m_pScriptAction = new QAction("Script Console", this);
+	connect(m_pScriptAction, SIGNAL(triggered()), this, SLOT(onScriptAction()));
+
 	createGraphActions();
 	createAFoilActions();
 	createXDirectActions();
@@ -914,7 +917,7 @@ void MainFrame::createDockWindows()
 	QXDirect::s_pMainFrame         = this;
 	QXInverse::s_pMainFrame        = this;
 	QMiarex::s_pMainFrame          = this;
-	GL3Widget::s_pMainFrame        = this;
+	gl3dView::s_pMainFrame         = this;
 	Section2dWidget::s_pMainFrame  = this;
 	GraphWidget::s_pMainFrame      = this;
 	OpPointWidget::s_pMainFrame    = this;
@@ -939,7 +942,7 @@ void MainFrame::createDockWindows()
 	addDockWidget(Qt::BottomDockWidgetArea, m_pctrlAFoilWidget);
 
 	m_p2dWidget = new InverseViewWidget(this);
-	m_pgl3Widget = new GL3Widget(this);
+	m_pgl3dMiarexView = new gl3dMiarexView(this);
 
 	m_pDirect2dWidget = new Direct2dDesign(this);
 	m_pXDirectTileWidget = new XDirectTileWidget(this);
@@ -947,6 +950,7 @@ void MainFrame::createDockWindows()
 
 	m_pXDirect = new QXDirect(this);
 	QXDirect *pXDirect = (QXDirect*)m_pXDirect;
+	pXDirect->setObjectName("XDirect ???");
 	m_pctrlXDirectWidget->setWidget(pXDirect);
 	m_pctrlXDirectWidget->setVisible(false);
 	m_pctrlXDirectWidget->setFloating(true);
@@ -992,7 +996,7 @@ void MainFrame::createDockWindows()
 
 	m_pctrlCentralWidget = new QStackedWidget;
 	m_pctrlCentralWidget->addWidget(m_p2dWidget);
-	m_pctrlCentralWidget->addWidget(m_pgl3Widget);
+	m_pctrlCentralWidget->addWidget(m_pgl3dMiarexView);
 	m_pctrlCentralWidget->addWidget(m_pDirect2dWidget);
 	m_pctrlCentralWidget->addWidget(m_pXDirectTileWidget);
 	m_pctrlCentralWidget->addWidget(m_pMiarexTileWidget);
@@ -1009,7 +1013,8 @@ void MainFrame::createDockWindows()
 	m_p2dWidget->m_pXInverse  = pXInverse;
 	m_p2dWidget->m_pMainFrame = this;
 
-	pMiarex->m_pgl3Widget = m_pgl3Widget;
+
+	pMiarex->m_pGL3dView = m_pgl3dMiarexView;
 
 	pXDirect->m_CpGraph.m_pParent    = m_p2dWidget;
 	pXDirect->m_poaFoil  = &Foil::s_oaFoil;
@@ -1028,7 +1033,7 @@ void MainFrame::createDockWindows()
 
 	LLTAnalysis::s_poaPolar = &Polar::s_oaPolar;
 
-	GL3Widget::s_pMiarex = m_pMiarex;
+	gl3dMiarexView::s_pMiarex = m_pMiarex;
 
 	WingWidget::s_pMiarex         = m_pMiarex;
 	XFoilAnalysisDlg::s_pXDirect  = m_pXDirect;
@@ -1068,8 +1073,10 @@ void MainFrame::createMenus()
 		m_pFileMenu->addAction(m_pSaveAct);
 		m_pFileMenu->addAction(m_pSaveProjectAsAct);
 		m_pFileMenu->addSeparator();
-//		m_pFileMenu->addAction(m_pExecScript);
-//		m_pFileMenu->addSeparator();
+#ifdef QT_DEBUG
+		m_pFileMenu->addAction(m_pExecScript);
+		m_pFileMenu->addSeparator();
+#endif
 		m_pFileMenu->addAction(m_pOnAFoilAct);
 		m_pFileMenu->addAction(m_pOnXInverseAct);
 		m_pFileMenu->addAction(m_pOnXDirectAct);
@@ -1119,6 +1126,10 @@ void MainFrame::createMenus()
 		m_pHelpMenu->addAction(m_pOpenGLAct);
 		m_pHelpMenu->addAction(m_pAboutQtAct);
 		m_pHelpMenu->addAction(m_pAboutAct);
+#ifdef QT_DEBUG
+		m_pHelpMenu->addSeparator();
+		m_pHelpMenu->addAction(m_pScriptAction);
+#endif
 	}
 
 	//Create Application-Specific Menus
@@ -3988,7 +3999,7 @@ void MainFrame::onNewProject()
 		deleteProject();
 	}
 
-	m_pgl3Widget->m_bArcball = false;
+	m_pgl3dMiarexView->m_bArcball = false;
 	updateView();
 }
 
@@ -4255,19 +4266,19 @@ void MainFrame::onSaveViewToImageFile()
 				QMessageBox::StandardButton reply = QMessageBox::question(this, "3D save option", tr("Set a transparent background ?"), QMessageBox::Yes|QMessageBox::No);
 				if (reply == QMessageBox::Yes)
 				{
-					QPixmap outPix = m_pgl3Widget->grab();
+					QPixmap outPix = m_pgl3dMiarexView->grab();
 					QPainter painter(&outPix);
 					painter.drawPixmap(0,0, pMiarex->m_PixText);
-					painter.drawPixmap(0,0, m_pgl3Widget->m_PixTextOverlay);
+					painter.drawPixmap(0,0, m_pgl3dMiarexView->m_PixTextOverlay);
 
 					outPix.save(FileName);
 				}
 				else
 				{
-					QImage outImg = m_pgl3Widget->grabFramebuffer();
+					QImage outImg = m_pgl3dMiarexView->grabFramebuffer();
 					QPainter painter(&outImg);
 					painter.drawPixmap(0,0, pMiarex->m_PixText);
-					painter.drawPixmap(0,0, m_pgl3Widget->m_PixTextOverlay);
+					painter.drawPixmap(0,0, m_pgl3dMiarexView->m_PixTextOverlay);
 
 					outImg.save(FileName);
 				}
@@ -5190,8 +5201,8 @@ void MainFrame::setMainFrameCentralWidget()
 		}
 		else if(pMiarex->m_iView==XFLR5::W3DVIEW)
 		{
-			m_pctrlCentralWidget->setCurrentWidget(m_pgl3Widget);
-			m_pgl3Widget->setFocus();
+			m_pctrlCentralWidget->setCurrentWidget(m_pgl3dMiarexView);
+			m_pgl3dMiarexView->setFocus();
 		}
 	}
 	else if(m_iApp==XFLR5::DIRECTDESIGN)
@@ -6892,3 +6903,13 @@ void MainFrame::showEvent(QShowEvent *event)
 	pXDirect->m_CpGraph.initializeGraph(m_pctrlCentralWidget->width(), m_pctrlCentralWidget->height());
 	event->ignore();
 }
+
+
+void MainFrame::onScriptAction()
+{
+	m_scriptConsole.move(QPoint(500,300));
+	m_scriptConsole.setXDirect(m_pXDirect);
+	m_scriptConsole.setVisible(!m_scriptConsole.isVisible());
+}
+
+

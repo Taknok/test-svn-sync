@@ -19,10 +19,6 @@ namespace XFLR5
 
 	typedef enum {BOOL, INTEGER, DOUBLE, STRING, PANELDISTRIBUTION, FOILNAME, BODYTYPE, POLARTYPE, ANALYSISMETHOD, REFDIMENSIONS, WINGTYPE, BOUNDARYCONDITION} enumDataType;
 
-	/** @enum This enumeration lists the different 3D views used in the program, i.e. the view in Miarex, in Body edition and in Wing edition.*/
-	typedef enum {GLMIAREXVIEW, GLBODYVIEW, GLWINGVIEW, GLPLANEVIEW, GLEDITBODYVIEW} enumGLView;
-
-
 	/** @enum The different formats usable to export data to text format files*/
 	typedef enum {TXT, CSV}	enumTextFileType;
 }

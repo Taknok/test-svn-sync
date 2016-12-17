@@ -225,7 +225,7 @@ void BodyScaleDlg::onEditingFinished()
 	m_FrameID = m_pctrlFrameID->value()-1;
 	pBodyDlg->m_pBody->m_iActiveFrame = m_FrameID;
 	pBodyDlg->m_pFrame = pBodyDlg->m_pBody->activeFrame();
-	pBodyDlg->m_bResetglBody = true;
+
 	pBodyDlg->updateView();
 }
 

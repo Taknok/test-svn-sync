@@ -472,11 +472,11 @@ void QMiarex::connectSignals()
 	connect(m_pTimerWOpp, SIGNAL(timeout()), this, SLOT(onAnimateWOppSingle()));
 	connect(m_pTimerMode, SIGNAL(timeout()), this, SLOT(onAnimateModeSingle()));
 
-	connect(m_pctrlSurfaces,  SIGNAL(clicked(bool)), m_pgl3Widget, SLOT(onSurfaces(bool)));
-	connect(m_pctrlOutline,   SIGNAL(clicked(bool)), m_pgl3Widget, SLOT(onOutline(bool)));
-	connect(m_pctrlPanels,    SIGNAL(clicked(bool)), m_pgl3Widget, SLOT(onPanels(bool)));
-	connect(m_pctrlFoilNames, SIGNAL(clicked(bool)), m_pgl3Widget, SLOT(onFoilNames(bool)));
-	connect(m_pctrlMasses,    SIGNAL(clicked(bool)), m_pgl3Widget, SLOT(onShowMasses(bool)));
+	connect(m_pctrlSurfaces,  SIGNAL(clicked(bool)), m_pGL3dView, SLOT(onSurfaces(bool)));
+	connect(m_pctrlOutline,   SIGNAL(clicked(bool)), m_pGL3dView, SLOT(onOutline(bool)));
+	connect(m_pctrlPanels,    SIGNAL(clicked(bool)), m_pGL3dView, SLOT(onPanels(bool)));
+	connect(m_pctrlFoilNames, SIGNAL(clicked(bool)), m_pGL3dView, SLOT(onFoilNames(bool)));
+	connect(m_pctrlMasses,    SIGNAL(clicked(bool)), m_pGL3dView, SLOT(onShowMasses(bool)));
 
 
 
@@ -485,13 +485,13 @@ void QMiarex::connectSignals()
 	connect(m_pctrlCpSectionSlider, SIGNAL(sliderMoved(int)),  this, SLOT(onCpSectionSlider(int)));
 	connect(m_pctrlSpanPos,         SIGNAL(editingFinished()), this, SLOT(onCpPosition()));
 
-	connect(m_pctrlAxes,  SIGNAL(clicked(bool)), m_pgl3Widget, SLOT(onAxes(bool)));
-	connect(m_pctrlX,     SIGNAL(clicked()),     m_pgl3Widget, SLOT(on3DFront()));
-	connect(m_pctrlY,     SIGNAL(clicked()),     m_pgl3Widget, SLOT(on3DLeft()));
-	connect(m_pctrlZ,     SIGNAL(clicked()),     m_pgl3Widget, SLOT(on3DTop()));
-	connect(m_pctrlIso,   SIGNAL(clicked()),     m_pgl3Widget, SLOT(on3DIso()));
-	connect(m_pctrlFlip,  SIGNAL(clicked()),     m_pgl3Widget, SLOT(on3DFlip()));
-	connect(m_pctrlClipPlanePos, SIGNAL(sliderMoved(int)), m_pgl3Widget, SLOT(onClipPlane(int)));
+	connect(m_pctrlAxes,  SIGNAL(clicked(bool)), m_pGL3dView, SLOT(onAxes(bool)));
+	connect(m_pctrlX,     SIGNAL(clicked()),     m_pGL3dView, SLOT(on3DFront()));
+	connect(m_pctrlY,     SIGNAL(clicked()),     m_pGL3dView, SLOT(on3DLeft()));
+	connect(m_pctrlZ,     SIGNAL(clicked()),     m_pGL3dView, SLOT(on3DTop()));
+	connect(m_pctrlIso,   SIGNAL(clicked()),     m_pGL3dView, SLOT(on3DIso()));
+	connect(m_pctrlFlip,  SIGNAL(clicked()),     m_pGL3dView, SLOT(on3DFlip()));
+	connect(m_pctrlClipPlanePos, SIGNAL(sliderMoved(int)), m_pGL3dView, SLOT(onClipPlane(int)));
 
 	connect(m_pctrl3DResetScale, SIGNAL(clicked()), this, SLOT(on3DResetScale()));
 
@@ -499,7 +499,7 @@ void QMiarex::connectSignals()
 	connect(m_pctrlAlphaMax,   SIGNAL(editingFinished()), this, SLOT(onReadAnalysisData()));
 	connect(m_pctrlAlphaDelta, SIGNAL(editingFinished()), this, SLOT(onReadAnalysisData()));
 
-	connect(m_pgl3Widget, SIGNAL(viewModified()), this, SLOT(onCheckViewIcons()));
+	connect(m_pGL3dView, SIGNAL(viewModified()), this, SLOT(onCheckViewIcons()));
 }
 
 
@@ -612,8 +612,8 @@ void QMiarex::setControls()
 	m_pctrlStream->setEnabled(    m_iView==XFLR5::W3DVIEW && m_pCurPOpp && m_pCurWPolar && m_pCurWPolar->analysisMethod()!=XFLR5::LLTMETHOD);
 	m_pctrlSurfVel->setEnabled(   m_iView==XFLR5::W3DVIEW && m_pCurPOpp && m_pCurWPolar && m_pCurWPolar->analysisMethod()!=XFLR5::LLTMETHOD);
 
-	m_pctrlFoilNames->setChecked(m_pgl3Widget->m_bFoilNames);
-	m_pctrlMasses->setChecked(m_pgl3Widget->m_bShowMasses);
+	m_pctrlFoilNames->setChecked(m_pGL3dView->m_bFoilNames);
+	m_pctrlMasses->setChecked(m_pGL3dView->m_bShowMasses);
 
 	s_pMainFrame->m_pHighlightOppAct->setChecked(QGraph::isHighLighting());
 
@@ -655,12 +655,12 @@ void QMiarex::setControls()
 
 	s_pMainFrame->m_pW3DScalesAct->setChecked(s_pMainFrame->m_pctrl3DScalesWidget->isVisible());
 
-	m_pctrlAxes->setChecked(m_pgl3Widget->m_bAxes);
-	m_pctrlOutline->setChecked(m_pgl3Widget->m_bOutline);
-	m_pctrlPanels->setChecked(m_pgl3Widget->m_bVLMPanels);
-	m_pctrlAxes->setChecked(m_pgl3Widget->m_bAxes);
-	m_pctrlSurfaces->setChecked(m_pgl3Widget->m_bSurfaces);
-	m_pctrlOutline->setChecked(m_pgl3Widget->m_bOutline);
+	m_pctrlAxes->setChecked(m_pGL3dView->m_bAxes);
+	m_pctrlOutline->setChecked(m_pGL3dView->m_bOutline);
+	m_pctrlPanels->setChecked(m_pGL3dView->m_bVLMPanels);
+	m_pctrlAxes->setChecked(m_pGL3dView->m_bAxes);
+	m_pctrlSurfaces->setChecked(m_pGL3dView->m_bSurfaces);
+	m_pctrlOutline->setChecked(m_pGL3dView->m_bOutline);
 
 	m_pctrlCp->setChecked(m_b3DCp);
 	m_pctrlPanelForce->setChecked(m_bPanelForce);
@@ -671,7 +671,7 @@ void QMiarex::setControls()
 	m_pctrlIDrag->setChecked(m_bICd);
 	m_pctrlVDrag->setChecked(m_bVCd);
 	m_pctrlStream->setChecked(m_bStream);
-	m_pctrlClipPlanePos->setValue((int)(m_pgl3Widget->m_ClipPlanePos*100.0));
+	m_pctrlClipPlanePos->setValue((int)(m_pGL3dView->m_ClipPlanePos*100.0));
 
 	m_pctrlOutline->setEnabled(m_pCurPlane);
 	m_pctrlSurfaces->setEnabled(m_pCurPlane);
@@ -1670,15 +1670,15 @@ void QMiarex::glMake3DObjects()
 
 	pCurBody = m_pCurPlane->body();
 
-	if(m_pCurWPolar) m_pgl3Widget->setSpanStations(m_pCurPlane, m_pCurWPolar, m_pCurPOpp);
+	if(m_pCurWPolar) m_pGL3dView->setSpanStations(m_pCurPlane, m_pCurWPolar, m_pCurPOpp);
 
 	if(m_bResetglBody && pCurBody)
 	{
 		Body translatedBody;
 		translatedBody.duplicate(pCurBody);
 		translatedBody.translate(m_pCurPlane->m_BodyPos);
-		if(pCurBody->isSplineType())         m_pgl3Widget->glMakeBodySplines(&translatedBody);
-		else if(pCurBody->isFlatPanelType()) m_pgl3Widget->glMakeBody3DFlatPanels(&translatedBody);
+		if(pCurBody->isSplineType())         m_pGL3dView->glMakeBodySplines(&translatedBody);
+		else if(pCurBody->isFlatPanelType()) m_pGL3dView->glMakeBody3DFlatPanels(&translatedBody);
 		m_bResetglBody = false;
 	}
 
@@ -1697,11 +1697,11 @@ void QMiarex::glMake3DObjects()
 			{
 				if(m_pCurPlane->body())
 				{
-					m_pgl3Widget->glMakeWingGeometry(iw, m_pCurPlane->wing(iw), &translatedBody);
+					m_pGL3dView->glMakeWingGeometry(iw, m_pCurPlane->wing(iw), &translatedBody);
 				}
 				else
 				{
-					m_pgl3Widget->glMakeWingGeometry(iw, m_pCurPlane->wing(iw), NULL);
+					m_pGL3dView->glMakeWingGeometry(iw, m_pCurPlane->wing(iw), NULL);
 				}
 			}
 		}
@@ -1712,14 +1712,14 @@ void QMiarex::glMake3DObjects()
 
 	if(m_bResetglMesh)
 	{
-		m_pgl3Widget->glMakePanels(m_pgl3Widget->m_vboMesh, m_theTask.m_MatSize, m_theTask.m_nNodes, m_theTask.m_Node, m_theTask.m_Panel, NULL);
+		m_pGL3dView->glMakePanels(m_pGL3dView->m_vboMesh, m_theTask.m_MatSize, m_theTask.m_nNodes, m_theTask.m_Node, m_theTask.m_Panel, NULL);
 		m_bResetglMesh = false;
 	}
 
 	if(m_bResetglPanelCp || m_bResetglOpp)
 	{
 		if(m_pCurWPolar && m_pCurWPolar->analysisMethod()!=XFLR5::LLTMETHOD)
-			m_pgl3Widget->glMakePanels(m_pgl3Widget->m_vboPanelCp, m_theTask.m_MatSize, m_theTask.m_nNodes, m_theTask.m_Node, m_theTask.m_Panel, m_pCurPOpp);
+			m_pGL3dView->glMakePanels(m_pGL3dView->m_vboPanelCp, m_theTask.m_MatSize, m_theTask.m_nNodes, m_theTask.m_Node, m_theTask.m_Panel, m_pCurPOpp);
 		m_bResetglPanelCp = false;
 	}
 
@@ -1730,7 +1730,7 @@ void QMiarex::glMake3DObjects()
 	{
 		if (m_pCurPlane && m_pCurPOpp)
 		{
-			m_pgl3Widget->glMakePanelForces(m_theTask.m_MatSize, m_theTask.m_Panel, m_pCurWPolar, m_pCurPOpp);
+			m_pGL3dView->glMakePanelForces(m_theTask.m_MatSize, m_theTask.m_Panel, m_pCurWPolar, m_pCurPOpp);
 		}
 		m_bResetglPanelForce = false;
 	}
@@ -1744,12 +1744,12 @@ void QMiarex::glMake3DObjects()
 			{
 				if(pWing(iw))
 				{
-					m_pgl3Widget->glMakeLiftStrip( iw, pWing(iw), m_pCurWPolar, m_pWOpp[iw]);
-					m_pgl3Widget->glMakeTransitions(iw, pWing(iw), m_pCurWPolar, m_pWOpp[iw]);
+					m_pGL3dView->glMakeLiftStrip( iw, pWing(iw), m_pCurWPolar, m_pWOpp[iw]);
+					m_pGL3dView->glMakeTransitions(iw, pWing(iw), m_pCurWPolar, m_pWOpp[iw]);
 				}
 			}
-			m_pgl3Widget->glMakeLiftForce(m_pCurWPolar, m_pCurPOpp);
-			m_pgl3Widget->glMakeMoments(pWing(0), m_pCurWPolar, m_pCurPOpp);
+			m_pGL3dView->glMakeLiftForce(m_pCurWPolar, m_pCurPOpp);
+			m_pGL3dView->glMakeMoments(pWing(0), m_pCurWPolar, m_pCurPOpp);
 		}
 		m_bResetglLift = false;
 	}
@@ -1762,7 +1762,7 @@ void QMiarex::glMake3DObjects()
 			{
 				if(pWing(iw))
 				{
-					m_pgl3Widget->glMakeDragStrip( iw, pWing(iw), m_pCurWPolar, m_pWOpp[iw], m_pCurPOpp->beta());
+					m_pGL3dView->glMakeDragStrip( iw, pWing(iw), m_pCurWPolar, m_pWOpp[iw], m_pCurPOpp->beta());
 				}
 			}
 		}
@@ -1775,7 +1775,7 @@ void QMiarex::glMake3DObjects()
 		{
 			if(pWing(iw) && m_pWOpp[iw])
 			{
-				m_pgl3Widget->glMakeDownwash(iw, pWing(iw), m_pCurWPolar, m_pWOpp[iw]);
+				m_pGL3dView->glMakeDownwash(iw, pWing(iw), m_pCurWPolar, m_pWOpp[iw]);
 			}
 		}
 
@@ -1792,7 +1792,7 @@ void QMiarex::glMake3DObjects()
 			{
 				Wing *pWingList[MAXWINGS];
 				for(int iw=0; iw<MAXWINGS;iw++) pWingList[iw]=m_pCurPlane->wing(iw);
-				if(!m_pgl3Widget->glMakeStreamLines(pWingList, m_theTask.m_Node, m_pCurWPolar, m_pCurPOpp, m_theTask.m_MatSize))
+				if(!m_pGL3dView->glMakeStreamLines(pWingList, m_theTask.m_Node, m_pCurWPolar, m_pCurPOpp, m_theTask.m_MatSize))
 				{
 					m_bStream  = false;
 					m_bResetglStream = true;
@@ -1812,7 +1812,7 @@ void QMiarex::glMake3DObjects()
 	{
 		if(m_pCurPOpp)
 		{
-			m_pgl3Widget->glMakeCpLegendClr();
+			m_pGL3dView->glMakeCpLegendClr();
 		}
 		m_bResetglLegend = false;
 	}
@@ -1821,7 +1821,7 @@ void QMiarex::glMake3DObjects()
 	{
 		if(m_pCurPlane && m_pCurPOpp && m_pCurPOpp->analysisMethod()>=XFLR5::VLMMETHOD)
 		{
-			m_pgl3Widget->glMakeSurfVelocities(m_theTask.m_Panel, m_pCurWPolar, m_pCurPOpp, m_theTask.m_MatSize);
+			m_pGL3dView->glMakeSurfVelocities(m_theTask.m_Panel, m_pCurWPolar, m_pCurPOpp, m_theTask.m_MatSize);
 			m_bResetglSurfVelocities = false;
 		}
 	}
@@ -1842,7 +1842,7 @@ void QMiarex::keyPressEvent(QKeyEvent *event)
 {
 	bool bCtrl = (event->modifiers() & Qt::ControlModifier) ? true : false;
 
-	m_pgl3Widget->m_bArcball=false;
+	m_pGL3dView->m_bArcball=false;
 
 	if(event->key()==Qt::Key_0 || event->text()=="0")
 	{
@@ -2151,10 +2151,10 @@ bool QMiarex::loadSettings(QSettings *pSettings)
 		m_bPanelForce   = pSettings->value("bPanelForce", false).toBool();
 		m_bICd          = pSettings->value("bICd", true).toBool();
 		m_bVCd          = pSettings->value("bVCd", true).toBool();
-		m_pgl3Widget->m_bSurfaces     = pSettings->value("bSurfaces").toBool();
-		m_pgl3Widget->m_bOutline      = pSettings->value("bOutline").toBool();
-		m_pgl3Widget->m_bVLMPanels    = pSettings->value("bVLMPanels").toBool();
-		m_pgl3Widget->m_bAxes         = pSettings->value("bAxes").toBool();
+		m_pGL3dView->m_bSurfaces     = pSettings->value("bSurfaces").toBool();
+		m_pGL3dView->m_bOutline      = pSettings->value("bOutline").toBool();
+		m_pGL3dView->m_bVLMPanels    = pSettings->value("bVLMPanels").toBool();
+		m_pGL3dView->m_bAxes         = pSettings->value("bAxes").toBool();
 		m_b3DCp         = pSettings->value("b3DCp").toBool();
 		m_bDownwash     = pSettings->value("bDownwash").toBool();
 		m_bMoments      = pSettings->value("bMoments").toBool();
@@ -2372,7 +2372,7 @@ void QMiarex::on3DCp()
 
 	if(m_b3DCp)
 	{
-		m_pgl3Widget->m_bSurfaces = false;
+		m_pGL3dView->m_bSurfaces = false;
 		m_pctrlSurfaces->setChecked(false);
 		m_bPanelForce = false;
 		m_pctrlPanelForce->setChecked(false);
@@ -2387,7 +2387,7 @@ void QMiarex::on3DCp()
 void QMiarex::on3DResetScale()
 {
 	m_bPickCenter   = false;
-	m_pgl3Widget->on3DReset();
+	m_pGL3dView->on3DReset();
 }
 
 
@@ -3584,7 +3584,7 @@ void QMiarex::onDuplicateCurPlane()
  */
 void QMiarex::onEditCurBody()
 {
-	m_pgl3Widget->m_bArcball = false;
+	m_pGL3dView->m_bArcball = false;
 	if(!m_pCurPlane || !m_pCurPlane->body()) return;
 
 	Body *pCurBody = m_pCurPlane->body();
@@ -3689,7 +3689,7 @@ void QMiarex::onEditCurBody()
  */
 void QMiarex::onEditCurBodyObject()
 {
-	m_pgl3Widget->m_bArcball = false;
+	m_pGL3dView->m_bArcball = false;
 	if(!m_pCurPlane || !m_pCurPlane->body()) return;
 
 	Body *pCurBody = m_pCurPlane->body();
@@ -3782,7 +3782,7 @@ void QMiarex::onEditCurBodyObject()
  */
 void QMiarex::onEditCurObject()
 {
-	m_pgl3Widget->m_bArcball = false;
+	m_pGL3dView->m_bArcball = false;
 	if(!m_pCurPlane) return;
 	int i;
 
@@ -3880,7 +3880,7 @@ void QMiarex::onEditCurObject()
  */
 void QMiarex::onEditCurPlane()
 {
-	m_pgl3Widget->m_bArcball = false;
+	m_pGL3dView->m_bArcball = false;
 	if(!m_pCurPlane) return;
 
 	int i;
@@ -3987,7 +3987,7 @@ void QMiarex::onEditCurPlane()
  */
 void QMiarex::onEditCurWing()
 {
-	m_pgl3Widget->m_bArcball = false;
+	m_pGL3dView->m_bArcball = false;
 	if(!m_pCurPlane) return;
 
 	int iWing;
@@ -5899,8 +5899,8 @@ void QMiarex::onStreamlines()
  */
 void QMiarex::onSurfaces()
 {
-	m_pgl3Widget->m_bSurfaces = m_pctrlSurfaces->isChecked();
-	if(m_pgl3Widget->m_bSurfaces)
+	m_pGL3dView->m_bSurfaces = m_pctrlSurfaces->isChecked();
+	if(m_pGL3dView->m_bSurfaces)
 	{
 		m_b3DCp = false;
 		m_pctrlCp->setChecked(false);
@@ -5932,7 +5932,7 @@ void QMiarex::onSetupLight()
 {
 	if(m_iView!=XFLR5::W3DVIEW) return;
 
-	s_pMainFrame->m_glLightDlg.setgl3Widget(m_pgl3Widget);
+	s_pMainFrame->m_glLightDlg.setgl3dView(m_pGL3dView);
 	s_pMainFrame->m_glLightDlg.show();
 }
 
@@ -6154,7 +6154,7 @@ void QMiarex::paintPlaneLegend(QPainter &painter, Plane *pPlane, WPolar *pWPolar
 	QPen textPen(Settings::s_TextColor);
 	painter.setPen(textPen);
 	QFont font(Settings::s_TextFont);
-	ratio = m_pgl3Widget->devicePixelRatio();
+	ratio = m_pGL3dView->devicePixelRatio();
 	font.setPointSize(Settings::s_TextFont.pointSize()*ratio);
 	painter.setFont(font);
 	painter.setRenderHint(QPainter::Antialiasing);
@@ -6287,7 +6287,7 @@ void QMiarex::paintPlaneOppLegend(QPainter &painter, QRect drawRect)
 	painter.setPen(textPen);
 	QFont font(Settings::s_TextFont);
 	if (m_iView == XFLR5::W3DVIEW)
-		ratio = m_pgl3Widget->devicePixelRatio();
+		ratio = m_pGL3dView->devicePixelRatio();
 	margin *= ratio;
 	font.setPointSize(Settings::s_TextFont.pointSize()*ratio);
 	painter.setFont(font);
@@ -6504,10 +6504,10 @@ bool QMiarex::saveSettings(QSettings *pSettings)
 		pSettings->setValue("bPanelForce", m_bPanelForce);
 		pSettings->setValue("bICd", m_bICd);
 		pSettings->setValue("bVCd", m_bVCd);
-		pSettings->setValue("bSurfaces", m_pgl3Widget->m_bSurfaces);
-		pSettings->setValue("bOutline", m_pgl3Widget->m_bOutline);
-		pSettings->setValue("bVLMPanels", m_pgl3Widget->m_bVLMPanels);
-		pSettings->setValue("bAxes", m_pgl3Widget->m_bAxes);
+		pSettings->setValue("bSurfaces", m_pGL3dView->m_bSurfaces);
+		pSettings->setValue("bOutline", m_pGL3dView->m_bOutline);
+		pSettings->setValue("bVLMPanels", m_pGL3dView->m_bVLMPanels);
+		pSettings->setValue("bAxes", m_pGL3dView->m_bAxes);
 		pSettings->setValue("b3DCp", m_b3DCp);
 		pSettings->setValue("bDownwash", m_bDownwash);
 		pSettings->setValue("bMoments", m_bMoments);
@@ -6733,7 +6733,7 @@ bool QMiarex::saveSettings(QSettings *pSettings)
  */
 void QMiarex::setScale()
 {
-	if(m_iView==XFLR5::W3DVIEW && m_pCurPlane && W3dPrefsDlg::s_bAutoAdjustScale) m_pgl3Widget->set3DScale(m_pCurPlane->span());
+	if(m_iView==XFLR5::W3DVIEW && m_pCurPlane && W3dPrefsDlg::s_bAutoAdjustScale) m_pGL3dView->set3DScale(m_pCurPlane->span());
 }
 
 
@@ -7585,7 +7585,7 @@ void QMiarex::showEvent(QShowEvent *event)
 void QMiarex::snapClient(QString const &FileName)
 {
 	int NbBytes, bitsPerPixel;
-	QSize size(m_pgl3Widget->rect().width(),m_pgl3Widget->rect().height());
+	QSize size(m_pGL3dView->rect().width(),m_pGL3dView->rect().height());
 
 	bitsPerPixel = 24;
 	int width = size.width();
@@ -7769,7 +7769,7 @@ void QMiarex::updateView()
 {
 	if(m_iView==XFLR5::W3DVIEW)
 	{
-		m_pgl3Widget->update();
+		m_pGL3dView->update();
 	}
 	else
 	{
@@ -7881,7 +7881,7 @@ void QMiarex::paintCpLegendText(QPainter &painter)
 	painter.save();
 
 	QFont font(Settings::s_TextFont);
-	ratio = m_pgl3Widget->devicePixelRatio();
+	ratio = m_pGL3dView->devicePixelRatio();
 	font.setPointSize(Settings::s_TextFont.pointSize()*ratio);
 	painter.setFont(font);
 	painter.setRenderHint(QPainter::Antialiasing);
@@ -7889,13 +7889,13 @@ void QMiarex::paintCpLegendText(QPainter &painter)
 	QFontMetrics fm(font);
 	int back = fm.averageCharWidth() * 5;
 
-	double h = m_pgl3Widget->rect().height()*ratio;
+	double h = m_pGL3dView->rect().height()*ratio;
 	double y0 = 2.*h/5.0;
 
 
 	int ixPos, iyPos, dy;
 
-	ixPos  = m_pgl3Widget->rect().width()*ratio-back;
+	ixPos  = m_pGL3dView->rect().width()*ratio-back;
 
 	dy     = (int) (h/MAXCPCOLORS/2);
 	iyPos  = (int) (y0 - 12.0*dy);
@@ -7942,7 +7942,7 @@ void QMiarex::paintPanelForceLegendText(QPainter &painter)
 
 	painter.save();
 	QFont font(Settings::s_TextFont);
-	ratio = m_pgl3Widget->devicePixelRatio();
+	ratio = m_pGL3dView->devicePixelRatio();
 	font.setPointSize(Settings::s_TextFont.pointSize()*ratio);
 	painter.setFont(font);
 	painter.setRenderHint(QPainter::Antialiasing);
@@ -7978,13 +7978,13 @@ void QMiarex::paintPanelForceLegendText(QPainter &painter)
 	QFontMetrics fm(font);
 	int back = fm.averageCharWidth() * 5;
 
-	double h = (double)m_pgl3Widget->rect().height()*ratio;
+	double h = (double)m_pGL3dView->rect().height()*ratio;
 	double y0 = 2.*h/5.0;
 
 
 	int ixPos, iyPos, dy;
 
-	ixPos  = m_pgl3Widget->rect().width()*ratio-back;
+	ixPos  = m_pGL3dView->rect().width()*ratio-back;
 
 	dy     = (int) (h/40.0);
 	iyPos  = (int) (y0 - 12.0*dy);
@@ -8151,8 +8151,8 @@ void QMiarex::drawTextLegend()
 	QRect rect;
 	if(m_iView==XFLR5::W3DVIEW)
 	{
-		QRect tempRect = m_pgl3Widget->rect();
-		float ratio = m_pgl3Widget->devicePixelRatio();
+		QRect tempRect = m_pGL3dView->rect();
+		float ratio = m_pGL3dView->devicePixelRatio();
 		rect.moveTopLeft(tempRect.topLeft()*ratio);
 		rect.setSize(tempRect.size()*ratio);
 	}

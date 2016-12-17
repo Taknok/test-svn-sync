@@ -3215,7 +3215,7 @@ bool PanelAnalysis::getZeroMomentAngle()
 	if(iter>=CM_ITER_MAX || s_bCancel) return false;
 
 	m_AlphaEq = a*180.0/PI;
-	Cm = computeCm(m_AlphaEq);// for information only, should be zero
+//	Cm = computeCm(m_AlphaEq);// for information only, should be zero
 
 	return true;
 }

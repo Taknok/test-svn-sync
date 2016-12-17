@@ -44,8 +44,9 @@
 #include <gui_params.h>
 #include <QGraph.h>
 #include <miarex/view/GLLightDlg.h>
+#include <misc/scriptconsole.h>
 
-class GL3Widget;
+class gl3dMiarexView;
 class InverseViewWidget;
 class QGraph;
 class Direct2dDesign;
@@ -69,7 +70,6 @@ class GLLightDlg;
 class MainFrame : public QMainWindow
 {
 	friend class InverseViewWidget;
-	friend class GL3Widget;
 	friend class QXDirect;
 	friend class QMiarex;
 	friend class Objects3D;
@@ -114,6 +114,8 @@ class MainFrame : public QMainWindow
 	friend class MiarexTileWidget;
 	friend class XDirectTileWidget;
 	friend class OpPointWidget;
+	friend class gl3dView;
+	friend class gl3dMiarexView;
 
 	Q_OBJECT
 
@@ -133,7 +135,7 @@ public slots:
 	void onXInverseMixed();
 	void onMiarex();
 	void onExecuteScript();
-
+	void onScriptAction();
 
 private slots:
 	void aboutQt();
@@ -259,7 +261,7 @@ private:
 	QStackedWidget *m_pctrlCentralWidget;     /** The stacked widget which is loaded at the center of the display area. The stack switches between the widgets depending on the user's request. */
 	InverseViewWidget *m_p2dWidget;           /** A pointer to the instance of the TwoDWidget which is used to perform 2d drawings */
 	Direct2dDesign *m_pDirect2dWidget;        /** A pointer to the instance of the TwoDWidget which is used to perform 2d drawings of foils in Direct Design */
-	GL3Widget *m_pgl3Widget;                  /** A pointer to the instance of the OpenGL 3.0 widget where 3d calculations and rendering are performed */
+	gl3dMiarexView *m_pgl3dMiarexView;                  /** A pointer to the instance of the OpenGL 3.0 widget where 3d calculations and rendering are performed */
 	MiarexTileWidget *m_pMiarexTileWidget;
 	XDirectTileWidget *m_pXDirectTileWidget;
 
@@ -318,6 +320,7 @@ private:
 	QAction *m_pRecentFileActs[MAXRECENTFILES];
 	QAction *m_pSeparatorAct;
 	QAction *m_pSaveViewToImageFileAct, *m_pResetSettingsAct;
+	QAction *m_pScriptAction;
 
 	//Graph Actions
 	QAction *m_pSingleGraph[MAXGRAPHS], *m_pTwoGraphs, *m_pFourGraphs, *m_pAllGraphs;
@@ -441,7 +444,7 @@ public:
 	void *m_pGL3DScales;
 
 	QTranslator m_Translator;  /**< the translator object; due to a Qt bug, need to load twice: once from the main function, once from the mainframe */
-
+	ScriptConsole m_scriptConsole;
 };
 
 #endif // MAINFRAME_H

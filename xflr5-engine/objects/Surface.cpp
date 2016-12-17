@@ -494,10 +494,8 @@ void Surface::getSidePoints(enumPanelPosition pos,
 	if(cosdB<-1.0) cosdB = -1.0;
 
 	CVector x(1.0,0.0,0.0);
-	double alpha_dA =  acos(cosdA)*180.0/PI;
-	alpha_dA =atan2((NormalA * Normal).dot(x), Normal.dot(NormalA))*180.0/PI;
-	double alpha_dB = -acos(cosdB)*180.0/PI;
-	alpha_dB =atan2((NormalB * Normal).dot(x), Normal.dot(NormalB))*180.0/PI;
+	double alpha_dA = atan2((NormalA * Normal).dot(x), Normal.dot(NormalA))*180.0/PI;
+	double alpha_dB = atan2((NormalB * Normal).dot(x), Normal.dot(NormalB))*180.0/PI;
 	double delta = -atan(Normal.y / Normal.z)*180.0/PI;
 //	double delta = -atan2(Normal.y,  Normal.z)*180.0/PI;
 

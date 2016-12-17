@@ -53,7 +53,8 @@ class PlaneAnalysisTask  : public QRunnable
 	friend class QMiarex;
 	friend class PanelAnalysisDlg;
 	friend class LLTAnalysisDlg;
-	friend class GL3Widget;
+	friend class gl3dMiarexView;
+	friend class gl3dView;
 
 public:
 	PlaneAnalysisTask();
