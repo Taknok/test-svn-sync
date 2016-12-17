@@ -1,6 +1,6 @@
 /****************************************************************************
 
-	GL3Widget Class
+	gl3dView Class
 	Copyright (C) 2016 Andre Deperrois adeperrois@xflr5.com
 
 	This program is free software; you can redistribute it and/or modify
@@ -19,8 +19,12 @@
 
 *****************************************************************************/
 
-#ifndef GL3WIDGET_H
-#define GL3WIDGET_H
+
+
+#ifndef GL3DVIEW_H
+#define GL3DVIEW_H
+
+
 
 #include <QOpenGLWidget>
 #include <QOpenGLBuffer>
@@ -45,7 +49,7 @@ class WPolar;
 class PlaneOpp;
 class Panel;
 
-class GL3Widget : public QOpenGLWidget
+class gl3dView : public QOpenGLWidget
 {
 	friend class MainFrame;
 	friend class QMiarex;
@@ -57,8 +61,8 @@ class GL3Widget : public QOpenGLWidget
 
 	Q_OBJECT
 public:
-	GL3Widget(QWidget *pParent = NULL);
-	~GL3Widget();
+	gl3dView(QWidget *pParent = NULL);
+	~gl3dView();
 
 signals:
 	void viewModified();
@@ -66,11 +70,10 @@ signals:
 protected:
 	//OVERLOADS
 	void initializeGL();
-	void paintGL();
-	void contextMenuEvent (QContextMenuEvent * event);
+	virtual void paintGL();
+	virtual void resizeGL(int width, int height);
 	void keyReleaseEvent(QKeyEvent *event);
 	void keyPressEvent(QKeyEvent *event);
-	void resizeGL(int width, int height);
 	void mouseDoubleClickEvent(QMouseEvent *event);
 	void mousePressEvent(QMouseEvent *event);
 	void mouseMoveEvent(QMouseEvent *event);
@@ -79,13 +82,13 @@ protected:
 	QSize sizeHint() const;
 	QSize minimumSizeHint() const;
 
-private slots:
+public slots:
 	void on3DIso();
 	void on3DFlip();
 	void on3DTop();
 	void on3DLeft();
 	void on3DFront();
-	void on3DReset();
+	virtual void on3DReset() = 0;
 	void onAxes(bool bChecked);
 	void onClipPlane(int pos);
 	void onSurfaces(bool bChecked);
@@ -101,7 +104,7 @@ public:
 	void setScale(double refLength);
 	void glSetupLight();
 
-private:
+protected:
 	void getTextureFile(QString planeName, QString surfaceName, QImage & textureImage);
 	void glDrawMasses(Plane *pPlane);
 	void getGLError();
@@ -111,46 +114,24 @@ private:
 	void glMakeArcBall();
 	void glMakeBody3DFlatPanels(Body *pBody);
 	void glMakeBodySplines(Body *pBody);
-	void glMakeCpLegendClr();
 	void glMakePanels(QOpenGLBuffer &vbo, int nPanels, int nNodes, CVector *pNode, Panel *pPanel, PlaneOpp *pPOpp);
 	void glMakePanelForces(int nPanels, Panel *pPanel, WPolar *pWPolar, PlaneOpp *pPOpp);
 	void glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody);
-	void glMakeDownwash(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
-	void glMakeLiftStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
-	void glMakeLiftForce(WPolar *pWPolar, PlaneOpp *pPOpp);
-	void glMakeMoments(Wing *pWing, WPolar *pWPolar, PlaneOpp *pPOpp);
-	void glMakeTransitions(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
-	void glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, double beta);
-	bool glMakeStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPolar *pWPolar, PlaneOpp *pPOpp, int nPanels);
-	void glMakeSurfVelocities(Panel *pPanel, WPolar *pWPolar, PlaneOpp *pPOpp, int nPanels);
 	void glMakeWingMesh(Wing *pWing);
 	void glMakeBodyMesh(Body *pBody);
 	void glMakeWingSectionHighlight(Wing *pWing, int iSectionHighLight, bool bRightSide);
 	void glMakeBodyFrameHighlight(Body *pBody, CVector bodyPos, int iFrame);
 	void glRenderText(int x, int y, const QString & str, QColor textColor = QColor(Qt::white));
 	void glRenderText(double x, double y, double z, const QString & str, QColor textColor = QColor(Qt::white));
-	void glRenderMiarexView();
-	void glRenderPlaneView();
-	void glRenderGL3DBodyView();
-	void glRenderEditBodyView();
-	void glRenderWingView();
+
+	virtual void glRenderView() = 0;
 
 	void paintGL3();
 	void paintFoilNames(void *pWingPtr);
 	void paintMasses(double volumeMass, CVector pos, QString tag, const QList<PointMass *> &ptMasses);
-	void paintOverlay();
+	virtual void paintOverlay() = 0;
 	void paintArcBall();
-    void paintAxes();
-	void paintCpLegendClr();
-	void paintDrag(int iWing);
-	void paintDownwash(int iWing);
-	void paintLift(int iWing);
-	void paintMoments();
-	void paintStreamLines();
-	void paintSurfaceVelocities(int nPanels);
-	void paintTransitions(int iWing);
-	void paintPanelCp(int nPanels);
-	void paintPanelForces(int nPanels);
+	void paintAxes();
 	void paintMesh(int nPanels);
 	void paintBodyMesh(Body *pBody);
 	void paintWingMesh(Wing *pWing);
@@ -160,7 +141,7 @@ private:
 	void paintSphere(CVector place, double radius, QColor sphereColor, bool bLight=true);
 	void printFormat(const QSurfaceFormat &format);
 	void reset3DRotationCenter();
-	void set3DRotationCenter(QPoint point);
+	virtual void set3DRotationCenter(QPoint point) = 0;
 	void set3DScale(double length=-1.0);
 	void setSpanStations(Plane *pPlane, WPolar *pWPolar, PlaneOpp *pPOpp);
 	void startResetTimer(double length);
@@ -240,7 +221,6 @@ private:
 	CRectangle m_GLViewRect;    /**< The OpenGl viewport.*/
 
 	QTimer *m_pTransitionTimer;
-	XFLR5::enumGLView m_iView;         /**< The identification of the type of the calling parent widget*/
 
 	bool m_bTrans;
 	bool m_bDragPoint;
@@ -282,4 +262,4 @@ private:
 	int m_iTransitionInc;
 };
 
-#endif // GL3WIDGET_H
+#endif // GL3DVIEW_H
