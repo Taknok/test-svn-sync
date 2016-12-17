@@ -266,20 +266,20 @@ void EditObjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
 
 	QFont myFont(myOption.font);
 
-	if(index.column()==0)
+/*	if(index.column()==0)
 	{
 		myFont.setWeight(QFont::Bold);
 		painter->setFont(myFont);
-		QPen textPen(Qt::darkRed);
+		QPen textPen(Qt::red);
 		painter->setPen(textPen);
 	}
 	else
 	{
 		myFont.setWeight(QFont::Normal);
 		painter->setFont(myFont);
-		QPen textPen(Qt::darkBlue);
+		QPen textPen(Qt::white);
 		painter->setPen(textPen);
-	}
+	}*/
 
 	QFontMetrics fm(myFont);
 	int w = (int)((double)fm.height()/2);//pixels

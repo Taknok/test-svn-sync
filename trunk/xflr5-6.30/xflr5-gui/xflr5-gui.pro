@@ -19,10 +19,12 @@ else
 
 CONFIG += qt
 QT += opengl
+QT += script
 TEMPLATE = app
 
 
 INCLUDEPATH += $$PWD/viewwidgets
+INCLUDEPATH += $$PWD/viewwidgets/glWidgets
 INCLUDEPATH += $$PWD/graph
 INCLUDEPATH += $$PWD/misc
 INCLUDEPATH += $$PWD/glcontextinfo
@@ -44,7 +46,6 @@ SOURCES += \
 	viewwidgets/graphwidget.cpp \
 	viewwidgets/graphtilewidget.cpp \
 	viewwidgets/legendwidget.cpp \
-	viewwidgets/gl3widget.cpp \
 	viewwidgets/BodyFrameWidget.cpp \
 	viewwidgets/BodyLineWidget.cpp \
 	viewwidgets/Direct2dDesign.cpp \
@@ -157,6 +158,12 @@ SOURCES += \
 	script/xflscriptreader.cpp \
 	gui_objects/Spline5.cpp \
 	gui_objects/SplineFoil.cpp \
+    misc/scriptconsole.cpp \
+	viewwidgets/glWidgets/gl3dview.cpp \
+	viewwidgets/glWidgets/gl3dbodyview.cpp \
+	viewwidgets/glWidgets/gl3dmiarexview.cpp \
+	viewwidgets/glWidgets/gl3dwingview.cpp \
+	viewwidgets/glWidgets/gl3dplaneview.cpp
 
 
 HEADERS += \
@@ -167,7 +174,6 @@ HEADERS += \
 	viewwidgets/graphwidget.h \
 	viewwidgets/graphtilewidget.h \
 	viewwidgets/legendwidget.h \
-	viewwidgets/gl3widget.h \
 	viewwidgets/BodyFrameWidget.h \
 	viewwidgets/BodyLineWidget.h \
 	viewwidgets/Direct2dDesign.h \
@@ -280,7 +286,13 @@ HEADERS += \
 	gui_objects/Spline5.h \
 	gui_objects/SplineFoil.h \
 	gui_enums.h \
-	gui_params.h
+	gui_params.h \
+    misc/scriptconsole.h \
+	viewwidgets/glWidgets/gl3dview.h \
+	viewwidgets/glWidgets/gl3dbodyview.h \
+	viewwidgets/glWidgets/gl3dmiarexview.h \
+	viewwidgets/glWidgets/gl3dwingview.h \
+	viewwidgets/glWidgets/gl3dplaneview.h
 
 	
 

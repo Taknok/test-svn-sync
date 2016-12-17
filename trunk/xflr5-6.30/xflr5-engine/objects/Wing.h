@@ -83,7 +83,7 @@ class Wing
 	friend class StabViewDlg;
 	friend class EditPlaneDlg;
 	friend class EditBodyDlg;
-	friend class GL3Widget;
+	friend class gl3dView;
 	friend class XMLPlaneReader;
 
 

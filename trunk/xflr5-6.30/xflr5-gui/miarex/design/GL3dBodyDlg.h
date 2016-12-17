@@ -42,8 +42,8 @@
 #include <misc/DoubleEdit.h>
 #include <misc/ColorButton.h>
 #include <viewwidgets/ArcBall.h>
+#include <gl3dbodyview.h>
 #include <objects/Body.h>
-#include "gl3widget.h"
 #include "BodyLineWidget.h"
 #include "BodyFrameWidget.h"
 
@@ -61,7 +61,8 @@ class GL3dBodyDlg : public QDialog
 	friend class ManageBodiesDlg;
 	friend class BoatDlg;
 	friend class PlaneDlg;
-	friend class GL3Widget;
+	friend class gl3dView;
+	friend class gl3dBodyView;
 
 public:
     GL3dBodyDlg(QWidget *pParent=NULL);
@@ -104,8 +105,6 @@ private:
 	void accept();
 	void reject();
 
-	void showContextMenu(QContextMenuEvent * event);
-
 	void blockSignalling(bool bBlock);
 
 	void fillFrameTableRow(int row);
@@ -125,7 +124,6 @@ private:
 	void setViewControls();
 	void setTableUnits();
 
-	void glMake3DObjects();
 	void setControls();
 	void updateView();
 
@@ -145,7 +143,7 @@ private:
 
 
 private:
-	GL3Widget m_gl3Widget;
+	gl3dBodyView m_gl3dBodyview;
 	BodyLineWidget *m_pBodyLineWidget;
 	BodyFrameWidget *m_pFrameWidget;
 
@@ -213,7 +211,6 @@ private:
 
 //	bool m_bStored;
 	bool m_bResetFrame;
-	bool m_bResetglFrameHighlight;
 
 	bool m_bChanged;
 
@@ -225,7 +222,6 @@ private:
 
 
 	bool m_bEnableName;
-	bool m_bResetglBody;
 
 	CVector m_RealPopUp;
 	QPoint m_ptPopUp;

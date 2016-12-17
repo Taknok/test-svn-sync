@@ -52,7 +52,7 @@ class GLLightDlg : public QDialog
 {
 	Q_OBJECT
 	friend class QMiarex;
-	friend class GL3Widget;
+	friend class gl3dView;
 
 public:
     GLLightDlg(QWidget *pParent=NULL);
@@ -61,7 +61,7 @@ public:
 	void setDefaults();
 	void setModelSize(double span);
 	void setParams(void);
-	void setgl3Widget(void*pgl3Widget) {m_pgl3Widget = pgl3Widget;}
+	void setgl3dView(void*pglView) {m_pglView = pglView;}
 
 	QSize minimumSizeHint() const;
 	QSize sizeHint() const;
@@ -101,7 +101,7 @@ private:
 
 
 private:
-	void *m_pgl3Widget;
+	void *m_pglView;
 
 	static Light s_Light;
 	static Attenuation s_Attenuation;
