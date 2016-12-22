@@ -163,8 +163,8 @@ private:
 	QPushButton *m_pctrlReset;
 	QRadioButton *m_pctrlColor, *m_pctrlTextures;
 
-	QToolButton *m_pctrlX, *m_pctrlY, *m_pctrlZ, *m_pctrlIso;
-	QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView;
+	QToolButton *m_pctrlX, *m_pctrlY, *m_pctrlZ, *m_pctrlIso, *m_pctrlFlip;
+	QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView, *m_pFlipView;
 
 	QAction *m_pScaleWing, *m_pInertia;
 	QAction *m_pExportWingAct, *m_pImportWingAct;

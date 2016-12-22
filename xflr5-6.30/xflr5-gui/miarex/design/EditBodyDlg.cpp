@@ -344,17 +344,20 @@ void EditBodyDlg::setupLayout()
 						m_pctrlY          = new QToolButton;
 						m_pctrlZ          = new QToolButton;
 						m_pctrlIso        = new QToolButton;
+						m_pctrlFlip       = new QToolButton;
 						if(m_pctrlX->iconSize().height()<=48)
 						{
-							m_pctrlX->setIconSize(QSize(24,24));
-							m_pctrlY->setIconSize(QSize(24,24));
-							m_pctrlZ->setIconSize(QSize(24,24));
-							m_pctrlIso->setIconSize(QSize(24,24));
+							m_pctrlX->setIconSize(QSize(32,32));
+							m_pctrlY->setIconSize(QSize(32,32));
+							m_pctrlZ->setIconSize(QSize(32,32));
+							m_pctrlIso->setIconSize(QSize(32,32));
+							m_pctrlFlip->setIconSize(QSize(32,32));
 						}
-						m_pXView   = new QAction(QIcon(":/images/OnXView.png"), tr("X View"), this);
-						m_pYView   = new QAction(QIcon(":/images/OnYView.png"), tr("Y View"), this);
-						m_pZView   = new QAction(QIcon(":/images/OnZView.png"), tr("Z View"), this);
-						m_pIsoView = new QAction(QIcon(":/images/OnIsoView.png"), tr("Iso View"), this);
+						m_pXView    = new QAction(QIcon(":/images/OnXView.png"), tr("X View"), this);
+						m_pYView    = new QAction(QIcon(":/images/OnYView.png"), tr("Y View"), this);
+						m_pZView    = new QAction(QIcon(":/images/OnZView.png"), tr("Z View"), this);
+						m_pIsoView  = new QAction(QIcon(":/images/OnIsoView.png"), tr("Iso View"), this);
+						m_pFlipView = new QAction(QIcon(":/images/OnFlipView.png"), tr("Flip View"), this);
 						m_pXView->setCheckable(true);
 						m_pYView->setCheckable(true);
 						m_pZView->setCheckable(true);
@@ -364,10 +367,12 @@ void EditBodyDlg::setupLayout()
 						m_pctrlY->setDefaultAction(m_pYView);
 						m_pctrlZ->setDefaultAction(m_pZView);
 						m_pctrlIso->setDefaultAction(m_pIsoView);
+						m_pctrlFlip->setDefaultAction(m_pFlipView);
 						pAxisViewLayout->addWidget(m_pctrlX);
 						pAxisViewLayout->addWidget(m_pctrlY);
 						pAxisViewLayout->addWidget(m_pctrlZ);
 						pAxisViewLayout->addWidget(m_pctrlIso);
+						pAxisViewLayout->addWidget(m_pctrlFlip);
 					}
 
 					m_pctrlReset = new QPushButton(tr("Reset scale"));
@@ -577,6 +582,7 @@ void EditBodyDlg::connectSignals()
 	connect(m_pctrlX,          SIGNAL(clicked()), m_pglBodyView, SLOT(on3DFront()));
 	connect(m_pctrlY,          SIGNAL(clicked()), m_pglBodyView, SLOT(on3DLeft()));
 	connect(m_pctrlZ,          SIGNAL(clicked()), m_pglBodyView, SLOT(on3DTop()));
+	connect(m_pctrlFlip,       SIGNAL(clicked()), m_pglBodyView, SLOT(on3DFlip()));
 
 	connect(m_pHorizontalSplitter, SIGNAL(splitterMoved(int,int)), this, SLOT(onResize()));
 

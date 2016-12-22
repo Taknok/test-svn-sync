@@ -167,8 +167,8 @@ private:
 	static QByteArray m_VerticalSplitterSizes, m_HorizontalSplitterSizes, m_LeftSplitterSizes;
 
 	QCheckBox *m_pctrlAxes, *m_pctrlSurfaces, *m_pctrlOutline, *m_pctrlPanels, *m_pctrlShowMasses;
-	QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView;
-	QToolButton *m_pctrlX, *m_pctrlY, *m_pctrlZ, *m_pctrlIso;
+	QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView, *m_pFlipView;
+	QToolButton *m_pctrlX, *m_pctrlY, *m_pctrlZ, *m_pctrlIso, *m_pctrlFlip;
 	QPushButton *m_pctrlReset;
 	QPushButton *m_pctrlUndo, *m_pctrlRedo;
 	QPushButton *m_pctrlOK, *m_pctrlCancel;
