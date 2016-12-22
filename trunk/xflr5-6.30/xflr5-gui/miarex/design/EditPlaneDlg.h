@@ -122,13 +122,13 @@ private:
 	QStandardItemModel *m_pModel;
 
 //	ThreeDWidget *m_pgl1Widget;
-	gl3dPlaneView *m_pglBodyView;
+	gl3dPlaneView *m_pglPlaneView;
 
 	QCheckBox *m_pctrlAxes, *m_pctrlLight, *m_pctrlSurfaces, *m_pctrlOutline, *m_pctrlPanels;
 	QCheckBox *m_pctrlFoilNames, *m_pctrlShowMasses;
 
-	QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView;
-	QToolButton *m_pctrlX, *m_pctrlY, *m_pctrlZ, *m_pctrlIso;
+	QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView, *m_pFlipView;
+	QToolButton *m_pctrlX, *m_pctrlY, *m_pctrlZ, *m_pctrlIso, *m_pctrlFlip;
 
 	QMenu *m_pContextMenu;
 	QAction *m_pInsertBefore, *m_pInsertAfter, *m_pDeleteItem;

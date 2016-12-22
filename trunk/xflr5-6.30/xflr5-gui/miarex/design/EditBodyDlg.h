@@ -142,8 +142,8 @@ private:
 	QAction *m_pScaleBody, *m_pTranslateBody;
 
 
-	QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView;
-	QToolButton *m_pctrlX, *m_pctrlY, *m_pctrlZ, *m_pctrlIso;
+	QAction *m_pXView, *m_pYView, *m_pZView, *m_pIsoView, *m_pFlipView;
+	QToolButton *m_pctrlX, *m_pctrlY, *m_pctrlZ, *m_pctrlIso, *m_pctrlFlip;
 
 	QMenu *m_pContextMenu;
 	QAction *m_pInsertBefore, *m_pInsertAfter, *m_pDeleteItem;

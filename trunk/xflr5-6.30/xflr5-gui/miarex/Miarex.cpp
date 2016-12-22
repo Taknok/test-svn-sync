@@ -7675,7 +7675,7 @@ void QMiarex::stopAnimate()
 	if(m_pCurPlane)
 	{
 		setPlaneOpp(true);
-		s_pMainFrame->selectOpPoint(m_pCurPOpp);
+		s_pMainFrame->selectPlaneOpp(m_pCurPOpp);
 	}
 }
 
