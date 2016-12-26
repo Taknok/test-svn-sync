@@ -57,7 +57,7 @@ WPolar::WPolar()
 
 	m_AnalysisMethod = XFLR5::LLTMETHOD;
 	m_WPolarType     = XFLR5::FIXEDSPEEDPOLAR;
-	m_ReferenceDim   = XFLR5::PLANFORMREFDIM;
+	m_ReferenceDim   = XFLR5::PROJECTEDREFDIM;
 
 	m_BankAngle = 0.0;
 	m_AlphaSpec = 0.0;

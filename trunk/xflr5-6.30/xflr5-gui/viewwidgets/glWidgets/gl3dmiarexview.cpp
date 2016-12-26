@@ -222,12 +222,10 @@ void gl3dMiarexView::resizeGL(int width, int height)
 	int side = qMin(width, height);
 	glViewport((width - side) / 2, (height - side) / 2, side, side);
 
-
 	double w, h, s;
 	w = (double)width;
 	h = (double)height;
 	s = 1.0;
-
 
 	if(w>h)	m_GLViewRect.setRect(-s, s*h/w, s, -s*h/w);
 	else    m_GLViewRect.setRect(-s*w/h, s, s*w/h, -s);
@@ -681,6 +679,12 @@ void gl3dMiarexView::glMakeSurfVelocities(Panel *pPanel, WPolar *pWPolar, PlaneO
 
 	QMiarex *pMiarex = (QMiarex*)s_pMiarex;
 
+
+	QProgressDialog dlg(tr("Velocities calculation"), tr("Abort"), 0, nPanels);
+	dlg.setWindowModality(Qt::WindowModal);
+	dlg.show();
+
+
 	Mu    = pPOpp->m_dG;
 	Sigma = pPOpp->m_dSigma;
 
@@ -758,9 +762,12 @@ void gl3dMiarexView::glMakeSurfVelocities(Panel *pPanel, WPolar *pWPolar, PlaneO
 		velocityVertexArray[iv++] = x2;
 		velocityVertexArray[iv++] = y2;
 		velocityVertexArray[iv++] = z2;
+		dlg.setValue(p);
+		qApp->processEvents();
+		if(dlg.wasCanceled()) break;
 	}
 
-	Q_ASSERT(iv==velocityVertexSize);
+	if(!dlg.wasCanceled()) Q_ASSERT(iv==velocityVertexSize);
 
 	m_vboSurfaceVelocities.destroy();
 	m_vboSurfaceVelocities.create();

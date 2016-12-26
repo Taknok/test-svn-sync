@@ -95,7 +95,8 @@ public:
 	bool serializePOppWPA(QDataStream &ar, bool bIsStoring);
 	bool serializePOppXFL(QDataStream &ar, bool bIsStoring);
 
-	void getPlaneOppProperties(QString &POppProps);
+	void getPlaneOppProperties(QString &PlaneOppProperties, QString lengthUnitLabel, QString massUnitLabel, QString speedUnitLabel,
+							   double mtoUnit, double kgtoUnit, double mstoUnit);
 
 	QString title() {return "POpp title";}
 

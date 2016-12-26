@@ -7855,7 +7855,8 @@ void QMiarex::onPlaneOppProperties()
 	if(!m_pCurPOpp) return;
 	ObjectPropsDlg opDlg(s_pMainFrame);
 	QString strangeProps;
-	m_pCurPOpp->getPlaneOppProperties(strangeProps);
+	m_pCurPOpp->getPlaneOppProperties(strangeProps, Units::lengthUnitLabel(), Units::weightUnitLabel(), Units::speedUnitLabel(),
+									  Units::mtoUnit(), Units::kgtoUnit(), Units::mstoUnit());
 	opDlg.initDialog(tr("Operating point Properties"), strangeProps);
 	opDlg.exec();
 }

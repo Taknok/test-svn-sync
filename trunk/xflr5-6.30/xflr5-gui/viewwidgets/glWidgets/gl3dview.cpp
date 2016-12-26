@@ -22,8 +22,6 @@
 #include "gl3dview.h"
 
 
-
-
 #include <QOpenGLShaderProgram>
 #include <QOpenGLPaintDevice>
 #include <QOpenGLFunctions>
