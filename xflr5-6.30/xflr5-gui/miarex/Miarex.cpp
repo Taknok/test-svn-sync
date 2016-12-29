@@ -4516,7 +4516,7 @@ void QMiarex::onExportCurWPolar()
 	QString FileName, filter;
 
 	if(Settings::s_ExportFileType==XFLR5::TXT) filter = "Text File (*.txt)";
-	else                                filter = "Comma Separated Values (*.csv)";
+	else                                       filter = "Comma Separated Values (*.csv)";
 
 	FileName = m_pCurWPolar->polarName();
 	FileName.replace("/", "_");
@@ -4556,9 +4556,39 @@ void QMiarex::onExportCurWPolar()
 }
 
 
+void QMiarex::onExportWPolars()
+{
+	QString fileName, DirName;
+	QFile XFile;
+	QTextStream out;
+
+	//select the directory for output
+	DirName = QFileDialog::getExistingDirectory(this,  tr("Export Directory"), Settings::s_LastDirName);
+
+	WPolar *pWPolar;
+	for(int l=0; l<m_poaWPolar->size(); l++)
+	{
+		pWPolar = (WPolar*)m_poaWPolar->at(l);
+		fileName = pWPolar->planeName() + "_" + pWPolar->polarName();
+		fileName.replace("/", "_");
+		fileName.replace(".", "_");
+		fileName = DirName + "/" +fileName;
+		if(Settings::s_ExportFileType==XFLR5::TXT) fileName += ".txt";
+		else                                       fileName += ".csv";
+
+		XFile.setFileName(fileName);
+		if (XFile.open(QIODevice::WriteOnly | QIODevice::Text))
+		{
+			out.setDevice(&XFile);
+			exportToTextStream(pWPolar, out, Settings::s_ExportFileType);
+			XFile.close();
+		}
+	}
+}
+
 
 /**
- * Exports the geometrical data of the acitve wing or plane to a text file readable by AVL
+ * Exports the geometrical data of the active plane to a text file readable by AVL
  */
 void QMiarex::onExporttoAVL()
 {
@@ -4980,111 +5010,114 @@ void QMiarex::onHidePlaneWPolars()
 
 
 /**
- * The user has requested the import of polar results from a text file.
- * Creates a new WPolar object, fills it with the data from the text file, and adds it to the array
- *@todo not used often, not thouroughly tested
+ * The user has requested the import of polar results from text file(s).
+ * Creates new WPolar object(s), fills them with the data from the text file,
+ * and adds them to the array
  */
-void QMiarex::onImportWPolar()
+void QMiarex::onImportWPolars()
 {
-	WPolar *pWPolar = new WPolar;
 	bool bRead = true;
-	QString PolarName, PlaneName;
+	QString polarName, PlaneName;
 	QString strong, str;
+	QStringList PathNames;
 	QString PathName;
 
-	PathName = QFileDialog::getOpenFileName(s_pMainFrame, tr("Open File"),
-											Settings::s_LastDirName,
-											tr("Plane Polar Format (*.*)"));
-	if(!PathName.length())
-	{
-		delete pWPolar;
-		return ;
-	}
+	PathNames = QFileDialog::getOpenFileNames(s_pMainFrame, tr("Open File"),
+											  Settings::s_LastDirName,
+											  tr("Plane Polar Format (*.*)"));
+	if(!PathNames.size()) return;
+
 	int pos = PathName.lastIndexOf("/");
 	if(pos>0) Settings::s_LastDirName = PathName.left(pos);
 
-	QFile XFile(PathName);
-	if (!XFile.open(QIODevice::ReadOnly))
+	for (int i=0; i<PathNames.size(); i++)
 	{
-		QString strange = tr("Could not read the file\n")+PathName;
-		QMessageBox::warning(s_pMainFrame, tr("Warning"), strange);
-		delete pWPolar;
-		return;
-	}
-
-	QTextStream inStream(&XFile);
-
-	strong = inStream.readLine();// XFLR5 version
-	strong = inStream.readLine();// blank line
-	strong = inStream.readLine();// plane name
-
-	PlaneName = strong.right(strong.length()-19);
-	PlaneName = PlaneName.trimmed();
-
-	Plane *pPlane = Objects3D::getPlane(PlaneName);
-
-	if(!pPlane)
-	{
-		str = tr("No Plane with the name ")+PlaneName;
-		str+= tr("\ncould be found. The polar(s) will not be stored");
-		delete pWPolar;
-		QMessageBox::warning(s_pMainFrame, tr("Warning"), str);
-		return;
-	}
-
-	pWPolar->planeName() = PlaneName;
-	pWPolar->referenceArea()        = pPlane->planformArea();
-	pWPolar->referenceChordLength() = pPlane->mac();
-	pWPolar->referenceSpanLength()  = pPlane->planformSpan();
-
-	strong = inStream.readLine();
-	PolarName = strong.right(strong.length()-19);
-	pWPolar->polarName() = PolarName;
-
-	strong = inStream.readLine();// blank line
-
-	strong = inStream.readLine();// "   alpha      CL          ICd   ..."
-
-	while( bRead)
-	{
-		strong = inStream.readLine(); // one line with polar results
-		if(strong.length())
+		PathName = PathNames.at(i);
+		QFile XFile(PathName);
+		if (!XFile.open(QIODevice::ReadOnly))
 		{
-			QStringList values = strong.split(" ", QString::SkipEmptyParts);
-//			alpha      Beta       CL          CDi        CDv        CD         CY         Cl         Cm         Cn        Cni       QInf        XCP
-
-			if(values.length()>=12)
-			{
-				PlaneOpp *pPOpp = new PlaneOpp;
-
-				pPOpp->m_Alpha  = values.at(0).toDouble();
-				pPOpp->m_Beta   = values.at(1).toDouble();
-				pPOpp->m_CL     = values.at(2).toDouble();
-				pPOpp->m_ICD    = values.at(3).toDouble();
-				pPOpp->m_VCD    = values.at(4).toDouble();
-//				pPOpp->m_TCd    = values.at(5).toDouble();
-				pPOpp->m_CY     = values.at(6).toDouble();
-				pPOpp->m_GRm    = values.at(7).toDouble();
-				pPOpp->m_GCm    = values.at(8).toDouble();
-				pPOpp->m_GYm    = values.at(9).toDouble();
-				pPOpp->m_IYm    = values.at(10).toDouble();
-				pPOpp->m_QInf   = values.at(11).toDouble();
-				pPOpp->m_CP.x   = values.at(12).toDouble();
-
-				pWPolar->addPlaneOpPoint(pPOpp);
-//					pWPolar->AddWingOpPoint(alpha, CL, ICd, PCd, CY, GCm, 0.0, 0.0, GRm, GYm, IYm, QInf, XCP);
-			}
-			else bRead = false;
+			QString strange = tr("Could not read the file\n")+PathName;
+			QMessageBox::warning(s_pMainFrame, tr("Warning"), strange);
 		}
-		else bRead = false;
+		else
+		{
+			QTextStream inStream(&XFile);
+
+			strong = inStream.readLine();// XFLR5 version
+			strong = inStream.readLine();// blank line
+			strong = inStream.readLine();// plane name
+
+			PlaneName = strong.right(strong.length()-19);
+			PlaneName = PlaneName.trimmed();
+
+			Plane *pPlane = Objects3D::getPlane(PlaneName);
+
+			if(!pPlane)
+			{
+				str = tr("No Plane with the name ")+PlaneName;
+				str+= tr("\ncould be found. The polar(s) will not be stored");
+
+				QMessageBox::warning(s_pMainFrame, tr("Warning"), str);
+			}
+			else
+			{
+				WPolar *pWPolar = new WPolar();
+
+				pWPolar->planeName() = PlaneName;
+				pWPolar->referenceArea()        = pPlane->planformArea();
+				pWPolar->referenceChordLength() = pPlane->mac();
+				pWPolar->referenceSpanLength()  = pPlane->planformSpan();
+
+				strong = inStream.readLine();
+				polarName = strong.right(strong.length()-19);
+				pWPolar->polarName() = polarName;
+
+				strong = inStream.readLine();// blank line
+
+				strong = inStream.readLine();// "   alpha      CL          ICd   ..."
+
+				bRead = true;
+				while( bRead)
+				{
+					strong = inStream.readLine(); // one line with polar results
+					if(strong.length())
+					{
+						QStringList values = strong.split(" ", QString::SkipEmptyParts);
+			//			alpha      Beta       CL          CDi        CDv        CD         CY         Cl         Cm         Cn        Cni       QInf        XCP
+
+						if(values.length()>=12)
+						{
+							PlaneOpp *pPOpp = new PlaneOpp;
+
+							pPOpp->m_Alpha  = values.at(0).toDouble();
+							pPOpp->m_Beta   = values.at(1).toDouble();
+							pPOpp->m_CL     = values.at(2).toDouble();
+							pPOpp->m_ICD    = values.at(3).toDouble();
+							pPOpp->m_VCD    = values.at(4).toDouble();
+			//				pPOpp->m_TCd    = values.at(5).toDouble();
+							pPOpp->m_CY     = values.at(6).toDouble();
+							pPOpp->m_GRm    = values.at(7).toDouble();
+							pPOpp->m_GCm    = values.at(8).toDouble();
+							pPOpp->m_GYm    = values.at(9).toDouble();
+							pPOpp->m_IYm    = values.at(10).toDouble();
+							pPOpp->m_QInf   = values.at(11).toDouble();
+							pPOpp->m_CP.x   = values.at(12).toDouble();
+
+							pWPolar->addPlaneOpPoint(pPOpp);
+						}
+						else bRead = false;
+					}
+					else bRead = false;
+				}
+
+				pWPolar->curveColor() = randomColor();
+				Objects3D::addWPolar(pWPolar);
+				XFile.close();
+			}
+		}
 	}
 
-	pWPolar->curveColor() = randomColor();
-
-	Objects3D::addWPolar(pWPolar);
-	m_pCurWPolar = pWPolar;
-
-	setWPolar(pWPolar);
+	setWPolar();
 	s_pMainFrame->updateWPolarListBox();
 	updateView();
 	emit projectModified();
@@ -8526,54 +8559,42 @@ void QMiarex::onImportFromXml()
 /**
  * Imports the plane geometry from an XML file
  */
-void QMiarex::onImportPlanefromXML()
+void QMiarex::onImportPlanesfromXML()
 {
-	QString PathName;
-	PathName = QFileDialog::getOpenFileName(s_pMainFrame, tr("Open XML File"),
-											Settings::s_xmlDirName,
-											tr("Plane XML file")+"(*.xml)");
-	if(!PathName.length())		return ;
-	int pos = PathName.lastIndexOf("/");
-	if(pos>0) Settings::s_xmlDirName = PathName.left(pos);
+	QStringList pathNames;
+	pathNames = QFileDialog::getOpenFileNames(s_pMainFrame, tr("Open XML File"),
+											  Settings::s_xmlDirName,
+											  tr("Plane XML file")+"(*.xml)");
+	if(!pathNames.size()) return;
+	int pos = pathNames.at(0).lastIndexOf("/");
+	if(pos>0) Settings::s_xmlDirName = pathNames.at(0).left(pos);
 
-	QFile XFile(PathName);
-	if (!XFile.open(QIODevice::ReadOnly))
+	for(int iFile=0; iFile<pathNames.size(); iFile++)
 	{
-		QString strange = tr("Could not read the file\n")+PathName;
-		QMessageBox::warning(s_pMainFrame, tr("Warning"), strange);
-		return;
+		QFile XFile(pathNames.at(iFile));
+		importPlaneFromXML(XFile);
 	}
-
-	XFile.close();
-
-	importPlaneFromXML(XFile);
-
 }
 
 
 /**
  * Imports the analysis definition from an XML file
  */
-void QMiarex::onImportWPolarFromXML()
+void QMiarex::onImportAnalysisFromXML()
 {
-	QString PathName;
-	PathName = QFileDialog::getOpenFileName(s_pMainFrame, tr("Open XML File"),
-											Settings::s_xmlDirName,
-											tr("Analysis XML file")+"(*.xml)");
-	if(!PathName.length())		return ;
-	int pos = PathName.lastIndexOf("/");
-	if(pos>0) Settings::s_xmlDirName = PathName.left(pos);
+	QStringList pathNames;
+	pathNames = QFileDialog::getOpenFileNames(s_pMainFrame, tr("Open XML File"),
+											  Settings::s_xmlDirName,
+											  tr("Analysis XML file")+"(*.xml)");
+	if(!pathNames.size()) return ;
+	int pos = pathNames.at(0).lastIndexOf("/");
+	if(pos>0) Settings::s_xmlDirName = pathNames.at(0).left(pos);
 
-	QFile XFile(PathName);
-	if (!XFile.open(QIODevice::ReadOnly))
+	for(int iFile=0; iFile<pathNames.size(); iFile++)
 	{
-		QString strange = tr("Could not read the file\n")+PathName;
-		QMessageBox::warning(s_pMainFrame, tr("Warning"), strange);
-		return;
+		QFile XFile(pathNames.at(iFile));
+		importWPolarFromXML(XFile);
 	}
-
-	importWPolarFromXML(XFile);
-
 }
 
 
@@ -8706,7 +8727,7 @@ void QMiarex::onExportPlanetoXML()
 /**
  * Exports the analysis data to an XML file
  */
-void QMiarex::onExportWPolarToXML()
+void QMiarex::onExportAnalysisToXML()
 {
 	if(!m_pCurPlane || !m_pCurWPolar) return ;// is there anything to export ?
 
@@ -9061,7 +9082,7 @@ void QMiarex::getPolarProperties(WPolar *pWPolar, QString &polarProps, bool bDat
 
 /**
  * Exports the data of the polar to a text stream
- * @param out the instance of output QtextStream
+ * @param out the instance of output QTextStream
  * @param FileType TXT if the data is separated by spaces, CSV for a comma separator
  * @param bDataOnly true if the analysis parameters should not be output
  */
@@ -9078,10 +9099,10 @@ void QMiarex::exportToTextStream(WPolar *pWPolar, QTextStream &out, XFLR5::enumT
 			strong += "\n\n";
 			out << strong;
 
-			strong ="Wing name :        "+ pWPolar->planeName() + "\n";
+			strong ="Plane name :        "+ pWPolar->planeName() + "\n";
 			out << strong;
 
-			strong ="Wing polar name :  "+ pWPolar->polarName()+ "\n";
+			strong ="Polar name :        "+ pWPolar->polarName()+ "\n";
 			out << strong;
 
 			Units::getSpeedUnitLabel(str);
@@ -9131,10 +9152,10 @@ void QMiarex::exportToTextStream(WPolar *pWPolar, QTextStream &out, XFLR5::enumT
 			strong += "\n\n";
 			out << strong;
 
-			strong ="Wing name :, "+ pWPolar->planeName() + "\n";
+			strong ="Plane name :, "+ pWPolar->planeName() + "\n";
 			out << strong;
 
-			strong ="Wing polar name :, "+ pWPolar->polarName() + "\n";
+			strong ="Polar name :, "+ pWPolar->polarName() + "\n";
 			out << strong;
 
 			Units::getSpeedUnitLabel(str);

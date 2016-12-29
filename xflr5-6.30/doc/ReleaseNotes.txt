@@ -15,6 +15,13 @@
 *******************************************************************************
 
 
+xflr5 v6.31 January 1st, 2017
+	- allowed multiple import and export of PLanes and Analysis objects from text and xml files
+	- moved the execution of LLT and Panel Analysis to separate threads
+	- set the default reference area for plane analysis to the projected area on the x-y plane
+	- bug corrections and minor enhancements
+
+
 xflr5 v6.30 November 6th, 2016
 	- updated the license from GPL v2 to v3
 	- separated the GUI from the analysis engines

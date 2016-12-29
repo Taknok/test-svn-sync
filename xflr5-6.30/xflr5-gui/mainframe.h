@@ -205,7 +205,6 @@ public:
 	void loadLastProject();
 	bool loadSettings();
 	bool loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
-	void* readFoilFile(QTextStream &ar, QString fileName);
 	void readPolarFile(QDataStream &ar);
 	bool saveProject(QString PathName="");
 	void saveSettings();
@@ -352,7 +351,7 @@ private:
 	QAction *m_pShowPolarProps, *m_pShowWOppProps;
 	QAction *m_pDeleteCurWPolar, *m_pDeleteCurWOpp;
 	QAction *m_pEditObjectAct, *m_pEditWPolarObjectAct;
-	QAction *m_pImportPlaneFromXml, *m_pImportWPolarFromXml, *m_pExportPlaneToXML, *m_pExportWPolarToXML;
+	QAction *m_pImportPlaneFromXml, *m_pImportAnalysisFromXml, *m_pExportPlaneToXML, *m_pExportAnalysisToXML;
 
 	QAction *m_pMiarexPolarFilter;
 	QAction *m_pAllGraphsScalesAct, *m_pAllGraphsSettings;
@@ -365,7 +364,7 @@ private:
 	QAction *m_pShowTargetCurve, *m_pShowXCmRefLocation, *m_pShowStabCurve, *m_pShowFinCurve, *m_pShowWing2Curve;
 	QAction *m_pExporttoAVL, *m_pExporttoSTL;
 	QAction *m_pManagePlanesAct, *m_pScaleWingAct;
-	QAction *m_pImportWPolar, *m_pPlaneInertia;
+	QAction *m_pImportWPolars, *m_pExportWPolars, *m_pPlaneInertia;
 	QAction *m_pShowFlapMoments;
 
 	//XDirect Actions
