@@ -1324,9 +1324,13 @@ void MainFrame::createMiarexActions()
 	m_pManagePlanesAct->setShortcut(Qt::Key_F7);
 	connect(m_pManagePlanesAct, SIGNAL(triggered()), pMiarex, SLOT(onManagePlanes()));
 
-	m_pImportWPolar = new QAction(tr("Import Polar"), this);
-	m_pImportWPolar->setStatusTip(tr("Import a polar from a text file"));
-	connect(m_pImportWPolar, SIGNAL(triggered()), pMiarex, SLOT(onImportWPolar()));
+	m_pImportWPolars = new QAction(tr("Import Polar(s)"), this);
+	m_pImportWPolars->setStatusTip(tr("Import polar(s) from text file(s)"));
+	connect(m_pImportWPolars, SIGNAL(triggered()), pMiarex, SLOT(onImportWPolars()));
+
+	m_pExportWPolars = new QAction(tr("Export all polars"), this);
+	m_pExportWPolars->setStatusTip(tr("Export polar(s) to text file(s)"));
+	connect(m_pExportWPolars, SIGNAL(triggered()), pMiarex, SLOT(onExportWPolars()));
 
 	m_pPlaneInertia = new QAction(tr("Define Inertia")+"\tF12", this);
 	m_pPlaneInertia->setStatusTip(tr("Define the inertia for the current plane or wing"));
@@ -1492,14 +1496,15 @@ void MainFrame::createMiarexActions()
 	m_pExportPlaneToXML = new QAction(tr("Export to xml file"), this);
 	connect(m_pExportPlaneToXML, SIGNAL(triggered()), pMiarex, SLOT(onExportPlanetoXML()));
 
-	m_pImportPlaneFromXml= new QAction(tr("Import plane from xml file"), this);
-	connect(m_pImportPlaneFromXml, SIGNAL(triggered()), pMiarex, SLOT(onImportPlanefromXML()));
+	m_pImportPlaneFromXml= new QAction(tr("Import plane(s) from xml file(s)"), this);
+	connect(m_pImportPlaneFromXml, SIGNAL(triggered()), pMiarex, SLOT(onImportPlanesfromXML()));
 
-	m_pExportWPolarToXML = new QAction(tr("Export analysis to xml file"), this);
-	connect(m_pExportWPolarToXML, SIGNAL(triggered()), pMiarex, SLOT(onExportWPolarToXML()));
+	m_pExportAnalysisToXML = new QAction(tr("Export analysis to xml file"), this);
+	connect(m_pExportAnalysisToXML, SIGNAL(triggered()), pMiarex, SLOT(onExportAnalysisToXML()));
 
-	m_pImportWPolarFromXml= new QAction(tr("Import analysis from xml file"), this);
-	connect(m_pImportWPolarFromXml, SIGNAL(triggered()), pMiarex, SLOT(onImportWPolarFromXML()));
+	m_pImportAnalysisFromXml= new QAction(tr("Import analysis from xml file"), this);
+	m_pImportAnalysisFromXml->setStatusTip(tr("Import analysis definition(s) from XML file(s)"));
+	connect(m_pImportAnalysisFromXml, SIGNAL(triggered()), pMiarex, SLOT(onImportAnalysisFromXML()));
 
 }
 
@@ -1590,11 +1595,12 @@ void MainFrame::createMiarexMenus()
 			m_pCurWPlrMenu->addAction(m_pDeleteAllWPlrOpps);
 			m_pCurWPlrMenu->addSeparator();
 			m_pCurWPlrMenu->addAction(m_pExportCurWPolar);
-			m_pCurWPlrMenu->addAction(m_pExportWPolarToXML);
+			m_pCurWPlrMenu->addAction(m_pExportAnalysisToXML);
 		}
 
 		m_pMiarexWPlrMenu->addSeparator();
-		m_pMiarexWPlrMenu->addAction(m_pImportWPolar);
+		m_pMiarexWPlrMenu->addAction(m_pImportWPolars);
+		m_pMiarexWPlrMenu->addAction(m_pExportWPolars);
 		m_pMiarexWPlrMenu->addSeparator();
 		m_pMiarexWPlrMenu->addAction(m_pMiarexPolarFilter);
 		m_pMiarexWPlrMenu->addSeparator();
@@ -1631,7 +1637,7 @@ void MainFrame::createMiarexMenus()
 		m_pMiarexAnalysisMenu->addAction(m_pDefineWPolar);
 		m_pMiarexAnalysisMenu->addAction(m_pDefineWPolarObjectAct);
 		m_pMiarexAnalysisMenu->addAction(m_pDefineStabPolar);
-		m_pMiarexAnalysisMenu->addAction(m_pImportWPolarFromXml);
+		m_pMiarexAnalysisMenu->addAction(m_pImportAnalysisFromXml);
 		m_pMiarexAnalysisMenu->addSeparator();
 		m_pMiarexAnalysisMenu->addAction(m_pViewLogFile);
 		m_pMiarexAnalysisMenu->addAction(m_pAadvancedSettings);
@@ -1697,7 +1703,7 @@ void MainFrame::createMiarexMenus()
 			m_pCurWPlrMenu_WOppCtxMenu->addAction(m_pDeleteAllWPlrOpps);
 			m_pCurWPlrMenu_WOppCtxMenu->addSeparator();
 			m_pCurWPlrMenu_WOppCtxMenu->addAction(m_pExportCurWPolar);
-			m_pCurWPlrMenu_WOppCtxMenu->addAction(m_pExportWPolarToXML);
+			m_pCurWPlrMenu_WOppCtxMenu->addAction(m_pExportAnalysisToXML);
 		}
 
         //m_pWOppCtxMenu->addMenu(m_pCurWPlrMenu);
@@ -1793,7 +1799,7 @@ void MainFrame::createMiarexMenus()
 			m_pCurWPlrMenu_WCpCtxMenu->addAction(m_pDeleteAllWPlrOpps);
 			m_pCurWPlrMenu_WCpCtxMenu->addSeparator();
 			m_pCurWPlrMenu_WCpCtxMenu->addAction(m_pExportCurWPolar);
-			m_pCurWPlrMenu_WCpCtxMenu->addAction(m_pExportWPolarToXML);
+			m_pCurWPlrMenu_WCpCtxMenu->addAction(m_pExportAnalysisToXML);
 		}
 
         //m_pWCpCtxMenu->addMenu(m_pCurWPlrMenu);
@@ -1874,7 +1880,7 @@ void MainFrame::createMiarexMenus()
 			m_pCurWPlrMenu_WTimeCtxMenu->addAction(m_pDeleteAllWPlrOpps);
 			m_pCurWPlrMenu_WTimeCtxMenu->addSeparator();
 			m_pCurWPlrMenu_WTimeCtxMenu->addAction(m_pExportCurWPolar);
-			m_pCurWPlrMenu_WTimeCtxMenu->addAction(m_pExportWPolarToXML);
+			m_pCurWPlrMenu_WTimeCtxMenu->addAction(m_pExportAnalysisToXML);
 		}
         //m_pWTimeCtxMenu->addMenu(m_pCurWPlrMenu);
 		m_pWTimeCtxMenu->addSeparator();
@@ -1955,7 +1961,7 @@ void MainFrame::createMiarexMenus()
             m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pDeleteAllWPlrOpps);
 			m_pCurWPlrMenu_WPlrCtxMenu->addSeparator();
 			m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pExportCurWPolar);
-			m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pExportWPolarToXML);
+			m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pExportAnalysisToXML);
 		}
         //m_pWPlrCtxMenu->addMenu(m_pCurWPlrMenu);
 		m_pWPlrCtxMenu->addSeparator();
@@ -2036,7 +2042,7 @@ void MainFrame::createMiarexMenus()
             m_pCurWPlrMenu_W3DCtxMenu->addAction(m_pDeleteAllWPlrOpps);
 			m_pCurWPlrMenu_W3DCtxMenu->addSeparator();
 			m_pCurWPlrMenu_W3DCtxMenu->addAction(m_pExportCurWPolar);
-			m_pCurWPlrMenu_W3DCtxMenu->addAction(m_pExportWPolarToXML);
+			m_pCurWPlrMenu_W3DCtxMenu->addAction(m_pExportAnalysisToXML);
 		}
         //m_pW3DCtxMenu->addMenu(m_pCurWPlrMenu);
 		m_pW3DCtxMenu->addSeparator();
@@ -2119,7 +2125,7 @@ void MainFrame::createMiarexMenus()
             m_pCurWPlrMenu_W3DStabCtxMenu->addAction(m_pDeleteAllWPlrOpps);
 			m_pCurWPlrMenu_W3DStabCtxMenu->addSeparator();
 			m_pCurWPlrMenu_W3DStabCtxMenu->addAction(m_pExportCurWPolar);
-			m_pCurWPlrMenu_W3DStabCtxMenu->addAction(m_pExportWPolarToXML);
+			m_pCurWPlrMenu_W3DStabCtxMenu->addAction(m_pExportAnalysisToXML);
 		}
 
         //m_pW3DStabCtxMenu->addMenu(m_pCurWPlrMenu);
@@ -3603,8 +3609,7 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString pathName)
 		int pos1 = fileName.lastIndexOf("hn");
 		fileName = fileName.right(fileName.length()-pos1);
 
-		QTextStream ar(&XFile);
-		Foil *pFoil = (Foil*)readFoilFile(ar, fileName);
+		Foil *pFoil = (Foil*)readFoilFile(XFile);
 		XFile.close();
 
 		if(pFoil)
@@ -3906,8 +3911,7 @@ void MainFrame::onLoadFile()
 		PathName = PathNames.at(0);
 		if(!PathName.length()) return;
 
-
-        PathName.replace(QDir::separator(), "/"); // Qt sometimes uses the windows \ separator
+		PathName.replace(QDir::separator(), "/"); // Qt sometimes uses the windows \ separator
 
 		int pos = PathName.lastIndexOf("/");
 		if(pos>0) Settings::s_LastDirName = PathName.left(pos);
@@ -4660,129 +4664,6 @@ void MainFrame::onOpenRecentFile()
 		onXInverse();
 		updateView();
 	}
-}
-
-
-void *MainFrame::readFoilFile(QTextStream &in, QString fileName)
-{
-	QString strong;
-	QString tempStr;
-	QString FoilName;
-
-	Foil* pFoil = NULL;
-	int pos, i, ip;
-	pos = 0;
-	double x, y, z, area;
-	double xp, yp;
-	bool bRead;
-
-
-	pFoil = new Foil();
-	if(!pFoil)	return NULL;
-
-	while(tempStr.length()==0 && !in.atEnd())
-	{
-		strong = in.readLine();
-		pos = strong.indexOf("#",0);
-		// ignore everything after # (including #)
-		if(pos>0)strong.truncate(pos);
-		tempStr = strong;
-		tempStr.remove(" ");
-		FoilName = strong;
-	}
-
-	if(!in.atEnd())
-	{
-		// FoilName contains the last comment
-
-		if(readValues(strong,x,y,z)==2)
-		{
-			//there isn't a name on the first line, use the file's name
-			FoilName = fileName;
-			{
-				pFoil->xb[0] = x;
-				pFoil->yb[0] = y;
-				pFoil->nb=1;
-				xp = x;
-				yp = y;
-			}
-		}
-		else FoilName = strong;
-		// remove fore and aft spaces
-		FoilName = FoilName.trimmed();
-	}
-
-	bRead = true;
-	xp=-9999.0;
-	yp=-9999.0;
-	do
-	{
-		strong = in.readLine();
-		pos = strong.indexOf("#",0);
-		// ignore everything after # (including #)
-		if(pos>0)strong.truncate(pos);
-		tempStr = strong;
-		tempStr.remove(" ");
-		if (!strong.isNull() && bRead && tempStr.length())
-		{
-			if(readValues(strong, x,y,z)==2)
-			{
-				//add values only if the point is not coincident with the previous one
-				double dist = sqrt((x-xp)*(x-xp) + (y-yp)*(y-yp));
-				if(dist>0.000001)
-				{
-					pFoil->xb[pFoil->nb] = x;
-					pFoil->yb[pFoil->nb] = y;
-					pFoil->nb++;
-					if(pFoil->nb>IQX)
-					{
-						delete pFoil;
-						return NULL;
-					}
-					xp = x;
-					yp = y;
-				}
-			}
-			else bRead = false;
-		}
-	}while (bRead && !strong.isNull());
-
-	pFoil->foilName() = FoilName;
-
-	// Check if the foil was written clockwise or counter-clockwise
-
-	area = 0.0;
-	for (i=0; i<pFoil->nb; i++)
-	{
-		if(i==pFoil->nb-1)	ip = 0;
-		else				ip = i+1;
-		area +=  0.5*(pFoil->yb[i]+pFoil->yb[ip])*(pFoil->xb[i]-pFoil->xb[ip]);
-	}
-
-	if(area < 0.0)
-	{
-		//reverse the points order
-		double xtmp, ytmp;
-		for (int i=0; i<pFoil->nb/2; i++)
-		{
-			xtmp         = pFoil->xb[i];
-			ytmp         = pFoil->yb[i];
-			pFoil->xb[i] = pFoil->xb[pFoil->nb-i-1];
-			pFoil->yb[i] = pFoil->yb[pFoil->nb-i-1];
-			pFoil->xb[pFoil->nb-i-1] = xtmp;
-			pFoil->yb[pFoil->nb-i-1] = ytmp;
-		}
-	}
-
-	memcpy(pFoil->x, pFoil->xb, sizeof(pFoil->xb));
-	memcpy(pFoil->y, pFoil->yb, sizeof(pFoil->yb));
-	pFoil->n = pFoil->nb;
-
-	QColor clr = randomColor();
-	pFoil->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
-	pFoil->initFoil();
-
-	return pFoil;
 }
 
 
