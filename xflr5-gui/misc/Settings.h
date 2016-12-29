@@ -94,7 +94,7 @@ public:
 	static bool s_bReverseZoom;
 	static XFLR5::enumTextFileType s_ExportFileType;  /**< Defines if the list separator for the output text files should be a space or a comma. */
 	static QGraph s_RefGraph;//Reference setttings
-	static QString s_LastDirName;
+	static QString s_LastDirName, s_xmlDirName;
 };
 
 

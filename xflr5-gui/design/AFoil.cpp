@@ -1721,7 +1721,7 @@ Foil* QAFoil::addNewFoil(Foil *pFoil)
 }
 
 
-void QAFoil::initDialog(void *p2DWidget, QList<void*> *poaFoil, void *pXFoil)
+void QAFoil::initDialog(void *p2DWidget, QList<Foil*> *poaFoil, void *pXFoil)
 {
 	m_poaFoil = poaFoil;
 	m_pXFoil = pXFoil;

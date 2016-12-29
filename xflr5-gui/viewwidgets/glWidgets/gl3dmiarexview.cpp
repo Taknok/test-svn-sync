@@ -462,7 +462,7 @@ bool gl3dMiarexView::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode
 
 						for (i=2; i< GL3DScales::s_NX ;i++)
 						{
-							pMiarex->m_theTask.m_thePanelAnalysis.getSpeedVector(C, Mu, Sigma, VT);
+							pMiarex->m_thePanelAnalysis.getSpeedVector(C, Mu, Sigma, VT);
 
 							VT += VInf;
 							VT.normalize();
@@ -496,7 +496,7 @@ bool gl3dMiarexView::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode
 
 					for (i=2; i<GL3DScales::s_NX; i++)
 					{
-						pMiarex->m_theTask.m_thePanelAnalysis.getSpeedVector(D, Mu, Sigma, VT);
+						pMiarex->m_theTask.m_pthePanelAnalysis->getSpeedVector(D, Mu, Sigma, VT);
 
 						VT += VInf;
 						VT.normalize();
@@ -706,7 +706,7 @@ void gl3dMiarexView::glMakeSurfVelocities(Panel *pPanel, WPolar *pWPolar, PlaneO
 		{
 			if(pPanel[p].m_Pos==MIDSURFACE) C.copy(pPanel[p].CtrlPt);
 			else                            C.copy(pPanel[p].CollPt);
-			pMiarex->m_theTask.m_thePanelAnalysis.getSpeedVector(C, Mu, Sigma, V);
+			pMiarex->m_theTask.m_pthePanelAnalysis->getSpeedVector(C, Mu, Sigma, V);
 
 			VT += V;
 

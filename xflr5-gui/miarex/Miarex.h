@@ -287,8 +287,10 @@ public:
 
 public:
 	LLTAnalysisDlg *m_pLLTDlg;                    /**< the dialog class which manages the LLT calculations */
+	LLTAnalysis m_theLLTAnalysis;
 
 	PanelAnalysisDlg *m_pPanelAnalysisDlg;        /**< the dialog class which manages the 3D VLM and Panel calculations */
+	PanelAnalysis m_thePanelAnalysis;
 
 	PlaneAnalysisTask m_theTask;
 

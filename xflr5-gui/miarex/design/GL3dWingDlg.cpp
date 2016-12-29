@@ -43,7 +43,7 @@
 
 
 
-QList <void*> *GL3dWingDlg::s_poaFoil;
+QList <Foil*> *GL3dWingDlg::s_poaFoil;
 
 QPoint GL3dWingDlg::s_WindowPos=QPoint(75,55);
 QSize  GL3dWingDlg::s_WindowSize=QSize(1200, 900);

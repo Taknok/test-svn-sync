@@ -29,7 +29,7 @@
 #include <engine_enums.h>
 
 
-QList <void*> *EditObjectDelegate::s_poaFoil;
+QList <Foil*> *EditObjectDelegate::s_poaFoil;
 
 
 EditObjectDelegate::EditObjectDelegate(QWidget *pParent) : QStyledItemDelegate(pParent)

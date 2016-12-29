@@ -35,7 +35,6 @@ PlaneOpp::PlaneOpp(void *pPlanePtr, void *pWPolarPtr, int PanelArraySize)
 	m_PlaneName   = "";
 	m_WPlrName    = "";
 
-
 	m_NStation    = 0;
 	m_NPanels     = 0;
 

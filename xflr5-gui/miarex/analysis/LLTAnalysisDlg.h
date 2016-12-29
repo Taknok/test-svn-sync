@@ -31,6 +31,7 @@
 #define LLTANALYSISDLG_H
 
 #include <QDialog>
+#include <QTimer>
 #include <QPushButton>
 #include <QCheckBox>
 #include <QString>
@@ -64,20 +65,24 @@ class LLTAnalysisDlg : public QDialog
 {
 	Q_OBJECT
 
-	friend class MainFrame;
-	friend class QMiarex;
 	friend class Wing;
 
 public:
-	LLTAnalysisDlg(QWidget *pParent, PlaneAnalysisTask *pPlaneAnalysisTask);
+	LLTAnalysisDlg(QWidget *pParent);
 	~LLTAnalysisDlg();
 
 	void initDialog();
+	void setTask(PlaneAnalysisTask *pTask){m_pTheTask = pTask;}
+	void deleteTask();
+	void analyze();
+	void cleanUp();
+	static void setPosition(QPoint pos) {s_Position = pos;}
 
 private slots:
 	void onCancelAnalysis();
 	void onProgress();
 	void onLogFile();
+	void onMessage(QString msg);
 
 private:
 	void keyPressEvent(QKeyEvent *event);
@@ -88,7 +93,6 @@ private:
 	bool AlphaLoop();
 	bool QInfLoop();
 	void setupLayout();
-	void analyze();
 	void updateView();
 	void updateOutput(QString &strong);
 
@@ -104,7 +108,9 @@ private:
 	QPoint m_LegendPlace;       /**< The position where the legend should be diplayed in the output graph */
 	QRect m_ViscRect;           /**< The rectangle in the client area where the graph is displayed */
 
+	QString m_strOut;
 
+	QTimer m_Timer;
 
 	//GUI widget variables
 	QPushButton *m_pctrlCancel;

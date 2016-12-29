@@ -46,7 +46,7 @@ bool Settings::s_bReverseZoom = false;
 QGraph Settings::s_RefGraph;
 XFLR5::enumTextFileType Settings::s_ExportFileType;  /**< Defines if the list separator for the output text files should be a space or a comma. */
 QString Settings::s_LastDirName = QDir::homePath();
-
+QString Settings::s_xmlDirName = QDir::homePath();
 
 Settings::Settings(QWidget *pParent) : QDialog(pParent)
 {
@@ -393,6 +393,7 @@ void Settings::saveSettings(QSettings *pSettings)
 	pSettings->beginGroup("global_settings");
 	{
 		pSettings->setValue("LastDirName", s_LastDirName);
+		pSettings->setValue("XMLDirName", s_xmlDirName);
 
 		pSettings->setValue("BackgroundColor", s_BackgroundColor);
 		pSettings->setValue("TextColor", s_TextColor);
@@ -419,7 +420,8 @@ void Settings::loadSettings(QSettings *pSettings)
 {
 	pSettings->beginGroup("global_settings");
 	{
-		s_LastDirName = pSettings->value("LastDirName").toString();
+		s_LastDirName = pSettings->value("LastDirName", QDir::homePath()).toString();
+		s_xmlDirName = pSettings->value("XMLDirName", QDir::homePath()).toString();
 
 		s_BackgroundColor = pSettings->value("BackgroundColor", QColor(5,11,13)).value<QColor>();
 

@@ -26,7 +26,7 @@
 #include <xfoil_globals.h>
 
 
-QList <void *> Polar::s_oaPolar;
+QList <Polar*> Polar::s_oaPolar;
 Polar* Polar::s_pCurPolar = NULL;
 
 

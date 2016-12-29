@@ -20,6 +20,8 @@
 *****************************************************************************/
 
 #include <QtDebug>
+#include <QThread>
+#include <QCoreApplication>
 #include <engine_globals.h>
 #include <objects/Surface.h>
 #include "PanelAnalysis.h"
@@ -661,14 +663,12 @@ bool PanelAnalysis::alphaLoop()
 	setInertia(0.0, 0.0, 0.0);
 
 	m_Progress = 0.0;
-//	qApp->processEvents();
 
 	str = QString("   Solving the problem... \n");
 	traceLog(str);
 
 	buildInfluenceMatrix();
 	if (s_bCancel) return true;
-
 
 	createUnitRHS();
 	if (s_bCancel) return true;
@@ -700,7 +700,6 @@ bool PanelAnalysis::alphaLoop()
 	}
 
 	if (s_bCancel) return true;
-
 
 	createSourceStrength(m_vMin, m_vDelta, m_nRHS);
 	if (s_bCancel) return true;
@@ -789,7 +788,6 @@ void PanelAnalysis::buildInfluenceMatrix()
 			m++;
 //		}
 		m_Progress += 10.0*(double)Size/400./(double)Size;
-//		qApp->processEvents();
 	}
 }
 
@@ -899,8 +897,6 @@ void PanelAnalysis::createRHS(double *RHS, CVector VInf, double *VField)
 			m++;
 //		}
 		m_Progress += 5.0/(double)m_MatSize;
-
-//		qApp->processEvents();
 	}
 }
 
@@ -1062,7 +1058,6 @@ void PanelAnalysis::createWakeContribution()
 			m++;
 		}
 		m_Progress += 1.0/(double)m_MatSize;
-//		qApp->processEvents();
 	}
 
 	delete [] PHC;
@@ -1197,7 +1192,6 @@ void PanelAnalysis::createWakeContribution(double *pWakeContrib, CVector WindDir
 			m++;
 //		}
 		m_Progress += 1.0/(double)m_MatSize;
-//		qApp->processEvents();
 	}
 
 	delete [] PHC;
@@ -1269,7 +1263,6 @@ void PanelAnalysis::computeFarField(double QInf, double Alpha0, double AlphaDelt
 				pos += m_pWingList[iw]->m_MatSize;
 
 				m_Progress += 10.0 * (double)m_pWingList[iw]->m_MatSize/ThinSize *(double)m_MatSize/400.;
-//				qApp->processEvents();
 				if(s_bCancel)return;
 			}
 		}
@@ -1431,7 +1424,6 @@ void PanelAnalysis::computeAeroCoefs(double V0, double VDelta, int nrhs)
 			traceLog(str);
 			computePlane(m_OpAlpha, V0+q*VDelta, q);
 			m_Progress += 5.0*(double)nrhs /(double)nrhs;
-//			qApp->processEvents();
 		}
 	}
 	else if(m_pWPolar->polarType()==XFLR5::BETAPOLAR)
@@ -1444,7 +1436,6 @@ void PanelAnalysis::computeAeroCoefs(double V0, double VDelta, int nrhs)
 			traceLog(str);
 			computePlane(m_OpAlpha, m_3DQInf[q], q);
 			m_Progress += 5.0*(double)nrhs /(double)nrhs;
-//			qApp->processEvents();
 		}
 	}
 	else
@@ -1461,7 +1452,6 @@ void PanelAnalysis::computeAeroCoefs(double V0, double VDelta, int nrhs)
 				computePlane(V0+q*VDelta, m_3DQInf[q], q);
 			}
 			m_Progress += 5.0*(double)nrhs/(double)nrhs;
-//			qApp->processEvents();
 		}
 	}
 }
@@ -1620,8 +1610,6 @@ void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
 		traceLog("\n");
 	}
 	else m_bPointOut = true;
-
-//	qApp->processEvents();
 }
 
 
@@ -1866,7 +1854,6 @@ void PanelAnalysis::computeOnBodyCp(double V0, double VDelta, int nval)
 			}
 			if(s_bCancel) return;
 			m_Progress += 1.0 *(double)nval/(double)nval;
-//			qApp->processEvents();
 		}
 	}
 	else //FIXEDAOAPOLAR
@@ -1890,7 +1877,6 @@ void PanelAnalysis::computeOnBodyCp(double V0, double VDelta, int nval)
 			}
 
 			m_Progress += 1.0  *(double)nval/(double)nval;
-//			qApp->processEvents();
 		}
 		for (q=1; q<nval; q++)
 		{
@@ -2037,7 +2023,6 @@ bool PanelAnalysis::QInfLoop()
 	if(!m_pWPolar->bThinSurfaces()) m_TotalTime +=1.0; //for wake contribution
 
 	m_Progress = 0.0;
-//	qApp->processEvents();
 
 	if(m_pWPolar->bTilted())
 	{
@@ -2255,7 +2240,6 @@ bool PanelAnalysis::unitLoop()
 	else                          MaxWakeIter = qMax(m_nMaxWakeIter, 1);
 
 	m_Progress = 0.0;
-//	qApp->processEvents();
 
 	str = QString("   Solving the problem...\n");
 	traceLog("\n"+str);
@@ -2598,7 +2582,6 @@ bool PanelAnalysis::controlLoop()
 	QString str, outString;
 
 	m_Progress = 0.0;
-//	qApp->processEvents();
 
 	m_bTrace = true;
 
@@ -3175,7 +3158,6 @@ bool PanelAnalysis::getZeroMomentAngle()
 		Cm0 = computeCm(a0*180.0/PI);
 		Cm1 = computeCm(a1*180.0/PI);
 		iter++;
-//		qApp->processEvents();
 		if(s_bCancel) break;
 	}
 	if(iter>=100 || s_bCancel) return false;
@@ -3208,7 +3190,6 @@ bool PanelAnalysis::getZeroMomentAngle()
 			Cm0 = Cm;
 		}
 		iter++;
-//		qApp->processEvents();
 		if(s_bCancel) break;
 	}
 
@@ -3438,7 +3419,6 @@ bool PanelAnalysis::computeTrimmedConditions()
 
 	//reconstruct doublet strengths from unit cosine and sine vectors
 	createDoubletStrength(m_AlphaEq, 0.0, 1.0);
-//	qApp->processEvents();
 	if(s_bCancel) return false;
 
 	//______________________________________________________________________________________
@@ -3727,7 +3707,6 @@ void PanelAnalysis::computeStabilityDerivatives()
 	Mw = (Moment - Moment0).dot(js) /deltaspeed;
 
 	m_Progress +=1;
-//	qApp->processEvents();
 
 	// p-derivatives
 	forces(m_pRHS, m_Sigma+3*m_MatSize, m_AlphaEq, V0, m_RHS+59*m_MatSize, Force, Moment);
@@ -3748,7 +3727,6 @@ void PanelAnalysis::computeStabilityDerivatives()
 	Nr = (Moment-Moment0).dot(ks) /deltarotation;
 
 	m_Progress +=1;
-//	qApp->processEvents();
 
 	//________________________________________________
 	// 2nd ORDER STABILITY DERIVATIVES
@@ -4285,8 +4263,8 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double *Gamma, double *Sigma
 */
 void PanelAnalysis::traceLog(QString str)
 {
-	m_OutMessage += str;
-//	qApp->processEvents();
+	emit(outputMsg(str));
+	qApp->processEvents();
 }
 
 
@@ -5005,3 +4983,13 @@ void PanelAnalysis::VLMQmn(CVector &LA, CVector &LB, CVector &TA, CVector &TB, C
 	}
 }
 
+
+
+void PanelAnalysis::clearPOppList()
+{
+	for(int ip=m_PlaneOppList.count()-1; ip>=0; ip--)
+	{
+		delete m_PlaneOppList.at(ip);
+		m_PlaneOppList.removeAt(ip);
+	}
+}

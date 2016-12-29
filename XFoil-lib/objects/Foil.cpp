@@ -29,7 +29,7 @@
 #include <QTextStream>
 #include <QtDebug>
 
-QList <void *> Foil::s_oaFoil;
+QList <Foil*> Foil::s_oaFoil;
 Foil *Foil::s_pCurFoil = NULL;
 
 /**

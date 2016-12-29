@@ -176,7 +176,7 @@ private:
 
 	void *m_pXFoil;             /**< a void pointer to the unique instance of the XFoil object */
 
-	QList<void *> *m_poaFoil;   /**< a pointer to the array of Foil objects */
+	QList<Foil*> *m_poaFoil;   /**< a pointer to the array of Foil objects */
 
 	Foil* m_pRefFoil;           /**< a pointer to the reference foil geometry used for inverse design */
 	Foil* m_pModFoil;           /**< a pointer to the resulting Foil modified by inverse design operations */

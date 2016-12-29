@@ -184,7 +184,7 @@ private:
 
 public:
 
-	static QList <void *> s_oaFoil;      /**< The array of void pointers to the Foil objects. */
+	static QList <Foil*> s_oaFoil;      /**< The array of void pointers to the Foil objects. */
 
 	bool m_bTEFlap;          /**< true if the foil has a trailing edge flap */
 	double m_TEFlapAngle;    /**< the trailing edge flap angle, in degrees*/

@@ -275,7 +275,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 	XFoilAnalysisDlg::s_Position = QPoint(kx+31, ky+31);
 	BatchThreadDlg::s_Position   = QPoint(kx+31, ky+31);
 	BatchDlg::s_Position         = QPoint(kx+31, ky+31);
-	LLTAnalysisDlg::s_Position   = QPoint(kx+31, ky+31);
+	LLTAnalysisDlg::setPosition(QPoint(kx+31, ky+31));
 	PanelAnalysisDlg::s_Position = QPoint(kx+31, ky+31);
 	EditPlrDlg::s_Position       = QPoint(kx+31, ky+31);
 	InertiaDlg::s_Position       = QPoint(kx+31, ky+31);
@@ -2515,10 +2515,10 @@ void MainFrame::createXDirectActions()
 	m_pImportXFoilPolar = new QAction(tr("Import XFoil Polar"), this);
 	connect(m_pImportXFoilPolar, SIGNAL(triggered()), pXDirect, SLOT(onImportXFoilPolar()));
 
-	m_pImportXMLFoilAnalysis = new QAction(tr("Import Analysis from XML"), this);
+	m_pImportXMLFoilAnalysis = new QAction(tr("Import Analysis from xml file"), this);
 	connect(m_pImportXMLFoilAnalysis, SIGNAL(triggered()), pXDirect, SLOT(onImportXMLAnalysis()));
 
-	m_pExportXMLFoilAnalysis = new QAction(tr("Export Analysis to XML"), this);
+	m_pExportXMLFoilAnalysis = new QAction(tr("Export analysis to xml file"), this);
 	connect(m_pExportXMLFoilAnalysis, SIGNAL(triggered()), pXDirect, SLOT(onExportXMLAnalysis()));
 }
 
@@ -3536,7 +3536,7 @@ bool MainFrame::loadSettings()
 		}while(n<MAXRECENTFILES);
 
 
-		Settings::s_bStyleSheets  = settings.value("ShowStyleSheets", false).toBool();
+		Settings::s_bStyleSheets   = settings.value("ShowStyleSheets", false).toBool();
 		Settings::s_StyleSheetName = settings.value("StyleSheetName", "xflr5_style").toString();
 		s_bShowMousePos = settings.value("ShowMousePosition", true).toBool();	
 	}
@@ -6602,7 +6602,6 @@ void MainFrame::setupDataDir()
 void MainFrame::readStyleSheet(QString styleSheetName, QString &styleSheet)
 {
 	QFile file(s_StylesheetDir.canonicalPath()+"/"+styleSheetName+".qss");
-
     if(file.open(QFile::ReadOnly))
 	{
 		styleSheet = QLatin1String(file.readAll());
