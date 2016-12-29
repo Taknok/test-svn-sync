@@ -22,8 +22,9 @@
 #include <math.h>
 #include <QApplication>
 #include <QDir>
+#include <QThreadPool>
+#include <QtConcurrent/QtConcurrentRun>
 #include <QDateTime>
-#include <QTimer>
 #include <QDesktopWidget>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -44,14 +45,13 @@ bool LLTAnalysisDlg::s_bWindowMaximized=false;
 /**
 *The public constructor
 */
-LLTAnalysisDlg::LLTAnalysisDlg(QWidget *pParent, PlaneAnalysisTask *pPlaneAnalysisTask) : QDialog(pParent)
+LLTAnalysisDlg::LLTAnalysisDlg(QWidget *pParent) : QDialog(pParent)
 {
 	setWindowTitle(tr("LLT Analysis"));
 
 	setupLayout();
 
-	m_pTheTask = pPlaneAnalysisTask;
-	m_pTheTask->setParent(this);
+	m_pTheTask = NULL;
 
 	m_pIterGraph = new QGraph();
 	m_pGraphWidget->setGraph(m_pIterGraph);
@@ -82,7 +82,6 @@ LLTAnalysisDlg::LLTAnalysisDlg(QWidget *pParent, PlaneAnalysisTask *pPlaneAnalys
 
 	m_LegendPlace.rx() = 0;
 	m_LegendPlace.ry() = 0;
-
 }
 
 /**
@@ -90,6 +89,7 @@ LLTAnalysisDlg::LLTAnalysisDlg(QWidget *pParent, PlaneAnalysisTask *pPlaneAnalys
  */
 LLTAnalysisDlg::~LLTAnalysisDlg()
 {
+	if(m_pTheTask)   delete m_pTheTask;
     if(m_pIterGraph) delete m_pIterGraph;
 }
 
@@ -114,6 +114,7 @@ void LLTAnalysisDlg::initDialog()
 
 	m_pctrlLogFile->setChecked(QMiarex::m_bLogFile);
 }
+
 
 void LLTAnalysisDlg::onLogFile()
 {
@@ -216,11 +217,9 @@ void LLTAnalysisDlg::analyze()
 	m_bCancel     = false;
 	m_bFinished   = false;
 
-
-	QTimer *pTimer = new QTimer(this);
-	connect(pTimer, SIGNAL(timeout()), this, SLOT(onProgress()));
-	pTimer->setInterval(100);
-	pTimer->start();
+	connect(&m_Timer, SIGNAL(timeout()), this, SLOT(onProgress()));
+	m_Timer.setInterval(200);
+	m_Timer.start();
 
 	m_pctrlTextOutput->clear();
 
@@ -247,27 +246,49 @@ void LLTAnalysisDlg::analyze()
 	m_pIterGraph->setYMinGrid(false, true, QColor(100,100,100), 2, 1, 4);
 
 	Curve *pCurve = m_pIterGraph->addCurve();
-	m_pTheTask->m_theLLTAnalysis.setCurvePointers(&pCurve->x, &pCurve->y);
-	m_pTheTask->run();
+	m_pTheTask->m_ptheLLTAnalysis->setCurvePointers(&pCurve->x, &pCurve->y);
 
-	pTimer->stop();
+	//run the instance asynchronously
+	QFuture<void> future = QtConcurrent::run(m_pTheTask, &PlaneAnalysisTask::run);
+
+	while(future.isRunning())
+	{
+		qApp->processEvents();
+		QThread::msleep(200);
+/*		QDateTime dt = QDateTime::currentDateTime();
+		QString str = dt.toString("dd.MM.yyyy  hh:mm:ss.zzz");
+		qDebug() << str<<m_pTheTask->isFinished();*/
+	}
+
+	cleanUp();
+}
+
+
+void LLTAnalysisDlg::cleanUp()
+{
+	QString strange;
+	m_Timer.stop();
 
 	if(PlaneOpp::s_bStoreOpps)
 	{
-		for(int iPOpp=0; iPOpp<m_pTheTask->m_theLLTAnalysis.m_PlaneOppList.size(); iPOpp++)
+		for(int iPOpp=0; iPOpp<m_pTheTask->m_ptheLLTAnalysis->m_PlaneOppList.size(); iPOpp++)
 		{
-			Objects3D::insertPOpp(m_pTheTask->m_theLLTAnalysis.m_PlaneOppList.at(iPOpp));
+			Objects3D::insertPOpp(m_pTheTask->m_ptheLLTAnalysis->m_PlaneOppList.at(iPOpp));
 		}
+	}
+	else
+	{
+		m_pTheTask->m_ptheLLTAnalysis->clearPOppList();
 	}
 
 	m_bFinished = true;
 	strange = "\n_________\n"+tr("Analysis completed");
-	if(m_pTheTask->m_theLLTAnalysis.m_bWarning)     strange += tr(" ...some points are outside the flight envelope");
-	else if(m_pTheTask->m_theLLTAnalysis.m_bError)  strange += tr(" ...some points are unconverged");
+	if(m_pTheTask->m_ptheLLTAnalysis->m_bWarning)     strange += tr(" ...some points are outside the flight envelope");
+	else if(m_pTheTask->m_ptheLLTAnalysis->m_bError)  strange += tr(" ...some points are unconverged");
 
 	strange+= "\n";
 
-	m_pTheTask->m_theLLTAnalysis.traceLog(strange);
+	m_pTheTask->m_ptheLLTAnalysis->traceLog(strange);
 	onProgress();
 
 	QString FileName = QDir::tempPath() + "/XFLR5.log";
@@ -285,11 +306,12 @@ void LLTAnalysisDlg::analyze()
 		outstream << m_pctrlTextOutput->toPlainText();
 		outstream.flush();
 		pXFile->close();
-		delete pXFile;
 	}
+	delete pXFile;
 
-
+	m_pTheTask = NULL;
 	m_pctrlCancel->setText(tr("Close"));
+	m_pctrlCancel->setFocus();
 }
 
 
@@ -306,13 +328,13 @@ void LLTAnalysisDlg::updateView()
 /**Updates the progress of the analysis in the slider widget */
 void LLTAnalysisDlg::onProgress()
 {
-	if(m_pTheTask->m_theLLTAnalysis.m_OutMessage.length())
+/*	if(m_strOut.length())
 	{
-		m_pctrlTextOutput->insertPlainText(m_pTheTask->m_theLLTAnalysis.m_OutMessage);
+		m_pctrlTextOutput->insertPlainText(m_strOut);
 		m_pctrlTextOutput->textCursor().movePosition(QTextCursor::End);
 		m_pctrlTextOutput->ensureCursorVisible();
 	}
-	m_pTheTask->m_theLLTAnalysis.m_OutMessage.clear();
+	m_strOut.clear();*/
 	m_pGraphWidget->update();
 }
 
@@ -360,3 +382,16 @@ void LLTAnalysisDlg::customEvent(QEvent * event)
 }
 
 
+void LLTAnalysisDlg::onMessage(QString msg)
+{
+	m_pctrlTextOutput->insertPlainText(msg);
+	m_pctrlTextOutput->textCursor().movePosition(QTextCursor::End);
+	m_pctrlTextOutput->ensureCursorVisible();
+}
+
+
+void LLTAnalysisDlg::deleteTask()
+{
+	if(m_pTheTask) delete m_pTheTask;
+	m_pTheTask = NULL;
+}

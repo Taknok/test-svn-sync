@@ -20,6 +20,7 @@
 *****************************************************************************/
 
 #include <QtDebug>
+#include <QtConcurrent/QtConcurrentRun>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QMessageBox>
@@ -47,11 +48,14 @@ bool PanelAnalysisDlg::s_bWindowMaximized=false;
 /**
 * The public constructor
 */
-PanelAnalysisDlg::PanelAnalysisDlg(QWidget *pParent, PlaneAnalysisTask *pPlaneAnalysisTask) : QDialog(pParent)
+PanelAnalysisDlg::PanelAnalysisDlg(QWidget *pParent) : QDialog(pParent)
 {
 	setWindowTitle(tr("3D Panel Analysis"));
 	setupLayout();
-	m_pTheTask = pPlaneAnalysisTask;
+
+	m_pctrlTextOutput->setFont(Settings::s_TableFont);
+
+	m_pTheTask = NULL;
 }
 
 
@@ -65,22 +69,14 @@ PanelAnalysisDlg::~PanelAnalysisDlg()
 
 
 /**
-*Initializes the dialog and the analysis
+* Initializes the dialog and the analysis
 */
-bool PanelAnalysisDlg::initDialog()
+void PanelAnalysisDlg::initDialog()
 {
-	m_pctrlTextOutput->setFont(Settings::s_TableFont);
 	m_Progress = 0.0;
 	m_pctrlProgress->setValue(m_Progress);
-
 	m_pctrlTextOutput->clear();
-
-	m_pctrlProgress->setMinimum(0);
-	m_pctrlProgress->setMaximum(100);
-
 	m_pctrlLogFile->setChecked(QMiarex::m_bLogFile);
-
-	return true;
 }
 
 
@@ -108,6 +104,7 @@ void PanelAnalysisDlg::onCancelAnalysis()
 	if(m_bIsFinished)
 	{
 		PanelAnalysis::s_bCancel = false;
+//		QThreadPool::globalInstance()->waitForDone();
 		done(1);
 	}
 }
@@ -122,28 +119,24 @@ void PanelAnalysisDlg::onLogFile()
 /**Updates the progress of the analysis in the slider widget */
 void PanelAnalysisDlg::onProgress()
 {
-	m_pctrlProgress->setMaximum(m_pTheTask->m_thePanelAnalysis.m_TotalTime);
-	m_pctrlProgress->setValue(m_pTheTask->m_thePanelAnalysis.m_Progress);
-	if(m_pTheTask->m_thePanelAnalysis.m_OutMessage.length())
+/*	QTime dt = QTime::currentTime();
+	QString str = dt.toString("hh:mm:ss.zzz");
+	qDebug() << str;*/
+
+	m_pctrlProgress->setMaximum(m_pTheTask->m_pthePanelAnalysis->m_TotalTime);
+	m_pctrlProgress->setValue(m_pTheTask->m_pthePanelAnalysis->m_Progress);
+	if(m_strOut.length())
 	{
-		m_pctrlTextOutput->insertPlainText(m_pTheTask->m_thePanelAnalysis.m_OutMessage);
+		m_pctrlTextOutput->insertPlainText(m_strOut);
 		m_pctrlTextOutput->textCursor().movePosition(QTextCursor::End);
 		m_pctrlTextOutput->ensureCursorVisible();
+		m_strOut.clear();
 	}
-	m_pTheTask->m_thePanelAnalysis.m_OutMessage.clear();
 }
 
 
-
-/**  Sets up the GUI */
 void PanelAnalysisDlg::setupLayout()
 {
-/*	QDesktopWidget desktop;
-	QRect r = desktop.geometry();
-	setMinimumHeight(r.height()/2);
-	setMinimumWidth(r.width()/2)*/
-
-
 	m_pctrlTextOutput = new QTextEdit(this);
 	m_pctrlTextOutput->setReadOnly(true);
 	m_pctrlTextOutput->setLineWrapMode(QTextEdit::NoWrap);
@@ -212,35 +205,42 @@ void PanelAnalysisDlg::analyze()
 
 	qApp->processEvents();
 
-	QString strong;
 	m_pctrlCancel->setText(tr("Cancel"));
 	m_bIsFinished = false;
 
 	m_pctrlProgress->setMaximum(100000);
 
-	QString len;
-	Units::getLengthUnitLabel(len);
 
-	QTimer *pTimer = new QTimer(this);
-	connect(pTimer, SIGNAL(timeout()), this, SLOT(onProgress()));
-	pTimer->setInterval(250);
-	pTimer->start();
+	connect(&m_Timer, SIGNAL(timeout()), this, SLOT(onProgress()));
+	m_Timer.setInterval(250);
+	m_Timer.start();
 
-	qApp->processEvents();
+	//run the instance asynchronously
+	QFuture<void> future = QtConcurrent::run(m_pTheTask, &PlaneAnalysisTask::run);
 
-	m_pTheTask->run();
+	while(future.isRunning())
+	{
+		qApp->processEvents();
+		QThread::msleep(200);
+	}
+	cleanUp();
+}
 
-	pTimer->stop();
 
+
+void PanelAnalysisDlg::cleanUp()
+{
+	QString strong;
+	m_Timer.stop();
 
 	//WPolar has been populated with results by the PlaneAnalysisTask
 	//Store the POpps if requested
 	if(PlaneOpp::s_bStoreOpps)
 	{
-		for(int iPOpp=0; iPOpp<m_pTheTask->m_thePanelAnalysis.m_PlaneOppList.size(); iPOpp++)
+		for(int iPOpp=0; iPOpp<m_pTheTask->m_pthePanelAnalysis->m_PlaneOppList.size(); iPOpp++)
 		{
 			//add the data to the polar object
-			PlaneOpp *pPOpp = m_pTheTask->m_thePanelAnalysis.m_PlaneOppList.at(iPOpp);
+			PlaneOpp *pPOpp = m_pTheTask->m_pthePanelAnalysis->m_PlaneOppList.at(iPOpp);
 			if(PlaneOpp::s_bKeepOutOpps || !pPOpp->isOut())	Objects3D::insertPOpp(pPOpp);
 			else
 			{
@@ -249,7 +249,10 @@ void PanelAnalysisDlg::analyze()
 			}
 		}
 	}
-	m_pTheTask->m_thePanelAnalysis.m_PlaneOppList.clear();
+	else
+	{
+		m_pTheTask->m_pthePanelAnalysis->clearPOppList();
+	}
 
 	m_bIsFinished = true;
 
@@ -276,11 +279,15 @@ void PanelAnalysisDlg::analyze()
 		outstream << m_pctrlTextOutput->toPlainText();
 		outstream.flush();
 		pXFile->close();
-		delete pXFile;
 	}
+	delete pXFile;
+
+	m_pTheTask = NULL;
 
 	m_pctrlCancel->setText(tr("Close"));
+	m_pctrlCancel->setFocus();
 }
+
 
 /**
 * Updates the text output in the dialog box and the log file.
@@ -289,6 +296,17 @@ void PanelAnalysisDlg::analyze()
 void PanelAnalysisDlg::updateOutput(QString &strong)
 {
 	m_pctrlTextOutput->insertPlainText(strong);
+	m_pctrlTextOutput->textCursor().movePosition(QTextCursor::End);
+	m_pctrlTextOutput->ensureCursorVisible();
+}
+
+
+void PanelAnalysisDlg::onMessage(QString msg)
+{
+/*	m_pctrlTextOutput->insertPlainText(msg);
+	m_pctrlTextOutput->textCursor().movePosition(QTextCursor::End);
+	m_pctrlTextOutput->ensureCursorVisible();*/
+	m_pctrlTextOutput->insertPlainText(msg);
 	m_pctrlTextOutput->textCursor().movePosition(QTextCursor::End);
 	m_pctrlTextOutput->ensureCursorVisible();
 }
@@ -312,4 +330,10 @@ void PanelAnalysisDlg::hideEvent(QHideEvent *event)
     s_Position = pos();
 
 	event->accept();
+}
+
+void PanelAnalysisDlg::deleteTask()
+{
+	if(m_pTheTask) delete m_pTheTask;
+	m_pTheTask = NULL;
 }

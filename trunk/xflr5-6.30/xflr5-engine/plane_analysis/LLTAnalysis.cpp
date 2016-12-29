@@ -23,16 +23,19 @@
 #include <math.h>
 #include "LLTAnalysis.h"
 #include <objects/PlaneOpp.h>
+#include <QtDebug>
+#include <QMutex>
 #include <QString>
 #include <objects/WPolar.h>
 
 
-QList<void *> *LLTAnalysis::s_poaPolar = NULL;
+QList<Polar*> *LLTAnalysis::s_poaPolar = NULL;
 int LLTAnalysis::s_IterLim = 20;
 int LLTAnalysis::s_NLLTStations = 0;
 double LLTAnalysis::s_RelaxMax = 0.0;
 double LLTAnalysis::s_CvPrec = 0.0;
 bool LLTAnalysis::s_bInitCalc = true;
+
 
 /** The public constructor */
 LLTAnalysis::LLTAnalysis()
@@ -56,8 +59,6 @@ void LLTAnalysis::resetVariables()
 	m_bCancel    = false;
 	m_bConverged = false;
 	m_bWingOut   = false;
-
-	s_IterLim = 0;
 
 	memset(m_Chord,         0, sizeof(m_Chord));
 	memset(m_Offset,        0, sizeof(m_Offset));
@@ -664,7 +665,7 @@ bool LLTAnalysis::alphaLoop()
 			traceLog(str);
 			if (m_bWingOut) m_bWarning = true;
 			PlaneOpp *pPOpp = createPlaneOpp(m_pWPolar->m_QInfSpec, Alpha, m_bWingOut);// Adds WOpp point and adds result to polar
-			m_PlaneOppList.append(pPOpp);
+			if(pPOpp) m_PlaneOppList.append(pPOpp);
 			s_bInitCalc = false;
 
 		}
@@ -677,7 +678,6 @@ bool LLTAnalysis::alphaLoop()
 			s_bInitCalc = true;
 		}
 		qApp->processEvents();
-
 	}
 
 	return true;
@@ -747,7 +747,7 @@ bool LLTAnalysis::QInfLoop()
 			traceLog(str);
 			if (m_bWingOut) m_bWarning = true;
 			PlaneOpp *pPOpp = createPlaneOpp(QInf, m_pWPolar->m_AlphaSpec, m_bWingOut);// Adds WOpp point and adds result to polar
-			m_PlaneOppList.append(pPOpp);
+			if(pPOpp) m_PlaneOppList.append(pPOpp);
 
 /*			if(m_bWingOut)
 			{
@@ -823,7 +823,7 @@ void LLTAnalysis::initializeAnalysis()
 /** Sends the analysis messages to the specified text output stream */
 void LLTAnalysis::traceLog(QString str)
 {
-	m_OutMessage += str;
+	emit(outputMsg(str));
 	qApp->processEvents();
 }
 
@@ -947,3 +947,13 @@ void LLTAnalysis::setWPolar(WPolar *pWPolar)
 	m_pWPolar  = pWPolar;
 }
 
+
+
+void LLTAnalysis::clearPOppList()
+{
+	for(int ip=m_PlaneOppList.count()-1; ip>=0; ip--)
+	{
+		delete m_PlaneOppList.at(ip);
+		m_PlaneOppList.removeAt(ip);
+	}
+}

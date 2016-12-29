@@ -41,7 +41,7 @@ Direct2dDesign::Direct2dDesign(QWidget *pParent) : Section2dWidget(pParent)
 }
 
 
-void Direct2dDesign::setObjects(Foil *pBufferFoil, SplineFoil *pSF, QList<void *> *poaFoil)
+void Direct2dDesign::setObjects(Foil *pBufferFoil, SplineFoil *pSF, QList<Foil*> *poaFoil)
 {
 	m_pBufferFoil = pBufferFoil;
 	m_pSF = pSF;

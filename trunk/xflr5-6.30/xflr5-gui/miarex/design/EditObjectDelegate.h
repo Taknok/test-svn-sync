@@ -25,7 +25,7 @@
 #include <QItemDelegate>
 #include <QList>
 
-
+class Foil;
 
 class EditObjectDelegate  : public QStyledItemDelegate
 {
@@ -39,7 +39,7 @@ public:
 	void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
 
-	static QList <void*> *s_poaFoil;
+	static QList <Foil*> *s_poaFoil;
 
 };
 

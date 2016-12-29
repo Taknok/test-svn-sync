@@ -31,7 +31,7 @@ class Direct2dDesign : public Section2dWidget
 public:
 	Direct2dDesign(QWidget *pParent=NULL);
 
-	void setObjects(Foil *pBufferFoil, SplineFoil *pSF, QList<void*> *poaFoil);
+	void setObjects(Foil *pBufferFoil, SplineFoil *pSF, QList<Foil *> *poaFoil);
 
 	void setScale();
 	void paintEvent(QPaintEvent *event);
@@ -53,7 +53,7 @@ private:
 
 
 private:
-	QList<void *> *m_poaFoil;   /**< a pointer to the array of Foil objects */
+	QList<Foil*> *m_poaFoil;   /**< a pointer to the array of Foil objects */
 	SplineFoil *m_pSF;          /**< a pointer to the SplineFoil object */
 	Foil *m_pBufferFoil;
 

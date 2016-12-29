@@ -27,7 +27,7 @@
 #include <xfoil_globals.h>
 
 
-QList <void *> OpPoint::s_oaOpp;
+QList <OpPoint*> OpPoint::s_oaOpp;
 OpPoint *OpPoint::s_pCurOpp=NULL;
 
 

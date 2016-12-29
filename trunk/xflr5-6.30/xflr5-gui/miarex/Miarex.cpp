@@ -70,11 +70,9 @@
 #include <viewwidgets/miarextilewidget.h>
 
 
-
 #ifdef Q_OS_WIN
 #include <windows.h> // for Sleep
 #endif
-
 
 
 MainFrame *QMiarex::s_pMainFrame = NULL;
@@ -135,8 +133,14 @@ QMiarex::QMiarex(QWidget *parent)
 		Trace(strange);
 	}*/
 
-	m_pLLTDlg = new LLTAnalysisDlg(this, &m_theTask);
-	m_pPanelAnalysisDlg = new PanelAnalysisDlg(s_pMainFrame, &m_theTask);
+	m_theTask.m_ptheLLTAnalysis = &m_theLLTAnalysis;
+	m_theTask.m_pthePanelAnalysis = &m_thePanelAnalysis;
+
+	m_pLLTDlg = new LLTAnalysisDlg(this);
+	m_pPanelAnalysisDlg = new PanelAnalysisDlg(s_pMainFrame);
+
+	connect(m_theTask.m_pthePanelAnalysis, SIGNAL(outputMsg(QString)), m_pPanelAnalysisDlg, SLOT(onMessage(QString)), Qt::QueuedConnection);
+	connect(m_theTask.m_ptheLLTAnalysis, SIGNAL(outputMsg(QString)), m_pLLTDlg, SLOT(onMessage(QString)), Qt::QueuedConnection);
 
 	m_PixText = QPixmap(107, 97);
 	m_PixText.fill(Qt::transparent);
@@ -2110,26 +2114,27 @@ void QMiarex::LLTAnalyze(double V0, double VMax, double VDelta, bool bSequence, 
 	LLTAnalysis::s_bInitCalc = bInitCalc;
 	LLTAnalysis::s_IterLim = m_LLTMaxIterations;
 
-	m_theTask.initializeTask(m_pCurPlane, m_pCurWPolar, V0, VMax, VDelta, bSequence);
+	m_pLLTDlg->deleteTask();
 
+	PlaneAnalysisTask *pTask = new PlaneAnalysisTask();
+	memcpy(pTask, &m_theTask, sizeof(PlaneAnalysisTask));
+
+	pTask->initializeTask(m_pCurPlane, m_pCurWPolar, V0, VMax, VDelta, bSequence);
+	m_pLLTDlg->setTask(pTask);
 	m_pLLTDlg->initDialog();
 	m_pLLTDlg->show();
+
 	m_pLLTDlg->analyze();
 
-	if(m_bLogFile && (m_theTask.m_theLLTAnalysis.m_bError || m_theTask.m_theLLTAnalysis.m_bWarning))
+	if(m_bLogFile && (m_theTask.m_ptheLLTAnalysis->m_bError || m_theTask.m_ptheLLTAnalysis->m_bWarning))
 	{
 	}
 	else
 	{
 		m_pLLTDlg->hide();
 	}
-
-
-	setPlaneOpp(false, V0);
-	s_pMainFrame->updatePOppListBox();
-
-	emit projectModified();
 }
+
 
 
 /**
@@ -6433,15 +6438,12 @@ void QMiarex::paintPlaneOppLegend(QPainter &painter, QRect drawRect)
 
 
 
-
-
-
 /**
  * Launches a 3D panel analysis
  * @param V0 the initial aoa
  * @param VMax the final aoa
  * @param VDelta the increment
- * @param bSequence if true, the analysis will run for a sequence of aoa from V0 to Vmax, if not only V0 shall be calculated
+ * @param bSequence if true, the analysis will for a sequence of aoa from V0 to Vmax, if not only V0 shall be calculated
  */
 void QMiarex::panelAnalyze(double V0, double VMax, double VDelta, bool bSequence)
 {
@@ -6464,22 +6466,21 @@ void QMiarex::panelAnalyze(double V0, double VMax, double VDelta, bool bSequence
 	}
 
 
-	if(!m_pPanelAnalysisDlg->initDialog()) return;
 
-	m_theTask.initializeTask(m_pCurPlane, m_pCurWPolar, V0, VMax, VDelta, bSequence);
+	m_pPanelAnalysisDlg->deleteTask();
+
+	PlaneAnalysisTask *pTask = new PlaneAnalysisTask;
+	memcpy(pTask, &m_theTask, sizeof(PlaneAnalysisTask));
+
+	pTask->initializeTask(m_pCurPlane, m_pCurWPolar, V0, VMax, VDelta, bSequence);
+	m_pPanelAnalysisDlg->setTask(pTask);
+	m_pPanelAnalysisDlg->initDialog();
 	m_pPanelAnalysisDlg->show();
 	m_pPanelAnalysisDlg->analyze();
 
 	if(!m_bLogFile || !PanelAnalysis::s_bWarning)
 		m_pPanelAnalysisDlg->hide();
-
-
-	setPlaneOpp(false, m_theTask.m_thePanelAnalysis.m_OpAlpha);
-	s_pMainFrame->updatePOppListBox();
-
-	emit projectModified();
 }
-
 
 
 
@@ -7121,6 +7122,7 @@ void QMiarex::setupLayout()
 	{
 		m_pctrlPolarProps = new MinTextEdit(this);
 		m_pctrlPolarProps->setFontFamily("Courier");
+		m_pctrlPolarProps->setReadOnly(true);
 
 		QHBoxLayout *pPolarPropsLayout = new QHBoxLayout;
 		{
@@ -8129,14 +8131,14 @@ PlaneOpp* QMiarex::setPlaneOppObject(Plane *pPlane, WPolar *pWPolar, PlaneOpp *p
 //			CVector RefPoint(0.0, 0.0, 0.0);
 			// Standard Convention in mechanic of flight is to have Beta>0 with nose to the left
 			// The yaw moment has the opposite convention...
-//			m_theTask.m_thePanelAnalysis.rotateGeomZ(pPOpp->m_Beta, RefPoint, pWPolar->m_NXWakePanels);
+//			m_theTask.m_pthePanelAnalysis->rotateGeomZ(pPOpp->m_Beta, RefPoint, pWPolar->m_NXWakePanels);
 		}
 		else if(pWPolar->polarType()==XFLR5::STABILITYPOLAR)
 		{
 			//if we have a type 7 polar, set the panels in the control's position
 			int nCtrls;
 			QString strong;
-			m_theTask.m_thePanelAnalysis.setControlPositions(pPOpp->m_Ctrl, nCtrls, strong, false);
+			m_theTask.m_pthePanelAnalysis->setControlPositions(pPOpp->m_Ctrl, nCtrls, strong, false);
 		}
 	}
 
@@ -8484,11 +8486,11 @@ void QMiarex::onImportFromXml()
 {
 	QString PathName;
 	PathName = QFileDialog::getOpenFileName(s_pMainFrame, tr("Open XML File"),
-											Settings::s_LastDirName,
+											Settings::s_xmlDirName,
 											tr("XML file")+"(*.xml)");
 	if(!PathName.length())		return ;
 	int pos = PathName.lastIndexOf("/");
-	if(pos>0) Settings::s_LastDirName = PathName.left(pos);
+	if(pos>0) Settings::s_xmlDirName = PathName.left(pos);
 
 	QFile xmlFile(PathName);
 	if (!xmlFile.open(QIODevice::ReadOnly))
@@ -8528,11 +8530,11 @@ void QMiarex::onImportPlanefromXML()
 {
 	QString PathName;
 	PathName = QFileDialog::getOpenFileName(s_pMainFrame, tr("Open XML File"),
-											Settings::s_LastDirName,
+											Settings::s_xmlDirName,
 											tr("Plane XML file")+"(*.xml)");
 	if(!PathName.length())		return ;
 	int pos = PathName.lastIndexOf("/");
-	if(pos>0) Settings::s_LastDirName = PathName.left(pos);
+	if(pos>0) Settings::s_xmlDirName = PathName.left(pos);
 
 	QFile XFile(PathName);
 	if (!XFile.open(QIODevice::ReadOnly))
@@ -8556,11 +8558,11 @@ void QMiarex::onImportWPolarFromXML()
 {
 	QString PathName;
 	PathName = QFileDialog::getOpenFileName(s_pMainFrame, tr("Open XML File"),
-											Settings::s_LastDirName,
+											Settings::s_xmlDirName,
 											tr("Analysis XML file")+"(*.xml)");
 	if(!PathName.length())		return ;
 	int pos = PathName.lastIndexOf("/");
-	if(pos>0) Settings::s_LastDirName = PathName.left(pos);
+	if(pos>0) Settings::s_xmlDirName = PathName.left(pos);
 
 	QFile XFile(PathName);
 	if (!XFile.open(QIODevice::ReadOnly))
@@ -8679,13 +8681,13 @@ void QMiarex::onExportPlanetoXML()
 
 	strong = m_pCurPlane->planeName();
 	FileName = QFileDialog::getSaveFileName(s_pMainFrame, tr("Export plane definition to xml file"),
-											Settings::s_LastDirName +'/'+strong,
+											Settings::s_xmlDirName +'/'+strong,
 											filter,
 											&filter);
 
 	if(!FileName.length()) return;
 	int pos = FileName.lastIndexOf("/");
-	if(pos>0) Settings::s_LastDirName = FileName.left(pos);
+	if(pos>0) Settings::s_xmlDirName = FileName.left(pos);
 
 	if(FileName.indexOf(".xml", Qt::CaseInsensitive)<0) FileName += ".xml";
 
@@ -8706,23 +8708,23 @@ void QMiarex::onExportPlanetoXML()
  */
 void QMiarex::onExportWPolarToXML()
 {
-	if(!m_pCurWPolar) return ;// is there anything to export ?
+	if(!m_pCurPlane || !m_pCurWPolar) return ;// is there anything to export ?
 
 	QString filter = "XML file (*.xml)";
 	QString FileName, strong;
 
-	strong = m_pCurWPolar->polarName();
+	strong = m_pCurPlane->planeName()+"_"+m_pCurWPolar->polarName();
 	strong.replace("/", "_");
 	strong.replace(".", "_");
 
 	FileName = QFileDialog::getSaveFileName(s_pMainFrame, tr("Export analysis definition to xml file"),
-											Settings::s_LastDirName +'/'+strong,
+											Settings::s_xmlDirName +'/'+strong,
 											filter,
 											&filter);
 
 	if(!FileName.length()) return;
 	int pos = FileName.lastIndexOf("/");
-	if(pos>0) Settings::s_LastDirName = FileName.left(pos);
+	if(pos>0) Settings::s_xmlDirName = FileName.left(pos);
 
 	if(FileName.indexOf(".xml", Qt::CaseInsensitive)<0) FileName += ".xml";
 

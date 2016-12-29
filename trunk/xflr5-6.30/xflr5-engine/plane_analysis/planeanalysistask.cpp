@@ -22,7 +22,6 @@
 #include <objects/Plane.h>
 #include <objects/WPolar.h>
 #include <objects/Surface.h>
-#include <QDebug>
 
 
 bool PlaneAnalysisTask::s_bCancel = false;
@@ -67,6 +66,7 @@ void PlaneAnalysisTask::initializeTask(Plane *pPlane, WPolar *pWPolar, double vM
 {
 	m_pPlane = pPlane;
 	m_pWPolar = pWPolar;
+
 	m_vMin = vMin;
 	m_vMax = vMax;
 	m_vInc = VInc;
@@ -78,6 +78,7 @@ void PlaneAnalysisTask::initializeTask(PlaneAnalysis *pAnalysis)
 {
 	m_pPlane = pAnalysis->pPlane;
 	m_pWPolar = pAnalysis->pWPolar;
+
 	m_vMin = pAnalysis->vMin;
 	m_vMax = pAnalysis->vMax;
 	m_vInc = pAnalysis->vInc;
@@ -104,12 +105,6 @@ void PlaneAnalysisTask::run()
 	}
 
 	m_bIsFinished = true;
-
-	// For multithreaded analysis, post an event to notify parent window that the analysis is finished
-	if(m_pParent)
-	{
-//		QApplication::postEvent((QWidget*)m_pParent, new PlaneTaskEvent(m_pPlane, m_pWPolar));
-	}
 }
 
 
@@ -157,7 +152,7 @@ Plane * PlaneAnalysisTask::setPlaneObject(Plane *pPlane)
 
 	pPlane->computeBodyAxisInertia();
 
-	m_theLLTAnalysis.setPlane(pPlane);
+	m_ptheLLTAnalysis->setPlane(pPlane);
 
 	return pPlane;
 }
@@ -188,13 +183,13 @@ WPolar* PlaneAnalysisTask::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar)
 
 	//initialize the analysis pointers.
 	//do it now, in case the user asks for streamlines from an existing file
-	m_theLLTAnalysis.setWPolar(m_pWPolar);
-	m_theLLTAnalysis.setPlane(pCurPlane);
+	m_ptheLLTAnalysis->setWPolar(m_pWPolar);
+	m_ptheLLTAnalysis->setPlane(pCurPlane);
 
-	m_thePanelAnalysis.setWPolar(m_pWPolar);
-	m_thePanelAnalysis.setObjectPointers(pCurPlane, &m_SurfaceList);
-	m_thePanelAnalysis.setArrayPointers(m_Panel, m_MemPanel, m_WakePanel, m_RefWakePanel, m_Node, m_MemNode, m_WakeNode, m_RefWakeNode);
-	m_thePanelAnalysis.setArraySize(m_MatSize, m_WakeSize, m_nNodes, m_nWakeNodes, m_NWakeColumn);
+	m_pthePanelAnalysis->setWPolar(m_pWPolar);
+	m_pthePanelAnalysis->setObjectPointers(pCurPlane, &m_SurfaceList);
+	m_pthePanelAnalysis->setArrayPointers(m_Panel, m_MemPanel, m_WakePanel, m_RefWakePanel, m_Node, m_MemNode, m_WakeNode, m_RefWakeNode);
+	m_pthePanelAnalysis->setArraySize(m_MatSize, m_WakeSize, m_nNodes, m_nWakeNodes, m_NWakeColumn);
 
 	/** @todo restore */
 	//set sideslip
@@ -203,7 +198,7 @@ WPolar* PlaneAnalysisTask::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar)
 	{
 		// Standard Convention in mechanic of flight is to have Beta>0 with nose to the left
 		// The yaw moement has the opposite convention...
-		m_thePanelAnalysis.rotateGeomZ(m_pWPolar->m_BetaSpec, RefPoint, m_pWPolar->m_NXWakePanels);
+		m_pthePanelAnalysis->rotateGeomZ(m_pWPolar->m_BetaSpec, RefPoint, m_pWPolar->m_NXWakePanels);
 	}*/
 
 	Wing *pWingList[MAXWINGS];
@@ -309,7 +304,7 @@ bool PlaneAnalysisTask::initializePanels()
 	{
 		int MatrixSize=0;
 
-		if(!m_thePanelAnalysis.allocateMatrix(m_MaxPanelSize, MatrixSize))
+		if(!m_pthePanelAnalysis->allocateMatrix(m_MaxPanelSize, MatrixSize))
 		{
 			releasePanelMemory();
 			return false;
@@ -1592,16 +1587,16 @@ void PlaneAnalysisTask::joinSurfaces(WPolar*pWPolar, Surface *pLeftSurf, Surface
 
 void PlaneAnalysisTask::LLTAnalyze()
 {
-	if(!m_theLLTAnalysis.m_pWing || !m_theLLTAnalysis.m_pWPolar) return;
+	if(!m_ptheLLTAnalysis->m_pWing || !m_ptheLLTAnalysis->m_pWPolar) return;
 	//all set to launch the analysis
 
 	m_bIsFinished   = false;
 
-	m_theLLTAnalysis.setWPolar(m_pWPolar);
-	m_theLLTAnalysis.setLLTRange(m_vMin, m_vMax, m_vInc, m_bSequence);
+	m_ptheLLTAnalysis->setWPolar(m_pWPolar);
+	m_ptheLLTAnalysis->setLLTRange(m_vMin, m_vMax, m_vInc, m_bSequence);
 
-	m_theLLTAnalysis.initializeAnalysis();
-	m_theLLTAnalysis.loop();
+	m_ptheLLTAnalysis->initializeAnalysis();
+	m_ptheLLTAnalysis->loop();
 
 	m_bIsFinished = true;
 }
@@ -1610,33 +1605,37 @@ void PlaneAnalysisTask::LLTAnalyze()
 
 void PlaneAnalysisTask::PanelAnalyze()
 {
-	if(!m_thePanelAnalysis.m_pPlane || !m_thePanelAnalysis.m_pWPolar) return;
+	if(!m_pthePanelAnalysis->m_pPlane || !m_pthePanelAnalysis->m_pWPolar) return;
 
 	m_bIsFinished   = false;
 
-	m_thePanelAnalysis.setWPolar(m_pWPolar);
-	m_thePanelAnalysis.setRange(m_vMin, m_vMax, m_vInc, m_bSequence);
+	m_pthePanelAnalysis->setRange(m_vMin, m_vMax, m_vInc, m_bSequence);
 
-	m_thePanelAnalysis.m_OpBeta = m_pWPolar->Beta();
+	m_pthePanelAnalysis->m_OpBeta = m_pWPolar->Beta();
 
 	if(m_pWPolar->polarType()==XFLR5::FIXEDAOAPOLAR)
 	{
-		m_thePanelAnalysis.m_Alpha      = m_pWPolar->Alpha();
+		m_pthePanelAnalysis->m_Alpha      = m_pWPolar->Alpha();
 	}
 	else if(m_pWPolar->polarType()==XFLR5::STABILITYPOLAR)
 	{
-		m_thePanelAnalysis.m_Alpha      = m_pWPolar->Alpha();
+		m_pthePanelAnalysis->m_Alpha      = m_pWPolar->Alpha();
 	}
 	else
 	{
-		m_thePanelAnalysis.m_QInf       = m_pWPolar->velocity();
+		m_pthePanelAnalysis->m_QInf       = m_pWPolar->velocity();
 	}
 
-	m_thePanelAnalysis.initializeAnalysis();
-	m_thePanelAnalysis.loop();
+	m_pthePanelAnalysis->initializeAnalysis();
+	m_pthePanelAnalysis->loop();
 
 	m_bIsFinished = true;
 }
+
+
+
+
+
 
 
 

@@ -75,7 +75,7 @@ public:
 	~QAFoil();
 
 	void setupLayout();
-	void initDialog(void *p2DWidget, QList<void*> *poaFoil, void *pXFoil);
+	void initDialog(void *p2DWidget, QList<Foil *> *poaFoil, void *pXFoil);
 
 signals:
 	void projectModified();
@@ -153,7 +153,7 @@ private:
 	bool m_bStored;             /**< true if the current Picture has been stored on the Undo stack >*/
 
 
-	QList<void *> *m_poaFoil;   /**< a pointer to the array of Foil objects >*/
+	QList<Foil*> *m_poaFoil;   /**< a pointer to the array of Foil objects >*/
 	void *m_pXFoil;             /**< a void pointer to the XFoil object >*/
 
 	SplineFoil *m_pSF;          /**< a pointer to the SplineFoil object >*/

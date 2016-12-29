@@ -136,7 +136,7 @@ public:
 	QList <double> m_RtCl;              /**< the array of aoa values */
 	QList <double> m_Re;                /**< the array of Re coefficients */
 
-	static QList <void *> s_oaPolar;   /**< The array of void pointers to the foil Polar objects. */
+	static QList <Polar *> s_oaPolar;   /**< The array of void pointers to the foil Polar objects. */
 
 private:
 	static Polar* s_pCurPolar;         /**< a static pointer to the currently selected foil polar */
