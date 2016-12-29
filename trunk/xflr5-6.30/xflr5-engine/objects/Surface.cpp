@@ -38,7 +38,7 @@ Panel *Surface::s_pPanel;
 Surface::Surface()
 {
 	m_bTEFlap = false;
-
+	m_innerSection = m_outerSection = -1;
 	m_Length   = 0.0;
 	m_TwistA   = 0.0;
 	m_TwistB   = 0.0;

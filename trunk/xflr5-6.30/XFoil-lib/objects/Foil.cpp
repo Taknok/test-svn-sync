@@ -478,17 +478,17 @@ double Foil::length()
 */
 CVector Foil::midYRel(double sRel)
 {
+	if(sRel>=1.0)      return m_rpMid[MIDPOINTCOUNT-1];
+	else if(sRel<=0.0) return m_rpMid[0];
+
 	CVector midY;
 	sRel *= (MIDPOINTCOUNT-1);
 	int iRel = (int)sRel;
 	double frac = sRel-iRel;
 	midY.x = m_rpMid[iRel].x * (1.0-frac) + m_rpMid[iRel+1].x * frac;
-	midY.y = m_rpMid[iRel].y * (1.0-frac) + m_rpMid[iRel+1].y * frac;	
+	midY.y = m_rpMid[iRel].y * (1.0-frac) + m_rpMid[iRel+1].y * frac;
 	return midY;
 }
-
-
-
 
 
 /**
