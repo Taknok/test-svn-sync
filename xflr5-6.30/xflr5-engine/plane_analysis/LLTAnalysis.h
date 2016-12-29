@@ -27,10 +27,6 @@
  *
  */
  
-//
-//Class used to perform LLT analysis
-//GUI-independant
-//
 
 #ifndef LLTANALYSIS_H
 #define LLTANALYSIS_H
@@ -53,8 +49,10 @@
 
 
 
-class LLTAnalysis
+class LLTAnalysis : QObject
 {
+	Q_OBJECT
+
 	friend class MainFrame;
 	friend class QMiarex;
 	friend class LLTAnalysisDlg;
@@ -63,6 +61,7 @@ class LLTAnalysis
 
 public:
 	LLTAnalysis();
+	void clearPOppList();
 
 private:
 	double AlphaInduced(int k);
@@ -94,8 +93,10 @@ private:
 		m_y = y;
 	}
 
+signals:
+	void outputMsg(QString msg);
 
-
+private:
 	void *m_pParent;                            /**< A void pointer to the instance of the LLTAnalysisDlg class >*/
 
 	Plane * m_pPlane;                           /**< A pointer to the Plane object for which the main wing calculation shall be performed >*/
@@ -134,7 +135,7 @@ private:
 	double m_mtoUnit;                           /**< Conversion factor for the display of results in the user-defined length unit*/
 	double m_Offset[MAXSPANSTATIONS+1];         /**< offset at  the span stations */
 	double m_PCd[MAXSPANSTATIONS+1];		    /**< Viscous Drag coefficient at the span stations */
-	static QList<void *> *s_poaPolar;           /**< A static pointer to the foil polar array */
+	static QList<Polar*> *s_poaPolar;           /**< A static pointer to the foil polar array */
 	double m_QInf0;                             /**< The freestream velocity */
 	double m_Re[MAXSPANSTATIONS+1];		        /**< Reynolds number at the span stations */
 	double m_SpanPos[MAXSPANSTATIONS+1];		/**< Span position of the span stations */
@@ -160,8 +161,6 @@ private:
 	static double s_RelaxMax;                   /**< The relaxation factor for the iterations */
 	static double s_CvPrec;                     /**< Precision criterion to stop the iterations. The difference in induced angle at any span point between two iterations should be less than the criterion */
 	static bool s_bInitCalc;                    /**< true if the iterations analysis should be intialized with the linear solution at each new a.o.a. calculation, false otherwise */
-
-	QString m_OutMessage;
 
 	QList<PlaneOpp*> m_PlaneOppList;
 };

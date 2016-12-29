@@ -34,8 +34,10 @@
 #define VLMMAXRHS 100
 
 
-class PanelAnalysis
+class PanelAnalysis : QObject
 {
+	Q_OBJECT
+
 	friend class PanelAnalysisDlg;
 	friend class Wing;
 	friend class Objects3D;
@@ -118,13 +120,17 @@ public:
 	void getSpeedVector(CVector const &C, double *Mu, double *Sigma, CVector &VT, bool bAll=true);
 	void computePhillipsFormulae();
 
+	void clearPOppList();
 
-private:
-
-	static bool s_bTrefftz;     /**< /true if the forces should be evaluated in the far-field plane rather than by on-body summation of panel forces */
-	static bool s_bKeepOutOpp;  /**< true if points with viscous interpolation issues should be stored nonetheless */
 	static bool s_bCancel;      /**< true if the user has cancelled the analysis */
 	static bool s_bWarning;     /**< true if one the OpPoints could not be properly interpolated */
+
+signals:
+	void outputMsg(QString msg);
+
+private:
+	static bool s_bTrefftz;     /**< /true if the forces should be evaluated in the far-field plane rather than by on-body summation of panel forces */
+	static bool s_bKeepOutOpp;  /**< true if points with viscous interpolation issues should be stored nonetheless */
 
 	static int s_MaxRHSSize;    /**< the max number of RHS points, used for memeory allocation >*/
 	static int s_MaxMatSize;    /**< the size currently allocated for the influence matrix >*/
@@ -278,7 +284,6 @@ public: //stability analysis method and variables
 
 
 	bool m_bTrace;
-	QString m_OutMessage;
 
 	double m_Mass;         /** The value of the mass for the calculation. Is set from the mean value, the gain, and the control parameter */
 	CVector m_CoG;         /** The value of the CoG for the calculation. Is set from the mean value, the gain, and the control parameter */

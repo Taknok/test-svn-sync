@@ -323,9 +323,9 @@ private:
 
 	Foil m_BufferFoil;          /**< used for screen drawing and temporary geometric mods */
 
-	QList<void*> *m_poaFoil;	/**< pointer to the foil object array */
-	QList<void*> *m_poaPolar;	/**< pointer to the polar object array */
-	QList<void*> *m_poaOpp;		/**< pointer to the OpPoint object array */
+	QList<Foil*> *m_poaFoil;    /**< pointer to the foil object array */
+	QList<Polar*> *m_poaPolar;  /**< pointer to the polar object array */
+	QList<OpPoint*> *m_poaOpp;  /**< pointer to the OpPoint object array */
 
 	QGraph m_CpGraph;           /**< the Cp graph for the OpPoint view */
 	QList<QGraph*> m_PlrGraph;  /**< the array of pointer to the 5 Polar graphs */

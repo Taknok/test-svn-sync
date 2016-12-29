@@ -142,7 +142,7 @@ private:
 
 
 public:
-	static QList <void *> s_oaOpp;     /**< The array of void pointers to the foil operating point objects. */
+	static QList <OpPoint*> s_oaOpp;     /**< The array of void pointers to the foil operating point objects. */
 };
 
 #endif

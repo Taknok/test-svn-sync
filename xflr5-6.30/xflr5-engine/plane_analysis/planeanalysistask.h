@@ -24,7 +24,6 @@
 
 
 #include <QEvent>
-#include <QRunnable>
 #include <QTextStream>
 #include <plane_analysis/LLTAnalysis.h>
 #include <plane_analysis/PanelAnalysis.h>
@@ -48,7 +47,7 @@ struct PlaneAnalysis
 };
 
 
-class PlaneAnalysisTask  : public QRunnable
+class PlaneAnalysisTask
 {
 	friend class QMiarex;
 	friend class PanelAnalysisDlg;
@@ -77,22 +76,25 @@ public:
 	void   setParent(void *pParent);
 	void   setStaticPointers();
 
+	bool isFinished(){return m_bIsFinished;}
+
 	WPolar *  setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar);
 	Plane *   setPlaneObject(Plane *pPlane);
 
 	void LLTAnalyze();
 	void PanelAnalyze();
-
-private:
 	void run();
 
+	PanelAnalysis *m_pthePanelAnalysis;
+	LLTAnalysis *m_ptheLLTAnalysis;
+
+
+private:
 	void *m_pParent;
 
 	Plane *m_pPlane;
 	WPolar *m_pWPolar;
 
-	PanelAnalysis m_thePanelAnalysis;
-	LLTAnalysis m_theLLTAnalysis;
 
 	//data arrays
 	CVector *m_Node;              /**< the node array for the currently loaded UFO*/
@@ -113,10 +115,6 @@ private:
 
 	int m_MaxPanelSize;                  /**< the maximum matrix size consistent <ith the current memory allocation */
 
-	QTextStream m_OutStream;
-	QString m_OutMessage;           /** @todo check usage */
-
-
 	QList<Surface *> m_SurfaceList;	    /**< An array holding the pointers to the wings Surface objects */
 
 	double m_vMin, m_vMax, m_vInc;
@@ -127,22 +125,7 @@ private:
 };
 
 
-
-
-
 #endif // PLANEANALYSISTASK_H
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

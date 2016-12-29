@@ -28,6 +28,8 @@
 #include <QList>
 #include <QStringList>
 
+class Foil;
+
 class FoilSelectionDlg : public QDialog
 {
 	Q_OBJECT
@@ -51,7 +53,7 @@ private:
 	QListWidget *m_pctrlNameList;
 	QString m_FoilName;
 	QStringList m_FoilList;
-	QList <void*> *m_poaFoil;
+	QList <Foil*> *m_poaFoil;
 };
 
 #endif // FOILSELECTIONDLG_H

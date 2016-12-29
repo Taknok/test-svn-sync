@@ -31,6 +31,7 @@
 #define PANELANALYSISDLG_H
 
 #include <QDialog>
+#include <QTimer>
 #include <QProgressBar>
 #include <QCheckBox>
 #include <QGLWidget>
@@ -63,15 +64,18 @@ class PanelAnalysisDlg : public QDialog
 	friend class MainFrame;
 
 public:
-	PanelAnalysisDlg(QWidget *pParent, PlaneAnalysisTask *pPlaneAnalysisTask);
+	PanelAnalysisDlg(QWidget *pParent);
 	~PanelAnalysisDlg();
 
-	bool initDialog();
+	void initDialog();
+	void setTask(PlaneAnalysisTask *pTask){m_pTheTask = pTask;}
+	void deleteTask();
 
 private slots:
 	void onCancelAnalysis();
 	void onProgress();
 	void onLogFile();
+	void onMessage(QString msg);
 
 private:
 	void showEvent(QShowEvent *event);
@@ -80,6 +84,7 @@ private:
 
 	void setupLayout();
 	void analyze();
+	void cleanUp();
 
 	void updateOutput(QString &strong);
 	void updateView();
@@ -102,6 +107,7 @@ private:
 	
 	QString m_strOut;
 
+	QTimer m_Timer;
 
 public:
 

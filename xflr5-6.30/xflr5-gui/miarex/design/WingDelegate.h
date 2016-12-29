@@ -48,7 +48,7 @@ public:
 private:
 	void *m_pWingDlg;
 	int *m_Precision; ///table of float precisions for each column
-	QList<void*> *m_poaFoil;
+	QList<Foil*> *m_poaFoil;
 	QList<WingSection*> *m_pWingSection;
 };
 
