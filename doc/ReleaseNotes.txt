@@ -7,7 +7,7 @@
                      A tool for the design of Airfoils, Wings and Planes
                           operating at low Reynolds numbers
 
-								Copyright (C) 2003-2016
+                                 Copyright (C) 2003-2016
 
                                      Andre Deperrois
 
@@ -15,18 +15,49 @@
 *******************************************************************************
 
 
-xflr5 v6.13 March xxxth, 2016
+xflr5 v6.31 January 1st, 2017
+	- allowed multiple import and export of PLanes and Analysis objects from text and xml files
+	- moved the execution of LLT and Panel Analysis to separate threads
+	- set the default reference area for plane analysis to the projected area on the x-y plane
+	- bug corrections and minor enhancements
+
+
+xflr5 v6.30 November 6th, 2016
+	- updated the license from GPL v2 to v3
+	- separated the GUI from the analysis engines
+	- added an option to hide flap moments in the operating view
+	- added a style property for foil points
+	- corrected and improved the calculation and display of analysis with sideslip; impact on results
+	- code cleaning
+	- bug corrections and minor enhancements
+
+
+xflr5 v6.14 May 29th, 2016
+	- modified the calculation of stability derivatives to take into account viscous drag and extra drag
+	- added mass and CoG position to the list of variables for stability polar graphs
+	- corrected issues in the construction of wings with inverse dihedral
+	- corrected an error in the calculation of a mode's damped natural frequency
+	- made some adjustments to batch analysis of foils to speed up execution
+	- added some animations to the 3d view transitions
+	- removed the limitations inconsistent with the GPL in the credits window
+	- fixed a few minor bugs
+
+
+xflr5 v6.13 April 16th, 2016
 	- upgraded to OpenGL 3.0+ from the deprecated OpenGL 1.0
 	- improved the lighting options in 3D view
+	- improved text rendering on high-DPI (Retina) displays
 	- added an option to paint textures on the plane's surfaces
 	- added an option to export 3D object geometries to binary stl format
 	- added an option to autosave the project at regular time intervals
 	- added XCp.Cl as a variable to the plane's polar graphs, and d(XCp.cl)/dCl = XNP to the plane's legend
 	- changed the panel force display to q.Cp instead of q.S.panel_area; this is more significant since the arrow lengths are now mesh independent.
 	- added the extra drag in the calculation of the plane's total drag coefficient
+	- fixed the crash bug when running a multithreaded batch foil analysis
 	- fixed the issue of slow display in XInverse design
 	- fixed some stability issues in XInverse design
 	- interface improvements in XInverse design
+	- added a selection option for inertia units
 	- changed the display in the foil OpPoint view so that the foil can be overlayed on the graph
 	- code cleaning
 

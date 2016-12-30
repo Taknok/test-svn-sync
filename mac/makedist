@@ -9,7 +9,10 @@ fi
 
 mkdir mac_release/XFLR5
 
-QT_HOME=~/Devtools/Qt5.4.1/5.4/clang_64
+if [ -z "$QT_HOME" ]
+then 
+	QT_HOME=~/Devtools/Qt5.4.1/5.4/clang_64
+fi
 #rm -r mac_release/XFLR5/*
 cp -r XFLR5.app mac_release/XFLR5/
 ${QT_HOME}/bin/macdeployqt mac_release/XFLR5/XFLR5.app
