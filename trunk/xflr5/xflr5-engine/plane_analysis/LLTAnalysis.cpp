@@ -30,7 +30,7 @@
 
 
 QList<Polar*> *LLTAnalysis::s_poaPolar = NULL;
-int LLTAnalysis::s_IterLim = 20;
+int LLTAnalysis::s_IterLim = 100;
 int LLTAnalysis::s_NLLTStations = 0;
 double LLTAnalysis::s_RelaxMax = 0.0;
 double LLTAnalysis::s_CvPrec = 0.0;
@@ -42,6 +42,7 @@ LLTAnalysis::LLTAnalysis()
 {
 	m_pWing = NULL;
 	m_pWPolar = NULL;
+	m_x = m_y = NULL;
 
 	resetVariables();
 }
@@ -667,13 +668,12 @@ bool LLTAnalysis::alphaLoop()
 			PlaneOpp *pPOpp = createPlaneOpp(m_pWPolar->m_QInfSpec, Alpha, m_bWingOut);// Adds WOpp point and adds result to polar
 			if(pPOpp) m_PlaneOppList.append(pPOpp);
 			s_bInitCalc = false;
-
 		}
 		else
 		{
 			if (m_bWingOut) m_bWarning = true;
 			m_bError = true;
-			str= QString("    ...unconverged after %2 iterations\n").arg(iter);
+			str= QString("    ...unconverged after %1 iterations out of %2\n").arg(iter).arg(s_IterLim);
 			traceLog(str);
 			s_bInitCalc = true;
 		}
@@ -804,23 +804,27 @@ void LLTAnalysis::initializeAnalysis()
 {
 	m_bWarning = m_bError = false;
 	m_PlaneOppList.clear();
+
+	traceLog("\nLaunching the LLT Analysis....\n");
+
+	QString strange;
+	strange = QString("Max iterations:          %1\n").arg(s_IterLim);
+	traceLog(strange);
+	strange = QString("Number of span stations: %1\n").arg(s_NLLTStations);
+	traceLog(strange);
+	strange = QString("Convergence precision:   %1\n").arg(s_CvPrec);
+	traceLog(strange);
+	strange = QString("Relaxation factor:       %1\n\n").arg(s_RelaxMax);
+	traceLog(strange);
+
+	qApp->processEvents();
 	initializeGeom();
-/*
-	QString strUnitLabel, strange;
-	Units::getAreaUnitLabel(strUnitLabel);
-	strange =QString("Ref. area  = %1 ").arg(m_pWPolar->referenceArea()*Units::m2toUnit(),9,'f',3)+strUnitLabel;
-	traceLog(strange+"\n");
-	Units::getLengthUnitLabel(strUnitLabel);
-	strange =QString("Ref. span  = %1 ").arg(m_pWPolar->referenceSpanLength()*Units::mtoUnit(),9,'f',3)+strUnitLabel;
-	traceLog(strange+"\n");
-	Units::getLengthUnitLabel(strUnitLabel);
-	strange =QString("Ref. chord = %1 ").arg(m_pWPolar->referenceChordLength()*Units::mtoUnit(),9,'f',3)+strUnitLabel;
-	traceLog(strange+"\n"+"\n");*/
+	qApp->processEvents();
 }
 
 
 
-/** Sends the analysis messages to the specified text output stream */
+/** emits the analysis messages to the world */
 void LLTAnalysis::traceLog(QString str)
 {
 	emit(outputMsg(str));
@@ -957,3 +961,23 @@ void LLTAnalysis::clearPOppList()
 		m_PlaneOppList.removeAt(ip);
 	}
 }
+
+
+void LLTAnalysis::onCancel()
+{
+	m_bCancel = true;
+	traceLog("Cancelling the LLT analysis\n");
+}
+
+
+
+bool LLTAnalysis::isCancelled()
+{
+	return m_bCancel;
+}
+
+bool LLTAnalysis::hasWarnings()
+{
+	return m_bError || m_bWarning;
+}
+

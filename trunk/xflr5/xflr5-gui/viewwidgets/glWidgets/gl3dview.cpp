@@ -2033,7 +2033,7 @@ void gl3dView::setSpanStations(Plane *pPlane, WPolar *pWPolar, PlaneOpp *pPOpp)
 		}
 		else
 		{
-			m_Ny[0] = LLTAnalysis::s_NLLTStations;
+			m_Ny[0] = LLTAnalysis::nSpanStations();
 		}
 
 		m_Ny[1] = m_Ny[2] = m_Ny[3] = 0;

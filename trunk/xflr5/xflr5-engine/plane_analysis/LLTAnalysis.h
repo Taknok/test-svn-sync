@@ -53,15 +53,40 @@ class LLTAnalysis : QObject
 {
 	Q_OBJECT
 
-	friend class MainFrame;
 	friend class QMiarex;
-	friend class LLTAnalysisDlg;
-	friend class gl3dView;
 	friend class PlaneAnalysisTask;
+	friend class MainFrame;
+	friend class LLTAnalysisDlg;
+	friend class XflScriptExec;
 
 public:
 	LLTAnalysis();
 	void clearPOppList();
+	void initializeAnalysis();
+	void setPlane(Plane *pPlane);
+	void setWPolar(WPolar *pWPolar);
+	void setLLTRange(double AlphaMin, double AlphaMax, double AlphaDelta, bool bSequence);
+	void setLLTData(Plane *pPlane, WPolar *pWPolar);
+
+	void setCurvePointers(QVarLengthArray<double, 1024> *x, QVarLengthArray<double, 1024> *y)
+	{
+		m_x = x;
+		m_y = y;
+	}
+
+	bool isCancelled();
+	bool hasWarnings();
+
+	static void setMaxIter(int maxIter){s_IterLim = maxIter;}
+	static void setConvergencePrecision(double precision) {s_CvPrec = precision;}
+	static void setNSpanStations(int nStations){s_NLLTStations=nStations;}
+	static void setRelaxationFactor(double relax){s_RelaxMax = relax;}
+
+	static int maxIter(){return s_IterLim;}
+	static double convergencePrecision() {return s_CvPrec;}
+	static int nSpanStations(){return s_NLLTStations;}
+	static double relaxationFactor(){return s_RelaxMax;}
+
 
 private:
 	double AlphaInduced(int k);
@@ -77,24 +102,16 @@ private:
 	double Sigma(int m);
 
 	PlaneOpp *createPlaneOpp(double QInf, double Alpha, bool bWingOut);
-	void initializeAnalysis();
-	void setLLTRange(double AlphaMin, double AlphaMax, double AlphaDelta, bool bSequence);
-	void setLLTData(Plane *pPlane, WPolar *pWPolar);
 	bool loop();
 	bool alphaLoop();
 	bool QInfLoop();
 	void traceLog(QString str);
-	void setPlane(Plane *pPlane);
-	void setWPolar(WPolar *pWPolar);
-
-	void setCurvePointers(QVarLengthArray<double, 1024> *x, QVarLengthArray<double, 1024> *y)
-	{
-		m_x = x;
-		m_y = y;
-	}
 
 signals:
 	void outputMsg(QString msg);
+
+public slots:
+	void onCancel();
 
 private:
 	void *m_pParent;                            /**< A void pointer to the instance of the LLTAnalysisDlg class >*/
