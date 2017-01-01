@@ -35,8 +35,8 @@
 #include <QFile>
 #include <QList>
 #include <QTextStream>
-#include <objects/Spline.h>
-#include <objects/CVector.h>
+#include <objects2d/Spline.h>
+#include <objects2d/CVector.h>
 #include <gui_params.h>
 
 

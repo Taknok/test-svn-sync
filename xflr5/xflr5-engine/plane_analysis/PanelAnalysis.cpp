@@ -23,7 +23,7 @@
 #include <QThread>
 #include <QCoreApplication>
 #include <engine_globals.h>
-#include <objects/Surface.h>
+#include <objects3d/Surface.h>
 #include "PanelAnalysis.h"
 
 
@@ -4187,6 +4187,7 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double *Gamma, double *Sigma
 
 			//Only one control derivative for all the controls of the polar
 			pPOpp->m_pPlaneWOpp[0]->m_nControls = 1;
+			pPOpp->m_nControls = 1;
 			pPOpp->CXe = CXe;
 			pPOpp->CYe = CYe;
 			pPOpp->CZe = CZe;

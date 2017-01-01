@@ -21,8 +21,8 @@
 
 #include "GraphDlg.h"
 #include <misc/LinePickerDlg.h>
-#include <objects/Polar.h>
-#include <objects/WPolar.h>
+#include <objects2d/Polar.h>
+#include <objects3d/WPolar.h>
 #include <QFontDialog>
 #include <QColorDialog>
 #include <QPalette>

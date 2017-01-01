@@ -22,7 +22,7 @@
 #include <misc/Units.h>
 #include <misc/Settings.h>
 #include <miarex/view/W3dPrefsDlg.h>
-#include <objects/Surface.h>
+#include <objects3d/Surface.h>
 #include "wingseldlg.h"
 #include "EditPlaneDlg.h"
 #include <globals.h>

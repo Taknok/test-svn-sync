@@ -19,6 +19,8 @@
 
 *****************************************************************************/
 
+#include <QtDebug>
+
 #include "PlaneOpp.h"
 #include "Plane.h"
 #include "WPolar.h"
@@ -899,23 +901,23 @@ void PlaneOpp::getPlaneOppProperties(QString &PlaneOppProperties, QString length
 		strong  = QString(QObject::tr("Cnr")+"  = %1").arg(Cnr,9,'f',5);
 		PlaneOppProperties += strong +"\n\n";
 
-/*		if(m_nControls>0)
+		if(m_nControls>0)
 		{
 			// (only one)
-			WingOppProperties += QObject::tr("Non-dimensional Control Derivatives:")+"\n";
+			PlaneOppProperties += QObject::tr("Non-dimensional Control Derivatives:")+"\n";
 			strong  = QString(QObject::tr("CXd")+"  = %1").arg(CXe,9,'f',5);
-			WingOppProperties += strong +"\n";
+			PlaneOppProperties += strong +"\n";
 			strong  = QString(QObject::tr("CYd")+"  = %1").arg(CYe,9,'f',5);
-			WingOppProperties += strong +"\n";
+			PlaneOppProperties += strong +"\n";
 			strong  = QString(QObject::tr("CZd")+"  = %1").arg(CZe,9,'f',5);
-			WingOppProperties += strong +"\n";
+			PlaneOppProperties += strong +"\n";
 			strong  = QString(QObject::tr("Cld")+"  = %1").arg(CLe,9,'f',5);
-			WingOppProperties += strong +"\n";
+			PlaneOppProperties += strong +"\n";
 			strong  = QString(QObject::tr("Cmd")+"  = %1").arg(CMe,9,'f',5);
-			WingOppProperties += strong +"\n";
+			PlaneOppProperties += strong +"\n";
 			strong  = QString(QObject::tr("Cnd")+"  = %1").arg(CNe,9,'f',5);
-			WingOppProperties += strong +"\n";
-		}*/
+			PlaneOppProperties += strong +"\n";
+		}
 
 		complex<double> c, angle;
 		double OmegaN, Omega1, Dsi, u0, mac, span;

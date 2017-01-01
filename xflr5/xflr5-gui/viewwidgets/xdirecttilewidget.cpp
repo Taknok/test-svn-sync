@@ -66,6 +66,7 @@ void XDirectTileWidget::connectSignals()
 	connect(pMainFrame->m_pXDirectStyleAct, SIGNAL(triggered()), m_pOpPointWidget, SLOT(onXDirectStyle()));
 	connect(pMainFrame->m_pShowNeutralLine, SIGNAL(triggered()), m_pOpPointWidget, SLOT(onShowNeutralLine()));
 //	connect(pMainFrame->m_pShowPanels,      SIGNAL(triggered()), m_pOpPointWidget, SLOT(onShowPanels()));
+	connect(m_pOpPointWidget, SIGNAL(graphChanged(QGraph*)), this, SLOT(onResetCurves(QGraph*)));
 
 	for(int igw=0; igw<m_GraphWidget.count(); igw++)
 	{

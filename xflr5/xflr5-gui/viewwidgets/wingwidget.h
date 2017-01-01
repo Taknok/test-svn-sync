@@ -4,8 +4,8 @@
 #include <QWidget>
 #include <QSettings>
 #include <QPixmap>
-#include <objects/Plane.h>
-#include <objects/PlaneOpp.h>
+#include <objects3d/Plane.h>
+#include <objects3d/PlaneOpp.h>
 #include <QGraph.h>
 
 

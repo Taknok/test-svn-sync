@@ -25,7 +25,7 @@
 
 #include "TwoDPanelDlg.h"
 #include <gui_params.h>
-#include <objects/Foil.h>
+#include <objects2d/Foil.h>
 #include <XFoil.h>
 
 void *TwoDPanelDlg::s_pXFoil;

@@ -29,7 +29,7 @@
 #include <QTableView>
 #include <QStandardItemModel>
 #include "PlaneTableDelegate.h"
-#include <objects/Plane.h>
+#include <objects3d/Plane.h>
 
 
 

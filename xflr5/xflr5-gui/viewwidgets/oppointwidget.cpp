@@ -33,6 +33,7 @@
 #include "graph/Curve.h"
 #include <xdirect/XDirect.h>
 #include <xdirect/XDirectStyleDlg.h>
+#include <graph/GraphDlg.h>
 
 void *OpPointWidget::s_pMainFrame = NULL;
 
@@ -82,8 +83,28 @@ void OpPointWidget::keyPressEvent(QKeyEvent *event)
 {
 	switch (event->key())
 	{
+		case Qt::Key_V:
+		{
+			if(m_pCpGraph->isInDrawRect(m_LastPoint))
+			{
+				GraphDlg::setActivePage(0);
+				onGraphSettings();
+			}
+			event->accept();
+			break;
+		}
+		case Qt::Key_G:
+		{
+			if(m_pCpGraph->isInDrawRect(m_LastPoint))
+			{
+				onGraphSettings();
+			}
+			event->accept();
+			break;
+		}
 		case Qt::Key_R:
-			if(m_pCpGraph->isInDrawRect(m_LastPoint)) 	m_pCpGraph->setAuto(true);
+			if(m_pCpGraph->isInDrawRect(m_LastPoint))
+				m_pCpGraph->setAuto(true);
 			else setFoilScale();
 			update();
 			break;
@@ -221,6 +242,40 @@ void OpPointWidget::mouseMoveEvent(QMouseEvent *event)
 
 	event->accept();
 
+}
+
+
+
+void OpPointWidget::mouseDoubleClickEvent (QMouseEvent *event)
+{
+	Q_UNUSED(event);
+	setCursor(Qt::CrossCursor);
+	if (m_pCpGraph->isInDrawRect(event->pos()))
+	{
+		onGraphSettings();
+		update();
+	}
+}
+
+
+
+
+/**
+ * The user has requested an edition of the settings of the active graph
+ */
+void OpPointWidget::onGraphSettings()
+{
+	GraphDlg grDlg(this);
+	grDlg.setGraph(m_pCpGraph);
+
+//	QAction *action = qobject_cast<QAction *>(sender());
+//	grDlg.setActivePage(0);
+
+	if(grDlg.exec() == QDialog::Accepted)
+	{
+		emit graphChanged(m_pCpGraph);
+	}
+	update();
 }
 
 

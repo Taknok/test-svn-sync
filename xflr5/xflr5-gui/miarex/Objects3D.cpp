@@ -22,7 +22,7 @@
 #include <misc/RenameDlg.h>
 
 #include "Objects3D.h"
-#include <objects/Surface.h>
+#include <objects3d/Surface.h>
 #include <QApplication>
 #include <QMessageBox>
 #include <QLocale>

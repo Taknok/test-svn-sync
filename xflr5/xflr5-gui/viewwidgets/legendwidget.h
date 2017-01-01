@@ -23,7 +23,7 @@
 #define LEGENDWIDGET_H
 
 #include <QWidget>
-#include <objects/PlaneOpp.h>
+#include <objects3d/PlaneOpp.h>
 #include <QGraph.h>
 
 

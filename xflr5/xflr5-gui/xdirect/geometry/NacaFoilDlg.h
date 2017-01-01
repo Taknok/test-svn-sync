@@ -25,7 +25,7 @@
 #include <QDialog>
 #include <QLabel>
 #include <QPushButton>
-#include <objects/Foil.h>
+#include <objects2d/Foil.h>
 #include <misc/IntEdit.h>
 
 

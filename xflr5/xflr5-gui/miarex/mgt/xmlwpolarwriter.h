@@ -23,7 +23,7 @@
 #define XMLWPOLARWRITER_H
 #include <QFile>
 #include <QXmlStreamWriter>
-#include <objects/WPolar.h>
+#include <objects3d/WPolar.h>
 
 class XmlWPolarWriter : public QXmlStreamWriter
 {

@@ -23,7 +23,7 @@
 
 #include "Plane.h"
 #include <engine_globals.h>
-#include <objects/WPolar.h>
+#include <objects3d/WPolar.h>
 #include <math.h>
 #include <QTextStream>
 

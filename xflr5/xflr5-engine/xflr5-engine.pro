@@ -13,47 +13,45 @@ CONFIG += staticlib
 
 QT += gui
 
-INCLUDEPATH += $$PWD/objects
 INCLUDEPATH += $$PWD/../XFoil-lib
 INCLUDEPATH += $$PWD/plane_analysis
 
 
 SOURCES += \
-    objects/Body.cpp \
-    objects/CVector.cpp \
-    objects/Frame.cpp \
-    objects/NURBSSurface.cpp \
-    objects/Panel.cpp \
-    objects/Plane.cpp \
-    objects/PlaneOpp.cpp \
-    objects/Quaternion.cpp \
-    objects/Spline.cpp \
-    objects/Surface.cpp \
-    objects/Wing.cpp \
-    objects/WingOpp.cpp \
-    objects/WPolar.cpp \
+    objects3d/Body.cpp \
+    objects3d/CVector.cpp \
+    objects3d/Frame.cpp \
+    objects3d/NURBSSurface.cpp \
+    objects3d/Panel.cpp \
+    objects3d/Plane.cpp \
+    objects3d/PlaneOpp.cpp \
+    objects3d/Quaternion.cpp \
+    objects3d/Spline.cpp \
+    objects3d/Surface.cpp \
+    objects3d/Wing.cpp \
+    objects3d/WingOpp.cpp \
+    objects3d/WPolar.cpp \
     plane_analysis/LLTAnalysis.cpp \
     plane_analysis/PanelAnalysis.cpp \
     plane_analysis/planeanalysistask.cpp \
     engine_globals.cpp
 
 HEADERS += \
-    objects/Body.h \
-    objects/CRectangle.h \
-    objects/CVector.h \
-    objects/Frame.h \
-    objects/NURBSSurface.h \
-    objects/Panel.h \
-    objects/Plane.h \
-    objects/PlaneOpp.h \
-    objects/PointMass.h \
-    objects/Quaternion.h \
-    objects/Spline.h \
-    objects/Surface.h \
-    objects/Wing.h \
-    objects/WingOpp.h \
-    objects/WingSection.h \
-    objects/WPolar.h \
+    objects3d/Body.h \
+    objects3d/CVector.h \
+    objects3d/Frame.h \
+    objects3d/NURBSSurface.h \
+    objects3d/Panel.h \
+    objects3d/Plane.h \
+    objects3d/PlaneOpp.h \
+    objects3d/PointMass.h \
+    objects3d/Quaternion.h \
+    objects3d/Spline.h \
+    objects3d/Surface.h \
+    objects3d/Wing.h \
+    objects3d/WingOpp.h \
+    objects3d/WingSection.h \
+    objects3d/WPolar.h \
     plane_analysis/LLTAnalysis.h \
     plane_analysis/PanelAnalysis.h \
     plane_analysis/planeanalysistask.h \

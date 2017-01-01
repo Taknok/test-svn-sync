@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 #include "Direct2dDesign.h"
-#include <objects/Foil.h>
+#include <objects2d/Foil.h>
 #include <mainframe.h>
 #include <misc/Settings.h>
 #include <globals.h>

@@ -8,7 +8,7 @@
 #include <Settings.h>
 #include <globals.h>
 #include <miarex/view/GL3DScales.h>
-#include <Surface.h>
+#include <objects3d/Surface.h>
 #include <miarex/view/W3dPrefsDlg.h>
 
 

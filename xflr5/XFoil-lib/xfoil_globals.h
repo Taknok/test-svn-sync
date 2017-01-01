@@ -34,9 +34,9 @@
 #include <QTextStream>
 #include <complex>
 #include <xfoil_params.h>
-#include <objects/CVector.h>
-#include <objects/Foil.h>
-#include <objects/Polar.h>
+#include <objects2d/CVector.h>
+#include <objects2d/Foil.h>
+#include <objects2d/Polar.h>
 
 
 void readCString(QDataStream &ar, QString &strong);

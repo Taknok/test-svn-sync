@@ -33,11 +33,11 @@
 #include <QTextStream>
 #include <complex>
 #include <engine_params.h>
-#include <objects/CVector.h>
-#include <objects/Foil.h>
-#include <objects/Polar.h>
-#include <objects/PointMass.h>
-#include <objects/Body.h>
+#include <objects3d/CVector.h>
+#include <objects2d/Foil.h>
+#include <objects2d/Polar.h>
+#include <objects3d/PointMass.h>
+#include <objects3d/Body.h>
 #include <engine_enums.h>
 
 

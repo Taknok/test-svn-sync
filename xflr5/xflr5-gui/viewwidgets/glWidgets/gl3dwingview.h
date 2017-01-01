@@ -21,7 +21,7 @@
 
 #ifndef GL3DWINGVIEW_H
 #define GL3DWINGVIEW_H
-#include <Wing.h>
+#include <objects3d/Wing.h>
 #include <gl3dview.h>
 
 class gl3dWingView : public gl3dView

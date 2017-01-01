@@ -25,9 +25,9 @@
   */
 
 #include <QList>
-#include <objects/Foil.h>
-#include <objects/Polar.h>
-#include <objects/OpPoint.h>
+#include <objects2d/Foil.h>
+#include <objects2d/Polar.h>
+#include <objects2d/OpPoint.h>
 
 class Objects2D
 {
