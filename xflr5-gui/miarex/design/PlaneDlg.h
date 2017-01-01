@@ -31,7 +31,7 @@
 #include <QCheckBox>
 #include <QComboBox>
 
-#include <objects/Plane.h>
+#include <objects3d/Plane.h>
 #include <misc/DoubleEdit.h>
 
 

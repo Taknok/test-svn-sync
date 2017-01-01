@@ -24,8 +24,8 @@
 #include <script/xflscriptreader.h>
 #include <QTextStream>
 
-#include <objects/Plane.h>
-#include <objects/WPolar.h>
+#include <objects3d/Plane.h>
+#include <objects3d/WPolar.h>
 
 #include <plane_analysis/planeanalysistask.h>
 #include <XFoilTask.h>

@@ -33,8 +33,8 @@
 #include <QRadioButton>
 #include <QTextEdit>
 
-#include <objects/Foil.h>
-#include <objects/Polar.h>
+#include <objects2d/Foil.h>
+#include <objects2d/Polar.h>
 #include <misc/DoubleEdit.h>
 #include <XFoilTask.h>
 #include <xfoiltaskevent.h>

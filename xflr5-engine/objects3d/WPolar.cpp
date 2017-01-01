@@ -22,8 +22,8 @@
 
 #include "WPolar.h"
 #include <engine_globals.h>
-#include <objects/Surface.h>
-#include <objects/Plane.h>
+#include <objects3d/Surface.h>
+#include <objects3d/Plane.h>
 #include <math.h>
 #include <QtDebug>
 

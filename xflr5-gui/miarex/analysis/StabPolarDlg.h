@@ -33,7 +33,7 @@
 #include <QStandardItemModel>
 #include "./CtrlTableDelegate.h"
 #include <misc/DoubleEdit.h>
-#include <objects/Plane.h>
+#include <objects3d/Plane.h>
 
 
 

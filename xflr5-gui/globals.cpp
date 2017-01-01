@@ -35,7 +35,7 @@
 #include <QByteArray>
 #include <math.h>
 #include <qopengl.h>
-#include <objects/WPolar.h>
+#include <objects3d/WPolar.h>
 #include <misc/Units.h>
 
 

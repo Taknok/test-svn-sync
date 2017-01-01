@@ -24,7 +24,7 @@
 
 #include "section2dwidget.h"
 #include <gui_objects/SplineFoil.h>
-#include <objects/Foil.h>
+#include <objects2d/Foil.h>
 
 class Direct2dDesign : public Section2dWidget
 {

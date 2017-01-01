@@ -23,7 +23,7 @@
 #define XMLPLANEREADER_H
 
 #include <QXmlStreamReader>
-#include <objects/Plane.h>
+#include <objects3d/Plane.h>
 
 
 class XMLPlaneReader : public QXmlStreamReader

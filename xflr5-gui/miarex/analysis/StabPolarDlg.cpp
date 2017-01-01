@@ -21,7 +21,7 @@
   
 #include <globals.h>
 #include <misc/Settings.h>
-#include <objects/WPolar.h>
+#include <objects3d/WPolar.h>
 #include <misc/Units.h>
 #include <miarex/Miarex.h>
 #include "StabPolarDlg.h"

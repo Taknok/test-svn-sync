@@ -42,8 +42,8 @@
 #include <plane_analysis/planeanalysistask.h>
 #include <graph/QGraph.h>
 #include "graphwidget.h"
-#include <objects/WPolar.h>
-#include <objects/Wing.h>
+#include <objects3d/WPolar.h>
+#include <objects3d/Wing.h>
 
 
 /**

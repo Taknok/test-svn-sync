@@ -41,7 +41,7 @@
 #include <gui_params.h>
 #include "Direct2dDesign.h"
 #include "FoilTableDelegate.h"
-#include <objects/Foil.h>
+#include <objects2d/Foil.h>
 #include <gui_objects/SplineFoil.h>
 
 class MainFrame;

@@ -24,7 +24,7 @@
 
 
 #include "section2dwidget.h"
-#include <objects/Body.h>
+#include <objects3d/Body.h>
 
 
 class BodyFrameWidget : public Section2dWidget

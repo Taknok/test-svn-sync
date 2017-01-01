@@ -28,7 +28,7 @@
 #include <QTableView>
 #include <QStandardItemModel>
 #include <misc/FloatEditDelegate.h>
-#include <objects/Foil.h>
+#include <objects2d/Foil.h>
 
 
 class FoilCoordDlg : public QDialog

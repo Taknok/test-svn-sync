@@ -28,7 +28,7 @@
 #include <QTableView>
 #include <QStandardItem>
 #include <misc/FloatEditDelegate.h>
-#include <objects/Foil.h>
+#include <objects2d/Foil.h>
 #include <misc/DoubleEdit.h>
 #include <gui_params.h>
 

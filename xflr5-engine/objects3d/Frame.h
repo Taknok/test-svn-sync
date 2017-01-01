@@ -24,7 +24,7 @@
 #ifndef FRAME_H
 #define FRAME_H
 
-#include <objects/CVector.h>
+#include <objects3d/CVector.h>
 #include <QDataStream>
 #include <QList>
 

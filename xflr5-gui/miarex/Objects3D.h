@@ -27,9 +27,9 @@
 #define OBJECTS3D_H
 
 #include <QList>
-#include <objects/Body.h>
-#include <objects/Plane.h>
-#include <objects/PlaneOpp.h>
+#include <objects3d/Body.h>
+#include <objects3d/Plane.h>
+#include <objects3d/PlaneOpp.h>
 
 class Objects3D
 {

@@ -30,7 +30,7 @@
 #include <QStandardItemModel>
 #include <QToolButton>
 #include <gl3dbodyview.h>
-#include <objects/Body.h>
+#include <objects3d/Body.h>
 #include "BodyLineWidget.h"
 #include "BodyFrameWidget.h"
 #include "EditObjectDelegate.h"

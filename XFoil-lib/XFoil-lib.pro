@@ -15,11 +15,11 @@ TEMPLATE = lib
 SOURCES += \
     XFoil.cpp \
     XFoilTask.cpp \
-    objects/CVector.cpp \
-    objects/Foil.cpp \
-    objects/OpPoint.cpp \
-    objects/Polar.cpp \
-    objects/Spline.cpp \
+    objects2d/CVector.cpp \
+    objects2d/Foil.cpp \
+    objects2d/OpPoint.cpp \
+    objects2d/Polar.cpp \
+    objects2d/Spline.cpp \
     xfoil_globals.cpp
 
 HEADERS +=\
@@ -27,12 +27,11 @@ HEADERS +=\
     XFoilTask.h \
     xfoiltaskevent.h \
     xfoil_params.h \
-    objects/CRectangle.h \
-    objects/CVector.h \
-    objects/Foil.h \
-    objects/OpPoint.h \
-    objects/Polar.h \
-    objects/Spline.h \
+    objects2d/CVector.h \
+    objects2d/Foil.h \
+    objects2d/OpPoint.h \
+    objects2d/Polar.h \
+    objects2d/Spline.h \
     xfoil_globals.h \
     xfoil_enums.h
 

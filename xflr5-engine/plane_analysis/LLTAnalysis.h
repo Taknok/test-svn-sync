@@ -35,8 +35,8 @@
 #include <plane_analysis/planetaskevent.h>
 #include <engine_params.h>
 #include <engine_globals.h>
-#include <objects/Plane.h>
-#include <objects/PlaneOpp.h>
+#include <objects3d/Plane.h>
+#include <objects3d/PlaneOpp.h>
 #include <QList>
 
 /**

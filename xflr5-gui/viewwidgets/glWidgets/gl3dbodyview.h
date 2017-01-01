@@ -23,7 +23,7 @@
 #define GL3DBODYVIEW_H
 
 #include <gl3dview.h>
-#include "Body.h"
+#include <objects3d/Body.h>
 
 
 class gl3dBodyView : public gl3dView

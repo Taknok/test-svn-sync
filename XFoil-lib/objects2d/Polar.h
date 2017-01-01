@@ -32,7 +32,7 @@
 
 
 #include <xfoil_enums.h>
-#include <objects/OpPoint.h>
+#include <objects2d/OpPoint.h>
 #include <QList>
 
 

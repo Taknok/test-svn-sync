@@ -33,9 +33,8 @@
 #include "gui_params.h"
 #include "gui_enums.h"
 #include <miarex/view/GLLightDlg.h>
-#include <objects/CRectangle.h>
 #include <viewwidgets/ArcBall.h>
-#include <objects/PointMass.h>
+#include <objects3d/PointMass.h>
 #include <QTimer>
 
 #define MAXCPCOLORS    21
@@ -218,7 +217,7 @@ protected:
 
 	static GLLightDlg* s_pglLightDlg;
 
-	CRectangle m_GLViewRect;    /**< The OpenGl viewport.*/
+	QRectF m_GLViewRect;    /**< The OpenGl viewport.*/
 
 	QTimer *m_pTransitionTimer;
 

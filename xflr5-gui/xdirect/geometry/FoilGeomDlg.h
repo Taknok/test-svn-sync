@@ -29,7 +29,7 @@
 #include <QLabel>
 
 #include <misc/DoubleEdit.h>
-#include <objects/Foil.h>
+#include <objects2d/Foil.h>
 
 class FoilGeomDlg : public QDialog
 {

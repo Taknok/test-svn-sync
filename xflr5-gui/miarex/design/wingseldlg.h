@@ -22,7 +22,7 @@
 #ifndef WINGSELDLG_H
 #define WINGSELDLG_H
 #include <gui_params.h>
-#include <objects/Plane.h>
+#include <objects3d/Plane.h>
 #include <QDialog>
 #include <QCheckBox>
 

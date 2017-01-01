@@ -28,7 +28,7 @@
 #include <QLabel>
 #include <QString>
 #include <misc/DoubleEdit.h>
-#include <objects/Polar.h>
+#include <objects2d/Polar.h>
 
 
 class FoilPolarDlg : public QDialog

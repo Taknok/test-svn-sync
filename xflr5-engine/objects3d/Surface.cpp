@@ -22,8 +22,8 @@
 #include <QtDebug>
 #include <math.h>
 #include "Surface.h"
-#include <objects/Quaternion.h>
-#include <objects/Foil.h>
+#include <objects3d/Quaternion.h>
+#include <objects2d/Foil.h>
 #include "Body.h"
 #include "CVector.h"
 #include "WingSection.h"

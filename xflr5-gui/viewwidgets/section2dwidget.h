@@ -25,7 +25,7 @@
 #include <QWidget>
 #include <QMenu>
 #include <QPixmap>
-#include <objects/CVector.h>
+#include <objects3d/CVector.h>
 
 
 
