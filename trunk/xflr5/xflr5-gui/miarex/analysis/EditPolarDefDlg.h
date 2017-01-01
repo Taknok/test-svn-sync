@@ -26,8 +26,8 @@
 #include <QTreeView>
 #include <QStandardItemModel>
 
-#include <objects/WPolar.h>
-#include <objects/Plane.h>
+#include <objects3d/WPolar.h>
+#include <objects3d/Plane.h>
 #include <miarex/design/EditObjectDelegate.h>
 
 

@@ -26,7 +26,7 @@
 #include <QPushButton>
 
 #include <miarex/Objects3D.h>
-#include <objects/Plane.h>
+#include <objects3d/Plane.h>
 #include "ImportObjectDlg.h"
 
 

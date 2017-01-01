@@ -22,11 +22,11 @@
 #include <QCoreApplication>
 #include <math.h>
 #include "LLTAnalysis.h"
-#include <objects/PlaneOpp.h>
+#include <objects3d/PlaneOpp.h>
 #include <QtDebug>
 #include <QMutex>
 #include <QString>
-#include <objects/WPolar.h>
+#include <objects3d/WPolar.h>
 
 
 QList<Polar*> *LLTAnalysis::s_poaPolar = NULL;

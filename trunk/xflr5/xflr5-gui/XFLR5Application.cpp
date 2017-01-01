@@ -95,6 +95,7 @@ XFLR5Application::XFLR5Application(int &argc, char** argv) : QApplication(argc, 
 	MainFrame *w = MainFrame::self();
 	MainFrame::self()->resize(sz);
 	MainFrame::self()->move(pt);
+	splash.finish(w);
 	if(bMaximized)	MainFrame::self()->showMaximized();
 	else            MainFrame::self()->show();
 
@@ -114,7 +115,6 @@ XFLR5Application::XFLR5Application(int &argc, char** argv) : QApplication(argc, 
     }
 #endif
 
-	splash.finish(w);
 }
 
 

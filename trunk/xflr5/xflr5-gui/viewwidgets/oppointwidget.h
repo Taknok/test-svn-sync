@@ -25,8 +25,8 @@
 #include <QObject>
 #include <QWidget>
 #include <QGraph.h>
-#include <objects/CVector.h>
-#include <objects/OpPoint.h>
+#include <objects2d/CVector.h>
+#include <objects2d/OpPoint.h>
 
 class OpPointWidget : public QWidget
 {
@@ -47,6 +47,11 @@ public slots:
 	void onShowPressure(bool bPressure);
 	void onShowBL(bool bBL);
 
+	void onGraphSettings();
+
+signals:
+	void graphChanged(QGraph *);
+
 protected:
 	void contextMenuEvent (QContextMenuEvent *event);
 	void keyPressEvent(QKeyEvent *event);
@@ -55,8 +60,9 @@ protected:
 	void mousePressEvent(QMouseEvent *event);
 	void mouseReleaseEvent(QMouseEvent *event);
 	void paintEvent(QPaintEvent *event);
-	void resizeEvent (QResizeEvent *event);
-	void wheelEvent (QWheelEvent *event);
+	void resizeEvent(QResizeEvent *event);
+	void wheelEvent(QWheelEvent *event);
+	void mouseDoubleClickEvent(QMouseEvent *event);
 
 public:
 	void setGraph(QGraph* pGraph){m_pCpGraph = pGraph;}

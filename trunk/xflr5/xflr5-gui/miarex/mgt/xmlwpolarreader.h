@@ -24,7 +24,7 @@
 
 #include <QXmlStreamReader>
 #include <QFile>
-#include <objects/WPolar.h>
+#include <objects3d/WPolar.h>
 
 
 class XmlWPolarReader : public QXmlStreamReader

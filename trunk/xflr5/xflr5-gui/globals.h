@@ -34,8 +34,8 @@
 
 #include <gui_params.h>
 #include <engine_enums.h>
-#include <objects/Foil.h>
-#include <objects/Polar.h>
+#include <objects2d/Foil.h>
+#include <objects2d/Polar.h>
 
 using namespace std;
 

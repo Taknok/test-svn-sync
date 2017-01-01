@@ -34,8 +34,8 @@ INCLUDEPATH += $$PWD/../XFoil-lib
 INCLUDEPATH += $$PWD/../xflr5-engine/objects
 INCLUDEPATH += $$PWD/../xflr5-engine/plane_analysis
 
-DEPENDPATH += $$OUT_PWD/../xflr5-engine/
-message($$OUT_PWD/../xflr5-engine/)
+#DEPENDPATH += $$OUT_PWD/../xflr5-engine/
+#message($$OUT_PWD/../xflr5-engine/)
 
 SOURCES += \
 	XFLR5Application.cpp \
@@ -163,7 +163,8 @@ SOURCES += \
 	viewwidgets/glWidgets/gl3dbodyview.cpp \
 	viewwidgets/glWidgets/gl3dmiarexview.cpp \
 	viewwidgets/glWidgets/gl3dwingview.cpp \
-	viewwidgets/glWidgets/gl3dplaneview.cpp
+	viewwidgets/glWidgets/gl3dplaneview.cpp \
+    misc/voidwidget.cpp
 
 
 HEADERS += \
@@ -292,7 +293,8 @@ HEADERS += \
 	viewwidgets/glWidgets/gl3dbodyview.h \
 	viewwidgets/glWidgets/gl3dmiarexview.h \
 	viewwidgets/glWidgets/gl3dwingview.h \
-	viewwidgets/glWidgets/gl3dplaneview.h
+	viewwidgets/glWidgets/gl3dplaneview.h \
+    misc/voidwidget.h
 
 	
 

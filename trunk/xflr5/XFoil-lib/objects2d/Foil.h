@@ -33,8 +33,7 @@
 
 #include <QPoint>
 #include <xfoil_params.h>
-#include <objects/CVector.h>
-#include <objects/CRectangle.h>
+#include <objects2d/CVector.h>
 #include <QTextStream>
 
 

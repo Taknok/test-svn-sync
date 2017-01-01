@@ -39,9 +39,9 @@
 #include <misc/LineCbBox.h>
 #include <misc/LineDelegate.h>
 #include <misc/DoubleEdit.h>
-#include <objects/Polar.h>
-#include <objects/Foil.h>
-#include <objects/OpPoint.h>
+#include <objects2d/Polar.h>
+#include <objects2d/Foil.h>
+#include <objects2d/OpPoint.h>
 #include <graph/QGraph.h>
 #include "analysis/XFoilAnalysisDlg.h"
 #include <XFoil.h>

@@ -29,8 +29,8 @@
 
 #include "XFoil.h"
 #include <QRunnable>
-#include <objects/Polar.h>
-#include <objects/Foil.h>
+#include <objects2d/Polar.h>
+#include <objects2d/Foil.h>
 
 
 

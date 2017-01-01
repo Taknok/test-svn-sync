@@ -25,11 +25,11 @@
 #define PANELANALYSIS_H
 
 
-#include <objects/CVector.h>
-#include <objects/Panel.h>
-#include <objects/WPolar.h>
-#include <objects/Plane.h>
-#include <objects/Body.h>
+#include <objects3d/CVector.h>
+#include <objects3d/Panel.h>
+#include <objects3d/WPolar.h>
+#include <objects3d/Plane.h>
+#include <objects3d/Body.h>
 
 #define VLMMAXRHS 100
 

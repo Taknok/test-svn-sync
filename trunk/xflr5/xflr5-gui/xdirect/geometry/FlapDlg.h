@@ -25,7 +25,7 @@
 #include <QDialog>
 #include <QCheckBox>
 #include <QPushButton>
-#include <objects/Foil.h>
+#include <objects2d/Foil.h>
 #include <misc/DoubleEdit.h>
 
 

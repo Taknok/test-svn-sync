@@ -26,8 +26,8 @@
 #include <QDataStream>
 
 #include "XFoil.h"
-#include <objects/Foil.h>
-#include <objects/Polar.h>
+#include <objects2d/Foil.h>
+#include <objects2d/Polar.h>
 
 bool XFoil::s_bCancel = false;
 bool XFoil::s_bFullReport = false;

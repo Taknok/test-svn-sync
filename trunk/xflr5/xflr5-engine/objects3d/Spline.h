@@ -38,7 +38,7 @@
 #include <QFile>
 #include <QList>
 #include <QTextStream>
-#include <objects/CVector.h>
+#include <objects2d/CVector.h>
 #include <xfoil_params.h>
 
 

@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 #include <globals.h>
-#include <objects/WPolar.h>
+#include <objects3d/WPolar.h>
 #include <misc/Units.h>
 #include <Settings.h>
 #include <miarex/Miarex.h>

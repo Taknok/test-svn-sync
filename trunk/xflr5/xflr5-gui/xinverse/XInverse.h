@@ -41,7 +41,7 @@
 #include <misc/IntEdit.h>
 #include <misc/MinTextEdit.h>
 #include <graph/QGraph.h>
-#include <objects/Foil.h>
+#include <objects2d/Foil.h>
 #include <gui_objects/Spline5.h>
 
 class MainFrame;

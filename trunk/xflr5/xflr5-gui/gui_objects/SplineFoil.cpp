@@ -22,7 +22,7 @@
 
 #include <math.h>
 #include "SplineFoil.h"
-#include <objects/Foil.h>
+#include <objects2d/Foil.h>
 #include <globals.h>
 #include <engine_globals.h>
 

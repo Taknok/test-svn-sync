@@ -22,7 +22,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
-#include <objects/Foil.h>
+#include <objects2d/Foil.h>
 #include "FoilSelectionDlg.h"
 
 

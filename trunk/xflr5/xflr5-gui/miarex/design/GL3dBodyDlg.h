@@ -43,7 +43,7 @@
 #include <misc/ColorButton.h>
 #include <viewwidgets/ArcBall.h>
 #include <gl3dbodyview.h>
-#include <objects/Body.h>
+#include <objects3d/Body.h>
 #include "BodyLineWidget.h"
 #include "BodyFrameWidget.h"
 

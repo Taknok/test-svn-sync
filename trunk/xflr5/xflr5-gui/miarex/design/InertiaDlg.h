@@ -33,8 +33,8 @@
 #include <gui_params.h>
 #include <misc/FloatEditDelegate.h>
 #include <misc/DoubleEdit.h>
-#include <objects/CVector.h>
-#include <objects/Plane.h>
+#include <objects3d/CVector.h>
+#include <objects3d/Plane.h>
 
 class InertiaDlg : public QDialog
 {

@@ -24,7 +24,7 @@
 #include <miarex/view/W3dPrefsDlg.h>
 #include <misc/Settings.h>
 #include <misc/Units.h>
-#include <objects/Surface.h>
+#include <objects3d/Surface.h>
 #include "GL3dWingDlg.h"
 #include "WingScaleDlg.h"
 #include "InertiaDlg.h"

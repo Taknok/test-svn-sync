@@ -142,6 +142,7 @@ public:
 
 	//non dimensional stability derivatives
 	double CXu, CZu, Cmu, CXa, CLa, Cma, CXq, CLq, Cmq, CYb, CYp, CYr, Clb, Clp, Clr, Cnb, Cnp, Cnr;
+
 	//non-dimensional control derivatives
 	double CXe,CYe,CZe;
 	double CLe,CMe,CNe;

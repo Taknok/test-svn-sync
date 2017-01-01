@@ -35,7 +35,7 @@
 
 #include <QVarLengthArray>
 #include <engine_globals.h>
-#include <objects/Panel.h>
+#include <objects3d/Panel.h>
 
 #define VLMHALF 2500
 

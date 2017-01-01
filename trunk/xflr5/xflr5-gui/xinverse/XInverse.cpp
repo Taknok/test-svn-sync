@@ -32,7 +32,7 @@
 #include "InverseOptionsDlg.h"
 #include <globals.h>
 #include <mainframe.h>
-#include <objects/Foil.h>
+#include <objects2d/Foil.h>
 #include <misc/RenameDlg.h>
 #include <misc/Settings.h>
 #include <graph/GraphDlg.h>

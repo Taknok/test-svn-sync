@@ -62,9 +62,9 @@
 #include <xdirect/analysis/XFoilAnalysisDlg.h>
 #include <xdirect/analysis/FoilPolarDlg.h>
 #include <xinverse/XInverse.h>
-#include <objects/Foil.h>
-#include <objects/Polar.h>
-#include <objects/Wing.h>
+#include <objects2d/Foil.h>
+#include <objects2d/Polar.h>
+#include <objects3d/Wing.h>
 #include "openglinfodlg.h"
 
 #include "inverseviewwidget.h"
@@ -233,7 +233,8 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 	{
 		QMessageBox::warning(this, tr("Warning"), tr("Your system does not provide support for OpenGL.\nXFLR5 will not operate correctly."));
 	}
-	
+
+	m_iApp = XFLR5::NOAPP;
 	createDockWindows();
 
 	m_ImageFormat = XFLR5::PNG;
@@ -995,6 +996,7 @@ void MainFrame::createDockWindows()
 	m_pctrlStabViewWidget->move(60,60);
 
 	m_pctrlCentralWidget = new QStackedWidget;
+	m_pctrlCentralWidget->addWidget(&m_VoidWidget);
 	m_pctrlCentralWidget->addWidget(m_p2dWidget);
 	m_pctrlCentralWidget->addWidget(m_pgl3dMiarexView);
 	m_pctrlCentralWidget->addWidget(m_pDirect2dWidget);
@@ -1003,6 +1005,7 @@ void MainFrame::createDockWindows()
 
 
 	setCentralWidget(m_pctrlCentralWidget);
+	setMainFrameCentralWidget();
 
 	m_pAFoil  = new QAFoil(this);
 	QAFoil *pAFoil = (QAFoil*)m_pAFoil;
@@ -5070,7 +5073,11 @@ void MainFrame::saveSettings()
 
 void MainFrame::setMainFrameCentralWidget()
 {
-	if(m_iApp==XFLR5::MIAREX)
+	if(m_iApp==XFLR5::NOAPP)
+	{
+		m_pctrlCentralWidget->setCurrentWidget(&m_VoidWidget);
+	}
+	else if(m_iApp==XFLR5::MIAREX)
 	{
 		QMiarex *pMiarex = (QMiarex*)m_pMiarex;
 		if (pMiarex->m_iView==XFLR5::WOPPVIEW || pMiarex->m_iView==XFLR5::WPOLARVIEW || pMiarex->m_iView==XFLR5::WCPVIEW ||

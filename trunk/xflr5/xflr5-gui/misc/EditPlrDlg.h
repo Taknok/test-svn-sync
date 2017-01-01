@@ -29,8 +29,8 @@
 #include <QStandardItemModel>
 #include <misc/FloatEditDelegate.h>
 
-#include <objects/Polar.h>
-#include <objects/WPolar.h>
+#include <objects2d/Polar.h>
+#include <objects3d/WPolar.h>
 
 
 class EditPlrDlg : public QDialog

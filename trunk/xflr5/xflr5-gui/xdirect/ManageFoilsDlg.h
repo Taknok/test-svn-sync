@@ -29,7 +29,7 @@
 #include <QTableView>
 #include <QStandardItemModel>
 #include <design/FoilTableDelegate.h>
-#include <objects/Foil.h>
+#include <objects2d/Foil.h>
 
 
 class ManageFoilsDlg : public QDialog

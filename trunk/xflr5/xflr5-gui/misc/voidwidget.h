@@ -1,7 +1,7 @@
 /****************************************************************************
 
-	XmlPlaneWriter Class
-	Copyright (C) 2015 Andre Deperrois adeperrois@xflr5.com
+	VoidWidget Class
+	Copyright (C) 2016 Andre Deperrois adeperrois@xflr5.com
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -19,25 +19,19 @@
 
 *****************************************************************************/
 
-#ifndef XMLPLANEWRITER_H
-#define XMLPLANEWRITER_H
+#ifndef VOIDWIDGET_H
+#define VOIDWIDGET_H
 
-#include <QXmlStreamWriter>
-#include <objects3d/Plane.h>
+#include <QWidget>
 
-class XMLPlaneWriter : public QXmlStreamWriter
+class VoidWidget : public QWidget
 {
+	Q_OBJECT
 public:
-	XMLPlaneWriter(QFile &XFile);
-	void writeXMLPlane(Plane *m_pPlane);
-	void writeXMLBody(Body *pBody);
-	void writeBody(Body *pBody, CVector position, double lengthUnit, double massUnit);
+	explicit VoidWidget(QWidget *parent = 0);
 
-private:
-	void writeHeader();
-	void writePointMass(PointMass *ppm, double massUnit, double lengthUnit);
-	void writeColor(QColor color);
-
+protected:
+	void paintEvent ( QPaintEvent * event );
 };
 
-#endif // XMLPLANEWRITER_H
+#endif // VOIDWIDGET_H

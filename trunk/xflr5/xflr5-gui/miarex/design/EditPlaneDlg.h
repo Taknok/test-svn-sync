@@ -30,7 +30,7 @@
 #include <QStandardItemModel>
 #include <QToolButton>
 #include <gl3dplaneview.h>
-#include <objects/Plane.h>
+#include <objects3d/Plane.h>
 #include "EditObjectDelegate.h"
 
 

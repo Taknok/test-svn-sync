@@ -22,7 +22,7 @@
 #ifndef GL3DPLANEVIEW_H
 #define GL3DPLANEVIEW_H
 #include <gl3dview.h>
-#include <Plane.h>
+#include <objects3d/Plane.h>
 
 class gl3dPlaneView : public gl3dView
 {

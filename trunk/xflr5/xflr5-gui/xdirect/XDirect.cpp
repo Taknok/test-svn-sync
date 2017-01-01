@@ -281,7 +281,7 @@ void QXDirect::setControls()
 	m_pctrlShowPressure->setEnabled(!m_bPolarView && OpPoint::curOpp());
 	m_pctrlShowBL->setEnabled(!m_bPolarView && OpPoint::curOpp());
 	m_pctrlAnimate->setEnabled(!m_bPolarView && OpPoint::curOpp());
-	m_pctrlAnimateSpeed->setEnabled(!m_bPolarView && OpPoint::curOpp());
+	m_pctrlAnimateSpeed->setEnabled(!m_bPolarView && OpPoint::curOpp() && m_pctrlAnimate->isChecked());
 //	m_pctrlHighlightOpp->setEnabled(m_bPolar);
 
 	s_pMainFrame->m_pCurrentFoilMenu->setEnabled(Foil::curFoil());
@@ -1073,6 +1073,7 @@ void QXDirect::onInputChanged()
  */
 void QXDirect::onAnimate(bool bChecked)
 {
+	m_pctrlAnimateSpeed->setEnabled(bChecked);
 	if(!Foil::curFoil() || !Polar::curPolar())
 	{
 		m_bAnimate = false;
@@ -1197,7 +1198,6 @@ void QXDirect::onAnalyze()
 {
 	if(!Foil::curFoil() || !Polar::curPolar()) return;
 
-
 	readParams();
 
 	m_pctrlAnalyze->setEnabled(false);
@@ -1245,6 +1245,7 @@ void QXDirect::onAnalyze()
 	m_pctrlInitBL->setChecked(s_bInitBL);;
 
 	s_pMainFrame->updateOppListBox();
+
 	if(s_bAlpha) setOpp(m_Alpha);
 	else         setOpp();
 

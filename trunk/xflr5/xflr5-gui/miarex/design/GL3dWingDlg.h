@@ -42,7 +42,7 @@
 #include <viewwidgets/ArcBall.h>
 #include <misc/DoubleEdit.h>
 #include <misc/ColorButton.h>
-#include <objects/Wing.h>
+#include <objects3d/Wing.h>
 
 
 

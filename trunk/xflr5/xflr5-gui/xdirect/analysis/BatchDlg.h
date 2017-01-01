@@ -33,8 +33,8 @@
 #include <QTextEdit>
 #include <graph/QGraph.h>
 #include "graphwidget.h"
-#include <objects/Foil.h>
-#include <objects/Polar.h>
+#include <objects2d/Foil.h>
+#include <objects2d/Polar.h>
 #include <misc/IntEdit.h>
 #include <misc/DoubleEdit.h>
 #include <XFoilTask.h>

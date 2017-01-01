@@ -45,6 +45,7 @@
 #include <QGraph.h>
 #include <miarex/view/GLLightDlg.h>
 #include <misc/scriptconsole.h>
+#include <misc/voidwidget.h>
 
 class gl3dMiarexView;
 class InverseViewWidget;
@@ -258,6 +259,7 @@ private:
 	static QPointer<MainFrame> _self; /**< necessary for MacOS >*/
 
 	QStackedWidget *m_pctrlCentralWidget;     /** The stacked widget which is loaded at the center of the display area. The stack switches between the widgets depending on the user's request. */
+	VoidWidget m_VoidWidget;
 	InverseViewWidget *m_p2dWidget;           /** A pointer to the instance of the TwoDWidget which is used to perform 2d drawings */
 	Direct2dDesign *m_pDirect2dWidget;        /** A pointer to the instance of the TwoDWidget which is used to perform 2d drawings of foils in Direct Design */
 	gl3dMiarexView *m_pgl3dMiarexView;                  /** A pointer to the instance of the OpenGL 3.0 widget where 3d calculations and rendering are performed */

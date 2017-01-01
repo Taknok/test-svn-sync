@@ -56,8 +56,8 @@
 #include "./analysis/EditPolarDefDlg.h"
 #include <miarex/mgt/xmlwpolarreader.h>
 #include <miarex/mgt/xmlwpolarwriter.h>
-#include <objects/PointMass.h>
-#include <objects/Surface.h>
+#include <objects3d/PointMass.h>
+#include <objects3d/Surface.h>
 #include <misc/Settings.h>
 #include <misc/ProgressDlg.h>
 #include <misc/ModDlg.h>
@@ -606,7 +606,7 @@ void QMiarex::setControls()
 	m_pctrlLift->setEnabled( (m_iView==XFLR5::WOPPVIEW||m_iView==XFLR5::W3DVIEW) && m_pCurPOpp);
 	m_pctrlTrans->setEnabled((m_iView==XFLR5::WOPPVIEW||m_iView==XFLR5::W3DVIEW) && m_pCurPOpp);
 	m_pctrlWOppAnimate->setEnabled((m_iView==XFLR5::WOPPVIEW||m_iView==XFLR5::W3DVIEW) && m_pCurPOpp && m_pCurPOpp->polarType()!=XFLR5::STABILITYPOLAR);
-	m_pctrlAnimateWOppSpeed->setEnabled((m_iView==XFLR5::WOPPVIEW||m_iView==XFLR5::W3DVIEW) && m_pCurPOpp);
+	m_pctrlAnimateWOppSpeed->setEnabled((m_iView==XFLR5::WOPPVIEW||m_iView==XFLR5::W3DVIEW) && m_pCurPOpp && m_pctrlWOppAnimate->isChecked());
 	m_pctrlIDrag->setEnabled(     m_iView==XFLR5::W3DVIEW && m_pCurPOpp);
 	m_pctrlVDrag->setEnabled(     m_iView==XFLR5::W3DVIEW && m_pCurPOpp);
 	m_pctrlDownwash->setEnabled(  m_iView==XFLR5::W3DVIEW && m_pCurPOpp);
@@ -2133,6 +2133,10 @@ void QMiarex::LLTAnalyze(double V0, double VMax, double VDelta, bool bSequence, 
 	{
 		m_pLLTDlg->hide();
 	}
+
+	setPlaneOpp(false, V0);
+	s_pMainFrame->updatePOppListBox();
+	emit projectModified();
 }
 
 
@@ -2178,6 +2182,7 @@ bool QMiarex::loadSettings(QSettings *pSettings)
 		m_bShowWingCurve[2]    = pSettings->value("ShowStab").toBool();
 		m_bShowWingCurve[3]    = pSettings->value("ShowFin").toBool();
 		m_bShowWingCurve[0] = true;
+		m_bShowFlapMoments = pSettings->value("showFlapMoments", true).toBool();
 
 		PlaneOpp::s_bStoreOpps    = pSettings->value("StoreWOpp").toBool();
 		m_bSequence     = pSettings->value("Sequence").toBool();
@@ -2545,6 +2550,7 @@ void QMiarex::onAnalyze()
 */
 void QMiarex::onAnimateWOpp()
 {
+	m_pctrlAnimateWOppSpeed->setEnabled(m_pctrlWOppAnimate->isChecked());
 	if(!m_pCurPlane || !m_pCurWPolar || m_iView==XFLR5::WPOLARVIEW)
 	{
 		m_bAnimateWOpp = false;
@@ -6498,8 +6504,6 @@ void QMiarex::panelAnalyze(double V0, double VMax, double VDelta, bool bSequence
 		pr += m_theTask.m_SurfaceList.at(i+1)->m_NElements;
 	}
 
-
-
 	m_pPanelAnalysisDlg->deleteTask();
 
 	PlaneAnalysisTask *pTask = new PlaneAnalysisTask;
@@ -6513,6 +6517,11 @@ void QMiarex::panelAnalyze(double V0, double VMax, double VDelta, bool bSequence
 
 	if(!m_bLogFile || !PanelAnalysis::s_bWarning)
 		m_pPanelAnalysisDlg->hide();
+
+	setPlaneOpp(false, V0);
+	s_pMainFrame->updatePOppListBox();
+
+	emit projectModified();
 }
 
 
@@ -6576,6 +6585,7 @@ bool QMiarex::saveSettings(QSettings *pSettings)
 		pSettings->setValue("ControlMax", m_ControlMax);
 		pSettings->setValue("ControlDelta", m_ControlDelta);
 		pSettings->setValue("bAutoInertia", WPolarDlg::s_WPolar.m_bAutoInertia);
+		pSettings->setValue("showFlapMoments", m_bShowFlapMoments);
 
 		pSettings->setValue("CpStyle", m_CpLineStyle.m_Style);
 		pSettings->setValue("CpWidth", m_CpLineStyle.m_Width);
@@ -6767,7 +6777,8 @@ bool QMiarex::saveSettings(QSettings *pSettings)
  */
 void QMiarex::setScale()
 {
-	if(m_iView==XFLR5::W3DVIEW && m_pCurPlane && W3dPrefsDlg::s_bAutoAdjustScale) m_pGL3dView->set3DScale(m_pCurPlane->span());
+	if(/*m_iView==XFLR5::W3DVIEW && */m_pCurPlane && W3dPrefsDlg::s_bAutoAdjustScale)
+		m_pGL3dView->set3DScale(m_pCurPlane->span());
 }
 
 
