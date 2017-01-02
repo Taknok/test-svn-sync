@@ -460,10 +460,6 @@ void QXDirect::createPolarCurves()
 				for(int ig=0; ig<MAXPOLARGRAPHS; ig++)
 				{
 					pCurve[ig] = m_PlrGraph[ig]->addCurve();
-//					pCurve[ig]->showPoints(pPolar->showPoints());
-//					pCurve[ig]->setStyle(pPolar->polarStyle());
-//					pCurve[ig]->setWidth(pPolar->polarWidth());
-//					pCurve[ig]->setColor(pPolar->polarColor());
 					pCurve[ig]->setLineStyle(pPolar->polarStyle(), pPolar->polarWidth(), colour(pPolar), pPolar->pointStyle(), pPolar->isVisible());
 
 					fillPolarCurve(pCurve[ig], pPolar, m_PlrGraph[ig]->xVariable(), m_PlrGraph[ig]->yVariable());
@@ -477,7 +473,7 @@ void QXDirect::createPolarCurves()
 						pTr2Curve->setStyle(1);
 						pTr2Curve->setWidth(pPolar->polarWidth());
 						pTr2Curve->setColor(pPolar->polarColor());*/
-						pTr2Curve[ig].setLineStyle(pPolar->polarStyle(), pPolar->polarWidth(), colour(pPolar), pPolar->pointStyle(), pPolar->isVisible());
+						pTr2Curve->setLineStyle(pPolar->polarStyle(), pPolar->polarWidth(), colour(pPolar), pPolar->pointStyle(), pPolar->isVisible());
 						fillPolarCurve(pTr2Curve, pPolar, m_PlrGraph[ig]->xVariable(), 7);
 
 						str = pPolar->polarName() + " / Xtr1";
@@ -1205,6 +1201,8 @@ void QXDirect::onAnalyze()
 	bool bHigh = QGraph::isHighLighting();
 	QGraph::setOppHighlighting(false);
 
+	m_pXFADlg->m_pRmsGraph->copySettings(&Settings::s_RefGraph);
+
 	if(m_bSequence)
 	{
 		m_pXFADlg->setAlpha(m_Alpha, m_AlphaMax, m_AlphaDelta);
@@ -1268,7 +1266,6 @@ void QXDirect::onBatchAnalysis()
 {
 	if(!Foil::curFoil()) return;
 
-	m_bPolarView = true;
 	onPolarView();
 	updateView();
 
@@ -1293,6 +1290,9 @@ void QXDirect::onBatchAnalysis()
 
 	pBatchDlg->m_bFromList = m_bFromList;
 	pBatchDlg->m_bFromZero = s_bFromZero;
+
+	pBatchDlg->m_pRmsGraph->copySettings(&Settings::s_RefGraph);
+
 	pBatchDlg->initDialog();
 
 	if(pBatchDlg->exec()==QDialog::Accepted) emit projectModified();
@@ -1825,7 +1825,7 @@ void QXDirect::onUePlot()
  */
 void QXDirect::onCpGraph()
 {
-	m_bPolarView = false;
+	onOpPointView();
 	if(m_CpGraph.yVariable()!=0)
 	{
 //		m_pCpGraph->ResetLimits();
@@ -2180,19 +2180,18 @@ void QXDirect::onCadd()
 {
 	stopAnimate();
 	if(!Foil::curFoil())		return;
+	onOpPointView();
 
 	void* ptr = OpPoint::curOpp();
 	OpPoint::setCurOpp(NULL);
 	m_bResetCurves = true;
 
 	bool bState = m_bShowPanels;
-	onOpPointView();
 
 	CAddDlg caDlg(s_pMainFrame);
 	caDlg.m_pBufferFoil = &m_BufferFoil;
 	caDlg.m_pMemFoil    = Foil::curFoil();
 	caDlg.initDialog();
-
 
 	m_bShowPanels = true;
 	updateView();
@@ -2722,6 +2721,7 @@ void QXDirect::onFoilCoordinates()
 {
 	if(!Foil::curFoil())	return;
 	stopAnimate();
+	onOpPointView();
 
 	bool bState = m_bShowPanels;//save current view setting
 
@@ -2729,7 +2729,6 @@ void QXDirect::onFoilCoordinates()
 	OpPoint::setCurOpp(NULL);
 	m_bResetCurves = true;
 
-	m_bPolarView    = false;
 	updateView();
 
 	bool bFlap       = m_BufferFoil.m_bTEFlap;
@@ -2800,7 +2799,7 @@ void QXDirect::onFoilGeom()
 	if(!Foil::curFoil())	return;
 
 	stopAnimate();
-	m_bPolarView   = false;
+	onOpPointView();
 
 	void* ptr = OpPoint::curOpp();
 	OpPoint::setCurOpp(NULL);
@@ -3311,7 +3310,7 @@ void QXDirect::onInterpolateFoils()
 void QXDirect::onNacaFoils()
 {
 	stopAnimate();
-	m_bPolarView   = false;
+	onOpPointView();
 
 	void* ptr0 = Foil::curFoil();
 	void* ptr  = OpPoint::curOpp();
@@ -3319,6 +3318,7 @@ void QXDirect::onNacaFoils()
 	OpPoint::setCurOpp(NULL);
 
 	m_bResetCurves = true;
+
 	updateView();
 
 	NacaFoilDlg nacaDlg(s_pMainFrame);
@@ -3370,7 +3370,6 @@ void QXDirect::onNormalizeFoil()
 	if(!Foil::curFoil()) return;
 	QString str;
 	stopAnimate();
-
 
 	double length = Foil::curFoil()->normalizeGeometry();
 	Foil *pFoil = Foil::curFoil();
@@ -3509,13 +3508,12 @@ void QXDirect::onRefinePanelsGlobally()
 	if(!Foil::curFoil())	return;
 	stopAnimate();
 
+	onOpPointView();
 	bool bState = m_bShowPanels;//save current view setting
 
 	void* ptr = OpPoint::curOpp();
 	OpPoint::setCurOpp(NULL);
 	m_bResetCurves = true;
-
-	onOpPointView();
 
 	TwoDPanelDlg tdpDlg(s_pMainFrame);
 	tdpDlg.m_pBufferFoil = &m_BufferFoil;
@@ -3559,7 +3557,7 @@ void QXDirect::onRefinePanelsGlobally()
  */
 void QXDirect::onQGraph()
 {
-	m_bPolarView = false;
+	onOpPointView();
 	if(m_CpGraph.yVariable()!=1)
 	{
 		m_CpGraph.resetLimits();
@@ -3821,12 +3819,11 @@ void QXDirect::onSetFlap()
 {
 	if(!Foil::curFoil()) return;
 	stopAnimate();
+	onOpPointView();
 
 	void* ptr = OpPoint::curOpp();
 	OpPoint::setCurOpp(NULL);
 	m_bResetCurves = true;
-
-	onOpPointView();
 
 	FlapDlg flpDlg(s_pMainFrame);
 	flpDlg.m_pBufferFoil  = &m_BufferFoil;
@@ -3871,11 +3868,11 @@ void QXDirect::onSetLERadius()
 {
 	if(!Foil::curFoil())	return;
 	stopAnimate();
+	onOpPointView();
 
 	void* ptr = OpPoint::curOpp();
 	OpPoint::setCurOpp(NULL);
 	m_bResetCurves = true;
-	onOpPointView();
 
 	LEDlg lDlg(s_pMainFrame);
 	lDlg.m_pBufferFoil = &m_BufferFoil;
@@ -3918,12 +3915,11 @@ void QXDirect::onSetTEGap()
 {
 	if(!Foil::curFoil())	return;
 	stopAnimate();
+	onOpPointView();
 
 	void* ptr = OpPoint::curOpp();
 	OpPoint::setCurOpp(NULL);
 	m_bResetCurves = true;
-
-	onOpPointView();
 
 	TEGapDlg tegDlg(s_pMainFrame);
 	tegDlg.m_pBufferFoil = &m_BufferFoil;

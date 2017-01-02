@@ -76,6 +76,7 @@ public:
 	double &beta()  {return m_Beta;}
 	double &phi()   {return m_Bank;}
 	double &ctrl()  {return m_Ctrl;}
+	double &QInf()  {return m_QInf;}
 
 	XFLR5::enumAnalysisMethod analysisMethod() {return m_AnalysisMethod;}
 	bool isLLTMethod(){return m_AnalysisMethod==XFLR5::LLTMETHOD;}
@@ -97,8 +98,6 @@ public:
 
 	void getPlaneOppProperties(QString &PlaneOppProperties, QString lengthUnitLabel, QString massUnitLabel, QString speedUnitLabel,
 							   double mtoUnit, double kgtoUnit, double mstoUnit);
-
-	QString title() {return "POpp title";}
 
 private:
 	XFLR5::enumAnalysisMethod m_AnalysisMethod;   /**< defines by which type of method (LLT, VLM, PANEL), this WingOpp was calculated */

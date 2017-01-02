@@ -78,6 +78,8 @@ public:
 	void cleanUp();
 	static void setPosition(QPoint pos) {s_Position = pos;}
 
+	QGraph* iterGraph(){return m_pIterGraph;}
+
 private slots:
 	void onCancelAnalysis();
 	void onProgress();

@@ -254,6 +254,7 @@ public:
 	void panelAnalyze(double V0, double VMax, double VDelta, bool bSequence);
 	void paintPlaneLegend(QPainter &painter, Plane *pPlane, WPolar *pWPolar, QRect drawRect);
 	void paintPlaneOppLegend(QPainter &painter, QRect drawRect);
+	QString POppTitle(PlaneOpp *pPOpp);
 	void renamePlane(QString PlaneName);
 	bool saveSettings(QSettings *pSettings);
 	void setAnalysisParams();

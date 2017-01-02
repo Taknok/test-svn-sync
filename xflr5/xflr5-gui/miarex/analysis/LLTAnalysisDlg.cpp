@@ -54,8 +54,10 @@ LLTAnalysisDlg::LLTAnalysisDlg(QWidget *pParent) : QDialog(pParent)
 	m_pTheTask = NULL;
 
 	m_pIterGraph = new QGraph();
+
 	m_pGraphWidget->setGraph(m_pIterGraph);
 	m_pIterGraph->copySettings(&Settings::s_RefGraph, false);
+
 //	m_pIterGraph->SetXTitle(tr("Iterations"));
 	m_pIterGraph->setYTitle("");
 	QFont fnt("Symbol");

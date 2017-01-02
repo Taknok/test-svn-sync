@@ -128,7 +128,7 @@ private:
 	void setTableFont();
 
 	void loadSettings(QSettings *pSettings);
-	void SaveSettings(QSettings *pSettings);
+	void saveSettings(QSettings *pSettings);
 
 	void takePicture();
 	void setPicture();

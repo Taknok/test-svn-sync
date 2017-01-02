@@ -644,6 +644,7 @@ void MainFrame::createAFoilActions()
 	connect(m_pHideCurrentFoil, SIGNAL(triggered()), pAFoil, SLOT(onHideCurrentFoil()));
 
 	m_pAFoilDerotateFoil = new QAction(tr("De-rotate the Foil"), this);
+	m_pAFoilDerotateFoil->setToolTip(tr("Set chord line level"));
 	connect(m_pAFoilDerotateFoil, SIGNAL(triggered()), pAFoil, SLOT(onAFoilDerotateFoil()));
 
 	m_pAFoilNormalizeFoil = new QAction(tr("Normalize the Foil"), this);
@@ -758,8 +759,6 @@ void MainFrame::createAFoilMenus()
 		m_pAFoilViewMenu->addAction(m_pAFoilClearImage);
 		m_pAFoilViewMenu->addSeparator();
 		m_pAFoilViewMenu->addAction(m_pSaveViewToImageFileAct);
-		m_pAFoilViewMenu->addSeparator();
-		m_pAFoilViewMenu->addAction(m_pStyleAct);
 	}
 
 	m_pAFoilDesignMenu = menuBar()->addMenu(tr("F&oil"));
@@ -1100,6 +1099,8 @@ void MainFrame::createMenus()
 		m_pOptionsMenu->addAction(m_pSaveOptionsAct);
 		m_pOptionsMenu->addSeparator();
 		m_pOptionsMenu->addAction(m_pUnitsAct);
+		m_pOptionsMenu->addSeparator();
+		m_pOptionsMenu->addAction(m_pStyleAct);
 		m_pOptionsMenu->addSeparator();
 		m_pOptionsMenu->addAction(m_pRestoreToolbarsAct);
 		m_pOptionsMenu->addSeparator();
@@ -1529,8 +1530,6 @@ void MainFrame::createMiarexMenus()
 		m_pMiarexViewMenu->addAction(m_pW3DScalesAct);
 		m_pMiarexViewMenu->addSeparator();
 		m_pMiarexViewMenu->addAction(m_pSaveViewToImageFileAct);
-		m_pMiarexViewMenu->addSeparator();
-		m_pMiarexViewMenu->addAction(m_pStyleAct);
 	}
 
 
@@ -2541,8 +2540,6 @@ void MainFrame::createXDirectMenus()
 		m_pXDirectViewMenu->addAction(m_pPolarsAct);
 		m_pXDirectViewMenu->addSeparator();
 		m_pXDirectViewMenu->addAction(m_pSaveViewToImageFileAct);
-		m_pXDirectViewMenu->addSeparator();
-		m_pXDirectViewMenu->addAction(m_pStyleAct);
 	}
 
 	m_pXDirectFoilMenu = menuBar()->addMenu(tr("&Foil"));
@@ -2919,8 +2916,6 @@ void MainFrame::createXInverseMenus()
 		m_pXInverseViewMenu->addAction(m_pXInverseStyles);
 		m_pXInverseViewMenu->addSeparator();
 		m_pXInverseViewMenu->addAction(m_pSaveViewToImageFileAct);
-		m_pXInverseViewMenu->addSeparator();
-		m_pXInverseViewMenu->addAction(m_pStyleAct);
 	}
 
 	m_pXInverseGraphMenu = menuBar()->addMenu(tr("&Graph"));
@@ -4473,9 +4468,14 @@ void MainFrame::onStyleSettings()
 	}
 	QAFoil *pAFoil = (QAFoil*)m_pAFoil;
 	pAFoil->setTableFont();
+	if(Settings::s_Theme==SETTINGS::DARKTHEME) pAFoil->m_p2DWidget->setNeutralLineColor(QColor(190,190,190));
+	else                                       pAFoil->m_p2DWidget->setNeutralLineColor(QColor(60,60,60));
 
 	pXDirect->m_CpGraph.setInverted(true);
 	pMiarex->m_CpGraph.setInverted(true);
+	pMiarex->m_bResetTextLegend = true;
+
+	m_VoidWidget.update();
 
 	setMainFrameCentralWidget();
 
@@ -5062,7 +5062,7 @@ void MainFrame::saveSettings()
 	settings.endGroup();
 
 	Settings::saveSettings(&settings);
-	pAFoil->SaveSettings(&settings);
+	pAFoil->saveSettings(&settings);
 	pXDirect->saveSettings(&settings);
 	pMiarex->saveSettings(&settings);
 	pXInverse->saveSettings(&settings);

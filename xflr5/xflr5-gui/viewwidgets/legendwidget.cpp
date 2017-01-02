@@ -346,7 +346,7 @@ void LegendWidget::drawPOppGraphLegend(QPainter &painter, QPointF place, double 
 		painter.setPen(TextPen);
 		painter.drawText(place.x() + 3*LegendSize,
 						 place.y() + 1.*ypos*ny+ypos/3,
-						 pMiarex->curPOpp()->title());
+						 pMiarex->POppTitle(pMiarex->m_pCurPOpp));
 	}
 	else
 	{
@@ -412,7 +412,7 @@ void LegendWidget::drawPOppGraphLegend(QPainter &painter, QPointF place, double 
 						painter.setPen(TextPen);
 						painter.drawText(place.x() + 3.0*LegendSize,
 										 place.y() + 1.0*ypos*ny + ypos/3,
-										 pPOpp->title());
+										 pMiarex->POppTitle(pPOpp));
 						ny++ ;
 					}
 				}

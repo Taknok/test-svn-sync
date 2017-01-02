@@ -820,19 +820,14 @@ void QMiarex::createCpCurves()
 */
 void QMiarex::createWOppCurves()
 {
-//	WingOpp *pWOpp = NULL;;
-	PlaneOpp *pPOpp = NULL;
-	Curve *pWingCurve[MAXWINGS][MAXWINGGRAPHS];
-
 	int i,k;
-
 	for(int ig=0; ig<MAXWINGGRAPHS; ig++) m_WingGraph[ig]->deleteCurves();
 
 	// Browse through the array of plane operating points
 	// add a curve for those selected, and fill them with data
 	for (k=0; k<m_poaPOpp->size(); k++)
 	{
-		pPOpp = (PlaneOpp*)m_poaPOpp->at(k);
+		PlaneOpp *pPOpp = (PlaneOpp*)m_poaPOpp->at(k);
 		if (pPOpp->isVisible() && (!m_bCurPOppOnly || (m_pCurPOpp==pPOpp)))
 		{
 			for(int iw=0; iw<MAXWINGS; iw++)
@@ -841,13 +836,13 @@ void QMiarex::createWOppCurves()
 				{
 					for(int ic=0; ic<m_WingGraph.count(); ic++)
 					{
-						pWingCurve[iw][ic]  = m_WingGraph[ic]->addCurve();
-						pWingCurve[iw][ic]->setPoints(pPOpp->points());
-						pWingCurve[iw][ic]->setStyle(pPOpp->style());
-						pWingCurve[iw][ic]->setColor(pPOpp->color());
-						pWingCurve[iw][ic]->setWidth(pPOpp->width());
-						pWingCurve[iw][ic]->setCurveName(pPOpp->title());
-						fillWOppCurve(pPOpp->m_pPlaneWOpp[iw], m_WingGraph[ic], pWingCurve[iw][ic]);
+						Curve *pWingCurve = m_WingGraph[ic]->addCurve();
+						pWingCurve->setPoints(pPOpp->points());
+						pWingCurve->setStyle(pPOpp->style());
+						pWingCurve->setColor(pPOpp->color());
+						pWingCurve->setWidth(pPOpp->width());
+						pWingCurve->setCurveName(POppTitle(pPOpp));
+						fillWOppCurve(pPOpp->m_pPlaneWOpp[iw], m_WingGraph[ic], pWingCurve);
 					}
 				}
 			}
@@ -1401,7 +1396,7 @@ void QMiarex::fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 	int Var = pGraph->yVariable();
 	int nStart, i;
 
-	if(m_pCurWPolar->analysisMethod()==XFLR5::LLTMETHOD) nStart = 1;
+	if(pWOpp->m_AnalysisMethod==XFLR5::LLTMETHOD) nStart = 1;
 	else nStart = 0;
 
 	switch(Var)
@@ -2113,6 +2108,8 @@ void QMiarex::LLTAnalyze(double V0, double VMax, double VDelta, bool bSequence, 
 
 	LLTAnalysis::s_bInitCalc = bInitCalc;
 	LLTAnalysis::s_IterLim = m_LLTMaxIterations;
+
+	m_pLLTDlg->iterGraph()->copySettings(&Settings::s_RefGraph);
 
 	m_pLLTDlg->deleteTask();
 
@@ -9202,3 +9199,24 @@ void QMiarex::exportToTextStream(WPolar *pWPolar, QTextStream &out, XFLR5::enumT
 	}
 	out << "\n\n";
 }
+
+
+QString QMiarex::POppTitle(PlaneOpp *pPOpp)
+{
+	QString strong;
+	if(pPOpp->polarType()==XFLR5::STABILITYPOLAR)
+	{
+		strong = QString("ctrl=%1-").arg(pPOpp->ctrl());
+	}
+	strong += QString::fromUtf8("%1°-").arg(pPOpp->alpha(), 7,'f',3);
+
+	if(fabs(pPOpp->beta())>PRECISION) strong += QString::fromUtf8("%1°-").arg(pPOpp->beta(), 7,'f',3);
+
+	strong += QString("%1").arg(pPOpp->QInf()*Units::mstoUnit());
+	strong +=Units::speedUnitLabel();
+
+	return strong;
+}
+
+
+
