@@ -48,6 +48,9 @@ XFLR5::enumTextFileType Settings::s_ExportFileType;  /**< Defines if the list se
 QString Settings::s_LastDirName = QDir::homePath();
 QString Settings::s_xmlDirName = QDir::homePath();
 
+SETTINGS::enumThemeType Settings::s_Theme = SETTINGS::DARKTHEME;
+
+
 Settings::Settings(QWidget *pParent) : QDialog(pParent)
 {
 	setWindowTitle(tr("General Display Settings"));
@@ -111,50 +114,81 @@ void Settings::setupLayout()
 		m_pctrlStyles->addItem(styleSheetName);
 	}
 
-
-	QGroupBox *pGraphBox = new QGroupBox(tr("Graph Settings"));
+	QGroupBox *pWidgetStyleBox = new QGroupBox(tr("Widget Style"));
 	{
-		QHBoxLayout *pGraphLayout = new QHBoxLayout;
-		{
-			m_pctrlGraphSettings  = new QPushButton(tr("All Graph Settings"));
-			m_pctrlGraphSettings->setMinimumWidth(120);
-			pGraphLayout->addWidget(m_pctrlGraphSettings);
-		}
-		pGraphBox->setLayout(pGraphLayout);
+		QHBoxLayout *pWidgetStyleLayout = new QHBoxLayout;
+		pWidgetStyleLayout->addWidget(m_pctrlStyles);
+		pWidgetStyleBox->setLayout(pWidgetStyleLayout);
 	}
 
-
-	QGroupBox *pBackBox = new QGroupBox(tr("Background Color"));
+	QGroupBox * pThemeBox = new QGroupBox(tr("Display"));
 	{
-		QHBoxLayout *pBackLayout = new QHBoxLayout;
+		QVBoxLayout *pThemeBoxLayout = new QVBoxLayout;
 		{
-			m_pctrlBackColor      = new ColorButton(this);
-			m_pctrlBackColor->setMinimumWidth(120);
-			pBackLayout->addWidget(m_pctrlBackColor);
+			QHBoxLayout *pThemeLayout = new QHBoxLayout;
+			{
+				m_prbDark   = new QRadioButton(tr("Dark"));
+				m_prbLight  = new QRadioButton(tr("Light"));
+				m_prbCustom = new QRadioButton(tr("Custom"));
+				pThemeLayout->addWidget(m_prbDark);
+				pThemeLayout->addWidget(m_prbLight);
+				pThemeLayout->addWidget(m_prbCustom);
+				connect(m_prbDark, SIGNAL(clicked(bool)), this, SLOT(onTheme()));
+				connect(m_prbLight, SIGNAL(clicked(bool)), this, SLOT(onTheme()));
+				connect(m_prbCustom, SIGNAL(clicked(bool)), this, SLOT(onTheme()));
+			}
+
+			QGroupBox *pGraphBox = new QGroupBox(tr("Graph Settings"));
+			{
+				QHBoxLayout *pGraphLayout = new QHBoxLayout;
+				{
+					m_pctrlGraphSettings  = new QPushButton(tr("All Graph Settings"));
+					m_pctrlGraphSettings->setMinimumWidth(120);
+					pGraphLayout->addWidget(m_pctrlGraphSettings);
+				}
+				pGraphBox->setLayout(pGraphLayout);
+			}
+
+			QGroupBox *pBackBox = new QGroupBox(tr("Background Color"));
+			{
+				QHBoxLayout *pBackLayout = new QHBoxLayout;
+				{
+					m_pctrlBackColor      = new ColorButton(this);
+					m_pctrlBackColor->setMinimumWidth(120);
+					pBackLayout->addWidget(m_pctrlBackColor);
+				}
+				pBackBox->setLayout(pBackLayout);
+			}
+
+			QGroupBox *pFontBox = new QGroupBox(tr("Fonts"));
+			{
+				QGridLayout *pMainFontLayout = new QGridLayout;
+				{
+					QLabel *labMain = new QLabel(tr("Main display font"));
+					m_pctrlTextFont = new QPushButton;
+					m_pctrlTextClr  = new TextClrBtn(this);
+
+					pMainFontLayout->addWidget(labMain,1,1);
+					pMainFontLayout->addWidget(m_pctrlTextFont,1,2);
+					pMainFontLayout->addWidget(m_pctrlTextClr,1,3);
+
+					QLabel *labTable = new QLabel(tr("Table font"));
+					m_pctrlTableFont = new QPushButton;
+
+					pMainFontLayout->addWidget(labTable,2,1);
+					pMainFontLayout->addWidget(m_pctrlTableFont,2,2);
+				}
+				pFontBox->setLayout(pMainFontLayout);
+			}
+
+			pThemeBoxLayout->addLayout(pThemeLayout);
+			pThemeBoxLayout->addWidget(pBackBox);
+			pThemeBoxLayout->addWidget(pFontBox);
+			pThemeBoxLayout->addWidget(pGraphBox);
 		}
-		pBackBox->setLayout(pBackLayout);
+		pThemeBox->setLayout(pThemeBoxLayout);
 	}
 
-	QGroupBox *pFontBox = new QGroupBox(tr("Fonts"));
-	{
-		QGridLayout *pMainFontLayout = new QGridLayout;
-		{
-			QLabel *labMain = new QLabel(tr("Main display font"));
-			m_pctrlTextFont = new QPushButton;
-			m_pctrlTextClr  = new TextClrBtn(this);
-
-			pMainFontLayout->addWidget(labMain,1,1);
-			pMainFontLayout->addWidget(m_pctrlTextFont,1,2);
-			pMainFontLayout->addWidget(m_pctrlTextClr,1,3);
-
-			QLabel *labTable = new QLabel(tr("Table font"));
-			m_pctrlTableFont = new QPushButton;
-
-			pMainFontLayout->addWidget(labTable,2,1);
-			pMainFontLayout->addWidget(m_pctrlTableFont,2,2);
-		}
-		pFontBox->setLayout(pMainFontLayout);
-	}
 
 
 	QHBoxLayout *pCommandButtons = new QHBoxLayout;
@@ -170,14 +204,9 @@ void Settings::setupLayout()
 	{
 		m_pctrlReverseZoom = new QCheckBox(tr("Reverse zoom direction using mouse wheel"));
 		pMainLayout->addStretch(1);
-		pMainLayout->addWidget(m_pctrlStyles);
+		pMainLayout->addWidget(pWidgetStyleBox);
 		pMainLayout->addStretch(1);
-		pMainLayout->addWidget(pBackBox);
-		pMainLayout->addStretch(1);
-		pMainLayout->addWidget(pFontBox);
-		pMainLayout->addStretch(1);
-		pMainLayout->addWidget(pGraphBox);
-		pMainLayout->addStretch(1);
+		pMainLayout->addWidget(pThemeBox);
 		pMainLayout->addWidget(m_pctrlReverseZoom);
 		pMainLayout->addSpacing(20);
 		pMainLayout->addStretch(1);
@@ -191,6 +220,9 @@ void Settings::setupLayout()
 
 void Settings::initDialog()
 {
+	m_prbCustom->setChecked(true);
+	m_prbCustom->setEnabled(false);
+
 	m_MemGraph.copySettings(&s_RefGraph);
 
 	m_pctrlBackColor->setColor(s_BackgroundColor);
@@ -261,32 +293,7 @@ void Settings::onBackgroundColor()
 
 void Settings::reject()
 {
-	MainFrame *pMainFrame = (MainFrame*)m_pMainFrame;
-	QXDirect *pXDirect   = (QXDirect*)pMainFrame->m_pXDirect;
-	QMiarex *pMiarex     = (QMiarex*)pMainFrame->m_pMiarex;
-	QXInverse *pXInverse = (QXInverse*)pMainFrame->m_pXInverse;
-
-	pXDirect->m_CpGraph.copySettings(&m_MemGraph);
-	pXDirect->m_CpGraph.setInverted(true);
-
-	for(int ig=0; ig<pXDirect->m_PlrGraph.count(); ig++)
-		pXDirect->m_PlrGraph[ig]->copySettings(&m_MemGraph);
-
-	for(int ig=0; ig<pMiarex->m_WingGraph.count(); ig++)
-	{
-		pMiarex->m_WingGraph[ig]->copySettings(&m_MemGraph);
-	}
-	for(int ig=0; ig<pMiarex->m_WPlrGraph.count(); ig++)
-	{
-		pMiarex->m_WPlrGraph[ig]->copySettings(&m_MemGraph);
-	}
-	for(int ig=0; ig<pMiarex->m_TimeGraph.count(); ig++)
-	{
-		pMiarex->m_TimeGraph[ig]->copySettings(&m_MemGraph);
-	}
-
-	pXInverse->m_QGraph.copySettings(&m_MemGraph);
-	pXInverse->m_QGraph.setInverted(true);
+	setAllGraphSettings(&m_MemGraph);
 
 	QDialog::reject();
 }
@@ -296,9 +303,6 @@ void Settings::reject()
 void Settings::onGraphSettings()
 {
 	MainFrame *pMainFrame = (MainFrame*)m_pMainFrame;
-	QXDirect *pXDirect   = (QXDirect*)pMainFrame->m_pXDirect;
-	QMiarex *pMiarex     = (QMiarex*)pMainFrame->m_pMiarex;
-	QXInverse *pXInverse = (QXInverse*)pMainFrame->m_pXInverse;
 
 	GraphDlg dlg(pMainFrame);
 
@@ -309,20 +313,32 @@ void Settings::onGraphSettings()
 	if(dlg.exec() == QDialog::Accepted)
 	{
 		m_bIsGraphModified = true;
-
-		pXDirect->m_CpGraph.copySettings(dlg.graph());
-		pXDirect->m_CpGraph.setInverted(true);
-
-		for(int ig=0; ig<pXDirect->m_PlrGraph.count(); ig++)     pXDirect->PlrGraph(ig)->copySettings(dlg.graph());
-		for(int ig=0; ig<pMiarex->m_WingGraph.count(); ig++)     pMiarex->m_WingGraph.at(ig)->copySettings(dlg.graph());
-		for(int ig=0; ig<pMiarex->m_WPlrGraph.count(); ig++)     pMiarex->m_WPlrGraph.at(ig)->copySettings(dlg.graph());
-		for(int ig=0; ig<pMiarex->m_StabPlrGraph.count(); ig++)  pMiarex->m_StabPlrGraph.at(ig)->copySettings(dlg.graph());
-		for(int ig=0; ig<pMiarex->m_TimeGraph.count(); ig++)     pMiarex->m_TimeGraph.at(ig)->copySettings(dlg.graph());
-
-
-		pXInverse->m_QGraph.copySettings(dlg.graph());
-		pXInverse->m_QGraph.setInverted(true);
 	}
+}
+
+
+void Settings::setAllGraphSettings(QGraph *pGraph)
+{
+	MainFrame *pMainFrame = (MainFrame*)m_pMainFrame;
+	QXDirect *pXDirect   = (QXDirect*)pMainFrame->m_pXDirect;
+	QMiarex *pMiarex     = (QMiarex*)pMainFrame->m_pMiarex;
+	QXInverse *pXInverse = (QXInverse*)pMainFrame->m_pXInverse;
+
+	pXDirect->m_CpGraph.copySettings(pGraph);
+	pXDirect->m_CpGraph.setInverted(true);
+
+	for(int ig=0; ig<pXDirect->m_PlrGraph.count(); ig++)     pXDirect->PlrGraph(ig)->copySettings(pGraph);
+	for(int ig=0; ig<pMiarex->m_WingGraph.count(); ig++)     pMiarex->m_WingGraph.at(ig)->copySettings(pGraph);
+	for(int ig=0; ig<pMiarex->m_WPlrGraph.count(); ig++)     pMiarex->m_WPlrGraph.at(ig)->copySettings(pGraph);
+	for(int ig=0; ig<pMiarex->m_StabPlrGraph.count(); ig++)  pMiarex->m_StabPlrGraph.at(ig)->copySettings(pGraph);
+	for(int ig=0; ig<pMiarex->m_TimeGraph.count(); ig++)     pMiarex->m_TimeGraph.at(ig)->copySettings(pGraph);
+
+	pMiarex->m_CpGraph.copySettings(pGraph);
+	pMiarex->m_CpGraph.setInverted(true);
+
+	pXInverse->m_QGraph.copySettings(pGraph);
+	pXInverse->m_QGraph.setInverted(true);
+
 }
 
 
@@ -412,7 +428,6 @@ void Settings::saveSettings(QSettings *pSettings)
 		s_RefGraph.saveSettings(pSettings);
 	}
 	pSettings->endGroup();
-
 }
 
 
@@ -454,7 +469,32 @@ void Settings::onReverseZoom()
 
 
 
-
+void Settings::onTheme()
+{
+	if (m_prbDark->isChecked())
+	{
+		m_bIsGraphModified = true;
+		s_Theme = SETTINGS::DARKTHEME;
+		s_BackgroundColor = QColor(3, 9, 9);
+		s_TextColor=QColor(221,221,221);
+		s_RefGraph.setGraphDefaults(true);
+	}
+	else if(m_prbLight->isChecked())
+	{
+		m_bIsGraphModified = true;
+		s_Theme = SETTINGS::LIGHTTHEME;
+		s_BackgroundColor = QColor(241, 241, 241);
+		s_TextColor=QColor(0,0,0);
+		s_RefGraph.setGraphDefaults(false);
+	}
+	else
+	{
+		return;
+	}
+	m_pctrlBackColor->setColor(s_BackgroundColor);
+	m_pctrlTextClr->setBackgroundColor(s_BackgroundColor);
+	m_pctrlTextClr->setTextColor(s_TextColor);
+}
 
 
 

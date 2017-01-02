@@ -41,6 +41,9 @@ public:
 	int selectPoint(CVector real);
 	void dragSelectedPoint(double x, double y);
 
+	void setNeutralLineColor(QColor clr){m_NeutralColor = clr;}
+	QColor neutralLineColor(){return m_NeutralColor;}
+
 private slots:
 	void onInsertPt();
 	void onRemovePt();

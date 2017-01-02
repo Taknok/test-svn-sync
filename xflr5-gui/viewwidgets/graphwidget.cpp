@@ -76,7 +76,7 @@ void GraphWidget::paintEvent(QPaintEvent *  event )
 	QPainter painter(this);
 	painter.save();
 
-	QBrush BackBrush(Settings::backgroundColor());
+	QBrush BackBrush(m_pGraph->backgroundColor());
 	painter.fillRect(event->rect(), BackBrush);
 	if(!m_pGraph)
 	{

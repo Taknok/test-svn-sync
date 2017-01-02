@@ -761,10 +761,40 @@ void Graph::setGraphName(QString GraphName)
 	m_GraphName = GraphName;
 }
 
-void Graph::setGraphDefaults()
+
+void Graph::setGraphDefaults(bool bDark)
 {
-	m_BkColor = QColor(0,9,13);
-	m_BorderColor = QColor(200,200,200);
+	if(bDark)
+	{
+		m_BkColor = QColor(0,9,13);
+		m_BorderColor = QColor(200,200,200);
+
+		setAxisColor(QColor(200,200,200));
+		setTitleColor(QColor(255,255,255));
+		setLabelColor(QColor(255,255,255));
+
+		m_XMajClr   = QColor(90,90,90);
+		m_YMajClr   = QColor(90,90,90);
+
+		m_XMinClr   = QColor(50,50,50);
+		m_YMinClr   = QColor(50,50,50);
+	}
+	else
+	{
+		m_BkColor = QColor(255,255,255);
+		m_BorderColor = QColor(55,55,55);
+
+		setAxisColor(QColor(55,55,55));
+		setTitleColor(QColor(0,0,0));
+		setLabelColor(QColor(0,0,0));
+
+		m_XMajClr   = QColor(165,165,165);
+		m_YMajClr   = QColor(165,165,165);
+
+		m_XMinClr   = QColor(205,205,205);
+		m_YMinClr   = QColor(205,205,205);
+	}
+
 	m_BorderStyle = 0;
 	m_BorderWidth = 3;
 
@@ -772,10 +802,6 @@ void Graph::setGraphDefaults()
 	m_AxisWidth = 1;
 
 	m_bYInverted = false;
-
-	setAxisColor(QColor(200,200,200));
-	setTitleColor(QColor(255,255,255));
-	setLabelColor(QColor(255,255,255));
 
 	m_bXMajGrid = true;
 	m_bYMajGrid = true;
@@ -786,15 +812,11 @@ void Graph::setGraphDefaults()
 	m_YMajStyle = 1;
 	m_XMajWidth = 1;
 	m_YMajWidth = 1;
-	m_XMajClr   = QColor(90,90,90);
-	m_YMajClr   = QColor(90,90,90);
 
 	m_XMinStyle = 1;
 	m_YMinStyle = 1;
 	m_XMinWidth = 1;
 	m_YMinWidth = 1;
-	m_XMinClr   = QColor(50,50,50);
-	m_YMinClr   = QColor(50,50,50);
 
 	m_XMinorUnit = 0.1;
 	m_YMinorUnit = 0.1;

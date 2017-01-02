@@ -16,6 +16,7 @@
 
 
 xflr5 v6.31 January 1st, 2017
+	- added a "light theme" option
 	- allowed multiple import and export of PLanes and Analysis objects from text and xml files
 	- moved the execution of LLT and Panel Analysis to separate threads
 	- set the default reference area for plane analysis to the projected area on the x-y plane
