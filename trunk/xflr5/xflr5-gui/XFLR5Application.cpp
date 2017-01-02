@@ -91,13 +91,12 @@ XFLR5Application::XFLR5Application(int &argc, char** argv) : QApplication(argc, 
 	QSize sz(c,d);
 
 	if(StyleName.length())	qApp->setStyle(StyleName);
-
 	MainFrame *w = MainFrame::self();
 	MainFrame::self()->resize(sz);
 	MainFrame::self()->move(pt);
-	splash.finish(w);
 	if(bMaximized)	MainFrame::self()->showMaximized();
 	else            MainFrame::self()->show();
+	splash.finish(w);
 
 #ifndef Q_OS_MAC
 	QString PathName, Extension;
