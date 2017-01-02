@@ -151,7 +151,7 @@ public:
 
 	QRect *clientRect();
 
-	void setGraphDefaults();
+	void setGraphDefaults(bool bDark=true);
 	void setGraphName(QString GraphName);
 	void graphName(QString &GraphName);
 

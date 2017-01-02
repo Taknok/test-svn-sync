@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	BatchDlg Class
-	   Copyright (C) 2003-2016 Anm_pctrlGre Deperrois adeperrois@xflr5.com
+	   Copyright (C) 2003-2017 Andre Deperrois adeperrois@xflr5.com
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -249,9 +249,9 @@ void BatchDlg::setupLayout()
 			SpecMax->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
 			SpecDelta->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
 			m_pctrlSpecVar    = new QLabel(tr("Spec ="));
-			m_pctrlSpecMin    = new DoubleEdit(0.00,2);
-			m_pctrlSpecMax    = new DoubleEdit(1.00,2);
-			m_pctrlSpecDelta  = new DoubleEdit(0.50,2);
+			m_pctrlSpecMin    = new DoubleEdit(0.00,3);
+			m_pctrlSpecMax    = new DoubleEdit(1.00,3);
+			m_pctrlSpecDelta  = new DoubleEdit(0.50,3);
 			pRangeVarsLayout->addWidget(Spec, 1, 1);
 			pRangeVarsLayout->addWidget(m_rbspec1, 1, 2);
 			pRangeVarsLayout->addWidget(m_rbspec2, 1, 3);
@@ -581,9 +581,9 @@ void BatchDlg::initDialog()
 		m_pctrlReMax->setPrecision(0);
 		m_pctrlReDelta->setPrecision(0);
 
-		m_pctrlSpecMin->setPrecision(2);
-		m_pctrlSpecMax->setPrecision(2);
-		m_pctrlSpecDelta->setPrecision(2);
+		m_pctrlSpecMin->setPrecision(3);
+		m_pctrlSpecMax->setPrecision(3);
+		m_pctrlSpecDelta->setPrecision(3);
 
 		m_pctrlReMin->setValue(m_ReMin);
 		m_pctrlReMax->setValue(m_ReMax);
@@ -716,9 +716,9 @@ void BatchDlg::onPolarType()
 		m_pctrlReMin->setPrecision(0);
 		m_pctrlReMax->setPrecision(0);
 		m_pctrlReDelta->setPrecision(0);
-		m_pctrlSpecMin->setPrecision(2);
-		m_pctrlSpecMax->setPrecision(2);
-		m_pctrlSpecDelta->setPrecision(2);
+		m_pctrlSpecMin->setPrecision(3);
+		m_pctrlSpecMax->setPrecision(3);
+		m_pctrlSpecDelta->setPrecision(3);
 		m_rbspec1->setEnabled(true);
 		m_rbspec2->setEnabled(true);
 		m_rbRange2->setEnabled(true);

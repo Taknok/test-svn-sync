@@ -31,7 +31,6 @@
 
 
 #include "AFoil.h"
-#include "GridSettingsDlg.h"
 #include "AFoilTableDlg.h"
 #include "SplineCtrlsDlg.h"
 #include "LECircleDlg.h"
@@ -401,9 +400,9 @@ void QAFoil::loadSettings(QSettings *pSettings)
 		m_pSF->m_Extrados.splineCurve();
 		m_pSF->m_Intrados.splineCurve();
 
-
 		m_p2DWidget->m_bLECircle          = pSettings->value("LECircle").toBool();
 		m_p2DWidget->m_bShowLegend        = pSettings->value("Legend").toBool();
+		m_p2DWidget->setNeutralLineColor(pSettings->value("NeutralLineColor", QColor(125,125,125)).value<QColor>());
 
 		QString str;
 		for(int i=0; i<16; i++)
@@ -412,6 +411,7 @@ void QAFoil::loadSettings(QSettings *pSettings)
 			m_pctrlFoilTable->setColumnWidth(i, pSettings->value(str,40).toInt());
 			if(pSettings->value(str+"_hidden", false).toBool()) m_pctrlFoilTable->hideColumn(i);
 		}
+
 	}
 	pSettings->endGroup();
 }
@@ -1331,7 +1331,7 @@ void QAFoil::onSplineControls()
  * Saves the user-defined settings.
  * @param pSettings a pointer to the QSetting object.
  */
-void QAFoil::SaveSettings(QSettings *pSettings)
+void QAFoil::saveSettings(QSettings *pSettings)
 {
 	pSettings->beginGroup("DirectDesign");
 	{
@@ -1349,6 +1349,8 @@ void QAFoil::SaveSettings(QSettings *pSettings)
 		pSettings->setValue("LECircle", m_p2DWidget->m_bLECircle);
 		pSettings->setValue("Legend", m_p2DWidget->m_bShowLegend );
 		
+		pSettings->setValue("NeutralLineColor", m_p2DWidget->neutralLineColor());
+
 		QString str;
 		for(int i=0; i<16; i++)
 		{

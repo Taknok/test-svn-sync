@@ -35,6 +35,13 @@
 #include "TextClrBtn.h"
 #include <graph/QGraph.h>
 
+// first name space
+namespace SETTINGS
+{
+	/** @enum The different types of polar available for 2D and 3D calculations. */
+	typedef enum {LIGHTTHEME, DARKTHEME, CUSTOMTHEME} enumThemeType;
+}
+
 
 class Settings : public QDialog
 {
@@ -62,10 +69,12 @@ private slots:
 	void onTextFont();
 	void onTableFont();
 	void onReverseZoom();
+	void onTheme();
 
 private:
 	void reject();
 	void setupLayout();
+	void setAllGraphSettings(QGraph *pGraph);
 
 	ColorButton *m_pctrlBackColor;
 	TextClrBtn *m_pctrlTextClr;
@@ -77,6 +86,7 @@ private:
 	QComboBox *m_pctrlStyles;
 	QPushButton *OK, *Cancel;
 
+	QRadioButton *m_prbDark, *m_prbLight, *m_prbCustom;
 
 
 	void *m_pMainFrame;
@@ -95,6 +105,8 @@ public:
 	static XFLR5::enumTextFileType s_ExportFileType;  /**< Defines if the list separator for the output text files should be a space or a comma. */
 	static QGraph s_RefGraph;//Reference setttings
 	static QString s_LastDirName, s_xmlDirName;
+
+	static SETTINGS::enumThemeType s_Theme;
 };
 
 

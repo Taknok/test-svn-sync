@@ -1587,7 +1587,7 @@ void gl3dView::paintGL()
 
 void gl3dView::paintGL3()
 {
-	makeCurrent();
+//	makeCurrent();
 	int width, height;
 	glClearColor(Settings::backgroundColor().redF(), Settings::backgroundColor().greenF(), Settings::backgroundColor().blueF(), 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -4130,7 +4130,6 @@ void gl3dView::glMakeBodyMesh(Body *pBody)
 				meshVertexArray[iv++] = Pt.z;
 			}
 		}
-
 	}
 	Q_ASSERT(iv==bufferSize);
 

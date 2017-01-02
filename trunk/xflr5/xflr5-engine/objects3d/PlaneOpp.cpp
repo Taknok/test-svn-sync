@@ -1060,3 +1060,4 @@ void PlaneOpp::getPlaneOppProperties(QString &PlaneOppProperties, QString length
 	}
 }
 
+
