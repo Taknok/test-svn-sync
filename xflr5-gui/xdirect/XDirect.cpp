@@ -91,6 +91,8 @@ QXDirect::QXDirect(QWidget *parent) : QWidget(parent)
 {
 	setAttribute(Qt::WA_DeleteOnClose);
 
+	m_pOpPointWidget = NULL;
+
 	m_LineStyle.m_Style = 0;
 	m_LineStyle.m_Width = 1;
 	m_LineStyle.m_Color = QColor(0,0,0);
@@ -1049,6 +1051,8 @@ void QXDirect::loadSettings(QSettings *pSettings)
 	}
 
 	for(int ig=0; ig<MAXPOLARGRAPHS; ig++) setGraphTitles(m_PlrGraph.at(ig));
+
+	m_pOpPointWidget->loadSettings(pSettings);
 }
 
 
@@ -4236,7 +4240,6 @@ void QXDirect::saveSettings(QSettings *pSettings)
 		pSettings->setValue("FromList", m_bFromList);
 		pSettings->setValue("FromZero", s_bFromZero);
 		pSettings->setValue("TextOutput", m_bShowTextOutput);
-		pSettings->setValue("NeutralLine", m_bNeutralLine);
 		pSettings->setValue("CurOppOnly", m_bCurOppOnly);
 		pSettings->setValue("ShowInviscid", m_bShowInviscid);
 		pSettings->setValue("ShowCpGraph", m_bCpGraph);
@@ -4245,6 +4248,7 @@ void QXDirect::saveSettings(QSettings *pSettings)
 		pSettings->setValue("TimeUpdateInterval", s_TimeUpdateInterval);
 		pSettings->setValue("BatchUpdatePolarView", BatchThreadDlg::s_bUpdatePolarView);
 		pSettings->setValue("PlrGraph", m_iPlrGraph);
+		pSettings->setValue("NeutralLine", m_bNeutralLine);
 
 		switch(m_iPlrView)
 		{
@@ -4306,6 +4310,7 @@ void QXDirect::saveSettings(QSettings *pSettings)
 		m_PlrGraph[ig]->saveSettings(pSettings);
 
 	m_CpGraph.saveSettings(pSettings);
+	m_pOpPointWidget->saveSettings(pSettings);
 }
 
 

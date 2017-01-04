@@ -24,6 +24,8 @@
 #include <QSplashScreen>
 #include <QDateTime>
 #include <QMessageBox>
+#include <QCommandLineOption>
+#include <QCommandLineParser>
 #include <QtDebug>
 #include "XFLR5Application.h"
 #include "mainframe.h"
@@ -32,6 +34,10 @@
 
 XFLR5Application::XFLR5Application(int &argc, char** argv) : QApplication(argc, argv)
 {
+	setApplicationDisplayName(VERSIONNAME);
+	setApplicationName(VERSIONNAME);
+//	setDesktopFileName(VERSIONNAME);
+
 	QPixmap pixmap;
 	pixmap.load(":/images/splash.png");
 	QSplashScreen splash(pixmap);
@@ -130,9 +136,11 @@ bool XFLR5Application::event(QEvent *event)
 
 			return true;
 		}
+
 		default:
 			return QApplication::event(event);
 	}
 }
+
 
 

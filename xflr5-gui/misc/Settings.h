@@ -63,7 +63,7 @@ public:
 
 private slots:
 	void onStyleChanged(const QString &StyleName);
-	void onBackgroundColor();
+	void onBackgroundColor2d();
 	void onGraphSettings();
 	void onTextColor();
 	void onTextFont();
@@ -98,7 +98,7 @@ public:
 	//settings variables used throughout the program
 	static QString s_StyleName, s_StyleSheetName;
 	static QFont s_TextFont, s_TableFont;
-	static QColor s_BackgroundColor;
+	static QColor s_BackgroundColor, s_BackgroundColor3d;
 	static QColor s_TextColor;
 	static bool s_bStyleSheets;
 	static bool s_bReverseZoom;

@@ -75,7 +75,7 @@ Settings::Settings(QWidget *pParent) : QDialog(pParent)
 
 	connect(m_pctrlStyles, SIGNAL(activated(const QString &)),this, SLOT(onStyleChanged(const QString &)));
 
-	connect(m_pctrlBackColor, SIGNAL(clicked()),this, SLOT(onBackgroundColor()));
+	connect(m_pctrlBackColor, SIGNAL(clicked()),this, SLOT(onBackgroundColor2d()));
 	connect(m_pctrlGraphSettings, SIGNAL(clicked()),this, SLOT(onGraphSettings()));
 	connect(m_pctrlTextClr, SIGNAL(clickedTB()),this, SLOT(onTextColor()));
 	connect(m_pctrlTextFont, SIGNAL(clicked()),this, SLOT(onTextFont()));
@@ -138,23 +138,11 @@ void Settings::setupLayout()
 				connect(m_prbCustom, SIGNAL(clicked(bool)), this, SLOT(onTheme()));
 			}
 
-			QGroupBox *pGraphBox = new QGroupBox(tr("Graph Settings"));
-			{
-				QHBoxLayout *pGraphLayout = new QHBoxLayout;
-				{
-					m_pctrlGraphSettings  = new QPushButton(tr("All Graph Settings"));
-					m_pctrlGraphSettings->setMinimumWidth(120);
-					pGraphLayout->addWidget(m_pctrlGraphSettings);
-				}
-				pGraphBox->setLayout(pGraphLayout);
-			}
-
-			QGroupBox *pBackBox = new QGroupBox(tr("Background Color"));
+			QGroupBox *pBackBox = new QGroupBox(tr("Background Colors"));
 			{
 				QHBoxLayout *pBackLayout = new QHBoxLayout;
 				{
 					m_pctrlBackColor      = new ColorButton(this);
-					m_pctrlBackColor->setMinimumWidth(120);
 					pBackLayout->addWidget(m_pctrlBackColor);
 				}
 				pBackBox->setLayout(pBackLayout);
@@ -179,6 +167,17 @@ void Settings::setupLayout()
 					pMainFontLayout->addWidget(m_pctrlTableFont,2,2);
 				}
 				pFontBox->setLayout(pMainFontLayout);
+			}
+
+			QGroupBox *pGraphBox = new QGroupBox(tr("Graph Settings"));
+			{
+				QHBoxLayout *pGraphLayout = new QHBoxLayout;
+				{
+					m_pctrlGraphSettings  = new QPushButton(tr("All Graph Settings"));
+					m_pctrlGraphSettings->setMinimumWidth(120);
+					pGraphLayout->addWidget(m_pctrlGraphSettings);
+				}
+				pGraphBox->setLayout(pGraphLayout);
 			}
 
 			pThemeBoxLayout->addLayout(pThemeLayout);
@@ -280,7 +279,7 @@ void Settings::onStyleChanged(const QString &StyleName)
 }
 
 
-void Settings::onBackgroundColor()
+void Settings::onBackgroundColor2d()
 {
 	QColor Color = QColorDialog::getColor(s_BackgroundColor);
 	if(Color.isValid()) s_BackgroundColor = Color;
@@ -289,6 +288,8 @@ void Settings::onBackgroundColor()
 
 	m_pctrlTextClr->setBackgroundColor(s_BackgroundColor);
 }
+
+
 
 
 void Settings::reject()

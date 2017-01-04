@@ -59,11 +59,11 @@ OpPointWidget::OpPointWidget(QWidget *parent) : QWidget(parent)
 //	m_bShowPanels  = false;
 	m_bXPressed = m_bYPressed = false;
 
-	m_iNeutralStyle = 2;
+	m_iNeutralStyle = 3;
 	m_iNeutralWidth = 1;
 	m_crNeutralColor = QColor(200,200,255);
 
-	m_crBLColor = QColor(200,70,70);
+	m_crBLColor = QColor(255,50,50);
 	m_iBLStyle = 1;
 	m_iBLWidth = 1;
 	m_crPressureColor= QColor(100,150,100);
@@ -1104,5 +1104,43 @@ void OpPointWidget::onShowBL(bool bBL)
 }
 
 
+void OpPointWidget::saveSettings(QSettings *pSettings)
+{
+	pSettings->beginGroup("OpPointSettings");
+	{
+		pSettings->setValue("BLColor", m_crBLColor);
+		pSettings->setValue("BLWidth", m_iBLWidth);
+		pSettings->setValue("BLStyle", m_iBLStyle);
 
+		pSettings->setValue("PressureWidth", m_iPressureWidth);
+		pSettings->setValue("PressureStyle", m_iPressureStyle);
+		pSettings->setValue("PressureColor", m_crPressureColor);
+
+		pSettings->setValue("NeutralColor", m_crNeutralColor);
+		pSettings->setValue("NeutralWidth", m_iNeutralWidth);
+		pSettings->setValue("NeutralStyle", m_iNeutralStyle);
+	}
+	pSettings->endGroup();
+}
+
+
+
+void OpPointWidget::loadSettings(QSettings *pSettings)
+{
+	pSettings->beginGroup("OpPointSettings");
+	{
+		m_iBLStyle  = pSettings->value("BLStyle", 1).toInt();
+		m_iBLWidth  = pSettings->value("BLWidth", 1).toInt();
+		m_crBLColor = pSettings->value("BLColor",QColor(235,50,50)).value<QColor>();
+
+		m_iPressureStyle  = pSettings->value("PressureStyle", 0).toInt();
+		m_iPressureWidth  = pSettings->value("PressureWidth", 1).toInt();
+		m_crPressureColor = pSettings->value("PressureColor",QColor(100,150,100)).value<QColor>();
+
+		m_iNeutralStyle  = pSettings->value("NeutralStyle", 3).toInt();
+		m_iNeutralWidth  = pSettings->value("NeutralWidth", 1).toInt();
+		m_crNeutralColor = pSettings->value("NeutralColor",QColor(190,190,190)).value<QColor>();
+	}
+	pSettings->endGroup();
+}
 

@@ -49,6 +49,12 @@ public slots:
 
 	void onGraphSettings();
 
+	void setNeutralLineColor(QColor clr){m_crNeutralColor = clr;}
+	QColor neutralLineColor(){return m_crNeutralColor;}
+	void setGraph(QGraph* pGraph){m_pCpGraph = pGraph;}
+	void loadSettings(QSettings *pSettings);
+	void saveSettings(QSettings *pSettings);
+
 signals:
 	void graphChanged(QGraph *);
 
@@ -64,8 +70,6 @@ protected:
 	void wheelEvent(QWheelEvent *event);
 	void mouseDoubleClickEvent(QMouseEvent *event);
 
-public:
-	void setGraph(QGraph* pGraph){m_pCpGraph = pGraph;}
 
 private:
 	void resetGraphScale();

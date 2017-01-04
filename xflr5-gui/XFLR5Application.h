@@ -30,14 +30,12 @@
 class XFLR5Application : public QApplication
 {
     Q_OBJECT
-    private:
-        //MainFrame *mainFrame;
-    protected:
-        bool event(QEvent *);
-    public:
-        XFLR5Application(int&, char**);
-    //    void setQFLR5MainWindow(MainFrame *);
 
+public:
+	XFLR5Application(int&, char**);
+
+protected:
+	bool event(QEvent *);
 };
 
 #endif // XFLR5APPLICATION_H
