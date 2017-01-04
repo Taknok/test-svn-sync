@@ -51,14 +51,12 @@ XDirectStyleDlg::XDirectStyleDlg(QWidget *pParent) : QDialog(pParent)
 	m_pctrlNeutral->setStyle(m_iNeutralStyle, m_iNeutralWidth, m_crNeutralColor,0);
 	m_pctrlBL->setStyle(m_iBLStyle, m_iBLWidth, m_crBLColor,0);
 	m_pctrlPressure->setStyle(m_iPressureStyle, m_iPressureWidth, m_crPressureColor,0);
-
-	onRestoreDefaults();
 }
 
 
 void XDirectStyleDlg::setupLayout()
 {
-	QGridLayout *StyleLayout = new QGridLayout;
+	QGridLayout *pStyleLayout = new QGridLayout;
 	{
 		m_pctrlNeutral  = new LineBtn(this);
 		m_pctrlBL       = new LineBtn(this);
@@ -66,47 +64,45 @@ void XDirectStyleDlg::setupLayout()
 		QLabel *lab1 = new QLabel(tr("Neutral Line"));
 		QLabel *lab2 = new QLabel(tr("Boundary Layer"));
 		QLabel *lab3 = new QLabel(tr("Pressure"));
-		StyleLayout->addWidget(lab1,1,1);
-		StyleLayout->addWidget(lab2,2,1);
-		StyleLayout->addWidget(lab3,3,1);
-		StyleLayout->addWidget(m_pctrlNeutral,1,2);
-		StyleLayout->addWidget(m_pctrlBL,2,2);
-		StyleLayout->addWidget(m_pctrlPressure,3,2);
+		pStyleLayout->addWidget(lab1,1,1);
+		pStyleLayout->addWidget(lab2,2,1);
+		pStyleLayout->addWidget(lab3,3,1);
+		pStyleLayout->addWidget(m_pctrlNeutral,1,2);
+		pStyleLayout->addWidget(m_pctrlBL,2,2);
+		pStyleLayout->addWidget(m_pctrlPressure,3,2);
         connect(m_pctrlNeutral,  SIGNAL(clickedLB()),this, SLOT(onNeutralStyle()));
         connect(m_pctrlBL,       SIGNAL(clickedLB()),this, SLOT(onBLStyle()));
         connect(m_pctrlPressure, SIGNAL(clickedLB()),this, SLOT(onPressureStyle()));
 	}
 
-	QHBoxLayout *CommandButtons = new QHBoxLayout;
+	QHBoxLayout *pCommandButtons = new QHBoxLayout;
 	{
 		OKButton = new QPushButton(tr("OK"));
 		QPushButton *DefaultsButton = new QPushButton(tr("Defaults"));
 		QPushButton *CancelButton   = new QPushButton(tr("Cancel"));
-		CommandButtons->addStretch(1);
-		CommandButtons->addWidget(OKButton);
-		CommandButtons->addStretch(1);
-		CommandButtons->addWidget(DefaultsButton);
-		CommandButtons->addStretch(1);
-		CommandButtons->addWidget(CancelButton);
-		CommandButtons->addStretch(1);
+		pCommandButtons->addStretch(1);
+		pCommandButtons->addWidget(OKButton);
+		pCommandButtons->addStretch(1);
+		pCommandButtons->addWidget(DefaultsButton);
+		pCommandButtons->addStretch(1);
+		pCommandButtons->addWidget(CancelButton);
+		pCommandButtons->addStretch(1);
 		connect(OKButton, SIGNAL(clicked()),this, SLOT(accept()));
 		connect(DefaultsButton, SIGNAL(clicked()),this, SLOT(onRestoreDefaults()));
 		connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 	}
 
-	QVBoxLayout *MainLayout = new QVBoxLayout;
+	QVBoxLayout *pMainLayout = new QVBoxLayout;
 	{
-		MainLayout->addLayout(StyleLayout);
-		MainLayout->addStretch(1);
-		MainLayout->addLayout(CommandButtons);
-		MainLayout->addStretch(1);
+		pMainLayout->addLayout(pStyleLayout);
+		pMainLayout->addStretch(1);
+		pMainLayout->addLayout(pCommandButtons);
+		pMainLayout->addStretch(1);
 	}
 
-	setLayout(MainLayout);
-
-
-
+	setLayout(pMainLayout);
 }
+
 
 
 void XDirectStyleDlg::onNeutralStyle()
