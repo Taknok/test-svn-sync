@@ -1022,6 +1022,7 @@ void MainFrame::createDockWindows()
 	pXDirect->m_poaFoil  = &Foil::s_oaFoil;
 	pXDirect->m_poaPolar = &Polar::s_oaPolar;
 	pXDirect->m_poaOpp   = &OpPoint::s_oaOpp;
+	pXDirect->m_pOpPointWidget = m_pXDirectTileWidget->opPointWidget();
 
 	pAFoil->initDialog(m_pDirect2dWidget, &Foil::s_oaFoil, pXDirect->m_pXFoil);
 
@@ -4468,8 +4469,16 @@ void MainFrame::onStyleSettings()
 	}
 	QAFoil *pAFoil = (QAFoil*)m_pAFoil;
 	pAFoil->setTableFont();
-	if(Settings::s_Theme==SETTINGS::DARKTHEME) pAFoil->m_p2DWidget->setNeutralLineColor(QColor(190,190,190));
-	else                                       pAFoil->m_p2DWidget->setNeutralLineColor(QColor(60,60,60));
+	if(Settings::s_Theme==SETTINGS::DARKTHEME)
+	{
+		m_pXDirectTileWidget->opPointWidget()->setNeutralLineColor(QColor(190,190,190));
+		pAFoil->m_p2DWidget->setNeutralLineColor(QColor(190,190,190));
+	}
+	else
+	{
+		m_pXDirectTileWidget->opPointWidget()->setNeutralLineColor(QColor(60,60,60));
+		pAFoil->m_p2DWidget->setNeutralLineColor(QColor(60,60,60));
+	}
 
 	pXDirect->m_CpGraph.setInverted(true);
 	pMiarex->m_CpGraph.setInverted(true);

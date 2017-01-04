@@ -45,6 +45,8 @@
 #include <graph/QGraph.h>
 #include "analysis/XFoilAnalysisDlg.h"
 #include <XFoil.h>
+#include <viewwidgets/oppointwidget.h>
+
 
 class MainFrame; // to shut the compiler up
 
@@ -219,6 +221,8 @@ public:
 	int PlrGraphSize(){return m_PlrGraph.count();}
 
 private:
+
+	OpPointWidget *m_pOpPointWidget;
 
 	QStackedWidget *m_pctrlMiddleControls;
 
