@@ -15,9 +15,11 @@
 *******************************************************************************
 
 
-xflr5 v6.31 January 1st, 2017
+xflr5 v6.31 January 6th, 2017
 	- added a "light theme" option
-	- allowed multiple import and export of PLanes and Analysis objects from text and xml files
+	- corrected the calculation of the tail volume when the main wing is not located at the origin;			
+      note that the tail volume value is not used in the calculation, it is only provided for information.
+	- allowed multiple import and export of Planes and Analysis objects from text and xml files
 	- moved the execution of LLT and Panel Analysis to separate threads
 	- set the default reference area for plane analysis to the projected area on the x-y plane
 	- bug corrections and minor enhancements

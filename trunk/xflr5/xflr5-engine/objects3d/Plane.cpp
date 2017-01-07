@@ -311,7 +311,7 @@ void Plane::computePlane(void)
 	int i;
 	if(m_bStab)
 	{
-		double SLA = m_WingLE[2].x + m_Wing[2].Chord(0)/4.0 - m_Wing[0].Chord(0)/4.0;
+		double SLA = m_WingLE[2].x + m_Wing[2].Chord(0)/4.0 - (m_WingLE[0].x+m_Wing[0].Chord(0)/4.0);
 		double area = m_Wing[0].m_ProjectedArea;
 		if(m_bBiplane) area += m_Wing[1].m_ProjectedArea;
 
