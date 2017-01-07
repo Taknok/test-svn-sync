@@ -223,6 +223,7 @@ void PanelAnalysisDlg::analyze()
 		qApp->processEvents();
 		QThread::msleep(200);
 	}
+	qApp->processEvents();
 	cleanUp();
 }
 

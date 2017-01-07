@@ -262,6 +262,7 @@ void LLTAnalysisDlg::analyze()
 		qDebug() << str<<m_pTheTask->isFinished();*/
 	}
 
+	qApp->processEvents();
 	cleanUp();
 }
 
