@@ -888,7 +888,7 @@ Polar *Polar::getPolar(void *pFoilPtr, QString PolarName)
 
 void Polar::setAutoPolarName()
 {
-	m_PlrName = getAutoPolarName(m_PolarType, m_Reynolds, m_Mach, m_ACrit, m_ASpec);
+	m_PlrName = getAutoPolarName(m_PolarType, m_Reynolds, m_Mach, m_ACrit, m_ASpec, m_XTop, m_XBot);
 }
 
 
@@ -902,7 +902,7 @@ void Polar::setAutoPolarName()
  * @param ASpec
  * @return
  */
-QString Polar::getAutoPolarName(XFOIL::enumPolarType polarType, double Re, double Mach, double NCrit, double ASpec)
+QString Polar::getAutoPolarName(XFOIL::enumPolarType polarType, double Re, double Mach, double NCrit, double ASpec, double XTop, double XBot)
 {
 	QString polarName;
 	Re = Re/1.e6;
@@ -938,6 +938,17 @@ QString Polar::getAutoPolarName(XFOIL::enumPolarType polarType, double Re, doubl
 
 	QString str = QString("_N%1").arg(NCrit,3,'f',1);
 	polarName += str;
+
+	if(XTop<1.0-PRECISION)
+	{
+		str = QString("_XtrTop%1%").arg(XTop*100.0,2,'f',0);
+		polarName += str;
+	}
+	if(XBot<1.0-PRECISION)
+	{
+		str = QString("_XtrBot%1%").arg(XBot*100.0,2,'f',0);
+		polarName += str;
+	}
 
 	return polarName;
 }

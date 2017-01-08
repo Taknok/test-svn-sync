@@ -564,7 +564,9 @@ void QGraph::drawLegend(QPainter &painter, QPoint &Place, QFont &LegendFont, QCo
 	QString strong;
 
 	LegendSize = 30;
-	ypos = 12;
+//	ypos = 12;
+	QFontMetrics fm(LegendFont);
+	ypos = fm.height();
 
 	painter.setFont(LegendFont);
 
@@ -589,8 +591,8 @@ void QGraph::drawLegend(QPainter &painter, QPoint &Place, QFont &LegendFont, QCo
 
 				painter.setPen(LegendPen);
 
-				painter.drawLine(Place.x(),                     Place.y() + ypos*npos,
-								 Place.x() + (int)(LegendSize), Place.y() + ypos*npos);
+				painter.drawLine(Place.x(),                     Place.y() + ypos*npos + ypos/3,
+								 Place.x() + (int)(LegendSize), Place.y() + ypos*npos + ypos/3);
 
 				painter.setPen(TextPen);
 				painter.drawText(Place.x() + (int)(1.5*LegendSize),    Place.y()  + ypos*npos+(int)(ypos/2),

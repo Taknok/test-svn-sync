@@ -392,9 +392,12 @@ void OpPoint::insertOpPoint(OpPoint *pNewPoint)
 				s_oaOpp.insert(i, pNewPoint);
 				return;
 			}
-			else if (qAbs(pNewPoint->Reynolds()-pOpPoint->Reynolds())<1.0)
+			else if (fabs(pNewPoint->Reynolds()-pOpPoint->Reynolds())<1.0)
 			{
-				if(qAbs(pNewPoint->m_Alpha - pOpPoint->aoa())<0.005)
+				if(fabs(pNewPoint->aoa() - pOpPoint->aoa())<0.005 &&
+				   fabs(pNewPoint->ACrit-pOpPoint->ACrit)<0.1 &&
+				   fabs(pNewPoint->Xtr1-pOpPoint->Xtr1)<0.001 &&
+				   fabs(pNewPoint->Xtr2-pOpPoint->Xtr2)<0.001)
 				{
 					//replace existing point
 					s_oaOpp.removeAt(i);
@@ -814,6 +817,16 @@ void OpPoint::setColor(int r, int g, int b, int a)
 	m_green = g;
 	m_blue = b;
 	m_alphaChannel = a;
+}
+
+
+QString OpPoint::oppName()
+{
+	QString name;
+	name = QString("-Re=%1-Alpha=%2-NCrit=%3-XTrTop=%4-XtrBot=%5").arg(Reynolds(),8,'f',0).arg(aoa(),5,'f',2)
+			.arg(ACrit, 5, 'f', 1).arg(Xtr1, 5, 'f', 3).arg(Xtr2, 5, 'f', 3);
+	name = foilName()+name;
+	return name;
 }
 
 

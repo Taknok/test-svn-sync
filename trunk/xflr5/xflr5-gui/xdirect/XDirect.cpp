@@ -388,10 +388,7 @@ void QXDirect::createOppCurves(OpPoint *pOpp)
 		pOpPoint->getColor(r,g,b,a);
 //		QColor clr(r,g,b,a);
 		pCurve1->setLineStyle(pOpPoint->oppStyle(), pOpPoint->oppWidth(), colour(pOpPoint), pOpPoint->pointStyle(), pOpPoint->isVisible());
-
-		str = QString("-Re=%1-Alpha=%2").arg(pOpPoint->Reynolds(),8,'f',0).arg(pOpPoint->aoa(),5,'f',2);
-		str = pOpPoint->foilName()+str;
-		pCurve1->setCurveName(str);
+		pCurve1->setCurveName(pOpPoint->oppName());
 
 		fillOppCurve(pOpPoint, &m_CpGraph, pCurve1);
 
@@ -419,10 +416,7 @@ void QXDirect::createOppCurves(OpPoint *pOpp)
 
 //				pCurve1->setPoints(pOpp->pointStyle());
 				pCurve1->setLineStyle(pOpp->oppStyle(), pOpp->oppWidth(), colour(pOpp), pOpp->pointStyle(), pOpp->isVisible());
-
-				str= QString("-Re=%1-Alpha=%2").arg(pOpp->Reynolds(),8,'f',0).arg(pOpp->aoa(),5,'f',2);
-				str = pOpp->foilName()+str;
-				pCurve1->setCurveName(str);
+				pCurve1->setCurveName(pOpp->oppName());
 
 				fillOppCurve(pOpp, &m_CpGraph, pCurve1);
 			}
@@ -859,7 +853,8 @@ void QXDirect::keyPressEvent(QKeyEvent *event)
 			break;
 		case Qt::Key_F2:
 		{
-			onRenameCurFoil();
+			if(bShift) onRenameCurPolar();
+			else       onRenameCurFoil();
 			break;
 		}
 		case Qt::Key_F3:
@@ -1968,9 +1963,10 @@ void QXDirect::onDeleteCurFoil()
 
 
 	Foil*pNextFoil = Foil::deleteFoil(Foil::curFoil());
-	Foil::setCurFoil(pNextFoil);
-	OpPoint::setCurOpp(NULL);
-	Polar::setCurPolar(NULL);
+//	Foil::setCurFoil(pNextFoil);
+//	OpPoint::setCurOpp(NULL);
+//	Polar::setCurPolar(NULL);
+	setFoil(pNextFoil);
 
 	s_pMainFrame->updateFoilListBox();
 
@@ -2859,6 +2855,7 @@ void QXDirect::onHideAllOpps()
 	emit projectModified();
 	m_bResetCurves = true;
 	setAnalysisParams();
+	setCurveParams();
 	updateView();
 }
 
@@ -3584,7 +3581,7 @@ void QXDirect::onQGraph()
 /**
  * The user has requested to rename the Polar
  */
-void QXDirect::onRenamePolar()
+void QXDirect::onRenameCurPolar()
 {
 	if(!Polar::curPolar()) return;
 	if(!Foil::curFoil()) return;
@@ -4584,27 +4581,36 @@ OpPoint * QXDirect::setOpp(double Alpha)
 
 	if(Alpha < -1234567.0) //the default
 	{
-		if(OpPoint::curOpp() && OpPoint::curOpp()->foilName() == Foil::curFoil()->foilName())
+		if(OpPoint::curOpp() && OpPoint::curOpp()->foilName() == Foil::curFoil()->foilName()
+							 && OpPoint::curOpp()->polarName()==Polar::curPolar()->polarName())
 			pOpp = OpPoint::curOpp();
-		else
+		else if(OpPoint::curOpp())
 		{
-			//try to get one from the array
-			for(int iOpp=0; iOpp<OpPoint::s_oaOpp.count(); iOpp++)
-			{
-				OpPoint *pOldOpp = (OpPoint*)OpPoint::s_oaOpp.at(iOpp);
-				if(pOldOpp->foilName()==Foil::curFoil()->foilName() && pOldOpp->polarName()==Polar::curPolar()->polarName())
-				{
-					pOpp = pOldOpp;
-					break;
-				}
-			}
+			//try to use the same alpha
+			double aoa = OpPoint::curOpp()->aoa();
+			pOpp = OpPoint::getOpp(aoa);
 		}
+
 	}
 	else
 	{
 		pOpp = OpPoint::getOpp(Alpha);
 	}
 
+	if(!pOpp)
+	{
+		//if unsuccessful so far,
+		//try to get the first one from the array
+		for(int iOpp=0; iOpp<OpPoint::s_oaOpp.count(); iOpp++)
+		{
+			OpPoint *pOldOpp = (OpPoint*)OpPoint::s_oaOpp.at(iOpp);
+			if(pOldOpp->foilName()==Foil::curFoil()->foilName() && pOldOpp->polarName()==Polar::curPolar()->polarName())
+			{
+				pOpp = pOldOpp;
+				break;
+			}
+		}
+	}
 
 	if(pOpp) 
 	{
@@ -4733,8 +4739,9 @@ void QXDirect::setupLayout()
 	szPolicyMaximum.setVerticalPolicy(QSizePolicy::Maximum);
 
 
-	QGroupBox *AnalysisBox = new QGroupBox(tr("Analysis settings"));
+	QGroupBox *pAnalysisBox = new QGroupBox(tr("Analysis settings"));
 	{
+		pAnalysisBox->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Maximum);
 		QVBoxLayout *AnalysisGroup = new QVBoxLayout;
 		{
 			m_pctrlSequence = new QCheckBox(tr("Sequence"));
@@ -4752,7 +4759,7 @@ void QXDirect::setupLayout()
 				SpecVarsLayout->addWidget(m_pctrlSpec3);
 			}
 
-			QGridLayout *SequenceGroupLayout = new QGridLayout;
+			QGridLayout *pSequenceGroupLayout = new QGridLayout;
 			{
 				QLabel *AlphaMinLab   = new QLabel(tr("Start="));
 				QLabel *AlphaMaxLab   = new QLabel(tr("End="));
@@ -4775,41 +4782,41 @@ void QXDirect::setupLayout()
 				m_pctrlAlphaMin->setAlignment(Qt::AlignRight);
 				m_pctrlAlphaMax->setAlignment(Qt::AlignRight);
 				m_pctrlAlphaDelta->setAlignment(Qt::AlignRight);
-				SequenceGroupLayout->addWidget(AlphaMinLab,1,1);
-				SequenceGroupLayout->addWidget(AlphaMaxLab,2,1);
-				SequenceGroupLayout->addWidget(DeltaAlphaLab,3,1);
-				SequenceGroupLayout->addWidget(m_pctrlAlphaMin,1,2);
-				SequenceGroupLayout->addWidget(m_pctrlAlphaMax,2,2);
-				SequenceGroupLayout->addWidget(m_pctrlAlphaDelta,3,2);
-				SequenceGroupLayout->addWidget(m_pctrlUnit1,1,3);
-				SequenceGroupLayout->addWidget(m_pctrlUnit2,2,3);
-				SequenceGroupLayout->addWidget(m_pctrlUnit3,3,3);
+				pSequenceGroupLayout->addWidget(AlphaMinLab,1,1);
+				pSequenceGroupLayout->addWidget(AlphaMaxLab,2,1);
+				pSequenceGroupLayout->addWidget(DeltaAlphaLab,3,1);
+				pSequenceGroupLayout->addWidget(m_pctrlAlphaMin,1,2);
+				pSequenceGroupLayout->addWidget(m_pctrlAlphaMax,2,2);
+				pSequenceGroupLayout->addWidget(m_pctrlAlphaDelta,3,2);
+				pSequenceGroupLayout->addWidget(m_pctrlUnit1,1,3);
+				pSequenceGroupLayout->addWidget(m_pctrlUnit2,2,3);
+				pSequenceGroupLayout->addWidget(m_pctrlUnit3,3,3);
 			}
 
-			QHBoxLayout *AnalysisSettings = new QHBoxLayout;
+			QHBoxLayout *pAnalysisSettings = new QHBoxLayout;
 			{
 				m_pctrlViscous  = new QCheckBox(tr("Viscous"));
 				m_pctrlInitBL   = new QCheckBox(tr("Init BL"));
-				AnalysisSettings->addWidget(m_pctrlViscous);
-				AnalysisSettings->addWidget(m_pctrlInitBL);
+				pAnalysisSettings->addWidget(m_pctrlViscous);
+				pAnalysisSettings->addWidget(m_pctrlInitBL);
 			}
 
 			AnalysisGroup->addLayout(SpecVarsLayout);
 			AnalysisGroup->addStretch(1);
 			AnalysisGroup->addWidget(m_pctrlSequence);
-			AnalysisGroup->addLayout(SequenceGroupLayout);
+			AnalysisGroup->addLayout(pSequenceGroupLayout);
 			AnalysisGroup->addStretch(1);
-			AnalysisGroup->addLayout(AnalysisSettings);
+			AnalysisGroup->addLayout(pAnalysisSettings);
 			AnalysisGroup->addWidget(m_pctrlStoreOpp);
 			AnalysisGroup->addWidget(m_pctrlAnalyze);
 		}
-		AnalysisBox->setLayout(AnalysisGroup);
+		pAnalysisBox->setLayout(AnalysisGroup);
 
 	}
 
-	QGroupBox *DisplayBox = new QGroupBox(tr("Display"));
+	QGroupBox *pDisplayBox = new QGroupBox(tr("Display"));
 	{
-		QVBoxLayout *DisplayGroup = new QVBoxLayout;
+		QVBoxLayout *pDisplayGroup = new QVBoxLayout;
 		{
 			m_pctrlShowBL        = new QCheckBox(tr("Show BL"));
 			m_pctrlShowPressure  = new QCheckBox(tr("Show Pressure"));
@@ -4820,20 +4827,20 @@ void QXDirect::setupLayout()
 			m_pctrlAnimateSpeed->setSliderPosition(500);
 			m_pctrlAnimateSpeed->setTickInterval(50);
 			m_pctrlAnimateSpeed->setTickPosition(QSlider::TicksBelow);
-			DisplayGroup->addWidget(m_pctrlShowBL);
-			DisplayGroup->addWidget(m_pctrlShowPressure);
-			DisplayGroup->addWidget(m_pctrlAnimate);
-			DisplayGroup->addWidget(m_pctrlAnimateSpeed);
-			DisplayGroup->addStretch(1);
-		//	DisplayGroup->addWidget(m_pctrlHighlightOpp);
+			pDisplayGroup->addWidget(m_pctrlShowBL);
+			pDisplayGroup->addWidget(m_pctrlShowPressure);
+			pDisplayGroup->addWidget(m_pctrlAnimate);
+			pDisplayGroup->addWidget(m_pctrlAnimateSpeed);
+			pDisplayGroup->addStretch(1);
 		}
-		DisplayBox->setLayout(DisplayGroup);
-		DisplayBox->setSizePolicy(szPolicyExpanding);
+		pDisplayBox->setLayout(pDisplayGroup);
+		pDisplayBox->setSizePolicy(szPolicyExpanding);
 	}
 
 	QGroupBox *pPolarPropsBox = new QGroupBox(tr("Polar properties"));
 	{
 		m_pctrlPolarProps = new QLabel;
+		m_pctrlPolarProps->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 		m_pctrlPolarProps->setSizePolicy(szPolicyExpanding);
 		QFont fnt("Courier");
 		m_pctrlPolarProps->setFont(fnt);
@@ -4899,7 +4906,7 @@ void QXDirect::setupLayout()
 
 			pCurveGroup->addLayout(pCurveDisplay);
 			pCurveGroup->addLayout(CurveStyleLayout);
-			pCurveGroup->addStretch(1);
+//			pCurveGroup->addStretch(1);
 		}
 		pCurveBox->setLayout(pCurveGroup);
 	}
@@ -4908,15 +4915,15 @@ void QXDirect::setupLayout()
 	QVBoxLayout *mainLayout = new QVBoxLayout;
 	{
 		m_pctrlMiddleControls = new QStackedWidget;
-		m_pctrlMiddleControls->addWidget(DisplayBox);
+		m_pctrlMiddleControls->addWidget(pDisplayBox);
 		m_pctrlMiddleControls->addWidget(pPolarPropsBox);
 
-		mainLayout->addWidget(AnalysisBox);
-		mainLayout->addStretch(1);
+		mainLayout->addWidget(pAnalysisBox);
+//		mainLayout->addStretch(1);
 		mainLayout->addWidget(m_pctrlMiddleControls);
-		mainLayout->addStretch(1);
+//		mainLayout->addStretch(1);
 		mainLayout->addWidget(pCurveBox);
-		mainLayout->addStretch(1);
+//		mainLayout->addStretch(1);
 	}
 
 	setLayout(mainLayout);
