@@ -1464,7 +1464,7 @@ void MainFrame::createMiarexActions()
 	m_pSavePlaneAsProjectAct->setStatusTip(tr("Save the currently selected wing or plane as a new separate project"));
 	connect(m_pSavePlaneAsProjectAct, SIGNAL(triggered()), this, SLOT(onSavePlaneAsProject()));
 
-	m_pRrenameCurWPolar = new QAction(tr("Rename..."), this);
+	m_pRrenameCurWPolar = new QAction(tr("Rename...")+"\t(Shift+F2)", this);
 	m_pRrenameCurWPolar->setStatusTip(tr("Rename the currently selected polar"));
 	connect(m_pRrenameCurWPolar, SIGNAL(triggered()), pMiarex, SLOT(onRenameCurWPolar()));
 
@@ -2386,8 +2386,8 @@ void MainFrame::createXDirectActions()
 	m_pManageFoilsAct->setShortcut(Qt::Key_F7);
 	connect(m_pManageFoilsAct, SIGNAL(triggered()), this, SLOT(onManageFoils()));
 
-	m_pRenamePolarAct = new QAction(tr("Rename"), this);
-	connect(m_pRenamePolarAct, SIGNAL(triggered()), pXDirect, SLOT(onRenamePolar()));
+	m_pRenamePolarAct = new QAction(tr("Rename")+"\t(Shift+F2)", this);
+	connect(m_pRenamePolarAct, SIGNAL(triggered()), pXDirect, SLOT(onRenameCurPolar()));
 
 
 	m_pShowInviscidCurve = new QAction(tr("Show Inviscid Curve"), this);

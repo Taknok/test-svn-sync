@@ -94,6 +94,7 @@ void GraphWidget::paintEvent(QPaintEvent *  event )
 	{
 		QPen textPen(Settings::textColor());
 		QFontMetrics fm(Settings::textFont());
+		painter.setBackgroundMode(Qt::TransparentMode);
 
 		int fmheight  = fm.height();
 

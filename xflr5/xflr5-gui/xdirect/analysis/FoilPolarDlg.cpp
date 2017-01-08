@@ -511,7 +511,7 @@ void FoilPolarDlg::setPlrName()
 
 	if(m_bAutoName)
 	{
-		m_PlrName= Polar::getAutoPolarName(m_PolarType, m_Reynolds, m_Mach, m_NCrit, m_ASpec);
+		m_PlrName= Polar::getAutoPolarName(m_PolarType, m_Reynolds, m_Mach, m_NCrit, m_ASpec, m_XTop, m_XBot);
 		m_pctrlAnalysisName->setText(m_PlrName);
 	}
 }

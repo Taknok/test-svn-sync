@@ -110,7 +110,7 @@ public:
 	int &MaType()      {return m_MaType;}
 	XFOIL::enumPolarType &polarType() {return m_PolarType;}
 
-	static QString getAutoPolarName(XFOIL::enumPolarType polarType, double Re, double Mach, double NCrit, double ASpec=0.0);
+	static QString getAutoPolarName(XFOIL::enumPolarType polarType, double Re, double Mach, double NCrit, double ASpec=0.0, double XTop=1.0, double XBot=1.0);
 	static QString variableName(int iVar);
 	static Polar *curPolar() {return s_pCurPolar;}
 	static Polar *getPolar(void* pFoilPtr, QString PolarName);
