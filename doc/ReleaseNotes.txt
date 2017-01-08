@@ -15,7 +15,11 @@
 *******************************************************************************
 
 
-xflr5 v6.31 January 6th, 2017
+xflr5 v6.32 January 8th, 2017
+	- bug corrections and improvemnts to the xfoil direct analysis module
+
+
+xflr5 v6.31 January 6th, 2017 - Not Released
 	- added a "light theme" option
 	- corrected the calculation of the tail volume when the main wing is not located at the origin;			
       note that the tail volume value is not used in the calculation, it is only provided for information.
