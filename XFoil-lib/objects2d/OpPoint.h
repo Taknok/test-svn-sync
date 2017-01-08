@@ -73,6 +73,7 @@ public:
 
 	QString &foilName()  {return m_FoilName;}
 	QString &polarName() {return m_PlrName;}
+	QString oppName();
 
 	void setFoilName(QString newFoilName) {m_FoilName = newFoilName;}
 

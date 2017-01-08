@@ -171,7 +171,7 @@ void Settings::setupLayout()
 
 			QGroupBox *pGraphBox = new QGroupBox(tr("Graph Settings"));
 			{
-				QHBoxLayout *pGraphLayout = new QHBoxLayout;
+				QVBoxLayout *pGraphLayout = new QVBoxLayout;
 				{
 					m_pctrlGraphSettings  = new QPushButton(tr("All Graph Settings"));
 					m_pctrlGraphSettings->setMinimumWidth(120);

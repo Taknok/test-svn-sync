@@ -153,7 +153,7 @@ public slots:
 	void onSetFlap();
 	void onInterpolateFoils();
 	void onNacaFoils();
-	void onRenamePolar();
+	void onRenameCurPolar();
 	void onAnimateSingle();
 
 	void onQGraph();

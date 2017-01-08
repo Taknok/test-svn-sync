@@ -1609,8 +1609,9 @@ void Foil::insertThisFoil()
 			m_green        = pOldFoil->m_green;
 			m_blue         = pOldFoil->m_blue;
 			m_alphaChannel = pOldFoil->m_alphaChannel;
-			m_FoilStyle = pOldFoil->foilLineStyle();
-			m_FoilWidth = pOldFoil->foilLineWidth();
+			m_FoilStyle    = pOldFoil->foilLineStyle();
+			m_FoilWidth    = pOldFoil->foilLineWidth();
+			m_PointStyle   = pOldFoil->foilPointStyle();
 
 			//we overwrite the old foil and delete its children objects
 			deleteFoil(pOldFoil);

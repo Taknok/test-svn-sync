@@ -332,7 +332,7 @@ public:
 
 	//stability widgets
 	MinTextEdit *m_pctrlPolarProps;
-	QStackedWidget *m_pctrBottomControls, *m_pctrlMiddleControls;
+	QStackedWidget *m_pctrlBottomControls, *m_pctrlMiddleControls;
 
 
 public:

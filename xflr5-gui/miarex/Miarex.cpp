@@ -528,8 +528,8 @@ void QMiarex::setControls()
 {
 	blockSignals(true);
 
-	if(m_iView==XFLR5::W3DVIEW) m_pctrBottomControls->setCurrentIndex(1);
-	else                        m_pctrBottomControls->setCurrentIndex(0);
+	if(m_iView==XFLR5::W3DVIEW) m_pctrlBottomControls->setCurrentIndex(1);
+	else                        m_pctrlBottomControls->setCurrentIndex(0);
 
 	if(m_iView==XFLR5::WPOLARVIEW)     m_pctrlMiddleControls->setCurrentIndex(1);
 	else if(m_iView==XFLR5::WCPVIEW)   m_pctrlMiddleControls->setCurrentIndex(2);
@@ -1839,7 +1839,8 @@ void QMiarex::glMake3DObjects()
  */
 void QMiarex::keyPressEvent(QKeyEvent *event)
 {
-	bool bCtrl = (event->modifiers() & Qt::ControlModifier) ? true : false;
+	bool bCtrl  = (event->modifiers() & Qt::ControlModifier) ? true : false;
+	bool bShift = (event->modifiers() & Qt::ShiftModifier)   ? true : false;
 
 	m_pGL3dView->m_bArcball=false;
 
@@ -1988,7 +1989,8 @@ void QMiarex::keyPressEvent(QKeyEvent *event)
 		}
 		case Qt::Key_F2:
 		{
-			onRenameCurPlane();
+			if(bShift) onRenameCurWPolar();
+			else       onRenameCurPlane();
 			break;
 		}
 		case Qt::Key_F3:
@@ -7110,7 +7112,7 @@ void QMiarex::setupLayout()
 
 			pAnalysisGroupLayout->addWidget(m_pctrlSequence);
 			pAnalysisGroupLayout->addLayout(pSequenceGroupLayout);
-			pAnalysisGroupLayout->addStretch(1);
+//			pAnalysisGroupLayout->addStretch(1);
 			pAnalysisGroupLayout->addLayout(pAnalysisSettingsLayout);
 			pAnalysisGroupLayout->addWidget(m_pctrlAnalyze);
 		}
@@ -7221,7 +7223,7 @@ void QMiarex::setupLayout()
 
 			pCurveGroupLayout->addWidget(m_pctrlShowCurve);
 			pCurveGroupLayout->addLayout(pCurveStyleLayout);
-			pCurveGroupLayout->addStretch(1);
+//			pCurveGroupLayout->addStretch(1);
 			setCurveParams();
 		}
 		pCurveBox->setLayout(pCurveGroupLayout);
@@ -7361,15 +7363,19 @@ void QMiarex::setupLayout()
 		m_pctrlMiddleControls->addWidget(pPolarPropsBox);
 		m_pctrlMiddleControls->addWidget(pCpBox);
 
-		m_pctrBottomControls = new QStackedWidget;
-		m_pctrBottomControls->addWidget(pCurveBox);
-		m_pctrBottomControls->addWidget(pThreeDViewBox);
+		m_pctrlBottomControls = new QStackedWidget;
+		m_pctrlBottomControls->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
+		pCurveBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
+		pThreeDViewBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
+
+		m_pctrlBottomControls->addWidget(pCurveBox);
+		m_pctrlBottomControls->addWidget(pThreeDViewBox);
 
 		pMainLayout->addWidget(pAnalysisBox);
-		pMainLayout->addStretch();
+//		pMainLayout->addStretch();
 		pMainLayout->addWidget(m_pctrlMiddleControls);
-		pMainLayout->addStretch();
-		pMainLayout->addWidget(m_pctrBottomControls);
+//		pMainLayout->addStretch();
+		pMainLayout->addWidget(m_pctrlBottomControls);
 	}
 	setLayout(pMainLayout);
 }
