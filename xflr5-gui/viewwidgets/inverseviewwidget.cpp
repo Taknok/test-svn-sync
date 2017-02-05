@@ -24,8 +24,7 @@
 #include <QtDebug>
 #include "mainframe.h"
 #include "misc/Settings.h"
-#include "graph/QGraph.h"
-#include "graph/Curve.h"
+#include "QGraph.h"
 #include "xinverse/XInverse.h"
 #include "inverseviewwidget.h"
 

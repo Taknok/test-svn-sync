@@ -202,6 +202,7 @@ public:
 	void createAFoilMenus();
 	void createAFoilToolbar();
 	void deleteProject(bool bClosing=false);
+	void exportGraph(QGraph *pGraph);
 	void GLToClient(CVector const &real, QPoint &point);
 	void loadLastProject();
 	bool loadSettings();
@@ -218,6 +219,10 @@ public:
 	bool serializeProjectWPA(QDataStream &ar, bool bIsStoring);
 	bool serializeProjectXFL(QDataStream &ar, bool bIsStoring);
 	bool serializePlaneProject(QDataStream &ar);
+	bool serializeOppXFL(OpPoint *pOpp, QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
+	bool serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStoring);
+	bool serializeFoilXFL(Foil *pFoil, QDataStream &ar, bool bIsStoring);
+
 	void setMainFrameCentralWidget();
 	void setGraphSettings(QGraph *pGraph);
 	void setProjectName(QString PathName);

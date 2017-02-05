@@ -24,6 +24,7 @@
 #include "ReListDlg.h"
 #include <gui_params.h>
 #include <xdirect/XDirect.h>
+#include <xdirect/objects2d.h>
 #include <misc/Settings.h>
 #include <xinverse/FoilSelectionDlg.h>
 #include <QHBoxLayout>
@@ -418,14 +419,14 @@ Polar * BatchThreadDlg::createPolar(Foil *pFoil, double Re, double Mach, double 
 
 
 	setPlrName(pNewPolar);
-	Polar *pOldPolar = Polar::getPolar(pFoil, pNewPolar->polarName());
+	Polar *pOldPolar = Objects2D::getPolar(pFoil, pNewPolar->polarName());
 
 	if(pOldPolar)
 	{
 		delete pNewPolar;
 		pNewPolar = pOldPolar;
 	}
-	else Polar::addPolar(pNewPolar);
+	else Objects2D::addPolar(pNewPolar);
 	return pNewPolar;
 }
 
@@ -473,7 +474,7 @@ void BatchThreadDlg::keyPressEvent(QKeyEvent *event)
  */
 void BatchThreadDlg::initDialog()
 {
-	if(!Foil::curFoil()) return;
+	if(!QXDirect::curFoil()) return;
 	blockSignals(true);
 
 	m_pctrlTextOutput->clear();
@@ -676,7 +677,7 @@ void BatchThreadDlg::onFoilList()
 {
 	FoilSelectionDlg dlg(this);
 //	dlg.SetSelectionMode(true);
-	dlg.m_poaFoil = &Foil::s_oaFoil;
+	dlg.m_poaFoil = &Objects2D::s_oaFoil;
 
 	dlg.m_FoilList.clear();
 	dlg.m_FoilList.append(m_FoilList);
@@ -703,7 +704,7 @@ void BatchThreadDlg::onFoilSelectionType()
 	if(s_bCurrentFoil)
 	{
 		m_FoilList.clear();
-		m_FoilList.append(Foil::curFoil()->foilName());
+		m_FoilList.append(QXDirect::curFoil()->foilName());
 	}
 
 	outputFoilList();
@@ -799,7 +800,7 @@ void BatchThreadDlg::setFileHeader()
 	out << "\n";
 	if(s_bCurrentFoil)
 	{
-		out << Foil::curFoil()->foilName();
+		out << QXDirect::curFoil()->foilName();
 		out << "\n";
 	}
 
@@ -865,7 +866,7 @@ void BatchThreadDlg::startAnalysis()
 	if(s_bCurrentFoil)
 	{
 		m_FoilList.clear();
-		m_FoilList.append(Foil::curFoil()->foilName());
+		m_FoilList.append(QXDirect::curFoil()->foilName());
 	}
 
 	if(!m_FoilList.count())
@@ -892,7 +893,7 @@ void BatchThreadDlg::startAnalysis()
 	FoilAnalysis *pAnalysis=NULL;
 	for(int i=0; i<m_FoilList.count(); i++)
 	{
-		pFoil = Foil::foil(m_FoilList.at(i));
+		pFoil = Objects2D::foil(m_FoilList.at(i));
 		if(pFoil)
 		{
 			for (iRe=0; iRe<nRe; iRe++)

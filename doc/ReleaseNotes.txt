@@ -15,8 +15,13 @@
 *******************************************************************************
 
 
+xflr5 v6.33
+	- corrected the calculation of the damping ratio; was formerly lambda.real()/omega_damped instead of lambda.real()/omega_natural
+	- reorganized the library structure; the XFoil library is now limited to the XFoil class
+	- bug corrections and minor enhancements
+
 xflr5 v6.32 January 8th, 2017
-	- bug corrections and improvemnts to the xfoil direct analysis module
+	- bug corrections and improvements to the xfoil direct analysis module
 
 
 xflr5 v6.31 January 6th, 2017 - Not Released

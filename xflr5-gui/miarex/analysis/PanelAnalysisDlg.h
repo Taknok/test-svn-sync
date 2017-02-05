@@ -42,7 +42,7 @@
 #include <QCheckBox>
 #include <objects3d/WPolar.h>
 #include <objects3d/Plane.h>
-#include <objects3d/CVector.h>
+#include <objects2d/Vector3d.h>
 #include "plane_analysis/PanelAnalysis.h"
 #include "plane_analysis/planeanalysistask.h"
 

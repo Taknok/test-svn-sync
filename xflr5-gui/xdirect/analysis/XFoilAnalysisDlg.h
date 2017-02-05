@@ -35,8 +35,8 @@
 #include <QPushButton>
 #include <QCheckBox>
 #include <QPoint>
-#include <XFoilTask.h>
-#include <xfoiltaskevent.h>
+#include <xdirect/analysis/XFoilTask.h>
+#include <xdirect/analysis/xfoiltaskevent.h>
 
 class GraphWidget;
 class QGraph;

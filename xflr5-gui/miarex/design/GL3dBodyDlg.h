@@ -223,7 +223,7 @@ private:
 
 	bool m_bEnableName;
 
-	CVector m_RealPopUp;
+	Vector3d m_RealPopUp;
 	QPoint m_ptPopUp;
 
 //	QRect m_rCltRect;

@@ -22,9 +22,12 @@
 #include "BatchDlg.h"
 #include <gui_params.h>
 #include <xdirect/XDirect.h>
+#include <xdirect/objects2d.h>
 #include "ReListDlg.h"
 #include <misc/Settings.h>
 #include <xinverse/FoilSelectionDlg.h>
+
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QGroupBox>
@@ -436,6 +439,7 @@ void BatchDlg::cleanUp()
 	m_bCancel    = false;
 	XFoil::s_bCancel = false;
 	m_pctrlClose->setFocus();
+	qApp->processEvents();
 }
 
 /**
@@ -494,14 +498,14 @@ Polar *BatchDlg::createPolar(Foil *pFoil, double Spec, double Mach, double NCrit
 	pPolar->XtrBot()  = m_XBot;
 
 	setPlrName(pPolar);
-	Polar *pOldPolar = Polar::getPolar(m_pFoil, pPolar->polarName());
+	Polar *pOldPolar = Objects2D::getPolar(m_pFoil, pPolar->polarName());
 
 	if(pOldPolar)
 	{
 		delete pPolar;
 		pPolar = pOldPolar;
 	}
-	else Polar::addPolar(pPolar);
+	else Objects2D::addPolar(pPolar);
 	return pPolar;
 }
 
@@ -793,8 +797,8 @@ void BatchDlg::onAnalyze()
 	else         m_pXFoilTask->setSequence(false, m_ClMin, m_ClMax, m_ClInc);
 
 	m_pXFoilTask->setReRange(m_ReMin, m_ReMax, m_ReInc);
-	m_pXFoilTask->initializeTask(Foil::curFoil(), Polar::curPolar(),
-							QXDirect::s_bStoreOpp, QXDirect::s_bViscous, m_bInitBL, m_bFromZero);
+	m_pXFoilTask->initializeTask(QXDirect::curFoil(), QXDirect::curPolar(),
+								 QXDirect::s_bStoreOpp, QXDirect::s_bViscous, m_bInitBL, m_bFromZero);
 
 
 	//prepare button state for analysis
@@ -1144,7 +1148,7 @@ void BatchDlg::analyze()
 	{
 		for(int i=0; i<m_FoilList.count();i++)
 		{
-			m_pFoil = Foil::foil(m_FoilList.at(i));
+			m_pFoil = Objects2D::foil(m_FoilList.at(i));
 
 			strong = tr("Analyzing ")+m_pFoil->foilName()+("\n");
 			outputMsg(strong);
@@ -1161,6 +1165,7 @@ void BatchDlg::analyze()
 
 	onProgress();
 
+	qApp->processEvents();
 
 	if(!m_bCancel)
 	{
@@ -1259,6 +1264,8 @@ void BatchDlg::customEvent(QEvent * event)
 	}
 	else if(event->type() == XFOIL_END_OPP_EVENT)
 	{
+		XFoilOppEvent *pOppEvent = (XFoilOppEvent*)event;
+		OpPoint *pOpp = Objects2D::addOpPoint(pOppEvent->foilPtr(), pOppEvent->polarPtr(), pOppEvent->XFoilPtr(), QXDirect::s_bStoreOpp);
 		m_pRmsGraph->resetYLimits();
 	}
 }

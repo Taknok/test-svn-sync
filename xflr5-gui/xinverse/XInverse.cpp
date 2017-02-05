@@ -26,6 +26,7 @@
 #include <QtDebug>
 
 #include "XInverse.h" 
+#include <xdirect/objects2d.h>
 #include <viewwidgets/inverseviewwidget.h>
 #include "FoilSelectionDlg.h"
 #include "PertDlg.h"
@@ -497,7 +498,7 @@ bool QXInverse::initXFoil(Foil * pFoil)
 
 	m_pModFoil->foilName() = pFoil->foilName() + tr(" Modified");
 
-	pXFoil->Initialize();
+	pXFoil->initialize();
 	for(int i =0; i<pFoil->n; i++)
 	{
 		pXFoil->xb[i+1] = pFoil->x[i];
@@ -1299,9 +1300,9 @@ void QXInverse::mouseReleaseEvent(QMouseEvent *event)
  * @param point the screen coordinates
  * @return the viewport coordinates
  */
-CVector QXInverse::mousetoReal(QPoint point)
+Vector3d QXInverse::mousetoReal(QPoint point)
 {
-	CVector Real;
+	Vector3d Real;
 
 	Real.x =  (point.x() - m_ptOffset.x())/m_fScale;
 	Real.y = -(point.y() - m_ptOffset.y())/m_fScale;
@@ -1426,8 +1427,8 @@ void QXInverse::onExtractFoil()
 		m_bSpline = false;
 		m_bSplined  = true;
 		Foil *pFoil;
-		pFoil = Foil::foil(dlg.m_FoilName);
-		Foil::setCurFoil(pFoil);
+		pFoil = Objects2D::foil(dlg.m_FoilName);
+		QXDirect::setCurFoil(pFoil);
 
 		m_pRefFoil->copyFoil(pFoil);
 
@@ -1476,11 +1477,6 @@ void QXInverse::onQGraphSettings()
 	updateView();
 }
 
-
-void QXInverse::onExportQGraph()
-{
-	m_QGraph.exportGraph();
-}
 
 
 
@@ -1822,9 +1818,9 @@ void QXInverse::onStoreFoil()
 	pNewFoil->setFoilName(m_pRefFoil->foilName());
 
 	QStringList NameList;
-	for(int k=0; k<Foil::s_oaFoil.size(); k++)
+	for(int k=0; k<Objects2D::s_oaFoil.size(); k++)
 	{
-		Foil *pOldFoil = (Foil*)Foil::s_oaFoil.at(k);
+		Foil *pOldFoil = Objects2D::s_oaFoil.at(k);
 		NameList.append(pOldFoil->foilName());
 	}
 
@@ -1833,7 +1829,7 @@ void QXInverse::onStoreFoil()
 	if(renDlg.exec() !=QDialog::Rejected)
 	{
 		pNewFoil->setFoilName(renDlg.newName());
-		pNewFoil->insertThisFoil();
+		Objects2D::insertThisFoil(pNewFoil);
 	}
 	else
 	{
@@ -2082,7 +2078,7 @@ void QXInverse::paintFoil(QPainter &painter)
 
 	//convert screen coordinates to foil coordinates
 
-	CVector real = mousetoReal(m_PointDown);
+	Vector3d real = mousetoReal(m_PointDown);
 	painter.drawText(m_QGraph.clientRect()->width()-12*fm.averageCharWidth(),
 					 m_QGraph.clientRect()->height() + dD, QString("x = %1")
 					 .arg(real.x,7,'f',3));
@@ -2359,11 +2355,11 @@ bool QXInverse::setParams()
 
 	onSpecal();
 
-	if (Foil::curFoil() && pXFoil->lqspec)
+	if (QXDirect::curFoil() && pXFoil->lqspec)
 	{
-		m_pRefFoil->copyFoil(Foil::curFoil());
+		m_pRefFoil->copyFoil(QXDirect::curFoil());
 		m_pRefFoil->setColor(m_pQCurve->color().red(), m_pQCurve->color().green(), m_pQCurve->color().blue(), m_pQCurve->color().alpha());
-		strFoilName = Foil::curFoil()->foilName();
+		strFoilName = QXDirect::curFoil()->foilName();
 	}
 	else
 	{

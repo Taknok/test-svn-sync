@@ -29,8 +29,7 @@
 #include <mainframe.h>
 #include <globals.h>
 #include "misc/Settings.h"
-#include "graph/QGraph.h"
-#include "graph/Curve.h"
+#include "QGraph.h"
 #include <xdirect/XDirect.h>
 #include <xdirect/XDirectStyleDlg.h>
 #include <graph/GraphDlg.h>
@@ -220,10 +219,10 @@ void OpPointWidget::mouseMoveEvent(QMouseEvent *event)
 			m_FoilOffset.ry() += pt.y()-m_LastPoint.y();
 		}
 	}
-	else if (Foil::curFoil() && ((event->buttons() & Qt::MidButton) || event->modifiers().testFlag(Qt::AltModifier)))
+	else if (QXDirect::curFoil() && ((event->buttons() & Qt::MidButton) || event->modifiers().testFlag(Qt::AltModifier)))
 	{
 		// we zoom the graph or the foil
-		if(Foil::curFoil())
+		if(QXDirect::curFoil())
 		{
 			//zoom the foil
 			scale = m_fScale;
@@ -390,7 +389,7 @@ void OpPointWidget::wheelEvent(QWheelEvent *event)
 		m_pCpGraph->setAutoYUnit();
 		update();
 	}
-	else if(Foil::curFoil())
+	else if(QXDirect::curFoil())
 	{
 		double zoomFactor=1.0;
 
@@ -499,7 +498,7 @@ void OpPointWidget::paintGraph(QPainter &painter)
  */
 void OpPointWidget::paintOpPoint(QPainter &painter)
 {
-	if (!Foil::curFoil() || !Foil::curFoil()->foilName().length())
+	if (!QXDirect::curFoil() || !QXDirect::curFoil()->foilName().length())
 		return;
 
 	double Alpha;
@@ -525,7 +524,7 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
 		int fmheight  = fm.height();
 		painter.setPen(textPen);
 
-		CVector real = mousetoReal(m_LastPoint);
+		Vector3d real = mousetoReal(m_LastPoint);
 		painter.drawText(m_pCpGraph->clientRect()->width()-12*fm.averageCharWidth(),
 						 m_pCpGraph->clientRect()->height() + fmheight, QString("x = %1")
 						 .arg(real.x,7,'f',3));
@@ -536,22 +535,22 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
 
 
 	Alpha = 0.0;
-	if(OpPoint::curOpp()) Alpha = OpPoint::curOpp()->aoa();
+	if(QXDirect::curOpp()) Alpha = QXDirect::curOpp()->aoa();
 
 
-	drawFoil(painter, Foil::curFoil(), -Alpha, m_fScale, m_fScale*m_fYScale, m_FoilOffset);
-	if(Foil::curFoil()->foilPointStyle()>0) drawPoints(painter, Foil::curFoil(), -Alpha, m_fScale,m_fScale*m_fYScale, m_FoilOffset);
+	drawFoil(painter, QXDirect::curFoil(), -Alpha, m_fScale, m_fScale*m_fYScale, m_FoilOffset);
+	if(QXDirect::curFoil()->foilPointStyle()>0) drawPoints(painter, QXDirect::curFoil(), -Alpha, m_fScale,m_fScale*m_fYScale, m_FoilOffset);
 
 /*	if(m_bShowPanels)
 	{
-		int memPts = Foil::curFoil()->foilPointStyle();
-		Foil::curFoil()->foilPointStyle() = qMax(memPts, 1);
-		drawPoints(painter, Foil::curFoil(), -Alpha, m_fScale, m_fScale*m_fYScale, m_FoilOffset);
-		Foil::curFoil()->foilPointStyle() = memPts;
+		int memPts = QXDirect::curFoil()->foilPointStyle();
+		QXDirect::curFoil()->foilPointStyle() = qMax(memPts, 1);
+		drawPoints(painter, QXDirect::curFoil(), -Alpha, m_fScale, m_fScale*m_fYScale, m_FoilOffset);
+		QXDirect::curFoil()->foilPointStyle() = memPts;
 	}*/
 
-	if(m_bPressure && OpPoint::curOpp()) paintPressure(painter, m_fScale, m_fScale*m_fYScale);
-	if(m_bBL && OpPoint::curOpp())       paintBL(painter, OpPoint::curOpp(), m_fScale, m_fScale*m_fYScale);
+	if(m_bPressure && QXDirect::curOpp()) paintPressure(painter, m_fScale, m_fScale*m_fYScale);
+	if(m_bBL && QXDirect::curOpp())       paintBL(painter, QXDirect::curOpp(), m_fScale, m_fScale*m_fYScale);
 
 
 	// Write Titles and results
@@ -571,49 +570,49 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
 
 	int Back = 5;
 
-	if(Foil::curFoil()->m_bTEFlap) Back +=3;
+	if(QXDirect::curFoil()->m_bTEFlap) Back +=3;
 
 	int LeftPos = rect().left()+10;
 	ZPos = rect().bottom() - 10 - Back*dD;
 
 	D = 0;
-	str1 = Foil::curFoil()->foilName();
+	str1 = QXDirect::curFoil()->foilName();
 	painter.drawText(LeftPos,ZPos+D, str1+str);
 	D += dD;
 
 	str = "%";
-	str1 = QString(tr("Thickness         = %1")).arg(Foil::curFoil()->thickness()*100.0, 6, 'f', 2);
+	str1 = QString(tr("Thickness         = %1")).arg(QXDirect::curFoil()->thickness()*100.0, 6, 'f', 2);
 	painter.drawText(LeftPos,ZPos+D, str1+str);
 	D += dD;
 
-	str1 = QString(tr("Max. Thick.pos.   = %1")).arg(Foil::curFoil()->xThickness()*100.0, 6, 'f', 2);
+	str1 = QString(tr("Max. Thick.pos.   = %1")).arg(QXDirect::curFoil()->xThickness()*100.0, 6, 'f', 2);
 	painter.drawText(LeftPos,ZPos+D, str1+str);
 	D += dD;
 
-	str1 = QString(tr("Max. Camber       = %1")).arg( Foil::curFoil()->camber()*100.0, 6, 'f', 2);
+	str1 = QString(tr("Max. Camber       = %1")).arg( QXDirect::curFoil()->camber()*100.0, 6, 'f', 2);
 	painter.drawText(LeftPos,ZPos+D, str1+str);
 	D += dD;
 
-	str1 = QString(tr("Max. Camber pos.  = %1")).arg(Foil::curFoil()->xCamber()*100.0, 6, 'f', 2);
+	str1 = QString(tr("Max. Camber pos.  = %1")).arg(QXDirect::curFoil()->xCamber()*100.0, 6, 'f', 2);
 	painter.drawText(LeftPos,ZPos+D, str1+str);
 	D += dD;
 
-	str1 = QString(tr("Number of Panels  =  %1")).arg( Foil::curFoil()->n);
+	str1 = QString(tr("Number of Panels  =  %1")).arg( QXDirect::curFoil()->n);
 	painter.drawText(LeftPos,ZPos+D, str1);
 	D += dD;
 
-	if(Foil::curFoil()->m_bTEFlap)
+	if(QXDirect::curFoil()->m_bTEFlap)
 	{
-		str1 = QString(tr("Flap Angle = %1")+QString::fromUtf8("°")).arg( Foil::curFoil()->m_TEFlapAngle, 7, 'f', 2);
+		str1 = QString(tr("Flap Angle = %1")+QString::fromUtf8("°")).arg( QXDirect::curFoil()->m_TEFlapAngle, 7, 'f', 2);
 		painter.drawText(LeftPos,ZPos+D, str1);
 		D += dD;
 
-		str1 = QString(tr("XHinge     = %1")).arg( Foil::curFoil()->m_TEXHinge, 6, 'f', 1);
+		str1 = QString(tr("XHinge     = %1")).arg( QXDirect::curFoil()->m_TEXHinge, 6, 'f', 1);
 		strong="%";
 		painter.drawText(LeftPos,ZPos+D, str1+strong);
 		D += dD;
 
-		str1 = QString(tr("YHinge     = %1")).arg( Foil::curFoil()->m_TEYHinge, 6, 'f', 1);
+		str1 = QString(tr("YHinge     = %1")).arg( QXDirect::curFoil()->m_TEYHinge, 6, 'f', 1);
 		strong="%";
 		painter.drawText(LeftPos,ZPos+D, str1+strong);
 		D += dD;
@@ -622,14 +621,14 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
 
 	D = 0;
 	Back = 6;
-	if(Polar::curPolar() && OpPoint::curOpp())
+	if(QXDirect::curPolar() && QXDirect::curOpp())
 	{
 		Back = 12;
-		if(OpPoint::curOpp()->m_bTEFlap) Back++;
-		if(OpPoint::curOpp()->m_bLEFlap) Back++;
-		if(OpPoint::curOpp()->m_bViscResults && qAbs(OpPoint::curOpp()->Cd)>0.0) Back++;
-		if(Polar::curPolar()->polarType()==XFOIL::FIXEDLIFTPOLAR) Back++;
-		if(Polar::curPolar()->polarType()!=XFOIL::FIXEDSPEEDPOLAR && Polar::curPolar()->polarType()!=XFOIL::FIXEDAOAPOLAR) Back++;
+		if(QXDirect::curOpp()->m_bTEFlap) Back++;
+		if(QXDirect::curOpp()->m_bLEFlap) Back++;
+		if(QXDirect::curOpp()->m_bViscResults && qAbs(QXDirect::curOpp()->Cd)>0.0) Back++;
+		if(QXDirect::curPolar()->polarType()==XFOIL::FIXEDLIFTPOLAR) Back++;
+		if(QXDirect::curPolar()->polarType()!=XFOIL::FIXEDSPEEDPOLAR && QXDirect::curPolar()->polarType()!=XFOIL::FIXEDAOAPOLAR) Back++;
 	}
 
 	int dwidth = fm.width(tr("TE Hinge Moment/span = 0123456789"));
@@ -639,126 +638,126 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
 	D=0;
 
 
-	if(Polar::curPolar())
+	if(QXDirect::curPolar())
 	{
-		if(Polar::curPolar()->polarType()==XFOIL::FIXEDSPEEDPOLAR)       str1 = tr("Fixed speed polar");
-		else if(Polar::curPolar()->polarType()==XFOIL::FIXEDLIFTPOLAR)   str1 = tr("Fixed lift polar");
-		else if(Polar::curPolar()->polarType()==XFOIL::RUBBERCHORDPOLAR) str1 = tr("Rubber chord polar");
-		else if(Polar::curPolar()->polarType()==XFOIL::FIXEDAOAPOLAR)    str1 = tr("Fixed a.o.a. polar");
+		if(QXDirect::curPolar()->polarType()==XFOIL::FIXEDSPEEDPOLAR)       str1 = tr("Fixed speed polar");
+		else if(QXDirect::curPolar()->polarType()==XFOIL::FIXEDLIFTPOLAR)   str1 = tr("Fixed lift polar");
+		else if(QXDirect::curPolar()->polarType()==XFOIL::RUBBERCHORDPOLAR) str1 = tr("Rubber chord polar");
+		else if(QXDirect::curPolar()->polarType()==XFOIL::FIXEDAOAPOLAR)    str1 = tr("Fixed a.o.a. polar");
 
 		painter.drawText(XPos,ZPos, dwidth, dD, Qt::AlignRight | Qt::AlignTop, str1);
 		D += dD;
-		if(Polar::curPolar()->polarType() ==XFOIL::FIXEDSPEEDPOLAR)
+		if(QXDirect::curPolar()->polarType() ==XFOIL::FIXEDSPEEDPOLAR)
 		{
-			ReynoldsFormat(strong, Polar::curPolar()->Reynolds());
+			ReynoldsFormat(strong, QXDirect::curPolar()->Reynolds());
 			strong ="Reynolds = " + strong;
 			painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, strong);
 			D += dD;
-			strong = QString("Mach = %1").arg( Polar::curPolar()->Mach(),9,'f',3);
+			strong = QString("Mach = %1").arg( QXDirect::curPolar()->Mach(),9,'f',3);
 			painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, strong);
 			D += dD;
 		}
-		else if(Polar::curPolar()->polarType()==XFOIL::FIXEDLIFTPOLAR)
+		else if(QXDirect::curPolar()->polarType()==XFOIL::FIXEDLIFTPOLAR)
 		{
-			ReynoldsFormat(strong, Polar::curPolar()->Reynolds());
+			ReynoldsFormat(strong, QXDirect::curPolar()->Reynolds());
 			strong = tr("Re.sqrt(Cl) = ") + strong;
 			painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, strong);
 			D += dD;
 
-			strong = QString(tr("M.sqrt(Cl) = %1")).arg(Polar::curPolar()->Mach(),9,'f',3);
+			strong = QString(tr("M.sqrt(Cl) = %1")).arg(QXDirect::curPolar()->Mach(),9,'f',3);
 			painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, strong);
 			D += dD;
 		}
-		else if(Polar::curPolar()->polarType()==XFOIL::RUBBERCHORDPOLAR)
+		else if(QXDirect::curPolar()->polarType()==XFOIL::RUBBERCHORDPOLAR)
 		{
-			ReynoldsFormat(strong, Polar::curPolar()->Reynolds());
+			ReynoldsFormat(strong, QXDirect::curPolar()->Reynolds());
 			strong = tr("Re.sqrt(Cl) = ") + strong;
 			painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, strong);
 			D += dD;
 
-			strong = QString("Mach = %1").arg(Polar::curPolar()->Mach(),9,'f',3);
+			strong = QString("Mach = %1").arg(QXDirect::curPolar()->Mach(),9,'f',3);
 			painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, strong);
 			D += dD;
 		}
-		else if(Polar::curPolar()->polarType()==XFOIL::FIXEDAOAPOLAR)
+		else if(QXDirect::curPolar()->polarType()==XFOIL::FIXEDAOAPOLAR)
 		{
-			strong = QString("Alpha = %1 "+QString::fromUtf8("°")).arg(Polar::curPolar()->aoa(),10,'f',2);
+			strong = QString("Alpha = %1 "+QString::fromUtf8("°")).arg(QXDirect::curPolar()->aoa(),10,'f',2);
 			painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, strong);
 			D += dD;
-			strong = QString("Mach = %1").arg(Polar::curPolar()->Mach(),9,'f',3);
+			strong = QString("Mach = %1").arg(QXDirect::curPolar()->Mach(),9,'f',3);
 			painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, strong);
 			D += dD;
 		}
 
-		strong = QString("NCrit = %1").arg(Polar::curPolar()->NCrit(),9,'f',3);
+		strong = QString("NCrit = %1").arg(QXDirect::curPolar()->NCrit(),9,'f',3);
 		painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, strong);
 		D += dD;
 
-		strong = QString(tr("Forced Upper Trans. = %1")).arg(Polar::curPolar()->XtrTop(),9,'f',3);
+		strong = QString(tr("Forced Upper Trans. = %1")).arg(QXDirect::curPolar()->XtrTop(),9,'f',3);
 		painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, strong);
 		D += dD;
-		strong = QString(tr("Forced Lower Trans. = %1")).arg(Polar::curPolar()->XtrBot(), 9, 'f', 3);
+		strong = QString(tr("Forced Lower Trans. = %1")).arg(QXDirect::curPolar()->XtrBot(), 9, 'f', 3);
 		painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, strong);
 		D += dD;
 
-		if(OpPoint::curOpp())
+		if(QXDirect::curOpp())
 		{
-			if(Polar::curPolar()->polarType()!=XFOIL::FIXEDSPEEDPOLAR)
+			if(QXDirect::curPolar()->polarType()!=XFOIL::FIXEDSPEEDPOLAR)
 			{
-				ReynoldsFormat(Result, OpPoint::curOpp()->Reynolds());
+				ReynoldsFormat(Result, QXDirect::curOpp()->Reynolds());
 				Result = "Re = "+ Result;
 				painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, Result);
 				D += dD;
 			}
-			if(Polar::curPolar()->polarType()==XFOIL::FIXEDLIFTPOLAR)
+			if(QXDirect::curPolar()->polarType()==XFOIL::FIXEDLIFTPOLAR)
 			{
-				Result = QString("Ma = %1").arg(OpPoint::curOpp()->m_Mach, 9, 'f', 4);
+				Result = QString("Ma = %1").arg(QXDirect::curOpp()->m_Mach, 9, 'f', 4);
 				painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, Result);
 				D += dD;
 			}
-			if(Polar::curPolar()->polarType()!=XFOIL::FIXEDAOAPOLAR)
+			if(QXDirect::curPolar()->polarType()!=XFOIL::FIXEDAOAPOLAR)
 			{
-				Result = QString(tr("Alpha = %1")+QString::fromUtf8("°")).arg(OpPoint::curOpp()->m_Alpha, 8, 'f', 2);
+				Result = QString(tr("Alpha = %1")+QString::fromUtf8("°")).arg(QXDirect::curOpp()->m_Alpha, 8, 'f', 2);
 				painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, Result);
 				D += dD;
 			}
-			Result = QString(tr("Cl = %1")).arg(OpPoint::curOpp()->Cl, 9, 'f', 3);
+			Result = QString(tr("Cl = %1")).arg(QXDirect::curOpp()->Cl, 9, 'f', 3);
 			painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, Result);
 			D += dD;
 
-			Result = QString(tr("Cm = %1")).arg(OpPoint::curOpp()->Cm, 9, 'f', 3);
+			Result = QString(tr("Cm = %1")).arg(QXDirect::curOpp()->Cm, 9, 'f', 3);
 			painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, Result);
 			D += dD;
 
-			Result = QString(tr("Cd = %1")).arg(OpPoint::curOpp()->Cd, 9, 'f', 3);
+			Result = QString(tr("Cd = %1")).arg(QXDirect::curOpp()->Cd, 9, 'f', 3);
 			painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, Result);
 			D += dD;
 
-			if(OpPoint::curOpp()->m_bViscResults && qAbs(OpPoint::curOpp()->Cd)>0.0)
+			if(QXDirect::curOpp()->m_bViscResults && qAbs(QXDirect::curOpp()->Cd)>0.0)
 			{
-				Result = QString(tr("L/D = %1")).arg(OpPoint::curOpp()->Cl/OpPoint::curOpp()->Cd, 9, 'f', 3);
-				painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, Result);
-				D += dD;
-			}
-
-			Result = QString(tr("Upper Trans. = %1")).arg(OpPoint::curOpp()->Xtr1, 9, 'f', 3);
-			painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, Result);
-			D += dD;
-
-			Result = QString(tr("Lower Trans. = %1")).arg(OpPoint::curOpp()->Xtr2, 9, 'f', 3);
-			painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, Result);
-			D += dD;
-
-			if(OpPoint::curOpp()->m_bTEFlap)
-			{
-				Result = QString(tr("TE Hinge Moment/span = %1")).arg(OpPoint::curOpp()->m_TEHMom, 9, 'e', 2);
+				Result = QString(tr("L/D = %1")).arg(QXDirect::curOpp()->Cl/QXDirect::curOpp()->Cd, 9, 'f', 3);
 				painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, Result);
 				D += dD;
 			}
 
-			if(OpPoint::curOpp()->m_bLEFlap)
+			Result = QString(tr("Upper Trans. = %1")).arg(QXDirect::curOpp()->Xtr1, 9, 'f', 3);
+			painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, Result);
+			D += dD;
+
+			Result = QString(tr("Lower Trans. = %1")).arg(QXDirect::curOpp()->Xtr2, 9, 'f', 3);
+			painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, Result);
+			D += dD;
+
+			if(QXDirect::curOpp()->m_bTEFlap)
 			{
-				Result = QString(tr("LE Hinge Moment/span = %1")).arg(OpPoint::curOpp()->m_LEHMom, 9, 'e', 2);
+				Result = QString(tr("TE Hinge Moment/span = %1")).arg(QXDirect::curOpp()->m_TEHMom, 9, 'e', 2);
+				painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, Result);
+				D += dD;
+			}
+
+			if(QXDirect::curOpp()->m_bLEFlap)
+			{
+				Result = QString(tr("LE Hinge Moment/span = %1")).arg(QXDirect::curOpp()->m_LEHMom, 9, 'e', 2);
 				painter.drawText(XPos,ZPos+D, dwidth, dD, Qt::AlignRight | Qt::AlignTop, Result);
 				D += dD;
 			}
@@ -780,12 +779,12 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
  */
 void OpPointWidget::paintPressure(QPainter &painter, double scalex, double scaley)
 {
-	if(!Foil::curFoil()) return;
-	if(!OpPoint::curOpp()) return;
-	if(!OpPoint::curOpp()->bViscResults()) return;
+	if(!QXDirect::curFoil()) return;
+	if(!QXDirect::curOpp()) return;
+	if(!QXDirect::curOpp()->bViscResults()) return;
 
 	int i;
-	double alpha = -OpPoint::curOpp()->m_Alpha*PI/180.0;
+	double alpha = -QXDirect::curOpp()->m_Alpha*PI/180.0;
 	double cosa = cos(alpha);
 	double sina = sin(alpha);
 	double x, y ,xs, ys, xe, ye, dx, dy, x1, x2, y1, y2, r2;
@@ -800,20 +799,20 @@ void OpPointWidget::paintPressure(QPainter &painter, double scalex, double scale
 	painter.setPen(CpvPen);
 
 
-	for(i=0; i<Foil::curFoil()->n; i++)
+	for(i=0; i<QXDirect::curFoil()->n; i++)
 	{
-		if(OpPoint::curOpp()->m_bViscResults) cp = OpPoint::curOpp()->Cpv[i];
-		else                                  cp = OpPoint::curOpp()->Cpi[i];
-		x = Foil::curFoil()->x[i];
-		y = Foil::curFoil()->y[i];
+		if(QXDirect::curOpp()->m_bViscResults) cp = QXDirect::curOpp()->Cpv[i];
+		else                                  cp = QXDirect::curOpp()->Cpi[i];
+		x = QXDirect::curFoil()->x[i];
+		y = QXDirect::curFoil()->y[i];
 
 		xs = (x-0.5)*cosa - y*sina + 0.5;
 		ys = (x-0.5)*sina + y*cosa;
 
 		if(cp>0)
 		{
-			x += Foil::curFoil()->nx[i] * cp * 0.05;
-			y += Foil::curFoil()->ny[i] * cp * 0.05;
+			x += QXDirect::curFoil()->nx[i] * cp * 0.05;
+			y += QXDirect::curFoil()->ny[i] * cp * 0.05;
 
 			xe = (x-0.5)*cosa - y*sina + 0.5;
 			ye = (x-0.5)*sina + y*cosa;
@@ -843,8 +842,8 @@ void OpPointWidget::paintPressure(QPainter &painter, double scalex, double scale
 		else
 		{
 
-			x += -Foil::curFoil()->nx[i] * cp *0.05;
-			y += -Foil::curFoil()->ny[i] * cp *0.05;
+			x += -QXDirect::curFoil()->nx[i] * cp *0.05;
+			y += -QXDirect::curFoil()->ny[i] * cp *0.05;
 
 			xe = (x-0.5)*cosa - y*sina+ 0.5;
 			ye = (x-0.5)*sina + y*cosa;
@@ -878,11 +877,11 @@ void OpPointWidget::paintPressure(QPainter &painter, double scalex, double scale
 	LiftPen.setWidth(m_iPressureWidth+1);
 	painter.setPen(LiftPen);
 
-	xs =  (OpPoint::curOpp()->m_XCP-0.5)*cosa  + 0.5;
-	ys = -(OpPoint::curOpp()->m_XCP-0.5)*sina ;
+	xs =  (QXDirect::curOpp()->m_XCP-0.5)*cosa  + 0.5;
+	ys = -(QXDirect::curOpp()->m_XCP-0.5)*sina ;
 
 	xe = xs;
-	ye = ys - OpPoint::curOpp()->Cl/10.0;
+	ye = ys - QXDirect::curOpp()->Cl/10.0;
 
 	painter.drawLine( xs*scalex + offset.x(), ys*scaley + offset.y(),
 					  xs*scalex + offset.x(), ye*scaley + offset.y());
@@ -919,7 +918,7 @@ void OpPointWidget::paintPressure(QPainter &painter, double scalex, double scale
  */
 void OpPointWidget::paintBL(QPainter &painter, OpPoint* pOpPoint, double scalex, double scaley)
 {
-	if(!Foil::curFoil() || !pOpPoint) return;
+	if(!QXDirect::curFoil() || !pOpPoint) return;
 
 	QPointF offset, From, To;
 	double x,y;
@@ -1035,9 +1034,9 @@ void OpPointWidget::onXDirectStyle()
  * @param point the screen coordinates
  * @return the viewport coordinates
  */
-CVector OpPointWidget::mousetoReal(QPoint point)
+Vector3d OpPointWidget::mousetoReal(QPoint point)
 {
-	CVector Real;
+	Vector3d Real;
 
 	Real.x =  (point.x() - m_FoilOffset.x())/m_fScale;
 	Real.y = -(point.y() - m_FoilOffset.y())/m_fScale;

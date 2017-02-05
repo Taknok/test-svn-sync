@@ -34,29 +34,47 @@ class Objects2D
 public:
 	Objects2D();
 
-	static Foil *    addFoil(Foil *pFoil);
-	static void      addPolar(Polar *pPolar);
 	static void      deleteObjects();
-	static void      deleteFoil(Foil *pFoil);
+
 	static void      deleteFoilResults(Foil *pFoil, bool bDeletePolars=false);
-	static void      deletePolar(Polar *pPolar);
+
+
 	static Foil *    duplicateFoil(Foil *pFoil);
 	static Foil*     getFoil(QString FoilName);
-	static OpPoint*  getFoilOpp(Foil *pFoil, Polar *pPolar, double x);
-	static Polar*    getPolar(Foil *pFoil, QString PolarName);
-	static void      insertPOpp(OpPoint *pPOpp);
-	static Polar *   insertNewPolar(Polar *pModPolar, Foil *pCurFoil);
+	static Foil *    foil(QString strFoilName);
+	static Foil*     deleteFoil(Foil *pFoil);
+	static void      insertThisFoil(Foil *pFoil);
+	static Foil *    addFoil(Foil *pFoil);
+	static Foil *    deleteThisFoil(Foil *pFoil);
 	static bool      FoilExists(QString FoilName);
 	static void      renameFoil(QString FoilName);
+	static void      renameThisFoil(Foil *pFoil, QString newFoilName);
 	static Foil *    setModFoil(Foil *pModFoil);
 	static void      setStaticPointers();
+
+	static Polar *createPolar(Foil *pFoil, double Re, double Mach, double NCrit,
+							  double XtrTop = 1.0, double XtrBot=1.0, XFOIL::enumPolarType polarType = XFOIL::FIXEDSPEEDPOLAR);
+	static void      addPolar(Polar *pPolar);
+	static Polar *   insertNewPolar(Polar *pModPolar, Foil *pCurFoil);
+	static Polar*    getPolar(Foil *pFoil, QString PolarName);
+	static Polar *   getPolar(QString m_FoilName, QString PolarName);
+	static void      deletePolar(Polar *pPolar);
+
+	static OpPoint*  getOpp(Foil *pFoil, Polar *pPolar, double Alpha);
+	static OpPoint*  getFoilOpp(Foil *pFoil, Polar *pPolar, double x);
+	static void      insertOpPoint(OpPoint *pNewPoint);
+	static bool      deleteOpp(OpPoint *pOpp);
+	static OpPoint*  addOpPoint(void *pFoilPtr, void *pPolarPtr, void *pXFoilPtr, bool bStoreOpp);
+
+	static void addXFoilData(OpPoint *pOpp, void *pXFoilPtr, void *pFoilPtr);
+
 
 public:
 	// object variable lists
 
-	static QList <void *> s_oaFoil;   /**< The array of void pointers to the Foil objects. */
-	static QList <void *> s_oaPolar;  /**< The array of void pointers to the Polar objects. */
-	static QList <void *> s_oaOpp;    /**< The array of void pointers to the OpPoint objects. */
+	static QList <Foil *> s_oaFoil;   /**< The array of void pointers to the Foil objects. */
+	static QList <Polar *> s_oaPolar;  /**< The array of void pointers to the Polar objects. */
+	static QList <OpPoint *> s_oaOpp;    /**< The array of void pointers to the OpPoint objects. */
 };
 
 #endif // OBJECTS2D_H

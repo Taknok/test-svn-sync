@@ -67,6 +67,7 @@ bool XMLPlaneReader::readXMLPlaneFile()
 				{
 //					if(m_pPlane->body()) delete m_pPlane->body();
 //					m_pPlane->setBody(new Body);
+					m_pPlane->hasBody() = true;
 					readBody(m_pPlane->body(), m_pPlane->bodyPos(), lengthunit, massunit);
 				}
 			}
@@ -356,7 +357,7 @@ bool XMLPlaneReader::readPointMass(PointMass *ppm, double massUnit, double lengt
 
 
 
-bool XMLPlaneReader::readBody(Body *pBody, CVector &position, double lengthUnit, double massUnit)
+bool XMLPlaneReader::readBody(Body *pBody, Vector3d &position, double lengthUnit, double massUnit)
 {
 	pBody->splineSurface()->clearFrames();
 	pBody->m_xPanels.clear();
@@ -446,7 +447,7 @@ bool XMLPlaneReader::readBody(Body *pBody, CVector &position, double lengthUnit,
 				}
 				else if (name().compare("point", Qt::CaseInsensitive)==0)
 				{
-					CVector ctrlPt;
+					Vector3d ctrlPt;
 					QStringList coordList = readElementText().split(",");
 					if(coordList.length()>=3)
 					{

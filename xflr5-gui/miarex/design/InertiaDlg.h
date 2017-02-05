@@ -33,7 +33,7 @@
 #include <gui_params.h>
 #include <misc/FloatEditDelegate.h>
 #include <misc/DoubleEdit.h>
-#include <objects3d/CVector.h>
+#include <objects2d/Vector3d.h>
 #include <objects3d/Plane.h>
 
 class InertiaDlg : public QDialog
@@ -111,7 +111,7 @@ private:
 	Plane *m_pPlane;
 
 	double m_VolumeMass;
-	CVector m_VolumeCoG;
+	Vector3d m_VolumeCoG;
 
 	double m_CoGIxx, m_CoGIyy, m_CoGIzz, m_CoGIxz;
 

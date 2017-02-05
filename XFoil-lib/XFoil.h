@@ -38,10 +38,11 @@ This is a translation to C++ of the original Fortran code of Mark Drela and Haro
 See http://raphael.mit.edu/xfoil for more information.
 */
 
+#include "xfoil-lib_global.h"
+
 #include <QTextStream>
 #include <math.h>
 #include <complex>
-
 
 #include <xfoil_params.h>
 
@@ -71,20 +72,12 @@ struct blData
 
 
 
-class XFoil
+class XFOILLIBSHARED_EXPORT XFoil
 {
 
 public:
 	XFoil();
 	virtual ~XFoil();
-
-
-
-
-
-
-
-
 
 public:
 	void interpolate(double xf1[], double yf1[], int n1,
@@ -99,9 +92,11 @@ public:
 	void smooq(int kq1,int kq2,int kqsp);
 	void ExecMDES();
 	bool ExecQDES();
-	bool Initialize();
-	bool InitXFoilGeometry(int *fn, double *fx, double *fy, double *fnx, double *fny);
-	bool InitXFoilAnalysis(void *pPolarPtr, bool bViscous, QTextStream &outStream);
+	bool initialize();
+	bool initXFoilGeometry(int &fn, double *fx, double *fy, double *fnx, double *fny);
+	bool initXFoilAnalysis(double Re, double alpha, double Mach, double NCrit, double XtrTop, double XtrBot,
+								  int reType, int maType, bool bViscous, QTextStream &outStream);
+
 	void splqsp(int kqsp);
 	void qspcir();
 	void InitMDES();
@@ -153,7 +148,6 @@ private:
 	void mapgen(int n, double x[],double y[]);
 
 	//	int kqtarg,nname,nprefix;
-	void setFoilFlap(void *pFoil);
 	void gamlin(int i, int j, double coef);
 	bool mixed(int kqsp);
 	void gamqsp(int kqsp);
@@ -231,7 +225,7 @@ private:
 	bool ludcmp(int n, double a[IQX][IQX],int indx[IQX]);
 	bool mhinge();
 	bool mrchdu();
-	bool mrchue();
+    bool mrchue();
 	bool ncalc(double x[], double y[], double s[], int n, double xn[], double yn[]);
 	bool psilin(int i, double xi,double yi,double nxi, double nyi, double &psi, double &psi_ni, bool geolin, bool siglin);
 	bool pswlin(int i,double xi, double yi, double nxi, double nyi, double &psi, double &psi_ni);

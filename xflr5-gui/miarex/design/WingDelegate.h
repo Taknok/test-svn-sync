@@ -28,6 +28,7 @@
 
 #include <misc/DoubleEdit.h>
 #include <objects3d/WingSection.h>
+#include <objects2d/Foil.h>
 
 class WingDelegate : public QStyledItemDelegate
 {
@@ -43,7 +44,7 @@ public:
 	void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
 	void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 	void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-	void SetPrecision(int*PrecisionTable);
+	void setPrecision(int*PrecisionTable);
 
 private:
 	void *m_pWingDlg;

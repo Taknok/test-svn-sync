@@ -1,21 +1,10 @@
 /****************************************************************************
 
-	Globals Class
-	Copyright (C) 2008-2016 Andre Deperrois adeperrois@xflr5.com
+	Techwing Application
 
-	This program is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
-	(at your option) any later version.
+	Copyright (C) Andre Deperrois adeperrois@xflr5.com
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with this program; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	All rights reserved.
 
 *****************************************************************************/
 
@@ -31,7 +20,6 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDir>
-#include <QDateTime> 
 #include <QByteArray>
 #include <math.h>
 #include <qopengl.h>
@@ -297,147 +285,6 @@ int readValues(QString line, double &x, double &y, double &z)
 
 
 
-/** 
-*Returns the determinant of a 4x4 matrix
-*@param aij a pointer to a one-dimensional array holding the 16 double values of the matrix
-*@return the matrix's determinant
-*/
-double Det44(double *aij)
-{
-//	returns the determinant of a 4x4 matrix
-
-	int i,j,k,l,p,q;
-	double det, sign, a33[16];
-
-	det = 0.0;
-	for(i=0; i<4; i++)
-	{
-		for(j=0; j<4; j++)
-		{
-			p = 0;
-			for(k=0; k<4 && k!=i; k++)
-			{
-				q = 0;
-				for(l=0; l<4 && l!=j; l++)
-				{
-					*(a33+p*3+q) = *(aij+4*k+l);// could also do it by address, to be a little faster
-					q++;
-				}
-				p++;
-			}
-			sign = pow(-1.0,i+j);
-			det += sign * Det33(a33);
-		}
-	}
-	return det;
-}
-
-
-
-/** 
-*Returns the cofactor of an element in a 4x4 matrix of complex values.
-*@param aij a pointer to a one-dimensional array holding the 16 complex values of the matrix.
-*@param i the number of the element's line, starting at 0.
-*@param j the number of the element's column, starting at 0.
-*@return the cofactor of element (i,j).
-*/
-complex<double> Cofactor44(complex<double> *aij, int &i, int &j)
-{
-	//returns the complex cofactor	of element i,j, in the 4x4 matrix aij
-	int k,l,p,q;
-	complex<double> a33[9];
-
-	p = 0;
-	for(k=0; k<4; k++)
-	{
-		if(k!=i)
-		{
-			q = 0;
-			for(l=0; l<4; l++)
-			{
-				if(l!=j)
-				{
-					a33[p*3+q] = *(aij+4*k+l);
-					q++;
-				}
-			}
-			p++;
-		}
-	}
-	return Det33(a33);
-}
-
-/** 
-*Returns the determinant of a complex 4x4 matrix
-*@param aij a pointer to a one-dimensional array holding the 16 complex double values of the matrix
-*@return the matrix's determinant
-*/
-complex<double> Det44(complex<double> *aij)
-{
-//	returns the determinant of a 4x4 matrix
-
-	int i,j,k,l,p,q;
-	double sign;
-	complex<double> det, a33[16];
-	det = 0.0;
-
-	i=0;
-	for(j=0; j<4; j++)
-	{
-		p = 0;
-		for(k=0; k<4; k++)
-		{
-			if(k!=i)
-			{
-				q = 0;
-				for(l=0; l<4; l++)
-				{
-					if(l!=j)
-					{
-						a33[p*3+q] = aij[4*k+l];
-						q++;
-					}
-				}
-				p++;
-			}
-		}
-		sign = pow(-1.0,i+j);
-		det += sign * aij[4*i+j] * Det33(a33);
-	}
-
-	return det;
-}
-
-/** 
-*Inverts a complex 4x4 matrix
-*@param ain in input, a pointer to a one-dimensional array holding the 16 complex values of the input matrix
-*@param aout in output, a pointer to a one-dimensional array holding the 16 complex values of the inverted matrix
-*@return if the inversion was successful
-*/
-bool Invert44(complex<double> *ain, complex<double> *aout)
-{
-	//small size, use the direct method
-	int i,j;
-	complex<double> det;
-	double sign;
-
-	det = Det44(ain);
-
-	if(abs(det)<PRECISION) return false;
-
-	for(i=0; i<4; i++)
-	{
-		for(j=0; j<4; j++)
-		{
-			sign = pow(-1.0,i+j);
-			aout[4*j+i] = sign * Cofactor44(ain, i, j)/det;
-		}
-	}
-	return true;
-}
-
-
-
 
 QColor randomColor()
 {
@@ -574,6 +421,22 @@ QString analysisMethod(XFLR5::enumAnalysisMethod analysisMethod)
 }
 
 
+
+XFLR5::enumBC boundaryCondition(QString strBC)
+{
+    if   (strBC.compare("DIRICHLET", Qt::CaseInsensitive)==0) return XFLR5::DIRICHLET;
+    else                                                      return XFLR5::NEUMANN;
+}
+
+QString boundaryCondition(XFLR5::enumBC boundaryCondition)
+{
+    switch(boundaryCondition)
+    {
+        case XFLR5::DIRICHLET: return "DIRICHLET";   break;
+        case XFLR5::NEUMANN:   return "NEUMANN";     break;
+        default: return "";
+    }
+}
 
 bool stringToBool(QString str)
 {
@@ -770,7 +633,7 @@ void * readPolarFile(QFile &plrFile, QList<Polar*> &polarList)
 		for (i=0;i<n; i++)
 		{
 			pFoil = new Foil();
-			if (!pFoil->serialize(ar, false))
+			if (!serializeFoil(pFoil, ar, false))
 			{
 				delete pFoil;
 				return NULL;
@@ -784,7 +647,7 @@ void * readPolarFile(QFile &plrFile, QList<Polar*> &polarList)
 		{
 			pPolar = new Polar();
 
-			if (!pPolar->serialize(ar, false))
+			if (!serializePolar(pPolar, ar, false))
 			{
 				delete pPolar;
 				return NULL;
@@ -1279,3 +1142,432 @@ void setRandomFoilColor(Foil *pFoil)
 	QColor clr = randomColor();
 	pFoil->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
 }
+
+
+/**
+* Reads the RGB int values of a color from binary datastream and returns a QColor. Inherited from the MFC versions of XFLR5.
+*@param ar the binary datastream
+*@param r the red component
+*@param g the green component
+*@param b the blue component
+*/
+void readColor(QDataStream &ar, int &r, int &g, int &b)
+{
+	qint32 colorref;
+
+	ar >> colorref;
+	b = (int)(colorref/256/256);
+	colorref -= b*256*256;
+	g = (int)(colorref/256);
+	r = colorref - g*256;
+}
+
+
+/**
+* Writes the RGB int values of a color to a binary datastream. Inherited from the MFC versions of XFLR5.
+*@param ar the binary datastream
+*@param r the red component
+*@param g the green component
+*@param b the blue component
+
+*/
+void writeColor(QDataStream &ar, int r, int g, int b)
+{
+	qint32 colorref;
+
+	colorref = b*256*256+g*256+r;
+	ar << colorref;
+}
+
+
+/**
+* Reads the RGB int values of a color from binary datastream and returns a QColor. Inherited from the MFC versions of XFLR5.
+*@param ar the binary datastream
+*@param r the red component
+*@param g the green component
+*@param b the blue component
+*@param a the alpha component
+*/
+void readColor(QDataStream &ar, int &r, int &g, int &b, int &a)
+{
+	uchar byte=0;
+
+	ar>>byte;//probably a format identificator
+	ar>>byte>>byte;
+	a = (int)byte;
+	ar>>byte>>byte;
+	r = (int)byte;
+	ar>>byte>>byte;
+	g = (int)byte;
+	ar>>byte>>byte;
+	b = (int)byte;
+	ar>>byte>>byte; //
+}
+
+/**
+* Writes the RGB int values of a color to a binary datastream. Inherited from the MFC versions of XFLR5.
+*@param ar the binary datastream
+*@param r the red component
+*@param g the green component
+*@param b the blue component
+*@param a the alpha component
+*/
+void writeColor(QDataStream &ar, int r, int g, int b, int a)
+{
+	uchar byte;
+
+	byte = 1;
+	ar<<byte;
+	byte = a & 0xFF;
+	ar << byte<<byte;
+	byte = r & 0xFF;
+	ar << byte<<byte;
+	byte = g & 0xFF;
+	ar << byte<<byte;
+	byte = b & 0xFF;
+	ar << byte<<byte;
+	byte = 0;
+	ar << byte<<byte;
+}
+
+
+/**
+* Reads a sequence of characters from a binary stream and returns a QString. Inherited from the MFC versions of XFLR5.
+*@param ar the binary datastream
+*@param strong the QString read from the stream
+*/
+void readString(QDataStream &ar, QString &strong)
+{
+	qint8 qi, ch;
+	char c;
+
+	ar >> qi;
+	strong.clear();
+	for(int j=0; j<qi;j++)
+	{
+		strong += " ";
+		ar >> ch;
+		c = char(ch);
+		strong[j] = c;
+	}
+}
+
+/**
+* Writes a sequence of characters from a QStrinf to a binary stream. Inherited from the MFC versions of XFLR5.
+*@param ar the binary datastream
+*@param strong the QString to output to the stream
+*/
+void writeString(QDataStream &ar, QString const &strong)
+{
+	qint8 qi = strong.length();
+
+	QByteArray textline;
+	char *text;
+	textline = strong.toLatin1();
+	text = textline.data();
+	ar << qi;
+	ar.writeRawData(text, qi);
+}
+
+
+
+
+/**
+ * Loads or Saves the data of this foil to a binary file.
+ * @param ar the QDataStream object from/to which the data should be serialized
+ * @param bIsStoring true if saving the data, false if loading
+ * @return true if the operation was successful, false otherwise
+ */
+bool serializeFoil(Foil *pFoil, QDataStream &ar, bool bIsStoring)
+{
+	// saves or loads the foil to the archive ar
+
+	int ArchiveFormat = 1006;
+	// 1006 : QFLR5 v0.02 : added Foil description
+	// 1005 : added LE Flap data
+	// 1004 : added Points and Centerline property
+	// 1003 : added Visible property
+	// 1002 : added color and style save
+	// 1001 : initial format
+	int p, j;
+	float f,ff;
+
+	if(bIsStoring)
+	{
+		ar << ArchiveFormat;
+		writeString(ar, pFoil->m_FoilName);
+		writeString(ar, pFoil->m_FoilDescription);
+		ar << pFoil->m_FoilStyle << pFoil->m_FoilWidth;
+		writeColor(ar, pFoil->m_red, pFoil->m_green, pFoil->m_blue);
+
+		if (pFoil->m_bIsFoilVisible) ar << 1; else ar << 0;
+		if (pFoil->m_PointStyle>0)   ar << 1; else ar << 0;//1004
+		if (pFoil->m_bCenterLine)    ar << 1; else ar << 0;//1004
+		if (pFoil->m_bLEFlap)        ar << 1; else ar << 0;
+		ar << (float)pFoil->m_LEFlapAngle << (float)pFoil->m_LEXHinge << (float)pFoil->m_LEYHinge;
+		if (pFoil->m_bTEFlap)        ar << 1; else ar << 0;
+		ar << (float)pFoil->m_TEFlapAngle << (float)pFoil->m_TEXHinge << (float)pFoil->m_TEYHinge;
+		ar << 1.f << 1.f << 9.f;//formerly transition parameters
+		ar << pFoil->nb;
+		for (j=0; j<pFoil->nb; j++)
+		{
+			ar << (float)pFoil->xb[j] << (float)pFoil->yb[j];
+		}
+		ar << pFoil->n;
+		for (j=0; j<pFoil->n; j++)
+		{
+			ar << (float)pFoil->x[j] << (float)pFoil->y[j];
+		}
+		return true;
+	}
+	else
+	{
+		ar >> ArchiveFormat;
+		if(ArchiveFormat<1000||ArchiveFormat>1010)
+			return false;
+
+		readString(ar, pFoil->m_FoilName);
+		if(ArchiveFormat>=1006)
+		{
+			readString(ar, pFoil->m_FoilDescription);
+		}
+		if(ArchiveFormat>=1002)
+		{
+			ar >> pFoil->m_FoilStyle >> pFoil->m_FoilWidth;
+			readColor(ar, pFoil->m_red, pFoil->m_green, pFoil->m_blue);
+		}
+		if(ArchiveFormat>=1003)
+		{
+			ar >> p;
+			if(p) pFoil->m_bIsFoilVisible = true; else pFoil->m_bIsFoilVisible = false;
+		}
+		if(ArchiveFormat>=1004)
+		{
+			ar >> p;
+			pFoil->m_PointStyle = p;
+			ar >> p;
+			if(p) pFoil->m_bCenterLine = true; else pFoil->m_bCenterLine = false;
+		}
+
+		if(ArchiveFormat>=1005)
+		{
+			ar >> p;
+			if (p) pFoil->m_bLEFlap = true; else pFoil->m_bLEFlap = false;
+			ar >> f; pFoil->m_LEFlapAngle =f;
+			ar >> f; pFoil->m_LEXHinge = f;
+			ar >> f; pFoil->m_LEYHinge = f;
+		}
+		ar >> p;
+		if (p) pFoil->m_bTEFlap = true; else pFoil->m_bTEFlap = false;
+		ar >> f; pFoil->m_TEFlapAngle =f;
+		ar >> f; pFoil->m_TEXHinge = f;
+		ar >> f; pFoil->m_TEYHinge = f;
+
+		ar >> f >> f >> f; //formerly transition parameters
+		ar >> pFoil->nb;
+		if(pFoil->nb>IBX) return false;
+
+		for (j=0; j<pFoil->nb; j++)
+		{
+			ar >> f >> ff;
+			pFoil->xb[j]  = f;  pFoil->yb[j]=ff;
+		}
+		if(ArchiveFormat>=1001)
+		{
+			ar >> pFoil->n;
+			if(pFoil->n>IBX) return false;
+
+			for (j=0; j<pFoil->n; j++)
+			{
+				ar >> f >> ff;
+				pFoil->x[j]=f; pFoil->y[j]=ff;
+			}
+			if(pFoil->nb==0 && pFoil->n!=0)
+			{
+				pFoil->nb = pFoil->n;
+				memcpy(pFoil->xb, pFoil->x, sizeof(pFoil->xb));
+				memcpy(pFoil->yb, pFoil->y, sizeof(pFoil->yb));
+			}
+		}
+		else
+		{
+			memcpy(pFoil->x, pFoil->xb, sizeof(pFoil->xb));
+			memcpy(pFoil->y, pFoil->yb, sizeof(pFoil->yb));
+			pFoil->n=pFoil->nb;
+		}
+
+
+		pFoil->initFoil();
+		pFoil->setFlap();
+
+		return true;
+	}
+}
+
+
+
+/**
+ * Loads or saves the data of this polar to a binary file
+ * @param ar the QDataStream object from/to which the data should be serialized
+ * @param bIsStoring true if saving the data, false if loading
+ * @return true if the operation was successful, false otherwise
+ */
+bool serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
+{
+	int i, j, n, l, k;
+	int ArchiveFormat;// identifies the format of the file
+	float f;
+
+	if(bIsStoring)
+	{
+		//write variables
+		n = (int)pPolar->m_Alpha.size();
+
+		ar << 1004; // identifies the format of the file
+		// 1004 : added XCp
+		// 1003 : re-instated NCrit, XtopTr and XBotTr with polar
+		writeString(ar, pPolar->m_FoilName);
+		writeString(ar, pPolar->m_PlrName);
+
+		if(pPolar->m_PolarType==XFOIL::FIXEDSPEEDPOLAR)       ar<<1;
+		else if(pPolar->m_PolarType==XFOIL::FIXEDLIFTPOLAR)   ar<<2;
+		else if(pPolar->m_PolarType==XFOIL::RUBBERCHORDPOLAR) ar<<3;
+		else if(pPolar->m_PolarType==XFOIL::FIXEDAOAPOLAR)    ar<<4;
+		else                                   ar<<1;
+
+		ar << pPolar->m_MaType << pPolar->m_ReType  ;
+		ar << (int)pPolar->m_Reynolds << (float)pPolar->m_Mach ;
+		ar << (float)pPolar->m_ASpec;
+		ar << n << (float)pPolar->m_ACrit;
+		ar << (float)pPolar->m_XTop << (float)pPolar->m_XBot;
+		writeColor(ar, pPolar->m_red, pPolar->m_green, pPolar->m_blue);
+
+		ar << pPolar->m_Style << pPolar->m_Width;
+		if (pPolar->m_bIsVisible)  ar<<1; else ar<<0;
+		ar<<pPolar->m_PointStyle;
+
+		for (i=0; i< pPolar->m_Alpha.size(); i++){
+			ar << (float)pPolar->m_Alpha[i] << (float)pPolar->m_Cd[i] ;
+			ar << (float)pPolar->m_Cdp[i]   << (float)pPolar->m_Cl[i] << (float)pPolar->m_Cm[i];
+			ar << (float)pPolar->m_XTr1[i]  << (float)pPolar->m_XTr2[i];
+			ar << (float)pPolar->m_HMom[i]  << (float)pPolar->m_Cpmn[i];
+			ar << (float)pPolar->m_Re[i];
+			ar << (float)pPolar->m_XCp[i];
+		}
+
+		ar << pPolar->m_ACrit << pPolar->m_XTop << pPolar->m_XBot;
+
+		return true;
+	}
+	else
+	{
+		//read variables
+		float Alpha, Cd, Cdp, Cl, Cm, XTr1, XTr2, HMom, Cpmn, Re, XCp;
+		int iRe;
+		ar >> ArchiveFormat;
+		if (ArchiveFormat <1001 ||ArchiveFormat>1100)
+		{
+			return false;
+		}
+
+		readString(ar, pPolar->m_FoilName);
+		readString(ar, pPolar->m_PlrName);
+
+		if(pPolar->m_FoilName =="" || pPolar->m_PlrName =="" )
+		{
+			return false;
+		}
+
+		ar >>k;
+		if(k==1)      pPolar->m_PolarType = XFOIL::FIXEDSPEEDPOLAR;
+		else if(k==2) pPolar->m_PolarType = XFOIL::FIXEDLIFTPOLAR;
+		else if(k==3) pPolar->m_PolarType = XFOIL::RUBBERCHORDPOLAR;
+		else if(k==4) pPolar->m_PolarType = XFOIL::FIXEDAOAPOLAR;
+		else          pPolar->m_PolarType = XFOIL::FIXEDSPEEDPOLAR;
+
+
+		ar >> pPolar->m_MaType >> pPolar->m_ReType;
+
+		if(pPolar->m_MaType!=1 && pPolar->m_MaType!=2 && pPolar->m_MaType!=3)
+		{
+			return false;
+		}
+		if(pPolar->m_ReType!=1 && pPolar->m_ReType!=2 && pPolar->m_ReType!=3)
+		{
+			return false;
+		}
+
+		ar >> iRe;
+		pPolar->m_Reynolds = (double) iRe;
+		ar >> f; pPolar->m_Mach =f;
+
+		ar >> f; pPolar->m_ASpec =f;
+
+		ar >> n;
+		ar >> f; pPolar->m_ACrit =f;
+		ar >> f; pPolar->m_XTop =f;
+		ar >> f; pPolar->m_XBot =f;
+
+		readColor(ar, pPolar->m_red, pPolar->m_green, pPolar->m_blue);
+
+		ar >> pPolar->m_Style >> pPolar->m_Width;
+
+		if(ArchiveFormat>=1002)
+		{
+			ar >> l;
+			if(l!=0 && l!=1 )
+			{
+				return false;
+			}
+			if (l) pPolar->m_bIsVisible =true; else pPolar->m_bIsVisible = false;
+		}
+
+		ar >> l;  pPolar->m_PointStyle =l;
+
+		bool bExists;
+		for (i=0; i< n; i++)
+		{
+			ar >> Alpha >> Cd >> Cdp >> Cl >> Cm;
+			ar >> XTr1 >> XTr2;
+			ar >> HMom >> Cpmn;
+
+			if(ArchiveFormat >=4) ar >> Re;
+			else                  Re = (float)pPolar->m_Reynolds;
+
+			if(ArchiveFormat>=1004) ar>> XCp;
+			else                    XCp = 0.0;
+
+			bExists = false;
+			if(pPolar->m_PolarType!=XFOIL::FIXEDAOAPOLAR)
+			{
+				for (j=0; j<pPolar->m_Alpha.size(); j++)
+				{
+					if(qAbs(Alpha-pPolar->m_Alpha[j])<0.001)
+					{
+						bExists = true;
+						break;
+					}
+				}
+			}
+			else
+			{
+				for (j=0; j<pPolar->m_Re.size(); j++)
+				{
+					if(qAbs(Re-pPolar->m_Re[j])<0.1)
+					{
+						bExists = true;
+						break;
+					}
+				}
+			}
+			if(!bExists)
+			{
+				pPolar->addPoint(Alpha, Cd, Cdp, Cl, Cm, XTr1, XTr2, HMom, Cpmn, Re, XCp);
+			}
+		}
+		if(ArchiveFormat>=1003)
+			ar >>pPolar->m_ACrit >> pPolar->m_XTop >> pPolar->m_XBot;
+	}
+	return true;
+}
+

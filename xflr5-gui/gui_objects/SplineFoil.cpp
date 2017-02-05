@@ -24,7 +24,7 @@
 #include "SplineFoil.h"
 #include <objects2d/Foil.h>
 #include <globals.h>
-#include <engine_globals.h>
+#include <objects_global.h>
 
 /**
  * The public costructor.
@@ -213,6 +213,7 @@ bool SplineFoil::serialize(QDataStream &ar, bool bIsStoring)
 {
 	float f,x,y;
 	int ArchiveFormat,k,n;
+    int r,g,b;
 
 	if(bIsStoring)
 	{
@@ -224,7 +225,7 @@ bool SplineFoil::serialize(QDataStream &ar, bool bIsStoring)
 		if(ArchiveFormat < 100000 || ArchiveFormat > 110000) return false;
 		readCString(ar, m_strFoilName);
 		m_strFoilName = QObject::tr("Spline Foil");
-		readCOLORREF(ar, m_FoilColor);
+        readCOLORREF(ar, r,g,b);
 		ar >>m_FoilStyle >> m_FoilWidth;
 
 		m_Extrados.setSplineParams(m_FoilStyle, m_FoilWidth, m_FoilColor);
@@ -238,7 +239,7 @@ bool SplineFoil::serialize(QDataStream &ar, bool bIsStoring)
 		{
 			ar >> x;
 			ar >> y;
-			m_Extrados.m_CtrlPoint.append(CVector(x,y,0.0));
+			m_Extrados.m_CtrlPoint.append(Vector3d(x,y,0.0));
 		}
 		if(ArchiveFormat<100306)
 		{
@@ -254,7 +255,7 @@ bool SplineFoil::serialize(QDataStream &ar, bool bIsStoring)
 		{
 			ar >> x;
 			ar >> y;
-			m_Intrados.m_CtrlPoint.append(CVector(x,y,0.0));
+			m_Intrados.m_CtrlPoint.append(Vector3d(x,y,0.0));
 		}
 		if(ArchiveFormat<100306)
 		{
@@ -348,7 +349,7 @@ bool SplineFoil::serializeXFL(QDataStream &ar, bool bIsStoring)
 		for (k=0; k<n;k++)
 		{
 			ar >> x >> y;
-			m_Extrados.m_CtrlPoint.append(CVector(x, y, 0.0));
+			m_Extrados.m_CtrlPoint.append(Vector3d(x, y, 0.0));
 		}
 
 		m_Intrados.m_CtrlPoint.clear();
@@ -356,7 +357,7 @@ bool SplineFoil::serializeXFL(QDataStream &ar, bool bIsStoring)
 		for (k=0; k<n;k++)
 		{
 			ar >> x >> y;
-			m_Intrados.m_CtrlPoint.append(CVector(x, y, 0.0));
+			m_Intrados.m_CtrlPoint.append(Vector3d(x, y, 0.0));
 		}
 
 		// space allocation

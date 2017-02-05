@@ -31,14 +31,14 @@
 #include <QLabel>
 #include <QRadioButton>
 #include <QTextEdit>
-#include <graph/QGraph.h>
+#include <QGraph.h>
 #include "graphwidget.h"
 #include <objects2d/Foil.h>
 #include <objects2d/Polar.h>
 #include <misc/IntEdit.h>
 #include <misc/DoubleEdit.h>
-#include <XFoilTask.h>
-#include <xfoiltaskevent.h>
+#include <xdirect/analysis/XFoilTask.h>
+#include <xdirect/analysis/xfoiltaskevent.h>
 
 
 

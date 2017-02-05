@@ -24,7 +24,7 @@
 #define LINECBBOX_H
 
 #include <QComboBox>
-#include <misc/linestyle.h>
+#include <linestyle.h>
 
 
 class LineCbBox : public QComboBox

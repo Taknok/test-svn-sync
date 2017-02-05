@@ -43,7 +43,7 @@ void gl3dBodyView::glRenderView()
 		if(m_pBody->activeFrame())
 			paintSectionHighlight();
 		if(m_bVLMPanels) paintBodyMesh(m_pBody);
-		if(m_bShowMasses) paintMasses(m_pBody->volumeMass(), CVector(0.0,0.0,0.0), "Structural mass", m_pBody->m_PointMass);
+		if(m_bShowMasses) paintMasses(m_pBody->volumeMass(), Vector3d(0.0,0.0,0.0), "Structural mass", m_pBody->m_PointMass);
 	}
 }
 
@@ -91,7 +91,7 @@ void gl3dBodyView::glMake3DObjects()
 	{
 		if(m_pBody->activeFrame())
 		{
-			glMakeBodyFrameHighlight(m_pBody,CVector(0.0,0.0,0.0), m_pBody->m_iActiveFrame);
+			glMakeBodyFrameHighlight(m_pBody,Vector3d(0.0,0.0,0.0), m_pBody->m_iActiveFrame);
 			m_bResetglFrameHighlight = false;
 		}
 	}
@@ -113,7 +113,7 @@ void gl3dBodyView::set3DRotationCenter(QPoint point)
 	//adjusts the new rotation center after the user has picked a point on the screen
 	//finds the closest panel under the point,
 	//and changes the rotation vector and viewport translation
-	CVector I, A, B, AA, BB, PP;
+	Vector3d I, A, B, AA, BB, PP;
 
 	screenToViewport(point, B);
 	B.z = -1.0;

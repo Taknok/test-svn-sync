@@ -22,6 +22,7 @@
 #include <QGroupBox>
 #include <QVBoxLayout>
 #include "InterpolateFoilsDlg.h"
+#include <xdirect/objects2d.h>
 #include <XFoil.h>
 
 
@@ -193,7 +194,7 @@ void InterpolateFoilsDlg::onSelChangeFoil1(int)
 {
 	QString strong  = m_pctrlFoil1->currentText();
 
-	Foil* pFoil = Foil::foil(strong);
+	Foil* pFoil = Objects2D::foil(strong);
 
 	if(pFoil)
 	{
@@ -222,7 +223,7 @@ void InterpolateFoilsDlg::onSelChangeFoil2(int)
 {
 	QString strong  = m_pctrlFoil2->currentText();
 
-	Foil* pFoil = Foil::foil(strong);
+	Foil* pFoil = Objects2D::foil(strong);
 
 	if(pFoil)
 	{
@@ -251,10 +252,10 @@ void InterpolateFoilsDlg::update()
 	QString strong;
 
 	strong = m_pctrlFoil1->currentText();
-	Foil* pFoil1 = Foil::foil(strong);
+	Foil* pFoil1 = Objects2D::foil(strong);
 
 	strong = m_pctrlFoil2->currentText();
-	Foil* pFoil2 = Foil::foil(strong);
+	Foil* pFoil2 = Objects2D::foil(strong);
 
 	if(!pFoil1 || !pFoil2) return;
 

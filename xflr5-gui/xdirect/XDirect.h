@@ -41,8 +41,9 @@
 #include <misc/DoubleEdit.h>
 #include <objects2d/Polar.h>
 #include <objects2d/Foil.h>
+#include <gui_enums.h>
 #include <objects2d/OpPoint.h>
-#include <graph/QGraph.h>
+#include <QGraph.h>
 #include "analysis/XFoilAnalysisDlg.h"
 #include <XFoil.h>
 #include <viewwidgets/oppointwidget.h>
@@ -118,7 +119,7 @@ public slots:
 	void onHideAllPolars();
 	void onHideFoilPolars();
 	void onImportJavaFoilPolar();
-	void onImportXFoilPolar();
+	void onImportXFoilPolars();
 	void onImportXMLAnalysis();
 	void onOpPointView();
 	void onPolarView();
@@ -189,7 +190,8 @@ public:
 
 	void getPolarProperties(Polar *pPolar, QString polarProps);
 
-	void importPolarFromXML(QFile &xmlFile);
+	void importAnalysisFromXML(QFile &xmlFile);
+	Polar *importXFoilPolar(QFile &txtFile);
 
 	void loadSettings(QSettings *pSettings);
 	void readParams();
@@ -219,6 +221,15 @@ public:
 	QGraph *CpGraph(){return &m_CpGraph;}
 	QGraph *PlrGraph(int iPlrGraph){return m_PlrGraph.at(iPlrGraph);}
 	int PlrGraphSize(){return m_PlrGraph.count();}
+
+	static void setCurFoil(Foil*pFoil)    {m_pCurFoil = pFoil;}
+	static void setCurPolar(Polar*pPolar) {m_pCurPolar = pPolar;}
+	static void setCurOpp(OpPoint* pOpp)  {m_pCurOpp = pOpp;}
+
+	static Foil *   curFoil()  {return m_pCurFoil;}
+	static Polar*   curPolar() {return m_pCurPolar;}
+	static OpPoint* curOpp()   {return m_pCurOpp;}
+
 
 private:
 
@@ -341,6 +352,9 @@ private:
 
 	XFoil *m_pXFoil;		    /**< a pointer to the unique instance of the XFoil object */
 
+	static Foil *m_pCurFoil;
+	static Polar *m_pCurPolar;
+	static OpPoint *m_pCurOpp;
 };
 
 

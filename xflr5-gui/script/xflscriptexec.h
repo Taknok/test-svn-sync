@@ -28,8 +28,7 @@
 #include <objects3d/WPolar.h>
 
 #include <plane_analysis/planeanalysistask.h>
-#include <XFoilTask.h>
-
+#include <xdirect/analysis/XFoilTask.h>
 
 class XflScriptExec
 {

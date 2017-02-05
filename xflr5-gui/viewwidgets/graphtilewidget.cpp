@@ -475,10 +475,11 @@ void GraphTileWidget::onResetCurGraphScales()
 
 void GraphTileWidget::onExportCurGraph()
 {
+	MainFrame*pMainFrame = (MainFrame*)s_pMainFrame;
 	if(!isVisible()) return;
 	QGraph *pGraph = activeGraph();
 	if(!pGraph) return;
-	pGraph->exportGraph();
+	pMainFrame->exportGraph(pGraph);
 	setFocus();
 }
 

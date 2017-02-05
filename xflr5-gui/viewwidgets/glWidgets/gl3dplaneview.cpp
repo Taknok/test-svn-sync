@@ -78,7 +78,7 @@ void gl3dPlaneView::set3DRotationCenter(QPoint point)
 	//adjusts the new rotation center after the user has picked a point on the screen
 	//finds the closest panel under the point,
 	//and changes the rotation vector and viewport translation
-	CVector I, A, B, AA, BB, PP;
+	Vector3d I, A, B, AA, BB, PP;
 
 	screenToViewport(point, B);
 	B.z = -1.0;

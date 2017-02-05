@@ -35,8 +35,9 @@
 #include <miarex/Objects3D.h>
 #include <xinverse/XInverse.h>
 #include <xdirect/XDirect.h>
+#include <xdirect/objects2d.h>
 #include <QPainter>
-#include <QtDebug>
+
 
 void* LegendWidget::s_pMainFrame = NULL;
 void* LegendWidget::s_pMiarex = NULL;
@@ -582,12 +583,12 @@ void LegendWidget::drawPolarLegend(QPainter &painter, QPointF place, int bottom)
 	QStringList str; // we need to make an inventory of foils
 	Polar * pPolar;
 	Foil *pFoil;
-	for (j=0; j<Foil::s_oaFoil.size(); j++)
+	for (j=0; j<Objects2D::s_oaFoil.size(); j++)
 	{
-		pFoil = (Foil*)Foil::s_oaFoil.at(j);
-		for (i=0; i<Polar::s_oaPolar.size(); i++)
+		pFoil = Objects2D::s_oaFoil.at(j);
+		for (i=0; i<Objects2D::s_oaPolar.size(); i++)
 		{
-			pPolar = (Polar*)Polar::s_oaPolar.at(i);
+			pPolar = (Polar*)Objects2D::s_oaPolar.at(i);
 			if (pPolar->foilName() == pFoil->foilName() && pPolar->m_Alpha.size() && pPolar->isVisible())
 			{
 				str.append(pFoil->foilName());
@@ -607,9 +608,9 @@ void LegendWidget::drawPolarLegend(QPainter &painter, QPointF place, int bottom)
 	for (k=0; k<nFoils; k++)
 	{
 		int FoilPlrs = 0;
-		for (l=0; l < Polar::s_oaPolar.count(); l++)
+		for (l=0; l < Objects2D::s_oaPolar.count(); l++)
 		{
-			pPolar = (Polar*)Polar::s_oaPolar.at(l);
+			pPolar = (Polar*)Objects2D::s_oaPolar.at(l);
 			if (pPolar->m_Alpha.size() &&
 				pPolar->polarName().length() &&
 				pPolar->isVisible() &&
@@ -636,9 +637,9 @@ void LegendWidget::drawPolarLegend(QPainter &painter, QPointF place, int bottom)
 			painter.drawText(place.x() + 0.5*LegendSize, place.y() + legendHeight*ny-legendHeight/2,
 							 str.at(k));
 		}
-		for (nc=0; nc<Polar::s_oaPolar.count(); nc++)
+		for (nc=0; nc<Objects2D::s_oaPolar.count(); nc++)
 		{
-			pPolar = (Polar*)Polar::s_oaPolar.at(nc);
+			pPolar = (Polar*)Objects2D::s_oaPolar.at(nc);
 			if(str.at(k) == pPolar->foilName())
 			{
 				if (pPolar->m_Alpha.size() && pPolar->polarName().length() && pPolar->isVisible())

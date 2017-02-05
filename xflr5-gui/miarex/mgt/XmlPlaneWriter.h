@@ -25,13 +25,15 @@
 #include <QXmlStreamWriter>
 #include <objects3d/Plane.h>
 
+#include <QFile>
+
 class XMLPlaneWriter : public QXmlStreamWriter
 {
 public:
 	XMLPlaneWriter(QFile &XFile);
 	void writeXMLPlane(Plane *m_pPlane);
 	void writeXMLBody(Body *pBody);
-	void writeBody(Body *pBody, CVector position, double lengthUnit, double massUnit);
+	void writeBody(Body *pBody, Vector3d position, double lengthUnit, double massUnit);
 
 private:
 	void writeHeader();

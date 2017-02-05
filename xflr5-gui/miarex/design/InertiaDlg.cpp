@@ -104,7 +104,7 @@ void InertiaDlg::computeInertia()
 {
 	int i, iw;
 	double TotalMass, TotalIxx, TotalIyy, TotalIzz, TotalIxz;
-	CVector TotalCoG, MassPos;
+	Vector3d TotalCoG, MassPos;
 
 	m_CoGIxx = m_CoGIyy = m_CoGIzz = m_CoGIxz = 0.0;
 	m_VolumeCoG.set(0.0, 0.0, 0.0);
@@ -191,7 +191,7 @@ void InertiaDlg::computeInertia()
 
 	//Total inertia in CoG referential
 	//Apply Huyghens theorem to convert the object's inertia to the new frame
-	CVector LA = TotalCoG - m_VolumeCoG;
+	Vector3d LA = TotalCoG - m_VolumeCoG;
 	TotalIxx = m_CoGIxx + m_VolumeMass * (LA.y*LA.y+ LA.z*LA.z);
 	TotalIyy = m_CoGIyy + m_VolumeMass * (LA.x*LA.x+ LA.z*LA.z);
 	TotalIzz = m_CoGIzz + m_VolumeMass * (LA.x*LA.x+ LA.y*LA.y);
@@ -219,7 +219,7 @@ void InertiaDlg::computeInertia()
 			{
 				for(i=0; i<pWing[iw]->m_PointMass.size(); i++)
 				{
-					MassPos = TotalCoG - (pWing[iw]->m_PointMass[i]->position() + (m_pPlane != NULL ? m_pPlane->WingLE(iw) : CVector(0.0, 0.0, 0.0)));
+					MassPos = TotalCoG - (pWing[iw]->m_PointMass[i]->position() + (m_pPlane != NULL ? m_pPlane->WingLE(iw) : Vector3d(0.0, 0.0, 0.0)));
 					TotalIxx  += pWing[iw]->m_PointMass[i]->mass() * (MassPos.y*MassPos.y + MassPos.z*MassPos.z);
 					TotalIyy  += pWing[iw]->m_PointMass[i]->mass() * (MassPos.x*MassPos.x + MassPos.z*MassPos.z);
 					TotalIzz  += pWing[iw]->m_PointMass[i]->mass() * (MassPos.x*MassPos.x + MassPos.y*MassPos.y);
@@ -465,7 +465,7 @@ void InertiaDlg::onExportToAVL()
 
 	QString FileName, strong;
 	double CoGIxx, CoGIyy, CoGIzz, CoGIxz;
-	CVector CoG;
+	Vector3d CoG;
 
 	Wing *pWing[MAXWINGS];
 	pWing[0] = pWing[1] = pWing[2] = pWing[3] = NULL;
@@ -692,7 +692,7 @@ void InertiaDlg::onInsertMassRow()
 	int sel;
 	sel = m_pctrlMassTable->currentIndex().row();
 
-	m_PointMass.insert(sel, new PointMass(0.0, CVector(0.0,0.0,0.0), ""));
+	m_PointMass.insert(sel, new PointMass(0.0, Vector3d(0.0,0.0,0.0), ""));
 
 	fillMassModel();
 	m_pctrlMassTable->closePersistentEditor(m_pctrlMassTable->currentIndex());
@@ -796,7 +796,7 @@ void InertiaDlg::readData()
 		if(qAbs(mass)>PRECISION || qAbs(x)>PRECISION || qAbs(y)>PRECISION || qAbs(z)>PRECISION || tag.length())
 		{
 			m_PointMass.append(new PointMass(mass/Units::kgtoUnit(),
-											 CVector(x/Units::mtoUnit(), y/Units::mtoUnit(), z/Units::mtoUnit()),
+											 Vector3d(x/Units::mtoUnit(), y/Units::mtoUnit(), z/Units::mtoUnit()),
 											 tag));
 		}
 	}
