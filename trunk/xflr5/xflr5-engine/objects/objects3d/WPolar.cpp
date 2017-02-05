@@ -447,20 +447,31 @@ void WPolar::calculatePoint(int iPt)
 	m_CoG_z[iPt]  = m_CoG.z + m_Ctrl[iPt] * m_inertiaGain[2];
 
 	double OmegaN, Omega1, Dsi;
-    modeProperties(m_EigenValue[2][iPt], Omega1, OmegaN, Dsi);
-	m_PhugoidDamping[iPt]   = Dsi;
-	m_PhugoidFrequency[iPt] = Omega1/2.0/PI;
+	if(isStabilityPolar())
+	{
+		modeProperties(m_EigenValue[2][iPt], Omega1, OmegaN, Dsi);
+		m_PhugoidDamping[iPt]   = Dsi;
+		m_PhugoidFrequency[iPt] = Omega1/2.0/PI;
 
-    modeProperties(m_EigenValue[0][iPt], Omega1, OmegaN, Dsi);
-	m_ShortPeriodFrequency[iPt] = Omega1/2.0/PI;
-	m_ShortPeriodDamping[iPt]   = Dsi;
+		modeProperties(m_EigenValue[0][iPt], Omega1, OmegaN, Dsi);
+		m_ShortPeriodFrequency[iPt] = Omega1/2.0/PI;
+		m_ShortPeriodDamping[iPt]   = Dsi;
 
-    modeProperties(m_EigenValue[5][iPt], Omega1, OmegaN, Dsi);
-	m_DutchRollFrequency[iPt] = Omega1/2.0/PI;
-	m_DutchRollDamping[iPt]   = Dsi;
+		modeProperties(m_EigenValue[5][iPt], Omega1, OmegaN, Dsi);
+		m_DutchRollFrequency[iPt] = Omega1/2.0/PI;
+		m_DutchRollDamping[iPt]   = Dsi;
 
-	m_RollDampingT2[iPt]    = log(2.0)/fabs(m_EigenValue[4][iPt].real());
-	m_SpiralDampingT2[iPt]  = log(2.0)/fabs(m_EigenValue[7][iPt].real());
+		m_RollDampingT2[iPt]    = log(2.0)/fabs(m_EigenValue[4][iPt].real());
+		m_SpiralDampingT2[iPt]  = log(2.0)/fabs(m_EigenValue[7][iPt].real());
+	}
+	else
+	{
+		m_PhugoidDamping[iPt] = m_PhugoidFrequency[iPt] = 0.0;
+		m_ShortPeriodFrequency[iPt] = m_ShortPeriodDamping[iPt] = 0.0;
+		m_DutchRollFrequency[iPt] = m_DutchRollDamping[iPt] = 0.0;
+		m_RollDampingT2[iPt] = m_SpiralDampingT2[iPt] = 0.0;
+	}
+//qDebug()<<	m_EigenValue[4][iPt].real()<<m_EigenValue[7][iPt].real();
 }
 
 
