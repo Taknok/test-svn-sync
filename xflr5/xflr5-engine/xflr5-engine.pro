@@ -20,8 +20,7 @@ INCLUDEPATH += $$PWD/analysis3d
 INCLUDEPATH += $$PWD/plane_analysis
 
 
-SOURCES += xflr5engine.cpp \
-    objects/objects_global.cpp \
+SOURCES += objects/objects_global.cpp \
     objects/objects2d/Foil.cpp \
     objects/objects2d/OpPoint.cpp \
     objects/objects2d/Polar.cpp \
@@ -43,9 +42,7 @@ SOURCES += xflr5engine.cpp \
     objects/objects3d/WingOpp.cpp \
     objects/objects3d/WPolar.cpp
 
-HEADERS += xflr5engine.h\
-		engine_globals.h \
-    objects/engine_enums.h \
+HEADERS += objects/engine_enums.h \
     objects/engine_params.h \
     objects/objects_global.h \
     objects/objects2d/Foil.h \
