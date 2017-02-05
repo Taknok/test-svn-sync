@@ -23,6 +23,7 @@
 #include <misc/LinePickerDlg.h>
 #include <objects2d/Polar.h>
 #include <objects3d/WPolar.h>
+#include <miarex/Miarex.h>
 #include <QFontDialog>
 #include <QColorDialog>
 #include <QPalette>
@@ -161,8 +162,8 @@ void GraphDlg::fillVariableList()
 			//WingPolar Graph Variables
 			for(int iVar=0; iVar<50; iVar++)
 			{
-				m_pctrlXSel->addItem(WPolar::variableName(iVar));
-				m_pctrlYSel->addItem(WPolar::variableName(iVar));
+				m_pctrlXSel->addItem(QMiarex::WPolarVariableName(iVar));
+				m_pctrlYSel->addItem(QMiarex::WPolarVariableName(iVar));
 			}
 			break;
 		}

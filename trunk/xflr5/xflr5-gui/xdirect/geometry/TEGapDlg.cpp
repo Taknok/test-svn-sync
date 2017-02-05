@@ -219,7 +219,6 @@ void TEGapDlg::onApply()
 			m_pBufferFoil->yb[j] = pXFoil->yb[j+1];
 		}
 		m_pBufferFoil->nb = pXFoil->nb;
-//		pXFoil->SetFoilFlap(m_pBufferFoil);
 		m_pBufferFoil->initFoil();
 		m_pBufferFoil->setFlap();
 	}

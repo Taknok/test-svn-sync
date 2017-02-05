@@ -58,7 +58,7 @@ public:
 	void contextMenuEvent(QContextMenuEvent *event);
 
 
-	bool intersectObject(CVector AA,  CVector U, CVector &I);
+	bool intersectObject(Vector3d AA,  Vector3d U, Vector3d &I);
 	void connectSignals();
 	void glMake3DObjects();
 	void identifySelection(const QModelIndex &indexSel);
@@ -67,7 +67,7 @@ public:
 	void fillBodyTreeView();
 	void readBodyTree(QModelIndex indexLevel);
 	void readInertiaTree(double &volumeMass, QList<PointMass *> &pointMasses, QModelIndex indexLevel);
-	void readVectorTree(CVector &V, QModelIndex indexLevel);
+	void readVectorTree(Vector3d &V, QModelIndex indexLevel);
 	void readPointMassTree(PointMass *ppm, QModelIndex indexLevel);
 	void readBodyFrameTree(Frame *pFrame, QModelIndex indexLevel);
 	void resizeTreeView();

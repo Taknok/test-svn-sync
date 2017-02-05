@@ -24,10 +24,10 @@
 
 #include <QCoreApplication>
 #include <QDataStream>
+#include <QtDebug>
 
 #include "XFoil.h"
-#include <objects2d/Foil.h>
-#include <objects2d/Polar.h>
+
 
 bool XFoil::s_bCancel = false;
 bool XFoil::s_bFullReport = false;
@@ -47,7 +47,7 @@ XFoil::XFoil()
 	// imx   number of complex mapping coefficients  cn
 	m_bTrace = false;
 	
-	sccon = 5.6  ;
+    sccon = 5.6;
 	gacon = 6.70;
 	gbcon = 0.75;
 	gbc0  = 0.60;
@@ -88,7 +88,7 @@ XFoil::XFoil()
 	retyp = 1;
 	reinf1 = 0.0;
 
-	Initialize();
+	initialize();
 }
 
 XFoil::~XFoil()
@@ -3448,7 +3448,7 @@ bool XFoil::iblsys()
 }
 
 
-bool XFoil::Initialize()
+bool XFoil::initialize()
 {
 //---------------------------------------------------
 //     variable initialization/default routine.
@@ -4005,23 +4005,21 @@ bool XFoil::Initialize()
 }
 
 
-
-bool XFoil::InitXFoilGeometry(int*fn, double*fx, double*fy, double*fnx, double*fny)
+bool XFoil::initXFoilGeometry(int &fn, double*fx, double*fy, double*fnx, double*fny)
 {
 	//loads the Foil's geometry in XFoil,
 	//calculates normal vectors,
 	//and sets results in current foil
 
-
 	int i, k;
 
-	for (i =0; i<*fn; i++)
+	for (i =0; i<fn; i++)
 	{
 		xb[i+1] = fx[i];
 		yb[i+1] = fy[i];
 	}
 
-	nb = *fn;
+	nb = fn;
 	lflap  = false;
 	lbflap = false;
 
@@ -4042,7 +4040,7 @@ bool XFoil::InitXFoilGeometry(int*fn, double*fx, double*fy, double*fnx, double*f
 			fnx[k] = nx[k+1];
 			fny[k] = ny[k+1];
 		}
-		*fn = n;
+		fn = n;
 		return true;
 	}
 	else
@@ -4054,35 +4052,31 @@ bool XFoil::InitXFoilGeometry(int*fn, double*fx, double*fy, double*fnx, double*f
 }
 
 
-
-bool XFoil::InitXFoilAnalysis(void *pPolarPtr, bool bViscous, QTextStream &outStream)
+bool XFoil::initXFoilAnalysis(double Re, double alpha, double Mach, double NCrit, double XtrTop, double XtrBot,
+							  int reType, int maType, bool bViscous, QTextStream &outStream)
 {
 	//Sets Analysis parameters in XFoil
-	if(!pPolarPtr) return false;
-
 	m_pOutStream = &outStream;
-
-	Polar *pPolar = (Polar*)pPolarPtr;
 
 	lblini = false;
 	lipan = false;
 
-	reinf1 = pPolar->Reynolds();
-	if (pPolar->polarType()==XFOIL::FIXEDAOAPOLAR) alfa = pPolar->aoa()*PI/180.0;
+	reinf1 = Re;
+	alfa =alpha*PI/180.0;
 
-	minf1  = pPolar->Mach();
-	retyp  = pPolar->ReType();
-	matyp  = pPolar->MaType();
+	minf1  = Mach;
+	retyp  = reType;
+	matyp  = maType;
 	lalfa = true;
 	qinf  = 1.0;
 
 	lvisc = bViscous;
 
-	acrit      = pPolar->NCrit();
-	xstrip[1]  = pPolar->XtrTop();
-	xstrip[2]  = pPolar->XtrBot();
+	acrit      = NCrit;
+	xstrip[1]  = XtrTop;
+	xstrip[2]  = XtrBot;
 
-	if (pPolar->Mach() > 0.000001)
+	if (Mach > 0.000001)
 	{
 		if(!SetMach())
 		{
@@ -4094,8 +4088,6 @@ bool XFoil::InitXFoilAnalysis(void *pPolarPtr, bool bViscous, QTextStream &outSt
 
 	return true;
 }
-
-
 
 
 bool XFoil::inside(double x[], double y[], int n, double xf, double yf)
@@ -13176,56 +13168,6 @@ void XFoil::lerscl(double *x, double *xp, double* y, double *yp,
 		
 		xnew[i] = xle + xbar  *dxc - ybarct*dyc;
 		ynew[i] = yle + ybarct*dxc + xbar  *dyc;
-	}
-}
-
-
-
-
-void XFoil::setFoilFlap(void *pFoilPtr)
-{
-	if(!pFoilPtr) return;
-	Foil *pFoil = (Foil*)pFoilPtr;
-	Initialize();
-	m_bTrace = false;
-
-	for(int i =0; i<pFoil->nb; i++)
-	{
-		xb[i+1] = pFoil->xb[i];
-		yb[i+1] = pFoil->yb[i];
-	}
-	nb = pFoil->nb;
-	lbflap = false;
-	ddef = 0.0;
-	xbf = 1.0;
-	ybf = 0.0;
-
-	if(Preprocess())
-	{
-		if(pFoil->m_bTEFlap)
-		{
-			lbflap = true;
-			
-			//hinge position is entered as a %, so convert
-			xbf  = pFoil->m_TEXHinge/100.0;
-			ybf  = pFoil->m_TEYHinge/100.0;
-			ddef = pFoil->m_TEFlapAngle;
-
-			flap();
-			abcopy();
-		}
-		for (int k=0; k<nb;k++)
-		{
-			pFoil->x[k]  = xb[k+1];
-			pFoil->y[k]  = yb[k+1];
-			pFoil->nx[k] = nx[k+1];
-			pFoil->ny[k] = ny[k+1];
-		}
-		pFoil->n = nb;
-		pFoil->initFoil();
-	}
-	else{
-			//what do I do now ?
 	}
 }
 

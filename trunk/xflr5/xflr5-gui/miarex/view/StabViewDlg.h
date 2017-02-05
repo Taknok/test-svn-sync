@@ -35,7 +35,7 @@
 #include <QTableView>
 #include <QStandardItemModel>
 #include <misc/DoubleEdit.h>
-#include <graph/Curve.h>
+#include <Curve.h>
 #include <misc/FloatEditDelegate.h>
 
 

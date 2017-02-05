@@ -25,7 +25,7 @@
 #include <QObject>
 #include <QWidget>
 #include <QGraph.h>
-#include <objects2d/CVector.h>
+#include <objects2d/Vector3d.h>
 #include <objects2d/OpPoint.h>
 
 class OpPointWidget : public QWidget
@@ -83,7 +83,7 @@ private:
 	void showPressure(bool bPressure){m_bPressure = bPressure;}
 	void showBL(bool bBL){m_bBL = bBL;}
 
-	CVector mousetoReal(QPoint point);
+	Vector3d mousetoReal(QPoint point);
 
 	static void *s_pMainFrame;   /**< A void pointer to the instance of the MainFrame object. */
 

@@ -29,7 +29,7 @@
 #include <QCheckBox>
 #include <QPushButton>
 
-#include <graph/QGraph.h>
+#include <QGraph.h>
 #include <misc/DoubleEdit.h>
 #include <misc/IntEdit.h>
 #include <misc/ColorButton.h>

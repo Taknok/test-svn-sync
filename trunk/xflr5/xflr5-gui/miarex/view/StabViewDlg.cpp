@@ -26,6 +26,7 @@
 #include <misc/Units.h>
 #include <miarex/Miarex.h>
 #include "StabViewDlg.h"
+#include <objects_global.h>
 
 #include <QGridLayout>
 #include <QGroupBox>
@@ -144,12 +145,12 @@ void StabViewDlg::fillEigenThings()
 {
     QMiarex * pMiarex = (QMiarex*)s_pMiarex;
 	complex<double> eigenvalue;
-	double OmegaN, Omega1, Dsi;
+	double OmegaN, Omega1, Zeta;
     QString strange;
     double u0, mac, span;
     complex<double> angle;
 
-	OmegaN = Omega1 = Dsi = u0 = mac = span = 0;
+	OmegaN = Omega1 = Zeta = u0 = mac = span = 0;
 
     QString ModeDescription = tr("<small>Mode Properties:")+"<br/>";
 
@@ -166,11 +167,10 @@ void StabViewDlg::fillEigenThings()
 		m_pctrlEigenValue->setText(strange);
         ModeDescription.append("Lambda="+strange+"<br/>");
 
-		modeProperties(eigenvalue, OmegaN, Omega1, Dsi);
+		modeProperties(eigenvalue, OmegaN, Omega1, Zeta);
 //		Omega1 = qAbs(eigenvalue.imag());
 //		OmegaN = sqrt(eigenvalue.real()*eigenvalue.real()+Omega1*Omega1);
 //		Dsi = -eigenvalue.real()/Omega1;
-
 
 		if(Omega1>PRECISION)
 		{
@@ -186,10 +186,10 @@ void StabViewDlg::fillEigenThings()
 		if(Omega1 > PRECISION)
 		{
 			m_pctrlFreqN->setValue(OmegaN/2.0/PI);
-			m_pctrlDsi->setValue(Dsi);
+			m_pctrlDsi->setValue(Zeta);
 			strange.sprintf("FN=%6.3f Hz",OmegaN/2.0/PI);
 			ModeDescription.append(strange+"<br/>");
-			strange.sprintf("Xi=%6.3f",Dsi);
+			strange.sprintf("Xi=%6.3f",Zeta);
 			ModeDescription.append(strange+"<br/>");
 		}
 		else
@@ -1061,10 +1061,6 @@ void StabViewDlg::setControls()
 	m_pctrlRLMode3->setEnabled(bStabPOpp);
 	m_pctrlRLMode4->setEnabled(bStabPOpp);
 
-	// Enable the time response controls only if
-	//   - the polar's type is 7
-	//   - we have an active wopp
-	//   - the StabilityView is0
 	bool bEnableTimeCtrl = pMiarex->m_pCurPOpp && pMiarex->m_pCurPOpp->polarType()==XFLR5::STABILITYPOLAR && pMiarex->m_iView==XFLR5::STABTIMEVIEW;
 	m_pctrlAddCurve->setEnabled(bEnableTimeCtrl);
 	m_pctrlRenameCurve->setEnabled(m_pctrlCurveList->count());

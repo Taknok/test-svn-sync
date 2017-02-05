@@ -1,64 +1,79 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2016-06-07T20:33:33
+# Project created by QtCreator 2017-01-17T05:34:23
 #
 #-------------------------------------------------
 
+QT       += gui
 
-TARGET = engine_xflr5
+TARGET = xflr5-engine
 TEMPLATE = lib
-CONFIG += qt
 CONFIG += staticlib
-#CONFIG += create_prl
 
-QT += gui
 
-INCLUDEPATH += $$PWD/../XFoil-lib
+
+INCLUDEPATH += $$PWD/objects
+INCLUDEPATH += $$PWD/objects/objects2d
+INCLUDEPATH += $$PWD/objects/objects3d
+INCLUDEPATH += $$PWD/XFoil
+INCLUDEPATH += $$PWD/analysis3d
 INCLUDEPATH += $$PWD/plane_analysis
 
 
-SOURCES += \
-    objects3d/Body.cpp \
-    objects3d/CVector.cpp \
-    objects3d/Frame.cpp \
-    objects3d/NURBSSurface.cpp \
-    objects3d/Panel.cpp \
-    objects3d/Plane.cpp \
-    objects3d/PlaneOpp.cpp \
-    objects3d/Quaternion.cpp \
-    objects3d/Spline.cpp \
-    objects3d/Surface.cpp \
-    objects3d/Wing.cpp \
-    objects3d/WingOpp.cpp \
-    objects3d/WPolar.cpp \
-    plane_analysis/LLTAnalysis.cpp \
-    plane_analysis/PanelAnalysis.cpp \
-    plane_analysis/planeanalysistask.cpp \
-    engine_globals.cpp
+SOURCES += xflr5engine.cpp \
+    objects/objects_global.cpp \
+    objects/objects2d/Foil.cpp \
+    objects/objects2d/OpPoint.cpp \
+    objects/objects2d/Polar.cpp \
+    objects/objects2d/Spline.cpp \
+    objects/objects2d/Vector3d.cpp \
+    analysis3d/analysis3d_globals.cpp \
+    analysis3d/plane_analysis/LLTAnalysis.cpp \
+    analysis3d/plane_analysis/PanelAnalysis.cpp \
+    analysis3d/plane_analysis/planeanalysistask.cpp \
+    objects/objects3d/Body.cpp \
+    objects/objects3d/Frame.cpp \
+    objects/objects3d/NURBSSurface.cpp \
+    objects/objects3d/Panel.cpp \
+    objects/objects3d/Plane.cpp \
+    objects/objects3d/PlaneOpp.cpp \
+    objects/objects3d/Quaternion.cpp \
+    objects/objects3d/Surface.cpp \
+    objects/objects3d/Wing.cpp \
+    objects/objects3d/WingOpp.cpp \
+    objects/objects3d/WPolar.cpp
 
-HEADERS += \
-    objects3d/Body.h \
-    objects3d/CVector.h \
-    objects3d/Frame.h \
-    objects3d/NURBSSurface.h \
-    objects3d/Panel.h \
-    objects3d/Plane.h \
-    objects3d/PlaneOpp.h \
-    objects3d/PointMass.h \
-    objects3d/Quaternion.h \
-    objects3d/Spline.h \
-    objects3d/Surface.h \
-    objects3d/Wing.h \
-    objects3d/WingOpp.h \
-    objects3d/WingSection.h \
-    objects3d/WPolar.h \
-    plane_analysis/LLTAnalysis.h \
-    plane_analysis/PanelAnalysis.h \
-    plane_analysis/planeanalysistask.h \
-    engine_globals.h \
-    engine_params.h \
-    engine_enums.h \
-    plane_analysis/planetaskevent.h
+HEADERS += xflr5engine.h\
+		engine_globals.h \
+    objects/engine_enums.h \
+    objects/engine_params.h \
+    objects/objects_global.h \
+    objects/objects2d/Foil.h \
+    objects/objects2d/OpPoint.h \
+    objects/objects2d/Polar.h \
+    objects/objects2d/Spline.h \
+    objects/objects2d/Vector3d.h \
+    objects/objects2d/xfoil_params.h \
+    analysis3d/analysis3d_enums.h \
+    analysis3d/analysis3d_globals.h \
+    analysis3d/analysis3d_params.h \
+    analysis3d/plane_analysis/LLTAnalysis.h \
+    analysis3d/plane_analysis/PanelAnalysis.h \
+    analysis3d/plane_analysis/planeanalysistask.h \
+    analysis3d/plane_analysis/planetaskevent.h \
+    objects/objects3d/Body.h \
+    objects/objects3d/Frame.h \
+    objects/objects3d/NURBSSurface.h \
+    objects/objects3d/Panel.h \
+    objects/objects3d/Plane.h \
+    objects/objects3d/PlaneOpp.h \
+    objects/objects3d/PointMass.h \
+    objects/objects3d/Quaternion.h \
+    objects/objects3d/Surface.h \
+    objects/objects3d/Wing.h \
+    objects/objects3d/WingOpp.h \
+    objects/objects3d/WingSection.h \
+	objects/objects3d/WPolar.h
 
 unix {
     target.path = /usr/lib

@@ -8,7 +8,7 @@ class gl3dMiarexView : public gl3dView
 {
 public:
 	gl3dMiarexView(QWidget *parent = 0);
-
+	~gl3dMiarexView();
 
 private:
 	void glRenderView();
@@ -20,7 +20,7 @@ private:
 
 public:
 	void glMakeCpLegendClr();
-	bool glMakeStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPolar *pWPolar, PlaneOpp *pPOpp, int nPanels);
+	bool glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNode, WPolar *pWPolar, PlaneOpp *pPOpp, int nPanels);
 	void glMakeSurfVelocities(Panel *pPanel, WPolar *pWPolar, PlaneOpp *pPOpp, int nPanels);
 	void glMakeTransitions(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
 	void glMakeLiftStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
@@ -28,6 +28,7 @@ public:
 	void glMakeMoments(Wing *pWing, WPolar *pWPolar, PlaneOpp *pPOpp);
 	void glMakeDownwash(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
 	void glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, double beta);
+	void glMakePanelForces(int nPanels, Panel *pPanel, WPolar *pWPolar, PlaneOpp *pPOpp);
 
 	void paintLift(int iWing);
 	void paintMoments();
@@ -42,6 +43,12 @@ public:
 
 public slots:
 	void on3DReset();
+
+public:
+	QOpenGLBuffer m_vboSurfaceVelocities, m_vboPanelCp, m_vboPanelForces, m_vboStreamLines;
+	QOpenGLBuffer m_vboLiftForce, m_vboMoments;
+	QOpenGLBuffer m_vboICd[MAXWINGS], m_vboVCd[MAXWINGS], m_vboLiftStrips[MAXWINGS], m_vboTransitions[MAXWINGS], m_vboDownwash[MAXWINGS];
+
 };
 
 #endif // GL3DMIAREXVIEW_H

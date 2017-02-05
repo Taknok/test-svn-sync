@@ -42,7 +42,7 @@ void gl3dWingView::glRenderView()
 		if(m_bFoilNames)  paintFoilNames(m_pWing);
 		if(m_bVLMPanels)  paintWingMesh(m_pWing);
 		if(m_bShowMasses)
-			paintMasses(m_pWing->volumeMass(), CVector(0.0,0.0,0.0), "Structural mass", m_pWing->m_PointMass);
+			paintMasses(m_pWing->volumeMass(), Vector3d(0.0,0.0,0.0), "Structural mass", m_pWing->m_PointMass);
 		if(pDlg->iSection()>=0) paintSectionHighlight();
 	}
 }
@@ -69,7 +69,7 @@ void gl3dWingView::set3DRotationCenter(QPoint point)
 	//adjusts the new rotation center after the user has picked a point on the screen
 	//finds the closest panel under the point,
 	//and changes the rotation vector and viewport translation
-	CVector I, A, B, AA, BB, PP;
+	Vector3d I, A, B, AA, BB, PP;
 
 	screenToViewport(point, B);
 	B.z = -1.0;

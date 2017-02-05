@@ -153,7 +153,7 @@ void WingDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewI
 }
 
 
-void WingDelegate::SetPrecision(int *PrecisionTable)
+void WingDelegate::setPrecision(int *PrecisionTable)
 {
 	m_Precision = PrecisionTable;
 }

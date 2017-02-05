@@ -31,6 +31,8 @@
 #include "GL3dWingDlg.h"
 #include "WingScaleDlg.h"
 #include "InertiaDlg.h"
+#include <xdirect/objects2d.h>
+#include <objects_global.h>
 
 #include <QHBoxLayout>
 #include <QHeaderView>
@@ -137,8 +139,8 @@ bool GL3dWingDlg::checkWing()
 			return false;
 		}
 		WingSection *pSection = m_pWing->m_WingSection.at(k);
-		Foil *pLeftFoil = Foil::foil(pSection->m_LeftFoilName);
-		Foil *pRightFoil = Foil::foil(pSection->m_RightFoilName);
+		Foil *pLeftFoil = Objects2D::foil(pSection->m_LeftFoilName);
+		Foil *pRightFoil = Objects2D::foil(pSection->m_RightFoilName);
 		if(pLeftFoil )
 		{
 			if((pLeftFoil->m_TEXHinge>=99&& pLeftFoil->m_bTEFlap) ||(pLeftFoil->m_LEXHinge<0.01&&pLeftFoil->m_bLEFlap))
@@ -178,7 +180,7 @@ void GL3dWingDlg::computeGeometry()
 {
 	// Computes the wing's characteristics from the panel data
 	m_pWing->computeGeometry();
-	m_pWing->createSurfaces(CVector(0.0,0.0,0.0), 0.0, 0.0);
+	m_pWing->createSurfaces(Vector3d(0.0,0.0,0.0), 0.0, 0.0);
 
 	for (int j=0; j<m_pWing->m_Surface.size(); j++)
 		m_pWing->m_Surface.at(j)->setSidePoints(NULL, 0.0, 0.0);
@@ -511,7 +513,7 @@ bool GL3dWingDlg::initDialog(Wing *pWing)
 	m_precision[7] = 0;
 	m_precision[8] = 0;
 	m_precision[9] = 0;
-	m_pWingDelegate->SetPrecision(m_precision);
+	m_pWingDelegate->setPrecision(m_precision);
 	m_pWingDelegate->m_pWingSection = &m_pWing->m_WingSection;
 	m_pWingDelegate->m_poaFoil = s_poaFoil;
 	fillDataTable();
@@ -889,7 +891,8 @@ void GL3dWingDlg::onScaleWing()
 				m_pWing->averageSweep(),
 				m_pWing->Twist(m_pWing->NWingSection()-1),
 				m_pWing->m_PlanformArea,
-				m_pWing->m_AR);
+				m_pWing->m_AR,
+				m_pWing->m_TR);
 
 	if(QDialog::Accepted == dlg.exec())
 	{
@@ -899,8 +902,9 @@ void GL3dWingDlg::onScaleWing()
 			if(dlg.m_bChord) m_pWing->scaleChord(dlg.m_NewChord);
 			if(dlg.m_bSweep) m_pWing->scaleSweep(dlg.m_NewSweep);
 			if(dlg.m_bTwist) m_pWing->scaleTwist(dlg.m_NewTwist);
-			if(dlg.m_bArea) m_pWing->scaleArea(dlg.m_NewArea);
-			if(dlg.m_bAR) m_pWing->scaleAR(dlg.m_NewAR);
+			if(dlg.m_bArea)  m_pWing->scaleArea(dlg.m_NewArea);
+			if(dlg.m_bAR)    m_pWing->scaleAR(dlg.m_NewAR);
+			if(dlg.m_bTR)    m_pWing->scaleTR(dlg.m_NewTR);
 		}
 
 		fillDataTable();
@@ -1723,43 +1727,22 @@ void GL3dWingDlg::onExportWing()
 
 
 
-bool GL3dWingDlg::intersectObject(CVector AA,  CVector U, CVector &I)
+bool GL3dWingDlg::intersectObject(Vector3d AA,  Vector3d U, Vector3d &I)
 {
 	double dist=0.0;
 
 	for(int j=0; j<m_pWing->m_Surface.size(); j++)
 	{
-		if ( Intersect(m_pWing->m_Surface.at(j)->m_LA,
-					   m_pWing->m_Surface.at(j)->m_LB,
-					   m_pWing->m_Surface.at(j)->m_TA,
-					   m_pWing->m_Surface.at(j)->m_TB,
-					   m_pWing->m_Surface.at(j)->Normal,
-					   AA, U, I, dist))
+        if (Intersect(m_pWing->m_Surface.at(j)->m_LA,
+                      m_pWing->m_Surface.at(j)->m_LB,
+                      m_pWing->m_Surface.at(j)->m_TA,
+                      m_pWing->m_Surface.at(j)->m_TB,
+                      m_pWing->m_Surface.at(j)->Normal,
+                      AA, U, I, dist))
 			return true;
 	}
 	return false;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -57,7 +57,7 @@ public:
 	void keyPressEvent(QKeyEvent *event);
 	void contextMenuEvent(QContextMenuEvent *event);
 
-	bool intersectObject(CVector AA,  CVector U, CVector &I);
+	bool intersectObject(Vector3d AA,  Vector3d U, Vector3d &I);
 	void connectSignals();
 	void glMake3DObjects();
 	void glCreateWingSectionHighlight(Wing *pWing);
@@ -71,9 +71,9 @@ public:
 	void readPlaneTree();
 	void readViewLevel(QModelIndex indexLevel);
 	void readBodyTree(Body *pBosy, QModelIndex indexLevel);
-	void readWingTree(Wing *pWing, CVector &wingLE, double &tiltAngle, QModelIndex indexLevel);
+	void readWingTree(Wing *pWing, Vector3d &wingLE, double &tiltAngle, QModelIndex indexLevel);
 	void readInertiaTree(double &volumeMass, QList<PointMass *> &pointMasses, QModelIndex indexLevel);
-	void readVectorTree(CVector &V, QModelIndex indexLevel);
+	void readVectorTree(Vector3d &V, QModelIndex indexLevel);
 	void readWingSectionTree(Wing *pWing, QModelIndex indexLevel);
 	void readPointMassTree(PointMass *ppm, QModelIndex indexLevel);
 	void readBodyFrameTree(Body *pBody, Frame *pFrame, QModelIndex indexLevel);

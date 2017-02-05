@@ -925,9 +925,9 @@ void Section2dWidget::releaseZoom()
  * @param point the screen coordinates
  * @return the viewport coordinates
  */
-CVector Section2dWidget::mousetoReal(QPoint &point)
+Vector3d Section2dWidget::mousetoReal(QPoint &point)
 {
-	CVector Real;
+	Vector3d Real;
 
 	Real.x =  (point.x() - m_ptOffset.x())/m_fScale;
 	Real.y = -(point.y() - m_ptOffset.y())/m_fScale/m_fScaleY;

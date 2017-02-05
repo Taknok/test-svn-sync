@@ -30,11 +30,14 @@
 
 #include "XFoilAnalysisDlg.h"
 #include <xdirect/XDirect.h>
+#include <xdirect/objects2d.h>
 #include <misc/Settings.h>
-#include <graph/QGraph.h>
+#include <QGraph.h>
 #include "graphwidget.h"
 #include <XFoil.h>
-#include <XFoilTask.h>
+#include <xdirect/analysis/XFoilTask.h>
+
+
 
 void *XFoilAnalysisDlg::s_pXDirect;
 QPoint XFoilAnalysisDlg::s_Position;
@@ -84,7 +87,6 @@ XFoilAnalysisDlg::XFoilAnalysisDlg(QWidget *pParent) : QDialog(pParent)
 	m_ReMin      =  10000.0;
 	m_ReMax      = 100000.0;
 	m_ReDelta    =  10000.0;
-
 }
 
 XFoilAnalysisDlg::~XFoilAnalysisDlg()
@@ -160,7 +162,7 @@ void XFoilAnalysisDlg::initDialog()
 	else         m_pXFoilTask->setSequence(false, m_ClMin, m_ClMax, m_ClDelta);
 
 	m_pXFoilTask->setReRange(m_ReMin, m_ReMax, m_ReDelta);
-	m_pXFoilTask->initializeTask(Foil::curFoil(), Polar::curPolar(),
+	m_pXFoilTask->initializeTask(QXDirect::curFoil(), QXDirect::curPolar(),
 								 QXDirect::s_bStoreOpp, QXDirect::s_bViscous, QXDirect::s_bInitBL, false);
 
 
@@ -292,11 +294,11 @@ void XFoilAnalysisDlg::setFileHeader()
 	out << "\n";
 	out << VERSIONNAME;
 	out << "\n";
-	out << Foil::curFoil()->foilName();
+	out << QXDirect::curFoil()->foilName();
 	out << "\n";
-	if(Polar::curPolar())
+	if(QXDirect::curPolar())
 	{
-		out << Polar::curPolar()->polarName();
+		out << QXDirect::curPolar()->polarName();
 		out << "\n";
 	}
 
@@ -320,11 +322,12 @@ void XFoilAnalysisDlg::analyze()
 	QTimer *pTimer = new QTimer;
     connect(pTimer, SIGNAL(timeout()), this, SLOT(onProgress()));
 	pTimer->setInterval(QXDirect::s_TimeUpdateInterval);
-	pTimer->start();
+    pTimer->start();
 
 	//Launch the task
+    m_pXFoilTask->run();
 
-	m_pXFoilTask->run();
+	qApp->processEvents();
 
 	pTimer->stop();
 	delete pTimer;
@@ -381,6 +384,8 @@ void XFoilAnalysisDlg::customEvent(QEvent * event)
 	}
 	else if(event->type() == XFOIL_END_OPP_EVENT)
 	{
+		XFoilOppEvent *pOppEvent = (XFoilOppEvent*)event;
+		OpPoint *pOpp = Objects2D::addOpPoint(pOppEvent->foilPtr(), pOppEvent->polarPtr(), pOppEvent->XFoilPtr(), QXDirect::s_bStoreOpp);
 		m_pRmsGraph->resetYLimits();
 	}
 }

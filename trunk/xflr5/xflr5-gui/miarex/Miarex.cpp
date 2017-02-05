@@ -68,7 +68,8 @@
 #include <misc/EditPlrDlg.h>
 #include <misc/stlexportdialog.h>
 #include <viewwidgets/miarextilewidget.h>
-
+#include <objects_global.h>
+#include <xdirect/objects2d.h>
 
 #ifdef Q_OS_WIN
 #include <windows.h> // for Sleep
@@ -149,6 +150,8 @@ QMiarex::QMiarex(QWidget *parent)
 	m_pCurPOpp    = NULL;
 	m_pCurWPolar  = NULL;
 
+	Wing::s_poaFoil  = &Objects2D::s_oaFoil;
+	Wing::s_poaPolar = &Objects2D::s_oaPolar;
 
 	for(int iw=0; iw<MAXWINGS; iw++)
 	{
@@ -2493,14 +2496,14 @@ void QMiarex::onAnalyze()
 		{
 			for (l=0; l<pWing(iw)->NWingSection(); l++)
 			{
-				if (!Foil::foil(pWing(iw)->rightFoil(l)))
+				if (!Objects2D::foil(pWing(iw)->rightFoil(l)))
 				{
 					QString strong;
 					strong = pWing(iw)->m_WingName + ": "+tr("Could not find the wing's foil ")+ pWing(iw)->rightFoil(l) +tr("...\nAborting Calculation");
 					QMessageBox::warning(s_pMainFrame, tr("Warning"), strong);
 					return;
 				}
-				if (!Foil::foil(pWing(iw)->leftFoil(l)))
+				if (!Objects2D::foil(pWing(iw)->leftFoil(l)))
 				{
 					QString strong;
 					strong = pWing(iw)->m_WingName + ": "+tr("Could not find the wing's foil ")+ pWing(iw)->leftFoil(l) +tr("...\nAborting Calculation");
@@ -4148,11 +4151,12 @@ void QMiarex::onScaleWing()
 					 pModPlane->wing()->averageSweep(),
 					 pModPlane->wing()->tipTwist(),
 					 pModPlane->planformArea(),
-					 pModPlane->aspectRatio());
+					 pModPlane->aspectRatio(),
+					 pModPlane->taperRatio());
 
 	if(QDialog::Accepted == wsDlg.exec())
 	{
-		if (wsDlg.m_bSpan || wsDlg.m_bChord || wsDlg.m_bSweep || wsDlg.m_bTwist || wsDlg.m_bArea || wsDlg.m_bAR)
+		if (wsDlg.m_bSpan || wsDlg.m_bChord || wsDlg.m_bSweep || wsDlg.m_bTwist || wsDlg.m_bArea || wsDlg.m_bAR || wsDlg.m_bTR)
 		{
 			if(wsDlg.m_bSpan)  pModPlane->wing()->scaleSpan(wsDlg.m_NewSpan);
 			if(wsDlg.m_bChord) pModPlane->wing()->scaleChord(wsDlg.m_NewChord);
@@ -4160,6 +4164,7 @@ void QMiarex::onScaleWing()
 			if(wsDlg.m_bTwist) pModPlane->wing()->scaleTwist(wsDlg.m_NewTwist);
 			if(wsDlg.m_bArea)  pModPlane->wing()->scaleArea(wsDlg.m_NewArea);
 			if(wsDlg.m_bAR)    pModPlane->wing()->scaleAR(wsDlg.m_NewAR);
+			if(wsDlg.m_bTR)    pModPlane->wing()->scaleTR(wsDlg.m_NewTR);
 			pModPlane->computePlane();
 
 			if(bHasResults)
@@ -4196,6 +4201,7 @@ void QMiarex::onScaleWing()
 			m_bResetglGeom = true;
 			m_bResetglMesh = true;
 			s_bResetCurves = true;
+			emit projectModified();
 		}
 
 		setPlane();
@@ -6777,7 +6783,11 @@ bool QMiarex::saveSettings(QSettings *pSettings)
 void QMiarex::setScale()
 {
 	if(/*m_iView==XFLR5::W3DVIEW && */m_pCurPlane && W3dPrefsDlg::s_bAutoAdjustScale)
-		m_pGL3dView->set3DScale(m_pCurPlane->span());
+	{
+		double bodyLength = 0.0;
+		if(m_pCurPlane->body()) bodyLength = m_pCurPlane->body()->length();
+		m_pGL3dView->set3DScale(std::max(m_pCurPlane->span(), bodyLength));
+	}
 }
 
 
@@ -7601,10 +7611,10 @@ void QMiarex::setWGraphTitles(Graph* pGraph)
 {
 	QString Title;
 
-	Title  = WPolar::variableName(pGraph->xVariable());
+	Title  = QMiarex::WPolarVariableName(pGraph->xVariable());
 	pGraph->setXTitle(Title);
 
-	Title  = WPolar::variableName(pGraph->yVariable());
+	Title  = QMiarex::WPolarVariableName(pGraph->yVariable());
 	pGraph->setYTitle(Title);
 }
 
@@ -8175,7 +8185,7 @@ PlaneOpp* QMiarex::setPlaneOppObject(Plane *pPlane, WPolar *pWPolar, PlaneOpp *p
 		if(pWPolar->polarType()==XFLR5::BETAPOLAR)
 		{
 			//set sideslip
-//			CVector RefPoint(0.0, 0.0, 0.0);
+//			Vector3d RefPoint(0.0, 0.0, 0.0);
 			// Standard Convention in mechanic of flight is to have Beta>0 with nose to the left
 			// The yaw moment has the opposite convention...
 //			m_theTask.m_pthePanelAnalysis->rotateGeomZ(pPOpp->m_Beta, RefPoint, pWPolar->m_NXWakePanels);
@@ -8238,15 +8248,15 @@ void QMiarex::drawTextLegend()
  * @param I the point of intersection
  * @return true if an intersection point has been found, false otherwise
  */
-bool QMiarex::intersectObject(CVector O,  CVector U, CVector &I)
+bool QMiarex::intersectObject(Vector3d O,  Vector3d U, Vector3d &I)
 {
 	if(!m_pCurPlane) return false;
 	Wing *pWingList[MAXWINGS] = {m_pCurPlane->wing(), m_pCurPlane->wing2(), m_pCurPlane->stab(), m_pCurPlane->fin()};
 
 	if(m_pCurPOpp)
 	{
-		CVector Origin(0.0,0.0,0.0);
-		CVector Y(0.0,1.0,0.0);
+		Vector3d Origin(0.0,0.0,0.0);
+		Vector3d Y(0.0,1.0,0.0);
 		O.rotate(Origin, Y, -m_pCurPOpp->alpha());
 		U.rotate(Y, -m_pCurPOpp->alpha());
 	}
@@ -9226,3 +9236,176 @@ QString QMiarex::POppTitle(PlaneOpp *pPOpp)
 
 
 
+
+/**
+ * Returns the name of the variable referenced by iVar
+ * @param iVar the index of the variable
+ * @param Name the name of the variable as a QString object
+ */
+QString QMiarex::WPolarVariableName(int iVar)
+{
+	QString strLength  = Units::lengthUnitLabel();
+	QString strSpeed   = Units::speedUnitLabel();
+	QString strMoment  = Units::momentUnitLabel();
+	QString strMass    = Units::weightUnitLabel();
+	QString strForce   = Units::forceUnitLabel();
+
+	switch (iVar)
+	{
+		case 0:
+			return "Alpha";
+			break;
+		case 1:
+			return "Beta";
+			break;
+		case 2:
+			return "CL";
+			break;
+		case 3:
+			return "CD";
+			break;
+		case 4:
+			return "CD_viscous";
+			break;
+		case 5:
+			return "CD_induced";
+			break;
+		case 6:
+			return "CY";
+			break;
+		case 7:
+			return "Cm";// Total Pitching moment coef.
+			break;
+		case 8:
+			return "Cm_viscous";// Viscous Pitching moment coef.
+			break;
+		case 9:
+			return "Cm_induced";// Induced Pitching moment coef.
+			break;
+		case 10:
+			return "Cl";// Total Rolling moment coef.
+			break;
+		case 11:
+			return "Cn";// Total Yawing moment coef.
+			break;
+		case 12:
+			return "Cn_viscous";// Profile yawing moment
+			break;
+		case 13:
+			return "Cn_induced";// Induced yawing moment
+			break;
+		case 14:
+			return "CL/CD";
+			break;
+		case 15:
+			return "CL^(3/2)/CD";
+			break;
+		case 16:
+			return "1/Rt(CL)";
+			break;
+		case 17:
+			return "Fx ("+strForce+")";
+			break;
+		case 18:
+			return "Fy ("+strForce+")";
+			break;
+		case 19:
+			return "Fz ("+strForce+")";
+			break;
+		case 20:
+			return "Vx ("+strSpeed+")";
+			break;
+		case 21:
+			return "Vz ("+strSpeed+")";
+			break;
+		case 22:
+			return "V ("+strSpeed+")";
+			break;
+		case 23:
+			return "Gamma";
+			break;
+		case 24:
+			return "L ("+ strMoment+")";
+			break;
+		case 25:
+			return "M ("+ strMoment+")";
+			break;
+		case 26:
+			return "N ("+ strMoment+")";
+			break;
+		case 27:
+			return "CPx ("+ strLength+")";
+			break;
+		case 28:
+			return "CPy ("+ strLength+")";
+			break;
+		case 29:
+			return "CPz ("+ strLength+")";
+			break;
+		case 30:
+			return "BM ("+ strMoment+")";
+			break;
+		case 31:
+			return "m.g.Vz (W)";
+			break;
+		case 32:
+			return "Efficiency";
+			break;
+		case 33:
+			return "XCp.Cl";
+			break;
+		case 34:
+			return "(XCp-XCG)/MAC(%)";
+			break;
+		case 35:
+			return "ctrl";
+			break;
+		case 36:
+			return "XNP ("+ strLength+")";
+			break;
+		case 37:
+			return "Phugoid Freq. (Hz)";
+			break;
+		case 38:
+			return "Phugoid Damping";
+			break;
+		case 39:
+			return "Short Period Freq. (Hz)";
+			break;
+		case 40:
+			return "Short Period Damping Ratio";
+			break;
+		case 41:
+			return "Dutch Roll Freq. (Hz)";
+			break;
+		case 42:
+			return "Dutch Roll Damping";
+			break;
+		case 43:
+			return "Roll mode t2 (s)";
+			break;
+		case 44:
+			return "Spiral mode t2 (s)";
+			break;
+		case 45:
+			return "Fx.Vx (W)";
+			break;
+		case 46:
+			return "Extra drag ("+strForce+")";
+			break;
+		case 47:
+			return "Mass ("+strMass+")";
+			break;
+		case 48:
+			return "CoG_x ("+ strLength+")";
+			break;
+		case 49:
+			return "CoG_z ("+ strLength+")";
+			break;
+
+
+	default:
+			return "";
+	}
+	return "";
+}

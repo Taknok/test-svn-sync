@@ -1,23 +1,13 @@
 /****************************************************************************
 
-	Global Functions 
-	Copyright (C) 2008-2016 Andre Deperrois adeperrois@xflr5.com
+	Techwing Application
 
-	This program is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
-	(at your option) any later version.
+	Copyright (C) Andre Deperrois adeperrois@xflr5.com
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with this program; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	All rights reserved.
 
 *****************************************************************************/
+
 /**
 * @file
 * This file contains the declaration of methods used throughout the program and not specific to one application.
@@ -63,12 +53,6 @@ void Trace(QString msg, double f);
 Qt::PenStyle getStyle(int s);
 
 
-double Det44(double *aij);
-
-complex<double> Det44(complex<double> *aij);
-complex<double> Cofactor44(complex<double> *aij, int &i, int &j);
-bool Invert44(complex<double> *ain, complex<double> *aout);
-
 
 void GLLineStipple(int style);
 
@@ -90,6 +74,9 @@ QString WPolarType(XFLR5::enumPolarType polarType);
 XFLR5::enumAnalysisMethod analysisMethod(QString strAnalysisMethod);
 QString analysisMethod(XFLR5::enumAnalysisMethod analysisMethod);
 
+
+XFLR5::enumBC boundaryCondition(QString strBC);
+QString boundaryCondition(XFLR5::enumBC boundaryCondition);
 
 void * readFoilFile(QFile &xFoilFile);
 void * readPolarFile(QFile &plrFile, QList<Polar*> &polarList);
@@ -116,5 +103,22 @@ QColor colour(OpPoint *pOpp);
 QColor colour(Polar *pPolar);
 QColor colour(Foil *pFoil);
 void setRandomFoilColor(Foil *pFoil);
+
+
+
+
+void readString(QDataStream &ar, QString &strong);
+void writeString(QDataStream &ar, QString const &strong);
+void readColor(QDataStream &ar, int &r, int &g, int &b);
+void writeColor(QDataStream &ar, int r, int g, int b);
+
+void readColor(QDataStream &ar, int &r, int &g, int &b, int &a);
+void writeColor(QDataStream &ar, int r, int g, int b, int a);
+
+
+bool serializeFoil(Foil*pFoil, QDataStream &ar, bool bIsStoring);
+bool serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring);
+
+
 #endif // FUNCTIONS_H
  

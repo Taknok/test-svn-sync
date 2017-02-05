@@ -113,7 +113,7 @@ void BodyLineWidget::drawBodyLines()
 	}
 	else
 	{
-		CVector Point;
+		Vector3d Point;
 		double xinc, u, v;
 
 		int nh = 50;
@@ -232,7 +232,7 @@ void BodyLineWidget::onScaleBody()
 
 void BodyLineWidget::onInsertPt()
 {
-	CVector Real = mousetoReal(m_PointDown);
+	Vector3d Real = mousetoReal(m_PointDown);
 	m_pBody->insertFrame(Real);
 	emit objectModified();
 }
@@ -240,9 +240,9 @@ void BodyLineWidget::onInsertPt()
 
 void BodyLineWidget::onRemovePt()
 {
-	CVector Real = mousetoReal(m_PointDown);
+	Vector3d Real = mousetoReal(m_PointDown);
 
-	int n =  m_pBody->isFramePos(CVector(Real.x, 0.0, Real.y), m_fScale/m_fRefScale);
+	int n =  m_pBody->isFramePos(Vector3d(Real.x, 0.0, Real.y), m_fScale/m_fRefScale);
 	if (n>=0)
 	{
 		n = m_pBody->removeFrame(n);
@@ -251,17 +251,17 @@ void BodyLineWidget::onRemovePt()
 }
 
 
-int BodyLineWidget::highlightPoint(CVector real)
+int BodyLineWidget::highlightPoint(Vector3d real)
 {
-	m_pBody->m_iHighlightFrame = m_pBody->isFramePos(CVector(real.x, 0.0, real.y), m_fScale/m_fRefScale);
+	m_pBody->m_iHighlightFrame = m_pBody->isFramePos(Vector3d(real.x, 0.0, real.y), m_fScale/m_fRefScale);
 	return m_pBody->m_iHighlightFrame;
 }
 
 
 
-int BodyLineWidget::selectPoint(CVector real)
+int BodyLineWidget::selectPoint(Vector3d real)
 {
-	m_pBody->m_iActiveFrame = m_pBody->isFramePos(CVector(real.x, 0.0, real.y), m_fScale/m_fRefScale);
+	m_pBody->m_iActiveFrame = m_pBody->isFramePos(Vector3d(real.x, 0.0, real.y), m_fScale/m_fRefScale);
 	m_pBody->setActiveFrame(m_pBody->m_iActiveFrame);
 	return m_pBody->m_iActiveFrame;
 }
@@ -270,7 +270,7 @@ int BodyLineWidget::selectPoint(CVector real)
 void BodyLineWidget::dragSelectedPoint(double x, double y)
 {
 	if(!m_pBody->activeFrame())return;
-	m_pBody->activeFrame()->setPosition(CVector(x,0,y));
+	m_pBody->activeFrame()->setPosition(Vector3d(x,0,y));
 }
 
 

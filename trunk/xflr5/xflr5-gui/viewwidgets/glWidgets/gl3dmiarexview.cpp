@@ -18,6 +18,24 @@ gl3dMiarexView::gl3dMiarexView(QWidget *parent) : gl3dView(parent)
 }
 
 
+gl3dMiarexView::~gl3dMiarexView()
+{
+	m_vboPanelCp.destroy();
+	m_vboPanelForces.destroy();
+	m_vboSurfaceVelocities.destroy();
+	m_vboLiftForce.destroy();
+	m_vboMoments.destroy();
+	for(int iWing=0; iWing<MAXWINGS; iWing++)
+	{
+		m_vboLiftStrips[iWing].destroy();
+		m_vboICd[iWing].destroy();
+		m_vboVCd[iWing].destroy();
+		m_vboTransitions[iWing].destroy();
+		m_vboDownwash[iWing].destroy();
+	}
+
+}
+
 void gl3dMiarexView::glRenderView()
 {
 	QMiarex* pMiarex = (QMiarex*)s_pMiarex;
@@ -320,7 +338,7 @@ void gl3dMiarexView::glMakeCpLegendClr()
 
 
 
-bool gl3dMiarexView::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode, WPolar *pWPolar, PlaneOpp *pPOpp, int nPanels)
+bool gl3dMiarexView::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNode, WPolar *pWPolar, PlaneOpp *pPOpp, int nPanels)
 {
 	if(!pPOpp || !pWPolar || pWPolar->isLLTMethod()) return false;
 
@@ -342,8 +360,8 @@ bool gl3dMiarexView::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], CVector *pNode
 	double ds;
 	double *Mu, *Sigma;
 
-	CVector C, D, D1, VA, VAT, VB, VBT, VT, VInf, TC, TD;
-	CVector RefPoint(0.0,0.0,0.0);
+	Vector3d C, D, D1, VA, VAT, VB, VBT, VT, VInf, TC, TD;
+	Vector3d RefPoint(0.0,0.0,0.0);
 
 	D1.set(987654321.0, 0.0, 0.0);
 
@@ -547,7 +565,7 @@ void gl3dMiarexView::glMakeTransitions(int iWing, Wing *pWing, WPolar *pWPolar, 
 	if(!pWing || !pWPolar || !pWOpp) return;
 	int i,j,k,m;
 	double yrel;
-	CVector Pt, N;
+	Vector3d Pt, N;
 
 	float *pTransVertexArray = NULL;
 	int bufferSize = m_Ny[iWing]*6;
@@ -672,8 +690,8 @@ void gl3dMiarexView::glMakeSurfVelocities(Panel *pPanel, WPolar *pWPolar, PlaneO
 
 	double *Mu, *Sigma;
 	double x1, x2, y1, y2, z1, z2, xe, ye, ze, dlx, dlz;
-	CVector C, V, VT;
-	CVector RefPoint(0.0,0.0,0.0);
+	Vector3d C, V, VT;
+	Vector3d RefPoint(0.0,0.0,0.0);
 
 	factor = QMiarex::s_VelocityScale/100.0;
 
@@ -1051,7 +1069,7 @@ void gl3dMiarexView::glMakeLiftStrip(int iWing, Wing *pWing, WPolar *pWPolar, Wi
 {
 	if(!pWing || !pWPolar || !pWOpp) return;
 	int i,j,k;
-	CVector C, CL, Pt, PtNormal;
+	Vector3d C, CL, Pt, PtNormal;
 
 	double amp, yob, dih;
 	double cosa =  cos(pWOpp->m_Alpha * PI/180.0);
@@ -1247,7 +1265,7 @@ void gl3dMiarexView::glMakeDownwash(int iWing, Wing *pWing, WPolar *pWPolar, Win
 	int i,j,k,p;
 	double dih, yob;
 	double y1, y2, z1, z2, xs, ys, zs;
-	CVector C, Pt, PtNormal;
+	Vector3d C, Pt, PtNormal;
 	double factor, amp;
 
 	double sina = -sin(pWOpp->m_Alpha*PI/180.0);
@@ -1358,7 +1376,7 @@ void gl3dMiarexView::glMakeDownwash(int iWing, Wing *pWing, WPolar *pWPolar, Win
 void gl3dMiarexView::glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, double beta)
 {
 	if(!pWing || !pWPolar || !pWOpp) return;
-	CVector C, Pt, PtNormal;
+	Vector3d C, Pt, PtNormal;
 	int i,j,k;
 	float *pICdVertexArray, *pVCdVertexArray;
 	QMiarex *pMiarex = (QMiarex*)s_pMiarex;
@@ -1851,7 +1869,7 @@ void gl3dMiarexView::set3DRotationCenter(QPoint point)
 	//adjusts the new rotation center after the user has picked a point on the screen
 	//finds the closest panel under the point,
 	//and changes the rotation vector and viewport translation
-	CVector I, A, B, AA, BB, PP;
+	Vector3d I, A, B, AA, BB, PP;
 
 	screenToViewport(point, B);
 	B.z = -1.0;
@@ -1879,3 +1897,264 @@ void gl3dMiarexView::set3DRotationCenter(QPoint point)
 	}
 }
 
+
+void gl3dMiarexView::glMakePanelForces(int nPanels, Panel *pPanel, WPolar *pWPolar, PlaneOpp *pPOpp)
+{
+	if( !pPOpp || !pWPolar || !pPanel || !nPanels) return;
+
+	int p;
+	double *Cp;
+	double force, cosa, sina2, cosa2, color;
+	double rmin, rmax, range;
+
+	Quaternion Qt; // Quaternion operator to align the reference arrow to the panel's normal
+	Vector3d Omega; // rotation vector to align the reference arrow to the panel's normal
+	Vector3d O;
+	//The vectors defining the reference arrow
+	Vector3d R(0.0,0.0,1.0);
+	Vector3d R1( 0.05, 0.0, -0.1);
+	Vector3d R2(-0.05, 0.0, -0.1);
+	//The three vectors defining the arrow on the panel
+	Vector3d P, P1, P2;
+
+	//define the range of values to set the colors in accordance
+	rmin = 1.e10;
+	rmax = -rmin;
+	double coef = .0005;
+
+	Cp = pPOpp->m_dCp;
+
+	for (int p=0; p<nPanels; p++)
+	{
+		rmax = qMax(rmax, Cp[p] );
+		rmin = qMin(rmin, Cp[p] );
+	}
+
+	rmin *= 0.5*pWPolar->density() *pPOpp->m_QInf*pPOpp->m_QInf;
+	rmax *= 0.5*pWPolar->density() *pPOpp->m_QInf*pPOpp->m_QInf;
+	range = rmax - rmin;
+
+	// vertices array size:
+	//		nPanels x 1 arrow
+	//      x3 lines per arrow
+	//      x2 vertices per line
+	//		x6 = 3 vertex components + 3 color components
+
+	int forceVertexSize = nPanels * 3 * 2 * 6;
+	float *forceVertexArray = new float[forceVertexSize];
+
+	int iv=0;
+	for (p=0; p<nPanels; p++)
+	{
+		force = 0.5*pWPolar->density() *pPOpp->m_QInf*pPOpp->m_QInf * Cp[p];
+		color = (force-rmin)/range;
+
+		//scale force for display
+		force *= QMiarex::s_LiftScale *coef;
+
+		double r= GLGetRed(color);
+		double g= GLGetGreen(color);
+		double b= GLGetBlue(color);
+
+		if(pPanel->m_Pos==MIDSURFACE) O = pPanel[p].CtrlPt;
+		else                          O = pPanel[p].CollPt;
+
+		// Rotate the reference arrow to align it with the panel normal
+		if(R==P)
+		{
+			Qt.Set(0.0, 0.0,0.0,1.0); //Null quaternion
+		}
+		else
+		{
+			cosa   = R.dot(pPanel[p].Normal);
+			sina2  = sqrt((1.0 - cosa)*0.5);
+			cosa2  = sqrt((1.0 + cosa)*0.5);
+
+			Omega = R * pPanel[p].Normal;//crossproduct
+			Omega.normalize();
+			Omega *=sina2;
+			Qt.Set(cosa2, Omega.x, Omega.y, Omega.z);
+		}
+
+		Qt.Conjugate(R,  P);
+		Qt.Conjugate(R1, P1);
+		Qt.Conjugate(R2, P2);
+
+		// Scale the pressure vector
+		P  *= force;
+		P1 *= force;
+		P2 *= force;
+
+		// Plot
+		if(pPanel[p].m_Pos==MIDSURFACE)
+		{
+			forceVertexArray[iv++] = O.x;
+			forceVertexArray[iv++] = O.y;
+			forceVertexArray[iv++] = O.z;
+			forceVertexArray[iv++] = r;
+			forceVertexArray[iv++] = g;
+			forceVertexArray[iv++] = b;
+			forceVertexArray[iv++] = O.x+P.x;
+			forceVertexArray[iv++] = O.y+P.y;
+			forceVertexArray[iv++] = O.z+P.z;
+			forceVertexArray[iv++] = r;
+			forceVertexArray[iv++] = g;
+			forceVertexArray[iv++] = b;
+
+			if(force>0)
+			{
+				forceVertexArray[iv++] = O.x+P.x;
+				forceVertexArray[iv++] = O.y+P.y;
+				forceVertexArray[iv++] = O.z+P.z;
+				forceVertexArray[iv++] = r;
+				forceVertexArray[iv++] = g;
+				forceVertexArray[iv++] = b;
+				forceVertexArray[iv++] = O.x+P.x+P1.x;
+				forceVertexArray[iv++] = O.y+P.y+P1.y;
+				forceVertexArray[iv++] = O.z+P.z+P1.z;
+				forceVertexArray[iv++] = r;
+				forceVertexArray[iv++] = g;
+				forceVertexArray[iv++] = b;
+
+				forceVertexArray[iv++] = O.x+P.x;
+				forceVertexArray[iv++] = O.y+P.y;
+				forceVertexArray[iv++] = O.z+P.z;
+				forceVertexArray[iv++] = r;
+				forceVertexArray[iv++] = g;
+				forceVertexArray[iv++] = b;
+				forceVertexArray[iv++] = O.x+P.x+P2.x;
+				forceVertexArray[iv++] = O.y+P.y+P2.y;
+				forceVertexArray[iv++] = O.z+P.z+P2.z;
+				forceVertexArray[iv++] = r;
+				forceVertexArray[iv++] = g;
+				forceVertexArray[iv++] = b;
+			}
+			else
+			{
+				forceVertexArray[iv++] = O.x+P.x;
+				forceVertexArray[iv++] = O.y+P.y;
+				forceVertexArray[iv++] = O.z+P.z;
+				forceVertexArray[iv++] = r;
+				forceVertexArray[iv++] = g;
+				forceVertexArray[iv++] = b;
+				forceVertexArray[iv++] = O.x+P.x+P1.x;
+				forceVertexArray[iv++] = O.y+P.y+P1.y;
+				forceVertexArray[iv++] = O.z+P.z+P1.z;
+				forceVertexArray[iv++] = r;
+				forceVertexArray[iv++] = g;
+				forceVertexArray[iv++] = b;
+
+				forceVertexArray[iv++] = O.x+P.x;
+				forceVertexArray[iv++] = O.y+P.y;
+				forceVertexArray[iv++] = O.z+P.z;
+				forceVertexArray[iv++] = r;
+				forceVertexArray[iv++] = g;
+				forceVertexArray[iv++] = b;
+				forceVertexArray[iv++] = O.x+P.x+P2.x;
+				forceVertexArray[iv++] = O.y+P.y+P2.y;
+				forceVertexArray[iv++] = O.z+P.z+P2.z;
+				forceVertexArray[iv++] = r;
+				forceVertexArray[iv++] = g;
+				forceVertexArray[iv++] = b;
+			}
+		}
+		else
+		{
+			if(Cp[p]>0)
+			{
+				// compression, point towards the surface
+				forceVertexArray[iv++] = O.x;
+				forceVertexArray[iv++] = O.y;
+				forceVertexArray[iv++] = O.z;
+				forceVertexArray[iv++] = r;
+				forceVertexArray[iv++] = g;
+				forceVertexArray[iv++] = b;
+				forceVertexArray[iv++] = O.x+P.x;
+				forceVertexArray[iv++] = O.y+P.y;
+				forceVertexArray[iv++] = O.z+P.z;
+				forceVertexArray[iv++] = r;
+				forceVertexArray[iv++] = g;
+				forceVertexArray[iv++] = b;
+
+				forceVertexArray[iv++] = O.x;
+				forceVertexArray[iv++] = O.y;
+				forceVertexArray[iv++] = O.z;
+				forceVertexArray[iv++] = r;
+				forceVertexArray[iv++] = g;
+				forceVertexArray[iv++] = b;
+				forceVertexArray[iv++] = O.x-P1.x;
+				forceVertexArray[iv++] = O.y-P1.y;
+				forceVertexArray[iv++] = O.z-P1.z;
+				forceVertexArray[iv++] = r;
+				forceVertexArray[iv++] = g;
+				forceVertexArray[iv++] = b;
+
+				forceVertexArray[iv++] = O.x;
+				forceVertexArray[iv++] = O.y;
+				forceVertexArray[iv++] = O.z;
+				forceVertexArray[iv++] = r;
+				forceVertexArray[iv++] = g;
+				forceVertexArray[iv++] = b;
+				forceVertexArray[iv++] = O.x-P2.x;
+				forceVertexArray[iv++] = O.y-P2.y;
+				forceVertexArray[iv++] = O.z-P2.z;
+				forceVertexArray[iv++] = r;
+				forceVertexArray[iv++] = g;
+				forceVertexArray[iv++] = b;
+			}
+			else
+			{
+				// depression, point outwards from the surface
+				P.set(-P.x, -P.y, -P.z);
+
+				forceVertexArray[iv++] = O.x;
+				forceVertexArray[iv++] = O.y;
+				forceVertexArray[iv++] = O.z;
+				forceVertexArray[iv++] = r;
+				forceVertexArray[iv++] = g;
+				forceVertexArray[iv++] = b;
+				forceVertexArray[iv++] = O.x+P.x;
+				forceVertexArray[iv++] = O.y+P.y;
+				forceVertexArray[iv++] = O.z+P.z;
+				forceVertexArray[iv++] = r;
+				forceVertexArray[iv++] = g;
+				forceVertexArray[iv++] = b;
+
+				forceVertexArray[iv++] = O.x+P.x;
+				forceVertexArray[iv++] = O.y+P.y;
+				forceVertexArray[iv++] = O.z+P.z;
+				forceVertexArray[iv++] = r;
+				forceVertexArray[iv++] = g;
+				forceVertexArray[iv++] = b;
+				forceVertexArray[iv++] = O.x+P.x-P1.x;
+				forceVertexArray[iv++] = O.y+P.y-P1.y;
+				forceVertexArray[iv++] = O.z+P.z-P1.z;
+				forceVertexArray[iv++] = r;
+				forceVertexArray[iv++] = g;
+				forceVertexArray[iv++] = b;
+
+				forceVertexArray[iv++] = O.x+P.x;
+				forceVertexArray[iv++] = O.y+P.y;
+				forceVertexArray[iv++] = O.z+P.z;
+				forceVertexArray[iv++] = r;
+				forceVertexArray[iv++] = g;
+				forceVertexArray[iv++] = b;
+				forceVertexArray[iv++] = O.x+P.x-P2.x;
+				forceVertexArray[iv++] = O.y+P.y-P2.y;
+				forceVertexArray[iv++] = O.z+P.z-P2.z;
+				forceVertexArray[iv++] = r;
+				forceVertexArray[iv++] = g;
+				forceVertexArray[iv++] = b;
+			}
+		}
+	}
+	Q_ASSERT(iv==forceVertexSize);
+
+	m_vboPanelForces.destroy();
+	m_vboPanelForces.create();
+	m_vboPanelForces.bind();
+	m_vboPanelForces.allocate(forceVertexArray, forceVertexSize * sizeof(GLfloat));
+	m_vboPanelForces.release();
+
+	delete [] forceVertexArray;
+}

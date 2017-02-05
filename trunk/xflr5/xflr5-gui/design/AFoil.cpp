@@ -39,6 +39,7 @@
 #include <misc/Settings.h>
 #include <misc/LinePickerDlg.h>
 #include <misc/RenameDlg.h>
+#include <xdirect/objects2d.h>
 #include <xdirect/geometry/NacaFoilDlg.h>
 #include <xdirect/geometry/CAddDlg.h>
 #include <xdirect/geometry/TwoDPanelDlg.h>
@@ -110,30 +111,30 @@ QAFoil::~QAFoil()
  */
 void QAFoil::setControls()
 {
-	s_pMainFrame->m_pAFoilDelete->setEnabled(Foil::curFoil());
-	s_pMainFrame->m_pAFoilRename->setEnabled(Foil::curFoil());
-	s_pMainFrame->m_pAFoilExport->setEnabled(Foil::curFoil());
-	s_pMainFrame->m_pAFoilDuplicateFoil->setEnabled(Foil::curFoil());
-	s_pMainFrame->m_pShowCurrentFoil->setEnabled(Foil::curFoil());
-	s_pMainFrame->m_pHideCurrentFoil->setEnabled(Foil::curFoil());
+	s_pMainFrame->m_pAFoilDelete->setEnabled(QXDirect::curFoil());
+	s_pMainFrame->m_pAFoilRename->setEnabled(QXDirect::curFoil());
+	s_pMainFrame->m_pAFoilExport->setEnabled(QXDirect::curFoil());
+	s_pMainFrame->m_pAFoilDuplicateFoil->setEnabled(QXDirect::curFoil());
+	s_pMainFrame->m_pShowCurrentFoil->setEnabled(QXDirect::curFoil());
+	s_pMainFrame->m_pHideCurrentFoil->setEnabled(QXDirect::curFoil());
 
-	s_pMainFrame->m_pAFoilDerotateFoil->setEnabled(Foil::curFoil());
-	s_pMainFrame->m_pAFoilEditCoordsFoil->setEnabled(Foil::curFoil());
-	s_pMainFrame->m_pAFoilInterpolateFoils->setEnabled(Foil::curFoil());
-	s_pMainFrame->m_pAFoilNormalizeFoil->setEnabled(Foil::curFoil());
-	s_pMainFrame->m_pAFoilRefineGlobalFoil->setEnabled(Foil::curFoil());
-	s_pMainFrame->m_pAFoilRefineLocalFoil->setEnabled(Foil::curFoil());
-	s_pMainFrame->m_pAFoilScaleFoil->setEnabled(Foil::curFoil());
-	s_pMainFrame->m_pAFoilSetFlap->setEnabled(Foil::curFoil());
-	s_pMainFrame->m_pAFoilSetLERadius->setEnabled(Foil::curFoil());
-	s_pMainFrame->m_pAFoilSetTEGap->setEnabled(Foil::curFoil());
+	s_pMainFrame->m_pAFoilDerotateFoil->setEnabled(QXDirect::curFoil());
+	s_pMainFrame->m_pAFoilEditCoordsFoil->setEnabled(QXDirect::curFoil());
+	s_pMainFrame->m_pAFoilInterpolateFoils->setEnabled(QXDirect::curFoil());
+	s_pMainFrame->m_pAFoilNormalizeFoil->setEnabled(QXDirect::curFoil());
+	s_pMainFrame->m_pAFoilRefineGlobalFoil->setEnabled(QXDirect::curFoil());
+	s_pMainFrame->m_pAFoilRefineLocalFoil->setEnabled(QXDirect::curFoil());
+	s_pMainFrame->m_pAFoilScaleFoil->setEnabled(QXDirect::curFoil());
+	s_pMainFrame->m_pAFoilSetFlap->setEnabled(QXDirect::curFoil());
+	s_pMainFrame->m_pAFoilSetLERadius->setEnabled(QXDirect::curFoil());
+	s_pMainFrame->m_pAFoilSetTEGap->setEnabled(QXDirect::curFoil());
 
 	s_pMainFrame->m_pShowLegend->setChecked(m_p2DWidget->m_bShowLegend);
 
-	s_pMainFrame->m_pAFoilSplineMenu->setEnabled(!Foil::curFoil());
-    s_pMainFrame->m_pAFoilSplineMenu_AFoilCtxMenu->setEnabled(!Foil::curFoil());
-	s_pMainFrame->m_pInsertSplinePt->setEnabled(!Foil::curFoil());
-	s_pMainFrame->m_pRemoveSplinePt->setEnabled(!Foil::curFoil());
+	s_pMainFrame->m_pAFoilSplineMenu->setEnabled(!QXDirect::curFoil());
+	s_pMainFrame->m_pAFoilSplineMenu_AFoilCtxMenu->setEnabled(!QXDirect::curFoil());
+	s_pMainFrame->m_pInsertSplinePt->setEnabled(!QXDirect::curFoil());
+	s_pMainFrame->m_pRemoveSplinePt->setEnabled(!QXDirect::curFoil());
 
 	s_pMainFrame->m_pUndoAFoilAct->setEnabled(m_StackPos>0);
 	s_pMainFrame->m_pRedoAFoilAct->setEnabled(m_StackPos<m_UndoStack.size()-1);
@@ -304,7 +305,7 @@ void QAFoil::keyPressEvent(QKeyEvent *event)
 		}
 		case Qt::Key_F3:
 		{
-			if(Foil::curFoil())
+			if(QXDirect::curFoil())
 			{
 				if(bShift) onAFoilCadd();
 				else       onAFoilPanels();
@@ -425,11 +426,11 @@ void QAFoil::loadSettings(QSettings *pSettings)
  */
 void QAFoil::onAFoilDerotateFoil()
 {
-	if(!Foil::curFoil()) return;
+	if(!QXDirect::curFoil()) return;
 
-	m_pBufferFoil->copyFoil(Foil::curFoil());
+	m_pBufferFoil->copyFoil(QXDirect::curFoil());
 	m_pBufferFoil->isVisible() = true;
-	m_pBufferFoil->foilName() = Foil::curFoil()->foilName();
+	m_pBufferFoil->foilName() = QXDirect::curFoil()->foilName();
 	m_pBufferFoil->setColor(160,160,160);
 	m_pBufferFoil->foilLineStyle() = 1;
 	m_pBufferFoil->foilLineWidth() = 1;
@@ -462,9 +463,9 @@ void QAFoil::onAFoilDerotateFoil()
  */
 void QAFoil::onAFoilNormalizeFoil()
 {
-	if(!Foil::curFoil()) return;
-	double length = Foil::curFoil()->normalizeGeometry();
-	Foil::curFoil()->initFoil();
+	if(!QXDirect::curFoil()) return;
+	double length = QXDirect::curFoil()->normalizeGeometry();
+	QXDirect::curFoil()->initFoil();
 	QString str = QString(tr("Foil has been normalized from %1  to 1.000")).arg(length,7,'f',3);
 
 	s_pMainFrame->statusBar()->showMessage(str);
@@ -478,10 +479,10 @@ void QAFoil::onAFoilNormalizeFoil()
  */
 void QAFoil::onAFoilCadd()
 {
-	if(!Foil::curFoil()) return;
+	if(!QXDirect::curFoil()) return;
 
-	m_pBufferFoil->copyFoil(Foil::curFoil());
-	m_pBufferFoil->foilName()   = Foil::curFoil()->foilName();
+	m_pBufferFoil->copyFoil(QXDirect::curFoil());
+	m_pBufferFoil->foilName()   = QXDirect::curFoil()->foilName();
 	m_pBufferFoil->setColor(160,160,160);
 	m_pBufferFoil->foilLineStyle() = 1;
 	m_pBufferFoil->foilLineWidth() = 1;
@@ -492,7 +493,7 @@ void QAFoil::onAFoilCadd()
 
 	CAddDlg caDlg(s_pMainFrame);
 	caDlg.m_pBufferFoil = m_pBufferFoil;
-	caDlg.m_pMemFoil    = Foil::curFoil();
+	caDlg.m_pMemFoil    = QXDirect::curFoil();
 	caDlg.initDialog();
 
 	if(QDialog::Accepted == caDlg.exec())
@@ -512,7 +513,7 @@ void QAFoil::onAFoilCadd()
 	else
 	{
 		fillFoilTable();
-		selectFoil(Foil::curFoil());
+		selectFoil(QXDirect::curFoil());
 
 	}
 	m_pBufferFoil->isVisible() = false;
@@ -544,10 +545,10 @@ void QAFoil::onAFoilLECircle()
 */
 void QAFoil::onAFoilPanels()
 {
-	if(!Foil::curFoil()) return;
+	if(!QXDirect::curFoil()) return;
 
-	m_pBufferFoil->copyFoil(Foil::curFoil());
-	m_pBufferFoil->foilName()  = Foil::curFoil()->foilName();
+	m_pBufferFoil->copyFoil(QXDirect::curFoil());
+	m_pBufferFoil->foilName()  = QXDirect::curFoil()->foilName();
 	m_pBufferFoil->setColor(160,160,160);
 	m_pBufferFoil->foilLineStyle() = 1;
 	m_pBufferFoil->foilLineWidth() = 1;
@@ -558,7 +559,7 @@ void QAFoil::onAFoilPanels()
 
 	TwoDPanelDlg tdpDlg(s_pMainFrame);
     tdpDlg.m_pBufferFoil = m_pBufferFoil;
-	tdpDlg.m_pMemFoil    = Foil::curFoil();
+	tdpDlg.m_pMemFoil    = QXDirect::curFoil();
 	tdpDlg.initDialog();
 
     if(QDialog::Accepted == tdpDlg.exec())
@@ -578,7 +579,7 @@ void QAFoil::onAFoilPanels()
 	else
 	{
 		fillFoilTable();
-		selectFoil(Foil::curFoil());
+		selectFoil(QXDirect::curFoil());
 //		m_pXFoil->foilName() ="";
 
 	}
@@ -592,12 +593,12 @@ void QAFoil::onAFoilPanels()
 */
 void QAFoil::onAFoilFoilCoordinates()
 {
-	if(!Foil::curFoil()) return;
+	if(!QXDirect::curFoil()) return;
 
-	m_pBufferFoil->copyFoil(Foil::curFoil());
+	m_pBufferFoil->copyFoil(QXDirect::curFoil());
 	m_pBufferFoil->foilPointStyle() = 1;
 	m_pBufferFoil->isVisible() = true;
-	m_pBufferFoil->foilName() = Foil::curFoil()->foilName();
+	m_pBufferFoil->foilName() = QXDirect::curFoil()->foilName();
 	m_pBufferFoil->setColor(160,160,160);
 	m_pBufferFoil->foilLineStyle() = 1;
 	m_pBufferFoil->foilLineWidth() = 1;
@@ -605,7 +606,7 @@ void QAFoil::onAFoilFoilCoordinates()
 	m_p2DWidget->update();;
 
 	FoilCoordDlg fcDlg(s_pMainFrame);
-	fcDlg.m_pMemFoil    = Foil::curFoil();
+	fcDlg.m_pMemFoil    = QXDirect::curFoil();
     fcDlg.m_pBufferFoil = m_pBufferFoil;
 	fcDlg.initDialog();
 
@@ -627,7 +628,7 @@ void QAFoil::onAFoilFoilCoordinates()
 	else
 	{
 		fillFoilTable();
-		selectFoil(Foil::curFoil());
+		selectFoil(QXDirect::curFoil());
 	}
 	m_pBufferFoil->isVisible() = false;
 	m_p2DWidget->update();;
@@ -639,12 +640,12 @@ void QAFoil::onAFoilFoilCoordinates()
  */
 void QAFoil::onAFoilFoilGeom()
 {
-	if(!Foil::curFoil()) return;
+	if(!QXDirect::curFoil()) return;
 
-	m_pBufferFoil->copyFoil(Foil::curFoil());
+	m_pBufferFoil->copyFoil(QXDirect::curFoil());
 	m_pBufferFoil->foilPointStyle() = 1;
 	m_pBufferFoil->isVisible() = true;
-	m_pBufferFoil->foilName() = Foil::curFoil()->foilName();
+	m_pBufferFoil->foilName() = QXDirect::curFoil()->foilName();
 	m_pBufferFoil->setColor(160,160,160);
 	m_pBufferFoil->foilLineStyle() = 1;
 	m_pBufferFoil->foilLineWidth() = 1;
@@ -652,7 +653,7 @@ void QAFoil::onAFoilFoilGeom()
 	m_p2DWidget->update();;
 
 	FoilGeomDlg fgeDlg(s_pMainFrame);
-	fgeDlg.m_pMemFoil    = Foil::curFoil();
+	fgeDlg.m_pMemFoil    = QXDirect::curFoil();
     fgeDlg.m_pBufferFoil = m_pBufferFoil;
     fgeDlg.initDialog();
 
@@ -672,7 +673,7 @@ void QAFoil::onAFoilFoilGeom()
 	else
 	{
 		fillFoilTable();
-		selectFoil(Foil::curFoil());
+		selectFoil(QXDirect::curFoil());
 //		m_pXFoil->foilName() ="";
 	}
 	m_pBufferFoil->isVisible() = false;
@@ -685,12 +686,12 @@ void QAFoil::onAFoilFoilGeom()
  */
 void QAFoil::onAFoilSetTEGap()
 {
-	if(!Foil::curFoil()) return;
+	if(!QXDirect::curFoil()) return;
 
-	m_pBufferFoil->copyFoil(Foil::curFoil());
+	m_pBufferFoil->copyFoil(QXDirect::curFoil());
 	m_pBufferFoil->foilPointStyle() = 1;
 	m_pBufferFoil->isVisible()   = true;
-	m_pBufferFoil->foilName()   = Foil::curFoil()->foilName();
+	m_pBufferFoil->foilName()   = QXDirect::curFoil()->foilName();
 	m_pBufferFoil->setColor(160,160,160);
 	m_pBufferFoil->foilLineStyle() = 1;
 	m_pBufferFoil->foilLineWidth() = 1;
@@ -699,7 +700,7 @@ void QAFoil::onAFoilSetTEGap()
 
 	TEGapDlg teDlg(s_pMainFrame);
     teDlg.m_pBufferFoil = m_pBufferFoil;
-	teDlg.m_pMemFoil    = Foil::curFoil();
+	teDlg.m_pMemFoil    = QXDirect::curFoil();
 	teDlg.initDialog();
 
     if(QDialog::Accepted == teDlg.exec())
@@ -719,7 +720,7 @@ void QAFoil::onAFoilSetTEGap()
 	else
 	{
 		fillFoilTable();
-		selectFoil(Foil::curFoil());
+		selectFoil(QXDirect::curFoil());
 //		m_pXFoil->foilName() ="";
 		//to un-initialize XFoil in case user switches to XInverse
 		//Thanks Jean-Marc !
@@ -735,12 +736,12 @@ void QAFoil::onAFoilSetTEGap()
  */
 void QAFoil::onAFoilSetLERadius()
 {
-	if(!Foil::curFoil()) return;
+	if(!QXDirect::curFoil()) return;
 
-	m_pBufferFoil->copyFoil(Foil::curFoil());
+	m_pBufferFoil->copyFoil(QXDirect::curFoil());
 	m_pBufferFoil->isVisible()   = true;
 	m_pBufferFoil->foilPointStyle() = 1;
-	m_pBufferFoil->foilName()   = Foil::curFoil()->foilName();
+	m_pBufferFoil->foilName()   = QXDirect::curFoil()->foilName();
 	m_pBufferFoil->setColor(160,160,160);
 	m_pBufferFoil->foilLineStyle() = 1;
 	m_pBufferFoil->foilLineWidth() = 1;
@@ -749,7 +750,7 @@ void QAFoil::onAFoilSetLERadius()
 
 	LEDlg leDlg(s_pMainFrame);
     leDlg.m_pBufferFoil = m_pBufferFoil;
-	leDlg.m_pMemFoil    = Foil::curFoil();
+	leDlg.m_pMemFoil    = QXDirect::curFoil();
     leDlg.InitDialog();
 
     if(QDialog::Accepted == leDlg.exec())
@@ -769,7 +770,7 @@ void QAFoil::onAFoilSetLERadius()
 	else
 	{
 		fillFoilTable();
-		selectFoil(Foil::curFoil());
+		selectFoil(QXDirect::curFoil());
 //		m_pXFoil->foilName() ="";
 
 	}
@@ -790,10 +791,10 @@ void QAFoil::onAFoilInterpolateFoils()
 		return;
 	}
 
-	if(!Foil::curFoil()) selectFoil();
-	if(!Foil::curFoil()) return;
-	m_pBufferFoil->copyFoil(Foil::curFoil());
-	m_pBufferFoil->foilName()  = Foil::curFoil()->foilName();
+	if(!QXDirect::curFoil()) selectFoil();
+	if(!QXDirect::curFoil()) return;
+	m_pBufferFoil->copyFoil(QXDirect::curFoil());
+	m_pBufferFoil->foilName()  = QXDirect::curFoil()->foilName();
 	m_pBufferFoil->setColor(160,160,160);
 	m_pBufferFoil->foilLineStyle() = 1;
 	m_pBufferFoil->foilLineWidth() = 1;
@@ -826,7 +827,7 @@ void QAFoil::onAFoilInterpolateFoils()
 	else
 	{
 		fillFoilTable();
-		selectFoil(Foil::curFoil());
+		selectFoil(QXDirect::curFoil());
 	}
 	m_pBufferFoil->isVisible() = false;
 	m_p2DWidget->update();;
@@ -877,7 +878,7 @@ void QAFoil::onAFoilNacaFoils()
 	else
 	{
 		fillFoilTable();;
-		if(Foil::curFoil()) selectFoil(Foil::curFoil());
+		if(QXDirect::curFoil()) selectFoil(QXDirect::curFoil());
 	}
 
 	setControls();
@@ -891,11 +892,11 @@ void QAFoil::onAFoilNacaFoils()
  */
 void QAFoil::onAFoilSetFlap()
 {
-	if(!Foil::curFoil()) return;
+	if(!QXDirect::curFoil()) return;
 
-	m_pBufferFoil->copyFoil(Foil::curFoil());
+	m_pBufferFoil->copyFoil(QXDirect::curFoil());
 	m_pBufferFoil->isVisible() = true;
-	m_pBufferFoil->foilName() = Foil::curFoil()->foilName();
+	m_pBufferFoil->foilName() = QXDirect::curFoil()->foilName();
 	m_pBufferFoil->setColor(160,160,160);
 	m_pBufferFoil->foilLineStyle() = 1;
 	m_pBufferFoil->foilLineWidth() = 1;
@@ -904,7 +905,7 @@ void QAFoil::onAFoilSetFlap()
 
 	FlapDlg flDlg(s_pMainFrame);
 	flDlg.m_pXFoil      = m_pXFoil;
-	flDlg.m_pMemFoil    = Foil::curFoil();
+	flDlg.m_pMemFoil    = QXDirect::curFoil();
     flDlg.m_pBufferFoil = m_pBufferFoil;
     flDlg.InitDialog();
 
@@ -924,7 +925,7 @@ void QAFoil::onAFoilSetFlap()
 	else
 	{
 		fillFoilTable();
-		selectFoil(Foil::curFoil());
+		selectFoil(QXDirect::curFoil());
 	}
 	m_pBufferFoil->isVisible() = false;
 	m_p2DWidget->update();;
@@ -936,16 +937,16 @@ void QAFoil::onAFoilSetFlap()
  */
 void QAFoil::onDeleteCurFoil()
 {
-	if(!Foil::curFoil()) return;
+	if(!QXDirect::curFoil()) return;
 
 	QString strong;
-	strong = tr("Are you sure you want to delete")  +"\n"+ Foil::curFoil()->foilName() +"\n";
+	strong = tr("Are you sure you want to delete")  +"\n"+ QXDirect::curFoil()->foilName() +"\n";
 	strong+= tr("and all associated OpPoints and Polars ?");
 
 	int resp = QMessageBox::question(s_pMainFrame, tr("Question"), strong,  QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
 	if(resp != QMessageBox::Yes) return;
 
-	Foil*pNextFoil = Foil::deleteFoil(Foil::curFoil());
+	Foil*pNextFoil = Objects2D::deleteFoil(QXDirect::curFoil());
 
 	fillFoilTable();
 	selectFoil(pNextFoil);
@@ -958,9 +959,9 @@ void QAFoil::onDeleteCurFoil()
  */
 void QAFoil::onDuplicate()
 {
-	if(!Foil::curFoil()) return;
+	if(!QXDirect::curFoil()) return;
 	Foil *pNewFoil = new Foil;
-	pNewFoil->copyFoil(Foil::curFoil());
+	pNewFoil->copyFoil(QXDirect::curFoil());
 	setRandomFoilColor(pNewFoil);
 	pNewFoil->initFoil();
 
@@ -975,11 +976,11 @@ void QAFoil::onDuplicate()
  */
 void QAFoil::onExportCurFoil()
 {
-	if(!Foil::curFoil())	return;
+	if(!QXDirect::curFoil())	return;
 
 	QString FileName;
 
-	FileName = Foil::curFoil()->foilName();
+	FileName = QXDirect::curFoil()->foilName();
 	FileName.replace("/", " ");
 
 	FileName = QFileDialog::getSaveFileName(this, tr("Export Foil"),
@@ -995,7 +996,7 @@ void QAFoil::onExportCurFoil()
 
 	QTextStream out(&XFile);
 
-	Foil::curFoil()->exportFoil(out);
+	QXDirect::curFoil()->exportFoil(out);
 	XFile.close();
 }
 
@@ -1071,7 +1072,7 @@ void QAFoil::onFoilClicked(const QModelIndex& index)
 
 	if(index.row()==0)
 	{
-		Foil::setCurFoil(NULL);
+		QXDirect::setCurFoil(NULL);
 		if(index.column()==12)
 		{
 			m_pSF->m_bVisible = !m_pSF->m_bVisible;
@@ -1084,8 +1085,8 @@ void QAFoil::onFoilClicked(const QModelIndex& index)
 	}
 	else if(index.row()>0)
 	{
-		Foil *pFoil= Foil::foil(pItem->text());
-		Foil::setCurFoil(pFoil);
+		Foil *pFoil= Objects2D::foil(pItem->text());
+		QXDirect::setCurFoil(pFoil);
 
 		if(pFoil)
 		{
@@ -1117,7 +1118,7 @@ void QAFoil::onFoilClicked(const QModelIndex& index)
  */
 void QAFoil::onFoilStyle()
 {
-	if(!Foil::curFoil())
+	if(!QXDirect::curFoil())
 	{
         LinePickerDlg dlg(this);
 		dlg.initDialog(m_pSF->splineFoilStyle(), m_pSF->splineFoilStyle(), m_pSF->splineFoilWidth(), m_pSF->splineFoilColor(), true);
@@ -1131,17 +1132,17 @@ void QAFoil::onFoilStyle()
 	else
 	{
         LinePickerDlg dlg(this);
-		dlg.initDialog(Foil::curFoil()->foilPointStyle(), Foil::curFoil()->foilLineStyle(),
-					   Foil::curFoil()->foilLineWidth(), colour(Foil::curFoil()), true);
+		dlg.initDialog(QXDirect::curFoil()->foilPointStyle(), QXDirect::curFoil()->foilLineStyle(),
+					   QXDirect::curFoil()->foilLineWidth(), colour(QXDirect::curFoil()), true);
 
 		if(QDialog::Accepted==dlg.exec())
 		{
 			emit projectModified();
-			Foil::curFoil()->foilPointStyle() = dlg.pointStyle();
-			Foil::curFoil()->foilLineStyle()  = dlg.lineStyle();
-			Foil::curFoil()->foilLineWidth()  = dlg.lineWidth();
+			QXDirect::curFoil()->foilPointStyle() = dlg.pointStyle();
+			QXDirect::curFoil()->foilLineStyle()  = dlg.lineStyle();
+			QXDirect::curFoil()->foilLineWidth()  = dlg.lineWidth();
 			QColor clr = dlg.lineColor();
-			Foil::curFoil()->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
+			QXDirect::curFoil()->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
 			m_p2DWidget->update();;
 		}
 	}
@@ -1172,8 +1173,8 @@ void QAFoil::onHideAllFoils()
  */
 void QAFoil::onHideCurrentFoil()
 {
-	if(!Foil::curFoil()) return;
-	showFoil(Foil::curFoil(), false);
+	if(!QXDirect::curFoil()) return;
+	showFoil(QXDirect::curFoil(), false);
 	m_p2DWidget->update();;
 
 }
@@ -1208,23 +1209,23 @@ void QAFoil::onNewSplines()
  */
 void QAFoil::onRenameFoil()
 {
-	if(!Foil::curFoil()) return;
+	if(!QXDirect::curFoil()) return;
 
 	Foil*pOldFoil;
 
 	QStringList NameList;
-	for(int k=0; k<Foil::s_oaFoil.size(); k++)
+	for(int k=0; k<Objects2D::s_oaFoil.size(); k++)
 	{
-		pOldFoil = (Foil*)Foil::s_oaFoil.at(k);
+		pOldFoil = Objects2D::s_oaFoil.at(k);
 		NameList.append(pOldFoil->foilName());
 	}
 
 	RenameDlg renDlg(this);
-	renDlg.initDialog(&NameList, Foil::curFoil()->foilName(), tr("Enter the foil's new name"));
+	renDlg.initDialog(&NameList, QXDirect::curFoil()->foilName(), tr("Enter the foil's new name"));
 
 	if(renDlg.exec() !=QDialog::Rejected)
 	{
-		Foil::curFoil()->renameThisFoil(renDlg.newName());
+		Objects2D::renameThisFoil(QXDirect::curFoil(), renDlg.newName());
 	}
 
 	fillFoilTable();
@@ -1254,8 +1255,8 @@ void QAFoil::onShowAllFoils()
  */
 void QAFoil::onShowCurrentFoil()
 {
-	if(!Foil::curFoil()) return;
-	showFoil(Foil::curFoil(), true);
+	if(!QXDirect::curFoil()) return;
+	showFoil(QXDirect::curFoil(), true);
 	m_p2DWidget->update();;
 
 }
@@ -1493,7 +1494,7 @@ void QAFoil::selectFoil(Foil* pFoil)
 	{
 		m_pctrlFoilTable->selectRow(0);
 	}
-	Foil::setCurFoil(pFoil);
+	QXDirect::setCurFoil(pFoil);
 }
 
 
@@ -1507,7 +1508,7 @@ void QAFoil::setAFoilParams()
 	setTableFont();
 	fillFoilTable();
 
-	selectFoil(Foil::curFoil());
+	selectFoil(QXDirect::curFoil());
 	setControls();
 }
 
@@ -1520,7 +1521,7 @@ void QAFoil::setAFoilParams()
 void QAFoil::showFoil(Foil* pFoil, bool bShow)
 {
 	if(!pFoil) return;
-	Foil::curFoil()->isVisible() = bShow;
+	QXDirect::curFoil()->isVisible() = bShow;
 	emit projectModified();
 }
 
@@ -1703,9 +1704,9 @@ Foil* QAFoil::addNewFoil(Foil *pFoil)
 {
 	if(!pFoil) return NULL;
 	QStringList NameList;
-	for(int k=0; k<Foil::s_oaFoil.size(); k++)
+	for(int k=0; k<Objects2D::s_oaFoil.size(); k++)
 	{
-		Foil*pOldFoil = (Foil*)Foil::s_oaFoil.at(k);
+		Foil*pOldFoil = Objects2D::s_oaFoil.at(k);
 		NameList.append(pOldFoil->foilName());
 	}
 
@@ -1715,7 +1716,7 @@ Foil* QAFoil::addNewFoil(Foil *pFoil)
 	if(renDlg.exec() != QDialog::Rejected)
 	{
 		pFoil->setFoilName(renDlg.newName());
-		pFoil->insertThisFoil();
+		Objects2D::insertThisFoil(pFoil);
 		emit projectModified();
 		return pFoil;
 	}
