@@ -201,10 +201,6 @@ void PlaneDlg::onBodyCheck()
 	if(m_pctrlBody->isChecked())
 	{
 		m_pPlane->m_bBody= true;
-		if(!m_pPlane->body())
-		{
-			m_pPlane->setBody(new Body);
-		}
 	}
 	else
 	{
@@ -347,7 +343,7 @@ void PlaneDlg::onDefineBody()
 
 	Body memBody;
 	memBody.duplicate(m_pPlane->body());
-    CVector v = m_pPlane->bodyPos();
+	Vector3d v = m_pPlane->bodyPos();
     v.x = -v.x; v.z=-v.z;
  //   m_pPlane->m_pBody->Translate(v,false);
 	GL3dBodyDlg glbDlg(this);
@@ -437,9 +433,7 @@ void PlaneDlg::onImportPlaneBody()
 		Body *pOldBody = Objects3D::getBody(dlg.m_ObjectName);
 		if(pOldBody)
 		{
-			Body *pNewBody = new Body;
-			pNewBody->duplicate(pOldBody);
-            m_pPlane->setBody(pNewBody);
+			m_pPlane->setBody(pOldBody);
 		}
 	}
 }
@@ -477,6 +471,7 @@ void PlaneDlg::onImportXMLBody()
 	}
 
 	Plane a_plane;
+	a_plane.hasBody() = true;
 	XMLPlaneReader planeReader(XFile, &a_plane);
 	planeReader.readXMLPlaneFile();
 
@@ -856,9 +851,9 @@ void PlaneDlg::setupLayout()
 			lab1->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 			lab2->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 			lab3->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-			m_pctrlXLEWing = new DoubleEdit(0.00);
-			m_pctrlZLEWing = new DoubleEdit(0.00);
-			m_pctrlWingTilt = new DoubleEdit(0.0,2);
+			m_pctrlXLEWing = new DoubleEdit(0.0, 3);
+			m_pctrlZLEWing = new DoubleEdit(0.0, 3);
+			m_pctrlWingTilt = new DoubleEdit(0.0, 3);
 			m_pctrlLen1 = new QLabel("mm");
 			m_pctrlLen2 = new QLabel("mm");
 			QLabel *lab4 = new QLabel(QString::fromUtf8("°"));
@@ -892,9 +887,9 @@ void PlaneDlg::setupLayout()
 			lab11->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 			lab12->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 			lab13->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-			m_pctrlXLEWing2 = new DoubleEdit(0.00);
-			m_pctrlZLEWing2 = new DoubleEdit(0.00);
-			m_pctrlWingTilt2 = new DoubleEdit(0.0,2);
+			m_pctrlXLEWing2 = new DoubleEdit(0.0, 3);
+			m_pctrlZLEWing2 = new DoubleEdit(0.0, 3);
+			m_pctrlWingTilt2 = new DoubleEdit(0.0, 3);
 			m_pctrlLen3 = new QLabel("mm");
 			m_pctrlLen4 = new QLabel("mm");
 			QLabel *lab14 = new QLabel(QString::fromUtf8("°"));
@@ -925,9 +920,9 @@ void PlaneDlg::setupLayout()
 			lab21->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 			lab22->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 			lab23->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-			m_pctrlXLEStab = new DoubleEdit(550.00);
-			m_pctrlZLEStab = new DoubleEdit(550.00);
-			m_pctrlStabTilt = new DoubleEdit(0.0,2);
+			m_pctrlXLEStab = new DoubleEdit(550.0, 3);
+			m_pctrlZLEStab = new DoubleEdit(550.0, 3);
+			m_pctrlStabTilt = new DoubleEdit(0.0, 3);
 			m_pctrlLen5 = new QLabel("mm");
 			m_pctrlLen6 = new QLabel("mm");
 			QLabel *lab24 = new QLabel(QString::fromUtf8("°"));
@@ -963,10 +958,10 @@ void PlaneDlg::setupLayout()
 			lab32->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 			lab33->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 			lab34->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-			m_pctrlXLEFin = new DoubleEdit(600.00);
-			m_pctrlYLEFin = new DoubleEdit(0.00);
-			m_pctrlZLEFin = new DoubleEdit(50.00);
-			m_pctrlFinTilt = new DoubleEdit(0.0,2);
+			m_pctrlXLEFin = new DoubleEdit(600.0, 3);
+			m_pctrlYLEFin = new DoubleEdit(0.0, 3);
+			m_pctrlZLEFin = new DoubleEdit(50.0, 3);
+			m_pctrlFinTilt = new DoubleEdit(0.0, 3);
 			m_pctrlLen7= new QLabel("mm");
 			m_pctrlLen8 = new QLabel("mm");
 			m_pctrlLen9 = new QLabel("mm");

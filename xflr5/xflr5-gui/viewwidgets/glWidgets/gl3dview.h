@@ -113,13 +113,12 @@ protected:
 	void glMakeArcBall();
 	void glMakeBody3DFlatPanels(Body *pBody);
 	void glMakeBodySplines(Body *pBody);
-	void glMakePanels(QOpenGLBuffer &vbo, int nPanels, int nNodes, CVector *pNode, Panel *pPanel, PlaneOpp *pPOpp);
-	void glMakePanelForces(int nPanels, Panel *pPanel, WPolar *pWPolar, PlaneOpp *pPOpp);
+	void glMakePanels(QOpenGLBuffer &vbo, int nPanels, int nNodes, Vector3d *pNode, Panel *pPanel, PlaneOpp *pPOpp);
 	void glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody);
 	void glMakeWingMesh(Wing *pWing);
 	void glMakeBodyMesh(Body *pBody);
 	void glMakeWingSectionHighlight(Wing *pWing, int iSectionHighLight, bool bRightSide);
-	void glMakeBodyFrameHighlight(Body *pBody, CVector bodyPos, int iFrame);
+	void glMakeBodyFrameHighlight(Body *pBody, Vector3d bodyPos, int iFrame);
 	void glRenderText(int x, int y, const QString & str, QColor textColor = QColor(Qt::white));
 	void glRenderText(double x, double y, double z, const QString & str, QColor textColor = QColor(Qt::white));
 
@@ -127,7 +126,7 @@ protected:
 
 	void paintGL3();
 	void paintFoilNames(void *pWingPtr);
-	void paintMasses(double volumeMass, CVector pos, QString tag, const QList<PointMass *> &ptMasses);
+	void paintMasses(double volumeMass, Vector3d pos, QString tag, const QList<PointMass *> &ptMasses);
 	virtual void paintOverlay() = 0;
 	void paintArcBall();
 	void paintAxes();
@@ -137,7 +136,7 @@ protected:
 	void paintSectionHighlight();
 	void paintBody(Body *pBody);
 	void paintWing(int iWing, Wing *pWing);
-	void paintSphere(CVector place, double radius, QColor sphereColor, bool bLight=true);
+	void paintSphere(Vector3d place, double radius, QColor sphereColor, bool bLight=true);
 	void printFormat(const QSurfaceFormat &format);
 	void reset3DRotationCenter();
 	virtual void set3DRotationCenter(QPoint point) = 0;
@@ -145,12 +144,12 @@ protected:
 	void setSpanStations(Plane *pPlane, WPolar *pWPolar, PlaneOpp *pPOpp);
 	void startResetTimer(double length);
 	void startRotationTimer();
-	void startTranslationTimer(CVector PP);
-	void screenToViewport(QPoint const &point, CVector &real);
-	void viewportToScreen(CVector const &real, QPoint &point);
-	void viewportToWorld(CVector vp, CVector &w);
-	QVector4D worldToViewport(CVector v);
-	QPoint worldToScreen(CVector v);
+	void startTranslationTimer(Vector3d PP);
+	void screenToViewport(QPoint const &point, Vector3d &real);
+	void viewportToScreen(Vector3d const &real, QPoint &point);
+	void viewportToWorld(Vector3d vp, Vector3d &w);
+	QVector4D worldToViewport(Vector3d v);
+	QPoint worldToScreen(Vector3d v);
 	QPoint worldToScreen(QVector4D v4);
 
 	QOpenGLShaderProgram m_ShaderProgramLine,  m_ShaderProgramGradient;
@@ -160,10 +159,7 @@ protected:
 	QOpenGLBuffer m_vboWingSurface[MAXWINGS], m_vboWingOutline[MAXWINGS];
 	QOpenGLBuffer m_vboEditMesh;
 	QOpenGLBuffer m_vboHighlight;
-	QOpenGLBuffer m_vboMesh, m_vboPanelCp, m_vboPanelForces, m_vboStreamLines, m_vboLegendColor;
-	QOpenGLBuffer m_vboSurfaceVelocities;
-	QOpenGLBuffer m_vboLiftForce, m_vboMoments;
-	QOpenGLBuffer m_vboICd[MAXWINGS], m_vboVCd[MAXWINGS], m_vboLiftStrips[MAXWINGS], m_vboTransitions[MAXWINGS], m_vboDownwash[MAXWINGS];
+	QOpenGLBuffer m_vboMesh, m_vboLegendColor;
 	QOpenGLBuffer m_vboSphere;
 	QOpenGLTexture 	*m_pLeftBodyTexture, *m_pRightBodyTexture;
 	QOpenGLTexture 	*m_pWingTopLeftTexture[MAXWINGS], *m_pWingTopRightTexture[MAXWINGS], *m_pWingBotLeftTexture[MAXWINGS], *m_pWingBotRightTexture[MAXWINGS];
@@ -238,12 +234,12 @@ protected:
 	QPoint m_ptPopUp;
 	QPoint m_LastPoint;
 
-	CVector m_transIncrement;
+	Vector3d m_transIncrement;
 	double m_glScaleIncrement;
 
-	CVector m_RealPopUp;
-	CVector m_glViewportTrans;// the translation vector in gl viewport coordinates
-	CVector m_glRotCenter;    // the center of rotation in object coordinates... is also the opposite of the translation vector
+	Vector3d m_RealPopUp;
+	Vector3d m_glViewportTrans;// the translation vector in gl viewport coordinates
+	Vector3d m_glRotCenter;    // the center of rotation in object coordinates... is also the opposite of the translation vector
 
 	QPixmap m_PixTextOverlay;
 

@@ -55,7 +55,7 @@ void XMLPlaneWriter::writeXMLBody(Body *pBody)
 
 	writeHeader();
 
-	CVector V;
+	Vector3d V;
 	writeBody(pBody, V, Units::mtoUnit(), Units::kgtoUnit());
 
 
@@ -186,7 +186,7 @@ void XMLPlaneWriter::writePointMass(PointMass *ppm, double massUnit, double leng
 
 
 
-void XMLPlaneWriter::writeBody(Body *pBody, CVector position, double lengthUnit, double massUnit)
+void XMLPlaneWriter::writeBody(Body *pBody, Vector3d position, double lengthUnit, double massUnit)
 {
 	NURBSSurface *pSurface = pBody->splineSurface();
 	writeStartElement("body");
@@ -244,7 +244,7 @@ void XMLPlaneWriter::writeBody(Body *pBody, CVector position, double lengthUnit,
 
 				for(int iPt=0; iPt<pFrame->pointCount(); iPt++)
 				{
-					CVector Pt(pFrame->point(iPt));
+					Vector3d Pt(pFrame->point(iPt));
 					writeTextElement("point",QString("%1, %2, %3").arg(Pt.x*lengthUnit, 11,'g',5)
 																  .arg(Pt.y*lengthUnit, 11,'g',5)
 																  .arg(Pt.z*lengthUnit, 11,'g',5));

@@ -7,12 +7,12 @@
 
 #Qt5.4 required for QOpenGLWidget instead of QGLWidget
 lessThan(QT_MAJOR_VERSION, 5) {
-  error("Qt5.4 or greater is required for xflr5 v6.30")
+  error("Qt5.4 or greater is required for xflr5 v6")
 }
 else
 {
     lessThan(QT_MINOR_VERSION, 4) {
-	  error("Qt5.4 or greater is required for xflr5 v6.30")
+	  error("Qt5.4 or greater is required for xflr5 v6")
     }
 }
 
@@ -27,15 +27,30 @@ INCLUDEPATH += $$PWD/viewwidgets
 INCLUDEPATH += $$PWD/viewwidgets/glWidgets
 INCLUDEPATH += $$PWD/graph
 INCLUDEPATH += $$PWD/misc
+INCLUDEPATH += $$PWD/xdirect/xfoil_task
 INCLUDEPATH += $$PWD/glcontextinfo
 
-INCLUDEPATH += $$PWD/../xflr5-engine
-INCLUDEPATH += $$PWD/../XFoil-lib
 INCLUDEPATH += $$PWD/../xflr5-engine/objects
-INCLUDEPATH += $$PWD/../xflr5-engine/plane_analysis
+INCLUDEPATH += $$PWD/../xflr5-engine/objects/objects2d
+INCLUDEPATH += $$PWD/../xflr5-engine/objects/objects3d
+INCLUDEPATH += $$PWD/../xflr5-engine/XFoil
+INCLUDEPATH += $$PWD/../xflr5-engine/analysis3d
+INCLUDEPATH += $$PWD/../xflr5-engine/analysis3d/plane_analysis
 
-#DEPENDPATH += $$OUT_PWD/../xflr5-engine/
-#message($$OUT_PWD/../xflr5-engine/)
+DEPENDPATH += $$PWD/../xflr5-engine/objects
+DEPENDPATH += $$PWD/../xflr5-engine/objects/objects2d
+DEPENDPATH += $$PWD/../xflr5-engine/objects/objects3d
+DEPENDPATH += $$PWD/../xflr5-engine/XFoil
+DEPENDPATH += $$PWD/../xflr5-engine/analysis3d
+DEPENDPATH += $$PWD/../xflr5-engine/analysis3d/plane_analysis
+
+INCLUDEPATH += $$PWD/../graph-lib
+DEPENDPATH += $$PWD/../graph-lib
+
+
+INCLUDEPATH += $$PWD/../XFoil-lib
+DEPENDPATH += $$PWD/../XFoil-lib
+
 
 SOURCES += \
 	XFLR5Application.cpp \
@@ -80,7 +95,6 @@ SOURCES += \
 	misc/LengthUnitDlg.cpp \
 	misc/exponentialslider.cpp \
 	misc/stlexportdialog.cpp \
-	misc/linestyle.h \
 	miarex/Miarex.cpp \
 	miarex/Objects3D.cpp \
 	miarex/analysis/StabPolarDlg.cpp \
@@ -126,6 +140,7 @@ SOURCES += \
 	xdirect/analysis/ReListDlg.cpp \
 	xdirect/analysis/XFoilAdvancedDlg.cpp \
 	xdirect/analysis/XFoilAnalysisDlg.cpp \
+	xdirect/analysis/XFoilTask.cpp \
 	xdirect/geometry/CAddDlg.cpp \
 	xdirect/geometry/FlapDlg.cpp \
 	xdirect/geometry/FoilCoordDlg.cpp \
@@ -138,10 +153,7 @@ SOURCES += \
 	xdirect/xmlpolarreader.cpp \
 	xdirect/xmlpolarwriter.cpp \
 	xdirect/objects2d.cpp \
-	graph/QGraph.cpp \
 	graph/GraphDlg.cpp \
-	graph/Graph.cpp \
-	graph/Curve.cpp \
 	xinverse/FoilSelectionDlg.cpp \
 	xinverse/PertDlg.cpp \
 	xinverse/XInverse.cpp \
@@ -164,7 +176,7 @@ SOURCES += \
 	viewwidgets/glWidgets/gl3dmiarexview.cpp \
 	viewwidgets/glWidgets/gl3dwingview.cpp \
 	viewwidgets/glWidgets/gl3dplaneview.cpp \
-    misc/voidwidget.cpp
+	misc/voidwidget.cpp
 
 
 HEADERS += \
@@ -254,6 +266,8 @@ HEADERS += \
 	xdirect/analysis/ReListDlg.h \
 	xdirect/analysis/XFoilAdvancedDlg.h \
 	xdirect/analysis/XFoilAnalysisDlg.h \
+	xdirect/analysis/XFoilTask.h \
+	xdirect/analysis/xfoiltaskevent.h \
 	xdirect/geometry/CAddDlg.h \
 	xdirect/geometry/FlapDlg.h \
 	xdirect/geometry/FoilCoordDlg.h \
@@ -270,10 +284,7 @@ HEADERS += \
 	xinverse/InverseOptionsDlg.h \
 	xinverse/FoilSelectionDlg.h \
 	xinverse/PertDlg.h \
-	graph/Graph.h \
 	graph/GraphDlg.h \
-	graph/Curve.h \
-	graph/QGraph.h \
 	design/AFoil.h \
 	design/LECircleDlg.h \
 	design/SplineCtrlsDlg.h \
@@ -294,8 +305,7 @@ HEADERS += \
 	viewwidgets/glWidgets/gl3dmiarexview.h \
 	viewwidgets/glWidgets/gl3dwingview.h \
 	viewwidgets/glWidgets/gl3dplaneview.h \
-    misc/voidwidget.h
-
+	misc/voidwidget.h
 	
 
 RESOURCES += \
@@ -309,24 +319,27 @@ RESOURCES += \
 win32 {
     TARGET = XFLR5
 	CONFIG(release, debug|release){
-		LIBS += -L$$OUT_PWD/../xflr5-engine/release/ -lengine_xflr5
+		LIBS += -L$$OUT_PWD/../xflr5-engine/release/ -lxflr5-engine
 		LIBS += -L$$OUT_PWD/../XFoil-lib/release/ -lXFoil-lib
+		LIBS += -L$$OUT_PWD/../graph-lib/release/ -lgraph-lib
 	}
-	CONFIG(debug, debug|release)
+	else:CONFIG(debug, debug|release)
 	{
-		LIBS += -L$$OUT_PWD/../xflr5-engine/debug/ -lengine_xflr5
+		LIBS += -L$$OUT_PWD/../xflr5-engine/debug/ -lxflr5-engine
 		LIBS += -L$$OUT_PWD/../XFoil-lib/debug/ -lXFoil-lib
+		LIBS += -L$$OUT_PWD/../graph-lib/debug/ -lgraph-lib
 	}
 
 	RC_FILE = ../win/xflr5.rc
 	LIBS += -lopenGL32
 }
 
-unix{
-    TARGET = xflr5
 
-	LIBS += -L$$OUT_PWD/../xflr5-engine/ -lengine_xflr5
+unix{
+	TARGET = xflr5
 	LIBS += -L$$OUT_PWD/../XFoil-lib/ -lXFoil-lib
+	LIBS += -L$$OUT_PWD/../xflr5-engine/ -lxflr5-engine
+	LIBS += -L$$OUT_PWD/../graph-lib/ -lgraph-lib
 
 #	release: DESTDIR = ../build/release
 #	debug:   DESTDIR = ../build/debug

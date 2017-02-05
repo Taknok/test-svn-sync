@@ -46,8 +46,8 @@ public:
 	void paintEvent(QPaintEvent *event);
 	void resizeEvent (QResizeEvent *event);
 
-	int highlightPoint(CVector real);
-	int selectPoint(CVector real);
+	int highlightPoint(Vector3d real);
+	int selectPoint(Vector3d real);
 	void dragSelectedPoint(double x, double y);
 	void createActions();
 

@@ -113,6 +113,6 @@ private:
 	QString m_strFoilName;           /**< the SplineFoil's name */
 	Spline5 m_Extrados;               /**< the spline which defines the upper surface */
 	Spline5 m_Intrados;               /**< the spline which defines the lower surface */
-	CVector m_rpMid[MIDPOINTCOUNT];  /**< the points on the SplineFoil's mid camber line @todo replace with a QVarLengthArray */
+	Vector3d m_rpMid[MIDPOINTCOUNT];  /**< the points on the SplineFoil's mid camber line @todo replace with a QVarLengthArray */
 };
 #endif

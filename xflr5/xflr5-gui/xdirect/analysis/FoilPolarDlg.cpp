@@ -306,8 +306,8 @@ void FoilPolarDlg::editingFinished()
 
 void FoilPolarDlg::initDialog()
 {
-	if(Foil::curFoil()) m_FoilName = Foil::curFoil()->foilName();
-	else                m_FoilName = "";
+	if(QXDirect::curFoil()) m_FoilName = QXDirect::curFoil()->foilName();
+	else                    m_FoilName = "";
 
 	QString str = tr("Analysis parameters for ");
 	setWindowTitle(str+ m_FoilName);
@@ -511,7 +511,7 @@ void FoilPolarDlg::setPlrName()
 
 	if(m_bAutoName)
 	{
-		m_PlrName= Polar::getAutoPolarName(m_PolarType, m_Reynolds, m_Mach, m_NCrit, m_ASpec, m_XTop, m_XBot);
+		m_PlrName= Polar::autoPolarName(m_PolarType, m_Reynolds, m_Mach, m_NCrit, m_ASpec, m_XTop, m_XBot);
 		m_pctrlAnalysisName->setText(m_PlrName);
 	}
 }

@@ -36,7 +36,7 @@
 #include <miarex/Miarex.h>
 #include <misc/Settings.h>
 #include <globals.h>
-#include <objects3d/CVector.h>
+#include <objects2d/Vector3d.h>
 #include <misc/Units.h>
 #include <miarex/Objects3D.h>
 

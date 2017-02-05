@@ -31,9 +31,10 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QLabel>
+#include <gui_enums.h>
 #include "ColorButton.h"
 #include "TextClrBtn.h"
-#include <graph/QGraph.h>
+#include <QGraph.h>
 
 // first name space
 namespace SETTINGS

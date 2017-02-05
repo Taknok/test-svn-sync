@@ -162,7 +162,6 @@ void CAddDlg::onApply()
 		m_pBufferFoil->yb[i] = pXFoil->y[i+1];
 	}
 	m_pBufferFoil->nb = pXFoil->n;
-//		pXFoil->SetFoilFlap(m_pBufferFoil);
 	m_pBufferFoil->initFoil();
 	m_pBufferFoil->setFlap();
 

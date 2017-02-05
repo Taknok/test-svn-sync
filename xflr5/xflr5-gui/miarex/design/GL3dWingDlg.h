@@ -63,7 +63,7 @@ public:
 	GL3dWingDlg(QWidget *pParent=NULL);
 	~GL3dWingDlg();
 
-	bool intersectObject(CVector AA,  CVector U, CVector &I);
+	bool intersectObject(Vector3d AA,  Vector3d U, Vector3d &I);
 	void glMake3DObjects();
 	void glMakeSectionHighlight(QOpenGLBuffer &vbo, int &nStrips, int &stripSize);
 	int iSection(){return m_iSection;}
@@ -198,10 +198,10 @@ private:
 	QPoint m_LastPoint;
 
 
-	CVector m_RealPopUp;
+	Vector3d m_RealPopUp;
 
 	Panel *m_pPanel;
-	CVector *m_pNode;
+	Vector3d *m_pNode;
 
 
 	int  *m_precision;

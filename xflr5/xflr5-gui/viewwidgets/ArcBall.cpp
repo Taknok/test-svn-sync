@@ -103,7 +103,7 @@ void ArcBall::getMatrix()
 
 
 /** find the intersection with the plane through the visible edge*/
-void ArcBall::edgeCoords(CVector m, CVector &V)
+void ArcBall::edgeCoords(Vector3d m, Vector3d &V)
 {
 	// find the intersection of the edge plane and the ray
 	t = (ab_edge - ab_zoom) / (ab_eyedir.dot(m));
@@ -306,7 +306,7 @@ void ArcBall::setQuat(double r, double qx, double qy, double qz)
 }
 
 
-void ArcBall::setZoom(double radius, CVector eye, CVector up)
+void ArcBall::setZoom(double radius, Vector3d eye, Vector3d up)
 {
 	ab_eye     = eye; // store eye vector
 	ab_zoom2   = ab_eye.dot(ab_eye);
@@ -341,7 +341,7 @@ void ArcBall::start(double ax, double ay)
 }
 
 
-void ArcBall::planarCoords(double const &ax, double const &ay, CVector &V)
+void ArcBall::planarCoords(double const &ax, double const &ay, Vector3d &V)
 {
 	m.set(ax- ab_eye.x, ay- ab_eye.y, az- ab_eye.z);
 	// intersect the point with the trackball plane
@@ -352,7 +352,7 @@ void ArcBall::planarCoords(double const &ax, double const &ay, CVector &V)
 }
 
 
-void ArcBall::sphereCoords(double const &ax, double const &ay, CVector &V)
+void ArcBall::sphereCoords(double const &ax, double const &ay, Vector3d &V)
 {
 	// find the intersection with the sphere
 

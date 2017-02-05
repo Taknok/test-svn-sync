@@ -245,7 +245,7 @@ public:
 	void glMake3DObjects();
 	void importPlaneFromXML(QFile &xmlFile);
 	void importWPolarFromXML(QFile &xmlFile);
-	bool intersectObject(CVector O,  CVector U, CVector &I);
+	bool intersectObject(Vector3d O,  Vector3d U, Vector3d &I);
 	void LLTAnalyze(double V0, double VMax, double VDelta, bool bSequence, bool bInitCalc);	
 	bool loadSettings(QSettings *pSettings);
 	int  matSize() {return m_theTask.m_MatSize;}
@@ -277,6 +277,7 @@ public:
 	void updateCurve();
 	void updateUnits();
 	void updateView();
+	static QString WPolarVariableName(int iVar);
 
 
 	PlaneOpp *curPOpp(){return m_pCurPOpp;}

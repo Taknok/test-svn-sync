@@ -27,6 +27,7 @@
 #include "GraphDlg.h"
 #include <objects2d/Polar.h>
 #include <objects3d/WPolar.h>
+#include <miarex/Miarex.h>
 #include <Units.h>
 #include <QPen>
 #include <QPainterPath>
@@ -406,10 +407,10 @@ void GraphWidget::onGraphSettings()
 			{
 				QString Title;
 
-				Title  = WPolar::variableName(m_pGraph->xVariable());
+				Title  = QMiarex::WPolarVariableName(m_pGraph->xVariable());
 				m_pGraph->setXTitle(Title);
 
-				Title  = WPolar::variableName(m_pGraph->yVariable());
+				Title  = QMiarex::WPolarVariableName(m_pGraph->yVariable());
 				m_pGraph->setYTitle(Title);
 
 				if(grDlg.bVariableChanged())

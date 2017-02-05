@@ -25,7 +25,7 @@
 #include <QWidget>
 #include <QMenu>
 #include <QPixmap>
-#include <objects3d/CVector.h>
+#include <objects2d/Vector3d.h>
 
 
 
@@ -76,7 +76,7 @@ public:
 	void setContextMenu(QMenu *pMenu);
 
 private:
-	CVector mousetoReal(QPoint &point);
+	Vector3d mousetoReal(QPoint &point);
 	virtual void setScale();
 	virtual void createActions();
 	virtual void createContextMenu();
@@ -92,8 +92,8 @@ private:
 
 	void paintGrids(QPainter &painter);
 
-	virtual int highlightPoint(CVector real) = 0;
-	virtual int selectPoint(CVector real) = 0;
+	virtual int highlightPoint(Vector3d real) = 0;
+	virtual int selectPoint(Vector3d real) = 0;
 	virtual void dragSelectedPoint(double x, double y) =0;
 
 
@@ -115,7 +115,7 @@ signals:
 
 
 public:
-	CVector m_objectOffset;
+	Vector3d m_objectOffset;
 	double m_objectScale;
 
 
@@ -176,7 +176,7 @@ private:
 
 	QRect m_ZoomRect;           /**< the user-defined rectangle for zooming in */
 
-	CVector m_MousePos;         /**< the mouse position */
+	Vector3d m_MousePos;         /**< the mouse position */
 
 
 	bool m_bIsImageLoaded;      /**< true if a backgruond image is loaded */

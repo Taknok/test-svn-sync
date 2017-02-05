@@ -40,7 +40,7 @@
 #include <misc/DoubleEdit.h>
 #include <misc/IntEdit.h>
 #include <misc/MinTextEdit.h>
-#include <graph/QGraph.h>
+#include <QGraph.h>
 #include <objects2d/Foil.h>
 #include <gui_objects/Spline5.h>
 
@@ -91,7 +91,6 @@ private slots:
 	void onResetFoilScale();
 	void onInsertCtrlPt();
 	void onPertubate();
-	void onExportQGraph();
 	void onQGraphSettings();
 	void onQInitial();
 	void onQSpec();
@@ -148,7 +147,7 @@ private:
 
 	double qincom(double qc, double qinf, double tklam);
 
-	CVector mousetoReal(QPoint point);
+	Vector3d mousetoReal(QPoint point);
 
 private:
 

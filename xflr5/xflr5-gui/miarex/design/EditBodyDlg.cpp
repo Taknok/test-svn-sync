@@ -603,7 +603,7 @@ void EditBodyDlg::onCheckViewIcons()
 
 
 
-bool EditBodyDlg::intersectObject(CVector AA,  CVector U, CVector &I)
+bool EditBodyDlg::intersectObject(Vector3d AA,  Vector3d U, Vector3d &I)
 {
 	return m_pBody->intersectFlatPanels(AA, AA+U*10, I);
 }
@@ -806,7 +806,7 @@ void EditBodyDlg::fillBodyTreeView()
 					{
 						if(Frame::s_iSelect==iPt) m_pStruct->expand(m_pModel->indexFromItem(pointFolder.first()));
 
-						CVector Pt(pFrame->point(iPt));
+						Vector3d Pt(pFrame->point(iPt));
 						QList<QStandardItem*> dataItem = prepareDoubleRow("", "x", Pt.x*Units::mtoUnit(), Units::lengthUnitLabel());
 						pointFolder.first()->appendRow(dataItem);
 
@@ -981,7 +981,7 @@ void EditBodyDlg::readBodyFrameTree(Frame *pFrame, QModelIndex indexLevel)
 		else if (object.compare("x_Position", Qt::CaseInsensitive)==0) xPt = dataIndex.data().toDouble()/Units::mtoUnit();
 		else if (object.indexOf("Point", Qt::CaseInsensitive)==0)
 		{
-			CVector Pt;
+			Vector3d Pt;
 			readVectorTree(Pt, indexLevel.child(0,0));
 			pFrame->appendPoint(Pt);
 		}
@@ -1053,7 +1053,7 @@ void EditBodyDlg::readPointMassTree(PointMass *ppm, QModelIndex indexLevel)
 
 
 
-void EditBodyDlg::readVectorTree(CVector &V, QModelIndex indexLevel)
+void EditBodyDlg::readVectorTree(Vector3d &V, QModelIndex indexLevel)
 {
 	QString object, field, value;
 	QModelIndex dataIndex;

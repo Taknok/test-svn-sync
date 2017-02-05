@@ -35,7 +35,7 @@ class WingScaleDlg : public QDialog
 	friend class MainFrame;
 public:
     WingScaleDlg(QWidget *pParent);
-	void initDialog(double const &RefSpan, double const &RefChord, double const &RefSweep, double const &RefTwist, const double &RefArea, const double &RefAR);
+	void initDialog(double const &RefSpan, double const &RefChord, double const &RefSweep, double const &RefTwist, const double &RefArea, const double &RefAR, const double &RefTR);
 private:
 	void setupLayout();
 	void readData();
@@ -51,19 +51,19 @@ private slots:
 public:
 
 	QCheckBox *m_pctrlSpan, *m_pctrlChord, *m_pctrlSweep, *m_pctrlTwist;
-	QCheckBox *m_pctrlScaleArea, *m_pctrlScaleAR;
+	QCheckBox *m_pctrlScaleArea, *m_pctrlScaleAR, *m_pctrlScaleTR;
 	DoubleEdit  *m_pctrlNewSpan, *m_pctrlNewChord, *m_pctrlNewSweep, *m_pctrlNewTwist;
-	DoubleEdit *m_pctrlNewArea, *m_pctrlNewAR;
+	DoubleEdit *m_pctrlNewArea, *m_pctrlNewAR, *m_pctrlNewTR;
 	QLabel *m_pctrlRefSpan, *m_pctrlRefChord, *m_pctrlRefSweep, *m_pctrlRefTwist;
-	QLabel *m_pctrlRefArea,*m_pctrlRefAR;
+	QLabel *m_pctrlRefArea,*m_pctrlRefAR, *m_pctrlRefTR;
 	QLabel *m_pctrlSpanRatio, *m_pctrlChordRatio, *m_pctrlSweepRatio, *m_pctrlTwistRatio;
-	QLabel *m_pctrlAreaRatio,*m_pctrlARRatio;
+	QLabel *m_pctrlAreaRatio,*m_pctrlARRatio, *m_pctrlTRRatio;
 
 	bool m_bSweep, m_bSpan, m_bChord, m_bTwist;
-	bool m_bArea, m_bAR;
+	bool m_bArea, m_bAR, m_bTR;
 
-	double m_NewSweep, m_NewChord, m_NewTwist, m_NewSpan, m_NewArea, m_NewAR;
-	double m_RefSweep, m_RefChord, m_RefTwist, m_RefSpan, m_RefArea, m_RefAR;
+	double m_NewSweep, m_NewChord, m_NewTwist, m_NewSpan, m_NewArea, m_NewAR, m_NewTR;
+	double m_RefSweep, m_RefChord, m_RefTwist, m_RefSpan, m_RefArea, m_RefAR, m_RefTR;
 };
 
 #endif // WINGSCALEDLG_H

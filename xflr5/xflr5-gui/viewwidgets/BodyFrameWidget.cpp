@@ -98,7 +98,7 @@ void BodyFrameWidget::drawFrameLines()
 	if(!m_pBody) return;
 
 	int k;
-	CVector Point;
+	Vector3d Point;
 	double hinc, u, v;
 	int nh;
 
@@ -243,7 +243,7 @@ void BodyFrameWidget::setBody(Body *pBody)
 
 void BodyFrameWidget::onInsertPt()
 {
-	CVector real = mousetoReal(m_PointDown);
+	Vector3d real = mousetoReal(m_PointDown);
 	real.z = real.y;
 	real.y = real.x;
 	real.x = m_pBody->activeFrame()->position().x;
@@ -259,7 +259,7 @@ void BodyFrameWidget::onRemovePt()
 {
 	if(m_pBody->activeFrame())
 	{
-		CVector real = mousetoReal(m_PointDown);
+		Vector3d real = mousetoReal(m_PointDown);
 		real.z = real.y;
 		real.y = real.x;
 		real.x = m_pBody->activeFrame()->position().x;
@@ -296,7 +296,7 @@ void BodyFrameWidget::onScaleFrame()
 }
 
 
-int BodyFrameWidget::highlightPoint(CVector real)
+int BodyFrameWidget::highlightPoint(Vector3d real)
 {
 	if(!m_pBody->activeFrame()) Frame::s_iHighlight = -1;
 	else
@@ -311,7 +311,7 @@ int BodyFrameWidget::highlightPoint(CVector real)
 
 
 
-int BodyFrameWidget::selectPoint(CVector real)
+int BodyFrameWidget::selectPoint(Vector3d real)
 {
 	if(!m_pBody->activeFrame()) Frame::s_iSelect = -1;
 	else

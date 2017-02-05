@@ -840,7 +840,7 @@ void EditPlaneDlg::onEndEdit()
 	if(s_bAutoRedraw) onRedraw();
 }
 
-bool EditPlaneDlg::intersectObject(CVector AA,  CVector U, CVector &I)
+bool EditPlaneDlg::intersectObject(Vector3d AA,  Vector3d U, Vector3d &I)
 {
 	Wing *pWingList[MAXWINGS] = {m_pPlane->wing(), m_pPlane->wing2(), m_pPlane->stab(), m_pPlane->fin()};
 
@@ -1332,7 +1332,7 @@ void EditPlaneDlg::fillBodyTreeView(QStandardItem*planeRootItem)
 					QList<QStandardItem*> pointFolder = prepareRow(QString("Point %1").arg(iPt+1));
 					sectionFolder.first()->appendRow(pointFolder);
 					{
-						CVector Pt(pFrame->point(iPt));
+						Vector3d Pt(pFrame->point(iPt));
 						QList<QStandardItem*> dataItem = prepareDoubleRow("", "x", Pt.x*Units::mtoUnit(), Units::lengthUnitLabel());
 						pointFolder.first()->appendRow(dataItem);
 
@@ -1383,7 +1383,7 @@ void EditPlaneDlg::readViewLevel(QModelIndex indexLevel)
 				newWing.clearWingSections();
 				newWing.clearSurfaces();
 				newWing.wingType() = wingType(value);
-				CVector wingPos;
+				Vector3d wingPos;
 				double wingTiltAngle;
 				readWingTree(&newWing, wingPos, wingTiltAngle, indexLevel.child(0,0));
 
@@ -1442,7 +1442,7 @@ void EditPlaneDlg::readViewLevel(QModelIndex indexLevel)
 }
 
 
-void EditPlaneDlg::readWingTree(Wing *pWing, CVector &wingLE, double &tiltAngle, QModelIndex indexLevel)
+void EditPlaneDlg::readWingTree(Wing *pWing, Vector3d &wingLE, double &tiltAngle, QModelIndex indexLevel)
 {
 	QString object, field, value;
 
@@ -1647,7 +1647,7 @@ void EditPlaneDlg::readBodyFrameTree(Body *pBody, Frame *pFrame, QModelIndex ind
 		else if (object.compare("x_Position", Qt::CaseInsensitive)==0) x = dataIndex.data().toDouble()/Units::mtoUnit();
 		else if (object.indexOf("Point", Qt::CaseInsensitive)==0)
 		{
-			CVector Pt;
+			Vector3d Pt;
 			readVectorTree(Pt, indexLevel.child(0,0));
 			pFrame->appendPoint(Pt);
 		}
@@ -1754,7 +1754,7 @@ void EditPlaneDlg::readPointMassTree(PointMass *ppm, QModelIndex indexLevel)
 
 
 
-void EditPlaneDlg::readVectorTree(CVector &V, QModelIndex indexLevel)
+void EditPlaneDlg::readVectorTree(Vector3d &V, QModelIndex indexLevel)
 {
 	QString object, field, value;
 	QModelIndex dataIndex;

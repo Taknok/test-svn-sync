@@ -36,8 +36,8 @@
 #include <objects2d/Foil.h>
 #include <objects2d/Polar.h>
 #include <misc/DoubleEdit.h>
-#include <XFoilTask.h>
-#include <xfoiltaskevent.h>
+#include <xdirect/analysis/XFoilTask.h>
+#include <xdirect/analysis/xfoiltaskevent.h>
 
 
 /**

@@ -301,7 +301,7 @@ void Direct2dDesign::resizeEvent (QResizeEvent *event)
 
 
 
-int Direct2dDesign::highlightPoint(CVector real)
+int Direct2dDesign::highlightPoint(Vector3d real)
 {
 	if(!m_pSF->isVisible()) return -1;
 	{
@@ -337,7 +337,7 @@ int Direct2dDesign::highlightPoint(CVector real)
 }
 
 
-int Direct2dDesign::selectPoint(CVector real)
+int Direct2dDesign::selectPoint(Vector3d real)
 {
 	if(!m_pSF->isVisible()) return -1;
 
@@ -408,9 +408,9 @@ void Direct2dDesign::dragSelectedPoint(double x, double y)
  */
 void Direct2dDesign::onInsertPt()
 {
-	if(Foil::curFoil()) return; // Action can be performed only if the spline foil is selected
+	if(QXDirect::curFoil()) return; // Action can be performed only if the spline foil is selected
 
-	CVector Real = mousetoReal(m_PointDown);
+	Vector3d Real = mousetoReal(m_PointDown);
 
 	if(Real.y>=0)
 	{
@@ -437,9 +437,9 @@ void Direct2dDesign::onInsertPt()
 void Direct2dDesign::onRemovePt()
 {
 	//Removes a point in the spline
-	if(Foil::curFoil()) return; // Action can be performed only if the spline foil is selected
+	if(QXDirect::curFoil()) return; // Action can be performed only if the spline foil is selected
 
-	CVector Real = mousetoReal(m_PointDown);
+	Vector3d Real = mousetoReal(m_PointDown);
 
 	int n =  m_pSF->extrados()->isControlPoint(Real, m_fScale/m_fRefScale);
 	if (n>=0)
