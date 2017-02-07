@@ -155,7 +155,7 @@ void StabViewDlg::fillEigenThings()
     QString ModeDescription = tr("<small>Mode Properties:")+"<br/>";
 
 	if(pMiarex->m_pCurPlane && pMiarex->m_pCurPOpp && pMiarex->m_pCurWPolar->polarType()==XFLR5::STABILITYPOLAR)
-    {
+	{
         //We normalize the mode before display and only for display purposes
 		u0   = pMiarex->m_pCurPOpp->m_QInf;
 		mac  = pMiarex->m_pCurPlane->m_Wing[0].m_MAChord;
@@ -186,16 +186,16 @@ void StabViewDlg::fillEigenThings()
 		if(Omega1 > PRECISION)
 		{
 			m_pctrlFreqN->setValue(OmegaN/2.0/PI);
-			m_pctrlDsi->setValue(Zeta);
+			m_pctrlZeta->setValue(Zeta);
 			strange.sprintf("FN=%6.3f Hz",OmegaN/2.0/PI);
 			ModeDescription.append(strange+"<br/>");
-			strange.sprintf("Xi=%6.3f",Zeta);
+			strange.sprintf("Zeta=%6.3f",Zeta);
 			ModeDescription.append(strange+"<br/>");
 		}
 		else
 		{
 			m_pctrlFreqN->clear();
-			m_pctrlDsi->clear();
+			m_pctrlZeta->clear();
 		}
 
 		if(fabs(eigenvalue.real())>PRECISION && fabs(eigenvalue.imag())<PRECISION)
@@ -287,7 +287,7 @@ void StabViewDlg::fillEigenThings()
         m_pctrlEigenVector4->clear();
         m_pctrlFreqN->clear();
         m_pctrlFreq1->clear();
-        m_pctrlDsi->clear();
+		m_pctrlZeta->clear();
 		m_pctrlT2->clear();
 		m_pctrlTau->clear();
         m_pctrlModeProperties->clear();
@@ -797,7 +797,7 @@ void StabViewDlg::setupLayout()
 
 			m_pctrlFreqN  = new DoubleEdit(0.0, 3);
 			m_pctrlFreq1  = new DoubleEdit(0.0, 3);
-			m_pctrlDsi    = new DoubleEdit(0.0, 3);
+			m_pctrlZeta   = new DoubleEdit(0.0, 3);
 			m_pctrlT2     = new DoubleEdit(0.0, 3);
 			m_pctrlTau    = new DoubleEdit(0.0, 3);
 
@@ -812,7 +812,7 @@ void StabViewDlg::setupLayout()
 
 			strong = tr("Damping ratio");
 			DsiLab->setToolTip(strong);
-			m_pctrlDsi->setToolTip(strong);
+			m_pctrlZeta->setToolTip(strong);
 
 			strong = tr("Time to double");
 			T2lab->setToolTip(strong);
@@ -824,7 +824,7 @@ void StabViewDlg::setupLayout()
 
 			m_pctrlFreqN->setEnabled(false);
 			m_pctrlFreq1->setEnabled(false);
-			m_pctrlDsi->setEnabled(false);
+			m_pctrlZeta->setEnabled(false);
 			m_pctrlT2->setEnabled(false);
 			m_pctrlTau->setEnabled(false);
 			QLabel *FreqUnit1 = new QLabel("Hz");
@@ -839,7 +839,7 @@ void StabViewDlg::setupLayout()
 				pFreakLayout->addWidget(tauLab, 5, 1);
 				pFreakLayout->addWidget(m_pctrlFreqN,1,2);
 				pFreakLayout->addWidget(m_pctrlFreq1,2,2);
-				pFreakLayout->addWidget(m_pctrlDsi,3,2);
+				pFreakLayout->addWidget(m_pctrlZeta,3,2);
 				pFreakLayout->addWidget(m_pctrlT2,4,2);
 				pFreakLayout->addWidget(m_pctrlTau,5,2);
 				pFreakLayout->addWidget(FreqUnit1,1,3);
