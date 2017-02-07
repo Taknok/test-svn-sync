@@ -4999,7 +4999,7 @@ void PanelAnalysis::onCancel()
 * Downwash is evaluated at a distance 100 times the span downstream (i.e. infinite)
 */
 void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double *Mu, double *Sigma, int pos, Vector3d &Force, double &WingIDrag,
-						 WPolar *pWPolar, Panel *pWakePanel, Vector3d *pWakeNode)
+								 WPolar *pWPolar, Panel *pWakePanel, Vector3d *pWakeNode)
 {
 	int nw, iTA, iTB;
 	int j, k, l, p, pp, m;
@@ -5065,6 +5065,7 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
 				//
 				// Since we place the trailing point at the end of the wake panels, it sees only the effect
 				// of the upstream part of the wake because the downstream part isn't modelled.
+				// The downwash in this plane is directly the wing's downwash
 				// If we were to model the downstream part, the total induced speed would be twice larger,
 				// so just add a factor 2 to account for this.
 				nw  = pWing->m_pWingPanel[p].m_iWake;
@@ -5110,6 +5111,11 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
 
 						getSpeedVector(C, Mu, Sigma, Wg, false);
 
+						// THe trailing point sees both the upstream and downstream parts of the trailing vortices
+						// Hence is sees twice the downwash.
+						// so divide by 2 to account for this.
+						Wg *= 1.0/2.0;
+
 						if(pWing->m_pWingPanel[pp].m_bIsTrailing)
 						{
 							pWing->m_Vd[m]      = Wg;
@@ -5132,9 +5138,9 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
 				//____________________________
 				// Project on wind axes
 				pWing->m_Cl[m]    = StripForce.dot(WindNormal)   /pWing->m_StripArea[m];
-				pWing->m_ICd[m]   = StripForce.dot(WindDirection)/pWing->m_StripArea[m]/2.;
+				pWing->m_ICd[m]   = StripForce.dot(WindDirection)/pWing->m_StripArea[m];
 				pWing->m_WingCL      += StripForce.dot(WindNormal);                // N/q
-				WingIDrag += StripForce.dot(WindDirection)/2.;          // N/q
+				WingIDrag += StripForce.dot(WindDirection);          // N/q
 			}
 			p  += coef*pWing->m_Surface.at(j)->m_NXPanels;
 
@@ -5143,7 +5149,7 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
 			pWing->m_F[m]     = StripForce * q;	                    // Newtons
 
 //			if(pWPolar->m_bTiltedGeom) m_F[m].RotateY(-Alpha);
-
+qDebug()<<pWing->m_Cl[m];
 			m++;
 		}
 //		if(s_bVLMSymetric) p+=m_Surface.at(j)->NXPanels * m_Surface.at(j)->NYPanels;

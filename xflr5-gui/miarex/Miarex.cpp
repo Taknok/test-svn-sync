@@ -120,6 +120,8 @@ QMiarex::QMiarex(QWidget *parent)
 {
 	setAttribute(Qt::WA_DeleteOnClose);
 
+	m_theLLTAnalysis.m_poaPolar = &Objects2D::s_oaPolar;
+
 	//construct and initialize everything
 /*	int memsize=0;
 	if(!Objects3D::AllocatePanelArrays(memsize))
@@ -9216,13 +9218,30 @@ void QMiarex::exportToTextStream(WPolar *pWPolar, QTextStream &out, XFLR5::enumT
 	out << "\n\n";
 }
 
-
+/**
+ * @brief Returns a title for the plane's OpPoint. This title will typically be used  in the legend of the graphs.
+ * @param pPOpp a pointer to the plane OpPoint instance.
+ * @return the the plane OpPoint title.
+ */
 QString QMiarex::POppTitle(PlaneOpp *pPOpp)
 {
 	QString strong;
+
+	if(pPOpp->isLLTMethod()) strong ="LLT   ";
+	else if(pPOpp->analysisMethod()>=XFLR5::VLMMETHOD)
+	{
+		if(pPOpp->m_bThinSurface)
+		{
+			pPOpp->m_bVLM1 ? strong = "VLM1  " : strong = "VLM2  ";
+		}
+		else strong = "Panels";
+	}
+
+	strong +=" ";
+
 	if(pPOpp->polarType()==XFLR5::STABILITYPOLAR)
 	{
-		strong = QString("ctrl=%1-").arg(pPOpp->ctrl());
+		strong += QString("ctrl=%1-").arg(pPOpp->ctrl());
 	}
 	strong += QString::fromUtf8("%1°-").arg(pPOpp->alpha(), 7,'f',3);
 

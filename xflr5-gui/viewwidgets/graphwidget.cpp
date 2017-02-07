@@ -56,6 +56,7 @@ GraphWidget::GraphWidget(QWidget *pParent) : QWidget(pParent)
 	m_bXPressed = m_bYPressed = false;
 
 	m_pGraph = NULL;
+	m_LegendOrigin = QPoint(20,20);
 }
 
 void GraphWidget::setGraph(QGraph *pGraph)
@@ -114,7 +115,7 @@ void GraphWidget::resizeEvent ( QResizeEvent * event )
 	QRect r = rect();
 	if(m_pGraph) m_pGraph->setDrawRect(r);
 
-	m_LegendOrigin = QPoint(r.center().x(), r.top()+20);
+//
 
 	if(m_pGraph)
 	{

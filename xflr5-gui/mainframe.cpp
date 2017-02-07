@@ -1034,8 +1034,6 @@ void MainFrame::createDockWindows()
 	GL3dWingDlg::s_poaFoil = &Objects2D::s_oaFoil;
 	EditObjectDelegate::s_poaFoil = &Objects2D::s_oaFoil;
 
-	LLTAnalysis::s_poaPolar = &Objects2D::s_oaPolar;
-
 	gl3dMiarexView::s_pMiarex = m_pMiarex;
 
 	WingWidget::s_pMiarex         = m_pMiarex;

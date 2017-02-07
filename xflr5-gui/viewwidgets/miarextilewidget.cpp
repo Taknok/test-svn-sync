@@ -92,13 +92,22 @@ void MiarexTileWidget::adjustLayout()
 
 	m_pWingWidget->setVisible(false);
 	m_pLegendWidget->setVisible(true);
+	for(int igw=0; igw<m_GraphWidget.count(); igw++)
+	{
+		m_GraphWidget.at(igw)->m_bDrawLegend = false;
+	}
 
 	if(m_nGraphWidgets==1)
 	{
 		if(m_MiarexView==XFLR5::WOPPVIEW)
 		{
 			for(int igw=0; igw<m_GraphWidget.count(); igw++)
+			{
+				m_GraphWidget.at(igw)->m_bDrawLegend = true;
+				m_GraphWidget.at(igw)->m_LegendOrigin.rx() = 20;
+				m_GraphWidget.at(igw)->m_LegendOrigin.ry() = 20;
 				m_GraphWidget.at(igw)->setVisible(igw==m_iActiveGraphWidget);
+			}
 
 			m_pWingWidget->setVisible(true);
 			m_pLegendWidget->setVisible(false);
