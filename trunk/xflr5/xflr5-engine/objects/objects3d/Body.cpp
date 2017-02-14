@@ -208,6 +208,14 @@ void Body::duplicate(Body *pBody)
 	m_LineType        = pBody->m_LineType;
 	m_BodyDescription = pBody->m_BodyDescription;
 
+	//copy the splined surface data
+	m_SplineSurface.m_iuDegree    = pBody->m_SplineSurface.m_iuDegree;
+	m_SplineSurface.m_ivDegree    = pBody->m_SplineSurface.m_ivDegree;
+	m_SplineSurface.m_iRes        = pBody->m_SplineSurface.m_iRes;
+	m_SplineSurface.m_Bunch       = pBody->m_SplineSurface.m_Bunch;
+	m_SplineSurface.m_EdgeWeightu = pBody->m_SplineSurface.m_EdgeWeightu;
+	m_SplineSurface.m_EdgeWeightv = pBody->m_SplineSurface.m_EdgeWeightv;
+
 	m_SplineSurface.clearFrames();
 	m_xPanels.clear();
 

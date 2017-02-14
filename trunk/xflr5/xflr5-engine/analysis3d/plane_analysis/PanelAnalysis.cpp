@@ -5111,9 +5111,9 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
 
 						getSpeedVector(C, Mu, Sigma, Wg, false);
 
-						// THe trailing point sees both the upstream and downstream parts of the trailing vortices
-						// Hence is sees twice the downwash.
-						// so divide by 2 to account for this.
+						// The trailing point sees both the upstream and downstream parts of the trailing vortices
+						// Hence it sees twice the downwash.
+						// So divide by 2 to account for this.
 						Wg *= 1.0/2.0;
 
 						if(pWing->m_pWingPanel[pp].m_bIsTrailing)
@@ -5149,7 +5149,6 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
 			pWing->m_F[m]     = StripForce * q;	                    // Newtons
 
 //			if(pWPolar->m_bTiltedGeom) m_F[m].RotateY(-Alpha);
-qDebug()<<pWing->m_Cl[m];
 			m++;
 		}
 //		if(s_bVLMSymetric) p+=m_Surface.at(j)->NXPanels * m_Surface.at(j)->NYPanels;
