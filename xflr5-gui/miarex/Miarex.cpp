@@ -3643,6 +3643,7 @@ void QMiarex::onEditCurBody()
 		return;
 	}
 	if(glbDlg.m_bChanged) emit projectModified();
+
 	m_bResetTextLegend = true;
 	m_bResetglGeom = true;
 	m_bResetglMesh = true;
@@ -3676,6 +3677,7 @@ void QMiarex::onEditCurBody()
 
 	//then modifications are automatically recorded
 	m_pCurPlane->duplicate(pModPlane);
+
 	// in all cases copy new color and texture flag
 	if(m_pCurPlane->body())
 	{
