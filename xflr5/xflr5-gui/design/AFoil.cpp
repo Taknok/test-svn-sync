@@ -1295,6 +1295,7 @@ void QAFoil::onStoreSplines()
 	Foil *pNewFoil = new Foil();
 	m_pSF->exportToBuffer(pNewFoil);
 	pNewFoil->foilName() = m_pSF->splineFoilName();
+	pNewFoil->initFoil();
 	addNewFoil(pNewFoil);
 	fillFoilTable();
 	selectFoil(pNewFoil);
