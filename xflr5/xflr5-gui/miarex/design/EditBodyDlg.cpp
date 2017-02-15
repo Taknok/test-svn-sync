@@ -84,6 +84,7 @@ EditBodyDlg::EditBodyDlg(QWidget *pParent) : QDialog(pParent)
 	setupLayout();
 }
 
+
 void EditBodyDlg::createActions()
 {
 	m_pScaleBody        = new QAction(tr("Scale"), this);

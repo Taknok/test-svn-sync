@@ -46,6 +46,9 @@ public:
 	void dragSelectedPoint(double x, double y);
 	void createActions();
 
+signals:
+	void frameSelChanged();
+
 private slots:
 	void onInsertPt();
 	void onRemovePt();

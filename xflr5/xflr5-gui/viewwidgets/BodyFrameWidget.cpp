@@ -321,6 +321,7 @@ int BodyFrameWidget::selectPoint(Vector3d real)
 		real.x = m_pBody->activeFrame()->position().x;
 		Frame::s_iSelect = m_pBody->activeFrame()->isPoint(real, m_fScale/m_fRefScale);
 	}
+	emit pointSelChanged();
 	return Frame::s_iSelect;
 }
 
