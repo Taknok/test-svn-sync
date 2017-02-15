@@ -93,10 +93,8 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
 	m_StackPos  = 0; //the current position on the stack
 	m_bResetFrame = true;
 
-
 	m_bChanged    = false;
 	m_bEnableName = true;
-
 
 	m_pScaleBody        = new QAction(tr("Scale"), this);
 	m_pGrid             = new QAction(tr("Grid Setup"), this);
@@ -181,6 +179,9 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
 
 	connect(m_pctrlOK,     SIGNAL(clicked()),this, SLOT(accept()));
 	connect(m_pctrlCancel, SIGNAL(clicked()),this, SLOT(reject()));
+
+	connect(m_pBodyLineWidget, SIGNAL(frameSelChanged()), this, SLOT(onFrameClicked()));
+	connect(m_pFrameWidget, SIGNAL(pointSelChanged()), this, SLOT(onPointClicked()));
 
 	connect(m_pBodyLineWidget, SIGNAL(objectModified()), this, SLOT(onUpdateBody()));
 	connect(m_pFrameWidget,    SIGNAL(objectModified()), this, SLOT(onUpdateBody()));
@@ -681,18 +682,6 @@ void GL3dBodyDlg::onImportBodyXML()
 }
 
 
-void GL3dBodyDlg::onFrameCellChanged(QWidget *)
-{
-	takePicture();
-	m_bChanged = true;
-//	int n = m_pBody->m_iActiveFrame;
-	readFrameSectionData(m_pBody->m_iActiveFrame);
-	m_gl3dBodyview.resetGLBody(true);
-
-
-	updateView();
-}
-
 
 
 void GL3dBodyDlg::readFrameSectionData(int sel)
@@ -725,6 +714,12 @@ void GL3dBodyDlg::readFrameSectionData(int sel)
 }
 
 
+/** The user has clicked a point in the body line view */
+void GL3dBodyDlg::onFrameClicked()
+{
+	m_pctrlFrameTable->selectRow(m_pBody->m_iActiveFrame);
+}
+
 
 void GL3dBodyDlg::onFrameItemClicked(const QModelIndex &index)
 {
@@ -733,6 +728,18 @@ void GL3dBodyDlg::onFrameItemClicked(const QModelIndex &index)
 	updateView();
 }
 
+
+void GL3dBodyDlg::onFrameCellChanged(QWidget *)
+{
+	takePicture();
+	m_bChanged = true;
+//	int n = m_pBody->m_iActiveFrame;
+	readFrameSectionData(m_pBody->m_iActiveFrame);
+	m_gl3dBodyview.resetGLBody(true);
+
+
+	updateView();
+}
 
 
 void GL3dBodyDlg::onGrid()
@@ -783,6 +790,14 @@ void GL3dBodyDlg::onPointCellChanged(QWidget *)
 
 
 	updateView();
+}
+
+
+/** The user has clicked a point in the frame view */
+void GL3dBodyDlg::onPointClicked()
+{
+	if(m_pFrame)
+		m_pctrlPointTable->selectRow(m_pFrame->s_iSelect);
 }
 
 

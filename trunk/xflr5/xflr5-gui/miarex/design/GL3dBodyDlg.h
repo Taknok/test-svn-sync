@@ -72,11 +72,13 @@ private slots:
 	void onBodyColor();
 	void onTextures();
 	void onBodyInertia();
+	void onBodyName();
 	void onCheckViewIcons();
 	void onEdgeWeight();
 	void onExportBodyDef();
 	void onExportBodyGeom();
 	void onExportBodyXML();
+	void onFrameClicked();
 	void onImportBodyDef() ;
 	void onImportBodyXML();
 	void onTranslateBody();
@@ -87,14 +89,15 @@ private slots:
 	void onFrameCellChanged(QWidget *);
 	void onFrameItemClicked(const QModelIndex &index);
 	void onPointCellChanged(QWidget *);
+	void onPointClicked();
 	void onPointItemClicked(const QModelIndex &index);
 	void onScaleBody();
 	void onUndo();
 	void onRedo();
-	void onBodyName();
 	void onSelChangeXDegree(int sel);
 	void onSelChangeHoopDegree(int sel);
 	void onUpdateBody();
+
 
 private:
 	void keyPressEvent(QKeyEvent *event);
