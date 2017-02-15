@@ -263,6 +263,7 @@ int BodyLineWidget::selectPoint(Vector3d real)
 {
 	m_pBody->m_iActiveFrame = m_pBody->isFramePos(Vector3d(real.x, 0.0, real.y), m_fScale/m_fRefScale);
 	m_pBody->setActiveFrame(m_pBody->m_iActiveFrame);
+	emit frameSelChanged();
 	return m_pBody->m_iActiveFrame;
 }
 
