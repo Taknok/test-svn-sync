@@ -373,10 +373,8 @@ void Plane::duplicate(Plane *pPlane)
 	}
 
 	m_bBody = pPlane->m_bBody ;
-	if(m_bBody)
-	{
-		m_Body.duplicate(pPlane->body());
-	}
+
+	m_Body.duplicate(&pPlane->m_Body);
 
 	setAutoBodyName();
 }
