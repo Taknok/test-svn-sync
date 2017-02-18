@@ -3976,7 +3976,6 @@ void QMiarex::onEditCurPlane()
 
 			//then modifications are automatically recorded
 			m_pCurPlane->duplicate(pModPlane);
-
 			Objects3D::deletePlaneResults(m_pCurPlane, false);// will also set new surface and Aerochord in WPolars
 			m_pCurWPolar = NULL;
 			m_pCurPOpp = NULL;
@@ -9229,12 +9228,12 @@ QString QMiarex::POppTitle(PlaneOpp *pPOpp)
 {
 	QString strong;
 
-	if(pPOpp->isLLTMethod()) strong ="LLT   ";
+	if(pPOpp->isLLTMethod()) strong ="LLT - ";
 	else if(pPOpp->analysisMethod()>=XFLR5::VLMMETHOD)
 	{
 		if(pPOpp->m_bThinSurface)
 		{
-			pPOpp->m_bVLM1 ? strong = "VLM1  " : strong = "VLM2  ";
+			pPOpp->m_bVLM1 ? strong = "VLM1 - " : strong = "VLM2 - ";
 		}
 		else strong = "Panels";
 	}
@@ -9251,6 +9250,8 @@ QString QMiarex::POppTitle(PlaneOpp *pPOpp)
 
 	strong += QString("%1").arg(pPOpp->QInf()*Units::mstoUnit());
 	strong +=Units::speedUnitLabel();
+
+	if(pPOpp->m_bTiltedGeom) strong += "-tilted";
 
 	return strong;
 }

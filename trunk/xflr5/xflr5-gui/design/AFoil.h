@@ -80,6 +80,9 @@ public:
 signals:
 	void projectModified();
 
+public slots:
+	void onUpdateFoilTable();
+
 private slots:
 	void onAFoilLECircle();
 	void onExportSplinesToFile();

@@ -357,6 +357,7 @@ void PlaneDlg::onDefineBody()
 		setResults();
 	}
 	else m_pPlane->body()->duplicate(&memBody);
+
  //   m_pPlane->m_pBody->Translate(m_pPlane->BodyPos(),false);
 }
 

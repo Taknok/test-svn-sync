@@ -1018,6 +1018,11 @@ void BatchThreadDlg::customEvent(QEvent * event)
 	{
 		handleXFoilTaskEvent(static_cast<XFoilTaskEvent *>(event));
 	}
+	else if(event->type() == XFOIL_END_OPP_EVENT)
+	{
+		XFoilOppEvent *pOppEvent = (XFoilOppEvent*)event;
+		OpPoint *pOpp = Objects2D::addOpPoint(pOppEvent->foilPtr(), pOppEvent->polarPtr(), pOppEvent->XFoilPtr(), QXDirect::s_bStoreOpp);
+	}
 }
 
 
