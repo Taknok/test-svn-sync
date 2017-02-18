@@ -83,7 +83,6 @@ QAFoil::QAFoil(QWidget *parent)
 
 	m_bStored        = false;
 
-
 	m_pBufferFoil = new Foil();
 
 	m_StackPos = 0;
@@ -1511,6 +1510,12 @@ void QAFoil::setAFoilParams()
 
 	selectFoil(QXDirect::curFoil());
 	setControls();
+}
+
+/** A signal has been received to update the foil table */
+void QAFoil::onUpdateFoilTable()
+{
+	fillFoilTable();
 }
 
 

@@ -1125,8 +1125,8 @@ void Wing::duplicate(Wing *pWing)
 */
 double Wing::averageSweep()
 {
-	double xroot = Chord(0)/4.0;
-	double xtip  = tipOffset() + tipChord()/4.0;
+	double xroot = rootOffset() + Chord(0)/4.0;
+	double xtip  = tipOffset()  + tipChord()/4.0;
 //	double sweep = (atan2(xtip-xroot, m_PlanformSpan/2.0)) * 180.0/PI;
 	return (atan2(xtip-xroot, m_PlanformSpan/2.0)) * 180.0/PI;
 }
@@ -1501,30 +1501,27 @@ void Wing::scaleSpan(double NewSpan)
 
 /**
 * Scales the wing's sweep so that the sweep is set to the NewSweep value
-*@param NewSweep the new value of the average quarter-chord sweep, in degrees
+* @param newSweep the new value of the average quarter-chord sweep, in degrees
 */
-void Wing::scaleSweep(double NewSweep)
+void Wing::scaleSweep(double newSweep)
 {
-	double OldTipOffset = tipOffset();
-	double NewTipOffset = Chord(0)/4.0
-						 + tan(NewSweep*PI/180.0)*m_PlanformSpan/2.0
-						 - tipChord()/4.0;
-	if(qAbs(OldTipOffset)>0.00001)
+	if(fabs(averageSweep())<0.1) return;
+qDebug()<<averageSweep();
+	double rootOffset = m_WingSection.first()->m_Offset;
+	double rootchord4 = rootOffset + Chord(0)/4.0;
+	double oldTipOffset = tipOffset();
+	double oldTipChord4 = tipOffset() + tipChord()/4.0;
+
+
+	double newTipChord4 = rootchord4 + tan(newSweep*PI/180.0) * m_SpanPos[m_NStation-1];
+	double newTipOffset = newTipChord4 - tipChord()/4.0;
+	//scale each panel's offset
+	double ratio = newTipOffset/oldTipOffset;
+
+	for(int is=1; is<NWingSection(); is++)
 	{
-		//scale each panel's offset
-		double ratio = NewTipOffset/OldTipOffset;
-		for(int is=1; is<NWingSection(); is++)
-		{
-			Offset(is) *= ratio;
-		}
-	}
-	else
-	{
-		//set each panel's offset
-		for(int is=1; is<NWingSection(); is++)
-		{
-			Offset(is) = NewTipOffset*YPosition(is)/(m_PlanformSpan/2.0);
-		}
+		double chord4Offset = rootchord4 + tan(newSweep*PI/180.0) * m_SpanPos[is];
+		Offset(is) = chord4Offset - Chord(is)/4.0;
 	}
 	computeGeometry();
 }

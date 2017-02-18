@@ -2934,7 +2934,6 @@ void PanelAnalysis::computeNDStabDerivatives()
 * @param *VInf a pointer to the array of the velocity vectors on the panels
 * @param Force the resulting force vector
 * @param Moment the resulting moment vector
-* @param bTilted  true if the calculation is performed on a tilted geometry
 */
 void PanelAnalysis::forces(double *Mu, double *Sigma, double alpha, Vector3d Vinc, double *VInf, Vector3d &Force, Vector3d &Moment)
 {

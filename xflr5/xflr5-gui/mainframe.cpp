@@ -1009,6 +1009,7 @@ void MainFrame::createDockWindows()
 	m_pAFoil  = new QAFoil(this);
 	QAFoil *pAFoil = (QAFoil*)m_pAFoil;
 	pAFoil->m_p2DWidget = m_pDirect2dWidget;
+	connect(m_pDirect2dWidget, SIGNAL(objectModified()), pAFoil, SLOT(onUpdateFoilTable()));
 	m_pctrlAFoilWidget->setWidget(pAFoil);
 	m_pctrlAFoilWidget->setVisible(false);
 

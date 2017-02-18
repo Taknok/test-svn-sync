@@ -160,6 +160,7 @@ public:
 
 	bool isWingFoil(Foil *pFoil);
 	double rootChord()     {return m_WingSection.first()->m_Chord;}
+	double rootOffset()    {return m_WingSection.first()->m_Offset;}
 	double tipChord()      {return m_WingSection.last()->m_Chord;}
 	double tipTwist()      {return m_WingSection.last()->m_Twist;}
 	double tipOffset()     {return m_WingSection.last()->m_Offset;}
