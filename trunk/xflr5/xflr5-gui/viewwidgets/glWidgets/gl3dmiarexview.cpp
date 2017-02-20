@@ -223,6 +223,7 @@ void gl3dMiarexView::contextMenuEvent (QContextMenuEvent * event)
 void gl3dMiarexView::on3DReset()
 {
 	QMiarex *pMiarex = (QMiarex*)s_pMiarex;
+	pMiarex->setScale();
 	if(pMiarex->m_pCurPlane) startResetTimer(pMiarex->m_pCurPlane->span());
 }
 
@@ -1889,7 +1890,6 @@ void gl3dMiarexView::set3DRotationCenter(QPoint point)
 		bIntersect = true;
 		PP.set(I);
 	}
-
 
 	if(bIntersect)
 	{

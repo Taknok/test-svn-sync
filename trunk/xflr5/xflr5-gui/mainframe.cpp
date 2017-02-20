@@ -3944,6 +3944,7 @@ void MainFrame::onLoadFile()
 	{
 		updatePlaneListBox();
 		pMiarex->setPlane();
+		pMiarex->setScale();
 		pMiarex->m_bIs2DScaleSet = false;
 		pMiarex->setControls();
 		updateView();
@@ -4664,6 +4665,8 @@ void MainFrame::onOpenRecentFile()
 	else if(m_iApp==XFLR5::MIAREX)
 	{
 		onMiarex();
+		QMiarex *pMiarex = (QMiarex*)m_pMiarex;
+		pMiarex->setScale();
 	}
 	else if(m_iApp==XFLR5::DIRECTDESIGN)
 	{
@@ -5951,7 +5954,11 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 
 		pAFoil->m_pSF->serialize(ar, bIsStoring);
 
-		if(m_iApp==XFLR5::MIAREX) pMiarex->setPlane();
+		if(m_iApp==XFLR5::MIAREX)
+		{
+			pMiarex->setPlane();
+			pMiarex->setScale();
+		}
 
 		pMiarex->updateUnits();
 

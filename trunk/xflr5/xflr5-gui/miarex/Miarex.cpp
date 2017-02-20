@@ -896,6 +896,7 @@ void QMiarex::createWOppCurves()
 	//if the target bell curve is requested, and if the graph variable is local lift, then add the curve
 	if(m_bShowBellCurve && m_pCurPOpp)
 	{
+		double b2 = m_pCurPlane->span()/2.0;
 		int nStart;
 		if(m_pCurPOpp->analysisMethod()==XFLR5::LLTMETHOD) nStart = 1;
 		else                                               nStart = 0;
@@ -907,9 +908,9 @@ void QMiarex::createWOppCurves()
 			lift=0.0;
 			for (i=nStart; i<m_pCurPOpp->m_NStation; i++)
 			{
-				x = m_pCurPOpp->m_pPlaneWOpp[0]->m_SpanPos[i]/m_pCurPlane->span()*2.0;
-				y = pow(cos(x*PI/2.0), m_BellCurveExp);
-				lift += y*m_pCurPOpp->m_pPlaneWOpp[0]->m_StripArea[i] ;
+				x = m_pCurPOpp->m_pPlaneWOpp[0]->m_SpanPos[i];
+				y = pow(1.0-x*x/b2/b2, m_BellCurveExp);
+				lift += y*m_pCurPOpp->m_pPlaneWOpp[0]->m_StripArea[i];
 			}
 			maxlift = m_pCurPOpp->m_CL / lift * m_pCurPlane->planformArea();
 		}
@@ -924,8 +925,9 @@ void QMiarex::createWOppCurves()
 				pCurve->setColor(QColor(100, 100, 100));
 				for (double id=-50.0; id<=50.5; id+=1.0)
 				{
-					x = m_pCurPlane->span()/2.0 * cos(id*PI/50.0);
-					y = maxlift * pow(cos(x/m_pCurPlane->span()*2.0*PI/2.0), m_BellCurveExp);
+					double phi = id*PI/2/ 50.0;
+					x = sin(phi) * b2;
+					y = maxlift * pow(cos(phi), m_BellCurveExp);
 					pCurve->appendPoint(x*Units::mtoUnit(),y);
 				}
 			}
@@ -6496,9 +6498,9 @@ void QMiarex::panelAnalyze(double V0, double VMax, double VDelta, bool bSequence
 {
 	if(!m_pCurPlane || !m_pCurWPolar) return;
 
-	int i,pl, pr;
 
-	//Join surfaces together
+/*	//Join surfaces together
+	int i,pl, pr;
 	pl = 0;
 	pr = m_theTask.m_SurfaceList.at(0)->m_NElements;
 	for (i=0; i<m_theTask.m_SurfaceList.size()-1; i++)
@@ -6510,7 +6512,7 @@ void QMiarex::panelAnalyze(double V0, double VMax, double VDelta, bool bSequence
 		}
 		pl  = pr;
 		pr += m_theTask.m_SurfaceList.at(i+1)->m_NElements;
-	}
+	}*/
 
 	m_pPanelAnalysisDlg->deleteTask();
 
@@ -7046,7 +7048,7 @@ void QMiarex::setPlane(QString PlaneName)
 
 	s_pMainFrame->m_glLightDlg.setModelSize(m_pCurPlane->planformSpan());
 
-	setScale();
+//	setScale();
 	setWGraphScale();
 
 	QApplication::restoreOverrideCursor();

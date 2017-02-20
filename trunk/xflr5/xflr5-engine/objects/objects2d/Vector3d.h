@@ -181,7 +181,7 @@ public:
 	bool isSame(Vector3d const &V)
 	{
 		//used only to compare point positions
-		return (V.x-x)*(V.x-x) + (V.y-y)*(V.y-y) + (V.z-z)*(V.z-z)<0.000000001;
+		return (V.x-x)*(V.x-x) + (V.y-y)*(V.y-y) + (V.z-z)*(V.z-z)<0.0000001;
 	}
 
 	void translate(Vector3d const &T)

@@ -215,6 +215,7 @@ void PanelAnalysisDlg::analyze()
 	m_Timer.setInterval(250);
 	m_Timer.start();
 
+
 	//run the instance asynchronously
 	QFuture<void> future = QtConcurrent::run(m_pTheTask, &PlaneAnalysisTask::run);
 

@@ -1499,6 +1499,7 @@ void Wing::scaleSpan(double NewSpan)
 	computeGeometry();
 }
 
+
 /**
 * Scales the wing's sweep so that the sweep is set to the NewSweep value
 * @param newSweep the new value of the average quarter-chord sweep, in degrees
@@ -1506,7 +1507,7 @@ void Wing::scaleSpan(double NewSpan)
 void Wing::scaleSweep(double newSweep)
 {
 	if(fabs(averageSweep())<0.1) return;
-qDebug()<<averageSweep();
+
 	double rootOffset = m_WingSection.first()->m_Offset;
 	double rootchord4 = rootOffset + Chord(0)/4.0;
 	double oldTipOffset = tipOffset();

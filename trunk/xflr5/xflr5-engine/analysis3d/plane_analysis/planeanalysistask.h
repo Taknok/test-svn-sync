@@ -57,7 +57,7 @@ public:
 	int    calculateMatSize();
 	int    createBodyElements(Plane *pCurPlane);
 	bool   createWakeElems(int PanelIndex, Plane *pPlane, WPolar *pWPolar);
-	int    createWingElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurface);
+	int    createSurfaceElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurface);
 	bool   initializePanels();
 	void   insertPOpp(PlaneOpp *pPOpp);
 	int    isNode(Vector3d &Pt);
@@ -98,6 +98,7 @@ private:
 	Vector3d *m_MemNode;           /**< used if the analysis should be performed on the tilted geometry */
 	Vector3d *m_WakeNode;          /**< the current wake node array */
 	Vector3d *m_RefWakeNode;       /**< the reference wake node array if wake needs to be reset */
+	Vector3d *m_TempWakeNode;      /**< a temporary array to hold the calculations of wake roll-up */
 
 	Panel *m_Panel;               /**< the panel array for the currently loaded UFO */
 	Panel *m_MemPanel;            /**< used if the analysis should be performed on the tilted geometry */
