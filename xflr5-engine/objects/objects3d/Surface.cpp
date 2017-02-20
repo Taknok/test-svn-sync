@@ -919,11 +919,10 @@ void Surface::rotateY(Vector3d const &O, double YTilt)
 	m_TB.rotateY(O, YTilt);
 	m_HingePoint.rotateY(O, YTilt);
 
-	Vector3d Origin(0.0,0.0,0.0);
-	Normal.rotateY(Origin, YTilt);
-	NormalA.rotateY(Origin, YTilt);
-	NormalB.rotateY(Origin, YTilt);
-	m_HingeVector.rotateY(Origin, YTilt);
+	Normal.rotateY(YTilt);
+	NormalA.rotateY(YTilt);
+	NormalB.rotateY(YTilt);
+	m_HingeVector.rotateY(YTilt);
 }
 
 /**

@@ -426,7 +426,6 @@ QPoint gl3dView::worldToScreen(QVector4D v4)
 */
 void gl3dView::mouseDoubleClickEvent(QMouseEvent *event)
 {
-
 	set3DRotationCenter(event->pos());
 }
 

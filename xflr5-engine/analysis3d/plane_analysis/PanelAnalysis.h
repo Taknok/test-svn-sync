@@ -75,6 +75,7 @@ public:
 	void getDoubletDerivative(const int &p, double *Mu, double &Cp, Vector3d &VTotl, double const &QInf, double Vx, double Vy, double Vz);
 	void getVortexCp(const int &p, double *Gamma, double *Cp, Vector3d &VInf);
 
+	void relaxWake();
 
 	void computeStabilityDerivatives();
 	void computeStabilityInertia();
@@ -98,7 +99,7 @@ public:
 	void setControlPositions(double t, int &NCtrls, QString &out, bool bBCOnly);
 
 	void restorePanels();
-	void setArrayPointers(void *pPanel, void *pMemPanel, void *pWakePanel, void *pRefWakePanel, void *pNode, void *pMemNode, void *pWakeNode, void *pRefWakeNode);
+	void setArrayPointers(void *pPanel, void *pMemPanel, void *pWakePanel, void *pRefWakePanel, void *pNode, void *pMemNode, void *pWakeNode, void *pRefWakeNode, void *pTempWakeNode);
 	void setArraySize(int MatSize, int WakeSize, int nNodes, int nWakeNodes, int NWakeColumn);
 	void setInertia(double ctrl, double alpha, double beta);
 	void setObjectPointers(Plane *pPlane, void *pSurfaceList);
@@ -199,19 +200,21 @@ private:
 
 	// pointers to the geometry input data
 	// these arrays are defined in the QMiarex handling class,
-	Panel *m_pPanel;           /**< the current working array of array of panels */
-	Panel *m_pWakePanel;       /**< the current working array of wake panel array */
-	Panel *m_pRefWakePanel;    /**< a copy of the reference wake node array if wake needs to be reset */
-	Panel *m_pMemPanel;        /**< a copy of the reference panel array if the panels need to be restored, for instance after control surfaces have been rotated*/
+	Panel *m_pPanel;            /**< the current working array of array of panels */
+	Panel *m_pWakePanel;        /**< the current working array of wake panel array */
+	Panel *m_pRefWakePanel;     /**< a copy of the reference wake node array if wake needs to be reset */
+	Panel *m_pMemPanel;         /**< a copy of the reference panel array if the panels need to be restored, for instance after control surfaces have been rotated*/
 
-	Vector3d *m_pNode;	       /**< the working array of nodes  */
-	Vector3d *m_pMemNode;	   /**< a copy of the reference node array, if the nodes need to be restored */
-	Vector3d *m_pWakeNode;	   /**< the current working wake node array */
+	Vector3d *m_pNode;	        /**< the working array of nodes  */
+	Vector3d *m_pMemNode;	    /**< a copy of the reference node array, if the nodes need to be restored */
+	Vector3d *m_pWakeNode;	    /**< the current working wake node array */
 	Vector3d *m_pRefWakeNode;   /**< a copy of the reference wake node array if the flat wake geometry needs to be restored */
+	Vector3d *m_pTempWakeNode;  /**< a temporary array to hold the calculations of wake roll-up */
+
 
 	// pointers to the object input data
-	Plane *m_pPlane;           /**< a pointer to the plane object, or NULL if the calculation is performed on a wing */
-	WPolar *m_pWPolar;         /**< a pointer to the current WPolar object */
+	Plane *m_pPlane;            /**< a pointer to the plane object, or NULL if the calculation is performed on a wing */
+	WPolar *m_pWPolar;          /**< a pointer to the current WPolar object */
 
 	//temp data
 	int m_NSpanStations;

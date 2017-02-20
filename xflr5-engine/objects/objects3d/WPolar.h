@@ -187,7 +187,7 @@ public:
 	double   m_inertiaGain[7];
 
 	int      m_nControls;          /**< the number of control surfaces for this wing or plane */
-	int      m_NXWakePanels;       /**< the number of wake panels */
+	int      m_NXWakePanels;       /**< the number of wake panels in each streamwise column */
 	double   m_AlphaSpec;          /**< the angle of attack for type 4 & 5 polars */
 	double   m_BetaSpec;           /**< The sideslip angle for type 1,2, 4 polars */
 	double   m_BankAngle;          /**< The bank angle */
