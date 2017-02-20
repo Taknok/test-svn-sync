@@ -8,6 +8,9 @@
 
 *****************************************************************************/
 
+#include <QtDebug>
+
+
 #include "planeanalysistask.h"
 #include <objects3d/Plane.h>
 #include <objects3d/WPolar.h>
@@ -23,7 +26,7 @@ PlaneAnalysisTask::PlaneAnalysisTask()
 
 	m_pParent = NULL;
 
-	m_Node = m_MemNode = m_WakeNode = m_RefWakeNode = NULL;
+	m_Node = m_MemNode = m_WakeNode = m_RefWakeNode = m_TempWakeNode = NULL;
 	m_Panel = m_MemPanel = m_WakePanel = m_RefWakePanel = NULL;
 	m_vMin = m_vMax = m_vInc = 0.0;
 	m_MaxPanelSize = 0;
@@ -140,7 +143,7 @@ Plane * PlaneAnalysisTask::setPlaneObject(Plane *pPlane)
 	{
 		if(pPlane->wing(iw))
 		{
-//			if(!pPlane && iw==0)  pPlane->wing(iw)->CreateSurfaces(Vector3d(0,0,0), 0.0, 0.0);
+//			if(!pPlane && iw==0)  pPlane->wing(iw)->createSurfaces(Vector3d(0,0,0), 0.0, 0.0);
 			if(iw<3)         pPlane->wing(iw)->createSurfaces(pPlane->WingLE(iw),   0.0, pPlane->WingTiltAngle(iw));
 			else if(iw==3)   pPlane->wing(iw)->createSurfaces(pPlane->WingLE(iw), -90.0, pPlane->WingTiltAngle(iw));
 
@@ -176,31 +179,6 @@ WPolar* PlaneAnalysisTask::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar)
 
 	m_pWPolar = pCurWPolar;
 	m_pPlane = pCurPlane;
-
-//	if(m_pWPolar && !m_pWPolar->isStabilityPolar())
-	if(!initializePanels()) return NULL;
-
-	if(!m_pWPolar) return NULL;
-
-	//initialize the analysis pointers.
-	//do it now, in case the user asks for streamlines from an existing file
-	m_ptheLLTAnalysis->setWPolar(m_pWPolar);
-	m_ptheLLTAnalysis->setPlane(pCurPlane);
-
-	m_pthePanelAnalysis->setWPolar(m_pWPolar);
-	m_pthePanelAnalysis->setObjectPointers(pCurPlane, &m_SurfaceList);
-	m_pthePanelAnalysis->setArrayPointers(m_Panel, m_MemPanel, m_WakePanel, m_RefWakePanel, m_Node, m_MemNode, m_WakeNode, m_RefWakeNode);
-	m_pthePanelAnalysis->setArraySize(m_MatSize, m_WakeSize, m_nNodes, m_nWakeNodes, m_NWakeColumn);
-
-	/** @todo restore */
-	//set sideslip
-/*	Vector3d RefPoint(0.0, 0.0, 0.0);
-	if(fabs(m_pWPolar->m_BetaSpec)>0.001 && !m_pWPolar->isBetaPolar())
-	{
-		// Standard Convention in mechanic of flight is to have Beta>0 with nose to the left
-		// The yaw moement has the opposite convention...
-		m_pthePanelAnalysis->rotateGeomZ(m_pWPolar->m_BetaSpec, RefPoint, m_pWPolar->m_NXWakePanels);
-	}*/
 
 	Wing *pWingList[MAXWINGS];
 	pWingList[0] = pCurPlane->wing();
@@ -240,6 +218,35 @@ WPolar* PlaneAnalysisTask::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar)
 //			pCurPlane->m_Wing[0].m_NStation  = m_NStation;
 //			pCurPlane->m_Wing[0].m_bLLT      = true;
 	}
+
+//	if(m_pWPolar && !m_pWPolar->isStabilityPolar())
+	if(!initializePanels()) return NULL;
+
+	if(!m_pWPolar) return NULL;
+
+	stitchSurfaces();
+
+	//initialize the analysis pointers.
+	//do it now, in case the user asks for streamlines from an existing file
+	m_ptheLLTAnalysis->setWPolar(m_pWPolar);
+	m_ptheLLTAnalysis->setPlane(pCurPlane);
+
+	m_pthePanelAnalysis->setWPolar(m_pWPolar);
+	m_pthePanelAnalysis->setObjectPointers(pCurPlane, &m_SurfaceList);
+	m_pthePanelAnalysis->setArrayPointers(m_Panel, m_MemPanel, m_WakePanel, m_RefWakePanel, m_Node, m_MemNode, m_WakeNode, m_RefWakeNode, m_TempWakeNode);
+	m_pthePanelAnalysis->setArraySize(m_MatSize, m_WakeSize, m_nNodes, m_nWakeNodes, m_NWakeColumn);
+
+	/** @todo restore */
+	//set sideslip
+/*	Vector3d RefPoint(0.0, 0.0, 0.0);
+	if(fabs(m_pWPolar->m_BetaSpec)>0.001 && !m_pWPolar->isBetaPolar())
+	{
+		// Standard Convention in mechanic of flight is to have Beta>0 with nose to the left
+		// The yaw moement has the opposite convention...
+		m_pthePanelAnalysis->rotateGeomZ(m_pWPolar->m_BetaSpec, RefPoint, m_pWPolar->m_NXWakePanels);
+	}*/
+
+
 
 	/** @todo need to cancel results too if we modify the inertia */
 	if(m_pWPolar->m_bAutoInertia)
@@ -345,17 +352,24 @@ bool PlaneAnalysisTask::initializePanels()
 	{
 		if(pWingList[iw])
 		{
+// qDebug()<<"   ____Wing "<<iw;
 			pWingList[iw]->m_MatSize = 0;
 			for(int jSurf=0; jSurf<pWingList[iw]->m_Surface.size(); jSurf++)
 			{
 				pWingList[iw]->m_Surface.at(jSurf)->resetFlap();
-				Nel = createWingElements(m_pPlane, m_pWPolar, pWingList[iw]->m_Surface.at(jSurf));
+				Nel = createSurfaceElements(m_pPlane, m_pWPolar, pWingList[iw]->m_Surface.at(jSurf));
+//				qDebug()<<"    Surface"<<jSurf<<"nWakeNodes"<<m_nWakeNodes;
 				pWingList[iw]->m_MatSize += Nel;
 			}
 			pWingList[iw]->m_pWingPanel = ptr;
 			ptr += pWingList[iw]->m_MatSize;
+
 		}
 	}
+
+	qDebug()<<"m_NWakeColumn"<<m_NWakeColumn;
+	qDebug()<<"Wake Panel Size"<<m_WakeSize;
+	qDebug()<<"Wake Node Size"<<m_nWakeNodes;
 
 	bool bBodyEl = false;
 	if(m_pPlane && m_pPlane->body())
@@ -381,7 +395,6 @@ bool PlaneAnalysisTask::initializePanels()
 	memcpy(m_MemNode,  m_Node,  m_nNodes * sizeof(Vector3d));
 	memcpy(m_RefWakePanel, m_WakePanel, m_WakeSize* sizeof(Panel));
 	memcpy(m_RefWakeNode,  m_WakeNode,  m_nWakeNodes * sizeof(Vector3d));
-
 
 	return true;
 }
@@ -776,7 +789,7 @@ int PlaneAnalysisTask::createBodyElements(Plane *pCurPlane)
 *@param a pointer to the surface for which the panels will be created
 *@return the number of panels which have been created and appended
 */
-int PlaneAnalysisTask::createWingElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurface)
+int PlaneAnalysisTask::createSurfaceElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurface)
 {
 	//TODO : for  a gap at the wing's center, need to separate m_iPL and m_iPR at the tips;
 	bool bNoJoinFlap=true;
@@ -1252,6 +1265,7 @@ bool PlaneAnalysisTask::createWakeElems(int PanelIndex, Plane *pPlane, WPolar* p
 	}
 
 	m_WakeSize = mw;
+
 	return true;
 }
 
@@ -1307,18 +1321,19 @@ int PlaneAnalysisTask::calculateMatSize()
 
 
 
-
 /**
  * Releases the memory allocated to the Panel and node arrays.
  * Sets the pointers to NULL and the matrixsize to 0.
  */
 void PlaneAnalysisTask::releasePanelMemory()
 {
-	if(m_Node)        delete[] m_Node;
-	if(m_MemNode)     delete[] m_MemNode;
-	if(m_WakeNode)    delete[] m_WakeNode;
-	if(m_RefWakeNode) delete[] m_RefWakeNode;
-	m_Node = m_MemNode = m_WakeNode = m_RefWakeNode = NULL;
+	if(m_Node)         delete[] m_Node;
+	if(m_MemNode)      delete[] m_MemNode;
+	if(m_WakeNode)     delete[] m_WakeNode;
+	if(m_RefWakeNode)  delete[] m_RefWakeNode;
+	if(m_TempWakeNode) delete[] m_TempWakeNode;
+
+	m_Node = m_MemNode = m_WakeNode = m_RefWakeNode = m_TempWakeNode = NULL;
 
 	if(m_Panel)        delete[] m_Panel;
 	if(m_MemPanel)     delete[] m_MemPanel;
@@ -1376,18 +1391,51 @@ int PlaneAnalysisTask::isNode(Vector3d &Pt)
 bool PlaneAnalysisTask::allocatePanelArrays(int &memsize)
 {
 //	Trace(QString("QMiarex::Allocating() %1 Panels").arg(m_MaxPanelSize));
+if(!m_pPlane) qDebug()<<"Error here";
+qDebug()<<"MaxPanelSize"<<m_MaxPanelSize;
 
 	try
 	{
 		m_Node        = new Vector3d[2*m_MaxPanelSize];
 		m_MemNode     = new Vector3d[2*m_MaxPanelSize];
+
+		//Wake Node size
+		m_NWakeColumn = 0;
+		int WakeNodeSize = 0;
+		for(int iw=0; iw<MAXWINGS; iw++)
+		{
+			if(m_pPlane->wing(iw))
+			{
+//				qDebug()<<"---------"<<iw<<"m_pPlane->wing(iw)->m_NStation"<<m_pPlane->wing(iw)->m_NStation;
+				m_NWakeColumn += m_pPlane->wing(iw)->m_NStation;
+				WakeNodeSize  += (m_pPlane->wing(iw)->m_NStation + m_pPlane->wing(iw)->NWingSection()) * (m_pWPolar->m_NXWakePanels + 1);
+			}
+		}
+		int WakePanelSize = m_NWakeColumn * m_pWPolar->m_NXWakePanels;
+qDebug()<<"WakePanelSize"<<WakePanelSize;
+qDebug()<<"WakeNodeSize"<<WakeNodeSize;
+qDebug()<<"NWakeColumn"<<m_NWakeColumn<<"m_pWPolar->m_NXWakePanels"<<m_pWPolar->m_NXWakePanels;
+qDebug()<<"____";
+WakeNodeSize +=10;
+		m_WakeNode    = new Vector3d[WakeNodeSize];
+		m_RefWakeNode = new Vector3d[WakeNodeSize];
+		m_TempWakeNode = new Vector3d[WakeNodeSize];
+
+		m_Panel        = new Panel[m_MaxPanelSize];
+		m_MemPanel     = new Panel[m_MaxPanelSize];
+		m_WakePanel    = new Panel[WakePanelSize];
+		m_RefWakePanel = new Panel[WakePanelSize];
+
+/*		m_Node        = new Vector3d[2*m_MaxPanelSize];
+		m_MemNode     = new Vector3d[2*m_MaxPanelSize];
 		m_WakeNode    = new Vector3d[2*m_MaxPanelSize];
 		m_RefWakeNode = new Vector3d[2*m_MaxPanelSize];
+		m_TempWakeNode = new Vector3d[2*m_MaxPanelSize];
 
 		m_Panel        = new Panel[m_MaxPanelSize];
 		m_MemPanel     = new Panel[m_MaxPanelSize];
 		m_WakePanel    = new Panel[m_MaxPanelSize];
-		m_RefWakePanel = new Panel[m_MaxPanelSize];
+		m_RefWakePanel = new Panel[m_MaxPanelSize];*/
 	}
 	catch(std::exception & e)
 	{
