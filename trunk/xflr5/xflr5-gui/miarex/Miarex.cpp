@@ -7472,6 +7472,12 @@ void QMiarex::setWPolar(bool bCurrent, QString WPlrName)
 
 	s_pMainFrame->selectWPolar(m_pCurWPolar);
 
+	if(!m_pCurWPolar)
+	{
+		m_pCurPOpp = NULL;
+		return;
+	}
+
 /** @todo restore ?
 	int i,j,k,m, NStation;
 	double SpanPos;
