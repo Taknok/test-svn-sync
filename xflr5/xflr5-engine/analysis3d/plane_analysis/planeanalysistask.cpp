@@ -180,6 +180,8 @@ WPolar* PlaneAnalysisTask::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar)
 	m_pWPolar = pCurWPolar;
 	m_pPlane = pCurPlane;
 
+	if(!pCurWPolar) return NULL;
+
 	Wing *pWingList[MAXWINGS];
 	pWingList[0] = pCurPlane->wing();
 	pWingList[1] = pCurPlane->wing2();
@@ -367,9 +369,9 @@ bool PlaneAnalysisTask::initializePanels()
 		}
 	}
 
-	qDebug()<<"m_NWakeColumn"<<m_NWakeColumn;
+/*	qDebug()<<"m_NWakeColumn"<<m_NWakeColumn;
 	qDebug()<<"Wake Panel Size"<<m_WakeSize;
-	qDebug()<<"Wake Node Size"<<m_nWakeNodes;
+	qDebug()<<"Wake Node Size"<<m_nWakeNodes;*/
 
 	bool bBodyEl = false;
 	if(m_pPlane && m_pPlane->body())
@@ -1392,7 +1394,7 @@ bool PlaneAnalysisTask::allocatePanelArrays(int &memsize)
 {
 //	Trace(QString("QMiarex::Allocating() %1 Panels").arg(m_MaxPanelSize));
 if(!m_pPlane) qDebug()<<"Error here";
-qDebug()<<"MaxPanelSize"<<m_MaxPanelSize;
+//qDebug()<<"MaxPanelSize"<<m_MaxPanelSize;
 
 	try
 	{
@@ -1412,10 +1414,10 @@ qDebug()<<"MaxPanelSize"<<m_MaxPanelSize;
 			}
 		}
 		int WakePanelSize = m_NWakeColumn * m_pWPolar->m_NXWakePanels;
-qDebug()<<"WakePanelSize"<<WakePanelSize;
+/*qDebug()<<"WakePanelSize"<<WakePanelSize;
 qDebug()<<"WakeNodeSize"<<WakeNodeSize;
 qDebug()<<"NWakeColumn"<<m_NWakeColumn<<"m_pWPolar->m_NXWakePanels"<<m_pWPolar->m_NXWakePanels;
-qDebug()<<"____";
+qDebug()<<"____";*/
 WakeNodeSize +=10;
 		m_WakeNode    = new Vector3d[WakeNodeSize];
 		m_RefWakeNode = new Vector3d[WakeNodeSize];
