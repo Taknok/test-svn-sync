@@ -379,6 +379,9 @@ macx {
     #QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.4
     #QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.6.sdk
     OTHER_FILES += ./mac/Info.plist
+    LIBS += -L$$OUT_PWD/../XFoil-lib/ -lXFoil-lib
+    LIBS += -L$$OUT_PWD/../xflr5-engine/ -lxflr5-engine
+    LIBS += -L$$OUT_PWD/../graph-lib/ -lgraph-lib
     LIBS += -framework \
         CoreFoundation
     QMAKE_INFO_PLIST = ./mac/Info.plist
