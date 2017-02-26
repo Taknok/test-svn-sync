@@ -354,9 +354,9 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 
 	if(m_bAutoLoadLast)
 	{
-		loadLastProject();
+		onLoadLastProject();
 	}
-	}
+}
 
 
 
@@ -506,6 +506,11 @@ void MainFrame::createActions()
 	m_pSaveAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
 	m_pSaveAct->setStatusTip(tr("Save the project to disk"));
 	connect(m_pSaveAct, SIGNAL(triggered()), this, SLOT(onSaveProject()));
+
+	m_pLoadLastProjectAction = new QAction(tr("Load Last Project"), this);
+	m_pLoadLastProjectAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_O));
+	m_pLoadLastProjectAction->setStatusTip(tr("Loads the last saved project"));
+	connect(m_pLoadLastProjectAction, SIGNAL(triggered()), this, SLOT(onLoadLastProject()));
 
 	m_pSaveProjectAsAct = new QAction(tr("Save Project As..."), this);
 	m_pSaveProjectAsAct->setStatusTip(tr("Save the current project under a new name"));
@@ -1069,6 +1074,7 @@ void MainFrame::createMenus()
 	{
 		m_pFileMenu->addAction(m_pNewProjectAct);
 		m_pFileMenu->addAction(m_pOpenAct);
+		m_pFileMenu->addAction(m_pLoadLastProjectAction);
 		m_pFileMenu->addAction(m_pInsertAct);
 		m_pFileMenu->addAction(m_pCloseProjectAct);
 		m_pFileMenu->addSeparator();
@@ -3161,7 +3167,7 @@ QColor MainFrame::getColor(int type)
 		{
 		}
 	}
-	return randomColor();
+	return randomColor(!Settings::isLightTheme());
 }
 
 
@@ -3224,14 +3230,14 @@ void MainFrame::keyPressEvent(QKeyEvent *event)
 				if(bCtrl) onMiarex();
 				break;
 			}
-			case Qt::Key_7:
+/*			case Qt::Key_7:
 			{
 				if(bCtrl)
 				{
-					loadLastProject();
+					onloadLastProject();
 				}
 				break;
-			}
+			}*/
 			case Qt::Key_8:
 			{
 				if(bCtrl) onOpenGLInfo();
@@ -6756,7 +6762,7 @@ void MainFrame::onCurGraphSettings()
 
 
 
-void MainFrame::loadLastProject()
+void MainFrame::onLoadLastProject()
 {
 	XFLR5::enumApp iApp = loadXFLR5File(m_RecentFiles.at(0));
 	if(m_iApp==XFLR5::NOAPP) m_iApp = iApp;

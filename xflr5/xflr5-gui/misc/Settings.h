@@ -62,6 +62,8 @@ public:
 	static QFont &textFont(){return s_TextFont;}
 	static QFont &tableFont(){return s_TableFont;}
 
+	static bool isLightTheme(){return s_Theme==SETTINGS::LIGHTTHEME;}
+
 private slots:
 	void onStyleChanged(const QString &StyleName);
 	void onBackgroundColor2d();

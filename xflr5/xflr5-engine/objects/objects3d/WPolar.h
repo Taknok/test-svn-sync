@@ -178,6 +178,7 @@ private:
 	XFLR5::enumPolarType      m_WPolarType;      /**< The type of analysis. May be one of the following types :FIXEDSPEEDPOLAR, FIXEDLIFTPOLAR, FIXEDAOAPOLAR, STABILITYPOLAR */
 
 public:
+	bool     m_bRelaxWake;         /**< true if wake relaxation is implemented */
 	bool     m_bAutoInertia;       /**< true if the inertia to be taken into account is the one of the parent plane */
 	double   m_CoGIxx;             /**< The Ixx component of the inertia tensor, w.r.t. the CoG origin */
 	double   m_CoGIxz;             /**< The Ixz component of the inertia tensor, w.r.t. the CoG origin */
@@ -196,7 +197,7 @@ public:
 	double   m_Viscosity;          /**< The fluid's kinematic viscosity */
 
 	double   m_WakePanelFactor;    /**< the ratio between the length of two wake panels in the x direction */
-	double   m_TotalWakeLength;    /**< the wake's length */
+	double   m_TotalWakeLength;    /**< the wake's length; defines the position of the Trefftz plane */
 
 	QVarLengthArray<double> m_ControlGain;      /**< the scaling factor for each of the control surfaces */
 

@@ -135,10 +135,10 @@ void WingScaleDlg::setupLayout()
 		pScaleLayout->addWidget(m_pctrlNewAR,   7,3);
 		pScaleLayout->addWidget(m_pctrlARRatio, 7,5);
 
-		pScaleLayout->addWidget(m_pctrlScaleTR, 8,1);
+/*		pScaleLayout->addWidget(m_pctrlScaleTR, 8,1);
 		pScaleLayout->addWidget(m_pctrlRefTR,   8,2);
 		pScaleLayout->addWidget(m_pctrlNewTR,   8,3);
-		pScaleLayout->addWidget(m_pctrlTRRatio, 8,5);
+		pScaleLayout->addWidget(m_pctrlTRRatio, 8,5);*/
 
 		QString unitLabel;
 		Units::getLengthUnitLabel(unitLabel);

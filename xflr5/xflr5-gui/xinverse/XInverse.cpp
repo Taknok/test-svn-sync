@@ -659,22 +659,24 @@ void QXInverse::keyPressEvent(QKeyEvent *event)
 			}
 
 		case Qt::Key_6:
+		{
 			if(bCtrl)
 			{
 				s_pMainFrame->onMiarex();
 				return;
 			}
+		}
 		case Qt::Key_7:
-			if(bCtrl)
+/*			if(bCtrl)
 			{
-				s_pMainFrame->loadLastProject();
+				s_pMainFrame->onLoadLastProject();
 				event->accept();
 				return;
-			}
+			}*/
 			break;
 
 		default:
-			QWidget::keyPressEvent(event);
+			event->ignore();
 	}
 }
 

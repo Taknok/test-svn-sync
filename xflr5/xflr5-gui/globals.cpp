@@ -286,13 +286,23 @@ int readValues(QString line, double &x, double &y, double &z)
 
 
 
-QColor randomColor()
+QColor randomColor(bool bLightColor)
 {
 	QColor clr;
-	clr.setHsv((int)(((double)qrand()/(double)RAND_MAX)*360),
-			   (int)(((double)qrand()/(double)RAND_MAX)*101)+ 99,
-			   (int)(((double)qrand()/(double)RAND_MAX)*100)+155,
-				255);
+	if(bLightColor)
+	{
+		clr.setHsv((int)(((double)qrand()/(double)RAND_MAX)*360),
+				   (int)(((double)qrand()/(double)RAND_MAX)*255),
+				   (int)(((double)qrand()/(double)RAND_MAX)*100)+155,
+					255);
+	}
+	else
+	{
+		clr.setHsv((int)(((double)qrand()/(double)RAND_MAX)*360),
+				   (int)(((double)qrand()/(double)RAND_MAX)*101)+ 99,
+				   (int)(((double)qrand()/(double)RAND_MAX)*100)+50,
+					255);
+	}
 	return clr;
 }
 
@@ -591,7 +601,7 @@ void * readFoilFile(QFile &xFoilFile)
 	memcpy(pFoil->y, pFoil->yb, sizeof(pFoil->yb));
 	pFoil->n = pFoil->nb;
 
-	QColor clr = randomColor();
+	QColor clr = randomColor(false);
 	pFoil->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
 	pFoil->initFoil();
 
@@ -1137,9 +1147,9 @@ QColor colour(Foil *pFoil)
 }
 
 
-void setRandomFoilColor(Foil *pFoil)
+void setRandomFoilColor(Foil *pFoil, bool bLightTheme)
 {
-	QColor clr = randomColor();
+	QColor clr = randomColor(!bLightTheme);
 	pFoil->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
 }
 

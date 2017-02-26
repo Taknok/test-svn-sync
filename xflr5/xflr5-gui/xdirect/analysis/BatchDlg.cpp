@@ -21,6 +21,8 @@
 
 #include "BatchDlg.h"
 #include <gui_params.h>
+#include <globals.h>
+#include <misc/Settings.h>
 #include <xdirect/XDirect.h>
 #include <xdirect/objects2d.h>
 #include "ReListDlg.h"
@@ -456,6 +458,9 @@ Polar *BatchDlg::createPolar(Foil *pFoil, double Spec, double Mach, double NCrit
 	if(!pFoil) return NULL;
 
 	Polar *pPolar = new Polar;
+	QColor clr = randomColor(!Settings::isLightTheme());
+	pPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
+
 	pPolar->foilName()   = pFoil->foilName();
 	pPolar->isVisible() = true;
 	pPolar->polarType() = m_PolarType;

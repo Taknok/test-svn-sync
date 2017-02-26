@@ -1914,14 +1914,14 @@ void QMiarex::keyPressEvent(QKeyEvent *event)
 	}
 	else if(event->key()==Qt::Key_7 || event->text()=="7")
 	{
-		if(bCtrl)
+/*		if(bCtrl)
 		{
 			s_pMainFrame->loadXFLR5File(s_pMainFrame->m_RecentFiles.at(0));
 
 			s_pMainFrame->updatePlaneListBox();
 			setPlane();
 			updateView();
-		}
+		}*/
 	}
 
 	switch (event->key())
@@ -3670,7 +3670,7 @@ void QMiarex::onEditCurBody()
 			//save mods to a new plane object
 			m_pCurPlane = Objects3D::setModPlane(pModPlane);
 
-			setPlane();
+			setPlane(pModPlane->planeName());
 			s_pMainFrame->updatePlaneListBox();
 			updateView();
 			return;
@@ -3776,7 +3776,7 @@ void QMiarex::onEditCurBodyObject()
 			//save mods to a new plane object
 			m_pCurPlane = Objects3D::setModPlane(pModPlane);
 
-			setPlane();
+			setPlane(pModPlane->planeName());
 			s_pMainFrame->updatePlaneListBox();
 			updateView();
 			return;
@@ -3863,7 +3863,7 @@ void QMiarex::onEditCurObject()
 					//save mods to a new plane object
 					m_pCurPlane = Objects3D::setModPlane(pModPlane);
 
-					setPlane();
+					setPlane(pModPlane->planeName());
 					s_pMainFrame->updatePlaneListBox();
 					updateView();
 					return;
@@ -3969,7 +3969,7 @@ void QMiarex::onEditCurPlane()
 					//save mods to a new plane object
 					m_pCurPlane = Objects3D::setModPlane(pModPlane);
 
-					setPlane();
+					setPlane(pModPlane->planeName());
 					s_pMainFrame->updatePlaneListBox();
 					updateView();
 					return;
@@ -4000,7 +4000,7 @@ void QMiarex::onEditCurPlane()
 
 
 /**
- * The user has requested an edition of the current Plane
+ * @brief The user has requested an edition of one of the wings.
  * Launches the dialog box, and maps the data depending on whether the user wants to overwrite, create a new object, or has cancelled the request.
  */
 void QMiarex::onEditCurWing()
@@ -4084,7 +4084,7 @@ void QMiarex::onEditCurWing()
 					//save mods to a new plane object
 					m_pCurPlane = Objects3D::setModPlane(pModPlane);
 
-					setPlane();
+					setPlane(pModPlane->planeName());
 					s_pMainFrame->updatePlaneListBox();
 					updateView();
 					return;
@@ -5126,7 +5126,7 @@ void QMiarex::onImportWPolars()
 					else bRead = false;
 				}
 
-				pWPolar->curveColor() = randomColor();
+				pWPolar->curveColor() = randomColor(!Settings::isLightTheme());
 				Objects3D::addWPolar(pWPolar);
 				XFile.close();
 			}
@@ -5165,7 +5165,7 @@ void QMiarex::onKeepCpSection()
 //	pNewCurve->setCurveName(pCurrentCurve->curveName());
 //	pNewCurve->setColor(pCurrentCurve->color());
 
-	m_CpLineStyle.m_Color = randomColor();
+	m_CpLineStyle.m_Color = randomColor(!Settings::isLightTheme());
 	pCurrentCurve->setColor(m_CpLineStyle.m_Color);
 
 	m_CpLineStyle.m_Style = 0;

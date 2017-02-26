@@ -41,7 +41,7 @@ float GLGetGreen(double tau);
 float GLGetBlue(double tau);
 
 
-QColor randomColor();
+QColor randomColor(bool bLightColor);
 
 void Trace(int n);
 void Trace(QString msg);
@@ -102,7 +102,7 @@ QColor getColor(int r, int g, int b, int a=255);
 QColor colour(OpPoint *pOpp);
 QColor colour(Polar *pPolar);
 QColor colour(Foil *pFoil);
-void setRandomFoilColor(Foil *pFoil);
+void setRandomFoilColor(Foil *pFoil, bool bLightTheme);
 
 
 
