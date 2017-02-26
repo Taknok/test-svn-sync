@@ -149,6 +149,7 @@ private slots:
 	void onNewProject();
 	void onLanguage();
 	void onLoadFile();
+	void onLoadLastProject();
 	void onLogFile();
 	void onOpenGLInfo();
 	void onProjectModified();
@@ -204,7 +205,6 @@ public:
 	void deleteProject(bool bClosing=false);
 	void exportGraph(QGraph *pGraph);
 	void GLToClient(CVector const &real, QPoint &point);
-	void loadLastProject();
 	bool loadSettings();
 	bool loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
 	void readPolarFile(QDataStream &ar);
@@ -327,6 +327,7 @@ private:
 	QAction *m_pSeparatorAct;
 	QAction *m_pSaveViewToImageFileAct, *m_pResetSettingsAct;
 	QAction *m_pScriptAction;
+	QAction *m_pLoadLastProjectAction;
 
 	//Graph Actions
 	QAction *m_pSingleGraph[MAXGRAPHS], *m_pTwoGraphs, *m_pFourGraphs, *m_pAllGraphs;

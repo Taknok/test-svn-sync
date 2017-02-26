@@ -1506,22 +1506,13 @@ void Wing::scaleSpan(double NewSpan)
 */
 void Wing::scaleSweep(double newSweep)
 {
-	if(fabs(averageSweep())<0.1) return;
-
 	double rootOffset = m_WingSection.first()->m_Offset;
 	double rootchord4 = rootOffset + Chord(0)/4.0;
-	double oldTipOffset = tipOffset();
-	double oldTipChord4 = tipOffset() + tipChord()/4.0;
 
-
-	double newTipChord4 = rootchord4 + tan(newSweep*PI/180.0) * m_SpanPos[m_NStation-1];
-	double newTipOffset = newTipChord4 - tipChord()/4.0;
 	//scale each panel's offset
-	double ratio = newTipOffset/oldTipOffset;
-
 	for(int is=1; is<NWingSection(); is++)
 	{
-		double chord4Offset = rootchord4 + tan(newSweep*PI/180.0) * m_SpanPos[is];
+		double chord4Offset = rootchord4 + tan(newSweep*PI/180.0) * m_WingSection.at(is)->m_YPosition;
 		Offset(is) = chord4Offset - Chord(is)/4.0;
 	}
 	computeGeometry();
@@ -1534,7 +1525,7 @@ void Wing::scaleSweep(double newSweep)
 */
 void Wing::scaleTwist(double NewTwist)
 {
-	if(qAbs(tipTwist())>0.0001)
+	if(fabs(tipTwist())>0.0001)
 	{
 		//scale each panel's twist
 		double ratio = NewTwist/tipTwist();

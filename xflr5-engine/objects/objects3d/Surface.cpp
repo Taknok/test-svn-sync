@@ -431,7 +431,7 @@ void Surface::getPanel(int const &k, int const &l, enumPanelPosition pos)
 double Surface::stripWidth(int k)
 {
 	getPanel(k, 0, MIDSURFACE);
-	return qAbs(LA.y-LB.y);
+	return fabs(LA.y-LB.y);
 }
 
 
@@ -485,7 +485,7 @@ void Surface::getSidePoints(enumPanelPosition pos,
 	double xRel;
 	Vector3d A4, B4, TA4, TB4;
 
-	double cosdA = Normal.dot(NormalA);
+/*	double cosdA = Normal.dot(NormalA);
 	double cosdB = Normal.dot(NormalB);
 
 	if(cosdA>1.0) cosdA = 1.0;
@@ -495,7 +495,29 @@ void Surface::getSidePoints(enumPanelPosition pos,
 
 	Vector3d x(1.0,0.0,0.0);
 	double alpha_dA = atan2((NormalA * Normal).dot(x), Normal.dot(NormalA))*180.0/PI;
-	double alpha_dB = atan2((NormalB * Normal).dot(x), Normal.dot(NormalB))*180.0/PI;
+	double alpha_dB = atan2((NormalB * Normal).dot(x), Normal.dot(NormalB))*180.0/PI;*/
+
+	Vector3d V = Normal * NormalA;
+	Vector3d U = (m_TA - m_LA).normalized();
+//	double sindA = -V.dot(Vector3d(1.0,0.0,0.0));
+	double sindA = -V.dot(U);
+	if(sindA> 1.0) sindA = 1.0;
+	if(sindA<-1.0) sindA = -1.0;
+	double alpha_dA = asin(sindA);
+	double cosdA = cos(alpha_dA);
+	alpha_dA *= 180.0/PI;
+
+	V = Normal * NormalB;
+	U = (m_TB-m_LB).normalized();
+//	double sindB = -V.dot(Vector3d(1.0,0.0,0.0));
+	double sindB = -V.dot(U);
+	if(sindB> 1.0) sindB = 1.0;
+	if(sindB<-1.0) sindB = -1.0;
+	double alpha_dB = asin(sindB);
+	double cosdB = cos(alpha_dB);
+	alpha_dB *= 180.0/PI;
+
+
 	double delta = -atan(Normal.y / Normal.z)*180.0/PI;
 //	double delta = -atan2(Normal.y,  Normal.z)*180.0/PI;
 
@@ -518,17 +540,27 @@ void Surface::getSidePoints(enumPanelPosition pos,
 
 		NA[i].set(0.0,0.0,0.0);
 		getSidePoint(xRel, false, pos, PtA[i], NA[i]);
-		PtA[i].y   = m_LA.y +(PtA[i].y - m_LA.y)/cosdA;
-		PtA[i].z   = m_LA.z +(PtA[i].z - m_LA.z)/cosdA;
-		PtA[i].rotate(m_LA, m_LA-m_TA, alpha_dA);
+
+		//scale the thickness
+		double Ox = xRel;
+		double Oy = m_LA.y * (1.0-Ox) +  m_TA.y * Ox;
+		double Oz = m_LA.z * (1.0-Ox) +  m_TA.z * Ox;
+		PtA[i].y   = Oy +(PtA[i].y - Oy)/cosdA;
+		PtA[i].z   = Oz +(PtA[i].z - Oz)/cosdA;
+		PtA[i].rotate(m_LA, m_LA-m_TA, +alpha_dA);
 		NA[i].rotate(Vector3d(1.0,0.0,0.0), delta);
 
 		NB[i].set(0.0,0.0,0.0);
 		getSidePoint(xRel, true,  pos, PtB[i], NB[i]);
-		PtB[i].y   = m_LB.y +(PtB[i].y - m_LB.y)/cosdB;
-		PtB[i].z   = m_LB.z +(PtB[i].z - m_LB.z)/cosdB;
-		PtB[i].rotate(m_LB, m_LB-m_TB, alpha_dB);
+		Ox = xRel;
+		Oy = m_LB.y * (1.0-Ox) +  m_TB.y * Ox;
+		Oz = m_LB.z * (1.0-Ox) +  m_TB.z * Ox;
+		PtB[i].y   = Oy +(PtB[i].y - Oy)/cosdB;
+		PtB[i].z   = Oz +(PtB[i].z - Oz)/cosdB;
+		PtB[i].rotate(m_LB, m_LB-m_TB, +alpha_dB);
 		NB[i].rotate(Vector3d(1.0,0.0,0.0), delta);
+
+
 
 /*		double sweep_i = -atan2((PtB[i].x-PtA[i].x), (PtB[i].y-PtA[i].y)) * 180.0/PI;
 		NA[i].rotate(Vector3d(0.0,0.0,1.0), sweep_i);
@@ -1003,7 +1035,7 @@ void Surface::setSidePoints(Body * pBody, double dx, double dz)
 {
 	int l;
 	double alpha_dA, alpha_dB, cosdA, cosdB;
-    Vector3d N, A4, B4, TA4, TB4, U;
+	Vector3d N, A4, B4, TA4, TB4;
     Body TBody;
 	if(pBody)
 	{
@@ -1012,7 +1044,9 @@ void Surface::setSidePoints(Body * pBody, double dx, double dz)
 	}
 
 	Vector3d V = Normal * NormalA;
-	double sindA = -V.dot(Vector3d(1.0,0.0,0.0));
+	Vector3d U = (m_TA - m_LA).normalized();
+//	double sindA = -V.dot(Vector3d(1.0,0.0,0.0));
+	double sindA = -V.dot(U);
 	if(sindA> 1.0) sindA = 1.0;
 	if(sindA<-1.0) sindA = -1.0;
 	alpha_dA = asin(sindA);
@@ -1020,13 +1054,14 @@ void Surface::setSidePoints(Body * pBody, double dx, double dz)
 	alpha_dA *= 180.0/PI;
 
 	V = Normal * NormalB;
-	double sindB = -V.dot(Vector3d(1.0,0.0,0.0));
+	U = (m_TB-m_LB).normalized();
+	double sindB = -V.dot(U);
+//	double sindB = V.VAbs();
 	if(sindB> 1.0) sindB = 1.0;
 	if(sindB<-1.0) sindB = -1.0;
 	alpha_dB = asin(sindB);
 	cosdB = cos(alpha_dB);
 	alpha_dB *= 180.0/PI;
-
 
 	chordA  = chord(0.0);
 	chordB  = chord(1.0);
@@ -1068,12 +1103,15 @@ void Surface::setSidePoints(Body * pBody, double dx, double dz)
 		getSidePoint(m_xPointA[l], false, BOTSURFACE, SideA_B[l], N);
 
 		//scale the thickness
-		SideA[l].y   = m_LA.y +(SideA[l].y   - m_LA.y)/cosdA;
-		SideA[l].z   = m_LA.z +(SideA[l].z   - m_LA.z)/cosdA;
-		SideA_T[l].y = m_LA.y +(SideA_T[l].y - m_LA.y)/cosdA;
-		SideA_T[l].z = m_LA.z +(SideA_T[l].z - m_LA.z)/cosdA;
-		SideA_B[l].y = m_LA.y +(SideA_B[l].y - m_LA.y)/cosdA;
-		SideA_B[l].z = m_LA.z +(SideA_B[l].z - m_LA.z)/cosdA;
+		double Ox = m_xPointA[l];
+		double Oy = m_LA.y * (1.0-Ox) +  m_TA.y * Ox;
+		double Oz = m_LA.z * (1.0-Ox) +  m_TA.z * Ox;
+		SideA[l].y   = Oy +(SideA[l].y   - Oy)/cosdA;
+		SideA[l].z   = Oz +(SideA[l].z   - Oz)/cosdA;
+		SideA_T[l].y = Oy +(SideA_T[l].y - Oy)/cosdA;
+		SideA_T[l].z = Oz +(SideA_T[l].z - Oz)/cosdA;
+		SideA_B[l].y = Oy +(SideA_B[l].y - Oy)/cosdA;
+		SideA_B[l].z = Oz +(SideA_B[l].z - Oz)/cosdA;
 
 		//rotate the point about the foil's neutral line to account for dihedral
 		SideA[l].rotate(m_LA, m_LA-m_TA, alpha_dA);
@@ -1084,24 +1122,28 @@ void Surface::setSidePoints(Body * pBody, double dx, double dz)
 //		SideA[l].rotate(A4, TA4, m_TwistA);
 //		SideA_T[l].rotate(A4, TA4, m_TwistA);
 //		SideA_B[l].rotate(A4, TA4, m_TwistA);
-		//        NormalA.rotate(TA4, m_TwistA);
+//        NormalA.rotate(TA4, m_TwistA);
 
 		getSidePoint(m_xPointB[l], true, MIDSURFACE, SideB[l], N);
 		getSidePoint(m_xPointB[l], true, TOPSURFACE, SideB_T[l], N);
 		getSidePoint(m_xPointB[l], true, BOTSURFACE, SideB_B[l], N);
 
 		//scale the thickness
-		SideB[l].y   = m_LB.y +(SideB[l].y   - m_LB.y)/cosdB;
-		SideB[l].z   = m_LB.z +(SideB[l].z   - m_LB.z)/cosdB;
-		SideB_T[l].y = m_LB.y +(SideB_T[l].y - m_LB.y)/cosdB;
-		SideB_T[l].z = m_LB.z +(SideB_T[l].z - m_LB.z)/cosdB;
-		SideB_B[l].y = m_LB.y +(SideB_B[l].y - m_LB.y)/cosdB;
-		SideB_B[l].z = m_LB.z +(SideB_B[l].z - m_LB.z)/cosdB;
+		Ox = m_xPointB[l];
+		Oy = m_LB.y * (1.0-Ox) +  m_TB.y * Ox;
+		Oz = m_LB.z * (1.0-Ox) +  m_TB.z * Ox;
+		SideB[l].y   = Oy +(SideB[l].y   - Oy)/cosdB;
+		SideB[l].z   = Oz +(SideB[l].z   - Oz)/cosdB;
+		SideB_T[l].y = Oy +(SideB_T[l].y - Oy)/cosdB;
+		SideB_T[l].z = Oz +(SideB_T[l].z - Oz)/cosdB;
+		SideB_B[l].y = Oy +(SideB_B[l].y - Oy)/cosdB;
+		SideB_B[l].z = Oz +(SideB_B[l].z - Oz)/cosdB;
 
 		//rotate the point about the foil's neutral line to account for dihedral
 		SideB[l].rotate(m_LB, m_LB-m_TB, alpha_dB);
 		SideB_T[l].rotate(m_LB, m_LB-m_TB, alpha_dB);
 		SideB_B[l].rotate(m_LB, m_LB-m_TB, alpha_dB);
+
 
 		//set the twist
 //		SideB[l].rotate(B4, TB4, m_TwistB);
