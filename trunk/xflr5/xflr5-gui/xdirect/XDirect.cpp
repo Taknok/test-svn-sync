@@ -850,13 +850,15 @@ void QXDirect::keyPressEvent(QKeyEvent *event)
 			}
 			break;
 		case Qt::Key_7:
-			if(bCtrl)
+		{
+/*			if(bCtrl)
 			{
-				s_pMainFrame->loadLastProject();
+				s_pMainFrame->onLoadLastProject();
 				event->accept();
 				return;
 			}
-			break;
+			break;*/
+		}
 		case Qt::Key_F2:
 		{
 			if(bShift) onRenameCurPolar();
@@ -1935,6 +1937,9 @@ void QXDirect::onDefinePolar()
 	if (res == QDialog::Accepted)
 	{
 		setCurPolar(new Polar());
+		QColor clr = randomColor(!Settings::isLightTheme());
+		m_pCurPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
+
 		m_pCurPolar->foilName() = m_pCurFoil->foilName();
 		m_pCurPolar->polarName() = fpDlg.m_PlrName;
 		m_pCurPolar->isVisible() = true;
@@ -2206,7 +2211,7 @@ void QXDirect::onCadd()
 	{
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(&m_BufferFoil);
-		setRandomFoilColor(pNewFoil);
+		setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
 		pNewFoil->foilLineStyle() = 1;
 		pNewFoil->foilLineWidth() = 1;
 		pNewFoil->foilPointStyle() = 0;
@@ -2245,7 +2250,7 @@ void QXDirect::onDerotateFoil()
 	pNewFoil->foilLineStyle() = 0;
 	pNewFoil->foilLineWidth() = 1;
 	pNewFoil->foilPointStyle() = 0;
-	setRandomFoilColor(pNewFoil);
+	setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
 
 	double angle = pNewFoil->deRotate();
 	str = QString(tr("The foil has been de-rotated by %1 degrees")).arg(angle,6,'f',3);
@@ -2763,7 +2768,7 @@ void QXDirect::onFoilCoordinates()
 
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(&m_BufferFoil);
-		setRandomFoilColor(pNewFoil);
+		setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
 		pNewFoil->foilLineStyle() = 0;
 		pNewFoil->foilLineWidth() = 1;
 		pNewFoil->foilPointStyle() = 0;
@@ -2819,7 +2824,7 @@ void QXDirect::onFoilGeom()
 	{
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(&m_BufferFoil);
-		setRandomFoilColor(pNewFoil);
+		setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
 		pNewFoil->foilLineStyle() = 0;
 		pNewFoil->foilLineWidth() = 1;
 		pNewFoil->foilPointStyle() = 0;
@@ -3300,7 +3305,7 @@ void QXDirect::onInterpolateFoils()
 	{
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(&m_BufferFoil);
-		setRandomFoilColor(pNewFoil);
+		setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
 		pNewFoil->foilLineStyle() = 0;
 		pNewFoil->foilLineWidth() = 1;
 		pNewFoil->foilPointStyle() = 0;
@@ -3355,7 +3360,7 @@ void QXDirect::onNacaFoils()
 
 		Foil *pNewFoil = new Foil;
 		pNewFoil->copyFoil(&m_BufferFoil);
-		setRandomFoilColor(pNewFoil);
+		setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
 		pNewFoil->foilLineStyle() = 0;
 		pNewFoil->foilLineWidth() = 1;
 		pNewFoil->foilPointStyle() = 0;
@@ -3548,7 +3553,7 @@ void QXDirect::onRefinePanelsGlobally()
 	{
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(&m_BufferFoil);
-		setRandomFoilColor(pNewFoil);
+		setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
 		pNewFoil->foilLineStyle() = 0;
 		pNewFoil->foilLineWidth() = 1;
 		pNewFoil->foilPointStyle() = 0;
@@ -3855,7 +3860,7 @@ void QXDirect::onSetFlap()
 	{
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(&m_BufferFoil);
-		setRandomFoilColor(pNewFoil);
+		setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
 		pNewFoil->foilLineStyle() = 0;
 		pNewFoil->foilLineWidth() = 1;
 		pNewFoil->foilPointStyle() = 0;
@@ -3903,7 +3908,7 @@ void QXDirect::onSetLERadius()
 	{
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(&m_BufferFoil);
-		setRandomFoilColor(pNewFoil);
+		setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
 		pNewFoil->foilLineStyle() = 0;
 		pNewFoil->foilLineWidth() = 1;
 		pNewFoil->foilPointStyle() = 0;
@@ -3951,7 +3956,7 @@ void QXDirect::onSetTEGap()
 	{
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(&m_BufferFoil);
-		setRandomFoilColor(pNewFoil);
+		setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
 		pNewFoil->foilLineStyle() = 0;
 		pNewFoil->foilLineWidth() = 1;
 		pNewFoil->foilPointStyle() = 0;

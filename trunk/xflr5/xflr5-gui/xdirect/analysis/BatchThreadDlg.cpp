@@ -23,6 +23,7 @@
 #include "XFoilAdvancedDlg.h"
 #include "ReListDlg.h"
 #include <gui_params.h>
+#include "globals.h"
 #include <xdirect/XDirect.h>
 #include <xdirect/objects2d.h>
 #include <misc/Settings.h>
@@ -382,6 +383,8 @@ Polar * BatchThreadDlg::createPolar(Foil *pFoil, double Re, double Mach, double 
 	if(!pFoil) return NULL;
 
 	Polar *pNewPolar = new Polar;
+	QColor clr = randomColor(!Settings::isLightTheme());
+	pNewPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
 	pNewPolar->foilName()   = pFoil->foilName();
 	pNewPolar->isVisible() = true;
 	pNewPolar->polarType() = m_PolarType;

@@ -50,6 +50,7 @@ WPolar::WPolar()
 //	m_bDirichlet    = true;
 	m_BoundaryCondition = XFLR5::DIRICHLET;
 	m_bIgnoreBodyPanels = false;
+	m_bRelaxWake = false;
 
 	m_NXWakePanels    = 1;
 	m_TotalWakeLength = 100.0;

@@ -358,16 +358,16 @@ void QAFoil::keyPressEvent(QKeyEvent *event)
 				return;
 			}
 		case Qt::Key_7:
-			if(bCtrl)
+/*			if(bCtrl)
 			{
-				s_pMainFrame->loadLastProject();
+				s_pMainFrame->onLoadLastProject();
 				event->accept();
 				return;
 			}
-			break;
+			break;*/
 
 		default:
-			QWidget::keyPressEvent(event);
+			event->ignore();
 	}
 }
 
@@ -443,7 +443,7 @@ void QAFoil::onAFoilDerotateFoil()
 	//then duplicate the buffer foil and add it
 	Foil *pNewFoil = new Foil();
 	pNewFoil->copyFoil(m_pBufferFoil);
-	setRandomFoilColor(pNewFoil);
+	setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
 	pNewFoil->foilLineStyle() = 0;
 	pNewFoil->foilLineWidth() = 1;
 
@@ -500,7 +500,7 @@ void QAFoil::onAFoilCadd()
 		//then duplicate the buffer foil and add it
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(m_pBufferFoil);
-		setRandomFoilColor(pNewFoil);
+		setRandomFoilColor(pNewFoil, Settings::isLightTheme());
 		pNewFoil->foilLineStyle() = 0;
 		pNewFoil->foilLineWidth() = 1;
 		pNewFoil->foilPointStyle() = 0;
@@ -566,7 +566,7 @@ void QAFoil::onAFoilPanels()
 		//then duplicate the buffer foil and add it
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(m_pBufferFoil);
-		setRandomFoilColor(pNewFoil);
+		setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
 		pNewFoil->foilLineStyle() = 0;
 		pNewFoil->foilLineWidth() = 1;
 		pNewFoil->foilPointStyle() = 0;
@@ -615,7 +615,7 @@ void QAFoil::onAFoilFoilCoordinates()
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(m_pBufferFoil);
 		pNewFoil->foilPointStyle() = 0;
-		setRandomFoilColor(pNewFoil);
+		setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
 		pNewFoil->foilLineStyle() = 0;
 		pNewFoil->foilLineWidth() = 1;
 		pNewFoil->setHighLight(-1);
@@ -661,7 +661,7 @@ void QAFoil::onAFoilFoilGeom()
 		//then duplicate the buffer foil and add it
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(m_pBufferFoil);
-		setRandomFoilColor(pNewFoil);
+		setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
 		pNewFoil->foilLineStyle() = 0;
 		pNewFoil->foilLineWidth() = 1;
 		pNewFoil->foilPointStyle() = 0;
@@ -707,7 +707,7 @@ void QAFoil::onAFoilSetTEGap()
 		//then duplicate the buffer foil and add it
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(m_pBufferFoil);
-		setRandomFoilColor(pNewFoil);
+		setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
 		pNewFoil->foilLineStyle() = 0;
 		pNewFoil->foilLineWidth() = 1;
 		pNewFoil->foilPointStyle() = 0;
@@ -757,7 +757,7 @@ void QAFoil::onAFoilSetLERadius()
 		//then duplicate the buffer foil and add it
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(m_pBufferFoil);
-		setRandomFoilColor(pNewFoil);
+		setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
 		pNewFoil->foilLineStyle() = 0;
 		pNewFoil->foilLineWidth() = 1;
 		pNewFoil->foilPointStyle() = 0;
@@ -812,7 +812,7 @@ void QAFoil::onAFoilInterpolateFoils()
 		//then duplicate the buffer foil and add it
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(m_pBufferFoil);
-		setRandomFoilColor(pNewFoil);
+		setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
 		pNewFoil->foilLineStyle() = 0;
 		pNewFoil->foilLineWidth() = 1;
 		pNewFoil->foilPointStyle() = 0;
@@ -864,7 +864,7 @@ void QAFoil::onAFoilNacaFoils()
 
 		Foil *pNewFoil    = new Foil();
 		pNewFoil->copyFoil(m_pBufferFoil);
-		setRandomFoilColor(pNewFoil);
+		setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
 		pNewFoil->foilLineStyle() = 0;
 		pNewFoil->foilLineWidth() = 1;
 		pNewFoil->foilPointStyle() = 0;
@@ -913,7 +913,7 @@ void QAFoil::onAFoilSetFlap()
 		//then duplicate the buffer foil and add it
 		Foil *pNewFoil = new Foil();
 		pNewFoil->copyFoil(m_pBufferFoil);
-		setRandomFoilColor(pNewFoil);
+		setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
 		pNewFoil->foilLineStyle() = 0;
 		pNewFoil->foilLineWidth() = 1;
 
@@ -961,7 +961,7 @@ void QAFoil::onDuplicate()
 	if(!QXDirect::curFoil()) return;
 	Foil *pNewFoil = new Foil;
 	pNewFoil->copyFoil(QXDirect::curFoil());
-	setRandomFoilColor(pNewFoil);
+	setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
 	pNewFoil->initFoil();
 
 	addNewFoil(pNewFoil);
