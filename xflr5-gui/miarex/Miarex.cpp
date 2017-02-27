@@ -70,6 +70,8 @@
 #include <viewwidgets/miarextilewidget.h>
 #include <objects_global.h>
 #include <xdirect/objects2d.h>
+#include <matrix.h>
+
 
 #ifdef Q_OS_WIN
 #include <windows.h> // for Sleep
@@ -5631,6 +5633,22 @@ void QMiarex::onShowPlaneWPolarsOnly()
 	updateView();
 }
 
+
+void QMiarex::onShowWPolarOppsOnly()
+{
+	if(!m_pCurPlane || !m_pCurWPolar) return;
+	for(int i=0; i<m_poaPOpp->size(); i++)
+	{
+		PlaneOpp *pPOpp = (PlaneOpp*)m_poaPOpp->at(i);
+		if(pPOpp->planeName().compare(m_pCurPlane->planeName())==0 && pPOpp->polarName().compare(m_pCurWPolar->polarName())==0)
+		{
+			pPOpp->isVisible() = true;
+		}
+		else pPOpp->isVisible() = false;
+	}
+	s_bResetCurves = true;
+	updateView();
+}
 
 
 /**

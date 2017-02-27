@@ -16,7 +16,7 @@
 #include <QMutex>
 #include <QString>
 #include <objects3d/WPolar.h>
-
+#include <matrix.h>
 
 QList<Polar*> *LLTAnalysis::s_poaPolar = NULL;
 int LLTAnalysis::s_IterLim = 100;
@@ -151,7 +151,7 @@ double LLTAnalysis::Beta(int m, int k)
 	double fr = (double)m_pWing->m_NStation;
 
 	if (m==k) b = 180.0*fr/8.0/PI/sin(fk*PI/fr);
-	else if (IsEven(m+k)) b=0.0;
+	else if (isEven(m+k)) b=0.0;
 	else
 	{
 		double c1 = 180.0/4.0/PI/fr/sin(fk*PI/fr);

@@ -1370,10 +1370,14 @@ void MainFrame::createMiarexActions()
 	m_pHideAllWPlrOpps = new QAction(tr("Hide Associated OpPoints"), this);
 	m_pHideAllWPlrOpps->setStatusTip(tr("Hide the curves of all the operating points of the currently selected polar"));
 	connect(m_pHideAllWPlrOpps, SIGNAL(triggered()), pMiarex, SLOT(onHideAllWPlrOpps()));
+
+	m_pShowWPlrOppsOnly = new QAction(tr("Show Only Associated OpPoints"), this);
+	connect(m_pShowWPlrOppsOnly, SIGNAL(triggered()), pMiarex, SLOT(onShowWPolarOppsOnly()));
 	
 	m_pDeleteAllWPlrOpps = new QAction(tr("Delete Associated OpPoints"), this);
 	m_pDeleteAllWPlrOpps->setStatusTip(tr("Delete all the operating points of the currently selected polar"));
 	connect(m_pDeleteAllWPlrOpps, SIGNAL(triggered()), pMiarex, SLOT(onDeleteAllWPlrOpps()));
+
 	m_pShowTargetCurve = new QAction(tr("Show Target Curve"), this);
 	m_pShowTargetCurve->setCheckable(false);
 	connect(m_pShowTargetCurve, SIGNAL(triggered()), pMiarex, SLOT(onShowTargetCurve()));
@@ -1601,6 +1605,7 @@ void MainFrame::createMiarexMenus()
 			m_pCurWPlrMenu->addAction(m_pShowAllWPlrOpps);
 			m_pCurWPlrMenu->addAction(m_pHideAllWPlrOpps);
 			m_pCurWPlrMenu->addAction(m_pDeleteAllWPlrOpps);
+			m_pCurWPlrMenu->addAction(m_pShowWPlrOppsOnly);
 			m_pCurWPlrMenu->addSeparator();
 			m_pCurWPlrMenu->addAction(m_pExportCurWPolar);
 			m_pCurWPlrMenu->addAction(m_pExportAnalysisToXML);
@@ -1709,6 +1714,7 @@ void MainFrame::createMiarexMenus()
 			m_pCurWPlrMenu_WOppCtxMenu->addAction(m_pShowAllWPlrOpps);
 			m_pCurWPlrMenu_WOppCtxMenu->addAction(m_pHideAllWPlrOpps);
 			m_pCurWPlrMenu_WOppCtxMenu->addAction(m_pDeleteAllWPlrOpps);
+			m_pCurWPlrMenu_WOppCtxMenu->addAction(m_pShowWPlrOppsOnly);
 			m_pCurWPlrMenu_WOppCtxMenu->addSeparator();
 			m_pCurWPlrMenu_WOppCtxMenu->addAction(m_pExportCurWPolar);
 			m_pCurWPlrMenu_WOppCtxMenu->addAction(m_pExportAnalysisToXML);
@@ -1805,6 +1811,7 @@ void MainFrame::createMiarexMenus()
 			m_pCurWPlrMenu_WCpCtxMenu->addAction(m_pShowAllWPlrOpps);
 			m_pCurWPlrMenu_WCpCtxMenu->addAction(m_pHideAllWPlrOpps);
 			m_pCurWPlrMenu_WCpCtxMenu->addAction(m_pDeleteAllWPlrOpps);
+			m_pCurWPlrMenu_WCpCtxMenu->addAction(m_pShowWPlrOppsOnly);
 			m_pCurWPlrMenu_WCpCtxMenu->addSeparator();
 			m_pCurWPlrMenu_WCpCtxMenu->addAction(m_pExportCurWPolar);
 			m_pCurWPlrMenu_WCpCtxMenu->addAction(m_pExportAnalysisToXML);
@@ -1886,6 +1893,7 @@ void MainFrame::createMiarexMenus()
 			m_pCurWPlrMenu_WTimeCtxMenu->addAction(m_pShowAllWPlrOpps);
 			m_pCurWPlrMenu_WTimeCtxMenu->addAction(m_pHideAllWPlrOpps);
 			m_pCurWPlrMenu_WTimeCtxMenu->addAction(m_pDeleteAllWPlrOpps);
+			m_pCurWPlrMenu_WTimeCtxMenu->addAction(m_pShowWPlrOppsOnly);
 			m_pCurWPlrMenu_WTimeCtxMenu->addSeparator();
 			m_pCurWPlrMenu_WTimeCtxMenu->addAction(m_pExportCurWPolar);
 			m_pCurWPlrMenu_WTimeCtxMenu->addAction(m_pExportAnalysisToXML);
@@ -1956,17 +1964,18 @@ void MainFrame::createMiarexMenus()
 		m_pWPlrCtxMenu->addSeparator();
         m_pCurWPlrMenu_WPlrCtxMenu = m_pWPlrCtxMenu->addMenu(tr("Current Polar"));
         {
-            m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pShowPolarProps);
-            m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pEditWPolarAct);
-            m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pEditWPolarObjectAct);
-            m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pEditWPolarPts);
-            m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pRrenameCurWPolar);
-            m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pDeleteCurWPolar);
-            m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pResetCurWPolar);
-            m_pCurWPlrMenu_WPlrCtxMenu->addSeparator();
-            m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pShowAllWPlrOpps);
-            m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pHideAllWPlrOpps);
-            m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pDeleteAllWPlrOpps);
+			m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pShowPolarProps);
+			m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pEditWPolarAct);
+			m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pEditWPolarObjectAct);
+			m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pEditWPolarPts);
+			m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pRrenameCurWPolar);
+			m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pDeleteCurWPolar);
+			m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pResetCurWPolar);
+			m_pCurWPlrMenu_WPlrCtxMenu->addSeparator();
+			m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pShowAllWPlrOpps);
+			m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pHideAllWPlrOpps);
+			m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pDeleteAllWPlrOpps);
+			m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pShowWPlrOppsOnly);
 			m_pCurWPlrMenu_WPlrCtxMenu->addSeparator();
 			m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pExportCurWPolar);
 			m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pExportAnalysisToXML);
@@ -2048,6 +2057,7 @@ void MainFrame::createMiarexMenus()
             m_pCurWPlrMenu_W3DCtxMenu->addAction(m_pShowAllWPlrOpps);
             m_pCurWPlrMenu_W3DCtxMenu->addAction(m_pHideAllWPlrOpps);
             m_pCurWPlrMenu_W3DCtxMenu->addAction(m_pDeleteAllWPlrOpps);
+			m_pCurWPlrMenu_W3DCtxMenu->addAction(m_pShowWPlrOppsOnly);
 			m_pCurWPlrMenu_W3DCtxMenu->addSeparator();
 			m_pCurWPlrMenu_W3DCtxMenu->addAction(m_pExportCurWPolar);
 			m_pCurWPlrMenu_W3DCtxMenu->addAction(m_pExportAnalysisToXML);
@@ -2131,6 +2141,7 @@ void MainFrame::createMiarexMenus()
             m_pCurWPlrMenu_W3DStabCtxMenu->addAction(m_pShowAllWPlrOpps);
             m_pCurWPlrMenu_W3DStabCtxMenu->addAction(m_pHideAllWPlrOpps);
             m_pCurWPlrMenu_W3DStabCtxMenu->addAction(m_pDeleteAllWPlrOpps);
+			m_pCurWPlrMenu_W3DStabCtxMenu->addAction(m_pShowWPlrOppsOnly);
 			m_pCurWPlrMenu_W3DStabCtxMenu->addSeparator();
 			m_pCurWPlrMenu_W3DStabCtxMenu->addAction(m_pExportCurWPolar);
 			m_pCurWPlrMenu_W3DStabCtxMenu->addAction(m_pExportAnalysisToXML);

@@ -203,6 +203,7 @@ private slots:
 	void onShowPlaneWPolarsOnly();
 	void onShowPlaneOpps();
 	void onShowVDrag();
+	void onShowWPolarOppsOnly();
 	void onShowXCmRef();
 	void onStabCurve();
 	void onStabilityDirection();
