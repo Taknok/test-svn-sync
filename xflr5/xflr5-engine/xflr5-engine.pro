@@ -40,7 +40,8 @@ SOURCES += objects/objects_global.cpp \
     objects/objects3d/Surface.cpp \
     objects/objects3d/Wing.cpp \
     objects/objects3d/WingOpp.cpp \
-    objects/objects3d/WPolar.cpp
+    objects/objects3d/WPolar.cpp \
+    analysis3d/matrix.cpp
 
 HEADERS += objects/engine_enums.h \
     objects/engine_params.h \
@@ -70,7 +71,8 @@ HEADERS += objects/engine_enums.h \
     objects/objects3d/Wing.h \
     objects/objects3d/WingOpp.h \
     objects/objects3d/WingSection.h \
-	objects/objects3d/WPolar.h
+	objects/objects3d/WPolar.h \
+    analysis3d/matrix.h
 
 macx {
     CONFIG(release, debug|release) {

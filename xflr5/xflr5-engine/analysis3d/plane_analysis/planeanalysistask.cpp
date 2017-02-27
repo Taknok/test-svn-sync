@@ -1405,8 +1405,13 @@ bool PlaneAnalysisTask::allocatePanelArrays(int &memsize)
 			if(m_pPlane->wing(iw))
 			{
 //				qDebug()<<"---------"<<iw<<"m_pPlane->wing(iw)->m_NStation"<<m_pPlane->wing(iw)->m_NStation;
+				//calculate chords to initialize Station count
+				m_pPlane->wing(iw)->computeChords();
+//qDebug()<<"chords "<<m_pPlane->wing(iw)->m_NStation;
+//qDebug()<<"count"<<m_pPlane->wing(iw)->NYPanels() ;
 				m_NWakeColumn += m_pPlane->wing(iw)->m_NStation;
 				//add 2 columns for tip and body connection
+
 				WakeNodeSize  += (m_pPlane->wing(iw)->m_NStation + 2) * (m_pWPolar->m_NXWakePanels + 1);
 			}
 		}
@@ -1416,6 +1421,7 @@ bool PlaneAnalysisTask::allocatePanelArrays(int &memsize)
 //qDebug()<<"NWakeColumn"<<m_NWakeColumn<<"m_pWPolar->m_NXWakePanels"<<m_pWPolar->m_NXWakePanels;
 //qDebug()<<"____";
 //WakeNodeSize +=10;
+//qDebug()<<WakeNodeSize;
 		m_WakeNode    = new Vector3d[WakeNodeSize];
 		m_RefWakeNode = new Vector3d[WakeNodeSize];
 		m_TempWakeNode = new Vector3d[WakeNodeSize];

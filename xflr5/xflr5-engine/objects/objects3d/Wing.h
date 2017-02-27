@@ -155,6 +155,8 @@ public:
 	int NWingSection() {return m_WingSection.count();}
 	int &NXPanels(const int &iSection);
 	int &NYPanels(const int &iSection);
+	int NYPanels();
+
 	XFLR5::enumPanelDistribution &XPanelDist(const int &iSection);
 	XFLR5::enumPanelDistribution &YPanelDist(const int &iSection);
 

@@ -11,7 +11,8 @@
 #include <QtDebug>
 #include <QThread>
 #include <QCoreApplication>
-#include <analysis3d_globals.h>
+//#include <analysis3d_globals.h>
+#include <matrix.h>
 #include <objects3d/Surface.h>
 #include "PanelAnalysis.h"
 
