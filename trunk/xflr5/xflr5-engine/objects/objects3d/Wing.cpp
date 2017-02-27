@@ -625,6 +625,30 @@ void Wing::computeBodyAxisInertia()
 }
 
 
+int Wing::NYPanels()
+{
+	double MinPanelSize;
+
+	if(s_MinPanelSize>0.0) MinPanelSize = s_MinPanelSize;
+	else                   MinPanelSize = 0.0;
+
+	int ny = 0;
+	for(int is=0; is<NWingSection()-1;is++)
+	{
+		double panelLength = fabs(YPosition(is)-YPosition(is+1));
+
+		if (panelLength < MinPanelSize ||  panelLength<planformSpan()/1000.0/2.0)
+		{
+		}
+		else
+		{
+			ny += m_WingSection.at(is)->m_NYPanels;
+		}
+	}
+	return ny*2;
+}
+
+
 /**
  * Constructs the surface objects based on the WingSection data.
  * The position and orientation are defined in the plane object
