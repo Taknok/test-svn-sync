@@ -5634,6 +5634,7 @@ void QMiarex::onShowPlaneWPolarsOnly()
 }
 
 
+/** Displays only the operating points of the currently selected WPolar */
 void QMiarex::onShowWPolarOppsOnly()
 {
 	if(!m_pCurPlane || !m_pCurWPolar) return;

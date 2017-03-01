@@ -974,8 +974,6 @@ bool LLTAnalysis::hasWarnings()
 
 /**
 *Interpolates the lift coefficient on the polar mesh, based on the geometrical position of a point between two sections on a wing.
-*@param m_poaPolar the pointer to the array of polars.
-*@param nVar the index of the variable to interpolate.
 *@param pFoil0 the pointer to the left foil  of the wing's section.
 *@param pFoil1 the pointer to the left foil  of the wing's section.
 *@param Re the Reynolds number at the point's position.
@@ -1017,7 +1015,6 @@ double LLTAnalysis::GetCl(Foil *pFoil0, Foil *pFoil1, double Re, double Alpha, d
 
 /**
 *Returns the zero-lift moment coefficient interpolated on the polar mesh, based on the geometrical position of a point between two sections on a wing.
-*@param m_poaPolar the pointer to the array of polars.
 *@param pFoil0 the pointer to the left foil  of the wing's section.
 *@param pFoil1 the pointer to the left foil  of the wing's section.
 *@param Re the Reynolds number at the point's position.
@@ -1070,9 +1067,9 @@ double LLTAnalysis::GetCm0(Foil *pFoil0, Foil *pFoil1, double Re, double Tau, bo
 	return Res;
 }
 
+
 /**
 *Interpolates the moment coefficient on the polar mesh, based on the geometrical position of a point between two sections on a wing.
-*@param m_poaPolar the pointer to the array of polars.
 *@param nVar the index of the variable to interpolate.
 *@param pFoil0 the pointer to the left foil  of the wing's section.
 *@param pFoil1 the pointer to the left foil  of the wing's section.
@@ -1113,7 +1110,6 @@ double LLTAnalysis::GetCm(Foil *pFoil0, Foil *pFoil1, double Re, double Alpha, d
 
 /**
 *Interpolates the drag coefficient on the polar mesh, based on the geometrical position of a point between two sections on a wing.
-*@param m_poaPolar the pointer to the array of polars.
 *@param nVar the index of the variable to interpolate.
 *@param pFoil0 the pointer to the left foil  of the wing's section.
 *@param pFoil1 the pointer to the left foil  of the wing's section.
@@ -1159,7 +1155,6 @@ double LLTAnalysis::GetCd(Foil *pFoil0, Foil *pFoil1, double Re, double Alpha, d
 
 /**
 *Interpolates the center of pressure's x-position coefficient on the polar mesh, based on the geometrical position of a point between two sections on a wing.
-*@param m_poaPolar the pointer to the array of polars.
 *@param pFoil0 the pointer to the left foil  of the wing's section.
 *@param pFoil1 the pointer to the left foil  of the wing's section.
 *@param Re the Reynolds number at the point's position.
@@ -1200,7 +1195,6 @@ double LLTAnalysis::GetXCp(Foil *pFoil0, Foil *pFoil1, double Re, double Alpha, 
 
 /**
 *Interpolates transition locations on the polar mesh, based on the geometrical position of a point between two sections on a wing.
-*@param m_poaPolar the pointer to the array of polars.
 *@param pFoil0 the pointer to the left foil  of the wing's section.
 *@param pFoil1 the pointer to the left foil  of the wing's section.
 *@param Re the Reynolds number at the point's position.
@@ -1254,7 +1248,6 @@ double LLTAnalysis::GetXTr(Foil *pFoil0, Foil *pFoil1, double Re, double Alpha, 
 
 /**
 *Interpolates the zero-lift angle on the polar mesh, based on the geometrical position of a point between two sections on a wing.
-*@param m_poaPolar the pointer to the array of polars.
 *@param pFoil0 the pointer to the left foil  of the wing's section.
 *@param pFoil1 the pointer to the left foil  of the wing's section.
 *@param Re the Reynolds number at the point's position.
@@ -1364,7 +1357,6 @@ double LLTAnalysis::GetZeroLiftAngle(Foil *pFoil0, Foil *pFoil1, double Re, doub
 * Returns the value of an aero coefficient, interpolated on a polar mesh, and based on the value of the Reynolds Number and of the aoa.
 * Proceeds by identifiying the two polars surronding Re, then interpolating both with the value of Alpha,
 * last by interpolating the requested variable between the values measured on the two polars.
-*@param m_poaPolar the pointer to the array of polars.
 *@param pFoil the pointer to the foil
 *@param Re the Reynolds number .
 *@param Alpha the angle of attack.
@@ -1630,7 +1622,6 @@ double LLTAnalysis::GetPlrPointFromAlpha(Foil *pFoil, double Re, double Alpha, i
 
 /**
 *Returns the coefficient of an approximate linearized Cl=f(aoa) curve, based on the geometrical position of a point between two sections on a wing.
-*@param m_poaPolar the pointer to the array of polars.
 *@param pFoil0 the pointer to the left foil  of the wing's section.
 *@param pFoil1 the pointer to the left foil  of the wing's section.
 *@param Re the Reynolds number at the point's position.
