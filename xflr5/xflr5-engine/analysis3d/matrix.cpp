@@ -1,10 +1,21 @@
 /****************************************************************************
 
-	Techwing Application
+	Matrix Functions 
+	Copyright (C) 2008-2017 Andre Deperrois adeperrois@xflr5.com
 
-	Copyright (C) Andre Deperrois adeperrois@xflr5.com
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	(at your option) any later version.
 
-	All rights reserved.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 *****************************************************************************/
 
@@ -124,42 +135,41 @@ void AV33(double *A, double *v, double *p)
 *@param n the size of the square matrix
 *@param B a pointer to the array of m RHS
 *@param m the number of RHS arrays to solve
-*@param pbCancel a pointer to the boolean variable which holds true if the operation shold be interrupted.
+*@param pbCancel a pointer to the boolean variable which holds true if the operation should be interrupted.
 *@return true if the problem was successfully solved.
 */
 bool Gauss(double *A, int n, double *B, int m, bool *pbCancel)
 {
 	int row, i, j, pivot_row, k;
 	double max, dum, *pa, *pA, *A_pivot_row;
+    
 	// for each variable find pivot row and perform forward substitution
 	pa = A;
-	for (row = 0; row < (n - 1); row++, pa += n)
+	for (row=0; row<n-1; row++, pa+=n)
 	{
-//		qApp->processEvents();
 		if(*pbCancel) return false;
-		//  find the pivot row
+		
+        //  find the pivot row
 		A_pivot_row = pa;
-		max = qAbs(*(pa + row));
+		max = fabs(*(pa + row));
 		pA = pa + n;
 		pivot_row = row;
-		for (i=row+1; i < n; pA+=n, i++)
+		for (i=row+1; i<n; pA+=n, i++)
 		{
-			if ((dum = qAbs(*(pA+row))) > max)
+			if ((dum = fabs(*(pA+row)))>max)
 			{
 				max = dum;
 				A_pivot_row = pA;
 				pivot_row = i;
 			}
 		}
-		if (max <= 0.0)
-		{
-			return false;                // the matrix A is singular
-		}
-			// and if it differs from the current row, interchange the two rows.
-
+        
+		if (max <= PRECISION) return false; // the matrix A is singular
+        
+		// and if it differs from the current row, interchange the two rows.
 		if (pivot_row != row)
 		{
-			for (i = row; i < n; i++)
+			for (i=row; i<n; i++)
 			{
 				dum = *(pa + i);
 				*(pa + i) = *(A_pivot_row + i);
@@ -174,7 +184,7 @@ bool Gauss(double *A, int n, double *B, int m, bool *pbCancel)
 		}
 
 		// Perform forward substitution
-		for (i = row+1; i<n; i++)
+		for (i= row+1; i<n; i++)
 		{
 			pA = A + i * n;
 			dum = - *(pA + row) / *(pa + row);
@@ -184,25 +194,22 @@ bool Gauss(double *A, int n, double *B, int m, bool *pbCancel)
 				B[i+k*n] += dum * B[row+k*n];
 		}
 	}
+    
 	// Perform backward substitution
-
-	pa = A + (n - 1) * n;
-	for (row = n - 1; row >= 0; pa -= n, row--)
+	pa = A + (n-1) * n;
+	for (row = n-1; row >= 0; pa -= n, row--)
 	{
-//		qApp->processEvents();
 		if(*pbCancel) return false;
 
-		if ( *(pa + row) == 0.0 )
-		{
-			return false;           // matrix is singular
-		}
+		if ( fabs(*(pa + row)) <PRECISION) return false;           // matrix is singular
+		
 		dum = 1.0 / *(pa + row);
-		for ( i = row + 1; i < n; i++) *(pa + i) *= dum;
+		for (i=row+1; i<n; i++) *(pa + i) *= dum;
 		for(k=0; k<m; k++) B[row+k*n] *= dum;
-		for ( i = 0, pA = A; i < row; pA += n, i++)
+		for (i=0, pA=A; i<row; pA+= n, i++)
 		{
 			dum = *(pA + row);
-			for ( j = row + 1; j < n; j++) *(pA + j) -= dum * *(pa + j);
+			for (j=row+1; j<n; j++) *(pA + j) -= dum * *(pa+j);
 			for(k=0; k<m; k++)
 				B[i+k*n] -= dum * B[row+k*n];
 		}
@@ -361,9 +368,9 @@ complex<double> cofactor44(complex<double> *aij, int &i, int &j)
 }
 
 /**
-*Returns the determinant of a complex 4x4 matrix
-*@param aij a pointer to a one-dimensional array holding the 16 complex double values of the matrix
-*@return the matrix's determinant
+* Returns the determinant of a complex 4x4 matrix
+* @param aij a pointer to a one-dimensional array holding the 16 complex double values of the matrix
+* @return the matrix's determinant
 */
 complex<double> det44(complex<double> *aij)
 {

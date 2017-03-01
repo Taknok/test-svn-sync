@@ -114,7 +114,6 @@ public slots:
 	void onCancel();
 
 private:
-	void *m_pParent;                            /**< A void pointer to the instance of the LLTAnalysisDlg class >*/
 
 	Plane * m_pPlane;                           /**< A pointer to the Plane object for which the main wing calculation shall be performed >*/
 	Wing * m_pWing;                             /**< A pointer to the Wing object for which the calculation shall be performed >*/
