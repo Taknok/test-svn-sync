@@ -1372,12 +1372,10 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
 			//float provision
 			for(int i=0; i<20; i++)
 			{
-				qDebug()<<f;
 				ar>>f;
 			}
 
 			//int provision
-			qDebug()<<m_PolarFormat;
 			ar >> n;
 			if (m_PolarFormat >= 1024)
 			{
@@ -1389,7 +1387,6 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
 			for(int i=1; i<20; i++)
 			{
 				ar>>n;
-				qDebug()<<n;
 			}
 		}
 	}
