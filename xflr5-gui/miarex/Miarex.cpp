@@ -2122,13 +2122,13 @@ void QMiarex::LLTAnalyze(double V0, double VMax, double VDelta, bool bSequence, 
 
 	m_pLLTDlg->iterGraph()->copySettings(&Settings::s_RefGraph);
 
-	m_pLLTDlg->deleteTask();
+//	m_pLLTDlg->deleteTask();
 
-	PlaneAnalysisTask *pTask = new PlaneAnalysisTask();
-	memcpy(pTask, &m_theTask, sizeof(PlaneAnalysisTask));
+//	PlaneAnalysisTask *pTask = new PlaneAnalysisTask();
+//	memcpy(pTask, &m_theTask, sizeof(PlaneAnalysisTask));
 
-	pTask->initializeTask(m_pCurPlane, m_pCurWPolar, V0, VMax, VDelta, bSequence);
-	m_pLLTDlg->setTask(pTask);
+	m_theTask.initializeTask(m_pCurPlane, m_pCurWPolar, V0, VMax, VDelta, bSequence);
+	m_pLLTDlg->setTask(&m_theTask);
 	m_pLLTDlg->initDialog();
 	m_pLLTDlg->show();
 
@@ -6533,13 +6533,14 @@ void QMiarex::panelAnalyze(double V0, double VMax, double VDelta, bool bSequence
 		pr += m_theTask.m_SurfaceList.at(i+1)->m_NElements;
 	}*/
 
-	m_pPanelAnalysisDlg->deleteTask();
+//	m_pPanelAnalysisDlg->deleteTask();
 
-	PlaneAnalysisTask *pTask = new PlaneAnalysisTask;
-	memcpy(pTask, &m_theTask, sizeof(PlaneAnalysisTask));
+//	PlaneAnalysisTask *pTask = new PlaneAnalysisTask;
+//	memcpy(pTask, &m_theTask, sizeof(PlaneAnalysisTask));
 
-	pTask->initializeTask(m_pCurPlane, m_pCurWPolar, V0, VMax, VDelta, bSequence);
-	m_pPanelAnalysisDlg->setTask(pTask);
+	m_theTask.initializeTask(m_pCurPlane, m_pCurWPolar, V0, VMax, VDelta, bSequence);
+	m_theTask.stitchSurfaces();
+	m_pPanelAnalysisDlg->setTask(&m_theTask);
 	m_pPanelAnalysisDlg->initDialog();
 	m_pPanelAnalysisDlg->show();
 	m_pPanelAnalysisDlg->analyze();
@@ -6550,6 +6551,7 @@ void QMiarex::panelAnalyze(double V0, double VMax, double VDelta, bool bSequence
 	setPlaneOpp(false, V0);
 	s_pMainFrame->updatePOppListBox();
 
+//	delete pTask;
 	emit projectModified();
 }
 

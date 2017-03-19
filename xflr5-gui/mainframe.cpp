@@ -3318,8 +3318,6 @@ bool MainFrame::loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFor
 	for (i=0;i<n; i++)
 	{
 		pFoil = new Foil();
-
-		pFoil = new Foil();
 		if (!serializeFoil(pFoil, ar, false))
 		{
 			delete pFoil;
@@ -5814,7 +5812,8 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 			if(!pWPolar->analysisMethod()==XFLR5::LLTMETHOD && ArchiveFormat <100003)	pWPolar->clearData();//former VLM version was flawed
 //			if(pWPolar->polarType()==STABILITYPOLAR)	pWPolar->bThinSurfaces() = true;
 
-			if(pWPolar->polarFormat()!=1020 || pWPolar->polarType()!=XFLR5::STABILITYPOLAR) Objects3D::addWPolar(pWPolar);
+			if(pWPolar->polarFormat()!=1020 || pWPolar->polarType()!=XFLR5::STABILITYPOLAR)
+				Objects3D::addWPolar(pWPolar);
 		}
 
 		//THEN WOPPS

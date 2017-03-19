@@ -65,6 +65,7 @@ PanelAnalysisDlg::PanelAnalysisDlg(QWidget *pParent) : QDialog(pParent)
  */
 PanelAnalysisDlg::~PanelAnalysisDlg()
 {
+	deleteTask();
 }
 
 
