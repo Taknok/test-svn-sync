@@ -2322,7 +2322,6 @@ void gl3dView::paintWing(int iWing, Wing *pWing)
 			default: glLineStipple (1, 0xFFFF); break;
 		}
 
-		qDebug()<<m_iWingOutlinePoints[iWing];
 		glDrawArrays(GL_LINES, 0, m_iWingOutlinePoints[iWing]);
 		m_vboWingOutline[iWing].release();
 
