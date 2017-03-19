@@ -48,7 +48,7 @@ void gl3dMiarexView::glRenderView()
 		if(pMiarex->m_pCurPOpp && pMiarex->m_pCurPOpp->polarType()==XFLR5::STABILITYPOLAR)
 		{
 			QString strong = QString(tr("Time =")+"%1s").arg(pMiarex->m_ModeTime,6,'f',3);
-			glRenderText(10, 15, strong);
+			glRenderText(10, 15, strong, Settings::s_TextColor);
 		}
 
 		modeMatrix.translate(pMiarex->m_ModeState[0], pMiarex->m_ModeState[1], pMiarex->m_ModeState[2]);

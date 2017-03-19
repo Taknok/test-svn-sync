@@ -404,6 +404,16 @@ void Section2dWidget::mouseMoveEvent(QMouseEvent *event)
 		int a = rect().center().x();
 		m_ptOffset.rx() = a + (int)((m_ptOffset.x()-a)*m_fScale/scale);
 	}
+	else if(event->modifiers().testFlag(Qt::AltModifier))
+	{
+		double zoomFactor=1.0;
+
+		if(point.y()-m_PointDown.y()<0) zoomFactor = 1./1.02;
+		else                            zoomFactor = 1.02;
+
+		zoomView(zoomFactor);
+		m_PointDown = point;
+	}
 	else if(!m_bZoomPlus)
 	{
 		//not zooming, check if mouse passes over control point and highlight
@@ -553,6 +563,15 @@ void Section2dWidget::wheelEvent (QWheelEvent *event)
 		if(!Settings::s_bReverseZoom) zoomFactor = 1.06;
 		else                          zoomFactor = 1./1.06;
 	}
+	zoomView(zoomFactor);
+
+	update();
+
+	event->accept();
+}
+
+void Section2dWidget::zoomView(double zoomFactor)
+{
 
 	m_ZoomRect.setBottomRight(m_ZoomRect.topLeft());
 	releaseZoom();
@@ -577,12 +596,7 @@ void Section2dWidget::wheelEvent (QWheelEvent *event)
 	m_ViewportTrans.rx() = (int)((m_ViewportTrans.x())*m_fScale /scale);
 	m_ViewportTrans.ry() = (int)((m_ViewportTrans.y())*m_fScale /scale);
 
-	update();
-
-	event->accept();
 }
-
-
 
 
 /**
