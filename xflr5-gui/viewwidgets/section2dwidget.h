@@ -89,6 +89,7 @@ private:
 	void drawYMinGrid(QPainter &painter, double scalex, double scaley, QPointF Offset);
 
 	void releaseZoom();
+	void zoomView(double zoomFactor);
 
 	void paintGrids(QPainter &painter);
 

@@ -53,9 +53,6 @@ bool Gauss(double *A, int n, double *B, int m, bool *pbCancel);
 bool Crout_LU_Decomposition_with_Pivoting(double *A, int pivot[], int n, bool *pbCancel, double TaskSize, double &Progress);
 bool Crout_LU_with_Pivoting_Solve(double *LU, double B[], int pivot[], double x[], int n, bool *pbCancel);
 
-bool Crout_LU_Decomposition_with_Pivoting(float *A, int pivot[], int n, bool *pbCancel, double TaskSize, double &Progress);
-bool Crout_LU_with_Pivoting_Solve(float *LU, double B[], int pivot[], double x[], int Size, bool *pbCancel);
-
 
 void TestEigen();
 void CharacteristicPol(double m[][4], double p[5]);
@@ -65,6 +62,10 @@ bool Eigenvector(double a[][4], complex<double> lambda, complex<double> *V);
 
 int Compare(complex<double> a, complex<double>b);
 void ComplexSort(complex<double>*array, int ub);
+
+
+void display_mat(double *mat, int rows, int cols);
+void display_vec(double *vec, int rows);
 
 
 
