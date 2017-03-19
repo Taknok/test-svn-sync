@@ -2904,6 +2904,16 @@ void PanelAnalysis::computeNDStabDerivatives()
 
 
 	//output control derivatives
+	bool bActive = false;
+	for(int c=0; c<m_NCtrls; c++)
+	{
+		if(fabs(m_pWPolar->m_ControlGain[c])>PRECISION)
+		{
+			bActive = true;
+			break;
+		}
+	}
+	if(!bActive) return;
 
 	str = QString("      Control derivatives \n");
 	traceLog(str);
@@ -3295,9 +3305,23 @@ void PanelAnalysis::buildStateMatrices()
 	strange ="\n";
 	traceLog(strange);
 
-	//build the control matrix
-//	for(i=0; i<m_pWPolar->m_nControls; i++)
+	bool bActive = false;
+	for(int c=0; c<m_NCtrls; c++)
 	{
+		if(fabs(m_pWPolar->m_ControlGain[c])>PRECISION)
+		{
+			bActive = true;
+			break;
+		}
+	}
+	if(!bActive)
+	{
+		m_BLong[0] = m_BLong[1] = m_BLong[2] = m_BLong[3] = 0.0;
+		m_BLat[0]  = m_BLat[1]  = m_BLat[2]  = m_BLat[3]  = 0.0;
+	}
+	else
+	{
+		//build the control matrix
 		// per radian
 		m_BLong[0] = Xde/m_Mass;
 		m_BLong[1] = Zde/m_Mass;
@@ -3308,28 +3332,29 @@ void PanelAnalysis::buildStateMatrices()
 		m_BLat[1] = Lde/Ipxx+Nde*Ipzx;
 		m_BLat[2] = Lde*Ipzx+Nde/Ipzz;
 		m_BLat[3] = 0.0;
+
+		strange = "      _____Control Matrices__________\n";
+		traceLog(strange);
+		strange = "       Longitudinal control matrix\n";
+		traceLog(strange);
+
+		strange = QString("      %1\n      %2\n      %3\n      %4\n\n")
+					.arg(m_BLong[0], 13, 'g', 7)
+					.arg(m_BLong[1], 13, 'g', 7)
+					.arg(m_BLong[2], 13, 'g', 7)
+					.arg(m_BLong[3], 13, 'g', 7);
+		traceLog(strange);
+		strange = "       Lateral control matrix\n";
+		traceLog(strange);
+
+		strange = QString("      %1\n      %2\n      %3\n      %4\n\n")
+					.arg(m_BLat[0], 13, 'g', 7)
+					.arg(m_BLat[1], 13, 'g', 7)
+					.arg(m_BLat[2], 13, 'g', 7)
+					.arg(m_BLat[3], 13, 'g', 7);
+		traceLog(strange);
 	}
 
-	strange = "      _____Control Matrices__________\n";
-	traceLog(strange);
-	strange = "       Longitudinal control matrix\n";
-	traceLog(strange);
-
-	strange = QString("      %1\n      %2\n      %3\n      %4\n\n")
-				.arg(m_BLong[0], 13, 'g', 7)
-				.arg(m_BLong[1], 13, 'g', 7)
-				.arg(m_BLong[2], 13, 'g', 7)
-				.arg(m_BLong[3], 13, 'g', 7);
-	traceLog(strange);
-	strange = "       Lateral control matrix\n";
-	traceLog(strange);
-
-	strange = QString("      %1\n      %2\n      %3\n      %4\n\n")
-				.arg(m_BLat[0], 13, 'g', 7)
-				.arg(m_BLat[1], 13, 'g', 7)
-				.arg(m_BLat[2], 13, 'g', 7)
-				.arg(m_BLat[3], 13, 'g', 7);
-	traceLog(strange);
 }
 
 
@@ -3829,6 +3854,7 @@ void PanelAnalysis::computeControlDerivatives()
 //	S   = m_pWPolar->m_WArea;
 //	mac = m_pPlane->mac();
 
+	Xde = Yde =  Zde = Lde = Mde = Nde= 0.0;
 
 	bool bActive = false;
 	for(int c=0; c<m_NCtrls; c++)
@@ -3858,7 +3884,6 @@ void PanelAnalysis::computeControlDerivatives()
 	DeltaAngle = 0.001;
 
 	pos = 0;
-	Xde = Yde =  Zde = Lde = Mde = Nde= 0.0;
 
 	NCtrls = 0;
 
