@@ -3941,7 +3941,7 @@ void MainFrame::onLoadFile()
 		m_iApp = App;
 
 		if(m_iApp==XFLR5::MIAREX) onMiarex();
-                else                      onXDirect();
+		else                      onXDirect();
 	}
 
 	if(App==0)

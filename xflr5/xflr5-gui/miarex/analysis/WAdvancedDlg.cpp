@@ -103,6 +103,9 @@ void WAdvancedDlg::setupLayout()
 			{
 				m_pctrlLength2 = new QLabel("");
 				m_pctrlCoreSize     = new DoubleEdit(.0001, 4);
+				m_pctrlCoreSize->setToolTip("The radius of the cylinder around the trailing vortices\n"
+											"under which the influence of the vortex is ignored, in order\n"
+											" to prevent numerical errors.");
 				QLabel *lab10 = new QLabel(tr("Core Size"));
 				lab10->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 				pCoreSizeLayout->addStretch(1);
@@ -128,8 +131,8 @@ void WAdvancedDlg::setupLayout()
 			QLabel *lab9 = new QLabel("%");
 			lab6->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 			lab7->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-			lab8->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-			lab9->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+			lab8->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+			lab9->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 			pVLMLayout->addWidget(lab6,1,1);
 			pVLMLayout->addWidget(lab7,2,1);
 			pVLMLayout->addWidget(m_pctrlVortexPos,1,2);

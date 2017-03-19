@@ -308,13 +308,17 @@ void GL3DScales::onCpScale()
 {
 	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
     QMiarex::s_bAutoCpScale = m_pctrlAutoCpScale->isChecked();
-    QMiarex::s_LegendMax = m_pctrlLegendMax->value();
-    QMiarex::s_LegendMin = m_pctrlLegendMin->value();
+	if(!QMiarex::s_bAutoCpScale)
+	{
+		QMiarex::s_LegendMax = m_pctrlLegendMax->value();
+		QMiarex::s_LegendMin = m_pctrlLegendMin->value();
+	}
     m_pctrlLegendMin->setEnabled(!QMiarex::s_bAutoCpScale);
     m_pctrlLegendMax->setEnabled(!QMiarex::s_bAutoCpScale);
 
 	pMiarex->m_bResetglPanelCp = true;
 	pMiarex->m_bResetglLegend = true;
+	pMiarex->m_bResetTextLegend = true;
 	pMiarex->updateView();
 }
 
@@ -400,6 +404,14 @@ void GL3DScales::onVelocityScale()
 void GL3DScales::showEvent(QShowEvent *event)
 {
 	initDialog();
+	event->accept();
+}
+
+
+void GL3DScales::hideEvent(QHideEvent *event)
+{
+	QMiarex * pMiarex = (QMiarex*)s_pMiarex;
+	pMiarex->setControls();
 	event->accept();
 }
 
