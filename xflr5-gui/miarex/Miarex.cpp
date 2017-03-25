@@ -4912,7 +4912,7 @@ void QMiarex::onHideAllWPolars()
 	{
 		pWPolar = (WPolar*)m_poaWPolar->at(i);
 		pWPolar->isVisible() = false;
-		if(pWPolar->polarType()==XFLR5::STABILITYPOLAR) pWPolar->points() = false;
+//		if(pWPolar->polarType()==XFLR5::STABILITYPOLAR) pWPolar->points() = false;
 	}
 
 	emit projectModified();

@@ -1,12 +1,25 @@
 /****************************************************************************
 
-	Techwing Application
+	PanelAnalysis Class
 
-	Copyright (C) Andre Deperrois adeperrois@xflr5.com
+	Copyright (C) 2008-2017 Andre Deperrois adeperrois@xflr5.com
 
-	All rights reserved.
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 *****************************************************************************/
+
 
 #include <QtDebug>
 #include <QThread>
@@ -1242,11 +1255,11 @@ void PanelAnalysis::computeFarField(double QInf, double Alpha0, double AlphaDelt
 		{
 			if(m_pWingList[iw])
 			{
-				WingForce.set(0.0, 0.0,		0.0);
+				WingForce.set(0.0, 0.0, 0.0);
 				panelTrefftz(m_pWingList[iw], QInf, alpha, Mu, Sigma, pos, WingForce, IDrag, m_pWPolar, m_pWakePanel, m_pWakeNode);
 
 				//save the results... will save another FF calculation when computing operating point
-				m_WingForce[q*MAXWINGS+iw] = WingForce;
+				m_WingForce[q*MAXWINGS+iw] = WingForce;  // N/q
 				m_WingIDrag[q*MAXWINGS+iw] = IDrag;
 
 				memcpy(m_Cl  + (q*MAXWINGS+iw)*m_NSpanStations, m_pWingList[iw]->m_Cl,  m_pWingList[iw]->m_NStation*sizeof(double));
@@ -1284,7 +1297,6 @@ void PanelAnalysis::computeBalanceSpeeds(double Alpha, int q)
 	{
 		if(m_pWingList[iw]) Force += m_WingForce[q*4+iw];
 	}
-
 	if (m_pWPolar->polarType()==XFLR5::FIXEDSPEEDPOLAR || m_pWPolar->polarType()==XFLR5::BETAPOLAR)
 	{
 		m_3DQInf[q] = m_pWPolar->m_QInfSpec;
@@ -1579,7 +1591,6 @@ void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
 		{
 			m_CP.set(0.0,0.0,0.0);
 		}
-
 
 
 		m_GCm *= 1.0 / m_pWPolar->referenceArea() /m_pWPolar->referenceChordLength();
@@ -2658,7 +2669,7 @@ bool PanelAnalysis::controlLoop()
 			// Solve for eigenvalues
 			if(!solveEigenvalues())
 			{
-				str = QString("      Unsuccessfull attempt to compute eigenvalues for Control=%1 - skipping.\n\n\n").arg(m_Ctrl,10,'f',3);
+				str = QString("      Unsuccessful attempt to compute eigenvalues for Control=%1 - skipping.\n\n\n").arg(m_Ctrl,10,'f',3);
 				traceLog(str);
 				s_bWarning = true;
 			}
@@ -3044,15 +3055,23 @@ void PanelAnalysis::forces(double *Mu, double *Sigma, double alpha, Vector3d Vin
 						C.x = m_pPlane->planformSpan() * 100.0;
 
 						getSpeedVector(C, Mu, Sigma, Wg, false);
+
+						// The trailing point sees both the upstream and downstream parts of the trailing vortices
+						// Hence it sees twice the downwash.
+						// So divide by 2 to account for this.
+						Wg *= 1.0/2.0;
+
 						Wg += Velocity; //total speed vector
 
+
 						//induced force
-						dF  = Wg * m_pPanel[p].Vortex;
-						dF *=  Mu[p];  // N/rho
+						dF  = Wg * m_pPanel[p].Vortex;    // Kutta-Joukowski theorem
+						dF *=  Mu[p];       // N/rho
 
 						Force += dF;        // N/rho
 						StripForce += dF;
 					}
+
 					//On-Body moment
 					PanelForce  = Velocity * m_pPanel[p].Vortex;
 					PanelForce *= Mu[p];                                 //Newtons/rho
@@ -3115,7 +3134,8 @@ void PanelAnalysis::forces(double *Mu, double *Sigma, double alpha, Vector3d Vin
 		}
 	}
 
-	if(m_pWPolar->bThinSurfaces()) Force -= WindDirection*Force.dot(WindDirection)/2.0;
+//	if(m_pWPolar->bThinSurfaces()) Force -= WindDirection*Force.dot(WindDirection)/2.0;
+
 
 	if(m_pWPolar->bViscous())
 	{
@@ -3384,8 +3404,6 @@ void PanelAnalysis::buildRotationMatrix()
  * Computes the trimmed condition for a stability analysis
  * Method :
  *   - For level flight, find the a.o.a. such that Cm=0
- *   - Reconstruct the right side circulations if the calculation was symmetric
- *   - Sort results i.a.w. panel numbering
  *   - Set trimmed parameters for level flight or other
 */
 bool PanelAnalysis::computeTrimmedConditions()
@@ -3455,7 +3473,7 @@ bool PanelAnalysis::computeTrimmedConditions()
 		r   = W cos(phi)              (yaw rate, positive for right turn) */
 
 	//so far we have a unit Vortex Strength
-	// find the speeds which will create a lift equal to the weight
+	// find the speed which will create a lift equal to the weight
 
 	traceLog("      Calculating speed to balance the weight...");
 
@@ -3473,14 +3491,12 @@ bool PanelAnalysis::computeTrimmedConditions()
 
 	u0 = 1.0;
 
-
 	//extra drag is useless when calculating lifting velocity
 	forces(m_Mu, m_Sigma, m_AlphaEq, Vector3d(0.0,0.0,0.0), m_RHS+50*m_MatSize, Force, Moment);
 
-
 	phi = m_pWPolar->m_BankAngle *PI/180.0;
 	Lift   = Force.dot(WindNormal);		//N/rho ; bank effect not included
-	VerticalCl = Lift*2.0/m_pWPolar->referenceArea() * cos(phi)/m_pWPolar->density();
+//	VerticalCl = Lift*2.0/m_pWPolar->referenceArea() * cos(phi)/m_pWPolar->density();
 	if(Lift<=0.0)
 	{
 		u0 = -100.0;
@@ -3494,7 +3510,8 @@ bool PanelAnalysis::computeTrimmedConditions()
 	{
 		double radius, W, p, q, r; //trimmed flight data
 
-		u0 =  sqrt( 2.0* 9.81 * m_Mass /m_pWPolar->density()/m_pWPolar->referenceArea() / VerticalCl );
+//		u0 =  sqrt( 2.0* 9.81 * m_Mass /m_pWPolar->density()/m_pWPolar->referenceArea() / VerticalCl );
+		u0 = sqrt(9.81 * m_Mass / Force.z);
 		strong = QString("VInf = %1 m/s").arg(u0,0,'f',5);
 		strong+= strange + "\n";
 		if(m_bTrace) traceLog(strong);
@@ -3549,20 +3566,17 @@ bool PanelAnalysis::computeTrimmedConditions()
 		m_RHS[52*m_MatSize+p] = VInf.z;
 	}
 
-	// Force0 and Moment0 are the reference values for forward differentiation
+	// Force0 and Moment0 are the reference values for differentiation
 	// Stability derivatives are inviscid
 	forces(m_Mu, m_Sigma, m_AlphaEq, VInf, m_RHS+50*m_MatSize, Force0, Moment0);
+
 	return true;
 }
 
 
-/**
-* Calculates the stability derivatives.
-* @todo implement automatic differentiation. Considerable task.
- The stability derivatives are estimated by forward difference at U=(U0,0,0).
- The reference condition has been saved during the calculation of the trimmed condition.
-*/
-void PanelAnalysis::computeStabilityDerivatives()
+
+
+void PanelAnalysis::computeStabilityDerivativesOld()
 {
 	Vector3d V0, Force, Moment, CGM, is, js, ks, Vi, Vj, Vk, Ris, Rjs, Rks, WindDirection, WindNormal;
 	int p;
@@ -3597,8 +3611,8 @@ void PanelAnalysis::computeStabilityDerivatives()
 	Vk = V0 - ks * deltaspeed; //a plane movement downwards (Z_stability>0) is a positive increase of V in geometry axes
 
 
-    strong = "         Creating the RHS translation vectors\n";
-    traceLog(strong);
+	strong = "         Creating the RHS translation vectors\n";
+	traceLog(strong);
 
 	for (p=0; p<m_MatSize; p++)
 	{
@@ -3625,8 +3639,8 @@ void PanelAnalysis::computeStabilityDerivatives()
 	// RHS for unit rotation vectors around Stability axis
 	// stability axis origin is CoG
 
-    strong = "         Creating the RHS rotation vectors\n";
-    traceLog(strong);
+	strong = "         Creating the RHS rotation vectors\n";
+	traceLog(strong);
 
 	for (p=0; p<m_MatSize; p++)
 	{
@@ -3678,8 +3692,8 @@ void PanelAnalysis::computeStabilityDerivatives()
 
 	// The LU matrix is unchanged, so back-substitute for unit vortex circulations
 
-    strong = "         LU solving for RHS\n";
-    traceLog(strong);
+	strong = "         LU solving for RHS\n";
+	traceLog(strong);
 
 	Crout_LU_with_Pivoting_Solve(m_aij, m_uRHS, m_Index, m_RHS,             Size, &s_bCancel);
 	Crout_LU_with_Pivoting_Solve(m_aij, m_vRHS, m_Index, m_RHS+  m_MatSize, Size, &s_bCancel);
@@ -3696,8 +3710,8 @@ void PanelAnalysis::computeStabilityDerivatives()
 	memcpy(m_rRHS, m_RHS+5*m_MatSize, m_MatSize*sizeof(double));
 
 
-    strong = "         Calculating forces and derivatives\n";
-    traceLog(strong);
+	strong = "         Calculating forces and derivatives\n";
+	traceLog(strong);
 
 	// Compute stability and control derivatives
 	Xu = Xw = Zu = Zw = Mu = Mw = Mq = Zwp = Mwp = 0.0;
@@ -3717,19 +3731,19 @@ void PanelAnalysis::computeStabilityDerivatives()
 	alpha = atan2(Vj.z, Vj.x)*180.0/PI;// =m_AlphaEq....
 	forces(m_vRHS, m_Sigma+m_MatSize, alpha, V0, m_RHS+53*m_MatSize, Force, Moment);
 	Yv = (Force - Force0).dot(js)   /deltaspeed;
-//	Lv = (Moment.dot(WindDirection) - Moment0.dot(is)) /deltaspeed;
-	Nv = (Moment.dot(WindNormal)    - Moment0.dot(ks)) /deltaspeed;
 	Lv = (Moment - Moment0).dot(is) /deltaspeed;
 	Nv = (Moment - Moment0).dot(ks) /deltaspeed;
 
 	// z-derivatives________________________
 	alpha = atan2(Vk.z, Vk.x)* 180.0/PI;
+//	alpha = m_AlphaEq;
 	forces(m_wRHS, m_Sigma+2*m_MatSize, alpha, V0, m_RHS+56*m_MatSize, Force, Moment);
 	Xw = (Force - Force0).dot(is)   /deltaspeed;
 	Zw = (Force - Force0).dot(ks)   /deltaspeed;
 	Mw = (Moment - Moment0).dot(js) /deltaspeed;
 
 	m_Progress +=1;
+
 
 	// p-derivatives
 	forces(m_pRHS, m_Sigma+3*m_MatSize, m_AlphaEq, V0, m_RHS+59*m_MatSize, Force, Moment);
@@ -3748,6 +3762,326 @@ void PanelAnalysis::computeStabilityDerivatives()
 	Yr = (Force-Force0).dot(js)   /deltarotation;
 	Lr = (Moment-Moment0).dot(is) /deltarotation;
 	Nr = (Moment-Moment0).dot(ks) /deltarotation;
+
+	m_Progress +=1;
+
+	//________________________________________________
+	// 2nd ORDER STABILITY DERIVATIVES
+	// Zwp & Mwp ... ?
+	// M. Drela's answer to the question posted on Yahoo Groups:
+
+	/*	May I take this opportunity to ask you about the stability derivatives w.r.t. alpha dot ?
+	Are they ignored in AVL and if so, is it a safe assumption ?
+
+	Yes, the _alphadot derivatives are ignored, for the simple reason that there's no way to do it
+	in an algorithmic way for a general configuration. The usual estimates in Etkin or Nelson assume
+	 a "typical" tailed airplane configuration, with a small tail and a well-defined tail arm.
+	These estimates won't work for other configurations like canard, tandem, or flying wing.
+
+	Normally, only the Cm_alphadot derivative is significant, and slightly augments the pitch-damping
+	derivative Cm_q. Leaving it out therefore underpredicts pitch damping slightly, so this is a
+	conservative approximation. And pitch damping is not a major concern in any case.
+	Simple pitch stability is more important, and that's not affected by alphadot.
+
+	All this is for a conventional configuration. Not sure what the impact is on the pitch damping of flying wings. */
+}
+/**
+* Calculates the stability derivatives.
+* @todo implement automatic differentiation. Considerable task.
+ The stability derivatives are estimated by forward difference at U=(U0,0,0).
+ The reference condition has been saved during the calculation of the trimmed condition.
+*/
+void PanelAnalysis::computeStabilityDerivatives()
+{
+	Vector3d Forcem, Momentm, Vim, Vjm, Vkm, Rism, Rjsm, Rksm;
+	Vector3d Forcep, Momentp, Vip, Vjp, Vkp, Risp, Rjsp, Rksp;
+	Vector3d V0, is, js, ks, CGM, WindDirection, WindNormal;
+	int p;
+	double alpha, sina, cosa, deltaspeed, deltarotation;
+	QString strong;
+	// Compute stability and control derivatives
+	Xu = Xw = Zu = Zw = Mu = Mw = Mq = Zwp = Mwp = 0.0;
+	Yv = Yp = Yr = Lv = Lp = Lr = Nv = Np  = Nr  = 0.0;
+
+	int Size= m_MatSize;
+//	if(m_b3DSymetric) Size = m_SymSize;
+
+	strong = "      Calculating the stability derivatives\n";
+	traceLog(strong);
+
+	deltaspeed    = 0.001;         //  m/s   for forward difference estimation
+	deltarotation = 0.001;        //  rad/s for forward difference estimation
+
+	// Define the stability axes
+	cosa = cos(m_AlphaEq*PI/180);
+	sina = sin(m_AlphaEq*PI/180);
+	WindDirection.set(cosa, 0.0, sina);
+	WindNormal.set(-sina, 0.0, cosa);
+
+	is.set(-cosa, 0.0, -sina);
+	js.set(  0.0, 1.0,   0.0);
+	ks.set( sina, 0.0, -cosa);
+
+	V0 = is * (-u0); //is the steady state velocity vector, if no sideslip
+
+	//______________________________________________________________________________
+	// RHS for unit speed vectors
+	// The change in wind velocity is opposite to the change in plane velocity
+	Vim = V0 - is * deltaspeed; //a positive increase in axial speed is a positive increase in wind speed
+	Vjm = V0 - js * deltaspeed; //a plane movement to the right is a wind flow to the left, i.e. negative y
+	Vkm = V0 - ks * deltaspeed; //a plane movement downwards (Z_stability>0) is a positive increase of V in geometry axes
+	Vip = V0 + is * deltaspeed; //a positive increase in axial speed is a positive increase in wind speed
+	Vjp = V0 + js * deltaspeed; //a plane movement to the right is a wind flow to the left, i.e. negative y
+	Vkp = V0 + ks * deltaspeed; //a plane movement downwards (Z_stability>0) is a positive increase of V in geometry axes
+
+	strong = "         Creating the RHS translation vectors\n";
+	traceLog(strong);
+
+	for (p=0; p<m_MatSize; p++)
+	{
+		//re-use existing memory to define the velocity field
+		m_RHS[50*m_MatSize+p] = Vip.x;
+		m_RHS[51*m_MatSize+p] = Vip.y;
+		m_RHS[52*m_MatSize+p] = Vip.z;
+		m_RHS[53*m_MatSize+p] = Vjp.x;
+		m_RHS[54*m_MatSize+p] = Vjp.y;
+		m_RHS[55*m_MatSize+p] = Vjp.z;
+		m_RHS[56*m_MatSize+p] = Vkp.x;
+		m_RHS[57*m_MatSize+p] = Vkp.y;
+		m_RHS[58*m_MatSize+p] = Vkp.z;
+
+		m_RHS[60*m_MatSize+p] = Vim.x;
+		m_RHS[61*m_MatSize+p] = Vim.y;
+		m_RHS[62*m_MatSize+p] = Vim.z;
+		m_RHS[63*m_MatSize+p] = Vjm.x;
+		m_RHS[64*m_MatSize+p] = Vjm.y;
+		m_RHS[65*m_MatSize+p] = Vjm.z;
+		m_RHS[66*m_MatSize+p] = Vkm.x;
+		m_RHS[67*m_MatSize+p] = Vkm.y;
+		m_RHS[68*m_MatSize+p] = Vkm.z;
+
+		if(!m_pWPolar->bThinSurfaces())
+		{
+			m_Sigma[p]             = -1.0/4.0/PI* (  m_RHS[50*m_MatSize+p] *m_pPanel[p].Normal.x
+												   + m_RHS[51*m_MatSize+p] *m_pPanel[p].Normal.y
+												   + m_RHS[52*m_MatSize+p] *m_pPanel[p].Normal.z);
+			m_Sigma[p+ m_MatSize]  = -1.0/4.0/PI* (  m_RHS[53*m_MatSize+p] *m_pPanel[p].Normal.x
+												   + m_RHS[54*m_MatSize+p] *m_pPanel[p].Normal.y
+												   + m_RHS[55*m_MatSize+p] *m_pPanel[p].Normal.z);
+			m_Sigma[p+2*m_MatSize] = -1.0/4.0/PI* (  m_RHS[56*m_MatSize+p] *m_pPanel[p].Normal.x
+												   + m_RHS[57*m_MatSize+p] *m_pPanel[p].Normal.y
+												   + m_RHS[58*m_MatSize+p] *m_pPanel[p].Normal.z);
+			m_Sigma[p+3*m_MatSize] = -1.0/4.0/PI* (  m_RHS[60*m_MatSize+p] *m_pPanel[p].Normal.x
+												   + m_RHS[61*m_MatSize+p] *m_pPanel[p].Normal.y
+												   + m_RHS[62*m_MatSize+p] *m_pPanel[p].Normal.z);
+			m_Sigma[p+4*m_MatSize] = -1.0/4.0/PI* (  m_RHS[63*m_MatSize+p] *m_pPanel[p].Normal.x
+												   + m_RHS[64*m_MatSize+p] *m_pPanel[p].Normal.y
+												   + m_RHS[65*m_MatSize+p] *m_pPanel[p].Normal.z);
+			m_Sigma[p+5*m_MatSize] = -1.0/4.0/PI* (  m_RHS[66*m_MatSize+p] *m_pPanel[p].Normal.x
+												   + m_RHS[67*m_MatSize+p] *m_pPanel[p].Normal.y
+												   + m_RHS[68*m_MatSize+p] *m_pPanel[p].Normal.z);
+		}
+	}
+
+	createRHS(m_uRHS, Vip);
+	createRHS(m_vRHS, Vjp);
+	createRHS(m_wRHS, Vkp);
+	createRHS(m_pRHS, Vim);
+	createRHS(m_qRHS, Vjm);
+	createRHS(m_rRHS, Vkm);
+
+	strong = "         LU solving for RHS - longitudinal\n";
+	traceLog(strong);
+
+	Crout_LU_with_Pivoting_Solve(m_aij, m_uRHS, m_Index, m_RHS+0*m_MatSize, Size, &s_bCancel);
+	Crout_LU_with_Pivoting_Solve(m_aij, m_vRHS, m_Index, m_RHS+1*m_MatSize, Size, &s_bCancel);
+	Crout_LU_with_Pivoting_Solve(m_aij, m_wRHS, m_Index, m_RHS+2*m_MatSize, Size, &s_bCancel);
+	Crout_LU_with_Pivoting_Solve(m_aij, m_pRHS, m_Index, m_RHS+3*m_MatSize, Size, &s_bCancel);
+	Crout_LU_with_Pivoting_Solve(m_aij, m_qRHS, m_Index, m_RHS+4*m_MatSize, Size, &s_bCancel);
+	Crout_LU_with_Pivoting_Solve(m_aij, m_rRHS, m_Index, m_RHS+5*m_MatSize, Size, &s_bCancel);
+
+	memcpy(m_uRHS, m_RHS+0*m_MatSize, m_MatSize*sizeof(double));
+	memcpy(m_vRHS, m_RHS+1*m_MatSize, m_MatSize*sizeof(double));
+	memcpy(m_wRHS, m_RHS+2*m_MatSize, m_MatSize*sizeof(double));
+	memcpy(m_pRHS, m_RHS+3*m_MatSize, m_MatSize*sizeof(double));
+	memcpy(m_qRHS, m_RHS+4*m_MatSize, m_MatSize*sizeof(double));
+	memcpy(m_rRHS, m_RHS+5*m_MatSize, m_MatSize*sizeof(double));
+
+	//________________________________________________
+	// 1st ORDER STABILITY DERIVATIVES
+	// x-derivatives________________________
+
+	strong = "         Calculating forces and derivatives - lateral\n";
+	traceLog(strong);
+
+	alpha = atan2(Vim.z, Vim.x) * 180.0/PI;// =m_AlphaEq....
+	alpha = m_AlphaEq;
+
+	forces(m_uRHS, m_Sigma+0*m_MatSize, alpha, Vim, m_RHS+50*m_MatSize, Forcep, Momentp);
+	forces(m_pRHS, m_Sigma+3*m_MatSize, alpha, Vim, m_RHS+60*m_MatSize, Forcem, Momentm);
+	Xu = (Forcem - Forcep).dot(is)   /deltaspeed/2.0;
+	Zu = (Forcem - Forcep).dot(ks)   /deltaspeed/2.0;
+	Mu = (Momentm- Momentp).dot(js)  /deltaspeed/2.0;
+
+	// y-derivatives________________________
+	alpha = atan2(Vjm.z, Vjm.x)*180.0/PI;// =m_AlphaEq....
+	alpha = m_AlphaEq;
+	forces(m_vRHS, m_Sigma+1*m_MatSize, alpha, V0, m_RHS+53*m_MatSize, Forcep, Momentp);
+	forces(m_qRHS, m_Sigma+4*m_MatSize, alpha, V0, m_RHS+63*m_MatSize, Forcem, Momentm);
+	Yv = (Forcem - Forcep).dot(js)   /deltaspeed/2.0;
+	Lv = (Momentm - Momentp).dot(is) /deltaspeed/2.0;
+	Nv = (Momentm - Momentp).dot(ks) /deltaspeed/2.0;
+
+	// z-derivatives________________________
+	alpha = atan2(Vkm.z, Vkm.x)* 180.0/PI;
+	alpha = m_AlphaEq;
+	forces(m_wRHS, m_Sigma+2*m_MatSize, alpha, V0, m_RHS+56*m_MatSize, Forcep, Momentp);
+	forces(m_rRHS, m_Sigma+5*m_MatSize, alpha, V0, m_RHS+66*m_MatSize, Forcem, Momentm);
+	Xw = (Forcem - Forcep).dot(is)   /deltaspeed/2.0;
+	Zw = (Forcem - Forcep).dot(ks)   /deltaspeed/2.0;
+	Mw = (Momentm - Momentp).dot(js) /deltaspeed/2.0;
+
+	m_Progress +=1;
+
+	//______________________________________________________________________________
+	// RHS for unit rotation vectors around Stability axis
+	// stability axis origin is CoG
+
+	strong = "         Creating the RHS rotation vectors\n";
+	traceLog(strong);
+
+	for (p=0; p<m_MatSize; p++)
+	{
+		//re-use existing memory to define the velocity field
+		if(m_pPanel[p].m_Pos==MIDSURFACE) CGM = m_pPanel[p].VortexPos - m_CoG;
+		else                              CGM = m_pPanel[p].CollPt    - m_CoG;
+
+		// a rotation of the plane about a vector is the opposite of a rotation of the freestream about this vector
+		Risp = is*CGM * (+deltarotation) + V0;
+		Rjsp = js*CGM * (+deltarotation) + V0;
+		Rksp = ks*CGM * (+deltarotation) + V0;
+		Rism = is*CGM * (-deltarotation) + V0;
+		Rjsm = js*CGM * (-deltarotation) + V0;
+		Rksm = ks*CGM * (-deltarotation) + V0;
+
+		m_RHS[50*m_MatSize+p] = Risp.x;
+		m_RHS[51*m_MatSize+p] = Risp.y;
+		m_RHS[52*m_MatSize+p] = Risp.z;
+		m_RHS[53*m_MatSize+p] = Rjsp.x;
+		m_RHS[54*m_MatSize+p] = Rjsp.y;
+		m_RHS[55*m_MatSize+p] = Rjsp.z;
+		m_RHS[56*m_MatSize+p] = Rksp.x;
+		m_RHS[57*m_MatSize+p] = Rksp.y;
+		m_RHS[58*m_MatSize+p] = Rksp.z;
+
+		m_RHS[60*m_MatSize+p] = Rism.x;
+		m_RHS[61*m_MatSize+p] = Rism.y;
+		m_RHS[62*m_MatSize+p] = Rism.z;
+		m_RHS[63*m_MatSize+p] = Rjsm.x;
+		m_RHS[64*m_MatSize+p] = Rjsm.y;
+		m_RHS[65*m_MatSize+p] = Rjsm.z;
+		m_RHS[66*m_MatSize+p] = Rksm.x;
+		m_RHS[67*m_MatSize+p] = Rksm.y;
+		m_RHS[68*m_MatSize+p] = Rksm.z;
+
+		if(!m_pWPolar->bThinSurfaces())
+		{
+			m_Sigma[p+0*m_MatSize] = -1.0/4.0/PI* (  m_RHS[50*m_MatSize+p]*m_pPanel[p].Normal.x
+												   + m_RHS[51*m_MatSize+p]*m_pPanel[p].Normal.y
+												   + m_RHS[52*m_MatSize+p]*m_pPanel[p].Normal.z);
+			m_Sigma[p+1*m_MatSize] = -1.0/4.0/PI* (  m_RHS[53*m_MatSize+p]*m_pPanel[p].Normal.x
+												   + m_RHS[54*m_MatSize+p]*m_pPanel[p].Normal.y
+												   + m_RHS[55*m_MatSize+p]*m_pPanel[p].Normal.z);
+			m_Sigma[p+2*m_MatSize] = -1.0/4.0/PI* (  m_RHS[56*m_MatSize+p]*m_pPanel[p].Normal.x
+												   + m_RHS[57*m_MatSize+p]*m_pPanel[p].Normal.y
+												   + m_RHS[58*m_MatSize+p]*m_pPanel[p].Normal.z);
+
+			m_Sigma[p+3*m_MatSize] = -1.0/4.0/PI* (  m_RHS[60*m_MatSize+p]*m_pPanel[p].Normal.x
+												   + m_RHS[61*m_MatSize+p]*m_pPanel[p].Normal.y
+												   + m_RHS[62*m_MatSize+p]*m_pPanel[p].Normal.z);
+			m_Sigma[p+4*m_MatSize] = -1.0/4.0/PI* (  m_RHS[63*m_MatSize+p]*m_pPanel[p].Normal.x
+												   + m_RHS[64*m_MatSize+p]*m_pPanel[p].Normal.y
+												   + m_RHS[65*m_MatSize+p]*m_pPanel[p].Normal.z);
+			m_Sigma[p+5*m_MatSize] = -1.0/4.0/PI* (  m_RHS[66*m_MatSize+p]*m_pPanel[p].Normal.x
+												   + m_RHS[67*m_MatSize+p]*m_pPanel[p].Normal.y
+												   + m_RHS[68*m_MatSize+p]*m_pPanel[p].Normal.z);
+		}
+	}
+
+	createRHS(m_uRHS, WindDirection, m_RHS+50*m_MatSize);
+	createRHS(m_vRHS, WindDirection, m_RHS+53*m_MatSize);
+	createRHS(m_wRHS, WindDirection, m_RHS+56*m_MatSize);
+
+	createRHS(m_pRHS, WindDirection, m_RHS+60*m_MatSize);
+	createRHS(m_qRHS, WindDirection, m_RHS+63*m_MatSize);
+	createRHS(m_rRHS, WindDirection, m_RHS+66*m_MatSize);
+
+	if(!m_pWPolar->bThinSurfaces())
+	{
+		// Compute the wake's contribution
+		// We ignore the perturbations and consider only the potential of the steady state flow
+		// Clearly an approximation which is also implicit in the VLM formulation
+		createWakeContribution(m_uWake,  WindDirection);// re-use m_uWake memory, which is re-calculated anyway at the next control iteration
+
+		//add wake contribution to all 6 RHS
+		for(p=0; p<m_MatSize; p++)
+		{
+			m_uRHS[p]+= m_uWake[p]*u0;
+			m_vRHS[p]+= m_uWake[p]*u0;
+			m_wRHS[p]+= m_uWake[p]*u0;
+
+			m_pRHS[p]+= m_uWake[p]*u0;
+			m_qRHS[p]+= m_uWake[p]*u0;
+			m_rRHS[p]+= m_uWake[p]*u0;
+		}
+	}
+
+	// The LU matrix is unchanged, so back-substitute for unit vortex circulations
+
+	strong = "         LU solving for RHS - lateral\n";
+	traceLog(strong);
+
+	Crout_LU_with_Pivoting_Solve(m_aij, m_uRHS, m_Index, m_RHS+0*m_MatSize, Size, &s_bCancel);
+	Crout_LU_with_Pivoting_Solve(m_aij, m_vRHS, m_Index, m_RHS+1*m_MatSize, Size, &s_bCancel);
+	Crout_LU_with_Pivoting_Solve(m_aij, m_wRHS, m_Index, m_RHS+2*m_MatSize, Size, &s_bCancel);
+	Crout_LU_with_Pivoting_Solve(m_aij, m_pRHS, m_Index, m_RHS+3*m_MatSize, Size, &s_bCancel);
+	Crout_LU_with_Pivoting_Solve(m_aij, m_qRHS, m_Index, m_RHS+4*m_MatSize, Size, &s_bCancel);
+	Crout_LU_with_Pivoting_Solve(m_aij, m_rRHS, m_Index, m_RHS+5*m_MatSize, Size, &s_bCancel);
+
+	memcpy(m_uRHS, m_RHS+0*m_MatSize, m_MatSize*sizeof(double));
+	memcpy(m_vRHS, m_RHS+1*m_MatSize, m_MatSize*sizeof(double));
+	memcpy(m_wRHS, m_RHS+2*m_MatSize, m_MatSize*sizeof(double));
+	memcpy(m_pRHS, m_RHS+3*m_MatSize, m_MatSize*sizeof(double));
+	memcpy(m_qRHS, m_RHS+4*m_MatSize, m_MatSize*sizeof(double));
+	memcpy(m_rRHS, m_RHS+5*m_MatSize, m_MatSize*sizeof(double));
+
+
+	//________________________________________________
+	// 1st ORDER STABILITY DERIVATIVES
+
+	strong = "         Calculating forces and derivatives - lateral\n";
+	traceLog(strong);
+
+	// p-derivatives
+	forces(m_uRHS, m_Sigma+0*m_MatSize, m_AlphaEq, V0, m_RHS+50*m_MatSize, Forcep, Momentp);
+	forces(m_pRHS, m_Sigma+3*m_MatSize, m_AlphaEq, V0, m_RHS+60*m_MatSize, Forcem, Momentm);
+	Yp = (Forcem-Forcep).dot(js)   /deltarotation/2.0;
+	Lp = (Momentm-Momentp).dot(is) /deltarotation/2.0;
+	Np = (Momentm-Momentp).dot(ks) /deltarotation/2.0;
+
+	// q-derivatives
+	forces(m_vRHS, m_Sigma+1*m_MatSize, m_AlphaEq, V0, m_RHS+53*m_MatSize, Forcep, Momentp);
+	forces(m_qRHS, m_Sigma+4*m_MatSize, m_AlphaEq, V0, m_RHS+63*m_MatSize, Forcem, Momentm);
+	Xq = (Forcem-Forcep).dot(is)   /deltarotation/2.0;
+	Zq = (Forcem-Forcep).dot(ks)   /deltarotation/2.0;
+	Mq = (Momentm-Momentp).dot(js) /deltarotation/2.0;
+
+	// r-derivatives
+	forces(m_wRHS, m_Sigma+2*m_MatSize, m_AlphaEq, V0, m_RHS+56*m_MatSize, Forcep, Momentp);
+	forces(m_rRHS, m_Sigma+5*m_MatSize, m_AlphaEq, V0, m_RHS+66*m_MatSize, Forcem, Momentm);
+	Yr = (Forcem-Forcep).dot(js)   /deltarotation/2.0;
+	Lr = (Momentm-Momentp).dot(is) /deltarotation/2.0;
+	Nr = (Momentm-Momentp).dot(ks) /deltarotation/2.0;
 
 	m_Progress +=1;
 
@@ -3933,7 +4267,7 @@ void PanelAnalysis::computeControlDerivatives()
 	}
 
 	//flap tilt
-	// TODO : exclude fin flaps, or add them to StabPolarDlg
+	/** @todo : exclude fin flaps, or add them to StabPolarDlg*/
 	for (j=0; j<m_ppSurface->size(); j++)
 	{
 		if(m_ppSurface->at(j)->m_bTEFlap)
@@ -5030,7 +5364,8 @@ void PanelAnalysis::onCancel()
 * Calculates the induced lift and drag from the vortices or wake panels strength using a farfield method
 * Downwash is evaluated at a distance 100 times the span downstream (i.e. infinite)
 */
-void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double *Mu, double *Sigma, int pos, Vector3d &Force, double &WingIDrag,
+void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double *Mu, double *Sigma, int pos,
+								 Vector3d &Force, double &WingIDrag,
 								 WPolar *pWPolar, Panel *pWakePanel, Vector3d *pWakeNode)
 {
 	int nw, iTA, iTB;
@@ -5067,10 +5402,6 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
 	if (pWPolar->bThinSurfaces()) coef = 1;
 
 	int NSurfaces = pWing->m_Surface.size();
-//	if(s_bVLMSymetric)
-//	{
-//		if(!m_bIsFin || (m_bIsFin && m_bDoubleFin))		NSurfaces=m_NSurfaces/2;
-//	}
 
 	p=0;
 	m=0;
