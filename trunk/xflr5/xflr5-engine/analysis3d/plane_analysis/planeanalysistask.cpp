@@ -1,12 +1,25 @@
 /****************************************************************************
 
-	Techwing Application
+	PlaneAnalysisTask Class
 
-	Copyright (C) Andre Deperrois adeperrois@xflr5.com
+	Copyright (C) 2008-2017 Andre Deperrois adeperrois@xflr5.com
 
-	All rights reserved.
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 *****************************************************************************/
+
 
 #include <QtDebug>
 
@@ -278,7 +291,6 @@ WPolar* PlaneAnalysisTask::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar)
  *         elevator
  *         fin
  *         body
- * Each panel gets the index of its symmetric, if any, else this index is set to -1
  *
  * A copy of the panels is saved to the MemPanel and MemNode arrays
  *@return true if successful, false if the panels could not be properly created ot if no object is active
@@ -294,7 +306,7 @@ bool PlaneAnalysisTask::initializePanels()
 	int PanelArraySize = calculateMatSize();
 	int memsize = 0;
 
-	if(PanelArraySize>m_MaxPanelSize)
+	//	if(PanelArraySize>m_MaxPanelSize)
 	{
 //		Trace(QString("PlaneAnalysisTask::Requesting additional memory for %1 panels").arg(PanelArraySize));
 
@@ -368,7 +380,8 @@ bool PlaneAnalysisTask::initializePanels()
 
 		}
 	}
-
+//qDebug()<<"created total"<<m_nWakeNodes<<"wake nodes";
+//qDebug()<<"";
 /*	qDebug()<<"m_NWakeColumn"<<m_NWakeColumn;
 	qDebug()<<"Wake Panel Size"<<m_WakeSize;
 	qDebug()<<"Wake Node Size"<<m_nWakeNodes;*/
@@ -406,7 +419,7 @@ bool PlaneAnalysisTask::initializePanels()
 
 
 /**
- * Creates the body panels for the active CBody object
+ * Creates the body panels for the active Body object
  * The panels are created in the following order
  *    - for the port side  first, then for the starboard side
  *    - from bottom to top
@@ -1412,9 +1425,12 @@ bool PlaneAnalysisTask::allocatePanelArrays(int &memsize)
 				m_NWakeColumn += m_pPlane->wing(iw)->m_NStation;
 				//add 2 columns for tip and body connection
 
-				WakeNodeSize  += (m_pPlane->wing(iw)->m_NStation + 2) * (m_pWPolar->m_NXWakePanels + 1);
+//				WakeNodeSize  += (m_pPlane->wing(iw)->m_NStation + 2) * (m_pWPolar->m_NXWakePanels + 1);
+				for(int j=0; j<m_pPlane->wing(iw)->m_Surface.size(); j++)
+					WakeNodeSize += m_pPlane->wing(iw)->m_Surface.at(j)->NYPanels()+1;
 			}
 		}
+		WakeNodeSize *=  (m_pWPolar->m_NXWakePanels + 1);
 		int WakePanelSize = m_NWakeColumn * m_pWPolar->m_NXWakePanels;
 //qDebug()<<"WakePanelSize"<<WakePanelSize;
 //qDebug()<<"WakeNodeSize"<<WakeNodeSize;
@@ -1425,6 +1441,7 @@ bool PlaneAnalysisTask::allocatePanelArrays(int &memsize)
 		m_WakeNode    = new Vector3d[WakeNodeSize];
 		m_RefWakeNode = new Vector3d[WakeNodeSize];
 		m_TempWakeNode = new Vector3d[WakeNodeSize];
+//qDebug()<<"Allocated"<<WakeNodeSize;
 
 		m_Panel        = new Panel[m_MaxPanelSize];
 		m_MemPanel     = new Panel[m_MaxPanelSize];
