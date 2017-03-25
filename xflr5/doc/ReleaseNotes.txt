@@ -18,6 +18,9 @@
 xflr5 v6.33
 	- corrected the calculation of the downwash and induced angle for the VLM method. Was twice what it should be. No impact on other results.
 	- corrected the calculation of the damping ratio; was formerly lambda.real()/omega_damped instead of lambda.real()/omega_natural
+	- changed the calculation method of Stability derivatives from forward differences to centered differences.
+	  The only noticable difference is for Xw which changes significantly. However this derivative seems to have low influence
+	  on the eigenvalues, and the flight modes should be almost unchanged.
 	- modified the construction of wings with dihedral and tilt - minor effect on results
 	- improved the wing sweep scaling
 	- reorganized the library structure; the XFoil library is now limited to the XFoil class
