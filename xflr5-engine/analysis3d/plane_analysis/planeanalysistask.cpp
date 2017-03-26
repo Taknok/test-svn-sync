@@ -156,7 +156,6 @@ Plane * PlaneAnalysisTask::setPlaneObject(Plane *pPlane)
 	{
 		if(pPlane->wing(iw))
 		{
-//			if(!pPlane && iw==0)  pPlane->wing(iw)->createSurfaces(Vector3d(0,0,0), 0.0, 0.0);
 			if(iw<3)         pPlane->wing(iw)->createSurfaces(pPlane->WingLE(iw),   0.0, pPlane->WingTiltAngle(iw));
 			else if(iw==3)   pPlane->wing(iw)->createSurfaces(pPlane->WingLE(iw), -90.0, pPlane->WingTiltAngle(iw));
 

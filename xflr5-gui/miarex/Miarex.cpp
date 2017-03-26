@@ -929,7 +929,7 @@ void QMiarex::createWOppCurves()
 				{
 					double phi = id*PI/2/ 50.0;
 					x = sin(phi) * b2;
-					y = maxlift * pow(cos(phi), m_BellCurveExp);
+					y = maxlift * pow(1.0-x*x/b2/b2, m_BellCurveExp);
 					pCurve->appendPoint(x*Units::mtoUnit(),y);
 				}
 			}
@@ -4647,36 +4647,36 @@ void QMiarex::onExporttoAVL()
 	if(!strong.length()) out << tr("Project");
 	else out << strong;
 	out << "\n";
-	out << "0.0                          | Mach\n";
-	if(m_pCurPlane->m_Wing[0].m_bSymetric) out << ("0     0     0.0              | iYsym  iZsym  Zsym\n");
-	else                                   out << ("0     0     0.0              | iYsym  iZsym  Zsym\n");
-	out << ("\n");
+	out << "0.0                                 | Mach\n";
+	if(m_pCurPlane->m_Wing[0].m_bSymetric) out << ("0     0     0.0                     | iYsym  iZsym  Zsym\n");
+	else                                   out << ("0     0     0.0                     | iYsym  iZsym  Zsym\n");
 
-	strong = QString("%1   %2   %3  | Sref   Cref   Bref\n")
-				  .arg(m_pCurPlane->planformArea()*Units::mtoUnit()*Units::mtoUnit(), 8, 'f', 3)
-				  .arg(m_pCurPlane->m_Wing[0].m_MAChord*Units::mtoUnit(),       8, 'f', 3)
-				  .arg(m_pCurPlane->planformSpan()*Units::mtoUnit(),  8, 'f', 3);
+	strong = QString("%1   %2   %3   | Sref   Cref   Bref\n")
+				  .arg(m_pCurPlane->planformArea()*Units::mtoUnit()*Units::mtoUnit(),9,'f',5)
+				  .arg(m_pCurPlane->m_Wing[0].m_MAChord*Units::mtoUnit(),9,'f',5)
+				  .arg(m_pCurPlane->planformSpan()*Units::mtoUnit(), 9,'f',5);
 	out << strong;
 
 	if(m_pCurPlane)
-		strong = QString("%1  %2  %3          | Xref   Yref   Zref\n")
-						   .arg(m_pCurPlane->CoG().x*Units::mtoUnit(),8,'f',3)
-						   .arg(m_pCurPlane->CoG().y*Units::mtoUnit(),8,'f',3)
-						   .arg(m_pCurPlane->CoG().z*Units::mtoUnit(),8,'f',3);
+		strong = QString("%1   %2   %3   | Xref   Yref   Zref\n")
+						   .arg(m_pCurPlane->CoG().x*Units::mtoUnit(),9,'f',5)
+						   .arg(m_pCurPlane->CoG().y*Units::mtoUnit(),9,'f',5)
+						   .arg(m_pCurPlane->CoG().z*Units::mtoUnit(),9,'f',5);
 
 	out << strong;
 
-	out << (" 0.00                        | CDp  (optional)\n");
+	out << (" 0.00                               | CDp  (optional)\n");
 
 	out << ("\n\n\n");
 
-	int index = rand();
+	int index = (double)qrand()/(double)RAND_MAX * 10000;
 
 	exportAVLWing(m_pCurPlane->wing(0), out, index, 0.0, m_pCurPlane->WingTiltAngle(0));
 
 	for(int iw=1; iw<MAXWINGS; iw++)
 	{
-		exportAVLWing(m_pCurPlane->wing(iw), out, index, 0.0, m_pCurPlane->WingTiltAngle(0));
+		if(m_pCurPlane->wing(iw))
+			exportAVLWing(m_pCurPlane->wing(iw), out, index+iw, 0.0, m_pCurPlane->WingTiltAngle(iw));
 	}
 	XFile.close();
 }
@@ -4692,6 +4692,172 @@ void QMiarex::onExporttoAVL()
  * @param Thetay the rotation about the y-axis to be applied to the geometry
  */
 void QMiarex::exportAVLWing(Wing *pWing, QTextStream &out, int index, double y, double Thetay)
+{
+	if(!pWing) return;
+	int j;
+	QString strong, str;
+
+	out << ("#========TODO: REMOVE OR MODIFY MANUALLY DUPLICATE SECTIONS IN SURFACE DEFINITION=========\n");
+	out << ("SURFACE                      | (keyword)\n");
+	out << (pWing->wingName());
+	out << ("\n");
+	out << ("#Nchord    Cspace   [ Nspan Sspace ]\n");
+
+	strong = QString("%1        %2\n").arg(pWing->NXPanels(0)).arg(1.0,3,'f',1);
+	out << (strong);
+
+	out << ("\n");
+	out << ("INDEX                        | (keyword)\n");
+	strong = QString("%1                         | Lsurf\n").arg(index,4);
+	out << (strong);
+
+	if(!pWing->isFin())
+	{
+		out << ("\n");
+		out << ("YDUPLICATE\n");
+		out << ("0.0\n");
+	}
+	else if(pWing->isDoubleFin())
+	{
+		out << ("\n");
+		out << ("YDUPLICATE\n");
+		strong = QString("%1\n").arg(y,9,'f',4);
+		out << (strong);
+	}
+
+	out << ("\n");
+	out << ("SCALE\n");
+	out << ("1.0  1.0  1.0\n");
+
+	out << ("\n");
+	out << ("TRANSLATE\n");
+	out << ("0.0  0.0  0.0\n");
+
+	out << ("\n");
+	out << ("ANGLE\n");
+	strong = QString("%1                         | dAinc\n").arg(Thetay,8,'f',3);
+	out << (strong);
+
+	out << ("\n\n");
+
+	//write only right wing surfaces since we have provided YDUPLICATE
+	Surface aSurface;
+	int iFlap = 1;
+
+	int NSurfaces = pWing->m_Surface.size();
+
+	int startIndex = (pWing->isFin() ? 0 : (int)(NSurfaces/2));
+
+	//write the first section
+
+
+	for(j=startIndex; j<NSurfaces; j++)
+	{
+		out << ("#____PANEL ")<<j-startIndex+1<<"_______\n";
+		aSurface.copy(pWing->m_Surface.at(j));
+
+		//Remove the twist, since AVL processes it as a mod of the angle of attack thru the dAInc command
+		aSurface.m_TwistA = aSurface.m_TwistB = 0.0;
+		aSurface.setTwist();
+		double mean_angle = 0.0;
+		if(aSurface.m_bTEFlap)
+		{
+			if(aSurface.m_pFoilA && aSurface.m_pFoilB)
+					mean_angle = (aSurface.m_pFoilA->m_TEFlapAngle + aSurface.m_pFoilB->m_TEFlapAngle)/2.0;
+		}
+
+		out << ("#______________\nSECTION                                                     |  (keyword)\n");
+
+		strong = QString("%1 %2 %3 %4 %5  %6  %7   | Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]\n")
+				 .arg(aSurface.m_LA.x       *Units::mtoUnit(),9,'f',4)
+				 .arg(aSurface.m_LA.y       *Units::mtoUnit(),9,'f',4)
+				 .arg(aSurface.m_LA.z       *Units::mtoUnit(),9,'f',4)
+				 .arg(aSurface.chord(0.0)   *Units::mtoUnit(),9,'f',4)
+				 .arg(pWing->m_Surface.at(j)->m_TwistA,7,'f',3)
+				 .arg(aSurface.m_NYPanels,3)
+				 .arg(aSurface.m_YDistType,3);
+		out << (strong);
+		out << ("\n");
+		out << ("AFIL 0.0 1.0\n");
+		if(aSurface.m_pFoilA)  out << (aSurface.m_pFoilA->foilName() +".dat\n");
+		out << ("\n");
+		if(aSurface.m_bTEFlap)
+		{
+			out << ("CONTROL                                                     |  (keyword)\n");
+			str = QString("_Flap_%1  ").arg(iFlap);
+			strong = pWing->wingName();
+			strong.replace(" ", "_");
+			strong += str;
+
+			if(fabs(mean_angle)>PRECISION) str = QString("%1  ").arg(1.0/mean_angle,5,'f',2);
+			else                           str = "1.0   ";
+			strong += str;
+
+			str = QString("%1  %2  %3  %4  -1.0  ")
+				  .arg(aSurface.m_pFoilA->m_TEXHinge/100.0,5,'f',3)
+				  .arg(aSurface.m_HingeVector.x,10,'f',4)
+				  .arg(aSurface.m_HingeVector.y,10,'f',4)
+				  .arg(aSurface.m_HingeVector.z,10,'f',4);
+			strong +=str + "| name, gain,  Xhinge,  XYZhvec,  SgnDup\n";
+			out << (strong);
+		}
+
+		//write the end section of the surface
+		out << ("\n#______________\nSECTION                                                     |  (keyword)\n");
+
+		strong = QString("%1 %2 %3 %4 %5  %6  %7   | Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]\n")
+				 .arg(aSurface.m_LB.x       *Units::mtoUnit(),9,'f',4)
+				 .arg(aSurface.m_LB.y       *Units::mtoUnit(),9,'f',4)
+				 .arg(aSurface.m_LB.z       *Units::mtoUnit(),9,'f',4)
+				 .arg(aSurface.chord(1.0)   *Units::mtoUnit(),9,'f',4)
+				 .arg(pWing->m_Surface.at(j)->m_TwistB,7,'f',3)
+				 .arg(aSurface.m_NYPanels,3)
+				 .arg(aSurface.m_YDistType,3);
+		out << (strong);
+		out << ("\n");
+		out << ("AFIL 0.0 1.0\n");
+		if(aSurface.m_pFoilB)  out << (aSurface.m_pFoilB->foilName() +".dat\n");
+		out << ("\n");
+
+		if(aSurface.m_bTEFlap)
+		{
+			out << ("CONTROL                                                     |  (keyword)\n");
+			str = QString("_Flap_%1  ").arg(iFlap);
+			strong = pWing->wingName();
+			strong.replace(" ", "_");
+			strong += str;
+
+			if(fabs(mean_angle)>PRECISION) str = QString("%1  ").arg(1.0/mean_angle,5,'f',2);
+			else                           str = "1.0   ";
+			strong += str;
+			str = QString("%1  %2  %3  %4  -1.0  ")
+				  .arg(aSurface.m_pFoilB->m_TEXHinge/100.0,5,'f',3)
+				  .arg(aSurface.m_HingeVector.x,10,'f',4)
+				  .arg(aSurface.m_HingeVector.y,10,'f',4)
+				  .arg(aSurface.m_HingeVector.z,10,'f',4);
+			strong +=str + "| name, gain,  Xhinge,  XYZhvec,  SgnDup\n";
+			out << (strong);
+			out << ("\n");
+
+			iFlap++;
+		}
+		out << ("\n");
+
+	}
+
+	out << ("\n\n");
+}
+
+
+/**
+ * Export the wing geometry to a text file readable by AVL.
+ * @param pWing a pointer to the instance of the wing which is to be exported
+ * @param out the instance of the QTextStream to which the output will be directed
+ * @param index a reference number used by AVL to idnitfy the wing
+ * @param y the y value of the translation to be applied to the wing's geometry
+ * @param Thetay the rotation about the y-axis to be applied to the geometry
+ */
+void QMiarex::exportAVLWing_Old(Wing *pWing, QTextStream &out, int index, double y, double Thetay)
 {
 	if(!pWing) return;
 	int j;
@@ -4853,7 +5019,6 @@ void QMiarex::exportAVLWing(Wing *pWing, QTextStream &out, int index, double y, 
 
 	out << ("\n\n");
 }
-
 
 
 /**
@@ -5756,7 +5921,7 @@ void QMiarex::onShowTargetCurve()
 	m_BellCurveExp = dlg.m_BellCurveExp;
 	m_bMaxCL = dlg.m_bMaxCL;
 	m_bShowEllipticCurve = dlg.m_bShowEllipticCurve;
-	m_bShowBellCurve = dlg.m_bShowBellCurve;
+	m_bShowBellCurve     = dlg.m_bShowBellCurve;
 
 	s_bResetCurves = true;
 	updateView();
