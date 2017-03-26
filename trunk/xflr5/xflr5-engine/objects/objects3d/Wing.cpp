@@ -657,7 +657,7 @@ int Wing::NYPanels()
  * A is the surface's left side, B is the right side
  * @param T the translation to be appied to the wing geometry
  * @param XTilt  the rotation in degrees around the x-axis; used in the case of fins
- * @param YTilt  the rotation in degrees arouns the y-axi; used for wing or elevator tilt
+ * @param YTilt  the rotation in degrees arouns the y-axis; used for wing or elevator tilt
  */
 void Wing::createSurfaces(Vector3d const &T, double XTilt, double YTilt)
 {
@@ -1774,12 +1774,10 @@ void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double *Gam
 			if(pWPolar->bViscous()) DragVector = WindDirection * m_PCd[m] * m_StripArea[m];   // N/q
 			else                    DragVector.set(0.0,0.0,0.0);
 
-
 			// global moments, in N.m/q
 			DragMoment =  LeverArmC4CoG * DragVector;
 
 			m_GRm += GeomMoment.dot(WindDirection);
-
 
 			m_VYm += DragMoment.dot(WindNormal);
 
