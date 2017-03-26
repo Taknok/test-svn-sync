@@ -236,6 +236,7 @@ public:
 	void createStabTimeCurves();
 	void createStabRungeKuttaCurves();
 	void drawTextLegend();
+	void exportAVLWing_Old(Wing *pWing, QTextStream &out, int index, double y, double Thetay);
 	void exportAVLWing(Wing *pWing, QTextStream &out, int index, double y, double Thetay);
 	void exportToTextStream(WPolar *pWPolar, QTextStream &out, XFLR5::enumTextFileType FileType, bool bDataOnly=false);
 	void fillComboBoxes(bool bEnable = true);
