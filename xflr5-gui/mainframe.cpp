@@ -1908,11 +1908,18 @@ void MainFrame::createMiarexMenus()
         }
         //m_pWTimeCtxMenu->addMenu(m_pCurWOppMenu);
 		m_pWTimeCtxMenu->addSeparator();
-		m_pWTimeCtxMenu->addAction(m_pShowCurWOppOnly);
+		QMenu *pCurGraphTimeCtxMenu = m_pWTimeCtxMenu->addMenu(tr("Current Graph"));
+		{
+			pCurGraphTimeCtxMenu->addAction(m_pResetCurGraphScales);
+			pCurGraphTimeCtxMenu->addAction(m_pCurGraphDlgAct);
+			pCurGraphTimeCtxMenu->addAction(m_pExportCurGraphAct);
+		}
+		m_pWTimeCtxMenu->addSeparator();
+/*		m_pWTimeCtxMenu->addAction(m_pShowCurWOppOnly);
 		m_pWTimeCtxMenu->addAction(m_pShowAllWOpps);
 		m_pWTimeCtxMenu->addAction(m_pHideAllWOpps);
 		m_pWTimeCtxMenu->addAction(m_pDeleteAllWOpps);
-		m_pWTimeCtxMenu->addSeparator();
+		m_pWTimeCtxMenu->addSeparator();*/
 		m_pWTimeCtxMenu->addAction(m_pViewLogFile);
 		m_pWTimeCtxMenu->addAction(m_pSaveViewToImageFileAct);
 	}

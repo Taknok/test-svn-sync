@@ -15,7 +15,12 @@
 *******************************************************************************
 
 
-xflr5 v6.33
+xflr5 v6.34 April xxx, 2017
+	- Forced the default renderer to be OpenGL and not Angle on Windows desktops
+	- Added an option to export time graphs to text files
+
+
+xflr5 v6.33 March 26th, 2017
 	- corrected the calculation of the downwash and induced angle for the VLM method. Was twice what it should be. No impact on other results.
 	- corrected the calculation of the damping ratio; was formerly lambda.real()/omega_damped instead of lambda.real()/omega_natural
 	- changed the calculation method of Stability derivatives from forward differences to centered differences.
