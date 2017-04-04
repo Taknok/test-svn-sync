@@ -802,9 +802,9 @@ void BatchDlg::onAnalyze()
 	else         m_pXFoilTask->setSequence(false, m_ClMin, m_ClMax, m_ClInc);
 
 	m_pXFoilTask->setReRange(m_ReMin, m_ReMax, m_ReInc);
-	m_pXFoilTask->initializeTask(QXDirect::curFoil(), QXDirect::curPolar(),
+/*	m_pXFoilTask->initializeTask(QXDirect::curFoil(), QXDirect::curPolar(),
 								 QXDirect::s_bStoreOpp, QXDirect::s_bViscous, m_bInitBL, m_bFromZero);
-
+*/
 
 	//prepare button state for analysis
 	m_pctrlAnalyze->setText(tr("Cancel"));
