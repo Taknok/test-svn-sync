@@ -35,7 +35,7 @@ ArcBall::ArcBall(void)
 
 	ax = ay = az = 0.0;
 
-	ab_quat[0]	= -0.65987748f;
+/*	ab_quat[0]	= -0.65987748f;
 	ab_quat[1]	=  0.38526487f;
 	ab_quat[2]	= -0.64508355f;
 	ab_quat[3]	=  0.0f;
@@ -50,7 +50,16 @@ ArcBall::ArcBall(void)
 	ab_quat[12]	=  0.0f;
 	ab_quat[13]	=  0.0f;
 	ab_quat[14]	=  0.0f;
-	ab_quat[15]	=  1.0f;
+	ab_quat[15]	=  1.0f;*/
+
+	Quaternion qti;
+	double yaw = -PI;
+	double pitch = 0.0;
+	double roll = -2.0*PI/3.0;
+	quat(roll, pitch, yaw, qti);
+
+	Quaternion qtyaw(-30.0, Vector3d(0.0,0.0,1.0));
+	setQuat(qti*qtyaw);
 
 	memcpy(ab_last, ab_quat, 16*sizeof(float));
 	memcpy(ab_next, ab_quat, 16*sizeof(float));
@@ -140,7 +149,7 @@ void ArcBall::move(double ax, double ay)
 		p = (ab_out*d.x)-(ab_up*d.y);
 		p.normalize();
 		p *= sina2;
-		Quat.Set(cosa2, p.x, p.y, p.z);
+		Quat.set(cosa2, p.x, p.y, p.z);
 
 		quatToMatrix(ab_next, Quat);
 		quatNext(ab_quat,ab_last,ab_next);
@@ -169,7 +178,7 @@ void ArcBall::move(double ax, double ay)
 		p = (ab_start*ab_curr);
 		p.normalize();
 		p *=sina2;
-		Quat.Set(cosa2, p.x, p.y, p.z);
+		Quat.set(cosa2, p.x, p.y, p.z);
 
 		quatToMatrix(ab_next, Quat);
 
@@ -200,7 +209,7 @@ void ArcBall::quatCopy(float* dst, float* src)
 
 
 /** convert the quaternion into a rotation matrix*/
-void ArcBall::quatToMatrix(float* q, Quaternion Qt)
+void ArcBall::quatToMatrix(float* mat, Quaternion Qt)
 {
 	x2 = Qt.qx*Qt.qx;
 	y2 = Qt.qy*Qt.qy;
@@ -212,24 +221,45 @@ void ArcBall::quatToMatrix(float* q, Quaternion Qt)
 	wy = Qt.a*Qt.qy;
 	wz = Qt.a*Qt.qz;
 
-	q[0] = (float)(1 - 2*y2 - 2*z2);
-	q[1] = (float)(2*xy + 2*wz);
-	q[2] = (float)(2*xz - 2*wy);
+	mat[0] = (float)(1 - 2*y2 - 2*z2);
+	mat[1] = (float)(2*xy + 2*wz);
+	mat[2] = (float)(2*xz - 2*wy);
 
-	q[4] = (float)(2*xy - 2*wz);
-	q[5] = (float)(1 - 2*x2 - 2*z2);
-	q[6] = (float)(2*yz + 2*wx);
+	mat[4] = (float)(2*xy - 2*wz);
+	mat[5] = (float)(1 - 2*x2 - 2*z2);
+	mat[6] = (float)(2*yz + 2*wx);
 
-	q[8] = (float)(2*xz + 2*wy);
-	q[9] = (float)(2*yz - 2*wx);
-	q[10]= (float)(1 - 2*x2 - 2*y2);
+	mat[8] = (float)(2*xz + 2*wy);
+	mat[9] = (float)(2*yz - 2*wx);
+	mat[10]= (float)(1 - 2*x2 - 2*y2);
 
-	q[11] = 0.0;
-	q[12] = 0.0;
-	q[13] = 0.0;
-	q[14] = 0.0;
-	q[15] = 1.0;
+	mat[11] = 0.0;
+	mat[12] = 0.0;
+	mat[13] = 0.0;
+	mat[14] = 0.0;
+	mat[15] = 1.0;
 }
+
+
+void ArcBall::matToQuat(Quaternion &qt, float *mat)
+{
+	qt.a = sqrt(1.0 + mat[0] + mat[5] + mat[10]) / 2.0;
+	double w4 = (4.0 * qt.a);
+	qt.qx = (mat[8] - mat[6]) / w4;
+	qt.qy = (mat[2] - mat[8]) / w4;
+	qt.qz = (mat[4] - mat[1]) / w4;
+}
+
+
+void ArcBall::matToQuat(Quaternion &qt, double *mat)
+{
+	qt.a = sqrt(1.0 + mat[0] + mat[5] + mat[10]) / 2.0;
+	double w4 = (4.0 * qt.a);
+	qt.qx = (mat[8] - mat[6]) / w4;
+	qt.qy = (mat[2] - mat[8]) / w4;
+	qt.qz = (mat[4] - mat[1]) / w4;
+}
+
 
 /** multiply two rotation matrices*/
 void ArcBall::quatNext(float* dest, float* left, float* right)
@@ -278,6 +308,25 @@ void ArcBall::rotateCrossPoint()
 	p = aa * ab_curr;
 	p.normalize();
 }
+
+
+void ArcBall::quat(double roll, double pitch, double yaw, Quaternion &qt)
+{
+	double c1 = cos(yaw/2.0);
+	double s1 = sin(yaw/2.0);
+	double c2 = cos(pitch/2.0);
+	double s2 = sin(pitch/2.0);
+	double c3 = cos(roll/2.0);
+	double s3 = sin(roll/2.0);
+	double c1c2 = c1*c2;
+	double s1s2 = s1*s2;
+	double w =c1c2*c3 - s1s2*s3;
+	double x =c1c2*s3 + s1s2*c3;
+	double y =s1*c2*c3 + c1*s2*s3;
+	double z =c1*s2*c3 - s1*c2*s3;
+	qt.set(w,x,y,z);
+}
+
 
 
 void ArcBall::setQuat(Quaternion Qt)
