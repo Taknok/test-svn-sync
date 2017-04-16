@@ -33,7 +33,7 @@
 #include "gui_params.h"
 #include "gui_enums.h"
 #include <miarex/view/GLLightDlg.h>
-#include <viewwidgets/ArcBall.h>
+#include <viewwidgets/glWidgets/ArcBall.h>
 #include <objects3d/PointMass.h>
 #include <QTimer>
 

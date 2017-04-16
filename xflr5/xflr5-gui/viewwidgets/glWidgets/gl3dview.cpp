@@ -234,27 +234,22 @@ void gl3dView::onClipPlane(int pos)
 
 void gl3dView::on3DIso()
 {
+	Quaternion qti;
+
 	memcpy(ab_old, m_ArcBall.ab_quat, 16*sizeof(float));
-	ab_new[0]	= -0.65987748f;
-	ab_new[1]	=  0.38526487f;
-	ab_new[2]	= -0.64508355f;
-	ab_new[3]	=  0.0f;
-	ab_new[4]	= -0.75137258f;
-	ab_new[5]	= -0.33720365f;
-	ab_new[6]	=  0.56721509f;
-	ab_new[7]	=  0.0f;
-	ab_new[8]	=  0.000f;
-	ab_new[9]	=  0.85899049f;
-	ab_new[10]	=  0.51199043f;
-	ab_new[11]	=  0.0f;
-	ab_new[12]	=  0.0f;
-	ab_new[13]	=  0.0f;
-	ab_new[14]	=  0.0f;
-	ab_new[15]	=  1.0f;
+
+	double yaw = -PI;
+	double pitch = 0.0;
+	double roll = -2.0*PI/3.0;
+	m_ArcBall.quat(roll, pitch, yaw, qti);
+
+	Quaternion qtyaw(-30.0, Vector3d(0.0,0.0,1.0));
+	m_ArcBall.setQuat(qti*qtyaw);
+
+	memcpy(ab_new, m_ArcBall.ab_quat, 16*sizeof(float));
 
 	startRotationTimer();
 	emit(viewModified());
-
 }
 
 
@@ -267,6 +262,7 @@ void gl3dView::on3DFlip()
 	memset(ab_flip, 0, 16*sizeof(float));
 	m_ArcBall.quatToMatrix(ab_flip, qtflip);
 	m_ArcBall.quatNext(ab_new, m_ArcBall.ab_quat, ab_flip);
+	memcpy(m_ArcBall.ab_quat, ab_new, 16*sizeof(float));
 
 	startRotationTimer();
 	emit(viewModified());
@@ -469,7 +465,6 @@ void gl3dView::mouseMoveEvent(QMouseEvent *event)
 
 		}
 	}
-
 	else if (event->buttons() & Qt::MidButton)
 	{
 		m_ArcBall.move(Real.x, Real.y);

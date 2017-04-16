@@ -1962,7 +1962,7 @@ void gl3dMiarexView::glMakePanelForces(int nPanels, Panel *pPanel, WPolar *pWPol
 		// Rotate the reference arrow to align it with the panel normal
 		if(R==P)
 		{
-			Qt.Set(0.0, 0.0,0.0,1.0); //Null quaternion
+			Qt.set(0.0, 0.0,0.0,1.0); //Null quaternion
 		}
 		else
 		{
@@ -1973,7 +1973,7 @@ void gl3dMiarexView::glMakePanelForces(int nPanels, Panel *pPanel, WPolar *pWPol
 			Omega = R * pPanel[p].Normal;//crossproduct
 			Omega.normalize();
 			Omega *=sina2;
-			Qt.Set(cosa2, Omega.x, Omega.y, Omega.z);
+			Qt.set(cosa2, Omega.x, Omega.y, Omega.z);
 		}
 
 		Qt.Conjugate(R,  P);
