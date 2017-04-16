@@ -89,6 +89,7 @@ class ArcBall
 public:
 	ArcBall(void);
 
+	void quat(double roll, double pitch, double yaw, Quaternion &qt);
 	void setQuat(Quaternion Qt);
 	void setQuat(double r, double qx, double qy, double qz);
 	void setZoom(double radius, Vector3d eye, Vector3d up);
@@ -103,8 +104,10 @@ public:
 	void rotateCrossPoint();
 	void quatIdentity(float* q);	// reset the rotation matrix
 	void quatCopy(float* dst, float* src);// copy a rotation matrix
-	void quatToMatrix(float* q, Quaternion Qt);// convert the quaternion into a rotation matrix
+	void quatToMatrix(float* mat, Quaternion Qt);// convert the quaternion into a rotation matrix
 	void quatNext(float* dest, float* left, float* right);// multiply two rotation matrices
+	void matToQuat(Quaternion &qt, float *mat);
+	void matToQuat(Quaternion &qt, double *mat);
 
 	float ab_quat[16];
 	float ab_last[16];
