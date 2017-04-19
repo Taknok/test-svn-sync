@@ -350,7 +350,7 @@ private:
 	QRect m_rCltRect;		    /**< the client rectangle of the central TwoDWidget */
 	QPoint m_PointDown;		    /**< the client coordinated of the last mouse left-click */
 
-	XFoil *m_pXFoil;		    /**< a pointer to the unique instance of the XFoil object */
+	XFoil m_XFoil;		        /**< the unique instance of the XFoil object */
 
 	static Foil *m_pCurFoil;
 	static Polar *m_pCurPolar;
