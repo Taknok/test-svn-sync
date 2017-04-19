@@ -1030,11 +1030,11 @@ void MainFrame::createDockWindows()
 	pXDirect->m_poaOpp   = &Objects2D::s_oaOpp;
 	pXDirect->m_pOpPointWidget = m_pXDirectTileWidget->opPointWidget();
 
-	pAFoil->initDialog(m_pDirect2dWidget, &Objects2D::s_oaFoil, pXDirect->m_pXFoil);
+	pAFoil->initDialog(m_pDirect2dWidget, &Objects2D::s_oaFoil, &pXDirect->m_XFoil);
 
 	QXInverse::s_p2DWidget        = m_p2dWidget;
 	pXInverse->s_pMainFrame       = this;
-	pXInverse->m_pXFoil           = pXDirect->m_pXFoil;
+	pXInverse->m_pXFoil           = &pXDirect->m_XFoil;
 	pXInverse->m_poaFoil          = &Objects2D::s_oaFoil;
 
 	GL3dWingDlg::s_poaFoil = &Objects2D::s_oaFoil;
@@ -1044,13 +1044,13 @@ void MainFrame::createDockWindows()
 
 	WingWidget::s_pMiarex         = m_pMiarex;
 	XFoilAnalysisDlg::s_pXDirect  = m_pXDirect;
-	NacaFoilDlg::s_pXFoil         = pXDirect->m_pXFoil;
-	InterpolateFoilsDlg::s_pXFoil = pXDirect->m_pXFoil;
-	CAddDlg::s_pXFoil             = pXDirect->m_pXFoil;
-	TwoDPanelDlg::s_pXFoil        = pXDirect->m_pXFoil;
-	FoilGeomDlg::s_pXFoil         = pXDirect->m_pXFoil;
-	TEGapDlg::s_pXFoil            = pXDirect->m_pXFoil;
-	LEDlg::s_pXFoil               = pXDirect->m_pXFoil;
+	NacaFoilDlg::s_pXFoil         = &pXDirect->m_XFoil;
+	InterpolateFoilsDlg::s_pXFoil = &pXDirect->m_XFoil;
+	CAddDlg::s_pXFoil             = &pXDirect->m_XFoil;
+	TwoDPanelDlg::s_pXFoil        = &pXDirect->m_XFoil;
+	FoilGeomDlg::s_pXFoil         = &pXDirect->m_XFoil;
+	TEGapDlg::s_pXFoil            = &pXDirect->m_XFoil;
+	LEDlg::s_pXFoil               = &pXDirect->m_XFoil;
 	BatchDlg::s_pXDirect          = m_pXDirect;
 	BatchThreadDlg::s_pXDirect    = m_pXDirect;
 
@@ -3328,7 +3328,7 @@ bool MainFrame::loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFor
 		if (!serializeFoil(pFoil, ar, false))
 		{
 			delete pFoil;
-			return NULL;
+			return false;
 		}
 
 		Objects2D::insertThisFoil(pFoil);
@@ -3345,7 +3345,7 @@ bool MainFrame::loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFor
 		if (!serializePolar(pPolar, ar, false))
 		{
 			delete pPolar;
-			return NULL;
+			return false;
 		}
 		for (l=0; l<Objects2D::s_oaPolar.size(); l++)
 		{
@@ -5816,7 +5816,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 				if(pWPolar) delete pWPolar;
 				return false;
 			}
-			if(!pWPolar->analysisMethod()==XFLR5::LLTMETHOD && ArchiveFormat <100003)	pWPolar->clearData();//former VLM version was flawed
+			if(pWPolar->analysisMethod()!=XFLR5::LLTMETHOD && ArchiveFormat <100003)	pWPolar->clearData();//former VLM version was flawed
 //			if(pWPolar->polarType()==STABILITYPOLAR)	pWPolar->bThinSurfaces() = true;
 
 			if(pWPolar->polarFormat()!=1020 || pWPolar->polarType()!=XFLR5::STABILITYPOLAR)
@@ -5953,7 +5953,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 						if(pWPolar) delete pWPolar;
 						return false;
 					}
-					if(!pWPolar->analysisMethod()==XFLR5::LLTMETHOD && ArchiveFormat <100003)
+					if(pWPolar->analysisMethod()!=XFLR5::LLTMETHOD && ArchiveFormat <100003)
 						pWPolar->clearData();
 					Objects3D::addWPolar(pWPolar);
 				}

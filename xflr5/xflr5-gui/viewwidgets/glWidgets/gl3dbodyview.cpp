@@ -54,6 +54,7 @@ void gl3dBodyView::glRenderView()
 */
 void gl3dBodyView::contextMenuEvent (QContextMenuEvent * event)
 {
+	Q_UNUSED(event);
 	m_bArcball = false;
 	update();
 

@@ -2702,7 +2702,7 @@ void QMiarex::onAnimateModeSingle(bool bStep)
 void QMiarex::onAnimateWOppSingle()
 {
 	bool bIsValid, bSkipOne;
-	int size;
+	int size=0;
 	PlaneOpp *pPOpp;
 
 	//KickIdle

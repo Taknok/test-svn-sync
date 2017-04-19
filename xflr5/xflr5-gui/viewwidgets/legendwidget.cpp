@@ -110,7 +110,7 @@ void LegendWidget::paintEvent(QPaintEvent *event)
 
 
 
-QSize LegendWidget::sizeHint()
+QSize LegendWidget::sizeHint() const
 {
 	return QSize(150,150);
 }
