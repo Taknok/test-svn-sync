@@ -3410,7 +3410,7 @@ bool PanelAnalysis::computeTrimmedConditions()
 {
 	QString strong, strange;
 	int p;
-	double Lift, phi, VerticalCl;
+	double Lift, phi;
 	Vector3d VInf, Force, Moment, WindNormal;
 
 	// find aoa such that Cm=0;

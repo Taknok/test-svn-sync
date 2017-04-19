@@ -1006,6 +1006,9 @@ void QXDirect::loadSettings(QSettings *pSettings)
 
 		XFoil::s_bFullReport = pSettings->value("FullReport").toBool();
 
+
+		BatchThreadDlg::s_nThreads = pSettings->value("MaxThreads", 12).toInt();
+
 		s_refPolar.NCrit()    = pSettings->value("NCrit").toDouble();
 		s_refPolar.XtrTop()   = pSettings->value("XTopTr").toDouble();
 		s_refPolar.XtrBot()   = pSettings->value("XBotTr").toDouble();
@@ -4257,6 +4260,7 @@ void QXDirect::saveSettings(QSettings *pSettings)
 		pSettings->setValue("IterLim", XFoilTask::s_IterLim);
 		pSettings->setValue("FullReport", XFoil::s_bFullReport);
 
+		pSettings->setValue("MaxThreads", BatchThreadDlg::s_nThreads);
 
 		pSettings->setValue("VAccel", m_XFoil.vaccel);
 		pSettings->setValue("KeepOpenErrors", s_bKeepOpenErrors);
