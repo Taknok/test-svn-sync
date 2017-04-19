@@ -136,7 +136,10 @@ BatchDlg::BatchDlg(QWidget *pParent) : QDialog(pParent)
 BatchDlg::~BatchDlg()
 {
 //	Trace("Destroying BatchDlg");
+	if(m_pXFile) delete m_pXFile;
 	if(m_pXFoilTask) delete m_pXFoilTask;
+	if(m_pRmsGraph) delete m_pRmsGraph;
+//	if(m_pRmsGraph) m_pRmsGraph->deleteCurves();;
 }
 
 /**
@@ -1279,7 +1282,7 @@ void BatchDlg::customEvent(QEvent * event)
 
 void BatchDlg::handleXFoilTaskEvent(const XFoilTaskEvent *event)
 {
-
+	Q_UNUSED(event);
 }
 
 
