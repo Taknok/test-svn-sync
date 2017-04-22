@@ -47,7 +47,6 @@
 #include <misc/RenameDlg.h>
 #include <misc/EditPlrDlg.h>
 
-#include "analysis/XFoilAnalysisDlg.h"
 #include "analysis/XFoilAdvancedDlg.h"
 #include "analysis/FoilPolarDlg.h"
 #include "analysis/BatchThreadDlg.h"
@@ -96,6 +95,7 @@ OpPoint * QXDirect::m_pCurOpp = NULL;
 QXDirect::QXDirect(QWidget *parent) : QWidget(parent)
 {
 	setAttribute(Qt::WA_DeleteOnClose);
+	m_pXFADlg = new XFoilAnalysisDlg(this);
 
 	m_pOpPointWidget = NULL;
 
@@ -236,6 +236,7 @@ QXDirect::~QXDirect()
 		delete m_PlrGraph.at(ig);
 		m_PlrGraph.removeAt(ig);
 	}
+	delete m_pXFADlg;
 }
 
 
@@ -1208,39 +1209,28 @@ void QXDirect::onAnalyze()
 	bool bHigh = QGraph::isHighLighting();
 	QGraph::setOppHighlighting(false);
 
-	XFoilAnalysisDlg* pXFADlg = new XFoilAnalysisDlg(this);
-
-	pXFADlg->m_pRmsGraph->copySettings(&Settings::s_RefGraph);
+	m_pXFADlg->m_pRmsGraph->copySettings(&Settings::s_RefGraph);
 
 	if(m_bSequence)
 	{
-		pXFADlg->setAlpha(m_Alpha, m_AlphaMax, m_AlphaDelta);
-		pXFADlg->setCl(m_Cl, m_ClMax, m_ClDelta);
-		pXFADlg->setRe(m_Reynolds, m_ReynoldsMax, m_ReynoldsDelta);
+		m_pXFADlg->setAlpha(m_Alpha, m_AlphaMax, m_AlphaDelta);
+		m_pXFADlg->setCl(m_Cl, m_ClMax, m_ClDelta);
+		m_pXFADlg->setRe(m_Reynolds, m_ReynoldsMax, m_ReynoldsDelta);
 	}
 	else
 	{
-		pXFADlg->setAlpha(m_Alpha, m_Alpha, m_AlphaDelta);
-		pXFADlg->setCl(m_Cl, m_Cl, m_ClDelta);
-		pXFADlg->setRe(m_Reynolds, m_Reynolds, m_ReynoldsDelta);
+		m_pXFADlg->setAlpha(m_Alpha, m_Alpha, m_AlphaDelta);
+		m_pXFADlg->setCl(m_Cl, m_Cl, m_ClDelta);
+		m_pXFADlg->setRe(m_Reynolds, m_Reynolds, m_ReynoldsDelta);
 	}
 
-	pXFADlg->m_bAlpha = s_bAlpha;
+	m_pXFADlg->m_bAlpha = s_bAlpha;
 
-	pXFADlg->initDialog();
-	pXFADlg->show();
-	pXFADlg->analyze();
-	if(!s_bKeepOpenErrors || !pXFADlg->m_bErrors) pXFADlg->hide();
+	m_pXFADlg->initDialog();
+	m_pXFADlg->show();
+	m_pXFADlg->analyze();
+	if(!s_bKeepOpenErrors || !m_pXFADlg->m_bErrors) m_pXFADlg->hide();
 
-	if(s_bKeepOpenErrors && pXFADlg->m_bErrors)
-	{
-	}
-	else
-	{
-		pXFADlg->hide();
-	}
-
-	delete pXFADlg;
 
 	// and update window
 	emit projectModified();
@@ -1597,7 +1587,7 @@ void QXDirect::onCdPlot()
 	pTopCurve->setCurveName(tr("Top"));
 	pBotCurve->setCurveName(tr("Bot"));
 
-	double qrf = m_XFoil.qinf;
+	double qrf = m_pCurOpp->qinf;
 
 	//---- fill compressible ue arrays
 	for (int ibl=2; ibl<= m_pCurOpp->nside1;ibl++)

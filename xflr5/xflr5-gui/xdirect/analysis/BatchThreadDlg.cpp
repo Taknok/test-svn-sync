@@ -802,6 +802,7 @@ void BatchThreadDlg::readParams()
 
 	s_nThreads = m_pctrlMaxThreads->value();
 	s_nThreads = std::min(s_nThreads, QThread::idealThreadCount());
+	m_pctrlMaxThreads->setValue(s_nThreads);
 }
 
 

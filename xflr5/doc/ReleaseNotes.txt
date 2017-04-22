@@ -15,7 +15,13 @@
 *******************************************************************************
 
 
-xflr5 v6.34 April xxx, 2017
+xflr5 v6.35 April 23rd, 2017
+	- Added an option to adjust the number of worker threads in a foil multithreaded analysis
+	- Fixed some memory leak & overflow issues in foil analysis; improves the stability of the analysis
+	- Other minor improvements
+
+
+xflr5 v6.34 April 15th, 2017 - limited release only
 	- Forced the default renderer to be OpenGL and not Angle on Windows desktops
 	- Added an option to export time graphs to text files
 
