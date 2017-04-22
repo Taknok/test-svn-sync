@@ -154,7 +154,11 @@ void XFoilAnalysisDlg::initDialog()
 
 	QString FileName = QDir::tempPath() + "/XFLR5.log";
 	m_pXFile = new QFile(FileName);
-	if (!m_pXFile->open(QIODevice::WriteOnly | QIODevice::Text)) m_pXFile = NULL;
+	if (!m_pXFile->open(QIODevice::WriteOnly | QIODevice::Text))
+	{
+		delete m_pXFile;
+		m_pXFile = NULL;
+	}
 
 	m_pXFoilTask->m_OutStream.setDevice(m_pXFile);
 
