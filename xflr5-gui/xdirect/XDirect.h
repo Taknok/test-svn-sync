@@ -41,12 +41,12 @@
 #include <misc/DoubleEdit.h>
 #include <objects2d/Polar.h>
 #include <objects2d/Foil.h>
+#include <xdirect/analysis/XFoilAnalysisDlg.h>
+#include <viewwidgets/oppointwidget.h>
 #include <gui_enums.h>
 #include <objects2d/OpPoint.h>
 #include <QGraph.h>
-#include "analysis/XFoilAnalysisDlg.h"
 #include <XFoil.h>
-#include <viewwidgets/oppointwidget.h>
 
 
 class MainFrame; // to shut the compiler up
@@ -232,7 +232,7 @@ public:
 
 
 private:
-
+	XFoilAnalysisDlg* m_pXFADlg ;
 	OpPointWidget *m_pOpPointWidget;
 
 	QStackedWidget *m_pctrlMiddleControls;
@@ -276,10 +276,8 @@ private:
 	static bool s_bAlpha;             /**< true if performing an analysis based on aoa, false if based on Cl */
 	static bool s_bInitBL;            /**< true if the boundary layer should be initialized for the next xfoil calculation */
 	static bool s_bFromZero;          /**< true if the batch analysis should start from Alpha=0 */
-	static bool s_bKeepOpenErrors; /**< true if the XfoilAnalysisDlg should be kept open if errors occured in the XFoil calculation */
+	static bool s_bKeepOpenErrors;    /**< true if the XfoilAnalysisDlg should be kept open if errors occured in the XFoil calculation */
 	static bool s_bStoreOpp;          /**< true if the operating points should be stored */
-
-	XFoilAnalysisDlg *m_pXFADlg;
 
 	bool m_bPolarView;         /**< true if the polar view is selected, false if the operating point view is selected */
 	bool m_bShowUserGraph;     /**< true if the 5th polar graph should be displayed */
