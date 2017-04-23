@@ -283,7 +283,7 @@ private:
 	bool m_bShowUserGraph;     /**< true if the 5th polar graph should be displayed */
 	bool m_bAnimate;           /**< true if a result animation is underway */
 	bool m_bAnimatePlus;       /**< true if the animation is going from lower to higher alpha, false if decreasing */
-	bool m_bShowPanels;        /**< true if the panels should be displayed on the foil surface */
+//	bool m_bShowPanels;        /**< true if the panels should be displayed on the foil surface */
 	bool m_bType1;             /**< true if the type 1 polars are to be displayed in the graphs */
 	bool m_bType2;             /**< true if the type 2 polars are to be displayed in the graphs */
 	bool m_bType3;             /**< true if the type 3 polars are to be displayed in the graphs */
