@@ -1273,7 +1273,7 @@ void BatchDlg::customEvent(QEvent * event)
 	else if(event->type() == XFOIL_END_OPP_EVENT)
 	{
 		XFoilOppEvent *pOppEvent = (XFoilOppEvent*)event;
-		OpPoint *pOpp = Objects2D::addOpPoint(pOppEvent->foilPtr(), pOppEvent->polarPtr(), pOppEvent->XFoilPtr(), QXDirect::s_bStoreOpp);
+		Objects2D::addOpPoint(pOppEvent->foilPtr(), pOppEvent->polarPtr(), pOppEvent->XFoilPtr(), QXDirect::s_bStoreOpp);
 		m_pRmsGraph->resetYLimits();
 	}
 }

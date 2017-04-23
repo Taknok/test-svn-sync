@@ -212,9 +212,9 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 	setWindowTitle(VERSIONNAME);
 	setWindowIcon(QIcon(":/images/xflr5_64.png"));
 
-	Settings sets(this);//to initialize the static variables
+//	Settings sets(this);//to initialize the static variables
 	//"Qt does not support style hints on X11 since this information is not provided by the window system."
-	Settings::s_TextFont.setStyleHint(QFont::TypeWriter, QFont::OpenGLCompatible);
+/*	Settings::s_TextFont.setStyleHint(QFont::TypeWriter, QFont::OpenGLCompatible);
 	Settings::s_TextFont.setStyleStrategy(QFont::OpenGLCompatible);
 	Settings::s_TextFont.setFamily(Settings::s_TextFont.defaultFamily());
 	Settings::s_TextFont.setPointSize(9);
@@ -222,7 +222,9 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 	Settings::s_TableFont.setStyleHint(QFont::TypeWriter);
 	Settings::s_TableFont.setStyleStrategy(QFont::PreferDevice);
 	Settings::s_TableFont.setFamily(Settings::s_TableFont.defaultFamily());
-	Settings::s_TableFont.setPointSize(8);
+	Settings::s_TableFont.setPointSize(8);*/
+
+	Settings::setDefaultFonts();
 
 	Settings::s_RefGraph.setTitleFont(Settings::s_TextFont);
 	Settings::s_RefGraph.setLabelFont(Settings::s_TextFont);
