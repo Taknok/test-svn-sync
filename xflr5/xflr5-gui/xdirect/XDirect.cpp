@@ -115,7 +115,7 @@ QXDirect::QXDirect(QWidget *parent) : QWidget(parent)
 	m_bAnimate        = false;
 	m_bAnimatePlus    = false;
 	m_bCpGraph        = true;
-	m_bShowPanels     = false;
+
 	m_bShowUserGraph  = true;
 	m_bSequence       = false;
 	s_bStoreOpp       = false;
@@ -952,7 +952,7 @@ void QXDirect::loadSettings(QSettings *pSettings)
 		s_bInitBL         = pSettings->value("InitBL").toBool();
 		m_bPolarView      = pSettings->value("PolarView").toBool();
 		m_bShowUserGraph  = pSettings->value("UserGraph").toBool();
-		m_bShowPanels     = pSettings->value("ShowPanels").toBool();
+
 		m_bType1          = pSettings->value("Type1").toBool();
 		m_bType2          = pSettings->value("Type2").toBool();
 		m_bType3          = pSettings->value("Type3").toBool();
@@ -969,8 +969,6 @@ void QXDirect::loadSettings(QSettings *pSettings)
 
 		m_XFoilVar       = pSettings->value("XFoilVar").toInt();
 		s_TimeUpdateInterval = pSettings->value("TimeUpdateInterval",100).toInt();
-
-		BatchThreadDlg::s_bUpdatePolarView = pSettings->value("BatchUpdatePolarView", false).toBool();
 
 		m_iPlrGraph      = pSettings->value("PlrGraph").toInt();
 
@@ -1007,7 +1005,7 @@ void QXDirect::loadSettings(QSettings *pSettings)
 
 		XFoil::s_bFullReport = pSettings->value("FullReport").toBool();
 
-
+		BatchThreadDlg::s_bUpdatePolarView = pSettings->value("BatchUpdatePolarView", false).toBool();
 		BatchThreadDlg::s_nThreads = pSettings->value("MaxThreads", 12).toInt();
 
 		s_refPolar.NCrit()    = pSettings->value("NCrit").toDouble();
@@ -2196,14 +2194,14 @@ void QXDirect::onCadd()
 	setCurOpp(NULL);
 	m_bResetCurves = true;
 
-	bool bState = m_bShowPanels;
+	int  psState = m_pCurFoil->foilPointStyle();
 
 	CAddDlg caDlg(s_pMainFrame);
 	caDlg.m_pBufferFoil = &m_BufferFoil;
 	caDlg.m_pMemFoil    = m_pCurFoil;
 	caDlg.initDialog();
 
-	m_bShowPanels = true;
+	m_pCurFoil->foilPointStyle() = 1;
 	updateView();
 
 	if(QDialog::Accepted == caDlg.exec())
@@ -2229,7 +2227,7 @@ void QXDirect::onCadd()
 		m_XFoil.initXFoilGeometry(pFoil->n, pFoil->x,pFoil->y, pFoil->nx, pFoil->ny);
 	}
 
-	m_bShowPanels = bState;
+	m_pCurFoil->foilPointStyle() = psState;
 
 	updateView();
 }
@@ -2733,7 +2731,7 @@ void QXDirect::onFoilCoordinates()
 	stopAnimate();
 	onOpPointView();
 
-	bool bState = m_bShowPanels;//save current view setting
+	bool psState = m_pCurFoil->foilPointStyle();//save current view setting
 
 	void* ptr = m_pCurOpp;
 	setCurOpp(NULL);
@@ -2753,7 +2751,7 @@ void QXDirect::onFoilCoordinates()
 	fcoDlg.m_pBufferFoil = &m_BufferFoil;
 	fcoDlg.initDialog();
 
-	m_bShowPanels = true;
+	m_pCurFoil->foilPointStyle() = 1;
 	updateView();
 
 	int res = fcoDlg.exec();
@@ -2794,7 +2792,7 @@ void QXDirect::onFoilCoordinates()
 	}
 
 	m_BufferFoil.setHighLight(-1);
-	m_bShowPanels = bState;//restore as it was
+	m_pCurFoil->foilPointStyle() = psState;//restore as it was
 	updateView();
 }
 
@@ -3378,8 +3376,8 @@ void QXDirect::onNacaFoils()
 		setCurFoil((Foil*)ptr0);
 		setCurOpp((OpPoint*)ptr);
 		setBufferFoil();
-		Foil *pFoil = m_pCurFoil;
-		m_XFoil.initXFoilGeometry(pFoil->n, pFoil->x,pFoil->y, pFoil->nx, pFoil->ny);
+//		Foil *pFoil = m_pCurFoil;
+		if(m_pCurFoil)	m_XFoil.initXFoilGeometry(m_pCurFoil->n, m_pCurFoil->x,m_pCurFoil->y, m_pCurFoil->nx, m_pCurFoil->ny);
 	}
 	setControls();
 	updateView();
@@ -3483,7 +3481,7 @@ void QXDirect::onRefinePanelsGlobally()
 	stopAnimate();
 
 	onOpPointView();
-	bool bState = m_bShowPanels;//save current view setting
+	int psState = m_pCurFoil->foilPointStyle();//save current view setting
 
 	void* ptr = m_pCurOpp;
 	setCurOpp(NULL);
@@ -3492,8 +3490,8 @@ void QXDirect::onRefinePanelsGlobally()
 	TwoDPanelDlg tdpDlg(s_pMainFrame);
 	tdpDlg.m_pBufferFoil = &m_BufferFoil;
 	tdpDlg.m_pMemFoil    = m_pCurFoil;
+	m_pCurFoil->foilPointStyle() = 1;
 
-	m_bShowPanels = true;
 	updateView();
 
 	tdpDlg.initDialog();
@@ -3517,11 +3515,10 @@ void QXDirect::onRefinePanelsGlobally()
 		//reset everything
 		setCurOpp((OpPoint*)ptr);
 		setBufferFoil();
-		Foil *pFoil = m_pCurFoil;
-		m_XFoil.initXFoilGeometry(pFoil->n, pFoil->x,pFoil->y, pFoil->nx, pFoil->ny);
+		if(m_pCurFoil) m_XFoil.initXFoilGeometry(m_pCurFoil->n, m_pCurFoil->x, m_pCurFoil->y, m_pCurFoil->nx, m_pCurFoil->ny);
 	}
 
-	m_bShowPanels = bState;//restore as it was
+	m_pCurFoil->foilPointStyle() = psState;//restore as it was
 	updateView();
 }
 
@@ -4202,7 +4199,6 @@ void QXDirect::saveSettings(QSettings *pSettings)
 		pSettings->setValue("InitBL", s_bInitBL);
 		pSettings->setValue("PolarView", m_bPolarView);
 		pSettings->setValue("UserGraph", m_bShowUserGraph);
-		pSettings->setValue("ShowPanels", m_bShowPanels);
 		pSettings->setValue("Type1", m_bType1);
 		pSettings->setValue("Type2", m_bType2);
 		pSettings->setValue("Type3", m_bType3);
@@ -4216,7 +4212,6 @@ void QXDirect::saveSettings(QSettings *pSettings)
 		pSettings->setValue("Sequence", m_bSequence);
 		pSettings->setValue("XFoilVar", m_XFoilVar);
 		pSettings->setValue("TimeUpdateInterval", s_TimeUpdateInterval);
-		pSettings->setValue("BatchUpdatePolarView", BatchThreadDlg::s_bUpdatePolarView);
 		pSettings->setValue("PlrGraph", m_iPlrGraph);
 		pSettings->setValue("NeutralLine", m_bNeutralLine);
 
@@ -4250,6 +4245,7 @@ void QXDirect::saveSettings(QSettings *pSettings)
 		pSettings->setValue("IterLim", XFoilTask::s_IterLim);
 		pSettings->setValue("FullReport", XFoil::s_bFullReport);
 
+		pSettings->setValue("BatchUpdatePolarView", BatchThreadDlg::s_bUpdatePolarView);
 		pSettings->setValue("MaxThreads", BatchThreadDlg::s_nThreads);
 
 		pSettings->setValue("VAccel", m_XFoil.vaccel);

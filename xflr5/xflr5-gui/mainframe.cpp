@@ -656,10 +656,12 @@ void MainFrame::createAFoilActions()
 	m_pAFoilNormalizeFoil = new QAction(tr("Normalize the Foil"), this);
 	connect(m_pAFoilNormalizeFoil, SIGNAL(triggered()), pAFoil, SLOT(onAFoilNormalizeFoil()));
 
-	m_pAFoilRefineGlobalFoil = new QAction(tr("Refine Globally")+"\t(F3)", this);
+	m_pAFoilRefineGlobalFoil = new QAction(tr("Refine Globally")/*+"\t(F3)"*/, this);
+	m_pAFoilRefineGlobalFoil->setShortcut(Qt::Key_F3);
 	connect(m_pAFoilRefineGlobalFoil, SIGNAL(triggered()), pAFoil, SLOT(onAFoilPanels()));
 
-	m_pAFoilRefineLocalFoil = new QAction(tr("Refine Locally")+"\t(Shift+F3)", this);
+	m_pAFoilRefineLocalFoil = new QAction(tr("Refine Locally")/*+"\t(Shift+F3)"*/, this);
+	m_pAFoilRefineLocalFoil->setShortcut(QKeySequence(Qt::SHIFT+Qt::Key_F3));
 	connect(m_pAFoilRefineLocalFoil, SIGNAL(triggered()), pAFoil, SLOT(onAFoilCadd()));
 
 	m_pAFoilEditCoordsFoil = new QAction(tr("Edit Foil Coordinates"), this);
@@ -1266,11 +1268,13 @@ void MainFrame::createMiarexActions()
 	m_pW3DLightAct->setStatusTip(tr("Define the light options in 3D view"));
 	connect(m_pW3DLightAct, SIGNAL(triggered()), pMiarex, SLOT(onSetupLight()));
 
-	m_pDefinePlaneAct = new QAction(tr("Define a New Plane")+"\tF3", this);
+	m_pDefinePlaneAct = new QAction(tr("Define a New Plane")/*+"\tF3"*/, this);
+	m_pDefinePlaneAct->setShortcut(Qt::Key_F3);
 	m_pDefinePlaneAct->setStatusTip(tr("Shows a dialogbox to create a new plane definition"));
 	connect(m_pDefinePlaneAct, SIGNAL(triggered()), pMiarex, SLOT(onNewPlane()));
 
-	m_pDefinePlaneObjectAct = new QAction(tr("Define... (Advanced users)")+"\tF3", this);
+	m_pDefinePlaneObjectAct = new QAction(tr("Define... (Advanced users)")/*+"\tF3"*/, this);
+	m_pDefinePlaneObjectAct->setShortcut(QKeySequence(Qt::SHIFT+Qt::Key_F3));
 	m_pDefinePlaneObjectAct->setStatusTip(tr("Shows a dialogbox to create a new plane definition"));
 	connect(m_pDefinePlaneObjectAct, SIGNAL(triggered()), pMiarex, SLOT(onNewPlaneObject()));
 
@@ -2313,7 +2317,8 @@ void MainFrame::createXDirectActions()
 	m_pDeleteCurFoil = new QAction(tr("Delete..."), this);
 	connect(m_pDeleteCurFoil, SIGNAL(triggered()), pXDirect, SLOT(onDeleteCurFoil()));
 
-	m_pRenameCurFoil = new QAction(tr("Rename...")+"\tF2", this);
+	m_pRenameCurFoil = new QAction(tr("Rename...")/*+"\tF2"*/, this);
+	m_pRenameCurFoil->setShortcut(Qt::Key_F2);
 	connect(m_pRenameCurFoil, SIGNAL(triggered()), pXDirect, SLOT(onRenameCurFoil()));
 
 	m_pExportCurFoil = new QAction(tr("Export..."), this);
@@ -2362,15 +2367,18 @@ void MainFrame::createXDirectActions()
 	m_pDeleteFoilOpps = new QAction(tr("Delete associated OpPoints"), this);
 	connect(m_pDeleteFoilOpps, SIGNAL(triggered()), pXDirect, SLOT(onDeleteFoilOpps()));
 
-	m_pDefinePolarAct = new QAction(tr("Define an Analysis")+"\tF6", this);
+	m_pDefinePolarAct = new QAction(tr("Define an Analysis")/*+"\tF6"*/, this);
+	m_pDefinePolarAct->setShortcut(Qt::Key_F6);
 	m_pDefinePolarAct->setStatusTip(tr("Defines a single analysis/polar"));
 	connect(m_pDefinePolarAct, SIGNAL(triggered()), pXDirect, SLOT(onDefinePolar()));
 
-	m_pBatchAnalysisAct = new QAction(tr("Batch Analysis")+"\tShift+F6", this);
+	m_pBatchAnalysisAct = new QAction(tr("Batch Analysis")/*+"\tShift+F6"*/, this);
+	m_pBatchAnalysisAct->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_F6));
 	m_pBatchAnalysisAct->setStatusTip(tr("Launches a batch of analysis calculation for a specified range or list of Reynolds numbers"));
 	connect(m_pBatchAnalysisAct, SIGNAL(triggered()), pXDirect, SLOT(onBatchAnalysis()));
 
-	m_pMultiThreadedBatchAct = new QAction(tr("Multi-threaded Batch Analysis")+"\tCtrl+F6", this);
+	m_pMultiThreadedBatchAct = new QAction(tr("Multi-threaded Batch Analysis")/*+"\tCtrl+F6"*/, this);
+	m_pMultiThreadedBatchAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F6));
 	m_pMultiThreadedBatchAct->setStatusTip(tr("Launches a batch of analysis calculation using all available computer CPU cores"));
 	connect(m_pMultiThreadedBatchAct, SIGNAL(triggered()), pXDirect, SLOT(onMultiThreadedBatchAnalysis()));
 
@@ -2409,7 +2417,8 @@ void MainFrame::createXDirectActions()
 	m_pManageFoilsAct->setShortcut(Qt::Key_F7);
 	connect(m_pManageFoilsAct, SIGNAL(triggered()), this, SLOT(onManageFoils()));
 
-	m_pRenamePolarAct = new QAction(tr("Rename")+"\t(Shift+F2)", this);
+	m_pRenamePolarAct = new QAction(tr("Rename")/*+"\t(Shift+F2)"*/, this);
+	m_pRenamePolarAct->setShortcut(QKeySequence(Qt::SHIFT +Qt::Key_F2));
 	connect(m_pRenamePolarAct, SIGNAL(triggered()), pXDirect, SLOT(onRenameCurPolar()));
 
 
@@ -2460,16 +2469,19 @@ void MainFrame::createXDirectActions()
 	m_pNormalizeFoil = new QAction(tr("Normalize the Foil"), this);
 	connect(m_pNormalizeFoil, SIGNAL(triggered()), pXDirect, SLOT(onNormalizeFoil()));
 
-	m_pRefineLocalFoil = new QAction(tr("Refine Locally")+"\t(Shift+F3)", this);
+	m_pRefineLocalFoil = new QAction(tr("Refine Locally")/*+"\t(Shift+F3)"*/, this);
+	m_pRefineLocalFoil->setShortcut(QKeySequence(Qt::SHIFT +Qt::Key_F3));
 	connect(m_pRefineLocalFoil, SIGNAL(triggered()), pXDirect, SLOT(onCadd()));
 
-	m_pRefineGlobalFoil = new QAction(tr("Refine Globally")+"\t(F3)", this);
+	m_pRefineGlobalFoil = new QAction(tr("Refine Globally")/*+"\t(F3)"*/, this);
+	m_pRefineGlobalFoil->setShortcut(Qt::Key_F3);
 	connect(m_pRefineGlobalFoil, SIGNAL(triggered()), pXDirect, SLOT(onRefinePanelsGlobally()));
 
 	m_pEditCoordsFoil = new QAction(tr("Edit Foil Coordinates"), this);
 	connect(m_pEditCoordsFoil, SIGNAL(triggered()), pXDirect, SLOT(onFoilCoordinates()));
 
-	m_pScaleFoil = new QAction(tr("Scale camber and thickness")+"\t(F9)", this);
+	m_pScaleFoil = new QAction(tr("Scale camber and thickness")/*+"\t(F9)"*/, this);
+	m_pScaleFoil->setShortcut(Qt::Key_F9);
 	connect(m_pScaleFoil, SIGNAL(triggered()), pXDirect, SLOT(onFoilGeom()));
 
 	m_pSetTEGap = new QAction(tr("Set T.E. Gap"), this);
@@ -2478,10 +2490,12 @@ void MainFrame::createXDirectActions()
 	m_pSetLERadius = new QAction(tr("Set L.E. Radius"), this);
 	connect(m_pSetLERadius, SIGNAL(triggered()), pXDirect, SLOT(onSetLERadius()));
 
-	m_pSetFlap = new QAction(tr("Set Flap")+"\t(F10)", this);
+	m_pSetFlap = new QAction(tr("Set Flap")/*+"\t(F10)"*/, this);
+	m_pSetFlap->setShortcut(Qt::Key_F10);
 	connect(m_pSetFlap, SIGNAL(triggered()), pXDirect, SLOT(onSetFlap()));
 
-	m_pInterpolateFoils = new QAction(tr("Interpolate Foils")+"\t(F11)", this);
+	m_pInterpolateFoils = new QAction(tr("Interpolate Foils")/*+"\t(F11)"*/, this);
+	m_pInterpolateFoils->setShortcut(Qt::Key_F11);
 	connect(m_pInterpolateFoils, SIGNAL(triggered()), pXDirect, SLOT(onInterpolateFoils()));
 
 	m_pNacaFoils = new QAction(tr("Naca Foils"), this);
