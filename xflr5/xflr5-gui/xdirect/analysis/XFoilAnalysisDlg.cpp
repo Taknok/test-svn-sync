@@ -24,6 +24,7 @@
 #include <QDateTime>
 #include <QTimer>
 #include <QHBoxLayout>
+#include <QFontDatabase>
 #include <QtDebug>
 
 #include <gui_params.h>
@@ -103,7 +104,7 @@ void XFoilAnalysisDlg::setupLayout()
 	m_pctrlTextOutput->setReadOnly(true);
 	m_pctrlTextOutput->setLineWrapMode(QTextEdit::NoWrap);
 	m_pctrlTextOutput->setWordWrapMode(QTextOption::NoWrap);
-
+	m_pctrlTextOutput->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
 	m_pGraphWidget = new GraphWidget;
 	m_pGraphWidget->setMinimumHeight(350);
 	m_pGraphWidget->setMinimumWidth(600);

@@ -37,6 +37,7 @@
 #include <QThread>
 #include <QThreadPool>
 #include <QTimer>
+#include <QFontDatabase>
 #include <QtDebug>
 
 bool BatchThreadDlg::s_bCurrentFoil=true;
@@ -311,7 +312,8 @@ void BatchThreadDlg::setupLayout()
 		m_pctrlTextOutput->setWordWrapMode(QTextOption::NoWrap);
 		m_pctrlTextOutput->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-		m_pctrlTextOutput->setFont(Settings::s_TableFont);
+		m_pctrlTextOutput->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
+
 		QFontMetrics fm(Settings::s_TableFont);
 		m_pctrlTextOutput->setMinimumWidth(67*fm.averageCharWidth());
 		m_pctrlInitBL          = new QCheckBox(tr("Initialize BLs between polars"));
@@ -1039,7 +1041,7 @@ void BatchThreadDlg::customEvent(QEvent * event)
 	else if(event->type() == XFOIL_END_OPP_EVENT)
 	{
 		XFoilOppEvent *pOppEvent = (XFoilOppEvent*)event;
-		OpPoint *pOpp = Objects2D::addOpPoint(pOppEvent->foilPtr(), pOppEvent->polarPtr(), pOppEvent->XFoilPtr(), QXDirect::s_bStoreOpp);
+		Objects2D::addOpPoint(pOppEvent->foilPtr(), pOppEvent->polarPtr(), pOppEvent->XFoilPtr(), QXDirect::s_bStoreOpp);
 	}
 }
 
