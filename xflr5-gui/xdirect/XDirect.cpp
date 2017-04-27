@@ -3331,12 +3331,15 @@ void QXDirect::onInterpolateFoils()
 
 	Foil *pCurFoil = curFoil();
 	Foil *pNewFoil = new Foil();
+	pNewFoil->copyFoil(curFoil());
 	setCurFoil(pNewFoil);
 
 	InterpolateFoilsDlg ifDlg(s_pMainFrame);
 	ifDlg.m_poaFoil     = m_poaFoil;
 	ifDlg.m_pBufferFoil = pNewFoil;
 	ifDlg.initDialog();
+
+	updateView();
 
 	if(ifDlg.exec() == QDialog::Accepted)
 	{
@@ -3942,7 +3945,6 @@ void QXDirect::onSetTEGap()
 
 	if(QDialog::Accepted == tegDlg.exec())
 	{
-		pNewFoil->copyFoil(curFoil());
 		setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
 
 		if(addNewFoil(pNewFoil))
