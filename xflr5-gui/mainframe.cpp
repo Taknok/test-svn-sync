@@ -3806,11 +3806,6 @@ void MainFrame::onCurFoilStyle()
 		QXDirect::curFoil()->foilLineWidth() = dlg.lineWidth();
 		QXDirect::curFoil()->foilPointStyle() = dlg.pointStyle();
 
-		QXDirect *pXDirect = (QXDirect*)m_pXDirect;
-		pXDirect->m_BufferFoil.setColor(QXDirect::curFoil()->red(), QXDirect::curFoil()->green(), QXDirect::curFoil()->blue(), QXDirect::curFoil()->alphaChannel());
-		pXDirect->m_BufferFoil.foilLineStyle()  = QXDirect::curFoil()->foilLineStyle();
-		pXDirect->m_BufferFoil.foilLineWidth()  = QXDirect::curFoil()->foilLineWidth();
-		pXDirect->m_BufferFoil.foilPointStyle() = QXDirect::curFoil()->foilPointStyle();
 		setSaveState(false);
 	}
 

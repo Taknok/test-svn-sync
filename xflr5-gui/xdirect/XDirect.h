@@ -198,7 +198,6 @@ public:
 	Foil *addNewFoil(Foil *pFoil);
 	void renameFoil(Foil *pFoil);
 	void saveSettings(QSettings *pSettings);
-	void setBufferFoil();
 	void setCurveParams();
 	void setFoilScale();
 	void setGraphTiles();
@@ -334,7 +333,6 @@ private:
 
 	static Polar s_refPolar;    /**< Used a static reference to store default data */
 
-	Foil m_BufferFoil;          /**< used for screen drawing and temporary geometric mods */
 
 	QList<Foil*> *m_poaFoil;    /**< pointer to the foil object array */
 	QList<Polar*> *m_poaPolar;  /**< pointer to the polar object array */

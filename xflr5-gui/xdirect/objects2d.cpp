@@ -876,3 +876,48 @@ void Objects2D::addXFoilData(OpPoint *pOpp, void *pXFoilPtr, void *pFoilPtr)
 	pOpp->nside1 = pXFoil->nside1;
 	pOpp->nside2 = pXFoil->nside2;
 }
+
+
+void Objects2D::deleteFoilResults(Foil *pFoil, bool bDeletePolars)
+{
+	for (int j=s_oaOpp.size()-1; j>=0; j--)
+	{
+		OpPoint *pOpPoint = s_oaOpp[j];
+		if(pOpPoint->foilName() == pFoil->foilName())
+		{
+			if(pOpPoint==QXDirect::curOpp()) QXDirect::setCurOpp(NULL);
+			s_oaOpp.removeAt(j);
+			delete pOpPoint;
+		}
+	}
+
+	for (int j=s_oaPolar.size()-1; j>=0; j--)
+	{
+		Polar *pPolar = (Polar*)s_oaPolar.at(j);
+		if(pPolar->foilName() == pFoil->foilName())
+		{
+			if(bDeletePolars)
+			{
+				if(pPolar==QXDirect::curPolar()) QXDirect::setCurPolar(NULL);
+				s_oaPolar.removeAt(j);
+				delete pPolar;
+			}
+			else
+			{
+				pPolar->resetPolar();
+			}
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
