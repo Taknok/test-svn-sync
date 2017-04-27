@@ -145,7 +145,6 @@ void LLTAnalysisDlg::keyPressEvent(QKeyEvent *event)
 void LLTAnalysisDlg::onCancelAnalysis()
 {
 	m_bCancel = true;
-
 	if(m_bFinished) accept();
 }
 

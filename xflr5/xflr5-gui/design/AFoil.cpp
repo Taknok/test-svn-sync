@@ -750,7 +750,7 @@ void QAFoil::onAFoilSetLERadius()
 	LEDlg leDlg(s_pMainFrame);
     leDlg.m_pBufferFoil = m_pBufferFoil;
 	leDlg.m_pMemFoil    = QXDirect::curFoil();
-    leDlg.InitDialog();
+    leDlg.initDialog();
 
     if(QDialog::Accepted == leDlg.exec())
 	{
@@ -906,7 +906,7 @@ void QAFoil::onAFoilSetFlap()
 	flDlg.m_pXFoil      = m_pXFoil;
 	flDlg.m_pMemFoil    = QXDirect::curFoil();
     flDlg.m_pBufferFoil = m_pBufferFoil;
-    flDlg.InitDialog();
+    flDlg.initDialog();
 
     if(QDialog::Accepted == flDlg.exec())
 	{
