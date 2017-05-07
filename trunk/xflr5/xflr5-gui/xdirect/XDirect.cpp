@@ -2200,12 +2200,13 @@ void QXDirect::onCadd()
 	caDlg.m_pBufferFoil = pNewFoil;
 	caDlg.m_pMemFoil    = pCurFoil;
 	caDlg.initDialog();
-
-	pNewFoil->foilPointStyle() = 1;
+	int psState = pNewFoil->foilPointStyle();
+	if(psState==0) pNewFoil->foilPointStyle() = 1;
 	updateView();
 
 	if(QDialog::Accepted == caDlg.exec())
 	{
+		pNewFoil->foilPointStyle() = psState;
 		setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
 		setCurOpp(pOpPoint);
 
@@ -3533,7 +3534,8 @@ void QXDirect::onRefinePanelsGlobally()
 	TwoDPanelDlg tdpDlg(s_pMainFrame);
 	tdpDlg.m_pBufferFoil = pNewFoil;
 	tdpDlg.m_pMemFoil    = pCurFoil;
-	pNewFoil->foilPointStyle() = 1;
+	int psState = pNewFoil->foilPointStyle();
+	if(psState==0)	pNewFoil->foilPointStyle() = 1;
 
 	updateView();
 
@@ -3541,6 +3543,7 @@ void QXDirect::onRefinePanelsGlobally()
 
 	if(QDialog::Accepted == tdpDlg.exec())
 	{
+		pNewFoil->foilPointStyle() = psState;
 		setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
 		setCurOpp(pOpPoint);
 		if(addNewFoil(pNewFoil))
