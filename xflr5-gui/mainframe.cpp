@@ -1479,9 +1479,9 @@ void MainFrame::createMiarexActions()
 	m_pSavePlaneAsProjectAct->setStatusTip(tr("Save the currently selected wing or plane as a new separate project"));
 	connect(m_pSavePlaneAsProjectAct, SIGNAL(triggered()), this, SLOT(onSavePlaneAsProject()));
 
-	m_pRrenameCurWPolar = new QAction(tr("Rename...")+"\t(Shift+F2)", this);
-	m_pRrenameCurWPolar->setStatusTip(tr("Rename the currently selected polar"));
-	connect(m_pRrenameCurWPolar, SIGNAL(triggered()), pMiarex, SLOT(onRenameCurWPolar()));
+	m_pRenameCurWPolar = new QAction(tr("Rename...")+"\t(Shift+F2)", this);
+	m_pRenameCurWPolar->setStatusTip(tr("Rename the currently selected polar"));
+	connect(m_pRenameCurWPolar, SIGNAL(triggered()), pMiarex, SLOT(onRenameCurWPolar()));
 
 	m_pExportCurWPolar = new QAction(tr("Export results"), this);
 	m_pExportCurWPolar->setStatusTip(tr("Export the currently selected polar to a text or csv file"));
@@ -1604,7 +1604,7 @@ void MainFrame::createMiarexMenus()
 			m_pCurWPlrMenu->addAction(m_pEditWPolarAct);
 			m_pCurWPlrMenu->addAction(m_pEditWPolarObjectAct);
 			m_pCurWPlrMenu->addAction(m_pEditWPolarPts);
-			m_pCurWPlrMenu->addAction(m_pRrenameCurWPolar);
+			m_pCurWPlrMenu->addAction(m_pRenameCurWPolar);
 			m_pCurWPlrMenu->addAction(m_pDeleteCurWPolar);
 			m_pCurWPlrMenu->addAction(m_pResetCurWPolar);
 			m_pCurWPlrMenu->addSeparator();
@@ -1713,7 +1713,7 @@ void MainFrame::createMiarexMenus()
 			m_pCurWPlrMenu_WOppCtxMenu->addAction(m_pEditWPolarAct);
 			m_pCurWPlrMenu_WOppCtxMenu->addAction(m_pEditWPolarObjectAct);
 			m_pCurWPlrMenu_WOppCtxMenu->addAction(m_pEditWPolarPts);
-			m_pCurWPlrMenu_WOppCtxMenu->addAction(m_pRrenameCurWPolar);
+			m_pCurWPlrMenu_WOppCtxMenu->addAction(m_pRenameCurWPolar);
 			m_pCurWPlrMenu_WOppCtxMenu->addAction(m_pDeleteCurWPolar);
 			m_pCurWPlrMenu_WOppCtxMenu->addAction(m_pResetCurWPolar);
 			m_pCurWPlrMenu_WOppCtxMenu->addSeparator();
@@ -1810,7 +1810,7 @@ void MainFrame::createMiarexMenus()
 			m_pCurWPlrMenu_WCpCtxMenu->addAction(m_pEditWPolarAct);
 			m_pCurWPlrMenu_WCpCtxMenu->addAction(m_pEditWPolarObjectAct);
 			m_pCurWPlrMenu_WCpCtxMenu->addAction(m_pEditWPolarPts);
-			m_pCurWPlrMenu_WCpCtxMenu->addAction(m_pRrenameCurWPolar);
+			m_pCurWPlrMenu_WCpCtxMenu->addAction(m_pRenameCurWPolar);
 			m_pCurWPlrMenu_WCpCtxMenu->addAction(m_pDeleteCurWPolar);
 			m_pCurWPlrMenu_WCpCtxMenu->addAction(m_pResetCurWPolar);
 			m_pCurWPlrMenu_WCpCtxMenu->addSeparator();
@@ -1892,7 +1892,7 @@ void MainFrame::createMiarexMenus()
 			m_pCurWPlrMenu_WTimeCtxMenu->addAction(m_pEditWPolarAct);
 			m_pCurWPlrMenu_WTimeCtxMenu->addAction(m_pEditWPolarObjectAct);
 			m_pCurWPlrMenu_WTimeCtxMenu->addAction(m_pEditWPolarPts);
-			m_pCurWPlrMenu_WTimeCtxMenu->addAction(m_pRrenameCurWPolar);
+			m_pCurWPlrMenu_WTimeCtxMenu->addAction(m_pRenameCurWPolar);
 			m_pCurWPlrMenu_WTimeCtxMenu->addAction(m_pDeleteCurWPolar);
 			m_pCurWPlrMenu_WTimeCtxMenu->addAction(m_pResetCurWPolar);
 			m_pCurWPlrMenu_WTimeCtxMenu->addSeparator();
@@ -1981,7 +1981,7 @@ void MainFrame::createMiarexMenus()
 			m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pEditWPolarAct);
 			m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pEditWPolarObjectAct);
 			m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pEditWPolarPts);
-			m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pRrenameCurWPolar);
+			m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pRenameCurWPolar);
 			m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pDeleteCurWPolar);
 			m_pCurWPlrMenu_WPlrCtxMenu->addAction(m_pResetCurWPolar);
 			m_pCurWPlrMenu_WPlrCtxMenu->addSeparator();
@@ -2062,7 +2062,7 @@ void MainFrame::createMiarexMenus()
             m_pCurWPlrMenu_W3DCtxMenu->addAction(m_pEditWPolarAct);
             m_pCurWPlrMenu_W3DCtxMenu->addAction(m_pEditWPolarObjectAct);
             m_pCurWPlrMenu_W3DCtxMenu->addAction(m_pEditWPolarPts);
-            m_pCurWPlrMenu_W3DCtxMenu->addAction(m_pRrenameCurWPolar);
+			m_pCurWPlrMenu_W3DCtxMenu->addAction(m_pRenameCurWPolar);
             m_pCurWPlrMenu_W3DCtxMenu->addAction(m_pDeleteCurWPolar);
             m_pCurWPlrMenu_W3DCtxMenu->addAction(m_pExportCurWPolar);
             m_pCurWPlrMenu_W3DCtxMenu->addAction(m_pResetCurWPolar);
@@ -2146,7 +2146,7 @@ void MainFrame::createMiarexMenus()
             m_pCurWPlrMenu_W3DStabCtxMenu->addAction(m_pEditWPolarAct);
             m_pCurWPlrMenu_W3DStabCtxMenu->addAction(m_pEditWPolarObjectAct);
             m_pCurWPlrMenu_W3DStabCtxMenu->addAction(m_pEditWPolarPts);
-            m_pCurWPlrMenu_W3DStabCtxMenu->addAction(m_pRrenameCurWPolar);
+			m_pCurWPlrMenu_W3DStabCtxMenu->addAction(m_pRenameCurWPolar);
             m_pCurWPlrMenu_W3DStabCtxMenu->addAction(m_pDeleteCurWPolar);
             m_pCurWPlrMenu_W3DStabCtxMenu->addAction(m_pExportCurWPolar);
             m_pCurWPlrMenu_W3DStabCtxMenu->addAction(m_pResetCurWPolar);

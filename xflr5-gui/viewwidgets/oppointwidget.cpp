@@ -474,7 +474,7 @@ void OpPointWidget::paintGraph(QPainter &painter)
 	{
 		m_pCpGraph->drawGraph(painter);
 		QPoint Place(m_pCpGraph->clientRect()->right()-73*fmWidth, m_pCpGraph->clientRect()->top()+fmheight);
-		m_pCpGraph->drawLegend(painter, Place, Settings::s_TextFont, Settings::s_TextColor);
+		m_pCpGraph->drawLegend(painter, Place, Settings::s_TextFont, Settings::s_TextColor, Settings::backgroundColor());
 	}
 
 
