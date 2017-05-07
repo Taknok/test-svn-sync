@@ -188,7 +188,7 @@ bool XFoilTask::alphaSequence()
 		{
 			MaxSeries = 2;
 			SpMin = 0.0;
-            SpMax = SpMax;
+//            SpMax = SpMax;
 		}
 	}
 	else

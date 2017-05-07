@@ -355,7 +355,7 @@ private:
 	QAction *m_pDefinePlaneAct, *m_pDefinePlaneObjectAct, *m_pEditPlaneAct, *m_pEditBodyAct, *m_pEditBodyObjectAct;
 	QAction *m_pEditWingAct, *m_pEditStabAct, *m_pEditFinAct;
 	QAction *m_pSavePlaneAsProjectAct, *m_pRenameCurPlaneAct, *m_pDeleteCurPlane, *m_pDuplicateCurPlane;
-	QAction *m_pRrenameCurWPolar, *m_pEditWPolarAct, *m_pEditWPolarPts, *m_pExportCurWPolar, *m_pResetCurWPolar;
+	QAction *m_pRenameCurWPolar, *m_pEditWPolarAct, *m_pEditWPolarPts, *m_pExportCurWPolar, *m_pResetCurWPolar;
 	QAction *m_pShowPolarProps, *m_pShowWOppProps;
 	QAction *m_pDeleteCurWPolar, *m_pDeleteCurWOpp;
 	QAction *m_pEditObjectAct, *m_pEditWPolarObjectAct;
