@@ -116,7 +116,6 @@ protected:
 	void glMakePanels(QOpenGLBuffer &vbo, int nPanels, int nNodes, Vector3d *pNode, Panel *pPanel, PlaneOpp *pPOpp);
 	void glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody);
 	void glMakeWingMesh(Wing *pWing);
-	void glMakeBodyMesh(Body *pBody);
 	void glMakeWingSectionHighlight(Wing *pWing, int iSectionHighLight, bool bRightSide);
 	void glMakeBodyFrameHighlight(Body *pBody, Vector3d bodyPos, int iFrame);
 	void glRenderText(int x, int y, const QString & str, QColor textColor = QColor(Qt::white));
@@ -131,7 +130,6 @@ protected:
 	void paintArcBall();
 	void paintAxes();
 	void paintMesh(int nPanels);
-	void paintBodyMesh(Body *pBody);
 	void paintWingMesh(Wing *pWing);
 	void paintSectionHighlight();
 	void paintBody(Body *pBody);
