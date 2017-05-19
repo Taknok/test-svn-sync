@@ -15,7 +15,10 @@
 *******************************************************************************
 
 
-xflr5 v6.35 April 23rd, 2017
+xflr5 v6.36 May xxx, 2017
+	- added a verification of the OpenGL version at startup
+
+xflr5 v6.35 May 15th, 2017
 	- Added an option to adjust the number of worker threads in a foil multithreaded analysis
 	- Fixed some memory leak & overflow issues in foil analysis; improves the stability of the analysis
 	- Fixed some font issues for MacOS
