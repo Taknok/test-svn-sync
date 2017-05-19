@@ -393,7 +393,7 @@ QMiarex::QMiarex(QWidget *parent)
 	m_CpLineStyle.m_PointStyle = 0;
 	m_bShowCp       = true;
 
-	m_iView          = XFLR5::W3DVIEW;
+	m_iView          = XFLR5::WOPPVIEW;
 	m_iWingView      = XFLR5::ONEGRAPH;
 	m_iWPlrView      = XFLR5::FOURGRAPHS;
 	m_iRootLocusView = XFLR5::ONEGRAPH;
@@ -571,10 +571,6 @@ void QMiarex::setControls()
 	s_pMainFrame->m_pW3DAct->setChecked(m_iView==XFLR5::W3DVIEW);
 	s_pMainFrame->m_pCpViewAct->setChecked(m_iView==XFLR5::WCPVIEW);
 
-	s_pMainFrame->m_pWOppAct->setChecked(m_iView==XFLR5::WOPPVIEW);
-	s_pMainFrame->m_pWPolarAct->setChecked(m_iView==XFLR5::WPOLARVIEW);
-	s_pMainFrame->m_pW3DAct->setChecked(m_iView==XFLR5::W3DVIEW);
-	s_pMainFrame->m_pCpViewAct->setChecked(m_iView==XFLR5::WCPVIEW);
 	s_pMainFrame->m_pStabTimeAct->setChecked(m_iView==XFLR5::STABTIMEVIEW);
 	s_pMainFrame->m_pRootLocusAct->setChecked(m_iView==XFLR5::STABPOLARVIEW);
 
@@ -2015,7 +2011,7 @@ void QMiarex::keyPressEvent(QKeyEvent *event)
 			{
 				s_pMainFrame->m_pCloseProjectAct->trigger();
 			}
-			on3DView();
+			if(MainFrame::hasOpenGL()) on3DView();
 			break;
 		}
 		case Qt::Key_F5:
@@ -2355,8 +2351,14 @@ bool QMiarex::loadSettings(QSettings *pSettings)
  */
 void QMiarex::on3DView()
 {
-	m_bResetTextLegend = true;
+	if(!MainFrame::hasOpenGL())
+	{
+		m_iView = XFLR5::WPOLARVIEW;
+		updateView();
+		return;
+	}
 
+	m_bResetTextLegend = true;
 
 	if(m_iView==XFLR5::W3DVIEW)
 	{

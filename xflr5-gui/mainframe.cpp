@@ -108,6 +108,7 @@ QDir MainFrame::s_TranslationDir;
 
 bool MainFrame::s_bShowMousePos = true;
 bool MainFrame::s_bSaved = true;
+bool MainFrame::s_bOpenGL = true;
 #ifdef QT_DEBUG
 	bool MainFrame::s_bTrace = true;
 #else
@@ -202,12 +203,24 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 		Trace("product type: " +sysInfo.productType());
 		Trace("product version: " +sysInfo.productVersion());
 #endif
-
 		QString strange;
 		strange.sprintf("Default OpengGl format:%d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
 		Trace(strange);
 	}
 
+	if(!QGLFormat::hasOpenGL())
+	{
+		QMessageBox::warning(this, tr("Warning"), tr("Your system does not provide support for OpenGL.\nXFLR5 will not operate correctly."));
+		s_bOpenGL = false;
+	}
+	else if(QSurfaceFormat::defaultFormat().majorVersion()<2)
+	{
+		QString strong = "XFLR5 requires OpenGL 2.0 or greater.\n";
+		QString strange;
+		strange.sprintf("Your system provides by default OpenGL %d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
+		QMessageBox::warning(this, tr("Warning"), strong+strange);
+		s_bOpenGL = false;
+	}
 
 	setWindowTitle(VERSIONNAME);
 	setWindowIcon(QIcon(":/images/xflr5_64.png"));
@@ -232,10 +245,6 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 //	Settings::s_StyleSheetName = "xflr5_style";
 	Settings::s_StyleSheetName = "";
 
-	if(!QGLFormat::hasOpenGL())
-	{
-		QMessageBox::warning(this, tr("Warning"), tr("Your system does not provide support for OpenGL.\nXFLR5 will not operate correctly."));
-	}
 
     m_iApp = XFLR5::NOAPP;
 	createDockWindows();
@@ -1068,6 +1077,8 @@ void MainFrame::createDockWindows()
 
 
 	pMiarex->connectSignals();
+
+
 }
 
 
@@ -1238,6 +1249,7 @@ void MainFrame::createMiarexActions()
 	m_pW3DAct->setCheckable(true);
 	m_pW3DAct->setStatusTip(tr("Switch to the 3D view"));
 	connect(m_pW3DAct, SIGNAL(triggered()), pMiarex, SLOT(on3DView()));
+	if(!hasOpenGL()) m_pW3DAct->setEnabled(false);
 
 	m_pCpViewAct = new QAction(QIcon(":/images/OnCpView.png"), tr("Cp View")+"\tF9", this);
 	m_pCpViewAct->setCheckable(true);

@@ -205,6 +205,7 @@ public:
 	void deleteProject(bool bClosing=false);
 	void exportGraph(QGraph *pGraph);
 	void GLToClient(CVector const &real, QPoint &point);
+	static bool hasOpenGL(){return s_bOpenGL;}
 	bool loadSettings();
 	bool loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
 	void readPolarFile(QDataStream &ar);
@@ -445,6 +446,7 @@ private:
 public:
 	static bool s_bTrace;
 	static bool s_bShowMousePos;
+	static bool s_bOpenGL;
 	static QFile *s_pTraceFile;
 	static QString s_ProjectName;      /**< The Project's name. */
 
