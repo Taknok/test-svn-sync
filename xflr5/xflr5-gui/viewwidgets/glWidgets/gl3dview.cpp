@@ -706,15 +706,18 @@ void gl3dView::glRenderText(double x, double y, double z, const QString & str, Q
 
 	point = worldToScreen(Vector3d(x,y,z));
 	point *= devicePixelRatio();
-	QPainter paint(&m_PixTextOverlay);
-	paint.save();
-	QPen textPen(textColor);
-	paint.setPen(textPen);
-	QFont font(paint.font());
-	font.setPointSize(paint.font().pointSize()*devicePixelRatio());
-	paint.setFont(font);
-	paint.drawText(point, str);
-	paint.restore();
+	if(!m_PixTextOverlay.isNull())
+	{
+		QPainter paint(&m_PixTextOverlay);
+		paint.save();
+		QPen textPen(textColor);
+		paint.setPen(textPen);
+		QFont font(paint.font());
+		font.setPointSize(paint.font().pointSize()*devicePixelRatio());
+		paint.setFont(font);
+		paint.drawText(point, str);
+		paint.restore();
+	}
 }
 
 
@@ -756,8 +759,8 @@ void gl3dView::resizeGL(int width, int height)
 	if(w>h)	m_GLViewRect.setRect(-s, s*h/w, s, -s*h/w);
 	else    m_GLViewRect.setRect(-s*w/h, s, s*w/h, -s);
 
-	m_PixTextOverlay = m_PixTextOverlay.scaled(rect().size()*devicePixelRatio());
-	m_PixTextOverlay.fill(Qt::transparent);
+	if(!m_PixTextOverlay.isNull())	m_PixTextOverlay = m_PixTextOverlay.scaled(rect().size()*devicePixelRatio());
+	if(!m_PixTextOverlay.isNull())	m_PixTextOverlay.fill(Qt::transparent);
 }
 
 

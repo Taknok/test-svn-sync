@@ -4318,8 +4318,8 @@ void MainFrame::onSaveViewToImageFile()
 				{
 					QPixmap outPix = m_pgl3dMiarexView->grab();
 					QPainter painter(&outPix);
-					painter.drawPixmap(0,0, pMiarex->m_PixText);
-					painter.drawPixmap(0,0, m_pgl3dMiarexView->m_PixTextOverlay);
+					if(!pMiarex->m_PixText.isNull())                  painter.drawPixmap(0,0, pMiarex->m_PixText);
+					if(!m_pgl3dMiarexView->m_PixTextOverlay.isNull()) painter.drawPixmap(0,0, m_pgl3dMiarexView->m_PixTextOverlay);
 
 					outPix.save(FileName);
 				}
@@ -4327,8 +4327,8 @@ void MainFrame::onSaveViewToImageFile()
 				{
 					QImage outImg = m_pgl3dMiarexView->grabFramebuffer();
 					QPainter painter(&outImg);
-					painter.drawPixmap(0,0, pMiarex->m_PixText);
-					painter.drawPixmap(0,0, m_pgl3dMiarexView->m_PixTextOverlay);
+					if(!pMiarex->m_PixText.isNull())                  painter.drawPixmap(0,0, pMiarex->m_PixText);
+					if(!m_pgl3dMiarexView->m_PixTextOverlay.isNull()) painter.drawPixmap(0,0, m_pgl3dMiarexView->m_PixTextOverlay);
 
 					outImg.save(FileName);
 				}
