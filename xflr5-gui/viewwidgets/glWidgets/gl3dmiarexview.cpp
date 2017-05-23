@@ -249,8 +249,8 @@ void gl3dMiarexView::resizeGL(int width, int height)
 	if(w>h)	m_GLViewRect.setRect(-s, s*h/w, s, -s*h/w);
 	else    m_GLViewRect.setRect(-s*w/h, s, s*w/h, -s);
 
-	m_PixTextOverlay = m_PixTextOverlay.scaled(rect().size()*devicePixelRatio());
-	m_PixTextOverlay.fill(Qt::transparent);
+	if(!m_PixTextOverlay.isNull()) m_PixTextOverlay = m_PixTextOverlay.scaled(rect().size()*devicePixelRatio());
+	if(!m_PixTextOverlay.isNull()) m_PixTextOverlay.fill(Qt::transparent);
 
 	QMiarex* pMiarex = (QMiarex*)s_pMiarex;
 	pMiarex->m_bResetTextLegend = true;
@@ -267,9 +267,12 @@ void gl3dMiarexView::paintOverlay()
 	QMiarex* pMiarex = (QMiarex*)s_pMiarex;
 	if(pMiarex->m_bResetTextLegend) pMiarex->drawTextLegend();
 
-	painter.drawPixmap(0,0, pMiarex->m_PixText);
-	painter.drawPixmap(0,0, m_PixTextOverlay);
-	m_PixTextOverlay.fill(Qt::transparent);
+	if(!pMiarex->m_PixText.isNull())  painter.drawPixmap(0,0, pMiarex->m_PixText);
+	if(!m_PixTextOverlay.isNull())
+	{
+		painter.drawPixmap(0,0, m_PixTextOverlay);
+		m_PixTextOverlay.fill(Qt::transparent);
+	}
 }
 
 void gl3dMiarexView::glMakeCpLegendClr()
