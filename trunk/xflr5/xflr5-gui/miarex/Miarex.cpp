@@ -8417,7 +8417,9 @@ void QMiarex::drawTextLegend()
 	}
 	else if(m_iView==XFLR5::WOPPVIEW) rect = s_pMainFrame->m_pMiarexTileWidget->pWingWidget()->rect();
 
-	m_PixText = m_PixText.scaled(rect.size());
+	if(!m_PixText.isNull())	m_PixText = m_PixText.scaled(rect.size());
+	if(m_PixText.isNull()) return;
+
 	m_PixText.fill(Qt::transparent);
 
 	QPainter paint(&m_PixText);
