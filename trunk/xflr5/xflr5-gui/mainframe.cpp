@@ -367,8 +367,6 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 	{
 		onLoadLastProject();
 	}
-	else
-		onAFoil();
 }
 
 
