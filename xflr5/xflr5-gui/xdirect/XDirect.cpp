@@ -2256,6 +2256,7 @@ void QXDirect::onDerotateFoil()
 		s_pMainFrame->updateFoilListBox();
 		emit projectModified();
 		updateView();
+		return;
 	}
 	//restore things
 	delete pNewFoil;
@@ -2273,9 +2274,7 @@ void QXDirect::onNormalizeFoil()
 	if(!m_pCurFoil) return;
 	QString str;
 	stopAnimate();
-
 	Foil *pCurFoil = curFoil();
-
 	Foil *pNewFoil = new Foil;
 	pNewFoil->copyFoil(m_pCurFoil);
 	setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
@@ -3850,7 +3849,7 @@ void QXDirect::onSetFlap()
 
 	if(QDialog::Accepted == flpDlg.exec())
 	{
-		pNewFoil->copyFoil(curFoil());
+//		pNewFoil->copyFoil(curFoil());
 		setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
 
 		setCurOpp(pOpPoint);
@@ -3861,6 +3860,7 @@ void QXDirect::onSetFlap()
 			s_pMainFrame->updateFoilListBox();
 			emit projectModified();
 			updateView();
+			return;
 		}
 	}
 
