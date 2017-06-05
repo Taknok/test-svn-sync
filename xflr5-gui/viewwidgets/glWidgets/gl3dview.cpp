@@ -1593,8 +1593,8 @@ void gl3dView::paintGL3()
 	width = geometry().width() * pixelRatio;
 	height = geometry().height() * pixelRatio;
 
-	m_OrthoMatrix.setToIdentity();
-	m_OrthoMatrix.ortho(-s,s,-(height*s)/width,(height*s)/width,-50.0*s,50.0*s);
+	m_orthoMatrix.setToIdentity();
+	m_orthoMatrix.ortho(-s,s,-(height*s)/width,(height*s)/width,-50.0*s,50.0*s);
 
 	m_ShaderProgramSurface.bind();
 	m_ShaderProgramSurface.setUniformValue(m_EyePosLocationSurface, QVector3D(0.0,0.0,50.0*s));
@@ -1607,7 +1607,7 @@ void gl3dView::paintGL3()
 
 	QMatrix4x4 modelMatrix;//keep identity
 	m_viewMatrix= matQuat.transposed();
-	m_pvmMatrix = m_OrthoMatrix * m_viewMatrix * modelMatrix;
+	m_pvmMatrix = m_orthoMatrix * m_viewMatrix * modelMatrix;
 
 	m_ShaderProgramLine.bind();
 	m_ShaderProgramLine.setUniformValue(m_ClipPlaneLocationLine, clipPlane);
@@ -1633,13 +1633,13 @@ void gl3dView::paintGL3()
 		lightColor.setGreenF(GLLightDlg::s_Light.m_Green);
 		lightColor.setBlueF(GLLightDlg::s_Light.m_Blue);
 		lightColor.setAlphaF(1.0);
-		m_pvmMatrix = m_OrthoMatrix;
+		m_pvmMatrix = m_orthoMatrix;
 		paintSphere(lightPos, radius, lightColor, false);
 	}
 
 	m_viewMatrix.scale(m_glScaled, m_glScaled, m_glScaled);
 	m_viewMatrix.translate(m_glRotCenter.x, m_glRotCenter.y, m_glRotCenter.z);
-	m_pvmMatrix = m_OrthoMatrix * m_viewMatrix * modelMatrix;
+	m_pvmMatrix = m_orthoMatrix * m_viewMatrix * modelMatrix;
 
 	if(m_bAxes)    paintAxes();
 	glRenderView();
@@ -1955,17 +1955,7 @@ void gl3dView::paintArcBall()
 
 	if(m_bCrossPoint)
 	{
-		double s, pixelRatio;
-		s = 1.0;
-		pixelRatio = devicePixelRatio();
-
-		int width = geometry().width() * pixelRatio;
-		int height = geometry().height() * pixelRatio;
-
-		QMatrix4x4 pvmCP; /** @todo remove pvm as parameter */
-		pvmCP.setToIdentity();
-		pvmCP.ortho(-s,s,-(height*s)/width,(height*s)/width,-100.0*s,100.0*s);
-
+		QMatrix4x4 pvmCP(m_orthoMatrix);
 		m_ArcBall.rotateCrossPoint();
 		pvmCP.rotate(m_ArcBall.angle, m_ArcBall.p.x, m_ArcBall.p.y, m_ArcBall.p.z);
 		m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, pvmCP);

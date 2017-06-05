@@ -59,7 +59,7 @@ void gl3dMiarexView::glRenderView()
 	m_modelMatrix = modeMatrix;
 
 	if(pMiarex->m_pCurPOpp)	m_modelMatrix.rotate(pMiarex->m_pCurPOpp->alpha(),0.0,1.0,0.0);
-	m_pvmMatrix = m_OrthoMatrix * m_viewMatrix * m_modelMatrix;
+	m_pvmMatrix = m_orthoMatrix * m_viewMatrix * m_modelMatrix;
 
 
 	glEnable(GL_CLIP_PLANE0);
@@ -77,7 +77,7 @@ void gl3dMiarexView::glRenderView()
 			/* CP position alredy includes the sideslip geometry, shond't be rotated by sideslip*/
 			if(pMiarex->m_bXCP)
 			{
-				m_pvmMatrix = m_OrthoMatrix * m_viewMatrix * m_modelMatrix;
+				m_pvmMatrix = m_orthoMatrix * m_viewMatrix * m_modelMatrix;
 				for(int iw=0; iw<MAXWINGS; iw++)
 				{
 					if(pMiarex->m_pCurPlane->wing(iw)) paintLift(iw);
@@ -93,7 +93,7 @@ void gl3dMiarexView::glRenderView()
 			if(pMiarex->m_pCurWPolar && fabs(pMiarex->m_pCurWPolar->Beta())>0.001)
 				m_modelMatrix.rotate(pMiarex->m_pCurWPolar->Beta(), 0.0, 0.0, 1.0);
 		}		if(m_bVLMPanels)  paintMesh(pMiarex->matSize());
-		m_pvmMatrix = m_OrthoMatrix * m_viewMatrix * m_modelMatrix;
+		m_pvmMatrix = m_orthoMatrix * m_viewMatrix * m_modelMatrix;
 
 		if(m_bVLMPanels) paintMesh(pMiarex->matSize());
 		if(pMiarex->m_pCurPOpp)
@@ -1699,7 +1699,7 @@ void gl3dMiarexView::paintStreamLines()
 	m_ShaderProgramLine.bind();
 	m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, idMatrix);
 	m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
-	m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_OrthoMatrix * m_viewMatrix);
+	m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_orthoMatrix * m_viewMatrix);
 
 	m_vboStreamLines.bind();
 	m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
@@ -1809,7 +1809,7 @@ void gl3dMiarexView::paintCpLegendClr()
 	m_ShaderProgramGradient.bind();
 	m_ShaderProgramGradient.enableAttributeArray(m_VertexLocationGradient);
 	m_ShaderProgramGradient.enableAttributeArray(m_ColorLocationGradient);
-	m_ShaderProgramGradient.setUniformValue(m_pvmMatrixLocationGradient, m_OrthoMatrix);
+	m_ShaderProgramGradient.setUniformValue(m_pvmMatrixLocationGradient, m_orthoMatrix);
 	m_vboLegendColor.bind();
 	m_ShaderProgramGradient.setAttributeBuffer(m_VertexLocationGradient, GL_FLOAT, 0,                  3, 6 * sizeof(GLfloat));
 	m_ShaderProgramGradient.setAttributeBuffer(m_ColorLocationGradient,  GL_FLOAT, 3* sizeof(GLfloat), 3, 6 * sizeof(GLfloat));
