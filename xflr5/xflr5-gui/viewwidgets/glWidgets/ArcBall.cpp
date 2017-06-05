@@ -35,23 +35,6 @@ ArcBall::ArcBall(void)
 
 	ax = ay = az = 0.0;
 
-/*	ab_quat[0]	= -0.65987748f;
-	ab_quat[1]	=  0.38526487f;
-	ab_quat[2]	= -0.64508355f;
-	ab_quat[3]	=  0.0f;
-	ab_quat[4]	= -0.75137258f;
-	ab_quat[5]	= -0.33720365f;
-	ab_quat[6]	=  0.56721509f;
-	ab_quat[7]	=  0.0f;
-	ab_quat[8]	=  0.000f;
-	ab_quat[9]	=  0.85899049f;
-	ab_quat[10]	=  0.51199043f;
-	ab_quat[11]	=  0.0f;
-	ab_quat[12]	=  0.0f;
-	ab_quat[13]	=  0.0f;
-	ab_quat[14]	=  0.0f;
-	ab_quat[15]	=  1.0f;*/
-
 	memset(ab_quat,       0, 16*sizeof(float));
 	memset(ab_last,       0, 16*sizeof(float));
 	memset(ab_next,       0, 16*sizeof(float));
@@ -86,31 +69,11 @@ ArcBall::ArcBall(void)
 	ab_up.set(0.0,1.0,0.0);
 	ab_out.set(1.0,0.0,0.0);
 
-/*	ab_glp[0]  = 1.0; ab_glp[1]  = 0.0; ab_glp[2]  = 0.0; ab_glp[3]  = 0.0;
-	ab_glp[4]  = 0.0; ab_glp[5]  = 1.0; ab_glp[6]  = 0.0; ab_glp[7]  = 0.0; 
-	ab_glp[8]  = 0.0; ab_glp[9]  = 0.0; ab_glp[10] = 1.0; ab_glp[11] = 0.0; 
-	ab_glp[12] = 0.0; ab_glp[13] = 0.0; ab_glp[14] = 0.0; ab_glp[15] = 1.0; 
-
-	memcpy(ab_glm, ab_glp, 16*sizeof(double));
-
-	ab_glv[0] = 0;
-	ab_glv[1] = 0;
-	ab_glv[2] = 640;
-	ab_glv[3] = 480;
-*/
+	a = ac = b = c2 = cosa = cosa2 = delta = q = sina2 = t =0.0;
 	sc.set(0.0,0.0,1.0);
 	ec.set(0.0,0.0,1.0);
-
-	memset(ab_crosspoint, 0, 16*sizeof(float));
 }
 
-
-
-void ArcBall::getMatrix()
-{
-//	glGetDoublev(GL_PROJECTION_MATRIX,ab_glp);
-//	glGetIntegerv(GL_VIEWPORT,ab_glv);
-}
 
 
 /** find the intersection with the plane through the visible edge*/
@@ -288,13 +251,6 @@ void ArcBall::reset()
 {
 	quatIdentity(ab_quat);
 	quatIdentity(ab_last);
-}
-
-
-/** affect the arcball's orientation on openGL*/
-void ArcBall::rotate()
-{
-	glMultMatrixf(ab_quat);
 }
 
 

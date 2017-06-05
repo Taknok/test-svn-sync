@@ -93,11 +93,9 @@ public:
 	void setQuat(Quaternion Qt);
 	void setQuat(double r, double qx, double qy, double qz);
 	void setZoom(double radius, Vector3d eye, Vector3d up);
-	void rotate();
 	void reset();
 	void start(double ax, double ay);
 	void move(double ax, double ay);
-	void getMatrix();
 	void sphereCoords(double const &ax, double const &ay, Vector3d &V);// find the intersection with the sphere
 	void planarCoords(double const &ax, double const &ay, Vector3d &V);// get intersection with plane for "trackball" style rotation
 	void edgeCoords(Vector3d m, Vector3d &V);	// find the intersection with the plane through the visible edge

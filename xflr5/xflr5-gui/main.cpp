@@ -34,7 +34,7 @@
 */
 int main(int argc, char *argv[])
 {
-	QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL);
+//	QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL);
 
 
 #ifdef Q_OS_MACX
