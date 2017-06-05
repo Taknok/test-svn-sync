@@ -1573,24 +1573,16 @@ void gl3dView::paintGL3()
 {
 //	makeCurrent();
 	int width, height;
+
+	double s = 1.0;
+	double pixelRatio = devicePixelRatio();
+
 	glClearColor(Settings::backgroundColor().redF(), Settings::backgroundColor().greenF(), Settings::backgroundColor().blueF(), 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// Enable blending
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_DEPTH_TEST);
-
-	QVector4D clipPlane(0.0,0.0,-1,m_ClipPlanePos);
-
-	double s, pixelRatio;
-	s = 1.0;
-	pixelRatio = devicePixelRatio();
-
-	width = geometry().width() * pixelRatio;
-	height = geometry().height() * pixelRatio;
-
-	m_orthoMatrix.setToIdentity();
-	m_orthoMatrix.ortho(-s,s,-(height*s)/width,(height*s)/width,-50.0*s,50.0*s);
 
 	m_ShaderProgramSurface.bind();
 	m_ShaderProgramSurface.setUniformValue(m_EyePosLocationSurface, QVector3D(0.0,0.0,50.0*s));
@@ -1599,10 +1591,7 @@ void gl3dView::paintGL3()
 	m_ShaderProgramTexture.setUniformValue(m_EyePosLocationTexture, QVector3D(0.0,0.0,50.0*s));
 	m_ShaderProgramTexture.release();
 
-	QMatrix4x4 matQuat(m_ArcBall.ab_quat);
-
-	m_modelMatrix.setToIdentity();//keep identity
-	m_viewMatrix= matQuat.transposed();
+	QVector4D clipPlane(0.0,0.0,-1,m_ClipPlanePos);
 
 	m_ShaderProgramLine.bind();
 	m_ShaderProgramLine.setUniformValue(m_ClipPlaneLocationLine, clipPlane);
@@ -1616,6 +1605,25 @@ void gl3dView::paintGL3()
 	m_ShaderProgramTexture.setUniformValue(m_ClipPlaneLocationTexture, clipPlane);
 	m_ShaderProgramTexture.release();
 
+	width  = geometry().width() * pixelRatio;
+	height = geometry().height() * pixelRatio;
+
+	m_orthoMatrix.setToIdentity();
+	m_orthoMatrix.ortho(-s,s,-(height*s)/width,(height*s)/width,-50.0*s,50.0*s);
+
+	QMatrix4x4 matQuat(m_ArcBall.ab_quat);
+
+	m_modelMatrix.setToIdentity();//keep identity
+	m_viewMatrix = matQuat.transposed();
+	m_pvmMatrix = m_orthoMatrix * m_viewMatrix * m_modelMatrix;
+
+	m_ShaderProgramLine.bind();
+	m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, m_modelMatrix);
+	m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
+	m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
+	m_ShaderProgramLine.release();
+
+	if(m_bArcball) paintArcBall();
 
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 	if(pMainFrame->m_glLightDlg.isVisible())
@@ -1635,14 +1643,7 @@ void gl3dView::paintGL3()
 	m_viewMatrix.translate(m_glRotCenter.x, m_glRotCenter.y, m_glRotCenter.z);
 	m_pvmMatrix = m_orthoMatrix * m_viewMatrix * m_modelMatrix;
 
-	m_ShaderProgramLine.bind();
-	m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, m_modelMatrix);
-	m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
-	m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
-	m_ShaderProgramLine.release();
-
 	if(m_bAxes)  paintAxes();
-	if(m_bArcball) paintArcBall();
 
 	glRenderView();
 
@@ -1979,10 +1980,12 @@ void gl3dView::paintArcBall()
 void gl3dView::paintAxes()
 {
 	m_ShaderProgramLine.bind();
-
 	m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
 	m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3, 0);
 	m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_3DAxisColor);
+	m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, m_modelMatrix);
+	m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
+	m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
 
 	//draw Axis
 	glLineWidth(W3dPrefsDlg::s_3DAxisWidth);
