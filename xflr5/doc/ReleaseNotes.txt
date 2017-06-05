@@ -15,6 +15,10 @@
 *******************************************************************************
 
 
+xflr5 v6.38 June 5th, 2017
+	- fixed the random behaviour bug in the OpenGL view
+
+
 xflr5 v6.37 May 28th, 2017
 	- added a verification of the OpenGL version at startup
 	- fixed two bad crash bugs when derotating a foil and when defining a flap

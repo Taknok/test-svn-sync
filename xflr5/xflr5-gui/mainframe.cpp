@@ -269,10 +269,13 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 	QMiarex *pMiarex     = (QMiarex*)m_pMiarex;
 
 #if defined Q_OS_MAC && defined MAC_NATIVE_PREFS
-		QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
+	QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
+#elif defined Q_OS_LINUX
+	QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #else
-		QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
+	QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
 #endif
+
 	QString str;
 	int kx=117, ky=57;
 	bool bOK;
@@ -3477,9 +3480,11 @@ bool MainFrame::loadSettings()
 	
 
 #if defined Q_OS_MAC && defined MAC_NATIVE_PREFS
-		QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
+	QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
+#elif defined Q_OS_LINUX
+	QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #else
-        QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
+	QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
 #endif
 
 	settings.beginGroup("MainFrame");
@@ -4071,11 +4076,15 @@ void MainFrame::onResetSettings()
 	if(resp == QMessageBox::Yes)
 	{
 		QMessageBox::warning(this,tr("Default Settings"), tr("The settings will be reset at the next session"));
+
 #if defined Q_OS_MAC && defined MAC_NATIVE_PREFS
-		QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
+	QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
+#elif defined Q_OS_LINUX
+	QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #else
-        QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
+	QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
 #endif
+
 		settings.clear();
 		Settings::s_LastDirName = QDir::homePath();
 		// do not save on exit
@@ -5032,17 +5041,21 @@ bool MainFrame::serializePlaneProject(QDataStream &ar)
 
 void MainFrame::saveSettings()
 {
-	QAFoil *pAFoil = (QAFoil*)m_pAFoil;
-	QMiarex *pMiarex = (QMiarex*)m_pMiarex;
-	QXDirect *pXDirect = (QXDirect*)m_pXDirect;
+	QAFoil *pAFoil       = (QAFoil*)m_pAFoil;
+	QMiarex *pMiarex     = (QMiarex*)m_pMiarex;
+	QXDirect *pXDirect   = (QXDirect*)m_pXDirect;
 	QXInverse *pXInverse = (QXInverse*)m_pXInverse;
 
 	if(!m_bSaveSettings) return;
+
 #if defined Q_OS_MAC && defined MAC_NATIVE_PREFS
+	QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
+#elif defined Q_OS_LINUX
 	QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #else
 	QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
 #endif
+
 	settings.beginGroup("MainFrame");
 	{
 		settings.setValue("SettingsFormat", SETTINGSFORMAT);

@@ -224,7 +224,7 @@ protected:
 
 	bool m_bUse120StyleShaders;
 
-	QMatrix4x4 m_OrthoMatrix;
+	QMatrix4x4 m_orthoMatrix;
 	QMatrix4x4 m_pvmMatrix;
 	QMatrix4x4 m_viewMatrix;
 	QMatrix4x4 m_modelMatrix;
