@@ -52,6 +52,11 @@ ArcBall::ArcBall(void)
 	ab_quat[14]	=  0.0f;
 	ab_quat[15]	=  1.0f;*/
 
+	memset(ab_quat,       0, 16*sizeof(float));
+	memset(ab_last,       0, 16*sizeof(float));
+	memset(ab_next,       0, 16*sizeof(float));
+	memset(ab_crosspoint, 0, 16*sizeof(float));
+
 	Quaternion qti;
 	double yaw = -PI;
 	double pitch = 0.0;
@@ -60,9 +65,6 @@ ArcBall::ArcBall(void)
 
 	Quaternion qtyaw(-30.0, Vector3d(0.0,0.0,1.0));
 	setQuat(qti*qtyaw);
-
-	memcpy(ab_last, ab_quat, 16*sizeof(float));
-	memcpy(ab_next, ab_quat, 16*sizeof(float));
 
 	// the distance from the origin to the eye
 	ab_zoom  = 1.0;
