@@ -6560,7 +6560,6 @@ void MainFrame::setupDataDir()
 	s_TranslationDir.setPath("/usr/share/xflr5/translations");
 	s_StylesheetDir.setPath("/usr/share/xflr5/qss");
 #endif
-
 }
 
 
