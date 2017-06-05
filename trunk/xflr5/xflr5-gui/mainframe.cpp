@@ -125,11 +125,12 @@ QList <QColor> MainFrame::s_ColorList;
 MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(parent, flags)
 {
 	setAttribute(Qt::WA_DeleteOnClose);
-    s_bTrace = false;
+	s_bTrace = false;
 
 	if(s_bTrace)
 	{
 		QString FileName = QDir::tempPath() + "/Trace.log";
+		Trace(FileName);
 		s_pTraceFile = new QFile(FileName);
 
 		if (!s_pTraceFile->open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text)) s_bTrace = false;
@@ -203,8 +204,13 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 		Trace("product type: " +sysInfo.productType());
 		Trace("product version: " +sysInfo.productVersion());
 #endif
+		Trace("OpenGL support:");
+		Trace("    Desktop OpenGL ", qApp->testAttribute(Qt::AA_UseDesktopOpenGL));
+		Trace("    OpenGL ES      ", qApp->testAttribute(Qt::AA_UseOpenGLES));
+		Trace("    Software OpenGL", qApp->testAttribute(Qt::AA_UseSoftwareOpenGL));
+
 		QString strange;
-		strange.sprintf("Default OpengGl format:%d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
+		strange.sprintf("   Default OpengGl format:%d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
 		Trace(strange);
 	}
 
@@ -215,7 +221,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 	}
 	else if(QSurfaceFormat::defaultFormat().majorVersion()<2)
 	{
-		QString strong = "XFLR5 requires OpenGL 2.0 or greater.\n";
+		QString strong = "XFLR5 requires OpenGL 2.1 or greater.\n";
 		QString strange;
 		strange.sprintf("Your system provides by default OpenGL %d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
 		QMessageBox::warning(this, tr("Warning"), strong+strange);

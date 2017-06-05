@@ -19,12 +19,8 @@
 
 *****************************************************************************/
 
-#include "gl3dview.h"
-
-
 #include <QOpenGLShaderProgram>
 #include <QOpenGLPaintDevice>
-#include <QOpenGLFunctions>
 #include <QMouseEvent>
 
 #include "gl3dview.h"
@@ -1605,9 +1601,8 @@ void gl3dView::paintGL3()
 
 	QMatrix4x4 matQuat(m_ArcBall.ab_quat);
 
-	QMatrix4x4 modelMatrix;//keep identity
+	m_modelMatrix.setToIdentity();//keep identity
 	m_viewMatrix= matQuat.transposed();
-	m_pvmMatrix = m_orthoMatrix * m_viewMatrix * modelMatrix;
 
 	m_ShaderProgramLine.bind();
 	m_ShaderProgramLine.setUniformValue(m_ClipPlaneLocationLine, clipPlane);
@@ -1621,7 +1616,6 @@ void gl3dView::paintGL3()
 	m_ShaderProgramTexture.setUniformValue(m_ClipPlaneLocationTexture, clipPlane);
 	m_ShaderProgramTexture.release();
 
-	if(m_bArcball) paintArcBall();
 
 	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
 	if(pMainFrame->m_glLightDlg.isVisible())
@@ -1639,11 +1633,18 @@ void gl3dView::paintGL3()
 
 	m_viewMatrix.scale(m_glScaled, m_glScaled, m_glScaled);
 	m_viewMatrix.translate(m_glRotCenter.x, m_glRotCenter.y, m_glRotCenter.z);
-	m_pvmMatrix = m_orthoMatrix * m_viewMatrix * modelMatrix;
+	m_pvmMatrix = m_orthoMatrix * m_viewMatrix * m_modelMatrix;
 
-	if(m_bAxes)    paintAxes();
+	m_ShaderProgramLine.bind();
+	m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, m_modelMatrix);
+	m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
+	m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
+	m_ShaderProgramLine.release();
+
+	if(m_bAxes)  paintAxes();
+	if(m_bArcball) paintArcBall();
+
 	glRenderView();
-
 
 	glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
@@ -1937,7 +1938,6 @@ void gl3dView::paintArcBall()
 	m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
 	m_vboArcBall.bind();
 	m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3, 0);
-	m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
 	m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, QColor(50,55,80,255));
 
 	glLineWidth(1.0);
@@ -1983,8 +1983,6 @@ void gl3dView::paintAxes()
 	m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
 	m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3, 0);
 	m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_3DAxisColor);
-	m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
-	m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
 
 	//draw Axis
 	glLineWidth(W3dPrefsDlg::s_3DAxisWidth);
