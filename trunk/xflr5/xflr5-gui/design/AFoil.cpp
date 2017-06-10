@@ -535,9 +535,12 @@ void QAFoil::onAFoilCadd()
 		pNewFoil->foilLineWidth() = 1;
 		pNewFoil->foilPointStyle() = 0;
 
-		addNewFoil(pNewFoil);
-		fillFoilTable();
-		selectFoil(pNewFoil);
+		if(addNewFoil(pNewFoil))
+		{
+			fillFoilTable();
+			selectFoil(pNewFoil);
+		}
+		else delete pNewFoil;
 	}
 	else
 	{
@@ -601,9 +604,13 @@ void QAFoil::onAFoilPanels()
 		pNewFoil->foilLineWidth() = 1;
 		pNewFoil->foilPointStyle() = 0;
 
-		addNewFoil(pNewFoil);
-		fillFoilTable();
-		selectFoil(pNewFoil);
+		if(addNewFoil(pNewFoil))
+		{
+			fillFoilTable();
+			selectFoil(pNewFoil);
+		}
+		else
+			delete pNewFoil;
 	}
 	else
 	{
@@ -695,9 +702,15 @@ void QAFoil::onAFoilFoilGeom()
 		pNewFoil->foilLineStyle() = 0;
 		pNewFoil->foilLineWidth() = 1;
 		pNewFoil->foilPointStyle() = 0;
-		addNewFoil(pNewFoil);
-		fillFoilTable();
-		selectFoil(pNewFoil);
+		if(addNewFoil(pNewFoil))
+		{
+			fillFoilTable();
+			selectFoil(pNewFoil);
+		}
+		else
+		{
+			delete pNewFoil;
+		}
 	}
 	else
 	{
@@ -742,9 +755,12 @@ void QAFoil::onAFoilSetTEGap()
 		pNewFoil->foilLineWidth() = 1;
 		pNewFoil->foilPointStyle() = 0;
 
-		addNewFoil(pNewFoil);
-		fillFoilTable();
-		selectFoil(pNewFoil);
+		if(addNewFoil(pNewFoil))
+		{
+			fillFoilTable();
+			selectFoil(pNewFoil);
+		}
+		else delete pNewFoil;
 	}
 	else
 	{
@@ -792,9 +808,13 @@ void QAFoil::onAFoilSetLERadius()
 		pNewFoil->foilLineWidth() = 1;
 		pNewFoil->foilPointStyle() = 0;
 
-		addNewFoil(pNewFoil);
-		fillFoilTable();
-		selectFoil(pNewFoil);
+		if(addNewFoil(pNewFoil))
+		{
+			fillFoilTable();
+			selectFoil(pNewFoil);
+		}
+		else
+			delete pNewFoil;
 	}
 	else
 	{
@@ -848,9 +868,12 @@ void QAFoil::onAFoilInterpolateFoils()
 		pNewFoil->foilPointStyle() = 0;
         pNewFoil->foilName() = ifDlg.m_NewFoilName;
 
-		addNewFoil(pNewFoil);
-		fillFoilTable();
-		selectFoil(pNewFoil);
+		if(addNewFoil(pNewFoil))
+		{
+			fillFoilTable();
+			selectFoil(pNewFoil);
+		}
+		else delete pNewFoil;
 
 	}
 	else
@@ -900,9 +923,12 @@ void QAFoil::onAFoilNacaFoils()
 		pNewFoil->foilPointStyle() = 0;
 		pNewFoil->foilName()   = str;
 
-		addNewFoil(pNewFoil);
-		fillFoilTable();
-		selectFoil(pNewFoil);
+		if(addNewFoil(pNewFoil))
+		{
+			fillFoilTable();
+			selectFoil(pNewFoil);
+		}
+		else delete pNewFoil;
 	}
 	else
 	{
@@ -947,9 +973,12 @@ void QAFoil::onAFoilSetFlap()
 		pNewFoil->foilLineStyle() = 0;
 		pNewFoil->foilLineWidth() = 1;
 
-		addNewFoil(pNewFoil);
-		fillFoilTable();
-		selectFoil(pNewFoil);
+		if(addNewFoil(pNewFoil))
+		{
+			fillFoilTable();
+			selectFoil(pNewFoil);
+		}
+		else delete pNewFoil;
 	}
 	else
 	{
