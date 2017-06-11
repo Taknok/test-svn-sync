@@ -3844,7 +3844,6 @@ void QXDirect::onSetFlap()
 	FlapDlg flpDlg(s_pMainFrame);
 	flpDlg.m_pBufferFoil  = pNewFoil;
 	flpDlg.m_pMemFoil     = pCurFoil;
-	flpDlg.m_pXFoil       = &m_XFoil;
 	flpDlg.initDialog();
 
 	if(QDialog::Accepted == flpDlg.exec())

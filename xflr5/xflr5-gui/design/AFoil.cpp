@@ -959,7 +959,6 @@ void QAFoil::onAFoilSetFlap()
 	m_p2DWidget->update();;
 
 	FlapDlg flDlg(s_pMainFrame);
-	flDlg.m_pXFoil      = m_pXFoil;
 	flDlg.m_pMemFoil    = QXDirect::curFoil();
     flDlg.m_pBufferFoil = m_pBufferFoil;
     flDlg.initDialog();
