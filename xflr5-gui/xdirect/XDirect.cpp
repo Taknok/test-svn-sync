@@ -266,7 +266,7 @@ void QXDirect::setControls()
 
 	int OppVar = m_CpGraph.yVariable();
 	s_pMainFrame->m_pCurXFoilCtPlot->setChecked(!m_bPolarView  && OppVar==2 && m_XFoilVar ==1);
-	s_pMainFrame->m_CurXFoilDbPlot->setChecked(!m_bPolarView  && OppVar==2 && m_XFoilVar ==2);
+	s_pMainFrame->m_CurXFoilDbPlot->setChecked(!m_bPolarView   && OppVar==2 && m_XFoilVar ==2);
 	s_pMainFrame->m_pCurXFoilDtPlot->setChecked(!m_bPolarView  && OppVar==2 && m_XFoilVar ==3);
 	s_pMainFrame->m_pCurXFoilRtLPlot->setChecked(!m_bPolarView && OppVar==2 && m_XFoilVar ==4);
 	s_pMainFrame->m_pCurXFoilRtPlot->setChecked(!m_bPolarView  && OppVar==2 && m_XFoilVar ==5);
@@ -940,6 +940,7 @@ void QXDirect::loadSettings(QSettings *pSettings)
 {
 	QString str1, str2, str3;
 	int b;
+	int oppVar = 0;
 
 	pSettings->beginGroup("XDirect");
 	{
@@ -964,6 +965,7 @@ void QXDirect::loadSettings(QSettings *pSettings)
 		m_bSequence       = pSettings->value("Sequence", false).toBool();
 
 
+		oppVar = pSettings->value("OppVar",0).toInt();
 		m_XFoilVar       = pSettings->value("XFoilVar").toInt();
 		s_TimeUpdateInterval = pSettings->value("TimeUpdateInterval",100).toInt();
 
@@ -1037,6 +1039,9 @@ void QXDirect::loadSettings(QSettings *pSettings)
 	for(int ig=0; ig<m_PlrGraph.count(); ig++) m_PlrGraph[ig]->loadSettings(pSettings);
 
 	m_CpGraph.loadSettings(pSettings);
+
+	if(oppVar>=2) oppVar=0;
+	m_CpGraph.setYVariable(oppVar);
 
 	if(m_CpGraph.yVariable() == 0 || m_CpGraph.yVariable()>=2)
 	{
@@ -2406,9 +2411,12 @@ void QXDirect::onExportCurXFoilResults()
 						 .arg(m_XFoil.minf1, 6, 'f',4)
 						 .arg(m_XFoil.acrit, 4, 'f',1);	out << (strong);
 
-	m_XFoil.CreateXBL(x, nside1, nside2);
+	m_XFoil.CreateXBL(x);
+	nside1 = m_XFoil.m_nSide1;
+	nside2 = m_XFoil.m_nSide2;
+
 	//write top first
-	m_XFoil.FillHk(Hk, nside1, nside2);
+	m_XFoil.FillHk(Hk);
 	for (ibl=2; ibl<= nside1;ibl++)
 	{
 		uei = m_XFoil.uedg[ibl][1];
@@ -2432,7 +2440,7 @@ void QXDirect::onExportCurXFoilResults()
 	for (ibl=2; ibl< nside1;ibl++)	AA0[ibl][1] = m_XFoil.ctau[ibl][1];
 	for (ibl=2; ibl< nside2;ibl++)	AA0[ibl][2] = m_XFoil.ctau[ibl][2];
 
-	m_XFoil.FillRTheta(RTheta, nside1, nside2);
+	m_XFoil.FillRTheta(RTheta);
 	for (ibl=2; ibl<= nside1; ibl++)
 	{
 		DStar[ibl][1] = m_XFoil.dstr[ibl][1];
@@ -4249,6 +4257,7 @@ void QXDirect::saveSettings(QSettings *pSettings)
 		pSettings->setValue("ShowInviscid", m_bShowInviscid);
 		pSettings->setValue("ShowCpGraph", m_bCpGraph);
 		pSettings->setValue("Sequence", m_bSequence);
+		pSettings->setValue("OppVar", m_CpGraph.yVariable());
 		pSettings->setValue("XFoilVar", m_XFoilVar);
 		pSettings->setValue("TimeUpdateInterval", s_TimeUpdateInterval);
 		pSettings->setValue("PlrGraph", m_iPlrGraph);
