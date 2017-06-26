@@ -1060,6 +1060,8 @@ void setAutoWPolarName(void * ptrWPolar, void *ptrPlane)
 	}
 	if(pWPolar->referenceDim()==XFLR5::PROJECTEDREFDIM) pWPolar->polarName() += "-proj_area";
 
+	if(pWPolar->bTilted()) pWPolar->polarName() += "-TG";
+
 	for(int i=0; i<MAXEXTRADRAG; i++)
 	{
 		if(fabs(pWPolar->m_ExtraDragCoef[i])>PRECISION && fabs(pWPolar->m_ExtraDragArea[i])>PRECISION)
