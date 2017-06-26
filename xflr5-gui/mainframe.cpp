@@ -2709,7 +2709,7 @@ void MainFrame::createXDirectMenus()
 			m_pXDirectCpGraphMenu->addSeparator();
 			m_pXDirectCpGraphMenu->addAction(m_pShowInviscidCurve);
 			m_pXDirectCpGraphMenu->addSeparator();
-			m_pCurXFoilResults = m_pXDirectCpGraphMenu->addMenu(tr("Current XFoil Results"));
+			m_pCurXFoilResults = m_pXDirectCpGraphMenu->addMenu(tr("Boundary Layer Plots"));
 			{
 				m_pCurXFoilResults->addSeparator();
 				m_pCurXFoilResults->addAction(m_pCurXFoilCtPlot);
@@ -2809,7 +2809,7 @@ void MainFrame::createXDirectMenus()
             m_pXDirectCpGraphMenu_OperPolarCtxMenu->addSeparator();
             m_pXDirectCpGraphMenu_OperPolarCtxMenu->addAction(m_pShowInviscidCurve);
             m_pXDirectCpGraphMenu_OperPolarCtxMenu->addSeparator();
-            m_pCurXFoilResults_OperPolarCtxMenu = m_pXDirectCpGraphMenu_OperPolarCtxMenu->addMenu(tr("Current XFoil Results"));
+			m_pCurXFoilResults_OperPolarCtxMenu = m_pXDirectCpGraphMenu_OperPolarCtxMenu->addMenu(tr("Boundary Layer Plots"));
             {
                 m_pCurXFoilResults_OperPolarCtxMenu->addSeparator();
                 m_pCurXFoilResults_OperPolarCtxMenu->addAction(m_pCurXFoilCtPlot);
@@ -4833,7 +4833,18 @@ bool MainFrame::saveProject(QString PathName)
 		if(pos>0) Settings::s_LastDirName = PathName.left(pos);
 	}
 
+
+	QString backupFileName = QDir::tempPath() + QDir::separator() + s_ProjectName + ".bak";
+	qDebug()<<backupFileName;
+
+	QFile::copy(PathName, backupFileName);
+
 	QFile fp(PathName);
+	if(fp.exists())
+	{
+		// move the old file to the temp directory instead of overwriting it
+		fp.rename(backupFileName);
+	}
 
 	if (!fp.open(QIODevice::WriteOnly))
 	{
@@ -4842,7 +4853,16 @@ bool MainFrame::saveProject(QString PathName)
 	}
 
 	QDataStream ar(&fp);
-	serializeProjectXFL(ar,true);
+	if(!serializeProjectXFL(ar,true))
+	{
+		QString strong = tr("Error saving the project file");
+		strong +="\n";
+		QFile::copy(backupFileName, PathName);
+		strong +="The changes have not been saved";
+		QMessageBox::critical(window(), tr("Error"), strong);
+	}
+	else QFile::remove(backupFileName);
+
 
 	m_FileName = PathName;
 	fp.close();
