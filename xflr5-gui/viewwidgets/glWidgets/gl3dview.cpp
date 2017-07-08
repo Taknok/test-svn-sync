@@ -389,10 +389,6 @@ void gl3dView::mousePressEvent(QMouseEvent *event)
 	}
 
 	m_LastPoint = point;
-	QVector4D  x1(1.0, 0.0, 0.0, 1.0);
-	QVector4D  y1(0.0, 1.0, 0.0, 1.0);
-	QVector4D  z1(0.0, 0.0, 1.0, 1.0);
-
 }
 
 

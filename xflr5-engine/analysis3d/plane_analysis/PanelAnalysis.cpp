@@ -5409,6 +5409,7 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
 	{
 		if(pWing->m_Surface.at(j)->m_bIsTipLeft && !pWPolar->bThinSurfaces()) p+=pWing->m_Surface.at(j)->m_NXPanels;//tip patch panels
 
+		Vector3d surfaceNormal(pWing->m_Surface.at(j)->Normal);
 		for (k=0; k<pWing->m_Surface.at(j)->m_NYPanels; k++)
 		{
 			pp = p;
@@ -5458,8 +5459,8 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
 
 				//____________________________
 				// Project on wind axes
-				pWing->m_Cl[m]    = StripForce.dot(WindNormal)   /pWing->m_StripArea[m];
-				pWing->m_ICd[m]   = StripForce.dot(WindDirection)/pWing->m_StripArea[m];
+				pWing->m_Cl[m]    = StripForce.dot(surfaceNormal)   /pWing->m_StripArea[m];
+				pWing->m_ICd[m]   = StripForce.dot(WindDirection)   /pWing->m_StripArea[m];
 				WingIDrag += StripForce.dot(WindDirection);          // N/q
 			}
 			else
@@ -5500,7 +5501,7 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
 
 				//____________________________
 				// Project on wind axes
-				pWing->m_Cl[m]    = StripForce.dot(WindNormal)   /pWing->m_StripArea[m];
+				pWing->m_Cl[m]    = StripForce.dot(surfaceNormal)   /pWing->m_StripArea[m];
 				pWing->m_ICd[m]   = StripForce.dot(WindDirection)/pWing->m_StripArea[m];
 				pWing->m_WingCL      += StripForce.dot(WindNormal);                // N/q
 				WingIDrag += StripForce.dot(WindDirection);          // N/q
