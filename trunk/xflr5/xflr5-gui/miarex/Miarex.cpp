@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	Miarex
-			Copyright (C) 2008-2016 Andre Deperrois adeperrois@xflr5.com
+			Copyright (C) 2008-2017 Andre Deperrois adeperrois@xflr5.com
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -6130,6 +6130,7 @@ void QMiarex::onStreamlines()
 //		m_bResetglStream = true;
 	}
 	if(m_iView==XFLR5::W3DVIEW) updateView();
+	m_pGL3dView->setFocus();
 }
 
 
@@ -6161,6 +6162,7 @@ void QMiarex::onSurfaceSpeeds()
 //		m_bResetglStream = true;
 	}
 	if(m_iView==XFLR5::W3DVIEW) updateView();
+	m_pGL3dView->setFocus();
 }
 
 

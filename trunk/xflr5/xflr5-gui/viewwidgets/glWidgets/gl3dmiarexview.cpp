@@ -1733,6 +1733,7 @@ void gl3dMiarexView::paintStreamLines()
 	m_ShaderProgramLine.release();
 }
 
+
 void gl3dMiarexView::paintTransitions(int iWing)
 {
 	m_ShaderProgramLine.bind();
