@@ -5439,7 +5439,7 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
 				getSpeedVector(C, Mu, Sigma, Wg, false);
 
 				pWing->m_Vd[m] = Wg;
-				InducedAngle = atan2(Wg.dot(WindNormal), QInf);
+				InducedAngle = atan2(Wg.dot(surfaceNormal), QInf);
 				pWing->m_Ai[m]      =       InducedAngle*180/PI;
 
 				// ____________________________
@@ -5483,7 +5483,7 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
 						if(pWing->m_pWingPanel[pp].m_bIsTrailing)
 						{
 							pWing->m_Vd[m]      = Wg;
-							InducedAngle = atan2(Wg.dot(WindNormal), QInf);
+							InducedAngle = atan2(Wg.dot(surfaceNormal), QInf);
 							pWing->m_Ai[m]      = InducedAngle*180/PI;
 						}
 
