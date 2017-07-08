@@ -4835,7 +4835,6 @@ bool MainFrame::saveProject(QString PathName)
 
 
 	QString backupFileName = QDir::tempPath() + QDir::separator() + s_ProjectName + ".bak";
-	qDebug()<<backupFileName;
 
 	QFile::copy(PathName, backupFileName);
 
