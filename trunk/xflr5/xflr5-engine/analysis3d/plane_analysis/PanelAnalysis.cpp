@@ -1240,6 +1240,7 @@ void PanelAnalysis::computeFarField(double QInf, double Alpha0, double AlphaDelt
 			if(m_pWPolar->polarType()==XFLR5::FIXEDAOAPOLAR)       alpha = m_OpAlpha;
 			else if(m_pWPolar->polarType()==XFLR5::BETAPOLAR)      alpha = m_OpAlpha;
 			else if(m_pWPolar->polarType()==XFLR5::STABILITYPOLAR) alpha = m_OpAlpha;
+			else if(m_pWPolar->Beta()>PRECISION)                   alpha = m_OpAlpha;
 			else                                                   alpha = Alpha0 + q*AlphaDelta;
 		}
 		WindNormal.set(-sin(alpha*PI/180.0), 0.0, cos(alpha*PI/180.0));
