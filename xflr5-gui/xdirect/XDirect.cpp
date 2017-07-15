@@ -524,14 +524,37 @@ void QXDirect::fillComboBoxes(bool bEnable)
 	m_pPointDelegate->setPointStyle(PointStyle);
 	m_pPointDelegate->setLineColor(m_LineStyle.m_Color);
 
-	m_pctrlCurveStyle->setLine(m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
+/*	m_pctrlCurveStyle->setLine(m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
 	m_pctrlCurveWidth->setLine(m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
 	m_pctrlPointStyle->setLine(m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
 
 	m_pctrlCurveColor->setColor(m_LineStyle.m_Color);
 	m_pctrlCurveColor->setStyle(m_LineStyle.m_Style);
 	m_pctrlCurveColor->setWidth(m_LineStyle.m_Width);
-	m_pctrlCurveColor->setPointStyle(m_LineStyle.m_PointStyle);
+	m_pctrlCurveColor->setPointStyle(m_LineStyle.m_PointStyle);*/
+
+	if(bEnable)
+	{
+		m_pctrlCurveStyle->setLine( m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
+		m_pctrlCurveWidth->setLine( m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
+		m_pctrlPointStyle->setLine(m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
+		m_pctrlCurveColor->setColor(m_LineStyle.m_Color);
+		m_pctrlCurveColor->setStyle(m_LineStyle.m_Style);
+		m_pctrlCurveColor->setWidth(m_LineStyle.m_Width);
+		m_pctrlCurveColor->setPointStyle(m_LineStyle.m_PointStyle);
+	}
+	else
+	{
+		m_pctrlCurveStyle->setLine( 0, 1, QColor(100,100,100), 0);
+		m_pctrlCurveWidth->setLine( 0, 1, QColor(100,100,100), 0);
+		m_pctrlPointStyle->setLine(0, 1, QColor(100,100,100), 0);
+		m_pctrlCurveColor->setColor(QColor(100,100,100));
+		m_pctrlCurveColor->setStyle(0);
+		m_pctrlCurveColor->setWidth(1);
+		m_pctrlCurveColor->setPointStyle(0);
+	}
+
+
 
 	m_pctrlCurveStyle->update();
 	m_pctrlCurveWidth->update();
@@ -4557,7 +4580,7 @@ Polar * QXDirect::setPolar(Polar *pPolar)
 	m_bResetCurves = true;
 	setAnalysisParams();
 	setOpp();
-
+	setCurveParams();
 	return m_pCurPolar;
 }
 
