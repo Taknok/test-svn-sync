@@ -28,6 +28,7 @@
 #include <QStatusBar>
 #include <mainframe.h>
 #include <globals.h>
+#include <graph_globals.h>
 #include "misc/Settings.h"
 #include "QGraph.h"
 #include <xdirect/XDirect.h>
@@ -539,7 +540,9 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
 
 
 	drawFoil(painter, QXDirect::curFoil(), -Alpha, m_fScale, m_fScale*m_fYScale, m_FoilOffset);
-	if(QXDirect::curFoil()->foilPointStyle()>0) drawPoints(painter, QXDirect::curFoil(), -Alpha, m_fScale,m_fScale*m_fYScale, m_FoilOffset);
+	if(QXDirect::curFoil()->foilPointStyle()>0)
+		drawPoints(painter, QXDirect::curFoil(), -Alpha, m_fScale,m_fScale*m_fYScale, m_FoilOffset, Settings::s_BackgroundColor);
+
 
 /*	if(m_bShowPanels)
 	{
