@@ -21,6 +21,7 @@
 
 
 #include "QGraph.h"
+#include "graph_globals.h"
 
 #include <math.h>
 #include <QPainter>
@@ -148,7 +149,7 @@ void QGraph::drawCurve(int nIndex, QPainter &painter)
 			for (i=0; i<pCurve->size();i++)
 			{
 				QPoint pt(int(pCurve->x[i]/m_scalex+m_ptoffset.x()), int(pCurve->y[i]/  scaley+m_ptoffset.y()));
-				drawPoint(painter, pCurve->pointStyle(), pt);
+				drawPoint(painter, pCurve->pointStyle(), pt, m_BkColor);
 			}
 		}
 
@@ -601,7 +602,7 @@ void QGraph::drawLegend(QPainter &painter, QPoint &Place, QFont &LegendFont, QCo
 					int x1 = Place.x() + 0.5*LegendSize;
 					int y1 = Place.y() + 1.*ypos*npos+ ypos/3;
 
-					drawPoint(painter, pCurve->pointStyle(), QPoint(x1, y1));
+					drawPoint(painter, pCurve->pointStyle(), QPoint(x1, y1), m_BkColor);
 				}
 
 				painter.setPen(TextPen);

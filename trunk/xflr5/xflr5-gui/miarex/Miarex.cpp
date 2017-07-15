@@ -1347,6 +1347,7 @@ void QMiarex::fillComboBoxes(bool bEnable)
 	int LineStyle[5];
 	int LineWidth[5];
 	int LinePoints[5];
+
 	for (int i=0; i<5;i++)
 	{
 		LineWidth[i] = m_LineStyle.m_Width;
@@ -1354,13 +1355,14 @@ void QMiarex::fillComboBoxes(bool bEnable)
 		LinePoints[i] = m_LineStyle.m_PointStyle;
 	}
 
-
 	m_pStyleDelegate->setLineWidth(LineWidth); // the same selected width for all styles
 	m_pStyleDelegate->setLineColor(m_LineStyle.m_Color);
+//	else        m_pStyleDelegate->setLineColor(QColor(100,100,100));
 	m_pStyleDelegate->setPointStyle(LinePoints);
 
 	m_pWidthDelegate->setLineStyle(LineStyle); //the same selected style for all widths
 	m_pWidthDelegate->setLineColor(m_LineStyle.m_Color);
+//	else        m_pPointDelegate->setLineColor(QColor(100,100,100));
 	m_pWidthDelegate->setPointStyle(LinePoints);
 
 	m_pPointDelegate->setLineStyle(LineStyle);
@@ -1368,14 +1370,28 @@ void QMiarex::fillComboBoxes(bool bEnable)
 	for (int i=0; i<5;i++) LinePoints[i]=i;
 	m_pPointDelegate->setPointStyle(LinePoints);
 	m_pPointDelegate->setLineColor(m_LineStyle.m_Color);
+//	else        m_pPointDelegate->setLineColor(QColor(100,100,100));
 
-	m_pctrlCurveStyle->setLine( m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
-	m_pctrlCurveWidth->setLine( m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
-	m_pctrlCurvePoints->setLine(m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
 
-	m_pctrlCurveColor->setColor(m_LineStyle.m_Color);
-	m_pctrlCurveColor->setStyle(m_LineStyle.m_Style);
-	m_pctrlCurveColor->setWidth(m_LineStyle.m_Width);
+	if(bEnable)
+	{
+		m_pctrlCurveStyle->setLine( m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
+		m_pctrlCurveWidth->setLine( m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
+		m_pctrlCurvePoints->setLine(m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
+		m_pctrlCurveColor->setColor(m_LineStyle.m_Color);
+		m_pctrlCurveColor->setStyle(m_LineStyle.m_Style);
+		m_pctrlCurveColor->setWidth(m_LineStyle.m_Width);
+	}
+	else
+	{
+		m_pctrlCurveStyle->setLine( 0, 1, QColor(100,100,100), 0);
+		m_pctrlCurveWidth->setLine( 0, 1, QColor(100,100,100), 0);
+		m_pctrlCurvePoints->setLine(0, 1, QColor(100,100,100), 0);
+		m_pctrlCurveColor->setColor(QColor(100,100,100));
+		m_pctrlCurveColor->setStyle(0);
+		m_pctrlCurveColor->setWidth(1);
+	}
+
 
 	m_pctrlCurveStyle->update();
 	m_pctrlCurveWidth->update();
@@ -1397,7 +1413,7 @@ void QMiarex::fillComboBoxes(bool bEnable)
 */
 void QMiarex::fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 {
-	if(!pWOpp || !pGraph || !pCurve || !m_pCurWPolar) return;
+	if(!pWOpp || !pGraph || !pCurve) return;
 	int Var = pGraph->yVariable();
 	int nStart, i;
 
@@ -7210,6 +7226,10 @@ void QMiarex::setPlane(QString PlaneName)
 		m_pCurWPolar = NULL;
 		m_pCurPOpp  = NULL;
 		s_bResetCurves = true;
+
+		setCurveParams();
+		s_bResetCurves = true;
+
 		updateView();
 		QApplication::restoreOverrideCursor();
 		return;
@@ -7240,6 +7260,8 @@ void QMiarex::setPlane(QString PlaneName)
 
 //	setScale();
 	setWGraphScale();
+
+	s_bResetCurves = true;
 
 	QApplication::restoreOverrideCursor();
 }
@@ -7665,6 +7687,8 @@ void QMiarex::setWPolar(bool bCurrent, QString WPlrName)
 	if(!m_pCurWPolar)
 	{
 		m_pCurPOpp = NULL;
+		setCurveParams();
+		s_bResetCurves = true;
 		return;
 	}
 
@@ -8282,13 +8306,18 @@ void QMiarex::paintPanelForceLegendText(QPainter &painter)
 */
 bool QMiarex::setPlaneOpp(bool bCurrent, double x)
 {
-	if(!m_pCurPlane) return false;
+	if(!m_pCurPlane || !m_pCurWPolar)
+	{
+		m_pCurPOpp = NULL;
+		s_bResetCurves = true;
+
+		setCurveParams();
+		return false;
+	}
 
 	m_bResetTextLegend = true;
 
 	m_pCurPOpp = setPlaneOppObject(m_pCurPlane, m_pCurWPolar, m_pCurPOpp, bCurrent, x);
-
-	setCurveParams();
 
 	if(m_pCurPOpp)
 	{
