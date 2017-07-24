@@ -2538,45 +2538,6 @@ void MainFrame::createXDirectActions()
 	m_pExportCurXFoilRes->setStatusTip(tr("Sets Speed vs. chord graph"));
 	connect(m_pExportCurXFoilRes, SIGNAL(triggered()), pXDirect, SLOT(onExportCurXFoilResults()));
 
-	m_pCurXFoilCtPlot = new QAction(tr("Max. Shear Coefficient"), this);
-	m_pCurXFoilCtPlot->setCheckable(true);
-	connect(m_pCurXFoilCtPlot, SIGNAL(triggered()), pXDirect, SLOT(onCtPlot()));
-
-	m_CurXFoilDbPlot = new QAction(tr("Bottom Side D* and Theta"), this);
-	m_CurXFoilDbPlot->setCheckable(true);
-	connect(m_CurXFoilDbPlot, SIGNAL(triggered()), pXDirect, SLOT(onDbPlot()));
-
-	m_pCurXFoilDtPlot = new QAction(tr("Top Side D* and Theta"), this);
-	m_pCurXFoilDtPlot->setCheckable(true);
-	connect(m_pCurXFoilDtPlot, SIGNAL(triggered()), pXDirect, SLOT(onDtPlot()));
-
-	m_pCurXFoilRtLPlot = new QAction(tr("Log(Re_Theta)"), this);
-	m_pCurXFoilRtLPlot->setCheckable(true);
-	connect(m_pCurXFoilRtLPlot, SIGNAL(triggered()), pXDirect, SLOT(onRtLPlot()));
-
-	m_pCurXFoilRtPlot = new QAction(tr("Re_Theta"), this);
-	m_pCurXFoilRtPlot->setCheckable(true);
-	connect(m_pCurXFoilRtPlot, SIGNAL(triggered()), pXDirect, SLOT(onRtPlot()));
-
-	m_pCurXFoilNPlot = new QAction(tr("Amplification Ratio"), this);
-	m_pCurXFoilNPlot->setCheckable(true);
-	connect(m_pCurXFoilNPlot, SIGNAL(triggered()), pXDirect, SLOT(onNPlot()));
-
-	m_pCurXFoilCdPlot = new QAction(tr("Dissipation Coefficient"), this);
-	m_pCurXFoilCdPlot->setCheckable(true);
-	connect(m_pCurXFoilCdPlot, SIGNAL(triggered()), pXDirect, SLOT(onCdPlot()));
-
-	m_pCurXFoilCfPlot = new QAction(tr("Skin Friction Coefficient"), this);
-	m_pCurXFoilCfPlot->setCheckable(true);
-	connect(m_pCurXFoilCfPlot, SIGNAL(triggered()), pXDirect, SLOT(onCfPlot()));
-
-	m_pCurXFoilUePlot = new QAction(tr("Edge Velocity"), this);
-	m_pCurXFoilUePlot->setCheckable(true);
-	connect(m_pCurXFoilUePlot, SIGNAL(triggered()), pXDirect, SLOT(onUePlot()));
-
-	m_pCurXFoilHPlot = new QAction(tr("Kinematic Shape Parameter"), this);
-	m_pCurXFoilHPlot->setCheckable(true);
-	connect(m_pCurXFoilHPlot, SIGNAL(triggered()), pXDirect, SLOT(onHPlot()));
 
 //	m_pImportJavaFoilPolar = new QAction(tr("Import JavaFoil Polar"), this);
 //	connect(m_pImportJavaFoilPolar, SIGNAL(triggered()), pXDirect, SLOT(onImportJavaFoilPolar()));
@@ -2709,21 +2670,6 @@ void MainFrame::createXDirectMenus()
 			m_pXDirectCpGraphMenu->addSeparator();
 			m_pXDirectCpGraphMenu->addAction(m_pShowInviscidCurve);
 			m_pXDirectCpGraphMenu->addSeparator();
-			m_pCurXFoilResults = m_pXDirectCpGraphMenu->addMenu(tr("Boundary Layer Plots"));
-			{
-				m_pCurXFoilResults->addSeparator();
-				m_pCurXFoilResults->addAction(m_pCurXFoilCtPlot);
-				m_pCurXFoilResults->addAction(m_CurXFoilDbPlot);
-				m_pCurXFoilResults->addAction(m_pCurXFoilDtPlot);
-				m_pCurXFoilResults->addAction(m_pCurXFoilRtLPlot);
-				m_pCurXFoilResults->addAction(m_pCurXFoilRtPlot);
-				m_pCurXFoilResults->addAction(m_pCurXFoilNPlot);
-				m_pCurXFoilResults->addAction(m_pCurXFoilCdPlot);
-				m_pCurXFoilResults->addAction(m_pCurXFoilCfPlot);
-				m_pCurXFoilResults->addAction(m_pCurXFoilUePlot);
-				m_pCurXFoilResults->addAction(m_pCurXFoilHPlot);
-			}
-			m_pXDirectCpGraphMenu->addSeparator();
 			m_pXDirectCpGraphMenu->addAction(m_pResetCurGraphScales);
 //			m_pXDirectCpGraphMenu->addAction(exportCurGraphAct);
 		}
@@ -2808,21 +2754,6 @@ void MainFrame::createXDirectMenus()
             m_pXDirectCpGraphMenu_OperPolarCtxMenu->addAction(m_psetQVarGraph);
             m_pXDirectCpGraphMenu_OperPolarCtxMenu->addSeparator();
             m_pXDirectCpGraphMenu_OperPolarCtxMenu->addAction(m_pShowInviscidCurve);
-            m_pXDirectCpGraphMenu_OperPolarCtxMenu->addSeparator();
-			m_pCurXFoilResults_OperPolarCtxMenu = m_pXDirectCpGraphMenu_OperPolarCtxMenu->addMenu(tr("Boundary Layer Plots"));
-            {
-                m_pCurXFoilResults_OperPolarCtxMenu->addSeparator();
-                m_pCurXFoilResults_OperPolarCtxMenu->addAction(m_pCurXFoilCtPlot);
-                m_pCurXFoilResults_OperPolarCtxMenu->addAction(m_CurXFoilDbPlot);
-                m_pCurXFoilResults_OperPolarCtxMenu->addAction(m_pCurXFoilDtPlot);
-                m_pCurXFoilResults_OperPolarCtxMenu->addAction(m_pCurXFoilRtLPlot);
-                m_pCurXFoilResults_OperPolarCtxMenu->addAction(m_pCurXFoilRtPlot);
-                m_pCurXFoilResults_OperPolarCtxMenu->addAction(m_pCurXFoilNPlot);
-                m_pCurXFoilResults_OperPolarCtxMenu->addAction(m_pCurXFoilCdPlot);
-                m_pCurXFoilResults_OperPolarCtxMenu->addAction(m_pCurXFoilCfPlot);
-                m_pCurXFoilResults_OperPolarCtxMenu->addAction(m_pCurXFoilUePlot);
-                m_pCurXFoilResults_OperPolarCtxMenu->addAction(m_pCurXFoilHPlot);
-            }
             m_pXDirectCpGraphMenu_OperPolarCtxMenu->addSeparator();
             m_pXDirectCpGraphMenu_OperPolarCtxMenu->addAction(m_pResetCurGraphScales);
 //			m_pXDirectCpGraphMenu->addAction(exportCurGraphAct);
