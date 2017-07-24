@@ -298,7 +298,7 @@ private:
     QMenu *m_pOpPointMenu, *m_pXDirectCpGraphMenu, *m_pXDirectCpGraphMenu_OperPolarCtxMenu, *m_pCurrentOppMenu;
     QMenu *m_pPolarMenu, *m_pCurrentPolarMenu, *m_pCurrentPolarMenu_OperFoilCtxMenu, *m_pCurrentPolarMenu_OperPolarCtxMenu;
     QMenu *m_pGraphPolarMenu, *CurPolarGraphMenu;
-    QMenu *m_pOperFoilCtxMenu, *m_pOperPolarCtxMenu, *m_pCurXFoilResults, *m_pCurXFoilResults_OperPolarCtxMenu;
+    QMenu *m_pOperFoilCtxMenu, *m_pOperPolarCtxMenu;
 
 	//XInverse menu
 	QMenu *m_pXInverseViewMenu, *m_pXInverseFoilMenu, *m_pXInverseGraphMenu, *m_pInverseContextMenu;
@@ -395,8 +395,7 @@ private:
 	QAction *m_pXDirectStyleAct;
 	QAction *m_pXDirectPolarFilter;
 	QAction *m_psetQVarGraph, *m_psetCpVarGraph;
-	QAction *m_pExportCurXFoilRes, * m_pCurXFoilCtPlot, *m_CurXFoilDbPlot, *m_pCurXFoilDtPlot, *m_pCurXFoilRtLPlot;
-	QAction *m_pCurXFoilRtPlot, *m_pCurXFoilNPlot, *m_pCurXFoilCdPlot, *m_pCurXFoilCfPlot, *m_pCurXFoilUePlot, *m_pCurXFoilHPlot;
+	QAction *m_pExportCurXFoilRes;
 	QAction *m_pManageFoilsAct, *m_pRenamePolarAct;
 	QAction *m_pImportJavaFoilPolar, *m_pImportXFoilPolar;
 	QAction *m_pImportXMLFoilAnalysis, *m_pExportXMLFoilAnalysis;
