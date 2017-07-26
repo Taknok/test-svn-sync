@@ -377,7 +377,7 @@ void QXDirect::createOppCurves(OpPoint *pOpp)
 
 		fillOppCurve(pOpPoint, &m_CpGraph, pCurve1);
 
-		if(m_bShowInviscid && pOpPoint)
+		if(m_bShowInviscid && pOpPoint && m_CpGraph.yVariable()<2)
 		{
 			Curve *pCpi = m_CpGraph.addCurve();
 			pCpi->setPoints(pOpPoint->pointStyle());
@@ -625,7 +625,7 @@ void QXDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bI
 			for (int i=2;   i<=m_pCurOpp->nside2-1; i++) pCurve3->appendPoint(m_pCurOpp->xbl[i][2], m_pCurOpp->ctq[i][2]);
 			break;
 		}
-		case 3:  //Dstar
+		case 3:  //Dstar & theta TOP
 		{
 			pGraph->setYTitle("D* & Theta Top");
 
@@ -642,8 +642,9 @@ void QXDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bI
 			}
 			break;
 		}
-		case 4:  //shear coeff
+		case 4:  //DStar & theta BOT
 		{
+			qDebug("fillin bottom");
 			pGraph->setYTitle("D* & Theta Bot");
 			Curve * pCurve0 = pGraph->addCurve();
 			Curve * pCurve1 = pGraph->addCurve();
