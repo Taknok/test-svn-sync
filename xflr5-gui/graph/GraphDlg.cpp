@@ -124,8 +124,8 @@ void GraphDlg::fillVariableList()
 			m_pctrlYSel->addItem("Cp");
 			m_pctrlYSel->addItem("Q - Velocity");
 			m_pctrlYSel->addItem("Max. Shear Coefficient");
-			m_pctrlYSel->addItem("Bottom Side D* and Theta");
 			m_pctrlYSel->addItem("Top Side D* and Theta");
+			m_pctrlYSel->addItem("Bottom Side D* and Theta");
 			m_pctrlYSel->addItem("Log(Re_Theta)");
 			m_pctrlYSel->addItem("Re_Theta");
 			m_pctrlYSel->addItem("Amplification Ratio");
