@@ -295,6 +295,7 @@ void OpPointWidget::resizeEvent(QResizeEvent *event)
 		QRect rGraphRect = QRect(0, 0, + rect().width(), rect().height()-h4);
 		m_pCpGraph->setMargin(50);
 		m_pCpGraph->setDrawRect(rGraphRect);
+		m_pCpGraph->initializeGraph();
 	}
 	setFoilScale();
 }
@@ -323,13 +324,13 @@ void OpPointWidget::setFoilScale()
 		h =  m_pCpGraph->clientRect()->height();
 		m_FoilOffset.rx() = rect().left() + iMargin;
 		m_FoilOffset.ry() = (rect().height()+h)/2;
-		m_fScale = rect().width()-2.0*iMargin;
-/*		if(m_pCpGraph && m_pCpGraph->yVariable()<2)
+//		m_fScale = rect().width()-2.0*iMargin;
+//		if(m_pCpGraph && m_pCpGraph->yVariable()<2)
 		{
 			double p0  = m_pCpGraph->xToClient(0.0);
 			double p1  = m_pCpGraph->xToClient(1.0);
 			m_fScale =  (p1-p0);
-		}*/
+		}
 	}
 	else
 	{
