@@ -225,7 +225,7 @@ void gl3dMiarexView::contextMenuEvent (QContextMenuEvent * event)
 void gl3dMiarexView::on3DReset()
 {
 	QMiarex *pMiarex = (QMiarex*)s_pMiarex;
-	pMiarex->setScale();
+//	pMiarex->setScale();
 	if(pMiarex->m_pCurPlane) startResetTimer(pMiarex->m_pCurPlane->span());
 }
 
