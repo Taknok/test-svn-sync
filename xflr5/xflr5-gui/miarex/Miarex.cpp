@@ -1039,9 +1039,9 @@ void QMiarex::createStabTimeCurves()
 	if(m_StabilityResponseType==0)
 	{
 		//start with the user input initial conditions
-		in[0] = complex<double>(m_TimeInput[0]*PI/180.0, 0.0);
-		in[1] = complex<double>(m_TimeInput[1]*PI/180.0, 0.0);
-		in[2] = complex<double>(m_TimeInput[2]*PI/180.0, 0.0);
+		in[0] = complex<double>(m_TimeInput[0], 0.0);
+		in[1] = complex<double>(m_TimeInput[1], 0.0);
+		in[2] = complex<double>(m_TimeInput[2], 0.0);
 		in[3] = complex<double>(m_TimeInput[3]*PI/180.0, 0.0);
 	}
 	else if(m_StabilityResponseType==2)
@@ -1086,7 +1086,7 @@ void QMiarex::createStabTimeCurves()
 			y[1] = *(M+4*1+0) * q[0] +*(M+4*1+1) * q[1] +*(M+4*1+2) * q[2] +*(M+4*1+3) * q[3];
 			y[2] = *(M+4*2+0) * q[0] +*(M+4*2+1) * q[1] +*(M+4*2+2) * q[2] +*(M+4*2+3) * q[3];
 			y[3] = *(M+4*3+0) * q[0] +*(M+4*3+1) * q[1] +*(M+4*3+2) * q[2] +*(M+4*3+3) * q[3];
-			if(abs(q[0])>1.e10 || abs(q[1])>1.e10 || abs(q[2])>1.e10  || abs(q[3])>1.e10 ) break;
+			if(fabs(q[0])>1.e10 || fabs(q[1])>1.e10 || fabs(q[2])>1.e10  || fabs(q[3])>1.e10 ) break;
 
 			pCurve0->appendPoint(t, y[0].real());
 			if(m_bLongitudinal) pCurve1->appendPoint(t, y[1].real());
