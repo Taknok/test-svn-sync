@@ -77,8 +77,6 @@
 #include <windows.h> // for Sleep
 #endif
 
-using namespace std;
-
 
 MainFrame *QMiarex::s_pMainFrame = NULL;
 
@@ -1088,7 +1086,7 @@ void QMiarex::createStabTimeCurves()
 			y[1] = *(M+4*1+0) * q[0] +*(M+4*1+1) * q[1] +*(M+4*1+2) * q[2] +*(M+4*1+3) * q[3];
 			y[2] = *(M+4*2+0) * q[0] +*(M+4*2+1) * q[1] +*(M+4*2+2) * q[2] +*(M+4*2+3) * q[3];
 			y[3] = *(M+4*3+0) * q[0] +*(M+4*3+1) * q[1] +*(M+4*3+2) * q[2] +*(M+4*3+3) * q[3];
-			if(fabs(q[0])>1.e10 || fabs(q[1])>1.e10 || fabs(q[2])>1.e10  || fabs(q[3])>1.e10 ) break;
+			if(abs(q[0])>1.e10 || abs(q[1])>1.e10 || abs(q[2])>1.e10  || abs(q[3])>1.e10 ) break;
 
 			pCurve0->appendPoint(t, y[0].real());
 			if(m_bLongitudinal) pCurve1->appendPoint(t, y[1].real());
