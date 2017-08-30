@@ -82,10 +82,6 @@ void LineCbBox::paintEvent (QPaintEvent *event)
 
 	painter.save();
 
-//	painter.setRenderHint(QPainter::Antialiasing);
-
-	QColor ContourColor = Qt::gray;
-
 	if(isEnabled())
 	{
 

@@ -77,6 +77,8 @@
 #include <windows.h> // for Sleep
 #endif
 
+using namespace std;
+
 
 MainFrame *QMiarex::s_pMainFrame = NULL;
 
