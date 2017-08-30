@@ -105,7 +105,7 @@ gl3dView::gl3dView(QWidget *pParent) : QOpenGLWidget(pParent)
 
 	m_glScaled = m_glScaledRef = 1.0;
 	m_glScaleIncrement = 0.0;
-	m_ClipPlanePos  = 5.0;
+	m_ClipPlanePos  = 50.0;
 
 	m_bTrans = false;
 
@@ -221,7 +221,7 @@ QSize gl3dView::minimumSizeHint() const
 void gl3dView::onClipPlane(int pos)
 {
 	double planepos =  (double)pos/100.0;
-	m_ClipPlanePos = sinh(planepos) * 0.5;
+	m_ClipPlanePos = sinh(planepos) * m_glScaled;
 	update();
 }
 
