@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	QGraph Classes
-	Copyright (C) 2008-2016 Andre Deperrois adeperrois@xflr5.com
+	Copyright (C) 2008-2017 Andre Deperrois adeperrois@xflr5.com
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -582,7 +582,7 @@ void QGraph::drawLegend(QPainter &painter, QPoint &Place, QFont &LegendFont, QCo
 	int npos = 0;
 	for (int nc=0; nc< m_oaCurves.size(); nc++)
 	{
-		pCurve = (Curve*) m_oaCurves[nc];
+		pCurve = m_oaCurves[nc];
 		if(pCurve->isVisible())
 		{
 			pCurve->curveName(strong);

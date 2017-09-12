@@ -844,7 +844,9 @@ void QMiarex::createWOppCurves()
 						pWingCurve->setStyle(pPOpp->style());
 						pWingCurve->setColor(pPOpp->color());
 						pWingCurve->setWidth(pPOpp->width());
-						pWingCurve->setCurveName(POppTitle(pPOpp));
+						//only show the legend for the main wing
+						if(iw==0) pWingCurve->setCurveName(POppTitle(pPOpp));
+						else      pWingCurve->setCurveName("");
 						fillWOppCurve(pPOpp->m_pPlaneWOpp[iw], m_WingGraph[ic], pWingCurve);
 					}
 				}
