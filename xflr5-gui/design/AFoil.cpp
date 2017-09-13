@@ -36,6 +36,7 @@
 #include "LECircleDlg.h"
 #include <globals.h>
 #include <mainframe.h>
+#include <xdirect/XDirect.h>
 #include <misc/Settings.h>
 #include <misc/LinePickerDlg.h>
 #include <misc/RenameDlg.h>

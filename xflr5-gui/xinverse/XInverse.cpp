@@ -26,7 +26,6 @@
 #include <QtDebug>
 
 #include "XInverse.h" 
-#include <xdirect/objects2d.h>
 #include <viewwidgets/inverseviewwidget.h>
 #include "FoilSelectionDlg.h"
 #include "PertDlg.h"
@@ -34,6 +33,8 @@
 #include <globals.h>
 #include <graph_globals.h>
 #include <mainframe.h>
+#include <xdirect/XDirect.h>
+#include <xdirect/objects2d.h>
 #include <objects2d/Foil.h>
 #include <misc/RenameDlg.h>
 #include <misc/Settings.h>

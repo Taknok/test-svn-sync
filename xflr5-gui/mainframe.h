@@ -44,7 +44,6 @@
 #include <gui_params.h>
 #include <QGraph.h>
 #include <miarex/view/GLLightDlg.h>
-#include <misc/scriptconsole.h>
 #include <misc/voidwidget.h>
 
 class gl3dMiarexView;
@@ -55,6 +54,8 @@ class XDirectTileWidget;
 class MiarexTileWidget;
 class CVector;
 class GLLightDlg;
+class Foil;
+class Polar;
 
 /**
 *@class MainFrame
@@ -136,7 +137,6 @@ public slots:
 	void onXInverseMixed();
 	void onMiarex();
 	void onExecuteScript();
-	void onScriptAction();
 
 private slots:
 	void aboutQt();
@@ -327,7 +327,6 @@ private:
 	QAction *m_pRecentFileActs[MAXRECENTFILES];
 	QAction *m_pSeparatorAct;
 	QAction *m_pSaveViewToImageFileAct, *m_pResetSettingsAct;
-	QAction *m_pScriptAction;
 	QAction *m_pLoadLastProjectAction;
 
 	//Graph Actions
@@ -452,7 +451,6 @@ public:
 	void *m_pGL3DScales;
 
 	QTranslator m_Translator;  /**< the translator object; due to a Qt bug, need to load twice: once from the main function, once from the mainframe */
-	ScriptConsole m_scriptConsole;
 };
 
 #endif // MAINFRAME_H
