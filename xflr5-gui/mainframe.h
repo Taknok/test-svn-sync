@@ -56,6 +56,7 @@ class CVector;
 class GLLightDlg;
 class Foil;
 class Polar;
+class OpPoint;
 
 /**
 *@class MainFrame
