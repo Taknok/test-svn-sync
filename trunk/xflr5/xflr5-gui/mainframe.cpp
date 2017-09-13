@@ -603,9 +603,6 @@ void MainFrame::createActions()
 	m_pAboutQtAct = new QAction(tr("About Qt"), this);
 	connect(m_pAboutQtAct, SIGNAL(triggered()), this, SLOT(aboutQt()));
 
-	m_pScriptAction = new QAction("Script Console", this);
-	connect(m_pScriptAction, SIGNAL(triggered()), this, SLOT(onScriptAction()));
-
 	createGraphActions();
 	createAFoilActions();
 	createXDirectActions();
@@ -1160,10 +1157,6 @@ void MainFrame::createMenus()
 		m_pHelpMenu->addAction(m_pOpenGLAct);
 		m_pHelpMenu->addAction(m_pAboutQtAct);
 		m_pHelpMenu->addAction(m_pAboutAct);
-#ifdef QT_DEBUG
-		m_pHelpMenu->addSeparator();
-		m_pHelpMenu->addAction(m_pScriptAction);
-#endif
 	}
 
 	//Create Application-Specific Menus
@@ -6816,15 +6809,6 @@ void MainFrame::showEvent(QShowEvent *event)
 	pXDirect->m_CpGraph.initializeGraph(m_pctrlCentralWidget->width(), m_pctrlCentralWidget->height());
 	event->ignore();
 }
-
-
-void MainFrame::onScriptAction()
-{
-	m_scriptConsole.move(QPoint(500,300));
-	m_scriptConsole.setXDirect(m_pXDirect);
-	m_scriptConsole.setVisible(!m_scriptConsole.isVisible());
-}
-
 
 
 

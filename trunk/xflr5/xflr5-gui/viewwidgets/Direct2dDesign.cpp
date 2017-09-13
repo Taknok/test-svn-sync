@@ -23,6 +23,7 @@
 #include <objects2d/Foil.h>
 #include <graph_globals.h>
 #include <mainframe.h>
+#include <xdirect/XDirect.h>
 #include <misc/Settings.h>
 #include <globals.h>
 #include <QPainter>
