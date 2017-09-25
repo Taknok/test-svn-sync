@@ -95,7 +95,7 @@ public:
 	double &density()                    {return m_Density;}        /**< returns the fluid's density, in IS units. */
 	double &viscosity()                  {return m_Viscosity;}      /**< returns the fluid's kinematic viscosity, in IS units. */
 
-	bool isSpeedPolar() {return m_WPolarType==XFLR5::FIXEDSPEEDPOLAR;}      /**< returns true if the polar is of the FIXEDSPEEDPOLAR type, false otherwise >*/
+	bool isFixedSpeedPolar() {return m_WPolarType==XFLR5::FIXEDSPEEDPOLAR;}      /**< returns true if the polar is of the FIXEDSPEEDPOLAR type, false otherwise >*/
 	bool isFixedLiftPolar() {return m_WPolarType==XFLR5::FIXEDLIFTPOLAR;}   /**< returns true if the polar is of the FIXEDLIFTPOLAR type, false otherwise >*/
 	bool isFixedaoaPolar() {return m_WPolarType==XFLR5::FIXEDAOAPOLAR;}     /**< returns true if the polar is of the FIXEDAOAPOLAR type, false otherwise >*/
 	bool isStabilityPolar() {return m_WPolarType==XFLR5::STABILITYPOLAR;}   /**< returns true if the polar is of the STABILITYPOLAR type, false otherwise >*/
