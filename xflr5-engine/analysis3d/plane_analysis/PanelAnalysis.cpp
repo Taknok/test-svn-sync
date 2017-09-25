@@ -83,6 +83,7 @@ PanelAnalysis::PanelAnalysis()
 	m_pTempWakeNode  = NULL;
 
 	m_Alpha   = 0.0;
+	m_AlphaEq = 0.0;
 	m_QInf    = 0.0;
 	m_OpAlpha = 0.0;
 	m_OpBeta  = 0.0;
@@ -507,11 +508,11 @@ bool PanelAnalysis::initializeAnalysis()
 
 	traceLog(m_pPlane->planeName()+"\n");
 
-	if(m_pWPolar->polarType()==XFLR5::FIXEDSPEEDPOLAR)     strange = "Type 1 - Fixed speed polar";
-	else if(m_pWPolar->polarType()==XFLR5::FIXEDLIFTPOLAR) strange = "Type 2 - Fixed lift polar";
-	else if(m_pWPolar->polarType()==XFLR5::FIXEDAOAPOLAR)  strange = "Type 4 - Fixed angle of attack polar";
-	else if(m_pWPolar->polarType()==XFLR5::FIXEDAOAPOLAR)  strange = "Type 5 - Sideslip variation polar";
-	else if(m_pWPolar->polarType()==XFLR5::STABILITYPOLAR) strange = "Type 7 - Stability polar";
+	if(m_pWPolar->isFixedSpeedPolar())     strange = "Type 1 - Fixed speed polar";
+	else if(m_pWPolar->isFixedLiftPolar()) strange = "Type 2 - Fixed lift polar";
+	else if(m_pWPolar->isFixedaoaPolar())  strange = "Type 4 - Fixed angle of attack polar";
+	else if(m_pWPolar->isBetaPolar())      strange = "Type 5 - Sideslip variation polar";
+	else if(m_pWPolar->isStabilityPolar()) strange = "Type 7 - Stability polar";
 	traceLog(strange+"\n\n");
 
 	if(m_pWPolar->bThinSurfaces())

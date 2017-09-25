@@ -196,7 +196,7 @@ private:
 	double *m_SigmaRef;
 	double *m_Sigma;         /**< The array of resulting source strengths of the analysis */
 	double *m_Mu;            /**< The array of resulting doublet strengths, or vortex circulations if the panel is located on a thin surface */
-	double *m_Cp;            /**< The array of lift coef per panel */
+	double *m_Cp;            /**< The array of pressure coef per panel */
 	double *m_3DQInf;        /**< a pointer to the calculated balance speeds for each aoa in Type 2 and Type 7 analysis */
 
 

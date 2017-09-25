@@ -77,7 +77,7 @@
 #include <script/xflscriptreader.h>
 #include <script/xflscriptexec.h>
 
-
+#include <QGLFormat>
 #include <QMessageBox>
 #include <QtCore>
 #include <QToolBar>
