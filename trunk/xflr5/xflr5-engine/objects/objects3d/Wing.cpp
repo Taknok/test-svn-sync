@@ -91,21 +91,24 @@ Wing::Wing()
 
 	m_pWingPanel     = NULL;
 
-	m_WingCL                = 0.0;
+	m_WingCL            = 0.0;
 	m_CDv               = 0.0;
 	m_CDi               = 0.0;
 	m_GYm               = 0.0;
 	m_IYm               = 0.0;
 	m_GCm               = 0.0;
 	m_GRm               = 0.0;
+	m_ICm               = 0.0;
 	m_VCm               = 0.0;
 	m_VYm               = 0.0;
 
 	m_CP.set(0.0, 0.0, 0.0);
 
+	m_Maxa = 0.0;
 //	m_AVLIndex = -(int)(qrand()/10000);//improbable value...
 
 	m_MatSize   = 0;
+	m_NStation  = 0;
 
 	m_AR         = 0.0;// Aspect ratio
 	m_TR         = 0.0;// Taper ratio

@@ -5431,8 +5431,11 @@ void QMiarex::onNewPlane()
 			Objects3D::addPlane(pPlane);
 			m_pCurPlane = pPlane;
 		}
-		setPlane();
+		m_pCurWPolar = NULL;
+
+		setPlane(m_pCurPlane->planeName());
 		s_pMainFrame->updatePlaneListBox();
+		m_bResetglMesh = true;
 		m_bResetglLegend = true;
 	}
 	else
@@ -7202,7 +7205,6 @@ void QMiarex::setPlane(QString PlaneName)
 {
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 	m_bResetTextLegend = true;
-
 	//try the plane's name first
 	Plane *pPlane = Objects3D::getPlane(PlaneName);
 	if(!pPlane)

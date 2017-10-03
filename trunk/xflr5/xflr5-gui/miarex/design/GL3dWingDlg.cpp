@@ -415,10 +415,9 @@ void GL3dWingDlg::glMake3DObjects()
 		m_bResetglWing = false;
 
 		m_pglWingView->glMakeWingGeometry(0, m_pWing, NULL);
-		m_pglWingView->glMakeWingMesh(m_pWing);
+		m_pglWingView->glMakeWingMesh(m_pglWingView->m_vboEditMesh, m_pWing);
 	}
 }
-
 
 
 
