@@ -43,7 +43,7 @@ SOURCES += objects/objects_global.cpp \
     objects/objects3d/WPolar.cpp \
     analysis3d/matrix.cpp
 
-HEADERS += objects/engine_enums.h \
+HEADERS += \
     objects/engine_params.h \
     objects/objects_global.h \
     objects/objects2d/Foil.h \

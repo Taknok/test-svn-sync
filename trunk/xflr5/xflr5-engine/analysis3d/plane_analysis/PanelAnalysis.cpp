@@ -1559,7 +1559,7 @@ void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
 			}
 		}
 
-		if(m_pPlane->body() && m_pWPolar->analysisMethod()==XFLR5::PANELMETHOD && !m_pWPolar->bIgnoreBodyPanels())
+		if(m_pPlane->body() && m_pWPolar->analysisMethod()==XFLR5::PANEL4METHOD && !m_pWPolar->bIgnoreBodyPanels())
 		{
 			double ICm = 0.0;
 			traceLog("       Calculating body...\n");
@@ -4451,7 +4451,7 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double *Gamma, double *Sigma
 	{
 		traceLog("OldVLM polar\n");
 	}
-	else if(m_pWPolar->analysisMethod()==XFLR5::PANELMETHOD)
+	else if(m_pWPolar->analysisMethod()==XFLR5::PANEL4METHOD)
 	{
 		//get the data from the PanelAnalysis dialog, and from the plane object
 		pPOpp->m_NPanels             = m_MatSize;

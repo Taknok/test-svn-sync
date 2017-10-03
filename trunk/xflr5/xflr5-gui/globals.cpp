@@ -412,7 +412,7 @@ XFLR5::enumAnalysisMethod analysisMethod(QString strAnalysisMethod)
 {
 	if     (strAnalysisMethod.compare("LLTMETHOD",   Qt::CaseInsensitive)==0) return XFLR5::LLTMETHOD;
 	else if(strAnalysisMethod.compare("VLMMETHOD",   Qt::CaseInsensitive)==0) return XFLR5::VLMMETHOD;
-	else if(strAnalysisMethod.compare("PANELMETHOD", Qt::CaseInsensitive)==0) return XFLR5::PANELMETHOD;
+	else if(strAnalysisMethod.compare("PANELMETHOD", Qt::CaseInsensitive)==0) return XFLR5::PANEL4METHOD;
 	else return XFLR5::VLMMETHOD;
 }
 
@@ -423,7 +423,7 @@ QString analysisMethod(XFLR5::enumAnalysisMethod analysisMethod)
 	{
 		case XFLR5::LLTMETHOD:   return "LLTMETHOD";   break;
 		case XFLR5::VLMMETHOD:   return "VLMMETHOD";   break;
-		case XFLR5::PANELMETHOD: return "PANELMETHOD"; break;
+		case XFLR5::PANEL4METHOD: return "PANELMETHOD"; break;
 		default: return "";
 	}
 }
@@ -928,7 +928,7 @@ void setAutoWPolarName(void * ptrWPolar, void *ptrPlane)
 			else                 pWPolar->polarName() += "-VLM2";
 			break;
 		}
-		case XFLR5::PANELMETHOD:
+		case XFLR5::PANEL4METHOD:
 		{
 			if(!pWPolar->bThinSurfaces()) pWPolar->polarName() += "-Panel";
 			else

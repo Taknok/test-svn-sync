@@ -26,7 +26,7 @@
 #include <misc/Settings.h>
 #include <misc/IntEdit.h>
 #include <misc/DoubleEdit.h>
-#include <engine_enums.h>
+#include <analysis3d_enums.h>
 
 
 QList <Foil*> *EditObjectDelegate::s_poaFoil;

@@ -28,7 +28,7 @@
 #include <QSplitter>
 #include <graphwidget.h>
 #include "legendwidget.h"
-#include <engine_enums.h>
+#include <analysis3d_enums.h>
 
 
 
