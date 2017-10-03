@@ -2953,7 +2953,7 @@ void gl3dView::getTextureFile(QString planeName, QString surfaceName, QImage &te
 
 
 /** Used in wing edition only */
-void gl3dView::glMakeWingMesh(Wing *pWing)
+void gl3dView::glMakeWingMesh(QOpenGLBuffer &vbo, Wing *pWing)
 {
 	int l,k;
 
@@ -3194,11 +3194,11 @@ void gl3dView::glMakeWingMesh(Wing *pWing)
 	Q_ASSERT(iv==bufferSize);
 
 //	m_iWingMeshElems = ii/3;
-	m_vboEditMesh.destroy();
-	m_vboEditMesh.create();
-	m_vboEditMesh.bind();
-	m_vboEditMesh.allocate(meshVertexArray, bufferSize * sizeof(GLfloat));
-	m_vboEditMesh.release();
+	vbo.destroy();
+	vbo.create();
+	vbo.bind();
+	vbo.allocate(meshVertexArray, bufferSize * sizeof(GLfloat));
+	vbo.release();
 
 	delete[] meshVertexArray;
 }

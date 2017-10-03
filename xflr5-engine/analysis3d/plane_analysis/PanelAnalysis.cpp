@@ -37,7 +37,7 @@ bool PanelAnalysis::s_bCancel = false;
 bool PanelAnalysis::s_bWarning = false;
 bool PanelAnalysis::s_bKeepOutOpp = false;
 bool PanelAnalysis::s_bTrefftz = true;
-int PanelAnalysis::s_MaxWakeIter = 5;
+int PanelAnalysis::s_MaxWakeIter = 1;
 
 
 /**
@@ -105,7 +105,7 @@ PanelAnalysis::PanelAnalysis()
 	m_MatSize        = 0;
 	m_nNodes         = 0;
 	m_NWakeColumn    = 0;
-	m_nMaxWakeIter   = 0;
+
 
 	m_nWakeNodes = 0;
 	m_WakeSize   = 0;
@@ -370,7 +370,7 @@ void PanelAnalysis::setRange(double vMin, double vMax, double vDelta, bool bSequ
 	if(!m_bSequence) m_nRHS = 1;
 	else if(m_nRHS>=VLMMAXRHS)
 	{
-		QString strange = QString("The number of points to be calculated will be limited to %1").arg(VLMMAXRHS);
+		QString strange = QString("The number of points to be calculated will be limited to %1\n\n").arg(VLMMAXRHS);
 		traceLog(strange);
 		m_nRHS = VLMMAXRHS-1;
 		s_MaxRHSSize = (int)((double)m_nRHS * 1.2);
@@ -457,12 +457,6 @@ void PanelAnalysis::setRange(double vMin, double vMax, double vDelta, bool bSequ
 						 + 5;                                //ComputeAeroCoefs
 		m_TotalTime *= (double)m_nRHS;
 	}
-}
-
-
-void PanelAnalysis::setParams(int nMaxWakeIter)
-{
-	m_nMaxWakeIter = nMaxWakeIter;
 }
 
 
@@ -679,14 +673,15 @@ bool PanelAnalysis::alphaLoop()
 	buildInfluenceMatrix();
 	if (s_bCancel) return true;
 
+
 	createUnitRHS();
 	if (s_bCancel) return true;
-
 
 	if(!m_pWPolar->bThinSurfaces())
 	{
 		//compute wake contribution
 		createWakeContribution();
+//		display_vec(m_aijWake+17*m_MatSize, m_MatSize);
 
 		//add wake contribution to matrix and RHS
 		for(int p=0; p<m_MatSize; p++)
@@ -991,6 +986,7 @@ void PanelAnalysis::createWakeContribution()
 					pw++;
 				}
 			}
+
 			//____________________________________________________________________________
 			//Add the contributions of the trailing panels to the matrix coefficients and to the RHS
 			mm = 0;
@@ -1648,8 +1644,7 @@ void PanelAnalysis::getVortexCp(const int &p, double *Gamma, double *Cp, Vector3
 
 /**
 * This method calculates the Cp coefficient on a panel based on the distribution of doublet strengths.
-*The Cp coefficient is the derivative of the doublet strength on the surface
-*This calculation follows the method provided in document NASA 4023.
+* This calculation follows the method provided in document NASA 4023.
 * @param p the index of the panel for which the calculation is performed
 * @param Mu the array of doublet strength values
 * @param Cp a reference to the Cp variable to evaluate
@@ -2246,7 +2241,7 @@ bool PanelAnalysis::unitLoop()
 	int n, nWakeIter, MaxWakeIter;
 
 	if(!m_pWPolar->bWakeRollUp()) MaxWakeIter = 1;
-	else                          MaxWakeIter = qMax(m_nMaxWakeIter, 1);
+	else                          MaxWakeIter = qMax(s_MaxWakeIter, 1);
 
 	m_Progress = 0.0;
 

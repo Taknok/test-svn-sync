@@ -116,7 +116,6 @@ public:
 	void setArraySize(int MatSize, int WakeSize, int nNodes, int nWakeNodes, int NWakeColumn);
 	void setInertia(double ctrl, double alpha, double beta);
 	void setObjectPointers(Plane *pPlane, void *pSurfaceList);
-	void setParams(int nMaxWakeIter);
 	void setRange(double vMin, double VMax, double vDelta, bool bSequence);
 	void setWPolar(WPolar*pWPolar){m_pWPolar = pWPolar;}
 	PlaneOpp* createPlaneOpp(double *Cp, double *Gamma, double *Sigma);
@@ -128,6 +127,7 @@ public:
 
 	static bool s_bCancel;      /**< true if the user has cancelled the analysis */
 	static bool s_bWarning;     /**< true if one the OpPoints could not be properly interpolated */
+	static void setMaxWakeIter(int nMaxWakeIter) {s_MaxWakeIter = nMaxWakeIter;}
 
 signals:
 	void outputMsg(QString msg);
@@ -156,7 +156,6 @@ private:
 	int m_nWakeNodes;           /**< the number of wake nodes */
 	int m_WakeSize;	            /**< the number of wake elements */
 	int m_NWakeColumn;          /**< the number of wake columns, which is also the number of panels in the spanwise direction */
-	int m_nMaxWakeIter;         /**< the max number of wake roll-up iterations. Disabled. */
 
 
 	double m_vMin;              /**< The minimum value of the analysis parameter*/

@@ -114,7 +114,7 @@ protected:
 	void glMakeBody3DFlatPanels(Body *pBody);
 	void glMakeBodySplines(Body *pBody);
 	void glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody);
-	void glMakeWingMesh(Wing *pWing);
+	void glMakeWingMesh(QOpenGLBuffer &vbo, Wing *pWing);
 	void glMakeWingSectionHighlight(Wing *pWing, int iSectionHighLight, bool bRightSide);
 	void glMakeBodyFrameHighlight(Body *pBody, Vector3d bodyPos, int iFrame);
 	void glRenderText(int x, int y, const QString & str, QColor textColor = QColor(Qt::white));

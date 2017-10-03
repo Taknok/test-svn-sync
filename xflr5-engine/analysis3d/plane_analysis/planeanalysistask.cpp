@@ -187,12 +187,20 @@ WPolar* PlaneAnalysisTask::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar)
 	int j,k,m, NStation;
 	double SpanPos;
 
-	if(!pCurPlane) return NULL;
+	if(!pCurPlane)
+	{
+		releasePanelMemory();
+		return NULL;
+	}
 
 	m_pWPolar = pCurWPolar;
 	m_pPlane = pCurPlane;
 
-	if(!pCurWPolar) return NULL;
+	if(!m_pWPolar)
+	{
+		releasePanelMemory();
+		return NULL;
+	}
 
 	Wing *pWingList[MAXWINGS];
 	pWingList[0] = pCurPlane->wing();
@@ -200,7 +208,7 @@ WPolar* PlaneAnalysisTask::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar)
 	pWingList[2] = pCurPlane->stab();
 	pWingList[3] = pCurPlane->fin();
 
-	if(m_pWPolar->analysisMethod()>XFLR5::LLTMETHOD)
+	if(!m_pWPolar || m_pWPolar->analysisMethod()>XFLR5::LLTMETHOD)
 	{
 		for(int iw=0; iw<MAXWINGS; iw++)
 		{
