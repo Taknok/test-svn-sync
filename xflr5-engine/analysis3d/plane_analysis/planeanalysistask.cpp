@@ -105,7 +105,7 @@ void PlaneAnalysisTask::run()
 	{
 		LLTAnalyze();
 	}
-	else if(m_pWPolar->isPanelMethod())
+	else if(m_pWPolar->isQuadMethod())
 	{
 		PanelAnalyze();
 	}
@@ -122,7 +122,7 @@ bool PlaneAnalysisTask::isLLTTask()
 
 bool PlaneAnalysisTask::isPanelTask()
 {
-	return (m_pWPolar && m_pWPolar->isPanelMethod());
+	return (m_pWPolar && m_pWPolar->isQuadMethod());
 }
 
 
@@ -397,7 +397,7 @@ bool PlaneAnalysisTask::initializePanels()
 	if(m_pPlane && m_pPlane->body())
 	{
 		if(!m_pWPolar) bBodyEl = true;//no risk...
-		else if(m_pWPolar->analysisMethod()==XFLR5::PANELMETHOD && !m_pWPolar->bIgnoreBodyPanels())
+		else if(m_pWPolar->analysisMethod()==XFLR5::PANEL4METHOD && !m_pWPolar->bIgnoreBodyPanels())
 		{
 			bBodyEl = true;
 		}
@@ -999,7 +999,7 @@ int PlaneAnalysisTask::createSurfaceElements(Plane *pPlane, WPolar *pWPolar, Sur
 			if(k==0)                      m_Panel[m_MatSize].m_iPR = -1;
 			if(k==pSurface->NYPanels()-1) m_Panel[m_MatSize].m_iPL = -1;
 
-			if(pWPolar && m_Panel[m_MatSize].m_bIsTrailing && pWPolar->analysisMethod()==XFLR5::PANELMETHOD)
+			if(pWPolar && m_Panel[m_MatSize].m_bIsTrailing && pWPolar->analysisMethod()==XFLR5::PANEL4METHOD)
 			{
 				m_Panel[m_MatSize].m_iWake = m_WakeSize;//next wake element
 				m_Panel[m_MatSize].m_iWakeColumn = m_NWakeColumn;
@@ -1090,7 +1090,7 @@ int PlaneAnalysisTask::createSurfaceElements(Plane *pPlane, WPolar *pWPolar, Sur
 				if(k==pSurface->NYPanels()-1) m_Panel[m_MatSize].m_iPR = -1;
 
 
-				if(pWPolar && m_Panel[m_MatSize].m_bIsTrailing && pWPolar->analysisMethod()==XFLR5::PANELMETHOD)
+				if(pWPolar && m_Panel[m_MatSize].m_bIsTrailing && pWPolar->analysisMethod()==XFLR5::PANEL4METHOD)
 				{
 					m_Panel[m_MatSize].m_iWake = m_WakeSize;//next wake element
 					m_Panel[m_MatSize].m_iWakeColumn = m_NWakeColumn;
@@ -1321,7 +1321,7 @@ int PlaneAnalysisTask::calculateMatSize()
 	{
 		Body *pCurBody = m_pPlane->body();
 
-		if(m_pWPolar && m_pWPolar->analysisMethod()==XFLR5::PANELMETHOD && m_pWPolar->bIgnoreBodyPanels())
+		if(m_pWPolar && m_pWPolar->analysisMethod()==XFLR5::PANEL4METHOD && m_pWPolar->bIgnoreBodyPanels())
 		{
 		}
 		else
@@ -1528,7 +1528,7 @@ void PlaneAnalysisTask::stitchSurfaces()
 */
 void PlaneAnalysisTask::joinSurfaces(WPolar*pWPolar, Surface *pLeftSurf, Surface *pRightSurf, int pl, int pr)
 {
-	if(!pWPolar || pWPolar->analysisMethod()!=XFLR5::PANELMETHOD) return;//panel analysis only
+	if(!pWPolar || pWPolar->analysisMethod()!=XFLR5::PANEL4METHOD) return;//panel analysis only
 
 	//pl and pr are respectively the left surface's and the right surface's first panel index
 	int lclose, ppl, ppr;
@@ -1538,7 +1538,7 @@ void PlaneAnalysisTask::joinSurfaces(WPolar*pWPolar, Surface *pLeftSurf, Surface
 	MidNormal.normalize();
 
 	int coef = 1;
-	if(pWPolar && pWPolar->analysisMethod()==XFLR5::PANELMETHOD && !pWPolar->bThinSurfaces()) coef = 2;
+	if(pWPolar && pWPolar->analysisMethod()==XFLR5::PANEL4METHOD && !pWPolar->bThinSurfaces()) coef = 2;
 
 	//left surface's right side
 	ppl = pl;

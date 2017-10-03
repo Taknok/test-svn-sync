@@ -143,12 +143,12 @@ void WPolarDlg::enableControls()
 		}
 	}
 
-	m_pctrlViscous->setEnabled(s_WPolar.analysisMethod()==XFLR5::PANELMETHOD);
-	m_pctrlTiltGeom->setEnabled(s_WPolar.analysisMethod()==XFLR5::PANELMETHOD);
+	m_pctrlViscous->setEnabled(s_WPolar.analysisMethod()==XFLR5::PANEL4METHOD);
+	m_pctrlTiltGeom->setEnabled(s_WPolar.analysisMethod()==XFLR5::PANEL4METHOD);
 	m_pctrlIgnoreBodyPanels->setEnabled(m_pPlane && m_pPlane->body());
-	m_pctrlBeta->setEnabled(s_WPolar.analysisMethod()==XFLR5::PANELMETHOD && s_WPolar.polarType()!=XFLR5::BETAPOLAR);
-	m_pctrlGroundEffect->setEnabled(s_WPolar.analysisMethod()==XFLR5::PANELMETHOD);
-	m_pctrlHeight->setEnabled(m_pctrlGroundEffect->isChecked() && s_WPolar.analysisMethod()==XFLR5::PANELMETHOD);
+	m_pctrlBeta->setEnabled(s_WPolar.analysisMethod()==XFLR5::PANEL4METHOD && s_WPolar.polarType()!=XFLR5::BETAPOLAR);
+	m_pctrlGroundEffect->setEnabled(s_WPolar.analysisMethod()==XFLR5::PANEL4METHOD);
+	m_pctrlHeight->setEnabled(m_pctrlGroundEffect->isChecked() && s_WPolar.analysisMethod()==XFLR5::PANEL4METHOD);
 
 	m_pctrlWeight->setEnabled(!s_WPolar.m_bAutoInertia);
 	m_pctrlXCmRef->setEnabled(!s_WPolar.m_bAutoInertia);
@@ -266,7 +266,7 @@ void WPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
 		m_pctrlVLM2Method->setChecked(!s_WPolar.bVLM1());
 		m_pctrlViscous->setEnabled(true);
 	}
-	else if(s_WPolar.analysisMethod()==XFLR5::PANELMETHOD)
+	else if(s_WPolar.analysisMethod()==XFLR5::PANEL4METHOD)
 	{
 		if(s_WPolar.bThinSurfaces())
 		{
@@ -483,12 +483,12 @@ void WPolarDlg::onMethod()
 	{
 		s_WPolar.bVLM1() = m_pctrlVLM1Method->isChecked();
 		s_WPolar.bThinSurfaces() = true;
-		s_WPolar.analysisMethod() = XFLR5::PANELMETHOD;
+		s_WPolar.analysisMethod() = XFLR5::PANEL4METHOD;
 	}
 	else if (m_pctrlPanelMethod->isChecked())
 	{
 		s_WPolar.bThinSurfaces() = false;
-		s_WPolar.analysisMethod() = XFLR5::PANELMETHOD;
+		s_WPolar.analysisMethod() = XFLR5::PANEL4METHOD;
 	}
 
 	enableControls();
@@ -522,7 +522,7 @@ void WPolarDlg::onOK()
 		m_pctrlWeight->setFocus();
 		return;
 	}
-	if(!m_pPlane->isWing() && s_WPolar.analysisMethod()==XFLR5::PANELMETHOD) s_WPolar.bThinSurfaces() = true;
+	if(!m_pPlane->isWing() && s_WPolar.analysisMethod()==XFLR5::PANEL4METHOD) s_WPolar.bThinSurfaces() = true;
 
 	readExtraDragData();
 

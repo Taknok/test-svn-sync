@@ -3687,10 +3687,12 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString pathName)
 		deleteProject();
 
 		QDataStream ar(&XFile);
+		QApplication::setOverrideCursor(Qt::WaitCursor);
 		if(!serializeProjectXFL(ar, false))
 		{
 			QMessageBox::warning(this,tr("Warning"), tr("Error reading the file")+"\n"+tr("Saved the valid part"));
 		}
+		QApplication::restoreOverrideCursor();
 
 		addRecentFile(pathName);
 		setSaveState(true);
@@ -4883,10 +4885,13 @@ bool MainFrame::serializePlaneProject(QDataStream &ar)
 	else if(WPolarDlg::s_WPolar.polarType()==XFLR5::STABILITYPOLAR)  ar<<7;
 	else ar << 0;
 
-	if(WPolarDlg::s_WPolar.analysisMethod()==XFLR5::LLTMETHOD)        ar << 1;
-	else if(WPolarDlg::s_WPolar.analysisMethod()==XFLR5::VLMMETHOD)   ar << 2;
-	else if(WPolarDlg::s_WPolar.analysisMethod()==XFLR5::PANELMETHOD) ar << 3;
+	if(WPolarDlg::s_WPolar.isLLTMethod())             ar << 1;
+	else if(WPolarDlg::s_WPolar.isVLMMethod())        ar << 2;
+	else if(WPolarDlg::s_WPolar.isPanel4Method())     ar << 3;
+	else if(WPolarDlg::s_WPolar.isTriCstMethod())     ar << 4;
+	else if(WPolarDlg::s_WPolar.isTriLinearMethod())  ar << 5;
 	else ar << 0;
+
 
 	ar << WPolarDlg::s_WPolar.mass();
 	ar << WPolarDlg::s_WPolar.m_QInfSpec;
@@ -5367,16 +5372,18 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 
 
 		//Save default Polar data. Not in the Settings, since this is Project dependant
-		if(WPolarDlg::s_WPolar.polarType()==XFLR5::FIXEDSPEEDPOLAR)      ar<<1;
-		else if(WPolarDlg::s_WPolar.polarType()==XFLR5::FIXEDLIFTPOLAR)  ar<<2;
-		else if(WPolarDlg::s_WPolar.polarType()==XFLR5::FIXEDAOAPOLAR)   ar<<4;
-		else if(WPolarDlg::s_WPolar.polarType()==XFLR5::BETAPOLAR)       ar<<5;
-		else if(WPolarDlg::s_WPolar.polarType()==XFLR5::STABILITYPOLAR)  ar<<7;
+		if(WPolarDlg::s_WPolar.isFixedSpeedPolar())       ar<<1;
+		else if(WPolarDlg::s_WPolar.isFixedLiftPolar())   ar<<2;
+		else if(WPolarDlg::s_WPolar.isFixedaoaPolar())    ar<<4;
+		else if(WPolarDlg::s_WPolar.isBetaPolar())        ar<<5;
+		else if(WPolarDlg::s_WPolar.isStabilityPolar())   ar<<7;
 		else ar << 0;
 
-		if(WPolarDlg::s_WPolar.analysisMethod()==XFLR5::LLTMETHOD)        ar << 1;
-		else if(WPolarDlg::s_WPolar.analysisMethod()==XFLR5::VLMMETHOD)   ar << 2;
-		else if(WPolarDlg::s_WPolar.analysisMethod()==XFLR5::PANELMETHOD) ar << 3;
+		if(WPolarDlg::s_WPolar.isLLTMethod())             ar << 1;
+		else if(WPolarDlg::s_WPolar.isVLMMethod())        ar << 2;
+		else if(WPolarDlg::s_WPolar.isPanel4Method())     ar << 3;
+		else if(WPolarDlg::s_WPolar.isTriCstMethod())     ar << 4;
+		else if(WPolarDlg::s_WPolar.isTriLinearMethod())  ar << 5;
 		else ar << 0;
 
 		ar << WPolarDlg::s_WPolar.mass();
@@ -5491,7 +5498,9 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 		ar >> n;
 		if(n==1)      WPolarDlg::s_WPolar.analysisMethod()=XFLR5::LLTMETHOD;
 		else if(n==2) WPolarDlg::s_WPolar.analysisMethod()=XFLR5::VLMMETHOD;
-		else if(n==3) WPolarDlg::s_WPolar.analysisMethod()=XFLR5::PANELMETHOD;
+		else if(n==3) WPolarDlg::s_WPolar.analysisMethod()=XFLR5::PANEL4METHOD;
+		else if(n==4) WPolarDlg::s_WPolar.analysisMethod()=XFLR5::TRICSTMETHOD;
+		else if(n==5) WPolarDlg::s_WPolar.analysisMethod()=XFLR5::TRILINMETHOD;
 
 		ar >> WPolarDlg::s_WPolar.mass();
 		ar >> WPolarDlg::s_WPolar.m_QInfSpec;
@@ -5736,7 +5745,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 				ar >> k;
 				if(k==1)      WPolarDlg::s_WPolar.analysisMethod()=XFLR5::LLTMETHOD;
 				else if(k==2) WPolarDlg::s_WPolar.analysisMethod()=XFLR5::VLMMETHOD;
-				else if(k==3) WPolarDlg::s_WPolar.analysisMethod()=XFLR5::PANELMETHOD;
+				else if(k==3) WPolarDlg::s_WPolar.analysisMethod()=XFLR5::PANEL4METHOD;
 			}
 			if(ArchiveFormat>=100006)
 			{
@@ -5794,7 +5803,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 			pWPolar = new WPolar;
 			bWPolarOK = pWPolar->serializeWPlrWPA(ar, bIsStoring);
 			//force compatibilty
-			if(pWPolar->analysisMethod()==XFLR5::PANELMETHOD && pWPolar->polarType()==XFLR5::STABILITYPOLAR) pWPolar->bThinSurfaces() = true;
+			if(pWPolar->analysisMethod()==XFLR5::PANEL4METHOD && pWPolar->polarType()==XFLR5::STABILITYPOLAR) pWPolar->bThinSurfaces() = true;
 
 			if (!bWPolarOK)
 			{

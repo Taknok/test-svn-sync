@@ -395,7 +395,7 @@ void StabPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
 	if(m_pPlane->isWing()) m_pctrlAnalysisControls->setCurrentIndex(0);
 	else
 	{
-		s_StabWPolar.analysisMethod() = XFLR5::PANELMETHOD;
+		s_StabWPolar.analysisMethod() = XFLR5::PANEL4METHOD;
 		m_pctrlAnalysisControls->setCurrentIndex(1);
 	}
 
@@ -419,7 +419,7 @@ void StabPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
 
 	if(s_StabWPolar.analysisMethod()==XFLR5::LLTMETHOD)
 	{
-		s_StabWPolar.analysisMethod() = XFLR5::PANELMETHOD;
+		s_StabWPolar.analysisMethod() = XFLR5::PANEL4METHOD;
 		s_StabWPolar.bThinSurfaces() = true;
 	}
 
@@ -429,7 +429,7 @@ void StabPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
 		m_pctrlPanelMethod->setChecked(false);
 
 		m_pctrlWingMethod2->setChecked(s_StabWPolar.analysisMethod()==XFLR5::VLMMETHOD);
-		m_pctrlWingMethod3->setChecked(s_StabWPolar.analysisMethod()==XFLR5::PANELMETHOD);
+		m_pctrlWingMethod3->setChecked(s_StabWPolar.analysisMethod()==XFLR5::PANEL4METHOD);
 	}
 
 	m_pctrlViscous->setChecked(s_StabWPolar.bViscous());
@@ -1241,7 +1241,7 @@ void StabPolarDlg::onMethod()
 	else if (m_pctrlWingMethod3->isChecked())
 	{
 		s_StabWPolar.bThinSurfaces()  = false;
-		s_StabWPolar.analysisMethod() = XFLR5::PANELMETHOD;
+		s_StabWPolar.analysisMethod() = XFLR5::PANEL4METHOD;
 	}
 
 	setWPolarName();
