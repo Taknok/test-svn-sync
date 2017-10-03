@@ -210,13 +210,13 @@ void EditPolarDefDlg::onOK()
 	if (m_pWPolar->analysisMethod()==XFLR5::VLMMETHOD)
 	{
 		m_pWPolar->bThinSurfaces()  = true;
-		m_pWPolar->analysisMethod() = XFLR5::PANELMETHOD;
+		m_pWPolar->analysisMethod() = XFLR5::PANEL4METHOD;
 	}
-	else if (m_pWPolar->analysisMethod()==XFLR5::PANELMETHOD && !m_pPlane->isWing())
+	else if (m_pWPolar->analysisMethod()==XFLR5::PANEL4METHOD && !m_pPlane->isWing())
 	{
 		m_pWPolar->bThinSurfaces()  = true;
 	}
-	else if (m_pWPolar->analysisMethod()==XFLR5::PANELMETHOD && m_pPlane->isWing())
+	else if (m_pWPolar->analysisMethod()==XFLR5::PANEL4METHOD && m_pPlane->isWing())
 	{
 		m_pWPolar->bThinSurfaces()  = false;
 	}
@@ -454,7 +454,7 @@ void EditPolarDefDlg::readData()
 		m_pWPolar->bThinSurfaces() = true;
 //		m_pWPolar->analysisMethod() = XFLR5::PANELMETHOD;
 	}
-	else if (m_pWPolar->analysisMethod() == XFLR5::PANELMETHOD)
+	else if (m_pWPolar->analysisMethod() == XFLR5::PANEL4METHOD)
 	{
 		m_pWPolar->bThinSurfaces() = false;
 	}

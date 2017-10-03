@@ -40,7 +40,7 @@
 #include <QMainWindow>
 #include <QList>
 #include <gui_enums.h>
-#include <engine_enums.h>
+#include <analysis3d_enums.h>
 #include <gui_params.h>
 #include <QGraph.h>
 #include <miarex/view/GLLightDlg.h>

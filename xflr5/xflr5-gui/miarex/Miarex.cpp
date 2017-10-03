@@ -3063,7 +3063,7 @@ void QMiarex::onDefineStabPolar()
 
 		pNewStabPolar->bTilted()         = false;
 		pNewStabPolar->bWakeRollUp()     = false;
-		pNewStabPolar->analysisMethod()  = XFLR5::PANELMETHOD;
+		pNewStabPolar->analysisMethod()  = XFLR5::PANEL4METHOD;
 		pNewStabPolar->bGround()         = false;
 		pNewStabPolar->m_AlphaSpec       = 0.0;
 		pNewStabPolar->m_Height          = 0.0;
@@ -9077,9 +9077,9 @@ void QMiarex::getPolarProperties(WPolar *pWPolar, QString &polarProps, bool bDat
 
 //	PolarProperties += QObject::tr("Method")+" = ";
 	if(pWPolar->analysisMethod()==XFLR5::LLTMETHOD)                                       polarProps +=QObject::tr("LLT");
-	else if(pWPolar->analysisMethod()==XFLR5::PANELMETHOD && !pWPolar->bThinSurfaces())   polarProps +=QObject::tr("3D-Panels");
-	else if(pWPolar->analysisMethod()==XFLR5::PANELMETHOD && pWPolar->bVLM1())            polarProps +=QObject::tr("3D-Panels/VLM1");
-	else if(pWPolar->analysisMethod()==XFLR5::PANELMETHOD && !pWPolar->bVLM1())           polarProps +=QObject::tr("3D-Panels/VLM2");
+	else if(pWPolar->analysisMethod()==XFLR5::PANEL4METHOD && !pWPolar->bThinSurfaces())   polarProps +=QObject::tr("3D-Panels");
+	else if(pWPolar->analysisMethod()==XFLR5::PANEL4METHOD && pWPolar->bVLM1())            polarProps +=QObject::tr("3D-Panels/VLM1");
+	else if(pWPolar->analysisMethod()==XFLR5::PANEL4METHOD && !pWPolar->bVLM1())           polarProps +=QObject::tr("3D-Panels/VLM2");
 	polarProps +="\n";
 
 

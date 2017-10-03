@@ -94,10 +94,11 @@ void gl3dMiarexView::glRenderView()
 		{
 			if(pMiarex->m_pCurWPolar && fabs(pMiarex->m_pCurWPolar->Beta())>0.001)
 				m_modelMatrix.rotate(pMiarex->m_pCurWPolar->Beta(), 0.0, 0.0, 1.0);
-		}		if(m_bVLMPanels)  paintMesh(pMiarex->matSize());
+		}
+//		if(m_bVLMPanels) paintMesh(pMiarex->matSize());
 		m_pvmMatrix = m_orthoMatrix * m_viewMatrix * m_modelMatrix;
 
-		if(m_bVLMPanels) paintMesh(pMiarex->matSize());
+		if(m_bVLMPanels && !pMiarex->m_pCurWPolar->isLLTMethod()) paintMesh(pMiarex->matSize());
 		if(pMiarex->m_pCurPOpp)
 		{
 			if(pMiarex->m_b3DCp && pMiarex->m_pCurPOpp->analysisMethod()>=XFLR5::VLMMETHOD)
@@ -726,7 +727,7 @@ void gl3dMiarexView::glMakeSurfVelocities(Panel *pPanel, WPolar *pWPolar, PlaneO
 	{
 		VT.set(pPOpp->m_QInf,0.0,0.0);
 
-		if(pWPolar->analysisMethod()==XFLR5::PANELMETHOD)
+		if(pWPolar->analysisMethod()==XFLR5::PANEL4METHOD)
 		{
 			if(pPanel[p].m_Pos==MIDSURFACE) C.copy(pPanel[p].CtrlPt);
 			else                            C.copy(pPanel[p].CollPt);
@@ -1095,7 +1096,7 @@ void gl3dMiarexView::glMakeLiftStrip(int iWing, Wing *pWing, WPolar *pWPolar, Wi
 			yob = 2.0*pWOpp->m_SpanPos[i]/pWOpp->m_Span;
 			pWing->surfacePoint(pWOpp->m_XCPSpanRel[i], pWOpp->m_SpanPos[i], MIDSURFACE, Pt, PtNormal);
 
-			dih = -pWing->Dihedral(yob)*PI/180.0;
+			dih = -pWing->getDihedral(yob)*PI/180.0;
 			amp = q0*pWOpp->m_Cl[i]*pWing->getChord(yob)/pWOpp->m_MAChord;
 			amp *= QMiarex::s_LiftScale/1000.0;
 
@@ -1112,7 +1113,7 @@ void gl3dMiarexView::glMakeLiftStrip(int iWing, Wing *pWing, WPolar *pWPolar, Wi
 			yob = 2.0*pWOpp->m_SpanPos[i]/pWOpp->m_Span;
 			pWing->surfacePoint(pWOpp->m_XCPSpanRel[i], pWOpp->m_SpanPos[i], MIDSURFACE, Pt, PtNormal);
 
-			dih = -pWing->Dihedral(yob)*PI/180.0;
+			dih = -pWing->getDihedral(yob)*PI/180.0;
 			amp = q0*pWOpp->m_Cl[i]*pWing->getChord(yob)/pWOpp->m_MAChord;
 			amp *= QMiarex::s_LiftScale/1000.0;
 
@@ -1288,7 +1289,7 @@ void gl3dMiarexView::glMakeDownwash(int iWing, Wing *pWing, WPolar *pWPolar, Win
 			yob = 2.0*pWOpp->m_SpanPos[i]/pWOpp->m_Span;
 			pWing->surfacePoint(1.0, pWOpp->m_SpanPos[i], MIDSURFACE, Pt, PtNormal);
 
-			dih = -pWing->Dihedral(yob)*PI/180.0;
+			dih = -pWing->getDihedral(yob)*PI/180.0;
 			amp = pWOpp->m_QInf*sin(pWOpp->m_Ai[i]*PI/180.0);
 			amp *= factor;
 			pDownWashVertexArray[iv++] = Pt.x;
@@ -1411,7 +1412,7 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, Wi
 			yob = 2.0*pWOpp->m_SpanPos[i]/pWOpp->m_Span;
 
 			pWing->surfacePoint(1.0, pWOpp->m_SpanPos[i], MIDSURFACE, Pt, PtNormal);
-			dih = pWing->Dihedral(yob)*PI/180.0;
+			dih = pWing->getDihedral(yob)*PI/180.0;
 			amp1 = q0*pWOpp->m_ICd[i]*pWing->getChord(yob)/pWOpp->m_MAChord*QMiarex::s_DragScale/coef;
 			amp2 = q0*pWOpp->m_PCd[i]*pWing->getChord(yob)/pWOpp->m_MAChord*QMiarex::s_DragScale/coef;
 			if(pMiarex->m_bICd)
@@ -1453,7 +1454,7 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, Wi
 				yob = 2.0*pWOpp->m_SpanPos[i]/pWOpp->m_Span;
 				pWing->surfacePoint(1.0, pWOpp->m_SpanPos[i], MIDSURFACE, Pt, PtNormal);
 
-				dih = pWing->Dihedral(yob)*PI/180.0;
+				dih = pWing->getDihedral(yob)*PI/180.0;
 				amp  = q0*pWOpp->m_ICd[i]*pWing->getChord(yob)/pWOpp->m_MAChord;
 				amp *= QMiarex::s_DragScale/coef;
 
@@ -1469,7 +1470,7 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, Wi
 				yob = 2.0*pWOpp->m_SpanPos[i]/pWOpp->m_Span;
 				pWing->surfacePoint(1.0, pWOpp->m_SpanPos[i], MIDSURFACE, Pt, PtNormal);
 
-				dih = pWing->Dihedral(yob)*PI/180.0;
+				dih = pWing->getDihedral(yob)*PI/180.0;
 				amp=0.0;
 				if(pMiarex->m_bICd) amp+=pWOpp->m_ICd[i];
 				amp +=pWOpp->m_PCd[i];

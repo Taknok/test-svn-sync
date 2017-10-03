@@ -557,8 +557,10 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
 
 		if(m_AnalysisMethod==XFLR5::LLTMETHOD)         ar<<1;
 		else if(m_AnalysisMethod==XFLR5::VLMMETHOD)    ar<<2;
-		else if(m_AnalysisMethod==XFLR5::PANELMETHOD)  ar<<3;
-		else ar << 2;
+		else if(m_AnalysisMethod==XFLR5::PANEL4METHOD) ar<<3;
+		else if(m_AnalysisMethod==XFLR5::TRILINMETHOD) ar<<4;
+		else if(m_AnalysisMethod==XFLR5::TRICSTMETHOD) ar<<5;
+		else                                           ar<<0;
 
 		ar << m_NPanels;
 		ar << m_NStation;
@@ -652,7 +654,9 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
 		ar >> n;
 		if(n==1)      m_AnalysisMethod=XFLR5::LLTMETHOD;
 		else if(n==2) m_AnalysisMethod=XFLR5::VLMMETHOD;
-		else if(n==3) m_AnalysisMethod=XFLR5::PANELMETHOD;
+		else if(n==3) m_AnalysisMethod=XFLR5::PANEL4METHOD;
+		else if(n==4) m_AnalysisMethod=XFLR5::TRILINMETHOD;
+		else if(n==5) m_AnalysisMethod=XFLR5::TRICSTMETHOD;
 
 		ar >> m_NPanels;
 		ar >> m_NStation;
@@ -776,9 +780,9 @@ void PlaneOpp::getPlaneOppProperties(QString &PlaneOppProperties, QString length
 
 //	WOppProperties += QObject::tr("Method")+" = ";
 	if(m_AnalysisMethod==XFLR5::LLTMETHOD)                             PlaneOppProperties +=QObject::tr("LLT");
-	else if(m_AnalysisMethod==XFLR5::PANELMETHOD && !m_bThinSurface)   PlaneOppProperties +=QObject::tr("3D-Panels");
-	else if(m_AnalysisMethod==XFLR5::PANELMETHOD && m_bVLM1)           PlaneOppProperties +=QObject::tr("3D-Panels/VLM1");
-	else if(m_AnalysisMethod==XFLR5::PANELMETHOD && !m_bVLM1)          PlaneOppProperties +=QObject::tr("3D-Panels/VLM2");
+	else if(m_AnalysisMethod==XFLR5::PANEL4METHOD && !m_bThinSurface)   PlaneOppProperties +=QObject::tr("3D-Panels");
+	else if(m_AnalysisMethod==XFLR5::PANEL4METHOD && m_bVLM1)           PlaneOppProperties +=QObject::tr("3D-Panels/VLM1");
+	else if(m_AnalysisMethod==XFLR5::PANEL4METHOD && !m_bVLM1)          PlaneOppProperties +=QObject::tr("3D-Panels/VLM2");
 	PlaneOppProperties +="\n";
 
 
