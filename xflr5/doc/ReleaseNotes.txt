@@ -15,7 +15,11 @@
 *******************************************************************************
 
 
-xflr5 v6.39 August xxxth, 2017
+xflr5 v6.40 October xxxth, 2017
+	- improved the construction method for the wake in the 3d-panel method; makes a small difference to induce drag
+
+
+xflr5 v6.39 September 14th, 2017
 	- Improved the GUI for the plot of BL results in the XFoil Direct Analysis module; corrected a few bugs at the same time
 	- modified the calculation of the lift coefficient at each span station in VLM and Panel Analysis.
 	  Is now F.dot(SurfaceNormal)/q.S instead of F.dot(WindNormal)/q.S formerly. Increases slightly the viscous drag
