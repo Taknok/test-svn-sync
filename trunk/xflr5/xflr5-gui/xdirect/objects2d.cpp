@@ -221,7 +221,7 @@ OpPoint* Objects2D::addOpPoint(void *pFoilPtr, void *pPolarPtr, void *pXFoilPtr,
 		Objects2D::insertOpPoint(pNewPoint);
 	}
 
-	// Now insert OpPoint in the current CPolar object
+	// Now insert OpPoint in the current Polar object
 
 	if(pXFoil->lvconv && pPolar)
 	{

@@ -19,6 +19,7 @@ xflr5 v6.40 October xxxth, 2017
 	- improved the construction method for the wake in the 3d-panel method; makes a small difference to induce drag
 	- corrected a potential crash bug when trying to display 3D results of an LLT calculation
 	- disabled the display of panels when no polar is defined; this is for consistency, since the disposition of panels depends on the analysis type
+	- code cleaning
 
 
 xflr5 v6.39 September 14th, 2017

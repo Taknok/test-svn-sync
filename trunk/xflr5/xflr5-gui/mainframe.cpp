@@ -6774,6 +6774,8 @@ void MainFrame::onCurGraphSettings()
 
 void MainFrame::onLoadLastProject()
 {
+	if(!m_RecentFiles.size()) return;
+
 	XFLR5::enumApp iApp = loadXFLR5File(m_RecentFiles.at(0));
 	if(m_iApp==XFLR5::NOAPP) m_iApp = iApp;
 	if(m_iApp==XFLR5::XFOILANALYSIS)
