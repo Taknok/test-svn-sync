@@ -1244,7 +1244,7 @@ void QXDirect::loadSettings(QSettings *pSettings)
 		m_Reynolds        = pSettings->value("ReynoldsMin").toDouble();
 		m_ReynoldsMax     = pSettings->value("ReynoldsMax").toDouble();
 		m_ReynoldsDelta   = pSettings->value("ReynolsDelta").toDouble();
-		m_XFoil.vaccel  = pSettings->value("VAccel").toDouble();
+		m_XFoil.vaccel    = pSettings->value("VAccel").toDouble();
 		s_bKeepOpenErrors = pSettings->value("KeepOpenErrors").toBool();
 
 		XFoilTask::s_bAutoInitBL    = pSettings->value("AutoInitBL").toBool();
@@ -1866,7 +1866,7 @@ void QXDirect::onDeleteCurPolar()
 				delete pOpPoint;
 			}
 		}
-		// then remove the CPolar and update views
+		// then remove the Polar and update views
 		for (l=m_poaPolar->size()-1; l>=0; l--)
 		{
 			if(m_pCurPolar == m_poaPolar->at(l))
@@ -1976,7 +1976,7 @@ void QXDirect::onDeleteFoilPolars()
 				delete pOpPoint;
 			}
 		}
-		// then remove CPolar and update views
+		// then remove Polar and update views
 		Polar* pPolar;
 		for (l=m_poaPolar->size()-1; l>=0; l--)
 		{
@@ -4126,7 +4126,8 @@ void QXDirect::saveSettings(QSettings *pSettings)
 		pSettings->setValue("ASpec", s_refPolar.aoa());
 
 		if(s_refPolar.polarType()==XFOIL::FIXEDSPEEDPOLAR)       pSettings->setValue("Type", 1);
-		else if(s_refPolar.polarType()==XFOIL::RUBBERCHORDPOLAR) pSettings->setValue("Type", 2);
+		else if(s_refPolar.polarType()==XFOIL::FIXEDLIFTPOLAR)   pSettings->setValue("Type", 2);
+		else if(s_refPolar.polarType()==XFOIL::RUBBERCHORDPOLAR) pSettings->setValue("Type", 3);
 		else if(s_refPolar.polarType()==XFOIL::FIXEDAOAPOLAR)    pSettings->setValue("Type", 4);
 
 		pSettings->setValue("NReynolds", s_ReList.count());

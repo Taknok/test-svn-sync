@@ -172,6 +172,7 @@ void WPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
 	if(pWPolar)
 	{
 		m_pctrlAutoName->setChecked(false);
+		m_bAutoName = false;
 		m_pctrlWPolarName->setText(pWPolar->polarName());
 		s_WPolar.duplicateSpec(pWPolar);
 	}

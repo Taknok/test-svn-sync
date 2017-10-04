@@ -203,7 +203,7 @@ public:
 	double   m_Viscosity;          /**< The fluid's kinematic viscosity */
 
 	double   m_WakePanelFactor;    /**< the ratio between the length of two wake panels in the x direction */
-	double   m_TotalWakeLength;    /**< the wake's length; defines the position of the Trefftz plane */
+	double   m_TotalWakeLength;    /**< the wake's length x MAC; defines the position of the Trefftz plane */
 
 	QVarLengthArray<double> m_ControlGain;      /**< the scaling factor for each of the control surfaces */
 
