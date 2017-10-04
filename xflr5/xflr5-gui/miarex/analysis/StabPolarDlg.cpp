@@ -356,10 +356,10 @@ void StabPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
 	else              m_pctrlUnit2->setChecked(true);
 	onUnit();
 
-	if(pWPolar && pWPolar->polarType()==XFLR5::STABILITYPOLAR)
+	if(pWPolar && pWPolar->isStabilityPolar())
 	{
-//		m_bAutoName = false;
-//		m_pctrlWPolarName->setText(pWPolar->polarName());
+		m_bAutoName = false;
+		m_pctrlWPolarName->setText(pWPolar->polarName());
 		s_StabWPolar.duplicateSpec(pWPolar);
 	}
 
@@ -384,9 +384,6 @@ void StabPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
 	}
 	m_pctrlRefChord->setValue(m_pPlane->mac()*Units::mtoUnit());
 
-
-
-	m_bAutoName = true;
 	m_pctrlAutoName->setChecked(m_bAutoName);
 
 	s_StabWPolar.planeName() = m_pPlane->planeName();

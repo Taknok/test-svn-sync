@@ -664,7 +664,7 @@ void QMiarex::setControls()
 
 	m_pctrlAxes->setChecked(m_pGL3dView->m_bAxes);
 	m_pctrlOutline->setChecked(m_pGL3dView->m_bOutline);
-	m_pctrlPanels->setChecked(m_pGL3dView->m_bVLMPanels);
+
 	m_pctrlAxes->setChecked(m_pGL3dView->m_bAxes);
 	m_pctrlSurfaces->setChecked(m_pGL3dView->m_bSurfaces);
 	m_pctrlOutline->setChecked(m_pGL3dView->m_bOutline);
@@ -684,7 +684,9 @@ void QMiarex::setControls()
 	m_pctrlSurfaces->setEnabled(m_pCurPlane);
 	m_pctrlMasses->setEnabled(m_pCurPlane);
 	m_pctrlFoilNames->setEnabled(m_pCurPlane);
-	m_pctrlPanels->setEnabled(m_pCurPlane);
+
+	m_pctrlPanels->setChecked(m_pGL3dView->m_bVLMPanels && m_pCurWPolar && !m_pCurWPolar->isLLTMethod());
+	m_pctrlPanels->setEnabled(m_pCurPlane && m_pCurWPolar &&  !m_pCurWPolar->isLLTMethod());
 
 	setCurveParams();
 

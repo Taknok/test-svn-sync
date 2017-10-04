@@ -95,10 +95,12 @@ void gl3dMiarexView::glRenderView()
 			if(pMiarex->m_pCurWPolar && fabs(pMiarex->m_pCurWPolar->Beta())>0.001)
 				m_modelMatrix.rotate(pMiarex->m_pCurWPolar->Beta(), 0.0, 0.0, 1.0);
 		}
-//		if(m_bVLMPanels) paintMesh(pMiarex->matSize());
+
 		m_pvmMatrix = m_orthoMatrix * m_viewMatrix * m_modelMatrix;
 
-		if(m_bVLMPanels && !pMiarex->m_pCurWPolar->isLLTMethod()) paintMesh(pMiarex->matSize());
+		if(m_bVLMPanels && !pMiarex->m_pCurWPolar->isLLTMethod())
+			paintMesh(pMiarex->matSize());
+
 		if(pMiarex->m_pCurPOpp)
 		{
 			if(pMiarex->m_b3DCp && pMiarex->m_pCurPOpp->analysisMethod()>=XFLR5::VLMMETHOD)
