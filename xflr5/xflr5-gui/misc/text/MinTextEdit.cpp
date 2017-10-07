@@ -1,7 +1,7 @@
 /****************************************************************************
 
-	SaveOptionsDlg
-	Copyright (C) 2009 Andre Deperrois adeperrois@xflr5.com
+	MinTextEdit Class
+	Copyright (C) 2014 Andre Deperrois adeperrois@xflr5.com
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -20,36 +20,20 @@
 *****************************************************************************/
 
 
-#ifndef SAVEOPTIONSDLG_H
-#define SAVEOPTIONSDLG_H
-
-#include "IntEdit.h"
-
-#include <QDialog>
-#include <QCheckBox>
+#include <misc/text/MinTextEdit.h>
+#include <misc/options/displayoptions.h>
 
 
-class SaveOptionsDlg : public QDialog
+MinTextEdit::MinTextEdit(QWidget *parent)
+	: QTextEdit(parent)
 {
-	Q_OBJECT
-	friend class MainFrame;
+}
 
-public:
-    SaveOptionsDlg(QWidget *pParent);
-	void initDialog(bool bAutoLoadLast=false, bool bOpps=false, bool bWOpps = true, bool bAutoSave=true, int saveInterval=10);
 
-private slots:
-	void onOK();
-
-private:
-	void setupLayout();
-	void readParams();
-
-	IntEdit *m_pctrlInterval;
-	bool m_bOpps, m_bWOpps, m_bAutoSave, m_bAutoLoadLast;
-	int m_SaveInterval;
-	QCheckBox *m_pctrlOpps, *m_pctrlWOpps;
-	QCheckBox *m_pctrlAutoSave, *m_pctrlAutoLoadLast;
-};
-
-#endif // SAVEOPTIONSDLG_H
+QSize MinTextEdit::sizeHint() const
+{
+	QFontMetrics fm(Settings::s_TextFont);
+	int w = 23 * fm.averageCharWidth();
+	int h = fm.height();
+	return QSize(w, h);
+}

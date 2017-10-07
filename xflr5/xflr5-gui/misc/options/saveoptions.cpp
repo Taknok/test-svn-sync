@@ -1,34 +1,25 @@
 /****************************************************************************
 
-	SaveOptionsDlg
-	Copyright (C) 2009 Andre Deperrois adeperrois@xflr5.com
+	Techwing Application
 
-	This program is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
-	(at your option) any later version.
+	Copyright (C) Andre Deperrois techwinder@gmail.com
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with this program; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	All rights reserved.
 
 *****************************************************************************/
 
-#include "SaveOptionsDlg.h"
+#include "saveoptions.h"
+#include <misc/text/IntEdit.h>
 #include <QGroupBox>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
 
-SaveOptionsDlg::SaveOptionsDlg(QWidget *pParent) : QDialog(pParent)
+#include "saveoptions.h"
+
+SaveOptions::SaveOptions(QWidget *parent) : QWidget(parent)
 {
-	setWindowTitle(tr("Save Options"));
 	m_bOpps = false;
 	m_bWOpps = true;
 	m_bAutoSave = true;
@@ -37,7 +28,9 @@ SaveOptionsDlg::SaveOptionsDlg(QWidget *pParent) : QDialog(pParent)
 	setupLayout();
 }
 
-void SaveOptionsDlg::setupLayout()
+
+
+void SaveOptions::setupLayout()
 {
 	QGroupBox *pLoadBox = new QGroupBox(tr("Load options"));
 	{
@@ -82,20 +75,7 @@ void SaveOptionsDlg::setupLayout()
 	}
 
 
-	QHBoxLayout *pCommandButtons = new QHBoxLayout;
-	{
-		QPushButton *pOKButton = new QPushButton(tr("OK"));
-		pOKButton->setAutoDefault(false);
-		QPushButton *pCancelButton = new QPushButton(tr("Cancel"));
-		pCancelButton->setAutoDefault(false);
-		pCommandButtons->addStretch(1);
-		pCommandButtons->addWidget(pOKButton);
-		pCommandButtons->addStretch(1);
-		pCommandButtons->addWidget(pCancelButton);
-		pCommandButtons->addStretch(1);
-		connect(pOKButton, SIGNAL(clicked()),this, SLOT(onOK()));
-		connect(pCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
-	}
+
 
 	QVBoxLayout *pMainLayout = new QVBoxLayout;
 	{
@@ -103,14 +83,12 @@ void SaveOptionsDlg::setupLayout()
 		pMainLayout->addWidget(pSaveTimerBox);
 		pMainLayout->addStretch(1);
 		pMainLayout->addWidget(pSaveOppBox);
-		pMainLayout->addStretch(1);
-		pMainLayout->addLayout(pCommandButtons);
 	}
 	setLayout(pMainLayout);
 }
 
 
-void SaveOptionsDlg::initDialog(bool bAutoLoadLast, bool bOpps, bool bWOpps, bool bAutoSave, int saveInterval)
+void SaveOptions::initWidget(bool bAutoLoadLast, bool bOpps, bool bWOpps, bool bAutoSave, int saveInterval)
 {
 	m_bAutoLoadLast = bAutoLoadLast;
 	m_bAutoSave = bAutoSave;
@@ -129,14 +107,13 @@ void SaveOptionsDlg::initDialog(bool bAutoLoadLast, bool bOpps, bool bWOpps, boo
 
 
 
-void SaveOptionsDlg::onOK()
+void SaveOptions::onOK()
 {
 	m_bAutoLoadLast = m_pctrlAutoLoadLast->isChecked();
 	m_bOpps = m_pctrlOpps->isChecked();
 	m_bWOpps = m_pctrlWOpps->isChecked();
 	m_bAutoSave = m_pctrlAutoSave->isChecked();
 	m_SaveInterval = m_pctrlInterval->value();
-	accept();
 }
 
 

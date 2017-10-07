@@ -32,7 +32,7 @@
 #include <QComboBox>
 
 #include <objects3d/Plane.h>
-#include <misc/DoubleEdit.h>
+#include <misc/text/DoubleEdit.h>
 
 
 /** The class to define and edit planes. SUes */

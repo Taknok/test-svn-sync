@@ -20,9 +20,9 @@
 *****************************************************************************/
   
 #include <globals.h>
-#include <misc/Settings.h>
+#include <misc/options/displayoptions.h>
 #include <objects3d/WPolar.h>
-#include <misc/Units.h>
+#include <misc/options/Units.h>
 #include <miarex/Miarex.h>
 #include "StabPolarDlg.h"
 #include "AeroDataDlg.h"

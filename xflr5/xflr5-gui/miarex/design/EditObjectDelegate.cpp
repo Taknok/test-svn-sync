@@ -23,9 +23,9 @@
 #include <QtDebug>
 #include "EditObjectDelegate.h"
 #include <objects2d/Foil.h>
-#include <misc/Settings.h>
-#include <misc/IntEdit.h>
-#include <misc/DoubleEdit.h>
+#include <misc/options/displayoptions.h>
+#include <misc/text/IntEdit.h>
+#include <misc/text/DoubleEdit.h>
 #include <analysis3d_enums.h>
 
 

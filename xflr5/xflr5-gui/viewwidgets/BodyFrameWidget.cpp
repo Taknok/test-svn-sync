@@ -19,10 +19,10 @@
 
 *****************************************************************************/
 
-#include "Settings.h"
+#include <misc/options/displayoptions.h>
 #include <miarex/design/BodyScaleDlg.h>
 #include "BodyFrameWidget.h"
-#include <misc/Units.h>
+#include <misc/options/Units.h>
 #include <QPainter>
 #include <QtDebug>
 

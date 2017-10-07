@@ -19,8 +19,8 @@
 
 *****************************************************************************/
 
-#include "DoubleEdit.h"
-#include <misc/Settings.h>
+#include <misc/text/DoubleEdit.h>
+#include <misc/options/displayoptions.h>
 #include <math.h>
 
 DoubleEdit::DoubleEdit(QWidget *pParent)  : QLineEdit(pParent)
