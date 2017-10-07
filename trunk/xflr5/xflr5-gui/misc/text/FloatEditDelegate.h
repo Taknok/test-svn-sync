@@ -23,7 +23,7 @@
 #define FLOATEDITDELEGATE_H
 
 #include <QItemDelegate>
-#include "DoubleEdit.h"
+#include <misc/text/DoubleEdit.h>
 
 class FloatEditDelegate : public QItemDelegate
 {

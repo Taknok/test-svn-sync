@@ -27,10 +27,10 @@
 #include <QMessageBox>
 #include <QMenu>
 #include <math.h>
-#include <Settings.h>
+#include <misc/options/displayoptions.h>
 
 #include <globals.h>
-#include <misc/Units.h>
+#include <misc/options/Units.h>
 #include <miarex/Objects3D.h>
 #include <miarex/mgt/ImportObjectDlg.h>
 #include <miarex/mgt/XmlPlaneReader.h>

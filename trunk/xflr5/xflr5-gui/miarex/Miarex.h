@@ -49,11 +49,11 @@ class MainFrame;
 #include "./analysis/PanelAnalysisDlg.h"
 #include "./analysis/LLTAnalysisDlg.h"
 #include <plane_analysis/planeanalysistask.h>
-#include <misc/LineBtn.h>
-#include <misc/DoubleEdit.h>
-#include <misc/MinTextEdit.h>
-#include <misc/LineCbBox.h>
-#include <misc/LineDelegate.h>
+#include <misc/line/LineBtn.h>
+#include <misc/text/DoubleEdit.h>
+#include <misc/text/MinTextEdit.h>
+#include <misc/line/LineCbBox.h>
+#include <misc/line/LineDelegate.h>
 #include <objects3d/Body.h>
 #include <objects3d/Wing.h>
 #include <objects3d/Plane.h>

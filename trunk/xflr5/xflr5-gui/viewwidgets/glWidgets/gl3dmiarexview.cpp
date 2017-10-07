@@ -5,7 +5,7 @@
 #include <QMenu>
 #include <QApplication>
 #include <QProgressDialog>
-#include <Settings.h>
+#include <misc/options/displayoptions.h>
 #include <globals.h>
 #include <miarex/view/GL3DScales.h>
 #include <objects3d/Surface.h>

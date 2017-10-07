@@ -36,7 +36,7 @@
 #include <math.h>
 #include <qopengl.h>
 #include <objects3d/WPolar.h>
-#include <misc/Units.h>
+#include <misc/options/Units.h>
 #include <graph_globals.h>
 
 

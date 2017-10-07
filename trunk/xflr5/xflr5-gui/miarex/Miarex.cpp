@@ -58,13 +58,13 @@
 #include <miarex/mgt/xmlwpolarwriter.h>
 #include <objects3d/PointMass.h>
 #include <objects3d/Surface.h>
-#include <misc/Settings.h>
+#include <misc/options/displayoptions.h>
 #include <misc/ProgressDlg.h>
 #include <misc/ModDlg.h>
 #include <misc/RenameDlg.h>
 #include <misc/PolarFilterDlg.h>
 #include <misc/ObjectPropsDlg.h>
-#include <misc/Units.h>
+#include <misc/options/Units.h>
 #include <misc/EditPlrDlg.h>
 #include <misc/stlexportdialog.h>
 #include <viewwidgets/miarextilewidget.h>

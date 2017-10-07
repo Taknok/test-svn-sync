@@ -26,8 +26,8 @@
 #include "gl3dview.h"
 #include <globals.h>
 #include <mainframe.h>
-#include <misc/Settings.h>
-#include <misc/Units.h>
+#include <misc/options/displayoptions.h>
+#include <misc/options/Units.h>
 #include <mainframe.h>
 #include <objects2d/Vector3d.h>
 #include <objects3d/Body.h>

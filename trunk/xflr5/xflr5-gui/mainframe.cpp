@@ -39,13 +39,14 @@
 #include <miarex/mgt/PlaneTableDelegate.h>
 #include <misc/AboutQ5.h>
 #include <misc/ObjectPropsDlg.h>
-#include <misc/LinePickerDlg.h>
-#include <misc/Settings.h>
-#include <misc/SaveOptionsDlg.h>
-#include <misc/TranslatorDlg.h>
+#include <misc/line/LinePickerDlg.h>
+#include <misc/options/displayoptions.h>
 #include <misc/RenameDlg.h>
-#include <misc/Units.h>
+#include <misc/options/Units.h>
 #include <misc/EditPlrDlg.h>
+#include <misc/options/preferencesdlg.h>
+#include <misc/options/saveoptions.h>
+#include <misc/options/language.h>
 #include <graph/GraphDlg.h>
 #include <xdirect/XDirect.h>
 #include <xdirect/objects2d.h>
@@ -193,6 +194,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 			case QSysInfo::MV_IOS_8_4:  Trace("iOS 8.4"); break;
 			case QSysInfo::MV_IOS_9_0:  Trace("iOS 9.0"); break;
 			case QSysInfo::MV_None:  Trace("Not a Darwin operating system"); break;
+			default: Trace("Other"); break;
 		}
 
 		Trace("build ABI: " + sysInfo.buildAbi());
@@ -536,16 +538,8 @@ void MainFrame::createActions()
 	m_pSaveProjectAsAct->setStatusTip(tr("Save the current project under a new name"));
 	connect(m_pSaveProjectAsAct, SIGNAL(triggered()), this, SLOT(onSaveProjectAs()));
 
-	m_pSaveOptionsAct = new QAction(tr("Load and Save Options"), this);
-	connect(m_pSaveOptionsAct, SIGNAL(triggered()), this, SLOT(onSaveOptions()));
-
-	m_pUnitsAct = new QAction(tr("Units..."), this);
-	m_pUnitsAct->setStatusTip(tr("Define the units for this project"));
-	connect(m_pUnitsAct, SIGNAL(triggered()), this, SLOT(onUnits()));
-
-	m_pLanguageAct = new QAction(tr("Language..."), this);
-	m_pLanguageAct->setStatusTip(tr("Define the default language for the application"));
-	connect(m_pLanguageAct, SIGNAL(triggered()), this, SLOT(onLanguage()));
+	m_pPreferencesAct = new QAction(tr("Preferences"), this);
+	connect(m_pPreferencesAct, SIGNAL(triggered()), this, SLOT(onPreferences()));
 
 	m_pRestoreToolbarsAct	 = new QAction(tr("Restore toolbars"), this);
 	m_pRestoreToolbarsAct->setStatusTip(tr("Restores the toolbars to their original state"));
@@ -583,10 +577,6 @@ void MainFrame::createActions()
 
 	m_pCurGraphDlgAct = new QAction(tr("Define Graph Settings")+"\t(G)", this);
 	connect(m_pCurGraphDlgAct, SIGNAL(triggered()), this, SLOT(onCurGraphSettings()));
-
-	m_pStyleAct = new QAction(tr("General Display Settings"), this);
-	m_pStyleAct->setStatusTip(tr("Define the color and font options for all views and graphs"));
-	connect(m_pStyleAct, SIGNAL(triggered()), this, SLOT(onStyleSettings()));
 
 	m_pExitAct = new QAction(tr("E&xit"), this);
 	m_pExitAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
@@ -1121,13 +1111,7 @@ void MainFrame::createMenus()
 	m_pOptionsMenu = menuBar()->addMenu(tr("O&ptions"));
 	{
 		m_pOptionsMenu->addSeparator();
-		m_pOptionsMenu->addAction(m_pLanguageAct);
-		m_pOptionsMenu->addSeparator();
-		m_pOptionsMenu->addAction(m_pSaveOptionsAct);
-		m_pOptionsMenu->addSeparator();
-		m_pOptionsMenu->addAction(m_pUnitsAct);
-		m_pOptionsMenu->addSeparator();
-		m_pOptionsMenu->addAction(m_pStyleAct);
+		m_pOptionsMenu->addAction(m_pPreferencesAct);
 		m_pOptionsMenu->addSeparator();
 		m_pOptionsMenu->addAction(m_pRestoreToolbarsAct);
 		m_pOptionsMenu->addSeparator();
@@ -3849,15 +3833,6 @@ void MainFrame::onHighlightOperatingPoint()
 }
 
 
-void MainFrame::onLanguage()
-{
-    TranslatorDlg tDlg(this);
-    tDlg.InitDialog();
-    if(tDlg.exec()==QDialog::Accepted)
-	{
-	}
-}
-
 
 void MainFrame::onLoadFile()
 {
@@ -4090,33 +4065,6 @@ void MainFrame::onRestoreToolbars()
 	}
 }
 
-
-void MainFrame::onSaveOptions()
-{
-    SaveOptionsDlg soDlg(this);
-	soDlg.initDialog(m_bAutoLoadLast, m_bSaveOpps, m_bSaveWOpps, m_bAutoSave, m_SaveInterval);
-    if(soDlg.exec()==QDialog::Accepted)
-	{
-		m_bAutoLoadLast = soDlg.m_bAutoLoadLast;
-		m_bAutoSave     = soDlg.m_bAutoSave;
-		m_SaveInterval  = soDlg.m_SaveInterval;
-		m_bSaveOpps     = soDlg.m_bOpps;
-		m_bSaveWOpps    = soDlg.m_bWOpps;
-
-		if(m_bAutoSave)
-		{
-			if(m_pSaveTimer)
-			{
-				m_pSaveTimer->stop();
-				delete m_pSaveTimer;
-			}
-			m_pSaveTimer = new QTimer(this);
-			m_pSaveTimer->setInterval(m_SaveInterval*60*1000);
-			m_pSaveTimer->start();
-			connect(m_pSaveTimer, SIGNAL(timeout()), this, SLOT(onSaveTimer()));
-		}
-	}
-}
 
 
 void MainFrame::onSaveTimer()
@@ -4437,65 +4385,6 @@ void MainFrame::onShowMousePos()
 }
 
 
-void MainFrame::onStyleSettings()
-{
-	QXDirect *pXDirect   = (QXDirect*)m_pXDirect;
-	QMiarex *pMiarex     = (QMiarex*)m_pMiarex;
-
-	Settings DSdlg(this);
-
-	DSdlg.initDialog();
-
-	DSdlg.exec();
-	pMiarex->m_bResetglGeom = true;
-	pMiarex->m_bResetglBody = true;
-	pMiarex->m_bResetglLegend = true;
-
-	if(DSdlg.m_bIsGraphModified)
-	{
-		setGraphSettings(&Settings::s_RefGraph);
-	}
-	QAFoil *pAFoil = (QAFoil*)m_pAFoil;
-	pAFoil->setTableFont();
-	if(Settings::s_Theme==SETTINGS::DARKTHEME)
-	{
-		m_pXDirectTileWidget->opPointWidget()->setNeutralLineColor(QColor(190,190,190));
-		pAFoil->m_p2DWidget->setNeutralLineColor(QColor(190,190,190));
-	}
-	else
-	{
-		m_pXDirectTileWidget->opPointWidget()->setNeutralLineColor(QColor(60,60,60));
-		pAFoil->m_p2DWidget->setNeutralLineColor(QColor(60,60,60));
-	}
-
-	pXDirect->m_CpGraph.setInverted(true);
-	pMiarex->m_CpGraph.setInverted(true);
-	pMiarex->m_bResetTextLegend = true;
-
-	m_VoidWidget.update();
-
-	setMainFrameCentralWidget();
-
-	updateView();
-}
-
-
-void MainFrame::onUnits()
-{
-	Units uDlg(this);
-	uDlg.initDialog();
-
-	if(uDlg.exec()==QDialog::Accepted)
-	{
-		setSaveState(false);
-
-		if(m_iApp==XFLR5::MIAREX)
-		{
-			QMiarex *pMiarex= (QMiarex*)m_pMiarex;
-			pMiarex->updateUnits();
-		}
-	}
-}
 
 
 void MainFrame::onXDirect()
@@ -7128,4 +7017,72 @@ void MainFrame::exportGraph(QGraph *pGraph)
 
 	pGraph->exportToFile(XFile, bCSV);
 
+}
+
+void MainFrame::onPreferences()
+{
+	PreferencesDlg dlg(this);
+	dlg.m_pSaveOptionsWidget->initWidget(m_bAutoLoadLast, m_bSaveOpps, m_bSaveWOpps, m_bAutoSave, m_SaveInterval);
+	dlg.m_pUnitsWidget->initWidget();
+	dlg.m_pDisplayOptionsWidget->initWidget();
+	dlg.m_pLanguageOptionsWidget->initWidget();
+
+	if(dlg.exec()==QDialog::Accepted)
+	{
+		m_bAutoLoadLast = dlg.m_pSaveOptionsWidget->m_bAutoLoadLast;
+		m_bAutoSave     = dlg.m_pSaveOptionsWidget->m_bAutoSave;
+		m_SaveInterval  = dlg.m_pSaveOptionsWidget->m_SaveInterval;
+		m_bSaveOpps     = dlg.m_pSaveOptionsWidget->m_bOpps;
+		m_bSaveWOpps    = dlg.m_pSaveOptionsWidget->m_bWOpps;
+
+		if(m_bAutoSave)
+		{
+			if(m_pSaveTimer)
+			{
+				m_pSaveTimer->stop();
+				delete m_pSaveTimer;
+			}
+			m_pSaveTimer = new QTimer(this);
+			m_pSaveTimer->setInterval(m_SaveInterval*60*1000);
+			m_pSaveTimer->start();
+			connect(m_pSaveTimer, SIGNAL(timeout()), this, SLOT(onSaveTimer()));
+		}
+
+		saveSettings();
+	}
+
+	QXDirect *pXDirect   = (QXDirect*)m_pXDirect;
+	QMiarex *pMiarex     = (QMiarex*)m_pMiarex;
+
+	if(dlg.m_pDisplayOptionsWidget->m_bIsGraphModified)
+	{
+		setGraphSettings(&Settings::s_RefGraph);
+	}
+	QAFoil *pAFoil = (QAFoil*)m_pAFoil;
+	pAFoil->setTableFont();
+	if(Settings::s_Theme==SETTINGS::DARKTHEME)
+	{
+		m_pXDirectTileWidget->opPointWidget()->setNeutralLineColor(QColor(190,190,190));
+		pAFoil->m_p2DWidget->setNeutralLineColor(QColor(190,190,190));
+	}
+	else
+	{
+		m_pXDirectTileWidget->opPointWidget()->setNeutralLineColor(QColor(60,60,60));
+		pAFoil->m_p2DWidget->setNeutralLineColor(QColor(60,60,60));
+	}
+	pMiarex->m_bResetglGeom = true;
+	pMiarex->m_bResetglBody = true;
+	pMiarex->m_bResetglLegend = true;
+	pXDirect->CpGraph()->setInverted(true);
+	pMiarex->m_CpGraph.setInverted(true);
+	pMiarex->m_bResetTextLegend = true;
+
+	m_VoidWidget.update();
+
+	setMainFrameCentralWidget();
+
+	saveSettings();
+	setSaveState(false);
+
+	updateView();
 }

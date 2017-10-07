@@ -1,7 +1,7 @@
 /****************************************************************************
 
-	TranslatorDlg Class
-	Copyright (C) 2009 Andre Deperrois adeperrois@xflr5.com
+	ColorButton Class
+	Copyright (C) 2009-2016 Andre Deperrois adeperrois@xflr5.com
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -19,35 +19,25 @@
 
 *****************************************************************************/
 
+#ifndef COLORBUTTON_H
+#define COLORBUTTON_H
 
-#ifndef TRANSLATORDLG_H
-#define TRANSLATORDLG_H
+#include <QAbstractButton>
+#include <QPaintEvent>
 
-#include <QDialog>
-#include <QPushButton>
-#include <QListWidget>
-#include <QStringList>
-
-
-class TranslatorDlg : public QDialog
+class ColorButton : public QAbstractButton
 {
-	Q_OBJECT
-
-	friend class MainFrame;
 public:
-    TranslatorDlg(QWidget *pParent);
+	ColorButton(QWidget *pParent = NULL);
 
-private slots:
-	void OnOK();
+	void paintEvent ( QPaintEvent * event );
+	QSize sizeHint() const;
+
+	void setColor(QColor const & color);
+	QColor &color();
 
 private:
-	void SetupLayout();
-	void InitDialog();
-	QStringList findQmFiles();
-	QString languageName(const QString &qmFile);
-
-	QListWidget *m_pctrlLanguageList;
-	QMap<QString, QString> qmFileForLanguage;
+	QColor m_Color;
 };
 
-#endif // TRANSLATORDLG_H
+#endif // COLORBUTTON_H

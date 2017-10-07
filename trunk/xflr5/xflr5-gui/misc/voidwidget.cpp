@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 #include "voidwidget.h"
-#include <misc/Settings.h>
+#include <misc/options/displayoptions.h>
 #include <QPainter>
 
 VoidWidget::VoidWidget(QWidget *parent) : QWidget(parent)

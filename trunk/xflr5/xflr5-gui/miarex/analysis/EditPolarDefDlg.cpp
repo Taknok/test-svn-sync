@@ -29,7 +29,7 @@
 #include <QHideEvent>
 #include <QtDebug>
 #include "EditPolarDefDlg.h"
-#include <misc/Units.h>
+#include <misc/options/Units.h>
 #include <globals.h>
 #include <gui_enums.h>
 

@@ -19,8 +19,8 @@
 
 *****************************************************************************/
 
-#include <misc/Units.h>
-#include <misc/Settings.h>
+#include <misc/options/Units.h>
+#include <misc/options/displayoptions.h>
 #include <miarex/view/W3dPrefsDlg.h>
 #include <objects3d/Surface.h>
 #include "wingseldlg.h"

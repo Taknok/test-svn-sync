@@ -21,7 +21,7 @@
 
 #include <globals.h>
 #include "section2dwidget.h"
-#include <misc/Settings.h>
+#include <misc/options/displayoptions.h>
 #include <design/GridSettingsDlg.h>
 #include <graph_globals.h>
 #include <QPainter>
