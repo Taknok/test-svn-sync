@@ -19,8 +19,8 @@
 
 *****************************************************************************/
 
-#include "IntEdit.h"
-#include "Settings.h"
+#include <misc/text/IntEdit.h>
+#include <misc/options/displayoptions.h>
 
 
 IntEdit::IntEdit(QWidget *pParent)

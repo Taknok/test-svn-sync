@@ -1,27 +1,16 @@
 /****************************************************************************
 
-	TranslatorDlg Class
-	Copyright (C) 2009 Andre Deperrois adeperrois@xflr5.com
+	Techwing Application
 
-	This program is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
-	(at your option) any later version.
+	Copyright (C) Andre Deperrois techwinder@gmail.com
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with this program; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	All rights reserved.
 
 *****************************************************************************/
 
-#include "TranslatorDlg.h"
+#include "language.h"
 #include <mainframe.h>
-#include <QtDebug>
+
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QStringList>
@@ -30,19 +19,19 @@
 #include <QDir>
 #include <QMessageBox>
 #include <QTranslator>
+#include <QtDebug>
 
 
-
-TranslatorDlg::TranslatorDlg(QWidget *pParent): QDialog(pParent)
+LanguageOptions::LanguageOptions(QWidget *pParent): QWidget(pParent)
 {
 	setWindowTitle(tr("Language settings"));
 	QString LanguageName = tr("English");// will be translated in the ts & qm files and this will be used to fill the QListWidget
 
-	SetupLayout();
+	setupLayout();
 }
 
 
-void TranslatorDlg::OnOK()
+void LanguageOptions::onOK()
 {
 	//read user language selection and exit
 	QListWidgetItem *pItem =  m_pctrlLanguageList->currentItem();
@@ -56,47 +45,29 @@ void TranslatorDlg::OnOK()
 		MainFrame::s_LanguageFilePath = "";
 	}
 	QMessageBox::warning(this, tr("Warning"), tr("The change will take effect at the next session"));
-
-	accept();
 }
 
 
-void TranslatorDlg::SetupLayout()
+void LanguageOptions::setupLayout()
 {
 	QLabel *lab = new QLabel(tr("Select the application's default language:"));
 	m_pctrlLanguageList = new QListWidget;
 	m_pctrlLanguageList->setMinimumHeight(300);
-	connect(m_pctrlLanguageList, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(OnOK()));
+	connect(m_pctrlLanguageList, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(onOK()));
 
-	QHBoxLayout *CommandButtons = new QHBoxLayout;
+	QVBoxLayout *pMainLayout = new QVBoxLayout;
 	{
-		QPushButton *OKButton = new QPushButton(tr("OK"));
-		QPushButton *CancelButton = new QPushButton(tr("Cancel"));
-		OKButton->setAutoDefault(true);
-		CommandButtons->addStretch(1);
-		CommandButtons->addWidget(OKButton);
-		CommandButtons->addStretch(1);
-		CommandButtons->addWidget(CancelButton);
-		CommandButtons->addStretch(1);
-		connect(OKButton, SIGNAL(clicked()),this, SLOT(OnOK()));
-		connect(CancelButton, SIGNAL(clicked()),this, SLOT(reject()));
+		pMainLayout->addWidget(lab);
+		pMainLayout->addStretch(1);
+		pMainLayout->addWidget(m_pctrlLanguageList);
+		pMainLayout->addStretch(1);
 	}
 
-	QVBoxLayout *MainLayout = new QVBoxLayout;
-	{
-		MainLayout->addWidget(lab);
-		MainLayout->addStretch(1);
-		MainLayout->addWidget(m_pctrlLanguageList);
-		MainLayout->addStretch(1);
-		MainLayout->addLayout(CommandButtons);
-		MainLayout->addStretch(1);
-	}
-
-	setLayout(MainLayout);
+	setLayout(pMainLayout);
 }
 
 
-void TranslatorDlg::InitDialog()
+void LanguageOptions::initWidget()
 {
 	QStringList qmFiles = findQmFiles();
 	qmFiles.sort();
@@ -106,6 +77,7 @@ void TranslatorDlg::InitDialog()
 
 	for (int i=0; i<qmFiles.count(); ++i)
 	{
+		qDebug()<<languageName(qmFiles[i]);
         qmFileForLanguage.insert(languageName(qmFiles[i]), qmFiles[i]);
         m_pctrlLanguageList->addItem(languageName(qmFiles[i]));
 	}
@@ -122,7 +94,7 @@ void TranslatorDlg::InitDialog()
 }
 
 
-QStringList TranslatorDlg::findQmFiles()
+QStringList LanguageOptions::findQmFiles()
 {
 	if(!MainFrame::s_TranslationDir.exists())
 	{
@@ -141,12 +113,12 @@ QStringList TranslatorDlg::findQmFiles()
 }
 
 
-QString TranslatorDlg::languageName(const QString &qmFile)
+QString LanguageOptions::languageName(const QString &qmFile)
 {
 	QTranslator translator;
 	translator.load(qmFile);
 
-	return translator.translate("TranslatorDlg", "English");
+	return translator.translate("LanguageOptions", "English");
 }
 
 

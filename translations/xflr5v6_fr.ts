@@ -219,58 +219,59 @@
     <message>
         <location filename="../xflr5-gui/miarex/analysis/AeroDataDlg.cpp" line="45"/>
         <source>Air data</source>
-        <translation type="unfinished"></translation>
+        <translation>Données atmosphériques</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/analysis/AeroDataDlg.cpp" line="140"/>
         <source>Applicable in the troposphere
  i.e. Altitude &lt; 11000m</source>
-        <translation type="unfinished"></translation>
+        <translation>Applicable à la ptroposphère,
+soit altitude&lt;11000m</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/analysis/AeroDataDlg.cpp" line="147"/>
         <source>Temperature</source>
-        <translation type="unfinished"></translation>
+        <translation>Température</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/analysis/AeroDataDlg.cpp" line="148"/>
         <source>Altitude</source>
-        <translation type="unfinished"></translation>
+        <translation>Altitude</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/analysis/AeroDataDlg.cpp" line="149"/>
         <source>Air Pressure</source>
-        <translation type="unfinished"></translation>
+        <translation>Pression atmosphérique</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/analysis/AeroDataDlg.cpp" line="150"/>
         <source>Air Density</source>
-        <translation type="unfinished"></translation>
+        <translation>Densité de l&apos;air</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/analysis/AeroDataDlg.cpp" line="151"/>
         <source>Dynamic Viscosity</source>
-        <translation type="unfinished"></translation>
+        <translation>Viscosité dynamique</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/analysis/AeroDataDlg.cpp" line="152"/>
         <source>Kinematic Viscosity</source>
-        <translation type="unfinished"></translation>
+        <translation>Viscosité cinématique</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/analysis/AeroDataDlg.cpp" line="153"/>
         <source>Speed of Sound</source>
-        <translation type="unfinished"></translation>
+        <translation>Vitesse du son</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/analysis/AeroDataDlg.cpp" line="226"/>
         <source>OK</source>
-        <translation type="unfinished">Accepter</translation>
+        <translation>Accepter</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/analysis/AeroDataDlg.cpp" line="227"/>
         <source>Cancel</source>
-        <translation type="unfinished">Abandonner</translation>
+        <translation>Abandonner</translation>
     </message>
 </context>
 <context>
@@ -373,12 +374,12 @@
     <message>
         <location filename="../xflr5-gui/xdirect/analysis/BatchDlg.cpp" line="278"/>
         <source>Iterations control</source>
-        <translation type="unfinished"></translation>
+        <translation>Paramètres d&apos;itérations</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/xdirect/analysis/BatchDlg.cpp" line="282"/>
         <source>Max. iterations</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximum d&apos;itérations</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/xdirect/analysis/BatchDlg.cpp" line="203"/>
@@ -452,7 +453,7 @@ CpCalc : vitesse locale trop élevée
     <message>
         <location filename="../xflr5-gui/xdirect/analysis/BatchDlg.cpp" line="1182"/>
         <source> ...some points are unconverged</source>
-        <translation type="unfinished"> ...certains points n&apos;ont pas convergé</translation>
+        <translation> ...certains points n&apos;ont pas convergé</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/xdirect/analysis/BatchDlg.cpp" line="1185"/>
@@ -492,12 +493,12 @@ CpCalc : vitesse locale trop élevée
     <message>
         <location filename="../xflr5-gui/xdirect/analysis/BatchDlg.cpp" line="297"/>
         <source>Initialize the boundary layer after each polar calculation</source>
-        <translation type="unfinished"></translation>
+        <translation>Initialiser la couche limite après chaque calcul de polaire</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/xdirect/analysis/BatchDlg.cpp" line="298"/>
         <source>Initialize the boundary layer after unconverged points</source>
-        <translation type="unfinished"></translation>
+        <translation>Initialiser la couche limite après une non-convergence</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/xdirect/analysis/BatchDlg.cpp" line="301"/>
@@ -703,7 +704,7 @@ CpCalc : vitesse locale trop élevée
     <message>
         <location filename="../xflr5-gui/xdirect/analysis/BatchThreadDlg.cpp" line="283"/>
         <source>Advanced Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Paramètres avancés</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/xdirect/analysis/BatchThreadDlg.cpp" line="286"/>
@@ -720,17 +721,18 @@ CpCalc : vitesse locale trop élevée
         <location filename="../xflr5-gui/xdirect/analysis/BatchThreadDlg.cpp" line="324"/>
         <source>Update the polar graphs after the completion of each foil/polar pair.
 Uncheck for increased analysis speed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mettre à jour les diagrammes polaires après chaque calcul de profil/polaire.
+Désactiver pour une plus grande rapidité d&apos;exécution.</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/xdirect/analysis/BatchThreadDlg.cpp" line="325"/>
         <source>Clear Output</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/xdirect/analysis/BatchThreadDlg.cpp" line="333"/>
         <source>Max. Threads to use for the analysis:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de threads à utiliser pour l&apos;analyse</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/xdirect/analysis/BatchThreadDlg.cpp" line="574"/>
@@ -748,42 +750,42 @@ Uncheck for increased analysis speed.</source>
     <message>
         <location filename="../xflr5-gui/viewwidgets/BodyFrameWidget.cpp" line="356"/>
         <source>Scale Frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Echelle des sections transverses</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/viewwidgets/BodyFrameWidget.cpp" line="364"/>
         <source>Insert Control Point</source>
-        <translation type="unfinished">Insérer un point de contrôle</translation>
+        <translation>Insérer un point de contrôle</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/viewwidgets/BodyFrameWidget.cpp" line="368"/>
         <source>Remove Control Point</source>
-        <translation type="unfinished">Supprimer un point de contrôle</translation>
+        <translation>Supprimer un point de contrôle</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/viewwidgets/BodyFrameWidget.cpp" line="376"/>
         <source>Show Current Frame Only</source>
-        <translation type="unfinished">N&apos;afficher que la structure en cours</translation>
+        <translation>N&apos;afficher que la section active</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/viewwidgets/BodyFrameWidget.cpp" line="381"/>
         <source>Reset Scales</source>
-        <translation type="unfinished">Réinitialiser les échelles</translation>
+        <translation>Réinitialiser les échelles</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/viewwidgets/BodyFrameWidget.cpp" line="385"/>
         <source>Grid Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Paramètres du grillage</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/viewwidgets/BodyFrameWidget.cpp" line="393"/>
         <source>Load background image</source>
-        <translation type="unfinished">Charger l’image d’arrière plan</translation>
+        <translation>Charger l’image d’arrière plan</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/viewwidgets/BodyFrameWidget.cpp" line="397"/>
         <source>Clear background image</source>
-        <translation type="unfinished">Effacer l’image d’arrière-plan</translation>
+        <translation>Effacer l’image d’arrière-plan</translation>
     </message>
 </context>
 <context>
@@ -841,37 +843,37 @@ Uncheck for increased analysis speed.</source>
     <message>
         <location filename="../xflr5-gui/viewwidgets/BodyLineWidget.cpp" line="297"/>
         <source>Scale Body</source>
-        <translation type="unfinished"></translation>
+        <translation>Echelle section longitudinale</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/viewwidgets/BodyLineWidget.cpp" line="305"/>
         <source>Insert Control Point</source>
-        <translation type="unfinished">Insérer un point de contrôle</translation>
+        <translation>Insérer un point de contrôle</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/viewwidgets/BodyLineWidget.cpp" line="309"/>
         <source>Remove Control Point</source>
-        <translation type="unfinished">Supprimer un point de contrôle</translation>
+        <translation>Supprimer un point de contrôle</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/viewwidgets/BodyLineWidget.cpp" line="317"/>
         <source>Reset Scales</source>
-        <translation type="unfinished">Réinitialiser les échelles</translation>
+        <translation>Réinitialiser les échelles</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/viewwidgets/BodyLineWidget.cpp" line="321"/>
         <source>Grid Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Paramètres du grillage</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/viewwidgets/BodyLineWidget.cpp" line="329"/>
         <source>Load background image</source>
-        <translation type="unfinished">Charger l’image d’arrière plan</translation>
+        <translation>Charger l’image d’arrière plan</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/viewwidgets/BodyLineWidget.cpp" line="333"/>
         <source>Clear background image</source>
-        <translation type="unfinished">Effacer l’image d’arrière-plan</translation>
+        <translation>Effacer l’image d’arrière-plan</translation>
     </message>
 </context>
 <context>
@@ -1081,13 +1083,13 @@ Uncheck for increased analysis speed.</source>
         <location filename="../xflr5-gui/viewwidgets/Direct2dDesign.cpp" line="449"/>
         <location filename="../xflr5-gui/viewwidgets/Direct2dDesign.cpp" line="463"/>
         <source>Warning</source>
-        <translation type="unfinished">Attention</translation>
+        <translation>Attention</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/viewwidgets/Direct2dDesign.cpp" line="449"/>
         <location filename="../xflr5-gui/viewwidgets/Direct2dDesign.cpp" line="463"/>
         <source>The minimum number of control points has been reached for this spline degree</source>
-        <translation type="unfinished"></translation>
+        <translation>Valeur minimale du nombre de points de controle atteinte</translation>
     </message>
 </context>
 <context>
@@ -1146,213 +1148,213 @@ Uncheck for increased analysis speed.</source>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="71"/>
         <source>Insert before</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer avant</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="72"/>
         <source>Insert after</source>
-        <translation type="unfinished">Insérer après</translation>
+        <translation>Insérer après</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="73"/>
         <source>Delete</source>
-        <translation type="unfinished">Supprimer</translation>
+        <translation>Supprimer</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="75"/>
         <source>Section</source>
-        <translation type="unfinished">Section</translation>
+        <translation>Section</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="90"/>
         <source>Scale</source>
-        <translation type="unfinished">Échelle</translation>
+        <translation>Échelle</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="93"/>
         <source>Export Body Geometry to text File</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter la géométrie du fuselage vers un fichier texte</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="96"/>
         <source>Export body definition to an XML file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter la définition du fuselage vers un fichier XML</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="100"/>
         <source>Import body definition from an XML file</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer la définition du fuselage depuis un fichier XML</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="103"/>
         <source>Define Inertia</source>
-        <translation type="unfinished">Définir l&apos;inertie</translation>
+        <translation>Définir l&apos;inertie</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="106"/>
         <source>Translate</source>
-        <translation type="unfinished">Translation</translation>
+        <translation>Translation</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="194"/>
         <source>Insert body frame before</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer une section avant</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="195"/>
         <source>Insert body frame after</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer une section après</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="196"/>
         <source>Delete body frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Retirer la section</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="200"/>
         <source>Insert point mass before</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer une masse ponctuelle avant</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="201"/>
         <source>Insert point mass after</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer une masse ponctuelle après</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="202"/>
         <source>Delete point Mass</source>
-        <translation type="unfinished"></translation>
+        <translation>Retirer la masse ponctuelle</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="212"/>
         <source>Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Objet</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="212"/>
         <source>Field</source>
-        <translation type="unfinished"></translation>
+        <translation>Champ</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="212"/>
         <source>Value</source>
-        <translation type="unfinished">Valeur</translation>
+        <translation>Valeur</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="212"/>
         <source>Unit</source>
-        <translation type="unfinished">Unités</translation>
+        <translation>Unités</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="227"/>
         <source>Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Objets</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="270"/>
         <source>Regenerate</source>
-        <translation type="unfinished"></translation>
+        <translation>Régénérer</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="272"/>
         <source>Actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Actions</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="274"/>
         <source>Actions...</source>
-        <translation type="unfinished">Actions...</translation>
+        <translation>Actions...</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="289"/>
         <source>Save and Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Accepter et fermer</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="291"/>
         <source>Cancel</source>
-        <translation type="unfinished">Abandonner</translation>
+        <translation>Abandonner</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="323"/>
         <source>Axes</source>
-        <translation type="unfinished">Axes</translation>
+        <translation>Axes</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="324"/>
         <source>Surfaces</source>
-        <translation type="unfinished">Surfaces</translation>
+        <translation>Surfaces</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="325"/>
         <source>Outline</source>
-        <translation type="unfinished">Contour</translation>
+        <translation>Contour</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="326"/>
         <source>Panels</source>
-        <translation type="unfinished">Panneaux</translation>
+        <translation>Panneaux</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="327"/>
         <source>Masses</source>
-        <translation type="unfinished">Masses</translation>
+        <translation>Masses</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="357"/>
         <source>X View</source>
-        <translation type="unfinished"></translation>
+        <translation>Vue suivant X</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="358"/>
         <source>Y View</source>
-        <translation type="unfinished">Vue Y</translation>
+        <translation>Vue suivant Y</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="359"/>
         <source>Z View</source>
-        <translation type="unfinished">Vue Z</translation>
+        <translation>Vue suivant Z</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="360"/>
         <source>Iso View</source>
-        <translation type="unfinished">Vue ISO</translation>
+        <translation>Vue ISO</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="361"/>
         <source>Flip View</source>
-        <translation type="unfinished"></translation>
+        <translation>Retourner</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="379"/>
         <source>Reset scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Rétablir l&apos;échelle</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="1347"/>
         <source>Export plane definition to xml file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter la définition de l&apos;avion vers un fichier XML</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="1377"/>
         <source>Open XML File</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir un fichier XML</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="1379"/>
         <source>Plane XML file</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier XML d&apos;avion</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="1387"/>
         <source>Could not read the file
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de lire le fichier\n</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="1388"/>
         <source>Warning</source>
-        <translation type="unfinished">Attention</translation>
+        <translation>Attention</translation>
     </message>
     <message>
         <source>Clip:</source>
@@ -1361,12 +1363,12 @@ Uncheck for increased analysis speed.</source>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="524"/>
         <source>Save the changes ?</source>
-        <translation type="unfinished">Enregistrer les modifications ?</translation>
+        <translation>Enregistrer les modifications ?</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="525"/>
         <source>Question</source>
-        <translation type="unfinished">Question</translation>
+        <translation>Question</translation>
     </message>
 </context>
 <context>
@@ -1374,279 +1376,279 @@ Uncheck for increased analysis speed.</source>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="75"/>
         <source>Insert Before</source>
-        <translation type="unfinished">Insérer avant</translation>
+        <translation>Insérer avant</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="76"/>
         <source>Insert after</source>
-        <translation type="unfinished">Insérer après</translation>
+        <translation>Insérer après</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="77"/>
         <source>Delete</source>
-        <translation type="unfinished">Supprimer</translation>
+        <translation>Supprimer</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="79"/>
         <source>Section</source>
-        <translation type="unfinished">Section</translation>
+        <translation>Section</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="185"/>
         <source>Insert body frame before</source>
-        <translation type="unfinished"></translation>
+        <translation>Inéserer une section avant</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="186"/>
         <source>Insert body frame after</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer une section après</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="187"/>
         <source>Delete body frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Retirer la section</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="191"/>
         <source>Insert wing section before</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer une section d&apos;aile avant</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="192"/>
         <source>Insert wing section after</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer une section d&apos;aile après</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="193"/>
         <source>Delete wing section</source>
-        <translation type="unfinished"></translation>
+        <translation>Retirer la section d&apos;aile</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="197"/>
         <source>Insert point mass before</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer une masse ponctuelle avant</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="198"/>
         <source>Insert point mass after</source>
-        <translation type="unfinished"></translation>
+        <translation>Insérer une masse ponctuelle après</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="199"/>
         <source>Delete point Mass</source>
-        <translation type="unfinished"></translation>
+        <translation>Retirer la masse ponctuelle</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="215"/>
         <source>Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Objet</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="215"/>
         <source>Field</source>
-        <translation type="unfinished"></translation>
+        <translation>Champ</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="215"/>
         <source>Value</source>
-        <translation type="unfinished">Valeur</translation>
+        <translation>Valeur</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="215"/>
         <source>Unit</source>
-        <translation type="unfinished">Unités</translation>
+        <translation>Unité</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="230"/>
         <source>Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Objets</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="300"/>
         <source>Axes</source>
-        <translation type="unfinished">Axes</translation>
+        <translation>Axes</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="301"/>
         <source>Surfaces</source>
-        <translation type="unfinished">Surfaces</translation>
+        <translation>Surfaces</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="302"/>
         <source>Outline</source>
-        <translation type="unfinished">Contour</translation>
+        <translation>Contour</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="303"/>
         <source>Panels</source>
-        <translation type="unfinished">Panneaux</translation>
+        <translation>Panneaux</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="304"/>
         <source>Foil Names</source>
-        <translation type="unfinished">Nom des profils</translation>
+        <translation>Nom des profils</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="305"/>
         <source>Masses</source>
-        <translation type="unfinished">Masses</translation>
+        <translation>Masses</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="336"/>
         <source>X View</source>
-        <translation type="unfinished"></translation>
+        <translation>Vue suivant X</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="337"/>
         <source>Y View</source>
-        <translation type="unfinished">Vue Y</translation>
+        <translation>Vue Y</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="338"/>
         <source>Z View</source>
-        <translation type="unfinished">Vue Z</translation>
+        <translation>Vue Z</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="339"/>
         <source>Iso View</source>
-        <translation type="unfinished">Vue ISO</translation>
+        <translation>Vue ISO</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="340"/>
         <source>Flip View</source>
-        <translation type="unfinished"></translation>
+        <translation>Retourner</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="360"/>
         <source>Reset scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Rétablir l&apos;échelle</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="364"/>
         <source>Clip:</source>
-        <translation type="unfinished">Tronquer :</translation>
+        <translation>Tronquer :</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="402"/>
         <source>Auto regeneration</source>
-        <translation type="unfinished"></translation>
+        <translation>Auto-régénération</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="403"/>
         <source>Regenerate</source>
-        <translation type="unfinished"></translation>
+        <translation>Régénérer</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="409"/>
         <source>Save and Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer et fermer</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="411"/>
         <source>Cancel</source>
-        <translation type="unfinished">Abandonner</translation>
+        <translation>Abandonner</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="609"/>
         <source>Save the changes ?</source>
-        <translation type="unfinished">Enregistrer les modifications ?</translation>
+        <translation>Enregistrer les modifications ?</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="610"/>
         <source>Question</source>
-        <translation type="unfinished">Question</translation>
+        <translation>Question</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="1773"/>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="1960"/>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="1968"/>
         <source>Warning</source>
-        <translation type="unfinished">Attention</translation>
+        <translation>Attention</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="1773"/>
         <source>No insertion possible before the first section</source>
-        <translation type="unfinished">Il n&apos;est pas possible d&apos;insérer avant la première section</translation>
+        <translation>Il n&apos;est pas possible d&apos;insérer avant la première section</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="1960"/>
         <source>The wing&apos;s first section cannot be deleted</source>
-        <translation type="unfinished"></translation>
+        <translation>La première section ne peut être retirée</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="1968"/>
         <source>The wing cannot have less than two sections</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;aile ne peut être définie par moins de deux sections</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="2064"/>
         <source>Wing Span      =</source>
-        <translation type="unfinished"></translation>
+        <translation>Envergure      =</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="2069"/>
         <source>xyProj. Span   =</source>
-        <translation type="unfinished"></translation>
+        <translation>Envergure projetée sur Oxy =</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="2074"/>
         <source>Wing Area      =</source>
-        <translation type="unfinished"></translation>
+        <translation>Aire de l&apos;aile =</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="2079"/>
         <source>xyProj. Area   =</source>
-        <translation type="unfinished"></translation>
+        <translation>Aire de l&apos;aile projetée sur Oxy =</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="2085"/>
         <source>Plane Mass     =</source>
-        <translation type="unfinished"></translation>
+        <translation>Masse de l&apos;avion =</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="2091"/>
         <source>Wing Load      =</source>
-        <translation type="unfinished"></translation>
+        <translation>Charge alaire = </translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="2098"/>
         <source>Tail Volume    =</source>
-        <translation type="unfinished"></translation>
+        <translation>Volume de Stab =</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="2103"/>
         <source>Root Chord     =</source>
-        <translation type="unfinished"></translation>
+        <translation>Corde d&apos;emplanture =</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="2108"/>
         <source>MAC            =</source>
-        <translation type="unfinished"></translation>
+        <translation>Corde Aéro moyenne =</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="2113"/>
         <source>TipTwist       =</source>
-        <translation type="unfinished"></translation>
+        <translation>Vrillage au saumon =</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="2117"/>
         <source>Aspect Ratio   =</source>
-        <translation type="unfinished"></translation>
+        <translation>Allongement =</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="2121"/>
         <source>Taper Ratio    =</source>
-        <translation type="unfinished"></translation>
+        <translation>Effilement =</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="2125"/>
         <source>Root-Tip Sweep =</source>
-        <translation type="unfinished">Flèche moyenne =</translation>
+        <translation>Flèche moyenne =</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditPlaneDlg.cpp" line="2129"/>
         <source>TailVolume     =</source>
-        <translation type="unfinished"></translation>
+        <translation>Volume de stab. = </translation>
     </message>
 </context>
 <context>
@@ -1682,37 +1684,37 @@ Uncheck for increased analysis speed.</source>
     <message>
         <location filename="../xflr5-gui/miarex/analysis/EditPolarDefDlg.cpp" line="87"/>
         <source>Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Objet</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/analysis/EditPolarDefDlg.cpp" line="87"/>
         <source>Field</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/analysis/EditPolarDefDlg.cpp" line="87"/>
         <source>Value</source>
-        <translation type="unfinished">Valeur</translation>
+        <translation>Valeur</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/analysis/EditPolarDefDlg.cpp" line="87"/>
         <source>Unit</source>
-        <translation type="unfinished">Unités</translation>
+        <translation>Unité</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/analysis/EditPolarDefDlg.cpp" line="102"/>
         <source>Objects</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/analysis/EditPolarDefDlg.cpp" line="133"/>
         <source>OK</source>
-        <translation type="unfinished">Accepter</translation>
+        <translation>Accepter</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/analysis/EditPolarDefDlg.cpp" line="135"/>
         <source>Cancel</source>
-        <translation type="unfinished">Abandonner</translation>
+        <translation>Abandonner</translation>
     </message>
 </context>
 <context>
@@ -2016,7 +2018,7 @@ Uncheck for increased analysis speed.</source>
     <message>
         <location filename="../xflr5-gui/xdirect/analysis/FoilPolarDlg.cpp" line="167"/>
         <source> </source>
-        <translation type="unfinished"> </translation>
+        <translation> </translation>
     </message>
     <message>
         <location filename="../xflr5-gui/xdirect/analysis/FoilPolarDlg.cpp" line="169"/>
@@ -2092,7 +2094,7 @@ Uncheck for increased analysis speed.</source>
     <message>
         <location filename="../xflr5-gui/xinverse/FoilSelectionDlg.cpp" line="50"/>
         <source>Select All</source>
-        <translation type="unfinished"></translation>
+        <translation>Tout sélectionner</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/xinverse/FoilSelectionDlg.cpp" line="51"/>
@@ -2407,27 +2409,27 @@ Uncheck for increased analysis speed.</source>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="113"/>
         <source>Export Body Geometry to text File</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter la géométrie du fuselage vers un fichier texte</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="116"/>
         <source>Export Body Definition to txt File</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter la définition du fuselage vers un fichier texte</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="119"/>
         <source>Export body definition to an XML file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter la définition du fuselage vers un fichier XML</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="122"/>
         <source>Import Body Definition from a text file</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer une définition de fuselage depuis un fichier texte</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="125"/>
         <source>Import body definition from an XML file</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer la définition du fuselage depuis un fichier XML</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="128"/>
@@ -2441,28 +2443,28 @@ Uncheck for increased analysis speed.</source>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="493"/>
         <source>Export plane definition to xml file</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="643"/>
         <source>Open XML File</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="645"/>
         <source>Plane XML file</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="653"/>
         <source>Could not read the file
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de lire le fichier\n</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="654"/>
         <source>Warning</source>
-        <translation type="unfinished">Attention</translation>
+        <translation>Attention</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1021"/>
@@ -2578,27 +2580,27 @@ Uncheck for increased analysis speed.</source>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1265"/>
         <source>Flip View</source>
-        <translation type="unfinished"></translation>
+        <translation>Retourner la vue</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1286"/>
         <source>Reset Scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Rétablir l&apos;échelle</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1348"/>
         <source>Style</source>
-        <translation type="unfinished">Style</translation>
+        <translation>Style</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1352"/>
         <source>Textures</source>
-        <translation type="unfinished"></translation>
+        <translation>Textures</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1353"/>
         <source>Color</source>
-        <translation type="unfinished">Couleur</translation>
+        <translation>Couleur</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1367"/>
@@ -2608,7 +2610,7 @@ Uncheck for increased analysis speed.</source>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1380"/>
         <source>Type</source>
-        <translation type="unfinished">Type</translation>
+        <translation>Type</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1400"/>
@@ -2966,18 +2968,18 @@ Réduisez la taille du maillage</translation>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dWingDlg.cpp" line="129"/>
         <source>Warning : Panel sequence is inconsistent. The sections should be ordered from root to tip</source>
-        <translation type="unfinished"></translation>
+        <translation>Attention: ordonnement incorrect des sections. Les sections doivent être définire de l&apos;emplanture au saumon</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dWingDlg.cpp" line="138"/>
         <source>Zero length chords will cause a division by zero and should be avoided.</source>
-        <translation type="unfinished"></translation>
+        <translation>Les cordes de longueur nulle sont à proscrire.</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dWingDlg.cpp" line="148"/>
         <location filename="../xflr5-gui/miarex/design/GL3dWingDlg.cpp" line="156"/>
         <source>Zero length flaps will cause a division by zero and should be avoided.</source>
-        <translation type="unfinished"></translation>
+        <translation>Les volets de longueur nulle sont à proscrire.</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dWingDlg.cpp" line="366"/>
@@ -3037,32 +3039,32 @@ Réduisez la taille du maillage</translation>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dWingDlg.cpp" line="1257"/>
         <source>Color</source>
-        <translation type="unfinished">Couleur</translation>
+        <translation>Couleur</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dWingDlg.cpp" line="1258"/>
         <source>Textures</source>
-        <translation type="unfinished"></translation>
+        <translation>Textures</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dWingDlg.cpp" line="1480"/>
         <source>Flip View</source>
-        <translation type="unfinished"></translation>
+        <translation>Retourner la vue</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dWingDlg.cpp" line="1498"/>
         <source>Reset scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Rétablir l&apos;échelle</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dWingDlg.cpp" line="1516"/>
         <source>Other</source>
-        <translation type="unfinished">Autre</translation>
+        <translation>Autre</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dWingDlg.cpp" line="1517"/>
         <source>Actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Actions</translation>
     </message>
     <message>
         <source>Max is </source>
@@ -3094,7 +3096,7 @@ Réduisez la taille du maillage</translation>
     <message>
         <location filename="../xflr5-gui/miarex/view/GLLightDlg.cpp" line="128"/>
         <source>Attenuation factor=1/(</source>
-        <translation type="unfinished"></translation>
+        <translation>Facteur d&apos;atténuation =1/(</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/view/GLLightDlg.cpp" line="156"/>
@@ -3114,7 +3116,7 @@ Réduisez la taille du maillage</translation>
     <message>
         <location filename="../xflr5-gui/miarex/view/GLLightDlg.cpp" line="230"/>
         <source>Material Shininess</source>
-        <translation type="unfinished"></translation>
+        <translation>Brillance </translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/view/GLLightDlg.cpp" line="152"/>
@@ -3207,7 +3209,7 @@ Réduisez la taille du maillage</translation>
     <message>
         <location filename="../xflr5-gui/glcontextinfo/glrenderwindow.cpp" line="161"/>
         <source>makeCurrent() failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;activer le contexte OpenGl</translation>
     </message>
 </context>
 <context>
@@ -3531,17 +3533,17 @@ Réduisez la taille du maillage</translation>
     <message>
         <location filename="../xflr5-gui/graph/GraphDlg.cpp" line="847"/>
         <source>Padding</source>
-        <translation type="unfinished"></translation>
+        <translation>Marges</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/graph/GraphDlg.cpp" line="851"/>
         <source>Margin</source>
-        <translation type="unfinished"></translation>
+        <translation>Marge</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/graph/GraphDlg.cpp" line="852"/>
         <source>pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>pixels</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/graph/GraphDlg.cpp" line="876"/>
@@ -3744,12 +3746,12 @@ Réduisez la taille du maillage</translation>
     <message>
         <location filename="../xflr5-gui/viewwidgets/graphwidget.cpp" line="368"/>
         <source>Cp</source>
-        <translation type="unfinished">Cp</translation>
+        <translation>Cp</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/viewwidgets/graphwidget.cpp" line="373"/>
         <source>Q</source>
-        <translation type="unfinished">Q</translation>
+        <translation>Q</translation>
     </message>
 </context>
 <context>
@@ -3757,47 +3759,47 @@ Réduisez la taille du maillage</translation>
     <message>
         <location filename="../xflr5-gui/design/GridSettingsDlg.cpp" line="31"/>
         <source>Grid Options</source>
-        <translation type="unfinished">Options de grille</translation>
+        <translation>Paramètres du grillage</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/design/GridSettingsDlg.cpp" line="149"/>
         <source>Neutral Line</source>
-        <translation type="unfinished">Ligne neutre</translation>
+        <translation>Ligne neutre</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/design/GridSettingsDlg.cpp" line="150"/>
         <source>X-Scale</source>
-        <translation type="unfinished">Échelle X</translation>
+        <translation>Échelle X</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/design/GridSettingsDlg.cpp" line="151"/>
         <source>X Major Grid</source>
-        <translation type="unfinished">Grille principale en X</translation>
+        <translation>Grillage principal en X</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/design/GridSettingsDlg.cpp" line="152"/>
         <source>Y Major Grid</source>
-        <translation type="unfinished">Grille principale en Y</translation>
+        <translation>Grillage principal en Y</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/design/GridSettingsDlg.cpp" line="153"/>
         <source>X Minor Grid</source>
-        <translation type="unfinished">Grille secondaire en X</translation>
+        <translation>Grillage secondaire en X</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/design/GridSettingsDlg.cpp" line="154"/>
         <source>Y Minor Grid</source>
-        <translation type="unfinished">Grille secondaire en Y</translation>
+        <translation>Grillage secondaire en Y</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/design/GridSettingsDlg.cpp" line="192"/>
         <source>Accept</source>
-        <translation type="unfinished">Accepter</translation>
+        <translation>Accepter</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/design/GridSettingsDlg.cpp" line="193"/>
         <source>Cancel</source>
-        <translation type="unfinished">Abandonner</translation>
+        <translation>Abandonner</translation>
     </message>
 </context>
 <context>
@@ -4334,7 +4336,7 @@ Réduisez la taille du maillage</translation>
     <message>
         <location filename="../xflr5-gui/miarex/analysis/LLTAnalysisDlg.cpp" line="183"/>
         <source>Keep this window opened on errors</source>
-        <translation type="unfinished"></translation>
+        <translation>Maintenir cette fenètre ouverte en cas d&apos;erreurs</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/analysis/LLTAnalysisDlg.cpp" line="283"/>
@@ -4374,32 +4376,32 @@ Réduisez la taille du maillage</translation>
     <message>
         <location filename="../xflr5-gui/misc/LengthUnitDlg.cpp" line="33"/>
         <source>Select units for this project :</source>
-        <translation type="unfinished">Sélection des unités pour ce projet :</translation>
+        <translation>Sélection des unités pour ce projet :</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/misc/LengthUnitDlg.cpp" line="34"/>
         <source>Units Dialog</source>
-        <translation type="unfinished">Dialogue des unités</translation>
+        <translation>Dialogue des unités</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/misc/LengthUnitDlg.cpp" line="45"/>
         <source>Length</source>
-        <translation type="unfinished">Longueur</translation>
+        <translation>Longueur</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/misc/LengthUnitDlg.cpp" line="50"/>
         <source>Define the project units</source>
-        <translation type="unfinished">Définir les unités du projet</translation>
+        <translation>Définir les unités du projet</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/misc/LengthUnitDlg.cpp" line="76"/>
         <source>OK</source>
-        <translation type="unfinished">Accepter</translation>
+        <translation>Accepter</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/misc/LengthUnitDlg.cpp" line="77"/>
         <source>Cancel</source>
-        <translation type="unfinished">Abandonner</translation>
+        <translation>Abandonner</translation>
     </message>
 </context>
 <context>
@@ -4422,7 +4424,7 @@ Réduisez la taille du maillage</translation>
     <message>
         <location filename="../xflr5-gui/misc/LinePickerDlg.cpp" line="264"/>
         <source>Points</source>
-        <translation type="unfinished">Points</translation>
+        <translation>Points</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/misc/LinePickerDlg.cpp" line="266"/>
@@ -4540,32 +4542,32 @@ Réduisez la taille du maillage</translation>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="530"/>
         <source>Load Last Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Charger le dernier projet</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="532"/>
         <source>Loads the last saved project</source>
-        <translation type="unfinished"></translation>
+        <translation>Charge le dernier projet</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="539"/>
         <source>Load and Save Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Options d&apos;enregistrement/Chargement</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="559"/>
         <source>Execute Script</source>
-        <translation type="unfinished"></translation>
+        <translation>Exécuter le script</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="561"/>
         <source>Executes a set of foil and plane analysis defined in an xml file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exécute une analyse d&apos;un ensemble de profils et d&apos;avions définis dans un fichier XML</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="596"/>
         <source>OpenGL info</source>
-        <translation type="unfinished"></translation>
+        <translation>Informations OpenGL</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="603"/>
@@ -4880,7 +4882,7 @@ Réduisez la taille du maillage</translation>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="673"/>
         <source>Set chord line level</source>
-        <translation type="unfinished"></translation>
+        <translation>Annuler l&apos;angle de la corde moyenne</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="687"/>
@@ -4942,7 +4944,7 @@ Réduisez la taille du maillage</translation>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="723"/>
         <source>Grid Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Paramètres du grillage</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="742"/>
@@ -5353,17 +5355,17 @@ Réduisez la taille du maillage</translation>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="955"/>
         <source>Direct foil analysis</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="963"/>
         <source>Plane analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Analyse d&apos;avion</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="967"/>
         <source>Foil direct design</source>
-        <translation type="unfinished"></translation>
+        <translation>Conception directe de profil</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1004"/>
@@ -5384,12 +5386,12 @@ Réduisez la taille du maillage</translation>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1124"/>
         <source>O&amp;ptions</source>
-        <translation type="unfinished"></translation>
+        <translation>Options</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1140"/>
         <source>&amp;Graphs</source>
-        <translation type="unfinished"></translation>
+        <translation>Diagrammes</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1158"/>
@@ -5399,33 +5401,33 @@ Réduisez la taille du maillage</translation>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1182"/>
         <source>Graph</source>
-        <translation type="unfinished"></translation>
+        <translation>Diagramme</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1194"/>
         <source>Four Graphs</source>
-        <translation type="unfinished"></translation>
+        <translation>Quatre diagrammes</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1195"/>
         <location filename="../xflr5-gui/mainframe.cpp" line="1201"/>
         <source>Display four graphs</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher quatre diagrammes</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1217"/>
         <source>Define the settings of all graphs</source>
-        <translation type="unfinished"></translation>
+        <translation>Rétablir les paramètres pour tous les diagrammes</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1221"/>
         <source>Display mouse coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher les coordonnées du curseur</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1224"/>
         <source>Display the coordinates of the mouse on the top right corner of the graph</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher les coordonnées du curseur dans lecoin droit supérieur du diagramme</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1234"/>
@@ -5450,184 +5452,184 @@ Réduisez la taille du maillage</translation>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1268"/>
         <source>3D View Preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>Préférences de vue 3D</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1269"/>
         <source>Define the preferences for the 3D view</source>
-        <translation type="unfinished"></translation>
+        <translation>Définir les préférences de la vue 3D</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1276"/>
         <source>Reset scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Rétablir l&apos;échelle</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1277"/>
         <source>Resets the display scale so that the plane fits in the window</source>
-        <translation type="unfinished"></translation>
+        <translation>Réinitialiser l&apos;échelle de manière à s&apos;adapter à la largeur de l&apos;écran</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1280"/>
         <source>Show flap moments</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher les moments sur les volets</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1282"/>
         <source>Display the flap moment values together with the other operating point results</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher les moments sur les volets sur la vue des points de fonctionnement</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1299"/>
         <source>Define... (Advanced users)</source>
-        <translation type="unfinished"></translation>
+        <translation>Défnir... (utilisateurs avancés)</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1305"/>
         <location filename="../xflr5-gui/mainframe.cpp" line="1310"/>
         <source>Shows a form to edit the currently selected plane</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher une fenètre d&apos;édition de l&apos;avion actif</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1309"/>
         <source>Edit... (advanced users)</source>
-        <translation type="unfinished"></translation>
+        <translation>Editer... (utilisateurs avancés)</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1320"/>
         <source>Edit elevator...</source>
-        <translation type="unfinished"></translation>
+        <translation>Editer le stab...</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1325"/>
         <source>Edit fin...</source>
-        <translation type="unfinished"></translation>
+        <translation>Editer la dérive...</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1347"/>
         <source>Export to STL...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter en fichier STL</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1348"/>
         <source>Export the current wing to a file in the STL format</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter l&apos;aile active vers un fichier au format STL</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1364"/>
         <source>Import Polar(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer des polaires</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1365"/>
         <source>Import polar(s) from text file(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer une polaire à partir d&apos;un fichier texte</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1369"/>
         <source>Export polar(s) to text file(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter la polaire vers un fichier texte</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1401"/>
         <source>Show Only Associated OpPoints</source>
-        <translation type="unfinished"></translation>
+        <translation>N&apos;afficher que les OpPoints associés</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1507"/>
         <source>Export results</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter les résultats</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1537"/>
         <source>Export to xml file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter vers un fichier XML</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1314"/>
         <source>Edit wing...</source>
-        <translation type="unfinished"></translation>
+        <translation>Editer l&apos;aile</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1315"/>
         <source>Shows a form to edit the wing of the currently selected plane</source>
-        <translation type="unfinished"></translation>
+        <translation>Affichie une fenètre de définition de l&apos;aile</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1330"/>
         <source>Edit body...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1331"/>
         <source>Shows a form to edit the body of the currently selected plane</source>
-        <translation type="unfinished"></translation>
+        <translation>Affiche une fenètre d&apos;édition du fuselage</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1335"/>
         <source>Edit body (advanced users)</source>
-        <translation type="unfinished"></translation>
+        <translation>Editer le fuselage... (utilisateurs avancés)</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1408"/>
         <source>Show Target Curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher la courbe cible</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1436"/>
         <source>Define an Analysis (advanced users)</source>
-        <translation type="unfinished"></translation>
+        <translation>Définir une analyse (utilisateurs avancés)</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1437"/>
         <source>Shows a form to edit a new polar object</source>
-        <translation type="unfinished"></translation>
+        <translation>Affiche une fenètre de définition d&apos;une nouvelle analyse</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1444"/>
         <source>Edit object (advanced users)</source>
-        <translation type="unfinished"></translation>
+        <translation>Editer l&apos;objet (utilisateurs avancés)</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1445"/>
         <source>Shows a form to edit the currently selected polar</source>
-        <translation type="unfinished"></translation>
+        <translation>Affiche une fenètre d&apos;édition de la polaire active</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1448"/>
         <source>Edit data points...</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier les points</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1449"/>
         <source>Modify the data points of this polar</source>
-        <translation type="unfinished"></translation>
+        <translation>Affiche une fenètre d&apos;édition des points de la polaire</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1540"/>
         <source>Import plane(s) from xml file(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer la définition d&apos;un avion depuis un fichier XML</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1543"/>
         <location filename="../xflr5-gui/mainframe.cpp" line="2590"/>
         <source>Export analysis to xml file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter l&apos;analyse vers un fichier XML</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1546"/>
         <source>Import analysis from xml file</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer l&apos;analyse depuis un fichier XML</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1547"/>
         <source>Import analysis definition(s) from XML file(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer les définitions des analyses depuis un fichier XML</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1573"/>
         <source>&amp;Plane</source>
-        <translation type="unfinished"></translation>
+        <translation>Avion</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1578"/>
@@ -5638,12 +5640,12 @@ Réduisez la taille du maillage</translation>
         <location filename="../xflr5-gui/mainframe.cpp" line="2038"/>
         <location filename="../xflr5-gui/mainframe.cpp" line="2123"/>
         <source>Current Plane</source>
-        <translation type="unfinished">Avion actif</translation>
+        <translation>Avion actif</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="2232"/>
         <source>Plane</source>
-        <translation type="unfinished"></translation>
+        <translation>Avion</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="2322"/>
@@ -5874,7 +5876,7 @@ Réduisez la taille du maillage</translation>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="959"/>
         <source>Inverse foil design</source>
-        <translation type="unfinished"></translation>
+        <translation>Conception inverse de profil</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="1216"/>
@@ -6309,12 +6311,12 @@ Réduisez la taille du maillage</translation>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="2584"/>
         <source>Import XFoil Polar(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer une polaire XFoil</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="2587"/>
         <source>Import Analysis from xml file</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="2606"/>
@@ -6447,7 +6449,7 @@ Réduisez la taille du maillage</translation>
         <location filename="../xflr5-gui/mainframe.cpp" line="3627"/>
         <source>Could not open the file
 </source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="4037"/>
@@ -6681,7 +6683,7 @@ XFLR5 ne foncitonnera pas correctement</translation>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="4331"/>
         <source>Set a transparent background ?</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser un fond transparent ?</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/mainframe.cpp" line="4820"/>

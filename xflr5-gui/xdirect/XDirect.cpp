@@ -41,7 +41,7 @@
 
 #include <xdirect/xmlpolarreader.h>
 #include <xdirect/xmlpolarwriter.h>
-#include <misc/Settings.h>
+#include <misc/options/displayoptions.h>
 #include <misc/PolarFilterDlg.h>
 #include <misc/ObjectPropsDlg.h>
 #include <misc/RenameDlg.h>

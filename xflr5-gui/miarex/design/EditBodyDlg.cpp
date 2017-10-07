@@ -19,8 +19,8 @@
 
 *****************************************************************************/
 #include <globals.h>
-#include <misc/Units.h>
-#include <misc/Settings.h>
+#include <misc/options/Units.h>
+#include <misc/options/displayoptions.h>
 #include <QHeaderView>
 #include <QHBoxLayout>
 #include <QGridLayout>

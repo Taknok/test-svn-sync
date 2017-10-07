@@ -1,21 +1,10 @@
 /****************************************************************************
 
-	UnitsDlg Class
-	Copyright (C) 2009 Andre Deperrois adeperrois@xflr5.com
+	Techwing Application
 
-	This program is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
-	(at your option) any later version.
+	Copyright (C) Andre Deperrois techwinder@gmail.com
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with this program; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	All rights reserved.
 
 *****************************************************************************/
 
@@ -43,7 +32,7 @@ int Units::s_PressureUnitIndex = 0;
 int Units::s_InertiaUnitIndex = 0;
 
 
-Units::Units(QWidget *parent): QDialog(parent)
+Units::Units(QWidget *parent): QWidget(parent)
 {
 	m_bLengthOnly = false;
 	m_Question = tr("Select the units for this project :");
@@ -183,32 +172,16 @@ void Units::setupLayout()
 //		UnitsLayout->setColumnMinimumWidth(4,220);
 	}
 
-	QHBoxLayout *pCommandButtons = new QHBoxLayout;
-	{
-		OKButton      = new QPushButton(tr("OK"));
-		CancelButton  = new QPushButton(tr("Cancel"));
-		pCommandButtons->addStretch(1);
-		pCommandButtons->addWidget(OKButton);
-		pCommandButtons->addStretch(1);
-		pCommandButtons->addWidget(CancelButton);
-		pCommandButtons->addStretch(1);
-	}
-
 	QVBoxLayout *pMainLayout = new QVBoxLayout;
 	{
 		pMainLayout->addWidget(m_pctrlQuestion);
 		pMainLayout->addSpacing(23);
 		pMainLayout->addLayout(pUnitsLayout);
 		pMainLayout->addStretch(1);
-		pMainLayout->addSpacing(23);
-		pMainLayout->addLayout(pCommandButtons);
-		pMainLayout->addStretch(1);
+
 	}
 
 	setLayout(pMainLayout);
-
-	connect(OKButton,     SIGNAL(clicked()), this, SLOT(accept()));
-	connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 
 	connect(m_pctrlLength,   SIGNAL(activated(const QString &)),this, SLOT(onSelChanged(const QString &)));
 	connect(m_pctrlSurface,  SIGNAL(activated(const QString &)),this, SLOT(onSelChanged(const QString &)));
@@ -221,7 +194,7 @@ void Units::setupLayout()
 }
 
 
-void Units::initDialog()
+void Units::initWidget()
 {
 	QStringList list;
 	list <<"mm" << "cm"<<"dm"<<"m"<<"in"<<"ft";

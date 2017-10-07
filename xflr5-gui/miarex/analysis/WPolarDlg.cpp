@@ -21,8 +21,8 @@
 
 #include <globals.h>
 #include <objects3d/WPolar.h>
-#include <misc/Units.h>
-#include <Settings.h>
+#include <misc/options/Units.h>
+#include <misc/options/displayoptions.h>
 #include <miarex/Miarex.h>
 #include "WPolarDlg.h"
 #include "AeroDataDlg.h"

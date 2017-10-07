@@ -35,10 +35,10 @@
 #include <QRadioButton>
 #include <QCheckBox>
 #include <QStackedWidget>
-#include <misc/LineBtn.h>
-#include <misc/LineCbBox.h>
-#include <misc/LineDelegate.h>
-#include <misc/DoubleEdit.h>
+#include <misc/line/LineBtn.h>
+#include <misc/line/LineCbBox.h>
+#include <misc/line/LineDelegate.h>
+#include <misc/text/DoubleEdit.h>
 #include <objects2d/Polar.h>
 #include <objects2d/Foil.h>
 #include <xdirect/analysis/XFoilAnalysisDlg.h>

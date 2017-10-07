@@ -119,6 +119,7 @@ class MainFrame : public QMainWindow
 	friend class OpPointWidget;
 	friend class gl3dView;
 	friend class gl3dMiarexView;
+	friend class LanguageOptions;
 
 	Q_OBJECT
 
@@ -148,16 +149,15 @@ private slots:
 	void onInsertProject();
 	void onHighlightOperatingPoint();
 	void onNewProject();
-	void onLanguage();
 	void onLoadFile();
 	void onLoadLastProject();
 	void onLogFile();
 	void onOpenGLInfo();
+	void onPreferences();
 	void onProjectModified();
 	void onResetCurGraphScales();
 	void onResetSettings();
 	void onRestoreToolbars();
-	void onSaveOptions();
 	bool onSaveProjectAs();
 	void onSaveTimer();
 	void onSaveViewToImageFile();
@@ -168,8 +168,6 @@ private slots:
 	void onSelChangePlaneOpp(int sel);
 	void onSelChangeWPolar(int sel);
 	void onSaveProject();
-	void onStyleSettings();
-	void onUnits();
 	void onManageFoils();
 	void onSavePlaneAsProject();
 	void onOpenRecentFile();
@@ -319,12 +317,12 @@ private:
 
 	//MainFrame actions
 	QAction *m_pOnXDirectAct, *m_pOnMiarexAct, *m_pOnAFoilAct, *m_pOnXInverseAct, *m_pOnMixedInverseAct;
-	QAction *m_pOpenAct, *m_pInsertAct, *m_pStyleAct;
-	QAction *m_pSaveAct, *m_pSaveProjectAsAct,*m_pNewProjectAct, *m_pCloseProjectAct, *m_pSaveOptionsAct;
-	QAction *m_pUnitsAct;
-	QAction *m_pLanguageAct;
+	QAction *m_pOpenAct, *m_pInsertAct;
+	QAction *m_pSaveAct, *m_pSaveProjectAsAct,*m_pNewProjectAct, *m_pCloseProjectAct;
+
 	QAction *m_pExitAct;
 	QAction *m_pAboutAct, *m_pAboutQtAct, *m_pOpenGLAct;
+	QAction *m_pPreferencesAct;
 	QAction *m_pRecentFileActs[MAXRECENTFILES];
 	QAction *m_pSeparatorAct;
 	QAction *m_pSaveViewToImageFileAct, *m_pResetSettingsAct;

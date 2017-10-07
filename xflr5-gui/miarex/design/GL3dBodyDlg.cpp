@@ -21,10 +21,10 @@
 
 
 #include <globals.h>
-#include <misc/LinePickerDlg.h>
-#include <misc/Settings.h>
+#include <misc/line/LinePickerDlg.h>
+#include <misc/options/displayoptions.h>
 #include <misc/LengthUnitDlg.h>
-#include <misc/Units.h>
+#include <misc/options/Units.h>
 #include "./BodyTransDlg.h"
 #include "./InertiaDlg.h"
 #include "./BodyScaleDlg.h"
