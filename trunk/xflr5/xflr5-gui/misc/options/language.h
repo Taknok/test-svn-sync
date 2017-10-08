@@ -17,15 +17,15 @@
 #include <QStringList>
 
 
-class LanguageOptions : public QWidget
+class TranslatorDlg : public QWidget
 {
 	Q_OBJECT
 
 	friend class MainFrame;
 public:
-    LanguageOptions(QWidget *pParent);
+    TranslatorDlg(QWidget *pParent);
 
-private slots:
+public slots:
 	void onOK();
 
 private:

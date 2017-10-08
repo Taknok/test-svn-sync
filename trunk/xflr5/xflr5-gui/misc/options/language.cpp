@@ -22,7 +22,7 @@
 #include <QtDebug>
 
 
-LanguageOptions::LanguageOptions(QWidget *pParent): QWidget(pParent)
+TranslatorDlg::TranslatorDlg(QWidget *pParent): QWidget(pParent)
 {
 	setWindowTitle(tr("Language settings"));
 	QString LanguageName = tr("English");// will be translated in the ts & qm files and this will be used to fill the QListWidget
@@ -31,7 +31,7 @@ LanguageOptions::LanguageOptions(QWidget *pParent): QWidget(pParent)
 }
 
 
-void LanguageOptions::onOK()
+void TranslatorDlg::onOK()
 {
 	//read user language selection and exit
 	QListWidgetItem *pItem =  m_pctrlLanguageList->currentItem();
@@ -48,7 +48,7 @@ void LanguageOptions::onOK()
 }
 
 
-void LanguageOptions::setupLayout()
+void TranslatorDlg::setupLayout()
 {
 	QLabel *lab = new QLabel(tr("Select the application's default language:"));
 	m_pctrlLanguageList = new QListWidget;
@@ -67,17 +67,17 @@ void LanguageOptions::setupLayout()
 }
 
 
-void LanguageOptions::initWidget()
+void TranslatorDlg::initWidget()
 {
 	QStringList qmFiles = findQmFiles();
 	qmFiles.sort();
+
 	qmFileForLanguage.insert("English", "English");
 	m_pctrlLanguageList->clear();
 	m_pctrlLanguageList->addItem("English (default)");
 
 	for (int i=0; i<qmFiles.count(); ++i)
 	{
-		qDebug()<<languageName(qmFiles[i]);
         qmFileForLanguage.insert(languageName(qmFiles[i]), qmFiles[i]);
         m_pctrlLanguageList->addItem(languageName(qmFiles[i]));
 	}
@@ -94,7 +94,7 @@ void LanguageOptions::initWidget()
 }
 
 
-QStringList LanguageOptions::findQmFiles()
+QStringList TranslatorDlg::findQmFiles()
 {
 	if(!MainFrame::s_TranslationDir.exists())
 	{
@@ -102,6 +102,8 @@ QStringList LanguageOptions::findQmFiles()
 	}
 
 	QStringList fileNames = MainFrame::s_TranslationDir.entryList(QStringList("*.qm"), QDir::Files, QDir::Name);
+//	for(int i=0; i<fileNames.size(); i++)	qDebug()<<fileNames.at(i);
+
 	QMutableStringListIterator i(fileNames);
 	while (i.hasNext())
 	{
@@ -113,12 +115,13 @@ QStringList LanguageOptions::findQmFiles()
 }
 
 
-QString LanguageOptions::languageName(const QString &qmFile)
+QString TranslatorDlg::languageName(const QString &qmFile)
 {
 	QTranslator translator;
 	translator.load(qmFile);
 
-	return translator.translate("LanguageOptions", "English");
+	return translator.translate("TranslatorDlg", "English");
+
 }
 
 

@@ -35,7 +35,7 @@ void PreferencesDlg::setupLayout()
 {
 	m_pDisplayOptionsWidget = new Settings(this);
 	m_pSaveOptionsWidget = new SaveOptions(this);
-	m_pLanguageOptionsWidget = new LanguageOptions(this);
+	m_pLanguageOptionsWidget = new TranslatorDlg(this);
 	m_pUnitsWidget = new Units(this);
 
 	QHBoxLayout *pOptionsLayout = new QHBoxLayout;
@@ -87,6 +87,6 @@ void PreferencesDlg::onPage(int iRow)
 void PreferencesDlg::onOK()
 {
 	m_pSaveOptionsWidget->onOK();
-
+	m_pLanguageOptionsWidget->onOK();
 	accept();
 }
