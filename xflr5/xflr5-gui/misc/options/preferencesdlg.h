@@ -25,7 +25,7 @@
 #include <misc/color/ColorButton.h>
 
 
-class LanguageOptions;
+class TranslatorDlg;
 class SaveOptions;
 class Units;
 class Settings;
@@ -50,7 +50,7 @@ private:
 	QStackedWidget *m_pPageStack;
 
 	SaveOptions *m_pSaveOptionsWidget;
-	LanguageOptions *m_pLanguageOptionsWidget;
+	TranslatorDlg *m_pLanguageOptionsWidget;
 	Units *m_pUnitsWidget;
 	Settings *m_pDisplayOptionsWidget;
 

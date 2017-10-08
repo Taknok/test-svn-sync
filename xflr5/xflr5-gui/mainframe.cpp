@@ -304,7 +304,6 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 	EditPlrDlg::s_Position       = QPoint(kx+31, ky+31);
 	InertiaDlg::s_Position       = QPoint(kx+31, ky+31);
 
-
 	if(s_LanguageFilePath.length())
 	{
 		qApp->removeTranslator(&m_Translator);
@@ -3412,7 +3411,6 @@ bool MainFrame::loadSettings()
 		else      Settings::s_ExportFileType = XFLR5::CSV;
 
 		s_LanguageFilePath = settings.value("LanguageFilePath").toString();
-
 		m_GraphExportFilter = settings.value("GraphExportFilter",".csv").toString();
 
 		bFloat  = settings.value("Miarex_Float").toBool();
@@ -7082,7 +7080,7 @@ void MainFrame::onPreferences()
 	setMainFrameCentralWidget();
 
 	saveSettings();
-	setSaveState(false);
+//	setSaveState(false);
 
 	updateView();
 }
