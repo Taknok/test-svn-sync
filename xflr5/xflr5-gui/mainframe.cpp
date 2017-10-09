@@ -6367,14 +6367,14 @@ void MainFrame::writePolars(QDataStream &ar, void *pFoilPtr)
 		int n=0;
 		for (i=0; i<Objects2D::s_oaPolar.size();i++)
 		{
-			pPolar = (Polar*)Objects2D::s_oaPolar.at(i);
+			pPolar = Objects2D::s_oaPolar.at(i);
 			if (pPolar->foilName() == pFoil->foilName()) n++;
 		}
 		//then write polars
 		ar << n;
 		for (i=0; i<Objects2D::s_oaPolar.size();i++)
 		{
-			pPolar = (Polar*)Objects2D::s_oaPolar.at(i);
+			pPolar = Objects2D::s_oaPolar.at(i);
 			if (pPolar->foilName() == pFoil->foilName()) serializePolar(pPolar, ar, true);
 		}
 	}
