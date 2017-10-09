@@ -20,7 +20,6 @@
 
 *****************************************************************************/
 
-
 #include "XFLR5Application.h"
 #include "mainframe.h"
 #include "gui_params.h"

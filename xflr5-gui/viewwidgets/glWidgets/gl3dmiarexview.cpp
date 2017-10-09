@@ -576,9 +576,8 @@ void gl3dMiarexView::glMakeTransitions(int iWing, Wing *pWing, WPolar *pWPolar, 
 	double yrel;
 	Vector3d Pt, N;
 
-	float *pTransVertexArray = NULL;
 	int bufferSize = m_Ny[iWing]*6;
-	pTransVertexArray = new float[bufferSize];
+	std::vector<float> pTransVertexArray(bufferSize);
 	int iv=0;
 	if(pWPolar->isLLTMethod())
 	{
@@ -682,9 +681,8 @@ void gl3dMiarexView::glMakeTransitions(int iWing, Wing *pWing, WPolar *pWPolar, 
 	m_vboTransitions[iWing].destroy();
 	m_vboTransitions[iWing].create();
 	m_vboTransitions[iWing].bind();
-	m_vboTransitions[iWing].allocate(pTransVertexArray, bufferSize * sizeof(GLfloat));
+	m_vboTransitions[iWing].allocate(pTransVertexArray.data(), bufferSize * sizeof(GLfloat));
 	m_vboTransitions[iWing].release();
-	delete [] pTransVertexArray;
 }
 
 
@@ -1087,7 +1085,8 @@ void gl3dMiarexView::glMakeLiftStrip(int iWing, Wing *pWing, WPolar *pWPolar, Wi
 	//LIFTLINE
 	//dynamic pressure x area
 	double q0 = 0.5 * pWPolar->density() * pWOpp->m_QInf * pWOpp->m_QInf;
-	float *pLiftVertexArray = new float[m_Ny[iWing]*9];
+
+	std::vector<float> pLiftVertexArray(m_Ny[iWing]*9);
 
 	int iv;
 	if(pWPolar->isLLTMethod())
@@ -1189,10 +1188,11 @@ void gl3dMiarexView::glMakeLiftStrip(int iWing, Wing *pWing, WPolar *pWPolar, Wi
 	m_vboLiftStrips[iWing].destroy();
 	m_vboLiftStrips[iWing].create();
 	m_vboLiftStrips[iWing].bind();
-	m_vboLiftStrips[iWing].allocate(pLiftVertexArray, m_Ny[iWing]*9 * sizeof(GLfloat));
+	m_vboLiftStrips[iWing].allocate(pLiftVertexArray.data(), m_Ny[iWing]*9 * sizeof(GLfloat));
 	m_vboLiftStrips[iWing].release();
-	delete [] pLiftVertexArray;
 }
+
+
 
 void gl3dMiarexView::paintLift(int iWing)
 {

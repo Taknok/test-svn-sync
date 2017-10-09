@@ -887,7 +887,7 @@ void PanelAnalysis::createRHS(double *RHS, Vector3d VInf, double *VField)
 					if(!m_pWPolar->bDirichlet() || m_pPanel[p].m_Pos==MIDSURFACE)
 					{
 						// Apply Neumann B.C.
-						// NASA4023 eq. (22) and (23)
+			 			// NASA4023 eq. (22) and (23)
 						// The RHS term is sigma[pp]*DJK = nj.Vjk
 						RHS[m] -= V.dot(m_pPanel[p].Normal) * sigmapp;
 					}
@@ -2113,15 +2113,8 @@ bool PanelAnalysis::QInfLoop()
 
 
 /**
-* Solves the linear system for the unit RHS, using LU decomposition.
-*   Method :
-* 	  - If the polar is of type 1 or 2, solve the linear system
-*	  - for cosine and sine parts, for a unit speed
-*	  - If the polar is of type 4, solve only for unit speed and for the specified Alpha
-*	  - Reconstruct right side results if calculation was symetric
-*	  - Sort results i.a.w. panel numbering
-*
-* Calculates the local velocities on each panel
+* Solves the linear system for the two unit RHS, using LU decomposition.
+* Calculates the local velocities on each panel for the two unit RHS
 */
 bool PanelAnalysis::solveUnitRHS()
 {

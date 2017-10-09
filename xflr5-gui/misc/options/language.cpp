@@ -26,13 +26,14 @@ TranslatorDlg::TranslatorDlg(QWidget *pParent): QWidget(pParent)
 {
 	setWindowTitle(tr("Language settings"));
 	QString LanguageName = tr("English");// will be translated in the ts & qm files and this will be used to fill the QListWidget
-
+	m_bChanged = false;
 	setupLayout();
 }
 
 
 void TranslatorDlg::onOK()
 {
+	if(!m_bChanged) return;
 	//read user language selection and exit
 	QListWidgetItem *pItem =  m_pctrlLanguageList->currentItem();
 	if(pItem)
@@ -53,7 +54,7 @@ void TranslatorDlg::setupLayout()
 	QLabel *lab = new QLabel(tr("Select the application's default language:"));
 	m_pctrlLanguageList = new QListWidget;
 	m_pctrlLanguageList->setMinimumHeight(300);
-	connect(m_pctrlLanguageList, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(onOK()));
+	connect(m_pctrlLanguageList, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(onLanguageSelected(QListWidgetItem *)));
 
 	QVBoxLayout *pMainLayout = new QVBoxLayout;
 	{
@@ -126,4 +127,8 @@ QString TranslatorDlg::languageName(const QString &qmFile)
 
 
 
+void TranslatorDlg::onLanguageSelected(QListWidgetItem *pItem)
+{
+	m_bChanged = true;
+}
 
