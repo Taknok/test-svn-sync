@@ -938,6 +938,8 @@ void setAutoWPolarName(void * ptrWPolar, void *ptrPlane)
 			}
 			break;
 		}
+		default:
+			break;
 	}
 
 	nCtrl = 0;
@@ -1343,6 +1345,7 @@ bool serializeFoil(Foil *pFoil, QDataStream &ar, bool bIsStoring)
 			return false;
 
 		readString(ar, pFoil->m_FoilName);
+
 		if(ArchiveFormat>=1006)
 		{
 			readString(ar, pFoil->m_FoilDescription);
@@ -1388,6 +1391,9 @@ bool serializeFoil(Foil *pFoil, QDataStream &ar, bool bIsStoring)
 			ar >> f >> ff;
 			pFoil->xb[j]  = f;  pFoil->yb[j]=ff;
 		}
+
+		/** @todo remove. We don't need to save/load the current foil geom
+		 *  since we re-create later it using base geometry and flap data */
 		if(ArchiveFormat>=1001)
 		{
 			ar >> pFoil->n;
@@ -1396,20 +1402,20 @@ bool serializeFoil(Foil *pFoil, QDataStream &ar, bool bIsStoring)
 			for (j=0; j<pFoil->n; j++)
 			{
 				ar >> f >> ff;
-				pFoil->x[j]=f; pFoil->y[j]=ff;
+//				pFoil->x[j]=f; pFoil->y[j]=ff;
 			}
-			if(pFoil->nb==0 && pFoil->n!=0)
+/*			if(pFoil->nb==0 && pFoil->n!=0)
 			{
 				pFoil->nb = pFoil->n;
 				memcpy(pFoil->xb, pFoil->x, sizeof(pFoil->xb));
 				memcpy(pFoil->yb, pFoil->y, sizeof(pFoil->yb));
-			}
+			}*/
 		}
 		else
 		{
-			memcpy(pFoil->x, pFoil->xb, sizeof(pFoil->xb));
+/*			memcpy(pFoil->x, pFoil->xb, sizeof(pFoil->xb));
 			memcpy(pFoil->y, pFoil->yb, sizeof(pFoil->yb));
-			pFoil->n=pFoil->nb;
+			pFoil->n=pFoil->nb;*/
 		}
 
 

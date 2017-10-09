@@ -27,6 +27,7 @@ public:
 
 public slots:
 	void onOK();
+	void onLanguageSelected(QListWidgetItem *pItem);
 
 private:
 	void setupLayout();
@@ -36,5 +37,8 @@ private:
 
 	QListWidget *m_pctrlLanguageList;
 	QMap<QString, QString> qmFileForLanguage;
+
+	bool m_bChanged;
+
 };
 

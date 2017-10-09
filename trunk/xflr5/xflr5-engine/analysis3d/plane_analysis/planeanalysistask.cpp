@@ -168,6 +168,7 @@ Plane * PlaneAnalysisTask::setPlaneObject(Plane *pPlane)
 		}
 	}
 
+
 	pPlane->computeBodyAxisInertia();
 
 	return pPlane;
@@ -387,6 +388,9 @@ bool PlaneAnalysisTask::initializePanels()
 
 		}
 	}
+
+	Panel*p50 = m_Panel+50;
+
 //qDebug()<<"created total"<<m_nWakeNodes<<"wake nodes";
 //qDebug()<<"";
 /*	qDebug()<<"m_NWakeColumn"<<m_NWakeColumn;
