@@ -3521,13 +3521,14 @@ void gl3dView::startResetTimer(double length)
 	if(W3dPrefsDlg::s_bAnimateTransitions)
 	{
 		m_iTransitionInc = 0;
+
+		m_glScaleIncrement = (m_glScaledRef-m_glScaled)/30.0f;
+		m_transIncrement = (Vector3d(0.0,0.0,0.0)-m_glViewportTrans)/30.0;
+
 		if(m_pTransitionTimer) delete m_pTransitionTimer;
 		m_pTransitionTimer = new QTimer(this);
 		connect(m_pTransitionTimer, SIGNAL(timeout()), this, SLOT(onResetIncrement()));
 		m_pTransitionTimer->start(10);//33 ms x 30 times is approximately one second
-
-		m_glScaleIncrement = (m_glScaledRef-m_glScaled)/30.0f;
-		m_transIncrement = (Vector3d(0.0,0.0,0.0)-m_glViewportTrans)/30.0;
 	}
 	else
 	{

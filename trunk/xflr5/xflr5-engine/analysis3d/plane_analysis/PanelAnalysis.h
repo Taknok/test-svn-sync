@@ -207,7 +207,6 @@ private:
 	double *m_uWake, *m_wWake;
 	Vector3d *m_uVl, *m_wVl;
 	int *m_Index;               /**< a pointer to the array of indexes used in matrix LU decomposition */
-	Vector3d *m_Speed;           /**< a pointer to the calculated surface speeds in a panel analysis */
 
 
 	// pointers to the geometry input data
