@@ -60,7 +60,6 @@ PanelAnalysis::PanelAnalysis()
 	m_uRHS = m_vRHS = m_wRHS = m_pRHS = m_qRHS = m_rRHS = NULL;
 	m_cRHS = m_uWake = m_wWake = NULL;
 	m_uVl = m_wVl = NULL;
-	m_Speed = NULL;
 	m_Index = NULL;
 
 	m_RHS = m_RHSRef = m_SigmaRef = m_Sigma = m_Mu = m_Cp = NULL;
@@ -191,7 +190,6 @@ bool PanelAnalysis::allocateMatrix(int matSize, int &memsize)
 
 		m_uVl   = new Vector3d[matSize];
 		m_wVl   = new Vector3d[matSize];
-		m_Speed = new Vector3d[matSize];
 		m_Index = new int[matSize];
 	}
 	catch(std::exception & e)
@@ -229,7 +227,6 @@ bool PanelAnalysis::allocateMatrix(int matSize, int &memsize)
 
 	memset(m_uVl,   0, matSize*sizeof(Vector3d));
 	memset(m_wVl,   0, matSize*sizeof(Vector3d));
-	memset(m_Speed, 0, matSize*sizeof(Vector3d));
 
 	memset(m_Index, 0, matSize*sizeof(int));
 
@@ -336,9 +333,6 @@ void PanelAnalysis::releaseArrays()
 
 	if(m_Index) delete [] m_Index;
 	m_Index = NULL;
-
-	if(m_Speed) delete [] m_Speed;
-	m_Speed = NULL;
 
 	m_MaxMatSize = 0;
 }
@@ -2613,7 +2607,7 @@ bool PanelAnalysis::controlLoop()
 		{
 			if(s_bCancel) break;
 			//no zero moment alpha
-			str = QString("      Unsuccessfull attempt to trim the model for control position=%1 - skipping.\n\n\n").arg(m_Ctrl,5,'f',2);
+			str = QString("      Unsuccessful attempt to trim the model for control position=%1 - skipping.\n\n\n").arg(m_Ctrl,5,'f',2);
 			traceLog(str);
 			s_bWarning = true;
 		}
@@ -3436,6 +3430,8 @@ bool PanelAnalysis::computeTrimmedConditions()
 	}
 
 	strong ="      Searching for zero-moment angle... ";
+	qDebug()<<"_____________";
+
 	if(!getZeroMomentAngle())
 	{
 		strong += "none found\n";
@@ -3879,6 +3875,27 @@ void PanelAnalysis::computeStabilityDerivatives()
 	createRHS(m_pRHS, Vim);
 	createRHS(m_qRHS, Vjm);
 	createRHS(m_rRHS, Vkm);
+
+	if(!m_pWPolar->bThinSurfaces())
+	{
+		// As long as the wing has a thin trailing edge, this contribution is zero anyway
+		// Compute the wake's contribution
+		// We ignore the perturbations and consider only the potential of the steady state flow
+		// Clearly an approximation which is also implicit in the VLM formulation
+		createWakeContribution(m_uWake,  WindDirection);// re-use m_uWake memory, which is re-calculated anyway at the next control iteration
+
+		//add wake contribution to all 6 RHS
+		for(p=0; p<m_MatSize; p++)
+		{
+			m_uRHS[p]+= m_uWake[p]*u0;
+			m_vRHS[p]+= m_uWake[p]*u0;
+			m_wRHS[p]+= m_uWake[p]*u0;
+
+			m_pRHS[p]+= m_uWake[p]*u0;
+			m_qRHS[p]+= m_uWake[p]*u0;
+			m_rRHS[p]+= m_uWake[p]*u0;
+		}
+	}
 
 	strong = "         LU solving for RHS - longitudinal\n";
 	traceLog(strong);
@@ -4357,12 +4374,13 @@ double PanelAnalysis::computeCm(double Alpha)
 		{
 			// for each panel along the chord, add the lift coef
 			Gamma   = m_uRHS[p]  *cosa + m_wRHS[p]  *sina;
-			Gammap1 = m_uRHS[p+1]*cosa + m_wRHS[p+1]*sina;
 			ForcePt = m_pPanel[p].VortexPos;
 			PanelForce  = WindDirection * m_pPanel[p].Vortex;
 			PanelForce *= 2.0 * Gamma;                                       //Newtons/q   (QInf = unit)
 			if(!m_pWPolar->bVLM1() && !m_pPanel[p].m_bIsLeading)
 			{
+				Q_ASSERT(p+1<m_MatSize);
+				Gammap1 = m_uRHS[p+1]*cosa + m_wRHS[p+1]*sina;
 				Force       = WindDirection * m_pPanel[p].Vortex;
 				Force      *= 2.0 * Gammap1;       //Newtons/q/QInf
 				PanelForce -= Force;
