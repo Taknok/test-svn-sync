@@ -671,6 +671,7 @@ bool PanelAnalysis::alphaLoop()
 	createUnitRHS();
 	if (s_bCancel) return true;
 
+
 	if(!m_pWPolar->bThinSurfaces())
 	{
 		//compute wake contribution

@@ -23,6 +23,7 @@ QT += opengl
 TEMPLATE = app
 
 
+
 INCLUDEPATH += $$PWD/viewwidgets
 INCLUDEPATH += $$PWD/viewwidgets/glWidgets
 INCLUDEPATH += $$PWD/graph
@@ -30,6 +31,7 @@ INCLUDEPATH += $$PWD/misc
 INCLUDEPATH += $$PWD/xdirect/xfoil_task
 INCLUDEPATH += $$PWD/glcontextinfo
 
+INCLUDEPATH += $$PWD/../xflr5-engine
 INCLUDEPATH += $$PWD/../xflr5-engine/objects
 INCLUDEPATH += $$PWD/../xflr5-engine/objects/objects2d
 INCLUDEPATH += $$PWD/../xflr5-engine/objects/objects3d
@@ -37,6 +39,7 @@ INCLUDEPATH += $$PWD/../xflr5-engine/XFoil
 INCLUDEPATH += $$PWD/../xflr5-engine/analysis3d
 INCLUDEPATH += $$PWD/../xflr5-engine/analysis3d/plane_analysis
 
+DEPENDPATH += $$PWD/../xflr5-engine
 DEPENDPATH += $$PWD/../xflr5-engine/objects
 DEPENDPATH += $$PWD/../xflr5-engine/objects/objects2d
 DEPENDPATH += $$PWD/../xflr5-engine/objects/objects3d
