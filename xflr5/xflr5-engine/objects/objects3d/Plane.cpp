@@ -174,7 +174,7 @@ void Plane::computeVolumeInertia(double &Mass, Vector3d & CoG, double &CoGIxx, d
 	// we transfer the inertia of each component, defined in its own CG, 
 	// to the new origin which is the plane's Volume CoG, excluding point masses
 
-	for(int iw=0; iw<4; iw++)
+	for(int iw=0; iw<MAXWINGS; iw++)
 	{
 		if(pWing[iw])
 		{
