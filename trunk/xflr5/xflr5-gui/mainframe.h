@@ -54,6 +54,7 @@ class XDirectTileWidget;
 class MiarexTileWidget;
 class CVector;
 class GLLightDlg;
+class GL3DScales;
 class Foil;
 class Polar;
 class OpPoint;
@@ -259,6 +260,7 @@ private:
 	void *m_pStabView;  /** < A void pointer to the instance of the StabViewDlg window. */
 	
 	GLLightDlg m_glLightDlg;
+	GL3DScales *m_pGL3DScales;
 
 
 	static QPointer<MainFrame> _self; /**< necessary for MacOS >*/
@@ -447,7 +449,6 @@ public:
 	static QFile *s_pTraceFile;
 	static QString s_ProjectName;      /**< The Project's name. */
 
-	void *m_pGL3DScales;
 
 	QTranslator m_Translator;  /**< the translator object; due to a Qt bug, need to load twice: once from the main function, once from the mainframe */
 };

@@ -468,6 +468,24 @@ void MainFrame::closeEvent (QCloseEvent * event)
 			return;
 		}
 	}
+	//close all dockwindows
+	m_p2dWidget->close();
+	m_pDirect2dWidget->close();
+	m_pgl3dMiarexView->close();
+	m_pMiarexTileWidget->close();
+	m_pXDirectTileWidget->close();
+	m_VoidWidget.close();
+
+
+	m_pctrlXDirectWidget->close();
+	m_pctrlMiarexWidget->close();
+	m_pctrlAFoilWidget->close();
+	m_pctrlXInverseWidget->close();
+	m_pctrl3DScalesWidget->close();
+	m_pctrlStabViewWidget->close();
+	m_pGL3DScales->close();
+	m_pctrlCentralWidget->close();
+	m_glLightDlg.close();
 	deleteProject(true);
 
 	saveSettings();
@@ -985,13 +1003,12 @@ void MainFrame::createDockWindows()
 
 
 	m_pGL3DScales = new GL3DScales(this);
-	GL3DScales * pGL3DScales = (GL3DScales*)m_pGL3DScales;
 	GL3DScales::s_pMiarex      = m_pMiarex;
 	m_pctrl3DScalesWidget = new QDockWidget(tr("3D Scales"), this);
 	m_pctrl3DScalesWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
 	addDockWidget(Qt::LeftDockWidgetArea, m_pctrl3DScalesWidget);
-	m_pctrl3DScalesWidget->setWidget(pGL3DScales);
-	pGL3DScales->setParent(m_pctrl3DScalesWidget);
+	m_pctrl3DScalesWidget->setWidget(m_pGL3DScales);
+	m_pGL3DScales->setParent(m_pctrl3DScalesWidget);
 	m_pctrl3DScalesWidget->setVisible(false);
 	m_pctrl3DScalesWidget->setFloating(true);
 	m_pctrl3DScalesWidget->move(60,60);
