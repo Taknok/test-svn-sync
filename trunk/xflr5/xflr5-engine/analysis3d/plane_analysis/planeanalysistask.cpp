@@ -389,7 +389,7 @@ bool PlaneAnalysisTask::initializePanels()
 		}
 	}
 
-	Panel*p50 = m_Panel+50;
+	qDebug()<<m_NWakeColumn;
 
 //qDebug()<<"created total"<<m_nWakeNodes<<"wake nodes";
 //qDebug()<<"";
