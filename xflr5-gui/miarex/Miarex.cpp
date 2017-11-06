@@ -806,7 +806,7 @@ void QMiarex::createCpCurves()
 					pCurve->setWidth(m_CpLineStyle.m_Width);
 					pCurve->setPoints(m_CpLineStyle.m_PointStyle);
 
-					pCurve->setCurveName(pWing(iw)->m_WingName+str2+str3);
+					pCurve->setCurveName(POppTitle(m_pCurPOpp)+str3);
 
 					for (pp=p; pp<p+coef*pWing(iw)->m_Surface.at(0)->m_NXPanels; pp++)
 					{
@@ -9479,11 +9479,11 @@ QString QMiarex::POppTitle(PlaneOpp *pPOpp)
 	{
 		strong += QString("ctrl=%1-").arg(pPOpp->ctrl());
 	}
-	strong += QString::fromUtf8("%1°-").arg(pPOpp->alpha(), 7,'f',3);
+	strong += QString::fromUtf8("%1°-").arg(pPOpp->alpha(), 5,'f',1);
 
-	if(fabs(pPOpp->beta())>PRECISION) strong += QString::fromUtf8("%1°-").arg(pPOpp->beta(), 7,'f',3);
+	if(fabs(pPOpp->beta())>PRECISION) strong += QString::fromUtf8("%1°-").arg(pPOpp->beta(), 5,'f',1);
 
-	strong += QString("%1").arg(pPOpp->QInf()*Units::mstoUnit());
+	strong += QString("%1").arg(pPOpp->QInf()*Units::mstoUnit(), 5, 'f', 2);
 	strong +=Units::speedUnitLabel();
 
 	if(pPOpp->m_bTiltedGeom) strong += "-tilted";

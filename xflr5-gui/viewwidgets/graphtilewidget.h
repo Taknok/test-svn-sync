@@ -40,7 +40,7 @@ class GraphTileWidget : public QWidget
 	Q_OBJECT
 public:
 	GraphTileWidget(QWidget *parent = 0);
-	~GraphTileWidget();
+	virtual ~GraphTileWidget();
 
 	QGraph *graph(int iGraph);
 	GraphWidget *graphWidget(int iGraph);
