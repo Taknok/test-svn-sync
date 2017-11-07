@@ -2358,12 +2358,16 @@ void QXDirect::onExportAllPolars()
 		FileName = DirName + "/" + pPolar->foilName() + "_" + pPolar->polarName();
 		if(Settings::s_ExportFileType==XFLR5::TXT) FileName += ".txt";
 		else                                       FileName += ".csv";
-
 		XFile.setFileName(FileName);
 		if (XFile.open(QIODevice::WriteOnly | QIODevice::Text))
 		{
 			pPolar->exportPolar(out, VERSIONNAME, Settings::s_ExportFileType);
 			XFile.close();
+		}
+		else
+		{
+			QString strange = tr("Could not write to the directory:") + DirName;
+			QMessageBox::warning(s_pMainFrame, tr("Warning"), strange);
 		}
 	}
 }
