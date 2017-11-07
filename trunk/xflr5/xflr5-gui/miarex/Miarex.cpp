@@ -4623,6 +4623,11 @@ void QMiarex::onExportWPolars()
 			exportToTextStream(pWPolar, out, Settings::s_ExportFileType);
 			XFile.close();
 		}
+		else
+		{
+			QString strange = tr("Could not write to the directory:") + DirName;
+			QMessageBox::warning(s_pMainFrame, tr("Warning"), strange);
+		}
 	}
 }
 
