@@ -40,6 +40,9 @@
 #include "EditBodyDlg.h"
 #include "InertiaDlg.h"
 
+QSize PlaneDlg::s_WindowSize(1031,783);
+QPoint PlaneDlg::s_WindowPosition(131, 77);
+bool PlaneDlg::s_bWindowMaximized =false;
 
 
 PlaneDlg::PlaneDlg(QWidget *parent) :QDialog(parent)
