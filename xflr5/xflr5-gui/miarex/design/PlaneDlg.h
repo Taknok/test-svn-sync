@@ -42,10 +42,13 @@ class PlaneDlg : public QDialog
 	Q_OBJECT
 	friend class QMiarex;
 	friend class MainFrame;
+	friend class EditPlaneDlg;
 
 public:
     PlaneDlg(QWidget *parent);
 	void initDialog();
+
+	static void setWindowPos(QPoint pos){s_WindowPosition = pos;}
 
 private slots:
 	void onOK();
@@ -149,6 +152,11 @@ private:
 	QPushButton *CancelButton;
 
 	QAction *m_pImportXMLBody, *m_pImportPlaneBody;
+
+	static bool s_bWindowMaximized;
+	static QPoint s_WindowPosition;   /**< the position on the client area of the dialog's topleft corner */
+	static QSize s_WindowSize;	 /**< the window size in the client area */
+
 };
 
 #endif // PLANEDLG_H
