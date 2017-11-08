@@ -43,7 +43,7 @@ QWidget *EditObjectDelegate::createEditor(QWidget *parent, const QStyleOptionVie
 
 	switch (dataType)
 	{
-		case XFLR5::BOOL:
+		case XFLR5::BOOLVALUE:
 		{
 			QComboBox *editor = new QComboBox(parent);
 			editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
@@ -139,7 +139,7 @@ QWidget *EditObjectDelegate::createEditor(QWidget *parent, const QStyleOptionVie
 			return editor;*/
 			return NULL;
 		}
-		case XFLR5::DOUBLE:
+		case XFLR5::DOUBLEVALUE:
 		{
 			DoubleEdit *editor = new DoubleEdit(parent);
 			editor->setPrecision(3);
@@ -170,7 +170,7 @@ void EditObjectDelegate::setEditorData(QWidget *editor, const QModelIndex &index
 		IntEdit *pIE = static_cast<IntEdit*>(editor);
 		pIE->setValue(value);
 	}
-	else if(dataType==XFLR5::DOUBLE)
+	else if(dataType==XFLR5::DOUBLEVALUE)
 	{
 		double value = index.model()->data(index, Qt::EditRole).toDouble();
 		DoubleEdit *pDE = static_cast<DoubleEdit*>(editor);
@@ -203,7 +203,7 @@ void EditObjectDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
 		int value = pIE->value();
 		model->setData(index, value, Qt::EditRole);
 	}
-	else if(dataType==XFLR5::DOUBLE)
+	else if(dataType==XFLR5::DOUBLEVALUE)
 	{
 		DoubleEdit *pDE = static_cast<DoubleEdit*>(editor);
 		double value = pDE->value();
@@ -237,7 +237,7 @@ void EditObjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
 		myOption.displayAlignment = Qt::AlignRight | Qt::AlignVCenter;
 		strong = QString("%L1").arg(index.model()->data(index, Qt::DisplayRole).toInt());
 	}
-	else if(dataType==XFLR5::DOUBLE)
+	else if(dataType==XFLR5::DOUBLEVALUE)
 	{
 		myOption.displayAlignment = Qt::AlignRight | Qt::AlignVCenter;
 		double val = index.model()->data(index, Qt::DisplayRole).toDouble();
