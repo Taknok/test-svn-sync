@@ -63,7 +63,7 @@ XFLR5Application::XFLR5Application(int &argc, char** argv) : QApplication(argc, 
 	QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
 #endif
 
-    qsrand(QDateTime::currentDateTime().toTime_t());
+    qsrand(time(NULL));
 
 	bool bMaximized = true;
 	bool bOK;

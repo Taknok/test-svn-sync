@@ -41,6 +41,10 @@
 
 #include <xdirect/xmlpolarreader.h>
 #include <xdirect/xmlpolarwriter.h>
+#include <misc/line/LineBtn.h>
+#include <misc/line/LineCbBox.h>
+#include <misc/line/LineDelegate.h>
+#include <misc/text/DoubleEdit.h>
 #include <misc/options/displayoptions.h>
 #include <misc/PolarFilterDlg.h>
 #include <misc/ObjectPropsDlg.h>
@@ -263,7 +267,7 @@ void QXDirect::setControls()
 	s_pMainFrame->m_psetCpVarGraph->setChecked(m_CpGraph.yVariable()==0);
 	s_pMainFrame->m_psetQVarGraph->setChecked(m_CpGraph.yVariable()==1);
 
-	s_pMainFrame->m_pExportCurXFoilRes->setEnabled(m_XFoil.lvconv);
+	s_pMainFrame->m_pExportBLData->setEnabled(m_pCurOpp);
 
 	m_pctrlShowPressure->setEnabled(!m_bPolarView && m_pCurOpp);
 	m_pctrlShowBL->setEnabled(!m_bPolarView && m_pCurOpp);
@@ -703,11 +707,11 @@ void QXDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bI
 
 			double y[IVX][3];
 
-			for (int ibl=2; ibl<m_pCurOpp->nside1;ibl++)
+			for (int ibl=2; ibl<m_pCurOpp->nside1; ibl++)
 			{
 				y[ibl][1] = m_pCurOpp->ctau[ibl][1];
 			}
-			for (int ibl=2; ibl<m_pCurOpp->nside2;ibl++)
+			for (int ibl=2; ibl<m_pCurOpp->nside2; ibl++)
 			{
 				y[ibl][2] = m_pCurOpp->ctau[ibl][2];
 			}
@@ -1244,7 +1248,7 @@ void QXDirect::loadSettings(QSettings *pSettings)
 		m_Reynolds        = pSettings->value("ReynoldsMin").toDouble();
 		m_ReynoldsMax     = pSettings->value("ReynoldsMax").toDouble();
 		m_ReynoldsDelta   = pSettings->value("ReynolsDelta").toDouble();
-		m_XFoil.vaccel    = pSettings->value("VAccel").toDouble();
+		m_XFoil.vaccel  = pSettings->value("VAccel").toDouble();
 		s_bKeepOpenErrors = pSettings->value("KeepOpenErrors").toBool();
 
 		XFoilTask::s_bAutoInitBL    = pSettings->value("AutoInitBL").toBool();
@@ -1866,7 +1870,7 @@ void QXDirect::onDeleteCurPolar()
 				delete pOpPoint;
 			}
 		}
-		// then remove the Polar and update views
+		// then remove the CPolar and update views
 		for (l=m_poaPolar->size()-1; l>=0; l--)
 		{
 			if(m_pCurPolar == m_poaPolar->at(l))
@@ -1976,7 +1980,7 @@ void QXDirect::onDeleteFoilPolars()
 				delete pOpPoint;
 			}
 		}
-		// then remove Polar and update views
+		// then remove CPolar and update views
 		Polar* pPolar;
 		for (l=m_poaPolar->size()-1; l>=0; l--)
 		{
@@ -2180,40 +2184,40 @@ void QXDirect::onEditCurPolar()
 /**
  * The user has requested the export of the current results stored in the XFoil object to a text file
  */
-void QXDirect::onExportCurXFoilResults()
+void QXDirect::onExportBLData()
 {
 	if(!m_pCurOpp || m_pCurOpp->nside1==0) return;
 	if(!m_pCurFoil)		  return;
 
-	QString FileName,  OutString, strong;
+	QString fileName,  OutString, strong;
 
-	double x[IVX][3],Hk[IVX][3],UeVinf[IVX][3], Cf[IVX][3], Cd[IVX][3], AA0[IVX][3];
-	double RTheta[IVX][3], DStar[IVX][3], Theta[IVX][3];
+	double xBL[IVX][ISX],Hk[IVX][ISX],UeVinf[IVX][ISX], Cf[IVX][ISX], Cd[IVX][ISX], AA0[IVX][ISX];
+	double DStar[IVX][ISX], Theta[IVX][ISX];
 	double uei;
 	double que = 0.5*m_XFoil.qinf*m_XFoil.qinf;
 	double qrf = m_XFoil.qinf;
 	int nside1, nside2, ibl;
 	XFLR5::enumTextFileType type = XFLR5::TXT;
 
-	FileName = m_pCurFoil->foilName();
-	FileName.replace("/", " ");
+	fileName = m_pCurFoil->foilName();
+	fileName.replace("/", " ");
 
-	FileName = QFileDialog::getSaveFileName(this, tr("Export Current XFoil Results"),
+	fileName = QFileDialog::getSaveFileName(this, tr("Export Current XFoil Results"),
 											Settings::s_LastDirName,
 											tr("Text File (*.txt);;Comma Separated Values (*.csv)"));
 
-	if(!FileName.length()) return;
-	int pos = FileName.lastIndexOf("/");
-	if(pos>0) Settings::s_LastDirName = FileName.left(pos);
+	if(!fileName.length()) return;
+	int pos = fileName.lastIndexOf("/");
+	if(pos>0) Settings::s_LastDirName = fileName.left(pos);
 
-	pos  = FileName.lastIndexOf(".csv");
+	pos  = fileName.lastIndexOf(".csv");
 	if(pos>0) type = XFLR5::CSV;
 
-	QFile DestFile(FileName);
+	QFile destFile(fileName);
 
-	if (!DestFile.open(QIODevice::WriteOnly | QIODevice::Text)) return ;
+	if (!destFile.open(QIODevice::WriteOnly | QIODevice::Text)) return ;
 
-	QTextStream out(&DestFile);
+	QTextStream out(&destFile);
 
 	out << VERSIONNAME;
 	out << ("\n");
@@ -2222,56 +2226,57 @@ void QXDirect::onExportCurXFoilResults()
 
 	if(type==XFLR5::TXT)
 		strong = QString("Alpha = %1,  Re = %2,  Ma= %3,  ACrit=%4\n\n")
-						 .arg(m_XFoil.alfa*180./PI, 5, 'f',1)
-						 .arg(m_XFoil.reinf1, 8, 'f',0)
-						 .arg(m_XFoil.minf1, 6, 'f',4)
-						 .arg(m_XFoil.acrit, 4, 'f',1);
+						 .arg(m_pCurOpp->aoa(), 5, 'f',1)
+						 .arg(m_pCurOpp->Reynolds(), 8, 'f',0)
+						 .arg(m_pCurOpp->Mach(), 6, 'f',4)
+						 .arg(m_pCurOpp->ACrit, 4, 'f',1);
 	else
 		strong = QString("Alpha =, %1,Re =, %3,Ma=, %3,ACrit =,%4\n\n")
-						 .arg(m_XFoil.alfa*180./PI, 5, 'f',1)
-						 .arg(m_XFoil.reinf1, 8, 'f',0)
-						 .arg(m_XFoil.minf1, 6, 'f',4)
-						 .arg(m_XFoil.acrit, 4, 'f',1);	out << (strong);
+						 .arg(m_pCurOpp->aoa(), 5, 'f',1)
+						 .arg(m_pCurOpp->Reynolds(), 8, 'f',0)
+						 .arg(m_pCurOpp->Mach(), 6, 'f',4)
+						 .arg(m_pCurOpp->ACrit, 4, 'f',1);	out << (strong);
 
-	m_XFoil.CreateXBL(x);
-	nside1 = m_XFoil.m_nSide1;
-	nside2 = m_XFoil.m_nSide2;
+
+	nside1 = m_pCurOpp->nside1;
+	nside2 = m_pCurOpp->nside2;
+
+	for (ibl=2; ibl<= nside1;ibl++)	xBL[ibl][1] = m_pCurOpp->xbl[ibl][1];
+	for (ibl=2; ibl<= nside2;ibl++)	xBL[ibl][2] = m_pCurOpp->xbl[ibl][2];
 
 	//write top first
-	m_XFoil.FillHk(Hk);
 	for (ibl=2; ibl<= nside1;ibl++)
 	{
-		uei = m_XFoil.uedg[ibl][1];
-		UeVinf[ibl][1] = uei * (1.0-m_XFoil.tklam)
-						/ (1.0-m_XFoil.tklam*(uei/m_XFoil.qinf)*(uei/m_XFoil.qinf));
+		uei = m_pCurOpp->uedg[ibl][1];
+		UeVinf[ibl][1] = uei * (1.0-m_pCurOpp->tklam)
+						/ (1.0-m_pCurOpp->tklam*(uei/m_pCurOpp->qinf)*(uei/m_pCurOpp->qinf));
 	}
 	for (ibl=2; ibl<= nside2;ibl++)
 	{
-		uei = m_XFoil.uedg[ibl][2];
-		UeVinf[ibl][2] = uei * (1.0-m_XFoil.tklam)
-						/ (1.0-m_XFoil.tklam*(uei/m_XFoil.qinf)*(uei/m_XFoil.qinf));
+		uei = m_pCurOpp->uedg[ibl][2];
+		UeVinf[ibl][2] = uei * (1.0-m_pCurOpp->tklam)
+						/ (1.0-m_pCurOpp->tklam*(uei/m_pCurOpp->qinf)*(uei/m_pCurOpp->qinf));
 	}
 	//---- fill compressible ue arrays
-	for (ibl=2; ibl<= nside1;ibl++)	Cf[ibl][1] = m_XFoil.tau[ibl][1] / que;
-	for (ibl=2; ibl<= nside2;ibl++)	Cf[ibl][2] = m_XFoil.tau[ibl][2] / que;
+	for (ibl=2; ibl<= nside1;ibl++)	Cf[ibl][1] = m_pCurOpp->tau[ibl][1] / que;
+	for (ibl=2; ibl<= nside2;ibl++)	Cf[ibl][2] = m_pCurOpp->tau[ibl][2] / que;
 
 	//---- fill compressible ue arrays
-	for (ibl=2; ibl<= nside1;ibl++)	Cd[ibl][1] = m_XFoil.dis[ibl][1] / qrf/ qrf/ qrf;
-	for (ibl=2; ibl<= nside2;ibl++)	Cd[ibl][2] = m_XFoil.dis[ibl][2] / qrf/ qrf/ qrf;
+	for (ibl=2; ibl<= nside1;ibl++)	Cd[ibl][1] = m_pCurOpp->dis[ibl][1] / qrf/ qrf/ qrf;
+	for (ibl=2; ibl<= nside2;ibl++)	Cd[ibl][2] = m_pCurOpp->dis[ibl][2] / qrf/ qrf/ qrf;
 	//NPlot
-	for (ibl=2; ibl< nside1;ibl++)	AA0[ibl][1] = m_XFoil.ctau[ibl][1];
-	for (ibl=2; ibl< nside2;ibl++)	AA0[ibl][2] = m_XFoil.ctau[ibl][2];
+	for (ibl=2; ibl< nside1;ibl++)	AA0[ibl][1] = m_pCurOpp->ctau[ibl][1];
+	for (ibl=2; ibl< nside2;ibl++)	AA0[ibl][2] = m_pCurOpp->ctau[ibl][2];
 
-	m_XFoil.FillRTheta(RTheta);
 	for (ibl=2; ibl<= nside1; ibl++)
 	{
-		DStar[ibl][1] = m_XFoil.dstr[ibl][1];
-		Theta[ibl][1] = m_XFoil.thet[ibl][1];
+		DStar[ibl][1] = m_pCurOpp->dstr[ibl][1];
+		Theta[ibl][1] = m_pCurOpp->thet[ibl][1];
 	}
 	for (ibl=2; ibl<= nside2; ibl++)
 	{
-		DStar[ibl][2] = m_XFoil.dstr[ibl][2];
-		Theta[ibl][2] = m_XFoil.thet[ibl][2];
+		DStar[ibl][2] = m_pCurOpp->dstr[ibl][2];
+		Theta[ibl][2] = m_pCurOpp->thet[ibl][2];
 	}
 
 	out << tr("\nTop Side\n");
@@ -2282,26 +2287,26 @@ void QXDirect::onExportCurXFoilResults()
 	{
 		if(type==XFLR5::TXT)
 			OutString = QString("%1  %2  %3  %4 %5 %6  %7  %8  %9\n")
-							.arg(x[ibl][1],8,'f',5)
-							.arg(Hk[ibl][1],8,'f',5)
+							.arg(xBL[ibl][1],8,'f',5)
+							.arg(m_pCurOpp->Hk[ibl][1],8,'f',5)
 							.arg(UeVinf[ibl][1],8,'f',5)
 							.arg(Cf[ibl][1],8,'f',5)
 							.arg(Cd[ibl][1],8,'f',5)
 							.arg(AA0[ibl][1],8,'f',5)
 							.arg(DStar[ibl][1],8,'f',5)
 							.arg(Theta[ibl][1],8,'f',5)
-							.arg(m_XFoil.ctq[ibl][1],8,'f',5);
+							.arg(m_pCurOpp->ctq[ibl][1],8,'f',5);
 		else
 			OutString = QString("%1, %2, %3, %4, %5, %6, %7, %8, %9\n")
-							.arg(x[ibl][1],8,'f',5)
-							.arg(Hk[ibl][1],8,'f',5)
+							.arg(xBL[ibl][1],8,'f',5)
+							.arg(m_pCurOpp->Hk[ibl][1],8,'f',5)
 							.arg(UeVinf[ibl][1],8,'f',5)
 							.arg(Cf[ibl][1],8,'f',5)
 							.arg(Cd[ibl][1],8,'f',5)
 							.arg(AA0[ibl][1],8,'f',5)
 							.arg(DStar[ibl][1],8,'f',5)
 							.arg(Theta[ibl][1],8,'f',5)
-							.arg(m_XFoil.ctq[ibl][1],8,'f',5);
+							.arg(m_pCurOpp->ctq[ibl][1],8,'f',5);
 		out << (OutString);
 	}
 	out << tr("\n\nBottom Side\n");
@@ -2312,30 +2317,30 @@ void QXDirect::onExportCurXFoilResults()
 	{
 		if(type==XFLR5::TXT)
 			OutString = QString("%1  %2  %3  %4 %5 %6  %7  %8  %9\n")
-							.arg(x[ibl][2],8,'f',5)
-							.arg(Hk[ibl][2],8,'f',5)
+							.arg(xBL[ibl][2],8,'f',5)
+							.arg(m_pCurOpp->Hk[ibl][2],8,'f',5)
 							.arg(UeVinf[ibl][2],8,'f',5)
 							.arg(Cf[ibl][2],8,'f',5)
 							.arg(Cd[ibl][2],8,'f',5)
 							.arg(AA0[ibl][2],8,'f',5)
 							.arg(DStar[ibl][2],8,'f',5)
 							.arg(Theta[ibl][2],8,'f',5)
-							.arg(m_XFoil.ctq[ibl][2],8,'f',5);
+							.arg(m_pCurOpp->ctq[ibl][2],8,'f',5);
 		else
 			OutString = QString("%1, %2, %3, %4, %5, %6, %7, %8, %9\n")
-							.arg(x[ibl][2],8,'f',5)
-							.arg(Hk[ibl][2],8,'f',5)
+							.arg(xBL[ibl][2],8,'f',5)
+							.arg(m_pCurOpp->Hk[ibl][2],8,'f',5)
 							.arg(UeVinf[ibl][2],8,'f',5)
 							.arg(Cf[ibl][2],8,'f',5)
 							.arg(Cd[ibl][2],8,'f',5)
 							.arg(AA0[ibl][2],8,'f',5)
 							.arg(DStar[ibl][2],8,'f',5)
 							.arg(Theta[ibl][2],8,'f',5)
-							.arg(m_XFoil.ctq[ibl][2],8,'f',5);
+							.arg(m_pCurOpp->ctq[ibl][2],8,'f',5);
 		out << (OutString);
 	}
 
-	DestFile.close();
+	destFile.close();
 }
 
 
@@ -2358,6 +2363,7 @@ void QXDirect::onExportAllPolars()
 		FileName = DirName + "/" + pPolar->foilName() + "_" + pPolar->polarName();
 		if(Settings::s_ExportFileType==XFLR5::TXT) FileName += ".txt";
 		else                                       FileName += ".csv";
+
 		XFile.setFileName(FileName);
 		if (XFile.open(QIODevice::WriteOnly | QIODevice::Text))
 		{
@@ -4130,8 +4136,7 @@ void QXDirect::saveSettings(QSettings *pSettings)
 		pSettings->setValue("ASpec", s_refPolar.aoa());
 
 		if(s_refPolar.polarType()==XFOIL::FIXEDSPEEDPOLAR)       pSettings->setValue("Type", 1);
-		else if(s_refPolar.polarType()==XFOIL::FIXEDLIFTPOLAR)   pSettings->setValue("Type", 2);
-		else if(s_refPolar.polarType()==XFOIL::RUBBERCHORDPOLAR) pSettings->setValue("Type", 3);
+		else if(s_refPolar.polarType()==XFOIL::RUBBERCHORDPOLAR) pSettings->setValue("Type", 2);
 		else if(s_refPolar.polarType()==XFOIL::FIXEDAOAPOLAR)    pSettings->setValue("Type", 4);
 
 		pSettings->setValue("NReynolds", s_ReList.count());

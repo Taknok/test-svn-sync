@@ -389,8 +389,6 @@ bool PlaneAnalysisTask::initializePanels()
 		}
 	}
 
-	qDebug()<<m_NWakeColumn;
-
 //qDebug()<<"created total"<<m_nWakeNodes<<"wake nodes";
 //qDebug()<<"";
 /*	qDebug()<<"m_NWakeColumn"<<m_NWakeColumn;
