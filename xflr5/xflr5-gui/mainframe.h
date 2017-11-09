@@ -46,6 +46,7 @@
 #include <miarex/view/GLLightDlg.h>
 #include <misc/voidwidget.h>
 
+class QXDirect;
 class gl3dMiarexView;
 class InverseViewWidget;
 class QGraph;
@@ -256,7 +257,7 @@ private:
 	void *m_pAFoil;     /**< A void pointer to the instance of the QAFoil application. The pointer will be cast to the QAFoil type at runtime. This is necessary to prevent loop includes of header files. */
 	void *m_pMiarex;    /**< A void pointer to the instance of the QMiarex application. The pointer will be cast to the QMiarex type at runtime. This is necessary to prevent loop includes of header files. */
 	void *m_pXInverse;  /**< A void pointer to the instance of the QXInverse application. The pointer will be cast to the QXInverse type at runtime. This is necessary to prevent loop includes of header files. */
-	void *m_pXDirect;   /**< A void pointer to the instance of the QXDirect application. The pointer will be cast to the QXDirect type at runtime. This is necessary to prevent loop includes of header files. */
+	QXDirect *m_pXDirect;   /**< A void pointer to the instance of the QXDirect application. The pointer will be cast to the QXDirect type at runtime. This is necessary to prevent loop includes of header files. */
 	void *m_pStabView;  /** < A void pointer to the instance of the StabViewDlg window. */
 	
 	GLLightDlg m_glLightDlg;
@@ -395,7 +396,7 @@ private:
 	QAction *m_pXDirectStyleAct;
 	QAction *m_pXDirectPolarFilter;
 	QAction *m_psetQVarGraph, *m_psetCpVarGraph;
-	QAction *m_pExportCurXFoilRes;
+	QAction *m_pExportBLData;
 	QAction *m_pManageFoilsAct, *m_pRenamePolarAct;
 	QAction *m_pImportJavaFoilPolar, *m_pImportXFoilPolar;
 	QAction *m_pImportXMLFoilAnalysis, *m_pExportXMLFoilAnalysis;
