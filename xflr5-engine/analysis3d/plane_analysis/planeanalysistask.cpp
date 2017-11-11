@@ -467,7 +467,7 @@ int PlaneAnalysisTask::createBodyElements(Plane *pCurPlane)
 	}
 	else dpx=dpz=0.0;
 
-	if(pCurBody->m_LineType==XFLR5::BODYPANELTYPE)
+	if(pCurBody->isFlatPanelType())
 	{
 		nx = 0;
 		for(i=0; i<pCurBody->frameCount()-1; i++) nx+=pCurBody->m_xPanels[i];
@@ -594,7 +594,7 @@ int PlaneAnalysisTask::createBodyElements(Plane *pCurPlane)
 			}
 		}
 	}
-	else if(pCurBody->m_LineType==XFLR5::BODYSPLINETYPE)
+	else if(pCurBody->isSplineType())
 	{
 		FullSize = 2*nx*nh;
 		//start with left side... same as for wings
