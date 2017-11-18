@@ -1,8 +1,7 @@
 /****************************************************************************
 
     XFLR5Application  Class
-    Copyright (C) 2008 Andre Deperrois adeperrois@xflr5.com
-                       Francesco Meschia francesco.meschia@gmail.com
+    Copyright (C) 2008-2017 Andre Deperrois adeperrois@xflr5.com
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,7 +29,7 @@
 #include "XFLR5Application.h"
 #include "mainframe.h"
 #include <misc/options/displayoptions.h>
-
+#include <ctime>
 
 XFLR5Application::XFLR5Application(int &argc, char** argv) : QApplication(argc, argv)
 {
