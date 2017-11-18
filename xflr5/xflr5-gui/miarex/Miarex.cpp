@@ -7533,13 +7533,14 @@ void QMiarex::setupLayout()
 					m_pctrlZ          = new QToolButton;
 					m_pctrlIso        = new QToolButton;
 					m_pctrlFlip       = new QToolButton;
-					if(m_pctrlX->iconSize().height()<=48)
+					int iconSize =32;
+					if(m_pctrlX->iconSize().height()<=iconSize)
 					{
-						m_pctrlX->setIconSize(QSize(24,24));
-						m_pctrlY->setIconSize(QSize(24,24));
-						m_pctrlZ->setIconSize(QSize(24,24));
-						m_pctrlIso->setIconSize(QSize(24,24));
-						m_pctrlFlip->setIconSize(QSize(24,24));
+						m_pctrlX->setIconSize(QSize(iconSize,iconSize));
+						m_pctrlY->setIconSize(QSize(iconSize,iconSize));
+						m_pctrlZ->setIconSize(QSize(iconSize,iconSize));
+						m_pctrlIso->setIconSize(QSize(iconSize,iconSize));
+						m_pctrlFlip->setIconSize(QSize(iconSize,iconSize));
 					}
 					m_pXView    = new QAction(QIcon(":/images/OnXView.png"), tr("X View"), this);
 					m_pYView    = new QAction(QIcon(":/images/OnYView.png"), tr("Y View"), this);

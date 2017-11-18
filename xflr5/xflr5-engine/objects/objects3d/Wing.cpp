@@ -2516,7 +2516,28 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
 
 		if(m_bTextures) ar<<1 ; else ar<<0;
 		// space allocation for the future storage of more data, without need to change the format
-		for (int i=1; i<20; i++) ar << 0;
+		for (int i=1; i<19; i++) ar << 0;
+		switch (wingType()) {
+			case XFLR5::MAINWING:
+				ar<<0;
+				break;
+			case XFLR5::SECONDWING:
+				ar<<1;
+				break;
+			case XFLR5::ELEVATOR:
+				ar<<2;
+				break;
+			case XFLR5::FIN:
+				ar<<3;
+				break;
+			case XFLR5::OTHERWING:
+				ar<<4;
+				break;
+			default:
+				ar<<0;
+				break;
+		}
+
 		for (int i=0; i<50; i++) ar << 0.0;
 
 		return true;
@@ -2574,7 +2595,28 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
 
 		ar>>k; if(k) m_bTextures=true; else m_bTextures=false;
 		// space allocation
-		for (int i=1; i<20; i++) ar >> k;
+		for (int i=1; i<19; i++) ar >> k;
+		ar >>k;
+		switch (k) {
+			case 0:
+				m_WingType=XFLR5::MAINWING;
+				break;
+			case 1:
+				m_WingType=XFLR5::SECONDWING;
+				break;
+			case 2:
+				m_WingType=XFLR5::ELEVATOR;
+				break;
+			case 3:
+				m_WingType=XFLR5::FIN;
+				break;
+			case 4:
+				m_WingType=XFLR5::OTHERWING;
+				break;
+			default:
+				break;
+		}
+
 		for (int i=0; i<50; i++) ar >> dble;
 
 		computeGeometry();

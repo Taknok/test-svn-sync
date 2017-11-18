@@ -631,6 +631,7 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
 	else
 	{
 		ar >> ArchiveFormat;
+		if (ArchiveFormat<200000 || ArchiveFormat>200003 ) return false;
 
 		ar >> m_PlaneName;
 		ar >> m_WPlrName;
