@@ -1288,7 +1288,7 @@ void PanelAnalysis::computeBalanceSpeeds(double Alpha, int q)
 
 	for(int iw=0; iw<MAXWINGS; iw++)
 	{
-		if(m_pWingList[iw]) Force += m_WingForce[q*4+iw];
+		if(m_pWingList[iw]) Force += m_WingForce[q*MAXWINGS+iw];
 	}
 	if (m_pWPolar->polarType()==XFLR5::FIXEDSPEEDPOLAR || m_pWPolar->polarType()==XFLR5::BETAPOLAR)
 	{
@@ -4955,10 +4955,10 @@ void PanelAnalysis::setControlPositions(double t, int &NCtrls, QString &out, boo
 				{
 					if(m_pPlane->wing()->isWingNode(n))
 					{
-							m_pNode[n].copy(m_pMemNode[n]);
-							W = m_pNode[n] - m_pPlane->WingLE(0);
-							Quat.Conjugate(W);
-							m_pNode[n] = W + m_pPlane->WingLE(0);
+						m_pNode[n].copy(m_pMemNode[n]);
+						W = m_pNode[n] - m_pPlane->WingLE(0);
+						Quat.Conjugate(W);
+						m_pNode[n] = W + m_pPlane->WingLE(0);
 					}
 				}
 				for(int p=0; p<m_MatSize; p++)
@@ -4989,10 +4989,10 @@ void PanelAnalysis::setControlPositions(double t, int &NCtrls, QString &out, boo
 					{
 						if(m_pPlane->stab()->isWingNode(n))
 						{
-								m_pNode[n].copy(m_pMemNode[n]);
-								W = m_pNode[n] - m_pPlane->WingLE(2);
-								Quat.Conjugate(W);
-								m_pNode[n] = W + m_pPlane->WingLE(2);
+							m_pNode[n].copy(m_pMemNode[n]);
+							W = m_pNode[n] - m_pPlane->WingLE(2);
+							Quat.Conjugate(W);
+							m_pNode[n] = W + m_pPlane->WingLE(2);
 						}
 					}
 					for(int p=0; p<m_MatSize; p++)
@@ -5023,9 +5023,8 @@ void PanelAnalysis::setControlPositions(double t, int &NCtrls, QString &out, boo
 			{
 				if(pWing->m_Surface.at(j)->m_bTEFlap)
 				{
-					if(qAbs(m_pWPolar->m_ControlGain[NCtrls])>0.0)
+					if(qAbs(m_pWPolar->m_ControlGain[NCtrls])>PRECISION)
 					{
-
 						angle = m_pWPolar->m_ControlGain[NCtrls] * t; //maxcontrol is the gain
 
 						if(pWing->m_Surface.at(j)->m_pFoilA->m_TEFlapAngle && pWing->m_Surface.at(j)->m_pFoilA->m_TEFlapAngle)
