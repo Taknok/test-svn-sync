@@ -98,7 +98,7 @@ void gl3dMiarexView::glRenderView()
 
 		m_pvmMatrix = m_orthoMatrix * m_viewMatrix * m_modelMatrix;
 
-		if(m_bVLMPanels && !pMiarex->m_pCurWPolar->isLLTMethod())
+		if(m_bVLMPanels && pMiarex->m_pCurWPolar && !pMiarex->m_pCurWPolar->isLLTMethod())
 			paintMesh(pMiarex->matSize());
 
 		if(pMiarex->m_pCurPOpp)
