@@ -178,11 +178,11 @@ void gl3dMiarexView::glRenderView()
 
 			if (pMiarex->m_b3DCp && pMiarex->m_pCurPOpp && pMiarex->m_pCurPOpp->analysisMethod()>=XFLR5::VLMMETHOD)
 			{
-				paintCpLegendClr();
+//				paintCpLegendClr();
 			}
 			else if (pMiarex->m_bPanelForce && pMiarex->m_pCurPOpp && pMiarex->m_pCurPOpp->analysisMethod()>=XFLR5::VLMMETHOD)
 			{
-				paintCpLegendClr();
+//				paintCpLegendClr();
 			}
 		}
 	}
