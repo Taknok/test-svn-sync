@@ -330,10 +330,14 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 		m_pSaveTimer->stop();
 		delete m_pSaveTimer;
 	}
-	m_pSaveTimer = new QTimer(this);
-	m_pSaveTimer->setInterval(m_SaveInterval*60*1000);
-	m_pSaveTimer->start();
-	connect(m_pSaveTimer, SIGNAL(timeout()), this, SLOT(onSaveTimer()));
+
+	if(m_bAutoSave)
+	{
+		m_pSaveTimer = new QTimer(this);
+		m_pSaveTimer->setInterval(m_SaveInterval*60*1000);
+		m_pSaveTimer->start();
+		connect(m_pSaveTimer, SIGNAL(timeout()), this, SLOT(onSaveTimer()));
+	}
 
 	setupDataDir();
 
@@ -3499,6 +3503,7 @@ bool MainFrame::loadSettings()
 		m_bSaveWOpps  = settings.value("SaveWOpps").toBool();
 
 		m_bAutoSave = settings.value("AutoSaveProject", false).toBool();
+
 		m_SaveInterval = settings.value("AutoSaveInterval", 10).toInt();
 
 //		a = settings.value("RecentFileSize").toInt();

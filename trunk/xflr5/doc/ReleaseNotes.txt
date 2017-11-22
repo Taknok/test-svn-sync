@@ -22,6 +22,7 @@ xflr5 v6.40 November xxxth, 2017
 	- removed the default suffix "-proj_area" from the name of plane polars
 	- restored the output of non-dimensional control derivatives in the operating point properties
 	- restored the option to export BL data to text files
+	- restored the autosave option which was always turned on
 	- code cleaning
 
 
