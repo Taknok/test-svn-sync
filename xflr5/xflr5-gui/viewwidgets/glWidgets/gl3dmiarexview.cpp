@@ -270,7 +270,6 @@ void gl3dMiarexView::paintOverlay()
 	QPainter painter(&device);
 
 	QMiarex* pMiarex = (QMiarex*)s_pMiarex;
-	if(pMiarex->m_bResetTextLegend) pMiarex->drawTextLegend();
 
 	if(!pMiarex->m_PixText.isNull())  painter.drawPixmap(0,0, pMiarex->m_PixText);
 	if(!m_PixTextOverlay.isNull())
