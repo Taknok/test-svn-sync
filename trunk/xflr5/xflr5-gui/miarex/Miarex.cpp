@@ -1832,12 +1832,15 @@ void QMiarex::glMake3DObjects()
 			}
 		}
 	}
-	if((m_bResetglLegend || m_bResetglOpp || m_bResetglGeom) && m_iView==XFLR5::W3DVIEW)
+	if((m_bResetTextLegend || m_bResetglLegend || m_bResetglOpp || m_bResetglGeom) && m_iView==XFLR5::W3DVIEW)
 	{
 		if(m_pCurPOpp)
 		{
 			m_pGL3dView->glMakeCpLegendClr();
+			drawTextLegend();
+
 		}
+		m_bResetTextLegend = false;
 		m_bResetglLegend = false;
 	}
 
