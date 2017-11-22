@@ -20,6 +20,7 @@
 *****************************************************************************/
 
 #include <QOpenGLShaderProgram>
+#include <QOpenGLFunctions>
 #include <QOpenGLPaintDevice>
 #include <QMouseEvent>
 
@@ -163,6 +164,7 @@ gl3dView::~gl3dView()
 	for(int iWing=0; iWing<MAXWINGS; iWing++)
 	{
 		if(m_WingIndicesArray[iWing]) delete [] m_WingIndicesArray[iWing];
+		m_vboEditWingMesh[iWing].destroy();
 	}
 
 	if(m_BodyIndicesArray)     delete[] m_BodyIndicesArray;
@@ -175,7 +177,7 @@ gl3dView::~gl3dView()
 	m_vboArcPoint.destroy();
 	m_vboSphere.destroy();
 	m_vboBody.destroy();
-	m_vboEditMesh.destroy();
+	m_vboEditBodyMesh.destroy();
 
 	for(int iWing=0; iWing<MAXWINGS; iWing++)
 	{
@@ -1765,20 +1767,21 @@ void gl3dView::paintSectionHighlight()
 }
 
 
-/** Used only in GL3DWingDlg, at a time when the mesh panels have not yet been built */
-void gl3dView::paintWingMesh(Wing *pWing)
+/** Default mesh, if no polar has been defined */
+void gl3dView::paintEditWingMesh(QOpenGLBuffer &vbo)
 {
-	if(!pWing) return;
-
-	int pos;
+	QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
 
 	m_ShaderProgramLine.bind();
+	m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, m_modelMatrix);
+	m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
+	m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
+	vbo.bind();
 	m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
-	m_vboEditMesh.bind();
 	m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3);
 	m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_VLMColor);
 
-	glEnable (GL_LINE_STIPPLE);
+/*	glEnable (GL_LINE_STIPPLE);
 	switch(W3dPrefsDlg::s_VLMStyle)
 	{
 		case 1:  glLineStipple (1, 0xCFCF); break;
@@ -1786,92 +1789,30 @@ void gl3dView::paintWingMesh(Wing *pWing)
 		case 3:  glLineStipple (1, 0xFF18); break;
 		case 4:  glLineStipple (1, 0x7E66); break;
 		default: glLineStipple (1, 0xFFFF); break;
-	}
-	glLineWidth(W3dPrefsDlg::s_VLMWidth);
+	}*/
 
+	int nTriangles = vbo.size()/3.0/3.0/sizeof(float); // three vertices and three components
 
-	pos=0;
-	for(int j=0; j<pWing->m_Surface.count(); j++)
+	f->glLineWidth(W3dPrefsDlg::s_VLMWidth);
+	int pos = 0;
+	for(int p=0; p<nTriangles; p++)
 	{
-		//top chordwise lines
-		for(int k=0; k<pWing->m_Surface.at(j)->NYPanels()+1; k++)
-		{
-			glDrawArrays(GL_LINE_STRIP, pos, pWing->m_Surface.at(j)->NXPanels()+1);
-			pos += pWing->m_Surface.at(j)->NXPanels()+1;
-		}
-		//bot chordwise lines
-		for(int k=0; k<pWing->m_Surface.at(j)->NYPanels()+1; k++)
-		{
-			glDrawArrays(GL_LINE_STRIP, pos, pWing->m_Surface.at(j)->NXPanels()+1);
-			pos += pWing->m_Surface.at(j)->NXPanels()+1;
-		}
-		//top spanwise lines
-		for(int l=0; l<pWing->m_Surface.at(j)->NXPanels()+1; l++)
-		{
-			glDrawArrays(GL_LINE_STRIP, pos, pWing->m_Surface.at(j)->NYPanels()+1);
-			pos += pWing->m_Surface.at(j)->NYPanels()+1;
-		}
-		//bot spanwise lines
-		for(int l=0; l<pWing->m_Surface.at(j)->NXPanels()+1; l++)
-		{
-			glDrawArrays(GL_LINE_STRIP, pos, pWing->m_Surface.at(j)->NYPanels()+1);
-			pos += pWing->m_Surface.at(j)->NYPanels()+1;
-		}
-	}
-	//tip patches
-	int tipPos =pos;
-	for(int j=0; j<pWing->m_Surface.count(); j++)
-	{
-		if(pWing->m_Surface.at(j)->isTipLeft())
-		{
-			glDrawArrays(GL_LINES, pos, 2 * (pWing->m_Surface.at(j)->NXPanels()+1));
-			pos += 2 *(pWing->m_Surface.at(j)->NXPanels()+1);
-		}
-		if(pWing->m_Surface.at(j)->isTipRight())
-		{
-			glDrawArrays(GL_LINES, pos, 2 * (pWing->m_Surface.at(j)->NXPanels()+1));
-			pos += 2 *(pWing->m_Surface.at(j)->NXPanels()+1);
-		}
+		f->glDrawArrays(GL_LINE_STRIP, pos, 3);
+		pos +=3 ;
 	}
 
+	m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, Settings::backgroundColor());
 
-	glEnable(GL_POLYGON_OFFSET_FILL);
-	glPolygonOffset(1.0, 1.0);
-	pos=tipPos;
-	m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, Settings::s_BackgroundColor);
-	for(int j=0; j<pWing->m_Surface.count(); j++)
-	{
-		if(pWing->m_Surface.at(j)->isTipLeft())
-		{
-			glDrawArrays(GL_TRIANGLE_STRIP, pos, (pWing->m_Surface.at(j)->NXPanels()+1)*2);
-			pos += (pWing->m_Surface.at(j)->NXPanels()+1)*2;
-		}
-		if(pWing->m_Surface.at(j)->isTipRight())
-		{
-			glDrawArrays(GL_TRIANGLE_STRIP, pos, (pWing->m_Surface.at(j)->NXPanels()+1)*2);
-			pos += (pWing->m_Surface.at(j)->NXPanels()+1)*2;
-		}
-	}
+	f->glEnable(GL_POLYGON_OFFSET_FILL);
+	f->glPolygonOffset(1.0, 1.0);
+	f->glDrawArrays(GL_TRIANGLES, 0, nTriangles*3);
+	f->glDisable(GL_POLYGON_OFFSET_FILL);
 
-
-	for(int j=0; j<pWing->m_Surface.count(); j++)
-	{
-		for(int k=0; k<pWing->m_Surface.at(j)->NYPanels(); k++)
-		{
-/*			glDrawArrays(GL_TRIANGLE_STRIP, pos, (pWing->m_Surface.at(j)->NXPanels()+1)*2);
-			pos += (pWing->m_Surface.at(j)->NXPanels()+1)*2;
-			glDrawArrays(GL_TRIANGLE_STRIP, pos, (pWing->m_Surface.at(j)->NXPanels()+1)*2);
-			pos += (pWing->m_Surface.at(j)->NXPanels()+1)*2;*/
-			glDrawArrays(GL_TRIANGLE_STRIP, pos, (pWing->m_Surface.at(j)->NXPanels()+1)*4);
-			pos += (pWing->m_Surface.at(j)->NXPanels()+1)*4;
-		}
-	}
-
-	m_vboEditMesh.release();
+	vbo.release();
 	m_ShaderProgramLine.disableAttributeArray(m_VertexLocationLine);
 	m_ShaderProgramLine.release();
-	glDisable(GL_LINE_STIPPLE);
-	glDisable(GL_POLYGON_OFFSET_FILL);
+//	f->glDisable(GL_LINE_STIPPLE);
+	f->glDisable(GL_POLYGON_OFFSET_FILL);
 }
 
 
@@ -2104,6 +2045,85 @@ void gl3dView::paintBody(Body *pBody)
 		m_vboBody.release();
 		m_ShaderProgramLine.release();
 	}
+}
+
+
+/** Default mesh, if no polar has been defined */
+void gl3dView::paintEditBodyMesh(Body *pBody)
+{
+	if(!pBody) return;
+	QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
+
+	m_ShaderProgramLine.bind();
+	m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, m_modelMatrix);
+	m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
+	m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
+	m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
+	m_vboEditBodyMesh.bind();
+	m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3, 6*sizeof(GLfloat));
+	m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_VLMColor);
+//	m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, Qt::red);
+
+	if(pBody->isFlatPanelType())
+	{
+		f->glLineWidth(W3dPrefsDlg::s_VLMWidth);
+
+//		f->glPolygonOffset(1.0, 1.0);
+		f->glDrawArrays(GL_LINES, 0, m_iBodyMeshLines*2);
+	}
+	else if(pBody->isSplineType())
+	{
+		int pos=0;
+		int NXXXX = W3dPrefsDlg::s_iBodyAxialRes;
+		int NHOOOP = W3dPrefsDlg::s_iBodyAxialRes;
+		f->glLineWidth(W3dPrefsDlg::s_VLMWidth);
+
+		pos=0;
+		//x-lines
+		for (int l=0; l<2*pBody->m_nhPanels; l++)
+		{
+			f->glDrawArrays(GL_LINE_STRIP, pos, NXXXX);
+			pos += NXXXX;
+		}
+
+		//hoop lines;
+		for (int k=0; k<2*pBody->m_nxPanels; k++)
+		{
+			f->glDrawArrays(GL_LINE_STRIP, pos, NHOOOP);
+			pos += NHOOOP;
+		}
+	}
+
+	m_vboEditBodyMesh.release();
+
+	//mesh background
+	m_ShaderProgramSurface.bind();
+	m_ShaderProgramSurface.setUniformValue(m_mMatrixLocationSurface, m_modelMatrix);
+	m_ShaderProgramSurface.setUniformValue(m_vMatrixLocationSurface, m_viewMatrix);
+	m_ShaderProgramSurface.setUniformValue(m_pvmMatrixLocationSurface, m_pvmMatrix);
+	m_ShaderProgramSurface.setUniformValue(m_LightLocationSurface, 0); // no light for the background
+	m_ShaderProgramSurface.enableAttributeArray(m_VertexLocationSurface);
+	m_ShaderProgramSurface.enableAttributeArray(m_NormalLocationSurface);
+	m_ShaderProgramSurface.setUniformValue(m_ColorLocationSurface, Settings::backgroundColor());
+
+	m_vboEditBodyMesh.bind();
+	m_ShaderProgramSurface.setAttributeBuffer(m_VertexLocationSurface, GL_FLOAT, 0,                  3, 6*sizeof(GLfloat));
+	m_ShaderProgramSurface.setAttributeBuffer(m_NormalLocationSurface, GL_FLOAT, 3* sizeof(GLfloat), 3, 6*sizeof(GLfloat));
+
+	f->glEnable(GL_POLYGON_OFFSET_FILL);
+	f->glPolygonOffset(1.0, 1.0);
+	f->glDrawElements(GL_TRIANGLES, m_iBodyElems/2, GL_UNSIGNED_SHORT, m_BodyIndicesArray);
+	f->glDrawElements(GL_TRIANGLES, m_iBodyElems/2, GL_UNSIGNED_SHORT, m_BodyIndicesArray+m_iBodyElems/2);
+	f->glDisable(GL_POLYGON_OFFSET_FILL);
+
+	m_ShaderProgramSurface.disableAttributeArray(m_VertexLocationSurface);
+	m_ShaderProgramSurface.disableAttributeArray(m_NormalLocationSurface);
+	m_ShaderProgramSurface.release();
+
+
+	m_vboEditBodyMesh.release();
+	m_ShaderProgramLine.disableAttributeArray(m_VertexLocationLine);
+	m_ShaderProgramLine.release();
 }
 
 
@@ -2952,243 +2972,169 @@ void gl3dView::getTextureFile(QString planeName, QString surfaceName, QImage &te
 }
 
 
-/** Used in wing edition only */
-void gl3dView::glMakeWingMesh(QOpenGLBuffer &vbo, Wing *pWing)
+/** Default mesh, if no polar has been defined */
+void gl3dView::glMakeWingEditMesh(QOpenGLBuffer &vbo, Wing *pWing)
 {
 	int l,k;
-
-	//not necessarily the same Nx for all surfaces, so we need to count the panels
+	//not necessarily the same Nx for all surfaces, so we need to count the quad panels
 	int bufferSize = 0;
 	for (int j=0; j<pWing->m_Surface.size(); j++)
 	{
-		//chordwise lines
-		bufferSize += (pWing->m_Surface.at(j)->NXPanels()+1) * (pWing->m_Surface.at(j)->NYPanels()+1) *2;
-
-		//spanwise lines
-		bufferSize += (pWing->m_Surface.at(j)->NXPanels()+1) * (pWing->m_Surface.at(j)->NYPanels()+1) *2;
-
+		Surface *pSurf = pWing->m_Surface[j];
 		//tip patches
-		if(pWing->m_Surface.at(j)->isTipLeft())
-			bufferSize += (pWing->m_Surface.at(j)->NXPanels()+1) *2;
-		if(pWing->m_Surface.at(j)->isTipRight())
-			bufferSize += (pWing->m_Surface.at(j)->NXPanels()+1) *2;
+		if(pSurf->isTipLeft())  bufferSize += (pSurf->NXPanels());
+		if(pSurf->isTipRight()) bufferSize += (pSurf->NXPanels());
 
-		//add background triangle strips
-		bufferSize += (pWing->m_Surface.at(j)->NXPanels()+1)*2 * (pWing->m_Surface.at(j)->NYPanels()) *2;
+		// top and bottom surfaces
+		bufferSize += pSurf->NXPanels()*2 * (pSurf->NYPanels());
 	}
-	bufferSize *=3; //3 vertices for each node
+	bufferSize *=2;    // 2 triangles/quad
+	bufferSize *=3;    // 3 vertex for each triangle
+	bufferSize *=3;    // 3 components for each node
 
-	float *meshVertexArray = new float[bufferSize];
+	std::vector<float> meshVertexArray(bufferSize);
 
 	int iv=0;
-
-	for (int j=0; j<pWing->m_Surface.size(); j++)
-	{
-		//top surface chordwise lines
-		for(k=0; k<pWing->m_Surface.at(j)->NYPanels(); k++)
-		{
-			for (int l=0; l<pWing->m_Surface.at(j)->NXPanels(); l++)
-			{
-				pWing->m_Surface.at(j)->getPanel(k,l,TOPSURFACE);
-				meshVertexArray[iv++] = pWing->m_Surface.at(j)->TA.x;
-				meshVertexArray[iv++] = pWing->m_Surface.at(j)->TA.y;
-				meshVertexArray[iv++] = pWing->m_Surface.at(j)->TA.z;
-			}
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->LA.x;
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->LA.y;
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->LA.z;
-		}
-		k--;
-		for (l=0; l<pWing->m_Surface.at(j)->NXPanels(); l++)
-		{
-			pWing->m_Surface.at(j)->getPanel(k,l,TOPSURFACE);
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->TB.x;
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->TB.y;
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->TB.z;
-		}
-		meshVertexArray[iv++] = pWing->m_Surface.at(j)->LB.x;
-		meshVertexArray[iv++] = pWing->m_Surface.at(j)->LB.y;
-		meshVertexArray[iv++] = pWing->m_Surface.at(j)->LB.z;
-
-		//bot surface chordwise lines
-		for(k=0; k<pWing->m_Surface.at(j)->NYPanels(); k++)
-		{
-			for (l=0; l<pWing->m_Surface.at(j)->NXPanels(); l++)
-			{
-				pWing->m_Surface.at(j)->getPanel(k,l,BOTSURFACE);
-				meshVertexArray[iv++] = pWing->m_Surface.at(j)->TA.x;
-				meshVertexArray[iv++] = pWing->m_Surface.at(j)->TA.y;
-				meshVertexArray[iv++] = pWing->m_Surface.at(j)->TA.z;
-			}
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->LA.x;
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->LA.y;
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->LA.z;
-		}
-		k--;
-		for (l=0; l<pWing->m_Surface.at(j)->NXPanels(); l++)
-		{
-			pWing->m_Surface.at(j)->getPanel(k,l,BOTSURFACE);
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->TB.x;
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->TB.y;
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->TB.z;
-		}
-		meshVertexArray[iv++] = pWing->m_Surface.at(j)->LB.x;
-		meshVertexArray[iv++] = pWing->m_Surface.at(j)->LB.y;
-		meshVertexArray[iv++] = pWing->m_Surface.at(j)->LB.z;
-
-
-		//top surface spanwise lines
-		for(l=0; l<pWing->m_Surface.at(j)->NXPanels(); l++)
-		{
-			for (k=0; k<pWing->m_Surface.at(j)->NYPanels(); k++)
-			{
-				pWing->m_Surface.at(j)->getPanel(k,l,TOPSURFACE);
-				meshVertexArray[iv++] = pWing->m_Surface.at(j)->TA.x;
-				meshVertexArray[iv++] = pWing->m_Surface.at(j)->TA.y;
-				meshVertexArray[iv++] = pWing->m_Surface.at(j)->TA.z;
-			}
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->TB.x;
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->TB.y;
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->TB.z;
-		}
-		l--;
-		for (k=0; k<pWing->m_Surface.at(j)->NYPanels(); k++)
-		{
-			pWing->m_Surface.at(j)->getPanel(k,l,TOPSURFACE);
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->LA.x;
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->LA.y;
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->LA.z;
-		}
-		meshVertexArray[iv++] = pWing->m_Surface.at(j)->LB.x;
-		meshVertexArray[iv++] = pWing->m_Surface.at(j)->LB.y;
-		meshVertexArray[iv++] = pWing->m_Surface.at(j)->LB.z;
-
-		//bot surface spanwise lines
-		for(l=0; l<pWing->m_Surface.at(j)->NXPanels(); l++)
-		{
-			for (k=0; k<pWing->m_Surface.at(j)->NYPanels(); k++)
-			{
-				pWing->m_Surface.at(j)->getPanel(k,l,BOTSURFACE);
-				meshVertexArray[iv++] = pWing->m_Surface.at(j)->TA.x;
-				meshVertexArray[iv++] = pWing->m_Surface.at(j)->TA.y;
-				meshVertexArray[iv++] = pWing->m_Surface.at(j)->TA.z;
-			}
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->TB.x;
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->TB.y;
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->TB.z;
-		}
-		l--;
-		for (k=0; k<pWing->m_Surface.at(j)->NYPanels(); k++)
-		{
-			pWing->m_Surface.at(j)->getPanel(k,l,BOTSURFACE);
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->LA.x;
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->LA.y;
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->LA.z;
-		}
-		meshVertexArray[iv++] = pWing->m_Surface.at(j)->LB.x;
-		meshVertexArray[iv++] = pWing->m_Surface.at(j)->LB.y;
-		meshVertexArray[iv++] = pWing->m_Surface.at(j)->LB.z;
-	}
 
 	Vector3d A,B,C,D;
 
 	//tip patches
 	for (int j=0; j<pWing->m_Surface.size(); j++)
 	{
-		if(pWing->m_Surface.at(j)->isTipLeft())
+		Surface *pSurf = pWing->m_Surface[j];
+		if(pSurf->isTipLeft())
 		{
-			for (l=0; l<pWing->m_Surface.at(j)->NXPanels(); l++)
+			for (l=0; l<pSurf->NXPanels(); l++)
 			{
-				pWing->m_Surface.at(j)->getPanel(0,l,TOPSURFACE);
-				A = pWing->m_Surface.at(j)->TA;
-				B = pWing->m_Surface.at(j)->LA;
-				pWing->m_Surface.at(j)->getPanel(0,l,BOTSURFACE);
-				C = pWing->m_Surface.at(j)->LA;
-				D = pWing->m_Surface.at(j)->TA;
+				pSurf->getPanel(0,l,TOPSURFACE);
+				A = pSurf->TA;
+				B = pSurf->LA;
+				pSurf->getPanel(0,l,BOTSURFACE);
+				C = pSurf->LA;
+				D = pSurf->TA;
 
+				//first triangle
 				meshVertexArray[iv++] = A.x;
 				meshVertexArray[iv++] = A.y;
 				meshVertexArray[iv++] = A.z;
+				meshVertexArray[iv++] = B.x;
+				meshVertexArray[iv++] = B.y;
+				meshVertexArray[iv++] = B.z;
 				meshVertexArray[iv++] = C.x;
 				meshVertexArray[iv++] = C.y;
 				meshVertexArray[iv++] = C.z;
+
+				//second triangle
+				meshVertexArray[iv++] = C.x;
+				meshVertexArray[iv++] = C.y;
+				meshVertexArray[iv++] = C.z;
+				meshVertexArray[iv++] = D.x;
+				meshVertexArray[iv++] = D.y;
+				meshVertexArray[iv++] = D.z;
+				meshVertexArray[iv++] = A.x;
+				meshVertexArray[iv++] = A.y;
+				meshVertexArray[iv++] = A.z;
 			}
-			meshVertexArray[iv++] = B.x;
-			meshVertexArray[iv++] = B.y;
-			meshVertexArray[iv++] = B.z;
-			meshVertexArray[iv++] = D.x;
-			meshVertexArray[iv++] = D.y;
-			meshVertexArray[iv++] = D.z;
 		}
-		if(pWing->m_Surface.at(j)->isTipRight())
+		if(pSurf->isTipRight())
 		{
-			for (l=0; l<pWing->m_Surface.at(j)->NXPanels(); l++)
+			for (l=0; l<pSurf->NXPanels(); l++)
 			{
-				pWing->m_Surface.at(j)->getPanel(pWing->m_Surface.at(j)->NYPanels()-1,l,TOPSURFACE);
-				A = pWing->m_Surface.at(j)->TB;
-				B = pWing->m_Surface.at(j)->LB;
-				pWing->m_Surface.at(j)->getPanel(pWing->m_Surface.at(j)->NYPanels()-1,l,BOTSURFACE);
-				C = pWing->m_Surface.at(j)->LB;
-				D = pWing->m_Surface.at(j)->TB;
+				pSurf->getPanel(pSurf->NYPanels()-1,l,TOPSURFACE);
+				A = pSurf->TB;
+				B = pSurf->LB;
+				pSurf->getPanel(pSurf->NYPanels()-1,l,BOTSURFACE);
+				C = pSurf->LB;
+				D = pSurf->TB;
 
+				//first triangle
+				meshVertexArray[iv++] = C.x;
+				meshVertexArray[iv++] = C.y;
+				meshVertexArray[iv++] = C.z;
+				meshVertexArray[iv++] = B.x;
+				meshVertexArray[iv++] = B.y;
+				meshVertexArray[iv++] = B.z;
 				meshVertexArray[iv++] = A.x;
 				meshVertexArray[iv++] = A.y;
 				meshVertexArray[iv++] = A.z;
+
+				//second triangle
+				meshVertexArray[iv++] = A.x;
+				meshVertexArray[iv++] = A.y;
+				meshVertexArray[iv++] = A.z;
+				meshVertexArray[iv++] = D.x;
+				meshVertexArray[iv++] = D.y;
+				meshVertexArray[iv++] = D.z;
 				meshVertexArray[iv++] = C.x;
 				meshVertexArray[iv++] = C.y;
 				meshVertexArray[iv++] = C.z;
 			}
-			meshVertexArray[iv++] = B.x;
-			meshVertexArray[iv++] = B.y;
-			meshVertexArray[iv++] = B.z;
-			meshVertexArray[iv++] = D.x;
-			meshVertexArray[iv++] = D.y;
-			meshVertexArray[iv++] = D.z;
 		}
 	}
 
 	//background surface
 	for (int j=0; j<pWing->m_Surface.size(); j++)
 	{
-		for(k=0; k<pWing->m_Surface.at(j)->NYPanels(); k++)
+		Surface *pSurf = pWing->m_Surface[j];
+		for(k=0; k<pSurf->NYPanels(); k++)
 		{
-			for (l=0; l<pWing->m_Surface.at(j)->NXPanels(); l++)
+			for (l=0; l<pSurf->NXPanels(); l++)
 			{
-				pWing->m_Surface.at(j)->getPanel(k,l,TOPSURFACE);
+				pSurf->getPanel(k,l,TOPSURFACE);
 
-				meshVertexArray[iv++] = pWing->m_Surface.at(j)->TA.x;
-				meshVertexArray[iv++] = pWing->m_Surface.at(j)->TA.y;
-				meshVertexArray[iv++] = pWing->m_Surface.at(j)->TA.z;
-				meshVertexArray[iv++] = pWing->m_Surface.at(j)->TB.x;
-				meshVertexArray[iv++] = pWing->m_Surface.at(j)->TB.y;
-				meshVertexArray[iv++] = pWing->m_Surface.at(j)->TB.z;
+				// first triangle
+				meshVertexArray[iv++] = pSurf->LA.x;
+				meshVertexArray[iv++] = pSurf->LA.y;
+				meshVertexArray[iv++] = pSurf->LA.z;
+				meshVertexArray[iv++] = pSurf->TA.x;
+				meshVertexArray[iv++] = pSurf->TA.y;
+				meshVertexArray[iv++] = pSurf->TA.z;
+				meshVertexArray[iv++] = pSurf->TB.x;
+				meshVertexArray[iv++] = pSurf->TB.y;
+				meshVertexArray[iv++] = pSurf->TB.z;
+
+				//second triangle
+				meshVertexArray[iv++] = pSurf->TB.x;
+				meshVertexArray[iv++] = pSurf->TB.y;
+				meshVertexArray[iv++] = pSurf->TB.z;
+				meshVertexArray[iv++] = pSurf->LB.x;
+				meshVertexArray[iv++] = pSurf->LB.y;
+				meshVertexArray[iv++] = pSurf->LB.z;
+				meshVertexArray[iv++] = pSurf->LA.x;
+				meshVertexArray[iv++] = pSurf->LA.y;
+				meshVertexArray[iv++] = pSurf->LA.z;
 			}
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->LA.x;
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->LA.y;
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->LA.z;
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->LB.x;
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->LB.y;
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->LB.z;
 
-			for (l=0; l<pWing->m_Surface.at(j)->NXPanels(); l++)
+			for (l=0; l<pSurf->NXPanels(); l++)
 			{
-				pWing->m_Surface.at(j)->getPanel(k,l,BOTSURFACE);
-				meshVertexArray[iv++] = pWing->m_Surface.at(j)->TA.x;
-				meshVertexArray[iv++] = pWing->m_Surface.at(j)->TA.y;
-				meshVertexArray[iv++] = pWing->m_Surface.at(j)->TA.z;
-				meshVertexArray[iv++] = pWing->m_Surface.at(j)->TB.x;
-				meshVertexArray[iv++] = pWing->m_Surface.at(j)->TB.y;
-				meshVertexArray[iv++] = pWing->m_Surface.at(j)->TB.z;
+				pSurf->getPanel(k,l,BOTSURFACE);
+				//first triangle
+				meshVertexArray[iv++] = pSurf->TB.x;
+				meshVertexArray[iv++] = pSurf->TB.y;
+				meshVertexArray[iv++] = pSurf->TB.z;
+				meshVertexArray[iv++] = pSurf->TA.x;
+				meshVertexArray[iv++] = pSurf->TA.y;
+				meshVertexArray[iv++] = pSurf->TA.z;
+				meshVertexArray[iv++] = pSurf->LA.x;
+				meshVertexArray[iv++] = pSurf->LA.y;
+				meshVertexArray[iv++] = pSurf->LA.z;
+
+				//second triangle
+				meshVertexArray[iv++] = pSurf->LA.x;
+				meshVertexArray[iv++] = pSurf->LA.y;
+				meshVertexArray[iv++] = pSurf->LA.z;
+				meshVertexArray[iv++] = pSurf->LB.x;
+				meshVertexArray[iv++] = pSurf->LB.y;
+				meshVertexArray[iv++] = pSurf->LB.z;
+				meshVertexArray[iv++] = pSurf->TB.x;
+				meshVertexArray[iv++] = pSurf->TB.y;
+				meshVertexArray[iv++] = pSurf->TB.z;
 			}
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->LA.x;
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->LA.y;
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->LA.z;
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->LB.x;
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->LB.y;
-			meshVertexArray[iv++] = pWing->m_Surface.at(j)->LB.z;
 		}
 	}
 
+
+	Q_ASSERT(iv==bufferSize);
 
 
 	Q_ASSERT(iv==bufferSize);
@@ -3197,10 +3143,8 @@ void gl3dView::glMakeWingMesh(QOpenGLBuffer &vbo, Wing *pWing)
 	vbo.destroy();
 	vbo.create();
 	vbo.bind();
-	vbo.allocate(meshVertexArray, bufferSize * sizeof(GLfloat));
+	vbo.allocate(meshVertexArray.data(), bufferSize * sizeof(GLfloat));
 	vbo.release();
-
-	delete[] meshVertexArray;
 }
 
 
@@ -3539,6 +3483,181 @@ void gl3dView::startResetTimer(double length)
 
 
 
+/** Default mesh, if no polar has been defined */
+void gl3dView::glMakeBodyEditMesh(Body *pBody)
+{
+	if(!pBody) return;
+	int NXXXX = W3dPrefsDlg::s_iBodyAxialRes;
+	int NHOOOP = W3dPrefsDlg::s_iBodyAxialRes;
+	int nx, nh;
+	Vector3d Pt;
+	Vector3d P1, P2, P3, P4, PStart, PEnd;
+	float *meshVertexArray = NULL;
+	int bufferSize = 0;
+	m_iBodyMeshLines = 0;
 
+	int iv=0;
 
+	if(pBody->isFlatPanelType()) //LINES
+	{
+		bufferSize = 0;
+		for (int j=0; j<pBody->frameCount()-1;j++)
+		{
+			for (int k=0; k<pBody->sideLineCount()-1;k++)
+			{
+				for(int jp=0; jp<pBody->m_xPanels[j]; jp++)
+				{
+					bufferSize += 6;
+				}
+				for(int kp=0; kp<pBody->m_hPanels[k]; kp++)
+				{
+					bufferSize += 6;
+				}
+			}
+		}
+		bufferSize *=2;
+
+		meshVertexArray = new float[bufferSize];
+
+		for (int j=0; j<pBody->frameCount()-1;j++)
+		{
+			for (int k=0; k<pBody->sideLineCount()-1;k++)
+			{
+				P1 = pBody->frame(j)->m_CtrlPoint[k];       P1.x = pBody->frame(j)->m_Position.x;
+				P2 = pBody->frame(j+1)->m_CtrlPoint[k];     P2.x = pBody->frame(j+1)->m_Position.x;
+				P3 = pBody->frame(j+1)->m_CtrlPoint[k+1];   P3.x = pBody->frame(j+1)->m_Position.x;
+				P4 = pBody->frame(j)->m_CtrlPoint[k+1];     P4.x = pBody->frame(j)->m_Position.x;
+
+				//left side panels
+				for(int jp=0; jp<pBody->m_xPanels[j]; jp++)
+				{
+					PStart = P1 + (P2-P1) * (float)jp/(float)pBody->m_xPanels[j];
+					PEnd   = P4 + (P3-P4) * (float)jp/(float)pBody->m_xPanels[j];
+					meshVertexArray[iv++] = PStart.x;
+					meshVertexArray[iv++] = PStart.y;
+					meshVertexArray[iv++] = PStart.z;
+					meshVertexArray[iv++] = PEnd.x;
+					meshVertexArray[iv++] = PEnd.y;
+					meshVertexArray[iv++] = PEnd.z;
+					m_iBodyMeshLines++;
+				}
+				for(int kp=0; kp<pBody->m_hPanels[k]; kp++)
+				{
+					PStart = P1 + (P4-P1) * (float)kp/(float)pBody->m_hPanels[k];
+					PEnd   = P2 + (P3-P2) * (float)kp/(float)pBody->m_hPanels[k];
+					meshVertexArray[iv++] = PStart.x;
+					meshVertexArray[iv++] = PStart.y;
+					meshVertexArray[iv++] = PStart.z;
+					meshVertexArray[iv++] = PEnd.x;
+					meshVertexArray[iv++] = PEnd.y;
+					meshVertexArray[iv++] = PEnd.z;
+					m_iBodyMeshLines++;
+				}
+
+				//right side panels
+				for(int jp=0; jp<pBody->m_xPanels[j]; jp++)
+				{
+					PStart = P1 + (P2-P1) * (float)jp/(float)pBody->m_xPanels[j];
+					PEnd   = P4 + (P3-P4) * (float)jp/(float)pBody->m_xPanels[j];
+					meshVertexArray[iv++] =  PStart.x;
+					meshVertexArray[iv++] = -PStart.y;
+					meshVertexArray[iv++] =  PStart.z;
+					meshVertexArray[iv++] =  PEnd.x;
+					meshVertexArray[iv++] = -PEnd.y;
+					meshVertexArray[iv++] =  PEnd.z;
+					m_iBodyMeshLines++;
+				}
+				for(int kp=0; kp<pBody->m_hPanels[k]; kp++)
+				{
+					PStart = P1 + (P4-P1) * (float)kp/(float)pBody->m_hPanels[k];
+					PEnd   = P2 + (P3-P2) * (float)kp/(float)pBody->m_hPanels[k];
+					meshVertexArray[iv++] =  PStart.x;
+					meshVertexArray[iv++] = -PStart.y;
+					meshVertexArray[iv++] =  PStart.z;
+					meshVertexArray[iv++] =  PEnd.x;
+					meshVertexArray[iv++] = -PEnd.y;
+					meshVertexArray[iv++] =  PEnd.z;
+					m_iBodyMeshLines++;
+				}
+			}
+		}
+		Q_ASSERT(m_iBodyMeshLines*6==bufferSize);
+		Q_ASSERT(iv==bufferSize);
+	}
+	else if(pBody->isSplineType()) //NURBS
+	{
+		nx = pBody->m_nxPanels;
+		nh = pBody->m_nhPanels;
+
+		bufferSize = 0;
+		bufferSize += nh * NXXXX; // nh longitudinal lines
+		bufferSize += nx * NHOOOP; // nx hoop line
+		bufferSize *= 2;       // two sides
+		bufferSize *= 3;       // 3 components/vertex;
+
+		meshVertexArray = new float[bufferSize];
+
+		pBody->setPanelPos();
+		//x-lines;
+		for (int l=0; l<nh; l++)
+		{
+			double v = (double)l/(double)(nh-1);
+			for (int k=0; k<NXXXX; k++)
+			{
+				double u = (double)k/(double)(NXXXX-1);
+				pBody->getPoint(u,  v, true, Pt);
+				meshVertexArray[iv++] = Pt.x;
+				meshVertexArray[iv++] = Pt.y;
+				meshVertexArray[iv++] = Pt.z;
+			}
+		}
+		for (int l=0; l<nh; l++)
+		{
+			double v = (double)l/(double)(nh-1);
+			for (int k=0; k<NXXXX; k++)
+			{
+				double u = (double)k/(double)(NXXXX-1);
+				pBody->getPoint(u,  v, false, Pt);
+				meshVertexArray[iv++] = Pt.x;
+				meshVertexArray[iv++] = Pt.y;
+				meshVertexArray[iv++] = Pt.z;
+			}
+		}
+
+		//hoop lines;
+		for (int k=0; k<nx; k++)
+		{
+			double uk = pBody->m_XPanelPos[k];
+			for (int l=0; l<NHOOOP; l++)
+			{
+				double v = (double)l/(double)(NHOOOP-1);
+				pBody->getPoint(uk,  v, true, Pt);
+				meshVertexArray[iv++] = Pt.x;
+				meshVertexArray[iv++] = Pt.y;
+				meshVertexArray[iv++] = Pt.z;
+			}
+		}
+		for (int k=0; k<nx; k++)
+		{
+			double uk = pBody->m_XPanelPos[k];
+			for (int l=0; l<NHOOOP; l++)
+			{
+				double v = (double)l/(double)(NHOOOP-1);
+				pBody->getPoint(uk,  v, false, Pt);
+				meshVertexArray[iv++] = Pt.x;
+				meshVertexArray[iv++] = Pt.y;
+				meshVertexArray[iv++] = Pt.z;
+			}
+		}
+	}
+	Q_ASSERT(iv==bufferSize);
+
+	m_vboEditBodyMesh.destroy();
+	m_vboEditBodyMesh.create();
+	m_vboEditBodyMesh.bind();
+	m_vboEditBodyMesh.allocate(meshVertexArray, bufferSize * sizeof(GLfloat));
+	m_vboEditBodyMesh.release();
+
+	delete[] meshVertexArray;
+}
 

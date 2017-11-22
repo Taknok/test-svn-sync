@@ -1049,7 +1049,7 @@ void MainFrame::createDockWindows()
 	m_p2dWidget->m_pMainFrame = this;
 
 
-	pMiarex->m_pGL3dView = m_pgl3dMiarexView;
+	pMiarex->m_pgl3dMiarexView = m_pgl3dMiarexView;
 
 	m_pXDirect->m_CpGraph.m_pParent    = m_p2dWidget;
 	m_pXDirect->m_poaFoil  = &Objects2D::s_oaFoil;
