@@ -399,7 +399,6 @@ public:
 	static bool m_bResetglStream;             /**< true if the streamlines OpenGL list needs to be re-generated */
 	static bool m_bResetglLegend;             /**< true if the legend needs to be reset if the window has been resized */
 	static bool m_bResetglBody;               /**< true if the openGL list for the body needs to be re-generated */
-	static bool m_bResetglBodyMesh;           /**< true if the openGL list for panel mesh needs to be re-generated */
 	static bool m_bResetglSurfVelocities;     /**< true if the crossflow OpenGL list needs to be refreshed */
 
 	static bool s_bResetCurves;               /**< true if the curves of the active view should be regenerated before the next view update >*/
@@ -499,7 +498,7 @@ public:
 
 public:
 	static MainFrame *s_pMainFrame;       /**< a pointer to the frame class */
-	gl3dMiarexView *m_pGL3dView;              /**< a pointer to the openGL 3.0 widget where 3d calculations and rendering are performed */
+	gl3dMiarexView *m_pgl3dMiarexView;              /**< a pointer to the openGL 3.0 widget where 3d calculations and rendering are performed */
 
 
 
