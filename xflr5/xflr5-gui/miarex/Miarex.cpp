@@ -8187,7 +8187,8 @@ void QMiarex::paintCpLegendText(QPainter &painter)
 	painter.setRenderHint(QPainter::Antialiasing);
 
 	QFontMetrics fm(font);
-	int back = fm.averageCharWidth() * 5;
+	int fmw = fm.averageCharWidth();
+	int back = fmw * 5;
 
 	double h = m_pGL3dView->rect().height()*ratio;
 	double y0 = 2.*h/5.0;
@@ -8218,6 +8219,9 @@ void QMiarex::paintCpLegendText(QPainter &painter)
 		labellength = (fm.width(strong)+5);
 		painter.drawText(ixPos-labellength, iyPos+i*dy, strong);
 	}
+
+	QRect gradientRect(ixPos,iyPos,3*fmw,20*dy);
+	drawColorGradient(painter, gradientRect);
 
 	painter.restore();
 }
@@ -8276,7 +8280,8 @@ void QMiarex::paintPanelForceLegendText(QPainter &painter)
 
 
 	QFontMetrics fm(font);
-	int back = fm.averageCharWidth() * 5;
+	int fmw = fm.averageCharWidth();
+	int back = fmw * 5;
 
 	double h = (double)m_pGL3dView->rect().height()*ratio;
 	double y0 = 2.*h/5.0;
@@ -8287,6 +8292,7 @@ void QMiarex::paintPanelForceLegendText(QPainter &painter)
 	ixPos  = m_pGL3dView->rect().width()*ratio-back;
 
 	dy     = (int) (h/40.0);
+	dy     = (int) (h/MAXCPCOLORS/2);
 	iyPos  = (int) (y0 - 12.0*dy);
 
 	delta = range / 20.0;
@@ -8303,10 +8309,31 @@ void QMiarex::paintPanelForceLegendText(QPainter &painter)
 		painter.drawText(ixPos-labellength, iyPos+i*dy, strong);
 	}
 
+	QRect gradientRect(ixPos,iyPos,3*fmw,20*dy);
+	drawColorGradient(painter, gradientRect);
+
 	painter.restore();
 }
 
 
+
+
+void QMiarex::drawColorGradient(QPainter &painter, QRect const & gradientRect)
+{
+	// draw the color gradient
+
+	QLinearGradient gradient;
+	gradient.setStart(gradientRect.center().x(), gradientRect.bottom());
+	gradient.setFinalStop(gradientRect.center().x(), gradientRect.top());
+
+	for (int i=0; i<MAXCPCOLORS; i++)
+	{
+		double fi = (double)i/(double)(MAXCPCOLORS-1);
+		QColor clr = QColor(GLGetRed(fi)*255, GLGetGreen(fi)*255, GLGetBlue(fi)*255);
+		gradient.setColorAt(fi, clr);
+	}
+	painter.fillRect(gradientRect, gradient);
+}
 
 
 

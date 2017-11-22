@@ -251,6 +251,7 @@ public:
 	void LLTAnalyze(double V0, double VMax, double VDelta, bool bSequence, bool bInitCalc);	
 	bool loadSettings(QSettings *pSettings);
 	int  matSize() {return m_theTask.m_MatSize;}
+	void drawColorGradient(QPainter &painter, QRect const & gradientRect);
 	void paintCpLegendText(QPainter &painter);
 	void paintPanelForceLegendText(QPainter &painter);
 	void panelAnalyze(double V0, double VMax, double VDelta, bool bSequence);
