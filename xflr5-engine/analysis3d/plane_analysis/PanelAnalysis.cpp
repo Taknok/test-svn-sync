@@ -1226,12 +1226,13 @@ void PanelAnalysis::computeFarField(double QInf, double Alpha0, double AlphaDelt
 
 	for (q=0; q<nval;q++)
 	{
+//		qDebug()<<"OpAlpha"<<m_OpAlpha<<"Alpha0"<<Alpha0;
 		if(m_pWPolar->bTilted()) alpha = m_OpAlpha;
 		else
 		{
 			if(m_pWPolar->polarType()==XFLR5::FIXEDAOAPOLAR)       alpha = m_OpAlpha;
 			else if(m_pWPolar->polarType()==XFLR5::BETAPOLAR)      alpha = m_OpAlpha;
-			else if(m_pWPolar->polarType()==XFLR5::STABILITYPOLAR) alpha = m_OpAlpha;
+//			else if(m_pWPolar->polarType()==XFLR5::STABILITYPOLAR) alpha = m_OpAlpha;
 			else if(fabs(m_pWPolar->Beta())>PRECISION)             alpha = m_OpAlpha;
 			else                                                   alpha = Alpha0 + q*AlphaDelta;
 		}
@@ -2590,6 +2591,7 @@ bool PanelAnalysis::controlLoop()
 		memcpy(m_pPanel, m_pMemPanel, m_MatSize * sizeof(Panel));
 		memcpy(m_pNode,  m_pMemNode,  m_nNodes  * sizeof(Vector3d));
 
+		m_OpAlpha = 0.0;
 		//define the control position for this iteration
 		m_Ctrl = m_vMin +(double)i *m_vDelta;
 		str = QString("      Calculation for control position %1\n").arg(m_Ctrl ,5,'f',2);
