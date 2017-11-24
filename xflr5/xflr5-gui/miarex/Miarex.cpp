@@ -3045,7 +3045,6 @@ void QMiarex::onDefineStabPolar()
 	StabPolarDlg::s_StabWPolar.referenceDim()  = WPolarDlg::s_WPolar.referenceDim();
 	StabPolarDlg::s_StabWPolar.bThinSurfaces() = WPolarDlg::s_WPolar.bThinSurfaces();
 
-
 	StabPolarDlg spDlg(s_pMainFrame);
 	spDlg.initDialog(m_pCurPlane);
 	int res = spDlg.exec();
@@ -3095,7 +3094,6 @@ void QMiarex::onDefineStabPolar()
 		s_pMainFrame->updateWPolarListBox();
 		updateView();
 	}
-
 	setControls();
 }
 
