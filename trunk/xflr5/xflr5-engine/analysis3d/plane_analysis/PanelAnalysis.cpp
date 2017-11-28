@@ -671,7 +671,6 @@ bool PanelAnalysis::alphaLoop()
 	createUnitRHS();
 	if (s_bCancel) return true;
 
-
 	if(!m_pWPolar->bThinSurfaces())
 	{
 		//compute wake contribution
@@ -1291,11 +1290,11 @@ void PanelAnalysis::computeBalanceSpeeds(double Alpha, int q)
 	{
 		if(m_pWingList[iw]) Force += m_WingForce[q*MAXWINGS+iw];
 	}
-	if (m_pWPolar->polarType()==XFLR5::FIXEDSPEEDPOLAR || m_pWPolar->polarType()==XFLR5::BETAPOLAR)
+	if (m_pWPolar->isFixedSpeedPolar() || m_pWPolar->isBetaPolar())
 	{
 		m_3DQInf[q] = m_pWPolar->m_QInfSpec;
 	}
-	else if(m_pWPolar->polarType()==XFLR5::FIXEDLIFTPOLAR)
+	else if(m_pWPolar->isFixedLiftPolar())
 	{
 		Lift =  Force.dot(WindNormal) ;      //N/q, for 1/ms
 		TempCl = Lift/m_pWPolar->referenceArea();
@@ -1574,6 +1573,7 @@ void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
 
 		m_InducedDrag =  1.0*IDrag/m_pWPolar->referenceArea();
 		m_ViscousDrag =  1.0*VDrag/m_pWPolar->referenceArea();
+
 
 		if(qAbs(Force.dot(WindNormal))>0.0)
 		{
@@ -5451,6 +5451,7 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
 				pWing->m_Vd[m] = Wg;
 				InducedAngle = atan2(Wg.dot(surfaceNormal), QInf);
 				pWing->m_Ai[m]      =       InducedAngle*180/PI;
+//	qDebug("%13.7g %13.7g %13.7g %13.7g %13.7g %13.7g %13.7g ", C.x, C.y, C.z, Wg.x, Wg.y, Wg.z, pWing->m_Ai[m]);
 
 				// ____________________________
 				// Lift calculation
@@ -5530,6 +5531,7 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
 	}
 
 	pWing->m_CDi = WingIDrag; // save this wing's induced drag (unused though...)
+//	qDebug("%13.7g  %13.7g  %13.7g  ", Force.x, Force.z, WingIDrag);
 }
 
 
