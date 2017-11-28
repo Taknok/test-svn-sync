@@ -8922,6 +8922,7 @@ void QMiarex::importWPolarFromXML(QFile &xmlFile)
 	{
 		QString errorMsg = polarReader.errorString() + QString("\nline %1 column %2").arg(polarReader.lineNumber()).arg(polarReader.columnNumber());
 		QMessageBox::warning(s_pMainFrame, "XML read", errorMsg, QMessageBox::Ok);
+		delete pWPolar;
 	}
 	else
 	{
@@ -8976,6 +8977,7 @@ void QMiarex::importPlaneFromXML(QFile &xmlFile)
 	{
 		QString errorMsg = planeReader.errorString() + QString("\nline %1 column %2").arg(planeReader.lineNumber()).arg(planeReader.columnNumber());
 		QMessageBox::warning(s_pMainFrame, "XML read", errorMsg, QMessageBox::Ok);
+		delete pPlane;
 	}
 	else
 	{
