@@ -15,14 +15,14 @@
 *******************************************************************************
 
 
-xflr5 v6.40 November xxxth, 2017
+xflr5 v6.40 December xxxth, 2017
 	- improved the construction method for the wake in the 3d-panel method; makes a small difference to induce drag
 	- corrected a potential crash bug when trying to display 3D results of an LLT calculation
-	- disabled the display of panels when no polar is defined; this is for consistency, since the disposition of panels depends on the analysis type
 	- removed the default suffix "-proj_area" from the name of plane polars
 	- restored the output of non-dimensional control derivatives in the operating point properties
 	- restored the option to export BL data to text files
-	- restored the autosave option which was always turned on
+	- restored the option to enable or disable autosave which was always turned on
+	- included the missing NURBS degrees in the serialization of the body objects
 	- code cleaning
 
 

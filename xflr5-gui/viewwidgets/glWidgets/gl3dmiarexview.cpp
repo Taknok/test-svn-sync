@@ -98,13 +98,15 @@ void gl3dMiarexView::glRenderView()
 
 		m_pvmMatrix = m_orthoMatrix * m_viewMatrix * m_modelMatrix;
 
-		if(m_bVLMPanels && pMiarex->m_pCurWPolar && !pMiarex->m_pCurWPolar->isLLTMethod())
-			paintMesh(pMiarex->matSize());
-		else
+		if(m_bVLMPanels)
 		{
-			for(int i=0; i<MAXWINGS; i++)
-				paintEditWingMesh(m_vboEditWingMesh[i]);
-			paintEditBodyMesh(pMiarex->m_pCurPlane->body());
+			if(pMiarex->m_pCurWPolar && !pMiarex->m_pCurWPolar->isLLTMethod())	paintMesh(pMiarex->matSize());
+			else
+			{
+				for(int i=0; i<MAXWINGS; i++)
+					paintEditWingMesh(m_vboEditWingMesh[i]);
+				paintEditBodyMesh(pMiarex->m_pCurPlane->body());
+			}
 		}
 
 		if(pMiarex->m_pCurPOpp)
