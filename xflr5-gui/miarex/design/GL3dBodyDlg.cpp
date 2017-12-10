@@ -851,6 +851,7 @@ void GL3dBodyDlg::onUpdateBody()
 }
 
 
+
 void GL3dBodyDlg::onSelChangeXDegree(int sel)
 {
 	if(!m_pBody) return;
@@ -859,7 +860,16 @@ void GL3dBodyDlg::onSelChangeXDegree(int sel)
 	takePicture();
 	m_bChanged = true;
 
-	m_pBody->m_SplineSurface.m_iuDegree = sel+1;
+	int deg = sel+1;
+	if(deg>=m_pBody->nurbs().frameCount())
+	{
+		QString strange = tr("The degree must be less than the number of Frames");
+		QMessageBox::warning(this, QObject::tr("Warning"), strange);
+		deg=m_pBody->nurbs().frameCount();
+		m_pctrlXDegree->setCurrentIndex(m_pBody->nurbs().frameCount()-2);
+	}
+
+	m_pBody->m_SplineSurface.setuDegree(deg);
 	m_pBody->setNURBSKnots();
 	m_gl3dBodyview.resetGLBody(true);
 
@@ -870,19 +880,27 @@ void GL3dBodyDlg::onSelChangeXDegree(int sel)
 void GL3dBodyDlg::onSelChangeHoopDegree(int sel)
 {
 	if(!m_pBody) return;
-	if (sel <0) return;
-
-	m_bChanged = true;
+	if (sel<0) return;
 
 	takePicture();
 
-	m_pBody->m_SplineSurface.m_ivDegree = sel+1;
+	m_bChanged = true;
+
+	int deg = sel+1;
+	if(deg>=m_pBody->nurbs().framePointCount())
+	{
+		QString strange = tr("The degree must be less than the number of side lines");
+		QMessageBox::warning(this, QObject::tr("Warning"), strange);
+		deg=m_pBody->nurbs().framePointCount();
+		m_pctrlHoopDegree->setCurrentIndex(m_pBody->nurbs().framePointCount()-2);
+	}
+
+	m_pBody->m_SplineSurface.setvDegree(deg);
 	m_pBody->setNURBSKnots();
 	m_gl3dBodyview.resetGLBody(true);
 
 	updateView();
 }
-
 
 void GL3dBodyDlg::onEdgeWeight()
 {

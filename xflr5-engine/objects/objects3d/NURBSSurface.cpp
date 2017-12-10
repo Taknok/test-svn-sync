@@ -369,7 +369,7 @@ void NURBSSurface::setKnots()
 	if(!frameCount())return;
 	if(!framePointCount())return;
 
-	m_iuDegree = qMin(m_iuDegree, frameCount());
+	m_iuDegree = std::min(m_iuDegree, frameCount()-1);
 	m_nuKnots  = m_iuDegree + frameCount() + 1;
 	b = (double)(m_nuKnots-2*m_iuDegree-1);
 
@@ -387,7 +387,7 @@ void NURBSSurface::setKnots()
 		}
 	}
 
-	m_ivDegree = qMin(m_ivDegree, m_pFrame.first()->m_CtrlPoint.size());
+	m_ivDegree = std::min(m_ivDegree, firstFrame()->pointCount()-1);
 
 	m_nvKnots  = m_ivDegree + framePointCount() + 1;
 	b = (double)(m_nvKnots-2*m_ivDegree-1);
