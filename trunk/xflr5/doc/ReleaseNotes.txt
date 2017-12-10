@@ -23,6 +23,7 @@ xflr5 v6.40 December xxxth, 2017
 	- restored the option to export BL data to text files
 	- restored the option to enable or disable autosave which was always turned on
 	- included the missing NURBS degrees in the serialization of the body objects
+	- added a protection to the max degree of NURBS vs point count
 	- code cleaning
 
 
