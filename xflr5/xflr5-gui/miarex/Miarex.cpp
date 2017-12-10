@@ -1745,7 +1745,8 @@ void QMiarex::glMake3DObjects()
 				if(m_pCurPlane->wing(iw))
 					m_pgl3dMiarexView->glMakeWingEditMesh(m_pgl3dMiarexView->m_vboEditWingMesh[iw], m_pCurPlane->wing(iw));
 			}
-			if(m_pCurPlane->body()) m_pgl3dMiarexView->glMakeBodyEditMesh(m_pCurPlane->body());
+			if(m_pCurPlane->body())
+				m_pgl3dMiarexView->glMakeBodyEditMesh(m_pCurPlane->body());
 		}
 		m_bResetglMesh = false;
 	}

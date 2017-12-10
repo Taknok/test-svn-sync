@@ -1678,7 +1678,8 @@ bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
 
 		// space allocation for the future storage of more data, without need to change the format
 		if(m_bTextures) ar << 1; else ar <<0;
-		for (int i=1; i<20; i++) ar << 0;
+		for (int i=1; i<18; i++) ar << 0;
+		ar << m_SplineSurface.uDegree()<<m_SplineSurface.vDegree();
 		for (int i=0; i<50; i++) ar << (double)0.0;
 	}
 	else
@@ -1742,7 +1743,9 @@ bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
 		// space allocation
 		ar >>k;
 		if(k) m_bTextures = true; else m_bTextures = false;
-		for (int i=1; i<20; i++) ar >> k;
+		for (int i=1; i<18; i++) ar >> k;
+		ar >> k; m_SplineSurface.setuDegree(std::max(k,3));
+		ar >> k; m_SplineSurface.setvDegree(std::max(k,3));
 		for (int i=0; i<50; i++) ar >> dble;
 	}
 	return true;
