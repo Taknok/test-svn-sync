@@ -405,6 +405,13 @@ void NURBSSurface::setKnots()
 			else m_vKnots[j] = 1.0;
 		}
 	}
+
+/*	qDebug("u-knots\n");
+	for(int iu=0; iu<m_nuKnots; iu++)
+		qDebug(" %d  %7.3f", iu, m_uKnots[iu]);
+	qDebug("v-knots\n");
+	for(int iv=0; iv<m_nvKnots; iv++)
+		qDebug(" %d  %7.3f", iv, m_vKnots[iv]);*/
 }
 
 
