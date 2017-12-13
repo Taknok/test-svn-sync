@@ -69,7 +69,7 @@ private:
 	DoubleEdit	*m_pctrlCamber;
 
 	QPushButton *OKButton, *CancelButton, *RestoreButton;
-	QLabel *m_pctrlXFoilMessage;
+
 
 private:
 	static void* s_pXFoil;

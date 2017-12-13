@@ -7588,10 +7588,10 @@ void QMiarex::setupLayout()
 				QLabel *ClipLabel = new QLabel(tr("Clip:"));
 				m_pctrlClipPlanePos = new QSlider(Qt::Horizontal);
 				m_pctrlClipPlanePos->setSizePolicy(szPolicyMinimum);
-				m_pctrlClipPlanePos->setMinimum(-300);
-				m_pctrlClipPlanePos->setMaximum(300);
+				m_pctrlClipPlanePos->setMinimum(-100);
+				m_pctrlClipPlanePos->setMaximum(100);
 				m_pctrlClipPlanePos->setSliderPosition(0);
-				m_pctrlClipPlanePos->setTickInterval(30);
+				m_pctrlClipPlanePos->setTickInterval(10);
 				m_pctrlClipPlanePos->setTickPosition(QSlider::TicksBelow);
 				pClipLayout->addWidget(ClipLabel);
 				pClipLayout->addWidget(m_pctrlClipPlanePos,1);

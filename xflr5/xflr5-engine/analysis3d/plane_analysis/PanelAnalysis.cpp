@@ -1415,7 +1415,7 @@ void PanelAnalysis::computeAeroCoefs(double V0, double VDelta, int nrhs)
 	int q;
 	QString str;
 
-	if(m_pWPolar->polarType()==XFLR5::FIXEDAOAPOLAR)
+	if(m_pWPolar->isFixedaoaPolar())
 	{
 		for (q=0; q<nrhs; q++)
 		{
@@ -1426,7 +1426,7 @@ void PanelAnalysis::computeAeroCoefs(double V0, double VDelta, int nrhs)
 			m_Progress += 5.0*(double)nrhs /(double)nrhs;
 		}
 	}
-	else if(m_pWPolar->polarType()==XFLR5::BETAPOLAR)
+	else if(m_pWPolar->isBetaPolar())
 	{
 		for (q=0; q<nrhs; q++)
 		{
@@ -1475,6 +1475,7 @@ void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
 	Vector3d WindNormal, WindDirection, WindSide;
 	Vector3d Force;
 	QString OutString;
+
 	//   Define wind (stability) axis
 	cosa = cos(Alpha*PI/180.0);
 	sina = sin(Alpha*PI/180.0);
@@ -1602,7 +1603,7 @@ void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
 
 		if(m_bPointOut) s_bWarning = true;
 
-		if(m_pWPolar->polarType()==XFLR5::STABILITYPOLAR) m_Alpha = m_AlphaEq; // so it is set by default at the end of the analyis
+		if(m_pWPolar->isStabilityPolar()) m_Alpha = m_AlphaEq; // so it is set by default at the end of the analyis
 
 		PlaneOpp *pPOpp = createPlaneOpp(m_Cp+qrhs*m_MatSize, Mu, Sigma);
 		m_PlaneOppList.append(pPOpp);
