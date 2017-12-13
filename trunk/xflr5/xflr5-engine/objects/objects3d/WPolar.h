@@ -102,11 +102,11 @@ public:
 	double &density()                    {return m_Density;}        /**< returns the fluid's density, in IS units. */
 	double &viscosity()                  {return m_Viscosity;}      /**< returns the fluid's kinematic viscosity, in IS units. */
 
-	bool isFixedSpeedPolar()  {return m_WPolarType==XFLR5::FIXEDSPEEDPOLAR;}      /**< returns true if the polar is of the FIXEDSPEEDPOLAR type, false otherwise >*/
-	bool isFixedLiftPolar()   {return m_WPolarType==XFLR5::FIXEDLIFTPOLAR;}       /**< returns true if the polar is of the FIXEDLIFTPOLAR type, false otherwise >*/
-	bool isFixedaoaPolar()    {return m_WPolarType==XFLR5::FIXEDAOAPOLAR;}        /**< returns true if the polar is of the FIXEDAOAPOLAR type, false otherwise >*/
-	bool isStabilityPolar()   {return m_WPolarType==XFLR5::STABILITYPOLAR;}       /**< returns true if the polar is of the STABILITYPOLAR type, false otherwise >*/
-	bool isBetaPolar()        {return m_WPolarType==XFLR5::BETAPOLAR;}            /**< returns true if the polar is of the BETAPOLAR type, false otherwise >*/
+	bool isFixedSpeedPolar() const    {return m_WPolarType==XFLR5::FIXEDSPEEDPOLAR;}      /**< returns true if the polar is of the FIXEDSPEEDPOLAR type, false otherwise >*/
+	bool isFixedLiftPolar()  const    {return m_WPolarType==XFLR5::FIXEDLIFTPOLAR;}       /**< returns true if the polar is of the FIXEDLIFTPOLAR type, false otherwise >*/
+	bool isFixedaoaPolar()   const    {return m_WPolarType==XFLR5::FIXEDAOAPOLAR;}        /**< returns true if the polar is of the FIXEDAOAPOLAR type, false otherwise >*/
+	bool isStabilityPolar()  const    {return m_WPolarType==XFLR5::STABILITYPOLAR;}       /**< returns true if the polar is of the STABILITYPOLAR type, false otherwise >*/
+	bool isBetaPolar()       const    {return m_WPolarType==XFLR5::BETAPOLAR;}            /**< returns true if the polar is of the BETAPOLAR type, false otherwise >*/
 
 	bool &bThinSurfaces() {return m_bThinSurfaces;}  /**< returns true if the analysis if using thin surfaces, i.e. VLM, false if 3D Panels for the Wing objects. */
 	bool &bWakeRollUp()  {return m_bWakeRollUp;}

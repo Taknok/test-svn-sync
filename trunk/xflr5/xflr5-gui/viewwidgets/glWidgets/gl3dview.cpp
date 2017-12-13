@@ -222,8 +222,10 @@ QSize gl3dView::minimumSizeHint() const
 */
 void gl3dView::onClipPlane(int pos)
 {
+	double coef = 3.0;
 	double planepos =  (double)pos/100.0;
-	m_ClipPlanePos = sinh(planepos) * m_glScaled;
+	m_ClipPlanePos = 1.0*sinh(planepos*coef)/sinh(coef);
+//qDebug(" %13.7f   %13.7f  %13.7f", planepos, m_ClipPlanePos, m_glScaled);
 	update();
 }
 
