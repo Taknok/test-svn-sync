@@ -807,7 +807,7 @@ void EditBodyDlg::fillBodyTreeView()
 					QList<QStandardItem*> pointFolder = prepareRow(QString("Point %1").arg(iPt+1));
 					sectionFolder.first()->appendRow(pointFolder);
 					{
-						if(Frame::s_iSelect==iPt) m_pStruct->expand(m_pModel->indexFromItem(pointFolder.first()));
+						if(Frame::selectedIndex()==iPt) m_pStruct->expand(m_pModel->indexFromItem(pointFolder.first()));
 
 						Vector3d Pt(pFrame->point(iPt));
 						QList<QStandardItem*> dataItem = prepareDoubleRow("", "x", Pt.x*Units::mtoUnit(), Units::lengthUnitLabel());
@@ -1117,7 +1117,7 @@ void EditBodyDlg::identifySelection(const QModelIndex &indexSel)
 		if(object.indexOf("Frame_", 0, Qt::CaseInsensitive)>=0)
 		{
 			setActiveFrame(object.right(object.length()-6).toInt() -1);
-			Frame::s_iSelect = -1;
+			Frame::setSelected(-1);
 			m_iActivePointMass = -1;
 			return;
 		}
@@ -1129,7 +1129,7 @@ void EditBodyDlg::identifySelection(const QModelIndex &indexSel)
 		}
 		else if(object.indexOf("Point", 0, Qt::CaseInsensitive)==0)
 		{
-			Frame::s_iSelect = object.right(object.length()-6).toInt() -1;
+			Frame::setSelected(object.right(object.length()-6).toInt() -1);
 			//identify the parent Frame object
 
 			indexLevel = indexLevel.parent();

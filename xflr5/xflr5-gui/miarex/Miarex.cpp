@@ -1848,9 +1848,8 @@ void QMiarex::glMake3DObjects()
 		if(m_pCurPOpp)
 		{
 			m_pgl3dMiarexView->glMakeCpLegendClr();
-			drawTextLegend();
-
 		}
+		drawTextLegend();
 		m_bResetTextLegend = false;
 		m_bResetglLegend = false;
 	}
@@ -7261,7 +7260,6 @@ void QMiarex::setPlane(QString PlaneName)
 	// we have a plane, initialize the pointers and the  GUI
 	m_bResetglGeom = true;
 	m_bResetglMesh = true;
-	m_bResetTextLegend = true;
 
 	if(m_pCurPlane->body()) m_bResetglBody   = true;
 	else                    m_bResetglBody   = false;
