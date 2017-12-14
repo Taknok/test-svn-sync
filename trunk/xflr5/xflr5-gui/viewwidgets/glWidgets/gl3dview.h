@@ -39,7 +39,8 @@
 
 #define MAXCPCOLORS    21
 
-
+class QMiarex;
+class MainFrame;
 class Plane;
 class Body;
 class Wing;
@@ -198,8 +199,8 @@ protected:
 
 	double m_glScaled, m_glScaledRef;
 
-	static void *s_pMiarex;     /**< A void pointer to the instance of the QMiarex widget.*/
-	static void *s_pMainFrame;  /**< A void pointer to the instance of the MainFrame widget.*/
+	static QMiarex *s_pMiarex;     /**< A void pointer to the instance of the QMiarex widget.*/
+	static MainFrame *s_pMainFrame;  /**< A void pointer to the instance of the MainFrame widget.*/
 	void *m_pParent;            /**< A void pointer to the parent widget. */
 
 	bool m_bOutline;                   /**< true if the surface outlines are to be displayed in the 3D view*/

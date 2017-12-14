@@ -794,15 +794,15 @@ void GL3dBodyDlg::onPointCellChanged(QWidget *)
 void GL3dBodyDlg::onPointClicked()
 {
 	if(m_pFrame)
-		m_pctrlPointTable->selectRow(m_pFrame->s_iSelect);
+		m_pctrlPointTable->selectRow(m_pFrame->selectedIndex());
 }
 
 
 void GL3dBodyDlg::onPointItemClicked(const QModelIndex &index)
 {
 	if(!m_pFrame) return;
-	m_pFrame->s_iSelect = index.row();
-	m_pFrame->s_iHighlight = index.row();
+	m_pFrame->setSelected(index.row());
+	m_pFrame->setHighlighted(index.row());
 	updateView();
 }
 
@@ -1158,6 +1158,7 @@ bool GL3dBodyDlg::initDialog(Body *pBody)
 	m_pctrlPointTable->setFont(Settings::s_TableFont);
 
 	m_gl3dBodyview.setBody(pBody);
+	m_gl3dBodyview.setScale(pBody->length());
 
 	return setBody(pBody);
 }

@@ -452,17 +452,20 @@ void Section2dWidget::mousePressEvent(QMouseEvent *event)
 		else
 		{
 			//Selects the point
-			if(selectPoint(mousetoReal(point))>=0)
+			int iSelect = selectPoint(mousetoReal(point));
+			if(iSelect>=0)
 			{
 				//dragging a point
 				setCursor(m_hcMove);
 				m_bDrag = true;
+//				m_bTrans = false;
 			}
 			else
 			{
 				//dragging the view
 				setCursor(m_hcMove);
 				m_bTrans = true;
+//				m_bDrag = false;
 			}
 		}
 	}

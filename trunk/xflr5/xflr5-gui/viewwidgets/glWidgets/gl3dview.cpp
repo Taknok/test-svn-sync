@@ -48,8 +48,8 @@
 #include <gui_params.h>
 
 
-void *gl3dView::s_pMiarex;
-void *gl3dView::s_pMainFrame;
+QMiarex *gl3dView::s_pMiarex;
+MainFrame *gl3dView::s_pMainFrame;
 
 GLLightDlg *gl3dView::s_pglLightDlg = NULL;
 
@@ -106,7 +106,7 @@ gl3dView::gl3dView(QWidget *pParent) : QOpenGLWidget(pParent)
 
 	m_glScaled = m_glScaledRef = 1.0;
 	m_glScaleIncrement = 0.0;
-	m_ClipPlanePos  = 50.0;
+	m_ClipPlanePos  = 5.0;
 
 	m_bTrans = false;
 
@@ -222,9 +222,9 @@ QSize gl3dView::minimumSizeHint() const
 */
 void gl3dView::onClipPlane(int pos)
 {
-	double coef = 3.0;
+	double coef = 4.0;
 	double planepos =  (double)pos/100.0;
-	m_ClipPlanePos = 1.0*sinh(planepos*coef)/sinh(coef);
+	m_ClipPlanePos = 5.0*sinh(planepos*coef)/sinh(coef);
 //qDebug(" %13.7f   %13.7f  %13.7f", planepos, m_ClipPlanePos, m_glScaled);
 	update();
 }

@@ -46,7 +46,10 @@
 #include <miarex/view/GLLightDlg.h>
 #include <misc/voidwidget.h>
 
+class QMiarex;
 class QXDirect;
+class QAFoil;
+class QXInverse;
 class gl3dMiarexView;
 class InverseViewWidget;
 class QGraph;
@@ -254,9 +257,9 @@ public:
 
 private:
 
-	void *m_pAFoil;     /**< A void pointer to the instance of the QAFoil application. The pointer will be cast to the QAFoil type at runtime. This is necessary to prevent loop includes of header files. */
-	void *m_pMiarex;    /**< A void pointer to the instance of the QMiarex application. The pointer will be cast to the QMiarex type at runtime. This is necessary to prevent loop includes of header files. */
-	void *m_pXInverse;  /**< A void pointer to the instance of the QXInverse application. The pointer will be cast to the QXInverse type at runtime. This is necessary to prevent loop includes of header files. */
+	QAFoil *m_pAFoil;     /**< A void pointer to the instance of the QAFoil application. The pointer will be cast to the QAFoil type at runtime. This is necessary to prevent loop includes of header files. */
+	QMiarex *m_pMiarex;    /**< A void pointer to the instance of the QMiarex application. The pointer will be cast to the QMiarex type at runtime. This is necessary to prevent loop includes of header files. */
+	QXInverse *m_pXInverse;  /**< A void pointer to the instance of the QXInverse application. The pointer will be cast to the QXInverse type at runtime. This is necessary to prevent loop includes of header files. */
 	QXDirect *m_pXDirect;   /**< A void pointer to the instance of the QXDirect application. The pointer will be cast to the QXDirect type at runtime. This is necessary to prevent loop includes of header files. */
 	void *m_pStabView;  /** < A void pointer to the instance of the StabViewDlg window. */
 	
