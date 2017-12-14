@@ -106,9 +106,9 @@ bool QMiarex::m_bResetglSurfVelocities = true;
 bool QMiarex::s_bResetCurves = true;
 bool QMiarex::m_bLogFile = true;
 
-QList<void *> *QMiarex::m_poaPlane = NULL;
-QList<void *> *QMiarex::m_poaWPolar = NULL;
-QList<void *> *QMiarex::m_poaPOpp = NULL;
+QList<Plane*>    *QMiarex::m_poaPlane = NULL;
+QList<WPolar*>   *QMiarex::m_poaWPolar = NULL;
+QList<PlaneOpp*> *QMiarex::m_poaPOpp = NULL;
 
 
 /**
@@ -831,7 +831,7 @@ void QMiarex::createWOppCurves()
 	// add a curve for those selected, and fill them with data
 	for (k=0; k<m_poaPOpp->size(); k++)
 	{
-		PlaneOpp *pPOpp = (PlaneOpp*)m_poaPOpp->at(k);
+		PlaneOpp *pPOpp = m_poaPOpp->at(k);
 		if (pPOpp->isVisible() && (!m_bCurPOppOnly || (m_pCurPOpp==pPOpp)))
 		{
 			for(int iw=0; iw<MAXWINGS; iw++)
@@ -950,7 +950,7 @@ void QMiarex::createWPolarCurves()
 
 	for (int k=0; k<m_poaWPolar->size(); k++)
 	{
-		pWPolar = (WPolar*)m_poaWPolar->at(k);
+		pWPolar = m_poaWPolar->at(k);
 		if (pWPolar->isVisible() && pWPolar->dataSize()>0 &&
 			((m_bType1 && pWPolar->polarType()==XFLR5::FIXEDSPEEDPOLAR) ||
 			(m_bType2 && pWPolar->polarType()==XFLR5::FIXEDLIFTPOLAR) ||
@@ -1299,7 +1299,7 @@ void QMiarex::createStabRLCurves()
 
 	for (int k=0; k<m_poaWPolar->size(); k++)
 	{
-		pWPolar = (WPolar*)m_poaWPolar->at(k);
+		pWPolar = m_poaWPolar->at(k);
 		if ((pWPolar->isVisible())
 			&& pWPolar->dataSize()>0 && (m_bType7 && pWPolar->isStabilityPolar()))
 		{
@@ -2610,7 +2610,7 @@ void QMiarex::onAnimateWOpp()
 		{
 			for (l=0; l< m_poaPOpp->size(); l++)
 			{
-				pPOpp = (PlaneOpp*)m_poaPOpp->at(l);
+				pPOpp = m_poaPOpp->at(l);
 
 				if (pPOpp &&
 					pPOpp->polarName() == m_pCurWPolar->polarName() &&
@@ -2757,7 +2757,7 @@ void QMiarex::onAnimateWOppSingle()
 
 		if(m_pCurPlane)
 		{
-			pPOpp = (PlaneOpp*)m_poaPOpp->at(m_posAnimateWOpp);
+			pPOpp = m_poaPOpp->at(m_posAnimateWOpp);
 			if(!pPOpp) return;
 		}
 		if(m_pCurPlane)
@@ -3404,7 +3404,7 @@ void QMiarex::onDeleteAllWPlrOpps()
 	{
 		for (i = m_poaPOpp->size()-1; i>=0; i--)
 		{
-			pPOpp = (PlaneOpp*) m_poaPOpp->at(i);
+			pPOpp =  m_poaPOpp->at(i);
 			if(pPOpp->polarName() == m_pCurWPolar->polarName() &&
 			   pPOpp->planeName() == m_pCurPlane->planeName())
 			{
@@ -3434,7 +3434,7 @@ void QMiarex::onDeleteAllWOpps()
 	int i;
 	for (i = m_poaPOpp->size()-1; i>=0; i--)
 	{
-		pPOpp = (PlaneOpp*) m_poaPOpp->at(i);
+		pPOpp =  m_poaPOpp->at(i);
 		m_poaPOpp->removeAt(i);
 		delete pPOpp;
 	}
@@ -3493,7 +3493,7 @@ void QMiarex::onDeleteCurWOpp()
 		PlaneOpp* pPOpp;
 		for (i = m_poaPOpp->size()-1; i>=0; i--)
 		{
-			pPOpp = (PlaneOpp*)m_poaPOpp->at(i);
+			pPOpp = m_poaPOpp->at(i);
 			if(pPOpp == m_pCurPOpp)
 			{
 				m_poaPOpp->removeAt(i);
@@ -3532,7 +3532,7 @@ void QMiarex::onDeletePlanePOpps()
 	{
 		for (i=m_poaPOpp->size()-1; i>=0; i--)
 		{
-			pPOpp = (PlaneOpp*)m_poaPOpp->at(i);
+			pPOpp = m_poaPOpp->at(i);
 			if (pPOpp->planeName() == m_pCurPlane->planeName())
 			{
 				m_poaPOpp->removeAt(i);
@@ -3647,13 +3647,13 @@ void QMiarex::onEditCurBody()
 	WPolar *pWPolar;
 	for (i=0; i< m_poaPlane->size(); i++)
 	{
-		pPlane = (Plane*)m_poaPlane->at(i);
+		pPlane = m_poaPlane->at(i);
 		if(pPlane->body() && pPlane->body()==pCurBody)
 		{
 			// Does this plane have results
 			for(int j=0; j<m_poaWPolar->size(); j++)
 			{
-				pWPolar = (WPolar*)m_poaWPolar->at(j);
+				pWPolar = m_poaWPolar->at(j);
 				if(pWPolar->planeName()==pPlane->planeName() && pWPolar->dataSize())
 				{
 					bUsed = true;
@@ -3754,13 +3754,13 @@ void QMiarex::onEditCurBodyObject()
 	WPolar *pWPolar;
 	for (i=0; i< m_poaPlane->size(); i++)
 	{
-		pPlane = (Plane*)m_poaPlane->at(i);
+		pPlane = m_poaPlane->at(i);
 		if(pPlane->body() && pPlane->body()==pCurBody)
 		{
 			// Does this plane have results
 			for(int j=0; j<m_poaWPolar->size(); j++)
 			{
-				pWPolar = (WPolar*)m_poaWPolar->at(j);
+				pWPolar = m_poaWPolar->at(j);
 				if(pWPolar->planeName()==pPlane->planeName() && pWPolar->dataSize())
 				{
 					bUsed = true;
@@ -3845,7 +3845,7 @@ void QMiarex::onEditCurObject()
 	bool bHasResults = false;
 	for (i=0; i< m_poaWPolar->size(); i++)
 	{
-		pWPolar = (WPolar*)m_poaWPolar->at(i);
+		pWPolar = m_poaWPolar->at(i);
 		if(pWPolar->dataSize() && pWPolar->planeName() == m_pCurPlane->planeName())
 		{
 			bHasResults = true;
@@ -3855,7 +3855,7 @@ void QMiarex::onEditCurObject()
 
 	for (i=0; i<m_poaPOpp->size(); i++)
 	{
-		pPOpp = (PlaneOpp*)m_poaPOpp->at(i);
+		pPOpp = m_poaPOpp->at(i);
 		if(pPOpp->planeName() == m_pCurPlane->planeName())
 		{
 			bHasResults = true;
@@ -3916,7 +3916,7 @@ void QMiarex::onEditCurObject()
 		setPlane(m_pCurPlane->planeName());
 		s_pMainFrame->updatePlaneListBox();
 		m_bIs2DScaleSet = false;
-		setScale();
+
 		onAdjustToWing();
 		setControls();
 
@@ -3944,7 +3944,7 @@ void QMiarex::onEditCurPlane()
 	bool bHasResults = false;
 	for (i=0; i< m_poaWPolar->size(); i++)
 	{
-		pWPolar = (WPolar*)m_poaWPolar->at(i);
+		pWPolar = m_poaWPolar->at(i);
 		if(pWPolar->dataSize() && pWPolar->planeName() == m_pCurPlane->planeName())
 		{
 			bHasResults = true;
@@ -3954,7 +3954,7 @@ void QMiarex::onEditCurPlane()
 
 	for (i=0; i<m_poaPOpp->size(); i++)
 	{
-		pPOpp = (PlaneOpp*)m_poaPOpp->at(i);
+		pPOpp = m_poaPOpp->at(i);
 		if(pPOpp->planeName() == m_pCurPlane->planeName())
 		{
 			bHasResults = true;
@@ -4021,7 +4021,7 @@ void QMiarex::onEditCurPlane()
 		setPlane(m_pCurPlane->planeName());
 		s_pMainFrame->updatePlaneListBox();
 		m_bIs2DScaleSet = false;
-		setScale();
+
 		onAdjustToWing();
 		setControls();
 
@@ -4056,7 +4056,7 @@ void QMiarex::onEditCurWing()
 	bool bHasResults = false;
 	for (int i=0; i< m_poaWPolar->size(); i++)
 	{
-		pWPolar = (WPolar*)m_poaWPolar->at(i);
+		pWPolar = m_poaWPolar->at(i);
 		if(pWPolar->dataSize() && pWPolar->planeName() == m_pCurPlane->planeName())
 		{
 			bHasResults = true;
@@ -4066,7 +4066,7 @@ void QMiarex::onEditCurWing()
 
 	for (int i=0; i<m_poaPOpp->size(); i++)
 	{
-		pPOpp = (PlaneOpp*)m_poaPOpp->at(i);
+		pPOpp = m_poaPOpp->at(i);
 		if(pPOpp->planeName() == m_pCurPlane->planeName())
 		{
 			bHasResults = true;
@@ -4138,7 +4138,7 @@ void QMiarex::onEditCurWing()
 		setPlane(m_pCurPlane->planeName());
 		s_pMainFrame->updatePlaneListBox();
 		m_bIs2DScaleSet = false;
-		setScale();
+
 		onAdjustToWing();
 		setControls();
 
@@ -4164,7 +4164,7 @@ void QMiarex::onScaleWing()
 	bool bHasResults = false;
 	for (int i=0; i< m_poaWPolar->size(); i++)
 	{
-		pWPolar = (WPolar*)m_poaWPolar->at(i);
+		pWPolar = m_poaWPolar->at(i);
 		if(pWPolar->dataSize() && pWPolar->planeName() == m_pCurPlane->planeName())
 		{
 			bHasResults = true;
@@ -4174,7 +4174,7 @@ void QMiarex::onScaleWing()
 
 	for (int i=0; i<m_poaPOpp->size(); i++)
 	{
-		pPOpp = (PlaneOpp*)m_poaPOpp->at(i);
+		pPOpp = m_poaPOpp->at(i);
 		if(pPOpp->planeName() == m_pCurPlane->planeName())
 		{
 			bHasResults = true;
@@ -4247,7 +4247,7 @@ void QMiarex::onScaleWing()
 		setPlane();
 		s_pMainFrame->updatePlaneListBox();
 		m_bIs2DScaleSet = false;
-		setScale();
+
 		onAdjustToWing();
 		setControls();
 
@@ -4619,7 +4619,7 @@ void QMiarex::onExportWPolars()
 	WPolar *pWPolar;
 	for(int l=0; l<m_poaWPolar->size(); l++)
 	{
-		pWPolar = (WPolar*)m_poaWPolar->at(l);
+		pWPolar = m_poaWPolar->at(l);
 		fileName = pWPolar->planeName() + "_" + pWPolar->polarName();
 		fileName.replace("/", "_");
 		fileName.replace(".", "_");
@@ -5113,7 +5113,7 @@ void QMiarex::onHideAllWPolars()
 	WPolar *pWPolar;
 	for (i=0; i<m_poaWPolar->size(); i++)
 	{
-		pWPolar = (WPolar*)m_poaWPolar->at(i);
+		pWPolar = m_poaWPolar->at(i);
 		pWPolar->isVisible() = false;
 //		if(pWPolar->polarType()==XFLR5::STABILITYPOLAR) pWPolar->points() = false;
 	}
@@ -5139,7 +5139,7 @@ void QMiarex::onHideAllWPlrOpps()
 	{
 		for (i=0; i< m_poaPOpp->size(); i++)
 		{
-			pPOpp = (PlaneOpp*)m_poaPOpp->at(i);
+			pPOpp = m_poaPOpp->at(i);
 			if (pPOpp->planeName() == m_pCurWPolar->planeName() &&
 				pPOpp->polarName()   == m_pCurWPolar->polarName())
 			{
@@ -5166,7 +5166,7 @@ void QMiarex::onHideAllWOpps()
 	PlaneOpp *pPOpp;
 	for (i=0; i< m_poaPOpp->size(); i++)
 	{
-		pPOpp = (PlaneOpp*)m_poaPOpp->at(i);
+		pPOpp = m_poaPOpp->at(i);
 		pPOpp->isVisible() = false;
 	}
 	emit projectModified();
@@ -5186,7 +5186,7 @@ void QMiarex::onHidePlaneOpps()
 	int i;
 	for (i=0; i< m_poaPOpp->size(); i++)
 	{
-		pPOpp = (PlaneOpp*)m_poaPOpp->at(i);
+		pPOpp = m_poaPOpp->at(i);
 		if (pPOpp->planeName() == m_pCurWPolar->planeName())
 		{
 			pPOpp->isVisible() = false;
@@ -5214,7 +5214,7 @@ void QMiarex::onHidePlaneWPolars()
 	WPolar *pWPolar;
 	for (i=0; i<m_poaWPolar->size(); i++)
 	{
-		pWPolar = (WPolar*)m_poaWPolar->at(i);
+		pWPolar = m_poaWPolar->at(i);
 		if (pWPolar->planeName() == PlaneName)
 		{
 			pWPolar->isVisible() = false;
@@ -5603,7 +5603,7 @@ void QMiarex::onRenameCurWPolar()
 	QStringList NameList;
 	for(int k=0; k<m_poaWPolar->size(); k++)
 	{
-		pWPolar = (WPolar*)m_poaWPolar->at(k);
+		pWPolar = m_poaWPolar->at(k);
 		if(pWPolar->planeName()==m_pCurPlane->planeName())
 			NameList.append(pWPolar->polarName());
 	}
@@ -5625,7 +5625,7 @@ void QMiarex::onRenameCurWPolar()
 		pWPolar = NULL;
 		for(int ipb=0; ipb<m_poaWPolar->size(); ipb++)
 		{
-			pOldWPolar = (WPolar*)m_poaWPolar->at(ipb);
+			pOldWPolar = m_poaWPolar->at(ipb);
 			if(pOldWPolar->polarName()==dlg.newName() && pOldWPolar->planeName()==m_pCurPlane->planeName())
 			{
 				Objects3D::deleteWPolar(pOldWPolar);
@@ -5638,7 +5638,7 @@ void QMiarex::onRenameCurWPolar()
 	//remove the WPolar from its current position in the array
 	for (int l=0; l<m_poaWPolar->size();l++)
 	{
-		pOldWPolar = (WPolar*)m_poaWPolar->at(l);
+		pOldWPolar = m_poaWPolar->at(l);
 		if(pOldWPolar==m_pCurWPolar)
 		{
 			m_poaWPolar->removeAt(l);
@@ -5649,7 +5649,7 @@ void QMiarex::onRenameCurWPolar()
 	//set the new name
 	for (int l=m_poaPOpp->size()-1;l>=0; l--)
 	{
-		PlaneOpp *pPOpp = (PlaneOpp*)m_poaPOpp->at(l);
+		PlaneOpp *pPOpp = m_poaPOpp->at(l);
 		if (pPOpp->planeName() == m_pCurPlane->planeName() && pPOpp->polarName()==m_pCurWPolar->polarName())
 		{
 			pPOpp->polarName() = dlg.newName();
@@ -5662,7 +5662,7 @@ void QMiarex::onRenameCurWPolar()
 	bool bInserted = false;
 	for (int l=0; l<m_poaWPolar->size();l++)
 	{
-		pOldWPolar = (WPolar*)m_poaWPolar->at(l);
+		pOldWPolar = m_poaWPolar->at(l);
 
 		if(pOldWPolar->polarName().compare(m_pCurWPolar->polarName(), Qt::CaseInsensitive) >0)
 		{
@@ -5733,7 +5733,7 @@ void QMiarex::onResetCurWPolar()
 	{
 		for(int i=m_poaPOpp->size()-1; i>=0; --i)
 		{
-			pPOpp = (PlaneOpp*) m_poaPOpp->at(i);
+			pPOpp =  m_poaPOpp->at(i);
 			if(pPOpp->polarName()==m_pCurWPolar->polarName() && pPOpp->planeName()==m_pCurPlane->planeName())
 			{
 				m_poaPOpp->removeAt(i);
@@ -5785,7 +5785,7 @@ void QMiarex::onShowAllWOpps()
 	PlaneOpp *pPOpp;
 	for (i=0; i< m_poaPOpp->size(); i++)
 	{
-		pPOpp = (PlaneOpp*)m_poaPOpp->at(i);
+		pPOpp = m_poaPOpp->at(i);
 		pPOpp->isVisible() = true;
 	}
 
@@ -5807,7 +5807,7 @@ void QMiarex::onShowAllWPolars()
 	WPolar *pWPolar;
 	for (i=0; i<m_poaWPolar->size(); i++)
 	{
-		pWPolar = (WPolar*)m_poaWPolar->at(i);
+		pWPolar = m_poaWPolar->at(i);
 		pWPolar->isVisible() = true;
 	}
 
@@ -5829,7 +5829,7 @@ void QMiarex::onShowPlaneWPolarsOnly()
 	WPolar *pWPolar;
 	for (int i=0; i<m_poaWPolar->size(); i++)
 	{
-		pWPolar = (WPolar*)m_poaWPolar->at(i);
+		pWPolar = m_poaWPolar->at(i);
 		pWPolar->isVisible() = (pWPolar->planeName() == m_pCurPlane->planeName());
 	}
 
@@ -5846,7 +5846,7 @@ void QMiarex::onShowWPolarOppsOnly()
 	if(!m_pCurPlane || !m_pCurWPolar) return;
 	for(int i=0; i<m_poaPOpp->size(); i++)
 	{
-		PlaneOpp *pPOpp = (PlaneOpp*)m_poaPOpp->at(i);
+		PlaneOpp *pPOpp = m_poaPOpp->at(i);
 		if(pPOpp->planeName().compare(m_pCurPlane->planeName())==0 && pPOpp->polarName().compare(m_pCurWPolar->polarName())==0)
 		{
 			pPOpp->isVisible() = true;
@@ -5872,7 +5872,7 @@ void QMiarex::onShowPlaneWPolars()
 	WPolar *pWPolar;
 	for (i=0; i<m_poaWPolar->size(); i++)
 	{
-		pWPolar = (WPolar*)m_poaWPolar->at(i);
+		pWPolar = m_poaWPolar->at(i);
 		if (pWPolar->planeName() == PlaneName) pWPolar->isVisible() = true;
 	}
 
@@ -5894,7 +5894,7 @@ void QMiarex::onShowPlaneOpps()
 	int i;
 	for (i=0; i< m_poaPOpp->size(); i++)
 	{
-		pPOpp = (PlaneOpp*)m_poaPOpp->at(i);
+		pPOpp = m_poaPOpp->at(i);
 		if (pPOpp->planeName() == m_pCurWPolar->planeName())
 		{
 			pPOpp->isVisible() = true;
@@ -5922,7 +5922,7 @@ void QMiarex::onShowAllWPlrOpps()
 	{
 		for (i=0; i< m_poaPOpp->size(); i++)
 		{
-			pPOpp = (PlaneOpp*)m_poaPOpp->at(i);
+			pPOpp = m_poaPOpp->at(i);
 			if (pPOpp->planeName() == m_pCurWPolar->planeName() &&
 				pPOpp->polarName()   == m_pCurWPolar->polarName())
 			{
@@ -6268,7 +6268,7 @@ void QMiarex::onPlaneInertia()
 
 	for (int i=0; i< m_poaWPolar->size(); i++)
 	{
-		pWPolar = (WPolar*)m_poaWPolar->at(i);
+		pWPolar = m_poaWPolar->at(i);
 		if(pWPolar->dataSize() && pWPolar->planeName()==PlaneName && pWPolar->m_bAutoInertia)
 		{
 //			if(pWPolar->polarType()==XFLR5::STABILITYPOLAR)
@@ -6321,7 +6321,7 @@ void QMiarex::onPlaneInertia()
 
 			for (int i=0; i<m_poaWPolar->size(); i++)
 			{
-				pWPolar = (WPolar*)m_poaWPolar->at(i);
+				pWPolar = m_poaWPolar->at(i);
 				if(pWPolar && pWPolar->planeName()==PlaneName && pWPolar->m_bAutoInertia)
 				{
 					pWPolar->clearData();
@@ -6329,7 +6329,7 @@ void QMiarex::onPlaneInertia()
 
 					for (int i=m_poaPOpp->size()-1; i>=0; i--)
 					{
-						PlaneOpp *pPOpp = (PlaneOpp*)m_poaPOpp->at(i);
+						PlaneOpp *pPOpp = m_poaPOpp->at(i);
 						if(pPOpp && pPOpp->planeName()==PlaneName && pPOpp->polarName()==pWPolar->polarName())
 						{
 							m_poaPOpp->removeAt(i);
@@ -7230,7 +7230,7 @@ void QMiarex::setPlane(QString PlaneName)
 		//get the first one in the list
 		if(Objects3D::s_oaPlane.count())
 		{
-			pPlane = (Plane*)Objects3D::s_oaPlane.at(0);
+			pPlane = Objects3D::s_oaPlane.at(0);
 		}
 	}
 
@@ -7251,7 +7251,7 @@ void QMiarex::setPlane(QString PlaneName)
 
 		setCurveParams();
 		s_bResetCurves = true;
-
+		setScale();
 		updateView();
 		QApplication::restoreOverrideCursor();
 		return;
@@ -7279,7 +7279,7 @@ void QMiarex::setPlane(QString PlaneName)
 
 	s_pMainFrame->m_glLightDlg.setModelSize(m_pCurPlane->planformSpan());
 
-//	setScale();
+	setScale();
 	setWGraphScale();
 
 	s_bResetCurves = true;
@@ -7697,7 +7697,7 @@ void QMiarex::setWPolar(bool bCurrent, QString WPlrName)
 		//if we don't know anything, find the first for this plane
 		for (int i=0; i<Objects3D::s_oaWPolar.size(); i++)
 		{
-			WPolar *pOldWPolar = (WPolar*)Objects3D::s_oaWPolar.at(i);
+			WPolar *pOldWPolar = Objects3D::s_oaWPolar.at(i);
 			if (pOldWPolar->planeName() == m_pCurPlane->planeName())
 			{
 				m_pCurWPolar = pOldWPolar;
