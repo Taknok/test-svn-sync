@@ -428,9 +428,9 @@ public:
 	WingOpp *m_pWOpp[MAXWINGS];   /**< an array of pointers to the operating points of the four wings of the currently selected plane */
 
 
-	static QList<void *> *m_poaPlane;			/**< for convenienece, a pointer to the array of pointers to plane objects */
-	static QList<void *> *m_poaWPolar;			/**< for convenienece, a pointer to the array of UFO polar objects */
-	static QList<void *> *m_poaPOpp;			/**< for convenienece, a pointer to the array of Plane OpPoint objects */
+	static QList<Plane*>    *m_poaPlane;		/**< for convenienece, a pointer to the array of pointers to plane objects */
+	static QList<WPolar*>   *m_poaWPolar;		/**< for convenienece, a pointer to the array of UFO polar objects */
+	static QList<PlaneOpp*> *m_poaPOpp;			/**< for convenienece, a pointer to the array of Plane OpPoint objects */
 
 
 	Plane * m_pCurPlane;          /**< the currently active Plane */

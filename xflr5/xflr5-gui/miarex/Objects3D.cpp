@@ -30,10 +30,10 @@
 #include <QtDebug>
 
 
-QList <void *> Objects3D::s_oaPlane;
-QList <void *> Objects3D::s_oaWPolar;
-QList <void *> Objects3D::s_oaPOpp;
-QList <void *> Objects3D::s_oaBody;
+QList <Plane*>    Objects3D::s_oaPlane;
+QList <WPolar*>   Objects3D::s_oaWPolar;
+QList <PlaneOpp*> Objects3D::s_oaPOpp;
+QList <Body*>     Objects3D::s_oaBody;
 
 
 Objects3D::Objects3D()
