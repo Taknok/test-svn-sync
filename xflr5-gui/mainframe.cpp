@@ -6664,6 +6664,7 @@ void MainFrame::onLoadLastProject()
 	else if(m_iApp==XFLR5::MIAREX)
 	{
 		onMiarex();
+		m_pMiarex->setScale();
 	}
 	else if(m_iApp==XFLR5::DIRECTDESIGN)
 	{
