@@ -118,7 +118,7 @@ protected:
 	void glMakeWingEditMesh(QOpenGLBuffer &vbo, Wing *pWing);
 	void glMakeWingSectionHighlight(Wing *pWing, int iSectionHighLight, bool bRightSide);
 	void glMakeBodyFrameHighlight(Body *pBody, Vector3d bodyPos, int iFrame);
-	void glMakeBodyEditMesh(Body *pBody);
+	void glMakeEditBodyMesh(Body *pBody, Vector3d BodyPosition);
 	void glRenderText(int x, int y, const QString & str, QColor textColor = QColor(Qt::white));
 	void glRenderText(double x, double y, double z, const QString & str, QColor textColor = QColor(Qt::white));
 

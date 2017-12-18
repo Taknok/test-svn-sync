@@ -1106,8 +1106,8 @@ void gl3dView::glMakeBody3DFlatPanels(Body *pBody)
 
 void gl3dView::glMakeBodySplines(Body *pBody)
 {
-	int NXXXX = W3dPrefsDlg::s_iBodyAxialRes;
-	int NHOOOP = W3dPrefsDlg::s_iBodyAxialRes;
+	int NXXXX = W3dPrefsDlg::bodyAxialRes();
+	int NHOOOP = W3dPrefsDlg::bodyHoopRes();
 	Vector3d *m_T = new Vector3d[(NXXXX+1)*(NHOOOP+1)]; //temporary points to save calculation times for body NURBS surfaces
 	Vector3d TALB, LATB;
 	int j, k, l, p;
@@ -1937,8 +1937,8 @@ void gl3dView::paintBody(Body *pBody)
 {
 	if(!pBody) return;
 	int pos = 0;
-	int NXXXX = W3dPrefsDlg::s_iBodyAxialRes;
-	int NHOOOP = W3dPrefsDlg::s_iBodyAxialRes;
+	int NXXXX = W3dPrefsDlg::bodyAxialRes();
+	int NHOOOP = W3dPrefsDlg::bodyHoopRes();
 
 	bool bTextures = pBody->textures() && (m_pLeftBodyTexture && m_pRightBodyTexture);
 	if(bTextures)
@@ -2062,7 +2062,7 @@ void gl3dView::paintEditBodyMesh(Body *pBody)
 	m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
 	m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
 	m_vboEditBodyMesh.bind();
-	m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3, 6*sizeof(GLfloat));
+	m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3, 3*sizeof(GLfloat));
 	m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_VLMColor);
 //	m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, Qt::red);
 
@@ -2076,8 +2076,8 @@ void gl3dView::paintEditBodyMesh(Body *pBody)
 	else if(pBody->isSplineType())
 	{
 		int pos=0;
-		int NXXXX = W3dPrefsDlg::s_iBodyAxialRes;
-		int NHOOOP = W3dPrefsDlg::s_iBodyAxialRes;
+		int NXXXX = W3dPrefsDlg::bodyAxialRes();
+		int NHOOOP = W3dPrefsDlg::bodyHoopRes();
 		f->glLineWidth(W3dPrefsDlg::s_VLMWidth);
 
 		pos=0;
@@ -2133,7 +2133,7 @@ void gl3dView::paintWing(int iWing, Wing *pWing)
 {
 	if(!pWing) return;
 
-	int CHORDPOINTS = W3dPrefsDlg::s_iChordwiseRes;
+	int CHORDPOINTS = W3dPrefsDlg::chordwiseRes();
 
 	if(m_bSurfaces)
 	{
@@ -2465,7 +2465,7 @@ void gl3dView::paintSphere(Vector3d place, double radius, QColor sphereColor, bo
 
 void gl3dView::glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody)
 {
-	int CHORDPOINTS = W3dPrefsDlg::s_iChordwiseRes;
+	int CHORDPOINTS = W3dPrefsDlg::chordwiseRes();
 
 	int j, l ;
 	Vector3d N, Pt;
@@ -3156,7 +3156,7 @@ void gl3dView::glMakeWingSectionHighlight(Wing *pWing, int iSectionHighLight, bo
 {
 	Vector3d Point, Normal;
 
-	int CHORDPOINTS = W3dPrefsDlg::s_iChordwiseRes;
+	int CHORDPOINTS = W3dPrefsDlg::chordwiseRes();
 	int iSection = 0;
 	int jSurf = 0;
 	for(int jSection=0; jSection<pWing->NWingSection(); jSection++)
@@ -3260,8 +3260,8 @@ void gl3dView::glMakeWingSectionHighlight(Wing *pWing, int iSectionHighLight, bo
 
 void gl3dView::glMakeBodyFrameHighlight(Body *pBody, Vector3d bodyPos, int iFrame)
 {
-//	int NXXXX = W3dPrefsDlg::s_iBodyAxialRes;
-	int NHOOOP = W3dPrefsDlg::s_iBodyAxialRes;
+//	int NXXXX = W3dPrefsDlg::bodyAxialRes();
+	int NHOOOP = W3dPrefsDlg::bodyHoopRes();
 	int k;
 	Vector3d Point;
 	double hinc, u, v;
@@ -3486,17 +3486,21 @@ void gl3dView::startResetTimer(double length)
 
 
 /** Default mesh, if no polar has been defined */
-void gl3dView::glMakeBodyEditMesh(Body *pBody)
+void gl3dView::glMakeEditBodyMesh(Body *pBody, Vector3d BodyPosition)
 {
 	if(!pBody) return;
-	int NXXXX = W3dPrefsDlg::s_iBodyAxialRes;
-	int NHOOOP = W3dPrefsDlg::s_iBodyAxialRes;
+	int NXXXX = W3dPrefsDlg::bodyAxialRes();
+	int NHOOOP = W3dPrefsDlg::bodyHoopRes();
 	int nx, nh;
 	Vector3d Pt;
 	Vector3d P1, P2, P3, P4, PStart, PEnd;
 	float *meshVertexArray = NULL;
 	int bufferSize = 0;
 	m_iBodyMeshLines = 0;
+
+	double dx = BodyPosition.x;
+	double dy = BodyPosition.y;
+	double dz = BodyPosition.z;
 
 	int iv=0;
 
@@ -3507,11 +3511,11 @@ void gl3dView::glMakeBodyEditMesh(Body *pBody)
 		{
 			for (int k=0; k<pBody->sideLineCount()-1;k++)
 			{
-				for(int jp=0; jp<pBody->m_xPanels[j]; jp++)
+				for(int jp=0; jp<=pBody->m_xPanels[j]; jp++)
 				{
 					bufferSize += 6;
 				}
-				for(int kp=0; kp<pBody->m_hPanels[k]; kp++)
+				for(int kp=0; kp<=pBody->m_hPanels[k]; kp++)
 				{
 					bufferSize += 6;
 				}
@@ -3530,8 +3534,12 @@ void gl3dView::glMakeBodyEditMesh(Body *pBody)
 				P3 = pBody->frame(j+1)->m_CtrlPoint[k+1];   P3.x = pBody->frame(j+1)->m_Position.x;
 				P4 = pBody->frame(j)->m_CtrlPoint[k+1];     P4.x = pBody->frame(j)->m_Position.x;
 
+				P1.x+=dx; P2.x+=dx; P3.x+=dx; P4.x+=dx;
+				P1.y+=dy; P2.y+=dy; P3.y+=dy; P4.y+=dy;
+				P1.z+=dz; P2.z+=dz; P3.z+=dz; P4.z+=dz;
+
 				//left side panels
-				for(int jp=0; jp<pBody->m_xPanels[j]; jp++)
+				for(int jp=0; jp<=pBody->m_xPanels[j]; jp++)
 				{
 					PStart = P1 + (P2-P1) * (float)jp/(float)pBody->m_xPanels[j];
 					PEnd   = P4 + (P3-P4) * (float)jp/(float)pBody->m_xPanels[j];
@@ -3543,7 +3551,7 @@ void gl3dView::glMakeBodyEditMesh(Body *pBody)
 					meshVertexArray[iv++] = PEnd.z;
 					m_iBodyMeshLines++;
 				}
-				for(int kp=0; kp<pBody->m_hPanels[k]; kp++)
+				for(int kp=0; kp<=pBody->m_hPanels[k]; kp++)
 				{
 					PStart = P1 + (P4-P1) * (float)kp/(float)pBody->m_hPanels[k];
 					PEnd   = P2 + (P3-P2) * (float)kp/(float)pBody->m_hPanels[k];
@@ -3557,7 +3565,7 @@ void gl3dView::glMakeBodyEditMesh(Body *pBody)
 				}
 
 				//right side panels
-				for(int jp=0; jp<pBody->m_xPanels[j]; jp++)
+				for(int jp=0; jp<=pBody->m_xPanels[j]; jp++)
 				{
 					PStart = P1 + (P2-P1) * (float)jp/(float)pBody->m_xPanels[j];
 					PEnd   = P4 + (P3-P4) * (float)jp/(float)pBody->m_xPanels[j];
@@ -3569,7 +3577,7 @@ void gl3dView::glMakeBodyEditMesh(Body *pBody)
 					meshVertexArray[iv++] =  PEnd.z;
 					m_iBodyMeshLines++;
 				}
-				for(int kp=0; kp<pBody->m_hPanels[k]; kp++)
+				for(int kp=0; kp<=pBody->m_hPanels[k]; kp++)
 				{
 					PStart = P1 + (P4-P1) * (float)kp/(float)pBody->m_hPanels[k];
 					PEnd   = P2 + (P3-P2) * (float)kp/(float)pBody->m_hPanels[k];
@@ -3608,9 +3616,9 @@ void gl3dView::glMakeBodyEditMesh(Body *pBody)
 			{
 				double u = (double)k/(double)(NXXXX-1);
 				pBody->getPoint(u,  v, true, Pt);
-				meshVertexArray[iv++] = Pt.x;
-				meshVertexArray[iv++] = Pt.y;
-				meshVertexArray[iv++] = Pt.z;
+				meshVertexArray[iv++] = Pt.x + dx;
+				meshVertexArray[iv++] = Pt.y + dy;
+				meshVertexArray[iv++] = Pt.z + dz;
 			}
 		}
 		for (int l=0; l<nh; l++)
@@ -3620,9 +3628,9 @@ void gl3dView::glMakeBodyEditMesh(Body *pBody)
 			{
 				double u = (double)k/(double)(NXXXX-1);
 				pBody->getPoint(u,  v, false, Pt);
-				meshVertexArray[iv++] = Pt.x;
-				meshVertexArray[iv++] = Pt.y;
-				meshVertexArray[iv++] = Pt.z;
+				meshVertexArray[iv++] = Pt.x + dx;
+				meshVertexArray[iv++] = Pt.y + dy;
+				meshVertexArray[iv++] = Pt.z + dz;
 			}
 		}
 
@@ -3634,9 +3642,9 @@ void gl3dView::glMakeBodyEditMesh(Body *pBody)
 			{
 				double v = (double)l/(double)(NHOOOP-1);
 				pBody->getPoint(uk,  v, true, Pt);
-				meshVertexArray[iv++] = Pt.x;
-				meshVertexArray[iv++] = Pt.y;
-				meshVertexArray[iv++] = Pt.z;
+				meshVertexArray[iv++] = Pt.x + dx;
+				meshVertexArray[iv++] = Pt.y + dy;
+				meshVertexArray[iv++] = Pt.z + dz;
 			}
 		}
 		for (int k=0; k<nx; k++)
@@ -3646,9 +3654,9 @@ void gl3dView::glMakeBodyEditMesh(Body *pBody)
 			{
 				double v = (double)l/(double)(NHOOOP-1);
 				pBody->getPoint(uk,  v, false, Pt);
-				meshVertexArray[iv++] = Pt.x;
-				meshVertexArray[iv++] = Pt.y;
-				meshVertexArray[iv++] = Pt.z;
+				meshVertexArray[iv++] = Pt.x + dx;
+				meshVertexArray[iv++] = Pt.y + dy;
+				meshVertexArray[iv++] = Pt.z + dz;
 			}
 		}
 	}
