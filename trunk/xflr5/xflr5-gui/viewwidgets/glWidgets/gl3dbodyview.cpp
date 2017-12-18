@@ -105,7 +105,7 @@ void gl3dBodyView::glMake3DObjects()
 		m_bResetglBody = false;
 		if(m_pBody->isSplineType())         glMakeBodySplines(m_pBody);
 		else if(m_pBody->isFlatPanelType()) glMakeBody3DFlatPanels(m_pBody);
-		glMakeBodyEditMesh(m_pBody);
+		glMakeEditBodyMesh(m_pBody, Vector3d(0.0,0.0,0.0));
 	}
 }
 
