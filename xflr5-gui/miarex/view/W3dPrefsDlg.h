@@ -43,6 +43,10 @@ public:
     W3dPrefsDlg(QWidget *pParent);
 	void initDialog();
 
+	static int chordwiseRes() {return s_iChordwiseRes;}
+	static int bodyAxialRes() {return s_iBodyAxialRes;}
+	static int bodyHoopRes() {return s_iBodyHoopRes;}
+
 private slots:
 	void on3DAxis();
 	void onOutline();
