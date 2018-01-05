@@ -195,7 +195,7 @@ void WingWidget::paintWing(QPainter &painter, QPointF ORef, double scale)
 	Wing *pWing = pMiarex->m_pCurPlane->m_Wing;
 
 	painter.save();
-	QPen WingPen(Settings::textColor().darker());
+	QPen WingPen(W3dPrefsDlg::s_OutlineColor);
 	WingPen.setStyle(getStyle(W3dPrefsDlg::s_OutlineStyle));
 	WingPen.setWidth(W3dPrefsDlg::s_OutlineWidth);
 

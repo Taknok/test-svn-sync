@@ -355,7 +355,7 @@ void gl3dView::mousePressEvent(QMouseEvent *event)
 	bool bCtrl = false;
 	if(event->modifiers() & Qt::ControlModifier) bCtrl =true;
 
-	setFocus();
+//	setFocus();
 
 	if (event->buttons() & Qt::MidButton)
 	{
@@ -3162,7 +3162,7 @@ void gl3dView::glMakeWingSectionHighlight(Wing *pWing, int iSectionHighLight, bo
 	for(int jSection=0; jSection<pWing->NWingSection(); jSection++)
 	{
 		if(jSection==iSectionHighLight) break;
-		if(qAbs(pWing->YPosition(jSection+1)-pWing->YPosition(jSection)) > Wing::s_MinPanelSize)
+		if(jSection<pWing->NWingSection()-1 &&	fabs(pWing->YPosition(jSection+1)-pWing->YPosition(jSection)) > Wing::s_MinPanelSize)
 			iSection++;
 	}
 
