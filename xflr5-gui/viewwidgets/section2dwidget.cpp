@@ -208,7 +208,7 @@ void Section2dWidget::paintEvent(QPaintEvent *event)
 void Section2dWidget::contextMenuEvent (QContextMenuEvent *event)
 {
 	m_pSection2dContextMenu->exec(event->globalPos());
-	setCursor(m_hcCross);
+	setCursor(Qt::CrossCursor);
 	event->accept();
 }
 
@@ -315,7 +315,7 @@ void Section2dWidget::keyReleaseEvent(QKeyEvent *event)
 
 void Section2dWidget::mouseDoubleClickEvent (QMouseEvent *event)
 {
-	if(!hasFocus()) setFocus();
+//	if(!hasFocus()) setFocus();
 
 	QPoint center = rect().center();
 
@@ -332,7 +332,7 @@ void Section2dWidget::mouseDoubleClickEvent (QMouseEvent *event)
 
 void Section2dWidget::mouseMoveEvent(QMouseEvent *event)
 {
-	if(!hasFocus()) setFocus();
+//	if(!hasFocus()) setFocus();
 	QPoint point = event->pos();
 	m_MousePos = mousetoReal(point);
 

@@ -845,6 +845,8 @@ void GL3dBodyDlg::onUpdateBody()
 	m_bChanged = true;
 	m_gl3dBodyview.resetGLBody(true);
 
+	m_pFrame = m_pBody->activeFrame();
+
 	fillFrameDataTable();
 	fillPointDataTable();
 	updateView();

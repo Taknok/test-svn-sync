@@ -35,7 +35,7 @@ BodyLineWidget::BodyLineWidget(QWidget *pParent, Body *pBody)
 	m_pBody = pBody;
 	createActions();
 	createContextMenu();
-
+	setCursor(Qt::CrossCursor);
 }
 
 

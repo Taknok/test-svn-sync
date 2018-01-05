@@ -36,6 +36,8 @@ BodyFrameWidget::BodyFrameWidget(QWidget *pParent, Body *pBody)
 	m_pShowCurFrameOnly = NULL;
 	createActions();
 	createContextMenu();
+	setCursor(Qt::CrossCursor);
+
 }
 
 
@@ -332,7 +334,9 @@ void BodyFrameWidget::dragSelectedPoint(double x, double y)
 	if (!m_pBody->activeFrame() || (Frame::selectedIndex()<0) || (Frame::selectedIndex() > m_pBody->activeFrame()->pointCount()))
 		return;
 
-	m_pBody->activeFrame()->selectedPoint().set(m_pBody->activeFrame()->position().x, std::max(x,0.0), y);
+	if(Frame::selectedIndex()==0 || Frame::selectedIndex()==m_pBody->activeFrame()->pointCount()-1) x=0.0;
+	x = std::max(x,0.0);
+	m_pBody->activeFrame()->selectedPoint().set(m_pBody->activeFrame()->position().x, x, y);
 }
 
 
