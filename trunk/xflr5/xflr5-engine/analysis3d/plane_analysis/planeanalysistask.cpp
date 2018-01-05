@@ -388,7 +388,15 @@ bool PlaneAnalysisTask::initializePanels()
 
 		}
 	}
+	// list check
+/*	for(int i4=0; i4<m_MatSize; i4++)
+	{
+		Panel *p4 = &m_Panel[i4];
 
+		QString strange;
+		strange.sprintf("Panel %2d has neighbours PU=%d PD =%2d PL=%2d PR=%2d", i4, p4->m_iPU, p4->m_iPD, p4->m_iPL, p4->m_iPR);
+		qDebug()<<strange;
+	}*/
 //qDebug()<<"created total"<<m_nWakeNodes<<"wake nodes";
 //qDebug()<<"";
 /*	qDebug()<<"m_NWakeColumn"<<m_NWakeColumn;
