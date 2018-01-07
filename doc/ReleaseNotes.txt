@@ -15,7 +15,8 @@
 *******************************************************************************
 
 
-xflr5 v6.40 December xxxth, 2017
+xflr5 v6.40 January 7th, 2018
+	- fixed a bug which caused the a stability analysis to calculate the operating point with the aoa of the previous calculation.
 	- improved the construction method for the wake in the 3d-panel method; makes a small difference to induce drag
 	- corrected a potential crash bug when trying to display 3D results of an LLT calculation
 	- removed the default suffix "-proj_area" from the name of plane polars
