@@ -102,8 +102,12 @@ void gl3dMiarexView::glRenderView()
 			if(s_pMiarex->m_pCurWPolar && !s_pMiarex->m_pCurWPolar->isLLTMethod())	paintMesh(s_pMiarex->matSize());
 			else
 			{
-				for(int i=0; i<MAXWINGS; i++)
-					paintEditWingMesh(m_vboEditWingMesh[i]);
+				for(int iw=0; iw<MAXWINGS; iw++)
+				{
+					Wing * pWing = s_pMiarex->m_pCurPlane->wing(iw);
+					if(pWing)
+						paintEditWingMesh(m_vboEditWingMesh[iw]);
+				}
 				paintEditBodyMesh(s_pMiarex->m_pCurPlane->body());
 			}
 		}

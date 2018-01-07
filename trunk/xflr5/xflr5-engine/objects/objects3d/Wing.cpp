@@ -436,7 +436,7 @@ void Wing::computeGeometry()
 
 #define NXSTATIONS 20
 #define NYSTATIONS 40
-#define MAXSPANSECTIONS 1000
+
 /**
 * Calculates and returns the inertia properties of the structure based on the object's mass and on the existing geometry
 * The mass is assumed to have been set previously.
@@ -449,9 +449,9 @@ void Wing::computeGeometry()
 */
 void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz)
 {
-	static double ElemVolume[NXSTATIONS*NYSTATIONS*MAXSPANSECTIONS*2];
-	static Vector3d PtVolume[NXSTATIONS*NYSTATIONS*MAXSPANSECTIONS*2];
-	int j,k,l;
+	std::vector<double> ElemVolume(NXSTATIONS*NYSTATIONS*m_Surface.size());
+	std::vector<Vector3d> PtVolume(NXSTATIONS*NYSTATIONS*m_Surface.size());
+
 	double rho, LocalSpan, LocalVolume;
 	double LocalChord,  LocalArea,  tau;
 	double LocalChord1, LocalArea1, tau1;
@@ -482,10 +482,10 @@ void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
 	//first get the CoG - necessary for future application of Huygens/Steiner theorem
 	int p = 0;
 
-	for (j=0; j<m_Surface.size(); j++)
+	for (int j=0; j<m_Surface.size(); j++)
 	{
 		LocalSpan = m_Surface.at(j)->m_Length/(double)NYSTATIONS;
-		for (k=0; k<NYSTATIONS; k++)
+		for (int k=0; k<NYSTATIONS; k++)
 		{
 			tau  = (double)k     / (double)NYSTATIONS;
 			tau1 = (double)(k+1) / (double)NYSTATIONS;
@@ -499,7 +499,7 @@ void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
 			PtC4.z = (Pt.z + Pt1.z)/2.0;
 
 //			CoGCheck += LocalVolume * PtC4;
-			for(l=0; l<NXSTATIONS; l++)
+			for(int l=0; l<NXSTATIONS; l++)
 			{
 				//browse mid-section
 				xrel  = 1.0 - 1.0/2.0 * (1.0-cos((double) l   *PI /(double)NXSTATIONS));
@@ -541,10 +541,10 @@ void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
 
 	// CoG is the new origin for inertia calculation
 	p=0;
-	for (j=0; j<m_Surface.size(); j++)
+	for (int j=0; j<m_Surface.size(); j++)
 	{
 		LocalSpan = m_Surface.at(j)->m_Length/(double)NYSTATIONS;
-		for (k=0; k<NYSTATIONS; k++)
+		for (int k=0; k<NYSTATIONS; k++)
 		{
 			tau  = (double)k     / (double)NYSTATIONS;
 			tau1 = (double)(k+1) / (double)NYSTATIONS;
@@ -565,7 +565,7 @@ void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
 			recalcMass   += LocalVolume*rho;
 			recalcVolume += LocalVolume;
 
-			for(l=0; l<NXSTATIONS; l++)
+			for(int l=0; l<NXSTATIONS; l++)
 			{
 				//browse mid-section
 				CoGIxx += ElemVolume[p]*rho * ( (PtVolume[p].y-CoG.y)*(PtVolume[p].y-CoG.y) + (PtVolume[p].z-CoG.z)*(PtVolume[p].z-CoG.z));
