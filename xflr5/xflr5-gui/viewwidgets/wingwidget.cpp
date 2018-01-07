@@ -186,8 +186,8 @@ void WingWidget::paintWing(QPainter &painter, QPointF ORef, double scale)
 {
 	QMiarex *pMiarex=(QMiarex*)s_pMiarex;
 	if(!pMiarex->m_pCurPlane)	return;
-	static int i;
-	static double scalex, scaley;
+	int i;
+	double scalex, scaley;
 
 	scalex  = scale;
 	scaley  = scale;

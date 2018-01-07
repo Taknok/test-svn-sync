@@ -3969,7 +3969,9 @@ void MainFrame::onNewProject()
 		deleteProject();
 	}
 
+	m_pMiarex->	m_PixText.fill(Qt::transparent);
 	m_pgl3dMiarexView->m_bArcball = false;
+
 	updateView();
 }
 

@@ -24,14 +24,13 @@
 #include <QtDebug>
 #include <QThread>
 #include <QCoreApplication>
-//#include <analysis3d_globals.h>
+
 #include <matrix.h>
 #include <objects3d/Surface.h>
 #include "PanelAnalysis.h"
 
 
-//int PanelAnalysis::s_MaxMatSize = 0;
-//int PanelAnalysis::s_MaxRHSSize = VLMMAXRHS;
+
 
 bool PanelAnalysis::s_bCancel = false;
 bool PanelAnalysis::s_bWarning = false;

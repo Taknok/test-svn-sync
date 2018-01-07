@@ -1378,7 +1378,7 @@ void QXDirect::onAnimate(bool bChecked)
 void QXDirect::onAnimateSingle()
 {
 	static int indexCbBox;
-	static QString str;
+	QString str;
 	bool bIsValid = false;
 
 	OpPoint* pOpPoint;
