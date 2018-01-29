@@ -3433,7 +3433,7 @@ bool PanelAnalysis::computeTrimmedConditions()
 	}
 
 	strong ="      Searching for zero-moment angle... ";
-	qDebug()<<"_____________";
+
 
 	if(!getZeroMomentAngle())
 	{

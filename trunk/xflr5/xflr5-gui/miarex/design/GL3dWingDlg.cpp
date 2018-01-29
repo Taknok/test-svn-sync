@@ -33,6 +33,8 @@
 #include "InertiaDlg.h"
 #include <xdirect/objects2d.h>
 #include <objects_global.h>
+#include <miarex/mgt/XmlPlaneReader.h>
+#include <miarex/mgt/XmlPlaneWriter.h>
 
 #include <QHBoxLayout>
 #include <QHeaderView>
@@ -236,9 +238,11 @@ void GL3dWingDlg::connectSignals()
 
 	connect(m_pInertia,       SIGNAL(triggered()), this, SLOT(onInertia()));
 	connect(m_pScaleWing,     SIGNAL(triggered()), this, SLOT(onScaleWing()));
+	connect(m_pglWingView,    SIGNAL(viewModified()), this, SLOT(onCheckViewIcons()));
 	connect(m_pImportWingAct, SIGNAL(triggered()),this, SLOT(onImportWing()));
 	connect(m_pExportWingAct, SIGNAL(triggered()),this, SLOT(onExportWing()));
-	connect(m_pglWingView, SIGNAL(viewModified()), this, SLOT(onCheckViewIcons()));
+	connect(m_pImportWingXml, SIGNAL(triggered()),this, SLOT(onImportWingFromXML()));
+	connect(m_pExportWingXml, SIGNAL(triggered()),this, SLOT(onExportWingToXML()));
 }
 
 
@@ -1510,11 +1514,16 @@ void GL3dWingDlg::setupLayout()
 
 				m_pScaleWing     = new QAction(tr("Scale Wing"), this);
 				m_pInertia       = new QAction(tr("Inertia..."), this);
-				m_pImportWingAct = new QAction(tr("Import Wing from File..."), this);
-				m_pExportWingAct = new QAction(tr("Export Wing to File..."), this);
+				m_pImportWingAct = new QAction(tr("Import Wing (deprecated, use XML)"), this);
+				m_pExportWingAct = new QAction(tr("Export Wing (deprecated, use XML)"), this);
+				m_pImportWingXml = new QAction(tr("Import Wing from xml file..."), this);
+				m_pExportWingXml = new QAction(tr("Export Wing to xml file..."), this);
 
 				QPushButton *pMenuButton = new QPushButton(tr("Other"));
 				QMenu *pWingMenu = new QMenu(tr("Actions"), this);
+				pWingMenu->addAction(m_pExportWingXml);
+				pWingMenu->addAction(m_pImportWingXml);
+				pWingMenu->addSeparator();
 				pWingMenu->addAction(m_pExportWingAct);
 				pWingMenu->addAction(m_pImportWingAct);
 				pWingMenu->addSeparator();
@@ -1685,6 +1694,77 @@ bool GL3dWingDlg::VLMSetAutoMesh(int total)
 }
 
 
+
+void GL3dWingDlg::onImportWingFromXML()
+{
+	QString path_to_file;
+	path_to_file = QFileDialog::getOpenFileName(0,
+												QString("Open XML File"),
+												Settings::s_LastDirName,
+												tr("Plane XML file")+"(*.xml)");
+	QFileInfo fileinfo(path_to_file);
+	Settings::s_LastDirName = fileinfo.path();
+
+	QFile xmlfile(path_to_file);
+
+	if (!xmlfile.open(QIODevice::ReadOnly))
+	{
+		QString strange = tr("Could not read the file\n")+xmlfile.fileName();
+		QMessageBox::warning(this, tr("Warning"), strange);
+		return;
+	}
+
+	Plane plane;
+	XMLPlaneReader planereader(xmlfile, &plane);
+	planereader.readXMLPlaneFile();
+	if(planereader.hasError())
+	{
+		QString strong;
+		QString errorMsg;
+		errorMsg = "Failed to read the file "+path_to_file+"\n";
+		strong.sprintf("error on line %d column %d",(int)planereader.lineNumber(),(int)planereader.columnNumber());
+		errorMsg += planereader.errorString() + " at " + strong;
+		QMessageBox::warning(this, "XML read", errorMsg, QMessageBox::Ok);
+		return;
+	}
+
+	m_pWing->duplicate(plane.wing());
+	initDialog(m_pWing);
+	readParams();
+	setWingData();
+	m_bChanged = true;
+
+	m_bResetglWing = true;
+	m_pglWingView->update();
+}
+
+
+void GL3dWingDlg::onExportWingToXML()
+{
+	QString filter = "XML file (*.xml)";
+	QString FileName, strong;
+
+	strong = m_pWing->wingName().trimmed();
+	strong.replace(' ', '_');
+	FileName = QFileDialog::getSaveFileName(this, tr("Export to xml file"),
+											Settings::s_LastDirName +'/'+strong,
+											filter,
+											&filter);
+
+	if(!FileName.length()) return;
+	QFileInfo fileInfo(FileName);
+	Settings::s_LastDirName = fileInfo.path();
+
+	if(FileName.indexOf(".xml", Qt::CaseInsensitive)<0) FileName += ".xml";
+
+	QFile XFile(FileName);
+	if (!XFile.open(QIODevice::WriteOnly | QIODevice::Text)) return ;
+
+	XMLPlaneWriter planeWriter(XFile);
+	planeWriter.writeXMLWing(*m_pWing);
+
+	XFile.close();
+}
 
 
 void GL3dWingDlg::onImportWing()
