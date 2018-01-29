@@ -37,6 +37,7 @@ public:
 private:
 	bool readPlane(Plane *pPlane, double lengthUnit, double massUnit);
 	bool readBody(Body *pBody, Vector3d &position, double lengthUnit, double massUnit);
+	bool readWing(Wing &newwing, Vector3d &position, double tiltangle, double lengthUnit, double massUnit);
 	bool readPointMass(PointMass *ppm, double massUnit, double lengthUnit);
 	bool readColor(QColor &color);
 
