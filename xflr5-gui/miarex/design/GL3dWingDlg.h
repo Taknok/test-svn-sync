@@ -94,7 +94,8 @@ private slots:
 	void onInertia();
 	void onImportWing();
 	void onExportWing();
-
+	void onImportWingFromXML();
+	void onExportWingToXML();
 
 private:
 	void accept();
@@ -168,6 +169,7 @@ private:
 
 	QAction *m_pScaleWing, *m_pInertia;
 	QAction *m_pExportWingAct, *m_pImportWingAct;
+	QAction *m_pExportWingXml, *m_pImportWingXml;
 
 	QAction *m_pResetScales;
 	

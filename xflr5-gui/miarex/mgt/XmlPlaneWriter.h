@@ -33,7 +33,10 @@ public:
 	XMLPlaneWriter(QFile &XFile);
 	void writeXMLPlane(Plane *m_pPlane);
 	void writeXMLBody(Body *pBody);
+	void writeXMLWing(Wing &wing);
 	void writeBody(Body *pBody, Vector3d position, double lengthUnit, double massUnit);
+	void writeWing(Wing &wing, Vector3d position, double Ry);
+
 
 private:
 	void writeHeader();
