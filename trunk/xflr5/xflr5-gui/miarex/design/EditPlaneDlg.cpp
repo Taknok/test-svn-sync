@@ -2044,7 +2044,7 @@ void EditPlaneDlg::paintPlaneLegend(QPainter &painter, Plane *pPlane, QRect draw
 
 	QString Result, str, strong;
 	QString str1;
-	double Mass;
+	double Mass=0.0;
 	int margin,dheight;
 
 	QPen textPen(Settings::textColor());
