@@ -71,7 +71,7 @@ bool XMLPlaneReader::readXMLPlaneFile()
 				else if (name().toString().compare(QString("wing"), Qt::CaseInsensitive)==0)
 				{
 					Vector3d V;
-					double ry;
+					double ry=0.0;
 					m_pPlane->wing(0)->clearWingSections();
 					m_pPlane->wing(0)->clearPointMasses();
 					readWing(*m_pPlane->wing(0), V, ry, lengthunit, massunit);
@@ -138,7 +138,7 @@ bool XMLPlaneReader::readPlane(Plane *pPlane, double lengthunit, double massunit
 			newwing.m_WingSection.clear();
 
 			Vector3d pos;
-			double tiltangle;
+			double tiltangle=0.0;
 			readWing(newwing, pos, tiltangle, lengthunit, massunit);
 
 
