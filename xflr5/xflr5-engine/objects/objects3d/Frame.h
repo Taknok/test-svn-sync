@@ -65,6 +65,8 @@ public:
 	Vector3d position() const {return m_Position;}
 	Vector3d &selectedPoint() {return m_CtrlPoint[s_iSelect];}
 
+	const Vector3d &ctrlPointAt(int idx) const {return m_CtrlPoint.at(idx);}
+
 	QList <Vector3d> m_CtrlPoint;	/**< the array of points which define the frame.  */
 	Vector3d m_Position;             /**< the translation vector for the Frame's origin */
 
