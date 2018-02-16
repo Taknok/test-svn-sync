@@ -2286,13 +2286,13 @@ void Body::exportSTLBinaryFlatPanels(QDataStream &outStream)
 				writeFloat(outStream, (float)N.y);
 				writeFloat(outStream, (float)N.z);
 
-				writeFloat(outStream, (float)P1.x);
-				writeFloat(outStream, (float)P1.y);
-				writeFloat(outStream, (float)P1.z);
-
 				writeFloat(outStream, (float)P2.x);
 				writeFloat(outStream, (float)P2.y);
 				writeFloat(outStream, (float)P2.z);
+
+				writeFloat(outStream, (float)P1.x);
+				writeFloat(outStream, (float)P1.y);
+				writeFloat(outStream, (float)P1.z);
 
 				writeFloat(outStream, (float)P4.x);
 				writeFloat(outStream, (float)P4.y);
@@ -2309,13 +2309,13 @@ void Body::exportSTLBinaryFlatPanels(QDataStream &outStream)
 				writeFloat(outStream, (float)N.y);
 				writeFloat(outStream, (float)N.z);
 
-				writeFloat(outStream, (float)P4.x);
-				writeFloat(outStream, (float)P4.y);
-				writeFloat(outStream, (float)P4.z);
-
 				writeFloat(outStream, (float)P2.x);
 				writeFloat(outStream, (float)P2.y);
 				writeFloat(outStream, (float)P2.z);
+
+				writeFloat(outStream, (float)P4.x);
+				writeFloat(outStream, (float)P4.y);
+				writeFloat(outStream, (float)P4.z);
 
 				writeFloat(outStream, (float)P3.x);
 				writeFloat(outStream, (float)P3.y);

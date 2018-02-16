@@ -28,13 +28,14 @@
 
 #include <QDialog>
 #include <QEventLoop>
-
+#include <QShowEvent>
 #include <QString>
 #include <QFile>
 #include <QTextEdit>
 #include <QPushButton>
 #include <QCheckBox>
 #include <QPoint>
+
 #include <xdirect/analysis/XFoilTask.h>
 #include <xdirect/analysis/xfoiltaskevent.h>
 

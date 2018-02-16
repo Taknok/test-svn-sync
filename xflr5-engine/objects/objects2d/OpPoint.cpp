@@ -38,6 +38,16 @@ OpPoint::OpPoint()
 	m_bTEFlap      = false;
 	m_bLEFlap      = false;
 
+	m_Alpha    = 0.0;
+	m_Reynolds = 0.0;
+	m_Mach     = 0.0;
+	ACrit      = 0.0;
+	Cd         = 0.0;
+	Cdp        = 0.0;
+	Cl         = 0.0;
+	Cm         = 0.0;
+
+
 	Xtr1   = 0.0;
 	Xtr2   = 0.0;
 	XForce = 0.0;
