@@ -1515,3 +1515,24 @@ void Foil::setColor(int r, int g, int b, int a)
 
 
 
+/** For debug purposes only */
+void Foil::displayCoords(bool bBaseCoords)
+{
+	if(bBaseCoords)
+	{
+		for(int i=0; i<nb; i++)
+		{
+			qDebug(" %13.5f   %13.5f", xb[i], yb[i]);
+		}
+	}
+	else
+	{
+		for(int i=0; i<n; i++)
+		{
+			qDebug(" %13.5f   %13.5f", x[i], y[i]);
+		}
+	}
+}
+
+
+

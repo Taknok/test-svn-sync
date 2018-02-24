@@ -116,6 +116,9 @@ public:
 	int iHighLight() {return m_iHighLight;}
 	void setHighLight(int iH) {m_iHighLight = iH;}
 
+	void displayCoords(bool bBaseCoords=false);
+
+
 public:
 	// Base geometry;
    int nb;                              /**< the number of points of the base foil */

@@ -19,6 +19,7 @@
 
 *****************************************************************************/
 
+#include <QDebug>
 #include <QGroupBox>
 #include <QVBoxLayout>
 #include "InterpolateFoilsDlg.h"
@@ -262,6 +263,14 @@ void InterpolateFoilsDlg::update()
 	pXFoil->interpolate(pFoil1->x, pFoil1->y, pFoil1->n,
 						pFoil2->x, pFoil2->y, pFoil2->n,
 						m_Frac/100.0);
+/*
+qDebug()<<pFoil1->foilName();
+pFoil1->displayCoords();
+qDebug()<<"________";
+qDebug()<<pFoil2->foilName();
+pFoil2->displayCoords(false);
+qDebug()<<"________";*/
+
 
 	for (int j=0; j< pFoil1->n; j++)
 	{
@@ -270,6 +279,7 @@ void InterpolateFoilsDlg::update()
 		m_pBufferFoil->xb[j] = pXFoil->xb[j+1];
 		m_pBufferFoil->yb[j] = pXFoil->yb[j+1];
 	}
+
 	m_pBufferFoil->n  = pFoil1->n;
 	m_pBufferFoil->nb = pFoil1->n;
 

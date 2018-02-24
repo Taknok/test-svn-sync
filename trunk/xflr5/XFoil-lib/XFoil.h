@@ -2,7 +2,7 @@
 
     XFoil Class
 	Copyright (C) 2000 Mark Drela 
-	Copyright (C) 2003 Andre Deperrois adeperrois@xflr5.com
+	Copyright (C) 2003 Andre Deperrois techwinder@gmail.com
 	
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -93,7 +93,7 @@ public:
 	void ExecMDES();
 	bool ExecQDES();
 	bool initialize();
-	bool initXFoilGeometry(int &fn, double *fx, double *fy, double *fnx, double *fny);
+	bool initXFoilGeometry(int fn, double *fx, double *fy, double *fnx, double *fny);
 	bool initXFoilAnalysis(double Re, double alpha, double Mach, double NCrit, double XtrTop, double XtrBot,
 								  int reType, int maType, bool bViscous, QTextStream &outStream);
 
@@ -105,10 +105,10 @@ public:
 	double qcomp(double g);
 	bool clcalc(double xref, double yref);
 
-	void CreateXBL(double xs[IVX][3]);
-	void FillHk(double ws[IVX][3]);
-	void FillRTheta(double ws[IVX][3]);
-	void WriteString(QString str, bool bFullReport = false);
+	void createXBL(double xs[IVX][3]);
+	void fillHk(double ws[IVX][3]);
+	void fillRTheta(double ws[IVX][3]);
+	void writeString(QString str, bool bFullReport = false);
 	double DeRotate();
 	bool specal();
 	bool speccl();
@@ -154,7 +154,7 @@ private:
 	void cnfilt(double ffilt);
 	void RestoreQDES();
 
-	bool SetMach();
+	bool setMach();
 	void scheck(double x[], double y[], int *n, double stol, bool *lchange);
 	void sss(double ss, double *s1, double *s2, double del, double xbf, double ybf,	double x[], double xp[], double y[], double yp[], double s[],int n, int iside);
 	bool inside(double xb[], double yb[], int nb, double xbf, double ybf);
@@ -173,8 +173,8 @@ private:
 	bool aecalc(int n, double x[], double y[], double t[], int itype, double &area,
 				double &xcen, double &ycen, double &ei11, double &ei22, double &apx1, double &apx2);
 	bool apcalc();
-	bool axset( double hk1, double t1, double rt1, double a1,
-				double hk2, double t2, double rt2, double a2,
+	bool axset( double hk1, double thet1, double rt1, double a1,
+				double hk2, double thet2, double rt2, double a2,
 				double acrit, double &ax,
 				double &ax_hk1, double &ax_t1, double &ax_rt1, double &ax_a1,
 				double &ax_hk2, double &ax_t2, double &ax_rt2, double &ax_a2);
@@ -294,6 +294,7 @@ public:
 	double xb[IBX],yb[IBX],nx[IZX],ny[IZX];
 	double xpref1,xpref2;
 	double cvpar,cterat,ctrrat,xsref1,xsref2;
+
 	double cl,cm,cd,cdp,cdf,cpi[IZX],cpv[IZX],acrit;
 	double xcp;
 	double alfa, avisc, awake, reinf1, qinf, mvisc, rmsbl, ante;
@@ -322,14 +323,15 @@ public:
 	double xp[IZX],yp[IZX],s[IZX];
 	double dtor;
 
-
 	double thet[IVX][ISX],tau[IVX][ISX],ctau[IVX][ISX],ctq[IVX][ISX];
 	double dis[IVX][ISX],uedg[IVX][ISX];
 	double xbl[IVX][ISX], Hk[IVX][ISX], RTheta[IVX][ISX];
 	double dstr[IVX][ISX];
+	double delt[IVX][ISX];
 	int m_nSide1, m_nSide2;
 	int itran[ISX];
 
+	double m_ctrl; /** information storage for xflr5 gui */
 
 private:
 
@@ -373,7 +375,7 @@ private:
 //	bool lppsho,lplot,lclip,lvlab,lcurs,lcminp, lhmomp,lland;
 //	bool lplcam,lgparm,lnorm,,lgsym,lgslop, lcslop,lclock,
 	bool limage,lgamu,sharp,lqaij,ladij,lwdij;
-	bool lqinu,lgsame;// ???
+	bool lqinu,lgsame;//???
 //	bool lgtick, lplegn,,lplist, lpgrid,lblgrd,lblsym,
 //	     lcpgrd,lggrid,lgeopl, lpcdw,lqsppl, liqset, lqgrid;
 
@@ -414,7 +416,6 @@ private:
 	double cpmni,cpmnv,xcpmni,xcpmnv;
 	double arad;//added arcds
 	double xssi[IVX][ISX],uinv[IVX][ISX],mass[IVX][ISX];
-	double delt[IVX][ISX];
 	double uslp[IVX][ISX],guxq[IVX][ISX],guxd[IVX][ISX];
 	double vti[IVX][ISX];
 	double xssitr[ISX],uinv_a[IVX][ISX];
@@ -439,7 +440,7 @@ private:
 	double dwte, qinfbl, tkbl, tkbl_ms, rstbl, rstbl_ms, hstinv, hstinv_ms;
 	double reybl, reybl_ms, reybl_re, gambl, gm1bl, hvrat, bule, xiforc, amcrit;
 
-	double x2,  u2,  t2,  d2,  s2, ampl2, u2_uei, u2_ms, dw2,
+	double x2, u2, theta2, d2, s2, ampl2, u2_uei, u2_ms, dw2,
 		h2, h2_t2, h2_d2, m2, m2_u2,m2_ms, r2, r2_u2,r2_ms,
 		v2, v2_u2,v2_ms,v2_re, hk2, hk2_u2, hk2_t2, hk2_d2,hk2_ms, 
 		hs2, hs2_u2, hs2_t2, hs2_d2,hs2_ms, hs2_re, hc2, hc2_u2,
@@ -449,7 +450,7 @@ private:
 		us2_d2,us2_ms, us2_re, cq2, cq2_u2, cq2_t2, cq2_d2,cq2_ms,
 		cq2_re, de2, de2_u2, de2_t2, de2_d2,de2_ms;
 
-	double x1, u1, t1, d1, s1, ampl1, u1_uei, u1_ms, dw1, h1, h1_t1, h1_d1,
+	double x1, u1, theta1, d1, s1, ampl1, u1_uei, u1_ms, dw1, h1, h1_t1, h1_d1,
 		m1, m1_u1,m1_ms,r1, r1_u1,r1_ms,v1, v1_u1,v1_ms, v1_re,hk1, hk1_u1,
 		hk1_t1, hk1_d1,hk1_ms,hs1, hs1_u1, hs1_t1, hs1_d1,hs1_ms, hs1_re,
 		hc1, hc1_u1, hc1_t1, hc1_d1,hc1_ms, rt1, rt1_u1, rt1_t1,rt1_ms,
@@ -462,7 +463,7 @@ private:
 	double  xsf,ysf;
 //	QString vmxbl;
 
-//	double cpol[800][iptot][9],cpolsd[800][3][jptot][9];//what's iptot ???
+//	double cpol[800][iptot][9],cpolsd[800][3][jptot][9];//what's iptot???
 //	double xpref[300],cpref[300], verspol[9],cpolxy[300][2][9]
 //	double machp1[9], reynp1[9],acritp[9],xstripp[3][9],cpolref[128][2][4][9];
 	double cfm, cfm_ms, cfm_re, cfm_u1, cfm_t1, cfm_d1, cfm_u2, cfm_t2, cfm_d2;
