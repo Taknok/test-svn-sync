@@ -82,7 +82,8 @@ void XFoilTask::run()
 	m_bIsFinished = true;
 
 	// For multithreaded analysis, post an event to notify parent window that the task is done
-	qApp->postEvent((QObject*)m_pParent, new XFoilTaskEvent(m_pFoil, m_pPolar));
+	if(m_pParent)
+		qApp->postEvent((QObject*)m_pParent, new XFoilTaskEvent(m_pFoil, m_pPolar));
 }
 
 /**
@@ -283,8 +284,11 @@ bool XFoilTask::alphaSequence()
 				m_bErrors = true;
 			}
 
-			XFoil *pXFoil = new XFoil(XFoilInstance);
-			qApp->postEvent((QObject*)m_pParent, new XFoilOppEvent(m_pFoil, m_pPolar, pXFoil));
+			if(m_pParent)
+			{
+				XFoil *pXFoil = new XFoil(XFoilInstance);
+				qApp->postEvent((QObject*)m_pParent, new XFoilOppEvent(m_pFoil, m_pPolar, pXFoil));
+			}
 
             if(XFoil::s_bFullReport)
 			{
@@ -381,8 +385,11 @@ bool XFoilTask::ReSequence()
 
 		m_Iterations = 0;
 
-		XFoil *pXFoil = new XFoil(XFoilInstance);
-		qApp->postEvent((QObject*)m_pParent, new XFoilOppEvent(m_pFoil, m_pPolar, pXFoil));
+		if(m_pParent)
+		{
+			XFoil *pXFoil = new XFoil(XFoilInstance);
+			qApp->postEvent((QObject*)m_pParent, new XFoilOppEvent(m_pFoil, m_pPolar, pXFoil));
+		}
 
         if(XFoil::s_bFullReport)
 		{
@@ -487,7 +494,7 @@ bool XFoilTask::iterate()
  */
 void XFoilTask::traceLog(QString str)
 {
-	if(m_OutStream.device())
+	if(m_OutStream.device() || m_OutStream.string())
 	{
 		m_OutStream << str;
 		m_OutMessage += str;

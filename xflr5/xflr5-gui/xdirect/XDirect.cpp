@@ -3258,25 +3258,18 @@ void QXDirect::onNacaFoils()
 
 		if(addNewFoil(pNacaFoil))
 		{
+			setFoil(pNacaFoil);
+			s_pMainFrame->updateFoilListBox();
+			emit projectModified();
+			updateView();
+			return;
 		}
-		else
-		{
-			delete pNacaFoil;
-		}
-
-		setFoil(pNacaFoil);
-		s_pMainFrame->updateFoilListBox();
-		emit projectModified();
 	}
-	else
-	{
-		delete pNacaFoil;
-		setCurFoil(pCurFoil);
-		setCurOpp(pCurOpp);
-//		Foil *pFoil = m_pCurFoil;
-		if(m_pCurFoil)	m_XFoil.initXFoilGeometry(m_pCurFoil->n, m_pCurFoil->x,m_pCurFoil->y, m_pCurFoil->nx, m_pCurFoil->ny);
-	}
-	setControls();
+	//reset everything
+	setCurFoil(pCurFoil);
+	setCurOpp(pCurOpp);
+	m_XFoil.initXFoilGeometry(pCurFoil->n, pCurFoil->x, pCurFoil->y, pCurFoil->nx, pCurFoil->ny);
+	delete pNacaFoil;
 	updateView();
 }
 
