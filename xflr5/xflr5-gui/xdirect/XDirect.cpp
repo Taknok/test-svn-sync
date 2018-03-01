@@ -2922,7 +2922,7 @@ Polar * QXDirect::importXFoilPolar(QFile & txtFile)
 		return NULL;
 	}
 
-	pPolar->XtrTop() = strong.mid(9,6).toDouble(&bOK);
+	pPolar->XtrBot() = strong.mid(9,6).toDouble(&bOK);
 	if(!bOK)
 	{
 		str = QString("Error reading Bottom Transition value at line %1. The polar(s) will not be stored").arg(Line);
