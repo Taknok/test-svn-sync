@@ -21,7 +21,7 @@
 
 #include "Frame.h"
 #include <math.h>
-#include <engine_params.h>
+#include <analysis3d_params.h>
 
 
 int Frame::s_iHighlight = -1;

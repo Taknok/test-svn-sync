@@ -160,6 +160,7 @@ public:
 	double aspectRatio()  {return m_Wing[0].m_AR;}
 	double taperRatio()   {return m_Wing[0].m_TR;}
 
+	int spanStationCount();
 
 	bool &hasBody()       {return m_bBody;}
 	bool &hasElevator()   {return m_bStab;}

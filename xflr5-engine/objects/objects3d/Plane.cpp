@@ -867,3 +867,16 @@ bool Plane::serializePlaneXFL(QDataStream &ar, bool bIsStoring)
 }
 
 
+int Plane::spanStationCount()
+{
+	// check the number of span spations
+	int nSpanStations = 0;
+	for(int iw=0; iw<MAXWINGS; iw++)
+	{
+		if(wing(iw))	nSpanStations = wing()->m_NStation;
+	}
+	return nSpanStations;
+}
+
+
+
