@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 #include <QtDebug>
-#include <engine_params.h>
+#include <analysis3d_params.h>
 #include "NURBSSurface.h"
 
 

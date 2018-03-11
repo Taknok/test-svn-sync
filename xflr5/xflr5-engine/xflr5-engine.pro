@@ -55,7 +55,6 @@ SOURCES += objects/objects_global.cpp \
     analysis3d/matrix.cpp
 
 HEADERS += \
-    objects/engine_params.h \
     objects/objects_global.h \
     objects/objects2d/Foil.h \
     objects/objects2d/OpPoint.h \
