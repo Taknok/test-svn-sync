@@ -210,6 +210,16 @@ void PanelAnalysisDlg::analyze()
 
 	m_pctrlProgress->setMaximum(100000);
 
+	clock.start(); // put some pressure
+
+	QString strange = "\n" + QString(VERSIONNAME) +"\n";
+	updateOutput(strange);
+	QDateTime dt = QDateTime::currentDateTime();
+	strange = dt.toString("dd.MM.yyyy  hh:mm:ss\n\n");
+	updateOutput(strange);
+	strange = "Launching Analysis\n\n";
+	updateOutput(strange);
+
 
 	connect(&m_Timer, SIGNAL(timeout()), this, SLOT(onProgress()));
 	m_Timer.setInterval(250);
@@ -271,14 +281,14 @@ void PanelAnalysisDlg::cleanUp()
 	if(pXFile->open(QIODevice::WriteOnly | QIODevice::Text))
 	{
 		QTextStream outstream(pXFile);
-		outstream << "\n";
-		outstream << VERSIONNAME;
-		outstream << "\n";
-		QDateTime dt = QDateTime::currentDateTime();
-		QString str = dt.toString("dd.MM.yyyy  hh:mm:ss");
-		outstream << str<<"\n\n";
 
 		outstream << m_pctrlTextOutput->toPlainText();
+		outstream << "\n";
+		QDateTime dt = QDateTime::currentDateTime();
+		QString str = dt.toString(Qt::DefaultLocaleLongDate);
+		outstream << "Analysis ended "<<str<<"\n";
+		outstream << "Elapsed: "<<(double)clock.elapsed()/1000.0<<"s";
+		outstream << "\n";
 		outstream.flush();
 		pXFile->close();
 	}

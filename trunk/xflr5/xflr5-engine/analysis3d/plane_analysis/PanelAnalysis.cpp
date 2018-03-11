@@ -21,7 +21,8 @@
 *****************************************************************************/
 
 
-#include <QtDebug>
+#include <QDebug>
+#include <QTime>
 #include <QThread>
 #include <QCoreApplication>
 
@@ -2117,6 +2118,9 @@ bool PanelAnalysis::solveUnitRHS()
 	double taskTime = 400.0;
 	int Size = m_MatSize;
 
+	QTime t;
+	t.start();
+
 	memcpy(m_RHS,      m_uRHS, Size * sizeof(double));
 	memcpy(m_RHS+Size, m_wRHS, Size * sizeof(double));
 
@@ -2131,6 +2135,11 @@ bool PanelAnalysis::solveUnitRHS()
 	traceLog("      Solving the LU system...\n");
 	Crout_LU_with_Pivoting_Solve(m_aij, m_uRHS, m_Index, m_RHS,      Size, &s_bCancel);
 	Crout_LU_with_Pivoting_Solve(m_aij, m_wRHS, m_Index, m_RHS+Size, Size, &s_bCancel);
+
+	QString strange;
+	strange.sprintf("      Time for matrix inversion: %.3f s\n", (double)t.elapsed()/1000.0);
+//	qDebug(strange.toStdString().c_str());
+	traceLog(strange);
 
 	memcpy(m_uRHS, m_RHS,           m_MatSize*sizeof(double));
 	memcpy(m_wRHS, m_RHS+m_MatSize, m_MatSize*sizeof(double));
@@ -2148,6 +2157,7 @@ bool PanelAnalysis::solveUnitRHS()
 		}
 		if(s_bCancel) return false;
 	}
+
 
 	return true;
 }

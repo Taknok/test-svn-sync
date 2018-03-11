@@ -45,7 +45,7 @@
 */
 
 
-#include <engine_params.h>
+#include <analysis3d_params.h>
 #include <analysis3d_enums.h>
 #include <QString>
 #include <QColor>

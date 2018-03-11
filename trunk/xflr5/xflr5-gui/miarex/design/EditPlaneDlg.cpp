@@ -482,22 +482,28 @@ void EditPlaneDlg::glMake3DObjects()
 
 void EditPlaneDlg::onOK()
 {
-	int j;
-
 	readPlaneTree();
 
 	m_pPlane->computePlane();
 
+	int nstations = m_pPlane->spanStationCount();
+	if(nstations>MAXSPANSTATIONS)
+	{
+		QString strange;
+		strange.sprintf("The total number of span stations is %3d. Cannot exceed %3d. \n Please reduce the number of panels in the Y direction.",  nstations, MAXSPANSTATIONS);
+		QMessageBox::warning(this, tr("Warning"), strange);
+		return;
+	}
 
 	//check the number of surfaces
-	int nSurfaces = 0;
-	for (j=0; j<m_pPlane->wing()->NWingSection()-1; j++)
+/*	int nSurfaces = 0;
+	for (int j=0; j<m_pPlane->wing()->NWingSection()-1; j++)
 	{
 		if(qAbs(m_pPlane->wing()->YPosition(j)-m_pPlane->wing()->YPosition(j+1)) > Wing::s_MinPanelSize) nSurfaces+=2;
 	}
 	if(m_pPlane->stab())
 	{
-		for (j=0; j<m_pPlane->stab()->NWingSection()-1; j++)
+		for (int j=0; j<m_pPlane->stab()->NWingSection()-1; j++)
 		{
 			if(qAbs(m_pPlane->stab()->YPosition(j)-m_pPlane->stab()->YPosition(j+1)) > Wing::s_MinPanelSize) nSurfaces+=2;
 		}
@@ -505,7 +511,7 @@ void EditPlaneDlg::onOK()
 
 	if(m_pPlane->fin())
 	{
-		for (j=0; j<m_pPlane->fin()->NWingSection()-1; j++)
+		for (int j=0; j<m_pPlane->fin()->NWingSection()-1; j++)
 		{
 			if(qAbs(m_pPlane->fin()->YPosition(j)-m_pPlane->fin()->YPosition(j+1)) > Wing::s_MinPanelSize)
 			{
@@ -515,7 +521,7 @@ void EditPlaneDlg::onOK()
 					nSurfaces += 1;
 			}
 		}
-	}
+	}*/
 
 	m_pPlane->computeBodyAxisInertia();
 

@@ -16,10 +16,12 @@
 
 
 
-xflr5 v6.41 February xxxth, 2018
+xflr5 v6.41 March xxxth, 2018
 	- added an option to import/export wings to xml format
 	- corrected the export of flat panel bodies to STL to avoid null triangles
+	- raised the max cumulated number of span stations from 250 to 1000 for a plane
 	- code cleaning
+
 
 xflr5 v6.40 January 7th, 2018
 	- fixed a bug which caused a stability analysis to calculate the operating point with the aoa

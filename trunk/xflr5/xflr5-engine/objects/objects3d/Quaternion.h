@@ -44,7 +44,7 @@ Home made class. Since it was written, Qt has developed and provided a QQuaterni
 */
 
 #include <objects2d/Vector3d.h>
-#include "engine_params.h"
+#include "analysis3d_params.h"
 
 class Quaternion
 {

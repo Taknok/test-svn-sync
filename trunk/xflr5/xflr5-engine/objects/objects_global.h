@@ -24,7 +24,7 @@
 
 #endif // OBJECTS_GLOBAL_H
 
-#include "engine_params.h"
+#include "analysis3d_params.h"
 #include <objects2d/Vector3d.h>
 #include <complex>
 
