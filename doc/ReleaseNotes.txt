@@ -7,7 +7,7 @@
                      A tool for the design of Airfoils, Wings and Planes
                           operating at low Reynolds numbers
 
-								 Copyright (C) 2003-2017
+								 Copyright (C) 2003-2018
 
                                      Andre Deperrois
 
@@ -21,6 +21,7 @@
 
 
 xflr5 v6.41 March xxxth, 2018
+	- corrected the color scale of panel forces in the 3d view; was proportional to q.S.Cp instead of q.Cp
 	- added an option to import/export wings to xml format
 	- corrected the export of flat panel bodies to STL to avoid null triangles
 	- raised the max cumulated number of span stations from 250 to 1000 for a plane
