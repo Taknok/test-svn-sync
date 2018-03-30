@@ -2,7 +2,7 @@
 
 	XFLR5 Application
 
-	Copyright (C) 2008-2018 Andre Deperrois adeperrois@xflr5.com
+	Copyright (C) 2008-2018 Andre Deperrois techwinder@users.sourceforge.net
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 
 *****************************************************************************/
 
+
 #include "XFLR5Application.h"
 #include "mainframe.h"
 #include "gui_params.h"
@@ -34,7 +35,6 @@
 int main(int argc, char *argv[])
 {
 //	QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL);
-
 
 #ifdef Q_OS_MACX
 	/*

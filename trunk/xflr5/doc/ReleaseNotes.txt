@@ -14,6 +14,10 @@
 
 *******************************************************************************
 
+@todo
+ - check windnormal everywhere
+ - restore panels after setcontrolpositions in stab analysis
+ - check m_bJointRight in Wing::createsurfaces
 
 
 xflr5 v6.41 March xxxth, 2018

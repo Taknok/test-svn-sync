@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	Miarex
-			Copyright (C) 2008-2017 Andre Deperrois adeperrois@xflr5.com
+			Copyright (C) 2008-2017 Andre Deperrois 
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -8275,13 +8275,16 @@ void QMiarex::paintPanelForceLegendText(QPainter &painter)
 		{
 			for (p=0; p<pWing(iw)->m_MatSize; p++)
 			{
-				rmax = qMax(rmax, pWOppList[iw]->m_dCp[p]*pWing(iw)->m_pWingPanel[p].area());
-				rmin = qMin(rmin, pWOppList[iw]->m_dCp[p]*pWing(iw)->m_pWingPanel[p].area());
+				rmax = qMax(rmax, pWOppList[iw]->m_dCp[p]);
+				rmin = qMin(rmin, pWOppList[iw]->m_dCp[p]);
 			}
 		}
 	}
-	rmin *= 0.5*m_pCurWPolar->density() *pWOppList[0]->m_QInf*pWOppList[0]->m_QInf  *Units::PatoUnit();
-	rmax *= 0.5*m_pCurWPolar->density() *pWOppList[0]->m_QInf*pWOppList[0]->m_QInf  *Units::PatoUnit();
+
+	double qdyn = 0.5*m_pCurWPolar->density() *pWOppList[0]->m_QInf*pWOppList[0]->m_QInf;
+
+	rmin *= qdyn *Units::PatoUnit();
+	rmax *= qdyn *Units::PatoUnit();
 	range = rmax - rmin;
 
 
