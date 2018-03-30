@@ -1,7 +1,7 @@
 /****************************************************************************
 
     Panel Class
-	Copyright (C) 2006-2016 Andre Deperrois adeperrois@xflr5.com
+	Copyright (C) 2006-2016 Andre Deperrois 
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -91,7 +91,10 @@ public:
 	Vector3d localToGlobal(Vector3d const &VTest);
 
 	double width();
-	double area(){return Area;}
+	double area() const {return Area;}
+	Vector3d ctrlPt() const {return CtrlPt;}
+	Vector3d collPt() const {return CollPt;}
+	Vector3d normal() const {return Normal;}
 
 	static void setCoreSize(double CoreSize) { s_CoreSize=CoreSize;	}
 	static double coreSize() { return s_CoreSize; }
