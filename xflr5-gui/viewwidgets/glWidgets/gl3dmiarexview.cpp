@@ -1935,8 +1935,9 @@ void gl3dMiarexView::glMakePanelForces(int nPanels, Panel *pPanel, WPolar *pWPol
 		rmin = qMin(rmin, Cp[p] );
 	}
 
-	rmin *= 0.5*pWPolar->density() *pPOpp->m_QInf*pPOpp->m_QInf;
-	rmax *= 0.5*pWPolar->density() *pPOpp->m_QInf*pPOpp->m_QInf;
+	double qdyn = 0.5*pWPolar->density() *pPOpp->m_QInf*pPOpp->m_QInf;
+	rmin *= qdyn;
+	rmax *= qdyn;
 	range = rmax - rmin;
 
 	// vertices array size:
@@ -1951,7 +1952,7 @@ void gl3dMiarexView::glMakePanelForces(int nPanels, Panel *pPanel, WPolar *pWPol
 	int iv=0;
 	for (p=0; p<nPanels; p++)
 	{
-		force = 0.5*pWPolar->density() *pPOpp->m_QInf*pPOpp->m_QInf * Cp[p];
+		force = qdyn * Cp[p];
 		color = (force-rmin)/range;
 
 		//scale force for display

@@ -2,7 +2,7 @@
 
         XFLR5Application Class
 
-    Copyright (C) 2008 Andre Deperrois adeperrois@xflr5.com
+    Copyright (C) 2008 Andre Deperrois 
                        Francesco Meschia francesco.meschia@gmail.com
 
     This program is free software; you can redistribute it and/or modify
