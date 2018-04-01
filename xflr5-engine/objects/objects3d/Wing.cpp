@@ -473,7 +473,7 @@ void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
 
 	//the mass density is assumed to be homogeneous
 
-	//the local weight is proportional to the chord x foil area
+	//the local mass is proportional to the chord x foil area
 	//the foil's area is interpolated
 
 	//we consider the whole wing, i.e. all left and right surfaces
@@ -515,7 +515,7 @@ void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
 				PointNormal = Diag1 * Diag2;
 
 				ElemArea = PointNormal.VAbs()/2.0;
-				if(ElemArea>PRECISION)	ElemVolume[p] = ElemArea * LocalSpan;
+				if(ElemArea>0.0) ElemVolume[p] = ElemArea * LocalSpan;
 				else
 				{
 					//no area, means that the foils have not yet been defined for this surface
