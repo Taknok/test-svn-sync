@@ -699,9 +699,14 @@ double Surface::stripSpanPos(int k)
  */
 double Surface::twist(int k)
 {
-	getPanel(k, 0, MIDSURFACE);
+/*	getPanel(k, 0, MIDSURFACE);
 	double y = (LA.y+LB.y+TA.y+TB.y)/4.0;
-	return  m_TwistA + (m_TwistB-m_TwistA) *(y-m_LA.y)/(m_LB.y-m_LA.y);
+	return  m_TwistA + (m_TwistB-m_TwistA) *(y-m_LA.y)/(m_LB.y-m_LA.y);*/
+
+	double y1=0.0, y2=0.0;
+	getYDist(k, y1, y2);
+	double tau = (y1+y2)/2.0;
+	return m_TwistA *(1.0-tau) + m_TwistB*tau;
 }
 
 

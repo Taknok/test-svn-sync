@@ -216,7 +216,7 @@ WPolar* PlaneAnalysisTask::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar)
 			if(pWingList[iw])
 			{
 				pWingList[iw]->computeChords();
-
+//for(int i=0; i<pWingList[iw]->m_NStation; i++) qDebug()<<"twist"<<pWingList[iw]->m_Twist[i];
 				NStation = 0;
 				m=0;
 				SpanPos = 0;

@@ -824,12 +824,11 @@ void QMiarex::createCpCurves()
 */
 void QMiarex::createWOppCurves()
 {
-	int i,k;
 	for(int ig=0; ig<MAXWINGGRAPHS; ig++) m_WingGraph[ig]->deleteCurves();
 
 	// Browse through the array of plane operating points
 	// add a curve for those selected, and fill them with data
-	for (k=0; k<m_poaPOpp->size(); k++)
+	for (int k=0; k<m_poaPOpp->size(); k++)
 	{
 		PlaneOpp *pPOpp = m_poaPOpp->at(k);
 		if (pPOpp->isVisible() && (!m_bCurPOppOnly || (m_pCurPOpp==pPOpp)))
@@ -868,7 +867,7 @@ void QMiarex::createWOppCurves()
 		else
 		{
 			lift=0.0;
-			for (i=nStart; i<m_pCurPOpp->m_NStation; i++)
+			for (int i=nStart; i<m_pCurPOpp->m_NStation; i++)
 			{
 				x = m_pCurPOpp->m_pPlaneWOpp[0]->m_SpanPos[i]/m_pCurPlane->span()*2.0;
 				y = sqrt(1.0 - x*x);
@@ -907,7 +906,7 @@ void QMiarex::createWOppCurves()
 		else
 		{
 			lift=0.0;
-			for (i=nStart; i<m_pCurPOpp->m_NStation; i++)
+			for (int i=nStart; i<m_pCurPOpp->m_NStation; i++)
 			{
 				x = m_pCurPOpp->m_pPlaneWOpp[0]->m_SpanPos[i];
 				y = pow(1.0-x*x/b2/b2, m_BellCurveExp);
@@ -1418,7 +1417,7 @@ void QMiarex::fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 {
 	if(!pWOpp || !pGraph || !pCurve) return;
 	int Var = pGraph->yVariable();
-	int nStart, i;
+	int nStart=0;
 
 	if(pWOpp->m_AnalysisMethod==XFLR5::LLTMETHOD) nStart = 1;
 	else nStart = 0;
@@ -1427,7 +1426,7 @@ void QMiarex::fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 	{
 		case 0:
 		{
-			for (i=nStart; i<pWOpp->m_NStation; i++)
+			for (int i=nStart; i<pWOpp->m_NStation; i++)
 			{
 				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_Ai[i]);
 			}
@@ -1436,7 +1435,7 @@ void QMiarex::fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		}
 		case 1:
 		{
-			for (i=nStart; i<pWOpp->m_NStation; i++)
+			for (int i=nStart; i<pWOpp->m_NStation; i++)
 			{
 				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(),
 					pWOpp->m_Alpha + pWOpp->m_Ai[i] + pWOpp->m_Twist[i]);
@@ -1446,7 +1445,7 @@ void QMiarex::fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		}
 		case 2:
 		{
-			for (i=nStart; i<pWOpp->m_NStation; i++)
+			for (int i=nStart; i<pWOpp->m_NStation; i++)
 			{
 				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_Cl[i]);
 			}
@@ -1455,7 +1454,7 @@ void QMiarex::fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		}
 		case 3:
 		{
-			for (i=nStart; i<pWOpp->m_NStation; i++)
+			for (int i=nStart; i<pWOpp->m_NStation; i++)
 			{
 				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_Cl[i] * pWOpp->m_Chord[i]/pWOpp->m_MAChord);
 			}
@@ -1464,7 +1463,7 @@ void QMiarex::fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		}
 		case 4:
 		{
-			for (i=nStart; i<pWOpp->m_NStation; i++)
+			for (int i=nStart; i<pWOpp->m_NStation; i++)
 			{
 				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_PCd[i]);
 			}
@@ -1473,7 +1472,7 @@ void QMiarex::fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		}
 		case 5:
 		{
-			for (i=nStart; i<pWOpp->m_NStation; i++)
+			for (int i=nStart; i<pWOpp->m_NStation; i++)
 			{
 				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_ICd[i]);
 			}
@@ -1482,7 +1481,7 @@ void QMiarex::fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		}
 		case 6:
 		{
-			for (i=nStart; i<pWOpp->m_NStation; i++)
+			for (int i=nStart; i<pWOpp->m_NStation; i++)
 			{
 				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_PCd[i]+ pWOpp->m_ICd[i]);
 			}
@@ -1491,7 +1490,7 @@ void QMiarex::fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		}
 		case 7:
 		{
-			for (i=nStart; i<pWOpp->m_NStation; i++)
+			for (int i=nStart; i<pWOpp->m_NStation; i++)
 			{
 				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), (pWOpp->m_PCd[i]+ pWOpp->m_ICd[i])* pWOpp->m_Chord[i]/pWOpp->m_MAChord);
 			}
@@ -1500,7 +1499,7 @@ void QMiarex::fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		}
 		case 8:
 		{
-			for (i=nStart; i<pWOpp->m_NStation; i++)
+			for (int i=nStart; i<pWOpp->m_NStation; i++)
 			{
 				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_CmAirf[i]);
 			}
@@ -1509,7 +1508,7 @@ void QMiarex::fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		}
 		case 9:
 		{
-			for (i=nStart; i<pWOpp->m_NStation; i++)
+			for (int i=nStart; i<pWOpp->m_NStation; i++)
 			{
 				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_Cm[i]);
 			}
@@ -1518,7 +1517,7 @@ void QMiarex::fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		}
 		case 10:
 		{
-			for (i=nStart; i<pWOpp->m_NStation; i++)
+			for (int i=nStart; i<pWOpp->m_NStation; i++)
 			{
 				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_Re[i]);
 			}
@@ -1527,7 +1526,7 @@ void QMiarex::fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		}
 		case 11:
 		{
-			for (i=nStart; i<pWOpp->m_NStation; i++)
+			for (int i=nStart; i<pWOpp->m_NStation; i++)
 			{
 				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_XTrTop[i]);
 			}
@@ -1536,7 +1535,7 @@ void QMiarex::fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		}
 		case 12:
 		{
-			for (i=nStart; i<pWOpp->m_NStation; i++)
+			for (int i=nStart; i<pWOpp->m_NStation; i++)
 			{
 				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_XTrBot[i]);
 			}
@@ -1545,7 +1544,7 @@ void QMiarex::fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		}
 		case 13:
 		{
-			for (i=nStart; i<pWOpp->m_NStation; i++)
+			for (int i=nStart; i<pWOpp->m_NStation; i++)
 			{
 				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_XCPSpanRel[i]*100.0);
 			}
@@ -1554,7 +1553,7 @@ void QMiarex::fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		}
 		case 14:
 		{
-			for (i=nStart; i<pWOpp->m_NStation; i++)
+			for (int i=nStart; i<pWOpp->m_NStation; i++)
 			{
 				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(),
 								pWOpp->m_BendingMoment[i] * Units::NmtoUnit());
@@ -1566,7 +1565,7 @@ void QMiarex::fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 		}
 		default:
 		{
-			for (i=nStart; i<pWOpp->m_NStation; i++)
+			for (int i=nStart; i<pWOpp->m_NStation; i++)
 			{
 				pCurve->appendPoint(pWOpp->m_SpanPos[i]*Units::mtoUnit(), pWOpp->m_Ai[i]);
 			}
