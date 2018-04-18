@@ -42,22 +42,21 @@ QList<Polar*> *Wing::s_poaPolar = NULL;
  */
 Wing::Wing()
 {
-	memset(m_Ai, 0, sizeof(m_Ai));
+	memset(m_Ai,    0, sizeof(m_Ai));
 	memset(m_Twist, 0, sizeof(m_Twist));
-	memset(m_Cl, 0, sizeof(m_Cl));
-	memset(m_PCd, 0, sizeof(m_PCd));
-	memset(m_ICd, 0, sizeof(m_ICd));
-	memset(m_Cm, 0, sizeof(m_Cm));
-	memset(m_CmAirfoil, 0, sizeof(m_CmAirfoil));
+	memset(m_Cl,    0, sizeof(m_Cl));
+	memset(m_PCd,   0, sizeof(m_PCd));
+	memset(m_ICd,   0, sizeof(m_ICd));
+	memset(m_Cm,    0, sizeof(m_Cm));
+	memset(m_CmAirfoil,  0, sizeof(m_CmAirfoil));
 	memset(m_XCPSpanAbs, 0, sizeof(m_XCPSpanAbs));
 	memset(m_XCPSpanRel, 0, sizeof(m_XCPSpanRel));
-	memset(m_Re, 0, sizeof(m_Re));
-	memset(m_Chord, 0, sizeof(m_Chord));
+	memset(m_Re,     0, sizeof(m_Re));
+	memset(m_Chord,  0, sizeof(m_Chord));
 	memset(m_Offset, 0, sizeof(m_Offset));
 	memset(m_XTrTop, 0, sizeof(m_XTrTop));
 	memset(m_XTrBot, 0, sizeof(m_XTrBot));
 	memset(m_BendingMoment, 0, sizeof(m_BendingMoment));
-	memset(m_Twist, 0, sizeof(m_Twist));
 
 	memset(m_SpanPos, 0, sizeof(m_SpanPos));
 	memset(m_StripArea, 0, sizeof(m_StripArea));
@@ -1029,6 +1028,7 @@ void Wing::computeChords(int NStation)
 				m_Offset[m] = C.x-x0;
 
 				m_Twist[m]  = m_Surface.at(j)->twist(k);
+				Q_ASSERT(!std::isnan(m_Twist[m]));
 				m++;
 			}
 		}
