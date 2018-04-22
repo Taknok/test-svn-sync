@@ -7,20 +7,15 @@
                      A tool for the design of Airfoils, Wings and Planes
                           operating at low Reynolds numbers
 
-								 Copyright (C) 2003-2018
+                                 Copyright (C) 2003-2018
 
                                      Andre Deperrois
 
 
 *******************************************************************************
 
-@todo
- - check windnormal everywhere
- - restore panels after setcontrolpositions in stab analysis
- - check m_bJointRight in Wing::createsurfaces
 
-
-xflr5 v6.41 March xxxth, 2018
+xflr5 v6.41 April 22, 2018
 	- corrected a numerical bug inthe calculation of twist for pure vertical surfaces i.e. dihedral=90°;
 	  would formerly cause a division by zero and lead to inconsistent results
 	- corrected a precision issue in the estimation of wing inertia which could lead to underestimation of the total volume.
