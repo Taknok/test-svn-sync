@@ -69,9 +69,6 @@ void WAdvancedDlg::setupLayout()
 	szPolicyMinimum.setHorizontalPolicy(QSizePolicy::Minimum);
 	szPolicyMinimum.setVerticalPolicy(QSizePolicy::Minimum);
 
-
-
-
 	QGroupBox *pAllBox = new QGroupBox(tr("All Analysis"));
 	{
 		QHBoxLayout *pAllLayout = new QHBoxLayout;

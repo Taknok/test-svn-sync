@@ -1801,7 +1801,7 @@ void QMiarex::glMake3DObjects()
 				}
 			}
 		}
-		m_bResetglLift = false;
+		m_bResetglDrag = false;
 	}
 
 	if((m_bResetglDownwash || m_bResetglOpp) && m_iView==XFLR5::W3DVIEW)
@@ -2333,7 +2333,8 @@ bool QMiarex::loadSettings(QSettings *pSettings)
 		LLTAnalysis::s_RelaxMax     = pSettings->value("RelaxMax").toDouble();
 		LLTAnalysis::s_NLLTStations = pSettings->value("NLLTStations").toInt();
 
-		PanelAnalysis::s_bTrefftz   = pSettings->value("Trefftz").toBool();
+		PanelAnalysis::s_bTrefftz   = pSettings->value("Trefftz", true).toBool();
+		PanelAnalysis::s_bTrefftz   = true;
 
 		Panel::s_CtrlPos       = pSettings->value("CtrlPos").toDouble();
 		Panel::s_VortexPos     = pSettings->value("VortexPos").toDouble();
