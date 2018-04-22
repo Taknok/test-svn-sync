@@ -89,7 +89,7 @@ void WAdvancedDlg::setupLayout()
 			{
 				m_pctrlMinPanelSize = new DoubleEdit(1.00,5);
 				m_pctrlLength  = new QLabel("");
-				QLabel *lab5 = new QLabel(tr("Ignore wing panels with span <"));
+				QLabel *lab5 = new QLabel(tr("Ignore wing panels with span width <"));
 				lab5->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 				pWingPanelLayout->addStretch(1);
 				pWingPanelLayout->addWidget(lab5);
