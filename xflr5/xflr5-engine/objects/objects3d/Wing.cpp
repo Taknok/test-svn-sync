@@ -512,11 +512,12 @@ void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
 				Diag1 = ATop - CBot;
 				Diag2 = ABot - CTop;
 				PointNormal = Diag1 * Diag2;
-
 				ElemArea = PointNormal.VAbs()/2.0;
+//	qDebug("elemarea  %17.7g", ElemArea);
 				if(ElemArea>0.0) ElemVolume[p] = ElemArea * LocalSpan;
 				else
 				{
+qDebug("elemarea  %17.7g   %17.7g", ElemArea, PRECISION);
 					//no area, means that the foils have not yet been defined for this surface
 					// so just count a unit volume, temporary
 					ElemVolume[p] = 1.0;

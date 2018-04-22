@@ -21,6 +21,9 @@
 
 
 xflr5 v6.41 March xxxth, 2018
+	- corrected a numerical bug inthe calculation of twist for pure vertical surfaces i.e. dihedral=90°;
+	  would formerly cause a division by zero and lead to inconsistent results
+	- corrected a precision issue in the estimation of wing inertia which could lead to underestimation of the total volume.
 	- corrected the color scale of panel forces in the 3d view; was proportional to q.S.Cp instead of q.Cp
 	- added an option to import/export wings to xml format
 	- corrected the export of flat panel bodies to STL to avoid null triangles
