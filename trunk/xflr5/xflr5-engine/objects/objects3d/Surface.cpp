@@ -82,7 +82,6 @@ Surface::Surface()
 	TA.set(0.0,0.0,0.0);
 	LB.set(0.0,0.0,0.0);
 	TB.set(0.0,0.0,0.0);
-
 }
 
 
