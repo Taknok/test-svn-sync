@@ -7793,7 +7793,7 @@ void QMiarex::setWPolar(bool bCurrent, QString WPlrName)
 				m_pCurWPolar->referenceArea()       = m_pCurPlane->planformArea();
 				m_pCurWPolar->referenceSpanLength() = m_pCurPlane->planformSpan();
 			}
-			else if(m_pCurWPolar->referenceDim()==XFLR5::PLANFORMREFDIM)
+			else if(m_pCurWPolar->referenceDim()==XFLR5::PROJECTEDREFDIM)
 			{
 				m_pCurWPolar->referenceArea()       = m_pCurPlane->projectedArea();
 				m_pCurWPolar->referenceSpanLength() = m_pCurPlane->projectedSpan();

@@ -15,8 +15,13 @@
 *******************************************************************************
 
 
+xflr5 v6.42 May xxx 2018
+	- corrected a bug which prevented the reference dimensions of an analysis to be updated when the geometry
+	  is modified by the user
+
+
 xflr5 v6.41 April 22, 2018
-	- corrected a numerical bug inthe calculation of twist for pure vertical surfaces i.e. dihedral=90°;
+	- corrected a numerical bug in the calculation of twist for pure vertical surfaces i.e. dihedral=90°;
 	  would formerly cause a division by zero and lead to inconsistent results
 	- corrected a precision issue in the estimation of wing inertia which could lead to underestimation of the total volume.
 	- corrected the color scale of panel forces in the 3d view; was proportional to q.S.Cp instead of q.Cp
