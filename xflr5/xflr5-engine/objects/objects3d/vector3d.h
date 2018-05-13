@@ -24,10 +24,10 @@
 
 #include <math.h>
 
+#include <xflr5-engine_global.h>
 
 
-#ifndef VECTOR3D_H
-#define VECTOR3D_H
+#pragma once
 
 
 /** @brief
@@ -37,7 +37,7 @@
  * the operations take much longer at run time probably due to the temporary memory allocations.
  * If speed is required, implement directly the vectorial operations component by component in the source code.
  */
-class Vector3d
+class XFLR5ENGINELIBSHARED_EXPORT Vector3d
 {
 public:
 	double x;
@@ -228,4 +228,3 @@ public:
  
 };
 
-#endif

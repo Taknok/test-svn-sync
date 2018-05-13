@@ -75,9 +75,9 @@ HEADERS += \
     objects/objects3d/Wing.h \
     objects/objects3d/WingOpp.h \
     objects/objects3d/WingSection.h \
-    objects/objects3d/WPolar.h \
-    xflr5-engine_global.h \
-    objects/objectcolor.h
+	objects/objects3d/WPolar.h \
+	objects/objectcolor.h \
+	xflr5-engine_global.h
 
 
 
