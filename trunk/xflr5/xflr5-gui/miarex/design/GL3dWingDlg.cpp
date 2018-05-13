@@ -19,12 +19,12 @@
 
 *****************************************************************************/
 
-#include <globals.h>
-#include <miarex/Objects3D.h>
+#include <globals/globals.h>
+#include <miarex/objects3d.h>
 #include <miarex/view/W3dPrefsDlg.h>
 #include <misc/options/displayoptions.h>
 #include <misc/options/Units.h>
-#include <objects3d/Surface.h>
+#include <objects/objects3d/Surface.h>
 #include "GL3dWingDlg.h"
 #include "WingScaleDlg.h"
 #include "InertiaDlg.h"
@@ -32,7 +32,7 @@
 #include "WingScaleDlg.h"
 #include "InertiaDlg.h"
 #include <xdirect/objects2d.h>
-#include <objects_global.h>
+#include <objects/objects_global.h>
 #include <miarex/mgt/XmlPlaneReader.h>
 #include <miarex/mgt/XmlPlaneWriter.h>
 
@@ -141,8 +141,8 @@ bool GL3dWingDlg::checkWing()
 			return false;
 		}
 		WingSection *pSection = m_pWing->m_WingSection.at(k);
-		Foil *pLeftFoil = Objects2D::foil(pSection->m_LeftFoilName);
-		Foil *pRightFoil = Objects2D::foil(pSection->m_RightFoilName);
+		Foil *pLeftFoil = Objects2d::foil(pSection->m_LeftFoilName);
+		Foil *pRightFoil = Objects2d::foil(pSection->m_RightFoilName);
 		if(pLeftFoil )
 		{
 			if((pLeftFoil->m_TEXHinge>=99&& pLeftFoil->m_bTEFlap) ||(pLeftFoil->m_LEXHinge<0.01&&pLeftFoil->m_bLEFlap))
@@ -473,7 +473,7 @@ bool GL3dWingDlg::initDialog(Wing *pWing)
 
 	m_pctrlColor->setChecked(!m_pWing->textures());
 	m_pctrlTextures->setChecked(m_pWing->textures());
-	m_pctrlWingColor->setColor(m_pWing->m_WingColor);
+	m_pctrlWingColor->setColor(color(m_pWing->m_WingColor));
 	m_pctrlWingColor->setEnabled(m_pctrlColor->isChecked());
 
 	m_pctrlWingTable->setFont(Settings::s_TableFont);
@@ -978,15 +978,15 @@ void GL3dWingDlg::onWingColor()
     dialogOptions |= QColorDialog::DontUseNativeDialog;
 #endif
 #endif
-	QColor WingColor = QColorDialog::getColor(m_pWing->wingColor(),
+	QColor clr = QColorDialog::getColor(color(m_pWing->wingColor()),
 									  this, "Color selection", dialogOptions);
-	if(WingColor.isValid())
+	if(clr.isValid())
 	{
-		m_pWing->setWingColor(WingColor);
+		m_pWing->setWingColor(ObjectColor(clr.red(), clr.green(), clr.blue(), clr.alpha()));
 		m_bDescriptionChanged = true;
 	}
 
-	m_pctrlWingColor->setColor(m_pWing->wingColor());
+	m_pctrlWingColor->setColor(color(m_pWing->wingColor()));
 	m_bResetglWing = true;
 	m_pglWingView->update();
 }

@@ -28,8 +28,8 @@
 #define ENGINE_GLOBALS_H
 
 
-#include <Vector3d.h>
-#include <objects2d/Foil.h>
+#include <objects/objects3d/vector3d.h>
+#include <objects/objects2d/Foil.h>
 
 
 using namespace std;

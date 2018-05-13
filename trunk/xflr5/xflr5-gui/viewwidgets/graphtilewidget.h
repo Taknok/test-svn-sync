@@ -24,11 +24,11 @@
 #define GRAPHTILEWIDGET_H
 
 #include <QWidget>
-#include <QGraph.h>
+#include <graph/graph.h>
 #include <QSplitter>
 #include <graphwidget.h>
 #include "legendwidget.h"
-#include <analysis3d_enums.h>
+#include <analysis3d/analysis3d_enums.h>
 
 
 
@@ -42,7 +42,7 @@ public:
 	GraphTileWidget(QWidget *parent = 0);
 	virtual ~GraphTileWidget();
 
-	QGraph *graph(int iGraph);
+	Graph *graph(int iGraph);
 	GraphWidget *graphWidget(int iGraph);
 
 	XFLR5::enumApp xflr5App(){return m_xflr5App;}
@@ -55,12 +55,12 @@ public:
 	void showEvent(QShowEvent *event);
 
 
-	virtual void setGraphList(QList<QGraph*>pGraphList, int nGraphs, int iGraphWidget, Qt::Orientation orientation =Qt::Horizontal);
+	virtual void setGraphList(QList<Graph*>pGraphList, int nGraphs, int iGraphWidget, Qt::Orientation orientation =Qt::Horizontal);
 	virtual void connectSignals() = 0;
 
 
-	GraphWidget *graphWidget(QGraph *pGraph);
-	QGraph *activeGraph();
+	GraphWidget *graphWidget(Graph *pGraph);
+	Graph *activeGraph();
 	GraphWidget *activeGraphWidget();
 
 private:
@@ -69,7 +69,7 @@ private:
 
 
 public slots:
-	void onResetCurves(QGraph *pGraph = NULL);
+	void onResetCurves(Graph *pGraph = NULL);
 
 	void onSingleGraph();
 	void onAllGraphSettings();

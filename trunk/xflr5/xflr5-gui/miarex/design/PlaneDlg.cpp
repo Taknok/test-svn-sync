@@ -29,9 +29,9 @@
 #include <math.h>
 #include <misc/options/displayoptions.h>
 
-#include <globals.h>
+#include <globals/globals.h>
 #include <misc/options/Units.h>
-#include <miarex/Objects3D.h>
+#include <miarex/objects3d.h>
 #include <miarex/mgt/ImportObjectDlg.h>
 #include <miarex/mgt/XmlPlaneReader.h>
 #include "PlaneDlg.h"
@@ -434,7 +434,7 @@ void PlaneDlg::onImportPlaneBody()
 
 	if(dlg.exec() == QDialog::Accepted)
 	{
-		Body *pOldBody = Objects3D::getBody(dlg.m_ObjectName);
+		Body *pOldBody = Objects3d::getBody(dlg.m_ObjectName);
 		if(pOldBody)
 		{
 			m_pPlane->setBody(pOldBody);
@@ -511,7 +511,7 @@ void PlaneDlg::onImportWing()
 	{
 		m_bChanged = true;
 		dlg.m_ObjectName.replace("/Main wing","");
-		Wing *pWing = Objects3D::getWing(dlg.m_ObjectName);
+		Wing *pWing = Objects3d::getWing(dlg.m_ObjectName);
 		if(pWing)
 		{
 			m_pPlane->wing()->duplicate(pWing);
@@ -530,7 +530,7 @@ void PlaneDlg::onImportWing2()
 	if(dlg.exec() == QDialog::Accepted)
 	{
 		m_bChanged = true;
-		Wing *pWing = Objects3D::getWing(dlg.m_ObjectName);
+		Wing *pWing = Objects3d::getWing(dlg.m_ObjectName);
 		if(pWing)
 		{
 			m_pPlane->wing2()->duplicate(pWing);

@@ -25,23 +25,23 @@
 #ifndef PANELANALYSIS_H
 #define PANELANALYSIS_H
 
-#include <Vector3d.h>
-#include <objects3d/Panel.h>
-#include <objects3d/WPolar.h>
-#include <objects3d/Plane.h>
-#include <objects3d/Body.h>
+#include <objects/objects3d/vector3d.h>
+#include <objects/objects3d/Panel.h>
+#include <objects/objects3d/WPolar.h>
+#include <objects/objects3d/Plane.h>
+#include <objects/objects3d/Body.h>
 
 #define VLMMAXRHS 100
 
 
-class PanelAnalysis : QObject
+class XFLR5ENGINELIBSHARED_EXPORT PanelAnalysis : QObject
 {
 	Q_OBJECT
 
 	friend class PanelAnalysisDlg;
 	friend class Wing;
 	friend class Objects3D;
-	friend class QMiarex;
+	friend class Miarex;
 	friend class PlaneAnalysisTask;
 	friend class XflScriptExec;
 

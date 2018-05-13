@@ -19,7 +19,7 @@
 
 *****************************************************************************/
 
-#include <globals.h>
+#include <globals/globals.h>
 #include <misc/options/displayoptions.h>
 #include "LengthUnitDlg.h"
 #include <QGridLayout>

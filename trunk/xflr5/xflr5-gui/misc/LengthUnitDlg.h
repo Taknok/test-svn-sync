@@ -32,7 +32,7 @@ class LengthUnitDlg : public QDialog
 {
 	Q_OBJECT
 	friend class MainFrame;
-	friend class QMiarex;
+	friend class Miarex;
 
 public:
     LengthUnitDlg(QWidget *parent);

@@ -24,7 +24,7 @@
 
 #include <QXmlStreamReader>
 #include <QFile>
-#include <objects2d/Polar.h>
+#include <objects/objects2d/Polar.h>
 
 class XmlPolarReader : public QXmlStreamReader
 {

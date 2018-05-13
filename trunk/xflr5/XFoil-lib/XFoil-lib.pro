@@ -17,9 +17,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 QT       -= gui
 
-TARGET = XFoil-lib
+TARGET = XFoil
 TEMPLATE = lib
-CONFIG += staticlib
 
 DEFINES += XFOILLIB_LIBRARY
 
@@ -41,15 +40,15 @@ macx {
     CONFIG(debug, debug|release) {
         OBJECTS_DIR = ./build/debug
         MOC_DIR = ./build/debug
-                RCC_DIR = ./build/debug
+		RCC_DIR = ./build/debug
         UI_HEADERS_DIR = ./build/debug
     }
-    CONFIG += staticlib
+
     CONFIG += i386
     QMAKE_MAC_SDK = macosx
 }
 
 unix {
-    target.path = /usr/lib
+	target.path = /usr/local/lib64
     INSTALLS += target
 }

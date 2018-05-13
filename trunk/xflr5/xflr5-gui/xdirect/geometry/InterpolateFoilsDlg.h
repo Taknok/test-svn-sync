@@ -29,7 +29,7 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QSlider>
-#include <objects2d/Foil.h>
+#include <objects/objects2d/Foil.h>
 #include <misc/text/DoubleEdit.h>
 
 class InterpolateFoilsDlg : public QDialog

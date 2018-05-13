@@ -36,10 +36,10 @@
 #include "PanelAnalysisDlg.h"
 #include <miarex/Miarex.h>
 #include <misc/options/displayoptions.h>
-#include <globals.h>
-#include <objects2d/Vector3d.h>
+#include <globals/globals.h>
+#include <objects/objects3d/vector3d.h>
 #include <misc/options/Units.h>
-#include <miarex/Objects3D.h>
+#include <miarex/objects3d.h>
 
 QPoint PanelAnalysisDlg::s_Position = QPoint(200,100);
 QSize  PanelAnalysisDlg::s_WindowSize = QSize(900,550);
@@ -76,7 +76,7 @@ void PanelAnalysisDlg::initDialog()
 	m_Progress = 0.0;
 	m_pctrlProgress->setValue(m_Progress);
 	m_pctrlTextOutput->clear();
-	m_pctrlLogFile->setChecked(QMiarex::m_bLogFile);
+	m_pctrlLogFile->setChecked(Miarex::m_bLogFile);
 }
 
 
@@ -112,7 +112,7 @@ void PanelAnalysisDlg::onCancelAnalysis()
 
 void PanelAnalysisDlg::onLogFile()
 {
-	QMiarex::m_bLogFile = m_pctrlLogFile->isChecked();
+	Miarex::m_bLogFile = m_pctrlLogFile->isChecked();
 }
 
 
@@ -253,7 +253,7 @@ void PanelAnalysisDlg::cleanUp()
 		{
 			//add the data to the polar object
 			PlaneOpp *pPOpp = m_pTheTask->m_pthePanelAnalysis->m_PlaneOppList.at(iPOpp);
-			if(PlaneOpp::s_bKeepOutOpps || !pPOpp->isOut())	Objects3D::insertPOpp(pPOpp);
+			if(PlaneOpp::s_bKeepOutOpps || !pPOpp->isOut())	Objects3d::insertPOpp(pPOpp);
 			else
 			{
 				delete pPOpp;

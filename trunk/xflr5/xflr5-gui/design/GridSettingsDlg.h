@@ -33,7 +33,7 @@ class GridSettingsDlg : public QDialog
 {
 	Q_OBJECT
 
-	friend class QAFoil;
+	friend class AFoil;
 	friend class Section2dWidget;
 
 public:

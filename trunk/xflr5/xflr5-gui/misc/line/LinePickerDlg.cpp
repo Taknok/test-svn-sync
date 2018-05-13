@@ -26,7 +26,7 @@
 #include <QGridLayout>
 
 #include "LinePickerDlg.h"
-#include <globals.h>
+#include <globals/globals.h>
 #include <misc/options/displayoptions.h>
 
 

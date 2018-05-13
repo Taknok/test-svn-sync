@@ -30,7 +30,7 @@
 class FoilTableDelegate : public QItemDelegate
 {
 	Q_OBJECT
-	friend class QAFoil;
+	friend class AFoil;
 	friend class ManageFoilsDlg;
 
 public:

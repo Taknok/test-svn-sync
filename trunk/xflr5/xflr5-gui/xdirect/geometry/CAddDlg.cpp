@@ -38,7 +38,7 @@ CAddDlg::CAddDlg(QWidget *pParent) : QDialog(pParent)
 
 	m_iSplineType = 0;
 
-	setupLayout();
+    setupLayout();
 
 	connect(m_pctrlTo,     SIGNAL(editingFinished()), this, SLOT(onApply()));
 	connect(m_pctrlFrom,   SIGNAL(editingFinished()), this, SLOT(onApply()));
@@ -49,6 +49,7 @@ CAddDlg::CAddDlg(QWidget *pParent) : QDialog(pParent)
 	connect(OKButton,      SIGNAL(clicked()),         this, SLOT(accept()));
 	connect(CancelButton,  SIGNAL(clicked()),         this, SLOT(reject()));
 }
+
 
 void CAddDlg::setupLayout()
 {

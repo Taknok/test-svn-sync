@@ -25,7 +25,7 @@
 #include <QGridLayout>
 #include <QColorDialog>
 #include <QPushButton>
-#include <gui_params.h>
+#include <globals/gui_params.h>
 #include "W3dPrefsDlg.h"
 #include <misc/line/LinePickerDlg.h>
 

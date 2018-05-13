@@ -42,7 +42,7 @@
 #include <viewwidgets/glWidgets/ArcBall.h>
 #include <misc/text/DoubleEdit.h>
 #include <misc/color/ColorButton.h>
-#include <objects3d/Wing.h>
+#include <objects/objects3d/Wing.h>
 
 
 
@@ -51,7 +51,7 @@ class GL3dWingDlg: public QDialog
 	Q_OBJECT
 
 	friend class MainFrame;
-	friend class QMiarex;
+	friend class Miarex;
 	friend class gl3dView;
 	friend class gl3dWingView;
 	friend class Wing;

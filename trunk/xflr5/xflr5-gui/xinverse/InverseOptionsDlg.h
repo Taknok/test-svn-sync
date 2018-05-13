@@ -30,7 +30,7 @@ class InverseOptionsDlg:public QDialog
 {
 	Q_OBJECT
 	
-	friend class QXInverse;
+	friend class XInverse;
 
 public:
     InverseOptionsDlg(QWidget *pParent);

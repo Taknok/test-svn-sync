@@ -21,7 +21,7 @@
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QtDebug>
+
 #include "PertDlg.h"
 #include <misc/options/displayoptions.h>
 

@@ -24,7 +24,7 @@
 
 #include <QFile>
 #include <QXmlStreamWriter>
-#include <objects2d/Polar.h>
+#include <objects/objects2d/Polar.h>
 
 class XmlPolarWriter : public QXmlStreamWriter
 {

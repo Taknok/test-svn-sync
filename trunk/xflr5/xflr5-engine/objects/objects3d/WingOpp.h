@@ -45,19 +45,19 @@
 */
 
 
-#include <analysis3d_params.h>
-#include <analysis3d_enums.h>
+#include <analysis3d/analysis3d_params.h>
+#include <analysis3d/analysis3d_enums.h>
 #include <QString>
-#include <QColor>
+
 #include <QTextStream>
 #include <complex>
-#include <objects2d/Vector3d.h>
+#include <objects/objects3d/vector3d.h>
 
 using namespace std;
 
-class WingOpp
+class XFLR5ENGINELIBSHARED_EXPORT WingOpp
 {
-	friend class QMiarex;
+	friend class Miarex;
 	friend class MainFrame;
 	friend class WPolar;
 	friend class PlaneOpp;

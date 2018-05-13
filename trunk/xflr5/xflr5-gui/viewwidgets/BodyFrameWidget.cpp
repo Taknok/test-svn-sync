@@ -19,12 +19,15 @@
 
 *****************************************************************************/
 
-#include <misc/options/displayoptions.h>
-#include <miarex/design/BodyScaleDlg.h>
-#include "BodyFrameWidget.h"
-#include <misc/options/Units.h>
 #include <QPainter>
 #include <QtDebug>
+
+#include "BodyFrameWidget.h"
+#include <misc/options/displayoptions.h>
+#include <miarex/design/BodyScaleDlg.h>
+#include <misc/options/Units.h>
+#include <globals/globals.h>
+
 
 bool BodyFrameWidget::s_bCurFrameOnly = false;
 
@@ -110,7 +113,7 @@ void BodyFrameWidget::drawFrameLines()
 //	xinc = 0.1;
 	hinc = 1.0/(double)(nh-1);
 
-	QPen framePen(m_pBody->bodyColor());
+	QPen framePen(color(m_pBody->bodyColor()));
 	framePen.setWidth(2);
 	painter.setPen(framePen);
 
@@ -203,7 +206,7 @@ void BodyFrameWidget::drawFramePoints()
 	QPainter painter(this);
 	painter.save();
 
-	QPen pointPen(m_pBody->bodyColor());
+	QPen pointPen(color(m_pBody->bodyColor()));
 
 
 	for (int k=0; k<m_pFrame->pointCount();k++)
@@ -216,12 +219,12 @@ void BodyFrameWidget::drawFramePoints()
 		else if(Frame::highlightedIndex()==k)
 		{
 			pointPen.setWidth(4);
-			pointPen.setColor(m_pBody->bodyColor().lighter());
+			pointPen.setColor(color(m_pBody->bodyColor()).lighter());
 		}
 		else
 		{
 			pointPen.setWidth(2);
-			pointPen.setColor(m_pBody->bodyColor());
+			pointPen.setColor(color(m_pBody->bodyColor()));
 		}
 
 		painter.setPen(pointPen);

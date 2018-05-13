@@ -442,7 +442,7 @@ bool OpPoint::serializeOppXFL(QDataStream &ar, bool bIsStoring, int ArchiveForma
 		ar << m_PlrName;
 
 		ar << m_Style << m_Width;
-		writeqColor(ar, m_red, m_green, m_blue, m_alphaChannel);
+		writeQColor(ar, m_red, m_green, m_blue, m_alphaChannel);
 		ar << m_bIsVisible << false;
 
 		ar << m_Reynolds << m_Mach << m_Alpha;
@@ -474,7 +474,7 @@ bool OpPoint::serializeOppXFL(QDataStream &ar, bool bIsStoring, int ArchiveForma
 		ar >> m_PlrName;
 
 		ar >> m_Style >> m_Width;
-		readqColor(ar, m_red, m_green, m_blue, m_alphaChannel);
+		readQColor(ar, m_red, m_green, m_blue, m_alphaChannel);
 		ar >> m_bIsVisible >> boolean;
 
 		ar >> m_Reynolds >> m_Mach >> m_Alpha;

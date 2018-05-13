@@ -43,7 +43,7 @@ The foil is contructed based on one spline for the upper surface and one spline 
 */
 class SplineFoil
 {
-	friend class QAFoil;
+	friend class AFoil;
 	friend class SplineCtrlsDlg;
 	friend class FoilTableDelegate;
 

@@ -29,13 +29,13 @@
 #include <QTableView>
 #include <QStandardItemModel>
 #include <design/FoilTableDelegate.h>
-#include <objects2d/Foil.h>
+#include <objects/objects2d/Foil.h>
 
 
 class ManageFoilsDlg : public QDialog
 {
 	Q_OBJECT
-	friend class QXDirect;
+	friend class XDirect;
 	friend class MainFrame;
 
 public:

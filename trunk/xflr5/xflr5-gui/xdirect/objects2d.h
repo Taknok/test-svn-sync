@@ -25,14 +25,14 @@
   */
 
 #include <QList>
-#include <objects2d/Foil.h>
-#include <objects2d/Polar.h>
-#include <objects2d/OpPoint.h>
+#include <objects/objects2d/Foil.h>
+#include <objects/objects2d/Polar.h>
+#include <objects/objects2d/OpPoint.h>
 
-class Objects2D
+class Objects2d
 {
 public:
-	Objects2D();
+	Objects2d();
 
 	static void      deleteObjects();
 
@@ -53,7 +53,7 @@ public:
 	static void      setStaticPointers();
 
 	static Polar *createPolar(Foil *pFoil, double Re, double Mach, double NCrit,
-							  double XtrTop = 1.0, double XtrBot=1.0, XFOIL::enumPolarType polarType = XFOIL::FIXEDSPEEDPOLAR);
+                              double XtrTop = 1.0, double XtrBot=1.0, XFLR5::enumPolarType polarType = XFLR5::FIXEDSPEEDPOLAR);
 	static void      addPolar(Polar *pPolar);
 	static Polar *   insertNewPolar(Polar *pModPolar, Foil *pCurFoil);
 	static Polar*    getPolar(Foil *pFoil, QString PolarName);

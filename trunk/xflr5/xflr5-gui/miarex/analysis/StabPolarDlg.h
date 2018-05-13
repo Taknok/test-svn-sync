@@ -33,7 +33,7 @@
 #include <QStandardItemModel>
 #include "./CtrlTableDelegate.h"
 #include <misc/text/DoubleEdit.h>
-#include <objects3d/Plane.h>
+#include <objects/objects3d/Plane.h>
 
 
 
@@ -56,7 +56,7 @@ public:
 class StabPolarDlg : public QDialog
 {
 	Q_OBJECT
-	friend class QMiarex;
+	friend class Miarex;
 	friend class MainFrame;
 
 public:

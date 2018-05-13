@@ -49,7 +49,7 @@ class AeroDataDlg : public QDialog
 {
 	Q_OBJECT
 
-	friend class QMiarex;
+	friend class Miarex;
 
 public:
 	AeroDataDlg(QWidget *parent = NULL);

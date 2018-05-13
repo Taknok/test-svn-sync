@@ -28,7 +28,7 @@
 #include <QLabel>
 #include <QPushButton>
 
-#include <globals.h>
+#include <globals/globals.h>
 #include <misc/options/Units.h>
 #include <misc/line/LinePickerDlg.h>
 #include "BodyGridDlg.h"

@@ -38,7 +38,7 @@
 class SplineCtrlsDlg : public QDialog
 {
 	Q_OBJECT
-	friend class QAFoil;
+	friend class AFoil;
 
 public:
 	SplineCtrlsDlg(QWidget *pParent);

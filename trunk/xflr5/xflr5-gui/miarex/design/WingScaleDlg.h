@@ -31,7 +31,7 @@
 class WingScaleDlg : public QDialog
 {
 	Q_OBJECT
-	friend class QMiarex;
+	friend class Miarex;
 	friend class MainFrame;
 public:
     WingScaleDlg(QWidget *pParent);

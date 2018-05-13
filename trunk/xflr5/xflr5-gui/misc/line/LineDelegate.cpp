@@ -22,7 +22,7 @@
 #include <QtDebug>
 #include "LineDelegate.h"
 #include "LineCbBox.h"
-#include <globals.h>
+#include <globals/globals.h>
 #include <graph_globals.h>
 
 

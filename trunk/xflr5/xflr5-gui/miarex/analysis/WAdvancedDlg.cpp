@@ -19,7 +19,7 @@
 
 *****************************************************************************/
 
-#include <globals.h>
+#include <globals/globals.h>
 #include <misc/options/Units.h>
 #include "WAdvancedDlg.h"
 #include <QLabel>

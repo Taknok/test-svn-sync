@@ -25,15 +25,15 @@
 #include <QDialog>
 #include <QLabel>
 #include <QPushButton>
-#include <objects2d/Foil.h>
+#include <objects/objects2d/Foil.h>
 #include <misc/text/IntEdit.h>
 
 
 class NacaFoilDlg : public QDialog
 {
 	Q_OBJECT
-	friend class QXDirect;
-	friend class QAFoil;
+	friend class XDirect;
+	friend class AFoil;
 	friend class XFoil;
 
 

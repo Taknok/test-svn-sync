@@ -24,7 +24,7 @@
 #include <QLabel>
 
 #include "WingScaleDlg.h"
-#include <globals.h>
+#include <globals/globals.h>
 #include <misc/options/Units.h>
 
 

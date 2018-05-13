@@ -31,7 +31,7 @@
 #include "Panel.h"
 #include "PointMass.h"
 #include "objects_global.h"
-#include <objects2d/Polar.h>
+#include <objects/objects2d/Polar.h>
 
 double Wing::s_MinPanelSize = 0.0001;
 QList<Foil *> *Wing::s_poaFoil  = NULL;
@@ -83,9 +83,10 @@ Wing::Wing()
 	m_WingType        = XFLR5::MAINWING;
 	m_WingDescription = "";
 
-	m_WingColor.setHsv((int)(((double)qrand()/(double)RAND_MAX)*360),
-					   (int)(((double)qrand()/(double)RAND_MAX)*55)+30,
-					   (int)(((double)qrand()/(double)RAND_MAX)*55)+150);
+	m_WingColor.setRed((int)(((double)qrand()/(double)RAND_MAX)*155)+100);
+	m_WingColor.setGreen((int)(((double)qrand()/(double)RAND_MAX)*155)+100);
+	m_WingColor.setBlue((int)(((double)qrand()/(double)RAND_MAX)*155)+100);
+
 	m_QInf0    = 0.0;
 
 	m_pWingPanel     = NULL;
@@ -2456,7 +2457,7 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
 		ar << m_WingName;
 		ar << m_WingDescription;
 
-		ar << m_WingColor;
+		writeQColor(ar, m_WingColor.red(), m_WingColor.green(), m_WingColor.blue(), m_WingColor.alpha());
 
 		ar << m_bSymetric;
 
@@ -2552,7 +2553,9 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
 		ar >> m_WingName;
 		ar >> m_WingDescription;
 
-		ar >> m_WingColor;
+		int a,r,g,b;
+		readQColor(ar, r, g, b, a);
+		m_WingColor.setColor(r,g,b,a);
 
 		ar >> m_bSymetric;
 
@@ -3406,7 +3409,7 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
 	for (i = 0; i<s_poaPolar->size(); i++)
 	{
 		pPolar = s_poaPolar->at(i);
-		if((pPolar->polarType()== XFOIL::FIXEDSPEEDPOLAR) && (pPolar->foilName() == pFoil->foilName()))
+		if((pPolar->polarType()== XFLR5::FIXEDSPEEDPOLAR) && (pPolar->foilName() == pFoil->foilName()))
 		{
 			n++;
 			if(n>=2) break;
@@ -3425,7 +3428,7 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
 	for (i=0; i< nPolars; i++)
 	{
 		pPolar = s_poaPolar->at(i);
-		if((pPolar->polarType()== XFOIL::FIXEDSPEEDPOLAR) &&
+		if((pPolar->polarType()== XFLR5::FIXEDSPEEDPOLAR) &&
 		   (pPolar->foilName() == pFoil->foilName()) &&
 			pPolar->m_Cl.size()>0)
 		{
@@ -3468,7 +3471,7 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
 	for (i=0; i< nPolars; i++)
 	{
 		pPolar = s_poaPolar->at(i);
-		if((pPolar->polarType()== XFOIL::FIXEDSPEEDPOLAR) && (pPolar->foilName() == pFoil->foilName())  && pPolar->m_Cl.size()>0)
+		if((pPolar->polarType()== XFLR5::FIXEDSPEEDPOLAR) && (pPolar->foilName() == pFoil->foilName())  && pPolar->m_Cl.size()>0)
 		{
 			// we have found the first type 1 polar for this foil
 			pPolar->getClLimits(Clmin, Clmax);

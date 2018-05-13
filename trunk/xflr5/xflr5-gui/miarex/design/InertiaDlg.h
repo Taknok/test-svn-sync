@@ -30,11 +30,11 @@
 #include <QTableView>
 #include <QStandardItemModel>
 
-#include <gui_params.h>
+#include <globals/gui_params.h>
 #include <misc/text/FloatEditDelegate.h>
 #include <misc/text/DoubleEdit.h>
-#include <objects2d/Vector3d.h>
-#include <objects3d/Plane.h>
+#include <objects/objects3d/vector3d.h>
+#include <objects/objects3d/Plane.h>
 
 class InertiaDlg : public QDialog
 {
@@ -43,7 +43,7 @@ class InertiaDlg : public QDialog
 	friend class GL3dBodyDlg;
 	friend class EditBodyDlg;
 	friend class PlaneDlg;
-	friend class QMiarex;
+	friend class Miarex;
 	friend class MainFrame;
 
 public:

@@ -32,7 +32,7 @@
 
 #include <misc/options/displayoptions.h>
 #include <misc/options/Units.h>
-#include <globals.h>
+#include <globals/globals.h>
 #include "InertiaDlg.h"
 
 

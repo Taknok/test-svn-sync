@@ -32,13 +32,15 @@
 
 
 #include <QString>
-#include <analysis3d_enums.h>
+
+#include <xflr5-engine_global.h>
+#include <analysis3d/analysis3d_enums.h>
 
 /**
 *@class WingSection
 *@brief  The class which defines the wing section object used to construct wing geometries.
 */
-class WingSection
+class XFLR5ENGINELIBSHARED_EXPORT WingSection
 {
 public:
 	WingSection()

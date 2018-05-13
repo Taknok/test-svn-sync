@@ -30,20 +30,18 @@
 #ifndef CURVE_H
 #define CURVE_H
 
-//#include <gui_params.h>
+//#include <globals/gui_params.h>
 #include <QVarLengthArray>
 #include <QColor>
 #include "linestyle.h"
-#include "graph-lib_global.h"
 
 /**
 * @class Curve
 * This class defines the curve object used by the Graph class.
 */
-class GRAPHLIBSHARED_EXPORT Curve
+class Curve
 {
 	friend class Graph;
-	friend class QGraph;
 
 public:
 	Curve();
