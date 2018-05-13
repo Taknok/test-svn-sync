@@ -33,8 +33,8 @@
 class TwoDPanelDlg : public QDialog
 {
 	Q_OBJECT
-	friend class QAFoil;
-	friend class QXDirect;
+	friend class AFoil;
+	friend class XDirect;
 
 private slots:
 	void onApply();

@@ -25,8 +25,8 @@
 #include <QtDebug>
 
 #include "TwoDPanelDlg.h"
-#include <gui_params.h>
-#include <objects2d/Foil.h>
+#include <globals/gui_params.h>
+#include <objects/objects2d/Foil.h>
 #include <XFoil.h>
 
 void *TwoDPanelDlg::s_pXFoil;

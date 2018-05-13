@@ -30,7 +30,7 @@
 #include <QRadioButton>
 #include <QPushButton>
 
-#include <objects2d/Foil.h>
+#include <objects/objects2d/Foil.h>
 #include <misc/text/DoubleEdit.h>
 
 /**
@@ -46,8 +46,8 @@ class CAddDlg : public QDialog
 	Q_OBJECT
 
 	friend class MainFrame;
-	friend class QXDirect;
-	friend class QAFoil;
+	friend class XDirect;
+	friend class AFoil;
 
 public:
 	CAddDlg(QWidget *pParent);

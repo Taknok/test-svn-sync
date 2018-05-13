@@ -19,8 +19,8 @@
 
 *****************************************************************************/
 
-#include <globals.h>
-#include <objects3d/WPolar.h>
+#include <globals/globals.h>
+#include <objects/objects3d/WPolar.h>
 #include <misc/options/Units.h>
 #include <misc/options/displayoptions.h>
 #include <miarex/Miarex.h>

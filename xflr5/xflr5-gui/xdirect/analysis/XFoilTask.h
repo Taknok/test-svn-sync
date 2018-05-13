@@ -24,10 +24,12 @@
 #ifndef XFOILTASK_H
 #define XFOILTASK_H
 
-#include "XFoil.h"
 #include <QRunnable>
-#include <objects2d/Polar.h>
-#include <objects2d/Foil.h>
+
+#include "XFoil.h"
+
+#include <objects/objects2d/Polar.h>
+#include <objects/objects2d/Foil.h>
 
 
 

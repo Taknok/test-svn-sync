@@ -25,7 +25,7 @@
 #include <QWidget>
 #include <QMenu>
 #include <QPixmap>
-#include <objects2d/Vector3d.h>
+#include <objects/objects3d/vector3d.h>
 
 
 
@@ -53,7 +53,7 @@ class Section2dWidget : public QWidget
 	friend class BodyLineWidget;
 	friend class BodyFrameWidget;
 	friend class Direct2dDesign;
-	friend class QAFoil;
+	friend class AFoil;
 
 	Q_OBJECT
 public:

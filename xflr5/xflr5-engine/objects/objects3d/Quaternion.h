@@ -43,10 +43,10 @@
 Home made class. Since it was written, Qt has developed and provided a QQuaternion class.
 */
 
-#include <objects2d/Vector3d.h>
-#include "analysis3d_params.h"
+#include <objects/objects3d/vector3d.h>
+#include <analysis3d/analysis3d_params.h>
 
-class Quaternion
+class XFLR5ENGINELIBSHARED_EXPORT Quaternion
 {
 private:
 	double theta;

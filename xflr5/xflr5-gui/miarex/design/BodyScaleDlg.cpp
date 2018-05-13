@@ -25,7 +25,7 @@
 #include <QDesktopWidget>
 #include <QLabel>
 
-#include <globals.h>
+#include <globals/globals.h>
 #include <misc/line/LinePickerDlg.h>
 #include "BodyScaleDlg.h"
 #include "GL3dBodyDlg.h"

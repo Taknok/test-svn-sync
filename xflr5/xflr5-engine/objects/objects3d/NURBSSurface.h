@@ -45,7 +45,7 @@
  * When used to describe a half body, u describes the NURBS in the x direction, and v in the z direction.
  *
 */
-class NURBSSurface
+class XFLR5ENGINELIBSHARED_EXPORT NURBSSurface
 {
 
 public:

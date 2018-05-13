@@ -33,7 +33,7 @@ class BodyTransDlg : public QDialog
 {
 	Q_OBJECT
 	friend class MainFrame;
-	friend class QMiarex;
+	friend class Miarex;
 	friend class Body;
 	friend class GL3dBodyDlg;
 	friend class EditBodyDlg;

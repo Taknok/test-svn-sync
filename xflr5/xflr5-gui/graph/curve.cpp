@@ -19,11 +19,11 @@
 
 *****************************************************************************/
 
+#include <math.h>
 
-#include "Curve.h"
-#include "math.h"
-#include "Graph.h"
-#include "graph_globals.h"
+#include <graph/curve.h>
+#include <graph/graph.h>
+#include <graph/graph_globals.h>
 
 /**
  * The public constructor

@@ -29,13 +29,13 @@
 #include <QLabel>
 
 #include <misc/text/DoubleEdit.h>
-#include <objects2d/Foil.h>
+#include <objects/objects2d/Foil.h>
 
 class FoilGeomDlg : public QDialog
 {
 	Q_OBJECT
-	friend class QAFoil;
-	friend class QXDirect;
+	friend class AFoil;
+	friend class XDirect;
 	friend class MainFrame;
 
 public:

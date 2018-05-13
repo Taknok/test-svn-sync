@@ -19,7 +19,7 @@
 
 *****************************************************************************/
 
-#include <globals.h>
+#include <globals/globals.h>
 #include "section2dwidget.h"
 #include <misc/options/displayoptions.h>
 #include <design/GridSettingsDlg.h>

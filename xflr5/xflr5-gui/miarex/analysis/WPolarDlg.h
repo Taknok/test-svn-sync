@@ -34,7 +34,7 @@
 #include <QTableView>
 #include "CtrlTableDelegate.h"
 #include <misc/text/DoubleEdit.h>
-#include <objects3d/Plane.h>
+#include <objects/objects3d/Plane.h>
 
 /**
 *@class WPolarDlg
@@ -48,7 +48,7 @@
 class WPolarDlg : public QDialog
 {
 	Q_OBJECT
-	friend class QMiarex;
+	friend class Miarex;
 	friend class MainFrame;
 
 public:

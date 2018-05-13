@@ -25,7 +25,7 @@
 #include <QPushButton>
 #include <QStringList>
 
-#include <globals.h>
+#include <globals/globals.h>
 
 
 

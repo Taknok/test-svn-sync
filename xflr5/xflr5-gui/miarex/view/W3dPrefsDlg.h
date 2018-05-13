@@ -35,7 +35,7 @@ class W3dPrefsDlg : public QDialog
 {
 	Q_OBJECT
 
-	friend class QMiarex;
+	friend class Miarex;
 	friend class MainFrame;
 	friend class GL3dBodyDlg;
 

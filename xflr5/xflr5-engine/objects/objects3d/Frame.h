@@ -24,7 +24,7 @@
 #ifndef FRAME_H
 #define FRAME_H
 
-#include <objects2d/Vector3d.h>
+#include <objects/objects3d/vector3d.h>
 #include <QDataStream>
 #include <QList>
 
@@ -38,7 +38,7 @@
  * The Frmae's points are defined from bottom to top, i.e. for crescending z values, and for the body's left (port) side. 
   * The x-value of the control points is unused, the frame's position is defined by the variable m_Position.
 */
-class Frame
+class XFLR5ENGINELIBSHARED_EXPORT Frame
 {
 public:
 	Frame(int nCtrlPts=0);

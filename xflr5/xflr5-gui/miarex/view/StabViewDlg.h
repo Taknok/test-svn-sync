@@ -37,15 +37,15 @@
 
 #include <misc/text/DoubleEdit.h>
 #include <misc/text/FloatEditDelegate.h>
-#include <Curve.h>
+#include <graph/curve.h>
 
-class QMiarex;
+class Miarex;
 
 class StabViewDlg : public QWidget
 {
 	Q_OBJECT
 
-	friend class QMiarex;
+	friend class Miarex;
 	friend class MainFrame;
 
 public:
@@ -84,7 +84,7 @@ private:
 	void readControlModelData();
 	void updateControlModelData();
 
-	static QMiarex *s_pMiarex;
+	static Miarex *s_pMiarex;
 
 	QRadioButton *m_pctrlLongDynamics,*m_pctrlLatDynamics;
 	QRadioButton *m_pctrlRLMode1,*m_pctrlRLMode2,*m_pctrlRLMode3,*m_pctrlRLMode4;

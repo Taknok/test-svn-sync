@@ -38,7 +38,7 @@ class XFoilAdvancedDlg : public QDialog
 {
 	Q_OBJECT
 
-	friend class QXDirect;
+	friend class XDirect;
 	friend class BatchThreadDlg;
 	friend class BatchDlg;
 

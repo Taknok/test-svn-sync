@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 #include <QtDebug>
-#include <globals.h>
+#include <globals/globals.h>
 #include "xmlpolarreader.h"
 
 XmlPolarReader::XmlPolarReader(QFile &file, Polar *pPolar)

@@ -32,8 +32,8 @@ class PolarFilterDlg : public QDialog
 {
 	Q_OBJECT
 
-	friend class QMiarex;
-	friend class QXDirect;
+	friend class Miarex;
+	friend class XDirect;
 
 public:
 	PolarFilterDlg(QWidget *pParent=NULL);

@@ -23,7 +23,7 @@
 #define XMLPLANEWRITER_H
 
 #include <QXmlStreamWriter>
-#include <objects3d/Plane.h>
+#include <objects/objects3d/Plane.h>
 
 #include <QFile>
 

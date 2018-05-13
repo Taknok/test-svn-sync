@@ -19,7 +19,7 @@
 
 *****************************************************************************/
 #include <QStringList>
-#include <globals.h>
+#include <globals/globals.h>
 #include "xmlwpolarreader.h"
 
 XmlWPolarReader::XmlWPolarReader(QFile &file, WPolar *pWPolar)

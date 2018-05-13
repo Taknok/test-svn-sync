@@ -36,7 +36,7 @@
 
 
 #include "Quaternion.h"
-#include <objects2d/Vector3d.h>
+#include <objects/objects3d/vector3d.h>
 
 /**
  * enumeration used to identify the type of surface on which the panel lies.
@@ -58,11 +58,11 @@ typedef enum {BOTSURFACE, MIDSURFACE, TOPSURFACE, SIDESURFACE, BODYSURFACE} enum
 *	For VLM calculations, the position and length vector of the bound vortex at the panel's quarter-chord are
 	stored as member variables.
 */
-class Panel
+class XFLR5ENGINELIBSHARED_EXPORT Panel
 {
 	friend class Surface;
 	friend class Wing;
-	friend class QMiarex;
+	friend class Miarex;
 	friend class Objects3D;
 	friend class Body;
 	friend class PlaneAnalysisTask;

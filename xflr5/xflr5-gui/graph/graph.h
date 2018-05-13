@@ -20,26 +20,67 @@
 *****************************************************************************/
 
 
-#ifndef GRAPH_H
-#define GRAPH_H
+#pragma once
 
+#include <QSettings>
 #include <QFile>
 #include <QPoint>
 #include <QRect>
 #include <QColor>
 #include <QList>
-#include "Curve.h"
-#include "graph-lib_global.h"
+#include <QFont>
 
-class GRAPHLIBSHARED_EXPORT Graph
+#include <graph/curve.h>
+
+#define MAXTIMEGRAPHS  4  /**< The max number of graphs available for display in the stability time view. */
+#define MAXWINGGRAPHS  5  /**< The max number of graphs available for display in QXDirect. */
+#define MAXPOLARGRAPHS 5  /**< The max number of graphs available for display in QXDirect. */
+#define MAXGRAPHS      6  /**< The max number of graphs available for display at one time. */
+
+namespace GRAPH
 {
-	friend class QGraph;
+	typedef enum{OPPGRAPH, POLARGRAPH, POPPGRAPH, WPOLARGRAPH, STABTIMEGRAPH, CPGRAPH, INVERSEGRAPH, OTHERGRAPH} enumGraphType;
+}
+
+class MainFrame;
+
+class Graph
+{
 	friend class GraphWidget;
 //	friend class OpPointWidget;
-//	friend class QXDirect;
+//	friend class XDirect;
 
 public:
+	void drawGraph(QRect const & rect, QPainter &painter);
+	void drawGraph(QPainter &painter);
+	void drawAxes(QPainter &painter);
+	void drawCurve(int nIndex, QPainter &painter);
+	void drawLegend(QPainter &painter, QPoint &Place, QFont &LegendFont, QColor &LegendColor, QColor &backColor);
+	void drawTitles(QPainter &painter);
+	void drawXMinGrid(QPainter &painter);
+	void drawYMinGrid(QPainter &painter);
+	void drawXMajGrid(QPainter &painter);
+	void drawYMajGrid(QPainter &painter);
+	void drawXTicks(QPainter &painter);
+	void drawYTicks(QPainter &painter);
+	void expFormat(double &f, int &exp);
+	void exportToFile(QFile &XFile, bool bCSV);
+	void highlight(QPainter &painter, Curve *pCurve, int ref);
 
+	void loadSettings(QSettings *pSettings);
+	void saveSettings(QSettings *pSettings);
+	QPoint getOffset();
+
+	void getLabelFont(QFont &labelFont);
+	void getTitleFont(QFont &titleFont);
+	void setLabelFont(QFont &font);
+	void setTitleFont(QFont &font);
+
+
+	static void setOppHighlighting(bool bHighLight){s_bHighlightPoint = bHighLight;}
+	static bool isHighLighting(){return s_bHighlightPoint;}
+
+	GRAPH::enumGraphType &graphType(){return m_graphType;}
 	bool bAutoX();
 	bool bAutoY();
 	bool bAutoXMin();
@@ -58,6 +99,7 @@ public:
 
 	int xToClient(double x);
 	int yToClient(double y);
+
 
 	void copySettings(Graph* pGraph, bool bScales=true);
 	void deselectPoint();
@@ -82,8 +124,8 @@ public:
 	void setMargin(int m);
 	void setInverted(bool bInverted);
 	void setType(int type);
-	void setXTitle(QString str);
-	void setYTitle(QString str);
+	void setXTitle(const QString &str);
+	void setYTitle(const QString &str);
 	void setX0(double f);
 	void setXMax(double f);
 	void setXMin(double f);
@@ -238,6 +280,15 @@ private:
 
 
 	int m_X, m_Y; //index of X and Y variables
+
+
+
+private:
+	QFont m_TitleFont;
+	QFont m_LabelFont;
+	GRAPH::enumGraphType m_graphType;
+
+	static bool s_bHighlightPoint;       /**< true if the active OpPoint should be highlighted on the polar curve. */
+
 };
 
-#endif

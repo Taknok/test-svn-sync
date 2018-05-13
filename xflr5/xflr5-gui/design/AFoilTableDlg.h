@@ -32,7 +32,7 @@ class AFoilTableDlg : public QDialog
 {
 	Q_OBJECT
 
-	friend class QAFoil;
+	friend class AFoil;
 
 public:
     AFoilTableDlg(QWidget *pParent);

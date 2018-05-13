@@ -31,7 +31,7 @@
 #include <QCheckBox>
 #include <QComboBox>
 
-#include <objects3d/Plane.h>
+#include <objects/objects3d/Plane.h>
 #include <misc/text/DoubleEdit.h>
 
 
@@ -40,7 +40,7 @@
 class PlaneDlg : public QDialog
 {
 	Q_OBJECT
-	friend class QMiarex;
+	friend class Miarex;
 	friend class MainFrame;
 	friend class EditPlaneDlg;
 

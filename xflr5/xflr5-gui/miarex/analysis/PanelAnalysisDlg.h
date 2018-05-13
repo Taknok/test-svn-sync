@@ -40,11 +40,11 @@
 #include <QTextEdit>
 #include <QPushButton>
 #include <QCheckBox>
-#include <objects3d/WPolar.h>
-#include <objects3d/Plane.h>
-#include <objects2d/Vector3d.h>
-#include "plane_analysis/PanelAnalysis.h"
-#include "plane_analysis/planeanalysistask.h"
+#include <objects/objects3d/WPolar.h>
+#include <objects/objects3d/Plane.h>
+#include <objects/objects3d/vector3d.h>
+#include <analysis3d/plane_analysis/PanelAnalysis.h>
+#include <analysis3d/plane_analysis/planeanalysistask.h>
 
 #define VLMMAXRHS 100
 
@@ -60,7 +60,7 @@ class PanelAnalysisDlg : public QDialog
 {
 	Q_OBJECT
 
-	friend class QMiarex;
+	friend class Miarex;
 	friend class MainFrame;
 
 public:

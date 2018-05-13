@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 #include "Plane.h"
-#include <objects3d/Surface.h>
+#include <objects/objects3d/Surface.h>
 #include <math.h>
 #include "objects_global.h"
 #include <QtDebug>
