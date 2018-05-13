@@ -21,8 +21,8 @@
 
 
 #include "WPolar.h"
-#include <objects3d/Surface.h>
-#include <objects3d/Plane.h>
+#include <objects/objects3d/Surface.h>
+#include <objects/objects3d/Plane.h>
 #include <math.h>
 #include "objects_global.h"
 #include <QtDebug>
@@ -36,10 +36,11 @@ WPolar::WPolar()
 	m_PointStyle = 0;
 	m_Style  = 0;
 	m_Width  = 1;
-	m_Color.setHsv((int)(((double)qrand()/(double)RAND_MAX)*360),
-				  (int)(((double)qrand()/(double)RAND_MAX)*155)+100,
-				  (int)(((double)qrand()/(double)RAND_MAX)*155)+100,
-				   255);;
+
+	m_Color.setRed((int)(((double)qrand()/(double)RAND_MAX)*155)+100);
+	m_Color.setGreen((int)(((double)qrand()/(double)RAND_MAX)*155)+100);
+	m_Color.setBlue((int)(((double)qrand()/(double)RAND_MAX)*155)+100);
+
 
 	m_bVLM1         = true;
 	m_bThinSurfaces = true;
@@ -1424,7 +1425,8 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 
 		ar << m_referenceArea << m_referenceChordLength << m_referenceSpanLength ;
 		ar << m_Style << m_Width;
-		ar << m_Color;
+
+		writeQColor(ar, m_Color.red(), m_Color.green(), m_Color.blue(), m_Color.alpha());
 		ar << m_bIsVisible << false;
 
 		if(m_AnalysisMethod==XFLR5::LLTMETHOD)         ar<<1;
@@ -1514,7 +1516,11 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 
 		ar >> m_referenceArea >> m_referenceChordLength >> m_referenceSpanLength;
 		ar >> m_Style >> m_Width;
-		ar >> m_Color;
+
+		int a,r,g,b;
+		readQColor(ar, r, g, b, a);
+		m_Color.setColor(r,g,b,a);
+
 		ar >> m_bIsVisible >> boolean;
 
 		ar >> n;

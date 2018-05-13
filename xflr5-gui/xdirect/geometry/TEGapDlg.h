@@ -27,14 +27,14 @@
 #include <QPushButton>
 
 #include <misc/text/DoubleEdit.h>
-#include <objects2d/Foil.h>
+#include <objects/objects2d/Foil.h>
 
 
 class TEGapDlg : public QDialog
 {
 	Q_OBJECT
-	friend class QXDirect;
-	friend class QAFoil;
+	friend class XDirect;
+	friend class AFoil;
 
 public:
 	TEGapDlg(QWidget *pParent);

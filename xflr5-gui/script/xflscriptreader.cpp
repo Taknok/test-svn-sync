@@ -21,7 +21,7 @@
 #include <QtDebug>
 #include "xflscriptreader.h"
 #include <misc/options/Units.h>
-#include <globals.h>
+#include <globals/globals.h>
 #include <QtDebug>
 
 

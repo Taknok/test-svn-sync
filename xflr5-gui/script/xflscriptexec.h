@@ -24,10 +24,10 @@
 #include <script/xflscriptreader.h>
 #include <QTextStream>
 
-#include <objects3d/Plane.h>
-#include <objects3d/WPolar.h>
+#include <objects/objects3d/Plane.h>
+#include <objects/objects3d/WPolar.h>
 
-#include <plane_analysis/planeanalysistask.h>
+#include <analysis3d/plane_analysis/planeanalysistask.h>
 #include <xdirect/analysis/XFoilTask.h>
 
 class XflScriptExec

@@ -38,10 +38,10 @@
 #include <QSettings>
 #include <QList>
 
-#include <gui_params.h>
+#include <globals/gui_params.h>
 #include "Direct2dDesign.h"
 #include "FoilTableDelegate.h"
-#include <objects2d/Foil.h>
+#include <objects/objects2d/Foil.h>
 #include <gui_objects/SplineFoil.h>
 
 class MainFrame;
@@ -49,7 +49,7 @@ class MainFrame;
 /**
  * @brief the QAFoil class used as the interface for direct Foil design
  */
-class QAFoil : public QWidget
+class AFoil : public QWidget
 {
 	Q_OBJECT
 
@@ -71,8 +71,8 @@ class QAFoil : public QWidget
 	friend class CAddDlg;
 
 public:
-	QAFoil(QWidget *parent = NULL);
-	~QAFoil();
+	AFoil(QWidget *parent = NULL);
+	~AFoil();
 
 	void setupLayout();
 	void initDialog(void *p2DWidget, QList<Foil *> *poaFoil, void *pXFoil);

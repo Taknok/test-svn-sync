@@ -22,8 +22,8 @@
 
 
 #include "Foil.h"
-#include <objects2d/Spline.h>
-#include <objects2d/Polar.h>
+#include <objects/objects2d/Spline.h>
+#include <objects/objects2d/Polar.h>
 #include <math.h>
 #include <QTextStream>
 #include <QtDebug>
@@ -300,7 +300,7 @@ bool Foil::exportFoil(QTextStream &out)
  * Returns the area defined by the foil's contour, in normalized units.
  * @return the foil's internal area
  */
-double Foil::area()
+double Foil::area() const
 {
 	int i;
 	double area = 0.0;
@@ -318,7 +318,7 @@ double Foil::area()
  * @param &x the chordwise position
  * @return the y-position
  */
-double Foil::baseLowerY(double x)
+double Foil::baseLowerY(double x) const
 {
 	int i;
 	double y;
@@ -344,7 +344,7 @@ double Foil::baseLowerY(double x)
  * @param &x the chordwise position
  * @return the y-position
  */
-double Foil::baseUpperY(double x)
+double Foil::baseUpperY(double x) const
 {
 	double y;
 	int i;
@@ -415,7 +415,7 @@ double Foil::topSlope(double const &x)
  * @param &x the chordwise position
  * @return the camber value
  */
-double Foil::camber(double x)
+double Foil::camber(double x) const
 {
 	//returns the camber value at position x
 	for (int i=0; i<MIDPOINTCOUNT-1; i++)
@@ -434,7 +434,7 @@ double Foil::camber(double x)
  * @param &x the chordwise position
  * @return the camber angle, in degrees
  */
-double Foil::camberSlope(double x)
+double Foil::camberSlope(double x) const
 {
 	//returns the camber slope at position x
 	for (int i=0; i<MIDPOINTCOUNT-1; i++)
@@ -460,7 +460,7 @@ double Foil::camberSlope(double x)
  * Returns the foil's length.
  * @return the foil's length, in relative units
 */
-double Foil::length()
+double Foil::length() const
 {
 	return qMax(m_rpExtrados[m_iExt].x, m_rpExtrados[m_iInt].x);
 }
@@ -473,7 +473,7 @@ double Foil::length()
 * @param x the chordwise position
 * @return the position on the mid line
 */
-Vector3d Foil::midYRel(double sRel)
+Vector3d Foil::midYRel(double sRel) const
 {
 	if(sRel>=1.0)      return m_rpMid[MIDPOINTCOUNT-1];
 	else if(sRel<=0.0) return m_rpMid[0];
@@ -496,7 +496,7 @@ Vector3d Foil::midYRel(double sRel)
 * @param x the chordwise position
 * @return the position on the upper surface
 */
-Vector3d Foil::upperYRel(double xRel, double &normx, double &normy)
+Vector3d Foil::upperYRel(double xRel, double &normx, double &normy) const
 {
 	double x = m_rpExtrados[0].x + xRel*(m_rpExtrados[m_iExt].x-m_rpExtrados[0].x);
 
@@ -531,7 +531,7 @@ Vector3d Foil::upperYRel(double xRel, double &normx, double &normy)
 * @param x the chordwise position
 * @return the position on the upper surface
 */
-Vector3d Foil::lowerYRel(double xRel, double &normx, double &normy)
+Vector3d Foil::lowerYRel(double xRel, double &normx, double &normy) const
 {
 	double x = m_rpIntrados[0].x + xRel*(m_rpIntrados[m_iInt].x-m_rpIntrados[0].x);
 

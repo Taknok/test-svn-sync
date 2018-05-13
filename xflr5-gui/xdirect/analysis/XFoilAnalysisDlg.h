@@ -40,7 +40,7 @@
 #include <xdirect/analysis/xfoiltaskevent.h>
 
 class GraphWidget;
-class QGraph;
+class Graph;
 
 /**
 * @class XFoilAnalysisDlg
@@ -51,7 +51,7 @@ class XFoilAnalysisDlg : public QDialog
 	Q_OBJECT
 
 	friend class MainFrame;
-	friend class QXDirect;
+	friend class XDirect;
 
 public:
 	XFoilAnalysisDlg(QWidget *pParent=NULL);
@@ -101,7 +101,7 @@ private:
 	double m_ClMin, m_ClMax, m_ClDelta;           /**< The range of lift coefficient for a Type 1/2/3 Polar>*/
 
 	QFile *m_pXFile;               /**< a pointer to the log file>*/
-	QGraph *m_pRmsGraph;           /**< a pointer to the output graph >*/
+	Graph *m_pRmsGraph;           /**< a pointer to the output graph >*/
 
 	XFoilTask *m_pXFoilTask;       /**< A pointer to the instance of the XFoilTask associated to this analysis. >*/
 

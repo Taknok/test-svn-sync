@@ -9,7 +9,7 @@
 *****************************************************************************/
 
 #include "language.h"
-#include <mainframe.h>
+#include <globals/mainframe.h>
 
 #include <QHBoxLayout>
 #include <QLabel>

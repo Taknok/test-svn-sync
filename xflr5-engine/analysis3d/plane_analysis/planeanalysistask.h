@@ -27,8 +27,8 @@
 #include <QEvent>
 #include <QTextStream>
 
-#include <plane_analysis/LLTAnalysis.h>
-#include <plane_analysis/PanelAnalysis.h>
+#include <analysis3d/plane_analysis/LLTAnalysis.h>
+#include <analysis3d/plane_analysis/PanelAnalysis.h>
 
 class Plane;
 class WPolar;
@@ -49,10 +49,10 @@ struct PlaneAnalysis
 };
 
 
-class PlaneAnalysisTask
+class XFLR5ENGINELIBSHARED_EXPORT PlaneAnalysisTask
 {
 	friend class MainFrame;
-	friend class QMiarex;
+	friend class Miarex;
 	friend class PanelAnalysisDlg;
 	friend class LLTAnalysisDlg;
 	friend class gl3dMiarexView;

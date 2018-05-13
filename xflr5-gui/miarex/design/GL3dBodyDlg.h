@@ -43,7 +43,7 @@
 #include <misc/color/ColorButton.h>
 #include <viewwidgets/glWidgets/ArcBall.h>
 #include <gl3dbodyview.h>
-#include <objects3d/Body.h>
+#include <objects/objects3d/Body.h>
 #include "BodyLineWidget.h"
 #include "BodyFrameWidget.h"
 
@@ -55,7 +55,7 @@ class GL3dBodyDlg : public QDialog
 	Q_OBJECT
 	friend class MainFrame;
 	friend class QSail7;
-	friend class QMiarex;
+	friend class Miarex;
 	friend class GLLightDlg;
 	friend class BodyScaleDlg;
 	friend class ManageBodiesDlg;
@@ -101,7 +101,6 @@ private slots:
 
 private:
 	void keyPressEvent(QKeyEvent *event);
-	void keyReleaseEvent(QKeyEvent *event);
 	void resizeEvent(QResizeEvent *event);
 	void showEvent(QShowEvent *event);
 	void hideEvent(QHideEvent *event);

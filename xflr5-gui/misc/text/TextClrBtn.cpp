@@ -26,7 +26,7 @@
 #include <QFontMetrics>
 
 #include <misc/options/displayoptions.h>
-#include <globals.h>
+#include <globals/globals.h>
 #include <misc/text/TextClrBtn.h>
 
 

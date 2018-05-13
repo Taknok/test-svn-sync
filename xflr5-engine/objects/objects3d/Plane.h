@@ -47,10 +47,10 @@
 #include "Body.h"
 
 
-class Plane
+class XFLR5ENGINELIBSHARED_EXPORT Plane
 {
 	friend class PlaneDlg;
-	friend class QMiarex;
+	friend class Miarex;
 
 public:
 	Plane();

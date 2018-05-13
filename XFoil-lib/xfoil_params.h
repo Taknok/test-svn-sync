@@ -23,11 +23,6 @@
 
 #define MIDPOINTCOUNT 100  /**< the number of points which define the foil's mid camber line */
 
-namespace XFOIL
-{
-	/** @enum The different types of polar available for 2D and 3D calculations. */
-	typedef enum {FIXEDSPEEDPOLAR, FIXEDLIFTPOLAR, RUBBERCHORDPOLAR, FIXEDAOAPOLAR} enumPolarType;
-}
 
 
 #endif // XFOIL_PARAMS_H

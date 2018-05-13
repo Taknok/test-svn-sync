@@ -21,7 +21,7 @@
 
 
 #include "PlaneTableDelegate.h"
-#include <miarex/Objects3D.h>
+#include <miarex/objects3d.h>
 
 
 PlaneTableDelegate::PlaneTableDelegate(QObject *parent)
@@ -63,7 +63,7 @@ void PlaneTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
 {
 	QString strong;
 	QStyleOptionViewItem myOption = option;
-    int NUFOs  = Objects3D::s_oaPlane.size();
+    int NUFOs  = Objects3d::s_oaPlane.size();
 
 	if(index.row()> NUFOs)
 	{

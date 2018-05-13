@@ -22,10 +22,10 @@
 #include <misc/options/Units.h>
 #include <misc/options/displayoptions.h>
 #include <miarex/view/W3dPrefsDlg.h>
-#include <objects3d/Surface.h>
+#include <objects/objects3d/Surface.h>
 #include "wingseldlg.h"
 #include "EditPlaneDlg.h"
-#include <globals.h>
+#include <globals/globals.h>
 
 #include <QApplication>
 #include <QAction>

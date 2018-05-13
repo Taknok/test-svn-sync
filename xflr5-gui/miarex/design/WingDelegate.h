@@ -27,8 +27,8 @@
 #include <QStyledItemDelegate>
 
 #include <misc/text/DoubleEdit.h>
-#include <objects3d/WingSection.h>
-#include <objects2d/Foil.h>
+#include <objects/objects3d/WingSection.h>
+#include <objects/objects2d/Foil.h>
 
 class WingDelegate : public QStyledItemDelegate
 {

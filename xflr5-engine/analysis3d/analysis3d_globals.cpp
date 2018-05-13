@@ -30,7 +30,7 @@
 #include <QTextStream>
 #include <QByteArray>
 #include <math.h>
-#include <qopengl.h>
+
 #include <QtCore>
 
 #include <matrix.h>

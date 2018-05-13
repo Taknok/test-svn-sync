@@ -48,10 +48,10 @@ PlaneOpp::PlaneOpp(void *pPlanePtr, void *pWPolarPtr, int PanelArraySize)
 	m_Width       = 1;
 	m_PointStyle  = 0;
 	m_bIsVisible  = true;
-	m_Color.setHsv((int)(((double)qrand()/(double)RAND_MAX)*360),
-				   (int)(((double)qrand()/(double)RAND_MAX)*155)+100,
-				   (int)(((double)qrand()/(double)RAND_MAX)*155)+100,
-				   255);
+
+	m_Color.setRed((int)(((double)qrand()/(double)RAND_MAX)*155)+100);
+	m_Color.setGreen((int)(((double)qrand()/(double)RAND_MAX)*155)+100);
+	m_Color.setBlue((int)(((double)qrand()/(double)RAND_MAX)*155)+100);
 
 	m_bVLM1 = false;
 	m_bThinSurface = true;
@@ -540,7 +540,7 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
 		ar << m_WPlrName;
 
 		ar << m_Style << m_Width;
-		ar << m_Color;
+		writeQColor(ar, m_Color.red(), m_Color.green(), m_Color.blue(), m_Color.alpha());
 		ar << m_bIsVisible << false;
 
 		ar << m_bOut;
@@ -637,7 +637,11 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
 		ar >> m_WPlrName;
 
 		ar >> m_Style >> m_Width;
-		ar >> m_Color;
+
+		int a,r,g,b;
+		readQColor(ar, r, g, b, a);
+		m_Color.setColor(r,g,b,a);
+
 		ar >> m_bIsVisible >> boolean;
 
 		ar >> m_bOut;

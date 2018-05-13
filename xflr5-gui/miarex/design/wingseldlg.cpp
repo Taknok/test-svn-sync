@@ -20,8 +20,8 @@
 *****************************************************************************/
 
 #include "wingseldlg.h"
-#include <globals.h>
-#include <analysis3d_enums.h>
+#include <globals/globals.h>
+#include <analysis3d/analysis3d_enums.h>
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QtDebug>

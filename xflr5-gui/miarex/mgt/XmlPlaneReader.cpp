@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 #include "XmlPlaneReader.h"
-#include <globals.h>
+#include <globals/globals.h>
 #include <QMessageBox>
 #include <QtDebug>
 
@@ -223,7 +223,9 @@ bool XMLPlaneReader::readWing(Wing &newwing, Vector3d &position, double tiltangl
 		}
 		else if (name().compare(QString("color"),           Qt::CaseInsensitive)==0)
 		{
-			readColor(newwing.wingColor());
+			QColor clr;
+			readColor(clr);
+			newwing.setWingColor(ObjectColor(clr.red(), clr.green(), clr.blue(), clr.alpha()));
 		}
 		else if (name().compare(QString("description"),     Qt::CaseInsensitive)==0)
 		{
@@ -389,7 +391,9 @@ bool XMLPlaneReader::readBody(Body *pBody, Vector3d &position, double lengthUnit
 		}
         else if (name().toString().compare(QString("color"), Qt::CaseInsensitive)==0)
 		{
-			readColor(pBody->bodyColor());
+			QColor clr;
+			readColor(clr);
+			pBody->setBodyColor(ObjectColor(clr.red(), clr.green(), clr.blue(), clr.alpha()));
 		}
         else if (name().toString().compare(QString("description"), Qt::CaseInsensitive)==0)
 		{

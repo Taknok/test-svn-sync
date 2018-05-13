@@ -32,7 +32,7 @@
 class PlaneTableDelegate : public QItemDelegate
 {
 	Q_OBJECT
-	friend class QMiarex;
+	friend class Miarex;
 	friend class ManagePlanesDlg;
 	friend class MainFrame;
 

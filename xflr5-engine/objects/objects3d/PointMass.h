@@ -24,12 +24,12 @@
 #define POINTMASS_H
 
 #include <QString>
-#include <objects2d/Vector3d.h>
+#include <objects/objects3d/vector3d.h>
 
 
 
 
-class PointMass
+class XFLR5ENGINELIBSHARED_EXPORT PointMass
 {
 public:
 	/** The public constructor */

@@ -28,7 +28,7 @@
 #define INVERSEVIEWDWIDGET_H
 
 #include <QWidget>
-#include "gui_params.h"
+#include <globals/gui_params.h>
 
 /**
 *@class InverseViewWidget

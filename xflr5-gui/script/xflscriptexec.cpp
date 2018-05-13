@@ -23,7 +23,7 @@
 #include <QDateTime>
 #include <QtDebug>
 
-#include <globals.h>
+#include <globals/globals.h>
 #include "xflscriptexec.h"
 #include <misc/options/displayoptions.h>
 #include <miarex/mgt/XmlPlaneReader.h>

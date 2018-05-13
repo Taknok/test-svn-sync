@@ -20,7 +20,7 @@
 *****************************************************************************/
  
 
-#include <objects2d/Foil.h>
+#include <objects/objects2d/Foil.h>
 #include "WingDelegate.h"
 #include "GL3dWingDlg.h"
 

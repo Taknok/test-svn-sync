@@ -30,7 +30,7 @@
 #include <QStandardItemModel>
 #include <QToolButton>
 #include <gl3dplaneview.h>
-#include <objects3d/Plane.h>
+#include <objects/objects3d/Plane.h>
 #include "EditObjectDelegate.h"
 
 
@@ -44,7 +44,7 @@ class EditPlaneDlg : public QDialog
 
 	friend class Wing;
 	friend class Plane;
-	friend class QMiarex;
+	friend class Miarex;
 	friend class gl3dPlaneView;
 	friend class gl3dView;
 

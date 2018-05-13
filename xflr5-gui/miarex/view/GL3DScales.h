@@ -35,7 +35,7 @@ class GL3DScales : public QWidget
 {
 	Q_OBJECT
 	friend class MainFrame;
-	friend class QMiarex;
+	friend class Miarex;
 
 public:
 	GL3DScales(QWidget *);

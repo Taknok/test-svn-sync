@@ -25,30 +25,30 @@
 #include <QMouseEvent>
 
 #include "gl3dview.h"
-#include <globals.h>
-#include <mainframe.h>
+#include <globals/globals.h>
+#include <globals/mainframe.h>
 #include <misc/options/displayoptions.h>
 #include <misc/options/Units.h>
-#include <mainframe.h>
-#include <objects2d/Vector3d.h>
-#include <objects3d/Body.h>
-#include <objects3d/Wing.h>
-#include <objects3d/Plane.h>
-#include <objects3d/WPolar.h>
-#include <objects3d/Surface.h>
+#include <globals/mainframe.h>
+#include <objects/objects3d/vector3d.h>
+#include <objects/objects3d/Body.h>
+#include <objects/objects3d/Wing.h>
+#include <objects/objects3d/Plane.h>
+#include <objects/objects3d/WPolar.h>
+#include <objects/objects3d/Surface.h>
 #include <miarex/Miarex.h>
-#include <miarex/Objects3D.h>
+#include <miarex/objects3d.h>
 #include <miarex/design/GL3dBodyDlg.h>
 #include <miarex/design/GL3dWingDlg.h>
 #include <miarex/design/EditBodyDlg.h>
 #include <miarex/design/EditPlaneDlg.h>
 #include <miarex/view/GL3DScales.h>
 #include <miarex/view/W3dPrefsDlg.h>
-#include <plane_analysis/LLTAnalysis.h>
-#include <gui_params.h>
+#include <analysis3d/plane_analysis/LLTAnalysis.h>
+#include <globals/gui_params.h>
 
 
-QMiarex *gl3dView::s_pMiarex;
+Miarex *gl3dView::s_pMiarex;
 MainFrame *gl3dView::s_pMainFrame;
 
 GLLightDlg *gl3dView::s_pglLightDlg = NULL;
@@ -905,7 +905,7 @@ void gl3dView::glMakeBody3DFlatPanels(Body *pBody)
 
 	QString projectPath = Settings::s_LastDirName + QDir::separator() + MainFrame::s_ProjectName+ "_textures";
 	QString planeName;
-	QMiarex *pMiarex = (QMiarex*)s_pMiarex;
+	Miarex *pMiarex = (Miarex*)s_pMiarex;
 	if(pMiarex && pMiarex->m_pCurPlane)
 	{
 		planeName = pMiarex->m_pCurPlane->planeName();
@@ -1128,7 +1128,7 @@ void gl3dView::glMakeBodySplines(Body *pBody)
 
 	QString projectPath = Settings::s_LastDirName + QDir::separator() + MainFrame::s_ProjectName+ "_textures";
 	QString planeName;
-	QMiarex *pMiarex = (QMiarex*)s_pMiarex;
+	Miarex *pMiarex = (Miarex*)s_pMiarex;
 	if(pMiarex && pMiarex->m_pCurPlane)
 	{
 		planeName = pMiarex->m_pCurPlane->planeName();
@@ -1968,7 +1968,7 @@ void gl3dView::paintBody(Body *pBody)
 		m_ShaderProgramSurface.setUniformValue(m_pvmMatrixLocationSurface, m_pvmMatrix);
 		if(GLLightDlg::s_Light.m_bIsLightOn) m_ShaderProgramSurface.setUniformValue(m_LightLocationSurface, 1);
 		else                                 m_ShaderProgramSurface.setUniformValue(m_LightLocationSurface, 0);
-		m_ShaderProgramSurface.setUniformValue(m_ColorLocationSurface, pBody->bodyColor());
+		m_ShaderProgramSurface.setUniformValue(m_ColorLocationSurface, color(pBody->bodyColor()));
 		m_ShaderProgramSurface.enableAttributeArray(m_VertexLocationSurface);
 		m_ShaderProgramSurface.enableAttributeArray(m_NormalLocationSurface);
 		m_ShaderProgramSurface.setAttributeBuffer(m_VertexLocationSurface, GL_FLOAT, 0,                  3, 8 * sizeof(GLfloat));
@@ -2170,7 +2170,7 @@ void gl3dView::paintWing(int iWing, Wing *pWing)
 			m_ShaderProgramSurface.setUniformValue(m_pvmMatrixLocationSurface, m_pvmMatrix);
 			if(GLLightDlg::s_Light.m_bIsLightOn) m_ShaderProgramSurface.setUniformValue(m_LightLocationSurface, 1);
 			else                                 m_ShaderProgramSurface.setUniformValue(m_LightLocationSurface, 0);
-			m_ShaderProgramSurface.setUniformValue(m_ColorLocationSurface, pWing->wingColor());
+			m_ShaderProgramSurface.setUniformValue(m_ColorLocationSurface, color(pWing->wingColor()));
 
 			m_ShaderProgramSurface.enableAttributeArray(m_VertexLocationSurface);
 			m_ShaderProgramSurface.enableAttributeArray(m_NormalLocationSurface);
@@ -2695,7 +2695,7 @@ void gl3dView::glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody)
 
 	QString planeName;
 	QString textureName;
-	QMiarex *pMiarex = (QMiarex*)s_pMiarex;
+	Miarex *pMiarex = (Miarex*)s_pMiarex;
 
 	if(pMiarex && pMiarex->m_pCurPlane)
 	{

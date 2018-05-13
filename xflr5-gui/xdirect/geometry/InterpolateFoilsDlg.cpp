@@ -195,7 +195,7 @@ void InterpolateFoilsDlg::onSelChangeFoil1(int)
 {
 	QString strong  = m_pctrlFoil1->currentText();
 
-	Foil* pFoil = Objects2D::foil(strong);
+	Foil* pFoil = Objects2d::foil(strong);
 
 	if(pFoil)
 	{
@@ -224,7 +224,7 @@ void InterpolateFoilsDlg::onSelChangeFoil2(int)
 {
 	QString strong  = m_pctrlFoil2->currentText();
 
-	Foil* pFoil = Objects2D::foil(strong);
+	Foil* pFoil = Objects2d::foil(strong);
 
 	if(pFoil)
 	{
@@ -253,10 +253,10 @@ void InterpolateFoilsDlg::update()
 	QString strong;
 
 	strong = m_pctrlFoil1->currentText();
-	Foil* pFoil1 = Objects2D::foil(strong);
+	Foil* pFoil1 = Objects2d::foil(strong);
 
 	strong = m_pctrlFoil2->currentText();
-	Foil* pFoil2 = Objects2D::foil(strong);
+	Foil* pFoil2 = Objects2d::foil(strong);
 
 	if(!pFoil1 || !pFoil2) return;
 
@@ -315,7 +315,7 @@ void InterpolateFoilsDlg::onFrac()
 
 void InterpolateFoilsDlg::onOK()
 {
-	m_pBufferFoil->foilName() = m_NewFoilName;
+	m_pBufferFoil->setFoilName(m_NewFoilName);
 
 	QDialog::accept();
 }

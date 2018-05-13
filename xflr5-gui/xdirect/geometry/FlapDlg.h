@@ -25,7 +25,7 @@
 #include <QDialog>
 #include <QCheckBox>
 #include <QPushButton>
-#include <objects2d/Foil.h>
+#include <objects/objects2d/Foil.h>
 #include <misc/text/DoubleEdit.h>
 
 
@@ -36,8 +36,8 @@ class FlapDlg : public QDialog
 public:
 	FlapDlg(QWidget *pParent);
 
-	friend class QAFoil;
-	friend class QXDirect;
+	friend class AFoil;
+	friend class XDirect;
 
 
 private:

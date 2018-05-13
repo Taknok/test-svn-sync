@@ -29,7 +29,7 @@
 class ProgressDlg : public QDialog
 {
 	Q_OBJECT
-	friend class QMiarex;
+	friend class Miarex;
 public:
     ProgressDlg(QWidget *pParent);
 	void InitDialog(int min=0, int max=100);

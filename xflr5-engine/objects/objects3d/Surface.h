@@ -34,8 +34,8 @@
 
 
 #include <QVarLengthArray>
-#include <objects3d/Panel.h>
-#include "analysis3d_enums.h"
+#include <objects/objects3d/Panel.h>
+#include <analysis3d/analysis3d_enums.h>
 
 #define VLMHALF 2500
 
@@ -95,10 +95,10 @@ class Foil;
 class Body;
 class Vector3d;
 
-class Surface
+class XFLR5ENGINELIBSHARED_EXPORT Surface
 {
 	friend class Wing;
-	friend class QMiarex;
+	friend class Miarex;
 	friend class Objects3D;
 	friend class MainFrame;
 	friend class GL3dWingDlg;

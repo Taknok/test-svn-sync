@@ -29,14 +29,14 @@
 #include <QTableView>
 #include <QStandardItemModel>
 #include "PlaneTableDelegate.h"
-#include <objects3d/Plane.h>
+#include <objects/objects3d/Plane.h>
 
 
 
 class ManagePlanesDlg : public QDialog
 {
 	Q_OBJECT
-	friend class QMiarex;
+	friend class Miarex;
 	friend class MainFrame;
 
 public:

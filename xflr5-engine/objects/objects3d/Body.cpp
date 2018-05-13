@@ -31,7 +31,7 @@ Body::Body()
 {
 	m_BodyName = QObject::tr("Body Name");
 
-	m_BodyColor = QColor(98,102,156);
+	m_BodyColor = ObjectColor(98,102,156);
 	m_BodyStyle = 0;
 	m_BodyWidth = 1;
 
@@ -1525,7 +1525,7 @@ bool Body::serializeBodyWPA(QDataStream &ar, bool bIsStoring)
 		if(ArchiveFormat>=1003) readCString(ar, m_BodyDescription);
 
         readCOLORREF(ar, r,g,b);
-        m_BodyColor = QColor(r,g,b);
+		m_BodyColor = ObjectColor(r,g,b);
 		ar >> k;
 		if(k==1) m_LineType = XFLR5::BODYPANELTYPE;
 		else     m_LineType = XFLR5::BODYSPLINETYPE;
@@ -1647,7 +1647,7 @@ bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
 		ar << m_BodyName;
 		ar << m_BodyDescription;
 
-		ar << m_BodyColor;
+		writeQColor(ar, m_BodyColor.red(), m_BodyColor.green(), m_BodyColor.blue(), m_BodyColor.alpha());
 
 		if(m_LineType==XFLR5::BODYPANELTYPE) ar << 1;
 		else                                 ar << 2;
@@ -1690,7 +1690,10 @@ bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
 		ar >> m_BodyName;
 		ar >> m_BodyDescription;
 
-		ar >> m_BodyColor;
+		int a,r,g,b;
+		readQColor(ar, r, g, b, a);
+		m_BodyColor.setColor(r,g,b,a);
+
 
 		ar >> k;
 		if(k==1) m_LineType = XFLR5::BODYPANELTYPE;

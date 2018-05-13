@@ -21,7 +21,7 @@
 
 #include <QtDebug>
 #include "xmlpolarwriter.h"
-#include <globals.h>
+#include <globals/globals.h>
 
 XmlPolarWriter::XmlPolarWriter(QFile &XFile)
 {

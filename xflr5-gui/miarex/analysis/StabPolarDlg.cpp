@@ -19,9 +19,9 @@
 
 *****************************************************************************/
   
-#include <globals.h>
+#include <globals/globals.h>
 #include <misc/options/displayoptions.h>
-#include <objects3d/WPolar.h>
+#include <objects/objects3d/WPolar.h>
 #include <misc/options/Units.h>
 #include <miarex/Miarex.h>
 #include "StabPolarDlg.h"

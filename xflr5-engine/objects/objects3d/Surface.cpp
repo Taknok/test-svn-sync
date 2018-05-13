@@ -22,10 +22,10 @@
 #include <QtDebug>
 #include <math.h>
 #include "Surface.h"
-#include <objects3d/Quaternion.h>
-#include <objects2d/Foil.h>
+#include <objects/objects3d/Quaternion.h>
+#include <objects/objects2d/Foil.h>
 #include "Body.h"
-#include <objects2d/Vector3d.h>
+#include <objects/objects3d/vector3d.h>
 #include "WingSection.h"
 
 Vector3d *Surface::s_pNode;

@@ -28,15 +28,15 @@
 #include <QTableView>
 #include <QStandardItemModel>
 #include <misc/text/FloatEditDelegate.h>
-#include <objects2d/Foil.h>
+#include <objects/objects2d/Foil.h>
 
 
 class FoilCoordDlg : public QDialog
 {
 	Q_OBJECT
 
-	friend class QXDirect;
-	friend class QAFoil;
+	friend class XDirect;
+	friend class AFoil;
 
 public:
 	FoilCoordDlg(QWidget *pParent);
