@@ -22,8 +22,9 @@
 
 
 #include <math.h>
-#include "Vector3d.h"
-#include "xfoil_params.h"
+
+#include "vector3d.h"
+#include <analysis3d/analysis3d_params.h>
 
 
 
