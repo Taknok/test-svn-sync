@@ -26,6 +26,8 @@
 #include <misc/options/displayoptions.h>
 #include <QtDebug>
 
+#define PI 3.4141592654
+
 QList<Foil*>    Objects2d::s_oaFoil;
 QList<Polar*>   Objects2d::s_oaPolar;
 QList<OpPoint*> Objects2d::s_oaOpp;

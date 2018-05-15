@@ -18,6 +18,8 @@
 xflr5 v6.42 May xxx 2018
 	- corrected a bug which prevented the reference dimensions of an analysis to be updated when the geometry
 	  is modified by the user
+	- moved the XFoil and plane analysis engines in separate shared libraries for future re-use
+	- quick and dirty fix for bug report #114: added an option to enable/disable the clip plane in the 3d display options.
 
 
 xflr5 v6.41 April 22, 2018

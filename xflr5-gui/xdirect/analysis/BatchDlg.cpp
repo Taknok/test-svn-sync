@@ -88,7 +88,7 @@ BatchDlg::BatchDlg(QWidget *pParent) : QDialog(pParent)
 	m_bIsRunning      = false;
 	m_bErrors         = false;
 
-	XFoil::s_bCancel = false;
+    XFoil::setCancel(false);
 
 	setupLayout();
 
@@ -420,7 +420,7 @@ void BatchDlg::reject()
 	if(m_bIsRunning)
 	{
 		m_bCancel    = true;
-		XFoil::s_bCancel = true;
+        XFoil::setCancel(true);
 	}
 	else
 	{
@@ -442,7 +442,7 @@ void BatchDlg::cleanUp()
 	m_pctrlAnalyze->setText(tr("Analyze"));
 	m_bIsRunning = false;
 	m_bCancel    = false;
-	XFoil::s_bCancel = false;
+    XFoil::setCancel(false);
 	m_pctrlClose->setFocus();
 	qApp->processEvents();
 }
@@ -780,7 +780,7 @@ void BatchDlg::onAnalyze()
 {
 	if(m_bIsRunning)
 	{
-		XFoil::s_bCancel = true;
+        XFoil::setCancel(true);
 		XFoilTask::s_bCancel = true;
 		m_bCancel = true;
 		return;
@@ -830,7 +830,7 @@ void BatchDlg::onClose()
 	if(m_bIsRunning)
 	{
 		m_bCancel = true;
-		XFoil::s_bCancel= true;
+        XFoil::setCancel(true);
 		XFoilTask::s_bCancel = true;
 		return;
 	}

@@ -1246,13 +1246,13 @@ void XDirect::loadSettings(QSettings *pSettings)
 		m_Reynolds        = pSettings->value("ReynoldsMin").toDouble();
 		m_ReynoldsMax     = pSettings->value("ReynoldsMax").toDouble();
 		m_ReynoldsDelta   = pSettings->value("ReynolsDelta").toDouble();
-		m_XFoil.vaccel  = pSettings->value("VAccel").toDouble();
+        m_XFoil.setVAccel(pSettings->value("VAccel").toDouble());
 		s_bKeepOpenErrors = pSettings->value("KeepOpenErrors").toBool();
 
 		XFoilTask::s_bAutoInitBL    = pSettings->value("AutoInitBL").toBool();
 		XFoilTask::s_IterLim        = pSettings->value("IterLim", 100).toInt();
 
-		XFoil::s_bFullReport = pSettings->value("FullReport").toBool();
+        XFoil::setFullReport(pSettings->value("FullReport").toBool());
 
 		BatchThreadDlg::s_bUpdatePolarView = pSettings->value("BatchUpdatePolarView", false).toBool();
 		BatchThreadDlg::s_nThreads = pSettings->value("MaxThreads", 12).toInt();
@@ -1490,7 +1490,7 @@ void XDirect::onAnalyze()
 
 	m_pctrlAnalyze->setEnabled(true);
 
-	s_bInitBL = !m_XFoil.lblini;
+	s_bInitBL = !m_XFoil.isBLInitialized();
 	m_pctrlInitBL->setChecked(s_bInitBL);;
 
 	s_pMainFrame->updateOppListBox();
@@ -2195,8 +2195,8 @@ void XDirect::onExportBLData()
 	double xBL[IVX][ISX],Hk[IVX][ISX],UeVinf[IVX][ISX], Cf[IVX][ISX], Cd[IVX][ISX], AA0[IVX][ISX];
 	double DStar[IVX][ISX], Theta[IVX][ISX];
 	double uei;
-	double que = 0.5*m_XFoil.qinf*m_XFoil.qinf;
-	double qrf = m_XFoil.qinf;
+	double que = 0.5*m_XFoil.QInf()*m_XFoil.QInf();
+	double qrf = m_XFoil.QInf();
 	int nside1, nside2, ibl;
 	XFLR5::enumTextFileType type = XFLR5::TXT;
 
@@ -4002,14 +4002,14 @@ void XDirect::onXFoilAdvanced()
 	XFoilAdvancedDlg xfaDlg(s_pMainFrame);
 	xfaDlg.m_IterLimit   = XFoilTask::s_IterLim;
 	xfaDlg.m_bAutoInitBL     = XFoilTask::s_bAutoInitBL;
-	xfaDlg.m_VAccel      = XFoil::vaccel;
-	xfaDlg.m_bFullReport = XFoil::s_bFullReport;
+    xfaDlg.m_VAccel      = XFoil::VAccel();
+	xfaDlg.m_bFullReport = XFoil::fullReport();
 	xfaDlg.initDialog();
 
 	if (QDialog::Accepted == xfaDlg.exec())
 	{
-		XFoil::vaccel             = xfaDlg.m_VAccel;
-		XFoil::s_bFullReport      = xfaDlg.m_bFullReport;
+        XFoil::setVAccel(xfaDlg.m_VAccel);
+        XFoil::setFullReport(xfaDlg.m_bFullReport);
 		XFoilTask::s_bAutoInitBL  = xfaDlg.m_bAutoInitBL;
 		XFoilTask::s_IterLim      = xfaDlg.m_IterLimit;
 	}
@@ -4116,12 +4116,12 @@ void XDirect::saveSettings(QSettings *pSettings)
 
 		pSettings->setValue("AutoInitBL", XFoilTask::s_bAutoInitBL);
 		pSettings->setValue("IterLim", XFoilTask::s_IterLim);
-		pSettings->setValue("FullReport", XFoil::s_bFullReport);
+		pSettings->setValue("FullReport", XFoil::fullReport());
 
 		pSettings->setValue("BatchUpdatePolarView", BatchThreadDlg::s_bUpdatePolarView);
 		pSettings->setValue("MaxThreads", BatchThreadDlg::s_nThreads);
 
-		pSettings->setValue("VAccel", m_XFoil.vaccel);
+        pSettings->setValue("VAccel", m_XFoil.VAccel());
 		pSettings->setValue("KeepOpenErrors", s_bKeepOpenErrors);
 		pSettings->setValue("NCrit", s_refPolar.NCrit());
 		pSettings->setValue("XTopTr", s_refPolar.XtrTop());

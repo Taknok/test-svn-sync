@@ -14,7 +14,6 @@
 
 gl3dMiarexView::gl3dMiarexView(QWidget *parent) : gl3dView(parent)
 {
-
 }
 
 
@@ -63,7 +62,7 @@ void gl3dMiarexView::glRenderView()
 	m_pvmMatrix = m_orthoMatrix * m_viewMatrix * m_modelMatrix;
 
 
-	glEnable(GL_CLIP_PLANE0);
+	if(W3dPrefsDlg::s_bEnableClipPlane) glEnable(GL_CLIP_PLANE0);
 
 	if(s_pMiarex->m_pCurPlane)
 	{
@@ -154,13 +153,6 @@ void gl3dMiarexView::glRenderView()
 
 		if(s_pMiarex->m_pCurPOpp)
 		{
-/*			if(pMiarex->m_bXCP)
-			{
-				for(int iw=0; iw<MAXWINGS; iw++)
-				{
-					if(pMiarex->m_pCurPlane->wing(iw)) paintLift(iw);
-				}
-			}*/
 			if(s_pMiarex->m_bMoments)
 			{
 				paintMoments();
@@ -197,8 +189,7 @@ void gl3dMiarexView::glRenderView()
 			}
 		}
 	}
-	glDisable(GL_CLIP_PLANE0);
-
+	if(W3dPrefsDlg::s_bEnableClipPlane) glDisable(GL_CLIP_PLANE0);
 }
 
 

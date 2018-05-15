@@ -28,7 +28,7 @@
 
 #include "XFoil.h"
 
-
+#define PI 3.141592654
 
 bool XFoil::s_bCancel = false;
 bool XFoil::s_bFullReport = false;
