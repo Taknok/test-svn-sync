@@ -23,17 +23,21 @@
 
 
 #include <math.h>
-#include <QMenu>
-#include <QtDebug>
-#include <QStatusBar>
+#include <QAction>
+
+
 #include <globals/mainframe.h>
 #include <globals/globals.h>
 #include <graph_globals.h>
-#include "misc/options/displayoptions.h"
+
 #include <graph/graph.h>
 #include <xdirect/XDirect.h>
 #include <xdirect/XDirectStyleDlg.h>
 #include <graph/graphdlg.h>
+#include <misc/options/displayoptions.h>
+
+#define PI 3.141592654
+
 
 void *OpPointWidget::s_pMainFrame = NULL;
 

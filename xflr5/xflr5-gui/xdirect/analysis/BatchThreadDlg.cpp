@@ -85,7 +85,7 @@ BatchThreadDlg::BatchThreadDlg(QWidget *pParent) : QDialog(pParent)
 
 	m_bIsRunning      = false;
 
-	XFoil::s_bCancel = false;
+    XFoil::setCancel(false);
 	XFoilTask::s_bSkipOpp = false;
 	XFoilTask::s_bSkipPolar = false;
 
@@ -371,7 +371,7 @@ void BatchThreadDlg::cleanUp()
 	m_pctrlAnalyze->setText(tr("Analyze"));
 	m_bIsRunning = false;
 	m_bCancel    = false;
-	XFoil::s_bCancel = false;
+    XFoil::setCancel(false);
 	m_pctrlClose->setFocus();
 
 	//in case we cancelled, delete all Analysis that are left
@@ -471,7 +471,7 @@ void BatchThreadDlg::keyPressEvent(QKeyEvent *event)
 			{
 				m_bCancel = true;
 				XFoilTask::s_bCancel = true;
-				XFoil::s_bCancel = true;
+                XFoil::setCancel(true);
 			}
 			else
 			{
@@ -600,7 +600,7 @@ void BatchThreadDlg::onAnalyze()
 	{
 		m_bCancel = true;
 		XFoilTask::s_bCancel = true;
-		XFoil::s_bCancel = true;
+        XFoil::setCancel(true);
 		return;
 	}
 
@@ -655,7 +655,7 @@ void BatchThreadDlg::reject()
 	if(m_bIsRunning)
 	{
 		m_bCancel    = true;
-		XFoil::s_bCancel = true;
+        XFoil::setCancel(true);
 	}
 	else
 	{
@@ -1137,15 +1137,15 @@ void BatchThreadDlg::onAdvancedSettings()
 {
 	XFoilAdvancedDlg xfaDlg(this);
 	xfaDlg.m_IterLimit   = XFoilTask::s_IterLim;
-	xfaDlg.m_bAutoInitBL     = XFoilTask::s_bAutoInitBL;
-	xfaDlg.m_VAccel      = XFoil::vaccel;
-	xfaDlg.m_bFullReport = XFoil::s_bFullReport;
+    xfaDlg.m_bAutoInitBL = XFoilTask::s_bAutoInitBL;
+    xfaDlg.m_VAccel      = XFoil::VAccel();
+	xfaDlg.m_bFullReport = XFoil::fullReport();
 	xfaDlg.initDialog();
 
 	if (QDialog::Accepted == xfaDlg.exec())
 	{
-		XFoil::vaccel             = xfaDlg.m_VAccel;
-		XFoil::s_bFullReport      = xfaDlg.m_bFullReport;
+        XFoil::setVAccel(xfaDlg.m_VAccel);
+        XFoil::setFullReport(xfaDlg.m_bFullReport);
 		XFoilTask::s_bAutoInitBL  = xfaDlg.m_bAutoInitBL;
 		XFoilTask::s_IterLim      = xfaDlg.m_IterLimit;
 	}

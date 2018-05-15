@@ -78,7 +78,8 @@ private:
 
 	ColorButton *m_pctrlMassColor;
 
-	QCheckBox*m_pctrlAnimateTransitions, *m_pctrlAutoAdjustScale;
+	QCheckBox *m_pctrlAnimateTransitions, *m_pctrlAutoAdjustScale;
+	QCheckBox *m_pctrlEnableClipPlane;
 	IntEdit *m_pctrlChordwiseRes, *m_pctrlBodyAxialRes, *m_pctrlBodyHoopRes;
 
 public:
@@ -121,6 +122,7 @@ public:
 
 	static int s_iChordwiseRes,s_iBodyAxialRes, s_iBodyHoopRes;
 	static bool s_bAnimateTransitions;
+	static bool s_bEnableClipPlane;
 };
 
 #endif // W3DPREFSDLG_H

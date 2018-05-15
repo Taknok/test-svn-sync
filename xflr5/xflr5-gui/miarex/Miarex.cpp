@@ -678,6 +678,7 @@ void Miarex::setControls()
 	m_pctrlVDrag->setChecked(m_bVCd);
 	m_pctrlStream->setChecked(m_bStream);
 	m_pctrlClipPlanePos->setValue((int)(m_pgl3dMiarexView->m_ClipPlanePos*100.0));
+	m_pctrlClipPlanePos->setEnabled(W3dPrefsDlg::s_bEnableClipPlane);
 
 	m_pctrlOutline->setEnabled(m_pCurPlane);
 	m_pctrlSurfaces->setEnabled(m_pCurPlane);
@@ -2463,6 +2464,7 @@ void Miarex::on3DPrefs()
 	m_bResetglOpp  = true;
 	m_bResetglStream = true;
 
+	setControls();
 	updateView();
 }
 
