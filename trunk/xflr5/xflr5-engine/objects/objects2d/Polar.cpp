@@ -23,6 +23,7 @@
 #include "Foil.h"
 #include "Polar.h"
 
+#define PI 3.141592654
 
 /**
 *The public constructor.
@@ -753,12 +754,12 @@ QString Polar::autoPolarName(XFLR5::enumPolarType polarType, double Re, double M
 	QString str = QString("_N%1").arg(NCrit,3,'f',1);
 	polarName += str;
 
-	if(XTop<1.0-ACCURACY)
+    if(XTop<1.0-0.001)
 	{
 		str = QString("_XtrTop%1%").arg(XTop*100.0,2,'f',0);
 		polarName += str;
 	}
-	if(XBot<1.0-ACCURACY)
+    if(XBot<1.0-0.001)
 	{
 		str = QString("_XtrBot%1%").arg(XBot*100.0,2,'f',0);
 		polarName += str;

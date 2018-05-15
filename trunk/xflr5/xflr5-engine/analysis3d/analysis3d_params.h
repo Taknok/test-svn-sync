@@ -23,7 +23,7 @@
 #define ANALYSIS3D_PARAMS_H
 
 
-#define PI             3.14159265358979
+#define PI         3.14159265358979
 #define PRECISION  0.00000001  /**< Values are assumed 0 if less than this value. This is to avoid comparing the equality of two floating point numbers */
 
 

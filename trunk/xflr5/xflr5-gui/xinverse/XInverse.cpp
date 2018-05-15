@@ -41,6 +41,8 @@
 #include <graph/graphdlg.h>
 #include <XFoil.h>
 
+#define PI 3.4141592654
+
 
 MainFrame *XInverse::s_pMainFrame;
 void *XInverse::s_p2DWidget;

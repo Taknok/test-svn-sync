@@ -202,7 +202,7 @@ void XFoilAnalysisDlg::initDialog()
 
 void XFoilAnalysisDlg::onCancelAnalysis()
 {
-	XFoil::s_bCancel= true;
+    XFoil::setCancel(true);
 	XFoilTask::s_bCancel = true;
 
     if(m_pXFoilTask->isFinished()) reject();
@@ -214,13 +214,13 @@ void XFoilAnalysisDlg::reject()
 {
     if(!m_pXFoilTask->isFinished())
 	{
-		XFoil::s_bCancel= true;
+        XFoil::setCancel(true);
 		XFoilTask::s_bCancel = true;
 		return;
 	}
 
-	XFoilTask::s_bCancel = true;
-	XFoil::s_bCancel = true;
+    XFoilTask::s_bCancel = true;
+    XFoil::setCancel(true);
 	if(m_pXFile)
 	{
 		m_pXFoilTask->m_OutStream.flush();
@@ -234,7 +234,7 @@ void XFoilAnalysisDlg::reject()
 void XFoilAnalysisDlg::accept()
 {
 	XFoilTask::s_bCancel = true;
-	XFoil::s_bCancel = true;
+    XFoil::setCancel(true);
 	if(m_pXFile)
 	{
 		m_pXFoilTask->m_OutStream.flush();

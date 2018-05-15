@@ -225,7 +225,6 @@ void gl3dView::onClipPlane(int pos)
 	double coef = 4.0;
 	double planepos =  (double)pos/100.0;
 	m_ClipPlanePos = 5.0*sinh(planepos*coef)/sinh(coef);
-//qDebug(" %13.7f   %13.7f  %13.7f", planepos, m_ClipPlanePos, m_glScaled);
 	update();
 }
 
@@ -1589,18 +1588,18 @@ void gl3dView::paintGL3()
 	m_ShaderProgramTexture.setUniformValue(m_EyePosLocationTexture, QVector3D(0.0,0.0,50.0*s));
 	m_ShaderProgramTexture.release();
 
-	QVector4D clipPlane(0.0,0.0,-1,m_ClipPlanePos);
+	QVector4D clipplane(0.0,0.0,-1,m_ClipPlanePos);
 
 	m_ShaderProgramLine.bind();
-	m_ShaderProgramLine.setUniformValue(m_ClipPlaneLocationLine, clipPlane);
+	m_ShaderProgramLine.setUniformValue(m_ClipPlaneLocationLine, clipplane);
 	m_ShaderProgramLine.release();
 
 	m_ShaderProgramSurface.bind();
-	m_ShaderProgramSurface.setUniformValue(m_ClipPlaneLocationSurface, clipPlane);
+	m_ShaderProgramSurface.setUniformValue(m_ClipPlaneLocationSurface, clipplane);
 	m_ShaderProgramSurface.release();
 
 	m_ShaderProgramTexture.bind();
-	m_ShaderProgramTexture.setUniformValue(m_ClipPlaneLocationTexture, clipPlane);
+	m_ShaderProgramTexture.setUniformValue(m_ClipPlaneLocationTexture, clipplane);
 	m_ShaderProgramTexture.release();
 
 	width  = geometry().width() * pixelRatio;
@@ -1623,8 +1622,7 @@ void gl3dView::paintGL3()
 
 	if(m_bArcball) paintArcBall();
 
-	MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-	if(pMainFrame->m_glLightDlg.isVisible())
+	if(s_pMainFrame->m_glLightDlg.isVisible())
 	{
 		Vector3d lightPos(GLLightDlg::s_Light.m_X, GLLightDlg::s_Light.m_Y, GLLightDlg::s_Light.m_Z);
 		double radius = (GLLightDlg::s_Light.m_Z+2.0)/73.0;
@@ -2142,12 +2140,13 @@ void gl3dView::paintWing(int iWing, Wing *pWing)
 		int pos = 0;
 
 		bool bTextures = pWing->textures() &&
-						 (m_pWingBotLeftTexture[iWing] && m_pWingBotRightTexture[iWing] && m_pWingTopLeftTexture[iWing] && m_pWingTopRightTexture[iWing]);
+				(m_pWingBotLeftTexture[iWing] && m_pWingBotRightTexture[iWing] && m_pWingTopLeftTexture[iWing] && m_pWingTopRightTexture[iWing]);
 
 		if(bTextures)
 		{
 			m_ShaderProgramTexture.bind();
 			m_vboWingSurface[iWing].bind();
+
 			m_ShaderProgramTexture.setUniformValue(m_mMatrixLocationTexture, m_modelMatrix);
 			m_ShaderProgramTexture.setUniformValue(m_vMatrixLocationTexture, m_viewMatrix);
 			m_ShaderProgramTexture.setUniformValue(m_pvmMatrixLocationTexture, m_pvmMatrix);
@@ -2695,11 +2694,10 @@ void gl3dView::glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody)
 
 	QString planeName;
 	QString textureName;
-	Miarex *pMiarex = (Miarex*)s_pMiarex;
 
-	if(pMiarex && pMiarex->m_pCurPlane)
+	if(s_pMiarex && s_pMiarex->m_pCurPlane)
 	{
-		planeName = pMiarex->m_pCurPlane->planeName();
+		planeName = s_pMiarex->m_pCurPlane->planeName();
 		switch(pWing->wingType())
 		{
 			case XFLR5::MAINWING:
