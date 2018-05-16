@@ -372,10 +372,10 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 
     Objects3d::setStaticPointers();
 
-	if(m_bAutoLoadLast)
+/*	if(m_bAutoLoadLast)
 	{
 		onLoadLastProject();
-	}
+	}*/
 }
 
 

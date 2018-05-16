@@ -144,6 +144,7 @@ public slots:
 	void onXInverseMixed();
 	void onMiarex();
 	void onExecuteScript();
+	void onLoadLastProject();
 
 private slots:
 	void aboutQt();
@@ -155,7 +156,6 @@ private slots:
 	void onHighlightOperatingPoint();
 	void onNewProject();
 	void onLoadFile();
-	void onLoadLastProject();
 	void onLogFile();
 	void onOpenGLInfo();
 	void onPreferences();
@@ -243,6 +243,8 @@ public:
 	void updateWPolarListBox();
 	void updatePOppListBox();
 	void writePolars(QDataStream &ar, void *pFoilPtr=NULL);
+
+	bool bAutoLoadLast() const {return m_bAutoLoadLast;}
 
 	static void setSaveState(bool bSave);
 	static void readStyleSheet(QString styleSheetName, QString &styleSheet);
