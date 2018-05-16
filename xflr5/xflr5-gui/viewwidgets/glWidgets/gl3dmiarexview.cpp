@@ -62,7 +62,7 @@ void gl3dMiarexView::glRenderView()
 	m_pvmMatrix = m_orthoMatrix * m_viewMatrix * m_modelMatrix;
 
 
-	if(W3dPrefsDlg::s_bEnableClipPlane) glEnable(GL_CLIP_PLANE0);
+//	if(W3dPrefsDlg::s_bEnableClipPlane) glEnable(GL_CLIP_PLANE0);
 
 	if(s_pMiarex->m_pCurPlane)
 	{
@@ -189,7 +189,7 @@ void gl3dMiarexView::glRenderView()
 			}
 		}
 	}
-	if(W3dPrefsDlg::s_bEnableClipPlane) glDisable(GL_CLIP_PLANE0);
+//	if(W3dPrefsDlg::s_bEnableClipPlane) glDisable(GL_CLIP_PLANE0);
 }
 
 

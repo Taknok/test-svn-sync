@@ -120,6 +120,13 @@ XFLR5Application::XFLR5Application(int &argc, char** argv) : QApplication(argc, 
 		   else if (iApp == XFLR5::XFOILANALYSIS) w->onXDirect();
         }
     }
+	else
+	{
+		if(w->bAutoLoadLast())
+		{
+			w->onLoadLastProject();
+		}
+	}
 #endif
 
 }
