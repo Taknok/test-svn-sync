@@ -102,6 +102,6 @@ macx {
 
 
 unix {
-    target.path = /usr/local/lib64
+	target.path = /usr/local/lib
     INSTALLS += target
 }
