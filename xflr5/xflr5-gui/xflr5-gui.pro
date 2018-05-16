@@ -350,7 +350,7 @@ unix{
 	TARGET = xflr5
 #   Specify here the directories where the shared library files XFoil.so and Xfl5-engine.so are located
 #   The precise paths depend on QtCreator's settings
-#   Alternate option is to compile the libraries separately and declare them in the system's PATH
+#   Alternate option is to compile the libraries and  sudo make install
 #   Alternate option is to specify the absolute path instead of the relative path
 #   Uncomment the following line to print the name of the variable OUT_PWD in the console
 #message($$OUT_PWD)
@@ -359,7 +359,7 @@ unix{
 	LIBS += -L$$OUT_PWD/../xflr5-engine/ -lxflr5-engine
 
 	# VARIABLES
-	isEmpty(PREFIX):PREFIX = /usr
+	isEmpty(PREFIX):PREFIX = /usr/local
 	BINDIR = $$PREFIX/bin
 	DATADIR = $$PREFIX/share
 
