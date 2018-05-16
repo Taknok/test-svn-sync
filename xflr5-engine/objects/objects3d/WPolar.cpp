@@ -413,8 +413,8 @@ void WPolar::calculatePoint(int iPt)
 	}
 
 
-	if(qAbs(m_CL[iPt])>0.) m_Gamma[iPt]  =  atan(m_TCd[iPt]/m_CL[iPt]) * 180.0/PI;
-	else m_Gamma[iPt] = 90.0;
+	if(fabs(m_CL[iPt])>0.) m_Gamma[iPt] = atan(m_TCd[iPt]/m_CL[iPt]) * 180.0/PI;
+	else                   m_Gamma[iPt] = 90.0;
 
 	m_Vz[iPt] = (double)sqrt(2*mass*9.81/m_Density/m_referenceArea)/m_Cl32Cd[iPt];
 	m_Vx[iPt] = m_QInfinite[iPt] * (double)cos(m_Gamma[iPt]*PI/180.0);
