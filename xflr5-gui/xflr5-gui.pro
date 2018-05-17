@@ -28,6 +28,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 
+VERSION = 6.42
+
 CONFIG += qt
 QT += opengl
 
@@ -322,6 +324,11 @@ DEPENDPATH += $$PWD/../XFoil-lib/
 DEPENDPATH += $$PWD/../xflr5-engine/
 
 
+OBJECTS_DIR = ./build/objects
+MOC_DIR = ./build/moc
+RCC_DIR = ./build/rcc
+
+
 win32 {
 	TARGET = xflr5
 
@@ -370,47 +377,57 @@ unix{
 
 
 macx {
-	CONFIG(release, debug|release) {
-		OBJECTS_DIR = ./build/release
-		MOC_DIR = ./build/release
-		RCC_DIR = ./build/release
-		UI_HEADERS_DIR = ./build/release
-	}
-	CONFIG(debug, debug|release) {
-		OBJECTS_DIR = ./build/debug
-		MOC_DIR = ./build/debug
-		RCC_DIR = ./build/debug
-		UI_HEADERS_DIR = ./build/debug
-	}
 	DESTDIR = ../
 	TARGET = XFLR5
 	TEMPLATE = app
-	CONFIG += i386
+#	CONFIG += i386
 	QMAKE_MAC_SDK = macosx
 	#QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.4
-	#QMAKE_MAC_SDK = /Developer/SDKs/MacOSX10.6.sdk
-	OTHER_FILES += ./mac/Info.plist
 
-	LIBS += -framework \
-		CoreFoundation
+	OTHER_FILES += ./mac/Info.plist
+	QMAKE_INFO_PLIST = ./mac/Info.plist
+	ICON = ./mac/xflr5.icns
 
 #   Specify here the directories where the shared library files XFoil.dylib and Xfl5-engine.dylib are located
 #   The precise paths depend on QtCreator's settings
 #   Alternate option is to compile the libraries separately and declare them in the system's PATH
 #   Alternate option is to specify the absolute path instead of the relative path
 #   Uncomment the following line to print the name of the variable OUT_PWD in the console
+
+#	CONFIG(release, debug|release){
+#		LIBS += -L$$OUT_PWD/../xflr5-engine/ -lxflr5-engine
+#		LIBS += -L$$OUT_PWD/../XFoil-lib/ -lXFoil
+#	}
+#	else:CONFIG(debug, debug|release)
+#	{
+#		LIBS += -L$$OUT_PWD/../xflr5-engine/ -lxflr5-engine
+#		LIBS += -L$$OUT_PWD/../XFoil-lib/ -lXFoil
+#	}
 #message($$OUT_PWD)
-	CONFIG(release, debug|release){
-		LIBS += -L$$OUT_PWD/../xflr5-engine/build/ -lxflr5-engine
-		LIBS += -L$$OUT_PWD/../XFoil-lib/build/ -lXFoil
-	}
-	else:CONFIG(debug, debug|release)
-	{
-		LIBS += -L$$OUT_PWD/../xflr5-engine/build/ -lxflr5-engine
-		LIBS += -L$$OUT_PWD/../XFoil-lib/build/ -lXFoil
-	}
-	QMAKE_INFO_PLIST = ./mac/Info.plist
-	ICON = ./mac/xflr5.icns
+#	LIBS += -F$$OUT_PWD/../xflr5-engine
+#	LIBS += -framework xflr5-engine
+#	LIBS += -F$$OUT_PWD/../XFoil-lib
+#	LIBS += -framework XFoil
+
+	# link to the lib:
+	LIBS += -L$$OUT_PWD/../xflr5-engine -lxflr5-engine
+	# make the app find the libs:
+	QMAKE_RPATHDIR = @executable_path/../Frameworks
+	# deploy the libs:
+	xflr5-engine.files = $$OUT_PWD/../xflr5-engine/libxflr5-engine.1.dylib
+	xflr5-engine.path = Contents/Frameworks
+	QMAKE_BUNDLE_DATA += xflr5-engine
+
+	# link to the lib:
+	LIBS += -L$$OUT_PWD/../XFoil-lib -lXFoil
+	# make the app find the libs:
+	QMAKE_RPATHDIR = @executable_path/../Frameworks
+	# deploy the libs:
+	XFoil.files = $$OUT_PWD/../XFoil-lib/libXFoil.1.dylib
+	XFoil.path = Contents/Frameworks
+	QMAKE_BUNDLE_DATA += XFoil
+
+	LIBS += -framework CoreFoundation
 }
 
 QMAKE_CFLAGS_WARN_ON -= -W3
