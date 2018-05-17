@@ -22,6 +22,8 @@ TEMPLATE = lib
 
 DEFINES += XFLR5ENGINE_LIBRARY
 
+#VERSION = 1.00
+
 SOURCES += \
     objects/objects_global.cpp \
     objects/objects2d/Foil.cpp \
@@ -85,19 +87,16 @@ INCLUDEPATH += $$PWD/objects
 INCLUDEPATH += $$PWD/analysis3d
 
 
-macx {
-    CONFIG(release, debug|release) {
-        OBJECTS_DIR = ./build/release
-        MOC_DIR = ./build/release
-        RCC_DIR = ./build/release
-    }
-    CONFIG(debug, debug|release) {
-        OBJECTS_DIR = ./build/debug
-        MOC_DIR = ./build/debug
-        RCC_DIR = ./build/debug
-    }
-    CONFIG += i386
-    QMAKE_MAC_SDK = macosx
+OBJECTS_DIR = ./build/objects
+MOC_DIR = ./build/moc
+RCC_DIR = ./build/rcc
+
+
+macx{
+#	CONFIG += lib_bundle
+#	CONFIG += i386
+	QMAKE_SONAME_PREFIX = @executable_path/../Frameworks
+	QMAKE_MAC_SDK = macosx
 }
 
 

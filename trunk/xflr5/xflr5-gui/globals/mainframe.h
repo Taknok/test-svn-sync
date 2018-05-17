@@ -246,6 +246,7 @@ public:
 
 	bool bAutoLoadLast() const {return m_bAutoLoadLast;}
 
+	static QString projectName() {return s_ProjectName;}
 	static void setSaveState(bool bSave);
 	static void readStyleSheet(QString styleSheetName, QString &styleSheet);
 	static QColor getColor(int type);
