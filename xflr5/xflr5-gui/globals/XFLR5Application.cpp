@@ -127,6 +127,12 @@ XFLR5Application::XFLR5Application(int &argc, char** argv) : QApplication(argc, 
 			w->onLoadLastProject();
 		}
 	}
+#else
+	if(w->bAutoLoadLast() && !MainFrame::projectName().length())
+	{
+		// if nothing has been loaded, load the last project file
+		w->onLoadLastProject();
+	}
 #endif
 
 }
@@ -149,6 +155,7 @@ bool XFLR5Application::event(QEvent *event)
 		default:
 			return QApplication::event(event);
 	}
+	return QApplication::event(event);
 }
 
 
