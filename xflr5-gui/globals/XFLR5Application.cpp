@@ -127,7 +127,6 @@ XFLR5Application::XFLR5Application(int &argc, char** argv) : QApplication(argc, 
     }
 	else
 	{
-		QMessageBox::information(w, "info", "loading autolast");
 		if(w->bAutoLoadLast())
 		{
 			w->onLoadLastProject();
