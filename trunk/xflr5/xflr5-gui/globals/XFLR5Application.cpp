@@ -30,6 +30,7 @@
 #include <globals/mainframe.h>
 #include <misc/options/displayoptions.h>
 #include <ctime>
+#include <iostream>
 
 XFLR5Application::XFLR5Application(int &argc, char** argv) : QApplication(argc, argv)
 {
@@ -107,21 +108,26 @@ XFLR5Application::XFLR5Application(int &argc, char** argv) : QApplication(argc, 
 
 
 #ifndef Q_OS_MAC
-	QString PathName, Extension;
 	if(argc>1)
-    {
+	{
+		QString PathName, Extension;
 		PathName=argv[1];
-		Extension = PathName.right(4);
-		if(Extension.compare(".xfl",Qt::CaseInsensitive)==0 || Extension.compare(".wpa",Qt::CaseInsensitive)==0 || Extension.compare(".plr",Qt::CaseInsensitive)==0)
+		PathName.replace("'","");
+		QFileInfo fi(PathName);
+		Extension = fi.suffix();
+
+		if (Extension.compare("xfl",Qt::CaseInsensitive)==0 || Extension.compare("wpa",Qt::CaseInsensitive)==0 ||
+			Extension.compare("plr",Qt::CaseInsensitive)==0 || Extension.compare("dat",Qt::CaseInsensitive)==0)
         {
 			int iApp = w->loadXFLR5File(PathName);
 
-		   if (iApp == XFLR5::MIAREX)             w->onMiarex();
-		   else if (iApp == XFLR5::XFOILANALYSIS) w->onXDirect();
+			if (iApp == XFLR5::MIAREX)             w->onMiarex();
+			else if (iApp == XFLR5::XFOILANALYSIS) w->onXDirect();
         }
     }
 	else
 	{
+		QMessageBox::information(w, "info", "loading autolast");
 		if(w->bAutoLoadLast())
 		{
 			w->onLoadLastProject();
