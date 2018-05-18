@@ -3520,22 +3520,22 @@ MainFrame* MainFrame::self() {
 }
 
 
-XFLR5::enumApp MainFrame::loadXFLR5File(QString pathName)
+XFLR5::enumApp MainFrame::loadXFLR5File(QString pathname)
 {
-	QFile XFile(pathName);
+	QFile XFile(pathname);
 	if (!XFile.open(QIODevice::ReadOnly))
 	{
-		QString strange = tr("Could not open the file\n")+pathName;
+		QString strange = tr("Could not open the file\n")+pathname;
 		QMessageBox::information(window(), tr("Info"), strange);
 		return XFLR5::NOAPP;
 	}
 
-	QString end = pathName.right(4).toLower();
+	QString end = pathname.right(4).toLower();
 
-	pathName.replace(QDir::separator(), "/"); // Qt sometimes uses the windows \ separator
+	pathname.replace(QDir::separator(), "/"); // Qt sometimes uses the windows \ separator
 
-	int pos = pathName.lastIndexOf("/");
-	if(pos>0) 	Settings::s_LastDirName = pathName.left(pos);
+	int pos = pathname.lastIndexOf("/");
+	if(pos>0) 	Settings::s_LastDirName = pathname.left(pos);
 
 	if(end==".plr")
 	{
@@ -3555,14 +3555,14 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString pathName)
 
 		XFile.close();
 
-		addRecentFile(pathName);
+		addRecentFile(pathname);
 		setSaveState(false);
 		m_pXDirect->setControls();
 		return XFLR5::XFOILANALYSIS;
 	}
 	else if(end==".dat")
 	{
-		QString fileName = pathName;
+		QString fileName = pathname;
 		fileName.replace(".dat","");
 		int pos1 = fileName.lastIndexOf("hn");
 		fileName = fileName.right(fileName.length()-pos1);
@@ -3581,7 +3581,7 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString pathName)
             XFile.close();
 
             setSaveState(false);
-			addRecentFile(pathName);
+			addRecentFile(pathname);
 
 			if(m_iApp==XFLR5::XFOILANALYSIS)
 			{
@@ -3627,10 +3627,10 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString pathName)
 			QMessageBox::warning(this,tr("Warning"), tr("Error reading the file")+"\n"+tr("Saved the valid part"));
 		}
 
-		addRecentFile(pathName);
+		addRecentFile(pathname);
 		setSaveState(true);
-		pathName.replace(".wpa", ".xfl", Qt::CaseInsensitive);
-		setProjectName(pathName);
+		pathname.replace(".wpa", ".xfl", Qt::CaseInsensitive);
+		setProjectName(pathname);
 
 		XFile.close();
 
@@ -3668,9 +3668,9 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString pathName)
 		}
 		QApplication::restoreOverrideCursor();
 
-		addRecentFile(pathName);
+		addRecentFile(pathname);
 		setSaveState(true);
-		setProjectName(pathName);
+		setProjectName(pathname);
 
 		XFile.close();
 
