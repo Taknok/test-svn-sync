@@ -26,7 +26,7 @@
 #include <misc/options/displayoptions.h>
 #include <QtDebug>
 
-#define PI 3.4141592654
+#define PI 3.141592654
 
 QList<Foil*>    Objects2d::s_oaFoil;
 QList<Polar*>   Objects2d::s_oaPolar;
