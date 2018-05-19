@@ -585,11 +585,13 @@ void MainFrame::createActions()
 	m_pExportCurGraphAct->setStatusTip(tr("Export the current graph data to a text file"));
 	connect(m_pExportCurGraphAct, SIGNAL(triggered()), this, SLOT(onExportCurGraph()));
 
-	m_pResetCurGraphScales = new QAction(QIcon(":/images/OnResetGraphScale.png"), tr("Reset Graph Scales")+"\t(R)", this);
+	m_pResetCurGraphScales = new QAction(QIcon(":/images/OnResetGraphScale.png"), tr("Reset Graph Scales")+"\tR", this);
+//	m_pResetCurGraphScales->setShortcut(Qt::Key_R);
 	m_pResetCurGraphScales->setStatusTip(tr("Restores the graph's x and y scales"));
 	connect(m_pResetCurGraphScales, SIGNAL(triggered()), this, SLOT(onResetCurGraphScales()));
 
-	m_pCurGraphDlgAct = new QAction(tr("Define Graph Settings")+"\t(G)", this);
+	m_pCurGraphDlgAct = new QAction(tr("Define Graph Settings"), this);
+	m_pCurGraphDlgAct->setShortcut(Qt::Key_G);
 	connect(m_pCurGraphDlgAct, SIGNAL(triggered()), this, SLOT(onCurGraphSettings()));
 
 	m_pExitAct = new QAction(tr("E&xit"), this);
@@ -617,107 +619,105 @@ void MainFrame::createActions()
 
 void MainFrame::createAFoilActions()
 {
-	AFoil *pAFoil = (AFoil*)m_pAFoil;
-
 	m_pStoreSplineAct= new QAction(QIcon(":/images/OnStoreFoil.png"), tr("Store Splines as Foil"), this);
 	m_pStoreSplineAct->setStatusTip(tr("Store the current splines in the foil database"));
-	connect(m_pStoreSplineAct, SIGNAL(triggered()), pAFoil, SLOT(onStoreSplines()));
+	connect(m_pStoreSplineAct, SIGNAL(triggered()), m_pAFoil, SLOT(onStoreSplines()));
 
 	m_pSplineControlsAct= new QAction(tr("Splines Params"), this);
 	m_pSplineControlsAct->setStatusTip(tr("Define parameters for the splines : degree, number of out points"));
-	connect(m_pSplineControlsAct, SIGNAL(triggered()), pAFoil, SLOT(onSplineControls()));
+	connect(m_pSplineControlsAct, SIGNAL(triggered()), m_pAFoil, SLOT(onSplineControls()));
 
 	m_pExportSplinesToFileAct= new QAction(tr("Export Splines To File"), this);
 	m_pExportSplinesToFileAct->setStatusTip(tr("Define parameters for the splines : degree, number of out points"));
-	connect(m_pExportSplinesToFileAct, SIGNAL(triggered()), pAFoil, SLOT(onExportSplinesToFile()));
+	connect(m_pExportSplinesToFileAct, SIGNAL(triggered()), m_pAFoil, SLOT(onExportSplinesToFile()));
 
 	m_pNewSplinesAct= new QAction(tr("New Splines"), this);
 	m_pNewSplinesAct->setStatusTip(tr("Reset the splines"));
-	connect(m_pNewSplinesAct, SIGNAL(triggered()), pAFoil, SLOT(onNewSplines()));
+	connect(m_pNewSplinesAct, SIGNAL(triggered()), m_pAFoil, SLOT(onNewSplines()));
 
 	m_pUndoAFoilAct= new QAction(QIcon(":/images/OnUndo.png"), tr("Undo"), this);
 	m_pUndoAFoilAct->setShortcut(Qt::CTRL + Qt::Key_Z);
 	m_pUndoAFoilAct->setStatusTip(tr("Cancels the last modification"));
-	connect(m_pUndoAFoilAct, SIGNAL(triggered()), pAFoil, SLOT(onUndo()));
+	connect(m_pUndoAFoilAct, SIGNAL(triggered()), m_pAFoil, SLOT(onUndo()));
 
 	m_pRedoAFoilAct= new QAction(QIcon(":/images/OnRedo.png"), tr("Redo"), this);
 	m_pRedoAFoilAct->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_Z);
 	m_pRedoAFoilAct->setStatusTip(tr("Restores the last cancelled modification"));
-	connect(m_pRedoAFoilAct, SIGNAL(triggered()), pAFoil, SLOT(onRedo()));
+	connect(m_pRedoAFoilAct, SIGNAL(triggered()), m_pAFoil, SLOT(onRedo()));
 
 	m_pShowAllFoils= new QAction(tr("Show All Foils"), this);
-	connect(m_pShowAllFoils, SIGNAL(triggered()), pAFoil, SLOT(onShowAllFoils()));
+	connect(m_pShowAllFoils, SIGNAL(triggered()), m_pAFoil, SLOT(onShowAllFoils()));
 	m_pHideAllFoils= new QAction(tr("Hide All Foils"), this);
-	connect(m_pHideAllFoils, SIGNAL(triggered()), pAFoil, SLOT(onHideAllFoils()));
+	connect(m_pHideAllFoils, SIGNAL(triggered()), m_pAFoil, SLOT(onHideAllFoils()));
 
 
 	m_pAFoilDelete = new QAction(tr("Delete..."), this);
-	connect(m_pAFoilDelete, SIGNAL(triggered()), pAFoil, SLOT(onDeleteCurFoil()));
+	connect(m_pAFoilDelete, SIGNAL(triggered()), m_pAFoil, SLOT(onDeleteCurFoil()));
 
 	m_pAFoilRename = new QAction(tr("Rename..."), this);
 	m_pAFoilRename->setShortcut(Qt::Key_F2);
-	connect(m_pAFoilRename, SIGNAL(triggered()), pAFoil, SLOT(onRenameFoil()));
+	connect(m_pAFoilRename, SIGNAL(triggered()), m_pAFoil, SLOT(onRenameFoil()));
 
 	m_pAFoilExport = new QAction(tr("Export..."), this);
-	connect(m_pAFoilExport, SIGNAL(triggered()), pAFoil, SLOT(onExportCurFoil()));
+	connect(m_pAFoilExport, SIGNAL(triggered()), m_pAFoil, SLOT(onExportCurFoil()));
 
 	m_pAFoilDuplicateFoil = new QAction(tr("Duplicate..."), this);
-	connect(m_pAFoilDuplicateFoil, SIGNAL(triggered()), pAFoil, SLOT(onDuplicate()));
+	connect(m_pAFoilDuplicateFoil, SIGNAL(triggered()), m_pAFoil, SLOT(onDuplicate()));
 
 	m_pShowCurrentFoil= new QAction(tr("Show Current Foil"), this);
-	connect(m_pShowCurrentFoil, SIGNAL(triggered()), pAFoil, SLOT(onShowCurrentFoil()));
+	connect(m_pShowCurrentFoil, SIGNAL(triggered()), m_pAFoil, SLOT(onShowCurrentFoil()));
 
 	m_pHideCurrentFoil= new QAction(tr("Hide Current Foil"), this);
-	connect(m_pHideCurrentFoil, SIGNAL(triggered()), pAFoil, SLOT(onHideCurrentFoil()));
+	connect(m_pHideCurrentFoil, SIGNAL(triggered()), m_pAFoil, SLOT(onHideCurrentFoil()));
 
 	m_pAFoilDerotateFoil = new QAction(tr("De-rotate the Foil"), this);
 	m_pAFoilDerotateFoil->setToolTip(tr("Set chord line level"));
-	connect(m_pAFoilDerotateFoil, SIGNAL(triggered()), pAFoil, SLOT(onAFoilDerotateFoil()));
+	connect(m_pAFoilDerotateFoil, SIGNAL(triggered()), m_pAFoil, SLOT(onAFoilDerotateFoil()));
 
 	m_pAFoilNormalizeFoil = new QAction(tr("Normalize the Foil"), this);
-	connect(m_pAFoilNormalizeFoil, SIGNAL(triggered()), pAFoil, SLOT(onAFoilNormalizeFoil()));
+	connect(m_pAFoilNormalizeFoil, SIGNAL(triggered()), m_pAFoil, SLOT(onAFoilNormalizeFoil()));
 
 	m_pAFoilRefineGlobalFoil = new QAction(tr("Refine Globally")/*+"\t(F3)"*/, this);
 	m_pAFoilRefineGlobalFoil->setShortcut(Qt::Key_F3);
-	connect(m_pAFoilRefineGlobalFoil, SIGNAL(triggered()), pAFoil, SLOT(onAFoilPanels()));
+	connect(m_pAFoilRefineGlobalFoil, SIGNAL(triggered()), m_pAFoil, SLOT(onAFoilPanels()));
 
 	m_pAFoilRefineLocalFoil = new QAction(tr("Refine Locally")/*+"\t(Shift+F3)"*/, this);
 	m_pAFoilRefineLocalFoil->setShortcut(QKeySequence(Qt::SHIFT+Qt::Key_F3));
-	connect(m_pAFoilRefineLocalFoil, SIGNAL(triggered()), pAFoil, SLOT(onAFoilCadd()));
+	connect(m_pAFoilRefineLocalFoil, SIGNAL(triggered()), m_pAFoil, SLOT(onAFoilCadd()));
 
 	m_pAFoilEditCoordsFoil = new QAction(tr("Edit Foil Coordinates"), this);
-	connect(m_pAFoilEditCoordsFoil, SIGNAL(triggered()), pAFoil, SLOT(onAFoilFoilCoordinates()));
+	connect(m_pAFoilEditCoordsFoil, SIGNAL(triggered()), m_pAFoil, SLOT(onAFoilFoilCoordinates()));
 
-	m_pAFoilScaleFoil = new QAction(tr("Scale camber and thickness")+"\t(F9)", this);
-	connect(m_pAFoilScaleFoil, SIGNAL(triggered()), pAFoil, SLOT(onAFoilFoilGeom()));
+	m_pAFoilScaleFoil = new QAction(tr("Scale camber and thickness")+"\tF9", this);
+	connect(m_pAFoilScaleFoil, SIGNAL(triggered()), m_pAFoil, SLOT(onAFoilFoilGeom()));
 
 	m_pAFoilSetTEGap = new QAction(tr("Set T.E. Gap"), this);
-	connect(m_pAFoilSetTEGap, SIGNAL(triggered()), pAFoil, SLOT(onAFoilSetTEGap()));
+	connect(m_pAFoilSetTEGap, SIGNAL(triggered()), m_pAFoil, SLOT(onAFoilSetTEGap()));
 
 	m_pAFoilSetLERadius = new QAction(tr("Set L.E. Radius"), this);
-	connect(m_pAFoilSetLERadius, SIGNAL(triggered()), pAFoil, SLOT(onAFoilSetLERadius()));
+	connect(m_pAFoilSetLERadius, SIGNAL(triggered()), m_pAFoil, SLOT(onAFoilSetLERadius()));
 
 	m_pAFoilLECircle = new QAction(tr("Show LE Circle"), this);
-	connect(m_pAFoilLECircle, SIGNAL(triggered()), pAFoil, SLOT(onAFoilLECircle()));
+	connect(m_pAFoilLECircle, SIGNAL(triggered()), m_pAFoil, SLOT(onAFoilLECircle()));
 
 	m_pShowLegend = new QAction(tr("Show Legend"), this);
 	m_pShowLegend->setCheckable(true);
-	connect(m_pShowLegend, SIGNAL(triggered()), pAFoil, SLOT(onShowLegend()));
+	connect(m_pShowLegend, SIGNAL(triggered()), m_pAFoil, SLOT(onShowLegend()));
 
-	m_pAFoilSetFlap = new QAction(tr("Set Flap")+"\t(F10)", this);
-	connect(m_pAFoilSetFlap, SIGNAL(triggered()), pAFoil, SLOT(onAFoilSetFlap()));
+	m_pAFoilSetFlap = new QAction(tr("Set Flap")+"\tF10", this);
+	connect(m_pAFoilSetFlap, SIGNAL(triggered()), m_pAFoil, SLOT(onAFoilSetFlap()));
 
-	m_pAFoilInterpolateFoils = new QAction(tr("Interpolate Foils")+"\t(F11)", this);
-	connect(m_pAFoilInterpolateFoils, SIGNAL(triggered()), pAFoil, SLOT(onAFoilInterpolateFoils()));
+	m_pAFoilInterpolateFoils = new QAction(tr("Interpolate Foils")+"\tF11", this);
+	connect(m_pAFoilInterpolateFoils, SIGNAL(triggered()), m_pAFoil, SLOT(onAFoilInterpolateFoils()));
 
 	m_pAFoilNacaFoils = new QAction(tr("Naca Foils"), this);
-	connect(m_pAFoilNacaFoils, SIGNAL(triggered()), pAFoil, SLOT(onAFoilNacaFoils()));
+	connect(m_pAFoilNacaFoils, SIGNAL(triggered()), m_pAFoil, SLOT(onAFoilNacaFoils()));
 
 	m_pAFoilTableColumns = new QAction(tr("Set Table Columns"), this);
-	connect(m_pAFoilTableColumns, SIGNAL(triggered()), pAFoil, SLOT(onAFoilTableColumns()));
+	connect(m_pAFoilTableColumns, SIGNAL(triggered()), m_pAFoil, SLOT(onAFoilTableColumns()));
 
 	m_pAFoilTableColumnWidths = new QAction(tr("Reset column widths"), this);
-	connect(m_pAFoilTableColumnWidths, SIGNAL(triggered()), pAFoil, SLOT(onResetColumnWidths()));
+	connect(m_pAFoilTableColumnWidths, SIGNAL(triggered()), m_pAFoil, SLOT(onResetColumnWidths()));
 
 
 
@@ -735,7 +735,7 @@ void MainFrame::createAFoilActions()
 	m_pResetXScaleAct->setStatusTip(tr("Resets the scale to fit the current screen width"));
 	connect(m_pResetXScaleAct, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onResetXScale()));
 
-	m_pResetXYScaleAct= new QAction(QIcon(":/images/OnResetFoilScale.png"), tr("Reset Scales")+"\t(R)", this);
+	m_pResetXYScaleAct= new QAction(QIcon(":/images/OnResetFoilScale.png"), tr("Reset Scales")+"\tR", this);
 	m_pResetXYScaleAct->setStatusTip(tr("Resets the x and y scales to screen size"));
 	connect(m_pResetXYScaleAct, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onResetScales()));
 
@@ -762,7 +762,6 @@ void MainFrame::createAFoilActions()
 	m_pZoomYAct->setStatusTip(tr("Zoom Y scale Only"));
 	connect(m_pZoomYAct, SIGNAL(triggered()), m_pDirect2dWidget, SLOT(onZoomYOnly()));
 }
-
 
 
 void MainFrame::createAFoilMenus()
@@ -817,9 +816,9 @@ void MainFrame::createAFoilMenus()
 
 	m_pAFoilSplineMenu = menuBar()->addMenu(tr("&Splines"));
 	{
-		m_pAFoilSplineMenu->addAction(m_pInsertSplinePt);
+/*		m_pAFoilSplineMenu->addAction(m_pInsertSplinePt);
 		m_pAFoilSplineMenu->addAction(m_pRemoveSplinePt);
-		m_pAFoilSplineMenu->addSeparator();
+		m_pAFoilSplineMenu->addSeparator();*/
 		m_pAFoilSplineMenu->addAction(m_pUndoAFoilAct);
 		m_pAFoilSplineMenu->addAction(m_pRedoAFoilAct);
 		m_pAFoilSplineMenu->addSeparator();
@@ -984,15 +983,13 @@ void MainFrame::createDockWindows()
 	m_pctrlXDirectWidget->move(960,60);
 
 	m_pXInverse = new XInverse(this);
-	XInverse *pXInverse = (XInverse*)m_pXInverse;
-	m_pctrlXInverseWidget->setWidget(pXInverse);
+	m_pctrlXInverseWidget->setWidget(m_pXInverse);
 	m_pctrlXInverseWidget->setVisible(false);
 	m_pctrlXInverseWidget->setFloating(true);
 	m_pctrlXInverseWidget->move(960,60);
 
 	m_pMiarex = new Miarex;
-	Miarex * pMiarex = (Miarex*)m_pMiarex;
-	m_pctrlMiarexWidget->setWidget(pMiarex);
+	m_pctrlMiarexWidget->setWidget(m_pMiarex);
 	m_pctrlMiarexWidget->setVisible(false);
 	m_pctrlMiarexWidget->setFloating(true);
 	m_pctrlMiarexWidget->move(960,60);
@@ -1032,30 +1029,29 @@ void MainFrame::createDockWindows()
 	setMainFrameCentralWidget();
 
 	m_pAFoil  = new AFoil(this);
-	AFoil *pAFoil = (AFoil*)m_pAFoil;
-	pAFoil->m_p2DWidget = m_pDirect2dWidget;
-	connect(m_pDirect2dWidget, SIGNAL(objectModified()), pAFoil, SLOT(onUpdateFoilTable()));
+	m_pAFoil->m_p2DWidget = m_pDirect2dWidget;
+	connect(m_pDirect2dWidget, SIGNAL(objectModified()), m_pAFoil, SLOT(onUpdateFoilTable()));
 
-	m_pctrlAFoilWidget->setWidget(pAFoil);
+	m_pctrlAFoilWidget->setWidget(m_pAFoil);
 	m_pctrlAFoilWidget->setVisible(false);
 
-	m_p2dWidget->m_pXInverse  = pXInverse;
+	m_p2dWidget->m_pXInverse  = m_pXInverse;
 	m_p2dWidget->m_pMainFrame = this;
 
 
-	pMiarex->m_pgl3dMiarexView = m_pgl3dMiarexView;
+	m_pMiarex->m_pgl3dMiarexView = m_pgl3dMiarexView;
 
 	m_pXDirect->m_poaFoil  = &Objects2d::s_oaFoil;
 	m_pXDirect->m_poaPolar = &Objects2d::s_oaPolar;
 	m_pXDirect->m_poaOpp   = &Objects2d::s_oaOpp;
 	m_pXDirect->m_pOpPointWidget = m_pXDirectTileWidget->opPointWidget();
 
-	pAFoil->initDialog(m_pDirect2dWidget, &Objects2d::s_oaFoil, &m_pXDirect->m_XFoil);
+	m_pAFoil->initDialog(m_pDirect2dWidget, &Objects2d::s_oaFoil, &m_pXDirect->m_XFoil);
 
 	XInverse::s_p2DWidget        = m_p2dWidget;
-	pXInverse->s_pMainFrame       = this;
-	pXInverse->m_pXFoil           = &m_pXDirect->m_XFoil;
-	pXInverse->m_poaFoil          = &Objects2d::s_oaFoil;
+	m_pXInverse->s_pMainFrame       = this;
+	m_pXInverse->m_pXFoil           = &m_pXDirect->m_XFoil;
+	m_pXInverse->m_poaFoil          = &Objects2d::s_oaFoil;
 
 	GL3dWingDlg::s_poaFoil = &Objects2d::s_oaFoil;
 	EditObjectDelegate::s_poaFoil = &Objects2d::s_oaFoil;
@@ -1083,7 +1079,7 @@ void MainFrame::createDockWindows()
 	LegendWidget::s_pXDirect   = m_pXDirect;
 
 
-	pMiarex->connectSignals();
+	m_pMiarex->connectSignals();
 }
 
 
@@ -1163,33 +1159,40 @@ void MainFrame::createMenus()
 
 void MainFrame::createGraphActions()
 {
-	for (int ig=0; ig<MAXGRAPHS; ++ig)
+	for (short ig=0; ig<MAXGRAPHS; ++ig)
 	{
-		m_pSingleGraph[ig] = new QAction(tr("Graph")+QString(" %1\t(%2)").arg(ig+1).arg(ig+1), this);
+		m_pSingleGraph[ig] = new QAction(tr("Graph")+QString(" %1").arg(ig+1), this);
+		m_pSingleGraph[ig]->setShortcut(Qt::Key_1+ig);
 		m_pSingleGraph[ig]->setData(ig);
 		m_pSingleGraph[ig]->setCheckable(true);
 		connect(m_pSingleGraph[ig], SIGNAL(triggered()), m_pXDirectTileWidget, SLOT(onSingleGraph()));
 		connect(m_pSingleGraph[ig], SIGNAL(triggered()), m_pMiarexTileWidget, SLOT(onSingleGraph()));
 	}
-	m_pTwoGraphs = new QAction(tr("Two Graphs")+"\t(T)", this);
+//	m_pTwoGraphs = new QAction(tr("Two Graphs")+"\t(T)", this);
+	m_pTwoGraphs = new QAction(tr("Two Graphs"), this);
+	m_pTwoGraphs->setShortcut(Qt::Key_T);
 	m_pTwoGraphs->setStatusTip(tr("Display the first two graphs"));
 	m_pTwoGraphs->setCheckable(true);
 	connect(m_pTwoGraphs, SIGNAL(triggered()), m_pXDirectTileWidget, SLOT(onTwoGraphs()));
 	connect(m_pTwoGraphs, SIGNAL(triggered()), m_pMiarexTileWidget, SLOT(onTwoGraphs()));
 
-	m_pFourGraphs = new QAction(tr("Four Graphs")+"\t(F)", this);
+//	m_pFourGraphs = new QAction(tr("Four Graphs")+"\t(F)", this);
+	m_pFourGraphs = new QAction(tr("Four Graphs"), this);
+	m_pFourGraphs->setShortcut(Qt::Key_F);
 	m_pFourGraphs->setStatusTip(tr("Display four graphs"));
 	m_pFourGraphs->setCheckable(true);
 	connect(m_pFourGraphs, SIGNAL(triggered()), m_pXDirectTileWidget, SLOT(onFourGraphs()));
 	connect(m_pFourGraphs, SIGNAL(triggered()), m_pMiarexTileWidget, SLOT(onFourGraphs()));
 
-	m_pAllGraphs = new QAction(tr("All Graphs")+"\t(A)", this);
+	m_pAllGraphs = new QAction(tr("All Graphs"), this);
+	m_pAllGraphs->setShortcut(Qt::Key_A);
 	m_pAllGraphs->setStatusTip(tr("Display four graphs"));
 	m_pAllGraphs->setCheckable(true);
 	connect(m_pAllGraphs, SIGNAL(triggered()), m_pXDirectTileWidget, SLOT(onAllGraphs()));
 	connect(m_pAllGraphs, SIGNAL(triggered()), m_pMiarexTileWidget, SLOT(onAllGraphs()));
 
-	m_pGraphDlgAct = new QAction(tr("Define Graph Settings")+"\t(G)", this);
+	m_pGraphDlgAct = new QAction(tr("Define Graph Settings"), this);
+	m_pGraphDlgAct->setShortcut(Qt::Key_G);
 	m_pGraphDlgAct->setStatusTip(tr("Define the settings for the selected graph"));
 	connect(m_pGraphDlgAct, SIGNAL(triggered()), m_pXDirectTileWidget, SLOT(onCurGraphSettings()));
 	connect(m_pGraphDlgAct, SIGNAL(triggered()), m_pMiarexTileWidget, SLOT(onCurGraphSettings()));
@@ -1215,323 +1218,321 @@ void MainFrame::createGraphActions()
 
 void MainFrame::createMiarexActions()
 {
-	Miarex *pMiarex = (Miarex*)m_pMiarex;
-
 	m_pWOppAct = new QAction(QIcon(":/images/OnWOppView.png"), tr("OpPoint View")+"\tF5", this);
 	m_pWOppAct->setCheckable(true);
 	m_pWOppAct->setStatusTip(tr("Switch to the Operating point view"));
 //	WOppAct->setShortcut(Qt::Key_F5);
-	connect(m_pWOppAct, SIGNAL(triggered()), pMiarex, SLOT(onWOppView()));
+	connect(m_pWOppAct, SIGNAL(triggered()), m_pMiarex, SLOT(onWOppView()));
 
 	m_pWPolarAct = new QAction(QIcon(":/images/OnPolarView.png"), tr("Polar View")+"\tF8", this);
 	m_pWPolarAct->setCheckable(true);
 	m_pWPolarAct->setStatusTip(tr("Switch to the Polar view"));
 //	WPolarAct->setShortcut(Qt::Key_F8);
-	connect(m_pWPolarAct, SIGNAL(triggered()), pMiarex, SLOT(onWPolarView()));
+	connect(m_pWPolarAct, SIGNAL(triggered()), m_pMiarex, SLOT(onWPolarView()));
 
 	m_pStabTimeAct = new QAction(QIcon(":/images/OnStabView.png"),tr("Time Response Vew")+"\tShift+F8", this);
 	m_pStabTimeAct->setCheckable(true);
 	m_pStabTimeAct->setStatusTip(tr("Switch to stability analysis post-processing"));
 //	StabTimeAct->setShortcut(tr("Shift+F8"));
-	connect(m_pStabTimeAct, SIGNAL(triggered()), pMiarex, SLOT(onStabTimeView()));
+	connect(m_pStabTimeAct, SIGNAL(triggered()), m_pMiarex, SLOT(onStabTimeView()));
 
 	m_pRootLocusAct = new QAction(QIcon(":/images/OnRootLocus.png"),tr("Root Locus View")+"\tCtrl+F8", this);
 	m_pRootLocusAct->setCheckable(true);
 	m_pRootLocusAct->setStatusTip(tr("Switch to root locus view"));
-	connect(m_pRootLocusAct, SIGNAL(triggered()), pMiarex, SLOT(onRootLocusView()));
+	connect(m_pRootLocusAct, SIGNAL(triggered()), m_pMiarex, SLOT(onRootLocusView()));
 
 	m_pW3DAct = new QAction(QIcon(":/images/On3DView.png"), tr("3D View")+"\tF4", this);
 	m_pW3DAct->setCheckable(true);
 	m_pW3DAct->setStatusTip(tr("Switch to the 3D view"));
-	connect(m_pW3DAct, SIGNAL(triggered()), pMiarex, SLOT(on3DView()));
+	connect(m_pW3DAct, SIGNAL(triggered()), m_pMiarex, SLOT(on3DView()));
 	if(!hasOpenGL()) m_pW3DAct->setEnabled(false);
 
 	m_pCpViewAct = new QAction(QIcon(":/images/OnCpView.png"), tr("Cp View")+"\tF9", this);
 	m_pCpViewAct->setCheckable(true);
 	m_pCpViewAct->setStatusTip(tr("Switch to the Cp view"));
-	connect(m_pCpViewAct, SIGNAL(triggered()), pMiarex, SLOT(onCpView()));
+	connect(m_pCpViewAct, SIGNAL(triggered()), m_pMiarex, SLOT(onCpView()));
 
 	m_pW3DPrefsAct = new QAction(tr("3D View Preferences"), this);
 	m_pW3DPrefsAct->setStatusTip(tr("Define the preferences for the 3D view"));
-	connect(m_pW3DPrefsAct, SIGNAL(triggered()), pMiarex, SLOT(on3DPrefs()));
+	connect(m_pW3DPrefsAct, SIGNAL(triggered()), m_pMiarex, SLOT(on3DPrefs()));
 
 	m_pMiarexPolarFilter = new QAction(tr("Polar Filter"), this);
 	m_pMiarexPolarFilter->setStatusTip(tr("Define which type of polars should be shown or hidden"));
-	connect(m_pMiarexPolarFilter, SIGNAL(triggered()), pMiarex, SLOT(onPolarFilter()));
+	connect(m_pMiarexPolarFilter, SIGNAL(triggered()), m_pMiarex, SLOT(onPolarFilter()));
 
-	m_pReset3DScale = new QAction(tr("Reset scale")+"\t(R)", this);
+	m_pReset3DScale = new QAction(tr("Reset scale")+"\tR", this);
 	m_pReset3DScale->setStatusTip(tr("Resets the display scale so that the plane fits in the window"));
-	connect(m_pReset3DScale, SIGNAL(triggered()), pMiarex, SLOT(on3DResetScale()));
+	connect(m_pReset3DScale, SIGNAL(triggered()), m_pMiarex, SLOT(on3DResetScale()));
 
 	m_pShowFlapMoments = new QAction(tr("Show flap moments"), this);
 	m_pShowFlapMoments->setCheckable(true);
 	m_pShowFlapMoments->setStatusTip(tr("Display the flap moment values together with the other operating point results"));
-	connect(m_pShowFlapMoments, SIGNAL(triggered()), pMiarex, SLOT(onShowFlapMoments()));
+	connect(m_pShowFlapMoments, SIGNAL(triggered()), m_pMiarex, SLOT(onShowFlapMoments()));
 
 	m_pW3DScalesAct = new QAction(tr("3D Scales"), this);
 	m_pW3DScalesAct->setStatusTip(tr("Define the scales for the 3D display of lift, moment, drag, and downwash"));
 	m_pW3DScalesAct->setCheckable(true);
-	connect(m_pW3DScalesAct, SIGNAL(triggered()), pMiarex, SLOT(onGL3DScale()));
+	connect(m_pW3DScalesAct, SIGNAL(triggered()), m_pMiarex, SLOT(onGL3DScale()));
 
 	m_pW3DLightAct = new QAction(tr("3D Light Options"), this);
 	m_pW3DLightAct->setStatusTip(tr("Define the light options in 3D view"));
-	connect(m_pW3DLightAct, SIGNAL(triggered()), pMiarex, SLOT(onSetupLight()));
+	connect(m_pW3DLightAct, SIGNAL(triggered()), m_pMiarex, SLOT(onSetupLight()));
 
 	m_pDefinePlaneAct = new QAction(tr("Define a New Plane")/*+"\tF3"*/, this);
 	m_pDefinePlaneAct->setShortcut(Qt::Key_F3);
 	m_pDefinePlaneAct->setStatusTip(tr("Shows a dialogbox to create a new plane definition"));
-	connect(m_pDefinePlaneAct, SIGNAL(triggered()), pMiarex, SLOT(onNewPlane()));
+	connect(m_pDefinePlaneAct, SIGNAL(triggered()), m_pMiarex, SLOT(onNewPlane()));
 
 	m_pDefinePlaneObjectAct = new QAction(tr("Define... (Advanced users)")/*+"\tF3"*/, this);
 	m_pDefinePlaneObjectAct->setShortcut(QKeySequence(Qt::SHIFT+Qt::Key_F3));
 	m_pDefinePlaneObjectAct->setStatusTip(tr("Shows a dialogbox to create a new plane definition"));
-	connect(m_pDefinePlaneObjectAct, SIGNAL(triggered()), pMiarex, SLOT(onNewPlaneObject()));
+	connect(m_pDefinePlaneObjectAct, SIGNAL(triggered()), m_pMiarex, SLOT(onNewPlaneObject()));
 
 	m_pEditPlaneAct = new QAction(tr("Edit..."), this);
 	m_pEditPlaneAct->setStatusTip(tr("Shows a form to edit the currently selected plane"));
 	m_pEditPlaneAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_P));
-	connect(m_pEditPlaneAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurPlane()));
+	connect(m_pEditPlaneAct, SIGNAL(triggered()), m_pMiarex, SLOT(onEditCurPlane()));
 
 	m_pEditObjectAct = new QAction(tr("Edit... (advanced users)"), this);
 	m_pEditObjectAct->setStatusTip(tr("Shows a form to edit the currently selected plane"));
 	m_pEditObjectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT+Qt::Key_P));
-	connect(m_pEditObjectAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurObject()));
+	connect(m_pEditObjectAct, SIGNAL(triggered()), m_pMiarex, SLOT(onEditCurObject()));
 
 	m_pEditWingAct = new QAction(tr("Edit wing..."), this);
 	m_pEditWingAct->setStatusTip(tr("Shows a form to edit the wing of the currently selected plane"));
 	m_pEditWingAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_W));
 	m_pEditWingAct->setData(0);
-	connect(m_pEditWingAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurWing()));
+	connect(m_pEditWingAct, SIGNAL(triggered()), m_pMiarex, SLOT(onEditCurWing()));
 
 	m_pEditStabAct = new QAction(tr("Edit elevator..."), this);
 	m_pEditStabAct->setData(2);
 	m_pEditStabAct->setShortcut(Qt::CTRL + Qt::Key_E);
-	connect(m_pEditStabAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurWing()));
+	connect(m_pEditStabAct, SIGNAL(triggered()), m_pMiarex, SLOT(onEditCurWing()));
 
 	m_pEditFinAct = new QAction(tr("Edit fin..."), this);
 	m_pEditFinAct->setData(3);
 	m_pEditFinAct->setShortcut(Qt::CTRL + Qt::Key_F);
-	connect(m_pEditFinAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurWing()));
+	connect(m_pEditFinAct, SIGNAL(triggered()), m_pMiarex, SLOT(onEditCurWing()));
 
 	m_pEditBodyAct = new QAction(tr("Edit body..."), this);
 	m_pEditBodyAct->setStatusTip(tr("Shows a form to edit the body of the currently selected plane"));
 	m_pEditBodyAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_B));
-	connect(m_pEditBodyAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurBody()));
+	connect(m_pEditBodyAct, SIGNAL(triggered()), m_pMiarex, SLOT(onEditCurBody()));
 
 	m_pEditBodyObjectAct= new QAction(tr("Edit body (advanced users)"), this);
 	m_pEditBodyObjectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_B));
-	connect(m_pEditBodyObjectAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurBodyObject()));
+	connect(m_pEditBodyObjectAct, SIGNAL(triggered()), m_pMiarex, SLOT(onEditCurBodyObject()));
 
 	m_pRenameCurPlaneAct = new QAction(tr("Rename...")+"\tF2", this);
 	m_pRenameCurPlaneAct->setStatusTip(tr("Rename the currently selected object"));
-	connect(m_pRenameCurPlaneAct, SIGNAL(triggered()), pMiarex, SLOT(onRenameCurPlane()));
+	connect(m_pRenameCurPlaneAct, SIGNAL(triggered()), m_pMiarex, SLOT(onRenameCurPlane()));
 
 	m_pExporttoAVL = new QAction(tr("Export to AVL..."), this);
 	m_pExporttoAVL->setStatusTip(tr("Export the current plane or wing to a text file in the format required by AVL"));
-	connect(m_pExporttoAVL, SIGNAL(triggered()), pMiarex, SLOT(onExporttoAVL()));
+	connect(m_pExporttoAVL, SIGNAL(triggered()), m_pMiarex, SLOT(onExporttoAVL()));
 
 	m_pExporttoSTL = new QAction(tr("Export to STL..."), this);
 	m_pExporttoSTL->setStatusTip(tr("Export the current wing to a file in the STL format"));
-	connect(m_pExporttoSTL, SIGNAL(triggered()), pMiarex, SLOT(onExporttoSTL()));
+	connect(m_pExporttoSTL, SIGNAL(triggered()), m_pMiarex, SLOT(onExporttoSTL()));
 
 	m_pExportCurWOpp = new QAction(tr("Export..."), this);
 	m_pExportCurWOpp->setStatusTip(tr("Export the current operating point to a text or csv file"));
-	connect(m_pExportCurWOpp, SIGNAL(triggered()), pMiarex, SLOT(onExportCurPOpp()));
+	connect(m_pExportCurWOpp, SIGNAL(triggered()), m_pMiarex, SLOT(onExportCurPOpp()));
 
 	m_pScaleWingAct = new QAction(tr("Scale Wing"), this);
 	m_pScaleWingAct->setStatusTip(tr("Scale the dimensions of the currently selected wing"));
-	connect(m_pScaleWingAct, SIGNAL(triggered()), pMiarex, SLOT(onScaleWing()));
+	connect(m_pScaleWingAct, SIGNAL(triggered()), m_pMiarex, SLOT(onScaleWing()));
 
 	m_pManagePlanesAct = new QAction(tr("Manage objects"), this);
 	m_pManagePlanesAct->setStatusTip(tr("Rename or delete the planes and wings stored in the database"));
 	m_pManagePlanesAct->setShortcut(Qt::Key_F7);
-	connect(m_pManagePlanesAct, SIGNAL(triggered()), pMiarex, SLOT(onManagePlanes()));
+	connect(m_pManagePlanesAct, SIGNAL(triggered()), m_pMiarex, SLOT(onManagePlanes()));
 
 	m_pImportWPolars = new QAction(tr("Import Polar(s)"), this);
 	m_pImportWPolars->setStatusTip(tr("Import polar(s) from text file(s)"));
-	connect(m_pImportWPolars, SIGNAL(triggered()), pMiarex, SLOT(onImportWPolars()));
+	connect(m_pImportWPolars, SIGNAL(triggered()), m_pMiarex, SLOT(onImportWPolars()));
 
 	m_pExportWPolars = new QAction(tr("Export all polars"), this);
 	m_pExportWPolars->setStatusTip(tr("Export polar(s) to text file(s)"));
-	connect(m_pExportWPolars, SIGNAL(triggered()), pMiarex, SLOT(onExportWPolars()));
+	connect(m_pExportWPolars, SIGNAL(triggered()), m_pMiarex, SLOT(onExportWPolars()));
 
 	m_pPlaneInertia = new QAction(tr("Define Inertia")+"\tF12", this);
 	m_pPlaneInertia->setStatusTip(tr("Define the inertia for the current plane or wing"));
-	connect(m_pPlaneInertia, SIGNAL(triggered()), pMiarex, SLOT(onPlaneInertia()));
+	connect(m_pPlaneInertia, SIGNAL(triggered()), m_pMiarex, SLOT(onPlaneInertia()));
 
 	m_pShowCurWOppOnly = new QAction(tr("Show Current OpPoint Only"), this);
 	m_pShowCurWOppOnly->setStatusTip(tr("Hide all the curves except for the one corresponding to the currently selected operating point"));
 	m_pShowCurWOppOnly->setCheckable(true);
-	connect(m_pShowCurWOppOnly, SIGNAL(triggered()), pMiarex, SLOT(onCurWOppOnly()));
+	connect(m_pShowCurWOppOnly, SIGNAL(triggered()), m_pMiarex, SLOT(onCurWOppOnly()));
 
 	m_pShowAllWOpps = new QAction(tr("Show All OpPoints"), this);
 	m_pShowAllWOpps->setStatusTip(tr("Show the graph curves of all operating points"));
-	connect(m_pShowAllWOpps, SIGNAL(triggered()), pMiarex, SLOT(onShowAllWOpps()));
+	connect(m_pShowAllWOpps, SIGNAL(triggered()), m_pMiarex, SLOT(onShowAllWOpps()));
 
 	m_pHideAllWOpps = new QAction(tr("Hide All OpPoints"), this);
 	m_pHideAllWOpps->setStatusTip(tr("Hide the graph curves of all operating points"));
-	connect(m_pHideAllWOpps, SIGNAL(triggered()), pMiarex, SLOT(onHideAllWOpps()));
+	connect(m_pHideAllWOpps, SIGNAL(triggered()), m_pMiarex, SLOT(onHideAllWOpps()));
 
 	m_pDeleteAllWOpps = new QAction(tr("Delete All OpPoints"), this);
 	m_pDeleteAllWOpps->setStatusTip(tr("Delete all the operating points of all planes and polars"));
-	connect(m_pDeleteAllWOpps, SIGNAL(triggered()), pMiarex, SLOT(onDeleteAllWOpps()));
+	connect(m_pDeleteAllWOpps, SIGNAL(triggered()), m_pMiarex, SLOT(onDeleteAllWOpps()));
 
 	m_pShowAllWPlrOpps = new QAction(tr("Show Associated OpPoints"), this);
 	m_pShowAllWPlrOpps->setStatusTip(tr("Show the curves of all the operating points of the currently selected polar"));
-	connect(m_pShowAllWPlrOpps, SIGNAL(triggered()), pMiarex, SLOT(onShowAllWPlrOpps()));
-	
+	connect(m_pShowAllWPlrOpps, SIGNAL(triggered()), m_pMiarex, SLOT(onShowAllWPlrOpps()));
+
 	m_pHideAllWPlrOpps = new QAction(tr("Hide Associated OpPoints"), this);
 	m_pHideAllWPlrOpps->setStatusTip(tr("Hide the curves of all the operating points of the currently selected polar"));
-	connect(m_pHideAllWPlrOpps, SIGNAL(triggered()), pMiarex, SLOT(onHideAllWPlrOpps()));
+	connect(m_pHideAllWPlrOpps, SIGNAL(triggered()), m_pMiarex, SLOT(onHideAllWPlrOpps()));
 
 	m_pShowWPlrOppsOnly = new QAction(tr("Show Only Associated OpPoints"), this);
-	connect(m_pShowWPlrOppsOnly, SIGNAL(triggered()), pMiarex, SLOT(onShowWPolarOppsOnly()));
-	
+	connect(m_pShowWPlrOppsOnly, SIGNAL(triggered()), m_pMiarex, SLOT(onShowWPolarOppsOnly()));
+
 	m_pDeleteAllWPlrOpps = new QAction(tr("Delete Associated OpPoints"), this);
 	m_pDeleteAllWPlrOpps->setStatusTip(tr("Delete all the operating points of the currently selected polar"));
-	connect(m_pDeleteAllWPlrOpps, SIGNAL(triggered()), pMiarex, SLOT(onDeleteAllWPlrOpps()));
+	connect(m_pDeleteAllWPlrOpps, SIGNAL(triggered()), m_pMiarex, SLOT(onDeleteAllWPlrOpps()));
 
 	m_pShowTargetCurve = new QAction(tr("Show Target Curve"), this);
 	m_pShowTargetCurve->setCheckable(false);
-	connect(m_pShowTargetCurve, SIGNAL(triggered()), pMiarex, SLOT(onShowTargetCurve()));
+	connect(m_pShowTargetCurve, SIGNAL(triggered()), m_pMiarex, SLOT(onShowTargetCurve()));
 
 	m_pShowXCmRefLocation = new QAction(tr("Show XCG location"), this);
 	m_pShowXCmRefLocation->setStatusTip(tr("Show the position of the center of gravity defined in the analysis"));
 	m_pShowXCmRefLocation->setCheckable(true);
-	connect(m_pShowXCmRefLocation, SIGNAL(triggered()), pMiarex, SLOT(onShowXCmRef()));
+	connect(m_pShowXCmRefLocation, SIGNAL(triggered()), m_pMiarex, SLOT(onShowXCmRef()));
 
 	m_pShowStabCurve = new QAction(tr("Show Elevator Curve"), this);
 	m_pShowStabCurve->setStatusTip(tr("Show the graph curves for the elevator"));
 	m_pShowStabCurve->setCheckable(true);
-	connect(m_pShowStabCurve, SIGNAL(triggered()), pMiarex, SLOT(onStabCurve()));
+	connect(m_pShowStabCurve, SIGNAL(triggered()), m_pMiarex, SLOT(onStabCurve()));
 
 	m_pShowFinCurve = new QAction(tr("Show Fin Curve"), this);
 	m_pShowFinCurve->setStatusTip(tr("Show the graph curves for the fin"));
 	m_pShowFinCurve->setCheckable(true);
-	connect(m_pShowFinCurve, SIGNAL(triggered()), pMiarex, SLOT(onFinCurve()));
+	connect(m_pShowFinCurve, SIGNAL(triggered()), m_pMiarex, SLOT(onFinCurve()));
 
 	m_pShowWing2Curve = new QAction(tr("Show Second Wing Curve"), this);
 	m_pShowWing2Curve->setStatusTip(tr("Show the graph curves for the second wing"));
 	m_pShowWing2Curve->setCheckable(true);
-	connect(m_pShowWing2Curve, SIGNAL(triggered()), pMiarex, SLOT(onWing2Curve()));
+	connect(m_pShowWing2Curve, SIGNAL(triggered()), m_pMiarex, SLOT(onWing2Curve()));
 
-	m_pDefineWPolar = new QAction(tr("Define an Analysis")+" \t(F6)", this);
+	m_pDefineWPolar = new QAction(tr("Define an Analysis")+" \tF6", this);
 	m_pDefineWPolar->setStatusTip(tr("Define an analysis for the current wing or plane"));
-	connect(m_pDefineWPolar, SIGNAL(triggered()), pMiarex, SLOT(onDefineWPolar()));
+	connect(m_pDefineWPolar, SIGNAL(triggered()), m_pMiarex, SLOT(onDefineWPolar()));
 
-	m_pDefineWPolarObjectAct = new QAction(tr("Define an Analysis (advanced users)")+" \t(Ctrl+F6)", this);
+	m_pDefineWPolarObjectAct = new QAction(tr("Define an Analysis (advanced users)")+" \tCtrl+F6", this);
 	m_pDefineWPolarObjectAct->setStatusTip(tr("Shows a form to edit a new polar object"));
-	connect(m_pDefineWPolarObjectAct, SIGNAL(triggered()), pMiarex, SLOT(onDefineWPolarObject()));
+	connect(m_pDefineWPolarObjectAct, SIGNAL(triggered()), m_pMiarex, SLOT(onDefineWPolarObject()));
 
 	m_pEditWPolarAct = new QAction(tr("Edit..."), this);
 	m_pEditWPolarAct->setStatusTip(tr("Modify the analysis parameters of this polar"));
-	connect(m_pEditWPolarAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurWPolar()));
+	connect(m_pEditWPolarAct, SIGNAL(triggered()), m_pMiarex, SLOT(onEditCurWPolar()));
 
 	m_pEditWPolarObjectAct = new QAction(tr("Edit object (advanced users)"), this);
 	m_pEditWPolarObjectAct->setStatusTip(tr("Shows a form to edit the currently selected polar"));
-	connect(m_pEditWPolarObjectAct, SIGNAL(triggered()), pMiarex, SLOT(onEditCurWPolarObject()));
+	connect(m_pEditWPolarObjectAct, SIGNAL(triggered()), m_pMiarex, SLOT(onEditCurWPolarObject()));
 
 	m_pEditWPolarPts = new QAction(tr("Edit data points..."), this);
 	m_pEditWPolarPts->setStatusTip(tr("Modify the data points of this polar"));
-	connect(m_pEditWPolarPts, SIGNAL(triggered()), pMiarex, SLOT(onEditCurWPolarPts()));
+	connect(m_pEditWPolarPts, SIGNAL(triggered()), m_pMiarex, SLOT(onEditCurWPolarPts()));
 
-	m_pDefineStabPolar = new QAction(tr("Define a Stability Analysis")+"\t(Shift+F6)", this);
+	m_pDefineStabPolar = new QAction(tr("Define a Stability Analysis")+"\tShift+F6", this);
 	m_pDefineStabPolar->setStatusTip(tr("Define a stability analysis for the current wing or plane"));
-	connect(m_pDefineStabPolar, SIGNAL(triggered()), pMiarex, SLOT(onDefineStabPolar()));
+	connect(m_pDefineStabPolar, SIGNAL(triggered()), m_pMiarex, SLOT(onDefineStabPolar()));
 
 	m_pHidePlaneWPlrs = new QAction(tr("Hide Associated Polars"), this);
 	m_pHidePlaneWPlrs->setStatusTip(tr("Hide all the polar curves associated to the currently selected wing or plane"));
-	connect(m_pHidePlaneWPlrs, SIGNAL(triggered()), pMiarex, SLOT(onHidePlaneWPolars()));
-	
+	connect(m_pHidePlaneWPlrs, SIGNAL(triggered()), m_pMiarex, SLOT(onHidePlaneWPolars()));
+
 	m_pShowPlaneWPlrsOnly = new QAction(tr("Show Only Associated Polars"), this);
-	connect(m_pShowPlaneWPlrsOnly, SIGNAL(triggered()), pMiarex, SLOT(onShowPlaneWPolarsOnly()));
+	connect(m_pShowPlaneWPlrsOnly, SIGNAL(triggered()), m_pMiarex, SLOT(onShowPlaneWPolarsOnly()));
 
 	m_pShowPlaneWPlrs = new QAction(tr("Show Associated Polars"), this);
 	m_pShowPlaneWPlrs->setStatusTip(tr("Show all the polar curves associated to the currently selected wing or plane"));
-	connect(m_pShowPlaneWPlrs, SIGNAL(triggered()), pMiarex, SLOT(onShowPlaneWPolars()));
+	connect(m_pShowPlaneWPlrs, SIGNAL(triggered()), m_pMiarex, SLOT(onShowPlaneWPolars()));
 
 	m_pDeletePlaneWPlrs = new QAction(tr("Delete Associated Polars"), this);
 	m_pDeletePlaneWPlrs->setStatusTip(tr("Delete all the polars associated to the currently selected wing or plane"));
-	connect(m_pDeletePlaneWPlrs, SIGNAL(triggered()), pMiarex, SLOT(onDeletePlaneWPolars()));
+	connect(m_pDeletePlaneWPlrs, SIGNAL(triggered()), m_pMiarex, SLOT(onDeletePlaneWPolars()));
 
 	m_pHideAllWPlrs = new QAction(tr("Hide All Polars"), this);
 	m_pHideAllWPlrs->setStatusTip(tr("Hide all the polar curves of all wings and planes"));
-	connect(m_pHideAllWPlrs, SIGNAL(triggered()), pMiarex, SLOT(onHideAllWPolars()));
-	
+	connect(m_pHideAllWPlrs, SIGNAL(triggered()), m_pMiarex, SLOT(onHideAllWPolars()));
+
 	m_pShowAllWPlrs = new QAction(tr("Show All Polars"), this);
 	m_pShowAllWPlrs->setStatusTip(tr("Show all the polar curves of all wings and planes"));
-	connect(m_pShowAllWPlrs, SIGNAL(triggered()), pMiarex, SLOT(onShowAllWPolars()));
+	connect(m_pShowAllWPlrs, SIGNAL(triggered()), m_pMiarex, SLOT(onShowAllWPolars()));
 
 	m_pHidePlaneWOpps = new QAction(tr("Hide Associated OpPoints"), this);
 	m_pHidePlaneWOpps->setStatusTip(tr("Hide all the operating point curves of the currently selected wing or plane"));
-	connect(m_pHidePlaneWOpps, SIGNAL(triggered()), pMiarex, SLOT(onHidePlaneOpps()));
-	
+	connect(m_pHidePlaneWOpps, SIGNAL(triggered()), m_pMiarex, SLOT(onHidePlaneOpps()));
+
 	m_pShowPlaneWOpps = new QAction(tr("Show Associated OpPoints"), this);
 	m_pShowPlaneWOpps->setStatusTip(tr("Show all the operating point curves of the currently selected wing or plane"));
-	connect(m_pShowPlaneWOpps, SIGNAL(triggered()), pMiarex, SLOT(onShowPlaneOpps()));
-	
+	connect(m_pShowPlaneWOpps, SIGNAL(triggered()), m_pMiarex, SLOT(onShowPlaneOpps()));
+
 	m_pDeletePlaneWOpps = new QAction(tr("Delete Associated OpPoints"), this);
 	m_pDeletePlaneWOpps->setStatusTip(tr("Delete all the operating points of the currently selected wing or plane"));
-	connect(m_pDeletePlaneWOpps, SIGNAL(triggered()), pMiarex, SLOT(onDeletePlanePOpps()));
+	connect(m_pDeletePlaneWOpps, SIGNAL(triggered()), m_pMiarex, SLOT(onDeletePlanePOpps()));
 
 	m_pDeleteCurPlane = new QAction(tr("Delete..."), this);
 	m_pDeleteCurPlane->setStatusTip(tr("Delete the currently selected wing or plane"));
-	connect(m_pDeleteCurPlane, SIGNAL(triggered()), pMiarex, SLOT(onDeleteCurPlane()));
+	connect(m_pDeleteCurPlane, SIGNAL(triggered()), m_pMiarex, SLOT(onDeleteCurPlane()));
 
 	m_pDuplicateCurPlane = new QAction(tr("Duplicate..."), this);
 	m_pDuplicateCurPlane->setStatusTip(tr("Duplicate the currently selected wing or plane"));
-	connect(m_pDuplicateCurPlane, SIGNAL(triggered()), pMiarex, SLOT(onDuplicateCurPlane()));
+	connect(m_pDuplicateCurPlane, SIGNAL(triggered()), m_pMiarex, SLOT(onDuplicateCurPlane()));
 
 	m_pSavePlaneAsProjectAct = new QAction(tr("Save as Project..."), this);
 	m_pSavePlaneAsProjectAct->setStatusTip(tr("Save the currently selected wing or plane as a new separate project"));
 	connect(m_pSavePlaneAsProjectAct, SIGNAL(triggered()), this, SLOT(onSavePlaneAsProject()));
 
-	m_pRenameCurWPolar = new QAction(tr("Rename...")+"\t(Shift+F2)", this);
+	m_pRenameCurWPolar = new QAction(tr("Rename...")+"\tShift+F2", this);
 	m_pRenameCurWPolar->setStatusTip(tr("Rename the currently selected polar"));
-	connect(m_pRenameCurWPolar, SIGNAL(triggered()), pMiarex, SLOT(onRenameCurWPolar()));
+	connect(m_pRenameCurWPolar, SIGNAL(triggered()), m_pMiarex, SLOT(onRenameCurWPolar()));
 
 	m_pExportCurWPolar = new QAction(tr("Export results"), this);
 	m_pExportCurWPolar->setStatusTip(tr("Export the currently selected polar to a text or csv file"));
-	connect(m_pExportCurWPolar, SIGNAL(triggered()), pMiarex, SLOT(onExportCurWPolar()));
+	connect(m_pExportCurWPolar, SIGNAL(triggered()), m_pMiarex, SLOT(onExportCurWPolar()));
 
 	m_pResetCurWPolar = new QAction(tr("Reset ..."), this);
 	m_pResetCurWPolar->setStatusTip(tr("Delete all the points of the currently selected polar, but keep the analysis settings"));
-	connect(m_pResetCurWPolar, SIGNAL(triggered()), pMiarex, SLOT(onResetCurWPolar()));
+	connect(m_pResetCurWPolar, SIGNAL(triggered()), m_pMiarex, SLOT(onResetCurWPolar()));
 
 	m_pDeleteCurWPolar = new QAction(tr("Delete ..."), this);
 	m_pDeleteCurWPolar->setStatusTip(tr("Delete the currently selected polar"));
-	connect(m_pDeleteCurWPolar, SIGNAL(triggered()), pMiarex, SLOT(onDeleteCurWPolar()));
+	connect(m_pDeleteCurWPolar, SIGNAL(triggered()), m_pMiarex, SLOT(onDeleteCurWPolar()));
 
 	m_pDeleteCurWOpp = new QAction(tr("Delete..."), this);
 	m_pDeleteCurWOpp->setStatusTip(tr("Delete the currently selected operating point"));
-	connect(m_pDeleteCurWOpp, SIGNAL(triggered()), pMiarex, SLOT(onDeleteCurWOpp()));
+	connect(m_pDeleteCurWOpp, SIGNAL(triggered()), m_pMiarex, SLOT(onDeleteCurWOpp()));
 
 	m_pAadvancedSettings = new QAction(tr("Advanced Settings..."), this);
 	m_pAadvancedSettings->setStatusTip(tr("Define the settings for LLT, VLM and Panel analysis"));
-	connect(m_pAadvancedSettings, SIGNAL(triggered()), pMiarex, SLOT(onAdvancedSettings()));
+	connect(m_pAadvancedSettings, SIGNAL(triggered()), m_pMiarex, SLOT(onAdvancedSettings()));
 
 	m_pShowPolarProps = new QAction(tr("Properties"), this);
 	m_pShowPolarProps->setStatusTip(tr("Show the properties of the currently selected polar"));
 	m_pShowPolarProps->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Return));
-	connect(m_pShowPolarProps, SIGNAL(triggered()), pMiarex, SLOT(onWPolarProperties()));
+	connect(m_pShowPolarProps, SIGNAL(triggered()), m_pMiarex, SLOT(onWPolarProperties()));
 
 	m_pShowWOppProps = new QAction(tr("Properties"), this);
 	m_pShowWOppProps->setStatusTip(tr("Show the properties of the currently selected operating point"));
 	m_pShowWOppProps->setShortcut(QKeySequence(Qt::ALT + Qt::SHIFT + Qt::Key_Return));
-	connect(m_pShowWOppProps, SIGNAL(triggered()), pMiarex, SLOT(onPlaneOppProperties()));
+	connect(m_pShowWOppProps, SIGNAL(triggered()), m_pMiarex, SLOT(onPlaneOppProperties()));
 
 	m_pExportPlaneToXML = new QAction(tr("Export to xml file"), this);
-	connect(m_pExportPlaneToXML, SIGNAL(triggered()), pMiarex, SLOT(onExportPlanetoXML()));
+	connect(m_pExportPlaneToXML, SIGNAL(triggered()), m_pMiarex, SLOT(onExportPlanetoXML()));
 
 	m_pImportPlaneFromXml= new QAction(tr("Import plane(s) from xml file(s)"), this);
-	connect(m_pImportPlaneFromXml, SIGNAL(triggered()), pMiarex, SLOT(onImportPlanesfromXML()));
+	connect(m_pImportPlaneFromXml, SIGNAL(triggered()), m_pMiarex, SLOT(onImportPlanesfromXML()));
 
 	m_pExportAnalysisToXML = new QAction(tr("Export analysis to xml file"), this);
-	connect(m_pExportAnalysisToXML, SIGNAL(triggered()), pMiarex, SLOT(onExportAnalysisToXML()));
+	connect(m_pExportAnalysisToXML, SIGNAL(triggered()), m_pMiarex, SLOT(onExportAnalysisToXML()));
 
 	m_pImportAnalysisFromXml= new QAction(tr("Import analysis from xml file"), this);
 	m_pImportAnalysisFromXml->setStatusTip(tr("Import analysis definition(s) from XML file(s)"));
-	connect(m_pImportAnalysisFromXml, SIGNAL(triggered()), pMiarex, SLOT(onImportAnalysisFromXML()));
+	connect(m_pImportAnalysisFromXml, SIGNAL(triggered()), m_pMiarex, SLOT(onImportAnalysisFromXML()));
 
 }
 
@@ -2300,7 +2301,6 @@ void MainFrame::createXDirectToolbar()
 
 
 
-
 void MainFrame::createXDirectActions()
 {
 	m_pOpPointsAct = new QAction(QIcon(":/images/OnCpView.png"), tr("OpPoint view")+"\tF5", this);
@@ -2316,7 +2316,7 @@ void MainFrame::createXDirectActions()
 	m_pXDirectPolarFilter = new QAction(tr("Polar Filter"), this);
 	connect(m_pXDirectPolarFilter, SIGNAL(triggered()), m_pXDirect, SLOT(onPolarFilter()));
 
-	m_pHighlightOppAct	 = new QAction(tr("Highlight Current OpPoint")+"\t(Ctrl+H)", this);
+	m_pHighlightOppAct	 = new QAction(tr("Highlight Current OpPoint")+"\tCtrl+H", this);
 	m_pHighlightOppAct->setCheckable(true);
 	m_pHighlightOppAct->setStatusTip(tr("Highlights on the polar curve the currently selected operating point"));
 	connect(m_pHighlightOppAct, SIGNAL(triggered()), this, SLOT(onHighlightOperatingPoint()));
@@ -2466,8 +2466,8 @@ void MainFrame::createXDirectActions()
 	m_pViewXFoilAdvanced = new QAction(tr("XFoil Advanced Settings"), this);
 	m_pBatchAnalysisAct->setStatusTip(tr("Tip : you don't want to use that option..."));
 	connect(m_pViewXFoilAdvanced, SIGNAL(triggered()), m_pXDirect, SLOT(onXFoilAdvanced()));
- 
-	m_pViewLogFile = new QAction(tr("View Log File")+"\t(L)", this);
+
+	m_pViewLogFile = new QAction(tr("View Log File")+"\tL", this);
 	connect(m_pViewLogFile, SIGNAL(triggered()), this, SLOT(onLogFile()));
 
 	m_pDerotateFoil = new QAction(tr("De-rotate the Foil"), this);
@@ -2832,57 +2832,55 @@ void MainFrame::createXDirectMenus()
 }
 
 
+
 void MainFrame::createXInverseActions()
 {
-	XInverse *pXInverse = (XInverse*)m_pXInverse;
-
 	m_pStoreFoil = new QAction(QIcon(":/images/OnStoreFoil.png"), tr("Store Foil"), this);
 	m_pStoreFoil->setStatusTip(tr("Store Foil in database"));
-	connect(m_pStoreFoil, SIGNAL(triggered()), pXInverse, SLOT(onStoreFoil()));
+	connect(m_pStoreFoil, SIGNAL(triggered()), m_pXInverse, SLOT(onStoreFoil()));
 
 	m_pExtractFoil = new QAction(QIcon(":/images/OnExtractFoil.png"),tr("Extract Foil"), this);
 	m_pExtractFoil->setStatusTip(tr("Extract a Foil from the database for modification"));
-	connect(m_pExtractFoil, SIGNAL(triggered()), pXInverse, SLOT(onExtractFoil()));
+	connect(m_pExtractFoil, SIGNAL(triggered()), m_pXInverse, SLOT(onExtractFoil()));
 
 	m_pXInverseStyles = new QAction(tr("Define Styles"), this);
 	m_pXInverseStyles->setStatusTip(tr("Define the styles for this view"));
-	connect(m_pXInverseStyles, SIGNAL(triggered()), pXInverse, SLOT(onInverseStyles()));
+	connect(m_pXInverseStyles, SIGNAL(triggered()), m_pXInverse, SLOT(onInverseStyles()));
 
-	m_pXInverseResetFoilScale = new QAction(QIcon(":/images/OnResetFoilScale.png"), tr("Reset foil scale")+"\t(R)", this);
+	m_pXInverseResetFoilScale = new QAction(QIcon(":/images/OnResetFoilScale.png"), tr("Reset foil scale")+"\tR", this);
 	m_pXInverseResetFoilScale->setStatusTip(tr("Resets the scale to fit the screen size"));
-	connect(m_pXInverseResetFoilScale, SIGNAL(triggered()), pXInverse, SLOT(onResetFoilScale()));
+	connect(m_pXInverseResetFoilScale, SIGNAL(triggered()), m_pXInverse, SLOT(onResetFoilScale()));
 
 	m_pInverseInsertCtrlPt = new QAction(tr("Insert Control Point")+"\tShift+Click", this);
-	connect(m_pInverseInsertCtrlPt, SIGNAL(triggered()), pXInverse, SLOT(onInsertCtrlPt()));
+	connect(m_pInverseInsertCtrlPt, SIGNAL(triggered()), m_pXInverse, SLOT(onInsertCtrlPt()));
 
 	m_pInverseRemoveCtrlPt = new QAction(tr("Remove Control Point")+"\tCtrl+Click", this);
-	connect(m_pInverseRemoveCtrlPt, SIGNAL(triggered()), pXInverse, SLOT(onRemoveCtrlPt()));
+	connect(m_pInverseRemoveCtrlPt, SIGNAL(triggered()), m_pXInverse, SLOT(onRemoveCtrlPt()));
 
 	m_pInvQInitial = new QAction(tr("Show Q-Initial"), this);
 	m_pInvQInitial->setCheckable(true);
-	connect(m_pInvQInitial, SIGNAL(triggered()), pXInverse, SLOT(onQInitial()));
+	connect(m_pInvQInitial, SIGNAL(triggered()), m_pXInverse, SLOT(onQInitial()));
 
 	m_pInvQSpec = new QAction(tr("Show Q-Spec"), this);
 	m_pInvQSpec->setCheckable(true);
-	connect(m_pInvQSpec, SIGNAL(triggered()), pXInverse, SLOT(onQSpec()));
+	connect(m_pInvQSpec, SIGNAL(triggered()), m_pXInverse, SLOT(onQSpec()));
 
 	m_pInvQViscous = new QAction(tr("Show Q-Viscous"), this);
 	m_pInvQViscous->setCheckable(true);
-	connect(m_pInvQViscous, SIGNAL(triggered()), pXInverse, SLOT(onQViscous()));
+	connect(m_pInvQViscous, SIGNAL(triggered()), m_pXInverse, SLOT(onQViscous()));
 
 	m_pInvQPoints = new QAction(tr("Show Points"), this);
 	m_pInvQPoints->setCheckable(true);
-	connect(m_pInvQPoints, SIGNAL(triggered()), pXInverse, SLOT(onQPoints()));
+	connect(m_pInvQPoints, SIGNAL(triggered()), m_pXInverse, SLOT(onQPoints()));
 
 	m_pInvQReflected = new QAction(tr("Show Reflected"), this);
 	m_pInvQReflected->setCheckable(true);
-	connect(m_pInvQReflected, SIGNAL(triggered()), pXInverse, SLOT(onQReflected()));
+	connect(m_pInvQReflected, SIGNAL(triggered()), m_pXInverse, SLOT(onQReflected()));
 
 	m_pInverseZoomIn = new QAction(QIcon(":/images/OnZoomIn.png"), tr("Zoom in"), this);
 	m_pInverseZoomIn->setStatusTip(tr("Zoom the view by drawing a rectangle in the client area"));
-	connect(m_pInverseZoomIn, SIGNAL(triggered()), pXInverse, SLOT(onZoomIn()));
+	connect(m_pInverseZoomIn, SIGNAL(triggered()), m_pXInverse, SLOT(onZoomIn()));
 }
-
 
 void MainFrame::createXInverseMenus()
 {
@@ -2948,9 +2946,8 @@ void MainFrame::createXInverseToolbar()
 {
 	m_pctrlFullInverse  = new QRadioButton(tr("Full Inverse"));
 	m_pctrlMixedInverse = new QRadioButton(tr("Mixed Inverse"));
-	XInverse *pXInverse = (XInverse*)m_pXInverse;
-	connect(m_pctrlFullInverse,  SIGNAL(clicked()), pXInverse, SLOT(onInverseApp()));
-	connect(m_pctrlMixedInverse, SIGNAL(clicked()), pXInverse, SLOT(onInverseApp()));
+	connect(m_pctrlFullInverse,  SIGNAL(clicked()), m_pXInverse, SLOT(onInverseApp()));
+	connect(m_pctrlMixedInverse, SIGNAL(clicked()), m_pXInverse, SLOT(onInverseApp()));
 
 	m_pctrlXInverseToolBar = addToolBar(tr("XInverse"));
 	m_pctrlXInverseToolBar->addAction(m_pNewProjectAct);
@@ -3140,18 +3137,15 @@ void MainFrame::keyPressEvent(QKeyEvent *event)
 	}
 	else if(m_iApp == XFLR5::MIAREX && m_pMiarex)
 	{
-		Miarex* pMiarex = (Miarex*)m_pMiarex;
-		pMiarex->keyPressEvent(event);
+		m_pMiarex->keyPressEvent(event);
 	}
 	else if(m_iApp == XFLR5::DIRECTDESIGN && m_pAFoil)
 	{
-		AFoil *pAFoil= (AFoil*)m_pAFoil;
-		pAFoil->keyPressEvent(event);
+		m_pAFoil->keyPressEvent(event);
 	}
 	else if(m_iApp == XFLR5::INVERSEDESIGN && m_pXInverse)
 	{
-		XInverse *pXInverse= (XInverse*)m_pXInverse;
-		pXInverse->keyPressEvent(event);
+		m_pXInverse->keyPressEvent(event);
 	}
     else
 	{
@@ -3224,23 +3218,19 @@ void MainFrame::keyReleaseEvent(QKeyEvent *event)
 	}
 	else if(m_iApp == XFLR5::MIAREX && m_pMiarex)
 	{
-		Miarex* pMiarex = (Miarex*)m_pMiarex;
-
 		if (event->key()==Qt::Key_Control)
 		{
 			updateView();
 		}
-		else pMiarex->keyReleaseEvent(event);
+		else m_pMiarex->keyReleaseEvent(event);
 	}
 	else if(m_iApp == XFLR5::DIRECTDESIGN && m_pAFoil)
 	{
-		AFoil *pAFoil= (AFoil*)m_pAFoil;
-		pAFoil->keyReleaseEvent(event);
+		m_pAFoil->keyReleaseEvent(event);
 	}
 	else if(m_iApp == XFLR5::INVERSEDESIGN && m_pXInverse)
 	{
-		XInverse *pXInverse= (XInverse*)m_pXInverse;
-		pXInverse->keyReleaseEvent(event);
+		m_pXInverse->keyReleaseEvent(event);
 	}
 	event->accept();
 }
@@ -3688,8 +3678,7 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString pathname)
 
 void MainFrame::onAFoil()
 {
-	Miarex *pMiarex = (Miarex*)m_pMiarex;
-	pMiarex->stopAnimate();
+	m_pMiarex->stopAnimate();
 
 	m_pXDirect->stopAnimate();
 
@@ -3707,8 +3696,7 @@ void MainFrame::onAFoil()
 
 	setMainFrameCentralWidget();
 	setMenus();
-	AFoil *pAFoil = (AFoil*)m_pAFoil;
-	pAFoil->setAFoilParams();
+	m_pAFoil->setAFoilParams();
 	updateView();
 }
 
@@ -3738,8 +3726,6 @@ void MainFrame::onCurFoilStyle()
 void MainFrame::onInsertProject()
 {
 	QString PathName;
-	AFoil *pAFoil = (AFoil*)m_pAFoil;
-	Miarex *pMiarex = (Miarex*)m_pMiarex;
 
 	PathName = QFileDialog::getOpenFileName(this, tr("Open File"),
 											Settings::s_LastDirName,
@@ -3783,7 +3769,7 @@ void MainFrame::onInsertProject()
 	if(m_iApp == XFLR5::MIAREX)
 	{
 		updatePlaneListBox();
-		pMiarex->setPlane();
+		m_pMiarex->setPlane();
 		Miarex::s_bResetCurves = true;
 	}
 	else if(m_iApp == XFLR5::XFOILANALYSIS)
@@ -3794,8 +3780,8 @@ void MainFrame::onInsertProject()
 	}
 	else if(m_iApp == XFLR5::DIRECTDESIGN)
 	{
-		pAFoil->fillFoilTable();
-		pAFoil->selectFoil();
+		m_pAFoil->fillFoilTable();
+		m_pAFoil->selectFoil();
 	}
 	updateView();
 }
@@ -3808,9 +3794,8 @@ void MainFrame::onHighlightOperatingPoint()
 
 	if(m_iApp == XFLR5::MIAREX)
 	{
-		Miarex *pMiarex = (Miarex*)m_pMiarex;
 		Miarex::s_bResetCurves = true;
-		pMiarex->updateView();
+		m_pMiarex->updateView();
 	}
 	else if(m_iApp == XFLR5::XFOILANALYSIS)
 	{
@@ -3827,7 +3812,6 @@ void MainFrame::onLoadFile()
 	QString PathName;
 	XFLR5::enumApp App  = XFLR5::NOAPP;
 	bool warn_non_airfoil_multiload = false;
-	Miarex *pMiarex = (Miarex*)m_pMiarex;
 
 	PathNames = QFileDialog::getOpenFileNames(this, tr("Open File"),
 												Settings::s_LastDirName,
@@ -3886,17 +3870,16 @@ void MainFrame::onLoadFile()
 	else if(m_iApp==XFLR5::MIAREX)
 	{
 		updatePlaneListBox();
-		pMiarex->setPlane();
-		pMiarex->setScale();
-		pMiarex->m_bIs2DScaleSet = false;
-		pMiarex->setControls();
+		m_pMiarex->setPlane();
+		m_pMiarex->setScale();
+		m_pMiarex->m_bIs2DScaleSet = false;
+		m_pMiarex->setControls();
 		updateView();
 	}
 	else if(m_iApp==XFLR5::DIRECTDESIGN)
 	{
-		AFoil *pAFoil = (AFoil*)m_pAFoil;
-		pAFoil->setAFoilParams();
-		pAFoil->selectFoil(XDirect::curFoil());
+		m_pAFoil->setAFoilParams();
+		m_pAFoil->selectFoil(XDirect::curFoil());
 		updateView();
 	}
 	else if(m_iApp==XFLR5::INVERSEDESIGN)
@@ -4047,7 +4030,6 @@ void MainFrame::onRestoreToolbars()
 		m_pctrlXInverseWidget->hide();
 		m_pctrlMiarexWidget->show();
 		m_pctrlMiarexToolBar->show();
-//		QMiarex *pMiarex = (QMiarex*)m_pMiarex;
 //		if(pMiarex->m_iView==WSTABVIEW) m_pctrlStabViewWidget->show();
 //		else                            m_pctrlStabViewWidget->hide();
 	}
@@ -4093,9 +4075,7 @@ void MainFrame::onSaveProject()
 		addRecentFile(m_FileName);
 		statusBar()->showMessage(tr("The project ") + s_ProjectName + tr(" has been saved"));
 	}
-	Miarex *pMiarex = (Miarex*)m_pMiarex;
-
-	pMiarex->updateView();
+	m_pMiarex->updateView();
 }
 
 
@@ -4186,16 +4166,14 @@ void MainFrame::onSaveViewToImageFile()
 		}
 		case XFLR5::MIAREX:
 		{
-			Miarex *pMiarex = (Miarex*)m_pMiarex;
-
-			if(pMiarex->m_iView==XFLR5::W3DVIEW)
+			if(m_pMiarex->m_iView==XFLR5::W3DVIEW)
 			{
 				QMessageBox::StandardButton reply = QMessageBox::question(this, "3D save option", tr("Set a transparent background ?"), QMessageBox::Yes|QMessageBox::No);
 				if (reply == QMessageBox::Yes)
 				{
 					QPixmap outPix = m_pgl3dMiarexView->grab();
 					QPainter painter(&outPix);
-					if(!pMiarex->m_PixText.isNull())                  painter.drawPixmap(0,0, pMiarex->m_PixText);
+					if(!m_pMiarex->m_PixText.isNull())                  painter.drawPixmap(0,0, m_pMiarex->m_PixText);
 					if(!m_pgl3dMiarexView->m_PixTextOverlay.isNull()) painter.drawPixmap(0,0, m_pgl3dMiarexView->m_PixTextOverlay);
 
 					outPix.save(FileName);
@@ -4204,7 +4182,7 @@ void MainFrame::onSaveViewToImageFile()
 				{
 					QImage outImg = m_pgl3dMiarexView->grabFramebuffer();
 					QPainter painter(&outImg);
-					if(!pMiarex->m_PixText.isNull())                  painter.drawPixmap(0,0, pMiarex->m_PixText);
+					if(!m_pMiarex->m_PixText.isNull())                  painter.drawPixmap(0,0, m_pMiarex->m_PixText);
 					if(!m_pgl3dMiarexView->m_PixTextOverlay.isNull()) painter.drawPixmap(0,0, m_pgl3dMiarexView->m_PixTextOverlay);
 
 					outImg.save(FileName);
@@ -4231,42 +4209,39 @@ void MainFrame::onSelChangePlane(int sel)
 	// then updates WPolar combobox
 	// and selects either the current WPolar
 	// or the first one in the list, if any
-	Miarex *pMiarex = (Miarex*)m_pMiarex;
-	pMiarex->stopAnimate();
+	m_pMiarex->stopAnimate();
 	QString strong;
 //	int sel = m_pctrlPlane->currentIndex();
 	if (sel >=0) strong = m_pctrlPlane->itemText(sel);
-	pMiarex->setPlane(strong);
-	pMiarex->updateView();
+	m_pMiarex->setPlane(strong);
+	m_pMiarex->updateView();
 }
 
 
 void MainFrame::onSelChangeWPolar(int sel)
 {
-	Miarex *pMiarex = (Miarex*)m_pMiarex;
-	pMiarex->stopAnimate();
+	m_pMiarex->stopAnimate();
 
 	QString strong;
 //	int sel = m_pctrlPlanePolar->currentIndex();
 	if (sel>=0) strong = m_pctrlPlanePolar->itemText(sel);
 	m_iApp = XFLR5::MIAREX;
-	pMiarex->setWPolar(false, strong);
-	pMiarex->setControls();
-	pMiarex->updateView();
+	m_pMiarex->setWPolar(false, strong);
+	m_pMiarex->setControls();
+	m_pMiarex->updateView();
 }
 
 
 void MainFrame::onSelChangePlaneOpp(int sel)
 {
 	QString strong;
-	Miarex *pMiarex = (Miarex*)m_pMiarex;
-	pMiarex->stopAnimate();
+	m_pMiarex->stopAnimate();
 
 	// Gets the new selected WOpp name and notifies Miarex
 	if(!m_pctrlPlaneOpp->count())
 	{
 		Miarex::s_bResetCurves = true;
-		pMiarex->updateView();
+		m_pMiarex->updateView();
 		return;
 	}
 
@@ -4283,13 +4258,13 @@ void MainFrame::onSelChangePlaneOpp(int sel)
 		if(bOK)
 		{
 			m_iApp = XFLR5::MIAREX;
-			pMiarex->setPlaneOpp(false, x);
-			pMiarex->updateView();
+			m_pMiarex->setPlaneOpp(false, x);
+			m_pMiarex->updateView();
 		}
 		else
 		{
 			QMessageBox::warning(window(), tr("Warning"), tr("Unidentified Operating Point"));
-			pMiarex->setPlaneOpp(true);
+			m_pMiarex->setPlaneOpp(true);
 		}
 	}
 }
@@ -4374,8 +4349,7 @@ void MainFrame::onShowMousePos()
 
 void MainFrame::onXDirect()
 {
-	Miarex *pMiarex = (Miarex*)m_pMiarex;
-	pMiarex->stopAnimate();
+	m_pMiarex->stopAnimate();
 
 	m_iApp = XFLR5::XFOILANALYSIS;
 
@@ -4407,7 +4381,6 @@ void MainFrame::onXDirect()
 void MainFrame::onMiarex()
 {
 	m_pXDirect->stopAnimate();
-	Miarex *pMiarex = (Miarex*)m_pMiarex;
 	m_iApp = XFLR5::MIAREX;
 
 	m_pctrlXDirectToolBar->hide();
@@ -4421,13 +4394,13 @@ void MainFrame::onMiarex()
 	m_pctrlMiarexWidget->show();
 
 	updatePlaneListBox();
-	pMiarex->setPlane();
+	m_pMiarex->setPlane();
 
 	setMenus();
 	setMainFrameCentralWidget();
 	checkGraphActions();
-	pMiarex->setControls();
-	pMiarex->setCurveParams();
+	m_pMiarex->setControls();
+	m_pMiarex->setCurveParams();
 	updateView();
 }
 
@@ -4436,10 +4409,8 @@ void MainFrame::onMiarex()
 void MainFrame::onXInverse()
 {
 	m_pXDirect->stopAnimate();
-	Miarex *pMiarex = (Miarex*)m_pMiarex;
-	pMiarex->stopAnimate();
+	m_pMiarex->stopAnimate();
 
-	XInverse *pXInverse = (XInverse*)m_pXInverse;
 //	pXInverse->SetScale();
 	m_iApp = XFLR5::INVERSEDESIGN;
 
@@ -4457,18 +4428,16 @@ void MainFrame::onXInverse()
 	setMainFrameCentralWidget();
 	setMenus();
 	checkGraphActions();
-	pXInverse->setParams();
-	pXInverse->updateView();
+	m_pXInverse->setParams();
+	m_pXInverse->updateView();
 }
 
 
 void MainFrame::onXInverseMixed()
 {
 	m_pXDirect->stopAnimate();
-	Miarex *pMiarex = (Miarex*)m_pMiarex;
-	pMiarex->stopAnimate();
+	m_pMiarex->stopAnimate();
 
-	XInverse *pXInverse = (XInverse*)m_pXInverse;
 //	pXInverse->SetScale();
 	m_iApp = XFLR5::INVERSEDESIGN;
 	m_pctrlMiarexToolBar->hide();
@@ -4481,12 +4450,12 @@ void MainFrame::onXInverseMixed()
 	m_pctrlMiarexWidget->hide();
 	m_pctrlXDirectWidget->hide();
 	m_pctrlXInverseWidget->show();
-	pXInverse->m_bFullInverse = false;
+	m_pXInverse->m_bFullInverse = false;
 	setMainFrameCentralWidget();
 	setMenus();
 	checkGraphActions();
-	pXInverse->setParams();
-	pXInverse->updateView();
+	m_pXInverse->setParams();
+	m_pXInverse->updateView();
 }
 
 
@@ -4519,13 +4488,11 @@ void MainFrame::onOpenRecentFile()
 	else if(m_iApp==XFLR5::MIAREX)
 	{
 		onMiarex();
-		Miarex *pMiarex = (Miarex*)m_pMiarex;
-		pMiarex->setScale();
+		m_pMiarex->setScale();
 	}
 	else if(m_iApp==XFLR5::DIRECTDESIGN)
 	{
-		AFoil *pAFoil = (AFoil*)m_pAFoil;
-		pAFoil->setAFoilParams();
+		m_pAFoil->setAFoilParams();
 		onAFoil();
 		updateView();
 	}
@@ -4671,10 +4638,8 @@ bool MainFrame::saveProject(QString PathName)
 
 void MainFrame::onSavePlaneAsProject()
 {
-	Miarex *pMiarex = (Miarex*)m_pMiarex;
-
 	QString strong;
-	if(pMiarex->m_pCurPlane) strong = pMiarex->m_pCurPlane->planeName();
+	if(m_pMiarex->m_pCurPlane) strong = m_pMiarex->m_pCurPlane->planeName();
 	else
 	{
 		QMessageBox::warning(this, tr("Warning"), tr("Nothing to save"));
@@ -4716,19 +4681,16 @@ void MainFrame::onSavePlaneAsProject()
 
 bool MainFrame::serializePlaneProject(QDataStream &ar)
 {
-	Miarex * pMiarex = (Miarex*)m_pMiarex;
-	if(!pMiarex->m_pCurPlane)
+	if(!m_pMiarex->m_pCurPlane)
 	{
 		QMessageBox::warning(this, tr("Warning"), tr("Nothing to save"));
 		return false;
 	}
 
-	AFoil *pAFoil = (AFoil*)m_pAFoil;
-
 	WPolar *pWPolar = NULL;
 	Polar *pPolar   = NULL;
 
-	QString PlaneName = pMiarex->m_pCurPlane->planeName();
+	QString PlaneName = m_pMiarex->m_pCurPlane->planeName();
 
 	bool bIsStoring = true;
 	int i, iSize;
@@ -4777,7 +4739,7 @@ bool MainFrame::serializePlaneProject(QDataStream &ar)
 
 	// save the plane
 	ar << 1;
-	pMiarex->m_pCurPlane->serializePlaneXFL(ar, bIsStoring);
+	m_pMiarex->m_pCurPlane->serializePlaneXFL(ar, bIsStoring);
 
 	// save the WPolars associated to this plane
 	//count the polars
@@ -4804,7 +4766,7 @@ bool MainFrame::serializePlaneProject(QDataStream &ar)
 		Foil *pFoil = Objects2d::s_oaFoil.at(i);
 		for(int iw=0; iw<MAXWINGS; iw++)
 		{
-			if(pMiarex->m_pCurPlane->m_Wing[iw].isWingFoil(pFoil))
+			if(m_pMiarex->m_pCurPlane->m_Wing[iw].isWingFoil(pFoil))
 			{
 				foilList.append(pFoil);
 				break;
@@ -4855,7 +4817,7 @@ bool MainFrame::serializePlaneProject(QDataStream &ar)
 	ar << 0; //no need to save the operating points
 
 	// and the spline foil whilst we're at it
-	pAFoil->m_pSF->serialize(ar, bIsStoring);
+	m_pAFoil->m_pSF->serialize(ar, bIsStoring);
 
 	return true;
 }
@@ -4863,10 +4825,6 @@ bool MainFrame::serializePlaneProject(QDataStream &ar)
 
 void MainFrame::saveSettings()
 {
-	AFoil *pAFoil       = (AFoil*)m_pAFoil;
-	Miarex *pMiarex     = (Miarex*)m_pMiarex;
-	XInverse *pXInverse = (XInverse*)m_pXInverse;
-
 	if(!m_bSaveSettings) return;
 
 #if defined Q_OS_MAC && defined MAC_NATIVE_PREFS
@@ -4954,10 +4912,10 @@ void MainFrame::saveSettings()
 	settings.endGroup();
 
 	Settings::saveSettings(&settings);
-	pAFoil->saveSettings(&settings);
+	m_pAFoil->saveSettings(&settings);
 	m_pXDirect->saveSettings(&settings);
-	pMiarex->saveSettings(&settings);
-	pXInverse->saveSettings(&settings);
+	m_pMiarex->saveSettings(&settings);
+	m_pXInverse->saveSettings(&settings);
 	GL3DScales::saveSettings(&settings);
 	W3dPrefsDlg::saveSettings(&settings);
 }
@@ -4971,15 +4929,14 @@ void MainFrame::setMainFrameCentralWidget()
 	}
 	else if(m_iApp==XFLR5::MIAREX)
 	{
-		Miarex *pMiarex = (Miarex*)m_pMiarex;
-		if (pMiarex->m_iView==XFLR5::WOPPVIEW || pMiarex->m_iView==XFLR5::WPOLARVIEW || pMiarex->m_iView==XFLR5::WCPVIEW ||
-			pMiarex->m_iView==XFLR5::STABPOLARVIEW  || pMiarex->m_iView==XFLR5::STABTIMEVIEW)
+		if (m_pMiarex->m_iView==XFLR5::WOPPVIEW || m_pMiarex->m_iView==XFLR5::WPOLARVIEW || m_pMiarex->m_iView==XFLR5::WCPVIEW ||
+			m_pMiarex->m_iView==XFLR5::STABPOLARVIEW  || m_pMiarex->m_iView==XFLR5::STABTIMEVIEW)
 		{
 			m_pctrlCentralWidget->setCurrentWidget(m_pMiarexTileWidget);
-			pMiarex->setGraphTiles();
+			m_pMiarex->setGraphTiles();
 			m_pMiarexTileWidget->setFocus();
 		}
-		else if(pMiarex->m_iView==XFLR5::W3DVIEW)
+		else if(m_pMiarex->m_iView==XFLR5::W3DVIEW)
 		{
 			m_pctrlCentralWidget->setCurrentWidget(m_pgl3dMiarexView);
 			m_pgl3dMiarexView->setFocus();
@@ -5154,8 +5111,7 @@ void MainFrame::selectPlaneOpp(void *pPlaneOppPtr)
 		else if(pPlaneOpp->polarType()==XFLR5::STABILITYPOLAR) x = pPlaneOpp->m_Ctrl;
 	}
 	//Selects a pOpp in the combobox
-	Miarex *pMiarex = (Miarex*)m_pMiarex;
-	WPolar *pCurWPlr    = pMiarex->m_pCurWPolar;
+	WPolar *pCurWPlr    = m_pMiarex->m_pCurWPolar;
 	double val;
 	bool bOK;
 	QString strange;
@@ -5520,9 +5476,6 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 
 bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 {
-	Miarex *pMiarex = (Miarex*)m_pMiarex;
-	AFoil *pAFoil = (AFoil*)m_pAFoil;
-
 	Wing *pWing     = NULL;
 	WPolar *pWPolar = NULL;
 	WingOpp *pWOpp  = NULL;
@@ -5828,17 +5781,17 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 //				Objects3D::s_oaPOpp.append(pPOpp);
 			}
 		}
-		pMiarex->m_pCurPOpp = NULL;
+		m_pMiarex->m_pCurPOpp = NULL;
 
-		pAFoil->m_pSF->serialize(ar, bIsStoring);
+		m_pAFoil->m_pSF->serialize(ar, bIsStoring);
 
 		if(m_iApp==XFLR5::MIAREX)
 		{
-			pMiarex->setPlane();
-			pMiarex->setScale();
+			m_pMiarex->setPlane();
+			m_pMiarex->setScale();
 		}
 
-		pMiarex->updateUnits();
+		m_pMiarex->updateUnits();
 
 		return true;
 	}
@@ -5933,20 +5886,17 @@ void MainFrame::setSaveState(bool bSave)
 
 void MainFrame::setGraphSettings(Graph *pGraph)
 {
-	Miarex *pMiarex     = (Miarex*)m_pMiarex;
-	XInverse *pXInverse = (XInverse*)m_pXInverse;
-
 	m_pXDirect->m_CpGraph.copySettings(pGraph, false);
 	for(int ig=0; ig<qMax(MAXPOLARGRAPHS, m_pXDirect->m_PlrGraph.count()); ig++) m_pXDirect->m_PlrGraph[ig]->copySettings(pGraph, false);
 
-	pXInverse->m_QGraph.copySettings(pGraph, false);
+	m_pXInverse->m_QGraph.copySettings(pGraph, false);
 
-	pMiarex->m_CpGraph.copySettings(pGraph, false);
+	m_pMiarex->m_CpGraph.copySettings(pGraph, false);
 
-	for(int ig=0; ig<pMiarex->m_WingGraph.count(); ig++) pMiarex->m_WingGraph[ig]->copySettings(pGraph, false);
-	for(int ig=0; ig<pMiarex->m_WPlrGraph.count(); ig++) pMiarex->m_WPlrGraph[ig]->copySettings(pGraph, false);
-	for(int ig=0; ig<pMiarex->m_TimeGraph.count(); ig++) pMiarex->m_TimeGraph[ig]->copySettings(pGraph, false);
-	for(int ig=0; ig<pMiarex->m_StabPlrGraph.count(); ig++) pMiarex->m_StabPlrGraph[ig]->copySettings(pGraph, false);
+	for(int ig=0; ig<m_pMiarex->m_WingGraph.count(); ig++) m_pMiarex->m_WingGraph[ig]->copySettings(pGraph, false);
+	for(int ig=0; ig<m_pMiarex->m_WPlrGraph.count(); ig++) m_pMiarex->m_WPlrGraph[ig]->copySettings(pGraph, false);
+	for(int ig=0; ig<m_pMiarex->m_TimeGraph.count(); ig++) m_pMiarex->m_TimeGraph[ig]->copySettings(pGraph, false);
+	for(int ig=0; ig<m_pMiarex->m_StabPlrGraph.count(); ig++) m_pMiarex->m_StabPlrGraph[ig]->copySettings(pGraph, false);
 
 }
 
@@ -5984,13 +5934,12 @@ QString MainFrame::shortenFileName(QString &PathName)
 void MainFrame::updatePlaneListBox()
 {
 	int i;
-	Miarex *pMiarex= (Miarex*)m_pMiarex;
 	Plane *pPlane, *pCurPlane;
 
 	m_pctrlPlane->blockSignals(true);
 	m_pctrlPlane->clear();
 
-	pCurPlane = pMiarex->m_pCurPlane;
+	pCurPlane = m_pMiarex->m_pCurPlane;
 	QStringList PlaneNames;
     for (i=0; i<Objects3d::s_oaPlane.size(); i++)
 	{
@@ -6022,7 +5971,6 @@ void MainFrame::updateWPolarListBox()
 //	fills the combobox with WPolar names associated to Miarex's current wing
 //	then selects Miarex current WPolar if any, else selects the first, if any
 //	else disables the combobox
-	Miarex * pMiarex = (Miarex*)m_pMiarex;
 	WPolar *pWPolar;
 	QString PlaneName;
 	int i;
@@ -6030,15 +5978,15 @@ void MainFrame::updateWPolarListBox()
 	m_pctrlPlanePolar->blockSignals(true);
 	m_pctrlPlanePolar->clear();
 
-	Plane  *pCurPlane = pMiarex->m_pCurPlane;
-	WPolar *pCurWPlr  = pMiarex->m_pCurWPolar;
+	Plane  *pCurPlane = m_pMiarex->m_pCurPlane;
+	WPolar *pCurWPlr  = m_pMiarex->m_pCurWPolar;
 
 	if(pCurPlane)      PlaneName = pCurPlane->planeName();
 	else               PlaneName = "";
 
 	if(!PlaneName.length())
 	{
-		pMiarex->m_pCurWPolar = NULL;
+		m_pMiarex->m_pCurWPolar = NULL;
 		m_pctrlPlanePolar->setEnabled(false);
 		m_pctrlPlaneOpp->setEnabled(false);
 		return;
@@ -6070,11 +6018,10 @@ void MainFrame::updateWPolarListBox()
 void MainFrame::updatePOppListBox()
 {
 	m_pctrlPlaneOpp->blockSignals(true);
-	Miarex * pMiarex = (Miarex*)m_pMiarex;
 
 	PlaneOpp *pPOpp;
-	Plane  *pCurPlane   = pMiarex->m_pCurPlane;
-	WPolar *pCurWPlr    = pMiarex->m_pCurWPolar;
+	Plane  *pCurPlane   = m_pMiarex->m_pCurPlane;
+	WPolar *pCurWPlr    = m_pMiarex->m_pCurWPolar;
 
 	QString str;
 	m_pctrlPlaneOpp->clear();
@@ -6099,7 +6046,7 @@ void MainFrame::updatePOppListBox()
 		}
 	}
 
-	if(pMiarex->m_pCurPOpp) selectPlaneOpp(pMiarex->m_pCurPOpp);
+	if(m_pMiarex->m_pCurPOpp) selectPlaneOpp(m_pMiarex->m_pCurPOpp);
 	else                    m_pctrlPlaneOpp->setCurrentIndex(0);
 
 	// otherwise disable control
@@ -6275,14 +6222,12 @@ void MainFrame::updateView()
 		}
 		case XFLR5::MIAREX:
 		{
-			Miarex *pMiarex= (Miarex*)m_pMiarex;
-			pMiarex->updateView();
+			m_pMiarex->updateView();
 			break;
 		}
 		case XFLR5::INVERSEDESIGN:
 		{
-			XInverse *pXInverse = (XInverse*)m_pXInverse;
-			pXInverse->updateView();
+			m_pXInverse->updateView();
 			break;
 		}
 		default:
@@ -6412,9 +6357,8 @@ void MainFrame::onManageFoils()
 	}
 	else if(m_iApp==XFLR5::DIRECTDESIGN)
 	{
-		AFoil *pAFoil = (AFoil*)m_pAFoil;
-		pAFoil->fillFoilTable();
-		pAFoil->selectFoil();
+		m_pAFoil->fillFoilTable();
+		m_pAFoil->selectFoil();
 	}
 
 	updateView();
@@ -6432,15 +6376,14 @@ void MainFrame::checkGraphActions()
 
 	if(m_iApp==XFLR5::MIAREX)
 	{
-		Miarex *pMiarex = (Miarex*)m_pMiarex;
-		switch(pMiarex->m_iView)
+		switch(m_pMiarex->m_iView)
 		{
 			case XFLR5::WOPPVIEW:
 			{
-				if(pMiarex->m_iWingView == XFLR5::ONEGRAPH)        m_pSingleGraph[m_pMiarexTileWidget->activeGraphIndex()]->setChecked(true);
-				else if(pMiarex->m_iWingView == XFLR5::TWOGRAPHS)  m_pTwoGraphs->setChecked(true);
-				else if(pMiarex->m_iWingView == XFLR5::FOURGRAPHS) m_pFourGraphs->setChecked(true);
-				else if(pMiarex->m_iWingView == XFLR5::ALLGRAPHS)  m_pAllGraphs->setChecked(true);
+				if(m_pMiarex->m_iWingView == XFLR5::ONEGRAPH)        m_pSingleGraph[m_pMiarexTileWidget->activeGraphIndex()]->setChecked(true);
+				else if(m_pMiarex->m_iWingView == XFLR5::TWOGRAPHS)  m_pTwoGraphs->setChecked(true);
+				else if(m_pMiarex->m_iWingView == XFLR5::FOURGRAPHS) m_pFourGraphs->setChecked(true);
+				else if(m_pMiarex->m_iWingView == XFLR5::ALLGRAPHS)  m_pAllGraphs->setChecked(true);
 				m_pSingleGraph[1]->setEnabled(true);
 				m_pSingleGraph[2]->setEnabled(true);
 				m_pSingleGraph[3]->setEnabled(true);
@@ -6453,10 +6396,10 @@ void MainFrame::checkGraphActions()
 			}
 			case XFLR5::WPOLARVIEW:
 			{
-				if(pMiarex->m_iWPlrView == XFLR5::ONEGRAPH)        m_pSingleGraph[m_pMiarexTileWidget->activeGraphIndex()]->setChecked(true);
-				else if(pMiarex->m_iWPlrView == XFLR5::TWOGRAPHS)  m_pTwoGraphs->setChecked(true);
-				else if(pMiarex->m_iWPlrView == XFLR5::FOURGRAPHS) m_pFourGraphs->setChecked(true);
-				else if(pMiarex->m_iWPlrView == XFLR5::ALLGRAPHS)  m_pAllGraphs->setChecked(true);
+				if(m_pMiarex->m_iWPlrView == XFLR5::ONEGRAPH)        m_pSingleGraph[m_pMiarexTileWidget->activeGraphIndex()]->setChecked(true);
+				else if(m_pMiarex->m_iWPlrView == XFLR5::TWOGRAPHS)  m_pTwoGraphs->setChecked(true);
+				else if(m_pMiarex->m_iWPlrView == XFLR5::FOURGRAPHS) m_pFourGraphs->setChecked(true);
+				else if(m_pMiarex->m_iWPlrView == XFLR5::ALLGRAPHS)  m_pAllGraphs->setChecked(true);
 				m_pSingleGraph[1]->setEnabled(true);
 				m_pSingleGraph[2]->setEnabled(true);
 				m_pSingleGraph[3]->setEnabled(true);
@@ -6469,8 +6412,8 @@ void MainFrame::checkGraphActions()
 			}
 			case XFLR5::STABPOLARVIEW:
 			{
-				if(pMiarex->m_bLongitudinal== XFLR5::ONEGRAPH)      m_pSingleGraph[0]->setChecked(true);
-				else if(pMiarex->m_bLongitudinal== XFLR5::ONEGRAPH) m_pSingleGraph[1]->setChecked(true);
+				if(m_pMiarex->m_bLongitudinal== XFLR5::ONEGRAPH)      m_pSingleGraph[0]->setChecked(true);
+				else if(m_pMiarex->m_bLongitudinal== XFLR5::ONEGRAPH) m_pSingleGraph[1]->setChecked(true);
 				m_pSingleGraph[2]->setEnabled(false);
 				m_pSingleGraph[3]->setEnabled(false);
 				m_pSingleGraph[4]->setEnabled(false);
@@ -6482,10 +6425,10 @@ void MainFrame::checkGraphActions()
 			}
 			case XFLR5::STABTIMEVIEW:
 			{
-				if(pMiarex->m_iStabTimeView == XFLR5::ONEGRAPH)        m_pSingleGraph[m_pMiarexTileWidget->activeGraphIndex()]->setChecked(true);
-				else if(pMiarex->m_iStabTimeView == XFLR5::TWOGRAPHS)  m_pTwoGraphs->setChecked(true);
-				else if(pMiarex->m_iStabTimeView == XFLR5::FOURGRAPHS) m_pFourGraphs->setChecked(true);
-				else if(pMiarex->m_iStabTimeView == XFLR5::ALLGRAPHS)  m_pAllGraphs->setChecked(true);
+				if(m_pMiarex->m_iStabTimeView == XFLR5::ONEGRAPH)        m_pSingleGraph[m_pMiarexTileWidget->activeGraphIndex()]->setChecked(true);
+				else if(m_pMiarex->m_iStabTimeView == XFLR5::TWOGRAPHS)  m_pTwoGraphs->setChecked(true);
+				else if(m_pMiarex->m_iStabTimeView == XFLR5::FOURGRAPHS) m_pFourGraphs->setChecked(true);
+				else if(m_pMiarex->m_iStabTimeView == XFLR5::ALLGRAPHS)  m_pAllGraphs->setChecked(true);
 				m_pSingleGraph[1]->setEnabled(true);
 				m_pSingleGraph[2]->setEnabled(true);
 				m_pSingleGraph[3]->setEnabled(true);
@@ -6557,10 +6500,9 @@ void MainFrame::onResetCurGraphScales()
 		}
 		case XFLR5::INVERSEDESIGN:
 		{
-			XInverse *pXInverse = (XInverse*)m_pXInverse;
-			pXInverse->m_QGraph.setAuto(true);
-			pXInverse->releaseZoom();
-			pXInverse->updateView();
+			m_pXInverse->m_QGraph.setAuto(true);
+			m_pXInverse->releaseZoom();
+			m_pXInverse->updateView();
 			return;
 		}
 		default:
@@ -6587,8 +6529,7 @@ void MainFrame::onExportCurGraph()
 		}
 		case XFLR5::INVERSEDESIGN:
 		{
-			XInverse *pXInverse = (XInverse*)m_pXInverse;
-			exportGraph(&pXInverse->m_QGraph);
+			exportGraph(&m_pXInverse->m_QGraph);
 			break;
 		}
 		default:
@@ -6616,8 +6557,7 @@ void MainFrame::onCurGraphSettings()
 		}
 		case XFLR5::INVERSEDESIGN:
 		{
-			XInverse *pXInverse = (XInverse*)m_pXInverse;
-			pXInverse->onQGraphSettings();
+			m_pXInverse->onQGraphSettings();
 			break;
 		}
 		default:
@@ -6648,8 +6588,7 @@ void MainFrame::onLoadLastProject()
 	}
 	else if(m_iApp==XFLR5::INVERSEDESIGN)
 	{
-		XInverse *pXInverse = (XInverse*)m_pXInverse;
-		if(pXInverse->m_bFullInverse) onXInverse();
+		if(m_pXInverse->m_bFullInverse) onXInverse();
 		else                          onXInverseMixed();
 	}
 }
@@ -7025,30 +6964,27 @@ void MainFrame::onPreferences()
 		saveSettings();
 	}
 
-	Miarex *pMiarex     = (Miarex*)m_pMiarex;
-
 	if(dlg.m_pDisplayOptionsWidget->m_bIsGraphModified)
 	{
 		setGraphSettings(&Settings::s_RefGraph);
 	}
-	AFoil *pAFoil = (AFoil*)m_pAFoil;
-	pAFoil->setTableFont();
+	m_pAFoil->setTableFont();
 	if(Settings::s_Theme==SETTINGS::DARKTHEME)
 	{
 		m_pXDirectTileWidget->opPointWidget()->setNeutralLineColor(QColor(190,190,190));
-		pAFoil->m_p2DWidget->setNeutralLineColor(QColor(190,190,190));
+		m_pAFoil->m_p2DWidget->setNeutralLineColor(QColor(190,190,190));
 	}
 	else
 	{
 		m_pXDirectTileWidget->opPointWidget()->setNeutralLineColor(QColor(60,60,60));
-		pAFoil->m_p2DWidget->setNeutralLineColor(QColor(60,60,60));
+		m_pAFoil->m_p2DWidget->setNeutralLineColor(QColor(60,60,60));
 	}
-	pMiarex->m_bResetglGeom = true;
-	pMiarex->m_bResetglBody = true;
-	pMiarex->m_bResetglLegend = true;
+	m_pMiarex->m_bResetglGeom = true;
+	m_pMiarex->m_bResetglBody = true;
+	m_pMiarex->m_bResetglLegend = true;
 	m_pXDirect->CpGraph()->setInverted(true);
-	pMiarex->m_CpGraph.setInverted(true);
-	pMiarex->m_bResetTextLegend = true;
+	m_pMiarex->m_CpGraph.setInverted(true);
+	m_pMiarex->m_bResetTextLegend = true;
 
 	m_VoidWidget.update();
 
