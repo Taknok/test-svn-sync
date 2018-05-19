@@ -64,14 +64,15 @@ win32 {
 #   Alternate option is to specify the absolute path instead of the relative path
 #   Uncomment the following line to print the name of the variable OUT_PWD in the console
 #message($$OUT_PWD)
+
 	CONFIG(release, debug|release){
-		LIBS += -L$$OUT_PWD/../../build-xflr5/xflr5-engine/release/ -lxflr5-engine
-		LIBS += -L$$OUT_PWD/../../build-xflr5/XFoil-lib/release/ -lXFoil
+        LIBS += -L$$OUT_PWD/../xflr5-engine/release/ -lxflr5-engine
+        LIBS += -L$$OUT_PWD/../XFoil-lib/release/ -lXFoil
 	}
 	else:CONFIG(debug, debug|release)
 	{
-		LIBS += -L$$OUT_PWD/../../build-xflr5/xflr5-engine/debug/ -lxflr5-engine
-		LIBS += -L$$OUT_PWD/../../build-xflr5/XFoil-lib/debug/ -lXFoil
+        LIBS += -L$$OUT_PWD/../xflr5-engine/debug/ -lxflr5-engine
+        LIBS += -L$$OUT_PWD/../XFoil-lib/debug/ -lXFoil
 	}
 	LIBS += -lopenGL32
 
