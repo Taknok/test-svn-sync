@@ -85,9 +85,9 @@ public slots:
 
 
 public:
-	static void *s_pMainFrame;   /**< A void pointer to the instance of the MainFrame object. */
-	static void *s_pMiarex;      /**< A void pointer to the instance of the QMiarex object. */
-	static void *s_pXDirect;     /**< A void pointer to the instance of the QXDirect object. */
+	static MainFrame *s_pMainFrame;   /**< A void pointer to the instance of the MainFrame object. */
+	static Miarex *s_pMiarex;      /**< A void pointer to the instance of the QMiarex object. */
+	static XDirect *s_pXDirect;     /**< A void pointer to the instance of the QXDirect object. */
 
 
 private:
