@@ -101,7 +101,7 @@ unix{
 }
 
 
-macx {
+macx{
     DESTDIR = ../
 #	CONFIG += i386
 	QMAKE_MAC_SDK = macosx

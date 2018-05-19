@@ -376,8 +376,6 @@ void XFoilAnalysisDlg::onProgress()
 
 
 
-
-
 void XFoilAnalysisDlg::customEvent(QEvent * event)
 {
 	// When we get here, we've crossed the thread boundary and are now
