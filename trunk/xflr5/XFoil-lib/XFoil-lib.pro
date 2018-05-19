@@ -36,8 +36,7 @@ RCC_DIR = ./build/rcc
 
 
 
-macx
-{
+macx{
 #	CONFIG += lib_bundle
 #	CONFIG += i386
 	QMAKE_SONAME_PREFIX = @executable_path/../Frameworks
@@ -45,7 +44,8 @@ macx
 }
 
 
-unix {
+unix{
 	target.path = /usr/local/lib
     INSTALLS += target
 }
+

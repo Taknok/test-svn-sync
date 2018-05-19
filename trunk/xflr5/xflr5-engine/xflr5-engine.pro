@@ -100,7 +100,7 @@ macx{
 }
 
 
-unix {
+unix{
 	target.path = /usr/local/lib
     INSTALLS += target
 }
