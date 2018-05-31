@@ -634,20 +634,21 @@ void XInverse::keyPressEvent(QKeyEvent *event)
 				s_pMainFrame->onAFoil();
 				return;
 			}
-
+			break;
 		case Qt::Key_2:
 			if(bCtrl)
 			{
 				s_pMainFrame->onAFoil();
 				return;
 			}
-
+			break;
 		case Qt::Key_3:
 			if(bCtrl)
 			{
 				s_pMainFrame->onXInverse();
 				return;
 			}
+			break;
 
 		case Qt::Key_4:
 			if(bCtrl)
@@ -655,14 +656,14 @@ void XInverse::keyPressEvent(QKeyEvent *event)
 				s_pMainFrame->onXInverseMixed();
 				return;
 			}
-
+			break;
 		case Qt::Key_5:
 			if(bCtrl)
 			{
 				s_pMainFrame->onXDirect();
 				return;
 			}
-
+			break;
 		case Qt::Key_6:
 		{
 			if(bCtrl)
@@ -670,6 +671,7 @@ void XInverse::keyPressEvent(QKeyEvent *event)
 				s_pMainFrame->onMiarex();
 				return;
 			}
+			break;
 		}
 		case Qt::Key_7:
 /*			if(bCtrl)
