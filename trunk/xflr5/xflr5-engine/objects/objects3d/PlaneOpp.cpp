@@ -489,7 +489,7 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
 				ar >>f;   if(k==0) CNe=f;
 
 				ar >>f0>>f1>>f2>>f3;
-				if(k==0) m_BLat[0]= f0; m_BLat[1]= f1; m_BLat[2] = f2; m_BLat[3] = f3;
+				if(k==0) { m_BLat[0]= f0; m_BLat[1]= f1; m_BLat[2] = f2; m_BLat[3] = f3;}
 				ar >>f0>>f1>>f2>>f3;
 				m_BLong[0]=f0; m_BLong[1]=f1; m_BLong[2]= f2; m_BLong[3]= f3;
 			}

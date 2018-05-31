@@ -252,14 +252,17 @@ void GraphTileWidget::onResetCurves(Graph *pGraph)
 		case XFLR5::XFOILANALYSIS:
 		{
 			s_pXDirect->updateView();
+			break;
 		}
 		case XFLR5::INVERSEDESIGN:
 		{
+			break;
 		}
 		case XFLR5::MIAREX:
 		{
 			Miarex::s_bResetCurves = true;
 			s_pMiarex->updateView();
+			break;
 		}
 		default:
 			break;

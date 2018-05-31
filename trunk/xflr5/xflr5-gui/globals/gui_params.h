@@ -12,7 +12,7 @@
 #define GUI_PARAMS_H
 
 
-#define VERSIONNAME     "xflr5 v6.42"
+#define VERSIONNAME     "xflr5 v6.43"
 
 //General
 #define MAXRECENTFILES         8  /**< Defines the maximum number of file names in the recent file list */
