@@ -477,6 +477,7 @@ void StabPolarDlg::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_Escape:
 		{
 			reject();
+			break;
 		}
 		default:
 			event->ignore();

@@ -193,8 +193,11 @@ void GLRenderWindow::render()
 
     if (m_vao.isCreated())
         m_vao.bind();
-    else // no VAO support, set the vertex attribute arrays now
+	else
+	{
+		// no VAO support, set the vertex attribute arrays now
         setupVertexAttribs();
+	}
 
 	m_pOpenGLTexture->bind();
 	f->glDrawArrays(GL_TRIANGLE_FAN, 0, 4);

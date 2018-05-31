@@ -1064,6 +1064,7 @@ void XDirect::keyPressEvent(QKeyEvent *event)
 				event->accept();
 				return;
 			}
+			break;
 		case Qt::Key_2:
 			if(bCtrl)
 			{
@@ -1071,7 +1072,7 @@ void XDirect::keyPressEvent(QKeyEvent *event)
 				event->accept();
 				return;
 			}
-
+			break;
 		case Qt::Key_3:
 			if(bCtrl)
 			{
@@ -1079,6 +1080,7 @@ void XDirect::keyPressEvent(QKeyEvent *event)
 				event->accept();
 				return;
 			}
+			break;
 		case Qt::Key_4:
 			if(bCtrl)
 			{
