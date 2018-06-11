@@ -101,6 +101,9 @@ macx{
 
 
 unix{
-	target.path = /usr/local/lib
+	isEmpty(PREFIX){
+		PREFIX = /usr/local
+	}
+	target.path = $$PREFIX/lib
     INSTALLS += target
 }
