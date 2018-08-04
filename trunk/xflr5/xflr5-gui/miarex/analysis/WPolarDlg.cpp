@@ -166,6 +166,7 @@ void WPolarDlg::enableControls()
 void WPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
 {
 	m_pPlane = pPlane;
+	if(!m_pPlane) return;
 
 	blockSignals(true);
 
@@ -251,8 +252,10 @@ void WPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
 	m_pctrlViscous->setChecked(s_WPolar.bViscous());
 	m_pctrlTiltGeom->setChecked(s_WPolar.bTilted());
 
-	m_pctrlIgnoreBodyPanels->setChecked(m_pPlane && m_pPlane->body() && s_WPolar.bIgnoreBodyPanels());
-	if(!m_pPlane) s_WPolar.bIgnoreBodyPanels()=false;
+	// force ignore body panels by default
+	s_WPolar.bIgnoreBodyPanels()=true;
+	m_pctrlIgnoreBodyPanels->setChecked(m_pPlane->body() || s_WPolar.bIgnoreBodyPanels());
+//	if(!m_pPlane) s_WPolar.bIgnoreBodyPanels()=false;
 
 
 	if(s_WPolar.analysisMethod()==XFLR5::LLTMETHOD)
@@ -813,7 +816,7 @@ void WPolarDlg::setupLayout()
 				pOptionsLayout->addWidget(m_pctrlViscous);
 				pOptionsLayout->addWidget(m_pctrlTiltGeom);
 	//			OptionsLayout->addWidget(m_pctrlIgnoreBody);
-				m_pctrlIgnoreBodyPanels = new QCheckBox(tr("Ignore Body Panels"));
+				m_pctrlIgnoreBodyPanels = new QCheckBox(tr("Ignore Body Panels - RECOMMENDED"));
 				pOptionsLayout->addWidget(m_pctrlIgnoreBodyPanels);
 				pOptionsLayout->addStretch();
 			}

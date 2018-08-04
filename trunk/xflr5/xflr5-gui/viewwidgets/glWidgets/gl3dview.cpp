@@ -106,7 +106,7 @@ gl3dView::gl3dView(QWidget *pParent) : QOpenGLWidget(pParent)
 
 	m_glScaled = m_glScaledRef = 1.0;
 	m_glScaleIncrement = 0.0;
-	m_ClipPlanePos  = 5.0;
+	m_ClipPlanePos  = 500.0;
 
 	m_bTrans = false;
 
@@ -1582,10 +1582,10 @@ void gl3dView::paintGL3()
 	glEnable(GL_DEPTH_TEST);
 
 	m_ShaderProgramSurface.bind();
-	m_ShaderProgramSurface.setUniformValue(m_EyePosLocationSurface, QVector3D(0.0,0.0,50.0*s));
+	m_ShaderProgramSurface.setUniformValue(m_EyePosLocationSurface, QVector3D(0.0,0.0,500.0*s));
 	m_ShaderProgramSurface.release();
 	m_ShaderProgramTexture.bind();
-	m_ShaderProgramTexture.setUniformValue(m_EyePosLocationTexture, QVector3D(0.0,0.0,50.0*s));
+	m_ShaderProgramTexture.setUniformValue(m_EyePosLocationTexture, QVector3D(0.0,0.0,500.0*s));
 	m_ShaderProgramTexture.release();
 
 	QVector4D clipplane(0.0,0.0,-1,m_ClipPlanePos);
@@ -1606,7 +1606,7 @@ void gl3dView::paintGL3()
 	height = geometry().height() * pixelRatio;
 
 	m_orthoMatrix.setToIdentity();
-	m_orthoMatrix.ortho(-s,s,-(height*s)/width,(height*s)/width,-50.0*s,50.0*s);
+	m_orthoMatrix.ortho(-s,s,-(height*s)/width,(height*s)/width,-500.0*s,500.0*s);
 
 	QMatrix4x4 matQuat(m_ArcBall.ab_quat);
 
