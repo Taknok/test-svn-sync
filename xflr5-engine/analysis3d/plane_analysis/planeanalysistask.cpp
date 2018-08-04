@@ -242,7 +242,12 @@ WPolar* PlaneAnalysisTask::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar)
 //			pCurPlane->m_Wing[0].m_bLLT      = true;
 	}
 
-//	if(m_pWPolar && !m_pWPolar->isStabilityPolar())
+	if(m_pWPolar->isPanel4Method())
+	{
+		// if more than one wing, force thin surfaces
+		if(!m_pPlane->isWing()) m_pWPolar->bThinSurfaces() = true;
+	}
+
 	if(!initializePanels()) return NULL;
 
 	if(!m_pWPolar) return NULL;

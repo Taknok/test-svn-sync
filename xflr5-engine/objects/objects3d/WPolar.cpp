@@ -374,10 +374,6 @@ void WPolar::addPlaneOpPoint(PlaneOpp *pPOpp)
  */
 void WPolar::calculatePoint(int iPt)
 {
-	//finish calculations
-//	double cl = m_CL[i];
-//	double tcd = m_TCd[i];
-//	double Qinf =  m_QInfinite[i];
 	//dynamic pressure
 	double q =  0.5 * m_Density * m_QInfinite[iPt]*m_QInfinite[iPt];
 
@@ -393,11 +389,12 @@ void WPolar::calculatePoint(int iPt)
 	m_FY[iPt]  = q * m_CY[iPt]*m_referenceArea;
 	m_FX[iPt]  = q * (m_ICd[iPt]+m_PCd[iPt])*m_referenceArea;
 
-	for(int iExtra=0; iExtra<MAXEXTRADRAG; iExtra++) m_FX[iPt] += m_ExtraDragArea[iExtra] * m_ExtraDragCoef[iExtra] *q;
-
 	m_ExtraDrag[iPt] = 0.0;
-	for(int i=0; i<MAXEXTRADRAG; i++) m_ExtraDrag[iPt] += m_ExtraDragArea[i]*m_ExtraDragCoef[i];
-	m_ExtraDrag[iPt] *= q;
+	for(int iExtra=0; iExtra<MAXEXTRADRAG; iExtra++)
+	{
+		m_FX[iPt]        += m_ExtraDragArea[iExtra] * m_ExtraDragCoef[iExtra] *q;
+		m_ExtraDrag[iPt] += m_ExtraDragArea[iExtra] * m_ExtraDragCoef[iExtra] *q;
+	}
 
 	m_TCd[iPt] = m_FX[iPt]/q/m_referenceArea;
 
