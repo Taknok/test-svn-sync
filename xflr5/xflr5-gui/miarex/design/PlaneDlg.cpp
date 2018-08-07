@@ -808,7 +808,7 @@ void PlaneDlg::setResults()
 	m_pPlane->computePlane();
 	if(m_pPlane->stab())
 	{
-		double SLA = m_pPlane->m_WingLE[2].x + m_pPlane->stab()->Chord(0)/4.0 - m_pPlane->wing()->Chord(0)/4.0;
+		double SLA = m_pPlane->m_WingLE[2].x + m_pPlane->stab()->Chord(0)/4.0 - (m_pPlane->m_WingLE[0].x + m_pPlane->wing()->Chord(0)/4.0);
 		str = QString("%1").arg(SLA*Units::mtoUnit(),5,'f',2);
 	}
 	else  str=" ";

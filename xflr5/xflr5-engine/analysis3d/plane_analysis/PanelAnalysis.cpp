@@ -608,6 +608,12 @@ bool PanelAnalysis::initializeAnalysis()
 	QString str = QString("Counted %1 panel elements\n").arg(m_MatSize,4);
 	traceLog(str+"\n");
 
+/*	for (int p=0; p<m_MatSize; p++)
+	{
+		Panel const &p4 = m_pPanel[p];
+		qDebug("index=%3d   iPU=%3d   iPD=%3d   iPL=%3d   iPR=%3d", p4.m_iElement, p4.m_iPU, p4.m_iPD, p4.m_iPL, p4.m_iPR);
+	}*/
+
 	return true;
 }
 

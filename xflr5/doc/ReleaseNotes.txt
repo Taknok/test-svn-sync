@@ -18,6 +18,7 @@
 xflr5 v6.43 August xxx, 2018
 	- forced thin surface analysis whenever more than one wing is defined
 	- set the "ignore body panels" to true by default in the definition of the 3d analysis
+	- corrected the calculation of the tail volume for wings with an offset leading edge
 
 xflr5 v6.42 May 19th, 2018
     - restored the option in Windows and linux to launch the app by opening a project.xfl, polar.plr, or foil.dat file
