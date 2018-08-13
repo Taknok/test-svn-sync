@@ -157,3 +157,9 @@ void  Vector3d::rotateY(double YTilt)
 }
 
 
+void Vector3d::displayCoords(QString msg) const
+{
+	QString strong;
+	strong.sprintf("%s  %13.5g, %13.5g, %13.5g", msg.toStdString().c_str(), x,y,z);
+	qDebug(strong.toStdString().c_str());
+}
