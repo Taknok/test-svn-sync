@@ -224,7 +224,7 @@ void WingOpp::createWOpp(void *pWingPtr, void *pWPolarPtr)
 		m_PCd[l] =           pWing->m_PCd[l];
 		m_ICd[l] =           pWing->m_ICd[l];
 		m_Cm[l] =            pWing->m_Cm[l];
-		m_CmAirf[l] =        pWing->m_CmAirfoil[l];
+		m_CmAirf[l] =        pWing->m_CmPressure[l];
 		m_XCPSpanRel[l] =    pWing->m_XCPSpanRel[l];
 		m_XCPSpanAbs[l] =    pWing->m_XCPSpanAbs[l];
 		m_Re[l] =            pWing->m_Re[l];

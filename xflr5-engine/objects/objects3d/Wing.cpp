@@ -48,7 +48,7 @@ Wing::Wing()
 	memset(m_PCd,   0, sizeof(m_PCd));
 	memset(m_ICd,   0, sizeof(m_ICd));
 	memset(m_Cm,    0, sizeof(m_Cm));
-	memset(m_CmAirfoil,  0, sizeof(m_CmAirfoil));
+	memset(m_CmPressure,  0, sizeof(m_CmPressure));
 	memset(m_XCPSpanAbs, 0, sizeof(m_XCPSpanAbs));
 	memset(m_XCPSpanRel, 0, sizeof(m_XCPSpanRel));
 	memset(m_Re,     0, sizeof(m_Re));
@@ -667,7 +667,7 @@ void Wing::createSurfaces(Vector3d const &T, double XTilt, double YTilt)
 {
 	int nSurf;
 	Vector3d PLA, PTA, PLB, PTB, offset, T1;
-	Vector3d Trans(T.x, 0.0, T.z);
+	Vector3d Trans(T.x, T.y, T.z);
 	Vector3d O(0.0,0.0,0.0);
 	double MinPanelSize;
 
@@ -1655,7 +1655,7 @@ void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double *Gam
 	int  j, k, l, p, m, nFlap, coef;
 	double CPStrip, tau, NForce, cosa, sina;
 	Vector3d HingeLeverArm,  PtC4Strip, PtLEStrip, ForcePt, SurfaceNormal, LeverArmC4CoG, LeverArmPanelC4, LeverArmPanelCoG;
-	Vector3d Force, PanelForce, StripForce, viscousDragVector, Moment0, HingeMoment, viscousDragMoment, GeomMoment;
+	Vector3d Force, panelforce, StripForce, viscousDragVector, panelmoment, HingeMoment, viscousDragMoment, GeomMoment;
 	Vector3d WindNormal, WindDirection;
 	Vector3d Origin(0.0,0.0,0.0);
 
@@ -1688,26 +1688,27 @@ void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double *Gam
 
 	for (j=0; j<NSurfaces; j++)
 	{
+		Surface *pSurf = m_Surface.at(j);
 		//do not consider left tip patch, if any
-		if(!pWPolar->bThinSurfaces() && m_Surface.at(j)->m_bIsTipLeft) p += m_Surface.at(j)->m_NXPanels;
+		if(!pWPolar->bThinSurfaces() && pSurf->m_bIsTipLeft) p += pSurf->m_NXPanels;
 
-		if(m_Surface.at(j)->m_bTEFlap) m_FlapMoment.append(0.0);
+		if(pSurf->m_bTEFlap) m_FlapMoment.append(0.0);
 
-		SurfaceNormal = m_Surface.at(j)->Normal;
+		SurfaceNormal = pSurf->Normal;
 
 		// consider each strip in turn
-		for (k=0; k<m_Surface.at(j)->m_NYPanels; k++)
+		for (k=0; k<pSurf->m_NYPanels; k++)
 		{
 			//initialize
 			viscousDragVector.set(0.0,0.0,0.0);
 			StripForce.set(0.0,0.0,0.0);
 			GeomMoment.set(0.0,0.0,0.0);
 
-			m_CmAirfoil[m]    = 0.0;
+			m_CmPressure[m]    = 0.0;
 			CPStrip        = 0.0;
 
-			m_Surface.at(j)->getLeadingPt(k, PtLEStrip);
-			m_Surface.at(j)->getC4(k, PtC4Strip, tau);
+			pSurf->getLeadingPt(k, PtLEStrip);
+			pSurf->getC4(k, PtC4Strip, tau);
 			if(fabs(pWPolar->m_BetaSpec)>0.0)
 			{
 				PtC4Strip.rotateZ(Origin, pWPolar->m_BetaSpec);
@@ -1716,55 +1717,54 @@ void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double *Gam
 
 			LeverArmC4CoG = PtC4Strip - CoG;
 
-
-			for (l=0; l<coef*m_Surface.at(j)->m_NXPanels; l++)
+			for (l=0; l<coef*pSurf->m_NXPanels; l++)
 			{
 				// Get the force acting on the panel
 				if(m_pWingPanel[p].m_Pos!=MIDSURFACE)
 				{
 					ForcePt = m_pWingPanel[p].CollPt;
-					PanelForce = m_pWingPanel[p].Normal * (-Cp[p]) * m_pWingPanel[p].Area;      // Newtons/q
+					panelforce = m_pWingPanel[p].Normal * (-Cp[p]) * m_pWingPanel[p].Area;      // Newtons/q
 				}
 				else
 				{
 					// for each panel along the chord, add the lift coef
 					ForcePt = m_pWingPanel[p].VortexPos;
-					PanelForce  = WindDirection * m_pWingPanel[p].Vortex;
-					PanelForce *= 2.0 * Gamma[p] /QInf;                                 //Newtons/q
+					panelforce  = WindDirection * m_pWingPanel[p].Vortex;
+					panelforce *= 2.0 * Gamma[p] /QInf;                                 //Newtons/q
 
 					if(!pWPolar->bVLM1() && !m_pWingPanel[p].m_bIsLeading)
 					{
 						Force       = WindDirection * m_pWingPanel[p].Vortex;
 						Force      *= 2.0 * Gamma[p+1] /QInf;                          //Newtons/q
-						PanelForce -= Force;
+						panelforce -= Force;
 					}
-					Cp[p] = PanelForce.dot(m_pWingPanel[p].Normal)/m_pWingPanel[p].Area;    //
+					Cp[p] = panelforce.dot(m_pWingPanel[p].Normal)/m_pWingPanel[p].Area;    //
 				}
-				StripForce += PanelForce;                                           // Newtons/q
-				NForce = PanelForce.dot(SurfaceNormal);                             // Newtons/q
+				StripForce += panelforce;                                           // Newtons/q
+				NForce = panelforce.dot(SurfaceNormal);                             // Newtons/q
 
 				LeverArmPanelC4    = ForcePt - PtC4Strip;                           // m
 				LeverArmPanelCoG   = ForcePt - CoG;                                 // m
 
 
-				Moment0 = LeverArmPanelC4 * PanelForce;                             // N.m/q
-				m_CmAirfoil[m]  += Moment0.y;                                       // N.m/q
+				panelmoment = LeverArmPanelC4 * panelforce;                             // N.m/q
+				m_CmPressure[m]  += panelmoment.y;                                      // N.m/q, w.r.t. quarter chord point
 
-				GeomMoment += LeverArmPanelCoG * PanelForce;                        // N.m/q
+				GeomMoment += LeverArmPanelCoG * panelforce;                        // N.m/q
 
-				XCP       += ForcePt.x * PanelForce.dot(WindNormal); //global center of pressure
-				YCP       += ForcePt.y * PanelForce.dot(WindNormal);
-				ZCP       += ForcePt.z * PanelForce.dot(WindNormal);
+				XCP       += ForcePt.x * panelforce.dot(WindNormal); //global center of pressure
+				YCP       += ForcePt.y * panelforce.dot(WindNormal);
+				ZCP       += ForcePt.z * panelforce.dot(WindNormal);
 				CPStrip   += ForcePt.x * NForce;
 
-				if(m_Surface.at(j)->m_bTEFlap)
+				if(pSurf->m_bTEFlap)
 				{
-					if(m_Surface.at(j)->isFlapPanel(m_pWingPanel[p].m_iElement))
+					if(pSurf->isFlapPanel(m_pWingPanel[p].m_iElement))
 					{
 						//then p is on the flap, so add its contribution
-						HingeLeverArm = ForcePt - m_Surface.at(j)->m_HingePoint;
-						HingeMoment = HingeLeverArm * PanelForce;                   //N.m/q
-						m_FlapMoment[nFlap] += HingeMoment.dot(m_Surface.at(j)->m_HingeVector)* pWPolar->density() * QInf * QInf/2.0;  //N.m
+						HingeLeverArm = ForcePt - pSurf->m_HingePoint;
+						HingeMoment = HingeLeverArm * panelforce;                   //N.m/q
+						m_FlapMoment[nFlap] += HingeMoment.dot(pSurf->m_HingeVector)* pWPolar->density() * QInf * QInf/2.0;  //N.m
 					}
 				}
 				p++;
@@ -1776,35 +1776,37 @@ void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double *Gam
 			m_XCPSpanAbs[m]    =  CPStrip/NForce ;
 
 			// add viscous properties, if required
-			if(pWPolar->bViscous()) viscousDragVector = WindDirection * (-m_PCd[m]) * m_StripArea[m];   // N/q
+			if(pWPolar->bViscous()) viscousDragVector = WindDirection * (m_PCd[m]) * m_StripArea[m];   // N/q
 			else                    viscousDragVector.set(0.0,0.0,0.0);
 
-			// global moments, in N.m/q
-			viscousDragMoment =  LeverArmC4CoG * viscousDragVector;
+			// global moments
+			viscousDragMoment =  LeverArmC4CoG * viscousDragVector;         // N.m/q, w.r.t. CoG
 
 			m_GRm += GeomMoment.dot(WindDirection);
 
-			m_VYm += viscousDragMoment.dot(WindNormal);
+			m_VYm += viscousDragMoment.dot(WindNormal);                     // N.m/q
 
 //			m_IYm += -m_ICd[m] * m_StripArea[m] * PtC4Strip.y ;
-			m_IYm += GeomMoment.dot(WindNormal);
+			m_IYm += GeomMoment.dot(WindNormal);                            // N.m/q
 
-			m_VCm += viscousDragMoment.y;
-			m_ICm += GeomMoment.y;
+			m_VCm += viscousDragMoment.y;                                   // N.m/q
+			m_ICm += GeomMoment.y;                                          // N.m/q
 
-			m_CmAirfoil[m] *= 1.0                          /m_Chord[m]/m_StripArea[m];
-			m_Cm[m]         = (GeomMoment.y + viscousDragMoment.y)/m_Chord[m]/m_StripArea[m];
+			m_CmPressure[m] *= 1.0 /m_Chord[m]/m_StripArea[m];              // N.m/q, w.r.t. quarter chord point
+			m_Cm[m] = (GeomMoment.y + viscousDragMoment.y)/m_Chord[m]/m_StripArea[m];   // N.m/q, w.r.t. CoG
 			m++;
 		}
 		//do not consider right tip patch
-		if(!pWPolar->bThinSurfaces() && m_Surface.at(j)->m_bIsTipRight) p += m_Surface.at(j)->m_NXPanels;
-		if(m_Surface.at(j)->m_bTEFlap) nFlap++;
+		if(!pWPolar->bThinSurfaces() && pSurf->m_bIsTipRight) p += pSurf->m_NXPanels;
+		if(pSurf->m_bTEFlap) nFlap++;
 	}
 
 
 	//global plane dimensionless coefficients
 	GCm += m_VCm + m_ICm; // Pitching moment, sum of Viscous and Induced parts
 	VCm += m_VCm;
+//qDebug("  VCm=%13.7f   %s", m_VCm, wingName().toStdString().c_str());
+
 	ICm += m_ICm;
 
 	//sign convention for rolling and yawing is opposite to algebric results

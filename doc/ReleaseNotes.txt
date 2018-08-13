@@ -16,6 +16,7 @@
 
 
 xflr5 v6.43 August xxx, 2018
+	- corrected the wrong sign of viscous pitching and yawing moments - slight impact on results
 	- forced thin surface analysis whenever more than one wing is defined
 	- set the "ignore body panels" to true by default in the definition of the 3d analysis
 	- corrected the calculation of the tail volume for wings with an offset leading edge

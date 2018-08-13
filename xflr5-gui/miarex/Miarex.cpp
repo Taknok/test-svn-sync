@@ -7718,6 +7718,8 @@ void Miarex::setWPolar(bool bCurrent, QString WPlrName)
 
 	m_pCurWPolar = m_theTask.setWPolarObject(m_pCurPlane, m_pCurWPolar);
 
+//for(int i4=0; i4<m_theTask.m_MatSize; i4++)	m_theTask.m_Panel[i4].printPanel();
+
 	s_pMainFrame->selectWPolar(m_pCurWPolar);
 
 	if(!m_pCurWPolar)

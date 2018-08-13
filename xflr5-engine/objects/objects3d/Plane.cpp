@@ -763,7 +763,6 @@ bool Plane::serializePlaneXFL(QDataStream &ar, bool bIsStoring)
 {
 	double dble, m, px, py, pz;
 	QString str;
-	int i;
 
 	int ArchiveFormat;// identifies the format of the file
 	if (bIsStoring)
@@ -796,7 +795,7 @@ bool Plane::serializePlaneXFL(QDataStream &ar, bool bIsStoring)
 		}
 
 		ar << m_PointMass.size();
-		for(i=0; i<m_PointMass.size(); i++)
+		for(int i=0; i<m_PointMass.size(); i++)
 		{
 			ar << m_PointMass.at(i)->mass();
 			ar << m_PointMass.at(i)->position().x << m_PointMass.at(i)->position().y << m_PointMass.at(i)->position().z;
@@ -849,7 +848,7 @@ bool Plane::serializePlaneXFL(QDataStream &ar, bool bIsStoring)
 
 		clearPointMasses();
 		ar >> k;
-		for(i=0; i<k; i++)
+		for(int i=0; i<k; i++)
 		{
 			ar >> m >> px >>py >> pz;
 			ar >> str;
