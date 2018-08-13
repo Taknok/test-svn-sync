@@ -943,11 +943,16 @@ void Wing::createSurfaces(Vector3d const &T, double XTilt, double YTilt)
 	m_Surface[0]->m_bIsTipLeft              = true;
 	if(NSurfaces>=1) m_Surface[NSurfaces-1]->m_bIsTipRight = true;
 
-	if(NSurfaces>1) m_Surface[(int)(NSurfaces/2)-1]->m_bJoinRight   = true;
-	//check for a center gap greater than 1/10mm
-	if(YPosition(0)>0.0001) 	m_Surface[(int)(NSurfaces/2)-1]->m_bJoinRight   = false;
+	if(NSurfaces>1)
+	{
+		m_Surface[(int)(NSurfaces/2)-1]->m_bJoinRight   = true;
+		//check for a center gap greater than 1/10mm
+		int nada = (int)(NSurfaces/2)-1;
+		Q_ASSERT(nada>=0);
+		if(YPosition(0)>0.0001) 	m_Surface[(int)(NSurfaces/2)-1]->m_bJoinRight   = false;
 
-	if(m_bIsFin && m_bDoubleFin) m_Surface[(int)(NSurfaces/2)-1]->m_bJoinRight   = false;
+		if(m_bIsFin && m_bDoubleFin) m_Surface[(int)(NSurfaces/2)-1]->m_bJoinRight   = false;
+	}
 
 	delete[] VNormal;
 	delete[] VNSide;

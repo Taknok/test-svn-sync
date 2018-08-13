@@ -795,7 +795,7 @@ void Panel::doubletNASA4023(Vector3d const &C, Vector3d &V, double &phi, bool bW
 	}
 }
 
-/** output the panel's data - debug only */
+/** output the panel's properties - debug only */
 void Panel::printPanel()
 {
 	qDebug("Panel %d:", m_iElement);
@@ -809,6 +809,7 @@ void Panel::printPanel()
 	s_pNode[m_iLB].displayCoords("  LB");
 	s_pNode[m_iTA].displayCoords("  TA");
 	s_pNode[m_iTB].displayCoords("  TB");
+	qDebug("  Normal: %13.7f  %13.7f  %13.7f", Normal.x, Normal.y, Normal.z);
 	qDebug("  CollPt: %13.7f  %13.7f  %13.7f", CollPt.x, CollPt.y, CollPt.z);
 	qDebug("  CtrlPt: %13.7f  %13.7f  %13.7f", CtrlPt.x, CtrlPt.y, CtrlPt.z);
 	qDebug("  Vortex: %13.7f  %13.7f  %13.7f", Vortex.x, Vortex.y, Vortex.z);
