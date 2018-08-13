@@ -1585,7 +1585,7 @@ void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
 		m_ViscousDrag =  1.0*VDrag/m_pWPolar->referenceArea();
 
 
-		if(qAbs(Force.dot(WindNormal))>0.0)
+		if(fabs(Force.dot(WindNormal))>0.0)
 		{
 			m_CP.x         = XCP/Force.dot(WindNormal);
 			m_CP.y         = YCP/Force.dot(WindNormal);
