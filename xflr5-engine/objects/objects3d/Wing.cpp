@@ -667,7 +667,7 @@ void Wing::createSurfaces(Vector3d const &T, double XTilt, double YTilt)
 {
 	int nSurf;
 	Vector3d PLA, PTA, PLB, PTB, offset, T1;
-	Vector3d Trans(T.x, T.y, T.z);
+    Vector3d Trans(T.x, 0.0, T.z);
 	Vector3d O(0.0,0.0,0.0);
 	double MinPanelSize;
 

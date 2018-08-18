@@ -98,8 +98,7 @@ void gl3dMiarexView::glRenderView()
 
 		if(m_bVLMPanels)
 		{
-			if(s_pMiarex->m_pCurWPolar && !s_pMiarex->m_pCurWPolar->isLLTMethod())	paintMesh(s_pMiarex->matSize());
-			else
+            if(!s_pMiarex->m_pCurWPolar || s_pMiarex->m_pCurWPolar->isLLTMethod())
 			{
 				for(int iw=0; iw<MAXWINGS; iw++)
 				{
@@ -109,7 +108,8 @@ void gl3dMiarexView::glRenderView()
 				}
 				paintEditBodyMesh(s_pMiarex->m_pCurPlane->body());
 			}
-		}
+            else paintMesh(s_pMiarex->matSize());
+        }
 
 		if(s_pMiarex->m_pCurPOpp)
 		{
