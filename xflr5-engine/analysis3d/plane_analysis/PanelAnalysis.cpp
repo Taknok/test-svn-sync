@@ -676,7 +676,7 @@ bool PanelAnalysis::alphaLoop()
 
 	createUnitRHS();
 	if (s_bCancel) return true;
-for(int i=0; i<m_MatSize; i++) displayDouble(m_uRHS[i], m_wRHS[i]);
+//for(int i=0; i<m_MatSize; i++) displayDouble(m_uRHS[i], m_wRHS[i]);
 
 	if(!m_pWPolar->bThinSurfaces())
 	{

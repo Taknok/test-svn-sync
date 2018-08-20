@@ -129,8 +129,8 @@ public:
 	NURBSSurface& nurbs() {return m_SplineSurface;}
 
 	XFLR5::enumBodyLineType &bodyType(){return m_LineType;}
-	bool isFlatPanelType() {return m_LineType==XFLR5::BODYPANELTYPE;}
-	bool isSplineType()    {return m_LineType==XFLR5::BODYSPLINETYPE;}
+    bool isFlatPanelType() const {return m_LineType==XFLR5::BODYPANELTYPE;}
+    bool isSplineType()    const {return m_LineType==XFLR5::BODYSPLINETYPE;}
 
 	NURBSSurface *splineSurface() {return &m_SplineSurface;}
 
