@@ -482,7 +482,7 @@ void Surface::getSidePoints(enumPanelPosition pos,
 							Vector3d *PtA, Vector3d *PtB, Vector3d *NA, Vector3d *NB, int nPoints)
 {
 	double xRel;
-	Vector3d A4, B4, TA4, TB4;
+    Vector3d A4, B4, TA4, TB4, I;
 
 /*	double cosdA = Normal.dot(NormalA);
 	double cosdB = Normal.dot(NormalB);
@@ -560,18 +560,19 @@ void Surface::getSidePoints(enumPanelPosition pos,
 		NB[i].rotate(Vector3d(1.0,0.0,0.0), delta);
 
 
-
-/*		double sweep_i = -atan2((PtB[i].x-PtA[i].x), (PtB[i].y-PtA[i].y)) * 180.0/PI;
-		NA[i].rotate(Vector3d(0.0,0.0,1.0), sweep_i);
-		NB[i].rotate(Vector3d(0.0,0.0,1.0), sweep_i);*/
-
 		if(pBody && m_bIsCenterSurf && m_bIsLeftSurf)
 		{
-			pBody->intersect(PtA[i], PtB[i], PtB[i], false);
+            if(pBody->intersect(PtA[i], PtB[i], I, false))
+            {
+                PtB[i] = I;
+            }
 		}
 		else if(pBody && m_bIsCenterSurf && m_bIsRightSurf)
 		{
-			pBody->intersect(PtA[i], PtB[i], PtA[i], true);
+            if(pBody->intersect(PtA[i], PtB[i], I, true))
+            {
+                PtA[i] = I;
+            }
 		}
 	}
 }
@@ -1039,7 +1040,7 @@ void Surface::setSidePoints(Body * pBody, double dx, double dz)
 {
 	int l;
 	double alpha_dA, alpha_dB, cosdA, cosdB;
-	Vector3d N, A4, B4, TA4, TB4;
+    Vector3d N, A4, B4, TA4, TB4, I;
     Body TBody;
 	if(pBody)
 	{
@@ -1158,15 +1159,36 @@ void Surface::setSidePoints(Body * pBody, double dx, double dz)
 
 		if(pBody && m_bIsCenterSurf && m_bIsLeftSurf)
 		{
-			if(TBody.intersect(SideA_B[l], SideB_B[l], SideB_B[l], false)) m_bJoinRight = false;
-			if(TBody.intersect(SideA_T[l], SideB_T[l], SideB_T[l], false)) m_bJoinRight = false;
-			if(TBody.intersect(SideA[l],   SideB[l],   SideB[l],   false)) m_bJoinRight = false;
+            if(TBody.intersect(SideA_B[l], SideB_B[l], I, false))
+            {
+                SideB_B[l] = I;
+                m_bJoinRight = false;
+            }
+            if(TBody.intersect(SideA_T[l], SideB_T[l], I, false))
+            {
+                SideB_T[l] = I;
+                m_bJoinRight = false;
+            }
+            if(TBody.intersect(SideA[l], SideB[l], I, false))
+            {
+                SideB[l] = I;
+                m_bJoinRight = false;
+            }
 		}
 		else if(pBody && m_bIsCenterSurf && m_bIsRightSurf)
 		{
-			TBody.intersect(SideA_B[l], SideB_B[l], SideA_B[l], true);
-			TBody.intersect(SideA_T[l], SideB_T[l], SideA_T[l], true);
-			TBody.intersect(SideA[l],   SideB[l],     SideA[l], true);
+            if(TBody.intersect(SideA_B[l], SideB_B[l], I, true))
+            {
+                SideA_B[l] = I;
+            }
+            if(TBody.intersect(SideA_T[l], SideB_T[l], I, true))
+            {
+                SideA_T[l] = I;
+            }
+            if(TBody.intersect(SideA[l], SideB[l], I, true))
+            {
+                SideA[l] = I;
+            }
 		}
 	}
 

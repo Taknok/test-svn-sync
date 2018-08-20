@@ -586,8 +586,10 @@ int Body::insertFrame(Vector3d Real)
  */
 bool Body::intersect(Vector3d A, Vector3d B, Vector3d &I, bool bRight)
 {
-	if(m_LineType==XFLR5::BODYPANELTYPE)        return intersectFlatPanels(A,B,I);
-	else if (m_LineType==XFLR5::BODYSPLINETYPE) return intersectNURBS(A,B,I, bRight);
+    if(m_LineType==XFLR5::BODYPANELTYPE)
+        return intersectFlatPanels(A,B,I);
+    else if (m_LineType==XFLR5::BODYSPLINETYPE)
+        return intersectNURBS(A,B,I, bRight);
 	return false;
 }
 

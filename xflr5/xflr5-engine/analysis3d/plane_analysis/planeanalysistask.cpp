@@ -168,7 +168,6 @@ Plane * PlaneAnalysisTask::setPlaneObject(Plane *pPlane)
 		}
 	}
 
-
 	pPlane->computeBodyAxisInertia();
 
 	return pPlane;
