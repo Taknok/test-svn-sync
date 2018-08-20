@@ -33,7 +33,7 @@
 
 
 
-#include <QVarLengthArray>
+#include <QVector>
 #include <objects/objects3d/Panel.h>
 #include <analysis3d/analysis3d_enums.h>
 
@@ -175,8 +175,8 @@ public:
 
 	static void setPanelPointers(Panel *pPanel, Vector3d *pNode);
 
-	QList<Vector3d> SideA;      /**< the array of panel points on the left foil's mid-line*/
-	QList<Vector3d> SideB;      /**< the array of panel points on the right foil's mid-line*/
+    QVector<Vector3d> SideA;      /**< the array of panel points on the left foil's mid-line*/
+    QVector<Vector3d> SideB;      /**< the array of panel points on the right foil's mid-line*/
 
 	Vector3d m_LA;              /**< the Surface's leading left point */
 	Vector3d m_LB;              /**< the Surface's leading right point */
@@ -189,10 +189,10 @@ public:
 	double m_TwistB;           /**< the twist at side B in degrees */
 
 private :
-	QList<Vector3d> SideA_T;    /**< the array of panel points on the left foil's top-line*/
-	QList<Vector3d> SideB_T;    /**< the array of panel points on the right foil's top-line*/
-	QList<Vector3d> SideA_B;    /**< the array of panel points on the left foil's bottom-line*/
-	QList<Vector3d> SideB_B;    /**< the array of panel points on the right foil's bottom-line*/
+    QVector<Vector3d> SideA_T;    /**< the array of panel points on the left foil's top-line*/
+    QVector<Vector3d> SideB_T;    /**< the array of panel points on the right foil's top-line*/
+    QVector<Vector3d> SideA_B;    /**< the array of panel points on the left foil's bottom-line*/
+    QVector<Vector3d> SideB_B;    /**< the array of panel points on the right foil's bottom-line*/
 	Vector3d VTemp;
 	static Panel *s_pPanel;    /**< a pointer to the array of this Surface's panels, This array is a sub-array of the total array.*/
 	static Vector3d *s_pNode;   /**< a pointer to the array of this panel nodes.*/
