@@ -211,7 +211,7 @@ void InertiaDlg::computeInertia()
 	}
 
 
-	if(m_pPlane || m_pWing)
+    if(m_pPlane)
 	{
 		for(iw=0; iw<MAXWINGS; iw++)
 		{
@@ -1163,12 +1163,11 @@ void InertiaDlg::setupLayout()
 	connect(m_pctrlStabInertia,  SIGNAL(clicked()), this, SLOT(onStabInertia()));
 	connect(m_pctrlFinInertia,   SIGNAL(clicked()), this, SLOT(onFinInertia()));
 	connect(m_pctrlBodyInertia,  SIGNAL(clicked()), this, SLOT(onBodyInertia()));
-	connect(OKButton,            SIGNAL(clicked()),this, SLOT(onOK()));
+    connect(OKButton,            SIGNAL(clicked()), this, SLOT(onOK()));
 	connect(m_pctrlVolumeMass,   SIGNAL(editingFinished()), SLOT(onVolumeMass()));
 	connect(m_pInsertMassRow,    SIGNAL(triggered()), SLOT(onInsertMassRow()));
 	connect(m_pDeleteMassRow,    SIGNAL(triggered()), SLOT(onDeleteMassRow()));
 }
-
 
 
 
