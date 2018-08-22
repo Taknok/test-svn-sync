@@ -484,18 +484,6 @@ void Surface::getSidePoints(enumPanelPosition pos,
 	double xRel;
     Vector3d A4, B4, TA4, TB4, I;
 
-/*	double cosdA = Normal.dot(NormalA);
-	double cosdB = Normal.dot(NormalB);
-
-	if(cosdA>1.0) cosdA = 1.0;
-	if(cosdB>1.0) cosdB = 1.0;
-	if(cosdA<-1.0) cosdA = -1.0;
-	if(cosdB<-1.0) cosdB = -1.0;
-
-	Vector3d x(1.0,0.0,0.0);
-	double alpha_dA = atan2((NormalA * Normal).dot(x), Normal.dot(NormalA))*180.0/PI;
-	double alpha_dB = atan2((NormalB * Normal).dot(x), Normal.dot(NormalB))*180.0/PI;*/
-
 	Vector3d V = Normal * NormalA;
 	Vector3d U = (m_TA - m_LA).normalized();
 //	double sindA = -V.dot(Vector3d(1.0,0.0,0.0));
@@ -1123,12 +1111,6 @@ void Surface::setSidePoints(Body * pBody, double dx, double dz)
 		SideA_T[l].rotate(m_LA, m_LA-m_TA, alpha_dA);
 		SideA_B[l].rotate(m_LA, m_LA-m_TA, alpha_dA);
 
-		//set the twist
-//		SideA[l].rotate(A4, TA4, m_TwistA);
-//		SideA_T[l].rotate(A4, TA4, m_TwistA);
-//		SideA_B[l].rotate(A4, TA4, m_TwistA);
-//        NormalA.rotate(TA4, m_TwistA);
-
 		getSidePoint(m_xPointB[l], true, MIDSURFACE, SideB[l], N);
 		getSidePoint(m_xPointB[l], true, TOPSURFACE, SideB_T[l], N);
 		getSidePoint(m_xPointB[l], true, BOTSURFACE, SideB_B[l], N);
@@ -1148,13 +1130,6 @@ void Surface::setSidePoints(Body * pBody, double dx, double dz)
 		SideB[l].rotate(m_LB, m_LB-m_TB, alpha_dB);
 		SideB_T[l].rotate(m_LB, m_LB-m_TB, alpha_dB);
 		SideB_B[l].rotate(m_LB, m_LB-m_TB, alpha_dB);
-
-
-		//set the twist
-//		SideB[l].rotate(B4, TB4, m_TwistB);
-//		SideB_T[l].rotate(B4, TB4, m_TwistB);
-//		SideB_B[l].rotate(B4, TB4, m_TwistB);
-//        NormalB.rotate(TB4, m_TwistB);
 
 
 		if(pBody && m_bIsCenterSurf && m_bIsLeftSurf)
@@ -1243,7 +1218,7 @@ void Surface::translate(double tx, double ty, double tz)
 void Surface::createXPoints()
 {
 	int l;
-	int NXFlapA, NXFlapB, NXLeadA, NXLeadB;
+    int NXFlapA, NXFlapB;
 	double dl, dl2;
 	double xHingeA, xHingeB;
 	if(m_pFoilA && m_pFoilA->m_bTEFlap) xHingeA=m_pFoilA->m_TEXHinge/100.0; else xHingeA=1.0;
@@ -1255,51 +1230,49 @@ void Surface::createXPoints()
 	if(m_pFoilA && m_pFoilA->m_bTEFlap && NXFlapA==0) NXFlapA++;
 	if(m_pFoilB && m_pFoilB->m_bTEFlap && NXFlapB==0) NXFlapB++;
 
-	NXLeadA = m_NXPanels - NXFlapA;
-	NXLeadB = m_NXPanels - NXFlapB;
 
-	m_NXFlap  = qMax(NXFlapA, NXFlapB);
-	if(m_NXFlap>m_NXPanels/2) m_NXFlap=(int)m_NXPanels/2;
-	m_NXLead  = m_NXPanels - m_NXFlap;
+    m_NXFlap  = std::max(NXFlapA, NXFlapB);
+    if(m_NXFlap>m_NXPanels/2) m_NXFlap=(int)m_NXPanels/2;
+    m_NXLead  = m_NXPanels - m_NXFlap;
 
-	for(l=0; l<NXFlapA; l++)
+    for(l=0; l<m_NXFlap; l++)
 	{
 		dl =  (double)l;
-		dl2 = (double)NXFlapA;
+        dl2 = (double)m_NXFlap;
 		if(m_XDistType==XFLR5::COSINE)
 			m_xPointA[l] = 1.0 - (1.0-xHingeA)/2.0 * (1.0-cos(dl*PI /dl2));
 		else
 			m_xPointA[l] = 1.0 - (1.0-xHingeA) * (dl/dl2);
 	}
 
-	for(l=0; l<NXLeadA; l++)
+    for(l=0; l<m_NXLead; l++)
 	{
 		dl =  (double)l;
-		dl2 = (double)NXLeadA;
+        dl2 = (double)m_NXLead;
 		if(m_XDistType==XFLR5::COSINE)
-			m_xPointA[l+NXFlapA] = xHingeA - (xHingeA)/2.0 * (1.0-cos(dl*PI /dl2));
+            m_xPointA[l+m_NXFlap] = xHingeA - (xHingeA)/2.0 * (1.0-cos(dl*PI /dl2));
 		else
-			m_xPointA[l+NXFlapA] = xHingeA - (xHingeA) * (dl/dl2);
+            m_xPointA[l+m_NXFlap] = xHingeA - (xHingeA) * (dl/dl2);
 	}
 
-	for(l=0; l<NXFlapB; l++)
+    for(l=0; l<m_NXFlap; l++)
 	{
 		dl =  (double)l;
-		dl2 = (double)NXFlapB;
+        dl2 = (double)m_NXFlap;
 		if(m_XDistType==XFLR5::COSINE)
 			m_xPointB[l] = 1.0 - (1.0-xHingeB)/2.0 * (1.0-cos(dl*PI /dl2));
 		else
 			m_xPointB[l] = 1.0 - (1.0-xHingeB) * (dl/dl2);
 	}
 
-	for(l=0; l<NXLeadB; l++)
+    for(l=0; l<m_NXLead; l++)
 	{
 		dl =  (double)l;
-		dl2 = (double)NXLeadB;
+        dl2 = (double)m_NXLead;
 		if(m_XDistType==XFLR5::COSINE)
-			m_xPointB[l+NXFlapB] = xHingeB - (xHingeB)/2.0 * (1.0-cos(dl*PI /dl2));
+            m_xPointB[l+m_NXFlap] = xHingeB - (xHingeB)/2.0 * (1.0-cos(dl*PI /dl2));
 		else
-			m_xPointB[l+NXFlapB] = xHingeB - (xHingeB) * (dl/dl2);
+            m_xPointB[l+m_NXFlap] = xHingeB - (xHingeB) * (dl/dl2);
 	}
 
 	m_xPointA[m_NXPanels] = 0.0;
