@@ -24,10 +24,8 @@
 #include "XFLR5Application.h"
 #include <globals/mainframe.h>
 #include <globals/gui_params.h>
-#include <QSplashScreen>
-#include <QtDebug>
-#include <QSurfaceFormat>
-#include <QCommandLineParser>
+#include <QDebug>
+
 
 /**
 *The app's point of entry !
