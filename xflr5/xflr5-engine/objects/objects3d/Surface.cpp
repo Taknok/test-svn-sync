@@ -1217,68 +1217,76 @@ void Surface::translate(double tx, double ty, double tz)
  */
 void Surface::createXPoints()
 {
-	int l;
-    int NXFlapA, NXFlapB;
-	double dl, dl2;
-	double xHingeA, xHingeB;
-	if(m_pFoilA && m_pFoilA->m_bTEFlap) xHingeA=m_pFoilA->m_TEXHinge/100.0; else xHingeA=1.0;
-	if(m_pFoilB && m_pFoilB->m_bTEFlap) xHingeB=m_pFoilB->m_TEXHinge/100.0; else xHingeB=1.0;
+    int l;
+    int NXFlapA, NXFlapB, NXLeadA, NXLeadB;
+    double dl, dl2;
+    double xHingeA, xHingeB;
+    if(m_pFoilA && m_pFoilA->m_bTEFlap) xHingeA=m_pFoilA->m_TEXHinge/100.0; else xHingeA=1.0;
+    if(m_pFoilB && m_pFoilB->m_bTEFlap) xHingeB=m_pFoilB->m_TEXHinge/100.0; else xHingeB=1.0;
 
-	NXFlapA = (int)((1.0-xHingeA) * (double)m_NXPanels*1.000123);// to avoid numerical errors if exact division
-	NXFlapB = (int)((1.0-xHingeB) * (double)m_NXPanels *1.000123);
+    NXFlapA = (int)((1.0-xHingeA) * (double)m_NXPanels*1.000123);// to avoid numerical errors if exact division
+    NXFlapB = (int)((1.0-xHingeB) * (double)m_NXPanels *1.000123);
 
-	if(m_pFoilA && m_pFoilA->m_bTEFlap && NXFlapA==0) NXFlapA++;
-	if(m_pFoilB && m_pFoilB->m_bTEFlap && NXFlapB==0) NXFlapB++;
+    if(m_pFoilA && m_pFoilA->m_bTEFlap && NXFlapA==0) NXFlapA++;
+    if(m_pFoilB && m_pFoilB->m_bTEFlap && NXFlapB==0) NXFlapB++;
 
+    // uniformize the number of flap panels if flaps are defined at each end */
+    if(NXFlapA>0 && NXFlapB>0)
+    {
+        int n = std::min(NXFlapA, NXFlapB);
+        NXFlapA = n;
+        NXFlapB = n;
+    }
 
-    m_NXFlap  = std::max(NXFlapA, NXFlapB);
+    NXLeadA = m_NXPanels - NXFlapA;
+    NXLeadB = m_NXPanels - NXFlapB;
+
+    m_NXFlap  = qMax(NXFlapA, NXFlapB);
     if(m_NXFlap>m_NXPanels/2) m_NXFlap=(int)m_NXPanels/2;
     m_NXLead  = m_NXPanels - m_NXFlap;
 
-    for(l=0; l<m_NXFlap; l++)
-	{
-		dl =  (double)l;
-        dl2 = (double)m_NXFlap;
-		if(m_XDistType==XFLR5::COSINE)
-			m_xPointA[l] = 1.0 - (1.0-xHingeA)/2.0 * (1.0-cos(dl*PI /dl2));
-		else
-			m_xPointA[l] = 1.0 - (1.0-xHingeA) * (dl/dl2);
-	}
+    for(l=0; l<NXFlapA; l++)
+    {
+        dl =  (double)l;
+        dl2 = (double)NXFlapA;
+        if(m_XDistType==XFLR5::COSINE)
+            m_xPointA[l] = 1.0 - (1.0-xHingeA)/2.0 * (1.0-cos(dl*PI /dl2));
+        else
+            m_xPointA[l] = 1.0 - (1.0-xHingeA) * (dl/dl2);
+    }
 
-    for(l=0; l<m_NXLead; l++)
-	{
-		dl =  (double)l;
-        dl2 = (double)m_NXLead;
-		if(m_XDistType==XFLR5::COSINE)
-            m_xPointA[l+m_NXFlap] = xHingeA - (xHingeA)/2.0 * (1.0-cos(dl*PI /dl2));
-		else
-            m_xPointA[l+m_NXFlap] = xHingeA - (xHingeA) * (dl/dl2);
-	}
+    for(l=0; l<NXLeadA; l++)
+    {
+        dl =  (double)l;
+        dl2 = (double)NXLeadA;
+        if(m_XDistType==XFLR5::COSINE)
+            m_xPointA[l+NXFlapA] = xHingeA - (xHingeA)/2.0 * (1.0-cos(dl*PI /dl2));
+        else
+            m_xPointA[l+NXFlapA] = xHingeA - (xHingeA) * (dl/dl2);
+    }
 
-    for(l=0; l<m_NXFlap; l++)
-	{
-		dl =  (double)l;
-        dl2 = (double)m_NXFlap;
-		if(m_XDistType==XFLR5::COSINE)
-			m_xPointB[l] = 1.0 - (1.0-xHingeB)/2.0 * (1.0-cos(dl*PI /dl2));
-		else
-			m_xPointB[l] = 1.0 - (1.0-xHingeB) * (dl/dl2);
-	}
+    for(l=0; l<NXFlapB; l++)
+    {
+        dl =  (double)l;
+        dl2 = (double)NXFlapB;
+        if(m_XDistType==XFLR5::COSINE)
+            m_xPointB[l] = 1.0 - (1.0-xHingeB)/2.0 * (1.0-cos(dl*PI /dl2));
+        else
+            m_xPointB[l] = 1.0 - (1.0-xHingeB) * (dl/dl2);
+    }
 
-    for(l=0; l<m_NXLead; l++)
-	{
-		dl =  (double)l;
-        dl2 = (double)m_NXLead;
-		if(m_XDistType==XFLR5::COSINE)
-            m_xPointB[l+m_NXFlap] = xHingeB - (xHingeB)/2.0 * (1.0-cos(dl*PI /dl2));
-		else
-            m_xPointB[l+m_NXFlap] = xHingeB - (xHingeB) * (dl/dl2);
-	}
+    for(l=0; l<NXLeadB; l++)
+    {
+        dl =  (double)l;
+        dl2 = (double)NXLeadB;
+        if(m_XDistType==XFLR5::COSINE)
+            m_xPointB[l+NXFlapB] = xHingeB - (xHingeB)/2.0 * (1.0-cos(dl*PI /dl2));
+        else
+            m_xPointB[l+NXFlapB] = xHingeB - (xHingeB) * (dl/dl2);
+    }
 
-	m_xPointA[m_NXPanels] = 0.0;
-	m_xPointB[m_NXPanels] = 0.0;
-
-}
+    m_xPointA[m_NXPanels] = 0.0;
+    m_xPointB[m_NXPanels] = 0.0;}
 
 
 /**
