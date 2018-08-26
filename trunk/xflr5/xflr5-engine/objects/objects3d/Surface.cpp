@@ -1233,7 +1233,7 @@ void Surface::createXPoints()
     // uniformize the number of flap panels if flaps are defined at each end */
     if(NXFlapA>0 && NXFlapB>0)
     {
-        int n = std::min(NXFlapA, NXFlapB);
+        int n = (int)((NXFlapA+NXFlapB)/2);
         NXFlapA = n;
         NXFlapB = n;
     }

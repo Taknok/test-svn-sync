@@ -190,7 +190,7 @@ void InertiaDlg::computeInertia()
 	else                    TotalCoG.set(0.0,0.0,0.0);
 
 	//Total inertia in CoG referential
-	//Apply Huyghens theorem to convert the object's inertia to the new frame
+    //Apply Huygens theorem to convert the object's inertia to the new frame
 	Vector3d LA = TotalCoG - m_VolumeCoG;
 	TotalIxx = m_CoGIxx + m_VolumeMass * (LA.y*LA.y+ LA.z*LA.z);
 	TotalIyy = m_CoGIyy + m_VolumeMass * (LA.x*LA.x+ LA.z*LA.z);
