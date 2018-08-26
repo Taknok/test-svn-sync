@@ -170,7 +170,7 @@ void Plane::computeVolumeInertia(double &Mass, Vector3d & CoG, double &CoGIxx, d
 	else              CoG.set(0.0, 0.0, 0.0);
 
 
-	// Deduce inertia tensor in plane CoG from Huyghens/Steiner theorem
+    // Deduce inertia tensor in plane CoG from Huygens/Steiner theorem
 	// we transfer the inertia of each component, defined in its own CG, 
 	// to the new origin which is the plane's Volume CoG, excluding point masses
 
