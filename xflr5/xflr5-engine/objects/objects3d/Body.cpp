@@ -1097,8 +1097,6 @@ Frame * Body::setActiveFrame(int iFrame)
  */
 void Body::computeBodyAxisInertia()
 {
-
-	int i;
 	Vector3d LA, VolumeCoG;
 	double Ixx, Iyy, Izz, Ixz, VolumeMass;
 	Ixx = Iyy = Izz = Ixz = VolumeMass = 0.0;
@@ -1109,31 +1107,31 @@ void Body::computeBodyAxisInertia()
 	m_CoG = VolumeCoG *m_VolumeMass;
 
 	// add point masses
-	for(i=0; i<m_PointMass.size(); i++)
+    for(int im=0; im<m_PointMass.size(); im++)
 	{
-		m_TotalMass += m_PointMass[i]->mass();
-		m_CoG += m_PointMass[i]->position() * m_PointMass[i]->mass();
+        m_TotalMass += m_PointMass[im]->mass();
+        m_CoG += m_PointMass[im]->position() * m_PointMass[im]->mass();
 	}
 
 	if(m_TotalMass>0) m_CoG = m_CoG/m_TotalMass;
 	else              m_CoG.set(0.0,0.0,0.0);
 
 	// The CoG position is now available, so calculate the inertia w.r.t the CoG
-	// using Huyghens theorem
-	//LA is the displacement vector from the centre of mass to the new axis
+    // using Huygens theorem
+    // LA is the distance vector from the centre of mass to the new axis
 	LA = m_CoG-VolumeCoG;
 	m_CoGIxx = Ixx + m_VolumeMass * (LA.y*LA.y + LA.z*LA.z);
 	m_CoGIyy = Iyy + m_VolumeMass * (LA.x*LA.x + LA.z*LA.z);
 	m_CoGIzz = Izz + m_VolumeMass * (LA.x*LA.x + LA.y*LA.y);
 	m_CoGIxz = Ixz + m_VolumeMass * LA.x*LA.z;
 
-	for(i=0; i<m_PointMass.size(); i++)
+    for(int im=0; im<m_PointMass.size(); im++)
 	{
-		LA = m_PointMass[i]->position() - m_CoG;
-		m_CoGIxx += m_PointMass[i]->mass() * (LA.y*LA.y + LA.z*LA.z);
-		m_CoGIyy += m_PointMass[i]->mass() * (LA.x*LA.x + LA.z*LA.z);
-		m_CoGIzz += m_PointMass[i]->mass() * (LA.x*LA.x + LA.y*LA.y);
-		m_CoGIxz -= m_PointMass[i]->mass() * (LA.x*LA.z);
+        LA = m_PointMass[im]->position() - m_CoG;
+        m_CoGIxx += m_PointMass[im]->mass() * (LA.y*LA.y + LA.z*LA.z);
+        m_CoGIyy += m_PointMass[im]->mass() * (LA.x*LA.x + LA.z*LA.z);
+        m_CoGIzz += m_PointMass[im]->mass() * (LA.x*LA.x + LA.y*LA.y);
+        m_CoGIxz -= m_PointMass[im]->mass() * (LA.x*LA.z);
 	}
 }
 
@@ -1241,7 +1239,7 @@ void Body::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
 		else                       CoG.set(0.0, 0.0, 0.0);
 
 		//Then Get Inertias
-		// we could do it one calculation, for CG and inertia, by using Hyghens/steiner theorem
+        // we could do it one calculation, for CG and inertia, by using Huyghens/steiner theorem
 		for (int i=0; i<frameCount()-1; i++)
 		{
 			for (int j=0; j<m_xPanels[i]; j++)
