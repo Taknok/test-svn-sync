@@ -1841,6 +1841,7 @@ void Miarex::glMake3DObjects()
                 {
                     m_bStream  = true;
                     m_bResetglStream = false;
+                    m_pgl3dMiarexView->update(); // make sure the streamlines are displayed
                 }
             }
         }
@@ -7772,6 +7773,7 @@ void Miarex::setWPolar(bool bCurrent, QString WPlrName)
             x = m_pCurPOpp->m_Beta;
     }
 
+    setControls();
     setPlaneOpp(false, x);
 
 

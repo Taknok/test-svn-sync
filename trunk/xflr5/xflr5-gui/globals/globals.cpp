@@ -1048,10 +1048,10 @@ void setAutoWPolarName(void * ptrWPolar, void *ptrPlane)
 	{
 		pWPolar->polarName() += "-Inviscid";
 	}
-	if(pWPolar->bIgnoreBodyPanels())
+/*	if(pWPolar->bIgnoreBodyPanels())
 	{
 		pWPolar->polarName() += "-NoBodyPanels";
-	}
+    }*/
 //	if(pWPolar->referenceDim()==XFLR5::PROJECTEDREFDIM) pWPolar->polarName() += "-proj_area";
 
 	if(pWPolar->bTilted()) pWPolar->polarName() += "-TG";
