@@ -140,12 +140,12 @@ public:
 	void translate(Vector3d const &T);
 	void translate(double tx, double ty, double tz);
 
-	bool isCenterSurf() {return m_bIsCenterSurf;}
-	bool isLeftSurf()   {return m_bIsLeftSurf;}
-	bool isRightSurf()  {return m_bIsRightSurf;}
-	bool isTipLeft()    {return m_bIsTipLeft;}
-	bool isTipRight()   {return m_bIsTipRight;}
-	bool isInSymPlane() {return m_bIsInSymPlane;}
+    bool isCenterSurf() const {return m_bIsCenterSurf;}
+    bool isLeftSurf()   const {return m_bIsLeftSurf;}
+    bool isRightSurf()  const {return m_bIsRightSurf;}
+    bool isTipLeft()    const {return m_bIsTipLeft;}
+    bool isTipRight()   const {return m_bIsTipRight;}
+    bool isInSymPlane() const {return m_bIsInSymPlane;}
 
 	bool isFlapPanel(Panel *pPanel);
 	bool isFlapPanel(int p);
@@ -160,14 +160,14 @@ public:
 	double foilArea(double tau);
 	double stripWidth(int k);
 	double spanLength();
-	double planformLength(){return m_Length;}
+    double planformLength() const {return m_Length;}
 
-	int innerSection(){return m_innerSection;}
-	int outerSection(){return m_outerSection;}
+    int innerSection() const {return m_innerSection;}
+    int outerSection()const {return m_outerSection;}
 
-	int NXPanels(){return m_NXPanels;}
-	int NYPanels(){return m_NYPanels;}
-	int NXFlap() {return m_NXFlap;}
+    int NXPanels() const {return m_NXPanels;}
+    int NYPanels() const {return m_NYPanels;}
+    int NXFlap() const {return m_NXFlap;}
 	int & NElements(){return m_NElements;}
 
 	Foil *foilA() {return m_pFoilA;}

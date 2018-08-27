@@ -2152,31 +2152,58 @@ bool Wing::intersectWing(Vector3d O,  Vector3d U, Vector3d &I)
 
 void Wing::getTextureUV(int iSurf, double *leftV, double *rightV, double &leftU, double &rightU, int nPoints)
 {
-	double xRel, xA, xB, yA, yB;
+    double xRelA, xRelB, xA, xB, yA, yB;
 	double xMin=100000, xMax=-100000, yMin, yMax;
 	int iSectionA=0, iSectionB=1;
-	if(m_Surface[iSurf]->isLeftSurf())
+
+    Surface const *pSurf = m_Surface[iSurf];
+
+    if(pSurf->isLeftSurf())
 	{
-		iSectionB = m_Surface[iSurf]->innerSection();
-		iSectionA = m_Surface[iSurf]->outerSection();
+        iSectionB = pSurf->innerSection();
+        iSectionA = pSurf->outerSection();
 	}
 	else
 	{
-		iSectionA = m_Surface[iSurf]->innerSection();
-		iSectionB = m_Surface[iSurf]->outerSection();
+        iSectionA = pSurf->innerSection();
+        iSectionB = pSurf->outerSection();
 	}
 
 	for(int is=0; is<m_WingSection.count(); is++)
 	{
-		xMin = min(xMin, m_WingSection.at(is)->m_Offset);
-		xMax = max(xMax, m_WingSection.at(is)->m_Offset + m_WingSection.at(is)->m_Chord);
+        xMin = std::min(xMin, m_WingSection.at(is)->m_Offset);
+        xMax = std::max(xMax, m_WingSection.at(is)->m_Offset + m_WingSection.at(is)->m_Chord);
 	}
 
 	for(int i=0; i<nPoints; i++)
 	{
-		xRel  = 1.0/2.0*(1.0-cos( (double)i*PI   /(double)(nPoints-1)));
-		xA = m_WingSection.at(iSectionA)->m_Offset + m_WingSection.at(iSectionA)->m_Chord*xRel;
-		xB = m_WingSection.at(iSectionB)->m_Offset + m_WingSection.at(iSectionB)->m_Chord*xRel;
+        if(m_Surface[iSurf]->m_NXFlap>0 && m_Surface[iSurf]->m_pFoilA && m_Surface[iSurf]->m_pFoilB)
+        {
+            int nPtsTr = nPoints/3;
+            int nPtsLe = nPoints-nPtsTr;
+
+            if(i<nPtsTr)
+            {
+                xRelA = 1.0/2.0*(1.0-cos(PI * (double)i/(double)(nPtsTr-1)))* (pSurf->m_pFoilA->m_TEXHinge/100.);
+                xRelB = 1.0/2.0*(1.0-cos(PI * (double)i/(double)(nPtsTr-1)))* (pSurf->m_pFoilB->m_TEXHinge/100.);
+            }
+            else
+            {
+                int j = i-nPtsTr;
+                xRelA = pSurf->m_pFoilA->m_TEXHinge/100. + 1.0/2.0*(1.0-cos(PI* (double)j/(double)(nPtsLe-1))) * (1.-pSurf->m_pFoilA->m_TEXHinge/100.);
+                xRelB = pSurf->m_pFoilB->m_TEXHinge/100. + 1.0/2.0*(1.0-cos(PI* (double)j/(double)(nPtsLe-1))) * (1.-pSurf->m_pFoilB->m_TEXHinge/100.);
+            }
+        }
+        else
+        {
+            xRelA  = 1.0/2.0*(1.0-cos(PI * (double)i/(double)(nPoints-1)));
+            xRelB  = xRelA;
+        }
+
+
+//		xRel  = 1.0/2.0*(1.0-cos( (double)i*PI   /(double)(nPoints-1)));
+        xA = m_WingSection.at(iSectionA)->m_Offset + m_WingSection.at(iSectionA)->m_Chord*xRelA;
+        xB = m_WingSection.at(iSectionB)->m_Offset + m_WingSection.at(iSectionB)->m_Chord*xRelB;
 
 		leftV[i]  = (xA-xMin)/(xMax-xMin);
 		rightV[i] = (xB-xMin)/(xMax-xMin);
