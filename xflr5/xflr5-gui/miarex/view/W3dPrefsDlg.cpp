@@ -78,7 +78,7 @@ int W3dPrefsDlg::s_BotStyle = 1;
 int W3dPrefsDlg::s_BotWidth = 1;
 QColor W3dPrefsDlg::s_BotColor = QColor(171, 103, 220);
 
-int W3dPrefsDlg::s_iChordwiseRes=29;
+int W3dPrefsDlg::s_iChordwiseRes=73;
 int W3dPrefsDlg::s_iBodyAxialRes=23;
 int W3dPrefsDlg::s_iBodyHoopRes = 17;
 bool W3dPrefsDlg::s_bAnimateTransitions = true;
@@ -596,7 +596,7 @@ void W3dPrefsDlg::saveSettings(QSettings *pSettings)
 		pSettings->setValue("AnimateTransitions", s_bAnimateTransitions);
 		pSettings->setValue("EnableClipPlane", s_bEnableClipPlane);
 
-		pSettings->setValue("ChordwiseRes", s_iChordwiseRes);
+        pSettings->setValue("ChordwiseResolution", s_iChordwiseRes);
 		pSettings->setValue("BodyAxialRes", s_iBodyAxialRes);
 		pSettings->setValue("BodyHoopRes", s_iBodyHoopRes);
 
@@ -668,7 +668,7 @@ void W3dPrefsDlg::loadSettings(QSettings *pSettings)
 
 		s_bAutoAdjustScale = pSettings->value("AutoAdjustScale", true).toBool();
 		s_bAnimateTransitions = pSettings->value("AnimateTransitions", true).toBool();
-		s_iChordwiseRes = pSettings->value("ChordwiseRes", 29).toInt();
+        s_iChordwiseRes = pSettings->value("ChordwiseResolution", 50).toInt();
 		s_iBodyAxialRes = pSettings->value("BodyAxialRes", 23).toInt();
 		s_iBodyHoopRes = pSettings->value("BodyHoopRes", 17).toInt();
 	}

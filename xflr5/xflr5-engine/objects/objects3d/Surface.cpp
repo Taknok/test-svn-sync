@@ -481,7 +481,7 @@ void Surface::getSidePoints(enumPanelPosition pos,
 							Body * pBody,
 							Vector3d *PtA, Vector3d *PtB, Vector3d *NA, Vector3d *NB, int nPoints)
 {
-	double xRel;
+    double xRelA, xRelB;
     Vector3d A4, B4, TA4, TB4, I;
 
 	Vector3d V = Normal * NormalA;
@@ -523,13 +523,33 @@ void Surface::getSidePoints(enumPanelPosition pos,
 
 	for(int i=0; i<nPoints; i++)
 	{
-		xRel  = 1.0/2.0*(1.0-cos( (double)i*PI   /(double)(nPoints-1)));
+        if(m_NXFlap>0 && m_pFoilA && m_pFoilB)
+        {
+            int nPtsTr = nPoints/3;
+            int nPtsLe = nPoints-nPtsTr;
+
+            if(i<nPtsTr)
+            {
+                xRelA = 1.0/2.0*(1.0-cos(PI * (double)i/(double)(nPtsTr-1)))* (m_pFoilA->m_TEXHinge/100.);
+                xRelB = 1.0/2.0*(1.0-cos(PI * (double)i/(double)(nPtsTr-1)))* (m_pFoilB->m_TEXHinge/100.);
+            }
+            else
+            {
+                int j = i-nPtsTr;
+                xRelA = m_pFoilA->m_TEXHinge/100. + 1.0/2.0*(1.0-cos(PI* (double)j/(double)(nPtsLe-1))) * (1.-m_pFoilA->m_TEXHinge/100.);
+                xRelB = m_pFoilB->m_TEXHinge/100. + 1.0/2.0*(1.0-cos(PI* (double)j/(double)(nPtsLe-1))) * (1.-m_pFoilB->m_TEXHinge/100.);
+            }
+        }
+        else
+        {
+            xRelA  = 1.0/2.0*(1.0-cos(PI * (double)i/(double)(nPoints-1)));
+            xRelB  = xRelA;
+        }
 
 		NA[i].set(0.0,0.0,0.0);
-		getSidePoint(xRel, false, pos, PtA[i], NA[i]);
-
+        getSidePoint(xRelA, false, pos, PtA[i], NA[i]);
 		//scale the thickness
-		double Ox = xRel;
+        double Ox = xRelA;
 		double Oy = m_LA.y * (1.0-Ox) +  m_TA.y * Ox;
 		double Oz = m_LA.z * (1.0-Ox) +  m_TA.z * Ox;
 		PtA[i].y   = Oy +(PtA[i].y - Oy)/cosdA;
@@ -538,15 +558,14 @@ void Surface::getSidePoints(enumPanelPosition pos,
 		NA[i].rotate(Vector3d(1.0,0.0,0.0), delta);
 
 		NB[i].set(0.0,0.0,0.0);
-		getSidePoint(xRel, true,  pos, PtB[i], NB[i]);
-		Ox = xRel;
+        getSidePoint(xRelB, true,  pos, PtB[i], NB[i]);
+        Ox = xRelB;
 		Oy = m_LB.y * (1.0-Ox) +  m_TB.y * Ox;
 		Oz = m_LB.z * (1.0-Ox) +  m_TB.z * Ox;
 		PtB[i].y   = Oy +(PtB[i].y - Oy)/cosdB;
 		PtB[i].z   = Oz +(PtB[i].z - Oz)/cosdB;
 		PtB[i].rotate(m_LB, m_LB-m_TB, +alpha_dB);
 		NB[i].rotate(Vector3d(1.0,0.0,0.0), delta);
-
 
 		if(pBody && m_bIsCenterSurf && m_bIsLeftSurf)
 		{
@@ -564,7 +583,6 @@ void Surface::getSidePoints(enumPanelPosition pos,
 		}
 	}
 }
-
 
 
 
@@ -976,7 +994,7 @@ void Surface::rotateZ(Vector3d const &O, double ZTilt)
 void Surface::setFlap()
 {
 	Vector3d N;
-	if(m_pFoilA && m_pFoilA->m_bTEFlap)
+    if(m_pFoilA && m_pFoilA->m_bTEFlap)
 	{
 		m_posATE = m_pFoilA->m_TEXHinge/100.0;
 		if(m_posATE>1.0) m_posATE = 1.0; else if(m_posATE<0.0) m_posATE = 0.0;
@@ -1230,7 +1248,7 @@ void Surface::createXPoints()
     if(m_pFoilA && m_pFoilA->m_bTEFlap && NXFlapA==0) NXFlapA++;
     if(m_pFoilB && m_pFoilB->m_bTEFlap && NXFlapB==0) NXFlapB++;
 
-    // uniformize the number of flap panels if flaps are defined at each end */
+    // uniformize the number of flap panels if flaps are defined at each end
     if(NXFlapA>0 && NXFlapB>0)
     {
         int n = (int)((NXFlapA+NXFlapB)/2);
