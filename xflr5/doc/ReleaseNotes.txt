@@ -15,7 +15,7 @@
 *******************************************************************************
 
 
-xflr5 v6.43 August xxx, 2018
+xflr5 v6.43 August 27th, 2018
     - improved the VLM mesh of flapped surfaces with hinge points located at different %chord
     - corrected a bug in the display of inertia values for a wing or body - no impact on results
     - fixes for request #117 relative to the construction of double fins for a plane with a body
@@ -25,6 +25,7 @@ xflr5 v6.43 August xxx, 2018
 	- corrected the calculation of the tail volume for wings with an offset leading edge
     - corrected the asymetric position of double fins
     - corrected a potential crash bug when trying to display panels for a plane with a body and an LLT type polar
+
 
 xflr5 v6.42 May 19th, 2018
     - restored the option in Windows and linux to launch the app by opening a project.xfl, polar.plr, or foil.dat file
