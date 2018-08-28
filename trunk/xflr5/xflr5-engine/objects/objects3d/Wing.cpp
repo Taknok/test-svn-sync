@@ -2215,7 +2215,7 @@ void Wing::getTextureUV(int iSurf, double *leftV, double *rightV, double &leftU,
 
 	yA = m_WingSection.at(iSectionA)->m_YPosition;
 	yB = m_WingSection.at(iSectionB)->m_YPosition;
-	if(m_Surface[iSurf]->isLeftSurf())
+    if(pSurf->isLeftSurf())
 	{
 		leftU = 1.0-(yA-yMin)/(yMax-yMin);
 		rightU  = 1.0-(yB-yMin)/(yMax-yMin);

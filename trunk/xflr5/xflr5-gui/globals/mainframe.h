@@ -63,6 +63,7 @@ class GL3DScales;
 class Foil;
 class Polar;
 class OpPoint;
+class Updater;
 
 /**
 *@class MainFrame
@@ -149,7 +150,7 @@ public slots:
 private slots:
 	void aboutQt();
 	void aboutXFLR5();
-	void onCurFoilStyle();
+    void onCurFoilStyle();
 	void onExportCurGraph();
 	void onCurGraphSettings();
 	void onInsertProject();
@@ -177,6 +178,9 @@ private slots:
 	void onSavePlaneAsProject();
 	void onOpenRecentFile();
 	void onShowMousePos();
+    void onAutoCheckForUpdates();
+    void onCheckForUpdates();
+    void onFinishedUpdater();
 
 protected:
 	void keyPressEvent(QKeyEvent *event);
@@ -186,7 +190,8 @@ protected:
 
 public:
 	void addRecentFile(const QString &PathNAme);
-	void checkGraphActions();
+    void checkGraphActions();
+    void checkForUpdates();
 	void ClientToGL(QPoint const &point, CVector &real);
 	void createDockWindows();
 	void createToolbars();
@@ -330,7 +335,7 @@ private:
 	QAction *m_pSaveAct, *m_pSaveProjectAsAct,*m_pNewProjectAct, *m_pCloseProjectAct;
 
 	QAction *m_pExitAct;
-	QAction *m_pAboutAct, *m_pAboutQtAct, *m_pOpenGLAct;
+    QAction *m_pAboutAct, *m_pAboutQtAct, *m_pOpenGLAct, *m_pCheckForUpdates;
 	QAction *m_pPreferencesAct;
 	QAction *m_pRecentFileActs[MAXRECENTFILES];
 	QAction *m_pSeparatorAct;
@@ -448,6 +453,10 @@ private:
 
 	XFLR5::enumImageFormat m_ImageFormat;   /**< The index of the type of image file which should be used. */
 	QTimer *m_pSaveTimer;          /**< The timer which triggers the autosaving of the project at given intervals */
+
+    bool m_bManualCheck;
+
+    Updater *m_pUpdater;
 
 public:
 	static bool s_bTrace;

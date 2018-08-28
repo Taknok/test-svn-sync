@@ -123,6 +123,8 @@ SOURCES += \
     misc/text/MinTextEdit.cpp \
     misc/text/FloatEditDelegate.cpp \
     misc/voidwidget.cpp \
+    misc/updater.cpp \
+    misc/popup.cpp \
     graph/graphdlg.cpp \
     graph/graph.cpp \
     graph/graph_globals.cpp \
@@ -257,6 +259,8 @@ HEADERS += \
     misc/line/LinePickerDlg.h \
     misc/text/MinTextEdit.h \
     misc/text/FloatEditDelegate.h \
+    misc/updater.h \
+    misc/popup.h \
     graph/graphdlg.h \
     graph/linestyle.h \
     graph/graph.h \
