@@ -1,6 +1,6 @@
 /****************************************************************************
 
-    Preferences Class
+    Popup Class
     Copyright (C) 2018 Andre Deperrois
 
     This program is free software; you can redistribute it and/or modify
@@ -21,51 +21,37 @@
 
 #pragma once
 
-#include <QDialog>
-#include <QTabWidget>
-#include <QStackedWidget>
-#include <QCheckBox>
-#include <QRadioButton>
-#include <QComboBox>
-#include <QListWidget>
+#include <QWidget>
 #include <QLabel>
 
-#include <misc/text/IntEdit.h>
-#include <misc/text/TextClrBtn.h>
-#include <misc/color/ColorButton.h>
 
-
-class TranslatorDlg;
-class SaveOptions;
-class Units;
-class Settings;
-
-class PreferencesDlg : public QDialog
+class Popup : public QWidget
 {
-	friend class MainFrame;
 	Q_OBJECT
-
 public:
-	PreferencesDlg(QWidget *pParent);
+	Popup(QWidget *pParent=NULL);
+	Popup(QString const &message, QWidget *pParent);
+	void appendTextMessage(QString const &text);
+	void setTextMessage(QString const &text);
+
+    void setRed();
+    void setGreen();
+
+	static void setWindowPos(QPoint pt) {s_Position=pt;}
+
+protected:
+	void showEvent(QShowEvent *);
+	void hideEvent(QHideEvent *);
+	void mousePressEvent(QMouseEvent *event);
 
 private:
 	void setupLayout();
 
-private slots:
-	void onPage(int iRow);
-	void onOK();
 
 private:
-	QListWidget *m_pTabWidget;
-	QStackedWidget *m_pPageStack;
+	QLabel *m_pMessage;
 
-	SaveOptions *m_pSaveOptionsWidget;
-	TranslatorDlg *m_pLanguageOptionsWidget;
-	Units *m_pUnitsWidget;
-	Settings *m_pDisplayOptionsWidget;
-
-    QCheckBox *m_pctrlUpdateCheck;
-
+	static QSize  s_WindowSize;
+	static QPoint s_Position;
 };
-
 
