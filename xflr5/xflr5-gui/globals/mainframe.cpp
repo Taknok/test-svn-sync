@@ -41,6 +41,8 @@
 #include <misc/ObjectPropsDlg.h>
 #include <misc/line/LinePickerDlg.h>
 #include <misc/options/displayoptions.h>
+#include <misc/updater.h>
+#include <misc/popup.h>
 #include <misc/RenameDlg.h>
 #include <misc/options/Units.h>
 #include <misc/EditPlrDlg.h>
@@ -376,6 +378,8 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 	{
 		onLoadLastProject();
 	}*/
+    if(Updater::bAutoCheck())
+        onAutoCheckForUpdates();
 }
 
 
@@ -608,6 +612,9 @@ void MainFrame::createActions()
 
 	m_pAboutQtAct = new QAction(tr("About Qt"), this);
 	connect(m_pAboutQtAct, SIGNAL(triggered()), this, SLOT(aboutQt()));
+
+    m_pCheckForUpdates = new QAction(tr("Check for updates"), this);
+    connect(m_pCheckForUpdates, SIGNAL(triggered(bool)), this, SLOT(onCheckForUpdates()));
 
 	createGraphActions();
 	createAFoilActions();
@@ -1146,7 +1153,8 @@ void MainFrame::createMenus()
 		m_pHelpMenu->addAction(m_pOpenGLAct);
 		m_pHelpMenu->addAction(m_pAboutQtAct);
 		m_pHelpMenu->addAction(m_pAboutAct);
-	}
+        m_pHelpMenu->addAction(m_pCheckForUpdates);
+    }
 
 	//Create Application-Specific Menus
 	createXDirectMenus();
@@ -3496,6 +3504,8 @@ bool MainFrame::loadSettings()
 		Settings::s_bStyleSheets   = settings.value("ShowStyleSheets", false).toBool();
 		Settings::s_StyleSheetName = settings.value("StyleSheetName", "xflr5_style").toString();
 		s_bShowMousePos = settings.value("ShowMousePosition", true).toBool();	
+
+        Updater::loadSettings(&settings);
 	}
 
 	return true;
@@ -4908,6 +4918,8 @@ void MainFrame::saveSettings()
 			RecentF = QString("RecentFile_%1").arg(i);
 			settings.setValue(RecentF, "");
 		}
+
+        Updater::saveSettings(&settings);
 	}
 	settings.endGroup();
 
@@ -6994,4 +7006,69 @@ void MainFrame::onPreferences()
 //	setSaveState(false);
 
 	updateView();
+}
+
+/** auto check at startup */
+void MainFrame::onAutoCheckForUpdates()
+{
+    //check if a month has passed since the last check
+    QDate today = QDate::currentDate();
+    if(Updater::lastCheckDate().isNull() || !Updater::lastCheckDate().isValid() || Updater::lastCheckDate().daysTo(today)>31)
+    {
+        m_bManualCheck = false;
+        checkForUpdates();
+    }
+}
+
+
+/** manual check triggered by menu action */
+void MainFrame::onCheckForUpdates()
+{
+    m_bManualCheck = true;
+    checkForUpdates();
+}
+
+
+void MainFrame::checkForUpdates()
+{
+    QThread *pThread = new QThread;
+    m_pUpdater = new Updater(this);
+    m_pUpdater->moveToThread(pThread);
+    connect(pThread,    SIGNAL(started()),        m_pUpdater, SLOT(checkForUpdates()));
+    connect(m_pUpdater, SIGNAL(finishedUpdate()), this,       SLOT(onFinishedUpdater()));
+    connect(pThread,    SIGNAL(finished()),       pThread,    SLOT(deleteLater()));
+    pThread->start();
+    pThread->setPriority(QThread::LowPriority);
+
+}
+
+void MainFrame::onFinishedUpdater()
+{
+    if(!m_pUpdater) return;
+    Popup *pPopup = new Popup;
+    if(m_pUpdater->hasUpdate())  pPopup->setRed();
+    else                         pPopup->setGreen();
+
+    if(m_pUpdater->hasUpdate() || m_bManualCheck)
+    {
+        QString strange;
+        strange.sprintf("Latest version %d.%d", Updater::majorVersion(), Updater::minorVersion());
+        pPopup->setTextMessage(strange);
+        pPopup->appendTextMessage("Release date: " + m_pUpdater->releaseDate());
+        strange.sprintf("%d.%d", MAJOR_VERSION, MINOR_VERSION);
+        pPopup->appendTextMessage("Your version: " + strange);
+//		aPopup->appendTextMessage(m_pUpdater->releaseDescription()+"\n");
+
+        QSize sz = pPopup->size();
+        QRect rr = centralWidget()->frameGeometry();
+        QPoint tr = rr.topRight();
+
+        pPopup->setWindowPos(QPoint(pos().x()+centralWidget()->pos().x() + tr.x()-sz.width(),
+                                    pos().y()+centralWidget()->pos().y()));
+        pPopup->show();
+
+    }
+
+    delete m_pUpdater;
+    m_pUpdater = NULL;
 }
