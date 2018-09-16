@@ -185,7 +185,7 @@ void XflScriptExec::loadFoilPolarFiles()
 		{
 			QList<Polar*> polarList;
 
-			Foil *pFoil = (Foil*)readPolarFile(plrFile, polarList);
+            Foil *pFoil = readPolarFile(plrFile, polarList);
 			if(pFoil)
 			{
 				traceLog("   adding foil: "+pFoil->foilName());
@@ -219,7 +219,7 @@ void XflScriptExec::makeFoils()
 		}
 		else
 		{
-			Foil *pFoil = (Foil*)readFoilFile(datFile);
+            Foil *pFoil = readFoilFile(datFile);
 			if(pFoil)
 			{
 				traceLog("   adding foil: "+pFoil->foilName());
