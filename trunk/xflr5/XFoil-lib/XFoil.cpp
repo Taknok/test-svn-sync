@@ -3538,7 +3538,7 @@ bool XFoil::ggcalc()
 	//---- set up Kutta condition (no direct source influence)
 	for (j=1; j<=n;j++) bij[n+1][j] = 0.0;
 
-
+/*
 int size=n+1;
 for(int i=1; i<=size; i++)
 {
@@ -3548,7 +3548,7 @@ for(int i=1; i<=size; i++)
         strong += QString("%1  ").arg(aij[i][j], 11, 'g', 5);
     }
     qDebug(strong.toStdString().c_str());
-}
+}*/
 
 	if(sharp)
 	{
