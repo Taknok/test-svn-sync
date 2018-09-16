@@ -3567,7 +3567,7 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString pathname)
 		int pos1 = fileName.lastIndexOf("hn");
 		fileName = fileName.right(fileName.length()-pos1);
 
-		Foil *pFoil = (Foil*)readFoilFile(XFile);
+        Foil *pFoil = readFoilFile(XFile);
 		XFile.close();
 
 		if(pFoil)

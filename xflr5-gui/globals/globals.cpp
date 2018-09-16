@@ -473,7 +473,7 @@ XFLR5::enumRefDimension referenceDimension(QString strRefDimension)
 
 
 
-void * readFoilFile(QFile &xFoilFile)
+Foil *readFoilFile(QFile &xFoilFile)
 {
 	QString strong;
 	QString tempStr;
@@ -615,7 +615,7 @@ void * readFoilFile(QFile &xFoilFile)
  * @param ar the binary stream
  * @return the pointer to the Foil object which has been created, or NULL if failure.
  */
-void * readPolarFile(QFile &plrFile, QList<Polar*> &polarList)
+Foil* readPolarFile(QFile &plrFile, QList<Polar*> &polarList)
 {
 	Foil* pFoil = NULL;
 	Polar *pPolar = NULL;

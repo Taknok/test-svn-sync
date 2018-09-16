@@ -18,6 +18,7 @@
 xflr5 v6.44 September xxxth, 2018
     - added an optional automatic check for updates at startup
 
+
 xflr5 v6.43 August 27th, 2018
     - improved the VLM mesh of flapped surfaces with hinge points located at different %chord
     - corrected a bug in the display of inertia values for a wing or body - no impact on results
