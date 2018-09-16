@@ -41,6 +41,8 @@
 
 using namespace std;
 
+class Foil;
+class Polar;
 
 int readValues(QString line, double &x, double &y, double &z);
 
@@ -87,8 +89,8 @@ QString analysisMethod(XFLR5::enumAnalysisMethod analysisMethod);
 XFLR5::enumBC boundaryCondition(QString strBC);
 QString boundaryCondition(XFLR5::enumBC boundaryCondition);
 
-void * readFoilFile(QFile &xFoilFile);
-void * readPolarFile(QFile &plrFile, QList<Polar*> &polarList);
+Foil *readFoilFile(QFile &xFoilFile);
+Foil *readPolarFile(QFile &plrFile, QList<Polar*> &polarList);
 
 void drawFoil(QPainter &painter, Foil*pFoil, double const &alpha, double const &scalex, double const &scaley, QPointF const &Offset);
 void drawMidLine(QPainter &painter, Foil*pFoil, double const &scalex, double const &scaley, QPointF const &Offset);
