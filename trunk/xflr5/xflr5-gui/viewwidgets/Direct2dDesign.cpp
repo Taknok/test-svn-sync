@@ -368,15 +368,32 @@ void Direct2dDesign::dragSelectedPoint(double x, double y)
 		m_pSF->extrados()->m_CtrlPoint[n].x = m_MousePos.x;
 		m_pSF->extrados()->m_CtrlPoint[n].y = m_MousePos.y;
 		m_pSF->extrados()->splineCurve();
-		m_pSF->updateSplineFoil();
+
 		if(m_pSF->isSymetric())
 		{
 			m_pSF->intrados()->m_CtrlPoint[n].x = m_MousePos.x;
 			m_pSF->intrados()->m_CtrlPoint[n].y = -m_MousePos.y;
 			m_pSF->intrados()->splineCurve();
-			m_pSF->updateSplineFoil();
 		}
-		m_pSF->setModified(true);
+        if(m_pSF->bClosedTE())
+        {
+            if(n==m_pSF->extrados()->m_CtrlPoint.size()-1)
+            {
+                m_pSF->intrados()->m_CtrlPoint.back() = m_pSF->extrados()->m_CtrlPoint.back();
+                m_pSF->intrados()->splineCurve();
+            }
+        }
+        if(m_pSF->bClosedLE())
+        {
+            if(n==0)
+            {
+                m_pSF->intrados()->m_CtrlPoint.front() = m_pSF->extrados()->m_CtrlPoint.front();
+                m_pSF->intrados()->splineCurve();
+            }
+        }
+
+        m_pSF->updateSplineFoil();
+        m_pSF->setModified(true);
 	}
 	else
 	{

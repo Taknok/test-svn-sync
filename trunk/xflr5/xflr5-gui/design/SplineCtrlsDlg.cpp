@@ -47,12 +47,10 @@ SplineCtrlsDlg::~SplineCtrlsDlg()
 
 void SplineCtrlsDlg::initDialog()
 {
-	int i;
-
 	QString str;
 	m_pctrlDegExtrados->clear();
 	m_pctrlDegIntrados->clear();
-	for (i=2; i<6; i++)
+    for (int i=2; i<6; i++)
 	{
 		str = QString("%1").arg(i);
 		m_pctrlDegExtrados->addItem(str);
@@ -203,7 +201,6 @@ void SplineCtrlsDlg::setupLayout()
 		pSideLayout->addWidget(pLowerSideBox);
 	}
 
-	m_pctrlSymetric = new QCheckBox(tr("Symetric foil"));
 
 	QHBoxLayout *pCommandButtons = new QHBoxLayout;
 	{
@@ -217,10 +214,18 @@ void SplineCtrlsDlg::setupLayout()
 
 	QVBoxLayout *pMainLayout = new QVBoxLayout;
 	{
-		pMainLayout->addLayout(pSideLayout);
+        m_pctrlSymetric = new QCheckBox(tr("Symetric foil"));
+        QHBoxLayout *pClosedLayout = new QHBoxLayout;
+        {
+            m_pctrlCloseLE = new QCheckBox(tr("Force closed LE"));
+            m_pctrlCloseTE = new QCheckBox(tr("Force closed TE"));
+            pClosedLayout->addWidget(m_pctrlCloseLE);
+            pClosedLayout->addWidget(m_pctrlCloseTE);
+        }
+        pMainLayout->addLayout(pSideLayout);
 		pMainLayout->addStretch(1);
 		pMainLayout->addWidget(m_pctrlSymetric);
-//		MainLayout->addLayout(WeightLayout);
+        pMainLayout->addLayout(pClosedLayout);
 		pMainLayout->addStretch(1);
 
 		pMainLayout->addLayout(pCommandButtons);
@@ -327,6 +332,8 @@ void SplineCtrlsDlg::readData()
 		m_pSF->m_Intrados.copySymetric(&m_pSF->m_Extrados);
 	}
 
+    m_pSF->setClosedLE(m_pctrlCloseLE->isChecked());
+    m_pSF->setClosedTE(m_pctrlCloseTE->isChecked());
 }
 
 
@@ -343,6 +350,8 @@ void SplineCtrlsDlg::setControls()
 	m_pctrlDegIntrados->setEnabled(!m_pSF->m_bSymetric);
 	m_pctrlOutIntrados->setEnabled(!m_pSF->m_bSymetric);
 
+    m_pctrlCloseLE->setChecked(m_pSF->bClosedLE());
+    m_pctrlCloseTE->setChecked(m_pSF->bClosedTE());
 }
 
 

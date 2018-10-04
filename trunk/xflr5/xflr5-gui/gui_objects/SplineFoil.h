@@ -87,10 +87,16 @@ public:
 	void updateSplineFoil();
 	void setCurveParams(int style, int width, QColor color);
 
-	double camber() {return m_fCamber;}
-	double xCamber() {return m_fxCambMax;}
-	double thickness() {return m_fThickness;}
-	double xThickness() {return m_fxThickMax;}
+    double camber() const {return m_fCamber;}
+    double xCamber() const {return m_fxCambMax;}
+    double thickness() const {return m_fThickness;}
+    double xThickness() const {return m_fxThickMax;}
+
+    bool bClosedTE() const {return m_bForceCloseTE;}
+    bool bClosedLE() const {return m_bForceCloseLE;}
+    void setClosedTE(bool bClosed) {m_bForceCloseTE=bClosed;}
+    void setClosedLE(bool bClosed) {m_bForceCloseLE=bClosed;}
+
 
 private:
 	bool m_bModified;                /**< false if the SplineFoil has been serialized in its current dtate, false otherwise */
@@ -98,8 +104,9 @@ private:
 	bool m_bOutPoints;               /**< true if the ouput line points should be displayed */
 	bool m_bCenterLine;              /**< true if the SplineFoil's mean camber line is to be displayed */
 	bool m_bSymetric;                /**< true if the SplineFoil is symetric. In which case the lower surface is set as symetric of the upper surface. */
-
-	int m_OutPoints;                 /**< the number of output points with which to draw the SplineFoil. */
+    bool m_bForceCloseLE;            /**< true if the leading end points of the top and bottom spline should be positioned at the same place */
+    bool m_bForceCloseTE;            /**< true if the traling end points of the top and bottom spline should be positioned at the same place */
+    int m_OutPoints;                 /**< the number of output points with which to draw the SplineFoil. */
 
 	int m_PointStyle;                /**< the index of the style for the SplineFoil's points*/
 	int m_FoilStyle;                 /**< the index of the style with which to draw the SplineFoil */
@@ -114,5 +121,7 @@ private:
 	Spline5 m_Extrados;               /**< the spline which defines the upper surface */
 	Spline5 m_Intrados;               /**< the spline which defines the lower surface */
 	Vector3d m_rpMid[MIDPOINTCOUNT];  /**< the points on the SplineFoil's mid camber line @todo replace with a QVarLengthArray */
+
 };
+
 #endif

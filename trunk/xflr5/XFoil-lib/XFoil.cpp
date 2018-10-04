@@ -2335,7 +2335,7 @@ bool XFoil::cdcalc()
 
 bool XFoil::cfl(double hk, double rt, double &cf, double &cf_hk, double &cf_rt, double &cf_msq)
 {
-    //---- laminar skin friction function  ( cf )    ( from Falkner-Skan )
+	//---- laminar skin friction function  ( cf )    ( from falkner-skan )
 	double tmp;
 	if(hk<5.5)
 	{
@@ -2361,7 +2361,7 @@ bool XFoil::cft(double hk, double rt, double msq, double &cf, double &cf_hk, dou
 	double gam, gm1, f_arg, fc, grt, gex, thk, cfo;
 	gam =1.4;
 
-    //---- turbulent skin friction function  ( Cf )    (Coles)
+	//---- turbulent skin friction function  ( cf )    (coles)
 	gm1 = gam - 1.0;
 	fc  = sqrt(1.0 + 0.5*gm1*msq);
 	grt = log(rt/fc);
@@ -2635,17 +2635,17 @@ stop11:
 
 
 /** ==============================================================
- *      Amplification rate routine for envelope e^n method.
- *      Reference:
+ *      amplification rate routine for envelope e^n method.
+ *      reference:
  *                 drela, m., giles, m.,
  *                "viscous/inviscid analysis of transonic and
  *                 low reynolds number airfoils",
  *                 aiaa journal, oct. 1987.
  *
- *      New version.   march 1991       (latest bug fix  july 93)
+ *      new version.   march 1991       (latest bug fix  july 93)
  *           - m(h) correlation made more accurate up to h=20
  *           - for h > 5, non-similar profiles are used
- *             instead of falkner-skan profiles.  These
+ *             instead of falkner-skan profiles.  these
  *             non-similar profiles have smaller reverse
  *             velocities, are more representative of typical
  *             separation bubble profiles.
@@ -3538,17 +3538,6 @@ bool XFoil::ggcalc()
 	//---- set up Kutta condition (no direct source influence)
 	for (j=1; j<=n;j++) bij[n+1][j] = 0.0;
 
-/*
-int size=n+1;
-for(int i=1; i<=size; i++)
-{
-    QString strong="    ";
-    for(int j=1; j<=size; j++)
-    {
-        strong += QString("%1  ").arg(aij[i][j], 11, 'g', 5);
-    }
-    qDebug(strong.toStdString().c_str());
-}*/
 
 	if(sharp)
 	{
@@ -6160,11 +6149,11 @@ stop11:
 	psi += hopi*(psig*sigte + pgam*gamte);
 
 	//---- dpsi/dgam
-    dzdg[jo] += - hopi*psig*scs*0.5;
+	dzdg[jo] += - hopi*psig*scs*0.5;
 	dzdg[jp] += + hopi*psig*scs*0.5;
 
 	dzdg[jo] += + hopi*pgam*sds*0.5;
-    dzdg[jp] += - hopi*pgam*sds*0.5;
+	dzdg[jp] += - hopi*pgam*sds*0.5;
 
 	//---- dpsi/dni
 	psi_ni += hopi*(psigni*sigte + pgamni*gamte);
