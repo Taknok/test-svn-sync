@@ -41,6 +41,8 @@ SplineFoil::SplineFoil()
 	m_bOutPoints   = false;
 	m_bModified    = false;
 	m_bCenterLine  = false;
+    m_bForceCloseLE = true;
+    m_bForceCloseTE = true;
 	m_Intrados.setSplineParams(m_FoilStyle, m_FoilWidth, m_FoilColor);
 	m_Extrados.setSplineParams(m_FoilStyle, m_FoilWidth, m_FoilColor);
 	m_bSymetric = false;
@@ -329,8 +331,12 @@ bool SplineFoil::serializeXFL(QDataStream &ar, bool bIsStoring)
 			ar << m_Intrados.m_CtrlPoint[k].x << m_Intrados.m_CtrlPoint[k].y;
 		}
 
-		// space allocation for the future storage of more data, without need to change the format
-		for (int i=0; i<10; i++) ar << 0;
+        if(m_bForceCloseLE) k=1; else k=0;
+        ar << k;
+        if(m_bForceCloseTE) k=1; else k=0;
+        ar << k;
+        // space allocation for the future storage of more data, without need to change the format
+        for (int i=0; i<8; i++) ar << 0;
 		for (int i=0; i<10; i++) ar << (double)0.0;
 	}
 	else
@@ -362,8 +368,12 @@ bool SplineFoil::serializeXFL(QDataStream &ar, bool bIsStoring)
 			m_Intrados.m_CtrlPoint.append(Vector3d(x, y, 0.0));
 		}
 
-		// space allocation
-		for (int i=0; i<10; i++) ar >> k;
+        ar >> k;
+        if(k>0) m_bForceCloseLE = true; else m_bForceCloseLE=false;
+        ar >> k;
+        if(k>0) m_bForceCloseTE = true; else m_bForceCloseTE=false;
+        // space allocation
+        for (int i=0; i<8; i++) ar >> k;
 		for (int i=0; i<10; i++) ar >> dble;
 
 		m_Extrados.splineKnots();
