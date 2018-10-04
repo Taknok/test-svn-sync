@@ -2261,7 +2261,7 @@ void XInverse::setFoil()
 
 		createQCurve();
 		createMCurve();
-		strong = QString(tr("Alpha = %1")).arg(pXFoil->algam/pXFoil->dtor,0,'f',3);
+        strong.sprintf("Alpha = %.3f", pXFoil->algam/PI*180.0);
 		m_pctrlMAlphaSpec->setText(strong);
 		strong = QString(tr("Cl = %1")).arg(pXFoil->clgam,0,'f',3);
 		m_pctrlMClSpec->setText(strong);

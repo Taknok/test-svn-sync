@@ -66,7 +66,7 @@ private:
 	QComboBox	*m_pctrlDegExtrados;
 	QComboBox	*m_pctrlDegIntrados;
 	QPushButton *OKButton, *CancelButton;
-	QCheckBox *m_pctrlSymetric;
+    QCheckBox *m_pctrlSymetric, *m_pctrlCloseLE, *m_pctrlCloseTE;
 
 	QTableView *m_pctrlUpperList, *m_pctrlLowerList;
 	QStandardItemModel *m_pUpperListModel,*m_pLowerListModel;

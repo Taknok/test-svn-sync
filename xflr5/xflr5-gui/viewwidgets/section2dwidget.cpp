@@ -167,27 +167,7 @@ void Section2dWidget::paintEvent(QPaintEvent *event)
 	painter.save();
 	painter.fillRect(rect(), Settings::s_BackgroundColor);
 
-
-	double xscale = m_fScale          /m_fRefScale;
-	double yscale = m_fScale*m_fScaleY/m_fRefScale;
-
-	//zoom from the center of the viewport
-	QPointF VCenter = rect().center();
-
-	//draw the background image in the viewport
-	if(m_bIsImageLoaded && !m_BackImage.isNull())
-	{
-//		double w = (double)m_BackImage.width()* xscale;
-//		double h = (double)m_BackImage.height()* yscale;
-		//the coordinates of the top left corner are measured from the center of the viewport
-		double xtop = VCenter.x() + m_ViewportTrans.x() - (double)m_BackImage.width()  /2.*xscale;
-		double ytop = VCenter.y() + m_ViewportTrans.y() - (double)m_BackImage.height() /2.*yscale;
-
-//		QRectF target(xtop, ytop, w, h);
-		painter.drawPixmap(QPointF(xtop, ytop), m_BackImage);
-	}
-
-	painter.setFont(Settings::s_TextFont);
+    painter.setFont(Settings::s_TextFont);
 
 	QPen TextPen(Settings::s_TextColor);
 	painter.setPen(TextPen);
@@ -574,9 +554,9 @@ void Section2dWidget::wheelEvent (QWheelEvent *event)
 	event->accept();
 }
 
+
 void Section2dWidget::zoomView(double zoomFactor)
 {
-
 	m_ZoomRect.setBottomRight(m_ZoomRect.topLeft());
 	releaseZoom();
 
@@ -595,11 +575,12 @@ void Section2dWidget::zoomView(double zoomFactor)
 	else m_fScaleY *= zoomFactor;
 
 
-	int a = rect().center().x();
-	m_ptOffset.rx() = a + (int)((m_ptOffset.x()-a)*m_fScale/scale);
-	m_ViewportTrans.rx() = (int)((m_ViewportTrans.x())*m_fScale /scale);
-	m_ViewportTrans.ry() = (int)((m_ViewportTrans.y())*m_fScale /scale);
-
+    int a = rect().center().x();
+    int b = rect().center().y();
+    m_ptOffset.rx() = a + (m_ptOffset.x()-a)*m_fScale/scale;
+    m_ptOffset.ry() = b + (m_ptOffset.y()-b)*m_fScale/scale;
+    m_ViewportTrans.rx() = (m_ViewportTrans.x())*m_fScale /scale;
+    m_ViewportTrans.ry() = (m_ViewportTrans.y())*m_fScale /scale;
 }
 
 
@@ -1081,15 +1062,15 @@ void Section2dWidget::drawBackImage(QPainter &painter)
 		QPoint VCenter = rect().center();
 
 		//draw the background image in the viewport
-		int w = (int)((double)m_BackImage.width()* xscale);
-		int h = (int)((double)m_BackImage.height()* yscale);
+        int w = (int)((double)m_BackImage.width()* xscale);
+        int h = (int)((double)m_BackImage.height()* yscale);
 		//the coordinates of the top left corner are measured from the center of the viewport
 		double xtop = VCenter.x() + m_ViewportTrans.x() - (int)((double)m_BackImage.width()  /2.*xscale);
 		double ytop = VCenter.y() + m_ViewportTrans.y() - (int)((double)m_BackImage.height() /2.*yscale);
-
-		painter.drawPixmap(xtop, ytop, w,h, m_BackImage);
+//qDebug(" %11.5f   %11.5f", m_ViewportTrans.x()-m_ptOffset.x(), m_ViewportTrans.y()-m_ptOffset.y());
+        painter.drawPixmap(xtop, ytop, w, h, m_BackImage);
 		painter.restore();
-	}
+    }
 }
 
 
