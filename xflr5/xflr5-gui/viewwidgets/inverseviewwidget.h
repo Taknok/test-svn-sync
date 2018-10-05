@@ -30,6 +30,9 @@
 #include <QWidget>
 #include <globals/gui_params.h>
 
+class XInverse;
+class MainFrame;
+
 /**
 *@class InverseViewWidget
 * @brief This class is used for 2d drawing in the central area of the application's MainFrame.
@@ -61,8 +64,8 @@ protected:
  	void wheelEvent (QWheelEvent *event);
 
 private:
-	void *m_pMainFrame;   /**< A void pointer to the instance of the MainFrame object. */
-	void *m_pXInverse;    /**< A void pointer to the instance of the QXInverse object. */
+    MainFrame *m_pMainFrame;   /**< A void pointer to the instance of the MainFrame object. */
+    XInverse *m_pXInverse;    /**< A void pointer to the instance of the QXInverse object. */
 
 };
 

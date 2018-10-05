@@ -959,13 +959,20 @@ void BatchDlg::readParams()
 		m_ReMax = m_pctrlReMax->value();
 		m_ReMin = m_pctrlReMin->value();
 
+        if(m_ReMin>m_ReMax)
+        {
+            double tmp = m_ReMin;
+            m_ReMin = m_ReMax;
+            m_ReMax = tmp;
+        }
+
 		if(m_bAlpha)
 		{
-			m_AlphaInc = m_pctrlSpecDelta->value();
-			m_AlphaMax = m_pctrlSpecMax->value();
-			m_AlphaMin = m_pctrlSpecMin->value();
-			if(m_AlphaMin< m_AlphaMax) m_AlphaInc =  qAbs(m_AlphaInc);
-			else                       m_AlphaInc = -qAbs(m_AlphaInc);
+            m_AlphaInc = m_pctrlSpecDelta->value();
+            m_AlphaMax = m_pctrlSpecMax->value();
+            m_AlphaMin = m_pctrlSpecMin->value();
+            if(m_AlphaMin< m_AlphaMax) m_AlphaInc =  fabs(m_AlphaInc);
+            else                       m_AlphaInc = -fabs(m_AlphaInc);
 		}
 		else
 		{
@@ -987,8 +994,8 @@ void BatchDlg::readParams()
 		m_ReMin = m_pctrlSpecMin->value();
 	}
 
-	if(m_ReMin<=0.0) m_ReMin = qAbs(m_ReInc);
-	if(m_ReMax<=0.0) m_ReMax = qAbs(m_ReMax);
+    if(m_ReMin<=0.0) m_ReMin = fabs(m_ReInc);
+    if(m_ReMax<=0.0) m_ReMax = fabs(m_ReMax);
 	m_SpInc = qAbs(m_SpInc);
 
 

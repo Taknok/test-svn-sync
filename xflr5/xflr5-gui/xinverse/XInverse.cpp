@@ -87,6 +87,8 @@ XInverse::XInverse(QWidget *parent)
 	m_pModFoil->foilLineStyle() = 0;
 	m_pModFoil->foilLineWidth() = 1;
 
+    m_pOverlayFoil = NULL;
+
 	m_Spline.insertPoint(0.0,  0.0);
 	m_Spline.insertPoint(0.25, 0.0);
 	m_Spline.insertPoint(0.5,  0.0);
@@ -1421,7 +1423,7 @@ void XInverse::onExecute()
 void XInverse::onExtractFoil()
 {
 	FoilSelectionDlg dlg(s_pMainFrame);
-	dlg.m_poaFoil = m_poaFoil;
+    dlg.m_poaFoil = &Objects2d::s_oaFoil;
 	dlg.initDialog();
 
 	if(m_bLoaded)
@@ -1446,6 +1448,29 @@ void XInverse::onExtractFoil()
 		setFoil();
 		updateView();
 	}
+}
+
+
+/** Selects a foil for overlay in the display */
+void XInverse::onOverlayFoil()
+{
+    FoilSelectionDlg dlg(s_pMainFrame);
+    dlg.m_poaFoil = &Objects2d::s_oaFoil;
+    dlg.initDialog();
+    dlg.m_FoilName.clear();
+
+    if(QDialog::Accepted == dlg.exec())
+    {
+        m_pOverlayFoil = Objects2d::foil(dlg.m_FoilName);
+        updateView();
+    }
+}
+
+
+void XInverse::onClearOverlayFoil()
+{
+    m_pOverlayFoil = NULL;
+    updateView();
 }
 
 
@@ -2034,6 +2059,19 @@ void XInverse::paintFoil(QPainter &painter)
 		painter.drawText(50, m_rGraphRect.bottom()+40, m_pModFoil->foilName());
 	}
 
+    if(m_pOverlayFoil)
+    {
+        QPen ModPen(colour(m_pOverlayFoil));
+        ModPen.setStyle(getStyle(m_pOverlayFoil->foilLineStyle()));
+        ModPen.setWidth(m_pOverlayFoil->foilLineWidth());
+        painter.setPen(ModPen);
+
+        drawFoil(painter, m_pOverlayFoil, -alpha, m_fScale, m_fScale*m_fYScale, m_ptOffset);
+        painter.drawLine(20, m_rGraphRect.bottom()+50, 40, m_rGraphRect.bottom()+50);
+        painter.setPen(TextPen);
+        painter.drawText(50, m_rGraphRect.bottom()+55, m_pOverlayFoil->foilName());
+    }
+
 	if (m_pRefFoil->foilPointStyle()>0)
 	{
 		QPen CtrlPen(colour(m_pRefFoil));
@@ -2374,9 +2412,9 @@ bool XInverse::setParams()
 	{
 		// XFoil is not initialized
 		//is there anything in the database ?
-		if(m_poaFoil->size())
+        if(Objects2d::s_oaFoil.size())
 		{
-			pFoil = (Foil*)m_poaFoil->at(0);
+            pFoil = Objects2d::s_oaFoil.at(0);
 			strFoilName = pFoil->foilName();
 			m_pRefFoil->copyFoil(pFoil);
 			m_pRefFoil->setColor(m_pQCurve->color().red(), m_pQCurve->color().green(), m_pQCurve->color().blue(), m_pQCurve->color().alpha());

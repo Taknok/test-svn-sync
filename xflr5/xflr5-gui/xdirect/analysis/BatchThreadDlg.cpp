@@ -779,6 +779,13 @@ void BatchThreadDlg::readParams()
 		m_ReMax = m_pctrlReMax->value();
 		m_ReMin = m_pctrlReMin->value();
 
+        if(m_ReMin>m_ReMax)
+        {
+            double tmp = m_ReMin;
+            m_ReMin = m_ReMax;
+            m_ReMax = tmp;
+        }
+
 		if(m_bAlpha)
 		{
 			m_AlphaInc = qAbs(m_pctrlSpecDelta->value());

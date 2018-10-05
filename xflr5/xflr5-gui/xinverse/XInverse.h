@@ -41,11 +41,11 @@
 #include <misc/text/IntEdit.h>
 #include <misc/text/MinTextEdit.h>
 #include <graph/graph.h>
-#include <objects/objects2d/Foil.h>
+
 #include <gui_objects/Spline5.h>
 
 class MainFrame;
-
+class Foil;
 
 /**
  * @brief This class implements the interface for the inverse Foil design.
@@ -82,7 +82,9 @@ private slots:
 	void onApplySpline();
 	void onSpecal();
 	void onQReset();
-	void onFilter();
+    void onOverlayFoil();
+    void onClearOverlayFoil();
+    void onFilter();
 	void onSmooth();
 	void onSymm() ;
 	void onExecute();
@@ -175,10 +177,9 @@ private:
 
 	void *m_pXFoil;             /**< a void pointer to the unique instance of the XFoil object */
 
-	QList<Foil*> *m_poaFoil;   /**< a pointer to the array of Foil objects */
-
 	Foil* m_pRefFoil;           /**< a pointer to the reference foil geometry used for inverse design */
 	Foil* m_pModFoil;           /**< a pointer to the resulting Foil modified by inverse design operations */
+    Foil* m_pOverlayFoil;
 
 	Spline5 m_Spline;            /**< the spline oject to modify the velocity curve */
 
