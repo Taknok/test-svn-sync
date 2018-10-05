@@ -1058,7 +1058,6 @@ void MainFrame::createDockWindows()
 	XInverse::s_p2DWidget        = m_p2dWidget;
 	m_pXInverse->s_pMainFrame       = this;
 	m_pXInverse->m_pXFoil           = &m_pXDirect->m_XFoil;
-	m_pXInverse->m_poaFoil          = &Objects2d::s_oaFoil;
 
 	GL3dWingDlg::s_poaFoil = &Objects2d::s_oaFoil;
 	EditObjectDelegate::s_poaFoil = &Objects2d::s_oaFoil;
@@ -2855,6 +2854,13 @@ void MainFrame::createXInverseActions()
 	m_pXInverseStyles->setStatusTip(tr("Define the styles for this view"));
 	connect(m_pXInverseStyles, SIGNAL(triggered()), m_pXInverse, SLOT(onInverseStyles()));
 
+    m_pOverlayFoil = new QAction(tr("Overlay foil"), this);
+    m_pOverlayFoil->setStatusTip(tr("Overlay an additional foil for guidance"));
+    connect(m_pOverlayFoil, SIGNAL(triggered()), m_pXInverse, SLOT(onOverlayFoil()));
+
+    m_pClearOverlayFoil = new QAction(tr("Clear overlay foil"), this);
+    connect(m_pClearOverlayFoil, SIGNAL(triggered()), m_pXInverse, SLOT(onClearOverlayFoil()));
+
 	m_pXInverseResetFoilScale = new QAction(QIcon(":/images/OnResetFoilScale.png"), tr("Reset foil scale")+"\tR", this);
 	m_pXInverseResetFoilScale->setStatusTip(tr("Resets the scale to fit the screen size"));
 	connect(m_pXInverseResetFoilScale, SIGNAL(triggered()), m_pXInverse, SLOT(onResetFoilScale()));
@@ -2890,6 +2896,7 @@ void MainFrame::createXInverseActions()
 	connect(m_pInverseZoomIn, SIGNAL(triggered()), m_pXInverse, SLOT(onZoomIn()));
 }
 
+
 void MainFrame::createXInverseMenus()
 {
 	//MainMenu for XInverse Application
@@ -2897,7 +2904,10 @@ void MainFrame::createXInverseMenus()
 	{
 		m_pXInverseViewMenu->addAction(m_pXInverseStyles);
 		m_pXInverseViewMenu->addSeparator();
-		m_pXInverseViewMenu->addAction(m_pSaveViewToImageFileAct);
+        m_pXInverseViewMenu->addAction(m_pOverlayFoil);
+        m_pXInverseViewMenu->addAction(m_pClearOverlayFoil);
+        m_pXInverseViewMenu->addSeparator();
+        m_pXInverseViewMenu->addAction(m_pSaveViewToImageFileAct);
 	}
 
 	m_pXInverseGraphMenu = menuBar()->addMenu(tr("&Graph"));
@@ -2926,7 +2936,10 @@ void MainFrame::createXInverseMenus()
 		m_pInverseContextMenu->addAction(m_pXInverseStyles);
 		m_pInverseContextMenu->addAction(m_pXInverseResetFoilScale);
 		m_pInverseContextMenu->addSeparator();
-		m_pInverseContextMenu->addAction(m_pCurGraphDlgAct);
+        m_pInverseContextMenu->addAction(m_pOverlayFoil);
+        m_pInverseContextMenu->addAction(m_pClearOverlayFoil);
+        m_pInverseContextMenu->addSeparator();
+        m_pInverseContextMenu->addAction(m_pCurGraphDlgAct);
 		m_pInverseContextMenu->addAction(m_pResetCurGraphScales);
 		m_pInverseContextMenu->addAction(m_pShowMousePosAct);
 		m_pInverseContextMenu->addSeparator();
@@ -3675,7 +3688,7 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString pathname)
 		XFile.close();
 
 		if(Objects3d::s_oaPlane.size()) return XFLR5::MIAREX;
-        else                            return XFLR5::DIRECTDESIGN;
+        else                            return XFLR5::XFOILANALYSIS;
 	}
 
 
