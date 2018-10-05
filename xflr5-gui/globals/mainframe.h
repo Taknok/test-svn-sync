@@ -419,10 +419,10 @@ private:
 	static QLabel *m_pctrlProjectName;
 
 	//XInverse Actions
-	QAction *m_pStoreFoil, *m_pExtractFoil, *m_pXInverseStyles, *m_pXInverseResetFoilScale, *m_pInverseInsertCtrlPt, *m_pInverseRemoveCtrlPt;
-	QAction *m_pInvQInitial, *m_pInvQSpec, *m_pInvQViscous, *m_pInvQPoints, *m_pInvQReflected;
-	QAction *m_pInverseZoomIn;
-
+    QAction *m_pStoreFoil, *m_pExtractFoil, *m_pXInverseStyles, *m_pXInverseResetFoilScale, *m_pInverseInsertCtrlPt, *m_pInverseRemoveCtrlPt;
+    QAction *m_pInvQInitial, *m_pInvQSpec, *m_pInvQViscous, *m_pInvQPoints, *m_pInvQReflected;
+    QAction *m_pInverseZoomIn;
+    QAction *m_pOverlayFoil, *m_pClearOverlayFoil;
 
 	//Script actions
 	QAction *m_pExecScript;
