@@ -5202,7 +5202,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 	if (bIsStoring)
 	{
 		// storing code
-		int ArchiveFormat = 200001;
+        int ArchiveFormat = 200002;
 		ar << ArchiveFormat;
 		// 200001 : First instance of new ".xfl" format
 
@@ -5216,7 +5216,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 
 
 		//Save default Polar data. Not in the Settings, since this is Project dependant
-		if(WPolarDlg::s_WPolar.isFixedSpeedPolar())       ar<<1;
+/*		if(WPolarDlg::s_WPolar.isFixedSpeedPolar())       ar<<1;
 		else if(WPolarDlg::s_WPolar.isFixedLiftPolar())   ar<<2;
 		else if(WPolarDlg::s_WPolar.isFixedaoaPolar())    ar<<4;
 		else if(WPolarDlg::s_WPolar.isBetaPolar())        ar<<5;
@@ -5242,7 +5242,11 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 		ar << WPolarDlg::s_WPolar.m_BetaSpec;
 
 		ar << WPolarDlg::s_WPolar.bTilted();
-		ar << WPolarDlg::s_WPolar.bWakeRollUp();
+        ar << WPolarDlg::s_WPolar.bWakeRollUp();*/
+
+        // format 200002
+        // saving WPolar full data including extra drag
+        WPolarDlg::s_WPolar.serializeWPlrXFL(ar, true);
 
 		// save the planes...
 		ar << Objects3d::s_oaPlane.size();
@@ -5315,7 +5319,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 		// LOADING CODE
 		int ArchiveFormat;
 		ar >> ArchiveFormat;
-		if(ArchiveFormat!=200001) return false;
+        if(ArchiveFormat<200001 || ArchiveFormat>200002) return false;
 
 		//Load unit data
 		ar >> n; Units::setLengthUnitIndex(n);
@@ -5324,40 +5328,43 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 		ar >> n; Units::setSpeedUnitIndex(n);
 		ar >> n; Units::setForceUnitIndex(n);
 		ar >> n; Units::setMomentUnitIndex(n);
-		//pressure and inertia units are added later on in the provisions.
 
+        //pressure and inertia units are added later on in the provisions.
 
-		Units::setUnitConversionFactors();
+        Units::setUnitConversionFactors();
 
+        if(ArchiveFormat==200001)
+        {
+            //Load the default Polar data. Not in the Settings, since this is Project dependant
+            ar >> n;
+            if(n==1)      WPolarDlg::s_WPolar.polarType()=XFLR5::FIXEDSPEEDPOLAR;
+            else if(n==2) WPolarDlg::s_WPolar.polarType()=XFLR5::FIXEDLIFTPOLAR;
+            else if(n==4) WPolarDlg::s_WPolar.polarType()=XFLR5::FIXEDAOAPOLAR;
+            else if(n==5) WPolarDlg::s_WPolar.polarType()=XFLR5::BETAPOLAR;
+            else if(n==7) WPolarDlg::s_WPolar.polarType()=XFLR5::STABILITYPOLAR;
 
-		//Load the default Polar data. Not in the Settings, since this is Project dependant
-		ar >> n;
-		if(n==1)      WPolarDlg::s_WPolar.polarType()=XFLR5::FIXEDSPEEDPOLAR;
-		else if(n==2) WPolarDlg::s_WPolar.polarType()=XFLR5::FIXEDLIFTPOLAR;
-		else if(n==4) WPolarDlg::s_WPolar.polarType()=XFLR5::FIXEDAOAPOLAR;
-		else if(n==5) WPolarDlg::s_WPolar.polarType()=XFLR5::BETAPOLAR;
-		else if(n==7) WPolarDlg::s_WPolar.polarType()=XFLR5::STABILITYPOLAR;
+            ar >> n;
+            if(n==1)      WPolarDlg::s_WPolar.analysisMethod()=XFLR5::LLTMETHOD;
+            else if(n==2) WPolarDlg::s_WPolar.analysisMethod()=XFLR5::VLMMETHOD;
+            else if(n==3) WPolarDlg::s_WPolar.analysisMethod()=XFLR5::PANEL4METHOD;
+            else if(n==4) WPolarDlg::s_WPolar.analysisMethod()=XFLR5::TRICSTMETHOD;
+            else if(n==5) WPolarDlg::s_WPolar.analysisMethod()=XFLR5::TRILINMETHOD;
 
-		ar >> n;
-		if(n==1)      WPolarDlg::s_WPolar.analysisMethod()=XFLR5::LLTMETHOD;
-		else if(n==2) WPolarDlg::s_WPolar.analysisMethod()=XFLR5::VLMMETHOD;
-		else if(n==3) WPolarDlg::s_WPolar.analysisMethod()=XFLR5::PANEL4METHOD;
-		else if(n==4) WPolarDlg::s_WPolar.analysisMethod()=XFLR5::TRICSTMETHOD;
-		else if(n==5) WPolarDlg::s_WPolar.analysisMethod()=XFLR5::TRILINMETHOD;
+            ar >> WPolarDlg::s_WPolar.mass();
+            ar >> WPolarDlg::s_WPolar.m_QInfSpec;
+            ar >> WPolarDlg::s_WPolar.CoG().x;
+            ar >> WPolarDlg::s_WPolar.CoG().y;
+            ar >> WPolarDlg::s_WPolar.CoG().z;
 
-		ar >> WPolarDlg::s_WPolar.mass();
-		ar >> WPolarDlg::s_WPolar.m_QInfSpec;
-		ar >> WPolarDlg::s_WPolar.CoG().x;
-		ar >> WPolarDlg::s_WPolar.CoG().y;
-		ar >> WPolarDlg::s_WPolar.CoG().z;
+            ar >> WPolarDlg::s_WPolar.density();
+            ar >> WPolarDlg::s_WPolar.viscosity();
+            ar >> WPolarDlg::s_WPolar.m_AlphaSpec;
+            ar >> WPolarDlg::s_WPolar.m_BetaSpec;
 
-		ar >> WPolarDlg::s_WPolar.density();
-		ar >> WPolarDlg::s_WPolar.viscosity();
-		ar >> WPolarDlg::s_WPolar.m_AlphaSpec;
-		ar >> WPolarDlg::s_WPolar.m_BetaSpec;
-
-		ar >> WPolarDlg::s_WPolar.bTilted();
-		ar >> WPolarDlg::s_WPolar.bWakeRollUp();
+            ar >> WPolarDlg::s_WPolar.bTilted();
+            ar >> WPolarDlg::s_WPolar.bWakeRollUp();
+        }
+        else if(ArchiveFormat==200002) WPolarDlg::s_WPolar.serializeWPlrXFL(ar, false);
 
 		// load the planes...
 		// assumes all object have been deleted and the array cleared.
@@ -5365,7 +5372,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 		for(i=0; i<n; i++)
 		{
 			pPlane = new Plane();
-			if(pPlane->serializePlaneXFL(ar, bIsStoring)) Objects3d::s_oaPlane.append(pPlane);
+            if(pPlane->serializePlaneXFL(ar, bIsStoring)) Objects3d::s_oaPlane.append(pPlane);
 			else
 			{
 				QMessageBox::warning(this,tr("Warning"), tr("Error reading the file")+"\n"+tr("Saved the valid part"));

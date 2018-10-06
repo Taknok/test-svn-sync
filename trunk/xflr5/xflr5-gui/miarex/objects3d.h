@@ -54,8 +54,8 @@ public:
 	static PlaneOpp* getPlaneOpp(Plane *pPlane, WPolar *pWPolar, double x);
 	static Wing*     getWing(QString PlaneName);
 	static WPolar*   getWPolar(Plane *pPlane, QString WPolarName);
-	static void      insertPOpp(PlaneOpp *pPOpp);
-	static WPolar *  insertNewWPolar(WPolar *pModWPolar, Plane *pCurPlane);
+    static void      insertPOpp(PlaneOpp *pPOpp);
+    static WPolar *  insertNewWPolar(WPolar *pModWPolar, Plane *pCurPlane);
 	static bool      planeExists(QString planeName);
 	static void      renamePlane(QString PlaneName);
 	static Plane *   setModPlane(Plane *pModPlane);
