@@ -116,10 +116,9 @@ bool Objects3d::planeExists(QString planeName)
  */
 Plane* Objects3d::addPlane(Plane *pPlane)
 {
-	int i,j;
 	Plane *pOldPlane;
 
-	for (i=0; i<s_oaPlane.size(); i++)
+    for (int i=0; i<s_oaPlane.size(); i++)
 	{
 		pOldPlane = (Plane*)s_oaPlane.at(i);
 		if (pOldPlane->planeName() == pPlane->planeName())
@@ -136,7 +135,7 @@ Plane* Objects3d::addPlane(Plane *pPlane)
 	}
 
 	// the plane does not exist, just insert in alphabetical order
-	for (j=0; j<s_oaPlane.size(); j++)
+    for (int j=0; j<s_oaPlane.size(); j++)
 	{
 		pOldPlane = (Plane*)s_oaPlane.at(j);
 		if (pPlane->planeName() < pOldPlane->planeName())
