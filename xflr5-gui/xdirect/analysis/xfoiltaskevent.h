@@ -30,23 +30,25 @@
 const QEvent::Type XFOIL_END_TASK_EVENT = static_cast<QEvent::Type>(QEvent::User + 1);
 const QEvent::Type XFOIL_END_OPP_EVENT = static_cast<QEvent::Type>(QEvent::User + 2);
 
+class Foil;
+class Polar;
 
 class XFoilTaskEvent : public QEvent
 {
 
 public:
-	XFoilTaskEvent(void * pFoil, void *pPolar): QEvent(XFOIL_END_TASK_EVENT),
+    XFoilTaskEvent(Foil *pFoil, Polar *pPolar): QEvent(XFOIL_END_TASK_EVENT),
 		m_pFoil(pFoil),
 		m_pPolar(pPolar)
 	{
 	}
 
-	void * foilPtr() const	{return m_pFoil;}
-	void * polarPtr() const	{return m_pPolar;}
+    Foil * foilPtr() const	{return m_pFoil;}
+    Polar * polarPtr() const	{return m_pPolar;}
 
 private:
-	void *m_pFoil=NULL;
-	void *m_pPolar=NULL;
+    Foil *m_pFoil=NULL;
+    Polar *m_pPolar=NULL;
 };
 
 
@@ -55,7 +57,7 @@ class XFoilOppEvent : public QEvent
 {
 
 public:
-	XFoilOppEvent(void * pFoil, void *pPolar, XFoil *pXFoilRef): QEvent(XFOIL_END_OPP_EVENT),
+    XFoilOppEvent(Foil * pFoil, Polar *pPolar, XFoil *pXFoilRef): QEvent(XFOIL_END_OPP_EVENT),
 		m_pFoil(pFoil),
 		m_pPolar(pPolar)
 	{
@@ -68,13 +70,13 @@ public:
 		if(m_pXFoil) delete m_pXFoil;
 	}
 
-	void * foilPtr() const	{return m_pFoil;}
-	void * polarPtr() const	{return m_pPolar;}
+    Foil * foilPtr()   const {return m_pFoil;}
+    Polar * polarPtr() const {return m_pPolar;}
 	XFoil * XFoilPtr() {return m_pXFoil;}
 
 private:
-	void *m_pFoil=NULL;
-	void *m_pPolar=NULL;
+    Foil *m_pFoil=NULL;
+    Polar *m_pPolar=NULL;
 	XFoil *m_pXFoil=NULL;    /** need to store current XFoil results */
 };
 
