@@ -19,11 +19,13 @@
 
 *****************************************************************************/
 
+#include <QStringList>
+
 #include "Plane.h"
 #include <objects/objects3d/Surface.h>
 #include <math.h>
 #include "objects_global.h"
-#include <QtDebug>
+
 
 /** The public constructor. */
 Plane::Plane()

@@ -31,8 +31,8 @@ private:
 	QComboBox *m_version;
 	QLayout *m_profiles;
 	QLayout *m_options;
-	QTextEdit *m_glOutput;
-	QVBoxLayout *m_renderWindowLayout;
+    QTextEdit *m_glOutput;
+    QVBoxLayout *m_pRenderWindowLayout;
 	QWidget *m_renderWindowContainer;
 	QSurface *m_surface;
 };

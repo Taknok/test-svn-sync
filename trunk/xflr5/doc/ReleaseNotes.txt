@@ -15,12 +15,14 @@
 *******************************************************************************
 
 
-xflr5 v6.44 September xxxth, 2018
+xflr5 v6.44 October xxxth, 2018
     - added an optional automatic check for updates at startup
     - fix for bug report #121 - synchronized the background image position with the object views
     - mod for request #124 - added an option in the spline parameters to force closed LE and TE.
     - Completed the archiving of the default plane polar with all of its data.
       Incremented the format of the project file to 200002.
+    - corrected a crash bug when trying to overwrite a saved foil operating point
+    - code cleaning
 
 
 xflr5 v6.43 August 27th, 2018

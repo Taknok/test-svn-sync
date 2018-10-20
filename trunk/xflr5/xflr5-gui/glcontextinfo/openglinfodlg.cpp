@@ -1,3 +1,4 @@
+
 #include "openglinfodlg.h"
 #include "glrenderwindow.h"
 #include <QVBoxLayout>
@@ -143,7 +144,7 @@ void OpenGLInfoDlg::addOptions(QLayout *layout)
 
 void OpenGLInfoDlg::addRenderWindow()
 {
-	m_renderWindowLayout->addWidget(m_renderWindowContainer);
+    m_pRenderWindowLayout->addWidget(m_renderWindowContainer);
 }
 
 
@@ -184,8 +185,8 @@ void OpenGLInfoDlg::setupLayout()
 			pVSplit->addWidget(pHSplit);
 
 
-			m_renderWindowLayout = new QVBoxLayout;
-			pVSplit->addWidget(widgetWithLayout(m_renderWindowLayout));
+            m_pRenderWindowLayout = new QVBoxLayout;
+            pVSplit->addWidget(widgetWithLayout(m_pRenderWindowLayout));
 			pVSplit->setStretchFactor(1, 7);
 		}
 
@@ -228,7 +229,7 @@ void OpenGLInfoDlg::start()
 
 	m_glOutput->clear();
 
-	m_renderWindowLayout->removeWidget(m_renderWindowContainer);
+    m_pRenderWindowLayout->removeWidget(m_renderWindowContainer);
 	delete m_renderWindowContainer;
 
 	GLRenderWindow *renderWindow = new GLRenderWindow(fmt);

@@ -29,6 +29,8 @@
 #include <objects/objects2d/Polar.h>
 #include <objects/objects2d/OpPoint.h>
 
+class XFoil;
+
 class Objects2d
 {
 public:
@@ -64,9 +66,9 @@ public:
 	static OpPoint*  getFoilOpp(Foil *pFoil, Polar *pPolar, double x);
 	static void      insertOpPoint(OpPoint *pNewPoint);
 	static bool      deleteOpp(OpPoint *pOpp);
-	static OpPoint*  addOpPoint(void *pFoilPtr, void *pPolarPtr, void *pXFoilPtr, bool bStoreOpp);
+    static OpPoint*  addOpPoint(Foil *pFoil, Polar *pPolar, XFoil *pXFoil, bool bStoreOpp);
 
-	static void addXFoilData(OpPoint *pOpp, void *pXFoilPtr, void *pFoilPtr);
+    static void addXFoilData(OpPoint *pOpp, XFoil *pXFoil, Foil *pFoil);
 
 
 public:
