@@ -19,10 +19,12 @@
 
 *****************************************************************************/
 
+#include <QStringList>
+
+
 #include "Body.h"
 #include "objects_global.h"
 #include <math.h>
-#include <QtDebug>
 
 /**
  * The public constructor

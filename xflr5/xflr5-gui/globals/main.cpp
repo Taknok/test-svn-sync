@@ -20,11 +20,12 @@
 
 *****************************************************************************/
 
+#include <QSurfaceFormat>
+#include <QDebug>
 
 #include "XFLR5Application.h"
 #include <globals/mainframe.h>
 #include <globals/gui_params.h>
-#include <QDebug>
 
 
 /**
@@ -66,13 +67,14 @@ int main(int argc, char *argv[])
 	strange.sprintf("Default OpengGl format:%d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
 	qDebug()<<strange;*/
 #endif
-
-/*	QSurfaceFormat defaultFormat = QSurfaceFormat::defaultFormat();
-	defaultFormat.setVersion(3, 3);
+/*
+    QSurfaceFormat defaultFormat = QSurfaceFormat::defaultFormat();
+    defaultFormat.setVersion(3, 3);
 	defaultFormat.setProfile(QSurfaceFormat::CompatibilityProfile); //only relevant for 3.2+
-	QSurfaceFormat::setDefaultFormat(defaultFormat);
+    QSurfaceFormat::setDefaultFormat(defaultFormat);
 
 #ifdef QT_DEBUG
+    QString strange;
 	strange.sprintf("App default OpengGl format:%d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
 	qDebug()<<strange;
 	switch (QSurfaceFormat::defaultFormat().profile()) {
@@ -88,10 +90,8 @@ int main(int argc, char *argv[])
 		default:
 			break;
 	}
-	qDebug()<<"/main";
-	qDebug()<<"";
-#endif
-*/
+#endif*/
+
 	QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL);
 	XFLR5Application app(argc, argv);
 
