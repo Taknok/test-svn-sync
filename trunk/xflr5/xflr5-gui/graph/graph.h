@@ -80,25 +80,26 @@ public:
 	static void setOppHighlighting(bool bHighLight){s_bHighlightPoint = bHighLight;}
 	static bool isHighLighting(){return s_bHighlightPoint;}
 
-	GRAPH::enumGraphType &graphType(){return m_graphType;}
-	bool bAutoX();
-	bool bAutoY();
-	bool bAutoXMin();
-	bool bAutoYMin();
-	bool hasBorder();
-	bool bInverted();
+    void setGraphType(GRAPH::enumGraphType type) {m_GraphType=type;}
+    GRAPH::enumGraphType graphType() const {return m_GraphType;}
+    bool bAutoX() const;
+    bool bAutoY() const;
+    bool bAutoXMin() const;
+    bool bAutoYMin() const;
+    bool hasBorder() const;
+    bool bInverted() const;
 	bool isInDrawRect(int const &x, int const &y);
 	bool isInDrawRect(QPoint const &pt);
 	bool initializeGraph(int width=0, int height=0);
 
-	double clientTox(int x);
-	double clientToy(int y);
+    double clientTox(int x) const;
+    double clientToy(int y) const;
 
-	double clientTox(double x);
-	double clientToy(double y);
+    double clientTox(double x) const;
+    double clientToy(double y) const;
 
-	int xToClient(double x);
-	int yToClient(double y);
+    int xToClient(double x) const;
+    int yToClient(double y) const;
 
 
 	void copySettings(Graph* pGraph, bool bScales=true);
@@ -123,7 +124,8 @@ public:
 	void setDrawRect(QRect Rect);
 	void setMargin(int m);
 	void setInverted(bool bInverted);
-	void setType(int type);
+    void setScaleType(int scaleType){ m_AutoScaleType = scaleType;}
+
 	void setXTitle(const QString &str);
 	void setYTitle(const QString &str);
 	void setX0(double f);
@@ -146,37 +148,38 @@ public:
 	void setAxisColor(QColor crColor);
 	void setAxisStyle(int nStyle);
 	void setAxisWidth(int Width);
-	void setTitleColor(QColor crColor);
+    void setTitleColor(QColor crColor) {m_TitleColor = crColor;}
 	void setLabelColor(QColor crColor);
 	void setWindow(double x1, double x2, double y1, double y2);
 
-	QColor axisColor();
-	QColor titleColor();
-	QColor labelColor();
+    QColor axisColor()  const {return m_AxisColor;}
+    QColor titleColor() const {return m_TitleColor;}
+    QColor labelColor() const {return m_LabelColor;}
 
-	int margin();
-	int axisStyle();
-	int axisWidth();
-	int xVariable();
-	int yVariable();
+    int margin() const {return m_iMargin;}
+    int axisStyle() const;
+    int axisWidth() const;
+    int scaleType() const {return m_AutoScaleType;}
+    int xVariable() const;
+    int yVariable() const;
 	void setVariables(int const & X, int const & Y);
 	void setXVariable(int const & X);
 	void setYVariable(int const & Y);
-	double xOrigin();
-	double xMin();
-	double xMax();
-	double xUnit();
-	double yOrigin();
-	double yMin();
-	double yMax();
-	double yUnit();
-	double xScale();
-	double yScale();
+    double xOrigin() const;
+    double xMin() const;
+    double xMax() const;
+    double xUnit() const;
+    double yOrigin() const;
+    double yMin() const;
+    double yMax() const;
+    double yUnit() const;
+    double xScale() const;
+    double yScale() const;
 	
-	bool bXMajGrid();
-	bool yMajGrid();
-	bool bXMinGrid();
-	bool bYMinGrid();
+    bool bXMajGrid() const;
+    bool yMajGrid() const;
+    bool bXMinGrid() const;
+    bool bYMinGrid() const;
 	bool selectPoint(QString const &CurveName, int sel);
 	bool setXScale();
 	bool setYScale();
@@ -189,8 +192,8 @@ public:
 	void yMajGrid(bool &bstate, QColor &clr, int &style, int &width);
 	void bXMinGrid(bool &bstate, bool &bAuto, QColor &clr, int &style, int &width, double &unit);
 	void bYMinGrid(bool &bstate, bool &bAuto, QColor &clr, int &style, int &width, double &unit);
-	QString xTitle(){return m_XTitle;}
-	QString yTitle(){return m_YTitle;}
+    QString xTitle() const {return m_XTitle;}
+    QString yTitle() const {return m_YTitle;}
 
 	QRect *clientRect();
 
@@ -214,10 +217,10 @@ public:
 	QList<Curve*> *getCurves(){return &m_oaCurves;}
 
 
-	QColor backgroundColor(){return m_BkColor;}
-	QColor borderColor() {return m_BorderColor;}
-	int borderStyle(){return m_BorderStyle;}
-	int borderWidth(){return m_BorderWidth;}
+    QColor backgroundColor() const {return m_BkColor;}
+    QColor borderColor() const {return m_BorderColor;}
+    int borderStyle() const {return m_BorderStyle;}
+    int borderWidth() const {return m_BorderWidth;}
 
 
 	Graph();
@@ -229,7 +232,7 @@ private:
 
 	QString m_GraphName;        /** The graph's name, used for little else than to identify it in the settings file */
 
-	int m_Type;
+    int m_AutoScaleType;
 
 	QRect m_rCltRect;         //in screen coordinates
 
@@ -286,7 +289,7 @@ private:
 private:
 	QFont m_TitleFont;
 	QFont m_LabelFont;
-	GRAPH::enumGraphType m_graphType;
+    GRAPH::enumGraphType m_GraphType;
 
 	static bool s_bHighlightPoint;       /**< true if the active OpPoint should be highlighted on the polar curve. */
 

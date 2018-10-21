@@ -260,7 +260,7 @@ Miarex::Miarex(QWidget *parent)
     {
         m_WingGraph.append(new Graph);
         m_WingGraph[ig]->setGraphName(QString("Wing_Graph_%1").arg(ig));
-        m_WingGraph[ig]->graphType() = GRAPH::POPPGRAPH;
+        m_WingGraph[ig]->setGraphType(GRAPH::POPPGRAPH);
         m_WingGraph[ig]->setAutoX(true);
         m_WingGraph[ig]->setXUnit(2.0);
         m_WingGraph[ig]->setXMin(-1.0);
@@ -271,7 +271,7 @@ Miarex::Miarex(QWidget *parent)
         m_WingGraph[ig]->setXMinGrid(false, true, QColor(80,80,80),2, 1, 100.0);
         m_WingGraph[ig]->setYMajGrid(true, QColor(120,120,120),2,1);
         m_WingGraph[ig]->setYMinGrid(false, true, QColor(80,80,80),2, 1, 0.1);
-        m_WingGraph[ig]->setType(1);
+        m_WingGraph[ig]->setScaleType(1);
         m_WingGraph[ig]->setMargin(50);
         m_WingGraph[ig]->setYVariable(ig);
     }
@@ -280,7 +280,7 @@ Miarex::Miarex(QWidget *parent)
     for(int ig=0; ig<MAXPOLARGRAPHS; ig++)
     {
         m_WPlrGraph.append(new Graph);
-        m_WPlrGraph[ig]->graphType() = GRAPH::WPOLARGRAPH;
+        m_WPlrGraph[ig]->setGraphType(GRAPH::WPOLARGRAPH);
         m_WPlrGraph[ig]->setGraphName(QString("Wing_Polar_Graph_%1").arg(ig));
         m_WPlrGraph[ig]->setXMajGrid(true, QColor(120,120,120),2,1);
         m_WPlrGraph[ig]->setYMajGrid(true, QColor(120,120,120),2,1);
@@ -288,7 +288,7 @@ Miarex::Miarex(QWidget *parent)
         m_WPlrGraph[ig]->setXMax( 0.1);
         m_WPlrGraph[ig]->setYMin(-0.01);
         m_WPlrGraph[ig]->setYMax( 0.01);
-        m_WPlrGraph[ig]->setType(0);
+        m_WPlrGraph[ig]->setScaleType(0);
         m_WPlrGraph[ig]->setMargin(50);
         m_WPlrGraph.at(ig)->setOppHighlighting(true);
     }
@@ -302,7 +302,7 @@ Miarex::Miarex(QWidget *parent)
     for(int ig=0; ig<MAXPOLARGRAPHS; ig++) setWGraphTitles(m_WPlrGraph[ig]);
 
 
-    m_CpGraph.graphType() = GRAPH::CPGRAPH;
+    m_CpGraph.setGraphType(GRAPH::CPGRAPH);
     m_CpGraph.setXMajGrid(true, QColor(120,120,120),2,1);
     m_CpGraph.setYMajGrid(true, QColor(120,120,120),2,1);
     m_CpGraph.setXTitle(tr("x"));
@@ -311,7 +311,7 @@ Miarex::Miarex(QWidget *parent)
     m_CpGraph.setXMax( 0.1);
     m_CpGraph.setYMin(-0.01);
     m_CpGraph.setYMax( 0.01);
-    m_CpGraph.setType(0);
+    m_CpGraph.setScaleType(0);
     m_CpGraph.setMargin(50);
     m_CpGraph.setInverted(true);
 
@@ -322,7 +322,7 @@ Miarex::Miarex(QWidget *parent)
     for(int ig=0; ig<MAXTIMEGRAPHS; ig++)
     {
         m_TimeGraph.append(new Graph);
-        m_TimeGraph[ig]->graphType() = GRAPH::STABTIMEGRAPH;
+        m_TimeGraph[ig]->setGraphType(GRAPH::STABTIMEGRAPH);
         m_TimeGraph[ig]->setXMajGrid(true, QColor(120,120,120),2,1);
         m_TimeGraph[ig]->setYMajGrid(true, QColor(120,120,120),2,1);
         m_TimeGraph[ig]->setXTitle("s");
@@ -330,7 +330,7 @@ Miarex::Miarex(QWidget *parent)
         m_TimeGraph[ig]->setXMax( 0.1);
         m_TimeGraph[ig]->setYMin(-0.01);
         m_TimeGraph[ig]->setYMax( 0.01);
-        m_TimeGraph[ig]->setType(0);
+        m_TimeGraph[ig]->setScaleType(0);
         m_TimeGraph[ig]->setMargin(50);
         m_TimeGraph[ig]->setInverted(false);
         m_TimeGraph[ig]->setGraphName("Time Response");
@@ -355,7 +355,7 @@ Miarex::Miarex(QWidget *parent)
     //set the default settings for the root locus graphs
     m_StabPlrGraph.append(new Graph);   // the longitudinal graph
     m_StabPlrGraph.append(new Graph);   // the lateral graph
-    m_StabPlrGraph.at(0)->graphType() = GRAPH::WPOLARGRAPH;
+    m_StabPlrGraph.at(0)->setGraphType(GRAPH::WPOLARGRAPH);
     m_StabPlrGraph.at(0)->setXMajGrid(true, QColor(120,120,120),2,1);
     m_StabPlrGraph.at(0)->setYMajGrid(true, QColor(120,120,120),2,1);
     m_StabPlrGraph.at(0)->setXTitle(tr("Real"));
@@ -364,13 +364,13 @@ Miarex::Miarex(QWidget *parent)
     m_StabPlrGraph.at(0)->setXMax( 0.1);
     m_StabPlrGraph.at(0)->setYMin(-0.01);
     m_StabPlrGraph.at(0)->setYMax( 0.01);
-    m_StabPlrGraph.at(0)->setType(0);
+    m_StabPlrGraph.at(0)->setScaleType(0);
     m_StabPlrGraph.at(0)->setMargin(50);
     m_StabPlrGraph.at(0)->setInverted(false);
     m_StabPlrGraph.at(0)->setGraphName("Longitudinal Modes");
     m_StabPlrGraph.at(0)->setOppHighlighting(true);
 
-    m_StabPlrGraph.at(1)->graphType() = GRAPH::WPOLARGRAPH;
+    m_StabPlrGraph.at(1)->setGraphType(GRAPH::WPOLARGRAPH);
     m_StabPlrGraph.at(1)->setXMajGrid(true, QColor(120,120,120),2,1);
     m_StabPlrGraph.at(1)->setYMajGrid(true, QColor(120,120,120),2,1);
     m_StabPlrGraph.at(1)->setXTitle(tr("Real"));
@@ -379,7 +379,7 @@ Miarex::Miarex(QWidget *parent)
     m_StabPlrGraph.at(1)->setXMax( 0.1);
     m_StabPlrGraph.at(1)->setYMin(-0.01);
     m_StabPlrGraph.at(1)->setYMax( 0.01);
-    m_StabPlrGraph.at(1)->setType(0);
+    m_StabPlrGraph.at(1)->setScaleType(0);
     m_StabPlrGraph.at(1)->setMargin(50);
     m_StabPlrGraph.at(1)->setInverted(false);
     m_StabPlrGraph.at(1)->setGraphName("Lateral Modes");
