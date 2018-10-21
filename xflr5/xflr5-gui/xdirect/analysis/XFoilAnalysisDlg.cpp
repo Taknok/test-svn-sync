@@ -67,7 +67,7 @@ XFoilAnalysisDlg::XFoilAnalysisDlg(QWidget *pParent) : QDialog(pParent)
 	m_pRmsGraph->setXMax(50);
 	m_pRmsGraph->setYMin(0.0);
 	m_pRmsGraph->setYMax(1.0);
-	m_pRmsGraph->setType(1);
+	m_pRmsGraph->setScaleType(1);
 
 	m_pRmsGraph->setXTitle("abs");
 	m_pRmsGraph->setYTitle("rms");

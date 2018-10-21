@@ -112,8 +112,8 @@ XInverse::XInverse(QWidget *parent)
 	m_SplineLeftPos   = -1;
 	m_SplineRightPos  = -1;
 
-	m_QGraph.graphType() = GRAPH::INVERSEGRAPH;
-	m_QGraph.setType(2);
+    m_QGraph.setGraphType(GRAPH::INVERSEGRAPH);
+	m_QGraph.setScaleType(2);
 	m_QGraph.setGraphDefaults();
 	m_QGraph.setXTitle(tr("x/c"));
 	m_QGraph.setYTitle(tr("Q/Vinf"));

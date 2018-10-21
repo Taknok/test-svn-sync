@@ -75,7 +75,7 @@ LLTAnalysisDlg::LLTAnalysisDlg(QWidget *pParent) : QDialog(pParent)
 	m_pIterGraph->setXMax(50);
 	m_pIterGraph->setYMin(0.0);
 	m_pIterGraph->setYMax(1.0);
-	m_pIterGraph->setType(1);
+	m_pIterGraph->setScaleType(1);
 
 	m_pIterGraph->setYTitle("|Da|");
 

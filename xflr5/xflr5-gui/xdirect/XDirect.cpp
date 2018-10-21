@@ -163,12 +163,12 @@ XDirect::XDirect(QWidget *parent) : QWidget(parent)
 	{
 		m_PlrGraph.append(new Graph);
 		m_PlrGraph.at(ig)->setGraphName(QString("Polar_Graph_%1").arg(ig));
-		m_PlrGraph.at(ig)->graphType() = GRAPH::POLARGRAPH;
+        m_PlrGraph.at(ig)->setGraphType(GRAPH::POLARGRAPH);
 		m_PlrGraph[ig]->setXMin(0.0);
 		m_PlrGraph[ig]->setXMax(0.1);
 		m_PlrGraph[ig]->setYMin(-0.1);
 		m_PlrGraph[ig]->setYMax(0.1);
-		m_PlrGraph[ig]->setType(2);
+        m_PlrGraph[ig]->setScaleType(2);
 		m_PlrGraph[ig]->setBorderColor(QColor(200,200,200));
 		m_PlrGraph[ig]->setBorder(true);
 		m_PlrGraph[ig]->setBorderStyle(0);
@@ -183,7 +183,8 @@ XDirect::XDirect(QWidget *parent) : QWidget(parent)
 	}
 	for(int ig=0; ig<MAXPOLARGRAPHS; ig++) setGraphTitles(m_PlrGraph[ig]);
 
-	m_CpGraph.graphType() = GRAPH::OPPGRAPH;
+    m_CpGraph.setGraphType(GRAPH::OPPGRAPH);
+    m_CpGraph.setScaleType(1);
 	m_CpGraph.setXTitle(tr("X"));
 	m_CpGraph.setYTitle(tr("Cp"));
 	m_CpGraph.setInverted(true);
@@ -1456,7 +1457,7 @@ void XDirect::onAnimateSpeed(int val)
 void XDirect::onAnalyze()
 {
 	if(!m_pCurFoil || !m_pCurPolar) return;
-
+qDebug("cpgraphtype %d", m_CpGraph.scaleType());
 	readParams();
 
 	m_pctrlAnalyze->setEnabled(false);

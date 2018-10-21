@@ -6621,7 +6621,7 @@ void MainFrame::onLoadLastProject()
 	else if(m_iApp==XFLR5::INVERSEDESIGN)
 	{
 		if(m_pXInverse->m_bFullInverse) onXInverse();
-		else                          onXInverseMixed();
+        else                            onXInverseMixed();
 	}
 }
 

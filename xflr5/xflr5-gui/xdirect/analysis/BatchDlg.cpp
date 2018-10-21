@@ -108,7 +108,7 @@ BatchDlg::BatchDlg(QWidget *pParent) : QDialog(pParent)
 	m_pRmsGraph->setXMax(50);
 	m_pRmsGraph->setYMin(-1.0);
 	m_pRmsGraph->setYMax( 1.0);
-	m_pRmsGraph->setType(1);
+	m_pRmsGraph->setScaleType(1);
 	m_pRmsGraph->setMargin(40);
 
 	connect(m_pctrlFoil1, SIGNAL(clicked()), this, SLOT(onFoilSelectionType()));
