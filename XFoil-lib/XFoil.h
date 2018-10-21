@@ -146,6 +146,7 @@ public:
     static void setVAccel(double accel) {vaccel=accel;}
 
 private:
+
 	void inter(double x0[], double xp0[], double y0[], double yp0[], double s0[],int n0,double sle0,
 			   double x1[], double xp1[], double y1[], double yp1[], double s1[],int n1,double sle1,
 			   double x[], double y[], int n, double frac);
