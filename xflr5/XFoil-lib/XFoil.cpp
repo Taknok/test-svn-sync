@@ -8068,45 +8068,50 @@ bool XFoil::splind(double x[], double xs[], double s[], int n, double xs1, doubl
 
 
 
-
 void XFoil::sss(double ss, double *s1, double *s2, double del, double xbf, double ybf,
                 double x[], double xp[], double y[], double yp[], double s[], int n, int iside){
-    //      dimension x(*),xp(*),y(*),yp(*),s(*)
-    //----------------------------------------------------------------
-    //     returns arc length points s1,s2 at flap surface break
-    //     locations.  s1 is on fixed airfoil part, s2 is on flap.
-    //     the points are defined according to two cases:
-    //
-    //
-    //     if del > 0:  surface will be eliminated in s1 < s < s2
-    //
-    //     returns the arc length values s1,s2 of the endpoints
-    //     of the airfoil surface segment which "disappears" as a
-    //     result of the flap deflection.  the line segments between
-    //     these enpoints and the flap hinge point (xbf,ybf) have
-    //     an included angle of del.  del is therefore the flap
-    //     deflection which will join up the points at s1,s2.
-    //     ss is an approximate arc length value near s1 and s2.
-    //     it is used as an initial guess for the newton loop
-    //     for s1 and s2.
-    //
-    //
-    //     if del = 0:  surface will be created at s = s1 = s2
-    //
-    //     if del=0, then s1,s2 will cooincide, and will be located
-    //     on the airfoil surface where the segment joining the
-    //     point at s1,s2 and the hinge point is perpendicular to
-    //     the airfoil surface.  this will be the point where the
-    //     airfoil surface must be broken to permit a gap to open
-    //     as a result of the flap deflection.
-    //----------------------------------------------------------------
+//      dimension x(*),xp(*),y(*),yp(*),s(*)
+//----------------------------------------------------------------
+//     returns arc length points s1,s2 at flap surface break
+//     locations.  s1 is on fixed airfoil part, s2 is on flap.
+//     the points are defined according to two cases:
+//
+//
+//     if del > 0:  surface will be eliminated in s1 < s < s2
+//
+//     returns the arc length values s1,s2 of the endpoints
+//     of the airfoil surface segment which "disappears" as a
+//     result of the flap deflection.  the line segments between
+//     these enpoints and the flap hinge point (xbf,ybf) have
+//     an included angle of del.  del is therefore the flap
+//     deflection which will join up the points at s1,s2.
+//     ss is an approximate arc length value near s1 and s2.
+//     it is used as an initial guess for the newton loop
+//     for s1 and s2.
+//
+//
+//     if del = 0:  surface will be created at s = s1 = s2
+//
+//     if del=0, then s1,s2 will cooincide, and will be located
+//     on the airfoil surface where the segment joining the
+//     point at s1,s2 and the hinge point is perpendicular to
+//     the airfoil surface.  this will be the point where the
+//     airfoil surface must be broken to permit a gap to open
+//     as a result of the flap deflection.
+//
+//----------------------------------------------------------------
+//
+//     Translations errors from fortan to C
+//     corrected by Nicolas C. 2018/11/17
+//
+//----------------------------------------------------------------
     double rsq, x1p,y1p, x2p, y2p;
     double r1sq, r2sq, rrsq,rr,r1_s1,r2_s2,rr_s1,rr_s2,rs1, rs2;
     double a11,a12,a21,a22;
     double x1,x2, y1, y2;// also common variables...hmmm
     double x1pp, y1pp, x2pp, y2pp, xtot, ytot;
     double det, ds1,ds2, eps, stot, sind, ssgn, r1,r2;
-    //---- convergence epsilon
+//---- convergence epsilon
     eps = 1.0e-5;
 
     stot = fabs( s[n] - s[1] );
@@ -8125,7 +8130,9 @@ void XFoil::sss(double ss, double *s1, double *s2, double del, double xbf, doubl
     *s2 = ss + (sind*sqrt(rsq) + eps*stot)*ssgn;
 
     //---- newton iteration loop
-    for (int iter=1; iter<= 10; iter++)
+//	for (int iter = 1; iter <= 10; iter++)
+    int  iter;
+    for( iter = 1; iter <= 10; iter++)
     {
         x1  = seval(*s1,x,xp,s,n);
         x1p = deval(*s1,x,xp,s,n);
@@ -8162,14 +8169,14 @@ void XFoil::sss(double ss, double *s1, double *s2, double del, double xbf, doubl
             rr_s1 =  (x1p*(x1-x2) + y1p*(y1-y2))/rr;
             rr_s2 = -(x2p*(x1-x2) + y2p*(y1-y2))/rr;
 
-            //------- residual 1: set included angle via dot product
+                //------- residual 1: set included angle via dot product
             rs1 = ((xbf-x1)*(x2-x1) + (ybf-y1)*(y2-y1))/rr - sind*r1;
             a11 = ((xbf-x1)*( -x1p) + (ybf-y1)*( -y1p))/rr
-                    + ((  -x1p)*(x2-x1) + (  -y1p)*(y2-y1))/rr
-                    - ((xbf-x1)*(x2-x1) + (ybf-y1)*(y2-y1))*rr_s1/rrsq
-                    - sind*r1_s1;
+                + ((  -x1p)*(x2-x1) + (  -y1p)*(y2-y1))/rr
+                - ((xbf-x1)*(x2-x1) + (ybf-y1)*(y2-y1))*rr_s1/rrsq
+                - sind*r1_s1;
             a12 = ((xbf-x1)*(x2p  ) + (ybf-y1)*(y2p  ))/rr
-                    - ((xbf-x1)*(x2-x1) + (ybf-y1)*(y2-y1))*rr_s2/rrsq;
+                - ((xbf-x1)*(x2-x1) + (ybf-y1)*(y2-y1))*rr_s2/rrsq;
 
             //------- residual 2: set equal length segments
             rs2 = r1 - r2;
@@ -8180,7 +8187,8 @@ void XFoil::sss(double ss, double *s1, double *s2, double del, double xbf, doubl
         {
 
             //------- residual 1: set included angle via small angle approximation
-            rs1 = (r1+r2)*sind + (s1 - s2)*ssgn;
+//			rs1 = (r1 + r2)*sind + (s1 - s2)*ssgn;
+            rs1 = (r1 + r2)*sind + (*s1 - *s2)*ssgn; // corrected by Nicolas C. 2018/11/17
             a11 =  r1_s1 *sind + ssgn;
             a12 =  r2_s2 *sind - ssgn;
 
@@ -8213,11 +8221,16 @@ void XFoil::sss(double ss, double *s1, double *s2, double del, double xbf, doubl
         *s2 = *s2 + ds2;
         if(fabs(ds1)+fabs(ds2) < eps*stot ) break; // newton loop //go to 11
     }//10 continue
-    //      write(*,*) 'sss: failed to converge subtending angle points'
-    *s1 = ss;
-    *s2 = ss;
 
-    //	11 continue
+     // corrected by Nicolas C. 2018/11/17
+    if (fabs(ds1) + fabs(ds2) >= eps*stot)
+    {
+        //      write(*,*) 'sss: failed to converge subtending angle points'
+        *s1 = ss;
+        *s2 = ss;
+    }
+
+//	11 continue
 
     //---- make sure points are identical if included angle is zero.
     if(del<=0.00001)
@@ -8225,7 +8238,6 @@ void XFoil::sss(double ss, double *s1, double *s2, double del, double xbf, doubl
         *s1 = 0.5*(*s1+*s2);
         *s2 = *s1;
     }
-
 }
 
 
