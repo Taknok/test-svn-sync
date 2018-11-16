@@ -250,7 +250,12 @@ double Foil::deRotate()
         x[i] = xr;
         y[i] = yr;
     }
-	
+
+    xr = m_TE.x*cosa - m_TE.y*sina;
+    yr = m_TE.x*sina + m_TE.y*cosa;
+    m_TE.x = xr;
+    m_TE.y = yr;
+
 	initFoil();
 
 	return angle*180.0/PI;
