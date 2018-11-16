@@ -15,7 +15,8 @@
 *******************************************************************************
 
 
-xflr5 v6.44 October xxxth, 2018
+xflr5 v6.44 November xxxth, 2018
+    - corrected minor errors in the derotate operation of airfoils
     - added an optional automatic check for updates at startup
     - fix for bug report #121 - synchronized the background image position with the object views
     - mod for request #124 - added an option in the spline parameters to force closed LE and TE.
