@@ -8101,8 +8101,8 @@ void XFoil::sss(double ss, double *s1, double *s2, double del, double xbf, doubl
 //
 //----------------------------------------------------------------
 //
-//     Translations errors from fortan to C
-//     corrected by Nicolas C. 2018/11/17
+//     Translations errors from fortran to C
+//     pointed out by Nicolas C. 2018/11/17
 //
 //----------------------------------------------------------------
     double rsq, x1p,y1p, x2p, y2p;

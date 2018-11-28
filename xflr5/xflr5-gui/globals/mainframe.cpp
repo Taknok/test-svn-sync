@@ -1237,7 +1237,7 @@ void MainFrame::createMiarexActions()
 //	WPolarAct->setShortcut(Qt::Key_F8);
 	connect(m_pWPolarAct, SIGNAL(triggered()), m_pMiarex, SLOT(onWPolarView()));
 
-	m_pStabTimeAct = new QAction(QIcon(":/images/OnStabView.png"),tr("Time Response Vew")+"\tShift+F8", this);
+    m_pStabTimeAct = new QAction(QIcon(":/images/OnStabView.png"),tr("Time Response View")+"\tShift+F8", this);
 	m_pStabTimeAct->setCheckable(true);
 	m_pStabTimeAct->setStatusTip(tr("Switch to stability analysis post-processing"));
 //	StabTimeAct->setShortcut(tr("Shift+F8"));

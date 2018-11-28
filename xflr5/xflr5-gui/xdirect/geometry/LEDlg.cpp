@@ -164,9 +164,8 @@ void LEDlg::onApply()
 	//reset everything and retry
 	XFoil *pXFoil = (XFoil*)s_pXFoil;
 
-	int i, j;
 
-	for (i=0; i< m_pMemFoil->nb; i++)
+    for (int i=0; i< m_pMemFoil->nb; i++)
 	{
 		pXFoil->xb[i+1] = m_pMemFoil->xb[i] ;
 		pXFoil->yb[i+1] = m_pMemFoil->yb[i];
@@ -201,7 +200,7 @@ void LEDlg::onApply()
 	{
 		QMessageBox::information(window(), tr("Warning"), tr("Panel number cannot exceed 300"));
 		//reset everything and retry
-		for (i=0; i< m_pMemFoil->nb; i++)
+        for (int i=0; i< m_pMemFoil->nb; i++)
 		{
 			pXFoil->x[i+1] = m_pMemFoil->xb[i] ;
 			pXFoil->y[i+1] = m_pMemFoil->yb[i];
@@ -210,7 +209,7 @@ void LEDlg::onApply()
 	}
 	else
 	{
-		for (j=0; j< pXFoil->n; j++)
+        for (int j=0; j< pXFoil->n; j++)
 		{
 			m_pBufferFoil->xb[j] = pXFoil->xb[j+1];
 			m_pBufferFoil->yb[j] = pXFoil->yb[j+1];
