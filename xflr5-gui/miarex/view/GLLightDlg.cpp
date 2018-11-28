@@ -43,7 +43,7 @@ GLLightDlg::GLLightDlg(QWidget *pParent) : QDialog(pParent)
     setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
 
 	setupLayout();
-	setDefaults();
+//	setDefaults();
 
 	connect(m_pctrlLight,    SIGNAL(clicked()), this, SLOT(onLight()));
 	connect(m_pctrlClose,    SIGNAL(clicked()), this, SLOT(accept()));

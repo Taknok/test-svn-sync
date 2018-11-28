@@ -1,4 +1,3 @@
-
 /****************************************************************************
 
 	GLLightDlg class
@@ -33,20 +32,18 @@
 #include <misc/text/DoubleEdit.h>
 #include "exponentialslider.h"
 
-
 struct Light
 {
-	float m_Ambient, m_Diffuse, m_Specular; // the light intensities
-	float m_Red, m_Green, m_Blue; // the color of light
-	float m_X, m_Y, m_Z; // coordinates in camera space
-	bool m_bIsLightOn;
+    float m_Ambient=0.3f, m_Diffuse=1.2f, m_Specular=0.5f; // the light intensities
+    float m_Red=1.0f, m_Green=1.0f, m_Blue=1.0f; // the color of light
+    float m_X=0.1f, m_Y=0.3f, m_Z=0.5f; // coordinates in camera space
+    bool m_bIsLightOn=true;
 };
 
 struct Attenuation
 {
-	float m_Constant, m_Linear, m_Quadratic;
+    float m_Constant=1.0, m_Linear=0.5, m_Quadratic=0.0;
 };
-
 
 class GLLightDlg : public QDialog
 {
