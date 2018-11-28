@@ -29,6 +29,7 @@
 #include <misc/text/DoubleEdit.h>
 #include <objects/objects2d/Foil.h>
 
+class XFoil;
 
 class TEGapDlg : public QDialog
 {
@@ -60,7 +61,7 @@ public:
 
 	Foil* m_pBufferFoil;
 	Foil* m_pMemFoil;
-	static void* s_pXFoil;
+    static XFoil* s_pXFoil;
 };
 
 #endif // TEGAPDLG_H
