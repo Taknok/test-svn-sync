@@ -1819,6 +1819,18 @@ void Miarex::glMake3DObjects()
         m_bResetglDownwash = false;
     }
 
+    if((m_bResetTextLegend || m_bResetglLegend || m_bResetglOpp || m_bResetglGeom) && m_iView==XFLR5::W3DVIEW)
+    {
+        if(m_pCurPOpp)
+        {
+            m_pgl3dMiarexView->glMakeCpLegendClr();
+        }
+        drawTextLegend();
+        m_bResetTextLegend = false;
+        m_bResetglLegend = false;
+    }
+
+
     if((m_bResetglStream) && m_iView==XFLR5::W3DVIEW)
     {
         if(m_bStream)
@@ -1846,30 +1858,18 @@ void Miarex::glMake3DObjects()
             }
         }
     }
-    if((m_bResetTextLegend || m_bResetglLegend || m_bResetglOpp || m_bResetglGeom) && m_iView==XFLR5::W3DVIEW)
-    {
-        if(m_pCurPOpp)
-        {
-            m_pgl3dMiarexView->glMakeCpLegendClr();
-        }
-        drawTextLegend();
-        m_bResetTextLegend = false;
-        m_bResetglLegend = false;
-    }
 
-    if((m_bResetglSurfVelocities || m_bResetglOpp) && m_iView==XFLR5::W3DVIEW && m_bSurfVelocities)
+    if((m_bResetglSurfVelocities) && m_iView==XFLR5::W3DVIEW && m_bSurfVelocities)
     {
+        m_bResetglSurfVelocities = false; // prevent double repaints if calculations is not done yet
         if(m_pCurPlane && m_pCurPOpp && m_pCurPOpp->analysisMethod()>=XFLR5::VLMMETHOD)
         {
             m_pgl3dMiarexView->glMakeSurfVelocities(m_theTask.m_Panel, m_pCurWPolar, m_pCurPOpp, m_theTask.m_MatSize);
-            m_bResetglSurfVelocities = false;
         }
     }
 
     m_bResetglOpp = false;
 }
-
-
 
 
 
@@ -1925,7 +1925,6 @@ void Miarex::keyPressEvent(QKeyEvent *event)
             event->accept();
             return;
         }
-
     }
     else if(event->key()==Qt::Key_5 || event->text()=="5")
     {

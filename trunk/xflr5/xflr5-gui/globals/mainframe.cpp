@@ -3015,9 +3015,9 @@ void MainFrame::deleteProject(bool bClosing)
 		delete (OpPoint*)pObj;
 	}
 
-	m_pMiarex->m_pCurPlane  = NULL;
-	m_pMiarex->m_pCurPOpp   = NULL;
-	m_pMiarex->m_pCurWPolar = NULL;
+    m_pMiarex->m_pCurPlane  = NULL;
+    m_pMiarex->m_pCurPOpp   = NULL;
+    m_pMiarex->m_pCurWPolar = NULL;
 	m_pMiarex->m_bStream = false;
 
 	if(!bClosing)

@@ -1908,7 +1908,6 @@ void Wing::panelComputeViscous(double QInf, WPolar *pWPolar, double &WingVDrag, 
 
 			// Sum the total viscous drag of this wing
 			WingVDrag  += m_PCd[m] * m_StripArea[m];
-
 			m++;
 		}
 	}
