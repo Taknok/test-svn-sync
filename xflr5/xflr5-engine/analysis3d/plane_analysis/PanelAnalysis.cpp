@@ -5549,12 +5549,11 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
 //			if(pWPolar->m_bTiltedGeom) m_F[m].RotateY(-Alpha);
 			m++;
 		}
-//		if(s_bVLMSymetric) p+=m_Surface.at(j)->NXPanels * m_Surface.at(j)->NYPanels;
+
 		if(pWing->m_Surface.at(j)->isTipRight() && !pWPolar->bThinSurfaces()) p+=pWing->m_Surface.at(j)->NXPanels();//tip patch panels
 	}
 
 	pWing->m_CDi = WingIDrag; // save this wing's induced drag (unused though...)
-//	qDebug("%13.7g  %13.7g  %13.7g  ", Force.x, Force.z, WingIDrag);
 }
 
 
