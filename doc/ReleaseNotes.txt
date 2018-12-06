@@ -16,8 +16,9 @@
 
 
 xflr5 v6.44 November xxxth, 2018
+    - prevented the multiple repaint of surface velocities in the 3d view
     - corrected minor errors in the derotate operation of airfoils
-    - corrected translations errors in the XFoil flap setting routine - thanks to Nicolas C.
+    - corrected translations errors from fortran to C in the XFoil flap setting routine - thanks to Nicolas C.
     - added an optional automatic check for updates at startup
     - fix for bug report #121 - synchronized the background image position with the object views
     - mod for request #124 - added an option in the spline parameters to force closed LE and TE.
