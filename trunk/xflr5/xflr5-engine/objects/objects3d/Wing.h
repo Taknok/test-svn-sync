@@ -207,8 +207,8 @@ public:
 
 	bool &textures(){return m_bTextures;}
 
-	ObjectColor wingColor() {return m_WingColor;}
-	void setWingColor(ObjectColor colour){m_WingColor= colour;}
+    ObjectColor const & wingColor() const {return m_WingColor;}
+    void setWingColor(ObjectColor const &colour) {m_WingColor= colour;}
 
 	XFLR5::enumWingType &wingType() {return m_WingType;}
 

@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	EditPlaneDlg Class
-	Copyright (C) 2015-2017 Andre Deperrois 
+    Copyright (C) 2015-2019 Andre Deperrois
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -19,6 +19,16 @@
 
 *****************************************************************************/
 
+#include <QApplication>
+#include <QAction>
+#include <QMenu>
+#include <QHeaderView>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QMessageBox>
+#include <QDebug>
+
+
 #include <misc/options/Units.h>
 #include <misc/options/displayoptions.h>
 #include <miarex/view/W3dPrefsDlg.h>
@@ -27,13 +37,6 @@
 #include "EditPlaneDlg.h"
 #include <globals/globals.h>
 
-#include <QApplication>
-#include <QAction>
-#include <QMenu>
-#include <QHeaderView>
-#include <QHBoxLayout>
-#include <QGridLayout>
-#include <QMessageBox>
 
 QSize EditPlaneDlg::s_WindowSize(1031,783);
 QPoint EditPlaneDlg::s_WindowPosition(131, 77);
@@ -56,10 +59,10 @@ EditPlaneDlg::EditPlaneDlg(QWidget *pParent) : QDialog(pParent)
 	setWindowTitle("Plane object explorer");
 	setWindowFlags(Qt::Window);
 
-	m_pPlane = NULL;
-	m_pStruct = NULL;
-	m_pDelegate = NULL;
-	m_pModel = NULL;
+    m_pPlane = nullptr;
+    m_pStruct = nullptr;
+    m_pDelegate = nullptr;
+    m_pModel = nullptr;
 
 	m_enumActiveObject = NOOBJECT;
 	m_enumActiveWingType = XFLR5::OTHERWING;
@@ -447,31 +450,28 @@ void EditPlaneDlg::setupLayout()
 */
 void EditPlaneDlg::glMake3DObjects()
 {
-	Body *pCurBody = NULL;
 	if(!m_pPlane) return;
 
-	pCurBody = m_pPlane->body();
+    Body TranslatedBody;
+    if(m_pPlane->body())
+    {
+        TranslatedBody.duplicate(m_pPlane->body());
+        TranslatedBody.translate(m_pPlane->bodyPos());
+        if(m_bResetglPlane || m_bResetglBody)
+        {
+            m_pglPlaneView->glMakeBodySplines(&TranslatedBody);
+            m_bResetglBody = false;
+        }
+    }
 
-	if(m_bResetglBody && pCurBody)
-	{
-		m_pglPlaneView->glMakeBodySplines(pCurBody);
-		m_bResetglBody = false;
-	}
 
 	if(m_bResetglPlane)
 	{
-		Body TranslatedBody;
-		if(m_pPlane->body())
-		{
-			TranslatedBody.duplicate(m_pPlane->body());
-			TranslatedBody.translate(m_pPlane->bodyPos());
-		}
-
 		for(int iw=0; iw<MAXWINGS; iw++)
 		{
 			if(m_pPlane->wing(iw))
 			{
-				m_pglPlaneView->glMakeWingGeometry(iw, m_pPlane->wing(iw), m_pPlane->body());
+                m_pglPlaneView->glMakeWingGeometry(iw, m_pPlane->wing(iw), &TranslatedBody);
 			}
 		}
 
@@ -1263,20 +1263,20 @@ void EditPlaneDlg::readViewLevel(QModelIndex indexLevel)
 				readBodyTree(m_pPlane->body(), pItem->child(0,0)->index());
 			else if(object.compare("Wing", Qt::CaseInsensitive)==0)
 			{
-				Wing newWing;
-				newWing.clearPointMasses();
-				newWing.clearWingSections();
-				newWing.clearSurfaces();
-				newWing.wingType() = wingType(value);
+                Wing newwing;
+                newwing.clearPointMasses();
+                newwing.clearWingSections();
+                newwing.clearSurfaces();
+                newwing.wingType() = wingType(value);
 				Vector3d wingPos;
 				double wingTiltAngle;
-				readWingTree(&newWing, wingPos, wingTiltAngle, pItem->child(0,0)->index());
+                readWingTree(&newwing, wingPos, wingTiltAngle, pItem->child(0,0)->index());
 
 /*				if(newWing.isFin()) iWing = 3;
 				else if(iw==0)      iWing = 0;
 				else if(iw==1)      iWing = 2;*/
 
-				switch(newWing.wingType())
+                switch(newwing.wingType())
 				{
 					case XFLR5::MAINWING:
 					{
@@ -1305,7 +1305,9 @@ void EditPlaneDlg::readViewLevel(QModelIndex indexLevel)
 					}
 				}
 
-				m_pPlane->m_Wing[iWing].duplicate(&newWing);
+                newwing.setWingColor(m_pPlane->m_Wing[iWing].wingColor());
+
+                m_pPlane->m_Wing[iWing].duplicate(&newwing);
 				m_pPlane->WingLE(iWing)        = wingPos;
 				m_pPlane->WingTiltAngle(iWing) = wingTiltAngle;
 				iw++;
@@ -1325,6 +1327,7 @@ void EditPlaneDlg::readViewLevel(QModelIndex indexLevel)
 		indexLevel = indexLevel.sibling(indexLevel.row()+1,0);
 	} while(indexLevel.isValid());
 }
+
 
 void EditPlaneDlg::readWingTree(Wing *pWing, Vector3d &wingLE, double &tiltAngle, QModelIndex indexLevel)
 {
@@ -1349,14 +1352,17 @@ void EditPlaneDlg::readWingTree(Wing *pWing, Vector3d &wingLE, double &tiltAngle
 
 					QModelIndex dataIndex = subIndex.sibling(subIndex.row(),2);
 
-					if(field.compare("red", Qt::CaseInsensitive)==0)         pWing->wingColor().setRed(dataIndex.data().toInt());
-					else if(field.compare("green", Qt::CaseInsensitive)==0)  pWing->wingColor().setGreen(dataIndex.data().toInt());
-					else if(field.compare("blue", Qt::CaseInsensitive)==0)   pWing->wingColor().setBlue(dataIndex.data().toInt());
-					else if(field.compare("alpha", Qt::CaseInsensitive)==0)  pWing->wingColor().setAlpha(dataIndex.data().toInt());
-
+                    int r=100,g=100,b=100,a=255;
+                    if      (field.compare("red", Qt::CaseInsensitive)==0)    r = dataIndex.data().toInt();
+                    else if (field.compare("green", Qt::CaseInsensitive)==0)  g = dataIndex.data().toInt();
+                    else if (field.compare("blue", Qt::CaseInsensitive)==0)   b = dataIndex.data().toInt();
+                    else if (field.compare("alpha", Qt::CaseInsensitive)==0)  a = dataIndex.data().toInt();
+                    pWing->setWingColor(ObjectColor(r,g,b,a));
 					subIndex = subIndex.sibling(subIndex.row()+1,0);
-				}while(subIndex.isValid());
-			}
+                }
+                while(subIndex.isValid());
+//                qDebug()<< "wingcolor"<<pWing->wingColor().red()<<pWing->wingColor().green()<<pWing->wingColor().blue();
+            }
 			else if(object.compare("Fin data", Qt::CaseInsensitive)==0)
 			{
 				QModelIndex subIndex = pItem->child(0,0)->index();
