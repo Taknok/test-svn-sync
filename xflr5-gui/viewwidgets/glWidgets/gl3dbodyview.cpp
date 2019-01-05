@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	gl3dBodyView Class
-	Copyright (C) 2016 Andre Deperrois 
+    Copyright (C) 2016-2019 Andre Deperrois
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
 gl3dBodyView::gl3dBodyView(QWidget *pParent) : gl3dView(pParent)
 {
 	m_pParent = pParent;
-	m_pBody = NULL;
+    m_pBody = nullptr;
 	m_bResetglFrameHighlight   = true;
 	m_bResetglBody        = true;//otherwise endless repaint if no body present
 }

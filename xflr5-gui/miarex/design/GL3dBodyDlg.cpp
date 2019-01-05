@@ -414,7 +414,7 @@ void GL3dBodyDlg::onBodyName()
 void GL3dBodyDlg::onTextures()
 {
 	if(m_pBody) m_pBody->m_bTextures = m_pctrlTextures->isChecked();
-	m_gl3dBodyview.resetGLBody(true);
+    m_gl3dBodyview.resetGLBody();
 	setControls();
 	updateView();
 }
@@ -434,7 +434,7 @@ void GL3dBodyDlg::onBodyColor()
 	if(clr.isValid())
 	{
 		m_pBody->setBodyColor(ObjectColor(clr.red(), clr.green(), clr.blue(), clr.alpha()));
-		m_gl3dBodyview.resetGLBody(true);
+        m_gl3dBodyview.resetGLBody();
 
 		m_pctrlBodyColor->setColor(clr);
 		update();
@@ -615,7 +615,7 @@ void GL3dBodyDlg::onImportBodyDef()
 
 	setBody();
 
-	m_gl3dBodyview.resetGLBody(true);
+    m_gl3dBodyview.resetGLBody();
 
 	m_bChanged = true;
 
@@ -662,7 +662,7 @@ void GL3dBodyDlg::onImportBodyXML()
 	m_pBody->duplicate(a_plane.body());
 	setBody();
 
-	m_gl3dBodyview.resetGLBody(true);
+    m_gl3dBodyview.resetGLBody();
 
 
 	m_bChanged = true;
@@ -724,7 +724,7 @@ void GL3dBodyDlg::onFrameCellChanged(QWidget *)
 	m_bChanged = true;
 //	int n = m_pBody->m_iActiveFrame;
 	readFrameSectionData(m_pBody->m_iActiveFrame);
-	m_gl3dBodyview.resetGLBody(true);
+    m_gl3dBodyview.resetGLBody();
 
 
 	updateView();
@@ -761,7 +761,7 @@ void GL3dBodyDlg::onLineType()
 		m_pctrlXDegree->setEnabled(true);
 		m_pctrlHoopDegree->setEnabled(true);
 	}
-	m_gl3dBodyview.resetGLBody(true);
+    m_gl3dBodyview.resetGLBody();
 
 	updateView();
 }
@@ -775,7 +775,7 @@ void GL3dBodyDlg::onPointCellChanged(QWidget *)
 	m_bChanged = true;
 	for(int ip=0; ip<m_pPointModel->rowCount(); ip++)
 		readPointSectionData(ip);
-	m_gl3dBodyview.resetGLBody(true);
+    m_gl3dBodyview.resetGLBody();
 	updateView();
 }
 
@@ -820,7 +820,7 @@ void GL3dBodyDlg::onScaleBody()
 	{
 		takePicture();
 		m_pBody->scale(dlg.m_XFactor, dlg.m_YFactor, dlg.m_ZFactor, dlg.m_bFrameOnly, dlg.m_FrameID);
-		m_gl3dBodyview.resetGLBody(true);
+        m_gl3dBodyview.resetGLBody();
 
 		fillFrameDataTable();
 		fillPointDataTable();
@@ -833,7 +833,7 @@ void GL3dBodyDlg::onScaleBody()
 void GL3dBodyDlg::onUpdateBody()
 {
 	m_bChanged = true;
-	m_gl3dBodyview.resetGLBody(true);
+    m_gl3dBodyview.resetGLBody();
 
 	m_pFrame = m_pBody->activeFrame();
 
@@ -863,7 +863,7 @@ void GL3dBodyDlg::onSelChangeXDegree(int sel)
 
 	m_pBody->m_SplineSurface.setuDegree(deg);
 	m_pBody->setNURBSKnots();
-	m_gl3dBodyview.resetGLBody(true);
+    m_gl3dBodyview.resetGLBody();
 
 	updateView();
 }
@@ -889,7 +889,7 @@ void GL3dBodyDlg::onSelChangeHoopDegree(int sel)
 
 	m_pBody->m_SplineSurface.setvDegree(deg);
 	m_pBody->setNURBSKnots();
-	m_gl3dBodyview.resetGLBody(true);
+    m_gl3dBodyview.resetGLBody();
 
 	updateView();
 }
@@ -923,7 +923,7 @@ void GL3dBodyDlg::onNURBSPanels()
 	m_pBody->m_nxPanels = m_pctrlNXPanels->value();
 	m_pBody->setPanelPos();
 
-	m_gl3dBodyview.resetGLBody(true);
+    m_gl3dBodyview.resetGLBody();
 
 	updateView();
 }
@@ -947,7 +947,7 @@ void GL3dBodyDlg::onTranslateBody()
 		fillFrameDataTable();
 		fillPointDataTable();
 
-		m_gl3dBodyview.resetGLBody(true);
+        m_gl3dBodyview.resetGLBody();
 
 		updateView();
 	}
@@ -1191,7 +1191,7 @@ void GL3dBodyDlg::setFrame(int iFrame)
 	else                                          m_pFrame = m_pBody->frame(iFrame);
 	m_pBody->m_iActiveFrame = iFrame;
 
-	m_gl3dBodyview.resetGLBody(true);
+    m_gl3dBodyview.resetGLBody();
 
 	fillPointDataTable();;
 }
@@ -1203,7 +1203,7 @@ void GL3dBodyDlg::setFrame(Frame *pFrame)
 
 	m_pBody->setActiveFrame(pFrame);
 
-	m_gl3dBodyview.resetGLBody(true);
+    m_gl3dBodyview.resetGLBody();
 
 	fillPointDataTable();;
 }
@@ -1607,7 +1607,7 @@ void GL3dBodyDlg::showEvent(QShowEvent *event)
 
 	setTableUnits();
 	m_bChanged    = false;
-	m_gl3dBodyview.resetGLBody(true);
+    m_gl3dBodyview.resetGLBody();
 
 	resizeTables();
 
@@ -1673,7 +1673,7 @@ void GL3dBodyDlg::setPicture()
 	fillFrameDataTable();
 	m_pFrame = m_pBody->activeFrame();
 	fillPointDataTable();
-	m_gl3dBodyview.resetGLBody(true);
+    m_gl3dBodyview.resetGLBody();
 
 	updateView();
 }

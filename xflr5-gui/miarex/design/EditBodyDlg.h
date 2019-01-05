@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	EditBodyDlg Class
-	Copyright (C) 2015 Andre Deperrois 
+    Copyright (C) 2015-2019 Andre Deperrois
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ class EditBodyDlg : public QDialog
 	friend class gl3dView;
 
 public:
-	EditBodyDlg(QWidget *pParent = NULL);
+    EditBodyDlg(QWidget *pParent = nullptr);
 
 	void showEvent(QShowEvent *event);
 	void hideEvent(QHideEvent *event);
@@ -60,7 +60,6 @@ public:
 
 	bool intersectObject(Vector3d AA,  Vector3d U, Vector3d &I);
 	void connectSignals();
-	void glMake3DObjects();
 	void identifySelection(const QModelIndex &indexSel);
 	void initDialog(Body *pBody);
 	void setupLayout();
@@ -155,8 +154,6 @@ private:
 	QPushButton *pOKButton;
 
 	bool m_bChanged;
-	bool m_bResetglFrameHighlight;
-	bool m_bResetglBody;
 
 
 	XFLR5::enumWingType m_enumActiveWingType;
