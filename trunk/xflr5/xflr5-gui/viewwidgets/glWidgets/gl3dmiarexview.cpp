@@ -1,7 +1,7 @@
 /****************************************************************************
 
     gl3dMiarexView Class
-    Copyright (C) 2003-2018 Andre Deperrois
+    Copyright (C) 2003-2019 Andre Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -1819,7 +1819,12 @@ void gl3dMiarexView::paintTransitions(int iWing)
 
 void gl3dMiarexView::paintSurfaceVelocities(int nPanels)
 {
-	m_ShaderProgramLine.bind();
+    QMatrix4x4 idMatrix;
+    m_ShaderProgramLine.bind();
+    m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, idMatrix);
+    m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
+    m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_orthoMatrix * m_viewMatrix);
+
 	m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
 	m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_WakeColor);
 	m_vboSurfaceVelocities.bind();

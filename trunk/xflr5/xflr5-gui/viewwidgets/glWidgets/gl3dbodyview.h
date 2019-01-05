@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	gl3dBodyView Class
-	Copyright (C) 2016 Andre Deperrois 
+    Copyright (C) 2016-2019 Andre Deperrois
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -29,9 +29,9 @@
 class gl3dBodyView : public gl3dView
 {
 public:
-	gl3dBodyView(QWidget *pParent = NULL);
+    gl3dBodyView(QWidget *pParent = nullptr);
 	void setBody(Body* pBody){m_pBody = pBody;}
-	void resetGLBody(bool bReset){m_bResetglBody = bReset;}
+    void resetGLBody() {m_bResetglBody = true;}
 
 private:
 	void glRenderView();
