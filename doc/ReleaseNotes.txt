@@ -15,8 +15,9 @@
 *******************************************************************************
 
 
-xflr5 v6.44 November xxxth, 2018
-    - Fix for bug report #126 relative to the highlighting of frames in the advanced fuse editor
+xflr5 v6.44 January xxxth, 2019
+    - Fix for bug #128 relative to the display of the wings and body in the advanced plane editor
+    - Fix for bug #126 relative to the highlighting of frames in the advanced fuse editor
     - Feature request #127: shortcut added for the menu entries "show only associated polars"
     - prevented the multiple repaint of surface velocities in the 3d view
     - corrected minor errors in the derotate operation of airfoils

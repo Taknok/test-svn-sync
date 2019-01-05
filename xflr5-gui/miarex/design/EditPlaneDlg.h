@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	EditPlaneDlg Class
-	Copyright (C) 2015-2017 Andre Deperrois 
+    Copyright (C) 2015-2019 Andre Deperrois
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ class EditPlaneDlg : public QDialog
 	friend class gl3dView;
 
 public:
-	EditPlaneDlg(QWidget *pParent = NULL);
+    EditPlaneDlg(QWidget *pParent = nullptr);
 
 	void showEvent(QShowEvent *event);
 	void hideEvent(QHideEvent *event);
