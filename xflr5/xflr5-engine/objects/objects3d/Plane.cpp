@@ -126,7 +126,7 @@ void Plane::computeVolumeInertia(double &Mass, Vector3d & CoG, double &CoGIxx, d
 	Vector3d CoGBody;
 	Vector3d CoGWing[MAXWINGS];
 	Wing *pWing[MAXWINGS];
-	pWing[0] = pWing[1] = pWing[2] = pWing[3] = NULL;
+    pWing[0] = pWing[1] = pWing[2] = pWing[3] = nullptr;
 
 	pWing[0] = m_Wing;
 	if(m_bBiplane) pWing[1] = m_Wing+1;
@@ -218,9 +218,9 @@ void Plane::computeBodyAxisInertia()
 
 
 	pWing[0] = m_Wing;
-	if(m_bBiplane) pWing[1] = m_Wing+1; else pWing[1] = NULL;
-	if(m_bStab)    pWing[2] = m_Wing+2; else pWing[2] = NULL;
-	if(m_bFin)     pWing[3] = m_Wing+3; else pWing[3] = NULL;
+    if(m_bBiplane) pWing[1] = m_Wing+1; else pWing[1] = nullptr;
+    if(m_bStab)    pWing[2] = m_Wing+2; else pWing[2] = nullptr;
+    if(m_bFin)     pWing[3] = m_Wing+3; else pWing[3] = nullptr;
 
 	computeVolumeInertia(VolumeMass, VolumeCoG, Ixx, Iyy, Izz, Ixz);
 	m_TotalMass = VolumeMass;
@@ -553,9 +553,9 @@ Wing *Plane::wing(XFLR5::enumWingType wingType)
 		case XFLR5::FIN:
 			return fin();
 		default:
-			return NULL;
+            return nullptr;
 	}
-	return NULL;
+    return nullptr;
 }
 
 
@@ -565,17 +565,17 @@ Wing *Plane::wing(int iw)
 	if(iw==0)	return m_Wing;
 	else if (iw==1)
 	{
-		return m_bBiplane ? m_Wing+1 : NULL;
+        return m_bBiplane ? m_Wing+1 : nullptr;
 	}
 	else if (iw==2)
 	{
-		return m_bStab    ? m_Wing+2 : NULL;
+        return m_bStab    ? m_Wing+2 : nullptr;
 	}
 	else if (iw==3)
 	{
-		return m_bFin     ? m_Wing+3 : NULL;
+        return m_bFin     ? m_Wing+3 : nullptr;
 	}
-	return NULL;
+    return nullptr;
 }
 
 

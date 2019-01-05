@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	gl3dPlaneView Class
-	Copyright (C) 2016 Andre Deperrois 
+    Copyright (C) 2016-2019 Andre Deperrois
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 class gl3dPlaneView : public gl3dView
 {
 public:
-	gl3dPlaneView(QWidget *pParent = NULL);
+    gl3dPlaneView(QWidget *pParent = nullptr);
 	void setPlane(Plane*pPlane){m_pPlane = pPlane;}
 
 private:
