@@ -1451,8 +1451,9 @@ void MainFrame::createMiarexActions()
 	m_pHidePlaneWPlrs->setStatusTip(tr("Hide all the polar curves associated to the currently selected wing or plane"));
 	connect(m_pHidePlaneWPlrs, SIGNAL(triggered()), m_pMiarex, SLOT(onHidePlaneWPolars()));
 
-	m_pShowPlaneWPlrsOnly = new QAction(tr("Show Only Associated Polars"), this);
-	connect(m_pShowPlaneWPlrsOnly, SIGNAL(triggered()), m_pMiarex, SLOT(onShowPlaneWPolarsOnly()));
+    m_pShowPlaneWPlrsOnly = new QAction(tr("Show only associated Polars"), this);
+    m_pShowPlaneWPlrsOnly->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_U));
+    connect(m_pShowPlaneWPlrsOnly, SIGNAL(triggered()), m_pMiarex, SLOT(onShowPlaneWPolarsOnly()));
 
 	m_pShowPlaneWPlrs = new QAction(tr("Show Associated Polars"), this);
 	m_pShowPlaneWPlrs->setStatusTip(tr("Show all the polar curves associated to the currently selected wing or plane"));
@@ -2349,6 +2350,7 @@ void MainFrame::createXDirectActions()
 	connect(m_pDeleteFoilPolars, SIGNAL(triggered()), m_pXDirect, SLOT(onDeleteFoilPolars()));
 
 	m_pShowFoilPolarsOnly = new QAction(tr("Show only associated polars"), this);
+    m_pShowFoilPolarsOnly->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_U));
 	connect(m_pShowFoilPolarsOnly, SIGNAL(triggered()), m_pXDirect, SLOT(onShowFoilPolarsOnly()));
 
 	m_pShowFoilPolars = new QAction(tr("Show associated polars"), this);
