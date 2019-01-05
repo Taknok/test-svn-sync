@@ -31,7 +31,7 @@
 #include <miarex/view/GL3DScales.h>
 #include <objects/objects3d/Surface.h>
 #include <miarex/view/W3dPrefsDlg.h>
-
+#include <misc/waitdlg.h>
 
 gl3dMiarexView::gl3dMiarexView(QWidget *parent) : gl3dView(parent)
 {
@@ -375,9 +375,11 @@ bool gl3dMiarexView::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNod
 
 	Wing *pWing;
 
-	QProgressDialog dlg(tr("Streamlines calculation"), tr("Abort"), 0, nPanels);
+/*	QProgressDialog dlg(tr("Streamlines calculation"), tr("Abort"), 0, nPanels);
 	dlg.setWindowModality(Qt::WindowModal);
-	dlg.show();
+    dlg.show();*/
+    WaitDlg dlg;
+    dlg.show();
 
 	bool bFound;
 	int i, m, p, iWing;
@@ -551,15 +553,21 @@ bool gl3dMiarexView::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNod
 					}
 				}
 
-				dlg.setValue(m);
+//				dlg.setValue(m);
 				m++;
 
 				qApp->processEvents();
-				if(dlg.wasCanceled()) break;
+                if(dlg.isCancelled())
+                {
+                    qDebug()<<"cancelled....";
+                    break;
+                }
+                else
+                    dlg.setProgress(p);
 			}
-			if(dlg.wasCanceled()) break;
+//			if(dlg.wasCanceled()) break;
 		}
-		if(dlg.wasCanceled()) break;
+//		if(dlg.wasCanceled()) break;
 	}
 //	if(!dlg.wasCanceled()) Q_ASSERT(iv==streamArraySize);
 
@@ -578,7 +586,7 @@ bool gl3dMiarexView::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNod
 	m_vboStreamLines.release();
 	delete [] pStreamVertexArray;
 
-	if(dlg.wasCanceled()) return false;
+//	if(dlg.wasCanceled()) return false;
 	return true;
 }
 
@@ -922,10 +930,10 @@ void gl3dMiarexView::glMakeMoments(Wing *pWing, WPolar *pWPolar, PlaneOpp *pPOpp
 
 	int i;
 
-	double ampL, ampM, ampN;
-	double sign;
+    double ampL=0.0, ampM=0.0, ampN=0.0;
+    double sign=0.0;
 	double angle=0.0;//radian
-	double endx, endy, endz, dx, dy, dz,xae, yae, zae;
+    double endx, endy=0.0, endz=0.0, dx=0.0, dy=0.0, dz=0.0,xae=0.0, yae=0.0, zae=0.0;
 	double factor = 10.0;
 	double radius= pWing->m_PlanformSpan/4.0;
 
@@ -1090,6 +1098,7 @@ void gl3dMiarexView::glMakeMoments(Wing *pWing, WPolar *pWPolar, PlaneOpp *pPOpp
 	m_vboMoments.release();
 	delete [] momentVertexArray;
 }
+
 
 void gl3dMiarexView::glMakeLiftStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp)
 {

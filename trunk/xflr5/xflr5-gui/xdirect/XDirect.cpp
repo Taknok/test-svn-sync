@@ -430,7 +430,7 @@ void XDirect::createPolarCurves()
 
 	for (k=0; k<m_poaPolar->size(); k++)
 	{
-		pPolar = (Polar*)m_poaPolar->at(k);
+        pPolar = m_poaPolar->at(k);
 
 		if (pPolar->isVisible() && pPolar->m_Alpha.size()>0)
 		{
@@ -1988,7 +1988,7 @@ void XDirect::onDeleteFoilPolars()
 		Polar* pPolar;
 		for (l=m_poaPolar->size()-1; l>=0; l--)
 		{
-			pPolar = (Polar*)m_poaPolar->at(l);
+            pPolar = m_poaPolar->at(l);
 			if (pPolar->foilName() == m_pCurFoil->foilName())
 			{
 				m_poaPolar->removeAt(l);
@@ -2364,7 +2364,7 @@ void XDirect::onExportAllPolars()
 	Polar *pPolar;
 	for(int l=0; l<m_poaPolar->size(); l++)
 	{
-		pPolar = (Polar*)m_poaPolar->at(l);
+        pPolar = m_poaPolar->at(l);
 		FileName = DirName + "/" + pPolar->foilName() + "_" + pPolar->polarName();
 		if(Settings::s_ExportFileType==XFLR5::TXT) FileName += ".txt";
 		else                                       FileName += ".csv";
@@ -2756,7 +2756,7 @@ void XDirect::onHideAllPolars()
 	Polar *pPolar;
 	for (int i=0; i<m_poaPolar->size(); i++)
 	{
-		pPolar = (Polar*)m_poaPolar->at(i);
+        pPolar = m_poaPolar->at(i);
 		pPolar->isVisible() = false;
 	}
 	emit projectModified();
@@ -2775,7 +2775,7 @@ void XDirect::onHideFoilPolars()
 	Polar *pPolar;
 	for (int i=0; i<m_poaPolar->size(); i++)
 	{
-		pPolar = (Polar*)m_poaPolar->at(i);
+        pPolar = m_poaPolar->at(i);
 		if(pPolar->foilName() == m_pCurFoil->foilName())
 		{
 			pPolar->isVisible() = false;
@@ -3444,7 +3444,7 @@ void XDirect::onRenameCurPolar()
 	QStringList NameList;
 	for(k=0; k<m_poaPolar->size(); k++)
 	{
-		pPolar = (Polar*)m_poaPolar->at(k);
+        pPolar = m_poaPolar->at(k);
 		if(pPolar->foilName() == m_pCurFoil->foilName())
 			NameList.append(pPolar->polarName());
 	}
@@ -3464,7 +3464,7 @@ void XDirect::onRenameCurPolar()
 			bExists = false;
 			for (k=0; k<m_poaPolar->size(); k++)
 			{
-				pPolar = (Polar*)m_poaPolar->at(k);
+                pPolar = m_poaPolar->at(k);
 				if ((pPolar->foilName()==m_pCurFoil->foilName()) && (pPolar->polarName() == renDlg.newName()))
 				{
 					bExists = true;
@@ -3491,7 +3491,7 @@ void XDirect::onRenameCurPolar()
 			if (OldName == renDlg.newName()) return;
 			for (k=0; k<m_poaPolar->size(); k++)
 			{
-				pPolar = (Polar*)m_poaPolar->at(k);
+                pPolar = m_poaPolar->at(k);
 				if (pPolar->polarName() == renDlg.newName())
 				{
 					bExists = true;
@@ -3839,7 +3839,7 @@ void XDirect::onShowAllPolars()
 	Polar *pPolar;
 	for (int i=0; i<m_poaPolar->size(); i++)
 	{
-		pPolar = (Polar*)m_poaPolar->at(i);
+        pPolar = m_poaPolar->at(i);
 		pPolar->isVisible() = true;
 	}
 	emit projectModified();
@@ -3887,7 +3887,7 @@ void XDirect::onShowFoilPolarsOnly()
 	Polar *pPolar;
 	for (int i=0; i<m_poaPolar->size(); i++)
 	{
-		pPolar = (Polar*)m_poaPolar->at(i);
+        pPolar = m_poaPolar->at(i);
 		pPolar->isVisible() = (pPolar->foilName() == m_pCurFoil->foilName());
 	}
 	emit projectModified();
@@ -3906,7 +3906,7 @@ void XDirect::onShowFoilPolars()
 	Polar *pPolar;
 	for (int i=0; i<m_poaPolar->size(); i++)
 	{
-		pPolar = (Polar*)m_poaPolar->at(i);
+        pPolar = m_poaPolar->at(i);
 		if(pPolar->foilName() == m_pCurFoil->foilName())
 		{
 			pPolar->isVisible() = true;
@@ -4349,7 +4349,7 @@ Polar * XDirect::setPolar(Polar *pPolar)
 		//try to get one from the object array
 		for(int i=0; i<m_poaPolar->size(); i++)
 		{
-			pPolar = (Polar*)m_poaPolar->at(i);
+            pPolar = m_poaPolar->at(i);
 			if(pPolar && pPolar->foilName()==m_pCurFoil->foilName())
 			{
 				//set this one
@@ -4367,7 +4367,7 @@ Polar * XDirect::setPolar(Polar *pPolar)
 			bool bFound = false;
 			for (int i=0; i<m_poaPolar->size(); i++)
 			{
-				pOldPolar = (Polar*)m_poaPolar->at(i);
+                pOldPolar = m_poaPolar->at(i);
 				if ((pOldPolar->foilName() == m_pCurFoil->foilName()) &&
 					(pOldPolar->polarName() == m_pCurPolar->polarName()))
 				{
@@ -4646,8 +4646,8 @@ void XDirect::setupLayout()
 	{
 		QVBoxLayout *pDisplayGroup = new QVBoxLayout;
 		{
-			m_pctrlShowBL        = new QCheckBox(tr("Show BL"));
-			m_pctrlShowPressure  = new QCheckBox(tr("Show Pressure"));
+            m_pctrlShowBL        = new QCheckBox(tr("Displacement thickness"));
+            m_pctrlShowPressure  = new QCheckBox(tr("Pressure"));
 			m_pctrlAnimate       = new QCheckBox(tr("Animate"));
 			m_pctrlAnimateSpeed  = new QSlider(Qt::Horizontal);
 			m_pctrlAnimateSpeed->setMinimum(0);
