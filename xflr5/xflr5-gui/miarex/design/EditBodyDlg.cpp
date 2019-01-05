@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	EditBodyDlg Class
-	Copyright (C) 2015 Andre Deperrois 
+    Copyright (C) 2015-2019 Andre Deperrois
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -58,15 +58,13 @@ EditBodyDlg::EditBodyDlg(QWidget *pParent) : QDialog(pParent)
 	setWindowTitle("Body object explorer");
 	setWindowFlags(Qt::Window);
 
-	m_pStruct = NULL;
-	m_pDelegate = NULL;
-	m_pModel = NULL;
+    m_pStruct = nullptr;
+    m_pDelegate = nullptr;
+    m_pModel = nullptr;
 
 	m_enumActiveWingType = XFLR5::OTHERWING;
 	m_iActivePointMass = -1;
 
-	m_bResetglFrameHighlight   = true;
-	m_bResetglBody             = true;
 	m_bChanged                 = false;
 
 	m_pInsertBefore  = new QAction(tr("Insert before"), this);
@@ -546,22 +544,6 @@ void EditBodyDlg::reject()
 }
 
 
-/**
-* Creates the VertexBufferObjects for OpenGL 3.0
-*/
-void EditBodyDlg::glMake3DObjects()
-{
-	if(m_bResetglBody)
-	{
-		m_bResetglBody = false;
-		if(m_pBody->isSplineType())          m_pglBodyView->glMakeBodySplines(m_pBody);
-		else if(m_pBody->isFlatPanelType())  m_pglBodyView->glMakeBody3DFlatPanels(m_pBody);
-		m_pglBodyView->glMakeEditBodyMesh(m_pBody, Vector3d(0.0,0.0,0.0));
-	}
-}
-
-
-
 void EditBodyDlg::connectSignals()
 {
 	connect(m_pBodyLineWidget, SIGNAL(objectModified()), this, SLOT(onRefillBodyTree()));
@@ -841,7 +823,8 @@ void EditBodyDlg::onRedraw()
 	QStandardItem *pItem = m_pModel->itemFromIndex(m_pModel->index(0,0));
 	readBodyTree(pItem->child(0,0)->index());
 
-	m_bResetglBody = true;
+    m_pglBodyView->resetGLBody();
+
 	m_bChanged = true;
 	updateViews();
 }
@@ -850,7 +833,8 @@ void EditBodyDlg::onRedraw()
 void EditBodyDlg::onRefillBodyTree()
 {
 	fillBodyTreeView();
-	m_bResetglBody = true;
+    m_pglBodyView->resetGLBody();
+
 	m_pglBodyView->update();
 	m_pBodyLineWidget->update();
 	m_pFrameWidget->update();
@@ -1109,7 +1093,7 @@ void EditBodyDlg::identifySelection(const QModelIndex &indexSel)
 	m_iActivePointMass = -1;
 
 	QModelIndex indexLevel = indexSel;
-	QString object, value;
+    QString object;
 	do
 	{
 		object = indexLevel.sibling(indexLevel.row(),0).data().toString();
@@ -1117,7 +1101,8 @@ void EditBodyDlg::identifySelection(const QModelIndex &indexSel)
 		if(object.indexOf("Frame_", 0, Qt::CaseInsensitive)>=0)
 		{
 			setActiveFrame(object.right(object.length()-6).toInt() -1);
-			Frame::setSelected(-1);
+//            Frame::setSelected(-1);
+            m_pglBodyView->m_bResetglFrameHighlight = true;
 			m_iActivePointMass = -1;
 			return;
 		}
@@ -1157,7 +1142,7 @@ void EditBodyDlg::identifySelection(const QModelIndex &indexSel)
 void EditBodyDlg::setActiveFrame(int iFrame)
 {
 	m_pBody->setActiveFrame(m_pBody->frame(iFrame));
-	m_bResetglFrameHighlight = true;
+    m_pglBodyView->m_bResetglFrameHighlight = true;
 	m_pglBodyView->update();
 }
 
@@ -1173,8 +1158,8 @@ void EditBodyDlg::onInsertBefore()
 		fillBodyTreeView();
 
 		m_bChanged = true;
-		m_bResetglFrameHighlight = true;
-		m_bResetglBody   = true;
+        m_pglBodyView->m_bResetglFrameHighlight = true;
+        m_pglBodyView->resetGLBody();
 		m_pglBodyView->update();
 	}
 	else if(m_iActivePointMass>=0)
@@ -1184,7 +1169,7 @@ void EditBodyDlg::onInsertBefore()
 		m_pStruct->closePersistentEditor(m_pStruct->currentIndex());
 
 		m_bChanged = true;
-		m_bResetglFrameHighlight = true;
+        m_pglBodyView->m_bResetglFrameHighlight = true;
 		m_pglBodyView->update();
 
 	}
@@ -1203,8 +1188,9 @@ void EditBodyDlg::onInsertAfter()
 
 		m_pBody->m_iActiveFrame++;
 		m_bChanged = true;
-		m_bResetglFrameHighlight = true;
-		m_bResetglBody   = true;
+        m_pglBodyView->m_bResetglFrameHighlight = true;
+        m_pglBodyView->resetGLBody();
+
 		m_pglBodyView->update();
 	}
 	else if(m_iActivePointMass>=0)
@@ -1220,7 +1206,7 @@ void EditBodyDlg::onInsertAfter()
 		fillBodyTreeView();
 
 		m_bChanged = true;
-		m_bResetglFrameHighlight = true;
+        m_pglBodyView->m_bResetglFrameHighlight = true;
 		m_pglBodyView->update();
 
 	}
@@ -1237,8 +1223,9 @@ void EditBodyDlg::onDelete()
 		fillBodyTreeView();
 
 		m_bChanged = true;
-		m_bResetglFrameHighlight = true;
-		m_bResetglBody   = true;
+        m_pglBodyView->m_bResetglFrameHighlight = true;
+        m_pglBodyView->resetGLBody();
+
 		m_pglBodyView->update();
 	}
 	else if(m_iActivePointMass>=0)
@@ -1253,7 +1240,7 @@ void EditBodyDlg::onDelete()
 		fillBodyTreeView();
 
 		m_bChanged = true;
-		m_bResetglFrameHighlight = true;
+        m_pglBodyView->m_bResetglFrameHighlight = true;
 		m_pglBodyView->update();
 	}
 }
@@ -1423,7 +1410,7 @@ void EditBodyDlg::onImportBodyXML()
 	m_pBody->duplicate(a_plane.body());
 	initDialog(m_pBody);
 
-	m_bResetglBody       = true;
+    m_pglBodyView->resetGLBody();
 
 	m_bChanged = true;
 
@@ -1446,7 +1433,8 @@ void EditBodyDlg::onScaleBody()
 	{
 		m_bChanged = true;
 		m_pBody->scale(dlg.m_XFactor, dlg.m_YFactor, dlg.m_ZFactor, dlg.m_bFrameOnly, dlg.m_FrameID);
-		m_bResetglBody = true;
+        m_pglBodyView->resetGLBody();
+
 		fillBodyTreeView();
 
 		updateViews();
@@ -1468,9 +1456,8 @@ void EditBodyDlg::onTranslateBody()
 		m_bChanged = true;
 		m_pBody->translate(dlg.m_XTrans, dlg.m_YTrans, dlg.m_ZTrans, dlg.m_bFrameOnly, dlg.m_FrameID);
 		fillBodyTreeView();
-
-		m_bResetglBody = true;
-		updateViews();
+        m_pglBodyView->resetGLBody();
+        updateViews();
 	}
 }
 
@@ -1481,8 +1468,8 @@ void EditBodyDlg::onBodyInertia()
 	if(!m_pBody) return;
 	InertiaDlg dlg(this);
 	dlg.m_pBody  = m_pBody;
-	dlg.m_pPlane = NULL;
-	dlg.m_pWing  = NULL;
+    dlg.m_pPlane = nullptr;
+    dlg.m_pWing  = nullptr;
 	dlg.initDialog();
 	dlg.move(pos().x()+25, pos().y()+25);
 	if(dlg.exec()==QDialog::Accepted) m_bChanged=true;
