@@ -2,7 +2,7 @@
 
     XFoil Class
     Copyright (C) 2000 Mark Drela
-    Copyright (C) 2003 Andre Deperrois techwinder@gmail.com
+    Copyright (C) 2003 Andre Deperrois techwinder@gmail.com - translation to C
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
 #include <QtCore>
 #include <QCoreApplication>
 #include <QDataStream>
-#include <QtDebug>
+#include <QDebug>
 
 #include "XFoil.h"
 
@@ -36,7 +36,7 @@ double XFoil::vaccel = 0.01;
 
 XFoil::XFoil()
 {
-    m_pOutStream = NULL;
+    m_pOutStream = nullptr;
     //------ primary dimensioning limit parameters
 
     //------ derived dimensioning limit parameters
@@ -120,15 +120,11 @@ bool XFoil::initialize()
     memset(cij, 0, sizeof(cij));
     memset(cpi, 0, sizeof(cpi));
     memset(cpv, 0, sizeof(cpv));
-    memset(ctau, 0, sizeof(ctau));
-    memset(ctq, 0, sizeof(ctq));
     memset(dij, 0, sizeof(dij));
-    memset(dis, 0, sizeof(dis));
     memset(dq, 0, sizeof(dq));
     memset(dqdg, 0, sizeof(dqdg));
     memset(dqdm, 0, sizeof(dqdm));
     memset(delt, 0, sizeof(delt));
-    memset(dstr, 0, sizeof(dstr));
     memset(dzdg, 0, sizeof(dzdg));
     memset(dzdm, 0, sizeof(dzdm));
     memset(dzdn, 0, sizeof(dzdn));
@@ -159,9 +155,6 @@ bool XFoil::initialize()
     memset(sig, 0, sizeof(sig));
     memset(snew, 0, sizeof(snew));
     memset(sig, 0, sizeof(sig));
-    memset(tau, 0, sizeof(tau));
-    memset(thet, 0, sizeof(thet));
-    memset(uedg, 0, sizeof(uedg));
     memset(uinv, 0, sizeof(uinv));
     memset(uslp, 0, sizeof(uslp));
     memset(vti, 0, sizeof(vti));
@@ -206,6 +199,7 @@ bool XFoil::initialize()
     memset(Hk,     0, sizeof(Hk));
     memset(RTheta, 0, sizeof(RTheta));
     memset(itran,  0, sizeof(itran));
+
     m_nSide1 = m_nSide2 = 0;
     //mdes
     memset(wc, 0, sizeof(wc));

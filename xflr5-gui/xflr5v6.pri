@@ -125,6 +125,7 @@ SOURCES += \
     misc/voidwidget.cpp \
     misc/updater.cpp \
     misc/popup.cpp \
+    misc/waitdlg.cpp \
     graph/graphdlg.cpp \
     graph/graph.cpp \
     graph/graph_globals.cpp \
@@ -261,6 +262,7 @@ HEADERS += \
     misc/text/FloatEditDelegate.h \
     misc/updater.h \
     misc/popup.h \
+    misc/waitdlg.h \
     graph/graphdlg.h \
     graph/linestyle.h \
     graph/graph.h \
