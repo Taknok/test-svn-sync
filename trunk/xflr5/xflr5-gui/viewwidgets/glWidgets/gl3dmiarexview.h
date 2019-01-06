@@ -43,7 +43,7 @@ private:
 public:
     void glMake3dObjects();
 	void glMakeCpLegendClr();
-    bool glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNode, WPolar *pWPolar, PlaneOpp *pPOpp);
+    bool glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNode, WPolar *pWPolar, PlaneOpp *pPOpp, int nPanels);
 	void glMakeSurfVelocities(Panel *pPanel, WPolar *pWPolar, PlaneOpp *pPOpp, int nPanels);
 	void glMakeTransitions(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
     void glMakeLiftStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
@@ -101,6 +101,8 @@ public:
     static double s_LegendMax;                /**< maximum value of the Cp scale in 3D view */
 
 
+    bool m_bSurfVelocitiesDone;
+    bool m_bStreamlinesDone;
 
     bool m_bSurfVelocities;            /**< true if the velocities should be displayed in the operating point or 3D view*/
     bool m_bStream;                    /**< true if the streamlines should be displayed in the operating point or 3D view*/
