@@ -114,7 +114,7 @@ void WPolar::replacePOppDataAt(int pos, PlaneOpp *pPOpp)
 	m_XCP[pos]        =  pPOpp->m_CP.x;
 	m_YCP[pos]        =  pPOpp->m_CP.x;
 	m_ZCP[pos]        =  pPOpp->m_CP.z;
-	m_MaxBending[pos] =  pPOpp->m_pPlaneWOpp[0]->m_MaxBending;
+	m_MaxBending[pos] =  pPOpp->m_pWOpp[0]->m_MaxBending;
 	m_Ctrl[pos]       =  pPOpp->m_Ctrl;
 	m_XNP[pos]        =  pPOpp->m_XNP;
 
@@ -149,7 +149,7 @@ void WPolar::insertPOppDataAt(int pos, PlaneOpp *pPOpp)
 	m_XCP.insert(pos,  pPOpp->m_CP.x);
 	m_YCP.insert(pos,  pPOpp->m_CP.y);
 	m_ZCP.insert(pos,  pPOpp->m_CP.z);
-	if(pPOpp->m_pPlaneWOpp[0])	m_MaxBending.insert(pos, pPOpp->m_pPlaneWOpp[0]->m_MaxBending);
+	if(pPOpp->m_pWOpp[0])	m_MaxBending.insert(pos, pPOpp->m_pWOpp[0]->m_MaxBending);
 	else                        m_MaxBending.insert(pos, 0.0);
 	m_Ctrl.insert(pos, pPOpp->m_Ctrl);
 	m_XNP.insert(pos,  pPOpp->m_XNP);

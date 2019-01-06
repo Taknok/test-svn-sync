@@ -1903,7 +1903,7 @@ void gl3dView::setSpanStations(Plane *pPlane, WPolar *pWPolar, PlaneOpp *pPOpp)
 	{
 		if(pPOpp)
 		{
-			m_Ny[0] = pPOpp->m_pPlaneWOpp[0]->m_NStation-1;
+			m_Ny[0] = pPOpp->m_pWOpp[0]->m_NStation-1;
 		}
 		else
 		{

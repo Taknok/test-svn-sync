@@ -205,12 +205,14 @@ public:
 	QString &leftFoil(const int &iSection);
 	QString& rWingDescription() {return m_WingDescription;}
 
-	bool &textures(){return m_bTextures;}
+    bool textures() const {return m_bTextures;}
+    void setTextures(bool bTextures) {m_bTextures=bTextures;}
 
     ObjectColor const & wingColor() const {return m_WingColor;}
     void setWingColor(ObjectColor const &colour) {m_WingColor= colour;}
 
-	XFLR5::enumWingType &wingType() {return m_WingType;}
+    XFLR5::enumWingType const &wingType() const {return m_WingType;}
+    void setWingType(XFLR5::enumWingType type) {m_WingType=type;}
 
 	void getTextureUV(int iSurf, double *leftV, double *rightV, double &leftU, double &rightU, int nPoints);
 

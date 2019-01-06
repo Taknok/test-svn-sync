@@ -41,11 +41,12 @@ private:
 	void resizeGL(int width, int height);
 
 public:
+    void glMake3dObjects();
 	void glMakeCpLegendClr();
 	bool glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNode, WPolar *pWPolar, PlaneOpp *pPOpp, int nPanels);
 	void glMakeSurfVelocities(Panel *pPanel, WPolar *pWPolar, PlaneOpp *pPOpp, int nPanels);
 	void glMakeTransitions(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
-	void glMakeLiftStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
+    void glMakeLiftStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
 	void glMakeLiftForce(WPolar *pWPolar, PlaneOpp *pPOpp);
 	void glMakeMoments(Wing *pWing, WPolar *pWPolar, PlaneOpp *pPOpp);
 	void glMakeDownwash(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
@@ -73,6 +74,34 @@ public:
 	QOpenGLBuffer m_vboLiftForce, m_vboMoments;
 	QOpenGLBuffer m_vboICd[MAXWINGS], m_vboVCd[MAXWINGS], m_vboLiftStrips[MAXWINGS], m_vboTransitions[MAXWINGS], m_vboDownwash[MAXWINGS];
 	QOpenGLBuffer m_vboMesh, m_vboLegendColor;
+
+
+    static bool s_bResetglGeom;               /**< true if the geometry OpenGL list needs to be re-generated */
+    static bool s_bResetglMesh;               /**< true if the mesh OpenGL list needs to be re-generated */
+    static bool s_bResetglWake;               /**< true if the wake OpenGL list needs to be re-generated */
+    static bool s_bResetglOpp;                /**< true if the OpenGL lists need to be re-generated */
+    static bool s_bResetglLift;               /**< true if the OpenGL lists need to be re-generated */
+    static bool s_bResetglDrag;               /**< true if the OpenGL lists need to be re-generated */
+    static bool s_bResetglDownwash;           /**< true if the OpenGL lists need to be re-generated */
+    static bool s_bResetglPanelForce;         /**< true if the OpenGL lists need to be re-generated */
+    static bool s_bResetglPanelCp;            /**< true if the OpenGL lists need to be re-generated */
+    static bool s_bResetglStream;             /**< true if the streamlines OpenGL list needs to be re-generated */
+    static bool s_bResetglLegend;             /**< true if the legend needs to be reset if the window has been resized */
+    static bool s_bResetglBody;               /**< true if the openGL list for the body needs to be re-generated */
+    static bool s_bResetglSurfVelocities;     /**< true if the crossflow OpenGL list needs to be refreshed */
+
+    static double s_LiftScale;                /**< scaling factor for the lift display in 3D view */
+    static double s_VelocityScale;            /**< scaling factor for the velocity display in 3D view */
+    static double s_DragScale;                /**< scaling factor for the drag display in 3D view */
+
+    static bool s_bAutoCpScale;		          /**< true if the Cp scale should be set automatically */
+    static double s_LegendMin;                /**< minimum value of the Cp scale in 3D view */
+    static double s_LegendMax;                /**< maximum value of the Cp scale in 3D view */
+
+
+
+    bool m_bSurfVelocities;            /**< true if the velocities should be displayed in the operating point or 3D view*/
+    bool m_bStream;                    /**< true if the streamlines should be displayed in the operating point or 3D view*/
 
 };
 

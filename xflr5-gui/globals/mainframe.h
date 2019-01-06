@@ -47,23 +47,23 @@
 #include <miarex/view/GLLightDlg.h>
 #include <misc/voidwidget.h>
 
-class Miarex;
-class XDirect;
 class AFoil;
+class Direct2dDesign;
+class Foil;
+class GL3DScales;
+class GLLightDlg;
+class Graph;
+class InverseViewWidget;
+class Miarex;
+class MiarexTileWidget;
+class OpPoint;
+class Polar;
+class StabViewDlg;
+class Updater;
+class XDirect;
+class XDirectTileWidget;
 class XInverse;
 class gl3dMiarexView;
-class InverseViewWidget;
-class Graph;
-class Direct2dDesign;
-class XDirectTileWidget;
-class MiarexTileWidget;
-class CVector;
-class GLLightDlg;
-class GL3DScales;
-class Foil;
-class Polar;
-class OpPoint;
-class Updater;
 
 /**
 *@class MainFrame
@@ -189,10 +189,9 @@ protected:
 	void showEvent(QShowEvent *event);
 
 public:
-	void addRecentFile(const QString &PathNAme);
+    void addRecentFile(const QString &PathName);
     void checkGraphActions();
     void checkForUpdates();
-	void ClientToGL(QPoint const &point, CVector &real);
 	void createDockWindows();
 	void createToolbars();
 	void createStatusBar();
@@ -213,7 +212,6 @@ public:
 	void createAFoilToolbar();
 	void deleteProject(bool bClosing=false);
 	void exportGraph(Graph *pGraph);
-	void GLToClient(CVector const &real, QPoint &point);
 	static bool hasOpenGL(){return s_bOpenGL;}
 	bool loadSettings();
 	bool loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
@@ -269,7 +267,7 @@ private:
 	Miarex *m_pMiarex;    /**< A void pointer to the instance of the QMiarex application. The pointer will be cast to the QMiarex type at runtime. This is necessary to prevent loop includes of header files. */
 	XInverse *m_pXInverse;  /**< A void pointer to the instance of the QXInverse application. The pointer will be cast to the QXInverse type at runtime. This is necessary to prevent loop includes of header files. */
 	XDirect *m_pXDirect;   /**< A void pointer to the instance of the QXDirect application. The pointer will be cast to the QXDirect type at runtime. This is necessary to prevent loop includes of header files. */
-	void *m_pStabView;  /** < A void pointer to the instance of the StabViewDlg window. */
+    StabViewDlg *m_pStabView;  /** < A void pointer to the instance of the StabViewDlg window. */
 	
 	GLLightDlg m_glLightDlg;
 	GL3DScales *m_pGL3DScales;
