@@ -4466,7 +4466,7 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double *Gamma, double *Sigma
 		if(m_pWingList[iw])
 		{
 			pPOpp->addWingOpp(iw, m_pWingList[iw]->m_MatSize);
-			pPOpp->m_pPlaneWOpp[iw]->createWOpp(m_pWingList[iw], m_pWPolar);
+			pPOpp->m_pWOpp[iw]->createWOpp(m_pWingList[iw], m_pWPolar);
 		}
 	}
 
@@ -4474,7 +4474,7 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double *Gamma, double *Sigma
 	pPOpp->alpha() = m_Alpha;
 	pPOpp->m_QInf  = m_QInf;
 
-	pWOpp = pPOpp->m_pPlaneWOpp[0];
+	pWOpp = pPOpp->m_pWOpp[0];
 
 	for (l=0; l<m_pPlane->m_Wing[0].m_NStation; l++)
 	{
@@ -4576,7 +4576,7 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double *Gamma, double *Sigma
 			pPOpp->Cnr =  Cnr;
 
 			//Only one control derivative for all the controls of the polar
-			pPOpp->m_pPlaneWOpp[0]->m_nControls = 1;
+			pPOpp->m_pWOpp[0]->m_nControls = 1;
 			pPOpp->m_nControls = 1;
 			pPOpp->CXe = CXe;
 			pPOpp->CYe = CYe;
@@ -4604,16 +4604,16 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double *Gamma, double *Sigma
 
 	for(int iw=0;iw<MAXWINGS; iw++)
 	{
-		if(pPOpp->m_pPlaneWOpp[iw])
+		if(pPOpp->m_pWOpp[iw])
 		{
-			pPOpp->m_pPlaneWOpp[iw]->m_Alpha = pPOpp->alpha();
-			pPOpp->m_pPlaneWOpp[iw]->m_QInf  = pPOpp->m_QInf;
+			pPOpp->m_pWOpp[iw]->m_Alpha = pPOpp->alpha();
+			pPOpp->m_pWOpp[iw]->m_QInf  = pPOpp->m_QInf;
 
 
-			pPOpp->m_pPlaneWOpp[iw]->m_FlapMoment.clear();
+			pPOpp->m_pWOpp[iw]->m_FlapMoment.clear();
 			for (i=0; i<m_pPlane->m_Wing[iw].m_nFlaps; i++)
 			{
-				pPOpp->m_pPlaneWOpp[iw]->m_FlapMoment.append(m_pPlane->m_Wing[iw].m_FlapMoment.at(i));
+				pPOpp->m_pWOpp[iw]->m_FlapMoment.append(m_pPlane->m_Wing[iw].m_FlapMoment.at(i));
 			}
 		}
 	}
@@ -4627,11 +4627,11 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double *Gamma, double *Sigma
 	{
 		if(m_pWingList[iw])
 		{
-			if(pPOpp->m_pPlaneWOpp[iw])
+			if(pPOpp->m_pWOpp[iw])
 			{
-				pPOpp->m_pPlaneWOpp[iw]->m_dCp    = pPOpp->m_dCp    + pos;
-				pPOpp->m_pPlaneWOpp[iw]->m_dG     = pPOpp->m_dG     + pos;
-				pPOpp->m_pPlaneWOpp[iw]->m_dSigma = pPOpp->m_dSigma + pos;
+				pPOpp->m_pWOpp[iw]->m_dCp    = pPOpp->m_dCp    + pos;
+				pPOpp->m_pWOpp[iw]->m_dG     = pPOpp->m_dG     + pos;
+				pPOpp->m_pWOpp[iw]->m_dSigma = pPOpp->m_dSigma + pos;
 			}
 			pos +=m_pWingList[iw]->m_MatSize;
 		}

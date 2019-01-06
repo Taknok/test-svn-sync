@@ -3459,10 +3459,9 @@ bool XFoil::getxyf(double x[], double xp[], double y[], double yp[], double s[],
  *-------------------------------------------------------------- */
 bool XFoil::ggcalc()
 {
-    int i,j, iu;
-    double psi, psi_n, res, res1, res2, ag1, ag2;
-    double abis, cbis, sbis, ds1, ds2, dsmin;
-    double xbis, ybis, qbis, bwt;
+    double psi=0, psi_n=0, res=0, res1=0, res2=0, ag1=0, ag2=0;
+    double abis=0, cbis=0, sbis=0, ds1=0, ds2=0, dsmin=0;
+    double xbis=0, ybis=0, qbis=0, bwt=0;
     double bbb[IQX];
     //	double psiinf;
 
@@ -3477,7 +3476,7 @@ bool XFoil::ggcalc()
     writeString(str);
 
 
-    for(i=1; i<=n; i++)
+    for(int i=1; i<=n; i++)
     {
         gam[i] = 0.0;
         gamu[i][1] = 0.0;
@@ -3487,7 +3486,7 @@ bool XFoil::ggcalc()
 
     //---- set up matrix system for  psi = psio  on airfoil surface.
     //-    the unknowns are (dgamma)i and dpsio.
-    for (i=1; i<=n; i++)
+    for (int i=1; i<=n; i++)
     {
         //------ calculate psi and dpsi/dgamma array for current node
         psilin(i, x[i], y[i], nx[i], ny[i], psi, psi_n, false, true);
@@ -3500,12 +3499,12 @@ bool XFoil::ggcalc()
         res2 = -qinf*x[i];
 
         //------ dres/dgamma
-        for (j=1; j<=n; j++)
+        for (int j=1; j<=n; j++)
         {
             aij[i][j] = dzdg[j];
         }
 
-        for (j=1; j<=n; j++)
+        for (int j=1; j<=n; j++)
         {
             bij[i][j] = -dzdm[j];
         }
@@ -3517,11 +3516,12 @@ bool XFoil::ggcalc()
         gamu[i][2] = -res2;
     }
 
+
     //---- set Kutta condition
     //-    res = gam(1) + gam[n]
     res = 0.0;
 
-    for (j=1; j<=n+1; j++) aij[n+1][j] = 0.0;
+    for (int j=1; j<=n+1; j++) aij[n+1][j] = 0.0;
 
     aij[n+1][1] = 1.0;
     aij[n+1][n] = 1.0;
@@ -3530,7 +3530,7 @@ bool XFoil::ggcalc()
     gamu[n+1][2] = -res;
 
     //---- set up Kutta condition (no direct source influence)
-    for (j=1; j<=n;j++) bij[n+1][j] = 0.0;
+    for (int j=1; j<=n;j++) bij[n+1][j] = 0.0;
 
 
     if(sharp)
@@ -3559,10 +3559,10 @@ bool XFoil::ggcalc()
         res = 1000.0;
 
         //----- dres/dgamma
-        for (j=1; j<=n; j++) aij[n][j] = dqdg[j];
+        for (int j=1; j<=n; j++) aij[n][j] = dqdg[j];
 
         //----- -dres/dmass
-        for (j=1; j<=n; j++) bij[n][j] = -dqdm[j];
+        for (int j=1; j<=n; j++) bij[n][j] = -dqdm[j];
 
         //----- dres/dpsio
         aij[n][n+1] = 0.0;
@@ -3580,17 +3580,17 @@ bool XFoil::ggcalc()
     lqaij = true;
 
     //---- solve system for the two vorticity distributions
-    for (iu=0; iu<IQX; iu++) bbb[iu] = gamu[iu][1];//techwinder : create a dummy array
+    for (int iu=0; iu<IQX; iu++) bbb[iu] = gamu[iu][1];//techwinder : create a dummy array
     baksub(n+1, aij, aijpiv, bbb);
-    for (iu=0; iu<IQX; iu++) gamu[iu][1] = bbb[iu] ;
+    for (int iu=0; iu<IQX; iu++) gamu[iu][1] = bbb[iu];
 
-    for (iu=0; iu<IQX; iu++) bbb[iu] = gamu[iu][2];//techwinder : create a dummy array
+    for (int iu=0; iu<IQX; iu++) bbb[iu] = gamu[iu][2];//techwinder : create a dummy array
     baksub(n+1, aij, aijpiv, bbb);
-    for (iu=0; iu<IQX; iu++) gamu[iu][2] = bbb[iu] ;
+    for (int iu=0; iu<IQX; iu++) gamu[iu][2] = bbb[iu] ;
 
 
     //---- set inviscid alpha=0,90 surface speeds for this geometry
-    for (i=1; i<=n+1; i++)
+    for (int i=1; i<=n+1; i++)
     {
         qinvu[i][1] = gamu[i][1];
         qinvu[i][2] = gamu[i][2];

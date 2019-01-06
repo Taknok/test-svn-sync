@@ -31,15 +31,15 @@
 Plane::Plane()
 {
 	m_Wing[0].m_WingName   = QObject::tr("Wing");
-	m_Wing[0].wingType()   = XFLR5::MAINWING;
+    m_Wing[0].setWingType(XFLR5::MAINWING);
 	m_Wing[0].computeGeometry();
 
 	m_Wing[1].m_WingName   = QObject::tr("2nd Wing");
-	m_Wing[1].wingType()   = XFLR5::SECONDWING;
+    m_Wing[1].setWingType(XFLR5::SECONDWING);
 	m_Wing[1].computeGeometry();
 
 	m_Wing[2].m_WingName    = QObject::tr("Elevator");
-	m_Wing[2].wingType()    = XFLR5::ELEVATOR;
+    m_Wing[2].setWingType(XFLR5::ELEVATOR);
 	m_Wing[2].m_bIsFin      = false;
 	m_Wing[2].Chord(0)      = 0.100;
 	m_Wing[2].Chord(1)      = 0.080;
@@ -56,7 +56,7 @@ Plane::Plane()
 	m_Wing[2].computeGeometry();
 
 	m_Wing[3].m_WingName    = QObject::tr("Fin");
-	m_Wing[3].wingType()    = XFLR5::FIN;
+    m_Wing[3].setWingType(XFLR5::FIN);
 	m_Wing[3].m_bIsFin      = true;
 	m_Wing[3].Chord(0)      = 0.100;
 	m_Wing[3].Chord(1)      = 0.060;
@@ -827,10 +827,10 @@ bool Plane::serializePlaneXFL(QDataStream &ar, bool bIsStoring)
 		m_Wing[2].serializeWingXFL(ar, bIsStoring);
 		m_Wing[3].serializeWingXFL(ar, bIsStoring);
 
-		m_Wing[0].wingType() = XFLR5::MAINWING;
-		m_Wing[1].wingType() = XFLR5::SECONDWING;
-		m_Wing[2].wingType() = XFLR5::ELEVATOR;
-		m_Wing[3].wingType() = XFLR5::FIN;
+        m_Wing[0].setWingType(XFLR5::MAINWING);
+        m_Wing[1].setWingType(XFLR5::SECONDWING);
+        m_Wing[2].setWingType(XFLR5::ELEVATOR);
+        m_Wing[3].setWingType(XFLR5::FIN);
 
 		bool bl;
 		ar >> m_bBiplane>> m_bStab >>m_bFin >> m_bDoubleFin >> m_bSymFin >> bl; // m_bDoubleSymFin;

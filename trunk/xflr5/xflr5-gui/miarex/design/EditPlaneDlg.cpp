@@ -1267,7 +1267,7 @@ void EditPlaneDlg::readViewLevel(QModelIndex indexLevel)
                 newwing.clearPointMasses();
                 newwing.clearWingSections();
                 newwing.clearSurfaces();
-                newwing.wingType() = wingType(value);
+                newwing.setWingType(wingType(value));
 				Vector3d wingPos;
 				double wingTiltAngle;
                 readWingTree(&newwing, wingPos, wingTiltAngle, pItem->child(0,0)->index());

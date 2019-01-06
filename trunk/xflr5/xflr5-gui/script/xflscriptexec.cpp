@@ -18,10 +18,11 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 *****************************************************************************/
+
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDateTime>
-#include <QtDebug>
+#include <QDebug>
 
 #include <globals/globals.h>
 #include "xflscriptexec.h"
@@ -32,7 +33,7 @@
 
 XflScriptExec::XflScriptExec()
 {
-	m_pXFile = NULL;
+    m_pXFile = nullptr;
 
 	setLogFile();
 }
