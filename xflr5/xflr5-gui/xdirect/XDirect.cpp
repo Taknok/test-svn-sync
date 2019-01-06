@@ -85,9 +85,9 @@ bool XDirect::s_bStoreOpp = true;
 int XDirect::s_TimeUpdateInterval = 100;
 
 MainFrame *XDirect::s_pMainFrame;
-Foil *    XDirect::m_pCurFoil = NULL;
-Polar*    XDirect::m_pCurPolar = NULL;
-OpPoint * XDirect::m_pCurOpp = NULL;
+Foil *    XDirect::m_pCurFoil = nullptr;
+Polar*    XDirect::m_pCurPolar = nullptr;
+OpPoint * XDirect::m_pCurOpp = nullptr;
 
 
 /**
@@ -98,7 +98,7 @@ XDirect::XDirect(QWidget *parent) : QWidget(parent)
 	setAttribute(Qt::WA_DeleteOnClose);
 	m_pXFADlg = new XFoilAnalysisDlg(this);
 
-	m_pOpPointWidget = NULL;
+    m_pOpPointWidget = nullptr;
 
 	m_LineStyle.m_Style = 0;
 	m_LineStyle.m_Width = 1;
@@ -360,7 +360,7 @@ void XDirect::connectSignals()
 */
 void XDirect::createOppCurves(OpPoint *pOpp)
 {
-	OpPoint *pOpPoint = NULL;
+    OpPoint *pOpPoint = nullptr;
 	if(pOpp) pOpPoint = pOpp; else pOpPoint = m_pCurOpp;
 
 	Curve *pCurve1;
@@ -441,7 +441,7 @@ void XDirect::createPolarCurves()
 			{
 
 				Curve* pCurve[MAXPOLARGRAPHS];
-				Curve* pTr2Curve = NULL;
+                Curve* pTr2Curve = nullptr;
 				for(int ig=0; ig<MAXPOLARGRAPHS; ig++)
 				{
 					pCurve[ig] = m_PlrGraph[ig]->addCurve();
@@ -451,7 +451,7 @@ void XDirect::createPolarCurves()
 					pCurve[ig]->setCurveName(pPolar->polarName());
 
 					if(m_PlrGraph[ig]->yVariable() == 6)	pTr2Curve = m_PlrGraph[ig]->addCurve();
-					else                                    pTr2Curve = NULL;
+                    else                                    pTr2Curve = nullptr;
 					if(pTr2Curve)
 					{
 /*						pTr2Curve->showPoints(pPolar->showPoints());
@@ -1457,8 +1457,9 @@ void XDirect::onAnimateSpeed(int val)
 void XDirect::onAnalyze()
 {
 	if(!m_pCurFoil || !m_pCurPolar) return;
-qDebug("cpgraphtype %d", m_CpGraph.scaleType());
-	readParams();
+//qDebug("cpgraphtype %d", m_CpGraph.scaleType());
+
+    readParams();
 
 	m_pctrlAnalyze->setEnabled(false);
 
@@ -2848,7 +2849,7 @@ void XDirect::onImportXFoilPolars()
 	int pos = pathNames.at(0).lastIndexOf("/");
 	if(pos>0) Settings::s_xmlDirName = pathNames.at(0).left(pos);
 
-	Polar *pPolar = NULL;
+    Polar *pPolar = nullptr;
 	for(int iFile=0; iFile<pathNames.size(); iFile++)
 	{
 		QFile XFile(pathNames.at(iFile));
@@ -2878,7 +2879,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
 	{
 		QString strange = tr("Could not read the file\n")+txtFile.fileName();
 		QMessageBox::warning(s_pMainFrame, tr("Warning"), strange);
-		return NULL;
+        return nullptr;
 	}
 
 	QTextStream in(&txtFile);
@@ -2898,7 +2899,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
 		str+= tr("\ncould be found. The polar(s) will not be stored");
 		delete pPolar;
 		QMessageBox::warning(s_pMainFrame, tr("Warning"), str);
-		return NULL;
+        return nullptr;
 	}
 	pPolar->foilName() = FoilName;
 
@@ -2911,7 +2912,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
 		str = QString("Error reading line %1: Unrecognized Mach and Reynolds type.\nThe polar(s) will not be stored").arg(Line);
 		delete pPolar;
 		QMessageBox::warning(s_pMainFrame, tr("Warning"), str);
-		return NULL;
+        return nullptr;
 	}
     if     (pPolar->ReType() ==1 && pPolar->MaType() ==1) pPolar->polarType() = XFLR5::FIXEDSPEEDPOLAR;
     else if(pPolar->ReType() ==2 && pPolar->MaType() ==2) pPolar->polarType() = XFLR5::FIXEDLIFTPOLAR;
@@ -2925,7 +2926,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
 		str = QString("Error reading line %1. The polar(s) will not be stored").arg(Line);
 		delete pPolar;
 		QMessageBox::warning(s_pMainFrame, tr("Warning"), str);
-		return NULL;
+        return nullptr;
 	}
 
 	pPolar->XtrBot() = strong.mid(9,6).toDouble(&bOK);
@@ -2934,7 +2935,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
 		str = QString("Error reading Bottom Transition value at line %1. The polar(s) will not be stored").arg(Line);
 		delete pPolar;
 		QMessageBox::warning(s_pMainFrame, tr("Warning"), str);
-		return NULL;
+        return nullptr;
 	}
 
 	pPolar->XtrTop() = strong.mid(28,6).toDouble(&bOK);
@@ -2943,7 +2944,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
 		str = QString("Error reading Top Transition value at line %1. The polar(s) will not be stored").arg(Line);
 		delete pPolar;
 		QMessageBox::warning(s_pMainFrame, tr("Warning"), str);
-		return NULL;
+        return nullptr;
 	}
 
 	// Mach     Re     NCrit
@@ -2953,7 +2954,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
 		str = QString("Error reading line %1. The polar(s) will not be stored").arg(Line);
 		delete pPolar;
 		QMessageBox::warning(s_pMainFrame, tr("Warning"), str);
-		return NULL;
+        return nullptr;
 	}
 
 	pPolar->Mach() = strong.mid(8,6).toDouble(&bOK);
@@ -2962,7 +2963,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
 		str = QString("Error reading Mach Number at line %1. The polar(s) will not be stored").arg(Line);
 		delete pPolar;
 		QMessageBox::warning(s_pMainFrame, tr("Warning"), str);
-		return NULL;
+        return nullptr;
 	}
 
 	Re = strong.mid(24,10).toDouble(&bOK);
@@ -2971,7 +2972,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
 		str = QString("Error reading Reynolds Number at line %1. The polar(s) will not be stored").arg(Line);
 		delete pPolar;
 		QMessageBox::warning(s_pMainFrame, tr("Warning"), str);
-		return NULL;
+        return nullptr;
 	}
 	Re *=1000000.0;
 
@@ -2981,7 +2982,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
 		str = QString("Error reading NCrit at line %1. The polar(s) will not be stored").arg(Line);
 		delete pPolar;
 		QMessageBox::warning(s_pMainFrame, tr("Warning"), str);
-		return NULL;
+        return nullptr;
 	}
 	pPolar->Reynolds() = Re;
 
@@ -3437,7 +3438,7 @@ void XDirect::onRenameCurPolar()
 	if(!m_pCurFoil) return;
 
 	int resp, k,l;
-	Polar* pPolar = NULL;
+    Polar* pPolar = nullptr;
 	OpPoint * pOpp;
 	QString OldName = m_pCurPolar->polarName();
 
@@ -4339,7 +4340,7 @@ Polar * XDirect::setPolar(Polar *pPolar)
 		setCurPolar(NULL);
 		setCurOpp(NULL);
 		setAnalysisParams();
-		return NULL;
+        return nullptr;
 	}
 
 	if(pPolar) setCurPolar(pPolar);
@@ -4403,12 +4404,12 @@ Polar * XDirect::setPolar(Polar *pPolar)
  */
 OpPoint * XDirect::setOpp(double Alpha)
 {
-	OpPoint * pOpp = NULL;
+    OpPoint * pOpp = nullptr;
 
 	if(!m_pCurFoil || !m_pCurPolar)
 	{
 		setCurOpp(NULL);
-		return NULL;
+        return nullptr;
 	}
 
 	if(Alpha < -1234567.0) //the default
@@ -4862,7 +4863,7 @@ void XDirect::onRenameCurFoil()
  */
 Foil* XDirect::addNewFoil(Foil *pFoil)
 {
-	if(!pFoil) return NULL;
+    if(!pFoil) return nullptr;
 	QStringList NameList;
     for(int k=0; k<Objects2d::s_oaFoil.size(); k++)
 	{
@@ -4880,7 +4881,7 @@ Foil* XDirect::addNewFoil(Foil *pFoil)
 
 		return pFoil;
 	}
-	return NULL;
+    return nullptr;
 }
 
 

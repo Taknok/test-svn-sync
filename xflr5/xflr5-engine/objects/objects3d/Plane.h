@@ -117,6 +117,8 @@ public:
 	QString& rPlaneDescription() {return m_PlaneDescription;}
 
 
+    Wing *mainWing() {return &m_Wing[0];}
+
 	Wing *wing(int iw);
 	Wing *wing(XFLR5::enumWingType wingType);
 

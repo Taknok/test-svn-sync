@@ -94,9 +94,9 @@ PlaneOpp::PlaneOpp(void *pPlanePtr, void *pWPolarPtr, int PanelArraySize)
 //	for (int iw=0; iw<MAXWINGS; iw++) m_bWing[iw] = false;
 //	m_bWing[0] = true;
 
-	for (int iw=0; iw<MAXWINGS; iw++) m_pPlaneWOpp[iw] = NULL;
+    for (int iw=0; iw<MAXWINGS; iw++) m_pWOpp[iw] = nullptr;
 
-	m_dCp = m_dG = m_dSigma = NULL;
+    m_dCp = m_dG = m_dSigma = nullptr;
 	allocateMemory(PanelArraySize);
 
 
@@ -131,7 +131,7 @@ PlaneOpp::PlaneOpp(void *pPlanePtr, void *pWPolarPtr, int PanelArraySize)
 void PlaneOpp::addWingOpp(int iw, int PanelArraySize)
 {
 //	m_bWing[iw] = true;
-	m_pPlaneWOpp[iw] = new WingOpp(PanelArraySize);
+    m_pWOpp[iw] = new WingOpp(PanelArraySize);
 }
 
 
@@ -170,14 +170,14 @@ void PlaneOpp::releaseMemory()
 	if(m_dSigma) delete [] m_dSigma;
 	if(m_dG)     delete [] m_dG;
 
-	m_dCp = NULL;
-	m_dSigma = NULL;
-	m_dG = NULL;
+    m_dCp = nullptr;
+    m_dSigma = nullptr;
+    m_dG = nullptr;
 
 	for (int iw=0; iw<MAXWINGS; iw++)
 	{
-		if(m_pPlaneWOpp[iw] != NULL) delete m_pPlaneWOpp[iw];
-		m_pPlaneWOpp[iw] = NULL;
+        if(m_pWOpp[iw] != NULL) delete m_pWOpp[iw];
+        m_pWOpp[iw] = nullptr;
 	}
 }
 
@@ -218,8 +218,8 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
 		readCString(ar, m_WPlrName);
 
 		//always a main wing
-		if(m_pPlaneWOpp[0]!=NULL) delete m_pPlaneWOpp[0];
-		m_pPlaneWOpp[0] = new WingOpp();
+        if(m_pWOpp[0]!=NULL) delete m_pWOpp[0];
+        m_pWOpp[0] = new WingOpp();
 
 		if(ArchiveFormat>=1005)
 		{
@@ -227,8 +227,8 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
 			if (a!=0 && a!=1) return false;
 			if(a)
 			{
-				if(m_pPlaneWOpp[1]!=NULL) delete m_pPlaneWOpp[1];
-				m_pPlaneWOpp[1] = new WingOpp();
+                if(m_pWOpp[1]!=NULL) delete m_pWOpp[1];
+                m_pWOpp[1] = new WingOpp();
 			}
 		}
 
@@ -236,16 +236,16 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
 		if (a!=0 && a!=1) return false;
 		if(a)
 		{
-			if(m_pPlaneWOpp[2]!=NULL) delete m_pPlaneWOpp[2];
-			m_pPlaneWOpp[2] = new WingOpp();
+            if(m_pWOpp[2]!=NULL) delete m_pWOpp[2];
+            m_pWOpp[2] = new WingOpp();
 		}
 
 		ar >> a;
 		if (a!=0 && a!=1) return false;
 		if(a)
 		{
-			if(m_pPlaneWOpp[3]!=NULL) delete m_pPlaneWOpp[3];
-			m_pPlaneWOpp[3] = new WingOpp();
+            if(m_pWOpp[3]!=NULL) delete m_pWOpp[3];
+            m_pWOpp[3] = new WingOpp();
 		}
 
 
@@ -374,7 +374,7 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
 
 		ar >> k; //VLMType
 
-		if (!m_pPlaneWOpp[0]->serializeWingOppWPA(ar, bIsStoring))
+        if (!m_pWOpp[0]->serializeWingOppWPA(ar, bIsStoring))
 		{
 			return false;
 		}
@@ -382,64 +382,64 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
 
 		if(ArchiveFormat>=1005)
 		{
-			if(m_pPlaneWOpp[1])
+            if(m_pWOpp[1])
 			{
-				if (!m_pPlaneWOpp[1]->serializeWingOppWPA(ar, bIsStoring))
+                if (!m_pWOpp[1]->serializeWingOppWPA(ar, bIsStoring))
 				{
 					return false;
 				}
 			}
 		}
-		if(m_pPlaneWOpp[2])
+        if(m_pWOpp[2])
 		{
-			if (!m_pPlaneWOpp[2]->serializeWingOppWPA(ar, bIsStoring))
+            if (!m_pWOpp[2]->serializeWingOppWPA(ar, bIsStoring))
 			{
 				return false;
 			}
 
 		}
-		if(m_pPlaneWOpp[3])
+        if(m_pWOpp[3])
 		{
-			if (!m_pPlaneWOpp[3]->serializeWingOppWPA(ar, bIsStoring))
+            if (!m_pWOpp[3]->serializeWingOppWPA(ar, bIsStoring))
 			{
 				return false;
 			}
 		}
 
 
-		m_CL = m_pPlaneWOpp[0]->m_CL;
-		m_CX = m_pPlaneWOpp[0]->m_CX;
-		m_CY = m_pPlaneWOpp[0]->m_CY;
+        m_CL = m_pWOpp[0]->m_CL;
+        m_CX = m_pWOpp[0]->m_CX;
+        m_CY = m_pWOpp[0]->m_CY;
 
-		m_ICD = m_pPlaneWOpp[0]->m_ICD;
-		m_VCD = m_pPlaneWOpp[0]->m_VCD;
+        m_ICD = m_pWOpp[0]->m_ICD;
+        m_VCD = m_pWOpp[0]->m_VCD;
 
-		m_ICm = m_pPlaneWOpp[0]->m_ICm;
-		m_VCm = m_pPlaneWOpp[0]->m_VCm;
-		m_GCm = m_pPlaneWOpp[0]->m_GCm;
+        m_ICm = m_pWOpp[0]->m_ICm;
+        m_VCm = m_pWOpp[0]->m_VCm;
+        m_GCm = m_pWOpp[0]->m_GCm;
 
-		m_GRm = m_pPlaneWOpp[0]->m_GRm;
+        m_GRm = m_pWOpp[0]->m_GRm;
 
-		m_IYm = m_pPlaneWOpp[0]->m_IYm;
-		m_VYm = m_pPlaneWOpp[0]->m_VYm;
-		m_GYm = m_pPlaneWOpp[0]->m_GYm;
+        m_IYm = m_pWOpp[0]->m_IYm;
+        m_VYm = m_pWOpp[0]->m_VYm;
+        m_GYm = m_pWOpp[0]->m_GYm;
 
-		m_CP.copy(m_pPlaneWOpp[0]->m_CP);
+        m_CP.copy(m_pWOpp[0]->m_CP);
 
-		m_Ctrl = m_pPlaneWOpp[0]->m_oldCtrl;
+        m_Ctrl = m_pWOpp[0]->m_oldCtrl;
 
-		memcpy(m_EigenValue,  m_pPlaneWOpp[0]->m_oldEigenValue,  16*sizeof(double));
-		memcpy(m_EigenVector, m_pPlaneWOpp[0]->m_oldEigenVector, 64*sizeof(double));
+        memcpy(m_EigenValue,  m_pWOpp[0]->m_oldEigenValue,  16*sizeof(double));
+        memcpy(m_EigenVector, m_pWOpp[0]->m_oldEigenVector, 64*sizeof(double));
 
 		int pos = 0;
 		for(int iw=0; iw<MAXWINGS; iw++)
 		{
-			if(m_pPlaneWOpp[iw])
+            if(m_pWOpp[iw])
 			{
-				m_pPlaneWOpp[iw]->m_dCp    = m_dCp    + pos;
-				m_pPlaneWOpp[iw]->m_dG     = m_dG     + pos;
-				m_pPlaneWOpp[iw]->m_dSigma = m_dSigma + pos;
-				pos +=m_pPlaneWOpp[iw]->m_NVLMPanels;
+                m_pWOpp[iw]->m_dCp    = m_dCp    + pos;
+                m_pWOpp[iw]->m_dG     = m_dG     + pos;
+                m_pWOpp[iw]->m_dSigma = m_dSigma + pos;
+                pos +=m_pWOpp[iw]->m_NVLMPanels;
 			}
 		}
 
@@ -577,11 +577,11 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
 
 		for(int iw=0; iw<MAXWINGS; iw++)
 		{
-			if(m_pPlaneWOpp[iw])  ar << 1; else ar<<0;
+            if(m_pWOpp[iw])  ar << 1; else ar<<0;
 
-			if(m_pPlaneWOpp[iw])
+            if(m_pWOpp[iw])
 			{
-				m_pPlaneWOpp[iw]->serializeWingOppXFL(ar, bIsStoring);
+                m_pWOpp[iw]->serializeWingOppXFL(ar, bIsStoring);
 			}
 		}
 
@@ -694,17 +694,17 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
 		for(int iw=0; iw<MAXWINGS; iw++)
 		{
 			ar >> n;
-			if(n) m_pPlaneWOpp[iw] = new WingOpp();
-			else  m_pPlaneWOpp[iw] = NULL;
+            if(n) m_pWOpp[iw] = new WingOpp();
+            else  m_pWOpp[iw] = nullptr;
 
-			if(m_pPlaneWOpp[iw])
+            if(m_pWOpp[iw])
 			{
-				m_pPlaneWOpp[iw]->serializeWingOppXFL(ar, bIsStoring);
+                m_pWOpp[iw]->serializeWingOppXFL(ar, bIsStoring);
 
-				m_pPlaneWOpp[iw]->m_dCp    = m_dCp    + pos;
-				m_pPlaneWOpp[iw]->m_dG     = m_dG     + pos;
-				m_pPlaneWOpp[iw]->m_dSigma = m_dSigma + pos;
-				pos +=m_pPlaneWOpp[iw]->m_NVLMPanels;
+                m_pWOpp[iw]->m_dCp    = m_dCp    + pos;
+                m_pWOpp[iw]->m_dG     = m_dG     + pos;
+                m_pWOpp[iw]->m_dSigma = m_dSigma + pos;
+                pos +=m_pWOpp[iw]->m_NVLMPanels;
 			}
 		}
 

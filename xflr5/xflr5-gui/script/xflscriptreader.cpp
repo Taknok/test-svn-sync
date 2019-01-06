@@ -18,11 +18,12 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 *****************************************************************************/
-#include <QtDebug>
+
+#include <QDebug>
+
 #include "xflscriptreader.h"
 #include <misc/options/Units.h>
 #include <globals/globals.h>
-#include <QtDebug>
 
 
 XFLScriptReader::XFLScriptReader()

@@ -879,9 +879,9 @@ PlaneOpp* LLTAnalysis::createPlaneOpp(double QInf, double Alpha, bool bWingOut)
 
 
 		pNewPOpp->addWingOpp(0, 0);
-		pNewPOpp->m_pPlaneWOpp[0]->createWOpp(m_pWing, m_pWPolar);
+		pNewPOpp->m_pWOpp[0]->createWOpp(m_pWing, m_pWPolar);
 
-		WingOpp *pNewPoint = pNewPOpp->m_pPlaneWOpp[0];
+		WingOpp *pNewPoint = pNewPOpp->m_pWOpp[0];
 		{
 			pNewPoint->m_Alpha          = Alpha;
 			pNewPoint->m_QInf           = QInf;

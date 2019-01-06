@@ -118,9 +118,9 @@ bool MainFrame::s_bOpenGL = true;
 	bool MainFrame::s_bTrace = false;
 #endif
 
-QFile *MainFrame::s_pTraceFile = NULL;
+QFile *MainFrame::s_pTraceFile = nullptr;
 
-QLabel *MainFrame::m_pctrlProjectName = NULL;
+QLabel *MainFrame::m_pctrlProjectName = nullptr;
 QList <QColor> MainFrame::s_ColorList;
 
 
@@ -270,7 +270,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 	m_SaveInterval = 10;
 	m_GraphExportFilter = "Comma Separated Values (*.csv)";
 
-	m_pSaveTimer = NULL;
+    m_pSaveTimer = nullptr;
 
 #if defined Q_OS_MAC && defined MAC_NATIVE_PREFS
 	QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
@@ -438,8 +438,8 @@ void MainFrame::aboutXFLR5()
 
 void MainFrame::addRecentFile(const QString &PathName)
 {
-	m_RecentFiles.removeAll(PathName);
-	m_RecentFiles.prepend(PathName);
+    m_RecentFiles.removeAll(PathName);
+    m_RecentFiles.prepend(PathName);
 	while (m_RecentFiles.size() > MAXRECENTFILES)
 		m_RecentFiles.removeLast();
 
@@ -3017,10 +3017,10 @@ void MainFrame::deleteProject(bool bClosing)
 		delete (OpPoint*)pObj;
 	}
 
-    m_pMiarex->m_pCurPlane  = NULL;
-    m_pMiarex->m_pCurPOpp   = NULL;
-    m_pMiarex->m_pCurWPolar = NULL;
-	m_pMiarex->m_bStream = false;
+    m_pMiarex->m_pCurPlane  = nullptr;
+    m_pMiarex->m_pCurPOpp   = nullptr;
+    m_pMiarex->m_pCurWPolar = nullptr;
+    m_pMiarex->m_pgl3dMiarexView->m_bStream = false;
 
 	if(!bClosing)
 	{
@@ -3262,7 +3262,7 @@ void MainFrame::keyReleaseEvent(QKeyEvent *event)
 bool MainFrame::loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFormat)
 {
 	Foil *pFoil;
-	Polar *pPolar = NULL;
+    Polar *pPolar = nullptr;
 	Polar *pOldPlr;
 	OpPoint *pOpp, *pOldOpp;
 
@@ -4536,8 +4536,8 @@ void MainFrame::onOpenRecentFile()
  */
 void MainFrame::readPolarFile(QDataStream &ar)
 {
-	Foil* pFoil = NULL;
-	Polar *pPolar = NULL;
+    Foil* pFoil = nullptr;
+    Polar *pPolar = nullptr;
 	Polar * pOldPolar;
 	int i, n, l;
 
@@ -4712,8 +4712,8 @@ bool MainFrame::serializePlaneProject(QDataStream &ar)
 		return false;
 	}
 
-	WPolar *pWPolar = NULL;
-	Polar *pPolar   = NULL;
+    WPolar *pWPolar = nullptr;
+    Polar *pPolar   = nullptr;
 
 	QString PlaneName = m_pMiarex->m_pCurPlane->planeName();
 
@@ -5193,11 +5193,11 @@ void MainFrame::selectPlaneOpp(void *pPlaneOppPtr)
 
 bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 {
-	WPolar *pWPolar = NULL;
-	PlaneOpp *pPOpp = NULL;
-	Plane *pPlane   = NULL;
-	Polar *pPolar   = NULL;
-	OpPoint *pOpp    = NULL;
+    WPolar *pWPolar = nullptr;
+    PlaneOpp *pPOpp = nullptr;
+    Plane *pPlane   = nullptr;
+    Polar *pPolar   = nullptr;
+    OpPoint *pOpp    = nullptr;
 
 	int i, n;
 
@@ -5510,14 +5510,14 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 
 bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 {
-	Wing *pWing     = NULL;
-	WPolar *pWPolar = NULL;
-	WingOpp *pWOpp  = NULL;
-	PlaneOpp *pPOpp = NULL;
-	Plane *pPlane   = NULL;
-	Body *pBody     = NULL;
-	Polar *pPolar   = NULL;
-	Foil *pFoil     = NULL;
+    Wing *pWing     = nullptr;
+    WPolar *pWPolar = nullptr;
+    WingOpp *pWOpp  = nullptr;
+    PlaneOpp *pPOpp = nullptr;
+    Plane *pPlane   = nullptr;
+    Body *pBody     = nullptr;
+    Polar *pPolar   = nullptr;
+    Foil *pFoil     = nullptr;
 
 	QString str;
 	int i, n, j, k;
@@ -5815,7 +5815,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 //				Objects3D::s_oaPOpp.append(pPOpp);
 			}
 		}
-		m_pMiarex->m_pCurPOpp = NULL;
+        m_pMiarex->m_pCurPOpp = nullptr;
 
 		m_pAFoil->m_pSF->serialize(ar, bIsStoring);
 
@@ -6020,7 +6020,7 @@ void MainFrame::updateWPolarListBox()
 
 	if(!PlaneName.length())
 	{
-		m_pMiarex->m_pCurWPolar = NULL;
+        m_pMiarex->m_pCurWPolar = nullptr;
 		m_pctrlPlanePolar->setEnabled(false);
 		m_pctrlPlaneOpp->setEnabled(false);
 		return;
@@ -7013,12 +7013,14 @@ void MainFrame::onPreferences()
 		m_pXDirectTileWidget->opPointWidget()->setNeutralLineColor(QColor(60,60,60));
 		m_pAFoil->m_p2DWidget->setNeutralLineColor(QColor(60,60,60));
 	}
-	m_pMiarex->m_bResetglGeom = true;
-	m_pMiarex->m_bResetglBody = true;
-	m_pMiarex->m_bResetglLegend = true;
-	m_pXDirect->CpGraph()->setInverted(true);
+    gl3dMiarexView::s_bResetglGeom = true;
+    gl3dMiarexView::s_bResetglBody = true;
+    gl3dMiarexView::s_bResetglLegend = true;
+
 	m_pMiarex->m_CpGraph.setInverted(true);
 	m_pMiarex->m_bResetTextLegend = true;
+
+    m_pXDirect->CpGraph()->setInverted(true);
 
 	m_VoidWidget.update();
 
@@ -7092,5 +7094,5 @@ void MainFrame::onFinishedUpdater()
     }
 
     delete m_pUpdater;
-    m_pUpdater = NULL;
+    m_pUpdater = nullptr;
 }
