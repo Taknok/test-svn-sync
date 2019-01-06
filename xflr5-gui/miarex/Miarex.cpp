@@ -69,8 +69,23 @@
 #include <misc/stlexportdialog.h>
 #include <viewwidgets/miarextilewidget.h>
 #include <objects/objects_global.h>
+#include <objects/objects3d/Body.h>
+#include <objects/objects3d/Wing.h>
+#include <objects/objects3d/Plane.h>
+#include <objects/objects3d/WPolar.h>
+#include <objects/objects3d/WingOpp.h>
+#include <objects/objects3d/PlaneOpp.h>
 #include <xdirect/objects2d.h>
 #include <analysis3d/matrix.h>
+#include <viewwidgets/glWidgets/gl3dmiarexview.h>
+#include <miarex/view/GLLightDlg.h>
+#include <graph/graph.h>
+#include "graphtilewidget.h"
+#include <misc/line/LineBtn.h>
+#include <misc/text/DoubleEdit.h>
+#include <misc/text/MinTextEdit.h>
+#include <misc/line/LineCbBox.h>
+#include <misc/line/LineDelegate.h>
 
 
 #ifdef Q_OS_WIN

@@ -19,15 +19,18 @@
 
 *****************************************************************************/
 
+#include <QGridLayout>
+#include <QGroupBox>
+#include <QDockWidget>
+
+
 #include "GL3DScales.h"
 #include <miarex/Miarex.h>
 #include <misc/options/Units.h>
 #include <globals/globals.h>
 #include <misc/options/displayoptions.h>
+#include <viewwidgets/glWidgets/gl3dmiarexview.h>
 
-#include <QGridLayout>
-#include <QGroupBox>
-#include <QDockWidget>
 
 Miarex *GL3DScales::s_pMiarex;
 
