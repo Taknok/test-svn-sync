@@ -38,7 +38,7 @@ TwoDPanelDlg::TwoDPanelDlg(QWidget *pParent) : QDialog(pParent)
 
 	m_pParent = pParent;
 
-	m_pBufferFoil = NULL;
+	m_pBufferFoil = nullptr;
 	m_bApplied    = false;
 }
 

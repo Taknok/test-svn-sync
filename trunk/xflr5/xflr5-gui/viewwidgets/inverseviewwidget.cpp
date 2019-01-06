@@ -35,8 +35,8 @@
 InverseViewWidget::InverseViewWidget(QWidget *parent)
 	: QWidget(parent)
 {
-	m_pMainFrame = NULL;
-	m_pXInverse = NULL;
+	m_pMainFrame = nullptr;
+	m_pXInverse = nullptr;
 
 	setMouseTracking(true);
 	setCursor(Qt::CrossCursor);

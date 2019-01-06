@@ -38,7 +38,7 @@
 
 
 
-void *GraphWidget::s_pMainFrame = NULL;
+void *GraphWidget::s_pMainFrame = nullptr;
 
 GraphWidget::GraphWidget(QWidget *pParent) : QWidget(pParent)
 {
@@ -55,7 +55,7 @@ GraphWidget::GraphWidget(QWidget *pParent) : QWidget(pParent)
 	m_bTransGraph = false;
 	m_bXPressed = m_bYPressed = false;
 
-	m_pGraph = NULL;
+	m_pGraph = nullptr;
 	setLegendPosition(QPoint(20,20));
 }
 

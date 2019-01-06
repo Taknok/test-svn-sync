@@ -34,8 +34,8 @@
 #include <objects/objects2d/Polar.h>
 
 double Wing::s_MinPanelSize = 0.0001;
-QList<Foil *> *Wing::s_poaFoil  = NULL;
-QList<Polar*> *Wing::s_poaPolar = NULL;
+QList<Foil *> *Wing::s_poaFoil  = nullptr;
+QList<Polar*> *Wing::s_poaPolar = nullptr;
 
 /**
  * The public constructor.
@@ -89,7 +89,7 @@ Wing::Wing()
 
 	m_QInf0    = 0.0;
 
-	m_pWingPanel     = NULL;
+	m_pWingPanel     = nullptr;
 
 	m_WingCL            = 0.0;
 	m_CDv               = 0.0;
@@ -1330,8 +1330,8 @@ void Wing::getFoils(Foil **pFoil0, Foil **pFoil1, double y, double &t)
 		}
 	}
 	t = 0;
-	pFoil0 = NULL;// use linear
-	pFoil1 = NULL;// use linear
+	pFoil0 = nullptr;// use linear
+	pFoil1 = nullptr;// use linear
 }
 
 
@@ -1353,7 +1353,7 @@ double Wing::totalMass()
 
 void Wing::surfacePoint(double xRel, double ypos, enumPanelPosition pos, Vector3d &Point, Vector3d &PtNormal)
 {
-	Surface *pSurface = NULL;
+	Surface *pSurface = nullptr;
 	double fy = qAbs(ypos);
 
 	int iSurf = m_Surface.size()/2;
@@ -3331,7 +3331,7 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
  */
 Foil* Wing::foil(QString strFoilName)
 {
-	if(!strFoilName.length()) return NULL;
+	if(!strFoilName.length()) return nullptr;
 	Foil* pFoil;
 	for (int i=0; i<s_poaFoil->size(); i++)
 	{
@@ -3342,7 +3342,7 @@ Foil* Wing::foil(QString strFoilName)
 		}
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 /**
@@ -3452,8 +3452,8 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
 //more than one polar - interpolate between  - tough job
 
 	//First Find the two polars with Reynolds number surrounding wanted Re
-	Polar * pPolar1 = NULL;
-	Polar * pPolar2 = NULL;
+	Polar * pPolar1 = nullptr;
+	Polar * pPolar2 = nullptr;
 	int nPolars = s_poaPolar->size();
 	//Type 1 Polars are sorted by crescending Re Number
 

@@ -70,15 +70,15 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
 	setMouseTracking(true);
 
 	m_pBodyGridDlg = new BodyGridDlg(this);
-	m_pBody = NULL;
-	m_pPointPrecision = NULL;
-	m_pFramePrecision = NULL;
+	m_pBody = nullptr;
+	m_pPointPrecision = nullptr;
+	m_pFramePrecision = nullptr;
 
-	m_pPointDelegate = NULL;
-	m_pFrameDelegate = NULL;
+	m_pPointDelegate = nullptr;
+	m_pFrameDelegate = nullptr;
 
-	m_pPointModel = NULL;
-	m_pFrameModel = NULL;
+	m_pPointModel = nullptr;
+	m_pFrameModel = nullptr;
 
 	//create a default pix from a random image - couldn't find a better way to do this
 	m_pixTextLegend = QPixmap(":/images/xflr5_64.png");
@@ -460,8 +460,8 @@ void GL3dBodyDlg::onBodyInertia()
 	if(!m_pBody) return;
 	InertiaDlg dlg(this);
 	dlg.m_pBody  = m_pBody;
-	dlg.m_pPlane = NULL;
-	dlg.m_pWing  = NULL;
+	dlg.m_pPlane = nullptr;
+	dlg.m_pWing  = nullptr;
 	dlg.initDialog();
 	dlg.move(pos().x()+25, pos().y()+25);
 	if(dlg.exec()==QDialog::Accepted) m_bChanged=true;
@@ -1032,18 +1032,18 @@ void GL3dBodyDlg::reject()
 		int res = QMessageBox::question(this, tr("Body Dlg Exit"), tr("Save the Body ?"), QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
 		if (QMessageBox::No == res)
 		{
-			m_pBody = NULL;
+			m_pBody = nullptr;
 			QDialog::reject();
 		}
 		else if (QMessageBox::Cancel == res) return;
 		else
 		{
-			m_pBody = NULL;
+			m_pBody = nullptr;
 			done(QDialog::Accepted);
 			return;
 		}
 	}
-	else m_pBody = NULL;
+	else m_pBody = nullptr;
 
 	done(QDialog::Rejected);
 }
@@ -1187,7 +1187,7 @@ bool GL3dBodyDlg::setBody(Body *pBody)
 void GL3dBodyDlg::setFrame(int iFrame)
 {
 	if(!m_pBody) return;
-	if(iFrame<0 || iFrame>=m_pBody->frameCount()) m_pFrame = NULL;
+	if(iFrame<0 || iFrame>=m_pBody->frameCount()) m_pFrame = nullptr;
 	else                                          m_pFrame = m_pBody->frame(iFrame);
 	m_pBody->m_iActiveFrame = iFrame;
 

@@ -50,9 +50,9 @@ void ExpFormat(double &f, int &exp);
 void ReynoldsFormat(QString &str, double f);
 
 
-float GLGetRed(double tau);
-float GLGetGreen(double tau);
-float GLGetBlue(double tau);
+float GLGetRed(float tau);
+float GLGetGreen(float tau);
+float GLGetBlue(float tau);
 
 
 QColor randomColor(bool bLightColor);

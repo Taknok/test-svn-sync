@@ -44,7 +44,7 @@ Body::Body()
 	m_nxPanels = 19;
 	m_nhPanels = 11;
 
-	m_pBodyPanel = NULL; 
+	m_pBodyPanel = nullptr; 
 	m_NElements = m_nxPanels * m_nhPanels * 2;
 
 
@@ -1032,7 +1032,7 @@ void Body::translate(Vector3d T, bool bFrameOnly, int FrameID)
 Frame *Body::frame(int iFrame)
 {
 	if(iFrame>=0 && iFrame<frameCount()) return m_SplineSurface.m_pFrame[iFrame];
-	return NULL;
+	return nullptr;
 }
 
 
@@ -1054,7 +1054,7 @@ double Body::framePosition(int iFrame)
 Frame *Body::activeFrame()
 {
 	if(m_iActiveFrame>=0 && m_iActiveFrame<frameCount()) return m_SplineSurface.m_pFrame[m_iActiveFrame];
-	else                                                 return NULL;
+	else                                                 return nullptr;
 }
 
 

@@ -43,7 +43,7 @@ private:
 public:
     void glMake3dObjects();
 	void glMakeCpLegendClr();
-	bool glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNode, WPolar *pWPolar, PlaneOpp *pPOpp, int nPanels);
+    bool glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNode, WPolar *pWPolar, PlaneOpp *pPOpp);
 	void glMakeSurfVelocities(Panel *pPanel, WPolar *pWPolar, PlaneOpp *pPOpp, int nPanels);
 	void glMakeTransitions(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
     void glMakeLiftStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
@@ -74,6 +74,8 @@ public:
 	QOpenGLBuffer m_vboLiftForce, m_vboMoments;
 	QOpenGLBuffer m_vboICd[MAXWINGS], m_vboVCd[MAXWINGS], m_vboLiftStrips[MAXWINGS], m_vboTransitions[MAXWINGS], m_vboDownwash[MAXWINGS];
 	QOpenGLBuffer m_vboMesh, m_vboLegendColor;
+
+    uint m_NStreamLines;
 
 
     static bool s_bResetglGeom;               /**< true if the geometry OpenGL list needs to be re-generated */

@@ -26,7 +26,7 @@
 InverseOptionsDlg::InverseOptionsDlg(QWidget *pParent) : QDialog(pParent)
 {
 	setWindowTitle(tr("XInverse Style"));
-	m_pXInverse = NULL;
+	m_pXInverse = nullptr;
 	setupLayout();
 }
 

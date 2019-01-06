@@ -32,7 +32,7 @@ GLRenderWindow::GLRenderWindow(const QSurfaceFormat &format)
 		m_pContext = 0;
     }
 	xRot = yRot = zRot = 0;
-	m_pOpenGLTexture = NULL;
+	m_pOpenGLTexture = nullptr;
 
 }
 

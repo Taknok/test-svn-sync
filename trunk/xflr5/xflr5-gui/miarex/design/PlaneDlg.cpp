@@ -48,7 +48,7 @@ bool PlaneDlg::s_bWindowMaximized =false;
 PlaneDlg::PlaneDlg(QWidget *parent) :QDialog(parent)
 {
 	setWindowTitle(tr("Plane Editor"));
-	m_pPlane = NULL;
+	m_pPlane = nullptr;
 
 
 	m_bAcceptName         = true;
@@ -549,8 +549,8 @@ void PlaneDlg::onInertia()
 	m_pPlane->createSurfaces();//necessary for inertia calculations
 
     InertiaDlg dlg(this);
-	dlg.m_pBody = NULL;
-	dlg.m_pWing = NULL;
+	dlg.m_pBody = nullptr;
+	dlg.m_pWing = nullptr;
 	dlg.m_pPlane = m_pPlane;
 
 	//save inertia properties

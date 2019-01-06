@@ -47,8 +47,8 @@ public:
     Polar * polarPtr() const	{return m_pPolar;}
 
 private:
-    Foil *m_pFoil=NULL;
-    Polar *m_pPolar=NULL;
+    Foil *m_pFoil=nullptr;
+    Polar *m_pPolar=nullptr;
 };
 
 
@@ -75,9 +75,9 @@ public:
 	XFoil * XFoilPtr() {return m_pXFoil;}
 
 private:
-    Foil *m_pFoil=NULL;
-    Polar *m_pPolar=NULL;
-	XFoil *m_pXFoil=NULL;    /** need to store current XFoil results */
+    Foil *m_pFoil=nullptr;
+    Polar *m_pPolar=nullptr;
+	XFoil *m_pXFoil=nullptr;    /** need to store current XFoil results */
 };
 
 #endif // XFOILTASKEVENT_H

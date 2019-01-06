@@ -51,7 +51,7 @@
 Miarex *gl3dView::s_pMiarex;
 MainFrame *gl3dView::s_pMainFrame;
 
-GLLightDlg *gl3dView::s_pglLightDlg = NULL;
+GLLightDlg *gl3dView::s_pglLightDlg = nullptr;
 
 
 gl3dView::gl3dView(QWidget *pParent) : QOpenGLWidget(pParent)
@@ -62,7 +62,7 @@ gl3dView::gl3dView(QWidget *pParent) : QOpenGLWidget(pParent)
 
 	m_pParent = pParent;
 
-	m_pTransitionTimer = NULL;
+	m_pTransitionTimer = nullptr;
 	memset(ab_new, 0, 16*sizeof(float));
 	memset(ab_old, 0, 16*sizeof(float));
 	m_iTransitionInc = 0;
@@ -73,17 +73,17 @@ gl3dView::gl3dView(QWidget *pParent) : QOpenGLWidget(pParent)
 
 	for(int iw=0; iw<MAXWINGS; iw++)
 	{
-		m_WingIndicesArray[iw] = NULL;
+		m_WingIndicesArray[iw] = nullptr;
 	}
-	m_BodyIndicesArray = NULL;
-	m_SphereIndicesArray = NULL;
-	m_WingMeshIndicesArray = NULL;
+	m_BodyIndicesArray = nullptr;
+	m_SphereIndicesArray = nullptr;
+	m_WingMeshIndicesArray = nullptr;
 
-	m_pLeftBodyTexture = m_pRightBodyTexture= NULL;
+	m_pLeftBodyTexture = m_pRightBodyTexture= nullptr;
 	for(int iw=0; iw<MAXWINGS; iw++)
 	{
-		m_pWingTopLeftTexture[iw] = m_pWingTopRightTexture[iw] = NULL;
-		m_pWingBotLeftTexture[iw] = m_pWingBotRightTexture[iw] = NULL;
+		m_pWingTopLeftTexture[iw] = m_pWingTopRightTexture[iw] = nullptr;
+		m_pWingBotLeftTexture[iw] = m_pWingBotRightTexture[iw] = nullptr;
 	}
 
 	m_bOutline    = true;
@@ -97,7 +97,7 @@ gl3dView::gl3dView(QWidget *pParent) : QOpenGLWidget(pParent)
 	for(int iw=0; iw<MAXWINGS; iw++) m_iWingElems[iw]=0;
 	m_iWingMeshElems = 0;
 
-	m_NStreamLines = 0;
+
 	m_nHighlightLines = m_HighlightLineSize = 0;
 
 	m_glViewportTrans.x  = 0.0;
@@ -194,10 +194,10 @@ gl3dView::~gl3dView()
 		if(m_pWingTopLeftTexture[iw])  delete m_pWingTopLeftTexture[iw];
 		if(m_pWingBotRightTexture[iw]) delete m_pWingBotRightTexture[iw];
 		if(m_pWingTopRightTexture[iw]) delete m_pWingTopRightTexture[iw];
-		m_pWingBotLeftTexture[iw] = NULL;
-		m_pWingTopLeftTexture[iw] = NULL;
-		m_pWingBotRightTexture[iw] = NULL;
-		m_pWingTopRightTexture[iw] = NULL;
+		m_pWingBotLeftTexture[iw] = nullptr;
+		m_pWingTopLeftTexture[iw] = nullptr;
+		m_pWingBotRightTexture[iw] = nullptr;
+		m_pWingTopRightTexture[iw] = nullptr;
 	}
 
 	doneCurrent();
@@ -1368,7 +1368,7 @@ void gl3dView::glMakeBodySplines(Body *pBody)
 	}
 	m_iBodyElems = ii;
 
-	pBody = NULL;
+	pBody = nullptr;
 
 	m_vboBody.destroy();
 	m_vboBody.create();
@@ -3270,7 +3270,7 @@ void gl3dView::glMakeBodyFrameHighlight(Body *pBody, Vector3d bodyPos, int iFram
 	hinc = 1.0/(double)(NHOOOP-1);
 
 	int bufferSize = 0;
-	float *pHighlightVertexArray = NULL;
+	float *pHighlightVertexArray = nullptr;
 
 	m_nHighlightLines = 2; // left and right - could make one instead
 
@@ -3348,7 +3348,7 @@ void gl3dView::onRotationIncrement()
 	{
 		m_pTransitionTimer->stop();
 		delete m_pTransitionTimer;
-		m_pTransitionTimer = NULL;
+		m_pTransitionTimer = nullptr;
 		return;
 	}
 	for(int iq=0; iq<16; iq++)
@@ -3413,7 +3413,7 @@ void gl3dView::onTranslationIncrement()
 	{
 		m_pTransitionTimer->stop();
 		delete m_pTransitionTimer;
-		m_pTransitionTimer = NULL;
+		m_pTransitionTimer = nullptr;
 		return;
 	}
 
@@ -3447,7 +3447,7 @@ void gl3dView::onResetIncrement()
 	{
 		m_pTransitionTimer->stop();
 		delete m_pTransitionTimer;
-		m_pTransitionTimer = NULL;
+		m_pTransitionTimer = nullptr;
 		return;
 	}
 
@@ -3492,7 +3492,7 @@ void gl3dView::glMakeEditBodyMesh(Body *pBody, Vector3d BodyPosition)
 	int nx, nh;
 	Vector3d Pt;
 	Vector3d P1, P2, P3, P4, PStart, PEnd;
-	float *meshVertexArray = NULL;
+	float *meshVertexArray = nullptr;
 	int bufferSize = 0;
 	m_iBodyMeshLines = 0;
 

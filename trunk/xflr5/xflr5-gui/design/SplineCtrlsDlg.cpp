@@ -29,12 +29,12 @@
 #include <QMessageBox>
 #include <QtDebug>
 
-void *SplineCtrlsDlg::s_pAFoil = NULL;
+void *SplineCtrlsDlg::s_pAFoil = nullptr;
 
 SplineCtrlsDlg::SplineCtrlsDlg(QWidget *pParent): QDialog(pParent)
 {
 	setWindowTitle(tr("Spline Parameters"));
-	m_pSF = NULL;
+	m_pSF = nullptr;
 	setupLayout();
 }
 

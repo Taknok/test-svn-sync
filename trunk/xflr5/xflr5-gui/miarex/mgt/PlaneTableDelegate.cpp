@@ -32,7 +32,7 @@ PlaneTableDelegate::PlaneTableDelegate(QObject *parent)
 
 QWidget *PlaneTableDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & index ) const
 {
-	return NULL;//No edition possible - display only
+	return nullptr;//No edition possible - display only
 
 	if(index.column()==0)
 	{
@@ -48,7 +48,7 @@ QWidget *PlaneTableDelegate::createEditor(QWidget *parent, const QStyleOptionVie
 		return editor;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 

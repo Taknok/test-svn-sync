@@ -36,7 +36,7 @@ BodyFrameWidget::BodyFrameWidget(QWidget *pParent, Body *pBody)
 {
 	m_pBody = pBody;
 
-	m_pShowCurFrameOnly = NULL;
+	m_pShowCurFrameOnly = nullptr;
 	createActions();
 	createContextMenu();
 	setCursor(Qt::CrossCursor);

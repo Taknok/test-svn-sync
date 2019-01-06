@@ -30,7 +30,7 @@
 FoilSelectionDlg::FoilSelectionDlg(QWidget *pParent) : QDialog(pParent)
 {
 	setWindowTitle(tr("Foil Selection"));
-	m_poaFoil = NULL;
+	m_poaFoil = nullptr;
 	m_FoilName = "";
 	m_FoilList.clear();
 	setupLayout();

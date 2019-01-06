@@ -52,34 +52,34 @@ PanelAnalysis::PanelAnalysis()
 
 	m_Progress = m_TotalTime = 0.0;
 
-	m_Ai = m_Cl = m_ICd = NULL;
-	m_F  = NULL;
-	m_Vd = NULL;
+	m_Ai = m_Cl = m_ICd = nullptr;
+	m_F  = nullptr;
+	m_Vd = nullptr;
 
-	m_aij = m_aijWake = NULL;
-	m_uRHS = m_vRHS = m_wRHS = m_pRHS = m_qRHS = m_rRHS = NULL;
-	m_cRHS = m_uWake = m_wWake = NULL;
-	m_uVl = m_wVl = NULL;
-	m_Index = NULL;
+	m_aij = m_aijWake = nullptr;
+	m_uRHS = m_vRHS = m_wRHS = m_pRHS = m_qRHS = m_rRHS = nullptr;
+	m_cRHS = m_uWake = m_wWake = nullptr;
+	m_uVl = m_wVl = nullptr;
+	m_Index = nullptr;
 
-	m_RHS = m_RHSRef = m_SigmaRef = m_Sigma = m_Mu = m_Cp = NULL;
-	m_3DQInf = NULL;
+	m_RHS = m_RHSRef = m_SigmaRef = m_Sigma = m_Mu = m_Cp = nullptr;
+	m_3DQInf = nullptr;
 
-	m_pWingList[0] = m_pWingList[1] = m_pWingList[2] = m_pWingList[3] = NULL;
+	m_pWingList[0] = m_pWingList[1] = m_pWingList[2] = m_pWingList[3] = nullptr;
 
-	m_pWPolar = NULL;
-	m_pPlane  = NULL;
-	m_ppSurface = NULL;
+	m_pWPolar = nullptr;
+	m_pPlane  = nullptr;
+	m_ppSurface = nullptr;
 
-	m_pPanel         = NULL;
-	m_pWakePanel     = NULL;
-	m_pRefWakePanel  = NULL;
-	m_pMemPanel      = NULL;
-	m_pNode          = NULL;
-	m_pMemNode       = NULL;
-	m_pWakeNode      = NULL;
-	m_pRefWakeNode   = NULL;
-	m_pTempWakeNode  = NULL;
+	m_pPanel         = nullptr;
+	m_pWakePanel     = nullptr;
+	m_pRefWakePanel  = nullptr;
+	m_pMemPanel      = nullptr;
+	m_pNode          = nullptr;
+	m_pMemNode       = nullptr;
+	m_pWakeNode      = nullptr;
+	m_pRefWakeNode   = nullptr;
+	m_pTempWakeNode  = nullptr;
 
 	m_Alpha   = 0.0;
 	m_AlphaEq = 0.0;
@@ -303,7 +303,7 @@ void PanelAnalysis::releaseArrays()
 {
 	if(m_aij)     delete [] m_aij;
 	if(m_aijWake) delete [] m_aijWake;
-	m_aij = m_aijWake = NULL;
+	m_aij = m_aijWake = nullptr;
 
 	if(m_RHS)      delete [] m_RHS;
 	if(m_RHSRef)   delete [] m_RHSRef;
@@ -311,14 +311,14 @@ void PanelAnalysis::releaseArrays()
 	if(m_Sigma)    delete [] m_Sigma;
 	if(m_Mu)       delete [] m_Mu;
 	if(m_Cp)       delete [] m_Cp;
-	m_RHS = m_RHSRef = m_SigmaRef = m_Sigma = m_Mu = m_Cp = NULL;
+	m_RHS = m_RHSRef = m_SigmaRef = m_Sigma = m_Mu = m_Cp = nullptr;
 
 	if(m_3DQInf) delete [] m_3DQInf;
-	m_3DQInf = NULL;
+	m_3DQInf = nullptr;
 
 	if(m_uVl) delete [] m_uVl;
 	if(m_wVl) delete [] m_wVl;
-	m_uVl = m_wVl = NULL;
+	m_uVl = m_wVl = nullptr;
 
 	if(m_uRHS)  delete [] m_uRHS;
 	if(m_vRHS)  delete [] m_vRHS;
@@ -329,10 +329,10 @@ void PanelAnalysis::releaseArrays()
 	if(m_cRHS)  delete [] m_cRHS;
 	if(m_uWake) delete [] m_uWake;
 	if(m_wWake) delete [] m_wWake;
-	m_uRHS = m_vRHS = m_wRHS = m_pRHS = m_qRHS = m_rRHS = m_cRHS = m_uWake = m_wWake = NULL;
+	m_uRHS = m_vRHS = m_wRHS = m_pRHS = m_qRHS = m_rRHS = m_cRHS = m_uWake = m_wWake = nullptr;
 
 	if(m_Index) delete [] m_Index;
-	m_Index = NULL;
+	m_Index = nullptr;
 
 	m_MaxMatSize = 0;
 }
@@ -4453,13 +4453,13 @@ void PanelAnalysis::restorePanels()
 */
 PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double *Gamma, double *Sigma)
 {
-	PlaneOpp *pPOpp = NULL;
-	WingOpp *pWOpp=NULL;
+	PlaneOpp *pPOpp = nullptr;
+	WingOpp *pWOpp=nullptr;
 	int i,l;
 	double Cb = 0.0;
 
 	pPOpp = new PlaneOpp(m_pPlane, m_pWPolar, m_MatSize);
-	if(!pPOpp) return NULL;
+	if(!pPOpp) return nullptr;
 
 	for(int iw=0; iw<MAXWINGS; iw++)
 	{

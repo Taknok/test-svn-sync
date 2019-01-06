@@ -37,7 +37,7 @@ WingOpp::WingOpp(int PanelArraySize)
 	m_AnalysisMethod = XFLR5::LLTMETHOD;
 
 	m_NVLMPanels   = PanelArraySize;
-	m_dCp = m_dG = m_dSigma = NULL;
+	m_dCp = m_dG = m_dSigma = nullptr;
 
 	m_bOut         = false;
 

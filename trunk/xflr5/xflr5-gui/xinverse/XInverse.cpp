@@ -55,8 +55,8 @@ XInverse::XInverse(QWidget *parent)
 
 	m_bFullInverse = false;
 
-	m_pXFoil = NULL;
-	m_pCurGraph = NULL;
+	m_pXFoil = nullptr;
+	m_pCurGraph = nullptr;
 
 	m_bTransGraph    = false;
 	m_bLoaded        = false;
@@ -87,7 +87,7 @@ XInverse::XInverse(QWidget *parent)
 	m_pModFoil->foilLineStyle() = 0;
 	m_pModFoil->foilLineWidth() = 1;
 
-    m_pOverlayFoil = NULL;
+    m_pOverlayFoil = nullptr;
 
 	m_Spline.insertPoint(0.0,  0.0);
 	m_Spline.insertPoint(0.25, 0.0);
@@ -997,7 +997,7 @@ void XInverse::mouseMoveEvent(QMouseEvent *event)
 		}
 		else
 		{
-			m_pCurGraph = NULL;
+			m_pCurGraph = nullptr;
 		}
 
 		// highlight if mouse passe over a point
@@ -1469,7 +1469,7 @@ void XInverse::onOverlayFoil()
 
 void XInverse::onClearOverlayFoil()
 {
-    m_pOverlayFoil = NULL;
+    m_pOverlayFoil = nullptr;
     updateView();
 }
 
@@ -2264,7 +2264,7 @@ void XInverse::saveSettings(QSettings *pSettings)
 void XInverse::setFoil()
 {
 	int i;
-	QFile *pXFile=NULL;
+	QFile *pXFile=nullptr;
 	XFoil *pXFoil = (XFoil*)m_pXFoil;
 
 	QString strong;
@@ -2291,7 +2291,7 @@ void XInverse::setFoil()
 		// Mixed Inverse
 		QString FileName = QDir::tempPath() + "/XFLR5.log";
 		pXFile = new QFile(FileName);
-		if (!pXFile->open(QIODevice::WriteOnly | QIODevice::Text)) pXFile = NULL;
+		if (!pXFile->open(QIODevice::WriteOnly | QIODevice::Text)) pXFile = nullptr;
 
 //		pXFoil->m_pOutStream->setDevice(pXFile);
 

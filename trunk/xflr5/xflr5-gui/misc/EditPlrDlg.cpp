@@ -41,15 +41,15 @@ bool EditPlrDlg::s_bWindowMaximized;
 EditPlrDlg::EditPlrDlg(QWidget *pParent) : QDialog(pParent)
 {
 	setWindowTitle(tr("Polar Points Edition"));
-	m_pXDirect    = NULL;
-	m_pMiarex     = NULL;
+	m_pXDirect    = nullptr;
+	m_pMiarex     = nullptr;
 
-	m_pPolar      = NULL;
-	m_pWPolar     = NULL;
+	m_pPolar      = nullptr;
+	m_pWPolar     = nullptr;
 
-	m_pctrlPointTable = NULL;
-	m_pPointModel     = NULL;
-	m_pFloatDelegate  = NULL;
+	m_pctrlPointTable = nullptr;
+	m_pPointModel     = nullptr;
+	m_pFloatDelegate  = nullptr;
 
 	setupLayout();
 }

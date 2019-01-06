@@ -42,8 +42,8 @@ QPoint EditPolarDefDlg::s_Position(231, 97);
 EditPolarDefDlg::EditPolarDefDlg(QWidget *pParent) : QDialog(pParent)
 {
 	setWindowTitle("Polar object explorer");
-	m_pWPolar = NULL;
-	m_pPlane = NULL;
+	m_pWPolar = nullptr;
+	m_pPlane = nullptr;
 	setupLayout();
 }
 

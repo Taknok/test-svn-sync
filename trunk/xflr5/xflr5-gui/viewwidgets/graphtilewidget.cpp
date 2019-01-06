@@ -38,17 +38,17 @@
 #include <misc/options/Units.h>
 
 
-MainFrame* GraphTileWidget::s_pMainFrame = NULL;
-Miarex* GraphTileWidget::s_pMiarex = NULL;
-XDirect* GraphTileWidget::s_pXDirect = NULL;
+MainFrame* GraphTileWidget::s_pMainFrame = nullptr;
+Miarex* GraphTileWidget::s_pMiarex = nullptr;
+XDirect* GraphTileWidget::s_pXDirect = nullptr;
 
 
 
 GraphTileWidget::GraphTileWidget(QWidget *parent) : QWidget(parent)
 {
 //	setMouseTracking(true);
-	m_pLegendWidget = NULL;
-	m_pMainSplitter = NULL;
+	m_pLegendWidget = nullptr;
+	m_pMainSplitter = nullptr;
 
 	m_nGraphWidgets = 0;
 	m_iActiveGraphWidget = -1;
@@ -71,7 +71,7 @@ GraphTileWidget::~GraphTileWidget()
 
 Graph *GraphTileWidget::graph(int iGraph)
 {
-	if(iGraph<0 || iGraph>=m_GraphWidget.count()) return NULL;
+	if(iGraph<0 || iGraph>=m_GraphWidget.count()) return nullptr;
 
 	return m_GraphWidget.at(iGraph)->graph();
 }
@@ -79,7 +79,7 @@ Graph *GraphTileWidget::graph(int iGraph)
 
 GraphWidget *GraphTileWidget::graphWidget(int iGraph)
 {
-	if(iGraph<0 || iGraph>=m_GraphWidget.count()) return NULL;
+	if(iGraph<0 || iGraph>=m_GraphWidget.count()) return nullptr;
 
 	return m_GraphWidget.at(iGraph);
 }
@@ -92,7 +92,7 @@ GraphWidget *GraphTileWidget::graphWidget(Graph *pGraph)
 	{
 		if(m_GraphWidget.at(igw)->graph()==pGraph) return m_GraphWidget[igw];
 	}
-	return NULL;
+	return nullptr;
 }
 
 
@@ -596,7 +596,7 @@ Graph *GraphTileWidget::activeGraph()
 	{
 		if(m_GraphWidget.at(igw)->isVisible()&& m_GraphWidget.at(igw)->hasFocus()) return m_GraphWidget.at(igw)->graph();
 	}
-	return NULL;
+	return nullptr;
 }
 
 
@@ -609,7 +609,7 @@ GraphWidget *GraphTileWidget::activeGraphWidget()
 	{
 		if(m_GraphWidget.at(igw)->isVisible()&& m_GraphWidget.at(igw)->hasFocus()) return m_GraphWidget.at(igw);
 	}
-	return NULL;
+	return nullptr;
 }
 
 

@@ -29,7 +29,7 @@
 #include <QtDebug>
 #include <QAction>
 
-void *Section2dWidget::s_pMainFrame = NULL;
+void *Section2dWidget::s_pMainFrame = nullptr;
 
 Section2dWidget::Section2dWidget(QWidget *parent) : QWidget(parent)
 {
