@@ -52,7 +52,7 @@ XFoilAnalysisDlg::XFoilAnalysisDlg(QWidget *pParent) : QDialog(pParent)
 	m_pXFoilTask = new XFoilTask;
 	m_pXFoilTask->m_pParent = this;
 
-	m_pXFile       = NULL;
+	m_pXFile       = nullptr;
 
 	m_pRmsGraph = new Graph;
 	m_pGraphWidget->setGraph(m_pRmsGraph);
@@ -158,7 +158,7 @@ void XFoilAnalysisDlg::initDialog()
 	if (!m_pXFile->open(QIODevice::WriteOnly | QIODevice::Text))
 	{
 		delete m_pXFile;
-		m_pXFile = NULL;
+		m_pXFile = nullptr;
 	}
 
 	m_pXFoilTask->m_OutStream.setDevice(m_pXFile);

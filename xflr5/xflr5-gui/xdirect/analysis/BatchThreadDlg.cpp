@@ -54,7 +54,7 @@ BatchThreadDlg::BatchThreadDlg(QWidget *pParent) : QDialog(pParent)
 	QString str = tr("Multi-threaded batch analysis");
 	setWindowTitle(str);
 
-	m_pXFile = NULL;
+	m_pXFile = nullptr;
 
 	m_PolarType = XFLR5::FIXEDSPEEDPOLAR;
 
@@ -394,7 +394,7 @@ void BatchThreadDlg::cleanUp()
  */
 Polar * BatchThreadDlg::createPolar(Foil *pFoil, double Re, double Mach, double NCrit)
 {
-	if(!pFoil) return NULL;
+	if(!pFoil) return nullptr;
 
 	Polar *pNewPolar = new Polar;
 	QColor clr = randomColor(!Settings::isLightTheme());
@@ -611,7 +611,7 @@ void BatchThreadDlg::onAnalyze()
 
 	QString FileName = QDir::tempPath() + "/XFLR5.log";
 	m_pXFile = new QFile(FileName);
-	if (!m_pXFile->open(QIODevice::WriteOnly | QIODevice::Text)) m_pXFile = NULL;
+	if (!m_pXFile->open(QIODevice::WriteOnly | QIODevice::Text)) m_pXFile = nullptr;
 
 	readParams();
 
@@ -918,7 +918,7 @@ void BatchThreadDlg::startAnalysis()
 	m_nTaskDone = 0;
 	m_nTaskStarted = 0;
 
-	FoilAnalysis *pAnalysis=NULL;
+	FoilAnalysis *pAnalysis=nullptr;
 	for(int i=0; i<m_FoilList.count(); i++)
 	{
 		pFoil = Objects2d::foil(m_FoilList.at(i));

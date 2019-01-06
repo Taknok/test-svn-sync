@@ -36,7 +36,7 @@ NacaFoilDlg::NacaFoilDlg(QWidget *pParent) : QDialog(pParent)
 	m_pParent = pParent;
 
 	m_bGenerated = false;
-	m_pBufferFoil = NULL;
+	m_pBufferFoil = nullptr;
 
 	setupLayout();
 

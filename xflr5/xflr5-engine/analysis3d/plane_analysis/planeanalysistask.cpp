@@ -34,13 +34,13 @@ bool PlaneAnalysisTask::s_bCancel = false;
 
 PlaneAnalysisTask::PlaneAnalysisTask()
 {
-	m_pPlane = NULL;
-	m_pWPolar = NULL;
+	m_pPlane = nullptr;
+	m_pWPolar = nullptr;
 
-	m_pParent = NULL;
+	m_pParent = nullptr;
 
-	m_Node = m_MemNode = m_WakeNode = m_RefWakeNode = m_TempWakeNode = NULL;
-	m_Panel = m_MemPanel = m_WakePanel = m_RefWakePanel = NULL;
+	m_Node = m_MemNode = m_WakeNode = m_RefWakeNode = m_TempWakeNode = nullptr;
+	m_Panel = m_MemPanel = m_WakePanel = m_RefWakePanel = nullptr;
 	m_vMin = m_vMax = m_vInc = 0.0;
 	m_MaxPanelSize = 0;
 	m_bSequence = true;
@@ -136,7 +136,7 @@ bool PlaneAnalysisTask::isPanelTask()
 Plane * PlaneAnalysisTask::setPlaneObject(Plane *pPlane)
 {
 	m_pPlane = pPlane;
-	if(!pPlane) return NULL;
+	if(!pPlane) return nullptr;
 
 	double dx=0, dz=0;
 
@@ -190,7 +190,7 @@ WPolar* PlaneAnalysisTask::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar)
 	if(!pCurPlane)
 	{
 		releasePanelMemory();
-		return NULL;
+		return nullptr;
 	}
 
 	m_pWPolar = pCurWPolar;
@@ -199,7 +199,7 @@ WPolar* PlaneAnalysisTask::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar)
 	if(!m_pWPolar)
 	{
 		releasePanelMemory();
-		return NULL;
+		return nullptr;
 	}
 
 	Wing *pWingList[MAXWINGS];
@@ -247,9 +247,9 @@ WPolar* PlaneAnalysisTask::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar)
 		if(!m_pPlane->isWing()) m_pWPolar->bThinSurfaces() = true;
 	}
 
-	if(!initializePanels()) return NULL;
+	if(!initializePanels()) return nullptr;
 
-	if(!m_pWPolar) return NULL;
+	if(!m_pWPolar) return nullptr;
 
 	stitchSurfaces();
 
@@ -1369,13 +1369,13 @@ void PlaneAnalysisTask::releasePanelMemory()
 	if(m_RefWakeNode)  delete[] m_RefWakeNode;
 	if(m_TempWakeNode) delete[] m_TempWakeNode;
 
-	m_Node = m_MemNode = m_WakeNode = m_RefWakeNode = m_TempWakeNode = NULL;
+	m_Node = m_MemNode = m_WakeNode = m_RefWakeNode = m_TempWakeNode = nullptr;
 
 	if(m_Panel)        delete[] m_Panel;
 	if(m_MemPanel)     delete[] m_MemPanel;
 	if(m_WakePanel)    delete[] m_WakePanel;
 	if(m_RefWakePanel) delete[] m_RefWakePanel;
-	m_Panel = m_MemPanel = m_WakePanel = m_RefWakePanel = NULL;
+	m_Panel = m_MemPanel = m_WakePanel = m_RefWakePanel = nullptr;
 
 	m_MatSize = 0;
 	m_nNodes = 0;

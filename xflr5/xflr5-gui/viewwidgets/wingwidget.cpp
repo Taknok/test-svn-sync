@@ -29,8 +29,8 @@
 #include "miarex/Miarex.h"
 
 #include <QtDebug>
-void *WingWidget::s_pMainFrame = NULL;
-void *WingWidget::s_pMiarex = NULL;
+void *WingWidget::s_pMainFrame = nullptr;
+void *WingWidget::s_pMiarex = nullptr;
 
 WingWidget::WingWidget(QWidget *pParent) : QWidget(pParent)
 {
@@ -38,7 +38,7 @@ WingWidget::WingWidget(QWidget *pParent) : QWidget(pParent)
 
 	m_bTrans = false;
 
-	m_pGraph = NULL;
+	m_pGraph = nullptr;
 
 	m_WingScale = 1.0;
 	m_ptOffset.rx() = 0;

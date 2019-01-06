@@ -37,9 +37,9 @@ PertDlg::PertDlg(QWidget *pParent) : QDialog(pParent)
 	memset(m_backr, 0, sizeof(m_backr));
 	memset(m_backi, 0, sizeof(m_backi));
 
-//	m_pCnModel = NULL;
-	m_precision = NULL;
-	m_pFloatDelegate = NULL;
+//	m_pCnModel = nullptr;
+	m_precision = nullptr;
+	m_pFloatDelegate = nullptr;
 
 	setupLayout();
 

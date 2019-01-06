@@ -1108,7 +1108,7 @@ void Graph::deleteCurve(int index)
 
 void Graph::deleteCurve(Curve *pCurve)
 {
-	Curve *pOldCurve = NULL;
+	Curve *pOldCurve = nullptr;
 	for(int i=0; i<m_oaCurves.size(); i++)
 	{
 		pOldCurve = m_oaCurves.at(i);
@@ -1124,7 +1124,7 @@ void Graph::deleteCurve(Curve *pCurve)
 
 void Graph::deleteCurve(QString CurveTitle)
 {
-	Curve *pOldCurve = NULL;
+	Curve *pOldCurve = nullptr;
 	for(int i=0; i<m_oaCurves.size(); i++)
 	{
 		pOldCurve = m_oaCurves.at(i);
@@ -1211,7 +1211,7 @@ Curve* Graph::curve(int nIndex)
 {
     if(m_oaCurves.size()>nIndex)
 		return m_oaCurves[nIndex];
-	else return NULL;
+	else return nullptr;
 }
 
 
@@ -1228,7 +1228,7 @@ Curve* Graph::curve(QString CurveTitle)
 			if(strong==CurveTitle) return pCurve;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 
@@ -2138,7 +2138,7 @@ Curve*  Graph::getClosestPoint(const double &x, const double &y, double &xSel, d
 	double dist, dmax, x1, y1;
 	dmax = 1.e40;
 	Curve *pOldCurve, *pCurveSel;
-	pCurveSel = NULL;
+	pCurveSel = nullptr;
 	
 	for(i=0; i<m_oaCurves.size(); i++)
 	{
@@ -2180,14 +2180,14 @@ Curve* Graph::getCurvePoint(const int &xClt, const int &yClt,int &nSel)
 		}
 	}
 	nSel = -1;
-	return  NULL;
+	return  nullptr;
 }
 
 
 bool Graph::selectPoint(QString const &CurveName, int sel)
 {
 	QString str;
-	Curve *pCurve = NULL;
+	Curve *pCurve = nullptr;
 	
 	if(sel<0) 
 	{

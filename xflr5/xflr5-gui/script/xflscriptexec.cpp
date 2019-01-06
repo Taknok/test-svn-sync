@@ -276,7 +276,7 @@ Polar* XflScriptExec::makePolar(QString fileName)
 	{
 		QString strange = "Could not read the file"+pathName;
 		traceLog(strange);
-		return NULL;
+		return nullptr;
 	}
 	else
 	{
@@ -286,7 +286,7 @@ Polar* XflScriptExec::makePolar(QString fileName)
 		m_oaPolar.append(pPolar);
 		return pPolar;
 	}
-	return NULL;
+	return nullptr;
 }
 
 
@@ -298,7 +298,7 @@ WPolar* XflScriptExec::makeWPolar(QString fileName)
 	{
 		QString strange = "Could not read the file"+pathName;
 		traceLog(strange);
-		return NULL;
+		return nullptr;
 	}
 	else
 	{
@@ -308,7 +308,7 @@ WPolar* XflScriptExec::makeWPolar(QString fileName)
 		m_oaWPolar.append(pWPolar);
 		return pWPolar;
 	}
-	return NULL;
+	return nullptr;
 }
 
 

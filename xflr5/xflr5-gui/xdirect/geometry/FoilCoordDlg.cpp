@@ -35,8 +35,8 @@ FoilCoordDlg::FoilCoordDlg(QWidget *pParent) : QDialog(pParent)
 
 	m_pParent = pParent;
 
-	m_pBufferFoil = NULL;
-	m_pMemFoil    = NULL;
+	m_pBufferFoil = nullptr;
+	m_pMemFoil    = nullptr;
 	setupLayout();
 
 	m_bApplied  = true;

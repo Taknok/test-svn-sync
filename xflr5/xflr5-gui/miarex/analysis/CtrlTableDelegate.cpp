@@ -53,7 +53,7 @@ QWidget *CtrlTableDelegate::createEditor(QWidget *parent, const QStyleOptionView
 		return editor;*/
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 

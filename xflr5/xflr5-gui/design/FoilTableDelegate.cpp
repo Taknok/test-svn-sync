@@ -33,14 +33,14 @@
 FoilTableDelegate::FoilTableDelegate(QObject *pParent)
  : QItemDelegate(pParent)
 {
-	m_pManageFoils = NULL;
-	m_pAFoil = NULL;
+	m_pManageFoils = nullptr;
+	m_pAFoil = nullptr;
 }
 
 
 QWidget *FoilTableDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & index ) const
 {
-	return NULL;//No edition possible - display only
+	return nullptr;//No edition possible - display only
 
 	if(index.column()==0)
 	{
@@ -56,7 +56,7 @@ QWidget *FoilTableDelegate::createEditor(QWidget *parent, const QStyleOptionView
 		return editor;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 

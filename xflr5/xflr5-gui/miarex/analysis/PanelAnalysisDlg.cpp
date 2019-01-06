@@ -54,7 +54,7 @@ PanelAnalysisDlg::PanelAnalysisDlg(QWidget *pParent) : QDialog(pParent)
 	setWindowTitle(tr("3D Panel Analysis"));
 	setupLayout();
 
-	m_pTheTask = NULL;
+	m_pTheTask = nullptr;
 }
 
 
@@ -257,7 +257,7 @@ void PanelAnalysisDlg::cleanUp()
 			else
 			{
 				delete pPOpp;
-				pPOpp = NULL;
+				pPOpp = nullptr;
 			}
 		}
 	}
@@ -294,7 +294,7 @@ void PanelAnalysisDlg::cleanUp()
 	}
 	delete pXFile;
 
-	m_pTheTask = NULL;
+	m_pTheTask = nullptr;
 
 	m_pctrlCancel->setText(tr("Close"));
 	m_pctrlCancel->setFocus();
@@ -347,5 +347,5 @@ void PanelAnalysisDlg::hideEvent(QHideEvent *event)
 void PanelAnalysisDlg::deleteTask()
 {
 	if(m_pTheTask) delete m_pTheTask;
-	m_pTheTask = NULL;
+	m_pTheTask = nullptr;
 }

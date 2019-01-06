@@ -246,7 +246,6 @@ protected:
 	unsigned int m_iBodyElems, m_iWingElems[MAXWINGS], m_iWingMeshElems;
 
 	int m_Ny[MAXWINGS];
-	int m_NStreamLines;
 	int m_nHighlightLines, m_HighlightLineSize;
 
 	int m_iBodyMeshLines;

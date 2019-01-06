@@ -43,8 +43,8 @@ XFoilTask::XFoilTask(void *pParent)
 {
 	setAutoDelete(true);
 	m_pParent = pParent;
-	m_pFoil  = NULL;
-	m_pPolar = NULL;
+	m_pFoil  = nullptr;
+	m_pPolar = nullptr;
 	m_bIsFinished = true;
 
 	m_AlphaMin = m_AlphaMax = m_AlphaInc = 0.0;
@@ -60,7 +60,7 @@ XFoilTask::XFoilTask(void *pParent)
 	m_OutStream.setDevice(NULL);
 
 	m_bErrors = false;
-	m_x0 = m_x1 = m_y0 = m_y1 = NULL;
+	m_x0 = m_x1 = m_y0 = m_y1 = nullptr;
 }
 
 

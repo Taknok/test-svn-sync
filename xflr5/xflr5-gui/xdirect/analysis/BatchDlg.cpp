@@ -54,7 +54,7 @@ BatchDlg::BatchDlg(QWidget *pParent) : QDialog(pParent)
 	QString str = tr("Batch foil analysis");
 	setWindowTitle(str);
 
-	m_pXFile = NULL;
+	m_pXFile = nullptr;
 
 	m_pXFoilTask = new XFoilTask;
 	m_pXFoilTask->m_pParent = this;
@@ -458,7 +458,7 @@ void BatchDlg::cleanUp()
  */
 Polar *BatchDlg::createPolar(Foil *pFoil, double Spec, double Mach, double NCrit)
 {
-	if(!pFoil) return NULL;
+	if(!pFoil) return nullptr;
 
 	Polar *pPolar = new Polar;
 	QColor clr = randomColor(!Settings::isLightTheme());
@@ -795,7 +795,7 @@ void BatchDlg::onAnalyze()
 	//set output file
 	QString FileName = QDir::tempPath() + "/XFLR5.log";
 	m_pXFile = new QFile(FileName);
-	if (!m_pXFile->open(QIODevice::WriteOnly | QIODevice::Text)) m_pXFile = NULL;
+	if (!m_pXFile->open(QIODevice::WriteOnly | QIODevice::Text)) m_pXFile = nullptr;
 	setFileHeader();
 
 	//initialize XFoil task

@@ -159,7 +159,7 @@ Plane* Objects3d::addPlane(Plane *pPlane)
 */
 Plane* Objects3d::duplicatePlane(Plane *pPlane)
 {
-	if(!pPlane) return NULL;
+	if(!pPlane) return nullptr;
 	Plane* pNewPlane= new Plane;
 	pNewPlane->duplicate(pPlane);
 	return setModPlane(pNewPlane);
@@ -169,7 +169,7 @@ Plane* Objects3d::duplicatePlane(Plane *pPlane)
 
 void Objects3d::insertPOpp(PlaneOpp *pPOpp)
 {
-	PlaneOpp *pOldPOpp = NULL;
+	PlaneOpp *pOldPOpp = nullptr;
 	bool bIsInserted = false;
 
 	for (int i=0; i<s_oaPOpp.size(); i++)
@@ -435,7 +435,7 @@ void Objects3d::deletePlaneResults(Plane *pPlane, bool bDeletePolars)
 			{
 				s_oaWPolar.removeAt(i);
 				delete pWPolar;
-				pWPolar = NULL;
+				pWPolar = nullptr;
 			}
 			else
 			{
@@ -472,7 +472,7 @@ Body * Objects3d::getBody(QString BodyName)
 		}
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 
@@ -485,7 +485,7 @@ Body * Objects3d::getBody(QString BodyName)
 PlaneOpp * Objects3d::getPlaneOpp(Plane *pPlane, WPolar* pWPolar, double x)
 {
 	int i;
-	if(!pPlane || !pWPolar) return NULL;
+	if(!pPlane || !pWPolar) return nullptr;
 
 	PlaneOpp* pPOpp;
 
@@ -500,7 +500,7 @@ PlaneOpp * Objects3d::getPlaneOpp(Plane *pPlane, WPolar* pWPolar, double x)
             else if(pWPolar->polarType()==XFLR5::STABILITYPOLAR && qAbs(pPOpp->ctrl() - x) <0.005)   return pPOpp;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 
@@ -514,7 +514,7 @@ WPolar* Objects3d::getWPolar(Plane *pPlane, QString WPolarName)
 {
 	WPolar *pWPolar;
 	int i;
-	if(!pPlane) return NULL;
+	if(!pPlane) return nullptr;
 
 	for (i=0; i<s_oaWPolar.size(); i++)
 	{
@@ -522,7 +522,7 @@ WPolar* Objects3d::getWPolar(Plane *pPlane, QString WPolarName)
 		if (pWPolar->planeName()==pPlane->planeName() && pWPolar->polarName()== WPolarName)
 			return pWPolar;
 	}
-	return NULL;
+	return nullptr;
 }
 
 
@@ -541,7 +541,7 @@ Plane * Objects3d::getPlane(QString PlaneName)
 		pPlane = (Plane*)s_oaPlane.at(i);
 		if (pPlane->planeName() == PlaneName) return pPlane;
 	}
-	return NULL;
+	return nullptr;
 }
 
 
@@ -558,7 +558,7 @@ Wing* Objects3d::getWing(QString PlaneName)
 		Plane *pPlane = (Plane*)s_oaPlane.at(ip);
 		if(QString::compare(pPlane->planeName(), PlaneName, Qt::CaseInsensitive)==0) return pPlane->m_Wing;
 	}
-	return NULL;
+	return nullptr;
 }
 
 
@@ -570,7 +570,7 @@ Wing* Objects3d::getWing(QString PlaneName)
  */
 Plane * Objects3d::setModPlane(Plane *pModPlane)
 {
-	if(!pModPlane) return NULL;
+	if(!pModPlane) return nullptr;
 	Plane * pPlane;
 	bool bExists = true;
 	int resp, k, l;
@@ -680,7 +680,7 @@ Plane * Objects3d::setModPlane(Plane *pModPlane)
 		}
 		else
 		{
-			return NULL;//cancelled
+			return nullptr;//cancelled
 		}
 	}
 	return pModPlane;
@@ -696,7 +696,7 @@ Plane * Objects3d::setModPlane(Plane *pModPlane)
  */
 WPolar* Objects3d::insertNewWPolar(WPolar *pNewWPolar, Plane *pCurPlane)
 {
-	if(!pNewWPolar) return NULL;
+	if(!pNewWPolar) return nullptr;
 	WPolar *pWPolar, *pOldWPolar;
 
 	bool bExists = true;
@@ -709,7 +709,7 @@ WPolar* Objects3d::insertNewWPolar(WPolar *pNewWPolar, Plane *pCurPlane)
 		if(pOldWPolar==pNewWPolar)
 		{
 //			Trace("this WPolar is already in the array, nothing inserted");
-			return NULL;
+			return nullptr;
 		}
 	}
 
@@ -760,7 +760,7 @@ WPolar* Objects3d::insertNewWPolar(WPolar *pNewWPolar, Plane *pCurPlane)
 	{
 		//user wants to overwrite an existing name
 		//so find the existing WPolar with that name
-		pWPolar = NULL;
+		pWPolar = nullptr;
 		for(int ipb=0; ipb<s_oaWPolar.size(); ipb++)
 		{
 			pOldWPolar = (WPolar*)s_oaWPolar.at(ipb);
@@ -816,7 +816,7 @@ WPolar* Objects3d::insertNewWPolar(WPolar *pNewWPolar, Plane *pCurPlane)
 	}
 	else if(resp==QDialog::Rejected)
 	{
-		return NULL;
+		return nullptr;
 	}
 	else if(resp==QDialog::Accepted)
 	{
@@ -838,7 +838,7 @@ WPolar* Objects3d::insertNewWPolar(WPolar *pNewWPolar, Plane *pCurPlane)
 		return pNewWPolar;
 
 	}
-	return NULL;//should never gethere
+	return nullptr;//should never gethere
 }
 
 

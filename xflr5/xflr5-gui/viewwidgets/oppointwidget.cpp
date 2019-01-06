@@ -39,7 +39,7 @@
 #define PI 3.141592654
 
 
-void *OpPointWidget::s_pMainFrame = NULL;
+void *OpPointWidget::s_pMainFrame = nullptr;
 
 /**
 *The public constructor
@@ -75,7 +75,7 @@ OpPointWidget::OpPointWidget(QWidget *parent) : QWidget(parent)
 	m_iPressureWidth = 1;
 
 	m_fScale = m_fYScale = 1.0;
-	m_pCpGraph = NULL;
+	m_pCpGraph = nullptr;
 }
 
 

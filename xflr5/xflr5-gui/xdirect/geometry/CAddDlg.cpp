@@ -33,8 +33,8 @@ CAddDlg::CAddDlg(QWidget *pParent) : QDialog(pParent)
 {
 	setWindowTitle(tr("Local Panel Refinement"));
 	m_pParent = pParent;
-	m_pBufferFoil = NULL;
-	m_pMemFoil    = NULL;
+	m_pBufferFoil = nullptr;
+	m_pMemFoil    = nullptr;
 
 	m_iSplineType = 0;
 

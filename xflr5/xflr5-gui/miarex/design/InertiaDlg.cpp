@@ -45,9 +45,9 @@ InertiaDlg::InertiaDlg(QWidget *pParent) : QDialog(pParent)
 {
 	setWindowTitle(tr("Inertia Properties"));
 
-	m_pPlane = NULL;
-	m_pWing = NULL;
-	m_pBody = NULL;
+	m_pPlane = nullptr;
+	m_pWing = nullptr;
+	m_pBody = nullptr;
 
 	m_CoGIxx = m_CoGIyy = m_CoGIzz = m_CoGIxz = 0.0;
 
@@ -110,7 +110,7 @@ void InertiaDlg::computeInertia()
 	m_VolumeCoG.set(0.0, 0.0, 0.0);
 
 	Wing *pWing[MAXWINGS];
-	pWing[0] = pWing[1] = pWing[2] = pWing[3] = NULL;
+	pWing[0] = pWing[1] = pWing[2] = pWing[3] = nullptr;
 
 	if(m_pPlane)
 	{
@@ -468,7 +468,7 @@ void InertiaDlg::onExportToAVL()
 	Vector3d CoG;
 
 	Wing *pWing[MAXWINGS];
-	pWing[0] = pWing[1] = pWing[2] = pWing[3] = NULL;
+	pWing[0] = pWing[1] = pWing[2] = pWing[3] = nullptr;
 
 	if(m_pPlane)
 	{
@@ -1176,8 +1176,8 @@ void InertiaDlg::onWingInertia()
     InertiaDlg dlg(this);
 	if(!m_pPlane->wing()) return;
 	dlg.m_pWing  = m_pPlane->wing();
-	dlg.m_pPlane = NULL;
-	dlg.m_pBody  = NULL;
+	dlg.m_pPlane = nullptr;
+	dlg.m_pBody  = nullptr;
 	dlg.initDialog();
 	dlg.s_Position += QPoint(43, 19);
 	if(dlg.exec()==QDialog::Accepted) m_bChanged=true;
@@ -1191,8 +1191,8 @@ void InertiaDlg::onWing2Inertia()
 	if(!m_pPlane->BiPlane()) return;
     InertiaDlg dlg(this);
 	dlg.m_pWing  = m_pPlane->wing2();
-	dlg.m_pPlane = NULL;
-	dlg.m_pBody  = NULL;
+	dlg.m_pPlane = nullptr;
+	dlg.m_pBody  = nullptr;
 	dlg.initDialog();
 	dlg.s_Position += QPoint(43, 19);
 	if(dlg.exec()==QDialog::Accepted) m_bChanged=true;
@@ -1206,8 +1206,8 @@ void InertiaDlg::onStabInertia()
 	if(!m_pPlane->stab()) return;
     InertiaDlg dlg(this);
 	dlg.m_pWing  = m_pPlane->stab();
-	dlg.m_pPlane = NULL;
-	dlg.m_pBody  = NULL;
+	dlg.m_pPlane = nullptr;
+	dlg.m_pBody  = nullptr;
 	dlg.initDialog();
 	dlg.s_Position += QPoint(43, 19);
 	if(dlg.exec()==QDialog::Accepted) m_bChanged=true;
@@ -1221,8 +1221,8 @@ void InertiaDlg::onFinInertia()
 	if(!m_pPlane->fin()) return;
     InertiaDlg dlg(this);
 	dlg.m_pWing  = m_pPlane->fin();
-	dlg.m_pPlane = NULL;
-	dlg.m_pBody  = NULL;
+	dlg.m_pPlane = nullptr;
+	dlg.m_pBody  = nullptr;
 	dlg.initDialog();
 	dlg.s_Position += QPoint(43, 19);
 	if(dlg.exec()==QDialog::Accepted) m_bChanged=true;
@@ -1236,8 +1236,8 @@ void InertiaDlg::onBodyInertia()
 	if(!m_pPlane->body()) return;
     InertiaDlg dlg(this);
 	dlg.m_pBody  = m_pPlane->body();
-	dlg.m_pPlane = NULL;
-	dlg.m_pWing  = NULL;
+	dlg.m_pPlane = nullptr;
+	dlg.m_pWing  = nullptr;
 	dlg.initDialog();
 	dlg.s_Position += QPoint(43, 19);
 	if(dlg.exec()==QDialog::Accepted) m_bChanged=true;

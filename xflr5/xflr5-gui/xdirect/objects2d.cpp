@@ -48,7 +48,7 @@ Objects2d::Objects2d()
  */
 Foil * Objects2d::deleteFoil(Foil *pFoil)
 {
-	if(!pFoil || !pFoil->foilName().length()) return NULL;
+	if(!pFoil || !pFoil->foilName().length()) return nullptr;
 	Foil *pOldFoil;
 	OpPoint * pOpPoint;
 	Polar* pPolar;
@@ -79,7 +79,7 @@ Foil * Objects2d::deleteFoil(Foil *pFoil)
 	}
 
 
-	Foil *pNewCurFoil= NULL;
+	Foil *pNewCurFoil= nullptr;
 
 	for (j=0; j<s_oaFoil.size(); j++)
 	{
@@ -88,7 +88,7 @@ Foil * Objects2d::deleteFoil(Foil *pFoil)
 		{
             if(j<s_oaFoil.count()-1) pNewCurFoil = s_oaFoil.at(j+1);
             else if(j>0)             pNewCurFoil = s_oaFoil.at(j-1);
-			else                     pNewCurFoil = NULL;
+			else                     pNewCurFoil = nullptr;
 
 			s_oaFoil.removeAt(j);
 			delete pOldFoil;
@@ -106,7 +106,7 @@ Foil * Objects2d::deleteFoil(Foil *pFoil)
  */
 Foil* Objects2d::foil(QString strFoilName)
 {
-	if(!strFoilName.length()) return NULL;
+	if(!strFoilName.length()) return nullptr;
 	Foil* pFoil;
 	for (int i=0; i<s_oaFoil.size(); i++)
 	{
@@ -117,7 +117,7 @@ Foil* Objects2d::foil(QString strFoilName)
 		}
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 /**
@@ -189,7 +189,7 @@ void Objects2d::insertThisFoil(Foil *pFoil)
 */
 OpPoint* Objects2d::addOpPoint(Foil *pFoil, Polar *pPolar, XFoil *pXFoil, bool bStoreOpp)
 {
-    if(!pFoil || !pXFoil) return NULL;
+    if(!pFoil || !pXFoil) return nullptr;
 
     if(!pPolar) pPolar = XDirect::curPolar();
 
@@ -199,14 +199,14 @@ OpPoint* Objects2d::addOpPoint(Foil *pFoil, Polar *pPolar, XFoil *pXFoil, bool b
 
 	if(pNewPoint ==NULL)
 	{
-		return NULL;
+		return nullptr;
 	}
 	else
 	{
 		if(!pXFoil->lvconv)
 		{
 			delete pNewPoint;
-			return NULL;
+			return nullptr;
 		}
 		pNewPoint->m_Alpha = pXFoil->alfa * 180/PI;
 		pNewPoint->foilName() = pFoil->foilName();
@@ -241,7 +241,7 @@ OpPoint* Objects2d::addOpPoint(Foil *pFoil, Polar *pPolar, XFoil *pXFoil, bool b
 	if(!bStoreOpp)
 	{
 		delete pNewPoint;
-		pNewPoint = NULL;
+		pNewPoint = nullptr;
 	}
 
 	return pNewPoint;
@@ -256,9 +256,9 @@ OpPoint* Objects2d::addOpPoint(Foil *pFoil, Polar *pPolar, XFoil *pXFoil, bool b
  */
 Foil * Objects2d::deleteThisFoil(Foil *pFoil)
 {
-	Foil *pOldFoil=NULL;
-	Polar* pOldPolar=NULL;
-	OpPoint *pOpPoint=NULL;
+	Foil *pOldFoil=nullptr;
+	Polar* pOldPolar=nullptr;
+	OpPoint *pOpPoint=nullptr;
 
 	//delete any OpPoints with this FoilName
 	for (int jOpp=s_oaOpp.size()-1; jOpp>=0; jOpp--)
@@ -287,7 +287,7 @@ Foil * Objects2d::deleteThisFoil(Foil *pFoil)
 
 
 	//delete the Foil
-	Foil *pNewCurFoil= NULL;
+	Foil *pNewCurFoil= nullptr;
 
 	for (int jFoil=0; jFoil<s_oaFoil.size(); jFoil++)
 	{
@@ -296,7 +296,7 @@ Foil * Objects2d::deleteThisFoil(Foil *pFoil)
 		{
             if(jFoil<s_oaFoil.count()-1) pNewCurFoil = s_oaFoil.at(jFoil+1);
             else if(jFoil>0)             pNewCurFoil = s_oaFoil.at(jFoil-1);
-			else                         pNewCurFoil = NULL;
+			else                         pNewCurFoil = nullptr;
 
 			s_oaFoil.removeAt(jFoil);
 			delete pOldFoil;
@@ -363,9 +363,9 @@ void Objects2d::deletePolar(Polar *pPolar)
  */
 void Objects2d::renameThisFoil(Foil *pFoil, QString newFoilName)
 {
-	Foil *pOldFoil=NULL;
-	Polar* pOldPolar=NULL;
-	OpPoint *pOpPoint=NULL;
+	Foil *pOldFoil=nullptr;
+	Polar* pOldPolar=nullptr;
+	OpPoint *pOpPoint=nullptr;
 	QString oldFoilName = pFoil->foilName();
 
 	//check that this Foil exists in the array
@@ -453,11 +453,11 @@ void Objects2d::renameThisFoil(Foil *pFoil, QString newFoilName)
 OpPoint *Objects2d::getOpp(Foil *pFoil, Polar *pPolar, double Alpha)
 {
 	OpPoint* pOpPoint;
-	if(!pPolar) return NULL;
+	if(!pPolar) return nullptr;
 
 	for (int i=0; i<s_oaOpp.size(); i++)
 	{
-		if(!pPolar) return NULL;
+		if(!pPolar) return nullptr;
         pOpPoint = s_oaOpp.at(i);
 		//since alphas are calculated at 1/100th
 		if (pOpPoint->foilName() == pFoil->foilName())
@@ -481,7 +481,7 @@ OpPoint *Objects2d::getOpp(Foil *pFoil, Polar *pPolar, double Alpha)
 			}
 		}
 	}
-	return NULL;// if no OpPoint has a matching alpha
+	return nullptr;// if no OpPoint has a matching alpha
 }
 
 
@@ -562,7 +562,7 @@ void Objects2d::addPolar(Polar *pPolar)
 
 	bool bExists   = false;
 	bool bInserted = false;
-	Polar *pOldPlr = NULL;
+	Polar *pOldPlr = nullptr;
 	int ip,j;
 
 	for (ip=0; ip<s_oaPolar.size(); ip++)
@@ -639,7 +639,7 @@ void Objects2d::addPolar(Polar *pPolar)
 
 Polar *Objects2d::getPolar(Foil *pFoil, QString PolarName)
 {
-	if (!PolarName.length()) return NULL;
+	if (!PolarName.length()) return nullptr;
 
 
 	Polar *pPolar;
@@ -651,7 +651,7 @@ Polar *Objects2d::getPolar(Foil *pFoil, QString PolarName)
 			return pPolar;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 
@@ -659,7 +659,7 @@ Polar *Objects2d::getPolar(QString m_FoilName, QString PolarName)
 {
 	if (!PolarName.length())
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	Polar *pPolar;
@@ -671,7 +671,7 @@ Polar *Objects2d::getPolar(QString m_FoilName, QString PolarName)
 			return pPolar;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 
@@ -688,7 +688,7 @@ Polar *Objects2d::getPolar(QString m_FoilName, QString PolarName)
  */
 Polar * Objects2d::createPolar(Foil *pFoil, double Re, double Mach, double NCrit, double XtrTop, double XtrBot, XFLR5::enumPolarType polarType)
 {
-	if(!pFoil) return NULL;
+	if(!pFoil) return nullptr;
 
 	Polar *pNewPolar = new Polar;
 	pNewPolar->foilName()  = pFoil->foilName();

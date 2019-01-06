@@ -88,7 +88,7 @@ bool W3dPrefsDlg::s_bEnableClipPlane = false;
 W3dPrefsDlg::W3dPrefsDlg(QWidget *pParent) : QDialog(pParent)
 {
 	setWindowTitle(tr("3D Styles"));
-//	s_pSail7  = NULL;
+//	s_pSail7  = nullptr;
 
 	setupLayout();
 
