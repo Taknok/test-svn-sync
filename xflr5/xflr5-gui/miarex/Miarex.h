@@ -31,7 +31,7 @@
 
 class MainFrame;
 
-#include "gl3dmiarexview.h"
+
 #include <QWidget>
 #include <QPixmap>
 #include <QLabel>
@@ -45,25 +45,35 @@ class MainFrame;
 #include <QDialog>
 #include <QSettings>
 #include <QXmlStreamWriter>
+
+#include <globals/gui_enums.h>
 #include <globals/gui_params.h>
 #include "./analysis/PanelAnalysisDlg.h"
 #include "./analysis/LLTAnalysisDlg.h"
 #include <analysis3d/plane_analysis/planeanalysistask.h>
-#include <misc/line/LineBtn.h>
-#include <misc/text/DoubleEdit.h>
-#include <misc/text/MinTextEdit.h>
-#include <misc/line/LineCbBox.h>
-#include <misc/line/LineDelegate.h>
-#include <objects/objects3d/Body.h>
-#include <objects/objects3d/Wing.h>
-#include <objects/objects3d/Plane.h>
-#include <objects/objects3d/WPolar.h>
-#include <objects/objects3d/WingOpp.h>
-#include <objects/objects3d/PlaneOpp.h>
-#include "view/GLLightDlg.h"
-#include <graph/graph.h>
-#include "graphtilewidget.h"
 
+
+
+
+//forward declarations
+class PanelAnalysisDlg;
+class LLTAnalysisDlg;
+class PlaneAnalysisTask;
+class Wing;
+class Body;
+class Plane;
+class WPolar;
+class WingOpp;
+class PlaneOpp;
+class gl3dMiarexView;
+class graph;
+class GraphTileWidget;
+class GLLightDlg;
+class LineCbBox;
+class LineDelegate;
+class MinTextEdit;
+class DoubleEdit;
+class LineBtn;
 /**
  *@class QMiarex
  *@brief This is the class associated to the 3D calculations

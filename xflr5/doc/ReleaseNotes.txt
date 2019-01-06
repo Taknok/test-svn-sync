@@ -16,6 +16,7 @@
 
 
 xflr5 v6.44 January xxxth, 2019
+    - tentative fix for occasional crash bug when displaying streamlines or surface velocities
     - fix for bug #128 relative to the display of the wings and body in the advanced plane editor
     - fix for bug #126 relative to the highlighting of frames in the advanced fuse editor
     - feature request #127: shortcut added for the menu entries "show only associated polars"

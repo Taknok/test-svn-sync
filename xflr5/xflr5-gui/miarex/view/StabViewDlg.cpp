@@ -20,14 +20,6 @@
 *****************************************************************************/
 
 
-#include <globals/globals.h>
-#include <misc/options/displayoptions.h>
-#include <misc/NewNameDlg.h>
-#include <misc/options/Units.h>
-#include <miarex/Miarex.h>
-#include "StabViewDlg.h"
-#include <objects/objects_global.h>
-
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QHBoxLayout>
@@ -36,6 +28,20 @@
 #include <QTimer>
 #include <complex>
 
+
+
+#include "StabViewDlg.h"
+#include <globals/globals.h>
+#include <misc/options/displayoptions.h>
+#include <misc/NewNameDlg.h>
+#include <misc/options/Units.h>
+#include <miarex/Miarex.h>
+#include <viewwidgets/glWidgets/gl3dmiarexview.h>
+#include <objects/objects_global.h>
+
+#include <misc/text/DoubleEdit.h>
+#include <misc/text/FloatEditDelegate.h>
+#include <graph/curve.h>
 
 Miarex *StabViewDlg::s_pMiarex;
 
