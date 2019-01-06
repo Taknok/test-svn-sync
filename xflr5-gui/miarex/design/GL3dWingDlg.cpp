@@ -65,13 +65,13 @@ GL3dWingDlg::GL3dWingDlg(QWidget *pParent) : QDialog(pParent)
 	setWindowTitle(tr("Wing Edition"));
 	setWindowFlags(Qt::Window);
 
-	m_pWing = NULL;
+	m_pWing = nullptr;
 
-	m_precision = NULL;
+	m_precision = nullptr;
 
 	m_iSection   = -1;
 
-	m_pLeftSideSplitter = NULL;
+	m_pLeftSideSplitter = nullptr;
 
 	m_bResetglSectionHighlight = true;
 	m_bResetglWing             = true;

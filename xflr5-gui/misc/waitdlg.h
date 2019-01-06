@@ -23,6 +23,7 @@
 #include <QDialog>
 #include <QAbstractButton>
 
+
 class IntEdit;
 
 class WaitDlg : public QDialog

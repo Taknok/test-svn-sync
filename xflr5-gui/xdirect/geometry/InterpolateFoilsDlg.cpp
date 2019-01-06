@@ -36,8 +36,8 @@ InterpolateFoilsDlg::InterpolateFoilsDlg(QWidget *pParent) : QDialog(pParent)
 	setWindowTitle(tr("Interpolate Foils"));
 
 	m_pParent = pParent;
-	m_pBufferFoil = NULL;
-	m_poaFoil = NULL;
+	m_pBufferFoil = nullptr;
+	m_poaFoil = nullptr;
 
 
 	setupLayout();

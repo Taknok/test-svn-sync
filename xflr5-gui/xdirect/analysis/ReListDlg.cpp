@@ -33,8 +33,8 @@ ReListDlg::ReListDlg(QWidget *pParent) : QDialog(pParent)
 
 	m_iSelection = 0;
 
-	m_pFloatDelegate = NULL;
-	m_Precision = NULL;
+	m_pFloatDelegate = nullptr;
+	m_Precision = nullptr;
 
 	setupLayout();
 

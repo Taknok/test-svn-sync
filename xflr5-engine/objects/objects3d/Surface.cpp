@@ -51,9 +51,9 @@ Surface::Surface()
 	m_XDistType = XFLR5::COSINE;
 	m_YDistType = XFLR5::UNIFORM;
 
-	m_pLeftSurface = m_pRightSurface = NULL;
-	m_pFoilA   = NULL;
-	m_pFoilB   = NULL;
+	m_pLeftSurface = m_pRightSurface = nullptr;
+	m_pFoilA   = nullptr;
+	m_pFoilB   = nullptr;
 	m_NElements = 0;
 
 	m_bIsInSymPlane = false;

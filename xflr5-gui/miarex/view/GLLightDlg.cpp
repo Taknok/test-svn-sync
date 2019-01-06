@@ -65,7 +65,7 @@ GLLightDlg::GLLightDlg(QWidget *pParent) : QDialog(pParent)
 	connect(m_pctrlLinearAttenuation,    SIGNAL(editingFinished()), this, SLOT(onChanged()));
 	connect(m_pctrlQuadAttenuation,      SIGNAL(editingFinished()), this, SLOT(onChanged()));
 
-	m_pglView = NULL;
+	m_pglView = nullptr;
 }
 
 

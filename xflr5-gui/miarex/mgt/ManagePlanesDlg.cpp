@@ -37,10 +37,10 @@ ManagePlanesDlg::ManagePlanesDlg(QWidget *pParent) : QDialog(pParent)
 {
 	setWindowTitle(tr("Plane Object Management"));
 
-	m_pPlane     = NULL;
-	m_pSelectionModel = NULL;
-	m_pUFODelegate = NULL;
-	m_pPrecision = NULL;
+	m_pPlane     = nullptr;
+	m_pSelectionModel = nullptr;
+	m_pUFODelegate = nullptr;
+	m_pPrecision = nullptr;
 
 	m_bChanged = false;
 
@@ -110,7 +110,7 @@ void ManagePlanesDlg::initDialog(QString &UFOName)
 	}
 	else
 	{
-		m_pPlane = NULL;
+		m_pPlane = nullptr;
 	}
 }
 
@@ -314,7 +314,7 @@ void ManagePlanesDlg::onDelete()
 	}
 	else
 	{
-		m_pPlane = NULL;
+		m_pPlane = nullptr;
 	}
 
 	m_bChanged = true;

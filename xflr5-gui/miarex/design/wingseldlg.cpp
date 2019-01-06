@@ -28,7 +28,7 @@
 
 WingSelDlg::WingSelDlg(QWidget *pParent) : QDialog(pParent)
 {
-	m_pPlane = NULL;
+	m_pPlane = nullptr;
 	setWindowFlags(Qt::Tool);
 	setupLayout();
 }

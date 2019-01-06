@@ -42,8 +42,8 @@ WPolarDlg::WPolarDlg(QWidget *pParent) : QDialog(pParent)
 {
 	setWindowTitle(tr("Analysis Definition"));
 
-	m_pPlane     = NULL;
-	m_anglePrecision = NULL;
+	m_pPlane     = nullptr;
+	m_anglePrecision = nullptr;
 	m_bAutoName = true;
 	m_WingLoad   = 0.0;
 	m_UnitType  = 1;

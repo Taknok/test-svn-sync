@@ -29,7 +29,7 @@
 #include <objects/objects3d/WPolar.h>
 #include <matrix.h>
 
-QList<Polar*> *LLTAnalysis::s_poaPolar = NULL;
+QList<Polar*> *LLTAnalysis::s_poaPolar = nullptr;
 int LLTAnalysis::s_IterLim = 100;
 int LLTAnalysis::s_NLLTStations = 20;
 double LLTAnalysis::s_RelaxMax = 20.0;
@@ -40,11 +40,11 @@ bool LLTAnalysis::s_bInitCalc = true;
 /** The public constructor */
 LLTAnalysis::LLTAnalysis()
 {
-	m_pWing = NULL;
-	m_pWPolar = NULL;
-	m_x = m_y = NULL;
+	m_pWing = nullptr;
+	m_pWPolar = nullptr;
+	m_x = m_y = nullptr;
 
-	m_poaPolar = NULL;
+	m_poaPolar = nullptr;
 	resetVariables();
 }
 
@@ -182,8 +182,8 @@ double LLTAnalysis::Beta(int m, int k)
  */
 void LLTAnalysis::ComputeWing(double QInf, double Alpha, QString &ErrorMessage)
 {
-	Foil* pFoil0 = NULL;
-	Foil* pFoil1 = NULL;
+	Foil* pFoil0 = nullptr;
+	Foil* pFoil1 = nullptr;
 
 	int m;
 	QString strange;
@@ -492,8 +492,8 @@ double LLTAnalysis::AlphaInduced(int k)
 int LLTAnalysis::iterate(double &QInf, double Alpha)
 {
 	int k ;
-	Foil* pFoil0  = NULL;
-	Foil* pFoil1  = NULL;
+	Foil* pFoil0  = nullptr;
+	Foil* pFoil1  = nullptr;
 	double a, yob, tau, anext;
 	bool bOutRe, bError;
 	int iter = 0;
@@ -853,7 +853,7 @@ PlaneOpp* LLTAnalysis::createPlaneOpp(double QInf, double Alpha, bool bWingOut)
 	if(pNewPOpp == NULL)
 	{
 		traceLog("Not enough memory to store the OpPoint\n");
-		return NULL;
+		return nullptr;
 	}
 	else
 	{
@@ -1279,8 +1279,8 @@ double LLTAnalysis::GetZeroLiftAngle(Foil *pFoil0, Foil *pFoil1, double Re, doub
 	if(!pFoil0) Alpha00 = 0.0;
 	else
 	{
-		pPolar1 = NULL;
-		pPolar2 = NULL;
+		pPolar1 = nullptr;
+		pPolar2 = nullptr;
 		for (i=0; i<m_poaPolar->size(); i++)
 		{
 			pPolar = m_poaPolar->at(i);
@@ -1321,8 +1321,8 @@ double LLTAnalysis::GetZeroLiftAngle(Foil *pFoil0, Foil *pFoil1, double Re, doub
 	if(!pFoil1) Alpha01 = 0.0;
 	else
 	{
-		pPolar1 = NULL;
-		pPolar2 = NULL;
+		pPolar1 = nullptr;
+		pPolar2 = nullptr;
 		for (i=0; i<m_poaPolar->size(); i++)
 		{
 			pPolar = m_poaPolar->at(i);
@@ -1425,8 +1425,8 @@ double LLTAnalysis::GetPlrPointFromAlpha(Foil *pFoil, double Re, double Alpha, i
 //more than one polar - interpolate between  - tough job
 
 	//First Find the two polars with Reynolds number surrounding wanted Re
-	Polar * pPolar1 = NULL;
-	Polar * pPolar2 = NULL;
+	Polar * pPolar1 = nullptr;
+	Polar * pPolar2 = nullptr;
 	int nPolars = m_poaPolar->size();
 	//Type 1 Polars are sorted by crescending Re Number
 
@@ -1658,8 +1658,8 @@ void LLTAnalysis::GetLinearizedPolar(Foil *pFoil0, Foil *pFoil1, double Re, doub
 	}
 	else
 	{
-		pPolar1 = NULL;
-		pPolar2 = NULL;
+		pPolar1 = nullptr;
+		pPolar2 = nullptr;
 		for (i=0; i<m_poaPolar->size(); i++)
 		{
 			pPolar = m_poaPolar->at(i);
@@ -1711,8 +1711,8 @@ void LLTAnalysis::GetLinearizedPolar(Foil *pFoil0, Foil *pFoil1, double Re, doub
 	}
 	else
 	{
-		pPolar1 = NULL;
-		pPolar2 = NULL;
+		pPolar1 = nullptr;
+		pPolar2 = nullptr;
 		for (i=0; i<m_poaPolar->size(); i++)
 		{
 			pPolar = m_poaPolar->at(i);

@@ -41,14 +41,14 @@ GraphDlg::GraphDlg(QWidget *pParent): QDialog(pParent)
 
 	m_pParent = pParent;
 
-	m_pGraph    = NULL;
+	m_pGraph    = nullptr;
 	m_bApplied = true;
 	m_bVariableChanged = false;
 
 	m_XSel = 0;
 	m_YSel = 1;
 
-	m_pTitleFont = m_pLabelFont = NULL;
+	m_pTitleFont = m_pLabelFont = nullptr;
 
 	setupLayout();
 	connectSignals();

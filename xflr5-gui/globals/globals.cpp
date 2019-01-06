@@ -56,9 +56,9 @@ void ExpFormat(double &f, int &exp)
 	double f1 = qAbs(f);
 //	int sgn = int(f/f1);
 	if(f1<1)
-		exp = (int)log10(f1)-1;
+        exp = int(log10(f1))-1;
 	else
-		exp = (int)log10(f1);
+        exp = int(log10(f1));
 
 	f = f/pow(10.0,exp);
 }
@@ -178,11 +178,11 @@ void Trace(QString msg, double f)
 *@param tau the input parameter between 0 and 1.
 *@return the red component of the color
 */
-float GLGetRed(double tau)
+float GLGetRed(float tau)
 {
-	if(tau>2.0/3.0)      return 1.0;
-	else if(tau>1.0/3.0) return (3.0*(tau-1.0/3.0));
-	else                 return 0.0;
+    if(tau>2.0f/3.0f)      return 1.0f;
+    else if(tau>1.0f/3.0f) return (3.0f*(tau-1.0f/3.0f));
+    else                   return 0.0;
 }
 
 
@@ -192,12 +192,12 @@ float GLGetRed(double tau)
 *@param tau the input parameter between 0 and 1.
 *@return the green component of the color
 */
-float GLGetGreen(double tau)
+float GLGetGreen(float tau)
 {
-	if(tau<0.f || tau>1.0) 	return 0.0;
-	else if(tau<1.0/4.0) 	return (4.0*tau);
-	else if(tau>3.0/4.0) 	return (1.0-4.0*(tau-3.0/4.0));
-	else                    return 1.0;
+    if(tau<0.f || tau>1.0f) 	return 0.0f;
+    else if(tau<1.0f/4.0f) 	return (4.0f*tau);
+    else if(tau>3.0f/4.0f) 	return (1.0f-4.0f*(tau-3.0f/4.0f));
+    else                    return 1.0f;
 }
 
 
@@ -207,11 +207,11 @@ float GLGetGreen(double tau)
 *@param tau the input parameter between 0 and 1.
 *@return the blue component of the color
 */
-float GLGetBlue(double tau)
+float GLGetBlue(float tau)
 {
-	if(tau>2.0/3.0)      return 0.0;
-	else if(tau>1.0/3.0) return (1.0-3.0*(tau-1.0/3.0));
-	else                 return 1.0;
+    if(tau>2.0f/3.0f)      return 0.0;
+    else if(tau>1.0f/3.0f) return (1.0f-3.0f*(tau-1.0f/3.0f));
+    else                   return 1.0;
 }
 
 
@@ -289,16 +289,16 @@ QColor randomColor(bool bLightColor)
 	QColor clr;
 	if(bLightColor)
 	{
-		clr.setHsv((int)(((double)qrand()/(double)RAND_MAX)*360),
-				   (int)(((double)qrand()/(double)RAND_MAX)*255),
-				   (int)(((double)qrand()/(double)RAND_MAX)*100)+155,
+        clr.setHsv(int((double(qrand())/double(RAND_MAX))*360),
+                   int((double(qrand())/double(RAND_MAX))*255),
+                   int((double(qrand())/double(RAND_MAX))*100)+155,
 					255);
 	}
 	else
 	{
-		clr.setHsv((int)(((double)qrand()/(double)RAND_MAX)*360),
-				   (int)(((double)qrand()/(double)RAND_MAX)*101)+ 99,
-				   (int)(((double)qrand()/(double)RAND_MAX)*100)+50,
+        clr.setHsv(int((double(qrand())/double(RAND_MAX))*360),
+                   int((double(qrand())/double(RAND_MAX))*101)+ 99,
+                   int((double(qrand())/double(RAND_MAX))*100)+50,
 					255);
 	}
 	return clr;
@@ -334,10 +334,10 @@ QString distributionType(XFLR5::enumPanelDistribution dist)
 {
 	switch(dist)
 	{
-		case XFLR5::COSINE: return "COSINE"; break;
-		case XFLR5::UNIFORM: return "UNIFORM"; break;
-		case XFLR5::SINE: return "SINE"; break;
-		case XFLR5::INVERSESINE: return "INVERSE SINE"; break;
+        case XFLR5::COSINE: return "COSINE";
+        case XFLR5::UNIFORM: return "UNIFORM";
+        case XFLR5::SINE: return "SINE";
+        case XFLR5::INVERSESINE: return "INVERSE SINE";
 		default: return "";
 	}
 }
@@ -354,8 +354,8 @@ QString bodyPanelType(XFLR5::enumBodyLineType panelType)
 {
 	switch(panelType)
 	{
-		case XFLR5::BODYPANELTYPE:  return "FLATPANELS"; break;
-		case XFLR5::BODYSPLINETYPE: return "NURBS"; break;
+        case XFLR5::BODYPANELTYPE:  return "FLATPANELS";
+        case XFLR5::BODYSPLINETYPE: return "NURBS";
 		default: return "";
 	}
 }
@@ -374,10 +374,10 @@ QString polarType(XFLR5::enumPolarType polarType)
 {
 	switch(polarType)
 	{
-        case XFLR5::FIXEDSPEEDPOLAR:  return "FIXEDSPEEDPOLAR";   break;
-        case XFLR5::FIXEDLIFTPOLAR:   return "FIXEDLIFTPOLAR";    break;
-        case XFLR5::RUBBERCHORDPOLAR: return "RUBBERCHORDPOLAR";  break;
-        case XFLR5::FIXEDAOAPOLAR:    return "FIXEDAOAPOLAR";     break;
+        case XFLR5::FIXEDSPEEDPOLAR:  return "FIXEDSPEEDPOLAR";
+        case XFLR5::FIXEDLIFTPOLAR:   return "FIXEDLIFTPOLAR";
+        case XFLR5::RUBBERCHORDPOLAR: return "RUBBERCHORDPOLAR";
+        case XFLR5::FIXEDAOAPOLAR:    return "FIXEDAOAPOLAR";
 		default: return "";
 	}
 }
@@ -398,11 +398,11 @@ QString WPolarType(XFLR5::enumPolarType polarType)
 {
 	switch(polarType)
 	{
-		case XFLR5::FIXEDSPEEDPOLAR:  return "FIXEDSPEEDPOLAR"; break;
-		case XFLR5::FIXEDLIFTPOLAR:   return "FIXEDLIFTPOLAR";  break;
-		case XFLR5::FIXEDAOAPOLAR:    return "FIXEDAOAPOLAR";   break;
-		case XFLR5::STABILITYPOLAR:   return "STABILITYPOLAR";  break;
-		case XFLR5::BETAPOLAR:        return "BETAPOLAR";       break;
+        case XFLR5::FIXEDSPEEDPOLAR:  return "FIXEDSPEEDPOLAR";
+        case XFLR5::FIXEDLIFTPOLAR:   return "FIXEDLIFTPOLAR";
+        case XFLR5::FIXEDAOAPOLAR:    return "FIXEDAOAPOLAR";
+        case XFLR5::STABILITYPOLAR:   return "STABILITYPOLAR";
+        case XFLR5::BETAPOLAR:        return "BETAPOLAR";
 		default: return "";
 	}
 }
@@ -421,9 +421,9 @@ QString analysisMethod(XFLR5::enumAnalysisMethod analysisMethod)
 {
 	switch(analysisMethod)
 	{
-		case XFLR5::LLTMETHOD:   return "LLTMETHOD";   break;
-		case XFLR5::VLMMETHOD:   return "VLMMETHOD";   break;
-		case XFLR5::PANEL4METHOD: return "PANELMETHOD"; break;
+        case XFLR5::LLTMETHOD:   return "LLTMETHOD";
+        case XFLR5::VLMMETHOD:   return "VLMMETHOD";
+        case XFLR5::PANEL4METHOD: return "PANELMETHOD";
 		default: return "";
 	}
 }
@@ -440,9 +440,8 @@ QString boundaryCondition(XFLR5::enumBC boundaryCondition)
 {
     switch(boundaryCondition)
     {
-        case XFLR5::DIRICHLET: return "DIRICHLET";   break;
-        case XFLR5::NEUMANN:   return "NEUMANN";     break;
-        default: return "";
+        case XFLR5::DIRICHLET: return "DIRICHLET";
+        case XFLR5::NEUMANN:   return "NEUMANN";
     }
 }
 
@@ -479,7 +478,7 @@ Foil *readFoilFile(QFile &xFoilFile)
 	QString tempStr;
 	QString FoilName;
 
-	Foil* pFoil = NULL;
+    Foil* pFoil = nullptr;
 	int pos, i, ip;
 	pos = 0;
 	double x, y, z, area;
@@ -499,7 +498,7 @@ Foil *readFoilFile(QFile &xFoilFile)
 	}
 
 	pFoil = new Foil();
-	if(!pFoil)	return NULL;
+    if(!pFoil)	return nullptr;
 
 	while(tempStr.length()==0 && !in.atEnd())
 	{
@@ -558,7 +557,7 @@ Foil *readFoilFile(QFile &xFoilFile)
 					if(pFoil->nb>IQX)
 					{
 						delete pFoil;
-						return NULL;
+                        return nullptr;
 					}
 					xp = x;
 					yp = y;
@@ -617,8 +616,8 @@ Foil *readFoilFile(QFile &xFoilFile)
  */
 Foil* readPolarFile(QFile &plrFile, QList<Polar*> &polarList)
 {
-	Foil* pFoil = NULL;
-	Polar *pPolar = NULL;
+    Foil* pFoil = nullptr;
+    Polar *pPolar = nullptr;
 	Polar * pOldPolar;
 	int i, n, l;
 
@@ -631,7 +630,7 @@ Foil* readPolarFile(QFile &plrFile, QList<Polar*> &polarList)
 	if(n<100000)
 	{
 		//old format
-		return NULL;
+        return nullptr;
 	}
 	else if (n >=100000)
 	{
@@ -644,7 +643,7 @@ Foil* readPolarFile(QFile &plrFile, QList<Polar*> &polarList)
 			if (!serializeFoil(pFoil, ar, false))
 			{
 				delete pFoil;
-				return NULL;
+                return nullptr;
 			}
 		}
 
@@ -658,7 +657,7 @@ Foil* readPolarFile(QFile &plrFile, QList<Polar*> &polarList)
 			if (!serializePolar(pPolar, ar, false))
 			{
 				delete pPolar;
-				return NULL;
+                return nullptr;
 			}
 			for (l=0; l<polarList.size(); l++)
 			{
@@ -872,8 +871,8 @@ void setAutoWPolarName(void * ptrWPolar, void *ptrPlane)
 
 	int i, nCtrl;
 
-	WPolar *pWPolar =(WPolar*)ptrWPolar;
-	Plane *pPlane = (Plane*)ptrPlane;
+    WPolar *pWPolar = (WPolar*)(ptrWPolar);
+    Plane *pPlane = (Plane*)(ptrPlane);
 
 	Units::getSpeedUnitLabel(str);
 

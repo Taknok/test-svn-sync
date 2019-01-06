@@ -49,15 +49,15 @@ StabPolarDlg::StabPolarDlg(QWidget *pParent) : QDialog(pParent)
 	m_bAutoName = true;
 	m_UnitType   = 1;
 
-	m_pWingList[0] = NULL;
-	m_pWingList[1] = NULL;
-	m_pWingList[2] = NULL;
-	m_pWingList[3] = NULL;
-	m_pInertiaControlTable = NULL;
-	m_pInertiaControlModel = NULL;
+	m_pWingList[0] = nullptr;
+	m_pWingList[1] = nullptr;
+	m_pWingList[2] = nullptr;
+	m_pWingList[3] = nullptr;
+	m_pInertiaControlTable = nullptr;
+	m_pInertiaControlModel = nullptr;
 
-	m_pAngleControlTable = NULL;
-	m_pAngleControlModel = NULL;
+	m_pAngleControlTable = nullptr;
+	m_pAngleControlModel = nullptr;
 
 
 	s_StabWPolar.polarType() = XFLR5::STABILITYPOLAR;

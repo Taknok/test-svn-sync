@@ -52,9 +52,9 @@ DEPENDPATH += $$PWD/../XFoil-lib/
 DEPENDPATH += $$PWD/../xflr5-engine/
 
 
-OBJECTS_DIR = ./build/objects
-MOC_DIR = ./build/moc
-RCC_DIR = ./build/rcc
+#OBJECTS_DIR = ./build/objects
+#MOC_DIR = ./build/moc
+#RCC_DIR = ./build/rcc
 
 
 win32 {

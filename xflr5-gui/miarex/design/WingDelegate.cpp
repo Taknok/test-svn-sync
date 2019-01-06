@@ -79,7 +79,7 @@ QWidget *WingDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem 
 		}
 		return editor;
 	}
-	return NULL;
+	return nullptr;
 }
 
 

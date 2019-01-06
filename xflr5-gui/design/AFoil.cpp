@@ -54,7 +54,7 @@
 
 
 
-MainFrame *AFoil::s_pMainFrame = NULL;
+MainFrame *AFoil::s_pMainFrame = nullptr;
 
 /**
  * The public constructor
@@ -65,19 +65,19 @@ AFoil::AFoil(QWidget *parent)
 {
 	setAttribute(Qt::WA_DeleteOnClose);
 
-	m_p2DWidget = NULL;
+	m_p2DWidget = nullptr;
 
 	m_StackPos = 0;
 
-	m_poaFoil  = NULL;
-	m_pctrlFoilTable = NULL;
-	m_precision = NULL;
+	m_poaFoil  = nullptr;
+	m_pctrlFoilTable = nullptr;
+	m_precision = nullptr;
 
 	m_pSF = new SplineFoil();
 	m_pSF->m_bModified = false;
 	m_pSF->initSplineFoil();
 
-	s_pMainFrame->m_pUndoAFoilAct = s_pMainFrame->m_pRedoAFoilAct = NULL;
+	s_pMainFrame->m_pUndoAFoilAct = s_pMainFrame->m_pRedoAFoilAct = nullptr;
 
 	clearStack();
 	takePicture();
@@ -1800,7 +1800,7 @@ void AFoil::setTableFont()
 
 Foil* AFoil::addNewFoil(Foil *pFoil)
 {
-	if(!pFoil) return NULL;
+	if(!pFoil) return nullptr;
 	QStringList NameList;
     for(int k=0; k<Objects2d::s_oaFoil.size(); k++)
 	{
@@ -1818,7 +1818,7 @@ Foil* AFoil::addNewFoil(Foil *pFoil)
 		emit projectModified();
 		return pFoil;
 	}
-	return NULL;
+	return nullptr;
 }
 
 

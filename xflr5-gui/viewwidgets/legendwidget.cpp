@@ -40,9 +40,9 @@
 #include <QPainter>
 
 
-MainFrame* LegendWidget::s_pMainFrame = NULL;
-Miarex* LegendWidget::s_pMiarex = NULL;
-XDirect* LegendWidget::s_pXDirect = NULL;
+MainFrame* LegendWidget::s_pMainFrame = nullptr;
+Miarex* LegendWidget::s_pMiarex = nullptr;
+XDirect* LegendWidget::s_pXDirect = nullptr;
 
 
 
@@ -50,7 +50,7 @@ LegendWidget::LegendWidget(QWidget *pParent) : QWidget(pParent)
 {
 	setMouseTracking(true);
 	m_pParent = pParent;
-	m_pGraph = NULL;
+	m_pGraph = nullptr;
 	m_MiarexView = XFLR5::OTHERVIEW;
 	m_LegendPosition = QPointF(11.0,11.0);
 	m_bTrans = false;
@@ -280,7 +280,7 @@ void LegendWidget::drawPOppGraphLegend(QPainter &painter, QPointF place, double 
 
 	QStringList str; // we need to make an inventory of wings
 	bool bFound;
-	PlaneOpp *pPOpp = NULL;
+	PlaneOpp *pPOpp = nullptr;
 
 
     for (i=0; i<Objects3d::s_oaPOpp.size(); i++)
@@ -437,7 +437,7 @@ void LegendWidget::drawCpLegend(QPainter &painter, Graph *pGraph, QPointF place,
 {
 	painter.save();
 	double LegendSize, LegendWidth, dny, x1, y1, i, ny;
-	Curve *pCurve=NULL;
+	Curve *pCurve=nullptr;
 	QString strong;
 
 	LegendSize = 30;
@@ -500,7 +500,7 @@ void LegendWidget::drawStabTimeLegend(QPainter &painter, Graph *pGraph, QPointF 
 {
 	painter.save();
 	double LegendSize, LegendWidth, dny, x1, y1, i, ny;
-	Curve *pCurve=NULL;
+	Curve *pCurve=nullptr;
 	QString strong;
 
 	LegendSize = 30;

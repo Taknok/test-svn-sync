@@ -52,7 +52,7 @@ LLTAnalysisDlg::LLTAnalysisDlg(QWidget *pParent) : QDialog(pParent)
 
 	setupLayout();
 
-	m_pTheTask = NULL;
+	m_pTheTask = nullptr;
 
 	m_pIterGraph = new Graph();
 
@@ -307,7 +307,7 @@ void LLTAnalysisDlg::cleanUp()
 	}
 	delete pXFile;
 
-	m_pTheTask = NULL;
+	m_pTheTask = nullptr;
 	m_pctrlCancel->setText(tr("Close"));
 	m_pctrlCancel->setFocus();
 }
@@ -391,5 +391,5 @@ void LLTAnalysisDlg::onMessage(QString msg)
 void LLTAnalysisDlg::deleteTask()
 {
 	if(m_pTheTask) delete m_pTheTask;
-	m_pTheTask = NULL;
+	m_pTheTask = nullptr;
 }

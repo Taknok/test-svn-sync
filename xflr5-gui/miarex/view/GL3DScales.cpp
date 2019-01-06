@@ -44,7 +44,7 @@ GL3DScales::GL3DScales(QWidget *)
 	setAttribute(Qt::WA_DeleteOnClose, false);
 	setWindowTitle(tr("3D Scales Settings"));
 
-	m_pParent = NULL;
+	m_pParent = nullptr;
 	s_pos       = 1;
 	s_NX        =   30;
 	s_XFactor   = 1.10;

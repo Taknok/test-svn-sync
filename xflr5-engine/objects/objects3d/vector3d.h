@@ -140,6 +140,11 @@ public:
 
 	
 	//inline methods
+
+    float xf() {return float(x);}
+    float yf() {return float(y);}
+    float zf() {return float(z);}
+
 	void copy(Vector3d const &V)
 	{	
 		x = V.x;

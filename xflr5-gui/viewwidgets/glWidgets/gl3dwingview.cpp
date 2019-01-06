@@ -27,7 +27,7 @@
 gl3dWingView::gl3dWingView(QWidget *pParent) : gl3dView(pParent)
 {
 	m_pParent = pParent;
-	m_pWing = NULL;
+	m_pWing = nullptr;
 }
 
 

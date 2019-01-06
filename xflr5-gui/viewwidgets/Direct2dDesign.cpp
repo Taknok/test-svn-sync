@@ -37,9 +37,9 @@ Direct2dDesign::Direct2dDesign(QWidget *pParent) : Section2dWidget(pParent)
 	m_bLECircle      = false;
 	m_LERad   = 1.0;
 
-	m_pSF = NULL;
-	m_poaFoil = NULL;
-	m_pBufferFoil = NULL;
+	m_pSF = nullptr;
+	m_poaFoil = nullptr;
+	m_pBufferFoil = nullptr;
 	createContextMenu();
 }
 

@@ -32,7 +32,7 @@ int Updater::s_AvailableMajorVersion=-1;
 int Updater::s_AvailableMinorVersion=-1;
 QDate Updater::s_LastCheckDate;
 
-MainFrame *Updater::s_pMainFrame = NULL;
+MainFrame *Updater::s_pMainFrame = nullptr;
 
 Updater::Updater(MainFrame *pMainFrame)
 {
