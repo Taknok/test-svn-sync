@@ -19,12 +19,14 @@
 
 *****************************************************************************/
 
-#include "wingseldlg.h"
-#include <globals/globals.h>
-#include <analysis3d/analysis3d_enums.h>
 #include <QVBoxLayout>
 #include <QPushButton>
-#include <QtDebug>
+#include <QDebug>
+
+#include "wingseldlg.h"
+#include <objects/objects3d/Plane.h>
+#include <globals/globals.h>
+#include <analysis3d/analysis3d_enums.h>
 
 WingSelDlg::WingSelDlg(QWidget *pParent) : QDialog(pParent)
 {

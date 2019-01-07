@@ -30,7 +30,7 @@
 #include <QTableView>
 #include <QStandardItemModel>
 
-#include <globals/gui_params.h>
+
 #include <misc/text/FloatEditDelegate.h>
 #include <misc/text/DoubleEdit.h>
 #include <objects/objects3d/vector3d.h>

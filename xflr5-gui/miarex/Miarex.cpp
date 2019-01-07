@@ -19,15 +19,16 @@
 
 *****************************************************************************/
 
-#include <QtDebug>
-#include <QApplication>
-#include <QDockWidget>
-#include <QStatusBar>
-#include <QMessageBox>
 #include <QAction>
-#include <QFileDialog>
+#include <QApplication>
 #include <QColorDialog>
+#include <QDebug>
 #include <QDesktopServices>
+#include <QDockWidget>
+#include <QFileDialog>
+#include <QMenu>
+#include <QMessageBox>
+#include <QStatusBar>
 #include <math.h>
 
 #include "Miarex.h"

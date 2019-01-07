@@ -26,9 +26,9 @@
 #include <QDialog>
 #include <QPushButton>
 
-#include <misc/text/IntEdit.h>
-#include <misc/text/DoubleEdit.h>
 
+class IntEdit;
+class DoubleEdit;
 
 class TwoDPanelDlg : public QDialog
 {

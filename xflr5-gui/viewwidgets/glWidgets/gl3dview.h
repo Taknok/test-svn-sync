@@ -30,12 +30,12 @@
 #include <QOpenGLBuffer>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
-#include <globals/gui_params.h>
-#include <globals/gui_enums.h>
-#include <miarex/view/GLLightDlg.h>
-#include <viewwidgets/glWidgets/ArcBall.h>
-#include <objects/objects3d/PointMass.h>
 #include <QTimer>
+
+#include <globals/gui_enums.h>
+#include <viewwidgets/glWidgets/ArcBall.h>
+
+
 
 #define MAXCPCOLORS    21
 
@@ -48,6 +48,8 @@ class WingOpp;
 class WPolar;
 class PlaneOpp;
 class Panel;
+class GLLightDlg;
+class PointMass;
 
 class gl3dView : public QOpenGLWidget
 {
@@ -61,7 +63,7 @@ class gl3dView : public QOpenGLWidget
 
 	Q_OBJECT
 public:
-	gl3dView(QWidget *pParent = NULL);
+    gl3dView(QWidget *pParent = nullptr);
 	~gl3dView();
 
 signals:

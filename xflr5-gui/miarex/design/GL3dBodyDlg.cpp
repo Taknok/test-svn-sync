@@ -19,19 +19,6 @@
 
 *****************************************************************************/
 
-
-#include <globals/globals.h>
-#include <misc/line/LinePickerDlg.h>
-#include <misc/options/displayoptions.h>
-#include <misc/LengthUnitDlg.h>
-#include <misc/options/Units.h>
-#include "./BodyTransDlg.h"
-#include "./InertiaDlg.h"
-#include "./BodyScaleDlg.h"
-#include "./GL3dBodyDlg.h"
-#include <miarex/mgt/XmlPlaneReader.h>
-#include <miarex/mgt/XmlPlaneWriter.h>
-#include <miarex/view/W3dPrefsDlg.h>
 #include <QFileDialog>
 #include <QColorDialog>
 #include <QGridLayout>
@@ -43,6 +30,29 @@
 #include <QMessageBox>
 #include <QHeaderView>
 #include <math.h>
+
+
+#include "./BodyScaleDlg.h"
+#include "./BodyTransDlg.h"
+#include "./GL3dBodyDlg.h"
+#include "./InertiaDlg.h"
+#include "BodyFrameWidget.h"
+#include "BodyGridDlg.h"
+#include "BodyLineWidget.h"
+#include "BodyTableDelegate.h"
+#include <gl3dbodyview.h>
+#include <globals/globals.h>
+#include <miarex/mgt/XmlPlaneReader.h>
+#include <miarex/mgt/XmlPlaneWriter.h>
+#include <miarex/view/W3dPrefsDlg.h>
+#include <misc/LengthUnitDlg.h>
+#include <misc/color/ColorButton.h>
+#include <misc/line/LinePickerDlg.h>
+#include <misc/options/Units.h>
+#include <misc/options/displayoptions.h>
+#include <misc/text/DoubleEdit.h>
+#include <objects/objects3d/Body.h>
+#include <viewwidgets/glWidgets/ArcBall.h>
 
 
 QByteArray GL3dBodyDlg::m_VerticalSplitterSizes;
