@@ -32,7 +32,7 @@ class SaveOptions : public QWidget
 	friend class MainFrame;
 	Q_OBJECT
 public:
-	SaveOptions(QWidget *parent = NULL);
+    SaveOptions(QWidget *parent = nullptr);
 
 	void initWidget(bool bAutoLoadLast=false, bool bOpps=false, bool bWOpps = true, bool bAutoSave=true, int saveInterval=10);
 
