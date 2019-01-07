@@ -29,14 +29,14 @@
 
 
 class Foil;
-class FoilAnalysis;
 class Plane;
-class PlaneAnalysis;
 class PlaneAnalysisTask;
 class PlaneOpp;
 class Polar;
 class WPolar;
 class XfoilTask;
+struct FoilAnalysis;
+struct PlaneAnalysis;
 
 class XflScriptExec
 {
