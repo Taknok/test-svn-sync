@@ -19,18 +19,27 @@
 
 *****************************************************************************/
 
-#include <graph/graphdlg.h>
-#include <misc/line/LinePickerDlg.h>
-#include <objects/objects2d/Polar.h>
-#include <objects/objects3d/WPolar.h>
-#include <miarex/Miarex.h>
+
 #include <QFontDialog>
 #include <QColorDialog>
 #include <QPalette>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QGroupBox>
-#include <QtDebug>
+#include <QDebug>
+
+#include <graph/graph.h>
+#include <graph/graphdlg.h>
+#include <miarex/Miarex.h>
+#include <misc/color/ColorButton.h>
+#include <misc/line/LineBtn.h>
+#include <misc/line/LinePickerDlg.h>
+#include <misc/text/DoubleEdit.h>
+#include <misc/text/IntEdit.h>
+#include <misc/text/TextClrBtn.h>
+#include <objects/objects2d/Polar.h>
+#include <objects/objects3d/WPolar.h>
+
 
 int GraphDlg::s_iActivePage = 0;
 

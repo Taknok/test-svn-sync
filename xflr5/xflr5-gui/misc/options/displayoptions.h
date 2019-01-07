@@ -31,10 +31,10 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QSettings>
-#include <graph/graph.h>
-#include <graph/graph.h>
 
 #include <globals/gui_enums.h>
+#include <graph/graph.h>
+
 
 class TextClrBtn;
 class ColorButton;

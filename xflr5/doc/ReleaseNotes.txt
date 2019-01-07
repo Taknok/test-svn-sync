@@ -16,16 +16,16 @@
 
 
 xflr5 v6.44 January 7th, 2019
-    - tentative fix for occasional crash bug when displaying streamlines or surface velocities
+    - tentative fix for an occasional crash bug when displaying streamlines or surface velocities
     - fix for bug #128 relative to the display of the wings and body in the advanced plane editor
     - fix for bug #126 relative to the highlighting of frames in the advanced fuse editor
     - feature request #127: shortcut added for the menu entries "show only associated polars"
+    - fix for bug report #121 - synchronized the background image position with the object views
+    - mod for request #124 - added an option in the spline parameters to force closed LE and TE.
     - prevented the multiple repaint of surface velocities in the 3d view
     - corrected minor errors in the derotate operation of airfoils
     - corrected translations errors from fortran to C in the XFoil flap setting routine - thanks to Nicolas C.
     - added an optional automatic check for updates at startup
-    - fix for bug report #121 - synchronized the background image position with the object views
-    - mod for request #124 - added an option in the spline parameters to force closed LE and TE.
     - completed the archiving of the default plane polar with all of its data.
       Incremented the format of the project file to 200002.
     - corrected a crash bug when trying to overwrite a saved foil operating point
