@@ -19,7 +19,7 @@
 
 *****************************************************************************/
 
-#include <QtDebug>
+#include <QDebug>
 #include <QtConcurrent/QtConcurrentRun>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -34,12 +34,17 @@
 #include <math.h>
 
 #include "PanelAnalysisDlg.h"
-#include <miarex/Miarex.h>
-#include <misc/options/displayoptions.h>
+#include <analysis3d/plane_analysis/PanelAnalysis.h>
+#include <analysis3d/plane_analysis/planeanalysistask.h>
 #include <globals/globals.h>
-#include <objects/objects3d/vector3d.h>
-#include <misc/options/Units.h>
+#include <globals/gui_params.h>
+#include <miarex/Miarex.h>
 #include <miarex/objects3d.h>
+#include <misc/options/Units.h>
+#include <misc/options/displayoptions.h>
+#include <objects/objects3d/Plane.h>
+#include <objects/objects3d/WPolar.h>
+#include <objects/objects3d/vector3d.h>
 
 QPoint PanelAnalysisDlg::s_Position = QPoint(200,100);
 QSize  PanelAnalysisDlg::s_WindowSize = QSize(900,550);

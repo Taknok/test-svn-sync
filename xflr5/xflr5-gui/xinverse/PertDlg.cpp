@@ -25,7 +25,9 @@
 #include "PertDlg.h"
 #include <misc/options/displayoptions.h>
 
-
+#include <misc/text/FloatEditDelegate.h>
+#include <objects/objects2d/Foil.h>
+#include <misc/text/DoubleEdit.h>
 
 
 PertDlg::PertDlg(QWidget *pParent) : QDialog(pParent)

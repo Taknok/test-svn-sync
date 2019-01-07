@@ -28,7 +28,7 @@
 #define INVERSEVIEWDWIDGET_H
 
 #include <QWidget>
-#include <globals/gui_params.h>
+
 
 class XInverse;
 class MainFrame;

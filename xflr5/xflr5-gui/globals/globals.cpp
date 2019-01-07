@@ -443,6 +443,7 @@ QString boundaryCondition(XFLR5::enumBC boundaryCondition)
         case XFLR5::DIRICHLET: return "DIRICHLET";
         case XFLR5::NEUMANN:   return "NEUMANN";
     }
+    return "DIRICHLET";
 }
 
 bool stringToBool(QString str)

@@ -589,10 +589,14 @@ int Body::insertFrame(Vector3d Real)
 bool Body::intersect(Vector3d A, Vector3d B, Vector3d &I, bool bRight)
 {
     if(m_LineType==XFLR5::BODYPANELTYPE)
+    {
         return intersectFlatPanels(A,B,I);
+    }
     else if (m_LineType==XFLR5::BODYSPLINETYPE)
+    {
         return intersectNURBS(A,B,I, bRight);
-	return false;
+    }
+    return false;
 }
 
 /**
@@ -674,7 +678,7 @@ bool Body::intersectNURBS(Vector3d A, Vector3d B, Vector3d &I, bool bRight)
  * @param I the intersection point
  * @return true if an intersection point has been found, false otherwise.
  */
-bool Body::intersectFlatPanels(Vector3d A, Vector3d B, Vector3d &I)
+bool Body::intersectFlatPanels(Vector3d const &A, Vector3d const &B, Vector3d &I) const
 {
 	bool b1, b2, b3, b4, b5;
 	int i,k;

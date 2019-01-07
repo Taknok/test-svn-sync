@@ -37,6 +37,9 @@
 #include "EditPlaneDlg.h"
 #include <globals/globals.h>
 
+#include <gl3dplaneview.h>
+#include <objects/objects3d/Plane.h>
+#include <miarex/design/EditObjectDelegate.h>
 
 QSize EditPlaneDlg::s_WindowSize(1031,783);
 QPoint EditPlaneDlg::s_WindowPosition(131, 77);
@@ -725,7 +728,8 @@ void EditPlaneDlg::onEndEdit()
 	if(s_bAutoRedraw) onRedraw();
 }
 
-bool EditPlaneDlg::intersectObject(Vector3d AA,  Vector3d U, Vector3d &I)
+
+bool EditPlaneDlg::intersectObject(Vector3d AA, Vector3d U, Vector3d &I)
 {
 	Wing *pWingList[MAXWINGS] = {m_pPlane->wing(), m_pPlane->wing2(), m_pPlane->stab(), m_pPlane->fin()};
 
@@ -736,7 +740,7 @@ bool EditPlaneDlg::intersectObject(Vector3d AA,  Vector3d U, Vector3d &I)
 
 	if(m_pPlane->body())
 	{
-		if(m_pPlane->body()->intersectFlatPanels(AA, AA+U*10, I))return true;
+        if(m_pPlane->body()->intersectFlatPanels(AA, AA+U*10, I)) return true;
 	}
 	return false;
 }

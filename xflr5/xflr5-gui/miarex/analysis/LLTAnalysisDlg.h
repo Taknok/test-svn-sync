@@ -38,13 +38,15 @@
 #include <QFile>
 #include <QTextEdit>
 #include <QPoint>
-#include <analysis3d/plane_analysis/LLTAnalysis.h>
-#include <analysis3d/plane_analysis/planeanalysistask.h>
-#include <graph/graph.h>
-#include "graphwidget.h"
-#include <objects/objects3d/WPolar.h>
-#include <objects/objects3d/Wing.h>
 
+
+
+class Graph;
+class GraphWidget;
+class WPolar;
+class Wing;
+class LLTAnalysis;
+class PlaneAnalysisTask;
 
 /**
  *@class LLTAnalysisDlg

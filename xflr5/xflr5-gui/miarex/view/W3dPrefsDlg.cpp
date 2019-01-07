@@ -25,9 +25,13 @@
 #include <QGridLayout>
 #include <QColorDialog>
 #include <QPushButton>
-#include <globals/gui_params.h>
+
 #include "W3dPrefsDlg.h"
 #include <misc/line/LinePickerDlg.h>
+
+#include <misc/line/LineBtn.h>
+#include <misc/color/ColorButton.h>
+#include <misc/text/IntEdit.h>
 
 
 bool W3dPrefsDlg::s_bAutoAdjustScale = true;

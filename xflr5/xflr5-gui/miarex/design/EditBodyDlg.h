@@ -25,18 +25,26 @@
 
 #include <QDialog>
 #include <QPixmap>
+#include <QSettings>
+#include <QFile>
 #include <QSplitter>
 #include <QTreeView>
 #include <QStandardItemModel>
 #include <QToolButton>
-#include <gl3dbodyview.h>
-#include <objects/objects3d/Body.h>
-#include "BodyLineWidget.h"
-#include "BodyFrameWidget.h"
-#include "EditObjectDelegate.h"
-#include "section2dwidget.h"
+#include <QList>
+#include <QCheckBox>
 
+#include <objects/objects3d/vector3d.h>
+#include <analysis3d/analysis3d_enums.h>
 
+class gl3dBodyView;
+class Body;
+class BodyLineWidget;
+class BodyFrameWidget;
+class EditObjectDelegate;
+class Section2dWidget;
+class PointMass;
+class Frame;
 
 class EditBodyDlg : public QDialog
 {

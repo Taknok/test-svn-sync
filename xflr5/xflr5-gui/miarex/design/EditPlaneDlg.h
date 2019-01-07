@@ -24,16 +24,24 @@
 #define EDITPLANEOBJECTDLG_H
 
 #include <QDialog>
+#include <QSettings>
 #include <QPixmap>
 #include <QSplitter>
 #include <QTreeView>
 #include <QStandardItemModel>
 #include <QToolButton>
-#include <gl3dplaneview.h>
-#include <objects/objects3d/Plane.h>
-#include "EditObjectDelegate.h"
+#include <QCheckBox>
 
+#include <objects/objects3d/vector3d.h>
+#include <analysis3d/analysis3d_enums.h>
 
+class Plane;
+class Body;
+class Wing;
+class PointMass;
+class Frame;
+class gl3dPlaneView;
+class EditObjectDelegate;
 
 typedef enum {PLANE, BODY, WING, NOOBJECT} enumObjectType;
 
@@ -57,7 +65,7 @@ public:
 	void keyPressEvent(QKeyEvent *event);
 	void contextMenuEvent(QContextMenuEvent *event);
 
-	bool intersectObject(Vector3d AA,  Vector3d U, Vector3d &I);
+    bool intersectObject(Vector3d AA,  Vector3d U, Vector3d &I);
 	void connectSignals();
 	void glMake3DObjects();
 	void identifySelection(const QModelIndex &indexSel);
@@ -69,7 +77,7 @@ public:
 	void fillPlaneMetaData(QStandardItem *item);
 	void readPlaneTree();
 	void readViewLevel(QModelIndex indexLevel);
-	void readBodyTree(Body *pBosy, QModelIndex indexLevel);
+    void readBodyTree(Body *pBody, QModelIndex indexLevel);
 	void readWingTree(Wing *pWing, Vector3d &wingLE, double &tiltAngle, QModelIndex indexLevel);
 	void readInertiaTree(double &volumeMass, QList<PointMass *> &pointMasses, QModelIndex indexLevel);
 	void readVectorTree(Vector3d &V, QModelIndex indexLevel);

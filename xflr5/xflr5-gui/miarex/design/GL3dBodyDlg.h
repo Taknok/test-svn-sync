@@ -37,17 +37,17 @@
 #include <QSettings>
 #include <QPixmap>
 
-#include "BodyGridDlg.h"
-#include "BodyTableDelegate.h"
-#include <misc/text/DoubleEdit.h>
-#include <misc/color/ColorButton.h>
-#include <viewwidgets/glWidgets/ArcBall.h>
-#include <gl3dbodyview.h>
-#include <objects/objects3d/Body.h>
-#include "BodyLineWidget.h"
-#include "BodyFrameWidget.h"
 
-#define SECTIONHIGHLIGHT    1702
+#include <viewwidgets/glWidgets/gl3dbodyview.h>
+
+class ColorButton;
+class DoubleEdit;
+class BodyTableDelegate;
+class BodyGridDlg;
+class Body;
+class BodyLineWidget;
+class BodyFrameWidget;
+
 
 
 class GL3dBodyDlg : public QDialog

@@ -22,14 +22,21 @@
 #ifndef XFLSCRIPTEXEC_H
 #define XFLSCRIPTEXEC_H
 
-#include <script/xflscriptreader.h>
 #include <QTextStream>
 
-#include <objects/objects3d/Plane.h>
-#include <objects/objects3d/WPolar.h>
+#include <script/xflscriptreader.h>
 
-#include <analysis3d/plane_analysis/planeanalysistask.h>
-#include <xdirect/analysis/XFoilTask.h>
+
+
+class Foil;
+class FoilAnalysis;
+class Plane;
+class PlaneAnalysis;
+class PlaneAnalysisTask;
+class PlaneOpp;
+class Polar;
+class WPolar;
+class XfoilTask;
 
 class XflScriptExec
 {

@@ -28,13 +28,21 @@
 #include <QMessageBox>
 #include <QPainter>
 #include <QFileDialog>
-#include "EditBodyDlg.h"
-#include <miarex/mgt/XmlPlaneReader.h>
-#include <miarex/mgt/XmlPlaneWriter.h>
-#include <miarex/view/W3dPrefsDlg.h>
+
+
 #include "./BodyScaleDlg.h"
 #include "./BodyTransDlg.h"
 #include "./InertiaDlg.h"
+#include "BodyFrameWidget.h"
+#include "BodyLineWidget.h"
+#include "EditBodyDlg.h"
+#include "EditObjectDelegate.h"
+#include "section2dwidget.h"
+#include <gl3dbodyview.h>
+#include <miarex/mgt/XmlPlaneReader.h>
+#include <miarex/mgt/XmlPlaneWriter.h>
+#include <miarex/view/W3dPrefsDlg.h>
+#include <objects/objects3d/Body.h>
 
 QSize EditBodyDlg::s_WindowSize(1031,783);
 QPoint EditBodyDlg::s_WindowPosition(131, 77);

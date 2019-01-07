@@ -25,6 +25,9 @@
 #include <globals/globals.h>
 #include <misc/options/Units.h>
 #include <xdirect/XDirect.h>
+#include <misc/text/DoubleEdit.h>
+#include <objects/objects2d/Polar.h>
+
 
 int FoilPolarDlg::s_UnitType = 1;
 double FoilPolarDlg::s_Viscosity = 1.5e-5;

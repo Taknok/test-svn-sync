@@ -19,17 +19,6 @@
 
 *****************************************************************************/
 
-#include "BatchDlg.h"
-#include <globals/gui_params.h>
-#include <globals/globals.h>
-#include <misc/options/displayoptions.h>
-#include <xdirect/XDirect.h>
-#include <xdirect/objects2d.h>
-#include "ReListDlg.h"
-#include <misc/options/displayoptions.h>
-#include <xinverse/FoilSelectionDlg.h>
-
-
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QGroupBox>
@@ -38,8 +27,24 @@
 #include <QTimer>
 #include <QApplication>
 #include <QMessageBox>
-#include <QtDebug>
+#include <QDebug>
 
+#include "BatchDlg.h"
+#include "ReListDlg.h"
+#include "graphwidget.h"
+#include <globals/globals.h>
+#include <globals/gui_params.h>
+#include <graph/graph.h>
+#include <misc/options/displayoptions.h>
+#include <misc/text/DoubleEdit.h>
+#include <misc/text/IntEdit.h>
+#include <objects/objects2d/Foil.h>
+#include <objects/objects2d/Polar.h>
+#include <xdirect/XDirect.h>
+#include <xdirect/analysis/XFoilTask.h>
+#include <xdirect/analysis/xfoiltaskevent.h>
+#include <xdirect/objects2d.h>
+#include <xinverse/FoilSelectionDlg.h>
 
 bool BatchDlg::s_bCurrentFoil=true;
 void * BatchDlg::s_pXDirect;
