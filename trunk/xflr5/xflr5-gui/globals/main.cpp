@@ -25,7 +25,7 @@
 
 #include "XFLR5Application.h"
 #include <globals/mainframe.h>
-#include <globals/gui_params.h>
+
 
 
 /**

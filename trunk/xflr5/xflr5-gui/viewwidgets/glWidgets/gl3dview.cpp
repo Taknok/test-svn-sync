@@ -25,28 +25,28 @@
 #include <QMouseEvent>
 
 #include "gl3dview.h"
+#include <analysis3d/plane_analysis/LLTAnalysis.h>
 #include <globals/globals.h>
+
 #include <globals/mainframe.h>
-#include <misc/options/displayoptions.h>
-#include <misc/options/Units.h>
-#include <globals/mainframe.h>
-#include <objects/objects3d/vector3d.h>
-#include <objects/objects3d/Body.h>
-#include <objects/objects3d/Wing.h>
-#include <objects/objects3d/Plane.h>
-#include <objects/objects3d/WPolar.h>
-#include <objects/objects3d/Surface.h>
 #include <miarex/Miarex.h>
-#include <miarex/objects3d.h>
-#include <miarex/design/GL3dBodyDlg.h>
-#include <miarex/design/GL3dWingDlg.h>
 #include <miarex/design/EditBodyDlg.h>
 #include <miarex/design/EditPlaneDlg.h>
+#include <miarex/design/GL3dBodyDlg.h>
+#include <miarex/design/GL3dWingDlg.h>
+#include <miarex/objects3d.h>
 #include <miarex/view/GL3DScales.h>
+#include <miarex/view/GLLightDlg.h>
 #include <miarex/view/W3dPrefsDlg.h>
-#include <analysis3d/plane_analysis/LLTAnalysis.h>
-#include <globals/gui_params.h>
-
+#include <misc/options/Units.h>
+#include <misc/options/displayoptions.h>
+#include <objects/objects3d/Body.h>
+#include <objects/objects3d/Plane.h>
+#include <objects/objects3d/PointMass.h>
+#include <objects/objects3d/Surface.h>
+#include <objects/objects3d/WPolar.h>
+#include <objects/objects3d/Wing.h>
+#include <objects/objects3d/vector3d.h>
 
 Miarex *gl3dView::s_pMiarex;
 MainFrame *gl3dView::s_pMainFrame;

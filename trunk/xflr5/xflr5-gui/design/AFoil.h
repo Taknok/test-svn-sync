@@ -38,14 +38,14 @@
 #include <QSettings>
 #include <QList>
 
-#include <globals/gui_params.h>
+
 #include "Direct2dDesign.h"
-#include "FoilTableDelegate.h"
-#include <objects/objects2d/Foil.h>
-#include <gui_objects/SplineFoil.h>
 
+
+class FoilTableDelegate;
 class MainFrame;
-
+class Foil;
+class SplineFoil;
 /**
  * @brief the QAFoil class used as the interface for direct Foil design
  */

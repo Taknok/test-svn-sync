@@ -33,10 +33,16 @@
 #include <QtDebug>
 
 #include "LLTAnalysisDlg.h"
+#include "graphwidget.h"
+#include <analysis3d/plane_analysis/LLTAnalysis.h>
+#include <analysis3d/plane_analysis/planeanalysistask.h>
+#include <globals/gui_params.h>
+#include <graph/graph.h>
+#include <miarex/Miarex.h>
 #include <miarex/objects3d.h>
 #include <misc/options/displayoptions.h>
-#include "miarex/Miarex.h"
-
+#include <objects/objects3d/WPolar.h>
+#include <objects/objects3d/Wing.h>
 
 QPoint LLTAnalysisDlg::s_Position = QPoint(200,100);
 QSize  LLTAnalysisDlg::s_WindowSize = QSize(900,550);

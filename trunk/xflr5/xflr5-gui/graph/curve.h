@@ -30,7 +30,7 @@
 #ifndef CURVE_H
 #define CURVE_H
 
-//#include <globals/gui_params.h>
+
 #include <QVarLengthArray>
 #include <QColor>
 #include "linestyle.h"

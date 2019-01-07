@@ -58,8 +58,8 @@ public:
 	Frame *frameAt(int iFrame) {return m_pFrame.at(iFrame);}
 	Frame *firstFrame() {return m_pFrame.first();}
 	Frame *lastFrame() {return m_pFrame.last();}
-	int    frameCount() {return m_pFrame.size();}
-	int    framePointCount();
+    int    frameCount() const {return m_pFrame.size();}
+    int    framePointCount() const;
 	double getu(double pos, double v);
 	double getv(double u, Vector3d r);
 	void   getPoint(double u, double v, Vector3d &Pt);

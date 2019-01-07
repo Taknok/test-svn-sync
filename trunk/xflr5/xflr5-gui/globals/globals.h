@@ -33,7 +33,7 @@
 #include <QPainter>
 #include <complex>
 
-#include <globals/gui_params.h>
+
 #include "analysis3d/analysis3d_enums.h"
 #include <objects/objectcolor.h>
 #include <objects/objects2d/Foil.h>

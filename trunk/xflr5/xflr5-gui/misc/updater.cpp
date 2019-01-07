@@ -1,7 +1,7 @@
 /****************************************************************************
 
     Updater Class
-    Copyright (C) 2018 Andre Deperrois
+    Copyright (C) 2018-2019 Andre Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -192,7 +192,10 @@ void Updater::onDownloadFinished(QNetworkReply *pResponse)
 bool Updater::hasUpdate()
 {
     if(s_AvailableMajorVersion>MAJOR_VERSION) return true;
-    if(s_AvailableMinorVersion>MINOR_VERSION) return true;
+    else if(s_AvailableMajorVersion==MAJOR_VERSION)
+    {
+        if(s_AvailableMinorVersion>MINOR_VERSION) return true;
+    }
     return false;
 }
 

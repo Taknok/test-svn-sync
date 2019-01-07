@@ -402,7 +402,7 @@ bool gl3dMiarexView::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNod
     double memcoresize = Panel::coreSize();
     Panel::setCoreSize(0.0005); //mm, just for the time needed to build the streamlines which are very sensitive to trailing vortex interference
 
-    Wing *pWing;
+    Wing *pWing=nullptr;
 
     QProgressDialog dlg(tr("Streamlines calculation"), tr("Abort"), 0, nPanels);
     dlg.setWindowModality(Qt::WindowModal);

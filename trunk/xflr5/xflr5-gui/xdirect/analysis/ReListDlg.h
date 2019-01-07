@@ -28,7 +28,8 @@
 #include <QPushButton>
 #include <QTableView>
 #include <QStandardItemModel>
-#include <misc/text/FloatEditDelegate.h>
+
+class FloatEditDelegate;
 
 
 class ReListDlg : public QDialog

@@ -47,33 +47,35 @@ class MainFrame;
 #include <QXmlStreamWriter>
 
 #include <globals/gui_enums.h>
-#include <globals/gui_params.h>
+
 #include "./analysis/PanelAnalysisDlg.h"
 #include "./analysis/LLTAnalysisDlg.h"
 #include <analysis3d/plane_analysis/planeanalysistask.h>
-
+#include <graph/graph.h>
+#include <graph/linestyle.h>
 
 
 
 //forward declarations
-class PanelAnalysisDlg;
-class LLTAnalysisDlg;
-class PlaneAnalysisTask;
-class Wing;
 class Body;
-class Plane;
-class WPolar;
-class WingOpp;
-class PlaneOpp;
-class gl3dMiarexView;
-class graph;
-class GraphTileWidget;
+class Curve;
+class DoubleEdit;
 class GLLightDlg;
+class GraphTileWidget;
+class LLTAnalysisDlg;
+class LineBtn;
 class LineCbBox;
 class LineDelegate;
 class MinTextEdit;
-class DoubleEdit;
-class LineBtn;
+class PanelAnalysisDlg;
+class Plane;
+class PlaneAnalysisTask;
+class PlaneOpp;
+class WPolar;
+class Wing;
+class WingOpp;
+class gl3dMiarexView;
+
 /**
  *@class QMiarex
  *@brief This is the class associated to the 3D calculations
@@ -89,25 +91,24 @@ class LineBtn;
 */
 class Miarex : public QWidget
 {
-	friend class MainFrame;
-	friend class TwoDWidget;
-	friend class GL3DScales;
-	friend class GL3dBodyDlg;
-	friend class WingDlg;
-	friend class Wing;
-	friend class LLTAnalysisDlg;
-	friend class StabPolarDlg;
-	friend class StabViewDlg;
-	friend class PanelAnalysisDlg;
-	friend class Plane;
-	friend class PlaneDlg;
-	friend class ManageBodiesDlg;
-	friend class ManageUFOsDlg;
-	friend class GL3dWingDlg;
-	friend class Settings;
-	friend class UFOTableDelegate;
-	friend class WPolarDlg;
-	friend class WPolar;
+    friend class GL3DScales;
+    friend class GL3dBodyDlg;
+    friend class GL3dWingDlg;
+    friend class LLTAnalysisDlg;
+    friend class MainFrame;
+    friend class ManageBodiesDlg;
+    friend class ManageUFOsDlg;
+    friend class PanelAnalysisDlg;
+    friend class Plane;
+    friend class PlaneDlg;
+    friend class Settings;
+    friend class StabPolarDlg;
+    friend class StabViewDlg;
+    friend class TwoDWidget;
+    friend class WPolar;
+    friend class WPolarDlg;
+    friend class Wing;
+    friend class WingDlg;
 
 	Q_OBJECT
 

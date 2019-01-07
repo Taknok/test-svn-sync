@@ -22,12 +22,14 @@
 #include <QMessageBox>
 #include <QGridLayout>
 #include <QLabel>
-#include <QtDebug>
+#include <QDebug>
 
 #include "TwoDPanelDlg.h"
-#include <globals/gui_params.h>
+
 #include <objects/objects2d/Foil.h>
 #include <XFoil.h>
+#include <misc/text/IntEdit.h>
+#include <misc/text/DoubleEdit.h>
 
 void *TwoDPanelDlg::s_pXFoil;
 

@@ -50,6 +50,9 @@
 #include <xdirect/geometry/FoilCoordDlg.h>
 #include <xdirect/geometry/FoilGeomDlg.h>
 #include <xdirect/geometry/InterpolateFoilsDlg.h>
+#include "FoilTableDelegate.h"
+#include <objects/objects2d/Foil.h>
+#include <gui_objects/SplineFoil.h>
 #include <XFoil.h>
 
 

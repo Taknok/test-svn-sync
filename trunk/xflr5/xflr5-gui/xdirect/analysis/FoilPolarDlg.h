@@ -27,8 +27,12 @@
 #include <QRadioButton>
 #include <QLabel>
 #include <QString>
-#include <misc/text/DoubleEdit.h>
-#include <objects/objects2d/Polar.h>
+#include <QLineEdit>
+
+#include <analysis3d/analysis3d_enums.h>
+
+class DoubleEdit;
+class Polar;
 
 
 class FoilPolarDlg : public QDialog

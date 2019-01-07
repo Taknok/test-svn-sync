@@ -28,17 +28,21 @@
 
 #include <QDialog>
 #include <QCheckBox>
+#include <QFile>
 #include <QPushButton>
 #include <QLabel>
 #include <QRadioButton>
 #include <QTextEdit>
 
-#include <objects/objects2d/Foil.h>
-#include <objects/objects2d/Polar.h>
-#include <misc/text/IntEdit.h>
-#include <misc/text/DoubleEdit.h>
-#include <xdirect/analysis/XFoilTask.h>
-#include <xdirect/analysis/xfoiltaskevent.h>
+#include <analysis3d/analysis3d_enums.h>
+
+class Foil;
+class Polar;
+class IntEdit;
+class DoubleEdit;
+class XFoilTask;
+class XFoilTaskEvent;
+struct FoilAnalysis;
 
 
 /**

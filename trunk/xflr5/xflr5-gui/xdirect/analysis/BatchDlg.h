@@ -27,20 +27,25 @@
 
 #include <QDialog>
 #include <QCheckBox>
+#include <QFile>
 #include <QPushButton>
 #include <QLabel>
 #include <QRadioButton>
 #include <QTextEdit>
-#include <graph/graph.h>
-#include "graphwidget.h"
-#include <objects/objects2d/Foil.h>
-#include <objects/objects2d/Polar.h>
-#include <misc/text/IntEdit.h>
-#include <misc/text/DoubleEdit.h>
-#include <xdirect/analysis/XFoilTask.h>
-#include <xdirect/analysis/xfoiltaskevent.h>
 
 
+#include <analysis3d/analysis3d_enums.h>
+
+
+
+class IntEdit;
+class DoubleEdit;
+class XFoilTask;
+class XFoilTaskEvent;
+class Foil;
+class Polar;
+class Graph;
+class GraphWidget;
 
 /**
 * @class XFoilAnalysisDlg
@@ -53,7 +58,7 @@ class BatchDlg : public QDialog
 	friend class MainFrame;
 
 public:
-	BatchDlg(QWidget *pParent=NULL);
+    BatchDlg(QWidget *pParent=nullptr);
 	~BatchDlg();
 
 

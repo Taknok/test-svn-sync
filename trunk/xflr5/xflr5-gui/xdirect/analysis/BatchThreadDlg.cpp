@@ -19,15 +19,6 @@
 
 *****************************************************************************/
 
-#include "BatchThreadDlg.h"
-#include "XFoilAdvancedDlg.h"
-#include "ReListDlg.h"
-#include <globals/gui_params.h>
-#include <globals/globals.h>
-#include <xdirect/XDirect.h>
-#include <xdirect/objects2d.h>
-#include <misc/options/displayoptions.h>
-#include <xinverse/FoilSelectionDlg.h>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QGroupBox>
@@ -39,6 +30,23 @@
 #include <QTimer>
 #include <QFontDatabase>
 #include <QtDebug>
+
+#include "BatchThreadDlg.h"
+#include "ReListDlg.h"
+#include "XFoilAdvancedDlg.h"
+#include <globals/globals.h>
+#include <globals/gui_params.h>
+#include <misc/options/displayoptions.h>
+#include <misc/text/DoubleEdit.h>
+#include <misc/text/IntEdit.h>
+#include <objects/objects2d/Foil.h>
+#include <objects/objects2d/Polar.h>
+#include <xdirect/XDirect.h>
+#include <xdirect/analysis/XFoilTask.h>
+#include <xdirect/analysis/xfoiltaskevent.h>
+#include <xdirect/objects2d.h>
+#include <xinverse/FoilSelectionDlg.h>
+
 
 bool BatchThreadDlg::s_bCurrentFoil=true;
 bool BatchThreadDlg::s_bUpdatePolarView = false;

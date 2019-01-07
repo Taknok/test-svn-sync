@@ -62,7 +62,7 @@ public:
 	bool isInNURBSBody(double x, double z);
 	bool isInNURBSBodyOld(Vector3d Pt);
 	bool intersect(Vector3d A, Vector3d B, Vector3d &I, bool bRight);
-	bool intersectFlatPanels(Vector3d A, Vector3d B, Vector3d &I);
+    bool intersectFlatPanels(const Vector3d &A, const Vector3d &B, Vector3d &I) const;
 	bool intersectNURBS(Vector3d A, Vector3d B, Vector3d &I, bool bRight);
 
 	bool importDefinition(QTextStream &inStream, double mtoUnit, QString &errorMessage);
@@ -107,9 +107,9 @@ public:
 
 
 	double framePosition(int iFrame);
-	int frameCount()      {return m_SplineSurface.frameCount();}
-	int framePointCount() {return m_SplineSurface.framePointCount();}
-	int sideLineCount()   {return m_SplineSurface.framePointCount();}// same as FramePointCount();
+    int frameCount()      const {return m_SplineSurface.frameCount();}
+    int framePointCount() const {return m_SplineSurface.framePointCount();}
+    int sideLineCount()   const {return m_SplineSurface.framePointCount();}// same as FramePointCount();
 
 	void computeBodyAxisInertia();
 	void computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz);
@@ -192,9 +192,9 @@ public:
 
 	//allocate temporary variables to
 	//avoid lengthy memory allocation times on the stack
-	double value, bs, cs;
-	Vector3d t_R, t_Prod, t_Q, t_r, t_N;
-//	Vector3d P0, P1, P2, PI;
+    mutable double value, bs, cs;
+    mutable Vector3d t_R, t_Prod, t_Q, t_r, t_N;
+//	mutable Vector3d P0, P1, P2, PI;
 
 	bool m_bTextures;
 

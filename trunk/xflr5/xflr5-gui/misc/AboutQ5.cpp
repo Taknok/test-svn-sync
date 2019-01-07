@@ -18,11 +18,13 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 *****************************************************************************/
-#include <globals/gui_params.h>
-#include "AboutQ5.h"
+
 #include <QBitmap>
 #include <QGridLayout>
 #include <QPushButton>
+
+#include <globals/gui_params.h>
+#include "AboutQ5.h"
 
 
 AboutQ5::AboutQ5(QWidget *parent) : QDialog(parent)
