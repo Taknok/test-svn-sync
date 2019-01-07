@@ -30,15 +30,14 @@
 #include <QListWidget>
 #include <QLabel>
 
-#include <misc/text/IntEdit.h>
-#include <misc/text/TextClrBtn.h>
-#include <misc/color/ColorButton.h>
-
 
 class TranslatorDlg;
 class SaveOptions;
 class Units;
 class Settings;
+class IntEdit;
+class TextClrBtn;
+class ColorButton;
 
 class PreferencesDlg : public QDialog
 {
