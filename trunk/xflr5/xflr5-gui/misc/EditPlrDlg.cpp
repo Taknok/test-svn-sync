@@ -26,10 +26,12 @@
 
 
 #include "EditPlrDlg.h"
-#include <misc/options/displayoptions.h>
-
-#include <xdirect/XDirect.h>
 #include <miarex/Miarex.h>
+#include <misc/options/displayoptions.h>
+#include <misc/text/FloatEditDelegate.h>
+#include <objects/objects2d/Polar.h>
+#include <objects/objects3d/WPolar.h>
+#include <xdirect/XDirect.h>
 
 
 QPoint EditPlrDlg::s_Position;

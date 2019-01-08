@@ -19,9 +19,10 @@
 
 *****************************************************************************/
 
-#include "miarextilewidget.h"
 #include <QHBoxLayout>
 
+#include "miarextilewidget.h"
+#include "wingwidget.h"
 
 MiarexTileWidget::MiarexTileWidget(QWidget *pParent) : GraphTileWidget(pParent)
 {

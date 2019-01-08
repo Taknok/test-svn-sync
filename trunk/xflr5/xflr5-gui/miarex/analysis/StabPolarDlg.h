@@ -31,11 +31,13 @@
 #include <QStackedWidget>
 #include <QTableView>
 #include <QStandardItemModel>
-#include "./CtrlTableDelegate.h"
-#include <misc/text/DoubleEdit.h>
-#include <objects/objects3d/Plane.h>
 
-
+#include <analysis3d/analysis3d_params.h>
+class Plane;
+class Wing;
+class WPolar;
+class DoubleEdit;
+class CtrlTableDelegate;
 
 
 class CtrlTableModel: public QStandardItemModel
@@ -63,7 +65,7 @@ public:
 	StabPolarDlg(QWidget *pParent=NULL);
 	~StabPolarDlg();
 
-	void initDialog(Plane *pPlane, WPolar *pWPolar=NULL);
+    void initDialog(Plane *pPlane, WPolar *pWPolar=nullptr);
 
 private:
 	void setupLayout();
