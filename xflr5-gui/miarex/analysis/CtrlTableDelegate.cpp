@@ -20,9 +20,12 @@
 *****************************************************************************/
 
 
-#include "CtrlTableDelegate.h"
 
 #include <QApplication>
+
+
+#include "CtrlTableDelegate.h"
+#include <misc/text/DoubleEdit.h>
 
 
 CtrlTableDelegate::CtrlTableDelegate(QObject *parent)

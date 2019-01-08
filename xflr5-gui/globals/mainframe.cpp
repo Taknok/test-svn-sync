@@ -19,67 +19,6 @@
 
 *****************************************************************************/
 
-#include <globals/mainframe.h>
-#include <globals/globals.h>
-#include <design/AFoil.h>
-#include <miarex/Miarex.h>
-#include <miarex/design/InertiaDlg.h>
-#include <miarex/design/EditObjectDelegate.h>
-#include <miarex/objects3d.h>
-#include <miarex/analysis/WPolarDlg.h>
-#include <miarex/analysis/StabPolarDlg.h>
-#include <miarex/analysis/PanelAnalysisDlg.h>
-#include <miarex/design/BodyTransDlg.h>
-#include <miarex/design/GL3dWingDlg.h>
-#include <miarex/design/GL3dBodyDlg.h>
-#include <miarex/view/GL3DScales.h>
-#include <miarex/view/StabViewDlg.h>
-#include <miarex/view/W3dPrefsDlg.h>
-#include <miarex/design/PlaneDlg.h>
-#include <miarex/mgt/PlaneTableDelegate.h>
-#include <misc/AboutQ5.h>
-#include <misc/ObjectPropsDlg.h>
-#include <misc/line/LinePickerDlg.h>
-#include <misc/options/displayoptions.h>
-#include <misc/updater.h>
-#include <misc/popup.h>
-#include <misc/RenameDlg.h>
-#include <misc/options/Units.h>
-#include <misc/EditPlrDlg.h>
-#include <misc/options/preferencesdlg.h>
-#include <misc/options/saveoptions.h>
-#include <misc/options/language.h>
-#include <graph/graphdlg.h>
-#include <xdirect/XDirect.h>
-#include <xdirect/objects2d.h>
-#include <xdirect/analysis/BatchDlg.h>
-#include <xdirect/analysis/BatchThreadDlg.h>
-#include <xdirect/geometry/NacaFoilDlg.h>
-#include <xdirect/geometry/InterpolateFoilsDlg.h>
-#include <xdirect/geometry/CAddDlg.h>
-#include <xdirect/geometry/TwoDPanelDlg.h>
-#include <xdirect/geometry/FoilCoordDlg.h>
-#include <xdirect/geometry/FoilGeomDlg.h>
-#include <xdirect/geometry/TEGapDlg.h>
-#include <xdirect/geometry/LEDlg.h>
-#include <xdirect/ManageFoilsDlg.h>
-#include <xdirect/analysis/XFoilAnalysisDlg.h>
-#include <xdirect/analysis/FoilPolarDlg.h>
-#include <xinverse/XInverse.h>
-#include <objects/objects2d/Foil.h>
-#include <objects/objects2d/Polar.h>
-#include <objects/objects3d/Wing.h>
-#include "openglinfodlg.h"
-
-#include "inverseviewwidget.h"
-#include "gl3dmiarexview.h"
-#include "Direct2dDesign.h"
-#include "xdirecttilewidget.h"
-#include "miarextilewidget.h"
-
-#include <script/xflscriptreader.h>
-#include <script/xflscriptexec.h>
-
 #include <QGLFormat>
 #include <QMessageBox>
 #include <QtCore>
@@ -95,6 +34,68 @@
 #include <QStyledItemDelegate>
 #include <QOpenGLContext>
 #include <QSysInfo>
+
+
+#include <design/AFoil.h>
+#include <glcontextinfo/openglinfodlg.h>
+#include <globals/globals.h>
+#include <globals/mainframe.h>
+#include <graph/graphdlg.h>
+#include <miarex/Miarex.h>
+#include <miarex/analysis/PanelAnalysisDlg.h>
+#include <miarex/analysis/StabPolarDlg.h>
+#include <miarex/analysis/WPolarDlg.h>
+#include <miarex/design/BodyTransDlg.h>
+#include <miarex/design/EditObjectDelegate.h>
+#include <miarex/design/GL3dBodyDlg.h>
+#include <miarex/design/GL3dWingDlg.h>
+#include <miarex/design/InertiaDlg.h>
+#include <miarex/design/PlaneDlg.h>
+#include <miarex/mgt/PlaneTableDelegate.h>
+#include <miarex/objects3d.h>
+#include <miarex/view/GL3DScales.h>
+#include <miarex/view/StabViewDlg.h>
+#include <miarex/view/W3dPrefsDlg.h>
+#include <misc/AboutQ5.h>
+#include <misc/EditPlrDlg.h>
+#include <misc/ObjectPropsDlg.h>
+#include <misc/RenameDlg.h>
+#include <misc/line/LinePickerDlg.h>
+#include <misc/options/Units.h>
+#include <misc/options/displayoptions.h>
+#include <misc/options/language.h>
+#include <misc/options/preferencesdlg.h>
+#include <misc/options/saveoptions.h>
+#include <misc/popup.h>
+#include <misc/updater.h>
+#include <objects/objects2d/Foil.h>
+#include <objects/objects2d/Polar.h>
+#include <objects/objects3d/Wing.h>
+#include <script/xflscriptexec.h>
+#include <script/xflscriptreader.h>
+#include <viewwidgets/Direct2dDesign.h>
+#include <viewwidgets/glWidgets/gl3dmiarexview.h>
+#include <viewwidgets/inverseviewwidget.h>
+#include <viewwidgets/miarextilewidget.h>
+#include <viewwidgets/wingwidget.h>
+#include <viewwidgets/xdirecttilewidget.h>
+#include <xdirect/ManageFoilsDlg.h>
+#include <xdirect/XDirect.h>
+#include <xdirect/analysis/BatchDlg.h>
+#include <xdirect/analysis/BatchThreadDlg.h>
+#include <xdirect/analysis/FoilPolarDlg.h>
+#include <xdirect/analysis/XFoilAnalysisDlg.h>
+#include <xdirect/geometry/CAddDlg.h>
+#include <xdirect/geometry/FoilCoordDlg.h>
+#include <xdirect/geometry/FoilGeomDlg.h>
+#include <xdirect/geometry/InterpolateFoilsDlg.h>
+#include <xdirect/geometry/LEDlg.h>
+#include <xdirect/geometry/NacaFoilDlg.h>
+#include <xdirect/geometry/TEGapDlg.h>
+#include <xdirect/geometry/TwoDPanelDlg.h>
+#include <xdirect/objects2d.h>
+#include <xinverse/XInverse.h>
+
 
 
 #ifdef Q_OS_MAC

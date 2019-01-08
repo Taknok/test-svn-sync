@@ -32,9 +32,14 @@
 #include <QStackedWidget>
 #include <QRadioButton>
 #include <QTableView>
-#include "CtrlTableDelegate.h"
-#include <misc/text/DoubleEdit.h>
-#include <objects/objects3d/Plane.h>
+
+#include <QStandardItemModel>
+
+
+class Plane;
+class WPolar;
+class DoubleEdit;
+class CtrlTableDelegate;
 
 /**
 *@class WPolarDlg
@@ -60,7 +65,7 @@ private:
 	void connectSignals();
 	void enableControls();
 	void fillExtraDragList();
-	void initDialog(Plane *pPlane, WPolar *pWPolar=NULL);
+    void initDialog(Plane *pPlane, WPolar *pWPolar=nullptr);
 	void keyPressEvent(QKeyEvent *event);
 	void readExtraDragData();
 	void readValues();

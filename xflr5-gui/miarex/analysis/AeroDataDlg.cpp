@@ -20,14 +20,16 @@
 *****************************************************************************/
 
 
-#include "AeroDataDlg.h"
-#include <misc/options/Units.h>
-
-#include <QtDebug>
+#include <QDebug>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QLabel>
 #include <math.h>
+
+#include "AeroDataDlg.h"
+#include <misc/options/Units.h>
+
+
 // International Standard Atmosphere
 
 #define STANDARDTEMPERATURE  288.15  // [°K]

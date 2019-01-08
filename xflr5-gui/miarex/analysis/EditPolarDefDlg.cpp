@@ -27,12 +27,16 @@
 #include <QMessageBox>
 #include <QShowEvent>
 #include <QHideEvent>
-#include <QtDebug>
+#include <QDebug>
+
 #include "EditPolarDefDlg.h"
 #include <analysis3d/analysis3d_globals.h>
 #include <misc/options/Units.h>
 #include <globals/globals.h>
 #include <globals/gui_enums.h>
+#include <objects/objects3d/WPolar.h>
+#include <objects/objects3d/Plane.h>
+#include <miarex/design/EditObjectDelegate.h>
 
 
 QSize EditPolarDefDlg::s_Size(579,783);

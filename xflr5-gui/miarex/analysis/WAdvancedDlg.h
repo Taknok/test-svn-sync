@@ -27,10 +27,10 @@
 #include <QRadioButton>
 #include <QPushButton>
 #include <QLabel>
-#include <misc/text/DoubleEdit.h>
-#include <misc/text/IntEdit.h>
 
 
+class DoubleEdit;
+class IntEdit;
 
 class WAdvancedDlg : public QDialog
 {

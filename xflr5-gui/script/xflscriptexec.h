@@ -35,6 +35,8 @@ class PlaneOpp;
 class Polar;
 class WPolar;
 class XfoilTask;
+
+
 struct FoilAnalysis;
 struct PlaneAnalysis;
 

@@ -30,10 +30,21 @@ HEADERS +=\
     XFoil.h \
     xfoil_params.h
 
-OBJECTS_DIR = ./build/objects
-MOC_DIR = ./build/moc
-RCC_DIR = ./build/rcc
 
+
+win32 {
+    CONFIG(release, debug|release){
+        OBJECTS_DIR = ./release/objects
+        MOC_DIR     = ./release/moc
+        RCC_DIR     = ./release/rcc
+    }
+    else:CONFIG(debug, debug|release)
+    {
+        OBJECTS_DIR = ./debug/objects
+        MOC_DIR     = ./debug/moc
+        RCC_DIR     = ./debug/rcc
+    }
+}
 
 
 macx{

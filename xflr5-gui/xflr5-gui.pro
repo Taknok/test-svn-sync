@@ -52,9 +52,6 @@ DEPENDPATH += $$PWD/../XFoil-lib/
 DEPENDPATH += $$PWD/../xflr5-engine/
 
 
-#OBJECTS_DIR = ./build/objects
-#MOC_DIR = ./build/moc
-#RCC_DIR = ./build/rcc
 
 
 win32 {
@@ -66,11 +63,19 @@ win32 {
 #message($$OUT_PWD)
 
 	CONFIG(release, debug|release){
+        OBJECTS_DIR = ./release/objects
+        MOC_DIR     = ./release/moc
+        RCC_DIR     = ./release/rcc
+
         LIBS += -L$$OUT_PWD/../xflr5-engine/release/ -lxflr5-engine
         LIBS += -L$$OUT_PWD/../XFoil-lib/release/ -lXFoil
 	}
 	else:CONFIG(debug, debug|release)
 	{
+        OBJECTS_DIR = ./debug/objects
+        MOC_DIR     = ./debug/moc
+        RCC_DIR     = ./debug/rcc
+
         LIBS += -L$$OUT_PWD/../xflr5-engine/debug/ -lxflr5-engine
         LIBS += -L$$OUT_PWD/../XFoil-lib/debug/ -lXFoil
 	}
