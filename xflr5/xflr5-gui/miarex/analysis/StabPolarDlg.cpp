@@ -19,13 +19,6 @@
 
 *****************************************************************************/
   
-#include <globals/globals.h>
-#include <misc/options/displayoptions.h>
-#include <objects/objects3d/WPolar.h>
-#include <misc/options/Units.h>
-#include <miarex/Miarex.h>
-#include "StabPolarDlg.h"
-#include "AeroDataDlg.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -34,9 +27,18 @@
 #include <QHeaderView>
 #include <QMessageBox>
 #include <math.h>
-#include <QtDebug>
+#include <QDebug>
 
-
+#include "./CtrlTableDelegate.h"
+#include "AeroDataDlg.h"
+#include "StabPolarDlg.h"
+#include <globals/globals.h>
+#include <miarex/Miarex.h>
+#include <misc/options/Units.h>
+#include <misc/options/displayoptions.h>
+#include <misc/text/DoubleEdit.h>
+#include <objects/objects3d/Plane.h>
+#include <objects/objects3d/WPolar.h>
 
 WPolar StabPolarDlg::s_StabWPolar;
 

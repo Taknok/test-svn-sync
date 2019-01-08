@@ -19,13 +19,6 @@
 
 *****************************************************************************/
 
-#include <globals/globals.h>
-#include <objects/objects3d/WPolar.h>
-#include <misc/options/Units.h>
-#include <misc/options/displayoptions.h>
-#include <miarex/Miarex.h>
-#include "WPolarDlg.h"
-#include "AeroDataDlg.h"
 #include <QHeaderView>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -33,7 +26,19 @@
 #include <QTabWidget>
 #include <QGroupBox>
 #include <QMessageBox>
+
 #include <math.h>
+
+#include "AeroDataDlg.h"
+#include "CtrlTableDelegate.h"
+#include "WPolarDlg.h"
+#include <globals/globals.h>
+#include <miarex/Miarex.h>
+#include <misc/options/Units.h>
+#include <misc/options/displayoptions.h>
+#include <misc/text/DoubleEdit.h>
+#include <objects/objects3d/Plane.h>
+#include <objects/objects3d/WPolar.h>
 
 
 WPolar WPolarDlg::s_WPolar;

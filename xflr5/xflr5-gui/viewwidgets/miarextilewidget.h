@@ -23,8 +23,10 @@
 #define MIAREXTILEWIDGET_H
 
 #include "graphtilewidget.h"
-#include "wingwidget.h"
 #include <QGridLayout>
+
+
+class WingWidget;
 
 class MiarexTileWidget : public GraphTileWidget
 {

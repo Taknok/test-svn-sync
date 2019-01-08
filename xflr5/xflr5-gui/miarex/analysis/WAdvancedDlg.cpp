@@ -19,9 +19,7 @@
 
 *****************************************************************************/
 
-#include <globals/globals.h>
-#include <misc/options/Units.h>
-#include "WAdvancedDlg.h"
+
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -30,6 +28,11 @@
 #include <QMessageBox>
 
 
+#include "WAdvancedDlg.h"
+#include <globals/globals.h>
+#include <misc/options/Units.h>
+#include <misc/text/DoubleEdit.h>
+#include <misc/text/IntEdit.h>
 
 WAdvancedDlg::WAdvancedDlg(QWidget *pParent) : QDialog(pParent)
 {

@@ -25,10 +25,10 @@
 #include <QTreeView>
 #include <QStandardItemModel>
 
-#include <objects/objects3d/WPolar.h>
-#include <objects/objects3d/Plane.h>
-#include <miarex/design/EditObjectDelegate.h>
 
+class WPolar;
+class Plane;
+class EditObjectDelegate;
 
 class EditPolarDefDlg : public QDialog
 {

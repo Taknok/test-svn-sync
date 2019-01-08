@@ -22,10 +22,13 @@
 #ifndef XDIRECTTILEWIDGET_H
 #define XDIRECTTILEWIDGET_H
 
-#include "graphtilewidget.h"
-#include "oppointwidget.h"
 #include <QStackedWidget>
 #include <QGridLayout>
+
+#include "graphtilewidget.h"
+
+
+class OpPointWidget;
 
 class XDirectTileWidget : public GraphTileWidget
 {

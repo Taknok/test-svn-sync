@@ -19,15 +19,16 @@
 
 *****************************************************************************/
 
-#include <globals/mainframe.h>
-#include "xdirecttilewidget.h"
-#include "xdirect/XDirect.h"
-#include <viewwidgets/oppointwidget.h>
 #include <QHBoxLayout>
 #include <QGridLayout>
 #include <QSplitter>
 #include <QAction>
-#include <QtDebug>
+#include <QDebug>
+
+#include <globals/mainframe.h>
+#include "xdirecttilewidget.h"
+#include "xdirect/XDirect.h"
+#include <viewwidgets/oppointwidget.h>
 
 
 XDirectTileWidget::XDirectTileWidget(QWidget *pParent) :  GraphTileWidget(pParent)
