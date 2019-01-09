@@ -31,10 +31,15 @@
 #include <QStandardItemModel>
 
 
-#include <misc/text/FloatEditDelegate.h>
-#include <misc/text/DoubleEdit.h>
+
 #include <objects/objects3d/vector3d.h>
-#include <objects/objects3d/Plane.h>
+
+class FloatEditDelegate;
+class DoubleEdit;
+class Plane;
+class Wing;
+class Body;
+class PointMass;
 
 class InertiaDlg : public QDialog
 {

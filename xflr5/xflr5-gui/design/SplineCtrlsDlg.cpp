@@ -19,15 +19,21 @@
 
 *****************************************************************************/
 
-#include <misc/options/displayoptions.h>
-#include "AFoil.h"
-#include "SplineCtrlsDlg.h"
+
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QLabel>
 #include <QHeaderView>
 #include <QMessageBox>
-#include <QtDebug>
+#include <QDebug>
+
+
+#include "AFoil.h"
+#include "SplineCtrlsDlg.h"
+#include <gui_objects/SplineFoil.h>
+#include <misc/options/displayoptions.h>
+#include <misc/text/DoubleEdit.h>
+#include <misc/text/FloatEditDelegate.h>
 
 void *SplineCtrlsDlg::s_pAFoil = nullptr;
 

@@ -19,6 +19,15 @@
 
 *****************************************************************************/
 
+#include <QHBoxLayout>
+#include <QHeaderView>
+#include <QFileDialog>
+#include <QAction>
+#include <QMenu>
+#include <QMessageBox>
+#include <QColorDialog>
+#include <math.h>
+
 #include <globals/globals.h>
 #include <miarex/objects3d.h>
 #include <miarex/view/W3dPrefsDlg.h>
@@ -35,15 +44,12 @@
 #include <objects/objects_global.h>
 #include <miarex/mgt/XmlPlaneReader.h>
 #include <miarex/mgt/XmlPlaneWriter.h>
+#include "WingDelegate.h"
+#include <gl3dwingview.h>
+#include <misc/text/DoubleEdit.h>
+#include <misc/color/ColorButton.h>
+#include <objects/objects3d/Wing.h>
 
-#include <QHBoxLayout>
-#include <QHeaderView>
-#include <QFileDialog>
-#include <QAction>
-#include <QMenu>
-#include <QMessageBox>
-#include <QColorDialog>
-#include <math.h>
 
 
 

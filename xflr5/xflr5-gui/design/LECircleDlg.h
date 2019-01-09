@@ -26,8 +26,8 @@
 #include <QDialog>
 #include <QCheckBox>
 #include <QPushButton>
-#include <misc/text/DoubleEdit.h>
 
+class DoubleEdit;
 
 class LECircleDlg : public QDialog
 {

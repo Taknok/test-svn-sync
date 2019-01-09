@@ -30,11 +30,13 @@
 #include <QAction>
 #include <QMenu>
 
-#include <misc/options/displayoptions.h>
-#include <misc/options/Units.h>
-#include <globals/globals.h>
 #include "InertiaDlg.h"
-
+#include <globals/globals.h>
+#include <misc/options/Units.h>
+#include <misc/options/displayoptions.h>
+#include <misc/text/DoubleEdit.h>
+#include <misc/text/FloatEditDelegate.h>
+#include <objects/objects3d/Plane.h>
 
 QPoint InertiaDlg::s_Position;
 QSize  InertiaDlg::s_WindowSize;

@@ -19,12 +19,16 @@
 
 *****************************************************************************/
 
-#include "AFoil.h"
-#include "GridSettingsDlg.h"
 #include <QGridLayout>
 #include <QVBoxLayout>
 #include <QLabel>
+
+#include "AFoil.h"
+#include "GridSettingsDlg.h"
 #include <misc/line/LinePickerDlg.h>
+#include <misc/line/LineBtn.h>
+#include <misc/text/DoubleEdit.h>
+
 
 GridSettingsDlg::GridSettingsDlg(QWidget *pParent): QDialog(pParent)
 {

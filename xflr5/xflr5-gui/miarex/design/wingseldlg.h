@@ -25,6 +25,7 @@
 #include <QCheckBox>
 
 #include <analysis3d/analysis3d_params.h>
+
 class Plane;
 
 class WingSelDlg : public QDialog

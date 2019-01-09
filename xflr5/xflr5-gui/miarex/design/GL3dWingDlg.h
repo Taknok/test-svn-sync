@@ -36,14 +36,17 @@
 #include <QTableView>
 #include <QPushButton>
 #include <QSplitter>
+#include <QOpenGLBuffer>
 
-#include "WingDelegate.h"
-#include <gl3dwingview.h>
-#include <viewwidgets/glWidgets/ArcBall.h>
-#include <misc/text/DoubleEdit.h>
-#include <misc/color/ColorButton.h>
-#include <objects/objects3d/Wing.h>
+#include <objects/objects3d/vector3d.h>
 
+class gl3dWingView;
+class DoubleEdit;
+class ColorButton;
+class Wing;
+class WingDelegate;
+class Panel;
+class Foil;
 
 
 class GL3dWingDlg: public QDialog

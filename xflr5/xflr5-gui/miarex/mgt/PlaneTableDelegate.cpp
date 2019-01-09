@@ -22,6 +22,7 @@
 
 #include "PlaneTableDelegate.h"
 #include <miarex/objects3d.h>
+#include <misc/text/DoubleEdit.h>
 
 
 PlaneTableDelegate::PlaneTableDelegate(QObject *parent)

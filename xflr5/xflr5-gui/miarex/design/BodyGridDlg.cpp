@@ -28,10 +28,12 @@
 #include <QLabel>
 #include <QPushButton>
 
-#include <globals/globals.h>
-#include <misc/options/Units.h>
-#include <misc/line/LinePickerDlg.h>
 #include "BodyGridDlg.h"
+#include <globals/globals.h>
+#include <misc/line/LineBtn.h>
+#include <misc/line/LinePickerDlg.h>
+#include <misc/options/Units.h>
+#include <misc/text/DoubleEdit.h>
 
 
 bool BodyGridDlg::s_bScale = false;

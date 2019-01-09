@@ -36,13 +36,13 @@
 
 #include "analysis3d/analysis3d_enums.h"
 #include <objects/objectcolor.h>
-#include <objects/objects2d/Foil.h>
-#include <objects/objects2d/Polar.h>
+
 
 using namespace std;
 
 class Foil;
 class Polar;
+class OpPoint;
 
 int readValues(QString line, double &x, double &y, double &z);
 

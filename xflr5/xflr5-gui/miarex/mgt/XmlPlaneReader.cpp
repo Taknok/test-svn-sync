@@ -19,10 +19,13 @@
 
 *****************************************************************************/
 
+
+#include <QMessageBox>
+#include <QDebug>
+
 #include "XmlPlaneReader.h"
 #include <globals/globals.h>
-#include <QMessageBox>
-#include <QtDebug>
+#include <objects/objects3d/Plane.h>
 
 XMLPlaneReader::XMLPlaneReader(QFile &file, Plane *pPlane)
 {
