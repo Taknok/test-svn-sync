@@ -19,6 +19,7 @@
 
 *****************************************************************************/
 
+#include <QPainter>
 
 #include "gl3dwingview.h"
 #include <QOpenGLPaintDevice>

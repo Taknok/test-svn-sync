@@ -27,6 +27,7 @@
 #include <globals/globals.h>
 #include <graph_globals.h>
 #include <misc/options/displayoptions.h>
+#include <misc/text/DoubleEdit.h>
 
 
 

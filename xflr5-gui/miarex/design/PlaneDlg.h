@@ -31,9 +31,8 @@
 #include <QCheckBox>
 #include <QComboBox>
 
-#include <objects/objects3d/Plane.h>
-#include <misc/text/DoubleEdit.h>
-
+class Plane;
+class DoubleEdit;
 
 /** The class to define and edit planes. SUes */
 

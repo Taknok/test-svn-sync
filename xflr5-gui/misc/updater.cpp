@@ -207,7 +207,7 @@ void Updater::loadSettings(QSettings *pSettings)
         s_bAutoCheck = pSettings->value("AutoUpdateCheck", true).toBool();
         s_LastCheckDate = pSettings->value("LastCheckDate", false).toDate();
     }
-    qDebug()<<"loading lastcheckdate"<<s_LastCheckDate.toString("yyyy.MM.dd");
+//    qDebug()<<"loading lastcheckdate"<<s_LastCheckDate.toString("yyyy.MM.dd");
     pSettings->endGroup();
 }
 
@@ -216,7 +216,7 @@ void Updater::saveSettings(QSettings *pSettings)
 {
     pSettings->beginGroup("Updater");
     {
-        qDebug()<<"saving lastcheckdate"<<s_LastCheckDate.toString("yyyy.MM.dd");
+//        qDebug()<<"saving lastcheckdate"<<s_LastCheckDate.toString("yyyy.MM.dd");
         pSettings->setValue("AutoUpdateCheck", s_bAutoCheck);
         pSettings->setValue("LastCheckDate", s_LastCheckDate);
     }

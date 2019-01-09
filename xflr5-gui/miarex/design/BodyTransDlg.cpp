@@ -28,6 +28,7 @@
 #include "BodyTransDlg.h"
 #include <misc/options/Units.h>
 #include <globals/globals.h>
+#include <misc/text/DoubleEdit.h>
 
 
 BodyTransDlg::BodyTransDlg(QWidget *pParent): QDialog(pParent)

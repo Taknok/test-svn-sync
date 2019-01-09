@@ -24,9 +24,8 @@
 
 /**@file This file contains the definitions of methods used throughout the program and not specific to one application. */
 
-#include <globals/globals.h>
-#include <globals/mainframe.h>
-#include <QtDebug>
+
+#include <QDebug>
 #include <QPen>
 #include <QApplication>
 #include <QFile>
@@ -35,11 +34,14 @@
 #include <QByteArray>
 #include <math.h>
 #include <qopengl.h>
-#include <objects/objects3d/WPolar.h>
-#include <misc/options/Units.h>
+
+#include <globals/globals.h>
+#include <globals/mainframe.h>
 #include <graph_globals.h>
-
-
+#include <misc/options/Units.h>
+#include <objects/objects2d/Foil.h>
+#include <objects/objects2d/Polar.h>
+#include <objects/objects3d/WPolar.h>
 /** 
 * Returns a double number as its root and its base 10 exponent
 * @param f the double number to reformat; is returned as f = f/pow(10.0,exp);

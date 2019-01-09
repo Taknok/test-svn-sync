@@ -28,10 +28,10 @@
 #include <QPushButton>
 #include <QTableView>
 #include <QStandardItemModel>
-#include "PlaneTableDelegate.h"
-#include <objects/objects3d/Plane.h>
 
 
+class Plane;
+class PlaneTableDelegate;
 
 class ManagePlanesDlg : public QDialog
 {
