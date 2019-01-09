@@ -22,9 +22,11 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QLabel>
+
 #include "LECircleDlg.h"
 #include "AFoil.h"
 
+#include <misc/text/DoubleEdit.h>
 
 
 LECircleDlg::LECircleDlg(QWidget *pParent): QDialog(pParent)

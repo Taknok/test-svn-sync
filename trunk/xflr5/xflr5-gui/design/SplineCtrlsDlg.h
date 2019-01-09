@@ -22,10 +22,6 @@
 #ifndef SPLINECTRLSDLG_H
 #define SPLINECTRLSDLG_H
 
-#include <misc/text/DoubleEdit.h>
-#include <gui_objects/SplineFoil.h>
-#include <misc/text/FloatEditDelegate.h>
-
 
 #include <QDialog>
 #include <QComboBox>
@@ -34,6 +30,10 @@
 #include <QTableView>
 #include <QStandardItemModel>
 #include <QCheckBox>
+
+class DoubleEdit;
+class FloatEditDelegate;
+class SplineFoil;
 
 class SplineCtrlsDlg : public QDialog
 {

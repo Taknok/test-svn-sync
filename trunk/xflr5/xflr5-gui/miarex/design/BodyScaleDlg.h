@@ -28,8 +28,8 @@
 #include <QPushButton>
 #include <QRadioButton>
 #include <QLabel>
-#include <misc/text/DoubleEdit.h>
 
+class DoubleEdit;
 
 class BodyScaleDlg : public QDialog
 {

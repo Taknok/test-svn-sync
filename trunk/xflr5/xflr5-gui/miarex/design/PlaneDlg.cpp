@@ -27,18 +27,21 @@
 #include <QMessageBox>
 #include <QMenu>
 #include <math.h>
-#include <misc/options/displayoptions.h>
 
 #include <globals/globals.h>
-#include <misc/options/Units.h>
-#include <miarex/objects3d.h>
+#include <miarex/design/EditBodyDlg.h>
+#include <miarex/design/GL3dBodyDlg.h>
+#include <miarex/design/GL3dWingDlg.h>
+#include <miarex/design/InertiaDlg.h>
+#include <miarex/design/PlaneDlg.h>
 #include <miarex/mgt/ImportObjectDlg.h>
 #include <miarex/mgt/XmlPlaneReader.h>
-#include "PlaneDlg.h"
-#include "GL3dWingDlg.h"
-#include "GL3dBodyDlg.h"
-#include "EditBodyDlg.h"
-#include "InertiaDlg.h"
+#include <miarex/objects3d.h>
+#include <misc/options/Units.h>
+#include <misc/options/displayoptions.h>
+#include <misc/text/DoubleEdit.h>
+#include <objects/objects3d/Plane.h>
+
 
 QSize PlaneDlg::s_WindowSize(1031,783);
 QPoint PlaneDlg::s_WindowPosition(131, 77);

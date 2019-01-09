@@ -37,7 +37,7 @@
 #define VERSIONNAME     "xflr5 v6.44"
 
 #define MAJOR_VERSION    6
-#define MINOR_VERSION    44
+#define MINOR_VERSION    45
 
 
 //General

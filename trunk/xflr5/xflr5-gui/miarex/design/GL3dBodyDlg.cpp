@@ -32,16 +32,14 @@
 #include <math.h>
 
 
-#include "./BodyScaleDlg.h"
-#include "./BodyTransDlg.h"
-#include "./GL3dBodyDlg.h"
-#include "./InertiaDlg.h"
-#include "BodyFrameWidget.h"
-#include "BodyGridDlg.h"
-#include "BodyLineWidget.h"
-#include "BodyTableDelegate.h"
 #include <gl3dbodyview.h>
 #include <globals/globals.h>
+#include <miarex/design/BodyGridDlg.h>
+#include <miarex/design/BodyScaleDlg.h>
+#include <miarex/design/BodyTableDelegate.h>
+#include <miarex/design/BodyTransDlg.h>
+#include <miarex/design/GL3dBodyDlg.h>
+#include <miarex/design/InertiaDlg.h>
 #include <miarex/mgt/XmlPlaneReader.h>
 #include <miarex/mgt/XmlPlaneWriter.h>
 #include <miarex/view/W3dPrefsDlg.h>
@@ -52,8 +50,10 @@
 #include <misc/options/displayoptions.h>
 #include <misc/text/DoubleEdit.h>
 #include <objects/objects3d/Body.h>
+#include <objects/objects3d/Plane.h>
+#include <viewwidgets/BodyFrameWidget.h>
+#include <viewwidgets/BodyLineWidget.h>
 #include <viewwidgets/glWidgets/ArcBall.h>
-
 
 QByteArray GL3dBodyDlg::m_VerticalSplitterSizes;
 QByteArray GL3dBodyDlg::m_HorizontalSplitterSizes;

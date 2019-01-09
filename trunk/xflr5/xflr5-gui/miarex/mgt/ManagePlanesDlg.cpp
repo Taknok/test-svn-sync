@@ -30,6 +30,8 @@
 #include <misc/options/Units.h>
 #include <globals/globals.h>
 #include <misc/options/displayoptions.h>
+#include "PlaneTableDelegate.h"
+#include <objects/objects3d/Plane.h>
 
 
 

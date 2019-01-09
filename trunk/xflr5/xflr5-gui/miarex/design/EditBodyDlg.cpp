@@ -19,9 +19,6 @@
 
 *****************************************************************************/
 
-#include <globals/globals.h>
-#include <misc/options/Units.h>
-#include <misc/options/displayoptions.h>
 #include <QHeaderView>
 #include <QHBoxLayout>
 #include <QGridLayout>
@@ -30,19 +27,24 @@
 #include <QFileDialog>
 
 
-#include "./BodyScaleDlg.h"
-#include "./BodyTransDlg.h"
-#include "./InertiaDlg.h"
-#include "BodyFrameWidget.h"
-#include "BodyLineWidget.h"
-#include "EditBodyDlg.h"
-#include "EditObjectDelegate.h"
+#include <miarex/design/BodyScaleDlg.h>
+#include <miarex/design/BodyTransDlg.h>
+#include <miarex/design/InertiaDlg.h>
+#include <viewwidgets/BodyFrameWidget.h>
+#include <viewwidgets/BodyLineWidget.h>
+#include <miarex/design/EditBodyDlg.h>
+#include <miarex/design/EditObjectDelegate.h>
 #include "section2dwidget.h"
 #include <gl3dbodyview.h>
 #include <miarex/mgt/XmlPlaneReader.h>
 #include <miarex/mgt/XmlPlaneWriter.h>
 #include <miarex/view/W3dPrefsDlg.h>
+#include <objects/objects3d/Plane.h>
 #include <objects/objects3d/Body.h>
+#include <globals/globals.h>
+#include <misc/options/Units.h>
+#include <misc/options/displayoptions.h>
+
 
 QSize EditBodyDlg::s_WindowSize(1031,783);
 QPoint EditBodyDlg::s_WindowPosition(131, 77);

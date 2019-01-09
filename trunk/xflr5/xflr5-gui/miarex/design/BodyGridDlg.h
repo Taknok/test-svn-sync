@@ -28,9 +28,9 @@
 #include <QLabel>
 #include <QSettings>
 
-#include <misc/text/DoubleEdit.h>
-#include <misc/line/LineBtn.h>
-
+class DoubleEdit;
+class LineEdit;
+class LineBtn;
 
 class BodyGridDlg : public QDialog
 {

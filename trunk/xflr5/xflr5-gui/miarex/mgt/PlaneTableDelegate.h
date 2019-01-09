@@ -26,8 +26,8 @@
 #include <QItemDelegate>
 #include <QStandardItemModel>
 
-#include <misc/text/DoubleEdit.h>
 
+class DoubleEdit;
 
 class PlaneTableDelegate : public QItemDelegate
 {

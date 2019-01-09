@@ -6454,6 +6454,18 @@ bool XFoil::qdcalc()
         }
     }
 
+/*    for(int i=1;i<=n;i++)
+     {
+        QString strong;
+        for(int j=1;j<=n;j++)
+        {
+            QString str;
+            str.sprintf(" %11g", bij[i][j]);
+            strong+=str;
+        }
+        qDebug(strong.toStdString().c_str());
+    }*/
+
     //---- set up kutta condition (no direct source influence)
     for(j=n+1; j<=n+nw;j++) bij[n+1][j] = 0.0;
 
