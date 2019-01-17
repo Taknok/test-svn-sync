@@ -18,16 +18,18 @@
 
 *****************************************************************************/
 
+#include <QApplication>
+#include <QMessageBox>
+#include <QLocale>
+#include <QProcess>
+#include <QDebug>
+
 #include <miarex/Miarex.h>
 #include <misc/RenameDlg.h>
 
 #include "objects3d.h"
 #include <objects/objects3d/Surface.h>
-#include <QApplication>
-#include <QMessageBox>
-#include <QLocale>
-#include <QProcess>
-#include <QtDebug>
+#include <objects/objects3d/WPolar.h>
 
 
 QList <Plane*>    Objects3d::s_oaPlane;

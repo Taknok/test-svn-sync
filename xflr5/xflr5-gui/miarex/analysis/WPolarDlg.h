@@ -35,9 +35,9 @@
 
 #include <QStandardItemModel>
 
+#include <objects/objects3d/WPolar.h>
 
 class Plane;
-class WPolar;
 class DoubleEdit;
 class CtrlTableDelegate;
 

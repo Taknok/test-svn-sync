@@ -85,6 +85,7 @@
 #include <objects/objects3d/WingOpp.h>
 #include <objects/objects_global.h>
 #include <viewwidgets/glWidgets/gl3dmiarexview.h>
+#include <viewwidgets/graphwidget.h>
 #include <viewwidgets/miarextilewidget.h>
 #include <viewwidgets/wingwidget.h>
 #include <xdirect/objects2d.h>

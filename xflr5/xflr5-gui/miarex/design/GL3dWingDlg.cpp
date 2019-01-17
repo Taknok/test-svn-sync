@@ -29,26 +29,27 @@
 #include <math.h>
 
 #include <globals/globals.h>
-#include <miarex/objects3d.h>
-#include <miarex/view/W3dPrefsDlg.h>
-#include <misc/options/displayoptions.h>
-#include <misc/options/Units.h>
-#include <objects/objects3d/Surface.h>
-#include "GL3dWingDlg.h"
-#include "WingScaleDlg.h"
-#include "InertiaDlg.h"
-#include "GL3dWingDlg.h"
-#include "WingScaleDlg.h"
-#include "InertiaDlg.h"
-#include <xdirect/objects2d.h>
-#include <objects/objects_global.h>
+#include <miarex/design/GL3dWingDlg.h>
+#include <miarex/design/GL3dWingDlg.h>
+#include <miarex/design/InertiaDlg.h>
+#include <miarex/design/InertiaDlg.h>
+#include <miarex/design/WingDelegate.h>
+#include <miarex/design/WingScaleDlg.h>
+#include <miarex/design/WingScaleDlg.h>
 #include <miarex/mgt/XmlPlaneReader.h>
 #include <miarex/mgt/XmlPlaneWriter.h>
-#include "WingDelegate.h"
-#include <gl3dwingview.h>
-#include <misc/text/DoubleEdit.h>
+#include <miarex/objects3d.h>
+#include <miarex/view/W3dPrefsDlg.h>
 #include <misc/color/ColorButton.h>
+#include <misc/options/Units.h>
+#include <misc/options/displayoptions.h>
+#include <misc/text/DoubleEdit.h>
+#include <objects/objects3d/Plane.h>
+#include <objects/objects3d/Surface.h>
 #include <objects/objects3d/Wing.h>
+#include <objects/objects_global.h>
+#include <viewwidgets/glWidgets/gl3dwingview.h>
+#include <xdirect/objects2d.h>
 
 
 

@@ -25,14 +25,23 @@
 #ifndef PANELANALYSIS_H
 #define PANELANALYSIS_H
 
+#include <complex>
+
+#include <QObject>
+
 #include <objects/objects3d/vector3d.h>
 #include <objects/objects3d/Panel.h>
-#include <objects/objects3d/WPolar.h>
-#include <objects/objects3d/Plane.h>
-#include <objects/objects3d/Body.h>
+
 
 #define VLMMAXRHS 100
 
+class Plane;
+class WPolar;
+class PlaneOpp;
+class PlaneTaskEvent;
+class Wing;
+class Polar;
+class Surface;
 
 class XFLR5ENGINELIBSHARED_EXPORT PanelAnalysis : QObject
 {
@@ -274,13 +283,13 @@ public: //stability analysis method and variables
 	double m_Ib[3][3];	          /**< Inertia tensor in body (geometrical) axis */
 	double m_Is[3][3];	          /**< Inertia tensor in stability axis */
 
-	complex<double> m_rLong[4];   /**< complex longitudinal eigenvalues resulting from the stability analysis*/
-	complex<double> m_rLat[4];    /**< complex lateral eigenvalues resulting from the stability analysis*/
-	complex<double> m_vLong[16];  /**< complex longitudinal eigenvectors resulting from the stability analysis*/
-	complex<double> m_vLat[16];   /**< complex lateral eigenvectors resulting from the stability analysis*/
+    std::complex<double> m_rLong[4];   /**< complex longitudinal eigenvalues resulting from the stability analysis*/
+    std::complex<double> m_rLat[4];    /**< complex lateral eigenvalues resulting from the stability analysis*/
+    std::complex<double> m_vLong[16];  /**< complex longitudinal eigenvectors resulting from the stability analysis*/
+    std::complex<double> m_vLat[16];   /**< complex lateral eigenvectors resulting from the stability analysis*/
 
-	complex<double> m_phiPH;      /**< complex phugoid eigenvalue computed using Phillip's formula */
-	complex<double> m_phiDR;      /**< complex Dutch roll eigenvalue computed using Phillip's formula */
+    std::complex<double> m_phiPH;      /**< complex phugoid eigenvalue computed using Phillip's formula */
+    std::complex<double> m_phiDR;      /**< complex Dutch roll eigenvalue computed using Phillip's formula */
 
 	double m_AlphaEq;             /**< the balance aoa, calculated in stability analysis */
 	double m_Ctrl;                /**< the control parameter, which defines the position of the control surfaces */

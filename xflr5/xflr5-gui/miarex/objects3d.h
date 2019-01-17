@@ -27,11 +27,9 @@
 #define OBJECTS3D_H
 
 #include <QList>
-#include <objects/objects3d/Body.h>
-#include <objects/objects3d/Plane.h>
-#include <objects/objects3d/PlaneOpp.h>
 
 class Plane;
+class Wing;
 class Body;
 class WPolar;
 class PlaneOpp;
