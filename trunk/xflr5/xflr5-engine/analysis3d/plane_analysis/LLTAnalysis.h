@@ -34,11 +34,9 @@
 #define LLTANALYSIS_H
 
 
-#include <analysis3d/plane_analysis/planetaskevent.h>
 #include <analysis3d/analysis3d_params.h>
 #include <analysis3d/analysis3d_globals.h>
-#include <objects/objects3d/Plane.h>
-#include <objects/objects3d/PlaneOpp.h>
+
 #include <QList>
 
 /**
@@ -49,7 +47,12 @@
 	All the data is in International Standard units kg, m, s.
  */
 
-
+class Plane;
+class WPolar;
+class PlaneOpp;
+class PlaneTaskEvent;
+class Wing;
+class Polar;
 
 class XFLR5ENGINELIBSHARED_EXPORT LLTAnalysis : QObject
 {

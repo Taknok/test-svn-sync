@@ -22,9 +22,9 @@
 #ifndef MIAREXTILEWIDGET_H
 #define MIAREXTILEWIDGET_H
 
-#include "graphtilewidget.h"
 #include <QGridLayout>
 
+#include "graphtilewidget.h"
 
 class WingWidget;
 

@@ -2325,11 +2325,9 @@ bool XFoil::cdcalc()
 }
 
 
-
-
+/** ---- laminar skin friction function  ( Cf )    ( from Falkner-Skan )*/
 bool XFoil::cfl(double hk, double rt, double &cf, double &cf_hk, double &cf_rt, double &cf_msq)
 {
-    //---- laminar skin friction function  ( cf )    ( from falkner-skan )
     double tmp;
     if(hk<5.5)
     {
@@ -2349,13 +2347,13 @@ bool XFoil::cfl(double hk, double rt, double &cf, double &cf_hk, double &cf_rt, 
     return true;
 }
 
-
+/** ---- turbulent skin friction function  ( Cf )    (Coles) */
 bool XFoil::cft(double hk, double rt, double msq, double &cf, double &cf_hk, double &cf_rt, double &cf_msq)
 {
     double gam, gm1, f_arg, fc, grt, gex, thk, cfo;
     gam =1.4;
 
-    //---- turbulent skin friction function  ( cf )    (coles)
+
     gm1 = gam - 1.0;
     fc  = sqrt(1.0 + 0.5*gm1*msq);
     grt = log(rt/fc);
@@ -2379,20 +2377,18 @@ bool XFoil::cft(double hk, double rt, double msq, double &cf, double &cf_hk, dou
 }
 
 
+/** -----------------------------------------------------------
+ *	   integrates surface pressures to get cl and cm.
+ *	   integrates skin friction to get cdf.
+ *	   calculates dcl/dalpha for prescribed-cl routines.
+ *-----------------------------------------------------------*/
 bool XFoil::clcalc(double xref, double yref)
 {
-    // modified techwinder : all other variables are member variables (ex fortran common)
-    //-----------------------------------------------------------
-    //	   integrates surface pressures to get cl and cm.
-    //	   integrates skin friction to get cdf.
-    //	   calculates dcl/dalpha for prescribed-cl routines.
-    //-----------------------------------------------------------
-
     //techwinder addition : calculate XCp position
 
     //---- moment-reference coordinates
-    ////ccc	   xref = 0.25
-    ////ccc	   yref = 0.
+    //ccc	   xref = 0.25
+    //ccc	   yref = 0.
 
     double beta, beta_msq, bfac, bfac_msq, cginc;
     double cpi_gam, cpc_cpi;
@@ -2454,8 +2450,7 @@ bool XFoil::clcalc(double xref, double yref)
 
         cl	   = cl 	+ dx* ag;
         cdp    = cdp	- dy* ag;
-        cm	   = cm 	- dx*(ag*ax + dg*dx/12.0)
-                - dy*(ag*ay + dg*dy/12.0);
+        cm	   = cm 	- dx*(ag*ax + dg*dx/12.0) - dy*(ag*ay + dg*dy/12.0);
 
         xcp += dx*ag*(x[ip]+x[i])/2.0;
 
@@ -2558,7 +2553,6 @@ void XFoil::writeString(QString str, bool bFullReport)
  *      xs,ys    derivative arrays                |
  *               (calculated earlier by spline)   |
  * ------------------------------------------------ */
-
 double XFoil::curv(double ss, double x[], double xs[], double y[], double ys[], double s[], int n)
 {
     int ilow, i, imid;
@@ -2631,12 +2625,12 @@ stop11:
 /** ==============================================================
  *      amplification rate routine for envelope e^n method.
  *      reference:
- *                 drela, m., giles, m.,
- *                "viscous/inviscid analysis of transonic and
+ *                 Drela, M., Giles, M.,
+ *                "Viscous/inviscid analysis of transonic and
  *                 low reynolds number airfoils",
- *                 aiaa journal, oct. 1987.
+ *                 AIAA journal, oct. 1987.
  *
- *      new version.   march 1991       (latest bug fix  july 93)
+ *      new version.   March 1991       (latest bug fix  july 93)
  *           - m(h) correlation made more accurate up to h=20
  *           - for h > 5, non-similar profiles are used
  *             instead of falkner-skan profiles.  these
@@ -2647,7 +2641,7 @@ stop11:
  *
  *      input :   hk     kinematic shape parameter
  *                th     momentum thickness
- *                rt     momentum-thickness reynolds number
+ *                Rt     momentum-thickness reynolds number
  *
  *      output:   ax     envelope spatial amplification rate
  *                ax_(.) sensitivity of ax to parameter (.)
@@ -2658,7 +2652,7 @@ stop11:
  *             respect to the streamwise distance x.
  *                       x
  *                      /
- *               n(x) = | ax(h(x),th(x),rth(x)) dx
+ *               n(x) = | ax(h(x),th(x),Rth(x)) dx
  *                      /
  *                       0
  *             the integration can be started from the leading
@@ -2736,11 +2730,11 @@ bool XFoil::dampl(double hk, double th, double rt, double &ax, double &ax_hk, do
         af_hmi =      2.7     - 11.0*hmi    + 9.0*hmi*hmi;
         af_hk = af_hmi*hmi_hk;
 
-        ax    = (af   *dadr/th                ) * rfac;
-        ax_hk = (af_hk*dadr/th + af*dadr_hk/th) * rfac
+        ax    =   (af   *dadr/th                ) * rfac;
+        ax_hk =   (af_hk*dadr/th + af*dadr_hk/th) * rfac
                 + (af   *dadr/th                ) * rfac_hk;
-        ax_th = -(ax)/th;
-        ax_rt =  (af   *dadr/th               ) * rfac_rt;
+        ax_th = - (ax)/th;
+        ax_rt =   (af   *dadr/th                ) * rfac_rt;
 
     }
 
@@ -2781,7 +2775,7 @@ double XFoil::deval(double ss, double x[], double xs[], double s[], int n)
 }
 
 
-/** Laminar dissipation function  ( 2 cd/h* )     (from Falkner-Skan)*/
+/** Laminar dissipation function  ( 2 Cd/H* )     (from Falkner-Skan)*/
 bool XFoil::dil(double hk, double rt, double &di, double &di_hk, double &di_rt)
 {
     if(hk<4.0)
@@ -4943,8 +4937,7 @@ bool XFoil::mrchue()
                 dsi = dsw + dswaki;
                 if(dmax<=0.00001) goto stop110;
 stop100:
-                int nothing= 1;
-
+                int nothing=1;      (void)nothing;    //c++ doesn(t like gotos
             }//end itbl loop
 
 
@@ -5647,11 +5640,11 @@ stop11:
                 //---------- go on to next input geometry point to check for corner
                 goto stop25;
 stop252:
-                nothing = 0;// C++ doesn't like gotos
+                nothing = 0; (void)nothing;// C++ doesn't like gotos
             }
         }
 stop25:
-        nothing = 0;// C++ doesn't like gotos
+        nothing = 0; (void)nothing;// C++ doesn't like gotos
     }
 
     scalc(x,y,s,n);
@@ -5817,7 +5810,7 @@ bool XFoil::psilin(int iNode, double xi, double yi, double nxi, double nyi, doub
     int io,jo,jm,jq,jp;
 
     double dxinv, psum, qtanm, scs, sds, rx1, rx2, sx, sy, dsio, dso, dsm, dsim;
-    double sgn, x0, logr0, theta0, rs0, rs1, rs2, xjo, xjp, yjo, yjp, nxo, nyo, nxp, nyp, ry1, ry2;
+    double sgn, x0, logr0, theta0, rs0, rs1, rs2, nxo, nyo, nxp, nyp, ry1, ry2;
     double ssum, sdif, psni,pdni, psx0,psx1,psx2,pdx0,pdx1,pdx2,psyy,pdyy,psis,psig,psid;
     double psigx1,psigx2,psigyy,pgamx1,pgamx2,pgamyy,psigni,pgamni;
     double gsum,gdif,gsum1,gsum2,gdif1,gdif2,pdif,dsp,dsip;
@@ -6112,8 +6105,7 @@ bool XFoil::psilin(int iNode, double xi, double yi, double nxi, double nyi, doub
             z_qdof3 += qopi*((psis-psid)*qf3[jo] + (psis+psid)*qf3[jp]);
         }
 stop10:
-        int nothing;
-        nothing = 1;
+        int nothing=1;      (void)nothing;    //c++ doesn(t like gotos
     }
 
 stop11:
@@ -7750,6 +7742,7 @@ bool XFoil::specal()
         gam[i]   =  cosa*gamu[i][1] + sina*gamu[i][2];
         gam_a[i] = -sina*gamu[i][1] + cosa*gamu[i][2];
     }
+
     psio = cosa*gamu[n+1][1] + sina*gamu[n+1][2];
 
     tecalc();

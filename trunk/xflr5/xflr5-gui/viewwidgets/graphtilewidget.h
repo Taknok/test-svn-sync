@@ -26,11 +26,14 @@
 #include <QWidget>
 #include <graph/graph.h>
 #include <QSplitter>
-#include <graphwidget.h>
-#include "legendwidget.h"
+
+#include <globals/gui_enums.h>
 #include <analysis3d/analysis3d_enums.h>
 
-
+class LegendWidget;
+class GraphWidget;
+class Miarex;
+class XDirect;
 
 class GraphTileWidget : public QWidget
 {
@@ -45,7 +48,7 @@ public:
 	Graph *graph(int iGraph);
 	GraphWidget *graphWidget(int iGraph);
 
-	XFLR5::enumApp xflr5App(){return m_xflr5App;}
+    XFLR5::enumApp xflr5App() const {return m_xflr5App;}
 
 	int graphWidgetCount(){return m_GraphWidget.count();}
 	int activeGraphIndex(){return m_iActiveGraphWidget;}

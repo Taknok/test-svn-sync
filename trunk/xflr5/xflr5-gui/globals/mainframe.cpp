@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	MainFrame  Class
-	Copyright (C) 2008-2017 Andre Deperrois 
+    Copyright (C) 2008-2019 Andre Deperrois
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -75,7 +75,9 @@
 #include <script/xflscriptreader.h>
 #include <viewwidgets/Direct2dDesign.h>
 #include <viewwidgets/glWidgets/gl3dmiarexview.h>
+#include <viewwidgets/graphwidget.h>
 #include <viewwidgets/inverseviewwidget.h>
+#include <viewwidgets/legendwidget.h>
 #include <viewwidgets/miarextilewidget.h>
 #include <viewwidgets/wingwidget.h>
 #include <viewwidgets/xdirecttilewidget.h>

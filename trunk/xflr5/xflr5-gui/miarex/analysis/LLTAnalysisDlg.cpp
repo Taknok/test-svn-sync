@@ -43,6 +43,8 @@
 #include <misc/options/displayoptions.h>
 #include <objects/objects3d/WPolar.h>
 #include <objects/objects3d/Wing.h>
+#include <analysis3d/plane_analysis/planetaskevent.h>
+
 
 QPoint LLTAnalysisDlg::s_Position = QPoint(200,100);
 QSize  LLTAnalysisDlg::s_WindowSize = QSize(900,550);

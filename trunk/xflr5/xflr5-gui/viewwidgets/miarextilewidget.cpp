@@ -22,7 +22,9 @@
 #include <QHBoxLayout>
 
 #include "miarextilewidget.h"
-#include "wingwidget.h"
+#include <viewwidgets/wingwidget.h>
+#include <viewwidgets/graphwidget.h>
+#include <viewwidgets/legendwidget.h>
 
 MiarexTileWidget::MiarexTileWidget(QWidget *pParent) : GraphTileWidget(pParent)
 {

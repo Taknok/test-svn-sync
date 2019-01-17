@@ -27,9 +27,11 @@
 #include <QCoreApplication>
 
 #include <matrix.h>
-#include <objects/objects3d/Surface.h>
 #include "PanelAnalysis.h"
-
+#include <objects/objects3d/WPolar.h>
+#include <objects/objects3d/Plane.h>
+#include <objects/objects3d/Body.h>
+#include <objects/objects3d/Surface.h>
 
 
 
