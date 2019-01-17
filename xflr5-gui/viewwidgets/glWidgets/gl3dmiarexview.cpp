@@ -19,17 +19,20 @@
 
 *****************************************************************************/
 
-#include <QOpenGLPaintDevice>
-#include "gl3dmiarexview.h"
-#include <miarex/Miarex.h>
-#include <globals/mainframe.h>
 #include <QMenu>
 #include <QApplication>
 #include <QProgressDialog>
+#include <QOpenGLPaintDevice>
+
+#include "gl3dmiarexview.h"
+#include <miarex/Miarex.h>
+#include <globals/mainframe.h>
+
 #include <misc/options/displayoptions.h>
 #include <globals/globals.h>
 #include <miarex/view/GL3DScales.h>
 #include <objects/objects3d/Surface.h>
+#include <objects/objects3d/WPolar.h>
 #include <miarex/view/W3dPrefsDlg.h>
 #include <misc/waitdlg.h>
 

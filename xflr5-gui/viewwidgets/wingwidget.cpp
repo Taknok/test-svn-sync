@@ -20,15 +20,21 @@
 *****************************************************************************/
 
 #include <QPainter>
+#include <QDebug>
+
 #include <globals/globals.h>
 #include <graph_globals.h>
+
 #include "wingwidget.h"
 #include <misc/options/displayoptions.h>
-#include "miarex/objects3d.h"
-#include "miarex/view/W3dPrefsDlg.h"
-#include "miarex/Miarex.h"
+#include <miarex/objects3d.h>
+#include <miarex/view/W3dPrefsDlg.h>
+#include <miarex/Miarex.h>
+#include <objects/objects3d/WPolar.h>
+#include <objects/objects3d/Plane.h>
+#include <objects/objects3d/PlaneOpp.h>
+#include <graph/graph.h>
 
-#include <QtDebug>
 void *WingWidget::s_pMainFrame = nullptr;
 void *WingWidget::s_pMiarex = nullptr;
 

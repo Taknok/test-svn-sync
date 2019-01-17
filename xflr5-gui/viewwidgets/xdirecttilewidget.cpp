@@ -26,9 +26,11 @@
 #include <QDebug>
 
 #include <globals/mainframe.h>
-#include "xdirecttilewidget.h"
-#include "xdirect/XDirect.h"
+#include <viewwidgets/graphwidget.h>
+#include <viewwidgets/legendwidget.h>
 #include <viewwidgets/oppointwidget.h>
+#include <viewwidgets/xdirecttilewidget.h>
+#include <xdirect/XDirect.h>
 
 
 XDirectTileWidget::XDirectTileWidget(QWidget *pParent) :  GraphTileWidget(pParent)

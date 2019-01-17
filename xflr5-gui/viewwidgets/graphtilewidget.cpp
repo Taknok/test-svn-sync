@@ -29,13 +29,16 @@
 #include <QContextMenuEvent>
 
 #include "graphtilewidget.h"
-#include <graph/graphdlg.h>
 #include <globals/mainframe.h>
-#include "miarex/Miarex.h"
-#include "xdirect/XDirect.h"
-#include "xinverse/XInverse.h"
-#include <misc/options/displayoptions.h>
+#include <graph/graphdlg.h>
+#include <miarex/Miarex.h>
 #include <misc/options/Units.h>
+#include <misc/options/displayoptions.h>
+#include <objects/objects3d/Plane.h>
+#include <viewwidgets/graphwidget.h>
+#include <viewwidgets/legendwidget.h>
+#include <xdirect/XDirect.h>
+#include <xinverse/XInverse.h>
 
 
 MainFrame* GraphTileWidget::s_pMainFrame = nullptr;
