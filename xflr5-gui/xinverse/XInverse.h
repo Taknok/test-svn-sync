@@ -33,19 +33,21 @@
 #include <QRadioButton>
 #include <QCheckBox>
 #include <QTextEdit>
+#include <QLineEdit>
 #include <QLabel>
 #include <QStackedWidget>
 #include <QVBoxLayout>
 #include <QSettings>
-#include <misc/text/DoubleEdit.h>
-#include <misc/text/IntEdit.h>
-#include <misc/text/MinTextEdit.h>
+
 #include <graph/graph.h>
 
 #include <gui_objects/Spline5.h>
 
 class MainFrame;
 class Foil;
+class MinTextEdit;
+class IntEdit;
+class DoubleEdit;
 
 /**
  * @brief This class implements the interface for the inverse Foil design.

@@ -23,8 +23,9 @@
 #define XDIRECTSTYLEDLG_H
 
 #include <QDialog>
-#include <misc/line/LineBtn.h>
 #include <QKeyEvent>
+
+class LineBtn;
 
 class XDirectStyleDlg : public QDialog
 {
