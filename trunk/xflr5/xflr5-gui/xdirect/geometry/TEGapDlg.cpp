@@ -19,12 +19,15 @@
 
 *****************************************************************************/
 
-#include "TEGapDlg.h"
-#include <XFoil.h>
-
 #include <QLabel>
 #include <QMessageBox>
 #include <QHBoxLayout>
+
+#include "TEGapDlg.h"
+#include <XFoil.h>
+#include <misc/text/DoubleEdit.h>
+#include <objects/objects2d/Foil.h>
+
 
 XFoil *TEGapDlg::s_pXFoil;
 

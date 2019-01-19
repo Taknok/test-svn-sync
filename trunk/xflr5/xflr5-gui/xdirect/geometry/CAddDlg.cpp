@@ -23,7 +23,10 @@
 
 #include "CAddDlg.h"
 #include <QGridLayout>
+
 #include <XFoil.h>
+#include <objects/objects2d/Foil.h>
+#include <misc/text/DoubleEdit.h>
 
 
 

@@ -26,10 +26,10 @@
 #include <QDialog>
 #include <QPushButton>
 
-#include <misc/text/DoubleEdit.h>
-#include <objects/objects2d/Foil.h>
 
 class XFoil;
+class Foil;
+class DoubleEdit;
 
 class TEGapDlg : public QDialog
 {

@@ -25,6 +25,10 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
+
+#include <misc/text/DoubleEdit.h>
+#include <objects/objects2d/Foil.h>
+
 void *LEDlg::s_pXFoil;
 
 LEDlg::LEDlg(QWidget *pParent) : QDialog(pParent)

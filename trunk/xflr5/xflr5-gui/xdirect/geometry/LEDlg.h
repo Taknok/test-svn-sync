@@ -24,9 +24,9 @@
 
 #include <QDialog>
 #include <QPushButton>
-#include <misc/text/DoubleEdit.h>
-#include <objects/objects2d/Foil.h>
 
+class Foil;
+class DoubleEdit;
 
 class LEDlg : public QDialog
 {
