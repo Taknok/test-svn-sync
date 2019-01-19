@@ -27,6 +27,9 @@
 #include "FoilGeomDlg.h"
 
 
+#include <misc/text/DoubleEdit.h>
+#include <objects/objects2d/Foil.h>
+
 
 XFoil *FoilGeomDlg::s_pXFoil;
 

@@ -23,10 +23,13 @@
 #include "NacaFoilDlg.h"
 #include <QGridLayout>
 #include <QFormLayout>
+#include <objects/objects2d/Foil.h>
+#include <misc/text/IntEdit.h>
 
 void *NacaFoilDlg::s_pXFoil;
 int NacaFoilDlg::s_Digits = 0;
 int NacaFoilDlg::s_Panels = 100;
+
 
 
 NacaFoilDlg::NacaFoilDlg(QWidget *pParent) : QDialog(pParent)

@@ -25,23 +25,26 @@
 #include <QMessageBox>
 #include <QtDebug>
 
-#include "XInverse.h" 
-#include <viewwidgets/inverseviewwidget.h>
 #include "FoilSelectionDlg.h"
-#include "PertDlg.h"
 #include "InverseOptionsDlg.h"
+#include "PertDlg.h"
+#include "XInverse.h"
+#include <XFoil.h>
 #include <globals/globals.h>
-#include <graph_globals.h>
 #include <globals/mainframe.h>
-#include <xdirect/XDirect.h>
-#include <xdirect/objects2d.h>
-#include <objects/objects2d/Foil.h>
+#include <graph/graphdlg.h>
+#include <graph_globals.h>
 #include <misc/RenameDlg.h>
 #include <misc/options/displayoptions.h>
-#include <graph/graphdlg.h>
-#include <XFoil.h>
+#include <misc/text/DoubleEdit.h>
+#include <misc/text/IntEdit.h>
+#include <misc/text/MinTextEdit.h>
+#include <objects/objects2d/Foil.h>
+#include <viewwidgets/inverseviewwidget.h>
+#include <xdirect/XDirect.h>
+#include <xdirect/objects2d.h>
+#include <analysis3d/analysis3d_params.h>
 
-#define PI 3.4141592654
 
 
 MainFrame *XInverse::s_pMainFrame;

@@ -19,13 +19,16 @@
 
 *****************************************************************************/
 
-#include "XDirectStyleDlg.h"
-#include "XDirect.h"
-#include <misc/line/LinePickerDlg.h>
-#include "viewwidgets/oppointwidget.h"
 #include <QGridLayout>
 #include <QLabel>
 
+#include "XDirectStyleDlg.h"
+#include <xdirect/XDirect.h>
+#include <misc/line/LinePickerDlg.h>
+#include <viewwidgets/oppointwidget.h>
+
+
+#include <misc/line/LineBtn.h>
 
 
 XDirectStyleDlg::XDirectStyleDlg(QWidget *pParent) : QDialog(pParent)

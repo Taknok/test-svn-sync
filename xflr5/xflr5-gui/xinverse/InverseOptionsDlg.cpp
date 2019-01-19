@@ -20,10 +20,12 @@
 *****************************************************************************/
 
 #include <globals/globals.h>
+
 #include "XInverse.h"
 #include "InverseOptionsDlg.h"
 #include <misc/line/LinePickerDlg.h>
 #include <objects/objects2d/Foil.h>
+#include <misc/line/LineBtn.h>
 
 
 InverseOptionsDlg::InverseOptionsDlg(QWidget *pParent) : QDialog(pParent)

@@ -19,9 +19,11 @@
 
 *****************************************************************************/
 
-#include <QtDebug>
+#include <QDebug>
+
 #include <globals/globals.h>
 #include "xmlpolarreader.h"
+#include <objects/objects2d/Polar.h>
 
 XmlPolarReader::XmlPolarReader(QFile &file, Polar *pPolar)
 {

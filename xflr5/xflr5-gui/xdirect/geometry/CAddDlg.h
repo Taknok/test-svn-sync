@@ -30,8 +30,9 @@
 #include <QRadioButton>
 #include <QPushButton>
 
-#include <objects/objects2d/Foil.h>
-#include <misc/text/DoubleEdit.h>
+
+class Foil;
+class DoubleEdit;
 
 /**
 * @class CAddDlg

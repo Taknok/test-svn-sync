@@ -28,11 +28,9 @@
 #include <QSlider>
 #include <QLabel>
 
-#include <misc/text/DoubleEdit.h>
-#include <objects/objects2d/Foil.h>
-
 class XFoil;
-
+class Foil;
+class DoubleEdit;
 class FoilGeomDlg : public QDialog
 {
 	Q_OBJECT
