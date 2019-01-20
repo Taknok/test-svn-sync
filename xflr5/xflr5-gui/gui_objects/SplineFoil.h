@@ -33,7 +33,7 @@
 
 
 #include "Spline5.h"
-
+#include <objects/objects2d/Foil.h>
 
 /**
 *@class SplineFoil

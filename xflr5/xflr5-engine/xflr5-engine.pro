@@ -25,17 +25,16 @@ DEFINES += XFLR5ENGINE_LIBRARY
 #VERSION = 1.00
 
 SOURCES += \
-    objects/objects_global.cpp \
+    objects/objects3d/vector3d.cpp \
+    analysis3d/analysis3d_globals.cpp \
+    analysis3d/matrix.cpp \
+    analysis3d/plane_analysis/LLTAnalysis.cpp \
+    analysis3d/plane_analysis/PanelAnalysis.cpp \
+    analysis3d/plane_analysis/planeanalysistask.cpp \
     objects/objects2d/Foil.cpp \
     objects/objects2d/OpPoint.cpp \
     objects/objects2d/Polar.cpp \
     objects/objects2d/Spline.cpp \
-    analysis3d/matrix.cpp \
-    analysis3d/analysis3d_globals.cpp \
-    analysis3d/plane_analysis/LLTAnalysis.cpp \
-    analysis3d/plane_analysis/PanelAnalysis.cpp \
-    analysis3d/plane_analysis/planeanalysistask.cpp \
-	objects/objects3d/vector3d.cpp \
     objects/objects3d/Body.cpp \
     objects/objects3d/Frame.cpp \
     objects/objects3d/NURBSSurface.cpp \
@@ -44,27 +43,27 @@ SOURCES += \
     objects/objects3d/PlaneOpp.cpp \
     objects/objects3d/Quaternion.cpp \
     objects/objects3d/Surface.cpp \
+    objects/objects3d/WPolar.cpp \
     objects/objects3d/Wing.cpp \
     objects/objects3d/WingOpp.cpp \
-    objects/objects3d/WPolar.cpp
+    objects/objects_global.cpp
 
 
 HEADERS += \
-    objects/objects_global.h \
-    objects/objects2d/Foil.h \
-    objects/objects2d/OpPoint.h \
-    objects/objects2d/Polar.h \
-    objects/objects2d/Spline.h \
-    objects/objects2d/xfoil_params.h \
-    analysis3d/matrix.h \
+    xflr5-engine_global.h \
     analysis3d/analysis3d_enums.h \
     analysis3d/analysis3d_globals.h \
     analysis3d/analysis3d_params.h \
+    analysis3d/matrix.h \
     analysis3d/plane_analysis/LLTAnalysis.h \
     analysis3d/plane_analysis/PanelAnalysis.h \
     analysis3d/plane_analysis/planeanalysistask.h \
     analysis3d/plane_analysis/planetaskevent.h \
-    objects/objects3d/vector3d.h \
+    objects/objectcolor.h \
+    objects/objects2d/Foil.h \
+    objects/objects2d/OpPoint.h \
+    objects/objects2d/Polar.h \
+    objects/objects2d/Spline.h \
     objects/objects3d/Body.h \
     objects/objects3d/Frame.h \
     objects/objects3d/NURBSSurface.h \
@@ -76,15 +75,18 @@ HEADERS += \
     objects/objects3d/Surface.h \
     objects/objects3d/Wing.h \
     objects/objects3d/WingOpp.h \
+    objects/objects3d/WPolar.h \
     objects/objects3d/WingSection.h \
-	objects/objects3d/WPolar.h \
-	objects/objectcolor.h \
-	xflr5-engine_global.h
+    objects/objects3d/vector3d.h \
+    objects/objects_global.h
 
 
 
 INCLUDEPATH += $$PWD/objects
 INCLUDEPATH += $$PWD/analysis3d
+
+INCLUDEPATH += ../XFoil-lib
+DEPENDPATH  += ../XFoil-lib
 
 
 win32 {
