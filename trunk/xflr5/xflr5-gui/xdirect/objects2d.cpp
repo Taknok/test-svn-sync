@@ -866,9 +866,9 @@ void Objects2d::addXFoilData(OpPoint *pOpp, XFoil *pXFoil, Foil *pFoil)
 	memcpy(pOpp->dstr, pXFoil->dstr, IVX * ISX * sizeof(double));
 	memcpy(pOpp->itran, pXFoil->itran, 3 * sizeof(int));
 
-	pXFoil->createXBL(pXFoil->xbl);
-	pXFoil->fillHk(pXFoil->Hk);
-	pXFoil->fillRTheta(pXFoil->RTheta);
+    pXFoil->createXBL();
+    pXFoil->fillHk();
+    pXFoil->fillRTheta();
 	memcpy(pOpp->xbl, pXFoil->xbl, IVX * ISX * sizeof(double));
 	memcpy(pOpp->Hk, pXFoil->Hk, IVX * ISX * sizeof(double));
 	memcpy(pOpp->RTheta, pXFoil->RTheta, IVX * ISX * sizeof(double));

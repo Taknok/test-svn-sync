@@ -103,8 +103,7 @@ Foil::Foil()
 */
 void Foil::compMidLine(bool bParams)
 {
-	int l;
-	double xt, yex, yin, step, nx, ny;
+    double xt=0, yex=0, yin=0, step=0, nx=0, ny=0;
 
 	if(bParams)
 	{
@@ -114,25 +113,25 @@ void Foil::compMidLine(bool bParams)
 		m_fXThickness = 0.0;
 	}
 
-	step = (m_rpExtrados[m_iExt].x-m_rpExtrados[0].x)/(double)(MIDPOINTCOUNT-1);
+    step = (m_rpExtrados[m_iExt].x-m_rpExtrados[0].x)/double(MIDPOINTCOUNT-1);
 
-	for (l=0; l<MIDPOINTCOUNT; l++)
+    for (int l=0; l<MIDPOINTCOUNT; l++)
 	{
 		xt = m_rpExtrados[0].x + l*step;
-		getUpperY((double)l*step, yex, nx, ny);
-		getLowerY((double)l*step, yin, nx, ny);
+        getUpperY(double(l)*step, yex, nx, ny);
+        getLowerY(double(l)*step, yin, nx, ny);
 
 		m_rpMid[l].x = xt;
 		m_rpMid[l].y = (yex+yin)/2.0;
 
 		if(bParams)
 		{
-			if(qAbs(yex-yin)>m_fThickness)
+            if(fabs(yex-yin)>m_fThickness)
 			{
-				m_fThickness  = qAbs(yex-yin);
+                m_fThickness  = fabs(yex-yin);
 				m_fXThickness = xt;
 			}
-			if(qAbs(m_rpMid[l].y)>qAbs(m_fCamber))
+            if(fabs(m_rpMid[l].y)>fabs(m_fCamber))
 			{
 				m_fCamber  = m_rpMid[l].y;
 				m_fXCamber = xt;

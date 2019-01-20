@@ -105,9 +105,9 @@ public:
 	double qcomp(double g);
 	bool clcalc(double xref, double yref);
 
-	void createXBL(double xs[IVX][3]);
-	void fillHk(double ws[IVX][3]);
-	void fillRTheta(double ws[IVX][3]);
+    void createXBL();
+    void fillHk();
+    void fillRTheta();
 	void writeString(QString str, bool bFullReport = false);
 	double DeRotate();
 	bool specal();
@@ -341,8 +341,8 @@ public:
 	double xp[IZX],yp[IZX],s[IZX];
 	double dtor;
 
-	double thet[IVX][ISX],tau[IVX][ISX],ctau[IVX][ISX],ctq[IVX][ISX];
-	double dis[IVX][ISX],uedg[IVX][ISX];
+    double thet[IVX][ISX], tau[IVX][ISX], ctau[IVX][ISX], ctq[IVX][ISX];
+    double dis[IVX][ISX], uedg[IVX][ISX];
 	double xbl[IVX][ISX], Hk[IVX][ISX], RTheta[IVX][ISX];
 	double dstr[IVX][ISX];
 	double delt[IVX][ISX];
