@@ -13022,7 +13022,7 @@ bool XFoil::naca5(int ides, int nside)
 
 
 
-void XFoil::fillHk(double ws[IVX][3])
+void XFoil::fillHk()
 {
     int nside[3];
     nside[1] = m_nSide1;
@@ -13039,13 +13039,13 @@ void XFoil::fillHk(double ws[IVX][3])
             uei = uedg[ibl][is];
             uc = uei * (1.0-tklam) / (1.0 - tklam*(uei/qinf)*(uei/qinf));
             amsq = uc*uc*hstinv / (gamm1*(1.0 - 0.5*uc*uc*hstinv));
-            hkin(dsi/thi, amsq, ws[ibl][is], dummy, dummy);
+            hkin(dsi/thi, amsq, Hk[ibl][is], dummy, dummy);
         }
     }
 }
 
 
-void XFoil::fillRTheta(double ws[IVX][3])
+void XFoil::fillRTheta()
 {
     int nside[3];
     nside[1] = m_nSide1;
@@ -13066,7 +13066,7 @@ void XFoil::fillRTheta(double ws[IVX][3])
                     / (1.0 - 0.5*hstinv*qinf*qinf);
             rhoe = pow(herat, 1.0/gamm1);
             amue = sqrt(herat*herat*herat) * (1.0+hvrat)/(herat+hvrat);
-            ws[ibl][is] = reinf * rhoe*ue*thet[ibl][is]/amue;
+            RTheta[ibl][is] = reinf * rhoe*ue*thet[ibl][is]/amue;
         }
     }
 }
@@ -13078,22 +13078,23 @@ void XFoil::fillRTheta(double ws[IVX][3])
  * @param nside1 the number of nodes on side 1 (top?)
  * @param nside2 the number of nodes on side 2 (bottom?)
  */
-void XFoil::createXBL(double xs[IVX][3])
+void XFoil::createXBL()
 {
     int i;
     //---- set up cartesian bl x-arrays for plotting
     for(int is=1; is<= 2; is++){
-        for (int ibl=2; ibl<= nbl[is]; ibl++){
+        for (int ibl=2; ibl<=nbl[is]; ibl++)
+        {
             i = ipan[ibl][is];
-            xs[ibl][is] = x[i];
-            //			xxtr[is] = xle + (xte-xle)*xoctr[is] - (yte-yle)*yoctr[is];
+            xbl[ibl][is] = x[i];
+//			xxtr[is] = xle + (xte-xle)*xoctr[is] - (yte-yle)*yoctr[is];
         }
     }
 
     m_nSide1 = nbl[2] + iblte[1] - iblte[2];
     m_nSide2 = nbl[2];
 
-    for( int iblw=1; iblw <= nbl[2]-iblte[2]; iblw++)
-        xs[iblte[1]+iblw][1] = xs[iblte[2]+iblw][2];
+    for(int iblw=1; iblw <= nbl[2]-iblte[2]; iblw++)
+        xbl[iblte[1]+iblw][1] = xbl[iblte[2]+iblw][2];
 }
 
