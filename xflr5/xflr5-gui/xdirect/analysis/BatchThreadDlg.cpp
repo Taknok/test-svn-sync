@@ -505,10 +505,10 @@ void BatchThreadDlg::initDialog()
 	m_pctrlTextOutput->clear();
 	m_pctrlTextOutput->setFont(Settings::s_TableFont);
 
-	m_ACrit     = XDirect::s_refPolar.NCrit();
-	m_XBot      = XDirect::s_refPolar.XtrBot();
-	m_XTop      = XDirect::s_refPolar.XtrTop();
-	m_Mach      = XDirect::s_refPolar.Mach();
+	m_ACrit     = XDirect::s_RefPolar.NCrit();
+	m_XBot      = XDirect::s_RefPolar.XtrBot();
+	m_XTop      = XDirect::s_RefPolar.XtrTop();
+	m_Mach      = XDirect::s_RefPolar.Mach();
 
 	m_PolarType = XFLR5::FIXEDSPEEDPOLAR; //no choice...
 
@@ -643,10 +643,10 @@ void BatchThreadDlg::onClose()
 	QThreadPool::globalInstance()->waitForDone();
 	readParams();
 
-	XDirect::s_refPolar.NCrit()    = m_ACrit;
-	XDirect::s_refPolar.XtrBot()   = m_XBot;
-	XDirect::s_refPolar.XtrTop()   = m_XTop;
-	XDirect::s_refPolar.Mach()     = m_Mach;
+	XDirect::s_RefPolar.NCrit()    = m_ACrit;
+	XDirect::s_RefPolar.XtrBot()   = m_XBot;
+	XDirect::s_RefPolar.XtrTop()   = m_XTop;
+	XDirect::s_RefPolar.Mach()     = m_Mach;
 
 	accept();
 }

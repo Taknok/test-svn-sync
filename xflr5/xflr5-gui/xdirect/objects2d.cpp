@@ -197,7 +197,7 @@ OpPoint* Objects2d::addOpPoint(Foil *pFoil, Polar *pPolar, XFoil *pXFoil, bool b
 	QColor clr = randomColor(!Settings::isLightTheme());
 	pNewPoint->setColor(clr.red(), clr.green(), clr.black(), clr.alpha());
 
-	if(pNewPoint ==NULL)
+    if(pNewPoint ==nullptr)
 	{
 		return nullptr;
 	}

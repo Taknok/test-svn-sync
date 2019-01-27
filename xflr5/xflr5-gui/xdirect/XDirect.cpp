@@ -69,7 +69,7 @@
 #include "XDirectStyleDlg.h"
 
 
-Polar XDirect::s_refPolar;
+Polar XDirect::s_RefPolar;
 
 QList<double> XDirect::s_ReList;
 QList<double> XDirect::s_MachList;
@@ -1260,17 +1260,17 @@ void XDirect::loadSettings(QSettings *pSettings)
 		BatchThreadDlg::s_bUpdatePolarView = pSettings->value("BatchUpdatePolarView", false).toBool();
 		BatchThreadDlg::s_nThreads = pSettings->value("MaxThreads", 12).toInt();
 
-		s_refPolar.NCrit()    = pSettings->value("NCrit").toDouble();
-		s_refPolar.XtrTop()   = pSettings->value("XTopTr").toDouble();
-		s_refPolar.XtrBot()   = pSettings->value("XBotTr").toDouble();
-		s_refPolar.Mach()     = pSettings->value("Mach").toDouble();
-		s_refPolar.aoa()      = pSettings->value("ASpec").toDouble();
+		s_RefPolar.NCrit()    = pSettings->value("NCrit").toDouble();
+		s_RefPolar.XtrTop()   = pSettings->value("XTopTr").toDouble();
+		s_RefPolar.XtrBot()   = pSettings->value("XBotTr").toDouble();
+		s_RefPolar.Mach()     = pSettings->value("Mach").toDouble();
+		s_RefPolar.aoa()      = pSettings->value("ASpec").toDouble();
 
 		b = pSettings->value("Type").toInt();
-        if(b==1)      s_refPolar.setPolarType(XFLR5::FIXEDSPEEDPOLAR);
-        else if(b==2) s_refPolar.setPolarType(XFLR5::FIXEDLIFTPOLAR);
-        else if(b==3) s_refPolar.setPolarType(XFLR5::RUBBERCHORDPOLAR);
-		else if(b==4) s_refPolar.setPolarType(XFLR5::FIXEDAOAPOLAR);
+        if(b==1)      s_RefPolar.setPolarType(XFLR5::FIXEDSPEEDPOLAR);
+        else if(b==2) s_RefPolar.setPolarType(XFLR5::FIXEDLIFTPOLAR);
+        else if(b==3) s_RefPolar.setPolarType(XFLR5::RUBBERCHORDPOLAR);
+		else if(b==4) s_RefPolar.setPolarType(XFLR5::FIXEDAOAPOLAR);
 
 
 		int NRe = pSettings->value("NReynolds").toInt();
@@ -1313,6 +1313,8 @@ void XDirect::loadSettings(QSettings *pSettings)
 		setGraphTitles(m_PlrGraph[ig]);
 	}
 	m_pOpPointWidget->loadSettings(pSettings);
+
+    FoilPolarDlg::loadSettings(*pSettings);
 }
 
 
@@ -1773,7 +1775,7 @@ void XDirect::onDefinePolar()
 		m_pCurPolar->foilName() = m_pCurFoil->foilName();
 		m_pCurPolar->polarName() = fpDlg.m_PlrName;
 		m_pCurPolar->isVisible() = true;
-		m_pCurPolar->copySpecification(&s_refPolar);
+		m_pCurPolar->copySpecification(&s_RefPolar);
 
 		m_pCurPolar->setPolarType(fpDlg.m_PolarType);
 
@@ -4132,15 +4134,15 @@ void XDirect::saveSettings(QSettings *pSettings)
 
         pSettings->setValue("VAccel", m_XFoil.VAccel());
 		pSettings->setValue("KeepOpenErrors", s_bKeepOpenErrors);
-		pSettings->setValue("NCrit", s_refPolar.NCrit());
-		pSettings->setValue("XTopTr", s_refPolar.XtrTop());
-		pSettings->setValue("XBotTr", s_refPolar.XtrBot());
-		pSettings->setValue("Mach", s_refPolar.Mach());
-		pSettings->setValue("ASpec", s_refPolar.aoa());
+		pSettings->setValue("NCrit", s_RefPolar.NCrit());
+		pSettings->setValue("XTopTr", s_RefPolar.XtrTop());
+		pSettings->setValue("XBotTr", s_RefPolar.XtrBot());
+		pSettings->setValue("Mach", s_RefPolar.Mach());
+		pSettings->setValue("ASpec", s_RefPolar.aoa());
 
-        if(s_refPolar.polarType()==XFLR5::FIXEDSPEEDPOLAR)       pSettings->setValue("Type", 1);
-        else if(s_refPolar.polarType()==XFLR5::RUBBERCHORDPOLAR) pSettings->setValue("Type", 2);
-        else if(s_refPolar.polarType()==XFLR5::FIXEDAOAPOLAR)    pSettings->setValue("Type", 4);
+        if(s_RefPolar.polarType()==XFLR5::FIXEDSPEEDPOLAR)       pSettings->setValue("Type", 1);
+        else if(s_RefPolar.polarType()==XFLR5::RUBBERCHORDPOLAR) pSettings->setValue("Type", 2);
+        else if(s_RefPolar.polarType()==XFLR5::FIXEDAOAPOLAR)    pSettings->setValue("Type", 4);
 
 		pSettings->setValue("NReynolds", s_ReList.count());
 		for (int i=0; i<s_ReList.count(); i++)
@@ -4160,6 +4162,8 @@ void XDirect::saveSettings(QSettings *pSettings)
 
 	m_CpGraph.saveSettings(pSettings);
 	m_pOpPointWidget->saveSettings(pSettings);
+
+    FoilPolarDlg::saveSettings(*pSettings);
 }
 
 

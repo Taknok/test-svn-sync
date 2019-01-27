@@ -2409,7 +2409,7 @@ void MainFrame::createXDirectActions()
 	m_pResetCurPolar->setStatusTip(tr("Deletes the contents of the currently selected polar"));
 	connect(m_pResetCurPolar, SIGNAL(triggered()), m_pXDirect, SLOT(onResetCurPolar()));
 
-	m_pEditCurPolar = new QAction(tr("Edit"), this);
+    m_pEditCurPolar = new QAction(tr("Edit data points"), this);
 	m_pEditCurPolar->setStatusTip(tr("Remove the unconverged or erroneaous points of the currently selected polar"));
 	connect(m_pEditCurPolar, SIGNAL(triggered()), m_pXDirect, SLOT(onEditCurPolar()));
 
@@ -6347,8 +6347,8 @@ void MainFrame::setupDataDir()
     s_StylesheetDir.setPath(qApp->applicationDirPath()+"/qss");
 #endif
 #ifdef Q_OS_LINUX
-	s_TranslationDir.setPath("/usr/share/xflr5/translations");
-	s_StylesheetDir.setPath("/usr/share/xflr5/qss");
+    s_TranslationDir.setPath("/usr/local/share/xflr5/translations");
+    s_StylesheetDir.setPath("/usr/local/share/xflr5/qss");
 #endif
 }
 

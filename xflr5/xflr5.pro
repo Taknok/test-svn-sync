@@ -18,6 +18,7 @@ SUBDIRS = xflr5-engine \
 
 TRANSLATIONS = translations/xflr5v6.ts \
 	translations/xflr5v6_fr.ts \
+	translations/xflr5v6_de.ts \
 	translations/xflr5v6_ja.ts
 
 
