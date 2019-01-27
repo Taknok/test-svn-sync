@@ -13031,9 +13031,10 @@ void XFoil::fillHk()
     double hstinv = gamm1*(minf/qinf)*(minf/qinf) / (1.0 + 0.5*gamm1*minf*minf);
 
     //---- fill kinematic shape parameter array
-    for (int is=1; is<=2; is++){
-        for(int ibl=2; ibl< nside[is]; ibl++){
-
+    for (int is=1; is<=2; is++)
+    {
+        for(int ibl=2; ibl< nside[is]; ibl++)
+        {
             thi = thet[ibl][is];
             dsi = dstr[ibl][is];
             uei = uedg[ibl][is];

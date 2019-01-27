@@ -1,6 +1,6 @@
 /****************************************************************************
 
-	AFoilGridDlg Class
+    GridSettingsDlg Class
 	Copyright (C) 2009 Andre Deperrois 
 
 	This program is free software; you can redistribute it and/or modify

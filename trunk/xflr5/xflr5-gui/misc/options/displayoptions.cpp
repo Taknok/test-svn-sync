@@ -75,7 +75,7 @@ Settings::Settings(QWidget *pParent) : QWidget(pParent)
 	m_StyleSheetDir.setPath(qApp->applicationDirPath());
 #endif
 #ifdef Q_OS_LINUX
-	m_StyleSheetDir.setPath("/usr/share/xflr5");
+    m_StyleSheetDir.setPath("/usr/local/share/xflr5");
 #endif
 
 	setupLayout();

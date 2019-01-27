@@ -15,6 +15,13 @@
 *******************************************************************************
 
 
+xflr5 v6.45 January xxxth, 2019
+    - corrected imperial unit conversions in the foil polar definition
+    - changed the unix directory for shared files to /usr/local/share instead of /usr/share
+    - increased the samplng of the foil's mid camber line from 100 to 1000 points; this improves
+      the precision of the calculated camber and thickness value and position
+    - code cleaning
+
 xflr5 v6.44 January 7th, 2019
     - tentative fix for an occasional crash bug when displaying streamlines or surface velocities
     - fix for bug #128 relative to the display of the wings and body in the advanced plane editor
