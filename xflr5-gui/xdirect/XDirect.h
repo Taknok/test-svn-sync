@@ -320,7 +320,7 @@ private:
 //	double m_XBotTr;            /**< Stores the position of the bottom transition point defined in the last Polar creation */
 //	enumPolarType m_PolarType;  /**< Stores the type of the last polar which has been created. */
 
-	static Polar s_refPolar;    /**< Used a static reference to store default data */
+	static Polar s_RefPolar;    /**< Used a static reference to store default data */
 
 
 	QList<Foil*> *m_poaFoil;    /**< pointer to the foil object array */
