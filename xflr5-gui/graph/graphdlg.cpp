@@ -132,14 +132,14 @@ void GraphDlg::fillVariableList()
 			m_pctrlXSel->addItem("X - chord");
 			m_pctrlYSel->addItem("Cp");
 			m_pctrlYSel->addItem("Q - Velocity");
-			m_pctrlYSel->addItem("Max. Shear Coefficient");
+            m_pctrlYSel->addItem("sqrt(Max. Shear Coefficient)");
 			m_pctrlYSel->addItem("Top Side D* and Theta");
 			m_pctrlYSel->addItem("Bottom Side D* and Theta");
 			m_pctrlYSel->addItem("Log(Re_Theta)");
 			m_pctrlYSel->addItem("Re_Theta");
 			m_pctrlYSel->addItem("Amplification Ratio");
-			m_pctrlYSel->addItem("Dissipation Coefficient");
-			m_pctrlYSel->addItem("Skin Friction Coefficient");
+            m_pctrlYSel->addItem("Dissipation Coefficient");
+            m_pctrlYSel->addItem("Wall shear stress");
 			m_pctrlYSel->addItem("Edge Velocity");
 			m_pctrlYSel->addItem("Kinematic Shape Parameter");
 			break;
