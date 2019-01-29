@@ -564,8 +564,6 @@ void XDirect::fillComboBoxes(bool bEnable)
 */
 void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bInviscid)
 {
-	int j;
-
 	Foil *pOpFoil = Objects2d::foil(pOpp->foilName());
 
 	m_CpGraph.resetLimits();
@@ -576,7 +574,7 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 		case 0:
 		{
 			m_CpGraph.setInverted(true);
-			for (j=0; j<pOpp->n; j++)
+            for (int j=0; j<pOpp->n; j++)
 			{
 				if(!bInviscid)
 				{
@@ -592,7 +590,7 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 		}
 		case 1:
 		{
-			for (j=0; j<pOpp->n; j++)
+            for (int j=0; j<pOpp->n; j++)
 			{
 				if(!bInviscid)
 				{
@@ -759,7 +757,7 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 		}
 		case 9:  //friction coefficient
 		{
-			pGraph->setYTitle("Wall_shear");
+            pGraph->setYTitle("tau");
 			Curve * pTopCurve = pGraph->addCurve();
 			Curve * pBotCurve = pGraph->addCurve();
 			pTopCurve->setCurveName("Wall_shear_Top");
@@ -844,7 +842,7 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 		}
 		default:
 		{
-			for (j=0; j<pOpp->n; j++)
+            for (int j=0; j<pOpp->n; j++)
 			{
 				if(!bInviscid)
 				{
