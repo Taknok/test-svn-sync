@@ -25,11 +25,14 @@
 #include <QVBoxLayout>
 #include <QFileDialog>
 #include <QStringList>
+
+
+#include "ManageFoilsDlg.h"
 #include <misc/options/displayoptions.h>
 #include <misc/RenameDlg.h>
-#include "ManageFoilsDlg.h"
 #include <xdirect/objects2d.h>
-
+#include <design/FoilTableDelegate.h>
+#include <objects/objects2d/Foil.h>
 
 ManageFoilsDlg::ManageFoilsDlg(QWidget *pParent) : QDialog(pParent)
 {
