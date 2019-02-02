@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 #include "GLLightDlg.h"
-#include <misc/options/Units.h>
+#include <misc/options/units.h>
 #include <gl3dview.h>
 #include <QGroupBox>
 #include <QGridLayout>

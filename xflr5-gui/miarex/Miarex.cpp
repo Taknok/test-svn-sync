@@ -70,7 +70,7 @@
 #include <misc/line/LineBtn.h>
 #include <misc/line/LineCbBox.h>
 #include <misc/line/LineDelegate.h>
-#include <misc/options/Units.h>
+#include <misc/options/units.h>
 #include <misc/options/displayoptions.h>
 #include <misc/stlexportdialog.h>
 #include <misc/text/DoubleEdit.h>
@@ -7218,18 +7218,22 @@ void Miarex::setupLayout()
         pDisplayBox->setLayout(pCheckDispLayout);
     }
 
-    QGroupBox *pPolarPropsBox = new QGroupBox(tr("Polar properties"));
+    QFrame *pPolarPropsFrame = new QFrame;
     {
-        m_pctrlPolarProps = new MinTextEdit(this);
-        m_pctrlPolarProps->setFontFamily("Courier");
-        m_pctrlPolarProps->setReadOnly(true);
-
-        QHBoxLayout *pPolarPropsLayout = new QHBoxLayout;
+        QVBoxLayout *pPolarPropsLayout = new QVBoxLayout;
         {
+            QLabel *pPolarProps = new QLabel(tr("Polar properties"));
+            m_pctrlPolarProps = new MinTextEdit;
+            QFont fnt("Courier");
+            m_pctrlPolarProps->setFont(fnt);
+            m_pctrlPolarProps->setReadOnly(true);
+
+            pPolarPropsLayout->addWidget(pPolarProps);
             pPolarPropsLayout->addWidget(m_pctrlPolarProps);
         }
-        pPolarPropsBox->setLayout(pPolarPropsLayout);
+        pPolarPropsFrame->setLayout(pPolarPropsLayout);
     }
+
 
     //_______________________Curve params
     QGroupBox *pCurveBox = new QGroupBox(tr("Curve settings"));
@@ -7318,7 +7322,6 @@ void Miarex::setupLayout()
         }
         pCpBox->setLayout(pCpParams);
     }
-
 
     //_______________________3D view controls
     QGroupBox *pThreeDViewBox = new QGroupBox(tr("Display"));
@@ -7418,7 +7421,7 @@ void Miarex::setupLayout()
     {
         m_pctrlMiddleControls = new QStackedWidget;
         m_pctrlMiddleControls->addWidget(pDisplayBox);
-        m_pctrlMiddleControls->addWidget(pPolarPropsBox);
+        m_pctrlMiddleControls->addWidget(pPolarPropsFrame);
         m_pctrlMiddleControls->addWidget(pCpBox);
 
         m_pctrlBottomControls = new QStackedWidget;

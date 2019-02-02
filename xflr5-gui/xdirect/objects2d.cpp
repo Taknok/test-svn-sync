@@ -739,7 +739,7 @@ Polar * Objects2d::createPolar(Foil *pFoil, double Re, double Mach, double NCrit
 */
 void Objects2d::addXFoilData(OpPoint *pOpp, XFoil *pXFoil, Foil *pFoil)
 {
-	int i, j, ibl, is, k;
+    int i=0, j=0, ibl=0, is=0;
 
 	pOpp->n            = pXFoil->n;
 	pOpp->Cd           = pXFoil->cd;
@@ -756,7 +756,7 @@ void Objects2d::addXFoilData(OpPoint *pOpp, XFoil *pXFoil, Foil *pFoil)
 
 	pOpp->Cpmn   = pXFoil->cpmn;
 
-	for (k=0; k<pXFoil->n; k++)
+    for (int k=0; k<pXFoil->n; k++)
 	{
 //		x[k]   = m_pXFoil->x[k+1];
 //		y[k]   = m_pXFoil->y[k+1];
@@ -771,7 +771,7 @@ void Objects2d::addXFoilData(OpPoint *pOpp, XFoil *pXFoil, Foil *pFoil)
 		pOpp->Xtr2 =pXFoil->xoctr[2];
 		pOpp->m_bViscResults = true;
 		pOpp->m_bBL = true;
-		for (k=0; k<pXFoil->n; k++)
+        for (int k=0; k<pXFoil->n; k++)
 		{
 			pOpp->Cpv[k] = pXFoil->cpv[k+1];
 			pOpp->Qv[k] = pXFoil->qvis[k+1];
@@ -798,7 +798,7 @@ void Objects2d::addXFoilData(OpPoint *pOpp, XFoil *pXFoil, Foil *pFoil)
 	pOpp->nd3=0;
 	for (is=1; is<=2; is++)
 	{
-		for ( ibl=2; ibl<=pXFoil->iblte[is];ibl++)
+        for (ibl=2; ibl<=pXFoil->iblte[is];ibl++)
 		{
 			i = pXFoil->ipan[ibl][is];
 			pOpp->xd1[i] = pXFoil->x[i] + pXFoil->nx[i]*pXFoil->dstr[ibl][is];
@@ -811,7 +811,7 @@ void Objects2d::addXFoilData(OpPoint *pOpp, XFoil *pXFoil, Foil *pFoil)
 	is=2;
 	double dstrte = pXFoil->dstr[pXFoil->iblte[is]+1][is];
 	double dsf1, dsf2;
-	if(dstrte!=0.0)
+    if(dstrte!=0.0) // d* at TE
 	{
 		dsf1 = (pXFoil->dstr[pXFoil->iblte[1]][1] + 0.5*pXFoil->ante) / dstrte;
 		dsf2 = (pXFoil->dstr[pXFoil->iblte[2]][2] + 0.5*pXFoil->ante) / dstrte;

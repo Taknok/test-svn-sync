@@ -32,7 +32,7 @@
 #include <globals/globals.h>
 #include <misc/line/LineBtn.h>
 #include <misc/line/LinePickerDlg.h>
-#include <misc/options/Units.h>
+#include <misc/options/units.h>
 #include <misc/text/DoubleEdit.h>
 
 

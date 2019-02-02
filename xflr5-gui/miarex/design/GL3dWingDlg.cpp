@@ -41,7 +41,7 @@
 #include <miarex/objects3d.h>
 #include <miarex/view/W3dPrefsDlg.h>
 #include <misc/color/ColorButton.h>
-#include <misc/options/Units.h>
+#include <misc/options/units.h>
 #include <misc/options/displayoptions.h>
 #include <misc/text/DoubleEdit.h>
 #include <objects/objects3d/Plane.h>

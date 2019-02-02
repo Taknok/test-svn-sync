@@ -27,7 +27,7 @@
 #include "BodyLineWidget.h"
 #include <miarex/design/BodyScaleDlg.h>
 #include <misc/options/displayoptions.h>
-#include <misc/options/Units.h>
+#include <misc/options/units.h>
 
 
 BodyLineWidget::BodyLineWidget(QWidget *pParent, Body *pBody)

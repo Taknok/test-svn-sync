@@ -26,7 +26,7 @@
 
 #include "GL3DScales.h"
 #include <miarex/Miarex.h>
-#include <misc/options/Units.h>
+#include <misc/options/units.h>
 #include <globals/globals.h>
 #include <misc/options/displayoptions.h>
 #include <viewwidgets/glWidgets/gl3dmiarexview.h>

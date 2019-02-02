@@ -63,7 +63,7 @@ XFLR5Application::XFLR5Application(int &argc, char** argv) : QApplication(argc, 
 	QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
 #endif
 
-    qsrand(time(NULL));
+    qsrand(time(nullptr));
 
 	bool bMaximized = true;
 	bool bOK;
@@ -88,12 +88,11 @@ XFLR5Application::XFLR5Application(int &argc, char** argv) : QApplication(argc, 
 	}
 	settings.endGroup();
 
-	QTranslator xflr5Translator;
-
+    QTranslator xflr5Translator;
 	if(LanguagePath.length())
 	{
 		if(xflr5Translator.load(LanguagePath)) installTranslator(&xflr5Translator);
-	}
+    }
 
 	QPoint pt(a,b);
 	QSize sz(c,d);

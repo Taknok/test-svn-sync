@@ -29,9 +29,9 @@
 #include <QComboBox>
 #include <QListWidget>
 #include <QLabel>
+#include <QDialogButtonBox>
 
-
-class TranslatorDlg;
+class LanguageWt;
 class SaveOptions;
 class Units;
 class Settings;
@@ -49,22 +49,25 @@ public:
 
 private:
 	void setupLayout();
+    void keyPressEvent(QKeyEvent *event);
 
 private slots:
 	void onPage(int iRow);
-	void onOK();
+    void onButton(QAbstractButton *pButton);
+    void onClose();
 
 private:
 	QListWidget *m_pTabWidget;
 	QStackedWidget *m_pPageStack;
 
-	SaveOptions *m_pSaveOptionsWidget;
-	TranslatorDlg *m_pLanguageOptionsWidget;
-	Units *m_pUnitsWidget;
-	Settings *m_pDisplayOptionsWidget;
+    SaveOptions *m_pSaveOptionsWt;
+    LanguageWt *m_pLanguageWt;
+    Units *m_pUnitsWt;
+    Settings *m_pDisplayOptionsWt;
 
     QCheckBox *m_pctrlUpdateCheck;
 
+    QDialogButtonBox *m_pButtonBox;
 };
 
 

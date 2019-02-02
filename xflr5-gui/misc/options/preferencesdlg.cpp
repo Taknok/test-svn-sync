@@ -31,9 +31,9 @@
 #include "preferencesdlg.h"
 #include <globals/mainframe.h>
 #include <misc/color/ColorButton.h>
-#include <misc/options/Units.h>
+#include <misc/options/units.h>
 #include <misc/options/displayoptions.h>
-#include <misc/options/language.h>
+#include <misc/options/languagewt.h>
 #include <misc/options/saveoptions.h>
 #include <misc/text/IntEdit.h>
 #include <misc/text/TextClrBtn.h>
@@ -41,8 +41,32 @@
 
 PreferencesDlg::PreferencesDlg(QWidget *pParent) : QDialog(pParent)
 {
+    setWindowTitle(tr("Preferences"));
 	setupLayout();
 }
+
+
+
+void PreferencesDlg::keyPressEvent(QKeyEvent *event)
+{
+    switch (event->key())
+    {
+        case Qt::Key_Return:
+        case Qt::Key_Enter:
+        {
+            m_pButtonBox->button(QDialogButtonBox::Ok)->setFocus();
+            break;
+        }
+        case Qt::Key_Escape:
+        {
+            onClose();
+            return;
+        }
+        default:
+            event->ignore();
+    }
+}
+
 
 
 
@@ -58,10 +82,10 @@ void PreferencesDlg::setupLayout()
         pUpdateFrame->setLayout(pUpdateLayout);
     }
 
-	m_pDisplayOptionsWidget = new Settings(this);
-	m_pSaveOptionsWidget = new SaveOptions(this);
-	m_pLanguageOptionsWidget = new TranslatorDlg(this);
-	m_pUnitsWidget = new Units(this);
+    m_pDisplayOptionsWt = new Settings(this);
+    m_pSaveOptionsWt = new SaveOptions(this);
+    m_pLanguageWt = new LanguageWt(this);
+    m_pUnitsWt = new Units(this);
 
 	QHBoxLayout *pOptionsLayout = new QHBoxLayout;
 	{
@@ -73,36 +97,34 @@ void PreferencesDlg::setupLayout()
 		m_pTabWidget->addItem(tr("Units"));
 		m_pPageStack = new QStackedWidget;
         m_pPageStack->addWidget(pUpdateFrame);
-        m_pPageStack->addWidget(m_pSaveOptionsWidget);
-        m_pPageStack->addWidget(m_pDisplayOptionsWidget);
-		m_pPageStack->addWidget(m_pLanguageOptionsWidget);
-		m_pPageStack->addWidget(m_pUnitsWidget);
+        m_pPageStack->addWidget(m_pSaveOptionsWt);
+        m_pPageStack->addWidget(m_pDisplayOptionsWt);
+        m_pPageStack->addWidget(m_pLanguageWt);
+        m_pPageStack->addWidget(m_pUnitsWt);
 		pOptionsLayout->addWidget(m_pTabWidget);
 		pOptionsLayout->addWidget(m_pPageStack);
 	}
 
-	QHBoxLayout *pCommandButtonsLayout = new QHBoxLayout;
-	{
-		QPushButton *pOKButton = new QPushButton(tr("OK"));
-		pOKButton->setAutoDefault(true);
-		QPushButton *pCancelButton = new QPushButton(tr("Cancel"));
-		connect(pOKButton, SIGNAL(clicked(bool)), this, SLOT(onOK()));
-		connect(pCancelButton, SIGNAL(clicked(bool)), this, SLOT(reject()));
-		pCancelButton->setAutoDefault(false);
-		pCommandButtonsLayout->addStretch(1);
-		pCommandButtonsLayout->addWidget(pOKButton);
-		pCommandButtonsLayout->addWidget(pCancelButton);
-	}
+    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Close);
+    {
+        connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(onButton(QAbstractButton*)));
+    }
+
 	QVBoxLayout *pMainLayout = new QVBoxLayout;
 	{
 		pMainLayout->addLayout(pOptionsLayout);
-		pMainLayout->addLayout(pCommandButtonsLayout);
+        pMainLayout->addWidget(m_pButtonBox);
 	}
 	setLayout(pMainLayout);
 
 	connect(m_pTabWidget, SIGNAL(currentRowChanged(int)), this, SLOT(onPage(int)));
 }
 
+
+void PreferencesDlg::onButton(QAbstractButton *pButton)
+{
+    if (m_pButtonBox->button(QDialogButtonBox::Close) == pButton)  onClose();
+}
 
 
 void PreferencesDlg::onPage(int iRow)
@@ -111,10 +133,10 @@ void PreferencesDlg::onPage(int iRow)
 }
 
 
-void PreferencesDlg::onOK()
+void PreferencesDlg::onClose()
 {
     Updater::setAutoCheck(m_pctrlUpdateCheck->isChecked());
-	m_pSaveOptionsWidget->onOK();
-	m_pLanguageOptionsWidget->onOK();
+    m_pSaveOptionsWt->onOK();
+    m_pLanguageWt->readLanguage();
 	accept();
 }

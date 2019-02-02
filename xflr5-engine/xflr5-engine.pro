@@ -106,6 +106,18 @@ win32 {
 
 
 macx{
+    CONFIG(release, debug|release){
+        OBJECTS_DIR = ./objects
+        MOC_DIR     = ./moc
+        RCC_DIR     = ./rcc
+    }
+    else:CONFIG(debug, debug|release)
+    {
+        OBJECTS_DIR = ./objects
+        MOC_DIR     = ./moc
+        RCC_DIR     = ./rcc
+    }
+
 #	CONFIG += lib_bundle
 #	CONFIG += i386
 	QMAKE_SONAME_PREFIX = @executable_path/../Frameworks
@@ -114,7 +126,19 @@ macx{
 
 
 unix{
-	isEmpty(PREFIX){
+    CONFIG(release, debug|release){
+        OBJECTS_DIR = ./objects
+        MOC_DIR     = ./moc
+        RCC_DIR     = ./rcc
+    }
+    else:CONFIG(debug, debug|release)
+    {
+        OBJECTS_DIR = ./objects
+        MOC_DIR     = ./moc
+        RCC_DIR     = ./rcc
+    }
+
+    isEmpty(PREFIX){
 		PREFIX = /usr/local
 	}
 	target.path = $$PREFIX/lib
