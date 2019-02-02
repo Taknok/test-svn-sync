@@ -21,7 +21,7 @@
 
 
 #include <globals/globals.h>
-#include "Units.h"
+#include "units.h"
 #include <QGridLayout>
 #include <QVBoxLayout>
 
