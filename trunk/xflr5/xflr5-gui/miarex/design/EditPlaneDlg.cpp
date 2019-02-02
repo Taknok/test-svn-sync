@@ -29,7 +29,7 @@
 #include <QDebug>
 
 
-#include <misc/options/Units.h>
+#include <misc/options/units.h>
 #include <misc/options/displayoptions.h>
 #include <miarex/view/W3dPrefsDlg.h>
 #include <objects/objects3d/Surface.h>

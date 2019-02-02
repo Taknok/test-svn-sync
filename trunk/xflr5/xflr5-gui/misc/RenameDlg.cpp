@@ -130,7 +130,6 @@ void RenameDlg::initDialog(QStringList *pStrList, QString startName, QString que
 
 void RenameDlg::keyPressEvent(QKeyEvent *event)
 {
-	// Prevent Return Key from closing App
 	switch (event->key())
 	{
 		case Qt::Key_Return:

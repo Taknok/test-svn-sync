@@ -51,23 +51,25 @@
 #include <misc/RenameDlg.h>
 #include <misc/EditPlrDlg.h>
 
-#include "analysis/XFoilAdvancedDlg.h"
-#include "analysis/FoilPolarDlg.h"
-#include "analysis/BatchThreadDlg.h"
-#include "analysis/BatchDlg.h"
+#include <xdirect/analysis/XFoilAdvancedDlg.h>
+#include <xdirect/analysis/FoilPolarDlg.h>
+#include <xdirect/analysis/BatchThreadDlg.h>
+#include <xdirect/analysis/BatchDlg.h>
 
-#include "geometry/TwoDPanelDlg.h"
-#include "geometry/InterpolateFoilsDlg.h"
-#include "geometry/NacaFoilDlg.h"
-#include "geometry/FoilCoordDlg.h"
-#include "geometry/FoilGeomDlg.h"
-#include "geometry/TEGapDlg.h"
-#include "geometry/LEDlg.h"
-#include "geometry/FlapDlg.h"
-#include "geometry/CAddDlg.h"
+#include <xdirect/geometry/TwoDPanelDlg.h>
+#include <xdirect/geometry/InterpolateFoilsDlg.h>
+#include <xdirect/geometry/NacaFoilDlg.h>
+#include <xdirect/geometry/FoilCoordDlg.h>
+#include <xdirect/geometry/FoilGeomDlg.h>
+#include <xdirect/geometry/TEGapDlg.h>
+#include <xdirect/geometry/LEDlg.h>
+#include <xdirect/geometry/FlapDlg.h>
+#include <xdirect/geometry/CAddDlg.h>
 
-#include "XDirectStyleDlg.h"
+#include <xdirect/XDirectStyleDlg.h>
 
+
+#include <misc/text/MinTextEdit.h>
 
 Polar XDirect::s_RefPolar;
 
@@ -243,8 +245,6 @@ XDirect::~XDirect()
 /** Sets the state of the window's widgets i.a.w. the state of the active ojbects and views. */
 void XDirect::setControls()
 {
-	setAttribute(Qt::WA_DeleteOnClose);
-
 	if(m_bPolarView) m_pctrlMiddleControls->setCurrentIndex(1);
 	else             m_pctrlMiddleControls->setCurrentIndex(0);
 
@@ -252,7 +252,7 @@ void XDirect::setControls()
 	{
 		QString polarProps;
 		m_pCurPolar->getPolarProperties(polarProps);
-		m_pctrlPolarProps->setText(polarProps);
+        m_pctrlPolarProps->setPlainText(polarProps);
 	}
 	else m_pctrlPolarProps->clear();
 
@@ -324,7 +324,6 @@ void XDirect::setControls()
 */
 void XDirect::connectSignals()
 {
-
 	connect(this, SIGNAL(projectModified()), s_pMainFrame, SLOT(onProjectModified()));
 	connect(m_pctrlSpec1, SIGNAL(clicked()), this, SLOT(onSpec()));
 	connect(m_pctrlSpec2, SIGNAL(clicked()), this, SLOT(onSpec()));
@@ -4573,32 +4572,32 @@ void XDirect::setupLayout()
 	QGroupBox *pAnalysisBox = new QGroupBox(tr("Analysis settings"));
 	{
 		pAnalysisBox->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Maximum);
-		QVBoxLayout *AnalysisGroup = new QVBoxLayout;
+        QVBoxLayout *pAnalysisGroup = new QVBoxLayout;
 		{
 			m_pctrlSequence = new QCheckBox(tr("Sequence"));
 			m_pctrlStoreOpp = new QCheckBox(tr("Store Opp"));
 			m_pctrlAnalyze  = new QPushButton(tr("Analyze"));
 
-			QHBoxLayout *SpecVarsLayout = new QHBoxLayout;
+            QHBoxLayout *pSpecVarsLayout = new QHBoxLayout;
 			{
 				m_pctrlSpec1 = new QRadioButton("a");
 				m_pctrlSpec2 = new QRadioButton(tr("Cl"));
 				m_pctrlSpec3 = new QRadioButton(tr("Re"));
 				m_pctrlSpec1->setFont(QFont("Symbol"));
-				SpecVarsLayout->addWidget(m_pctrlSpec1);
-				SpecVarsLayout->addWidget(m_pctrlSpec2);
-				SpecVarsLayout->addWidget(m_pctrlSpec3);
+                pSpecVarsLayout->addWidget(m_pctrlSpec1);
+                pSpecVarsLayout->addWidget(m_pctrlSpec2);
+                pSpecVarsLayout->addWidget(m_pctrlSpec3);
 			}
 
 			QGridLayout *pSequenceGroupLayout = new QGridLayout;
 			{
-				QLabel *AlphaMinLab   = new QLabel(tr("Start="));
-				QLabel *AlphaMaxLab   = new QLabel(tr("End="));
-				QLabel *DeltaAlphaLab = new QLabel(tr("D="));
-				DeltaAlphaLab->setFont(QFont("Symbol"));
-				DeltaAlphaLab->setAlignment(Qt::AlignRight);
-				AlphaMinLab->setAlignment(Qt::AlignRight);
-				AlphaMaxLab->setAlignment(Qt::AlignRight);
+                QLabel *pAlphaMinLab   = new QLabel(tr("Start="));
+                QLabel *pAlphaMaxLab   = new QLabel(tr("End="));
+                QLabel *pDeltaAlphaLab = new QLabel(tr("D="));
+                pDeltaAlphaLab->setFont(QFont("Symbol"));
+                pDeltaAlphaLab->setAlignment(Qt::AlignRight);
+                pAlphaMinLab->setAlignment(Qt::AlignRight);
+                pAlphaMaxLab->setAlignment(Qt::AlignRight);
 
 				m_pctrlUnit1 = new QLabel(QString::fromUtf8("°"));
 				m_pctrlUnit2 = new QLabel(QString::fromUtf8("°"));
@@ -4613,9 +4612,9 @@ void XDirect::setupLayout()
 				m_pctrlAlphaMin->setAlignment(Qt::AlignRight);
 				m_pctrlAlphaMax->setAlignment(Qt::AlignRight);
 				m_pctrlAlphaDelta->setAlignment(Qt::AlignRight);
-				pSequenceGroupLayout->addWidget(AlphaMinLab,1,1);
-				pSequenceGroupLayout->addWidget(AlphaMaxLab,2,1);
-				pSequenceGroupLayout->addWidget(DeltaAlphaLab,3,1);
+                pSequenceGroupLayout->addWidget(pAlphaMinLab,1,1);
+                pSequenceGroupLayout->addWidget(pAlphaMaxLab,2,1);
+                pSequenceGroupLayout->addWidget(pDeltaAlphaLab,3,1);
 				pSequenceGroupLayout->addWidget(m_pctrlAlphaMin,1,2);
 				pSequenceGroupLayout->addWidget(m_pctrlAlphaMax,2,2);
 				pSequenceGroupLayout->addWidget(m_pctrlAlphaDelta,3,2);
@@ -4632,16 +4631,16 @@ void XDirect::setupLayout()
 				pAnalysisSettings->addWidget(m_pctrlInitBL);
 			}
 
-			AnalysisGroup->addLayout(SpecVarsLayout);
-			AnalysisGroup->addStretch(1);
-			AnalysisGroup->addWidget(m_pctrlSequence);
-			AnalysisGroup->addLayout(pSequenceGroupLayout);
-			AnalysisGroup->addStretch(1);
-			AnalysisGroup->addLayout(pAnalysisSettings);
-			AnalysisGroup->addWidget(m_pctrlStoreOpp);
-			AnalysisGroup->addWidget(m_pctrlAnalyze);
+            pAnalysisGroup->addLayout(pSpecVarsLayout);
+            pAnalysisGroup->addStretch(1);
+            pAnalysisGroup->addWidget(m_pctrlSequence);
+            pAnalysisGroup->addLayout(pSequenceGroupLayout);
+            pAnalysisGroup->addStretch(1);
+            pAnalysisGroup->addLayout(pAnalysisSettings);
+            pAnalysisGroup->addWidget(m_pctrlStoreOpp);
+            pAnalysisGroup->addWidget(m_pctrlAnalyze);
 		}
-		pAnalysisBox->setLayout(AnalysisGroup);
+        pAnalysisBox->setLayout(pAnalysisGroup);
 
 	}
 
@@ -4668,23 +4667,23 @@ void XDirect::setupLayout()
 		pDisplayBox->setSizePolicy(szPolicyExpanding);
 	}
 
-	QGroupBox *pPolarPropsBox = new QGroupBox(tr("Polar properties"));
-	{
-		m_pctrlPolarProps = new QLabel;
-		m_pctrlPolarProps->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-		m_pctrlPolarProps->setSizePolicy(szPolicyExpanding);
-		QFont fnt("Courier");
-		m_pctrlPolarProps->setFont(fnt);
 
+    QFrame *pPolarPropsFrame = new QFrame;
+    {
+        QVBoxLayout *pPolarPropsLayout = new QVBoxLayout;
+        {
+            QLabel *pPolarProps = new QLabel(tr("Polar properties"));
+            m_pctrlPolarProps = new MinTextEdit;
+            QFont fnt("Courier");
+            m_pctrlPolarProps->setFont(fnt);
+            m_pctrlPolarProps->setReadOnly(true);
 
-	//	m_pctrlPolarProps->setReadOnly(true);
-	//	m_pctrlPolarProps->setWordWrapMode(QTextOption::NoWrap);
-		QHBoxLayout *pPolarPropsLayout = new QHBoxLayout;
-		{
-			pPolarPropsLayout->addWidget(m_pctrlPolarProps);
-		}
-		pPolarPropsBox->setLayout(pPolarPropsLayout);
-	}
+            pPolarPropsLayout->addWidget(pPolarProps);
+            pPolarPropsLayout->addWidget(m_pctrlPolarProps);
+        }
+        pPolarPropsFrame->setLayout(pPolarPropsLayout);
+    }
+
 
 	QGroupBox *pCurveBox = new QGroupBox(tr("Graph Curve Settings"));
 	{
@@ -4743,21 +4742,21 @@ void XDirect::setupLayout()
 	}
 
 
-	QVBoxLayout *mainLayout = new QVBoxLayout;
+    QVBoxLayout *pMainLayout = new QVBoxLayout;
 	{
 		m_pctrlMiddleControls = new QStackedWidget;
-		m_pctrlMiddleControls->addWidget(pDisplayBox);
-		m_pctrlMiddleControls->addWidget(pPolarPropsBox);
+        m_pctrlMiddleControls->addWidget(pDisplayBox);
+        m_pctrlMiddleControls->addWidget(pPolarPropsFrame);
 
-		mainLayout->addWidget(pAnalysisBox);
-//		mainLayout->addStretch(1);
-		mainLayout->addWidget(m_pctrlMiddleControls);
-//		mainLayout->addStretch(1);
-		mainLayout->addWidget(pCurveBox);
-//		mainLayout->addStretch(1);
+        pMainLayout->addWidget(pAnalysisBox);
+//		pMainLayout->addStretch(1);
+        pMainLayout->addWidget(m_pctrlMiddleControls);
+//		pMainLayout->addStretch(1);
+        pMainLayout->addWidget(pCurveBox);
+//		pMainLayout->addStretch(1);
 	}
 
-	setLayout(mainLayout);
+    setLayout(pMainLayout);
 
 	setAttribute(Qt::WA_AlwaysShowToolTips);
 

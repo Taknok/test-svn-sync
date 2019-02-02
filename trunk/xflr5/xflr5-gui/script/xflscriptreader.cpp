@@ -22,7 +22,7 @@
 #include <QDebug>
 
 #include "xflscriptreader.h"
-#include <misc/options/Units.h>
+#include <misc/options/units.h>
 #include <globals/globals.h>
 
 

@@ -79,58 +79,55 @@ class gl3dMiarexView;
 */
 class MainFrame : public QMainWindow
 {
-	friend class InverseViewWidget;
-	friend class XDirect;
-	friend class Miarex;
-	friend class Objects3D;
-	friend class AFoil;
-	friend class XInverse;
-	friend class Body;
-	friend class Wing;
-	friend class WPolar;
-	friend class OpPoint;
-	friend class CWOpp;
-	friend class Plane;
-	friend class BodyGridDlg;
-	friend class XFoilAnalysisDlg;
-	friend class FoilPolarDlg;
-	friend class BatchDlg;
-	friend class BatchThreadDlg;
-	friend class InterpolateFoilsDlg;
-	friend class WingDlg;
-	friend class WPolarDlg;
-	friend class StabPolarDlg;
-	friend class StabViewDlg;
-	friend class PlaneDlg;
-	friend class PanelAnalysisDlg;
-	friend class GL3dBodyDlg;
-	friend class GL3DScales;
-	friend class ManageBodiesDlg;
-	friend class WingScaleDlg;
-	friend class BodyTransDlg;
-	friend class GL3dWingDlg;
-	friend class WAdvancedDlg;
-	friend class GraphDlg;
-	friend class LLTAnalysisDlg;
-	friend class wySettingsDlg;
-	friend class ManageFoilsDlg;
-	friend class ManagePlanesDlg;
-	friend class InertiaDlg;
-	friend class TranslatorDlg;
-	friend class Settings;
-	friend class Direct2dDesign;
-	friend class GraphTileWidget;
-	friend class MiarexTileWidget;
-	friend class XDirectTileWidget;
-	friend class OpPointWidget;
-	friend class gl3dView;
-	friend class gl3dMiarexView;
-	friend class LanguageOptions;
+    friend class AFoil;
+    friend class BatchDlg;
+    friend class BatchThreadDlg;
+    friend class Body;
+    friend class BodyGridDlg;
+    friend class BodyTransDlg;
+    friend class Direct2dDesign;
+    friend class FoilPolarDlg;
+    friend class GL3DScales;
+    friend class GL3dBodyDlg;
+    friend class GL3dWingDlg;
+    friend class GraphDlg;
+    friend class GraphTileWidget;
+    friend class InertiaDlg;
+    friend class InterpolateFoilsDlg;
+    friend class InverseViewWidget;
+    friend class LLTAnalysisDlg;
+    friend class ManageBodiesDlg;
+    friend class ManageFoilsDlg;
+    friend class ManagePlanesDlg;
+    friend class Miarex;
+    friend class MiarexTileWidget;
+    friend class Objects3D;
+    friend class OpPoint;
+    friend class OpPointWidget;
+    friend class PanelAnalysisDlg;
+    friend class Plane;
+    friend class PlaneDlg;
+    friend class Settings;
+    friend class StabPolarDlg;
+    friend class StabViewDlg;
+    friend class WAdvancedDlg;
+    friend class WPolar;
+    friend class WPolarDlg;
+    friend class Wing;
+    friend class WingDlg;
+    friend class WingScaleDlg;
+    friend class XDirect;
+    friend class XDirectTileWidget;
+    friend class XFoilAnalysisDlg;
+    friend class XInverse;
+    friend class gl3dMiarexView;
+    friend class gl3dView;
+    friend class LanguageWt;
 
 	Q_OBJECT
 
 public:
-	MainFrame(QWidget * parent = 0, Qt::WindowFlags flags = 0);
+    MainFrame(QWidget * parent = nullptr, Qt::WindowFlags flags = 0);
     ~MainFrame();
 
 	XFLR5::enumApp loadXFLR5File(QString PathName);
@@ -183,10 +180,11 @@ private slots:
     void onFinishedUpdater();
 
 protected:
-	void keyPressEvent(QKeyEvent *event);
-	void keyReleaseEvent(QKeyEvent *event);
-	void closeEvent (QCloseEvent * event);
-	void showEvent(QShowEvent *event);
+    void keyPressEvent(QKeyEvent *pEvent);
+    void keyReleaseEvent(QKeyEvent *pEvent);
+    void closeEvent (QCloseEvent * pEvent);
+    void showEvent(QShowEvent *pEvent);
+    void changeEvent(QEvent *pEvent);
 
 public:
     void addRecentFile(const QString &PathName);

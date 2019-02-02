@@ -61,9 +61,9 @@
 #include <misc/ObjectPropsDlg.h>
 #include <misc/RenameDlg.h>
 #include <misc/line/LinePickerDlg.h>
-#include <misc/options/Units.h>
+#include <misc/options/units.h>
 #include <misc/options/displayoptions.h>
-#include <misc/options/language.h>
+#include <misc/options/languagewt.h>
 #include <misc/options/preferencesdlg.h>
 #include <misc/options/saveoptions.h>
 #include <misc/popup.h>
@@ -223,7 +223,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 
 	if(!QGLFormat::hasOpenGL())
 	{
-		QMessageBox::warning(this, tr("Warning"), tr("Your system does not provide support for OpenGL.\nXFLR5 will not operate correctly."));
+        QMessageBox::warning(this, tr("Warning"), tr("Your system does not provide support for OpenGL.\nXFLR5 will not operate correctly."));
 		s_bOpenGL = false;
 	}
 	else if(QSurfaceFormat::defaultFormat().majorVersion()<2)
@@ -304,14 +304,14 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 	InertiaDlg::s_Position       = QPoint(kx+31, ky+31);
 
 
-	if(s_LanguageFilePath.length())
+    if(s_LanguageFilePath.length())
 	{
 		qApp->removeTranslator(&m_Translator);
 		if(m_Translator.load(s_LanguageFilePath))
 		{
 			qApp->installTranslator(&m_Translator);
 		}
-	}
+    }
 
 	if(loadSettings())
 	{
@@ -450,25 +450,25 @@ void MainFrame::addRecentFile(const QString &PathName)
 }
 
 
-void MainFrame::closeEvent (QCloseEvent * event)
+void MainFrame::closeEvent (QCloseEvent * pEvent)
 {
 	if(!s_bSaved)
 	{
-		int resp = QMessageBox::question(this, tr("Exit"), tr("Save the project before exit ?"),
+        int resp = QMessageBox::question(this, tr("Exit"), tr("Save the project before exit ?"),
 										 QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel,
 										 QMessageBox::Yes);
 		if(resp == QMessageBox::Yes)
 		{
 			if(!saveProject(m_FileName))
 			{
-				event->ignore();
+                pEvent->ignore();
 				return;
 			}
 			addRecentFile(m_FileName);
 		}
 		else if (resp==QMessageBox::Cancel)
 		{
-			event->ignore();
+            pEvent->ignore();
 			return;
 		}
 	}
@@ -493,7 +493,7 @@ void MainFrame::closeEvent (QCloseEvent * event)
 	deleteProject(true);
 
 	saveSettings();
-	event->accept();//continue closing
+    pEvent->accept();//continue closing
 }
 
 
@@ -2311,16 +2311,15 @@ void MainFrame::createXDirectToolbar()
 }
 
 
-
 void MainFrame::createXDirectActions()
 {
 	m_pOpPointsAct = new QAction(QIcon(":/images/OnCpView.png"), tr("OpPoint view")+"\tF5", this);
-	m_pOpPointsAct->setCheckable(true);
+//	m_pOpPointsAct->setCheckable(true);
 	m_pOpPointsAct->setStatusTip(tr("Show Operating point view"));
 	connect(m_pOpPointsAct, SIGNAL(triggered()), m_pXDirect, SLOT(onOpPointView()));
 
 	m_pPolarsAct = new QAction(QIcon(":/images/OnPolarView.png"), tr("Polar view")+"\tF8", this);
-	m_pPolarsAct->setCheckable(true);
+//	m_pPolarsAct->setCheckable(true);
 	m_pPolarsAct->setStatusTip(tr("Show Polar view"));
 	connect(m_pPolarsAct, SIGNAL(triggered()), m_pXDirect, SLOT(onPolarView()));
 
@@ -3153,29 +3152,29 @@ QColor MainFrame::getColor(int type)
 
 
 
-void MainFrame::keyPressEvent(QKeyEvent *event)
+void MainFrame::keyPressEvent(QKeyEvent *pEvent)
 {
-	bool bCtrl = (event->modifiers() & Qt::ControlModifier);
+    bool bCtrl = (pEvent->modifiers() & Qt::ControlModifier);
 
 	if(m_iApp == XFLR5::XFOILANALYSIS && m_pXDirect)
 	{
-		m_pXDirect->keyPressEvent(event);
+        m_pXDirect->keyPressEvent(pEvent);
 	}
 	else if(m_iApp == XFLR5::MIAREX && m_pMiarex)
 	{
-		m_pMiarex->keyPressEvent(event);
+        m_pMiarex->keyPressEvent(pEvent);
 	}
 	else if(m_iApp == XFLR5::DIRECTDESIGN && m_pAFoil)
 	{
-		m_pAFoil->keyPressEvent(event);
+        m_pAFoil->keyPressEvent(pEvent);
 	}
 	else if(m_iApp == XFLR5::INVERSEDESIGN && m_pXInverse)
 	{
-		m_pXInverse->keyPressEvent(event);
+        m_pXInverse->keyPressEvent(pEvent);
 	}
     else
 	{
-		switch (event->key())
+        switch (pEvent->key())
 		{
 		    case Qt::Key_1:
 		    {
@@ -3226,39 +3225,37 @@ void MainFrame::keyPressEvent(QKeyEvent *event)
 				onLogFile();
 				break;
 			}
-
-
-			default:
-				event->ignore();
+            default:
+                pEvent->ignore();
 		}
 	}
-	event->accept();
+    pEvent->accept();
 }
 
 
-void MainFrame::keyReleaseEvent(QKeyEvent *event)
+void MainFrame::keyReleaseEvent(QKeyEvent *pEvent)
 {
 	if(m_iApp == XFLR5::XFOILANALYSIS && m_pXDirect)
 	{
-		m_pXDirect->keyReleaseEvent(event);
+        m_pXDirect->keyReleaseEvent(pEvent);
 	}
 	else if(m_iApp == XFLR5::MIAREX && m_pMiarex)
 	{
-		if (event->key()==Qt::Key_Control)
+        if (pEvent->key()==Qt::Key_Control)
 		{
 			updateView();
 		}
-		else m_pMiarex->keyReleaseEvent(event);
+        else m_pMiarex->keyReleaseEvent(pEvent);
 	}
 	else if(m_iApp == XFLR5::DIRECTDESIGN && m_pAFoil)
 	{
-		m_pAFoil->keyReleaseEvent(event);
+        m_pAFoil->keyReleaseEvent(pEvent);
 	}
 	else if(m_iApp == XFLR5::INVERSEDESIGN && m_pXInverse)
 	{
-		m_pXInverse->keyReleaseEvent(event);
+        m_pXInverse->keyReleaseEvent(pEvent);
 	}
-	event->accept();
+    pEvent->accept();
 }
 
 
@@ -6644,12 +6641,12 @@ void MainFrame::onExecuteScript()
 }
 
 
-void MainFrame::showEvent(QShowEvent *event)
+void MainFrame::showEvent(QShowEvent *pEvent)
 {
 	// make sure the graph and foil scales have been initialized when we first display
 	// the foil operating point view
 	m_pXDirect->m_CpGraph.initializeGraph(m_pctrlCentralWidget->width(), m_pctrlCentralWidget->height());
-	event->ignore();
+    pEvent->ignore();
 }
 
 
@@ -6972,18 +6969,18 @@ void MainFrame::exportGraph(Graph *pGraph)
 void MainFrame::onPreferences()
 {
 	PreferencesDlg dlg(this);
-	dlg.m_pSaveOptionsWidget->initWidget(m_bAutoLoadLast, m_bSaveOpps, m_bSaveWOpps, m_bAutoSave, m_SaveInterval);
-	dlg.m_pUnitsWidget->initWidget();
-	dlg.m_pDisplayOptionsWidget->initWidget();
-	dlg.m_pLanguageOptionsWidget->initWidget();
+	dlg.m_pSaveOptionsWt->initWidget(m_bAutoLoadLast, m_bSaveOpps, m_bSaveWOpps, m_bAutoSave, m_SaveInterval);
+	dlg.m_pUnitsWt->initWidget();
+	dlg.m_pDisplayOptionsWt->initWidget();
+	dlg.m_pLanguageWt->initWidget();
 
 	if(dlg.exec()==QDialog::Accepted)
 	{
-		m_bAutoLoadLast = dlg.m_pSaveOptionsWidget->m_bAutoLoadLast;
-		m_bAutoSave     = dlg.m_pSaveOptionsWidget->m_bAutoSave;
-		m_SaveInterval  = dlg.m_pSaveOptionsWidget->m_SaveInterval;
-		m_bSaveOpps     = dlg.m_pSaveOptionsWidget->m_bOpps;
-		m_bSaveWOpps    = dlg.m_pSaveOptionsWidget->m_bWOpps;
+		m_bAutoLoadLast = dlg.m_pSaveOptionsWt->m_bAutoLoadLast;
+		m_bAutoSave     = dlg.m_pSaveOptionsWt->m_bAutoSave;
+		m_SaveInterval  = dlg.m_pSaveOptionsWt->m_SaveInterval;
+		m_bSaveOpps     = dlg.m_pSaveOptionsWt->m_bOpps;
+		m_bSaveWOpps    = dlg.m_pSaveOptionsWt->m_bWOpps;
 
 		if(m_bAutoSave)
 		{
@@ -7001,7 +6998,7 @@ void MainFrame::onPreferences()
 		saveSettings();
 	}
 
-	if(dlg.m_pDisplayOptionsWidget->m_bIsGraphModified)
+	if(dlg.m_pDisplayOptionsWt->m_bIsGraphModified)
 	{
 		setGraphSettings(&Settings::s_RefGraph);
 	}
@@ -7027,6 +7024,15 @@ void MainFrame::onPreferences()
 
 	m_VoidWidget.update();
 
+    if(s_LanguageFilePath.length())
+    {
+        qApp->removeTranslator(&m_Translator);
+        if(m_Translator.load(s_LanguageFilePath))
+        {
+            qApp->installTranslator(&m_Translator);
+        }
+    }
+
 	setMainFrameCentralWidget();
 
 	saveSettings();
@@ -7045,6 +7051,18 @@ void MainFrame::onAutoCheckForUpdates()
         m_bManualCheck = false;
         checkForUpdates();
     }
+}
+
+
+void MainFrame::changeEvent(QEvent *pEvent)
+{
+    if (pEvent->type() == QEvent::LanguageChange)
+    {
+        createActions(); // no need to destroy first, old action pointers are still registered in MainFrame parent for deletion
+        createMenus(); // no need to destroy first, old menu pointers are still registered in MainFrame parent for deletion
+        setMenus();
+    }
+    else QWidget::changeEvent(pEvent);
 }
 
 

@@ -25,11 +25,13 @@
   */
 
 #include <QList>
-#include <objects/objects2d/Foil.h>
-#include <objects/objects2d/Polar.h>
-#include <objects/objects2d/OpPoint.h>
+
+#include <analysis3d/analysis3d_enums.h>
 
 class XFoil;
+class Foil;
+class Polar;
+class OpPoint;
 
 class Objects2d
 {

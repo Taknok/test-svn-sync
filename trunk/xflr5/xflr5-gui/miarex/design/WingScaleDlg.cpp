@@ -25,7 +25,7 @@
 
 #include "WingScaleDlg.h"
 #include <globals/globals.h>
-#include <misc/options/Units.h>
+#include <misc/options/units.h>
 #include <misc/text/DoubleEdit.h>
 
 

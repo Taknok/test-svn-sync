@@ -31,7 +31,7 @@
 
 #include "EditPolarDefDlg.h"
 #include <analysis3d/analysis3d_globals.h>
-#include <misc/options/Units.h>
+#include <misc/options/units.h>
 #include <globals/globals.h>
 #include <globals/gui_enums.h>
 #include <objects/objects3d/WPolar.h>

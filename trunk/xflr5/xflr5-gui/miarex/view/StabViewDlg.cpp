@@ -34,7 +34,7 @@
 #include <globals/globals.h>
 #include <misc/options/displayoptions.h>
 #include <misc/NewNameDlg.h>
-#include <misc/options/Units.h>
+#include <misc/options/units.h>
 #include <miarex/Miarex.h>
 #include <viewwidgets/glWidgets/gl3dmiarexview.h>
 #include <objects/objects_global.h>

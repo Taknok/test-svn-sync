@@ -42,7 +42,7 @@
 #include <objects/objects3d/Plane.h>
 #include <objects/objects3d/Body.h>
 #include <globals/globals.h>
-#include <misc/options/Units.h>
+#include <misc/options/units.h>
 #include <misc/options/displayoptions.h>
 
 

@@ -38,7 +38,7 @@
 #include <globals/globals.h>
 #include <globals/mainframe.h>
 #include <graph_globals.h>
-#include <misc/options/Units.h>
+#include <misc/options/units.h>
 #include <objects/objects2d/Foil.h>
 #include <objects/objects2d/Polar.h>
 #include <objects/objects3d/WPolar.h>

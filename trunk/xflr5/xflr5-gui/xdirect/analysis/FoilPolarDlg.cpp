@@ -23,7 +23,7 @@
 #include <QVBoxLayout>
 #include "FoilPolarDlg.h"
 #include <globals/globals.h>
-#include <misc/options/Units.h>
+#include <misc/options/units.h>
 #include <xdirect/XDirect.h>
 #include <misc/text/DoubleEdit.h>
 #include <objects/objects2d/Polar.h>

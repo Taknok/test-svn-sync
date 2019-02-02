@@ -28,7 +28,7 @@
 #include <objects/objects2d/Polar.h>
 #include <objects/objects3d/WPolar.h>
 #include <miarex/Miarex.h>
-#include <misc/options/Units.h>
+#include <misc/options/units.h>
 #include <QPen>
 #include <QPainterPath>
 #include <QPainter>

@@ -38,7 +38,7 @@
 #include <miarex/view/GL3DScales.h>
 #include <miarex/view/GLLightDlg.h>
 #include <miarex/view/W3dPrefsDlg.h>
-#include <misc/options/Units.h>
+#include <misc/options/units.h>
 #include <misc/options/displayoptions.h>
 #include <objects/objects3d/Body.h>
 #include <objects/objects3d/Plane.h>

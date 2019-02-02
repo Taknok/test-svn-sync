@@ -36,6 +36,8 @@
 #include <QCheckBox>
 #include <QStackedWidget>
 #include <QSlider>
+
+
 #include <objects/objects2d/Polar.h>
 #include <objects/objects2d/Foil.h>
 #include <xdirect/analysis/XFoilAnalysisDlg.h>
@@ -50,6 +52,7 @@ class LineCbBox;
 class LineDelegate;
 class MainFrame; // to shut the compiler up
 class DoubleEdit;
+class MinTextEdit;
 
 /**
 * @class QXDirect
@@ -248,7 +251,7 @@ private:
 	QCheckBox* m_pctrlAnimate;
 	QSlider* m_pctrlAnimateSpeed;
 
-	QLabel *m_pctrlPolarProps;
+    MinTextEdit *m_pctrlPolarProps;
 
 	QCheckBox *m_pctrlShowCurve;
 //	QCheckBox *m_pctrlShowPoints;
