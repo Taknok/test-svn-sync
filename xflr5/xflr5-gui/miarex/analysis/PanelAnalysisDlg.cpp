@@ -40,7 +40,7 @@
 #include <globals/gui_params.h>
 #include <miarex/Miarex.h>
 #include <miarex/objects3d.h>
-#include <misc/options/Units.h>
+#include <misc/options/units.h>
 #include <misc/options/displayoptions.h>
 #include <objects/objects3d/Plane.h>
 #include <objects/objects3d/WPolar.h>

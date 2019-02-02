@@ -48,6 +48,9 @@ win32 {
 
 
 macx{
+    OBJECTS_DIR = ./objects
+
+
 #	CONFIG += lib_bundle
 #	CONFIG += i386
 	QMAKE_SONAME_PREFIX = @executable_path/../Frameworks
@@ -55,7 +58,10 @@ macx{
 }
 
 
-unix{
+linux-g++{
+    OBJECTS_DIR = ./objects
+
+
 	isEmpty(PREFIX){
 		PREFIX = /usr/local
 	}

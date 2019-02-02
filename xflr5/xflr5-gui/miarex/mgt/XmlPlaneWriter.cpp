@@ -21,7 +21,7 @@
 
 #include "XmlPlaneWriter.h"
 #include <globals/globals.h>
-#include <misc/options/Units.h>
+#include <misc/options/units.h>
 #include <objects/objects3d/Plane.h>
 
 

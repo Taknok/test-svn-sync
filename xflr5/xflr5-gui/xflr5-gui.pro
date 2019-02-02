@@ -85,13 +85,18 @@ win32 {
 }
 
 
-unix{
+linux-g++{
 #   Specify here the directories where the shared library files XFoil.so and Xfl5-engine.so are located
 #   The precise paths depend on QtCreator's settings
 #   Alternate option is to compile the libraries and  sudo make install
 #   Alternate option is to specify the absolute path instead of the relative path
 #   Uncomment the following line to print the name of the variable OUT_PWD in the console
 #message($$OUT_PWD)
+
+    OBJECTS_DIR = ./objects
+    MOC_DIR     = ./moc
+    RCC_DIR     = ./rcc
+
 
 	LIBS += -L$$OUT_PWD/../XFoil-lib/ -lXFoil
 	LIBS += -L$$OUT_PWD/../xflr5-engine/ -lxflr5-engine

@@ -25,7 +25,7 @@
 #include "BodyFrameWidget.h"
 #include <misc/options/displayoptions.h>
 #include <miarex/design/BodyScaleDlg.h>
-#include <misc/options/Units.h>
+#include <misc/options/units.h>
 #include <globals/globals.h>
 
 

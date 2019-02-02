@@ -108,7 +108,7 @@ void OpenGLInfoDlg::addVersions(QLayout *layout)
 	QHBoxLayout *pHBoxLayout = new QHBoxLayout;
 	{
 		pHBoxLayout->setSpacing(20);
-		QLabel *label = new QLabel(tr("Context &version: "));
+        QLabel *label = new QLabel(QObject::tr("Context &version: "));
 		pHBoxLayout->addWidget(label);
 		m_version = new QComboBox;
 		m_version->setMinimumWidth(60);
@@ -120,7 +120,7 @@ void OpenGLInfoDlg::addVersions(QLayout *layout)
 				m_version->setCurrentIndex(m_version->count() - 1);
 		}
 
-		QPushButton *btn = new QPushButton(tr("Create context"));
+        QPushButton *btn = new QPushButton(QObject::tr("Create context"));
 		connect(btn, &QPushButton::clicked, this, &OpenGLInfoDlg::start);
 		btn->setMinimumSize(120, 40);
 		pHBoxLayout->addWidget(btn);
@@ -132,7 +132,7 @@ void OpenGLInfoDlg::addVersions(QLayout *layout)
 
 void OpenGLInfoDlg::addProfiles(QLayout *layout)
 {
-	QGroupBox *pGroupBox = new QGroupBox(tr("Profile"));
+    QGroupBox *pGroupBox = new QGroupBox(QObject::tr("Profile"));
 	{
 		QVBoxLayout *pVBoxLayout = new QVBoxLayout;
 		{
@@ -149,7 +149,7 @@ void OpenGLInfoDlg::addProfiles(QLayout *layout)
 
 void OpenGLInfoDlg::addOptions(QLayout *layout)
 {
-	QGroupBox *pGroupBox = new QGroupBox(tr("Options"));
+    QGroupBox *pGroupBox = new QGroupBox(QObject::tr("Options"));
 	{
 		QVBoxLayout *pVBoxLayout = new QVBoxLayout;
 		{
@@ -257,7 +257,7 @@ void OpenGLInfoDlg::start()
 	GLRenderWindow *renderWindow = new GLRenderWindow(fmt);
 	if (!renderWindow->context())
 	{
-		m_glOutput->append(tr("Failed to create context"));
+        m_glOutput->append(QObject::tr("Failed to create context"));
 		delete renderWindow;
 		m_renderWindowContainer = new QWidget;
 		addRenderWindow();
@@ -293,11 +293,11 @@ void OpenGLInfoDlg::start()
 
 void OpenGLInfoDlg::printFormat(const QSurfaceFormat &format)
 {
-	m_glOutput->append(tr("OpenGL version: %1.%2").arg(format.majorVersion()).arg(format.minorVersion()));
+    m_glOutput->append(QObject::tr("OpenGL version: %1.%2").arg(format.majorVersion()).arg(format.minorVersion()));
 
 	for (size_t i = 0; i < sizeof(profiles) / sizeof(Profile); ++i)
 		if (profiles[i].profile == format.profile()) {
-			m_glOutput->append(tr("Profile: %1").arg(QString::fromLatin1(profiles[i].str)));
+            m_glOutput->append(QObject::tr("Profile: %1").arg(QString::fromLatin1(profiles[i].str)));
 			break;
 		}
 
@@ -305,16 +305,16 @@ void OpenGLInfoDlg::printFormat(const QSurfaceFormat &format)
 	for (size_t i = 0; i < sizeof(options) / sizeof(Option); ++i)
 		if (format.testOption(options[i].option))
 			opts += QString::fromLatin1(options[i].str) + QStringLiteral(" ");
-	m_glOutput->append(tr("Options: %1").arg(opts));
+    m_glOutput->append(QObject::tr("Options: %1").arg(opts));
 
-	m_glOutput->append(tr("Depth buffer size: %1").arg(QString::number(format.depthBufferSize())));
-	m_glOutput->append(tr("Stencil buffer size: %1").arg(QString::number(format.stencilBufferSize())));
-	m_glOutput->append(tr("Samples: %1").arg(QString::number(format.samples())));
-	m_glOutput->append(tr("Red buffer size: %1").arg(QString::number(format.redBufferSize())));
-	m_glOutput->append(tr("Green buffer size: %1").arg(QString::number(format.greenBufferSize())));
-	m_glOutput->append(tr("Blue buffer size: %1").arg(QString::number(format.blueBufferSize())));
-	m_glOutput->append(tr("Alpha buffer size: %1").arg(QString::number(format.alphaBufferSize())));
-	m_glOutput->append(tr("Swap interval: %1").arg(QString::number(format.swapInterval())));
+    m_glOutput->append(QObject::tr("Depth buffer size: %1").arg(QString::number(format.depthBufferSize())));
+    m_glOutput->append(QObject::tr("Stencil buffer size: %1").arg(QString::number(format.stencilBufferSize())));
+    m_glOutput->append(QObject::tr("Samples: %1").arg(QString::number(format.samples())));
+    m_glOutput->append(QObject::tr("Red buffer size: %1").arg(QString::number(format.redBufferSize())));
+    m_glOutput->append(QObject::tr("Green buffer size: %1").arg(QString::number(format.greenBufferSize())));
+    m_glOutput->append(QObject::tr("Blue buffer size: %1").arg(QString::number(format.blueBufferSize())));
+    m_glOutput->append(QObject::tr("Alpha buffer size: %1").arg(QString::number(format.alphaBufferSize())));
+    m_glOutput->append(QObject::tr("Swap interval: %1").arg(QString::number(format.swapInterval())));
 }
 
 
@@ -335,23 +335,23 @@ void OpenGLInfoDlg::renderWindowReady()
 	if ((p = f->glGetString(GL_SHADING_LANGUAGE_VERSION)))
 		glslVersion = QString::fromLatin1(reinterpret_cast<const char *>(p));
 
-	m_glOutput->append(tr("*** Context information ***"));
-	m_glOutput->append(tr("Vendor: %1").arg(vendor));
-	m_glOutput->append(tr("Renderer: %1").arg(renderer));
-	m_glOutput->append(tr("OpenGL version: %1").arg(version));
-	m_glOutput->append(tr("GLSL version: %1").arg(glslVersion));
+    m_glOutput->append(QObject::tr("*** Context information ***"));
+    m_glOutput->append(QObject::tr("Vendor: %1").arg(vendor));
+    m_glOutput->append(QObject::tr("Renderer: %1").arg(renderer));
+    m_glOutput->append(QObject::tr("OpenGL version: %1").arg(version));
+    m_glOutput->append(QObject::tr("GLSL version: %1").arg(glslVersion));
 
-	m_glOutput->append(tr("\n*** QSurfaceFormat from context ***"));
+    m_glOutput->append(QObject::tr("\n*** QSurfaceFormat from context ***"));
 	printFormat(context->format());
 
-	m_glOutput->append(tr("\n*** QSurfaceFormat from window surface ***"));
+    m_glOutput->append(QObject::tr("\n*** QSurfaceFormat from window surface ***"));
 	printFormat(m_surface->format());
 
-	m_glOutput->append(tr("\n*** Qt build information ***"));
+    m_glOutput->append(QObject::tr("\n*** Qt build information ***"));
 	const char *gltype[] = { "Desktop", "GLES 2", "GLES 1" };
-	m_glOutput->append(tr("Qt OpenGL configuration: %1")
+    m_glOutput->append(QObject::tr("Qt OpenGL configuration: %1")
 					 .arg(QString::fromLatin1(gltype[QOpenGLContext::openGLModuleType()])));
-	m_glOutput->append(tr("Qt OpenGL library handle: %1")
+    m_glOutput->append(QObject::tr("Qt OpenGL library handle: %1")
 					 .arg(QString::number(qintptr(QOpenGLContext::openGLModuleHandle()), 16)));
 
 	m_glOutput->moveCursor(QTextCursor::Start);
@@ -360,7 +360,7 @@ void OpenGLInfoDlg::renderWindowReady()
 
 void OpenGLInfoDlg::renderWindowError(const QString &msg)
 {
-	m_glOutput->append(tr("An error has occurred:\n%1").arg(msg));
+    m_glOutput->append(QObject::tr("An error has occurred:\n%1").arg(msg));
 }
 
 

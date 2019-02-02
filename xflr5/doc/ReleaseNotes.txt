@@ -16,6 +16,7 @@
 
 
 xflr5 v6.45 January xxxth, 2019
+    - corrected the names of some variables in boundary layer plots
     - corrected imperial unit conversions in the foil polar definition
     - changed the unix directory for shared files to /usr/local/share instead of /usr/share
     - increased the samplng of the foil's mid camber line from 100 to 1000 points; this improves

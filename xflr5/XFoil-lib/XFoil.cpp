@@ -1443,10 +1443,10 @@ bool XFoil::bldif(int ityp)
     vs2[3][3] = z_hs2*hs2_d2 + z_cf2*cf2_d2 + z_di2*di2_d2;
     vs2[3][4] = z_hs2*hs2_u2 + z_cf2*cf2_u2 + z_di2*di2_u2 + z_u2;
     vs2[3][5] =                                              z_x2;
-    vsm[3]   = z_hs1*hs1_ms + z_cf1*cf1_ms + z_di1*di1_ms
-            + z_hs2*hs2_ms + z_cf2*cf2_ms + z_di2*di2_ms;
-    vsr[3]   = z_hs1*hs1_re + z_cf1*cf1_re + z_di1*di1_re
-            + z_hs2*hs2_re + z_cf2*cf2_re + z_di2*di2_re;
+    vsm[3]   =   z_hs1*hs1_ms + z_cf1*cf1_ms + z_di1*di1_ms
+               + z_hs2*hs2_ms + z_cf2*cf2_ms + z_di2*di2_ms;
+    vsr[3]   =   z_hs1*hs1_re + z_cf1*cf1_re + z_di1*di1_re
+               + z_hs2*hs2_re + z_cf2*cf2_re + z_di2*di2_re;
 
     vs1[3][2] = vs1[3][2] + 0.5*(z_hca*hc1_t1+z_ha*h1_t1) + z_upw*upw_t1;
     vs1[3][3] = vs1[3][3] + 0.5*(z_hca*hc1_d1+z_ha*h1_d1) + z_upw*upw_d1;
@@ -1455,8 +1455,8 @@ bool XFoil::bldif(int ityp)
     vs2[3][3] = vs2[3][3] + 0.5*(z_hca*hc2_d2+z_ha*h2_d2) + z_upw*upw_d2;
     vs2[3][4] = vs2[3][4] + 0.5*(z_hca*hc2_u2           ) + z_upw*upw_u2;
 
-    vsm[3]   = vsm[3]   + 0.5*(z_hca*hc1_ms           ) + z_upw*upw_ms
-            + 0.5*(z_hca*hc2_ms           );
+    vsm[3]   = vsm[3]   + 0.5*(z_hca*hc1_ms) + z_upw*upw_ms
+                        + 0.5*(z_hca*hc2_ms);
 
     vsx[3]   = 0.0;
     vsrez[3] = -rezh;
@@ -1490,8 +1490,8 @@ bool XFoil::blkin()
 
     //---- set edge static/stagnation enthalpy
     herat = 1.0 - 0.5*u2*u2*hstinv;
-    he_u2 =      -        u2*hstinv;
-    he_ms =      - 0.5*u2*u2*hstinv_ms;
+    he_u2 =     -        u2*hstinv;
+    he_ms =     - 0.5*u2*u2*hstinv_ms;
     //---- set molecular viscosity
     v2 = sqrt(herat*herat*herat) * (1.0+hvrat)/(herat+hvrat)/reybl;
     v2_he = v2*(1.5/herat - 1.0/(herat+hvrat));
@@ -1519,17 +1519,16 @@ bool XFoil::blkin()
 }
 
 
-
+/** ----------------------------------------------------
+ *     calculates midpoint skin friction cfm
+ *
+ *      ityp = 1 :  laminar
+ *      ityp = 2 :  turbulent
+ *      ityp = 3 :  turbulent wake
+ * -----------------------------------------------------*/
 bool XFoil::blmid(int ityp)
 {
-    //----------------------------------------------------
-    //     calculates midpoint skin friction cfm
-    //
-    //      ityp = 1 :  laminar
-    //      ityp = 2 :  turbulent
-    //      ityp = 3 :  turbulent wake
-    //----------------------------------------------------
-    //
+
     double hka, rta, ma, cfm_rta, cfm_ma;
     double cfml, cfml_hka, cfml_rta, cfml_ma, cfm_hka;
     //---- set similarity variables if not defined
@@ -1566,10 +1565,10 @@ bool XFoil::blmid(int ityp)
     }
     else
     {
-        if(ityp==1) cfl( hka, rta, cfm, cfm_hka, cfm_rta, cfm_ma );
+        if(ityp==1) cfl(hka, rta, cfm, cfm_hka, cfm_rta, cfm_ma );
         else {
-            cft( hka, rta, ma, cfm, cfm_hka, cfm_rta, cfm_ma );
-            cfl( hka, rta, cfml, cfml_hka, cfml_rta, cfml_ma);
+            cft(hka, rta, ma, cfm, cfm_hka, cfm_rta, cfm_ma );
+            cfl(hka, rta, cfml, cfml_hka, cfml_rta, cfml_ma);
             if(cfml>cfm) {
                 //ccc      write(*,*) 'cft cfl rt hk:', cfm, cfml, rta, hka, 0.5*(x1+x2)
                 cfm     = cfml;
@@ -2723,11 +2722,11 @@ bool XFoil::dampl(double hk, double th, double rt, double &ax, double &ax_hk, do
         ex_hk = ex * (-2.0*f_arg*arg_hk);
 
         dadr    = 0.028*(hk-1.0) - 0.0345*ex;
-        dadr_hk = 0.028           - 0.0345*ex_hk;
+        dadr_hk = 0.028          - 0.0345*ex_hk;
 
         //----- new m(h) correlation    1 march 91
         af = -0.05 + 2.7*hmi -  5.5*hmi*hmi + 3.0*hmi*hmi*hmi;
-        af_hmi =      2.7     - 11.0*hmi    + 9.0*hmi*hmi;
+        af_hmi =     2.7     - 11.0*hmi    + 9.0*hmi*hmi;
         af_hk = af_hmi*hmi_hk;
 
         ax    =   (af   *dadr/th                ) * rfac;
@@ -8245,7 +8244,7 @@ bool XFoil::stepbl()
     //techwinder : can't think of a more elegant way to do this, and too lazy to search
     x1     = x2;
     u1     = u2;
-    theta1     = theta2;
+    theta1 = theta2;
     d1     = d2;
     s1     = s2;
     ampl1  = ampl2;
