@@ -21,13 +21,15 @@
 
 #ifndef GL3DWINGVIEW_H
 #define GL3DWINGVIEW_H
-#include <objects/objects3d/Wing.h>
+
 #include <gl3dview.h>
+
+class Wing;
 
 class gl3dWingView : public gl3dView
 {
 public:
-	gl3dWingView(QWidget *pParent = NULL);
+    gl3dWingView(QWidget *pParent = nullptr);
 	void setWing(Wing *pWing){m_pWing = pWing;}
 private:
 	void glRenderView();

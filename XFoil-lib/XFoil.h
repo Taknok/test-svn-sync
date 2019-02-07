@@ -2,7 +2,8 @@
 
     XFoil Class
 	Copyright (C) 2000 Mark Drela 
-	Copyright (C) 2003 Andre Deperrois techwinder@gmail.com
+    Andre Deperrois techwinder@gmail.com - translation to C - 2003
+
 	
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -287,8 +288,9 @@ private:
 public:
 	static double vaccel;
 	static bool s_bCancel;
-	static bool s_bFullReport;	QTextStream *m_pOutStream;
+    static bool s_bFullReport;
 
+    QTextStream *m_pOutStream;
 
 	double agte,ag0,qim0,qimold;
 	double ssple, dwc,algam,clgam,cmgam;

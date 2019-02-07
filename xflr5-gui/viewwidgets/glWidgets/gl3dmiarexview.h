@@ -29,7 +29,7 @@
 class gl3dMiarexView : public gl3dView
 {
 public:
-	gl3dMiarexView(QWidget *parent = 0);
+    gl3dMiarexView(QWidget *parent = nullptr);
 	~gl3dMiarexView();
 
 private:

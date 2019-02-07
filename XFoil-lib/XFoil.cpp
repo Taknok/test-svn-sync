@@ -2,7 +2,7 @@
 
     XFoil Class
     Copyright (C) 2000 Mark Drela
-    Copyright (C) 2003 Andre Deperrois techwinder@gmail.com - translation to C
+    Andre Deperrois techwinder@gmail.com - translation to C - 2003
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -112,116 +112,114 @@ bool XFoil::initialize()
 
     n=0;// so that current airfoil is not initialized
 
+    memset(Hk,     0, sizeof(Hk));
+    memset(RTheta, 0, sizeof(RTheta));
+
+    memset(aij,    0, sizeof(aij));
     memset(aijpiv, 0, sizeof(aijpiv));
     memset(apanel, 0, sizeof(apanel));
-    memset(blsav, 0, sizeof(blsav));
-    memset(aij, 0, sizeof(aij));
-    memset(bij, 0, sizeof(bij));
-    memset(cij, 0, sizeof(cij));
-    memset(cpi, 0, sizeof(cpi));
-    memset(cpv, 0, sizeof(cpv));
-    memset(dij, 0, sizeof(dij));
-    memset(dq, 0, sizeof(dq));
-    memset(dqdg, 0, sizeof(dqdg));
-    memset(dqdm, 0, sizeof(dqdm));
-    memset(delt, 0, sizeof(delt));
-    memset(dzdg, 0, sizeof(dzdg));
-    memset(dzdm, 0, sizeof(dzdm));
-    memset(dzdn, 0, sizeof(dzdn));
-    memset(guxd, 0, sizeof(guxd));
-    memset(guxq, 0, sizeof(guxq));
-    memset(iblte, 0, sizeof(iblte));
-    memset(ipan, 0, sizeof(ipan));
-    memset(isys, 0, sizeof(isys));
-    memset(itran, 0, sizeof(itran));
-    memset(mass, 0, sizeof(mass));
-    memset(nbl, 0, sizeof(nbl));
-    memset(nx, 0, sizeof(nx));
-    memset(ny, 0, sizeof(ny));
-    memset(gamu, 0, sizeof(gamu));
-    memset(gam, 0, sizeof(gam));
-    memset(gam_a, 0, sizeof(gam_a));
-    memset(q, 0, sizeof(q));
-    memset(qf0, 0, sizeof(qf0));
-    memset(qf1, 0, sizeof(qf1));
-    memset(qf2, 0, sizeof(qf2));
-    memset(qf3, 0, sizeof(qf3));
-    memset(qinv, 0, sizeof(qinv));
-    memset(qinvu, 0, sizeof(qinvu));
-    memset(qinv_a, 0, sizeof(qinv_a));
-    memset(qvis, 0, sizeof(qvis));
-    memset(s, 0, sizeof(x));
-    memset(sb, 0, sizeof(xb));
-    memset(sig, 0, sizeof(sig));
-    memset(snew, 0, sizeof(snew));
-    memset(sig, 0, sizeof(sig));
-    memset(uinv, 0, sizeof(uinv));
-    memset(uslp, 0, sizeof(uslp));
-    memset(vti, 0, sizeof(vti));
-    memset(x, 0, sizeof(x));
-    memset(xb, 0, sizeof(xb));
-    memset(xbp, 0, sizeof(xbp));
-    memset(xp, 0, sizeof(xp));
-    memset(xssi, 0, sizeof(xssi));
-    memset(y, 0, sizeof(y));
-    memset(yb, 0, sizeof(yb));
-    memset(ybp, 0, sizeof(ybp));
-    memset(yp, 0, sizeof(yp));
-    memset(wgap, 0, sizeof(wgap));
-    memset(va, 0, sizeof(va));
-    memset(vb, 0, sizeof(vb));
-    memset(vdel, 0, sizeof(vdel));
-    memset(vm, 0, sizeof(vm));
-    memset(vs1, 0, sizeof(vs1));
-    memset(vs2, 0, sizeof(vs2));
-    memset(vsrez, 0, sizeof(vsrez));
-    memset(vsr, 0, sizeof(vsr));
-    memset(vsm, 0, sizeof(vsm));
-    memset(vsx, 0, sizeof(vsx));
-    memset(vz, 0, sizeof(vz));
-    memset(w1, 0, sizeof(w1));
-    memset(w2, 0, sizeof(w2));
-    memset(w3, 0, sizeof(w3));
-    memset(w4, 0, sizeof(w4));
-    memset(w5, 0, sizeof(w5));
-    memset(w6, 0, sizeof(w6));
-    memset(w7, 0, sizeof(w7));
-    memset(w8, 0, sizeof(w8));
-
+    memset(bij,    0, sizeof(bij));
+    memset(blsav,  0, sizeof(blsav));
+    memset(cij,    0, sizeof(cij));
+    memset(cpi,    0, sizeof(cpi));
+    memset(cpv,    0, sizeof(cpv));
     memset(ctau,   0, sizeof(ctau));
     memset(ctq,    0, sizeof(ctq));
+    memset(delt,   0, sizeof(delt));
+    memset(dij,    0, sizeof(dij));
     memset(dis,    0, sizeof(dis));
+    memset(dq,     0, sizeof(dq));
+    memset(dqdg,   0, sizeof(dqdg));
+    memset(dqdm,   0, sizeof(dqdm));
     memset(dstr,   0, sizeof(dstr));
+    memset(dzdg,   0, sizeof(dzdg));
+    memset(dzdm,   0, sizeof(dzdm));
+    memset(dzdn,   0, sizeof(dzdn));
+    memset(gam,    0, sizeof(gam));
+    memset(gam_a,  0, sizeof(gam_a));
+    memset(gamu,   0, sizeof(gamu));
+    memset(guxd,   0, sizeof(guxd));
+    memset(guxq,   0, sizeof(guxq));
+    memset(iblte,  0, sizeof(iblte));
+    memset(ipan,   0, sizeof(ipan));
+    memset(isys,   0, sizeof(isys));
+    memset(itran,  0, sizeof(itran));
+    memset(itran,  0, sizeof(itran));
+    memset(mass,   0, sizeof(mass));
+    memset(nbl,    0, sizeof(nbl));
+    memset(nx,     0, sizeof(nx));
+    memset(ny,     0, sizeof(ny));
+    memset(q,      0, sizeof(q));
+    memset(qf0,    0, sizeof(qf0));
+    memset(qf1,    0, sizeof(qf1));
+    memset(qf2,    0, sizeof(qf2));
+    memset(qf3,    0, sizeof(qf3));
+    memset(qinv,   0, sizeof(qinv));
+    memset(qinv_a, 0, sizeof(qinv_a));
+    memset(qinvu,  0, sizeof(qinvu));
+    memset(qvis,   0, sizeof(qvis));
+    memset(s,      0, sizeof(x));
+    memset(sb,     0, sizeof(xb));
+    memset(sig,    0, sizeof(sig));
+    memset(snew,   0, sizeof(snew));
     memset(tau,    0, sizeof(tau));
     memset(thet,   0, sizeof(thet));
     memset(uedg,   0, sizeof(uedg));
+    memset(uinv,   0, sizeof(uinv));
+    memset(uslp,   0, sizeof(uslp));
+    memset(va,     0, sizeof(va));
+    memset(vb,     0, sizeof(vb));
+    memset(vdel,   0, sizeof(vdel));
+    memset(vm,     0, sizeof(vm));
+    memset(vs1,    0, sizeof(vs1));
+    memset(vs2,    0, sizeof(vs2));
+    memset(vsm,    0, sizeof(vsm));
+    memset(vsr,    0, sizeof(vsr));
+    memset(vsrez,  0, sizeof(vsrez));
+    memset(vsx,    0, sizeof(vsx));
+    memset(vti,    0, sizeof(vti));
+    memset(vz,     0, sizeof(vz));
+    memset(w1,     0, sizeof(w1));
+    memset(w2,     0, sizeof(w2));
+    memset(w3,     0, sizeof(w3));
+    memset(w4,     0, sizeof(w4));
+    memset(w5,     0, sizeof(w5));
+    memset(w6,     0, sizeof(w6));
+    memset(w7,     0, sizeof(w7));
+    memset(w8,     0, sizeof(w8));
+    memset(wgap,   0, sizeof(wgap));
+    memset(x,      0, sizeof(x));
+    memset(xb,     0, sizeof(xb));
     memset(xbl,    0, sizeof(xbl));
-    memset(Hk,     0, sizeof(Hk));
-    memset(RTheta, 0, sizeof(RTheta));
-    memset(itran,  0, sizeof(itran));
+    memset(xbp,    0, sizeof(xbp));
+    memset(xp,     0, sizeof(xp));
+    memset(xssi,   0, sizeof(xssi));
+    memset(y,      0, sizeof(y));
+    memset(yb,     0, sizeof(yb));
+    memset(ybp,    0, sizeof(ybp));
+    memset(yp,     0, sizeof(yp));
 
     m_nSide1 = m_nSide2 = 0;
     //mdes
-    memset(wc, 0, sizeof(wc));
-    memset(sc, 0, sizeof(sc));
-    memset(scold, 0, sizeof(scold));
-    memset(xcold, 0, sizeof(xcold));
-    memset(ycold, 0, sizeof(ycold));
-    memset(sspec, 0, sizeof(sspec));
-    memset(xspoc, 0, sizeof(xspoc));
-    memset(yspoc, 0, sizeof(yspoc));
-    memset(qgamm, 0, sizeof(qgamm));
-    memset(qspec, 0, sizeof(qspec));
+    memset(wc,     0, sizeof(wc));
+    memset(sc,     0, sizeof(sc));
+    memset(scold,  0, sizeof(scold));
+    memset(xcold,  0, sizeof(xcold));
+    memset(ycold,  0, sizeof(ycold));
+    memset(sspec,  0, sizeof(sspec));
+    memset(xspoc,  0, sizeof(xspoc));
+    memset(yspoc,  0, sizeof(yspoc));
+    memset(qgamm,  0, sizeof(qgamm));
+    memset(qspec,  0, sizeof(qspec));
     memset(qspecp, 0, sizeof(qspecp));
-    memset(alqsp, 0, sizeof(alqsp));
-    memset(clqsp, 0, sizeof(clqsp));
-    memset(cmqsp, 0, sizeof(cmqsp));
+    memset(alqsp,  0, sizeof(alqsp));
+    memset(clqsp,  0, sizeof(clqsp));
+    memset(cmqsp,  0, sizeof(cmqsp));
 
-
-    memset(xcam, 0, IQX*sizeof(double));
-    memset(ycam, 0, IQX*sizeof(double));
-    memset(xthk, 0, IQX*sizeof(double));
-    memset(ythk, 0, IQX*sizeof(double));
+    memset(xcam,  0, IQX*sizeof(double));
+    memset(ycam,  0, IQX*sizeof(double));
+    memset(xthk,  0, IQX*sizeof(double));
+    memset(ythk,  0, IQX*sizeof(double));
     memset(ycamp, 0, IQX*sizeof(double));
     memset(ythkp, 0, IQX*sizeof(double));
     ncam = nthk = 0;
@@ -894,8 +892,8 @@ double XFoil::aint(double number)
 
 bool XFoil::apcalc()
 {
-    double sx, sy;
-    int i, ip;
+    double sx=0, sy=0;
+    int i=0, ip=0;
 
     //---- set angles of airfoil panels
     for (i=1; i<=n-1; i++)
@@ -904,7 +902,6 @@ bool XFoil::apcalc()
         sy = y[i+1] - y[i];
         if(sx==0.0 && sy==0.0) apanel[i] = atan2(-ny[i], -nx[i]);
         else                   apanel[i] = atan2(sx, -sy );
-
     }
 
     //---- TE panel
@@ -3484,7 +3481,7 @@ bool XFoil::ggcalc()
         //------ calculate psi and dpsi/dgamma array for current node
         psilin(i, x[i], y[i], nx[i], ny[i], psi, psi_n, false, true);
 
-        //		psiinf = qinf*(cosa*y[i] - sina*x[i]);
+//		psiinf = qinf*(cosa*y[i] - sina*x[i]);
 
         //------ res1 = psi( 0) - psio
         //------ res2 = psi(90) - psio
@@ -3509,7 +3506,6 @@ bool XFoil::ggcalc()
         gamu[i][2] = -res2;
     }
 
-
     //---- set Kutta condition
     //-    res = gam(1) + gam[n]
     res = 0.0;
@@ -3523,7 +3519,7 @@ bool XFoil::ggcalc()
     gamu[n+1][2] = -res;
 
     //---- set up Kutta condition (no direct source influence)
-    for (int j=1; j<=n;j++) bij[n+1][j] = 0.0;
+    for (int j=1; j<=n; j++) bij[n+1][j] = 0.0;
 
 
     if(sharp)
@@ -3567,7 +3563,6 @@ bool XFoil::ggcalc()
         gamu[n][2] = -sbis;
     }
 
-
     //---- lu-factor coefficient matrix aij
     ludcmp(n+1,aij,aijpiv);
     lqaij = true;
@@ -3598,8 +3593,8 @@ bool XFoil::ggcalc()
 
 bool XFoil::baksub(int n, double a[IQX][IQX], int indx[], double b[])
 {
-    double sum;
-    int i, ii, ll, j;
+    double sum=0;
+    int i=0, ii=0, ll=0, j=0;
     ii = 0;
     for (i=1; i<=n; i++){
         ll = indx[i];
@@ -5800,27 +5795,33 @@ bool XFoil::Preprocess()
  *	   If geolin=true, then the geometric sensitivity vector dpsi/dn
  *	   is calculated, where n is the normal motion of the jth node.
  *
- *			airfoil:  1   < i < n
- *			wake:	  n+1 < i < n+nw
+ *			airfoil:  1   <= i <= n         // techwinder: < to <=
+ *			wake:	  n+1 <= i <= n+nw      // techwinder: < to <=
+ *
+ * @todo mass defect array sig[] doesn't seem to be ever set,
+ *       except perhaps in mixed inverse routines - check former fortran /common/ field?
+ *
  * ----------------------------------------------------------------------- */
 bool XFoil::psilin(int iNode, double xi, double yi, double nxi, double nyi, double &psi, double &psi_ni,
                    bool geolin, bool siglin)
 {
-    int io,jo,jm,jq,jp;
+    int io=0,jo=0,jm=0,jq=0,jp=0;
 
-    double dxinv, psum, qtanm, scs, sds, rx1, rx2, sx, sy, dsio, dso, dsm, dsim;
-    double sgn, x0, logr0, theta0, rs0, rs1, rs2, nxo, nyo, nxp, nyp, ry1, ry2;
-    double ssum, sdif, psni,pdni, psx0,psx1,psx2,pdx0,pdx1,pdx2,psyy,pdyy,psis,psig,psid;
-    double psigx1,psigx2,psigyy,pgamx1,pgamx2,pgamyy,psigni,pgamni;
-    double gsum,gdif,gsum1,gsum2,gdif1,gdif2,pdif,dsp,dsip;
-    double sigte1,sigte2,gamte1,gamte2,pgam;
-    double apan , yy, logr12, logr22, x1i, x2i, yyi, x1o, x1p, x2o,x2p,yyo,yyp;
-    double seps;
+    double dxinv=0, psum=0, qtanm=0, scs=0, sds=0;
+    double rx1=0, rx2=0, sx=0, sy=0, dsio=0, dso=0, dsm=0, dsim=0;
+    double sgn=0, x0=0, logr0=0, theta0=0, rsq0=0, rsq1=0, rsq2=0;
+    double nxo=0, nyo=0, nxp=0, nyp=0, ry1=0, ry2=0;
+    double ssum=0, sdif=0, psni=0,pdni=0;
+    double psx0=0, psx1=0, psx2=0, pdx0=0, pdx1=0, pdx2=0, psyy=0, pdyy=0, psis=0, psig=0, psid=0;
+    double psigx1=0, psigx2=0, psigyy=0, pgamx1=0, pgamx2=0, pgamyy=0, psigni=0, pgamni=0;
+    double gsum=0, gdif=0, gsum1=0, gsum2=0, gdif1=0, gdif2=0, pdif=0, dsp=0, dsip=0;
+    double sigte1=0, sigte2=0, gamte1=0, gamte2=0, pgam=0;
+    double apan=0, yy=0, logr12=0, logr22=0;
+    double x1i=0, x2i=0, yyi=0, x1o=0, x1p=0, x2o=0, x2p=0, yyo=0, yyp=0;
+    double seps=0;
 
     //---- distance tolerance for determining if two points are the same
     seps = (s[n]-s[1]) * 0.00001;
-
-    apan = yy = logr12 = logr22 = x1i = x2i = yyi = x1o = x1p = x2o = x2p = yyo = yyp = 0.0;
 
     io = iNode;
 
@@ -5866,6 +5867,7 @@ bool XFoil::psilin(int iNode, double xi, double yi, double nxi, double nyi, doub
         scs = ante/dste;
         sds = aste/dste;
     }
+
     for(jo=1; jo<=n; jo++)
     {
         //stop10
@@ -5887,6 +5889,7 @@ bool XFoil::psilin(int iNode, double xi, double yi, double nxi, double nyi, doub
                 }
             }
         }
+//        Q_ASSERT(jq<=n);
 
         dso = sqrt((x[jo]-x[jp])*(x[jo]-x[jp]) + (y[jo]-y[jp])*(y[jo]-y[jp]));
 
@@ -5909,8 +5912,8 @@ bool XFoil::psilin(int iNode, double xi, double yi, double nxi, double nyi, doub
         x2 = sx*rx2 + sy*ry2;
         yy = sx*ry1 - sy*rx1;
 
-        rs1 = rx1*rx1 + ry1*ry1;
-        rs2 = rx2*rx2 + ry2*ry2;
+        rsq1 = rx1*rx1 + ry1*ry1;
+        rsq2 = rx2*rx2 + ry2*ry2;
 
         //------ set reflection flag sgn to avoid branch problems with arctan
         if(io>=1 && io<=n)
@@ -5925,9 +5928,9 @@ bool XFoil::psilin(int iNode, double xi, double yi, double nxi, double nyi, doub
         }
 
         //------ set log(r^2) and arctan(x/y), correcting for reflection if any
-        if(io!=jo && rs1>0.0)
+        if(io!=jo && rsq1>0.0)
         {
-            logr12 = log(rs1);
+            logr12 = log(rsq1);
             theta1 = atan2(sgn*x1,sgn*yy) + (0.5- 0.5*sgn)*PI;
         }
         else
@@ -5936,9 +5939,9 @@ bool XFoil::psilin(int iNode, double xi, double yi, double nxi, double nyi, doub
             theta1 = 0.0;
         }
 
-        if(io!=jp && rs2>0.0)
+        if(io!=jp && rsq2>0.0)
         {
-            logr22 = log(rs2);
+            logr22 = log(rsq2);
             theta2 = atan2(sgn*x2,sgn*yy) + (0.5- 0.5*sgn)*PI;
         }
         else
@@ -5972,14 +5975,14 @@ bool XFoil::psilin(int iNode, double xi, double yi, double nxi, double nyi, doub
         {
             //------- set up midpoint quantities
             x0 = 0.5*(x1+x2);
-            rs0 = x0*x0 + yy*yy;
-            logr0 = log(rs0);
+            rsq0 = x0*x0 + yy*yy;
+            logr0 = log(rsq0);
             theta0 = atan2(sgn*x0,sgn*yy) + (0.5- 0.5*sgn)*PI;
 
             //------- calculate source contribution to psi	for  1-0  half-panel
             dxinv = 1.0/(x1-x0);
             psum = x0*(theta0-apan) - x1*(theta1-apan) + 0.5*yy*(logr12-logr0);
-            pdif = ((x1+x0)*psum + rs1*(theta1-apan) - rs0*(theta0-apan)+ (x0-x1)*yy) * dxinv;
+            pdif = ((x1+x0)*psum + rsq1*(theta1-apan) - rsq0*(theta0-apan)+ (x0-x1)*yy) * dxinv;
 
             psx1 =	-(theta1-apan);
             psx0 =	  theta0-apan;
@@ -6017,7 +6020,7 @@ bool XFoil::psilin(int iNode, double xi, double yi, double nxi, double nyi, doub
             //------- calculate source contribution to psi	for  0-2  half-panel
             dxinv = 1.0/(x0-x2);
             psum = x2*(theta2-apan) - x0*(theta0-apan) + 0.5*yy*(logr0-logr22);
-            pdif = ((x0+x2)*psum + rs0*(theta0-apan) - rs2*(theta2-apan)+ (x2-x0)*yy) * dxinv;
+            pdif = ((x0+x2)*psum + rsq0*(theta0-apan) - rsq2*(theta2-apan)+ (x2-x0)*yy) * dxinv;
 
             psx0 =  -(theta0-apan);
             psx2 =	  theta2-apan;
@@ -6055,7 +6058,7 @@ bool XFoil::psilin(int iNode, double xi, double yi, double nxi, double nyi, doub
         //------ calculate vortex panel contribution to psi
         dxinv = 1.0/(x1-x2);
         psis = 0.5*x1*logr12 - 0.5*x2*logr22 + x2 - x1 + yy*(theta1-theta2);
-        psid = ((x1+x2)*psis + 0.5*(rs2*logr22-rs1*logr12 + x1*x1-x2*x2))*dxinv;
+        psid = ((x1+x2)*psis + 0.5*(rsq2*logr22-rsq1*logr12 + x1*x1-x2*x2))*dxinv;
 
         psx1 = 0.5*logr12;
         psx2 = -.5*logr22;
@@ -6094,9 +6097,10 @@ bool XFoil::psilin(int iNode, double xi, double yi, double nxi, double nyi, doub
         {
             //------- dpsi/dn
             dzdn[jo] +=   qopi*gsum*(psx1*x1o + psx2*x2o + psyy*yyo)
-                    + qopi*gdif*(pdx1*x1o + pdx2*x2o + pdyy*yyo);
+                        + qopi*gdif*(pdx1*x1o + pdx2*x2o + pdyy*yyo);
             dzdn[jp] +=   qopi*gsum*(psx1*x1p + psx2*x2p + psyy*yyp)
-                    + qopi*gdif*(pdx1*x1p + pdx2*x2p + pdyy*yyp);
+                        + qopi*gdif*(pdx1*x1p + pdx2*x2p + pdyy*yyp);
+
             //------- dpsi/dp
             z_qdof0 += qopi*((psis-psid)*qf0[jo] + (psis+psid)*qf0[jp]);
             z_qdof1 += qopi*((psis-psid)*qf1[jo] + (psis+psid)*qf1[jp]);
@@ -6104,7 +6108,7 @@ bool XFoil::psilin(int iNode, double xi, double yi, double nxi, double nyi, doub
             z_qdof3 += qopi*((psis-psid)*qf3[jo] + (psis+psid)*qf3[jp]);
         }
 stop10:
-        int nothing=1;      (void)nothing;    //c++ doesn(t like gotos
+        int nothing=1;      (void)nothing;    //c++ doesn't like gotos
     }
 
 stop11:
@@ -6193,22 +6197,23 @@ stop12:
 /** --------------------------------------------------------------------
  *	   Calculates current streamfunction psi and tangential velocity
  *	   qtan at panel node or wake node i due to freestream and wake
- *	   sources sig.  also calculates sensitivity vectors dpsi/dsig
+ *	   sources sig. Also calculates sensitivity vectors dpsi/dsig
  *	   (dzdm) and dqtan/dsig (dqdm).
  *
- *			airfoil:  1   < i < n
- *			wake:	  n+1 < i < n+nw
+ *			airfoil:  1   <= i <= n         // techwinder: < to <=
+ *			wake:	  n+1 <= i <= n+nw      // techwinder: < to <=
+ *
  *-------------------------------------------------------------------- */
 bool XFoil::pswlin(int i, double xi, double yi, double nxi, double nyi, double &psi, double &psi_ni)
 {
-    double g1,g2,t1,t2;
-    double x1i, x2i, yyi, x0,rs0,g0,t0;
-    double dso, dsio, apan, rx1, rx2, ry1, ry2;
-    double sx, sy, x1, x2, yy, rs1, rs2, sgn;
-    double dxinv, psum, pdif, psx1, psx0, psyy, pdx1, pdx0, pdyy;
-    double dsm, dsim, ssum, sdif, psni, pdni, psx2, pdx2, dsp, dsip;
+    double g1=0, g2=0, t1=0, t2=0;
+    double x1i=0, x2i=0, yyi=0, x0=0,rs0=0,g0=0, t0=0;
+    double dso=0, dsio=0, apan=0, rx1=0, rx2=0, ry1=0, ry2=0;
+    double sx=0, sy=0, x1=0, x2=0, yy=0, rs1=0, rs2=0, sgn=0;
+    double dxinv=0, psum=0, pdif=0, psx1=0, psx0=0, psyy=0, pdx1=0, pdx0=0, pdyy=0;
+    double dsm, dsim=0, ssum=0, sdif=0, psni=0, pdni=0, psx2=0, pdx2=0, dsp=0, dsip=0;
     //double nxi, nyi;
-    int io,jo;
+    int io=0, jo=0;
 
     io = i;
 
@@ -6216,7 +6221,7 @@ bool XFoil::pswlin(int i, double xi, double yi, double nxi, double nyi, double &
     sina = sin(alfa);
 
 
-    for(jo=n+1; jo<= n+nw;jo++)
+    for(jo=n+1; jo<=n+nw;jo++)
     {
         dzdm[jo] = 0.0;
         dqdm[jo] = 0.0;
@@ -6225,10 +6230,8 @@ bool XFoil::pswlin(int i, double xi, double yi, double nxi, double nyi, double &
     psi	 = 0.0;
     psi_ni = 0.0;
 
-
-    for(jo=n+1; jo<= n+nw-1; jo++)
+    for(jo=n+1; jo<=n+nw-1; jo++)
     {
-
         int jp = jo+1;
         int jm = jo-1;
         int jq = jp+1;
@@ -6317,10 +6320,10 @@ bool XFoil::pswlin(int i, double xi, double yi, double nxi, double nyi, double &
         dsm = sqrt((x[jp]-x[jm])*(x[jp]-x[jm]) + (y[jp]-y[jm])*(y[jp]-y[jm]));
         dsim = 1.0/dsm;
 
-        ////ccc		  sig0 = (sig[jp] - sig[jo])/dso
-        ////ccc		  sig1 = (sig[jp] - sig[jm])*dsim
-        ////ccc		  ssum = sig0 + sig1
-        ////ccc		  sdif = sig0 - sig1
+        // ccc		  sig0 = (sig[jp] - sig[jo])/dso
+        // ccc		  sig1 = (sig[jp] - sig[jm])*dsim
+        // ccc		  ssum = sig0 + sig1
+        // ccc		  sdif = sig0 - sig1
 
 
         ssum = (sig[jp] - sig[jo])/dso + (sig[jp] - sig[jm])*dsim;
@@ -6338,9 +6341,9 @@ bool XFoil::pswlin(int i, double xi, double yi, double nxi, double nyi, double &
         pdni = pdx1*x1i + pdx0*(x1i+x2i)*0.5+ pdyy*yyi;
         psi_ni = psi_ni + qopi*(psni*ssum + pdni*sdif);
 
-        dqdm[jm] = dqdm[jm] + qopi*(-psni*dsim + pdni*dsim);
-        dqdm[jo] = dqdm[jo] + qopi*(-psni/dso - pdni/dso);
-        dqdm[jp] = dqdm[jp] + qopi*( psni*(dsio+dsim)+ pdni*(dsio-dsim));
+        dqdm[jm] += qopi*(-psni*dsim + pdni*dsim);
+        dqdm[jo] += qopi*(-psni/dso - pdni/dso);
+        dqdm[jp] += qopi*( psni*(dsio+dsim)+ pdni*(dsio-dsim));
 
 
         //------- calculate source contribution to psi	for  0-2  half-panel
@@ -6370,9 +6373,9 @@ bool XFoil::pswlin(int i, double xi, double yi, double nxi, double nyi, double &
         psi = psi + qopi*(psum*ssum + pdif*sdif);
 
         //------- dpsi/dm
-        dzdm[jo] = dzdm[jo] + qopi*(-psum*(dsip+dsio)- pdif*(dsip-dsio));
-        dzdm[jp] = dzdm[jp] + qopi*( psum/dso - pdif/dso);
-        dzdm[jq] = dzdm[jq] + qopi*( psum*dsip + pdif*dsip);
+        dzdm[jo] += qopi*(-psum*(dsip+dsio)- pdif*(dsip-dsio));
+        dzdm[jp] += qopi*( psum/dso - pdif/dso);
+        dzdm[jq] += qopi*( psum*dsip + pdif*dsip);
 
         //------- dpsi/dni
         psni = psx0*(x1i+x2i)*0.5+ psx2*x2i + psyy*yyi;
@@ -6395,14 +6398,14 @@ bool XFoil::pswlin(int i, double xi, double yi, double nxi, double nyi, double &
  * ------------------------------------------------------ */
 bool XFoil::qdcalc()
 {
-    int i, j, k, iu, iw;
-    double psi, psi_n, sum;
+    int i=0, j=0, k=0, iu=0, iw=0;
+    double psi=0, psi_n=0;
     double bbb[IQX];
+    memset(bbb, 0, IQX*sizeof(double));
 
     //TRACE("calculating source influence matrix ...\n");
     QString str = "   Calculating source influence matrix ...\n";
     writeString(str);
-
 
     if(!ladij)
     {
@@ -6423,19 +6426,7 @@ bool XFoil::qdcalc()
         ladij = true;
     }
 
-/*    for(int i=1;i<=n;i++)
-     {
-        QString strong;
-        for(int j=1;j<=n;j++)
-        {
-            QString str;
-            str.sprintf(" %7.3g", dij[i][j]);
-            strong+=str;
-        }
-        qDebug(strong.toStdString().c_str());
-    }*/
-
-    //---- set up coefficient matrix of dpsi/dm on airfoil surface
+    //---- set up coefficient matrix of dpsi/dm on wake
     for (i=1; i<=n; i++)
     {
         pswlin(i,x[i],y[i],nx[i],ny[i],psi,psi_n);
@@ -6445,25 +6436,14 @@ bool XFoil::qdcalc()
         }
     }
 
-/*    for(int i=1;i<=n;i++)
-     {
-        QString strong;
-        for(int j=1;j<=n;j++)
-        {
-            QString str;
-            str.sprintf(" %11g", bij[i][j]);
-            strong+=str;
-        }
-        qDebug(strong.toStdString().c_str());
-    }*/
-
     //---- set up kutta condition (no direct source influence)
     for(j=n+1; j<=n+nw;j++) bij[n+1][j] = 0.0;
 
-
-    //---- sharp te gamma extrapolation also has no source influence
-    if(sharp) {	for(j=n+1; j<=n+nw;j++) bij[n][j] = 0.0;}
-
+    //---- sharp TE gamma extrapolation also has no source influence
+    if(sharp)
+    {
+        for(j=n+1; j<=n+nw;j++) bij[n][j] = 0.0;
+    }
 
     //---- multiply by inverse of factored dpsi/dgam matrix
     for(j=n+1; j<=n+nw;j++)
@@ -6484,6 +6464,20 @@ bool XFoil::qdcalc()
         }
     }
 
+
+/*    for(int i=1; i<=n; i++)
+    {
+        QString strong;
+        for(int j=1; j<=n+nw; j++)
+        {
+            QString str;
+            str.sprintf(" %9g", dij[i][j]);
+            strong+=str;
+        }
+        qDebug(strong.toStdString().c_str());
+    }*/
+
+
     //**** now we need to calculate the influence of sources on the wake velocities
 
     //---- calculate dqtan/dgam and dqtan/dsig at the wake points
@@ -6497,7 +6491,7 @@ bool XFoil::qdcalc()
         {
             cij[iw][j] = dqdg[j];
         }
-        for(j=1; j<=n;j++)
+        for(j=1; j<=n; j++)
         {
             dij[i][j] = dqdm[j];
         }
@@ -6510,29 +6504,26 @@ bool XFoil::qdcalc()
     }
 
     //---- add on effect of all sources on airfoil vorticity which effects wake qtan
-    for(i=n+1;i<=n+nw;i++)
+    for(i=n+1; i<=n+nw; i++)
     {
         int iw = i-n;
 
         //------ airfoil surface source contribution first
         for(j=1; j<=n;j++)
         {
-            sum = 0.0;
-            for (k=1;k<= n;k++) sum = sum + cij[iw][k]*dij[k][j];
-            dij[i][j] = dij[i][j] + sum;
+            for (k=1; k<=n; k++) dij[i][j] += cij[iw][k]*dij[k][j];
         }
 
         //------ wake source contribution next
-        for(j=n+1; j<=n+nw;j++){
-            sum = 0.0;
-            for(k=1;k<=n;k++) sum = sum + cij[iw][k]*bij[k][j];
-            dij[i][j] = dij[i][j] + sum;
+        for(j=n+1; j<=n+nw;j++)
+        {
+            for(k=1; k<=n; k++) dij[i][j] += cij[iw][k]*bij[k][j];
         }
-
     }
 
     //---- make sure first wake point has same velocity as trailing edge
-    for(j=1; j<=n+nw;j++){
+    for(j=1; j<=n+nw;j++)
+    {
         dij[n+1][j] = dij[n][j];
     }
 
@@ -7557,20 +7548,19 @@ void XFoil::scheck(double x[], double y[], int *n, double stol, bool *lchange){
 }
 
 
+/** ........................................................
+ *     sets geometriy stretched array s:
+ *
+ *       s(i+1) - s(i)  =  r * [s(i) - s(i-1)]
+ *
+ *       s     (output)  array to be set
+ *       ds1   (input)   first s increment:  s[2] - s[1]
+ *       smax  (input)   final s value:      s(nn)
+ *       nn    (input)   number of points
+ * ........................................................*/
 bool XFoil::setexp(double s[], double ds1, double smax, int nn)
 {
-    //........................................................
-    //     sets geometriy stretched array s:
-    //
-    //       s(i+1) - s(i)  =  r * [s(i) - s(i-1)]
-    //
-    //       s     (output)  array to be set
-    //       ds1   (input)   first s increment:  s[2] - s[1]
-    //       smax  (input)   final s value:      s(nn)
-    //       nn    (input)   number of points
-    //........................................................
     QString str;
-
     int nex, iter, n;
     double sigma, rnex, rni, aaa, bbb, ccc;
     double disc, ratio, sigman, res;
@@ -9267,12 +9257,12 @@ bool XFoil::ueset()
 }
 
 
-
+/** --------------------------------------------------------------
+ *     sets inviscid ue from panel inviscid tangential velocity
+ * -------------------------------------------------------------- */
 bool XFoil::uicalc()
 {
-    //--------------------------------------------------------------
-    //     sets inviscid ue from panel inviscid tangential velocity
-    //--------------------------------------------------------------
+
     int i,ibl,is;
 
     for (is=1; is<=2;is++)
@@ -9292,16 +9282,16 @@ bool XFoil::uicalc()
 }
 
 
+/** ------------------------------------------------------------------
+ *     Adds on Newton deltas to boundary layer variables.
+ *     Checks for excessive changes and underrelaxes if necessary.
+ *     Calculates max and rms changes.
+ *     Also calculates the change in the global variable "ac".
+ *       if lalfa=true , "ac" is cl
+ *       if lalfa=false, "ac" is alpha
+ * ------------------------------------------------------------------ */
 bool XFoil::update()
 {
-    //------------------------------------------------------------------
-    //      adds on newton deltas to boundary layer variables.
-    //      checks for excessive changes and underrelaxes if necessary.
-    //      calculates max and rms changes.
-    //      also calculates the change in the global variable "ac".
-    //        if lalfa=true , "ac" is cl
-    //        if lalfa=false, "ac" is alpha
-    //------------------------------------------------------------------
 
     int i=0, ip=0, is=0, iv=0, iw=0, j=0, js=0, jv=0, ibl=0, jbl=0, kbl=0;
     double unew[IVX][3], u_ac[IVX][3];
@@ -9923,15 +9913,14 @@ bool XFoil::xifset(int is)
 
 
 
-
+/** -----------------------------------------------------
+ *     sets wake coordinate array for current surface
+ *     vorticity and/or mass source distributions.
+ *----------------------------------------------------- */
 bool XFoil::xyWake()
 {
-    //-----------------------------------------------------
-    //     sets wake coordinate array for current surface
-    //     vorticity and/or mass source distributions.
-    //-----------------------------------------------------
-    double ds, ds1, sx, sy, smod;
-    double psi, psi_x,psi_y;
+    double ds=0, ds1=0, sx=0, sy=0, smod=0;
+    double psi=0, psi_x=0, psi_y=0;
     //
     QString str("   Calculating wake trajectory ...\n");
     writeString(str, true);
@@ -9985,7 +9974,6 @@ bool XFoil::xyWake()
 
         if(i!=n+nw)
         {
-
             //------- calculate normal vector for next point
             psilin(i,x[i],y[i],1.0,0.0,psi,psi_x,false,false);
             psilin(i,x[i],y[i],0.0,1.0,psi,psi_y,false,false);
@@ -10006,7 +9994,6 @@ bool XFoil::xyWake()
     lwdij = false;
 
     return true;
-
 }
 
 
