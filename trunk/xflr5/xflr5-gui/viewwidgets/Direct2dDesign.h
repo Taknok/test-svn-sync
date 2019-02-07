@@ -23,8 +23,9 @@
 #define DIRECT2DDESIGN_H
 
 #include "section2dwidget.h"
-#include <gui_objects/SplineFoil.h>
-#include <objects/objects2d/Foil.h>
+
+class Foil;
+class SplineFoil;
 
 class Direct2dDesign : public Section2dWidget
 {
