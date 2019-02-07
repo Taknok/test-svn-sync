@@ -23,8 +23,8 @@
 #define BODYLINEWIDGET_H
 
 #include "section2dwidget.h"
-#include <objects/objects3d/Body.h>
 
+class Body;
 
 class BodyLineWidget : public Section2dWidget
 {
