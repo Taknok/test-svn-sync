@@ -25,6 +25,8 @@
 #include <QOpenGLPaintDevice>
 #include <miarex/design/GL3dWingDlg.h>
 
+#include <objects/objects3d/Wing.h>
+
 gl3dWingView::gl3dWingView(QWidget *pParent) : gl3dView(pParent)
 {
 	m_pParent = pParent;

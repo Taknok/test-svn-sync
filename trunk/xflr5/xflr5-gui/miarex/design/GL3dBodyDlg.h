@@ -47,7 +47,7 @@ class BodyGridDlg;
 class Body;
 class BodyLineWidget;
 class BodyFrameWidget;
-
+class Frame;
 
 
 class GL3dBodyDlg : public QDialog

@@ -28,6 +28,7 @@
 #include "BodyScaleDlg.h"
 #include "GL3dBodyDlg.h"
 #include <globals/globals.h>
+#include <objects/objects3d/Body.h>
 #include <misc/line/LinePickerDlg.h>
 #include <misc/text/DoubleEdit.h>
 
