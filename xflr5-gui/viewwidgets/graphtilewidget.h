@@ -34,6 +34,7 @@ class LegendWidget;
 class GraphWidget;
 class Miarex;
 class XDirect;
+class Graph;
 
 class GraphTileWidget : public QWidget
 {
@@ -42,7 +43,7 @@ class GraphTileWidget : public QWidget
 
 	Q_OBJECT
 public:
-	GraphTileWidget(QWidget *parent = 0);
+    GraphTileWidget(QWidget *parent = nullptr);
 	virtual ~GraphTileWidget();
 
 	Graph *graph(int iGraph);

@@ -41,6 +41,7 @@
 #include <globals/globals.h>
 #include <globals/mainframe.h>
 #include <graph/graphdlg.h>
+#include <gui_objects/SplineFoil.h>
 #include <miarex/Miarex.h>
 #include <miarex/analysis/PanelAnalysisDlg.h>
 #include <miarex/analysis/StabPolarDlg.h>
@@ -61,11 +62,11 @@
 #include <misc/ObjectPropsDlg.h>
 #include <misc/RenameDlg.h>
 #include <misc/line/LinePickerDlg.h>
-#include <misc/options/units.h>
 #include <misc/options/displayoptions.h>
 #include <misc/options/languagewt.h>
 #include <misc/options/preferencesdlg.h>
 #include <misc/options/saveoptions.h>
+#include <misc/options/units.h>
 #include <misc/popup.h>
 #include <misc/updater.h>
 #include <objects/objects2d/Foil.h>
@@ -97,7 +98,6 @@
 #include <xdirect/geometry/TwoDPanelDlg.h>
 #include <xdirect/objects2d.h>
 #include <xinverse/XInverse.h>
-
 
 
 #ifdef Q_OS_MAC

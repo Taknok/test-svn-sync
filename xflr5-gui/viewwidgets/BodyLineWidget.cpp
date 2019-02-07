@@ -24,10 +24,11 @@
 #include <QtDebug>
 
 #include <globals/globals.h>
-#include "BodyLineWidget.h"
 #include <miarex/design/BodyScaleDlg.h>
 #include <misc/options/displayoptions.h>
 #include <misc/options/units.h>
+#include <objects/objects3d/Body.h>
+#include <viewwidgets/BodyLineWidget.h>
 
 
 BodyLineWidget::BodyLineWidget(QWidget *pParent, Body *pBody)
@@ -49,8 +50,6 @@ void BodyLineWidget::resizeEvent (QResizeEvent *event)
 	setScale();
 	event->accept();
 }
-
-
 
 
 void BodyLineWidget::setScale()

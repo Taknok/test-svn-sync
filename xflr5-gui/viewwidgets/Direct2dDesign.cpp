@@ -30,6 +30,7 @@
 #include <xdirect/XDirect.h>
 #include <misc/options/displayoptions.h>
 #include <globals/globals.h>
+#include <gui_objects/SplineFoil.h>
 
 Direct2dDesign::Direct2dDesign(QWidget *pParent) : Section2dWidget(pParent)
 {

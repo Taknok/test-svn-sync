@@ -23,11 +23,11 @@
 
 #include <QWidget>
 #include <globals/gui_enums.h>
-#include <objects/objects3d/PlaneOpp.h>
-#include <graph/graph.h>
 
+class MainFrame;
 class Miarex;
 class XDirect;
+class Graph;
 
 class LegendWidget : public QWidget
 {
