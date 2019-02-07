@@ -27,6 +27,7 @@
 #include <miarex/view/W3dPrefsDlg.h>
 #include <miarex/design/GL3dBodyDlg.h>
 #include <globals/mainframe.h>
+#include <objects/objects3d/Body.h>
 
 
 gl3dBodyView::gl3dBodyView(QWidget *pParent) : gl3dView(pParent)

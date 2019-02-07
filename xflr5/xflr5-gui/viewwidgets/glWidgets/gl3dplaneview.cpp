@@ -22,7 +22,9 @@
 
 #include <QOpenGLPaintDevice>
 #include <QPainter>
+
 #include "gl3dplaneview.h"
+#include <objects/objects3d/Plane.h>
 #include <miarex/design/EditPlaneDlg.h>
 
 
