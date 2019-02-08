@@ -1,7 +1,7 @@
 /****************************************************************************
 
-	QXDirect Class
-	Copyright (C) 2008-2016 Andre Deperrois 
+    XDirect Class
+    Copyright (C) 2008-2019 Andre Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -364,11 +364,10 @@ void XDirect::createOppCurves(OpPoint *pOpp)
 
 	Curve *pCurve1;
 	QString str;
-	int k;
 
 	m_CpGraph.deleteCurves();
 
-	if(m_bCurOppOnly && pOpPoint)
+/*    if(pOpPoint)
 	{
 		if(!pOpPoint || !pOpPoint->isVisible()) return;
 		pCurve1    = m_CpGraph.addCurve();
@@ -380,36 +379,51 @@ void XDirect::createOppCurves(OpPoint *pOpp)
 
 		fillOppCurve(pOpPoint, &m_CpGraph, pCurve1);
 
-		if(m_bShowInviscid && pOpPoint && m_CpGraph.yVariable()<2)
-		{
-			Curve *pCpi = m_CpGraph.addCurve();
-			pCpi->setPoints(pOpPoint->pointStyle());
-			pCpi->setStyle(1);
-			pCpi->setColor(colour(pOpPoint).darker(150));
-			pCpi->setWidth(pOpPoint->oppWidth());
-			str= QString("-Re=%1-Alpha=%2_Inviscid").arg(pOpPoint->Reynolds(),8,'f',0).arg(pOpPoint->aoa(),5,'f',2);
-			str = pOpPoint->foilName()+str;
-			pCpi->setCurveName(str);
-			fillOppCurve(pOpPoint, &m_CpGraph, pCpi, true);
-		}
-	}
-	else if(!m_bCurOppOnly)
-	{
-		for (k=0; k<m_poaOpp->size(); k++)
-		{
-			pOpp = (OpPoint*)m_poaOpp->at(k);
-			if (pOpp && pOpp->isVisible())
-			{
-				pCurve1    = m_CpGraph.addCurve();
+        if(m_bShowInviscid && pOpPoint && m_CpGraph.yVariable()<2)
+        {
+            Curve *pCpi = m_CpGraph.addCurve();
+            pCpi->setPoints(pOpPoint->pointStyle());
+            pCpi->setStyle(1);
+            pCpi->setColor(colour(pOpPoint).darker(150));
+            pCpi->setWidth(pOpPoint->oppWidth());
+            str= QString("-Re=%1-Alpha=%2_Inviscid").arg(pOpPoint->Reynolds(),8,'f',0).arg(pOpPoint->aoa(),5,'f',2);
+            str = pOpPoint->foilName()+str;
+            pCpi->setCurveName(str);
+            fillOppCurve(pOpPoint, &m_CpGraph, pCpi, true);
+        }
+    }*/
+
+
+    for (int k=0; k<m_poaOpp->size(); k++)
+    {
+        pOpp = m_poaOpp->at(k);
+        bool bShow = pOpp->isVisible();
+        if(m_bCurOppOnly && pOpp!=curOpp()) bShow = false;
+        if (pOpp && bShow)
+        {
+            pCurve1    = m_CpGraph.addCurve();
 
 //				pCurve1->setPoints(pOpp->pointStyle());
-				pCurve1->setLineStyle(pOpp->oppStyle(), pOpp->oppWidth(), colour(pOpp), pOpp->pointStyle(), pOpp->isVisible());
-				pCurve1->setCurveName(pOpp->opPointName());
+            pCurve1->setLineStyle(pOpp->oppStyle(), pOpp->oppWidth(), colour(pOpp), pOpp->pointStyle(), pOpp->isVisible());
+            pCurve1->setCurveName(pOpp->opPointName());
 
-				fillOppCurve(pOpp, &m_CpGraph, pCurve1);
-			}
-		}
-	}
+            fillOppCurve(pOpp, &m_CpGraph, pCurve1);
+
+            if(m_bShowInviscid && pOpPoint && m_CpGraph.yVariable()<2 && pOpp==curOpp())
+            {
+                Curve *pCpi = m_CpGraph.addCurve();
+                pCpi->setPoints(pOpPoint->pointStyle());
+                pCpi->setStyle(1);
+                pCpi->setColor(colour(pOpPoint).darker(150));
+                pCpi->setWidth(pOpPoint->oppWidth());
+                str= QString("-Re=%1-Alpha=%2_Inviscid").arg(pOpPoint->Reynolds(),8,'f',0).arg(pOpPoint->aoa(),5,'f',2);
+                str = pOpPoint->foilName()+str;
+                pCpi->setCurveName(str);
+                fillOppCurve(pOpPoint, &m_CpGraph, pCpi, true);
+            }
+        }
+    }
+
 }
 
 
@@ -1346,7 +1360,7 @@ void XDirect::onAnimate(bool bChecked)
 	{
 		for (l=0; l< m_poaOpp->size(); l++)
 		{
-			pOpPoint = (OpPoint*)m_poaOpp->at(l);
+            pOpPoint = m_poaOpp->at(l);
 
 			if (pOpPoint &&
 				pOpPoint->polarName()  == m_pCurPolar->polarName() &&
@@ -1366,7 +1380,7 @@ void XDirect::onAnimate(bool bChecked)
 		m_pAnimateTimer->stop();
 		m_bAnimate = false;
 		if(m_posAnimate<0 || m_posAnimate>=m_poaOpp->size()) return;
-		OpPoint* pOpPoint = (OpPoint*)m_poaOpp->at(m_posAnimate);
+        OpPoint* pOpPoint = m_poaOpp->at(m_posAnimate);
 		if(pOpPoint) setOpp(pOpPoint->aoa());
 //		UpdateView();
 		return;
@@ -1411,7 +1425,7 @@ void XDirect::onAnimateSingle()
 		}
 		if(m_posAnimate<0 || m_posAnimate>=m_poaOpp->size()) return;
 
-		pOpPoint = (OpPoint*)m_poaOpp->at(m_posAnimate);
+        pOpPoint = m_poaOpp->at(m_posAnimate);
 
 		if (pOpPoint &&
 			pOpPoint->polarName()  == m_pCurPolar->polarName() &&
@@ -1866,7 +1880,7 @@ void XDirect::onDeleteCurPolar()
 		// start by removing all OpPoints
 		for (l=m_poaOpp->size()-1; l>=0; l--)
 		{
-			pOpPoint = (OpPoint*)m_poaOpp->at(l);
+            pOpPoint = m_poaOpp->at(l);
 			if (pOpPoint->polarName()  == m_pCurPolar->polarName() &&
 				pOpPoint->foilName() == m_pCurFoil->foilName())
 			{
@@ -1907,7 +1921,7 @@ void XDirect::onDeletePolarOpps()
 
 	for(int i=m_poaOpp->size()-1; i>=0; i--)
 	{
-		pOpp = (OpPoint*)m_poaOpp->at(i);
+        pOpp = m_poaOpp->at(i);
 		if(pOpp->foilName()==m_pCurFoil->foilName() && pOpp->polarName()==m_pCurPolar->polarName())
 		{
 			m_poaOpp->removeAt(i);
@@ -1937,7 +1951,7 @@ void XDirect::onDeleteFoilOpps()
 
 	for(int i=m_poaOpp->size()-1; i>=0; i--)
 	{
-		pOpp = (OpPoint*)m_poaOpp->at(i);
+        pOpp = m_poaOpp->at(i);
 		if(pOpp->foilName()==m_pCurFoil->foilName())
 		{
 			m_poaOpp->removeAt(i);
@@ -1977,7 +1991,7 @@ void XDirect::onDeleteFoilPolars()
 		// start by removing all OpPoints
 		for (l=m_poaOpp->size()-1; l>=0; l--)
 		{
-			pOpPoint = (OpPoint*)m_poaOpp->at(l);
+            pOpPoint = m_poaOpp->at(l);
 			if (pOpPoint->foilName() == m_pCurFoil->foilName())
 			{
 				m_poaOpp->removeAt(l);
@@ -2500,7 +2514,7 @@ void XDirect::onExportPolarOpps()
 
 	for (i=0; i<m_poaOpp->size(); i++)
 	{
-		pOpPoint = (OpPoint*)m_poaOpp->at(i);
+        pOpPoint = m_poaOpp->at(i);
 		if(pOpPoint->foilName() == m_pCurPolar->foilName() && pOpPoint->polarName() == m_pCurPolar->polarName() )
 		{
 			if(Settings::s_ExportFileType==XFLR5::TXT)
@@ -2737,7 +2751,7 @@ void XDirect::onHideAllOpps()
 	OpPoint *pOpp;
 	for (int i=0; i<m_poaOpp->size(); i++)
 	{
-		pOpp = (OpPoint*)m_poaOpp->at(i);
+        pOpp = m_poaOpp->at(i);
 		pOpp->isVisible() = false;
 	}
 	emit projectModified();
@@ -2799,7 +2813,7 @@ void XDirect::onHideFoilOpps()
 
 	for(int i=0; i<m_poaOpp->size(); i++)
 	{
-		pOpp = (OpPoint*)m_poaOpp->at(i);
+        pOpp = m_poaOpp->at(i);
 		if(pOpp->foilName()==m_pCurFoil->foilName())
 			pOpp->isVisible() = false;
 	}
@@ -2821,7 +2835,7 @@ void XDirect::onHidePolarOpps()
 
 	for(int i=0; i<m_poaOpp->size(); i++)
 	{
-		pOpp = (OpPoint*)m_poaOpp->at(i);
+        pOpp = m_poaOpp->at(i);
 		if(pOpp->foilName()==m_pCurFoil->foilName() && pOpp->polarName()==m_pCurPolar->polarName())
 			pOpp->isVisible() = false;
 	}
@@ -3475,7 +3489,7 @@ void XDirect::onRenameCurPolar()
 			{
 				for (l=(int)m_poaOpp->size()-1;l>=0; l--)
 				{
-					pOpp = (OpPoint*)m_poaOpp->at(l);
+                    pOpp = m_poaOpp->at(l);
 					if (pOpp->polarName() == OldName &&
 						pOpp->foilName() == m_pCurFoil->foilName())
 					{
@@ -3500,7 +3514,7 @@ void XDirect::onRenameCurPolar()
 			}
 			for (l=m_poaOpp->size()-1;l>=0; l--)
 			{
-				pOpp = (OpPoint*)m_poaOpp->at(l);
+                pOpp = m_poaOpp->at(l);
 				if (pOpp->polarName() == m_pCurPolar->polarName())
 				{
 					m_poaOpp->removeAt(l);
@@ -3517,7 +3531,7 @@ void XDirect::onRenameCurPolar()
 
 			for (l=m_poaOpp->size()-1;l>=0; l--)
 			{
-				pOpp = (OpPoint*)m_poaOpp->at(l);
+                pOpp = m_poaOpp->at(l);
 				if (pOpp->polarName() == OldName &&
 					pOpp->foilName() == m_pCurFoil->foilName())
 				{
@@ -3600,7 +3614,7 @@ void XDirect::onResetCurPolar()
 	OpPoint*pOpp;
 	for(int i=m_poaOpp->size()-1;i>=0;i--)
 	{
-		pOpp = (OpPoint*)m_poaOpp->at(i);
+        pOpp = m_poaOpp->at(i);
 		if(pOpp->foilName()==m_pCurFoil->foilName() && pOpp->polarName()==m_pCurPolar->polarName())
 		{
 			m_poaOpp->removeAt(i);
@@ -3821,7 +3835,7 @@ void XDirect::onShowAllOpps()
 
 	for (int i=0; i<m_poaOpp->size(); i++)
 	{
-		pOpp = (OpPoint*)m_poaOpp->at(i);
+        pOpp = m_poaOpp->at(i);
 		pOpp->isVisible() = true;
 	}
     emit projectModified();
@@ -3933,7 +3947,7 @@ void XDirect::onShowFoilOpps()
 
 	for(int i=0; i<m_poaOpp->size(); i++)
 	{
-		pOpp = (OpPoint*)m_poaOpp->at(i);
+        pOpp = m_poaOpp->at(i);
 		if(pOpp->foilName()==m_pCurFoil->foilName())
 			pOpp->isVisible() = true;
 	}
@@ -3960,7 +3974,7 @@ void XDirect::onShowPolarOpps()
 
 	for(int i=0; i<m_poaOpp->size(); i++)
 	{
-		pOpp = (OpPoint*)m_poaOpp->at(i);
+        pOpp = m_poaOpp->at(i);
 		if(pOpp->foilName()==m_pCurFoil->foilName() && pOpp->polarName()==m_pCurPolar->polarName())
 			pOpp->isVisible() = true;
 	}
@@ -4325,7 +4339,7 @@ Foil* XDirect::setFoil(Foil* pFoil)
 
 
 /**
- * Initializes QXDirect with the specified Polar object.
+ * Initializes XDirect with the specified Polar object.
  * If the specified polar is not valid, a stock polar associated to the current foil will be set.
  * Sets the first OpPoint object belonging to this Polar, if any.
  * Initializes the XFoil object with the Polar's data.
@@ -4338,8 +4352,8 @@ Polar * XDirect::setPolar(Polar *pPolar)
 
 	if(!m_pCurFoil|| !m_pCurFoil->foilName().length())
 	{
-		setCurPolar(NULL);
-		setCurOpp(NULL);
+        setCurPolar(nullptr);
+        setCurOpp(nullptr);
 		setAnalysisParams();
         return nullptr;
 	}
