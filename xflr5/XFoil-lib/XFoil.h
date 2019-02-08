@@ -434,7 +434,7 @@ private:
 //	double circ;
 	double tkl_msq,cpstar,qstar;
 	double cpmni,cpmnv,xcpmni,xcpmnv;
-	double arad;//added arcds
+    double arad;
 	double xssi[IVX][ISX],uinv[IVX][ISX],mass[IVX][ISX];
 	double uslp[IVX][ISX],guxq[IVX][ISX],guxd[IVX][ISX];
 	double vti[IVX][ISX];
