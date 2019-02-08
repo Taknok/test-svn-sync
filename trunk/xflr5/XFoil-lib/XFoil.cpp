@@ -6983,14 +6983,14 @@ bool XFoil::segspld(double x[],double xs[],double s[],int n, double xs1, double 
     return true;
 }
 
-
+/** -------------------------------------------------
+ *	   Sets up the BL Newton system coefficients for the current BL variables
+ *     and the edge velocities received from setup.
+ *     The local BL system  coefficients are then incorporated into
+ *     the global Newton system.
+ * ------------------------------------------------- */
 bool XFoil::setbl()
 {
-    //-------------------------------------------------
-    //	   sets up the bl newton system coefficients for the current bl variables
-    //     and the edge velocities received from setup. the local bl system
-    //     coefficients are then incorporated into the global newton system.
-    //-------------------------------------------------
 
     int i=0, ibl=0, iv=0,iw=0, j=0, js=0, jv=0, jbl=0, is=0;
     int ile1=0,ile2=0,ite1=0,ite2=0,jvte1=0,jvte2=0;
@@ -9224,12 +9224,12 @@ bool XFoil::trisol(double a[], double b[], double c[], double d[], int kk){
 }
 
 
-
+/** ---------------------------------------------------------
+ *     sets ue from inviscid ue plus all source influence
+ * --------------------------------------------------------- */
 bool XFoil::ueset()
 {
-    //---------------------------------------------------------
-    //     sets ue from inviscid ue plus all source influence
-    //---------------------------------------------------------
+
     int i, is,ibl, j, js, jbl;
     double dui, ue_m;
     for (is=1; is<= 2;is++)
@@ -9245,7 +9245,7 @@ bool XFoil::ueset()
                 {
                     j  = ipan[jbl][js];
                     ue_m = -vti[ibl][is]*vti[jbl][js]*dij[i][j];
-                    dui = dui + ue_m*mass[jbl][js];
+                    dui += ue_m*mass[jbl][js];
                 }
             }
 
@@ -9603,12 +9603,12 @@ bool XFoil::update()
 }
 
 
-
+/** --------------------------------------
+ *      converges viscous operating point
+ * -------------------------------------- */
 bool XFoil::viscal()
 {
-    ////--------------------------------------
-    //     converges viscous operating point
-    ////--------------------------------------
+
     int ibl;
 
     //---- calculate wake trajectory from current inviscid solution if necessary
@@ -9777,11 +9777,11 @@ bool XFoil::ViscousIter()
 }
 
 
+/** -------------------------------------------------------------
+ *     sets bl arc length array on each airfoil side and wake
+ * ------------------------------------------------------------- */
 bool XFoil::xicalc()
 {
-    //-------------------------------------------------------------
-    //     sets bl arc length array on each airfoil side and wake
-    //-------------------------------------------------------------
     double telrat, crosp, dwdxte, aa, bb, zn;
     int i, ibl, is, iw;
     is = 1;
