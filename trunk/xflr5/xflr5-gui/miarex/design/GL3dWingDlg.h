@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	GL3dWingDlg Class
-	Copyright (C) 2009 Andre Deperrois 
+    Copyright (C) 2009-2019 Andre Deperrois
  
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ class GL3dWingDlg: public QDialog
 	friend class WingDelegate;
 
 public:
-	GL3dWingDlg(QWidget *pParent=NULL);
+    GL3dWingDlg(QWidget *pParent=nullptr);
 	~GL3dWingDlg();
 
 	bool intersectObject(Vector3d AA,  Vector3d U, Vector3d &I);
