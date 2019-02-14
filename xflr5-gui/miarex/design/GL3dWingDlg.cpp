@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	GL3dWingDlg Class
-	Copyright (C) 2009-2016 Andre Deperrois 
+    Copyright (C) 2009-2019 Andre Deperrois
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -425,7 +425,7 @@ void GL3dWingDlg::glMake3DObjects()
 	{
 		m_bResetglWing = false;
 
-		m_pglWingView->glMakeWingGeometry(0, m_pWing, NULL);
+        m_pglWingView->glMakeWingGeometry(0, m_pWing, nullptr);
 		m_pglWingView->glMakeWingEditMesh(m_pglWingView->m_vboEditWingMesh[0], m_pWing);
 	}
 }
