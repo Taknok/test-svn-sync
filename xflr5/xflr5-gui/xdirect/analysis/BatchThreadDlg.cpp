@@ -407,8 +407,8 @@ Polar * BatchThreadDlg::createPolar(Foil *pFoil, double Re, double Mach, double 
 	Polar *pNewPolar = new Polar;
 	QColor clr = randomColor(!Settings::isLightTheme());
 	pNewPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
-	pNewPolar->foilName()   = pFoil->foilName();
-	pNewPolar->isVisible() = true;
+    pNewPolar->setFoilName(pFoil->foilName());
+    pNewPolar->setVisible(true);
 	pNewPolar->polarType() = m_PolarType;
 
 	switch (pNewPolar->polarType())

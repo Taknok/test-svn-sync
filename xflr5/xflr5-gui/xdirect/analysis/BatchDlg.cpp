@@ -469,7 +469,7 @@ Polar *BatchDlg::createPolar(Foil *pFoil, double Spec, double Mach, double NCrit
 	QColor clr = randomColor(!Settings::isLightTheme());
 	pPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
 
-	pPolar->foilName()   = pFoil->foilName();
+    pPolar->setFoilName(pFoil->foilName());
 	pPolar->isVisible() = true;
 	pPolar->polarType() = m_PolarType;
 

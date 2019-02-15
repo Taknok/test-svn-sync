@@ -1,7 +1,7 @@
 /****************************************************************************
 
     Polar Class
-	Copyright (C) 2003 Andre Deperrois 
+    Copyright (C) 2003-2019 Andre Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -35,9 +35,9 @@ Polar::Polar()
 	m_Style = 0;// = PS_SOLID
 	m_Width = 1;
 
-	m_red   = (int)(((double)rand()/(double)RAND_MAX)*200);
-	m_green = (int)(((double)rand()/(double)RAND_MAX)*200);
-	m_blue  = (int)(((double)rand()/(double)RAND_MAX)*200);
+    m_red   = int(((double)rand()/(double)RAND_MAX)*200);
+    m_green = int(((double)rand()/(double)RAND_MAX)*200);
+    m_blue  = int(((double)rand()/(double)RAND_MAX)*200);
 	m_alphaChannel = 255;
 
 	m_ASpec = 0.0;
@@ -839,7 +839,7 @@ void Polar::getPolarProperties(QString &polarProps)
 
 
 
-void Polar::getColor(int &r, int &g, int &b, int &a)
+void Polar::getColor(int &r, int &g, int &b, int &a) const
 {
 	r = m_red;
 	g = m_green;

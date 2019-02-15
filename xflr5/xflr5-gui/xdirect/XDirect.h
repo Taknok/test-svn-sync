@@ -203,7 +203,7 @@ public:
 	void stopAnimate();
 	void updateCurveStyle();
 
-	void * getVariable(Polar *pPolar, int iVar);
+    QVector<double> *getVariable(Polar *pPolar, int iVar);
 
 	Foil* setFoil(Foil* pFoil=NULL);
 	Polar *setPolar(Polar *pPolar=NULL);
