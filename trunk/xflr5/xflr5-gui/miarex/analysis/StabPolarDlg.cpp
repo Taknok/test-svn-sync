@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	StabPolarDlg Class
-	Copyright (C) 2010-2016 Andre Deperrois 
+    Copyright (C) 2010-2019 Andre Deperrois
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -113,10 +113,13 @@ void StabPolarDlg::connectSignals()
 	connect(m_pMassCtrlDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(onInertiaCellChanged(QWidget *)));
 	connect(m_pAngleCtrlDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(onAngleCellChanged(QWidget *)));
 	connect(m_pDragCtrlDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(onDragCellChanged(QWidget *)));
+}
 
 
-	connect(OKButton,     SIGNAL(clicked()), this, SLOT(onOK()));
-	connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+void StabPolarDlg::onButton(QAbstractButton *pButton)
+{
+    if (m_pButtonBox->button(QDialogButtonBox::Ok) == pButton)            onOK();
+    else if (m_pButtonBox->button(QDialogButtonBox::Cancel) == pButton)  reject();
 }
 
 
@@ -460,13 +463,13 @@ void StabPolarDlg::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_Return:
 		case Qt::Key_Enter:
 		{
-			if(!OKButton->hasFocus() && !CancelButton->hasFocus())
+            if(!m_pButtonBox->hasFocus())
 			{
 				readCtrlData();
 				readInertiaData();
 				readExtraDragData();
 				setWPolarName();
-				OKButton->setFocus();
+                m_pButtonBox->setFocus();
 				return;
 			}
 			else
@@ -1120,17 +1123,10 @@ void StabPolarDlg::setupLayout()
 
 	m_pTabWidget->setCurrentIndex(0);
 
-	QHBoxLayout *pCommandButtons = new QHBoxLayout;
-	{
-		OKButton = new QPushButton(tr("OK"));
-		OKButton->setDefault(true);
-		CancelButton = new QPushButton(tr("Cancel"));
-		pCommandButtons->addStretch(1);
-		pCommandButtons->addWidget(OKButton);
-		pCommandButtons->addStretch(1);
-		pCommandButtons->addWidget(CancelButton);
-		pCommandButtons->addStretch(1);
-	}
+    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    {
+        connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(onButton(QAbstractButton*)));
+    }
 
 	QVBoxLayout * pMainLayout = new QVBoxLayout(this);
 	{
@@ -1147,7 +1143,7 @@ void StabPolarDlg::setupLayout()
 		pMainLayout->addWidget(m_pTabWidget,13);
 		pMainLayout->addStretch(1);
 		pMainLayout->addSpacing(23);
-		pMainLayout->addLayout(pCommandButtons,1);
+        pMainLayout->addWidget(m_pButtonBox,1);
 	}
 
 	setLayout(pMainLayout);
