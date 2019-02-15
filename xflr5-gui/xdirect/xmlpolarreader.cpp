@@ -63,11 +63,11 @@ void XmlPolarReader::readPolar(Polar *pPolar)
 	{
         if (name().toString().compare(QString("polar_name"),Qt::CaseInsensitive) ==0)
 		{
-			pPolar->polarName() = readElementText();
+            pPolar->setPolarName(readElementText());
 		}
         else if (name().toString().compare(QString("foil_name"),Qt::CaseInsensitive) ==0)
 		{
-			pPolar->foilName() = readElementText();
+            pPolar->setFoilName(readElementText());
 		}
         else if (name().toString().compare(QString("type"),Qt::CaseInsensitive) ==0)
 		{
