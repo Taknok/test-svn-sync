@@ -5727,7 +5727,8 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
                         pPolar->XtrTop()     = 1.0;
                         pPolar->XtrBot()     = 1.0;
                         str = QString("_N%1").arg(9.0,4,'f',1);
-                        pPolar->polarName() += str;
+                        QString name = pPolar->polarName();
+                        pPolar->setPolarName(name + str);
                         break;
                     }
                 }

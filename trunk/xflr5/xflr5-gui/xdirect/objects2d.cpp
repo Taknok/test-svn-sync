@@ -691,8 +691,8 @@ Polar * Objects2d::createPolar(Foil *pFoil, double Re, double Mach, double NCrit
 	if(!pFoil) return nullptr;
 
 	Polar *pNewPolar = new Polar;
-	pNewPolar->foilName()  = pFoil->foilName();
-	pNewPolar->isVisible() = true;
+    pNewPolar->setFoilName(pFoil->foilName());
+    pNewPolar->setVisible(true);
 	pNewPolar->polarType() = polarType;
 	pNewPolar->Mach()      = Mach;
 	pNewPolar->NCrit()     = NCrit;
@@ -726,7 +726,7 @@ Polar * Objects2d::createPolar(Foil *pFoil, double Re, double Mach, double NCrit
 	else                                 pNewPolar->aoa()    = 0.0;
 
 
-	pNewPolar->polarName() = Polar::autoPolarName(polarType, Re, Mach, NCrit, 0.0, XtrTop, XtrBot);
+    pNewPolar->setPolarName(Polar::autoPolarName(polarType, Re, Mach, NCrit, 0.0, XtrTop, XtrBot));
 	return pNewPolar;
 }
 

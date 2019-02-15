@@ -454,6 +454,7 @@ void XDirect::createPolarCurves()
 			{
 
 				Curve* pCurve[MAXPOLARGRAPHS];
+                for(int ic=0; ic<MAXPOLARGRAPHS; ic++) pCurve[ic]=nullptr;
                 Curve* pTr2Curve = nullptr;
 				for(int ig=0; ig<MAXPOLARGRAPHS; ig++)
 				{
@@ -569,12 +570,12 @@ void XDirect::fillComboBoxes(bool bEnable)
 
 
 /**
-* Fills the Cp graph curve with the data from the OpPoint.
-*@param pOpp a pointer to the OpPoint for which the curve is drawn
-*@param pGraph a pointer to the Graph to which the curve belongs
-*@param pCurve a pointer to the CCurve which will be filled with the data from the OpPoint
-*@param bInviscid true if the inviscid resutls should be displayed, false if the viscous results should be displayed
-*/
+ * Fills the Cp graph curve with the data from the OpPoint.
+ * @param pOpp a pointer to the OpPoint for which the curve is drawn
+ * @param pGraph a pointer to the Graph to which the curve belongs
+ * @param pCurve a pointer to the CCurve which will be filled with the data from the OpPoint
+ * @param bInviscid true if the inviscid resutls should be displayed, false if the viscous results should be displayed
+ */
 void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bInviscid)
 {
 	Foil *pOpFoil = Objects2d::foil(pOpp->foilName());
@@ -630,14 +631,14 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 			pCurve2->setCurveName("sqrt(Ctau_bot)");
 			pCurve3->setCurveName("sqrt(CtauEq_bot)");
 
-			int it1 = m_pCurOpp->itran[1];
-			int it2 = m_pCurOpp->itran[2];
+            int it1 = pOpp->itran[1];
+            int it2 = pOpp->itran[2];
 
-			for (int i=it1; i<=m_pCurOpp->nside1-1; i++) pCurve0->appendPoint(m_pCurOpp->xbl[i][1], m_pCurOpp->ctau[i][1]);
-			for (int i=2;   i<=m_pCurOpp->nside1-1; i++) pCurve1->appendPoint(m_pCurOpp->xbl[i][1], m_pCurOpp->ctq[i][1]);
+            for (int i=it1; i<=pOpp->nside1-1; i++) pCurve0->appendPoint(pOpp->xbl[i][1], pOpp->ctau[i][1]);
+            for (int i=2;   i<=pOpp->nside1-1; i++) pCurve1->appendPoint(pOpp->xbl[i][1], pOpp->ctq[i][1]);
 
-			for (int i=it2; i<=m_pCurOpp->nside2-1; i++) pCurve2->appendPoint(m_pCurOpp->xbl[i][2], m_pCurOpp->ctau[i][2]);
-			for (int i=2;   i<=m_pCurOpp->nside2-1; i++) pCurve3->appendPoint(m_pCurOpp->xbl[i][2], m_pCurOpp->ctq[i][2]);
+            for (int i=it2; i<=pOpp->nside2-1; i++) pCurve2->appendPoint(pOpp->xbl[i][2], pOpp->ctau[i][2]);
+            for (int i=2;   i<=pOpp->nside2-1; i++) pCurve3->appendPoint(pOpp->xbl[i][2], pOpp->ctq[i][2]);
 			break;
 		}
 		case 3:  //Dstar & theta TOP
@@ -650,10 +651,10 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 			pCurve0->setCurveName("D*");
 			pCurve1->setCurveName("Theta");
 
-			for (int i=2; i<m_pCurOpp->nside1; i++)
+            for (int i=2; i<pOpp->nside1; i++)
 			{
-				pCurve0->appendPoint(m_pCurOpp->xbl[i][1], m_pCurOpp->dstr[i][1]);
-				pCurve1->appendPoint(m_pCurOpp->xbl[i][1], m_pCurOpp->thet[i][1]);
+                pCurve0->appendPoint(pOpp->xbl[i][1], pOpp->dstr[i][1]);
+                pCurve1->appendPoint(pOpp->xbl[i][1], pOpp->thet[i][1]);
 			}
 			break;
 		}
@@ -667,10 +668,10 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 			pCurve0->setCurveName("D*");
 			pCurve1->setCurveName("Theta");
 
-			for (int i=2; i<m_pCurOpp->nside2; i++)
+            for (int i=2; i<pOpp->nside2; i++)
 			{
-				pCurve0->appendPoint(m_pCurOpp->xbl[i][2], m_pCurOpp->dstr[i][2]);
-				pCurve1->appendPoint(m_pCurOpp->xbl[i][2], m_pCurOpp->thet[i][2]);
+                pCurve0->appendPoint(pOpp->xbl[i][2], pOpp->dstr[i][2]);
+                pCurve1->appendPoint(pOpp->xbl[i][2], pOpp->thet[i][2]);
 			}
 			break;
 		}
@@ -683,15 +684,15 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 			pBotCurve->setCurveName("Bot");
 
 			double y[IVX][3];
-			for (int i=2; i<=m_pCurOpp->nside1-1; i++){
-				if (m_pCurOpp->RTheta[i][1]>0.0) y[i][1] = log10( m_pCurOpp->RTheta[i][1] );
+            for (int i=2; i<=pOpp->nside1-1; i++){
+                if (pOpp->RTheta[i][1]>0.0) y[i][1] = log10( pOpp->RTheta[i][1] );
 				else                             y[i][1] = 0.0;
-				pTopCurve->appendPoint(m_pCurOpp->xbl[i][1], y[i][1]);
+                pTopCurve->appendPoint(pOpp->xbl[i][1], y[i][1]);
 			}
-			for (int i=2; i<=m_pCurOpp->nside2-1; i++){
-				if (m_pCurOpp->RTheta[i][2]>0.0) y[i][2] = log10( m_pCurOpp->RTheta[i][2] );
+            for (int i=2; i<=pOpp->nside2-1; i++){
+                if (pOpp->RTheta[i][2]>0.0) y[i][2] = log10( pOpp->RTheta[i][2] );
 				else                             y[i][2] = 0.0;
-				pBotCurve->appendPoint(m_pCurOpp->xbl[i][2], y[i][2]);
+                pBotCurve->appendPoint(pOpp->xbl[i][2], y[i][2]);
 			}
 			break;
 		}
@@ -703,8 +704,8 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 			pTopCurve->setCurveName("ReTheta_Top");
 			pBotCurve->setCurveName("ReTheta_Bot");
 
-			for (int i=2; i<=m_pCurOpp->nside1-1; i++) pTopCurve->appendPoint(m_pCurOpp->xbl[i][1], m_pCurOpp->RTheta[i][1]);
-			for (int i=2; i<=m_pCurOpp->nside2-1; i++) pBotCurve->appendPoint(m_pCurOpp->xbl[i][2], m_pCurOpp->RTheta[i][2]);
+            for (int i=2; i<=pOpp->nside1-1; i++) pTopCurve->appendPoint(pOpp->xbl[i][1], pOpp->RTheta[i][1]);
+            for (int i=2; i<=pOpp->nside2-1; i++) pBotCurve->appendPoint(pOpp->xbl[i][2], pOpp->RTheta[i][2]);
 			break;
 		}
 		case 7:  //Amplification factor
@@ -718,22 +719,22 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 
 			double y[IVX][3];
 
-			for (int ibl=2; ibl<m_pCurOpp->nside1; ibl++)
+            for (int ibl=2; ibl<pOpp->nside1; ibl++)
 			{
-				y[ibl][1] = m_pCurOpp->ctau[ibl][1];
+                y[ibl][1] = pOpp->ctau[ibl][1];
 			}
-			for (int ibl=2; ibl<m_pCurOpp->nside2; ibl++)
+            for (int ibl=2; ibl<pOpp->nside2; ibl++)
 			{
-				y[ibl][2] = m_pCurOpp->ctau[ibl][2];
+                y[ibl][2] = pOpp->ctau[ibl][2];
 			}
 
-			for (int i=2; i<=m_pCurOpp->itran[1]-2; i++)
+            for (int i=2; i<=pOpp->itran[1]-2; i++)
 			{
-				pTopCurve->appendPoint(m_pCurOpp->xbl[i][1], y[i][1]);
+                pTopCurve->appendPoint(pOpp->xbl[i][1], y[i][1]);
 			}
-			for (int i=2; i<=m_pCurOpp->itran[2]-2; i++)
+            for (int i=2; i<=pOpp->itran[2]-2; i++)
 			{
-				pBotCurve->appendPoint(m_pCurOpp->xbl[i][2], y[i][2]);
+                pBotCurve->appendPoint(pOpp->xbl[i][2], y[i][2]);
 			}
 			break;
 		}
@@ -746,25 +747,25 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 			pTopCurve->setCurveName("Dissipation-Top");
 			pBotCurve->setCurveName("Dissipation-Bot");
 
-			double qrf = m_pCurOpp->qinf;
+            double qrf = pOpp->qinf;
 
 			//---- fill compressible ue arrays
-			for (int ibl=2; ibl<= m_pCurOpp->nside1;ibl++)
+            for (int ibl=2; ibl<= pOpp->nside1;ibl++)
 			{
-				y[ibl][1] = m_pCurOpp->dis[ibl][1] / qrf/ qrf/ qrf;
+                y[ibl][1] = pOpp->dis[ibl][1] / qrf/ qrf/ qrf;
 			}
-			for (int ibl=2; ibl<= m_pCurOpp->nside2;ibl++)
+            for (int ibl=2; ibl<= pOpp->nside2;ibl++)
 			{
-				y[ibl][2] = m_pCurOpp->dis[ibl][2] / qrf/ qrf/ qrf;
+                y[ibl][2] = pOpp->dis[ibl][2] / qrf/ qrf/ qrf;
 			}
 
-			for (int i=2; i<=m_pCurOpp->nside1-1; i++)
+            for (int i=2; i<=pOpp->nside1-1; i++)
 			{
-				pTopCurve->appendPoint(m_pCurOpp->xbl[i][1], y[i][1]);
+                pTopCurve->appendPoint(pOpp->xbl[i][1], y[i][1]);
 			}
-			for (int i=2; i<=m_pCurOpp->nside2-1; i++)
+            for (int i=2; i<=pOpp->nside2-1; i++)
 			{
-				pBotCurve->appendPoint(m_pCurOpp->xbl[i][2], y[i][2]);
+                pBotCurve->appendPoint(pOpp->xbl[i][2], y[i][2]);
 			}
 			break;
 		}
@@ -776,26 +777,26 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 			pTopCurve->setCurveName("Wall_shear_Top");
 			pBotCurve->setCurveName("Wall_shear_Bot");
 
-			double que = 0.5*m_pCurOpp->qinf*m_pCurOpp->qinf;
+            double que = 0.5*pOpp->qinf*pOpp->qinf;
 
 			double y[IVX][ISX];
 			//---- fill compressible ue arrays
-			for (int ibl=2; ibl<= m_pCurOpp->nside1;ibl++)
+            for (int ibl=2; ibl<= pOpp->nside1;ibl++)
 			{
-				y[ibl][1] = m_pCurOpp->tau[ibl][1] / que;
+                y[ibl][1] = pOpp->tau[ibl][1] / que;
 			}
-			for (int ibl=2; ibl<= m_pCurOpp->nside2;ibl++)
+            for (int ibl=2; ibl<= pOpp->nside2;ibl++)
 			{
-				y[ibl][2] = m_pCurOpp->tau[ibl][2] / que;
+                y[ibl][2] = pOpp->tau[ibl][2] / que;
 			}
 
-			for (int i=2; i<=m_pCurOpp->nside1-1; i++)
+            for (int i=2; i<=pOpp->nside1-1; i++)
 			{
-				pTopCurve->appendPoint(m_pCurOpp->xbl[i][1], y[i][1]);
+                pTopCurve->appendPoint(pOpp->xbl[i][1], y[i][1]);
 			}
-			for (int i=2; i<=m_pCurOpp->nside2-1; i++)
+            for (int i=2; i<=pOpp->nside2-1; i++)
 			{
-				pBotCurve->appendPoint(m_pCurOpp->xbl[i][2], y[i][2]);
+                pBotCurve->appendPoint(pOpp->xbl[i][2], y[i][2]);
 			}
 			break;
 		}
@@ -811,26 +812,26 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 			double uei;
 
 			//---- fill compressible ue arrays
-			for (int ibl=2; ibl<= m_pCurOpp->nside1;ibl++)
+            for (int ibl=2; ibl<= pOpp->nside1;ibl++)
 			{
-				uei = m_pCurOpp->uedg[ibl][1];
-				y[ibl][1] = uei * (1.0-m_pCurOpp->tklam)
-								/ (1.0-m_pCurOpp->tklam*(uei/m_pCurOpp->qinf)*(uei/m_pCurOpp->qinf));
+                uei = pOpp->uedg[ibl][1];
+                y[ibl][1] = uei * (1.0-pOpp->tklam)
+                                / (1.0-pOpp->tklam*(uei/pOpp->qinf)*(uei/pOpp->qinf));
 			}
-			for (int ibl=2; ibl<= m_pCurOpp->nside2;ibl++)
+            for (int ibl=2; ibl<= pOpp->nside2;ibl++)
 			{
-				uei = m_pCurOpp->uedg[ibl][2];
-				y[ibl][2] = uei * (1.0-m_pCurOpp->tklam)
-								/ (1.0-m_pCurOpp->tklam*(uei/m_pCurOpp->qinf)*(uei/m_pCurOpp->qinf));
+                uei = pOpp->uedg[ibl][2];
+                y[ibl][2] = uei * (1.0-pOpp->tklam)
+                                / (1.0-pOpp->tklam*(uei/pOpp->qinf)*(uei/pOpp->qinf));
 			}
 
-			for (int i=2; i<=m_pCurOpp->nside1-1; i++)
+            for (int i=2; i<=pOpp->nside1-1; i++)
 			{
-				pTopCurve->appendPoint(m_pCurOpp->xbl[i][1], y[i][1]);
+                pTopCurve->appendPoint(pOpp->xbl[i][1], y[i][1]);
 			}
-			for (int i=2; i<=m_pCurOpp->nside2-1; i++)
+            for (int i=2; i<=pOpp->nside2-1; i++)
 			{
-				pBotCurve->appendPoint(m_pCurOpp->xbl[i][2], y[i][2]);
+                pBotCurve->appendPoint(pOpp->xbl[i][2], y[i][2]);
 			}
 			break;
 		}
@@ -842,13 +843,13 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 			pTopCurve->setCurveName("Top");
 			pBotCurve->setCurveName("Bot");
 
-			for (int i=2; i<=m_pCurOpp->nside1-1; i++)
+            for (int i=2; i<=pOpp->nside1-1; i++)
 			{
-				pTopCurve->appendPoint(m_pCurOpp->xbl[i][1], m_pCurOpp->Hk[i][1]);
+                pTopCurve->appendPoint(pOpp->xbl[i][1], pOpp->Hk[i][1]);
 			}
-			for (int i=2; i<=m_pCurOpp->nside2-1; i++)
+            for (int i=2; i<=pOpp->nside2-1; i++)
 			{
-				pBotCurve->appendPoint(m_pCurOpp->xbl[i][2], m_pCurOpp->Hk[i][2]);
+                pBotCurve->appendPoint(pOpp->xbl[i][2], pOpp->Hk[i][2]);
 			}
 
 			break;
@@ -883,12 +884,8 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 */
 void XDirect::fillPolarCurve(Curve *pCurve, Polar *pPolar, int XVar, int YVar)
 {
-	int i;
-	QList <double> *pX;
-	QList <double> *pY;
-
-	pX = (QList <double> *) getVariable(pPolar, XVar);
-	pY = (QList <double> *) getVariable(pPolar, YVar);
+    QVector<double> *pX = getVariable(pPolar, XVar);
+    QVector<double> *pY = getVariable(pPolar, YVar);
 	double fx = 1.0;
 	double fy = 1.0;
 
@@ -897,7 +894,7 @@ void XDirect::fillPolarCurve(Curve *pCurve, Polar *pPolar, int XVar, int YVar)
 	if(XVar == 3) fx = 10000.0;
 	if(YVar == 3) fy = 10000.0;
 
-	for (i=0; i<pPolar->m_Alpha.size(); i++)
+    for (int i=0; i<pPolar->m_Alpha.size(); i++)
 	{
 		if (XVar==12)
 		{
@@ -953,9 +950,9 @@ void XDirect::fillPolarCurve(Curve *pCurve, Polar *pPolar, int XVar, int YVar)
 * @param iVar the index of the variable for which a pointer is requested
 * @return a pointer to the array of the requested variable
 */
-void * XDirect::getVariable(Polar *pPolar, int iVar)
+QVector<double>* XDirect::getVariable(Polar *pPolar, int iVar)
 {
-	void * pVar;
+    QVector<double> * pVar=nullptr;
 	switch (iVar){
 		case 0:
 			pVar = &pPolar->m_Alpha;
@@ -1783,9 +1780,9 @@ void XDirect::onDefinePolar()
 		QColor clr = randomColor(!Settings::isLightTheme());
 		m_pCurPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
 
-		m_pCurPolar->foilName() = m_pCurFoil->foilName();
-		m_pCurPolar->polarName() = fpDlg.m_PlrName;
-		m_pCurPolar->isVisible() = true;
+        m_pCurPolar->setFoilName(m_pCurFoil->foilName());
+        m_pCurPolar->setPolarName(fpDlg.m_PlrName);
+        m_pCurPolar->setVisible(true);
 		m_pCurPolar->copySpecification(&s_RefPolar);
 
 		m_pCurPolar->setPolarType(fpDlg.m_PolarType);
@@ -2206,7 +2203,7 @@ void XDirect::onEditCurPolar()
 void XDirect::onExportBLData()
 {
 	if(!m_pCurOpp || m_pCurOpp->nside1==0) return;
-	if(!m_pCurFoil)		  return;
+    if(!m_pCurFoil) return;
 
 	QString fileName,  OutString, strong;
 
@@ -2914,7 +2911,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
 		QMessageBox::warning(s_pMainFrame, tr("Warning"), str);
         return nullptr;
 	}
-	pPolar->foilName() = FoilName;
+    pPolar->setFoilName(FoilName);
 
 	bRead  = ReadAVLString(in, Line, strong);// analysis type
 
@@ -3044,12 +3041,14 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
 	txtFile.close();
 
 	Re = pPolar->Reynolds()/1000000.0;
-	pPolar->polarName() = QString("T%1_Re%2_M%3")
+    QString strange = QString("T%1_Re%2_M%3")
 						.arg(pPolar->polarType())
 						.arg(Re,0,'f',2)
 						.arg(pPolar->Mach(),0,'f',2);
 	str = QString("_N%1").arg(pPolar->NCrit(),0,'f',1);
-	pPolar->polarName() += str + "_Imported";
+    strange += str + "_Imported";
+
+    pPolar->setPolarName(strange);
 
 	QColor clr = MainFrame::getColor(1);
 	pPolar->setColor(clr.red(), clr.green(), clr.blue());
@@ -3126,12 +3125,12 @@ void XDirect::onImportJavaFoilPolar()
 		else
 		{
 			Polar *pPolar = new Polar();
-			pPolar->foilName() = FoilName;
+            pPolar->setFoilName(FoilName);
 			pPolar->Reynolds() = Re;;
-			pPolar->polarName() = QString("T%1_Re2_M3_JavaFoil")
+            pPolar->setPolarName(QString("T%1_Re2_M3_JavaFoil")
 								.arg(pPolar->polarType())
 								.arg(pPolar->Reynolds()/1000000.0,0,'f',2)
-								.arg(pPolar->Mach(),0,'f',2);
+                                .arg(pPolar->Mach(),0,'f',2));
 
 			QColor clr = MainFrame::getColor(1);
 			pPolar->setColor(clr.red(), clr.green(), clr.blue());
@@ -3518,16 +3517,19 @@ void XDirect::onRenameCurPolar()
 				if (pOpp->polarName() == m_pCurPolar->polarName())
 				{
 					m_poaOpp->removeAt(l);
-					if(pOpp==m_pCurOpp) setCurOpp(NULL);
+
+                    if(pOpp==m_pCurOpp)
+                        setCurOpp(nullptr);
+
 					delete pOpp;
 				}
 			}
 			m_poaPolar->removeAt(k);
-			if(pPolar==m_pCurPolar) setCurPolar(NULL);
+            if(pPolar==m_pCurPolar) setCurPolar(nullptr);
 			delete pPolar;
 
 			//and rename everything
-			m_pCurPolar->polarName() = renDlg.newName();
+            m_pCurPolar->setPolarName(renDlg.newName());
 
 			for (l=m_poaOpp->size()-1;l>=0; l--)
 			{
@@ -5032,7 +5034,7 @@ void XDirect::importAnalysisFromXML(QFile &xmlFile)
 		if(!pFoil && m_pCurFoil)
 		{
 			s_pMainFrame->statusBar()->showMessage(tr("Attaching the analysis to the active foil"));
-			pPolar->foilName() = m_pCurFoil->foilName();
+            pPolar->setFoilName(m_pCurFoil->foilName());
 			pFoil = m_pCurFoil;
 		}
 		else if(!pFoil)
