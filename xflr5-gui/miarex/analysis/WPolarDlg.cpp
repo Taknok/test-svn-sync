@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	WPolarDlg Class
-	Copyright (C) 2009-2016 Andre Deperrois 
+    Copyright (C) 2009-2019 Andre Deperrois
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -105,9 +105,13 @@ void WPolarDlg::connectSignals()
 	connect(m_pctrlArea1, SIGNAL(clicked()),this, SLOT(onArea()));
 	connect(m_pctrlArea2, SIGNAL(clicked()),this, SLOT(onArea()));
 	connect(m_pctrlArea3, SIGNAL(clicked()),this, SLOT(onArea()));
+}
 
-	connect(OKButton, SIGNAL(clicked()),this, SLOT(onOK()));
-	connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+
+void WPolarDlg::onButton(QAbstractButton *pButton)
+{
+    if (m_pButtonBox->button(QDialogButtonBox::Ok) == pButton)           onOK();
+    else if (m_pButtonBox->button(QDialogButtonBox::Cancel) == pButton)  reject();
 }
 
 
@@ -346,12 +350,12 @@ void WPolarDlg::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_Return:
 		case Qt::Key_Enter:
 		{
-			if(!OKButton->hasFocus() && !CancelButton->hasFocus())
+            if(!m_pButtonBox->hasFocus())
 			{
 				readExtraDragData();
 				readValues();
 				setWPolarName();
-				OKButton->setFocus();
+                m_pButtonBox->setFocus();
 				return;
 			}
 			else
@@ -1069,17 +1073,10 @@ void WPolarDlg::setupLayout()
 	pTabWidget->setCurrentIndex(0);
 	connect(pTabWidget, SIGNAL(currentChanged(int)), this, SLOT(onTabChanged(int)));
 
-	QHBoxLayout *pCommandButtons = new QHBoxLayout;
-	{
-		OKButton = new QPushButton(tr("OK"));
-		OKButton->setDefault(true);
-		CancelButton = new QPushButton(tr("Cancel"));
-		pCommandButtons->addStretch(1);
-		pCommandButtons->addWidget(OKButton);
-		pCommandButtons->addStretch(1);
-		pCommandButtons->addWidget(CancelButton);
-		pCommandButtons->addStretch(1);
-	}
+    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    {
+        connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(onButton(QAbstractButton*)));
+    }
 
 	QVBoxLayout *pMainLayout = new QVBoxLayout(this);
 	{
@@ -1095,7 +1092,7 @@ void WPolarDlg::setupLayout()
 		pMainLayout->addSpacing(13);
 		pMainLayout->addWidget(pTabWidget,13);
 		pMainLayout->addStretch(1);
-		pMainLayout->addLayout(pCommandButtons,1);
+        pMainLayout->addWidget(m_pButtonBox,1);
 	}
 	setLayout(pMainLayout);
 }
