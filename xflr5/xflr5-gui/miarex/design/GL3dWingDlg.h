@@ -37,6 +37,7 @@
 #include <QPushButton>
 #include <QSplitter>
 #include <QOpenGLBuffer>
+#include <QDialogButtonBox>
 
 #include <objects/objects3d/vector3d.h>
 
@@ -99,6 +100,7 @@ private slots:
 	void onExportWing();
 	void onImportWingFromXML();
 	void onExportWingToXML();
+    void onButton(QAbstractButton *pButton);
 
 private:
 	void accept();
@@ -161,7 +163,8 @@ private:
 	QStandardItemModel *m_pWingModel;
 	WingDelegate *m_pWingDelegate;
 
-	QPushButton *OKButton, *CancelButton;
+    QDialogButtonBox *m_pButtonBox;
+
     QCheckBox *m_pctrlAxes, *m_pctrlSurfaces, *m_pctrlOutline, *m_pctrlPanels, *m_pctrlFoilNames;
 	QCheckBox *m_pctrlShowMasses;
 	QPushButton *m_pctrlReset;

@@ -3478,9 +3478,6 @@ void Miarex::onEditCurBody()
     GL3dBodyDlg glbDlg(s_pMainFrame);
     glbDlg.m_bEnableName = false;
     glbDlg.initDialog(pModPlane->body());
-    glbDlg.move(GL3dBodyDlg::s_WindowPos);
-    glbDlg.resize(GL3dBodyDlg::s_WindowSize);
-    if(GL3dBodyDlg::s_bWindowMaximized) glbDlg.setWindowState(Qt::WindowMaximized);
 
     if(glbDlg.exec()!=QDialog::Accepted)
     {
@@ -3584,9 +3581,6 @@ void Miarex::onEditCurBodyObject()
 
     EditBodyDlg ebDlg(s_pMainFrame);
     ebDlg.initDialog(pModPlane->body());
-    ebDlg.move(GL3dBodyDlg::s_WindowPos);
-    ebDlg.resize(GL3dBodyDlg::s_WindowSize);
-    if(GL3dBodyDlg::s_bWindowMaximized) ebDlg.setWindowState(Qt::WindowMaximized);
 
     if(ebDlg.exec()!=QDialog::Accepted)
     {
