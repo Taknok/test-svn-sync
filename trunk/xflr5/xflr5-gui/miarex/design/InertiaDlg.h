@@ -74,7 +74,7 @@ private slots:
 private:
 	void contextMenuEvent(QContextMenuEvent *event);
 	void keyPressEvent(QKeyEvent *event);
-	void resizeEvent(QResizeEvent *event);
+    void resizeEvent(QResizeEvent *pEvent);
 	void showEvent(QShowEvent *event);
 	void hideEvent(QHideEvent *event);
 
