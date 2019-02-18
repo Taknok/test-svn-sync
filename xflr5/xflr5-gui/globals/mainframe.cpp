@@ -301,7 +301,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
     LLTAnalysisDlg::setPosition(QPoint(kx+31, ky+31));
     PanelAnalysisDlg::s_Position = QPoint(kx+31, ky+31);
     EditPlrDlg::s_Position       = QPoint(kx+31, ky+31);
-    InertiaDlg::s_Position       = QPoint(kx+31, ky+31);
+
 
 
     if(s_LanguageFilePath.length())
