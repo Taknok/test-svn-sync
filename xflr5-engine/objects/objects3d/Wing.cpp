@@ -3418,7 +3418,7 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
 	7, 8 = m_HMom, m_Cpmn;
 	9,10 = m_ClCd, m_Cl32Cd;
 */
-	QList <double> *pX;
+    QVector <double> *pX;
 	double Clmin, Clmax;
 	Polar *pPolar;
 	double Var1, Var2, u, dist;
@@ -3470,7 +3470,7 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
 			{
 				bOutRe = true;
 				//interpolate Cl on this polar
-				pX = (QList <double> *) pPolar->getPlrVariable(PlrVar);
+                pX = (QVector<double> *) pPolar->getPlrVariable(PlrVar);
 				size = (int)pPolar->m_Cl.size();
 				if(Cl < pPolar->m_Cl[0])
 				{
@@ -3545,7 +3545,7 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
 			return 0.000;
 		}
 
-		pX = (QList <double> *) pPolar1->getPlrVariable(PlrVar);
+        pX = (QVector <double> *) pPolar1->getPlrVariable(PlrVar);
 		if(Cl < pPolar1->m_Cl[0])	   return (*pX)[0];
 		if(Cl > pPolar1->m_Cl[size-1]) return (*pX)[size-1];
 		for (i=0; i<size-1; i++)
@@ -3586,7 +3586,7 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
 			return 0.000;
 		}
 
-		pX = (QList <double> *) pPolar1->getPlrVariable(PlrVar);
+        pX = (QVector <double> *) pPolar1->getPlrVariable(PlrVar);
 		pPolar1->getClLimits(Clmin, Clmax);
 		if(Cl < Clmin)
 		{
@@ -3664,7 +3664,7 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
 			return 0.000;
 		}
 
-		pX = (QList <double> *) pPolar2->getPlrVariable(PlrVar);
+        pX = (QVector <double> *) pPolar2->getPlrVariable(PlrVar);
 		pPolar2->getClLimits(Clmin, Clmax);
 
 		if(Cl < Clmin)

@@ -278,7 +278,7 @@ void WPolar::insertDataAt(int pos, double Alpha, double Beta, double QInf, doubl
 void WPolar::addPlaneOpPoint(PlaneOpp *pPOpp)
 {
 	bool bInserted = false;
-	int i;
+    int i=0;
 	int size = dataSize();
 
 	if(size)
