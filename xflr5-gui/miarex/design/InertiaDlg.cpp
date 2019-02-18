@@ -82,9 +82,9 @@ InertiaDlg::~InertiaDlg()
 
 void InertiaDlg::onButton(QAbstractButton *pButton)
 {
-    if (m_pButtonBox->button(QDialogButtonBox::Save) == pButton)           onOK();
-    else if (m_pButtonBox->button(QDialogButtonBox::Cancel) == pButton)  reject();
-    else if(pButton==m_pctrlExportToAVL) onExportToAVL();
+    if      (m_pButtonBox->button(QDialogButtonBox::Save) == pButton)     onOK();
+    else if (m_pButtonBox->button(QDialogButtonBox::Discard) == pButton)  reject();
+    else if (pButton==m_pctrlExportToAVL) onExportToAVL();
 }
 
 
@@ -1250,7 +1250,7 @@ void InertiaDlg::onBodyInertia()
 }
 
 
-void InertiaDlg::resizeEvent(QResizeEvent *event)
+void InertiaDlg::resizeEvent(QResizeEvent *pEvent)
 {
     if(!m_pctrlMassTable || !m_pMassModel) return;
     int w = m_pctrlMassTable->width();
@@ -1262,7 +1262,7 @@ void InertiaDlg::resizeEvent(QResizeEvent *event)
     m_pctrlMassTable->setColumnWidth(3,w7);
     m_pctrlMassTable->setColumnWidth(4,3*w7);
 
-    event->accept();
+    pEvent->accept();
 }
 
 
