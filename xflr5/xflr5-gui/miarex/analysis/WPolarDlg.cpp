@@ -111,8 +111,8 @@ void WPolarDlg::connectSignals()
 
 void WPolarDlg::onButton(QAbstractButton *pButton)
 {
-    if (m_pButtonBox->button(QDialogButtonBox::Ok) == pButton)           onOK();
-    else if (m_pButtonBox->button(QDialogButtonBox::Cancel) == pButton)  reject();
+    if (m_pButtonBox->button(QDialogButtonBox::Save) == pButton)           onOK();
+    else if (m_pButtonBox->button(QDialogButtonBox::Discard) == pButton)  reject();
 }
 
 
@@ -1074,7 +1074,7 @@ void WPolarDlg::setupLayout()
     pTabWidget->setCurrentIndex(0);
     connect(pTabWidget, SIGNAL(currentChanged(int)), this, SLOT(onTabChanged(int)));
 
-    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Discard);
     {
         connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(onButton(QAbstractButton*)));
     }

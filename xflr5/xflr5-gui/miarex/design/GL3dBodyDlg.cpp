@@ -1,7 +1,7 @@
 /****************************************************************************
 
-    BodyDlg Class
-    Copyright (C) 2009-2016 Andre Deperrois
+    GL3dBodyDlg Class
+    Copyright (C) 2009-2019 Andre Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -197,8 +197,8 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
 
 void GL3dBodyDlg::onButton(QAbstractButton *pButton)
 {
-    if (m_pButtonBox->button(QDialogButtonBox::Ok) == pButton)           accept();
-    else if (m_pButtonBox->button(QDialogButtonBox::Cancel) == pButton)  reject();
+    if (m_pButtonBox->button(QDialogButtonBox::Save) == pButton)           accept();
+    else if (m_pButtonBox->button(QDialogButtonBox::Discard) == pButton)  reject();
 }
 
 
@@ -1336,7 +1336,7 @@ void GL3dBodyDlg::setupLayout()
         }
 
 
-        m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+        m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Discard);
         {
             connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(onButton(QAbstractButton*)));
         }
