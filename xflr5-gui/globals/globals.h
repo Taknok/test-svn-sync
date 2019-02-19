@@ -1,22 +1,22 @@
 /****************************************************************************
 
-	Global functions
+    Global functions
 
-	Copyright (C) 2008-2017 Andre Deperrois 
+    Copyright (C) 2008-2017 Andre Deperrois
 
-	This program is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
-	(at your option) any later version.
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with this program; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 *****************************************************************************/
 
@@ -43,6 +43,8 @@ using namespace std;
 class Foil;
 class Polar;
 class OpPoint;
+class Plane;
+class WPolar;
 
 int readValues(QString line, double &x, double &y, double &z);
 
@@ -104,7 +106,7 @@ XFLR5::enumRefDimension referenceDimension(QString strRefDimension);
 XFLR5::enumWingType wingType(QString strWingType);
 QString wingType(XFLR5::enumWingType wingType);
 
-void setAutoWPolarName(void * ptrWPolar, void *ptrPlane);
+void setAutoWPolarName(WPolar * pWPolar, Plane *pPlane);
 
 
 void ReynoldsFormat(QString &str, double f);

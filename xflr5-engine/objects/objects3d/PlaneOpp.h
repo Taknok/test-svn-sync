@@ -1,7 +1,7 @@
 /****************************************************************************
 
 	PlaneOpp Class
-	Copyright (C) 2006-2016 Andre Deperrois 
+    Copyright (C) 2006-2019 Andre Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -37,7 +37,8 @@
 #include <objects/objects3d/WingOpp.h>
 #include <objects/objectcolor.h>
 
-
+class Plane;
+class WPolar;
 
 //using namespace std;
 
@@ -61,7 +62,7 @@ class XFLR5ENGINELIBSHARED_EXPORT PlaneOpp
 	friend class LLTAnalysis;
 
 public:
-    PlaneOpp(void *pPlanePtr=nullptr, void *pWPolarPtr=nullptr, int PanelArraySize=0);
+    PlaneOpp(Plane *pPlane=nullptr, WPolar *pWPolar=nullptr, int PanelArraySize=0);
 	~PlaneOpp();
 
 

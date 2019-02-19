@@ -29,8 +29,12 @@
 #include <QPushButton>
 #include <QSlider>
 #include <QSettings>
-#include <misc/text/DoubleEdit.h>
-#include "exponentialslider.h"
+
+
+class gl3dView;
+class ExponentialSlider;
+class DoubleEdit;
+
 
 struct Light
 {
@@ -58,7 +62,7 @@ public:
 	void setDefaults();
 	void setModelSize(double span);
 	void setParams(void);
-	void setgl3dView(void*pglView) {m_pglView = pglView;}
+    void setgl3dView(gl3dView*pglView) {m_pglView = pglView;}
 
 	QSize minimumSizeHint() const;
 	QSize sizeHint() const;
@@ -98,7 +102,7 @@ private:
 
 
 private:
-	void *m_pglView;
+    gl3dView *m_pglView;
 
 	static Light s_Light;
 	static Attenuation s_Attenuation;
