@@ -7038,6 +7038,9 @@ void MainFrame::onAutoCheckForUpdates()
 {
     //check if a month has passed since the last check
     QDate today = QDate::currentDate();
+    Trace("Updater::lastCheckDate().isNull():  ", Updater::lastCheckDate().isNull());
+    Trace("Updater::lastCheckDate().isValid(): ", Updater::lastCheckDate().isValid());
+    Trace("Updater::lastCheckDate(): " + Updater::lastCheckDate().toString("yyyy.MM.dd"));
     if(Updater::lastCheckDate().isNull() || !Updater::lastCheckDate().isValid() || Updater::lastCheckDate().daysTo(today)>31)
     {
         m_bManualCheck = false;
@@ -7083,6 +7086,9 @@ void MainFrame::onFinishedUpdater()
 {
     if(!m_pUpdater) return;
     Popup *pPopup = new Popup;
+
+    Trace("Finished update check; available version: ", double(Updater::majorVersion())+double(Updater::minorVersion())/100.0);
+
     if(m_pUpdater->hasUpdate())  pPopup->setRed();
     else                         pPopup->setGreen();
 

@@ -34,6 +34,7 @@
 #include "graphwidget.h"
 #include <globals/globals.h>
 #include <globals/gui_params.h>
+#include <graph/curve.h>
 #include <graph/graph.h>
 #include <misc/options/displayoptions.h>
 #include <misc/text/DoubleEdit.h>

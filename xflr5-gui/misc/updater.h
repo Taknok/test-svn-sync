@@ -29,15 +29,15 @@ class MainFrame;
 
 class Updater : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	Updater(MainFrame *pMainFrame);
-	~Updater();
+    Updater(MainFrame *pMainFrame);
+    ~Updater();
 
-	bool hasUpdate();
-	QString releaseDate()        const {return m_Date;}
-	QString releaseDescription() const {return m_Description;}
+    bool hasUpdate();
+    QString releaseDate()        const {return m_Date;}
+    QString releaseDescription() const {return m_Description;}
 
     static void setAutoCheck(bool bAuto) {s_bAutoCheck=bAuto;}
     static bool bAutoCheck() {return s_bAutoCheck;}
@@ -52,23 +52,23 @@ public:
     static void saveSettings(QSettings *pSettings);
 
 signals:
-	void finishedUpdate();
+    void finishedUpdate();
 
 private slots:
-	void onDownloadFinished(QNetworkReply *pResponse);
+    void onDownloadFinished(QNetworkReply *pResponse);
 
-	void checkForUpdates();
+    void checkForUpdates();
 
-	void onReplyFinished(QNetworkReply*netReply);
-	void onReadyRead();
-	void slotError(QNetworkReply::NetworkError);
-	void slotSslErrors(QList<QSslError>);
+    void onReplyFinished(QNetworkReply*netReply);
+    void onReadyRead();
+    void slotError(QNetworkReply::NetworkError);
+    void slotSslErrors(QList<QSslError>);
 
 
 private:
-	QNetworkAccessManager *m_pNetworkAcessManager;
-	QNetworkReply * m_pNetworkReply;
-	QString m_Date, m_Description;
+    QNetworkAccessManager *m_pNetworkAcessManager;
+    QNetworkReply * m_pNetworkReply;
+    QString m_Date, m_Description;
 
     static MainFrame *s_pMainFrame;
 

@@ -36,6 +36,7 @@
 #include <analysis3d/matrix.h>
 #include <globals/globals.h>
 #include <globals/mainframe.h>
+#include <graph/curve.h>
 #include <graph/graph.h>
 #include <miarex/analysis/AeroDataDlg.h>
 #include <miarex/analysis/EditPolarDefDlg.h>
@@ -70,8 +71,8 @@
 #include <misc/line/LineBtn.h>
 #include <misc/line/LineCbBox.h>
 #include <misc/line/LineDelegate.h>
-#include <misc/options/units.h>
 #include <misc/options/displayoptions.h>
+#include <misc/options/units.h>
 #include <misc/stlexportdialog.h>
 #include <misc/text/DoubleEdit.h>
 #include <misc/text/MinTextEdit.h>
@@ -89,7 +90,6 @@
 #include <viewwidgets/miarextilewidget.h>
 #include <viewwidgets/wingwidget.h>
 #include <xdirect/objects2d.h>
-
 
 #ifdef Q_OS_WIN
 #include <windows.h> // for Sleep
