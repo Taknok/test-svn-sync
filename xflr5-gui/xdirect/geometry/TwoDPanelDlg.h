@@ -24,6 +24,7 @@
 #define TWODPANELDLG_H
 
 #include <QDialog>
+#include <QDialogButtonBox>
 #include <QPushButton>
 
 
@@ -42,6 +43,7 @@ private slots:
     void onApply();
     void onOK();
     void onChanged();
+    void onButton(QAbstractButton *pButton);
 
 public:
     TwoDPanelDlg(QWidget *pParent);
@@ -55,7 +57,7 @@ private:
     void setupLayout();
     void readParams();
 
-    QPushButton *OKButton, *CancelButton, *ApplyButton;
+    QDialogButtonBox *m_pButtonBox;
 
     IntEdit  *m_pctrlNPanels;
     DoubleEdit *m_pctrlCVpar,  *m_pctrlCTErat, *m_pctrlCTRrat;
