@@ -38,6 +38,7 @@
 #include <xdirect/objects2d.h>
 #include <viewwidgets/xdirecttilewidget.h>
 #include <graph/graphdlg.h>
+#include <graph/curve.h>
 
 #include <xdirect/xmlpolarreader.h>
 #include <xdirect/xmlpolarwriter.h>

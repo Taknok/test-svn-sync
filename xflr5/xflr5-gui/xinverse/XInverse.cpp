@@ -23,7 +23,7 @@
 #include <QGridLayout>
 #include <QAction>
 #include <QMessageBox>
-#include <QtDebug>
+#include <QDebug>
 
 #include "FoilSelectionDlg.h"
 #include "InverseOptionsDlg.h"
@@ -44,7 +44,7 @@
 #include <xdirect/XDirect.h>
 #include <xdirect/objects2d.h>
 #include <analysis3d/analysis3d_params.h>
-
+#include <graph/curve.h>
 
 
 MainFrame *XInverse::s_pMainFrame;

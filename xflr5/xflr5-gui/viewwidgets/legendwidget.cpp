@@ -19,6 +19,7 @@
 
 *****************************************************************************/
 
+#include <QPainter>
 
 #include "legendwidget.h"
 #include "graphtilewidget.h"
@@ -37,7 +38,7 @@
 #include <xinverse/XInverse.h>
 #include <xdirect/XDirect.h>
 #include <xdirect/objects2d.h>
-#include <QPainter>
+#include <graph/curve.h>
 
 
 MainFrame* LegendWidget::s_pMainFrame = nullptr;
