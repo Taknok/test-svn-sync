@@ -1,7 +1,7 @@
 /****************************************************************************
 
     PlaneOpp Class
-    Copyright (C) 2006-2016 Andre Deperrois
+    Copyright (C) 2006-2019 Andre Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ bool  PlaneOpp::s_bKeepOutOpps=false;
 /**
 *The public constructor
 */
-PlaneOpp::PlaneOpp(void *pPlanePtr, void *pWPolarPtr, int PanelArraySize)
+PlaneOpp::PlaneOpp(Plane *pPlane, WPolar *pWPolar, int PanelArraySize)
 {
     m_PlaneName   = "";
     m_WPlrName    = "";
@@ -100,18 +100,16 @@ PlaneOpp::PlaneOpp(void *pPlanePtr, void *pWPolarPtr, int PanelArraySize)
     allocateMemory(PanelArraySize);
 
 
-    if(pPlanePtr)
+    if(pPlane)
     {
-        Plane * pPlane = (Plane*)pPlanePtr;
         m_PlaneName = pPlane->planeName();
         m_MAChord   = pPlane->mac();
         m_Span      = pPlane->span();
         m_NStation  = pPlane->m_Wing[0].m_NStation;
     }
 
-    if(pWPolarPtr)
+    if(pWPolar)
     {
-        WPolar *pWPolar = (WPolar*)pWPolarPtr;
         m_WPlrName        = pWPolar->polarName();
         m_bVLM1           = pWPolar->bVLM1();
         m_WPlrName        = pWPolar->polarName();
