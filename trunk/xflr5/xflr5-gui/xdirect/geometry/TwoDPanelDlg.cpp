@@ -96,18 +96,9 @@ void TwoDPanelDlg::setupLayout()
         connect(m_pctrlXpRef2,  SIGNAL(editingFinished()), this, SLOT(onChanged()));
     }
 
-    QHBoxLayout *pCommandButtonsLayout = new QHBoxLayout;
+    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Apply | QDialogButtonBox::Discard);
     {
-        OKButton      = new QPushButton(tr("OK"));
-        CancelButton  = new QPushButton(tr("Cancel"));
-        ApplyButton   = new QPushButton(tr("Apply"));
-        pCommandButtonsLayout->addStretch(1);
-        pCommandButtonsLayout->addWidget(ApplyButton);
-        pCommandButtonsLayout->addStretch(1);
-        pCommandButtonsLayout->addWidget(OKButton);
-        pCommandButtonsLayout->addStretch(1);
-        pCommandButtonsLayout->addWidget(CancelButton);
-        pCommandButtonsLayout->addStretch(1);
+        connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(onButton(QAbstractButton*)));
     }
 
     QVBoxLayout *pmainLayout = new QVBoxLayout;
@@ -115,14 +106,10 @@ void TwoDPanelDlg::setupLayout()
         pmainLayout->addStretch(1);
         pmainLayout->addLayout(pInputDataLayout);
         pmainLayout->addStretch(1);
-        pmainLayout->addLayout(pCommandButtonsLayout);
+        pmainLayout->addWidget(m_pButtonBox);
         pmainLayout->addStretch(1);
         setLayout(pmainLayout);
     }
-
-    connect(ApplyButton, SIGNAL(clicked()),this, SLOT(onApply()));
-    connect(OKButton, SIGNAL(clicked()),this, SLOT(onOK()));
-    connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 
     setMinimumHeight(250);
 }
@@ -153,6 +140,15 @@ void TwoDPanelDlg::initDialog()
 }
 
 
+
+void TwoDPanelDlg::onButton(QAbstractButton *pButton)
+{
+    if      (m_pButtonBox->button(QDialogButtonBox::Save) == pButton)     onOK();
+    else if (m_pButtonBox->button(QDialogButtonBox::Apply) == pButton)    onApply();
+    else if (m_pButtonBox->button(QDialogButtonBox::Discard) == pButton)  reject();
+}
+
+
 void TwoDPanelDlg::keyPressEvent(QKeyEvent *event)
 {
     // Prevent Return Key from closing App
@@ -166,15 +162,15 @@ void TwoDPanelDlg::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if(!OKButton->hasFocus() && !CancelButton->hasFocus())
+            if(!m_pButtonBox->hasFocus())
             {
-                onApply();
-                OKButton->setFocus();
-                m_bApplied  = true;
+                m_pButtonBox->setFocus();
+                return;
             }
             else
             {
-                event->ignore();
+                onOK();
+                return;
             }
             break;
         }
