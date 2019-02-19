@@ -29,6 +29,9 @@
 #include <QLabel>
 #include <QShowEvent>
 
+#include <misc/text/DoubleEdit.h>
+#include "exponentialslider.h"
+
 
 Light GLLightDlg::s_Light;
 Attenuation GLLightDlg::s_Attenuation;
@@ -280,9 +283,8 @@ void GLLightDlg::apply()
 
 	if(m_pglView)
 	{
-		gl3dView *pgl3dView =(gl3dView*)m_pglView;
-		pgl3dView->glSetupLight();
-		pgl3dView->update();
+        m_pglView->glSetupLight();
+        m_pglView->update();
 	}
 }
 
@@ -302,9 +304,8 @@ void GLLightDlg::onDefaults()
 
 	if(m_pglView)
 	{
-		gl3dView *pglView =(gl3dView*)m_pglView;
-		pglView->glSetupLight();
-		pglView->update();
+        m_pglView->glSetupLight();
+        m_pglView->update();
 	}
 }
 

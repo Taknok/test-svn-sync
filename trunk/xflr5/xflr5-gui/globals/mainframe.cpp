@@ -956,10 +956,8 @@ void MainFrame::createDockWindows()
     XInverse::s_pMainFrame        = this;
     Miarex::s_pMainFrame          = this;
     gl3dView::s_pMainFrame         = this;
-    Section2dWidget::s_pMainFrame  = this;
     GraphWidget::s_pMainFrame      = this;
     OpPointWidget::s_pMainFrame    = this;
-    WingWidget::s_pMainFrame       = this;
 
 
     m_pctrlXDirectWidget = new QDockWidget(tr("Direct foil analysis"), this);
@@ -1058,7 +1056,7 @@ void MainFrame::createDockWindows()
 
     m_pAFoil->initDialog(m_pDirect2dWidget, &Objects2d::s_oaFoil, &m_pXDirect->m_XFoil);
 
-    XInverse::s_p2DWidget        = m_p2dWidget;
+    XInverse::s_p2dWidget        = m_p2dWidget;
     m_pXInverse->s_pMainFrame       = this;
     m_pXInverse->m_pXFoil           = &m_pXDirect->m_XFoil;
 
@@ -4988,9 +4986,8 @@ void MainFrame::setMainFrameCentralWidget()
 }
 
 
-void MainFrame::selectFoil(void*pFoilPtr)
+void MainFrame::selectFoil(Foil *pFoil)
 {
-    Foil *pFoil = (Foil*)pFoilPtr;
     if(!m_pctrlFoil->count()) return;
 
     m_pctrlFoil->blockSignals(true);
@@ -5012,9 +5009,8 @@ void MainFrame::selectFoil(void*pFoilPtr)
 
 
 
-void MainFrame::selectPolar(void*pPolarPtr)
+void MainFrame::selectPolar(Polar *pPolar)
 {
-    Polar *pPolar = (Polar*)pPolarPtr;
     if(!m_pctrlPolar->count()) return;
 
     m_pctrlPolar->blockSignals(true);
@@ -5040,10 +5036,10 @@ void MainFrame::selectPolar(void*pPolarPtr)
  *Selects the operating point in the combobox and returns true
  *On error, selects the first and returns false
  */
-void MainFrame::selectOpPoint(void *pOppPtr)
+void MainFrame::selectOpPoint(OpPoint *pOpp)
 {
     Polar *pCurPlr = m_pXDirect->curPolar();
-    OpPoint *pOpp = (OpPoint*)pOppPtr;
+
     if(!pOpp || !pCurPlr) return;
     if(!m_pctrlOpPoint->count()) return;
 
@@ -5079,12 +5075,10 @@ void MainFrame::selectOpPoint(void *pOppPtr)
 }
 
 
-void MainFrame::selectPlane(void *pPlanePtr)
+void MainFrame::selectPlane(Plane *pPlane)
 {
     if(!m_pctrlPlane->count()) return;
     m_pctrlPlane->blockSignals(true);
-
-    Plane *pPlane = (Plane*)pPlanePtr;
 
     if(pPlane)
     {
@@ -5102,15 +5096,13 @@ void MainFrame::selectPlane(void *pPlanePtr)
 }
 
 
-void MainFrame::selectWPolar(void *pWPolarPtr)
+void MainFrame::selectWPolar(WPolar *pWPolar)
 {
     if(!m_pctrlPlanePolar->count()) return;
 
-    WPolar *pWPolar = (WPolar*)pWPolarPtr;
-
     m_pctrlPlanePolar->blockSignals(true);
 
-    if(pWPolarPtr)
+    if(pWPolar)
     {
         int pos = m_pctrlPlanePolar->findText(pWPolar->polarName());
         if (pos>=0) m_pctrlPlanePolar->setCurrentIndex(pos);
@@ -5125,10 +5117,9 @@ void MainFrame::selectWPolar(void *pWPolarPtr)
 }
 
 
-void MainFrame::selectPlaneOpp(void *pPlaneOppPtr)
+void MainFrame::selectPlaneOpp(PlaneOpp *pPlaneOpp)
 {
     double x = 0.0;
-    PlaneOpp *pPlaneOpp = (PlaneOpp*)pPlaneOppPtr;
 
     if(pPlaneOpp)
     {
