@@ -26,6 +26,8 @@
 #include "updater.h"
 #include <globals/mainframe.h>
 #include <globals/gui_params.h>
+#include <globals/globals.h>
+
 
 bool Updater::s_bAutoCheck = true;
 int Updater::s_AvailableMajorVersion=-1;
@@ -36,156 +38,156 @@ MainFrame *Updater::s_pMainFrame = nullptr;
 
 Updater::Updater(MainFrame *pMainFrame)
 {
-	s_pMainFrame = pMainFrame;
-	m_Date.clear();
-	m_Description.clear();
+    s_pMainFrame = pMainFrame;
+    m_Date.clear();
+    m_Description.clear();
 }
 
 
 Updater::~Updater()
 {
-	delete m_pNetworkAcessManager;
+    delete m_pNetworkAcessManager;
 }
 
 
 void Updater::checkForUpdates()
 {
-	QUrl url("https://www.xflr5.com/rss/rssfeed.xml");
+    QUrl url("https://www.xflr5.com/rss/rssfeed.xml");
 
-	QNetworkRequest request;
-	request.setUrl(url);
-	request.setRawHeader("User-Agent", "MyOwnBrowser 1.0");
+    QNetworkRequest request;
+    request.setUrl(url);
+    request.setRawHeader("User-Agent", "MyOwnBrowser 1.0");
 
-	m_pNetworkAcessManager = new QNetworkAccessManager;
-/*	switch(m_pNetworkAcessManager->networkAccessible())
-	{
-		case QNetworkAccessManager::UnknownAccessibility:
-			qDebug()<<"UnknownAccessibility";
-			return;
-		case QNetworkAccessManager::NotAccessible:
-			qDebug()<<"Netw<ork Not Accessible";
-			return;
-		case QNetworkAccessManager::Accessible:
-			qDebug()<<"Accessible";
-			break;
-	}*/
+    m_pNetworkAcessManager = new QNetworkAccessManager;
+    /*	switch(m_pNetworkAcessManager->networkAccessible())
+    {
+        case QNetworkAccessManager::UnknownAccessibility:
+            qDebug()<<"UnknownAccessibility";
+            return;
+        case QNetworkAccessManager::NotAccessible:
+            qDebug()<<"Netw<ork Not Accessible";
+            return;
+        case QNetworkAccessManager::Accessible:
+            qDebug()<<"Accessible";
+            break;
+    }*/
 
-	m_pNetworkReply = m_pNetworkAcessManager->get(request);
-	connect(m_pNetworkAcessManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onReplyFinished(QNetworkReply*)));
+    m_pNetworkReply = m_pNetworkAcessManager->get(request);
+    connect(m_pNetworkAcessManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onReplyFinished(QNetworkReply*)));
 
-/*	qDebug()<<m_pNetworkReply->isOpen();
-	qDebug()<<m_pNetworkReply->isReadable();
-	qDebug()<<m_pNetworkReply->isWritable();*/
-	connect(m_pNetworkReply, SIGNAL(readyRead()),                        this, SLOT(onReadyRead()));
-	connect(m_pNetworkReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(slotError(QNetworkReply::NetworkError)));
-	connect(m_pNetworkReply, SIGNAL(sslErrors(QList<QSslError>)),        this, SLOT(slotSslErrors(QList<QSslError>)));
+    /*	qDebug()<<m_pNetworkReply->isOpen();
+    qDebug()<<m_pNetworkReply->isReadable();
+    qDebug()<<m_pNetworkReply->isWritable();*/
+    connect(m_pNetworkReply, SIGNAL(readyRead()),                        this, SLOT(onReadyRead()));
+    connect(m_pNetworkReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(slotError(QNetworkReply::NetworkError)));
+    connect(m_pNetworkReply, SIGNAL(sslErrors(QList<QSslError>)),        this, SLOT(slotSslErrors(QList<QSslError>)));
 
-/*	QUrl ud("http://www.xflr5.com/rss/updatedescription.txt");
-	if(ud.isValid())
-	{
-		m_pNetworkAcessManager->get(QNetworkRequest(ud));
-		QObject::connect(m_pNetworkAcessManager, SIGNAL(finished(QNetworkReply*)), SLOT(onDownloadFinished(QNetworkReply*)));
-	}*/
+    /*	QUrl ud("http://www.xflr5.com/rss/updatedescription.txt");
+    if(ud.isValid())
+    {
+        m_pNetworkAcessManager->get(QNetworkRequest(ud));
+        QObject::connect(m_pNetworkAcessManager, SIGNAL(finished(QNetworkReply*)), SLOT(onDownloadFinished(QNetworkReply*)));
+    }*/
 }
 
 
 void Updater::slotError(QNetworkReply::NetworkError)
 {
-	qDebug()<<"some network error";
+    Trace("Some network error");
 }
 
 
 void Updater::slotSslErrors(QList<QSslError>)
 {
-	qDebug()<<"SSL error";
+    Trace("SSL error");
 }
 
 
 void Updater::onReadyRead()
 {
-//	qDebug()<<"readyRead()";
+    //	Trace()<<"ReadyRead()";
 }
 
 
 
 void Updater::onReplyFinished(QNetworkReply* netReply)
 {
-	QString str (netReply->readAll());
+    QString str (netReply->readAll());
 
-	/* If we are redirected, try again. TODO: Limit redirection count. */
-	QVariant vt = netReply->attribute(QNetworkRequest::RedirectionTargetAttribute);
+    /* If we are redirected, try again. TODO: Limit redirection count. */
+    QVariant vt = netReply->attribute(QNetworkRequest::RedirectionTargetAttribute);
 
-	m_pNetworkReply->deleteLater();
+    m_pNetworkReply->deleteLater();
 
-	if (!vt.isNull())
-	{
-		qDebug() << "Redirected to:" << vt.toUrl().toString();
-		m_pNetworkReply = m_pNetworkAcessManager->get(QNetworkRequest(vt.toUrl()));
-//		connect(m_pNetworkReply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
-	}
-	else
-	{
-		// We have something.
-		QDomDocument doc;
-		QString error;
-		if (!doc.setContent(str, false, &error))
-		{
-//			m_pWebEngineView->setHtml(QString("<h1>Error</h1>") + error);
-		}
-		else
-		{
-			QDomElement docElem = doc.documentElement();
-			QDomNodeList nodeList = docElem.elementsByTagName("item");
+    if (!vt.isNull())
+    {
+        Trace("Redirected to:" + vt.toUrl().toString());
+        m_pNetworkReply = m_pNetworkAcessManager->get(QNetworkRequest(vt.toUrl()));
+        //		connect(m_pNetworkReply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
+    }
+    else
+    {
+        // We have something.
+        QDomDocument doc;
+        QString error;
+        if (!doc.setContent(str, false, &error))
+        {
+            //			m_pWebEngineView->setHtml(QString("<h1>Error</h1>") + error);
+        }
+        else
+        {
+            QDomElement docElem = doc.documentElement();
+            QDomNodeList nodeList = docElem.elementsByTagName("item");
 
-			for (int i=0; i<nodeList.length(); i++)
-			{
-				QDomNode node = nodeList.item(i);
-				QDomElement e = node.toElement();
-/*				QString strTitle =  e.elementsByTagName("title").item(0).firstChild().nodeValue();
-				QString strLink = e.elementsByTagName("link").item(0).firstChild().nodeValue();
-				QString strDescription = e.elementsByTagName("description").item(0).firstChild().nodeValue();
+            for (int i=0; i<nodeList.length(); i++)
+            {
+                QDomNode node = nodeList.item(i);
+                QDomElement e = node.toElement();
+                /*				QString strTitle =  e.elementsByTagName("title").item(0).firstChild().nodeValue();
+                QString strLink = e.elementsByTagName("link").item(0).firstChild().nodeValue();
+                QString strDescription = e.elementsByTagName("description").item(0).firstChild().nodeValue();
                 qDebug()<<"    "<<strTitle;
                 qDebug()<<"    "<<strLink;
                 qDebug()<<"    "<<strDescription;*/
-			}
-			nodeList = docElem.elementsByTagName("xflversion");
+            }
+            nodeList = docElem.elementsByTagName("xflversion");
 
-			for (int i=0; i<nodeList.length(); i++)
-			{
-				QDomNode node = nodeList.item(i);
-				QDomElement e = node.toElement();
+            for (int i=0; i<nodeList.length(); i++)
+            {
+                QDomNode node = nodeList.item(i);
+                QDomElement e = node.toElement();
                 s_AvailableMajorVersion  = e.elementsByTagName("majorversion").item(0).firstChild().nodeValue().toInt();
                 s_AvailableMinorVersion  = e.elementsByTagName("minorversion").item(0).firstChild().nodeValue().toInt();
-				m_Date = e.elementsByTagName("date").item(0).firstChild().nodeValue();
-				m_Description = e.elementsByTagName("description").item(0).firstChild().nodeValue();
-			}
-/*			QUrl ud("http://www.xflr5.com/rss/updatedescription.txt");
-			if(ud.isValid())
-			{
-				m_NetworkAcessManager.get(QNetworkRequest(ud));
-				QObject::connect(&m_NetworkAcessManager, SIGNAL(finished(QNetworkReply*)), SLOT(onDownloadFinished(QNetworkReply*)));
-			}*/
+                m_Date = e.elementsByTagName("date").item(0).firstChild().nodeValue();
+                m_Description = e.elementsByTagName("description").item(0).firstChild().nodeValue();
+            }
+            /*			QUrl ud("http://www.xflr5.com/rss/updatedescription.txt");
+            if(ud.isValid())
+            {
+                m_NetworkAcessManager.get(QNetworkRequest(ud));
+                QObject::connect(&m_NetworkAcessManager, SIGNAL(finished(QNetworkReply*)), SLOT(onDownloadFinished(QNetworkReply*)));
+            }*/
 
             s_LastCheckDate = QDate::currentDate();
-		}
-	}
-	emit finishedUpdate();
+        }
+    }
+    emit finishedUpdate();
 }
 
 
 /** downloads a file and prints it */
 void Updater::onDownloadFinished(QNetworkReply *pResponse)
 {
-	  pResponse->deleteLater();
+    pResponse->deleteLater();
 
-	  if (pResponse->error() != QNetworkReply::NoError) return;
-	  QString contentType = pResponse->header(QNetworkRequest::ContentTypeHeader).toString();
-/*	  if (!contentType.contains("charset=utf-8")) {
-		  qWarning() << "Content charsets other than utf-8 are not implemented yet.";
-		  return;
-	  }*/
-	  QString html = QString::fromUtf8(pResponse->readAll());
-	  qDebug()<<html;
+    if (pResponse->error() != QNetworkReply::NoError) return;
+    QString contentType = pResponse->header(QNetworkRequest::ContentTypeHeader).toString();
+    /*	  if (!contentType.contains("charset=utf-8")) {
+          qWarning() << "Content charsets other than utf-8 are not implemented yet.";
+          return;
+      }*/
+    QString html = QString::fromUtf8(pResponse->readAll());
+    Trace(html);
 }
 
 
@@ -207,7 +209,7 @@ void Updater::loadSettings(QSettings *pSettings)
         s_bAutoCheck = pSettings->value("AutoUpdateCheck", true).toBool();
         s_LastCheckDate = pSettings->value("LastCheckDate", false).toDate();
     }
-//    qDebug()<<"loading lastcheckdate"<<s_LastCheckDate.toString("yyyy.MM.dd");
+    Trace("loading lastcheckdate: "+s_LastCheckDate.toString("yyyy.MM.dd"));
     pSettings->endGroup();
 }
 
@@ -216,7 +218,7 @@ void Updater::saveSettings(QSettings *pSettings)
 {
     pSettings->beginGroup("Updater");
     {
-//        qDebug()<<"saving lastcheckdate"<<s_LastCheckDate.toString("yyyy.MM.dd");
+        Trace("Saving lastcheckdate: "+s_LastCheckDate.toString("yyyy.MM.dd"));
         pSettings->setValue("AutoUpdateCheck", s_bAutoCheck);
         pSettings->setValue("LastCheckDate", s_LastCheckDate);
     }

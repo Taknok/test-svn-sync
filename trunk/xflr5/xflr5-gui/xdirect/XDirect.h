@@ -45,6 +45,7 @@
 #include <globals/gui_enums.h>
 #include <objects/objects2d/OpPoint.h>
 #include <graph/graph.h>
+#include <graph/linestyle.h>
 #include <XFoil.h>
 
 class LineBtn;

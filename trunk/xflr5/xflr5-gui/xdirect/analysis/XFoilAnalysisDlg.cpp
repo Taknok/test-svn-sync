@@ -27,16 +27,17 @@
 #include <QFontDatabase>
 #include <QtDebug>
 
-#include <globals/gui_params.h>
 
 #include "XFoilAnalysisDlg.h"
-#include <xdirect/XDirect.h>
-#include <xdirect/objects2d.h>
-#include <misc/options/displayoptions.h>
-#include <graph/graph.h>
-#include "graphwidget.h"
 #include <XFoil.h>
+#include <globals/gui_params.h>
+#include <graph/curve.h>
+#include <graph/graph.h>
+#include <misc/options/displayoptions.h>
+#include <viewwidgets/graphwidget.h>
+#include <xdirect/XDirect.h>
 #include <xdirect/analysis/XFoilTask.h>
+#include <xdirect/objects2d.h>
 
 
 
