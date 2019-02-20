@@ -131,7 +131,8 @@ QList <QColor> MainFrame::s_ColorList;
 MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(parent, flags)
 {
     setAttribute(Qt::WA_DeleteOnClose);
-    s_bTrace = false;
+
+    m_bManualUpdateCheck = false;
 
     if(s_bTrace)
     {
@@ -3518,7 +3519,7 @@ bool MainFrame::loadSettings()
         Settings::s_StyleSheetName = settings.value("StyleSheetName", "xflr5_style").toString();
         s_bShowMousePos = settings.value("ShowMousePosition", true).toBool();
 
-        Updater::loadSettings(&settings);
+        Updater::loadSettings(settings);
     }
 
     return true;
@@ -4932,7 +4933,7 @@ void MainFrame::saveSettings()
             settings.setValue(RecentF, "");
         }
 
-        Updater::saveSettings(&settings);
+        Updater::saveSettings(settings);
     }
     settings.endGroup();
 
@@ -7043,7 +7044,7 @@ void MainFrame::onAutoCheckForUpdates()
     Trace("Updater::lastCheckDate(): " + Updater::lastCheckDate().toString("yyyy.MM.dd"));
     if(Updater::lastCheckDate().isNull() || !Updater::lastCheckDate().isValid() || Updater::lastCheckDate().daysTo(today)>31)
     {
-        m_bManualCheck = false;
+        m_bManualUpdateCheck = false;
         checkForUpdates();
     }
 }
@@ -7064,7 +7065,7 @@ void MainFrame::changeEvent(QEvent *pEvent)
 /** manual check triggered by menu action */
 void MainFrame::onCheckForUpdates()
 {
-    m_bManualCheck = true;
+    m_bManualUpdateCheck = true;
     checkForUpdates();
 }
 
@@ -7092,7 +7093,7 @@ void MainFrame::onFinishedUpdater()
     if(m_pUpdater->hasUpdate())  pPopup->setRed();
     else                         pPopup->setGreen();
 
-    if(m_pUpdater->hasUpdate() || m_bManualCheck)
+    if(m_pUpdater->hasUpdate() || m_bManualUpdateCheck)
     {
         QString strange;
         strange.sprintf("Latest version %d.%d", Updater::majorVersion(), Updater::minorVersion());

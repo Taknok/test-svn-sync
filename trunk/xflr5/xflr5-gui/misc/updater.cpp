@@ -36,6 +36,7 @@ QDate Updater::s_LastCheckDate;
 
 MainFrame *Updater::s_pMainFrame = nullptr;
 
+
 Updater::Updater(MainFrame *pMainFrame)
 {
     s_pMainFrame = pMainFrame;
@@ -73,6 +74,8 @@ void Updater::checkForUpdates()
     }*/
 
     m_pNetworkReply = m_pNetworkAcessManager->get(request);
+    if(!m_pNetworkReply) return;
+
     connect(m_pNetworkAcessManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onReplyFinished(QNetworkReply*)));
 
     /*	qDebug()<<m_pNetworkReply->isOpen();
@@ -91,15 +94,125 @@ void Updater::checkForUpdates()
 }
 
 
-void Updater::slotError(QNetworkReply::NetworkError)
+void Updater::slotError(QNetworkReply::NetworkError neterror)
 {
-    Trace("Some network error");
+    Trace("Network error:");
+    switch(neterror)
+    {
+        case QNetworkReply::NoError:
+            Trace("no error condition.");
+            break;
+        case QNetworkReply::ConnectionRefusedError:
+            Trace("The remote server refused the connection (the server is not accepting requests)");
+            break;
+        case QNetworkReply::RemoteHostClosedError:
+            Trace("The remote server closed the connection prematurely, before the entire reply was received and processed");
+            break;
+        case QNetworkReply::HostNotFoundError:
+            Trace("The remote host name was not found (invalid hostname)");
+            break;
+        case QNetworkReply::TimeoutError:
+            Trace("The connection to the remote server timed out");
+            break;
+        case QNetworkReply::OperationCanceledError:
+            Trace("The operation was canceled via calls to abort() or close() before it was finished.");
+            break;
+        case QNetworkReply::SslHandshakeFailedError:
+            Trace("The SSL/TLS handshake failed and the encrypted channel could not be established. The sslErrors() signal should have been emitted.");
+            break;
+        case QNetworkReply::TemporaryNetworkFailureError:
+            Trace("The connection was broken due to disconnection from the network, however the system has initiated roaming to another access point. The request should be resubmitted and will be processed as soon as the connection is re-established.");
+            break;
+        case QNetworkReply::NetworkSessionFailedError:
+            Trace("The connection was broken due to disconnection from the network or failure to start the network.");
+            break;
+        case QNetworkReply::BackgroundRequestNotAllowedError:
+            Trace("The background request is not currently allowed due to platform policy.");
+            break;
+        case QNetworkReply::TooManyRedirectsError:
+            Trace("While following redirects, the maximum limit was reached. The limit is by default set to 50 or as set by QNetworkRequest::setMaxRedirectsAllowed(). (This value was introduced in 5.6.)");
+            break;
+        case QNetworkReply::InsecureRedirectError:
+            Trace("While following redirects, the network access API detected a redirect from a encrypted protocol (https) to an unencrypted one (http). (This value was introduced in 5.6.)");
+            break;
+        case QNetworkReply::ProxyConnectionRefusedError:
+            Trace("The connection to the proxy server was refused (the proxy server is not accepting requests)");
+            break;
+        case QNetworkReply::ProxyConnectionClosedError:
+            Trace("The proxy server closed the connection prematurely, before the entire reply was received and processed");
+            break;
+        case QNetworkReply::ProxyNotFoundError:
+            Trace("The proxy host name was not found (invalid proxy hostname)");
+            break;
+        case QNetworkReply::ProxyTimeoutError:
+            Trace("The connection to the proxy timed out or the proxy did not reply in time to the request sent");
+            break;
+        case QNetworkReply::ProxyAuthenticationRequiredError:
+            Trace("The proxy requires authentication in order to honour the request but did not accept any credentials offered (if any)");
+            break;
+        case QNetworkReply::ContentAccessDenied:
+            Trace("The access to the remote content was denied (similar to HTTP error 403)");
+            break;
+        case QNetworkReply::ContentOperationNotPermittedError:
+            Trace("The operation requested on the remote content is not permitted");
+            break;
+        case QNetworkReply::ContentNotFoundError:
+            Trace("The remote content was not found at the server (similar to HTTP error 404)");
+            break;
+        case QNetworkReply::AuthenticationRequiredError:
+            Trace("The remote server requires authentication to serve the content but the credentials provided were not accepted (if any)");
+            break;
+        case QNetworkReply::ContentReSendError:
+            Trace("The request needed to be sent again, but this failed for example because the upload data could not be read a second time.");
+            break;
+        case QNetworkReply::ContentConflictError:
+            Trace("The request could not be completed due to a conflict with the current state of the resource.");
+            break;
+        case QNetworkReply::ContentGoneError:
+            Trace("The requested resource is no longer available at the server.");
+            break;
+        case QNetworkReply::InternalServerError:
+            Trace("The server encountered an unexpected condition which prevented it from fulfilling the request.");
+            break;
+        case QNetworkReply::OperationNotImplementedError:
+            Trace("The server does not support the functionality required to fulfill the request.");
+            break;
+        case QNetworkReply::ServiceUnavailableError:
+            Trace("The server is unable to handle the request at this time.");
+            break;
+        case QNetworkReply::ProtocolUnknownError:
+            Trace("The Network Access API cannot honor the request because the protocol is not known");
+            break;
+        case QNetworkReply::ProtocolInvalidOperationError:
+            Trace("The requested operation is invalid for this protocol");
+            break;
+        case QNetworkReply::UnknownNetworkError:
+            Trace("An unknown network-related error was detected");
+            break;
+        case QNetworkReply::UnknownProxyError:
+            Trace("An unknown proxy-related error was detected");
+            break;
+        case QNetworkReply::UnknownContentError:
+            Trace("An unknown error related to the remote content was detected");
+            break;
+        case QNetworkReply::ProtocolFailure:
+            Trace("A breakdown in protocol was detected (parsing error, invalid or unexpected responses, etc.)");
+            break;
+        case QNetworkReply::UnknownServerError:
+            Trace("An unknown error related to the server response was detected");
+            break;
+    }
 }
 
 
-void Updater::slotSslErrors(QList<QSslError>)
+void Updater::slotSslErrors(QList<QSslError> sslerrors)
 {
-    Trace("SSL error");
+    QString strange;
+    for(int i=0; i<sslerrors.size(); i++)
+    {
+       strange.sprintf("SSl Error %d : ", sslerrors.at(i).error());
+       Trace(strange+sslerrors.at(i).errorString());
+    }
 }
 
 
@@ -110,12 +223,18 @@ void Updater::onReadyRead()
 
 
 
-void Updater::onReplyFinished(QNetworkReply* netReply)
+void Updater::onReplyFinished(QNetworkReply* pNetReply)
 {
-    QString str (netReply->readAll());
+    if(!pNetReply)
+    {
+        Trace("Null net reply - aborting");
+        return;
+    }
 
-    /* If we are redirected, try again. TODO: Limit redirection count. */
-    QVariant vt = netReply->attribute(QNetworkRequest::RedirectionTargetAttribute);
+    QString str (pNetReply->readAll());
+
+    // If we are redirected, try again. TODO: Limit redirection count.
+    QVariant vt = pNetReply->attribute(QNetworkRequest::RedirectionTargetAttribute);
 
     m_pNetworkReply->deleteLater();
 
@@ -176,18 +295,21 @@ void Updater::onReplyFinished(QNetworkReply* netReply)
 
 
 /** downloads a file and prints it */
-void Updater::onDownloadFinished(QNetworkReply *pResponse)
+void Updater::onDownloadFinished(QNetworkReply *pNetworkReply)
 {
-    pResponse->deleteLater();
-
-    if (pResponse->error() != QNetworkReply::NoError) return;
-    QString contentType = pResponse->header(QNetworkRequest::ContentTypeHeader).toString();
-    /*	  if (!contentType.contains("charset=utf-8")) {
-          qWarning() << "Content charsets other than utf-8 are not implemented yet.";
-          return;
-      }*/
-    QString html = QString::fromUtf8(pResponse->readAll());
-    Trace(html);
+    if(pNetworkReply)
+    {
+        pNetworkReply->deleteLater();
+/*
+        if (pResponse->error() != QNetworkReply::NoError) return;
+        QString contentType = pResponse->header(QNetworkRequest::ContentTypeHeader).toString();
+              if (!contentType.contains("charset=utf-8")) {
+              qWarning() << "Content charsets other than utf-8 are not implemented yet.";
+              return;
+          }*/
+        QString html = QString::fromUtf8(pNetworkReply->readAll());
+        Trace(html);
+    }
 }
 
 
@@ -202,26 +324,26 @@ bool Updater::hasUpdate()
 }
 
 
-void Updater::loadSettings(QSettings *pSettings)
+void Updater::loadSettings(QSettings &settings)
 {
-    pSettings->beginGroup("Updater");
+    settings.beginGroup("Updater");
     {
-        s_bAutoCheck = pSettings->value("AutoUpdateCheck", true).toBool();
-        s_LastCheckDate = pSettings->value("LastCheckDate", false).toDate();
+        s_bAutoCheck = settings.value("AutoUpdateCheck", true).toBool();
+        s_LastCheckDate = settings.value("LastCheckDate", false).toDate();
     }
     Trace("loading lastcheckdate: "+s_LastCheckDate.toString("yyyy.MM.dd"));
-    pSettings->endGroup();
+    settings.endGroup();
 }
 
 
-void Updater::saveSettings(QSettings *pSettings)
+void Updater::saveSettings(QSettings &settings)
 {
-    pSettings->beginGroup("Updater");
+    settings.beginGroup("Updater");
     {
         Trace("Saving lastcheckdate: "+s_LastCheckDate.toString("yyyy.MM.dd"));
-        pSettings->setValue("AutoUpdateCheck", s_bAutoCheck);
-        pSettings->setValue("LastCheckDate", s_LastCheckDate);
+        settings.setValue("AutoUpdateCheck", s_bAutoCheck);
+        settings.setValue("LastCheckDate", s_LastCheckDate);
     }
-    pSettings->endGroup();
+    settings.endGroup();
 
 }

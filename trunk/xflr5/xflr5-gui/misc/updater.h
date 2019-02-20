@@ -48,21 +48,21 @@ public:
     static int majorVersion() {return s_AvailableMajorVersion;}
     static int minorVersion() {return s_AvailableMinorVersion;}
 
-    static void loadSettings(QSettings *pSettings);
-    static void saveSettings(QSettings *pSettings);
+    static void loadSettings(QSettings &settings);
+    static void saveSettings(QSettings &settings);
 
 signals:
     void finishedUpdate();
 
 private slots:
-    void onDownloadFinished(QNetworkReply *pResponse);
+    void onDownloadFinished(QNetworkReply *pNetworkReply);
 
     void checkForUpdates();
 
-    void onReplyFinished(QNetworkReply*netReply);
+    void onReplyFinished(QNetworkReply*pNetReply);
     void onReadyRead();
-    void slotError(QNetworkReply::NetworkError);
-    void slotSslErrors(QList<QSslError>);
+    void slotError(QNetworkReply::NetworkError neterror);
+    void slotSslErrors(QList<QSslError> sslerrors);
 
 
 private:
