@@ -453,7 +453,7 @@ private:
 	XFLR5::enumImageFormat m_ImageFormat;   /**< The index of the type of image file which should be used. */
 	QTimer *m_pSaveTimer;          /**< The timer which triggers the autosaving of the project at given intervals */
 
-    bool m_bManualCheck;
+    bool m_bManualUpdateCheck;
 
     Updater *m_pUpdater;
 
