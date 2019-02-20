@@ -22,6 +22,7 @@ xflr5 v6.45 February xxxth, 2019
     - changed the unix directory for shared files to /usr/local/share instead of /usr/share
     - increased the sampling of the foil's mid camber line from 100 to 1000 points; this improves
       the precision of the calculated camber and thickness value and position
+    - added error management to the check for update process
     - code cleaning
 
 xflr5 v6.44 January 7th, 2019
