@@ -246,7 +246,7 @@ public:
 	void updateView();
 	void updateWPolarListBox();
 	void updatePOppListBox();
-	void writePolars(QDataStream &ar, void *pFoilPtr=NULL);
+    void writePolars(QDataStream &ar, Foil *pFoil=nullptr);
 
 	bool bAutoLoadLast() const {return m_bAutoLoadLast;}
 
