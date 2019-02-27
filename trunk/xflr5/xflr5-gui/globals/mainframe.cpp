@@ -382,6 +382,8 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
     {
         onLoadLastProject();
     }*/
+
+    m_pUpdater = nullptr;
     if(Updater::bAutoCheck())
         onAutoCheckForUpdates();
 }
@@ -413,6 +415,12 @@ MainFrame::~MainFrame()
     {
         m_pSaveTimer->stop();
         delete m_pSaveTimer;
+    }
+
+    if(m_pUpdater)
+    {
+        delete m_pUpdater;
+        m_pUpdater = nullptr;
     }
 }
 
@@ -4537,8 +4545,8 @@ void MainFrame::readPolarFile(QDataStream &ar)
 {
     Foil* pFoil = nullptr;
     Polar *pPolar = nullptr;
-    Polar * pOldPolar;
-    int i, n, l;
+    Polar * pOldPolar = nullptr;
+    int i=0, n=0, l=0;
 
     ar >> n;
 
@@ -7034,6 +7042,7 @@ void MainFrame::onPreferences()
     updateView();
 }
 
+
 /** auto check at startup */
 void MainFrame::onAutoCheckForUpdates()
 {
@@ -7047,6 +7056,7 @@ void MainFrame::onAutoCheckForUpdates()
         m_bManualUpdateCheck = false;
         checkForUpdates();
     }
+    else checkForUpdates();
 }
 
 
@@ -7072,16 +7082,23 @@ void MainFrame::onCheckForUpdates()
 
 void MainFrame::checkForUpdates()
 {
+    if(!m_pUpdater)
+    {
+        m_pUpdater = new Updater(this);
+        connect(m_pUpdater, SIGNAL(finishedUpdate()), this, SLOT(onFinishedUpdater()));
+    }
+    if(m_pUpdater)
+        QTimer::singleShot(0, m_pUpdater, SLOT(checkForUpdates()));
+
+ /*
     QThread *pThread = new QThread;
-    m_pUpdater = new Updater(this);
     m_pUpdater->moveToThread(pThread);
     connect(pThread,    SIGNAL(started()),        m_pUpdater, SLOT(checkForUpdates()));
-    connect(m_pUpdater, SIGNAL(finishedUpdate()), this,       SLOT(onFinishedUpdater()));
     connect(pThread,    SIGNAL(finished()),       pThread,    SLOT(deleteLater()));
     pThread->start();
-    pThread->setPriority(QThread::LowPriority);
-
+    pThread->setPriority(QThread::LowPriority);*/
 }
+
 
 void MainFrame::onFinishedUpdater()
 {
@@ -7112,7 +7129,4 @@ void MainFrame::onFinishedUpdater()
         pPopup->show();
 
     }
-
-    delete m_pUpdater;
-    m_pUpdater = nullptr;
 }

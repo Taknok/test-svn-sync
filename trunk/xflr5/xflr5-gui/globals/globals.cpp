@@ -1436,9 +1436,9 @@ bool serializeFoil(Foil *pFoil, QDataStream &ar, bool bIsStoring)
  */
 bool serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
 {
-    int i, j, n, l, k;
-    int ArchiveFormat;// identifies the format of the file
-    float f;
+    int i=0, j=0, n=0, l=0, k=0;
+    int ArchiveFormat=0;// identifies the format of the file
+    float f=0;
 
     if(bIsStoring)
     {
@@ -1484,10 +1484,11 @@ bool serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
     else
     {
         //read variables
-        float Alpha, Cd, Cdp, Cl, Cm, XTr1, XTr2, HMom, Cpmn, Re, XCp;
-        int iRe;
+        float Alpha=0, Cd=0, Cdp=0, Cl=0, Cm=0, XTr1=0, XTr2=0, HMom=0, Cpmn=0, Re=0, XCp=0;
+        int iRe=0;
+
         ar >> ArchiveFormat;
-        if (ArchiveFormat <1001 ||ArchiveFormat>1100)
+        if (ArchiveFormat <1001 || ArchiveFormat>1100)
         {
             return false;
         }
@@ -1501,7 +1502,7 @@ bool serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
         }
 
         ar >>k;
-        if(k==1)      pPolar->m_PolarType = XFLR5::FIXEDSPEEDPOLAR;
+        if     (k==1) pPolar->m_PolarType = XFLR5::FIXEDSPEEDPOLAR;
         else if(k==2) pPolar->m_PolarType = XFLR5::FIXEDLIFTPOLAR;
         else if(k==3) pPolar->m_PolarType = XFLR5::RUBBERCHORDPOLAR;
         else if(k==4) pPolar->m_PolarType = XFLR5::FIXEDAOAPOLAR;
