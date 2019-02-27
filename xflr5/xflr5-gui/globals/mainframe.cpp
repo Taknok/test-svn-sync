@@ -3002,28 +3002,25 @@ void MainFrame::createXInverseToolbar()
 void MainFrame::deleteProject(bool bClosing)
 {
     // clear everything
-
-    void *pObj;
-
     Objects3d::deleteObjects();
 
     for (int i=Objects2d::s_oaFoil.size()-1; i>=0; i--)
     {
-        pObj = Objects2d::s_oaFoil.at(i);
+        Foil *pObj = Objects2d::s_oaFoil.at(i);
         Objects2d::s_oaFoil.removeAt(i);
-        delete (Foil*)pObj;
+        delete pObj;
     }
     for (int i=Objects2d::s_oaPolar.size()-1; i>=0; i--)
     {
-        pObj = Objects2d::s_oaPolar.at(i);
+        Polar *pObj = Objects2d::s_oaPolar.at(i);
         Objects2d::s_oaPolar.removeAt(i);
-        delete (Polar*)pObj;
+        delete pObj;
     }
     for (int i=Objects2d::s_oaOpp.size()-1; i>=0; i--)
     {
-        pObj = Objects2d::s_oaOpp.at(i);
+        OpPoint *pObj = Objects2d::s_oaOpp.at(i);
         Objects2d::s_oaOpp.removeAt(i);
-        delete (OpPoint*)pObj;
+        delete pObj;
     }
 
     m_pMiarex->m_pCurPlane  = nullptr;
@@ -3085,7 +3082,7 @@ QColor MainFrame::getColor(int type)
     // 4=WPolar
     // 5=WOpp
     // 6=POpp
-    int i,j;
+    int i=0,j=0;
     bool bFound = false;
     switch (type)
     {
@@ -3268,10 +3265,10 @@ void MainFrame::keyReleaseEvent(QKeyEvent *pEvent)
 
 bool MainFrame::loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFormat)
 {
-    Foil *pFoil;
+    Foil *pFoil = nullptr;
     Polar *pPolar = nullptr;
-    Polar *pOldPlr;
-    OpPoint *pOpp, *pOldOpp;
+    Polar *pOldPlr = nullptr;
+    OpPoint *pOpp = nullptr, *pOldOpp = nullptr;
 
     //first read all available foils
     int i,l,n;
@@ -3401,8 +3398,8 @@ bool MainFrame::loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFor
 bool MainFrame::loadSettings()
 {
     QPoint pt;
-    bool bFloat;
-    int SettingsFormat;
+    bool bFloat=false;
+    int SettingsFormat=0;
     QSize size;
 
 
@@ -4352,8 +4349,8 @@ void MainFrame::onSelChangeOpp(int sel)
     if (sel>=0) strong = m_pctrlOpPoint->itemText(sel);
     m_iApp = XFLR5::XFOILANALYSIS;
 
-    double Alpha;
-    bool bOK;
+    double Alpha=0;
+    bool bOK=false;
     Alpha = locale().toDouble(strong, &bOK);
 
     if(bOK)
@@ -4725,7 +4722,7 @@ bool MainFrame::serializePlaneProject(QDataStream &ar)
     QString PlaneName = m_pMiarex->m_pCurPlane->planeName();
 
     bool bIsStoring = true;
-    int i, iSize;
+    int i=0, iSize=0;
 
     int ArchiveFormat = 200001;
     ar << ArchiveFormat;
@@ -4778,7 +4775,7 @@ bool MainFrame::serializePlaneProject(QDataStream &ar)
     iSize = 0;
     for (i=0; i<Objects3d::s_oaWPolar.size();i++)
     {
-        pWPolar = (WPolar*)Objects3d::s_oaWPolar.at(i);
+        pWPolar = Objects3d::s_oaWPolar.at(i);
         if(pWPolar->planeName()==PlaneName) iSize++;
     }
     ar << iSize;
@@ -5199,7 +5196,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
     Polar *pPolar   = nullptr;
     OpPoint *pOpp    = nullptr;
 
-    int i, n;
+    int i=0, n=0;
 
     if (bIsStoring)
     {
@@ -5262,7 +5259,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
         ar << Objects3d::s_oaWPolar.size();
         for (i=0; i<Objects3d::s_oaWPolar.size();i++)
         {
-            pWPolar = (WPolar*)Objects3d::s_oaWPolar.at(i);
+            pWPolar = Objects3d::s_oaWPolar.at(i);
             pWPolar->serializeWPlrXFL(ar, bIsStoring);
         }
 
@@ -5520,8 +5517,8 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
     Foil *pFoil     = nullptr;
 
     QString str;
-    int i, n, j, k;
-    float f;
+    int i=0, n=0, j=0, k=0;
+    float f=0;
 
     if (bIsStoring)
     {
@@ -5968,8 +5965,8 @@ QString MainFrame::shortenFileName(QString &PathName)
 */
 void MainFrame::updatePlaneListBox()
 {
-    int i;
-    Plane *pPlane, *pCurPlane;
+    int i=0;
+    Plane *pPlane=nullptr, *pCurPlane=nullptr;
 
     m_pctrlPlane->blockSignals(true);
     m_pctrlPlane->clear();
@@ -6006,9 +6003,9 @@ void MainFrame::updateWPolarListBox()
     //	fills the combobox with WPolar names associated to Miarex's current wing
     //	then selects Miarex current WPolar if any, else selects the first, if any
     //	else disables the combobox
-    WPolar *pWPolar;
+    WPolar *pWPolar=nullptr;
     QString PlaneName;
-    int i;
+    int i=0;
 
     m_pctrlPlanePolar->blockSignals(true);
     m_pctrlPlanePolar->clear();
@@ -6029,7 +6026,7 @@ void MainFrame::updateWPolarListBox()
 
     for (i=0; i<Objects3d::s_oaWPolar.size(); i++)
     {
-        pWPolar = (WPolar*)Objects3d::s_oaWPolar[i];
+        pWPolar = Objects3d::s_oaWPolar[i];
         if(pWPolar->planeName() == PlaneName)
         {
             m_pctrlPlanePolar->addItem(pWPolar->polarName());
@@ -6272,11 +6269,9 @@ void MainFrame::updateView()
 
 
 
-void MainFrame::writePolars(QDataStream &ar, void *pFoilPtr)
+void MainFrame::writePolars(QDataStream &ar, Foil *pFoil)
 {
-    Foil *pFoil = (Foil*)pFoilPtr;
-
-    int i;
+    int i=0;
     if(!pFoil)
     {
         int ArchiveFormat = 100003;
@@ -6733,10 +6728,10 @@ bool MainFrame::serializeFoilXFL(Foil *pFoil, QDataStream &ar, bool bIsStoring)
  */
 bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStoring)
 {
-    double dble;
-    bool boolean;
-    int i, k, n;
-    int ArchiveFormat;// identifies the format of the file
+    double dble=0;
+    bool boolean=false;
+    int i=0, k=0, n=0;
+    int ArchiveFormat=0;// identifies the format of the file
 
     if(bIsStoring)
     {
@@ -6833,10 +6828,10 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
  */
 bool MainFrame::serializeOppXFL(OpPoint *pOpp, QDataStream &ar, bool bIsStoring, int ArchiveFormat)
 {
-    bool boolean;
-    int k;
-    float f0,f1;
-    double dble;
+    bool boolean=false;
+    int k=0;
+    float f0=0.f,f1=0.f;
+    double dble=0;
 
     if(bIsStoring)
     {
@@ -7056,7 +7051,7 @@ void MainFrame::onAutoCheckForUpdates()
         m_bManualUpdateCheck = false;
         checkForUpdates();
     }
-    else checkForUpdates();
+//    else checkForUpdates();
 }
 
 
