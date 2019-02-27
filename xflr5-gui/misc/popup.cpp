@@ -77,11 +77,13 @@ void Popup::setGreen()
 
 void Popup::showEvent(QShowEvent *)
 {
-	move(s_Position);
-	QTimer *pTimer = new QTimer;
-	pTimer->setSingleShot(true);
-	connect(pTimer,SIGNAL(timeout()),this,SLOT(close()));
-	pTimer->start(11000); //hide once the user has read the popup
+    move(s_Position);
+/*    QTimer *pTimer = new QTimer;
+    pTimer->setSingleShot(true);
+    connect(pTimer,SIGNAL(timeout()),this,SLOT(close()));
+    pTimer->start(11000); //hide once the user has read the popup*/
+
+    QTimer::singleShot(11000, this, SLOT(close()));
 }
 
 
