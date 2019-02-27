@@ -19,6 +19,7 @@
 
 *****************************************************************************/
 
+
 #include <QtXml/QDomDocument>
 #include <QtXml/QDomNodeList>
 
@@ -39,64 +40,74 @@ MainFrame *Updater::s_pMainFrame = nullptr;
 
 Updater::Updater(MainFrame *pMainFrame)
 {
+    Trace("Updater::Updater");
     s_pMainFrame = pMainFrame;
     m_Date.clear();
     m_Description.clear();
+
+//    m_pNetworkReply = nullptr;
+
+    m_pNetworkAcessManager = new QNetworkAccessManager;
+    connect(m_pNetworkAcessManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onReplyFinished(QNetworkReply*)));
+
 }
 
 
 Updater::~Updater()
 {
-    delete m_pNetworkAcessManager;
+    if(m_pNetworkAcessManager)
+        delete m_pNetworkAcessManager;
 }
 
 
 void Updater::checkForUpdates()
 {
+    Trace("Updater::checkForUpdates()");
+
+    if(!m_pNetworkAcessManager)
+    {
+        Trace("Failed to access the network manager");
+        return;
+    }
+
+    switch(m_pNetworkAcessManager->networkAccessible())
+    {
+        case QNetworkAccessManager::UnknownAccessibility:
+            Trace("QNetworkAccessManager::Unknown Accessibility");
+            return;
+        case QNetworkAccessManager::NotAccessible:
+            Trace("QNetworkAccessManager::Network Not Accessible");
+            return;
+        case QNetworkAccessManager::Accessible:
+            Trace("QNetworkAccessManager::Accessible");
+            break;
+    }
+
     QUrl url("https://www.xflr5.com/rss/rssfeed.xml");
 
     QNetworkRequest request;
     request.setUrl(url);
-    request.setRawHeader("User-Agent", "MyOwnBrowser 1.0");
+    request.setRawHeader("User-Agent", "xfl_browser");
 
-    m_pNetworkAcessManager = new QNetworkAccessManager;
-    /*	switch(m_pNetworkAcessManager->networkAccessible())
+    QNetworkReply *pNetworkReply = m_pNetworkAcessManager->get(request);
+    if(!pNetworkReply)
     {
-        case QNetworkAccessManager::UnknownAccessibility:
-            qDebug()<<"UnknownAccessibility";
-            return;
-        case QNetworkAccessManager::NotAccessible:
-            qDebug()<<"Netw<ork Not Accessible";
-            return;
-        case QNetworkAccessManager::Accessible:
-            qDebug()<<"Accessible";
-            break;
-    }*/
+        Trace("No net reply");
+        return;
+    }
+    Trace("pNetworkReply->isOpen(): ",pNetworkReply->isOpen());
+    Trace("pNetworkReply->isReadable(): ", pNetworkReply->isReadable());
+    Trace("pNetworkReply->isWritable(): ", pNetworkReply->isWritable());
 
-    m_pNetworkReply = m_pNetworkAcessManager->get(request);
-    if(!m_pNetworkReply) return;
+    connect(pNetworkReply, SIGNAL(readyRead()),                        this, SLOT(onReadyRead()));
+    connect(pNetworkReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(slotError(QNetworkReply::NetworkError)));
+    connect(pNetworkReply, SIGNAL(sslErrors(QList<QSslError>)),        this, SLOT(slotSslErrors(QList<QSslError>)));
 
-    connect(m_pNetworkAcessManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onReplyFinished(QNetworkReply*)));
-
-    /*	qDebug()<<m_pNetworkReply->isOpen();
-    qDebug()<<m_pNetworkReply->isReadable();
-    qDebug()<<m_pNetworkReply->isWritable();*/
-    connect(m_pNetworkReply, SIGNAL(readyRead()),                        this, SLOT(onReadyRead()));
-    connect(m_pNetworkReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(slotError(QNetworkReply::NetworkError)));
-    connect(m_pNetworkReply, SIGNAL(sslErrors(QList<QSslError>)),        this, SLOT(slotSslErrors(QList<QSslError>)));
-
-    /*	QUrl ud("http://www.xflr5.com/rss/updatedescription.txt");
-    if(ud.isValid())
-    {
-        m_pNetworkAcessManager->get(QNetworkRequest(ud));
-        QObject::connect(m_pNetworkAcessManager, SIGNAL(finished(QNetworkReply*)), SLOT(onDownloadFinished(QNetworkReply*)));
-    }*/
 }
 
 
 void Updater::slotError(QNetworkReply::NetworkError neterror)
 {
-    Trace("Network error:");
     switch(neterror)
     {
         case QNetworkReply::NoError:
@@ -207,6 +218,7 @@ void Updater::slotError(QNetworkReply::NetworkError neterror)
 
 void Updater::slotSslErrors(QList<QSslError> sslerrors)
 {
+    Trace("Updater::slotSslErrors()");
     QString strange;
     for(int i=0; i<sslerrors.size(); i++)
     {
@@ -218,9 +230,8 @@ void Updater::slotSslErrors(QList<QSslError> sslerrors)
 
 void Updater::onReadyRead()
 {
-    //	Trace()<<"ReadyRead()";
+    Trace("Updater::ReadyRead()");
 }
-
 
 
 void Updater::onReplyFinished(QNetworkReply* pNetReply)
@@ -230,19 +241,18 @@ void Updater::onReplyFinished(QNetworkReply* pNetReply)
         Trace("Null net reply - aborting");
         return;
     }
+    Trace("Updater::onReplyFinished");
 
     QString str (pNetReply->readAll());
 
     // If we are redirected, try again. TODO: Limit redirection count.
     QVariant vt = pNetReply->attribute(QNetworkRequest::RedirectionTargetAttribute);
 
-    m_pNetworkReply->deleteLater();
 
     if (!vt.isNull())
     {
         Trace("Redirected to:" + vt.toUrl().toString());
-        m_pNetworkReply = m_pNetworkAcessManager->get(QNetworkRequest(vt.toUrl()));
-        //		connect(m_pNetworkReply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
+        pNetReply = m_pNetworkAcessManager->get(QNetworkRequest(vt.toUrl()));
     }
     else
     {
@@ -251,7 +261,7 @@ void Updater::onReplyFinished(QNetworkReply* pNetReply)
         QString error;
         if (!doc.setContent(str, false, &error))
         {
-            //			m_pWebEngineView->setHtml(QString("<h1>Error</h1>") + error);
+            Trace("Updater::onReplyFinished - error setting xml doc content");
         }
         else
         {
@@ -280,16 +290,13 @@ void Updater::onReplyFinished(QNetworkReply* pNetReply)
                 m_Date = e.elementsByTagName("date").item(0).firstChild().nodeValue();
                 m_Description = e.elementsByTagName("description").item(0).firstChild().nodeValue();
             }
-            /*			QUrl ud("http://www.xflr5.com/rss/updatedescription.txt");
-            if(ud.isValid())
-            {
-                m_NetworkAcessManager.get(QNetworkRequest(ud));
-                QObject::connect(&m_NetworkAcessManager, SIGNAL(finished(QNetworkReply*)), SLOT(onDownloadFinished(QNetworkReply*)));
-            }*/
 
             s_LastCheckDate = QDate::currentDate();
         }
     }
+
+    pNetReply->deleteLater();
+
     emit finishedUpdate();
 }
 
@@ -297,9 +304,10 @@ void Updater::onReplyFinished(QNetworkReply* pNetReply)
 /** downloads a file and prints it */
 void Updater::onDownloadFinished(QNetworkReply *pNetworkReply)
 {
+    Trace("Updater::onDownloadFinished");
     if(pNetworkReply)
     {
-        pNetworkReply->deleteLater();
+
 /*
         if (pResponse->error() != QNetworkReply::NoError) return;
         QString contentType = pResponse->header(QNetworkRequest::ContentTypeHeader).toString();
@@ -309,12 +317,17 @@ void Updater::onDownloadFinished(QNetworkReply *pNetworkReply)
           }*/
         QString html = QString::fromUtf8(pNetworkReply->readAll());
         Trace(html);
+        pNetworkReply->deleteLater();
     }
 }
 
 
 bool Updater::hasUpdate()
 {
+    QString strange;
+    strange.sprintf("Latest version %d.%d", Updater::majorVersion(), Updater::minorVersion());
+    Trace(strange);
+
     if(s_AvailableMajorVersion>MAJOR_VERSION) return true;
     else if(s_AvailableMajorVersion==MAJOR_VERSION)
     {
@@ -322,6 +335,7 @@ bool Updater::hasUpdate()
     }
     return false;
 }
+
 
 
 void Updater::loadSettings(QSettings &settings)
@@ -345,5 +359,4 @@ void Updater::saveSettings(QSettings &settings)
         settings.setValue("LastCheckDate", s_LastCheckDate);
     }
     settings.endGroup();
-
 }

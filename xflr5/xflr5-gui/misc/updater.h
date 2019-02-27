@@ -39,6 +39,8 @@ public:
     QString releaseDate()        const {return m_Date;}
     QString releaseDescription() const {return m_Description;}
 
+
+
     static void setAutoCheck(bool bAuto) {s_bAutoCheck=bAuto;}
     static bool bAutoCheck() {return s_bAutoCheck;}
 
@@ -54,10 +56,12 @@ public:
 signals:
     void finishedUpdate();
 
+public slots:
+    void checkForUpdates();
+
 private slots:
     void onDownloadFinished(QNetworkReply *pNetworkReply);
 
-    void checkForUpdates();
 
     void onReplyFinished(QNetworkReply*pNetReply);
     void onReadyRead();
@@ -67,7 +71,7 @@ private slots:
 
 private:
     QNetworkAccessManager *m_pNetworkAcessManager;
-    QNetworkReply * m_pNetworkReply;
+//    QNetworkReply * m_pNetworkReply;
     QString m_Date, m_Description;
 
     static MainFrame *s_pMainFrame;
