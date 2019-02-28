@@ -35,7 +35,6 @@
 #include <QPoint>
 
 
-#include <objects/objects2d/Foil.h>
 #include <objects/objects3d/vector3d.h>
 #include <xfoil_params.h>
 

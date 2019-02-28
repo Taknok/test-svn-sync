@@ -209,6 +209,7 @@ void Updater::slotError(QNetworkReply::NetworkError neterror)
         case QNetworkReply::ProtocolFailure:
             Trace("A breakdown in protocol was detected (parsing error, invalid or unexpected responses, etc.)");
             break;
+        default:
         case QNetworkReply::UnknownServerError:
             Trace("An unknown error related to the server response was detected");
             break;
@@ -307,7 +308,6 @@ void Updater::onDownloadFinished(QNetworkReply *pNetworkReply)
     Trace("Updater::onDownloadFinished");
     if(pNetworkReply)
     {
-
 /*
         if (pResponse->error() != QNetworkReply::NoError) return;
         QString contentType = pResponse->header(QNetworkRequest::ContentTypeHeader).toString();

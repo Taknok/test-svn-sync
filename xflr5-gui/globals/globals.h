@@ -67,9 +67,6 @@ void Trace(QString msg, double f);
 
 
 
-void GLLineStipple(int style);
-
-
 XFLR5::enumPanelDistribution distributionType(QString strDist);
 QString distributionType(XFLR5::enumPanelDistribution dist);
 
