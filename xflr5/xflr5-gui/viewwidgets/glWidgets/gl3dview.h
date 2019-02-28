@@ -51,6 +51,8 @@ class Panel;
 class GLLightDlg;
 class PointMass;
 
+
+
 class gl3dView : public QOpenGLWidget
 {
     friend class MainFrame;
@@ -257,5 +259,8 @@ protected:
     float ab_old[16], ab_new[16];
     int m_iTransitionInc;
 };
+
+void GLLineStipple(int style);
+
 
 #endif // GL3DVIEW_H

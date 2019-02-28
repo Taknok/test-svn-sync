@@ -872,14 +872,7 @@ void gl3dMiarexView::paintDownwash(int iWing)
 	glEnable(GL_DEPTH_TEST);
 	glEnable (GL_LINE_STIPPLE);
 
-	switch(W3dPrefsDlg::s_DownwashStyle)
-	{
-		case 1: glLineStipple (1, 0xCFCF); break;
-		case 2: glLineStipple (1, 0x6666); break;
-		case 3: glLineStipple (1, 0xFF18); break;
-		case 4: glLineStipple (1, 0x7E66); break;
-		default: glLineStipple (1, 0xFFFF); break;
-	}
+    GLLineStipple(W3dPrefsDlg::s_DownwashStyle);
 
     glLineWidth(GLfloat(W3dPrefsDlg::s_DownwashWidth));
 
@@ -893,12 +886,13 @@ void gl3dMiarexView::paintDownwash(int iWing)
 	m_ShaderProgramLine.release();
 }
 
+
 void gl3dMiarexView::glMakeLiftForce(WPolar *pWPolar, PlaneOpp *pPOpp)
 {
 	if(!pWPolar || !pPOpp) return;
 
-    float forcez,forcex,glx, gly, glz;
-    float sign;
+    float forcez=0,forcex=0,glx=0, gly=0, glz=0;
+    float sign=0;
 
     float force = 0.5f*float(pWPolar->density() * pWPolar->referenceArea() *pPOpp->m_QInf*pPOpp->QInf() *pPOpp->m_CL);
 
@@ -955,7 +949,7 @@ void gl3dMiarexView::glMakeMoments(Wing *pWing, WPolar *pWPolar, PlaneOpp *pPOpp
 //	-- Wikipedia flight dynamics --
 	if(!pWing || !pWPolar) return;
 
-	int i;
+    int i=0;
 
     float ampL=0.0f, ampM=0.0f, ampN=0.0f;
     float sign=0.0f;
@@ -1130,10 +1124,10 @@ void gl3dMiarexView::glMakeMoments(Wing *pWing, WPolar *pWPolar, PlaneOpp *pPOpp
 void gl3dMiarexView::glMakeLiftStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp)
 {
 	if(!pWing || !pWPolar || !pWOpp) return;
-	int i,j,k;
+    int i=0,j=0,k=0;
 	Vector3d C, CL, Pt, PtNormal;
 
-	double amp, yob, dih;
+    double amp=0, yob=0, dih=0;
 	double cosa =  cos(pWOpp->m_Alpha * PI/180.0);
 	double sina = -sin(pWOpp->m_Alpha * PI/180.0);
 
@@ -1159,9 +1153,9 @@ void gl3dMiarexView::glMakeLiftStrip(int iWing, Wing *pWing, WPolar *pWPolar, Wi
             pLiftVertexArray[iv++] = Pt.xf();
             pLiftVertexArray[iv++] = Pt.yf();
             pLiftVertexArray[iv++] = Pt.zf();
-			pLiftVertexArray[iv++] = Pt.x + amp * cos(dih)*sina;
-			pLiftVertexArray[iv++] = Pt.y + amp * sin(dih);
-			pLiftVertexArray[iv++] = Pt.z + amp * cos(dih)*cosa;
+            pLiftVertexArray[iv++] = Pt.xf()+ amp * cos(dih)*sina;
+            pLiftVertexArray[iv++] = Pt.yf() + amp * sin(dih);
+            pLiftVertexArray[iv++] = Pt.zf() + amp * cos(dih)*cosa;
 		}
 
 		for (i=1; i<pWOpp->m_NStation; i++)
@@ -1173,9 +1167,9 @@ void gl3dMiarexView::glMakeLiftStrip(int iWing, Wing *pWing, WPolar *pWPolar, Wi
 			amp = q0*pWOpp->m_Cl[i]*pWing->getChord(yob)/pWOpp->m_MAChord;
             amp *= s_LiftScale/1000.0;
 
-			pLiftVertexArray[iv++] = Pt.x + amp * cos(dih)*sina;
-			pLiftVertexArray[iv++] = Pt.y + amp * sin(dih);
-			pLiftVertexArray[iv++] = Pt.z + amp * cos(dih)*cosa;
+            pLiftVertexArray[iv++] = Pt.xf()+ amp * cos(dih)*sina;
+            pLiftVertexArray[iv++] = Pt.yf() + amp * sin(dih);
+            pLiftVertexArray[iv++] = Pt.zf() + amp * cos(dih)*cosa;
 		}
 	}
 	else
@@ -1189,15 +1183,15 @@ void gl3dMiarexView::glMakeLiftStrip(int iWing, Wing *pWing, WPolar *pWPolar, Wi
 			{
 				pWing->m_Surface[j]->getLeadingPt(k, C);
                 amp = pWing->m_Surface[j]->chord(k) / pWOpp->m_StripArea[i] / pWing->m_MAChord * s_LiftScale/1000.0;
-				C.x += pWOpp->m_XCPSpanRel[i] * pWing->m_Surface[j]->chord(k);
+                C.x += pWOpp->m_XCPSpanRel[i] * pWing->m_Surface[j]->chord(k);
 
                 pLiftVertexArray[iv++] = C.xf();
                 pLiftVertexArray[iv++] = C.yf();
                 pLiftVertexArray[iv++] = C.zf();
 
-				pLiftVertexArray[iv++] = C.x + pWOpp->m_F[i].x*amp;
-				pLiftVertexArray[iv++] = C.y + pWOpp->m_F[i].y*amp;
-				pLiftVertexArray[iv++] = C.z + pWOpp->m_F[i].z*amp;
+                pLiftVertexArray[iv++] = C.xf()+ pWOpp->m_F[i].xf()*amp;
+                pLiftVertexArray[iv++] = C.yf() + pWOpp->m_F[i].yf()*amp;
+                pLiftVertexArray[iv++] = C.zf() + pWOpp->m_F[i].zf()*amp;
 				i++;
 			}
 		}
@@ -1215,21 +1209,21 @@ void gl3dMiarexView::glMakeLiftStrip(int iWing, Wing *pWing, WPolar *pWPolar, Wi
 				k=0;
 				pWing->m_Surface[j]->getLeadingPt(k, C);
 				amp = pWing->m_Surface[j]->chord(k) / pWOpp->m_StripArea[i] / pWing->m_MAChord * QMiarex::s_LiftScale/1000.0;
-				C.x += pWOpp->m_XCPSpanRel[i] * pWing->m_Surface[j]->chord(k);
+                C.xf()+= pWOpp->m_XCPSpanRel[i] * pWing->m_Surface[j]->chord(k);
 
-				pLiftVertexArray[iv++] = C.x + pWOpp->m_F[i].x*amp;
-				pLiftVertexArray[iv++] = C.y + pWOpp->m_F[i].y*amp;
-				pLiftVertexArray[iv++] = C.z + pWOpp->m_F[i].z*amp;
+                pLiftVertexArray[iv++] = C.xf()+ pWOpp->m_F[i].xf()*amp;
+                pLiftVertexArray[iv++] = C.yf() + pWOpp->m_F[i].yf()*amp;
+                pLiftVertexArray[iv++] = C.zf() + pWOpp->m_F[i].zf()*amp;
 			}*/
 
 			for (k=0; k< pWing->m_Surface[j]->NYPanels(); k++)
 			{
 				pWing->m_Surface[j]->getLeadingPt(k, C);
                 amp = pWing->m_Surface[j]->chord(k) / pWOpp->m_StripArea[i] / pWing->m_MAChord * s_LiftScale/1000.0;
-				C.x += pWOpp->m_XCPSpanRel[i] * pWing->m_Surface[j]->chord(k);
-				CL.x = C.x + pWOpp->m_F[i].x*amp;
-				CL.y = C.y + pWOpp->m_F[i].y*amp;
-				CL.z = C.z + pWOpp->m_F[i].z*amp;
+                C.x += pWOpp->m_XCPSpanRel[i] * pWing->m_Surface[j]->chord(k);
+                CL.x = C.xf()+ pWOpp->m_F[i].xf()*amp;
+                CL.y = C.yf() + pWOpp->m_F[i].yf()*amp;
+                CL.z = C.zf() + pWOpp->m_F[i].zf()*amp;
 
                 pLiftVertexArray[iv++] = CL.xf();
                 pLiftVertexArray[iv++] = CL.yf();
@@ -1261,14 +1255,7 @@ void gl3dMiarexView::paintLift(int iWing)
 	glEnable(GL_DEPTH_TEST);
 	glEnable (GL_LINE_STIPPLE);
 
-	switch(W3dPrefsDlg::s_XCPStyle)
-	{
-		case 1: glLineStipple (1, 0xCFCF); break;
-		case 2: glLineStipple (1, 0x6666); break;
-		case 3: glLineStipple (1, 0xFF18); break;
-		case 4: glLineStipple (1, 0x7E66); break;
-		default: glLineStipple (1, 0xFFFF); break;
-	}
+    GLLineStipple(W3dPrefsDlg::s_XCPStyle);
 
 	glLineWidth((GLfloat)W3dPrefsDlg::s_XCPWidth);
 
@@ -1301,14 +1288,7 @@ void gl3dMiarexView::paintMoments()
 	glEnable(GL_DEPTH_TEST);
 	glEnable (GL_LINE_STIPPLE);
 
-	switch(W3dPrefsDlg::s_MomentStyle)
-	{
-		case 1: glLineStipple (1, 0xCFCF); break;
-		case 2: glLineStipple (1, 0x6666); break;
-		case 3: glLineStipple (1, 0xFF18); break;
-		case 4: glLineStipple (1, 0x7E66); break;
-		default: glLineStipple (1, 0xFFFF); break;
-	}
+    GLLineStipple(W3dPrefsDlg::s_MomentStyle);
 
 	glLineWidth((GLfloat)W3dPrefsDlg::s_MomentWidth);
 
@@ -1326,15 +1306,15 @@ void gl3dMiarexView::glMakeDownwash(int iWing, Wing *pWing, WPolar *pWPolar, Win
 {
 	if(!pWing || !pWPolar || !pWOpp) return;
 
-	int i,j,k,p;
-	double dih, yob;
-	double y1, y2, z1, z2, xs, ys, zs;
+    int i=0,j=0,k=0,p=0;
+    float dih=0, yob=0;
+    float y1=0, y2=0, z1=0, z2=0, xs=0, ys=0, zs=0;
 	Vector3d C, Pt, PtNormal;
-	double factor, amp;
+    float amp=0.0f;
 
-	double sina = -sin(pWOpp->m_Alpha*PI/180.0);
-	double cosa =  cos(pWOpp->m_Alpha*PI/180.0);
-    factor = s_VelocityScale/5.0;
+    float sina = -sin(pWOpp->m_Alpha*PI/180.0);
+    float cosa =  cos(pWOpp->m_Alpha*PI/180.0);
+    float factor = s_VelocityScale/5.0;
 
 	int bufferSize = m_Ny[iWing]*18;
 	float *pDownWashVertexArray = new float[bufferSize];
@@ -1353,13 +1333,13 @@ void gl3dMiarexView::glMakeDownwash(int iWing, Wing *pWing, WPolar *pWPolar, Win
             pDownWashVertexArray[iv++] = Pt.yf();
             pDownWashVertexArray[iv++] = Pt.zf();
 
-			pDownWashVertexArray[iv++] = Pt.x + amp * cos(dih)* sina;
-			pDownWashVertexArray[iv++] = Pt.y + amp * sin(dih);
-			pDownWashVertexArray[iv++] = Pt.z + amp * cos(dih)* cosa;
+            pDownWashVertexArray[iv++] = Pt.xf() + amp * cos(dih)* sina;
+            pDownWashVertexArray[iv++] = Pt.yf() + amp * sin(dih);
+            pDownWashVertexArray[iv++] = Pt.zf() + amp * cos(dih)* cosa;
 
-			xs = Pt.x + amp * cos(dih) * sina;
-			ys = Pt.y + amp * sin(dih);
-			zs = Pt.z + amp * cos(dih) * cosa;
+            xs = Pt.xf() + amp * cos(dih) * sina;
+            ys = Pt.yf() + amp * sin(dih);
+            zs = Pt.zf() + amp * cos(dih) * cosa;
 			y1 = ys - 0.085*amp * sin(dih)        + 0.05*amp * cos(dih) * cosa;
 			z1 = zs - 0.085*amp * cos(dih) * cosa - 0.05*amp * sin(dih);
 			y2 = ys - 0.085*amp * sin(dih)        - 0.05*amp * cos(dih) * cosa;
@@ -1395,17 +1375,17 @@ void gl3dMiarexView::glMakeDownwash(int iWing, Wing *pWing, WPolar *pWPolar, Win
                 pDownWashVertexArray[iv++] = C.xf();
                 pDownWashVertexArray[iv++] = C.yf();
                 pDownWashVertexArray[iv++] = C.zf();
-				pDownWashVertexArray[iv++] = C.x+factor*pWOpp->m_Vd[i].z * sina;
+                pDownWashVertexArray[iv++] = C.x+factor*pWOpp->m_Vd[i].zf() * sina;
                 pDownWashVertexArray[iv++] = C.y+factor*pWOpp->m_Vd[i].yf();
-				pDownWashVertexArray[iv++] = C.z+factor*pWOpp->m_Vd[i].z * cosa;
+                pDownWashVertexArray[iv++] = C.z+factor*pWOpp->m_Vd[i].zf() * cosa;
 
-				xs = C.x+factor*pWOpp->m_Vd[i].z*sina;
-                ys = C.y+factor*pWOpp->m_Vd[i].yf();
-				zs = C.z+factor*pWOpp->m_Vd[i].z*cosa;
-				y1 = ys - 0.085*factor*pWOpp->m_Vd[i].y      + 0.05*factor*pWOpp->m_Vd[i].z*cosa;
-                z1 = zs - 0.085*factor*pWOpp->m_Vd[i].z*cosa - 0.05*factor*pWOpp->m_Vd[i].yf();
-				y2 = ys - 0.085*factor*pWOpp->m_Vd[i].y      - 0.05*factor*pWOpp->m_Vd[i].z*cosa;
-                z2 = zs - 0.085*factor*pWOpp->m_Vd[i].z*cosa + 0.05*factor*pWOpp->m_Vd[i].yf();
+                xs = C.xf()+factor*pWOpp->m_Vd[i].zf()*sina;
+                ys = C.yf()+factor*pWOpp->m_Vd[i].yf();
+                zs = C.zf()+factor*pWOpp->m_Vd[i].zf()*cosa;
+                y1 = ys - 0.085*factor*pWOpp->m_Vd[i].yf()      + 0.05*factor*pWOpp->m_Vd[i].zf()*cosa;
+                z1 = zs - 0.085*factor*pWOpp->m_Vd[i].zf()*cosa - 0.05*factor*pWOpp->m_Vd[i].yf();
+                y2 = ys - 0.085*factor*pWOpp->m_Vd[i].yf()      - 0.05*factor*pWOpp->m_Vd[i].zf()*cosa;
+                z2 = zs - 0.085*factor*pWOpp->m_Vd[i].zf()*cosa + 0.05*factor*pWOpp->m_Vd[i].yf();
 
 				pDownWashVertexArray[iv++] = xs;
 				pDownWashVertexArray[iv++] = ys;
@@ -1441,24 +1421,24 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, Wi
 {
 	if(!pWing || !pWPolar || !pWOpp) return;
 	Vector3d C, Pt, PtNormal;
-	int i,j,k;
-	float *pICdVertexArray, *pVCdVertexArray;
+    int i=0,j=0,k=0;
+    float *pICdVertexArray=nullptr, *pVCdVertexArray=nullptr;
 
-	double coef = 5.0;
-	double amp, amp1, amp2, yob, dih, cosa, cosb, sina, sinb;
-	cosa =  cos(pWOpp->m_Alpha * PI/180.0);
-	sina = -sin(pWOpp->m_Alpha * PI/180.0);
-	cosb =  cos(-beta*PI/180.0);
-	sinb =  sin(-beta*PI/180.0);
+    float coef = 5.0;
+    float amp=0, amp1=0, amp2=0, yob=0, dih=0;
+    float cosa =  cos(pWOpp->m_Alpha * PI/180.0);
+    float sina = -sin(pWOpp->m_Alpha * PI/180.0);
+    float cosb =  cos(-beta*PI/180.0);
+    float sinb =  sin(-beta*PI/180.0);
 
 	int bufferSize = m_Ny[iWing]*9;
 	pICdVertexArray = new float[bufferSize];
 	pVCdVertexArray = new float[bufferSize];
 
 	//DRAGLINE
-	double q0 = 0.5 * pWPolar->density() * pWPolar->referenceArea() * pWOpp->m_QInf * pWOpp->m_QInf;
+    float q0 = 0.5 * pWPolar->density() * pWPolar->referenceArea() * pWOpp->m_QInf * pWOpp->m_QInf;
 
-	int ii, iv;
+    int ii=0, iv=0;
 	if(pWPolar->isLLTMethod())
 	{
 		ii=0;
@@ -1476,9 +1456,9 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, Wi
                 pICdVertexArray[ii++] = Pt.xf();
                 pICdVertexArray[ii++] = Pt.yf();
                 pICdVertexArray[ii++] = Pt.zf();
-				pICdVertexArray[ii++] = Pt.x + amp1 * cos(dih)*cosa;
+                pICdVertexArray[ii++] = Pt.xf()+ amp1 * cos(dih)*cosa;
                 pICdVertexArray[ii++] = Pt.yf();
-				pICdVertexArray[ii++] = Pt.z - amp1 * cos(dih)*sina;
+                pICdVertexArray[ii++] = Pt.zf() - amp1 * cos(dih)*sina;
 			}
 			if(s_pMiarex->m_bVCd)
 			{
@@ -1487,19 +1467,19 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, Wi
                     pVCdVertexArray[iv++] = Pt.xf();
                     pVCdVertexArray[iv++] = Pt.yf();
                     pVCdVertexArray[iv++] = Pt.zf();
-					pVCdVertexArray[iv++] = Pt.x + amp2 * cos(dih)*cosa;
+                    pVCdVertexArray[iv++] = Pt.xf()+ amp2 * cos(dih)*cosa;
                     pVCdVertexArray[iv++] = Pt.yf();
-					pVCdVertexArray[iv++] = Pt.z - amp2 * cos(dih)*sina;
+                    pVCdVertexArray[iv++] = Pt.zf() - amp2 * cos(dih)*sina;
 				}
 				else
 				{
-					pVCdVertexArray[iv++] = Pt.x + amp1 * cos(dih)*cosa;
+                    pVCdVertexArray[iv++] = Pt.xf()+ amp1 * cos(dih)*cosa;
                     pVCdVertexArray[iv++] = Pt.yf();
-					pVCdVertexArray[iv++] = Pt.z - amp1 * cos(dih)*sina;
+                    pVCdVertexArray[iv++] = Pt.zf() - amp1 * cos(dih)*sina;
 
-					pVCdVertexArray[iv++] = Pt.x + (amp1+amp2) * cos(dih)*cosa;
+                    pVCdVertexArray[iv++] = Pt.xf()+ (amp1+amp2) * cos(dih)*cosa;
                     pVCdVertexArray[iv++] = Pt.yf();
-					pVCdVertexArray[iv++] = Pt.z - (amp1+amp2) * cos(dih)*sina;
+                    pVCdVertexArray[iv++] = Pt.zf() - (amp1+amp2) * cos(dih)*sina;
 				}
 			}
 		}
@@ -1514,9 +1494,9 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, Wi
 				amp  = q0*pWOpp->m_ICd[i]*pWing->getChord(yob)/pWOpp->m_MAChord;
                 amp *= s_DragScale/coef;
 
-				pICdVertexArray[ii++] = Pt.x + amp * cos(dih)*cosa;
+                pICdVertexArray[ii++] = Pt.xf()+ amp * cos(dih)*cosa;
                 pICdVertexArray[ii++] = Pt.yf();
-				pICdVertexArray[ii++] = Pt.z - amp * cos(dih)*sina;
+                pICdVertexArray[ii++] = Pt.zf() - amp * cos(dih)*sina;
 			}
 		}
 		if(s_pMiarex->m_bVCd)
@@ -1533,9 +1513,9 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, Wi
 				amp *= q0*pWing->getChord(yob)/pWOpp->m_MAChord;
                 amp *= s_DragScale/coef;
 
-				pVCdVertexArray[iv++] = Pt.x + amp * cos(dih)*cosa;
+                pVCdVertexArray[iv++] = Pt.xf()+ amp * cos(dih)*cosa;
                 pVCdVertexArray[iv++] = Pt.yf();
-				pVCdVertexArray[iv++] = Pt.z - amp * cos(dih)*sina;
+                pVCdVertexArray[iv++] = Pt.zf() - amp * cos(dih)*sina;
 			}
 		}
 	}
@@ -1558,9 +1538,9 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, Wi
                     pICdVertexArray[ii++] = C.xf();
                     pICdVertexArray[ii++] = C.yf();
                     pICdVertexArray[ii++] = C.zf();
-					pICdVertexArray[ii++] = C.x + amp1*cosa * cosb;
-					pICdVertexArray[ii++] = C.y + amp1*cosa * sinb;
-					pICdVertexArray[ii++] = C.z - amp1*sina;
+                    pICdVertexArray[ii++] = C.xf() + amp1*cosa * cosb;
+                    pICdVertexArray[ii++] = C.yf() + amp1*cosa * sinb;
+                    pICdVertexArray[ii++] = C.zf() - amp1*sina;
 				}
 				if(s_pMiarex->m_bVCd)
 				{
@@ -1569,18 +1549,18 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, Wi
                         pVCdVertexArray[iv++] = C.xf();
                         pVCdVertexArray[iv++] = C.yf();
                         pVCdVertexArray[iv++] = C.zf();
-						pVCdVertexArray[iv++] = C.x + amp2*cosa * cosb;
-						pVCdVertexArray[iv++] = C.y + amp2*cosa * sinb;
-						pVCdVertexArray[iv++] = C.z - amp2*sina;
+                        pVCdVertexArray[iv++] = C.xf()+ amp2*cosa * cosb;
+                        pVCdVertexArray[iv++] = C.yf() + amp2*cosa * sinb;
+                        pVCdVertexArray[iv++] = C.zf() - amp2*sina;
 					}
 					else
 					{
-						pVCdVertexArray[iv++] = C.x + amp1*cosa*cosb;
-						pVCdVertexArray[iv++] = C.y + amp1*cosa*sinb;
-						pVCdVertexArray[iv++] = C.z - amp1*sina;
-						pVCdVertexArray[iv++] = C.x + (amp1+amp2)*cosa*cosb;
-						pVCdVertexArray[iv++] = C.y + (amp1+amp2)*cosa*sinb;
-						pVCdVertexArray[iv++] = C.z - (amp1+amp2)*sina;
+                        pVCdVertexArray[iv++] = C.xf()+ amp1*cosa*cosb;
+                        pVCdVertexArray[iv++] = C.yf() + amp1*cosa*sinb;
+                        pVCdVertexArray[iv++] = C.zf() - amp1*sina;
+                        pVCdVertexArray[iv++] = C.xf()+ (amp1+amp2)*cosa*cosb;
+                        pVCdVertexArray[iv++] = C.yf() + (amp1+amp2)*cosa*sinb;
+                        pVCdVertexArray[iv++] = C.zf() - (amp1+amp2)*sina;
 					}
 				}
 
@@ -1599,9 +1579,9 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, Wi
 						pWing->m_Surface[j]->getTrailingPt(k, C);
 						amp = q0*(pWOpp->m_ICd[i]*pWOpp->m_Chord[i])/pWing->m_MAChord;
                         amp *= s_DragScale/coef;
-						pICdVertexArray[ii++] = C.x + amp*cosa * cosb;
-						pICdVertexArray[ii++] = C.y + amp*cosa * sinb;
-						pICdVertexArray[ii++] = C.z - amp*sina;
+                        pICdVertexArray[ii++] = C.xf()+ amp*cosa * cosb;
+                        pICdVertexArray[ii++] = C.yf() + amp*cosa * sinb;
+                        pICdVertexArray[ii++] = C.zf() - amp*sina;
 						i++;
 					}
 				}
@@ -1620,9 +1600,9 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, Wi
 						amp *= q0*pWOpp->m_Chord[i]/pWing->m_MAChord;
                         amp *= s_DragScale/coef;
 
-						pVCdVertexArray[iv++] = C.x + amp*cosa*cosb;
-						pVCdVertexArray[iv++] = C.y + amp*cosa*sinb;
-						pVCdVertexArray[iv++] = C.z - amp*sina;
+                        pVCdVertexArray[iv++] = C.xf()+ amp*cosa*cosb;
+                        pVCdVertexArray[iv++] = C.yf() + amp*cosa*sinb;
+                        pVCdVertexArray[iv++] = C.zf() - amp*sina;
 
 						i++;
 					}
@@ -1641,9 +1621,9 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, Wi
 						pWing->m_Surface[j]->getTrailingPt(k, C);
 						amp = q0*(pWOpp->m_ICd[i]*pWOpp->m_Chord[i])/pWing->m_MAChord;
                         amp *= s_DragScale/coef;
-						pICdVertexArray[ii++] = C.x + amp*cosa * cosb;
-						pICdVertexArray[ii++] = C.y + amp*cosa * sinb;
-						pICdVertexArray[ii++] = C.z - amp*sina;
+                        pICdVertexArray[ii++] = C.xf()+ amp*cosa * cosb;
+                        pICdVertexArray[ii++] = C.yf() + amp*cosa * sinb;
+                        pICdVertexArray[ii++] = C.zf() - amp*sina;
 						i++;
 					}
 				}
@@ -1662,9 +1642,9 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, Wi
 						amp *= q0*pWOpp->m_Chord[i]/pWing->m_MAChord;
                         amp *= s_DragScale/coef;
 
-						pVCdVertexArray[iv++] = C.x + amp*cosa*cosb;
-						pVCdVertexArray[iv++] = C.y + amp*cosa*sinb;
-						pVCdVertexArray[iv++] = C.z - amp*sina;
+                        pVCdVertexArray[iv++] = C.xf()+ amp*cosa*cosb;
+                        pVCdVertexArray[iv++] = C.yf() + amp*cosa*sinb;
+                        pVCdVertexArray[iv++] = C.zf() - amp*sina;
 						i++;
 					}
 				}
@@ -1706,14 +1686,8 @@ void gl3dMiarexView::paintDrag(int iWing)
 	{
 		m_vboICd[iWing].bind();
 		m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_IDragColor);
-		switch(W3dPrefsDlg::s_IDragStyle)
-		{
-			case 1:  glLineStipple (1, 0xCFCF); break;
-			case 2:  glLineStipple (1, 0x6666); break;
-			case 3:  glLineStipple (1, 0xFF18); break;
-			case 4:  glLineStipple (1, 0x7E66); break;
-			default: glLineStipple (1, 0xFFFF); break;
-		}
+        GLLineStipple(W3dPrefsDlg::s_IDragStyle);
+
 		glLineWidth((GLfloat)W3dPrefsDlg::s_IDragWidth);
 		m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3);
 
@@ -1729,15 +1703,9 @@ void gl3dMiarexView::paintDrag(int iWing)
 	{
 		m_vboVCd[iWing].bind();
 		m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_VDragColor);
-		switch(W3dPrefsDlg::s_VDragStyle)
-		{
-			case 1: glLineStipple (1, 0xCFCF); break;
-			case 2: glLineStipple (1, 0x6666); break;
-			case 3: glLineStipple (1, 0xFF18); break;
-			case 4: glLineStipple (1, 0x7E66); break;
-			default: glLineStipple (1, 0xFFFF); break;
-		}
-		glLineWidth((GLfloat)W3dPrefsDlg::s_VDragWidth);
+        GLLineStipple(W3dPrefsDlg::s_VDragStyle);
+
+        glLineWidth((GLfloat)W3dPrefsDlg::s_VDragWidth);
 
 		m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3);
 
@@ -1769,15 +1737,10 @@ void gl3dMiarexView::paintStreamLines()
 	glEnable (GL_LINE_STIPPLE);
 
 	m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_StreamLinesColor);
-	switch(W3dPrefsDlg::s_StreamLinesStyle)
-	{
-		case 1: glLineStipple (1, 0xCFCF); break;
-		case 2: glLineStipple (1, 0x6666); break;
-		case 3: glLineStipple (1, 0xFF18); break;
-		case 4: glLineStipple (1, 0x7E66); break;
-		default: glLineStipple (1, 0xFFFF); break;
-	}
-	glLineWidth((GLfloat)W3dPrefsDlg::s_StreamLinesWidth);
+
+    GLLineStipple(W3dPrefsDlg::s_StreamLinesStyle);
+
+    glLineWidth((GLfloat)W3dPrefsDlg::s_StreamLinesWidth);
 
 	int pos=0;
 
@@ -1810,14 +1773,8 @@ void gl3dMiarexView::paintTransitions(int iWing)
 	if(s_pMiarex->m_bXTop)
 	{
 		m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_TopColor);
-		switch(W3dPrefsDlg::s_TopStyle)
-		{
-			case 1: glLineStipple (1, 0xCFCF); break;
-			case 2: glLineStipple (1, 0x6666); break;
-			case 3: glLineStipple (1, 0xFF18); break;
-			case 4: glLineStipple (1, 0x7E66); break;
-			default: glLineStipple (1, 0xFFFF); break;
-		}
+        GLLineStipple(W3dPrefsDlg::s_TopStyle);
+
 		glLineWidth((GLfloat)W3dPrefsDlg::s_TopWidth);
 		glDrawArrays(GL_LINE_STRIP, 0, m_Ny[iWing]);
 	}
@@ -1826,14 +1783,7 @@ void gl3dMiarexView::paintTransitions(int iWing)
 	if(s_pMiarex->m_bXBot)
 	{
 		m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_BotColor);
-		switch(W3dPrefsDlg::s_BotStyle)
-		{
-			case 1: glLineStipple (1, 0xCFCF); break;
-			case 2: glLineStipple (1, 0x6666); break;
-			case 3: glLineStipple (1, 0xFF18); break;
-			case 4: glLineStipple (1, 0x7E66); break;
-			default: glLineStipple (1, 0xFFFF); break;
-		}
+        GLLineStipple(W3dPrefsDlg::s_BotStyle);
 		glLineWidth((GLfloat)W3dPrefsDlg::s_BotWidth);
 		glDrawArrays(GL_LINE_STRIP, m_Ny[iWing], m_Ny[iWing]);
 	}
@@ -1948,7 +1898,7 @@ void gl3dMiarexView::set3DRotationCenter(QPoint point)
 	Vector3d I, A, B, AA, BB, PP;
 
 	screenToViewport(point, B);
-	B.z = -1.0;
+    B.z = -1.0;
 	A.set(B.x, B.y, +1.0);
 
 	viewportToWorld(A, AA);
@@ -1976,10 +1926,10 @@ void gl3dMiarexView::glMakePanelForces(int nPanels, Panel *pPanel, WPolar *pWPol
 {
 	if( !pPOpp || !pWPolar || !pPanel || !nPanels) return;
 
-	int p;
-	double *Cp;
-	double force, cosa, sina2, cosa2, color;
-	double rmin, rmax, range;
+    int p=0;
+    double *Cp=nullptr;
+    float force=0, cosa=0, sina2=0, cosa2=0, color=0;
+    double rmin=0, rmax=0, range=0;
 
 	Quaternion Qt; // Quaternion operator to align the reference arrow to the panel's normal
 	Vector3d Omega; // rotation vector to align the reference arrow to the panel's normal
@@ -2240,10 +2190,10 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int nNodes, V
 {
 	if(!pPanel || !pNode || !nPanels) return;
 
-	int pp, n, averageInf, averageSup, average100;
+    int pp=0, n=0, averageInf=0, averageSup=0, average100=0;
 
-	double color;
-	double lmin, lmax, range;
+    float color=0;
+    float lmin=0, lmax=0, range=0;
 	double *tab = nullptr;
 	if(pPOpp) tab= pPOpp->m_dCp;
 
@@ -2490,14 +2440,7 @@ void gl3dMiarexView::paintMesh(int nPanels)
 
 	glLineWidth(W3dPrefsDlg::s_VLMWidth);
 	glEnable(GL_LINE_STIPPLE);
-	switch(W3dPrefsDlg::s_VLMStyle)
-	{
-		case 1:  glLineStipple (1, 0xCFCF); break;
-		case 2:  glLineStipple (1, 0x6666); break;
-		case 3:  glLineStipple (1, 0xFF18); break;
-		case 4:  glLineStipple (1, 0x7E66); break;
-		default: glLineStipple (1, 0xFFFF); break;
-	}
+    GLLineStipple(W3dPrefsDlg::s_VLMStyle);
 	int pos = 0;
 	for(int p=0; p<nPanels*2; p++)
 	{
