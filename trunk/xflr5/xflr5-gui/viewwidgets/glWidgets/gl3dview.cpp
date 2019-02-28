@@ -1781,16 +1781,6 @@ void gl3dView::paintEditWingMesh(QOpenGLBuffer &vbo)
     m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3);
     m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_VLMColor);
 
-    /*	glEnable (GL_LINE_STIPPLE);
-    switch(W3dPrefsDlg::s_VLMStyle)
-    {
-        case 1:  glLineStipple (1, 0xCFCF); break;
-        case 2:  glLineStipple (1, 0x6666); break;
-        case 3:  glLineStipple (1, 0xFF18); break;
-        case 4:  glLineStipple (1, 0x7E66); break;
-        default: glLineStipple (1, 0xFFFF); break;
-    }*/
-
     int nTriangles = vbo.size()/3.0/3.0/sizeof(float); // three vertices and three components
 
     f->glLineWidth(W3dPrefsDlg::s_VLMWidth);
@@ -1811,7 +1801,7 @@ void gl3dView::paintEditWingMesh(QOpenGLBuffer &vbo)
     vbo.release();
     m_ShaderProgramLine.disableAttributeArray(m_VertexLocationLine);
     m_ShaderProgramLine.release();
-    //	f->glDisable(GL_LINE_STIPPLE);
+
     f->glDisable(GL_POLYGON_OFFSET_FILL);
 }
 
@@ -2268,14 +2258,7 @@ void gl3dView::paintWing(int iWing, Wing *pWing)
 
         glLineWidth(W3dPrefsDlg::s_OutlineWidth);
         glEnable (GL_LINE_STIPPLE);
-        switch(W3dPrefsDlg::s_OutlineStyle)
-        {
-            case 1:  glLineStipple (1, 0xCFCF); break;
-            case 2:  glLineStipple (1, 0x6666); break;
-            case 3:  glLineStipple (1, 0xFF18); break;
-            case 4:  glLineStipple (1, 0x7E66); break;
-            default: glLineStipple (1, 0xFFFF); break;
-        }
+        GLLineStipple(W3dPrefsDlg::s_OutlineStyle);
 
         glDrawArrays(GL_LINES, 0, m_iWingOutlinePoints[iWing]);
         m_vboWingOutline[iWing].release();
@@ -3668,4 +3651,16 @@ void gl3dView::glMakeEditBodyMesh(Body *pBody, Vector3d BodyPosition)
 
     delete[] meshVertexArray;
 }
+
+
+/** note: glLineStipple is deprecated since OpenGL 3.1 */
+void GLLineStipple(int style)
+{
+    if     (style == Qt::DashLine)       glLineStipple (1, 0xCFCF);
+    else if(style == Qt::DotLine)        glLineStipple (1, 0x6666);
+    else if(style == Qt::DashDotLine)    glLineStipple (1, 0xFF18);
+    else if(style == Qt::DashDotDotLine) glLineStipple (1, 0x7E66);
+    else                                 glLineStipple (1, 0xFFFF);
+}
+
 
