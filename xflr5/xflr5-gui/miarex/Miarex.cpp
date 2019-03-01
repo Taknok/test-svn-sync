@@ -6337,9 +6337,10 @@ void Miarex::paintPlaneLegend(QPainter &painter, Plane *pPlane, WPolar *pWPolar,
     {
         if(pWPolar->dataSize()>1)
         {
-            str1.sprintf( "XNP = d(XCp.Cl)/dCl =%10.3f ", pWPolar->m_XNeutralPoint * Units::mtoUnit());
-            str1 += length;
-            painter.drawText(LeftPos, ZPos+D, str1);
+            str1 = QString(tr("XNP = d(XCp.Cl)/dCl =")+"%1 ").arg(pWPolar->m_XNeutralPoint * Units::mtoUnit(), 10,'f', 3);
+            Result = str1+length;
+
+            painter.drawText(LeftPos, ZPos+D, Result);
             D+=dheight;
         }
         str1 = QString(tr("Mesh elements  =")+"%1").arg(m_theTask.calculateMatSize(),6);
