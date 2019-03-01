@@ -2088,13 +2088,13 @@ void XInverse::paintFoil(QPainter &painter)
     painter.drawText(LeftPos,ZPos+D, str1+str2);
     D += dD;
 
-    str1 = QString(tr("Max. Camber      = %1%")).arg( m_pRefFoil->camber()*100.0, 6, 'f', 2);
+    str1 = QString(tr("Max.Camber       = %1%")).arg( m_pRefFoil->camber()*100.0, 6, 'f', 2);
     if(m_bModFoil && m_bLoaded)  str2 = QString("    %1%").arg(m_pModFoil->camber()*100.0, 6, 'f', 2);
     else str2 = "";
     painter.drawText(LeftPos,ZPos+D, str1+str2);
     D += dD;
 
-    str1 = QString(tr("Max.Thick.pos.   = %1%")).arg(m_pRefFoil->xCamber()*100.0, 6, 'f', 2);
+    str1 = QString(tr("Max.Camber.pos.  = %1%")).arg(m_pRefFoil->xCamber()*100.0, 6, 'f', 2);
     if(m_bModFoil && m_bLoaded)  str2 = QString("    %1%").arg(m_pModFoil->xCamber()*100.0, 6, 'f', 2);
     else str2 = "";
     painter.drawText(LeftPos,ZPos+D, str1+str2);
