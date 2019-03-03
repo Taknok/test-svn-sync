@@ -1898,7 +1898,6 @@ void Miarex::keyPressEvent(QKeyEvent *event)
         }
         case Qt::Key_8:
         {
-            if(bCtrl) s_pMainFrame->onOpenGLInfo();
             break;
         }
         case Qt::Key_9:

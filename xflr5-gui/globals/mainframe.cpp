@@ -38,6 +38,7 @@
 
 #include <design/AFoil.h>
 #include <glcontextinfo/openglinfodlg.h>
+#include <glcontextinfo/view3dtestdlg.h>
 #include <globals/globals.h>
 #include <globals/mainframe.h>
 #include <graph/graphdlg.h>
@@ -3220,7 +3221,6 @@ void MainFrame::keyPressEvent(QKeyEvent *pEvent)
             }*/
             case Qt::Key_8:
             {
-                if(bCtrl) onOpenGLInfo();
                 break;
             }
 
@@ -3968,8 +3968,8 @@ void MainFrame::onNewProject()
 
 void MainFrame::onOpenGLInfo()
 {
-    OpenGLInfoDlg w;
-    w.resize(700, 800);
+    View3dTestDlg w(this);
+    w.resize(900, 800);
     w.exec();
 }
 
