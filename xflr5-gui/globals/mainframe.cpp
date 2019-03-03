@@ -6336,7 +6336,7 @@ void MainFrame::setupDataDir()
     s_StylesheetDir.setPath(qApp->applicationDirPath()+"/qss/");
 #endif
 #ifdef Q_OS_WIN
-    s_TranslationDir.setPath(qApp->applicationDirPath()+"/translations");
+    s_TranslationDir.setPath(qApp->applicationDirPath()+"/translations/xfl");
     s_StylesheetDir.setPath(qApp->applicationDirPath()+"/qss");
 #endif
 #ifdef Q_OS_LINUX

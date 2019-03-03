@@ -245,14 +245,13 @@
         <translation>French translation by Jean-Luc Coulon</translation>
     </message>
     <message>
-        <source>OK</source>
+        <source>Copyright (C) Andre Deperrois 2003-2019</source>
         <translation type="unfinished">
-            </translation>
+             {2003-2019?}</translation>
     </message>
     <message>
-        <source>Copyright (C) Andre Deperrois 2003-2018</source>
-        <translation type="unfinished">
-             {2003-2018?}</translation>
+        <source>German translation by Christall, Jochen Günzel and Martin Willner</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -978,14 +977,6 @@ Uncheck for increased analysis speed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Save and Close</source>
-        <translation type="unfinished">保存して閉じる</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="unfinished">キャンセル</translation>
-    </message>
-    <message>
         <source>Axes</source>
         <translation type="unfinished">
             </translation>
@@ -1229,14 +1220,6 @@ Uncheck for increased analysis speed.</source>
     <message>
         <source>Regenerate</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save and Close</source>
-        <translation type="unfinished">保存して閉じる</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="unfinished">キャンセル</translation>
     </message>
     <message>
         <source>Save the changes ?</source>
@@ -1865,14 +1848,6 @@ Uncheck for increased analysis speed.</source>
         <translation>アクション...</translation>
     </message>
     <message>
-        <source>Save and Close</source>
-        <translation>保存して閉じる</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation>キャンセル</translation>
-    </message>
-    <message>
         <source>Flat Panels</source>
         <translation>平面パネル</translation>
     </message>
@@ -2256,14 +2231,6 @@ Uncheck for increased analysis speed.</source>
     <message>
         <source>Inertia...</source>
         <translation>慣性の設定...</translation>
-    </message>
-    <message>
-        <source>Save and Close</source>
-        <translation>保存して閉じる</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation>キャンセル</translation>
     </message>
     <message>
         <source>Reset section</source>
@@ -2887,15 +2854,6 @@ Uncheck for increased analysis speed.</source>
         <translation>全質量＝</translation>
     </message>
     <message>
-        <source>OK</source>
-        <translation type="unfinished">
-            </translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation>キャンセル</translation>
-    </message>
-    <message>
         <source>Center of gravity</source>
         <translation>重心</translation>
     </message>
@@ -3142,14 +3100,6 @@ Uncheck for increased analysis speed.</source>
         <source>Select the application&apos;s default language:</source>
         <translation type="unfinished">アプリケーションの既定の言語を選択してください:</translation>
     </message>
-    <message>
-        <source>Warning</source>
-        <translation type="obsolete">警告</translation>
-    </message>
-    <message>
-        <source>The change will take effect at the next session</source>
-        <translation type="obsolete">変更は次のセッションから有効になります</translation>
-    </message>
 </context>
 <context>
     <name>LengthUnitDlg</name>
@@ -3213,7 +3163,7 @@ Uncheck for increased analysis speed.</source>
     <name>MainFrame</name>
     <message>
         <source>Save the project before exit ?</source>
-        <translation type="vanished">終了前にプロジェクトを保存しますか？</translation>
+        <translation>終了前にプロジェクトを保存しますか？</translation>
     </message>
     <message>
         <source>New Project</source>
@@ -3858,7 +3808,7 @@ Uncheck for increased analysis speed.</source>
     </message>
     <message>
         <source>Exit</source>
-        <translation type="vanished">終了</translation>
+        <translation>終了</translation>
     </message>
     <message>
         <source>will revert to default settings at the next session</source>
@@ -4336,7 +4286,7 @@ Uncheck for increased analysis speed.</source>
     <message>
         <source>Your system does not provide support for OpenGL.
 XFLR5 will not operate correctly.</source>
-        <translation type="vanished">あなたの環境ではOpenGLのサポートが提供されていません
+        <translation>あなたの環境ではOpenGLのサポートが提供されていません
 XFLR5は正常に動作しません.</translation>
     </message>
     <message>
@@ -4849,17 +4799,8 @@ XFLR5は正常に動作しません.</translation>
         <translation type="unfinished">名称変更</translation>
     </message>
     <message>
-        <source>Close</source>
-        <translation type="unfinished">閉じる</translation>
-    </message>
-    <message>
         <source>Description:</source>
         <translation type="unfinished">説明:</translation>
-    </message>
-    <message>
-        <source>UFOs</source>
-        <translation type="unfinished">
-            </translation>
     </message>
     <message>
         <source>Are you sure you want to delete the plane :
@@ -4869,6 +4810,10 @@ XFLR5は正常に動作しません.</translation>
     <message>
         <source>Question</source>
         <translation type="unfinished">確認</translation>
+    </message>
+    <message>
+        <source>Planes</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5462,6 +5407,10 @@ Continue ?</source>
         <source>Export analysis definition to xml file</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>XNP = d(XCp.Cl)/dCl =</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ModDlg</name>
@@ -5633,13 +5582,6 @@ Continue ?</source>
     <message>
         <source>LE Hinge Moment/span = %1</source>
         <translation type="unfinished">前縁ヒンジモーメント/スパン = %1</translation>
-    </message>
-</context>
-<context>
-    <name>OpenGLInfoDlg</name>
-    <message>
-        <source>Options</source>
-        <translation type="obsolete">オプション</translation>
     </message>
 </context>
 <context>
@@ -5829,15 +5771,6 @@ Check the guidelines for explanations.</source>
     <message>
         <source>Total Panels = </source>
         <translation>パネル総数＝ </translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="unfinished">
-            </translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation>キャンセル</translation>
     </message>
     <message>
         <source>Open XML File</source>
@@ -6728,20 +6661,6 @@ Non *.dat files will be ignored.</source>
 %1</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Your system does not provide support for OpenGL.
-XFLR5 will not operate correctly.</source>
-        <translation type="unfinished">あなたの環境ではOpenGLのサポートが提供されていません
-XFLR5は正常に動作しません.</translation>
-    </message>
-    <message>
-        <source>Exit</source>
-        <translation type="unfinished">終了</translation>
-    </message>
-    <message>
-        <source>Save the project before exit ?</source>
-        <translation type="unfinished">終了前にプロジェクトを保存しますか？</translation>
-    </message>
 </context>
 <context>
     <name>ReListDlg</name>
@@ -7141,15 +7060,6 @@ XFLR5は正常に動作しません.</translation>
     <message>
         <source>Plane analysis methods</source>
         <translation>機体の解析方法</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="unfinished">
-            </translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation>キャンセル</translation>
     </message>
     <message>
         <source>Ignore Body Panels</source>
@@ -7609,18 +7519,6 @@ XFLR5は正常に動作しません.</translation>
             </translation>
     </message>
     <message>
-        <source>OK</source>
-        <translation>OK</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation>キャンセル</translation>
-    </message>
-    <message>
-        <source>Apply</source>
-        <translation>適用</translation>
-    </message>
-    <message>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
@@ -7677,6 +7575,117 @@ XFLR5は正常に動作しません.</translation>
     </message>
     <message>
         <source>Inertia</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>View3dTestDlg</name>
+    <message>
+        <source>Context &amp;version: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create context</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Profile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Options</source>
+        <translation type="unfinished">オプション</translation>
+    </message>
+    <message>
+        <source>   OpenGL version: %1.%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>   Profile: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>   Options: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>   Depth buffer size: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>   Stencil buffer size: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>   Samples: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>   Red buffer size: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>   Green buffer size: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>   Blue buffer size: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>   Alpha buffer size: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>   Swap interval: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>*** Context information ***</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>   Vendor: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>   Renderer: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>   OpenGL version: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>   GLSL version: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+*** QSurfaceFormat from context ***</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+*** QSurfaceFormat from QOpenGLWidget ***</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+*** Qt build information ***</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>   Qt OpenGL configuration: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>   Qt OpenGL library handle: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>An error has occurred:
+%1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8006,15 +8015,6 @@ of the surfaces.This may reduce the display speed.
     <message>
         <source>Wing Planform projected on xy plane</source>
         <translation>XY平面に投影された翼平面型</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="unfinished">
-            </translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation>キャンセル</translation>
     </message>
     <message>
         <source>Root Re =</source>
@@ -8729,10 +8729,6 @@ could be found. The polar(s) will not be stored</source>
         <translation type="unfinished">最大翼厚位置 = %1%</translation>
     </message>
     <message>
-        <source>Max. Camber      = %1%</source>
-        <translation type="unfinished">最大キャンバー      = %1%</translation>
-    </message>
-    <message>
         <source>Cl = %1</source>
         <translation type="unfinished">
             </translation>
@@ -8908,6 +8904,14 @@ on the QSpec curve.</source>
     <message>
         <source>Smoothing the selected portion.
 </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Max.Camber       = %1%</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Max.Camber.pos.  = %1%</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

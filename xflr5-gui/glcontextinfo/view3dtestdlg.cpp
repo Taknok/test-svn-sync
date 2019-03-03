@@ -290,16 +290,16 @@ void View3dTestDlg::printFormat(const QSurfaceFormat &format)
     for (size_t i=0; i<sizeof(options) / sizeof(Option); ++i)
         if (format.testOption(options[i].option))
             opts += QString::fromLatin1(options[i].str) + QStringLiteral(" ");
-    m_pctrlglOutput->appendPlainText(tr("   Options: %1").arg(opts));
+    m_pctrlglOutput->appendPlainText(QString("Options: %1").arg(opts));
+    m_pctrlglOutput->appendPlainText(QString("Depth buffer size: %1").arg(QString::number(format.depthBufferSize())));
+    m_pctrlglOutput->appendPlainText(QString("Stencil buffer size: %1").arg(QString::number(format.stencilBufferSize())));
+    m_pctrlglOutput->appendPlainText(QString("Samples: %1").arg(QString::number(format.samples())));
+    m_pctrlglOutput->appendPlainText(QString("Red buffer size: %1").arg(QString::number(format.redBufferSize())));
+    m_pctrlglOutput->appendPlainText(QString("Green buffer size: %1").arg(QString::number(format.greenBufferSize())));
+    m_pctrlglOutput->appendPlainText(QString("Blue buffer size: %1").arg(QString::number(format.blueBufferSize())));
+    m_pctrlglOutput->appendPlainText(QString("Alpha buffer size: %1").arg(QString::number(format.alphaBufferSize())));
+    m_pctrlglOutput->appendPlainText(QString("Swap interval: %1").arg(QString::number(format.swapInterval())));
 
-    m_pctrlglOutput->appendPlainText(tr("   Depth buffer size: %1").arg(QString::number(format.depthBufferSize())));
-    m_pctrlglOutput->appendPlainText(tr("   Stencil buffer size: %1").arg(QString::number(format.stencilBufferSize())));
-    m_pctrlglOutput->appendPlainText(tr("   Samples: %1").arg(QString::number(format.samples())));
-    m_pctrlglOutput->appendPlainText(tr("   Red buffer size: %1").arg(QString::number(format.redBufferSize())));
-    m_pctrlglOutput->appendPlainText(tr("   Green buffer size: %1").arg(QString::number(format.greenBufferSize())));
-    m_pctrlglOutput->appendPlainText(tr("   Blue buffer size: %1").arg(QString::number(format.blueBufferSize())));
-    m_pctrlglOutput->appendPlainText(tr("   Alpha buffer size: %1").arg(QString::number(format.alphaBufferSize())));
-    m_pctrlglOutput->appendPlainText(tr("   Swap interval: %1").arg(QString::number(format.swapInterval())));
 }
 
 
@@ -320,23 +320,23 @@ void View3dTestDlg::onRenderWindowReady()
     if ((p = f->glGetString(GL_SHADING_LANGUAGE_VERSION)))
         glslVersion = QString::fromLatin1(reinterpret_cast<const char *>(p));
 
-    m_pctrlglOutput->appendPlainText(tr("*** Context information ***"));
-    m_pctrlglOutput->appendPlainText(tr("   Vendor: %1").arg(vendor));
-    m_pctrlglOutput->appendPlainText(tr("   Renderer: %1").arg(renderer));
-    m_pctrlglOutput->appendPlainText(tr("   OpenGL version: %1").arg(version));
-    m_pctrlglOutput->appendPlainText(tr("   GLSL version: %1").arg(glslVersion));
+    m_pctrlglOutput->appendPlainText(QString("*** Context information ***"));
+    m_pctrlglOutput->appendPlainText(QString("   Vendor: %1").arg(vendor));
+    m_pctrlglOutput->appendPlainText(QString("   Renderer: %1").arg(renderer));
+    m_pctrlglOutput->appendPlainText(QString("   OpenGL version: %1").arg(version));
+    m_pctrlglOutput->appendPlainText(QString("   GLSL version: %1").arg(glslVersion));
 
-    m_pctrlglOutput->appendPlainText(tr("\n*** QSurfaceFormat from context ***"));
+    m_pctrlglOutput->appendPlainText("\n*** QSurfaceFormat from context ***");
     printFormat(pContext->format());
 
-    m_pctrlglOutput->appendPlainText(tr("\n*** QSurfaceFormat from QOpenGLWidget ***"));
+    m_pctrlglOutput->appendPlainText("\n*** QSurfaceFormat from QOpenGLWidget ***");
     printFormat(m_pgl3dTestView->format());
 
-    m_pctrlglOutput->appendPlainText(tr("\n*** Qt build information ***"));
+    m_pctrlglOutput->appendPlainText("\n*** Qt build information ***");
     const char *gltype[] = { "Desktop", "GLES 2", "GLES 1" };
-    m_pctrlglOutput->appendPlainText(tr("   Qt OpenGL configuration: %1")
+    m_pctrlglOutput->appendPlainText(QString("   Qt OpenGL configuration: %1")
                      .arg(QString::fromLatin1(gltype[QOpenGLContext::openGLModuleType()])));
-    m_pctrlglOutput->appendPlainText(tr("   Qt OpenGL library handle: %1")
+    m_pctrlglOutput->appendPlainText(QString("   Qt OpenGL library handle: %1")
                      .arg(QString::number(qintptr(QOpenGLContext::openGLModuleHandle()), 16)));
 
     m_pctrlglOutput->moveCursor(QTextCursor::Start);
@@ -365,7 +365,7 @@ void View3dTestDlg::onRenderWindowReady()
 
 void View3dTestDlg::onRenderWindowError(const QString &msg)
 {
-    m_pctrlglOutput->appendPlainText(tr("An error has occurred:\n%1").arg(msg));
+    m_pctrlglOutput->appendPlainText(QString("An error has occurred:\n%1").arg(msg));
 }
 
 

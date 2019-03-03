@@ -36,7 +36,7 @@ QT += opengl network xml
 TEMPLATE = app
 TARGET = xflr5
 
-
+INCLUDEPATH += .
 INCLUDEPATH += $$PWD/viewwidgets
 INCLUDEPATH += $$PWD/viewwidgets/glWidgets
 INCLUDEPATH += $$PWD/graph
