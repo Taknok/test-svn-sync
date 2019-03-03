@@ -1,7 +1,7 @@
 /****************************************************************************
 
     gl3dView Class
-    Copyright (C) 2016 Andre Deperrois
+    Copyright (C) 2016-2019 Andre Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
 
 #include <QOpenGLWidget>
 #include <QOpenGLBuffer>
+#include <QOpenGLVertexArrayObject>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
 #include <QTimer>
@@ -125,6 +126,7 @@ protected:
     void glMakeEditBodyMesh(Body *pBody, Vector3d BodyPosition);
     void glRenderText(int x, int y, const QString & str, QColor textColor = QColor(Qt::white));
     void glRenderText(double x, double y, double z, const QString & str, QColor textColor = QColor(Qt::white));
+    void glMakeAxis();
 
     virtual void glRenderView() = 0;
 
@@ -165,6 +167,9 @@ protected:
     QOpenGLBuffer m_vboEditBodyMesh;
     QOpenGLBuffer m_vboHighlight;
     QOpenGLBuffer m_vboSphere;
+    QOpenGLBuffer m_vboAxis;
+
+
     QOpenGLTexture 	*m_pLeftBodyTexture, *m_pRightBodyTexture;
     QOpenGLTexture 	*m_pWingTopLeftTexture[MAXWINGS], *m_pWingTopRightTexture[MAXWINGS], *m_pWingBotLeftTexture[MAXWINGS], *m_pWingBotRightTexture[MAXWINGS];
 
@@ -258,6 +263,9 @@ protected:
 
     float ab_old[16], ab_new[16];
     int m_iTransitionInc;
+
+    QOpenGLVertexArrayObject m_vao; /** generic vao required for the core profile >3.x*/
+
 };
 
 void GLLineStipple(int style);

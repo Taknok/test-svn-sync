@@ -276,14 +276,11 @@ void gl3dMiarexView::contextMenuEvent (QContextMenuEvent * event)
 }
 
 
-
-
 void gl3dMiarexView::on3DReset()
 {
 //	pMiarex->setScale();
 	if(s_pMiarex->m_pCurPlane) startResetTimer(s_pMiarex->m_pCurPlane->span());
 }
-
 
 
 /**
@@ -329,6 +326,7 @@ void gl3dMiarexView::paintOverlay()
 		m_PixTextOverlay.fill(Qt::transparent);
 	}
 }
+
 
 void gl3dMiarexView::glMakeCpLegendClr()
 {
@@ -622,7 +620,6 @@ bool gl3dMiarexView::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNod
 }
 
 
-
 void gl3dMiarexView::glMakeTransitions(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp)
 {
 	if(!pWing || !pWPolar || !pWOpp) return;
@@ -738,7 +735,6 @@ void gl3dMiarexView::glMakeTransitions(int iWing, Wing *pWing, WPolar *pWPolar, 
 	m_vboTransitions[iWing].allocate(pTransVertexArray.data(), bufferSize * sizeof(GLfloat));
 	m_vboTransitions[iWing].release();
 }
-
 
 
 void gl3dMiarexView::glMakeSurfVelocities(Panel *pPanel, WPolar *pWPolar, PlaneOpp *pPOpp, int nPanels)
@@ -862,7 +858,9 @@ void gl3dMiarexView::glMakeSurfVelocities(Panel *pPanel, WPolar *pWPolar, PlaneO
 
 void gl3dMiarexView::paintDownwash(int iWing)
 {
-	m_ShaderProgramLine.bind();
+    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+
+    m_ShaderProgramLine.bind();
 	m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
 	m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_DownwashColor);
 	m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
@@ -1242,10 +1240,11 @@ void gl3dMiarexView::glMakeLiftStrip(int iWing, Wing *pWing, WPolar *pWPolar, Wi
 }
 
 
-
 void gl3dMiarexView::paintLift(int iWing)
 {
-	m_ShaderProgramLine.bind();
+    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+
+    m_ShaderProgramLine.bind();
 	m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
 	m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_XCPColor);
 	m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, m_modelMatrix);
@@ -1276,9 +1275,12 @@ void gl3dMiarexView::paintLift(int iWing)
 	m_ShaderProgramLine.release();
 }
 
+
 void gl3dMiarexView::paintMoments()
 {
-	m_ShaderProgramLine.bind();
+    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+
+    m_ShaderProgramLine.bind();
 	m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
 	m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_MomentColor);
 	m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
@@ -1302,6 +1304,7 @@ void gl3dMiarexView::paintMoments()
 	m_ShaderProgramLine.release();
 }
 
+
 void gl3dMiarexView::glMakeDownwash(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp)
 {
 	if(!pWing || !pWPolar || !pWOpp) return;
@@ -1317,7 +1320,7 @@ void gl3dMiarexView::glMakeDownwash(int iWing, Wing *pWing, WPolar *pWPolar, Win
     float factor = s_VelocityScale/5.0;
 
 	int bufferSize = m_Ny[iWing]*18;
-	float *pDownWashVertexArray = new float[bufferSize];
+    QVector<float> pDownWashVertexArray(bufferSize);
 	int iv = 0;
 	if(pWPolar->isLLTMethod())
 	{
@@ -1412,10 +1415,10 @@ void gl3dMiarexView::glMakeDownwash(int iWing, Wing *pWing, WPolar *pWPolar, Win
 	m_vboDownwash[iWing].destroy();
 	m_vboDownwash[iWing].create();
 	m_vboDownwash[iWing].bind();
-	m_vboDownwash[iWing].allocate(pDownWashVertexArray, bufferSize * sizeof(GLfloat));
+    m_vboDownwash[iWing].allocate(pDownWashVertexArray.constData(), bufferSize * sizeof(GLfloat));
 	m_vboDownwash[iWing].release();
-	delete [] pDownWashVertexArray;
 }
+
 
 void gl3dMiarexView::glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, double beta)
 {
@@ -1673,7 +1676,9 @@ void gl3dMiarexView::glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, Wi
 
 void gl3dMiarexView::paintDrag(int iWing)
 {
-	m_ShaderProgramLine.bind();
+    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+
+    m_ShaderProgramLine.bind();
 	m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
 	m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
 	m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
@@ -1722,6 +1727,8 @@ void gl3dMiarexView::paintDrag(int iWing)
 
 void gl3dMiarexView::paintStreamLines()
 {
+    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+
     if(!m_bStreamlinesDone) return; // don't render until the vbo is ready
 	QMatrix4x4 idMatrix;
 	m_ShaderProgramLine.bind();
@@ -1759,7 +1766,9 @@ void gl3dMiarexView::paintStreamLines()
 
 void gl3dMiarexView::paintTransitions(int iWing)
 {
-	m_ShaderProgramLine.bind();
+    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+
+    m_ShaderProgramLine.bind();
 	m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
 	m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
 	m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
@@ -1801,6 +1810,8 @@ void gl3dMiarexView::paintSurfaceVelocities(int nPanels)
 {
     if(!m_bSurfVelocitiesDone) return;
 
+    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+
     QMatrix4x4 idMatrix;
     m_ShaderProgramLine.bind();
     m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, idMatrix);
@@ -1825,9 +1836,10 @@ void gl3dMiarexView::paintSurfaceVelocities(int nPanels)
 }
 
 
-
 void gl3dMiarexView::paintCpLegendClr()
 {
+    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+
     m_ShaderProgramGradient.bind();
     m_ShaderProgramGradient.enableAttributeArray(m_VertexLocationGradient);
     m_ShaderProgramGradient.enableAttributeArray(m_ColorLocationGradient);
@@ -1847,8 +1859,11 @@ void gl3dMiarexView::paintCpLegendClr()
     m_ShaderProgramGradient.release();
 }
 
+
 void gl3dMiarexView::paintPanelCp(int nPanels)
 {
+    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+
     m_ShaderProgramGradient.bind();
     m_ShaderProgramGradient.enableAttributeArray(m_VertexLocationGradient);
     m_ShaderProgramGradient.enableAttributeArray(m_ColorLocationGradient);
@@ -1868,8 +1883,11 @@ void gl3dMiarexView::paintPanelCp(int nPanels)
     m_ShaderProgramGradient.release();
 }
 
+
 void gl3dMiarexView::paintPanelForces(int nPanels)
 {
+    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+
     m_ShaderProgramGradient.bind();
     m_ShaderProgramGradient.enableAttributeArray(m_VertexLocationGradient);
     m_ShaderProgramGradient.enableAttributeArray(m_ColorLocationGradient);
@@ -1887,7 +1905,6 @@ void gl3dMiarexView::paintPanelForces(int nPanels)
     m_vboPanelForces.release();
     m_ShaderProgramGradient.release();
 }
-
 
 
 void gl3dMiarexView::set3DRotationCenter(QPoint point)
@@ -2185,7 +2202,6 @@ void gl3dMiarexView::glMakePanelForces(int nPanels, Panel *pPanel, WPolar *pWPol
 }
 
 
-
 void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int nNodes, Vector3d *pNode, Panel *pPanel, PlaneOpp *pPOpp)
 {
 	if(!pPanel || !pNode || !nPanels) return;
@@ -2429,7 +2445,9 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int nNodes, V
 
 void gl3dMiarexView::paintMesh(int nPanels)
 {
-	m_ShaderProgramLine.bind();
+    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+
+    m_ShaderProgramLine.bind();
 	m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
 	m_vboMesh.bind();
 	m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3, 6 * sizeof(GLfloat));
@@ -2465,7 +2483,6 @@ void gl3dMiarexView::paintMesh(int nPanels)
 	m_vboMesh.release();
 	m_ShaderProgramLine.release();
 }
-
 
 
 /**
