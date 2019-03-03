@@ -34,8 +34,8 @@ void main()
 
 	if(lightOn==1)
 	{
-		MaterialAmbientColor  = vec4(texture2D(textureSampler, UV).rgb*LightAmbient, 1.0) ;
-		MaterialDiffuseColor  = vec4(texture2D(textureSampler, UV).rgb*LightDiffuse, 1.0);
+        MaterialAmbientColor  = vec4(texture(textureSampler, UV).rgb*LightAmbient, 1.0);
+        MaterialDiffuseColor  = vec4(texture(textureSampler, UV).rgb*LightDiffuse, 1.0);
 
 
 		MaterialSpecularColor = vec4(1.0, 1.0, 1.0, 1.0);
@@ -69,7 +69,7 @@ void main()
 			+(MaterialSpecularColor * LightSpecular * pow(cosAlpha, MaterialShininess)) * LightColor * attenuation_factor;
 	}
 	else
-        fragColor  = vec4(texture2D(textureSampler, UV).rgb, 1.0);
+        fragColor  = vec4(texture(textureSampler, UV).rgb, 1.0);
 
 }
 
