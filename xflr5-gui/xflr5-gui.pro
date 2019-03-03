@@ -79,9 +79,11 @@ win32 {
         LIBS += -L$$OUT_PWD/../xflr5-engine/debug/ -lxflr5-engine
         LIBS += -L$$OUT_PWD/../XFoil-lib/debug/ -lXFoil
 	}
-	LIBS += -lopenGL32
+    LIBS += -lopenGL32
 
 	RC_FILE = ../win/xflr5.rc
+
+    CONFIG+= static
 }
 
 

@@ -1,5 +1,7 @@
 #version 330
 
+// the texture vertex shaders
+
 // Input vertex data, different for all executions of this shader.
 in vec4 vertexPosition_modelSpace;
 in vec3 vertexNormal_modelSpace;
