@@ -70,9 +70,9 @@ int main(int argc, char *argv[])
 
 /*    QSurfaceFormat defaultFormat = QSurfaceFormat::defaultFormat();
     defaultFormat.setVersion(3, 3);
-    defaultFormat.setProfile(QSurfaceFormat::CompatibilityProfile); //only relevant for 3.2+
-    QSurfaceFormat::setDefaultFormat(defaultFormat);
-*/
+//    defaultFormat.setProfile(QSurfaceFormat::CompatibilityProfile); //only relevant for 3.2+
+    QSurfaceFormat::setDefaultFormat(defaultFormat);*/
+
 
 #ifdef QT_DEBUG
     QString strange;
