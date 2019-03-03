@@ -8,6 +8,7 @@ SOURCES += \
     design/SplineCtrlsDlg.cpp \
     glcontextinfo/glrenderwindow.cpp \
     glcontextinfo/openglinfodlg.cpp \
+    glcontextinfo/view3dtestdlg.cpp \
     globals/XFLR5Application.cpp \
     globals/globals.cpp \
     globals/main.cpp \
@@ -69,11 +70,11 @@ SOURCES += \
     misc/line/LineCbBox.cpp \
     misc/line/LineDelegate.cpp \
     misc/line/LinePickerDlg.cpp \
-    misc/options/units.cpp \
     misc/options/displayoptions.cpp \
+    misc/options/languagewt.cpp \
     misc/options/preferencesdlg.cpp \
     misc/options/saveoptions.cpp \
-    misc/options/languagewt.cpp \
+    misc/options/units.cpp \
     misc/popup.cpp \
     misc/stlexportdialog.cpp \
     misc/text/DoubleEdit.cpp \
@@ -93,6 +94,7 @@ SOURCES += \
     viewwidgets/glWidgets/gl3dbodyview.cpp \
     viewwidgets/glWidgets/gl3dmiarexview.cpp \
     viewwidgets/glWidgets/gl3dplaneview.cpp \
+    viewwidgets/glWidgets/gl3dtestview.cpp \
     viewwidgets/glWidgets/gl3dview.cpp \
     viewwidgets/glWidgets/gl3dwingview.cpp \
     viewwidgets/graphtilewidget.cpp \
@@ -141,6 +143,7 @@ HEADERS += \
     design/SplineCtrlsDlg.h \
     glcontextinfo/glrenderwindow.h \
     glcontextinfo/openglinfodlg.h \
+    glcontextinfo/view3dtestdlg.h \
     globals/XFLR5Application.h \
     globals/globals.h \
     globals/gui_enums.h \
@@ -205,11 +208,11 @@ HEADERS += \
     misc/line/LineCbBox.h \
     misc/line/LineDelegate.h \
     misc/line/LinePickerDlg.h \
-    misc/options/units.h \
     misc/options/displayoptions.h \
+    misc/options/languagewt.h \
     misc/options/preferencesdlg.h \
     misc/options/saveoptions.h \
-    misc/options/languagewt.h \
+    misc/options/units.h \
     misc/popup.h \
     misc/stlexportdialog.h \
     misc/text/DoubleEdit.h \
@@ -230,6 +233,7 @@ HEADERS += \
     viewwidgets/glWidgets/gl3dbodyview.h \
     viewwidgets/glWidgets/gl3dmiarexview.h \
     viewwidgets/glWidgets/gl3dplaneview.h \
+    viewwidgets/glWidgets/gl3dtestview.h \
     viewwidgets/glWidgets/gl3dview.h \
     viewwidgets/glWidgets/gl3dwingview.h \
     viewwidgets/graphtilewidget.h \

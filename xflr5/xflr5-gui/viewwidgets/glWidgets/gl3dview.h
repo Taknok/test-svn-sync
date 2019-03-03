@@ -108,6 +108,7 @@ public slots:
 public:
     void setScale(double refLength);
     void glSetupLight();
+    bool bUsing120StyleShaders() const {return m_bUse120StyleShaders;}
 
 protected:
     void getTextureFile(QString planeName, QString surfaceName, QImage & textureImage);
@@ -133,7 +134,7 @@ protected:
     void paintGL3();
     void paintFoilNames(void *pWingPtr);
     void paintMasses(double volumeMass, Vector3d pos, QString tag, const QList<PointMass *> &ptMasses);
-    virtual void paintOverlay() = 0;
+    virtual void paintOverlay() {}
     void paintArcBall();
     void paintAxes();
     void paintWingMesh(Wing *pWing);
