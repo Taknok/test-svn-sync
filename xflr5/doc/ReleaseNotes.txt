@@ -15,7 +15,8 @@
 *******************************************************************************
 
 
-xflr5 v6.45 February xxxth, 2019
+xflr5 v6.45 March xxxth, 2019
+    - added VAO support for the OpenGL 3.2+ core profile
     - fixed a crash bug when trying to plot BL graphs without an active operating point
     - corrected the names of some variables in boundary layer plots
     - corrected imperial unit conversions in the foil polar definition
