@@ -1,7 +1,7 @@
 /****************************************************************************
 
     gl3dView Class
-    Copyright (C) 2016 Andre Deperrois
+    Copyright (C) 2016-2019 Andre Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -266,7 +266,6 @@ void gl3dView::on3DFlip()
 }
 
 
-
 void gl3dView::on3DTop()
 {
     memcpy(ab_old, m_ArcBall.ab_quat, 16*sizeof(float));
@@ -305,7 +304,6 @@ void gl3dView::on3DFront()
 }
 
 
-
 void gl3dView::onSurfaces(bool bChecked)
 {
     m_bSurfaces = bChecked;
@@ -325,6 +323,7 @@ void gl3dView::onPanels(bool bChecked)
     m_bVLMPanels = bChecked;
     update();
 }
+
 
 void gl3dView::onAxes(bool bChecked)
 {
@@ -419,7 +418,6 @@ void gl3dView::mouseDoubleClickEvent(QMouseEvent *event)
 }
 
 
-
 void gl3dView::mouseMoveEvent(QMouseEvent *event)
 {
     QPoint point(event->pos().x(), event->pos().y());
@@ -477,7 +475,6 @@ void gl3dView::mouseMoveEvent(QMouseEvent *event)
 }
 
 
-
 /**
 *Overrides the wheelEvent method of the base class.
 *Dispatches the handling to the active child application.
@@ -523,8 +520,6 @@ void gl3dView::mouseReleaseEvent(QMouseEvent * event )
     update();
     event->accept();
 }
-
-
 
 
 /**
@@ -577,7 +572,6 @@ void gl3dView::keyReleaseEvent(QKeyEvent *event)
             event->ignore();
     }
 }
-
 
 
 void gl3dView::reset3DRotationCenter()
@@ -633,7 +627,6 @@ void gl3dView::screenToViewport(QPoint const &point, Vector3d &real)
         real.y = -((double)point.y() - h2) / h2;
     }
 }
-
 
 
 /**
@@ -712,8 +705,6 @@ void gl3dView::glRenderText(double x, double y, double z, const QString & str, Q
         paint.restore();
     }
 }
-
-
 
 
 void gl3dView::glRenderText(int x, int y, const QString & str, QColor textColor)
@@ -1102,7 +1093,6 @@ void gl3dView::glMakeBody3DFlatPanels(Body *pBody)
 }
 
 
-
 void gl3dView::glMakeBodySplines(Body *pBody)
 {
     int NXXXX = W3dPrefsDlg::bodyAxialRes();
@@ -1386,33 +1376,11 @@ void gl3dView::initializeGL()
     QSurfaceFormat ctxtFormat = format();
     m_bUse120StyleShaders = (ctxtFormat.majorVersion()*10+ctxtFormat.minorVersion())<33;
 
-    Trace("");
-    Trace("****************gl3dView********************");
-    Trace("Initializing GL");
+#ifdef QT_DEBUG
+    printFormat(ctxtFormat);
+#endif
 
-    printFormat(format());
-
-    QString vendor, renderer, version, glslVersion;
-    const GLubyte *p;
-    if ((p = glGetString(GL_VENDOR)))
-        vendor = QString::fromLatin1(reinterpret_cast<const char *>(p));
-    if ((p = glGetString(GL_RENDERER)))
-        renderer = QString::fromLatin1(reinterpret_cast<const char *>(p));
-    if ((p = glGetString(GL_VERSION)))
-        version = QString::fromLatin1(reinterpret_cast<const char *>(p));
-    if ((p = glGetString(GL_SHADING_LANGUAGE_VERSION)))
-        glslVersion = QString::fromLatin1(reinterpret_cast<const char *>(p));
-
-    Trace("   *** Context information ***");
-    Trace(QString("   Vendor: %1").arg(vendor));
-    Trace(QString("   Renderer: %1").arg(renderer));
-    Trace(QString("   OpenGL version: %1").arg(version));
-    Trace(QString("   GLSL version: %1").arg(glslVersion));
-    if(m_bUse120StyleShaders) Trace("Using glsl v120 style shaders");
-    else                      Trace("Using glsl v330 style shaders");
-    Trace("/****************gl3dView********************");
-
-
+    glMakeAxis();
     glMakeUnitSphere();
     glMakeArcBall();
     glMakeArcPoint();
@@ -1520,7 +1488,6 @@ void gl3dView::initializeGL()
 }
 
 
-
 void gl3dView::glSetupLight()
 {
     QColor LightColor;
@@ -1556,7 +1523,6 @@ void gl3dView::glSetupLight()
     m_ShaderProgramTexture.setUniformValue(m_AttenuationQuadraticTexture,  GLLightDlg::s_Attenuation.m_Quadratic);
     m_ShaderProgramTexture.release();
 }
-
 
 
 void gl3dView::paintGL()
@@ -1635,11 +1601,26 @@ void gl3dView::paintGL3()
         paintSphere(lightPos, radius, lightColor, false);
     }
 
-    m_viewMatrix.scale(m_glScaled, m_glScaled, m_glScaled);
-    m_viewMatrix.translate(m_glRotCenter.x, m_glRotCenter.y, m_glRotCenter.z);
-    m_pvmMatrix = m_orthoMatrix * m_viewMatrix * m_modelMatrix;
 
-    if(m_bAxes)  paintAxes();
+    float glScalef = float(m_glScaled);
+
+    if(m_bAxes)
+    {
+        // fixed scale axis for the axis
+    //	m_viewMatrix.scale(0.5, 0.5, 0.5);
+
+        m_viewMatrix.scale(glScalef, glScalef, glScalef);
+        m_viewMatrix.translate(m_glRotCenter.xf(), m_glRotCenter.yf(), m_glRotCenter.zf());
+        m_viewMatrix.scale(0.3f/glScalef, 0.3f/glScalef, 0.3f/glScalef);
+        m_pvmMatrix = m_orthoMatrix * m_viewMatrix;
+        paintAxes();
+    }
+
+    m_viewMatrix= matQuat.transposed();
+    m_viewMatrix.scale(glScalef, glScalef, glScalef);
+    m_viewMatrix.translate(m_glRotCenter.xf(), m_glRotCenter.yf(), m_glRotCenter.zf());
+    m_pvmMatrix = m_orthoMatrix * m_viewMatrix;
+
 
     glRenderView();
 
@@ -1656,7 +1637,7 @@ void gl3dView::setScale(double refLength)
 
 void gl3dView::paintFoilNames(void *pWingPtr)
 {
-    int j;
+    int j=0;
     Foil *pFoil;
     Wing *pWing = (Wing*)pWingPtr;
 
@@ -1675,7 +1656,6 @@ void gl3dView::paintFoilNames(void *pWingPtr)
                            pFoil->foilName(),
                            QColor(Qt::cyan).lighter(175));
 }
-
 
 
 /**
@@ -1719,9 +1699,10 @@ void gl3dView::glDrawMasses(Plane *pPlane)
 }
 
 
-
 void gl3dView::paintMasses(double volumeMass, Vector3d pos, QString tag, const QList<PointMass*> &ptMasses)
 {
+    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+
     double delta = 0.02/m_glScaled;
     if(qAbs(volumeMass)>PRECISION)
     {
@@ -1743,10 +1724,11 @@ void gl3dView::paintMasses(double volumeMass, Vector3d pos, QString tag, const Q
 }
 
 
-
 /** used only in GL3DWingDlg*/
 void gl3dView::paintSectionHighlight()
-{
+{    
+    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+
     m_ShaderProgramLine.bind();
     m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
     m_vboHighlight.bind();
@@ -1770,6 +1752,9 @@ void gl3dView::paintSectionHighlight()
 /** Default mesh, if no polar has been defined */
 void gl3dView::paintEditWingMesh(QOpenGLBuffer &vbo)
 {
+
+    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+
     QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
 
     m_ShaderProgramLine.bind();
@@ -1806,11 +1791,10 @@ void gl3dView::paintEditWingMesh(QOpenGLBuffer &vbo)
 }
 
 
-
-
 void gl3dView::paintArcBall()
-{
-    int pos;
+{    
+    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+
     m_ShaderProgramLine.bind();
     m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
     m_vboArcBall.bind();
@@ -1818,7 +1802,7 @@ void gl3dView::paintArcBall()
     m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, QColor(50,55,80,255));
 
     glLineWidth(1.0);
-    pos=0;
+    int pos=0;
     for (int col=0; col<NUMCIRCLES*2; col++)
     {
         glDrawArrays(GL_LINE_STRIP, pos, NUMANGLES-2);
@@ -1855,32 +1839,31 @@ void gl3dView::paintArcBall()
 
 void gl3dView::paintAxes()
 {
+    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+//    QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
     m_ShaderProgramLine.bind();
-    m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
-    m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3, 0);
+
     m_ShaderProgramLine.setUniformValue(m_ColorLocationLine, W3dPrefsDlg::s_3DAxisColor);
-    m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, m_modelMatrix);
     m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
     m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_pvmMatrix);
-
+    m_vboAxis.bind();
     //draw Axis
     glLineWidth(W3dPrefsDlg::s_3DAxisWidth);
-    glEnable (GL_LINE_STIPPLE);
-    glLineStipple (1, 0xFF18);
 
-    m_ShaderProgramLine.setAttributeArray(m_VertexLocationLine, x_axis, 3);
-    glDrawArrays(GL_LINE_STRIP, 0, 6);
-    m_ShaderProgramLine.setAttributeArray(m_VertexLocationLine, y_axis, 3);
-    glDrawArrays(GL_LINE_STRIP, 0, 6);
-    m_ShaderProgramLine.setAttributeArray(m_VertexLocationLine, z_axis, 3);
-    glDrawArrays(GL_LINE_STRIP, 0, 6);
+    m_ShaderProgramLine.setAttributeBuffer(m_VertexLocationLine, GL_FLOAT, 0, 3);
+    m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
 
-    glDisable (GL_LINE_STIPPLE);
+    int nvertices = m_vboAxis.size()/sizeof(float)/3; // three components
+    glDrawArrays(GL_LINES, 0, nvertices);
+
+    m_vboAxis.release();
+
     m_ShaderProgramLine.disableAttributeArray(m_VertexLocationLine);
     m_ShaderProgramLine.release();
-    glRenderText(1.0, 0.015, 0.015, "X");
-    glRenderText(0.015, 1.0, 0.015, "Y");
-    glRenderText(0.015, 0.015, 1.0, "Z");
+
+    glRenderText(1.0, 0.015, 0.015, "X", W3dPrefsDlg::s_3DAxisColor);
+    glRenderText(0.015, 1.0, 0.015, "Y", W3dPrefsDlg::s_3DAxisColor);
+    glRenderText(0.015, 0.015, 1.0, "Z", W3dPrefsDlg::s_3DAxisColor);
 }
 
 
@@ -1920,10 +1903,12 @@ void gl3dView::setSpanStations(Plane *pPlane, WPolar *pWPolar, PlaneOpp *pPOpp)
 }
 
 
-
 void gl3dView::paintBody(Body *pBody)
 {
     if(!pBody) return;
+
+    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+
     int pos = 0;
     int NXXXX = W3dPrefsDlg::bodyAxialRes();
     int NHOOOP = W3dPrefsDlg::bodyHoopRes();
@@ -2042,6 +2027,9 @@ void gl3dView::paintBody(Body *pBody)
 void gl3dView::paintEditBodyMesh(Body *pBody)
 {
     if(!pBody) return;
+
+    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+
     QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
 
     m_ShaderProgramLine.bind();
@@ -2120,6 +2108,8 @@ void gl3dView::paintEditBodyMesh(Body *pBody)
 void gl3dView::paintWing(int iWing, Wing *pWing)
 {
     if(!pWing) return;
+
+    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
 
     int CHORDPOINTS = W3dPrefsDlg::chordwiseRes();
 
@@ -2270,7 +2260,6 @@ void gl3dView::paintWing(int iWing, Wing *pWing)
 }
 
 
-
 /**
 *Creates the OpenGL List for the ArcBall.
 *@param ArcBall the ArcBall object associated to the view
@@ -2413,6 +2402,8 @@ void gl3dView::glMakeUnitSphere()
 
 void gl3dView::paintSphere(Vector3d place, double radius, QColor sphereColor, bool bLight)
 {
+    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+
     QMatrix4x4 mSphere; //is identity
     mSphere.translate(place.x, place.y, place.z);
     mSphere.scale(radius);
@@ -2442,7 +2433,6 @@ void gl3dView::paintSphere(Vector3d place, double radius, QColor sphereColor, bo
     m_ShaderProgramSurface.disableAttributeArray(m_NormalLocationSurface);
     m_ShaderProgramSurface.release();
 }
-
 
 
 void gl3dView::glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody)
@@ -3131,8 +3121,6 @@ void gl3dView::glMakeWingEditMesh(QOpenGLBuffer &vbo, Wing *pWing)
 }
 
 
-
-
 void gl3dView::glMakeWingSectionHighlight(Wing *pWing, int iSectionHighLight, bool bRightSide)
 {
     Vector3d Point, Normal;
@@ -3238,7 +3226,6 @@ void gl3dView::glMakeWingSectionHighlight(Wing *pWing, int iSectionHighLight, bo
 }
 
 
-
 void gl3dView::glMakeBodyFrameHighlight(Body *pBody, Vector3d bodyPos, int iFrame)
 {
     //	int NXXXX = W3dPrefsDlg::bodyAxialRes();
@@ -3320,11 +3307,6 @@ void gl3dView::glMakeBodyFrameHighlight(Body *pBody, Vector3d bodyPos, int iFram
 }
 
 
-
-
-
-
-
 void gl3dView::onRotationIncrement()
 {
     if(m_iTransitionInc>=30)
@@ -3389,7 +3371,6 @@ void gl3dView::startTranslationTimer(Vector3d PP)
 }
 
 
-
 void gl3dView::onTranslationIncrement()
 {
     if(m_iTransitionInc>=30)
@@ -3411,19 +3392,6 @@ void gl3dView::onTranslationIncrement()
 }
 
 
-/**
- * Sets an automatic scale for the wing or plane in the 3D view, depending on wing span.
- */
-void gl3dView::set3DScale(double length)
-{
-    if(length>0.0) m_glScaledRef = (GLfloat)(4./5.*2.0/length);
-    m_glScaled = m_glScaledRef;
-    m_glViewportTrans.set(0.0, 0.0, 0.0);
-    reset3DRotationCenter();
-    update();
-}
-
-
 void gl3dView::onResetIncrement()
 {
     if(m_iTransitionInc>=30)
@@ -3440,6 +3408,19 @@ void gl3dView::onResetIncrement()
     reset3DRotationCenter();
     update();
     m_iTransitionInc++;
+}
+
+
+/**
+ * Sets an automatic scale for the wing or plane in the 3D view, depending on wing span.
+ */
+void gl3dView::set3DScale(double length)
+{
+    if(length>0.0) m_glScaledRef = (GLfloat)(4./5.*2.0/length);
+    m_glScaled = m_glScaledRef;
+    m_glViewportTrans.set(0.0, 0.0, 0.0);
+    reset3DRotationCenter();
+    update();
 }
 
 
@@ -3463,7 +3444,6 @@ void gl3dView::startResetTimer(double length)
         update();
     }
 }
-
 
 
 /** Default mesh, if no polar has been defined */
@@ -3664,3 +3644,220 @@ void GLLineStipple(int style)
 }
 
 
+/**
+ * @brief since glLineStipple is deprecated, make an array of simple lines for all 3 axis
+ */
+void gl3dView::glMakeAxis()
+{
+    std::vector<GLfloat>axisVertexArray;
+
+    int iv = 0;
+
+    double axisLength = fabs(double(x_axis[3]-x_axis[0]));
+
+    int lineStyle = 3;
+    switch(lineStyle)
+    {
+        case 1:
+        {
+            // dash
+            iv = 0;
+            int nVertices = 75;
+            double incLine  = axisLength/double(nVertices-1) * 0.7 * 2.0;
+            double incSpace = axisLength/double(nVertices-1) * 0.3 * 2.0;
+            float s = 0.0f;
+            for(int jv=0; jv<nVertices/2; jv++)
+            {
+                axisVertexArray.push_back(x_axis[0]+s);
+                axisVertexArray.push_back(x_axis[1]);
+                axisVertexArray.push_back(x_axis[2]);
+                s+=incLine;
+                axisVertexArray.push_back(x_axis[0]+s);
+                axisVertexArray.push_back(x_axis[1]);
+                axisVertexArray.push_back(x_axis[2]);
+                s+=incSpace;
+                iv+=6;
+            }
+
+            s=0.0;
+            for(int jv=0; jv<nVertices/2; jv++)
+            {
+                axisVertexArray.push_back(y_axis[0]);
+                axisVertexArray.push_back(y_axis[1]+s);
+                axisVertexArray.push_back(y_axis[2]);
+                s+=incLine;
+                axisVertexArray.push_back(y_axis[0]);
+                axisVertexArray.push_back(y_axis[1]+s);
+                axisVertexArray.push_back(y_axis[2]);
+                s+=incSpace;
+                iv+=6;
+            }
+            s=0.0;
+            for(int jv=0; jv<nVertices/2; jv++)
+            {
+                axisVertexArray.push_back(z_axis[0]);
+                axisVertexArray.push_back(z_axis[1]);
+                axisVertexArray.push_back(z_axis[2]+s);
+                s+=incLine;
+                axisVertexArray.push_back(z_axis[0]);
+                axisVertexArray.push_back(z_axis[1]);
+                axisVertexArray.push_back(z_axis[2]+s);
+                s+=incSpace;
+                iv+=6;
+            }
+
+            break;
+        }
+        case 2:
+        {
+            //dot
+            iv = 0;
+            int nVertices = 300;
+            double incLine  = axisLength/double(nVertices-1) * 0.1 * 2.0;
+            double incSpace = axisLength/double(nVertices-1) * 0.9 * 2.0;
+            float s = 0.0;
+            for(int jv=0; jv<nVertices/2; jv++)
+            {
+                axisVertexArray.push_back(x_axis[0]+s);
+                axisVertexArray.push_back(x_axis[1]);
+                axisVertexArray.push_back(x_axis[2]);
+                s+=incLine;
+                axisVertexArray.push_back(x_axis[0]+s);
+                axisVertexArray.push_back(x_axis[1]);
+                axisVertexArray.push_back(x_axis[2]);
+                s+=incSpace;
+                iv+=6;
+            }
+
+            s=0.0;
+            for(int jv=0; jv<nVertices/2; jv++)
+            {
+                axisVertexArray.push_back(y_axis[0]);
+                axisVertexArray.push_back(y_axis[1]+s);
+                axisVertexArray.push_back(y_axis[2]);
+                s+=incLine;
+                axisVertexArray.push_back(y_axis[0]);
+                axisVertexArray.push_back(y_axis[1]+s);
+                axisVertexArray.push_back(y_axis[2]);
+                s+=incSpace;
+                iv+=6;
+            }
+            s=0.0;
+            for(int jv=0; jv<nVertices/2; jv++)
+            {
+                axisVertexArray.push_back(z_axis[0]);
+                axisVertexArray.push_back(z_axis[1]);
+                axisVertexArray.push_back(z_axis[2]+s);
+                s+=incLine;
+                axisVertexArray.push_back(z_axis[0]);
+                axisVertexArray.push_back(z_axis[1]);
+                axisVertexArray.push_back(z_axis[2]+s);
+                s+=incSpace;
+                iv+=6;
+            }
+
+            break;
+        }
+        case 3:
+        {
+            //dash-dot
+            iv = 0;
+            int nVertices = 50;
+            double incLine1 = axisLength/double(nVertices-1) * 0.5 * 2.0;
+            double incLine2 = axisLength/double(nVertices-1) * 0.1 * 2.0;
+            double incSpace = axisLength/double(nVertices-1) * 0.2 * 2.0;
+            float s = 0.0;
+            for(int jv=0; jv<nVertices/2; jv++)
+            {
+                axisVertexArray.push_back(x_axis[0]+s);
+                axisVertexArray.push_back(x_axis[1]);
+                axisVertexArray.push_back(x_axis[2]);
+                s+=incLine1;
+                axisVertexArray.push_back(x_axis[0]+s);
+                axisVertexArray.push_back(x_axis[1]);
+                axisVertexArray.push_back(x_axis[2]);
+                s+=incSpace;
+                axisVertexArray.push_back(x_axis[0]+s);
+                axisVertexArray.push_back(x_axis[1]);
+                axisVertexArray.push_back(x_axis[2]);
+                s+=incLine2;
+                axisVertexArray.push_back(x_axis[0]+s);
+                axisVertexArray.push_back(x_axis[1]);
+                axisVertexArray.push_back(x_axis[2]);
+                s+=incSpace;
+                iv+=12;
+            }
+
+            s=0.0;
+            for(int jv=0; jv<nVertices/2; jv++)
+            {
+                axisVertexArray.push_back(y_axis[0]);
+                axisVertexArray.push_back(y_axis[1]+s);
+                axisVertexArray.push_back(y_axis[2]);
+                s+=incLine1;
+                axisVertexArray.push_back(y_axis[0]);
+                axisVertexArray.push_back(y_axis[1]+s);
+                axisVertexArray.push_back(y_axis[2]);
+                s+=incSpace;
+                axisVertexArray.push_back(y_axis[0]);
+                axisVertexArray.push_back(y_axis[1]+s);
+                axisVertexArray.push_back(y_axis[2]);
+                s+=incLine2;
+                axisVertexArray.push_back(y_axis[0]);
+                axisVertexArray.push_back(y_axis[1]+s);
+                axisVertexArray.push_back(y_axis[2]);
+                s+=incSpace;
+                iv+=12;
+            }
+            s=0.0;
+            for(int jv=0; jv<nVertices/2; jv++)
+            {
+                axisVertexArray.push_back(z_axis[0]);
+                axisVertexArray.push_back(z_axis[1]);
+                axisVertexArray.push_back(z_axis[2]+s);
+                s+=incLine1;
+                axisVertexArray.push_back(z_axis[0]);
+                axisVertexArray.push_back(z_axis[1]);
+                axisVertexArray.push_back(z_axis[2]+s);
+                s+=incSpace;
+                axisVertexArray.push_back(z_axis[0]);
+                axisVertexArray.push_back(z_axis[1]);
+                axisVertexArray.push_back(z_axis[2]+s);
+                s+=incLine2;
+                axisVertexArray.push_back(z_axis[0]);
+                axisVertexArray.push_back(z_axis[1]);
+                axisVertexArray.push_back(z_axis[2]+s);
+                s+=incSpace;
+                iv+=12;
+            }
+
+            break;
+        }
+/*		case 4:
+        {
+            //dash-dot-dot
+            break;
+        }*/
+        default:
+        {
+            // solid
+            // 3 axis x 3 solid lines x 2 vertices * 3 coordinates
+            iv = 0;
+            for(; iv<18; iv++)	axisVertexArray.push_back(x_axis[iv]);
+            for(; iv<36; iv++)	axisVertexArray.push_back(y_axis[iv]);
+            for(; iv<54; iv++)	axisVertexArray.push_back(z_axis[iv]);
+            break;
+        }
+    }
+
+    // add arrows
+    for(int i=6; i<18; i++) axisVertexArray.push_back(x_axis[i]);
+    for(int i=6; i<18; i++) axisVertexArray.push_back(y_axis[i]);
+    for(int i=6; i<18; i++) axisVertexArray.push_back(z_axis[i]);
+
+    m_vboAxis.destroy();
+    m_vboAxis.create();
+    m_vboAxis.bind();
+    m_vboAxis.allocate(axisVertexArray.data(), int(axisVertexArray.size() * sizeof(GLfloat)));
+    m_vboAxis.release();
+}
