@@ -7,7 +7,6 @@ SOURCES += \
     design/LECircleDlg.cpp \
     design/SplineCtrlsDlg.cpp \
     glcontextinfo/glrenderwindow.cpp \
-    glcontextinfo/openglinfodlg.cpp \
     glcontextinfo/view3dtestdlg.cpp \
     globals/XFLR5Application.cpp \
     globals/globals.cpp \
@@ -142,7 +141,6 @@ HEADERS += \
     design/LECircleDlg.h \
     design/SplineCtrlsDlg.h \
     glcontextinfo/glrenderwindow.h \
-    glcontextinfo/openglinfodlg.h \
     glcontextinfo/view3dtestdlg.h \
     globals/XFLR5Application.h \
     globals/globals.h \

@@ -6336,7 +6336,7 @@ void Miarex::paintPlaneLegend(QPainter &painter, Plane *pPlane, WPolar *pWPolar,
     {
         if(pWPolar->dataSize()>1)
         {
-            str1 = QString(tr("XNP = d(XCp.Cl)/dCl =")+"%1 ").arg(pWPolar->m_XNeutralPoint * Units::mtoUnit(), 10,'f', 3);
+            str1 = QString("XNP = d(XCp.Cl)/dCl = %1 ").arg(pWPolar->m_XNeutralPoint * Units::mtoUnit(), 10,'f', 3);
             Result = str1+length;
 
             painter.drawText(LeftPos, ZPos+D, Result);

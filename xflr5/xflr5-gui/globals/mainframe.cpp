@@ -37,7 +37,6 @@
 
 
 #include <design/AFoil.h>
-#include <glcontextinfo/openglinfodlg.h>
 #include <glcontextinfo/view3dtestdlg.h>
 #include <globals/globals.h>
 #include <globals/mainframe.h>
