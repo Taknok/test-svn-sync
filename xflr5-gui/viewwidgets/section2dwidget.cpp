@@ -175,10 +175,10 @@ void Section2dWidget::paintEvent(QPaintEvent *event)
 
     paintGrids(painter);
 
-    painter.drawText(5,10, QString("X-Scale = %1").arg(m_fScale/m_fRefScale,4,'f',1));
-    painter.drawText(5,22, QString("Y-Scale = %1").arg(m_fScaleY*m_fScale/m_fRefScale,4,'f',1));
-    painter.drawText(5,34, QString("x  = %1").arg(m_MousePos.x,7,'f',4));
-    painter.drawText(5,46, QString("y  = %1").arg(m_MousePos.y,7,'f',4));
+    painter.drawText(5,10, QString(tr("X-Scale = %1")).arg(m_fScale/m_fRefScale,4,'f',1));
+    painter.drawText(5,22, QString(tr("Y-Scale = %1")).arg(m_fScaleY*m_fScale/m_fRefScale,4,'f',1));
+    painter.drawText(5,34, QString(tr("x  = %1")).arg(m_MousePos.x,7,'f',4));
+    painter.drawText(5,46, QString(tr("y  = %1")).arg(m_MousePos.y,7,'f',4));
 
     painter.restore();
 }
@@ -1040,10 +1040,10 @@ void Section2dWidget::drawScaleLegend(QPainter &painter)
     painter.save();
     QPen TextPen(Settings::s_TextColor);
     painter.setPen(TextPen);
-    painter.drawText(5,10, QString("X-Scale = %1").arg(m_fScale/m_fRefScale,4,'f',1));
-    painter.drawText(5,22, QString("Y-Scale = %1").arg(m_fScaleY*m_fScale/m_fRefScale,4,'f',1));
-    painter.drawText(5,34, QString("x  = %1").arg(m_MousePos.x,7,'f',4));
-    painter.drawText(5,46, QString("y  = %1").arg(m_MousePos.y,7,'f',4));
+    painter.drawText(5,10, QString(tr("X-Scale = %1")).arg(m_fScale/m_fRefScale,4,'f',1));
+    painter.drawText(5,22, QString(tr("Y-Scale = %1")).arg(m_fScaleY*m_fScale/m_fRefScale,4,'f',1));
+    painter.drawText(5,34, QString(tr("x  = %1")).arg(m_MousePos.x,7,'f',4));
+    painter.drawText(5,46, QString(tr("y  = %1")).arg(m_MousePos.y,7,'f',4));
     painter.restore();
 }
 
