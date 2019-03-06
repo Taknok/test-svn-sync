@@ -303,6 +303,7 @@ void View3dTestDlg::printFormat(const QSurfaceFormat &format)
 }
 
 
+
 void View3dTestDlg::onRenderWindowReady()
 {
     QOpenGLContext *pContext = QOpenGLContext::currentContext();
