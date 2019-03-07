@@ -2436,6 +2436,7 @@ void XDirect::onExportAllPolars()
 		{
 			QString strange = tr("Could not write to the directory:") + DirName;
 			QMessageBox::warning(s_pMainFrame, tr("Warning"), strange);
+            return;
 		}
 	}
 }
@@ -3392,7 +3393,7 @@ void XDirect::onPolarFilter()
 	pfDlg.m_bType2 = m_bType2;
 	pfDlg.m_bType3 = m_bType3;
 	pfDlg.m_bType4 = m_bType4;
-	pfDlg.InitDialog();
+	pfDlg.initDialog();
 
 	if(pfDlg.exec()==QDialog::Accepted)
 	{

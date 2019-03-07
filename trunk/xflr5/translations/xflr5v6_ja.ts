@@ -661,6 +661,22 @@ Uncheck for increased analysis speed.</source>
         <source>Clear background image</source>
         <translation type="unfinished">背景画像のクリア</translation>
     </message>
+    <message>
+        <source>X-Scale = %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y-Scale = %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>x  = %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>y  = %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>BodyGridDlg</name>
@@ -733,6 +749,22 @@ Uncheck for increased analysis speed.</source>
     <message>
         <source>Clear background image</source>
         <translation type="unfinished">背景画像のクリア</translation>
+    </message>
+    <message>
+        <source>X-Scale = %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y-Scale = %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>x  = %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>y  = %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2468,25 +2500,6 @@ Uncheck for increased analysis speed.</source>
     <message>
         <source>Bending moment</source>
         <translation>曲げモーメント</translation>
-    </message>
-    <message>
-        <source>Restore</source>
-        <translation type="unfinished">
-            </translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="unfinished">
-            </translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation>キャンセル</translation>
-    </message>
-    <message>
-        <source>Apply</source>
-        <translation type="unfinished">
-            </translation>
     </message>
     <message>
         <source>YAxis</source>
@@ -6741,6 +6754,22 @@ Non *.dat files will be ignored.</source>
         <source>Open Image File</source>
         <translation type="unfinished">イメージファイルを開く</translation>
     </message>
+    <message>
+        <source>X-Scale = %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y-Scale = %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>x  = %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>y  = %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Settings</name>
@@ -8712,6 +8741,10 @@ on the QSpec curve.</source>
     </message>
     <message>
         <source>Max.Camber.pos.  = %1%</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>executing...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
