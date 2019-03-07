@@ -27,7 +27,7 @@
 #include <QListWidget>
 #include <QLabel>
 #include <QCheckBox>
-#include <QPushButton>
+#include <QDialogButtonBox>
 
 #include <graph/graph.h>
 
@@ -58,8 +58,8 @@ public:
 
 
 private slots:
+    void onButton(QAbstractButton *pButton);
     void onOK();
-    void onApply();
     void onTitleFont();
     void onLabelFont();
     void onTitleColor();
@@ -107,7 +107,7 @@ private:
 
     QListWidget *m_pctrlXSel, *m_pctrlYSel;
 
-    QPushButton *OKButton,*CancelButton, *RestoreButton, *ApplyButton;
+    QDialogButtonBox *m_pButtonBox;
     QPushButton *m_pctrlTitleButton, *m_pctrlLabelButton;
     TextClrBtn*m_pctrlTitleClr, *m_pctrlLabelClr;
     QLabel *m_pctrlTitleLabel, *m_pctrlLabelLabel;

@@ -801,6 +801,26 @@ Désactiver pour une plus grande rapidité d&apos;exécution.</translation>
 <context>
     <name>BodyFrameWidget</name>
     <message>
+        <location filename="../xflr5-gui/viewwidgets/BodyFrameWidget.cpp" line="352"/>
+        <source>X-Scale = %1</source>
+        <translation>ech. X = %1</translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/viewwidgets/BodyFrameWidget.cpp" line="353"/>
+        <source>Y-Scale = %1</source>
+        <translation>ech. Y = %1</translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/viewwidgets/BodyFrameWidget.cpp" line="354"/>
+        <source>x  = %1</source>
+        <translation>x = %1</translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/viewwidgets/BodyFrameWidget.cpp" line="355"/>
+        <source>y  = %1</source>
+        <translation></translation>
+    </message>
+    <message>
         <location filename="../xflr5-gui/viewwidgets/BodyFrameWidget.cpp" line="365"/>
         <source>Scale Frame</source>
         <translation>Echelle des sections transverses</translation>
@@ -893,6 +913,26 @@ Désactiver pour une plus grande rapidité d&apos;exécution.</translation>
 </context>
 <context>
     <name>BodyLineWidget</name>
+    <message>
+        <location filename="../xflr5-gui/viewwidgets/BodyLineWidget.cpp" line="282"/>
+        <source>X-Scale = %1</source>
+        <translation>ech. X = %1</translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/viewwidgets/BodyLineWidget.cpp" line="283"/>
+        <source>Y-Scale = %1</source>
+        <translation>ech. Y = %1</translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/viewwidgets/BodyLineWidget.cpp" line="284"/>
+        <source>x  = %1</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/viewwidgets/BodyLineWidget.cpp" line="285"/>
+        <source>y  = %1</source>
+        <translation></translation>
+    </message>
     <message>
         <location filename="../xflr5-gui/viewwidgets/BodyLineWidget.cpp" line="296"/>
         <source>Scale Body</source>
@@ -2962,291 +3002,271 @@ Désactiver pour une plus grande rapidité d&apos;exécution.</translation>
 <context>
     <name>GraphDlg</name>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="752"/>
-        <source>OK</source>
-        <translation>Accepter</translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="754"/>
-        <source>Cancel</source>
-        <translation>Abandonner</translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="756"/>
-        <source>Apply</source>
-        <translation>Appliquer</translation>
-    </message>
-    <message>
         <location filename="../xflr5-gui/graph/graphdlg.cpp" line="49"/>
         <source>Graph Settings</source>
         <translation>Paramètres du diagramme</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="191"/>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="197"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="186"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="192"/>
         <source>X - Chord</source>
         <translation>X - Corde</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="192"/>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="198"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="187"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="193"/>
         <source>Cp</source>
         <translation>Cp</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="162"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="157"/>
         <source>Induced Angle</source>
         <translation>Angle induit</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="163"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="158"/>
         <source>Total Angle</source>
         <translation>Angle total</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="164"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="159"/>
         <source>Local lift coef.</source>
         <translation>Coef. de portance locale</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="165"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="160"/>
         <source>Local Lift C.Cl/M.A.C.</source>
         <translation>Portance locale C.Cz/CAM</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="166"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="161"/>
         <source>Airfoil viscous drag coef.</source>
         <translation>Coef traînée visqueuse profil</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="167"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="162"/>
         <source>Induced drag coef.</source>
         <translation>Coef traînée induite</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="168"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="163"/>
         <source>Total drag coef.</source>
         <translation>Coef traînée totale</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="169"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="164"/>
         <source>Local Drag C.Cd/M.A.C.</source>
         <translation>Traînée locale C.Cx/CAM</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="170"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="165"/>
         <source>Airfoil Pitching moment coef.</source>
         <translation>Coef moment tangage profil</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="171"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="166"/>
         <source>Total Pitching moment coef.</source>
         <translation>Coef moment total tangage</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="173"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="168"/>
         <source>Top Transition x-pos%</source>
         <translation>% pos. x transition supérieure</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="174"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="169"/>
         <source>Bottom Transition x-pos%</source>
         <translation>% pos. x transition inférieure</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="175"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="170"/>
         <source>Centre of Pressure x-pos%</source>
         <translation>% position x du centre de pression</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="176"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="171"/>
         <source>Bending moment</source>
         <translation>Moment de flexion</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="751"/>
-        <source>Restore</source>
-        <translation>Restaurer</translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="780"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="756"/>
         <source>YAxis</source>
         <translation>Axe Y</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="782"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="758"/>
         <source>XAxis</source>
         <translation>Axe X</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="833"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="809"/>
         <source>Title Color</source>
         <translation>Couleur du titre</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="835"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="811"/>
         <source>Label Color</source>
         <translation>Couleur des étiquettes</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="809"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="785"/>
         <source>Fonts</source>
         <translation>Polices</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="847"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="823"/>
         <source>Graph Background</source>
         <translation>Arrière-plan du diagramme</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="849"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="825"/>
         <source>Graph Border</source>
         <translation>Bordure du diagramme</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="843"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="819"/>
         <source>BackGround</source>
         <translation>Arrière-plan</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="866"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="842"/>
         <source>Padding</source>
         <translation>Marges</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="870"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="846"/>
         <source>Margin</source>
         <translation>Marge</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="871"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="847"/>
         <source>pixels</source>
         <translation>pixels</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="895"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="871"/>
         <source>X Axis</source>
         <translation>Axe X</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="896"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="872"/>
         <source>Y Axis</source>
         <translation>Axe Y</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="900"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="876"/>
         <source>Min</source>
         <translation>Min</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="901"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="877"/>
         <source>Max</source>
         <translation>Max</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="902"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="878"/>
         <source>Origin</source>
         <translation>Origine</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="903"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="879"/>
         <source>Unit</source>
         <translation>Unités</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="914"/>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="928"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="890"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="904"/>
         <source>Auto Scale</source>
         <translation>Échelle automatique</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="927"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="903"/>
         <source>Inverted Axis</source>
         <translation>Axes inversés</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="950"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="926"/>
         <source>Axis Style</source>
         <translation>Style des axes</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="952"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="928"/>
         <source>X Major Grid</source>
         <translation>Grille principale en X</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="953"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="929"/>
         <source>Y Major Grid</source>
         <translation>Grille principale en Y</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="954"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="930"/>
         <source>X Minor Grid</source>
         <translation>Grille secondaire en X</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="955"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="931"/>
         <source>Y Minor Grid</source>
         <translation>Grille secondaire en Y</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="990"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="966"/>
         <source>Variables</source>
         <translation>Variables</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="991"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="967"/>
         <source>Scales</source>
         <translation>Échelles</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="992"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="968"/>
         <source>Axis and Grids</source>
         <translation>Axes et grilles</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="993"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="969"/>
         <source>Fonts and BackGround</source>
         <translation>Polices et arrières-plans</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="172"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="167"/>
         <source>Reynolds</source>
         <translation>Reynolds</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="781"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="757"/>
         <source>vs.</source>
         <translation>vs.</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="813"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="789"/>
         <source>Title</source>
         <translation>Titre</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="814"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="790"/>
         <source>Label</source>
         <translation>Étiquette</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="815"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="791"/>
         <source>Font</source>
         <translation>Police</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="816"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="792"/>
         <source>Color</source>
         <translation>Couleur</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="956"/>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="957"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="932"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="933"/>
         <source>Auto Unit</source>
         <translation>Unités automatiques</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="160"/>
+        <location filename="../xflr5-gui/graph/graphdlg.cpp" line="155"/>
         <source>Y - span</source>
         <translation>Y - envergure</translation>
     </message>
@@ -8459,6 +8479,30 @@ CpCalc: local speed too large
         <translation>Effacer l’image d’arrière-plan</translation>
     </message>
     <message>
+        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="178"/>
+        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="1043"/>
+        <source>X-Scale = %1</source>
+        <translation>ech. X = %1</translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="179"/>
+        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="1044"/>
+        <source>Y-Scale = %1</source>
+        <translation>ech. Y = %1</translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="180"/>
+        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="1045"/>
+        <source>x  = %1</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="181"/>
+        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="1046"/>
+        <source>y  = %1</source>
+        <translation></translation>
+    </message>
+    <message>
         <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="258"/>
         <source>Open Image File</source>
         <translation>Ouvrir un fichier image</translation>
@@ -10032,127 +10076,127 @@ of the surfaces.This may reduce the display speed.
     <message>
         <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="192"/>
         <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="603"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="870"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1310"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1686"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="915"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1355"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1731"/>
         <source>Cp</source>
         <translation>Cp</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="619"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1315"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3434"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1360"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3479"/>
         <source>Q</source>
         <translation>Q</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="702"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="717"/>
         <source>Re_Theta</source>
         <translation>Re_Theta</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1605"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1650"/>
         <source>Not enough threads available for multithreading</source>
         <translation>Nombre de processeurs insuffisant pour faire un traitement multi-processeurs</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1606"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2393"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2473"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2892"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2912"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2925"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2939"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2948"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1651"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2438"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2518"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2937"/>
         <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2957"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2967"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2976"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2985"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2995"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3088"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3111"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3184"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="5001"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="5019"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2970"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2984"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2993"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3002"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3012"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3021"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3030"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3040"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3133"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3156"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3229"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="5046"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="5064"/>
         <source>Warning</source>
         <translation>Attention</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1809"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1854"/>
         <source>Are you sure you want to delete</source>
         <translation>Certain de vouloir supprimer</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1810"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1855"/>
         <source>and all associated OpPoints and Polars ?</source>
         <translation>et tous les OpPoints et polaires associés ?</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1812"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1850"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1875"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1985"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1857"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1895"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1920"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2030"/>
         <source>Question</source>
         <translation>Question</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1844"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1889"/>
         <source>Are you sure you want to delete the Operating Point
 </source>
         <translation>Êtes-vous certain de vouloir supprimer le point de fonctionnement
 </translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1872"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1917"/>
         <source>Are you sure you want to delete the polar :
   </source>
         <translation>Êtes-vous certain de vouloir supprimer la polaire :
   </translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1873"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1918"/>
         <source>
  and all the associated OpPoints ?</source>
         <translation>
  et les OpPoints associés ?</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1983"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2028"/>
         <source>Are you sure you want to delete polars and OpPoints
 </source>
         <translation>Êtes-vous certain de vouloir supprimer les polaires et les OpPoints
 </translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="1984"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2029"/>
         <source>associated to </source>
         <translation>associés à </translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2098"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2143"/>
         <source>The foil has been de-rotated by %1 degrees</source>
         <translation>Le profil a été pivoté de %1 degrés</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2133"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2178"/>
         <source>The foil has been normalized from %1  to 1.000</source>
         <translation>Le profil a été normalisé de %1 à 1.000</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2222"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2267"/>
         <source>Export Current XFoil Results</source>
         <translation>Exporter les résultats actuels d&apos;XFoil</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2224"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2445"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2486"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2598"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2269"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2490"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2531"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2643"/>
         <source>Text File (*.txt);;Comma Separated Values (*.csv)</source>
         <translation>Fichier texte (*.txt);;Format CSV (*.csv)</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2299"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2344"/>
         <source>
 Top Side
 </source>
@@ -10161,23 +10205,23 @@ Face supérieure
 </translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2300"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2330"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2345"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2375"/>
         <source>    x         Hk     Ue/Vinf      Cf        Cd     A/A0       D*       Theta      CTq
 </source>
         <translation>    x         Hk     Ue/Vinf      Cf        Cx     A/A0       D*       Theta      CTq
 </translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2301"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2331"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2346"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2376"/>
         <source>x,Hk,Ue/Vinf,Cf,Cd,A/A0,D*,Theta,CTq
 </source>
         <translation>x,Hk,Ue/Vinf,Cf,Cx,A/A0,D*,Theta,CTq
 </translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2329"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2374"/>
         <source>
 
 Bottom Side
@@ -10188,239 +10232,239 @@ Surface inférieure
 </translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2374"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2419"/>
         <source>Export Directory</source>
         <translation>Répertoire pour l&apos;export</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2392"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2437"/>
         <source>Could not write to the directory:</source>
         <translation>Echec d&apos;écriture dans le répetoire</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2411"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2456"/>
         <source>Export Foil</source>
         <translation>Exporter le profil</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2413"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2458"/>
         <source>Foil File (*.dat)</source>
         <translation>Fichier de profil (*.dat)</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2443"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2484"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2488"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2529"/>
         <source>Export OpPoint</source>
         <translation>Exporter l&apos;OpPoint</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2596"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2641"/>
         <source>Export Polar</source>
         <translation>Exporter la polaire</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2855"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3077"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2900"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3122"/>
         <source>Open File</source>
         <translation>Ouvrir le fichier</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2857"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2902"/>
         <source>XFoil Polar Format (*.*)</source>
         <translation>Format de polaire XFoil (*.*)</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2891"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3087"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="5000"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="5018"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2936"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3132"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="5045"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="5063"/>
         <source>Could not read the file
 </source>
         <translation>Echec de lecture du fichier</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2909"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3109"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2954"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3154"/>
         <source>No Foil with the name </source>
         <translation>Aucun profil avec le nom </translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2910"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3110"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="2955"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3155"/>
         <source>
 could be found. The polar(s) will not be stored</source>
         <translation>
 n&apos;a pu être trouvé. Les polaires ne seront pas enregistrées</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3079"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3124"/>
         <source>JavaFoil Polar Format (*.*)</source>
         <translation>Format de polaire JavaFoil (*.*)</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3184"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3229"/>
         <source>At least two foils are required</source>
         <translation>Deux profils minimum sont requis</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3467"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3512"/>
         <source>Enter the new name for the foil polar :</source>
         <translation>Enter le nouveau nom pour la polaire du profil :</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3570"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3615"/>
         <source>Operating point properties</source>
         <translation>Propriétés d&apos;OpPoint</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3586"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4692"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3631"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4737"/>
         <source>Polar properties</source>
         <translation>Propriétés de la polaire</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3649"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3694"/>
         <source>Polar File</source>
         <translation>Fichier de polaire</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3649"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="3694"/>
         <source>Polar File (*.plr)</source>
         <translation>Fichier de polaire (*.plr)</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4589"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4634"/>
         <source>Analysis settings</source>
         <translation>Paramètres d&apos;analyse</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4594"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4639"/>
         <source>Sequence</source>
         <translation>Séquence</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4595"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4640"/>
         <source>Store Opp</source>
         <translation>Enregistrer l&apos;OpPoint</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4596"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4641"/>
         <source>Analyze</source>
         <translation>Analyser</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4601"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4646"/>
         <source>Cl</source>
         <translation>Cz</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4602"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4647"/>
         <source>Re</source>
         <translation>Re</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4611"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4656"/>
         <source>Start=</source>
         <translation>Départ=</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4612"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4657"/>
         <source>End=</source>
         <translation>Fin=</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4613"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4658"/>
         <source>D=</source>
         <translation>D=</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4645"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4690"/>
         <source>Viscous</source>
         <translation>Visqueux</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4646"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4691"/>
         <source>Init BL</source>
         <translation>Init couche limite</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4664"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4709"/>
         <source>Display</source>
         <translation>Afficher</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4668"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4713"/>
         <source>Displacement thickness</source>
         <translation>d*</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4669"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4714"/>
         <source>Pressure</source>
         <translation>Pression</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4670"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4715"/>
         <source>Animate</source>
         <translation>Animer</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4705"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4750"/>
         <source>Graph Curve Settings</source>
         <translation>Paramètres de la courbe</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4711"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4756"/>
         <source>Curve</source>
         <translation>Courbe</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4737"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4782"/>
         <source>Style</source>
         <translation>Style</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4738"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4783"/>
         <source>Width</source>
         <translation>Epaisseur</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4739"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4784"/>
         <source>Color</source>
         <translation>Couleur</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4740"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4785"/>
         <source>Points</source>
         <translation>Points</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4893"/>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4923"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4938"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4968"/>
         <source>Enter the foil&apos;s new name</source>
         <translation>Entrer le nouveau nom du profil</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4990"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="5035"/>
         <source>Open XML File</source>
         <translation>Ouvrir un fichier XML</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="4992"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="5037"/>
         <source>Analysis XML file</source>
         <translation>Ficxhier d&apos;analyse XML</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="5037"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="5082"/>
         <source>Attaching the analysis to the active foil</source>
         <translation>Liaison de l&apos;analyse au profil actif</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="5043"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="5088"/>
         <source>No foil to attach the polar to</source>
         <translation>Pas de profil auquel attacher l&apos;analyse</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="5077"/>
+        <location filename="../xflr5-gui/xdirect/XDirect.cpp" line="5122"/>
         <source>Export analysis definition to xml file</source>
         <translation>Exporter l&apos;analyse au format xml</translation>
     </message>
@@ -10571,6 +10615,12 @@ n&apos;a pu être trouvé. Les polaires ne seront pas enregistrées</translation
         <location filename="../xflr5-gui/xinverse/XInverse.cpp" line="127"/>
         <source>Q Graph</source>
         <translation>Diagramme Q</translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/xinverse/XInverse.cpp" line="388"/>
+        <location filename="../xflr5-gui/xinverse/XInverse.cpp" line="432"/>
+        <source>executing...</source>
+        <translation>...en cours</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/xinverse/XInverse.cpp" line="428"/>

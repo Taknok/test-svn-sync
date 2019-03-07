@@ -103,11 +103,6 @@ void GraphDlg::connectSignals()
 
     connect(m_pctrlXSel, SIGNAL(itemDoubleClicked (QListWidgetItem *)), SLOT(onOK()));
     connect(m_pctrlYSel, SIGNAL(itemDoubleClicked (QListWidgetItem *)), SLOT(onOK()));
-
-    connect(RestoreButton, SIGNAL(clicked()),this, SLOT(onRestoreParams()));
-    connect(OKButton, SIGNAL(clicked()),this, SLOT(onOK()));
-    connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
-    connect(ApplyButton, SIGNAL(clicked()), this, SLOT(onApply()));
 }
 
 
@@ -228,13 +223,15 @@ void GraphDlg::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if(!OKButton->hasFocus() && !CancelButton->hasFocus())
+            if(!m_pButtonBox->hasFocus())
             {
-                OKButton->setFocus();
+                m_pButtonBox->setFocus();
+                return;
             }
             else
             {
-                QDialog::accept();
+                onOK();
+                return;
             }
             break;
         }
@@ -252,7 +249,6 @@ void GraphDlg::keyPressEvent(QKeyEvent *event)
 void GraphDlg::onActivePage(int index)
 {
     s_iActivePage = index;
-    ApplyButton->setEnabled(m_pTabWidget->currentIndex()!=0);
 }
 
 
@@ -382,6 +378,14 @@ void GraphDlg::onLabelFont()
 }
 
 
+void GraphDlg::onButton(QAbstractButton *pButton)
+{
+    if (     m_pButtonBox->button(QDialogButtonBox::Ok)      == pButton)  onOK();
+    else if (m_pButtonBox->button(QDialogButtonBox::Discard) == pButton)  reject();
+    else if (m_pButtonBox->button(QDialogButtonBox::Reset)   == pButton)  onRestoreParams();
+}
+
+
 void GraphDlg::onOK()
 {
     applyChanges();
@@ -430,18 +434,6 @@ void GraphDlg::applyChanges()
     m_pGraph->setMargin(m_pctrlMargin->value());
 
 }
-
-
-void GraphDlg::onApply()
-{
-    applyChanges();
-
-    m_pGraph->setInverted(m_pctrlYInverted->isChecked());
-
-    if(m_pParent) m_pParent->update();
-    setApplied(true);
-}
-
 
 
 void GraphDlg::onRestoreParams()
@@ -736,8 +728,6 @@ void GraphDlg::setControls()
     m_bVariableChanged = false;
 
     setApplied(true);
-
-    ApplyButton->setEnabled(m_pTabWidget->currentIndex()!=0);
 }
 
 
@@ -746,25 +736,11 @@ void GraphDlg::setupLayout()
 {
     QFontMetrics fm(font());
 
-    QHBoxLayout *CommandButtons = new QHBoxLayout;
+    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Discard | QDialogButtonBox::Reset);
     {
-        RestoreButton = new QPushButton(tr("Restore"));
-        OKButton = new QPushButton(tr("OK"));
-        OKButton->setAutoDefault(true);
-        CancelButton = new QPushButton(tr("Cancel"));
-        CancelButton->setAutoDefault(false);
-        ApplyButton = new QPushButton(tr("Apply"));
-        ApplyButton->setAutoDefault(false);
-        CommandButtons->addStretch(1);
-        CommandButtons->addWidget(RestoreButton);
-        CommandButtons->addStretch(1);
-        CommandButtons->addWidget(ApplyButton);
-        CommandButtons->addStretch(1);
-        CommandButtons->addWidget(OKButton);
-        CommandButtons->addStretch(1);
-        CommandButtons->addWidget(CancelButton);
-        CommandButtons->addStretch(1);
+        connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(onButton(QAbstractButton*)));
     }
+
 
     m_pTabWidget = new QTabWidget(this);
     m_pScalePage    = new QWidget(this);
@@ -998,7 +974,7 @@ void GraphDlg::setupLayout()
     QVBoxLayout *mainLayout = new QVBoxLayout;
     {
         mainLayout->addWidget(m_pTabWidget);
-        mainLayout->addLayout(CommandButtons);
+        mainLayout->addWidget(m_pButtonBox);
     }
     setLayout(mainLayout);
 }

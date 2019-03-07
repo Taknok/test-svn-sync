@@ -385,7 +385,7 @@ void XInverse::drawGrid(QPainter &painter, double scale)
 void XInverse::execMDES()
 {
     //----- put modified info back into global arrays
-    m_pctrlOutput->append("executing...");
+    m_pctrlOutput->append(tr("executing..."));
 
     double qscom;
     for (int i=1; i<= m_pXFoil->nsp; i++)
@@ -429,7 +429,7 @@ bool XInverse::execQDES()
         m_pctrlOutput->setTextColor(Qt::black);
         return false;
     }
-    m_pctrlOutput->append("executing...");
+    m_pctrlOutput->append(tr("executing..."));
 
     //----- put modified info back into global arrays
     //	int isp;

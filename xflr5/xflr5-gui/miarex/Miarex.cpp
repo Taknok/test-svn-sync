@@ -4439,6 +4439,7 @@ void Miarex::onExportWPolars()
         {
             QString strange = tr("Could not write to the directory:") + DirName;
             QMessageBox::warning(s_pMainFrame, tr("Warning"), strange);
+            return;
         }
     }
 }
@@ -5376,7 +5377,7 @@ void Miarex::onPolarFilter()
     pfDlg.m_bType4 = m_bType4;
     pfDlg.m_bType7 = m_bType7;
 
-    pfDlg.InitDialog();
+    pfDlg.initDialog();
 
     if(pfDlg.exec()==QDialog::Accepted)
     {
