@@ -649,6 +649,11 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 			Curve * pCurve0 = pGraph->addCurve();
 			Curve * pCurve1 = pGraph->addCurve();
 
+            pCurve0->setWidth(2);
+            pCurve1->setWidth(2);
+            pCurve0->setColor(QColor(55,155,75));
+            pCurve1->setColor(QColor(55,75,155));
+
 			pCurve0->setCurveName("D*");
 			pCurve1->setCurveName("Theta");
 
@@ -669,6 +674,11 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 			pCurve0->setCurveName("D*");
 			pCurve1->setCurveName("Theta");
 
+            pCurve0->setWidth(2);
+            pCurve1->setWidth(2);
+            pCurve0->setColor(QColor(55,155,75));
+            pCurve1->setColor(QColor(55,75,155));
+
             for (int i=2; i<pOpp->nside2; i++)
 			{
                 pCurve0->appendPoint(pOpp->xbl[i][2], pOpp->dstr[i][2]);
@@ -683,6 +693,11 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 			Curve * pBotCurve = pGraph->addCurve();
 			pTopCurve->setCurveName("Top");
 			pBotCurve->setCurveName("Bot");
+
+            pTopCurve->setWidth(2);
+            pBotCurve->setWidth(2);
+            pTopCurve->setColor(QColor(55,155,75));
+            pBotCurve->setColor(QColor(55,75,155));
 
 			double y[IVX][3];
             for (int i=2; i<=pOpp->nside1-1; i++){
@@ -705,6 +720,11 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 			pTopCurve->setCurveName("ReTheta_Top");
 			pBotCurve->setCurveName("ReTheta_Bot");
 
+            pTopCurve->setWidth(2);
+            pBotCurve->setWidth(2);
+            pTopCurve->setColor(QColor(55,155,75));
+            pBotCurve->setColor(QColor(55,75,155));
+
             for (int i=2; i<=pOpp->nside1-1; i++) pTopCurve->appendPoint(pOpp->xbl[i][1], pOpp->RTheta[i][1]);
             for (int i=2; i<=pOpp->nside2-1; i++) pBotCurve->appendPoint(pOpp->xbl[i][2], pOpp->RTheta[i][2]);
 			break;
@@ -717,6 +737,11 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 
 			pTopCurve->setCurveName("Top");
 			pBotCurve->setCurveName("Bot");
+
+            pTopCurve->setWidth(2);
+            pBotCurve->setWidth(2);
+            pTopCurve->setColor(QColor(55,155,75));
+            pBotCurve->setColor(QColor(55,75,155));
 
 			double y[IVX][3];
 
@@ -748,6 +773,11 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 			pTopCurve->setCurveName("Dissipation-Top");
 			pBotCurve->setCurveName("Dissipation-Bot");
 
+            pTopCurve->setWidth(2);
+            pBotCurve->setWidth(2);
+            pTopCurve->setColor(QColor(55,155,75));
+            pBotCurve->setColor(QColor(55,75,155));
+
             double qrf = pOpp->qinf;
 
 			//---- fill compressible ue arrays
@@ -777,6 +807,11 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 			Curve * pBotCurve = pGraph->addCurve();
 			pTopCurve->setCurveName("Wall_shear_Top");
 			pBotCurve->setCurveName("Wall_shear_Bot");
+
+            pTopCurve->setWidth(2);
+            pBotCurve->setWidth(2);
+            pTopCurve->setColor(QColor(55,155,75));
+            pBotCurve->setColor(QColor(55,75,155));
 
             double que = 0.5*pOpp->qinf*pOpp->qinf;
 
@@ -808,6 +843,11 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 			Curve * pBotCurve = pGraph->addCurve();
 			pTopCurve->setCurveName("Top");
 			pBotCurve->setCurveName("Bot");
+
+            pTopCurve->setWidth(2);
+            pBotCurve->setWidth(2);
+            pTopCurve->setColor(QColor(55,155,75));
+            pBotCurve->setColor(QColor(55,75,155));
 
 			double y[IVX][3];
 			double uei;
@@ -843,6 +883,11 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 			Curve * pBotCurve = pGraph->addCurve();
 			pTopCurve->setCurveName("Top");
 			pBotCurve->setCurveName("Bot");
+
+            pTopCurve->setWidth(2);
+            pBotCurve->setWidth(2);
+            pTopCurve->setColor(QColor(55,155,75));
+            pBotCurve->setColor(QColor(55,75,155));
 
             for (int i=2; i<=pOpp->nside1-1; i++)
 			{
