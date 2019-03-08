@@ -88,36 +88,20 @@ INCLUDEPATH += $$PWD/analysis3d
 INCLUDEPATH += ../XFoil-lib
 DEPENDPATH  += ../XFoil-lib
 
+OBJECTS_DIR = ./objects
+MOC_DIR     = ./moc
+RCC_DIR     = ./rcc
+DESTDIR     = .
+
 
 win32 {
-    CONFIG(release, debug|release){
-        OBJECTS_DIR = ./release/objects
-        MOC_DIR     = ./release/moc
-        RCC_DIR     = ./release/rcc
-    }
-    else:CONFIG(debug, debug|release)
-    {
-        OBJECTS_DIR = ./debug/objects
-        MOC_DIR     = ./debug/moc
-        RCC_DIR     = ./debug/rcc
-    }
+#prevent qmake from making useless \debug and \release subdirs
+    CONFIG -= debug_and_release debug_and_release_target
 }
 
 
 
 macx{
-    CONFIG(release, debug|release){
-        OBJECTS_DIR = ./objects
-        MOC_DIR     = ./moc
-        RCC_DIR     = ./rcc
-    }
-    else:CONFIG(debug, debug|release)
-    {
-        OBJECTS_DIR = ./objects
-        MOC_DIR     = ./moc
-        RCC_DIR     = ./rcc
-    }
-
 #	CONFIG += lib_bundle
 #	CONFIG += i386
 	QMAKE_SONAME_PREFIX = @executable_path/../Frameworks
@@ -126,18 +110,6 @@ macx{
 
 
 unix{
-    CONFIG(release, debug|release){
-        OBJECTS_DIR = ./objects
-        MOC_DIR     = ./moc
-        RCC_DIR     = ./rcc
-    }
-    else:CONFIG(debug, debug|release)
-    {
-        OBJECTS_DIR = ./objects
-        MOC_DIR     = ./moc
-        RCC_DIR     = ./rcc
-    }
-
     isEmpty(PREFIX){
 		PREFIX = /usr/local
 	}

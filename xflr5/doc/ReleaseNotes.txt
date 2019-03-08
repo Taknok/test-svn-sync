@@ -24,6 +24,7 @@ xflr5 v6.45 March xxxth, 2019
     - increased the sampling of the foil's mid camber line from 100 to 1000 points; this improves
       the precision of the calculated camber and thickness value and position
     - added error management to the check for update process
+    - cleaned up all .pro files
     - code cleaning
 
 xflr5 v6.44 January 7th, 2019

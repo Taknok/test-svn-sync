@@ -27,6 +27,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+#   Uncomment the following line to print the name of the variable OUT_PWD in the console
+#message($$OUT_PWD)
 
 VERSION = 6.44
 
@@ -52,33 +54,15 @@ DEPENDPATH += $$PWD/../XFoil-lib/
 DEPENDPATH += $$PWD/../xflr5-engine/
 
 
-
+OBJECTS_DIR = ./objects
+MOC_DIR     = ./moc
+RCC_DIR     = ./rcc
+DESTDIR     = .
 
 win32 {
-#   Specify here the directories where the shared library files XFoil.dll and Xfl5-engine.dll are located
-#   The precise paths depend on QtCreator's settings
-#   Alternate option is to compile the libraries separately and declare them in the system's PATH
-#   Alternate option is to specify the absolute path instead of the relative path
-#   Uncomment the following line to print the name of the variable OUT_PWD in the console
-#message($$OUT_PWD)
+#prevent qmake from making useless \debug and \release subdirs
+    CONFIG -= debug_and_release debug_and_release_target
 
-	CONFIG(release, debug|release){
-        OBJECTS_DIR = ./release/objects
-        MOC_DIR     = ./release/moc
-        RCC_DIR     = ./release/rcc
-
-        LIBS += -L$$OUT_PWD/../xflr5-engine/release/ -lxflr5-engine
-        LIBS += -L$$OUT_PWD/../XFoil-lib/release/ -lXFoil
-	}
-	else:CONFIG(debug, debug|release)
-	{
-        OBJECTS_DIR = ./debug/objects
-        MOC_DIR     = ./debug/moc
-        RCC_DIR     = ./debug/rcc
-
-        LIBS += -L$$OUT_PWD/../xflr5-engine/debug/ -lxflr5-engine
-        LIBS += -L$$OUT_PWD/../XFoil-lib/debug/ -lXFoil
-	}
     LIBS += -lopenGL32
 
 	RC_FILE = ../win/xflr5.rc
@@ -88,20 +72,6 @@ win32 {
 
 
 linux-g++{
-#   Specify here the directories where the shared library files XFoil.so and Xfl5-engine.so are located
-#   The precise paths depend on QtCreator's settings
-#   Alternate option is to compile the libraries and  sudo make install
-#   Alternate option is to specify the absolute path instead of the relative path
-#   Uncomment the following line to print the name of the variable OUT_PWD in the console
-#message($$OUT_PWD)
-
-    OBJECTS_DIR = ./objects
-    MOC_DIR     = ./moc
-    RCC_DIR     = ./rcc
-
-
-	LIBS += -L$$OUT_PWD/../XFoil-lib/ -lXFoil
-	LIBS += -L$$OUT_PWD/../xflr5-engine/ -lxflr5-engine
 
 	# VARIABLES
 	isEmpty(PREFIX):PREFIX = /usr/local
@@ -124,21 +94,6 @@ macx{
 	QMAKE_INFO_PLIST = ./mac/Info.plist
 	ICON = ./mac/xflr5.icns
 
-#   Specify here the directories where the shared library files XFoil.dylib and Xfl5-engine.dylib are located
-#   The precise paths depend on QtCreator's settings
-#   Alternate option is to compile the libraries separately and declare them in the system's PATH
-#   Alternate option is to specify the absolute path instead of the relative path
-#   Uncomment the following line to print the name of the variable OUT_PWD in the console
-
-#	CONFIG(release, debug|release){
-#		LIBS += -L$$OUT_PWD/../xflr5-engine/ -lxflr5-engine
-#		LIBS += -L$$OUT_PWD/../XFoil-lib/ -lXFoil
-#	}
-#	else:CONFIG(debug, debug|release)
-#	{
-#		LIBS += -L$$OUT_PWD/../xflr5-engine/ -lxflr5-engine
-#		LIBS += -L$$OUT_PWD/../XFoil-lib/ -lXFoil
-#	}
 #message($$OUT_PWD)
 #	LIBS += -F$$OUT_PWD/../xflr5-engine
 #	LIBS += -framework xflr5-engine
@@ -168,6 +123,9 @@ macx{
 
 QMAKE_CFLAGS_WARN_ON -= -W3
 QMAKE_CFLAGS_WARN_ON += -W4
+
+LIBS += -L../xflr5-engine -lxflr5-engine
+LIBS += -L../XFoil-lib -lXFoil
 
 
 include(xflr5v6.pri)
