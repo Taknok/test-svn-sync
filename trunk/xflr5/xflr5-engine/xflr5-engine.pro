@@ -91,7 +91,6 @@ DEPENDPATH  += ../XFoil-lib
 OBJECTS_DIR = ./objects
 MOC_DIR     = ./moc
 RCC_DIR     = ./rcc
-DESTDIR     = .
 
 
 win32 {
