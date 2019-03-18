@@ -946,7 +946,7 @@ void BatchThreadDlg::startAnalysis()
             }
         }
     }
-    strong = QString("Found %1 foil/polar pairs to analyze\n").arg(m_nAnalysis);
+    strong = QString(tr("Found %1 foil/polar pairs to analyze\n")).arg(m_nAnalysis);
     m_pctrlTextOutput->insertPlainText(strong);
 
     //Start as many threads as the user has requested
@@ -954,9 +954,9 @@ void BatchThreadDlg::startAnalysis()
 
     XFoilTask::s_bCancel = false;
 
-    strong = QString("Starting with %1 threads\n\n").arg(s_nThreads);
+    strong = QString(tr("Starting with %1 threads\n\n")).arg(s_nThreads);
     m_pctrlTextOutput->insertPlainText(strong);
-    m_pctrlTextOutput->insertPlainText("\nStarted/Done/Total\n");
+    m_pctrlTextOutput->insertPlainText(tr("\nStarted/Done/Total\n"));
 
     m_pTimer = new QTimer(this);
     connect(m_pTimer, SIGNAL(timeout()), this, SLOT(onTimerEvent()));
@@ -982,8 +982,8 @@ void BatchThreadDlg::onTimerEvent()
         {
             QThreadPool::globalInstance()->waitForDone();
 
-            if(m_bCancel) strong = "\n_____Analysis cancelled_____\n";
-            else          strong = "\n_____Analysis completed_____\n";
+            if(m_bCancel) strong = tr("\n_____Analysis cancelled_____\n");
+            else          strong = tr("\n_____Analysis completed_____\n");
             m_pctrlTextOutput->insertPlainText(strong);
             m_pctrlTextOutput->ensureCursorVisible();
 
@@ -1032,7 +1032,7 @@ void BatchThreadDlg::startThread()
 
         //launch it
         m_nTaskStarted++;
-        strong = "Starting "+pAnalysis->pFoil->foilName()+" / "+pAnalysis->pPolar->polarName()+"\n";
+        strong = tr("Starting ")+pAnalysis->pFoil->foilName()+" / "+pAnalysis->pPolar->polarName()+"\n";
         updateOutput(strong);
         QThreadPool::globalInstance()->start(pXFoilTask);
 
@@ -1065,7 +1065,7 @@ void BatchThreadDlg::handleXFoilTaskEvent(const XFoilTaskEvent *event)
 {
     // Now we can safely do something with our Qt objects.
     m_nTaskDone++; //one down, more to go
-    QString str = "   ...Finished "+ ((Foil*)event->foilPtr())->foilName()+" / "
+    QString str = tr("   ...Finished ")+ ((Foil*)event->foilPtr())->foilName()+" / "
             +((Polar*)event->polarPtr())->polarName()+"\n";
     updateOutput(str);
 
@@ -1085,7 +1085,7 @@ void BatchThreadDlg::handleXFoilTaskEvent(const XFoilTaskEvent *event)
  */
 void BatchThreadDlg::outputFoilList()
 {
-    m_pctrlTextOutput->append("Foils to analyze:");
+    m_pctrlTextOutput->append(tr("Foils to analyze:"));
     for(int i=0; i<m_FoilList.count();i++)
     {
         m_pctrlTextOutput->append("   "+m_FoilList.at(i));
@@ -1099,7 +1099,7 @@ void BatchThreadDlg::outputFoilList()
  */
 void BatchThreadDlg::outputReList()
 {
-    m_pctrlTextOutput->append("Reynolds numbers to analyze:");
+    m_pctrlTextOutput->append(tr("Reynolds numbers to analyze:"));
     if(m_bFromList)
     {
         for(int i=0; i<XDirect::s_ReList.count(); i++)
