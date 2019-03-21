@@ -6437,19 +6437,32 @@ bool XFoil::qdcalc()
     }
 
     //---- set up kutta condition (no direct source influence)
-    for(j=n+1; j<=n+nw;j++) bij[n+1][j] = 0.0;
+    for(j=n+1; j<=n+nw; j++) bij[n+1][j] = 0.0;
 
     //---- sharp TE gamma extrapolation also has no source influence
     if(sharp)
     {
-        for(j=n+1; j<=n+nw;j++) bij[n][j] = 0.0;
+        for(j=n+1; j<=n+nw; j++) bij[n][j] = 0.0;
     }
+
+/*
+for(int i=1; i<=n; i++)
+{
+    QString strong;
+    for(int j=1; j<=n+nw; j++)
+    {
+        QString str;
+        str.sprintf(" %11g", bij[i][j]);
+        strong+=str;
+    }
+    qDebug(strong.toStdString().c_str());
+}*/
 
     //---- multiply by inverse of factored dpsi/dgam matrix
     for(j=n+1; j<=n+nw;j++)
     {
         //		baksub(iqx,n+1,aijpiv,j);
-        for (iu=0; iu<IQX; iu++) bbb[iu] = bij[iu][j];//techwinder : create a dummy array
+        for (iu=0; iu<IQX; iu++) bbb[iu] = bij[iu][j];//techwinder: create a dummy array
 
         baksub(n+1,aij,aijpiv,bbb);
         for (iu=0; iu<IQX; iu++) bij[iu][j] = bbb[iu];
@@ -6464,18 +6477,18 @@ bool XFoil::qdcalc()
         }
     }
 
-
-/*    for(int i=1; i<=n; i++)
+/*
+for(int i=1; i<=n; i++)
+{
+    QString strong;
+    for(int j=1; j<=n+nw; j++)
     {
-        QString strong;
-        for(int j=1; j<=n+nw; j++)
-        {
-            QString str;
-            str.sprintf(" %9g", dij[i][j]);
-            strong+=str;
-        }
-        qDebug(strong.toStdString().c_str());
-    }*/
+        QString str;
+        str.sprintf(" %11g", dij[i][j]);
+        strong+=str;
+    }
+    qDebug(strong.toStdString().c_str());
+}*/
 
 
     //**** now we need to calculate the influence of sources on the wake velocities
@@ -6991,9 +7004,9 @@ bool XFoil::segspld(double x[],double xs[],double s[],int n, double xs1, double 
  * ------------------------------------------------- */
 bool XFoil::setbl()
 {
-
     int i=0, ibl=0, iv=0,iw=0, j=0, js=0, jv=0, jbl=0, is=0;
     int ile1=0,ile2=0,ite1=0,ite2=0,jvte1=0,jvte2=0;
+
     double usav[IVX+1][ISX];
     double u1_m[2*IVX+1], u2_m[2*IVX+1];
     double d1_m[2*IVX+1], d2_m[2*IVX+1];

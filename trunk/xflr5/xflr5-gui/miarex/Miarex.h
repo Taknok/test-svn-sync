@@ -259,7 +259,7 @@ public:
 	void importWPolarFromXML(QFile &xmlFile);
 	bool intersectObject(Vector3d O,  Vector3d U, Vector3d &I);
 	void LLTAnalyze(double V0, double VMax, double VDelta, bool bSequence, bool bInitCalc);	
-	bool loadSettings(QSettings *pSettings);
+    bool loadSettings(QSettings &settings);
 	int  matSize() {return m_theTask.m_MatSize;}
 	void drawColorGradient(QPainter &painter, QRect const & gradientRect);
 	void paintCpLegendText(QPainter &painter);
@@ -269,7 +269,7 @@ public:
 	void paintPlaneOppLegend(QPainter &painter, QRect drawRect);
 	QString POppTitle(PlaneOpp *pPOpp);
 	void renamePlane(QString PlaneName);
-	bool saveSettings(QSettings *pSettings);
+    bool saveSettings(QSettings &settings);
 	void setAnalysisParams();
 	void setControls();
 	void setCurveParams();

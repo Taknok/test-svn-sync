@@ -708,27 +708,27 @@ void XInverse::keyReleaseEvent(QKeyEvent *event)
  * Loads the user's default settings from the application QSettings object
  * @param pSettings a pointer to the QSettings object
  */
-void XInverse::loadSettings(QSettings *pSettings)
+void XInverse::loadSettings(QSettings &settings)
 {
-    pSettings->beginGroup("XInverse");
+    settings.beginGroup("XInverse");
     {
-        m_bFullInverse = pSettings->value("FullInverse").toBool();
+        m_bFullInverse = settings.value("FullInverse").toBool();
 
-        m_Spline.setColor(pSettings->value("SplineColor").value<QColor>());
-        m_Spline.setStyle(pSettings->value("SplineStyle").toInt());
-        m_Spline.setWidth(pSettings->value("SplineWdth").toInt());
-        QColor clr  = pSettings->value("BaseFoilColor").value<QColor>();
+        m_Spline.setColor(settings.value("SplineColor").value<QColor>());
+        m_Spline.setStyle(settings.value("SplineStyle").toInt());
+        m_Spline.setWidth(settings.value("SplineWdth").toInt());
+        QColor clr  = settings.value("BaseFoilColor").value<QColor>();
         m_pRefFoil->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
-        m_pRefFoil->foilLineStyle()  = pSettings->value("BaseFoilStyle").toInt();
-        m_pRefFoil->foilLineWidth()  = pSettings->value("BaseFoilWidth").toInt();
+        m_pRefFoil->foilLineStyle()  = settings.value("BaseFoilStyle").toInt();
+        m_pRefFoil->foilLineWidth()  = settings.value("BaseFoilWidth").toInt();
 
-        clr  = pSettings->value("ModFoilColor").value<QColor>();
+        clr  = settings.value("ModFoilColor").value<QColor>();
         m_pModFoil->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
-        m_pModFoil->foilLineStyle()  = pSettings->value("ModFoilStyle").toInt();
-        m_pModFoil->foilLineWidth()  = pSettings->value("ModFoilWidth").toInt();
+        m_pModFoil->foilLineStyle()  = settings.value("ModFoilStyle").toInt();
+        m_pModFoil->foilLineWidth()  = settings.value("ModFoilWidth").toInt();
     }
-    pSettings->endGroup();
-    m_QGraph.loadSettings(pSettings);
+    settings.endGroup();
+    m_QGraph.loadSettings(settings);
 }
 
 
@@ -2213,24 +2213,24 @@ void XInverse::resetScale()
  * Saves the user settings
  * @param pSettings a pointer to the QSetting object.
  */
-void XInverse::saveSettings(QSettings *pSettings)
+void XInverse::saveSettings(QSettings &settings)
 {
-    pSettings->beginGroup("XInverse");
+    settings.beginGroup("XInverse");
     {
-        pSettings->setValue("FullInverse", m_bFullInverse);
-        pSettings->setValue("SplineColor", m_Spline.color());
-        pSettings->setValue("SplineStyle", m_Spline.style());
-        pSettings->setValue("SplineWdth",  m_Spline.width());
-        pSettings->setValue("BaseFoilColor", colour(m_pRefFoil));
-        pSettings->setValue("BaseFoilStyle", m_pRefFoil->foilLineStyle());
-        pSettings->setValue("BaseFoilWidth", m_pRefFoil->foilLineWidth());
-        pSettings->setValue("ModFoilColor", colour(m_pModFoil));
-        pSettings->setValue("ModFoilStyle", m_pModFoil->foilLineStyle());
-        pSettings->setValue("ModFoilWidth", m_pModFoil->foilLineWidth());
+        settings.setValue("FullInverse", m_bFullInverse);
+        settings.setValue("SplineColor", m_Spline.color());
+        settings.setValue("SplineStyle", m_Spline.style());
+        settings.setValue("SplineWdth",  m_Spline.width());
+        settings.setValue("BaseFoilColor", colour(m_pRefFoil));
+        settings.setValue("BaseFoilStyle", m_pRefFoil->foilLineStyle());
+        settings.setValue("BaseFoilWidth", m_pRefFoil->foilLineWidth());
+        settings.setValue("ModFoilColor", colour(m_pModFoil));
+        settings.setValue("ModFoilStyle", m_pModFoil->foilLineStyle());
+        settings.setValue("ModFoilWidth", m_pModFoil->foilLineWidth());
     }
-    pSettings->endGroup();
+    settings.endGroup();
 
-    m_QGraph.saveSettings(pSettings);
+    m_QGraph.saveSettings(settings);
 }
 
 

@@ -198,7 +198,7 @@ void Body::computeAero(double *Cp, double &XCP, double &YCP, double &ZCP,
  * Copies the data of an existing Body object to this Body
  * @param pBody the source Body object
  */
-void Body::duplicate(Body *pBody)
+void Body::duplicate(Body const *pBody)
 {
 	if(!pBody) return;
 

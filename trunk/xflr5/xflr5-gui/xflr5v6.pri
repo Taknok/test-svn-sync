@@ -86,9 +86,6 @@ SOURCES += \
     misc/waitdlg.cpp \
     script/xflscriptexec.cpp \
     script/xflscriptreader.cpp \
-    viewwidgets/BodyFrameWidget.cpp \
-    viewwidgets/BodyLineWidget.cpp \
-    viewwidgets/Direct2dDesign.cpp \
     viewwidgets/glWidgets/ArcBall.cpp \
     viewwidgets/glWidgets/gl3dbodyview.cpp \
     viewwidgets/glWidgets/gl3dmiarexview.cpp \
@@ -130,7 +127,10 @@ SOURCES += \
     xinverse/FoilSelectionDlg.cpp \
     xinverse/InverseOptionsDlg.cpp \
     xinverse/PertDlg.cpp \
-    xinverse/XInverse.cpp
+    xinverse/XInverse.cpp \
+    $$PWD/viewwidgets/foildesignwt.cpp \
+    $$PWD/viewwidgets/bodylinewt.cpp \
+    $$PWD/viewwidgets/bodyframewt.cpp
 
 
 HEADERS += \
@@ -224,9 +224,6 @@ HEADERS += \
     misc/waitdlg.h \
     script/xflscriptexec.h \
     script/xflscriptreader.h \
-    viewwidgets/BodyFrameWidget.h \
-    viewwidgets/BodyLineWidget.h \
-    viewwidgets/Direct2dDesign.h \
     viewwidgets/glWidgets/ArcBall.h \
     viewwidgets/glWidgets/gl3dbodyview.h \
     viewwidgets/glWidgets/gl3dmiarexview.h \
@@ -269,7 +266,10 @@ HEADERS += \
     xinverse/FoilSelectionDlg.h \
     xinverse/InverseOptionsDlg.h \
     xinverse/PertDlg.h \
-    xinverse/XInverse.h
+    xinverse/XInverse.h \
+    $$PWD/viewwidgets/foildesignwt.h \
+    $$PWD/viewwidgets/bodyframewt.h \
+    $$PWD/viewwidgets/bodylinewt.h
 
 
 RESOURCES += \

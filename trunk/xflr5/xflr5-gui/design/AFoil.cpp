@@ -1592,7 +1592,6 @@ void AFoil::selectFoil(Foil* pFoil)
 }
 
 
-
 /**
  * Initializes the Foil table, the QWidget and the QAction objects from the data.
  * Selects the current foil in the table
@@ -1606,10 +1605,18 @@ void AFoil::setAFoilParams()
     setControls();
 }
 
+
 /** A signal has been received to update the foil table */
 void AFoil::onUpdateFoilTable()
 {
     fillFoilTable();
+}
+
+
+void AFoil::onSplinesModified()
+{
+    fillFoilTable();
+    takePicture();
 }
 
 
@@ -1648,7 +1655,6 @@ void AFoil::takePicture()
         s_pMainFrame->m_pRedoAFoilAct->setEnabled(m_StackPos<m_UndoStack.size()-1);
     }
 }
-
 
 
 /**
@@ -1824,7 +1830,7 @@ Foil* AFoil::addNewFoil(Foil *pFoil)
 }
 
 
-void AFoil::initDialog(Direct2dDesign *p2DWidget, QList<Foil*> *poaFoil, XFoil *pXFoil)
+void AFoil::initDialog(FoilDesignWt *p2DWidget, QList<Foil*> *poaFoil, XFoil *pXFoil)
 {
     m_poaFoil = poaFoil;
     m_pXFoil = pXFoil;

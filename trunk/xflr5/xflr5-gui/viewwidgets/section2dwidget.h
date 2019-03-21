@@ -63,20 +63,20 @@ public:
     QSize sizeHint() const;
     QSize minimumSizeHint() const;
 
-    void contextMenuEvent (QContextMenuEvent *event);
-    void keyPressEvent(QKeyEvent *event);
-    void keyReleaseEvent(QKeyEvent *event);
-    void mouseDoubleClickEvent (QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    virtual void paintEvent(QPaintEvent *event);
-    void resizeEvent (QResizeEvent *event);
-    void wheelEvent (QWheelEvent *event);
+    void contextMenuEvent (QContextMenuEvent *pEvent);
+    void keyPressEvent(QKeyEvent *pEvent);
+    void keyReleaseEvent(QKeyEvent *pEvent);
+    void mouseDoubleClickEvent (QMouseEvent *pEvent);
+    void mouseMoveEvent(QMouseEvent *pEvent);
+    void mousePressEvent(QMouseEvent *pEvent);
+    void mouseReleaseEvent(QMouseEvent *pEvent);
+    virtual void paintEvent(QPaintEvent *pEvent);
+    void resizeEvent (QResizeEvent *pEvent);
+    void wheelEvent (QWheelEvent *pEvent);
 
     void setContextMenu(QMenu *pMenu);
 
-private:
+protected:
     Vector3d mousetoReal(QPoint &point);
     virtual void setScale();
     virtual void createActions();
@@ -121,7 +121,7 @@ public:
     double m_objectScale;
 
 
-private:
+protected:
     QCursor m_hcMove;           /**< the cursor to display when moving the viewport */
     QCursor m_hcCross;          /**< the cursor to display in the client area, when not dragging or zooming */
 
@@ -137,7 +137,6 @@ private:
     bool m_bShowLegend;         /**< true if the legend should be shown */
     bool m_bXDown;              /**< true if the 'X' key is pressed */
     bool m_bYDown;              /**< true if the 'Y' key is pressed */
-    bool m_bZDown;              /**< true if the 'Z' key is pressed */
     bool m_bXGrid;              /**< true if the X main grid (vertical lines) should be displayed */
     bool m_bYGrid;              /**< true if the Y main grid (horizontal lines) should be displayed */
     bool m_bXMinGrid;           /**< true if the X minor grid (vertical lines) should be displayed */

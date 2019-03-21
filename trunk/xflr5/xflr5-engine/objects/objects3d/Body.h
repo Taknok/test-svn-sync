@@ -87,7 +87,7 @@ public:
 	void clearPointMasses();
 	void computeAero(double *Cp, double &XCP, double &YCP, double &ZCP,
 				  double &GCm, double &GRm, double &GYm, double &Alpha, Vector3d &CoG);
-	void duplicate(Body *pBody);
+    void duplicate(const Body *pBody);
 	void getPoint(double u, double v, bool bRight, Vector3d &Pt);
 	Vector3d Point(double u, double v, bool bRight);
 	void removeActiveFrame();

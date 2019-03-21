@@ -65,8 +65,8 @@ public:
     void exportToFile(QFile &XFile, bool bCSV);
     void highlight(QPainter &painter, Curve *pCurve, int ref);
 
-    void loadSettings(QSettings *pSettings);
-    void saveSettings(QSettings *pSettings);
+    void loadSettings(QSettings &settings);
+    void saveSettings(QSettings &settings);
     QPoint getOffset();
 
     void getLabelFont(QFont &labelFont);

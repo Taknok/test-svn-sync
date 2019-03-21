@@ -23,7 +23,7 @@
 #include <QMessageBox>
 
 
-#include "Direct2dDesign.h"
+#include "foildesignwt.h"
 #include <objects/objects2d/Foil.h>
 #include <graph_globals.h>
 #include <globals/mainframe.h>
@@ -32,7 +32,7 @@
 #include <globals/globals.h>
 #include <gui_objects/SplineFoil.h>
 
-Direct2dDesign::Direct2dDesign(QWidget *pParent) : Section2dWidget(pParent)
+FoilDesignWt::FoilDesignWt(QWidget *pParent) : Section2dWidget(pParent)
 {
 	m_bNeutralLine = true;
 	m_bLECircle      = false;
@@ -45,7 +45,7 @@ Direct2dDesign::Direct2dDesign(QWidget *pParent) : Section2dWidget(pParent)
 }
 
 
-void Direct2dDesign::setObjects(Foil *pBufferFoil, SplineFoil *pSF, QList<Foil*> *poaFoil)
+void FoilDesignWt::setObjects(Foil *pBufferFoil, SplineFoil *pSF, QList<Foil*> *poaFoil)
 {
 	m_pBufferFoil = pBufferFoil;
 	m_pSF = pSF;
@@ -53,7 +53,7 @@ void Direct2dDesign::setObjects(Foil *pBufferFoil, SplineFoil *pSF, QList<Foil*>
 }
 
 
-void Direct2dDesign::setScale()
+void FoilDesignWt::setScale()
 {
 	//scale is set by user zooming
 	m_fRefScale = (double)rect().width()*6.0/8.0;
@@ -67,7 +67,7 @@ void Direct2dDesign::setScale()
 }
 
 
-void Direct2dDesign::paintEvent(QPaintEvent *event)
+void FoilDesignWt::paintEvent(QPaintEvent *event)
 {
 	Q_UNUSED(event);
 	QPainter painter(this);
@@ -89,7 +89,7 @@ void Direct2dDesign::paintEvent(QPaintEvent *event)
  * Draws a dashed circle located at the leading edge of the foil.
  * @param painter a reference to the QPainter object with which to draw.
  */
-void Direct2dDesign::paintLECircle(QPainter &painter)
+void FoilDesignWt::paintLECircle(QPainter &painter)
 {
 	if(m_bLECircle)
 	{
@@ -109,7 +109,7 @@ void Direct2dDesign::paintLECircle(QPainter &painter)
  * Draws the SplineFoil object.
  * @param painter a reference to the QPainter object with which to draw.
  */
-void Direct2dDesign::paintSplines(QPainter &painter)
+void FoilDesignWt::paintSplines(QPainter &painter)
 {
 	painter.save();
 
@@ -146,7 +146,7 @@ void Direct2dDesign::paintSplines(QPainter &painter)
  * Draws the visible Foil objects.
  * @param painter a reference to the QPainter object with which to draw.
  */
-void Direct2dDesign::paintFoils(QPainter &painter)
+void FoilDesignWt::paintFoils(QPainter &painter)
 {
 	painter.save();
 	int k;
@@ -206,7 +206,7 @@ void Direct2dDesign::paintFoils(QPainter &painter)
  * Draws the legend.
  * @param painter a reference to the QPainter object with which to draw.
  */
-void Direct2dDesign::paintLegend(QPainter &painter)
+void FoilDesignWt::paintLegend(QPainter &painter)
 {
 	painter.save();
 
@@ -297,7 +297,7 @@ void Direct2dDesign::paintLegend(QPainter &painter)
 
 
 
-void Direct2dDesign::resizeEvent (QResizeEvent *event)
+void FoilDesignWt::resizeEvent (QResizeEvent *event)
 {
 	setScale();
 	event->accept();
@@ -305,7 +305,7 @@ void Direct2dDesign::resizeEvent (QResizeEvent *event)
 
 
 
-int Direct2dDesign::highlightPoint(Vector3d real)
+int FoilDesignWt::highlightPoint(Vector3d real)
 {
 	if(!m_pSF->isVisible()) return -1;
 	{
@@ -341,7 +341,7 @@ int Direct2dDesign::highlightPoint(Vector3d real)
 }
 
 
-int Direct2dDesign::selectPoint(Vector3d real)
+int FoilDesignWt::selectPoint(Vector3d real)
 {
 	if(!m_pSF->isVisible()) return -1;
 
@@ -356,7 +356,7 @@ int Direct2dDesign::selectPoint(Vector3d real)
 }
 
 
-void Direct2dDesign::dragSelectedPoint(double x, double y)
+void FoilDesignWt::dragSelectedPoint(double x, double y)
 {
 	Q_UNUSED(x);
 	Q_UNUSED(y);
@@ -419,15 +419,10 @@ void Direct2dDesign::dragSelectedPoint(double x, double y)
 }
 
 
-
-
-
-
-
 /**
  * The user has requested the insertion of a control point in the SplineFoil at the location of the mouse
  */
-void Direct2dDesign::onInsertPt()
+void FoilDesignWt::onInsertPt()
 {
 	if(XDirect::curFoil()) return; // Action can be performed only if the spline foil is selected
 
@@ -455,7 +450,7 @@ void Direct2dDesign::onInsertPt()
 /**
  * The user has requested the deletion of a control point in the SplineFoil at the location of the mouse.
  */
-void Direct2dDesign::onRemovePt()
+void FoilDesignWt::onRemovePt()
 {
 	//Removes a point in the spline
 	if(XDirect::curFoil()) return; // Action can be performed only if the spline foil is selected
@@ -492,8 +487,6 @@ void Direct2dDesign::onRemovePt()
 
 //	TakePicture();
 }
-
-
 
 
 
