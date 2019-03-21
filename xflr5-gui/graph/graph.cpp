@@ -775,7 +775,7 @@ void Graph::highlight(QPainter &painter, Curve *pCurve, int ref)
 }
 
 
-void Graph::saveSettings(QSettings *pSettings)
+void Graph::saveSettings(QSettings &settings)
 {
     QFont lgft;
     QColor clr;
@@ -783,85 +783,85 @@ void Graph::saveSettings(QSettings *pSettings)
     bool ba, bs;
     double f;
 
-    pSettings->beginGroup(m_GraphName);
+    settings.beginGroup(m_GraphName);
     {
         //read variables
         clr = axisColor();
-        pSettings->setValue("AxisColor", clr);
+        settings.setValue("AxisColor", clr);
         k = axisStyle();
-        pSettings->setValue("AxisStyle", k);
+        settings.setValue("AxisStyle", k);
         k = axisWidth();
-        pSettings->setValue("AxisWidth", k);
+        settings.setValue("AxisWidth", k);
 
         clr = titleColor();
-        pSettings->setValue("TitleColor", clr);
+        settings.setValue("TitleColor", clr);
 
         clr = labelColor();
-        pSettings->setValue("LabelColor", clr);
+        settings.setValue("LabelColor", clr);
 
         getTitleFont(lgft);
-        pSettings->setValue("TitleFontName", lgft.family());
-        pSettings->setValue("TitleFontSize", lgft.pointSize());
-        pSettings->setValue("TitleFontItalic", lgft.italic());
-        pSettings->setValue("TitleFontBold", lgft.bold());
+        settings.setValue("TitleFontName", lgft.family());
+        settings.setValue("TitleFontSize", lgft.pointSize());
+        settings.setValue("TitleFontItalic", lgft.italic());
+        settings.setValue("TitleFontBold", lgft.bold());
 
         getLabelFont(lgft);
-        pSettings->setValue("LabelFontName", lgft.family());
-        pSettings->setValue("LabelFontSize", lgft.pointSize());
-        pSettings->setValue("LabelFontItalic", lgft.italic());
-        pSettings->setValue("LabelFontBold", lgft.bold());
+        settings.setValue("LabelFontName", lgft.family());
+        settings.setValue("LabelFontSize", lgft.pointSize());
+        settings.setValue("LabelFontItalic", lgft.italic());
+        settings.setValue("LabelFontBold", lgft.bold());
 
         bXMajGrid(bs,clr,s,w);
-        pSettings->setValue("XMajGridColor", clr);
-        pSettings->setValue("XMajGridShow",bs);
-        pSettings->setValue("XMajGridStyle",s);
-        pSettings->setValue("XMajGridWidth",w);
+        settings.setValue("XMajGridColor", clr);
+        settings.setValue("XMajGridShow",bs);
+        settings.setValue("XMajGridStyle",s);
+        settings.setValue("XMajGridWidth",w);
 
         yMajGrid(bs,clr,s,w);
-        pSettings->setValue("YMajGridColor", clr);
-        pSettings->setValue("YMajGridShow",bs);
-        pSettings->setValue("YMajGridStyle",s);
-        pSettings->setValue("YMajGridWidth",w);
+        settings.setValue("YMajGridColor", clr);
+        settings.setValue("YMajGridShow",bs);
+        settings.setValue("YMajGridStyle",s);
+        settings.setValue("YMajGridWidth",w);
 
         bXMinGrid(bs,ba,clr,s,w,f);
-        pSettings->setValue("XMinGridColor", clr);
-        pSettings->setValue("XMinGridAuto",ba);
-        pSettings->setValue("XMinGridShow",bs);
-        pSettings->setValue("XMinGridStyle",s);
-        pSettings->setValue("XMinGridWidth",w);
-        pSettings->setValue("XMinGridUnit",f);
+        settings.setValue("XMinGridColor", clr);
+        settings.setValue("XMinGridAuto",ba);
+        settings.setValue("XMinGridShow",bs);
+        settings.setValue("XMinGridStyle",s);
+        settings.setValue("XMinGridWidth",w);
+        settings.setValue("XMinGridUnit",f);
 
         bYMinGrid(bs,ba,clr,s,w,f);
-        pSettings->setValue("YMinGridColor", clr);
-        pSettings->setValue("YMinGridAuto",ba);
-        pSettings->setValue("YMinGridShow",bs);
-        pSettings->setValue("YMinGridStyle",s);
-        pSettings->setValue("YMinGridWidth",w);
-        pSettings->setValue("YMinGridUnit",f);
+        settings.setValue("YMinGridColor", clr);
+        settings.setValue("YMinGridAuto",ba);
+        settings.setValue("YMinGridShow",bs);
+        settings.setValue("YMinGridStyle",s);
+        settings.setValue("YMinGridWidth",w);
+        settings.setValue("YMinGridUnit",f);
 
         clr = borderColor();
         s   = borderStyle();
         w   = borderWidth();
-        pSettings->setValue("BorderColor", clr);
-        pSettings->setValue("BorderStyle", s);
-        pSettings->setValue("BorderWidth", w);
-        pSettings->setValue("BorderShow", m_bBorder);
+        settings.setValue("BorderColor", clr);
+        settings.setValue("BorderStyle", s);
+        settings.setValue("BorderWidth", w);
+        settings.setValue("BorderShow", m_bBorder);
 
         clr = backgroundColor();
-        pSettings->setValue("BackgroundColor", clr);
+        settings.setValue("BackgroundColor", clr);
 
-        pSettings->setValue("margin", m_iMargin);
+        settings.setValue("margin", m_iMargin);
 
-        pSettings->setValue("Inverted", m_bYInverted);
+        settings.setValue("Inverted", m_bYInverted);
 
-        pSettings->setValue("XVariable", m_X);
-        pSettings->setValue("YVariable", m_Y);
+        settings.setValue("XVariable", m_X);
+        settings.setValue("YVariable", m_Y);
     }
-    pSettings->endGroup();
+    settings.endGroup();
 }
 
 
-void Graph::loadSettings(QSettings *pSettings)
+void Graph::loadSettings(QSettings &settings)
 {
     QFont lgft;
     bool bs, ba;
@@ -870,80 +870,80 @@ void Graph::loadSettings(QSettings *pSettings)
     double f;
     QColor clr;
 
-    pSettings->beginGroup(m_GraphName);
+    settings.beginGroup(m_GraphName);
     {
         //read variables
-        clr = pSettings->value("AxisColor", QColor(255,255,255)).value<QColor>();
-        s = pSettings->value("AxisStyle",0).toInt();
-        w = pSettings->value("AxisWidth",1).toInt();
+        clr = settings.value("AxisColor", QColor(255,255,255)).value<QColor>();
+        s = settings.value("AxisStyle",0).toInt();
+        w = settings.value("AxisWidth",1).toInt();
         setAxisData(s,w,clr);
 
-        clr = pSettings->value("TitleColor", QColor(255,255,255)).value<QColor>();
+        clr = settings.value("TitleColor", QColor(255,255,255)).value<QColor>();
         setTitleColor(clr);
-        clr = pSettings->value("LabelColor", QColor(255,255,255)).value<QColor>();
+        clr = settings.value("LabelColor", QColor(255,255,255)).value<QColor>();
         setLabelColor(clr);
 
-        lgft = QFont(pSettings->value("TitleFontName","Comic Sans MS").toString());
-        int size = pSettings->value("TitleFontSize",8).toInt();
+        lgft = QFont(settings.value("TitleFontName","Comic Sans MS").toString());
+        int size = settings.value("TitleFontSize",8).toInt();
         if(size>0) lgft.setPointSize(size);
-        lgft.setItalic(pSettings->value("TitleFontItalic", false).toBool());
-        lgft.setBold(pSettings->value("TitleFontBold", false).toBool());
+        lgft.setItalic(settings.value("TitleFontItalic", false).toBool());
+        lgft.setBold(settings.value("TitleFontBold", false).toBool());
         setTitleFont(lgft);
 
-        lgft = QFont(pSettings->value("LabelFontName","Comic Sans MS").toString());
-        size = pSettings->value("LabelFontSize",8).toInt();
+        lgft = QFont(settings.value("LabelFontName","Comic Sans MS").toString());
+        size = settings.value("LabelFontSize",8).toInt();
         if(size>0) lgft.setPointSize(size);
-        lgft.setItalic(pSettings->value("LabelFontItalic", false).toBool());
-        lgft.setBold(pSettings->value("LabelFontBold", false).toBool());
+        lgft.setItalic(settings.value("LabelFontItalic", false).toBool());
+        lgft.setBold(settings.value("LabelFontBold", false).toBool());
         setLabelFont(lgft);
 
-        clr  = pSettings->value("XMajGridColor", QColor(90,90,90)).value<QColor>();
-        bs = pSettings->value("XMajGridShow",true).toBool();
-        s  = pSettings->value("XMajGridStyle",1).toInt();
-        w  = pSettings->value("XMajGridWidth",1).toInt();
+        clr  = settings.value("XMajGridColor", QColor(90,90,90)).value<QColor>();
+        bs = settings.value("XMajGridShow",true).toBool();
+        s  = settings.value("XMajGridStyle",1).toInt();
+        w  = settings.value("XMajGridWidth",1).toInt();
         setXMajGrid(bs,clr,s,w);
 
-        clr  = pSettings->value("YMajGridColor", QColor(90,90,90)).value<QColor>();
-        bs = pSettings->value("YMajGridShow",true).toBool();
-        s  = pSettings->value("YMajGridStyle",1).toInt();
-        w  = pSettings->value("YMajGridWidth",1).toInt();
+        clr  = settings.value("YMajGridColor", QColor(90,90,90)).value<QColor>();
+        bs = settings.value("YMajGridShow",true).toBool();
+        s  = settings.value("YMajGridStyle",1).toInt();
+        w  = settings.value("YMajGridWidth",1).toInt();
         setYMajGrid(bs,clr,s,w);
 
-        clr  = pSettings->value("XMinGridColor", QColor(90,90,90)).value<QColor>();
-        ba = pSettings->value("XMinGridAuto",true).toBool();
-        bs = pSettings->value("XMinGridShow",false).toBool();
-        s  = pSettings->value("XMinGridStyle",2).toInt();
-        w  = pSettings->value("XMinGridWidth",1).toInt();
-        f  = pSettings->value("XMinGridUnit", 0.01).toDouble();
+        clr  = settings.value("XMinGridColor", QColor(90,90,90)).value<QColor>();
+        ba = settings.value("XMinGridAuto",true).toBool();
+        bs = settings.value("XMinGridShow",false).toBool();
+        s  = settings.value("XMinGridStyle",2).toInt();
+        w  = settings.value("XMinGridWidth",1).toInt();
+        f  = settings.value("XMinGridUnit", 0.01).toDouble();
         setXMinGrid(bs,ba,clr,s,w,f);
 
-        clr  = pSettings->value("YMinGridColor", QColor(90,90,90)).value<QColor>();
-        ba = pSettings->value("YMinGridAuto",true).toBool();
-        bs = pSettings->value("YMinGridShow",false).toBool();
-        s  = pSettings->value("YMinGridStyle",2).toInt();
-        w  = pSettings->value("YMinGridWidth",1).toInt();
-        f  = pSettings->value("YMinGridUnit",0.01).toDouble();
+        clr  = settings.value("YMinGridColor", QColor(90,90,90)).value<QColor>();
+        ba = settings.value("YMinGridAuto",true).toBool();
+        bs = settings.value("YMinGridShow",false).toBool();
+        s  = settings.value("YMinGridStyle",2).toInt();
+        w  = settings.value("YMinGridWidth",1).toInt();
+        f  = settings.value("YMinGridUnit",0.01).toDouble();
         setYMinGrid(bs,ba,clr,s,w,f);
 
-        clr  = pSettings->value("BorderColor", QColor(200,200,200)).value<QColor>();
-        s  = pSettings->value("BorderStyle",0).toInt();
-        w  = pSettings->value("BorderWidth",2).toInt();
-        m_bBorder = pSettings->value("BorderShow", true).toBool();
+        clr  = settings.value("BorderColor", QColor(200,200,200)).value<QColor>();
+        s  = settings.value("BorderStyle",0).toInt();
+        w  = settings.value("BorderWidth",2).toInt();
+        m_bBorder = settings.value("BorderShow", true).toBool();
         setBorderColor(clr);
         setBorderStyle(s);
         setBorderWidth(w);
 
-        clr  = pSettings->value("BackgroundColor", QColor(15,19,20)).value<QColor>();
+        clr  = settings.value("BackgroundColor", QColor(15,19,20)).value<QColor>();
         setBkColor(clr);
 
-        m_iMargin = pSettings->value("margin", 61).toInt();
+        m_iMargin = settings.value("margin", 61).toInt();
 
-        m_bYInverted = pSettings->value("Inverted", false).toBool();
+        m_bYInverted = settings.value("Inverted", false).toBool();
 
-        m_X  = pSettings->value("XVariable",0).toInt();
-        m_Y  = pSettings->value("YVariable",0).toInt();
+        m_X  = settings.value("XVariable",0).toInt();
+        m_Y  = settings.value("YVariable",0).toInt();
     }
-    pSettings->endGroup();
+    settings.endGroup();
 }
 
 

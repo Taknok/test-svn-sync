@@ -67,8 +67,8 @@ public:
 	QSize minimumSizeHint() const;
 	QSize sizeHint() const;
 
-	static bool loadSettings(QSettings *pSettings);
-	static bool saveSettings(QSettings *pSettings);
+    static bool loadSettings(QSettings &settings);
+    static bool saveSettings(QSettings &settings);
 
 	static bool isLightOn() {return s_Light.m_bIsLightOn;}
 	static void setLightOn(bool bLight) {s_Light.m_bIsLightOn = bLight;}

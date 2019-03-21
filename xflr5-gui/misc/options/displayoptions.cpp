@@ -400,66 +400,66 @@ void Settings::onTableFont()
 
 
 
-void Settings::saveSettings(QSettings *pSettings)
+void Settings::saveSettings(QSettings &settings)
 {
-	pSettings->beginGroup("global_settings");
+    settings.beginGroup("global_settings");
 	{
-		pSettings->setValue("LastDirName", s_LastDirName);
-		pSettings->setValue("XMLDirName", s_xmlDirName);
+        settings.setValue("LastDirName", s_LastDirName);
+        settings.setValue("XMLDirName", s_xmlDirName);
 
-		pSettings->setValue("BackgroundColor", s_BackgroundColor);
-		pSettings->setValue("TextColor", s_TextColor);
+        settings.setValue("BackgroundColor", s_BackgroundColor);
+        settings.setValue("TextColor", s_TextColor);
 
-		pSettings->setValue("TextFontFamily", s_TextFont.family());
-		pSettings->setValue("TextFontPointSize", s_TextFont.pointSize());
-		pSettings->setValue("TextFontItalic", s_TextFont.italic());
-		pSettings->setValue("TextFontBold", s_TextFont.bold());
+        settings.setValue("TextFontFamily", s_TextFont.family());
+        settings.setValue("TextFontPointSize", s_TextFont.pointSize());
+        settings.setValue("TextFontItalic", s_TextFont.italic());
+        settings.setValue("TextFontBold", s_TextFont.bold());
 
-		pSettings->setValue("TableFontFamily", s_TableFont.family());
-		pSettings->setValue("TableFontPointSize", s_TableFont.pointSize());
-		pSettings->setValue("TableFontItalic", s_TableFont.italic());
-		pSettings->setValue("TableFontBold", s_TableFont.bold());
+        settings.setValue("TableFontFamily", s_TableFont.family());
+        settings.setValue("TableFontPointSize", s_TableFont.pointSize());
+        settings.setValue("TableFontItalic", s_TableFont.italic());
+        settings.setValue("TableFontBold", s_TableFont.bold());
 
-		pSettings->setValue("ReverseZoom", s_bReverseZoom);
+        settings.setValue("ReverseZoom", s_bReverseZoom);
 
-		if(isLightTheme()) pSettings->setValue("Theme",0);
-		else               pSettings->setValue("Theme",1);
+        if(isLightTheme()) settings.setValue("Theme",0);
+        else               settings.setValue("Theme",1);
 
-		s_RefGraph.saveSettings(pSettings);
+        s_RefGraph.saveSettings(settings);
 	}
-	pSettings->endGroup();
+    settings.endGroup();
 }
 
 
-void Settings::loadSettings(QSettings *pSettings)
+void Settings::loadSettings(QSettings &settings)
 {
-	pSettings->beginGroup("global_settings");
+    settings.beginGroup("global_settings");
 	{
-		s_LastDirName = pSettings->value("LastDirName", QDir::homePath()).toString();
-		s_xmlDirName = pSettings->value("XMLDirName", QDir::homePath()).toString();
+        s_LastDirName = settings.value("LastDirName", QDir::homePath()).toString();
+        s_xmlDirName = settings.value("XMLDirName", QDir::homePath()).toString();
 
-		s_BackgroundColor = pSettings->value("BackgroundColor", QColor(5,11,13)).value<QColor>();
+        s_BackgroundColor = settings.value("BackgroundColor", QColor(5,11,13)).value<QColor>();
 
-		s_TextColor = pSettings->value("TextColor", QColor(237,237,237)).value<QColor>();
+        s_TextColor = settings.value("TextColor", QColor(237,237,237)).value<QColor>();
 
-		s_TextFont = QFont(pSettings->value("TextFontFamily", "Courier").toString());
-		s_TextFont.setPointSize(pSettings->value("TextFontPointSize", 10).toInt());
-		s_TextFont.setItalic(pSettings->value("TextFontItalic", false).toBool());
-		s_TextFont.setBold(pSettings->value("TextFontBold", false).toBool());
+        s_TextFont = QFont(settings.value("TextFontFamily", "Courier").toString());
+        s_TextFont.setPointSize(settings.value("TextFontPointSize", 10).toInt());
+        s_TextFont.setItalic(settings.value("TextFontItalic", false).toBool());
+        s_TextFont.setBold(settings.value("TextFontBold", false).toBool());
 		s_TextFont.setStyleStrategy(QFont::OpenGLCompatible);
 
-		s_TableFont = QFont(pSettings->value("TableFontFamily", "Courier").toString());
-		s_TableFont.setPointSize(pSettings->value("TableFontPointSize", 10).toInt());
-		s_TableFont.setItalic(pSettings->value("TableFontItalic", false).toBool());
-		s_TableFont.setBold(pSettings->value("TableFontBold", false).toBool());
+        s_TableFont = QFont(settings.value("TableFontFamily", "Courier").toString());
+        s_TableFont.setPointSize(settings.value("TableFontPointSize", 10).toInt());
+        s_TableFont.setItalic(settings.value("TableFontItalic", false).toBool());
+        s_TableFont.setBold(settings.value("TableFontBold", false).toBool());
 
-		s_bReverseZoom   = pSettings->value("ReverseZoom", false).toBool();
-		int iTheme = pSettings->value("Theme",1).toInt();
+        s_bReverseZoom   = settings.value("ReverseZoom", false).toBool();
+        int iTheme = settings.value("Theme",1).toInt();
 		if(iTheme==0) s_Theme = SETTINGS::LIGHTTHEME;
 		else          s_Theme = SETTINGS::DARKTHEME;
-		s_RefGraph.loadSettings(pSettings);
+        s_RefGraph.loadSettings(settings);
 	}
-	pSettings->endGroup();
+    settings.endGroup();
 }
 
 

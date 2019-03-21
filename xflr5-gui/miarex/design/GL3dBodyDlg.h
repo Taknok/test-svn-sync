@@ -45,8 +45,8 @@ class DoubleEdit;
 class BodyTableDelegate;
 class BodyGridDlg;
 class Body;
-class BodyLineWidget;
-class BodyFrameWidget;
+class BodyLineWt;
+class BodyFrameWt;
 class Frame;
 
 
@@ -100,14 +100,15 @@ private slots:
     void onUpdateBody();
 
 private:
-    void keyPressEvent(QKeyEvent *event);
-    void resizeEvent(QResizeEvent *event);
+    void keyPressEvent(QKeyEvent *pEvent);
+    void resizeEvent(QResizeEvent *pEvent);
     void showEvent(QShowEvent *pEvent);
     void hideEvent(QHideEvent *pEvent);
     void accept();
     void reject();
 
     void blockSignalling(bool bBlock);
+    void connectSignals();
 
     void fillFrameTableRow(int row);
     void fillFrameDataTable();
@@ -130,8 +131,8 @@ private:
     void updateView();
 
     bool initDialog(Body *pBody);
-    static bool loadSettings(QSettings *pSettings);
-    static bool saveSettings(QSettings *pSettings);
+    static bool loadSettings(QSettings &settings);
+    static bool saveSettings(QSettings &settings);
 
     void resizeTables();
 
@@ -146,8 +147,8 @@ private:
 
 private:
     gl3dBodyView m_gl3dBodyview;
-    BodyLineWidget *m_pBodyLineWidget;
-    BodyFrameWidget *m_pFrameWidget;
+    BodyLineWt *m_pBodyLineWidget;
+    BodyFrameWt *m_pFrameWidget;
 
     static QByteArray s_WindowGeometry;
 

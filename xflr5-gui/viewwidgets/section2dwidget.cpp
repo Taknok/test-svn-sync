@@ -22,7 +22,8 @@
 
 #include <QPainter>
 #include <QFileDialog>
-#include <QtDebug>
+#include <QKeyEvent>
+#include <QDebug>
 #include <QAction>
 
 #include "section2dwidget.h"
@@ -51,7 +52,7 @@ Section2dWidget::Section2dWidget(QWidget *parent) : QWidget(parent)
     m_bScale         = false;
     m_bShowLegend    = true;
     m_bIsImageLoaded = false;
-    m_bXDown = m_bYDown = m_bZDown = false;
+    m_bXDown = m_bYDown = false;
 
     m_bXGrid     = false;
     m_XGridUnit  = 0.05;
@@ -186,34 +187,34 @@ void Section2dWidget::paintEvent(QPaintEvent *event)
 
 
 
-void Section2dWidget::contextMenuEvent (QContextMenuEvent *event)
+void Section2dWidget::contextMenuEvent (QContextMenuEvent *pEvent)
 {
-    m_pSection2dContextMenu->exec(event->globalPos());
+    m_pSection2dContextMenu->exec(pEvent->globalPos());
     setCursor(Qt::CrossCursor);
-    event->accept();
+    pEvent->accept();
 }
 
 
-void Section2dWidget::keyPressEvent(QKeyEvent *event)
+void Section2dWidget::keyPressEvent(QKeyEvent *pEvent)
 {
     //	bool bShift = false;
     //	if(event->modifiers() & Qt::ShiftModifier)   bShift =true;
 
-    switch (event->key())
+    switch (pEvent->key())
     {
         case Qt::Key_Escape:
         {
             if(m_bZoomPlus)
             {
                 releaseZoom();
-                event->accept();
+                pEvent->accept();
             }
             else if(m_bZoomYOnly)
             {
                 m_bZoomYOnly = false;
-                event->accept();
+                pEvent->accept();
             }
-            m_bXDown = m_bYDown = m_bZDown = false;
+            m_bXDown = m_bYDown = false;
             break;
         }
 
@@ -226,11 +227,8 @@ void Section2dWidget::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Y:
             m_bYDown = true;
             break;
-        case Qt::Key_Z:
-            m_bZDown = true;
-            break;
         case Qt::Key_I:
-            if (event->modifiers().testFlag(Qt::ControlModifier) & event->modifiers().testFlag(Qt::ShiftModifier))
+            if (pEvent->modifiers().testFlag(Qt::ControlModifier) & pEvent->modifiers().testFlag(Qt::ShiftModifier))
             {
                 if(!m_bIsImageLoaded)
                 {
@@ -243,9 +241,9 @@ void Section2dWidget::keyPressEvent(QKeyEvent *event)
             }
             break;
         default:
-            QWidget::keyPressEvent(event);
+            QWidget::keyPressEvent(pEvent);
     }
-    event->ignore();
+    pEvent->ignore();
 }
 
 
@@ -274,10 +272,9 @@ void Section2dWidget::onClearBackImage()
 }
 
 
-void Section2dWidget::keyReleaseEvent(QKeyEvent *event)
+void Section2dWidget::keyReleaseEvent(QKeyEvent *pEvent)
 {
-
-    switch (event->key())
+    switch (pEvent->key())
     {
         case Qt::Key_X:
             m_bXDown = false;
@@ -285,46 +282,41 @@ void Section2dWidget::keyReleaseEvent(QKeyEvent *event)
         case Qt::Key_Y:
             m_bYDown = false;
             break;
-        case Qt::Key_Z:
-            m_bZDown = false;
-            break;
     }
-    event->ignore();
+    pEvent->ignore();
 }
 
 
-
-void Section2dWidget::mouseDoubleClickEvent (QMouseEvent *event)
+void Section2dWidget::mouseDoubleClickEvent (QMouseEvent *pEvent)
 {
     //	if(!hasFocus()) setFocus();
 
     QPoint center = rect().center();
 
-    m_ptOffset.rx() += -event->pos().x() + center.x();
-    m_ptOffset.ry() += -event->pos().y() + center.y();
-    m_ViewportTrans.rx() += -event->pos().x() + center.x();
-    m_ViewportTrans.ry() += -event->pos().y() + center.y();
+    m_ptOffset.rx() += -pEvent->pos().x() + center.x();
+    m_ptOffset.ry() += -pEvent->pos().y() + center.y();
+    m_ViewportTrans.rx() += -pEvent->pos().x() + center.x();
+    m_ViewportTrans.ry() += -pEvent->pos().y() + center.y();
 
     update();
-    event->accept();
+    pEvent->accept();
 }
 
 
-
-void Section2dWidget::mouseMoveEvent(QMouseEvent *event)
+void Section2dWidget::mouseMoveEvent(QMouseEvent *pEvent)
 {
     //	if(!hasFocus()) setFocus();
-    QPoint point = event->pos();
+    QPoint point = pEvent->pos();
     m_MousePos = mousetoReal(point);
 
-    if(m_bZoomPlus && (event->buttons() & Qt::LeftButton))
+    if(m_bZoomPlus && (pEvent->buttons() & Qt::LeftButton))
     {
         // we're zooming in using the rectangle method
         m_ZoomRect.setBottomRight(point);
         update();
         return;
     }
-    else if((event->buttons() & Qt::LeftButton) && m_bTrans)
+    else if((pEvent->buttons() & Qt::LeftButton) && m_bTrans)
     {
         //translate
         m_ptOffset.rx() += point.x() - m_PointDown.x();
@@ -338,13 +330,13 @@ void Section2dWidget::mouseMoveEvent(QMouseEvent *event)
         update();
         return;
     }
-    else if (event->buttons() & Qt::LeftButton && !m_bZoomPlus)
+    else if (pEvent->buttons() & Qt::LeftButton && !m_bZoomPlus)
     {
         // user is dragging the point
         dragSelectedPoint(m_MousePos.x, m_MousePos.y);
-        emit objectModified();
+//        emit objectModified();
     }
-    else if ((event->buttons() & Qt::MidButton))
+    else if ((pEvent->buttons() & Qt::MidButton))
     {
         // user is zooming with mouse button down rather than with wheel
         double scale = m_fScale;
@@ -386,7 +378,7 @@ void Section2dWidget::mouseMoveEvent(QMouseEvent *event)
         int a = rect().center().x();
         m_ptOffset.rx() = a + (int)((m_ptOffset.x()-a)*m_fScale/scale);
     }
-    else if(event->modifiers().testFlag(Qt::AltModifier))
+    else if(pEvent->modifiers().testFlag(Qt::AltModifier))
     {
         double zoomFactor=1.0;
 
@@ -402,14 +394,13 @@ void Section2dWidget::mouseMoveEvent(QMouseEvent *event)
         highlightPoint(m_MousePos);
     }
     update();
-    event->accept();
+    pEvent->accept();
 }
 
 
-
-void Section2dWidget::mousePressEvent(QMouseEvent *event)
+void Section2dWidget::mousePressEvent(QMouseEvent *pEvent)
 {
-    QPoint point = event->pos();
+    QPoint point = pEvent->pos();
 
     // get a reference for mouse movements
     m_PointDown.rx() = point.x();
@@ -420,13 +411,13 @@ void Section2dWidget::mousePressEvent(QMouseEvent *event)
         m_ZoomRect.setTopLeft(point);
         m_ZoomRect.setBottomRight(point);
     }
-    else if(!m_bZoomPlus && (event->buttons() & Qt::LeftButton))
+    else if(!m_bZoomPlus && (pEvent->buttons() & Qt::LeftButton))
     {
-        if (event->modifiers() & Qt::ShiftModifier)
+        if (pEvent->modifiers() & Qt::ShiftModifier)
         {
             onInsertPt();
         }
-        else if (event->modifiers() & Qt::ControlModifier)
+        else if (pEvent->modifiers() & Qt::ControlModifier)
         {
             onRemovePt();
         }
@@ -450,14 +441,13 @@ void Section2dWidget::mousePressEvent(QMouseEvent *event)
             }
         }
     }
-    event->accept();
+    pEvent->accept();
 }
 
 
-
-void Section2dWidget::mouseReleaseEvent(QMouseEvent *event)
+void Section2dWidget::mouseReleaseEvent(QMouseEvent *pEvent)
 {
-    QPoint point = event->pos();
+    QPoint point = pEvent->pos();
 
     if(m_bZoomPlus)
     {
@@ -517,7 +507,7 @@ void Section2dWidget::mouseReleaseEvent(QMouseEvent *event)
     m_bTrans = false;
     m_bDrag = false;
     update();
-    event->accept();
+    pEvent->accept();
 }
 
 
@@ -532,13 +522,11 @@ void Section2dWidget::resizeEvent (QResizeEvent *event)
 }
 
 
-
-
-void Section2dWidget::wheelEvent (QWheelEvent *event)
+void Section2dWidget::wheelEvent (QWheelEvent *pEvent)
 {
     double zoomFactor=1.0;
 
-    if(event->delta()>0)
+    if(pEvent->delta()>0)
     {
         if(!Settings::s_bReverseZoom) zoomFactor = 1./1.06;
         else                          zoomFactor = 1.06;
@@ -552,7 +540,7 @@ void Section2dWidget::wheelEvent (QWheelEvent *event)
 
     update();
 
-    event->accept();
+    pEvent->accept();
 }
 
 

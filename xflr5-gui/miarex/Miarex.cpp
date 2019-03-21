@@ -1986,65 +1986,65 @@ void Miarex::LLTAnalyze(double V0, double VMax, double VDelta, bool bSequence, b
  *@param a pointer to the QSettings object loaded in the MainFrame class
  *@return true if the settings have been loaded successfully
  */
-bool Miarex::loadSettings(QSettings *pSettings)
+bool Miarex::loadSettings(QSettings &settings)
 {
     QString strong;
     StabViewDlg *pStabView = s_pMainFrame->m_pStabView;
 
-    pSettings->beginGroup("Miarex");
+    settings.beginGroup("Miarex");
     {
-        m_bXCmRef       = pSettings->value("bXCmRef", true).toBool();
-        m_bXTop         = pSettings->value("bXTop", false).toBool();
-        m_bXBot         = pSettings->value("bXBot", false).toBool();
-        m_bXCP          = pSettings->value("bXCP", false).toBool();
-        m_bPanelForce   = pSettings->value("bPanelForce", false).toBool();
-        m_bICd          = pSettings->value("bICd", true).toBool();
-        m_bVCd          = pSettings->value("bVCd", true).toBool();
-        m_pgl3dMiarexView->m_bSurfaces     = pSettings->value("bSurfaces").toBool();
-        m_pgl3dMiarexView->m_bOutline      = pSettings->value("bOutline").toBool();
-        m_pgl3dMiarexView->m_bVLMPanels    = pSettings->value("bVLMPanels").toBool();
-        m_pgl3dMiarexView->m_bAxes         = pSettings->value("bAxes").toBool();
-        m_b3DCp         = pSettings->value("b3DCp").toBool();
-        m_bDownwash     = pSettings->value("bDownwash").toBool();
-        m_bMoments      = pSettings->value("bMoments").toBool();
-        gl3dMiarexView::s_bAutoCpScale  = pSettings->value("bAutoCpScale").toBool();
-        m_bCurPOppOnly  = pSettings->value("CurWOppOnly").toBool();
-        m_bShowEllipticCurve = pSettings->value("bShowElliptic").toBool();
-        m_bShowBellCurve     = pSettings->value("bShowTargetCurve").toBool();
-        m_BellCurveExp  = pSettings->value("BellCurveExp", 1).toDouble();
-        m_bMaxCL        = pSettings->value("CurveMaxCL", true ).toBool();
-        m_bLogFile      = pSettings->value("LogFile").toBool();
-        m_bDirichlet    = pSettings->value("Dirichlet").toBool();
-        m_bResetWake    = pSettings->value("ResetWake").toBool();
-        m_bShowWingCurve[0]    = pSettings->value("ShowWing").toBool();
-        m_bShowWingCurve[1]    = pSettings->value("ShowWing2").toBool();
-        m_bShowWingCurve[2]    = pSettings->value("ShowStab").toBool();
-        m_bShowWingCurve[3]    = pSettings->value("ShowFin").toBool();
+        m_bXCmRef       = settings.value("bXCmRef", true).toBool();
+        m_bXTop         = settings.value("bXTop", false).toBool();
+        m_bXBot         = settings.value("bXBot", false).toBool();
+        m_bXCP          = settings.value("bXCP", false).toBool();
+        m_bPanelForce   = settings.value("bPanelForce", false).toBool();
+        m_bICd          = settings.value("bICd", true).toBool();
+        m_bVCd          = settings.value("bVCd", true).toBool();
+        m_pgl3dMiarexView->m_bSurfaces     = settings.value("bSurfaces").toBool();
+        m_pgl3dMiarexView->m_bOutline      = settings.value("bOutline").toBool();
+        m_pgl3dMiarexView->m_bVLMPanels    = settings.value("bVLMPanels").toBool();
+        m_pgl3dMiarexView->m_bAxes         = settings.value("bAxes").toBool();
+        m_b3DCp         = settings.value("b3DCp").toBool();
+        m_bDownwash     = settings.value("bDownwash").toBool();
+        m_bMoments      = settings.value("bMoments").toBool();
+        gl3dMiarexView::s_bAutoCpScale  = settings.value("bAutoCpScale").toBool();
+        m_bCurPOppOnly  = settings.value("CurWOppOnly").toBool();
+        m_bShowEllipticCurve = settings.value("bShowElliptic").toBool();
+        m_bShowBellCurve     = settings.value("bShowTargetCurve").toBool();
+        m_BellCurveExp  = settings.value("BellCurveExp", 1).toDouble();
+        m_bMaxCL        = settings.value("CurveMaxCL", true ).toBool();
+        m_bLogFile      = settings.value("LogFile").toBool();
+        m_bDirichlet    = settings.value("Dirichlet").toBool();
+        m_bResetWake    = settings.value("ResetWake").toBool();
+        m_bShowWingCurve[0]    = settings.value("ShowWing").toBool();
+        m_bShowWingCurve[1]    = settings.value("ShowWing2").toBool();
+        m_bShowWingCurve[2]    = settings.value("ShowStab").toBool();
+        m_bShowWingCurve[3]    = settings.value("ShowFin").toBool();
         m_bShowWingCurve[0] = true;
-        m_bShowFlapMoments = pSettings->value("showFlapMoments", true).toBool();
+        m_bShowFlapMoments = settings.value("showFlapMoments", true).toBool();
 
-        PlaneOpp::s_bStoreOpps    = pSettings->value("StoreWOpp").toBool();
-        m_bSequence     = pSettings->value("Sequence").toBool();
+        PlaneOpp::s_bStoreOpps    = settings.value("StoreWOpp").toBool();
+        m_bSequence     = settings.value("Sequence").toBool();
 
-        m_AlphaMin      = pSettings->value("AlphaMin").toDouble();
-        m_AlphaMax      = pSettings->value("AlphaMax").toDouble();
-        m_AlphaDelta    = pSettings->value("AlphaDelta").toDouble();
-        m_BetaMin       = pSettings->value("BetaMin", 0.0).toDouble();
-        m_BetaMax       = pSettings->value("BetaMax", 1.0).toDouble();
-        m_BetaDelta     = pSettings->value("BetaDelta", 0.5).toDouble();
-        m_QInfMin       = pSettings->value("QInfMin").toDouble();
-        m_QInfMax       = pSettings->value("QInfMax").toDouble();
-        m_QInfDelta     = pSettings->value("QInfDelta").toDouble();
-        m_ControlMin    = pSettings->value("ControlMin").toDouble();
-        m_ControlMax    = pSettings->value("ControlMax").toDouble();
-        m_ControlDelta  = pSettings->value("ControlDelta").toDouble();
+        m_AlphaMin      = settings.value("AlphaMin").toDouble();
+        m_AlphaMax      = settings.value("AlphaMax").toDouble();
+        m_AlphaDelta    = settings.value("AlphaDelta").toDouble();
+        m_BetaMin       = settings.value("BetaMin", 0.0).toDouble();
+        m_BetaMax       = settings.value("BetaMax", 1.0).toDouble();
+        m_BetaDelta     = settings.value("BetaDelta", 0.5).toDouble();
+        m_QInfMin       = settings.value("QInfMin").toDouble();
+        m_QInfMax       = settings.value("QInfMax").toDouble();
+        m_QInfDelta     = settings.value("QInfDelta").toDouble();
+        m_ControlMin    = settings.value("ControlMin").toDouble();
+        m_ControlMax    = settings.value("ControlMax").toDouble();
+        m_ControlDelta  = settings.value("ControlDelta").toDouble();
 
-        m_CpLineStyle.m_Style = pSettings->value("CpStyle").toInt();
-        m_CpLineStyle.m_Width = pSettings->value("CpWidth").toInt();
-        m_CpLineStyle.m_Color = pSettings->value("CpColor").value<QColor>();
-        m_CpLineStyle.m_PointStyle = pSettings->value("CpPointStyle").toInt();
+        m_CpLineStyle.m_Style = settings.value("CpStyle").toInt();
+        m_CpLineStyle.m_Width = settings.value("CpWidth").toInt();
+        m_CpLineStyle.m_Color = settings.value("CpColor").value<QColor>();
+        m_CpLineStyle.m_PointStyle = settings.value("CpPointStyle").toInt();
 
-        int k = pSettings->value("iView").toInt();
+        int k = settings.value("iView").toInt();
         if(k==0)      m_iView = XFLR5::WOPPVIEW;
         else if(k==1) m_iView = XFLR5::WPOLARVIEW;
         else if(k==2) m_iView = XFLR5::W3DVIEW;
@@ -2052,127 +2052,127 @@ bool Miarex::loadSettings(QSettings *pSettings)
         else if(k==4) m_iView = XFLR5::STABTIMEVIEW;
         else if(k==5) m_iView = XFLR5::STABPOLARVIEW;
 
-        k = pSettings->value("iWingView").toInt();
+        k = settings.value("iWingView").toInt();
         if(k==0)      m_iWingView  = XFLR5::ALLGRAPHS;
         else if(k==1) m_iWingView  = XFLR5::ONEGRAPH;
         else if(k==2) m_iWingView  = XFLR5::TWOGRAPHS;
         else if(k==4) m_iWingView  = XFLR5::FOURGRAPHS;
 
-        k = pSettings->value("iWPlrView").toInt();
+        k = settings.value("iWPlrView").toInt();
         if(k==0)      m_iWPlrView  = XFLR5::ALLGRAPHS;
         else if(k==1) m_iWPlrView  = XFLR5::ONEGRAPH;
         else if(k==2) m_iWPlrView  = XFLR5::TWOGRAPHS;
         else if(k==4) m_iWPlrView  = XFLR5::FOURGRAPHS;
 
-        k = pSettings->value("iRootLocusView").toInt();
+        k = settings.value("iRootLocusView").toInt();
         if(k==0)      m_iRootLocusView  = XFLR5::ALLGRAPHS;
         else if(k==1) m_iRootLocusView  = XFLR5::ONEGRAPH;
         else if(k==2) m_iRootLocusView  = XFLR5::TWOGRAPHS;
         else if(k==4) m_iRootLocusView  = XFLR5::FOURGRAPHS;
 
-        k = pSettings->value("iStabTimeView").toInt();
+        k = settings.value("iStabTimeView").toInt();
         if(k==0)      m_iStabTimeView  = XFLR5::ALLGRAPHS;
         else if(k==1) m_iStabTimeView  = XFLR5::ONEGRAPH;
         else if(k==2) m_iStabTimeView  = XFLR5::TWOGRAPHS;
         else if(k==4) m_iStabTimeView  = XFLR5::FOURGRAPHS;
 
-        m_LLTMaxIterations         = pSettings->value("Iter").toInt();
-        //		GL3dBodyDlg::s_NHoopPoints  = pSettings->value("NHoopPoints").toInt();
-        //		GL3dBodyDlg::s_NXPoints     = pSettings->value("NXPoints").toInt();
-        m_InducedDragPoint  = pSettings->value("InducedDragPoint").toInt();
+        m_LLTMaxIterations         = settings.value("Iter").toInt();
+        //		GL3dBodyDlg::s_NHoopPoints  = settings.value("NHoopPoints").toInt();
+        //		GL3dBodyDlg::s_NXPoints     = settings.value("NXPoints").toInt();
+        m_InducedDragPoint  = settings.value("InducedDragPoint").toInt();
 
-        gl3dMiarexView::s_LiftScale     = pSettings->value("LiftScale").toDouble();
-        gl3dMiarexView::s_DragScale     = pSettings->value("DragScale").toDouble();
-        gl3dMiarexView::s_VelocityScale = pSettings->value("VelocityScale").toDouble();
+        gl3dMiarexView::s_LiftScale     = settings.value("LiftScale").toDouble();
+        gl3dMiarexView::s_DragScale     = settings.value("DragScale").toDouble();
+        gl3dMiarexView::s_VelocityScale = settings.value("VelocityScale").toDouble();
 
-        m_WakeInterNodes    = pSettings->value("WakeInterNodes").toInt();
+        m_WakeInterNodes    = settings.value("WakeInterNodes").toInt();
 
-        m_RampTime      = pSettings->value("RampTime", 0.1).toDouble();
-        m_RampAmplitude = pSettings->value("RampAmplitude", 1.0).toDouble();
+        m_RampTime      = settings.value("RampTime", 0.1).toDouble();
+        m_RampAmplitude = settings.value("RampAmplitude", 1.0).toDouble();
 
-        m_TotalTime         = pSettings->value("TotalTime",10.0).toDouble();
-        m_Deltat            = pSettings->value("Delta_t",0.01).toDouble();
+        m_TotalTime         = settings.value("TotalTime",10.0).toDouble();
+        m_Deltat            = settings.value("Delta_t",0.01).toDouble();
 
-        m_TimeInput[0]      = pSettings->value("TimeIn0",0.0).toDouble();
-        m_TimeInput[1]      = pSettings->value("TimeIn1",0.0).toDouble();
-        m_TimeInput[2]      = pSettings->value("TimeIn2",0.0).toDouble();
-        m_TimeInput[3]      = pSettings->value("TimeIn3",0.0).toDouble();
-        m_bLongitudinal     = pSettings->value("DynamicsMode").toBool();
-        m_StabilityResponseType = pSettings->value("StabCurveType",0).toInt();
+        m_TimeInput[0]      = settings.value("TimeIn0",0.0).toDouble();
+        m_TimeInput[1]      = settings.value("TimeIn1",0.0).toDouble();
+        m_TimeInput[2]      = settings.value("TimeIn2",0.0).toDouble();
+        m_TimeInput[3]      = settings.value("TimeIn3",0.0).toDouble();
+        m_bLongitudinal     = settings.value("DynamicsMode").toBool();
+        m_StabilityResponseType = settings.value("StabCurveType",0).toInt();
 
 
         for(int i=0; i<20; i++)
         {
             strong = QString("ForcedTime%1").arg(i);
-            pStabView->m_Time[i] = pSettings->value(strong, (double)i).toDouble();
+            pStabView->m_Time[i] = settings.value(strong, (double)i).toDouble();
         }
         for(int i=0; i<20; i++)
         {
             strong = QString("ForcedAmplitude%1").arg(i);
-            pStabView->m_Amplitude[i] = pSettings->value(strong, 0.0).toDouble();
+            pStabView->m_Amplitude[i] = settings.value(strong, 0.0).toDouble();
         }
         pStabView->updateControlModelData();
 
-        StabPolarDlg::s_StabWPolar.m_bAutoInertia = pSettings->value("StabPolarAutoInertia", true).toBool();
-        StabPolarDlg::s_StabWPolar.mass()   = pSettings->value("StabPolarMass", 0.0).toDouble();
-        StabPolarDlg::s_StabWPolar.CoG().x  = pSettings->value("StabPolarCoGx", 0.0).toDouble();
-        StabPolarDlg::s_StabWPolar.CoG().y  = pSettings->value("StabPolarCoGy", 0.0).toDouble();
-        StabPolarDlg::s_StabWPolar.CoG().z  = pSettings->value("StabPolarCoGz", 0.0).toDouble();
-        StabPolarDlg::s_StabWPolar.m_CoGIxx = pSettings->value("StabPolarCoGIxx", 0.0).toDouble();
-        StabPolarDlg::s_StabWPolar.m_CoGIyy = pSettings->value("StabPolarCoGIyy", 0.0).toDouble();
-        StabPolarDlg::s_StabWPolar.m_CoGIzz = pSettings->value("StabPolarCoGIzz", 0.0).toDouble();
-        StabPolarDlg::s_StabWPolar.m_CoGIxz = pSettings->value("StabPolarCoGIxz", 0.0).toDouble();
+        StabPolarDlg::s_StabWPolar.m_bAutoInertia = settings.value("StabPolarAutoInertia", true).toBool();
+        StabPolarDlg::s_StabWPolar.mass()   = settings.value("StabPolarMass", 0.0).toDouble();
+        StabPolarDlg::s_StabWPolar.CoG().x  = settings.value("StabPolarCoGx", 0.0).toDouble();
+        StabPolarDlg::s_StabWPolar.CoG().y  = settings.value("StabPolarCoGy", 0.0).toDouble();
+        StabPolarDlg::s_StabWPolar.CoG().z  = settings.value("StabPolarCoGz", 0.0).toDouble();
+        StabPolarDlg::s_StabWPolar.m_CoGIxx = settings.value("StabPolarCoGIxx", 0.0).toDouble();
+        StabPolarDlg::s_StabWPolar.m_CoGIyy = settings.value("StabPolarCoGIyy", 0.0).toDouble();
+        StabPolarDlg::s_StabWPolar.m_CoGIzz = settings.value("StabPolarCoGIzz", 0.0).toDouble();
+        StabPolarDlg::s_StabWPolar.m_CoGIxz = settings.value("StabPolarCoGIxz", 0.0).toDouble();
 
 
-        WPolarDlg::s_WPolar.m_bAutoInertia =	pSettings->value("bAutoInertia", false).toBool();
-        WPolarDlg::s_WPolar.bVLM1() = pSettings->value("bVLM1").toBool();
+        WPolarDlg::s_WPolar.m_bAutoInertia =	settings.value("bAutoInertia", false).toBool();
+        WPolarDlg::s_WPolar.bVLM1() = settings.value("bVLM1").toBool();
 
-        PlaneOpp::s_bKeepOutOpps  = pSettings->value("KeepOutOpps").toBool();
+        PlaneOpp::s_bKeepOutOpps  = settings.value("KeepOutOpps").toBool();
 
-        W3dPrefsDlg::s_MassColor = pSettings->value("MassColor", QColor(100, 100, 200)).value<QColor>();
+        W3dPrefsDlg::s_MassColor = settings.value("MassColor", QColor(100, 100, 200)).value<QColor>();
 
-        LLTAnalysis::s_CvPrec       = pSettings->value("CvPrec").toDouble();
-        LLTAnalysis::s_RelaxMax     = pSettings->value("RelaxMax").toDouble();
-        LLTAnalysis::s_NLLTStations = pSettings->value("NLLTStations").toInt();
+        LLTAnalysis::s_CvPrec       = settings.value("CvPrec").toDouble();
+        LLTAnalysis::s_RelaxMax     = settings.value("RelaxMax").toDouble();
+        LLTAnalysis::s_NLLTStations = settings.value("NLLTStations").toInt();
 
-        PanelAnalysis::s_bTrefftz   = pSettings->value("Trefftz", true).toBool();
+        PanelAnalysis::s_bTrefftz   = settings.value("Trefftz", true).toBool();
         PanelAnalysis::s_bTrefftz   = true;
 
-        Panel::s_CtrlPos       = pSettings->value("CtrlPos").toDouble();
-        Panel::s_VortexPos     = pSettings->value("VortexPos").toDouble();
-        Panel::s_CoreSize      = pSettings->value("CoreSize", 0.000001).toDouble();
-        Wing::s_MinPanelSize   = pSettings->value("MinPanelSize").toDouble();
+        Panel::s_CtrlPos       = settings.value("CtrlPos").toDouble();
+        Panel::s_VortexPos     = settings.value("VortexPos").toDouble();
+        Panel::s_CoreSize      = settings.value("CoreSize", 0.000001).toDouble();
+        Wing::s_MinPanelSize   = settings.value("MinPanelSize").toDouble();
 
-        AeroDataDlg::s_Temperature = pSettings->value("Temperature", 288.15).toDouble();
-        AeroDataDlg::s_Altitude    = pSettings->value("Altitude", 0.0).toDouble();
+        AeroDataDlg::s_Temperature = settings.value("Temperature", 288.15).toDouble();
+        AeroDataDlg::s_Altitude    = settings.value("Altitude", 0.0).toDouble();
     }
 
-    pSettings->endGroup();
+    settings.endGroup();
 
-    GL3dBodyDlg::loadSettings(pSettings);
+    GL3dBodyDlg::loadSettings(settings);
 
-    GLLightDlg::loadSettings(pSettings);
+    GLLightDlg::loadSettings(settings);
 
-    EditPlaneDlg::loadSettings(pSettings);
-    EditBodyDlg::loadSettings(pSettings);
+    EditPlaneDlg::loadSettings(settings);
+    EditBodyDlg::loadSettings(settings);
 
-    m_CpGraph.loadSettings(pSettings);
+    m_CpGraph.loadSettings(settings);
 
     for(int ig=0; ig<MAXWINGGRAPHS; ig++)
     {
-        m_WingGraph[ig]->loadSettings(pSettings);
+        m_WingGraph[ig]->loadSettings(settings);
     }
     for(int ig=0; ig<MAXPOLARGRAPHS; ig++)
     {
-        m_WPlrGraph[ig]->loadSettings(pSettings);
+        m_WPlrGraph[ig]->loadSettings(settings);
         setWGraphTitles(m_WPlrGraph[ig]);
     }
     for(int ig=0; ig<MAXTIMEGRAPHS; ig++)
     {
-        m_TimeGraph[ig]->loadSettings(pSettings);
+        m_TimeGraph[ig]->loadSettings(settings);
     }
-    m_StabPlrGraph.at(0)->loadSettings(pSettings);
-    m_StabPlrGraph.at(1)->loadSettings(pSettings);
+    m_StabPlrGraph.at(0)->loadSettings(settings);
+    m_StabPlrGraph.at(1)->loadSettings(settings);
 
     setStabGraphTitles();
 
@@ -6575,103 +6575,103 @@ void Miarex::panelAnalyze(double V0, double VMax, double VDelta, bool bSequence)
  * @param pSettings a pointer to the QSettings object
  * @return true if the save was successfull, false if an error was encountered
  */
-bool Miarex::saveSettings(QSettings *pSettings)
+bool Miarex::saveSettings(QSettings &settings)
 {
     QString strong;
     StabViewDlg *pStabView = s_pMainFrame->m_pStabView;
 
     onReadAnalysisData();
 
-    pSettings->beginGroup("Miarex");
+    settings.beginGroup("Miarex");
     {
-        pSettings->setValue("bXCmRef", m_bXCmRef);
-        pSettings->setValue("bXTop", m_bXTop);
-        pSettings->setValue("bXBot", m_bXBot);
-        pSettings->setValue("bXCP", m_bXCP);
-        pSettings->setValue("bPanelForce", m_bPanelForce);
-        pSettings->setValue("bICd", m_bICd);
-        pSettings->setValue("bVCd", m_bVCd);
-        pSettings->setValue("bSurfaces", m_pgl3dMiarexView->m_bSurfaces);
-        pSettings->setValue("bOutline", m_pgl3dMiarexView->m_bOutline);
-        pSettings->setValue("bVLMPanels", m_pgl3dMiarexView->m_bVLMPanels);
-        pSettings->setValue("bAxes", m_pgl3dMiarexView->m_bAxes);
-        pSettings->setValue("b3DCp", m_b3DCp);
-        pSettings->setValue("bDownwash", m_bDownwash);
-        pSettings->setValue("bMoments", m_bMoments);
-        pSettings->setValue("bAutoCpScale", gl3dMiarexView::s_bAutoCpScale);
-        pSettings->setValue("CurWOppOnly", m_bCurPOppOnly);
-        pSettings->setValue("bShowElliptic", m_bShowEllipticCurve);
-        pSettings->setValue("bShowTargetCurve", m_bShowBellCurve);
-        pSettings->setValue("BellCurveExp",m_BellCurveExp);
-        pSettings->setValue("CurveMaxCL",m_bMaxCL);
-        pSettings->setValue("LogFile", m_bLogFile);
-        pSettings->setValue("bVLM1", WPolarDlg::s_WPolar.bVLM1());
-        pSettings->setValue("Dirichlet", m_bDirichlet);
-        pSettings->setValue("KeepOutOpps", PlaneOpp::s_bKeepOutOpps);
-        pSettings->setValue("ResetWake", m_bResetWake );
-        pSettings->setValue("ShowWing", m_bShowWingCurve[0]);
-        pSettings->setValue("ShowWing2", m_bShowWingCurve[1]);
-        pSettings->setValue("ShowStab", m_bShowWingCurve[2]);
-        pSettings->setValue("ShowFin", m_bShowWingCurve[3]);
-        pSettings->setValue("StoreWOpp", PlaneOpp::s_bStoreOpps);
-        pSettings->setValue("Sequence", m_bSequence );
-        pSettings->setValue("AlphaMin", m_AlphaMin);
-        pSettings->setValue("AlphaMax", m_AlphaMax);
-        pSettings->setValue("AlphaDelta", m_AlphaDelta);
-        pSettings->setValue("BetaMin", m_BetaMin);
-        pSettings->setValue("BetaMax", m_BetaMax);
-        pSettings->setValue("BetaDelta", m_BetaDelta);
-        pSettings->setValue("QInfMin", m_QInfMin );
-        pSettings->setValue("QInfMax", m_QInfMax );
-        pSettings->setValue("QInfDelta", m_QInfDelta );
-        pSettings->setValue("ControlMin", m_ControlMin);
-        pSettings->setValue("ControlMax", m_ControlMax);
-        pSettings->setValue("ControlDelta", m_ControlDelta);
-        pSettings->setValue("bAutoInertia", WPolarDlg::s_WPolar.m_bAutoInertia);
-        pSettings->setValue("showFlapMoments", m_bShowFlapMoments);
+        settings.setValue("bXCmRef", m_bXCmRef);
+        settings.setValue("bXTop", m_bXTop);
+        settings.setValue("bXBot", m_bXBot);
+        settings.setValue("bXCP", m_bXCP);
+        settings.setValue("bPanelForce", m_bPanelForce);
+        settings.setValue("bICd", m_bICd);
+        settings.setValue("bVCd", m_bVCd);
+        settings.setValue("bSurfaces", m_pgl3dMiarexView->m_bSurfaces);
+        settings.setValue("bOutline", m_pgl3dMiarexView->m_bOutline);
+        settings.setValue("bVLMPanels", m_pgl3dMiarexView->m_bVLMPanels);
+        settings.setValue("bAxes", m_pgl3dMiarexView->m_bAxes);
+        settings.setValue("b3DCp", m_b3DCp);
+        settings.setValue("bDownwash", m_bDownwash);
+        settings.setValue("bMoments", m_bMoments);
+        settings.setValue("bAutoCpScale", gl3dMiarexView::s_bAutoCpScale);
+        settings.setValue("CurWOppOnly", m_bCurPOppOnly);
+        settings.setValue("bShowElliptic", m_bShowEllipticCurve);
+        settings.setValue("bShowTargetCurve", m_bShowBellCurve);
+        settings.setValue("BellCurveExp",m_BellCurveExp);
+        settings.setValue("CurveMaxCL",m_bMaxCL);
+        settings.setValue("LogFile", m_bLogFile);
+        settings.setValue("bVLM1", WPolarDlg::s_WPolar.bVLM1());
+        settings.setValue("Dirichlet", m_bDirichlet);
+        settings.setValue("KeepOutOpps", PlaneOpp::s_bKeepOutOpps);
+        settings.setValue("ResetWake", m_bResetWake );
+        settings.setValue("ShowWing", m_bShowWingCurve[0]);
+        settings.setValue("ShowWing2", m_bShowWingCurve[1]);
+        settings.setValue("ShowStab", m_bShowWingCurve[2]);
+        settings.setValue("ShowFin", m_bShowWingCurve[3]);
+        settings.setValue("StoreWOpp", PlaneOpp::s_bStoreOpps);
+        settings.setValue("Sequence", m_bSequence );
+        settings.setValue("AlphaMin", m_AlphaMin);
+        settings.setValue("AlphaMax", m_AlphaMax);
+        settings.setValue("AlphaDelta", m_AlphaDelta);
+        settings.setValue("BetaMin", m_BetaMin);
+        settings.setValue("BetaMax", m_BetaMax);
+        settings.setValue("BetaDelta", m_BetaDelta);
+        settings.setValue("QInfMin", m_QInfMin );
+        settings.setValue("QInfMax", m_QInfMax );
+        settings.setValue("QInfDelta", m_QInfDelta );
+        settings.setValue("ControlMin", m_ControlMin);
+        settings.setValue("ControlMax", m_ControlMax);
+        settings.setValue("ControlDelta", m_ControlDelta);
+        settings.setValue("bAutoInertia", WPolarDlg::s_WPolar.m_bAutoInertia);
+        settings.setValue("showFlapMoments", m_bShowFlapMoments);
 
-        pSettings->setValue("CpStyle", m_CpLineStyle.m_Style);
-        pSettings->setValue("CpWidth", m_CpLineStyle.m_Width);
-        pSettings->setValue("CpColor", m_CpLineStyle.m_Color);
-        pSettings->setValue("CpPointStyle", m_CpLineStyle.m_PointStyle);
+        settings.setValue("CpStyle", m_CpLineStyle.m_Style);
+        settings.setValue("CpWidth", m_CpLineStyle.m_Width);
+        settings.setValue("CpColor", m_CpLineStyle.m_Color);
+        settings.setValue("CpPointStyle", m_CpLineStyle.m_PointStyle);
 
-        pSettings->setValue("CvPrec", LLTAnalysis::s_CvPrec);
-        pSettings->setValue("RelaxMax", LLTAnalysis::s_RelaxMax);
-        pSettings->setValue("NLLTStations", LLTAnalysis::s_NLLTStations);
+        settings.setValue("CvPrec", LLTAnalysis::s_CvPrec);
+        settings.setValue("RelaxMax", LLTAnalysis::s_RelaxMax);
+        settings.setValue("NLLTStations", LLTAnalysis::s_NLLTStations);
 
-        pSettings->setValue("Trefftz", PanelAnalysis::s_bTrefftz);
+        settings.setValue("Trefftz", PanelAnalysis::s_bTrefftz);
 
 
         switch(m_iView)
         {
             case XFLR5::WOPPVIEW:
             {
-                pSettings->setValue("iView", 0);
+                settings.setValue("iView", 0);
                 break;
             }
             case XFLR5::WPOLARVIEW:
             {
-                pSettings->setValue("iView", 1);
+                settings.setValue("iView", 1);
                 break;
             }
             case XFLR5::W3DVIEW:
             {
-                pSettings->setValue("iView", 2);
+                settings.setValue("iView", 2);
                 break;
             }
             case XFLR5::WCPVIEW:
             {
-                pSettings->setValue("iView", 3);
+                settings.setValue("iView", 3);
                 break;
             }
             case XFLR5::STABTIMEVIEW:
             {
-                pSettings->setValue("iView", 4);
+                settings.setValue("iView", 4);
                 break;
             }
             case XFLR5::STABPOLARVIEW:
             {
-                pSettings->setValue("iView", 5);
+                settings.setValue("iView", 5);
                 break;
             }
             case XFLR5::OTHERVIEW:
@@ -6681,16 +6681,16 @@ bool Miarex::saveSettings(QSettings *pSettings)
         switch(m_iWingView)
         {
             case XFLR5::ONEGRAPH:
-                pSettings->setValue("iWingView", 1);
+                settings.setValue("iWingView", 1);
                 break;
             case XFLR5::TWOGRAPHS:
-                pSettings->setValue("iWingView", 2);
+                settings.setValue("iWingView", 2);
                 break;
             case XFLR5::FOURGRAPHS:
-                pSettings->setValue("iWingView", 4);
+                settings.setValue("iWingView", 4);
                 break;
             default:
-                pSettings->setValue("iWingView", 0);
+                settings.setValue("iWingView", 0);
                 break;
         }
 
@@ -6698,16 +6698,16 @@ bool Miarex::saveSettings(QSettings *pSettings)
         switch(m_iWPlrView)
         {
             case XFLR5::ONEGRAPH:
-                pSettings->setValue("iWPlrView", 1);
+                settings.setValue("iWPlrView", 1);
                 break;
             case XFLR5::TWOGRAPHS:
-                pSettings->setValue("iWPlrView", 2);
+                settings.setValue("iWPlrView", 2);
                 break;
             case XFLR5::FOURGRAPHS:
-                pSettings->setValue("iWPlrView", 4);
+                settings.setValue("iWPlrView", 4);
                 break;
             default:
-                pSettings->setValue("iWPlrView", 0);
+                settings.setValue("iWPlrView", 0);
                 break;
         }
 
@@ -6715,100 +6715,100 @@ bool Miarex::saveSettings(QSettings *pSettings)
         switch(m_iRootLocusView)
         {
             case XFLR5::ONEGRAPH:
-                pSettings->setValue("iRootLocusView", 1);
+                settings.setValue("iRootLocusView", 1);
                 break;
             case XFLR5::TWOGRAPHS:
-                pSettings->setValue("iRootLocusView", 2);
+                settings.setValue("iRootLocusView", 2);
                 break;
             case XFLR5::FOURGRAPHS:
-                pSettings->setValue("iRootLocusView", 4);
+                settings.setValue("iRootLocusView", 4);
                 break;
             default:
-                pSettings->setValue("iRootLocusView", 0);
+                settings.setValue("iRootLocusView", 0);
                 break;
         }
         switch(m_iStabTimeView)
         {
             case XFLR5::ONEGRAPH:
-                pSettings->setValue("iStabTimeView", 1);
+                settings.setValue("iStabTimeView", 1);
                 break;
             case XFLR5::TWOGRAPHS:
-                pSettings->setValue("iStabTimeView", 2);
+                settings.setValue("iStabTimeView", 2);
                 break;
             case XFLR5::FOURGRAPHS:
-                pSettings->setValue("iStabTimeView", 5);
+                settings.setValue("iStabTimeView", 5);
                 break;
             default:
-                pSettings->setValue("iStabTimeView", 0);
+                settings.setValue("iStabTimeView", 0);
                 break;
         }
 
-        pSettings->setValue("Iter", m_LLTMaxIterations);
-        pSettings->setValue("InducedDragPoint", m_InducedDragPoint);
-        //		pSettings->setValue("NHoopPoints", GL3dBodyDlg::s_NHoopPoints);
-        //		pSettings->setValue("NXPoints", GL3dBodyDlg::s_NXPoints);
+        settings.setValue("Iter", m_LLTMaxIterations);
+        settings.setValue("InducedDragPoint", m_InducedDragPoint);
+        //		settings.setValue("NHoopPoints", GL3dBodyDlg::s_NHoopPoints);
+        //		settings.setValue("NXPoints", GL3dBodyDlg::s_NXPoints);
 
-        pSettings->setValue("LiftScale", gl3dMiarexView::s_LiftScale);
-        pSettings->setValue("DragScale", gl3dMiarexView::s_DragScale);
-        pSettings->setValue("VelocityScale", gl3dMiarexView::s_VelocityScale);
+        settings.setValue("LiftScale", gl3dMiarexView::s_LiftScale);
+        settings.setValue("DragScale", gl3dMiarexView::s_DragScale);
+        settings.setValue("VelocityScale", gl3dMiarexView::s_VelocityScale);
 
-        pSettings->setValue("WakeInterNodes", m_WakeInterNodes);
-        pSettings->setValue("CtrlPos",   Panel::s_CtrlPos);
-        pSettings->setValue("VortexPos", Panel::s_VortexPos);
-        pSettings->setValue("CoreSize", Panel::s_CoreSize);
-        pSettings->setValue("MinPanelSize", Wing::s_MinPanelSize);
-        pSettings->setValue("TotalTime", m_TotalTime);
-        pSettings->setValue("Delta_t", m_Deltat);
-        pSettings->setValue("RampTime", m_RampTime);
-        pSettings->setValue("RampAmplitude", m_RampAmplitude);
-        pSettings->setValue("TimeIn0", m_TimeInput[0]);
-        pSettings->setValue("TimeIn1", m_TimeInput[1]);
-        pSettings->setValue("TimeIn2", m_TimeInput[2]);
-        pSettings->setValue("TimeIn3", m_TimeInput[3]);
-        pSettings->setValue("DynamicsMode", m_bLongitudinal);
-        pSettings->setValue("StabCurveType",m_StabilityResponseType);
+        settings.setValue("WakeInterNodes", m_WakeInterNodes);
+        settings.setValue("CtrlPos",   Panel::s_CtrlPos);
+        settings.setValue("VortexPos", Panel::s_VortexPos);
+        settings.setValue("CoreSize", Panel::s_CoreSize);
+        settings.setValue("MinPanelSize", Wing::s_MinPanelSize);
+        settings.setValue("TotalTime", m_TotalTime);
+        settings.setValue("Delta_t", m_Deltat);
+        settings.setValue("RampTime", m_RampTime);
+        settings.setValue("RampAmplitude", m_RampAmplitude);
+        settings.setValue("TimeIn0", m_TimeInput[0]);
+        settings.setValue("TimeIn1", m_TimeInput[1]);
+        settings.setValue("TimeIn2", m_TimeInput[2]);
+        settings.setValue("TimeIn3", m_TimeInput[3]);
+        settings.setValue("DynamicsMode", m_bLongitudinal);
+        settings.setValue("StabCurveType",m_StabilityResponseType);
 
-        //		pSettings->setValue("AVLControls", StabPolarDlg::s_StabPolar.m_bAVLControls);
+        //		settings.setValue("AVLControls", StabPolarDlg::s_StabPolar.m_bAVLControls);
 
         pStabView->readControlModelData();
         for(int i=0; i<20; i++)
         {
             strong = QString("ForcedTime%1").arg(i);
-            pSettings->setValue(strong, pStabView->m_Time[i]);
+            settings.setValue(strong, pStabView->m_Time[i]);
         }
         for(int i=0; i<20; i++)
         {
             strong = QString("ForcedAmplitude%1").arg(i);
-            pSettings->setValue(strong, pStabView->m_Amplitude[i]);
+            settings.setValue(strong, pStabView->m_Amplitude[i]);
         }
 
-        pSettings->setValue("StabPolarAutoInertia", StabPolarDlg::s_StabWPolar.m_bAutoInertia);
-        pSettings->setValue("StabPolarMass",   StabPolarDlg::s_StabWPolar.mass());
-        pSettings->setValue("StabPolarCoGx",   StabPolarDlg::s_StabWPolar.CoG().x);
-        pSettings->setValue("StabPolarCoGy",   StabPolarDlg::s_StabWPolar.CoG().y);
-        pSettings->setValue("StabPolarCoGz",   StabPolarDlg::s_StabWPolar.CoG().z);
-        pSettings->setValue("StabPolarCoGIxx", StabPolarDlg::s_StabWPolar.m_CoGIxx);
-        pSettings->setValue("StabPolarCoGIyy", StabPolarDlg::s_StabWPolar.m_CoGIyy);
-        pSettings->setValue("StabPolarCoGIzz", StabPolarDlg::s_StabWPolar.m_CoGIzz);
-        pSettings->setValue("StabPolarCoGIxz", StabPolarDlg::s_StabWPolar.m_CoGIxz);
+        settings.setValue("StabPolarAutoInertia", StabPolarDlg::s_StabWPolar.m_bAutoInertia);
+        settings.setValue("StabPolarMass",   StabPolarDlg::s_StabWPolar.mass());
+        settings.setValue("StabPolarCoGx",   StabPolarDlg::s_StabWPolar.CoG().x);
+        settings.setValue("StabPolarCoGy",   StabPolarDlg::s_StabWPolar.CoG().y);
+        settings.setValue("StabPolarCoGz",   StabPolarDlg::s_StabWPolar.CoG().z);
+        settings.setValue("StabPolarCoGIxx", StabPolarDlg::s_StabWPolar.m_CoGIxx);
+        settings.setValue("StabPolarCoGIyy", StabPolarDlg::s_StabWPolar.m_CoGIyy);
+        settings.setValue("StabPolarCoGIzz", StabPolarDlg::s_StabWPolar.m_CoGIzz);
+        settings.setValue("StabPolarCoGIxz", StabPolarDlg::s_StabWPolar.m_CoGIxz);
 
-        pSettings->setValue("Temperature", AeroDataDlg::s_Temperature);
-        pSettings->setValue("Altitude", AeroDataDlg::s_Altitude);
+        settings.setValue("Temperature", AeroDataDlg::s_Temperature);
+        settings.setValue("Altitude", AeroDataDlg::s_Altitude);
     }
-    pSettings->endGroup();
+    settings.endGroup();
 
-    m_CpGraph.saveSettings(pSettings);
-    m_StabPlrGraph.at(0)->saveSettings(pSettings);
-    m_StabPlrGraph.at(1)->saveSettings(pSettings);
+    m_CpGraph.saveSettings(settings);
+    m_StabPlrGraph.at(0)->saveSettings(settings);
+    m_StabPlrGraph.at(1)->saveSettings(settings);
 
-    for(int ig=0; ig<m_WPlrGraph.count(); ig++) m_WPlrGraph[ig]->saveSettings(pSettings);
-    for(int ig=0; ig<m_WingGraph.count(); ig++) m_WingGraph[ig]->saveSettings(pSettings);
-    for(int ig=0; ig<m_TimeGraph.count(); ig++) m_TimeGraph[ig]->saveSettings(pSettings);
+    for(int ig=0; ig<m_WPlrGraph.count(); ig++) m_WPlrGraph[ig]->saveSettings(settings);
+    for(int ig=0; ig<m_WingGraph.count(); ig++) m_WingGraph[ig]->saveSettings(settings);
+    for(int ig=0; ig<m_TimeGraph.count(); ig++) m_TimeGraph[ig]->saveSettings(settings);
 
-    GLLightDlg::saveSettings(pSettings);
-    GL3dBodyDlg::saveSettings(pSettings);
-    EditPlaneDlg::saveSettings(pSettings);
-    EditBodyDlg::saveSettings(pSettings);
+    GLLightDlg::saveSettings(settings);
+    GL3dBodyDlg::saveSettings(settings);
+    EditPlaneDlg::saveSettings(settings);
+    EditBodyDlg::saveSettings(settings);
 
     return true;
 }

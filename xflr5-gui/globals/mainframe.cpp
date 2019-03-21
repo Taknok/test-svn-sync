@@ -74,7 +74,7 @@
 #include <objects/objects3d/Wing.h>
 #include <script/xflscriptexec.h>
 #include <script/xflscriptreader.h>
-#include <viewwidgets/Direct2dDesign.h>
+#include <viewwidgets/foildesignwt.h>
 #include <viewwidgets/glWidgets/gl3dmiarexview.h>
 #include <viewwidgets/graphwidget.h>
 #include <viewwidgets/inverseviewwidget.h>
@@ -131,113 +131,13 @@ QList <QColor> MainFrame::s_ColorList;
 MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(parent, flags)
 {
     setAttribute(Qt::WA_DeleteOnClose);
+    setWindowTitle(VERSIONNAME);
+    setWindowIcon(QIcon(":/images/xflr5_64.png"));
+
+    if(s_bTrace) testConfiguration();
 
     m_bManualUpdateCheck = false;
 
-    if(s_bTrace)
-    {
-        QString FileName = QDir::tempPath() + "/Trace.log";
-        Trace(FileName);
-        s_pTraceFile = new QFile(FileName);
-
-        if (!s_pTraceFile->open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text)) s_bTrace = false;
-        s_pTraceFile->reset();
-
-#if QT_VERSION >= 0x050500
-        QSysInfo sysInfo;
-        switch(sysInfo.windowsVersion())
-        {
-            case QSysInfo::WV_CE:          Trace("Windows CE"); break;
-            case QSysInfo::WV_CENET:       Trace("Windows CE .NET"); break;
-            case QSysInfo::WV_CE_5:        Trace("Windows CE 5.x"); break;
-            case QSysInfo::WV_CE_6:        Trace("Windows CE 6.x"); break;
-            case QSysInfo::WV_DOS_based:   Trace("MS-DOS-based version of Windows"); break;
-            case QSysInfo::WV_NT_based:    Trace("NT-based version of Windows"); break;
-            case QSysInfo::WV_CE_based:    Trace("CE-based version of Windows"); break;
-            case QSysInfo::WV_None:        Trace("Operating system other than Windows."); break;
-            case QSysInfo::WV_32s:         Trace("Windows 3.1 with Win 32s"); break;
-            case QSysInfo::WV_95:          Trace("Windows 95"); break;
-            case QSysInfo::WV_98:          Trace("Windows 98"); break;
-            case QSysInfo::WV_Me:          Trace("Windows Me"); break;
-            case QSysInfo::WV_NT:	       Trace("Windows NT (operating system version 4.0)"); break;
-            case QSysInfo::WV_2000:	       Trace("Windows 2000 (operating system version 5.0)"); break;
-            case QSysInfo::WV_XP:	       Trace("Windows XP (operating system version 5.1)"); break;
-            case QSysInfo::WV_2003:	       Trace("Windows Server 2003, Windows Server 2003 R2, Windows Home Server, Windows XP Professional x64 Edition (operating system version 5.2)"); break;
-            case QSysInfo::WV_VISTA:	   Trace("Windows Vista, Windows Server 2008 (operating system version 6.0)"); break;
-            case QSysInfo::WV_WINDOWS7:    Trace("Windows 7, Windows Server 2008 R2 (operating system version 6.1)"); break;
-            case QSysInfo::WV_WINDOWS8:    Trace("Windows 8 (operating system version 6.2)"); break;
-            case QSysInfo::WV_WINDOWS8_1:  Trace("Windows 8.1 (operating system version 6.3), introduced in Qt 5.2"); break;
-            case QSysInfo::WV_WINDOWS10:   Trace("Windows 10 (operating system version 10.0), introduced in Qt 5.5"); break;
-        }
-        switch(sysInfo.macVersion())
-        {
-            case QSysInfo::MV_9:        Trace("Mac OS 9 (unsupported)"); break;
-            case QSysInfo::MV_Unknown:  Trace("An unknown and currently unsupported platform"); break;
-            case QSysInfo::MV_CHEETAH:  Trace("CHEETAH MV_10_0"); break;
-            case QSysInfo::MV_PUMA:     Trace("PUMA MV_10_1"); break;
-            case QSysInfo::MV_JAGUAR:   Trace("JAGUAR MV_10_2"); break;
-            case QSysInfo::MV_PANTHER:  Trace("PANTHER MV_10_3"); break;
-            case QSysInfo::MV_TIGER:    Trace("TIGER MV_10_4"); break;
-            case QSysInfo::MV_LEOPARD:  Trace("LEOPARD MV_10_5"); break;
-            case QSysInfo::MV_SNOWLEOPARD:  Trace("SNOWLEOPARD MV_10_6"); break;
-            case QSysInfo::MV_LION:         Trace("LION MV_10_7"); break;
-            case QSysInfo::MV_MOUNTAINLION: Trace("MOUNTAINLION MV_10_8"); break;
-            case QSysInfo::MV_MAVERICKS:    Trace("MAVERICKS MV_10_9"); break;
-            case QSysInfo::MV_YOSEMITE:     Trace("YOSEMITE MV_10_10"); break;
-            case QSysInfo::MV_ELCAPITAN:    Trace("ELCAPITAN MV_10_11"); break;
-            case QSysInfo::MV_IOS:          Trace("iOS (any)"); break;
-            case QSysInfo::MV_IOS_4_3:  Trace("iOS 4.3"); break;
-            case QSysInfo::MV_IOS_5_0:  Trace("iOS 5.0"); break;
-            case QSysInfo::MV_IOS_5_1:  Trace("iOS 5.1"); break;
-            case QSysInfo::MV_IOS_6_0:  Trace("iOS 6.0"); break;
-            case QSysInfo::MV_IOS_6_1:  Trace("iOS 6.1"); break;
-            case QSysInfo::MV_IOS_7_0:  Trace("iOS 7.0"); break;
-            case QSysInfo::MV_IOS_7_1:  Trace("iOS 7.1"); break;
-            case QSysInfo::MV_IOS_8_0:  Trace("iOS 8.0"); break;
-            case QSysInfo::MV_IOS_8_1:  Trace("iOS 8.1"); break;
-            case QSysInfo::MV_IOS_8_2:  Trace("iOS 8.2"); break;
-            case QSysInfo::MV_IOS_8_3:  Trace("iOS 8.3"); break;
-            case QSysInfo::MV_IOS_8_4:  Trace("iOS 8.4"); break;
-            case QSysInfo::MV_IOS_9_0:  Trace("iOS 9.0"); break;
-            case QSysInfo::MV_None:  Trace("Not a Darwin operating system"); break;
-            default: Trace("Other"); break;
-        }
-
-        Trace("build ABI: " + sysInfo.buildAbi());
-        Trace("build CPU: " + sysInfo.buildCpuArchitecture());
-        Trace("current CPU: " + sysInfo.currentCpuArchitecture());
-        Trace("kernel type: "+sysInfo.kernelType());
-        Trace("kernel version: "+sysInfo.kernelVersion());
-        Trace("product name: "+sysInfo.prettyProductName());
-        Trace("product type: " +sysInfo.productType());
-        Trace("product version: " +sysInfo.productVersion());
-#endif
-        Trace("OpenGL support:");
-        Trace("    Desktop OpenGL ", qApp->testAttribute(Qt::AA_UseDesktopOpenGL));
-        Trace("    OpenGL ES      ", qApp->testAttribute(Qt::AA_UseOpenGLES));
-        Trace("    Software OpenGL", qApp->testAttribute(Qt::AA_UseSoftwareOpenGL));
-
-        QString strange;
-        strange.sprintf("   Default OpengGl format:%d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
-        Trace(strange);
-    }
-
-    if(!QGLFormat::hasOpenGL())
-    {
-        QMessageBox::warning(this, tr("Warning"), tr("Your system does not provide support for OpenGL.\nXFLR5 will not operate correctly."));
-        s_bOpenGL = false;
-    }
-    else if(QSurfaceFormat::defaultFormat().majorVersion()<2)
-    {
-        QString strong = "XFLR5 requires OpenGL 2.1 or greater.\n";
-        QString strange;
-        strange.sprintf("Your system provides by default OpenGL %d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
-        QMessageBox::warning(this, tr("Warning"), strong+strange);
-        s_bOpenGL = false;
-    }
-
-    setWindowTitle(VERSIONNAME);
-    setWindowIcon(QIcon(":/images/xflr5_64.png"));
 
     //	Settings sets(this);//to initialize the static variables
     //"Qt does not support style hints on X11 since this information is not provided by the window system."
@@ -316,12 +216,12 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 
     if(loadSettings())
     {
-        Settings::loadSettings(&settings);
+        Settings::loadSettings(settings);
 
         m_pAFoil->loadSettings(&settings);
-        m_pXDirect->loadSettings(&settings);
-        m_pMiarex->loadSettings(&settings);
-        m_pXInverse->loadSettings(&settings);
+        m_pXDirect->loadSettings(settings);
+        m_pMiarex->loadSettings(settings);
+        m_pXInverse->loadSettings(settings);
 
         GL3DScales::loadSettings(&settings);
         W3dPrefsDlg::loadSettings(&settings);
@@ -425,6 +325,110 @@ MainFrame::~MainFrame()
 }
 
 
+void MainFrame::testConfiguration()
+{
+    QString FileName = QDir::tempPath() + "/Trace.log";
+    Trace(FileName);
+    s_pTraceFile = new QFile(FileName);
+
+    if (!s_pTraceFile->open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text)) s_bTrace = false;
+    s_pTraceFile->reset();
+
+#if QT_VERSION >= 0x050500
+    QSysInfo sysInfo;
+    switch(sysInfo.windowsVersion())
+    {
+        case QSysInfo::WV_CE:          Trace("Windows CE"); break;
+        case QSysInfo::WV_CENET:       Trace("Windows CE .NET"); break;
+        case QSysInfo::WV_CE_5:        Trace("Windows CE 5.x"); break;
+        case QSysInfo::WV_CE_6:        Trace("Windows CE 6.x"); break;
+        case QSysInfo::WV_DOS_based:   Trace("MS-DOS-based version of Windows"); break;
+        case QSysInfo::WV_NT_based:    Trace("NT-based version of Windows"); break;
+        case QSysInfo::WV_CE_based:    Trace("CE-based version of Windows"); break;
+        case QSysInfo::WV_None:        Trace("Operating system other than Windows."); break;
+        case QSysInfo::WV_32s:         Trace("Windows 3.1 with Win 32s"); break;
+        case QSysInfo::WV_95:          Trace("Windows 95"); break;
+        case QSysInfo::WV_98:          Trace("Windows 98"); break;
+        case QSysInfo::WV_Me:          Trace("Windows Me"); break;
+        case QSysInfo::WV_NT:	       Trace("Windows NT (operating system version 4.0)"); break;
+        case QSysInfo::WV_2000:	       Trace("Windows 2000 (operating system version 5.0)"); break;
+        case QSysInfo::WV_XP:	       Trace("Windows XP (operating system version 5.1)"); break;
+        case QSysInfo::WV_2003:	       Trace("Windows Server 2003, Windows Server 2003 R2, Windows Home Server, Windows XP Professional x64 Edition (operating system version 5.2)"); break;
+        case QSysInfo::WV_VISTA:	   Trace("Windows Vista, Windows Server 2008 (operating system version 6.0)"); break;
+        case QSysInfo::WV_WINDOWS7:    Trace("Windows 7, Windows Server 2008 R2 (operating system version 6.1)"); break;
+        case QSysInfo::WV_WINDOWS8:    Trace("Windows 8 (operating system version 6.2)"); break;
+        case QSysInfo::WV_WINDOWS8_1:  Trace("Windows 8.1 (operating system version 6.3), introduced in Qt 5.2"); break;
+        case QSysInfo::WV_WINDOWS10:   Trace("Windows 10 (operating system version 10.0), introduced in Qt 5.5"); break;
+    }
+    switch(sysInfo.macVersion())
+    {
+        case QSysInfo::MV_9:        Trace("Mac OS 9 (unsupported)"); break;
+        case QSysInfo::MV_Unknown:  Trace("An unknown and currently unsupported platform"); break;
+        case QSysInfo::MV_CHEETAH:  Trace("CHEETAH MV_10_0"); break;
+        case QSysInfo::MV_PUMA:     Trace("PUMA MV_10_1"); break;
+        case QSysInfo::MV_JAGUAR:   Trace("JAGUAR MV_10_2"); break;
+        case QSysInfo::MV_PANTHER:  Trace("PANTHER MV_10_3"); break;
+        case QSysInfo::MV_TIGER:    Trace("TIGER MV_10_4"); break;
+        case QSysInfo::MV_LEOPARD:  Trace("LEOPARD MV_10_5"); break;
+        case QSysInfo::MV_SNOWLEOPARD:  Trace("SNOWLEOPARD MV_10_6"); break;
+        case QSysInfo::MV_LION:         Trace("LION MV_10_7"); break;
+        case QSysInfo::MV_MOUNTAINLION: Trace("MOUNTAINLION MV_10_8"); break;
+        case QSysInfo::MV_MAVERICKS:    Trace("MAVERICKS MV_10_9"); break;
+        case QSysInfo::MV_YOSEMITE:     Trace("YOSEMITE MV_10_10"); break;
+        case QSysInfo::MV_ELCAPITAN:    Trace("ELCAPITAN MV_10_11"); break;
+        case QSysInfo::MV_IOS:          Trace("iOS (any)"); break;
+        case QSysInfo::MV_IOS_4_3:  Trace("iOS 4.3"); break;
+        case QSysInfo::MV_IOS_5_0:  Trace("iOS 5.0"); break;
+        case QSysInfo::MV_IOS_5_1:  Trace("iOS 5.1"); break;
+        case QSysInfo::MV_IOS_6_0:  Trace("iOS 6.0"); break;
+        case QSysInfo::MV_IOS_6_1:  Trace("iOS 6.1"); break;
+        case QSysInfo::MV_IOS_7_0:  Trace("iOS 7.0"); break;
+        case QSysInfo::MV_IOS_7_1:  Trace("iOS 7.1"); break;
+        case QSysInfo::MV_IOS_8_0:  Trace("iOS 8.0"); break;
+        case QSysInfo::MV_IOS_8_1:  Trace("iOS 8.1"); break;
+        case QSysInfo::MV_IOS_8_2:  Trace("iOS 8.2"); break;
+        case QSysInfo::MV_IOS_8_3:  Trace("iOS 8.3"); break;
+        case QSysInfo::MV_IOS_8_4:  Trace("iOS 8.4"); break;
+        case QSysInfo::MV_IOS_9_0:  Trace("iOS 9.0"); break;
+        case QSysInfo::MV_None:  Trace("Not a Darwin operating system"); break;
+        default: Trace("Other"); break;
+    }
+
+    Trace("build ABI: "       + sysInfo.buildAbi());
+    Trace("build CPU: "       + sysInfo.buildCpuArchitecture());
+    Trace("current CPU: "     + sysInfo.currentCpuArchitecture());
+    Trace("kernel type: "     + sysInfo.kernelType());
+    Trace("kernel version: "  + sysInfo.kernelVersion());
+    Trace("product name: "    + sysInfo.prettyProductName());
+    Trace("product type: "    + sysInfo.productType());
+    Trace("product version: " + sysInfo.productVersion());
+#endif
+    Trace("OpenGL support:");
+    Trace("    Desktop OpenGL ", qApp->testAttribute(Qt::AA_UseDesktopOpenGL));
+    Trace("    OpenGL ES      ", qApp->testAttribute(Qt::AA_UseOpenGLES));
+    Trace("    Software OpenGL", qApp->testAttribute(Qt::AA_UseSoftwareOpenGL));
+
+    QString strange;
+    strange.sprintf("   Default OpengGl format:%d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
+    Trace(strange);
+
+
+    if(!QGLFormat::hasOpenGL())
+    {
+        QMessageBox::warning(this, tr("Warning"), tr("Your system does not provide support for OpenGL.\nXFLR5 will not operate correctly."));
+        s_bOpenGL = false;
+    }
+    else if(QSurfaceFormat::defaultFormat().majorVersion()<2)
+    {
+        QString strong = "XFLR5 requires OpenGL 2.1 or greater.\n";
+        QString strange;
+        strange.sprintf("Your system provides by default OpenGL %d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
+        QMessageBox::warning(this, tr("Warning"), strong+strange);
+        s_bOpenGL = false;
+    }
+}
+
+
 void MainFrame::aboutQt()
 {
 #ifndef QT_NO_MESSAGEBOX
@@ -506,11 +510,10 @@ void MainFrame::closeEvent (QCloseEvent * pEvent)
 }
 
 
-
 void MainFrame::createActions()
 {
     m_pNewProjectAct = new QAction(QIcon(":/images/new.png"), tr("New Project"), this);
-    m_pNewProjectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_N));
+    m_pNewProjectAct->setShortcut(QKeySequence::New);
     m_pNewProjectAct->setStatusTip(tr("Save and close the current project, create a new project"));
     connect(m_pNewProjectAct, SIGNAL(triggered()), this, SLOT(onNewProject()));
 
@@ -519,43 +522,43 @@ void MainFrame::createActions()
     m_pCloseProjectAct->setStatusTip(tr("Save and close the current project"));
     connect(m_pCloseProjectAct, SIGNAL(triggered()), this, SLOT(onNewProject()));
 
-    m_pOpenAct = new QAction(QIcon(":/images/open.png"), tr("&Open..."), this);
-    m_pOpenAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
+    m_pOpenAct = new QAction(QIcon(":/images/open.png"), tr("Open"), this);
+    m_pOpenAct->setShortcut(QKeySequence::Open);
     m_pOpenAct->setStatusTip(tr("Open an existing file"));
     connect(m_pOpenAct, SIGNAL(triggered()), this, SLOT(onLoadFile()));
 
-    m_pInsertAct = new QAction(tr("&Insert Project..."), this);
+    m_pInsertAct = new QAction(tr("Insert Project"), this);
     m_pInsertAct->setStatusTip(tr("Insert an existing project in the current project"));
     m_pInsertAct->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_I));
     connect(m_pInsertAct, SIGNAL(triggered()), this, SLOT(onInsertProject()));
 
-    m_pOnAFoilAct = new QAction(tr("&Direct Foil Design"), this);
+    m_pOnAFoilAct = new QAction(tr("Direct Foil Design"), this);
     m_pOnAFoilAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_1));
     m_pOnAFoilAct->setStatusTip(tr("Open Foil Design application"));
     connect(m_pOnAFoilAct, SIGNAL(triggered()), this, SLOT(onAFoil()));
 
-    m_pOnXInverseAct = new QAction(tr("&XFoil Inverse Design"), this);
+    m_pOnXInverseAct = new QAction(tr("XFoil Inverse Design"), this);
     m_pOnXInverseAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_3));
     m_pOnXInverseAct->setStatusTip(tr("Open XFoil inverse analysis application"));
     connect(m_pOnXInverseAct, SIGNAL(triggered()), this, SLOT(onXInverse()));
 
-    m_pOnMixedInverseAct = new QAction(tr("&XFoil Mixed Inverse Design"), this);
+    m_pOnMixedInverseAct = new QAction(tr("XFoil Mixed Inverse Design"), this);
     m_pOnMixedInverseAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_4));
     m_pOnMixedInverseAct->setStatusTip(tr("Open XFoil Mixed Inverse analysis application"));
     connect(m_pOnMixedInverseAct, SIGNAL(triggered()), this, SLOT(onXInverseMixed()));
 
-    m_pOnXDirectAct = new QAction(tr("&XFoil Direct Analysis"), this);
+    m_pOnXDirectAct = new QAction(tr("XFoil Direct Analysis"), this);
     m_pOnXDirectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_5));
     m_pOnXDirectAct->setStatusTip(tr("Open XFoil direct analysis application"));
     connect(m_pOnXDirectAct, SIGNAL(triggered()), this, SLOT(onXDirect()));
 
-    m_pOnMiarexAct = new QAction(tr("&Wing and Plane Design"), this);
+    m_pOnMiarexAct = new QAction(tr("Wing and Plane Design"), this);
     m_pOnMiarexAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_6));
     m_pOnMiarexAct->setStatusTip(tr("Open Wing/plane design and analysis application"));
     connect(m_pOnMiarexAct, SIGNAL(triggered()), this, SLOT(onMiarex()));
 
     m_pSaveAct = new QAction(QIcon(":/images/save.png"), tr("Save"), this);
-    m_pSaveAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
+    m_pSaveAct->setShortcut(QKeySequence::Save);
     m_pSaveAct->setStatusTip(tr("Save the project to disk"));
     connect(m_pSaveAct, SIGNAL(triggered()), this, SLOT(onSaveProject()));
 
@@ -564,7 +567,8 @@ void MainFrame::createActions()
     m_pLoadLastProjectAction->setStatusTip(tr("Loads the last saved project"));
     connect(m_pLoadLastProjectAction, SIGNAL(triggered()), this, SLOT(onLoadLastProject()));
 
-    m_pSaveProjectAsAct = new QAction(tr("Save Project As..."), this);
+    m_pSaveProjectAsAct = new QAction(tr("Save Project As"), this);
+    m_pSaveProjectAsAct->setShortcut(QKeySequence::SaveAs);
     m_pSaveProjectAsAct->setStatusTip(tr("Save the current project under a new name"));
     connect(m_pSaveProjectAsAct, SIGNAL(triggered()), this, SLOT(onSaveProjectAs()));
 
@@ -579,11 +583,6 @@ void MainFrame::createActions()
     m_pSaveViewToImageFileAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_I));
     m_pSaveViewToImageFileAct->setStatusTip(tr("Saves the current view to a file on disk"));
     connect(m_pSaveViewToImageFileAct, SIGNAL(triggered()), this, SLOT(onSaveViewToImageFile()));
-
-    m_pExecScript	 = new QAction(tr("Execute Script"), this);
-    m_pExecScript->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_S));
-    m_pExecScript->setStatusTip(tr("Executes a set of foil and plane analysis defined in an xml file"));
-    connect(m_pExecScript, SIGNAL(triggered()), this, SLOT(onExecuteScript()));
 
     m_pResetSettingsAct = new QAction(tr("Reset Default Settings"), this);
     m_pResetSettingsAct->setStatusTip(tr("will revert to default settings at the next session"));
@@ -611,14 +610,14 @@ void MainFrame::createActions()
     connect(m_pCurGraphDlgAct, SIGNAL(triggered()), this, SLOT(onCurGraphSettings()));
 
     m_pExitAct = new QAction(tr("E&xit"), this);
-    m_pExitAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
+    m_pExitAct->setShortcut(QKeySequence::Quit);
     m_pExitAct->setStatusTip(tr("Exit the application"));
     connect(m_pExitAct, SIGNAL(triggered()), this, SLOT(close()));
 
     m_pOpenGLAct = new QAction(tr("OpenGL info"), this);
     connect(m_pOpenGLAct, SIGNAL(triggered()), this, SLOT(onOpenGLInfo()));
 
-    m_pAboutAct = new QAction(tr("&About"), this);
+    m_pAboutAct = new QAction(tr("About"), this);
     m_pAboutAct->setStatusTip(tr("More information about XFLR5"));
     connect(m_pAboutAct, SIGNAL(triggered()), this, SLOT(aboutXFLR5()));
 
@@ -655,12 +654,12 @@ void MainFrame::createAFoilActions()
     connect(m_pNewSplinesAct, SIGNAL(triggered()), m_pAFoil, SLOT(onNewSplines()));
 
     m_pUndoAFoilAct= new QAction(QIcon(":/images/OnUndo.png"), tr("Undo"), this);
-    m_pUndoAFoilAct->setShortcut(Qt::CTRL + Qt::Key_Z);
+    m_pUndoAFoilAct->setShortcut(QKeySequence::Undo);
     m_pUndoAFoilAct->setStatusTip(tr("Cancels the last modification"));
     connect(m_pUndoAFoilAct, SIGNAL(triggered()), m_pAFoil, SLOT(onUndo()));
 
     m_pRedoAFoilAct= new QAction(QIcon(":/images/OnRedo.png"), tr("Redo"), this);
-    m_pRedoAFoilAct->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_Z);
+    m_pRedoAFoilAct->setShortcut(QKeySequence::Redo);
     m_pRedoAFoilAct->setStatusTip(tr("Restores the last cancelled modification"));
     connect(m_pRedoAFoilAct, SIGNAL(triggered()), m_pAFoil, SLOT(onRedo()));
 
@@ -670,17 +669,17 @@ void MainFrame::createAFoilActions()
     connect(m_pHideAllFoils, SIGNAL(triggered()), m_pAFoil, SLOT(onHideAllFoils()));
 
 
-    m_pAFoilDelete = new QAction(tr("Delete..."), this);
+    m_pAFoilDelete = new QAction(tr("Delete"), this);
     connect(m_pAFoilDelete, SIGNAL(triggered()), m_pAFoil, SLOT(onDeleteCurFoil()));
 
-    m_pAFoilRename = new QAction(tr("Rename..."), this);
+    m_pAFoilRename = new QAction(tr("Rename"), this);
     m_pAFoilRename->setShortcut(Qt::Key_F2);
     connect(m_pAFoilRename, SIGNAL(triggered()), m_pAFoil, SLOT(onRenameFoil()));
 
-    m_pAFoilExport = new QAction(tr("Export..."), this);
+    m_pAFoilExport = new QAction(tr("Export"), this);
     connect(m_pAFoilExport, SIGNAL(triggered()), m_pAFoil, SLOT(onExportCurFoil()));
 
-    m_pAFoilDuplicateFoil = new QAction(tr("Duplicate..."), this);
+    m_pAFoilDuplicateFoil = new QAction(tr("Duplicate"), this);
     connect(m_pAFoilDuplicateFoil, SIGNAL(triggered()), m_pAFoil, SLOT(onDuplicate()));
 
     m_pShowCurrentFoil= new QAction(tr("Show Current Foil"), this);
@@ -785,7 +784,7 @@ void MainFrame::createAFoilActions()
 
 void MainFrame::createAFoilMenus()
 {
-    m_pAFoilViewMenu = menuBar()->addMenu(tr("&View"));
+    m_pAFoilViewMenu = menuBar()->addMenu(tr("View"));
     {
         m_pAFoilViewMenu->addAction(m_pShowCurrentFoil);
         m_pAFoilViewMenu->addAction(m_pHideCurrentFoil);
@@ -833,7 +832,7 @@ void MainFrame::createAFoilMenus()
         m_pAFoilDesignMenu->addAction(m_pManageFoilsAct);
     }
 
-    m_pAFoilSplineMenu = menuBar()->addMenu(tr("&Splines"));
+    m_pAFoilSplineMenu = menuBar()->addMenu(tr("Splines"));
     {
         /*		m_pAFoilSplineMenu->addAction(m_pInsertSplinePt);
         m_pAFoilSplineMenu->addAction(m_pRemoveSplinePt);
@@ -876,7 +875,7 @@ void MainFrame::createAFoilMenus()
         }
         //m_pAFoilCtxMenu->addMenu(m_pAFoilDesignMenu);
         m_pAFoilCtxMenu->addSeparator();
-        m_pAFoilSplineMenu_AFoilCtxMenu = m_pAFoilCtxMenu->addMenu(tr("&Splines"));
+        m_pAFoilSplineMenu_AFoilCtxMenu = m_pAFoilCtxMenu->addMenu(tr("Splines"));
         {
             m_pAFoilSplineMenu_AFoilCtxMenu->addAction(m_pInsertSplinePt);
             m_pAFoilSplineMenu_AFoilCtxMenu->addAction(m_pRemoveSplinePt);
@@ -988,7 +987,7 @@ void MainFrame::createDockWindows()
     m_p2dWidget = new InverseViewWidget(this);
     m_pgl3dMiarexView = new gl3dMiarexView(this);
 
-    m_pDirect2dWidget = new Direct2dDesign(this);
+    m_pDirect2dWidget = new FoilDesignWt(this);
     m_pXDirectTileWidget = new XDirectTileWidget(this);
     m_pMiarexTileWidget  = new MiarexTileWidget(this);
 
@@ -1047,14 +1046,13 @@ void MainFrame::createDockWindows()
 
     m_pAFoil  = new AFoil(this);
     m_pAFoil->m_p2DWidget = m_pDirect2dWidget;
-    connect(m_pDirect2dWidget, SIGNAL(objectModified()), m_pAFoil, SLOT(onUpdateFoilTable()));
+    connect(m_pDirect2dWidget, SIGNAL(objectModified()), m_pAFoil, SLOT(onSplinesModified()));
 
     m_pctrlAFoilWidget->setWidget(m_pAFoil);
     m_pctrlAFoilWidget->setVisible(false);
 
     m_p2dWidget->m_pXInverse  = m_pXInverse;
     m_p2dWidget->m_pMainFrame = this;
-
 
     m_pMiarex->m_pgl3dMiarexView = m_pgl3dMiarexView;
 
@@ -1102,7 +1100,7 @@ void MainFrame::createDockWindows()
 
 void MainFrame::createMenus()
 {
-    m_pFileMenu = menuBar()->addMenu(tr("&File"));
+    m_pFileMenu = menuBar()->addMenu(tr("File"));
     {
         m_pFileMenu->addAction(m_pNewProjectAct);
         m_pFileMenu->addAction(m_pOpenAct);
@@ -1113,10 +1111,7 @@ void MainFrame::createMenus()
         m_pFileMenu->addAction(m_pSaveAct);
         m_pFileMenu->addAction(m_pSaveProjectAsAct);
         m_pFileMenu->addSeparator();
-#ifdef QT_DEBUG
-        m_pFileMenu->addAction(m_pExecScript);
-        m_pFileMenu->addSeparator();
-#endif
+
         m_pFileMenu->addAction(m_pOnAFoilAct);
         m_pFileMenu->addAction(m_pOnXInverseAct);
         m_pFileMenu->addAction(m_pOnXDirectAct);
@@ -1139,7 +1134,7 @@ void MainFrame::createMenus()
         m_pOptionsMenu->addAction(m_pResetSettingsAct);
     }
 
-    m_pGraphMenu = menuBar()->addMenu(tr("&Graphs"));
+    m_pGraphMenu = menuBar()->addMenu(tr("Graphs"));
     {
         for(int ig=0; ig<MAXGRAPHS; ig++)
             m_pGraphMenu->addAction(m_pSingleGraph[ig]);
@@ -1157,7 +1152,7 @@ void MainFrame::createMenus()
 
     }
 
-    m_pHelpMenu = menuBar()->addMenu(tr("&?"));
+    m_pHelpMenu = menuBar()->addMenu(tr("?"));
     {
         m_pHelpMenu->addAction(m_pOpenGLAct);
         m_pHelpMenu->addAction(m_pAboutQtAct);
@@ -1300,38 +1295,38 @@ void MainFrame::createMiarexActions()
     m_pDefinePlaneAct->setStatusTip(tr("Shows a dialogbox to create a new plane definition"));
     connect(m_pDefinePlaneAct, SIGNAL(triggered()), m_pMiarex, SLOT(onNewPlane()));
 
-    m_pDefinePlaneObjectAct = new QAction(tr("Define... (Advanced users)")/*+"\tF3"*/, this);
+    m_pDefinePlaneObjectAct = new QAction(tr("Define (Advanced users)")/*+"\tF3"*/, this);
     m_pDefinePlaneObjectAct->setShortcut(QKeySequence(Qt::SHIFT+Qt::Key_F3));
     m_pDefinePlaneObjectAct->setStatusTip(tr("Shows a dialogbox to create a new plane definition"));
     connect(m_pDefinePlaneObjectAct, SIGNAL(triggered()), m_pMiarex, SLOT(onNewPlaneObject()));
 
-    m_pEditPlaneAct = new QAction(tr("Edit..."), this);
+    m_pEditPlaneAct = new QAction(tr("Edit"), this);
     m_pEditPlaneAct->setStatusTip(tr("Shows a form to edit the currently selected plane"));
     m_pEditPlaneAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_P));
     connect(m_pEditPlaneAct, SIGNAL(triggered()), m_pMiarex, SLOT(onEditCurPlane()));
 
-    m_pEditObjectAct = new QAction(tr("Edit... (advanced users)"), this);
+    m_pEditObjectAct = new QAction(tr("Edit (advanced users)"), this);
     m_pEditObjectAct->setStatusTip(tr("Shows a form to edit the currently selected plane"));
     m_pEditObjectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT+Qt::Key_P));
     connect(m_pEditObjectAct, SIGNAL(triggered()), m_pMiarex, SLOT(onEditCurObject()));
 
-    m_pEditWingAct = new QAction(tr("Edit wing..."), this);
+    m_pEditWingAct = new QAction(tr("Edit wing"), this);
     m_pEditWingAct->setStatusTip(tr("Shows a form to edit the wing of the currently selected plane"));
-    m_pEditWingAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_W));
+    m_pEditWingAct->setShortcut(QKeySequence::Close);
     m_pEditWingAct->setData(0);
     connect(m_pEditWingAct, SIGNAL(triggered()), m_pMiarex, SLOT(onEditCurWing()));
 
-    m_pEditStabAct = new QAction(tr("Edit elevator..."), this);
+    m_pEditStabAct = new QAction(tr("Edit elevator"), this);
     m_pEditStabAct->setData(2);
     m_pEditStabAct->setShortcut(Qt::CTRL + Qt::Key_E);
     connect(m_pEditStabAct, SIGNAL(triggered()), m_pMiarex, SLOT(onEditCurWing()));
 
-    m_pEditFinAct = new QAction(tr("Edit fin..."), this);
+    m_pEditFinAct = new QAction(tr("Edit fin"), this);
     m_pEditFinAct->setData(3);
     m_pEditFinAct->setShortcut(Qt::CTRL + Qt::Key_F);
     connect(m_pEditFinAct, SIGNAL(triggered()), m_pMiarex, SLOT(onEditCurWing()));
 
-    m_pEditBodyAct = new QAction(tr("Edit body..."), this);
+    m_pEditBodyAct = new QAction(tr("Edit body"), this);
     m_pEditBodyAct->setStatusTip(tr("Shows a form to edit the body of the currently selected plane"));
     m_pEditBodyAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_B));
     connect(m_pEditBodyAct, SIGNAL(triggered()), m_pMiarex, SLOT(onEditCurBody()));
@@ -1340,19 +1335,19 @@ void MainFrame::createMiarexActions()
     m_pEditBodyObjectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_B));
     connect(m_pEditBodyObjectAct, SIGNAL(triggered()), m_pMiarex, SLOT(onEditCurBodyObject()));
 
-    m_pRenameCurPlaneAct = new QAction(tr("Rename...")+"\tF2", this);
+    m_pRenameCurPlaneAct = new QAction(tr("Rename")+"\tF2", this);
     m_pRenameCurPlaneAct->setStatusTip(tr("Rename the currently selected object"));
     connect(m_pRenameCurPlaneAct, SIGNAL(triggered()), m_pMiarex, SLOT(onRenameCurPlane()));
 
-    m_pExporttoAVL = new QAction(tr("Export to AVL..."), this);
+    m_pExporttoAVL = new QAction(tr("Export to AVL"), this);
     m_pExporttoAVL->setStatusTip(tr("Export the current plane or wing to a text file in the format required by AVL"));
     connect(m_pExporttoAVL, SIGNAL(triggered()), m_pMiarex, SLOT(onExporttoAVL()));
 
-    m_pExporttoSTL = new QAction(tr("Export to STL..."), this);
+    m_pExporttoSTL = new QAction(tr("Export to STL"), this);
     m_pExporttoSTL->setStatusTip(tr("Export the current wing to a file in the STL format"));
     connect(m_pExporttoSTL, SIGNAL(triggered()), m_pMiarex, SLOT(onExporttoSTL()));
 
-    m_pExportCurWOpp = new QAction(tr("Export..."), this);
+    m_pExportCurWOpp = new QAction(tr("Export"), this);
     m_pExportCurWOpp->setStatusTip(tr("Export the current operating point to a text or csv file"));
     connect(m_pExportCurWOpp, SIGNAL(triggered()), m_pMiarex, SLOT(onExportCurPOpp()));
 
@@ -1441,7 +1436,7 @@ void MainFrame::createMiarexActions()
     m_pDefineWPolarObjectAct->setStatusTip(tr("Shows a form to edit a new polar object"));
     connect(m_pDefineWPolarObjectAct, SIGNAL(triggered()), m_pMiarex, SLOT(onDefineWPolarObject()));
 
-    m_pEditWPolarAct = new QAction(tr("Edit..."), this);
+    m_pEditWPolarAct = new QAction(tr("Edit"), this);
     m_pEditWPolarAct->setStatusTip(tr("Modify the analysis parameters of this polar"));
     connect(m_pEditWPolarAct, SIGNAL(triggered()), m_pMiarex, SLOT(onEditCurWPolar()));
 
@@ -1449,7 +1444,7 @@ void MainFrame::createMiarexActions()
     m_pEditWPolarObjectAct->setStatusTip(tr("Shows a form to edit the currently selected polar"));
     connect(m_pEditWPolarObjectAct, SIGNAL(triggered()), m_pMiarex, SLOT(onEditCurWPolarObject()));
 
-    m_pEditWPolarPts = new QAction(tr("Edit data points..."), this);
+    m_pEditWPolarPts = new QAction(tr("Edit data points"), this);
     m_pEditWPolarPts->setStatusTip(tr("Modify the data points of this polar"));
     connect(m_pEditWPolarPts, SIGNAL(triggered()), m_pMiarex, SLOT(onEditCurWPolarPts()));
 
@@ -1493,19 +1488,19 @@ void MainFrame::createMiarexActions()
     m_pDeletePlaneWOpps->setStatusTip(tr("Delete all the operating points of the currently selected wing or plane"));
     connect(m_pDeletePlaneWOpps, SIGNAL(triggered()), m_pMiarex, SLOT(onDeletePlanePOpps()));
 
-    m_pDeleteCurPlane = new QAction(tr("Delete..."), this);
+    m_pDeleteCurPlane = new QAction(tr("Delete"), this);
     m_pDeleteCurPlane->setStatusTip(tr("Delete the currently selected wing or plane"));
     connect(m_pDeleteCurPlane, SIGNAL(triggered()), m_pMiarex, SLOT(onDeleteCurPlane()));
 
-    m_pDuplicateCurPlane = new QAction(tr("Duplicate..."), this);
+    m_pDuplicateCurPlane = new QAction(tr("Duplicate"), this);
     m_pDuplicateCurPlane->setStatusTip(tr("Duplicate the currently selected wing or plane"));
     connect(m_pDuplicateCurPlane, SIGNAL(triggered()), m_pMiarex, SLOT(onDuplicateCurPlane()));
 
-    m_pSavePlaneAsProjectAct = new QAction(tr("Save as Project..."), this);
+    m_pSavePlaneAsProjectAct = new QAction(tr("Save as Project"), this);
     m_pSavePlaneAsProjectAct->setStatusTip(tr("Save the currently selected wing or plane as a new separate project"));
     connect(m_pSavePlaneAsProjectAct, SIGNAL(triggered()), this, SLOT(onSavePlaneAsProject()));
 
-    m_pRenameCurWPolar = new QAction(tr("Rename...")+"\tShift+F2", this);
+    m_pRenameCurWPolar = new QAction(tr("Rename")+"\tShift+F2", this);
     m_pRenameCurWPolar->setStatusTip(tr("Rename the currently selected polar"));
     connect(m_pRenameCurWPolar, SIGNAL(triggered()), m_pMiarex, SLOT(onRenameCurWPolar()));
 
@@ -1513,19 +1508,19 @@ void MainFrame::createMiarexActions()
     m_pExportCurWPolar->setStatusTip(tr("Export the currently selected polar to a text or csv file"));
     connect(m_pExportCurWPolar, SIGNAL(triggered()), m_pMiarex, SLOT(onExportCurWPolar()));
 
-    m_pResetCurWPolar = new QAction(tr("Reset ..."), this);
+    m_pResetCurWPolar = new QAction(tr("Reset"), this);
     m_pResetCurWPolar->setStatusTip(tr("Delete all the points of the currently selected polar, but keep the analysis settings"));
     connect(m_pResetCurWPolar, SIGNAL(triggered()), m_pMiarex, SLOT(onResetCurWPolar()));
 
-    m_pDeleteCurWPolar = new QAction(tr("Delete ..."), this);
+    m_pDeleteCurWPolar = new QAction(tr("Delete"), this);
     m_pDeleteCurWPolar->setStatusTip(tr("Delete the currently selected polar"));
     connect(m_pDeleteCurWPolar, SIGNAL(triggered()), m_pMiarex, SLOT(onDeleteCurWPolar()));
 
-    m_pDeleteCurWOpp = new QAction(tr("Delete..."), this);
+    m_pDeleteCurWOpp = new QAction(tr("Delete"), this);
     m_pDeleteCurWOpp->setStatusTip(tr("Delete the currently selected operating point"));
     connect(m_pDeleteCurWOpp, SIGNAL(triggered()), m_pMiarex, SLOT(onDeleteCurWOpp()));
 
-    m_pAadvancedSettings = new QAction(tr("Advanced Settings..."), this);
+    m_pAadvancedSettings = new QAction(tr("Advanced Settings"), this);
     m_pAadvancedSettings->setStatusTip(tr("Define the settings for LLT, VLM and Panel analysis"));
     connect(m_pAadvancedSettings, SIGNAL(triggered()), m_pMiarex, SLOT(onAdvancedSettings()));
 
@@ -1551,14 +1546,13 @@ void MainFrame::createMiarexActions()
     m_pImportAnalysisFromXml= new QAction(tr("Import analysis from xml file"), this);
     m_pImportAnalysisFromXml->setStatusTip(tr("Import analysis definition(s) from XML file(s)"));
     connect(m_pImportAnalysisFromXml, SIGNAL(triggered()), m_pMiarex, SLOT(onImportAnalysisFromXML()));
-
 }
 
 
 void MainFrame::createMiarexMenus()
 {
     //MainMenu for Miarex Application
-    m_pMiarexViewMenu = menuBar()->addMenu(tr("&View"));
+    m_pMiarexViewMenu = menuBar()->addMenu(tr("View"));
     {
         m_pMiarexViewMenu->addAction(m_pWOppAct);
         m_pMiarexViewMenu->addAction(m_pWPolarAct);
@@ -1575,7 +1569,7 @@ void MainFrame::createMiarexMenus()
     }
 
 
-    m_pPlaneMenu = menuBar()->addMenu(tr("&Plane"));
+    m_pPlaneMenu = menuBar()->addMenu(tr("Plane"));
     {
         m_pPlaneMenu->addAction(m_pDefinePlaneAct);
         m_pPlaneMenu->addAction(m_pDefinePlaneObjectAct);
@@ -1622,7 +1616,7 @@ void MainFrame::createMiarexMenus()
         m_pPlaneMenu->addAction(m_pImportPlaneFromXml);
     }
 
-    m_pMiarexWPlrMenu = menuBar()->addMenu(tr("&Polars"));
+    m_pMiarexWPlrMenu = menuBar()->addMenu(tr("Polars"));
     {
         m_pCurWPlrMenu = m_pMiarexWPlrMenu->addMenu(tr("Current Polar"));
         {
@@ -1654,7 +1648,7 @@ void MainFrame::createMiarexMenus()
         m_pMiarexWPlrMenu->addSeparator();
     }
 
-    m_pMiarexWOppMenu = menuBar()->addMenu(tr("&OpPoint"));
+    m_pMiarexWOppMenu = menuBar()->addMenu(tr("OpPoint"));
     {
         m_pCurWOppMenu = m_pMiarexWOppMenu->addMenu(tr("Current OpPoint"));
         {
@@ -1677,7 +1671,7 @@ void MainFrame::createMiarexMenus()
     }
 
     //Miarex Analysis Menu
-    m_pMiarexAnalysisMenu  = menuBar()->addMenu(tr("&Analysis"));
+    m_pMiarexAnalysisMenu  = menuBar()->addMenu(tr("Analysis"));
     {
         m_pMiarexAnalysisMenu->addAction(m_pDefineWPolar);
         m_pMiarexAnalysisMenu->addAction(m_pDefineWPolarObjectAct);
@@ -2338,20 +2332,20 @@ void MainFrame::createXDirectActions()
     m_pHighlightOppAct->setStatusTip(tr("Highlights on the polar curve the currently selected operating point"));
     connect(m_pHighlightOppAct, SIGNAL(triggered()), this, SLOT(onHighlightOperatingPoint()));
 
-    m_pDeleteCurFoil = new QAction(tr("Delete..."), this);
+    m_pDeleteCurFoil = new QAction(tr("Delete"), this);
     connect(m_pDeleteCurFoil, SIGNAL(triggered()), m_pXDirect, SLOT(onDeleteCurFoil()));
 
-    m_pRenameCurFoil = new QAction(tr("Rename...")/*+"\tF2"*/, this);
+    m_pRenameCurFoil = new QAction(tr("Rename")/*+"\tF2"*/, this);
     m_pRenameCurFoil->setShortcut(Qt::Key_F2);
     connect(m_pRenameCurFoil, SIGNAL(triggered()), m_pXDirect, SLOT(onRenameCurFoil()));
 
-    m_pExportCurFoil = new QAction(tr("Export..."), this);
+    m_pExportCurFoil = new QAction(tr("Export"), this);
     connect(m_pExportCurFoil, SIGNAL(triggered()), m_pXDirect, SLOT(onExportCurFoil()));
 
-    m_pDirectDuplicateCurFoil = new QAction(tr("Duplicate..."), this);
+    m_pDirectDuplicateCurFoil = new QAction(tr("Duplicate"), this);
     connect(m_pDirectDuplicateCurFoil, SIGNAL(triggered()), m_pXDirect, SLOT(onDuplicateFoil()));
 
-    m_pSetCurFoilStyle = new QAction(tr("Set Style..."), this);
+    m_pSetCurFoilStyle = new QAction(tr("Set Style"), this);
     connect(m_pSetCurFoilStyle, SIGNAL(triggered()), this, SLOT(onCurFoilStyle()));
 
     m_pDeleteFoilPolars = new QAction(tr("Delete associated polars"), this);
@@ -2557,7 +2551,7 @@ void MainFrame::createXDirectActions()
 void MainFrame::createXDirectMenus()
 {
     //MainMenu for XDirect Application
-    m_pXDirectViewMenu = menuBar()->addMenu(tr("&View"));
+    m_pXDirectViewMenu = menuBar()->addMenu(tr("View"));
     {
         m_pXDirectViewMenu->addAction(m_pOpPointsAct);
         m_pXDirectViewMenu->addAction(m_pPolarsAct);
@@ -2565,7 +2559,7 @@ void MainFrame::createXDirectMenus()
         m_pXDirectViewMenu->addAction(m_pSaveViewToImageFileAct);
     }
 
-    m_pXDirectFoilMenu = menuBar()->addMenu(tr("&Foil"));
+    m_pXDirectFoilMenu = menuBar()->addMenu(tr("Foil"));
     {
         m_pXDirectFoilMenu->addAction(m_pManageFoilsAct);
         m_pXDirectFoilMenu->addSeparator();
@@ -2595,7 +2589,7 @@ void MainFrame::createXDirectMenus()
         m_pXDirectFoilMenu->addAction(m_pXDirectStyleAct);
     }
 
-    m_pDesignMenu = menuBar()->addMenu(tr("&Design"));
+    m_pDesignMenu = menuBar()->addMenu(tr("Design"));
     {
         m_pDesignMenu->addAction(m_pNormalizeFoil);
         m_pDesignMenu->addAction(m_pDerotateFoil);
@@ -2623,7 +2617,7 @@ void MainFrame::createXDirectMenus()
         m_pXFoilAnalysisMenu->addAction(m_pViewLogFile);
     }
 
-    m_pPolarMenu = menuBar()->addMenu(tr("&Polars"));
+    m_pPolarMenu = menuBar()->addMenu(tr("Polars"));
     {
         m_pCurrentPolarMenu = m_pPolarMenu->addMenu(tr("Current Polar"));
         {
@@ -2721,7 +2715,7 @@ void MainFrame::createXDirectMenus()
         }
         //m_pOperFoilCtxMenu->addMenu(m_pCurrentPolarMenu);
         m_pOperFoilCtxMenu->addSeparator();//_______________
-        m_pDesignMenu_OperPolarCtxMenu = m_pOperFoilCtxMenu->addMenu(tr("&Design"));
+        m_pDesignMenu_OperPolarCtxMenu = m_pOperFoilCtxMenu->addMenu(tr("Design"));
         {
             m_pDesignMenu_OperPolarCtxMenu->addAction(m_pNormalizeFoil);
             m_pDesignMenu_OperPolarCtxMenu->addAction(m_pDerotateFoil);
@@ -2911,7 +2905,7 @@ void MainFrame::createXInverseActions()
 void MainFrame::createXInverseMenus()
 {
     //MainMenu for XInverse Application
-    m_pXInverseViewMenu = menuBar()->addMenu(tr("&View"));
+    m_pXInverseViewMenu = menuBar()->addMenu(tr("View"));
     {
         m_pXInverseViewMenu->addAction(m_pXInverseStyles);
         m_pXInverseViewMenu->addSeparator();
@@ -2921,14 +2915,14 @@ void MainFrame::createXInverseMenus()
         m_pXInverseViewMenu->addAction(m_pSaveViewToImageFileAct);
     }
 
-    m_pXInverseGraphMenu = menuBar()->addMenu(tr("&Graph"));
+    m_pXInverseGraphMenu = menuBar()->addMenu(tr("Graph"));
     {
         m_pXInverseGraphMenu->addAction(m_pCurGraphDlgAct);
         m_pXInverseGraphMenu->addAction(m_pResetCurGraphScales);
         m_pXInverseGraphMenu->addAction(m_pExportCurGraphAct);
     }
 
-    m_pXInverseFoilMenu = menuBar()->addMenu(tr("&Foil"));
+    m_pXInverseFoilMenu = menuBar()->addMenu(tr("Foil"));
     {
         m_pXInverseFoilMenu->addAction(m_pStoreFoil);
         m_pXInverseFoilMenu->addAction(m_pExtractFoil);
@@ -4941,11 +4935,11 @@ void MainFrame::saveSettings()
     }
     settings.endGroup();
 
-    Settings::saveSettings(&settings);
+    Settings::saveSettings(settings);
     m_pAFoil->saveSettings(&settings);
-    m_pXDirect->saveSettings(&settings);
-    m_pMiarex->saveSettings(&settings);
-    m_pXInverse->saveSettings(&settings);
+    m_pXDirect->saveSettings(settings);
+    m_pMiarex->saveSettings(settings);
+    m_pXInverse->saveSettings(settings);
     GL3DScales::saveSettings(&settings);
     W3dPrefsDlg::saveSettings(&settings);
 }
@@ -6214,7 +6208,6 @@ void MainFrame::updateOppListBox()
 }
 
 
-
 void MainFrame::updateRecentFileActions()
 {
     int numRecentFiles = qMin(m_RecentFiles.size(), MAXRECENTFILES);
@@ -6234,7 +6227,6 @@ void MainFrame::updateRecentFileActions()
 
     m_pSeparatorAct->setVisible(numRecentFiles > 0);
 }
-
 
 
 void MainFrame::updateView()
@@ -6342,6 +6334,16 @@ void MainFrame::setupDataDir()
     s_TranslationDir.setPath("/usr/local/share/xflr5/translations");
     s_StylesheetDir.setPath("/usr/local/share/xflr5/qss");
 #endif
+
+/*    qDebug()<<QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
+    qDebug()<<QStandardPaths::standardLocations(QStandardPaths::DesktopLocation);
+    qDebug()<<QStandardPaths::standardLocations(QStandardPaths::DocumentsLocation);
+    qDebug()<<QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation);
+    qDebug()<<QStandardPaths::standardLocations(QStandardPaths::HomeLocation);
+    qDebug()<<QStandardPaths::standardLocations(QStandardPaths::DataLocation);
+    qDebug()<<QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation);
+    qDebug()<<QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
+    qDebug()<<QStandardPaths::standardLocations(QStandardPaths::AppLocalDataLocation);*/
 }
 
 

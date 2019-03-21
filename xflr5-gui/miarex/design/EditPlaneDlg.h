@@ -94,8 +94,8 @@ public:
     QList<QStandardItem *> prepareDoubleRow(const QString &first, const QString &second, const double &third,  const QString &fourth);
 
 
-    static bool loadSettings(QSettings *pSettings);
-    static bool saveSettings(QSettings *pSettings);
+    static bool loadSettings(QSettings &settings);
+    static bool saveSettings(QSettings &settings);
 
 private slots:
     void on3DReset();

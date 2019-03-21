@@ -40,8 +40,8 @@
 
 class gl3dBodyView;
 class Body;
-class BodyLineWidget;
-class BodyFrameWidget;
+class BodyLineWt;
+class BodyFrameWt;
 class EditObjectDelegate;
 class Section2dWidget;
 class PointMass;
@@ -89,8 +89,8 @@ public:
     QList<QStandardItem *> prepareDoubleRow(const QString &first, const QString &second, const double &third,  const QString &fourth);
 
 
-    static bool loadSettings(QSettings *pSettings);
-    static bool saveSettings(QSettings *pSettings);
+    static bool loadSettings(QSettings &settings);
+    static bool saveSettings(QSettings &settings);
 
 private slots:
     void onRedraw();
@@ -139,8 +139,8 @@ private:
     QStandardItemModel *m_pModel;
 
     gl3dBodyView *m_pglBodyView;
-    BodyLineWidget *m_pBodyLineWidget;
-    BodyFrameWidget *m_pFrameWidget;
+    BodyLineWt *m_pBodyLineWidget;
+    BodyFrameWt *m_pFrameWidget;
 
     QCheckBox *m_pctrlAxes, *m_pctrlLight, *m_pctrlSurfaces, *m_pctrlOutline, *m_pctrlPanels;
     QCheckBox *m_pctrlShowMasses;

@@ -389,37 +389,36 @@ void GLLightDlg::setLabels()
 
 	strong.sprintf("%d", s_iShininess);
 	m_pctrlMatShininessLabel->setText(strong);
-
 }
 
 
 
-bool GLLightDlg::loadSettings(QSettings *pSettings)
+bool GLLightDlg::loadSettings(QSettings &settings)
 {
-	pSettings->beginGroup("GLLight3");
+    settings.beginGroup("GLLight3");
 	{
 	//  we're reading/loading
-		s_Light.m_Ambient           = pSettings->value("Ambient",0.3).toDouble();
-		s_Light.m_Diffuse           = pSettings->value("Diffuse",1.2).toDouble();
-		s_Light.m_Specular          = pSettings->value("Specular",0.50).toDouble();
+        s_Light.m_Ambient           = settings.value("Ambient",0.3).toDouble();
+        s_Light.m_Diffuse           = settings.value("Diffuse",1.2).toDouble();
+        s_Light.m_Specular          = settings.value("Specular",0.50).toDouble();
 
-		s_Light.m_X                 = pSettings->value("XLight", 0.300).toDouble();
-		s_Light.m_Y                 = pSettings->value("YLight", 0.300).toDouble();
-		s_Light.m_Z                 = pSettings->value("ZLight", 3.000).toDouble();
+        s_Light.m_X                 = settings.value("XLight", 0.300).toDouble();
+        s_Light.m_Y                 = settings.value("YLight", 0.300).toDouble();
+        s_Light.m_Z                 = settings.value("ZLight", 3.000).toDouble();
 
-		s_Light.m_Red               = pSettings->value("RedLight",1.0).toDouble();
-		s_Light.m_Green             = pSettings->value("GreenLight",1.0).toDouble();
-		s_Light.m_Blue              = pSettings->value("BlueLight",1.0).toDouble();
+        s_Light.m_Red               = settings.value("RedLight",1.0).toDouble();
+        s_Light.m_Green             = settings.value("GreenLight",1.0).toDouble();
+        s_Light.m_Blue              = settings.value("BlueLight",1.0).toDouble();
 
-		s_iShininess     = pSettings->value("MatShininess", 5).toInt();
+        s_iShininess     = settings.value("MatShininess", 5).toInt();
 
-		s_Attenuation.m_Constant    = pSettings->value("ConstantAtt",2.0).toDouble();
-		s_Attenuation.m_Linear      = pSettings->value("LinearAtt",1.0).toDouble();
-		s_Attenuation.m_Quadratic   = pSettings->value("QuadraticAtt",.5).toDouble();
+        s_Attenuation.m_Constant    = settings.value("ConstantAtt",2.0).toDouble();
+        s_Attenuation.m_Linear      = settings.value("LinearAtt",1.0).toDouble();
+        s_Attenuation.m_Quadratic   = settings.value("QuadraticAtt",.5).toDouble();
 
-		s_Light.m_bIsLightOn        = pSettings->value("bLight", true).toBool();
+        s_Light.m_bIsLightOn        = settings.value("bLight", true).toBool();
 	}
-	pSettings->endGroup();
+    settings.endGroup();
 	return true;
 }
 
@@ -455,30 +454,30 @@ void GLLightDlg::setDefaults()
 
 
 
-bool GLLightDlg::saveSettings(QSettings *pSettings)
+bool GLLightDlg::saveSettings(QSettings &settings)
 {
-	pSettings->beginGroup("GLLight3");
+    settings.beginGroup("GLLight3");
 	{
-		pSettings->setValue("Ambient",      s_Light.m_Ambient);
-		pSettings->setValue("Diffuse",      s_Light.m_Diffuse);
-		pSettings->setValue("Specular",     s_Light.m_Specular);
+        settings.setValue("Ambient",      s_Light.m_Ambient);
+        settings.setValue("Diffuse",      s_Light.m_Diffuse);
+        settings.setValue("Specular",     s_Light.m_Specular);
 
-		pSettings->setValue("XLight",       s_Light.m_X);
-		pSettings->setValue("YLight",       s_Light.m_Y);
-		pSettings->setValue("ZLight",       s_Light.m_Z);
-		pSettings->setValue("RedLight",     s_Light.m_Red);
-		pSettings->setValue("GreenLight",   s_Light.m_Green);
-		pSettings->setValue("BlueLight",    s_Light.m_Blue);
-		pSettings->setValue("bLight",       s_Light.m_bIsLightOn);
+        settings.setValue("XLight",       s_Light.m_X);
+        settings.setValue("YLight",       s_Light.m_Y);
+        settings.setValue("ZLight",       s_Light.m_Z);
+        settings.setValue("RedLight",     s_Light.m_Red);
+        settings.setValue("GreenLight",   s_Light.m_Green);
+        settings.setValue("BlueLight",    s_Light.m_Blue);
+        settings.setValue("bLight",       s_Light.m_bIsLightOn);
 
-		pSettings->setValue("MatShininess", s_iShininess);
+        settings.setValue("MatShininess", s_iShininess);
 
-		pSettings->setValue("ConstantAtt",  s_Attenuation.m_Constant);
-		pSettings->setValue("LinearAtt",    s_Attenuation.m_Linear);
-		pSettings->setValue("QuadraticAtt", s_Attenuation.m_Quadratic);
+        settings.setValue("ConstantAtt",  s_Attenuation.m_Constant);
+        settings.setValue("LinearAtt",    s_Attenuation.m_Linear);
+        settings.setValue("QuadraticAtt", s_Attenuation.m_Quadratic);
 
 	}
-	pSettings->endGroup();
+    settings.endGroup();
 
 	return true;
 }

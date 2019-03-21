@@ -1,6 +1,6 @@
 /****************************************************************************
 
-    BodyLineWidget Class
+    BodyFrameWidget Class
     Copyright (C) 2015 Andre Deperrois
 
     This program is free software; you can redistribute it and/or modify
@@ -19,27 +19,32 @@
 
 *****************************************************************************/
 
-#ifndef BODYLINEWIDGET_H
-#define BODYLINEWIDGET_H
+#ifndef BODYFRAMEWIDGET_H
+#define BODYFRAMEWIDGET_H
+
 
 #include "section2dwidget.h"
 
 class Body;
 
-class BodyLineWidget : public Section2dWidget
+class BodyFrameWt : public Section2dWidget
 {
     Q_OBJECT
 
+    friend class GL3dBodyDlg;
+    //	friend class Body;
+
 public:
-    BodyLineWidget(QWidget *pParent, Body *pBody=nullptr);
+    BodyFrameWt(QWidget *pParent=nullptr, Body *pBody=nullptr);
+
     void setBody(Body *pBody);
-    void drawBodyLines();
-    void drawBodyPoints();
+    void drawFrameLines();
+    void drawFramePoints();
     void drawScaleLegend(QPainter &painter);
 
+    void setScale();
     void paintEvent(QPaintEvent *event);
     void resizeEvent (QResizeEvent *event);
-    void setScale();
 
     int highlightPoint(Vector3d real);
     int selectPoint(Vector3d real);
@@ -47,16 +52,19 @@ public:
     void createActions();
 
 signals:
-    void frameSelChanged();
+    void pointSelChanged();
 
 private slots:
     void onInsertPt();
     void onRemovePt();
-    void onScaleBody();
-
+    void onScaleFrame();
+    void onShowCurFrameOnly();
 
 private:
     Body *m_pBody;
+    QAction *m_pShowCurFrameOnly;
+    static bool s_bCurFrameOnly;
+
 };
 
-#endif // BODYLINEWIDGET_H
+#endif // BODYFRAMEWIDGET_H

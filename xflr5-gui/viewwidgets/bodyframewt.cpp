@@ -22,7 +22,7 @@
 #include <QPainter>
 #include <QtDebug>
 
-#include "BodyFrameWidget.h"
+#include "bodyframewt.h"
 #include <misc/options/displayoptions.h>
 #include <miarex/design/BodyScaleDlg.h>
 #include <misc/options/units.h>
@@ -30,9 +30,9 @@
 #include <objects/objects3d/Body.h>
 
 
-bool BodyFrameWidget::s_bCurFrameOnly = false;
+bool BodyFrameWt::s_bCurFrameOnly = false;
 
-BodyFrameWidget::BodyFrameWidget(QWidget *pParent, Body *pBody)
+BodyFrameWt::BodyFrameWt(QWidget *pParent, Body *pBody)
     :Section2dWidget(pParent)
 {
     m_pBody = pBody;
@@ -45,7 +45,7 @@ BodyFrameWidget::BodyFrameWidget(QWidget *pParent, Body *pBody)
 }
 
 
-void BodyFrameWidget::setScale()
+void BodyFrameWt::setScale()
 {
     if(!m_pBody)
     {
@@ -71,7 +71,7 @@ void BodyFrameWidget::setScale()
 *Overrides the resizeEvent function of the base class.
 *Dispatches the handling to the active child application.
 */
-void BodyFrameWidget::resizeEvent (QResizeEvent *event)
+void BodyFrameWt::resizeEvent (QResizeEvent *event)
 {
     Q_UNUSED(event);
     setScale();
@@ -79,7 +79,7 @@ void BodyFrameWidget::resizeEvent (QResizeEvent *event)
 
 
 
-void BodyFrameWidget::paintEvent(QPaintEvent *event)
+void BodyFrameWt::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
     QPainter painter(this);
@@ -99,7 +99,7 @@ void BodyFrameWidget::paintEvent(QPaintEvent *event)
 
 
 
-void BodyFrameWidget::drawFrameLines()
+void BodyFrameWt::drawFrameLines()
 {
     if(!m_pBody) return;
 
@@ -199,7 +199,7 @@ void BodyFrameWidget::drawFrameLines()
 
 
 
-void BodyFrameWidget::drawFramePoints()
+void BodyFrameWt::drawFramePoints()
 {
     if(!m_pBody->activeFrame()) return;
 
@@ -239,7 +239,7 @@ void BodyFrameWidget::drawFramePoints()
 
 
 
-void BodyFrameWidget::setBody(Body *pBody)
+void BodyFrameWt::setBody(Body *pBody)
 {
     m_pBody = pBody;
     setScale();
@@ -247,7 +247,7 @@ void BodyFrameWidget::setBody(Body *pBody)
 
 
 
-void BodyFrameWidget::onInsertPt()
+void BodyFrameWt::onInsertPt()
 {
     Vector3d real = mousetoReal(m_PointDown);
     real.z = real.y;
@@ -261,7 +261,7 @@ void BodyFrameWidget::onInsertPt()
 }
 
 
-void BodyFrameWidget::onRemovePt()
+void BodyFrameWt::onRemovePt()
 {
     if(m_pBody->activeFrame())
     {
@@ -284,7 +284,7 @@ void BodyFrameWidget::onRemovePt()
 }
 
 
-void BodyFrameWidget::onScaleFrame()
+void BodyFrameWt::onScaleFrame()
 {
     if(!m_pBody) return;
 
@@ -302,7 +302,7 @@ void BodyFrameWidget::onScaleFrame()
 }
 
 
-int BodyFrameWidget::highlightPoint(Vector3d real)
+int BodyFrameWt::highlightPoint(Vector3d real)
 {
     if(!m_pBody->activeFrame()) Frame::setHighlighted(-1);
     else
@@ -317,7 +317,7 @@ int BodyFrameWidget::highlightPoint(Vector3d real)
 
 
 
-int BodyFrameWidget::selectPoint(Vector3d real)
+int BodyFrameWt::selectPoint(Vector3d real)
 {
     if(!m_pBody->activeFrame()) Frame::setSelected(-1);
     else
@@ -333,7 +333,7 @@ int BodyFrameWidget::selectPoint(Vector3d real)
 
 
 
-void BodyFrameWidget::dragSelectedPoint(double x, double y)
+void BodyFrameWt::dragSelectedPoint(double x, double y)
 {
     if (!m_pBody->activeFrame() || (Frame::selectedIndex()<0) || (Frame::selectedIndex() > m_pBody->activeFrame()->pointCount()))
         return;
@@ -344,7 +344,7 @@ void BodyFrameWidget::dragSelectedPoint(double x, double y)
 }
 
 
-void BodyFrameWidget::drawScaleLegend(QPainter &painter)
+void BodyFrameWt::drawScaleLegend(QPainter &painter)
 {
     painter.save();
     QPen TextPen(Settings::s_TextColor);
@@ -358,7 +358,7 @@ void BodyFrameWidget::drawScaleLegend(QPainter &painter)
 
 
 
-void BodyFrameWidget::createActions()
+void BodyFrameWt::createActions()
 {
     m_ActionList.clear();
 
@@ -411,7 +411,7 @@ void BodyFrameWidget::createActions()
 
 
 
-void BodyFrameWidget::onShowCurFrameOnly()
+void BodyFrameWt::onShowCurFrameOnly()
 {
     s_bCurFrameOnly = !s_bCurFrameOnly;
     m_pShowCurFrameOnly->setChecked(s_bCurFrameOnly);

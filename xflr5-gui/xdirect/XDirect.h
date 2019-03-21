@@ -187,11 +187,11 @@ public:
 	void importAnalysisFromXML(QFile &xmlFile);
 	Polar *importXFoilPolar(QFile &txtFile);
 
-	void loadSettings(QSettings *pSettings);
+    void loadSettings(QSettings &settings);
 	void readParams();
 	Foil *addNewFoil(Foil *pFoil);
 	void renameFoil(Foil *pFoil);
-	void saveSettings(QSettings *pSettings);
+    void saveSettings(QSettings &settings);
 	void setCurveParams();
 	void setFoilScale();
 	void setGraphTiles();

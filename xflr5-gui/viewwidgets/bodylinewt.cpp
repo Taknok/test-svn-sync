@@ -28,10 +28,10 @@
 #include <misc/options/displayoptions.h>
 #include <misc/options/units.h>
 #include <objects/objects3d/Body.h>
-#include <viewwidgets/BodyLineWidget.h>
+#include <viewwidgets/bodylinewt.h>
 
 
-BodyLineWidget::BodyLineWidget(QWidget *pParent, Body *pBody)
+BodyLineWt::BodyLineWt(QWidget *pParent, Body *pBody)
     :Section2dWidget(pParent)
 {
     m_pBody = pBody;
@@ -45,14 +45,14 @@ BodyLineWidget::BodyLineWidget(QWidget *pParent, Body *pBody)
 *Overrides the resizeEvent function of the base class.
 *Dispatches the handling to the active child application.
 */
-void BodyLineWidget::resizeEvent (QResizeEvent *event)
+void BodyLineWt::resizeEvent (QResizeEvent *pEvent)
 {
     setScale();
-    event->accept();
+    pEvent->accept();
 }
 
 
-void BodyLineWidget::setScale()
+void BodyLineWt::setScale()
 {
     if(!m_pBody)
     {
@@ -74,14 +74,11 @@ void BodyLineWidget::setScale()
 }
 
 
-void BodyLineWidget::drawBodyLines()
+void BodyLineWt::drawBodyLines()
 {
     if(!m_pBody) return;
     QPainter painter(this);
     painter.save();
-    int i,k;
-    double zpos;
-
 
     QPen linePen(color(m_pBody->m_BodyColor));
     linePen.setWidth(1);
@@ -90,22 +87,22 @@ void BodyLineWidget::drawBodyLines()
 
     QPolygonF midLine,topLine, botLine;
     //Middle Line
-    for (k=0; k<m_pBody->frameCount();k++)
+    for (int k=0; k<m_pBody->frameCount();k++)
     {
-        zpos = (m_pBody->frame(k)->m_CtrlPoint.first().z +m_pBody->frame(k)->m_CtrlPoint.last().z )/2.0;
+        double zpos = (m_pBody->frame(k)->m_CtrlPoint.first().z +m_pBody->frame(k)->m_CtrlPoint.last().z )/2.0;
         midLine.append(QPointF(m_pBody->frame(k)->m_Position.x*m_fScale + m_ptOffset.x(), zpos*-m_fScale + m_ptOffset.y()));
     }
 
     if(m_pBody->m_LineType==XFLR5::BODYPANELTYPE)
     {
         //Top Line
-        for (k=0; k<m_pBody->frameCount();k++)
+        for (int k=0; k<m_pBody->frameCount();k++)
         {
             topLine.append(QPointF(m_pBody->frame(k)->m_Position.x*m_fScale + m_ptOffset.x(), m_pBody->frame(k)->m_CtrlPoint[0].z*-m_fScale+ m_ptOffset.y()));
         }
 
         //Bottom Line
-        for (k=0; k<m_pBody->frameCount();k++)
+        for (int k=0; k<m_pBody->frameCount();k++)
         {
             botLine.append(QPointF(m_pBody->frame(k)->m_Position.x*m_fScale + m_ptOffset.x(),
                                    m_pBody->frame(k)->m_CtrlPoint[ m_pBody->frame(k)->pointCount()-1].z*-m_fScale + m_ptOffset.y()));
@@ -114,16 +111,15 @@ void BodyLineWidget::drawBodyLines()
     else
     {
         Vector3d Point;
-        double xinc, u, v;
+        double xinc=0, u=0, v=0;
 
         int nh = 50;
         xinc = 1./(double)(nh-1);
-        u=0.0; v = 0.0;
 
         //top line
-        u=0.0;
+        u = 0.0;
         v = 0.0;
-        for (i=0; i<=nh; i++)
+        for (int i=0; i<=nh; i++)
         {
             m_pBody->getPoint(u,v,true, Point);
             topLine.append(QPointF(Point.x*m_fScale + m_ptOffset.x(), Point.z*-m_fScale + m_ptOffset.y()));
@@ -131,11 +127,11 @@ void BodyLineWidget::drawBodyLines()
         }
 
         //bottom line
-        u=0.0;
+        u = 0.0;
         v = 1.0;
-        for (i=0; i<=nh; i++)
+        for (int i=0; i<=nh; i++)
         {
-            m_pBody->getPoint(u,v,true, Point);
+            m_pBody->getPoint(u, v, true, Point);
             botLine.append(QPointF(Point.x*m_fScale + m_ptOffset.x(), Point.z*-m_fScale + m_ptOffset.y()));
             u += xinc;
         }
@@ -150,7 +146,7 @@ void BodyLineWidget::drawBodyLines()
 }
 
 
-void BodyLineWidget::drawBodyPoints()
+void BodyLineWt::drawBodyPoints()
 {
     if(!m_pBody) return;
 
@@ -187,14 +183,14 @@ void BodyLineWidget::drawBodyPoints()
 }
 
 
-void BodyLineWidget::setBody(Body *pBody)
+void BodyLineWt::setBody(Body *pBody)
 {
     m_pBody = pBody;
     setScale();
 }
 
 
-void BodyLineWidget::paintEvent(QPaintEvent *)
+void BodyLineWt::paintEvent(QPaintEvent *pEvent)
 {
     QPainter painter(this);
     painter.save();
@@ -211,8 +207,7 @@ void BodyLineWidget::paintEvent(QPaintEvent *)
 }
 
 
-
-void BodyLineWidget::onScaleBody()
+void BodyLineWt::onScaleBody()
 {
     if(!m_pBody) return;
 
@@ -229,7 +224,7 @@ void BodyLineWidget::onScaleBody()
 }
 
 
-void BodyLineWidget::onInsertPt()
+void BodyLineWt::onInsertPt()
 {
     Vector3d Real = mousetoReal(m_PointDown);
     m_pBody->insertFrame(Real);
@@ -237,7 +232,7 @@ void BodyLineWidget::onInsertPt()
 }
 
 
-void BodyLineWidget::onRemovePt()
+void BodyLineWt::onRemovePt()
 {
     Vector3d Real = mousetoReal(m_PointDown);
 
@@ -250,7 +245,7 @@ void BodyLineWidget::onRemovePt()
 }
 
 
-int BodyLineWidget::highlightPoint(Vector3d real)
+int BodyLineWt::highlightPoint(Vector3d real)
 {
     m_pBody->m_iHighlightFrame = m_pBody->isFramePos(Vector3d(real.x, 0.0, real.y), m_fScale/m_fRefScale);
     return m_pBody->m_iHighlightFrame;
@@ -258,7 +253,7 @@ int BodyLineWidget::highlightPoint(Vector3d real)
 
 
 
-int BodyLineWidget::selectPoint(Vector3d real)
+int BodyLineWt::selectPoint(Vector3d real)
 {
     m_pBody->m_iActiveFrame = m_pBody->isFramePos(Vector3d(real.x, 0.0, real.y), m_fScale/m_fRefScale);
     m_pBody->setActiveFrame(m_pBody->m_iActiveFrame);
@@ -267,14 +262,14 @@ int BodyLineWidget::selectPoint(Vector3d real)
 }
 
 
-void BodyLineWidget::dragSelectedPoint(double x, double y)
+void BodyLineWt::dragSelectedPoint(double x, double y)
 {
     if(!m_pBody->activeFrame())return;
     m_pBody->activeFrame()->setPosition(Vector3d(x,0,y));
 }
 
 
-void BodyLineWidget::drawScaleLegend(QPainter &painter)
+void BodyLineWt::drawScaleLegend(QPainter &painter)
 {
     painter.save();
     QPen TextPen(Settings::s_TextColor);
@@ -288,7 +283,7 @@ void BodyLineWidget::drawScaleLegend(QPainter &painter)
 
 
 
-void BodyLineWidget::createActions()
+void BodyLineWt::createActions()
 {
     m_ActionList.clear();
 
