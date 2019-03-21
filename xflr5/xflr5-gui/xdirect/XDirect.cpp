@@ -1245,40 +1245,40 @@ void XDirect::keyReleaseEvent(QKeyEvent *event)
  * Loads the user's default settings from the application QSettings object
  * @param pSettings a pointer to the QSettings object
  */
-void XDirect::loadSettings(QSettings *pSettings)
+void XDirect::loadSettings(QSettings &settings)
 {
 	QString str1, str2, str3;
 	int b;
 	int oppVar = 0;
-	pSettings->beginGroup("XDirect");
+    settings.beginGroup("XDirect");
 	{
-		s_bStoreOpp       = pSettings->value("StoreOpp").toBool();
-		s_bAlpha          = pSettings->value("AlphaSpec").toBool();
-		s_bViscous        = pSettings->value("ViscousAnalysis").toBool();
-		s_bInitBL         = pSettings->value("InitBL").toBool();
-		m_bPolarView      = pSettings->value("PolarView").toBool();
-		m_bShowUserGraph  = pSettings->value("UserGraph").toBool();
+        s_bStoreOpp       = settings.value("StoreOpp").toBool();
+        s_bAlpha          = settings.value("AlphaSpec").toBool();
+        s_bViscous        = settings.value("ViscousAnalysis").toBool();
+        s_bInitBL         = settings.value("InitBL").toBool();
+        m_bPolarView      = settings.value("PolarView").toBool();
+        m_bShowUserGraph  = settings.value("UserGraph").toBool();
 
-		m_bType1          = pSettings->value("Type1").toBool();
-		m_bType2          = pSettings->value("Type2").toBool();
-		m_bType3          = pSettings->value("Type3").toBool();
-		m_bType4          = pSettings->value("Type4").toBool();
-		m_bFromList       = pSettings->value("FromList", true).toBool();
-		s_bFromZero       = pSettings->value("FromZero", true).toBool();
-		m_bShowTextOutput = pSettings->value("TextOutput").toBool();
-		m_bNeutralLine    = pSettings->value("NeutralLine").toBool();
-		m_bCurOppOnly     = pSettings->value("CurOppOnly").toBool();
-		m_bShowInviscid   = pSettings->value("ShowInviscid", false).toBool();
-		m_bCpGraph        = pSettings->value("ShowCpGraph", true).toBool();
-		m_bSequence       = pSettings->value("Sequence", false).toBool();
+        m_bType1          = settings.value("Type1").toBool();
+        m_bType2          = settings.value("Type2").toBool();
+        m_bType3          = settings.value("Type3").toBool();
+        m_bType4          = settings.value("Type4").toBool();
+        m_bFromList       = settings.value("FromList", true).toBool();
+        s_bFromZero       = settings.value("FromZero", true).toBool();
+        m_bShowTextOutput = settings.value("TextOutput").toBool();
+        m_bNeutralLine    = settings.value("NeutralLine").toBool();
+        m_bCurOppOnly     = settings.value("CurOppOnly").toBool();
+        m_bShowInviscid   = settings.value("ShowInviscid", false).toBool();
+        m_bCpGraph        = settings.value("ShowCpGraph", true).toBool();
+        m_bSequence       = settings.value("Sequence", false).toBool();
 
 
-		oppVar = pSettings->value("OppVar",0).toInt();
-		s_TimeUpdateInterval = pSettings->value("TimeUpdateInterval",100).toInt();
+        oppVar = settings.value("OppVar",0).toInt();
+        s_TimeUpdateInterval = settings.value("TimeUpdateInterval",100).toInt();
 
-		m_iPlrGraph      = pSettings->value("PlrGraph").toInt();
+        m_iPlrGraph      = settings.value("PlrGraph").toInt();
 
-		switch(pSettings->value("PlrView").toInt())
+        switch(settings.value("PlrView").toInt())
 		{
 			case 1:
 				m_iPlrView = XFLR5::ONEGRAPH;
@@ -1294,40 +1294,40 @@ void XDirect::loadSettings(QSettings *pSettings)
 				break;
 		}
 
-		m_Alpha           = pSettings->value("AlphaMin").toDouble();
-		m_AlphaMax        = pSettings->value("AlphaMax").toDouble();
-		m_AlphaDelta      = pSettings->value("AlphaDelta").toDouble();
-		m_Cl              = pSettings->value("ClMin").toDouble();
-		m_ClMax           = pSettings->value("ClMax").toDouble();
-		m_ClDelta         = pSettings->value("ClDelta").toDouble();
-		m_Reynolds        = pSettings->value("ReynoldsMin").toDouble();
-		m_ReynoldsMax     = pSettings->value("ReynoldsMax").toDouble();
-		m_ReynoldsDelta   = pSettings->value("ReynolsDelta").toDouble();
-        m_XFoil.setVAccel(pSettings->value("VAccel").toDouble());
-		s_bKeepOpenErrors = pSettings->value("KeepOpenErrors").toBool();
+        m_Alpha           = settings.value("AlphaMin").toDouble();
+        m_AlphaMax        = settings.value("AlphaMax").toDouble();
+        m_AlphaDelta      = settings.value("AlphaDelta").toDouble();
+        m_Cl              = settings.value("ClMin").toDouble();
+        m_ClMax           = settings.value("ClMax").toDouble();
+        m_ClDelta         = settings.value("ClDelta").toDouble();
+        m_Reynolds        = settings.value("ReynoldsMin").toDouble();
+        m_ReynoldsMax     = settings.value("ReynoldsMax").toDouble();
+        m_ReynoldsDelta   = settings.value("ReynolsDelta").toDouble();
+        m_XFoil.setVAccel(settings.value("VAccel").toDouble());
+        s_bKeepOpenErrors = settings.value("KeepOpenErrors").toBool();
 
-		XFoilTask::s_bAutoInitBL    = pSettings->value("AutoInitBL").toBool();
-		XFoilTask::s_IterLim        = pSettings->value("IterLim", 100).toInt();
+        XFoilTask::s_bAutoInitBL    = settings.value("AutoInitBL").toBool();
+        XFoilTask::s_IterLim        = settings.value("IterLim", 100).toInt();
 
-        XFoil::setFullReport(pSettings->value("FullReport").toBool());
+        XFoil::setFullReport(settings.value("FullReport").toBool());
 
-		BatchThreadDlg::s_bUpdatePolarView = pSettings->value("BatchUpdatePolarView", false).toBool();
-		BatchThreadDlg::s_nThreads = pSettings->value("MaxThreads", 12).toInt();
+        BatchThreadDlg::s_bUpdatePolarView = settings.value("BatchUpdatePolarView", false).toBool();
+        BatchThreadDlg::s_nThreads = settings.value("MaxThreads", 12).toInt();
 
-		s_RefPolar.NCrit()    = pSettings->value("NCrit").toDouble();
-		s_RefPolar.XtrTop()   = pSettings->value("XTopTr").toDouble();
-		s_RefPolar.XtrBot()   = pSettings->value("XBotTr").toDouble();
-		s_RefPolar.Mach()     = pSettings->value("Mach").toDouble();
-		s_RefPolar.aoa()      = pSettings->value("ASpec").toDouble();
+        s_RefPolar.NCrit()    = settings.value("NCrit").toDouble();
+        s_RefPolar.XtrTop()   = settings.value("XTopTr").toDouble();
+        s_RefPolar.XtrBot()   = settings.value("XBotTr").toDouble();
+        s_RefPolar.Mach()     = settings.value("Mach").toDouble();
+        s_RefPolar.aoa()      = settings.value("ASpec").toDouble();
 
-		b = pSettings->value("Type").toInt();
+        b = settings.value("Type").toInt();
         if(b==1)      s_RefPolar.setPolarType(XFLR5::FIXEDSPEEDPOLAR);
         else if(b==2) s_RefPolar.setPolarType(XFLR5::FIXEDLIFTPOLAR);
         else if(b==3) s_RefPolar.setPolarType(XFLR5::RUBBERCHORDPOLAR);
 		else if(b==4) s_RefPolar.setPolarType(XFLR5::FIXEDAOAPOLAR);
 
 
-		int NRe = pSettings->value("NReynolds").toInt();
+        int NRe = settings.value("NReynolds").toInt();
 		s_ReList.clear();
 		s_MachList.clear();
 		s_NCritList.clear();
@@ -1336,16 +1336,16 @@ void XDirect::loadSettings(QSettings *pSettings)
 			str1 = QString("ReList%1").arg(i);
 			str2 = QString("MaList%1").arg(i);
 			str3 = QString("NcList%1").arg(i);
-			s_ReList.append(pSettings->value(str1).toDouble());
-			s_MachList.append(pSettings->value(str2).toDouble());
-			s_NCritList.append(pSettings->value(str3).toDouble());
+            s_ReList.append(settings.value(str1).toDouble());
+            s_MachList.append(settings.value(str2).toDouble());
+            s_NCritList.append(settings.value(str3).toDouble());
 		}
 	}
-	pSettings->endGroup();
+    settings.endGroup();
 
-	for(int ig=0; ig<m_PlrGraph.count(); ig++) m_PlrGraph[ig]->loadSettings(pSettings);
+    for(int ig=0; ig<m_PlrGraph.count(); ig++) m_PlrGraph[ig]->loadSettings(settings);
 
-	m_CpGraph.loadSettings(pSettings);
+    m_CpGraph.loadSettings(settings);
 
 	if(oppVar>=2) oppVar=0;
 	m_CpGraph.setYVariable(oppVar);
@@ -1366,9 +1366,9 @@ void XDirect::loadSettings(QSettings *pSettings)
 //		Graph *pGraph = m_PlrGraph[ig];
 		setGraphTitles(m_PlrGraph[ig]);
 	}
-	m_pOpPointWidget->loadSettings(pSettings);
+    m_pOpPointWidget->loadSettings(settings);
 
-    FoilPolarDlg::loadSettings(*pSettings);
+    FoilPolarDlg::loadSettings(settings);
 }
 
 
@@ -4132,98 +4132,98 @@ void XDirect::readParams()
  * Saves the user-defined settings
  * @param pSettings a pointer to the QSetting object.
  */
-void XDirect::saveSettings(QSettings *pSettings)
+void XDirect::saveSettings(QSettings &settings)
 {
 	QString str1, str2, str3;
-	pSettings->beginGroup("XDirect");
+    settings.beginGroup("XDirect");
 	{
-		pSettings->setValue("AlphaSpec", s_bAlpha);
-		pSettings->setValue("StoreOpp", s_bStoreOpp);
-		pSettings->setValue("ViscousAnalysis", s_bViscous);
-		pSettings->setValue("InitBL", s_bInitBL);
-		pSettings->setValue("PolarView", m_bPolarView);
-		pSettings->setValue("UserGraph", m_bShowUserGraph);
-		pSettings->setValue("Type1", m_bType1);
-		pSettings->setValue("Type2", m_bType2);
-		pSettings->setValue("Type3", m_bType3);
-		pSettings->setValue("Type4", m_bType4);
-		pSettings->setValue("FromList", m_bFromList);
-		pSettings->setValue("FromZero", s_bFromZero);
-		pSettings->setValue("TextOutput", m_bShowTextOutput);
-		pSettings->setValue("CurOppOnly", m_bCurOppOnly);
-		pSettings->setValue("ShowInviscid", m_bShowInviscid);
-		pSettings->setValue("ShowCpGraph", m_bCpGraph);
-		pSettings->setValue("Sequence", m_bSequence);
-		pSettings->setValue("OppVar", m_CpGraph.yVariable());
-		pSettings->setValue("TimeUpdateInterval", s_TimeUpdateInterval);
-		pSettings->setValue("PlrGraph", m_iPlrGraph);
-		pSettings->setValue("NeutralLine", m_bNeutralLine);
+        settings.setValue("AlphaSpec", s_bAlpha);
+        settings.setValue("StoreOpp", s_bStoreOpp);
+        settings.setValue("ViscousAnalysis", s_bViscous);
+        settings.setValue("InitBL", s_bInitBL);
+        settings.setValue("PolarView", m_bPolarView);
+        settings.setValue("UserGraph", m_bShowUserGraph);
+        settings.setValue("Type1", m_bType1);
+        settings.setValue("Type2", m_bType2);
+        settings.setValue("Type3", m_bType3);
+        settings.setValue("Type4", m_bType4);
+        settings.setValue("FromList", m_bFromList);
+        settings.setValue("FromZero", s_bFromZero);
+        settings.setValue("TextOutput", m_bShowTextOutput);
+        settings.setValue("CurOppOnly", m_bCurOppOnly);
+        settings.setValue("ShowInviscid", m_bShowInviscid);
+        settings.setValue("ShowCpGraph", m_bCpGraph);
+        settings.setValue("Sequence", m_bSequence);
+        settings.setValue("OppVar", m_CpGraph.yVariable());
+        settings.setValue("TimeUpdateInterval", s_TimeUpdateInterval);
+        settings.setValue("PlrGraph", m_iPlrGraph);
+        settings.setValue("NeutralLine", m_bNeutralLine);
 
 		switch(m_iPlrView)
 		{
 			case XFLR5::ONEGRAPH:
-				pSettings->setValue("PlrView", 1);
+                settings.setValue("PlrView", 1);
 				break;
 			case XFLR5::TWOGRAPHS:
-				pSettings->setValue("PlrView", 2);
+                settings.setValue("PlrView", 2);
 				break;
 			case XFLR5::FOURGRAPHS:
-				pSettings->setValue("PlrView", 4);
+                settings.setValue("PlrView", 4);
 				break;
 			default:
-				pSettings->setValue("PlrView", 0);
+                settings.setValue("PlrView", 0);
 				break;
 		}
 
-		pSettings->setValue("AlphaMin", m_Alpha);
-		pSettings->setValue("AlphaMax", m_AlphaMax);
-		pSettings->setValue("AlphaDelta", m_AlphaDelta);
-		pSettings->setValue("ClMin", m_Cl);
-		pSettings->setValue("ClMax", m_ClMax);
-		pSettings->setValue("ClDelta", m_ClDelta);
-		pSettings->setValue("ReynoldsMin", m_Reynolds);
-		pSettings->setValue("ReynoldsMax", m_ReynoldsMax);
-		pSettings->setValue("ReynolsDelta", m_ReynoldsDelta);
+        settings.setValue("AlphaMin", m_Alpha);
+        settings.setValue("AlphaMax", m_AlphaMax);
+        settings.setValue("AlphaDelta", m_AlphaDelta);
+        settings.setValue("ClMin", m_Cl);
+        settings.setValue("ClMax", m_ClMax);
+        settings.setValue("ClDelta", m_ClDelta);
+        settings.setValue("ReynoldsMin", m_Reynolds);
+        settings.setValue("ReynoldsMax", m_ReynoldsMax);
+        settings.setValue("ReynolsDelta", m_ReynoldsDelta);
 
-		pSettings->setValue("AutoInitBL", XFoilTask::s_bAutoInitBL);
-		pSettings->setValue("IterLim", XFoilTask::s_IterLim);
-		pSettings->setValue("FullReport", XFoil::fullReport());
+        settings.setValue("AutoInitBL", XFoilTask::s_bAutoInitBL);
+        settings.setValue("IterLim", XFoilTask::s_IterLim);
+        settings.setValue("FullReport", XFoil::fullReport());
 
-		pSettings->setValue("BatchUpdatePolarView", BatchThreadDlg::s_bUpdatePolarView);
-		pSettings->setValue("MaxThreads", BatchThreadDlg::s_nThreads);
+        settings.setValue("BatchUpdatePolarView", BatchThreadDlg::s_bUpdatePolarView);
+        settings.setValue("MaxThreads", BatchThreadDlg::s_nThreads);
 
-        pSettings->setValue("VAccel", m_XFoil.VAccel());
-		pSettings->setValue("KeepOpenErrors", s_bKeepOpenErrors);
-		pSettings->setValue("NCrit", s_RefPolar.NCrit());
-		pSettings->setValue("XTopTr", s_RefPolar.XtrTop());
-		pSettings->setValue("XBotTr", s_RefPolar.XtrBot());
-		pSettings->setValue("Mach", s_RefPolar.Mach());
-		pSettings->setValue("ASpec", s_RefPolar.aoa());
+        settings.setValue("VAccel", m_XFoil.VAccel());
+        settings.setValue("KeepOpenErrors", s_bKeepOpenErrors);
+        settings.setValue("NCrit", s_RefPolar.NCrit());
+        settings.setValue("XTopTr", s_RefPolar.XtrTop());
+        settings.setValue("XBotTr", s_RefPolar.XtrBot());
+        settings.setValue("Mach", s_RefPolar.Mach());
+        settings.setValue("ASpec", s_RefPolar.aoa());
 
-        if(s_RefPolar.polarType()==XFLR5::FIXEDSPEEDPOLAR)       pSettings->setValue("Type", 1);
-        else if(s_RefPolar.polarType()==XFLR5::RUBBERCHORDPOLAR) pSettings->setValue("Type", 2);
-        else if(s_RefPolar.polarType()==XFLR5::FIXEDAOAPOLAR)    pSettings->setValue("Type", 4);
+        if(s_RefPolar.polarType()==XFLR5::FIXEDSPEEDPOLAR)       settings.setValue("Type", 1);
+        else if(s_RefPolar.polarType()==XFLR5::RUBBERCHORDPOLAR) settings.setValue("Type", 2);
+        else if(s_RefPolar.polarType()==XFLR5::FIXEDAOAPOLAR)    settings.setValue("Type", 4);
 
-		pSettings->setValue("NReynolds", s_ReList.count());
+        settings.setValue("NReynolds", s_ReList.count());
 		for (int i=0; i<s_ReList.count(); i++)
 		{
 			str1 = QString("ReList%1").arg(i);
 			str2 = QString("MaList%1").arg(i);
 			str3 = QString("NcList%1").arg(i);
-			pSettings->setValue(str1, s_ReList[i]);
-			pSettings->setValue(str2, s_MachList[i]);
-			pSettings->setValue(str3, s_NCritList[i]);
+            settings.setValue(str1, s_ReList[i]);
+            settings.setValue(str2, s_MachList[i]);
+            settings.setValue(str3, s_NCritList[i]);
 		}
 	}
-	pSettings->endGroup();
+    settings.endGroup();
 
 	for(int ig=0; ig<m_PlrGraph.count(); ig++)
-		m_PlrGraph[ig]->saveSettings(pSettings);
+        m_PlrGraph[ig]->saveSettings(settings);
 
-	m_CpGraph.saveSettings(pSettings);
-	m_pOpPointWidget->saveSettings(pSettings);
+    m_CpGraph.saveSettings(settings);
+    m_pOpPointWidget->saveSettings(settings);
 
-    FoilPolarDlg::saveSettings(*pSettings);
+    FoilPolarDlg::saveSettings(settings);
 }
 
 

@@ -2159,31 +2159,31 @@ void EditPlaneDlg::paintPlaneLegend(QPainter &painter, Plane *pPlane, QRect draw
 
 
 
-bool EditPlaneDlg::loadSettings(QSettings *pSettings)
+bool EditPlaneDlg::loadSettings(QSettings &settings)
 {
-    pSettings->beginGroup("EditPlaneDlg");
+    settings.beginGroup("EditPlaneDlg");
     {
         //  we're reading/loading
-        s_WindowSize              = pSettings->value("WindowSize", QSize(1031,783)).toSize();
-        s_bWindowMaximized        = pSettings->value("WindowMaximized", false).toBool();
-        s_WindowPosition          = pSettings->value("WindowPosition", QPoint(131, 77)).toPoint();
-        m_HorizontalSplitterSizes = pSettings->value("HorizontalSplitterSizes").toByteArray();
+        s_WindowSize              = settings.value("WindowSize", QSize(1031,783)).toSize();
+        s_bWindowMaximized        = settings.value("WindowMaximized", false).toBool();
+        s_WindowPosition          = settings.value("WindowPosition", QPoint(131, 77)).toPoint();
+        m_HorizontalSplitterSizes = settings.value("HorizontalSplitterSizes").toByteArray();
     }
-    pSettings->endGroup();
+    settings.endGroup();
     return true;
 }
 
 
-bool EditPlaneDlg::saveSettings(QSettings *pSettings)
+bool EditPlaneDlg::saveSettings(QSettings &settings)
 {
-    pSettings->beginGroup("EditPlaneDlg");
+    settings.beginGroup("EditPlaneDlg");
     {
-        pSettings->setValue("WindowSize", s_WindowSize);
-        pSettings->setValue("WindowMaximized", s_bWindowMaximized);
-        pSettings->setValue("WindowPosition", s_WindowPosition);
-        pSettings->setValue("HorizontalSplitterSizes", m_HorizontalSplitterSizes);
+        settings.setValue("WindowSize", s_WindowSize);
+        settings.setValue("WindowMaximized", s_bWindowMaximized);
+        settings.setValue("WindowPosition", s_WindowPosition);
+        settings.setValue("HorizontalSplitterSizes", m_HorizontalSplitterSizes);
     }
-    pSettings->endGroup();
+    settings.endGroup();
 
     return true;
 }

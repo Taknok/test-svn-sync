@@ -39,7 +39,7 @@
 #include <QList>
 
 
-#include "Direct2dDesign.h"
+#include "foildesignwt.h"
 
 
 class FoilTableDelegate;
@@ -78,7 +78,7 @@ public:
     ~AFoil();
 
     void setupLayout();
-    void initDialog(Direct2dDesign *p2DWidget, QList<Foil *> *poaFoil, XFoil *pXFoil);
+    void initDialog(FoilDesignWt *p2DWidget, QList<Foil *> *poaFoil, XFoil *pXFoil);
 
 signals:
     void projectModified();
@@ -87,38 +87,39 @@ public slots:
     void onUpdateFoilTable();
 
 private slots:
+    void onAFoilCadd();
+    void onAFoilDerotateFoil();
+    void onAFoilFoilCoordinates();
+    void onAFoilFoilGeom();
+    void onAFoilInterpolateFoils();
     void onAFoilLECircle();
-    void onExportSplinesToFile();
-    void onRenameFoil();
-    void onFoilStyle();
+    void onAFoilNacaFoils();
+    void onAFoilNormalizeFoil();
+    void onAFoilPanels();
+    void onAFoilSetFlap();
+    void onAFoilSetLERadius();
+    void onAFoilSetTEGap();
+    void onAFoilTableColumns();
     void onDeleteCurFoil();
     void onDuplicate();
     void onExportCurFoil();
+    void onExportSplinesToFile();
     void onFoilClicked(const QModelIndex& index);
-    void onShowAllFoils();
+    void onFoilStyle();
+    void onFoilTableCtxMenu(const QPoint &);
     void onHideAllFoils();
     void onHideCurrentFoil();
+    void onNewSplines();
+    void onRedo();
+    void onRenameFoil();
+    void onResetColumnWidths();
+    void onShowAllFoils();
     void onShowCurrentFoil();
     void onShowLegend();
-    void onStoreSplines();
-    void onUndo();
-    void onRedo();
     void onSplineControls();
-    void onNewSplines();
-    void onAFoilSetFlap();
-    void onAFoilDerotateFoil();
-    void onAFoilNormalizeFoil();
-    void onAFoilCadd();
-    void onAFoilPanels();
-    void onAFoilFoilCoordinates();
-    void onAFoilFoilGeom();
-    void onAFoilSetTEGap();
-    void onAFoilSetLERadius();
-    void onAFoilInterpolateFoils();
-    void onAFoilNacaFoils();
-    void onFoilTableCtxMenu(const QPoint &);
-    void onAFoilTableColumns();
-    void onResetColumnWidths();
+    void onStoreSplines();
+    void onSplinesModified();
+    void onUndo();
 
 private:
     Foil* addNewFoil(Foil *pFoil);
@@ -145,7 +146,7 @@ private:
 
 private:
 
-    Direct2dDesign *m_p2DWidget;
+    FoilDesignWt *m_p2DWidget;
 
     QTableView *m_pctrlFoilTable;
     QStandardItemModel *m_pFoilModel;

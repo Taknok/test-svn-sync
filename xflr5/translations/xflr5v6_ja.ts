@@ -626,6 +626,51 @@ Uncheck for increased analysis speed.</source>
         <source>Max. Threads to use for the analysis:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Found %1 foil/polar pairs to analyze
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Starting with %1 threads
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Started/Done/Total
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+_____Analysis cancelled_____
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+_____Analysis completed_____
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Starting </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>   ...Finished </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Foils to analyze:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reynolds numbers to analyze:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>BodyFrameWidget</name>
@@ -3195,56 +3240,28 @@ Uncheck for increased analysis speed.</source>
         <translation>現在のプロジェクトを保存・終了します</translation>
     </message>
     <message>
-        <source>&amp;Open...</source>
-        <translation>開く(&amp;O)...</translation>
-    </message>
-    <message>
         <source>Open an existing file</source>
         <translation>既存のファイルを開く</translation>
-    </message>
-    <message>
-        <source>&amp;Insert Project...</source>
-        <translation>プロジェクトの挿入(&amp;I)...</translation>
     </message>
     <message>
         <source>Insert an existing project in the current project</source>
         <translation>既存のプロジェクトを現在のプロジェクトに挿入します</translation>
     </message>
     <message>
-        <source>&amp;Direct Foil Design</source>
-        <translation>翼型を直接設計(&amp;D)</translation>
-    </message>
-    <message>
         <source>Open Foil Design application</source>
         <translation>翼型設計アプリケーションを開く</translation>
-    </message>
-    <message>
-        <source>&amp;XFoil Inverse Design</source>
-        <translation>XFoil 逆設計(&amp;X)</translation>
     </message>
     <message>
         <source>Open XFoil inverse analysis application</source>
         <translation>XFoil 逆解析アプリケーションを開く</translation>
     </message>
     <message>
-        <source>&amp;XFoil Mixed Inverse Design</source>
-        <translation>XFoil 混合逆設計(&amp;X)</translation>
-    </message>
-    <message>
         <source>Open XFoil Mixed Inverse analysis application</source>
         <translation>XFoil 混合逆解析アプリケーションを開く</translation>
     </message>
     <message>
-        <source>&amp;XFoil Direct Analysis</source>
-        <translation>XFoil 順解析(&amp;X)</translation>
-    </message>
-    <message>
         <source>Open XFoil direct analysis application</source>
         <translation>XFoil 順解析アプリケーションを開く</translation>
-    </message>
-    <message>
-        <source>&amp;Wing and Plane Design</source>
-        <translation>翼と機体の設計(&amp;W)</translation>
     </message>
     <message>
         <source>Open Wing/plane design and analysis application</source>
@@ -3297,10 +3314,6 @@ Uncheck for increased analysis speed.</source>
     <message>
         <source>Exit the application</source>
         <translation>アプリケーションを終了します</translation>
-    </message>
-    <message>
-        <source>&amp;About</source>
-        <translation>情報(&amp;A)</translation>
     </message>
     <message>
         <source>More information about XFLR5</source>
@@ -3381,18 +3394,6 @@ Uncheck for increased analysis speed.</source>
     <message>
         <source>Hide All Foils</source>
         <translation>すべての翼型を非表示</translation>
-    </message>
-    <message>
-        <source>Delete...</source>
-        <translation>削除...</translation>
-    </message>
-    <message>
-        <source>Rename...</source>
-        <translation>名称変更...</translation>
-    </message>
-    <message>
-        <source>Export...</source>
-        <translation>エクスポート...</translation>
     </message>
     <message>
         <source>Show Current Foil</source>
@@ -3500,16 +3501,8 @@ Uncheck for increased analysis speed.</source>
         <translation>背景画像のクリア</translation>
     </message>
     <message>
-        <source>&amp;View</source>
-        <translation>表示(&amp;V)</translation>
-    </message>
-    <message>
         <source>F&amp;oil</source>
         <translation>翼型(&amp;O)</translation>
-    </message>
-    <message>
-        <source>&amp;Splines</source>
-        <translation>スプライン曲線(&amp;S)</translation>
     </message>
     <message>
         <source>Context Menu</source>
@@ -3742,10 +3735,6 @@ Uncheck for increased analysis speed.</source>
             </translation>
     </message>
     <message>
-        <source>&amp;Analysis</source>
-        <translation>解析(&amp;A)</translation>
-    </message>
-    <message>
         <source>Define an Analysis</source>
         <translation>解析の定義</translation>
     </message>
@@ -3765,14 +3754,6 @@ Uncheck for increased analysis speed.</source>
     <message>
         <source>3D Scales</source>
         <translation>3Dスケール</translation>
-    </message>
-    <message>
-        <source>&amp;File</source>
-        <translation>ファイル(&amp;F)</translation>
-    </message>
-    <message>
-        <source>&amp;?</source>
-        <translation>ヘルプ(&amp;?)</translation>
     </message>
     <message>
         <source>OpPoint view</source>
@@ -3806,10 +3787,6 @@ Uncheck for increased analysis speed.</source>
     <message>
         <source>Shows a dialogbox to create a new plane definition</source>
         <translation>新しい機体を作るダイアログを表示します</translation>
-    </message>
-    <message>
-        <source>Edit...</source>
-        <translation>編集...</translation>
     </message>
     <message>
         <source>Show Elevator Curve</source>
@@ -3863,10 +3840,6 @@ Uncheck for increased analysis speed.</source>
     <message>
         <source>Cp View</source>
         <translation>Cp表示</translation>
-    </message>
-    <message>
-        <source>Export to AVL...</source>
-        <translation>AVL形式でエクスポート...</translation>
     </message>
     <message>
         <source>Scale Wing</source>
@@ -3961,36 +3934,8 @@ Uncheck for increased analysis speed.</source>
         <translation>すべてのポーラーカーブを表示</translation>
     </message>
     <message>
-        <source>Duplicate...</source>
-        <translation>複製...</translation>
-    </message>
-    <message>
-        <source>Save as Project...</source>
-        <translation>プロジェクトとして保存...</translation>
-    </message>
-    <message>
-        <source>Reset ...</source>
-        <translation>リセット ...</translation>
-    </message>
-    <message>
-        <source>Delete ...</source>
-        <translation>削除 ...</translation>
-    </message>
-    <message>
-        <source>Advanced Settings...</source>
-        <translation>拡張設定...</translation>
-    </message>
-    <message>
-        <source>&amp;Polars</source>
-        <translation>グラフ(&amp;P)</translation>
-    </message>
-    <message>
         <source>Current Polar</source>
         <translation>選択中のポーラーカーブ</translation>
-    </message>
-    <message>
-        <source>&amp;OpPoint</source>
-        <translation>動作点(&amp;O)</translation>
     </message>
     <message>
         <source>Current OpPoint</source>
@@ -4003,10 +3948,6 @@ Uncheck for increased analysis speed.</source>
     <message>
         <source>Ready</source>
         <translation>準備完了</translation>
-    </message>
-    <message>
-        <source>Set Style...</source>
-        <translation>スタイル設定...</translation>
     </message>
     <message>
         <source>Delete associated polars</source>
@@ -4165,14 +4106,6 @@ Uncheck for increased analysis speed.</source>
         <translation>速度-翼弦長グラフを設定</translation>
     </message>
     <message>
-        <source>&amp;Foil</source>
-        <translation>翼型(&amp;F)</translation>
-    </message>
-    <message>
-        <source>&amp;Design</source>
-        <translation>設計(&amp;D)</translation>
-    </message>
-    <message>
         <source>Operating Points</source>
         <translation>動作点</translation>
     </message>
@@ -4240,10 +4173,6 @@ Uncheck for increased analysis speed.</source>
             </translation>
     </message>
     <message>
-        <source>&amp;Graph</source>
-        <translation>グラフ(&amp;G)</translation>
-    </message>
-    <message>
         <source>Full Inverse</source>
         <translation type="unfinished">
             </translation>
@@ -4301,10 +4230,6 @@ Uncheck for increased analysis speed.</source>
 XFLR5 will not operate correctly.</source>
         <translation>あなたの環境ではOpenGLのサポートが提供されていません
 XFLR5は正常に動作しません.</translation>
-    </message>
-    <message>
-        <source>Save Project As...</source>
-        <translation>プロジェクトを別名で保存...</translation>
     </message>
     <message>
         <source>Reset Default Settings</source>
@@ -4419,10 +4344,6 @@ XFLR5は正常に動作しません.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Graphs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Graph</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4439,15 +4360,7 @@ XFLR5は正常に動作しません.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Define... (Advanced users)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Shows a form to edit the currently selected plane</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Edit... (advanced users)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4455,15 +4368,7 @@ XFLR5は正常に動作しません.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Edit wing...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Shows a form to edit the wing of the currently selected plane</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Edit body...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4495,15 +4400,7 @@ XFLR5は正常に動作しません.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Edit data points...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Modify the data points of this polar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Plane</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4529,14 +4426,6 @@ XFLR5は正常に動作しません.</translation>
     </message>
     <message>
         <source>Loads the last saved project</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Execute Script</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Executes a set of foil and plane analysis defined in an xml file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4577,18 +4466,6 @@ XFLR5は正常に動作しません.</translation>
     </message>
     <message>
         <source>Display the flap moment values together with the other operating point results</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Edit elevator...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Edit fin...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Export to STL...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4681,6 +4558,126 @@ XFLR5は正常に動作しません.</translation>
     </message>
     <message>
         <source>Clear overlay foil</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Direct Foil Design</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>XFoil Inverse Design</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>XFoil Mixed Inverse Design</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>XFoil Direct Analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wing and Plane Design</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>About</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Splines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Graphs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polars</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OpPoint</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Design</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert Project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save Project As</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Duplicate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Define (Advanced users)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished">編集</translation>
+    </message>
+    <message>
+        <source>Edit (advanced users)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit wing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit elevator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit fin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit body</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export to AVL</source>
+        <translation type="unfinished">AVLに書き出す</translation>
+    </message>
+    <message>
+        <source>Export to STL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save as Project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Advanced Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set Style</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5418,6 +5415,10 @@ Continue ?</source>
     </message>
     <message>
         <source>Export analysis definition to xml file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>XNP = d(XCp.Cl)/dCl =</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

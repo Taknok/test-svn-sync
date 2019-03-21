@@ -1111,43 +1111,43 @@ void OpPointWidget::onShowBL(bool bBL)
 }
 
 
-void OpPointWidget::saveSettings(QSettings *pSettings)
+void OpPointWidget::saveSettings(QSettings &settings)
 {
-	pSettings->beginGroup("OpPointSettings");
+    settings.beginGroup("OpPointSettings");
 	{
-		pSettings->setValue("BLColor", m_crBLColor);
-		pSettings->setValue("BLWidth", m_iBLWidth);
-		pSettings->setValue("BLStyle", m_iBLStyle);
+        settings.setValue("BLColor", m_crBLColor);
+        settings.setValue("BLWidth", m_iBLWidth);
+        settings.setValue("BLStyle", m_iBLStyle);
 
-		pSettings->setValue("PressureWidth", m_iPressureWidth);
-		pSettings->setValue("PressureStyle", m_iPressureStyle);
-		pSettings->setValue("PressureColor", m_crPressureColor);
+        settings.setValue("PressureWidth", m_iPressureWidth);
+        settings.setValue("PressureStyle", m_iPressureStyle);
+        settings.setValue("PressureColor", m_crPressureColor);
 
-		pSettings->setValue("NeutralColor", m_crNeutralColor);
-		pSettings->setValue("NeutralWidth", m_iNeutralWidth);
-		pSettings->setValue("NeutralStyle", m_iNeutralStyle);
+        settings.setValue("NeutralColor", m_crNeutralColor);
+        settings.setValue("NeutralWidth", m_iNeutralWidth);
+        settings.setValue("NeutralStyle", m_iNeutralStyle);
 	}
-	pSettings->endGroup();
+    settings.endGroup();
 }
 
 
 
-void OpPointWidget::loadSettings(QSettings *pSettings)
+void OpPointWidget::loadSettings(QSettings &settings)
 {
-	pSettings->beginGroup("OpPointSettings");
+    settings.beginGroup("OpPointSettings");
 	{
-		m_iBLStyle  = pSettings->value("BLStyle", 1).toInt();
-		m_iBLWidth  = pSettings->value("BLWidth", 1).toInt();
-		m_crBLColor = pSettings->value("BLColor",QColor(235,50,50)).value<QColor>();
+        m_iBLStyle  = settings.value("BLStyle", 1).toInt();
+        m_iBLWidth  = settings.value("BLWidth", 1).toInt();
+        m_crBLColor = settings.value("BLColor",QColor(235,50,50)).value<QColor>();
 
-		m_iPressureStyle  = pSettings->value("PressureStyle", 0).toInt();
-		m_iPressureWidth  = pSettings->value("PressureWidth", 1).toInt();
-		m_crPressureColor = pSettings->value("PressureColor",QColor(100,150,100)).value<QColor>();
+        m_iPressureStyle  = settings.value("PressureStyle", 0).toInt();
+        m_iPressureWidth  = settings.value("PressureWidth", 1).toInt();
+        m_crPressureColor = settings.value("PressureColor",QColor(100,150,100)).value<QColor>();
 
-		m_iNeutralStyle  = pSettings->value("NeutralStyle", 3).toInt();
-		m_iNeutralWidth  = pSettings->value("NeutralWidth", 1).toInt();
-		m_crNeutralColor = pSettings->value("NeutralColor",QColor(190,190,190)).value<QColor>();
+        m_iNeutralStyle  = settings.value("NeutralStyle", 3).toInt();
+        m_iNeutralWidth  = settings.value("NeutralWidth", 1).toInt();
+        m_crNeutralColor = settings.value("NeutralColor",QColor(190,190,190)).value<QColor>();
 	}
-	pSettings->endGroup();
+    settings.endGroup();
 }
 

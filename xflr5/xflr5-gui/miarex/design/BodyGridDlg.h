@@ -42,8 +42,8 @@ class BodyGridDlg : public QDialog
 
 public:
 	BodyGridDlg(QWidget *pParent);
-	static void loadSettings (QSettings *pSettings);
-	static void saveSettings (QSettings *pSettings);
+    static void loadSettings (QSettings &settings);
+    static void saveSettings (QSettings &settings);
 
 private slots:
 	void onOK();

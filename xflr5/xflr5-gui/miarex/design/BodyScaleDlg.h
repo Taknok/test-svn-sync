@@ -39,8 +39,8 @@ class BodyScaleDlg : public QDialog
     friend class GL3dBodyDlg;
     friend class EditBodyDlg;
     friend class Body;
-    friend class BodyFrameWidget;
-    friend class BodyLineWidget;
+    friend class BodyFrameWt;
+    friend class BodyLineWt;
 
 public:
     BodyScaleDlg(QWidget *pParent);

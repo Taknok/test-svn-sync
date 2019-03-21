@@ -30,8 +30,8 @@
 #include <miarex/design/BodyScaleDlg.h>
 #include <miarex/design/BodyTransDlg.h>
 #include <miarex/design/InertiaDlg.h>
-#include <viewwidgets/BodyFrameWidget.h>
-#include <viewwidgets/BodyLineWidget.h>
+#include <viewwidgets/bodyframewt.h>
+#include <viewwidgets/bodylinewt.h>
 #include <miarex/design/EditBodyDlg.h>
 #include <miarex/design/EditObjectDelegate.h>
 #include "section2dwidget.h"
@@ -379,7 +379,7 @@ void EditBodyDlg::setupLayout()
                 }
                 p3DCtrlBox->setLayout(pThreeDViewControlsLayout);
             }
-            m_pBodyLineWidget = new BodyLineWidget(this);
+            m_pBodyLineWidget = new BodyLineWt(this);
             m_pBodyLineWidget->setSizePolicy(szPolicyMaximum);
             m_pBodyLineWidget->sizePolicy().setVerticalStretch(2);
 
@@ -399,7 +399,7 @@ void EditBodyDlg::setupLayout()
             m_pMiddleSplitter->addWidget(p3DCtrlBox);
         }
 
-        m_pFrameWidget = new BodyFrameWidget(this);
+        m_pFrameWidget = new BodyFrameWt(this);
 
         m_pHorizontalSplitter->addWidget(m_pLeftSplitter);
         m_pHorizontalSplitter->addWidget(m_pMiddleSplitter);
@@ -1266,37 +1266,37 @@ void EditBodyDlg::paintBodyLegend(QPainter &painter)
 
 
 
-bool EditBodyDlg::loadSettings(QSettings *pSettings)
+bool EditBodyDlg::loadSettings(QSettings &settings)
 {
-    pSettings->beginGroup("EditBodyDlg");
+    settings.beginGroup("EditBodyDlg");
     {
         //  we're reading/loading
-        s_WindowSize              = pSettings->value("WindowSize", QSize(1031,783)).toSize();
-        s_bWindowMaximized        = pSettings->value("WindowMaximized", false).toBool();
-        s_WindowPosition          = pSettings->value("WindowPosition", QPoint(131, 77)).toPoint();
-        m_HorizontalSplitterSizes = pSettings->value("HorizontalSplitterSizes").toByteArray();
-        //		m_LeftSplitterSizes       = pSettings->value("LeftSplitterSizes").toByteArray();
-        //		m_MiddleSplitterSizes     = pSettings->value("RightSplitterSizes").toByteArray();
+        s_WindowSize              = settings.value("WindowSize", QSize(1031,783)).toSize();
+        s_bWindowMaximized        = settings.value("WindowMaximized", false).toBool();
+        s_WindowPosition          = settings.value("WindowPosition", QPoint(131, 77)).toPoint();
+        m_HorizontalSplitterSizes = settings.value("HorizontalSplitterSizes").toByteArray();
+        //		m_LeftSplitterSizes       = settings.value("LeftSplitterSizes").toByteArray();
+        //		m_MiddleSplitterSizes     = settings.value("RightSplitterSizes").toByteArray();
     }
-    pSettings->endGroup();
+    settings.endGroup();
     return true;
 }
 
 
 
 
-bool EditBodyDlg::saveSettings(QSettings *pSettings)
+bool EditBodyDlg::saveSettings(QSettings &settings)
 {
-    pSettings->beginGroup("EditBodyDlg");
+    settings.beginGroup("EditBodyDlg");
     {
-        pSettings->setValue("WindowSize", s_WindowSize);
-        pSettings->setValue("WindowMaximized", s_bWindowMaximized);
-        pSettings->setValue("WindowPosition", s_WindowPosition);
-        pSettings->setValue("HorizontalSplitterSizes", m_HorizontalSplitterSizes);
-        //		pSettings->setValue("LeftSplitterSizes",       m_LeftSplitterSizes);
-        //		pSettings->setValue("RightSplitterSizes",      m_MiddleSplitterSizes);
+        settings.setValue("WindowSize", s_WindowSize);
+        settings.setValue("WindowMaximized", s_bWindowMaximized);
+        settings.setValue("WindowPosition", s_WindowPosition);
+        settings.setValue("HorizontalSplitterSizes", m_HorizontalSplitterSizes);
+        //		settings.setValue("LeftSplitterSizes",       m_LeftSplitterSizes);
+        //		settings.setValue("RightSplitterSizes",      m_MiddleSplitterSizes);
     }
-    pSettings->endGroup();
+    settings.endGroup();
 
     return true;
 }

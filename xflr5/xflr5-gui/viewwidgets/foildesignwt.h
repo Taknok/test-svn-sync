@@ -27,10 +27,10 @@
 class Foil;
 class SplineFoil;
 
-class Direct2dDesign : public Section2dWidget
+class FoilDesignWt : public Section2dWidget
 {
 public:
-	Direct2dDesign(QWidget *pParent=NULL);
+    FoilDesignWt(QWidget *pParent=nullptr);
 
 	void setObjects(Foil *pBufferFoil, SplineFoil *pSF, QList<Foil *> *poaFoil);
 
@@ -45,7 +45,7 @@ public:
 	void setNeutralLineColor(QColor clr){m_NeutralColor = clr;}
 	QColor neutralLineColor(){return m_NeutralColor;}
 
-private slots:
+public slots:
 	void onInsertPt();
 	void onRemovePt();
 

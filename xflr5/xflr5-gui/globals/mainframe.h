@@ -48,7 +48,7 @@
 #include <misc/voidwidget.h>
 
 class AFoil;
-class Direct2dDesign;
+class FoilDesignWt;
 class Foil;
 class GL3DScales;
 class GLLightDlg;
@@ -88,7 +88,7 @@ class MainFrame : public QMainWindow
     friend class Body;
     friend class BodyGridDlg;
     friend class BodyTransDlg;
-    friend class Direct2dDesign;
+    friend class FoilDesignWt;
     friend class FoilPolarDlg;
     friend class GL3DScales;
     friend class GL3dBodyDlg;
@@ -238,6 +238,7 @@ public:
 	void setMenus();
 	void setupDataDir();
 	QString shortenFileName(QString &PathName);
+    void testConfiguration();
 	void updateFoilListBox();
 	void updatePolarListBox();
 	void updateOppListBox();
@@ -279,7 +280,7 @@ private:
 	QStackedWidget *m_pctrlCentralWidget;     /** The stacked widget which is loaded at the center of the display area. The stack switches between the widgets depending on the user's request. */
 	VoidWidget m_VoidWidget;
 	InverseViewWidget *m_p2dWidget;           /** A pointer to the instance of the TwoDWidget which is used to perform 2d drawings */
-	Direct2dDesign *m_pDirect2dWidget;        /** A pointer to the instance of the TwoDWidget which is used to perform 2d drawings of foils in Direct Design */
+	FoilDesignWt *m_pDirect2dWidget;        /** A pointer to the instance of the TwoDWidget which is used to perform 2d drawings of foils in Direct Design */
 	gl3dMiarexView *m_pgl3dMiarexView;                  /** A pointer to the instance of the OpenGL 3.0 widget where 3d calculations and rendering are performed */
 	MiarexTileWidget *m_pMiarexTileWidget;
 	XDirectTileWidget *m_pXDirectTileWidget;
@@ -423,8 +424,6 @@ private:
     QAction *m_pInverseZoomIn;
     QAction *m_pOverlayFoil, *m_pClearOverlayFoil;
 
-	//Script actions
-	QAction *m_pExecScript;
 
 	QStringList m_RecentFiles;
 

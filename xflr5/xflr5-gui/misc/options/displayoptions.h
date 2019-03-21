@@ -55,8 +55,8 @@ class Settings : public QWidget
 public:
     Settings(QWidget *pParent);
     void initWidget();
-    static void loadSettings(QSettings *settings);
-    static void saveSettings(QSettings *settings);
+    static void loadSettings(QSettings &settings);
+    static void saveSettings(QSettings &settings);
 
     static QColor &backgroundColor(){return s_BackgroundColor;}
     static QColor &textColor(){return s_TextColor;}

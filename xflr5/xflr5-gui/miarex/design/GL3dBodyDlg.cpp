@@ -51,8 +51,8 @@
 #include <misc/text/DoubleEdit.h>
 #include <objects/objects3d/Body.h>
 #include <objects/objects3d/Plane.h>
-#include <viewwidgets/BodyFrameWidget.h>
-#include <viewwidgets/BodyLineWidget.h>
+#include <viewwidgets/bodyframewt.h>
+#include <viewwidgets/bodylinewt.h>
 #include <viewwidgets/glWidgets/ArcBall.h>
 
 QByteArray GL3dBodyDlg::m_VerticalSplitterSizes;
@@ -111,36 +111,37 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
 
     m_pUndo= new QAction(QIcon(":/images/OnUndo.png"), tr("Undo"), this);
     m_pUndo->setStatusTip(tr("Cancels the last modification"));
-    m_pUndo->setShortcut(Qt::CTRL + Qt::Key_Z);
-    connect(m_pUndo, SIGNAL(triggered()), this, SLOT(onUndo()));
+    m_pUndo->setShortcut(QKeySequence::Undo);
 
     m_pRedo = new QAction(QIcon(":/images/OnRedo.png"), tr("Redo"), this);
     m_pRedo->setStatusTip(tr("Restores the last cancelled modification"));
-    m_pRedo->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_Z);
-    connect(m_pRedo, SIGNAL(triggered()), this, SLOT(onRedo()));
+    m_pRedo->setShortcut(QKeySequence::Redo);
 
     m_pExportBodyGeom = new QAction(tr("Export Body Geometry to text File"), this);
-    connect(m_pExportBodyGeom, SIGNAL(triggered()), this, SLOT(onExportBodyGeom()));
-
     m_pExportBodyDef = new QAction(tr("Export Body Definition to txt File"), this);
-    connect(m_pExportBodyDef, SIGNAL(triggered()), this, SLOT(onExportBodyDef()));
-
     m_pExportBodyXML= new QAction(tr("Export body definition to an XML file"), this);
-    connect(m_pExportBodyXML, SIGNAL(triggered()), this, SLOT(onExportBodyXML()));
-
     m_pImportBodyDef = new QAction(tr("Import Body Definition from a text file"), this);
-    connect(m_pImportBodyDef, SIGNAL(triggered()), this, SLOT(onImportBodyDef()));
-
     m_pImportBodyXML= new QAction(tr("Import body definition from an XML file"), this);
-    connect(m_pImportBodyXML, SIGNAL(triggered()), this, SLOT(onImportBodyXML()));
-
     m_pBodyInertia = new QAction(tr("Define Inertia")+"\tF12", this);
-    connect(m_pBodyInertia, SIGNAL(triggered()), this, SLOT(onBodyInertia()));
-
     m_pTranslateBody = new QAction(tr("Translate"), this);
-    connect(m_pTranslateBody, SIGNAL(triggered()), this, SLOT(onTranslateBody()));
+
     setupLayout();
     setTableUnits();
+    connectSignals();
+}
+
+
+void GL3dBodyDlg::connectSignals()
+{
+    connect(m_pUndo, SIGNAL(triggered()), this, SLOT(onUndo()));
+    connect(m_pRedo, SIGNAL(triggered()), this, SLOT(onRedo()));
+    connect(m_pExportBodyGeom, SIGNAL(triggered()), this, SLOT(onExportBodyGeom()));
+    connect(m_pExportBodyDef, SIGNAL(triggered()), this, SLOT(onExportBodyDef()));
+    connect(m_pExportBodyXML, SIGNAL(triggered()), this, SLOT(onExportBodyXML()));
+    connect(m_pImportBodyDef, SIGNAL(triggered()), this, SLOT(onImportBodyDef()));
+    connect(m_pImportBodyXML, SIGNAL(triggered()), this, SLOT(onImportBodyXML()));
+    connect(m_pTranslateBody, SIGNAL(triggered()), this, SLOT(onTranslateBody()));
+    connect(m_pBodyInertia, SIGNAL(triggered()), this, SLOT(onBodyInertia()));
 
     connect(m_pScaleBody,        SIGNAL(triggered()), this, SLOT(onScaleBody()));
     connect(m_pResetScales,      SIGNAL(triggered()), this, SLOT(onResetScales()));
@@ -187,7 +188,7 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
     connect(m_pPointDelegate,       SIGNAL(closeEditor(QWidget *)), this, SLOT(onPointCellChanged(QWidget *)));
 
     connect(m_pBodyLineWidget, SIGNAL(frameSelChanged()), this, SLOT(onFrameClicked()));
-    connect(m_pFrameWidget, SIGNAL(pointSelChanged()), this, SLOT(onPointClicked()));
+    connect(m_pFrameWidget,    SIGNAL(pointSelChanged()), this, SLOT(onPointClicked()));
 
     connect(m_pBodyLineWidget, SIGNAL(objectModified()), this, SLOT(onUpdateBody()));
     connect(m_pFrameWidget,    SIGNAL(objectModified()), this, SLOT(onUpdateBody()));
@@ -258,11 +259,9 @@ void GL3dBodyDlg::fillFrameCell(int iItem, int iSubItem)
 void GL3dBodyDlg::fillFrameDataTable()
 {
     if(!m_pBody) return;
-    int i;
-
     m_pFrameModel->setRowCount(m_pBody->frameCount());
 
-    for(i=0; i<m_pBody->frameCount(); i++)
+    for(int i=0; i<m_pBody->frameCount(); i++)
     {
         fillFrameTableRow(i);
     }
@@ -278,7 +277,18 @@ void GL3dBodyDlg::fillFrameTableRow(int row)
 
     ind = m_pFrameModel->index(row, 1, QModelIndex());
     m_pFrameModel->setData(ind, m_pBody->m_xPanels[row]);
+}
 
+
+void GL3dBodyDlg::fillPointDataTable()
+{
+    if(!m_pBody) return;
+
+    m_pPointModel->setRowCount(m_pBody->sideLineCount());
+    for(int i=0; i<m_pBody->sideLineCount(); i++)
+    {
+        fillPointTableRow(i);
+    }
 }
 
 
@@ -301,7 +311,6 @@ void GL3dBodyDlg::fillPointCell(int iItem, int iSubItem)
         {
             ind = m_pPointModel->index(iItem, 1, QModelIndex());
             m_pPointModel->setData(ind, m_pBody->frame(l)->m_CtrlPoint[iItem].z*Units::mtoUnit());
-
             break;
         }
         case 2:
@@ -315,19 +324,6 @@ void GL3dBodyDlg::fillPointCell(int iItem, int iSubItem)
         {
             break;
         }
-    }
-}
-
-
-void GL3dBodyDlg::fillPointDataTable()
-{
-    if(!m_pBody) return;
-    int i;
-
-    m_pPointModel->setRowCount(m_pBody->sideLineCount());
-    for(i=0; i<m_pBody->sideLineCount(); i++)
-    {
-        fillPointTableRow(i);
     }
 }
 
@@ -348,14 +344,14 @@ void GL3dBodyDlg::fillPointTableRow(int row)
 }
 
 
-void GL3dBodyDlg::keyPressEvent(QKeyEvent *event)
+void GL3dBodyDlg::keyPressEvent(QKeyEvent *pEvent)
 {
     bool bShift = false;
     bool bCtrl  = false;
-    if(event->modifiers() & Qt::ShiftModifier)   bShift =true;
-    if(event->modifiers() & Qt::ControlModifier) bCtrl =true;
+    if(pEvent->modifiers() & Qt::ShiftModifier)   bShift =true;
+    if(pEvent->modifiers() & Qt::ControlModifier) bCtrl =true;
 
-    switch (event->key())
+    switch (pEvent->key())
     {
         case Qt::Key_Z:
         {
@@ -366,9 +362,9 @@ void GL3dBodyDlg::keyPressEvent(QKeyEvent *event)
                     onRedo();
                 }
                 else onUndo();
-                event->accept();
+                pEvent->accept();
             }
-            else event->ignore();
+            else pEvent->ignore();
             break;
         }
         case Qt::Key_Y:
@@ -376,9 +372,9 @@ void GL3dBodyDlg::keyPressEvent(QKeyEvent *event)
             if(bCtrl)
             {
                 onRedo();
-                event->accept();
+                pEvent->accept();
             }
-            else event->ignore();
+            else pEvent->ignore();
             break;
         }
         case Qt::Key_Return:
@@ -398,7 +394,7 @@ void GL3dBodyDlg::keyPressEvent(QKeyEvent *event)
             break;
         }
         default:
-            event->ignore();
+            pEvent->ignore();
     }
 }
 
@@ -683,20 +679,18 @@ void GL3dBodyDlg::onImportBodyXML()
 }
 
 
-
-
 void GL3dBodyDlg::readFrameSectionData(int sel)
 {
     if(sel>=m_pFrameModel->rowCount()) return;
-    double x;
-    int k;
+    double x=0;
+    int k=0;
 
-    bool bOK;
+    bool bOK=false;
     QString strong;
     QStandardItem *pItem;
 
     pItem = m_pFrameModel->item(sel,0);
-
+    if(!pItem) return;
     strong = pItem->text();
     strong.replace(" ","");
     x = strong.toDouble(&bOK);
@@ -708,6 +702,7 @@ void GL3dBodyDlg::readFrameSectionData(int sel)
     }
 
     pItem = m_pFrameModel->item(sel,1);
+    if(!pItem) return;
     strong = pItem->text();
     strong.replace(" ","");
     k = strong.toInt(&bOK);
@@ -844,6 +839,8 @@ void GL3dBodyDlg::onScaleBody()
 
 void GL3dBodyDlg::onUpdateBody()
 {
+    takePicture();
+
     m_bChanged = true;
     m_gl3dBodyview.resetGLBody();
 
@@ -851,6 +848,8 @@ void GL3dBodyDlg::onUpdateBody()
 
     fillFrameDataTable();
     fillPointDataTable();
+
+
     updateView();
 }
 
@@ -966,33 +965,34 @@ void GL3dBodyDlg::onTranslateBody()
 }
 
 
-
 void GL3dBodyDlg::readPointSectionData(int sel)
 {
     if(sel>=m_pPointModel->rowCount()) return;
     if(!m_pFrame) return;
 
-    double d;
-    int k;
+    double d=0;
+    int k=0;
 
-    bool bOK;
+    bool bOK=false;
     QString strong;
     QStandardItem *pItem;
 
     pItem = m_pPointModel->item(sel,0);
-
+    if(!pItem) return;
     strong = pItem->text();
     strong.replace(" ","");
     d =strong.toDouble(&bOK);
     if(bOK) m_pFrame->m_CtrlPoint[sel].y =d / Units::mtoUnit();
 
     pItem = m_pPointModel->item(sel,1);
+    if(!pItem) return;
     strong = pItem->text();
     strong.replace(" ","");
     d =strong.toDouble(&bOK);
     if(bOK) m_pFrame->m_CtrlPoint[sel].z =d / Units::mtoUnit();
 
     pItem = m_pPointModel->item(sel,2);
+    if(!pItem) return;
     strong = pItem->text();
     strong.replace(" ","");
     k =strong.toInt(&bOK);
@@ -1053,46 +1053,44 @@ void GL3dBodyDlg::reject()
 }
 
 
-
-void GL3dBodyDlg::resizeEvent(QResizeEvent *event)
+void GL3dBodyDlg::resizeEvent(QResizeEvent *pEvent)
 {
     //	SetBodyScale();
     //	SetRectangles();
 
     resizeTables();
-    event->accept();
+    pEvent->accept();
 }
 
 
-
-bool GL3dBodyDlg::loadSettings(QSettings *pSettings)
+bool GL3dBodyDlg::loadSettings(QSettings &settings)
 {
-    pSettings->beginGroup("GL3dBody");
+    settings.beginGroup("GL3dBody");
     {
-        s_WindowGeometry = pSettings->value("WindowGeom", QByteArray()).toByteArray();
+        s_WindowGeometry = settings.value("WindowGeom", QByteArray()).toByteArray();
 
-        m_HorizontalSplitterSizes = pSettings->value("HorizontalSplitterSizes").toByteArray();
-        m_LeftSplitterSizes = pSettings->value("LeftSplitterSizes").toByteArray();
+        m_HorizontalSplitterSizes = settings.value("HorizontalSplitterSizes").toByteArray();
+        m_LeftSplitterSizes = settings.value("LeftSplitterSizes").toByteArray();
     }
-    pSettings->endGroup();
-    BodyGridDlg::loadSettings(pSettings);
+    settings.endGroup();
+    BodyGridDlg::loadSettings(settings);
     return true;
 }
 
 
 
-bool GL3dBodyDlg::saveSettings(QSettings *pSettings)
+bool GL3dBodyDlg::saveSettings(QSettings &settings)
 {
-    pSettings->beginGroup("GL3dBody");
+    settings.beginGroup("GL3dBody");
     {
-        pSettings->setValue("WindowGeom", s_WindowGeometry);
+        settings.setValue("WindowGeom", s_WindowGeometry);
 
-        pSettings->setValue("HorizontalSplitterSizes", m_HorizontalSplitterSizes);
-        pSettings->setValue("LeftSplitterSizes", m_LeftSplitterSizes);
+        settings.setValue("HorizontalSplitterSizes", m_HorizontalSplitterSizes);
+        settings.setValue("LeftSplitterSizes", m_LeftSplitterSizes);
 
     }
-    pSettings->endGroup();
-    BodyGridDlg::saveSettings(pSettings);
+    settings.endGroup();
+    BodyGridDlg::saveSettings(settings);
     return true;
 }
 
@@ -1472,11 +1470,12 @@ void GL3dBodyDlg::setupLayout()
         //	FramePosLayout->addStretch(1);
         m_pctrlFrameTable->setSelectionMode(QAbstractItemView::SingleSelection);
         m_pctrlFrameTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-        m_pctrlFrameTable->setEditTriggers(QAbstractItemView::CurrentChanged |
-                                           QAbstractItemView::DoubleClicked |
-                                           QAbstractItemView::SelectedClicked |
-                                           QAbstractItemView::EditKeyPressed |
-                                           QAbstractItemView::AnyKeyPressed);
+        m_pctrlFrameTable->setEditTriggers(
+//                                            QAbstractItemView::CurrentChanged |
+                                            QAbstractItemView::DoubleClicked |
+                                            QAbstractItemView::SelectedClicked |
+                                            QAbstractItemView::EditKeyPressed |
+                                            QAbstractItemView::AnyKeyPressed);
         pFramePosLayout->addWidget(m_pctrlFrameTable);
     }
 
@@ -1492,11 +1491,13 @@ void GL3dBodyDlg::setupLayout()
         //	FramePointLayout->addStretch(1);
         m_pctrlPointTable->setSelectionMode(QAbstractItemView::SingleSelection);
         m_pctrlPointTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-        m_pctrlPointTable->setEditTriggers(QAbstractItemView::CurrentChanged |
-                                           QAbstractItemView::DoubleClicked |
-                                           QAbstractItemView::SelectedClicked |
-                                           QAbstractItemView::EditKeyPressed |
-                                           QAbstractItemView::AnyKeyPressed);
+        m_pctrlPointTable->setEditTriggers(
+//                                            QAbstractItemView::CurrentChanged |
+                                            QAbstractItemView::DoubleClicked |
+                                            QAbstractItemView::SelectedClicked |
+                                            QAbstractItemView::EditKeyPressed |
+                                            QAbstractItemView::AnyKeyPressed);
+
         pFramePointLayout->addWidget(m_pctrlPointTable);
     }
 
@@ -1522,14 +1523,14 @@ void GL3dBodyDlg::setupLayout()
     {
         m_pLeftSplitter = new QSplitter(Qt::Vertical, this);
         {
-            m_pBodyLineWidget = new BodyLineWidget(this);
+            m_pBodyLineWidget = new BodyLineWt(this);
             m_pBodyLineWidget->setSizePolicy(szPolicyMaximum);
             m_pBodyLineWidget->sizePolicy().setVerticalStretch(2);
 
             m_pLeftSplitter->addWidget(m_pBodyLineWidget);
             m_pLeftSplitter->addWidget(&m_gl3dBodyview);
         }
-        m_pFrameWidget = new BodyFrameWidget(this);
+        m_pFrameWidget = new BodyFrameWt(this);
         m_pHorizontalSplitter->addWidget(m_pLeftSplitter);
         m_pHorizontalSplitter->addWidget(m_pFrameWidget);
     }
@@ -1664,12 +1665,17 @@ void GL3dBodyDlg::clearStack(int pos)
  */
 void GL3dBodyDlg::setPicture()
 {
-    Body *pTmpBody = m_UndoStack.at(m_StackPos);
+    Body const *pTmpBody = m_UndoStack.at(m_StackPos);
     m_pBody->duplicate(pTmpBody);
     m_pBody->setNURBSKnots();
+
+
     fillFrameDataTable();
+
     m_pFrame = m_pBody->activeFrame();
+
     fillPointDataTable();
+
     m_gl3dBodyview.resetGLBody();
 
     updateView();
@@ -1699,18 +1705,6 @@ void GL3dBodyDlg::takePicture()
 }
 
 
-void GL3dBodyDlg::onRedo()
-{
-    if(m_StackPos<m_UndoStack.size()-1)
-    {
-        m_StackPos++;
-        setPicture();
-    }
-    m_pctrlUndo->setEnabled(m_StackPos>0);
-    m_pctrlRedo->setEnabled(m_StackPos<m_UndoStack.size()-1);
-}
-
-
 void GL3dBodyDlg::onUndo()
 {
     if(m_StackPos>0)
@@ -1722,6 +1716,18 @@ void GL3dBodyDlg::onUndo()
     else
     {
         //nothing to restore
+    }
+    m_pctrlUndo->setEnabled(m_StackPos>0);
+    m_pctrlRedo->setEnabled(m_StackPos<m_UndoStack.size()-1);
+}
+
+
+void GL3dBodyDlg::onRedo()
+{
+    if(m_StackPos<m_UndoStack.size()-1)
+    {
+        m_StackPos++;
+        setPicture();
     }
     m_pctrlUndo->setEnabled(m_StackPos>0);
     m_pctrlRedo->setEnabled(m_StackPos<m_UndoStack.size()-1);
