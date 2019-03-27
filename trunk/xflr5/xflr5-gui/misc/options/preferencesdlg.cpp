@@ -68,15 +68,15 @@ void PreferencesDlg::keyPressEvent(QKeyEvent *event)
 }
 
 
-
-
 void PreferencesDlg::setupLayout()
 {
     QWidget *pUpdateFrame = new QWidget;
     {
         QVBoxLayout *pUpdateLayout = new QVBoxLayout;
         m_pctrlUpdateCheck = new QCheckBox("Check for updates on startup");
-        m_pctrlUpdateCheck->setChecked(Updater::bAutoCheck());
+//        m_pctrlUpdateCheck->setChecked(Updater::bAutoCheck());
+        m_pctrlUpdateCheck->setChecked(false);
+        m_pctrlUpdateCheck->setEnabled(false);
         pUpdateLayout->addWidget(m_pctrlUpdateCheck);
         pUpdateLayout->addStretch();
         pUpdateFrame->setLayout(pUpdateLayout);
@@ -137,6 +137,6 @@ void PreferencesDlg::onClose()
 {
     Updater::setAutoCheck(m_pctrlUpdateCheck->isChecked());
     m_pSaveOptionsWt->onOK();
-    m_pLanguageWt->readLanguage();
+//    m_pLanguageWt->readLanguage();
 	accept();
 }

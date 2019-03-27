@@ -115,6 +115,7 @@ QDir MainFrame::s_TranslationDir;
 bool MainFrame::s_bShowMousePos = true;
 bool MainFrame::s_bSaved = true;
 bool MainFrame::s_bOpenGL = true;
+
 #ifdef QT_DEBUG
 bool MainFrame::s_bTrace = true;
 #else
@@ -6960,8 +6961,8 @@ void MainFrame::exportGraph(Graph *pGraph)
     if (!XFile.open(QIODevice::WriteOnly | QIODevice::Text)) return;
 
     pGraph->exportToFile(XFile, bCSV);
-
 }
+
 
 void MainFrame::onPreferences()
 {
