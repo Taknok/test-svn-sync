@@ -35,6 +35,8 @@ class LanguageWt : public QWidget
 public:
     LanguageWt(QWidget *pParent);
 
+    void hideEvent(QHideEvent *pEvent);
+
 public slots:
     void readLanguage();
 

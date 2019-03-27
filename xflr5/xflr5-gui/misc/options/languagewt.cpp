@@ -43,13 +43,11 @@ LanguageWt::LanguageWt(QWidget *pParent): QWidget(pParent)
 }
 
 
-
 void LanguageWt::setupLayout()
 {
 	QLabel *lab = new QLabel(tr("Select the application's default language:"));
 	m_pctrlLanguageList = new QListWidget;
-//	m_pctrlLanguageList->setMinimumHeight(300);
-//	connect(m_pctrlLanguageList, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(onLanguageSelected(QListWidgetItem *)));
+    connect(m_pctrlLanguageList, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(readLanguage()));
 
 	QVBoxLayout *pMainLayout = new QVBoxLayout;
 	{
@@ -118,8 +116,6 @@ QString LanguageWt::languageName(const QString &qmFile)
 }
 
 
-
-
 void LanguageWt::readLanguage()
 {
     //read user language selection
@@ -133,5 +129,14 @@ void LanguageWt::readLanguage()
     {
         MainFrame::s_LanguageFilePath = "";
     }
-//    QMessageBox::warning(this, tr("Warning"), tr("The change will take effect at the next session"));
+    m_bChanged = true;
 }
+
+
+void LanguageWt::hideEvent(QHideEvent *)
+{
+    if(m_bChanged)
+        QMessageBox::warning(this, tr("Warning"), tr("The language change will take effect at the next session"));
+}
+
+
