@@ -104,8 +104,6 @@ XFoil::~XFoil()
  * --------------------------------------------------- */
 bool XFoil::initialize()
 {
-    int l;
-
     hopi = 0.50/PI;
     qopi = 0.25/PI;
     dtor = PI/180.0;
@@ -342,14 +340,14 @@ bool XFoil::initialize()
     int nn = int( ann + 0.00001 );
     int tmp = 1;
 
-    for (l=0; l<nn; l++){
+    for (int l=0; l<nn; l++){
         tmp = 2*tmp;
     }
     nc1 = tmp + 1;
     //	nc1 = (int)pow(2,nn) + 1;
     if(nc1 > ICX) {
         tmp = 1;
-        for (l=0; l<nn-1; l++){
+        for (int l=0; l<nn-1; l++){
             tmp = 2*tmp;
         }
         nc1 = tmp+1;

@@ -30,7 +30,7 @@
 #include <globals/globals.h>
 
 
-bool Updater::s_bAutoCheck = true;
+bool Updater::s_bAutoCheck = false;  // until crash bugs are fixed
 int Updater::s_AvailableMajorVersion=-1;
 int Updater::s_AvailableMinorVersion=-1;
 QDate Updater::s_LastCheckDate;
@@ -347,6 +347,8 @@ void Updater::loadSettings(QSettings &settings)
     }
     Trace("loading lastcheckdate: "+s_LastCheckDate.toString("yyyy.MM.dd"));
     settings.endGroup();
+
+    s_bAutoCheck = false; // until crash bugs are fixed
 }
 
 
