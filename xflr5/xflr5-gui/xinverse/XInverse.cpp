@@ -601,11 +601,6 @@ void XInverse::keyPressEvent(QKeyEvent *event)
             }
             break;
         }
-
-        case Qt::Key_Z:
-        {
-            return;//User is zooming with 'Z' key instead of mouse midle button
-        }
         case Qt::Key_G:
         {
             onQGraphSettings();
@@ -622,7 +617,7 @@ void XInverse::keyPressEvent(QKeyEvent *event)
             break;
         }
 
-        case Qt::Key_1:
+/*        case Qt::Key_1:
             if(bCtrl)
             {
                 s_pMainFrame->onAFoil();
@@ -666,16 +661,7 @@ void XInverse::keyPressEvent(QKeyEvent *event)
                 return;
             }
             break;
-        }
-        case Qt::Key_7:
-            /*			if(bCtrl)
-            {
-                s_pMainFrame->onLoadLastProject();
-                event->accept();
-                return;
-            }*/
-            break;
-
+        }*/
         default:
             event->ignore();
     }

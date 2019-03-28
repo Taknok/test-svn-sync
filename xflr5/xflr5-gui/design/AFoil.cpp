@@ -292,14 +292,14 @@ void AFoil::fillTableRow(int row)
  * Dispatches the key press event
  * @param event the QKeyEvent
  */
-void AFoil::keyPressEvent(QKeyEvent *event)
+void AFoil::keyPressEvent(QKeyEvent *pEvent)
 {
     bool bShift = false;
-    if(event->modifiers() & Qt::ShiftModifier)   bShift =true;
+    if(pEvent->modifiers() & Qt::ShiftModifier)   bShift =true;
     bool bCtrl = false;
-    if(event->modifiers() & Qt::ControlModifier)   bCtrl =true;
+    if(pEvent->modifiers() & Qt::ControlModifier)   bCtrl =true;
 
-    switch (event->key())
+    switch (pEvent->key())
     {
         case Qt::Key_F2:
         {
@@ -335,8 +335,17 @@ void AFoil::keyPressEvent(QKeyEvent *event)
             onAFoilInterpolateFoils();
             break;
         }
+        case Qt::Key_Z:
+        {
+            if(bCtrl)
+            {
+                if(bShift) onRedo();
+                else       onUndo();
+            }
+            break;
+        }
 
-        case Qt::Key_3:
+/*        case Qt::Key_3:
         {
             if(bCtrl)
             {
@@ -365,18 +374,10 @@ void AFoil::keyPressEvent(QKeyEvent *event)
                 s_pMainFrame->onMiarex();
                 return;
             }
-            break;
-        case Qt::Key_7:
-            /*			if(bCtrl)
-            {
-                s_pMainFrame->onLoadLastProject();
-                event->accept();
-                return;
-            }
             break;*/
 
         default:
-            event->ignore();
+            pEvent->ignore();
     }
 }
 

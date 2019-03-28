@@ -675,6 +675,49 @@ _____Analysis completed_____
 <context>
     <name>BodyFrameWidget</name>
     <message>
+        <source>Insert Control Point</source>
+        <translation type="obsolete">操作点の挿入</translation>
+    </message>
+    <message>
+        <source>Remove Control Point</source>
+        <translation type="obsolete">操作点の削除</translation>
+    </message>
+    <message>
+        <source>Show Current Frame Only</source>
+        <translation type="obsolete">現在のフレームのみを表示</translation>
+    </message>
+    <message>
+        <source>Reset Scales</source>
+        <translation type="obsolete">縮尺をリセット</translation>
+    </message>
+    <message>
+        <source>Load background image</source>
+        <translation type="obsolete">背景画像の読み込み</translation>
+    </message>
+    <message>
+        <source>Clear background image</source>
+        <translation type="obsolete">背景画像のクリア</translation>
+    </message>
+</context>
+<context>
+    <name>BodyFrameWt</name>
+    <message>
+        <source>X-Scale = %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y-Scale = %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>x  = %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>y  = %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Scale Frame</source>
         <translation type="unfinished"></translation>
     </message>
@@ -705,22 +748,6 @@ _____Analysis completed_____
     <message>
         <source>Clear background image</source>
         <translation type="unfinished">背景画像のクリア</translation>
-    </message>
-    <message>
-        <source>X-Scale = %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Y-Scale = %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>x  = %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>y  = %1</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -768,6 +795,45 @@ _____Analysis completed_____
 <context>
     <name>BodyLineWidget</name>
     <message>
+        <source>Insert Control Point</source>
+        <translation type="obsolete">操作点の挿入</translation>
+    </message>
+    <message>
+        <source>Remove Control Point</source>
+        <translation type="obsolete">操作点の削除</translation>
+    </message>
+    <message>
+        <source>Reset Scales</source>
+        <translation type="obsolete">縮尺をリセット</translation>
+    </message>
+    <message>
+        <source>Load background image</source>
+        <translation type="obsolete">背景画像の読み込み</translation>
+    </message>
+    <message>
+        <source>Clear background image</source>
+        <translation type="obsolete">背景画像のクリア</translation>
+    </message>
+</context>
+<context>
+    <name>BodyLineWt</name>
+    <message>
+        <source>X-Scale = %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y-Scale = %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>x  = %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>y  = %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Scale Body</source>
         <translation type="unfinished"></translation>
     </message>
@@ -794,22 +860,6 @@ _____Analysis completed_____
     <message>
         <source>Clear background image</source>
         <translation type="unfinished">背景画像のクリア</translation>
-    </message>
-    <message>
-        <source>X-Scale = %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Y-Scale = %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>x  = %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>y  = %1</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -982,11 +1032,11 @@ _____Analysis completed_____
     <name>Direct2dDesign</name>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">警告</translation>
+        <translation type="obsolete">警告</translation>
     </message>
     <message>
         <source>The minimum number of control points has been reached for this spline degree</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
             </translation>
     </message>
 </context>
@@ -1531,6 +1581,18 @@ _____Analysis completed_____
     <message>
         <source>Cancel</source>
         <translation>キャンセル</translation>
+    </message>
+</context>
+<context>
+    <name>FoilDesignWt</name>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished">警告</translation>
+    </message>
+    <message>
+        <source>The minimum number of control points has been reached for this spline degree</source>
+        <translation type="unfinished">
+            </translation>
     </message>
 </context>
 <context>
@@ -3157,6 +3219,14 @@ _____Analysis completed_____
     <message>
         <source>Select the application&apos;s default language:</source>
         <translation type="unfinished">アプリケーションの既定の言語を選択してください:</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished">警告</translation>
+    </message>
+    <message>
+        <source>The language change will take effect at the next session</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
