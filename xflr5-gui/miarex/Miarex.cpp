@@ -1680,91 +1680,76 @@ void Miarex::fillWPlrCurve(Curve *pCurve, WPolar *pWPolar, int XVar, int YVar)
  * Dispatches the key press event
  * @param event the QKeyEvent
  */
-void Miarex::keyPressEvent(QKeyEvent *event)
+void Miarex::keyPressEvent(QKeyEvent *pEvent)
 {
-    bool bCtrl  = (event->modifiers() & Qt::ControlModifier) ? true : false;
-    bool bShift = (event->modifiers() & Qt::ShiftModifier)   ? true : false;
+    bool bCtrl  = (pEvent->modifiers() & Qt::ControlModifier) ? true : false;
+    bool bShift = (pEvent->modifiers() & Qt::ShiftModifier)   ? true : false;
 
     m_pgl3dMiarexView->m_bArcball=false;
 
-    if(event->key()==Qt::Key_0 || event->text()=="0")
-    {
-        return;
-    }
-    else if(event->key()==Qt::Key_1 || event->text()=="1")
+/*    if(pEvent->key()==Qt::Key_1 || pEvent->text()=="1")
     {
         if(bCtrl)
         {
             s_pMainFrame->onAFoil();
-            event->accept();
+            pEvent->accept();
             return;
         }
 
     }
-    else if(event->key()==Qt::Key_2 || event->text()=="2")
+    else if(pEvent->key()==Qt::Key_2 || pEvent->text()=="2")
     {
         if(bCtrl)
         {
             s_pMainFrame->onAFoil();
-            event->accept();
+            pEvent->accept();
             return;
         }
     }
-    else if(event->key()==Qt::Key_3 || event->text()=="3")
+    else if(pEvent->key()==Qt::Key_3 || pEvent->text()=="3")
     {
         if(bCtrl)
         {
             s_pMainFrame->onXInverse();
-            event->accept();
+            pEvent->accept();
             return;
         }
     }
-    else if(event->key()==Qt::Key_4 || event->text()=="4")
+    else if(pEvent->key()==Qt::Key_4 || pEvent->text()=="4")
     {
         if(bCtrl)
         {
             s_pMainFrame->onXInverseMixed();
-            event->accept();
+            pEvent->accept();
             return;
         }
     }
-    else if(event->key()==Qt::Key_5 || event->text()=="5")
+    else if(pEvent->key()==Qt::Key_5 || pEvent->text()=="5")
     {
         if(bCtrl)
         {
             s_pMainFrame->onXDirect();
-            event->accept();
+            pEvent->accept();
             return;
         }
 
     }
-    else if(event->key()==Qt::Key_6 || event->text()=="6")
+    else if(pEvent->key()==Qt::Key_6 || pEvent->text()=="6")
     {
         if(bCtrl)
         {
             s_pMainFrame->onXDirect();
-            event->accept();
+            pEvent->accept();
             return;
         }
-    }
-    else if(event->key()==Qt::Key_7 || event->text()=="7")
-    {
-        /*		if(bCtrl)
-        {
-            s_pMainFrame->loadXFLR5File(s_pMainFrame->m_RecentFiles.at(0));
+    }*/
 
-            s_pMainFrame->updatePlaneListBox();
-            setPlane();
-            updateView();
-        }*/
-    }
-
-    switch (event->key())
+    switch (pEvent->key())
     {
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if (event->modifiers().testFlag(Qt::AltModifier))
+            if (pEvent->modifiers().testFlag(Qt::AltModifier))
             {
                 onWPolarProperties();
                 break;
@@ -1778,7 +1763,7 @@ void Miarex::keyPressEvent(QKeyEvent *event)
             {
                 onAnalyze();
             }
-            event->accept();
+            pEvent->accept();
             break;
         }
         case Qt::Key_Escape:
@@ -1818,7 +1803,7 @@ void Miarex::keyPressEvent(QKeyEvent *event)
             break;
         case Qt::Key_H:
         {
-            if((m_iView==XFLR5::WPOLARVIEW || m_iView==XFLR5::STABPOLARVIEW) && event->modifiers().testFlag(Qt::ControlModifier))
+            if((m_iView==XFLR5::WPOLARVIEW || m_iView==XFLR5::STABPOLARVIEW) && pEvent->modifiers().testFlag(Qt::ControlModifier))
             {
                 s_pMainFrame->onHighlightOperatingPoint();
             }
@@ -1837,8 +1822,8 @@ void Miarex::keyPressEvent(QKeyEvent *event)
         }
         case Qt::Key_F3:
         {
-            if (event->modifiers().testFlag(Qt::ShiftModifier))        onEditCurPlane();
-            else if (event->modifiers().testFlag(Qt::ControlModifier)) onEditCurObject();
+            if (pEvent->modifiers().testFlag(Qt::ShiftModifier))        onEditCurPlane();
+            else if (pEvent->modifiers().testFlag(Qt::ControlModifier)) onEditCurObject();
             else                                                       onNewPlane();
             break;
         }
@@ -1858,15 +1843,15 @@ void Miarex::keyPressEvent(QKeyEvent *event)
         }
         case Qt::Key_F6:
         {
-            if (event->modifiers().testFlag(Qt::ShiftModifier))         onDefineStabPolar();
-            else if (event->modifiers().testFlag(Qt::ControlModifier))  onDefineWPolarObject();
+            if (pEvent->modifiers().testFlag(Qt::ShiftModifier))         onDefineStabPolar();
+            else if (pEvent->modifiers().testFlag(Qt::ControlModifier))  onDefineWPolarObject();
             else                                                        onDefineWPolar();
             break;
         }
         case Qt::Key_F8:
         {
-            if (event->modifiers().testFlag(Qt::ShiftModifier))        onRootLocusView();
-            else if (event->modifiers().testFlag(Qt::ControlModifier)) onStabTimeView();
+            if (pEvent->modifiers().testFlag(Qt::ShiftModifier))        onRootLocusView();
+            else if (pEvent->modifiers().testFlag(Qt::ControlModifier)) onStabTimeView();
             else                                                       onWPolarView();
             break;
         }
@@ -1912,7 +1897,7 @@ void Miarex::keyPressEvent(QKeyEvent *event)
         }
         default:
             //			QWidget::keyPressEvent(event);
-            event->ignore();
+            pEvent->ignore();
     }
 }
 

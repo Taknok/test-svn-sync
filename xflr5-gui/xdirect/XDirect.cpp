@@ -1058,23 +1058,23 @@ QVector<double>* XDirect::getVariable(Polar *pPolar, int iVar)
  * Dispatches the key press event
  * @param event the QKeyEvent
  */
-void XDirect::keyPressEvent(QKeyEvent *event)
+void XDirect::keyPressEvent(QKeyEvent *pEvent)
 {
 	bool bShift = false;
-	if(event->modifiers() & Qt::ShiftModifier)   bShift =true;
+    if(pEvent->modifiers() & Qt::ShiftModifier)   bShift =true;
 	bool bCtrl = false;
-	if(event->modifiers() & Qt::ControlModifier)   bCtrl =true;
+    if(pEvent->modifiers() & Qt::ControlModifier)   bCtrl =true;
 
-	switch (event->key())
+    switch (pEvent->key())
 	{
 		case Qt::Key_Return:
 		case Qt::Key_Enter:
-			if (event->modifiers().testFlag(Qt::AltModifier) & event->modifiers().testFlag(Qt::ShiftModifier))
+            if (pEvent->modifiers().testFlag(Qt::AltModifier) & pEvent->modifiers().testFlag(Qt::ShiftModifier))
 			{
 				onOpPointProps();
 				break;
 			}
-			else if (event->modifiers().testFlag(Qt::AltModifier))
+            else if (pEvent->modifiers().testFlag(Qt::AltModifier))
 			{
 				onPolarProps();
 				break;
@@ -1097,7 +1097,7 @@ void XDirect::keyPressEvent(QKeyEvent *event)
 			break;
 		case Qt::Key_H:
 		{
-			if(m_bPolarView && event->modifiers().testFlag(Qt::ControlModifier))
+            if(m_bPolarView && pEvent->modifiers().testFlag(Qt::ControlModifier))
 			{
 				s_pMainFrame->onHighlightOperatingPoint();
 			}
@@ -1112,57 +1112,48 @@ void XDirect::keyPressEvent(QKeyEvent *event)
 		case Qt::Key_Y:
 			m_bYPressed = true;
 			break;
-		case Qt::Key_1:
-			if(bCtrl)
-			{
-				s_pMainFrame->onAFoil();
-				event->accept();
-				return;
-			}
-			break;
-		case Qt::Key_2:
-			if(bCtrl)
-			{
-				s_pMainFrame->onAFoil();
-				event->accept();
-				return;
-			}
-			break;
-		case Qt::Key_3:
-			if(bCtrl)
-			{
-				s_pMainFrame->onXInverse();
-				event->accept();
-				return;
-			}
-			break;
-		case Qt::Key_4:
-			if(bCtrl)
-			{
-				s_pMainFrame->onXInverseMixed();
-				event->accept();
-				return;
-			}
-		case Qt::Key_5:
-			break;
-		case Qt::Key_6:
-			if(bCtrl)
-			{
-				s_pMainFrame->onMiarex();
-				event->accept();
-				return;
-			}
-			break;
-		case Qt::Key_7:
-		{
-/*			if(bCtrl)
-			{
-				s_pMainFrame->onLoadLastProject();
-				event->accept();
-				return;
-			}
-			break;*/
-		}
+/*        case Qt::Key_1:
+            if(bCtrl)
+            {
+                s_pMainFrame->onAFoil();
+                pEvent->accept();
+                return;
+            }
+            break;
+        case Qt::Key_2:
+            if(bCtrl)
+            {
+                s_pMainFrame->onAFoil();
+                pEvent->accept();
+                return;
+            }
+            break;
+        case Qt::Key_3:
+            if(bCtrl)
+            {
+                s_pMainFrame->onXInverse();
+                pEvent->accept();
+                return;
+            }
+            break;
+        case Qt::Key_4:
+            if(bCtrl)
+            {
+                s_pMainFrame->onXInverseMixed();
+                pEvent->accept();
+                return;
+            }
+        case Qt::Key_5:
+            break;
+        case Qt::Key_6:
+            if(bCtrl)
+            {
+                s_pMainFrame->onMiarex();
+                pEvent->accept();
+                return;
+            }
+            break;*/
+
 		case Qt::Key_F2:
 		{
 			if(bShift) onRenameCurPolar();
@@ -1183,8 +1174,8 @@ void XDirect::keyPressEvent(QKeyEvent *event)
 		}
 		case Qt::Key_F6:
 		{
-			if (event->modifiers().testFlag(Qt::ShiftModifier))        onBatchAnalysis();
-			else if (event->modifiers().testFlag(Qt::ControlModifier)) onMultiThreadedBatchAnalysis();
+            if (pEvent->modifiers().testFlag(Qt::ShiftModifier))        onBatchAnalysis();
+            else if (pEvent->modifiers().testFlag(Qt::ControlModifier)) onMultiThreadedBatchAnalysis();
 			else                                                       onDefinePolar();
 			break;
 		}
@@ -1210,10 +1201,10 @@ void XDirect::keyPressEvent(QKeyEvent *event)
 			break;
 		}
 		default:
-			QWidget::keyPressEvent(event);
+            QWidget::keyPressEvent(pEvent);
 	}
 
-	event->accept();
+    pEvent->accept();
 }
 
 
