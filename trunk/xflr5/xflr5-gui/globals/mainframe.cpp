@@ -513,20 +513,31 @@ void MainFrame::closeEvent (QCloseEvent * pEvent)
 
 void MainFrame::createActions()
 {
-    m_pNewProjectAct = new QAction(QIcon(":/images/new.png"), tr("New Project"), this);
-    m_pNewProjectAct->setShortcut(QKeySequence::New);
+    m_pNewProjectAct = new QAction(QIcon(":/images/new.png"), tr("New Project") + "\tCtrl+N", this);
+//    m_pNewProjectAct->setShortcut(QKeySequence::New); // bug in Qt libs: shortcut is defined twice in translation files
+//    m_pNewProjectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_N));
     m_pNewProjectAct->setStatusTip(tr("Save and close the current project, create a new project"));
     connect(m_pNewProjectAct, SIGNAL(triggered()), this, SLOT(onNewProject()));
+
+    m_pOpenAct = new QAction(QIcon(":/images/open.png"), tr("Open")  + "\tCtrl+O", this);
+//    m_pOpenAct->setShortcut(QKeySequence::Open); // bug in Qt libs: shortcut is defined twice in translation files
+    m_pOpenAct->setStatusTip(tr("Open an existing file"));
+    connect(m_pOpenAct, SIGNAL(triggered()), this, SLOT(onLoadFile()));
+
+    m_pSaveAct = new QAction(QIcon(":/images/save.png"), tr("Save") + "\tCtrl+S", this);
+//    m_pSaveAct->setShortcut(QKeySequence::Save); // bug in Qt libs: shortcut is defined twice in translation files
+    m_pSaveAct->setStatusTip(tr("Save the project to disk"));
+    connect(m_pSaveAct, SIGNAL(triggered()), this, SLOT(onSaveProject()));
+
+    m_pSaveProjectAsAct = new QAction(tr("Save Project As")  + "\tCtrl+Shift+S", this);
+//    m_pSaveProjectAsAct->setShortcut(QKeySequence::SaveAs); // bug in Qt libs: shortcut is defined twice in translation files
+    m_pSaveProjectAsAct->setStatusTip(tr("Save the current project under a new name"));
+    connect(m_pSaveProjectAsAct, SIGNAL(triggered()), this, SLOT(onSaveProjectAs()));
 
     m_pCloseProjectAct = new QAction(QIcon(":/images/new.png"), tr("Close the Project"), this);
     m_pCloseProjectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F4));
     m_pCloseProjectAct->setStatusTip(tr("Save and close the current project"));
     connect(m_pCloseProjectAct, SIGNAL(triggered()), this, SLOT(onNewProject()));
-
-    m_pOpenAct = new QAction(QIcon(":/images/open.png"), tr("Open"), this);
-    m_pOpenAct->setShortcut(QKeySequence::Open);
-    m_pOpenAct->setStatusTip(tr("Open an existing file"));
-    connect(m_pOpenAct, SIGNAL(triggered()), this, SLOT(onLoadFile()));
 
     m_pInsertAct = new QAction(tr("Insert Project"), this);
     m_pInsertAct->setStatusTip(tr("Insert an existing project in the current project"));
@@ -558,20 +569,12 @@ void MainFrame::createActions()
     m_pOnMiarexAct->setStatusTip(tr("Open Wing/plane design and analysis application"));
     connect(m_pOnMiarexAct, SIGNAL(triggered()), this, SLOT(onMiarex()));
 
-    m_pSaveAct = new QAction(QIcon(":/images/save.png"), tr("Save"), this);
-    m_pSaveAct->setShortcut(QKeySequence::Save);
-    m_pSaveAct->setStatusTip(tr("Save the project to disk"));
-    connect(m_pSaveAct, SIGNAL(triggered()), this, SLOT(onSaveProject()));
 
     m_pLoadLastProjectAction = new QAction(tr("Load Last Project"), this);
     m_pLoadLastProjectAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_O));
     m_pLoadLastProjectAction->setStatusTip(tr("Loads the last saved project"));
     connect(m_pLoadLastProjectAction, SIGNAL(triggered()), this, SLOT(onLoadLastProject()));
 
-    m_pSaveProjectAsAct = new QAction(tr("Save Project As"), this);
-    m_pSaveProjectAsAct->setShortcut(QKeySequence::SaveAs);
-    m_pSaveProjectAsAct->setStatusTip(tr("Save the current project under a new name"));
-    connect(m_pSaveProjectAsAct, SIGNAL(triggered()), this, SLOT(onSaveProjectAs()));
 
     m_pPreferencesAct = new QAction(tr("Preferences"), this);
     connect(m_pPreferencesAct, SIGNAL(triggered()), this, SLOT(onPreferences()));
@@ -654,13 +657,13 @@ void MainFrame::createAFoilActions()
     m_pNewSplinesAct->setStatusTip(tr("Reset the splines"));
     connect(m_pNewSplinesAct, SIGNAL(triggered()), m_pAFoil, SLOT(onNewSplines()));
 
-    m_pUndoAFoilAct= new QAction(QIcon(":/images/OnUndo.png"), tr("Undo"), this);
-    m_pUndoAFoilAct->setShortcut(QKeySequence::Undo);
+    m_pUndoAFoilAct= new QAction(QIcon(":/images/OnUndo.png"), tr("Undo") + "\tCtrl+Z", this);
+//    m_pUndoAFoilAct->setShortcut(QKeySequence::Undo); // bug in Qt libs: shortcut is defined twice in translation files
     m_pUndoAFoilAct->setStatusTip(tr("Cancels the last modification"));
     connect(m_pUndoAFoilAct, SIGNAL(triggered()), m_pAFoil, SLOT(onUndo()));
 
-    m_pRedoAFoilAct= new QAction(QIcon(":/images/OnRedo.png"), tr("Redo"), this);
-    m_pRedoAFoilAct->setShortcut(QKeySequence::Redo);
+    m_pRedoAFoilAct= new QAction(QIcon(":/images/OnRedo.png"), tr("Redo") + "\tCtrl+Shift+Z", this);
+//    m_pRedoAFoilAct->setShortcut(QKeySequence::Redo); // bug in Qt libs: shortcut is defined twice in translation files
     m_pRedoAFoilAct->setStatusTip(tr("Restores the last cancelled modification"));
     connect(m_pRedoAFoilAct, SIGNAL(triggered()), m_pAFoil, SLOT(onRedo()));
 
@@ -3154,22 +3157,58 @@ QColor MainFrame::getColor(int type)
 void MainFrame::keyPressEvent(QKeyEvent *pEvent)
 {
     bool bCtrl = (pEvent->modifiers() & Qt::ControlModifier);
+    bool bShift = (pEvent->modifiers() & Qt::ShiftModifier);
+
+    switch (pEvent->key())
+    {
+        case Qt::Key_N:
+        {
+            if(bCtrl)
+            {
+                onNewProject();
+                return;
+            }
+            break;
+        }
+        case Qt::Key_S:
+        {
+            if(bCtrl)
+            {
+                if(bShift)
+                    onSaveProjectAs();
+                else
+                    onSaveProject();
+                return;
+            }
+            break;
+        }
+        case Qt::Key_O:
+        {
+            if(bCtrl)
+            {
+                onLoadFile();
+                return;
+            }
+            break;
+        }
+    }
 
     if(m_iApp == XFLR5::XFOILANALYSIS && m_pXDirect)
     {
-        m_pXDirect->keyPressEvent(pEvent);
+        return m_pXDirect->keyPressEvent(pEvent);
     }
     else if(m_iApp == XFLR5::MIAREX && m_pMiarex)
     {
-        m_pMiarex->keyPressEvent(pEvent);
+        return m_pMiarex->keyPressEvent(pEvent);
     }
     else if(m_iApp == XFLR5::DIRECTDESIGN && m_pAFoil)
     {
-        m_pAFoil->keyPressEvent(pEvent);
+        return m_pAFoil->keyPressEvent(pEvent);
+
     }
     else if(m_iApp == XFLR5::INVERSEDESIGN && m_pXInverse)
     {
-        m_pXInverse->keyPressEvent(pEvent);
+        return m_pXInverse->keyPressEvent(pEvent);
     }
     else
     {
@@ -3217,7 +3256,6 @@ void MainFrame::keyPressEvent(QKeyEvent *pEvent)
             {
                 break;
             }
-
             case Qt::Key_L:
             {
                 onLogFile();

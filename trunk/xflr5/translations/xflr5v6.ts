@@ -94,7 +94,7 @@
     </message>
     <message>
         <location filename="../xflr5-gui/design/AFoil.cpp" line="1290"/>
-        <location filename="../xflr5-gui/design/AFoil.cpp" line="1814"/>
+        <location filename="../xflr5-gui/design/AFoil.cpp" line="1820"/>
         <source>Enter the foil&apos;s new name</source>
         <translation type="unfinished"></translation>
     </message>
@@ -849,64 +849,64 @@ Uncheck for increased analysis speed.</source>
     </message>
 </context>
 <context>
-    <name>BodyFrameWidget</name>
+    <name>BodyFrameWt</name>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/BodyFrameWidget.cpp" line="352"/>
+        <location filename="../xflr5-gui/viewwidgets/bodyframewt.cpp" line="352"/>
         <source>X-Scale = %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/BodyFrameWidget.cpp" line="353"/>
+        <location filename="../xflr5-gui/viewwidgets/bodyframewt.cpp" line="353"/>
         <source>Y-Scale = %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/BodyFrameWidget.cpp" line="354"/>
+        <location filename="../xflr5-gui/viewwidgets/bodyframewt.cpp" line="354"/>
         <source>x  = %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/BodyFrameWidget.cpp" line="355"/>
+        <location filename="../xflr5-gui/viewwidgets/bodyframewt.cpp" line="355"/>
         <source>y  = %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/BodyFrameWidget.cpp" line="365"/>
+        <location filename="../xflr5-gui/viewwidgets/bodyframewt.cpp" line="365"/>
         <source>Scale Frame</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/BodyFrameWidget.cpp" line="373"/>
+        <location filename="../xflr5-gui/viewwidgets/bodyframewt.cpp" line="373"/>
         <source>Insert Control Point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/BodyFrameWidget.cpp" line="377"/>
+        <location filename="../xflr5-gui/viewwidgets/bodyframewt.cpp" line="377"/>
         <source>Remove Control Point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/BodyFrameWidget.cpp" line="385"/>
+        <location filename="../xflr5-gui/viewwidgets/bodyframewt.cpp" line="385"/>
         <source>Show Current Frame Only</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/BodyFrameWidget.cpp" line="390"/>
+        <location filename="../xflr5-gui/viewwidgets/bodyframewt.cpp" line="390"/>
         <source>Reset Scales</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/BodyFrameWidget.cpp" line="394"/>
+        <location filename="../xflr5-gui/viewwidgets/bodyframewt.cpp" line="394"/>
         <source>Grid Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/BodyFrameWidget.cpp" line="402"/>
+        <location filename="../xflr5-gui/viewwidgets/bodyframewt.cpp" line="402"/>
         <source>Load background image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/BodyFrameWidget.cpp" line="406"/>
+        <location filename="../xflr5-gui/viewwidgets/bodyframewt.cpp" line="406"/>
         <source>Clear background image</source>
         <translation type="unfinished"></translation>
     </message>
@@ -962,59 +962,59 @@ Uncheck for increased analysis speed.</source>
     </message>
 </context>
 <context>
-    <name>BodyLineWidget</name>
+    <name>BodyLineWt</name>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/BodyLineWidget.cpp" line="282"/>
+        <location filename="../xflr5-gui/viewwidgets/bodylinewt.cpp" line="277"/>
         <source>X-Scale = %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/BodyLineWidget.cpp" line="283"/>
+        <location filename="../xflr5-gui/viewwidgets/bodylinewt.cpp" line="278"/>
         <source>Y-Scale = %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/BodyLineWidget.cpp" line="284"/>
+        <location filename="../xflr5-gui/viewwidgets/bodylinewt.cpp" line="279"/>
         <source>x  = %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/BodyLineWidget.cpp" line="285"/>
+        <location filename="../xflr5-gui/viewwidgets/bodylinewt.cpp" line="280"/>
         <source>y  = %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/BodyLineWidget.cpp" line="296"/>
+        <location filename="../xflr5-gui/viewwidgets/bodylinewt.cpp" line="291"/>
         <source>Scale Body</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/BodyLineWidget.cpp" line="304"/>
+        <location filename="../xflr5-gui/viewwidgets/bodylinewt.cpp" line="299"/>
         <source>Insert Control Point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/BodyLineWidget.cpp" line="308"/>
+        <location filename="../xflr5-gui/viewwidgets/bodylinewt.cpp" line="303"/>
         <source>Remove Control Point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/BodyLineWidget.cpp" line="316"/>
+        <location filename="../xflr5-gui/viewwidgets/bodylinewt.cpp" line="311"/>
         <source>Reset Scales</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/BodyLineWidget.cpp" line="320"/>
+        <location filename="../xflr5-gui/viewwidgets/bodylinewt.cpp" line="315"/>
         <source>Grid Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/BodyLineWidget.cpp" line="328"/>
+        <location filename="../xflr5-gui/viewwidgets/bodylinewt.cpp" line="323"/>
         <source>Load background image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/BodyLineWidget.cpp" line="332"/>
+        <location filename="../xflr5-gui/viewwidgets/bodylinewt.cpp" line="327"/>
         <source>Clear background image</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1217,21 +1217,6 @@ Uncheck for increased analysis speed.</source>
     <message>
         <location filename="../xflr5-gui/xdirect/geometry/CAddDlg.cpp" line="215"/>
         <source>Maximum panel angle is %1 deg</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Direct2dDesign</name>
-    <message>
-        <location filename="../xflr5-gui/viewwidgets/Direct2dDesign.cpp" line="470"/>
-        <location filename="../xflr5-gui/viewwidgets/Direct2dDesign.cpp" line="484"/>
-        <source>Warning</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/viewwidgets/Direct2dDesign.cpp" line="470"/>
-        <location filename="../xflr5-gui/viewwidgets/Direct2dDesign.cpp" line="484"/>
-        <source>The minimum number of control points has been reached for this spline degree</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1898,6 +1883,21 @@ Uncheck for increased analysis speed.</source>
     </message>
 </context>
 <context>
+    <name>FoilDesignWt</name>
+    <message>
+        <location filename="../xflr5-gui/viewwidgets/foildesignwt.cpp" line="465"/>
+        <location filename="../xflr5-gui/viewwidgets/foildesignwt.cpp" line="479"/>
+        <source>Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/viewwidgets/foildesignwt.cpp" line="465"/>
+        <location filename="../xflr5-gui/viewwidgets/foildesignwt.cpp" line="479"/>
+        <source>The minimum number of control points has been reached for this spline degree</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>FoilGeomDlg</name>
     <message>
         <location filename="../xflr5-gui/xdirect/geometry/FoilGeomDlg.cpp" line="39"/>
@@ -2303,24 +2303,24 @@ Uncheck for increased analysis speed.</source>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="112"/>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1309"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1307"/>
         <source>Undo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="117"/>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1310"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="116"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1308"/>
         <source>Redo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="140"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="126"/>
         <source>Translate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="211"/>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="214"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="212"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="215"/>
         <source>NPanels</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2335,73 +2335,73 @@ Uncheck for increased analysis speed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="118"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="117"/>
         <source>Restores the last cancelled modification</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="122"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="120"/>
         <source>Export Body Geometry to text File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="125"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="121"/>
         <source>Export Body Definition to txt File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="128"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="122"/>
         <source>Export body definition to an XML file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="131"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="123"/>
         <source>Import Body Definition from a text file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="134"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="124"/>
         <source>Import body definition from an XML file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="137"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="125"/>
         <source>Define Inertia</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="495"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="491"/>
         <source>Export plane definition to xml file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="645"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="641"/>
         <source>Open XML File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="647"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="643"/>
         <source>Plane XML file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="655"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="651"/>
         <source>Could not read the file
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="656"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="652"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="870"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="869"/>
         <source>The degree must be less than the number of Frames</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="896"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="895"/>
         <source>The degree must be less than the number of side lines</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2411,153 +2411,153 @@ Uncheck for increased analysis speed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1244"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1242"/>
         <source>Axes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1245"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1243"/>
         <source>Surfaces</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1246"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1244"/>
         <source>Outline</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1247"/>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1410"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1245"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1408"/>
         <source>Panels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1248"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1246"/>
         <source>Masses</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1312"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1310"/>
         <source>Other</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1314"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1312"/>
         <source>Actions...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1395"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1393"/>
         <source>Flat Panels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1396"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1394"/>
         <source>BSplines</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1407"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1405"/>
         <source>x</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1408"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1406"/>
         <source>Hoop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1409"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1407"/>
         <source>Degree</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1357"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1355"/>
         <source>BodyName</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1378"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1376"/>
         <source>Enter here a short description for the body</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1375"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1373"/>
         <source>Description:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1275"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1273"/>
         <source>X View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1276"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1274"/>
         <source>Y View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1277"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1275"/>
         <source>Z View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1278"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1276"/>
         <source>Iso View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1279"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1277"/>
         <source>Flip View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1300"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1298"/>
         <source>Reset Scale</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1359"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1357"/>
         <source>Style</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1363"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1361"/>
         <source>Textures</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1364"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1362"/>
         <source>Color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1391"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1389"/>
         <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1411"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1409"/>
         <source>Panel bunch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1468"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1466"/>
         <source>Frames</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1469"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1467"/>
         <source>Frame Positions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1488"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1487"/>
         <source>Points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1489"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="1488"/>
         <source>Current Frame Definition</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3866,7 +3866,7 @@ Uncheck for increased analysis speed.</source>
 <context>
     <name>Language</name>
     <message>
-        <location filename="../xflr5-gui/misc/options/languagewt.cpp" line="117"/>
+        <location filename="../xflr5-gui/misc/options/languagewt.cpp" line="115"/>
         <source>English</source>
         <translation>English</translation>
     </message>
@@ -3884,8 +3884,18 @@ Uncheck for increased analysis speed.</source>
         <translation type="unfinished">English</translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/misc/options/languagewt.cpp" line="49"/>
+        <location filename="../xflr5-gui/misc/options/languagewt.cpp" line="48"/>
         <source>Select the application&apos;s default language:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/misc/options/languagewt.cpp" line="139"/>
+        <source>Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/misc/options/languagewt.cpp" line="139"/>
+        <source>The language change will take effect at the next session</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3963,1916 +3973,1916 @@ Uncheck for increased analysis speed.</source>
 <context>
     <name>MainFrame</name>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="511"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="516"/>
         <source>New Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="513"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="518"/>
         <source>Save and close the current project, create a new project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="516"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="521"/>
         <source>Close the Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="518"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="523"/>
         <source>Save and close the current project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="521"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="526"/>
         <source>Open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="523"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="528"/>
         <source>Open an existing file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="526"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="531"/>
         <source>Insert Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="527"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="532"/>
         <source>Insert an existing project in the current project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="533"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="538"/>
         <source>Open Foil Design application</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="538"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="543"/>
         <source>Open XFoil inverse analysis application</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="543"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="548"/>
         <source>Open XFoil Mixed Inverse analysis application</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="548"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="553"/>
         <source>Open XFoil direct analysis application</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="553"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="558"/>
         <source>Open Wing/plane design and analysis application</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="556"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3613"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3654"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="561"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3617"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3658"/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="558"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="563"/>
         <source>Save the project to disk</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="561"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="566"/>
         <source>Load Last Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="563"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="568"/>
         <source>Loads the last saved project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="566"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="571"/>
         <source>Save Project As</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="568"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="573"/>
         <source>Save the current project under a new name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="574"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="579"/>
         <source>Restore toolbars</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="575"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="580"/>
         <source>Restores the toolbars to their original state</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="578"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="583"/>
         <source>Save View to Image File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="580"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="585"/>
         <source>Saves the current view to a file on disk</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="595"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="600"/>
         <source>Export Graph</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="596"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="601"/>
         <source>Export the current graph data to a text file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="601"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="606"/>
         <source>Restores the graph&apos;s x and y scales</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="608"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="613"/>
         <source>E&amp;xit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="610"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="615"/>
         <source>Exit the application</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="617"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="622"/>
         <source>More information about XFLR5</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="620"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="625"/>
         <source>About Qt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1456"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1460"/>
         <source>Show only associated Polars</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1496"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1500"/>
         <source>Save as Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1520"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1524"/>
         <source>Advanced Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1524"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1529"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2469"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2472"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1528"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1533"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2473"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2476"/>
         <source>Properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1525"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1529"/>
         <source>Show the properties of the currently selected polar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="739"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="744"/>
         <source>Define the grid settings for the view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="636"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="641"/>
         <source>Store Splines as Foil</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="637"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="642"/>
         <source>Store the current splines in the foil database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="640"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="645"/>
         <source>Splines Params</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="641"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="645"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="646"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="650"/>
         <source>Define parameters for the splines : degree, number of out points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="644"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="649"/>
         <source>Export Splines To File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="648"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="653"/>
         <source>New Splines</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="649"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="654"/>
         <source>Reset the splines</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="767"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2896"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="772"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2900"/>
         <source>Zoom in</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="768"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2897"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="773"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2901"/>
         <source>Zoom the view by drawing a rectangle in the client area</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="748"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="753"/>
         <source>Reset X Scale</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="749"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="754"/>
         <source>Resets the scale to fit the current screen width</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="652"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="657"/>
         <source>Undo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="657"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="662"/>
         <source>Redo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="662"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="667"/>
         <source>Show All Foils</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="664"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="669"/>
         <source>Hide All Foils</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="681"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="686"/>
         <source>Show Current Foil</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="684"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="689"/>
         <source>Hide Current Foil</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="764"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="769"/>
         <source>Reset Y Scale</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="752"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="757"/>
         <source>Reset Scales</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="753"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="758"/>
         <source>Resets the x and y scales to screen size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="771"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="772"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="776"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="777"/>
         <source>Zoom Less</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="775"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="780"/>
         <source>Zoom Y Scale Only</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="776"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="781"/>
         <source>Zoom Y scale Only</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="687"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2482"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="692"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2486"/>
         <source>De-rotate the Foil</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="691"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2485"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="696"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2489"/>
         <source>Normalize the Foil</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="698"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2488"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="703"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2492"/>
         <source>Refine Locally</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="694"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2492"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="699"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2496"/>
         <source>Refine Globally</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="227"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="419"/>
         <source>Your system does not provide support for OpenGL.
 XFLR5 will not operate correctly.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="466"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="471"/>
         <source>Exit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="466"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="471"/>
         <source>Save the project before exit ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="571"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="576"/>
         <source>Preferences</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="613"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="618"/>
         <source>OpenGL info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="623"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="628"/>
         <source>Check for updates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="654"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="659"/>
         <source>Cancels the last modification</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="659"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="664"/>
         <source>Restores the last cancelled modification</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="678"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1492"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2342"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="683"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1496"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2346"/>
         <source>Duplicate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="688"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="693"/>
         <source>Set chord line level</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="702"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2496"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="707"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2500"/>
         <source>Edit Foil Coordinates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="705"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2499"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="710"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2503"/>
         <source>Scale camber and thickness</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="708"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2503"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="713"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2507"/>
         <source>Set T.E. Gap</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="711"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2506"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="716"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2510"/>
         <source>Set L.E. Radius</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="714"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="719"/>
         <source>Show LE Circle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="717"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="722"/>
         <source>Show Legend</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="721"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2509"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="726"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2513"/>
         <source>Set Flap</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="724"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2513"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="729"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2517"/>
         <source>Interpolate Foils</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="727"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2517"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="732"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2521"/>
         <source>Naca Foils</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="730"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="735"/>
         <source>Set Table Columns</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="733"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="738"/>
         <source>Reset column widths</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="738"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="743"/>
         <source>Grid Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="757"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="762"/>
         <source>Load background image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="759"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="764"/>
         <source>Clear background image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="806"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="848"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="811"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="853"/>
         <source>F&amp;oil</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="846"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1684"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1781"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1862"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1951"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2032"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2117"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2676"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2779"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2936"/>
-        <source>Context Menu</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="971"/>
-        <source>Inverse foil design</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1219"/>
-        <source>Display mouse coordinates</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1222"/>
-        <source>Display the coordinates of the mouse on the top right corner of the graph</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1232"/>
-        <source>Switch to the Operating point view</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1238"/>
-        <source>Switch to the Polar view</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1242"/>
-        <source>Time Response View</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1244"/>
-        <source>Switch to stability analysis post-processing</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1255"/>
-        <source>Switch to the 3D view</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1261"/>
-        <source>Switch to the Cp view</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1269"/>
-        <source>Define which type of polars should be shown or hidden</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1282"/>
-        <source>Define the scales for the 3D display of lift, moment, drag, and downwash</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1287"/>
-        <source>Define the light options in 3D view</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1295"/>
-        <source>Define (Advanced users)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1300"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1436"/>
-        <source>Edit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1305"/>
-        <source>Edit (advanced users)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1310"/>
-        <source>Edit wing</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1316"/>
-        <source>Edit elevator</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1321"/>
-        <source>Edit fin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1326"/>
-        <source>Edit body</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1336"/>
-        <source>Rename the currently selected object</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1339"/>
-        <source>Export to AVL</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1340"/>
-        <source>Export the current plane or wing to a text file in the format required by AVL</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1343"/>
-        <source>Export to STL</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1348"/>
-        <source>Export the current operating point to a text or csv file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1352"/>
-        <source>Scale the dimensions of the currently selected wing</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1355"/>
-        <source>Manage objects</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1356"/>
-        <source>Rename or delete the planes and wings stored in the database</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1369"/>
-        <source>Define the inertia for the current plane or wing</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1373"/>
-        <source>Hide all the curves except for the one corresponding to the currently selected operating point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1378"/>
-        <source>Show the graph curves of all operating points</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1382"/>
-        <source>Hide the graph curves of all operating points</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1386"/>
-        <source>Delete all the operating points of all planes and polars</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1390"/>
-        <source>Show the curves of all the operating points of the currently selected polar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1394"/>
-        <source>Hide the curves of all the operating points of the currently selected polar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1401"/>
-        <source>Delete all the operating points of the currently selected polar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1408"/>
-        <source>Show XCG location</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1409"/>
-        <source>Show the position of the center of gravity defined in the analysis</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1414"/>
-        <source>Show the graph curves for the elevator</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1419"/>
-        <source>Show the graph curves for the fin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1424"/>
-        <source>Show the graph curves for the second wing</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1429"/>
-        <source>Define an analysis for the current wing or plane</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1437"/>
-        <source>Modify the analysis parameters of this polar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1448"/>
-        <source>Define a Stability Analysis</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1449"/>
-        <source>Define a stability analysis for the current wing or plane</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="604"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1203"/>
-        <source>Define Graph Settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="531"/>
-        <source>Direct Foil Design</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="536"/>
-        <source>XFoil Inverse Design</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="541"/>
-        <source>XFoil Mixed Inverse Design</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="546"/>
-        <source>XFoil Direct Analysis</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="551"/>
-        <source>Wing and Plane Design</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="616"/>
-        <source>About</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="783"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1552"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2551"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2905"/>
-        <source>View</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="831"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="874"/>
-        <source>Splines</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1100"/>
-        <source>File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1134"/>
-        <source>Graphs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1152"/>
-        <source>?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1205"/>
-        <source>Define the settings for the selected graph</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1210"/>
-        <source>Reset the scales of all four polar graphs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1264"/>
-        <source>3D View Preferences</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1265"/>
-        <source>Define the preferences for the 3D view</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1272"/>
-        <source>Reset scale</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1273"/>
-        <source>Resets the display scale so that the plane fits in the window</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1276"/>
-        <source>Show flap moments</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1278"/>
-        <source>Display the flap moment values together with the other operating point results</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1344"/>
-        <source>Export the current wing to a file in the STL format</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1360"/>
-        <source>Import Polar(s)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1361"/>
-        <source>Import polar(s) from text file(s)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1365"/>
-        <source>Export polar(s) to text file(s)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1397"/>
-        <source>Show Only Associated OpPoints</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1453"/>
-        <source>Hide all the polar curves associated to the currently selected wing or plane</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1461"/>
-        <source>Show all the polar curves associated to the currently selected wing or plane</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1465"/>
-        <source>Delete all the polars associated to the currently selected wing or plane</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1469"/>
-        <source>Hide all the polar curves of all wings and planes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1473"/>
-        <source>Show all the polar curves of all wings and planes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1477"/>
-        <source>Hide all the operating point curves of the currently selected wing or plane</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1481"/>
-        <source>Show all the operating point curves of the currently selected wing or plane</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1485"/>
-        <source>Delete all the operating points of the currently selected wing or plane</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1489"/>
-        <source>Delete the currently selected wing or plane</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1493"/>
-        <source>Duplicate the currently selected wing or plane</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1497"/>
-        <source>Save the currently selected wing or plane as a new separate project</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1501"/>
-        <source>Rename the currently selected polar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1504"/>
-        <source>Export results</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1505"/>
-        <source>Export the currently selected polar to a text or csv file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1509"/>
-        <source>Delete all the points of the currently selected polar, but keep the analysis settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1513"/>
-        <source>Delete the currently selected polar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1517"/>
-        <source>Delete the currently selected operating point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1521"/>
-        <source>Define the settings for LLT, VLM and Panel analysis</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1537"/>
-        <source>Import plane(s) from xml file(s)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1540"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2543"/>
-        <source>Export analysis to xml file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1543"/>
-        <source>Import analysis from xml file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1544"/>
-        <source>Import analysis definition(s) from XML file(s)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1428"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2386"/>
-        <source>Define an Analysis</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2391"/>
-        <source>Batch Analysis</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2563"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2678"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2781"/>
-        <source>Current Foil</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="936"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2294"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2559"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2922"/>
-        <source>Foil</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1012"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1281"/>
-        <source>3D Scales</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2314"/>
-        <source>OpPoint view</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2316"/>
-        <source>Show Operating point view</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2319"/>
-        <source>Polar view</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2321"/>
-        <source>Show Polar view</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1268"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2324"/>
-        <source>Polar Filter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1286"/>
-        <source>3D Light Options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1290"/>
-        <source>Define a New Plane</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1292"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1297"/>
-        <source>Shows a dialogbox to create a new plane definition</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1413"/>
-        <source>Show Elevator Curve</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2479"/>
-        <source>View Log File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="584"/>
-        <source>will revert to default settings at the next session</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1530"/>
-        <source>Show the properties of the currently selected operating point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="911"/>
-        <source>Foil Actions</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1024"/>
-        <source>Stability</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1230"/>
-        <source>OpPoint View</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1236"/>
-        <source>Polar View</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1248"/>
-        <source>Root Locus View</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1250"/>
-        <source>Switch to root locus view</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1253"/>
-        <source>3D View</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1259"/>
-        <source>Cp View</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1351"/>
-        <source>Scale Wing</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1368"/>
-        <source>Define Inertia</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1372"/>
-        <source>Show Current OpPoint Only</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1377"/>
-        <source>Show All OpPoints</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1381"/>
-        <source>Hide All OpPoints</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1385"/>
-        <source>Delete All OpPoints</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1389"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1480"/>
-        <source>Show Associated OpPoints</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1393"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1476"/>
-        <source>Hide Associated OpPoints</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1400"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1484"/>
-        <source>Delete Associated OpPoints</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1418"/>
-        <source>Show Fin Curve</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1423"/>
-        <source>Show Second Wing Curve</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1183"/>
-        <source>Display the first two graphs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2327"/>
-        <source>Highlight Current OpPoint</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2329"/>
-        <source>Highlights on the polar curve the currently selected operating point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1209"/>
-        <source>Reset All Graph Scales</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1214"/>
-        <source>All Graph Settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1452"/>
-        <source>Hide Associated Polars</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1460"/>
-        <source>Show Associated Polars</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1464"/>
-        <source>Delete Associated Polars</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1468"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2450"/>
-        <source>Hide All Polars</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1472"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2447"/>
-        <source>Show All Polars</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1618"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1727"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1824"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1906"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1995"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2076"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2160"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2619"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2699"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2802"/>
-        <source>Current Polar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1650"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1748"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1845"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1926"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2097"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2182"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2649"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2733"/>
-        <source>Current OpPoint</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1768"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1934"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2018"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2818"/>
-        <source>Current Graph</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2253"/>
-        <source>Ready</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2348"/>
-        <source>Delete associated polars</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2349"/>
-        <source>Delete all the polars associated to this foil</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2352"/>
-        <source>Show only associated polars</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2356"/>
-        <source>Show associated polars</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2359"/>
-        <source>Hide associated polars</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2362"/>
-        <source>Save associated polars</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2365"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2377"/>
-        <source>Hide associated OpPoints</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2368"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2380"/>
-        <source>Show associated OpPoints</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2371"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2383"/>
-        <source>Delete associated OpPoints</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2374"/>
-        <source>Export associated OpPoints</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2388"/>
-        <source>Defines a single analysis/polar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2393"/>
-        <source>Launches a batch of analysis calculation for a specified range or list of Reynolds numbers</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2396"/>
-        <source>Multi-threaded Batch Analysis</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2398"/>
-        <source>Launches a batch of analysis calculation using all available computer CPU cores</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="668"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1488"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1512"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1516"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2332"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2401"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2466"/>
-        <source>Delete</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2402"/>
-        <source>Deletes the currently selected polar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1508"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2405"/>
-        <source>Reset</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2406"/>
-        <source>Deletes the contents of the currently selected polar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2410"/>
-        <source>Remove the unconverged or erroneaous points of the currently selected polar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="675"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1347"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2339"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2413"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2463"/>
-        <source>Export</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1364"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2416"/>
-        <source>Export all polars</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2419"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2855"/>
-        <source>Define Styles</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2420"/>
-        <source>Define the style for the boundary layer and the pressure arrows</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2432"/>
-        <source>Manage Foils</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="671"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1335"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1500"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2335"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2436"/>
-        <source>Rename</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2429"/>
-        <source>Reset Foil Scale</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2430"/>
-        <source>Resets the foil&apos;s scale to original size</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2441"/>
-        <source>Show Inviscid Curve</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2443"/>
-        <source>Display the Opp&apos;s inviscid curve</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2422"/>
-        <source>Neutral Line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2345"/>
-        <source>Set Style</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2453"/>
-        <source>Show Current Opp Only</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2457"/>
-        <source>Show All Opps</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2460"/>
-        <source>Hide All Opps</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2475"/>
-        <source>XFoil Advanced Settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2476"/>
-        <source>Tip : you don&apos;t want to use that option...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2520"/>
-        <source>Cp Variable</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2522"/>
-        <source>Sets Cp vs. chord graph</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2525"/>
-        <source>Q Variable</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2527"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2531"/>
-        <source>Sets Speed vs. chord graph</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2647"/>
-        <source>Operating Points</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2657"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2744"/>
-        <source>Cp Graph</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2847"/>
-        <source>Store Foil</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2848"/>
-        <source>Store Foil in database</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2851"/>
-        <source>Extract Foil</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2852"/>
-        <source>Extract a Foil from the database for modification</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2856"/>
-        <source>Define the styles for this view</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2867"/>
-        <source>Resets the scale to fit the screen size</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="742"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2870"/>
-        <source>Insert Control Point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="745"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2873"/>
-        <source>Remove Control Point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="967"/>
-        <source>Direct foil analysis</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="975"/>
-        <source>Plane analysis</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="979"/>
-        <source>Foil direct design</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1124"/>
-        <source>O&amp;ptions</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1173"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2915"/>
-        <source>Graph</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1189"/>
-        <source>Four Graphs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1191"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1198"/>
-        <source>Display four graphs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1215"/>
-        <source>Define the settings of all graphs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1301"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1306"/>
-        <source>Shows a form to edit the currently selected plane</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1534"/>
-        <source>Export to xml file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1311"/>
-        <source>Shows a form to edit the wing of the currently selected plane</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1327"/>
-        <source>Shows a form to edit the body of the currently selected plane</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1331"/>
-        <source>Edit body (advanced users)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1404"/>
-        <source>Show Target Curve</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1432"/>
-        <source>Define an Analysis (advanced users)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1433"/>
-        <source>Shows a form to edit a new polar object</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1440"/>
-        <source>Edit object (advanced users)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1441"/>
-        <source>Shows a form to edit the currently selected polar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1445"/>
-        <source>Modify the data points of this polar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1574"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1686"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1783"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1864"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1953"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2034"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2119"/>
-        <source>Current Plane</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1569"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2228"/>
-        <source>Plane</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1444"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2409"/>
-        <source>Edit data points</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2530"/>
-        <source>Export BL Data</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2537"/>
-        <source>Import XFoil Polar(s)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2540"/>
-        <source>Import Analysis from xml file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2859"/>
-        <source>Overlay foil</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2860"/>
-        <source>Overlay an additional foil for guidance</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2863"/>
-        <source>Clear overlay foil</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2876"/>
-        <source>Show Q-Initial</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2880"/>
-        <source>Show Q-Spec</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2884"/>
-        <source>Show Q-Viscous</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2888"/>
-        <source>Show Points</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2892"/>
-        <source>Show Reflected</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2970"/>
-        <source>Full Inverse</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2971"/>
-        <source>Mixed Inverse</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2975"/>
-        <source>XInverse</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3926"/>
-        <source>Question</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3759"/>
-        <source>Could not read the file
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3538"/>
-        <source>Info</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3612"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3653"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3926"/>
-        <source>Save the current project ?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3749"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3835"/>
-        <source>Open File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="227"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="235"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3636"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3676"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3759"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3772"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3781"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4285"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4352"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4543"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4630"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4664"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4689"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4705"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5367"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5405"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5429"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5449"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5462"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5475"/>
-        <source>Warning</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3938"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4064"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4095"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4108"/>
-        <source>The project </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3938"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4064"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4095"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4108"/>
-        <source> has been saved</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3971"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3975"/>
-        <source>Default Settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="583"/>
-        <source>Reset Default Settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="599"/>
-        <source>Reset Graph Scales</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1181"/>
-        <source>Two Graphs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1196"/>
-        <source>All Graphs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1576"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1671"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="851"/>
         <location filename="../xflr5-gui/globals/mainframe.cpp" line="1688"/>
         <location filename="../xflr5-gui/globals/mainframe.cpp" line="1785"/>
         <location filename="../xflr5-gui/globals/mainframe.cpp" line="1866"/>
         <location filename="../xflr5-gui/globals/mainframe.cpp" line="1955"/>
         <location filename="../xflr5-gui/globals/mainframe.cpp" line="2036"/>
         <location filename="../xflr5-gui/globals/mainframe.cpp" line="2121"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2605"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2680"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2783"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2940"/>
+        <source>Context Menu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="976"/>
+        <source>Inverse foil design</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1223"/>
+        <source>Display mouse coordinates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1226"/>
+        <source>Display the coordinates of the mouse on the top right corner of the graph</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1236"/>
+        <source>Switch to the Operating point view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1242"/>
+        <source>Switch to the Polar view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1246"/>
+        <source>Time Response View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1248"/>
+        <source>Switch to stability analysis post-processing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1259"/>
+        <source>Switch to the 3D view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1265"/>
+        <source>Switch to the Cp view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1273"/>
+        <source>Define which type of polars should be shown or hidden</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1286"/>
+        <source>Define the scales for the 3D display of lift, moment, drag, and downwash</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1291"/>
+        <source>Define the light options in 3D view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1299"/>
+        <source>Define (Advanced users)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1304"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1440"/>
+        <source>Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1309"/>
+        <source>Edit (advanced users)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1314"/>
+        <source>Edit wing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1320"/>
+        <source>Edit elevator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1325"/>
+        <source>Edit fin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1330"/>
+        <source>Edit body</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1340"/>
+        <source>Rename the currently selected object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1343"/>
+        <source>Export to AVL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1344"/>
+        <source>Export the current plane or wing to a text file in the format required by AVL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1347"/>
+        <source>Export to STL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1352"/>
+        <source>Export the current operating point to a text or csv file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1356"/>
+        <source>Scale the dimensions of the currently selected wing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1359"/>
+        <source>Manage objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1360"/>
+        <source>Rename or delete the planes and wings stored in the database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1373"/>
+        <source>Define the inertia for the current plane or wing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1377"/>
+        <source>Hide all the curves except for the one corresponding to the currently selected operating point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1382"/>
+        <source>Show the graph curves of all operating points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1386"/>
+        <source>Hide the graph curves of all operating points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1390"/>
+        <source>Delete all the operating points of all planes and polars</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1394"/>
+        <source>Show the curves of all the operating points of the currently selected polar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1398"/>
+        <source>Hide the curves of all the operating points of the currently selected polar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1405"/>
+        <source>Delete all the operating points of the currently selected polar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1412"/>
+        <source>Show XCG location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1413"/>
+        <source>Show the position of the center of gravity defined in the analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1418"/>
+        <source>Show the graph curves for the elevator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1423"/>
+        <source>Show the graph curves for the fin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1428"/>
+        <source>Show the graph curves for the second wing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1433"/>
+        <source>Define an analysis for the current wing or plane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1441"/>
+        <source>Modify the analysis parameters of this polar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1452"/>
+        <source>Define a Stability Analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1453"/>
+        <source>Define a stability analysis for the current wing or plane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="609"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1207"/>
+        <source>Define Graph Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="536"/>
+        <source>Direct Foil Design</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="541"/>
+        <source>XFoil Inverse Design</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="546"/>
+        <source>XFoil Mixed Inverse Design</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="551"/>
+        <source>XFoil Direct Analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="556"/>
+        <source>Wing and Plane Design</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="621"/>
+        <source>About</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="788"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1556"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2555"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2909"/>
+        <source>View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="836"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="879"/>
+        <source>Splines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1104"/>
+        <source>File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1138"/>
+        <source>Graphs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1156"/>
+        <source>?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1209"/>
+        <source>Define the settings for the selected graph</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1214"/>
+        <source>Reset the scales of all four polar graphs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1268"/>
+        <source>3D View Preferences</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1269"/>
+        <source>Define the preferences for the 3D view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1276"/>
+        <source>Reset scale</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1277"/>
+        <source>Resets the display scale so that the plane fits in the window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1280"/>
+        <source>Show flap moments</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1282"/>
+        <source>Display the flap moment values together with the other operating point results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1348"/>
+        <source>Export the current wing to a file in the STL format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1364"/>
+        <source>Import Polar(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1365"/>
+        <source>Import polar(s) from text file(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1369"/>
+        <source>Export polar(s) to text file(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1401"/>
+        <source>Show Only Associated OpPoints</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1457"/>
+        <source>Hide all the polar curves associated to the currently selected wing or plane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1465"/>
+        <source>Show all the polar curves associated to the currently selected wing or plane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1469"/>
+        <source>Delete all the polars associated to the currently selected wing or plane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1473"/>
+        <source>Hide all the polar curves of all wings and planes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1477"/>
+        <source>Show all the polar curves of all wings and planes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1481"/>
+        <source>Hide all the operating point curves of the currently selected wing or plane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1485"/>
+        <source>Show all the operating point curves of the currently selected wing or plane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1489"/>
+        <source>Delete all the operating points of the currently selected wing or plane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1493"/>
+        <source>Delete the currently selected wing or plane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1497"/>
+        <source>Duplicate the currently selected wing or plane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1501"/>
+        <source>Save the currently selected wing or plane as a new separate project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1505"/>
+        <source>Rename the currently selected polar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1508"/>
+        <source>Export results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1509"/>
+        <source>Export the currently selected polar to a text or csv file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1513"/>
+        <source>Delete all the points of the currently selected polar, but keep the analysis settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1517"/>
+        <source>Delete the currently selected polar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1521"/>
+        <source>Delete the currently selected operating point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1525"/>
+        <source>Define the settings for LLT, VLM and Panel analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1541"/>
+        <source>Import plane(s) from xml file(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1544"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2547"/>
+        <source>Export analysis to xml file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1547"/>
+        <source>Import analysis from xml file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1548"/>
+        <source>Import analysis definition(s) from XML file(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1432"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2390"/>
+        <source>Define an Analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2395"/>
+        <source>Batch Analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2567"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2682"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2785"/>
+        <source>Current Foil</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="941"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2298"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2563"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2926"/>
+        <source>Foil</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1017"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1285"/>
+        <source>3D Scales</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2318"/>
+        <source>OpPoint view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2320"/>
+        <source>Show Operating point view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2323"/>
+        <source>Polar view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2325"/>
+        <source>Show Polar view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1272"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2328"/>
+        <source>Polar Filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1290"/>
+        <source>3D Light Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1294"/>
+        <source>Define a New Plane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1296"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1301"/>
+        <source>Shows a dialogbox to create a new plane definition</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1417"/>
+        <source>Show Elevator Curve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2483"/>
+        <source>View Log File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="589"/>
+        <source>will revert to default settings at the next session</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1534"/>
+        <source>Show the properties of the currently selected operating point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="916"/>
+        <source>Foil Actions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1029"/>
+        <source>Stability</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1234"/>
+        <source>OpPoint View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1240"/>
+        <source>Polar View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1252"/>
+        <source>Root Locus View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1254"/>
+        <source>Switch to root locus view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1257"/>
+        <source>3D View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1263"/>
+        <source>Cp View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1355"/>
+        <source>Scale Wing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1372"/>
+        <source>Define Inertia</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1376"/>
+        <source>Show Current OpPoint Only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1381"/>
+        <source>Show All OpPoints</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1385"/>
+        <source>Hide All OpPoints</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1389"/>
+        <source>Delete All OpPoints</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1393"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1484"/>
+        <source>Show Associated OpPoints</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1397"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1480"/>
+        <source>Hide Associated OpPoints</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1404"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1488"/>
+        <source>Delete Associated OpPoints</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1422"/>
+        <source>Show Fin Curve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1427"/>
+        <source>Show Second Wing Curve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1187"/>
+        <source>Display the first two graphs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2331"/>
+        <source>Highlight Current OpPoint</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2333"/>
+        <source>Highlights on the polar curve the currently selected operating point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1213"/>
+        <source>Reset All Graph Scales</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1218"/>
+        <source>All Graph Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1456"/>
+        <source>Hide Associated Polars</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1464"/>
+        <source>Show Associated Polars</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1468"/>
+        <source>Delete Associated Polars</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1472"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2454"/>
+        <source>Hide All Polars</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1476"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2451"/>
+        <source>Show All Polars</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1622"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1731"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1828"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1910"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1999"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2080"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2164"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2623"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2703"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2806"/>
+        <source>Current Polar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1654"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1752"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1849"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1930"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2101"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2186"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2653"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2737"/>
+        <source>Current OpPoint</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1772"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1938"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2022"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2822"/>
+        <source>Current Graph</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2257"/>
+        <source>Ready</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2352"/>
+        <source>Delete associated polars</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2353"/>
+        <source>Delete all the polars associated to this foil</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2356"/>
+        <source>Show only associated polars</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2360"/>
+        <source>Show associated polars</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2363"/>
+        <source>Hide associated polars</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2366"/>
+        <source>Save associated polars</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2369"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2381"/>
+        <source>Hide associated OpPoints</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2372"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2384"/>
+        <source>Show associated OpPoints</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2375"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2387"/>
+        <source>Delete associated OpPoints</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2378"/>
+        <source>Export associated OpPoints</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2392"/>
+        <source>Defines a single analysis/polar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2397"/>
+        <source>Launches a batch of analysis calculation for a specified range or list of Reynolds numbers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2400"/>
+        <source>Multi-threaded Batch Analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2402"/>
+        <source>Launches a batch of analysis calculation using all available computer CPU cores</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="673"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1492"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1516"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1520"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2336"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2405"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2470"/>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2406"/>
+        <source>Deletes the currently selected polar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1512"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2409"/>
+        <source>Reset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2410"/>
+        <source>Deletes the contents of the currently selected polar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2414"/>
+        <source>Remove the unconverged or erroneaous points of the currently selected polar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="680"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1351"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2343"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2417"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2467"/>
+        <source>Export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1368"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2420"/>
+        <source>Export all polars</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2423"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2859"/>
+        <source>Define Styles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2424"/>
+        <source>Define the style for the boundary layer and the pressure arrows</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2436"/>
+        <source>Manage Foils</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="676"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1339"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1504"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2339"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2440"/>
+        <source>Rename</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2433"/>
+        <source>Reset Foil Scale</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2434"/>
+        <source>Resets the foil&apos;s scale to original size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2445"/>
+        <source>Show Inviscid Curve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2447"/>
+        <source>Display the Opp&apos;s inviscid curve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2426"/>
+        <source>Neutral Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2349"/>
+        <source>Set Style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2457"/>
+        <source>Show Current Opp Only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2461"/>
+        <source>Show All Opps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2464"/>
+        <source>Hide All Opps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2479"/>
+        <source>XFoil Advanced Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2480"/>
+        <source>Tip : you don&apos;t want to use that option...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2524"/>
+        <source>Cp Variable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2526"/>
+        <source>Sets Cp vs. chord graph</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2529"/>
+        <source>Q Variable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2531"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2535"/>
+        <source>Sets Speed vs. chord graph</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2651"/>
+        <source>Operating Points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2661"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2748"/>
+        <source>Cp Graph</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2851"/>
+        <source>Store Foil</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2852"/>
+        <source>Store Foil in database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2855"/>
+        <source>Extract Foil</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2856"/>
+        <source>Extract a Foil from the database for modification</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2860"/>
+        <source>Define the styles for this view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2871"/>
+        <source>Resets the scale to fit the screen size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="747"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2874"/>
+        <source>Insert Control Point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="750"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2877"/>
+        <source>Remove Control Point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="972"/>
+        <source>Direct foil analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="980"/>
+        <source>Plane analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="984"/>
+        <source>Foil direct design</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1128"/>
+        <source>O&amp;ptions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1177"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2919"/>
+        <source>Graph</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1193"/>
+        <source>Four Graphs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1195"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1202"/>
+        <source>Display four graphs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1219"/>
+        <source>Define the settings of all graphs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1305"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1310"/>
+        <source>Shows a form to edit the currently selected plane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1538"/>
+        <source>Export to xml file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1315"/>
+        <source>Shows a form to edit the wing of the currently selected plane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1331"/>
+        <source>Shows a form to edit the body of the currently selected plane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1335"/>
+        <source>Edit body (advanced users)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1408"/>
+        <source>Show Target Curve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1436"/>
+        <source>Define an Analysis (advanced users)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1437"/>
+        <source>Shows a form to edit a new polar object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1444"/>
+        <source>Edit object (advanced users)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1445"/>
+        <source>Shows a form to edit the currently selected polar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1449"/>
+        <source>Modify the data points of this polar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1578"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1690"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1787"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1868"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1957"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2038"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2123"/>
+        <source>Current Plane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1573"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2232"/>
+        <source>Plane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1448"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2413"/>
+        <source>Edit data points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2534"/>
+        <source>Export BL Data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2541"/>
+        <source>Import XFoil Polar(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2544"/>
+        <source>Import Analysis from xml file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2863"/>
+        <source>Overlay foil</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2864"/>
+        <source>Overlay an additional foil for guidance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2867"/>
+        <source>Clear overlay foil</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2880"/>
+        <source>Show Q-Initial</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2884"/>
+        <source>Show Q-Spec</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2888"/>
+        <source>Show Q-Viscous</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2892"/>
+        <source>Show Points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2896"/>
+        <source>Show Reflected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2974"/>
+        <source>Full Inverse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2975"/>
+        <source>Mixed Inverse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2979"/>
+        <source>XInverse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3930"/>
+        <source>Question</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3763"/>
+        <source>Could not read the file
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3542"/>
+        <source>Info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3616"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3657"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3930"/>
+        <source>Save the current project ?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3753"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3839"/>
+        <source>Open File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="419"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="427"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3640"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3680"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3763"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3776"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3785"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4289"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4356"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4547"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4634"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4668"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4693"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4709"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5371"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5409"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5433"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5453"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5466"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5479"/>
+        <source>Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3942"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4068"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4099"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4112"/>
+        <source>The project </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3942"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4068"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4099"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4112"/>
+        <source> has been saved</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3975"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3979"/>
+        <source>Default Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="588"/>
+        <source>Reset Default Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="604"/>
+        <source>Reset Graph Scales</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1185"/>
+        <source>Two Graphs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1200"/>
+        <source>All Graphs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1580"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1675"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1692"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1789"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1870"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1959"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2040"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2125"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2609"/>
         <source>Analysis</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1616"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2617"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1620"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2621"/>
         <source>Polars</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1648"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="1652"/>
         <source>OpPoint</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2589"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2715"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2593"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2719"/>
         <source>Design</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2866"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="2870"/>
         <source>Reset foil scale</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3537"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3541"/>
         <source>Could not open the file
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3636"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3676"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3772"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3781"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5367"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5405"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5429"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5449"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5462"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5475"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3640"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3680"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3776"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3785"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5371"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5409"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5433"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5453"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5466"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5479"/>
         <source>Error reading the file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3636"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3676"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5367"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5405"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5429"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5449"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5462"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5475"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3640"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3680"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5371"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5409"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5433"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5453"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5466"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="5479"/>
         <source>Saved the valid part</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3971"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3975"/>
         <source>Are you sure you want to reset the default settings ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3975"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3979"/>
         <source>The settings will be reset at the next session</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4190"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4194"/>
         <source>Set a transparent background ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4637"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4641"/>
         <source>Error saving the project file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4641"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4645"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4664"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4705"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4668"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4709"/>
         <source>Nothing to save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4600"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4672"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4604"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4676"/>
         <source>Save the Project File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4630"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4689"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4634"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4693"/>
         <source>Could not open the file for writing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4140"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4144"/>
         <source>Save Image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4285"/>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4352"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4289"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4356"/>
         <source>Unidentified Operating Point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4543"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="4547"/>
         <source>Obsolete format, cannot read</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="6215"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="6219"/>
         <source>&amp;%1 %2</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7656,65 +7666,65 @@ Check the guidelines for explanations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="529"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="525"/>
         <source>Export Body Definition</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="531"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="527"/>
         <source>Text Format (*.txt)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="1320"/>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="561"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="557"/>
         <source>Export Body Geometry</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="6935"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="6939"/>
         <source>Export Graph</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="6936"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="6940"/>
         <location filename="../xflr5-gui/miarex/design/EditBodyDlg.cpp" line="1322"/>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="563"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="559"/>
         <source>Text File (*.txt);;Comma Separated Values (*.csv)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="591"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="587"/>
         <source>Choose the length unit to read this file :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="602"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="598"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="604"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="600"/>
         <source>All files (*.*)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="612"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="608"/>
         <source>Could not read the file
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3852"/>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="613"/>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="621"/>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="871"/>
-        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="897"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3856"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="609"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="617"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="870"/>
+        <location filename="../xflr5-gui/miarex/design/GL3dBodyDlg.cpp" line="896"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3852"/>
+        <location filename="../xflr5-gui/globals/mainframe.cpp" line="3856"/>
         <source>Multiple file loading only available for airfoil files.
 Non *.dat files will be ignored.</source>
         <translation type="unfinished"></translation>
@@ -8514,61 +8524,61 @@ CpCalc: local speed too large
 <context>
     <name>Section2dWidget</name>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="100"/>
+        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="101"/>
         <source>Insert Control Point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="104"/>
+        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="105"/>
         <source>Remove Control Point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="112"/>
+        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="113"/>
         <source>Reset Scales</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="116"/>
+        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="117"/>
         <source>Grid Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="124"/>
+        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="125"/>
         <source>Load background image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="128"/>
+        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="129"/>
         <source>Clear background image</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="178"/>
-        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="1043"/>
+        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="179"/>
+        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="1031"/>
         <source>X-Scale = %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="179"/>
-        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="1044"/>
+        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="180"/>
+        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="1032"/>
         <source>Y-Scale = %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="180"/>
-        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="1045"/>
+        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="181"/>
+        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="1033"/>
         <source>x  = %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="181"/>
-        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="1046"/>
+        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="182"/>
+        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="1034"/>
         <source>y  = %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="258"/>
+        <location filename="../xflr5-gui/viewwidgets/section2dwidget.cpp" line="256"/>
         <source>Open Image File</source>
         <translation type="unfinished"></translation>
     </message>
