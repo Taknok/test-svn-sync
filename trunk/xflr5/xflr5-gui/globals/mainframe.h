@@ -39,6 +39,7 @@
 #include <QTranslator>
 #include <QMainWindow>
 #include <QList>
+#include <QActionGroup>
 
 #include <globals/gui_params.h>
 #include <globals/gui_enums.h>
@@ -363,6 +364,7 @@ private:
 	QAction *m_pAFoilLoadImage, *m_pAFoilClearImage;
 
 	//Miarex Actions
+    QActionGroup *m_pMiarexViewActGroup;
 	QAction *m_pWPolarAct, *m_pWOppAct, *m_pW3DAct, *m_pCpViewAct, *m_pStabTimeAct, *m_pRootLocusAct;
 	QAction *m_pW3DPrefsAct, *m_pW3DLightAct, *m_pW3DScalesAct, *m_pReset3DScale;
 	QAction *m_pDefinePlaneAct, *m_pDefinePlaneObjectAct, *m_pEditPlaneAct, *m_pEditBodyAct, *m_pEditBodyObjectAct;
@@ -389,7 +391,8 @@ private:
 	QAction *m_pShowFlapMoments;
 
 	//XDirect Actions
-	QAction *m_pPolarsAct, *m_pOpPointsAct, *m_pDeletePolar, *m_pDefinePolarAct, *m_pEditCurPolar, *m_pBatchAnalysisAct, *m_pResetCurPolar;
+    QActionGroup *m_pXDirectViewActGroup;
+    QAction *m_pPolarsAct, *m_pOpPointsAct, *m_pDeletePolar, *m_pDefinePolarAct, *m_pEditCurPolar, *m_pBatchAnalysisAct, *m_pResetCurPolar;
 	QAction *m_pMultiThreadedBatchAct;
 	QAction *m_pRestoreToolbarsAct;
 	QAction *m_pExportCurPolar, *m_pExportAllPolars, *m_pHideFoilPolars, *m_pShowFoilPolars, *m_pShowFoilPolarsOnly, *m_pSaveFoilPolars,*m_pDeleteFoilPolars;
