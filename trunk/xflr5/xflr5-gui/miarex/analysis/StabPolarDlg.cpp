@@ -894,9 +894,9 @@ void StabPolarDlg::setupLayout()
 
 				QGridLayout *pRefAreaLayout = new QGridLayout;
 				{
-					QLabel *labRefArea  = new QLabel("Ref. area=");
-					QLabel *labRefSpan  = new QLabel("Ref. span length=");
-					QLabel *labRefChord = new QLabel("Ref. chord length=");
+                    QLabel *labRefArea  = new QLabel(tr("Ref. area="));
+                    QLabel *labRefSpan  = new QLabel(tr("Ref. span length="));
+                    QLabel *labRefChord = new QLabel(tr("Ref. chord length="));
 					m_pctrlRefArea  = new DoubleEdit(0.0, 3);
 					m_pctrlRefChord = new DoubleEdit(0.0, 3);
 					m_pctrlRefSpan  = new DoubleEdit(0.0, 3);
