@@ -188,7 +188,6 @@ protected:
     void keyReleaseEvent(QKeyEvent *pEvent);
     void closeEvent (QCloseEvent * pEvent);
     void showEvent(QShowEvent *pEvent);
-    void changeEvent(QEvent *pEvent);
 
 public:
     void addRecentFile(const QString &PathName);
