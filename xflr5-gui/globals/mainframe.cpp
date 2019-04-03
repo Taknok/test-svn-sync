@@ -7075,15 +7075,6 @@ void MainFrame::onPreferences()
 
     m_VoidWidget.update();
 
-    if(s_LanguageFilePath.length())
-    {
-        qApp->removeTranslator(&m_Translator);
-        if(m_Translator.load(s_LanguageFilePath))
-        {
-            qApp->installTranslator(&m_Translator);
-        }
-    }
-
     setMainFrameCentralWidget();
 
     saveSettings();
@@ -7107,18 +7098,6 @@ void MainFrame::onAutoCheckForUpdates()
         checkForUpdates();
     }
 //    else checkForUpdates();
-}
-
-
-void MainFrame::changeEvent(QEvent *pEvent)
-{
-    if (pEvent->type() == QEvent::LanguageChange)
-    {
-        createActions(); // no need to destroy first, old action pointers are still registered in MainFrame parent for deletion
-        createMenus(); // no need to destroy first, old menu pointers are still registered in MainFrame parent for deletion
-        setMenus();
-    }
-    else QWidget::changeEvent(pEvent);
 }
 
 
