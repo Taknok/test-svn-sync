@@ -3985,11 +3985,9 @@ bool XFoil::iblsys()
 /** Loads the Foil's geometry in XFoil,
  *  calculates the normal vectors,
  *  and sets the results in current foil */
-bool XFoil::initXFoilGeometry(int fn, double*fx, double*fy, double*fnx, double*fny)
+bool XFoil::initXFoilGeometry(int fn, double const *fx, double const *fy, double*fnx, double*fny)
 {
-    int i, k;
-
-    for (i =0; i<fn; i++)
+    for (int i =0; i<fn; i++)
     {
         xb[i+1] = fx[i];
         yb[i+1] = fy[i];
@@ -4010,7 +4008,7 @@ bool XFoil::initXFoilGeometry(int fn, double*fx, double*fy, double*fnx, double*f
     if(Preprocess())
     {
         CheckAngles();
-        for (k=0; k<n;k++)
+        for (int k=0; k<n;k++)
         {
             fnx[k] = nx[k+1];
             fny[k] = ny[k+1];

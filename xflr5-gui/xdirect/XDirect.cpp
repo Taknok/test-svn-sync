@@ -632,14 +632,14 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 			pCurve2->setCurveName("sqrt(Ctau_bot)");
 			pCurve3->setCurveName("sqrt(CtauEq_bot)");
 
-            int it1 = pOpp->itran[1];
-            int it2 = pOpp->itran[2];
+            int it1 = pOpp->blx.itran[1];
+            int it2 = pOpp->blx.itran[2];
 
-            for (int i=it1; i<=pOpp->nside1-1; i++) pCurve0->appendPoint(pOpp->xbl[i][1], pOpp->ctau[i][1]);
-            for (int i=2;   i<=pOpp->nside1-1; i++) pCurve1->appendPoint(pOpp->xbl[i][1], pOpp->ctq[i][1]);
+            for (int i=it1; i<=pOpp->blx.nside1-1; i++) pCurve0->appendPoint(pOpp->blx.xbl[i][1], pOpp->blx.ctau[i][1]);
+            for (int i=2;   i<=pOpp->blx.nside1-1; i++) pCurve1->appendPoint(pOpp->blx.xbl[i][1], pOpp->blx.ctq[i][1]);
 
-            for (int i=it2; i<=pOpp->nside2-1; i++) pCurve2->appendPoint(pOpp->xbl[i][2], pOpp->ctau[i][2]);
-            for (int i=2;   i<=pOpp->nside2-1; i++) pCurve3->appendPoint(pOpp->xbl[i][2], pOpp->ctq[i][2]);
+            for (int i=it2; i<=pOpp->blx.nside2-1; i++) pCurve2->appendPoint(pOpp->blx.xbl[i][2], pOpp->blx.ctau[i][2]);
+            for (int i=2;   i<=pOpp->blx.nside2-1; i++) pCurve3->appendPoint(pOpp->blx.xbl[i][2], pOpp->blx.ctq[i][2]);
 			break;
 		}
 		case 3:  //Dstar & theta TOP
@@ -657,10 +657,10 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 			pCurve0->setCurveName("D*");
 			pCurve1->setCurveName("Theta");
 
-            for (int i=2; i<pOpp->nside1; i++)
+            for (int i=2; i<pOpp->blx.nside1; i++)
 			{
-                pCurve0->appendPoint(pOpp->xbl[i][1], pOpp->dstr[i][1]);
-                pCurve1->appendPoint(pOpp->xbl[i][1], pOpp->thet[i][1]);
+                pCurve0->appendPoint(pOpp->blx.xbl[i][1], pOpp->blx.dstr[i][1]);
+                pCurve1->appendPoint(pOpp->blx.xbl[i][1], pOpp->blx.thet[i][1]);
 			}
 			break;
 		}
@@ -679,10 +679,10 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
             pCurve0->setColor(QColor(55,155,75));
             pCurve1->setColor(QColor(55,75,155));
 
-            for (int i=2; i<pOpp->nside2; i++)
+            for (int i=2; i<pOpp->blx.nside2; i++)
 			{
-                pCurve0->appendPoint(pOpp->xbl[i][2], pOpp->dstr[i][2]);
-                pCurve1->appendPoint(pOpp->xbl[i][2], pOpp->thet[i][2]);
+                pCurve0->appendPoint(pOpp->blx.xbl[i][2], pOpp->blx.dstr[i][2]);
+                pCurve1->appendPoint(pOpp->blx.xbl[i][2], pOpp->blx.thet[i][2]);
 			}
 			break;
 		}
@@ -700,15 +700,15 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
             pBotCurve->setColor(QColor(55,75,155));
 
 			double y[IVX][3];
-            for (int i=2; i<=pOpp->nside1-1; i++){
-                if (pOpp->RTheta[i][1]>0.0) y[i][1] = log10( pOpp->RTheta[i][1] );
+            for (int i=2; i<=pOpp->blx.nside1-1; i++){
+                if (pOpp->blx.RTheta[i][1]>0.0) y[i][1] = log10( pOpp->blx.RTheta[i][1] );
 				else                             y[i][1] = 0.0;
-                pTopCurve->appendPoint(pOpp->xbl[i][1], y[i][1]);
+                pTopCurve->appendPoint(pOpp->blx.xbl[i][1], y[i][1]);
 			}
-            for (int i=2; i<=pOpp->nside2-1; i++){
-                if (pOpp->RTheta[i][2]>0.0) y[i][2] = log10( pOpp->RTheta[i][2] );
+            for (int i=2; i<=pOpp->blx.nside2-1; i++){
+                if (pOpp->blx.RTheta[i][2]>0.0) y[i][2] = log10( pOpp->blx.RTheta[i][2] );
 				else                             y[i][2] = 0.0;
-                pBotCurve->appendPoint(pOpp->xbl[i][2], y[i][2]);
+                pBotCurve->appendPoint(pOpp->blx.xbl[i][2], y[i][2]);
 			}
 			break;
 		}
@@ -725,8 +725,8 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
             pTopCurve->setColor(QColor(55,155,75));
             pBotCurve->setColor(QColor(55,75,155));
 
-            for (int i=2; i<=pOpp->nside1-1; i++) pTopCurve->appendPoint(pOpp->xbl[i][1], pOpp->RTheta[i][1]);
-            for (int i=2; i<=pOpp->nside2-1; i++) pBotCurve->appendPoint(pOpp->xbl[i][2], pOpp->RTheta[i][2]);
+            for (int i=2; i<=pOpp->blx.nside1-1; i++) pTopCurve->appendPoint(pOpp->blx.xbl[i][1], pOpp->blx.RTheta[i][1]);
+            for (int i=2; i<=pOpp->blx.nside2-1; i++) pBotCurve->appendPoint(pOpp->blx.xbl[i][2], pOpp->blx.RTheta[i][2]);
 			break;
 		}
 		case 7:  //Amplification factor
@@ -745,22 +745,22 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 
 			double y[IVX][3];
 
-            for (int ibl=2; ibl<pOpp->nside1; ibl++)
+            for (int ibl=2; ibl<pOpp->blx.nside1; ibl++)
 			{
-                y[ibl][1] = pOpp->ctau[ibl][1];
+                y[ibl][1] = pOpp->blx.ctau[ibl][1];
 			}
-            for (int ibl=2; ibl<pOpp->nside2; ibl++)
+            for (int ibl=2; ibl<pOpp->blx.nside2; ibl++)
 			{
-                y[ibl][2] = pOpp->ctau[ibl][2];
+                y[ibl][2] = pOpp->blx.ctau[ibl][2];
 			}
 
-            for (int i=2; i<=pOpp->itran[1]-2; i++)
+            for (int i=2; i<=pOpp->blx.itran[1]-2; i++)
 			{
-                pTopCurve->appendPoint(pOpp->xbl[i][1], y[i][1]);
+                pTopCurve->appendPoint(pOpp->blx.xbl[i][1], y[i][1]);
 			}
-            for (int i=2; i<=pOpp->itran[2]-2; i++)
+            for (int i=2; i<=pOpp->blx.itran[2]-2; i++)
 			{
-                pBotCurve->appendPoint(pOpp->xbl[i][2], y[i][2]);
+                pBotCurve->appendPoint(pOpp->blx.xbl[i][2], y[i][2]);
 			}
 			break;
 		}
@@ -778,25 +778,25 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
             pTopCurve->setColor(QColor(55,155,75));
             pBotCurve->setColor(QColor(55,75,155));
 
-            double qrf = pOpp->qinf;
+            double qrf = pOpp->blx.qinf;
 
 			//---- fill compressible ue arrays
-            for (int ibl=2; ibl<= pOpp->nside1;ibl++)
+            for (int ibl=2; ibl<= pOpp->blx.nside1;ibl++)
 			{
-                y[ibl][1] = pOpp->dis[ibl][1] / qrf/ qrf/ qrf;
+                y[ibl][1] = pOpp->blx.dis[ibl][1] / qrf/ qrf/ qrf;
 			}
-            for (int ibl=2; ibl<= pOpp->nside2;ibl++)
+            for (int ibl=2; ibl<= pOpp->blx.nside2;ibl++)
 			{
-                y[ibl][2] = pOpp->dis[ibl][2] / qrf/ qrf/ qrf;
+                y[ibl][2] = pOpp->blx.dis[ibl][2] / qrf/ qrf/ qrf;
 			}
 
-            for (int i=2; i<=pOpp->nside1-1; i++)
+            for (int i=2; i<=pOpp->blx.nside1-1; i++)
 			{
-                pTopCurve->appendPoint(pOpp->xbl[i][1], y[i][1]);
+                pTopCurve->appendPoint(pOpp->blx.xbl[i][1], y[i][1]);
 			}
-            for (int i=2; i<=pOpp->nside2-1; i++)
+            for (int i=2; i<=pOpp->blx.nside2-1; i++)
 			{
-                pBotCurve->appendPoint(pOpp->xbl[i][2], y[i][2]);
+                pBotCurve->appendPoint(pOpp->blx.xbl[i][2], y[i][2]);
 			}
 			break;
 		}
@@ -813,26 +813,26 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
             pTopCurve->setColor(QColor(55,155,75));
             pBotCurve->setColor(QColor(55,75,155));
 
-            double que = 0.5*pOpp->qinf*pOpp->qinf;
+            double que = 0.5*pOpp->blx.qinf*pOpp->blx.qinf;
 
 			double y[IVX][ISX];
 			//---- fill compressible ue arrays
-            for (int ibl=2; ibl<= pOpp->nside1;ibl++)
+            for (int ibl=2; ibl<= pOpp->blx.nside1;ibl++)
 			{
-                y[ibl][1] = pOpp->tau[ibl][1] / que;
+                y[ibl][1] = pOpp->blx.tau[ibl][1] / que;
 			}
-            for (int ibl=2; ibl<= pOpp->nside2;ibl++)
+            for (int ibl=2; ibl<= pOpp->blx.nside2;ibl++)
 			{
-                y[ibl][2] = pOpp->tau[ibl][2] / que;
+                y[ibl][2] = pOpp->blx.tau[ibl][2] / que;
 			}
 
-            for (int i=2; i<=pOpp->nside1-1; i++)
+            for (int i=2; i<=pOpp->blx.nside1-1; i++)
 			{
-                pTopCurve->appendPoint(pOpp->xbl[i][1], y[i][1]);
+                pTopCurve->appendPoint(pOpp->blx.xbl[i][1], y[i][1]);
 			}
-            for (int i=2; i<=pOpp->nside2-1; i++)
+            for (int i=2; i<=pOpp->blx.nside2-1; i++)
 			{
-                pBotCurve->appendPoint(pOpp->xbl[i][2], y[i][2]);
+                pBotCurve->appendPoint(pOpp->blx.xbl[i][2], y[i][2]);
 			}
 			break;
 		}
@@ -853,26 +853,26 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
 			double uei;
 
 			//---- fill compressible ue arrays
-            for (int ibl=2; ibl<= pOpp->nside1;ibl++)
+            for (int ibl=2; ibl<= pOpp->blx.nside1;ibl++)
 			{
-                uei = pOpp->uedg[ibl][1];
-                y[ibl][1] = uei * (1.0-pOpp->tklam)
-                                / (1.0-pOpp->tklam*(uei/pOpp->qinf)*(uei/pOpp->qinf));
+                uei = pOpp->blx.uedg[ibl][1];
+                y[ibl][1] = uei * (1.0-pOpp->blx.tklam)
+                                / (1.0-pOpp->blx.tklam*(uei/pOpp->blx.qinf)*(uei/pOpp->blx.qinf));
 			}
-            for (int ibl=2; ibl<= pOpp->nside2;ibl++)
+            for (int ibl=2; ibl<= pOpp->blx.nside2;ibl++)
 			{
-                uei = pOpp->uedg[ibl][2];
-                y[ibl][2] = uei * (1.0-pOpp->tklam)
-                                / (1.0-pOpp->tklam*(uei/pOpp->qinf)*(uei/pOpp->qinf));
+                uei = pOpp->blx.uedg[ibl][2];
+                y[ibl][2] = uei * (1.0-pOpp->blx.tklam)
+                                / (1.0-pOpp->blx.tklam*(uei/pOpp->blx.qinf)*(uei/pOpp->blx.qinf));
 			}
 
-            for (int i=2; i<=pOpp->nside1-1; i++)
+            for (int i=2; i<=pOpp->blx.nside1-1; i++)
 			{
-                pTopCurve->appendPoint(pOpp->xbl[i][1], y[i][1]);
+                pTopCurve->appendPoint(pOpp->blx.xbl[i][1], y[i][1]);
 			}
-            for (int i=2; i<=pOpp->nside2-1; i++)
+            for (int i=2; i<=pOpp->blx.nside2-1; i++)
 			{
-                pBotCurve->appendPoint(pOpp->xbl[i][2], y[i][2]);
+                pBotCurve->appendPoint(pOpp->blx.xbl[i][2], y[i][2]);
 			}
 			break;
 		}
@@ -889,13 +889,13 @@ void XDirect::fillOppCurve(OpPoint *pOpp, Graph *pGraph, Curve *pCurve, bool bIn
             pTopCurve->setColor(QColor(55,155,75));
             pBotCurve->setColor(QColor(55,75,155));
 
-            for (int i=2; i<=pOpp->nside1-1; i++)
+            for (int i=2; i<=pOpp->blx.nside1-1; i++)
 			{
-                pTopCurve->appendPoint(pOpp->xbl[i][1], pOpp->Hk[i][1]);
+                pTopCurve->appendPoint(pOpp->blx.xbl[i][1], pOpp->blx.Hk[i][1]);
 			}
-            for (int i=2; i<=pOpp->nside2-1; i++)
+            for (int i=2; i<=pOpp->blx.nside2-1; i++)
 			{
-                pBotCurve->appendPoint(pOpp->xbl[i][2], pOpp->Hk[i][2]);
+                pBotCurve->appendPoint(pOpp->blx.xbl[i][2], pOpp->blx.Hk[i][2]);
 			}
 
 			break;
@@ -2239,7 +2239,7 @@ void XDirect::onEditCurPolar()
  */
 void XDirect::onExportBLData()
 {
-	if(!m_pCurOpp || m_pCurOpp->nside1==0) return;
+    if(!m_pCurOpp || m_pCurOpp->blx.nside1==0) return;
     if(!m_pCurFoil) return;
 
 	QString fileName,  OutString, strong;
@@ -2291,45 +2291,45 @@ void XDirect::onExportBLData()
 						 .arg(m_pCurOpp->ACrit, 4, 'f',1);	out << (strong);
 
 
-	nside1 = m_pCurOpp->nside1;
-	nside2 = m_pCurOpp->nside2;
+    nside1 = m_pCurOpp->blx.nside1;
+    nside2 = m_pCurOpp->blx.nside2;
 
-	for (ibl=2; ibl<= nside1;ibl++)	xBL[ibl][1] = m_pCurOpp->xbl[ibl][1];
-	for (ibl=2; ibl<= nside2;ibl++)	xBL[ibl][2] = m_pCurOpp->xbl[ibl][2];
+    for (ibl=2; ibl<= nside1;ibl++)	xBL[ibl][1] = m_pCurOpp->blx.xbl[ibl][1];
+    for (ibl=2; ibl<= nside2;ibl++)	xBL[ibl][2] = m_pCurOpp->blx.xbl[ibl][2];
 
 	//write top first
 	for (ibl=2; ibl<= nside1;ibl++)
 	{
-		uei = m_pCurOpp->uedg[ibl][1];
-		UeVinf[ibl][1] = uei * (1.0-m_pCurOpp->tklam)
-						/ (1.0-m_pCurOpp->tklam*(uei/m_pCurOpp->qinf)*(uei/m_pCurOpp->qinf));
+        uei = m_pCurOpp->blx.uedg[ibl][1];
+        UeVinf[ibl][1] = uei * (1.0-m_pCurOpp->blx.tklam)
+                        / (1.0-m_pCurOpp->blx.tklam*(uei/m_pCurOpp->blx.qinf)*(uei/m_pCurOpp->blx.qinf));
 	}
 	for (ibl=2; ibl<= nside2;ibl++)
 	{
-		uei = m_pCurOpp->uedg[ibl][2];
-		UeVinf[ibl][2] = uei * (1.0-m_pCurOpp->tklam)
-						/ (1.0-m_pCurOpp->tklam*(uei/m_pCurOpp->qinf)*(uei/m_pCurOpp->qinf));
+        uei = m_pCurOpp->blx.uedg[ibl][2];
+        UeVinf[ibl][2] = uei * (1.0-m_pCurOpp->blx.tklam)
+                        / (1.0-m_pCurOpp->blx.tklam*(uei/m_pCurOpp->blx.qinf)*(uei/m_pCurOpp->blx.qinf));
 	}
 	//---- fill compressible ue arrays
-	for (ibl=2; ibl<= nside1;ibl++)	Cf[ibl][1] = m_pCurOpp->tau[ibl][1] / que;
-	for (ibl=2; ibl<= nside2;ibl++)	Cf[ibl][2] = m_pCurOpp->tau[ibl][2] / que;
+    for (ibl=2; ibl<= nside1;ibl++)	Cf[ibl][1] = m_pCurOpp->blx.tau[ibl][1] / que;
+    for (ibl=2; ibl<= nside2;ibl++)	Cf[ibl][2] = m_pCurOpp->blx.tau[ibl][2] / que;
 
 	//---- fill compressible ue arrays
-	for (ibl=2; ibl<= nside1;ibl++)	Cd[ibl][1] = m_pCurOpp->dis[ibl][1] / qrf/ qrf/ qrf;
-	for (ibl=2; ibl<= nside2;ibl++)	Cd[ibl][2] = m_pCurOpp->dis[ibl][2] / qrf/ qrf/ qrf;
+    for (ibl=2; ibl<= nside1;ibl++)	Cd[ibl][1] = m_pCurOpp->blx.dis[ibl][1] / qrf/ qrf/ qrf;
+    for (ibl=2; ibl<= nside2;ibl++)	Cd[ibl][2] = m_pCurOpp->blx.dis[ibl][2] / qrf/ qrf/ qrf;
 	//NPlot
-	for (ibl=2; ibl< nside1;ibl++)	AA0[ibl][1] = m_pCurOpp->ctau[ibl][1];
-	for (ibl=2; ibl< nside2;ibl++)	AA0[ibl][2] = m_pCurOpp->ctau[ibl][2];
+    for (ibl=2; ibl< nside1;ibl++)	AA0[ibl][1] = m_pCurOpp->blx.ctau[ibl][1];
+    for (ibl=2; ibl< nside2;ibl++)	AA0[ibl][2] = m_pCurOpp->blx.ctau[ibl][2];
 
 	for (ibl=2; ibl<= nside1; ibl++)
 	{
-		DStar[ibl][1] = m_pCurOpp->dstr[ibl][1];
-		Theta[ibl][1] = m_pCurOpp->thet[ibl][1];
+        DStar[ibl][1] = m_pCurOpp->blx.dstr[ibl][1];
+        Theta[ibl][1] = m_pCurOpp->blx.thet[ibl][1];
 	}
 	for (ibl=2; ibl<= nside2; ibl++)
 	{
-		DStar[ibl][2] = m_pCurOpp->dstr[ibl][2];
-		Theta[ibl][2] = m_pCurOpp->thet[ibl][2];
+        DStar[ibl][2] = m_pCurOpp->blx.dstr[ibl][2];
+        Theta[ibl][2] = m_pCurOpp->blx.thet[ibl][2];
 	}
 
 	out << tr("\nTop Side\n");
@@ -2341,25 +2341,25 @@ void XDirect::onExportBLData()
 		if(type==XFLR5::TXT)
 			OutString = QString("%1  %2  %3  %4 %5 %6  %7  %8  %9\n")
 							.arg(xBL[ibl][1],8,'f',5)
-							.arg(m_pCurOpp->Hk[ibl][1],8,'f',5)
+                            .arg(m_pCurOpp->blx.Hk[ibl][1],8,'f',5)
 							.arg(UeVinf[ibl][1],8,'f',5)
 							.arg(Cf[ibl][1],8,'f',5)
 							.arg(Cd[ibl][1],8,'f',5)
 							.arg(AA0[ibl][1],8,'f',5)
 							.arg(DStar[ibl][1],8,'f',5)
 							.arg(Theta[ibl][1],8,'f',5)
-							.arg(m_pCurOpp->ctq[ibl][1],8,'f',5);
+                            .arg(m_pCurOpp->blx.ctq[ibl][1],8,'f',5);
 		else
 			OutString = QString("%1, %2, %3, %4, %5, %6, %7, %8, %9\n")
 							.arg(xBL[ibl][1],8,'f',5)
-							.arg(m_pCurOpp->Hk[ibl][1],8,'f',5)
+                            .arg(m_pCurOpp->blx.Hk[ibl][1],8,'f',5)
 							.arg(UeVinf[ibl][1],8,'f',5)
 							.arg(Cf[ibl][1],8,'f',5)
 							.arg(Cd[ibl][1],8,'f',5)
 							.arg(AA0[ibl][1],8,'f',5)
 							.arg(DStar[ibl][1],8,'f',5)
 							.arg(Theta[ibl][1],8,'f',5)
-							.arg(m_pCurOpp->ctq[ibl][1],8,'f',5);
+                            .arg(m_pCurOpp->blx.ctq[ibl][1],8,'f',5);
 		out << (OutString);
 	}
 	out << tr("\n\nBottom Side\n");
@@ -2371,25 +2371,25 @@ void XDirect::onExportBLData()
 		if(type==XFLR5::TXT)
 			OutString = QString("%1  %2  %3  %4 %5 %6  %7  %8  %9\n")
 							.arg(xBL[ibl][2],8,'f',5)
-							.arg(m_pCurOpp->Hk[ibl][2],8,'f',5)
+                            .arg(m_pCurOpp->blx.Hk[ibl][2],8,'f',5)
 							.arg(UeVinf[ibl][2],8,'f',5)
 							.arg(Cf[ibl][2],8,'f',5)
 							.arg(Cd[ibl][2],8,'f',5)
 							.arg(AA0[ibl][2],8,'f',5)
 							.arg(DStar[ibl][2],8,'f',5)
 							.arg(Theta[ibl][2],8,'f',5)
-							.arg(m_pCurOpp->ctq[ibl][2],8,'f',5);
+                            .arg(m_pCurOpp->blx.ctq[ibl][2],8,'f',5);
 		else
 			OutString = QString("%1, %2, %3, %4, %5, %6, %7, %8, %9\n")
 							.arg(xBL[ibl][2],8,'f',5)
-							.arg(m_pCurOpp->Hk[ibl][2],8,'f',5)
+                            .arg(m_pCurOpp->blx.Hk[ibl][2],8,'f',5)
 							.arg(UeVinf[ibl][2],8,'f',5)
 							.arg(Cf[ibl][2],8,'f',5)
 							.arg(Cd[ibl][2],8,'f',5)
 							.arg(AA0[ibl][2],8,'f',5)
 							.arg(DStar[ibl][2],8,'f',5)
 							.arg(Theta[ibl][2],8,'f',5)
-							.arg(m_pCurOpp->ctq[ibl][2],8,'f',5);
+                            .arg(m_pCurOpp->blx.ctq[ibl][2],8,'f',5);
 		out << (OutString);
 	}
 
@@ -2593,7 +2593,7 @@ void XDirect::onExportPolarOpps()
 			if(Settings::s_ExportFileType==XFLR5::TXT) out<< " Cpi          Cpv\n-----------------\n";
 			else                                       out << "Cpi,Cpv\n";
 
-			for (j=0; j<pOpPoint->n; j++)
+            for (j=0; j<pOpPoint->n; j++)
 			{
 				if(pOpPoint->m_bViscResults)
 				{
