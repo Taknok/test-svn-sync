@@ -6434,7 +6434,7 @@ bool XFoil::qdcalc()
         }
     }
 
-    //---- set up kutta condition (no direct source influence)
+    //---- set up Kutta condition (no direct source influence)
     for(j=n+1; j<=n+nw; j++) bij[n+1][j] = 0.0;
 
     //---- sharp TE gamma extrapolation also has no source influence
@@ -9240,28 +9240,24 @@ bool XFoil::trisol(double a[], double b[], double c[], double d[], int kk){
  * --------------------------------------------------------- */
 bool XFoil::ueset()
 {
-
-    int i, is,ibl, j, js, jbl;
     double dui, ue_m;
-    for (is=1; is<= 2;is++)
+    for (int is=1; is<= 2;is++)
     {
-        for(ibl=2; ibl<= nbl[is]; ibl++)
+        for(int ibl=2; ibl<= nbl[is]; ibl++)
         {
-            i = ipan[ibl][is];
+            int i = ipan[ibl][is];
 
             dui = 0.0;
-            for (js=1; js<= 2; js++)
+            for (int js=1; js<=2; js++)
             {
-                for(jbl=2; jbl<= nbl[js]; jbl++)
+                for(int jbl=2; jbl<=nbl[js]; jbl++)
                 {
-                    j  = ipan[jbl][js];
+                    int j  = ipan[jbl][js];
                     ue_m = -vti[ibl][is]*vti[jbl][js]*dij[i][j];
                     dui += ue_m*mass[jbl][js];
                 }
             }
-
             uedg[ibl][is] = uinv[ibl][is] + dui;
-
         }
     }
     return true;
@@ -9273,23 +9269,18 @@ bool XFoil::ueset()
  * -------------------------------------------------------------- */
 bool XFoil::uicalc()
 {
-
-    int i,ibl,is;
-
-    for (is=1; is<=2;is++)
+    for (int is=1; is<=2;is++)
     {
         uinv  [1][is] = 0.0;
         uinv_a[1][is] = 0.0;
-        for (ibl=2;ibl<= nbl[is];ibl++)
+        for (int ibl=2; ibl<=nbl[is]; ibl++)
         {
-            i = ipan[ibl][is];
+            int i = ipan[ibl][is];
             uinv[ibl][is] = vti[ibl][is]*qinv  [i];
             uinv_a[ibl][is] = vti[ibl][is]*qinv_a[i];
         }
     }
-
     return true;
-
 }
 
 

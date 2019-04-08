@@ -1234,51 +1234,50 @@ void MainFrame::createGraphActions()
 
 void MainFrame::createMiarexActions()
 {
-
     //groups view actions so their exclusive state is properly toggled in menu and toolbar
     m_pMiarexViewActGroup = new QActionGroup(this);
+    {
+        m_pWOppAct = new QAction(QIcon(":/images/OnWOppView.png"), tr("OpPoint View")+"\tF5", this);
+        m_pWOppAct->setCheckable(true);
+        m_pWOppAct->setStatusTip(tr("Switch to the Operating point view"));
+        m_pWOppAct->setActionGroup(m_pMiarexViewActGroup);
+        //	WOppAct->setShortcut(Qt::Key_F5);
+        connect(m_pWOppAct, SIGNAL(triggered()), m_pMiarex, SLOT(onWOppView()));
 
-    m_pWOppAct = new QAction(QIcon(":/images/OnWOppView.png"), tr("OpPoint View")+"\tF5", this);
-    m_pWOppAct->setCheckable(true);
-    m_pWOppAct->setStatusTip(tr("Switch to the Operating point view"));
-    m_pWOppAct->setActionGroup(m_pMiarexViewActGroup);
-    //	WOppAct->setShortcut(Qt::Key_F5);
-    connect(m_pWOppAct, SIGNAL(triggered()), m_pMiarex, SLOT(onWOppView()));
+        m_pWPolarAct = new QAction(QIcon(":/images/OnPolarView.png"), tr("Polar View")+"\tF8", this);
+        m_pWPolarAct->setCheckable(true);
+        m_pWPolarAct->setStatusTip(tr("Switch to the Polar view"));
+        m_pWPolarAct->setActionGroup(m_pMiarexViewActGroup);
+        //	WPolarAct->setShortcut(Qt::Key_F8);
+        connect(m_pWPolarAct, SIGNAL(triggered()), m_pMiarex, SLOT(onWPolarView()));
 
-    m_pWPolarAct = new QAction(QIcon(":/images/OnPolarView.png"), tr("Polar View")+"\tF8", this);
-    m_pWPolarAct->setCheckable(true);
-    m_pWPolarAct->setStatusTip(tr("Switch to the Polar view"));
-    m_pWPolarAct->setActionGroup(m_pMiarexViewActGroup);
-    //	WPolarAct->setShortcut(Qt::Key_F8);
-    connect(m_pWPolarAct, SIGNAL(triggered()), m_pMiarex, SLOT(onWPolarView()));
+        m_pStabTimeAct = new QAction(QIcon(":/images/OnStabView.png"),tr("Time Response View")+"\tShift+F8", this);
+        m_pStabTimeAct->setCheckable(true);
+        m_pStabTimeAct->setStatusTip(tr("Switch to stability analysis post-processing"));
+        m_pStabTimeAct->setActionGroup(m_pMiarexViewActGroup);
+        //	StabTimeAct->setShortcut(tr("Shift+F8"));
+        connect(m_pStabTimeAct, SIGNAL(triggered()), m_pMiarex, SLOT(onStabTimeView()));
 
-    m_pStabTimeAct = new QAction(QIcon(":/images/OnStabView.png"),tr("Time Response View")+"\tShift+F8", this);
-    m_pStabTimeAct->setCheckable(true);
-    m_pStabTimeAct->setStatusTip(tr("Switch to stability analysis post-processing"));
-    m_pStabTimeAct->setActionGroup(m_pMiarexViewActGroup);
-    //	StabTimeAct->setShortcut(tr("Shift+F8"));
-    connect(m_pStabTimeAct, SIGNAL(triggered()), m_pMiarex, SLOT(onStabTimeView()));
+        m_pRootLocusAct = new QAction(QIcon(":/images/OnRootLocus.png"),tr("Root Locus View")+"\tCtrl+F8", this);
+        m_pRootLocusAct->setCheckable(true);
+        m_pRootLocusAct->setStatusTip(tr("Switch to root locus view"));
+        m_pRootLocusAct->setActionGroup(m_pMiarexViewActGroup);
+        connect(m_pRootLocusAct, SIGNAL(triggered()), m_pMiarex, SLOT(onRootLocusView()));
 
-    m_pRootLocusAct = new QAction(QIcon(":/images/OnRootLocus.png"),tr("Root Locus View")+"\tCtrl+F8", this);
-    m_pRootLocusAct->setCheckable(true);
-    m_pRootLocusAct->setStatusTip(tr("Switch to root locus view"));
-    m_pRootLocusAct->setActionGroup(m_pMiarexViewActGroup);
-    connect(m_pRootLocusAct, SIGNAL(triggered()), m_pMiarex, SLOT(onRootLocusView()));
+        m_pW3DAct = new QAction(QIcon(":/images/On3DView.png"), tr("3D View")+"\tF4", this);
+        m_pW3DAct->setCheckable(true);
+        m_pW3DAct->setStatusTip(tr("Switch to the 3D view"));
+        m_pW3DAct->setActionGroup(m_pMiarexViewActGroup);
+        connect(m_pW3DAct, SIGNAL(triggered()), m_pMiarex, SLOT(on3DView()));
+        if(!hasOpenGL()) m_pW3DAct->setEnabled(false);
+        //end action group
 
-    m_pW3DAct = new QAction(QIcon(":/images/On3DView.png"), tr("3D View")+"\tF4", this);
-    m_pW3DAct->setCheckable(true);
-    m_pW3DAct->setStatusTip(tr("Switch to the 3D view"));
-    m_pW3DAct->setActionGroup(m_pMiarexViewActGroup);
-    connect(m_pW3DAct, SIGNAL(triggered()), m_pMiarex, SLOT(on3DView()));
-    if(!hasOpenGL()) m_pW3DAct->setEnabled(false);
-    //end action group
-
-
-    m_pCpViewAct = new QAction(QIcon(":/images/OnCpView.png"), tr("Cp View")+"\tF9", this);
-    m_pCpViewAct->setCheckable(true);
-    m_pCpViewAct->setStatusTip(tr("Switch to the Cp view"));
-    m_pCpViewAct->setActionGroup(m_pMiarexViewActGroup);
-    connect(m_pCpViewAct, SIGNAL(triggered()), m_pMiarex, SLOT(onCpView()));
+        m_pCpViewAct = new QAction(QIcon(":/images/OnCpView.png"), tr("Cp View")+"\tF9", this);
+        m_pCpViewAct->setCheckable(true);
+        m_pCpViewAct->setStatusTip(tr("Switch to the Cp view"));
+        m_pCpViewAct->setActionGroup(m_pMiarexViewActGroup);
+        connect(m_pCpViewAct, SIGNAL(triggered()), m_pMiarex, SLOT(onCpView()));
+    }
 
     m_pW3DPrefsAct = new QAction(tr("3D View Preferences"), this);
     m_pW3DPrefsAct->setStatusTip(tr("Define the preferences for the 3D view"));
@@ -2325,22 +2324,22 @@ void MainFrame::createXDirectToolbar()
 
 void MainFrame::createXDirectActions()
 {
-
     // groups the XDirect view so toolbar and menu actions are toggled properly
     m_pXDirectViewActGroup = new QActionGroup(this);
+    {
+        m_pOpPointsAct = new QAction(QIcon(":/images/OnCpView.png"), tr("OpPoint view")+"\tF5", this);
+        m_pOpPointsAct->setCheckable(true);
+        m_pOpPointsAct->setStatusTip(tr("Show Operating point view"));
+        m_pOpPointsAct->setActionGroup(m_pXDirectViewActGroup);
+        connect(m_pOpPointsAct, SIGNAL(triggered()), m_pXDirect, SLOT(onOpPointView()));
 
-    m_pOpPointsAct = new QAction(QIcon(":/images/OnCpView.png"), tr("OpPoint view")+"\tF5", this);
-    m_pOpPointsAct->setCheckable(true);
-    m_pOpPointsAct->setStatusTip(tr("Show Operating point view"));
-    m_pOpPointsAct->setActionGroup(m_pXDirectViewActGroup);
-    connect(m_pOpPointsAct, SIGNAL(triggered()), m_pXDirect, SLOT(onOpPointView()));
-
-    m_pPolarsAct = new QAction(QIcon(":/images/OnPolarView.png"), tr("Polar view")+"\tF8", this);
-    m_pPolarsAct->setCheckable(true);
-    m_pPolarsAct->setStatusTip(tr("Show Polar view"));
-    m_pPolarsAct->setActionGroup(m_pXDirectViewActGroup);
-    connect(m_pPolarsAct, SIGNAL(triggered()), m_pXDirect, SLOT(onPolarView()));
-    // end action group
+        m_pPolarsAct = new QAction(QIcon(":/images/OnPolarView.png"), tr("Polar view")+"\tF8", this);
+        m_pPolarsAct->setCheckable(true);
+        m_pPolarsAct->setStatusTip(tr("Show Polar view"));
+        m_pPolarsAct->setActionGroup(m_pXDirectViewActGroup);
+        connect(m_pPolarsAct, SIGNAL(triggered()), m_pXDirect, SLOT(onPolarView()));
+        // end action group
+    }
 
     m_pXDirectPolarFilter = new QAction(tr("Polar Filter"), this);
     connect(m_pXDirectPolarFilter, SIGNAL(triggered()), m_pXDirect, SLOT(onPolarFilter()));
@@ -4476,6 +4475,7 @@ void MainFrame::onMiarex()
     setMainFrameCentralWidget();
     checkGraphActions();
     m_pMiarex->setControls();
+
     m_pMiarex->setCurveParams();
     updateView();
 }
