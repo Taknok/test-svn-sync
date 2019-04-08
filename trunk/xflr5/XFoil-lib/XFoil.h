@@ -94,7 +94,7 @@ public:
 	void ExecMDES();
 	bool ExecQDES();
 	bool initialize();
-	bool initXFoilGeometry(int fn, double *fx, double *fy, double *fnx, double *fny);
+    bool initXFoilGeometry(int fn, const double *fx, const double *fy, double *fnx, double *fny);
 	bool initXFoilAnalysis(double Re, double alpha, double Mach, double NCrit, double XtrTop, double XtrBot,
 								  int reType, int maType, bool bViscous, QTextStream &outStream);
 

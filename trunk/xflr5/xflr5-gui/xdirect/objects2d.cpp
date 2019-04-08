@@ -793,17 +793,17 @@ void Objects2d::addXFoilData(OpPoint *pOpp, XFoil *pXFoil, Foil *pFoil)
     if(!pXFoil->lvisc || !pXFoil->lvconv)	return;
 
     //---- add boundary layer on both sides of airfoil
-    pOpp->nd1=0;
-    pOpp->nd2=0;
-    pOpp->nd3=0;
+    pOpp->blx.nd1=0;
+    pOpp->blx.nd2=0;
+    pOpp->blx.nd3=0;
     for (is=1; is<=2; is++)
     {
         for (ibl=2; ibl<=pXFoil->iblte[is];ibl++)
         {
             i = pXFoil->ipan[ibl][is];
-            pOpp->xd1[i] = pXFoil->x[i] + pXFoil->nx[i]*pXFoil->dstr[ibl][is];
-            pOpp->yd1[i] = pXFoil->y[i] + pXFoil->ny[i]*pXFoil->dstr[ibl][is];
-            pOpp->nd1++;
+            pOpp->blx.xd1[i] = pXFoil->x[i] + pXFoil->nx[i]*pXFoil->dstr[ibl][is];
+            pOpp->blx.yd1[i] = pXFoil->y[i] + pXFoil->ny[i]*pXFoil->dstr[ibl][is];
+            pOpp->blx.nd1++;
         }
     }
 
@@ -825,55 +825,55 @@ void Objects2d::addXFoilData(OpPoint *pOpp, XFoil *pXFoil, Foil *pFoil)
     //---- plot upper wake displacement surface
     ibl = pXFoil->iblte[1];
     i = pXFoil->ipan[ibl][1];
-    pOpp->xd2[0] = pXFoil->x[i] + pXFoil->nx[i]*pXFoil->dstr[ibl][1];
-    pOpp->yd2[0] = pXFoil->y[i] + pXFoil->ny[i]*pXFoil->dstr[ibl][1];
-    pOpp->nd2++;
+    pOpp->blx.xd2[0] = pXFoil->x[i] + pXFoil->nx[i]*pXFoil->dstr[ibl][1];
+    pOpp->blx.yd2[0] = pXFoil->y[i] + pXFoil->ny[i]*pXFoil->dstr[ibl][1];
+    pOpp->blx.nd2++;
 
     j= pXFoil->ipan[pXFoil->iblte[is]+1][is]  -1;
     for (ibl=pXFoil->iblte[is]+1; ibl<=pXFoil->nbl[is]; ibl++)
     {
         i = pXFoil->ipan[ibl][is];
-        pOpp->xd2[i-j] = pXFoil->x[i] - pXFoil->nx[i]*pXFoil->dstr[ibl][is]*dsf1;
-        pOpp->yd2[i-j] = pXFoil->y[i] - pXFoil->ny[i]*pXFoil->dstr[ibl][is]*dsf1;
-        pOpp->nd2++;
+        pOpp->blx.xd2[i-j] = pXFoil->x[i] - pXFoil->nx[i]*pXFoil->dstr[ibl][is]*dsf1;
+        pOpp->blx.yd2[i-j] = pXFoil->y[i] - pXFoil->ny[i]*pXFoil->dstr[ibl][is]*dsf1;
+        pOpp->blx.nd2++;
     }
 
     //---- plot lower wake displacement surface
     ibl = pXFoil->iblte[2];
     i = pXFoil->ipan[ibl][2];
-    pOpp->xd3[0] = pXFoil->x[i] + pXFoil->nx[i]*pXFoil->dstr[ibl][2];
-    pOpp->yd3[0] = pXFoil->y[i] + pXFoil->ny[i]*pXFoil->dstr[ibl][2];
-    pOpp->nd3++;
+    pOpp->blx.xd3[0] = pXFoil->x[i] + pXFoil->nx[i]*pXFoil->dstr[ibl][2];
+    pOpp->blx.yd3[0] = pXFoil->y[i] + pXFoil->ny[i]*pXFoil->dstr[ibl][2];
+    pOpp->blx.nd3++;
 
     j = pXFoil->ipan[pXFoil->iblte[is]+1][is]  -1;
     for (ibl=pXFoil->iblte[is]+1; ibl<=pXFoil->nbl[is]; ibl++)
     {
         i = pXFoil->ipan[ibl][is];
-        pOpp->xd3[i-j] = pXFoil->x[i] + pXFoil->nx[i]*pXFoil->dstr[ibl][is]*dsf2;
-        pOpp->yd3[i-j] = pXFoil->y[i] + pXFoil->ny[i]*pXFoil->dstr[ibl][is]*dsf2;
-        pOpp->nd3++;
+        pOpp->blx.xd3[i-j] = pXFoil->x[i] + pXFoil->nx[i]*pXFoil->dstr[ibl][is]*dsf2;
+        pOpp->blx.yd3[i-j] = pXFoil->y[i] + pXFoil->ny[i]*pXFoil->dstr[ibl][is]*dsf2;
+        pOpp->blx.nd3++;
     }
 
-    pOpp->tklam = pXFoil->tklam;
-    pOpp->qinf = pXFoil->qinf;
+    pOpp->blx.tklam = pXFoil->tklam;
+    pOpp->blx.qinf = pXFoil->qinf;
 
-    memcpy(pOpp->thet, pXFoil->thet, IVX * ISX * sizeof(double));
-    memcpy(pOpp->tau,  pXFoil->tau,  IVX * ISX * sizeof(double));
-    memcpy(pOpp->ctau, pXFoil->ctau, IVX * ISX * sizeof(double));
-    memcpy(pOpp->ctq,  pXFoil->ctq,  IVX * ISX * sizeof(double));
-    memcpy(pOpp->dis,  pXFoil->dis,  IVX * ISX * sizeof(double));
-    memcpy(pOpp->uedg, pXFoil->uedg, IVX * ISX * sizeof(double));
-    memcpy(pOpp->dstr, pXFoil->dstr, IVX * ISX * sizeof(double));
-    memcpy(pOpp->itran, pXFoil->itran, 3 * sizeof(int));
+    memcpy(pOpp->blx.thet, pXFoil->thet, IVX * ISX * sizeof(double));
+    memcpy(pOpp->blx.tau,  pXFoil->tau,  IVX * ISX * sizeof(double));
+    memcpy(pOpp->blx.ctau, pXFoil->ctau, IVX * ISX * sizeof(double));
+    memcpy(pOpp->blx.ctq,  pXFoil->ctq,  IVX * ISX * sizeof(double));
+    memcpy(pOpp->blx.dis,  pXFoil->dis,  IVX * ISX * sizeof(double));
+    memcpy(pOpp->blx.uedg, pXFoil->uedg, IVX * ISX * sizeof(double));
+    memcpy(pOpp->blx.dstr, pXFoil->dstr, IVX * ISX * sizeof(double));
+    memcpy(pOpp->blx.itran, pXFoil->itran, 3 * sizeof(int));
 
     pXFoil->createXBL();
     pXFoil->fillHk();
     pXFoil->fillRTheta();
-    memcpy(pOpp->xbl, pXFoil->xbl, IVX * ISX * sizeof(double));
-    memcpy(pOpp->Hk, pXFoil->Hk, IVX * ISX * sizeof(double));
-    memcpy(pOpp->RTheta, pXFoil->RTheta, IVX * ISX * sizeof(double));
-    pOpp->nside1 = pXFoil->m_nSide1;
-    pOpp->nside2 = pXFoil->m_nSide2;
+    memcpy(pOpp->blx.xbl, pXFoil->xbl, IVX * ISX * sizeof(double));
+    memcpy(pOpp->blx.Hk, pXFoil->Hk, IVX * ISX * sizeof(double));
+    memcpy(pOpp->blx.RTheta, pXFoil->RTheta, IVX * ISX * sizeof(double));
+    pOpp->blx.nside1 = pXFoil->m_nSide1;
+    pOpp->blx.nside2 = pXFoil->m_nSide2;
 }
 
 

@@ -6901,7 +6901,7 @@ bool MainFrame::serializeOppXFL(OpPoint *pOpp, QDataStream &ar, bool bIsStoring,
         ar << pOpp->m_bIsVisible << false;
 
         ar << pOpp->m_Reynolds << pOpp->m_Mach << pOpp->m_Alpha;
-        ar << pOpp->n << pOpp->nd1 << pOpp->nd2 << pOpp->nd3;
+        ar << pOpp->n << pOpp->blx.nd1 << pOpp->blx.nd2 << pOpp->blx.nd3;
 
         ar << pOpp->m_bViscResults;
         ar << pOpp->m_bBL;
@@ -6912,9 +6912,9 @@ bool MainFrame::serializeOppXFL(OpPoint *pOpp, QDataStream &ar, bool bIsStoring,
 
         for (k=0; k<pOpp->n; k++)     ar << (float)pOpp->Cpv[k] << (float)pOpp->Cpi[k];
         for (k=0; k<pOpp->n; k++)     ar << (float)pOpp->Qv[k]  << (float)pOpp->Qi[k];
-        for (k=0; k<=pOpp->nd1; k++)  ar << (float)pOpp->xd1[k] << (float)pOpp->yd1[k];
-        for (k=0; k<pOpp->nd2; k++)   ar << (float)pOpp->xd2[k] << (float)pOpp->yd2[k];
-        for (k=0; k<pOpp->nd3; k++)	  ar << (float)pOpp->xd3[k] << (float)pOpp->yd3[k];
+        for (k=0; k<=pOpp->blx.nd1; k++)  ar << (float)pOpp->blx.xd1[k] << (float)pOpp->blx.yd1[k];
+        for (k=0; k<pOpp->blx.nd2; k++)   ar << (float)pOpp->blx.xd2[k] << (float)pOpp->blx.yd2[k];
+        for (k=0; k<pOpp->blx.nd3; k++)	  ar << (float)pOpp->blx.xd3[k] << (float)pOpp->blx.yd3[k];
 
         // space allocation for the future storage of more data, without need to change the format
         for (int i=0; i<20; i++) ar << 0;
@@ -6933,7 +6933,7 @@ bool MainFrame::serializeOppXFL(OpPoint *pOpp, QDataStream &ar, bool bIsStoring,
         ar >> pOpp->m_bIsVisible >> boolean;
 
         ar >> pOpp->m_Reynolds >> pOpp->m_Mach >> pOpp->m_Alpha;
-        ar >> pOpp->n >> pOpp->nd1 >> pOpp->nd2 >> pOpp->nd3;
+        ar >> pOpp->n >> pOpp->blx.nd1 >> pOpp->blx.nd2 >> pOpp->blx.nd3;
 
         ar >> pOpp->m_bViscResults;
         ar >> pOpp->m_bBL;
@@ -6954,23 +6954,23 @@ bool MainFrame::serializeOppXFL(OpPoint *pOpp, QDataStream &ar, bool bIsStoring,
             pOpp->Qv[k] = f0;
             pOpp->Qi[k] = f1;
         }
-        for (k=0; k<=pOpp->nd1; k++)
+        for (k=0; k<=pOpp->blx.nd1; k++)
         {
             ar >> f0 >> f1;
-            pOpp->xd1[k] = f0;
-            pOpp->yd1[k] = f1;
+            pOpp->blx.xd1[k] = f0;
+            pOpp->blx.yd1[k] = f1;
         }
-        for (k=0; k<pOpp->nd2; k++)
+        for (k=0; k<pOpp->blx.nd2; k++)
         {
             ar >> f0 >> f1;
-            pOpp->xd2[k] = f0;
-            pOpp->yd2[k] = f1;
+            pOpp->blx.xd2[k] = f0;
+            pOpp->blx.yd2[k] = f1;
         }
-        for (k=0; k<pOpp->nd3; k++)
+        for (k=0; k<pOpp->blx.nd3; k++)
         {
             ar >> f0 >> f1;
-            pOpp->xd3[k] = f0;
-            pOpp->yd3[k] = f1;
+            pOpp->blx.xd3[k] = f0;
+            pOpp->blx.yd3[k] = f1;
         }
 
         // space allocation
