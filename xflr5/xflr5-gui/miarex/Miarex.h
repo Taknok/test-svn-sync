@@ -184,7 +184,6 @@ private slots:
 	void onInitLLTCalc();
 	void onKeepCpSection();
 	void onManagePlanes();
-	void onModalView();
 	void onMoment();
 	void onNewPlane();
 	void onNewPlaneObject();
