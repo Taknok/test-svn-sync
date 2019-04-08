@@ -7237,6 +7237,18 @@ Non *.dat files will be ignored.</source>
         <source>Extra drag coef.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Ref. area=</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ref. span length=</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ref. chord length=</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>StabViewDlg</name>
@@ -8074,6 +8086,18 @@ of the surfaces.This may reduce the display speed.
     </message>
     <message>
         <source>Ignore Body Panels - RECOMMENDED</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ref. area=</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ref. span length=</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ref. chord length=</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

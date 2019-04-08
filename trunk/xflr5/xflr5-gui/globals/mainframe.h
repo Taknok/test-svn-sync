@@ -23,7 +23,7 @@
  *@file mainframe.h
  *@brief This file contains the description of the MainFrame class associated to the application's main window
  *
-*/
+ */
 #ifndef MAINFRAME_H
 #define MAINFRAME_H
 
@@ -387,7 +387,7 @@ private:
 	QAction *m_pExporttoAVL, *m_pExporttoSTL;
 	QAction *m_pManagePlanesAct, *m_pScaleWingAct;
 	QAction *m_pImportWPolars, *m_pExportWPolars, *m_pPlaneInertia;
-	QAction *m_pShowFlapMoments;
+    QAction *m_pShowFlapMoments;
 
 	//XDirect Actions
     QActionGroup *m_pXDirectViewActGroup;

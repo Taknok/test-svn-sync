@@ -555,13 +555,13 @@ void Miarex::setControls()
 
     m_pctrlInitLLTCalc->setEnabled(m_pCurWPolar && m_pCurWPolar->analysisMethod()==XFLR5::LLTMETHOD);
 
-    s_pMainFrame->m_pWOppAct->setChecked(m_iView==XFLR5::WOPPVIEW);
+/*    s_pMainFrame->m_pWOppAct->setChecked(m_iView==XFLR5::WOPPVIEW);
     s_pMainFrame->m_pWPolarAct->setChecked(m_iView==XFLR5::WPOLARVIEW);
     s_pMainFrame->m_pW3DAct->setChecked(m_iView==XFLR5::W3DVIEW);
     s_pMainFrame->m_pCpViewAct->setChecked(m_iView==XFLR5::WCPVIEW);
 
     s_pMainFrame->m_pStabTimeAct->setChecked(m_iView==XFLR5::STABTIMEVIEW);
-    s_pMainFrame->m_pRootLocusAct->setChecked(m_iView==XFLR5::STABPOLARVIEW);
+    s_pMainFrame->m_pRootLocusAct->setChecked(m_iView==XFLR5::STABPOLARVIEW);*/
 
     s_pMainFrame->m_pShowWing2Curve->setChecked(m_bShowWingCurve[1]);
     s_pMainFrame->m_pShowStabCurve->setChecked(m_bShowWingCurve[2]);
@@ -5927,23 +5927,6 @@ void Miarex::onRootLocusView()
     s_bResetCurves = true;
     updateView();
 
-}
-
-
-/**
- * The user has requested to change the display of stability results to the modal view
- */
-void Miarex::onModalView()
-{
-    m_iView = XFLR5::W3DVIEW;
-
-    m_bResetTextLegend = true;
-
-    setGraphTiles();
-    s_pMainFrame->setMainFrameCentralWidget();
-    setCurveParams();
-    setControls();
-    updateView();
 }
 
 
