@@ -1271,19 +1271,20 @@ void BatchDlg::onAnalysisSettings()
 
 
 
-void BatchDlg::customEvent(QEvent * event)
+void BatchDlg::customEvent(QEvent * pEvent)
 {
     // When we get here, we've crossed the thread boundary and are now
     // executing in this widget's thread
 
-    if(event->type() == XFOIL_END_TASK_EVENT)
+    if(pEvent->type() == XFOIL_END_TASK_EVENT)
     {
-        handleXFoilTaskEvent(static_cast<XFoilTaskEvent *>(event));
+        handleXFoilTaskEvent(static_cast<XFoilTaskEvent *>(pEvent));
     }
-    else if(event->type() == XFOIL_END_OPP_EVENT)
+    else if(pEvent->type() == XFOIL_END_OPP_EVENT)
     {
-        XFoilOppEvent *pOppEvent = (XFoilOppEvent*)event;
-        Objects2d::addOpPoint(pOppEvent->foilPtr(), pOppEvent->polarPtr(), pOppEvent->XFoilPtr(), XDirect::s_bStoreOpp);
+        XFoilOppEvent *pOppEvent = (XFoilOppEvent*)pEvent;
+
+        Objects2d::addOpPoint(pOppEvent->foilPtr(), pOppEvent->polarPtr(), pOppEvent->oppPtr(), XDirect::s_bStoreOpp);
         m_pRmsGraph->resetYLimits();
     }
 }

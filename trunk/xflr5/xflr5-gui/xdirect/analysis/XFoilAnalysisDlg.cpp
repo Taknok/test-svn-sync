@@ -388,7 +388,7 @@ void XFoilAnalysisDlg::customEvent(QEvent * event)
     else if(event->type() == XFOIL_END_OPP_EVENT)
     {
         XFoilOppEvent *pOppEvent = (XFoilOppEvent*)event;
-        Objects2d::addOpPoint(pOppEvent->foilPtr(), pOppEvent->polarPtr(), pOppEvent->XFoilPtr(), XDirect::s_bStoreOpp);
+        Objects2d::addOpPoint(pOppEvent->foilPtr(), pOppEvent->polarPtr(), pOppEvent->oppPtr(), XDirect::s_bStoreOpp);
         m_pRmsGraph->resetYLimits();
     }
 }

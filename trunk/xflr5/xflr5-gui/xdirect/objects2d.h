@@ -28,7 +28,7 @@
 
 #include <analysis3d/analysis3d_enums.h>
 
-class XFoil;
+
 class Foil;
 class Polar;
 class OpPoint;
@@ -68,9 +68,8 @@ public:
 	static OpPoint*  getFoilOpp(Foil *pFoil, Polar *pPolar, double x);
 	static void      insertOpPoint(OpPoint *pNewPoint);
 	static bool      deleteOpp(OpPoint *pOpp);
-    static OpPoint*  addOpPoint(Foil *pFoil, Polar *pPolar, XFoil *pXFoil, bool bStoreOpp);
+    static OpPoint*  addOpPoint(Foil *pFoil, Polar *pPolar, OpPoint *pOpPoint, bool bStoreOpp);
 
-    static void addXFoilData(OpPoint *pOpp, XFoil *pXFoil, Foil *pFoil);
 
 
 public:

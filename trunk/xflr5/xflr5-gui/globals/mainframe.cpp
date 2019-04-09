@@ -302,7 +302,7 @@ MainFrame::~MainFrame()
 
     for(int ioa=Objects2d::s_oaPolar.size()-1; ioa>=0; ioa--)
     {
-        delete (Polar*)Objects2d::s_oaPolar.at(ioa);
+        delete Objects2d::s_oaPolar.at(ioa);
         Objects2d::s_oaPolar.removeAt(ioa);
     }
 
@@ -3350,7 +3350,7 @@ bool MainFrame::loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFor
         }
         for (l=0; l<Objects2d::s_oaPolar.size(); l++)
         {
-            pOldPlr = (Polar*)Objects2d::s_oaPolar[l];
+            pOldPlr = Objects2d::s_oaPolar[l];
             if (pOldPlr->foilName() == pPolar->foilName() &&
                     pOldPlr->polarName()  == pPolar->polarName())
             {
@@ -4630,7 +4630,7 @@ void MainFrame::readPolarFile(QDataStream &ar)
             }
             for (l=0; l<Objects2d::s_oaPolar.size(); l++)
             {
-                pOldPolar = (Polar*)Objects2d::s_oaPolar[l];
+                pOldPolar = Objects2d::s_oaPolar[l];
                 if (pOldPolar->foilName() == pPolar->foilName() &&
                         pOldPolar->polarName()  == pPolar->polarName())
                 {
@@ -4861,7 +4861,7 @@ bool MainFrame::serializePlaneProject(QDataStream &ar)
     QList<Polar*> polarList;
     for(i=0; i<Objects2d::s_oaPolar.size(); i++)
     {
-        pPolar = (Polar*)Objects2d::s_oaPolar.at(i);
+        pPolar = Objects2d::s_oaPolar.at(i);
         for(int iFoil=0; iFoil<foilList.count(); iFoil++)
         {
             if(pPolar->foilName() == foilList.at(iFoil)->foilName())
@@ -5334,7 +5334,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
         ar << Objects2d::s_oaPolar.size();
         for (int i=0; i<Objects2d::s_oaPolar.size();i++)
         {
-            pPolar = (Polar*)Objects2d::s_oaPolar.at(i);
+            pPolar = Objects2d::s_oaPolar.at(i);
             serializePolarXFL(pPolar, ar, bIsStoring);
         }
 
@@ -5761,7 +5761,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
         {
             for (j=0; j<Objects2d::s_oaPolar.size(); j++)
             {
-                pPolar = (Polar*)Objects2d::s_oaPolar.at(j);
+                pPolar = Objects2d::s_oaPolar.at(j);
                 for (k=0; k<Objects2d::s_oaFoil.size(); k++)
                 {
                     pFoil = Objects2d::s_oaFoil.at(k);
@@ -6186,7 +6186,7 @@ void MainFrame::updatePolarListBox()
         QStringList polarList;
         for (int i=0; i<Objects2d::s_oaPolar.size(); i++)
         {
-            Polar *pPolar = (Polar*)Objects2d::s_oaPolar[i];
+            Polar *pPolar = Objects2d::s_oaPolar[i];
             if(pPolar->foilName() == XDirect::curFoil()->foilName())
             {
                 polarList.append(pPolar->polarName());
@@ -6338,7 +6338,7 @@ void MainFrame::writePolars(QDataStream &ar, Foil *pFoil)
         Polar * pPolar ;
         for (i=0; i<Objects2d::s_oaPolar.size();i++)
         {
-            pPolar = (Polar*)Objects2d::s_oaPolar.at(i);
+            pPolar = Objects2d::s_oaPolar.at(i);
             serializePolar(pPolar, ar, true);
         }
     }

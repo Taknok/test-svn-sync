@@ -85,9 +85,9 @@ public:
 					 double xf2[], double yf2[], int n2, double mixt);
 
 	bool CheckAngles();
-	void pangen();
 	bool Preprocess();
-	void pert_process(int kqsp);
+    void pangen();
+    void pert_process(int kqsp);
 	void pert_init(int kqsp);
 	void HanningFilter(double cfilt, QTextStream &ts);
 	void smooq(int kq1,int kq2,int kqsp);
