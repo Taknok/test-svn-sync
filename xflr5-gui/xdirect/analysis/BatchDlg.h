@@ -64,7 +64,7 @@ public:
 
 
     void handleXFoilTaskEvent(const XFoilTaskEvent *event);
-    void customEvent(QEvent * event);
+    void customEvent(QEvent * pEvent);
 
 private:
     void keyPressEvent(QKeyEvent *event);

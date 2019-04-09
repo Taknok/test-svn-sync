@@ -22,7 +22,7 @@
 #ifndef XFOILTASKEVENT_H
 #define XFOILTASKEVENT_H
 
-#include <XFoil.h>
+
 #include <QEvent>
 #include <QString>
 
@@ -32,6 +32,7 @@ const QEvent::Type XFOIL_END_OPP_EVENT = static_cast<QEvent::Type>(QEvent::User 
 
 class Foil;
 class Polar;
+class OpPoint;
 
 class XFoilTaskEvent : public QEvent
 {
@@ -57,27 +58,26 @@ class XFoilOppEvent : public QEvent
 {
 
 public:
-    XFoilOppEvent(Foil * pFoil, Polar *pPolar, XFoil *pXFoilRef): QEvent(XFOIL_END_OPP_EVENT),
+    XFoilOppEvent(Foil * pFoil, Polar *pPolar, OpPoint *pOpPoint): QEvent(XFOIL_END_OPP_EVENT),
 		m_pFoil(pFoil),
 		m_pPolar(pPolar)
 	{
 //		memcpy(&m_XFoil, pXFoilPtr, sizeof(XFoil));
-		m_pXFoil = pXFoilRef; /** use the copy constructor and = operator defined implicitly by the compiler */
+        m_pOpPoint = pOpPoint; /** use the copy constructor and = operator defined implicitly by the compiler */
 	}
 
 	~XFoilOppEvent()
 	{
-		if(m_pXFoil) delete m_pXFoil;
 	}
 
     Foil * foilPtr()   const {return m_pFoil;}
     Polar * polarPtr() const {return m_pPolar;}
-	XFoil * XFoilPtr() {return m_pXFoil;}
+    OpPoint * oppPtr() {return m_pOpPoint;}
 
 private:
     Foil *m_pFoil=nullptr;
     Polar *m_pPolar=nullptr;
-	XFoil *m_pXFoil=nullptr;    /** need to store current XFoil results */
+    OpPoint *m_pOpPoint=nullptr;    /** need to store current XFoil results */
 };
 
 #endif // XFOILTASKEVENT_H

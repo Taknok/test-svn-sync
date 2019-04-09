@@ -7100,7 +7100,7 @@ Poursuivre ?</translation>
     <message>
         <location filename="../xflr5-gui/viewwidgets/oppointwidget.cpp" line="736"/>
         <source>Cm = %1</source>
-        <translation>Cm = %1  {1?}</translation>
+        <translation>Cm = %1</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/viewwidgets/oppointwidget.cpp" line="740"/>
