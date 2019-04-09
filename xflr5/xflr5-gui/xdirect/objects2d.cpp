@@ -21,10 +21,11 @@
 
 
 #include "objects2d.h"
+
 #include <xdirect/XDirect.h>
 #include <globals/globals.h>
 #include <misc/options/displayoptions.h>
-#include <QtDebug>
+#include <QDebug>
 
 #define PI 3.141592654
 
@@ -187,64 +188,54 @@ void Objects2d::insertThisFoil(Foil *pFoil)
 * @param pPolarPtr a point to the parent Polar object to which the OpPoint should be attached.
 * @return a pointer to the OpPoint which has been created, or NULL if it wasn't stored.
 */
-OpPoint* Objects2d::addOpPoint(Foil *pFoil, Polar *pPolar, XFoil *pXFoil, bool bStoreOpp)
+OpPoint* Objects2d::addOpPoint(Foil *pFoil, Polar *pPolar, OpPoint *pOpPoint, bool bStoreOpp)
 {
-    if(!pFoil || !pXFoil) return nullptr;
+    if(!pFoil || !pOpPoint) return nullptr;
 
     if(!pPolar) pPolar = XDirect::curPolar();
 
-    OpPoint *pNewPoint = new OpPoint();
-    QColor clr = randomColor(!Settings::isLightTheme());
-    pNewPoint->setColor(clr.red(), clr.green(), clr.black(), clr.alpha());
+    if(!pPolar) return nullptr;
 
-    if(pNewPoint ==nullptr)
+    QColor clr = randomColor(!Settings::isLightTheme());
+    pOpPoint->setColor(clr.red(), clr.green(), clr.black(), clr.alpha());
+
+    if(pOpPoint ==nullptr)
     {
         return nullptr;
     }
     else
     {
-        if(!pXFoil->lvconv)
-        {
-            delete pNewPoint;
-            return nullptr;
-        }
-        pNewPoint->m_Alpha = pXFoil->alfa * 180/PI;
-        pNewPoint->foilName() = pFoil->foilName();
-        pNewPoint->polarName()  = pPolar->polarName();
-
-        addXFoilData(pNewPoint, pXFoil, pFoil);
+        pOpPoint->foilName() = pFoil->foilName();
+        pOpPoint->polarName()  = pPolar->polarName();
     }
 
     if(bStoreOpp)
     {
         //insert the OpPoint in the Operating points array
-        Objects2d::insertOpPoint(pNewPoint);
+        Objects2d::insertOpPoint(pOpPoint);
     }
 
     // Now insert OpPoint in the current Polar object
-
-    if(pXFoil->lvconv && pPolar)
+    if(pPolar->polarType()==XFLR5::FIXEDLIFTPOLAR || pPolar->polarType()==XFLR5::RUBBERCHORDPOLAR)
     {
-        if(pPolar->polarType()==XFLR5::FIXEDLIFTPOLAR || pPolar->polarType()==XFLR5::RUBBERCHORDPOLAR)
+        if(pOpPoint && pOpPoint->Reynolds()<1.00e8)
         {
-            if(pNewPoint && pNewPoint->Reynolds()<1.00e8)
-            {
-                pPolar->addOpPointData(pNewPoint);
-            }
-        }
-        else
-        {
-            pPolar->addOpPointData(pNewPoint);
+            pPolar->addOpPointData(pOpPoint);
         }
     }
+    else
+    {
+        pPolar->addOpPointData(pOpPoint);
+    }
+
 
     if(!bStoreOpp)
     {
-        delete pNewPoint;
-        pNewPoint = nullptr;
+        delete pOpPoint;
+        pOpPoint = nullptr;
     }
 
-    return pNewPoint;
+    return pOpPoint;
 }
 
 
@@ -730,151 +721,6 @@ Polar * Objects2d::createPolar(Foil *pFoil, double Re, double Mach, double NCrit
     return pNewPolar;
 }
 
-
-
-
-/**
-* Adds the results of the XFoil Calculation to the OpPoint object
-* @param pOpPoint a pointer to the instance of the OpPoint to be filled with the data from the XFoil object.
-*/
-void Objects2d::addXFoilData(OpPoint *pOpp, XFoil *pXFoil, Foil *pFoil)
-{
-    int i=0, j=0, ibl=0, is=0;
-
-    pOpp->n            = pXFoil->n;
-    pOpp->Cd           = pXFoil->cd;
-    pOpp->Cdp          = pXFoil->cdp;
-    pOpp->Cl           = pXFoil->cl;
-    pOpp->m_XCP        = pXFoil->xcp;
-    pOpp->Cm           = pXFoil->cm;
-    pOpp->m_Reynolds   = pXFoil->reinf;
-    pOpp->m_Mach       = pXFoil->minf;
-    pOpp->ACrit        = pXFoil->acrit;
-
-    pOpp->m_bTEFlap    = pFoil->m_bTEFlap;
-    pOpp->m_bLEFlap    = pFoil->m_bLEFlap;
-
-    pOpp->Cpmn   = pXFoil->cpmn;
-
-    for (int k=0; k<pXFoil->n; k++)
-    {
-        //		x[k]   = m_pXFoil->x[k+1];
-        //		y[k]   = m_pXFoil->y[k+1];
-        //		s[k]   = m_pXFoil->s[k+1];
-        pOpp->Cpi[k] = pXFoil->cpi[k+1];
-        pOpp->Qi[k]  = pXFoil->qgamm[k+1];
-    }
-
-    if(pXFoil->lvisc && pXFoil->lvconv)
-    {
-        pOpp->Xtr1 =pXFoil->xoctr[1];
-        pOpp->Xtr2 =pXFoil->xoctr[2];
-        pOpp->m_bViscResults = true;
-        pOpp->m_bBL = true;
-        for (int k=0; k<pXFoil->n; k++)
-        {
-            pOpp->Cpv[k] = pXFoil->cpv[k+1];
-            pOpp->Qv[k] = pXFoil->qvis[k+1];
-        }
-    }
-    else
-    {
-        pOpp->m_bViscResults = false;
-    }
-
-    if(pOpp->m_bTEFlap || pOpp->m_bLEFlap)
-    {
-        pOpp->setHingeMoments(pFoil);
-        /*		m_TEHMom = m_pXFoil->hmom;
-        XForce   = m_pXFoil->hfx;
-        YForce   = m_pXFoil->hfy;*/
-    }
-
-    if(!pXFoil->lvisc || !pXFoil->lvconv)	return;
-
-    //---- add boundary layer on both sides of airfoil
-    pOpp->blx.nd1=0;
-    pOpp->blx.nd2=0;
-    pOpp->blx.nd3=0;
-    for (is=1; is<=2; is++)
-    {
-        for (ibl=2; ibl<=pXFoil->iblte[is];ibl++)
-        {
-            i = pXFoil->ipan[ibl][is];
-            pOpp->blx.xd1[i] = pXFoil->x[i] + pXFoil->nx[i]*pXFoil->dstr[ibl][is];
-            pOpp->blx.yd1[i] = pXFoil->y[i] + pXFoil->ny[i]*pXFoil->dstr[ibl][is];
-            pOpp->blx.nd1++;
-        }
-    }
-
-    //---- set upper and lower wake dstar fractions based on first wake point
-    is=2;
-    double dstrte = pXFoil->dstr[pXFoil->iblte[is]+1][is];
-    double dsf1, dsf2;
-    if(dstrte!=0.0) // d* at TE
-    {
-        dsf1 = (pXFoil->dstr[pXFoil->iblte[1]][1] + 0.5*pXFoil->ante) / dstrte;
-        dsf2 = (pXFoil->dstr[pXFoil->iblte[2]][2] + 0.5*pXFoil->ante) / dstrte;
-    }
-    else
-    {
-        dsf1 = 0.5;
-        dsf2 = 0.5;
-    }
-
-    //---- plot upper wake displacement surface
-    ibl = pXFoil->iblte[1];
-    i = pXFoil->ipan[ibl][1];
-    pOpp->blx.xd2[0] = pXFoil->x[i] + pXFoil->nx[i]*pXFoil->dstr[ibl][1];
-    pOpp->blx.yd2[0] = pXFoil->y[i] + pXFoil->ny[i]*pXFoil->dstr[ibl][1];
-    pOpp->blx.nd2++;
-
-    j= pXFoil->ipan[pXFoil->iblte[is]+1][is]  -1;
-    for (ibl=pXFoil->iblte[is]+1; ibl<=pXFoil->nbl[is]; ibl++)
-    {
-        i = pXFoil->ipan[ibl][is];
-        pOpp->blx.xd2[i-j] = pXFoil->x[i] - pXFoil->nx[i]*pXFoil->dstr[ibl][is]*dsf1;
-        pOpp->blx.yd2[i-j] = pXFoil->y[i] - pXFoil->ny[i]*pXFoil->dstr[ibl][is]*dsf1;
-        pOpp->blx.nd2++;
-    }
-
-    //---- plot lower wake displacement surface
-    ibl = pXFoil->iblte[2];
-    i = pXFoil->ipan[ibl][2];
-    pOpp->blx.xd3[0] = pXFoil->x[i] + pXFoil->nx[i]*pXFoil->dstr[ibl][2];
-    pOpp->blx.yd3[0] = pXFoil->y[i] + pXFoil->ny[i]*pXFoil->dstr[ibl][2];
-    pOpp->blx.nd3++;
-
-    j = pXFoil->ipan[pXFoil->iblte[is]+1][is]  -1;
-    for (ibl=pXFoil->iblte[is]+1; ibl<=pXFoil->nbl[is]; ibl++)
-    {
-        i = pXFoil->ipan[ibl][is];
-        pOpp->blx.xd3[i-j] = pXFoil->x[i] + pXFoil->nx[i]*pXFoil->dstr[ibl][is]*dsf2;
-        pOpp->blx.yd3[i-j] = pXFoil->y[i] + pXFoil->ny[i]*pXFoil->dstr[ibl][is]*dsf2;
-        pOpp->blx.nd3++;
-    }
-
-    pOpp->blx.tklam = pXFoil->tklam;
-    pOpp->blx.qinf = pXFoil->qinf;
-
-    memcpy(pOpp->blx.thet, pXFoil->thet, IVX * ISX * sizeof(double));
-    memcpy(pOpp->blx.tau,  pXFoil->tau,  IVX * ISX * sizeof(double));
-    memcpy(pOpp->blx.ctau, pXFoil->ctau, IVX * ISX * sizeof(double));
-    memcpy(pOpp->blx.ctq,  pXFoil->ctq,  IVX * ISX * sizeof(double));
-    memcpy(pOpp->blx.dis,  pXFoil->dis,  IVX * ISX * sizeof(double));
-    memcpy(pOpp->blx.uedg, pXFoil->uedg, IVX * ISX * sizeof(double));
-    memcpy(pOpp->blx.dstr, pXFoil->dstr, IVX * ISX * sizeof(double));
-    memcpy(pOpp->blx.itran, pXFoil->itran, 3 * sizeof(int));
-
-    pXFoil->createXBL();
-    pXFoil->fillHk();
-    pXFoil->fillRTheta();
-    memcpy(pOpp->blx.xbl, pXFoil->xbl, IVX * ISX * sizeof(double));
-    memcpy(pOpp->blx.Hk, pXFoil->Hk, IVX * ISX * sizeof(double));
-    memcpy(pOpp->blx.RTheta, pXFoil->RTheta, IVX * ISX * sizeof(double));
-    pOpp->blx.nside1 = pXFoil->m_nSide1;
-    pOpp->blx.nside2 = pXFoil->m_nSide2;
-}
 
 
 void Objects2d::deleteFoilResults(Foil *pFoil, bool bDeletePolars)
