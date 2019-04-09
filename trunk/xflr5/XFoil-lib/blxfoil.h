@@ -27,9 +27,10 @@
 #include <QVector>
 
 #include <xfoil_params.h>
+#include "xfoil-lib_global.h"
 
 
-struct BLXFoil
+struct XFOILLIBSHARED_EXPORT BLXFoil
 {
 public:
     BLXFoil();
