@@ -15,7 +15,7 @@
 *******************************************************************************
 
 
-xflr5 v6.45 March xxxth, 2019
+xflr5 v6.45 April 10th, 2019
     - disabled the auto-check for update feature due to crash bugs on some systems
     - updated the German and French translations
     - added VAO support for the OpenGL 3.2+ core profile

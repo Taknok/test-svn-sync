@@ -38,7 +38,7 @@
 #include <xflr5-engine_global.h>
 
 #include <xfoil_params.h>
-#include <blxfoil.h>
+#include <objects/objects2d/blxfoil.h>
 
 class Foil;
 class Polar;
