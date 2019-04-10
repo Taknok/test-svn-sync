@@ -15,8 +15,7 @@ then
 fi
 #rm -r mac_release/XFLR5/*
 cp -r ../build/build-xflr5/release/XFLR5.app mac_release/XFLR5/
-${QT_HOME}/bin/macdeployqt mac_release/XFLR5/XFLR5.app
-
+$ht
 cp License.txt mac_release/XFLR5/
 cp doc/ReleaseNotes.txt mac_release/XFLR5/
 

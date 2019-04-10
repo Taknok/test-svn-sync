@@ -7029,7 +7029,7 @@ Poursuivre ?</translation>
     <message>
         <location filename="../xflr5-gui/viewwidgets/oppointwidget.cpp" line="614"/>
         <source>Flap Angle = %1</source>
-        <translation>Angle de volet = %1</translation>
+        <translation type="unfinished">Angle de volet      = %1</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/viewwidgets/oppointwidget.cpp" line="618"/>
@@ -7039,7 +7039,7 @@ Poursuivre ?</translation>
     <message>
         <location filename="../xflr5-gui/viewwidgets/oppointwidget.cpp" line="623"/>
         <source>YHinge     = %1</source>
-        <translation>Y articulation     = %1</translation>
+        <translation>X articulation      = %1</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/viewwidgets/oppointwidget.cpp" line="642"/>
