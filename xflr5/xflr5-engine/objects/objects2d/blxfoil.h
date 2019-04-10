@@ -27,10 +27,10 @@
 #include <QVector>
 
 #include <xfoil_params.h>
-#include "xfoil-lib_global.h"
+#include <xflr5-engine_global.h>
 
 
-struct XFOILLIBSHARED_EXPORT BLXFoil
+struct XFLR5ENGINELIBSHARED_EXPORT BLXFoil
 {
 public:
     BLXFoil();
