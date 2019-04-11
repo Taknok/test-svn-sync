@@ -102,8 +102,6 @@ macx{
 
 	# link to the lib:
 	LIBS += -L$$OUT_PWD/../xflr5-engine -lxflr5-engine
-	# make the app find the libs:
-	QMAKE_RPATHDIR = @executable_path/../Frameworks
 	# deploy the libs:
 	xflr5-engine.files = $$OUT_PWD/../xflr5-engine/libxflr5-engine.1.dylib
 	xflr5-engine.path = Contents/Frameworks
@@ -111,14 +109,20 @@ macx{
 
 	# link to the lib:
 	LIBS += -L$$OUT_PWD/../XFoil-lib -lXFoil
-	# make the app find the libs:
-	QMAKE_RPATHDIR = @executable_path/../Frameworks
 	# deploy the libs:
 	XFoil.files = $$OUT_PWD/../XFoil-lib/libXFoil.1.dylib
 	XFoil.path = Contents/Frameworks
 	QMAKE_BUNDLE_DATA += XFoil
 
-	LIBS += -framework CoreFoundation
+    # make the app find the libs:
+    QMAKE_RPATHDIR = @executable_path/../Frameworks
+
+    LIBS += -framework CoreFoundation
+
+    #other files to be bundled
+    LicenseFile.files = $$PWD/../License.txt
+    LicenseFile.path = Contents
+    QMAKE_BUNDLE_DATA += LicenseFile
 }
 
 QMAKE_CFLAGS_WARN_ON -= -W3

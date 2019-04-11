@@ -7029,7 +7029,7 @@ Poursuivre ?</translation>
     <message>
         <location filename="../xflr5-gui/viewwidgets/oppointwidget.cpp" line="614"/>
         <source>Flap Angle = %1</source>
-        <translation type="unfinished">Angle de volet      = %1</translation>
+        <translation>Angle de volet      = %1</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/viewwidgets/oppointwidget.cpp" line="618"/>
