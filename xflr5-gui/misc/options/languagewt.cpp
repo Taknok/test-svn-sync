@@ -136,7 +136,7 @@ void LanguageWt::readLanguage()
 void LanguageWt::hideEvent(QHideEvent *)
 {
     if(m_bChanged)
-        QMessageBox::warning(this, tr("Warning"), tr("The language change will take effect at the next session"));
+        QMessageBox::information(this, tr("Warning"), tr("The language change will take effect at the next session"));
 }
 
 

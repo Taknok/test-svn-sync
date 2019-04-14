@@ -7482,68 +7482,68 @@ Check the guidelines for explanations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-engine/objects/objects2d/OpPoint.cpp" line="243"/>
+        <location filename="../xflr5-engine/objects/objects2d/OpPoint.cpp" line="218"/>
         <location filename="../xflr5-gui/xdirect/analysis/ReListDlg.cpp" line="72"/>
         <source>Re</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-engine/objects/objects2d/OpPoint.cpp" line="249"/>
+        <location filename="../xflr5-engine/objects/objects2d/OpPoint.cpp" line="224"/>
         <location filename="../xflr5-gui/xdirect/analysis/ReListDlg.cpp" line="73"/>
         <source>Mach</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-engine/objects/objects2d/OpPoint.cpp" line="255"/>
+        <location filename="../xflr5-engine/objects/objects2d/OpPoint.cpp" line="230"/>
         <location filename="../xflr5-engine/objects/objects3d/PlaneOpp.cpp" line="826"/>
         <source>CL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-engine/objects/objects2d/OpPoint.cpp" line="258"/>
+        <location filename="../xflr5-engine/objects/objects2d/OpPoint.cpp" line="233"/>
         <location filename="../xflr5-engine/objects/objects3d/PlaneOpp.cpp" line="828"/>
         <source>CD</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-engine/objects/objects2d/OpPoint.cpp" line="261"/>
+        <location filename="../xflr5-engine/objects/objects2d/OpPoint.cpp" line="236"/>
         <location filename="../xflr5-engine/objects/objects3d/PlaneOpp.cpp" line="842"/>
         <source>Cm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-engine/objects/objects2d/OpPoint.cpp" line="264"/>
+        <location filename="../xflr5-engine/objects/objects2d/OpPoint.cpp" line="239"/>
         <source>Cdp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-engine/objects/objects2d/OpPoint.cpp" line="267"/>
+        <location filename="../xflr5-engine/objects/objects2d/OpPoint.cpp" line="242"/>
         <source>Cpmn</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-engine/objects/objects2d/OpPoint.cpp" line="270"/>
+        <location filename="../xflr5-engine/objects/objects2d/OpPoint.cpp" line="245"/>
         <location filename="../xflr5-engine/objects/objects3d/PlaneOpp.cpp" line="818"/>
         <source>XCP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-engine/objects/objects2d/OpPoint.cpp" line="273"/>
+        <location filename="../xflr5-engine/objects/objects2d/OpPoint.cpp" line="248"/>
         <source>Top Transition</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-engine/objects/objects2d/OpPoint.cpp" line="276"/>
+        <location filename="../xflr5-engine/objects/objects2d/OpPoint.cpp" line="251"/>
         <source>Bot Transition</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-engine/objects/objects2d/OpPoint.cpp" line="281"/>
+        <location filename="../xflr5-engine/objects/objects2d/OpPoint.cpp" line="256"/>
         <source>T.E. Flap moment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-engine/objects/objects2d/OpPoint.cpp" line="286"/>
+        <location filename="../xflr5-engine/objects/objects2d/OpPoint.cpp" line="261"/>
         <source>L.E. Flap moment</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7596,14 +7596,14 @@ Check the guidelines for explanations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-engine/objects/objects2d/OpPoint.cpp" line="246"/>
+        <location filename="../xflr5-engine/objects/objects2d/OpPoint.cpp" line="221"/>
         <location filename="../xflr5-engine/objects/objects2d/Polar.cpp" line="819"/>
         <location filename="../xflr5-engine/objects/objects3d/PlaneOpp.cpp" line="799"/>
         <source>Alpha</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../xflr5-engine/objects/objects2d/OpPoint.cpp" line="252"/>
+        <location filename="../xflr5-engine/objects/objects2d/OpPoint.cpp" line="227"/>
         <location filename="../xflr5-engine/objects/objects2d/Polar.cpp" line="826"/>
         <location filename="../xflr5-gui/xdirect/analysis/ReListDlg.cpp" line="74"/>
         <source>NCrit</source>
@@ -7641,17 +7641,29 @@ Check the guidelines for explanations.</source>
     </message>
     <message>
         <location filename="../xflr5-engine/objects/objects3d/Plane.cpp" line="41"/>
+        <location filename="../xflr5-engine/objects/objects3d/Plane.cpp" line="453"/>
         <source>Elevator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../xflr5-engine/objects/objects3d/Plane.cpp" line="58"/>
+        <location filename="../xflr5-engine/objects/objects3d/Plane.cpp" line="454"/>
         <source>Fin</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../xflr5-engine/objects/objects3d/Plane.cpp" line="103"/>
         <source>Plane Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-engine/objects/objects3d/Plane.cpp" line="451"/>
+        <source>Main Wing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../xflr5-engine/objects/objects3d/Plane.cpp" line="452"/>
+        <source>Second Wing2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -8175,14 +8187,14 @@ CpCalc: local speed too large
     </message>
     <message>
         <location filename="../xflr5-gui/xdirect/analysis/XFoilTask.cpp" line="279"/>
-        <location filename="../xflr5-gui/xdirect/analysis/XFoilTask.cpp" line="376"/>
+        <location filename="../xflr5-gui/xdirect/analysis/XFoilTask.cpp" line="377"/>
         <source>   ...converged after %1 iterations
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../xflr5-gui/xdirect/analysis/XFoilTask.cpp" line="284"/>
-        <location filename="../xflr5-gui/xdirect/analysis/XFoilTask.cpp" line="381"/>
+        <location filename="../xflr5-gui/xdirect/analysis/XFoilTask.cpp" line="382"/>
         <source>   ...unconverged after %1 iterations
 </source>
         <translation type="unfinished"></translation>

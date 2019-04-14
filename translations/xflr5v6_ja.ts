@@ -673,33 +673,6 @@ _____Analysis completed_____
     </message>
 </context>
 <context>
-    <name>BodyFrameWidget</name>
-    <message>
-        <source>Insert Control Point</source>
-        <translation type="obsolete">操作点の挿入</translation>
-    </message>
-    <message>
-        <source>Remove Control Point</source>
-        <translation type="obsolete">操作点の削除</translation>
-    </message>
-    <message>
-        <source>Show Current Frame Only</source>
-        <translation type="obsolete">現在のフレームのみを表示</translation>
-    </message>
-    <message>
-        <source>Reset Scales</source>
-        <translation type="obsolete">縮尺をリセット</translation>
-    </message>
-    <message>
-        <source>Load background image</source>
-        <translation type="obsolete">背景画像の読み込み</translation>
-    </message>
-    <message>
-        <source>Clear background image</source>
-        <translation type="obsolete">背景画像のクリア</translation>
-    </message>
-</context>
-<context>
     <name>BodyFrameWt</name>
     <message>
         <source>X-Scale = %1</source>
@@ -790,29 +763,6 @@ _____Analysis completed_____
     <message>
         <source>Cancel</source>
         <translation>キャンセル</translation>
-    </message>
-</context>
-<context>
-    <name>BodyLineWidget</name>
-    <message>
-        <source>Insert Control Point</source>
-        <translation type="obsolete">操作点の挿入</translation>
-    </message>
-    <message>
-        <source>Remove Control Point</source>
-        <translation type="obsolete">操作点の削除</translation>
-    </message>
-    <message>
-        <source>Reset Scales</source>
-        <translation type="obsolete">縮尺をリセット</translation>
-    </message>
-    <message>
-        <source>Load background image</source>
-        <translation type="obsolete">背景画像の読み込み</translation>
-    </message>
-    <message>
-        <source>Clear background image</source>
-        <translation type="obsolete">背景画像のクリア</translation>
     </message>
 </context>
 <context>
@@ -1026,18 +976,6 @@ _____Analysis completed_____
     <message>
         <source>Maximum panel angle is %1 deg</source>
         <translation>パネルの角度は最大で %1 度</translation>
-    </message>
-</context>
-<context>
-    <name>Direct2dDesign</name>
-    <message>
-        <source>Warning</source>
-        <translation type="obsolete">警告</translation>
-    </message>
-    <message>
-        <source>The minimum number of control points has been reached for this spline degree</source>
-        <translation type="obsolete">
-            </translation>
     </message>
 </context>
 <context>
@@ -5680,7 +5618,7 @@ Continue ?</source>
     </message>
     <message>
         <source>Panel Analysis completed ... Errors encountered</source>
-        <translation>パネル解析が完了しました　解析中にいくつかのエラーが発生しました</translation>
+        <translation>パネル解析が完了しました&#x3000;解析中にいくつかのエラーが発生しました</translation>
     </message>
     <message>
         <source>Close</source>
@@ -6619,6 +6557,14 @@ Non *.dat files will be ignored.</source>
     </message>
     <message>
         <source>The file is not an xflr5 readable script</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Main Wing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Second Wing2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
