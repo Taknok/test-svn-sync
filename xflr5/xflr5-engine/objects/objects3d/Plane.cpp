@@ -448,10 +448,10 @@ void Plane::clearPointMasses()
 */
 void Plane::renameWings()
 {
-	m_Wing[0].m_WingName = "Main Wing";
-	m_Wing[1].m_WingName = "Second Wing2";
-	m_Wing[2].m_WingName = "Elevator";
-	m_Wing[3].m_WingName = "Fin";
+    m_Wing[0].m_WingName = QObject::tr("Main Wing");
+    m_Wing[1].m_WingName = QObject::tr("Second Wing2");
+    m_Wing[2].m_WingName = QObject::tr("Elevator");
+    m_Wing[3].m_WingName = QObject::tr("Fin");
 }
 
 
