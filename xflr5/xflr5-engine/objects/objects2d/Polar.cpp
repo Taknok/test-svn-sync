@@ -281,16 +281,18 @@ void Polar::replaceOppDataAt(int pos, OpPoint *pOpp)
 	m_ClCd[pos]  =  pOpp->Cl/pOpp->Cd;
 	m_XCp[pos]   =  pOpp->m_XCP;
 
-	if(pOpp->Cl>0.0) m_RtCl[pos] = 1.0/sqrt(pOpp->Cl);
-	else             m_RtCl[pos] = 0.0;
+//  Bug  if(pOpp->Cl>0.0) m_RtCl[pos] = 1.0/sqrt(pOpp->Cl);
+    if(pOpp->Cl>0.0) m_RtCl[pos] = sqrt(pOpp->Cl);
+    else             m_RtCl[pos] = 0.0;
 	if (pOpp->Cl>=0.0) m_Cl32Cd[pos] =  pow( pOpp->Cl, 1.5)/ pOpp->Cd;
 	else               m_Cl32Cd[pos] = -pow(-pOpp->Cl, 1.5)/ pOpp->Cd;
 
     if(m_PolarType==XFLR5::FIXEDSPEEDPOLAR)  m_Re[pos] =  pOpp->Reynolds();
     else if (m_PolarType==XFLR5::FIXEDLIFTPOLAR)
 	{
-		if(pOpp->Cl>0.0) m_Re[pos] =  pOpp->Reynolds()/ sqrt(pOpp->Cl);
-		else             m_Re[pos] = 0.0;
+//    Bug    if(pOpp->Cl>0.0) m_Re[pos] =  pOpp->Reynolds()/ sqrt(pOpp->Cl);
+        if(pOpp->Cl>0.0) m_Re[pos] =  pOpp->Reynolds();
+        else             m_Re[pos] = 0.0;
 	}
     else if (m_PolarType==XFLR5::RUBBERCHORDPOLAR)
 	{
@@ -315,8 +317,9 @@ void Polar::insertOppDataAt(int i, OpPoint *pOpp)
 	m_ClCd.insert(i, pOpp->Cl/pOpp->Cd);
 	m_XCp.insert(i, pOpp->m_XCP);
 
-	if(pOpp->Cl>0.0) m_RtCl.insert(i, 1.0/sqrt(pOpp->Cl));
-	else             m_RtCl.insert(i, 0.0);
+//  Bug  if(pOpp->Cl>0.0) m_RtCl.insert(i, 1.0/sqrt(pOpp->Cl));
+    if(pOpp->Cl>0.0) m_RtCl.insert(i, sqrt(pOpp->Cl));
+    else             m_RtCl.insert(i, 0.0);
 
 	if (pOpp->Cl>=0.0) m_Cl32Cd.insert(i,pow( pOpp->Cl, 1.5) / pOpp->Cd);
 	else               m_Cl32Cd.insert(i,-pow(-pOpp->Cl, 1.5)/ pOpp->Cd);
@@ -324,8 +327,9 @@ void Polar::insertOppDataAt(int i, OpPoint *pOpp)
     if(m_PolarType==XFLR5::FIXEDSPEEDPOLAR)	 m_Re.insert(i, pOpp->Reynolds());
     else if (m_PolarType==XFLR5::FIXEDLIFTPOLAR)
 	{
-		if(pOpp->Cl>0) m_Re.insert(i, pOpp->Reynolds()/sqrt(pOpp->Cl));
-		else           m_Re[i] = 0.0;
+//      Bug  if(pOpp->Cl>0) m_Re.insert(i, pOpp->Reynolds()/sqrt(pOpp->Cl));
+        if(pOpp->Cl>0) m_Re.insert(i, pOpp->Reynolds());
+        else           m_Re[i] = 0.0;
 	}
     else if (m_PolarType==XFLR5::RUBBERCHORDPOLAR)
 	{
@@ -787,7 +791,14 @@ void Polar::getPolarProperties(QString &polarProps)
 //	strong = QString(QObject::tr("Analysis Type")+" = %1\n").arg(m_PolarType);
 	polarProps.clear();
 
-	strong = QString(QObject::tr("Type")+" = %1").arg(m_PolarType);
+    int iPolarNumber = 0;
+    if (m_PolarType==XFLR5::FIXEDSPEEDPOLAR)     iPolarNumber = 1;
+    else if (m_PolarType==XFLR5::FIXEDLIFTPOLAR) iPolarNumber = 2;
+    else if (m_PolarType==XFLR5::FIXEDAOAPOLAR)  iPolarNumber = 4;
+    else if (m_PolarType==XFLR5::STABILITYPOLAR) iPolarNumber = 7;
+    else if (m_PolarType==XFLR5::BETAPOLAR)      iPolarNumber = 5;
+    strong = QString(QObject::tr("Type")+" = %1").arg(iPolarNumber);
+
     if(m_PolarType==XFLR5::FIXEDSPEEDPOLAR)      strong += " ("+QObject::tr("Fixed speed") +")\n";
     else if(m_PolarType==XFLR5::FIXEDLIFTPOLAR) strong += " ("+QObject::tr("Fixed lift") +")\n";
     else if(m_PolarType==XFLR5::FIXEDAOAPOLAR) strong += " ("+QObject::tr("Fixed angle of attack") +")\n";
