@@ -1823,7 +1823,6 @@ void XDirect::onDefinePolar()
 		m_pCurPolar->copySpecification(&s_RefPolar);
 
 		m_pCurPolar->setPolarType(fpDlg.m_PolarType);
-
 		Objects2d::addPolar(m_pCurPolar);
 		setPolar(m_pCurPolar);
 
