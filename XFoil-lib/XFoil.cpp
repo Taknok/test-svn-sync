@@ -12697,7 +12697,6 @@ void XFoil::tgap(double gapnew, double blend)
     }
 
     doc = std::min( std::max( blend , 0.0 ) , 1.0 );
-
     dgap = gapnew - gap;
 
     //---- go over each point, changing the y-thickness appropriately

@@ -4688,6 +4688,14 @@ XFLR5は正常に動作しません.</translation>
         <source>Set Style</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Foil 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Foil 2</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ManageFoilsDlg</name>
@@ -7432,11 +7440,6 @@ Non *.dat files will be ignored.</source>
         <translation>% コード長</translation>
     </message>
     <message>
-        <source>Blending Distance from L.E.</source>
-        <translation type="unfinished">
-            </translation>
-    </message>
-    <message>
         <source>OK</source>
         <translation>OK</translation>
     </message>
@@ -7459,6 +7462,10 @@ Non *.dat files will be ignored.</source>
     <message>
         <source>Panel number cannot exceed 300</source>
         <translation>メッシュの数は300を超えることができません</translation>
+    </message>
+    <message>
+        <source>Blending Distance from T.E.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

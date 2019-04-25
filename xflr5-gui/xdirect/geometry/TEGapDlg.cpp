@@ -68,7 +68,7 @@ void TEGapDlg::setupLayout()
 
 	QHBoxLayout *pBlendValueLayout = new QHBoxLayout;
 	{
-		QLabel *lab3 = new QLabel(tr("Blending Distance from L.E."));
+        QLabel *lab3 = new QLabel(tr("Blending Distance from T.E."));
 		lab3->setAlignment(Qt::AlignRight);
 		lab3->setMinimumWidth(150);
 		QLabel *lab4 = new QLabel(tr("% chord"));
@@ -201,7 +201,6 @@ void TEGapDlg::onApply()
 
 	m_Gap = m_pctrlGap->value();
 	m_Blend = m_pctrlBlend->value();
-
     s_pXFoil->tgap(m_Gap/100.0,m_Blend/100.0);
     if(s_pXFoil->n>IQX)
 	{
