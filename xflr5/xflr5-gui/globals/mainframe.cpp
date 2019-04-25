@@ -941,7 +941,7 @@ void MainFrame::createAFoilMenus()
 
 void MainFrame::createAFoilToolbar()
 {
-    m_pctrlAFoilToolBar = addToolBar(tr("Foil"));
+    m_pctrlAFoilToolBar = addToolBar(tr("Foil 1"));
     m_pctrlAFoilToolBar->addAction(m_pNewProjectAct);
     m_pctrlAFoilToolBar->addAction(m_pOpenAct);
     m_pctrlAFoilToolBar->addAction(m_pSaveAct);
@@ -2303,7 +2303,7 @@ void MainFrame::createXDirectToolbar()
     m_pctrlPolar->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     m_pctrlOpPoint->setSizeAdjustPolicy(QComboBox::AdjustToContents);
 
-    m_pctrlXDirectToolBar = addToolBar(tr("Foil"));
+    m_pctrlXDirectToolBar = addToolBar(tr("Foil 2"));
     m_pctrlXDirectToolBar->addAction(m_pNewProjectAct);
     m_pctrlXDirectToolBar->addAction(m_pOpenAct);
     m_pctrlXDirectToolBar->addAction(m_pSaveAct);
