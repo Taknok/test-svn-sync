@@ -3418,14 +3418,12 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
 	7, 8 = m_HMom, m_Cpmn;
 	9,10 = m_ClCd, m_Cl32Cd;
 */
-    QVector <double> *pX;
-	double Clmin, Clmax;
+    double Clmin=0, Clmax=0;
 	Polar *pPolar;
-	double Var1, Var2, u, dist;
+    double Var1=0, Var2=0, u=0, dist=0;
 	Var1 = Var2 = u = dist = 0.0;
-	int pt;
-	int size;
-	int n, i;
+    int pt=0;
+    int n=0;
 
 	bOutRe = false;
 	bError = false;
@@ -3439,7 +3437,7 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
 
 		n=0;
 	// Are there any Type 1 polars available for this foil ?
-	for (i = 0; i<s_poaPolar->size(); i++)
+    for (int i = 0; i<s_poaPolar->size(); i++)
 	{
 		pPolar = s_poaPolar->at(i);
 		if((pPolar->polarType()== XFLR5::FIXEDSPEEDPOLAR) && (pPolar->foilName() == pFoil->foilName()))
@@ -3458,27 +3456,25 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
 	//Type 1 Polars are sorted by crescending Re Number
 
 	//if Re is less than that of the first polar, use this one
-	for (i=0; i< nPolars; i++)
+    for (int i=0; i<nPolars; i++)
 	{
 		pPolar = s_poaPolar->at(i);
-		if((pPolar->polarType()== XFLR5::FIXEDSPEEDPOLAR) &&
-		   (pPolar->foilName() == pFoil->foilName()) &&
-			pPolar->m_Cl.size()>0)
+        if((pPolar->polarType()==XFLR5::FIXEDSPEEDPOLAR) && (pPolar->foilName()==pFoil->foilName()) && pPolar->m_Cl.size()>0)
 		{
 			// we have found the first type 1 polar for this foil
 			if (Re < pPolar->Reynolds())
 			{
 				bOutRe = true;
 				//interpolate Cl on this polar
-                pX = (QVector<double> *) pPolar->getPlrVariable(PlrVar);
-				size = (int)pPolar->m_Cl.size();
+                QVector<double> const &pX = pPolar->getPlrVariable(PlrVar);
+                int size = (int)pPolar->m_Cl.size();
 				if(Cl < pPolar->m_Cl[0])
 				{
-					return (*pX)[0];
+                    return pX.front();
 				}
 				if(Cl > pPolar->m_Cl[size-1])
 				{
-					return (*pX)[size-1];
+                    return pX.back();
 				}
 				for (i=0; i<size-1; i++)
 				{
@@ -3486,11 +3482,10 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
 					{
 					//interpolate
 						if(pPolar->m_Cl[i+1]-pPolar->m_Cl[i] < 0.00001)//do not divide by zero
-							return (*pX)[i];
+                            return pX.at(i);
 						else {
-							u = (Cl - pPolar->m_Cl[i])
-									 /(pPolar->m_Cl[i+1]-pPolar->m_Cl[i]);
-							return ((*pX)[i] + u * ((*pX)[i+1]-(*pX)[i]));
+                            u = (Cl - pPolar->m_Cl[i])  /(pPolar->m_Cl[i+1]-pPolar->m_Cl[i]);
+                            return pX.at(i) + u * (pX.at(i+1)-pX.at(i));
 						}
 					}
 				}
@@ -3501,7 +3496,7 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
 	}
 
 	// if not Find the two polars
-	for (i=0; i< nPolars; i++)
+    for (int i=0; i< nPolars; i++)
 	{
 		pPolar = s_poaPolar->at(i);
 		if((pPolar->polarType()== XFLR5::FIXEDSPEEDPOLAR) && (pPolar->foilName() == pFoil->foilName())  && pPolar->m_Cl.size()>0)
@@ -3537,7 +3532,7 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
 			bError = true;
 			return 0.000;
 		}
-		size = (int)pPolar1->m_Cl.size();
+        int size = pPolar1->m_Cl.size();
 		if(!size)
 		{
 			bOutRe = true;
@@ -3545,28 +3540,28 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
 			return 0.000;
 		}
 
-        pX = (QVector <double> *) pPolar1->getPlrVariable(PlrVar);
-		if(Cl < pPolar1->m_Cl[0])	   return (*pX)[0];
-		if(Cl > pPolar1->m_Cl[size-1]) return (*pX)[size-1];
-		for (i=0; i<size-1; i++)
+        QVector<double> const &pX = pPolar1->getPlrVariable(PlrVar);
+        if(Cl < pPolar1->m_Cl[0])	   return pX.front();
+        if(Cl > pPolar1->m_Cl[size-1]) return pX.back();
+        for (int i=0; i<size-1; i++)
 		{
 			if(pPolar1->m_Cl[i] <= Cl && Cl < pPolar1->m_Cl[i+1])
 			{
 				//interpolate
 				if(pPolar1->m_Cl[i+1]-pPolar1->m_Cl[i] < 0.00001)
 				{//do not divide by zero
-					return (*pX)[i];
+                    return pX.at(i);
 				}
 				else
 				{
 					u = (Cl - pPolar1->m_Cl[i])
 							 /(pPolar1->m_Cl[i+1]-pPolar1->m_Cl[i]);
-					return ((*pX)[i] + u * ((*pX)[i+1]-(*pX)[i]));
+                    return pX.at(i) + u * (pX.at(i+1)-pX.at(i));
 				}
 			}
 		}
 		//Out in Re, out in Cl...
-		return (*pX)[size-1];
+        return pX.back();
 	}
 	else
 	{
@@ -3578,7 +3573,7 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
 			bError = true;
 			return 0.000;
 		}
-		size = (int)pPolar1->m_Cl.size();
+        int size = (int)pPolar1->m_Cl.size();
 		if(!size)
 		{
 			bOutRe = true;
@@ -3586,49 +3581,49 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
 			return 0.000;
 		}
 
-        pX = (QVector <double> *) pPolar1->getPlrVariable(PlrVar);
+        QVector<double> const &pX = pPolar1->getPlrVariable(PlrVar);
 		pPolar1->getClLimits(Clmin, Clmax);
 		if(Cl < Clmin)
 		{
-			Var1 = (*pX)[0];
+            Var1 = pX.front();
 			bOutRe = true;
 		}
 		else if(Cl > Clmax)
 		{
-			Var1 = (*pX)[size-1];
+            Var1 = pX.back();
 			bOutRe = true;
 		}
 		else
 		{
 			//first Find the point closest to Cl=0
 			pt = 0;
-			dist = qAbs(pPolar1->m_Cl[0]);
-			for (i=1; i<size;i++)
+            dist = fabs(pPolar1->m_Cl[0]);
+            for (int i=1; i<size;i++)
 			{
-				if (qAbs(pPolar1->m_Cl[i])< dist)
+                if (fabs(pPolar1->m_Cl[i])< dist)
 				{
-					dist = qAbs(pPolar1->m_Cl[i]);
+                    dist = fabs(pPolar1->m_Cl[i]);
 					pt = i;
 				}
 			}
 			if(Cl<pPolar1->m_Cl[pt])
 			{
-				for (i=pt; i>0; i--)
+                for (int i=pt; i>0; i--)
 				{
 					if(Cl<= pPolar1->m_Cl[i] && Cl > pPolar1->m_Cl[i-1])
 					{
 						//interpolate
-						if(qAbs(pPolar1->m_Cl[i]-pPolar1->m_Cl[i-1]) < 0.00001)
+                        if(fabs(pPolar1->m_Cl[i]-pPolar1->m_Cl[i-1]) < 0.00001)
 						{
 							//do not divide by zero
-							Var1 = (*pX)[i];
+                            Var1 = pX.at(i);
 							break;
 						}
 						else
 						{
 							u = (Cl - pPolar1->m_Cl[i-1])
 									 /(pPolar1->m_Cl[i]-pPolar1->m_Cl[i-1]);
-							Var1 = (*pX)[i-1] + u * ((*pX)[i]-(*pX)[i-1]);
+                            Var1 = pX.at(i-1) + u * (pX.at(i)-pX.at(i-1));
 							break;
 						}
 					}
@@ -3636,27 +3631,27 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
 			}
 			else
 			{
-				for (i=pt; i<size-1; i++)
+                for (int i=pt; i<size-1; i++)
 				{
 					if(pPolar1->m_Cl[i] <=Cl && Cl < pPolar1->m_Cl[i+1])
 					{
 						//interpolate
-						if(qAbs(pPolar1->m_Cl[i+1]-pPolar1->m_Cl[i]) < 0.00001){//do not divide by zero
-							Var1 = (*pX)[i];
+                        if(fabs(pPolar1->m_Cl[i+1]-pPolar1->m_Cl[i]) < 0.00001){//do not divide by zero
+                            Var1 = pX.at(i);
 							break;
 						}
 						else
 						{
 							u = (Cl - pPolar1->m_Cl[i])
 									 /(pPolar1->m_Cl[i+1]-pPolar1->m_Cl[i]);
-							Var1 = (*pX)[i] + u * ((*pX)[i+1]-(*pX)[i]);
+                            Var1 = pX.at(i) + u * (pX.at(i+1)-pX.at(i));
 							break;
 						}
 					}
 				}
 			}
 		}
-		size = (int)pPolar2->m_Cl.size();
+        size = pPolar2->m_Cl.size();
 		if(!size)
 		{
 			bOutRe = true;
@@ -3664,17 +3659,17 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
 			return 0.000;
 		}
 
-        pX = (QVector <double> *) pPolar2->getPlrVariable(PlrVar);
+        QVector<double> const &pX2 = pPolar2->getPlrVariable(PlrVar);
 		pPolar2->getClLimits(Clmin, Clmax);
 
 		if(Cl < Clmin)
 		{
-			Var2 = (*pX)[0];
+            Var2 = pX2.front();
 			bOutRe = true;
 		}
 		else if(Cl > Clmax)
 		{
-			Var2 = (*pX)[size-1];
+            Var2 = pX2.back();
 			bOutRe = true;
 		}
 		else
@@ -3682,31 +3677,31 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
 			//first Find the point closest to Cl=0
 			pt = 0;
 			dist = qAbs(pPolar2->m_Cl[0]);
-			for (i=1; i<size;i++)
+            for (int i=1; i<size;i++)
 			{
-				if (qAbs(pPolar2->m_Cl[i])< dist)
+                if (fabs(pPolar2->m_Cl[i])< dist)
 				{
-					dist = qAbs(pPolar2->m_Cl[i]);
+                    dist =fabs(pPolar2->m_Cl[i]);
 					pt = i;
 				}
 			}
 			if(Cl<pPolar2->m_Cl[pt])
 			{
-				for (i=pt; i>0; i--)
+                for (int i=pt; i>0; i--)
 				{
 					if(Cl<= pPolar2->m_Cl[i] && Cl > pPolar2->m_Cl[i-1])
 					{
 						//interpolate
-						if(qAbs(pPolar2->m_Cl[i]-pPolar2->m_Cl[i-1]) < 0.00001)
+                        if(fabs(pPolar2->m_Cl[i]-pPolar2->m_Cl[i-1]) < 0.00001)
 						{//do not divide by zero
-							Var2 = (*pX)[i];
+                            Var2 = pX2.at(i);
 							break;
 						}
 						else
 						{
 							u = (Cl - pPolar2->m_Cl[i-1])
 									 /(pPolar2->m_Cl[i]-pPolar2->m_Cl[i-1]);
-							Var2 = (*pX)[i-1] + u * ((*pX)[i]-(*pX)[i-1]);
+                            Var2 = pX2.at(i-1) + u * (pX2.at(i)-pX2.at(i-1));
 							break;
 						}
 					}
@@ -3714,22 +3709,22 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
 			}
 			else
 			{
-				for (i=pt; i<size-1; i++)
+                for (int i=pt; i<size-1; i++)
 				{
 					if(pPolar2->m_Cl[i] <=Cl && Cl < pPolar2->m_Cl[i+1])
 					{
 						//interpolate
-						if(qAbs(pPolar2->m_Cl[i+1]-pPolar2->m_Cl[i]) < 0.00001)
+                        if(fabs(pPolar2->m_Cl[i+1]-pPolar2->m_Cl[i]) < 0.00001)
 						{
 							//do not divide by zero
-							Var2 = (*pX)[i];
+                            Var2 = pX2.at(i);
 							break;
 						}
 						else
 						{
 							u = (Cl - pPolar2->m_Cl[i])
 									 /(pPolar2->m_Cl[i+1]-pPolar2->m_Cl[i]);
-							Var2 = (*pX)[i] + u * ((*pX)[i+1]-(*pX)[i]);
+                            Var2 = pX2.at(i) + u * (pX2.at(i+1)-pX2.at(i));
 							break;
 						}
 					}

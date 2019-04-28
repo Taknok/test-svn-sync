@@ -85,7 +85,7 @@ public:
     void setAutoPolarName();
 
     void getPolarProperties(QString &polarProps);
-    void * getPlrVariable(int iVar);
+    const QVector<double> &getPlrVariable(int iVar);
 
     void getColor(int &r, int &g, int &b, int &a) const;
     void setColor(int r, int g, int b, int a=255);
@@ -112,7 +112,14 @@ public:
     double &XtrBot()   {return m_XBot;}
     int &ReType()      {return m_ReType;}
     int &MaType()      {return m_MaType;}
-    XFLR5::enumPolarType &polarType() {return m_PolarType;}
+
+    XFLR5::enumPolarType const &polarType() {return m_PolarType;}
+
+    bool isFixedSpeedPolar()  const {return m_PolarType==XFLR5::FIXEDSPEEDPOLAR;}   /**< returns true if the polar is of the FIXEDSPEEDPOLAR type, false otherwise >*/
+    bool isFixedLiftPolar()   const {return m_PolarType==XFLR5::FIXEDLIFTPOLAR;}    /**< returns true if the polar is of the FIXEDLIFTPOLAR type, false otherwise >*/
+    bool isFixedaoaPolar()    const {return m_PolarType==XFLR5::FIXEDAOAPOLAR;}     /**< returns true if the polar is of the FIXEDAOAPOLAR type, false otherwise >*/
+    bool isRubberChordPolar() const {return m_PolarType==XFLR5::RUBBERCHORDPOLAR;}
+
 
     static QString autoPolarName(XFLR5::enumPolarType polarType, double Re, double Mach, double NCrit, double ASpec=0.0, double XTop=1.0, double XBot=1.0);
     static QString variableName(int iVar);

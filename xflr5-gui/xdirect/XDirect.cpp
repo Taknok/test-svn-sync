@@ -2961,10 +2961,10 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
 		QMessageBox::warning(s_pMainFrame, tr("Warning"), str);
         return nullptr;
 	}
-    if     (pPolar->ReType() ==1 && pPolar->MaType() ==1) pPolar->polarType() = XFLR5::FIXEDSPEEDPOLAR;
-    else if(pPolar->ReType() ==2 && pPolar->MaType() ==2) pPolar->polarType() = XFLR5::FIXEDLIFTPOLAR;
-    else if(pPolar->ReType() ==3 && pPolar->MaType() ==1) pPolar->polarType() = XFLR5::RUBBERCHORDPOLAR;
-    else                                                  pPolar->polarType() = XFLR5::FIXEDSPEEDPOLAR;
+    if     (pPolar->ReType() ==1 && pPolar->MaType() ==1) pPolar->setPolarType(XFLR5::FIXEDSPEEDPOLAR);
+    else if(pPolar->ReType() ==2 && pPolar->MaType() ==2) pPolar->setPolarType(XFLR5::FIXEDLIFTPOLAR);
+    else if(pPolar->ReType() ==3 && pPolar->MaType() ==1) pPolar->setPolarType(XFLR5::RUBBERCHORDPOLAR);
+    else                                                  pPolar->setPolarType(XFLR5::FIXEDSPEEDPOLAR);
 
 
 	bRead  = ReadAVLString(in, Line, strong);

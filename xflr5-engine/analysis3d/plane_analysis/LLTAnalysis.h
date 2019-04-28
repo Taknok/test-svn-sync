@@ -119,8 +119,8 @@ private:
 	double GetCd(Foil *pFoil0, Foil *pFoil1, double Re, double Alpha, double Tau, double AR, bool &bOutRe, bool &bError);
 	double GetXCp(Foil *pFoil0, Foil *pFoil1, double Re, double Alpha, double Tau,  bool &bOutRe, bool &bError);
 	double GetXTr(Foil *pFoil0, Foil *pFoil1, double Re, double Alpha, double Tau, bool bTop, bool &bOutRe, bool &bError);
-	double GetPlrPointFromAlpha(Foil *pFoil, double Re, double Alpha, int PlrVar, bool &bOutRe, bool &bError);
-	void GetLinearizedPolar(Foil *pFoil0, Foil *pFoil1, double Re, double Tau, double &Alpha0, double &Slope);
+	double getPlrPointFromAlpha(Foil *pFoil, double Re, double Alpha, int PlrVar, bool &bOutRe, bool &bError);
+	void getLinearizedPolar(Foil *pFoil0, Foil *pFoil1, double Re, double Tau, double &Alpha0, double &Slope);
 
 
 signals:
