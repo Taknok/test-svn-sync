@@ -471,7 +471,7 @@ Polar *BatchDlg::createPolar(Foil *pFoil, double Spec, double Mach, double NCrit
 
     pPolar->setFoilName(pFoil->foilName());
     pPolar->isVisible() = true;
-    pPolar->polarType() = m_PolarType;
+    pPolar->setPolarType(m_PolarType);
 
     switch (pPolar->polarType())
     {

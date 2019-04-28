@@ -442,7 +442,7 @@ void FoilPolarDlg::onOK()
 {
     XDirect::s_RefPolar.m_PlrName = m_pctrlAnalysisName->text();
 
-    XDirect::s_RefPolar.polarType() = m_PolarType;
+    XDirect::s_RefPolar.setPolarType(m_PolarType);
     XDirect::s_RefPolar.NCrit()     = m_NCrit;
     XDirect::s_RefPolar.XtrBot()    = m_XBot;
     XDirect::s_RefPolar.XtrTop()    = m_XTop;

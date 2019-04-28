@@ -71,7 +71,7 @@ void XmlPolarReader::readPolar(Polar *pPolar)
 		}
         else if (name().toString().compare(QString("type"),Qt::CaseInsensitive) ==0)
 		{
-			pPolar->polarType() = polarType(readElementText());
+            pPolar->setPolarType(polarType(readElementText()));
 		}
         else if (name().compare(QString("Fixed_Reynolds"),         Qt::CaseInsensitive)==0)
 		{

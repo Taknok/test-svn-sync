@@ -672,10 +672,9 @@ QString Polar::variableName(int iVar)
 }
 
 
-
 void Polar::setPolarType(XFLR5::enumPolarType type)
 {
-	m_PolarType =type;
+    m_PolarType=type;
 	switch (m_PolarType)
 	{
         case XFLR5::FIXEDSPEEDPOLAR:
@@ -700,9 +699,6 @@ void Polar::setPolarType(XFLR5::enumPolarType type)
 			break;
 	}
 }
-
-
-
 
 
 void Polar::setAutoPolarName()
@@ -875,50 +871,36 @@ void Polar::setColor(int r, int g, int b, int a)
 * @param iVar the index of the variable
 * @return the pointer to the array holding the values of the variable
 */
-void * Polar::getPlrVariable(int iVar)
+QVector<double> const & Polar::getPlrVariable(int iVar)
 {
-	void * pVar;
 	switch (iVar)
 	{
 		case 0:
-			pVar = &m_Alpha;
-			break;
+            return m_Alpha;
 		case 1:
-			pVar = &m_Cl;
-			break;
+            return m_Cl;
 		case 2:
-			pVar = &m_Cd;
-			break;
+            return m_Cd;
 		case 3:
-			pVar = &m_Cdp;
-			break;
+            return m_Cdp;
 		case 4:
-			pVar = &m_Cm;
-			break;
+            return m_Cm;
 		case 5:
-			pVar = &m_XTr1;
-			break;
+            return m_XTr1;
 		case 6:
-			pVar = &m_XTr2;
-			break;
+            return m_XTr2;
 		case 7:
-			pVar = &m_HMom;
-			break;
+            return m_HMom;
 		case 8:
-			pVar = &m_Cpmn;
-			break;
+            return m_Cpmn;
 		case 9:
-			pVar = &m_ClCd;
-			break;
+            return m_ClCd;
 		case 10:
-			pVar = &m_Cl32Cd;
-			break;
+            return m_Cl32Cd;
 		case 11:
-			pVar = &m_XCp;
-			break;
+            return m_XCp;
 		default:
-			pVar = &m_Alpha;
-			break;
+            return m_Alpha;
 	}
-	return pVar;
+    return m_Alpha;
 }
