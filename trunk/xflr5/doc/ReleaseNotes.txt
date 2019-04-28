@@ -16,7 +16,6 @@
 
 
 xflr5 v6.45 April 10th, 2019
-    - disabled the auto-check for update feature due to crash bugs on some systems
     - updated the German and French translations
     - added VAO support for the OpenGL 3.2+ core profile
     - fixed a crash bug when trying to plot BL graphs without an active operating point
@@ -25,6 +24,7 @@ xflr5 v6.45 April 10th, 2019
     - changed the unix directory for shared files to /usr/local/share instead of /usr/share
     - increased the sampling of the foil's mid camber line from 100 to 1000 points; this improves
       the precision of the calculated camber and thickness value and position
+    - disabled the auto-check for update feature due to crash bugs on some systems
     - added error management to the check for update process
     - cleaned up all .pro files
     - code cleaning

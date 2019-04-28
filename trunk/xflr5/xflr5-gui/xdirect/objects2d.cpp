@@ -684,7 +684,7 @@ Polar * Objects2d::createPolar(Foil *pFoil, double Re, double Mach, double NCrit
     Polar *pNewPolar = new Polar;
     pNewPolar->setFoilName(pFoil->foilName());
     pNewPolar->setVisible(true);
-    pNewPolar->polarType() = polarType;
+    pNewPolar->setPolarType(polarType);
     pNewPolar->Mach()      = Mach;
     pNewPolar->NCrit()     = NCrit;
     pNewPolar->XtrTop()    = XtrTop;

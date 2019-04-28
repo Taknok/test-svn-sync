@@ -409,7 +409,7 @@ Polar * BatchThreadDlg::createPolar(Foil *pFoil, double Re, double Mach, double 
     pNewPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
     pNewPolar->setFoilName(pFoil->foilName());
     pNewPolar->setVisible(true);
-    pNewPolar->polarType() = m_PolarType;
+    pNewPolar->setPolarType(m_PolarType);
 
     switch (pNewPolar->polarType())
     {
