@@ -2687,7 +2687,7 @@ void Miarex::onAdvancedSettings()
         Panel::s_CtrlPos           = waDlg.m_ControlPos;
         Panel::s_VortexPos         = waDlg.m_VortexPos;
 
-        PlaneOpp::s_bKeepOutOpps         = waDlg.m_bKeepOutOpps;
+        PlaneOpp::s_bKeepOutOpps   = waDlg.m_bKeepOutOpps;
 
         m_LLTMaxIterations     = waDlg.m_Iter;
         m_bDirichlet           = waDlg.m_bDirichlet;
@@ -2704,7 +2704,7 @@ void Miarex::onAdvancedSettings()
 
 
 /**
-* The user has modified the position span section to display in the Cp view
+* The user has modified the position of the span section to display in the Cp view
 */
 void Miarex::onCpSectionSlider(int pos)
 {
