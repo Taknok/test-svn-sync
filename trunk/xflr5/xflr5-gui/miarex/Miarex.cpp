@@ -3507,7 +3507,7 @@ void Miarex::onEditCurBody()
     // in all cases copy new color and texture flag
     if(m_pCurPlane->body())
     {
-        m_pCurPlane->body()->bodyColor() = pModPlane->body()->bodyColor();
+        m_pCurPlane->body()->setBodyColor( pModPlane->body()->bodyColor());
         m_pCurPlane->body()->textures()  = pModPlane->body()->textures();
     }
 
@@ -3518,9 +3518,8 @@ void Miarex::onEditCurBody()
     m_pCurWPolar = nullptr;
     m_pCurPOpp = nullptr;
 
-
-
-    setPlane();
+    gl3dMiarexView::s_bResetglGeom = true;
+    gl3dMiarexView::s_bResetglBody = true;
 
     updateView();
 }
@@ -3538,10 +3537,10 @@ void Miarex::onEditCurBodyObject()
     Body *pCurBody = m_pCurPlane->body();
 
     bool bUsed = false;
-    int i;
-    Plane *pPlane;
-    WPolar *pWPolar;
-    for (i=0; i< m_poaPlane->size(); i++)
+
+    Plane *pPlane = nullptr;
+    WPolar *pWPolar = nullptr;
+    for (int i=0; i<m_poaPlane->size(); i++)
     {
         pPlane = m_poaPlane->at(i);
         if(pPlane->body() && pPlane->body()==pCurBody)
@@ -3723,12 +3722,11 @@ void Miarex::onEditCurPlane()
     m_pgl3dMiarexView->m_bArcball = false;
     if(!m_pCurPlane) return;
 
-    int i;
 
-    WPolar *pWPolar;
-    PlaneOpp* pPOpp;
+    WPolar *pWPolar = nullptr;
+    PlaneOpp* pPOpp = nullptr;
     bool bHasResults = false;
-    for (i=0; i< m_poaWPolar->size(); i++)
+    for (int i=0; i<m_poaWPolar->size(); i++)
     {
         pWPolar = m_poaWPolar->at(i);
         if(pWPolar->dataSize() && pWPolar->planeName() == m_pCurPlane->planeName())
@@ -3738,7 +3736,7 @@ void Miarex::onEditCurPlane()
         }
     }
 
-    for (i=0; i<m_poaPOpp->size(); i++)
+    for (int i=0; i<m_poaPOpp->size(); i++)
     {
         pPOpp = m_poaPOpp->at(i);
         if(pPOpp->planeName() == m_pCurPlane->planeName())
@@ -3748,7 +3746,7 @@ void Miarex::onEditCurPlane()
         }
     }
 
-    Plane* pModPlane= new Plane;
+    Plane* pModPlane = new Plane;
 
     pModPlane->duplicate(m_pCurPlane);
 
@@ -3837,10 +3835,10 @@ void Miarex::onEditCurWing()
 
     if(!m_pCurPlane->wing(iWing)) return;
 
-    WPolar *pWPolar;
-    PlaneOpp* pPOpp;
+    WPolar *pWPolar = nullptr;
+    PlaneOpp* pPOpp = nullptr;
     bool bHasResults = false;
-    for (int i=0; i< m_poaWPolar->size(); i++)
+    for (int i=0; i<m_poaWPolar->size(); i++)
     {
         pWPolar = m_poaWPolar->at(i);
         if(pWPolar->dataSize() && pWPolar->planeName() == m_pCurPlane->planeName())
@@ -3945,8 +3943,8 @@ void Miarex::onScaleWing()
 {
     if(!m_pCurPlane) return;
 
-    WPolar *pWPolar;
-    PlaneOpp* pPOpp;
+    WPolar *pWPolar = nullptr;
+    PlaneOpp* pPOpp = nullptr;
     bool bHasResults = false;
     for (int i=0; i< m_poaWPolar->size(); i++)
     {
