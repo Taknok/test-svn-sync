@@ -585,7 +585,6 @@ bool gl3dMiarexView::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNod
                         nVertex +=1;
                     }
 
-                    qApp->processEvents();
                     if(pdlg.wasCanceled())
                     {
                         qDebug()<<"cancelled....";
@@ -595,6 +594,7 @@ bool gl3dMiarexView::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNod
                     {
                         pdlg.setValue(p0+p);
                     }
+                    qApp->processEvents();
                 }
 
                 //				dlg.setValue(m);
