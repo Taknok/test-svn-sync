@@ -135,7 +135,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
     setWindowTitle(VERSIONNAME);
     setWindowIcon(QIcon(":/images/xflr5_64.png"));
 
-    if(s_bTrace) testConfiguration();
+//    if(s_bTrace) testConfiguration();
 
     m_bManualUpdateCheck = false;
 
@@ -3748,7 +3748,6 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString pathname)
 
     return XFLR5::NOAPP;
 }
-
 
 
 void MainFrame::onAFoil()

@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
 //    defaultFormat.setProfile(QSurfaceFormat::CompatibilityProfile); //only relevant for 3.2+
     QSurfaceFormat::setDefaultFormat(defaultFormat);*/
 
-
+/*
 #ifdef QT_DEBUG
     QString strange;
 	strange.sprintf("App default OpengGl format:%d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
 		default:
 			break;
 	}
-#endif
+#endif*/
 
 	QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL);
 	XFLR5Application app(argc, argv);
