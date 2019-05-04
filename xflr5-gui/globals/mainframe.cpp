@@ -1327,7 +1327,7 @@ void MainFrame::createMiarexActions()
 
     m_pEditWingAct = new QAction(tr("Edit wing"), this);
     m_pEditWingAct->setStatusTip(tr("Shows a form to edit the wing of the currently selected plane"));
-    m_pEditWingAct->setShortcut(QKeySequence::Close);
+    m_pEditWingAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_W));
     m_pEditWingAct->setData(0);
     connect(m_pEditWingAct, SIGNAL(triggered()), m_pMiarex, SLOT(onEditCurWing()));
 
