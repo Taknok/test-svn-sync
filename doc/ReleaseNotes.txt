@@ -15,6 +15,13 @@
 *******************************************************************************
 
 
+xflr5 v6.46 May 4th, 2019
+    - Fix for bug #134 - LLT now restored in v6.46
+    - Fix for bug #139 - no crash from swithching from plane design to other app with streamlines displayed.
+    - Fixed some minor other issues
+    - Code cleaning
+
+
 xflr5 v6.45 April 10th, 2019
     - updated the German and French translations
     - added VAO support for the OpenGL 3.2+ core profile
