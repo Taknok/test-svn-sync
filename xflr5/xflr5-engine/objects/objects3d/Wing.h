@@ -220,7 +220,7 @@ public:
 	bool serializeWingWPA(QDataStream &ar, bool bIsStoring);
 	bool serializeWingXFL(QDataStream &ar, bool bIsStoring);
 
-	void exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANELS);
+    void exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANELS, double unit);
 	void exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS);
 
 	Foil* foil(QString strFoilName);

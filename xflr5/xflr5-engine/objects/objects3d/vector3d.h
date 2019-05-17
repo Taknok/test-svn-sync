@@ -141,9 +141,9 @@ public:
 
     //inline methods
 
-    float xf() {return float(x);}
-    float yf() {return float(y);}
-    float zf() {return float(z);}
+    float xf() const {return float(x);}
+    float yf() const {return float(y);}
+    float zf() const {return float(z);}
 
     void copy(Vector3d const &V)
     {

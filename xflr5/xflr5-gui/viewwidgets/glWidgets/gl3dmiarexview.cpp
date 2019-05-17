@@ -2541,14 +2541,12 @@ void gl3dMiarexView::glMake3dObjects()
                 }
                 else
                 {
-                    glMakeWingGeometry(iw, pCurPlane->wing(iw), NULL);
+                    glMakeWingGeometry(iw, pCurPlane->wing(iw), nullptr);
                 }
             }
         }
-
         s_bResetglGeom = false;
     }
-
 
     if(s_bResetglMesh)
     {
