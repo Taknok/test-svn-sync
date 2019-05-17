@@ -328,9 +328,10 @@ void Polar::insertOppDataAt(int i, OpPoint *pOpp)
     else if (m_PolarType==XFLR5::FIXEDLIFTPOLAR)
 	{
 //      Bug  if(pOpp->Cl>0) m_Re.insert(i, pOpp->Reynolds()/sqrt(pOpp->Cl));
-        if(pOpp->Cl>0) m_Re.insert(i, pOpp->Reynolds());
-        else           m_Re[i] = 0.0;
-	}
+        if(pOpp->Cl>0.0) m_Re.insert(i, pOpp->Reynolds());
+//      Bug  else           m_Re[i] = 0.0;   -> exception when i doesn't exist in array
+        else             m_Re.insert(i, 0.0);
+    }
     else if (m_PolarType==XFLR5::RUBBERCHORDPOLAR)
 	{
 		if(pOpp->Cl>0.0) m_Re.insert(i, pOpp->Reynolds()/pOpp->Cl);
