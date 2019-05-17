@@ -1182,7 +1182,7 @@ int PlaneAnalysisTask::createSurfaceElements(Plane *pPlane, WPolar *pWPolar, Sur
 		}
 	}
 
-	pSurface->NElements() = m_MatSize-InitialSize;
+    pSurface->setNElements(m_MatSize-InitialSize);
 	return pSurface->NElements();
 }
 

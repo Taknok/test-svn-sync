@@ -122,7 +122,6 @@ protected:
     void glMakeBodySplines(Body *pBody);
     void glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody);
     void glMakeWingEditMesh(QOpenGLBuffer &vbo, Wing *pWing);
-    void glMakeWingSectionHighlight(Wing *pWing, int iSectionHighLight, bool bRightSide);
     void glMakeBodyFrameHighlight(Body *pBody, Vector3d bodyPos, int iFrame);
     void glMakeEditBodyMesh(Body *pBody, Vector3d BodyPosition);
     void glRenderText(int x, int y, const QString & str, QColor textColor = QColor(Qt::white));
@@ -130,11 +129,12 @@ protected:
     void glMakeAxis();
 
     virtual void glRenderView() = 0;
+    virtual void set3DRotationCenter(QPoint point) = 0;
+    virtual void paintOverlay() {}
 
     void paintGL3();
     void paintFoilNames(void *pWingPtr);
     void paintMasses(double volumeMass, Vector3d pos, QString tag, const QList<PointMass *> &ptMasses);
-    virtual void paintOverlay() {}
     void paintArcBall();
     void paintAxes();
     void paintWingMesh(Wing *pWing);
@@ -146,7 +146,6 @@ protected:
     void paintSphere(Vector3d place, double radius, QColor sphereColor, bool bLight=true);
     void printFormat(const QSurfaceFormat &format);
     void reset3DRotationCenter();
-    virtual void set3DRotationCenter(QPoint point) = 0;
     void set3DScale(double length=-1.0);
     void setSpanStations(Plane *pPlane, WPolar *pWPolar, PlaneOpp *pPOpp);
     void startResetTimer(double length);

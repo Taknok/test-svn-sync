@@ -1405,7 +1405,7 @@ void EditPlaneDlg::readWingTree(Wing *pWing, Vector3d &wingLE, double &tiltAngle
 
             if     (field.compare("Name", Qt::CaseInsensitive)==0)     pWing->rWingName() = value;
             else if(field.compare("Angle", Qt::CaseInsensitive)==0)    tiltAngle = value.toDouble();
-            else if(field.compare("Symetric", Qt::CaseInsensitive)==0) pWing->isSymetric() = stringToBool(value);
+            else if(field.compare("Symetric", Qt::CaseInsensitive)==0) pWing->setSymetric(stringToBool(value));
         }
 
         indexLevel = indexLevel.sibling(indexLevel.row()+1,0);

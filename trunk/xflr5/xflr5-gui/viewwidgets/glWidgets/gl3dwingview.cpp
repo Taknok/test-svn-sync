@@ -24,8 +24,9 @@
 #include "gl3dwingview.h"
 #include <QOpenGLPaintDevice>
 #include <miarex/design/GL3dWingDlg.h>
-
+#include <miarex/view/W3dPrefsDlg.h>
 #include <objects/objects3d/Wing.h>
+#include <objects/objects3d/Surface.h>
 
 gl3dWingView::gl3dWingView(QWidget *pParent) : gl3dView(pParent)
 {
@@ -102,8 +103,6 @@ void gl3dWingView::set3DRotationCenter(QPoint point)
 }
 
 
-
-
 void gl3dWingView::paintOverlay()
 {
     QOpenGLPaintDevice device(size() * devicePixelRatio());
@@ -117,6 +116,113 @@ void gl3dWingView::paintOverlay()
 }
 
 
+void gl3dWingView::glMakeWingSectionHighlight(Wing *pWing, int iSectionHighLight, bool bRightSide)
+{
+    Vector3d Point, Normal;
+
+    int CHORDPOINTS = W3dPrefsDlg::chordwiseRes();
+    int iSection = 0;
+    int jSurf = 0;
+    for(int jSection=0; jSection<pWing->NWingSection(); jSection++)
+    {
+        if(jSection==iSectionHighLight) break;
+        if(jSection<pWing->NWingSection()-1 &&	fabs(pWing->YPosition(jSection+1)-pWing->YPosition(jSection)) > Wing::minPanelSize())
+            iSection++;
+    }
+
+    m_HighlightLineSize = CHORDPOINTS * 2;
+    int bufferSize = m_HighlightLineSize *2 *3;
+    float *pHighlightVertexArray = new float[bufferSize];
+
+    m_nHighlightLines = 0;
+    int iv=0;
+    if(iSection==0)
+    {
+        m_nHighlightLines++;
+        //define the inner left side surface
+        if(!pWing->isFin())  jSurf = pWing->m_Surface.size()/2 - 1;
+        else                 jSurf = pWing->m_Surface.size()   - 1;
+        Surface const *pSurf =  pWing->m_Surface.at(jSurf);
+
+        for (int lx=0; lx<CHORDPOINTS; lx++)
+        {
+            double xRel = double(lx)/double(CHORDPOINTS-1);
+            pSurf->getSidePoint(xRel, true, TOPSURFACE, Point, Normal);
+
+            pHighlightVertexArray[iv++] = Point.xf();
+            pHighlightVertexArray[iv++] = Point.yf();
+            pHighlightVertexArray[iv++] = Point.zf();
+        }
+        for (int lx=CHORDPOINTS-1; lx>=0; lx--)
+        {
+            double xRel = (double)lx/(double)(CHORDPOINTS-1);
+            pSurf->getSidePoint(xRel, true, BOTSURFACE, Point, Normal);
+            pHighlightVertexArray[iv++] = Point.xf();
+            pHighlightVertexArray[iv++] = Point.yf();
+            pHighlightVertexArray[iv++] = Point.zf();
+        }
+    }
+    else
+    {
+        if((pWing->isSymetric() || bRightSide) && !pWing->isFin())
+        {
+            m_nHighlightLines++;
+            jSurf = pWing->m_Surface.size()/2 + iSection -1;
+            Surface const *pSurf =  pWing->m_Surface.at(jSurf);
+
+            for (int lx=0; lx<CHORDPOINTS; lx++)
+            {
+                double xRel = double(lx)/double(CHORDPOINTS-1);
+                pSurf->getSidePoint(xRel, true, TOPSURFACE, Point, Normal);
+                pHighlightVertexArray[iv++] = Point.xf();
+                pHighlightVertexArray[iv++] = Point.yf();
+                pHighlightVertexArray[iv++] = Point.zf();
+            }
+            for (int lx=CHORDPOINTS-1; lx>=0; lx--)
+            {
+                double xRel = double(lx)/double(CHORDPOINTS-1);
+                pSurf->getSidePoint(xRel, true, BOTSURFACE, Point, Normal);
+                pHighlightVertexArray[iv++] = Point.xf();
+                pHighlightVertexArray[iv++] = Point.yf();
+                pHighlightVertexArray[iv++] = Point.zf();
+            }
+        }
+
+        if(pWing->isSymetric() || !bRightSide)
+        {
+            m_nHighlightLines++;
+            if(!pWing->isFin()) jSurf = pWing->m_Surface.size()/2 - iSection;
+            else                jSurf = pWing->m_Surface.size()   - iSection;
+            Surface const *pSurf =  pWing->m_Surface.at(jSurf);
+
+            //plot A side outline
+            for (int lx=0; lx<CHORDPOINTS; lx++)
+            {
+                double xRel = double(lx)/double(CHORDPOINTS-1);
+                pSurf->getSidePoint(xRel, false, TOPSURFACE, Point, Normal);
+                pHighlightVertexArray[iv++] = Point.xf();
+                pHighlightVertexArray[iv++] = Point.yf();
+                pHighlightVertexArray[iv++] = Point.zf();
+            }
+
+            for (int lx=CHORDPOINTS-1; lx>=0; lx--)
+            {
+                double xRel = double(lx)/double(CHORDPOINTS-1);
+                pSurf->getSidePoint(xRel, false, BOTSURFACE, Point, Normal);
+                pHighlightVertexArray[iv++] = Point.xf();
+                pHighlightVertexArray[iv++] = Point.yf();
+                pHighlightVertexArray[iv++] = Point.zf();
+            }
+        }
+    }
+
+    m_vboHighlight.destroy();
+    m_vboHighlight.create();
+    m_vboHighlight.bind();
+    m_vboHighlight.allocate(pHighlightVertexArray, bufferSize*sizeof(float));
+    m_vboHighlight.release();
+    delete [] pHighlightVertexArray;
+}
 
 
 

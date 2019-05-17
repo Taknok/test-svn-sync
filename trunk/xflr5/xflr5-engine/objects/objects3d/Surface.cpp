@@ -254,7 +254,7 @@ void Surface::getC4(int k, Vector3d &Pt, double &tau)
  * @param k the 0-based index of the strip for which the chord shall be returned.
  * @return the chord length
  */
-double Surface::chord(int k)
+double Surface::chord(int k) const
 {
     double y1, y2;
     getYDist(k, y1, y2);
@@ -267,7 +267,7 @@ double Surface::chord(int k)
  * @param tau the relative percentage of the Surface's span length
  * @return the chord length
  */
-double Surface::chord(double tau)
+double Surface::chord(double tau) const
 {
     //assumes LA-TB have already been loaded
     Vector3d V1, V2;
@@ -288,7 +288,7 @@ double Surface::chord(double tau)
  * @param tau the relative percentage of the Surface's span length
  * @return the offset in the x-direction
  */
-double Surface::offset(double tau)
+double Surface::offset(double tau) const
 {
     //chord spacing
     return m_LA.x + (m_LB.x-m_LA.x) * qAbs(tau);
@@ -300,7 +300,7 @@ double Surface::offset(double tau)
  * @param tau the relative percentage of the Surface's span length
  * @return the cross area at the specified location
  */
-double Surface::foilArea(double tau)
+double Surface::foilArea(double tau) const
 {
     if(m_pFoilA && m_pFoilB)
     {
@@ -316,7 +316,7 @@ double Surface::foilArea(double tau)
  * @param tau the relative percentage of the Surface's span length
  * @return N the average normal at the specified location
  */
-void Surface::getNormal(double yrel, Vector3d &N)
+void Surface::getNormal(double yrel, Vector3d &N) const
 {
     N = NormalA * (1.0-yrel) + NormalB * yrel;
     N.normalize();
@@ -442,7 +442,7 @@ double Surface::stripWidth(int k)
  * @param Point a reference to the requested point's position
  * @param PtNormal a reference to the vector normal to the surface at that point
  */
-void Surface::getSidePoint(double xRel, bool bRight, enumPanelPosition pos, Vector3d &Point, Vector3d &PtNormal)
+void Surface::getSidePoint(double xRel, bool bRight, enumPanelPosition pos, Vector3d &Point, Vector3d &PtNormal) const
 {
     Vector3d foilPt(xRel,0.0,0.0);
 
@@ -481,7 +481,7 @@ void Surface::getSidePoints(enumPanelPosition pos,
                             Body * pBody,
                             Vector3d *PtA, Vector3d *PtB, Vector3d *NA, Vector3d *NB, int nPoints)
 {
-    double xRelA, xRelB;
+    double xRelA=0, xRelB=0;
     Vector3d A4, B4, TA4, TB4, I;
 
     Vector3d V = Normal * NormalA;
@@ -594,10 +594,11 @@ void Surface::getSidePoints(enumPanelPosition pos,
  * @param Point a reference of the requested point's position
  * @param pos defines on which surface (BOTSURFACE, TOPSURFACE, MIDSURFACE) the point is calculated
  */
-void Surface::getSurfacePoint(double xArel, double xBrel, double yrel, enumPanelPosition pos, Vector3d &Point, Vector3d &PtNormal)
+void Surface::getSurfacePoint(double xArel, double xBrel, double yrel,
+                              enumPanelPosition pos, Vector3d &Point, Vector3d &PtNormal) const
 {
     Vector3d APt, BPt, foilPt;
-    double nx, ny;
+    double nx=0, ny=0;
     if(pos==MIDSURFACE && m_pFoilA && m_pFoilB)
     {
         foilPt = m_pFoilA->midYRel(xArel);
@@ -703,7 +704,7 @@ double Surface::stripSpanPos(int k)
  * @param k the 0-based index of the strip for which the leading point shall be returned.
  * @return the strip's twist.
  */
-double Surface::twist(int k)
+double Surface::twist(int k) const
 {
     /*	getPanel(k, 0, MIDSURFACE);
     double y = (LA.y+LB.y+TA.y+TB.y)/4.0;
@@ -722,7 +723,7 @@ double Surface::twist(int k)
  * @param y1 a reference to the relative left span position.
  * @param y2 a reference to the relative left span position.
  */
-void Surface::getYDist(int const &k, double &y1, double &y2)
+void Surface::getYDist(int const &k, double &y1, double &y2) const
 {
     //leading edge
 
@@ -798,7 +799,7 @@ void Surface::setCornerPoints(Vector3d PLA, Vector3d PTA, Vector3d PLB, Vector3d
  * @param p the index of the panel
  * @return true if the panel is located on the T.E. flap
  */
-bool Surface::isFlapPanel(int p)
+bool Surface::isFlapPanel(int p) const
 {
     int pp;
     for(pp=0; pp<m_nFlapPanels; pp++)
@@ -814,7 +815,7 @@ bool Surface::isFlapPanel(int p)
  * @param pPanel a pointer to the panel object
  * @return true if the panel is located on the T.E. flap
  */
-bool Surface::isFlapPanel(Panel *pPanel)
+bool Surface::isFlapPanel(Panel *pPanel) const
 {
     int pp;
     for(pp=0; pp<m_nFlapPanels; pp++)
@@ -830,7 +831,7 @@ bool Surface::isFlapPanel(Panel *pPanel)
  * @param nNode the index of the node
  * @return true if the node is located on the T.E. flap
  */
-bool Surface::isFlapNode(int nNode)
+bool Surface::isFlapNode(int nNode) const
 {
     int pp;
     for(pp=0; pp<m_nFlapPanels; pp++)
@@ -1350,7 +1351,7 @@ void Surface::setTwist()
 
 
 
-double Surface::spanLength()
+double Surface::spanLength() const
 {
     return sqrt((m_LB.y - m_LA.y)*(m_LB.y - m_LA.y) + (m_LB.z - m_LA.z)*(m_LB.z - m_LA.z));
 }
@@ -1360,7 +1361,6 @@ void Surface::setPanelPointers(Panel *pPanel, Vector3d *pNode)
 {
     s_pPanel = pPanel;
     s_pNode = pNode;
-
 }
 
 

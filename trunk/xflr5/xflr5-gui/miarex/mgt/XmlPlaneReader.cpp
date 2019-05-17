@@ -250,7 +250,7 @@ bool XMLPlaneReader::readWing(Wing &newwing, Vector3d &position, double tiltangl
 		}
 		else if (name().compare(QString("Symetric"),        Qt::CaseInsensitive)==0)
 		{
-			newwing.isSymetric() = readElementText().compare(QString("true"), Qt::CaseInsensitive)==0;
+            newwing.setSymetric(readElementText().compare(QString("true"), Qt::CaseInsensitive)==0);
 		}
 		else if (name().compare(QString("isFin"),           Qt::CaseInsensitive)==0)
 		{
