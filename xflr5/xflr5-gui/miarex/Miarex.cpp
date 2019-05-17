@@ -8477,12 +8477,12 @@ void Miarex::onExporttoSTL()
             if (!XFile.open(QIODevice::WriteOnly)) return ;
             QDataStream out(&XFile);
             out.setByteOrder(QDataStream::LittleEndian);
-            m_pCurPlane->body()->exportSTLBinary(out, STLExportDlg::s_NChordPanels, STLExportDlg::s_NSpanPanels);
+            m_pCurPlane->body()->exportSTLBinary(out, STLExportDlg::s_NChordPanels, STLExportDlg::s_NSpanPanels, Units::mtoUnit());
         }
         else
         {
             if (!XFile.open(QIODevice::WriteOnly | QIODevice::Text)) return ;
-            QTextStream out(&XFile);
+//            QTextStream out(&XFile);
         }
     }
 

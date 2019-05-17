@@ -190,7 +190,7 @@ void BodyLineWt::setBody(Body *pBody)
 }
 
 
-void BodyLineWt::paintEvent(QPaintEvent *pEvent)
+void BodyLineWt::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     painter.save();
