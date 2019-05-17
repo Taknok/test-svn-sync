@@ -191,11 +191,12 @@ public:
 	double ZPosition(double y);
 	double Beta(int m, int k);
 
-	bool &isSymetric() {return m_bSymetric;}
+    void setSymetric(bool bSymetric) {m_bSymetric=bSymetric;}
+    bool const &isSymetric() {return m_bSymetric;}
 
 	int &nFlaps() {return m_nFlaps;}
 
-	static double minPanelSize(){return s_MinPanelSize;}
+    static double minPanelSize() {return s_MinPanelSize;}
 
 	Vector3d CoG() {return m_CoG;}
 	const QString& wingName() const {return m_WingName;}

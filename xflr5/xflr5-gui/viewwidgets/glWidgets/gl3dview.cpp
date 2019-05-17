@@ -1724,9 +1724,10 @@ void gl3dView::paintMasses(double volumeMass, Vector3d pos, QString tag, const Q
 }
 
 
-/** used only in GL3DWingDlg*/
+
+/** used in GL3DWingDlg and gl3dBodyView*/
 void gl3dView::paintSectionHighlight()
-{    
+{
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
 
     m_ShaderProgramLine.bind();
@@ -1749,10 +1750,10 @@ void gl3dView::paintSectionHighlight()
 }
 
 
+
 /** Default mesh, if no polar has been defined */
 void gl3dView::paintEditWingMesh(QOpenGLBuffer &vbo)
 {
-
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
 
     QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
@@ -2439,7 +2440,6 @@ void gl3dView::glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody)
 {
     int CHORDPOINTS = W3dPrefsDlg::chordwiseRes();
 
-    int j, l ;
     Vector3d N, Pt;
     Vector3d *NormalA = new Vector3d[CHORDPOINTS];
     Vector3d *NormalB = new Vector3d[CHORDPOINTS];
@@ -2475,7 +2475,7 @@ void gl3dView::glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody)
     int iv=0; //index of vertex components
 
     //SURFACE
-    for (j=0; j<pWing->m_Surface.size(); j++)
+    for (int j=0; j<pWing->m_Surface.size(); j++)
     {
         //top surface
         pWing->m_Surface.at(j)->getSidePoints(TOPSURFACE, pBody, PtTopLeft+j*CHORDPOINTS, PtTopRight+j*CHORDPOINTS,
@@ -2483,26 +2483,26 @@ void gl3dView::glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody)
         pWing->getTextureUV(j, leftV, rightV, leftU, rightU, CHORDPOINTS);
 
         //left side vertices
-        for (l=0; l<CHORDPOINTS; l++)
+        for (int l=0; l<CHORDPOINTS; l++)
         {
-            wingVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+l].x;
-            wingVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+l].y;
-            wingVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+l].z;
-            wingVertexArray[iv++] = NormalA[l].x;
-            wingVertexArray[iv++] = NormalA[l].y;
-            wingVertexArray[iv++] = NormalA[l].z;
+            wingVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+l].xf();
+            wingVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+l].yf();
+            wingVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+l].zf();
+            wingVertexArray[iv++] = NormalA[l].xf();
+            wingVertexArray[iv++] = NormalA[l].yf();
+            wingVertexArray[iv++] = NormalA[l].zf();
             wingVertexArray[iv++] = leftU;
             wingVertexArray[iv++] = leftV[l];
         }
         //right side vertices
-        for (l=0; l<CHORDPOINTS; l++)
+        for (int l=0; l<CHORDPOINTS; l++)
         {
-            wingVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+l].x;
-            wingVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+l].y;
-            wingVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+l].z;
-            wingVertexArray[iv++] = NormalB[l].x;
-            wingVertexArray[iv++] = NormalB[l].y;
-            wingVertexArray[iv++] = NormalB[l].z;
+            wingVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+l].xf();
+            wingVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+l].yf();
+            wingVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+l].zf();
+            wingVertexArray[iv++] = NormalB[l].xf();
+            wingVertexArray[iv++] = NormalB[l].yf();
+            wingVertexArray[iv++] = NormalB[l].zf();
             wingVertexArray[iv++] = rightU;
             wingVertexArray[iv++] = rightV[l];
         }
@@ -2513,27 +2513,27 @@ void gl3dView::glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody)
                                               NormalA, NormalB, CHORDPOINTS);
 
         //left side vertices
-        for (l=0; l<CHORDPOINTS; l++)
+        for (int l=0; l<CHORDPOINTS; l++)
         {
-            wingVertexArray[iv++] = PtBotLeft[j*CHORDPOINTS+l].x;
-            wingVertexArray[iv++] = PtBotLeft[j*CHORDPOINTS+l].y;
-            wingVertexArray[iv++] = PtBotLeft[j*CHORDPOINTS+l].z;
-            wingVertexArray[iv++] = NormalA[l].x;
-            wingVertexArray[iv++] = NormalA[l].y;
-            wingVertexArray[iv++] = NormalA[l].z;
+            wingVertexArray[iv++] = PtBotLeft[j*CHORDPOINTS+l].xf();
+            wingVertexArray[iv++] = PtBotLeft[j*CHORDPOINTS+l].yf();
+            wingVertexArray[iv++] = PtBotLeft[j*CHORDPOINTS+l].zf();
+            wingVertexArray[iv++] = NormalA[l].xf();
+            wingVertexArray[iv++] = NormalA[l].yf();
+            wingVertexArray[iv++] = NormalA[l].zf();
             wingVertexArray[iv++] = 1.0f-leftU;
             wingVertexArray[iv++] = leftV[l];
         }
 
         //right side vertices
-        for (l=0; l<CHORDPOINTS; l++)
+        for (int l=0; l<CHORDPOINTS; l++)
         {
-            wingVertexArray[iv++] = PtBotRight[j*CHORDPOINTS+l].x;
-            wingVertexArray[iv++] = PtBotRight[j*CHORDPOINTS+l].y;
-            wingVertexArray[iv++] = PtBotRight[j*CHORDPOINTS+l].z;
-            wingVertexArray[iv++] = NormalB[l].x;
-            wingVertexArray[iv++] = NormalB[l].y;
-            wingVertexArray[iv++] = NormalB[l].z;
+            wingVertexArray[iv++] = PtBotRight[j*CHORDPOINTS+l].xf();
+            wingVertexArray[iv++] = PtBotRight[j*CHORDPOINTS+l].yf();
+            wingVertexArray[iv++] = PtBotRight[j*CHORDPOINTS+l].zf();
+            wingVertexArray[iv++] = NormalB[l].xf();
+            wingVertexArray[iv++] = NormalB[l].yf();
+            wingVertexArray[iv++] = NormalB[l].zf();
             wingVertexArray[iv++] = 1.0f-rightU;
             wingVertexArray[iv++] = rightV[l];
         }
@@ -2562,10 +2562,10 @@ void gl3dView::glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody)
     unsigned short *wingIndicesArray = m_WingIndicesArray[iWing];
     uint ii = 0;
     int nV=0;
-    for (j=0; j<pWing->m_Surface.count(); j++)
+    for (int j=0; j<pWing->m_Surface.count(); j++)
     {
         //topsurface
-        for (l=0; l<CHORDPOINTS-1; l++)
+        for (int l=0; l<CHORDPOINTS-1; l++)
         {
             Q_ASSERT(ii < m_iWingElems[iWing]);
             //first triangle
@@ -2582,7 +2582,7 @@ void gl3dView::glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody)
         nV +=CHORDPOINTS+1;
 
         //botsurface
-        for (l=0; l<CHORDPOINTS-1; l++)
+        for (int l=0; l<CHORDPOINTS-1; l++)
         {
             Q_ASSERT(ii < m_iWingElems[iWing]);
             //first triangle
@@ -2601,12 +2601,12 @@ void gl3dView::glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody)
 
     //TIP PATCHES
     nV=0;
-    for (j=0; j<pWing->m_Surface.count(); j++)
+    for (int j=0; j<pWing->m_Surface.count(); j++)
     {
         if(pWing->m_Surface.at(j)->isTipLeft())
         {
             Q_ASSERT(ii+5 < m_iWingElems[iWing]);
-            for (l=0; l<CHORDPOINTS-1; l++)
+            for (int l=0; l<CHORDPOINTS-1; l++)
             {
                 //first triangle
                 wingIndicesArray[ii]   = nV;
@@ -2627,7 +2627,7 @@ void gl3dView::glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody)
             if(!pWing->m_Surface.at(j)->isTipLeft()) nV += CHORDPOINTS;
 
             Q_ASSERT(ii+5 < m_iWingElems[iWing]);
-            for (l=0; l<CHORDPOINTS-1; l++)
+            for (int l=0; l<CHORDPOINTS-1; l++)
             {
                 //first triangle
                 wingIndicesArray[ii]   = nV;
@@ -2735,20 +2735,20 @@ void gl3dView::glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody)
     m_iWingOutlinePoints[iWing] += pWing->m_Surface.size()*2*2;
 
     //TE flap outline....
-    for (j=0; j<pWing->m_Surface.size(); j++)
+    for (int j=0; j<pWing->m_Surface.size(); j++)
     {
-        Foil *pFoilA = pWing->m_Surface[j]->m_pFoilA;
-        Foil *pFoilB = pWing->m_Surface[j]->m_pFoilB;
+        Foil const *pFoilA = pWing->m_Surface[j]->m_pFoilA;
+        Foil const *pFoilB = pWing->m_Surface[j]->m_pFoilB;
         if(pFoilA && pFoilB && pFoilA->m_bTEFlap && pFoilB->m_bTEFlap)
         {
             m_iWingOutlinePoints[iWing] += 4;//two vertices for the top line and two for the bottom line
         }
     }
     //LE flap outline....
-    for (j=0; j<pWing->m_Surface.size(); j++)
+    for (int j=0; j<pWing->m_Surface.size(); j++)
     {
-        Foil *pFoilA = pWing->m_Surface[j]->m_pFoilA;
-        Foil *pFoilB = pWing->m_Surface[j]->m_pFoilB;
+        Foil const *pFoilA = pWing->m_Surface[j]->m_pFoilA;
+        Foil const *pFoilB = pWing->m_Surface[j]->m_pFoilB;
         if(pFoilA && pFoilB && pFoilA->m_bLEFlap && pFoilB->m_bLEFlap)
         {
             m_iWingOutlinePoints[iWing] += 4;//two vertices for the top line and two for the bottom line
@@ -2761,144 +2761,146 @@ void gl3dView::glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody)
     iv=0; //index of vertex components
 
     //SECTIONS OUTLINE
-    for (j=0; j<pWing->m_Surface.size(); j++)
+    for (int j=0; j<pWing->m_Surface.size(); j++)
     {
         //top surface
         //left side vertices
-        for (l=0; l<CHORDPOINTS-1; l++)
+        for (int l=0; l<CHORDPOINTS-1; l++)
         {
-            wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+l].x;
-            wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+l].y;
-            wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+l].z;
-            wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+l+1].x;
-            wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+l+1].y;
-            wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+l+1].z;
+            wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+l].xf();
+            wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+l].yf();
+            wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+l].zf();
+            wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+l+1].xf();
+            wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+l+1].yf();
+            wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+l+1].zf();
         }
         //right side vertices
-        for (l=0; l<CHORDPOINTS-1; l++)
+        for (int l=0; l<CHORDPOINTS-1; l++)
         {
-            wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+l].x;
-            wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+l].y;
-            wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+l].z;
-            wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+l+1].x;
-            wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+l+1].y;
-            wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+l+1].z;
+            wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+l].xf();
+            wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+l].yf();
+            wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+l].zf();
+            wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+l+1].xf();
+            wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+l+1].yf();
+            wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+l+1].zf();
         }
 
 
         //bottom surface
 
         //left side vertices
-        for (l=0; l<CHORDPOINTS-1; l++)
+        for (int l=0; l<CHORDPOINTS-1; l++)
         {
-            wingOutlineVertexArray[iv++] = PtBotLeft[j*CHORDPOINTS+l].x;
-            wingOutlineVertexArray[iv++] = PtBotLeft[j*CHORDPOINTS+l].y;
-            wingOutlineVertexArray[iv++] = PtBotLeft[j*CHORDPOINTS+l].z;
-            wingOutlineVertexArray[iv++] = PtBotLeft[j*CHORDPOINTS+l+1].x;
-            wingOutlineVertexArray[iv++] = PtBotLeft[j*CHORDPOINTS+l+1].y;
-            wingOutlineVertexArray[iv++] = PtBotLeft[j*CHORDPOINTS+l+1].z;
+            wingOutlineVertexArray[iv++] = PtBotLeft[j*CHORDPOINTS+l].xf();
+            wingOutlineVertexArray[iv++] = PtBotLeft[j*CHORDPOINTS+l].yf();
+            wingOutlineVertexArray[iv++] = PtBotLeft[j*CHORDPOINTS+l].zf();
+            wingOutlineVertexArray[iv++] = PtBotLeft[j*CHORDPOINTS+l+1].xf();
+            wingOutlineVertexArray[iv++] = PtBotLeft[j*CHORDPOINTS+l+1].yf();
+            wingOutlineVertexArray[iv++] = PtBotLeft[j*CHORDPOINTS+l+1].zf();
         }
 
         //right side vertices
-        for (l=0; l<CHORDPOINTS-1; l++)
+        for (int l=0; l<CHORDPOINTS-1; l++)
         {
-            wingOutlineVertexArray[iv++] = PtBotRight[j*CHORDPOINTS+l].x;
-            wingOutlineVertexArray[iv++] = PtBotRight[j*CHORDPOINTS+l].y;
-            wingOutlineVertexArray[iv++] = PtBotRight[j*CHORDPOINTS+l].z;
-            wingOutlineVertexArray[iv++] = PtBotRight[j*CHORDPOINTS+l+1].x;
-            wingOutlineVertexArray[iv++] = PtBotRight[j*CHORDPOINTS+l+1].y;
-            wingOutlineVertexArray[iv++] = PtBotRight[j*CHORDPOINTS+l+1].z;
+            wingOutlineVertexArray[iv++] = PtBotRight[j*CHORDPOINTS+l].xf();
+            wingOutlineVertexArray[iv++] = PtBotRight[j*CHORDPOINTS+l].yf();
+            wingOutlineVertexArray[iv++] = PtBotRight[j*CHORDPOINTS+l].zf();
+            wingOutlineVertexArray[iv++] = PtBotRight[j*CHORDPOINTS+l+1].xf();
+            wingOutlineVertexArray[iv++] = PtBotRight[j*CHORDPOINTS+l+1].yf();
+            wingOutlineVertexArray[iv++] = PtBotRight[j*CHORDPOINTS+l+1].zf();
         }
 
         //Leading edge
-        wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+0].x;
-        wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+0].y;
-        wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+0].z;
-        wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+0].x;
-        wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+0].y;
-        wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+0].z;
+        wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+0].xf();
+        wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+0].yf();
+        wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS+0].zf();
+        wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+0].xf();
+        wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+0].yf();
+        wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS+0].zf();
 
         //trailing edge
-        wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS + CHORDPOINTS-1].x;
-        wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS + CHORDPOINTS-1].y;
-        wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS + CHORDPOINTS-1].z;
-        wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS + CHORDPOINTS-1].x;
-        wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS + CHORDPOINTS-1].y;
-        wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS + CHORDPOINTS-1].z;
+        wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS + CHORDPOINTS-1].xf();
+        wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS + CHORDPOINTS-1].yf();
+        wingOutlineVertexArray[iv++] = PtTopLeft[j*CHORDPOINTS + CHORDPOINTS-1].zf();
+        wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS + CHORDPOINTS-1].xf();
+        wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS + CHORDPOINTS-1].yf();
+        wingOutlineVertexArray[iv++] = PtTopRight[j*CHORDPOINTS + CHORDPOINTS-1].zf();
     }
 
     //TE flap outline....
-    for (j=0; j<pWing->m_Surface.size(); j++)
+    for (int j=0; j<pWing->m_Surface.size(); j++)
     {
-        Foil *pFoilA = pWing->m_Surface[j]->m_pFoilA;
-        Foil *pFoilB = pWing->m_Surface[j]->m_pFoilB;
+        Surface const *pSurf =  pWing->m_Surface[j];
+        Foil const *pFoilA =pSurf->m_pFoilA;
+        Foil const *pFoilB =pSurf->m_pFoilB;
         if(pFoilA && pFoilB && pFoilA->m_bTEFlap && pFoilB->m_bTEFlap)
         {
-            pWing->m_Surface[j]->getSurfacePoint(pWing->m_Surface[j]->m_pFoilA->m_TEXHinge/100.0,
-                                                 pWing->m_Surface[j]->m_pFoilA->m_TEXHinge/100.0,
-                                                 0.0, TOPSURFACE, Pt, N);
-            wingOutlineVertexArray[iv++] = Pt.x;
-            wingOutlineVertexArray[iv++] = Pt.y;
-            wingOutlineVertexArray[iv++] = Pt.z;
+           pSurf->getSurfacePoint(pSurf->m_pFoilA->m_TEXHinge/100.0,
+                                  pFoilA->m_TEXHinge/100.0,
+                                  0.0, TOPSURFACE, Pt, N);
+            wingOutlineVertexArray[iv++] = Pt.xf();
+            wingOutlineVertexArray[iv++] = Pt.yf();
+            wingOutlineVertexArray[iv++] = Pt.zf();
 
-            pWing->m_Surface[j]->getSurfacePoint(pWing->m_Surface[j]->m_pFoilB->m_TEXHinge/100.0,
-                                                 pWing->m_Surface[j]->m_pFoilB->m_TEXHinge/100.0,
-                                                 1.0, TOPSURFACE, Pt, N);
-            wingOutlineVertexArray[iv++] = Pt.x;
-            wingOutlineVertexArray[iv++] = Pt.y;
-            wingOutlineVertexArray[iv++] = Pt.z;
-
-
-            pWing->m_Surface[j]->getSurfacePoint(pWing->m_Surface[j]->m_pFoilA->m_TEXHinge/100.0,
-                                                 pWing->m_Surface[j]->m_pFoilA->m_TEXHinge/100.0,
-                                                 0.0, BOTSURFACE, Pt, N);
-            wingOutlineVertexArray[iv++] = Pt.x;
-            wingOutlineVertexArray[iv++] = Pt.y;
-            wingOutlineVertexArray[iv++] = Pt.z;
+           pSurf->getSurfacePoint(pSurf->m_pFoilB->m_TEXHinge/100.0,
+                                  pFoilB->m_TEXHinge/100.0,
+                                  1.0, TOPSURFACE, Pt, N);
+            wingOutlineVertexArray[iv++] = Pt.xf();
+            wingOutlineVertexArray[iv++] = Pt.yf();
+            wingOutlineVertexArray[iv++] = Pt.zf();
 
 
-            pWing->m_Surface[j]->getSurfacePoint(pWing->m_Surface[j]->m_pFoilB->m_TEXHinge/100.0,
-                                                 pWing->m_Surface[j]->m_pFoilB->m_TEXHinge/100.0,
-                                                 1.0, BOTSURFACE, Pt, N);
-            wingOutlineVertexArray[iv++] = Pt.x;
-            wingOutlineVertexArray[iv++] = Pt.y;
-            wingOutlineVertexArray[iv++] = Pt.z;
+           pSurf->getSurfacePoint(pSurf->m_pFoilA->m_TEXHinge/100.0,
+                                  pFoilA->m_TEXHinge/100.0,
+                                  0.0, BOTSURFACE, Pt, N);
+            wingOutlineVertexArray[iv++] = Pt.xf();
+            wingOutlineVertexArray[iv++] = Pt.yf();
+            wingOutlineVertexArray[iv++] = Pt.zf();
+
+
+           pSurf->getSurfacePoint(pSurf->m_pFoilB->m_TEXHinge/100.0,
+                                  pFoilB->m_TEXHinge/100.0,
+                                  1.0, BOTSURFACE, Pt, N);
+            wingOutlineVertexArray[iv++] = Pt.xf();
+            wingOutlineVertexArray[iv++] = Pt.yf();
+            wingOutlineVertexArray[iv++] = Pt.zf();
         }
     }
     //LE flap outline....
-    for (j=0; j<pWing->m_Surface.size(); j++)
+    for (int j=0; j<pWing->m_Surface.size(); j++)
     {
-        Foil *pFoilA = pWing->m_Surface[j]->m_pFoilA;
-        Foil *pFoilB = pWing->m_Surface[j]->m_pFoilB;
+        Surface const *pSurf =  pWing->m_Surface[j];
+        Foil const *pFoilA = pSurf->m_pFoilA;
+        Foil const *pFoilB = pSurf->m_pFoilB;
         if(pFoilA && pFoilB && pFoilA->m_bLEFlap && pFoilB->m_bLEFlap)
         {
-            pWing->m_Surface[j]->getSurfacePoint(pWing->m_Surface[j]->m_pFoilA->m_LEXHinge/100.0,
-                                                 pWing->m_Surface[j]->m_pFoilA->m_LEXHinge/100.0,
-                                                 0.0, TOPSURFACE, Pt, N);
-            wingOutlineVertexArray[iv++] = Pt.x;
-            wingOutlineVertexArray[iv++] = Pt.y;
-            wingOutlineVertexArray[iv++] = Pt.z;
+            pSurf->getSurfacePoint(pFoilA->m_LEXHinge/100.0,
+                                   pFoilA->m_LEXHinge/100.0,
+                                   0.0, TOPSURFACE, Pt, N);
+            wingOutlineVertexArray[iv++] = Pt.xf();
+            wingOutlineVertexArray[iv++] = Pt.yf();
+            wingOutlineVertexArray[iv++] = Pt.zf();
 
-            pWing->m_Surface[j]->getSurfacePoint(pWing->m_Surface[j]->m_pFoilB->m_LEXHinge/100.0,
-                                                 pWing->m_Surface[j]->m_pFoilB->m_LEXHinge/100.0,
-                                                 1.0, TOPSURFACE, Pt, N);
-            wingOutlineVertexArray[iv++] = Pt.x;
-            wingOutlineVertexArray[iv++] = Pt.y;
-            wingOutlineVertexArray[iv++] = Pt.z;
+            pSurf->getSurfacePoint(pFoilB->m_LEXHinge/100.0,
+                                   pFoilB->m_LEXHinge/100.0,
+                                   1.0, TOPSURFACE, Pt, N);
+            wingOutlineVertexArray[iv++] = Pt.xf();
+            wingOutlineVertexArray[iv++] = Pt.yf();
+            wingOutlineVertexArray[iv++] = Pt.zf();
 
-            pWing->m_Surface[j]->getSurfacePoint(pWing->m_Surface[j]->m_pFoilA->m_LEXHinge/100.0,
-                                                 pWing->m_Surface[j]->m_pFoilA->m_LEXHinge/100.0,
-                                                 0.0, BOTSURFACE, Pt, N);
-            wingOutlineVertexArray[iv++] = Pt.x;
-            wingOutlineVertexArray[iv++] = Pt.y;
-            wingOutlineVertexArray[iv++] = Pt.z;
+            pSurf->getSurfacePoint(pFoilA->m_LEXHinge/100.0,
+                                   pFoilA->m_LEXHinge/100.0,
+                                   0.0, BOTSURFACE, Pt, N);
+            wingOutlineVertexArray[iv++] = Pt.xf();
+            wingOutlineVertexArray[iv++] = Pt.yf();
+            wingOutlineVertexArray[iv++] = Pt.zf();
 
-            pWing->m_Surface[j]->getSurfacePoint(pWing->m_Surface[j]->m_pFoilB->m_LEXHinge/100.0,
-                                                 pWing->m_Surface[j]->m_pFoilB->m_LEXHinge/100.0,
-                                                 1.0, BOTSURFACE, Pt, N);
-            wingOutlineVertexArray[iv++] = Pt.x;
-            wingOutlineVertexArray[iv++] = Pt.y;
-            wingOutlineVertexArray[iv++] = Pt.z;
+            pSurf->getSurfacePoint(pFoilB->m_LEXHinge/100.0,
+                                   pFoilB->m_LEXHinge/100.0,
+                                   1.0, BOTSURFACE, Pt, N);
+            wingOutlineVertexArray[iv++] = Pt.xf();
+            wingOutlineVertexArray[iv++] = Pt.yf();
+            wingOutlineVertexArray[iv++] = Pt.zf();
         }
     }
 
@@ -3118,111 +3120,6 @@ void gl3dView::glMakeWingEditMesh(QOpenGLBuffer &vbo, Wing *pWing)
     vbo.bind();
     vbo.allocate(meshVertexArray.data(), bufferSize * sizeof(GLfloat));
     vbo.release();
-}
-
-
-void gl3dView::glMakeWingSectionHighlight(Wing *pWing, int iSectionHighLight, bool bRightSide)
-{
-    Vector3d Point, Normal;
-
-    int CHORDPOINTS = W3dPrefsDlg::chordwiseRes();
-    int iSection = 0;
-    int jSurf = 0;
-    for(int jSection=0; jSection<pWing->NWingSection(); jSection++)
-    {
-        if(jSection==iSectionHighLight) break;
-        if(jSection<pWing->NWingSection()-1 &&	fabs(pWing->YPosition(jSection+1)-pWing->YPosition(jSection)) > Wing::s_MinPanelSize)
-            iSection++;
-    }
-
-    m_HighlightLineSize = CHORDPOINTS * 2;
-    int bufferSize = m_HighlightLineSize *2 *3 ;
-    float *pHighlightVertexArray = new float[bufferSize];
-
-    m_nHighlightLines = 0;
-    int iv=0;
-    if(iSection==0)
-    {
-        m_nHighlightLines++;
-        //define the inner left side surface
-        if(!pWing->isFin())  jSurf = pWing->m_Surface.size()/2 - 1;
-        else                 jSurf = pWing->m_Surface.size()   - 1;
-
-        for (int lx=0; lx<CHORDPOINTS; lx++)
-        {
-            double xRel = (double)lx/(double)(CHORDPOINTS-1);
-            pWing->m_Surface.at(jSurf)->getSidePoint(xRel, true, TOPSURFACE, Point, Normal);
-            pHighlightVertexArray[iv++] = Point.x;
-            pHighlightVertexArray[iv++] = Point.y;
-            pHighlightVertexArray[iv++] = Point.z;
-        }
-        for (int lx=CHORDPOINTS-1; lx>=0; lx--)
-        {
-            double xRel = (double)lx/(double)(CHORDPOINTS-1);
-            pWing->m_Surface.at(jSurf)->getSidePoint(xRel, true, BOTSURFACE, Point, Normal);
-            pHighlightVertexArray[iv++] = Point.x;
-            pHighlightVertexArray[iv++] = Point.y;
-            pHighlightVertexArray[iv++] = Point.z;
-        }
-    }
-    else
-    {
-        if((pWing->m_bSymetric || bRightSide) && !pWing->m_bIsFin)
-        {
-            m_nHighlightLines++;
-            jSurf = pWing->m_Surface.size()/2 + iSection -1;
-
-            for (int lx=0; lx<CHORDPOINTS; lx++)
-            {
-                double xRel = (double)lx/(double)(CHORDPOINTS-1);
-                pWing->m_Surface.at(jSurf)->getSidePoint(xRel, true, TOPSURFACE, Point, Normal);
-                pHighlightVertexArray[iv++] = Point.x;
-                pHighlightVertexArray[iv++] = Point.y;
-                pHighlightVertexArray[iv++] = Point.z;
-            }
-            for (int lx=CHORDPOINTS-1; lx>=0; lx--)
-            {
-                double xRel = (double)lx/(double)(CHORDPOINTS-1);
-                pWing->m_Surface.at(jSurf)->getSidePoint(xRel, true, BOTSURFACE, Point, Normal);
-                pHighlightVertexArray[iv++] = Point.x;
-                pHighlightVertexArray[iv++] = Point.y;
-                pHighlightVertexArray[iv++] = Point.z;
-            }
-        }
-
-        if(pWing->m_bSymetric || !bRightSide)
-        {
-            m_nHighlightLines++;
-            if(!pWing->m_bIsFin) jSurf = pWing->m_Surface.size()/2 - iSection;
-            else                 jSurf = pWing->m_Surface.size()   - iSection;
-
-            //plot A side outline
-            for (int lx=0; lx<CHORDPOINTS; lx++)
-            {
-                double xRel = (double)lx/(double)(CHORDPOINTS-1);
-                pWing->m_Surface.at(jSurf)->getSidePoint(xRel, false, TOPSURFACE, Point, Normal);
-                pHighlightVertexArray[iv++] = Point.x;
-                pHighlightVertexArray[iv++] = Point.y;
-                pHighlightVertexArray[iv++] = Point.z;
-            }
-
-            for (int lx=CHORDPOINTS-1; lx>=0; lx--)
-            {
-                double xRel = (double)lx/(double)(CHORDPOINTS-1);
-                pWing->m_Surface.at(jSurf)->getSidePoint(xRel, false, BOTSURFACE, Point, Normal);
-                pHighlightVertexArray[iv++] = Point.x;
-                pHighlightVertexArray[iv++] = Point.y;
-                pHighlightVertexArray[iv++] = Point.z;
-            }
-        }
-    }
-
-    m_vboHighlight.destroy();
-    m_vboHighlight.create();
-    m_vboHighlight.bind();
-    m_vboHighlight.allocate(pHighlightVertexArray, bufferSize*sizeof(float));
-    m_vboHighlight.release();
-    delete [] pHighlightVertexArray;
 }
 
 

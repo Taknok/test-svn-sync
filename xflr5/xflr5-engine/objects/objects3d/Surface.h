@@ -118,13 +118,13 @@ public:
 	void createXPoints();
 	void getC4(int k, Vector3d &Pt, double &tau);
 	void getLeadingPt(int k, Vector3d &C);
-	void getNormal(double yrel, Vector3d &N);
+    void getNormal(double yrel, Vector3d &N) const;
 	void getTrailingPt(int k, Vector3d &C);
 	void getPanel(int const &k, int const &l, enumPanelPosition pos);
-    void getSidePoint(double xRel, bool bRight, enumPanelPosition pos, Vector3d &Point, Vector3d &PtNormal);
-    void getSurfacePoint(double xArel, double xBrel, double yrel, enumPanelPosition pos, Vector3d &Point, Vector3d &PtNormal);
+    void getSidePoint(double xRel, bool bRight, enumPanelPosition pos, Vector3d &Point, Vector3d &PtNormal) const;
+    void getSurfacePoint(double xArel, double xBrel, double yrel, enumPanelPosition pos, Vector3d &Point, Vector3d &PtNormal) const;
     void getSection(double const &tau, double &Chord, double &Area, Vector3d &PtC4);
-	void getYDist(int const &k, double &y1, double &y2);
+    void getYDist(int const &k, double &y1, double &y2) const;
 	void getSidePoints(enumPanelPosition pos, Body * pBody, Vector3d *PtA, Vector3d *PtB, Vector3d *NA, Vector3d *NB, int nPoints);
     void init();
 	void resetFlap();
@@ -147,28 +147,30 @@ public:
     bool isTipRight()   const {return m_bIsTipRight;}
     bool isInSymPlane() const {return m_bIsInSymPlane;}
 
-	bool isFlapPanel(Panel *pPanel);
-	bool isFlapPanel(int p);
-	bool isFlapNode(int nNode);
+    bool isFlapPanel(Panel *pPanel) const;
+    bool isFlapPanel(int p) const;
+    bool isFlapNode(int nNode) const;
 	bool rotateFlap(double Angle);
 
-	double twist(int k);
-	double chord(int k);
-	double chord(double tau);
-	double offset(double tau);
-	double stripSpanPos(int k);
-	double foilArea(double tau);
-	double stripWidth(int k);
-	double spanLength();
+    double twist(int k) const;
+    double chord(int k) const;
+    double chord(double tau) const;
+    double offset(double tau) const;
+    double stripSpanPos(int k);
+    double foilArea(double tau) const;
+    double stripWidth(int k);
+    double spanLength() const;
     double planformLength() const {return m_Length;}
 
     int innerSection() const {return m_innerSection;}
-    int outerSection()const {return m_outerSection;}
+    int outerSection() const {return m_outerSection;}
 
     int NXPanels() const {return m_NXPanels;}
     int NYPanels() const {return m_NYPanels;}
     int NXFlap() const {return m_NXFlap;}
-	int & NElements(){return m_NElements;}
+
+    void setNElements(int n) {m_NElements=n;}
+    int NElements() const {return m_NElements;}
 
 	Foil *foilA() {return m_pFoilA;}
 	Foil *foilB() {return m_pFoilB;}
