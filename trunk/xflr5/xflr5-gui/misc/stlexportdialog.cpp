@@ -206,7 +206,7 @@ void STLExportDlg::setLabels()
     if(s_iObject==0)
     {
         m_pctrlChordLabel->setText(tr("Number of x-panels"));
-        m_pctrlSpanLabel->setText(tr("Number of hoop panels"));
+        m_pctrlSpanLabel->setText(tr("Number of hoop/y panels"));
     }
     else
     {
