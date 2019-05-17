@@ -1687,63 +1687,6 @@ void Miarex::keyPressEvent(QKeyEvent *pEvent)
 
     m_pgl3dMiarexView->m_bArcball=false;
 
-/*    if(pEvent->key()==Qt::Key_1 || pEvent->text()=="1")
-    {
-        if(bCtrl)
-        {
-            s_pMainFrame->onAFoil();
-            pEvent->accept();
-            return;
-        }
-
-    }
-    else if(pEvent->key()==Qt::Key_2 || pEvent->text()=="2")
-    {
-        if(bCtrl)
-        {
-            s_pMainFrame->onAFoil();
-            pEvent->accept();
-            return;
-        }
-    }
-    else if(pEvent->key()==Qt::Key_3 || pEvent->text()=="3")
-    {
-        if(bCtrl)
-        {
-            s_pMainFrame->onXInverse();
-            pEvent->accept();
-            return;
-        }
-    }
-    else if(pEvent->key()==Qt::Key_4 || pEvent->text()=="4")
-    {
-        if(bCtrl)
-        {
-            s_pMainFrame->onXInverseMixed();
-            pEvent->accept();
-            return;
-        }
-    }
-    else if(pEvent->key()==Qt::Key_5 || pEvent->text()=="5")
-    {
-        if(bCtrl)
-        {
-            s_pMainFrame->onXDirect();
-            pEvent->accept();
-            return;
-        }
-
-    }
-    else if(pEvent->key()==Qt::Key_6 || pEvent->text()=="6")
-    {
-        if(bCtrl)
-        {
-            s_pMainFrame->onXDirect();
-            pEvent->accept();
-            return;
-        }
-    }*/
-
     switch (pEvent->key())
     {
         case Qt::Key_Return:
@@ -1768,7 +1711,6 @@ void Miarex::keyPressEvent(QKeyEvent *pEvent)
         }
         case Qt::Key_Escape:
         {
-
             stopAnimate();
 
             if(s_pMainFrame->m_pctrl3DScalesWidget->isVisible()) s_pMainFrame->m_pctrl3DScalesWidget->hide();
@@ -1801,6 +1743,31 @@ void Miarex::keyPressEvent(QKeyEvent *pEvent)
         case Qt::Key_Y:
             m_bYPressed = true;
             break;
+/*        case Qt::Key_Z:
+        {
+            // testing only
+            if(bCtrl && m_pCurPlane)
+            {
+                Wing *pWing = m_pCurPlane->mainWing();
+                Surface *pSurf0 = pWing->m_Surface.at(0);
+                Surface *pSurf1 = pWing->m_Surface.at(1);
+                int CHORDPANELS = 13;
+                std::vector<Vector3d> NormalA(CHORDPANELS+1);
+                std::vector<Vector3d> NormalB(CHORDPANELS+1);
+                std::vector<Vector3d> PtLeft0(CHORDPANELS+1);
+                std::vector<Vector3d> PtRight0(CHORDPANELS+1);
+                std::vector<Vector3d> PtLeft1(CHORDPANELS+1);
+                std::vector<Vector3d> PtRight1(CHORDPANELS+1);
+
+                pSurf0->getSidePoints(TOPSURFACE, nullptr, PtLeft0.data(), PtRight0.data(), NormalA.data(), NormalB.data(), CHORDPANELS+1);
+                pSurf1->getSidePoints(TOPSURFACE, nullptr, PtLeft1.data(), PtRight1.data(), NormalA.data(), NormalB.data(), CHORDPANELS+1);
+                for(int i=0; i<CHORDPANELS+1; i++)
+                {
+                    qDebug(" %19g  %19g  %19g  %19g  %19g  %19g", PtRight0[i].x, PtRight0[i].y, PtRight0[i].z, PtLeft1[i].x, PtLeft1[i].y, PtLeft1[i].z);
+                }
+            }
+            break;
+        }*/
         case Qt::Key_H:
         {
             if((m_iView==XFLR5::WPOLARVIEW || m_iView==XFLR5::STABPOLARVIEW) && pEvent->modifiers().testFlag(Qt::ControlModifier))
@@ -2140,6 +2107,7 @@ bool Miarex::loadSettings(QSettings &settings)
 
     EditPlaneDlg::loadSettings(settings);
     EditBodyDlg::loadSettings(settings);
+    STLExportDlg::loadSettings(settings);
 
     m_CpGraph.loadSettings(settings);
 
@@ -6775,6 +6743,7 @@ bool Miarex::saveSettings(QSettings &settings)
     GL3dBodyDlg::saveSettings(settings);
     EditPlaneDlg::saveSettings(settings);
     EditBodyDlg::saveSettings(settings);
+    STLExportDlg::saveSettings(settings);
 
     return true;
 }
@@ -8459,7 +8428,9 @@ void Miarex::onExporttoSTL()
     FileName = m_pCurPlane->planeName();
     FileName.replace("/", " ");
 
-    STLExportDialog dlg;
+    STLExportDlg dlg;
+    dlg.initDialog(m_pCurPlane);
+
     if(dlg.exec()==QDialog::Rejected) return;
 
     QFileDialog Fdlg(this);
@@ -8471,7 +8442,7 @@ void Miarex::onExporttoSTL()
     if(!FileName.length()) return;
 
 
-    bool bBinary = STLExportDialog::s_bBinary;
+    bool bBinary = STLExportDlg::s_bBinary;
 
     int pos = FileName.lastIndexOf("/");
     if(pos>0) Settings::s_LastDirName = FileName.left(pos);
@@ -8481,30 +8452,32 @@ void Miarex::onExporttoSTL()
 
     QFile XFile(FileName);
 
-    if(STLExportDialog::s_iObject>0)
+    if(STLExportDlg::s_iObject>0)
     {
         if(bBinary)
         {
-            if (!XFile.open(QIODevice::WriteOnly)) return ;
+            if (!XFile.open(QIODevice::WriteOnly)) return;
             QDataStream out(&XFile);
             out.setByteOrder(QDataStream::LittleEndian);
-            pWing(STLExportDialog::s_iObject-1)->exportSTLBinary(out, STLExportDialog::s_iChordPanels, STLExportDialog::s_iSpanPanels);
+            pWing(STLExportDlg::s_iObject-1)->exportSTLBinary(out,
+                                                              STLExportDlg::s_NChordPanels, STLExportDlg::s_NSpanPanels,
+                                                              Units::mtoUnit());
         }
         else
         {
             if (!XFile.open(QIODevice::WriteOnly | QIODevice::Text)) return ;
             QTextStream out(&XFile);
-            pWing(STLExportDialog::s_iObject-1)->exportSTLText(out, STLExportDialog::s_iChordPanels, STLExportDialog::s_iSpanPanels);
+            pWing(STLExportDlg::s_iObject-1)->exportSTLText(out, STLExportDlg::s_NChordPanels, STLExportDlg::s_NSpanPanels);
         }
     }
-    else if(STLExportDialog::s_iObject==0 && m_pCurPlane->body())
+    else if(STLExportDlg::s_iObject==0 && m_pCurPlane->body())
     {
         if(bBinary)
         {
             if (!XFile.open(QIODevice::WriteOnly)) return ;
             QDataStream out(&XFile);
             out.setByteOrder(QDataStream::LittleEndian);
-            m_pCurPlane->body()->exportSTLBinary(out, STLExportDialog::s_iChordPanels, STLExportDialog::s_iSpanPanels);
+            m_pCurPlane->body()->exportSTLBinary(out, STLExportDlg::s_NChordPanels, STLExportDlg::s_NSpanPanels);
         }
         else
         {

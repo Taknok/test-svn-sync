@@ -478,7 +478,7 @@ void Surface::getSidePoint(double xRel, bool bRight, enumPanelPosition pos, Vect
  * @param nPoints the number of side points to define on each tip
  */
 void Surface::getSidePoints(enumPanelPosition pos,
-                            Body * pBody,
+                            Body *pBody,
                             Vector3d *PtA, Vector3d *PtB, Vector3d *NA, Vector3d *NB, int nPoints)
 {
     double xRelA=0, xRelB=0;
@@ -530,19 +530,19 @@ void Surface::getSidePoints(enumPanelPosition pos,
 
             if(i<nPtsTr)
             {
-                xRelA = 1.0/2.0*(1.0-cos(PI * (double)i/(double)(nPtsTr-1)))* (m_pFoilA->m_TEXHinge/100.);
-                xRelB = 1.0/2.0*(1.0-cos(PI * (double)i/(double)(nPtsTr-1)))* (m_pFoilB->m_TEXHinge/100.);
+                xRelA = 1.0/2.0*(1.0-cos(PI * double(i)/double(nPtsTr-1)))* (m_pFoilA->m_TEXHinge/100.);
+                xRelB = 1.0/2.0*(1.0-cos(PI * double(i)/double(nPtsTr-1)))* (m_pFoilB->m_TEXHinge/100.);
             }
             else
             {
                 int j = i-nPtsTr;
-                xRelA = m_pFoilA->m_TEXHinge/100. + 1.0/2.0*(1.0-cos(PI* (double)j/(double)(nPtsLe-1))) * (1.-m_pFoilA->m_TEXHinge/100.);
-                xRelB = m_pFoilB->m_TEXHinge/100. + 1.0/2.0*(1.0-cos(PI* (double)j/(double)(nPtsLe-1))) * (1.-m_pFoilB->m_TEXHinge/100.);
+                xRelA = m_pFoilA->m_TEXHinge/100. + 1.0/2.0*(1.0-cos(PI* double(j)/double(nPtsLe-1))) * (1.-m_pFoilA->m_TEXHinge/100.);
+                xRelB = m_pFoilB->m_TEXHinge/100. + 1.0/2.0*(1.0-cos(PI* double(j)/double(nPtsLe-1))) * (1.-m_pFoilB->m_TEXHinge/100.);
             }
         }
         else
         {
-            xRelA  = 1.0/2.0*(1.0-cos(PI * (double)i/(double)(nPoints-1)));
+            xRelA  = 1.0/2.0*(1.0-cos(PI * double(i)/double(nPoints-1)));
             xRelB  = xRelA;
         }
 
@@ -552,8 +552,8 @@ void Surface::getSidePoints(enumPanelPosition pos,
         double Ox = xRelA;
         double Oy = m_LA.y * (1.0-Ox) +  m_TA.y * Ox;
         double Oz = m_LA.z * (1.0-Ox) +  m_TA.z * Ox;
-        PtA[i].y   = Oy +(PtA[i].y - Oy)/cosdA;
-        PtA[i].z   = Oz +(PtA[i].z - Oz)/cosdA;
+        PtA[i].y = Oy +(PtA[i].y - Oy)/cosdA;
+        PtA[i].z = Oz +(PtA[i].z - Oz)/cosdA;
         PtA[i].rotate(m_LA, m_LA-m_TA, +alpha_dA);
         NA[i].rotate(Vector3d(1.0,0.0,0.0), delta);
 

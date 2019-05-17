@@ -25,12 +25,12 @@
 #include <QtDebug>
 
 
-#include "Wing.h"
-#include "WPolar.h"
-#include "Surface.h"
-#include "Panel.h"
-#include "PointMass.h"
-#include "objects_global.h"
+#include <objects/objects3d/Wing.h>
+#include <objects/objects3d/WPolar.h>
+#include <objects/objects3d/Surface.h>
+#include <objects/objects3d/Panel.h>
+#include <objects/objects3d/PointMass.h>
+#include <objects/objects_global.h>
 #include <objects/objects2d/Polar.h>
 
 double Wing::s_MinPanelSize = 0.0001;
@@ -2714,7 +2714,7 @@ void Wing::scaleTR(double newTR)
  * Export the wing geometry to a binary file in STL Format.
  * @param out the instance of the QTextStream to which the output will be directed
  */
-void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANELS)
+void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANELS, double unit)
 {
     /***
      *  UINT8[80] – Header
@@ -2758,7 +2758,7 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
     //   *2 triangles/quad
 
     uint nTriangles = m_Surface.count() * CHORDPANELS * SPANPANELS * 2 *2
-            + 2* ((CHORDPANELS-2) * 2 + 2);
+                     + 2* ((CHORDPANELS-2)*2 + 2);
     outStream << nTriangles;
 
     short zero = 0;
@@ -2788,17 +2788,17 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
                 writeFloat(outStream, N.yf());
                 writeFloat(outStream, N.zf());
                 Pt = PtLeft[ic]   * (1.0-tauA) + PtRight[ic]   * tauA;
-                writeFloat(outStream, Pt.xf());
-                writeFloat(outStream, Pt.yf());
-                writeFloat(outStream, Pt.zf());
+                writeFloat(outStream, Pt.xf()*unit);
+                writeFloat(outStream, Pt.yf()*unit);
+                writeFloat(outStream, Pt.zf()*unit);
                 Pt = PtLeft[ic+1] * (1.0-tauA) + PtRight[ic+1] * tauA;
-                writeFloat(outStream, Pt.xf());
-                writeFloat(outStream, Pt.yf());
-                writeFloat(outStream, Pt.zf());
+                writeFloat(outStream, Pt.xf()*unit);
+                writeFloat(outStream, Pt.yf()*unit);
+                writeFloat(outStream, Pt.zf()*unit);
                 Pt = PtLeft[ic]   * (1.0-tauB) + PtRight[ic]   * tauB;
-                writeFloat(outStream, Pt.xf());
-                writeFloat(outStream, Pt.yf());
-                writeFloat(outStream, Pt.zf());
+                writeFloat(outStream, Pt.xf()*unit);
+                writeFloat(outStream, Pt.yf()*unit);
+                writeFloat(outStream, Pt.zf()*unit);
 
                 memcpy(buffer, &zero, sizeof(short));
                 outStream.writeRawData(buffer, 2);
@@ -2809,17 +2809,17 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
                 writeFloat(outStream, N.yf());
                 writeFloat(outStream, N.zf());
                 Pt = PtLeft[ic+1] * (1.0-tauA) + PtRight[ic+1] * tauA;
-                writeFloat(outStream, Pt.xf());
-                writeFloat(outStream, Pt.yf());
-                writeFloat(outStream, Pt.zf());
+                writeFloat(outStream, Pt.xf()*unit);
+                writeFloat(outStream, Pt.yf()*unit);
+                writeFloat(outStream, Pt.zf()*unit);
                 Pt = PtLeft[ic+1] * (1.0-tauB) + PtRight[ic+1] * tauB;
-                writeFloat(outStream, Pt.xf());
-                writeFloat(outStream, Pt.yf());
-                writeFloat(outStream, Pt.zf());
+                writeFloat(outStream, Pt.xf()*unit);
+                writeFloat(outStream, Pt.yf()*unit);
+                writeFloat(outStream, Pt.zf()*unit);
                 Pt = PtLeft[ic]   * (1.0-tauB) + PtRight[ic]   * tauB;
-                writeFloat(outStream, Pt.xf());
-                writeFloat(outStream, Pt.yf());
-                writeFloat(outStream, Pt.zf());
+                writeFloat(outStream, Pt.xf()*unit);
+                writeFloat(outStream, Pt.yf()*unit);
+                writeFloat(outStream, Pt.zf()*unit);
 
                 memcpy(buffer, &zero, sizeof(short));
                 outStream.writeRawData(buffer, 2);
@@ -2843,41 +2843,41 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
                 N = NormalA[ic] * (1.0-tau) + NormalB[ic] * tau;
 
                 //1st triangle
-                writeFloat(outStream, N.xf());
-                writeFloat(outStream, N.yf());
-                writeFloat(outStream, N.zf());
+                writeFloat(outStream, N.xf()*unit);
+                writeFloat(outStream, N.yf()*unit);
+                writeFloat(outStream, N.zf()*unit);
                 Pt = PtLeft[ic]   * (1.0-tauA) + PtRight[ic]   * tauA;
-                writeFloat(outStream, Pt.xf());
-                writeFloat(outStream, Pt.yf());
-                writeFloat(outStream, Pt.zf());
+                writeFloat(outStream, Pt.xf()*unit);
+                writeFloat(outStream, Pt.yf()*unit);
+                writeFloat(outStream, Pt.zf()*unit);
                 Pt = PtLeft[ic+1] * (1.0-tauA) + PtRight[ic+1] * tauA;
-                writeFloat(outStream, Pt.xf());
-                writeFloat(outStream, Pt.yf());
-                writeFloat(outStream, Pt.zf());
+                writeFloat(outStream, Pt.xf()*unit);
+                writeFloat(outStream, Pt.yf()*unit);
+                writeFloat(outStream, Pt.zf()*unit);
                 Pt = PtLeft[ic]   * (1.0-tauB) + PtRight[ic]   * tauB;
-                writeFloat(outStream, Pt.xf());
-                writeFloat(outStream, Pt.yf());
-                writeFloat(outStream, Pt.zf());
+                writeFloat(outStream, Pt.xf()*unit);
+                writeFloat(outStream, Pt.yf()*unit);
+                writeFloat(outStream, Pt.zf()*unit);
 
                 memcpy(buffer, &zero, sizeof(short));
                 outStream.writeRawData(buffer, 2);
 
                 //2nd triangle
-                writeFloat(outStream, N.xf());
-                writeFloat(outStream, N.yf());
-                writeFloat(outStream, N.zf());
+                writeFloat(outStream, N.xf()*unit);
+                writeFloat(outStream, N.yf()*unit);
+                writeFloat(outStream, N.zf()*unit);
                 Pt = PtLeft[ic+1] * (1.0-tauA) + PtRight[ic+1] * tauA;
-                writeFloat(outStream, Pt.xf());
-                writeFloat(outStream, Pt.yf());
-                writeFloat(outStream, Pt.zf());
+                writeFloat(outStream, Pt.xf()*unit);
+                writeFloat(outStream, Pt.yf()*unit);
+                writeFloat(outStream, Pt.zf()*unit);
                 Pt = PtLeft[ic+1] * (1.0-tauB) + PtRight[ic+1] * tauB;
-                writeFloat(outStream, Pt.xf());
-                writeFloat(outStream, Pt.yf());
-                writeFloat(outStream, Pt.zf());
+                writeFloat(outStream, Pt.xf()*unit);
+                writeFloat(outStream, Pt.yf()*unit);
+                writeFloat(outStream, Pt.zf()*unit);
                 Pt = PtLeft[ic]   * (1.0-tauB) + PtRight[ic]   * tauB;
-                writeFloat(outStream, Pt.xf());
-                writeFloat(outStream, Pt.yf());
-                writeFloat(outStream, Pt.zf());
+                writeFloat(outStream, Pt.xf()*unit);
+                writeFloat(outStream, Pt.yf()*unit);
+                writeFloat(outStream, Pt.zf()*unit);
 
                 memcpy(buffer, &zero, sizeof(short));
                 outStream.writeRawData(buffer, 2);
@@ -2907,15 +2907,15 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
             writeFloat(outStream, N.xf());
             writeFloat(outStream, N.yf());
             writeFloat(outStream, N.zf());
-            writeFloat(outStream, PtBotLeft[0].xf());
-            writeFloat(outStream, PtBotLeft[0].yf());
-            writeFloat(outStream, PtBotLeft[0].zf());
-            writeFloat(outStream, PtLeft[1].xf());
-            writeFloat(outStream, PtLeft[1].yf());
-            writeFloat(outStream, PtLeft[1].zf());
-            writeFloat(outStream, PtBotLeft[1].xf());
-            writeFloat(outStream, PtBotLeft[1].yf());
-            writeFloat(outStream, PtBotLeft[1].zf());
+            writeFloat(outStream, PtBotLeft[0].xf()*unit);
+            writeFloat(outStream, PtBotLeft[0].yf()*unit);
+            writeFloat(outStream, PtBotLeft[0].zf()*unit);
+            writeFloat(outStream, PtLeft[1].xf()*unit);
+            writeFloat(outStream, PtLeft[1].yf()*unit);
+            writeFloat(outStream, PtLeft[1].zf()*unit);
+            writeFloat(outStream, PtBotLeft[1].xf()*unit);
+            writeFloat(outStream, PtBotLeft[1].yf()*unit);
+            writeFloat(outStream, PtBotLeft[1].zf()*unit);
             memcpy(buffer, &zero, sizeof(short));
             outStream.writeRawData(buffer, 2);
 
@@ -2927,15 +2927,15 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
                 writeFloat(outStream, N.xf());
                 writeFloat(outStream, N.yf());
                 writeFloat(outStream, N.zf());
-                writeFloat(outStream, PtBotLeft[ic].xf());
-                writeFloat(outStream, PtBotLeft[ic].yf());
-                writeFloat(outStream, PtBotLeft[ic].zf());
-                writeFloat(outStream, PtLeft[ic].xf());
-                writeFloat(outStream, PtLeft[ic].yf());
-                writeFloat(outStream, PtLeft[ic].zf());
-                writeFloat(outStream, PtLeft[ic+1].xf());
-                writeFloat(outStream, PtLeft[ic+1].yf());
-                writeFloat(outStream, PtLeft[ic+1].zf());
+                writeFloat(outStream, PtBotLeft[ic].xf()*unit);
+                writeFloat(outStream, PtBotLeft[ic].yf()*unit);
+                writeFloat(outStream, PtBotLeft[ic].zf()*unit);
+                writeFloat(outStream, PtLeft[ic].xf()*unit);
+                writeFloat(outStream, PtLeft[ic].yf()*unit);
+                writeFloat(outStream, PtLeft[ic].zf()*unit);
+                writeFloat(outStream, PtLeft[ic+1].xf()*unit);
+                writeFloat(outStream, PtLeft[ic+1].yf()*unit);
+                writeFloat(outStream, PtLeft[ic+1].zf()*unit);
                 memcpy(buffer, &zero, sizeof(short));
                 outStream.writeRawData(buffer, 2);
 
@@ -2943,15 +2943,15 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
                 writeFloat(outStream, N.xf());
                 writeFloat(outStream, N.yf());
                 writeFloat(outStream, N.zf());
-                writeFloat(outStream, PtBotLeft[ic].xf());
-                writeFloat(outStream, PtBotLeft[ic].yf());
-                writeFloat(outStream, PtBotLeft[ic].zf());
-                writeFloat(outStream, PtLeft[ic+1].xf());
-                writeFloat(outStream, PtLeft[ic+1].yf());
-                writeFloat(outStream, PtLeft[ic+1].zf());
-                writeFloat(outStream, PtBotLeft[ic+1].xf());
-                writeFloat(outStream, PtBotLeft[ic+1].yf());
-                writeFloat(outStream, PtBotLeft[ic+1].zf());
+                writeFloat(outStream, PtBotLeft[ic].xf()*unit);
+                writeFloat(outStream, PtBotLeft[ic].yf()*unit);
+                writeFloat(outStream, PtBotLeft[ic].zf()*unit);
+                writeFloat(outStream, PtLeft[ic+1].xf()*unit);
+                writeFloat(outStream, PtLeft[ic+1].yf()*unit);
+                writeFloat(outStream, PtLeft[ic+1].zf()*unit);
+                writeFloat(outStream, PtBotLeft[ic+1].xf()*unit);
+                writeFloat(outStream, PtBotLeft[ic+1].yf()*unit);
+                writeFloat(outStream, PtBotLeft[ic+1].zf()*unit);
                 memcpy(buffer, &zero, sizeof(short));
                 outStream.writeRawData(buffer, 2);
 
@@ -2963,15 +2963,15 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
             writeFloat(outStream, N.xf());
             writeFloat(outStream, N.yf());
             writeFloat(outStream, N.zf());
-            writeFloat(outStream, PtBotLeft[ic].xf());
-            writeFloat(outStream, PtBotLeft[ic].yf());
-            writeFloat(outStream, PtBotLeft[ic].zf());
-            writeFloat(outStream, PtLeft[ic].xf());
-            writeFloat(outStream, PtLeft[ic].yf());
-            writeFloat(outStream, PtLeft[ic].zf());
-            writeFloat(outStream, PtBotLeft[ic+1].xf());
-            writeFloat(outStream, PtBotLeft[ic+1].yf());
-            writeFloat(outStream, PtBotLeft[ic+1].zf());
+            writeFloat(outStream, PtBotLeft[ic].xf()*unit);
+            writeFloat(outStream, PtBotLeft[ic].yf()*unit);
+            writeFloat(outStream, PtBotLeft[ic].zf()*unit);
+            writeFloat(outStream, PtLeft[ic].xf()*unit);
+            writeFloat(outStream, PtLeft[ic].yf()*unit);
+            writeFloat(outStream, PtLeft[ic].zf()*unit);
+            writeFloat(outStream, PtBotLeft[ic+1].xf()*unit);
+            writeFloat(outStream, PtBotLeft[ic+1].yf()*unit);
+            writeFloat(outStream, PtBotLeft[ic+1].zf()*unit);
             memcpy(buffer, &zero, sizeof(short));
             outStream.writeRawData(buffer, 2);
 
@@ -2992,15 +2992,15 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
             writeFloat(outStream, N.xf());
             writeFloat(outStream, N.yf());
             writeFloat(outStream, N.zf());
-            writeFloat(outStream, PtBotRight[0].xf());
-            writeFloat(outStream, PtBotRight[0].yf());
-            writeFloat(outStream, PtBotRight[0].zf());
-            writeFloat(outStream, PtRight[1].xf());
-            writeFloat(outStream, PtRight[1].yf());
-            writeFloat(outStream, PtRight[1].zf());
-            writeFloat(outStream, PtBotRight[1].xf());
-            writeFloat(outStream, PtBotRight[1].yf());
-            writeFloat(outStream, PtBotRight[1].zf());
+            writeFloat(outStream, PtBotRight[0].xf()*unit);
+            writeFloat(outStream, PtBotRight[0].yf()*unit);
+            writeFloat(outStream, PtBotRight[0].zf()*unit);
+            writeFloat(outStream, PtRight[1].xf()*unit);
+            writeFloat(outStream, PtRight[1].yf()*unit);
+            writeFloat(outStream, PtRight[1].zf()*unit);
+            writeFloat(outStream, PtBotRight[1].xf()*unit);
+            writeFloat(outStream, PtBotRight[1].yf()*unit);
+            writeFloat(outStream, PtBotRight[1].zf()*unit);
             memcpy(buffer, &zero, sizeof(short));
             outStream.writeRawData(buffer, 2);
             iTriangles +=1;
@@ -3011,15 +3011,15 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
                 writeFloat(outStream, N.xf());
                 writeFloat(outStream, N.yf());
                 writeFloat(outStream, N.zf());
-                writeFloat(outStream, PtBotRight[ic].xf());
-                writeFloat(outStream, PtBotRight[ic].yf());
-                writeFloat(outStream, PtBotRight[ic].zf());
-                writeFloat(outStream, PtRight[ic].xf());
-                writeFloat(outStream, PtRight[ic].yf());
-                writeFloat(outStream, PtRight[ic].zf());
-                writeFloat(outStream, PtRight[ic+1].xf());
-                writeFloat(outStream, PtRight[ic+1].yf());
-                writeFloat(outStream, PtRight[ic+1].zf());
+                writeFloat(outStream, PtBotRight[ic].xf()*unit);
+                writeFloat(outStream, PtBotRight[ic].yf()*unit);
+                writeFloat(outStream, PtBotRight[ic].zf()*unit);
+                writeFloat(outStream, PtRight[ic].xf()*unit);
+                writeFloat(outStream, PtRight[ic].yf()*unit);
+                writeFloat(outStream, PtRight[ic].zf()*unit);
+                writeFloat(outStream, PtRight[ic+1].xf()*unit);
+                writeFloat(outStream, PtRight[ic+1].yf()*unit);
+                writeFloat(outStream, PtRight[ic+1].zf()*unit);
                 memcpy(buffer, &zero, sizeof(short));
                 outStream.writeRawData(buffer, 2);
 
@@ -3027,15 +3027,15 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
                 writeFloat(outStream, N.xf());
                 writeFloat(outStream, N.yf());
                 writeFloat(outStream, N.zf());
-                writeFloat(outStream, PtBotRight[ic].xf());
-                writeFloat(outStream, PtBotRight[ic].yf());
-                writeFloat(outStream, PtBotRight[ic].zf());
-                writeFloat(outStream, PtRight[ic+1].xf());
-                writeFloat(outStream, PtRight[ic+1].yf());
-                writeFloat(outStream, PtRight[ic+1].zf());
-                writeFloat(outStream, PtBotRight[ic+1].xf());
-                writeFloat(outStream, PtBotRight[ic+1].yf());
-                writeFloat(outStream, PtBotRight[ic+1].zf());
+                writeFloat(outStream, PtBotRight[ic].xf()*unit);
+                writeFloat(outStream, PtBotRight[ic].yf()*unit);
+                writeFloat(outStream, PtBotRight[ic].zf()*unit);
+                writeFloat(outStream, PtRight[ic+1].xf()*unit);
+                writeFloat(outStream, PtRight[ic+1].yf()*unit);
+                writeFloat(outStream, PtRight[ic+1].zf()*unit);
+                writeFloat(outStream, PtBotRight[ic+1].xf()*unit);
+                writeFloat(outStream, PtBotRight[ic+1].yf()*unit);
+                writeFloat(outStream, PtBotRight[ic+1].zf()*unit);
 
                 memcpy(buffer, &zero, sizeof(short));
                 outStream.writeRawData(buffer, 2);
@@ -3047,15 +3047,15 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
             writeFloat(outStream, N.xf());
             writeFloat(outStream, N.yf());
             writeFloat(outStream, N.zf());
-            writeFloat(outStream, PtBotRight[ic].xf());
-            writeFloat(outStream, PtBotRight[ic].yf());
-            writeFloat(outStream, PtBotRight[ic].zf());
-            writeFloat(outStream, PtRight[ic].xf());
-            writeFloat(outStream, PtRight[ic].yf());
-            writeFloat(outStream, PtRight[ic].zf());
-            writeFloat(outStream, PtBotRight[ic+1].xf());
-            writeFloat(outStream, PtBotRight[ic+1].yf());
-            writeFloat(outStream, PtBotRight[ic+1].zf());
+            writeFloat(outStream, PtBotRight[ic].xf()*unit);
+            writeFloat(outStream, PtBotRight[ic].yf()*unit);
+            writeFloat(outStream, PtBotRight[ic].zf()*unit);
+            writeFloat(outStream, PtRight[ic].xf()*unit);
+            writeFloat(outStream, PtRight[ic].yf()*unit);
+            writeFloat(outStream, PtRight[ic].zf()*unit);
+            writeFloat(outStream, PtBotRight[ic+1].xf()*unit);
+            writeFloat(outStream, PtBotRight[ic+1].yf()*unit);
+            writeFloat(outStream, PtBotRight[ic+1].zf()*unit);
             memcpy(buffer, &zero, sizeof(short));
             outStream.writeRawData(buffer, 2);
 
@@ -3121,7 +3121,7 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
     //   *2 triangles/quad
 
     uint nTriangles = m_Surface.count() * CHORDPANELS * SPANPANELS * 2 *2
-            + 2* ((CHORDPANELS-2) * 2 + 2);
+                      + 2* ((CHORDPANELS-2)*2 + 2);
     N.set(0.0, 0.0, 0.0);
     int iTriangles = 0;
 
@@ -3130,11 +3130,10 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
         //top surface
         for(int is=0; is<SPANPANELS; is++)
         {
-            m_Surface.at(j)->getSidePoints(TOPSURFACE, NULL, PtLeft, PtRight,
-                                           NormalA, NormalB, CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft, PtRight, NormalA, NormalB, CHORDPANELS+1);
 
-            double tauA = (double)is    /(double)SPANPANELS;
-            double tauB = (double)(is+1)/(double)SPANPANELS;
+            double tauA = double(is)   / double(SPANPANELS);
+            double tauB = double(is+1) / double(SPANPANELS);
             double tau = (tauA+tauB)/2.0;
             for(int ic=0; ic<CHORDPANELS; ic++)
             {
@@ -3169,7 +3168,7 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
         //bottom surface
         for(int is=0; is<SPANPANELS; is++)
         {
-            m_Surface.at(j)->getSidePoints(BOTSURFACE, NULL, PtLeft, PtRight,
+            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtLeft, PtRight,
                                            NormalA, NormalB, CHORDPANELS+1);
 
             double tauA = double(is)   /double(SPANPANELS);
@@ -3215,10 +3214,8 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
     {
         if(m_Surface.at(j)->isTipLeft())
         {
-            m_Surface.at(j)->getSidePoints(TOPSURFACE, NULL, PtLeft, PtRight,
-                                           NormalA, NormalB, CHORDPANELS+1);
-            m_Surface.at(j)->getSidePoints(BOTSURFACE, NULL, PtBotLeft, PtBotRight,
-                                           NormalA, NormalB, CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft,    PtRight,    NormalA, NormalB, CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtBotLeft, PtBotRight, NormalA, NormalB, CHORDPANELS+1);
 
             N = m_Surface.at(j)->Normal;
             N.rotateX(90.0);
@@ -3227,7 +3224,7 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
             outStream << strong.sprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
             outStream << "    outer loop\n";
             outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[0].x, PtBotLeft[0].y, PtBotLeft[0].z);
-            outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtLeft[1].x, PtLeft[1].y, PtLeft[1].z);
+            outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtLeft[1].x,    PtLeft[1].y,    PtLeft[1].z);
             outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[1].x, PtBotLeft[1].y, PtBotLeft[1].z);
             outStream << "    endloop\n  endfacet\n";
             iTriangles +=1;
@@ -3237,16 +3234,16 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
                 //1st triangle
                 outStream << strong.sprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
                 outStream << "    outer loop\n";
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[ic].x, PtBotLeft[ic].y, PtBotLeft[ic].z);
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtLeft[ic].x, PtLeft[ic].y, PtLeft[ic].z);
+                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[ic].x,   PtBotLeft[ic].y,   PtBotLeft[ic].z);
+                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtLeft[ic].x,      PtLeft[ic].y,      PtLeft[ic].z);
                 outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[ic+1].x, PtBotLeft[ic+1].y, PtBotLeft[ic+1].z);
                 outStream << "    endloop\n  endfacet\n";
                 //2nd triangle
                 outStream << strong.sprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
                 outStream << "    outer loop\n";
                 outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[ic+1].x, PtBotLeft[ic+1].y, PtBotLeft[ic+1].z);
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtLeft[ic].x, PtLeft[ic].y, PtLeft[ic].z);
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtLeft[ic+1].x, PtLeft[ic+1].y, PtLeft[ic+1].z);
+                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtLeft[ic].x,      PtLeft[ic].y,      PtLeft[ic].z);
+                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtLeft[ic+1].x,    PtLeft[ic+1].y,    PtLeft[ic+1].z);
                 outStream << "    endloop\n  endfacet\n";
                 iTriangles +=2;
             }
@@ -3254,8 +3251,8 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
             int ic = CHORDPANELS-1;
             outStream << strong.sprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
             outStream << "    outer loop\n";
-            outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[ic].x, PtBotLeft[ic].y, PtBotLeft[ic].z);
-            outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtLeft[ic].x, PtLeft[ic].y, PtLeft[ic].z);
+            outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[ic].x,   PtBotLeft[ic].y,   PtBotLeft[ic].z);
+            outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtLeft[ic].x,      PtLeft[ic].y,      PtLeft[ic].z);
             outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[ic+1].x, PtBotLeft[ic+1].y, PtBotLeft[ic+1].z);
             outStream << "    endloop\n  endfacet\n";
             iTriangles +=1;
@@ -3263,10 +3260,8 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
 
         if(m_Surface.at(j)->isTipRight())
         {
-            m_Surface.at(j)->getSidePoints(TOPSURFACE, NULL, PtLeft, PtRight,
-                                           NormalA, NormalB, CHORDPANELS+1);
-            m_Surface.at(j)->getSidePoints(BOTSURFACE, NULL, PtBotLeft, PtBotRight,
-                                           NormalA, NormalB, CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft,    PtRight,    NormalA, NormalB, CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtBotLeft, PtBotRight, NormalA, NormalB, CHORDPANELS+1);
 
             N = m_Surface.at(j)->Normal;
             N.rotateX(-90.0);
@@ -3275,7 +3270,7 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
             outStream << strong.sprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
             outStream << "    outer loop\n";
             outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[0].x, PtBotRight[0].y, PtBotRight[0].z);
-            outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtRight[1].x, PtRight[1].y, PtRight[1].z);
+            outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtRight[1].x,    PtRight[1].y,    PtRight[1].z);
             outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[1].x, PtBotRight[1].y, PtBotRight[1].z);
             outStream << "    endloop\n  endfacet\n";
             iTriangles +=1;
@@ -3285,16 +3280,16 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
                 //1st triangle
                 outStream << strong.sprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
                 outStream << "    outer loop\n";
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[ic].x, PtBotRight[ic].y, PtBotRight[ic].z);
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtRight[ic].x, PtRight[ic].y, PtRight[ic].z);
+                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[ic].x,   PtBotRight[ic].y,   PtBotRight[ic].z);
+                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtRight[ic].x,      PtRight[ic].y,      PtRight[ic].z);
                 outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[ic+1].x, PtBotRight[ic+1].y, PtBotRight[ic+1].z);
                 outStream << "    endloop\n  endfacet\n";
                 //2nd triangle
                 outStream << strong.sprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
                 outStream << "    outer loop\n";
                 outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[ic+1].x, PtBotRight[ic+1].y, PtBotRight[ic+1].z);
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtRight[ic].x, PtRight[ic].y, PtRight[ic].z);
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtRight[ic+1].x, PtRight[ic+1].y, PtRight[ic+1].z);
+                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtRight[ic].x,      PtRight[ic].y,      PtRight[ic].z);
+                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtRight[ic+1].x,    PtRight[ic+1].y,    PtRight[ic+1].z);
                 outStream << "    endloop\n  endfacet\n";
                 iTriangles +=2;
             }
@@ -3302,8 +3297,8 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
             int ic = CHORDPANELS-1;
             outStream << strong.sprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
             outStream << "    outer loop\n";
-            outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[ic].x, PtBotRight[ic].y, PtBotRight[ic].z);
-            outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtRight[ic].x, PtRight[ic].y, PtRight[ic].z);
+            outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[ic].x,   PtBotRight[ic].y,   PtBotRight[ic].z);
+            outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtRight[ic].x,      PtRight[ic].y,      PtRight[ic].z);
             outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[ic+1].x, PtBotRight[ic+1].y, PtBotRight[ic+1].z);
             outStream << "    endloop\n  endfacet\n";
             iTriangles +=1;
@@ -3321,7 +3316,6 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
     delete [] PtBotLeft;
     delete [] PtBotRight;
 }
-
 
 
 /**
