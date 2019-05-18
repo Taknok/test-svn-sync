@@ -15,6 +15,9 @@
 *******************************************************************************
 
 
+xflr5 v6.47 May xxxth, 2019
+    - Tentative fix for bug #140
+
 xflr5 v6.46 May 4th, 2019
     - Fix for bug #134 - LLT now restored in v6.46
     - Fix for bug #139 - corrected crash bug when switching from plane design to another app with streamlines displayed.
