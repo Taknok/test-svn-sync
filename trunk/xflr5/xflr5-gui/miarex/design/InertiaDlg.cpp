@@ -66,7 +66,6 @@ InertiaDlg::InertiaDlg(QWidget *pParent) : QDialog(pParent)
     m_pContextMenu->addAction(m_pInsertMassRow);
     m_pContextMenu->addAction(m_pDeleteMassRow);
 
-
     setupLayout();
 }
 
@@ -79,11 +78,10 @@ InertiaDlg::~InertiaDlg()
 }
 
 
-
 void InertiaDlg::onButton(QAbstractButton *pButton)
 {
-    if      (m_pButtonBox->button(QDialogButtonBox::Save) == pButton)     onOK();
-    else if (m_pButtonBox->button(QDialogButtonBox::Discard) == pButton)  reject();
+    if      (m_pButtonBox->button(QDialogButtonBox::Save) == pButton)    onOK();
+    else if (m_pButtonBox->button(QDialogButtonBox::Discard) == pButton) reject();
     else if (pButton==m_pctrlExportToAVL) onExportToAVL();
 }
 
@@ -1146,7 +1144,7 @@ void InertiaDlg::setupLayout()
     }
     //__________________Control buttons___________________
 
-    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Cancel);
+    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Discard);
     {
         m_pctrlExportToAVL = new QPushButton(tr("Export to AVL"));
         m_pButtonBox->addButton(m_pctrlExportToAVL, QDialogButtonBox::ActionRole);
