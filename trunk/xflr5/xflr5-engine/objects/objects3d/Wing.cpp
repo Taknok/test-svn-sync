@@ -83,9 +83,9 @@ Wing::Wing()
     m_WingType        = XFLR5::MAINWING;
     m_WingDescription = "";
 
-    m_WingColor.setRed((int)(((double)qrand()/(double)RAND_MAX)*155)+100);
-    m_WingColor.setGreen((int)(((double)qrand()/(double)RAND_MAX)*155)+100);
-    m_WingColor.setBlue((int)(((double)qrand()/(double)RAND_MAX)*155)+100);
+    m_WingColor.setRed(  int((double(qrand())/double(RAND_MAX))*155)+100);
+    m_WingColor.setGreen(int((double(qrand())/double(RAND_MAX))*155)+100);
+    m_WingColor.setBlue( int((double(qrand())/double(RAND_MAX))*155)+100);
 
     m_QInf0    = 0.0;
 
@@ -449,8 +449,8 @@ void Wing::computeGeometry()
 */
 void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz)
 {
-    std::vector<double> ElemVolume(NXSTATIONS*NYSTATIONS*m_Surface.size());
-    std::vector<Vector3d> PtVolume(NXSTATIONS*NYSTATIONS*m_Surface.size());
+    QVector<double> ElemVolume(NXSTATIONS*NYSTATIONS*m_Surface.size());
+    QVector<Vector3d> PtVolume(NXSTATIONS*NYSTATIONS*m_Surface.size());
 
     double rho, LocalSpan, LocalVolume;
     double LocalChord,  LocalArea,  tau;
@@ -484,11 +484,11 @@ void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
 
     for (int j=0; j<m_Surface.size(); j++)
     {
-        LocalSpan = m_Surface.at(j)->m_Length/(double)NYSTATIONS;
+        LocalSpan = m_Surface.at(j)->m_Length/double(NYSTATIONS);
         for (int k=0; k<NYSTATIONS; k++)
         {
-            tau  = (double)k     / (double)NYSTATIONS;
-            tau1 = (double)(k+1) / (double)NYSTATIONS;
+            tau  = double(k)   / double(NYSTATIONS);
+            tau1 = double(k+1) / double(NYSTATIONS);
             yrel = (tau+tau1)/2.0;
 
             m_Surface.at(j)->getSection(tau,  LocalChord,  LocalArea,  Pt);
@@ -502,8 +502,8 @@ void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
             for(int l=0; l<NXSTATIONS; l++)
             {
                 //browse mid-section
-                xrel  = 1.0 - 1.0/2.0 * (1.0-cos((double) l   *PI /(double)NXSTATIONS));
-                xrel1 = 1.0 - 1.0/2.0 * (1.0-cos((double)(l+1)*PI /(double)NXSTATIONS));
+                xrel  = 1.0 - 1.0/2.0 * (1.0-cos(double(l)   *PI /double(NXSTATIONS)));
+                xrel1 = 1.0 - 1.0/2.0 * (1.0-cos(double(l+1)*PI /double(NXSTATIONS)));
 
                 m_Surface.at(j)->getSurfacePoint(xrel, xrel, yrel,  TOPSURFACE, ATop, N);
                 m_Surface.at(j)->getSurfacePoint(xrel, xrel, yrel,  BOTSURFACE, ABot, N);
@@ -544,11 +544,11 @@ void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
     p=0;
     for (int j=0; j<m_Surface.size(); j++)
     {
-        LocalSpan = m_Surface.at(j)->m_Length/(double)NYSTATIONS;
+        LocalSpan = m_Surface.at(j)->m_Length/double(NYSTATIONS);
         for (int k=0; k<NYSTATIONS; k++)
         {
-            tau  = (double)k     / (double)NYSTATIONS;
-            tau1 = (double)(k+1) / (double)NYSTATIONS;
+            tau  = double(k)     / double(NYSTATIONS);
+            tau1 = double(k+1) / double(NYSTATIONS);
             m_Surface.at(j)->getSection(tau,  LocalChord,  LocalArea,  Pt);
             m_Surface.at(j)->getSection(tau1, LocalChord1, LocalArea1, Pt1);
 
@@ -671,8 +671,8 @@ void Wing::createSurfaces(Vector3d const &T, double XTilt, double YTilt)
     Vector3d O(0.0,0.0,0.0);
     double MinPanelSize;
 
-    Vector3d *VNormal = new Vector3d[NWingSection()];
-    Vector3d *VNSide = new Vector3d[NWingSection()];
+    QVector<Vector3d> VNormal(NWingSection());
+    QVector<Vector3d> VNSide(NWingSection());
 
     if(s_MinPanelSize>0.0) MinPanelSize = s_MinPanelSize;
     else                   MinPanelSize = 0.0;
@@ -716,8 +716,6 @@ void Wing::createSurfaces(Vector3d const &T, double XTilt, double YTilt)
 
     if(nSurf<=0)
     {
-        delete[] VNormal;
-        delete[] VNSide;
         return;
     }
     int NSurfaces = nSurf;
@@ -896,7 +894,7 @@ void Wing::createSurfaces(Vector3d const &T, double XTilt, double YTilt)
         {
             NSurfaces*=2;
             //rotate surfaces symetrically
-            int ns2 = (int)(NSurfaces/2);
+            int ns2 = int(NSurfaces/2);
             offset.set(0.0, -T.y, 0.0);
             for(int jSurf=0; jSurf<ns2; jSurf++)
             {
@@ -945,17 +943,14 @@ void Wing::createSurfaces(Vector3d const &T, double XTilt, double YTilt)
 
     if(NSurfaces>1)
     {
-        m_Surface[(int)(NSurfaces/2)-1]->m_bJoinRight   = true;
+        m_Surface[int(NSurfaces/2)-1]->m_bJoinRight   = true;
         //check for a center gap greater than 1/10mm
-        int nada = (int)(NSurfaces/2)-1;
+        int nada = int(NSurfaces/2)-1;
         Q_ASSERT(nada>=0);
-        if(YPosition(0)>0.0001) 	m_Surface[(int)(NSurfaces/2)-1]->m_bJoinRight   = false;
+        if(YPosition(0)>0.0001) 	m_Surface[int(NSurfaces/2)-1]->m_bJoinRight   = false;
 
-        if(m_bIsFin && m_bDoubleFin) m_Surface[(int)(NSurfaces/2)-1]->m_bJoinRight   = false;
+        if(m_bIsFin && m_bDoubleFin) m_Surface[int(NSurfaces/2)-1]->m_bJoinRight   = false;
     }
-
-    delete[] VNormal;
-    delete[] VNSide;
 }
 
 
@@ -2183,24 +2178,24 @@ void Wing::getTextureUV(int iSurf, double *leftV, double *rightV, double &leftU,
 
             if(i<nPtsTr)
             {
-                xRelA = 1.0/2.0*(1.0-cos(PI * (double)i/(double)(nPtsTr-1)))* (pSurf->m_pFoilA->m_TEXHinge/100.);
-                xRelB = 1.0/2.0*(1.0-cos(PI * (double)i/(double)(nPtsTr-1)))* (pSurf->m_pFoilB->m_TEXHinge/100.);
+                xRelA = 1.0/2.0*(1.0-cos(PI * double(i)/double(nPtsTr-1)))* (pSurf->m_pFoilA->m_TEXHinge/100.);
+                xRelB = 1.0/2.0*(1.0-cos(PI * double(i)/double(nPtsTr-1)))* (pSurf->m_pFoilB->m_TEXHinge/100.);
             }
             else
             {
                 int j = i-nPtsTr;
-                xRelA = pSurf->m_pFoilA->m_TEXHinge/100. + 1.0/2.0*(1.0-cos(PI* (double)j/(double)(nPtsLe-1))) * (1.-pSurf->m_pFoilA->m_TEXHinge/100.);
-                xRelB = pSurf->m_pFoilB->m_TEXHinge/100. + 1.0/2.0*(1.0-cos(PI* (double)j/(double)(nPtsLe-1))) * (1.-pSurf->m_pFoilB->m_TEXHinge/100.);
+                xRelA = pSurf->m_pFoilA->m_TEXHinge/100. + 1.0/2.0*(1.0-cos(PI* double(j)/double(nPtsLe-1))) * (1.-pSurf->m_pFoilA->m_TEXHinge/100.);
+                xRelB = pSurf->m_pFoilB->m_TEXHinge/100. + 1.0/2.0*(1.0-cos(PI* double(j)/double(nPtsLe-1))) * (1.-pSurf->m_pFoilB->m_TEXHinge/100.);
             }
         }
         else
         {
-            xRelA  = 1.0/2.0*(1.0-cos(PI * (double)i/(double)(nPoints-1)));
+            xRelA  = 1.0/2.0*(1.0-cos(PI * double(i)/double(nPoints-1)));
             xRelB  = xRelA;
         }
 
 
-        //		xRel  = 1.0/2.0*(1.0-cos( (double)i*PI   /(double)(nPoints-1)));
+        //		xRel  = 1.0/2.0*(1.0-cos( double(i)*PI   /(double)(nPoints-1)));
         xA = m_WingSection.at(iSectionA)->m_Offset + m_WingSection.at(iSectionA)->m_Chord*xRelA;
         xB = m_WingSection.at(iSectionB)->m_Offset + m_WingSection.at(iSectionB)->m_Chord*xRelB;
 
@@ -2310,7 +2305,7 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
 
         for (int is=0; is<=NPanel; is++)
         {
-            ar >> f; Chord(is)=f;
+            ar >> f; Chord(is)=double(f);
             if (qAbs(Chord(is)) <0.0)
             {
                 m_WingName = "";
@@ -2320,7 +2315,7 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
 
         for (int is=0; is<=NPanel; is++)
         {
-            ar >> f; YPosition(is)=f;
+            ar >> f; YPosition(is)=double(f);
             if (qAbs(YPosition(is)) <0.0)
             {
                 m_WingName = "";
@@ -2329,7 +2324,7 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
         }
         for (int is=0; is<=NPanel; is++)
         {
-            ar >> f; Offset(is)=f;
+            ar >> f; Offset(is)=double(f);
         }
 
         if(ArchiveFormat<1007)
@@ -2345,11 +2340,11 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
         }
         for (int is=0; is<=NPanel; is++)
         {
-            ar >> f; Dihedral(is)=f;
+            ar >> f; Dihedral(is)=double(f);
         }
         for (int is=0; is<=NPanel; is++)
         {
-            ar >> f; Twist(is)=f;
+            ar >> f; Twist(is)=double(f);
         }
 
         ar >> f; //m_XCmRef=f;
@@ -2361,7 +2356,7 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
             if(ArchiveFormat<=1003)
             {
                 ar >> f;
-                NXPanels(is) = (int)f;
+                NXPanels(is) = int(f);
             }
             else
                 ar >> NXPanels(is);
@@ -2372,7 +2367,7 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
             if(ArchiveFormat<=1003)
             {
                 ar >> f;
-                NYPanels(is) = (int)f;
+                NYPanels(is) = int(f);
             }
             else 	ar >> NYPanels(is);
         }
@@ -2421,7 +2416,7 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
 
         if(ArchiveFormat>=1009)
         {
-            ar >> f;  m_VolumeMass = f;
+            ar >> f;  m_VolumeMass = double(f);
             int nMass;
 
             ar >> nMass;
@@ -2432,12 +2427,12 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
             for(int im=0; im<nMass; im++)
             {
                 ar >> f;
-                mass.append(f);
+                mass.append(double(f));
             }
             for(int im=0; im<nMass; im++)
             {
                 ar >> f >> g >> h;
-                position.append(Vector3d(f,g,h));
+                position.append(Vector3d(double(f),double(g),double(h)));
             }
             for(int im=0; im<nMass; im++)
             {
@@ -2568,9 +2563,6 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
                 break;
             case XFLR5::OTHERWING:
                 ar<<4;
-                break;
-            default:
-                ar<<0;
                 break;
         }
 
@@ -2714,7 +2706,7 @@ void Wing::scaleTR(double newTR)
  * Export the wing geometry to a binary file in STL Format.
  * @param out the instance of the QTextStream to which the output will be directed
  */
-void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANELS, double unit)
+void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANELS, float unit)
 {
     /***
      *  UINT8[80] – Header
@@ -2730,15 +2722,15 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
     */
 
     Vector3d N, Pt;
-    Vector3d *NormalA    = new Vector3d[CHORDPANELS+1];
-    Vector3d *NormalB    = new Vector3d[CHORDPANELS+1];
-    Vector3d *PtLeft     = new Vector3d[CHORDPANELS+1];
-    Vector3d *PtRight    = new Vector3d[CHORDPANELS+1];
-    Vector3d *PtBotLeft  = new Vector3d[CHORDPANELS+1];
-    Vector3d *PtBotRight = new Vector3d[CHORDPANELS+1];
+    QVector<Vector3d> NormalA(CHORDPANELS+1);
+    QVector<Vector3d> NormalB(CHORDPANELS+1);
+    QVector<Vector3d> PtLeft(CHORDPANELS+1);
+    QVector<Vector3d> PtRight(CHORDPANELS+1);
+    QVector<Vector3d> PtBotLeft(CHORDPANELS+1);
+    QVector<Vector3d> PtBotRight(CHORDPANELS+1);
 
-    memset(NormalA, 0, (CHORDPANELS+1) * sizeof(Vector3d));
-    memset(NormalB, 0, (CHORDPANELS+1) * sizeof(Vector3d));
+    memset(NormalA.data(), 0, ulong(CHORDPANELS+1) * sizeof(Vector3d));
+    memset(NormalB.data(), 0, ulong(CHORDPANELS+1) * sizeof(Vector3d));
 
 
     //	80 character header, avoid word "solid"
@@ -2757,7 +2749,7 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
     //   CHORDPANELS-1  quads
     //   *2 triangles/quad
 
-    uint nTriangles = m_Surface.count() * CHORDPANELS * SPANPANELS * 2 *2
+    int nTriangles = m_Surface.count() * CHORDPANELS * SPANPANELS * 2 *2
                      + 2* ((CHORDPANELS-2)*2 + 2);
     outStream << nTriangles;
 
@@ -2773,8 +2765,8 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
         //top surface
         for(int is=0; is<SPANPANELS; is++)
         {
-            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft, PtRight,
-                                           NormalA, NormalB, CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft.data(), PtRight.data(),
+                                           NormalA.data(), NormalB.data(), CHORDPANELS+1);
 
             double tauA = double(is)   /double(SPANPANELS);
             double tauB = double(is+1) /double(SPANPANELS);
@@ -2832,8 +2824,8 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
         //bottom surface
         for(int is=0; is<SPANPANELS; is++)
         {
-            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtLeft, PtRight,
-                                           NormalA, NormalB, CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtLeft.data(), PtRight.data(),
+                                           NormalA.data(), NormalB.data(), CHORDPANELS+1);
 
             double tauA = double(is)   / double(SPANPANELS);
             double tauB = double(is+1) / double(SPANPANELS);
@@ -2895,10 +2887,10 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
     {
         if(m_Surface.at(j)->isTipLeft())
         {
-            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft, PtRight,
-                                           NormalA, NormalB, CHORDPANELS+1);
-            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtBotLeft, PtBotRight,
-                                           NormalA, NormalB, CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft.data(), PtRight.data(),
+                                           NormalA.data(), NormalB.data(), CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtBotLeft.data(), PtBotRight.data(),
+                                           NormalA.data(), NormalB.data(), CHORDPANELS+1);
 
             N = m_Surface.at(j)->Normal;
             N.rotateX(90.0);
@@ -2980,10 +2972,10 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
 
         if(m_Surface.at(j)->isTipRight())
         {
-            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft, PtRight,
-                                           NormalA, NormalB, CHORDPANELS+1);
-            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtBotLeft, PtBotRight,
-                                           NormalA, NormalB, CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft.data(), PtRight.data(),
+                                           NormalA.data(), NormalB.data(), CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtBotLeft.data(), PtBotRight.data(),
+                                           NormalA.data(), NormalB.data(), CHORDPANELS+1);
 
             N = m_Surface.at(j)->Normal;
             N.rotateX(-90.0);
@@ -3062,13 +3054,7 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
             iTriangles +=1;
         }
     }
-    Q_ASSERT((uint)iTriangles==nTriangles);
-    delete [] NormalA;
-    delete [] NormalB;
-    delete [] PtLeft;
-    delete [] PtRight;
-    delete [] PtBotLeft;
-    delete [] PtBotRight;
+    Q_ASSERT(iTriangles==nTriangles);
 }
 
 
@@ -3098,16 +3084,15 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
     outStream << strong;
 
     Vector3d N, Pt;
-    Vector3d *NormalA    = new Vector3d[CHORDPANELS+1];
-    Vector3d *NormalB    = new Vector3d[CHORDPANELS+1];
-    Vector3d *PtLeft     = new Vector3d[CHORDPANELS+1];
-    Vector3d *PtRight    = new Vector3d[CHORDPANELS+1];
-    Vector3d *PtBotLeft  = new Vector3d[CHORDPANELS+1];
-    Vector3d *PtBotRight = new Vector3d[CHORDPANELS+1];
+    QVector<Vector3d> NormalA(CHORDPANELS+1);
+    QVector<Vector3d> NormalB(CHORDPANELS+1);
+    QVector<Vector3d> PtLeft(CHORDPANELS+1);
+    QVector<Vector3d> PtRight(CHORDPANELS+1);
+    QVector<Vector3d> PtBotLeft(CHORDPANELS+1);
+    QVector<Vector3d> PtBotRight(CHORDPANELS+1);
 
-
-    memset(NormalA, 0, (CHORDPANELS+1) * sizeof(Vector3d));
-    memset(NormalB, 0, (CHORDPANELS+1) * sizeof(Vector3d));
+    memset(NormalA.data(), 0, ulong(CHORDPANELS+1) * sizeof(Vector3d));
+    memset(NormalB.data(), 0, ulong(CHORDPANELS+1) * sizeof(Vector3d));
 
     //Number of triangles
     // nSurfaces
@@ -3120,7 +3105,7 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
     //   CHORDPANELS-1  quads
     //   *2 triangles/quad
 
-    uint nTriangles = m_Surface.count() * CHORDPANELS * SPANPANELS * 2 *2
+    int nTriangles = m_Surface.count() * CHORDPANELS * SPANPANELS * 2 *2
                       + 2* ((CHORDPANELS-2)*2 + 2);
     N.set(0.0, 0.0, 0.0);
     int iTriangles = 0;
@@ -3130,7 +3115,7 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
         //top surface
         for(int is=0; is<SPANPANELS; is++)
         {
-            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft, PtRight, NormalA, NormalB, CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft.data(), PtRight.data(), NormalA.data(), NormalB.data(), CHORDPANELS+1);
 
             double tauA = double(is)   / double(SPANPANELS);
             double tauB = double(is+1) / double(SPANPANELS);
@@ -3168,8 +3153,8 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
         //bottom surface
         for(int is=0; is<SPANPANELS; is++)
         {
-            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtLeft, PtRight,
-                                           NormalA, NormalB, CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtLeft.data(), PtRight.data(),
+                                           NormalA.data(), NormalB.data(), CHORDPANELS+1);
 
             double tauA = double(is)   /double(SPANPANELS);
             double tauB = double(is+1) /double(SPANPANELS);
@@ -3214,8 +3199,8 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
     {
         if(m_Surface.at(j)->isTipLeft())
         {
-            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft,    PtRight,    NormalA, NormalB, CHORDPANELS+1);
-            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtBotLeft, PtBotRight, NormalA, NormalB, CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft.data(),    PtRight.data(),    NormalA.data(), NormalB.data(), CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtBotLeft.data(), PtBotRight.data(), NormalA.data(), NormalB.data(), CHORDPANELS+1);
 
             N = m_Surface.at(j)->Normal;
             N.rotateX(90.0);
@@ -3260,8 +3245,8 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
 
         if(m_Surface.at(j)->isTipRight())
         {
-            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft,    PtRight,    NormalA, NormalB, CHORDPANELS+1);
-            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtBotLeft, PtBotRight, NormalA, NormalB, CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(TOPSURFACE, nullptr, PtLeft.data(),    PtRight.data(),    NormalA.data(), NormalB.data(), CHORDPANELS+1);
+            m_Surface.at(j)->getSidePoints(BOTSURFACE, nullptr, PtBotLeft.data(), PtBotRight.data(), NormalA.data(), NormalB.data(), CHORDPANELS+1);
 
             N = m_Surface.at(j)->Normal;
             N.rotateX(-90.0);
@@ -3305,16 +3290,10 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
         }
     }
 
-    Q_ASSERT((uint)iTriangles==nTriangles);
+    Q_ASSERT(iTriangles==nTriangles);
 
     strong = "endsolid " + name + "\n";
     outStream << strong;
-    delete [] NormalA;
-    delete [] NormalB;
-    delete [] PtLeft;
-    delete [] PtRight;
-    delete [] PtBotLeft;
-    delete [] PtBotRight;
 }
 
 
@@ -3461,7 +3440,7 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
                 bOutRe = true;
                 //interpolate Cl on this polar
                 QVector<double> const &pX = pPolar->getPlrVariable(PlrVar);
-                int size = (int)pPolar->m_Cl.size();
+                int size = pPolar->m_Cl.size();
                 if(Cl < pPolar->m_Cl[0])
                 {
                     return pX.front();
@@ -3567,7 +3546,7 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
             bError = true;
             return 0.000;
         }
-        int size = (int)pPolar1->m_Cl.size();
+        int size = pPolar1->m_Cl.size();
         if(!size)
         {
             bOutRe = true;
