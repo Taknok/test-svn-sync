@@ -8461,7 +8461,7 @@ void Miarex::onExporttoSTL()
             out.setByteOrder(QDataStream::LittleEndian);
             pWing(STLExportDlg::s_iObject-1)->exportSTLBinary(out,
                                                               STLExportDlg::s_NChordPanels, STLExportDlg::s_NSpanPanels,
-                                                              Units::mtoUnit());
+                                                              float(Units::mtoUnit()));
         }
         else
         {
