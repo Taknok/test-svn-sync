@@ -20,7 +20,7 @@ xflr5 v6.47 June xxxth, 2019
     - Corrected a minor output error in LLT analysis
     - Modified the color display of Cp coefficients in the 3d view, to render more accurately the uniformity of singularities on panels
     - Tentative fix for bug #140
-
+    - Code cleaning
 
 xflr5 v6.46 May 4th, 2019
     - Fix for bug #134 - LLT now restored in v6.46
