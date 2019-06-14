@@ -15,8 +15,10 @@
 *******************************************************************************
 
 
-xflr5 v6.47 May xxxth, 2019
+xflr5 v6.47 June xxxth, 2019
+    - Modified the color display of Cp coefficients in the 3d view, to render more accurately the uniformity of singularities on panels
     - Tentative fix for bug #140
+
 
 xflr5 v6.46 May 4th, 2019
     - Fix for bug #134 - LLT now restored in v6.46

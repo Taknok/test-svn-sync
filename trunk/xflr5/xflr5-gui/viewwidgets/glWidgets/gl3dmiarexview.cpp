@@ -2219,7 +2219,7 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int nNodes, V
     int pp=0, n=0, averageInf=0, averageSup=0, average100=0;
 
     float color=0;
-    float lmin=0, lmax=0, range=0;
+    float range=0;
     double *tab = nullptr;
     if(pPOpp) tab= pPOpp->m_dCp;
 
@@ -2229,66 +2229,26 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int nNodes, V
     double *CpSup = new double[2*nPanels];
     double *Cp100 = new double[2*nPanels];
 
-    lmin =  10000.0;
-    lmax = -10000.0;
+    float lmin =  10000.0;
+    float lmax = -10000.0;
     // find min and max Cp for scale set
     if(pPOpp)
     {
-        for (n=0; n<nNodes; n++)
+        for (pp=0; pp< nPanels; pp++)
         {
-            averageInf = 0; averageSup = 0; average100 = 0;
-            CpInf[n] = 0.0; CpSup[n] = 0.0; Cp100[n] = 0.0;
-            for (pp=0; pp< nPanels; pp++)
-            {
-                if (pNode[pPanel[pp].m_iLA].isSame(pNode[n]) || pNode[pPanel[pp].m_iTA].isSame(pNode[n]) ||
-                        pNode[pPanel[pp].m_iTB].isSame(pNode[n]) || pNode[pPanel[pp].m_iLB].isSame(pNode[n]))
-                {
-                    if(pPanel[pp].m_Pos==TOPSURFACE)
-                    {
-                        CpSup[n] +=tab[pp];
-                        averageSup++;
-                    }
-                    else if(pPanel[pp].m_Pos<=MIDSURFACE)
-                    {
-                        CpInf[n] +=tab[pp];
-                        averageInf++;
-                    }
-                    else if(pPanel[pp].m_Pos==BODYSURFACE)
-                    {
-                        Cp100[n] +=tab[pp];
-                        average100++;
-                    }
-                }
-            }
-            if(averageSup>0)
-            {
-                CpSup[n] /= averageSup;
-                if(CpSup[n]<lmin) lmin = CpSup[n];
-                if(lmax<CpSup[n]) lmax = CpSup[n];
-            }
-            if(averageInf>0)
-            {
-                CpInf[n] /= averageInf;
-                if(CpInf[n]<lmin) lmin = CpInf[n];
-                if(lmax<CpInf[n]) lmax = CpInf[n];
-            }
-            if(average100>0)
-            {
-                Cp100[n] /= average100;
-                if(Cp100[n]<lmin) lmin = Cp100[n];
-                if(lmax<Cp100[n]) lmax = Cp100[n];
-            }
+            lmin = std::min(lmin, float(pPOpp->m_dCp[pp]));
+            lmax = std::max(lmax, float(pPOpp->m_dCp[pp]));
+        }
 
-            if(gl3dMiarexView::s_bAutoCpScale)
-            {
-                gl3dMiarexView::s_LegendMin = lmin;
-                gl3dMiarexView::s_LegendMax = lmax;
-            }
-            else
-            {
-                lmin = gl3dMiarexView::s_LegendMin;
-                lmax = gl3dMiarexView::s_LegendMax;
-            }
+        if(gl3dMiarexView::s_bAutoCpScale)
+        {
+            gl3dMiarexView::s_LegendMin = lmin;
+            gl3dMiarexView::s_LegendMax = lmax;
+        }
+        else
+        {
+            lmin = gl3dMiarexView::s_LegendMin;
+            lmax = gl3dMiarexView::s_LegendMax;
         }
     }
 
@@ -2300,10 +2260,10 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int nNodes, V
     // so write as many nodes as there are triangles.
     //
     // vertices array size:
-    //		nPanels
+    //      nPanels
     //      x2 triangles per panels
     //      x3 nodes per triangle
-    //		x6 = 3 vertex components + 3 color components
+    //      x6 = 3 vertex components + 3 color components
 
     int nodeVertexSize = nPanels * 2 * 3 * 6;
     float *nodeVertexArray = new float[nodeVertexSize];
@@ -2324,9 +2284,7 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int nNodes, V
         nodeVertexArray[iv++] = TA.zf();
         if(pPOpp)
         {
-            if(pPanel[p].m_Pos==TOPSURFACE)      color = (CpSup[pPanel[p].m_iTA]-lmin)/range;
-            else if(pPanel[p].m_Pos<=MIDSURFACE) color = (CpInf[pPanel[p].m_iTA]-lmin)/range;
-            else                                 color = (Cp100[pPanel[p].m_iTA]-lmin)/range;
+            color = (pPOpp->m_dCp[p]-lmin)/range;
             nodeVertexArray[iv++] = GLGetRed(color);
             nodeVertexArray[iv++] = GLGetGreen(color);
             nodeVertexArray[iv++] = GLGetBlue(color);
@@ -2343,10 +2301,7 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int nNodes, V
         nodeVertexArray[iv++] = LA.zf();
         if(pPOpp)
         {
-
-            if(pPanel[p].m_Pos==TOPSURFACE)      color = (CpSup[pPanel[p].m_iLA]-lmin)/range;
-            else if(pPanel[p].m_Pos<=MIDSURFACE) color = (CpInf[pPanel[p].m_iLA]-lmin)/range;
-            else                                 color = (Cp100[pPanel[p].m_iLA]-lmin)/range;
+            color = (pPOpp->m_dCp[p]-lmin)/range;
             nodeVertexArray[iv++] = GLGetRed(color);
             nodeVertexArray[iv++] = GLGetGreen(color);
             nodeVertexArray[iv++] = GLGetBlue(color);
@@ -2363,9 +2318,7 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int nNodes, V
         nodeVertexArray[iv++] = LB.zf();
         if(pPOpp)
         {
-            if(pPanel[p].m_Pos==TOPSURFACE)      color = (CpSup[pPanel[p].m_iLB]-lmin)/range;
-            else if(pPanel[p].m_Pos<=MIDSURFACE) color = (CpInf[pPanel[p].m_iLB]-lmin)/range;
-            else                                 color = (Cp100[pPanel[p].m_iLB]-lmin)/range;
+            color = (pPOpp->m_dCp[p]-lmin)/range;
             nodeVertexArray[iv++] = GLGetRed(color);
             nodeVertexArray[iv++] = GLGetGreen(color);
             nodeVertexArray[iv++] = GLGetBlue(color);
@@ -2384,9 +2337,7 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int nNodes, V
 
         if(pPOpp)
         {
-            if(pPanel[p].m_Pos==TOPSURFACE)      color = (CpSup[pPanel[p].m_iLB]-lmin)/range;
-            else if(pPanel[p].m_Pos<=MIDSURFACE) color = (CpInf[pPanel[p].m_iLB]-lmin)/range;
-            else                                 color = (Cp100[pPanel[p].m_iLB]-lmin)/range;
+            color = (pPOpp->m_dCp[p]-lmin)/range;
             nodeVertexArray[iv++] = GLGetRed(color);
             nodeVertexArray[iv++] = GLGetGreen(color);
             nodeVertexArray[iv++] = GLGetBlue(color);
@@ -2403,9 +2354,7 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int nNodes, V
         nodeVertexArray[iv++] = TB.zf();
         if(pPOpp)
         {
-            if(pPanel[p].m_Pos==TOPSURFACE)      color = (CpSup[pPanel[p].m_iTB]-lmin)/range;
-            else if(pPanel[p].m_Pos<=MIDSURFACE) color = (CpInf[pPanel[p].m_iTB]-lmin)/range;
-            else                                 color = (Cp100[pPanel[p].m_iTB]-lmin)/range;
+            color = (pPOpp->m_dCp[p]-lmin)/range;
             nodeVertexArray[iv++] = GLGetRed(color);
             nodeVertexArray[iv++] = GLGetGreen(color);
             nodeVertexArray[iv++] = GLGetBlue(color);
@@ -2422,9 +2371,7 @@ void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int nNodes, V
         nodeVertexArray[iv++] = TA.zf();
         if(pPOpp)
         {
-            if(pPanel[p].m_Pos==TOPSURFACE)      color = (CpSup[pPanel[p].m_iTA]-lmin)/range;
-            else if(pPanel[p].m_Pos<=MIDSURFACE) color = (CpInf[pPanel[p].m_iTA]-lmin)/range;
-            else                                 color = (Cp100[pPanel[p].m_iTA]-lmin)/range;
+            color = (pPOpp->m_dCp[p]-lmin)/range;
             nodeVertexArray[iv++] = GLGetRed(color);
             nodeVertexArray[iv++] = GLGetGreen(color);
             nodeVertexArray[iv++] = GLGetBlue(color);
