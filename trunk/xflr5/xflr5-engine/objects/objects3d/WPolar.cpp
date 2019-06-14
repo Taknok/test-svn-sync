@@ -37,9 +37,9 @@ WPolar::WPolar()
 	m_Style  = 0;
 	m_Width  = 1;
 
-	m_Color.setRed((int)(((double)qrand()/(double)RAND_MAX)*155)+100);
-	m_Color.setGreen((int)(((double)qrand()/(double)RAND_MAX)*155)+100);
-	m_Color.setBlue((int)(((double)qrand()/(double)RAND_MAX)*155)+100);
+    m_Color.setRed((int)((double(qrand())/double(RAND_MAX))*155)+100);
+    m_Color.setGreen((int)((double(qrand())/double(RAND_MAX))*155)+100);
+    m_Color.setBlue((int)((double(qrand())/double(RAND_MAX))*155)+100);
 
 
 	m_bVLM1         = true;
@@ -1567,6 +1567,10 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 		}
 
 		ar >> m_NXWakePanels >> m_TotalWakeLength >> m_WakePanelFactor;
+
+        if(m_NXWakePanels==0) m_NXWakePanels=1;
+        if(fabs(m_TotalWakeLength)<PRECISION) m_TotalWakeLength = 100.0;
+        if(fabs(m_WakePanelFactor)<PRECISION) m_WakePanelFactor = 1.1;
 
 		ar >> m_QInfSpec;
 		ar >> m_AlphaSpec;
