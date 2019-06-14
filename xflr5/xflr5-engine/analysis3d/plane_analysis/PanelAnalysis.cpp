@@ -456,20 +456,19 @@ void PanelAnalysis::setRange(double vMin, double vMax, double vDelta, bool bSequ
 }
 
 
-
-void PanelAnalysis::setArrayPointers(void *pPanel, void *pMemPanel, void *pWakePanel, void *pRefWakePanel,
-                                     void *pNode,  void *pMemNode,  void *pWakeNode,  void *pRefWakeNode, void *pTempWakeNode)
+void PanelAnalysis::setArrayPointers(Panel *pPanel, Panel *pMemPanel, Panel *pWakePanel, Panel *pRefWakePanel,
+                                     Vector3d *pNode,  Vector3d *pMemNode,  Vector3d *pWakeNode,  Vector3d *pRefWakeNode, Vector3d *pTempWakeNode)
 {
-    m_pPanel        = (Panel*)pPanel;
-    m_pMemPanel     = (Panel*)pMemPanel;
-    m_pWakePanel    = (Panel*)pWakePanel;
-    m_pRefWakePanel = (Panel*)pRefWakePanel;
+    m_pPanel        = pPanel;
+    m_pMemPanel     = pMemPanel;
+    m_pWakePanel    = pWakePanel;
+    m_pRefWakePanel = pRefWakePanel;
 
-    m_pNode         = (Vector3d*) pNode;
-    m_pMemNode      = (Vector3d*) pMemNode;
-    m_pWakeNode     = (Vector3d*) pWakeNode;
-    m_pRefWakeNode  = (Vector3d*) pRefWakeNode;
-    m_pTempWakeNode = (Vector3d*) pTempWakeNode;
+    m_pNode         = pNode;
+    m_pMemNode      = pMemNode;
+    m_pWakeNode     = pWakeNode;
+    m_pRefWakeNode  = pRefWakeNode;
+    m_pTempWakeNode = pTempWakeNode;
 }
 
 
@@ -5402,9 +5401,9 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
                                  Vector3d &Force, double &WingIDrag,
                                  WPolar *pWPolar, Panel *pWakePanel, Vector3d *pWakeNode)
 {
-    int nw, iTA, iTB;
-    int j, k, l, p, pp, m;
-    double InducedAngle, cosa, sina;
+    int nw=0, iTA=0, iTB=0;
+    int k=0, l=0, pp=0;
+    double InducedAngle=0, cosa=0, sina=0;
     QList<double> GammaStrip;
     Vector3d C, Wg, dF, StripForce, WindDirection, WindNormal, VInf;
 
@@ -5437,9 +5436,9 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
 
     int NSurfaces = pWing->m_Surface.size();
 
-    p=0;
-    m=0;
-    for (j=0; j<NSurfaces; j++)
+    int p=0;
+    int m=0;
+    for (int j=0; j<NSurfaces; j++)
     {
         if(pWing->m_Surface.at(j)->m_bIsTipLeft && !pWPolar->bThinSurfaces()) p+=pWing->m_Surface.at(j)->m_NXPanels;//tip patch panels
 

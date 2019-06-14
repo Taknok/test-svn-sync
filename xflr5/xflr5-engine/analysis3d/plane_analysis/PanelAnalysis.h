@@ -121,7 +121,7 @@ public:
     void setControlPositions(double t, int &NCtrls, QString &out, bool bBCOnly);
 
     void restorePanels();
-    void setArrayPointers(void *pPanel, void *pMemPanel, void *pWakePanel, void *pRefWakePanel, void *pNode, void *pMemNode, void *pWakeNode, void *pRefWakeNode, void *pTempWakeNode);
+    void setArrayPointers(Panel *pPanel, Panel *pMemPanel, Panel *pWakePanel, Panel *pRefWakePanel, Vector3d *pNode, Vector3d *pMemNode, Vector3d *pWakeNode, Vector3d *pRefWakeNode, Vector3d *pTempWakeNode);
     void setArraySize(int MatSize, int WakeSize, int nNodes, int nWakeNodes, int NWakeColumn);
     void setInertia(double ctrl, double alpha, double beta);
     void setObjectPointers(Plane *pPlane, void *pSurfaceList);

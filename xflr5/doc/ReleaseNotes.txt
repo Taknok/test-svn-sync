@@ -16,6 +16,8 @@
 
 
 xflr5 v6.47 June xxxth, 2019
+    - Corrected a crash bug when running a 3d panel analysis from and old project files due to no wake defined
+    - Corrected a minor output error in LLT analysis
     - Modified the color display of Cp coefficients in the 3d view, to render more accurately the uniformity of singularities on panels
     - Tentative fix for bug #140
 

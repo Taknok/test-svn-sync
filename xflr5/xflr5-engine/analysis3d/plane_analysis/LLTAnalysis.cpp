@@ -42,7 +42,7 @@ LLTAnalysis::LLTAnalysis()
 {
     m_pWing = nullptr;
     m_pWPolar = nullptr;
-    m_x = m_y = nullptr;
+    m_pX = m_pY = nullptr;
 
     m_poaPolar = nullptr;
     resetVariables();
@@ -185,11 +185,9 @@ void LLTAnalysis::ComputeWing(double QInf, double Alpha, QString &ErrorMessage)
     Foil* pFoil0 = nullptr;
     Foil* pFoil1 = nullptr;
 
-    int m;
     QString strange;
-    double yob, tau, c4, arad, zpos;
+    double yob=0, tau=0, c4=0, arad=0, zpos=0;
 
-    yob = tau = c4 = arad = zpos = 0.0;
     double Integral0           = 0.0;
     double Integral1           = 0.0;
     double Integral2           = 0.0;
@@ -201,17 +199,17 @@ void LLTAnalysis::ComputeWing(double QInf, double Alpha, QString &ErrorMessage)
     double PitchingMoment      = 0.0;
     double VCm                 = 0.0;
     double ICm                 = 0.0;
-    double eta, sigma;
-    double Cm0;
-    double ViscCm, InducedCm;
+    double eta=0, sigma=0;
+    double Cm0=0;
+    double ViscCm=0, InducedCm=0;
 
-    bool bOutRe, bError;
-    bool bPointOutRe, bPointOutAlpha;
+    bool bOutRe=false, bError=false;
+    bool bPointOutRe=false, bPointOutAlpha=false;
     m_bWingOut = false;
 
     ErrorMessage.clear();
 
-    for (m=1; m<s_NLLTStations; m++)
+    for (int m=1; m<s_NLLTStations; m++)
     {
         bPointOutRe    = false;
         bPointOutAlpha = false;
@@ -281,8 +279,7 @@ void LLTAnalysis::ComputeWing(double QInf, double Alpha, QString &ErrorMessage)
             ErrorMessage = QString("       Span pos = %1 ").arg(cos(m*PI/s_NLLTStations)*m_pWing->m_PlanformSpan/2.0*m_mtoUnit,9,'f',2);
             ErrorMessage += m_LengthUnit;
             ErrorMessage += ",  Re = ";
-            QString string;
-            string.sprintf("%.0f", m_Re[m]);
+            strange.sprintf("%.0f", m_Re[m]);
             ErrorMessage += strange;
 
             strange = QString(" ,  A+Ai+Twist = %1 could not be interpolated\n").arg(Alpha+m_Ai[m] + m_Twist[m],6,'f',1);
@@ -296,8 +293,7 @@ void LLTAnalysis::ComputeWing(double QInf, double Alpha, QString &ErrorMessage)
             ErrorMessage = QString("       Span pos = %1 ").arg(cos(m*PI/s_NLLTStations)*m_pWing->m_PlanformSpan/2.0*m_mtoUnit,9,'f',2);
             ErrorMessage += m_LengthUnit;
             ErrorMessage += ",  Re = ";
-            QString string;
-            string.sprintf("%.0f", m_Re[m]);
+            strange.sprintf("%.0f", m_Re[m]);
             ErrorMessage += strange;
 
             strange = QString(" ,  A+Ai+Twist = %1 is outside the flight envelope\n").arg(Alpha+m_Ai[m] + m_Twist[m],6,'f',1);
@@ -491,11 +487,11 @@ double LLTAnalysis::AlphaInduced(int k)
 */
 int LLTAnalysis::iterate(double &QInf, double Alpha)
 {
-    int k ;
+
     Foil* pFoil0  = nullptr;
     Foil* pFoil1  = nullptr;
-    double a, yob, tau, anext;
-    bool bOutRe, bError;
+    double  yob=0, tau=0, anext=0;
+    bool bOutRe=false, bError;
     int iter = 0;
 
     while(iter<s_IterLim)
@@ -503,16 +499,16 @@ int LLTAnalysis::iterate(double &QInf, double Alpha)
         if(m_bCancel) return -1;
         m_Maxa = 0.0;
 
-        for (k=1; k<s_NLLTStations; k++)
+        for (int k=1; k<s_NLLTStations; k++)
         {
-            a        = m_Ai[k];
+            double a = m_Ai[k];
             anext    = -AlphaInduced(k);
             m_Ai[k]  = a +(anext-a)/s_RelaxMax;
             m_Maxa   = qMax(m_Maxa, qAbs(a-anext));
         }
 
         double Lift=0.0;// required for Type 2
-        for (k=1; k<s_NLLTStations; k++)
+        for (int k=1; k<s_NLLTStations; k++)
         {
             yob     = cos(k*PI/s_NLLTStations);
             m_pWing->getFoils(&pFoil0, &pFoil1, yob*m_pWing->m_PlanformSpan/2.0, tau);
@@ -530,7 +526,7 @@ int LLTAnalysis::iterate(double &QInf, double Alpha)
 
             QInf  = m_QInf0 / sqrt(Lift);
 
-            for (k=1; k<s_NLLTStations; k++)
+            for (int k=1; k<s_NLLTStations; k++)
             {
                 m_Re[k] = m_Chord[k] * QInf /m_pWPolar->m_Viscosity;
                 yob     = cos(k*PI/s_NLLTStations);
@@ -546,10 +542,10 @@ int LLTAnalysis::iterate(double &QInf, double Alpha)
         }
 
         //		if(m_pCurve) m_pCurve->appendPoint(iter, m_Maxa);
-        if(m_x && m_y)
+        if(m_pX && m_pY)
         {
-            m_x->append((double)iter);
-            m_y->append(m_Maxa);
+            m_pX->append((double)iter);
+            m_pY->append(m_Maxa);
         }
         iter++;
     }
@@ -616,17 +612,16 @@ bool LLTAnalysis::alphaLoop()
 {
     QString str;
 
-    int i,iter;
-    double Alpha,yob, tau;
-    Foil *pFoil0, *pFoil1;
-    bool bOutRe, bError;
+    Foil *pFoil0=nullptr, *pFoil1=nullptr;
+    bool bOutRe=false, bError=false;
+    double tau = 0.0;
 
-    for (i=0; i<=m_nPoints; i++)
+    for (int i=0; i<=m_nPoints; i++)
     {
-        if(m_x) m_x->clear();
-        if(m_y) m_y->clear();
+        if(m_pX) m_pX->clear();
+        if(m_pY) m_pY->clear();
 
-        Alpha = m_vMin +(double)i * m_vDelta;
+        double Alpha = m_vMin +double(i) * m_vDelta;
         if(m_bCancel)
         {
             str = "Analysis cancelled on user request....\n";
@@ -640,7 +635,7 @@ bool LLTAnalysis::alphaLoop()
         //initialize first iteration
         for (int k=1; k<s_NLLTStations; k++)
         {
-            yob   = cos(k*PI/s_NLLTStations);
+            double yob   = cos(k*PI/s_NLLTStations);
             m_pWing->getFoils(&pFoil0, &pFoil1, yob*m_pWing->m_PlanformSpan/2.0, tau);
             m_Cl[k] = GetCl(pFoil0, pFoil1, m_Re[k], Alpha + m_Ai[k] + m_Twist[k], tau, bOutRe, bError);
         }
@@ -649,7 +644,7 @@ bool LLTAnalysis::alphaLoop()
         str= QString("Calculating Alpha = %1... ").arg(Alpha,5,'f',2);
         traceLog(str);
 
-        iter = iterate(m_pWPolar->m_QInfSpec, Alpha);
+        int iter = iterate(m_pWPolar->m_QInfSpec, Alpha);
 
         if (iter==-1 && !m_bCancel)
         {
@@ -767,8 +762,8 @@ bool LLTAnalysis::QInfLoop()
         }
         qApp->processEvents();
 
-        if(m_x) m_x->clear();
-        if(m_y) m_y->clear();
+        if(m_pX) m_pX->clear();
+        if(m_pY) m_pY->clear();
     }
     return true;
 }
@@ -846,11 +841,9 @@ void LLTAnalysis::traceLog(QString str)
 */
 PlaneOpp* LLTAnalysis::createPlaneOpp(double QInf, double Alpha, bool bWingOut)
 {
-    int l;
-
     PlaneOpp *pNewPOpp = new PlaneOpp(m_pPlane, m_pWPolar, 0);
 
-    if(pNewPOpp == NULL)
+    if(!pNewPOpp)
     {
         traceLog("Not enough memory to store the OpPoint\n");
         return nullptr;
@@ -905,7 +898,7 @@ PlaneOpp* LLTAnalysis::createPlaneOpp(double QInf, double Alpha, bool bWingOut)
             pNewPoint->m_NStation = nStation;
 
             double Cb =0.0;
-            for (l=1; l<nStation; l++)
+            for (int l=1; l<nStation; l++)
             {
                 pNewPoint->m_SpanPos[l]       = -m_SpanPos[l];
                 pNewPoint->m_StripArea[l]     =  m_StripArea[l];
@@ -996,7 +989,7 @@ bool LLTAnalysis::hasWarnings()
 */
 double LLTAnalysis::GetCl(Foil *pFoil0, Foil *pFoil1, double Re, double Alpha, double Tau, bool &bOutRe, bool &bError)
 {
-    double Cl0, Cl1;
+    double Cl0=0, Cl1=0;
     bool IsOutRe = false;
     bool IsError  = false;
     bOutRe = false;
@@ -1394,7 +1387,7 @@ double LLTAnalysis::getPlrPointFromAlpha(Foil *pFoil, double Re, double Alpha, i
     }
 
 
-    int size;
+    int size = 0;
     int n = 0;
 
     // Are there any Type 1 polars available for this foil ?
@@ -1417,7 +1410,7 @@ double LLTAnalysis::getPlrPointFromAlpha(Foil *pFoil, double Re, double Alpha, i
     //Type 1 Polars are sorted by crescending Re Number
 
     //if Re is less than that of the first polar, use this one
-    for (int i=0; i< nPolars; i++)
+    for (int i=0; i<nPolars; i++)
     {
         pPolar = m_poaPolar->at(i);
         if(pPolar->isFixedSpeedPolar() && (pPolar->foilName()==pFoil->foilName()) && pPolar->m_Alpha.size()>0)
