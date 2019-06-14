@@ -21,7 +21,7 @@
 *****************************************************************************/
 
 
-#include <QtDebug>
+#include <QDebug>
 
 
 #include "planeanalysistask.h"
@@ -184,8 +184,8 @@ Plane * PlaneAnalysisTask::setPlaneObject(Plane *pPlane)
  */
 WPolar* PlaneAnalysisTask::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar)
 {
-	int j,k,m, NStation;
-	double SpanPos;
+    int m=0, NStation=0;
+    double SpanPos=0;
 
 	if(!pCurPlane)
 	{
@@ -219,11 +219,11 @@ WPolar* PlaneAnalysisTask::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar)
 				NStation = 0;
 				m=0;
 				SpanPos = 0;
-				for (j=0; j<pWingList[iw]->m_Surface.size(); j++)	NStation += pWingList[iw]->m_Surface.at(j)->m_NYPanels;
+                for (int j=0; j<pWingList[iw]->m_Surface.size(); j++)	NStation += pWingList[iw]->m_Surface.at(j)->m_NYPanels;
 
-				for (j=(int)(pWingList[iw]->m_Surface.size()/2); j<pWingList[iw]->m_Surface.size(); j++)
+                for (int j=(int)(pWingList[iw]->m_Surface.size()/2); j<pWingList[iw]->m_Surface.size(); j++)
 				{
-					for(k=0; k<pWingList[iw]->m_Surface.at(j)->m_NYPanels; k++)
+                    for(int k=0; k<pWingList[iw]->m_Surface.at(j)->m_NYPanels; k++)
 					{
 						pWingList[iw]->m_SpanPos[m+NStation/2] = SpanPos + pWingList[iw]->m_Surface.at(j)->stripSpanPos(k);
 						m++;
@@ -455,9 +455,8 @@ int PlaneAnalysisTask::createBodyElements(Plane *pCurPlane)
 
 	Body *pCurBody = pCurPlane->body();
 
-	int i,j,k,l;
-	double uk, uk1, v, dj, dj1, dl1;
-	double dpx, dpz;
+    double uk=0, uk1=0, v=0, dj=0, dj1=0, dl1=0;
+    double dpx=0, dpz=0;
 	Vector3d LATB, TALB;
 	Vector3d LA, LB, TA, TB;
 	Vector3d PLA, PTA, PLB, PTB;
@@ -482,23 +481,23 @@ int PlaneAnalysisTask::createBodyElements(Plane *pCurPlane)
 	if(pCurBody->isFlatPanelType())
 	{
 		nx = 0;
-		for(i=0; i<pCurBody->frameCount()-1; i++) nx+=pCurBody->m_xPanels[i];
+        for(int i=0; i<pCurBody->frameCount()-1; i++) nx+=pCurBody->m_xPanels[i];
 		nh = 0;
-		for(i=0; i<pCurBody->sideLineCount()-1; i++) nh+=pCurBody->m_hPanels[i];
+        for(int i=0; i<pCurBody->sideLineCount()-1; i++) nh+=pCurBody->m_hPanels[i];
 		FullSize = nx*nh*2;
         pCurBody->setNXPanels(nx);
         pCurBody->setNHPanels(nh);
 
-		for (i=0; i<pCurBody->frameCount()-1; i++)
+        for (int i=0; i<pCurBody->frameCount()-1; i++)
 		{
-			for (j=0; j<pCurBody->m_xPanels[i]; j++)
+            for (int j=0; j<pCurBody->m_xPanels[i]; j++)
 			{
 				dj  = (double) j   /(double)(pCurBody->m_xPanels[i]);
 				dj1 = (double)(j+1)/(double)(pCurBody->m_xPanels[i]);
 
 				//body left side
 				lnh = 0;
-				for (k=0; k<pCurBody->sideLineCount()-1; k++)
+                for (int k=0; k<pCurBody->sideLineCount()-1; k++)
 				{
 					//build the four corner points of the strips
 					PLB.x =  (1.0- dj) * pCurBody->framePosition(i)      +  dj * pCurBody->framePosition(i+1)       +dpx;
@@ -520,7 +519,7 @@ int PlaneAnalysisTask::createBodyElements(Plane *pCurPlane)
 					LB = PLB;
 					TB = PTB;
 
-					for (l=0; l<pCurBody->m_hPanels[k]; l++)
+                    for (int l=0; l<pCurBody->m_hPanels[k]; l++)
 					{
 						dl1  = (double)(l+1) / (double)(pCurBody->m_hPanels[k]);
 						LA = PLB * (1.0- dl1) + PLA * dl1;
@@ -610,7 +609,7 @@ int PlaneAnalysisTask::createBodyElements(Plane *pCurPlane)
 	{
 		FullSize = 2*nx*nh;
 		//start with left side... same as for wings
-		for (k=0; k<nx; k++)
+        for (int k=0; k<nx; k++)
 		{
 			uk  = pCurBody->m_XPanelPos[k];
 			uk1 = pCurBody->m_XPanelPos[k+1];
@@ -623,7 +622,7 @@ int PlaneAnalysisTask::createBodyElements(Plane *pCurPlane)
 			TB.x += dpx;
 			TB.z += dpz;
 
-			for (l=0; l<nh; l++)
+            for (int l=0; l<nh; l++)
 			{
 				//start with left side... same as for wings
 				v = (double)(l+1) / (double)(nh);
@@ -713,11 +712,11 @@ int PlaneAnalysisTask::createBodyElements(Plane *pCurPlane)
 	}
 
 	//right side next
-	i = m_MatSize;
+    int i = m_MatSize;
 
-	for (k=nx-1; k>=0; k--)
+    for (int k=nx-1; k>=0; k--)
 	{
-		for (l=nh-1; l>=0; l--)
+        for (int l=nh-1; l>=0; l--)
 		{
 			i--;
 			LA = m_Node[m_Panel[i].m_iLB];
@@ -828,12 +827,11 @@ int PlaneAnalysisTask::createBodyElements(Plane *pCurPlane)
 int PlaneAnalysisTask::createSurfaceElements(Plane *pPlane, WPolar *pWPolar, Surface *pSurface)
 {
 	//TODO : for  a gap at the wing's center, need to separate m_iPL and m_iPR at the tips;
-	bool bNoJoinFlap=true;
-	int k,l;
-	int n0, n1, n2, n3;
+    bool bNoJoinFlap=true;
+    int n0=0, n1=0, n2=0, n3=0;
 
 	int InitialSize = m_MatSize;
-	enumPanelPosition side;
+    enumPanelPosition side = MIDSURFACE;
 	Vector3d LA, LB, TA, TB;
 
 	bool bThickSurfaces = true;
@@ -848,7 +846,7 @@ int PlaneAnalysisTask::createSurfaceElements(Plane *pPlane, WPolar *pWPolar, Sur
 	if (bThickSurfaces && pWPolar && pSurface->isTipLeft())
 	{
 		//then left tip surface, add side panels
-		for (l=0; l<pSurface->NXPanels(); l++)
+        for (int l=0; l<pSurface->NXPanels(); l++)
 		{
 			m_Panel[m_MatSize].m_bIsLeading     = false;
 			m_Panel[m_MatSize].m_bIsTrailing    = false;
@@ -912,13 +910,13 @@ int PlaneAnalysisTask::createSurfaceElements(Plane *pPlane, WPolar *pWPolar, Sur
 		}
 	}
 
-	for (k=0; k<pSurface->NYPanels(); k++)
+    for (int k=0; k<pSurface->NYPanels(); k++)
 	{
 		//add "horizontal" panels, mid side, or following a strip from bot to top if 3D Panel
 		if(bThickSurfaces)   side = BOTSURFACE;  //start with lower surf, as recommended by K&P
 		else                 side = MIDSURFACE;
 		//from T.E. to L.E.
-		for (l=0; l<pSurface->NXPanels(); l++)
+        for (int l=0; l<pSurface->NXPanels(); l++)
 		{
 			pSurface->getPanel(k,l,side);
 
@@ -1034,7 +1032,7 @@ int PlaneAnalysisTask::createSurfaceElements(Plane *pPlane, WPolar *pWPolar, Sur
 			//add top side if 3D Panels
 			side = TOPSURFACE; //next upper surf, as recommended by K&P
 			//from L.E. to T.E.
-			for (l=pSurface->NXPanels()-1;l>=0; l--)
+            for (int l=pSurface->NXPanels()-1;l>=0; l--)
 			{
 				pSurface->getPanel(k,l,side);
 				n0 = isNode(pSurface->LA);
@@ -1120,8 +1118,8 @@ int PlaneAnalysisTask::createSurfaceElements(Plane *pPlane, WPolar *pWPolar, Sur
 
 	if (bThickSurfaces && pWPolar && pSurface->isTipRight())
 	{	//right tip surface
-		k = pSurface->NYPanels()-1;
-		for (l=0; l< pSurface->NXPanels(); l++)
+        int k = pSurface->NYPanels()-1;
+        for (int l=0; l< pSurface->NXPanels(); l++)
 		{
 			m_Panel[m_MatSize].m_bIsTrailing    = false;
 			m_Panel[m_MatSize].m_bIsLeading     = false;
@@ -1536,9 +1534,9 @@ void PlaneAnalysisTask::joinSurfaces(WPolar*pWPolar, Surface *pLeftSurf, Surface
 	if(!pWPolar || pWPolar->analysisMethod()!=XFLR5::PANEL4METHOD) return;//panel analysis only
 
 	//pl and pr are respectively the left surface's and the right surface's first panel index
-	int lclose, ppl, ppr;
-	double dist, x,y,z, mindist;
-	lclose=0;
+    int ppl=0, ppr=0;
+    double dist=0, x=0,y=0,z=0, mindist=0;
+    int lclose=0;
 	Vector3d MidNormal = pLeftSurf->Normal + pRightSurf->Normal;
 	MidNormal.normalize();
 
