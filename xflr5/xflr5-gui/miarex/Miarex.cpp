@@ -3123,7 +3123,7 @@ void Miarex::onEditCurWPolarPts()
     epDlg.resize(EditPlrDlg::s_WindowSize);
     if(EditPlrDlg::s_bWindowMaximized) epDlg.setWindowState(Qt::WindowMaximized);
 
-    epDlg.initDialog(NULL, NULL, this, m_pCurWPolar);
+    epDlg.initDialog(nullptr, nullptr, this, m_pCurWPolar);
 
 
     bool bPoints = m_pCurWPolar->points();
@@ -3156,16 +3156,16 @@ void Miarex::onEditCurWPolarPts()
  */
 void Miarex::onDeleteAllWPlrOpps()
 {
+    stopAnimate();
     if(!m_pCurWPolar) return;
 
     emit projectModified();
-    PlaneOpp* pPOpp;
-    int i;
+
     if(m_pCurPlane)
     {
-        for (i = m_poaPOpp->size()-1; i>=0; i--)
+        for (int i = m_poaPOpp->size()-1; i>=0; i--)
         {
-            pPOpp =  m_poaPOpp->at(i);
+            PlaneOpp* pPOpp =  m_poaPOpp->at(i);
             if(pPOpp->polarName() == m_pCurWPolar->polarName() &&
                     pPOpp->planeName() == m_pCurPlane->planeName())
             {
@@ -3191,11 +3191,10 @@ void Miarex::onDeleteAllWPlrOpps()
 void Miarex::onDeleteAllWOpps()
 {
     emit projectModified();
-    PlaneOpp* pPOpp;
-    int i;
-    for (i = m_poaPOpp->size()-1; i>=0; i--)
+
+    for (int i = m_poaPOpp->size()-1; i>=0; i--)
     {
-        pPOpp =  m_poaPOpp->at(i);
+        PlaneOpp* pPOpp =  m_poaPOpp->at(i);
         m_poaPOpp->removeAt(i);
         delete pPOpp;
     }
@@ -3244,17 +3243,16 @@ void Miarex::onDeleteCurPlane()
  */
 void Miarex::onDeleteCurWOpp()
 {
-    int i;
-
+    stopAnimate();
     double alpha=-9999999;
 
     if(m_pCurPOpp)
     {
         alpha = m_pCurPOpp->alpha();
-        PlaneOpp* pPOpp;
-        for (i = m_poaPOpp->size()-1; i>=0; i--)
+
+        for (int i = m_poaPOpp->size()-1; i>=0; i--)
         {
-            pPOpp = m_poaPOpp->at(i);
+            PlaneOpp* pPOpp = m_poaPOpp->at(i);
             if(pPOpp == m_pCurPOpp)
             {
                 m_poaPOpp->removeAt(i);
@@ -3287,13 +3285,13 @@ void Miarex::onDeleteCurWOpp()
 */
 void Miarex::onDeletePlanePOpps()
 {
-    PlaneOpp *pPOpp;
-    int i;
+    stopAnimate();
+
     if(m_pCurPlane)
     {
-        for (i=m_poaPOpp->size()-1; i>=0; i--)
+        for (int i=m_poaPOpp->size()-1; i>=0; i--)
         {
-            pPOpp = m_poaPOpp->at(i);
+            PlaneOpp *pPOpp = m_poaPOpp->at(i);
             if (pPOpp->planeName() == m_pCurPlane->planeName())
             {
                 m_poaPOpp->removeAt(i);
@@ -3318,6 +3316,8 @@ void Miarex::onDeletePlanePOpps()
 */
 void Miarex::onDeletePlaneWPolars()
 {
+    stopAnimate();
+
     if(!m_pCurPlane) return;
 
     QString PlaneName, strong;
@@ -3397,16 +3397,18 @@ void Miarex::onDuplicateCurPlane()
  */
 void Miarex::onEditCurBody()
 {
+    stopAnimate();
+
     m_pgl3dMiarexView->m_bArcball = false;
     if(!m_pCurPlane || !m_pCurPlane->body()) return;
 
     Body *pCurBody = m_pCurPlane->body();
 
     bool bUsed = false;
-    int i;
-    Plane *pPlane;
-    WPolar *pWPolar;
-    for (i=0; i< m_poaPlane->size(); i++)
+
+    Plane *pPlane=nullptr;
+    WPolar *pWPolar=nullptr;
+    for (int i=0; i< m_poaPlane->size(); i++)
     {
         pPlane = m_poaPlane->at(i);
         if(pPlane->body() && pPlane->body()==pCurBody)
@@ -3463,6 +3465,9 @@ void Miarex::onEditCurBody()
             //save mods to a new plane object
             m_pCurPlane = Objects3d::setModPlane(pModPlane);
 
+            m_pCurWPolar = nullptr;
+            m_pCurPOpp = nullptr;
+
             setPlane(pModPlane->planeName());
             s_pMainFrame->updatePlaneListBox();
             updateView();
@@ -3482,10 +3487,11 @@ void Miarex::onEditCurBody()
 
     delete pModPlane; // clean up, we don't need it any more
 
-    //plane has been modified, old results are not consistent with new geometry, delete them
+    //plane has been modified, old results are not consistent with the new geometry, delete them
     Objects3d::deletePlaneResults(m_pCurPlane, false);
     m_pCurWPolar = nullptr;
     m_pCurPOpp = nullptr;
+    s_pMainFrame->updatePlaneListBox();
 
     gl3dMiarexView::s_bResetglGeom = true;
     gl3dMiarexView::s_bResetglBody = true;
@@ -3500,6 +3506,7 @@ void Miarex::onEditCurBody()
  */
 void Miarex::onEditCurBodyObject()
 {
+    stopAnimate();
     m_pgl3dMiarexView->m_bArcball = false;
     if(!m_pCurPlane || !m_pCurPlane->body()) return;
 
@@ -3564,6 +3571,8 @@ void Miarex::onEditCurBodyObject()
         {
             //save mods to a new plane object
             m_pCurPlane = Objects3d::setModPlane(pModPlane);
+            m_pCurWPolar = nullptr;
+            m_pCurPOpp = nullptr;
 
             setPlane(pModPlane->planeName());
             s_pMainFrame->updatePlaneListBox();
@@ -3590,14 +3599,16 @@ void Miarex::onEditCurBodyObject()
  */
 void Miarex::onEditCurObject()
 {
+    stopAnimate();
+
     m_pgl3dMiarexView->m_bArcball = false;
     if(!m_pCurPlane) return;
-    int i;
 
-    WPolar *pWPolar;
-    PlaneOpp* pPOpp;
+    WPolar *pWPolar = nullptr;
+    PlaneOpp* pPOpp = nullptr;
+
     bool bHasResults = false;
-    for (i=0; i< m_poaWPolar->size(); i++)
+    for (int i=0; i< m_poaWPolar->size(); i++)
     {
         pWPolar = m_poaWPolar->at(i);
         if(pWPolar->dataSize() && pWPolar->planeName() == m_pCurPlane->planeName())
@@ -3607,7 +3618,7 @@ void Miarex::onEditCurObject()
         }
     }
 
-    for (i=0; i<m_poaPOpp->size(); i++)
+    for (int i=0; i<m_poaPOpp->size(); i++)
     {
         pPOpp = m_poaPOpp->at(i);
         if(pPOpp->planeName() == m_pCurPlane->planeName())
@@ -3651,6 +3662,8 @@ void Miarex::onEditCurObject()
                 {
                     //save mods to a new plane object
                     m_pCurPlane = Objects3d::setModPlane(pModPlane);
+                    m_pCurWPolar = nullptr;
+                    m_pCurPOpp = nullptr;
 
                     setPlane(pModPlane->planeName());
                     s_pMainFrame->updatePlaneListBox();
@@ -3688,6 +3701,7 @@ void Miarex::onEditCurObject()
  */
 void Miarex::onEditCurPlane()
 {
+    stopAnimate();
     m_pgl3dMiarexView->m_bArcball = false;
     if(!m_pCurPlane) return;
 
@@ -3793,10 +3807,11 @@ void Miarex::onEditCurPlane()
  */
 void Miarex::onEditCurWing()
 {
+    stopAnimate();
     m_pgl3dMiarexView->m_bArcball = false;
     if(!m_pCurPlane) return;
 
-    int iWing;
+    int iWing=0;
 
     QAction *pAction = qobject_cast<QAction *>(sender());
     if (!pAction) iWing = 0;
@@ -3885,7 +3900,6 @@ void Miarex::onEditCurWing()
             Objects3d::deletePlaneResults(m_pCurPlane, false);// will also set new surface and Aerochord in WPolars
             m_pCurWPolar = nullptr;
             m_pCurPOpp = nullptr;
-
         }
 
         setPlane(m_pCurPlane->planeName());
@@ -4020,7 +4034,7 @@ void Miarex::onExportCurPOpp()
 {
     if(!m_pCurPOpp)return ;// is there anything to export ?
 
-    int iStrip,j,k,l,p, coef;
+    int iStrip=0,j=0,k=0,l=0,p=0, coef=0;
     XFLR5::enumTextFileType exporttype;
     QString filter;
     if(Settings::s_ExportFileType==XFLR5::TXT) filter = "Text File (*.txt)";
@@ -4369,7 +4383,7 @@ void Miarex::onExportWPolars()
     //select the directory for output
     DirName = QFileDialog::getExistingDirectory(this,  tr("Export Directory"), Settings::s_LastDirName);
 
-    WPolar *pWPolar;
+    WPolar *pWPolar=nullptr;
     for(int l=0; l<m_poaWPolar->size(); l++)
     {
         pWPolar = m_poaWPolar->at(l);
@@ -4486,7 +4500,7 @@ void Miarex::onExporttoAVL()
 void Miarex::exportAVLWing(Wing *pWing, QTextStream &out, int index, double y, double Thetay)
 {
     if(!pWing) return;
-    int j;
+
     QString strong, str;
 
     out << ("#========TODO: REMOVE OR MODIFY MANUALLY DUPLICATE SECTIONS IN SURFACE DEFINITION=========\n");
@@ -4543,7 +4557,7 @@ void Miarex::exportAVLWing(Wing *pWing, QTextStream &out, int index, double y, d
     //write the first section
 
 
-    for(j=startIndex; j<NSurfaces; j++)
+    for(int j=startIndex; j<NSurfaces; j++)
     {
         out << ("#____PANEL ")<<j-startIndex+1<<"_______\n";
         aSurface.copy(pWing->m_Surface.at(j));
@@ -4863,11 +4877,9 @@ void Miarex::onGL3DScale()
  */
 void Miarex::onHideAllWPolars()
 {
-    int i;
-    WPolar *pWPolar;
-    for (i=0; i<m_poaWPolar->size(); i++)
+    for (int i=0; i<m_poaWPolar->size(); i++)
     {
-        pWPolar = m_poaWPolar->at(i);
+        WPolar *pWPolar = m_poaWPolar->at(i);
         pWPolar->isVisible() = false;
         //		if(pWPolar->polarType()==XFLR5::STABILITYPOLAR) pWPolar->points() = false;
     }
@@ -4885,15 +4897,12 @@ void Miarex::onHideAllWPolars()
  */
 void Miarex::onHideAllWPlrOpps()
 {
-    int i;
     m_bCurPOppOnly = false;
-
-    PlaneOpp *pPOpp;
     if(m_pCurPlane)
     {
-        for (i=0; i< m_poaPOpp->size(); i++)
+        for (int i=0; i< m_poaPOpp->size(); i++)
         {
-            pPOpp = m_poaPOpp->at(i);
+            PlaneOpp *pPOpp = m_poaPOpp->at(i);
             if (pPOpp->planeName() == m_pCurWPolar->planeName() &&
                     pPOpp->polarName()   == m_pCurWPolar->polarName())
             {
@@ -4914,13 +4923,11 @@ void Miarex::onHideAllWPlrOpps()
  */
 void Miarex::onHideAllWOpps()
 {
-    int i;
     m_bCurPOppOnly = false;
 
-    PlaneOpp *pPOpp;
-    for (i=0; i< m_poaPOpp->size(); i++)
+    for (int i=0; i< m_poaPOpp->size(); i++)
     {
-        pPOpp = m_poaPOpp->at(i);
+        PlaneOpp *pPOpp = m_poaPOpp->at(i);
         pPOpp->isVisible() = false;
     }
     emit projectModified();
@@ -4936,11 +4943,9 @@ void Miarex::onHideAllWOpps()
  */
 void Miarex::onHidePlaneOpps()
 {
-    PlaneOpp *pPOpp;
-    int i;
-    for (i=0; i< m_poaPOpp->size(); i++)
+    for (int i=0; i< m_poaPOpp->size(); i++)
     {
-        pPOpp = m_poaPOpp->at(i);
+        PlaneOpp *pPOpp = m_poaPOpp->at(i);
         if (pPOpp->planeName() == m_pCurWPolar->planeName())
         {
             pPOpp->isVisible() = false;
@@ -4960,15 +4965,14 @@ void Miarex::onHidePlaneOpps()
 void Miarex::onHidePlaneWPolars()
 {
     if(!m_pCurPlane) return;
-    int i;
+
     QString PlaneName;
     if(m_pCurPlane)     PlaneName = m_pCurPlane->planeName();
     else return;
 
-    WPolar *pWPolar;
-    for (i=0; i<m_poaWPolar->size(); i++)
+    for (int i=0; i<m_poaWPolar->size(); i++)
     {
-        pWPolar = m_poaWPolar->at(i);
+        WPolar *pWPolar = m_poaWPolar->at(i);
         if (pWPolar->planeName() == PlaneName)
         {
             pWPolar->isVisible() = false;
@@ -5116,10 +5120,8 @@ void Miarex::onInitLLTCalc()
  */
 void Miarex::onKeepCpSection()
 {
-    Curve *pCurrentCurve, *pNewCurve;
-
-    pCurrentCurve = m_CpGraph.curve(0);
-    pNewCurve = m_CpGraph.addCurve();
+    Curve *pCurrentCurve = m_CpGraph.curve(0);
+    Curve *pNewCurve = m_CpGraph.addCurve();
     pNewCurve->copyData(pCurrentCurve);
     pNewCurve->duplicate(pCurrentCurve);
 
@@ -5179,8 +5181,6 @@ void Miarex::onMoment()
     m_bMoments = m_pctrlMoment->isChecked();
     updateView();
 }
-
-
 
 
 /**
@@ -6996,6 +6996,9 @@ void Miarex::setPlane(QString PlaneName)
         s_bResetCurves = true;
         setScale();
         updateView();
+
+        s_pMainFrame->updatePlaneListBox();
+
         QApplication::restoreOverrideCursor();
         return;
     }

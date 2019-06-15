@@ -16,12 +16,15 @@
 
 
 xflr5 v6.47 June xxxth, 2019
+    - Fixed a couple of crash bugs when editing a part of a plane with an active polar
+    - Fixed potential crash bugs when editing plane parts during 3d animation
     - Fixed potential crash bugs when deleting planes or foils from the Manage options
-    - Corrected a crash bug when running a 3d panel analysis from and old project files due to no wake defined
+    - Fixed a crash bug when running a 3d panel analysis from and old project files due to no wake defined
     - Corrected a minor output error in LLT analysis
     - Modified the color display of Cp coefficients in the 3d view, to render more accurately the uniformity of singularities on panels
     - Tentative fix for bug #140
     - Code cleaning
+
 
 xflr5 v6.46 May 4th, 2019
     - Fix for bug #134 - LLT now restored in v6.46
