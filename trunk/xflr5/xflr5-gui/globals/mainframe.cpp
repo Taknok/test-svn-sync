@@ -5975,7 +5975,6 @@ void MainFrame::setGraphSettings(Graph *pGraph)
     for(int ig=0; ig<m_pMiarex->m_WPlrGraph.count(); ig++) m_pMiarex->m_WPlrGraph[ig]->copySettings(pGraph, false);
     for(int ig=0; ig<m_pMiarex->m_TimeGraph.count(); ig++) m_pMiarex->m_TimeGraph[ig]->copySettings(pGraph, false);
     for(int ig=0; ig<m_pMiarex->m_StabPlrGraph.count(); ig++) m_pMiarex->m_StabPlrGraph[ig]->copySettings(pGraph, false);
-
 }
 
 

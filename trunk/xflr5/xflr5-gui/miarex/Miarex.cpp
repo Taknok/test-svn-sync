@@ -2102,6 +2102,7 @@ bool Miarex::loadSettings(QSettings &settings)
     settings.endGroup();
 
     GL3dBodyDlg::loadSettings(settings);
+    GL3dWingDlg::loadSettings(settings);
 
     GLLightDlg::loadSettings(settings);
 
@@ -6742,6 +6743,7 @@ bool Miarex::saveSettings(QSettings &settings)
     for(int ig=0; ig<m_TimeGraph.count(); ig++) m_TimeGraph[ig]->saveSettings(settings);
 
     GLLightDlg::saveSettings(settings);
+    GL3dWingDlg::saveSettings(settings);
     GL3dBodyDlg::saveSettings(settings);
     EditPlaneDlg::saveSettings(settings);
     EditBodyDlg::saveSettings(settings);

@@ -56,9 +56,7 @@
 
 QList <Foil*> *GL3dWingDlg::s_poaFoil;
 
-QPoint GL3dWingDlg::s_WindowPos=QPoint(75,55);
-QSize  GL3dWingDlg::s_WindowSize=QSize(1200, 900);
-bool GL3dWingDlg::s_bWindowMaximized=false;
+QByteArray GL3dWingDlg::s_WindowGeometry;
 
 bool GL3dWingDlg::s_bOutline    = true;
 bool GL3dWingDlg::s_bSurfaces   = true;
@@ -197,10 +195,10 @@ void GL3dWingDlg::computeGeometry()
 
 
 
-void GL3dWingDlg::contextMenuEvent(QContextMenuEvent *event)
+void GL3dWingDlg::contextMenuEvent(QContextMenuEvent *pEvent)
 {
     // Display the context menu
-    if(m_pctrlWingTable->geometry().contains(event->pos())) m_pContextMenu->exec(event->globalPos());
+    if(m_pctrlWingTable->geometry().contains(pEvent->pos())) m_pContextMenu->exec(pEvent->globalPos());
 }
 
 
@@ -541,14 +539,14 @@ bool GL3dWingDlg::initDialog(Wing *pWing)
 }
 
 
-void GL3dWingDlg::keyPressEvent(QKeyEvent *event)
+void GL3dWingDlg::keyPressEvent(QKeyEvent *pEvent)
 {
     //	bool bShift = false;
     //	bool bCtrl  = false;
     //	if(event->modifiers() & Qt::ShiftModifier)   bShift =true;
     //	if(event->modifiers() & Qt::ControlModifier) bCtrl =true;
 
-    switch (event->key())
+    switch (pEvent->key())
     {
         case Qt::Key_Return:
         case Qt::Key_Enter:
@@ -575,7 +573,7 @@ void GL3dWingDlg::keyPressEvent(QKeyEvent *event)
         }
 
         default:
-            event->ignore();
+            pEvent->ignore();
     }
 }
 
@@ -1113,10 +1111,6 @@ void GL3dWingDlg::readSectionData(int sel)
 
 void GL3dWingDlg::accept()
 {
-    s_bWindowMaximized= isMaximized();
-    s_WindowPos = pos();
-    s_WindowSize = size();
-
     s_bOutline    = m_pglWingView->m_bOutline;
     s_bSurfaces   = m_pglWingView->m_bSurfaces;
     s_bVLMPanels  = m_pglWingView->m_bVLMPanels;
@@ -1142,10 +1136,6 @@ void GL3dWingDlg::reject()
         }
         else if(QMessageBox::Cancel == Ans) return;
     }
-
-    s_bWindowMaximized= isMaximized();
-    s_WindowPos = pos();
-    s_WindowSize = size();
 
     s_bOutline    = m_pglWingView->m_bOutline;
     s_bSurfaces   = m_pglWingView->m_bSurfaces;
@@ -1590,21 +1580,25 @@ void GL3dWingDlg::setupLayout()
 }
 
 
-void GL3dWingDlg::showEvent(QShowEvent *event)
+void GL3dWingDlg::showEvent(QShowEvent *pEvent)
 {
-    move(s_WindowPos);
-    resize(s_WindowSize);
-    if(s_bWindowMaximized) setWindowState(Qt::WindowMaximized);
-
+    restoreGeometry(s_WindowGeometry);
     m_bChanged = false;
     m_bResetglWing = true;
 
     m_pglWingView->update();
-    event->accept();
+    pEvent->accept();
 }
 
 
-void GL3dWingDlg::resizeEvent(QResizeEvent *event)
+void GL3dWingDlg::hideEvent(QHideEvent *pEvent)
+{
+    s_WindowGeometry = saveGeometry();
+    pEvent->accept();
+}
+
+
+void GL3dWingDlg::resizeEvent(QResizeEvent *pEvent)
 {
     if(m_pLeftSideSplitter)
     {
@@ -1635,7 +1629,7 @@ void GL3dWingDlg::resizeEvent(QResizeEvent *event)
 
     if(m_pWing)	m_pglWingView->set3DScale(m_pWing->planformSpan());
     m_pglWingView->update();
-    event->accept();
+    pEvent->accept();
 }
 
 
@@ -1832,6 +1826,25 @@ bool GL3dWingDlg::intersectObject(Vector3d AA,  Vector3d U, Vector3d &I)
 
 
 
+void GL3dWingDlg::loadSettings(QSettings &settings)
+{
+    settings.beginGroup("GL3dWingDlg");
+    {
+        s_WindowGeometry = settings.value("GL3dWingDlgGeom").toByteArray();
+    }
+    settings.endGroup();
+}
+
+
+
+void GL3dWingDlg::saveSettings(QSettings &settings)
+{
+    settings.beginGroup("GL3dWingDlg");
+    {
+        settings.setValue("GL3dWingDlgGeom", s_WindowGeometry);
+    }
+    settings.endGroup();
+}
 
 
 
