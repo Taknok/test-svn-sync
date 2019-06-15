@@ -5151,8 +5151,10 @@ void Miarex::onManagePlanes()
     uDlg.initDialog(PlaneName);
     uDlg.exec();
 
-    m_pCurPlane = nullptr;
+    // set null ptrs in case the current objects have been deleted
+    m_pCurPlane  = nullptr;
     m_pCurWPolar = nullptr;
+    m_pCurPOpp   = nullptr;
 
     if(uDlg.m_pPlane) setPlane(uDlg.m_pPlane->planeName());
     else setPlane();
