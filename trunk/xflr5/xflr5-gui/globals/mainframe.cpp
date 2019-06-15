@@ -5181,9 +5181,15 @@ void MainFrame::selectPlaneOpp(PlaneOpp *pPlaneOpp)
         else if(pPlaneOpp->polarType()==XFLR5::STABILITYPOLAR) x = pPlaneOpp->m_Ctrl;
     }
     //Selects a pOpp in the combobox
-    WPolar *pCurWPlr    = m_pMiarex->m_pCurWPolar;
-    double val;
-    bool bOK;
+    WPolar *pCurWPlr = m_pMiarex->m_pCurWPolar;
+    if(!pCurWPlr)
+    {
+        m_pctrlPlaneOpp->clear();
+        m_pctrlPlaneOpp->setEnabled(false);
+        return;
+    }
+    double val=0;
+    bool bOK=false;
     QString strange;
 
     m_pctrlPlaneOpp->blockSignals(true);
@@ -5297,7 +5303,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
         ar << Objects3d::s_oaPlane.size();
         for (i=0; i<Objects3d::s_oaPlane.size();i++)
         {
-            pPlane = (Plane*)Objects3d::s_oaPlane.at(i);
+            pPlane = Objects3d::s_oaPlane.at(i);
             pPlane->serializePlaneXFL(ar, bIsStoring);
         }
 
@@ -6020,7 +6026,7 @@ void MainFrame::updatePlaneListBox()
     QStringList PlaneNames;
     for (i=0; i<Objects3d::s_oaPlane.size(); i++)
     {
-        pPlane = (Plane*)Objects3d::s_oaPlane[i];
+        pPlane = Objects3d::s_oaPlane[i];
         PlaneNames.append(pPlane->planeName());
     }
 
@@ -6096,7 +6102,6 @@ void MainFrame::updatePOppListBox()
 {
     m_pctrlPlaneOpp->blockSignals(true);
 
-    PlaneOpp *pPOpp;
     Plane  *pCurPlane   = m_pMiarex->m_pCurPlane;
     WPolar *pCurWPlr    = m_pMiarex->m_pCurWPolar;
 
@@ -6112,7 +6117,7 @@ void MainFrame::updatePOppListBox()
 
     for (int iPOpp=0; iPOpp<Objects3d::s_oaPOpp.size(); iPOpp++)
     {
-        pPOpp = (PlaneOpp*)Objects3d::s_oaPOpp.at(iPOpp);
+        PlaneOpp *pPOpp = (PlaneOpp*)Objects3d::s_oaPOpp.at(iPOpp);
         if (pPOpp->planeName()==pCurPlane->planeName() && pPOpp->polarName()==pCurWPlr->polarName())
         {
             if(pCurWPlr->polarType()<XFLR5::FIXEDAOAPOLAR)        str = QString("%L1").arg(pPOpp->m_Alpha,8,'f',3);
