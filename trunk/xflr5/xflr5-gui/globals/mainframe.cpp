@@ -6431,6 +6431,11 @@ void MainFrame::onManageFoils()
     mfDlg.initDialog(FoilName);
     mfDlg.exec();
 
+    // set null ptrs in case the current objects have been deleted
+    XDirect::setCurFoil(nullptr);
+    XDirect::setCurPolar(nullptr);
+    XDirect::setCurOpp(nullptr);
+
     if(mfDlg.m_bChanged) setSaveState(false);
 
     if(m_iApp==XFLR5::XFOILANALYSIS)
