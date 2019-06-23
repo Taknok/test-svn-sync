@@ -98,7 +98,7 @@ public:
 	int &foilLineWidth() {return m_FoilWidth;}
 	int &foilLineStyle() {return m_FoilStyle;}
 	int &foilPointStyle() {return m_PointStyle;}
-	QString const &foilName() {return m_FoilName;}
+    QString const &foilName() const {return m_FoilName;}
 	void setFoilName(QString const &FoilName) {m_FoilName = FoilName;}
 
 

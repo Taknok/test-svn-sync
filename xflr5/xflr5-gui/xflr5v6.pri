@@ -102,6 +102,9 @@ SOURCES += \
     viewwidgets/section2dwidget.cpp \
     viewwidgets/wingwidget.cpp \
     viewwidgets/xdirecttilewidget.cpp \
+    viewwidgets/foildesignwt.cpp \
+    viewwidgets/bodylinewt.cpp \
+    viewwidgets/bodyframewt.cpp \
     xdirect/ManageFoilsDlg.cpp \
     xdirect/XDirect.cpp \
     xdirect/XDirectStyleDlg.cpp \
@@ -127,10 +130,7 @@ SOURCES += \
     xinverse/FoilSelectionDlg.cpp \
     xinverse/InverseOptionsDlg.cpp \
     xinverse/PertDlg.cpp \
-    xinverse/XInverse.cpp \
-    $$PWD/viewwidgets/foildesignwt.cpp \
-    $$PWD/viewwidgets/bodylinewt.cpp \
-    $$PWD/viewwidgets/bodyframewt.cpp
+    xinverse/XInverse.cpp
 
 
 HEADERS += \
@@ -240,6 +240,9 @@ HEADERS += \
     viewwidgets/section2dwidget.h \
     viewwidgets/wingwidget.h \
     viewwidgets/xdirecttilewidget.h \
+    viewwidgets/foildesignwt.h \
+    viewwidgets/bodyframewt.h \
+    viewwidgets/bodylinewt.h \
     xdirect/ManageFoilsDlg.h \
     xdirect/XDirect.h \
     xdirect/XDirectStyleDlg.h \
@@ -266,10 +269,7 @@ HEADERS += \
     xinverse/FoilSelectionDlg.h \
     xinverse/InverseOptionsDlg.h \
     xinverse/PertDlg.h \
-    xinverse/XInverse.h \
-    $$PWD/viewwidgets/foildesignwt.h \
-    $$PWD/viewwidgets/bodyframewt.h \
-    $$PWD/viewwidgets/bodylinewt.h
+    xinverse/XInverse.h
 
 
 RESOURCES += \

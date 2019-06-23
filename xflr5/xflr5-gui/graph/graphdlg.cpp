@@ -971,12 +971,12 @@ void GraphDlg::setupLayout()
     m_pTabWidget->setCurrentIndex(s_iActivePage);
     connect(m_pTabWidget, SIGNAL(currentChanged (int)), this, SLOT(onActivePage(int)));
 
-    QVBoxLayout *mainLayout = new QVBoxLayout;
+    QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
-        mainLayout->addWidget(m_pTabWidget);
-        mainLayout->addWidget(m_pButtonBox);
+        pMainLayout->addWidget(m_pTabWidget);
+        pMainLayout->addWidget(m_pButtonBox);
     }
-    setLayout(mainLayout);
+    setLayout(pMainLayout);
 }
 
 

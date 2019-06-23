@@ -79,7 +79,7 @@ Foil * Objects2d::deleteFoil(Foil *pFoil)
     }
 
 
-    Foil *pNewCurFoil= nullptr;
+    Foil *pNewCurFoil = nullptr;
 
     for (int j=0; j<s_oaFoil.size(); j++)
     {
@@ -120,6 +120,14 @@ Foil* Objects2d::foil(QString strFoilName)
 
     return nullptr;
 }
+
+
+Foil* Objects2d::foilAt(int iFoil)
+{
+    if(iFoil<0 || iFoil>=foilCount()) return nullptr;
+    return s_oaFoil.at(iFoil);
+}
+
 
 /**
  * The Foil does not exist yet in the array.

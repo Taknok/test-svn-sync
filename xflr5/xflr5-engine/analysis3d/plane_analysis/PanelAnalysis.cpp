@@ -660,8 +660,6 @@ bool PanelAnalysis::loop()
 bool PanelAnalysis::alphaLoop()
 {
     QString str;
-    //    nrhs  = (int)qAbs((m_AlphaMax-m_Alpha)*1.0001/m_AlphaDelta) + 1;
-
     if(!m_bSequence) m_nRHS = 1;
 
     setInertia(0.0, 0.0, 0.0);
@@ -2145,7 +2143,7 @@ bool PanelAnalysis::solveUnitRHS()
     Crout_LU_with_Pivoting_Solve(m_aij, m_wRHS, m_Index, m_RHS+Size, Size, &s_bCancel);
 
     QString strange;
-    strange.sprintf("      Time for matrix inversion: %.3f s\n", (double)t.elapsed()/1000.0);
+    strange.sprintf("      Time for linear system solve: %.3f s\n", double(t.elapsed())/1000.0);
     //	qDebug(strange.toStdString().c_str());
     traceLog(strange);
 
@@ -2407,9 +2405,6 @@ bool PanelAnalysis::unitLoop()
 }
 
 
-
-
-
 /**
 * Returns the perturbation velocity created at a point C by a horseshoe or quad vortex with unit circulation located on a panel pPanel
 * @param pPanel a pointer to the Panel where the vortex is located
@@ -2419,7 +2414,7 @@ bool PanelAnalysis::unitLoop()
 */
 void PanelAnalysis::VLMGetVortexInfluence(Panel *pPanel, Vector3d const &C, Vector3d &V, bool bAll)
 {
-    int lw, pw, p;
+    int lw=0, pw=0, p=0;
     Vector3d AA1, BB1, VT;
 
     p = pPanel->m_iElement;
@@ -5392,7 +5387,6 @@ void PanelAnalysis::onCancel()
 }
 
 
-
 /**
 * Calculates the induced lift and drag from the vortices or wake panels strength using a farfield method
 * Downwash is evaluated at a distance 100 times the span downstream (i.e. infinite)
@@ -5453,7 +5447,7 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
                 pWing->m_StripArea[m]  += pWing->m_pWingPanel[pp].Area;
                 pp++;
             }
-            pWing->m_StripArea[m] /= (double)coef;
+            pWing->m_StripArea[m] /= double(coef);
 
             if(!pWPolar->bThinSurfaces())
             {
