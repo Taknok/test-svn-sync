@@ -375,18 +375,14 @@ void BatchDlg::setupLayout()
 void BatchDlg::alphaLoop()
 {
     QString str;
-    int iAlpha, nAlpha;
-    double alphadeg;
-    //	QPoint Place(m_pctrlGraphOutput->rect().left()+m_pRmsGraph->GetMargin()*2, m_pctrlGraphOutput->rect().top()+m_pRmsGraph->GetMargin()/2);
 
+    int nAlpha = (int)(qAbs((m_SpMax-m_SpMin)*1.000/m_SpInc));//*1.0001 to make sure upper limit is included
 
-    nAlpha = (int)(qAbs((m_SpMax-m_SpMin)*1.000/m_SpInc));//*1.0001 to make sure upper limit is included
-
-    for (iAlpha=0; iAlpha<=nAlpha; iAlpha++)
+    for (int iAlpha=0; iAlpha<=nAlpha; iAlpha++)
     {
         if(m_bCancel) break;
 
-        alphadeg = m_SpMin + iAlpha*m_SpInc;
+        double alphadeg = m_SpMin + iAlpha*m_SpInc;
         str = QString("Alpha = %1\n").arg(alphadeg,0,'f',2);
         outputMsg(str);
 
@@ -639,7 +635,7 @@ void BatchDlg::initDialog()
     else         m_rbspec2->setChecked(true);
     onAcl();
 
-    if(m_PolarType==XFLR5::FIXEDSPEEDPOLAR)       m_rbtype1->setChecked(true);
+    if     (m_PolarType==XFLR5::FIXEDSPEEDPOLAR)  m_rbtype1->setChecked(true);
     else if(m_PolarType==XFLR5::FIXEDLIFTPOLAR)   m_rbtype2->setChecked(true);
     else if(m_PolarType==XFLR5::RUBBERCHORDPOLAR) m_rbtype3->setChecked(true);
     else if(m_PolarType==XFLR5::FIXEDAOAPOLAR)    m_rbtype4->setChecked(true);
@@ -661,8 +657,9 @@ void BatchDlg::initDialog()
     m_pctrlSkipPolar->setEnabled(false);
 
     resetCurves();
-}
 
+    outputFoilList();
+}
 
 
 /**
@@ -879,24 +876,42 @@ void BatchDlg::onEditReList()
 void BatchDlg::onFoilList()
 {
     FoilSelectionDlg dlg(this);
-    //	dlg.SetSelectionMode(true);
-    dlg.m_poaFoil = s_pXDirect->m_poaFoil;
-    if(m_pFoil) dlg.m_FoilName = m_pFoil->foilName();
-    dlg.m_FoilList.clear();
-    for(int i=0; i<m_FoilList.size(); i++)
-    {
-        dlg.m_FoilList.append(m_FoilList.at(i));
-    }
-    dlg.initDialog();
+
+    if(m_pFoil) dlg.setFoilName(m_pFoil->foilName());
+
+    dlg.initDialog(Objects2d::s_oaFoil, m_FoilList);
 
     m_FoilList.clear();
     if(QDialog::Accepted == dlg.exec())
     {
-        for(int i=0; i<dlg.m_FoilList.count();i++)
+        for(int i=0; i<dlg.foilSelectionList().count();i++)
         {
-            m_FoilList.append(dlg.m_FoilList.at(i));
+            m_FoilList.append(dlg.foilSelectionList().at(i));
         }
     }
+    outputFoilList();
+}
+
+
+/**
+ * Outputs the list of the Foil names selected for analysis to the output text window.
+ */
+void BatchDlg::outputFoilList()
+{
+    m_pctrlTextOutput->append(tr("Foils to analyze:"));
+    if (s_bCurrentFoil)
+    {
+        if(m_pFoil)
+            m_pctrlTextOutput->append("   "+m_pFoil->foilName());
+    }
+    else
+    {
+        for(int i=0; i<m_FoilList.count();i++)
+        {
+            m_pctrlTextOutput->append("   "+m_FoilList.at(i));
+        }
+    }
+    m_pctrlTextOutput->append("\n");
 }
 
 
@@ -1135,8 +1150,6 @@ void BatchDlg::setPlrName(Polar *pPolar)
     if(!pPolar) return;
     pPolar->setAutoPolarName();
 }
-
-
 
 
 /**

@@ -399,22 +399,19 @@ void WPolar::calculatePoint(int iPt)
     m_TCd[iPt] = m_FX[iPt]/q/m_referenceArea;
 
     if(m_CL[iPt]>0.0) {
-        m_1Cl[iPt]    = (double)(1./sqrt(m_CL[iPt]));
-        //		m_Cl32Cd[i] = (double)pow(m_CL[i],1.5)/m_TCd[i];
+        m_1Cl[iPt]    = (1./sqrt(m_CL[iPt]));
         m_Cl32Cd[iPt] = sqrt(m_CL[iPt]*m_CL[iPt]*m_CL[iPt])/m_TCd[iPt];
     }
     else {
         m_1Cl[iPt]    = -1.0;//will not be plotted
-        //		m_Cl32Cd[i] =  -(double)pow(-m_CL[i],1.5)/m_TCd[i];
         m_Cl32Cd[iPt] = -sqrt(-m_CL[iPt]*m_CL[iPt]*m_CL[iPt])/m_TCd[iPt];
     }
-
 
     if(fabs(m_CL[iPt])>0.) m_Gamma[iPt] = atan(m_TCd[iPt]/m_CL[iPt]) * 180.0/PI;
     else                   m_Gamma[iPt] = 90.0;
 
-    m_Vz[iPt] = (double)sqrt(2*mass*9.81/m_Density/m_referenceArea)/m_Cl32Cd[iPt];
-    m_Vx[iPt] = m_QInfinite[iPt] * (double)cos(m_Gamma[iPt]*PI/180.0);
+    m_Vz[iPt] = sqrt(2*mass*9.81/m_Density/m_referenceArea)/m_Cl32Cd[iPt];
+    m_Vx[iPt] = m_QInfinite[iPt] * cos(m_Gamma[iPt]*PI/180.0);
 
     m_ClCd[iPt]   =  m_CL[iPt]/m_TCd[iPt];
 

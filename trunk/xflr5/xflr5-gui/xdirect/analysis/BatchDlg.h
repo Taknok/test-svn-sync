@@ -84,7 +84,7 @@ private:
     void setPlrName(Polar *pPolar);
     void analyze();
     void outputMsg(QString &msg);
-
+    void outputFoilList();
 
 private slots:
     void onAnalyze();

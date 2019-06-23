@@ -52,6 +52,7 @@ class Settings : public QWidget
     Q_OBJECT
 
     friend class MainFrame;
+
 public:
     Settings(QWidget *pParent);
     void initWidget();
@@ -60,13 +61,21 @@ public:
 
     static QColor &backgroundColor(){return s_BackgroundColor;}
     static QColor &textColor(){return s_TextColor;}
-    static QString &lastDirName(){return s_LastDirName;}
     static QString &styleName(){return s_StyleName;}
     static QFont &textFont(){return s_TextFont;}
     static QFont &tableFont(){return s_TableFont;}
     static void setDefaultFonts();
     static void setColorList();
     static bool isLightTheme(){return s_Theme==SETTINGS::LIGHTTHEME;}
+
+    static void setLastDirName(QString dirname) {s_LastDirName=dirname;}
+    static QString const &lastDirName(){return s_LastDirName;}
+
+    static void setXmlDirName(QString dirname) {s_xmlDirName=dirname;}
+    static QString xmlDirName() {return s_xmlDirName;}
+
+    static void setPlrDirName(QString dirname) {s_plrDirName=dirname;}
+    static QString plrDirName() {return s_plrDirName;}
 
 private slots:
     void onStyleChanged(const QString &StyleName);
@@ -111,7 +120,7 @@ public:
     static bool s_bReverseZoom;
     static XFLR5::enumTextFileType s_ExportFileType;  /**< Defines if the list separator for the output text files should be a space or a comma. */
     static Graph s_RefGraph;//Reference setttings
-    static QString s_LastDirName, s_xmlDirName;
+    static QString s_LastDirName, s_xmlDirName, s_plrDirName;
     static QStringList s_colorList;
     static QStringList s_colorNames;
     static SETTINGS::enumThemeType s_Theme;

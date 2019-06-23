@@ -117,7 +117,8 @@ public slots:
 	void onExportCurOpp();
 	void onExportPolarOpps() ;
 	void onExportCurPolar();
-	void onExportAllPolars();
+    void onExportAllFoilPolars();
+	void onExportAllPolarsTxt();
 	void onExportXMLAnalysis();
 	void onHideAllOpps();
 	void onHideAllPolars();
@@ -129,7 +130,7 @@ public slots:
 	void onPolarView();
 	void onResetAllPolarGraphsScales();
 	void onResetCurPolar();
-	void onSavePolars();
+    void onSaveFoilPolars();
 	void onSequence();
 	void onShowFoilPolarsOnly();
 	void onShowFoilPolars();

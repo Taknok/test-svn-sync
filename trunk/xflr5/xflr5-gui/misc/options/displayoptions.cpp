@@ -51,6 +51,7 @@ Graph Settings::s_RefGraph;
 XFLR5::enumTextFileType Settings::s_ExportFileType;  /**< Defines if the list separator for the output text files should be a space or a comma. */
 QString Settings::s_LastDirName = QDir::homePath();
 QString Settings::s_xmlDirName = QDir::homePath();
+QString Settings::s_plrDirName = QDir::homePath();
 QStringList Settings::s_colorList;
 QStringList Settings::s_colorNames;
 
@@ -406,6 +407,7 @@ void Settings::saveSettings(QSettings &settings)
 	{
         settings.setValue("LastDirName", s_LastDirName);
         settings.setValue("XMLDirName", s_xmlDirName);
+        settings.setValue("PlrDirName", s_plrDirName);
 
         settings.setValue("BackgroundColor", s_BackgroundColor);
         settings.setValue("TextColor", s_TextColor);
@@ -436,7 +438,8 @@ void Settings::loadSettings(QSettings &settings)
     settings.beginGroup("global_settings");
 	{
         s_LastDirName = settings.value("LastDirName", QDir::homePath()).toString();
-        s_xmlDirName = settings.value("XMLDirName", QDir::homePath()).toString();
+        s_xmlDirName  = settings.value("XMLDirName", QDir::homePath()).toString();
+        s_plrDirName  = settings.value("PlrDirName", QDir::homePath()).toString();
 
         s_BackgroundColor = settings.value("BackgroundColor", QColor(5,11,13)).value<QColor>();
 

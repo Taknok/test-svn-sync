@@ -702,17 +702,14 @@ void BatchThreadDlg::onFoilList()
 {
     FoilSelectionDlg dlg(this);
     //	dlg.SetSelectionMode(true);
-    dlg.m_poaFoil = &Objects2d::s_oaFoil;
 
-    dlg.m_FoilList.clear();
-    dlg.m_FoilList.append(m_FoilList);
-    dlg.initDialog();
+    dlg.initDialog(Objects2d::s_oaFoil, m_FoilList);
 
     m_FoilList.clear();
 
     if(QDialog::Accepted == dlg.exec())
     {
-        m_FoilList.append(dlg.m_FoilList);
+        m_FoilList.append(dlg.foilSelectionList());
     }
     outputFoilList();
 }
@@ -1076,8 +1073,6 @@ void BatchThreadDlg::handleXFoilTaskEvent(const XFoilTaskEvent *event)
         s_pXDirect->updateView();
     }
 }
-
-
 
 
 /**

@@ -31,53 +31,46 @@
 FoilSelectionDlg::FoilSelectionDlg(QWidget *pParent) : QDialog(pParent)
 {
 	setWindowTitle(tr("Foil Selection"));
-	m_poaFoil = nullptr;
-	m_FoilName = "";
-	m_FoilList.clear();
+
+    m_FoilName.clear();
 	setupLayout();
 }
 
 
 void FoilSelectionDlg::setupLayout()
 {
-	QVBoxLayout *MainLayout = new QVBoxLayout;
+    QVBoxLayout *pMainLayout = new QVBoxLayout;
 	{
 		m_pctrlNameList = new QListWidget;
 		m_pctrlNameList->setMinimumHeight(300);
 		m_pctrlNameList->setSelectionMode(QAbstractItemView::MultiSelection);
 
-		QHBoxLayout *CommandButtons = new QHBoxLayout;
-		{
-			QPushButton *pSelectAllBtn = new QPushButton(tr("Select All"));
-			QPushButton *pOKButton = new QPushButton(tr("OK"));
-			pOKButton->setAutoDefault(false);
-			QPushButton *pCancelButton = new QPushButton(tr("Cancel"));
-			pCancelButton->setAutoDefault(false);
-			CommandButtons->addStretch(1);
-			CommandButtons->addWidget(pSelectAllBtn);
-			CommandButtons->addStretch(1);
-			CommandButtons->addWidget(pOKButton);
-			CommandButtons->addStretch(1);
-			CommandButtons->addWidget(pCancelButton);
-			CommandButtons->addStretch(1);
-			connect(pSelectAllBtn, SIGNAL(clicked()),this, SLOT(onSelectAll()));
-			connect(pOKButton, SIGNAL(clicked()),this, SLOT(onOK()));
-			connect(pCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
-		}
+        m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Discard);
+        {
+            m_pctrlSelectAll = new QPushButton(tr("Select all"));
+            m_pButtonBox->addButton(m_pctrlSelectAll, QDialogButtonBox::ActionRole);
+            connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
+        }
 
-		MainLayout->addStretch(1);
-		MainLayout->addWidget(m_pctrlNameList);
-		MainLayout->addStretch(1);
-		MainLayout->addLayout(CommandButtons);
-		MainLayout->addStretch(1);
+        pMainLayout->addStretch(1);
+        pMainLayout->addWidget(m_pctrlNameList);
+        pMainLayout->addStretch(1);
+        pMainLayout->addWidget(m_pButtonBox);
 	}
 
-	connect(m_pctrlNameList, SIGNAL(itemClicked(QListWidgetItem *)),       this, SLOT(onSelChangeList(QListWidgetItem *)));
-	connect(m_pctrlNameList, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(onDoubleClickList(QListWidgetItem *)));
+    connect(m_pctrlNameList, SIGNAL(itemClicked(QListWidgetItem *)),       SLOT(onSelChangeList(QListWidgetItem *)));
+    connect(m_pctrlNameList, SIGNAL(itemDoubleClicked(QListWidgetItem *)), SLOT(onDoubleClickList(QListWidgetItem *)));
 
-	setLayout(MainLayout);
+    setLayout(pMainLayout);
 }
 
+
+void FoilSelectionDlg::onButton(QAbstractButton *pButton)
+{
+    if (     m_pButtonBox->button(QDialogButtonBox::Ok)      == pButton)  onOK();
+    else if (m_pButtonBox->button(QDialogButtonBox::Discard) == pButton)  reject();
+    else if (m_pctrlSelectAll                                == pButton)  onSelectAll();
+}
 
 
 void FoilSelectionDlg::onSelectAll()
@@ -90,14 +83,14 @@ void FoilSelectionDlg::onOK()
 {
 	QListWidgetItem *pItem =  m_pctrlNameList->currentItem();
 	m_FoilName = pItem->text();
-	
-	m_FoilList.clear();
+
+    m_FoilSelectionList.clear();
 	for(int i=0; i<m_pctrlNameList->count();i++)
 	{
 		pItem = m_pctrlNameList->item(i);
 		if(pItem->isSelected())
 		{
-			m_FoilList.append(pItem->text());
+            m_FoilSelectionList.append(pItem->text());
 		}
 	}
 
@@ -117,19 +110,18 @@ void FoilSelectionDlg::onDoubleClickList(QListWidgetItem *)
 }
 
 
-void FoilSelectionDlg::initDialog()
+void FoilSelectionDlg::initDialog(QList<Foil*> const &FoilList, QStringList const &FoilSelList)
 {
-	if(!m_poaFoil) return;
-	Foil *pFoil;
+    m_FoilList = FoilList;
 
-	for (int i=0; i<m_poaFoil->size(); i++)
+    for (int i=0; i<m_FoilList.size(); i++)
 	{
-		pFoil = (Foil*)m_poaFoil->at(i);
+        const Foil *pFoil = m_FoilList.at(i);
 		m_pctrlNameList->addItem(pFoil->foilName());
 		m_pctrlNameList->setItemSelected(m_pctrlNameList->item(i), false);
-		for(int j=0; j<m_FoilList.size();j++)
+        for(int j=0; j<FoilSelList.size(); j++)
 		{
-			if(m_FoilList.at(j)==pFoil->foilName())
+            if(FoilSelList.at(j)==pFoil->foilName())
 			{
 				m_pctrlNameList->setItemSelected(m_pctrlNameList->item(i), true);
 				break;

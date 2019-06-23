@@ -6007,27 +6007,23 @@ void Miarex::onPlaneInertia()
         iDlg.m_pPlane = m_pCurPlane;
     }
 
-    for (int i=0; i< m_poaWPolar->size(); i++)
+    for (int i=0; i<m_poaWPolar->size(); i++)
     {
         pWPolar = m_poaWPolar->at(i);
         if(pWPolar->dataSize() && pWPolar->planeName()==PlaneName && pWPolar->m_bAutoInertia)
         {
-            //			if(pWPolar->polarType()==XFLR5::STABILITYPOLAR)
-            //			{
             bHasResults = true;
             break;
-            //			}
         }
     }
 
     iDlg.initDialog();
 
-    ModDlg mdDlg(s_pMainFrame);
-
     if(iDlg.exec()==QDialog::Accepted)
     {
         if(bHasResults)
         {
+            ModDlg mdDlg(s_pMainFrame);
             mdDlg.m_Question = tr("The modification will erase all polar results associated to this Plane.\nContinue ?");
             mdDlg.initDialog();
             int Ans = mdDlg.exec();

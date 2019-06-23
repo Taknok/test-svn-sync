@@ -2379,8 +2379,8 @@ void MainFrame::createXDirectActions()
     m_pHideFoilPolars = new QAction(tr("Hide associated polars"), this);
     connect(m_pHideFoilPolars, SIGNAL(triggered()), m_pXDirect, SLOT(onHideFoilPolars()));
 
-    m_pSaveFoilPolars = new QAction(tr("Save associated polars"), this);
-    connect(m_pSaveFoilPolars, SIGNAL(triggered()), m_pXDirect, SLOT(onSavePolars()));
+    m_pSaveFoilPolars = new QAction(tr("Export polars to .plr file"), this);
+    connect(m_pSaveFoilPolars, SIGNAL(triggered()), m_pXDirect, SLOT(onSaveFoilPolars()));
 
     m_pHidePolarOpps = new QAction(tr("Hide associated OpPoints"), this);
     connect(m_pHidePolarOpps, SIGNAL(triggered()), m_pXDirect, SLOT(onHidePolarOpps()));
@@ -2433,8 +2433,11 @@ void MainFrame::createXDirectActions()
     m_pExportCurPolar = new QAction(tr("Export"), this);
     connect(m_pExportCurPolar, SIGNAL(triggered()), m_pXDirect, SLOT(onExportCurPolar()));
 
-    m_pExportAllPolars = new QAction(tr("Export all polars"), this);
-    connect(m_pExportAllPolars, SIGNAL(triggered()), m_pXDirect, SLOT(onExportAllPolars()));
+    m_pExportPolarsTxt = new QAction(tr("to text format"), this);
+    connect(m_pExportPolarsTxt, SIGNAL(triggered()), m_pXDirect, SLOT(onExportAllPolarsTxt()));
+
+    m_pExportFoilPlrs = new QAction(tr("to .plr format"), this);
+    connect(m_pExportFoilPlrs, SIGNAL(triggered()), m_pXDirect, SLOT(onExportAllFoilPolars()));
 
     m_pXDirectStyleAct = new QAction(tr("Define Styles"), this);
     m_pXDirectStyleAct->setStatusTip(tr("Define the style for the boundary layer and the pressure arrows"));
@@ -2594,6 +2597,7 @@ void MainFrame::createXDirectMenus()
             m_pCurrentFoilMenu->addAction(m_pShowFoilPolars);
             m_pCurrentFoilMenu->addAction(m_pHideFoilPolars);
             m_pCurrentFoilMenu->addAction(m_pDeleteFoilPolars);
+            m_pCurrentFoilMenu->addSeparator();
             m_pCurrentFoilMenu->addAction(m_pSaveFoilPolars);
             m_pCurrentFoilMenu->addSeparator();
             m_pCurrentFoilMenu->addAction(m_pShowFoilOpps);
@@ -2656,7 +2660,11 @@ void MainFrame::createXDirectMenus()
         m_pPolarMenu->addSeparator();
         m_pPolarMenu->addAction(m_pImportXFoilPolar);
         m_pPolarMenu->addSeparator();
-        m_pPolarMenu->addAction(m_pExportAllPolars);
+        QMenu *pExportMenu = m_pPolarMenu->addMenu(tr("Export all"));
+        {
+            pExportMenu->addAction(m_pExportFoilPlrs);
+            pExportMenu->addAction(m_pExportPolarsTxt);
+        }
         m_pPolarMenu->addSeparator();
         m_pPolarMenu->addAction(m_pXDirectPolarFilter);
         m_pPolarMenu->addSeparator();
@@ -2709,6 +2717,7 @@ void MainFrame::createXDirectMenus()
             m_pCurrentFoilMenu_OperFoilCtxMenu->addAction(m_pShowFoilPolars);
             m_pCurrentFoilMenu_OperFoilCtxMenu->addAction(m_pHideFoilPolars);
             m_pCurrentFoilMenu_OperFoilCtxMenu->addAction(m_pDeleteFoilPolars);
+            m_pCurrentFoilMenu_OperFoilCtxMenu->addSeparator();
             m_pCurrentFoilMenu_OperFoilCtxMenu->addAction(m_pSaveFoilPolars);
             m_pCurrentFoilMenu_OperFoilCtxMenu->addSeparator();
             m_pCurrentFoilMenu_OperFoilCtxMenu->addAction(m_pShowFoilOpps);
@@ -2812,6 +2821,7 @@ void MainFrame::createXDirectMenus()
             m_pCurrentFoilMenu_OperPolarCtxMenu->addAction(m_pShowFoilPolars);
             m_pCurrentFoilMenu_OperPolarCtxMenu->addAction(m_pHideFoilPolars);
             m_pCurrentFoilMenu_OperPolarCtxMenu->addAction(m_pDeleteFoilPolars);
+            m_pCurrentFoilMenu_OperPolarCtxMenu->addSeparator();
             m_pCurrentFoilMenu_OperPolarCtxMenu->addAction(m_pSaveFoilPolars);
             m_pCurrentFoilMenu_OperPolarCtxMenu->addSeparator();
             m_pCurrentFoilMenu_OperPolarCtxMenu->addAction(m_pShowFoilOpps);
@@ -3600,7 +3610,7 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString pathname)
     pathname.replace(QDir::separator(), "/"); // Qt sometimes uses the windows \ separator
 
     int pos = pathname.lastIndexOf("/");
-    if(pos>0) 	Settings::s_LastDirName = pathname.left(pos);
+    if(pos>0) Settings::setLastDirName(pathname.left(pos));
 
     if(end==".plr")
     {
@@ -3802,11 +3812,11 @@ void MainFrame::onInsertProject()
     QString PathName;
 
     PathName = QFileDialog::getOpenFileName(this, tr("Open File"),
-                                            Settings::s_LastDirName,
+                                            Settings::lastDirName(),
                                             "Project file (*.wpa *.xfl)");
     if(!PathName.length()) return;
     int pos = PathName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = PathName.left(pos);
+    if(pos>0) Settings::setLastDirName(PathName.left(pos));
 
     QFile XFile(PathName);
     if (!XFile.open(QIODevice::ReadOnly))
@@ -3888,7 +3898,7 @@ void MainFrame::onLoadFile()
     bool warn_non_airfoil_multiload = false;
 
     PathNames = QFileDialog::getOpenFileNames(this, tr("Open File"),
-                                              Settings::s_LastDirName,
+                                              Settings::lastDirName(),
                                               "XFLR5 file (*.dat *.plr *.wpa *.xfl)");
     if(!PathNames.size()) return;
     if(PathNames.size() > 1)
@@ -3915,7 +3925,7 @@ void MainFrame::onLoadFile()
         PathName.replace(QDir::separator(), "/"); // Qt sometimes uses the windows \ separator
 
         int pos = PathName.lastIndexOf("/");
-        if(pos>0) Settings::s_LastDirName = PathName.left(pos);
+        if(pos>0) Settings::setLastDirName(PathName.left(pos));
 
         App = loadXFLR5File(PathName);
     }
@@ -4019,8 +4029,6 @@ void MainFrame::onOpenGLInfo()
 }
 
 
-
-
 void MainFrame::onResetSettings()
 {
     int resp = QMessageBox::question(this, tr("Default Settings"), tr("Are you sure you want to reset the default settings ?"),
@@ -4038,7 +4046,9 @@ void MainFrame::onResetSettings()
 #endif
 
         settings.clear();
-        Settings::s_LastDirName = QDir::homePath();
+        Settings::setLastDirName(QDir::homePath());
+        Settings::setXmlDirName(QDir::homePath());
+        Settings::setPlrDirName(QDir::homePath());
         // do not save on exit
         m_bSaveSettings = false;
     }
@@ -4645,7 +4655,6 @@ void MainFrame::readPolarFile(QDataStream &ar)
 }
 
 
-
 bool MainFrame::saveProject(QString PathName)
 {
     QString Filter = "XFLR5 v6 Project File (*.xfl)";
@@ -4654,7 +4663,7 @@ bool MainFrame::saveProject(QString PathName)
     if(!PathName.length())
     {
         PathName = QFileDialog::getSaveFileName(this, tr("Save the Project File"),
-                                                Settings::s_LastDirName+"/"+FileName,
+                                                Settings::lastDirName()+"/"+FileName,
                                                 "XFLR5 v6 Project File (*.xfl)",
                                                 &Filter);
 
@@ -4666,7 +4675,7 @@ bool MainFrame::saveProject(QString PathName)
         PathName.replace(QDir::separator(), "/"); // Qt sometimes uses the windows \ separator
 
         pos = PathName.lastIndexOf("/");
-        if(pos>0) Settings::s_LastDirName = PathName.left(pos);
+        if(pos>0) Settings::setLastDirName(PathName.left(pos));
     }
 
 
@@ -4726,7 +4735,7 @@ void MainFrame::onSavePlaneAsProject()
     QString FileName = strong;
 
     PathName = QFileDialog::getSaveFileName(this, tr("Save the Project File"),
-                                            Settings::s_LastDirName+"/"+FileName,
+                                            Settings::lastDirName()+"/"+FileName,
                                             "XFLR5 v6 Project File (*.xfl)",
                                             &Filter);
 
@@ -4735,7 +4744,7 @@ void MainFrame::onSavePlaneAsProject()
     if(pos<0) PathName += ".xfl";
     PathName.replace(QDir::separator(), "/"); // Qt sometimes uses the windows \ separator
     pos = PathName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = PathName.left(pos);
+    if(pos>0) Settings::setLastDirName(PathName.left(pos));
 
 
     QFile fp(PathName);
@@ -6316,63 +6325,66 @@ void MainFrame::updateView()
 }
 
 
-
-void MainFrame::writePolars(QDataStream &ar, Foil *pFoil)
+void MainFrame::saveFoilPolars(QDataStream &ar, QList<Foil*> const &FoilList)
 {
-    int i=0;
-    if(!pFoil)
+    QVector<Foil*> ExportList;
+    if(FoilList.isEmpty())
     {
-        int ArchiveFormat = 100003;
-        ar << ArchiveFormat;
-        //100003 : added foil comment
-        //100002 : means we are serializings opps in the new numbered format
-        //100001 : transferred NCrit, XTopTr, XBotTr to polar file
-        //first write foils
-        ar << Objects2d::s_oaFoil.size();
-
-        for (i=0; i<Objects2d::s_oaFoil.size(); i++)
+        // Save them all, the user will sort them out
+        for(int iFoil=0; iFoil<Objects2d::foilCount(); iFoil++)
         {
-            pFoil = Objects2d::s_oaFoil.at(i);
-            serializeFoil(pFoil, ar, true);
-        }
-
-        //then write polars
-        ar << Objects2d::s_oaPolar.size();
-        Polar * pPolar ;
-        for (i=0; i<Objects2d::s_oaPolar.size();i++)
-        {
-            pPolar = Objects2d::s_oaPolar.at(i);
-            serializePolar(pPolar, ar, true);
+            ExportList.append(Objects2d::foilAt(iFoil));
         }
     }
     else
     {
-        ar << 100003;
-        //100003 : added foil comment
-        //100002 : means we are serializings opps in the new numbered format
-        //100001 : transferred NCrit, XTopTr, XBotTr to polar file
-        //first write foil
-        ar << 1;//only one this time
-        serializeFoil(pFoil, ar,true);
-        //count polars associated to the foil
-        Polar * pPolar ;
-        int n=0;
-        for (i=0; i<Objects2d::s_oaPolar.size();i++)
+        for(int iFoil=0; iFoil<FoilList.size(); iFoil++)
         {
-            pPolar = Objects2d::s_oaPolar.at(i);
-            if (pPolar->foilName() == pFoil->foilName()) n++;
+            ExportList.append(FoilList.at(iFoil));
         }
-        //then write polars
-        ar << n;
-        for (i=0; i<Objects2d::s_oaPolar.size();i++)
+    }
+
+    // count the number of polars to export
+    int nPolars = 0;
+    for (int i=0; i<ExportList.size(); i++)
+    {
+        Foil const *pFoil = ExportList.at(i);
+        for (int j=0; j<Objects2d::s_oaPolar.size(); j++)
         {
-            pPolar = Objects2d::s_oaPolar.at(i);
-            if (pPolar->foilName() == pFoil->foilName()) serializePolar(pPolar, ar, true);
+            Polar *pPolar = Objects2d::s_oaPolar.at(j);
+            if(pPolar->foilName().compare(pFoil->foilName())==0) nPolars++;
+        }
+    }
+
+    int ArchiveFormat = 100003;
+    ar << ArchiveFormat;
+    //100003 : added foil comment
+    //100002 : means we are serializings opps in the new numbered format
+    //100001 : transferred NCrit, XTopTr, XBotTr to polar file
+    //first write foils
+    ar << ExportList.size();
+
+    for (int i=0; i<ExportList.size(); i++)
+    {
+        Foil *pFoil = ExportList.at(i);
+        serializeFoil(pFoil, ar, true);
+    }
+
+    //then write the polars associated to the selected foils
+    ar << nPolars;
+
+    for (int i=0; i<ExportList.size(); i++)
+    {
+        Foil const *pFoil = ExportList.at(i);
+        for (int j=0; j<Objects2d::s_oaPolar.size(); j++)
+        {
+            Polar *pPolar = Objects2d::s_oaPolar.at(j);
+            if(pPolar->foilName().compare(pFoil->foilName())==0)
+                serializePolar(pPolar, ar, true);
         }
     }
 
     ar << 0; // don't save opps
-
 }
 
 

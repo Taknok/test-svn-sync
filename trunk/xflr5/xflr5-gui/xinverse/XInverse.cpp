@@ -1395,12 +1395,12 @@ void XInverse::onExecute()
 void XInverse::onExtractFoil()
 {
     FoilSelectionDlg dlg(s_pMainFrame);
-    dlg.m_poaFoil = &Objects2d::s_oaFoil;
-    dlg.initDialog();
+
+    dlg.initDialog(Objects2d::s_oaFoil, QStringList());
 
     if(m_bLoaded)
     {
-        dlg.m_FoilName = m_pRefFoil->foilName();
+        dlg.setFoilName(m_pRefFoil->foilName());
     }
 
     if(QDialog::Accepted == dlg.exec())
@@ -1410,7 +1410,7 @@ void XInverse::onExtractFoil()
         m_bSpline = false;
         m_bSplined  = true;
         Foil *pFoil;
-        pFoil = Objects2d::foil(dlg.m_FoilName);
+        pFoil = Objects2d::foil(dlg.selectedFoilName());
         XDirect::setCurFoil(pFoil);
 
         m_pRefFoil->copyFoil(pFoil);
@@ -1427,13 +1427,12 @@ void XInverse::onExtractFoil()
 void XInverse::onOverlayFoil()
 {
     FoilSelectionDlg dlg(s_pMainFrame);
-    dlg.m_poaFoil = &Objects2d::s_oaFoil;
-    dlg.initDialog();
-    dlg.m_FoilName.clear();
+
+    dlg.initDialog(Objects2d::s_oaFoil, QStringList());
 
     if(QDialog::Accepted == dlg.exec())
     {
-        m_pOverlayFoil = Objects2d::foil(dlg.m_FoilName);
+        m_pOverlayFoil = Objects2d::foil(dlg.selectedFoilName());
         updateView();
     }
 }

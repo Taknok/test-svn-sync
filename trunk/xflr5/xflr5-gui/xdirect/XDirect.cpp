@@ -69,6 +69,7 @@
 
 #include <xdirect/XDirectStyleDlg.h>
 
+#include <xinverse/FoilSelectionDlg.h>
 
 #include <misc/text/MinTextEdit.h>
 
@@ -2392,7 +2393,7 @@ void XDirect::onExportBLData()
 /**
  * The user has requested the export of all polars to text files
  */
-void XDirect::onExportAllPolars()
+void XDirect::onExportAllPolarsTxt()
 {
     QString FileName, DirName;
     QFile XFile;
@@ -2422,6 +2423,84 @@ void XDirect::onExportAllPolars()
             return;
         }
     }
+}
+
+
+/**
+ * The user has requested the export of all polars to .plr files
+ */
+void XDirect::onExportAllFoilPolars()
+{
+    if(!m_poaFoil->size() || !m_poaPolar->size()) return;
+
+    QString FileName;
+    FileName = ".plr";
+    FileName.replace("/", " ");
+
+    FileName = QFileDialog::getSaveFileName(this, tr("Polar File"), Settings::plrDirName()+"/"+FileName, tr("Polar File (*.plr)"));
+    if(!FileName.length()) return;
+
+    QString strong = FileName.right(4);
+    if(strong !=".plr" && strong !=".PLR") FileName += ".plr";
+
+    QFile XFile(FileName);
+    if (!XFile.open(QIODevice::WriteOnly)) return;
+
+    int pos = FileName.lastIndexOf("/");
+    if(pos>0) Settings::setPlrDirName(FileName.left(pos));
+
+    QDataStream ar(&XFile);
+#if QT_VERSION >= 0x040500
+    ar.setVersion(QDataStream::Qt_4_5);
+#endif
+    ar.setByteOrder(QDataStream::LittleEndian);
+
+    FoilSelectionDlg dlg(s_pMainFrame);
+    dlg.initDialog(*m_poaFoil, QStringList());
+
+    if(m_pCurFoil)
+        dlg.setFoilName(m_pCurFoil->foilName());
+
+    if(dlg.exec()==QDialog::Accepted)
+        s_pMainFrame->saveFoilPolars(ar, dlg.foilList());
+
+    XFile.close();
+}
+
+
+/**
+ * The user has requested the creation of a .plr file with the Polars of the active Foil object.
+ */
+void XDirect::onSaveFoilPolars()
+{
+    if(!m_pCurFoil || !m_poaPolar->size()) return;
+
+    QString FileName;
+    FileName = m_pCurFoil->foilName() + ".plr";
+    FileName.replace("/", " ");
+
+    FileName = QFileDialog::getSaveFileName(this, tr("Polar File"), Settings::plrDirName()+"/"+FileName, tr("Polar File (*.plr)"));
+    if(!FileName.length()) return;
+
+    QString strong = FileName.right(4);
+    if(strong !=".plr" && strong !=".PLR") FileName += ".plr";
+
+    QFile XFile(FileName);
+    if (!XFile.open(QIODevice::WriteOnly)) return;
+
+    int pos = FileName.lastIndexOf("/");
+    if(pos>0) Settings::setPlrDirName(FileName.left(pos));
+
+    QDataStream ar(&XFile);
+#if QT_VERSION >= 0x040500
+    ar.setVersion(QDataStream::Qt_4_5);
+#endif
+    ar.setByteOrder(QDataStream::LittleEndian);
+
+    QList<Foil*> foilList = {m_pCurFoil};
+    s_pMainFrame->saveFoilPolars(ar, foilList);
+
+    XFile.close();
 }
 
 
@@ -3661,41 +3740,6 @@ void XDirect::onResetCurPolar()
     updateView();
 
     emit projectModified();
-}
-
-
-/**
- * The user has requested the creation of a .plr file with the Polars of the active Foil object.
- */
-void XDirect::onSavePolars()
-{
-    if(!m_pCurFoil || !m_poaPolar->size()) return;
-
-    QString FileName;
-    FileName = m_pCurFoil->foilName() + ".plr";
-    FileName.replace("/", " ");
-
-    FileName = QFileDialog::getSaveFileName(this, tr("Polar File"), Settings::s_LastDirName+"/"+FileName, tr("Polar File (*.plr)"));
-    if(!FileName.length()) return;
-
-    QString strong = FileName.right(4);
-    if(strong !=".plr" && strong !=".PLR") FileName += ".plr";
-
-    QFile XFile(FileName);
-    if (!XFile.open(QIODevice::WriteOnly)) return;
-
-    int pos = FileName.lastIndexOf("/");
-    if(pos>0) Settings::s_LastDirName = FileName.left(pos);
-
-    QDataStream ar(&XFile);
-#if QT_VERSION >= 0x040500
-    ar.setVersion(QDataStream::Qt_4_5);
-#endif
-    ar.setByteOrder(QDataStream::LittleEndian);
-
-    s_pMainFrame->writePolars(ar, m_pCurFoil);
-
-    XFile.close();
 }
 
 
