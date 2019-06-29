@@ -79,8 +79,8 @@ public:
         m_pY = y;
     }
 
-    bool isCancelled();
-    bool hasWarnings();
+    bool isCancelled() const;
+    bool hasWarnings() const;
 
     static void setMaxIter(int maxIter){s_IterLim = maxIter;}
     static void setConvergencePrecision(double precision) {s_CvPrec = precision;}
@@ -167,7 +167,6 @@ private:
     double m_mtoUnit;                           /**< Conversion factor for the display of results in the user-defined length unit*/
     double m_Offset[MAXSPANSTATIONS+1];         /**< offset at  the span stations */
     double m_PCd[MAXSPANSTATIONS+1];		    /**< Viscous Drag coefficient at the span stations */
-    static QList<Polar*> *s_poaPolar;           /**< A static pointer to the foil polar array */
     double m_QInf0;                             /**< The freestream velocity */
     double m_Re[MAXSPANSTATIONS+1];		        /**< Reynolds number at the span stations */
     double m_SpanPos[MAXSPANSTATIONS+1];		/**< Span position of the span stations */
