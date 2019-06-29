@@ -113,9 +113,9 @@ void LLTAnalysisDlg::initDialog()
     m_pIterGraph->deleteCurves();
 
     m_pIterGraph->setXMin(0.0);
-    m_pIterGraph->setXMax((double)LLTAnalysis::s_IterLim);
+    m_pIterGraph->setXMax(double(LLTAnalysis::s_IterLim));
     m_pIterGraph->setX0(0.0);
-    m_pIterGraph->setXUnit((int)(LLTAnalysis::s_IterLim/10.0));
+    m_pIterGraph->setXUnit(int(LLTAnalysis::s_IterLim/10.0));
 
     m_pIterGraph->setY0(0.0);
     m_pIterGraph->setYMin(0.0);
@@ -247,7 +247,7 @@ void LLTAnalysisDlg::analyze()
 
     m_pIterGraph->deleteCurves();
     m_pIterGraph->resetLimits();
-    m_pIterGraph->setXMax((double)LLTAnalysis::s_IterLim);
+    m_pIterGraph->setXMax(double(LLTAnalysis::s_IterLim));
     m_pIterGraph->setYMinGrid(false, true, QColor(100,100,100), 2, 1, 4);
 
     Curve *pCurve = m_pIterGraph->addCurve();
@@ -357,31 +357,31 @@ void LLTAnalysisDlg::updateOutput(QString &strong)
 
 
 
-void LLTAnalysisDlg::showEvent(QShowEvent *event)
+void LLTAnalysisDlg::showEvent(QShowEvent *pEvent)
 {
     move(s_Position);
     resize(s_WindowSize);
     if(s_bWindowMaximized) setWindowState(Qt::WindowMaximized);
 
-    event->accept();
+    pEvent->accept();
 }
 
-void LLTAnalysisDlg::hideEvent(QHideEvent *event)
+void LLTAnalysisDlg::hideEvent(QHideEvent *pEvent)
 {
     s_WindowSize = size();
     s_bWindowMaximized = isMaximized();
     s_Position = pos();
 
-    event->accept();
+    pEvent->accept();
 }
 
 
-void LLTAnalysisDlg::customEvent(QEvent * event)
+void LLTAnalysisDlg::customEvent(QEvent * pEvent)
 {
     // When we get here, we've crossed the thread boundary and are now
     // executing in this widget's thread
 
-    if(event->type() == PLANE_END_POPP_EVENT)
+    if(pEvent->type() == PLANE_END_POPP_EVENT)
     {
         m_pIterGraph->resetYLimits();
     }

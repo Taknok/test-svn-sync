@@ -90,9 +90,9 @@ private slots:
 
 private:
     void keyPressEvent(QKeyEvent *event);
-    void showEvent(QShowEvent *event);
-    void hideEvent(QHideEvent *event);
-    void customEvent(QEvent * event);
+    void showEvent(QShowEvent *pEvent);
+    void hideEvent(QHideEvent *pEvent);
+    void customEvent(QEvent * pEvent);
 
     bool AlphaLoop();
     bool QInfLoop();
