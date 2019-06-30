@@ -77,7 +77,6 @@ int Compare(complex<double> a, complex<double>b)
 		else if (a.imag()<b.imag())   return -1;
 		else return 0;
 	}
-	return 0;
 }
 
 
@@ -507,7 +506,7 @@ bool Crout_LU_Decomposition_with_Pivoting(double *A, int pivot[], int n, bool *p
 		for (i = k+1, p_row = p_k + n; i < n; p_row += n, i++)
 			for (j = k+1; j < n; j++) *(p_row + j) -= *(p_row + k) * *(p_k + j);
 
-		Progress += TaskSize/(double)(n);
+        Progress += TaskSize/double(n);
 //		qApp->processEvents();
 		if(*pbCancel) return false;
 	}
@@ -698,7 +697,6 @@ void TestEigen()
 	A[3][0] = 1.00;	A[3][1] =  1.0;	A[3][2] =  2.0;	A[3][3] =  1.0;
 	complex<double> AC[16];
 //	complex<double> V[4];
-	complex <double> lambda(2.0, 0.0);
 	for(int i=0; i<4; i++)
 	{
 		for(int j=0; j<4;j++)

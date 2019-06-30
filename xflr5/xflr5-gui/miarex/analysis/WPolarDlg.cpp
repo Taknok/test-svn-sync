@@ -364,7 +364,6 @@ void WPolarDlg::keyPressEvent(QKeyEvent *event)
                 onOK();
                 return;
             }
-            break;
         }
         case Qt::Key_Escape:
         {
@@ -631,13 +630,13 @@ void WPolarDlg::readValues()
 
     if(m_pctrlUnit1->isChecked())
     {
-        s_WPolar.viscosity() = m_pctrlViscosity->value();
-        s_WPolar.density()   = m_pctrlDensity->value();
+        s_WPolar.setViscosity(m_pctrlViscosity->value());
+        s_WPolar.setDensity(m_pctrlDensity->value());
     }
     else
     {
-        s_WPolar.density()   = m_pctrlDensity->value() / 0.00194122;
-        s_WPolar.viscosity() = m_pctrlViscosity->value() / 10.7182881;
+        s_WPolar.setDensity(m_pctrlDensity->value() / 0.00194122);
+        s_WPolar.setViscosity(m_pctrlViscosity->value() / 10.7182881);
     }
 
     //    qDebug("%13.8g    %13.8g",m_pctrlViscosity->value(),s_WPolar.viscosity());
@@ -675,7 +674,7 @@ void WPolarDlg::setDensity()
     int exp, precision;
     if(m_pctrlUnit1->isChecked())
     {
-        exp = (int)log(s_WPolar.density());
+        exp = int(log(s_WPolar.density()));
         if(exp>1) precision = 1;
         else if(exp<-4) precision = 4;
         else precision = 3-exp;
@@ -684,7 +683,7 @@ void WPolarDlg::setDensity()
     }
     else
     {
-        exp = (int)log(s_WPolar.density()* 0.00194122);
+        exp = int(log(s_WPolar.density()* 0.00194122));
         if(exp>1) precision = 1;
         else if(exp<-4) precision = 4;
         else precision = 3-exp;
@@ -1133,8 +1132,8 @@ void WPolarDlg::onTabChanged(int index)
 
 void WPolarDlg::resizeColumns()
 {
-    double wc = (double)m_pExtraDragControlTable->width()*.97;
-    int wCols  = (int)(wc/3);
+    double wc = double(m_pExtraDragControlTable->width())*.97;
+    int wCols  = int(wc/3);
     m_pExtraDragControlTable->setColumnWidth(0, wCols);
     m_pExtraDragControlTable->setColumnWidth(1, wCols);
     m_pExtraDragControlTable->setColumnWidth(2, wCols);
@@ -1216,15 +1215,13 @@ void WPolarDlg::setReynolds()
 }
 
 
-
-
 void WPolarDlg::onAeroData()
 {
     AeroDataDlg dlg;
     if(dlg.exec() == QDialog::Accepted)
     {
-        s_WPolar.density() = dlg.AirDensity();
-        s_WPolar.m_Viscosity = dlg.KinematicViscosity();
+        s_WPolar.setDensity(dlg.AirDensity());
+        s_WPolar.setViscosity(dlg.KinematicViscosity());
 
         if(m_pctrlUnit1->isChecked())
         {

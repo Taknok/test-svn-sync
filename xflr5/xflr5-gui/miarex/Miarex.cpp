@@ -99,7 +99,7 @@
 MainFrame *Miarex::s_pMainFrame = nullptr;
 
 bool Miarex::s_bResetCurves = true;
-bool Miarex::m_bLogFile = true;
+bool Miarex::s_bLogFile = true;
 
 QList<Plane*>    *Miarex::m_poaPlane = nullptr;
 QList<WPolar*>   *Miarex::m_poaWPolar = nullptr;
@@ -647,7 +647,7 @@ void Miarex::setControls()
     s_pMainFrame->checkGraphActions();
 
     m_pctrlSpanPos->setValue(m_CurSpanPos);
-    m_pctrlCpSectionSlider->setValue((int)(m_CurSpanPos*100.0));
+    m_pctrlCpSectionSlider->setValue(int(m_CurSpanPos*100.0));
 
     s_pMainFrame->m_pW3DScalesAct->setChecked(s_pMainFrame->m_pctrl3DScalesWidget->isVisible());
 
@@ -667,7 +667,7 @@ void Miarex::setControls()
     m_pctrlIDrag->setChecked(m_bICd);
     m_pctrlVDrag->setChecked(m_bVCd);
     m_pctrlStream->setChecked(m_pgl3dMiarexView->m_bStream);
-    m_pctrlClipPlanePos->setValue((int)(m_pgl3dMiarexView->m_ClipPlanePos*100.0));
+    m_pctrlClipPlanePos->setValue(int(m_pgl3dMiarexView->m_ClipPlanePos*100.0));
     m_pctrlClipPlanePos->setEnabled(W3dPrefsDlg::s_bEnableClipPlane);
 
     m_pctrlOutline->setEnabled(m_pCurPlane);
@@ -1023,7 +1023,7 @@ void Miarex::createStabTimeCurves()
     dt = m_TotalTime/1000.;
     if(dt<m_Deltat) dt = m_Deltat;
 
-    TotalPoints = qMin(1000, (int)(m_TotalTime/dt));
+    TotalPoints = qMin(1000, int(m_TotalTime/dt));
     //read the initial state condition
     m_TimeInput[0] = pStabView->m_pctrlStabVar1->value();
     m_TimeInput[1] = pStabView->m_pctrlStabVar2->value();
@@ -1071,7 +1071,7 @@ void Miarex::createStabTimeCurves()
 
         for(i=0; i<TotalPoints; i++)
         {
-            t = (double)i * dt;
+            t = double(i) * dt;
             q[0] = q0[0] * exp(m_pCurPOpp->m_EigenValue[0+k*4]*t);
             q[1] = q0[1] * exp(m_pCurPOpp->m_EigenValue[1+k*4]*t);
             q[2] = q0[2] * exp(m_pCurPOpp->m_EigenValue[2+k*4]*t);
@@ -1101,10 +1101,6 @@ void Miarex::createStabTimeCurves()
 */
 void Miarex::createStabRungeKuttaCurves()
 {
-    int i, TotalPoints, PlotInterval;
-
-    double t, dt, ctrl_t;
-    Curve *pCurve0, *pCurve1, *pCurve2, *pCurve3;
     double A[4][4], B[4];
     double m[5][4];
     double y[4], yp[4];
@@ -1113,16 +1109,16 @@ void Miarex::createStabRungeKuttaCurves()
 
     StabViewDlg *pStabView = s_pMainFrame->m_pStabView;
     CurveTitle = pStabView->m_pctrlCurveList->currentText();
-    pCurve0 = m_TimeGraph[0]->curve(CurveTitle);
+    Curve *pCurve0 = m_TimeGraph[0]->curve(CurveTitle);
     if(pCurve0) pCurve0->clear();
     else return;
-    pCurve1 = m_TimeGraph[1]->curve(CurveTitle);
+    Curve* pCurve1 = m_TimeGraph[1]->curve(CurveTitle);
     if(pCurve1) pCurve1->clear();
     else return;
-    pCurve2 = m_TimeGraph[2]->curve(CurveTitle);
+    Curve *pCurve2 = m_TimeGraph[2]->curve(CurveTitle);
     if(pCurve2) pCurve2->clear();
     else return;
-    pCurve3 = m_TimeGraph[3]->curve(CurveTitle);
+    Curve *pCurve3 = m_TimeGraph[3]->curve(CurveTitle);
     if(pCurve3) pCurve3->clear();
     else return;
 
@@ -1150,15 +1146,15 @@ void Miarex::createStabRungeKuttaCurves()
 
     m_Deltat    = pStabView->m_pctrlDeltat->value();
     m_TotalTime = pStabView->m_pctrlTotalTime->value();
-    dt = m_TotalTime/1000.;
+    double dt = m_TotalTime/1000.;
     if(dt<m_Deltat) dt = m_Deltat;
 
-    TotalPoints  = qMin(1000, (int)(m_TotalTime/dt));
-    PlotInterval = qMax(1,(int)(TotalPoints/200));
+    int TotalPoints  = qMin(1000, int(m_TotalTime/dt));
+    int PlotInterval = qMax(1, int(TotalPoints/200));
 
     //we are considering forced response from initial steady state, so set
     // initial conditions to 0
-    t = 0.0;
+    double t = 0.0;
     y[0] = y[1] = y[2] = y[3] = 0.0;
     pCurve0->appendPoint(0.0, y[0]);
     pCurve1->appendPoint(0.0, y[1]);
@@ -1166,7 +1162,7 @@ void Miarex::createStabRungeKuttaCurves()
     pCurve3->appendPoint(0.0, y[3]);
 
     //Runge-Kutta method
-    for(i=0; i<TotalPoints; i++)
+    for(int i=0; i<TotalPoints; i++)
     {
         //initial slope m1
         m[0][0] = A[0][0]*y[0] + A[0][1]*y[1] + A[0][2]*y[2] + A[0][3]*y[3];
@@ -1174,7 +1170,7 @@ void Miarex::createStabRungeKuttaCurves()
         m[0][2] = A[2][0]*y[0] + A[2][1]*y[1] + A[2][2]*y[2] + A[2][3]*y[3];
         m[0][3] = A[3][0]*y[0] + A[3][1]*y[1] + A[3][2]*y[2] + A[3][3]*y[3];
 
-        ctrl_t = pStabView->getControlInput(t);
+        double ctrl_t = pStabView->getControlInput(t);
         m[0][0] += B[0] * ctrl_t;
         m[0][1] += B[1] * ctrl_t;
         m[0][2] += B[2] * ctrl_t;
@@ -1278,8 +1274,6 @@ void Miarex::createStabRungeKuttaCurves()
 */
 void Miarex::createStabRLCurves()
 {
-    WPolar *pWPolar;
-
     // we have eight modes, 4 longitudinal and 4 lateral
     // declare a curve for each
     Curve *pLongCurve[4];
@@ -1290,7 +1284,7 @@ void Miarex::createStabRLCurves()
 
     for (int k=0; k<m_poaWPolar->size(); k++)
     {
-        pWPolar = m_poaWPolar->at(k);
+        WPolar *pWPolar = m_poaWPolar->at(k);
         if ((pWPolar->isVisible())
                 && pWPolar->dataSize()>0 && (m_bType7 && pWPolar->isStabilityPolar()))
         {
@@ -1324,8 +1318,6 @@ void Miarex::createStabRLCurves()
 }
 
 
-
-
 /**
  * Initializes the style combo box for the graph curves
  * Selects the styles of the active curve
@@ -1338,9 +1330,9 @@ void Miarex::fillComboBoxes(bool bEnable)
     m_pctrlCurvePoints->setEnabled(bEnable);
     m_pctrlShowCurve->setEnabled(bEnable);
 
-    int LineStyle[5];
-    int LineWidth[5];
-    int LinePoints[5];
+    int LineStyle[]  = {0,0,0,0,0};
+    int LineWidth[]  = {0,0,0,0,0};
+    int LinePoints[] = {0,0,0,0,0};
 
     for (int i=0; i<5;i++)
     {
@@ -1616,8 +1608,8 @@ void Miarex::fillWPlrCurve(Curve *pCurve, WPolar *pWPolar, int XVar, int YVar)
     if(m_pCurPlane)     PlaneName=m_pCurPlane->planeName();
     QList <double> *pX;
     QList <double> *pY;
-    pX = (QList <double> *) pWPolar->getWPlrVariable(XVar);
-    pY = (QList <double> *) pWPolar->getWPlrVariable(YVar);
+    pX = pWPolar->getWPlrVariable(XVar);
+    pY = pWPolar->getWPlrVariable(YVar);
 
     pCurve->setSelected(-1);
     for (i=0; i<pWPolar->dataSize(); i++)
@@ -1918,7 +1910,7 @@ void Miarex::LLTAnalyze(double V0, double VMax, double VDelta, bool bSequence, b
 
     m_pLLTDlg->analyze();
 
-    if(m_bLogFile && (m_theTask.m_ptheLLTAnalysis->m_bError || m_theTask.m_ptheLLTAnalysis->m_bWarning))
+    if(s_bLogFile && (m_theTask.m_ptheLLTAnalysis->m_bError || m_theTask.m_ptheLLTAnalysis->m_bWarning))
     {
     }
     else
@@ -1965,7 +1957,7 @@ bool Miarex::loadSettings(QSettings &settings)
         m_bShowBellCurve     = settings.value("bShowTargetCurve").toBool();
         m_BellCurveExp  = settings.value("BellCurveExp", 1).toDouble();
         m_bMaxCL        = settings.value("CurveMaxCL", true ).toBool();
-        m_bLogFile      = settings.value("LogFile").toBool();
+        s_bLogFile      = settings.value("LogFile").toBool();
         m_bDirichlet    = settings.value("Dirichlet").toBool();
         m_bResetWake    = settings.value("ResetWake").toBool();
         m_bShowWingCurve[0]    = settings.value("ShowWing").toBool();
@@ -2056,7 +2048,7 @@ bool Miarex::loadSettings(QSettings &settings)
         for(int i=0; i<20; i++)
         {
             strong = QString("ForcedTime%1").arg(i);
-            pStabView->m_Time[i] = settings.value(strong, (double)i).toDouble();
+            pStabView->m_Time[i] = settings.value(strong, double(i)).toDouble();
         }
         for(int i=0; i<20; i++)
         {
@@ -2639,7 +2631,7 @@ void Miarex::onAdvancedSettings()
     waDlg.m_Iter            = m_LLTMaxIterations;
     waDlg.m_bDirichlet      = m_bDirichlet;
     waDlg.m_bKeepOutOpps    = PlaneOpp::s_bKeepOutOpps;
-    waDlg.m_bLogFile        = m_bLogFile;
+    waDlg.m_bLogFile        = s_bLogFile;
     waDlg.m_WakeInterNodes  = m_WakeInterNodes;
 
     waDlg.initDialog();
@@ -2663,8 +2655,8 @@ void Miarex::onAdvancedSettings()
         m_WakeInterNodes       = waDlg.m_WakeInterNodes;
         m_InducedDragPoint     = waDlg.m_InducedDragPoint;
 
+        s_bLogFile = waDlg.m_bLogFile;
 
-        if(waDlg.m_bLogFile) m_bLogFile = true; else m_bLogFile = false;
         gl3dMiarexView::s_bResetglWake    = true;
         updateView();
     }
@@ -2677,7 +2669,7 @@ void Miarex::onAdvancedSettings()
 */
 void Miarex::onCpSectionSlider(int pos)
 {
-    m_CurSpanPos = (double)pos/100.0;
+    m_CurSpanPos = double(pos)/100.0;
     m_pctrlSpanPos->setValue(m_CurSpanPos);
     createCpCurves();
     updateView();
@@ -2690,7 +2682,7 @@ void Miarex::onCpSectionSlider(int pos)
 void Miarex::onCpPosition()
 {
     m_CurSpanPos = m_pctrlSpanPos->value();
-    m_pctrlCpSectionSlider->setValue((int)(m_CurSpanPos*100.0));
+    m_pctrlCpSectionSlider->setValue(int(m_CurSpanPos*100.0));
     createCpCurves();
     updateView();
 }
@@ -2797,8 +2789,8 @@ void Miarex::onDefineStabPolar()
     if(!m_pCurPlane) return;
     stopAnimate();
 
-    StabPolarDlg::s_StabWPolar.viscosity()     = WPolarDlg::s_WPolar.viscosity();
-    StabPolarDlg::s_StabWPolar.density()       = WPolarDlg::s_WPolar.density();
+    StabPolarDlg::s_StabWPolar.setViscosity(WPolarDlg::s_WPolar.viscosity());
+    StabPolarDlg::s_StabWPolar.setDensity(WPolarDlg::s_WPolar.density());
     StabPolarDlg::s_StabWPolar.referenceDim()  = WPolarDlg::s_WPolar.referenceDim();
     StabPolarDlg::s_StabWPolar.bThinSurfaces() = WPolarDlg::s_WPolar.bThinSurfaces();
 
@@ -3631,7 +3623,7 @@ void Miarex::onEditCurObject()
     Plane* pModPlane= new Plane;
     pModPlane->duplicate(m_pCurPlane);
 
-    EditPlaneDlg voDlg((MainFrame*)s_pMainFrame);
+    EditPlaneDlg voDlg(s_pMainFrame);
     voDlg.initDialog(pModPlane);
 
     ModDlg mdDlg(s_pMainFrame);
@@ -4475,7 +4467,7 @@ void Miarex::onExporttoAVL()
 
     out << ("\n\n\n");
 
-    int index = (double)qrand()/(double)RAND_MAX * 10000;
+    int index = int(double(qrand())/double(RAND_MAX) * 10000);
 
     exportAVLWing(m_pCurPlane->wing(0), out, index, 0.0, m_pCurPlane->WingTiltAngle(0));
 
@@ -4552,7 +4544,7 @@ void Miarex::exportAVLWing(Wing *pWing, QTextStream &out, int index, double y, d
 
     int NSurfaces = pWing->m_Surface.size();
 
-    int startIndex = (pWing->isFin() ? 0 : (int)(NSurfaces/2));
+    int startIndex = (pWing->isFin() ? 0 : int(NSurfaces/2));
 
     //write the first section
 
@@ -4718,7 +4710,7 @@ void Miarex::exportAVLWing_Old(Wing *pWing, QTextStream &out, int index, double 
 
     int NSurfaces = pWing->m_Surface.size();
 
-    int startIndex = (pWing->isFin() ? 0 : (int)(NSurfaces/2));
+    int startIndex = (pWing->isFin() ? 0 : int(NSurfaces/2));
 
     for(j=startIndex; j<NSurfaces; j++)
     {
@@ -6173,11 +6165,11 @@ void Miarex::paintPlaneLegend(QPainter &painter, Plane *pPlane, WPolar *pWPolar,
     painter.setPen(textPen);
     QFont font(Settings::s_TextFont);
     ratio = m_pgl3dMiarexView->devicePixelRatio();
-    font.setPointSize(Settings::s_TextFont.pointSize()*ratio);
+    font.setPointSize(int(float(Settings::s_TextFont.pointSize())*ratio));
     painter.setFont(font);
     painter.setRenderHint(QPainter::Antialiasing);
 
-    margin = 10*ratio;
+    margin = int(10*ratio);
 
     QFontMetrics fm(font);
     dheight = fm.height();
@@ -6308,7 +6300,7 @@ void Miarex::paintPlaneOppLegend(QPainter &painter, QRect drawRect)
     if (m_iView == XFLR5::W3DVIEW)
         ratio = m_pgl3dMiarexView->devicePixelRatio();
     margin *= ratio;
-    font.setPointSize(Settings::s_TextFont.pointSize()*ratio);
+    font.setPointSize(int(float(Settings::s_TextFont.pointSize())*ratio));
     painter.setFont(font);
     painter.setRenderHint(QPainter::Antialiasing);
 
@@ -6491,7 +6483,7 @@ void Miarex::panelAnalyze(double V0, double VMax, double VDelta, bool bSequence)
     m_pPanelAnalysisDlg->show();
     m_pPanelAnalysisDlg->analyze();
 
-    if(!m_bLogFile || !PanelAnalysis::s_bWarning)
+    if(!s_bLogFile || !PanelAnalysis::s_bWarning)
         m_pPanelAnalysisDlg->hide();
 
     setPlaneOpp(false, V0);
@@ -6537,7 +6529,7 @@ bool Miarex::saveSettings(QSettings &settings)
         settings.setValue("bShowTargetCurve", m_bShowBellCurve);
         settings.setValue("BellCurveExp",m_BellCurveExp);
         settings.setValue("CurveMaxCL",m_bMaxCL);
-        settings.setValue("LogFile", m_bLogFile);
+        settings.setValue("LogFile", s_bLogFile);
         settings.setValue("bVLM1", WPolarDlg::s_WPolar.bVLM1());
         settings.setValue("Dirichlet", m_bDirichlet);
         settings.setValue("KeepOutOpps", PlaneOpp::s_bKeepOutOpps);
@@ -7093,7 +7085,7 @@ void Miarex::setupLayout()
             QHBoxLayout *pAnalysisSettingsLayout = new QHBoxLayout;
             {
                 m_pctrlInitLLTCalc = new QCheckBox(tr("Init LLT"));
-                m_pctrlStoreWOpp    = new QCheckBox(tr("Store OpPoint"));
+                m_pctrlStoreWOpp   = new QCheckBox(tr("Store OpPoint"));
                 pAnalysisSettingsLayout->addWidget(m_pctrlInitLLTCalc);
                 pAnalysisSettingsLayout->addWidget(m_pctrlStoreWOpp);
             }
@@ -7102,7 +7094,6 @@ void Miarex::setupLayout()
 
             pAnalysisGroupLayout->addWidget(m_pctrlSequence);
             pAnalysisGroupLayout->addLayout(pSequenceGroupLayout);
-            //			pAnalysisGroupLayout->addStretch(1);
             pAnalysisGroupLayout->addLayout(pAnalysisSettingsLayout);
             pAnalysisGroupLayout->addWidget(m_pctrlAnalyze);
         }
@@ -7671,7 +7662,7 @@ void Miarex::snapClient(QString const &FileName)
             return;
         }
     }
-    uchar *pPixelData = new uchar[NbBytes];
+    uchar *pPixelData = new uchar[ulong(NbBytes)];
 
     // Copy from OpenGL
     glReadBuffer(GL_FRONT);
@@ -7925,20 +7916,15 @@ void Miarex::paintCpLegendText(QPainter &painter)
 {
     if (!m_b3DCp || !m_pCurPOpp || m_pCurPOpp->analysisMethod()<XFLR5::VLMMETHOD) return;
 
-    int i;
     QString strong;
 
-    double labellength;
-
-    double f;
-    double range, delta;
     float ratio = 1.0;
 
     painter.save();
 
     QFont font(Settings::s_TextFont);
     ratio = m_pgl3dMiarexView->devicePixelRatio();
-    font.setPointSize(Settings::s_TextFont.pointSize()*ratio);
+    font.setPointSize(int(float(Settings::s_TextFont.pointSize())*ratio));
     painter.setFont(font);
     painter.setRenderHint(QPainter::Antialiasing);
 
@@ -7946,31 +7932,29 @@ void Miarex::paintCpLegendText(QPainter &painter)
     int fmw = fm.averageCharWidth();
     int back = fmw * 5;
 
-    double h = m_pgl3dMiarexView->rect().height()*ratio;
+    double h = int(float(m_pgl3dMiarexView->rect().height())*ratio);
     double y0 = 2.*h/5.0;
 
 
-    int ixPos, iyPos, dy;
+    int ixPos  = int(float(m_pgl3dMiarexView->rect().width())*ratio)-back;
 
-    ixPos  = m_pgl3dMiarexView->rect().width()*ratio-back;
+    int dy     = int(h/MAXCPCOLORS/2);
+    int iyPos  = int(y0 - 12.0*dy);
 
-    dy     = (int) (h/MAXCPCOLORS/2);
-    iyPos  = (int) (y0 - 12.0*dy);
-
-    range = gl3dMiarexView::s_LegendMax - gl3dMiarexView::s_LegendMin;
-    delta = range / 20;
+    double range = gl3dMiarexView::s_LegendMax - gl3dMiarexView::s_LegendMin;
+    double delta = range / 20;
 
     QPen textPen(Settings::s_TextColor);
     painter.setPen(textPen);
     painter.setRenderHint(QPainter::Antialiasing);
 
     strong = "Cp";
-    labellength = fm.width(strong)+5;
+    int labellength = fm.width(strong)+5;
     painter.drawText(ixPos-labellength, iyPos-dy, strong);
 
-    for (i=0; i<=20; i ++)
+    for (int i=0; i<=20; i ++)
     {
-        f = gl3dMiarexView::s_LegendMax - (double)i * delta;
+        double f = gl3dMiarexView::s_LegendMax - double(i) * delta;
         strong = QString("%1").arg(f, 5,'f',2);
         labellength = (fm.width(strong)+5);
         painter.drawText(ixPos-labellength, iyPos+i*dy, strong);
@@ -7998,12 +7982,12 @@ void Miarex::paintPanelForceLegendText(QPainter &painter)
     int labellength;
     double f;
     double rmin, rmax, range, delta;
-    float ratio = 1.0;
+    double ratio = 1.0;
 
     painter.save();
     QFont font(Settings::s_TextFont);
     ratio = m_pgl3dMiarexView->devicePixelRatio();
-    font.setPointSize(Settings::s_TextFont.pointSize()*ratio);
+    font.setPointSize(int(double(Settings::s_TextFont.pointSize())*ratio));
     painter.setFont(font);
     painter.setRenderHint(QPainter::Antialiasing);
     QPen textPen(Settings::s_TextColor);
@@ -8042,17 +8026,14 @@ void Miarex::paintPanelForceLegendText(QPainter &painter)
     int fmw = fm.averageCharWidth();
     int back = fmw * 5;
 
-    double h = (double)m_pgl3dMiarexView->rect().height()*ratio;
+    double h = double(m_pgl3dMiarexView->rect().height())*ratio;
     double y0 = 2.*h/5.0;
 
+    int ixPos  = int(double(m_pgl3dMiarexView->rect().width())*ratio)-back;
 
-    int ixPos, iyPos, dy;
-
-    ixPos  = m_pgl3dMiarexView->rect().width()*ratio-back;
-
-    dy     = (int) (h/40.0);
-    dy     = (int) (h/MAXCPCOLORS/2);
-    iyPos  = (int) (y0 - 12.0*dy);
+    int dy     = int(h/40.0);
+    dy     = int(h/MAXCPCOLORS/2);
+    int iyPos  = int(y0 - 12.0*dy);
 
     delta = range / 20.0;
 
@@ -8062,7 +8043,7 @@ void Miarex::paintPanelForceLegendText(QPainter &painter)
 
     for (i=0; i<=20; i++)
     {
-        f = rmin + (double)i * delta;
+        f = rmin + double(i) * delta;
         strong.sprintf("%6.3f", f);
         labellength = (fm.width(strong)+5);
         painter.drawText(ixPos-labellength, iyPos+i*dy, strong);
@@ -8087,9 +8068,9 @@ void Miarex::drawColorGradient(QPainter &painter, QRect const & gradientRect)
 
     for (int i=0; i<MAXCPCOLORS; i++)
     {
-        double fi = (double)i/(double)(MAXCPCOLORS-1);
-        QColor clr = QColor(GLGetRed(fi)*255, GLGetGreen(fi)*255, GLGetBlue(fi)*255);
-        gradient.setColorAt(fi, clr);
+        float fi = float(i)/float(MAXCPCOLORS-1);
+        QColor clr = QColor(int(GLGetRed(fi)*255.0f), int(GLGetGreen(fi)*255.0f), int(GLGetBlue(fi)*255.0f));
+        gradient.setColorAt(double(fi), clr);
     }
     painter.fillRect(gradientRect, gradient);
 }
@@ -8193,7 +8174,7 @@ PlaneOpp* Miarex::setPlaneOppObject(Plane *pPlane, WPolar *pWPolar, PlaneOpp *pC
         //try to select the first in the object array
         for(int iPOpp=0; iPOpp<Objects3d::s_oaPOpp.size(); iPOpp++)
         {
-            PlaneOpp *pOldPOpp = (PlaneOpp *)Objects3d::s_oaPOpp.at(iPOpp);
+            PlaneOpp *pOldPOpp = Objects3d::s_oaPOpp.at(iPOpp);
             if(pOldPOpp->planeName()==pPlane->planeName() && pOldPOpp->polarName()==pWPolar->polarName())
             {
                 pPOpp = pOldPOpp;
@@ -8245,7 +8226,7 @@ void Miarex::drawTextLegend()
         QRect tempRect = m_pgl3dMiarexView->rect();
         float ratio = m_pgl3dMiarexView->devicePixelRatio();
         rect.moveTopLeft(tempRect.topLeft()*ratio);
-        rect.setSize(tempRect.size()*ratio);
+        rect.setSize(tempRect.size()*double(ratio));
     }
     else if(m_iView==XFLR5::WOPPVIEW) rect = s_pMainFrame->m_pMiarexTileWidget->pWingWidget()->rect();
 
@@ -8399,7 +8380,7 @@ void Miarex::setGraphTiles()
         {
             for(int ig=0; ig<maxWidgets; ig++)
             {
-                s_pMainFrame->m_pMiarexTileWidget->graphWidget(ig)->setGraph(NULL);
+                s_pMainFrame->m_pMiarexTileWidget->graphWidget(ig)->setGraph(nullptr);
             }
         }
     }
@@ -9312,158 +9293,107 @@ QString Miarex::WPolarVariableName(int iVar)
     {
         case 0:
             return "Alpha";
-            break;
         case 1:
             return "Beta";
-            break;
         case 2:
             return "CL";
-            break;
         case 3:
             return "CD";
-            break;
         case 4:
             return "CD_viscous";
-            break;
         case 5:
             return "CD_induced";
-            break;
         case 6:
             return "CY";
-            break;
         case 7:
             return "Cm";// Total Pitching moment coef.
-            break;
         case 8:
             return "Cm_viscous";// Viscous Pitching moment coef.
-            break;
         case 9:
             return "Cm_induced";// Induced Pitching moment coef.
-            break;
         case 10:
             return "Cl";// Total Rolling moment coef.
-            break;
         case 11:
             return "Cn";// Total Yawing moment coef.
-            break;
         case 12:
             return "Cn_viscous";// Profile yawing moment
-            break;
         case 13:
             return "Cn_induced";// Induced yawing moment
-            break;
         case 14:
             return "CL/CD";
-            break;
         case 15:
             return "CL^(3/2)/CD";
-            break;
         case 16:
             return "1/Rt(CL)";
-            break;
         case 17:
             return "Fx ("+strForce+")";
-            break;
         case 18:
             return "Fy ("+strForce+")";
-            break;
         case 19:
             return "Fz ("+strForce+")";
-            break;
         case 20:
             return "Vx ("+strSpeed+")";
-            break;
         case 21:
             return "Vz ("+strSpeed+")";
-            break;
         case 22:
             return "V ("+strSpeed+")";
-            break;
         case 23:
             return "Gamma";
-            break;
         case 24:
             return "L ("+ strMoment+")";
-            break;
         case 25:
             return "M ("+ strMoment+")";
-            break;
         case 26:
             return "N ("+ strMoment+")";
-            break;
         case 27:
             return "CPx ("+ strLength+")";
-            break;
         case 28:
             return "CPy ("+ strLength+")";
-            break;
         case 29:
             return "CPz ("+ strLength+")";
-            break;
         case 30:
             return "BM ("+ strMoment+")";
-            break;
         case 31:
             return "m.g.Vz (W)";
-            break;
         case 32:
             return "Efficiency";
-            break;
         case 33:
             return "XCp.Cl";
-            break;
         case 34:
             return "(XCp-XCG)/MAC(%)";
-            break;
         case 35:
             return "ctrl";
-            break;
         case 36:
             return "XNP ("+ strLength+")";
-            break;
         case 37:
             return "Phugoid Freq. (Hz)";
-            break;
         case 38:
             return "Phugoid Damping";
-            break;
         case 39:
             return "Short Period Freq. (Hz)";
-            break;
         case 40:
             return "Short Period Damping Ratio";
-            break;
         case 41:
             return "Dutch Roll Freq. (Hz)";
-            break;
         case 42:
             return "Dutch Roll Damping";
-            break;
         case 43:
             return "Roll mode t2 (s)";
-            break;
         case 44:
             return "Spiral mode t2 (s)";
-            break;
         case 45:
             return "Fx.Vx (W)";
-            break;
         case 46:
             return "Extra drag ("+strForce+")";
-            break;
         case 47:
             return "Mass ("+strMass+")";
-            break;
         case 48:
             return "CoG_x ("+ strLength+")";
-            break;
         case 49:
             return "CoG_z ("+ strLength+")";
-            break;
 
 
         default:
-            return "";
+            return QString();
     }
-    return "";
 }

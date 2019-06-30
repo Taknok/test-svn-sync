@@ -514,8 +514,8 @@ void EditPolarDefDlg::readViewLevel(QModelIndex indexLevel)
 			else if(field.compare("Reference Area")==0)          m_pWPolar->referenceArea()        = dataIndex.data().toDouble()/Units::m2toUnit();
 			else if(field.compare("Reference Span Length")==0)   m_pWPolar->referenceSpanLength()  = dataIndex.data().toDouble()/Units::mtoUnit();
 			else if(field.compare("Reference Chord Length")==0)  m_pWPolar->referenceChordLength() = dataIndex.data().toDouble()/Units::mtoUnit();
-			else if(field.compare("Density")==0)                 m_pWPolar->density()              = dataIndex.data().toDouble();
-			else if(field.compare("Viscosity")==0)               m_pWPolar->viscosity()            = dataIndex.data().toDouble();
+            else if(field.compare("Density")==0)                 m_pWPolar->setDensity(dataIndex.data().toDouble());
+            else if(field.compare("Viscosity")==0)               m_pWPolar->setViscosity(dataIndex.data().toDouble());
 			else if(field.compare("Ground effect")==0)           m_pWPolar->bGround()              = stringToBool(value);
 			else if(field.compare("Height flight")==0)           m_pWPolar->groundHeight()         = dataIndex.data().toDouble()/Units::mtoUnit();
 
