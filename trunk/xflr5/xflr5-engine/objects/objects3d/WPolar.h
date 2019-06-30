@@ -75,7 +75,7 @@ public:
     void calculatePoint(int iPt);
     void copy(WPolar *pWPolar);
     void duplicateSpec(WPolar *pWPolar);
-    void *getWPlrVariable(int iVar);
+    QList<double> *getWPlrVariable(int iVar);
     void remove(int i);
     void remove(double alpha);
     void clearData();
@@ -99,8 +99,10 @@ public:
     QString &polarName()                 {return m_WPlrName;}       /**< returns the polar's name as a QString object. */
     QString &planeName()                 {return m_PlaneName;}      /**< returns the name of the polar's parent object as a QString object. */
 
-    double &density()                    {return m_Density;}        /**< returns the fluid's density, in IS units. */
-    double &viscosity()                  {return m_Viscosity;}      /**< returns the fluid's kinematic viscosity, in IS units. */
+    double const &density()    const                {return m_Density;}        /**< returns the fluid's density, in IS units. */
+    double const &viscosity()  const                {return m_Viscosity;}      /**< returns the fluid's kinematic viscosity, in IS units. */
+    void setDensity(double f) {m_Density=f;}
+    void setViscosity(double f) {m_Viscosity=f;}
 
     bool isFixedSpeedPolar() const    {return m_WPolarType==XFLR5::FIXEDSPEEDPOLAR;}      /**< returns true if the polar is of the FIXEDSPEEDPOLAR type, false otherwise >*/
     bool isFixedLiftPolar()  const    {return m_WPolarType==XFLR5::FIXEDLIFTPOLAR;}       /**< returns true if the polar is of the FIXEDLIFTPOLAR type, false otherwise >*/

@@ -143,11 +143,11 @@ void XmlWPolarReader::readWPolar(WPolar *pWPolar, double lengthunit, double area
 		}
         else if (name().compare(QString("Viscosity"),         Qt::CaseInsensitive)==0)
 		{
-			pWPolar->viscosity() = readElementText().toDouble();
+            pWPolar->setViscosity(readElementText().toDouble());
 		}
         else if (name().compare(QString("Density"),         Qt::CaseInsensitive)==0)
 		{
-			pWPolar->density() = readElementText().toDouble();
+            pWPolar->setDensity(readElementText().toDouble());
 		}
         else if (name().compare(QString("Fixed_Velocity"),         Qt::CaseInsensitive)==0)
 		{

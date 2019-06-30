@@ -105,7 +105,7 @@
 #endif
 
 
-QPointer<MainFrame> MainFrame::_self = 0L;
+QPointer<MainFrame> MainFrame::_self = nullptr;
 
 QString MainFrame::s_ProjectName = "";
 QString MainFrame::s_LanguageFilePath = "";
@@ -135,7 +135,8 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
     setWindowTitle(VERSIONNAME);
     setWindowIcon(QIcon(":/images/xflr5_64.png"));
 
-//    if(s_bTrace) testConfiguration();
+//    if(s_bTrace)
+    testConfiguration();
 
     m_bManualUpdateCheck = false;
 
@@ -336,64 +337,12 @@ void MainFrame::testConfiguration()
     s_pTraceFile->reset();
 
 #if QT_VERSION >= 0x050500
+    QString strange;
+    QOperatingSystemVersion const &sys = QOperatingSystemVersion::current();
+    strange = sys.name();
+    Trace(strange);
+
     QSysInfo sysInfo;
-    switch(sysInfo.windowsVersion())
-    {
-        case QSysInfo::WV_CE:          Trace("Windows CE"); break;
-        case QSysInfo::WV_CENET:       Trace("Windows CE .NET"); break;
-        case QSysInfo::WV_CE_5:        Trace("Windows CE 5.x"); break;
-        case QSysInfo::WV_CE_6:        Trace("Windows CE 6.x"); break;
-        case QSysInfo::WV_DOS_based:   Trace("MS-DOS-based version of Windows"); break;
-        case QSysInfo::WV_NT_based:    Trace("NT-based version of Windows"); break;
-        case QSysInfo::WV_CE_based:    Trace("CE-based version of Windows"); break;
-        case QSysInfo::WV_None:        Trace("Operating system other than Windows."); break;
-        case QSysInfo::WV_32s:         Trace("Windows 3.1 with Win 32s"); break;
-        case QSysInfo::WV_95:          Trace("Windows 95"); break;
-        case QSysInfo::WV_98:          Trace("Windows 98"); break;
-        case QSysInfo::WV_Me:          Trace("Windows Me"); break;
-        case QSysInfo::WV_NT:	       Trace("Windows NT (operating system version 4.0)"); break;
-        case QSysInfo::WV_2000:	       Trace("Windows 2000 (operating system version 5.0)"); break;
-        case QSysInfo::WV_XP:	       Trace("Windows XP (operating system version 5.1)"); break;
-        case QSysInfo::WV_2003:	       Trace("Windows Server 2003, Windows Server 2003 R2, Windows Home Server, Windows XP Professional x64 Edition (operating system version 5.2)"); break;
-        case QSysInfo::WV_VISTA:	   Trace("Windows Vista, Windows Server 2008 (operating system version 6.0)"); break;
-        case QSysInfo::WV_WINDOWS7:    Trace("Windows 7, Windows Server 2008 R2 (operating system version 6.1)"); break;
-        case QSysInfo::WV_WINDOWS8:    Trace("Windows 8 (operating system version 6.2)"); break;
-        case QSysInfo::WV_WINDOWS8_1:  Trace("Windows 8.1 (operating system version 6.3), introduced in Qt 5.2"); break;
-        case QSysInfo::WV_WINDOWS10:   Trace("Windows 10 (operating system version 10.0), introduced in Qt 5.5"); break;
-    }
-    switch(sysInfo.macVersion())
-    {
-        case QSysInfo::MV_9:        Trace("Mac OS 9 (unsupported)"); break;
-        case QSysInfo::MV_Unknown:  Trace("An unknown and currently unsupported platform"); break;
-        case QSysInfo::MV_CHEETAH:  Trace("CHEETAH MV_10_0"); break;
-        case QSysInfo::MV_PUMA:     Trace("PUMA MV_10_1"); break;
-        case QSysInfo::MV_JAGUAR:   Trace("JAGUAR MV_10_2"); break;
-        case QSysInfo::MV_PANTHER:  Trace("PANTHER MV_10_3"); break;
-        case QSysInfo::MV_TIGER:    Trace("TIGER MV_10_4"); break;
-        case QSysInfo::MV_LEOPARD:  Trace("LEOPARD MV_10_5"); break;
-        case QSysInfo::MV_SNOWLEOPARD:  Trace("SNOWLEOPARD MV_10_6"); break;
-        case QSysInfo::MV_LION:         Trace("LION MV_10_7"); break;
-        case QSysInfo::MV_MOUNTAINLION: Trace("MOUNTAINLION MV_10_8"); break;
-        case QSysInfo::MV_MAVERICKS:    Trace("MAVERICKS MV_10_9"); break;
-        case QSysInfo::MV_YOSEMITE:     Trace("YOSEMITE MV_10_10"); break;
-        case QSysInfo::MV_ELCAPITAN:    Trace("ELCAPITAN MV_10_11"); break;
-        case QSysInfo::MV_IOS:          Trace("iOS (any)"); break;
-        case QSysInfo::MV_IOS_4_3:  Trace("iOS 4.3"); break;
-        case QSysInfo::MV_IOS_5_0:  Trace("iOS 5.0"); break;
-        case QSysInfo::MV_IOS_5_1:  Trace("iOS 5.1"); break;
-        case QSysInfo::MV_IOS_6_0:  Trace("iOS 6.0"); break;
-        case QSysInfo::MV_IOS_6_1:  Trace("iOS 6.1"); break;
-        case QSysInfo::MV_IOS_7_0:  Trace("iOS 7.0"); break;
-        case QSysInfo::MV_IOS_7_1:  Trace("iOS 7.1"); break;
-        case QSysInfo::MV_IOS_8_0:  Trace("iOS 8.0"); break;
-        case QSysInfo::MV_IOS_8_1:  Trace("iOS 8.1"); break;
-        case QSysInfo::MV_IOS_8_2:  Trace("iOS 8.2"); break;
-        case QSysInfo::MV_IOS_8_3:  Trace("iOS 8.3"); break;
-        case QSysInfo::MV_IOS_8_4:  Trace("iOS 8.4"); break;
-        case QSysInfo::MV_IOS_9_0:  Trace("iOS 9.0"); break;
-        case QSysInfo::MV_None:  Trace("Not a Darwin operating system"); break;
-        default: Trace("Other"); break;
-    }
 
     Trace("build ABI: "       + sysInfo.buildAbi());
     Trace("build CPU: "       + sysInfo.buildCpuArchitecture());
@@ -409,7 +358,7 @@ void MainFrame::testConfiguration()
     Trace("    OpenGL ES      ", qApp->testAttribute(Qt::AA_UseOpenGLES));
     Trace("    Software OpenGL", qApp->testAttribute(Qt::AA_UseSoftwareOpenGL));
 
-    QString strange;
+
     strange.sprintf("   Default OpengGl format:%d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
     Trace(strange);
 
@@ -1028,7 +977,7 @@ void MainFrame::createDockWindows()
 
     StabViewDlg::s_pMiarex = m_pMiarex;
     m_pStabView = new StabViewDlg(this);
-    StabViewDlg * pStabView = (StabViewDlg*)m_pStabView;
+    StabViewDlg * pStabView = m_pStabView;
     m_pctrlStabViewWidget = new QDockWidget(tr("Stability"), this);
     m_pctrlStabViewWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
     addDockWidget(Qt::LeftDockWidgetArea, m_pctrlStabViewWidget);
@@ -3589,7 +3538,7 @@ bool MainFrame::loadSettings()
 
 MainFrame* MainFrame::self() {
     if (!_self) {
-        _self = new MainFrame(0L, 0L);
+        _self = new MainFrame;
     }
     return _self;
 }
@@ -3914,7 +3863,7 @@ void MainFrame::onLoadFile()
             }
         }
         if (warn_non_airfoil_multiload) {
-            QMessageBox::warning(0, QObject::tr("Warning"), QObject::tr("Multiple file loading only available for airfoil files.\nNon *.dat files will be ignored."));
+            QMessageBox::warning(this, QObject::tr("Warning"), QObject::tr("Multiple file loading only available for airfoil files.\nNon *.dat files will be ignored."));
         }
     }
     else
@@ -5246,9 +5195,6 @@ void MainFrame::selectPlaneOpp(PlaneOpp *pPlaneOpp)
 }
 
 
-
-
-
 bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 {
     WPolar *pWPolar = nullptr;
@@ -5258,6 +5204,8 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
     OpPoint *pOpp    = nullptr;
 
     int i=0, n=0;
+    float f = 0;
+    double dble=0;
 
     if (bIsStoring)
     {
@@ -5330,7 +5278,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
             ar << Objects3d::s_oaPOpp.size();
             for (i=0; i<Objects3d::s_oaPOpp.size();i++)
             {
-                pPOpp = (PlaneOpp*)Objects3d::s_oaPOpp.at(i);
+                pPOpp = Objects3d::s_oaPOpp.at(i);
                 pPOpp->serializePOppXFL(ar, bIsStoring);
             }
         }
@@ -5372,7 +5320,8 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
         //add provisions
         // space allocation for the future storage of more data, without need to change the format
         for (int i=2; i<20; i++) ar << 0;
-        for (int i=0; i<50; i++) ar << (double)0.0;
+        dble=0;
+        for (int i=0; i<50; i++) ar << dble;
     }
     else
     {
@@ -5416,8 +5365,8 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
             ar >> WPolarDlg::s_WPolar.CoG().y;
             ar >> WPolarDlg::s_WPolar.CoG().z;
 
-            ar >> WPolarDlg::s_WPolar.density();
-            ar >> WPolarDlg::s_WPolar.viscosity();
+            ar >> f; WPolarDlg::s_WPolar.setDensity(double(f));
+            ar >> f; WPolarDlg::s_WPolar.setViscosity(double(f));
             ar >> WPolarDlg::s_WPolar.m_AlphaSpec;
             ar >> WPolarDlg::s_WPolar.m_BetaSpec;
 
@@ -5625,27 +5574,27 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
                 else if(k==5) WPolarDlg::s_WPolar.polarType() = XFLR5::BETAPOLAR;
                 else if(k==7) WPolarDlg::s_WPolar.polarType() = XFLR5::STABILITYPOLAR;
 
-                ar >> f; WPolarDlg::s_WPolar.mass()=f;
-                ar >> f; WPolarDlg::s_WPolar.m_QInfSpec=f;
+                ar >> f; WPolarDlg::s_WPolar.mass()=double(f);
+                ar >> f; WPolarDlg::s_WPolar.m_QInfSpec=double(f);
                 if(ArchiveFormat>=100013)
                 {
-                    ar >> f; WPolarDlg::s_WPolar.CoG().x=f;
-                    ar >> f; WPolarDlg::s_WPolar.CoG().y=f;
-                    ar >> f; WPolarDlg::s_WPolar.CoG().z=f;
+                    ar >> f; WPolarDlg::s_WPolar.CoG().x=double(f);
+                    ar >> f; WPolarDlg::s_WPolar.CoG().y=double(f);
+                    ar >> f; WPolarDlg::s_WPolar.CoG().z=double(f);
                 }
                 else
                 {
-                    ar >> f; WPolarDlg::s_WPolar.CoG().x=f;
+                    ar >> f; WPolarDlg::s_WPolar.CoG().x=double(f);
                     WPolarDlg::s_WPolar.CoG().y=0;
                     WPolarDlg::s_WPolar.CoG().z=0;
                 }
-                if(ArchiveFormat<100010) WPolarDlg::s_WPolar.CoG().x=f/1000.0;
-                ar >> f; WPolarDlg::s_WPolar.density()   = f;
-                ar >> f; WPolarDlg::s_WPolar.viscosity() = f;
-                ar >> f; WPolarDlg::s_WPolar.m_AlphaSpec     = f;
+                if(ArchiveFormat<100010) WPolarDlg::s_WPolar.CoG().x=double(f)/1000.0;
+                ar >> f; WPolarDlg::s_WPolar.setDensity(double(f));
+                ar >> f; WPolarDlg::s_WPolar.setViscosity(double(f));
+                ar >> f; WPolarDlg::s_WPolar.m_AlphaSpec     = double(f);
                 if(ArchiveFormat>=100012)
                 {
-                    ar >>f; WPolarDlg::s_WPolar.m_BetaSpec=f;
+                    ar >>f; WPolarDlg::s_WPolar.m_BetaSpec=double(f);
                 }
 
                 ar >> k;
@@ -5836,7 +5785,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
             // attach the body pointers to the Plane objects
             for (int ib=0; ib<Objects3d::s_oaBody.size(); ib++)
             {
-                Body *pBody = (Body*)Objects3d::s_oaBody.at(ib);
+                Body *pBody = Objects3d::s_oaBody.at(ib);
                 Objects3d::addBody(pBody);
             }
 
@@ -6126,7 +6075,7 @@ void MainFrame::updatePOppListBox()
 
     for (int iPOpp=0; iPOpp<Objects3d::s_oaPOpp.size(); iPOpp++)
     {
-        PlaneOpp *pPOpp = (PlaneOpp*)Objects3d::s_oaPOpp.at(iPOpp);
+        PlaneOpp *pPOpp = Objects3d::s_oaPOpp.at(iPOpp);
         if (pPOpp->planeName()==pCurPlane->planeName() && pPOpp->polarName()==pCurWPlr->polarName())
         {
             if(pCurWPlr->polarType()<XFLR5::FIXEDAOAPOLAR)        str = QString("%L1").arg(pPOpp->m_Alpha,8,'f',3);
@@ -6746,7 +6695,7 @@ bool MainFrame::serializeFoilXFL(Foil *pFoil, QDataStream &ar, bool bIsStoring)
         ar << pFoil->m_bIsFoilVisible;
         //		ar << m_bShowFoilPoints;
 
-        ar << (qint8)pFoil->m_PointStyle;
+        ar << qint8(pFoil->m_PointStyle);
         ar << pFoil->m_bCenterLine << pFoil->m_bLEFlap << pFoil->m_bTEFlap;
         ar << pFoil->m_LEFlapAngle << pFoil->m_LEXHinge << pFoil->m_LEYHinge;
         ar << pFoil->m_TEFlapAngle << pFoil->m_TEXHinge << pFoil->m_TEYHinge;
@@ -6773,7 +6722,7 @@ bool MainFrame::serializeFoilXFL(Foil *pFoil, QDataStream &ar, bool bIsStoring)
 
         ar >> pFoil->m_bIsFoilVisible;
         //		ar >> m_bShowFoilPoints;
-        ar >> b; pFoil->m_PointStyle = (int)b;
+        ar >> b; pFoil->m_PointStyle = int(b);
         ar >> pFoil->m_bCenterLine >> pFoil->m_bLEFlap >> pFoil->m_bTEFlap;
         ar >> pFoil->m_LEFlapAngle >> pFoil->m_LEXHinge >> pFoil->m_LEYHinge;
         ar >> pFoil->m_TEFlapAngle >> pFoil->m_TEXHinge >> pFoil->m_TEYHinge;
@@ -6820,11 +6769,11 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
         ar << pPolar->m_bIsVisible << false;
 
 
-        if(pPolar->m_PolarType==XFLR5::FIXEDSPEEDPOLAR)       ar<<1;
+        if      (pPolar->m_PolarType==XFLR5::FIXEDSPEEDPOLAR) ar<<1;
         else if(pPolar->m_PolarType==XFLR5::FIXEDLIFTPOLAR)   ar<<2;
         else if(pPolar->m_PolarType==XFLR5::RUBBERCHORDPOLAR) ar<<3;
         else if(pPolar->m_PolarType==XFLR5::FIXEDAOAPOLAR)    ar<<4;
-        else                                          ar<<1;
+        else                                                  ar<<1;
 
         ar << pPolar->m_MaType << pPolar->m_ReType;
         ar << pPolar->m_Reynolds << pPolar->m_Mach;
@@ -6835,12 +6784,12 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
         ar << pPolar->m_Alpha.size();
         for (i=0; i< pPolar->m_Alpha.size(); i++)
         {
-            ar << (float)pPolar->m_Alpha[i] << (float)pPolar->m_Cd[i] ;
-            ar << (float)pPolar->m_Cdp[i]   << (float)pPolar->m_Cl[i] << (float)pPolar->m_Cm[i];
-            ar << (float)pPolar->m_XTr1[i]  << (float)pPolar->m_XTr2[i];
-            ar << (float)pPolar->m_HMom[i]  << (float)pPolar->m_Cpmn[i];
-            ar << (float)pPolar->m_Re[i];
-            ar << (float)pPolar->m_XCp[i];
+            ar << float(pPolar->m_Alpha[i]) << float(pPolar->m_Cd[i]) ;
+            ar << float(pPolar->m_Cdp[i])   << float(pPolar->m_Cl[i]) << float(pPolar->m_Cm[i]);
+            ar << float(pPolar->m_XTr1[i])  << float(pPolar->m_XTr2[i]);
+            ar << float(pPolar->m_HMom[i])  << float(pPolar->m_Cpmn[i]);
+            ar << float(pPolar->m_Re[i]);
+            ar << float(pPolar->m_XCp[i]);
         }
 
         ar << pPolar->m_PointStyle;
@@ -6853,7 +6802,7 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
     else
     {
         //read variables
-        float Alpha, Cd, Cdp, Cl, Cm, XTr1, XTr2, HMom, Cpmn, Re, XCp;
+        float Alpha=0, Cd=0, Cdp=0, Cl=0, Cm=0, XTr1=0, XTr2=0, HMom=0, Cpmn=0, Re=0, XCp=0;
 
         ar >> ArchiveFormat;
         if (ArchiveFormat <100000 || ArchiveFormat>110000) return false;
@@ -6882,7 +6831,8 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
         for (i=0; i< n; i++)
         {
             ar >> Alpha >> Cd >> Cdp >> Cl >> Cm >> XTr1 >> XTr2 >> HMom >> Cpmn >> Re >> XCp;
-            pPolar->addPoint(Alpha, Cd, Cdp, Cl, Cm, XTr1, XTr2, HMom, Cpmn, Re, XCp);
+            pPolar->addPoint(double(Alpha), double(Cd), double(Cdp), double(Cl), double(Cm),
+                             double(XTr1), double(XTr2), double(HMom), double(Cpmn), double(Re), double(XCp));
         }
 
         ar >> pPolar->m_PointStyle;
@@ -6930,15 +6880,16 @@ bool MainFrame::serializeOppXFL(OpPoint *pOpp, QDataStream &ar, bool bIsStoring,
         ar << pOpp->Xtr1 << pOpp->Xtr2 << pOpp->m_XCP;
         ar << pOpp->ACrit << pOpp->m_TEHMom << pOpp->Cpmn;
 
-        for (k=0; k<pOpp->n; k++)     ar << (float)pOpp->Cpv[k] << (float)pOpp->Cpi[k];
-        for (k=0; k<pOpp->n; k++)     ar << (float)pOpp->Qv[k]  << (float)pOpp->Qi[k];
-        for (k=0; k<=pOpp->blx.nd1; k++)  ar << (float)pOpp->blx.xd1[k] << (float)pOpp->blx.yd1[k];
-        for (k=0; k<pOpp->blx.nd2; k++)   ar << (float)pOpp->blx.xd2[k] << (float)pOpp->blx.yd2[k];
-        for (k=0; k<pOpp->blx.nd3; k++)	  ar << (float)pOpp->blx.xd3[k] << (float)pOpp->blx.yd3[k];
+        for (k=0; k<pOpp->n; k++)     ar << float(pOpp->Cpv[k]) << float(pOpp->Cpi[k]);
+        for (k=0; k<pOpp->n; k++)     ar << float(pOpp->Qv[k] ) << float(pOpp->Qi[k]);
+        for (k=0; k<=pOpp->blx.nd1; k++)  ar << float(pOpp->blx.xd1[k]) << float(pOpp->blx.yd1[k]);
+        for (k=0; k<pOpp->blx.nd2; k++)   ar << float(pOpp->blx.xd2[k]) << float(pOpp->blx.yd2[k]);
+        for (k=0; k<pOpp->blx.nd3; k++)	  ar << float(pOpp->blx.xd3[k]) << float(pOpp->blx.yd3[k]);
 
         // space allocation for the future storage of more data, without need to change the format
         for (int i=0; i<20; i++) ar << 0;
-        for (int i=0; i<50; i++) ar << (double)0.0;
+        dble = 0;
+        for (int i=0; i<50; i++) ar << dble;
     }
     else
     {
@@ -6965,32 +6916,32 @@ bool MainFrame::serializeOppXFL(OpPoint *pOpp, QDataStream &ar, bool bIsStoring,
         for (k=0; k<pOpp->n; k++)
         {
             ar >> f0 >> f1;
-            pOpp->Cpv[k] = f0;
-            pOpp->Cpi[k] = f1;
+            pOpp->Cpv[k] = double(f0);
+            pOpp->Cpi[k] = double(f1);
         }
         for (k=0; k<pOpp->n; k++)
         {
             ar >> f0 >> f1;
-            pOpp->Qv[k] = f0;
-            pOpp->Qi[k] = f1;
+            pOpp->Qv[k] = double(f0);
+            pOpp->Qi[k] = double(f1);
         }
         for (k=0; k<=pOpp->blx.nd1; k++)
         {
             ar >> f0 >> f1;
-            pOpp->blx.xd1[k] = f0;
-            pOpp->blx.yd1[k] = f1;
+            pOpp->blx.xd1[k] = double(f0);
+            pOpp->blx.yd1[k] = double(f1);
         }
         for (k=0; k<pOpp->blx.nd2; k++)
         {
             ar >> f0 >> f1;
-            pOpp->blx.xd2[k] = f0;
-            pOpp->blx.yd2[k] = f1;
+            pOpp->blx.xd2[k] = double(f0);
+            pOpp->blx.yd2[k] = double(f1);
         }
         for (k=0; k<pOpp->blx.nd3; k++)
         {
             ar >> f0 >> f1;
-            pOpp->blx.xd3[k] = f0;
-            pOpp->blx.yd3[k] = f1;
+            pOpp->blx.xd3[k] = double(f0);
+            pOpp->blx.yd3[k] = double(f1);
         }
 
         // space allocation

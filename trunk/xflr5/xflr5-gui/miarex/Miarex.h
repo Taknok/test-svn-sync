@@ -387,7 +387,7 @@ public:
 	bool m_bXPressed;                  /**< true if the X key is pressed */
 	bool m_bYPressed;                  /**< true if the Y key is pressed */
 
-	static bool m_bLogFile;			       /**< true if the log file warning is turned on */
+	static bool s_bLogFile;			       /**< true if the log file warning is turned on */
 
 
 

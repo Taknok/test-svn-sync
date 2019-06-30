@@ -57,7 +57,7 @@ class WPolarDlg : public QDialog
     friend class MainFrame;
 
 public:
-    WPolarDlg(QWidget *pParent=NULL);
+    WPolarDlg(QWidget *pParent=nullptr);
     ~WPolarDlg();
 
 private:

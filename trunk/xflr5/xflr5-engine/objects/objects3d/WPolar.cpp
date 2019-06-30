@@ -554,10 +554,10 @@ void WPolar::duplicateSpec(WPolar *pWPolar)
  * @param iVar the index of the variable
  * @return a void pointer to the array of data
  */
-void * WPolar::getWPlrVariable(int iVar)
+QList <double> * WPolar::getWPlrVariable(int iVar)
 {
     // returns a pointer to the variable array defined by its index iVar
-    void * pVar;
+    QList <double> * pVar=nullptr;
     switch (iVar)
     {
         case 0:

@@ -121,13 +121,13 @@ void LLTAnalysisDlg::initDialog()
     m_pIterGraph->setYMin(0.0);
     m_pIterGraph->setYMax(1.0);
 
-    m_pctrlLogFile->setChecked(Miarex::m_bLogFile);
+    m_pctrlLogFile->setChecked(Miarex::s_bLogFile);
 }
 
 
 void LLTAnalysisDlg::onLogFile()
 {
-    Miarex::m_bLogFile = m_pctrlLogFile->isChecked();
+    Miarex::s_bLogFile = m_pctrlLogFile->isChecked();
 }
 
 

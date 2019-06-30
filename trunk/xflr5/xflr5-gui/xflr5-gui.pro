@@ -73,14 +73,14 @@ win32 {
 
 linux-g++{
 
-	# VARIABLES
-	isEmpty(PREFIX):PREFIX = /usr/local
-	BINDIR = $$PREFIX/bin
-	DATADIR = $$PREFIX/share
+    # VARIABLES
+    isEmpty(PREFIX):PREFIX = /usr/local
+    BINDIR = $$PREFIX/bin
+    DATADIR = $$PREFIX/share
 
-	# MAKE INSTALL
-	INSTALLS += target
-	target.path = $$BINDIR
+    # MAKE INSTALL
+    INSTALLS += target
+    target.path = $$BINDIR
 }
 
 

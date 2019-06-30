@@ -81,7 +81,7 @@ void PanelAnalysisDlg::initDialog()
 	m_Progress = 0.0;
 	m_pctrlProgress->setValue(m_Progress);
 	m_pctrlTextOutput->clear();
-	m_pctrlLogFile->setChecked(Miarex::m_bLogFile);
+	m_pctrlLogFile->setChecked(Miarex::s_bLogFile);
 }
 
 
@@ -117,7 +117,7 @@ void PanelAnalysisDlg::onCancelAnalysis()
 
 void PanelAnalysisDlg::onLogFile()
 {
-	Miarex::m_bLogFile = m_pctrlLogFile->isChecked();
+	Miarex::s_bLogFile = m_pctrlLogFile->isChecked();
 }
 
 
