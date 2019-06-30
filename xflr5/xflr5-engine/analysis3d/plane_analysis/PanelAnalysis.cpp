@@ -177,24 +177,24 @@ bool PanelAnalysis::allocateMatrix(int matSize, int &memsize)
     int size2 = matSize * matSize;
     try
     {
-        m_aij      = new double[size2];
-        m_aijWake  = new double[size2];
+        m_aij      = new double[ulong(size2)];
+        m_aijWake  = new double[ulong(size2)];
 
-        m_uRHS  = new double[matSize];
-        m_vRHS  = new double[matSize];
-        m_wRHS  = new double[matSize];
-        m_pRHS  = new double[matSize];
-        m_qRHS  = new double[matSize];
-        m_rRHS  = new double[matSize];
-        m_cRHS  = new double[matSize];
-        m_uWake = new double[matSize];
-        m_wWake = new double[matSize];
+        m_uRHS  = new double[ulong(matSize)];
+        m_vRHS  = new double[ulong(matSize)];
+        m_wRHS  = new double[ulong(matSize)];
+        m_pRHS  = new double[ulong(matSize)];
+        m_qRHS  = new double[ulong(matSize)];
+        m_rRHS  = new double[ulong(matSize)];
+        m_cRHS  = new double[ulong(matSize)];
+        m_uWake = new double[ulong(matSize)];
+        m_wWake = new double[ulong(matSize)];
 
-        m_uVl   = new Vector3d[matSize];
-        m_wVl   = new Vector3d[matSize];
-        m_Index = new int[matSize];
+        m_uVl   = new Vector3d[ulong(matSize)];
+        m_wVl   = new Vector3d[ulong(matSize)];
+        m_Index = new int[ulong(matSize)];
     }
-    catch(std::exception & e)
+    catch(std::exception & )
     {
         releaseArrays();
         m_MaxMatSize = 0;
@@ -217,20 +217,20 @@ bool PanelAnalysis::allocateMatrix(int matSize, int &memsize)
     memset(m_aij,     0, size2 * sizeof(double));
     memset(m_aijWake, 0, size2 * sizeof(double));
 
-    memset(m_uRHS,  0, matSize*sizeof(double));
-    memset(m_vRHS,  0, matSize*sizeof(double));
-    memset(m_wRHS,  0, matSize*sizeof(double));
-    memset(m_pRHS,  0, matSize*sizeof(double));
-    memset(m_qRHS,  0, matSize*sizeof(double));
-    memset(m_rRHS,  0, matSize*sizeof(double));
-    memset(m_cRHS,  0, matSize*sizeof(double));
-    memset(m_uWake, 0, matSize*sizeof(double));
-    memset(m_wWake, 0, matSize*sizeof(double));
+    memset(m_uRHS,  0, ulong(matSize)*sizeof(double));
+    memset(m_vRHS,  0, ulong(matSize)*sizeof(double));
+    memset(m_wRHS,  0, ulong(matSize)*sizeof(double));
+    memset(m_pRHS,  0, ulong(matSize)*sizeof(double));
+    memset(m_qRHS,  0, ulong(matSize)*sizeof(double));
+    memset(m_rRHS,  0, ulong(matSize)*sizeof(double));
+    memset(m_cRHS,  0, ulong(matSize)*sizeof(double));
+    memset(m_uWake, 0, ulong(matSize)*sizeof(double));
+    memset(m_wWake, 0, ulong(matSize)*sizeof(double));
 
-    memset(m_uVl,   0, matSize*sizeof(Vector3d));
-    memset(m_wVl,   0, matSize*sizeof(Vector3d));
+    memset(m_uVl,   0, ulong(matSize)*sizeof(Vector3d));
+    memset(m_wVl,   0, ulong(matSize)*sizeof(Vector3d));
 
-    memset(m_Index, 0, matSize*sizeof(int));
+    memset(m_Index, 0, ulong(matSize)*sizeof(int));
 
     int RHSSize = 0;
 
@@ -243,7 +243,7 @@ bool PanelAnalysis::allocateMatrix(int matSize, int &memsize)
 
     memsize += RHSSize;
 
-    strange = QString("PanelAnalysis::Memory allocation for the analysis arrays is %1 MB").arg((double)memsize/1024./1024., 7, 'f', 2);
+    strange = QString("PanelAnalysis::Memory allocation for the analysis arrays is %1 MB").arg(double(memsize)/1024./1024., 7, 'f', 2);
     //	Trace(strange);
 
     return true;
@@ -348,7 +348,7 @@ void PanelAnalysis::setObjectPointers(Plane *pPlane, void *pSurfaceList)
         m_pWingList[iw] = m_pPlane->wing(iw);
     }
 
-    m_ppSurface = (QList<Surface*>*)pSurfaceList;
+    m_ppSurface = (QVector<Surface*>*)pSurfaceList;
 }
 
 
@@ -793,7 +793,7 @@ void PanelAnalysis::buildInfluenceMatrix()
         }
         m++;
         //		}
-        m_Progress += 10.0*(double)Size/400./(double)Size;
+        m_Progress += 10.0*double(Size)/400./double(Size);
     }
 }
 
@@ -934,12 +934,12 @@ void PanelAnalysis::createUnitRHS()
 */
 void PanelAnalysis::createWakeContribution()
 {
-    int kw, lw, pw, p, pp, Size;
+    int kw=0, lw=0, pw=0, p=0, pp=0, Size=0;
 
     Vector3d V, C, CC, TrPt;
-    double phi;
-    double* PHC = new double[m_NWakeColumn];
-    Vector3d *VHC = new Vector3d[m_NWakeColumn];
+    double phi=0;
+    double* PHC = new double[ulong(m_NWakeColumn)];
+    Vector3d *VHC = new Vector3d[ulong(m_NWakeColumn)];
 
     traceLog("      Adding the wake's contribution...\n");
 
@@ -1064,7 +1064,7 @@ void PanelAnalysis::createWakeContribution()
             }
             m++;
         }
-        m_Progress += 1.0/(double)m_MatSize;
+        m_Progress += 1.0/double(m_MatSize);
     }
 
     delete [] PHC;
@@ -2369,9 +2369,7 @@ bool PanelAnalysis::unitLoop()
             computeOnBodyCp(0.0, m_vDelta, 1);
             if (s_bCancel) return true;
 
-
-
-            //			if(MaxWakeIter>0 && m_pWPolar->bWakeRollUp()) RelaxWake();
+//            if(MaxWakeIter>0 && m_pWPolar->bWakeRollUp()) relaxWake();
         }
 
         switch(m_pWPolar->polarType())
@@ -4465,8 +4463,8 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double *Gamma, double *Sigma
     }
 
     pPOpp->m_bOut  = m_bPointOut;
-    pPOpp->alpha() = m_Alpha;
-    pPOpp->m_QInf  = m_QInf;
+    pPOpp->setAlpha(m_Alpha);
+    pPOpp->setQInf(m_QInf);
 
     pWOpp = pPOpp->m_pWOpp[0];
 
@@ -4476,7 +4474,7 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double *Gamma, double *Sigma
     }
 
 
-    pWOpp->m_MaxBending = (float)Cb;
+    pWOpp->m_MaxBending = Cb;
 
     if(m_pWPolar->analysisMethod()==XFLR5::VLMMETHOD)
     {
@@ -4487,7 +4485,7 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double *Gamma, double *Sigma
         //get the data from the PanelAnalysis dialog, and from the plane object
         pPOpp->m_NPanels             = m_MatSize;
 
-        pPOpp->alpha()               = m_OpAlpha;
+        pPOpp->setAlpha(m_OpAlpha);
         pPOpp->m_QInf                = m_QInf;
         pPOpp->m_CL                  = m_CL;
         pPOpp->m_CX                  = m_CX;
@@ -4512,7 +4510,7 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double *Gamma, double *Sigma
 
         if(m_pWPolar->polarType()==XFLR5::STABILITYPOLAR)
         {
-            pPOpp->alpha()            = m_AlphaEq;
+            pPOpp->setAlpha(m_AlphaEq);
             pPOpp->m_QInf             = u0;
             pPOpp->m_Ctrl             = m_Ctrl;
 
@@ -5398,7 +5396,7 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
     int nw=0, iTA=0, iTB=0;
     int k=0, l=0, pp=0;
     double InducedAngle=0, cosa=0, sina=0;
-    QList<double> GammaStrip;
+    QVector<double> GammaStrip;
     Vector3d C, Wg, dF, StripForce, WindDirection, WindNormal, VInf;
 
     /*	if(pWPolar->m_bTiltedGeom)
@@ -5551,17 +5549,14 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
 }
 
 
-
-
 void PanelAnalysis::relaxWake()
 {
     Vector3d VL;
-    int mw, kw, lw, llw;
-    int nInter;
-    double t, dx, dx0;
+
+    int nInter=0;
+    double t=0, dx=0;
     double *Mu    = m_Mu   ;
     double *Sigma = m_Sigma;
-    mw=0;
 
     //Since the wake roll-up is performed on the tilted geometry,
     // we define a speed vector parallel to the x-axis
@@ -5573,16 +5568,18 @@ void PanelAnalysis::relaxWake()
     Vector3d LATB, TALB;
     Vector3d WLA, WLB,WTA,WTB, WTemp;//wake panel's leading corner points
 
-    dx0 = 0.05;
+    double dx0 = 0.05;
 
     traceLog("      Relaxing the wake...\n");
 
     memcpy(m_pTempWakeNode, m_pWakeNode, m_nWakeNodes * sizeof(Vector3d));
 
-    for (lw=0; lw<m_pWPolar->m_NXWakePanels; lw++)
+    int mw = 0;
+
+    for (int lw=0; lw<m_pWPolar->m_NXWakePanels; lw++)
     {
         if(s_bCancel) break;
-        for (kw=0; kw<m_NWakeColumn; kw++)
+        for (int kw=0; kw<m_NWakeColumn; kw++)
         {
             if(s_bCancel) break;
 
@@ -5595,7 +5592,7 @@ void PanelAnalysis::relaxWake()
             nInter = (int)((WTA.x - WLA.x)/dx0) ;
             dx = (WTA.x - WLA.x)/nInter;
 
-            for (llw=0; llw<nInter; llw++)
+            for (int llw=0; llw<nInter; llw++)
             {
                 getSpeedVector(WTemp, Mu, Sigma, VL);
                 VL += QInf;
@@ -5616,7 +5613,7 @@ void PanelAnalysis::relaxWake()
         nInter = (int)((WTB.x - WLB.x)/dx0);
         dx = (WTB.x - WLB.x)/nInter;
 
-        for (llw=0; llw<nInter; llw++)
+        for (int llw=0; llw<nInter; llw++)
         {
             getSpeedVector(WTemp, Mu, Sigma, VL);
             VL += QInf;
@@ -5636,7 +5633,7 @@ void PanelAnalysis::relaxWake()
 
     // Re-create the wake panels
     mw=0;
-    for (mw=0; mw<m_WakeSize; mw++)
+    for (int mw=0; mw<m_WakeSize; mw++)
     {
         if(s_bCancel) break;
 
@@ -5656,10 +5653,6 @@ void PanelAnalysis::relaxWake()
         m_pWakePanel[mw].Normal.normalize();
         m_pWakePanel[mw].setPanelFrame(WLA, WLB, WTA, WTB);
     }
-
-    //Udpdate the view
-    //	pMiarex->m_bResetglWake = true;
-    //	pMiarex->UpdateView();
 }
 
 

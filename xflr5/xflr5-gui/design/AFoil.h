@@ -36,7 +36,7 @@
 #include <QStandardItemModel>
 #include <QRadioButton>
 #include <QSettings>
-#include <QList>
+#include <QVector>
 
 
 #include "foildesignwt.h"
@@ -78,7 +78,7 @@ public:
     ~AFoil();
 
     void setupLayout();
-    void initDialog(FoilDesignWt *p2DWidget, QList<Foil *> *poaFoil, XFoil *pXFoil);
+    void initDialog(FoilDesignWt *p2DWidget, QVector<Foil *> *poaFoil, XFoil *pXFoil);
 
 signals:
     void projectModified();
@@ -160,7 +160,7 @@ private:
     bool m_bStored;             /**< true if the current Picture has been stored on the Undo stack >*/
 
 
-    QList<Foil*> *m_poaFoil;   /**< a pointer to the array of Foil objects >*/
+    QVector<Foil*> *m_poaFoil;   /**< a pointer to the array of Foil objects >*/
     XFoil *m_pXFoil;             /**< a void pointer to the XFoil object >*/
 
     SplineFoil *m_pSF;          /**< a pointer to the SplineFoil object >*/
@@ -169,7 +169,7 @@ private:
 
 
     int m_StackPos;                   /**< the current position on the Undo stack >*/
-    QList<SplineFoil> m_UndoStack;    /**< the stack of incremental modifications to the SplineFoil;
+    QVector<SplineFoil> m_UndoStack;    /**< the stack of incremental modifications to the SplineFoil;
                                          we can't use the QStack though, because we need to access
                                          any point in the case of multiple undo operations >*/
 

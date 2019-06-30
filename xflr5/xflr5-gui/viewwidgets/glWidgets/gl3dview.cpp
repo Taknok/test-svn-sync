@@ -1699,7 +1699,7 @@ void gl3dView::glDrawMasses(Plane *pPlane)
 }
 
 
-void gl3dView::paintMasses(double volumeMass, Vector3d pos, QString tag, const QList<PointMass*> &ptMasses)
+void gl3dView::paintMasses(double volumeMass, Vector3d pos, QString tag, const QVector<PointMass*> &ptMasses)
 {
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
 

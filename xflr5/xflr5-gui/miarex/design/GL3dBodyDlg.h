@@ -207,7 +207,7 @@ private:
 
 
     int m_StackPos;                /**< the current position on the Undo stack */
-    QList<Body*> m_UndoStack;      /**< the stack of incremental modifications to the SplineFoil;
+    QVector<Body*> m_UndoStack;      /**< the stack of incremental modifications to the SplineFoil;
                                      we can't use the QStack though, because we need to access
                                      any point in the case of multiple undo operations */
 

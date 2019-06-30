@@ -25,7 +25,7 @@
 #include <QMessageBox>
 #include <QPainter>
 #include <QFileDialog>
-
+#include <QShowEvent>
 
 #include <miarex/design/BodyScaleDlg.h>
 #include <miarex/design/BodyTransDlg.h>
@@ -120,7 +120,7 @@ void EditBodyDlg::createActions()
  * Overrides the base class showEvent method. Moves the window to its former location.
  * @param event the showEvent.
  */
-void EditBodyDlg::showEvent(QShowEvent *event)
+void EditBodyDlg::showEvent(QShowEvent *pEvent)
 {
     move(s_WindowPosition);
     resize(s_WindowSize);
@@ -131,7 +131,7 @@ void EditBodyDlg::showEvent(QShowEvent *event)
 
     m_pglBodyView->update();
 
-    event->accept();
+    pEvent->accept();
 }
 
 
@@ -140,17 +140,17 @@ void EditBodyDlg::showEvent(QShowEvent *event)
  * Overrides the base class hideEvent method. Stores the window's current position.
  * @param event the hideEvent.
  */
-void EditBodyDlg::hideEvent(QHideEvent *event)
+void EditBodyDlg::hideEvent(QHideEvent *pEvent)
 {
     m_HorizontalSplitterSizes  = m_pHorizontalSplitter->saveState();
     //	m_LeftSplitterSizes        = m_pLeftSplitter->saveState();
     //	m_MiddleSplitterSizes      = m_pMiddleSplitter->saveState();
     s_WindowPosition = pos();
-    event->accept();
+    pEvent->accept();
 }
 
 
-void EditBodyDlg::resizeEvent(QResizeEvent *event)
+void EditBodyDlg::resizeEvent(QResizeEvent *pEvent)
 {
     resizeTreeView();
     if(m_pglBodyView->width()>0 && m_pglBodyView->height()>0)
@@ -158,7 +158,7 @@ void EditBodyDlg::resizeEvent(QResizeEvent *event)
         m_PixText = m_PixText.scaled(m_pglBodyView->rect().size());
         m_PixText.fill(Qt::transparent);
     }
-    event->accept();
+    pEvent->accept();
 }
 
 
@@ -995,7 +995,7 @@ void EditBodyDlg::readBodyFrameTree(Frame *pFrame, QModelIndex indexLevel)
 
 
 
-void EditBodyDlg::readInertiaTree(double &volumeMass, QList<PointMass*>&pointMasses, QModelIndex indexLevel)
+void EditBodyDlg::readInertiaTree(double &volumeMass, QVector<PointMass*>&pointMasses, QModelIndex indexLevel)
 {
     pointMasses.clear();
 

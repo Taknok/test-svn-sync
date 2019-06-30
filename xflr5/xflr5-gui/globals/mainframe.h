@@ -38,7 +38,7 @@
 #include <QPointer>
 #include <QTranslator>
 #include <QMainWindow>
-#include <QList>
+#include <QVector>
 #include <QActionGroup>
 
 #include <globals/gui_params.h>
@@ -217,7 +217,7 @@ public:
     bool loadSettings();
     bool loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
     void readPolarFile(QDataStream &ar);
-    void saveFoilPolars(QDataStream &ar, const QList<Foil *> &FoilList);
+    void saveFoilPolars(QDataStream &ar, const QVector<Foil*> &FoilList);
     bool saveProject(QString PathName="");
     void saveSettings();
     void selectFoil(Foil *pFoil);
@@ -448,7 +448,7 @@ private:
     QString m_ExportLastDirName, m_ImageDirName;
     QString m_FileName;         /**< The absolute path to the file of the current project. */
 
-    static QList <QColor> s_ColorList;
+    static QVector <QColor> s_ColorList;
 
     QString m_GraphExportFilter;
 

@@ -94,24 +94,34 @@ public:
     int blue() const {return m_blue;}
     int alphaChannel() const {return m_alphaChannel;}
 
-    int &polarStyle()      {return m_Style;}
-    int &polarWidth()      {return m_Width;}
-    int &pointStyle()      {return m_PointStyle;}
-    bool &isVisible()      {return m_bIsVisible;}
+    int polarStyle() const     {return m_Style;}
+    int polarWidth() const     {return m_Width;}
+    int pointStyle() const     {return m_PointStyle;}
+    bool isVisible() const     {return m_bIsVisible;}
 
     void setPolarStyle(int s) {m_Style=s;}
     void setPolarWidth(int w) {m_Width=w;}
     void setPointStyle(int p) {m_PointStyle=p;}
     void setVisible(bool bVisible) {m_bIsVisible=bVisible;}
 
-    double &aoa()      {return m_ASpec;}
-    double &Reynolds() {return m_Reynolds;}
-    double &Mach()     {return m_Mach;}
-    double &NCrit()    {return m_ACrit;}
-    double &XtrTop()   {return m_XTop;}
-    double &XtrBot()   {return m_XBot;}
-    int &ReType()      {return m_ReType;}
-    int &MaType()      {return m_MaType;}
+    double aoa()      const {return m_ASpec;}
+    double Reynolds() const {return m_Reynolds;}
+    double Mach()     const {return m_Mach;}
+    double NCrit()    const {return m_ACrit;}
+    double XtrTop()   const {return m_XTop;}
+    double XtrBot()   const {return m_XBot;}
+
+    void setAoa(double alpha)   {m_ASpec = alpha;}
+    void setReynolds(double Re) {m_Reynolds=Re;}
+    void setMach(double m)      {m_Mach=m;}
+    void setNCrit(double n)     {m_ACrit=n;}
+    void setXtrTop(double xtr)  {m_XTop=xtr;}
+    void setXtrBot(double xtr)  {m_XBot=xtr;}
+
+    int ReType()  const {return m_ReType;}
+    int MaType()  const {return m_MaType;}
+    void setReType(int type) {m_ReType=type;}
+    void setMaType(int type) {m_MaType=type;}
 
     XFLR5::enumPolarType const &polarType() {return m_PolarType;}
 

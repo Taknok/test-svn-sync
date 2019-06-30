@@ -1396,7 +1396,7 @@ void XInverse::onExtractFoil()
 {
     FoilSelectionDlg dlg(s_pMainFrame);
 
-    dlg.initDialog(Objects2d::s_oaFoil, QStringList());
+    dlg.initDialog(Objects2d::pOAFoil(), QStringList());
 
     if(m_bLoaded)
     {
@@ -1428,7 +1428,7 @@ void XInverse::onOverlayFoil()
 {
     FoilSelectionDlg dlg(s_pMainFrame);
 
-    dlg.initDialog(Objects2d::s_oaFoil, QStringList());
+    dlg.initDialog(Objects2d::pOAFoil(), QStringList());
 
     if(QDialog::Accepted == dlg.exec())
     {
@@ -1817,9 +1817,9 @@ void XInverse::onStoreFoil()
     pNewFoil->setFoilName(m_pRefFoil->foilName());
 
     QStringList NameList;
-    for(int k=0; k<Objects2d::s_oaFoil.size(); k++)
+    for(int k=0; k<Objects2d::foilCount(); k++)
     {
-        Foil *pOldFoil = Objects2d::s_oaFoil.at(k);
+        Foil *pOldFoil = Objects2d::foilAt(k);
         NameList.append(pOldFoil->foilName());
     }
 
@@ -2371,9 +2371,9 @@ bool XInverse::setParams()
     {
         // XFoil is not initialized
         //is there anything in the database ?
-        if(Objects2d::s_oaFoil.size())
+        if(Objects2d::foilCount())
         {
-            pFoil = Objects2d::s_oaFoil.at(0);
+            pFoil = Objects2d::foilAt(0);
             strFoilName = pFoil->foilName();
             m_pRefFoil->copyFoil(pFoil);
             m_pRefFoil->setColor(m_pQCurve->color().red(), m_pQCurve->color().green(), m_pQCurve->color().blue(), m_pQCurve->color().alpha());

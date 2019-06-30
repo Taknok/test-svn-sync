@@ -125,7 +125,7 @@ bool MainFrame::s_bTrace = false;
 QFile *MainFrame::s_pTraceFile = nullptr;
 
 QLabel *MainFrame::m_pctrlProjectName = nullptr;
-QList <QColor> MainFrame::s_ColorList;
+QVector <QColor> MainFrame::s_ColorList;
 
 
 
@@ -295,23 +295,7 @@ MainFrame::~MainFrame()
 {
     if(s_pTraceFile) s_pTraceFile->close();
 
-    for(int ioa=Objects2d::s_oaFoil.size()-1; ioa>=0; ioa--)
-    {
-        delete Objects2d::s_oaFoil.at(ioa);
-        Objects2d::s_oaFoil.removeAt(ioa);
-    }
-
-    for(int ioa=Objects2d::s_oaPolar.size()-1; ioa>=0; ioa--)
-    {
-        delete Objects2d::s_oaPolar.at(ioa);
-        Objects2d::s_oaPolar.removeAt(ioa);
-    }
-
-    for(int ioa=Objects2d::s_oaOpp.size()-1; ioa>=0; ioa--)
-    {
-        delete Objects2d::s_oaOpp.at(ioa);
-        Objects2d::s_oaOpp.removeAt(ioa);
-    }
+    Objects2d::deleteAllFoils();
 
     if(m_pSaveTimer)
     {
@@ -1009,19 +993,19 @@ void MainFrame::createDockWindows()
 
     m_pMiarex->m_pgl3dMiarexView = m_pgl3dMiarexView;
 
-    m_pXDirect->m_poaFoil  = &Objects2d::s_oaFoil;
-    m_pXDirect->m_poaPolar = &Objects2d::s_oaPolar;
-    m_pXDirect->m_poaOpp   = &Objects2d::s_oaOpp;
+    m_pXDirect->m_poaFoil  = Objects2d::pOAFoil();
+    m_pXDirect->m_poaPolar = Objects2d::pOAPolar();
+    m_pXDirect->m_poaOpp   = Objects2d::pOAOpp();
     m_pXDirect->m_pOpPointWidget = m_pXDirectTileWidget->opPointWidget();
 
-    m_pAFoil->initDialog(m_pDirect2dWidget, &Objects2d::s_oaFoil, &m_pXDirect->m_XFoil);
+    m_pAFoil->initDialog(m_pDirect2dWidget, Objects2d::pOAFoil(), &m_pXDirect->m_XFoil);
 
     XInverse::s_p2dWidget        = m_p2dWidget;
     m_pXInverse->s_pMainFrame       = this;
     m_pXInverse->m_pXFoil           = &m_pXDirect->m_XFoil;
 
-    GL3dWingDlg::s_poaFoil = &Objects2d::s_oaFoil;
-    EditObjectDelegate::s_poaFoil = &Objects2d::s_oaFoil;
+    GL3dWingDlg::s_poaFoil = Objects2d::pOAFoil();
+    EditObjectDelegate::s_poaFoil = Objects2d::pOAFoil();
 
     gl3dMiarexView::s_pMiarex = m_pMiarex;
 
@@ -2975,24 +2959,7 @@ void MainFrame::deleteProject(bool bClosing)
     // clear everything
     Objects3d::deleteObjects();
 
-    for (int i=Objects2d::s_oaFoil.size()-1; i>=0; i--)
-    {
-        Foil *pObj = Objects2d::s_oaFoil.at(i);
-        Objects2d::s_oaFoil.removeAt(i);
-        delete pObj;
-    }
-    for (int i=Objects2d::s_oaPolar.size()-1; i>=0; i--)
-    {
-        Polar *pObj = Objects2d::s_oaPolar.at(i);
-        Objects2d::s_oaPolar.removeAt(i);
-        delete pObj;
-    }
-    for (int i=Objects2d::s_oaOpp.size()-1; i>=0; i--)
-    {
-        OpPoint *pObj = Objects2d::s_oaOpp.at(i);
-        Objects2d::s_oaOpp.removeAt(i);
-        delete pObj;
-    }
+    Objects2d::deleteAllFoils();
 
     m_pMiarex->m_pCurPlane  = nullptr;
     m_pMiarex->m_pCurPOpp   = nullptr;
@@ -3062,9 +3029,9 @@ QColor MainFrame::getColor(int type)
             Foil *pFoil;
             for (j=0; j<s_ColorList.size(); j++)
             {
-                for (i=0; i<Objects2d::s_oaFoil.size(); i++)
+                for (i=0; i<Objects2d::foilCount(); i++)
                 {
-                    pFoil = Objects2d::s_oaFoil.at(i);
+                    pFoil = Objects2d::foilAt(i);
                     bFound = false;
                     if(colour(pFoil) == s_ColorList.at(j))
                     {
@@ -3081,9 +3048,9 @@ QColor MainFrame::getColor(int type)
             Polar *pPolar;
             for (j=0; j<s_ColorList.size(); j++)
             {
-                for (i=0; i<Objects2d::s_oaPolar.size(); i++)
+                for (i=0; i<Objects2d::polarCount(); i++)
                 {
-                    pPolar = Objects2d::s_oaPolar.at(i);
+                    pPolar = Objects2d::polarAt(i);
                     bFound = false;
                     if(colour(pPolar) == s_ColorList.at(j))
                     {
@@ -3100,11 +3067,11 @@ QColor MainFrame::getColor(int type)
         {
             OpPoint *pOpPoint;
             for (j=0; j<s_ColorList.size(); j++){
-                for (i=0; i<Objects2d::s_oaOpp.size(); i++)
+                for (i=0; i<Objects2d::oppCount(); i++)
                 {
-                    pOpPoint = Objects2d::s_oaOpp.at(i);
+                    pOpPoint = Objects2d::oppAt(i);
                     bFound = false;
-                    int r,g,b,a;
+                    int r=0,g=0,b=0,a=0;
                     pOpPoint->getColor(r,g,b,a);
                     QColor clr(r,g,b,a);
                     if(clr == s_ColorList.at(j))
@@ -3307,15 +3274,14 @@ bool MainFrame::loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFor
             delete pPolar;
             return false;
         }
-        for (l=0; l<Objects2d::s_oaPolar.size(); l++)
+        for (l=0; l<Objects2d::polarCount(); l++)
         {
-            pOldPlr = Objects2d::s_oaPolar[l];
+            pOldPlr = Objects2d::polarAt(l);
             if (pOldPlr->foilName() == pPolar->foilName() &&
                     pOldPlr->polarName()  == pPolar->polarName())
             {
                 //just overwrite...
-                Objects2d::s_oaPolar.removeAt(l);
-                delete pOldPlr;
+                Objects2d::deletePolarAt(l);
                 //... and continue to add
             }
         }
@@ -3333,7 +3299,7 @@ bool MainFrame::loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFor
             return false;
         }
 
-        QColor clr = s_ColorList[Objects2d::s_oaOpp.size()%24];
+        QColor clr = s_ColorList[Objects2d::oppCount()%24];
         pOpp->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
         if(ArchiveFormat>=100002)
         {
@@ -3379,16 +3345,15 @@ bool MainFrame::loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFor
         }
         if(pOpp)
         {
-            for (int l=Objects2d::s_oaOpp.size()-1;l>=0; l--)
+            for (int l=Objects2d::oppCount()-1;l>=0; l--)
             {
-                pOldOpp = Objects2d::s_oaOpp.at(l);
+                pOldOpp = Objects2d::oppAt(l);
                 if (pOldOpp->foilName() == pOpp->foilName() &&
                         pOldOpp->polarName()  == pOpp->polarName() &&
                         qAbs(pOldOpp->aoa()-pOpp->aoa())<0.001)
                 {
                     //just overwrite...
-                    Objects2d::s_oaOpp.removeAt(l);
-                    delete pOldOpp;
+                    Objects2d::deleteOppAt(l);
                     //... and continue to add
                 }
             }
@@ -3892,7 +3857,7 @@ void MainFrame::onLoadFile()
     }
     else if(m_iApp==XFLR5::XFOILANALYSIS)
     {
-        if(Objects2d::s_oaPolar.size())
+        if(Objects2d::polarCount())
         {
             if(m_pXDirect->m_bPolarView) m_pXDirect->createPolarCurves();
             else                         m_pXDirect->createOppCurves();
@@ -4511,7 +4476,7 @@ void MainFrame::onOpenRecentFile()
 
     else if(m_iApp==XFLR5::XFOILANALYSIS)
     {
-        if(Objects2d::s_oaPolar.size())
+        if(Objects2d::polarCount())
         {
             if(m_pXDirect->bPolarView()) m_pXDirect->createPolarCurves();
             else                         m_pXDirect->createOppCurves();
@@ -4586,15 +4551,14 @@ void MainFrame::readPolarFile(QDataStream &ar)
                 delete pPolar;
                 return;
             }
-            for (l=0; l<Objects2d::s_oaPolar.size(); l++)
+            for (l=0; l<Objects2d::polarCount(); l++)
             {
-                pOldPolar = Objects2d::s_oaPolar[l];
+                pOldPolar = Objects2d::polarAt(l);
                 if (pOldPolar->foilName() == pPolar->foilName() &&
                         pOldPolar->polarName()  == pPolar->polarName())
                 {
                     //just overwrite...
-                    Objects2d::s_oaPolar.removeAt(l);
-                    delete pOldPolar;
+                    Objects2d::deletePolarAt(l);
                     //... and continue to add
                 }
             }
@@ -4793,10 +4757,10 @@ bool MainFrame::serializePlaneProject(QDataStream &ar)
 
     // then the foils
     // list the foils associated to this Plane's wings
-    QList<Foil*> foilList;
-    for(i=0; i<Objects2d::s_oaFoil.size(); i++)
+    QVector<Foil*> foilList;
+    for(i=0; i<Objects2d::foilCount(); i++)
     {
-        Foil *pFoil = Objects2d::s_oaFoil.at(i);
+        Foil *pFoil = Objects2d::foilAt(i);
         for(int iw=0; iw<MAXWINGS; iw++)
         {
             if(m_pMiarex->m_pCurPlane->m_Wing[iw].isWingFoil(pFoil))
@@ -4807,7 +4771,6 @@ bool MainFrame::serializePlaneProject(QDataStream &ar)
         }
     }
 
-
     ar << foilList.count();
     for(int iFoil=0; iFoil<foilList.size(); iFoil++)
     {
@@ -4815,10 +4778,10 @@ bool MainFrame::serializePlaneProject(QDataStream &ar)
     }
     // the foil polars
     // list the foil polars associated to this Plane's wings
-    QList<Polar*> polarList;
-    for(i=0; i<Objects2d::s_oaPolar.size(); i++)
+    QVector<Polar*> polarList;
+    for(i=0; i<Objects2d::polarCount(); i++)
     {
-        pPolar = Objects2d::s_oaPolar.at(i);
+        pPolar = Objects2d::polarAt(i);
         for(int iFoil=0; iFoil<foilList.count(); iFoil++)
         {
             if(pPolar->foilName() == foilList.at(iFoil)->foilName())
@@ -5204,7 +5167,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
     OpPoint *pOpp    = nullptr;
 
     int i=0, n=0;
-    float f = 0;
+    float f=0;
     double dble=0;
 
     if (bIsStoring)
@@ -5285,28 +5248,28 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
         else ar << 0;
 
         // then the foils
-        ar << Objects2d::s_oaFoil.size();
-        for(int i=0; i<Objects2d::s_oaFoil.size(); i++)
+        ar << Objects2d::foilCount();
+        for(int i=0; i<Objects2d::foilCount(); i++)
         {
-            Foil *pFoil = Objects2d::s_oaFoil.at(i);
+            Foil *pFoil = Objects2d::foilAt(i);
             serializeFoilXFL(pFoil, ar, bIsStoring);
         }
 
         //the foil polars
-        ar << Objects2d::s_oaPolar.size();
-        for (int i=0; i<Objects2d::s_oaPolar.size();i++)
+        ar << Objects2d::polarCount();
+        for (int i=0; i<Objects2d::polarCount();i++)
         {
-            pPolar = Objects2d::s_oaPolar.at(i);
+            pPolar = Objects2d::polarAt(i);
             serializePolarXFL(pPolar, ar, bIsStoring);
         }
 
         //the oppoints
         if(m_bSaveOpps)
         {
-            ar << Objects2d::s_oaOpp.size();
-            for (int i=0; i<Objects2d::s_oaOpp.size();i++)
+            ar << Objects2d::oppCount();
+            for (int i=0; i<Objects2d::oppCount();i++)
             {
-                pOpp = Objects2d::s_oaOpp.at(i);
+                pOpp = Objects2d::oppAt(i);
                 pOpp->serializeOppXFL(ar, bIsStoring);
             }
         }
@@ -5462,7 +5425,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
                 // there is a risk that old plane results are not consisent with the new foil, but difficult to avoid that
                 Foil *pOldFoil = Objects2d::foil(pFoil->foilName());
                 if(pOldFoil) Objects2d::deleteFoil(pOldFoil);
-                Objects2d::s_oaFoil.append(pFoil);
+                Objects2d::appendFoil(pFoil);
             }
             else
             {
@@ -5473,10 +5436,11 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 
         // load the Polars
         ar >> n;
+
         for(i=0; i<n; i++)
         {
             pPolar = new Polar();
-            if(serializePolarXFL(pPolar, ar, bIsStoring)) Objects2d::s_oaPolar.append(pPolar);
+            if(serializePolarXFL(pPolar, ar, bIsStoring)) Objects2d::appendPolar(pPolar);
             else
             {
                 QMessageBox::warning(this,tr("Warning"), tr("Error reading the file")+"\n"+tr("Saved the valid part"));
@@ -5489,7 +5453,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
         for(i=0; i<n; i++)
         {
             pOpp = new OpPoint();
-            if(pOpp->serializeOppXFL(ar, bIsStoring))  Objects2d::s_oaOpp.append(pOpp);
+            if(pOpp->serializeOppXFL(ar, bIsStoring))  Objects2d::appendOpp(pOpp);
             else
             {
                 QMessageBox::warning(this,tr("Warning"), tr("Error reading the file")+"\n"+tr("Saved the valid part"));
@@ -5722,17 +5686,17 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
         }
         if(n==100000)
         {
-            for (j=0; j<Objects2d::s_oaPolar.size(); j++)
+            for (j=0; j<Objects2d::polarCount(); j++)
             {
-                pPolar = Objects2d::s_oaPolar.at(j);
-                for (k=0; k<Objects2d::s_oaFoil.size(); k++)
+                pPolar = Objects2d::polarAt(j);
+                for (k=0; k<Objects2d::foilCount(); k++)
                 {
-                    pFoil = Objects2d::s_oaFoil.at(k);
+                    pFoil = Objects2d::foilAt(k);
                     if(pFoil->foilName()==pPolar->foilName())
                     {
-                        pPolar->NCrit()      = 9.0;
-                        pPolar->XtrTop()     = 1.0;
-                        pPolar->XtrBot()     = 1.0;
+                        pPolar->setNCrit(9.0);
+                        pPolar->setXtrTop(1.0);
+                        pPolar->setXtrBot(1.0);
                         str = QString("_N%1").arg(9.0,4,'f',1);
                         QString name = pPolar->polarName();
                         pPolar->setPolarName(name + str);
@@ -6107,9 +6071,9 @@ void MainFrame::updateFoilListBox()
     m_pctrlFoil->clear();
 
     QStringList foilList;
-    for (int iFoil=0; iFoil<Objects2d::s_oaFoil.size(); iFoil++)
+    for (int iFoil=0; iFoil<Objects2d::foilCount(); iFoil++)
     {
-        Foil *pFoil = Objects2d::s_oaFoil[iFoil];
+        Foil *pFoil = Objects2d::foilAt(iFoil);
         foilList.append(pFoil->foilName());
     }
 
@@ -6145,9 +6109,9 @@ void MainFrame::updatePolarListBox()
     else
     {
         QStringList polarList;
-        for (int i=0; i<Objects2d::s_oaPolar.size(); i++)
+        for (int i=0; i<Objects2d::polarCount(); i++)
         {
-            Polar *pPolar = Objects2d::s_oaPolar[i];
+            Polar *pPolar = Objects2d::polarAt(i);
             if(pPolar->foilName() == XDirect::curFoil()->foilName())
             {
                 polarList.append(pPolar->polarName());
@@ -6194,9 +6158,9 @@ void MainFrame::updateOppListBox()
     {
         QStringList oppList;
         QString str;
-        for (int iOpp=0; iOpp<Objects2d::s_oaOpp.size(); iOpp++)
+        for (int iOpp=0; iOpp<Objects2d::oppCount(); iOpp++)
         {
-            OpPoint *pOpp = Objects2d::s_oaOpp[iOpp];
+            OpPoint *pOpp = Objects2d::oppAt(iOpp);
             if (pOpp->foilName()==XDirect::curFoil()->foilName() && pOpp->polarName()==pCurPlr->polarName())
             {
                 if (pCurPlr->polarType() != XFLR5::FIXEDAOAPOLAR)
@@ -6274,7 +6238,7 @@ void MainFrame::updateView()
 }
 
 
-void MainFrame::saveFoilPolars(QDataStream &ar, QList<Foil*> const &FoilList)
+void MainFrame::saveFoilPolars(QDataStream &ar, QVector<Foil*> const &FoilList)
 {
     QVector<Foil*> ExportList;
     if(FoilList.isEmpty())
@@ -6298,9 +6262,9 @@ void MainFrame::saveFoilPolars(QDataStream &ar, QList<Foil*> const &FoilList)
     for (int i=0; i<ExportList.size(); i++)
     {
         Foil const *pFoil = ExportList.at(i);
-        for (int j=0; j<Objects2d::s_oaPolar.size(); j++)
+        for (int j=0; j<Objects2d::polarCount(); j++)
         {
-            Polar *pPolar = Objects2d::s_oaPolar.at(j);
+            Polar *pPolar = Objects2d::polarAt(j);
             if(pPolar->foilName().compare(pFoil->foilName())==0) nPolars++;
         }
     }
@@ -6325,9 +6289,9 @@ void MainFrame::saveFoilPolars(QDataStream &ar, QList<Foil*> const &FoilList)
     for (int i=0; i<ExportList.size(); i++)
     {
         Foil const *pFoil = ExportList.at(i);
-        for (int j=0; j<Objects2d::s_oaPolar.size(); j++)
+        for (int j=0; j<Objects2d::polarCount(); j++)
         {
-            Polar *pPolar = Objects2d::s_oaPolar.at(j);
+            Polar *pPolar = Objects2d::polarAt(j);
             if(pPolar->foilName().compare(pFoil->foilName())==0)
                 serializePolar(pPolar, ar, true);
         }
@@ -6810,7 +6774,8 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
         ar >> pPolar->m_FoilName;
         ar >> pPolar->m_PlrName;
 
-        ar >> pPolar->polarStyle() >> pPolar->polarWidth();
+        ar >> n; pPolar->setPolarStyle(n);
+        ar >> n; pPolar->setPolarWidth(n);
         readColor(ar, pPolar->m_red, pPolar->m_green, pPolar->m_blue, pPolar->m_alphaChannel);
         ar >> pPolar->m_bIsVisible >> boolean;
 

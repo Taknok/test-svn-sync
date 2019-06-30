@@ -75,7 +75,7 @@ public:
     void calculatePoint(int iPt);
     void copy(WPolar *pWPolar);
     void duplicateSpec(WPolar *pWPolar);
-    QList<double> *getWPlrVariable(int iVar);
+    QVector<double> *getWPlrVariable(int iVar);
     void remove(int i);
     void remove(double alpha);
     void clearData();
@@ -211,68 +211,68 @@ public:
 
     QVarLengthArray<double> m_ControlGain;      /**< the scaling factor for each of the control surfaces */
 
-    QList <double>  m_1Cl;        /**< 1/Cl, special for Matthieu */
-    QList <double>  m_Alpha;      /**< the angle of attack */
-    QList <double>  m_Beta;       /**< the sideslip angle */
-    QList <double>  m_QInfinite;  /**< the free stream speed - type 2 WPolars */
-    QList <double>  m_Cl32Cd;     /**< the power factor */
-    QList <double>  m_ClCd;       /**< the glide ratio */
-    QList <double>  m_CL;         /**< lift coef. */
+    QVector <double>  m_1Cl;        /**< 1/Cl, special for Matthieu */
+    QVector <double>  m_Alpha;      /**< the angle of attack */
+    QVector <double>  m_Beta;       /**< the sideslip angle */
+    QVector <double>  m_QInfinite;  /**< the free stream speed - type 2 WPolars */
+    QVector <double>  m_Cl32Cd;     /**< the power factor */
+    QVector <double>  m_ClCd;       /**< the glide ratio */
+    QVector <double>  m_CL;         /**< lift coef. */
 
-    QList <double>  m_Ctrl;       /**< Ctrl variable */
-    QList <double>  m_CY;         /**< Side Force */
-    QList <double>  m_FX;         /**< the total drag */
+    QVector <double>  m_Ctrl;       /**< Ctrl variable */
+    QVector <double>  m_CY;         /**< Side Force */
+    QVector <double>  m_FX;         /**< the total drag */
 
 
-    QList <double>  m_FY;         /**< the total side force */
-    QList <double>  m_FZ;         /**< the total wing lift */
-    QList <double>  m_Gamma;      /**< glide angle = Atan(Cx/Cz), in degrees */
-    QList <double>  m_GCm;        /**< Total Pitching Moment coefficient */
-    QList <double>  m_GRm;        /**< Total rolling moment */
+    QVector <double>  m_FY;         /**< the total side force */
+    QVector <double>  m_FZ;         /**< the total wing lift */
+    QVector <double>  m_Gamma;      /**< glide angle = Atan(Cx/Cz), in degrees */
+    QVector <double>  m_GCm;        /**< Total Pitching Moment coefficient */
+    QVector <double>  m_GRm;        /**< Total rolling moment */
 
-    QList <double>  m_GYm;        /**< Total yawing moment coefficient */
-    QList <double>  m_ICd;        /**< induced drag coef. */
-    QList <double>  m_ICm;        /**< Induced Pitching Moment coefficient */
-    QList <double>  m_IYm;        /**< induced yawing moment coefficient */
-    QList <double>  m_Rm;         /**< the total rolling moment */
-    QList <double>  m_Pm;         /**< the total pitching moment */
-    QList <double>  m_MaxBending; /**< the max bending moment at the root chord */
+    QVector <double>  m_GYm;        /**< Total yawing moment coefficient */
+    QVector <double>  m_ICd;        /**< induced drag coef. */
+    QVector <double>  m_ICm;        /**< Induced Pitching Moment coefficient */
+    QVector <double>  m_IYm;        /**< induced yawing moment coefficient */
+    QVector <double>  m_Rm;         /**< the total rolling moment */
+    QVector <double>  m_Pm;         /**< the total pitching moment */
+    QVector <double>  m_MaxBending; /**< the max bending moment at the root chord */
 
-    QList <double>  m_Oswald;     /**< Oswald's efficiency factor */
-    QList <double>  m_PCd;        /**< profile drag coef. */
+    QVector <double>  m_Oswald;     /**< Oswald's efficiency factor */
+    QVector <double>  m_PCd;        /**< profile drag coef. */
 
-    complex<double> m_EigenValue[8][MAXPOLARPOINTS]; /**< until we have a QList<complex<double>> ? */
-    QList <double>  m_PhugoidFrequency;        /**< the phugoid's frequency, as a result of stability analysis only */
-    QList <double>  m_PhugoidDamping;          /**< the phugoid's damping factor, as a result of stability analysis only */
-    QList <double>  m_RollDampingT2;           /**< the time to double or half for the damping of the roll-damping mode, as a result of stability analysis only */
-    QList <double>  m_ShortPeriodDamping;      /**< the damping of the short period mode, as a result of stability analysis only */
-    QList <double>  m_ShortPeriodFrequency;    /**< the frequency of the short period mode, as a result of stability analysis only */
-    QList <double>  m_DutchRollDamping;        /**< the damping of the Dutch roll mode, as a result of stability analysis only */
-    QList <double>  m_DutchRollFrequency;      /**< the frequency of the Dutch roll mode, as a result of stability analysis only */
-    QList <double>  m_SpiralDampingT2;         /**< the time to double or half for the damping of the spiral mode, as a result of stability analysis only >*/
+    complex<double> m_EigenValue[8][MAXPOLARPOINTS]; /**< until we have a QVector<complex<double>> ? */
+    QVector <double>  m_PhugoidFrequency;        /**< the phugoid's frequency, as a result of stability analysis only */
+    QVector <double>  m_PhugoidDamping;          /**< the phugoid's damping factor, as a result of stability analysis only */
+    QVector <double>  m_RollDampingT2;           /**< the time to double or half for the damping of the roll-damping mode, as a result of stability analysis only */
+    QVector <double>  m_ShortPeriodDamping;      /**< the damping of the short period mode, as a result of stability analysis only */
+    QVector <double>  m_ShortPeriodFrequency;    /**< the frequency of the short period mode, as a result of stability analysis only */
+    QVector <double>  m_DutchRollDamping;        /**< the damping of the Dutch roll mode, as a result of stability analysis only */
+    QVector <double>  m_DutchRollFrequency;      /**< the frequency of the Dutch roll mode, as a result of stability analysis only */
+    QVector <double>  m_SpiralDampingT2;         /**< the time to double or half for the damping of the spiral mode, as a result of stability analysis only >*/
 
-    QList <double>  m_XCpCl;                   /**< XCp.Cl, used in calculation of neutral point position >*/
-    QList <double>  m_SM;                      /**< (XCP-XCmRef)/m.a.c; >*/
-    QList <double>  m_TCd;                     /**< the total drag coeficient >*/
-    QList <double>  m_VCm;                     /**< the viscous Pitching Moment coefficient >*/
-    QList <double>  m_VertPower;               /**< the power for steady horizontal flight = m.g.Vz >*/
-    QList <double>  m_HorizontalPower;         /**< the power for steady horizontal flight = Fx.Vx >*/
+    QVector <double>  m_XCpCl;                   /**< XCp.Cl, used in calculation of neutral point position >*/
+    QVector <double>  m_SM;                      /**< (XCP-XCmRef)/m.a.c; >*/
+    QVector <double>  m_TCd;                     /**< the total drag coeficient >*/
+    QVector <double>  m_VCm;                     /**< the viscous Pitching Moment coefficient >*/
+    QVector <double>  m_VertPower;               /**< the power for steady horizontal flight = m.g.Vz >*/
+    QVector <double>  m_HorizontalPower;         /**< the power for steady horizontal flight = Fx.Vx >*/
 
-    QList <double>  m_Vx;         /**< the horizontal component of the velocity */
-    QList <double>  m_VYm;        /**< Profile yawing Moment coefficient */
-    QList <double>  m_Vz;         /**< the sink speed = sqrt(2mg/rho/S)/powerfactor */
-    QList <double>  m_XCP;        /**< the centre of pressure X-position relative to the wing's root LE */
-    QList <double>  m_XNP;        /**< the position of the neutral point, as a result of stability analysis only */
+    QVector <double>  m_Vx;         /**< the horizontal component of the velocity */
+    QVector <double>  m_VYm;        /**< Profile yawing Moment coefficient */
+    QVector <double>  m_Vz;         /**< the sink speed = sqrt(2mg/rho/S)/powerfactor */
+    QVector <double>  m_XCP;        /**< the centre of pressure X-position relative to the wing's root LE */
+    QVector <double>  m_XNP;        /**< the position of the neutral point, as a result of stability analysis only */
 
-    QList <double>  m_YCP;        /**< the centre of pressure Y-position relative to the wing's root LE */
-    QList <double>  m_Ym;         /**< the total yawing moment */
-    QList <double>  m_ZCP;        /**< the centre of pressure Z-position relative to the wing's root LE */
+    QVector <double>  m_YCP;        /**< the centre of pressure Y-position relative to the wing's root LE */
+    QVector <double>  m_Ym;         /**< the total yawing moment */
+    QVector <double>  m_ZCP;        /**< the centre of pressure Z-position relative to the wing's root LE */
 
-    QList <double>  m_ExtraDrag;  /**< the custom extra drag in addition to the induced and viscous drag parts */
+    QVector <double>  m_ExtraDrag;  /**< the custom extra drag in addition to the induced and viscous drag parts */
 
-    QList <double>  m_Mass_var;   /**< the mass calculated as ref_mass + gain*control */
-    QList <double>  m_CoG_x;      /**< the CoG position calculated as ref_CoG_x + gain*control */
-    QList <double>  m_CoG_z;      /**< the CoG position calculated as ref_CoG_z + gain*control */
+    QVector <double>  m_Mass_var;   /**< the mass calculated as ref_mass + gain*control */
+    QVector <double>  m_CoG_x;      /**< the CoG position calculated as ref_CoG_x + gain*control */
+    QVector <double>  m_CoG_z;      /**< the CoG position calculated as ref_CoG_z + gain*control */
 
     double m_ExtraDragArea[MAXEXTRADRAG], m_ExtraDragCoef[MAXEXTRADRAG];
 

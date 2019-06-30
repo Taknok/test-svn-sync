@@ -228,7 +228,7 @@ void AFoil::fillTableRow(int row)
 {
     QModelIndex ind;
 
-    Foil *pFoil = (Foil*)m_poaFoil->at(row-1);
+    Foil *pFoil = m_poaFoil->at(row-1);
 
     ind = m_pFoilModel->index(row, 0, QModelIndex());
     m_pFoilModel->setData(ind,pFoil->foilName());
@@ -918,7 +918,7 @@ void AFoil::onAFoilNacaFoils()
         //then duplicate the buffer foil and add it
         QString str;
 
-        if(nacaDlg.s_Digits>0 && log10((double)nacaDlg.s_Digits)<4)
+        if(nacaDlg.s_Digits>0 && log10(double(nacaDlg.s_Digits))<4)
             str = QString("%1").arg(nacaDlg.s_Digits,4,10,QChar('0'));
         else
             str = QString("%1").arg(nacaDlg.s_Digits);
@@ -1139,7 +1139,7 @@ void AFoil::onFoilClicked(const QModelIndex& index)
 
     if(index.row()==0)
     {
-        XDirect::setCurFoil(NULL);
+        XDirect::setCurFoil(nullptr);
         if(index.column()==12)
         {
             m_pSF->m_bVisible = !m_pSF->m_bVisible;
@@ -1226,7 +1226,7 @@ void AFoil::onHideAllFoils()
     Foil*pFoil;
     for (int k=0; k<m_poaFoil->size(); k++)
     {
-        pFoil = (Foil*)m_poaFoil->at(k);
+        pFoil = m_poaFoil->at(k);
         pFoil->isVisible() = false;
     }
     fillFoilTable();
@@ -1281,9 +1281,9 @@ void AFoil::onRenameFoil()
     Foil*pOldFoil;
 
     QStringList NameList;
-    for(int k=0; k<Objects2d::s_oaFoil.size(); k++)
+    for(int k=0; k<Objects2d::foilCount(); k++)
     {
-        pOldFoil = Objects2d::s_oaFoil.at(k);
+        pOldFoil = Objects2d::foilAt(k);
         NameList.append(pOldFoil->foilName());
     }
 
@@ -1309,7 +1309,7 @@ void AFoil::onShowAllFoils()
     Foil*pFoil;
     for (int k=0; k<m_poaFoil->size(); k++)
     {
-        pFoil = (Foil*)m_poaFoil->at(k);
+        pFoil = m_poaFoil->at(k);
         pFoil->isVisible() = true;
     }
     fillFoilTable();
@@ -1730,7 +1730,7 @@ void AFoil::clearStack(int pos)
  */
 void AFoil::onResetColumnWidths()
 {
-    int unitwidth = (int)((double)m_pctrlFoilTable->width()/16.0);
+    int unitwidth = int(double(m_pctrlFoilTable->width())/16.0);
     m_pctrlFoilTable->setColumnWidth(0, 3*unitwidth);
     for(int i=1; i<16; i++) m_pctrlFoilTable->setColumnWidth(i, unitwidth);
     m_pctrlFoilTable->setColumnHidden(9, true);
@@ -1790,7 +1790,7 @@ void AFoil::resizeEvent(QResizeEvent *event)
     ncol++;
 
     //get column width and spare 10% for horizontal header
-    int unitwidth = (int)((double)(m_pctrlFoilTable->width())/(double)ncol/1.1);
+    int unitwidth = int(double(m_pctrlFoilTable->width())/double(ncol)/1.1);
 
     m_pctrlFoilTable->setColumnWidth(0, 2*unitwidth);
     for(int i=1; i<16; i++)	m_pctrlFoilTable->setColumnWidth(i, unitwidth);
@@ -1811,9 +1811,9 @@ Foil* AFoil::addNewFoil(Foil *pFoil)
 {
     if(!pFoil) return nullptr;
     QStringList NameList;
-    for(int k=0; k<Objects2d::s_oaFoil.size(); k++)
+    for(int k=0; k<Objects2d::foilCount(); k++)
     {
-        Foil*pOldFoil = Objects2d::s_oaFoil.at(k);
+        Foil*pOldFoil = Objects2d::foilAt(k);
         NameList.append(pOldFoil->foilName());
     }
 
@@ -1831,7 +1831,7 @@ Foil* AFoil::addNewFoil(Foil *pFoil)
 }
 
 
-void AFoil::initDialog(FoilDesignWt *p2DWidget, QList<Foil*> *poaFoil, XFoil *pXFoil)
+void AFoil::initDialog(FoilDesignWt *p2DWidget, QVector<Foil*> *poaFoil, XFoil *pXFoil)
 {
     m_poaFoil = poaFoil;
     m_pXFoil = pXFoil;

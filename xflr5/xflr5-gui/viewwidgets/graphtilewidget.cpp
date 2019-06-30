@@ -99,7 +99,7 @@ GraphWidget *GraphTileWidget::graphWidget(Graph *pGraph)
 }
 
 
-void GraphTileWidget::setGraphList(QList<Graph *> pGraphList, int nGraphs, int iGraphWidget, Qt::Orientation orientation)
+void GraphTileWidget::setGraphList(QVector<Graph *> pGraphList, int nGraphs, int iGraphWidget, Qt::Orientation orientation)
 {
     m_xflr5App = s_pMainFrame->xflr5App();
     m_nGraphWidgets = qMin(nGraphs,MAXGRAPHS);

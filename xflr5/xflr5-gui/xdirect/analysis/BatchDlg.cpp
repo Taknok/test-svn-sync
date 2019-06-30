@@ -376,7 +376,7 @@ void BatchDlg::alphaLoop()
 {
     QString str;
 
-    int nAlpha = (int)(qAbs((m_SpMax-m_SpMin)*1.000/m_SpInc));//*1.0001 to make sure upper limit is included
+    int nAlpha = int(qAbs((m_SpMax-m_SpMin)*1.000/m_SpInc));//*1.0001 to make sure upper limit is included
 
     for (int iAlpha=0; iAlpha<=nAlpha; iAlpha++)
     {
@@ -466,45 +466,42 @@ Polar *BatchDlg::createPolar(Foil *pFoil, double Spec, double Mach, double NCrit
     pPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
 
     pPolar->setFoilName(pFoil->foilName());
-    pPolar->isVisible() = true;
+    pPolar->setVisible(true);
     pPolar->setPolarType(m_PolarType);
 
     switch (pPolar->polarType())
     {
+        default:
         case XFLR5::FIXEDSPEEDPOLAR:
-            pPolar->MaType() = 1;
-            pPolar->ReType() = 1;
+            pPolar->setMaType(1);
+            pPolar->setReType(1);
             break;
         case XFLR5::FIXEDLIFTPOLAR:
-            pPolar->MaType() = 2;
-            pPolar->ReType() = 2;
+            pPolar->setMaType(2);
+            pPolar->setReType(2);
             break;
         case XFLR5::RUBBERCHORDPOLAR:
-            pPolar->MaType() = 1;
-            pPolar->ReType() = 3;
+            pPolar->setMaType(1);
+            pPolar->setReType(3);
             break;
         case XFLR5::FIXEDAOAPOLAR:
-            pPolar->MaType() = 1;
-            pPolar->ReType() = 1;
-            break;
-        default:
-            pPolar->ReType() = 1;
-            pPolar->MaType() = 1;
+            pPolar->setMaType(1);
+            pPolar->setReType(1);
             break;
     }
 
     if(m_PolarType!=XFLR5::FIXEDAOAPOLAR)
     {
-        pPolar->Reynolds() = Spec;
+        pPolar->setReynolds(Spec);
     }
     else
     {
-        pPolar->aoa() = Spec;
+        pPolar->setAoa(Spec);
     }
-    pPolar->Mach()    = Mach;
-    pPolar->NCrit()   = NCrit;
-    pPolar->XtrTop()  = m_XTop;
-    pPolar->XtrBot()  = m_XBot;
+    pPolar->setMach(Mach);
+    pPolar->setNCrit(NCrit);
+    pPolar->setXtrTop(m_XTop);
+    pPolar->setXtrBot(m_XBot);
 
     setPlrName(pPolar);
     Polar *pOldPolar = Objects2d::getPolar(m_pFoil, pPolar->polarName());
@@ -839,10 +836,10 @@ void BatchDlg::onClose()
 
     readParams();
 
-    XDirect::s_RefPolar.NCrit()    = m_ACrit;
-    XDirect::s_RefPolar.XtrBot()   = m_XBot;
-    XDirect::s_RefPolar.XtrTop()   = m_XTop;
-    XDirect::s_RefPolar.Mach()     = m_Mach;
+    XDirect::s_RefPolar.setNCrit(m_ACrit);
+    XDirect::s_RefPolar.setXtrBot(m_XBot);
+    XDirect::s_RefPolar.setXtrTop(m_XTop);
+    XDirect::s_RefPolar.setMach(m_Mach);
 
     done(1);
 }
@@ -879,7 +876,7 @@ void BatchDlg::onFoilList()
 
     if(m_pFoil) dlg.setFoilName(m_pFoil->foilName());
 
-    dlg.initDialog(Objects2d::s_oaFoil, m_FoilList);
+    dlg.initDialog(Objects2d::pOAFoil(), m_FoilList);
 
     m_FoilList.clear();
     if(QDialog::Accepted == dlg.exec())
@@ -1047,7 +1044,7 @@ void BatchDlg::ReLoop()
     int iRe, nRe;
     double Reynolds =0, Mach = 0, NCrit = 9.0;
 
-    if(!m_bFromList) nRe = (int)qAbs((m_ReMax-m_ReMin)/m_ReInc);
+    if(!m_bFromList) nRe = int(qAbs((m_ReMax-m_ReMin)/m_ReInc));
     else             nRe = XDirect::s_ReList.count()-1;
 
     for (iRe=0; iRe<=nRe; iRe++)
@@ -1107,8 +1104,8 @@ void BatchDlg::resetCurves()
     pCurve1->setStyle(0);
     m_pRmsGraph->setAutoX(false);
     m_pRmsGraph->setXMin(0.0);
-    m_pRmsGraph->setXMax((double)XFoilTask::s_IterLim);
-    m_pRmsGraph->setXUnit((int)(XFoilTask::s_IterLim/5.0));
+    m_pRmsGraph->setXMax(double(XFoilTask::s_IterLim));
+    m_pRmsGraph->setXUnit(int(double(XFoilTask::s_IterLim)/5.0));
     m_pRmsGraph->setYMin(-1.0);
     m_pRmsGraph->setYMax( 1.0);
     m_pRmsGraph->setX0(0.0);
@@ -1282,8 +1279,6 @@ void BatchDlg::onAnalysisSettings()
 }
 
 
-
-
 void BatchDlg::customEvent(QEvent * pEvent)
 {
     // When we get here, we've crossed the thread boundary and are now
@@ -1295,7 +1290,7 @@ void BatchDlg::customEvent(QEvent * pEvent)
     }
     else if(pEvent->type() == XFOIL_END_OPP_EVENT)
     {
-        XFoilOppEvent *pOppEvent = (XFoilOppEvent*)pEvent;
+        XFoilOppEvent *pOppEvent = dynamic_cast<XFoilOppEvent*>(pEvent);
 
         Objects2d::addOpPoint(pOppEvent->foilPtr(), pOppEvent->polarPtr(), pOppEvent->oppPtr(), XDirect::s_bStoreOpp);
         m_pRmsGraph->resetYLimits();

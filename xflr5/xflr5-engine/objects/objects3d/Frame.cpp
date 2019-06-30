@@ -268,7 +268,7 @@ void Frame::copyFrame(Frame *pFrame)
  * Copies the control point data from an existing list of points
  * @param pPointList a pointer to the list of points
 */
-void Frame::copyPoints(QList<Vector3d> *pPointList)
+void Frame::copyPoints(QVector<Vector3d> *pPointList)
 {
 	m_CtrlPoint.clear();
 	for(int ip=0; ip<pPointList->size(); ip++)

@@ -22,6 +22,7 @@
 #include <QApplication>
 #include <QAction>
 #include <QMenu>
+#include <QShowEvent>
 #include <QHeaderView>
 #include <QHBoxLayout>
 #include <QGridLayout>
@@ -98,7 +99,7 @@ EditPlaneDlg::EditPlaneDlg(QWidget *pParent) : QDialog(pParent)
  * Overrides the base class showEvent method. Moves the window to its former location.
  * @param event the showEvent.
  */
-void EditPlaneDlg::showEvent(QShowEvent *event)
+void EditPlaneDlg::showEvent(QShowEvent *pEvent)
 {
     move(s_WindowPosition);
     resize(s_WindowSize);
@@ -107,7 +108,7 @@ void EditPlaneDlg::showEvent(QShowEvent *event)
     if(s_bWindowMaximized) setWindowState(Qt::WindowMaximized);
 
     m_pglPlaneView->update();
-    event->accept();
+    pEvent->accept();
 }
 
 
@@ -116,19 +117,19 @@ void EditPlaneDlg::showEvent(QShowEvent *event)
  * Overrides the base class hideEvent method. Stores the window's current position.
  * @param event the hideEvent.
  */
-void EditPlaneDlg::hideEvent(QHideEvent *event)
+void EditPlaneDlg::hideEvent(QHideEvent *pEvent)
 {
     m_HorizontalSplitterSizes = m_pHorizontalSplitter->saveState();
     s_WindowPosition = pos();
-    event->accept();
+    pEvent->accept();
 }
 
 
-void EditPlaneDlg::resizeEvent(QResizeEvent *event)
+void EditPlaneDlg::resizeEvent(QResizeEvent *pEvent)
 {
     resizeTreeView();
     resize3DView();
-    event->accept();
+    pEvent->accept();
 }
 
 
@@ -1595,7 +1596,7 @@ void EditPlaneDlg::readWingSectionTree(Wing *pWing, QModelIndex indexLevel)
 
 
 
-void EditPlaneDlg::readInertiaTree(double &volumeMass, QList<PointMass*>&pointMasses, QModelIndex indexLevel)
+void EditPlaneDlg::readInertiaTree(double &volumeMass, QVector<PointMass*>&pointMasses, QModelIndex indexLevel)
 {
     pointMasses.clear();
 

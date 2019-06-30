@@ -443,12 +443,12 @@ void FoilPolarDlg::onOK()
     XDirect::s_RefPolar.m_PlrName = m_pctrlAnalysisName->text();
 
     XDirect::s_RefPolar.setPolarType(m_PolarType);
-    XDirect::s_RefPolar.NCrit()     = m_NCrit;
-    XDirect::s_RefPolar.XtrBot()    = m_XBot;
-    XDirect::s_RefPolar.XtrTop()    = m_XTop;
-    XDirect::s_RefPolar.Mach()      = m_Mach;
-    XDirect::s_RefPolar.Reynolds()  = m_Reynolds;
-    XDirect::s_RefPolar.aoa()       = m_ASpec;
+    XDirect::s_RefPolar.setNCrit(m_NCrit);
+    XDirect::s_RefPolar.setXtrBot(m_XBot);
+    XDirect::s_RefPolar.setXtrTop(m_XTop);
+    XDirect::s_RefPolar.setMach(m_Mach);
+    XDirect::s_RefPolar.setReynolds(m_Reynolds);
+    XDirect::s_RefPolar.setAoa(m_ASpec);
 
 	accept();
 }

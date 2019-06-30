@@ -106,7 +106,7 @@ public:
 
     bool m_bStoreOpp;
 
-    QList<OpPoint*> m_OppList;
+    QVector<OpPoint*> m_OppList;
 
     void *m_pParent;
 

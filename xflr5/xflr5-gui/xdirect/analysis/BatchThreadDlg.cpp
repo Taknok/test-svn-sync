@@ -413,34 +413,31 @@ Polar * BatchThreadDlg::createPolar(Foil *pFoil, double Re, double Mach, double 
 
     switch (pNewPolar->polarType())
     {
+        default:
         case XFLR5::FIXEDSPEEDPOLAR:
-            pNewPolar->MaType() = 1;
-            pNewPolar->ReType() = 1;
+            pNewPolar->setMaType(1);
+            pNewPolar->setReType(1);
             break;
         case XFLR5::FIXEDLIFTPOLAR:
-            pNewPolar->MaType() = 2;
-            pNewPolar->ReType() = 2;
+            pNewPolar->setMaType(2);
+            pNewPolar->setReType(2);
             break;
         case XFLR5::RUBBERCHORDPOLAR:
-            pNewPolar->MaType() = 1;
-            pNewPolar->ReType() = 3;
+            pNewPolar->setMaType(1);
+            pNewPolar->setReType(3);
             break;
         case XFLR5::FIXEDAOAPOLAR:
-            pNewPolar->MaType() = 1;
-            pNewPolar->ReType() = 1;
-            break;
-        default:
-            pNewPolar->ReType() = 1;
-            pNewPolar->MaType() = 1;
+            pNewPolar->setMaType(1);
+            pNewPolar->setReType(1);
             break;
     }
-    if(m_PolarType!=XFLR5::FIXEDAOAPOLAR)  pNewPolar->Reynolds() = Re;
-    else                                   pNewPolar->aoa()    = 0.0;
+    if(m_PolarType!=XFLR5::FIXEDAOAPOLAR)  pNewPolar->setReynolds(Re);
+    else                                   pNewPolar->setAoa(0.0);
 
-    pNewPolar->Mach()    = Mach;
-    pNewPolar->NCrit()   = NCrit;
-    pNewPolar->XtrTop()  = m_XTop;
-    pNewPolar->XtrBot()  = m_XBot;
+    pNewPolar->setMach(Mach);
+    pNewPolar->setNCrit(NCrit);
+    pNewPolar->setXtrTop(m_XTop);
+    pNewPolar->setXtrBot(m_XBot);
 
 
     setPlrName(pNewPolar);
@@ -643,10 +640,10 @@ void BatchThreadDlg::onClose()
     QThreadPool::globalInstance()->waitForDone();
     readParams();
 
-    XDirect::s_RefPolar.NCrit()    = m_ACrit;
-    XDirect::s_RefPolar.XtrBot()   = m_XBot;
-    XDirect::s_RefPolar.XtrTop()   = m_XTop;
-    XDirect::s_RefPolar.Mach()     = m_Mach;
+    XDirect::s_RefPolar.setNCrit(m_ACrit);
+    XDirect::s_RefPolar.setXtrBot(m_XBot);
+    XDirect::s_RefPolar.setXtrTop(m_XTop);
+    XDirect::s_RefPolar.setMach(m_Mach);
 
     accept();
 }
@@ -703,7 +700,7 @@ void BatchThreadDlg::onFoilList()
     FoilSelectionDlg dlg(this);
     //	dlg.SetSelectionMode(true);
 
-    dlg.initDialog(Objects2d::s_oaFoil, m_FoilList);
+    dlg.initDialog(Objects2d::pOAFoil(), m_FoilList);
 
     m_FoilList.clear();
 
@@ -1018,7 +1015,7 @@ void BatchThreadDlg::startThread()
         //take the last analysis in the array
         pAnalysis = (FoilAnalysis*)m_AnalysisPair.at(m_AnalysisPair.size()-1);
 
-        pAnalysis->pPolar->isVisible() = true;
+        pAnalysis->pPolar->setVisible(true);
 
         //initiate the task
         if(m_bAlpha) pXFoilTask->setSequence(true,  m_AlphaMin, m_AlphaMax, m_AlphaInc);

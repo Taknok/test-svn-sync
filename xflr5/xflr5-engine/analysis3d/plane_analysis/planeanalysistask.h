@@ -95,8 +95,8 @@ public:
 	PanelAnalysis *m_pthePanelAnalysis;
 	LLTAnalysis *m_ptheLLTAnalysis;
 
-	bool isLLTTask();
-	bool isPanelTask();
+    bool isLLTTask() const;
+    bool isPanelTask() const;
 
 private:
 	void *m_pParent;
@@ -125,7 +125,7 @@ private:
 
 	int m_MaxPanelSize;                  /**< the maximum matrix size consistent <ith the current memory allocation */
 
-	QList<Surface *> m_SurfaceList;	    /**< An array holding the pointers to the wings Surface objects */
+	QVector<Surface *> m_SurfaceList;	    /**< An array holding the pointers to the wings Surface objects */
 
 	double m_vMin, m_vMax, m_vInc;
 	bool m_bSequence;

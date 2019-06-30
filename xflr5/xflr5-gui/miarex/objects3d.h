@@ -26,7 +26,7 @@
 #ifndef OBJECTS3D_H
 #define OBJECTS3D_H
 
-#include <QList>
+#include <QVector>
 
 class Plane;
 class Wing;
@@ -62,10 +62,10 @@ public:
 public:
 	// object variable lists
 
-	static QList <Plane*>    s_oaPlane;   /**< The array of void pointers to the Plane objects. */
-	static QList <Body*>     s_oaBody;    /**< The array of void pointers to the Body objects. */
-	static QList <WPolar*>   s_oaWPolar;  /**< The array of void pointers to the WPolar objects. */
-	static QList <PlaneOpp*> s_oaPOpp;    /**< The array of void pointers to the PlaneOpp objects. */
+	static QVector <Plane*>    s_oaPlane;   /**< The array of void pointers to the Plane objects. */
+	static QVector <Body*>     s_oaBody;    /**< The array of void pointers to the Body objects. */
+	static QVector <WPolar*>   s_oaWPolar;  /**< The array of void pointers to the WPolar objects. */
+	static QVector <PlaneOpp*> s_oaPOpp;    /**< The array of void pointers to the PlaneOpp objects. */
 };
 
 #endif // OBJECTS3D_H

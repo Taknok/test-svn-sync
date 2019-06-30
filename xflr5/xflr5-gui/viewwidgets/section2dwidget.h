@@ -126,7 +126,7 @@ protected:
     QCursor m_hcCross;          /**< the cursor to display in the client area, when not dragging or zooming */
 
     QMenu *m_pSection2dContextMenu;
-    QList<QAction*> m_ActionList;
+    QVector<QAction*> m_ActionList;
 
     bool m_bScale;              /**< true if the scale should be displayed */
     bool m_bZoomPlus;           /**< true if the user is in the process of zooming in by drawing a rectangle */

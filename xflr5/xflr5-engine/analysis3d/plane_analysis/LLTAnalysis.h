@@ -37,7 +37,7 @@
 #include <analysis3d/analysis3d_params.h>
 #include <analysis3d/analysis3d_globals.h>
 
-#include <QList>
+#include <QVector>
 
 /**
  *@class LLTAnalysis
@@ -97,7 +97,7 @@ private:
     double AlphaInduced(int k);
     double Beta(int m, int k);
     double Eta(int m);
-    void ComputeWing(double QInf, double Alpha, QString &ErrorMessage);
+    void computeWing(double QInf, double Alpha, QString &ErrorMessage);
     void setVelocity(double &QInf);
     void initializeGeom();
     int iterate(double &QInf, double const Alpha);
@@ -112,14 +112,14 @@ private:
     bool QInfLoop();
     void traceLog(QString str);
 
-    double GetCl(Foil *pFoil0, Foil *pFoil1, double Re, double Alpha, double Tau, bool &bOutRe, bool &bError);
-    double GetZeroLiftAngle(Foil *pFoil0, Foil *pFoil1, double Re, double Tau);
-    double GetCm(Foil  *pFoil0, Foil *pFoil1, double Re, double Alpha, double Tau, bool &bOutRe, bool &bError);
-    double GetCm0(Foil *pFoil0, Foil *pFoil1, double Re, double Tau, bool &bOutRe, bool &bError);
-    double GetCd(Foil *pFoil0, Foil *pFoil1, double Re, double Alpha, double Tau, double AR, bool &bOutRe, bool &bError);
-    double GetXCp(Foil *pFoil0, Foil *pFoil1, double Re, double Alpha, double Tau,  bool &bOutRe, bool &bError);
-    double GetXTr(Foil *pFoil0, Foil *pFoil1, double Re, double Alpha, double Tau, bool bTop, bool &bOutRe, bool &bError);
-    double getPlrPointFromAlpha(Foil *pFoil, double Re, double Alpha, int PlrVar, bool &bOutRe, bool &bError);
+    double getCl(Foil const*pFoil0, Foil const*pFoil1, double Re, double Alpha, double Tau, bool &bOutRe, bool &bError);
+    double getZeroLiftAngle(Foil const*pFoil0, Foil const*pFoil1, double Re, double Tau);
+    double getCm(Foil const *pFoil0, Foil const*pFoil1, double Re, double Alpha, double Tau, bool &bOutRe, bool &bError);
+    double getCm0(Foil const*pFoil0, Foil const*pFoil1, double Re, double Tau, bool &bOutRe, bool &bError);
+    double getCd(Foil const*pFoil0, Foil const*pFoil1, double Re, double Alpha, double Tau, double AR, bool &bOutRe, bool &bError);
+    double getXCp(Foil const*pFoil0, Foil const*pFoil1, double Re, double Alpha, double Tau,  bool &bOutRe, bool &bError);
+    double getXTr(Foil const*pFoil0, Foil const*pFoil1, double Re, double Alpha, double Tau, bool bTop, bool &bOutRe, bool &bError);
+    double getPlrPointFromAlpha(const Foil *pFoil, double Re, double Alpha, int PlrVar, bool &bOutRe, bool &bError);
     void getLinearizedPolar(Foil *pFoil0, Foil *pFoil1, double Re, double Tau, double &Alpha0, double &Slope);
 
 
@@ -131,8 +131,8 @@ public slots:
 
 private:
 
-    Plane * m_pPlane;                           /**< A pointer to the Plane object for which the main wing calculation shall be performed >*/
-    Wing * m_pWing;                             /**< A pointer to the Wing object for which the calculation shall be performed >*/
+    Plane *m_pPlane;                           /**< A pointer to the Plane object for which the main wing calculation shall be performed >*/
+    Wing *m_pWing;                             /**< A pointer to the Wing object for which the calculation shall be performed >*/
     WPolar *m_pWPolar;                          /**< A pointer to the WPolar object for which the calculation shall be performed >*/
 
     double m_vMin;          /**< The starting aoa for the analysis of type 1 & 2 polars */
@@ -193,8 +193,8 @@ private:
     static double s_CvPrec;                     /**< Precision criterion to stop the iterations. The difference in induced angle at any span point between two iterations should be less than the criterion */
     static bool s_bInitCalc;                    /**< true if the iterations analysis should be intialized with the linear solution at each new a.o.a. calculation, false otherwise */
 
-    QList<PlaneOpp*> m_PlaneOppList;
-    QList<Polar*> *m_poaPolar;
+    QVector<PlaneOpp*> m_PlaneOppList;
+    QVector<Polar*> const *m_poaPolar;
 };
 
 #endif // LLTANALYSIS_H

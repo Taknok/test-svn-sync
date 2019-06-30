@@ -22,7 +22,8 @@
 #ifndef WINGDELEGATE_H
 #define WINGDELEGATE_H
 
-#include <QList>
+#include <QVector>
+#include <QVector>
 #include <QPainter>
 #include <QStyledItemDelegate>
 
@@ -49,8 +50,8 @@ public:
 private:
 	void *m_pWingDlg;
 	int *m_Precision; ///table of float precisions for each column
-	QList<Foil*> *m_poaFoil;
-	QList<WingSection*> *m_pWingSection;
+    QVector<Foil*> *m_poaFoil;
+	QVector<WingSection*> *m_pWingSection;
 };
 
 #endif // QWingDelegate_H

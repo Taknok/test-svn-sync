@@ -54,7 +54,7 @@
 
 
 
-QList <Foil*> *GL3dWingDlg::s_poaFoil;
+QVector <Foil*> *GL3dWingDlg::s_poaFoil;
 
 QByteArray GL3dWingDlg::s_WindowGeometry;
 
@@ -668,7 +668,7 @@ void GL3dWingDlg::onInertia()
     dlg.m_pWing = m_pWing;
 
     //save inertia properties
-    QList<PointMass*> PtMass;
+    QVector<PointMass*> PtMass;
     PtMass.clear();
 
     for(int i=0; i< m_pWing->m_PointMass.size(); i++)

@@ -34,8 +34,8 @@
 #include <objects/objects2d/Polar.h>
 
 double Wing::s_MinPanelSize = 0.0001;
-QList<Foil *> *Wing::s_poaFoil  = nullptr;
-QList<Polar*> *Wing::s_poaPolar = nullptr;
+QVector<Foil *> *Wing::s_poaFoil  = nullptr;
+QVector<Polar*> *Wing::s_poaPolar = nullptr;
 
 /**
  * The public constructor.
@@ -991,7 +991,7 @@ void Wing::computeChords(int NStation)
     else
     {
         //VLM Mesh based
-        QList<double> SpanPosition;
+        QVector<double> SpanPosition;
         m_NStation = 0;
         m = 0;
 
@@ -1050,21 +1050,19 @@ void Wing::computeChords(int NStation)
 */
 void Wing::computeChords(int NStation, double *chord, double *offset, double *twist)
 {
-    double y, yob, tau;
-
     if(NStation !=0)
     {//LLT based
         m_NStation = NStation;
 
         for (int k=0; k<=NStation; k++)
         {
-            yob   = cos(k*PI/NStation);
-            y = qAbs(yob * m_PlanformSpan/2);
+            double yob   = cos(k*PI/NStation);
+            double y = qAbs(yob * m_PlanformSpan/2);
             for (int is=0; is<NWingSection(); is++)
             {
                 if(YPosition(is) < y && y <=YPosition(is+1))
                 {
-                    tau = (y-YPosition(is))/(YPosition(is+1)-YPosition(is));
+                    double tau = (y-YPosition(is))/(YPosition(is+1)-YPosition(is));
                     chord[k]  = Chord(is)  + (Chord(is+1) -Chord(is))  * tau;
                     offset[k] = Offset(is) + (Offset(is+1)-Offset(is)) * tau;
                     twist[k]  = Twist(is)  + (Twist(is+1) -Twist(is))  * tau;;
@@ -1301,7 +1299,6 @@ void Wing::getFoils(Foil **pFoil0, Foil **pFoil1, double y, double &t)
         {
             if (YPosition(is)<=y && y<=YPosition(is+1))
             {
-
                 *pFoil0 = foil(rightFoil(is));
                 *pFoil1 = foil(rightFoil(is+1));
                 t = (y-YPosition(is))/(YPosition(is+1) - YPosition(is));
@@ -1328,8 +1325,6 @@ void Wing::getFoils(Foil **pFoil0, Foil **pFoil1, double y, double &t)
     pFoil0 = nullptr;// use linear
     pFoil1 = nullptr;// use linear
 }
-
-
 
 
 /**
@@ -1432,7 +1427,7 @@ double Wing::ZPosition(double y)
  */
 void Wing::panelComputeBending(bool bThinSurface)
 {
-    QList<double> ypos, zpos;
+    QVector<double> ypos, zpos;
     int j,k,jj,coef,p;
     double bm;
     Vector3d Dist(0.0,0.0,0.0);
@@ -3305,7 +3300,7 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
 Foil* Wing::foil(QString strFoilName)
 {
     if(!strFoilName.length()) return nullptr;
-    Foil* pFoil;
+    Foil* pFoil=nullptr;
     for (int i=0; i<s_poaFoil->size(); i++)
     {
         pFoil = s_poaFoil->at(i);

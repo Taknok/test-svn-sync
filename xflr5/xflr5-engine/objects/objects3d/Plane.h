@@ -200,7 +200,7 @@ public:
 	QString m_BodyName;                         /**< identifies this plane's body */
 
 
-	QList<PointMass*> m_PointMass;              /**< the array of PointMass objects */
+	QVector<PointMass*> m_PointMass;              /**< the array of PointMass objects */
 	double m_CoGIxx;                            /**< the Ixx component of the inertia tensor, calculated at the CoG */
 	double m_CoGIyy;                            /**< the Iyy component of the inertia tensor, calculated at the CoG */
 	double m_CoGIzz;                            /**< the Izz component of the inertia tensor, calculated at the CoG */

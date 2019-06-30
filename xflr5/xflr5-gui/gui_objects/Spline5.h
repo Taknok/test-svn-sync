@@ -33,7 +33,7 @@
 
 #include <QPainter>
 #include <QFile>
-#include <QList>
+#include <QVector>
 #include <QTextStream>
 #include <objects/objects2d/Spline.h>
 #include <objects/objects3d/vector3d.h>

@@ -64,7 +64,7 @@ private:
 public:
 	static void *s_pXFoil;
 	Foil* m_pBufferFoil;
-	QList<Foil*> *m_poaFoil;
+    QVector<Foil*> *m_poaFoil;
 
 	QWidget *m_pParent;
 	double m_Frac;

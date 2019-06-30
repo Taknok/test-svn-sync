@@ -582,12 +582,12 @@ void LegendWidget::drawPolarLegend(QPainter &painter, QPointF place, int bottom)
 	QStringList str; // we need to make an inventory of foils
 	Polar * pPolar;
 	Foil *pFoil;
-    for (j=0; j<Objects2d::s_oaFoil.size(); j++)
+    for (j=0; j<Objects2d::foilCount(); j++)
 	{
-        pFoil = Objects2d::s_oaFoil.at(j);
-        for (i=0; i<Objects2d::s_oaPolar.size(); i++)
+        pFoil = Objects2d::foilAt(j);
+        for (i=0; i<Objects2d::polarCount(); i++)
 		{
-            pPolar = Objects2d::s_oaPolar.at(i);
+            pPolar = Objects2d::polarAt(i);
 			if (pPolar->foilName() == pFoil->foilName() && pPolar->m_Alpha.size() && pPolar->isVisible())
 			{
 				str.append(pFoil->foilName());
@@ -609,9 +609,9 @@ void LegendWidget::drawPolarLegend(QPainter &painter, QPointF place, int bottom)
 	for (k=0; k<nFoils; k++)
 	{
 		int FoilPlrs = 0;
-        for (l=0; l < Objects2d::s_oaPolar.count(); l++)
+        for (l=0; l<Objects2d::polarCount(); l++)
 		{
-            pPolar = Objects2d::s_oaPolar.at(l);
+            pPolar = Objects2d::polarAt(l);
 			if (pPolar->m_Alpha.size() &&
 				pPolar->polarName().length() &&
 				pPolar->isVisible() &&
@@ -638,9 +638,9 @@ void LegendWidget::drawPolarLegend(QPainter &painter, QPointF place, int bottom)
 			painter.drawText(place.x() + 0.5*LegendSize, place.y() + legendHeight*ny-legendHeight/2,
 							 str.at(k));
 		}
-        for (nc=0; nc<Objects2d::s_oaPolar.count(); nc++)
+        for (nc=0; nc<Objects2d::polarCount(); nc++)
 		{
-            pPolar = Objects2d::s_oaPolar.at(nc);
+            pPolar = Objects2d::polarAt(nc);
 			if(str.at(k) == pPolar->foilName())
 			{
 				if (pPolar->m_Alpha.size() && pPolar->polarName().length() && pPolar->isVisible())

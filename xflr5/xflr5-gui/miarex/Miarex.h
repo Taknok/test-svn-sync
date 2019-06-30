@@ -41,7 +41,7 @@ class MainFrame;
 #include <QToolButton>
 #include <QPushButton>
 #include <QRadioButton>
-#include <QList>
+#include <QVector>
 #include <QDialog>
 #include <QSettings>
 #include <QXmlStreamWriter>
@@ -410,9 +410,9 @@ public:
 	WingOpp *m_pWOpp[MAXWINGS];   /**< an array of pointers to the operating points of the four wings of the currently selected plane */
 
 
-	static QList<Plane*>    *m_poaPlane;		/**< for convenienece, a pointer to the array of pointers to plane objects */
-	static QList<WPolar*>   *m_poaWPolar;		/**< for convenienece, a pointer to the array of UFO polar objects */
-	static QList<PlaneOpp*> *m_poaPOpp;			/**< for convenienece, a pointer to the array of Plane OpPoint objects */
+	static QVector<Plane*>    *m_poaPlane;		/**< for convenienece, a pointer to the array of pointers to plane objects */
+	static QVector<WPolar*>   *m_poaWPolar;		/**< for convenienece, a pointer to the array of UFO polar objects */
+	static QVector<PlaneOpp*> *m_poaPOpp;			/**< for convenienece, a pointer to the array of Plane OpPoint objects */
 
 
 	Plane * m_pCurPlane;          /**< the currently active Plane */
@@ -466,10 +466,10 @@ public:
 	bool m_bMaxCL;
 
 	Graph m_CpGraph;                       /**< the Cp Graph in 3D panel analysis */
-	QList<Graph*> m_WingGraph;             /**< the array of pointer to the OpPoint graphs */
-	QList<Graph*> m_WPlrGraph;             /**< the array of pointers to the WPolar graphs */
-	QList<Graph*> m_StabPlrGraph;          /**< the array of pointers to the two root locus graphs */
-	QList<Graph*> m_TimeGraph;             /**< the array of pointers to the time response graphs in stability view */
+	QVector<Graph*> m_WingGraph;             /**< the array of pointer to the OpPoint graphs */
+	QVector<Graph*> m_WPlrGraph;             /**< the array of pointers to the WPolar graphs */
+	QVector<Graph*> m_StabPlrGraph;          /**< the array of pointers to the two root locus graphs */
+	QVector<Graph*> m_TimeGraph;             /**< the array of pointers to the time response graphs in stability view */
 
 	bool m_bResetTextLegend;
 	QPixmap m_PixText;

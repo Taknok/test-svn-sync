@@ -75,31 +75,31 @@ void XmlPolarReader::readPolar(Polar *pPolar)
 		}
         else if (name().compare(QString("Fixed_Reynolds"),         Qt::CaseInsensitive)==0)
 		{
-			pPolar->Reynolds() = readElementText().toDouble();
+            pPolar->setReynolds(readElementText().toDouble());
 		}
         else if (name().compare(QString("Fixed_AOA"),         Qt::CaseInsensitive)==0)
 		{
-			pPolar->aoa() = readElementText().toDouble();
+            pPolar->setAoa(readElementText().toDouble());
 		}
         else if (name().toString().compare(QString("Forced_Top_Transition"),Qt::CaseInsensitive) ==0)
 		{
-			pPolar->XtrTop() = readElementText().toDouble();
+            pPolar->setXtrTop(readElementText().toDouble());
 		}
         else if (name().toString().compare(QString("Forced_Bottom_Transition"),Qt::CaseInsensitive) ==0)
 		{
-			pPolar->XtrBot() = readElementText().toDouble();
+            pPolar->setXtrBot(readElementText().toDouble());
 		}
         else if (name().toString().compare(QString("Reynolds_Type"),Qt::CaseInsensitive) ==0)
 		{
-			pPolar->ReType() = readElementText().toInt();
+            pPolar->setReType(readElementText().toInt());
 		}
         else if (name().toString().compare(QString("Mach_Type"),Qt::CaseInsensitive) ==0)
 		{
-			pPolar->MaType() = readElementText().toInt();
+            pPolar->setMaType(readElementText().toInt());
 		}
         else if (name().toString().compare(QString("NCrit"),Qt::CaseInsensitive) ==0)
 		{
-			pPolar->NCrit() = readElementText().toDouble();
+            pPolar->setNCrit(readElementText().toDouble());
 		}
 		else
 			skipCurrentElement();

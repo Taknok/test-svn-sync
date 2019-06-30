@@ -26,7 +26,7 @@
 
 #include <objects/objects3d/vector3d.h>
 #include <QDataStream>
-#include <QList>
+#include <QVector>
 
 
 
@@ -45,7 +45,7 @@ public:
 
 	void    appendPoint(Vector3d const& Pt);
 	void    copyFrame(Frame *pFrame);
-	void    copyPoints(QList<Vector3d> *pPointList);
+	void    copyPoints(QVector<Vector3d> *pPointList);
 	double  height();
 	int     isPoint(Vector3d const &point, double const &ZoomFactor);
 	void    insertPoint(int n);
@@ -67,7 +67,7 @@ public:
 
 	const Vector3d &ctrlPointAt(int idx) const {return m_CtrlPoint.at(idx);}
 
-	QList <Vector3d> m_CtrlPoint;	/**< the array of points which define the frame.  */
+	QVector <Vector3d> m_CtrlPoint;	/**< the array of points which define the frame.  */
 	Vector3d m_Position;             /**< the translation vector for the Frame's origin */
 
 	static int selectedIndex()            {return s_iSelect;}

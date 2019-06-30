@@ -260,9 +260,9 @@ void LLTAnalysisDlg::analyze()
     {
         qApp->processEvents();
         QThread::msleep(200);
-        /*		QDateTime dt = QDateTime::currentDateTime();
-        QString str = dt.toString("dd.MM.yyyy  hh:mm:ss.zzz");
-        qDebug() << str<<m_pTheTask->isFinished();*/
+//      QDateTime dt = QDateTime::currentDateTime();
+//        QString str = dt.toString("dd.MM.yyyy  hh:mm:ss.zzz");
+//        qDebug() << str<<m_pTheTask->isFinished();
     }
 
     qApp->processEvents();

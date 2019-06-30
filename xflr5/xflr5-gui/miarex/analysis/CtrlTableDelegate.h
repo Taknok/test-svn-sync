@@ -22,7 +22,7 @@
 #ifndef CTRLTABLEDELEGATE_H
 #define CTRLTABLEDELEGATE_H
 
-#include <QList>
+#include <QVector>
 #include <QItemDelegate>
 #include <QStandardItemModel>
 
