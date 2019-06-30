@@ -24,7 +24,7 @@
 
 #include <QFile>
 #include <QXmlStreamReader>
-#include <QList>
+#include <QVector>
 
 class XFLScriptReader : public QXmlStreamReader
 {
@@ -48,7 +48,7 @@ public:
 	double alphaMin, alphaMax, alphaInc;
 	double qinfMin, qinfMax, qinfInc;
 
-	QList<double> m_Reynolds, m_NCrit, m_Mach;
+	QVector<double> m_Reynolds, m_NCrit, m_Mach;
 	double m_XtrTop, m_XtrBot;
 
 	double aoaMin, aoaMax, aoaInc;

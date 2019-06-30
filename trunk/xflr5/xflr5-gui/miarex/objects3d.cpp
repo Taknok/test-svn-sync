@@ -32,10 +32,10 @@
 #include <objects/objects3d/WPolar.h>
 
 
-QList <Plane*>    Objects3d::s_oaPlane;
-QList <WPolar*>   Objects3d::s_oaWPolar;
-QList <PlaneOpp*> Objects3d::s_oaPOpp;
-QList <Body*>     Objects3d::s_oaBody;
+QVector <Plane*>    Objects3d::s_oaPlane;
+QVector <WPolar*>   Objects3d::s_oaWPolar;
+QVector <PlaneOpp*> Objects3d::s_oaPOpp;
+QVector <Body*>     Objects3d::s_oaBody;
 
 
 Objects3d::Objects3d()
@@ -79,7 +79,7 @@ void Objects3d::addBody(Body *pBody)
     }
     /*	for(int ib=0; ib<m_poaBody->size(); ib++)
     {
-        Body *pOldBody = (Body*)m_poaBody->at(ib);
+        Body *pOldBody = m_poaBody->at(ib);
         if(pOldBody==pBody)
         {
             m_poaBody->removeAt(ib);
@@ -181,11 +181,11 @@ void Objects3d::insertPOpp(PlaneOpp *pPOpp)
                     if(qAbs(pPOpp->alpha() - pOldPOpp->alpha())<0.005)
                     {
                         //replace existing point
-                        pPOpp->color()      = pOldPOpp->color();
-                        pPOpp->style()      = pOldPOpp->style();
-                        pPOpp->width()      = pOldPOpp->width();
-                        pPOpp->isVisible()  = pOldPOpp->isVisible();
-                        pPOpp->points()     = pOldPOpp->points();
+                        pPOpp->setColor(pOldPOpp->color());
+                        pPOpp->setStyle(pOldPOpp->style());
+                        pPOpp->setWidth(pOldPOpp->width());
+                        pPOpp->setVisible(pOldPOpp->isVisible());
+                        pPOpp->setPoints(pOldPOpp->points());
 
                         s_oaPOpp.removeAt(i);
                         delete pOldPOpp;
@@ -205,12 +205,13 @@ void Objects3d::insertPOpp(PlaneOpp *pPOpp)
                 {
                     if(qAbs(pPOpp->m_QInf - pOldPOpp->m_QInf)<0.1)
                     {
-                        //replace existing point
-                        pPOpp->color() = pOldPOpp->color();
-                        pPOpp->style() = pOldPOpp->style();
-                        pPOpp->width() = pOldPOpp->width();
-                        pPOpp->isVisible()  = pOldPOpp->isVisible();
-                        pPOpp->points() = pOldPOpp->points();
+                        //replace the existing point
+                        pPOpp->setColor(pOldPOpp->color());
+                        pPOpp->setStyle(pOldPOpp->style());
+                        pPOpp->setWidth(pOldPOpp->width());
+                        pPOpp->setVisible(pOldPOpp->isVisible());
+                        pPOpp->setPoints(pOldPOpp->points());
+
 
                         s_oaPOpp.removeAt(i);
                         delete pOldPOpp;
@@ -231,11 +232,11 @@ void Objects3d::insertPOpp(PlaneOpp *pPOpp)
                     if(qAbs(pPOpp->beta() - pOldPOpp->beta())<0.01)
                     {
                         //replace existing point
-                        pPOpp->color() = pOldPOpp->color();
-                        pPOpp->style() = pOldPOpp->style();
-                        pPOpp->width() = pOldPOpp->width();
-                        pPOpp->isVisible()  = pOldPOpp->isVisible();
-                        pPOpp->points() = pOldPOpp->points();
+                        pPOpp->setColor(pOldPOpp->color());
+                        pPOpp->setStyle(pOldPOpp->style());
+                        pPOpp->setWidth(pOldPOpp->width());
+                        pPOpp->setVisible(pOldPOpp->isVisible());
+                        pPOpp->setPoints(pOldPOpp->points());
 
                         s_oaPOpp.removeAt(i);
                         delete pOldPOpp;
@@ -256,11 +257,11 @@ void Objects3d::insertPOpp(PlaneOpp *pPOpp)
                     if(qAbs(pPOpp->ctrl() - pOldPOpp->ctrl())<0.001)
                     {
                         //replace existing point
-                        pPOpp->color() = pOldPOpp->color();
-                        pPOpp->style() = pOldPOpp->style();
-                        pPOpp->width() = pOldPOpp->width();
-                        pPOpp->isVisible()  = pOldPOpp->isVisible();
-                        pPOpp->points() = pOldPOpp->points();
+                        pPOpp->setColor(pOldPOpp->color());
+                        pPOpp->setStyle(pOldPOpp->style());
+                        pPOpp->setWidth(pOldPOpp->width());
+                        pPOpp->setVisible(pOldPOpp->isVisible());
+                        pPOpp->setPoints(pOldPOpp->points());
 
                         s_oaPOpp.removeAt(i);
                         delete pOldPOpp;
@@ -447,7 +448,7 @@ Body * Objects3d::getBody(QString BodyName)
     Body* pBody = nullptr;
     for (int ib=0; ib<s_oaBody.size(); ib++)
     {
-        pBody = (Body*)s_oaBody.at(ib);
+        pBody = s_oaBody.at(ib);
         if (pBody->m_BodyName == BodyName) return pBody;
     }
 
@@ -864,7 +865,7 @@ void Objects3d::renamePlane(QString PlaneName)
             pPOpp = s_oaPOpp.at(l);
             if (pPOpp->planeName() == OldName)
             {
-                pPOpp->planeName() = pPlane->planeName();
+                pPOpp->setPlaneName(pPlane->planeName());
             }
         }
     }

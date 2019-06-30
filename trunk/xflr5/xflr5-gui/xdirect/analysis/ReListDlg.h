@@ -42,7 +42,7 @@ public:
     ReListDlg(QWidget *pParent=nullptr);
     ~ReListDlg();
 
-    void initDialog(QList<double> ReList, QList<double> MachList, QList<double> NCritList);
+    void initDialog(QVector<double> ReList, QVector<double> MachList, QVector<double> NCritList);
 
 private slots:
     void onDelete();
@@ -66,9 +66,9 @@ private:
     QStandardItemModel *m_pReModel;
     FloatEditDelegate *m_pFloatDelegate;
 
-    QList<double> m_ReList;
-    QList<double> m_MachList;
-    QList<double> m_NCritList;
+    QVector<double> m_ReList;
+    QVector<double> m_MachList;
+    QVector<double> m_NCritList;
 
     int m_iSelection;
 

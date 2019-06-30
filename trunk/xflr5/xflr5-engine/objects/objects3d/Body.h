@@ -176,7 +176,7 @@ public:
 
     double m_VolumeMass;                       /**< the mass of the Body's structure, excluding point masses */
     double m_TotalMass;                        /**< the wing's total mass, i.e. the sum of the volume mass and of the point masses */
-    QList<PointMass*> m_PointMass;             /**< the array of PointMass objects */
+    QVector<PointMass*> m_PointMass;             /**< the array of PointMass objects */
 
     double m_CoGIxx;                           /**< the Ixx component of the inertia tensor, calculated at the CoG */
     double m_CoGIyy;                           /**< the Ixx component of the inertia tensor, calculated at the CoG */

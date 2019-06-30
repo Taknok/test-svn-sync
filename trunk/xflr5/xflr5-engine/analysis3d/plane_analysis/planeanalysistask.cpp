@@ -92,7 +92,6 @@ void PlaneAnalysisTask::initializeTask(PlaneAnalysis *pAnalysis)
 }
 
 
-
 void PlaneAnalysisTask::run()
 {
 	if(s_bCancel || !m_pPlane || !m_pWPolar)
@@ -114,17 +113,16 @@ void PlaneAnalysisTask::run()
 }
 
 
-bool PlaneAnalysisTask::isLLTTask()
+bool PlaneAnalysisTask::isLLTTask() const
 {
 	return (m_pWPolar && m_pWPolar->isLLTMethod());
 }
 
 
-bool PlaneAnalysisTask::isPanelTask()
+bool PlaneAnalysisTask::isPanelTask() const
 {
 	return (m_pWPolar && m_pWPolar->isQuadMethod());
 }
-
 
 
 /**

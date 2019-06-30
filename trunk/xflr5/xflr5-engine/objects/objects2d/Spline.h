@@ -32,7 +32,7 @@
 
 
 #include <QFile>
-#include <QList>
+#include <QVector>
 #include <QTextStream>
 #include <objects/objects3d/vector3d.h>
 #include "xfoil_params.h"
@@ -87,9 +87,9 @@ public:
 	int m_iDegree;                   /**< the spline's degree */
 
 
-	QList<double> m_knot;            /**< the array of the values of the spline's knot */
-	QList<Vector3d> m_CtrlPoint;      /**< the array of the positions of the spline's control points */
-	Vector3d m_Output[IQX2];          /**< the array of output points, size of which is m_iRes @todo use a QVarLengthArray or a QList*/
+	QVector<double> m_knot;            /**< the array of the values of the spline's knot */
+	QVector<Vector3d> m_CtrlPoint;      /**< the array of the positions of the spline's control points */
+	Vector3d m_Output[IQX2];          /**< the array of output points, size of which is m_iRes @todo use a QVarLengthArray or a QVector*/
 
 
 	int m_Style, m_Width, m_PointStyle;

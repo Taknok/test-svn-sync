@@ -28,6 +28,7 @@
 #include <complex>
 
 #include <QObject>
+#include <QVector>
 
 #include <objects/objects3d/vector3d.h>
 #include <objects/objects3d/Panel.h>
@@ -79,7 +80,7 @@ public:
     void computeBalanceSpeeds(double Alpha, int q);
     void createDoubletStrength(double Alpha0, double AlphaDelta, int nval);
     void createSourceStrength(double Alpha0, double AlphaDelta, int nval);
-    void createRHS(double *RHS, Vector3d VInf, double *VField = NULL);
+    void createRHS(double *RHS, Vector3d VInf, double *VField=nullptr);
     void createUnitRHS();
     void createWakeContribution();
     void createWakeContribution(double *pWakeContrib, Vector3d WindDirection);
@@ -294,9 +295,8 @@ public: //stability analysis method and variables
     double m_AlphaEq;             /**< the balance aoa, calculated in stability analysis */
     double m_Ctrl;                /**< the control parameter, which defines the position of the control surfaces */
 
-    QList<Surface*> *m_ppSurface;        /**< A pointer to the array of Surface objects */
-
-    QList<PlaneOpp*> m_PlaneOppList;
+    QVector<Surface*> *m_ppSurface;        /**< A pointer to the array of Surface objects */
+    QVector<PlaneOpp*> m_PlaneOppList;
 
 
     bool m_bTrace;

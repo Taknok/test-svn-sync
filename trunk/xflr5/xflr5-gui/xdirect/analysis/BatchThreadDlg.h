@@ -157,7 +157,7 @@ private:
     double m_XBot;            /**< the point of forced transition on the lower surface */
 
 
-    QList<FoilAnalysis *> m_AnalysisPair;  /**< the list of all analysis to be performed. Once performed, an analysis is removed from the list. */
+    QVector<FoilAnalysis *> m_AnalysisPair;  /**< the list of all analysis to be performed. Once performed, an analysis is removed from the list. */
     //	XFoilTask *m_pXFoilTask;           /**< the task for a thread */
 
     QFile *m_pXFile;                   /**< a pointer to the output log file */

@@ -198,7 +198,7 @@ void MiarexTileWidget::adjustLayout()
 
 
 
-void MiarexTileWidget::setMiarexGraphList(XFLR5::enumMiarexViews miarexView, QList<Graph*>pGraphList,
+void MiarexTileWidget::setMiarexGraphList(XFLR5::enumMiarexViews miarexView, QVector<Graph*>pGraphList,
                                           int nGraphs, int iGraphWidget, Qt::Orientation orientation)
 {
     m_nGraphWidgets = qMin(nGraphs,MAXGRAPHS);

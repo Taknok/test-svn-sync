@@ -558,7 +558,7 @@ void PlaneDlg::onInertia()
     dlg.m_pPlane = m_pPlane;
 
     //save inertia properties
-    QList<PointMass*> memPtMass;
+    QVector<PointMass*> memPtMass;
     memPtMass.clear();
     for(int im=0; im<m_pPlane->m_PointMass.size(); im++)
     {

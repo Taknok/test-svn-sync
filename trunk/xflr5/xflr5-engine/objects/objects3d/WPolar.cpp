@@ -550,14 +550,14 @@ void WPolar::duplicateSpec(WPolar *pWPolar)
 
 
 /**
- * Returns a pointer to the QList array of data for the variable referenced by iVar
+ * Returns a pointer to the QVector array of data for the variable referenced by iVar
  * @param iVar the index of the variable
  * @return a void pointer to the array of data
  */
-QList <double> * WPolar::getWPlrVariable(int iVar)
+QVector <double> * WPolar::getWPlrVariable(int iVar)
 {
     // returns a pointer to the variable array defined by its index iVar
-    QList <double> * pVar=nullptr;
+    QVector <double> * pVar=nullptr;
     switch (iVar)
     {
         case 0:

@@ -22,7 +22,7 @@
 #ifndef BODYTABLEDELEGATE_H
 #define BODYTABLEDELEGATE_H
 
-#include <QList>
+#include <QVector>
 #include <QItemDelegate>
 
 

@@ -134,7 +134,7 @@ protected:
 
     void paintGL3();
     void paintFoilNames(void *pWingPtr);
-    void paintMasses(double volumeMass, Vector3d pos, QString tag, const QList<PointMass *> &ptMasses);
+    void paintMasses(double volumeMass, Vector3d pos, QString tag, const QVector<PointMass *> &ptMasses);
     void paintArcBall();
     void paintAxes();
     void paintWingMesh(Wing *pWing);

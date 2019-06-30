@@ -55,7 +55,7 @@ ReListDlg::~ReListDlg()
 }
 
 
-void ReListDlg::initDialog(QList<double> ReList, QList<double> MachList, QList<double> NCritList)
+void ReListDlg::initDialog(QVector<double> ReList, QVector<double> MachList, QVector<double> NCritList)
 {
     m_ReList.clear();
     m_MachList.clear();

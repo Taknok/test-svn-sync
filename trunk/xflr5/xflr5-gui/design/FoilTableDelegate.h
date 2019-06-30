@@ -22,7 +22,6 @@
 #ifndef FOILTABLEDELEGATE_H
 #define FOILTABLEDELEGATE_H
 
-#include <QList>
 #include <QItemDelegate>
 #include <QStandardItemModel>
 

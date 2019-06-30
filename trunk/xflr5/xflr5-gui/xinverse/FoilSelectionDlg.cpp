@@ -41,7 +41,7 @@ void FoilSelectionDlg::setupLayout()
 {
     QVBoxLayout *pMainLayout = new QVBoxLayout;
 	{
-		m_pctrlNameList = new QListWidget;
+        m_pctrlNameList = new QListWidget;
 		m_pctrlNameList->setMinimumHeight(300);
 		m_pctrlNameList->setSelectionMode(QAbstractItemView::MultiSelection);
 
@@ -81,7 +81,7 @@ void FoilSelectionDlg::onSelectAll()
 
 void FoilSelectionDlg::onOK()
 {
-	QListWidgetItem *pItem =  m_pctrlNameList->currentItem();
+    QListWidgetItem *pItem =  m_pctrlNameList->currentItem();
 	m_FoilName = pItem->text();
 
     m_FoilSelectionList.clear();
@@ -110,9 +110,9 @@ void FoilSelectionDlg::onDoubleClickList(QListWidgetItem *)
 }
 
 
-void FoilSelectionDlg::initDialog(QList<Foil*> const &FoilList, QStringList const &FoilSelList)
+void FoilSelectionDlg::initDialog(QVector<Foil*> const *FoilList, QStringList const &FoilSelList)
 {
-    m_FoilList = FoilList;
+    m_FoilList = *FoilList;
 
     for (int i=0; i<m_FoilList.size(); i++)
 	{

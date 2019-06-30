@@ -44,7 +44,7 @@ private slots:
 
 private:
     void setupLayout();
-    void keyPressEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *pEvent);
 
 
     QPushButton *m_pOKButton, *m_pCancelButton;

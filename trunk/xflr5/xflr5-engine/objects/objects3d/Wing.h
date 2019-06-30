@@ -116,7 +116,7 @@ public:
 	bool isWingPanel(int nPanel);
 	bool isWingNode(int nNode);
 
-	void getFoils(Foil **pFoil0, Foil **pFoil1, double y, double &t);
+    void getFoils(Foil **pFoil0, Foil **pFoil1, double y, double &t);
 	void duplicate(Wing *pWing);
 	void computeChords(int NStation=0);
 	void computeChords(int NStation, double *chord, double *offset, double *twist);
@@ -256,7 +256,7 @@ private:
 //	int m_AVLIndex;                  /**< a random identification number needed to export to AVL */
 
 	int m_nFlaps;                    /**< the number of T.E. flaps, numbered from left wing to right wing; for a main wing this number is even*/
-	QList<double> m_FlapMoment;      /**< the flap moments resulting from the panel of VLM analysis */
+    QVector<double> m_FlapMoment;      /**< the flap moments resulting from the panel of VLM analysis */
 
 	double m_QInf0;                  /**< the freestream velocity */
 
@@ -308,10 +308,10 @@ private:
 public:	
 
 
-	QList<WingSection*> m_WingSection;         /**< the array of wing sections. A WingSection extends between a foil and the next. */
-	QList<PointMass*> m_PointMass;             /**< the array of PointMass objects associated to this Wing object*/
+    QVector<WingSection*> m_WingSection;         /**< the array of wing sections. A WingSection extends between a foil and the next. */
+    QVector<PointMass*> m_PointMass;             /**< the array of PointMass objects associated to this Wing object*/
 
-	QList<Surface*> m_Surface;                 /**< the array of Surface objects associated to the wing */
+    QVector<Surface*> m_Surface;                 /**< the array of Surface objects associated to the wing */
 	
 	double m_MAChord;                          /**< the wing's mean aerodynamic chord */
 	double m_PlanformSpan;                     /**< the planform span, i.e. if the dihedral was 0 at each junction */
@@ -329,8 +329,8 @@ public:
 	int m_MatSize;                             /**< the number of mesh panels on this Wing; dependant on the polar type */
 	Panel *m_pWingPanel;                       /**< a pointer to the first panel of this wing in the array of panels */
 
-	static QList<Foil*> *s_poaFoil;
-	static QList<Polar*> *s_poaPolar;
+    static QVector<Foil*> *s_poaFoil;
+    static QVector<Polar*> *s_poaPolar;
 };
 
 #endif

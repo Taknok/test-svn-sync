@@ -74,7 +74,7 @@ public:
     void setupLayout();
     void fillBodyTreeView();
     void readBodyTree(QModelIndex indexLevel);
-    void readInertiaTree(double &volumeMass, QList<PointMass *> &pointMasses, QModelIndex indexLevel);
+    void readInertiaTree(double &volumeMass, QVector<PointMass *> &pointMasses, QModelIndex indexLevel);
     void readVectorTree(Vector3d &V, QModelIndex indexLevel);
     void readPointMassTree(PointMass *ppm, QModelIndex indexLevel);
     void readBodyFrameTree(Frame *pFrame, QModelIndex indexLevel);

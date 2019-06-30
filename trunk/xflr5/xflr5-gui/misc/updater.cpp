@@ -101,7 +101,7 @@ void Updater::checkForUpdates()
 
     connect(pNetworkReply, SIGNAL(readyRead()),                        this, SLOT(onReadyRead()));
     connect(pNetworkReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(slotError(QNetworkReply::NetworkError)));
-    connect(pNetworkReply, SIGNAL(sslErrors(QList<QSslError>)),        this, SLOT(slotSslErrors(QList<QSslError>)));
+    connect(pNetworkReply, SIGNAL(sslErrors(QVector<QSslError>)),        this, SLOT(slotSslErrors(QVector<QSslError>)));
 
 }
 
@@ -217,7 +217,7 @@ void Updater::slotError(QNetworkReply::NetworkError neterror)
 }
 
 
-void Updater::slotSslErrors(QList<QSslError> sslerrors)
+void Updater::slotSslErrors(QVector<QSslError> sslerrors)
 {
     Trace("Updater::slotSslErrors()");
     QString strange;

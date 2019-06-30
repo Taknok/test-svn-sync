@@ -608,12 +608,12 @@ Foil *readFoilFile(QFile &xFoilFile)
  * @param ar the binary stream
  * @return the pointer to the Foil object which has been created, or NULL if failure.
  */
-Foil* readPolarFile(QFile &plrFile, QList<Polar*> &polarList)
+Foil* readPolarFile(QFile &plrFile, QVector<Polar*> &polarList)
 {
     Foil* pFoil = nullptr;
     Polar *pPolar = nullptr;
-    Polar * pOldPolar;
-    int i, n, l;
+    Polar * pOldPolar = nullptr;
+    int i=0, n=0, l=0;
 
     QDataStream ar(&plrFile);
     ar.setVersion(QDataStream::Qt_4_5);

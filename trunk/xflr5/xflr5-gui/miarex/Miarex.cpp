@@ -101,9 +101,9 @@ MainFrame *Miarex::s_pMainFrame = nullptr;
 bool Miarex::s_bResetCurves = true;
 bool Miarex::s_bLogFile = true;
 
-QList<Plane*>    *Miarex::m_poaPlane = nullptr;
-QList<WPolar*>   *Miarex::m_poaWPolar = nullptr;
-QList<PlaneOpp*> *Miarex::m_poaPOpp = nullptr;
+QVector<Plane*>    *Miarex::m_poaPlane = nullptr;
+QVector<WPolar*>   *Miarex::m_poaWPolar = nullptr;
+QVector<PlaneOpp*> *Miarex::m_poaPOpp = nullptr;
 
 
 /**
@@ -111,26 +111,11 @@ QList<PlaneOpp*> *Miarex::m_poaPOpp = nullptr;
  *
  * @param parent: a pointer to the parent window
  */
-Miarex::Miarex(QWidget *parent)
-    : QWidget(parent)
+Miarex::Miarex(QWidget *parent) : QWidget(parent)
 {
     setAttribute(Qt::WA_DeleteOnClose);
 
-    m_theLLTAnalysis.m_poaPolar = &Objects2d::s_oaPolar;
-
-    //construct and initialize everything
-    /*	int memsize=0;
-    if(!Objects3D::AllocatePanelArrays(memsize))
-    {
-        QString strange = tr("This computer does not have enough RAM to run xflr5");
-        Trace(strange);
-        QMessageBox::warning(s_pMainFrame, tr("Warning"), strange);
-    }
-    else
-    {
-        QString strange = QString("QMiarex::Initial memory allocation for PanelAnalysis is %1 MB").arg((double)memsize/1024./1024., 7, 'f', 2);
-        Trace(strange);
-    }*/
+    m_theLLTAnalysis.m_poaPolar = Objects2d::pOAPolar();
 
     m_theTask.m_ptheLLTAnalysis = &m_theLLTAnalysis;
     m_theTask.m_pthePanelAnalysis = &m_thePanelAnalysis;
@@ -148,14 +133,13 @@ Miarex::Miarex(QWidget *parent)
     m_pCurPOpp    = nullptr;
     m_pCurWPolar  = nullptr;
 
-    Wing::s_poaFoil  = &Objects2d::s_oaFoil;
-    Wing::s_poaPolar = &Objects2d::s_oaPolar;
+    Wing::s_poaFoil  = Objects2d::pOAFoil();
+    Wing::s_poaPolar = Objects2d::pOAPolar();
 
     for(int iw=0; iw<MAXWINGS; iw++)
     {
         m_pWOpp[iw]     = nullptr;
     }
-
 
     m_bXPressed = m_bYPressed = false;
     m_bXCmRef            = true;
@@ -1606,8 +1590,8 @@ void Miarex::fillWPlrCurve(Curve *pCurve, WPolar *pWPolar, int XVar, int YVar)
     double x,y;
     QString PlaneName;
     if(m_pCurPlane)     PlaneName=m_pCurPlane->planeName();
-    QList <double> *pX;
-    QList <double> *pY;
+    QVector <double> *pX;
+    QVector <double> *pY;
     pX = pWPolar->getWPlrVariable(XVar);
     pY = pWPolar->getWPlrVariable(YVar);
 
@@ -4898,7 +4882,7 @@ void Miarex::onHideAllWPlrOpps()
             if (pPOpp->planeName() == m_pCurWPolar->planeName() &&
                     pPOpp->polarName()   == m_pCurWPolar->polarName())
             {
-                pPOpp->isVisible() = false;
+                pPOpp->setVisible(false);
             }
         }
     }
@@ -4920,7 +4904,7 @@ void Miarex::onHideAllWOpps()
     for (int i=0; i< m_poaPOpp->size(); i++)
     {
         PlaneOpp *pPOpp = m_poaPOpp->at(i);
-        pPOpp->isVisible() = false;
+        pPOpp->setVisible(false);
     }
     emit projectModified();
     setCurveParams();
@@ -4940,7 +4924,7 @@ void Miarex::onHidePlaneOpps()
         PlaneOpp *pPOpp = m_poaPOpp->at(i);
         if (pPOpp->planeName() == m_pCurWPolar->planeName())
         {
-            pPOpp->isVisible() = false;
+            pPOpp->setVisible(false);
         }
     }
 
@@ -5402,7 +5386,7 @@ void Miarex::onRenameCurWPolar()
         PlaneOpp *pPOpp = m_poaPOpp->at(l);
         if (pPOpp->planeName() == m_pCurPlane->planeName() && pPOpp->polarName()==m_pCurWPolar->polarName())
         {
-            pPOpp->polarName() = dlg.newName();
+            pPOpp->setPolarName(dlg.newName());
         }
     }
 
@@ -5527,16 +5511,14 @@ void Miarex::onSequence()
  */
 void Miarex::onShowAllWOpps()
 {
-    int i;
     //Switch all WOpps view to on for all Plane and WPolar
     m_bCurPOppOnly = false;
     s_pMainFrame->m_pShowCurWOppOnly->setChecked(false);
 
-    PlaneOpp *pPOpp;
-    for (i=0; i< m_poaPOpp->size(); i++)
+    for (int i=0; i< m_poaPOpp->size(); i++)
     {
-        pPOpp = m_poaPOpp->at(i);
-        pPOpp->isVisible() = true;
+        PlaneOpp *pPOpp = m_poaPOpp->at(i);
+        pPOpp->setVisible(true);
     }
 
     emit projectModified();
@@ -5599,9 +5581,9 @@ void Miarex::onShowWPolarOppsOnly()
         PlaneOpp *pPOpp = m_poaPOpp->at(i);
         if(pPOpp->planeName().compare(m_pCurPlane->planeName())==0 && pPOpp->polarName().compare(m_pCurWPolar->polarName())==0)
         {
-            pPOpp->isVisible() = true;
+            pPOpp->setVisible(true);
         }
-        else pPOpp->isVisible() = false;
+        else pPOpp->setVisible(false);
     }
     s_bResetCurves = true;
     updateView();
@@ -5647,7 +5629,7 @@ void Miarex::onShowPlaneOpps()
         pPOpp = m_poaPOpp->at(i);
         if (pPOpp->planeName() == m_pCurWPolar->planeName())
         {
-            pPOpp->isVisible() = true;
+            pPOpp->setVisible(true);
         }
     }
 
@@ -5676,7 +5658,7 @@ void Miarex::onShowAllWPlrOpps()
             if (pPOpp->planeName() == m_pCurWPolar->planeName() &&
                     pPOpp->polarName()   == m_pCurWPolar->polarName())
             {
-                pPOpp->isVisible() = true;
+                pPOpp->setVisible(true);
             }
         }
     }
@@ -7756,12 +7738,12 @@ void Miarex::updateCurve()
     {
         if(m_pCurPOpp)
         {
-            m_pCurPOpp->style()  = m_LineStyle.m_Style;
-            m_pCurPOpp->width()  = m_LineStyle.m_Width;
+            m_pCurPOpp->setStyle(m_LineStyle.m_Style);
+            m_pCurPOpp->setWidth(m_LineStyle.m_Width);
             QColor c = m_LineStyle.m_Color;
-            m_pCurPOpp->setPlaneOppColor(ObjectColor(c.red(), c.green(), c.blue(), c.alpha()));
-            m_pCurPOpp->points()    = m_LineStyle.m_PointStyle;
-            m_pCurPOpp->isVisible() = bCurveVisible;
+            m_pCurPOpp->setColor(ObjectColor(c.red(), c.green(), c.blue(), c.alpha()));
+            m_pCurPOpp->setPoints(m_LineStyle.m_PointStyle);
+            m_pCurPOpp->setVisible(bCurveVisible);
         }
     }
     else if (m_iView==XFLR5::WCPVIEW && m_pCurPOpp)
@@ -8341,7 +8323,7 @@ void Miarex::setGraphTiles()
 
         case XFLR5::WCPVIEW:
         {
-            QList<Graph*> pGraphList;
+            QVector<Graph*> pGraphList;
             pGraphList.append(&m_CpGraph);
             s_pMainFrame->m_pMiarexTileWidget->setMiarexGraphList(m_iView, pGraphList, 1, 0, Qt::Vertical);
             break;

@@ -24,6 +24,7 @@
 #include <QVBoxLayout>
 #include <QStringList>
 #include <QMessageBox>
+#include <QKeyEvent>
 
 #include "ManagePlanesDlg.h"
 #include <miarex/objects3d.h>

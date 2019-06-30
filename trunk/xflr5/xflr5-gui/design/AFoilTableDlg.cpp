@@ -19,11 +19,15 @@
 
 *****************************************************************************/
 
-#include "AFoil.h"
-#include "AFoilTableDlg.h"
 #include <QGridLayout>
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QKeyEvent>
+
+
+#include "AFoil.h"
+#include "AFoilTableDlg.h"
+
 #include <misc/line/LinePickerDlg.h>
 
 
@@ -39,9 +43,9 @@ AFoilTableDlg::AFoilTableDlg(QWidget *pParent): QDialog(pParent)
 }
 
 
-void AFoilTableDlg::keyPressEvent(QKeyEvent *event)
+void AFoilTableDlg::keyPressEvent(QKeyEvent *pEvent)
 {
-    switch (event->key())
+    switch (pEvent->key())
     {
         case Qt::Key_Escape:
         {
@@ -63,7 +67,7 @@ void AFoilTableDlg::keyPressEvent(QKeyEvent *event)
             break;
         }
         default:
-            event->ignore();
+            pEvent->ignore();
     }
 }
 

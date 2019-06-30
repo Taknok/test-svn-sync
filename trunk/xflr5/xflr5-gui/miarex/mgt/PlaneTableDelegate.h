@@ -22,7 +22,7 @@
 #ifndef UFOTABLEDELEGATE_H
 #define UFOTABLEDELEGATE_H
 
-#include <QList>
+#include <QVector>
 #include <QItemDelegate>
 #include <QStandardItemModel>
 

@@ -25,7 +25,7 @@
 
 #include <QDialog>
 #include <QListWidget>
-#include <QList>
+#include <QVector>
 #include <QStringList>
 #include <QAbstractButton>
 #include <QDialogButtonBox>
@@ -41,10 +41,10 @@ public:
 
     void setFoilName(QString name) {m_FoilName=name;}
     QString const &selectedFoilName() const {return m_FoilName;}
-    void initDialog(const QList<Foil *> &FoilList, const QStringList &FoilSelList);
+    void initDialog(const QVector<Foil *> *FoilList, const QStringList &FoilSelList);
 
-    void setFoilList(QList<Foil*> const &foilList) {m_FoilList = foilList;}
-    QList<Foil*> const &foilList() const {return m_FoilList;}
+    void setFoilList(QVector<Foil*> const &foilList) {m_FoilList = foilList;}
+    QVector<Foil*> const &foilList() const {return m_FoilList;}
     QStringList const &foilSelectionList() const {return m_FoilSelectionList;}
 
 private slots:
@@ -62,7 +62,7 @@ private:
     QListWidget *m_pctrlNameList;
     QString m_FoilName;
 
-    QList<Foil*> m_FoilList; /** in input, the array of all foil pointers, in output, pointers to the selected foils @todo make two lists*/
+    QVector<Foil*> m_FoilList; /** in input, the array of all foil pointers, in output, pointers to the selected foils @todo make two lists*/
     QStringList m_FoilSelectionList;
 };
 

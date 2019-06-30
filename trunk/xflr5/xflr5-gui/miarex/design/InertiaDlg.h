@@ -124,7 +124,7 @@ private:
 
     double m_CoGIxx, m_CoGIyy, m_CoGIzz, m_CoGIxz;
 
-    QList<PointMass*> m_PointMass;
+    QVector<PointMass*> m_PointMass;
 
     bool m_bChanged;
 

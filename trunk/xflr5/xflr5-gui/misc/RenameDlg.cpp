@@ -60,7 +60,7 @@ void RenameDlg::setupLayout()
 
 		m_pctrlName = new QLineEdit("");
 		QLabel* NameListLabel = new QLabel(tr("Existing Names:"));
-		m_pctrlNameList = new QListWidget;
+        m_pctrlNameList = new QListWidget;
 
 		pMainLayout->setStretchFactor(m_pctrlMessage, 1);
 		pMainLayout->setStretchFactor(m_pctrlName, 1);
@@ -82,7 +82,7 @@ void RenameDlg::setupLayout()
 	setLayout(pMainLayout);
 
 	connect(m_pctrlNameList, SIGNAL(currentRowChanged(int)), this, SLOT(onSelChangeList(int)));
-	connect(m_pctrlNameList, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(onDoubleClickList(QListWidgetItem *)));
+    connect(m_pctrlNameList, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(onDoubleClickList(QListWidgetItem *)));
 //	connect(m_pOverwriteButton, SIGNAL(clicked()), this, SLOT(onOverwrite()));
 }
 
@@ -196,7 +196,7 @@ void RenameDlg::onOK()
 
 void RenameDlg::onSelChangeList(int)
 {
-	QListWidgetItem *pItem =  m_pctrlNameList->currentItem();
+    QListWidgetItem *pItem =  m_pctrlNameList->currentItem();
 
 	if(pItem)
 	{
@@ -208,7 +208,7 @@ void RenameDlg::onSelChangeList(int)
 
 
 
-void RenameDlg::onDoubleClickList(QListWidgetItem * pItem)
+void RenameDlg::onDoubleClickList(QListWidgetItem *pItem)
 {
 //	QListWidgetItem *pItem =  m_pctrlNameList->currentItem();
 

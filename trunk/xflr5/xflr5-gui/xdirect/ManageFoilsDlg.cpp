@@ -208,9 +208,9 @@ ManageFoilsDlg::~ManageFoilsDlg()
 void ManageFoilsDlg::fillFoilTable()
 {
     int i;
-    m_pFoilModel->setRowCount(Objects2d::s_oaFoil.size());
+    m_pFoilModel->setRowCount(Objects2d::foilCount());
 
-    for(i=0; i< Objects2d::s_oaFoil.size(); i++)
+    for(i=0; i< Objects2d::foilCount(); i++)
     {
         fillTableRow(i);
     }
@@ -220,7 +220,7 @@ void ManageFoilsDlg::fillFoilTable()
 void ManageFoilsDlg::fillTableRow(int row)
 {
     QModelIndex ind;
-    Foil *pFoil = Objects2d::s_oaFoil.at(row);
+    Foil *pFoil = Objects2d::foilAt(row);
 
     ind = m_pFoilModel->index(row, 0, QModelIndex());
     m_pFoilModel->setData(ind,pFoil->foilName());
@@ -274,9 +274,9 @@ void ManageFoilsDlg::onRename()
     if (m_pFoil)
     {
         QStringList NameList;
-        for(int k=0; k< Objects2d::s_oaFoil.size(); k++)
+        for(int k=0; k< Objects2d::foilCount(); k++)
         {
-            Foil *pOldFoil= Objects2d::s_oaFoil.at(k);
+            Foil *pOldFoil= Objects2d::foilAt(k);
             NameList.append(pOldFoil->foilName());
         }
 
@@ -356,7 +356,7 @@ void ManageFoilsDlg::onDoubleClickTable(const QModelIndex &index)
 
 void ManageFoilsDlg::onFoilClicked(const QModelIndex& index)
 {
-    if(index.row()>=Objects2d::s_oaFoil.size()) return;
+    if(index.row()>=Objects2d::foilCount()) return;
 
     QStandardItem *pItem = m_pFoilModel->item(index.row(),0);
     QString FoilName =pItem->text();

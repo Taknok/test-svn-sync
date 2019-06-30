@@ -84,7 +84,7 @@ void FoilTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
 	QString strong;
 	QStyleOptionViewItem myOption = option;
 	AFoil *pAFoil = (AFoil*)m_pAFoil;
-	int NFoils = Objects2d::s_oaFoil.size();
+    int NFoils = Objects2d::foilCount();
 
 	if(index.row()> NFoils)
 	{
@@ -120,7 +120,7 @@ void FoilTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
 			if(index.row()==0)	drawCheckBox(painter, myOption.rect, pAFoil->m_pSF->m_bVisible);
 			else
 			{
-				Foil *pFoil = Objects2d::s_oaFoil.at(index.row()-1);
+                Foil *pFoil = Objects2d::foilAt(index.row()-1);
 				drawCheckBox(painter, myOption.rect, pFoil->isVisible());
 			}
 		}
@@ -132,7 +132,7 @@ void FoilTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
 			if(index.row()==0)	drawCheckBox(painter, myOption.rect, pAFoil->m_pSF->m_bCenterLine);
 			else
 			{
-				Foil *pFoil = Objects2d::s_oaFoil.at(index.row()-1);
+                Foil *pFoil = Objects2d::foilAt(index.row()-1);
 				drawCheckBox(painter, myOption.rect, pFoil->showCenterLine());
 			}
 		}
@@ -154,7 +154,7 @@ void FoilTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
 			}
 			else
 			{
-				Foil *pFoil = Objects2d::s_oaFoil.at(index.row()-1);
+                Foil *pFoil = Objects2d::foilAt(index.row()-1);
 				color = colour(pFoil);
 				pointStyle = pFoil->foilPointStyle();
 				lineStyle = pFoil->foilLineStyle();

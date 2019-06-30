@@ -45,7 +45,7 @@ FoilDesignWt::FoilDesignWt(QWidget *pParent) : Section2dWidget(pParent)
 }
 
 
-void FoilDesignWt::setObjects(Foil *pBufferFoil, SplineFoil *pSF, QList<Foil*> *poaFoil)
+void FoilDesignWt::setObjects(Foil *pBufferFoil, SplineFoil *pSF, QVector<Foil*> *poaFoil)
 {
 	m_pBufferFoil = pBufferFoil;
 	m_pSF = pSF;

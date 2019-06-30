@@ -136,7 +136,7 @@ private:
 
 
 private:
-    static QList <Foil*> *s_poaFoil;
+    static QVector <Foil*> *s_poaFoil;
 
     static QByteArray s_WindowGeometry;
 

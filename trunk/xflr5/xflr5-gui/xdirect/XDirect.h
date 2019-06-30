@@ -36,7 +36,7 @@
 #include <QCheckBox>
 #include <QStackedWidget>
 #include <QSlider>
-
+#include <QVector>
 
 #include <objects/objects2d/Polar.h>
 #include <objects/objects2d/Foil.h>
@@ -304,9 +304,9 @@ private:
 
 	double m_fFoilScale;        /**< the scale for foil display*/
 
-	static QList<double> s_ReList;        /**< the user-defined list of Re numbers, used for batch analysis */
-	static QList<double> s_MachList;      /**< the user-defined list of Mach numbers, used for batch analysis */
-	static QList<double> s_NCritList;     /**< the user-defined list of NCrit numbers, used for batch analysis */
+    static QVector<double> s_ReList;        /**< the user-defined list of Re numbers, used for batch analysis */
+    static QVector<double> s_MachList;      /**< the user-defined list of Mach numbers, used for batch analysis */
+    static QVector<double> s_NCritList;     /**< the user-defined list of NCrit numbers, used for batch analysis */
 
 	double m_Alpha;             /**< the min value of the aoa for a sequential analysis of Type 1, 2, or 3*/
 	double m_AlphaMax;          /**< the max value of the aoa for a sequential analysis of Type 1, 2, or 3*/
@@ -328,12 +328,12 @@ private:
 	static Polar s_RefPolar;    /**< Used a static reference to store default data */
 
 
-	QList<Foil*> *m_poaFoil;    /**< pointer to the foil object array */
-	QList<Polar*> *m_poaPolar;  /**< pointer to the polar object array */
-	QList<OpPoint*> *m_poaOpp;  /**< pointer to the OpPoint object array */
+    QVector<Foil*> *m_poaFoil;    /**< pointer to the foil object array */
+    QVector<Polar*> *m_poaPolar;  /**< pointer to the polar object array */
+    QVector<OpPoint*> *m_poaOpp;  /**< pointer to the OpPoint object array */
 
 	Graph m_CpGraph;           /**< the Cp graph for the OpPoint view */
-	QList<Graph*> m_PlrGraph;  /**< the array of pointer to the 5 Polar graphs */
+    QVector<Graph*> m_PlrGraph;  /**< the array of pointer to the 5 Polar graphs */
 
 	LineStyle m_LineStyle;      /**< the style of the lines displayed in the comboboxes*/
 
