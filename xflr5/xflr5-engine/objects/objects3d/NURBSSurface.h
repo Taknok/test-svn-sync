@@ -47,7 +47,7 @@
 */
 class XFLR5ENGINELIBSHARED_EXPORT NURBSSurface
 {
-
+    friend class Body;
 public:
     NURBSSurface(int iAxis=0);
     ~NURBSSurface();
@@ -60,22 +60,24 @@ public:
     Frame *lastFrame() {return m_pFrame.last();}
     int    frameCount() const {return m_pFrame.size();}
     int    framePointCount() const;
-    double getu(double pos, double v);
-    double getv(double u, Vector3d r);
-    void   getPoint(double u, double v, Vector3d &Pt);
-    Vector3d point(double u, double v);
+    double getu(double pos, double v) const;
+    double getv(double u, Vector3d r) const;
+    void   getPoint(double u, double v, Vector3d &Pt) const;
+    Vector3d point(double u, double v) const;
     void   insertFrame(Frame *pNewFrame);
     bool   intersectNURBS(Vector3d A, Vector3d B, Vector3d &I);
     void   removeFrame(int iFrame);
     void   setKnots();
     int    setvDegree(int nvDegree);
     int    setuDegree(int nuDegree);
-    double weight(const double &d, int const &i, int const &N);
-    int    uDegree(){return m_iuDegree;}
-    int    vDegree(){return m_ivDegree;}
+    int    uDegree() const {return m_iuDegree;}
+    int    vDegree() const {return m_ivDegree;}
 
-    double splineBlend(int const &index, int const &p, double const &t, double *knots);
+    double weight(const double &d, int const &i, int const &N) const;
 
+    double splineBlend(int const &index, int const &p, double const &t, const double *knots) const;
+
+private:
     QVector<Frame*> m_pFrame;	        /**< a pointer to the array of Frame objects */
 
     int m_iuDegree;                 /**< the degree of the NURBS in the u direction */
@@ -94,11 +96,6 @@ public:
 
     int m_uAxis;                    /**< used to identify along which axis parameter u is set; 0=x, 1=y, 2=z */
     int m_vAxis;                    /**< used to identify along which axis parameter u is set; 0=x, 1=y, 2=z */
-
-
-    //use temporary variables to avoid lengthy memory allocation times on the stack
-    double value, eps, bs, cs;
-    Vector3d t_R, t_Prod, t_Q, t_r, t_N;
 };
 
 #endif // SPLINESURFACE_H
