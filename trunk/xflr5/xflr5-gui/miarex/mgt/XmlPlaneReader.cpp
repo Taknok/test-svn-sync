@@ -434,8 +434,8 @@ bool XMLPlaneReader::readBody(Body *pBody, Vector3d &position, double lengthUnit
             if(readElementText().compare(QString("NURBS"), Qt::CaseInsensitive)==0) pBody->bodyType()=XFLR5::BODYSPLINETYPE;
 			else                                                           pBody->bodyType()=XFLR5::BODYPANELTYPE;
 		}
-        else if (name().compare(QString("x_degree"),    Qt::CaseInsensitive)==0) pBody->splineSurface()->m_iuDegree = readElementText().toInt();
-        else if (name().compare(QString("hoop_degree"), Qt::CaseInsensitive)==0) pBody->splineSurface()->m_ivDegree = readElementText().toInt();
+        else if (name().compare(QString("x_degree"),    Qt::CaseInsensitive)==0) pBody->splineSurface()->setuDegree(readElementText().toInt());
+        else if (name().compare(QString("hoop_degree"), Qt::CaseInsensitive)==0) pBody->splineSurface()->setvDegree(readElementText().toInt());
         else if (name().compare(QString("x_panels"),    Qt::CaseInsensitive)==0) pBody->m_nxPanels = readElementText().toInt();
         else if (name().compare(QString("hoop_panels"), Qt::CaseInsensitive)==0) pBody->m_nhPanels = readElementText().toInt();
         else if (name().compare(QString("Panel_Stripes"), Qt::CaseInsensitive)==0)

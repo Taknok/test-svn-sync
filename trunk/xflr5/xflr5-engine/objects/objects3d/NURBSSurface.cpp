@@ -51,7 +51,6 @@ NURBSSurface::NURBSSurface(int iAxis)
     m_EdgeWeightu = 1.0;
     m_EdgeWeightv = 1.0;
 
-    eps = 1.0e-06;
 }
 
 NURBSSurface::~NURBSSurface()
@@ -71,7 +70,7 @@ NURBSSurface::~NURBSSurface()
  * @param v the specified value of the v-parameter
  * @return the value of the u-parameter
  */
-double NURBSSurface::getu(double pos, double v)
+double NURBSSurface::getu(double pos, double v) const
 {
     if(pos<=m_pFrame.first()->m_Position[m_uAxis]) return 0.0;
     if(pos>=m_pFrame.last()->m_Position[m_uAxis])  return 1.0;
@@ -118,7 +117,7 @@ double NURBSSurface::getu(double pos, double v)
 * @return the spline function value
 */
 #define EPS 0.0001
-double NURBSSurface::splineBlend(int const &index, int const &p, double const &t, double *knots)
+double NURBSSurface::splineBlend(int const &index, int const &p, double const &t, double const *knots) const
 {
     if(p==0)
     {
@@ -147,7 +146,7 @@ double NURBSSurface::splineBlend(int const &index, int const &p, double const &t
  * @return the value of the v-parameter
  */
 
-double NURBSSurface::getv(double u, Vector3d r)
+double NURBSSurface::getv(double u, Vector3d r) const
 {
     double sine = 10000.0;
 
@@ -156,8 +155,8 @@ double NURBSSurface::getv(double u, Vector3d r)
     if(r.VAbs()<1.0e-5) return 0.0;
 
     int iter=0;
-    double v, v1, v2;
-
+    double v=0, v1=0, v2=0;
+    Vector3d t_R;
     r.normalize();
     v1 = 0.0; v2 = 1.0;
 
@@ -189,22 +188,21 @@ double NURBSSurface::getv(double u, Vector3d r)
  * @param v the specified v-parameter
  * @param Pt a reference to the point defined by the pair (u,v)
 */
-void NURBSSurface::getPoint(double u, double v, Vector3d &Pt)
+void NURBSSurface::getPoint(double u, double v, Vector3d &Pt) const
 {
     Vector3d V, Vv;
-    double wx, totalweight;
 
     if(u>=1.0) u=0.99999999999;
     if(v>=1.0) v=0.99999999999;
 
-    totalweight = 0.0;
+    double totalweight = 0.0;
     for(int iu=0; iu<frameCount(); iu++)
     {
         Vv.set(0.0,0.0,0.0);
-        wx = 0.0;
+        double wx = 0.0;
         for(int jv=0; jv<framePointCount(); jv++)
         {
-            cs = splineBlend(jv, m_ivDegree, v, m_vKnots) * weight(m_EdgeWeightv, jv, framePointCount());
+            double cs = splineBlend(jv, m_ivDegree, v, m_vKnots) * weight(m_EdgeWeightv, jv, framePointCount());
 
             Vv.x += m_pFrame[iu]->m_CtrlPoint[jv].x * cs;
             Vv.y += m_pFrame[iu]->m_CtrlPoint[jv].y * cs;
@@ -212,7 +210,7 @@ void NURBSSurface::getPoint(double u, double v, Vector3d &Pt)
 
             wx += cs;
         }
-        bs = splineBlend(iu, m_iuDegree, u, m_uKnots) * weight(m_EdgeWeightu, iu, frameCount());
+        double bs = splineBlend(iu, m_iuDegree, u, m_uKnots) * weight(m_EdgeWeightu, iu, frameCount());
 
         V.x += Vv.x * bs;
         V.y += Vv.y * bs;
@@ -238,10 +236,10 @@ void NURBSSurface::getPoint(double u, double v, Vector3d &Pt)
  * @param v the specified v-parameter
  * @param Pt a reference to the point defined by the pair (u,v)
 */
-Vector3d NURBSSurface::point(double u, double v)
+Vector3d NURBSSurface::point(double u, double v) const
 {
     Vector3d V, Vv;
-    double wx, totalweight;
+    double wx=0, totalweight=0;
 
     if(u>=1.0) u=0.99999999999;
     if(v>=1.0) v=0.99999999999;
@@ -253,7 +251,7 @@ Vector3d NURBSSurface::point(double u, double v)
         wx = 0.0;
         for(int jv=0; jv<framePointCount(); jv++)
         {
-            cs = splineBlend(jv, m_ivDegree, v, m_vKnots) * weight(m_EdgeWeightv, jv, framePointCount());
+            double cs = splineBlend(jv, m_ivDegree, v, m_vKnots) * weight(m_EdgeWeightv, jv, framePointCount());
 
             Vv.x += m_pFrame[iu]->m_CtrlPoint[jv].x * cs;
             Vv.y += m_pFrame[iu]->m_CtrlPoint[jv].y * cs;
@@ -261,7 +259,7 @@ Vector3d NURBSSurface::point(double u, double v)
 
             wx += cs;
         }
-        bs = splineBlend(iu, m_iuDegree, u, m_uKnots) * weight(m_EdgeWeightu, iu, frameCount());
+        double bs = splineBlend(iu, m_iuDegree, u, m_uKnots) * weight(m_EdgeWeightu, iu, frameCount());
 
         V.x += Vv.x * bs;
         V.y += Vv.y * bs;
@@ -281,7 +279,7 @@ Vector3d NURBSSurface::point(double u, double v)
 *  @param N the total number of points along the edge
 *  @return the point's weight
 **/
-double NURBSSurface::weight(double const &d, const int &i, int const &N)
+double NURBSSurface::weight(double const &d, const int &i, int const &N) const
 {
     if(qAbs(d-1.0)<PRECISION) return 1.0;
     if(i<(N+1)/2)             return pow(d, i);
@@ -328,6 +326,7 @@ bool NURBSSurface::intersectNURBS(Vector3d A, Vector3d B, Vector3d &I)
     //M0 is the outside Point, M1 is the inside point
     M0 = A; M1 = B;
 
+    Vector3d t_Q, t_r, t_N;
 
     I = (M0+M1)/2.0; t=0.5;
 
@@ -370,7 +369,7 @@ void NURBSSurface::setKnots()
 
     m_iuDegree = std::min(m_iuDegree, frameCount()-1);
     m_nuKnots  = m_iuDegree + frameCount() + 1;
-    b = (double)(m_nuKnots-2*m_iuDegree-1);
+    b = double(m_nuKnots-2*m_iuDegree-1);
 
     for (j=0; j<m_nuKnots; j++)
     {
@@ -379,7 +378,7 @@ void NURBSSurface::setKnots()
         {
             if (j<frameCount())
             {
-                if(qAbs(b)>0.0) m_uKnots[j] = (double)(j-m_iuDegree)/b;
+                if(qAbs(b)>0.0) m_uKnots[j] = double(j-m_iuDegree)/b;
                 else            m_uKnots[j] = 1.0;
             }
             else m_uKnots[j] = 1.0;
@@ -389,7 +388,7 @@ void NURBSSurface::setKnots()
     m_ivDegree = std::min(m_ivDegree, firstFrame()->pointCount()-1);
 
     m_nvKnots  = m_ivDegree + framePointCount() + 1;
-    b = (double)(m_nvKnots-2*m_ivDegree-1);
+    b = double(m_nvKnots-2*m_ivDegree-1);
 
     for (j=0; j<m_nvKnots; j++)
     {
@@ -398,7 +397,7 @@ void NURBSSurface::setKnots()
         {
             if (j<framePointCount())
             {
-                if(qAbs(b)>0.0) m_vKnots[j] = (double)(j-m_ivDegree)/b;
+                if(qAbs(b)>0.0) m_vKnots[j] = double(j-m_ivDegree)/b;
                 else            m_vKnots[j] = 1.0;
             }
             else m_vKnots[j] = 1.0;

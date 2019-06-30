@@ -571,7 +571,7 @@ void GL3dBodyDlg::onExportBodyGeom()
 
     QTextStream out(&XFile);
 
-    m_pBody->exportGeometry(out, Units::mtoUnit(), type, NXPOINTS, NHOOPPOINTS);
+    m_pBody->exportGeometry(out, type, Units::mtoUnit(), NXPOINTS, NHOOPPOINTS);
 }
 
 
@@ -930,8 +930,8 @@ void GL3dBodyDlg::onNURBSPanels()
 
     m_pBody->m_Bunch = m_pctrlPanelBunch->sliderPosition()/100.0;
 
-    m_pBody->m_nhPanels = m_pctrlNHoopPanels->value();
-    m_pBody->m_nxPanels = m_pctrlNXPanels->value();
+    m_pBody->m_nhPanels = int(m_pctrlNHoopPanels->value());
+    m_pBody->m_nxPanels = int(m_pctrlNXPanels->value());
     m_pBody->setPanelPos();
 
     m_gl3dBodyview.resetGLBody();
@@ -1131,14 +1131,14 @@ void GL3dBodyDlg::setControls()
 
     if(m_pBody)
     {
-        m_pctrlPanelBunch->setSliderPosition((int)(m_pBody->m_Bunch*100.0));
+        m_pctrlPanelBunch->setSliderPosition(int(m_pBody->m_Bunch*100.0));
         m_pctrlBodyColor->setColor(color(m_pBody->m_BodyColor));
 
         m_pctrlNXPanels->setValue(m_pBody->m_nxPanels);
         m_pctrlNHoopPanels->setValue(m_pBody->m_nhPanels);
 
-        m_pctrlXDegree->setCurrentIndex(m_pBody->m_SplineSurface.m_iuDegree-1);
-        m_pctrlHoopDegree->setCurrentIndex(m_pBody->m_SplineSurface.m_ivDegree-1);
+        m_pctrlXDegree->setCurrentIndex(m_pBody->m_SplineSurface.uDegree()-1);
+        m_pctrlHoopDegree->setCurrentIndex(m_pBody->m_SplineSurface.vDegree()-1);
     }
 }
 
@@ -1633,16 +1633,15 @@ void GL3dBodyDlg::hideEvent(QHideEvent *pEvent)
 
 void GL3dBodyDlg::resizeTables()
 {
-    int ColumnWidth = (int)((double)(m_pctrlFrameTable->width())/2.5);
+    int ColumnWidth = int(double(m_pctrlFrameTable->width())/2.5);
     m_pctrlFrameTable->setColumnWidth(0,ColumnWidth);
     m_pctrlFrameTable->setColumnWidth(1,ColumnWidth);
     //	m_pctrlFrameTable->setColumnWidth(2,ColumnWidth);
-    ColumnWidth = (int)((double)(m_pctrlPointTable->width())/4);
+    ColumnWidth = int(double(m_pctrlPointTable->width())/4);
     m_pctrlPointTable->setColumnWidth(0,ColumnWidth);
     m_pctrlPointTable->setColumnWidth(1,ColumnWidth);
     m_pctrlPointTable->setColumnWidth(2,ColumnWidth);
 }
-
 
 
 /**
