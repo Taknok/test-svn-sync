@@ -76,7 +76,7 @@ void XmlWPolarWriter::writeXMLWPolar(WPolar *pWPolar)
 		writeTextElement("Fixed_Velocity",     QString("%1").arg(pWPolar->velocity()*Units::mstoUnit(),11,'f',5));
 		writeTextElement("Fixed_AOA",          QString("%1").arg(pWPolar->Alpha(),11,'f',5));
 		writeTextElement("Fixed_Bank_Angle",   QString("%1").arg(pWPolar->Phi(),11,'f',5));
-		writeTextElement("Fixed_SideSlip",     QString("%1").arg(pWPolar->sideSlip(),11,'f',5));
+        writeTextElement("Fixed_SideSlip",     QString("%1").arg(pWPolar->Beta(),11,'f',5));
 		writeTextElement("Reference_Dimensions",   referenceDimension(pWPolar->referenceDim()));
 		writeTextElement("Reference_Area",         QString("%1").arg(pWPolar->referenceArea()*Units::m2toUnit(),11,'f',5));
 		writeTextElement("Reference_Span_Length",  QString("%1").arg(pWPolar->referenceSpanLength()*Units::mtoUnit(),11,'f',5));

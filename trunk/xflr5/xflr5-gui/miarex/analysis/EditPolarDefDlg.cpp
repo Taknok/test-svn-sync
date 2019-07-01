@@ -57,10 +57,10 @@ EditPolarDefDlg::EditPolarDefDlg(QWidget *pParent) : QDialog(pParent)
  * Overrides the base class showEvent method. Moves the window to its former location.
  * @param event the showEvent.
  */
-void EditPolarDefDlg::showEvent(QShowEvent *event)
+void EditPolarDefDlg::showEvent(QShowEvent *pEvent)
 {
     move(s_Position);
-    event->accept();
+    pEvent->accept();
 }
 
 
@@ -68,21 +68,21 @@ void EditPolarDefDlg::showEvent(QShowEvent *event)
  * Overrides the base class hideEvent method. Stores the window's current position.
  * @param event the hideEvent.
  */
-void EditPolarDefDlg::hideEvent(QHideEvent *event)
+void EditPolarDefDlg::hideEvent(QHideEvent *pEvent)
 {
     s_Position = pos();
-    event->accept();
+    pEvent->accept();
 }
 
 
-void EditPolarDefDlg::resizeEvent(QResizeEvent *event)
+void EditPolarDefDlg::resizeEvent(QResizeEvent *pEvent)
 {
     s_Size = size();
-    int ColumnWidth = (int)((double)(m_pStruct->width())/4);
+    int ColumnWidth = int(double(m_pStruct->width())/4.0);
     m_pStruct->setColumnWidth(0,ColumnWidth);
     m_pStruct->setColumnWidth(1,ColumnWidth);
     m_pStruct->setColumnWidth(2,ColumnWidth);
-    event->accept();
+    pEvent->accept();
 }
 
 
@@ -153,10 +153,10 @@ void EditPolarDefDlg::setupLayout()
 }
 
 
-void EditPolarDefDlg::keyPressEvent(QKeyEvent *event)
+void EditPolarDefDlg::keyPressEvent(QKeyEvent *pEvent)
 {
     // Prevent Return Key from closing App
-    switch (event->key())
+    switch (pEvent->key())
     {
         case Qt::Key_Return:
         case Qt::Key_Enter:
@@ -172,7 +172,6 @@ void EditPolarDefDlg::keyPressEvent(QKeyEvent *event)
                 onOK();
                 return;
             }
-            break;
         }
         case Qt::Key_Escape:
         {
@@ -180,7 +179,7 @@ void EditPolarDefDlg::keyPressEvent(QKeyEvent *event)
             break;
         }
         default:
-            event->ignore();
+            pEvent->ignore();
     }
 }
 
@@ -216,7 +215,7 @@ void EditPolarDefDlg::onOK()
     if (m_pWPolar->analysisMethod()==XFLR5::VLMMETHOD)
     {
         m_pWPolar->bThinSurfaces()  = true;
-        m_pWPolar->analysisMethod() = XFLR5::PANEL4METHOD;
+        m_pWPolar->setAnalysisMethod(XFLR5::PANEL4METHOD);
     }
     else if (m_pWPolar->analysisMethod()==XFLR5::PANEL4METHOD && !m_pPlane->isWing())
     {
@@ -407,7 +406,7 @@ void EditPolarDefDlg::fillInertiaData(QList<QStandardItem *> inertiaFolder)
 
     if(m_pWPolar->m_bAutoInertia)
     {
-        m_pWPolar->mass()   = m_pPlane->totalMass();
+        m_pWPolar->setMass(m_pPlane->totalMass());
         m_pWPolar->CoG()    = m_pPlane->CoG();
         m_pWPolar->CoGIxx() = m_pPlane->m_CoGIxx;
         m_pWPolar->CoGIyy() = m_pPlane->m_CoGIyy;
@@ -493,17 +492,17 @@ void EditPolarDefDlg::readViewLevel(QModelIndex indexLevel)
             QString value = indexLevel.sibling(indexLevel.row(),2).data().toString();
 
             if     (field.compare("Name")==0)                    m_pWPolar->polarName()            = value;
-            else if(field.compare("Type")==0)                    m_pWPolar->polarType()            = WPolarType(value);
-            else if(field.compare("Velocity")==0)                m_pWPolar->velocity()             = dataIndex.data().toDouble()/Units::mstoUnit();
-            else if(field.compare("Alpha")==0)                   m_pWPolar->Alpha()                = dataIndex.data().toDouble();
-            else if(field.compare("Beta")==0)                    m_pWPolar->Beta()                 = dataIndex.data().toDouble();
-            else if(field.compare("Method")==0)                  m_pWPolar->analysisMethod()       = analysisMethod(value);
+            else if(field.compare("Type")==0)                    m_pWPolar->setPolarType(WPolarType(value));
+            else if(field.compare("Velocity")==0)                m_pWPolar->setVelocity(dataIndex.data().toDouble()/Units::mstoUnit());
+            else if(field.compare("Alpha")==0)                   m_pWPolar->setAlpha(dataIndex.data().toDouble());
+            else if(field.compare("Beta")==0)                    m_pWPolar->setBeta(dataIndex.data().toDouble());
+            else if(field.compare("Method")==0)                  m_pWPolar->setAnalysisMethod(analysisMethod(value));
             else if(field.compare("Boundary condition")==0)      m_pWPolar->boundaryCondition()    = boundaryCondition(value);
             else if(field.compare("Viscous")==0)                 m_pWPolar->bViscous()             = stringToBool(value);
             else if(field.compare("Tilted geometry")==0)         m_pWPolar->bTilted()              = stringToBool(value);
             else if(field.compare("Ignore body panels")==0)      m_pWPolar->bIgnoreBodyPanels()    = stringToBool(value);
             else if(field.compare("Use plane inertia")==0)       m_pWPolar->bAutoInertia()         = stringToBool(value);
-            else if(field.compare("Mass")==0)                    m_pWPolar->mass()                 = dataIndex.data().toDouble()/Units::kgtoUnit();
+            else if(field.compare("Mass")==0)                    m_pWPolar->setMass(dataIndex.data().toDouble()/Units::kgtoUnit());
             else if(field.compare("x")==0)                       m_pWPolar->CoG().x                = dataIndex.data().toDouble()/Units::mtoUnit();
             else if(field.compare("z")==0)                       m_pWPolar->CoG().z                = dataIndex.data().toDouble()/Units::mtoUnit();
             else if(field.compare("Ixx")==0)                     m_pWPolar->CoGIxx()               = dataIndex.data().toDouble()/Units::kgm2toUnit();
@@ -517,7 +516,7 @@ void EditPolarDefDlg::readViewLevel(QModelIndex indexLevel)
             else if(field.compare("Density")==0)                 m_pWPolar->setDensity(dataIndex.data().toDouble());
             else if(field.compare("Viscosity")==0)               m_pWPolar->setViscosity(dataIndex.data().toDouble());
             else if(field.compare("Ground effect")==0)           m_pWPolar->bGround()              = stringToBool(value);
-            else if(field.compare("Height flight")==0)           m_pWPolar->groundHeight()         = dataIndex.data().toDouble()/Units::mtoUnit();
+            else if(field.compare("Height flight")==0)           m_pWPolar->setGroundHeight(dataIndex.data().toDouble()/Units::mtoUnit());
 
         }
 

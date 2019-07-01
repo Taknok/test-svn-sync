@@ -84,8 +84,11 @@ public:
     bool serializeWPlrWPA(QDataStream &ar, bool bIsStoring);
     bool serializeWPlrXFL(QDataStream &ar, bool bIsStoring);
 
-    XFLR5::enumPolarType &polarType()           {return m_WPolarType;}       /**< returns the type of the polar as an index in the enumeration. */
-    XFLR5::enumAnalysisMethod &analysisMethod() {return m_AnalysisMethod;}   /**< returns the analysis method of the polar as an index in the enumeration. */
+    XFLR5::enumPolarType const &polarType()           const {return m_WPolarType;}       /**< returns the type of the polar as an index in the enumeration. */
+    XFLR5::enumAnalysisMethod const &analysisMethod() const {return m_AnalysisMethod;}   /**< returns the analysis method of the polar as an index in the enumeration. */
+    void setPolarType(XFLR5::enumPolarType type) {m_WPolarType=type;}
+    void setAnalysisMethod(XFLR5::enumAnalysisMethod method) {m_AnalysisMethod=method;}
+
     bool isLLTMethod()         {return m_AnalysisMethod==XFLR5::LLTMETHOD;}
     bool isVLMMethod()         {return m_AnalysisMethod==XFLR5::VLMMETHOD;}
     bool isPanel4Method()      {return m_AnalysisMethod==XFLR5::PANEL4METHOD;}
@@ -93,8 +96,6 @@ public:
     bool isTriCstMethod()      {return m_AnalysisMethod==XFLR5::TRICSTMETHOD;}
     bool isTriLinearMethod()   {return m_AnalysisMethod==XFLR5::TRILINMETHOD;}
     bool isTriangleMethod()    {return isTriCstMethod() || isTriLinearMethod();}
-
-
 
     QString &polarName()                 {return m_WPlrName;}       /**< returns the polar's name as a QString object. */
     QString &planeName()                 {return m_PlaneName;}      /**< returns the name of the polar's parent object as a QString object. */
@@ -128,13 +129,19 @@ public:
     double &referenceSpanLength()  {return m_referenceSpanLength;}
     double &referenceChordLength() {return m_referenceChordLength;}
 
-    double &velocity() {return m_QInfSpec;}
-    double &Alpha()    {return m_AlphaSpec;}
-    double &Beta()     {return m_BetaSpec;}
-    double &sideSlip() {return m_BetaSpec;}       /**< returns the sideslip angle, in degrees. */
-    double &Phi()      {return m_BankAngle;}
-    double &mass()     {return m_Mass;}
-    double &groundHeight() {return m_Height;}
+    double const &velocity()     const {return m_QInfSpec;}
+    double const &Alpha()        const {return m_AlphaSpec;}
+    double const &Beta()         const {return m_BetaSpec;}
+    double const &Phi()          const {return m_BankAngle;}
+    double const &mass()         const {return m_Mass;}
+    double const &groundHeight() const {return m_Height;}
+
+    void setVelocity(double Q)     {m_QInfSpec=Q;}
+    void setAlpha(double aoa)      {m_AlphaSpec=aoa;}
+    void setBeta(double b)         {m_BetaSpec=b;}
+    void setPhi(double phi)        {m_BankAngle=phi;}
+    void setMass(double m)         {m_Mass=m;}
+    void setGroundHeight(double h) {m_Height=h;}
 
     Vector3d &CoG() {return m_CoG;}
     double &CoGIxx() {return m_CoGIxx;}

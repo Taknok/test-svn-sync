@@ -44,12 +44,12 @@ private slots:
     void onItemChanged();
 
 public:
-    EditPolarDefDlg(QWidget *pParent=NULL);
+    EditPolarDefDlg(QWidget *pParent=nullptr);
 
-    void showEvent(QShowEvent *event);
-    void hideEvent(QHideEvent *event);
-    void resizeEvent(QResizeEvent *event);
-    void keyPressEvent(QKeyEvent *event);
+    void showEvent(QShowEvent *pEvent);
+    void hideEvent(QHideEvent *pEvent);
+    void resizeEvent(QResizeEvent *pEvent);
+    void keyPressEvent(QKeyEvent *pEvent);
 
     void initDialog(Plane *pPlane, WPolar *pWPolar);
     void setupLayout();

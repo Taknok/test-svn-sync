@@ -2042,7 +2042,7 @@ bool Miarex::loadSettings(QSettings &settings)
         pStabView->updateControlModelData();
 
         StabPolarDlg::s_StabWPolar.m_bAutoInertia = settings.value("StabPolarAutoInertia", true).toBool();
-        StabPolarDlg::s_StabWPolar.mass()   = settings.value("StabPolarMass", 0.0).toDouble();
+        StabPolarDlg::s_StabWPolar.setMass(settings.value("StabPolarMass", 0.0).toDouble());
         StabPolarDlg::s_StabWPolar.CoG().x  = settings.value("StabPolarCoGx", 0.0).toDouble();
         StabPolarDlg::s_StabWPolar.CoG().y  = settings.value("StabPolarCoGy", 0.0).toDouble();
         StabPolarDlg::s_StabWPolar.CoG().z  = settings.value("StabPolarCoGz", 0.0).toDouble();
@@ -2811,7 +2811,7 @@ void Miarex::onDefineStabPolar()
 
         pNewStabPolar->bTilted()         = false;
         pNewStabPolar->bWakeRollUp()     = false;
-        pNewStabPolar->analysisMethod()  = XFLR5::PANEL4METHOD;
+        pNewStabPolar->setAnalysisMethod(XFLR5::PANEL4METHOD);
         pNewStabPolar->bGround()         = false;
         pNewStabPolar->m_AlphaSpec       = 0.0;
         pNewStabPolar->m_Height          = 0.0;
@@ -7494,7 +7494,7 @@ void Miarex::setWPolar(bool bCurrent, QString WPlrName)
         {
             if(m_pCurPlane)
             {
-                m_pCurWPolar->mass()   = m_pCurPlane->totalMass();
+                m_pCurWPolar->setMass(m_pCurPlane->totalMass());
                 m_pCurWPolar->CoG()    = m_pCurPlane->CoG();
                 m_pCurWPolar->CoGIxx() = m_pCurPlane->CoGIxx();
                 m_pCurWPolar->CoGIyy() = m_pCurPlane->CoGIyy();

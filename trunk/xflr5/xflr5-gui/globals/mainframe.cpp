@@ -5309,20 +5309,20 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
         {
             //Load the default Polar data. Not in the Settings, since this is Project dependant
             ar >> n;
-            if(n==1)      WPolarDlg::s_WPolar.polarType()=XFLR5::FIXEDSPEEDPOLAR;
-            else if(n==2) WPolarDlg::s_WPolar.polarType()=XFLR5::FIXEDLIFTPOLAR;
-            else if(n==4) WPolarDlg::s_WPolar.polarType()=XFLR5::FIXEDAOAPOLAR;
-            else if(n==5) WPolarDlg::s_WPolar.polarType()=XFLR5::BETAPOLAR;
-            else if(n==7) WPolarDlg::s_WPolar.polarType()=XFLR5::STABILITYPOLAR;
+            if     (n==1) WPolarDlg::s_WPolar.setPolarType(XFLR5::FIXEDSPEEDPOLAR);
+            else if(n==2) WPolarDlg::s_WPolar.setPolarType(XFLR5::FIXEDLIFTPOLAR);
+            else if(n==4) WPolarDlg::s_WPolar.setPolarType(XFLR5::FIXEDAOAPOLAR);
+            else if(n==5) WPolarDlg::s_WPolar.setPolarType(XFLR5::BETAPOLAR);
+            else if(n==7) WPolarDlg::s_WPolar.setPolarType(XFLR5::STABILITYPOLAR);
 
             ar >> n;
-            if(n==1)      WPolarDlg::s_WPolar.analysisMethod()=XFLR5::LLTMETHOD;
-            else if(n==2) WPolarDlg::s_WPolar.analysisMethod()=XFLR5::VLMMETHOD;
-            else if(n==3) WPolarDlg::s_WPolar.analysisMethod()=XFLR5::PANEL4METHOD;
-            else if(n==4) WPolarDlg::s_WPolar.analysisMethod()=XFLR5::TRICSTMETHOD;
-            else if(n==5) WPolarDlg::s_WPolar.analysisMethod()=XFLR5::TRILINMETHOD;
+            if(n==1)      WPolarDlg::s_WPolar.setAnalysisMethod(XFLR5::LLTMETHOD);
+            else if(n==2) WPolarDlg::s_WPolar.setAnalysisMethod(XFLR5::VLMMETHOD);
+            else if(n==3) WPolarDlg::s_WPolar.setAnalysisMethod(XFLR5::PANEL4METHOD);
+            else if(n==4) WPolarDlg::s_WPolar.setAnalysisMethod(XFLR5::TRICSTMETHOD);
+            else if(n==5) WPolarDlg::s_WPolar.setAnalysisMethod(XFLR5::TRILINMETHOD);
 
-            ar >> WPolarDlg::s_WPolar.mass();
+            ar >> dble;    WPolarDlg::s_WPolar.setMass(dble);
             ar >> WPolarDlg::s_WPolar.m_QInfSpec;
             ar >> WPolarDlg::s_WPolar.CoG().x;
             ar >> WPolarDlg::s_WPolar.CoG().y;
@@ -5532,13 +5532,13 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
             if(ArchiveFormat>=100004)
             {
                 ar >>k;
-                if(k==1)      WPolarDlg::s_WPolar.polarType() = XFLR5::FIXEDSPEEDPOLAR;
-                else if(k==2) WPolarDlg::s_WPolar.polarType() = XFLR5::FIXEDLIFTPOLAR;
-                else if(k==4) WPolarDlg::s_WPolar.polarType() = XFLR5::FIXEDAOAPOLAR;
-                else if(k==5) WPolarDlg::s_WPolar.polarType() = XFLR5::BETAPOLAR;
-                else if(k==7) WPolarDlg::s_WPolar.polarType() = XFLR5::STABILITYPOLAR;
+                if     (k==1) WPolarDlg::s_WPolar.setPolarType(XFLR5::FIXEDSPEEDPOLAR);
+                else if(k==2) WPolarDlg::s_WPolar.setPolarType(XFLR5::FIXEDLIFTPOLAR);
+                else if(k==4) WPolarDlg::s_WPolar.setPolarType(XFLR5::FIXEDAOAPOLAR);
+                else if(k==5) WPolarDlg::s_WPolar.setPolarType(XFLR5::BETAPOLAR);
+                else if(k==7) WPolarDlg::s_WPolar.setPolarType(XFLR5::STABILITYPOLAR);
 
-                ar >> f; WPolarDlg::s_WPolar.mass()=double(f);
+                ar >> f; WPolarDlg::s_WPolar.setMass(double(f));
                 ar >> f; WPolarDlg::s_WPolar.m_QInfSpec=double(f);
                 if(ArchiveFormat>=100013)
                 {
@@ -5562,9 +5562,9 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
                 }
 
                 ar >> k;
-                if(k==1)      WPolarDlg::s_WPolar.analysisMethod()=XFLR5::LLTMETHOD;
-                else if(k==2) WPolarDlg::s_WPolar.analysisMethod()=XFLR5::VLMMETHOD;
-                else if(k==3) WPolarDlg::s_WPolar.analysisMethod()=XFLR5::PANEL4METHOD;
+                if     (k==1) WPolarDlg::s_WPolar.setAnalysisMethod(XFLR5::LLTMETHOD);
+                else if(k==2) WPolarDlg::s_WPolar.setAnalysisMethod(XFLR5::VLMMETHOD);
+                else if(k==3) WPolarDlg::s_WPolar.setAnalysisMethod(XFLR5::PANEL4METHOD);
             }
             if(ArchiveFormat>=100006)
             {
@@ -5617,7 +5617,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
         ar >> n;// number of WPolars to load
         bool bWPolarOK;
 
-        for (i=0;i<n; i++)
+        for (i=0; i<n; i++)
         {
             pWPolar = new WPolar;
             bWPolarOK = pWPolar->serializeWPlrWPA(ar, bIsStoring);

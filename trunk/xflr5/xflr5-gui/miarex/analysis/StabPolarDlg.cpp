@@ -62,7 +62,7 @@ StabPolarDlg::StabPolarDlg(QWidget *pParent) : QDialog(pParent)
     m_pAngleControlModel = nullptr;
 
 
-    s_StabWPolar.polarType() = XFLR5::STABILITYPOLAR;
+    s_StabWPolar.setPolarType(XFLR5::STABILITYPOLAR);
     s_StabWPolar.bVLM1() = false;
 
     setupLayout();
@@ -133,7 +133,7 @@ void StabPolarDlg::fillInertiaPage()
 
     if(s_StabWPolar.m_bAutoInertia)
     {
-        s_StabWPolar.mass()   = m_pPlane->totalMass();
+        s_StabWPolar.setMass(m_pPlane->totalMass());
         s_StabWPolar.CoG()    = m_pPlane->CoG();
         s_StabWPolar.CoGIxx() = m_pPlane->m_CoGIxx;
         s_StabWPolar.CoGIyy() = m_pPlane->m_CoGIyy;
@@ -397,7 +397,7 @@ void StabPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
     if(m_pPlane->isWing()) m_pctrlAnalysisControls->setCurrentIndex(0);
     else
     {
-        s_StabWPolar.analysisMethod() = XFLR5::PANEL4METHOD;
+        s_StabWPolar.setAnalysisMethod(XFLR5::PANEL4METHOD);
         m_pctrlAnalysisControls->setCurrentIndex(1);
     }
 
@@ -421,7 +421,7 @@ void StabPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
 
     if(s_StabWPolar.analysisMethod()==XFLR5::LLTMETHOD)
     {
-        s_StabWPolar.analysisMethod() = XFLR5::PANEL4METHOD;
+        s_StabWPolar.setAnalysisMethod(XFLR5::PANEL4METHOD);
         s_StabWPolar.bThinSurfaces() = true;
     }
 
@@ -674,7 +674,7 @@ void StabPolarDlg::readInertiaData()
     }
     else
     {
-        s_StabWPolar.mass()   = m_pInertiaControlModel->index(0, 1, QModelIndex()).data().toDouble() / Units::kgtoUnit();
+        s_StabWPolar.setMass(m_pInertiaControlModel->index(0, 1, QModelIndex()).data().toDouble() / Units::kgtoUnit());
         s_StabWPolar.CoG().x  = m_pInertiaControlModel->index(1, 1, QModelIndex()).data().toDouble() / Units::mtoUnit();
         s_StabWPolar.CoG().z  = m_pInertiaControlModel->index(2, 1, QModelIndex()).data().toDouble() / Units::mtoUnit();
         s_StabWPolar.CoGIxx() = m_pInertiaControlModel->index(3, 1, QModelIndex()).data().toDouble() / Units::kgm2toUnit();
@@ -1231,12 +1231,12 @@ void StabPolarDlg::onMethod()
     if (m_pctrlWingMethod2->isChecked())
     {
         s_StabWPolar.bThinSurfaces()  = true;
-        s_StabWPolar.analysisMethod() = XFLR5::VLMMETHOD;
+        s_StabWPolar.setAnalysisMethod(XFLR5::VLMMETHOD);
     }
     else if (m_pctrlWingMethod3->isChecked())
     {
         s_StabWPolar.bThinSurfaces()  = false;
-        s_StabWPolar.analysisMethod() = XFLR5::PANEL4METHOD;
+        s_StabWPolar.setAnalysisMethod(XFLR5::PANEL4METHOD);
     }
 
     setWPolarName();

@@ -278,7 +278,7 @@ WPolar* PlaneAnalysisTask::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar)
 	{
 		if(pCurPlane)
 		{
-			m_pWPolar->mass()   = pCurPlane->totalMass();
+            m_pWPolar->setMass(pCurPlane->totalMass());
 			m_pWPolar->CoG()    = pCurPlane->CoG();
 			m_pWPolar->CoGIxx() = pCurPlane->CoGIxx();
 			m_pWPolar->CoGIyy() = pCurPlane->CoGIyy();

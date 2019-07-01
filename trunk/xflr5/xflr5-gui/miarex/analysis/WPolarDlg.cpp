@@ -198,7 +198,7 @@ void WPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
     }
     else
     {
-        s_WPolar.analysisMethod()=XFLR5::VLMMETHOD;
+        s_WPolar.setAnalysisMethod(XFLR5::VLMMETHOD);
         s_WPolar.bThinSurfaces() = true;
         m_pctrlPanelMethod->setVisible(false);
     }
@@ -224,7 +224,7 @@ void WPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
         m_pctrlWeight->setValue(m_pPlane->totalMass() * Units::kgtoUnit());
         m_pctrlXCmRef->setValue(m_pPlane->CoG().x * Units::mtoUnit());
         m_pctrlZCmRef->setValue(m_pPlane->CoG().z * Units::mtoUnit());
-        s_WPolar.mass()    = m_pPlane->totalMass();
+        s_WPolar.setMass(m_pPlane->totalMass());
         s_WPolar.CoG().x   = m_pPlane->CoG().x;
         s_WPolar.CoG().z   = m_pPlane->CoG().z;
     }
@@ -441,14 +441,14 @@ void WPolarDlg::onPlaneInertia()
             m_pctrlWeight->setValue(m_pPlane->totalMass() * Units::kgtoUnit());
             m_pctrlXCmRef->setValue(m_pPlane->CoG().x * Units::mtoUnit());
             m_pctrlZCmRef->setValue(m_pPlane->CoG().z * Units::mtoUnit());
-            s_WPolar.mass()    = m_pPlane->totalMass();
+            s_WPolar.setMass(m_pPlane->totalMass());
             s_WPolar.CoG().x   = m_pPlane->CoG().x;
             s_WPolar.CoG().z   = m_pPlane->CoG().z;
         }
     }
     else
     {
-        s_WPolar.mass()    = m_pctrlWeight->value() / Units::kgtoUnit();
+        s_WPolar.setMass(m_pctrlWeight->value() / Units::kgtoUnit());
         s_WPolar.CoG().x   = m_pctrlXCmRef->value() / Units::mtoUnit();
         s_WPolar.CoG().z   = m_pctrlZCmRef->value() / Units::mtoUnit();
     }
@@ -490,19 +490,19 @@ void WPolarDlg::onMethod()
         s_WPolar.bThinSurfaces() = true;
         s_WPolar.bWakeRollUp()   = false;
         s_WPolar.bTilted()   = false;
-        s_WPolar.analysisMethod()  = XFLR5::LLTMETHOD;
+        s_WPolar.setAnalysisMethod(XFLR5::LLTMETHOD);
         m_pctrlTiltGeom->setChecked(false);
     }
     else if (m_pctrlVLM1Method->isChecked() || m_pctrlVLM2Method->isChecked())
     {
         s_WPolar.bVLM1() = m_pctrlVLM1Method->isChecked();
         s_WPolar.bThinSurfaces() = true;
-        s_WPolar.analysisMethod() = XFLR5::PANEL4METHOD;
+        s_WPolar.setAnalysisMethod(XFLR5::PANEL4METHOD);
     }
     else if (m_pctrlPanelMethod->isChecked())
     {
         s_WPolar.bThinSurfaces() = false;
-        s_WPolar.analysisMethod() = XFLR5::PANEL4METHOD;
+        s_WPolar.setAnalysisMethod(XFLR5::PANEL4METHOD);
     }
 
     enableControls();
@@ -576,19 +576,19 @@ void WPolarDlg::onPolarType()
 {
     if (m_pctrlType1->isChecked())
     {
-        s_WPolar.polarType() = XFLR5::FIXEDSPEEDPOLAR;
+        s_WPolar.setPolarType(XFLR5::FIXEDSPEEDPOLAR);
     }
     else if(m_pctrlType2->isChecked())
     {
-        s_WPolar.polarType() = XFLR5::FIXEDLIFTPOLAR;
+        s_WPolar.setPolarType(XFLR5::FIXEDLIFTPOLAR);
     }
     else if(m_pctrlType4->isChecked())
     {
-        s_WPolar.polarType() = XFLR5::FIXEDAOAPOLAR;
+        s_WPolar.setPolarType(XFLR5::FIXEDAOAPOLAR);
     }
     else if(m_pctrlType5->isChecked())
     {
-        s_WPolar.polarType() = XFLR5::BETAPOLAR;
+        s_WPolar.setPolarType(XFLR5::BETAPOLAR);
         s_WPolar.bVLM1() = false;
         if(m_pctrlVLM1Method->isChecked())
         {
@@ -622,7 +622,7 @@ void WPolarDlg::readValues()
         }
     }
 
-    s_WPolar.mass()          = m_pctrlWeight->value() / Units::kgtoUnit();
+    s_WPolar.setMass(m_pctrlWeight->value() / Units::kgtoUnit());
     s_WPolar.CoG().x         = m_pctrlXCmRef->value() / Units::mtoUnit();
     s_WPolar.CoG().z         = m_pctrlZCmRef->value() / Units::mtoUnit();
     s_WPolar.m_QInfSpec      = m_pctrlQInf->value() / Units::mstoUnit();
