@@ -291,7 +291,8 @@ public:
 	void updateView();
 	static QString WPolarVariableName(int iVar);
 
-
+    Plane* curPlane() {return m_pCurPlane;}
+    WPolar *curWPolar() {return m_pCurWPolar;}
 	PlaneOpp *curPOpp(){return m_pCurPOpp;}
 	bool curPOppOnly(){return m_bCurPOppOnly;}
 

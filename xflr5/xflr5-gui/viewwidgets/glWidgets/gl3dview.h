@@ -37,6 +37,7 @@
 #include <viewwidgets/glWidgets/ArcBall.h>
 
 
+#define PIf 3.141592654f
 
 #define MAXCPCOLORS    21
 
@@ -133,7 +134,7 @@ protected:
     virtual void paintOverlay() {}
 
     void paintGL3();
-    void paintFoilNames(void *pWingPtr);
+    void paintFoilNames(Wing *pWingPtr);
     void paintMasses(double volumeMass, Vector3d pos, QString tag, const QVector<PointMass *> &ptMasses);
     void paintArcBall();
     void paintAxes();
@@ -254,7 +255,7 @@ protected:
 
     unsigned int m_iBodyElems, m_iWingElems[MAXWINGS], m_iWingMeshElems;
 
-    uint m_Ny[MAXWINGS];
+    int m_Ny[MAXWINGS];
     int m_nHighlightLines, m_HighlightLineSize;
 
     int m_iBodyMeshLines;

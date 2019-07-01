@@ -75,7 +75,7 @@ public:
 	QOpenGLBuffer m_vboICd[MAXWINGS], m_vboVCd[MAXWINGS], m_vboLiftStrips[MAXWINGS], m_vboTransitions[MAXWINGS], m_vboDownwash[MAXWINGS];
 	QOpenGLBuffer m_vboMesh, m_vboLegendColor;
 
-    uint m_NStreamLines;
+    int m_NStreamLines;
 
 
     static bool s_bResetglGeom;               /**< true if the geometry OpenGL list needs to be re-generated */

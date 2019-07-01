@@ -91,7 +91,7 @@ public:
     void setPlaneName(QString const &name) {m_PlaneName=name;}
     void setPolarName(QString const &name) {m_WPlrName=name;}
 
-    XFLR5::enumPolarType const& polarType() {return m_WPolarType;}
+    XFLR5::enumPolarType const& polarType() const {return m_WPolarType;}
     void setPolarType(XFLR5::enumPolarType type) {m_WPolarType=type;}
 
     bool isOut() const {return m_bOut;}

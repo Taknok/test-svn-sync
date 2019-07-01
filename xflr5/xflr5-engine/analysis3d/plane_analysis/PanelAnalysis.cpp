@@ -544,7 +544,7 @@ bool PanelAnalysis::initializeAnalysis()
     // but a user, who knows what he can do ?
     if(m_pWPolar->bAutoInertia())
     {
-        m_pWPolar->mass()   = m_pPlane->totalMass();
+        m_pWPolar->setMass(m_pPlane->totalMass());
         m_pWPolar->CoG()    = m_pPlane->CoG();
         m_pWPolar->CoGIxx() = m_pPlane->CoGIxx();
         m_pWPolar->CoGIyy() = m_pPlane->CoGIyy();
