@@ -888,9 +888,8 @@ void WPolar::clearData()
  * @param ptr a void pointer to the reference wing or plane instance
  * @param bPlane true if the reference object is a plane, false if it is a wing
  */
-void WPolar::retrieveInertia(void *ptr)
+void WPolar::retrieveInertia(Plane *pPlane)
 {
-    Plane *pPlane = (Plane*)ptr;
     m_Mass = pPlane->totalMass();
     m_CoG = pPlane->CoG();
     m_CoGIxx = pPlane->m_CoGIxx;
@@ -1048,15 +1047,15 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
         readCString(ar, m_WPlrName);
 
         ar>> f;
-        m_referenceArea = f;
+        m_referenceArea = double(f);
         if (m_referenceArea<0) return false;
 
         ar>> f;
-        m_referenceChordLength = f;
+        m_referenceChordLength = double(f);
         if (m_referenceChordLength<0) return false;
 
         ar>> f;
-        m_referenceSpanLength = f;
+        m_referenceSpanLength = double(f);
         if (m_referenceSpanLength<0) return false;
 
         ar >> m_Style  >> m_Width;
@@ -1122,7 +1121,7 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
             if (n!=0 && n!=1) return false;
 
             if(n) m_bGround =true; else m_bGround = false;
-            ar >> f; m_Height = f;
+            ar >> f; m_Height = double(f);
         }
 
         if(m_PolarFormat>=1007)
@@ -1132,8 +1131,8 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
         }
         if(m_PolarFormat>=1011)
         {
-            ar >> f; 			m_TotalWakeLength = f;
-            ar >> f; 			m_WakePanelFactor = f;
+            ar >> f; 			m_TotalWakeLength = double(f);
+            ar >> f; 			m_WakePanelFactor = double(f);
         }
 
         ar >> n;
@@ -1152,28 +1151,28 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
         else return false;
 
 
-        ar >> f;	m_QInfSpec = f;
-        ar >> f;	m_Mass = f;
-        ar >> f;	m_AlphaSpec = f;
+        ar >> f;	m_QInfSpec = double(f);
+        ar >> f;	m_Mass = double(f);
+        ar >> f;	m_AlphaSpec = double(f);
         if(m_PolarFormat>=1015)
         {
             ar >> f;
-            m_BetaSpec = f;
+            m_BetaSpec = double(f);
         }
         else m_BetaSpec = 0.0;
         if(m_PolarFormat<1018 && m_PolarFormat>=1002)
         {
-            ar >> f;			m_CoG.x = f;
+            ar >> f;			m_CoG.x = double(f);
         }
         else if(m_PolarFormat>=1018)
         {
-            ar >> f;			m_CoG.x = f;
-            ar >> f;			m_CoG.y = f;
-            ar >> f;			m_CoG.z = f;
+            ar >> f;			m_CoG.x = double(f);
+            ar >> f;			m_CoG.y = double(f);
+            ar >> f;			m_CoG.z = double(f);
         }
         //		if(m_PolarFormat>=1002) ar >> f; m_XCmRef = f;
-        ar >> f;	m_Density=f;
-        ar >> f;	m_Viscosity=f;
+        ar >> f;	m_Density=double(f);
+        ar >> f;	m_Viscosity=double(f);
 
         k=0;
         if(m_PolarFormat>=1016) ar >> k;
@@ -1209,8 +1208,8 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
 
             if(m_PolarFormat<1010)
             {
-                XCP   /=1000.0;
-                YCP   /=1000.0;
+                XCP   /= 1000.0f;
+                YCP   /= 1000.0f;
             }
 
             if (m_PolarFormat>=1003)
@@ -1228,7 +1227,7 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
             {
                 for (j=0; j<dataSize(); j++)
                 {
-                    if(qAbs(Alpha-m_Alpha[j])<0.001)
+                    if(qAbs(double(Alpha)-m_Alpha[j])<0.001)
                     {
                         break;
                     }
@@ -1238,37 +1237,37 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
             {
                 for (j=0; j<dataSize(); j++)
                 {
-                    if(qAbs(QInfinite-m_QInfinite[j])<0.001)
+                    if(qAbs(double(QInfinite)-m_QInfinite[j])<0.001)
                     {
                         break;
                     }
                 }
             }
 
-            m_Alpha.append(Alpha);
+            m_Alpha.append(double(Alpha));
             m_Beta.append(m_BetaSpec);
-            m_CL.append(Cl);
-            m_CY.append(CY);
-            m_ICd.append(ICd);
-            m_PCd.append(PCd);
-            m_TCd.append(ICd+PCd);
+            m_CL.append(double(Cl));
+            m_CY.append(double(CY));
+            m_ICd.append(double(ICd));
+            m_PCd.append(double(PCd));
+            m_TCd.append(double(ICd+PCd));
 
-            m_GCm.append(GCm);
-            m_VCm.append(VCm);
-            m_ICm.append(ICm);
-            m_GRm.append(GRm);
-            m_GYm.append(GYm);
-            m_VYm.append(VYm);
-            m_IYm.append(IYm);
+            m_GCm.append(double(GCm));
+            m_VCm.append(double(VCm));
+            m_ICm.append(double(ICm));
+            m_GRm.append(double(GRm));
+            m_GYm.append(double(GYm));
+            m_VYm.append(double(VYm));
+            m_IYm.append(double(IYm));
 
-            m_QInfinite.append(QInfinite);
+            m_QInfinite.append(double(QInfinite));
 
-            m_XCP.append(XCP);
-            m_YCP.append(YCP);
-            m_ZCP.append(ZCP);
-            m_MaxBending.append(Cb);
-            m_Ctrl.append(Ctrl);
-            m_XNP.append(XNP);
+            m_XCP.append(double(XCP));
+            m_YCP.append(double(YCP));
+            m_ZCP.append(double(ZCP));
+            m_MaxBending.append(double(Cb));
+            m_Ctrl.append(double(Ctrl));
+            m_XNP.append(double(XNP));
 
             m_PhugoidDamping.append(0.0);
             m_PhugoidFrequency.append(0.0);
@@ -1313,7 +1312,7 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
             for(i=0; i<m_nControls; i++)
             {
                 ar >> f; //m_MinControl[i] = f;
-                ar >> f; m_ControlGain[i] = f;
+                ar >> f; m_ControlGain[i] = double(f);
             }
             for(i=0; i<m_nControls; i++)
             {
@@ -1333,16 +1332,16 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
                 ar>>r0>>r1>>r2>>r3;
                 ar>>i0>>i1>>i2>>i3;
 
-                m_EigenValue[0][i] = complex<double>(r0,i0);
-                m_EigenValue[1][i] = complex<double>(r1,i1);
-                m_EigenValue[2][i] = complex<double>(r2,i2);
-                m_EigenValue[3][i] = complex<double>(r3,i3);
+                m_EigenValue[0][i] = complex<double>(double(r0),double(i0));
+                m_EigenValue[1][i] = complex<double>(double(r1),double(i1));
+                m_EigenValue[2][i] = complex<double>(double(r2),double(i2));
+                m_EigenValue[3][i] = complex<double>(double(r3),double(i3));
                 ar>>r0>>r1>>r2>>r3;
                 ar>>i0>>i1>>i2>>i3;
-                m_EigenValue[4][i] = complex<double>(r0,i0);
-                m_EigenValue[5][i] = complex<double>(r1,i1);
-                m_EigenValue[6][i] = complex<double>(r2,i2);
-                m_EigenValue[7][i] = complex<double>(r3,i3);
+                m_EigenValue[4][i] = complex<double>(double(r0),double(i0));
+                m_EigenValue[5][i] = complex<double>(double(r1),double(i1));
+                m_EigenValue[6][i] = complex<double>(double(r2),double(i2));
+                m_EigenValue[7][i] = complex<double>(double(r3),double(i3));
                 calculatePoint(i);
             }
         }
@@ -1351,10 +1350,10 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
             ar >> n;
             if(n && m_PolarFormat>1020) m_bAutoInertia =true; else m_bAutoInertia = false;
             ar>>r0>>r1>>r2>>r3;
-            m_CoGIxx = r0;
-            m_CoGIyy = r1;
-            m_CoGIzz = r2;
-            m_CoGIxz = r3;
+            m_CoGIxx = double(r0);
+            m_CoGIyy = double(r1);
+            m_CoGIzz = double(r2);
+            m_CoGIxz = double(r3);
         }
         else
         {
@@ -1390,8 +1389,6 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
 }
 
 
-
-
 /**
  * Loads or saves the data of this polar to a binary file
  * @param ar the QDataStream object from/to which the data should be serialized
@@ -1423,14 +1420,14 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
         writeQColor(ar, m_Color.red(), m_Color.green(), m_Color.blue(), m_Color.alpha());
         ar << m_bIsVisible << false;
 
-        if(m_AnalysisMethod==XFLR5::LLTMETHOD)         ar<<1;
+        if     (m_AnalysisMethod==XFLR5::LLTMETHOD)    ar<<1;
         else if(m_AnalysisMethod==XFLR5::VLMMETHOD)    ar<<2;
         else if(m_AnalysisMethod==XFLR5::PANEL4METHOD) ar<<3;
         else if(m_AnalysisMethod==XFLR5::TRILINMETHOD) ar<<4;
         else if(m_AnalysisMethod==XFLR5::TRICSTMETHOD) ar<<5;
         else                                           ar<<0;
 
-        if(m_WPolarType==XFLR5::FIXEDSPEEDPOLAR)      ar<<1;
+        if     (m_WPolarType==XFLR5::FIXEDSPEEDPOLAR) ar<<1;
         else if(m_WPolarType==XFLR5::FIXEDLIFTPOLAR)  ar<<2;
         else if(m_WPolarType==XFLR5::FIXEDAOAPOLAR)   ar<<4;
         else if(m_WPolarType==XFLR5::BETAPOLAR)       ar<<5;
@@ -1449,7 +1446,7 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 
         ar << m_Density << m_Viscosity;
 
-        if(m_ReferenceDim == XFLR5::PLANFORMREFDIM)       ar << 1;
+        if     (m_ReferenceDim == XFLR5::PLANFORMREFDIM)  ar << 1;
         else if(m_ReferenceDim == XFLR5::PROJECTEDREFDIM) ar << 2;
         else if(m_ReferenceDim == XFLR5::MANUALREFDIM)    ar << 3;
 

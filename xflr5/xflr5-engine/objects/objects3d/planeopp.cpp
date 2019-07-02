@@ -19,7 +19,7 @@
 
 *****************************************************************************/
 
-#include "PlaneOpp.h"
+#include "planeopp.h"
 #include "Plane.h"
 #include "WPolar.h"
 #include "objects_global.h"
@@ -35,7 +35,6 @@ PlaneOpp::PlaneOpp(Plane *pPlane, WPolar *pWPolar, int PanelArraySize)
     m_PlaneName   = "";
     m_WPlrName    = "";
 
-
     m_NStation    = 0;
     m_NPanels     = 0;
 
@@ -49,9 +48,9 @@ PlaneOpp::PlaneOpp(Plane *pPlane, WPolar *pWPolar, int PanelArraySize)
     m_PointStyle  = 0;
     m_bIsVisible  = true;
 
-    m_Color.setRed((int)(((double)qrand()/(double)RAND_MAX)*155)+100);
-    m_Color.setGreen((int)(((double)qrand()/(double)RAND_MAX)*155)+100);
-    m_Color.setBlue((int)(((double)qrand()/(double)RAND_MAX)*155)+100);
+    m_Color.setRed(  int((double(qrand())/double(RAND_MAX))*155)+100);
+    m_Color.setGreen(int((double(qrand())/double(RAND_MAX))*155)+100);
+    m_Color.setBlue( int((double(qrand())/double(RAND_MAX))*155)+100);
 
     m_bVLM1 = false;
     m_bThinSurface = true;
@@ -150,12 +149,12 @@ void PlaneOpp::allocateMemory(int PanelArraySize)
     releaseMemory();
 
     m_NPanels = PanelArraySize;
-    m_dCp    = new double[PanelArraySize];
-    m_dSigma = new double[PanelArraySize];
-    m_dG     = new double[PanelArraySize];
-    memset(m_dG,     0, PanelArraySize * sizeof(double));
-    memset(m_dSigma, 0, PanelArraySize * sizeof(double));
-    memset(m_dCp,    0, PanelArraySize * sizeof(double));
+    m_dCp    = new double[ulong(PanelArraySize)];
+    m_dSigma = new double[ulong(PanelArraySize)];
+    m_dG     = new double[ulong(PanelArraySize)];
+    memset(m_dG,     0, ulong(PanelArraySize) * sizeof(double));
+    memset(m_dSigma, 0, ulong(PanelArraySize) * sizeof(double));
+    memset(m_dCp,    0, ulong(PanelArraySize) * sizeof(double));
 }
 
 
@@ -282,13 +281,13 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
 
 
         ar >> m_NStation;
-        ar >> f;		m_Alpha = f;
-        ar >> f;        m_QInf  = f;
+        ar >> f;		m_Alpha = double(f);
+        ar >> f;        m_QInf  = double(f);
         ar >> f;//        m_Weight = f;
 
         if(ArchiveFormat>=1007)
         {
-            ar>>f; m_Beta = f;
+            ar>>f; m_Beta = double(f);
         }
         if(ArchiveFormat<1002)
         {
@@ -357,16 +356,16 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
             if(m_dSigma!=nullptr) delete [] m_dSigma;
             if(m_dCp!=nullptr)    delete [] m_dCp;
 
-            m_dG     = new double[m_NPanels];
-            m_dSigma = new double[m_NPanels];
-            m_dCp    = new double[m_NPanels];
+            m_dG     = new double[ulong(m_NPanels)];
+            m_dSigma = new double[ulong(m_NPanels)];
+            m_dCp    = new double[ulong(m_NPanels)];
 
             for (k=0; k<m_NPanels; k++)
             {
                 ar >> f >> g >> h;
-                m_dCp[k]    = (double)f;
-                m_dSigma[k] = (double)g;
-                m_dG[k]     = (double)h;
+                m_dCp[k]    = double(f);
+                m_dSigma[k] = double(g);
+                m_dG[k]     = double(h);
             }
         }
 
@@ -441,36 +440,35 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
             }
         }
 
-
         if(ArchiveFormat>=1020)
         {
             // Non dimensional stability derivatives
-            ar>>f;   CXa= f;
-            ar>>f;   CXq= f;
-            ar>>f;   CXu= f;
-            ar>>f;   CZu= f;
-            ar>>f;   Cmu= f;
+            ar>>f;   CXa= double(f);
+            ar>>f;   CXq= double(f);
+            ar>>f;   CXu= double(f);
+            ar>>f;   CZu= double(f);
+            ar>>f;   Cmu= double(f);
         }
         if(ArchiveFormat>=1017)
         {
             // Non dimensional stability derivatives
-            ar>>f;   CLa= f;
-            ar>>f;   CLq= f;
-            ar>>f;   Cma= f;
-            ar>>f;   Cmq= f;
-            ar>>f;   CYb= f;
-            ar>>f;   CYp= f;
-            ar>>f;   CYr= f;
-            ar>>f;   Clb= f;
-            ar>>f;   Clp= f;
-            ar>>f;   Clr= f;
-            ar>>f;   Cnb= f;
-            ar>>f;   Cnp= f;
-            ar>>f;   Cnr= f;
+            ar>>f;   CLa= double(f);
+            ar>>f;   CLq= double(f);
+            ar>>f;   Cma= double(f);
+            ar>>f;   Cmq= double(f);
+            ar>>f;   CYb= double(f);
+            ar>>f;   CYp= double(f);
+            ar>>f;   CYr= double(f);
+            ar>>f;   Clb= double(f);
+            ar>>f;   Clp= double(f);
+            ar>>f;   Clr= double(f);
+            ar>>f;   Cnb= double(f);
+            ar>>f;   Cnp= double(f);
+            ar>>f;   Cnr= double(f);
         }
 
-        int n;
-        float f0, f1,f2,f3;
+        int n=0;
+        float f0=0, f1=0,f2=0,f3=0;
         if(ArchiveFormat>=1018)
         {
             ar >> m_nControls;
@@ -479,32 +477,32 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
             else                   n =1;
             for(k=0; k<n; k++)
             {
-                ar >>f;   if(k==0) CXe=f;
-                ar >>f;   if(k==0) CYe=f;
-                ar >>f;   if(k==0) CZe=f;
-                ar >>f;   if(k==0) CLe=f;
-                ar >>f;   if(k==0) CMe=f;
-                ar >>f;   if(k==0) CNe=f;
+                ar >>f;   if(k==0) CXe=double(f);
+                ar >>f;   if(k==0) CYe=double(f);
+                ar >>f;   if(k==0) CZe=double(f);
+                ar >>f;   if(k==0) CLe=double(f);
+                ar >>f;   if(k==0) CMe=double(f);
+                ar >>f;   if(k==0) CNe=double(f);
 
                 ar >>f0>>f1>>f2>>f3;
-                if(k==0) { m_BLat[0]= f0; m_BLat[1]= f1; m_BLat[2] = f2; m_BLat[3] = f3;}
+                if(k==0) { m_BLat[0]= double(f0); m_BLat[1]= double(f1); m_BLat[2] = double(f2); m_BLat[3] = double(f3);}
                 ar >>f0>>f1>>f2>>f3;
-                m_BLong[0]=f0; m_BLong[1]=f1; m_BLong[2]= f2; m_BLong[3]= f3;
+                m_BLong[0]=double(f0); m_BLong[1]=double(f1); m_BLong[2]= double(f2); m_BLong[3]= double(f3);
             }
 
             for(k=0; k<4; k++)
             {
                 ar >>f0>>f1>>f2>>f3;
-                m_ALong[k][0]= f0; m_ALong[k][1]= f1; m_ALong[k][2]= f2; m_ALong[k][3] = f3;
+                m_ALong[k][0]= double(f0); m_ALong[k][1]= double(f1); m_ALong[k][2]= double(f2); m_ALong[k][3] = double(f3);
                 ar >>f0>>f1>>f2>>f3;
-                m_ALat[k][0] = f0; m_ALat[k][1] = f1; m_ALat[k][2] = f2; m_ALat[k][3] = f3;
+                m_ALat[k][0] = double(f0); m_ALat[k][1] = double(f1); m_ALat[k][2] = double(f2); m_ALat[k][3] = double(f3);
             }
         }
 
         if(ArchiveFormat>=1019)
         {
             ar>>f;
-            m_XNP = f;
+            m_XNP = double(f);
         }
         else m_XNP = 0.0;
     }
@@ -570,7 +568,7 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
 
         if(m_AnalysisMethod!=XFLR5::LLTMETHOD)
         {
-            for (k=0; k<m_NPanels; k++) ar<<(float)m_dCp[k]<<(float)m_dSigma[k]<<(float)m_dG[k];
+            for (k=0; k<m_NPanels; k++) ar<<float(m_dCp[k])<<float(m_dSigma[k])<<float(m_dG[k]);
         }
 
         for(int iw=0; iw<MAXWINGS; iw++)
@@ -673,18 +671,18 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
         if(m_dSigma!=nullptr) delete [] m_dSigma;
         if(m_dCp!=nullptr)    delete [] m_dCp;
 
-        m_dG     = new double[m_NPanels];
-        m_dSigma = new double[m_NPanels];
-        m_dCp    = new double[m_NPanels];
+        m_dG     = new double[ulong(m_NPanels)];
+        m_dSigma = new double[ulong(m_NPanels)];
+        m_dCp    = new double[ulong(m_NPanels)];
 
         if(m_AnalysisMethod!=XFLR5::LLTMETHOD)
         {
             for (k=0; k<m_NPanels; k++)
             {
                 ar >> f0 >> f1 >> f2;
-                m_dCp[k]    = (double)f0;
-                m_dSigma[k] = (double)f1;
-                m_dG[k]     = (double)f2;
+                m_dCp[k]    = double(f0);
+                m_dSigma[k] = double(f1);
+                m_dG[k]     = double(f2);
             }
         }
 

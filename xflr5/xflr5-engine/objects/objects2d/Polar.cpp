@@ -35,9 +35,9 @@ Polar::Polar()
 	m_Style = 0;// = PS_SOLID
 	m_Width = 1;
 
-    m_red   = int(((double)rand()/(double)RAND_MAX)*200);
-    m_green = int(((double)rand()/(double)RAND_MAX)*200);
-    m_blue  = int(((double)rand()/(double)RAND_MAX)*200);
+    m_red   = int((double(rand())/double(RAND_MAX))*200);
+    m_green = int((double(rand())/double(RAND_MAX))*200);
+    m_blue  = int((double(rand())/double(RAND_MAX))*200);
 	m_alphaChannel = 255;
 
 	m_ASpec = 0.0;
@@ -571,7 +571,7 @@ double Polar::getZeroLiftAngle()
 */
 void Polar::getLinearizedCl(double &Alpha0, double &slope)
 {
-    int n = (int)m_Cl.size();
+    int n = m_Cl.size();
 
     if(n<=1)
     {
@@ -580,7 +580,7 @@ void Polar::getLinearizedCl(double &Alpha0, double &slope)
 		return;
 	}
 
-	double fn = (double)n;
+    double fn = double(n);
 	double sum1 = 0.0;
 	double sum2 = 0.0;
 	double sum3 = 0.0;
@@ -594,7 +594,7 @@ void Polar::getLinearizedCl(double &Alpha0, double &slope)
 		sum3 += m_Cl[k];
 		sum4 += m_Alpha[k] * m_Alpha[k];
 	}
-	if(fn*sum4 == sum2*sum2 || fn*sum1 == sum2 * sum3) 
+    if(fabs(fn*sum4-sum2*sum2)<1.e-10 || fabs(fn*sum1-sum2 * sum3)<1.0e-10)
 	{
 		//very improbable...
 		Alpha0 = 0.0;
@@ -622,54 +622,37 @@ QString Polar::variableName(int iVar)
 	{
 		case 0:
 			return "Alpha";
-			break;
 		case 1:
 			return "Cl";
-			break;
 		case 2:
 			return "Cd";
-			break;
 		case 3:
 			return "Cd x 10000";
-			break;
 		case 4:
 			return "Cdp";
-			break;
 		case 5:
 			return "Cm";
-			break;
 		case 6:
 			return "Xtr top";
-			break;
 		case 7:
 			return "Xtr bot";
-			break;
 		case 8:
 			return "HMom";
-			break;
 		case 9:
 			return "Cpmin";
-			break;
 		case 10:
 			return "Cl/Cd";
-			break;
 		case 11:
 			return "|Cl|^(3/2)/Cd";
-			break;
 		case 12:
 			return "1/Rt(Cl)";
-			break;
 		case 13:
 			return "Re";
-			break;
 		case 14:
 			return "XCp";
-			break;
 		default:
 			return "Alpha";
-			break;
 	}
-	return "";
 }
 
 

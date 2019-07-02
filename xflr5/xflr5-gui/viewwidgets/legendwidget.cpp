@@ -28,7 +28,7 @@
 #include <globals/mainframe.h>
 #include <objects/objects3d/Plane.h>
 #include <objects/objects3d/WPolar.h>
-#include <objects/objects3d/PlaneOpp.h>
+#include <objects/objects3d/planeopp.h>
 #include <objects/objects2d/Foil.h>
 #include <objects/objects2d/Polar.h>
 #include <objects/objects2d/OpPoint.h>

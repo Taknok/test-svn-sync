@@ -1,6 +1,5 @@
 
 SOURCES += \
-    $$PWD/misc/options/settings.cpp \
     design/AFoil.cpp \
     design/AFoilTableDlg.cpp \
     design/FoilTableDelegate.cpp \
@@ -70,6 +69,7 @@ SOURCES += \
     misc/line/LineCbBox.cpp \
     misc/line/LineDelegate.cpp \
     misc/line/LinePickerDlg.cpp \
+    misc/options/settings.cpp \
     misc/options/languagewt.cpp \
     misc/options/preferencesdlg.cpp \
     misc/options/saveoptions.cpp \
@@ -134,7 +134,6 @@ SOURCES += \
 
 
 HEADERS += \
-    $$PWD/misc/options/settings.h \
     design/AFoil.h \
     design/AFoilTableDlg.h \
     design/FoilTableDelegate.h \
@@ -207,6 +206,7 @@ HEADERS += \
     misc/line/LineCbBox.h \
     misc/line/LineDelegate.h \
     misc/line/LinePickerDlg.h \
+    misc/options/settings.h \
     misc/options/languagewt.h \
     misc/options/preferencesdlg.h \
     misc/options/saveoptions.h \

@@ -51,7 +51,7 @@
 
 #include <analysis3d/analysis3d_enums.h>
 #include "WingOpp.h"
-#include "PlaneOpp.h"
+#include "planeopp.h"
 
 #define MAXPOLARPOINTS   5000     /**< The max number of points on a polar. */
 #define MAXEXTRADRAG 4
@@ -79,7 +79,7 @@ public:
     void remove(int i);
     void remove(double alpha);
     void clearData();
-    void retrieveInertia(void *ptr);
+    void retrieveInertia(Plane *pPlane);
 
     bool serializeWPlrWPA(QDataStream &ar, bool bIsStoring);
     bool serializeWPlrXFL(QDataStream &ar, bool bIsStoring);
