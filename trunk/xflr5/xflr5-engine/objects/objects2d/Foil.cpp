@@ -455,8 +455,6 @@ double Foil::length() const
 }
 
 
-
-
 /**
 * Returns the y-coordinate on the current foil's mid line at the x position.
 * @param x the chordwise position
@@ -469,15 +467,12 @@ Vector3d Foil::midYRel(double sRel) const
 
 	Vector3d midY;
 	sRel *= (MIDPOINTCOUNT-1);
-	int iRel = (int)sRel;
+    int iRel = int(sRel);
 	double frac = sRel-iRel;
 	midY.x = m_rpMid[iRel].x * (1.0-frac) + m_rpMid[iRel+1].x * frac;
 	midY.y = m_rpMid[iRel].y * (1.0-frac) + m_rpMid[iRel+1].y * frac;	
 	return midY;
 }
-
-
-
 
 
 /**

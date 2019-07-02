@@ -26,7 +26,7 @@
 
 
 #include "LLTAnalysis.h"
-#include <objects/objects3d/PlaneOpp.h>
+#include <objects/objects3d/planeopp.h>
 #include <objects/objects3d/WPolar.h>
 #include <analysis3d/matrix.h>
 

@@ -78,7 +78,7 @@
 #include <misc/text/MinTextEdit.h>
 #include <objects/objects3d/Body.h>
 #include <objects/objects3d/Plane.h>
-#include <objects/objects3d/PlaneOpp.h>
+#include <objects/objects3d/planeopp.h>
 #include <objects/objects3d/PointMass.h>
 #include <objects/objects3d/Surface.h>
 #include <objects/objects3d/WPolar.h>

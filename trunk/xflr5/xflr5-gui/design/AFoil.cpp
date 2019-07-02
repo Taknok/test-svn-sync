@@ -1179,7 +1179,6 @@ void AFoil::onFoilClicked(const QModelIndex& index)
 }
 
 
-
 /**
  * The user has requested an edition of the style of the active Foil.
  */
@@ -1210,11 +1209,14 @@ void AFoil::onFoilStyle()
             XDirect::curFoil()->foilLineWidth()  = dlg.lineWidth();
             QColor clr = dlg.lineColor();
             XDirect::curFoil()->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
+
+            if(Settings::s_bAlignChildrenStyle)
+                Objects2d::setFoilChildrenStyle(XDirect::curFoil());
+
             m_p2DWidget->update();;
         }
     }
 }
-
 
 
 /**
@@ -1232,7 +1234,6 @@ void AFoil::onHideAllFoils()
     fillFoilTable();
     m_p2DWidget->update();;
 }
-
 
 
 /**

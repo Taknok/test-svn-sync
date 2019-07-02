@@ -41,7 +41,7 @@ SOURCES += \
     objects/objects3d/NURBSSurface.cpp \
     objects/objects3d/Panel.cpp \
     objects/objects3d/Plane.cpp \
-    objects/objects3d/PlaneOpp.cpp \
+    objects/objects3d/planeopp.cpp \
     objects/objects3d/Quaternion.cpp \
     objects/objects3d/Surface.cpp \
     objects/objects3d/WPolar.cpp \
@@ -71,7 +71,7 @@ HEADERS += \
     objects/objects3d/NURBSSurface.h \
     objects/objects3d/Panel.h \
     objects/objects3d/Plane.h \
-    objects/objects3d/PlaneOpp.h \
+    objects/objects3d/planeopp.h \
     objects/objects3d/PointMass.h \
     objects/objects3d/Quaternion.h \
     objects/objects3d/Surface.h \

@@ -33,7 +33,7 @@
 #include <miarex/Miarex.h>
 #include <objects/objects3d/WPolar.h>
 #include <objects/objects3d/Plane.h>
-#include <objects/objects3d/PlaneOpp.h>
+#include <objects/objects3d/planeopp.h>
 #include <graph/graph.h>
 
 
