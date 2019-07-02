@@ -30,11 +30,11 @@
 #include <globals/gui_params.h>
 #include <miarex/mgt/XmlPlaneReader.h>
 #include <miarex/mgt/xmlwpolarreader.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <objects/objects3d/Plane.h>
 #include <objects/objects3d/WPolar.h>
 #include <xdirect/analysis/XFoilTask.h>
-#include <xdirect/xmlpolarreader.h>
+#include <xdirect/xml/xmlpolarreader.h>
 
 XflScriptExec::XflScriptExec()
 {
@@ -265,7 +265,7 @@ void XflScriptExec::makePlanes()
             else
             {
                 QString errorMsg;
-                errorMsg.sprintf("line %d column %d",(int)xplReader.lineNumber(),(int)xplReader.columnNumber());
+                errorMsg.sprintf("line %d column %d", int(xplReader.lineNumber()), int(xplReader.columnNumber()));
                 traceLog("   failed to add the plane "+pPlane->planeName() +xplReader.errorString() + errorMsg);
             }
         }
@@ -291,7 +291,6 @@ Polar* XflScriptExec::makePolar(QString fileName)
         m_oaPolar.append(pPolar);
         return pPolar;
     }
-    return nullptr;
 }
 
 
@@ -313,7 +312,6 @@ WPolar* XflScriptExec::makeWPolar(QString fileName)
         m_oaWPolar.append(pWPolar);
         return pWPolar;
     }
-    return nullptr;
 }
 
 
@@ -367,7 +365,7 @@ void XflScriptExec::readScript()
     if(m_scriptReader.hasError())
     {
         QString strange;
-        strange.sprintf("\nline %d column %d", (int)m_scriptReader.lineNumber(), (int)m_scriptReader.columnNumber());
+        strange.sprintf("\nline %d column %d", int(m_scriptReader.lineNumber()), int(m_scriptReader.columnNumber()));
         QString errorMsg = m_scriptReader.errorString() + strange;
         traceLog(errorMsg);
     }
@@ -375,8 +373,6 @@ void XflScriptExec::readScript()
     {
     }
 }
-
-
 
 
 void XflScriptExec::runScript()
@@ -388,15 +384,6 @@ void XflScriptExec::runScript()
         aTask.initializeTask(pAnalysis);
     }
 }
-
-
-
-
-
-
-
-
-
 
 
 

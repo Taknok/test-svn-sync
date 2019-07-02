@@ -28,7 +28,7 @@
 #include <miarex/Miarex.h>
 #include <misc/options/units.h>
 #include <globals/globals.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <viewwidgets/glWidgets/gl3dmiarexview.h>
 
 

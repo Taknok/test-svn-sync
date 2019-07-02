@@ -15,7 +15,9 @@
 *******************************************************************************
 
 
-xflr5 v6.47 June xxxth, 2019
+xflr5 v6.47 July xxxth, 2019
+    - Fixed the problem of initial settings when running and LLT analysis
+    - Added an option to align the children objects style with their parent's style
     - Fixed a couple of crash bugs when editing a part of a plane with an active polar
     - Fixed potential crash bugs when editing plane parts during 3d animation
     - Fixed potential crash bugs when deleting planes or foils from the Manage options

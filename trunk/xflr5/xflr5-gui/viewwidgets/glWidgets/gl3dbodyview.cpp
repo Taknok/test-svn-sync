@@ -23,7 +23,7 @@
 #include <QPainter>
 
 #include "gl3dbodyview.h"
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <miarex/view/W3dPrefsDlg.h>
 #include <miarex/design/GL3dBodyDlg.h>
 #include <globals/mainframe.h>

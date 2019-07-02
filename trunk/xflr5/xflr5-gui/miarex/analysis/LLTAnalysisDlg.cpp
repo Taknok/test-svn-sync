@@ -42,7 +42,7 @@
 #include <graph/graph.h>
 #include <miarex/Miarex.h>
 #include <miarex/objects3d.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <objects/objects3d/WPolar.h>
 #include <objects/objects3d/Wing.h>
 
@@ -279,7 +279,18 @@ void LLTAnalysisDlg::cleanUp()
     {
         for(int iPOpp=0; iPOpp<m_pTheTask->m_ptheLLTAnalysis->m_PlaneOppList.size(); iPOpp++)
         {
-            Objects3d::insertPOpp(m_pTheTask->m_ptheLLTAnalysis->m_PlaneOppList.at(iPOpp));
+            PlaneOpp *pPOpp = m_pTheTask->m_ptheLLTAnalysis->m_PlaneOppList.at(iPOpp);
+            if(Settings::s_bAlignChildrenStyle)
+            {
+                pPOpp->setStyle(m_pTheTask->m_pWPolar->curveStyle());
+                pPOpp->setWidth(m_pTheTask->m_pWPolar->curveWidth());
+                pPOpp->setColor(m_pTheTask->m_pWPolar->curveColor());
+                pPOpp->setPoints(m_pTheTask->m_pWPolar->points());
+            }
+
+            pPOpp->setVisible(true);
+
+            Objects3d::insertPOpp(pPOpp);
         }
     }
     else

@@ -46,6 +46,8 @@ class OpPoint;
 class Plane;
 class WPolar;
 
+QStringList findFiles(const QString &startDir, QStringList filters, bool bRecursive);
+
 int readValues(QString line, double &x, double &y, double &z);
 
 void ExpFormat(double &f, int &exp);

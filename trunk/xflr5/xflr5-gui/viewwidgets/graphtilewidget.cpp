@@ -33,7 +33,7 @@
 #include <graph/graphdlg.h>
 #include <miarex/Miarex.h>
 #include <misc/options/units.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <objects/objects3d/Plane.h>
 #include <viewwidgets/graphwidget.h>
 #include <viewwidgets/legendwidget.h>

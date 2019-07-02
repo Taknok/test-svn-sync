@@ -39,7 +39,7 @@
 #include <miarex/view/GLLightDlg.h>
 #include <miarex/view/W3dPrefsDlg.h>
 #include <misc/options/units.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <objects/objects3d/Body.h>
 #include <objects/objects3d/Plane.h>
 #include <objects/objects3d/PointMass.h>

@@ -28,7 +28,7 @@
 #include <miarex/Miarex.h>
 #include <globals/mainframe.h>
 
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <globals/globals.h>
 #include <miarex/view/GL3DScales.h>
 #include <objects/objects3d/Surface.h>

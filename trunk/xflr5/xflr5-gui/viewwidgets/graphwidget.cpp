@@ -21,7 +21,7 @@
 
 
 #include <globals/mainframe.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include "graphwidget.h"
 #include "graphtilewidget.h"
 #include <graph/graphdlg.h>

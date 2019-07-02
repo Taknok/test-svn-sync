@@ -1589,3 +1589,24 @@ QColor color(ObjectColor clr)
 {
     return QColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
 }
+
+QStringList findFiles(const QString &startDir, QStringList filters, bool bRecursive)
+{
+    QStringList names;
+    QDir dir(startDir);
+
+    foreach (QString file, dir.entryList(filters, QDir::Files))
+    {
+        names += startDir + '/' + file;
+    }
+
+    if(bRecursive)
+    {
+        foreach (QString subdir, dir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot))
+        {
+            names += findFiles(startDir + '/' + subdir, filters, bRecursive);
+        }
+    }
+
+    return names;
+}

@@ -21,7 +21,7 @@
 
 
 #include <misc/text/MinTextEdit.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 
 
 MinTextEdit::MinTextEdit(QWidget *parent)

@@ -23,7 +23,7 @@
 #include <QtDebug>
 
 #include "bodyframewt.h"
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <miarex/design/BodyScaleDlg.h>
 #include <misc/options/units.h>
 #include <globals/globals.h>

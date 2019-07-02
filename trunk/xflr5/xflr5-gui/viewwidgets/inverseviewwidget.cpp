@@ -24,7 +24,7 @@
 #include <QMouseEvent>
 
 #include <globals/mainframe.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <graph/graph.h>
 #include <xinverse/XInverse.h>
 #include <viewwidgets/inverseviewwidget.h>

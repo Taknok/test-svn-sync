@@ -30,7 +30,7 @@
 
 #include "XFLR5Application.h"
 #include <globals/mainframe.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <ctime>
 #include <iostream>
 

@@ -24,7 +24,7 @@
 
 #include <xdirect/XDirect.h>
 #include <globals/globals.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <QDebug>
 
 #define PI 3.141592654
@@ -196,8 +196,6 @@ void Objects2d::insertThisFoil(Foil *pFoil)
 }
 
 
-
-
 /**
 * Creates a new instance of an OpPoint.
 * Loads the data from the XFoil object in that OpPoint
@@ -210,11 +208,21 @@ OpPoint* Objects2d::addOpPoint(Foil *pFoil, Polar *pPolar, OpPoint *pOpPoint, bo
     if(!pFoil || !pOpPoint) return nullptr;
 
     if(!pPolar) pPolar = XDirect::curPolar();
-
     if(!pPolar) return nullptr;
 
-    QColor clr = randomColor(!Settings::isLightTheme());
-    pOpPoint->setColor(clr.red(), clr.green(), clr.black(), clr.alpha());
+    if(Settings::s_bAlignChildrenStyle)
+    {
+        pOpPoint->m_Style = pPolar->m_Style;
+        pOpPoint->m_Width = pPolar->m_Width;
+        pOpPoint->setColor(pPolar->m_red, pPolar->m_green, pPolar->m_blue, pPolar->alphaChannel());
+        pOpPoint->m_PointStyle = pPolar->m_PointStyle;
+    }
+    else
+    {
+        QColor clr = randomColor(!Settings::isLightTheme());
+        pOpPoint->setColor(clr.red(), clr.green(), clr.black(), clr.alpha());
+    }
+
 
     if(pOpPoint ==nullptr)
     {
@@ -706,56 +714,6 @@ OpPoint*  Objects2d::oppAt(int index)
     return s_oaOpp.at(index);
 }
 
-/**
- * Creates a polar object for a given set of specified input data
- * @param pFoil a pointer to the Foil object to which the Polar will be attached
- * @param Re  the value of the Reynolds number
- * @param Mach  the value of the Mach number
- * @param NCrit the value of the transition criterion
- * @return a pointer to the Polar object which has been created
- */
-Polar * Objects2d::createPolar(Foil *pFoil, double Re, double Mach, double NCrit, double XtrTop, double XtrBot, XFLR5::enumPolarType polarType)
-{
-    if(!pFoil) return nullptr;
-
-    Polar *pNewPolar = new Polar;
-    pNewPolar->setFoilName(pFoil->foilName());
-    pNewPolar->setVisible(true);
-    pNewPolar->setPolarType(polarType);
-    pNewPolar->setMach(Mach);
-    pNewPolar->setNCrit(NCrit);
-    pNewPolar->setXtrTop(XtrTop);
-    pNewPolar->setXtrBot(XtrBot);
-
-    switch (pNewPolar->polarType())
-    {
-        default:
-        case XFLR5::FIXEDSPEEDPOLAR:
-            pNewPolar->setMaType(1);
-            pNewPolar->setReType(1);
-            break;
-        case XFLR5::FIXEDLIFTPOLAR:
-            pNewPolar->setMaType(2);
-            pNewPolar->setReType(2);
-            break;
-        case XFLR5::RUBBERCHORDPOLAR:
-            pNewPolar->setMaType(1);
-            pNewPolar->setReType(3);
-            break;
-        case XFLR5::FIXEDAOAPOLAR:
-            pNewPolar->setMaType(1);
-            pNewPolar->setReType(1);
-            break;
-    }
-    if(polarType!=XFLR5::FIXEDAOAPOLAR)  pNewPolar->setReynolds(Re);
-    else                                 pNewPolar->setAoa(0.0);
-
-
-    pNewPolar->setPolarName(Polar::autoPolarName(polarType, Re, Mach, NCrit, 0.0, XtrTop, XtrBot));
-    return pNewPolar;
-}
-
-
 
 void Objects2d::deleteFoilResults(Foil *pFoil, bool bDeletePolars)
 {
@@ -790,13 +748,48 @@ void Objects2d::deleteFoilResults(Foil *pFoil, bool bDeletePolars)
 }
 
 
+void Objects2d::setFoilChildrenStyle(Foil *pFoil)
+{
+    if(!pFoil) return;
+    for (int j=s_oaOpp.size()-1; j>=0; j--)
+    {
+        OpPoint *pOpPoint = s_oaOpp[j];
+        if(pOpPoint->foilName() == pFoil->foilName())
+        {
+            pOpPoint->m_Style = pFoil->m_FoilStyle;
+            pOpPoint->m_Width = pFoil->m_FoilWidth;
+            pOpPoint->setColor(pFoil->m_red, pFoil->m_green, pFoil->m_blue, pFoil->alphaChannel());
+            pOpPoint->m_PointStyle = pFoil->m_PointStyle;
+        }
+    }
+
+    for (int j=s_oaPolar.size()-1; j>=0; j--)
+    {
+        Polar *pPolar = s_oaPolar.at(j);
+        if(pPolar->foilName() == pFoil->foilName())
+        {
+            pPolar->m_Style = pFoil->m_FoilStyle;
+            pPolar->m_Width = pFoil->m_FoilWidth;
+            pPolar->setColor(pFoil->m_red, pFoil->m_green, pFoil->m_blue, pFoil->alphaChannel());
+            pPolar->m_PointStyle = pFoil->m_PointStyle;
+        }
+    }
+}
 
 
-
-
-
-
-
-
-
+void Objects2d::setPolarChildrenStyle(Polar *pPolar)
+{
+    if(!pPolar) return;
+    for (int j=s_oaOpp.size()-1; j>=0; j--)
+    {
+        OpPoint *pOpPoint = s_oaOpp[j];
+        if(pOpPoint->foilName() == pPolar->foilName() && pOpPoint->polarName()==pPolar->polarName())
+        {
+            pOpPoint->m_Style = pPolar->m_Style;
+            pOpPoint->m_Width = pPolar->m_Width;
+            pOpPoint->setColor(pPolar->m_red, pPolar->m_green, pPolar->m_blue, pPolar->alphaChannel());
+            pOpPoint->m_PointStyle = pPolar->m_PointStyle;
+        }
+    }
+}
 

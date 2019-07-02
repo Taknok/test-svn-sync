@@ -35,7 +35,7 @@
 #include "InertiaDlg.h"
 #include <globals/globals.h>
 #include <misc/options/units.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <misc/text/DoubleEdit.h>
 #include <misc/text/FloatEditDelegate.h>
 #include <objects/objects3d/Plane.h>

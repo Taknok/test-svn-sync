@@ -21,7 +21,7 @@
 
 #include <globals/globals.h>
 #include <graph_globals.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include "LineCbBox.h"
 #include <QtDebug>
 #include <QPainter>

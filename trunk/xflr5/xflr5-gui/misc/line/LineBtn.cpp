@@ -25,7 +25,7 @@
 #include <QPen>
 #include <QPainter>
 
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include "LineBtn.h"
 #include <globals/globals.h>
 #include <graph_globals.h>

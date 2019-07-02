@@ -27,7 +27,7 @@
 
 #include "EditPlrDlg.h"
 #include <miarex/Miarex.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <misc/text/FloatEditDelegate.h>
 #include <objects/objects2d/Polar.h>
 #include <objects/objects3d/WPolar.h>

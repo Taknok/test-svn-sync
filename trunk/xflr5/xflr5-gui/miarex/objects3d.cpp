@@ -181,12 +181,6 @@ void Objects3d::insertPOpp(PlaneOpp *pPOpp)
                     if(qAbs(pPOpp->alpha() - pOldPOpp->alpha())<0.005)
                     {
                         //replace existing point
-                        pPOpp->setColor(pOldPOpp->color());
-                        pPOpp->setStyle(pOldPOpp->style());
-                        pPOpp->setWidth(pOldPOpp->width());
-                        pPOpp->setVisible(pOldPOpp->isVisible());
-                        pPOpp->setPoints(pOldPOpp->points());
-
                         s_oaPOpp.removeAt(i);
                         delete pOldPOpp;
                         s_oaPOpp.insert(i, pPOpp);
@@ -206,13 +200,6 @@ void Objects3d::insertPOpp(PlaneOpp *pPOpp)
                     if(qAbs(pPOpp->m_QInf - pOldPOpp->m_QInf)<0.1)
                     {
                         //replace the existing point
-                        pPOpp->setColor(pOldPOpp->color());
-                        pPOpp->setStyle(pOldPOpp->style());
-                        pPOpp->setWidth(pOldPOpp->width());
-                        pPOpp->setVisible(pOldPOpp->isVisible());
-                        pPOpp->setPoints(pOldPOpp->points());
-
-
                         s_oaPOpp.removeAt(i);
                         delete pOldPOpp;
                         s_oaPOpp.insert(i, pPOpp);
@@ -232,12 +219,6 @@ void Objects3d::insertPOpp(PlaneOpp *pPOpp)
                     if(qAbs(pPOpp->beta() - pOldPOpp->beta())<0.01)
                     {
                         //replace existing point
-                        pPOpp->setColor(pOldPOpp->color());
-                        pPOpp->setStyle(pOldPOpp->style());
-                        pPOpp->setWidth(pOldPOpp->width());
-                        pPOpp->setVisible(pOldPOpp->isVisible());
-                        pPOpp->setPoints(pOldPOpp->points());
-
                         s_oaPOpp.removeAt(i);
                         delete pOldPOpp;
                         s_oaPOpp.insert(i, pPOpp);
@@ -257,12 +238,6 @@ void Objects3d::insertPOpp(PlaneOpp *pPOpp)
                     if(qAbs(pPOpp->ctrl() - pOldPOpp->ctrl())<0.001)
                     {
                         //replace existing point
-                        pPOpp->setColor(pOldPOpp->color());
-                        pPOpp->setStyle(pOldPOpp->style());
-                        pPOpp->setWidth(pOldPOpp->width());
-                        pPOpp->setVisible(pOldPOpp->isVisible());
-                        pPOpp->setPoints(pOldPOpp->points());
-
                         s_oaPOpp.removeAt(i);
                         delete pOldPOpp;
                         s_oaPOpp.insert(i, pPOpp);
@@ -910,19 +885,24 @@ void Objects3d::deleteObjects()
         s_oaBody.removeAt(i);
         delete pObj;
     }
-
 }
 
 
-
-
-
-
-
-
-
-
-
+void Objects3d::setWPolarChildrenStyle(WPolar *pWPolar)
+{
+    if(!pWPolar) return;
+    for (int j=s_oaPOpp.size()-1; j>=0; j--)
+    {
+        PlaneOpp *pPOpp = s_oaPOpp.at(j);
+        if(pPOpp->planeName() == pWPolar->planeName() && pPOpp->polarName()==pWPolar->polarName())
+        {
+            pPOpp->setStyle(pWPolar->curveStyle());
+            pPOpp->setWidth(pWPolar->curveWidth());
+            pPOpp->setColor(pWPolar->curveColor());
+            pPOpp->setPoints(pWPolar->points());
+        }
+    }
+}
 
 
 

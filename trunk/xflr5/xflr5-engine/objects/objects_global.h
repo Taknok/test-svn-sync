@@ -28,7 +28,6 @@
 #include <QDataStream>
 #include <QTextStream>
 
-
 void XFLR5ENGINELIBSHARED_EXPORT readCString(QDataStream &ar, QString &strong);
 void writeCString(QDataStream &ar, QString const &strong);
 bool XFLR5ENGINELIBSHARED_EXPORT ReadAVLString(QTextStream &in, int &Line, QString &strong);
@@ -46,3 +45,4 @@ void XFLR5ENGINELIBSHARED_EXPORT modeProperties(std::complex<double> lambda, dou
 
 bool XFLR5ENGINELIBSHARED_EXPORT Intersect(Vector3d const &LA, Vector3d const &LB, Vector3d const &TA, Vector3d const &TB, Vector3d const &Normal,
                       Vector3d const &A,  Vector3d const &U,  Vector3d &I, double &dist);
+

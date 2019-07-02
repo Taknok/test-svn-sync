@@ -35,7 +35,7 @@
 #include <graph/graphdlg.h>
 #include <graph_globals.h>
 #include <misc/RenameDlg.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <misc/text/DoubleEdit.h>
 #include <misc/text/IntEdit.h>
 #include <misc/text/MinTextEdit.h>
