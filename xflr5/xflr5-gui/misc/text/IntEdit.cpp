@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 #include <misc/text/IntEdit.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 
 
 IntEdit::IntEdit(QWidget *pParent)

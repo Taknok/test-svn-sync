@@ -1,5 +1,6 @@
 
 SOURCES += \
+    $$PWD/misc/options/settings.cpp \
     design/AFoil.cpp \
     design/AFoilTableDlg.cpp \
     design/FoilTableDelegate.cpp \
@@ -69,7 +70,6 @@ SOURCES += \
     misc/line/LineCbBox.cpp \
     misc/line/LineDelegate.cpp \
     misc/line/LinePickerDlg.cpp \
-    misc/options/displayoptions.cpp \
     misc/options/languagewt.cpp \
     misc/options/preferencesdlg.cpp \
     misc/options/saveoptions.cpp \
@@ -105,7 +105,7 @@ SOURCES += \
     viewwidgets/foildesignwt.cpp \
     viewwidgets/bodylinewt.cpp \
     viewwidgets/bodyframewt.cpp \
-    xdirect/ManageFoilsDlg.cpp \
+    xdirect/mgt/managefoilsdlg.cpp \
     xdirect/XDirect.cpp \
     xdirect/XDirectStyleDlg.cpp \
     xdirect/analysis/BatchDlg.cpp \
@@ -125,8 +125,8 @@ SOURCES += \
     xdirect/geometry/TEGapDlg.cpp \
     xdirect/geometry/TwoDPanelDlg.cpp \
     xdirect/objects2d.cpp \
-    xdirect/xmlpolarreader.cpp \
-    xdirect/xmlpolarwriter.cpp \
+    xdirect/xml/xmlpolarreader.cpp \
+    xdirect/xml/xmlpolarwriter.cpp \
     xinverse/FoilSelectionDlg.cpp \
     xinverse/InverseOptionsDlg.cpp \
     xinverse/PertDlg.cpp \
@@ -134,6 +134,7 @@ SOURCES += \
 
 
 HEADERS += \
+    $$PWD/misc/options/settings.h \
     design/AFoil.h \
     design/AFoilTableDlg.h \
     design/FoilTableDelegate.h \
@@ -206,7 +207,6 @@ HEADERS += \
     misc/line/LineCbBox.h \
     misc/line/LineDelegate.h \
     misc/line/LinePickerDlg.h \
-    misc/options/displayoptions.h \
     misc/options/languagewt.h \
     misc/options/preferencesdlg.h \
     misc/options/saveoptions.h \
@@ -243,7 +243,7 @@ HEADERS += \
     viewwidgets/foildesignwt.h \
     viewwidgets/bodyframewt.h \
     viewwidgets/bodylinewt.h \
-    xdirect/ManageFoilsDlg.h \
+    xdirect/mgt/managefoilsdlg.h \
     xdirect/XDirect.h \
     xdirect/XDirectStyleDlg.h \
     xdirect/analysis/BatchDlg.h \
@@ -264,8 +264,8 @@ HEADERS += \
     xdirect/geometry/TEGapDlg.h \
     xdirect/geometry/TwoDPanelDlg.h \
     xdirect/objects2d.h \
-    xdirect/xmlpolarreader.h \
-    xdirect/xmlpolarwriter.h \
+    xdirect/xml/xmlpolarreader.h \
+    xdirect/xml/xmlpolarwriter.h \
     xinverse/FoilSelectionDlg.h \
     xinverse/InverseOptionsDlg.h \
     xinverse/PertDlg.h \

@@ -32,7 +32,7 @@
 #include <globals/mainframe.h>
 #include <misc/color/ColorButton.h>
 #include <misc/options/units.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <misc/options/languagewt.h>
 #include <misc/options/saveoptions.h>
 #include <misc/text/IntEdit.h>

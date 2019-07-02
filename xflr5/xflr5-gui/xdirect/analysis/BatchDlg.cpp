@@ -36,7 +36,7 @@
 #include <globals/gui_params.h>
 #include <graph/curve.h>
 #include <graph/graph.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <misc/text/DoubleEdit.h>
 #include <misc/text/IntEdit.h>
 #include <objects/objects2d/Foil.h>
@@ -387,6 +387,7 @@ void BatchDlg::alphaLoop()
         outputMsg(str);
 
         Polar *pCurPolar = createPolar(m_pFoil, alphadeg, m_Mach, m_ACrit);// Do something
+
         if(!pCurPolar) return;
 
         m_pXFoilTask->setReRange(m_ReMin, m_ReMax, m_ReInc);
@@ -462,8 +463,19 @@ Polar *BatchDlg::createPolar(Foil *pFoil, double Spec, double Mach, double NCrit
     if(!pFoil) return nullptr;
 
     Polar *pPolar = new Polar;
-    QColor clr = randomColor(!Settings::isLightTheme());
-    pPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
+
+    if(Settings::s_bAlignChildrenStyle)
+    {
+        pPolar->m_Style = pFoil->m_FoilStyle;
+        pPolar->m_Width = pFoil->m_FoilWidth;
+        pPolar->setColor(pFoil->m_red, pFoil->m_green, pFoil->m_blue, pFoil->alphaChannel());
+        pPolar->m_PointStyle = pFoil->m_PointStyle;
+    }
+    else
+    {
+        QColor clr = randomColor(!Settings::isLightTheme());
+        pPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
+    }
 
     pPolar->setFoilName(pFoil->foilName());
     pPolar->setVisible(true);

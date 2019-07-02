@@ -30,7 +30,7 @@
 #include <miarex/objects3d.h>
 #include <misc/options/units.h>
 #include <globals/globals.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include "PlaneTableDelegate.h"
 #include <objects/objects3d/Plane.h>
 

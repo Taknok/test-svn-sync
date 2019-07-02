@@ -28,7 +28,7 @@
 
 #include "section2dwidget.h"
 #include <globals/globals.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <design/GridSettingsDlg.h>
 #include <graph_globals.h>
 

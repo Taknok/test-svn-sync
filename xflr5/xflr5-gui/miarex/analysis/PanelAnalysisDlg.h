@@ -1,24 +1,24 @@
 /****************************************************************************
 
-	PanelAnalysisDlg Class
-	Copyright (C) 2009-2018 Andre Deperrois 
+    PanelAnalysisDlg Class
+    Copyright (C) 2009-2018 Andre Deperrois
 
-	This program is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
-	(at your option) any later version.
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with this program; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 *****************************************************************************/
- 
+
 
 /**
  *@file
@@ -61,64 +61,64 @@ class PlaneAnalysisTask;
  */
 class PanelAnalysisDlg : public QDialog
 {
-	Q_OBJECT
+    Q_OBJECT
 
-	friend class Miarex;
-	friend class MainFrame;
+    friend class Miarex;
+    friend class MainFrame;
 
 public:
-	PanelAnalysisDlg(QWidget *pParent);
-	~PanelAnalysisDlg();
+    PanelAnalysisDlg(QWidget *pParent);
+    ~PanelAnalysisDlg();
 
-	void initDialog();
-	void setTask(PlaneAnalysisTask *pTask){m_pTheTask = pTask;}
-	void deleteTask();
+    void initDialog();
+    void setTask(PlaneAnalysisTask *pTask){m_pTheTask = pTask;}
+    void deleteTask();
 
 private slots:
-	void onCancelAnalysis();
-	void onProgress();
-	void onLogFile();
-	void onMessage(QString msg);
+    void onCancelAnalysis();
+    void onProgress();
+    void onLogFile();
+    void onMessage(QString msg);
 
 private:
-	void showEvent(QShowEvent *event);
-	void hideEvent(QHideEvent *event);
-	void keyPressEvent(QKeyEvent *event);
+    void showEvent(QShowEvent *event);
+    void hideEvent(QHideEvent *event);
+    void keyPressEvent(QKeyEvent *event);
 
-	void setupLayout();
-	void analyze();
-	void cleanUp();
+    void setupLayout();
+    void analyze();
+    void cleanUp();
 
-	void updateOutput(QString &strong);
-	void updateView();
-	
+    void updateOutput(QString &strong);
+    void updateView();
+
 private:
-	QTextEdit *m_pctrlTextOutput;
-	QPushButton *m_pctrlCancel;
-	QCheckBox * m_pctrlLogFile;
-	QProgressBar *m_pctrlProgress;
+    QTextEdit *m_pctrlTextOutput;
+    QPushButton *m_pctrlCancel;
+    QCheckBox * m_pctrlLogFile;
+    QProgressBar *m_pctrlProgress;
 
-	static QPoint s_Position;        /**< the position on the client area of the dialog's topleft corner */
-	static QSize  s_WindowSize;
-	static bool s_bWindowMaximized;
+    static QPoint s_Position;        /**< the position on the client area of the dialog's topleft corner */
+    static QSize  s_WindowSize;
+    static bool s_bWindowMaximized;
 
-	QTime clock;
+    QTime clock;
 
-	bool m_bIsFinished;         /**< true if the analysis is completed */
-	bool m_bPointOut;           /** true if an interpolation was outside the min or max Cl */
-	bool m_bSequence;           /** true if the calculation is should be performed for a range of aoa */
+    bool m_bIsFinished;         /**< true if the analysis is completed */
+    bool m_bPointOut;           /** true if an interpolation was outside the min or max Cl */
+    bool m_bSequence;           /** true if the calculation is should be performed for a range of aoa */
 
-	double m_Progress;          /**< A measure of the progress of the analysis, used to provide feedback to the user */
-	
-	QString m_strOut;
+    double m_Progress;          /**< A measure of the progress of the analysis, used to provide feedback to the user */
 
-	QTimer m_Timer;
+    QString m_strOut;
+
+    QTimer m_Timer;
 
 public:
 
-	bool m_bTrace;
+    bool m_bTrace;
 
-	PlaneAnalysisTask *m_pTheTask; /**< a pointer to the one and only instance of the PlaneAnalysisTask class */
+    PlaneAnalysisTask *m_pTheTask; /**< a pointer to the one and only instance of the PlaneAnalysisTask class */
 };
 
 #endif // PANELANALYSISDLG_H

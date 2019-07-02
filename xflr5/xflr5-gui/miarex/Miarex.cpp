@@ -71,7 +71,7 @@
 #include <misc/line/LineBtn.h>
 #include <misc/line/LineCbBox.h>
 #include <misc/line/LineDelegate.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <misc/options/units.h>
 #include <misc/stlexportdialog.h>
 #include <misc/text/DoubleEdit.h>
@@ -7305,7 +7305,7 @@ void Miarex::setupLayout()
                 m_pctrlClipPlanePos = new QSlider(Qt::Horizontal);
                 m_pctrlClipPlanePos->setSizePolicy(szPolicyMinimum);
                 m_pctrlClipPlanePos->setMinimum(-100);
-                m_pctrlClipPlanePos->setMaximum(100);
+                m_pctrlClipPlanePos->setMaximum( 100);
                 m_pctrlClipPlanePos->setSliderPosition(0);
                 m_pctrlClipPlanePos->setTickInterval(10);
                 m_pctrlClipPlanePos->setTickPosition(QSlider::TicksBelow);
@@ -7719,6 +7719,8 @@ void Miarex::updateCurve()
         m_pCurWPolar->setCurveColor(ObjectColor(c.red(), c.green(), c.blue(), c.alpha()));
         m_pCurWPolar->points()      = m_LineStyle.m_PointStyle;
         m_pCurWPolar->isVisible()   = bCurveVisible;
+
+        if(Settings::s_bAlignChildrenStyle) Objects3d::setWPolarChildrenStyle(m_pCurWPolar);
     }
     else if(m_iView==XFLR5::STABTIMEVIEW && m_pCurWPolar)
     {
@@ -7733,6 +7735,7 @@ void Miarex::updateCurve()
         m_pCurWPolar->setCurveColor(ObjectColor(c.red(), c.green(), c.blue(), c.alpha()));
         m_pCurWPolar->points()    = m_LineStyle.m_PointStyle;
         m_pCurWPolar->isVisible() = m_pctrlShowCurve->isChecked();
+        if(Settings::s_bAlignChildrenStyle) Objects3d::setWPolarChildrenStyle(m_pCurWPolar);
     }
     else if (m_iView==XFLR5::WOPPVIEW)
     {
@@ -9114,7 +9117,6 @@ void Miarex::getPolarProperties(WPolar *pWPolar, QString &polarProps, bool bData
  */
 void Miarex::exportToTextStream(WPolar *pWPolar, QTextStream &out, XFLR5::enumTextFileType FileType, bool bDataOnly)
 {
-    int j;
     QString Header, strong, str;
 
     if (FileType==XFLR5::TXT)
@@ -9150,22 +9152,22 @@ void Miarex::exportToTextStream(WPolar *pWPolar, QTextStream &out, XFLR5::enumTe
 
         Header = "   alpha      Beta       CL          CDi        CDv        CD         CY         Cl         Cm         Cn        Cni       QInf        XCP\n";
         out << Header;
-        for (j=0; j<pWPolar->dataSize(); j++)
+        for (int j=0; j<pWPolar->dataSize(); j++)
         {
             strong = QString(" %1  %2  %3  %4  %5  %6  %7  %8  %9  %10  %11  %12  %13\n")
                     .arg(pWPolar->m_Alpha[j],8,'f',3)
-                    .arg(pWPolar->m_Beta[j],8,'f',3)
-                    .arg(pWPolar->m_CL[j], 9,'f',6)
-                    .arg(pWPolar->m_ICd[j],9,'f',6)
-                    .arg(pWPolar->m_PCd[j],9,'f',6)
-                    .arg(pWPolar->m_TCd[j],9,'f',6)
-                    .arg(pWPolar->m_CY[j] ,9,'f',6)
-                    .arg(pWPolar->m_GRm[j],9,'f',6)
-                    .arg(pWPolar->m_GCm[j],9,'f',6)
-                    .arg(pWPolar->m_GYm[j],9,'f',6)
-                    .arg(pWPolar->m_IYm[j],9,'f',6)
+                    .arg(pWPolar->m_Beta[j], 8,'f',3)
+                    .arg(pWPolar->m_CL[j],   9,'f',6)
+                    .arg(pWPolar->m_ICd[j],  9,'f',6)
+                    .arg(pWPolar->m_PCd[j],  9,'f',6)
+                    .arg(pWPolar->m_TCd[j],  9,'f',6)
+                    .arg(pWPolar->m_CY[j] ,  9,'f',6)
+                    .arg(pWPolar->m_GRm[j],  9,'f',6)
+                    .arg(pWPolar->m_GCm[j],  9,'f',6)
+                    .arg(pWPolar->m_GYm[j],  9,'f',6)
+                    .arg(pWPolar->m_IYm[j],  9,'f',6)
                     .arg(pWPolar->m_QInfinite[j],8,'f',4)
-                    .arg(pWPolar->m_XCP[j],9,'f',4);
+                    .arg(pWPolar->m_XCP[j],  9,'f',4);
 
             out << strong;
         }
@@ -9193,30 +9195,30 @@ void Miarex::exportToTextStream(WPolar *pWPolar, QTextStream &out, XFLR5::enumTe
 
         Header = "alpha, Beta, CL, CDi, CDv, CD, CY, Cl, Cm, Cn, Cni, QInf, XCP\n";
         out << Header;
-        for (j=0; j<pWPolar->dataSize(); j++)
+        for (int j=0; j<pWPolar->dataSize(); j++)
         {
             //			strong.Format(" %8.3f,  %9.6f,  %9.6f,  %9.6f,  %9.6f,  %9.6f,  %9.6f,  %9.6f,  %9.6f,  %9.6f,  %8.4f,  %9.4f\n",
             strong = QString(" %1,  %2,  %3,  %4,  %5,  %6,  %7,  %8,  %9,  %10,  %11,  %12, %13\n")
                     .arg(pWPolar->m_Alpha[j],8,'f',3)
                     .arg(pWPolar->m_Beta[j], 8,'f',3)
-                    .arg(pWPolar->m_CL[j], 9,'f',6)
-                    .arg(pWPolar->m_ICd[j],9,'f',6)
-                    .arg(pWPolar->m_PCd[j],9,'f',6)
-                    .arg(pWPolar->m_TCd[j],9,'f',6)
-                    .arg(pWPolar->m_CY[j] ,9,'f',6)
-                    .arg(pWPolar->m_GRm[j],9,'f',6)
-                    .arg(pWPolar->m_GCm[j],9,'f',6)
-                    .arg(pWPolar->m_GYm[j],9,'f',6)
-                    .arg(pWPolar->m_IYm[j],9,'f',6)
+                    .arg(pWPolar->m_CL[j],   9,'f',6)
+                    .arg(pWPolar->m_ICd[j],  9,'f',6)
+                    .arg(pWPolar->m_PCd[j],  9,'f',6)
+                    .arg(pWPolar->m_TCd[j],  9,'f',6)
+                    .arg(pWPolar->m_CY[j] ,  9,'f',6)
+                    .arg(pWPolar->m_GRm[j],  9,'f',6)
+                    .arg(pWPolar->m_GCm[j],  9,'f',6)
+                    .arg(pWPolar->m_GYm[j],  9,'f',6)
+                    .arg(pWPolar->m_IYm[j],  9,'f',6)
                     .arg(pWPolar->m_QInfinite[j],8,'f',4)
-                    .arg(pWPolar->m_XCP[j],9,'f',4);
+                    .arg(pWPolar->m_XCP[j],  9,'f',4);
 
             out << strong;
-
         }
     }
     out << "\n\n";
 }
+
 
 /**
  * @brief Returns a title for the plane's OpPoint. This title will typically be used  in the legend of the graphs.

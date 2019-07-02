@@ -2,19 +2,19 @@
 
     Objects3D    Copyright (C) 2014-2019 Andre Deperrois
 
-	This program is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
-	(at your option) any later version.
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with this program; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 *****************************************************************************/
 
@@ -39,33 +39,33 @@ class Objects3d
 public:
     Objects3d();
 
-	static void      addBody(Body *pBody);
-	static Plane *   addPlane(Plane *pPlane);
-	static void      addWPolar(WPolar *pWPolar);
-	static void      deleteObjects();
-	static void      deletePlane(Plane *pPlane);
-	static void      deletePlaneResults(Plane *pPlane, bool bDeletePolars=false);
-	static void      deleteWPolar(WPolar *pWPolar);
-	static Plane *   duplicatePlane(Plane *pPlane);
-	static Body*     getBody(QString BodyName);
-	static Plane*    getPlane(QString PlaneName);
-	static PlaneOpp* getPlaneOpp(Plane *pPlane, WPolar *pWPolar, double x);
-	static Wing*     getWing(QString PlaneName);
-	static WPolar*   getWPolar(Plane *pPlane, QString WPolarName);
+    static void      addBody(Body *pBody);
+    static Plane *   addPlane(Plane *pPlane);
+    static void      addWPolar(WPolar *pWPolar);
+    static void      deleteObjects();
+    static void      deletePlane(Plane *pPlane);
+    static void      deletePlaneResults(Plane *pPlane, bool bDeletePolars=false);
+    static void      deleteWPolar(WPolar *pWPolar);
+    static Plane *   duplicatePlane(Plane *pPlane);
+    static Body*     getBody(QString BodyName);
+    static Plane*    getPlane(QString PlaneName);
+    static PlaneOpp* getPlaneOpp(Plane *pPlane, WPolar *pWPolar, double x);
+    static Wing*     getWing(QString PlaneName);
+    static WPolar*   getWPolar(Plane *pPlane, QString WPolarName);
     static void      insertPOpp(PlaneOpp *pPOpp);
     static WPolar *  insertNewWPolar(WPolar *pModWPolar, Plane *pCurPlane);
-	static bool      planeExists(QString planeName);
-	static void      renamePlane(QString PlaneName);
-	static Plane *   setModPlane(Plane *pModPlane);
-	static void      setStaticPointers();
-
+    static bool      planeExists(QString planeName);
+    static void      renamePlane(QString PlaneName);
+    static Plane *   setModPlane(Plane *pModPlane);
+    static void      setStaticPointers();
+    static void      setWPolarChildrenStyle(WPolar *pWPolar);
 public:
-	// object variable lists
+    // object variable lists
 
-	static QVector <Plane*>    s_oaPlane;   /**< The array of void pointers to the Plane objects. */
-	static QVector <Body*>     s_oaBody;    /**< The array of void pointers to the Body objects. */
-	static QVector <WPolar*>   s_oaWPolar;  /**< The array of void pointers to the WPolar objects. */
-	static QVector <PlaneOpp*> s_oaPOpp;    /**< The array of void pointers to the PlaneOpp objects. */
+    static QVector <Plane*>    s_oaPlane;   /**< The array of void pointers to the Plane objects. */
+    static QVector <Body*>     s_oaBody;    /**< The array of void pointers to the Body objects. */
+    static QVector <WPolar*>   s_oaWPolar;  /**< The array of void pointers to the WPolar objects. */
+    static QVector <PlaneOpp*> s_oaPOpp;    /**< The array of void pointers to the PlaneOpp objects. */
 };
 
 #endif // OBJECTS3D_H

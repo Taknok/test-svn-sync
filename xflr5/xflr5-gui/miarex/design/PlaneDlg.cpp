@@ -38,7 +38,7 @@
 #include <miarex/mgt/XmlPlaneReader.h>
 #include <miarex/objects3d.h>
 #include <misc/options/units.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <misc/text/DoubleEdit.h>
 #include <objects/objects3d/Plane.h>
 

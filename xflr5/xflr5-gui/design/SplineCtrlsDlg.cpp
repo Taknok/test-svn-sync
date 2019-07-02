@@ -31,7 +31,7 @@
 #include "AFoil.h"
 #include "SplineCtrlsDlg.h"
 #include <gui_objects/SplineFoil.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <misc/text/DoubleEdit.h>
 #include <misc/text/FloatEditDelegate.h>
 

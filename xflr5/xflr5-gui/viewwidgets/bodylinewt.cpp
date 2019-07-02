@@ -25,7 +25,7 @@
 
 #include <globals/globals.h>
 #include <miarex/design/BodyScaleDlg.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <misc/options/units.h>
 #include <objects/objects3d/Body.h>
 #include <viewwidgets/bodylinewt.h>

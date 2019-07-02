@@ -62,7 +62,7 @@
 #include <misc/ObjectPropsDlg.h>
 #include <misc/RenameDlg.h>
 #include <misc/line/LinePickerDlg.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <misc/options/languagewt.h>
 #include <misc/options/preferencesdlg.h>
 #include <misc/options/saveoptions.h>
@@ -82,7 +82,7 @@
 #include <viewwidgets/miarextilewidget.h>
 #include <viewwidgets/wingwidget.h>
 #include <viewwidgets/xdirecttilewidget.h>
-#include <xdirect/ManageFoilsDlg.h>
+#include <xdirect/mgt/managefoilsdlg.h>
 #include <xdirect/XDirect.h>
 #include <xdirect/analysis/BatchDlg.h>
 #include <xdirect/analysis/BatchThreadDlg.h>
@@ -3714,6 +3714,11 @@ void MainFrame::onCurFoilStyle()
         XDirect::curFoil()->foilLineWidth() = dlg.lineWidth();
         XDirect::curFoil()->foilPointStyle() = dlg.pointStyle();
 
+        if(Settings::s_bAlignChildrenStyle)
+            Objects2d::setFoilChildrenStyle(XDirect::curFoil());
+
+        m_pXDirect->setControls();
+        m_pXDirect->m_bResetCurves = true;
         setSaveState(false);
     }
 

@@ -38,9 +38,9 @@ Foil::Foil()
 	m_PointStyle = 0; //no points to start with
 	m_FoilStyle = 0;
 	m_FoilWidth = 1;
-	m_red   = (int)(((double)rand()/(double)RAND_MAX)*200);
-	m_green = (int)(((double)rand()/(double)RAND_MAX)*200);
-	m_blue  = (int)(((double)rand()/(double)RAND_MAX)*200);
+    m_red   = int((double(rand())/double(RAND_MAX))*200);
+    m_green = int((double(rand())/double(RAND_MAX))*200);
+    m_blue  = int((double(rand())/double(RAND_MAX))*200);
 	m_alphaChannel = 255;
 
 

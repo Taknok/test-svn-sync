@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 #include <misc/text/DoubleEdit.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <math.h>
 
 DoubleEdit::DoubleEdit(QWidget *pParent)  : QLineEdit(pParent)

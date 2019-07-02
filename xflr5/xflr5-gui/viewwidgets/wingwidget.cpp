@@ -27,7 +27,7 @@
 #include <graph_globals.h>
 
 #include "wingwidget.h"
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <miarex/objects3d.h>
 #include <miarex/view/W3dPrefsDlg.h>
 #include <miarex/Miarex.h>

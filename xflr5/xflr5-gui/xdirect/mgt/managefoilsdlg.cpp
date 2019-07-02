@@ -27,8 +27,8 @@
 #include <QStringList>
 
 
-#include "ManageFoilsDlg.h"
-#include <misc/options/displayoptions.h>
+#include "managefoilsdlg.h"
+#include <misc/options/settings.h>
 #include <misc/RenameDlg.h>
 #include <xdirect/objects2d.h>
 #include <design/FoilTableDelegate.h>

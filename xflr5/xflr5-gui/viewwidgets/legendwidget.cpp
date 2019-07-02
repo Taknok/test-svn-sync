@@ -32,7 +32,7 @@
 #include <objects/objects2d/Foil.h>
 #include <objects/objects2d/Polar.h>
 #include <objects/objects2d/OpPoint.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <miarex/Miarex.h>
 #include <miarex/objects3d.h>
 #include <xinverse/XInverse.h>

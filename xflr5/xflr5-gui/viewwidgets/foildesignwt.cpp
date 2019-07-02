@@ -28,7 +28,7 @@
 #include <graph_globals.h>
 #include <globals/mainframe.h>
 #include <xdirect/XDirect.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <globals/globals.h>
 #include <gui_objects/SplineFoil.h>
 

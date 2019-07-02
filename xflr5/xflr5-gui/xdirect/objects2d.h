@@ -58,8 +58,6 @@ public:
     static Foil *    setModFoil(Foil *pModFoil);
     static void      setStaticPointers();
 
-    static Polar *createPolar(Foil *pFoil, double Re, double Mach, double NCrit,
-                              double XtrTop = 1.0, double XtrBot=1.0, XFLR5::enumPolarType polarType = XFLR5::FIXEDSPEEDPOLAR);
     static void      addPolar(Polar *pPolar);
     static void      appendPolar(Polar *pPolar) {s_oaPolar.append(pPolar);}
     static Polar*    insertNewPolar(Polar *pModPolar, Foil *pCurFoil);
@@ -81,6 +79,9 @@ public:
     static int foilCount() {return s_oaFoil.size();}
     static int polarCount() {return s_oaPolar.size();}
     static int oppCount() {return s_oaOpp.size();}
+
+    static void setFoilChildrenStyle(Foil *pFoil);
+    static void setPolarChildrenStyle(Polar *pPolar);
 
     static QVector<Foil*> * pOAFoil() {return &s_oaFoil;}
     static QVector<Polar*> * pOAPolar() {return &s_oaPolar;}

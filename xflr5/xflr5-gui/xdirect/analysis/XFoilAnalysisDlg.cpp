@@ -33,7 +33,7 @@
 #include <globals/gui_params.h>
 #include <graph/curve.h>
 #include <graph/graph.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <viewwidgets/graphwidget.h>
 #include <xdirect/XDirect.h>
 #include <xdirect/analysis/XFoilTask.h>

@@ -31,7 +31,7 @@
 
 
 #include <misc/options/units.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <miarex/view/W3dPrefsDlg.h>
 #include <objects/objects3d/Surface.h>
 #include "wingseldlg.h"

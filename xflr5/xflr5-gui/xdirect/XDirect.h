@@ -80,7 +80,7 @@ class XDirect : public QWidget
     Q_OBJECT
 
 public:
-	XDirect(QWidget *parent = NULL);
+    XDirect(QWidget *parent = nullptr);
 	~XDirect();
 
 
@@ -177,7 +177,7 @@ public:
 
 	void setControls();
 	void connectSignals();
-	void createOppCurves(OpPoint *pOpp= NULL);
+    void createOppCurves(OpPoint *pOpp=nullptr);
 	void createPolarCurves();
 	void fillComboBoxes(bool bEnable = true);
 	void fillPolarCurve(Curve *pCurve, Polar *pPolar, int XVar, int YVar);
@@ -207,8 +207,8 @@ public:
 
     QVector<double> * getVariable(Polar *pPolar, int iVar);
 
-	Foil* setFoil(Foil* pFoil=NULL);
-	Polar *setPolar(Polar *pPolar=NULL);
+    Foil* setFoil(Foil* pFoil=nullptr);
+    Polar *setPolar(Polar *pPolar=nullptr);
 	OpPoint *setOpp(double Alpha=-123456789.0);
 
 	bool bPolarView() {return m_bPolarView;}

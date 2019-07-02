@@ -40,13 +40,13 @@
 #include <graph/graphdlg.h>
 #include <graph/curve.h>
 
-#include <xdirect/xmlpolarreader.h>
-#include <xdirect/xmlpolarwriter.h>
+#include <xdirect/xml/xmlpolarreader.h>
+#include <xdirect/xml/xmlpolarwriter.h>
 #include <misc/line/LineBtn.h>
 #include <misc/line/LineCbBox.h>
 #include <misc/line/LineDelegate.h>
 #include <misc/text/DoubleEdit.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <misc/PolarFilterDlg.h>
 #include <misc/ObjectPropsDlg.h>
 #include <misc/RenameDlg.h>
@@ -334,10 +334,10 @@ void XDirect::connectSignals()
     connect(m_pctrlAlphaMin, SIGNAL(editingFinished()), this, SLOT(onInputChanged()));
     connect(m_pctrlAlphaMax, SIGNAL(editingFinished()), this, SLOT(onInputChanged()));
     connect(m_pctrlAlphaDelta, SIGNAL(editingFinished()), this, SLOT(onInputChanged()));
-    connect(m_pctrlCurveStyle, SIGNAL(activated(int)), this, SLOT(onCurveStyle(int)));
-    connect(m_pctrlCurveWidth, SIGNAL(activated(int)), this, SLOT(onCurveWidth(int)));
-    connect(m_pctrlPointStyle, SIGNAL(activated(int)), this, SLOT(onCurvePoints(int)));
-    connect(m_pctrlCurveColor, SIGNAL(clickedLB()), this, SLOT(onCurveColor()));
+    connect(m_pctrlCurveStyle, SIGNAL(activated(int)),    SLOT(onCurveStyle(int)));
+    connect(m_pctrlCurveWidth, SIGNAL(activated(int)),    SLOT(onCurveWidth(int)));
+    connect(m_pctrlPointStyle, SIGNAL(activated(int)),    SLOT(onCurvePoints(int)));
+    connect(m_pctrlCurveColor, SIGNAL(clickedLB()),       SLOT(onCurveColor()));
     connect(m_pctrlSequence, SIGNAL(clicked()), this, SLOT(onSequence()));
     connect(m_pctrlViscous, SIGNAL(clicked()), this, SLOT(onViscous()));
     connect(m_pctrlStoreOpp, SIGNAL(clicked()), this, SLOT(onStoreOpp()));
@@ -1808,8 +1808,19 @@ void XDirect::onDefinePolar()
     if (res == QDialog::Accepted)
     {
         setCurPolar(new Polar());
-        QColor clr = randomColor(!Settings::isLightTheme());
-        m_pCurPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
+
+        if(Settings::s_bAlignChildrenStyle)
+        {
+            m_pCurPolar->m_Style = m_pCurFoil->m_FoilStyle;
+            m_pCurPolar->m_Width = m_pCurFoil->m_FoilWidth;
+            m_pCurPolar->setColor(m_pCurFoil->m_red, m_pCurFoil->m_green, m_pCurFoil->m_blue, m_pCurFoil->alphaChannel());
+            m_pCurPolar->m_PointStyle = m_pCurFoil->m_PointStyle;
+        }
+        else
+        {
+            QColor clr = randomColor(!Settings::isLightTheme());
+            m_pCurPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
+        }
 
         m_pCurPolar->setFoilName(m_pCurFoil->foilName());
         m_pCurPolar->setPolarName(fpDlg.m_PlrName);
@@ -2848,7 +2859,6 @@ void XDirect::onFoilGeom()
 
 
 
-
 /**
  * The user has requested to hide all OpPoints
  */
@@ -2873,11 +2883,10 @@ void XDirect::onHideAllOpps()
  */
 void XDirect::onHideAllPolars()
 {
-    Polar *pPolar;
     for (int i=0; i<m_poaPolar->size(); i++)
     {
-        pPolar = m_poaPolar->at(i);
-        pPolar->setVisible(true);
+        Polar *pPolar = m_poaPolar->at(i);
+        pPolar->setVisible(false);
     }
     emit projectModified();
     m_bResetCurves = true;
@@ -2892,10 +2901,9 @@ void XDirect::onHideAllPolars()
 void XDirect::onHideFoilPolars()
 {
     if(!m_pCurFoil) return;
-    Polar *pPolar;
     for (int i=0; i<m_poaPolar->size(); i++)
     {
-        pPolar = m_poaPolar->at(i);
+        Polar *pPolar = m_poaPolar->at(i);
         if(pPolar->foilName() == m_pCurFoil->foilName())
         {
             pPolar->setVisible(false);
@@ -2915,11 +2923,9 @@ void XDirect::onHideFoilOpps()
 {
     if(!m_pCurFoil || !m_pCurPolar) return;
 
-    OpPoint *pOpp;
-
     for(int i=0; i<m_poaOpp->size(); i++)
     {
-        pOpp = m_poaOpp->at(i);
+        OpPoint *pOpp = m_poaOpp->at(i);
         if(pOpp->foilName()==m_pCurFoil->foilName())
             pOpp->isVisible() = false;
     }
@@ -3374,7 +3380,7 @@ void XDirect::onNacaFoils()
     if (nacaDlg.exec() == QDialog::Accepted)
     {
         QString str;
-        if(nacaDlg.s_Digits>0 && log10((double)nacaDlg.s_Digits)<4)
+        if(nacaDlg.s_Digits>0 && log10(double(nacaDlg.s_Digits))<4)
             str = QString("%1").arg(nacaDlg.s_Digits,4,10,QChar('0'));
         else
             str = QString("%1").arg(nacaDlg.s_Digits);
@@ -3595,7 +3601,7 @@ void XDirect::onRenameCurPolar()
             }
             if(!bExists)
             {
-                for (l=(int)m_poaOpp->size()-1;l>=0; l--)
+                for (l=m_poaOpp->size()-1;l>=0; l--)
                 {
                     pOpp = m_poaOpp->at(l);
                     if (pOpp->polarName() == OldName &&
@@ -4373,7 +4379,7 @@ Foil* XDirect::setFoil(Foil* pFoil)
         //take the first in the array, if any
         if(m_poaFoil->size())
         {
-            setCurFoil((Foil*)m_poaFoil->at(0));
+            setCurFoil(m_poaFoil->at(0));
         }
     }
 
@@ -4876,6 +4882,12 @@ void XDirect::updateCurveStyle()
         m_pCurPolar->setPolarStyle(m_LineStyle.m_Style);
         m_pCurPolar->setPolarWidth(m_LineStyle.m_Width);
         m_pCurPolar->setPointStyle(m_LineStyle.m_PointStyle);
+
+        if(Settings::s_bAlignChildrenStyle)
+        {
+            Objects2d::setPolarChildrenStyle(m_pCurPolar);
+        }
+
         m_bResetCurves = true;
     }
     else if (!m_bPolarView && m_pCurOpp)

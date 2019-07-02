@@ -25,7 +25,7 @@
 #include <QPainter>
 #include <QFontMetrics>
 
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <globals/globals.h>
 #include <misc/text/TextClrBtn.h>
 

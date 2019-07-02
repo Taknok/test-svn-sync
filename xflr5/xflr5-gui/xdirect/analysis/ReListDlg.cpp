@@ -25,7 +25,7 @@
 #include <QStringList>
 
 #include "ReListDlg.h"
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <misc/text/DoubleEdit.h>
 #include <misc/text/FloatEditDelegate.h>
 

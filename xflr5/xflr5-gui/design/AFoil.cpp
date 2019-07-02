@@ -37,7 +37,7 @@
 #include <globals/globals.h>
 #include <globals/mainframe.h>
 #include <xdirect/XDirect.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <misc/line/LinePickerDlg.h>
 #include <misc/RenameDlg.h>
 #include <xdirect/objects2d.h>

@@ -40,7 +40,7 @@ class ManageFoilsDlg : public QDialog
     friend class MainFrame;
 
 public:
-    ManageFoilsDlg(QWidget *pParent=NULL);
+    ManageFoilsDlg(QWidget *pParent=nullptr);
     ~ManageFoilsDlg();
 
     void initDialog(QString FoilName);

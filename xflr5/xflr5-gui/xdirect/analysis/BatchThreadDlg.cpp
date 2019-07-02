@@ -36,7 +36,7 @@
 #include "XFoilAdvancedDlg.h"
 #include <globals/globals.h>
 #include <globals/gui_params.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <misc/text/DoubleEdit.h>
 #include <misc/text/IntEdit.h>
 #include <objects/objects2d/Foil.h>
@@ -405,8 +405,18 @@ Polar * BatchThreadDlg::createPolar(Foil *pFoil, double Re, double Mach, double 
     if(!pFoil) return nullptr;
 
     Polar *pNewPolar = new Polar;
-    QColor clr = randomColor(!Settings::isLightTheme());
-    pNewPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
+    if(Settings::s_bAlignChildrenStyle)
+    {
+        pNewPolar->m_Style = pFoil->m_FoilStyle;
+        pNewPolar->m_Width = pFoil->m_FoilWidth;
+        pNewPolar->setColor(pFoil->m_red, pFoil->m_green, pFoil->m_blue, pFoil->alphaChannel());
+        pNewPolar->m_PointStyle = pFoil->m_PointStyle;
+    }
+    else
+    {
+        QColor clr = randomColor(!Settings::isLightTheme());
+        pNewPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
+    }
     pNewPolar->setFoilName(pFoil->foilName());
     pNewPolar->setVisible(true);
     pNewPolar->setPolarType(m_PolarType);

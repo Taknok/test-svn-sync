@@ -34,7 +34,7 @@
 #include <xdirect/XDirect.h>
 #include <xdirect/XDirectStyleDlg.h>
 #include <graph/graphdlg.h>
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 
 #define PI 3.141592654
 

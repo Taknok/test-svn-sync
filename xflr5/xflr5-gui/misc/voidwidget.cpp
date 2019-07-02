@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 #include "voidwidget.h"
-#include <misc/options/displayoptions.h>
+#include <misc/options/settings.h>
 #include <QPainter>
 #include <QPaintEvent>
 
