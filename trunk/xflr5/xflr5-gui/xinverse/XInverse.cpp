@@ -149,9 +149,9 @@ XInverse::~XInverse()
 {
     delete m_pModFoil;
     delete m_pRefFoil;
-    //	delete m_pPertDlg;
-    //	delete m_pGraphDlg;
-    //	delete m_pXInverseStyleDlg;
+    //    delete m_pPertDlg;
+    //    delete m_pGraphDlg;
+    //    delete m_pXInverseStyleDlg;
 }
 
 /**
@@ -181,7 +181,7 @@ void XInverse::cancelSmooth()
  */
 void XInverse::cancelSpline()
 {
-    //	m_bSpline  = false;
+    //    m_bSpline  = false;
     m_bSplined = false;
     m_pctrlNewSpline->setChecked(false);
     m_bSmooth = false;
@@ -327,16 +327,16 @@ void XInverse::drawGrid(QPainter &painter, double scale)
     painter.setPen(TextPen);
 
     //neutral line first
-    //	QPen LinePen(MainFrame::m_TextColor);
-    //	painter.setPen(LinePen);
+    //    QPen LinePen(MainFrame::m_TextColor);
+    //    painter.setPen(LinePen);
 
     painter.drawLine(0, m_ptOffset.y(), m_rCltRect.right(), m_ptOffset.y());
 
     double xo            =  0.0;
     double xmin          =  0.0;
     double xmax          =  1.0;
-    //	double ymin          = -0.2;
-    //	double ymax          =  0.2;
+    //    double ymin          = -0.2;
+    //    double ymax          =  0.2;
     double XGridUnit     =  0.1;
     double XHalfGridUnit =  0.05;
     double XMinGridUnit  =  0.01;
@@ -390,7 +390,7 @@ void XInverse::execMDES()
     double qscom;
     for (int i=1; i<= m_pXFoil->nsp; i++)
     {
-        //		isp = pXFoil->nsp - i + 1;
+        //        isp = pXFoil->nsp - i + 1;
         qscom =  m_pXFoil->qinf*m_pMCurve->y[i-1];
         m_pXFoil->qspec[1][i] = qincom(qscom, m_pXFoil->qinf, m_pXFoil->tklam);
     }
@@ -432,11 +432,11 @@ bool XInverse::execQDES()
     m_pctrlOutput->append(tr("executing..."));
 
     //----- put modified info back into global arrays
-    //	int isp;
+    //    int isp;
     double qscom;
     for (int i=1; i<= m_pXFoil->nsp; i++)
     {
-        //		isp = pXFoil->nsp - i + 1;
+        //        isp = pXFoil->nsp - i + 1;
         qscom =  m_pXFoil->qinf*m_pMCurve->y[i-1];
         m_pXFoil->qspec[1][i] = qincom(qscom, m_pXFoil->qinf, m_pXFoil->tklam);
     }
@@ -868,11 +868,11 @@ void XInverse::mouseMoveEvent(QMouseEvent *event)
                 yy2 = m_pMCurve->y[m_SplineLeftPos+1];
 
                 ux = (xx0-xx1)*(xx0-xx2)*(xx1-xx2)*(xx2-xx0);
-                uy =	  yy0 *(xx1-xx2)         * (xx1-xx2) * (xx2-xx0)
+                uy =      yy0 *(xx1-xx2)         * (xx1-xx2) * (xx2-xx0)
                         - yy1 *(2.0*xx1-xx0-xx2) * (xx0-xx2) * (xx2-xx0)
                         - yy2 *(xx1-xx0)         * (xx0-xx1) * (xx0-xx2);
 
-                //				unorm = sqrt(ux*ux*scx*scx+uy*uy*scy*scy)/scx/scy;
+                //                unorm = sqrt(ux*ux*scx*scx+uy*uy*scy*scy)/scx/scy;
                 unorm = sqrt(ux*ux+uy*uy);
                 ux /= unorm;
                 uy /= unorm;
@@ -918,7 +918,7 @@ void XInverse::mouseMoveEvent(QMouseEvent *event)
                 yy2 = m_pMCurve->y[m_SplineRightPos+1];
 
                 ux = (xx0-xx1)*(xx0-xx2)*(xx1-xx2)*(xx2-xx0);
-                uy =	  yy0 *(xx1-xx2)         * (xx1-xx2) * (xx2-xx0)
+                uy =      yy0 *(xx1-xx2)         * (xx1-xx2) * (xx2-xx0)
                         - yy1 *(2.0*xx1-xx0-xx2) * (xx0-xx2) * (xx2-xx0)
                         - yy2 *(xx1-xx0)         * (xx0-xx1) * (xx0-xx2);
 
@@ -970,7 +970,7 @@ void XInverse::mouseMoveEvent(QMouseEvent *event)
     {
         if(m_QGraph.isInDrawRect(point))
         {
-            //			s_pMainFrame->statusBar()->showMessage(QString("X = %1, Y = %2").arg(m_QGraph.clientTox(event->x())).arg(m_QGraph.clientToy(event->y())));
+            //            s_pMainFrame->statusBar()->showMessage(QString("X = %1, Y = %2").arg(m_QGraph.clientTox(event->x())).arg(m_QGraph.clientToy(event->y())));
             m_pCurGraph = &m_QGraph;
         }
         else
@@ -1035,7 +1035,7 @@ void XInverse::mousePressEvent(QMouseEvent *event)
                     else
                     {
                         m_Spline.m_iSelect = CtrlPt;
-                        //						return;
+                        //                        return;
                     }
                     if (bCtrl)
                     {
@@ -1122,8 +1122,8 @@ void XInverse::mouseReleaseEvent(QMouseEvent *event)
             //preserve ratio
             w = qAbs(xu-xd);
             h = qAbs(yu-yd);
-            xw = 	m_QGraph.xMax() - m_QGraph.xMin();
-            yh = 	m_QGraph.yMax() - m_QGraph.yMin();
+            xw =     m_QGraph.xMax() - m_QGraph.xMin();
+            yh =     m_QGraph.yMax() - m_QGraph.yMin();
             xm = (xu+xd)/2.0;
             ym = (yu+yd)/2.0;
 
@@ -1255,7 +1255,7 @@ void XInverse::mouseReleaseEvent(QMouseEvent *event)
             }
             else if(m_bMark)
             {
-                //				m_pctrlOutput->append(" ");
+                //                m_pctrlOutput->append(" ");
                 if (m_Pos1 == m_Pos2) return;
 
                 m_Mk1 = m_Pos1;
@@ -1326,7 +1326,7 @@ void XInverse::onApplySpline()
         m_bSplined = true;
         for (i=1; i<= m_pXFoil->nsp; i++)
         {
-            //			isp = pXFoil->nsp - i + 1;
+            //            isp = pXFoil->nsp - i + 1;
             qscom =  m_pXFoil->qinf*m_pMCurve->y[i-1];
             m_pXFoil->qspec[1][i] = qincom(qscom,m_pXFoil->qinf,m_pXFoil->tklam);
         }
@@ -1336,7 +1336,7 @@ void XInverse::onApplySpline()
         updateView();
     }
     if(m_bZoomPlus) releaseZoom();
-    //	m_bSpline = false;
+    //    m_bSpline = false;
     m_nPos    = 0;
     m_tmpPos  = -1;
     m_Pos1    = -1;
@@ -1375,13 +1375,13 @@ void XInverse::onExecute()
     {
         setTAngle(m_pctrlTAngle->value());
         setTGap(m_pctrlTGapx->value(), m_pctrlTGapy->value());
-        //		m_pctrlOutput->append("\n");
+        //        m_pctrlOutput->append("\n");
         execMDES();
     }
     else
     {
         m_pXFoil->niterq = m_pctrlIter->value();
-        //		m_pctrlOutput->append("\n");
+        //        m_pctrlOutput->append("\n");
         execQDES();
     }
     updateView();
@@ -1390,7 +1390,7 @@ void XInverse::onExecute()
 
 
 /**
- * 	Extracts a Foil from the database for display and modification
+ *     Extracts a Foil from the database for display and modification
 */
 void XInverse::onExtractFoil()
 {
@@ -1984,7 +1984,7 @@ void XInverse::paintFoil(QPainter &painter)
     painter.save();
     QString str,str1,str2;
 
-    //	draw the scale/grid
+    //    draw the scale/grid
     if(m_bModFoil || m_bRefFoil)
     {
         drawGrid(painter, m_fScale);
@@ -2162,8 +2162,8 @@ void XInverse::resetMixedQ()
         m_pMCurve->appendPoint(m_pQCurve->x[i], m_pQCurve->y[i]);
     }
 
-    //	m_pXFoil->gamqsp(1);
-    //	CreateMCurve();
+    //    m_pXFoil->gamqsp(1);
+    //    CreateMCurve();
 }
 
 
@@ -2253,7 +2253,7 @@ void XInverse::setFoil()
         pXFile = new QFile(FileName);
         if (!pXFile->open(QIODevice::WriteOnly | QIODevice::Text)) pXFile = nullptr;
 
-        //		pXFoil->m_pOutStream->setDevice(pXFile);
+        //        pXFoil->m_pOutStream->setDevice(pXFile);
 
         m_pXFoil->InitQDES();
 
@@ -2636,7 +2636,7 @@ void XInverse::setupLayout()
             pFInvLayout->addWidget(pSmoothBox);
             pFInvLayout->addWidget(pConstraintsBox);
             pFInvLayout->addWidget(m_pctrlExec);
-            //			pFInvLayout->addStretch(1);
+            //            pFInvLayout->addStretch(1);
         }
         m_pctrlFInvWidget->setLayout(pFInvLayout);
     }
@@ -2745,7 +2745,7 @@ void XInverse::setupLayout()
                 pMaxIterLayout->addWidget(m_pctrlIter);
             }
             pFoilLayout->addLayout(pMaxIterLayout);
-            //			pFoilLayout->addStretch();
+            //            pFoilLayout->addStretch();
         }
         pFoilBox->setLayout(pFoilLayout);
     }
@@ -2771,10 +2771,10 @@ void XInverse::setupLayout()
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
         pMainLayout->addWidget(m_pctrlStackedInv);
-        //		pMainLayout->addStretch(1);
+        //        pMainLayout->addStretch(1);
 
         m_pctrlOutput = new MinTextEdit(this);
-        //		m_pctrlOutput->setEnabled(true);
+        //        m_pctrlOutput->setEnabled(true);
         m_pctrlOutput->setAcceptRichText(true);
         pMainLayout->addWidget(m_pctrlOutput);
     }
@@ -2823,7 +2823,7 @@ void XInverse::smooth(int Pos1, int Pos2)
         m_pXFoil->smooq(Pos1,Pos2,1);
         m_pXFoil->splqsp(1);
         m_pXFoil->clcalc(m_pXFoil->xcmref,m_pXFoil->ycmref);
-        //		pXFoil->lqspec = true; ?? should we
+        //        pXFoil->lqspec = true; ?? should we
     }
     createMCurve();
     m_bSmooth = false;

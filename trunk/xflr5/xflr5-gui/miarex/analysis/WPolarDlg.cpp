@@ -265,7 +265,7 @@ void WPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
     // force ignore body panels by default
     s_WPolar.bIgnoreBodyPanels()=true;
     m_pctrlIgnoreBodyPanels->setChecked(m_pPlane->body() || s_WPolar.bIgnoreBodyPanels());
-    //	if(!m_pPlane) s_WPolar.bIgnoreBodyPanels()=false;
+    //    if(!m_pPlane) s_WPolar.bIgnoreBodyPanels()=false;
 
 
     if(s_WPolar.analysisMethod()==XFLR5::LLTMETHOD)
@@ -395,9 +395,9 @@ void WPolarDlg::onArea()
     else if(m_pctrlArea3->isChecked())
     {
         s_WPolar.referenceDim() = XFLR5::MANUALREFDIM;
-        //		m_pctrlRefArea->SetValue(s_WPolar.referenceArea()Length*Units::m2toUnit());
-        //		m_pctrlRefSpan->SetValue(s_WPolar.referenceSpanLength()*Units::mtoUnit());
-        //		m_pctrlRefChord->SetValue(s_WPolar.referenceChordLength()*Units::mtoUnit());
+        //        m_pctrlRefArea->SetValue(s_WPolar.referenceArea()Length*Units::m2toUnit());
+        //        m_pctrlRefSpan->SetValue(s_WPolar.referenceSpanLength()*Units::mtoUnit());
+        //        m_pctrlRefChord->SetValue(s_WPolar.referenceChordLength()*Units::mtoUnit());
     }
 
     setWPolarName();
@@ -824,7 +824,7 @@ void WPolarDlg::setupLayout()
                 m_pctrlTiltGeom = new QCheckBox(tr("Tilt. Geom."));
                 pOptionsLayout->addWidget(m_pctrlViscous);
                 pOptionsLayout->addWidget(m_pctrlTiltGeom);
-                //			OptionsLayout->addWidget(m_pctrlIgnoreBody);
+                //            OptionsLayout->addWidget(m_pctrlIgnoreBody);
                 m_pctrlIgnoreBodyPanels = new QCheckBox(tr("Ignore Body Panels - RECOMMENDED"));
                 pOptionsLayout->addWidget(m_pctrlIgnoreBodyPanels);
                 pOptionsLayout->addStretch();

@@ -258,7 +258,7 @@ void LLTAnalysis::computeWing(double QInf, double Alpha, QString &ErrorMessage)
         if(bError) bPointOutAlpha = true;
 
         arad = (Alpha+m_Ai[m]+m_Twist[m])*PI/180.0;
-        //		arad = (s_Alpha-m_Ai[m])*PI/180.0;
+        //        arad = (s_Alpha-m_Ai[m])*PI/180.0;
         c4   = m_pWing->C4(yob, m_pWPolar->CoG().x)/m_Chord[m];
         zpos = m_pWing->ZPosition(yob*m_pWing->m_PlanformSpan/2.0)/m_Chord[m];
 
@@ -272,7 +272,7 @@ void LLTAnalysis::computeWing(double QInf, double Alpha, QString &ErrorMessage)
         Integral1           += sigma * m_Cl[m]  * m_Chord[m];
         Integral2           += eta   * m_Cl[m]  * m_Chord[m] * (m_Offset[m]+m_XCPSpanRel[m]*m_Chord[m]);
         Integral3           += eta   * m_Cl[m]  * m_Chord[m] * (zpos*m_Chord[m]);
-        //		Integral3           += eta   * m_Cl[m]  * m_Chord[m] * ((m_XCPSpanRel[m]*m_Chord[m]*cos(-m_Twist[m]*PI/180.0)+m_Offset[m]) * sin(-Alpha*PI/180.0) + (zpos*m_Chord[m]+m_XCPSpanRel[m]*m_Chord[m]*sin(-m_Twist[m]*PI/180.0)) * cos(-Alpha*PI/180.0));
+        //        Integral3           += eta   * m_Cl[m]  * m_Chord[m] * ((m_XCPSpanRel[m]*m_Chord[m]*cos(-m_Twist[m]*PI/180.0)+m_Offset[m]) * sin(-Alpha*PI/180.0) + (zpos*m_Chord[m]+m_XCPSpanRel[m]*m_Chord[m]*sin(-m_Twist[m]*PI/180.0)) * cos(-Alpha*PI/180.0));
         InducedDrag         += eta   * m_Cl[m]  * m_Chord[m] * (-m_Ai[m]);
         ViscousDrag         += eta   * m_PCd[m] * m_Chord[m];
         InducedYawingMoment += sigma * m_Cl[m]  * m_Chord[m] * (-m_Ai[m]);
@@ -317,7 +317,7 @@ void LLTAnalysis::computeWing(double QInf, double Alpha, QString &ErrorMessage)
     m_VYm = ViscousYawingMoment /m_pWing->m_GChord;
     m_IYm = InducedYawingMoment /m_pWing->m_PlanformSpan * PI * m_pWing->m_AR /180.0;
     m_GYm = m_VYm + m_IYm;
-    //	m_GCm = PitchingMoment / m_GChord / m_MAChord;
+    //    m_GCm = PitchingMoment / m_GChord / m_MAChord;
     m_VCm = VCm / m_pWing->m_GChord / m_pWing->m_MAChord;
     m_ICm = ICm / m_pWing->m_GChord / m_pWing->m_MAChord;
     m_GCm = m_VCm + m_ICm;
@@ -545,7 +545,7 @@ int LLTAnalysis::iterate(double &QInf, double Alpha)
             break;
         }
 
-        //		if(m_pCurve) m_pCurve->appendPoint(iter, m_Maxa);
+        //        if(m_pCurve) m_pCurve->appendPoint(iter, m_Maxa);
         if(m_pX && m_pY)
         {
             m_pX->append(double(iter));
@@ -561,7 +561,7 @@ int LLTAnalysis::iterate(double &QInf, double Alpha)
  * Initializes the geometric data necessary for the LLT calculation
 */
 void LLTAnalysis::initializeGeom()
-{	
+{    
     m_bWingOut = false;
     m_bConverged = false;
 
@@ -572,7 +572,7 @@ void LLTAnalysis::initializeGeom()
 
     for (int k=0; k<=s_NLLTStations; k++)
     {
-        //		y   = cos(k*PI/s_NLLTStations)* m_pWing->m_PlanformSpan/2.0;
+        //        y   = cos(k*PI/s_NLLTStations)* m_pWing->m_PlanformSpan/2.0;
         m_SpanPos[k] = m_pWing->m_PlanformSpan/2.0 * cos(double(k)*PI/double(s_NLLTStations));
     }
 
@@ -743,7 +743,7 @@ bool LLTAnalysis::QInfLoop()
             PlaneOpp *pPOpp = createPlaneOpp(QInf, m_pWPolar->m_AlphaSpec, m_bWingOut);// Adds WOpp point and adds result to polar
             if(pPOpp) m_PlaneOppList.append(pPOpp);
 
-            /*			if(m_bWingOut)
+            /*            if(m_bWingOut)
             {
                 str = QString("\n");
                 traceLog(str);
@@ -914,7 +914,7 @@ PlaneOpp* LLTAnalysis::createPlaneOpp(double QInf, double Alpha, bool bWingOut)
                 pNewPoint->m_XTrTop[l]        =  m_XTrTop[nStation-l];
                 pNewPoint->m_XTrBot[l]        =  m_XTrBot[nStation-l];
                 pNewPoint->m_BendingMoment[l] =  m_BendingMoment[nStation-l];
-                if(qAbs(m_BendingMoment[l])>qAbs(Cb))	Cb = m_BendingMoment[l];
+                if(qAbs(m_BendingMoment[l])>qAbs(Cb))    Cb = m_BendingMoment[l];
             }
 
             pNewPoint->m_MaxBending = Cb;
@@ -1590,9 +1590,9 @@ double LLTAnalysis::getPlrPointFromAlpha(Foil const*pFoil, double Re, double Alp
         return Var;
     }
 
-    //	bOutRe = true;
-    //	bError = true;
-    //	return 0.000;// we missed something somewhere...
+    //    bOutRe = true;
+    //    bError = true;
+    //    return 0.000;// we missed something somewhere...
 }
 
 

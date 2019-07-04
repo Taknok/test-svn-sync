@@ -31,36 +31,36 @@
 class DoubleEdit : public QLineEdit
 {
 public:
-	DoubleEdit(QWidget *pParent=NULL);
-	DoubleEdit(double val, int decimals=2, QWidget *pParent=NULL);
+    DoubleEdit(QWidget *pParent=NULL);
+    DoubleEdit(double val, int decimals=2, QWidget *pParent=NULL);
 
-	~DoubleEdit() {delete m_pDV;}
+    ~DoubleEdit() {delete m_pDV;}
 
-	void focusOutEvent ( QFocusEvent * event );
-	void keyPressEvent(QKeyEvent *event);
-	QSize sizeHint() const;
+    void focusOutEvent ( QFocusEvent * event );
+    void keyPressEvent(QKeyEvent *event);
+    QSize sizeHint() const;
 
-	double value(){return m_Value;}
-	void setValue(double val);
-
-
-	void setValueNoFormat(double val);
-
-	void formatValue();
-	double readValue();
-	void setMin(double min) {m_pDV->setBottom(min);}
-	void setMax(double max) {m_pDV->setTop(max);}
+    double value(){return m_Value;}
+    void setValue(double val);
 
 
-	void setPrecision(int decimals) {m_pDV->setDecimals(decimals);}
+    void setValueNoFormat(double val);
 
-	void setNotation(QDoubleValidator::Notation notation) {m_pDV->setNotation(notation);}
+    void formatValue();
+    double readValue();
+    void setMin(double min) {m_pDV->setBottom(min);}
+    void setMax(double max) {m_pDV->setTop(max);}
 
-	int precision(){return m_pDV->decimals();}
+
+    void setPrecision(int decimals) {m_pDV->setDecimals(decimals);}
+
+    void setNotation(QDoubleValidator::Notation notation) {m_pDV->setNotation(notation);}
+
+    int precision(){return m_pDV->decimals();}
 
 public:
-	QDoubleValidator *m_pDV;
-	double m_Value;//we need to store a full precision value, irrespective of the display
+    QDoubleValidator *m_pDV;
+    double m_Value;//we need to store a full precision value, irrespective of the display
 };
 
 #endif // DOUBLEEDIT_H

@@ -52,7 +52,7 @@ void IntEdit::focusOutEvent (QFocusEvent *event)
 {
     readValue();
     formatValue();
-    //	emit(editingFinished()); //is emitted by call to base class
+    //    emit(editingFinished()); //is emitted by call to base class
     QLineEdit::focusOutEvent(event);
 }
 
@@ -61,7 +61,7 @@ int IntEdit::readValue()
 {
     bool bOK;
     int val = locale().toInt(text().trimmed(), &bOK);
-    //	int val = text().toInt(&bOK);
+    //    int val = text().toInt(&bOK);
     if(bOK) m_Value = val;
     return m_Value;
 }

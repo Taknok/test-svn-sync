@@ -49,7 +49,7 @@ XDirect* GraphTileWidget::s_pXDirect = nullptr;
 
 GraphTileWidget::GraphTileWidget(QWidget *parent) : QWidget(parent)
 {
-    //	setMouseTracking(true);
+    //    setMouseTracking(true);
     m_pLegendWidget = nullptr;
     m_pMainSplitter = nullptr;
 
@@ -169,9 +169,9 @@ void GraphTileWidget::contextMenuEvent (QContextMenuEvent *event)
 
 void GraphTileWidget::keyPressEvent(QKeyEvent *event)
 {
-    //	bool bShift = false;
+    //    bool bShift = false;
     bool bCtrl  = false;
-    //	if(event->modifiers() & Qt::ShiftModifier)   bShift =true;
+    //    if(event->modifiers() & Qt::ShiftModifier)   bShift =true;
     if(event->modifiers() & Qt::ControlModifier) bCtrl =true;
     switch (event->key())
     {
@@ -198,7 +198,7 @@ void GraphTileWidget::keyPressEvent(QKeyEvent *event)
                 {
                     if (s_pMiarex->m_iView==XFLR5::WOPPVIEW)   m_iPOppIndex = iGraph;
                     if (s_pMiarex->m_iView==XFLR5::WPOLARVIEW) m_iWPolarIndex = iGraph;
-                    if (s_pMiarex->m_iView==XFLR5::WCPVIEW && iGraph>0)	return;
+                    if (s_pMiarex->m_iView==XFLR5::WCPVIEW && iGraph>0)    return;
                     if (s_pMiarex->m_iView==XFLR5::STABPOLARVIEW)
                     {
                         if(iGraph>1) return;

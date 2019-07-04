@@ -119,7 +119,7 @@ private:
 public:
     static bool s_bWindowMaximized;
     static QPoint s_WindowPosition;   /**< the position on the client area of the dialog's topleft corner */
-    static QSize s_WindowSize;	 /**< the window size in the client area */
+    static QSize s_WindowSize;     /**< the window size in the client area */
     static QByteArray m_HorizontalSplitterSizes;
 
     QPixmap m_PixText;

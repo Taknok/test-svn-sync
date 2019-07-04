@@ -312,7 +312,7 @@ bool XFoilTask::alphaSequence()
         SpMax = m_AlphaMin;
         SpInc = -SpInc;
     }
-    //		strong+="\n";
+    //        strong+="\n";
     return true;
 }
 
@@ -421,7 +421,7 @@ bool XFoilTask::iterate()
     if(!m_XFoilInstance.viscal())
     {
         m_XFoilInstance.lvconv = false;
-        //		QString str =QObject::tr("CpCalc: local speed too large\n Compressibility corrections invalid");
+        //        QString str =QObject::tr("CpCalc: local speed too large\n Compressibility corrections invalid");
         return false;
     }
 
@@ -532,9 +532,9 @@ void XFoilTask::addXFoilData(OpPoint *pOpp, XFoil *pXFoil, Foil *pFoil)
 
     for (int k=0; k<pXFoil->n; k++)
     {
-        //		x[k]   = m_pXFoil->x[k+1];
-        //		y[k]   = m_pXFoil->y[k+1];
-        //		s[k]   = m_pXFoil->s[k+1];
+        //        x[k]   = m_pXFoil->x[k+1];
+        //        y[k]   = m_pXFoil->y[k+1];
+        //        s[k]   = m_pXFoil->s[k+1];
         pOpp->Cpi[k] = pXFoil->cpi[k+1];
         pOpp->Qi[k]  = pXFoil->qgamm[k+1];
     }
@@ -559,12 +559,12 @@ void XFoilTask::addXFoilData(OpPoint *pOpp, XFoil *pXFoil, Foil *pFoil)
     if(pOpp->m_bTEFlap || pOpp->m_bLEFlap)
     {
         pOpp->setHingeMoments(pFoil);
-        /*		m_TEHMom = m_pXFoil->hmom;
+        /*        m_TEHMom = m_pXFoil->hmom;
         XForce   = m_pXFoil->hfx;
         YForce   = m_pXFoil->hfy;*/
     }
 
-    if(!pXFoil->lvisc || !pXFoil->lvconv)	return;
+    if(!pXFoil->lvisc || !pXFoil->lvconv)    return;
 
     //---- add boundary layer on both sides of airfoil
     pOpp->blx.nd1=0;

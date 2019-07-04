@@ -261,7 +261,7 @@ void XDirect::setControls()
     s_pMainFrame->m_pOpPointsAct->setChecked(!m_bPolarView);
     s_pMainFrame->m_pPolarsAct->setChecked(m_bPolarView);
 
-    //	s_pMainFrame->m_pShowPanels->setChecked(m_bShowPanels);
+    //    s_pMainFrame->m_pShowPanels->setChecked(m_bShowPanels);
     s_pMainFrame->m_pShowNeutralLine->setChecked(m_bNeutralLine);
     s_pMainFrame->m_pShowInviscidCurve->setChecked(m_bShowInviscid);
     s_pMainFrame->m_pShowCurOppOnly->setChecked(m_bCurOppOnly);
@@ -275,7 +275,7 @@ void XDirect::setControls()
     m_pctrlShowBL->setEnabled(!m_bPolarView && m_pCurOpp);
     m_pctrlAnimate->setEnabled(!m_bPolarView && m_pCurOpp);
     m_pctrlAnimateSpeed->setEnabled(!m_bPolarView && m_pCurOpp && m_pctrlAnimate->isChecked());
-    //	m_pctrlHighlightOpp->setEnabled(m_bPolar);
+    //    m_pctrlHighlightOpp->setEnabled(m_bPolar);
 
     s_pMainFrame->m_pCurrentFoilMenu->setEnabled(m_pCurFoil);
     s_pMainFrame->m_pCurrentFoilMenu_OperFoilCtxMenu->setEnabled(m_pCurFoil);
@@ -341,9 +341,9 @@ void XDirect::connectSignals()
     connect(m_pctrlSequence, SIGNAL(clicked()), this, SLOT(onSequence()));
     connect(m_pctrlViscous, SIGNAL(clicked()), this, SLOT(onViscous()));
     connect(m_pctrlStoreOpp, SIGNAL(clicked()), this, SLOT(onStoreOpp()));
-    //	connect(m_pctrlShowPoints, SIGNAL(clicked()), this, SLOT(onShowCurvePoints()));
+    //    connect(m_pctrlShowPoints, SIGNAL(clicked()), this, SLOT(onShowCurvePoints()));
     connect(m_pctrlShowCurve, SIGNAL(clicked()), this, SLOT(onShowCurve()));
-    //	connect(m_pctrlHighlightOpp, SIGNAL(clicked()), this, SLOT(OnHighlightOpp()));
+    //    connect(m_pctrlHighlightOpp, SIGNAL(clicked()), this, SLOT(OnHighlightOpp()));
 
     connect(m_pctrlAnimate, SIGNAL(clicked(bool)), this, SLOT(onAnimate(bool)));
     connect(m_pctrlAnimateSpeed, SIGNAL(sliderMoved(int)), this, SLOT(onAnimateSpeed(int)));
@@ -405,7 +405,7 @@ void XDirect::createOppCurves(OpPoint *pOpp)
         {
             pCurve1    = m_CpGraph.addCurve();
 
-            //				pCurve1->setPoints(pOpp->pointStyle());
+            //                pCurve1->setPoints(pOpp->pointStyle());
             pCurve1->setLineStyle(pOpp->oppStyle(), pOpp->oppWidth(), colour(pOpp), pOpp->pointStyle(), pOpp->isVisible());
             pCurve1->setCurveName(pOpp->opPointName());
 
@@ -466,7 +466,7 @@ void XDirect::createPolarCurves()
                     fillPolarCurve(pCurve[ig], pPolar, m_PlrGraph[ig]->xVariable(), m_PlrGraph[ig]->yVariable());
                     pCurve[ig]->setCurveName(pPolar->polarName());
 
-                    /*					if(m_PlrGraph[ig]->yVariable() == 6)	pTr2Curve = m_PlrGraph[ig]->addCurve();
+                    /*                    if(m_PlrGraph[ig]->yVariable() == 6)    pTr2Curve = m_PlrGraph[ig]->addCurve();
                     else                                    pTr2Curve = nullptr;
                     if(pTr2Curve)
                     {
@@ -521,7 +521,7 @@ void XDirect::fillComboBoxes(bool bEnable)
     m_pPointDelegate->setPointStyle(PointStyle);
     m_pPointDelegate->setLineColor(m_LineStyle.m_Color);
 
-/*	m_pctrlCurveStyle->setLine(m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
+/*    m_pctrlCurveStyle->setLine(m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
     m_pctrlCurveWidth->setLine(m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
     m_pctrlPointStyle->setLine(m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
 
@@ -1056,8 +1056,8 @@ void XDirect::keyPressEvent(QKeyEvent *pEvent)
 {
     bool bShift = false;
     if(pEvent->modifiers() & Qt::ShiftModifier)   bShift =true;
-    bool bCtrl = false;
-    if(pEvent->modifiers() & Qt::ControlModifier)   bCtrl =true;
+//    bool bCtrl = false;
+//    if(pEvent->modifiers() & Qt::ControlModifier)   bCtrl =true;
 
     switch (pEvent->key())
     {
@@ -1348,7 +1348,7 @@ void XDirect::loadSettings(QSettings &settings)
 
     for(int ig=0; ig<MAXPOLARGRAPHS; ig++)
     {
-        //		Graph *pGraph = m_PlrGraph[ig];
+        //        Graph *pGraph = m_PlrGraph[ig];
         setGraphTitles(m_PlrGraph[ig]);
     }
     m_pOpPointWidget->loadSettings(settings);
@@ -1410,7 +1410,7 @@ void XDirect::onAnimate(bool bChecked)
         if(m_posAnimate<0 || m_posAnimate>=m_poaOpp->size()) return;
         OpPoint* pOpPoint = m_poaOpp->at(m_posAnimate);
         if(pOpPoint) setOpp(pOpPoint->aoa());
-        //		UpdateView();
+        //        UpdateView();
         return;
     }
 }
@@ -1628,7 +1628,7 @@ void XDirect::onBatchAnalysis()
  */
 void XDirect::onMultiThreadedBatchAnalysis()
 {
-    if(!m_pCurFoil) 		return;
+    if(!m_pCurFoil)         return;
 
     if(QThread::idealThreadCount()<2)
     {
@@ -1706,7 +1706,7 @@ void XDirect::onCpGraph()
     onOpPointView();
     if(m_CpGraph.yVariable()!=0)
     {
-        //		m_pCpGraph->ResetLimits();
+        //        m_pCpGraph->ResetLimits();
         m_CpGraph.setAuto(true);
         m_CpGraph.setYVariable(0);
     }
@@ -1854,9 +1854,9 @@ void XDirect::onDeleteCurFoil()
 
 
     Foil*pNextFoil = Objects2d::deleteFoil(m_pCurFoil);
-    //	setCurFoil(pNextFoil);
-    //	setCurOpp(nullptr);
-    //	setCurPolar(nullptr);
+    //    setCurFoil(pNextFoil);
+    //    setCurOpp(nullptr);
+    //    setCurPolar(nullptr);
     setFoil(pNextFoil);
 
     s_pMainFrame->updateFoilListBox();
@@ -2070,7 +2070,7 @@ void XDirect::onDeleteFoilPolars()
 void XDirect::onCadd()
 {
     stopAnimate();
-    if(!m_pCurFoil)	return;
+    if(!m_pCurFoil)    return;
     onOpPointView();
 
     Foil *pCurFoil = curFoil(); //keep a reference to restore eventually
@@ -2248,7 +2248,7 @@ void XDirect::onExportBLData()
 
     QString fileName,  OutString, strong;
 
-    double xBL[IVX][ISX],Hk[IVX][ISX],UeVinf[IVX][ISX], Cf[IVX][ISX], Cd[IVX][ISX], AA0[IVX][ISX];
+    double xBL[IVX][ISX], UeVinf[IVX][ISX], Cf[IVX][ISX], Cd[IVX][ISX], AA0[IVX][ISX];
     double DStar[IVX][ISX], Theta[IVX][ISX];
     double uei;
     double que = 0.5*m_XFoil.QInf()*m_XFoil.QInf();
@@ -2292,14 +2292,14 @@ void XDirect::onExportBLData()
                 .arg(m_pCurOpp->aoa(), 5, 'f',1)
                 .arg(m_pCurOpp->Reynolds(), 8, 'f',0)
                 .arg(m_pCurOpp->Mach(), 6, 'f',4)
-                .arg(m_pCurOpp->ACrit, 4, 'f',1);	out << (strong);
+                .arg(m_pCurOpp->ACrit, 4, 'f',1);    out << (strong);
 
 
     nside1 = m_pCurOpp->blx.nside1;
     nside2 = m_pCurOpp->blx.nside2;
 
-    for (ibl=2; ibl<= nside1;ibl++)	xBL[ibl][1] = m_pCurOpp->blx.xbl[ibl][1];
-    for (ibl=2; ibl<= nside2;ibl++)	xBL[ibl][2] = m_pCurOpp->blx.xbl[ibl][2];
+    for (ibl=2; ibl<= nside1;ibl++)    xBL[ibl][1] = m_pCurOpp->blx.xbl[ibl][1];
+    for (ibl=2; ibl<= nside2;ibl++)    xBL[ibl][2] = m_pCurOpp->blx.xbl[ibl][2];
 
     //write top first
     for (ibl=2; ibl<= nside1;ibl++)
@@ -2315,15 +2315,15 @@ void XDirect::onExportBLData()
                 / (1.0-m_pCurOpp->blx.tklam*(uei/m_pCurOpp->blx.qinf)*(uei/m_pCurOpp->blx.qinf));
     }
     //---- fill compressible ue arrays
-    for (ibl=2; ibl<= nside1;ibl++)	Cf[ibl][1] = m_pCurOpp->blx.tau[ibl][1] / que;
-    for (ibl=2; ibl<= nside2;ibl++)	Cf[ibl][2] = m_pCurOpp->blx.tau[ibl][2] / que;
+    for (ibl=2; ibl<= nside1;ibl++)    Cf[ibl][1] = m_pCurOpp->blx.tau[ibl][1] / que;
+    for (ibl=2; ibl<= nside2;ibl++)    Cf[ibl][2] = m_pCurOpp->blx.tau[ibl][2] / que;
 
     //---- fill compressible ue arrays
-    for (ibl=2; ibl<= nside1;ibl++)	Cd[ibl][1] = m_pCurOpp->blx.dis[ibl][1] / qrf/ qrf/ qrf;
-    for (ibl=2; ibl<= nside2;ibl++)	Cd[ibl][2] = m_pCurOpp->blx.dis[ibl][2] / qrf/ qrf/ qrf;
+    for (ibl=2; ibl<= nside1;ibl++)    Cd[ibl][1] = m_pCurOpp->blx.dis[ibl][1] / qrf/ qrf/ qrf;
+    for (ibl=2; ibl<= nside2;ibl++)    Cd[ibl][2] = m_pCurOpp->blx.dis[ibl][2] / qrf/ qrf/ qrf;
     //NPlot
-    for (ibl=2; ibl< nside1;ibl++)	AA0[ibl][1] = m_pCurOpp->blx.ctau[ibl][1];
-    for (ibl=2; ibl< nside2;ibl++)	AA0[ibl][2] = m_pCurOpp->blx.ctau[ibl][2];
+    for (ibl=2; ibl< nside1;ibl++)    AA0[ibl][1] = m_pCurOpp->blx.ctau[ibl][1];
+    for (ibl=2; ibl< nside2;ibl++)    AA0[ibl][2] = m_pCurOpp->blx.ctau[ibl][2];
 
     for (ibl=2; ibl<= nside1; ibl++)
     {
@@ -2520,7 +2520,7 @@ void XDirect::onSaveFoilPolars()
  */
 void XDirect::onExportCurFoil()
 {
-    if(!m_pCurFoil)	return;
+    if(!m_pCurFoil)    return;
 
     QString FileName;
 
@@ -2551,7 +2551,7 @@ void XDirect::onExportCurFoil()
  */
 void XDirect::onExportCurOpp()
 {
-    if(!m_pCurFoil || !m_pCurPolar || !m_pCurOpp)	return;
+    if(!m_pCurFoil || !m_pCurPolar || !m_pCurOpp)    return;
 
     QString FileName;
 
@@ -2703,7 +2703,7 @@ void XDirect::onExportPolarOpps()
  */
 void XDirect::onExportCurPolar()
 {
-    if(!m_pCurFoil || !m_pCurPolar)	return;
+    if(!m_pCurFoil || !m_pCurPolar)    return;
 
     QString FileName, filter;
 
@@ -2740,7 +2740,7 @@ void XDirect::onExportCurPolar()
  */
 void XDirect::onFoilCoordinates()
 {
-    if(!m_pCurFoil)	return;
+    if(!m_pCurFoil)    return;
     stopAnimate();
     onOpPointView();
 
@@ -2814,7 +2814,7 @@ void XDirect::onFoilCoordinates()
  */
 void XDirect::onFoilGeom()
 {
-    if(!m_pCurFoil)	return;
+    if(!m_pCurFoil)    return;
 
     stopAnimate();
     onOpPointView();
@@ -3121,9 +3121,9 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
         {
             if(strong.length())
             {
-                //				textline = strong.toLatin1();
-                //				text = textline.constData();
-                //				res = sscanf(text, "%lf%lf%lf%lf%lf%lf%lf%lf%lf", &alpha, &CL, &CD, &CDp, &CM, &Xt, &Xb, &Cpmn, &HMom);
+                //                textline = strong.toLatin1();
+                //                text = textline.constData();
+                //                res = sscanf(text, "%lf%lf%lf%lf%lf%lf%lf%lf%lf", &alpha, &CL, &CD, &CDp, &CM, &Xt, &Xb, &Cpmn, &HMom);
 
                 //Do this the C++ way
                 QStringList values = strong.split(" ", QString::SkipEmptyParts);
@@ -3191,7 +3191,7 @@ void XDirect::onImportJavaFoilPolar()
     PathName = QFileDialog::getOpenFileName(s_pMainFrame, tr("Open File"),
                                             Settings::s_LastDirName,
                                             tr("JavaFoil Polar Format (*.*)"));
-    if(!PathName.length())		return ;
+    if(!PathName.length())        return ;
     int pos = PathName.lastIndexOf("/");
     if(pos>0) Settings::s_LastDirName = PathName.left(pos);
 
@@ -3253,8 +3253,8 @@ void XDirect::onImportJavaFoilPolar()
             setCurPolar(pPolar);
             NPolars++;
 
-            if(!ReadAVLString(in, Line, strong)) break;//?	Cl	Cd	Cm 0.25	TU	TL	SU	SL	L/D
-            if(!ReadAVLString(in, Line, strong)) break;//[?]	[-]	[-]	[-]	[-]	[-]	[-]	[-]	[-]
+            if(!ReadAVLString(in, Line, strong)) break;//?    Cl    Cd    Cm 0.25    TU    TL    SU    SL    L/D
+            if(!ReadAVLString(in, Line, strong)) break;//[?]    [-]    [-]    [-]    [-]    [-]    [-]    [-]    [-]
 
             res = 6;
             while(res==6)
@@ -3270,7 +3270,7 @@ void XDirect::onImportJavaFoilPolar()
                     text = textline.constData();
 
                     res = sscanf(text, "%lf%lf%lf%lf%lf%lf",&alpha, &CL, &CD, &CM, &Xt, &Xb);
-                    if (res == 6) 	pPolar->addPoint(alpha, CD, 0.0, CL, CM, Xt, Xb, 0.0, 0.0, Re,0.0);
+                    if (res == 6)     pPolar->addPoint(alpha, CD, 0.0, CL, CM, Xt, Xb, 0.0, 0.0, Re,0.0);
                 }
                 else
                 {
@@ -3483,7 +3483,7 @@ void XDirect::onPolarFilter()
 */
 void XDirect::onRefinePanelsGlobally()
 {
-    if(!m_pCurFoil)	return;
+    if(!m_pCurFoil)    return;
     stopAnimate();
 
     onOpPointView();
@@ -3502,7 +3502,7 @@ void XDirect::onRefinePanelsGlobally()
     tdpDlg.m_pBufferFoil = pNewFoil;
     tdpDlg.m_pMemFoil    = pCurFoil;
     int psState = pNewFoil->foilPointStyle();
-    if(psState==0)	pNewFoil->foilPointStyle() = 1;
+    if(psState==0)    pNewFoil->foilPointStyle() = 1;
 
     updateView();
 
@@ -3664,9 +3664,9 @@ void XDirect::onRenameCurPolar()
             return ;//cancelled
         }
     }
-    //	setCurPolar(nullptr);
-    //	setCurOpp(nullptr);
-    //	SetPolar();
+    //    setCurPolar(nullptr);
+    //    setCurOpp(nullptr);
+    //    SetPolar();
     s_pMainFrame->updatePolarListBox();
     updateView();
 }
@@ -3784,7 +3784,7 @@ void XDirect::onSetFlap()
 
     if(QDialog::Accepted == flpDlg.exec())
     {
-        //		pNewFoil->copyFoil(curFoil());
+        //        pNewFoil->copyFoil(curFoil());
         setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
 
         setCurOpp(pOpPoint);
@@ -3815,7 +3815,7 @@ void XDirect::onSetFlap()
  */
 void XDirect::onSetLERadius()
 {
-    if(!m_pCurFoil)	return;
+    if(!m_pCurFoil)    return;
     stopAnimate();
     onOpPointView();
 
@@ -3863,7 +3863,7 @@ void XDirect::onSetLERadius()
  */
 void XDirect::onSetTEGap()
 {
-    if(!m_pCurFoil)	return;
+    if(!m_pCurFoil)    return;
     stopAnimate();
     onOpPointView();
 
@@ -4265,8 +4265,8 @@ void XDirect::setAnalysisParams()
     m_pctrlViscous->setChecked(s_bViscous);
     m_pctrlInitBL->setChecked(s_bInitBL);
     m_pctrlStoreOpp->setChecked(s_bStoreOpp);
-    //	m_pctrlShowPressure->setChecked(m_bPressure);
-    //	m_pctrlShowBL->setChecked(m_bBL);
+    //    m_pctrlShowPressure->setChecked(m_bPressure);
+    //    m_pctrlShowBL->setChecked(m_bBL);
 
     if(m_pCurPolar)
     {
@@ -4400,12 +4400,12 @@ Foil* XDirect::setFoil(Foil* pFoil)
         }
         else if (m_pCurPolar && m_pCurPolar->foilName() !=m_pCurFoil->foilName())
         {
-            //			setCurPolar(nullptr);
-            //			setCurOpp(nullptr);
+            //            setCurPolar(nullptr);
+            //            setCurOpp(nullptr);
         }
         else if (m_pCurOpp && m_pCurOpp->foilName()  !=m_pCurFoil->foilName())
         {
-            //			setCurOpp(nullptr);
+            //            setCurOpp(nullptr);
         }
     }
 
@@ -4480,7 +4480,7 @@ Polar * XDirect::setPolar(Polar *pPolar)
         m_pctrlInitBL->setChecked(s_bInitBL);
     }
 
-    //	m_XFoil.InitXFoilAnalysis(m_pCurPolar, s_bViscous); //useless, will be done in XFoilTask
+    //    m_XFoil.InitXFoilAnalysis(m_pCurPolar, s_bViscous); //useless, will be done in XFoilTask
     m_bResetCurves = true;
     setAnalysisParams();
     setOpp();
@@ -4609,7 +4609,7 @@ void XDirect::setOpPointSequence()
     else if(m_pCurPolar && m_pCurPolar->polarType()==XFLR5::FIXEDAOAPOLAR)
     {
         m_pctrlSpec3->setChecked(true);
-        s_bAlpha = true;		// no choice with type 4 polars
+        s_bAlpha = true;        // no choice with type 4 polars
         m_pctrlAlphaMin->setValue(m_Reynolds);
         m_pctrlAlphaMax->setValue(m_ReynoldsMax);
         m_pctrlAlphaDelta->setValue(m_ReynoldsDelta);
@@ -4828,7 +4828,7 @@ void XDirect::setupLayout()
 
             pCurveGroup->addLayout(pCurveDisplay);
             pCurveGroup->addLayout(CurveStyleLayout);
-            //			pCurveGroup->addStretch(1);
+            //            pCurveGroup->addStretch(1);
         }
         pCurveBox->setLayout(pCurveGroup);
     }
@@ -4841,11 +4841,11 @@ void XDirect::setupLayout()
         m_pctrlMiddleControls->addWidget(pPolarPropsFrame);
 
         pMainLayout->addWidget(pAnalysisBox);
-        //		pMainLayout->addStretch(1);
+        //        pMainLayout->addStretch(1);
         pMainLayout->addWidget(m_pctrlMiddleControls);
-        //		pMainLayout->addStretch(1);
+        //        pMainLayout->addStretch(1);
         pMainLayout->addWidget(pCurveBox);
-        //		pMainLayout->addStretch(1);
+        //        pMainLayout->addStretch(1);
     }
 
     setLayout(pMainLayout);
@@ -5071,7 +5071,7 @@ void XDirect::onImportXMLAnalysis()
     PathName = QFileDialog::getOpenFileName(s_pMainFrame, tr("Open XML File"),
                                             Settings::s_LastDirName,
                                             tr("Analysis XML file")+"(*.xml)");
-    if(!PathName.length())		return ;
+    if(!PathName.length())        return ;
     int pos = PathName.lastIndexOf("/");
     if(pos>0) Settings::s_LastDirName = PathName.left(pos);
 

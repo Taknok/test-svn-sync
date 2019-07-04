@@ -36,109 +36,109 @@
 
 XFLR5Application::XFLR5Application(int &argc, char** argv) : QApplication(argc, argv)
 {
-	setApplicationDisplayName(VERSIONNAME);
-	setApplicationName(VERSIONNAME);
-//	setDesktopFileName(VERSIONNAME);
+    setApplicationDisplayName(VERSIONNAME);
+    setApplicationName(VERSIONNAME);
+//    setDesktopFileName(VERSIONNAME);
 
-	QPixmap pixmap;
-	pixmap.load(":/images/splash.png");
-	QSplashScreen splash(pixmap);
-	splash.setWindowFlags(Qt::SplashScreen);
-	splash.show();
+    QPixmap pixmap;
+    pixmap.load(":/images/splash.png");
+    QSplashScreen splash(pixmap);
+    splash.setWindowFlags(Qt::SplashScreen);
+    splash.show();
 
-	QString StyleName;
-	QString LanguagePath ="";
+    QString StyleName;
+    QString LanguagePath ="";
 
-	QString str;
-	int a,b,c,d,k;
-	a=150;
-	b=50;
-	c=800;
-	d=700;
+    QString str;
+    int a,b,c,d,k;
+    a=150;
+    b=50;
+    c=800;
+    d=700;
 
 
 #if defined Q_OS_MAC && defined MAC_NATIVE_PREFS
     QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #elif defined Q_OS_LINUX
-	QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
+    QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
 #else
-	QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
+    QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
 #endif
 
     qsrand(uint(time(nullptr)));
 
-	bool bMaximized = true;
-	bool bOK;
-	settings.beginGroup("MainFrame");
-	{
-		k = settings.value("FrameGeometryx").toInt(&bOK);
-		if(bOK) a = k;
-		k = settings.value("FrameGeometryy").toInt(&bOK);
-		if(bOK) b = k;
-		k = settings.value("SizeWidth").toInt(&bOK);
-		if(bOK) c = k;
-		k = settings.value("SizeHeight").toInt(&bOK);
-		if(bOK) d = k;
+    bool bMaximized = true;
+    bool bOK;
+    settings.beginGroup("MainFrame");
+    {
+        k = settings.value("FrameGeometryx").toInt(&bOK);
+        if(bOK) a = k;
+        k = settings.value("FrameGeometryy").toInt(&bOK);
+        if(bOK) b = k;
+        k = settings.value("SizeWidth").toInt(&bOK);
+        if(bOK) c = k;
+        k = settings.value("SizeHeight").toInt(&bOK);
+        if(bOK) d = k;
 
-		bMaximized = settings.value("SizeMaximized").toBool();
+        bMaximized = settings.value("SizeMaximized").toBool();
 
-		str = settings.value("LanguageFilePath").toString();
-		if(str.length()) LanguagePath = str;
+        str = settings.value("LanguageFilePath").toString();
+        if(str.length()) LanguagePath = str;
 
-		str = settings.value("StyleName").toString();
-		if(str.length()) StyleName = str;
-	}
-	settings.endGroup();
+        str = settings.value("StyleName").toString();
+        if(str.length()) StyleName = str;
+    }
+    settings.endGroup();
 
     QTranslator xflr5Translator;
-	if(LanguagePath.length())
-	{
-		if(xflr5Translator.load(LanguagePath)) installTranslator(&xflr5Translator);
+    if(LanguagePath.length())
+    {
+        if(xflr5Translator.load(LanguagePath)) installTranslator(&xflr5Translator);
     }
 
-	QPoint pt(a,b);
-	QSize sz(c,d);
+    QPoint pt(a,b);
+    QSize sz(c,d);
 
-	if(StyleName.length())	qApp->setStyle(StyleName);
-	MainFrame *w = MainFrame::self();
-	MainFrame::self()->resize(sz);
-	MainFrame::self()->move(pt);
-	if(bMaximized)	MainFrame::self()->showMaximized();
-	else            MainFrame::self()->show();
-	splash.finish(w);
+    if(StyleName.length())    qApp->setStyle(StyleName);
+    MainFrame *w = MainFrame::self();
+    MainFrame::self()->resize(sz);
+    MainFrame::self()->move(pt);
+    if(bMaximized)    MainFrame::self()->showMaximized();
+    else            MainFrame::self()->show();
+    splash.finish(w);
 
 
 #ifndef Q_OS_MAC
-	if(argc>1)
-	{
-		QString PathName, Extension;
-		PathName=argv[1];
-		PathName.replace("'","");
-		QFileInfo fi(PathName);
-		Extension = fi.suffix();
+    if(argc>1)
+    {
+        QString PathName, Extension;
+        PathName=argv[1];
+        PathName.replace("'","");
+        QFileInfo fi(PathName);
+        Extension = fi.suffix();
 
-		if (Extension.compare("xfl",Qt::CaseInsensitive)==0 || Extension.compare("wpa",Qt::CaseInsensitive)==0 ||
-			Extension.compare("plr",Qt::CaseInsensitive)==0 || Extension.compare("dat",Qt::CaseInsensitive)==0)
+        if (Extension.compare("xfl",Qt::CaseInsensitive)==0 || Extension.compare("wpa",Qt::CaseInsensitive)==0 ||
+            Extension.compare("plr",Qt::CaseInsensitive)==0 || Extension.compare("dat",Qt::CaseInsensitive)==0)
         {
-			int iApp = w->loadXFLR5File(PathName);
+            int iApp = w->loadXFLR5File(PathName);
 
-			if (iApp == XFLR5::MIAREX)             w->onMiarex();
-			else if (iApp == XFLR5::XFOILANALYSIS) w->onXDirect();
+            if (iApp == XFLR5::MIAREX)             w->onMiarex();
+            else if (iApp == XFLR5::XFOILANALYSIS) w->onXDirect();
         }
     }
-	else
-	{
-		if(w->bAutoLoadLast())
-		{
-			w->onLoadLastProject();
-		}
-	}
+    else
+    {
+        if(w->bAutoLoadLast())
+        {
+            w->onLoadLastProject();
+        }
+    }
 #else
-	if(w->bAutoLoadLast() && !MainFrame::projectName().length())
-	{
-		// if nothing has been loaded, load the last project file
-		w->onLoadLastProject();
-	}
+    if(w->bAutoLoadLast() && !MainFrame::projectName().length())
+    {
+        // if nothing has been loaded, load the last project file
+        w->onLoadLastProject();
+    }
 #endif
 
     addStandardBtnStrings();
@@ -171,22 +171,22 @@ void XFLR5Application::addStandardBtnStrings()
 
 bool XFLR5Application::event(QEvent *event)
 {
-	int iApp;
-	switch (event->type())
-	{
-		case QEvent::FileOpen:
-		{
-			iApp = MainFrame::self()->loadXFLR5File(static_cast<QFileOpenEvent *>(event)->file());
-			if (iApp == XFLR5::MIAREX)             MainFrame::self()->onMiarex();
-			else if (iApp == XFLR5::XFOILANALYSIS) MainFrame::self()->onXDirect();
+    int iApp;
+    switch (event->type())
+    {
+        case QEvent::FileOpen:
+        {
+            iApp = MainFrame::self()->loadXFLR5File(static_cast<QFileOpenEvent *>(event)->file());
+            if (iApp == XFLR5::MIAREX)             MainFrame::self()->onMiarex();
+            else if (iApp == XFLR5::XFOILANALYSIS) MainFrame::self()->onXDirect();
 
-			return true;
-		}
+            return true;
+        }
 
-		default:
+        default:
             break;
-	}
-	return QApplication::event(event);
+    }
+    return QApplication::event(event);
 }
 
 

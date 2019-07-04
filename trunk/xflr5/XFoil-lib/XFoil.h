@@ -1,10 +1,10 @@
 /****************************************************************************
 
     XFoil Class
-	Copyright (C) 2000 Mark Drela 
+    Copyright (C) 2000 Mark Drela 
     Andre Deperrois techwinder@gmail.com - translation to C - 2003
 
-	
+    
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
@@ -49,12 +49,12 @@ See http://raphael.mit.edu/xfoil for more information.
 
 
 using namespace std;
-	//------ derived dimensioning limit parameters
+    //------ derived dimensioning limit parameters
 
 
 struct blData
 {
-	public:
+    public:
       double xz,  uz,  tz,  dz,  sz, amplz, uz_uei, uz_ms, dwz,
             hz, hz_tz, hz_dz,
             mz, mz_uz,                            mz_ms,
@@ -68,7 +68,7 @@ struct blData
             diz, diz_uz, diz_tz, diz_dz, diz_sz, diz_ms, diz_re,
             usz, usz_uz, usz_tz, usz_dz,         usz_ms, usz_re,
             cqz, cqz_uz, cqz_tz, cqz_dz,         cqz_ms, cqz_re,
-			dez, dez_uz, dez_tz, dez_dz,         dez_ms;
+            dez, dez_uz, dez_tz, dez_dz,         dez_ms;
 };
 
 
@@ -77,422 +77,422 @@ class XFOILLIBSHARED_EXPORT XFoil
 {
 
 public:
-	XFoil();
-	virtual ~XFoil();
+    XFoil();
+    virtual ~XFoil();
 
 public:
-	void interpolate(double xf1[], double yf1[], int n1,
-					 double xf2[], double yf2[], int n2, double mixt);
+    void interpolate(double xf1[], double yf1[], int n1,
+                     double xf2[], double yf2[], int n2, double mixt);
 
-	bool CheckAngles();
-	bool Preprocess();
+    bool CheckAngles();
+    bool Preprocess();
     void pangen();
     void pert_process(int kqsp);
-	void pert_init(int kqsp);
-	void HanningFilter(double cfilt, QTextStream &ts);
-	void smooq(int kq1,int kq2,int kqsp);
-	void ExecMDES();
-	bool ExecQDES();
-	bool initialize();
+    void pert_init(int kqsp);
+    void HanningFilter(double cfilt, QTextStream &ts);
+    void smooq(int kq1,int kq2,int kqsp);
+    void ExecMDES();
+    bool ExecQDES();
+    bool initialize();
     bool initXFoilGeometry(int fn, const double *fx, const double *fy, double *fnx, double *fny);
-	bool initXFoilAnalysis(double Re, double alpha, double Mach, double NCrit, double XtrTop, double XtrBot,
-								  int reType, int maType, bool bViscous, QTextStream &outStream);
+    bool initXFoilAnalysis(double Re, double alpha, double Mach, double NCrit, double XtrTop, double XtrBot,
+                                  int reType, int maType, bool bViscous, QTextStream &outStream);
 
-	void splqsp(int kqsp);
-	void qspcir();
-	void InitMDES();
-	bool InitQDES();
-	void cncalc(double qc[], bool lsymm);
-	double qcomp(double g);
-	bool clcalc(double xref, double yref);
+    void splqsp(int kqsp);
+    void qspcir();
+    void InitMDES();
+    bool InitQDES();
+    void cncalc(double qc[], bool lsymm);
+    double qcomp(double g);
+    bool clcalc(double xref, double yref);
 
     void createXBL();
     void fillHk();
     void fillRTheta();
-	void writeString(QString str, bool bFullReport = false);
-	double DeRotate();
-	bool specal();
-	bool speccl();
-	bool viscal();
-	bool ViscalEnd();
-	bool ViscousIter();
-	bool fcpmin();
-	int cadd(int ispl, double atol, double xrf1, double xrf2);
-	bool abcopy();
-	void tcset(double cnew, double tnew);
-	void hipnt(double xhc, double xht);
-	void lerad(double rfac, double blend);
-	void naca4(int ides, int nside);
-	bool naca5(int ides, int nside);
-	void tgap(double gapnew, double blend);
+    void writeString(QString str, bool bFullReport = false);
+    double DeRotate();
+    bool specal();
+    bool speccl();
+    bool viscal();
+    bool ViscalEnd();
+    bool ViscousIter();
+    bool fcpmin();
+    int cadd(int ispl, double atol, double xrf1, double xrf2);
+    bool abcopy();
+    void tcset(double cnew, double tnew);
+    void hipnt(double xhc, double xht);
+    void lerad(double rfac, double blend);
+    void naca4(int ides, int nside);
+    bool naca5(int ides, int nside);
+    void tgap(double gapnew, double blend);
 
-	bool isBLInitialized() const {return lblini;}
-	void setBLInitialized(bool bInitialized) {lblini = bInitialized;}
+    bool isBLInitialized() const {return lblini;}
+    void setBLInitialized(bool bInitialized) {lblini = bInitialized;}
 
-	double QInf() const {return qinf;}
-	void setQInf(double v) {qinf=v;}
+    double QInf() const {return qinf;}
+    void setQInf(double v) {qinf=v;}
 
-	double alpha() const {return alfa;}
-	void setAlpha(double aoa) {alfa = aoa;}
+    double alpha() const {return alfa;}
+    void setAlpha(double aoa) {alfa = aoa;}
 
-	double ClSpec() const {return clspec;}
-	void setClSpec(double cl) {clspec=cl;}
+    double ClSpec() const {return clspec;}
+    void setClSpec(double cl) {clspec=cl;}
 
 
-	static bool isCancelled() {return s_bCancel;}
+    static bool isCancelled() {return s_bCancel;}
     static void setCancel(bool bCancel) {s_bCancel=bCancel;}
     static void setFullReport(bool bFull) {s_bFullReport=bFull;}
-	static bool fullReport() {return s_bFullReport;}
+    static bool fullReport() {return s_bFullReport;}
     static double VAccel() {return vaccel;}
     static void setVAccel(double accel) {vaccel=accel;}
 
 private:
 
-	void inter(double x0[], double xp0[], double y0[], double yp0[], double s0[],int n0,double sle0,
-			   double x1[], double xp1[], double y1[], double yp1[], double s1[],int n1,double sle1,
-			   double x[], double y[], int n, double frac);
-	void thkcam(double tfac, double cfac);
-	void qspint(int kqsp, double &clq);
+    void inter(double x0[], double xp0[], double y0[], double yp0[], double s0[],int n0,double sle0,
+               double x1[], double xp1[], double y1[], double yp1[], double s1[],int n1,double sle1,
+               double x[], double y[], int n, double frac);
+    void thkcam(double tfac, double cfac);
+    void qspint(int kqsp, double &clq);
 
-	double qincom(double qc, double qinf, double tklam);
-	void qccalc(int ispec,double *alfa, double *cl, double *cm,double minf, double qinf, int *ncir, double xcir[], double ycir[], double scir[], double qcir[]);
-	void mapgam(int iac, double &alg, double &clg, double &cmg);
-	bool eiwset(int nc1);
-	void cgauss(int nn,complex <double> z[IMX4+1][IMX4+1],complex <double> r[IMX4+1]);
-	void zccalc(int mtest);
-	void zcnorm(int mtest);
-	void zlefind(complex<double>*zle,complex<double>zc[],double wc[],int nc,complex<double>piq[], double agte);
-	void piqsum();
-	void ftp();
-	void scinit(int n, double x[], double xp[], double y[], double yp[], double s[], double sle);
-	void mapgen(int n, double x[],double y[]);
+    double qincom(double qc, double qinf, double tklam);
+    void qccalc(int ispec,double *alfa, double *cl, double *cm,double minf, double qinf, int *ncir, double xcir[], double ycir[], double scir[], double qcir[]);
+    void mapgam(int iac, double &alg, double &clg, double &cmg);
+    bool eiwset(int nc1);
+    void cgauss(int nn,complex <double> z[IMX4+1][IMX4+1],complex <double> r[IMX4+1]);
+    void zccalc(int mtest);
+    void zcnorm(int mtest);
+    void zlefind(complex<double>*zle,complex<double>zc[],double wc[],int nc,complex<double>piq[], double agte);
+    void piqsum();
+    void ftp();
+    void scinit(int n, double x[], double xp[], double y[], double yp[], double s[], double sle);
+    void mapgen(int n, double x[],double y[]);
 
-	//	int kqtarg,nname,nprefix;
-	void gamlin(int i, int j, double coef);
-	bool mixed(int kqsp);
-	void gamqsp(int kqsp);
-	void cnfilt(double ffilt);
-	void RestoreQDES();
+    //    int kqtarg,nname,nprefix;
+    void gamlin(int i, int j, double coef);
+    bool mixed(int kqsp);
+    void gamqsp(int kqsp);
+    void cnfilt(double ffilt);
+    void RestoreQDES();
 
-	bool setMach();
-	void scheck(double x[], double y[], int *n, double stol, bool *lchange);
-	void sss(double ss, double *s1, double *s2, double del, double xbf, double ybf,	double x[], double xp[], double y[], double yp[], double s[],int n, int iside);
-	bool inside(double xb[], double yb[], int nb, double xbf, double ybf);
-	void flap();
-	int arefine(double x[],double y[], double s[], double xs[], double ys[],
-				 int n, double atol, int ndim, 
-				 double xnew[], double ynew[], double x1, double x2);
+    bool setMach();
+    void scheck(double x[], double y[], int *n, double stol, bool *lchange);
+    void sss(double ss, double *s1, double *s2, double del, double xbf, double ybf,    double x[], double xp[], double y[], double yp[], double s[],int n, int iside);
+    bool inside(double xb[], double yb[], int nb, double xbf, double ybf);
+    void flap();
+    int arefine(double x[],double y[], double s[], double xs[], double ys[],
+                 int n, double atol, int ndim, 
+                 double xnew[], double ynew[], double x1, double x2);
 
-	bool comset();
-	bool mrcl(double cls, double &m_cls, double &r_cls);
-	bool restoreblData(int icom);
-	bool saveblData(int icom);
+    bool comset();
+    bool mrcl(double cls, double &m_cls, double &r_cls);
+    bool restoreblData(int icom);
+    bool saveblData(int icom);
 
 
 
-	bool aecalc(int n, double x[], double y[], double t[], int itype, double &area,
-				double &xcen, double &ycen, double &ei11, double &ei22, double &apx1, double &apx2);
-	bool apcalc();
-	bool axset( double hk1, double thet1, double rt1, double a1,
-				double hk2, double thet2, double rt2, double a2,
-				double acrit, double &ax,
-				double &ax_hk1, double &ax_t1, double &ax_rt1, double &ax_a1,
-				double &ax_hk2, double &ax_t2, double &ax_rt2, double &ax_a2);
-	bool baksub(int n, double a[IQX][IQX],int indx[], double b[]);
-	bool bldif(int ityp);
-	bool blkin();
-	bool blmid(int ityp);
-	bool blprv(double xsi,double ami,double cti,double thi,double dsi,double dswaki,double uei);
-	bool blsolve();
-	bool blsys();
-	bool blvar(int ityp);
-	bool cang(double x[], double y[], int n, int &imax, double &amax);
-	bool cdcalc();
-	bool cfl(double hk, double rt, double &cf, double &cf_hk, double &cf_rt, double &cf_msq);
-	bool cft(double hk, double rt, double msq, double &cf, double &cf_hk, double &cf_rt, double &cf_msq);
-	bool cpcalc(int n, double q[], double qinf, double minf, double cp[]);
-	bool dampl(double hk, double th, double rt,
-			   double &ax, double &ax_hk, double &ax_th, double &ax_rt);
-	bool dil(double hk, double rt, double &di, double &di_hk, double &di_rt);
-	bool dilw(double hk, double rt, double &di, double &di_hk, double &di_rt);
-	bool dslim(double &dstr, double thet, double msq, double hklim);
+    bool aecalc(int n, double x[], double y[], double t[], int itype, double &area,
+                double &xcen, double &ycen, double &ei11, double &ei22, double &apx1, double &apx2);
+    bool apcalc();
+    bool axset( double hk1, double thet1, double rt1, double a1,
+                double hk2, double thet2, double rt2, double a2,
+                double acrit, double &ax,
+                double &ax_hk1, double &ax_t1, double &ax_rt1, double &ax_a1,
+                double &ax_hk2, double &ax_t2, double &ax_rt2, double &ax_a2);
+    bool baksub(int n, double a[IQX][IQX],int indx[], double b[]);
+    bool bldif(int ityp);
+    bool blkin();
+    bool blmid(int ityp);
+    bool blprv(double xsi,double ami,double cti,double thi,double dsi,double dswaki,double uei);
+    bool blsolve();
+    bool blsys();
+    bool blvar(int ityp);
+    bool cang(double x[], double y[], int n, int &imax, double &amax);
+    bool cdcalc();
+    bool cfl(double hk, double rt, double &cf, double &cf_hk, double &cf_rt, double &cf_msq);
+    bool cft(double hk, double rt, double msq, double &cf, double &cf_hk, double &cf_rt, double &cf_msq);
+    bool cpcalc(int n, double q[], double qinf, double minf, double cp[]);
+    bool dampl(double hk, double th, double rt,
+               double &ax, double &ax_hk, double &ax_th, double &ax_rt);
+    bool dil(double hk, double rt, double &di, double &di_hk, double &di_rt);
+    bool dilw(double hk, double rt, double &di, double &di_hk, double &di_rt);
+    bool dslim(double &dstr, double thet, double msq, double hklim);
 
-	bool gamqv();
-	bool Gauss(int nn, double z[][6], double r[5]);
-	bool Gauss(int nn, double z[IQX][IQX], double r[IQX]);
-	bool geopar(double x[], double xp[], double y[], double yp[], double s[],
-			   int n, double t[], double &sle, double &chord,
-			   double &area, double &radle, double &angte,
-			   double &ei11a, double &ei22a, double &apx1a, double &apx2a,
-			   double &ei11t, double &ei22t, double &apx1t, double &apx2t);
-	void sopps(double &sopp, double si, double x[], double xp[], double y[], double yp[], double s[],
-				  int n, double sle);
-	void getcam(double xcm[],double ycm[], int &ncm,double xtk[],double ytk[],int &ntk,
-					double x[],double xp[],double y[],double yp[],double s[],int n );
-	void getmax(double x[],double y[], double yp[], int n,double &xmax, double &ymax);
-	void xlfind(double &sle, double x[], double xp[], double y[], double yp[], double s[], int n);
-	void sortol(double tol,int &kk,double s[],double w[]);
-	bool getxyf(double x[],double xp[],double y[],double yp[],double s[], int n, double &tops, double &bots,double xf,double &yf);
-	bool ggcalc();
-	bool hct(double hk, double msq, double &hc, double &hc_hk, double &hc_msq);
-	bool hkin(double h, double msq, double &hk, double &hk_h, double &hk_msq);
-	bool hsl(double hk, double &hs, double &hs_hk, double &hs_rt, double &hs_msq);
-	bool hst(double hk, double rt, double msq, double &hs, double &hs_hk, double &hs_rt, double &hs_msq );
-	bool iblpan();
-	bool iblsys();
-	bool lefind(double &sle, double x[], double xp[], double y[], double yp[], double s[], int n);
-	void lerscl(double *x, double *xp, double* y, double *yp, double *s, int n, double doc, double rfac, double *xnew,double *ynew);
-	bool ludcmp(int n, double a[IQX][IQX],int indx[IQX]);
-	bool mhinge();
-	bool mrchdu();
+    bool gamqv();
+    bool Gauss(int nn, double z[][6], double r[5]);
+    bool Gauss(int nn, double z[IQX][IQX], double r[IQX]);
+    bool geopar(double x[], double xp[], double y[], double yp[], double s[],
+               int n, double t[], double &sle, double &chord,
+               double &area, double &radle, double &angte,
+               double &ei11a, double &ei22a, double &apx1a, double &apx2a,
+               double &ei11t, double &ei22t, double &apx1t, double &apx2t);
+    void sopps(double &sopp, double si, double x[], double xp[], double y[], double yp[], double s[],
+                  int n, double sle);
+    void getcam(double xcm[],double ycm[], int &ncm,double xtk[],double ytk[],int &ntk,
+                    double x[],double xp[],double y[],double yp[],double s[],int n );
+    void getmax(double x[],double y[], double yp[], int n,double &xmax, double &ymax);
+    void xlfind(double &sle, double x[], double xp[], double y[], double yp[], double s[], int n);
+    void sortol(double tol,int &kk,double s[],double w[]);
+    bool getxyf(double x[],double xp[],double y[],double yp[],double s[], int n, double &tops, double &bots,double xf,double &yf);
+    bool ggcalc();
+    bool hct(double hk, double msq, double &hc, double &hc_hk, double &hc_msq);
+    bool hkin(double h, double msq, double &hk, double &hk_h, double &hk_msq);
+    bool hsl(double hk, double &hs, double &hs_hk, double &hs_rt, double &hs_msq);
+    bool hst(double hk, double rt, double msq, double &hs, double &hs_hk, double &hs_rt, double &hs_msq );
+    bool iblpan();
+    bool iblsys();
+    bool lefind(double &sle, double x[], double xp[], double y[], double yp[], double s[], int n);
+    void lerscl(double *x, double *xp, double* y, double *yp, double *s, int n, double doc, double rfac, double *xnew,double *ynew);
+    bool ludcmp(int n, double a[IQX][IQX],int indx[IQX]);
+    bool mhinge();
+    bool mrchdu();
     bool mrchue();
-	bool ncalc(double x[], double y[], double s[], int n, double xn[], double yn[]);
-	bool psilin(int i, double xi,double yi,double nxi, double nyi, double &psi, double &psi_ni, bool geolin, bool siglin);
-	bool pswlin(int i,double xi, double yi, double nxi, double nyi, double &psi, double &psi_ni);
-	bool qdcalc();
-	bool qiset();
-	bool qvfue();
-	bool qwcalc();
-	bool scalc(double x[], double y[], double s[], int n);
-	bool segspl( double x[], double xs[], double s[], int n);
-	bool segspld(double x[], double xs[], double s[], int n, double xs1, double xs2);
-	bool setbl();
-	bool setexp(double s[],double ds1,double smax,int nn);
-	bool sinvrt(double &si,double xi,double x[],double xs[],double s[],int n);
+    bool ncalc(double x[], double y[], double s[], int n, double xn[], double yn[]);
+    bool psilin(int i, double xi,double yi,double nxi, double nyi, double &psi, double &psi_ni, bool geolin, bool siglin);
+    bool pswlin(int i,double xi, double yi, double nxi, double nyi, double &psi, double &psi_ni);
+    bool qdcalc();
+    bool qiset();
+    bool qvfue();
+    bool qwcalc();
+    bool scalc(double x[], double y[], double s[], int n);
+    bool segspl( double x[], double xs[], double s[], int n);
+    bool segspld(double x[], double xs[], double s[], int n, double xs1, double xs2);
+    bool setbl();
+    bool setexp(double s[],double ds1,double smax,int nn);
+    bool sinvrt(double &si,double xi,double x[],double xs[],double s[],int n);
 
-	void splina(double x[], double xs[], double s[], int n);
-	bool splind(double x[600], double xs[600], double s[600], int n, double xs1, double xs2);
-	bool stepbl();
-	bool stfind();
-	bool stmove();
-	bool tecalc();
-	bool tesys(double cte, double tte, double dte);
-	bool trchek();
-	bool trdif();
-	bool trisol(double a[],double b[], double c[], double d[], int kk);
-	bool ueset();
-	bool uicalc();
-	bool update();
-	bool xicalc();
-	bool xifset(int is);
-	bool xyWake();
-	double aint(double number);
-	double atanc(double y, double x, double thold);
-	double curv(double ss, double x[], double xs[], double y[], double ys[], double s[], int n);
-	double d2val(double ss, double x[], double xs[], double s[], int n);
-	double deval(double ss, double x[], double xs[], double s[], int n);
-	double seval(double ss, double x[], double xs[], double s[], int n);
-	double sign(double a, double b);
+    void splina(double x[], double xs[], double s[], int n);
+    bool splind(double x[600], double xs[600], double s[600], int n, double xs1, double xs2);
+    bool stepbl();
+    bool stfind();
+    bool stmove();
+    bool tecalc();
+    bool tesys(double cte, double tte, double dte);
+    bool trchek();
+    bool trdif();
+    bool trisol(double a[],double b[], double c[], double d[], int kk);
+    bool ueset();
+    bool uicalc();
+    bool update();
+    bool xicalc();
+    bool xifset(int is);
+    bool xyWake();
+    double aint(double number);
+    double atanc(double y, double x, double thold);
+    double curv(double ss, double x[], double xs[], double y[], double ys[], double s[], int n);
+    double d2val(double ss, double x[], double xs[], double s[], int n);
+    double deval(double ss, double x[], double xs[], double s[], int n);
+    double seval(double ss, double x[], double xs[], double s[], int n);
+    double sign(double a, double b);
 
 
 public:
-	static double vaccel;
-	static bool s_bCancel;
+    static double vaccel;
+    static bool s_bCancel;
     static bool s_bFullReport;
 
     QTextStream *m_pOutStream;
 
-	double agte,ag0,qim0,qimold;
-	double ssple, dwc,algam,clgam,cmgam;
-	double clspec;
-	double sspec[IBX+1],xspoc[IBX+1],yspoc[IBX+1];
-	double qspec[IPX+1][IBX+1],qspecp[IPX+1][IBX+1];
-	double alqsp[IPX+1],clqsp[IPX+1],cmqsp[IPX+1];
-	complex<double> dzte, chordz, zleold, zcoldw[ICX+1];
-	complex<double> piq[ICX+1], cn[IMX+1], eiw[ICX+1][IMX+1];
-	double dnTrace[100];//... added techwinder
-	double dgTrace[100];//... added techwinder
-	int QMax;
+    double agte,ag0,qim0,qimold;
+    double ssple, dwc,algam,clgam,cmgam;
+    double clspec;
+    double sspec[IBX+1],xspoc[IBX+1],yspoc[IBX+1];
+    double qspec[IPX+1][IBX+1],qspecp[IPX+1][IBX+1];
+    double alqsp[IPX+1],clqsp[IPX+1],cmqsp[IPX+1];
+    complex<double> dzte, chordz, zleold, zcoldw[ICX+1];
+    complex<double> piq[ICX+1], cn[IMX+1], eiw[ICX+1][IMX+1];
+    double dnTrace[100];//... added techwinder
+    double dgTrace[100];//... added techwinder
+    int QMax;
 
-	bool lqspec, lsym,leiw,lqslop,lscini, lrecalc, lcnpl;
-	int nsp,nqsp,iacqsp;
-	int nc,nc1,mc,mct;
-	int iq1, iq2;
-	int imax;// needed for preprocessing
+    bool lqspec, lsym,leiw,lqslop,lscini, lrecalc, lcnpl;
+    int nsp,nqsp,iacqsp;
+    int nc,nc1,mc,mct;
+    int iq1, iq2;
+    int imax;// needed for preprocessing
 
-	double thickb,cambrb;
-	double xb[IBX],yb[IBX],nx[IZX],ny[IZX];
-	double xpref1,xpref2;
-	double cvpar,cterat,ctrrat,xsref1,xsref2;
+    double thickb,cambrb;
+    double xb[IBX],yb[IBX],nx[IZX],ny[IZX];
+    double xpref1,xpref2;
+    double cvpar,cterat,ctrrat,xsref1,xsref2;
 
-	double cl,cm,cd,cdp,cdf,cpi[IZX],cpv[IZX],acrit;
-	double xcp;
-	double alfa, avisc, awake, reinf1, qinf, mvisc, rmsbl, ante;
-	double cpmn;
-	double minf, reinf;
-	bool lalfa, lvisc, lvconv, lwake;
-	double qgamm[IBX+1];
-	double hmom;
-	bool lcpxx;
-	int niterq;
-	double xbf,ybf;
-	double ddef; // flap angle
-	double rmxbl;
+    double cl,cm,cd,cdp,cdf,cpi[IZX],cpv[IZX],acrit;
+    double xcp;
+    double alfa, avisc, awake, reinf1, qinf, mvisc, rmsbl, ante;
+    double cpmn;
+    double minf, reinf;
+    bool lalfa, lvisc, lvconv, lwake;
+    double qgamm[IBX+1];
+    double hmom;
+    bool lcpxx;
+    int niterq;
+    double xbf,ybf;
+    double ddef; // flap angle
+    double rmxbl;
 
-	double amax;// needed for preprocessing
-	double minf1;
-	bool lblini, lipan,lqsym;
-	bool lbflap,lflap;
-	int n, nb,iblte[ISX],ipan[IVX][ISX],nbl[ISX];
-	int npan;
-	double x[IZX],y[IZX],xstrip[ISX],xoctr[ISX],yoctr[ISX];
-	double qvis[IZX];
-	bool liqset;
-	double adeg, xcmref, ycmref;
-	double tklam;
-	double xp[IZX],yp[IZX],s[IZX];
-	double dtor;
+    double amax;// needed for preprocessing
+    double minf1;
+    bool lblini, lipan,lqsym;
+    bool lbflap,lflap;
+    int n, nb,iblte[ISX],ipan[IVX][ISX],nbl[ISX];
+    int npan;
+    double x[IZX],y[IZX],xstrip[ISX],xoctr[ISX],yoctr[ISX];
+    double qvis[IZX];
+    bool liqset;
+    double adeg, xcmref, ycmref;
+    double tklam;
+    double xp[IZX],yp[IZX],s[IZX];
+    double dtor;
 
     double thet[IVX][ISX], tau[IVX][ISX], ctau[IVX][ISX], ctq[IVX][ISX];
     double dis[IVX][ISX], uedg[IVX][ISX];
-	double xbl[IVX][ISX], Hk[IVX][ISX], RTheta[IVX][ISX];
-	double dstr[IVX][ISX];
-	double delt[IVX][ISX];
-	int m_nSide1, m_nSide2;
-	int itran[ISX];
+    double xbl[IVX][ISX], Hk[IVX][ISX], RTheta[IVX][ISX];
+    double dstr[IVX][ISX];
+    double delt[IVX][ISX];
+    int m_nSide1, m_nSide2;
+    int itran[ISX];
 
-	double m_ctrl; /** information storage for xflr5 gui */
+    double m_ctrl; /** information storage for xflr5 gui */
 
 private:
 
-	double wc[ICX+1],sc[ICX+1];
-	double scold[ICX+1],xcold[ICX+1],ycold[ICX+1];
-	double qf0[IQX+1],qf1[IQX+1],qf2[IQX+1],qf3[IQX+1];
+    double wc[ICX+1],sc[ICX+1];
+    double scold[ICX+1],xcold[ICX+1],ycold[ICX+1];
+    double qf0[IQX+1],qf1[IQX+1],qf2[IQX+1],qf3[IQX+1];
 
-	double qdof0,qdof1,qdof2,qdof3,ffilt;
+    double qdof0,qdof1,qdof2,qdof3,ffilt;
 
-	complex<double> zc[ICX+1], zc_cn[ICX+1][IMX4+1];
-	complex<double> cnsav[IMX+1];
+    complex<double> zc[ICX+1], zc_cn[ICX+1][IMX4+1];
+    complex<double> cnsav[IMX+1];
 
-	int retyp, matyp;
-	double rlx;
+    int retyp, matyp;
+    double rlx;
 
-	double hfx,hfy;
-	double minf_cl, reinf_cl;
-	double angtol;
+    double hfx,hfy;
+    double minf_cl, reinf_cl;
+    double angtol;
 
-	double xcam[IQX], ycam[IQX], xthk[IQX], ythk[IQX], ycamp[IQX], ythkp[IQX];
-	double  thick, xthick, cambr, xcambr;
-	int ncam, nthk;
+    double xcam[IQX], ycam[IQX], xthk[IQX], ythk[IQX], ycamp[IQX], ythkp[IQX];
+    double  thick, xthick, cambr, xcambr;
+    int ncam, nthk;
 
-	blData blsav[3];
-	complex<double> conjg(complex<double> cplx);
+    blData blsav[3];
+    complex<double> conjg(complex<double> cplx);
 
-	bool m_bTrace;
+    bool m_bTrace;
 
-//	int nax, npx, nfx;
+//    int nax, npx, nfx;
 
-//	double com2[74], com1[74];
-//	int ncom;
-//	QString labref;
-//	QString fname, pfname, pfnamx;
-//	QString oname, prefix;
-//	QString name, namepol, codepol, nameref;
-//	QString ispars;
+//    double com2[74], com1[74];
+//    int ncom;
+//    QString labref;
+//    QString fname, pfname, pfnamx;
+//    QString oname, prefix;
+//    QString name, namepol, codepol, nameref;
+//    QString ispars;
 
 
-//	bool lpacc,lqvdes,,lqrefl,lcpref,lforef,lpfile,lpfilx;
-//	bool lppsho,lplot,lclip,lvlab,lcurs,lcminp, lhmomp,lland;
-//	bool lplcam,lgparm,lnorm,,lgsym,lgslop, lcslop,lclock,
-	bool limage,lgamu,sharp,lqaij,ladij,lwdij;
-	bool lqinu,lgsame;//???
-//	bool lgtick, lplegn,,lplist, lpgrid,lblgrd,lblsym,
-//	     lcpgrd,lggrid,lgeopl, lpcdw,lqsppl, liqset, lqgrid;
+//    bool lpacc,lqvdes,,lqrefl,lcpref,lforef,lpfile,lpfilx;
+//    bool lppsho,lplot,lclip,lvlab,lcurs,lcminp, lhmomp,lland;
+//    bool lplcam,lgparm,lnorm,,lgsym,lgslop, lcslop,lclock,
+    bool limage,lgamu,sharp,lqaij,ladij,lwdij;
+    bool lqinu,lgsame;//???
+//    bool lgtick, lplegn,,lplist, lpgrid,lblgrd,lblsym,
+//         lcpgrd,lggrid,lgeopl, lpcdw,lqsppl, liqset, lqgrid;
 
-	double sccon, gacon, gbcon, gbc0, gbc1, gccon, dlcon, ctcon;
+    double sccon, gacon, gbcon, gbc0, gbc1, gccon, dlcon, ctcon;
 
 //---- dimension temporary work and storage arrays [equivalenced below]
-	double w1[6*IQX], w2[6*IQX], w3[6*IQX], w4[6*IQX];
-	double w5[6*IQX], w6[6*IQX], w7[6*IQX], w8[6*IQX];
-	int nsys;
-	double isys[IVX][ISX];
-	double xbp[IBX],ybp[IBX],sb[IBX],snew[4*IBX];
-	double xof,yof,sble,chordb;
-//	double xbmin,xbmax,ybmin,ybmax;
-	double areab,radble,angbte;
-	double ei11ba,ei22ba,apx1ba,apx2ba,ei11bt,ei22bt,apx1bt,apx2bt;
-//	double xcm[1200],ycm[1200],scm[1200],xcmp[1200],ycmp[1200];
-//	double xtk[1200],ytk[1200],stk[1200];
-//	double xtkp[1200],ytkp[1200];
+    double w1[6*IQX], w2[6*IQX], w3[6*IQX], w4[6*IQX];
+    double w5[6*IQX], w6[6*IQX], w7[6*IQX], w8[6*IQX];
+    int nsys;
+    double isys[IVX][ISX];
+    double xbp[IBX],ybp[IBX],sb[IBX],snew[4*IBX];
+    double xof,yof,sble,chordb;
+//    double xbmin,xbmax,ybmin,ybmax;
+    double areab,radble,angbte;
+    double ei11ba,ei22ba,apx1ba,apx2ba,ei11bt,ei22bt,apx1bt,apx2bt;
+//    double xcm[1200],ycm[1200],scm[1200],xcmp[1200],ycmp[1200];
+//    double xtk[1200],ytk[1200],stk[1200];
+//    double xtkp[1200],ytkp[1200];
 
-	double sle,xle,yle,xte,yte;
-	double chord,yimage,wgap[IWX],waklen;
-//	double size,scrnfr,plotar, pfac,qfac,vfac,xwind,ywind;
-//	double xpage,ypage,xmarg,ymarg, chg, chq,xofair,yofair,facair, xofa,yofa,faca,uprwt;
-//	double cpmin,cpmax,cpdel;
-//	double cpolplf[3][4];
-//	double xcdwid,xalwid,xocwid;
-	double ch;
-	int nw,ist;
+    double sle,xle,yle,xte,yte;
+    double chord,yimage,wgap[IWX],waklen;
+//    double size,scrnfr,plotar, pfac,qfac,vfac,xwind,ywind;
+//    double xpage,ypage,xmarg,ymarg, chg, chq,xofair,yofair,facair, xofa,yofa,faca,uprwt;
+//    double cpmin,cpmax,cpdel;
+//    double cpolplf[3][4];
+//    double xcdwid,xalwid,xocwid;
+    double ch;
+    int nw,ist;
 
-//	int kimage,nseqex;
-	int aijpiv[IQX];
-//	int idev,idevrp,ipslu,ncolor,icols[5],nover, ncm,ntk;
+//    int kimage,nseqex;
+    int aijpiv[IQX];
+//    int idev,idevrp,ipslu,ncolor,icols[5],nover, ncm,ntk;
 
-	double cl_alf, cl_msq;
-	double psio,cosa,sina,gamma,gamm1;
-//	double circ;
-	double tkl_msq,cpstar,qstar;
-	double cpmni,cpmnv,xcpmni,xcpmnv;
+    double cl_alf, cl_msq;
+    double psio,cosa,sina,gamma,gamm1;
+//    double circ;
+    double tkl_msq,cpstar,qstar;
+    double cpmni,cpmnv,xcpmni,xcpmnv;
     double arad;
-	double xssi[IVX][ISX],uinv[IVX][ISX],mass[IVX][ISX];
-	double uslp[IVX][ISX],guxq[IVX][ISX],guxd[IVX][ISX];
-	double vti[IVX][ISX];
-	double xssitr[ISX],uinv_a[IVX][ISX];
-	double gam[IQX],gam_a[IQX],gamu[IQX][ISX],sig[IZX];
-	double apanel[IZX],sst,sst_go,sst_gp,gamte,sigte;
-//	double sigte_a,gamte_a;
-	double dste,aste;
-	double qinv[IZX],qinvu[IZX][3], qinv_a[IZX];
-	double q[IQX][IQX],dq[IQX],dzdg[IQX],dzdn[IQX],dzdm[IZX],dqdg[IQX];
-	double dqdm[IZX],qtan1,qtan2,z_qinf,z_alfa,z_qdof0,z_qdof1,z_qdof2,z_qdof3;
-	double aij[IQX][IQX];
-	double bij[IQX][IZX],dij[IZX][IZX];
-	double cij[IWX][IQX];
-	double hopi,qopi;
+    double xssi[IVX][ISX],uinv[IVX][ISX],mass[IVX][ISX];
+    double uslp[IVX][ISX],guxq[IVX][ISX],guxd[IVX][ISX];
+    double vti[IVX][ISX];
+    double xssitr[ISX],uinv_a[IVX][ISX];
+    double gam[IQX],gam_a[IQX],gamu[IQX][ISX],sig[IZX];
+    double apanel[IZX],sst,sst_go,sst_gp,gamte,sigte;
+//    double sigte_a,gamte_a;
+    double dste,aste;
+    double qinv[IZX],qinvu[IZX][3], qinv_a[IZX];
+    double q[IQX][IQX],dq[IQX],dzdg[IQX],dzdn[IQX],dzdm[IZX],dqdg[IQX];
+    double dqdm[IZX],qtan1,qtan2,z_qinf,z_alfa,z_qdof0,z_qdof1,z_qdof2,z_qdof3;
+    double aij[IQX][IQX];
+    double bij[IQX][IZX],dij[IZX][IZX];
+    double cij[IWX][IQX];
+    double hopi,qopi;
 
 
-	double vs1[5][6],vs2[5][6],vsrez[5],vsr[5],vsm[5],vsx[5];
-	bool tforce[ISX];
+    double vs1[5][6],vs2[5][6],vsrez[5],vsr[5],vsm[5],vsx[5];
+    bool tforce[ISX];
 
-	bool trforc, simi,tran,turb,wake, trfree;
+    bool trforc, simi,tran,turb,wake, trfree;
 
-	double dwte, qinfbl, tkbl, tkbl_ms, rstbl, rstbl_ms, hstinv, hstinv_ms;
-	double reybl, reybl_ms, reybl_re, gambl, gm1bl, hvrat, bule, xiforc, amcrit;
+    double dwte, qinfbl, tkbl, tkbl_ms, rstbl, rstbl_ms, hstinv, hstinv_ms;
+    double reybl, reybl_ms, reybl_re, gambl, gm1bl, hvrat, bule, xiforc, amcrit;
 
-	double x2, u2, theta2, d2, s2, ampl2, u2_uei, u2_ms, dw2,
-		h2, h2_t2, h2_d2, m2, m2_u2,m2_ms, r2, r2_u2,r2_ms,
-		v2, v2_u2,v2_ms,v2_re, hk2, hk2_u2, hk2_t2, hk2_d2,hk2_ms,
-		hs2, hs2_u2, hs2_t2, hs2_d2,hs2_ms, hs2_re, hc2, hc2_u2,
-		hc2_t2, hc2_d2,hc2_ms, rt2, rt2_u2, rt2_t2,rt2_ms, rt2_re,
-		cf2, cf2_u2, cf2_t2, cf2_d2,cf2_ms, cf2_re, di2, di2_u2,
-		di2_t2, di2_d2, di2_s2, di2_ms, di2_re, us2, us2_u2, us2_t2,
-		us2_d2,us2_ms, us2_re, cq2, cq2_u2, cq2_t2, cq2_d2,cq2_ms,
-		cq2_re, de2, de2_u2, de2_t2, de2_d2,de2_ms;
+    double x2, u2, theta2, d2, s2, ampl2, u2_uei, u2_ms, dw2,
+        h2, h2_t2, h2_d2, m2, m2_u2,m2_ms, r2, r2_u2,r2_ms,
+        v2, v2_u2,v2_ms,v2_re, hk2, hk2_u2, hk2_t2, hk2_d2,hk2_ms,
+        hs2, hs2_u2, hs2_t2, hs2_d2,hs2_ms, hs2_re, hc2, hc2_u2,
+        hc2_t2, hc2_d2,hc2_ms, rt2, rt2_u2, rt2_t2,rt2_ms, rt2_re,
+        cf2, cf2_u2, cf2_t2, cf2_d2,cf2_ms, cf2_re, di2, di2_u2,
+        di2_t2, di2_d2, di2_s2, di2_ms, di2_re, us2, us2_u2, us2_t2,
+        us2_d2,us2_ms, us2_re, cq2, cq2_u2, cq2_t2, cq2_d2,cq2_ms,
+        cq2_re, de2, de2_u2, de2_t2, de2_d2,de2_ms;
 
-	double x1, u1, theta1, d1, s1, ampl1, u1_uei, u1_ms, dw1, h1, h1_t1, h1_d1,
-		m1, m1_u1,m1_ms,r1, r1_u1,r1_ms,v1, v1_u1,v1_ms, v1_re,hk1, hk1_u1,
-		hk1_t1, hk1_d1,hk1_ms,hs1, hs1_u1, hs1_t1, hs1_d1,hs1_ms, hs1_re,
-		hc1, hc1_u1, hc1_t1, hc1_d1,hc1_ms, rt1, rt1_u1, rt1_t1,rt1_ms,
-		rt1_re, cf1, cf1_u1, cf1_t1, cf1_d1,cf1_ms, cf1_re, di1, di1_u1,
-		di1_t1, di1_d1, di1_s1, di1_ms, di1_re, us1, us1_u1, us1_t1, us1_d1,
-		us1_ms, us1_re, cq1, cq1_u1, cq1_t1, cq1_d1,cq1_ms, cq1_re, de1, de1_u1,
-		de1_t1, de1_d1,de1_ms;
-//	double  xoff,yoff,xgmin,xgmax,ygmin,ygmax,dxyg,xcmin,xcmax,ycmin,ycmax,dxyc,dyoffc,xpmin,xpmax,ypmin,ypmax,dxyp,dyoffp,ysfp,gtick;
-	int imxbl,ismxbl;
-	double  xsf,ysf;
-//	QString vmxbl;
+    double x1, u1, theta1, d1, s1, ampl1, u1_uei, u1_ms, dw1, h1, h1_t1, h1_d1,
+        m1, m1_u1,m1_ms,r1, r1_u1,r1_ms,v1, v1_u1,v1_ms, v1_re,hk1, hk1_u1,
+        hk1_t1, hk1_d1,hk1_ms,hs1, hs1_u1, hs1_t1, hs1_d1,hs1_ms, hs1_re,
+        hc1, hc1_u1, hc1_t1, hc1_d1,hc1_ms, rt1, rt1_u1, rt1_t1,rt1_ms,
+        rt1_re, cf1, cf1_u1, cf1_t1, cf1_d1,cf1_ms, cf1_re, di1, di1_u1,
+        di1_t1, di1_d1, di1_s1, di1_ms, di1_re, us1, us1_u1, us1_t1, us1_d1,
+        us1_ms, us1_re, cq1, cq1_u1, cq1_t1, cq1_d1,cq1_ms, cq1_re, de1, de1_u1,
+        de1_t1, de1_d1,de1_ms;
+//    double  xoff,yoff,xgmin,xgmax,ygmin,ygmax,dxyg,xcmin,xcmax,ycmin,ycmax,dxyc,dyoffc,xpmin,xpmax,ypmin,ypmax,dxyp,dyoffp,ysfp,gtick;
+    int imxbl,ismxbl;
+    double  xsf,ysf;
+//    QString vmxbl;
 
-//	double cpol[800][iptot][9],cpolsd[800][3][jptot][9];//what's iptot???
-//	double xpref[300],cpref[300], verspol[9],cpolxy[300][2][9]
-//	double machp1[9], reynp1[9],acritp[9],xstripp[3][9],cpolref[128][2][4][9];
-	double cfm, cfm_ms, cfm_re, cfm_u1, cfm_t1, cfm_d1, cfm_u2, cfm_t2, cfm_d2;
-	double xt, xt_a1, xt_ms, xt_re, xt_xf, xt_x1, xt_t1, xt_d1, xt_u1,
-		  xt_x2, xt_t2, xt_d2, xt_u2;
-	double va[4][3][IZX],vb[4][3][IZX],vdel[4][3][IZX],vm[4][IZX][IZX],vz[4][3];
+//    double cpol[800][iptot][9],cpolsd[800][3][jptot][9];//what's iptot???
+//    double xpref[300],cpref[300], verspol[9],cpolxy[300][2][9]
+//    double machp1[9], reynp1[9],acritp[9],xstripp[3][9],cpolref[128][2][4][9];
+    double cfm, cfm_ms, cfm_re, cfm_u1, cfm_t1, cfm_d1, cfm_u2, cfm_t2, cfm_d2;
+    double xt, xt_a1, xt_ms, xt_re, xt_xf, xt_x1, xt_t1, xt_d1, xt_u1,
+          xt_x2, xt_t2, xt_d2, xt_u2;
+    double va[4][3][IZX],vb[4][3][IZX],vdel[4][3][IZX],vm[4][IZX][IZX],vz[4][3];
 
-//	int ncpref, napol[9], npol, ipact, nlref, icolp[9],icolr[9],imatyp[9],iretyp[9], nxypol[9],npolref, ndref[4][9];
-//	double c1sav[74], c2sav[74];
+//    int ncpref, napol[9], npol, ipact, nlref, icolp[9],icolr[9],imatyp[9],iretyp[9], nxypol[9],npolref, ndref[4][9];
+//    double c1sav[74], c2sav[74];
 
 /*
 c
@@ -891,36 +891,36 @@ c   gtick       airfoil-plot tick marks size [as fraction of arc length]
 */
 
 
-	//	complex<double> zcoldw, dzte, chordz, zleold, zc, zc_cn, piq, cn, eiw;
+    //    complex<double> zcoldw, dzte, chordz, zleold, zc, zc_cn, piq, cn, eiw;
 
-	//----- CIRCLE.INC include file for circle-plane operations
-	//   NC         number of circle plane points, must be 2**n + 1
-	//   MC         number of Fourier harmonics of P(w) + iQ(w)
-	//   MCT        number of Fourier harmonics for which dZC/dCN are calculated
-	//
-	//   PI         3.1415926
-	//   AGTE       trailing edge angle/pi
-	//   AG0        angle of airfoil surface at first point
-	//   QIM0       Q(w) offset   = Q(0)
-	//   QIMOLD     Q(w) offset for old airfoil
-	//   DWC        increment of circle-plane coordinate w,  DWC = 2 pi/(NC-1)
-	//   WC(.)      circle plane coordinate w for Fourier operations
-	//   SC(.)      normalized arc length array s(w)
-	//   SCOLD(.)   normalized arc length s(w) of old airfoil
-	//   XCOLD(.)   x coordinate x(w) of old airfoil
-	//   YCOLD(.)   y coordinate y(w) of old airfoil
-	//
-	//   DZTE       trailing edge gap specified in the complex plane
-	//   CHORDZ     airfoil chord specified in the complex plane
-	//   ZLEOLD     leading edge of old airfoil
-	//   ZCOLDW(.)  d(x+iy)/dw of old airfoil
-	//   ZC(.)      complex airfoil coordinates derived from P(w) + iQ(w)
-	//   ZC_CN(..)  sensitivities dZC/dCN for driving geometry constraints
-	//   PIQ(.)     complex harmonic function P(w) + iQ(w)
-	//   CN(.)      Fourier coefficients of P(w) + iQ(w)
-	//   EIW(..)    complex number  exp(inw)  array on the unit circle
+    //----- CIRCLE.INC include file for circle-plane operations
+    //   NC         number of circle plane points, must be 2**n + 1
+    //   MC         number of Fourier harmonics of P(w) + iQ(w)
+    //   MCT        number of Fourier harmonics for which dZC/dCN are calculated
+    //
+    //   PI         3.1415926
+    //   AGTE       trailing edge angle/pi
+    //   AG0        angle of airfoil surface at first point
+    //   QIM0       Q(w) offset   = Q(0)
+    //   QIMOLD     Q(w) offset for old airfoil
+    //   DWC        increment of circle-plane coordinate w,  DWC = 2 pi/(NC-1)
+    //   WC(.)      circle plane coordinate w for Fourier operations
+    //   SC(.)      normalized arc length array s(w)
+    //   SCOLD(.)   normalized arc length s(w) of old airfoil
+    //   XCOLD(.)   x coordinate x(w) of old airfoil
+    //   YCOLD(.)   y coordinate y(w) of old airfoil
+    //
+    //   DZTE       trailing edge gap specified in the complex plane
+    //   CHORDZ     airfoil chord specified in the complex plane
+    //   ZLEOLD     leading edge of old airfoil
+    //   ZCOLDW(.)  d(x+iy)/dw of old airfoil
+    //   ZC(.)      complex airfoil coordinates derived from P(w) + iQ(w)
+    //   ZC_CN(..)  sensitivities dZC/dCN for driving geometry constraints
+    //   PIQ(.)     complex harmonic function P(w) + iQ(w)
+    //   CN(.)      Fourier coefficients of P(w) + iQ(w)
+    //   EIW(..)    complex number  exp(inw)  array on the unit circle
 
-	//-----End Specific Inverse MDES-------------------------------
+    //-----End Specific Inverse MDES-------------------------------
 };
 
 #endif

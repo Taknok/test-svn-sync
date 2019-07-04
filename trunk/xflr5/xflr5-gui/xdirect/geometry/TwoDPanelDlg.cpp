@@ -118,7 +118,7 @@ void TwoDPanelDlg::setupLayout()
 void TwoDPanelDlg::initDialog()
 {
     //memorize initial values
-    //	npan   = pXFoil->n;
+    //    npan   = pXFoil->n;
     npan   = m_pMemFoil->nb;
     cvpar  = s_pXFoil->cvpar;
     cterat = s_pXFoil->cterat;

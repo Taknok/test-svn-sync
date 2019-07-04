@@ -98,9 +98,9 @@ public:
     void move(double ax, double ay);
     void sphereCoords(double const &ax, double const &ay, Vector3d &V);// find the intersection with the sphere
     void planarCoords(double const &ax, double const &ay, Vector3d &V);// get intersection with plane for "trackball" style rotation
-    void edgeCoords(Vector3d m, Vector3d &V);	// find the intersection with the plane through the visible edge
+    void edgeCoords(Vector3d m, Vector3d &V);    // find the intersection with the plane through the visible edge
     void rotateCrossPoint();
-    void quatIdentity(float* q);	// reset the rotation matrix
+    void quatIdentity(float* q);    // reset the rotation matrix
     void quatCopy(float* dst, float* src);// copy a rotation matrix
     void quatToMatrix(float* mat, Quaternion Qt);// convert the quaternion into a rotation matrix
     void quatNext(float* dest, float* left, float* right);// multiply two rotation matrices
@@ -135,14 +135,14 @@ public:
     Quaternion Quat;
     double angle, cosa2, sina2, cosa;
 
-    //	double ab_glp[16];
-    //	double ab_glm[16];
-    //	int ab_glv[4];
+    //    double ab_glp[16];
+    //    double ab_glm[16];
+    //    int ab_glv[4];
 
-    //	object offset
-    //	double *m_pOffx, *m_pOffy;
-    //	double *m_pTransx, *m_pTransy;
-    //	QRect *m_pRect;
+    //    object offset
+    //    double *m_pOffx, *m_pOffy;
+    //    double *m_pTransx, *m_pTransy;
+    //    QRect *m_pRect;
 
     //avoid lengthy recurring memory allocations
     Vector3d aa, c, m, ec, sc, p, d;

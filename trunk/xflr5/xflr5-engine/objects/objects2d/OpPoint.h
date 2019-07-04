@@ -1,7 +1,7 @@
 /****************************************************************************
 
     OpPoint Class
-	Copyright (C) 2003 Andre Deperrois 
+    Copyright (C) 2003 Andre Deperrois 
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -54,88 +54,88 @@ The identification of the parent Polar and Foil are made using the QString names
 */
 class XFLR5ENGINELIBSHARED_EXPORT OpPoint
 {
-	friend class Polar;
-	friend class XDirect;
-	friend class OpPointWidget;
+    friend class Polar;
+    friend class XDirect;
+    friend class OpPointWidget;
 
 public:
-	OpPoint();
+    OpPoint();
 
-	void setHingeMoments(Foil *pFoil);
+    void setHingeMoments(Foil *pFoil);
 
-	void exportOpp(QTextStream &out, QString Version, bool bCSV, Foil *pFoil, bool bDataOnly=false);
+    void exportOpp(QTextStream &out, QString Version, bool bCSV, Foil *pFoil, bool bDataOnly=false);
 
-	bool serializeOppWPA(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
-	bool serializeOppXFL(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
-	void getOppProperties(QString &OpPointProperties, Foil *pFoil, bool bData=false);
+    bool serializeOppWPA(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
+    bool serializeOppXFL(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
+    void getOppProperties(QString &OpPointProperties, Foil *pFoil, bool bData=false);
 
 
-	QString &foilName()  {return m_FoilName;}
-	QString &polarName() {return m_PlrName;}
-	QString opPointName();
+    QString &foilName()  {return m_FoilName;}
+    QString &polarName() {return m_PlrName;}
+    QString opPointName();
 
-	void setFoilName(QString newFoilName) {m_FoilName = newFoilName;}
+    void setFoilName(QString newFoilName) {m_FoilName = newFoilName;}
 
-	bool &bViscResults(){return m_bViscResults;}
-	bool &bBL(){return m_bBL;}
+    bool &bViscResults(){return m_bViscResults;}
+    bool &bBL(){return m_bBL;}
 
-	int &oppStyle()        {return m_Style;}
-	int &oppWidth()        {return m_Width;}
-	bool &isVisible()      {return m_bIsVisible;}
-	int &pointStyle()      {return m_PointStyle;}
+    int &oppStyle()        {return m_Style;}
+    int &oppWidth()        {return m_Width;}
+    bool &isVisible()      {return m_bIsVisible;}
+    int &pointStyle()      {return m_PointStyle;}
 
-	double &aoa() {return m_Alpha;}
-	double &Reynolds() {return m_Reynolds;}
-	double &Mach(){return m_Mach; }
+    double &aoa() {return m_Alpha;}
+    double &Reynolds() {return m_Reynolds;}
+    double &Mach(){return m_Mach; }
 
-	void getColor(int &r, int &g, int &b, int &a);
-	void setColor(int r, int g, int b, int a);
-	int red() {return m_red;}
-	int green() {return m_green;}
-	int blue() {return m_blue;}
-	int alphaChannel(){return m_alphaChannel;}
+    void getColor(int &r, int &g, int &b, int &a);
+    void setColor(int r, int g, int b, int a);
+    int red() {return m_red;}
+    int green() {return m_green;}
+    int blue() {return m_blue;}
+    int alphaChannel(){return m_alphaChannel;}
 
 public:
-	bool m_bViscResults;        /**< true if viscous results are stored in this OpPoint */
-	bool m_bBL;                 /**< true if a boundary layer is stored in this OpPoint */
-	bool m_bTEFlap;             /**< true if the parent foil has a flap on the trailing edge */
-	bool m_bLEFlap;             /**< true if the parent foil has a flap on the leading edge */
+    bool m_bViscResults;        /**< true if viscous results are stored in this OpPoint */
+    bool m_bBL;                 /**< true if a boundary layer is stored in this OpPoint */
+    bool m_bTEFlap;             /**< true if the parent foil has a flap on the trailing edge */
+    bool m_bLEFlap;             /**< true if the parent foil has a flap on the leading edge */
 
-	int m_Style, m_Width, m_PointStyle;
-	bool m_bIsVisible;
-	int m_red, m_blue, m_green, m_alphaChannel;
+    int m_Style, m_Width, m_PointStyle;
+    bool m_bIsVisible;
+    int m_red, m_blue, m_green, m_alphaChannel;
 
     int n;                          /**< the number of foil surface points */
 
 
-	double m_Reynolds;            /**< the Re number of the OpPoint */
-	double m_Mach;                /**< the Mach number of the OpPoint */
-	double m_Alpha;               /**< the aoa*/
-	double Cl;                  /**< the lift coefficient */
-	double Cm;                  /**< the pitching moment coefficient */
-	double Cd;                  /**< the drag coefficient - viscous only, since we are dealing with 2D analysis */
-	double Cdp;                 /**< @todo check significance in XFoil doc */
-	double Xtr1;                /**< the laminar to turbulent transition point on the upper surface */
-	double Xtr2;                /**< the laminar to turbulent transition point on the lower surface */
-	double ACrit;               /**< the NCrit parameter which defines turbulent transition */
-	double m_XCP;               /**< the x-position of the centre of pressure */
+    double m_Reynolds;            /**< the Re number of the OpPoint */
+    double m_Mach;                /**< the Mach number of the OpPoint */
+    double m_Alpha;               /**< the aoa*/
+    double Cl;                  /**< the lift coefficient */
+    double Cm;                  /**< the pitching moment coefficient */
+    double Cd;                  /**< the drag coefficient - viscous only, since we are dealing with 2D analysis */
+    double Cdp;                 /**< @todo check significance in XFoil doc */
+    double Xtr1;                /**< the laminar to turbulent transition point on the upper surface */
+    double Xtr2;                /**< the laminar to turbulent transition point on the lower surface */
+    double ACrit;               /**< the NCrit parameter which defines turbulent transition */
+    double m_XCP;               /**< the x-position of the centre of pressure */
 
-	double Cpv[IQX];            /**< the distribution of Cp on the surfaces for a viscous analysis */
-	double Cpi[IQX];            /**< the distribution of Cp on the surfaces for an inviscid analysis */
-	double Qv[IQX];             /**< the distribution of stream velocity on the surfaces for a viscous analysis */
-	double Qi[IQX];             /**< the distribution of stream velocity on the surfaces for an inviscid analysis */
+    double Cpv[IQX];            /**< the distribution of Cp on the surfaces for a viscous analysis */
+    double Cpi[IQX];            /**< the distribution of Cp on the surfaces for an inviscid analysis */
+    double Qv[IQX];             /**< the distribution of stream velocity on the surfaces for a viscous analysis */
+    double Qi[IQX];             /**< the distribution of stream velocity on the surfaces for an inviscid analysis */
 
-	double m_TEHMom;            /**< the moment on the foil's trailing edge flap */
-	double m_LEHMom;            /**< the moment on the foil's leading edge flap */
-	double XForce;              /**< the y-component of the pressure forces */
-	double YForce;              /**< the y-component of the pressure forces */
-	double Cpmn;                /**< @todo check significance in XFoil doc */
+    double m_TEHMom;            /**< the moment on the foil's trailing edge flap */
+    double m_LEHMom;            /**< the moment on the foil's leading edge flap */
+    double XForce;              /**< the y-component of the pressure forces */
+    double YForce;              /**< the y-component of the pressure forces */
+    double Cpmn;                /**< @todo check significance in XFoil doc */
 
     BLXFoil blx;          /**< BL data from an XFoil analysis */
 
 
-	QString m_FoilName;      /**< the name of the parent Foil */
-	QString m_PlrName;       /**< the name of the parent Polar */
+    QString m_FoilName;      /**< the name of the parent Foil */
+    QString m_PlrName;       /**< the name of the parent Polar */
 };
 
 #endif

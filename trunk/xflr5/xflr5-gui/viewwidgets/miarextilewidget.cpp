@@ -202,7 +202,7 @@ void MiarexTileWidget::setMiarexGraphList(XFLR5::enumMiarexViews miarexView, QVe
                                           int nGraphs, int iGraphWidget, Qt::Orientation orientation)
 {
     m_nGraphWidgets = qMin(nGraphs,MAXGRAPHS);
-    if(iGraphWidget>=0)	m_iActiveGraphWidget = iGraphWidget;
+    if(iGraphWidget>=0)    m_iActiveGraphWidget = iGraphWidget;
     else
     {
         //restore the previously selected graph
@@ -237,7 +237,7 @@ void MiarexTileWidget::onSplitterMoved(int pos, int index)
     if(m_MiarexView==XFLR5::WOPPVIEW)
     {
         m_pWingWidget->setWingScale();
-        //		update();
+        //        update();
     }
 }
 

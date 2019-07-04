@@ -154,12 +154,12 @@ void Panel::setPanelFrame(Vector3d const &LA, Vector3d const &LB, Vector3d const
     CollPt.z = (LA.z + LB.z + TA.z + TB.z)/4.0;
 
     //Use VSAERO figure 8. p23
-    //	if(m_iPos==THINSURFACE || m_Pos==TOPSURFACE || m_Pos==BODYSURFACE)
-    //	{
+    //    if(m_iPos==THINSURFACE || m_Pos==TOPSURFACE || m_Pos==BODYSURFACE)
+    //    {
     m.x = (LB.x + TB.x) *0.5 - CollPt.x;
     m.y = (LB.y + TB.y) *0.5 - CollPt.y;
     m.z = (LB.z + TB.z) *0.5 - CollPt.z;
-    /*	}
+    /*    }
     else
     {
         m.x = (LA.x + TA.x) *0.5 - CollPt.x;
@@ -229,7 +229,7 @@ void Panel::setPanelFrame(Vector3d const &LA, Vector3d const &LB, Vector3d const
 */
 bool Panel::invert33(double *l)
 {
-    /*		a0 b1 c2
+    /*        a0 b1 c2
         d3 e4 f5
         g6 h7 i8
 
@@ -433,7 +433,7 @@ double Panel::width()
 */
 void Panel::rotateBC(Vector3d const &HA, Quaternion &Qt)
 {
-    //	Qt.Conjugate(Vortex);
+    //    Qt.Conjugate(Vortex);
     Vector3d WTest;
     WTest.x = VortexPos.x - HA.x;
     WTest.y = VortexPos.y - HA.y;
@@ -589,7 +589,7 @@ void Panel::sourceNASA4023(Vector3d const &C,  Vector3d &V, double &phi)
         else
         {
             //first the potential
-            if(fabs(A+B-S)>0.0)	GL = 1.0/S * log(fabs((A+B+S)/(A+B-S)));
+            if(fabs(A+B-S)>0.0)    GL = 1.0/S * log(fabs((A+B+S)/(A+B-S)));
             else                GL = 0.0;
 
             RNUM = SM*PN * (B*PA-A*PB);
@@ -602,13 +602,13 @@ void Panel::sourceNASA4023(Vector3d const &C,  Vector3d &V, double &phi)
                 if(side >=0.0) sign = 1.0; else sign = -1.0;
                 if(DNOM<0.0)
                 {
-                    if(PN>0.0)	CJKi =  PI * sign;
-                    else		CJKi = -PI * sign;
+                    if(PN>0.0)    CJKi =  PI * sign;
+                    else        CJKi = -PI * sign;
                 }
                 else if(DNOM == 0.0)
                 {
-                    if(PN>0.0)	CJKi =  PI/2.0 * sign;
-                    else		CJKi = -PI/2.0 * sign;
+                    if(PN>0.0)    CJKi =  PI/2.0 * sign;
+                    else        CJKi = -PI/2.0 * sign;
                 }
                 else
                     CJKi = 0.0;
@@ -757,13 +757,13 @@ void Panel::doubletNASA4023(Vector3d const &C, Vector3d &V, double &phi, bool bW
                 if(side >=0.0) sign = 1.0; else sign = -1.0;
                 if(DNOM<0.0)
                 {
-                    if(PN>0.0)	CJKi =  PI * sign;
-                    else		CJKi = -PI * sign;
+                    if(PN>0.0)    CJKi =  PI * sign;
+                    else        CJKi = -PI * sign;
                 }
                 else if(DNOM == 0.0)
                 {
-                    if(PN>0.0)	CJKi =  PI/2.0 * sign;
-                    else		CJKi = -PI/2.0 * sign;
+                    if(PN>0.0)    CJKi =  PI/2.0 * sign;
+                    else        CJKi = -PI/2.0 * sign;
                 }
                 else
                     CJKi = 0.0;
@@ -788,9 +788,9 @@ void Panel::doubletNASA4023(Vector3d const &C, Vector3d &V, double &phi, bool bW
           +(C.y-CollPt.y)*(C.y-CollPt.y)
           +(C.z-CollPt.z)*(C.z-CollPt.z))<1.e-10)
     {
-        //		if(m_R[0]->IsSame(*m_R[1]) || m_R[1]->IsSame(*m_R[2]) || m_R[2]->IsSame(*m_R[3]) || m_R[3]->IsSame(*m_R[0]))
-        //			phi = -3.0*pi/2.0;
-        //		else
+        //        if(m_R[0]->IsSame(*m_R[1]) || m_R[1]->IsSame(*m_R[2]) || m_R[2]->IsSame(*m_R[3]) || m_R[3]->IsSame(*m_R[0]))
+        //            phi = -3.0*pi/2.0;
+        //        else
         phi  = -2.0*PI;
     }
 }

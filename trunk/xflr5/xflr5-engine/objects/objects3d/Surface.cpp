@@ -1,7 +1,7 @@
 /****************************************************************************
 
-	Surface Class
-	Copyright (C) 2005-2016 Andre Deperrois 
+    Surface Class
+    Copyright (C) 2005-2016 Andre Deperrois 
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -486,7 +486,7 @@ void Surface::getSidePoints(enumPanelPosition pos,
 
     Vector3d V = Normal * NormalA;
     Vector3d U = (m_TA - m_LA).normalized();
-    //	double sindA = -V.dot(Vector3d(1.0,0.0,0.0));
+    //    double sindA = -V.dot(Vector3d(1.0,0.0,0.0));
     double sindA = -V.dot(U);
     if(sindA> 1.0) sindA = 1.0;
     if(sindA<-1.0) sindA = -1.0;
@@ -496,7 +496,7 @@ void Surface::getSidePoints(enumPanelPosition pos,
 
     V = Normal * NormalB;
     U = (m_TB-m_LB).normalized();
-    //	double sindB = -V.dot(Vector3d(1.0,0.0,0.0));
+    //    double sindB = -V.dot(Vector3d(1.0,0.0,0.0));
     double sindB = -V.dot(U);
     if(sindB> 1.0) sindB = 1.0;
     if(sindB<-1.0) sindB = -1.0;
@@ -506,7 +506,7 @@ void Surface::getSidePoints(enumPanelPosition pos,
 
 
     double delta = -atan(Normal.y / Normal.z)*180.0/PI;
-    //	double delta = -atan2(Normal.y,  Normal.z)*180.0/PI;
+    //    double delta = -atan2(Normal.y,  Normal.z)*180.0/PI;
 
     //create the quarter chord centers of rotation for the twist
     A4 = m_LA *3.0/4.0 + m_TA * 1/4.0;
@@ -706,7 +706,7 @@ double Surface::stripSpanPos(int k)
  */
 double Surface::twist(int k) const
 {
-    /*	getPanel(k, 0, MIDSURFACE);
+    /*    getPanel(k, 0, MIDSURFACE);
     double y = (LA.y+LB.y+TA.y+TB.y)/4.0;
     return  m_TwistA + (m_TwistB-m_TwistA) *(y-m_LA.y)/(m_LB.y-m_LA.y);*/
 
@@ -763,20 +763,20 @@ void Surface::getYDist(int const &k, double &y1, double &y2) const
  */
 void Surface::init()
 {
-    //	Vector3d DL, DC;
-    //	DL.set(m_LB.x-m_LA.x, m_LB.y-m_LA.y, m_LB.z-m_LA.z);
-    //	DC.set(m_TA.x-m_LA.x, m_TA.y-m_LA.y, m_TA.z-m_LA.z);
-    //	Length = DL.VAbs();
-    //	Chord  = DC.VAbs();
-    //	u.Set(DC.x/Chord,  DC.y/Chord,  DC.z/Chord);
-    //	v.Set(DL.x/Length, DL.y/Length, DL.z/Length);
+    //    Vector3d DL, DC;
+    //    DL.set(m_LB.x-m_LA.x, m_LB.y-m_LA.y, m_LB.z-m_LA.z);
+    //    DC.set(m_TA.x-m_LA.x, m_TA.y-m_LA.y, m_TA.z-m_LA.z);
+    //    Length = DL.VAbs();
+    //    Chord  = DC.VAbs();
+    //    u.Set(DC.x/Chord,  DC.y/Chord,  DC.z/Chord);
+    //    v.Set(DL.x/Length, DL.y/Length, DL.z/Length);
 
     m_bIsTipLeft   = false;
     m_bIsTipRight  = false;
     m_bIsLeftSurf  = false;
     m_bIsRightSurf = false;
 
-    /*	Vector3d LATB, TALB;
+    /*    Vector3d LATB, TALB;
 
     LATB = m_TB - m_LA;
     TALB = m_LB - m_TA;
@@ -1057,7 +1057,7 @@ void Surface::setSidePoints(Body * pBody, double dx, double dz)
 
     Vector3d V = Normal * NormalA;
     Vector3d U = (m_TA - m_LA).normalized();
-    //	double sindA = -V.dot(Vector3d(1.0,0.0,0.0));
+    //    double sindA = -V.dot(Vector3d(1.0,0.0,0.0));
     double sindA = -V.dot(U);
     if(sindA> 1.0) sindA = 1.0;
     if(sindA<-1.0) sindA = -1.0;
@@ -1068,7 +1068,7 @@ void Surface::setSidePoints(Body * pBody, double dx, double dz)
     V = Normal * NormalB;
     U = (m_TB-m_LB).normalized();
     double sindB = -V.dot(U);
-    //	double sindB = V.VAbs();
+    //    double sindB = V.VAbs();
     if(sindB> 1.0) sindB = 1.0;
     if(sindB<-1.0) sindB = -1.0;
     alpha_dB = asin(sindB);

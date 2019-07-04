@@ -32,36 +32,36 @@
 class XFLR5ENGINELIBSHARED_EXPORT PointMass
 {
 public:
-	/** The public constructor */
-	PointMass()
-	{
-		m_Mass = 0.0;
-	}
+    /** The public constructor */
+    PointMass()
+    {
+        m_Mass = 0.0;
+    }
 
-	/** Overloaded public constructor */
-	PointMass(PointMass *pPtMass)
-	{
-		m_Mass = pPtMass->m_Mass;
-		m_Position = pPtMass->m_Position;
-		m_Tag = pPtMass->m_Tag;
-	}
+    /** Overloaded public constructor */
+    PointMass(PointMass *pPtMass)
+    {
+        m_Mass = pPtMass->m_Mass;
+        m_Position = pPtMass->m_Position;
+        m_Tag = pPtMass->m_Tag;
+    }
 
-	/** Overloaded public constructor */
-	PointMass(double const &m, Vector3d const &p, QString const &tag)
-	{
-		m_Mass = m;
-		m_Position = p;
-		m_Tag = tag;
-	}
+    /** Overloaded public constructor */
+    PointMass(double const &m, Vector3d const &p, QString const &tag)
+    {
+        m_Mass = m;
+        m_Position = p;
+        m_Tag = tag;
+    }
 
-	/** Returns the the value of the mass */
-	double &mass()      {return m_Mass;}
-	
-	/** Returns the the position of the mass */
-	Vector3d &position() {return m_Position;}
-	
-	/** Returns the the tag of the mass */
-	QString &tag()      {return m_Tag;}
+    /** Returns the the value of the mass */
+    double &mass()      {return m_Mass;}
+    
+    /** Returns the the position of the mass */
+    Vector3d &position() {return m_Position;}
+    
+    /** Returns the the tag of the mass */
+    QString &tag()      {return m_Tag;}
 
 private:
     double m_Mass;          /**< the value of the point mass, in kg */

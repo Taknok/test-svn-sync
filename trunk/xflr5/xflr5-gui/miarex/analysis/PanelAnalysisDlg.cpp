@@ -109,7 +109,7 @@ void PanelAnalysisDlg::onCancelAnalysis()
     if(m_bIsFinished)
     {
         PanelAnalysis::s_bCancel = false;
-        //		QThreadPool::globalInstance()->waitForDone();
+        //        QThreadPool::globalInstance()->waitForDone();
         done(1);
     }
 }
@@ -124,7 +124,7 @@ void PanelAnalysisDlg::onLogFile()
 /**Updates the progress of the analysis in the slider widget */
 void PanelAnalysisDlg::onProgress()
 {
-    /*	QTime dt = QTime::currentTime();
+    /*    QTime dt = QTime::currentTime();
     QString str = dt.toString("hh:mm:ss.zzz");
     qDebug() << str;*/
 
@@ -269,7 +269,7 @@ void PanelAnalysisDlg::cleanUp()
 
             pPOpp->setVisible(true);
 
-            if(PlaneOpp::s_bKeepOutOpps || !pPOpp->isOut())	Objects3d::insertPOpp(pPOpp);
+            if(PlaneOpp::s_bKeepOutOpps || !pPOpp->isOut())    Objects3d::insertPOpp(pPOpp);
             else
             {
                 delete pPOpp;
@@ -331,7 +331,7 @@ void PanelAnalysisDlg::updateOutput(QString &strong)
 
 void PanelAnalysisDlg::onMessage(QString msg)
 {
-    /*	m_pctrlTextOutput->insertPlainText(msg);
+    /*    m_pctrlTextOutput->insertPlainText(msg);
     m_pctrlTextOutput->textCursor().movePosition(QTextCursor::End);
     m_pctrlTextOutput->ensureCursorVisible();*/
     m_pctrlTextOutput->insertPlainText(msg);

@@ -80,10 +80,10 @@ void BodyScaleDlg::initDialog(bool bFrameOnly)
 void BodyScaleDlg::setupLayout()
 {
     setWindowTitle("Scale Body");
-    //	QDesktopWidget desktop;
-    //	QRect r = desktop.geometry();
-    //	setMinimumHeight(r.height()/3);
-    //	move(r.width()/3, r.height()/6);
+    //    QDesktopWidget desktop;
+    //    QRect r = desktop.geometry();
+    //    setMinimumHeight(r.height()/3);
+    //    move(r.width()/3, r.height()/6);
 
     QGridLayout *pTopLayout = new QGridLayout;
     {
@@ -146,10 +146,10 @@ void BodyScaleDlg::setupLayout()
     connect(m_pctrlBody, SIGNAL(clicked()), this, SLOT(onRadio()));
     connect(m_pctrlFrame, SIGNAL(clicked()), this, SLOT(onRadio()));
 
-    //	connect(m_pctrlXScaleFactor, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-    //	connect(m_pctrlYScaleFactor, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-    //	connect(m_pctrlZScaleFactor, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
-    //	connect(m_pctrlFrameID, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+    //    connect(m_pctrlXScaleFactor, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+    //    connect(m_pctrlYScaleFactor, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+    //    connect(m_pctrlZScaleFactor, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
+    //    connect(m_pctrlFrameID, SIGNAL(editingFinished()), this, SLOT(onEditingFinished()));
 }
 
 

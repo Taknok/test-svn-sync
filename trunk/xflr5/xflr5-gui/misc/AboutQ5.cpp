@@ -1,7 +1,7 @@
 /****************************************************************************
 
     AboutQ5 Class
-	Copyright (C) 2008-2008 Andre Deperrois 
+    Copyright (C) 2008-2008 Andre Deperrois 
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,32 +30,32 @@
 
 AboutQ5::AboutQ5(QWidget *parent) : QDialog(parent)
 {
-	setWindowTitle(tr("About XFLR5"));
-	setupLayout();
+    setWindowTitle(tr("About XFLR5"));
+    setupLayout();
 }
 
 
 void AboutQ5::setupLayout()
 {
-	QGridLayout *pLogoLayout = new QGridLayout;
-	{
-		QLabel *LabIconQ5 = new QLabel;
-		LabIconQ5->setObjectName("iconXFLR5");
-		LabIconQ5->setPixmap(QPixmap(QString::fromUtf8(":/images/xflr5_64.png")));
-		QLabel *lab1  = new QLabel(VERSIONNAME);
-		lab1->setAlignment(Qt::AlignVCenter| Qt::AlignLeft);
-		QLabel *XFLR5Link = new QLabel;
-		XFLR5Link->setText("<a href=http://www.xflr5.com>http://www.xflr5.com</a>");
-		XFLR5Link->setOpenExternalLinks(true);
-		XFLR5Link->setTextInteractionFlags(Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse);
-		XFLR5Link->setAlignment(Qt::AlignVCenter| Qt::AlignLeft);
+    QGridLayout *pLogoLayout = new QGridLayout;
+    {
+        QLabel *LabIconQ5 = new QLabel;
+        LabIconQ5->setObjectName("iconXFLR5");
+        LabIconQ5->setPixmap(QPixmap(QString::fromUtf8(":/images/xflr5_64.png")));
+        QLabel *lab1  = new QLabel(VERSIONNAME);
+        lab1->setAlignment(Qt::AlignVCenter| Qt::AlignLeft);
+        QLabel *XFLR5Link = new QLabel;
+        XFLR5Link->setText("<a href=http://www.xflr5.com>http://www.xflr5.com</a>");
+        XFLR5Link->setOpenExternalLinks(true);
+        XFLR5Link->setTextInteractionFlags(Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse);
+        XFLR5Link->setAlignment(Qt::AlignVCenter| Qt::AlignLeft);
 
-		pLogoLayout->setColumnStretch(1,1);
-		pLogoLayout->setColumnStretch(2,2);
-		pLogoLayout->addWidget(LabIconQ5,1,1,2,1);
-		pLogoLayout->addWidget(lab1,1,2);
-		pLogoLayout->addWidget(XFLR5Link,2,2);
-	}
+        pLogoLayout->setColumnStretch(1,1);
+        pLogoLayout->setColumnStretch(2,2);
+        pLogoLayout->addWidget(LabIconQ5,1,1,2,1);
+        pLogoLayout->addWidget(lab1,1,2);
+        pLogoLayout->addWidget(XFLR5Link,2,2);
+    }
 
     QLabel *pLab2  = new QLabel(tr("Copyright (C) M. Drela and H. Youngren 2000 - XFoil v6.94"));
     QLabel *pLab3  = new QLabel(tr("Copyright (C) Matthieu Scherrer 2004 - Miarex v1.00"));
@@ -63,8 +63,8 @@ void AboutQ5::setupLayout()
     QLabel *pLab5  = new QLabel(tr("This program is distributed in the hope that it will be useful,"));
     QLabel *pLab6  = new QLabel(tr("but WITHOUT ANY WARRANTY; without even the implied warranty of"));
     QLabel *pLab7  = new QLabel(tr("MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."));
-//	QLabel *pLab8  = new QLabel(tr("This program has been developed exclusively for the analysis of model aircraft"));
-//	QLabel *pLab9  = new QLabel(tr("Any other usage is expressly prohibited"));
+//    QLabel *pLab8  = new QLabel(tr("This program has been developed exclusively for the analysis of model aircraft"));
+//    QLabel *pLab9  = new QLabel(tr("Any other usage is expressly prohibited"));
     QLabel *plab10 = new QLabel(tr("Program distributed  under the terms of the GNU General Public License"));
     QLabel *pLab11 = new QLabel(tr("German translation by Christall, Jochen Günzel and Martin Willner"));
     QLabel *pLab12 = new QLabel(tr("Japanese translation by IKUSU, Koichi Akabe, Misatus, dynamicsoar, hide253"));
@@ -76,10 +76,10 @@ void AboutQ5::setupLayout()
     connect(pButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
 
-	QVBoxLayout *pMainLayout = new QVBoxLayout;
-	{
-		pMainLayout->addLayout(pLogoLayout);
-		pMainLayout->addStretch(1);
+    QVBoxLayout *pMainLayout = new QVBoxLayout;
+    {
+        pMainLayout->addLayout(pLogoLayout);
+        pMainLayout->addStretch(1);
         pMainLayout->addWidget(pLab2);
         pMainLayout->addWidget(pLab3);
         pMainLayout->addWidget(pLab4);
@@ -89,21 +89,21 @@ void AboutQ5::setupLayout()
         pMainLayout->addWidget(pLab12);
         pMainLayout->addWidget(pLab13);
         pMainLayout->addWidget(pLab14);
-		pMainLayout->addSpacing(20);
-		pMainLayout->addStretch(1);
+        pMainLayout->addSpacing(20);
+        pMainLayout->addStretch(1);
         pMainLayout->addWidget(pLab5);
         pMainLayout->addWidget(pLab6);
         pMainLayout->addWidget(pLab7);
-		pMainLayout->addStretch(1);
-//		pMainLayout->addWidget(lab8);
-//		pMainLayout->addWidget(lab9);
-		pMainLayout->addStretch(1);
+        pMainLayout->addStretch(1);
+//        pMainLayout->addWidget(lab8);
+//        pMainLayout->addWidget(lab9);
+        pMainLayout->addStretch(1);
         pMainLayout->addWidget(plab10);
-		pMainLayout->addStretch(1);
+        pMainLayout->addStretch(1);
         pMainLayout->addWidget(pButtonBox);
-	}
-	setLayout(pMainLayout);
-	setMinimumHeight(400);
+    }
+    setLayout(pMainLayout);
+    setMinimumHeight(400);
 }
 
 

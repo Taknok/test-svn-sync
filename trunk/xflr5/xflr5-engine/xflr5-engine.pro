@@ -104,17 +104,17 @@ win32 {
 
 
 macx{
-#	CONFIG += lib_bundle
-#	CONFIG += i386
-	QMAKE_SONAME_PREFIX = @executable_path/../Frameworks
-	QMAKE_MAC_SDK = macosx
+#    CONFIG += lib_bundle
+#    CONFIG += i386
+    QMAKE_SONAME_PREFIX = @executable_path/../Frameworks
+    QMAKE_MAC_SDK = macosx
 }
 
 
 unix{
     isEmpty(PREFIX){
-		PREFIX = /usr/local
-	}
-	target.path = $$PREFIX/lib
+        PREFIX = /usr/local
+    }
+    target.path = $$PREFIX/lib
     INSTALLS += target
 }

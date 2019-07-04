@@ -295,7 +295,7 @@ void ManageFoilsDlg::onRename()
 
 void ManageFoilsDlg::onExport()
 {
-    if(!m_pFoil)	return;
+    if(!m_pFoil)    return;
 
     QString FileName;
 

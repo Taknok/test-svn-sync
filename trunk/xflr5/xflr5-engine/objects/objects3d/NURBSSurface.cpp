@@ -80,7 +80,7 @@ double NURBSSurface::getu(double pos, double v) const
     double u2, u1, b, c, u,  zz, zh;
     u1 = 0.0; u2 = 1.0;
 
-    //	v = 0.0;//use top line, but doesn't matter
+    //    v = 0.0;//use top line, but doesn't matter
     while(qAbs(u2-u1)>1.0e-6 && iter<200)
     {
         u=(u1+u2)/2.0;
@@ -320,7 +320,7 @@ bool NURBSSurface::intersectNURBS(Vector3d A, Vector3d B, Vector3d &I)
 
     if(M0.VAbs()<M1.VAbs())
     {
-        tmp = A;		A = B;		  B = tmp;
+        tmp = A;        A = B;          B = tmp;
     }
 
     //M0 is the outside Point, M1 is the inside point
@@ -348,7 +348,7 @@ bool NURBSSurface::intersectNURBS(Vector3d A, Vector3d B, Vector3d &I)
         I.y = M0.y + t * (M1.y-M0.y);
         I.z = M0.z + t * (M1.z-M0.z);
 
-        //		dist = sqrt((t_N.x-I.x)*(t_N.x-I.x) + (t_N.y-I.y)*(t_N.y-I.y) + (t_N.z-I.z)*(t_N.z-I.z));
+        //        dist = sqrt((t_N.x-I.x)*(t_N.x-I.x) + (t_N.y-I.y)*(t_N.y-I.y) + (t_N.z-I.z)*(t_N.z-I.z));
         dist = qAbs(t-tp);
         iter++;
     }
@@ -404,7 +404,7 @@ void NURBSSurface::setKnots()
         }
     }
 
-    /*	qDebug("u-knots\n");
+    /*    qDebug("u-knots\n");
     for(int iu=0; iu<m_nuKnots; iu++)
         qDebug(" %d  %7.3f", iu, m_uKnots[iu]);
     qDebug("v-knots\n");
@@ -512,6 +512,6 @@ void NURBSSurface::appendFrame(Frame*pFrame)
 
 int NURBSSurface::framePointCount() const
 {
-    if(m_pFrame.size())	return m_pFrame.first()->pointCount();
+    if(m_pFrame.size())    return m_pFrame.first()->pointCount();
     else return 0;
 }

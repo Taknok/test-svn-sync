@@ -143,8 +143,8 @@ void EditBodyDlg::showEvent(QShowEvent *pEvent)
 void EditBodyDlg::hideEvent(QHideEvent *pEvent)
 {
     m_HorizontalSplitterSizes  = m_pHorizontalSplitter->saveState();
-    //	m_LeftSplitterSizes        = m_pLeftSplitter->saveState();
-    //	m_MiddleSplitterSizes      = m_pMiddleSplitter->saveState();
+    //    m_LeftSplitterSizes        = m_pLeftSplitter->saveState();
+    //    m_MiddleSplitterSizes      = m_pMiddleSplitter->saveState();
     s_WindowPosition = pos();
     pEvent->accept();
 }
@@ -166,7 +166,7 @@ void EditBodyDlg::resizeEvent(QResizeEvent *pEvent)
 void EditBodyDlg::onResize()
 {
     resizeTreeView();
-    //	resize3DView();
+    //    resize3DView();
 }
 
 
@@ -226,13 +226,13 @@ void EditBodyDlg::setupLayout()
     m_pStruct->header()->setSectionResizeMode(QHeaderView::Interactive);
 #endif
 
-    //	m_pPlaneStruct->header()->setDefaultSectionSize(239);
+    //    m_pPlaneStruct->header()->setDefaultSectionSize(239);
     m_pStruct->header()->setStretchLastSection(true);
     m_pStruct->header()->setDefaultAlignment(Qt::AlignCenter);
 
     m_pStruct->setEditTriggers(QAbstractItemView::AllEditTriggers);
     m_pStruct->setSelectionBehavior (QAbstractItemView::SelectRows);
-    //	m_pStruct->setIndentation(31);
+    //    m_pStruct->setIndentation(31);
     m_pStruct->setWindowTitle(tr("Objects"));
 
     m_pModel = new QStandardItemModel(this);
@@ -429,7 +429,7 @@ void EditBodyDlg::setupLayout()
     }
     setLayout(pMainLayout);
     connectSignals();
-    //	resize(s_Size);
+    //    resize(s_Size);
 }
 
 
@@ -463,10 +463,10 @@ void EditBodyDlg::initDialog(Body *pBody)
 
 void EditBodyDlg::keyPressEvent(QKeyEvent *event)
 {
-    //	bool bShift = false;
-    //	bool bCtrl  = false;
-    //	if(event->modifiers() & Qt::ShiftModifier)   bShift =true;
-    //	if(event->modifiers() & Qt::ControlModifier) bCtrl =true;
+    //    bool bShift = false;
+    //    bool bCtrl  = false;
+    //    if(event->modifiers() & Qt::ShiftModifier)   bShift =true;
+    //    if(event->modifiers() & Qt::ControlModifier) bCtrl =true;
 
     switch (event->key())
     {
@@ -1275,8 +1275,8 @@ bool EditBodyDlg::loadSettings(QSettings &settings)
         s_bWindowMaximized        = settings.value("WindowMaximized", false).toBool();
         s_WindowPosition          = settings.value("WindowPosition", QPoint(131, 77)).toPoint();
         m_HorizontalSplitterSizes = settings.value("HorizontalSplitterSizes").toByteArray();
-        //		m_LeftSplitterSizes       = settings.value("LeftSplitterSizes").toByteArray();
-        //		m_MiddleSplitterSizes     = settings.value("RightSplitterSizes").toByteArray();
+        //        m_LeftSplitterSizes       = settings.value("LeftSplitterSizes").toByteArray();
+        //        m_MiddleSplitterSizes     = settings.value("RightSplitterSizes").toByteArray();
     }
     settings.endGroup();
     return true;
@@ -1293,8 +1293,8 @@ bool EditBodyDlg::saveSettings(QSettings &settings)
         settings.setValue("WindowMaximized", s_bWindowMaximized);
         settings.setValue("WindowPosition", s_WindowPosition);
         settings.setValue("HorizontalSplitterSizes", m_HorizontalSplitterSizes);
-        //		settings.setValue("LeftSplitterSizes",       m_LeftSplitterSizes);
-        //		settings.setValue("RightSplitterSizes",      m_MiddleSplitterSizes);
+        //        settings.setValue("LeftSplitterSizes",       m_LeftSplitterSizes);
+        //        settings.setValue("RightSplitterSizes",      m_MiddleSplitterSizes);
     }
     settings.endGroup();
 
@@ -1374,14 +1374,14 @@ void EditBodyDlg::onExportBodyXML()
 
 void EditBodyDlg::onImportBodyXML()
 {
-    //	Body memBody;
-    //	memBody.duplicate(m_pBody);
+    //    Body memBody;
+    //    memBody.duplicate(m_pBody);
 
     QString PathName;
     PathName = QFileDialog::getOpenFileName(this, tr("Open XML File"),
                                             Settings::s_LastDirName,
                                             tr("Plane XML file")+"(*.xml)");
-    if(!PathName.length())		return ;
+    if(!PathName.length())        return ;
     int pos = PathName.lastIndexOf("/");
     if(pos>0) Settings::s_LastDirName = PathName.left(pos);
 
@@ -1403,7 +1403,7 @@ void EditBodyDlg::onImportBodyXML()
     {
         QString errorMsg = planeReader.errorString() + QString("\nline %1 column %2").arg(planeReader.lineNumber()).arg(planeReader.columnNumber());
         QMessageBox::warning(this, "XML read", errorMsg, QMessageBox::Ok);
-        //		m_pBody->duplicate(&memBody);
+        //        m_pBody->duplicate(&memBody);
         return;
     }
 

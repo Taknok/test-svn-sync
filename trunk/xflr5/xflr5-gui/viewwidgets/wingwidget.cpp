@@ -74,8 +74,8 @@ void WingWidget::setWingGraph(Graph *pGraph)
 
 void WingWidget::keyPressEvent(QKeyEvent *pEvent)
 {
-    //	bool bShift = false;
-    //	if(event->modifiers() & Qt::ShiftModifier)   bShift =true;
+    //    bool bShift = false;
+    //    if(event->modifiers() & Qt::ShiftModifier)   bShift =true;
 
     switch (pEvent->key())
     {
@@ -186,7 +186,7 @@ void WingWidget::paintEvent(QPaintEvent *)
  */
 void WingWidget::paintWing(QPainter &painter, QPointF ORef, double scale)
 {
-    if(!s_pMiarex->m_pCurPlane)	return;
+    if(!s_pMiarex->m_pCurPlane)    return;
 
     double scalex  = scale;
     double scaley  = scale;
@@ -227,7 +227,7 @@ void WingWidget::paintWing(QPainter &painter, QPointF ORef, double scale)
     for (int i=0; i<pWing->NWingSection()-1;i++)
     {
         x -= int(pWing->Length(i)*scalex);
-        painter.drawLine(x,						           y+int(pWing->Offset(i)*scaley),
+        painter.drawLine(x,                                   y+int(pWing->Offset(i)*scaley),
                          x-int(pWing->Length(i+1)*scalex), y+int(pWing->Offset(i+1)*scaley));
 
         painter.drawLine(x-int(pWing->Length(i+1)*scalex), y+int(pWing->Offset(i+1)*scaley),
@@ -241,7 +241,7 @@ void WingWidget::paintWing(QPainter &painter, QPointF ORef, double scale)
     }
 
 
-    /*	QPen SymPen(QColor(155,128,190));
+    /*    QPen SymPen(QColor(155,128,190));
     painter.setPen(SymPen);
     painter.setBackgroundMode(Qt::TransparentMode);
 
@@ -260,7 +260,7 @@ void WingWidget::paintWing(QPainter &painter, QPointF ORef, double scale)
 void WingWidget::paintXCmRef(QPainter & painter, QPointF ORef, double scale)
 {
     //Draws the moment reference point on the 2D view
-    if(!s_pMiarex->m_pCurPlane || !s_pMiarex->m_pCurWPolar)	return;
+    if(!s_pMiarex->m_pCurPlane || !s_pMiarex->m_pCurWPolar)    return;
 
     painter.save();
     QPointF O(ORef);
@@ -270,7 +270,7 @@ void WingWidget::paintXCmRef(QPainter & painter, QPointF ORef, double scale)
 
     offset.rx() = ORef.x();
     offset.ry() = ORef.y();
-    //	scalex  = scale;
+    //    scalex  = scale;
     scaley  = scale;
     O.rx() = offset.x();
     O.ry() = offset.y();
@@ -299,7 +299,7 @@ void WingWidget::paintXCmRef(QPainter & painter, QPointF ORef, double scale)
 void WingWidget::paintXCP(QPainter & painter, QPointF ORef, double scale)
 {
     //Draws the lift line and center of pressure position on the the 2D view
-    if(!s_pMiarex->m_pCurPlane)	return;
+    if(!s_pMiarex->m_pCurPlane)    return;
 
     Wing *pWing = s_pMiarex->m_pCurPlane->m_Wing;
 
@@ -340,13 +340,13 @@ void WingWidget::paintXCP(QPainter & painter, QPointF ORef, double scale)
 
     double offLE = pWing->getOffset(pWOpp->m_SpanPos[nStart]*2.0/pWOpp->m_Span);
     double y = (offLE+pWOpp->m_Chord[nStart]*pWOpp->m_XCPSpanRel[nStart])*scaley;
-    From = QPointF(O.x()+pWOpp->m_SpanPos[nStart]*scalex,	O.y()+y );
+    From = QPointF(O.x()+pWOpp->m_SpanPos[nStart]*scalex,    O.y()+y );
 
     for (int m=nStart; m<pWOpp->m_NStation; m++)
     {
         offLE = pWing->getOffset(pWOpp->m_SpanPos[m]*2.0/pWOpp->m_Span);
         y = (offLE+pWOpp->m_Chord[m]*pWOpp->m_XCPSpanRel[m])*scaley;
-        To = QPointF(O.x()+pWOpp->m_SpanPos[m]*scalex,	O.y()+y );
+        To = QPointF(O.x()+pWOpp->m_SpanPos[m]*scalex,    O.y()+y );
         painter.drawLine(From, To);
         From = To;
     }
@@ -369,7 +369,7 @@ void WingWidget::paintXCP(QPainter & painter, QPointF ORef, double scale)
 void WingWidget::paintXTr(QPainter & painter, QPointF ORef, double scale)
 {
     //Draws the transition lines on the 2D view
-    if(!s_pMiarex->m_pCurPlane)	return;
+    if(!s_pMiarex->m_pCurPlane)    return;
 
     Wing *pWing = s_pMiarex->m_pCurPlane->wing();
     painter.save();
@@ -400,7 +400,7 @@ void WingWidget::paintXTr(QPainter & painter, QPointF ORef, double scale)
     {
         offLE = pWing->getOffset(s_pMiarex->m_pCurPOpp->m_pWOpp[0]->m_SpanPos[nStart]*2.0/s_pMiarex->m_pCurPOpp->m_pWOpp[0]->m_Span);
         y = (offLE+s_pMiarex->m_pCurPOpp->m_pWOpp[0]->m_Chord[nStart]*s_pMiarex->m_pCurPOpp->m_pWOpp[0]->m_XTrTop[nStart])*scaley;
-        From = QPointF(O.x()+s_pMiarex->m_pCurPOpp->m_pWOpp[0]->m_SpanPos[nStart]*scalex,	O.y()+y);
+        From = QPointF(O.x()+s_pMiarex->m_pCurPOpp->m_pWOpp[0]->m_SpanPos[nStart]*scalex,    O.y()+y);
 
         for (m=nStart; m<s_pMiarex->m_pCurPOpp->m_pWOpp[0]->m_NStation; m++)
         {

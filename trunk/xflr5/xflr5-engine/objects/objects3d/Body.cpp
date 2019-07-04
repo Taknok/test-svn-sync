@@ -50,9 +50,9 @@ Body::Body()
 
     m_bTextures = false;
 
-    //	m_BodyLEPosition.Set(0.0,0.0,0.0);
+    //    m_BodyLEPosition.Set(0.0,0.0,0.0);
     m_CoG.set(0.0,0.0,0.0);
-    m_VolumeMass =  m_TotalMass = 0.0;	    //for inertia calculations
+    m_VolumeMass =  m_TotalMass = 0.0;        //for inertia calculations
     m_CoGIxx = m_CoGIyy = m_CoGIzz = m_CoGIxz = 0.0;
     clearPointMasses();
 
@@ -62,8 +62,8 @@ Body::Body()
     m_SplineSurface.m_ivDegree = 3;
 
 
-    //	m_NSideLines = 5;
-    //	m_SplineSurface.m_nvLines = SideLines();
+    //    m_NSideLines = 5;
+    //    m_SplineSurface.m_nvLines = SideLines();
     m_xPanels.clear();
     m_hPanels.clear();
     for(int ifr=0; ifr<7; ifr++)
@@ -260,7 +260,7 @@ void Body::duplicate(Body const *pBody)
  */
 double Body::length()
 {
-    if(m_SplineSurface.m_pFrame.size())	return qAbs(m_SplineSurface.m_pFrame.last()->m_Position.x - m_SplineSurface.m_pFrame.first()->m_Position.x);
+    if(m_SplineSurface.m_pFrame.size())    return qAbs(m_SplineSurface.m_pFrame.last()->m_Position.x - m_SplineSurface.m_pFrame.first()->m_Position.x);
     else                                return 0.0;
 }
 
@@ -566,8 +566,8 @@ int Body::insertFrame(Vector3d Real)
 
     m_iActiveFrame = n+1;
 
-    if(n>=frameCount())	m_iActiveFrame = frameCount();
-    if(n<=0)			m_iActiveFrame = 0;
+    if(n>=frameCount())    m_iActiveFrame = frameCount();
+    if(n<=0)            m_iActiveFrame = 0;
     m_iHighlightFrame = -1;
 
     m_xPanels.insert(n, 1);
@@ -623,7 +623,7 @@ bool Body::intersectNURBS(Vector3d A, Vector3d B, Vector3d &I, bool bRight)
 
     if(M0.VAbs()<M1.VAbs())
     {
-        tmp = A;		A   = B;		B   = tmp;
+        tmp = A;        A   = B;        B   = tmp;
     }
     //M0 is the outside Point, M1 is the inside point
     M0 = A; M1 = B;
@@ -646,8 +646,8 @@ bool Body::intersectNURBS(Vector3d A, Vector3d B, Vector3d &I, bool bRight)
         tp = t;
         //first we get the u parameter corresponding to point I
         u = getu(I.x);
-        //		t_Q.Set(I.x, 0.0, 0.0);
-        //		t_r = (I-t_Q);
+        //        t_Q.Set(I.x, 0.0, 0.0);
+        //        t_r = (I-t_Q);
         t_r.x = 0.0;
         t_r.y = I.y;
         t_r.z = I.z;
@@ -662,7 +662,7 @@ bool Body::intersectNURBS(Vector3d A, Vector3d B, Vector3d &I, bool bRight)
         I.y = M0.y + t * (M1.y-M0.y);
         I.z = M0.z + t * (M1.z-M0.z);
 
-        //		dist = sqrt((t_N.x-I.x)*(t_N.x-I.x) + (t_N.y-I.y)*(t_N.y-I.y) + (t_N.z-I.z)*(t_N.z-I.z));
+        //        dist = sqrt((t_N.x-I.x)*(t_N.x-I.x) + (t_N.y-I.y)*(t_N.y-I.y) + (t_N.z-I.z)*(t_N.z-I.z));
         dist = qAbs(t-tp);
         iter++;
     }
@@ -948,7 +948,7 @@ void Body::scale(double XFactor, double YFactor, double ZFactor, bool bFrameOnly
             }
         }
     }
-    //	ComputeCenterLine();
+    //    ComputeCenterLine();
 }
 
 
@@ -961,7 +961,7 @@ void Body::scale(double XFactor, double YFactor, double ZFactor, bool bFrameOnly
 void Body::setPanelPos()
 {
     int i;
-    /*	for(i=0; i<=m_nxPanels; i++)
+    /*    for(i=0; i<=m_nxPanels; i++)
     {
         s_XPanelPos[i] =(double)i/(double)m_nxPanels;
     }
@@ -999,7 +999,7 @@ void Body::translate(double XTrans, double , double ZTrans, bool bFrameOnly, int
         if((bFrameOnly &&  i==FrameID) || !bFrameOnly)
         {
             m_SplineSurface.m_pFrame[i]->m_Position.x += XTrans;
-            //			m_SplineSurface.m_pFrame[i]->m_Position.y += YTrans;
+            //            m_SplineSurface.m_pFrame[i]->m_Position.y += YTrans;
             m_SplineSurface.m_pFrame[i]->m_Position.z += ZTrans;
 
             for(j=0; j<m_SplineSurface.m_pFrame[i]->m_CtrlPoint.size(); j++)
@@ -1009,7 +1009,7 @@ void Body::translate(double XTrans, double , double ZTrans, bool bFrameOnly, int
             }
         }
     }
-    //	ComputeCenterLine();
+    //    ComputeCenterLine();
 }
 
 
@@ -1452,8 +1452,8 @@ void Body::exportGeometry(QTextStream &outStream, int type, double mtoUnit, int 
     Vector3d Point;
 
 
-    if(type==1)	str="";
-    else		str=", ";
+    if(type==1)    str="";
+    else        str=", ";
 
     outStream  << m_BodyName;
     outStream  << ("\n\n");
@@ -1476,7 +1476,7 @@ void Body::exportGeometry(QTextStream &outStream, int type, double mtoUnit, int 
             getPoint(u,  v, true, Point);
 
             //increased precision i.a.w. request #18
-            /*			strong = QString("   %1"+str+"     %2"+str+"     %3\n")
+            /*            strong = QString("   %1"+str+"     %2"+str+"     %3\n")
                      .arg(Point.x * mtoUnit,10,'f',3)
                      .arg(Point.y * mtoUnit,10,'f',3)
                      .arg(Point.z * mtoUnit,10,'f',3);
@@ -1519,7 +1519,7 @@ bool Body::serializeBodyWPA(QDataStream &ar, bool bIsStoring)
         int NSideLines;
         //1006 : added body LEPosition
         //1005 : added body alpha color + provisions
-        //1004 : QFLRv0.03	: added mass properties for inertia calculations
+        //1004 : QFLRv0.03    : added mass properties for inertia calculations
         //1003 : QFLR5 v0.02 : added body description field
         //1002 : Added axial and hoop mesh panel numbers for linetype fuselage
         //1001 : Added bunching parameter
@@ -1572,7 +1572,7 @@ bool Body::serializeBodyWPA(QDataStream &ar, bool bIsStoring)
             m_SplineSurface.m_pFrame[k]->serializeFrame(ar, bIsStoring);
         }
         //Serialize Bodyline
-        ar >>k;//	ar >> m_NStations; again ?
+        ar >>k;//    ar >> m_NStations; again ?
 
         for (k=0; k<nStations;k++)
         {
@@ -1620,9 +1620,9 @@ bool Body::serializeBodyWPA(QDataStream &ar, bool bIsStoring)
         if(ArchiveFormat>=1006)
         {
             ar >> x >> y >> z;
-            //			m_BodyLEPosition.Set(x,y,z);
+            //            m_BodyLEPosition.Set(x,y,z);
         }
-        //		else m_BodyLEPosition.Set(0.0,0.0,0.0);
+        //        else m_BodyLEPosition.Set(0.0,0.0,0.0);
         ar >> f;
 
         setNURBSKnots();
@@ -1784,7 +1784,7 @@ bool Body::Rewind1Line(QTextStream &in, int &Line, QString &strong)
 */
 int Body::readValues(QString line, double &x, double &y, double &z)
 {
-    /*	char *sx = new char[30];
+    /*    char *sx = new char[30];
     char *sy = new char[30];
     char *text;*/
     int res=0;
@@ -1994,20 +1994,20 @@ void Body::exportSTLBinary(QDataStream &outStream, int nXPanels, int nHoopPanels
 {
     /***
      *  UINT8[80] – Header
-     * 	UINT32 – Number of triangles
+     *     UINT32 – Number of triangles
      *
-     * 	foreach triangle
-     * 	REAL32[3] – Normal vector
-     * 	REAL32[3] – Vertex 1
-     * 	REAL32[3] – Vertex 2
-     * 	REAL32[3] – Vertex 3
-     * 	UINT16 – Attribute byte count
-     * 	end
+     *     foreach triangle
+     *     REAL32[3] – Normal vector
+     *     REAL32[3] – Vertex 1
+     *     REAL32[3] – Vertex 2
+     *     REAL32[3] – Vertex 3
+     *     UINT16 – Attribute byte count
+     *     end
     */
 
-    //	80 character header, avoid word "solid"
+    //    80 character header, avoid word "solid"
     //                       0123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789
-    QString strong = 	"binary STL file                                                                ";
+    QString strong =     "binary STL file                                                                ";
     writeCString(outStream, strong);
 
     if(m_LineType==XFLR5::BODYSPLINETYPE) exportSTLBinarySplines(outStream, nXPanels, nHoopPanels, unit);
@@ -2057,8 +2057,8 @@ void Body::exportSTLBinarySplines(QDataStream &outStream, int nXPanels, int nHoo
     {
         for (int l=0; l<nHoopPanels; l++)
         {
-            LATB = m_T[p+nHoopPanels+1] - m_T[p+1];     //	LATB = TB - LA;
-            TALB = m_T[p+nHoopPanels+2] - m_T[p];      //	TALB = LB - TA;
+            LATB = m_T[p+nHoopPanels+1] - m_T[p+1];     //    LATB = TB - LA;
+            TALB = m_T[p+nHoopPanels+2] - m_T[p];      //    TALB = LB - TA;
             N = TALB * LATB;
             N.normalize();
 
@@ -2114,8 +2114,8 @@ void Body::exportSTLBinarySplines(QDataStream &outStream, int nXPanels, int nHoo
     {
         for (int l=0; l<nHoopPanels; l++)
         {
-            LATB = m_T[p+nHoopPanels+1] - m_T[p+1];     //	LATB = TB - LA;
-            TALB = m_T[p+nHoopPanels+2] - m_T[p];      //	TALB = LB - TA;
+            LATB = m_T[p+nHoopPanels+1] - m_T[p+1];     //    LATB = TB - LA;
+            TALB = m_T[p+nHoopPanels+2] - m_T[p];      //    TALB = LB - TA;
             N = TALB * LATB;
             N.normalize();
             //1st triangle
@@ -2165,7 +2165,7 @@ void Body::exportSTLBinarySplines(QDataStream &outStream, int nXPanels, int nHoo
     }
 
 
-    //	Q_ASSERT(iTriangles==nTriangles);
+    //    Q_ASSERT(iTriangles==nTriangles);
     delete [] m_T;
 }
 

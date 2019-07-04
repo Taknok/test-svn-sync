@@ -94,7 +94,7 @@ public:
     QString m_XFoilLog;
     QTextStream m_XFoilStream;
 
-    //	Curve Data
+    //    Curve Data
     QVarLengthArray<double, 1024> *m_x0, *m_x1, *m_y0,*m_y1;
 
 

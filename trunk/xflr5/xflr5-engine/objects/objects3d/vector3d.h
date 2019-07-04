@@ -230,7 +230,7 @@ public:
     void rotateZ(Vector3d const &O, double ZTilt);
     void rotateX(double delta);
     void rotateY(double YTilt);
-    //	void rotateZ(double ZRot);
+    //    void rotateZ(double ZRot);
 
     void displayCoords(QString msg) const;
 };

@@ -95,7 +95,7 @@ private:
     QLabel *m_pctrlSurf1;
     QLabel *m_pctrlSurf2;
     QLabel *m_pctrlSurf3;
-    //	QLabel *m_pctrlVolume;
+    //    QLabel *m_pctrlVolume;
     QLabel *m_pctrlLen1;
     QLabel *m_pctrlLen2;
     QLabel *m_pctrlLen3;
@@ -139,14 +139,14 @@ private:
     QCheckBox *m_pctrlStabCheck;
     QCheckBox *m_pctrlFinCheck;
     QCheckBox *m_pctrlDoubleFin;
-    QCheckBox	*m_pctrlSymFin;
+    QCheckBox    *m_pctrlSymFin;
     QPushButton *m_pctrlDefineWing;
     QPushButton *m_pctrlImportWing;
     QPushButton *m_pctrlDefineWing2;
     QPushButton *m_pctrlImportWing2;
-    QPushButton	*m_pctrlDefineFin;
-    QPushButton	*m_pctrlVTail;
-    QPushButton	*m_pctrlDefineStab;
+    QPushButton    *m_pctrlDefineFin;
+    QPushButton    *m_pctrlVTail;
+    QPushButton    *m_pctrlDefineStab;
     QPushButton *m_pctrlBodyActions;
     QPushButton *m_pctrlPlaneInertia;
 
@@ -157,7 +157,7 @@ private:
 
     static bool s_bWindowMaximized;
     static QPoint s_WindowPosition;   /**< the position on the client area of the dialog's topleft corner */
-    static QSize s_WindowSize;	 /**< the window size in the client area */
+    static QSize s_WindowSize;     /**< the window size in the client area */
 
 };
 

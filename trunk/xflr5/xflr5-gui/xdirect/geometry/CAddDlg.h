@@ -67,16 +67,16 @@ private slots:
 private:
     static XFoil* s_pXFoil;
 
-    QPushButton	*ApplyButton, *OKButton, *CancelButton;
+    QPushButton    *ApplyButton, *OKButton, *CancelButton;
     QLabel *m_pctrlAtPanel;
     QLabel *m_pctrlTotal;
     QLabel *m_pctrlAdded;
     QLabel *m_pctrlMaxAngle;
-    QRadioButton	*m_pctrlrb1;
-    QRadioButton	*m_pctrlrb2;
-    DoubleEdit	*m_pctrlTo;
-    DoubleEdit	*m_pctrlFrom;
-    DoubleEdit	*m_pctrlAngTol;
+    QRadioButton    *m_pctrlrb1;
+    QRadioButton    *m_pctrlrb2;
+    DoubleEdit    *m_pctrlTo;
+    DoubleEdit    *m_pctrlFrom;
+    DoubleEdit    *m_pctrlAngTol;
 
     Foil* m_pMemFoil;
     Foil* m_pBufferFoil;

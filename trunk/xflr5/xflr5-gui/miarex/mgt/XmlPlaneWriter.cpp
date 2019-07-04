@@ -195,9 +195,9 @@ void XMLPlaneWriter::writePointMass(PointMass *ppm, double massUnit, double leng
         writeTextElement("Mass", QString("%1").arg(ppm->mass()*massUnit,7,'f',3));
         writeTextElement("coordinates",QString("%1, %2, %3").arg(ppm->position().x*lengthUnit, 11,'g',5).arg(ppm->position().y*lengthUnit, 11,'g',5).arg(ppm->position().z*lengthUnit, 11,'g',5));
 
-        //		writeTextElement("x", QString("%1").arg(ppm->m_Position.x*lengthUnit,7,'f',3));
-        //		writeTextElement("y", QString("%1").arg(ppm->m_Position.y*lengthUnit,7,'f',3));
-        //		writeTextElement("z", QString("%1").arg(ppm->m_Position.z*lengthUnit,7,'f',3));
+        //        writeTextElement("x", QString("%1").arg(ppm->m_Position.x*lengthUnit,7,'f',3));
+        //        writeTextElement("y", QString("%1").arg(ppm->m_Position.y*lengthUnit,7,'f',3));
+        //        writeTextElement("z", QString("%1").arg(ppm->m_Position.z*lengthUnit,7,'f',3));
     }
     writeEndElement();
 }
@@ -254,7 +254,7 @@ void XMLPlaneWriter::writeBody(Body *pBody, Vector3d position, double lengthUnit
                 if(pBody->bodyType()==XFLR5::BODYPANELTYPE)
                 {
                     writeTextElement("x_panels", QString("%1").arg(pBody->m_xPanels.at(iFrame)));
-                    //					writeTextElement("h_panels", QString("%1").arg(pBody->m_xPanels.at(iFrame)));
+                    //                    writeTextElement("h_panels", QString("%1").arg(pBody->m_xPanels.at(iFrame)));
                 }
 
                 writeTextElement("Position",QString("%1, %2, %3").arg(pFrame->m_Position.x*lengthUnit, 11,'g',5)

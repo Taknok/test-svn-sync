@@ -46,16 +46,16 @@ typedef enum {BOTSURFACE, MIDSURFACE, TOPSURFACE, SIDESURFACE, BODYSURFACE} enum
 
 /**
 *@class Panel
-*@brief	This class defines the quad panel object used both in VLM and in 3d-panel analysis
+*@brief    This class defines the quad panel object used both in VLM and in 3d-panel analysis
 
-*	The class provides member variables which define the geometric properties of the panel, and functions used in the 3D analysis.
+*    The class provides member variables which define the geometric properties of the panel, and functions used in the 3D analysis.
 *
-*	The name of the variables follows closely the naming used in the document NASA Contractor report 4023 "Program VSAERO Theory Document".
+*    The name of the variables follows closely the naming used in the document NASA Contractor report 4023 "Program VSAERO Theory Document".
     Refer to this document for detailed explanations on the description of the panel and the meaning of the variables.
     The nodes are defined in a separate global array. The index of the nodes at the four corners are stored as
     member variables of this panel.
 *
-*	For VLM calculations, the position and length vector of the bound vortex at the panel's quarter-chord are
+*    For VLM calculations, the position and length vector of the bound vortex at the panel's quarter-chord are
     stored as member variables.
 */
 class XFLR5ENGINELIBSHARED_EXPORT Panel
@@ -104,11 +104,11 @@ public:
 
     void printPanel();
 
-    static void setCoreSize(double CoreSize) { s_CoreSize=CoreSize;	}
+    static void setCoreSize(double CoreSize) { s_CoreSize=CoreSize;    }
     static double coreSize() { return s_CoreSize; }
 
 
-protected:	
+protected:    
     bool m_bIsInSymPlane;    /**< true if the panel lies in the plane's xz plane of symetry at y=0*/
     bool m_bIsLeftPanel;     /**< true if the panel lies on the left (port) wing */
     bool m_bIsWakePanel;     /**< true if the panel lies on the wake of a winf */

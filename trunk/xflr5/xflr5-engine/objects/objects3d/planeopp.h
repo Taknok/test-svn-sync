@@ -44,7 +44,7 @@ class WPolar;
 
 /**
 *@brief
-*	This class defines the operating point object which stores the data of plane analysis
+*    This class defines the operating point object which stores the data of plane analysis
 *
         Each instance of this class is uniquely associated to an instance of a WPolar, which is itself uniquely
         associated to a Wing or a Plane object.
@@ -140,7 +140,7 @@ private:
     int m_NStation;            /**< unused */
 
 
-    //	bool m_bWing[MAXWINGS];    /**< true if respectively a main wing, 2nd wing, elevator, fin are part of the parent Plane object */
+    //    bool m_bWing[MAXWINGS];    /**< true if respectively a main wing, 2nd wing, elevator, fin are part of the parent Plane object */
     bool m_bVLM1;              /**<  true if the PlaneOpp is the result of a horseshoe VLM analysis */
     bool m_bOut;               /**<  true if the interpolation of viscous properties was outside the Foil Polar mesh */
 
@@ -152,7 +152,7 @@ public:
     double *m_dSigma;                     /**< the panel's source strengths */
     double *m_dCp;                        /**< the array of Cp coefficients */
     int m_NPanels;                        /**<  the number of VLM or 3D-panels */
-    int m_nControls;	                  /**< the number of control surfaces associated to the WingOpp */
+    int m_nControls;                      /**< the number of control surfaces associated to the WingOpp */
 
     complex<double> m_EigenValue[8];      /**< the eigenvalues of the four longitudinal and four lateral modes */
     complex<double> m_EigenVector[8][4];  /**< the longitudinal and lateral eigenvectors (4 longitudinal + 4 lateral) x 4 components */
@@ -166,8 +166,8 @@ public:
     double CXe,CYe,CZe;
     double CLe,CMe,CNe;
 
-    double m_ALong[4][4];	/**< the longitudinal state matrix */
-    double m_ALat[4][4];	/**< the lateral state matrix */
+    double m_ALong[4][4];    /**< the longitudinal state matrix */
+    double m_ALat[4][4];    /**< the lateral state matrix */
     double m_BLong[4];      /**< the longitudinal control vector */
     double m_BLat[4];       /**< the lateral control vector */
 

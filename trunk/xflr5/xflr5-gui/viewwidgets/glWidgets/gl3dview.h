@@ -171,8 +171,8 @@ protected:
     QOpenGLBuffer m_vboAxis;
 
 
-    QOpenGLTexture 	*m_pLeftBodyTexture, *m_pRightBodyTexture;
-    QOpenGLTexture 	*m_pWingTopLeftTexture[MAXWINGS], *m_pWingTopRightTexture[MAXWINGS], *m_pWingBotLeftTexture[MAXWINGS], *m_pWingBotRightTexture[MAXWINGS];
+    QOpenGLTexture     *m_pLeftBodyTexture, *m_pRightBodyTexture;
+    QOpenGLTexture     *m_pWingTopLeftTexture[MAXWINGS], *m_pWingTopRightTexture[MAXWINGS], *m_pWingBotLeftTexture[MAXWINGS], *m_pWingBotRightTexture[MAXWINGS];
 
     int m_VertexLocationGradient, m_ColorLocationGradient;
     int m_pvmMatrixLocationGradient;
@@ -202,16 +202,17 @@ protected:
     int m_MaterialShininessTexture;
 
 
-    bool m_bArcball;			//true if the arcball is to be displayed
-    bool m_bCrossPoint;			//true if the control point on the arcball is to be displayed
+    bool m_bArcball;            //true if the arcball is to be displayed
+    bool m_bCrossPoint;            //true if the control point on the arcball is to be displayed
     ArcBall m_ArcBall;
-    unsigned short *m_WingIndicesArray[MAXWINGS], *m_BodyIndicesArray, *m_SphereIndicesArray, *m_WingMeshIndicesArray;
+    unsigned short *m_SphereIndicesArray, *m_WingMeshIndicesArray;
+    QVector<ushort> m_BodyIndicesArray;
+    QVector<ushort> m_WingIndicesArray[MAXWINGS];
 
     double m_glScaled, m_glScaledRef;
 
     static Miarex *s_pMiarex;     /**< A void pointer to the instance of the QMiarex widget.*/
     static MainFrame *s_pMainFrame;  /**< A void pointer to the instance of the MainFrame widget.*/
-    void *m_pParent;            /**< A void pointer to the parent widget. */
 
     bool m_bOutline;                   /**< true if the surface outlines are to be displayed in the 3D view*/
     bool m_bSurfaces;                  /**< true if the surfaces are to be displayed in the 3D view*/
@@ -231,7 +232,7 @@ protected:
     bool m_bDragPoint;
 
 
-    double m_ClipPlanePos;      /**< the z-position of the clip plane in viewport coordinates */
+    float m_ClipPlanePos;      /**< the z-position of the clip plane in viewport coordinates */
     double MatIn[4][4], MatOut[4][4];
 
     bool m_bUse120StyleShaders;
@@ -253,7 +254,8 @@ protected:
 
     QPixmap m_PixTextOverlay;
 
-    unsigned int m_iBodyElems, m_iWingElems[MAXWINGS], m_iWingMeshElems;
+    int m_iBodyElems;
+    int m_iWingElems[MAXWINGS], m_iWingMeshElems;
 
     int m_Ny[MAXWINGS];
     int m_nHighlightLines, m_HighlightLineSize;

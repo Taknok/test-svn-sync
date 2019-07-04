@@ -53,7 +53,7 @@ AeroDataDlg::AeroDataDlg(QWidget *parent) : QDialog(parent)
 
     setupLayout();
 
-    if(s_bCelsius)	m_pctrlTemperature->setValue(s_Temperature-STANDARDTEMPERATURE+15);
+    if(s_bCelsius)    m_pctrlTemperature->setValue(s_Temperature-STANDARDTEMPERATURE+15);
     else
     {
         double temp = s_Temperature-STANDARDTEMPERATURE+15;
@@ -262,7 +262,7 @@ void AeroDataDlg::keyPressEvent(QKeyEvent *event)
         {
             if(!m_pOKButton->hasFocus() && !m_pCancelButton->hasFocus())
             {
-                //				updateResults();
+                //                updateResults();
                 m_pOKButton->setFocus();
                 return;
             }

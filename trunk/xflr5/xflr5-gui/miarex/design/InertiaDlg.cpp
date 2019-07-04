@@ -628,7 +628,7 @@ void InertiaDlg::onExportToAVL()
                     .arg(0.0,10, 'g', 3)
                     .arg(CoGIxz/Iunit,10, 'g', 3)
                     .arg(0.0,10, 'g', 3);
-            /*		 .arg(m_pPlane->Body()->m_VolumeMass /Munit, 10, 'g', 3)
+            /*         .arg(m_pPlane->Body()->m_VolumeMass /Munit, 10, 'g', 3)
                                                  .arg(m_pPlane->Body()->m_VolumeCoG.x/Lunit, 10, 'g', 3)
                                                  .arg(m_pPlane->Body()->m_VolumeCoG.y/Lunit, 10, 'g', 3)
                                                  .arg(m_pPlane->Body()->m_VolumeCoG.z/Lunit, 10, 'g', 3)
@@ -716,7 +716,7 @@ void InertiaDlg::onInsertMassRow()
 
     QModelIndex index = m_pMassModel->index(sel, 0, QModelIndex());
     m_pctrlMassTable->setCurrentIndex(index);
-    //	m_pctrlMassTable->openPersistentEditor(index);
+    //    m_pctrlMassTable->openPersistentEditor(index);
 }
 
 
@@ -885,7 +885,7 @@ void InertiaDlg::setupLayout()
                 pCoGLayout->addWidget(XCoGLab,2,1);
                 pCoGLayout->addWidget(YCoGLab,3,1);
                 pCoGLayout->addWidget(ZCoGLab,4,1);
-                //	CoGLayout->addWidget(CoGLabel,2,1);
+                //    CoGLayout->addWidget(CoGLabel,2,1);
                 pCoGLayout->addWidget(m_pctrlXCoG,2,2);
                 pCoGLayout->addWidget(m_pctrlYCoG,3,2);
                 pCoGLayout->addWidget(m_pctrlZCoG,4,2);
@@ -996,9 +996,9 @@ void InertiaDlg::setupLayout()
             }
 
             pObjectLayout->addLayout(pWingInertiasLayout);
-            //			ObjectLayout->addStretch();
+            //            ObjectLayout->addStretch();
             pObjectLayout->addLayout(pAxisInertiasLayout);
-            //			ObjectLayout->addStretch();
+            //            ObjectLayout->addStretch();
             pObjectSelectionBox->setLayout(pObjectLayout);
         }
     }

@@ -40,10 +40,10 @@ XFoil::XFoil()
     //------ primary dimensioning limit parameters
 
     //------ derived dimensioning limit parameters
-    //	nax=800;//number of points in stored polar
-    //	npx=8;//number of polars and reference polars
-    //	nfx=128;// number of points in one reference polar
-    //	ncom = 73;
+    //    nax=800;//number of points in stored polar
+    //    npx=8;//number of polars and reference polars
+    //    nfx=128;// number of points in one reference polar
+    //    ncom = 73;
 
     // imx   number of complex mapping coefficients  cn
     m_bTrace = false;
@@ -249,8 +249,8 @@ bool XFoil::initialize()
 
     sigte = 0.0;
     gamte = 0.0;
-    //	sigte_a = 0.0;
-    //	gamte_a = 0.0;
+    //    sigte_a = 0.0;
+    //    gamte_a = 0.0;
 
     nsp = 0;
     nqsp = 0;
@@ -258,7 +258,7 @@ bool XFoil::initialize()
     awake = 0.0;
     avisc = 0.0;
 
-    //	kimage = 1;
+    //    kimage = 1;
     yimage = -10.0;
     limage = false;
 
@@ -267,36 +267,36 @@ bool XFoil::initialize()
     lqinu  = false;//???
     lvisc  = false;
     lwake  = false;
-    //	lpacc  = false;
+    //    lpacc  = false;
     lblini = false;
     lipan  = false;
     lqaij  = false;
     ladij  = false;
     lwdij  = false;
     lcpxx  = false;
-    //	lqvdes = false;
+    //    lqvdes = false;
     lqspec = false;
-    //	lqrefl = false;
+    //    lqrefl = false;
     lvconv = false;
-    //	lcpref = false;
-    //	lforef = false;
-    //	lpfile = false;
-    //	lpfilx = false;
-    //	lppsho = false;
+    //    lcpref = false;
+    //    lforef = false;
+    //    lpfile = false;
+    //    lpfilx = false;
+    //    lppsho = false;
     leiw   = false;
     lscini = false;
 
-    //	lclip  = false;
-    //	lvlab  = true;
-    //	lcminp = false;
-    //	lhmomp = false;
+    //    lclip  = false;
+    //    lvlab  = true;
+    //    lcminp = false;
+    //    lhmomp = false;
 
-    //	lcurs  = true;
-    //	lland  = true;
+    //    lcurs  = true;
+    //    lland  = true;
     lgsame = false;
 
-    //	lgparm = true;
-    //	lplcam = false;
+    //    lgparm = true;
+    //    lplcam = false;
 
     sharp = false;
     lalfa = false;
@@ -316,16 +316,16 @@ bool XFoil::initialize()
     cambrb = 0.0;
 
     //---- input airfoil will not be normalized
-    //	lnorm = false;
+    //    lnorm = false;
 
     //---- airfoil will not be forced symmetric
     lqsym = false;
-    //	lgsym = false;
+    //    lgsym = false;
 
     //---- endpoint slopes will be matched
     lqslop = true;
-    //	lgslop = true;
-    //	lcslop = true;
+    //    lgslop = true;
+    //    lcslop = true;
 
     //---- buffer and current airfoil flap hinge coordinates
     xbf = 0.0;
@@ -333,7 +333,7 @@ bool XFoil::initialize()
     xof = 0.0;
     yof = 0.0;
 
-    //	ncpref = 0;
+    //    ncpref = 0;
     //                                       n
     //---- circle plane array size (largest 2  + 1 that will fit array size)
     double ann = log(double((2*IQX)-1))/log(2.0);
@@ -344,14 +344,14 @@ bool XFoil::initialize()
         tmp = 2*tmp;
     }
     nc1 = tmp + 1;
-    //	nc1 = (int)pow(2,nn) + 1;
+    //    nc1 = (int)pow(2,nn) + 1;
     if(nc1 > ICX) {
         tmp = 1;
         for (int l=0; l<nn-1; l++){
             tmp = 2*tmp;
         }
         nc1 = tmp+1;
-        //		nc1 = pow(2,(nn-1)) + 1; //257 instead of ICX in original source code
+        //        nc1 = pow(2,(nn-1)) + 1; //257 instead of ICX in original source code
     }
 
     //---- default cm reference location
@@ -726,7 +726,7 @@ bool XFoil::abcopy()
     lwdij = false;
     lipan = false;
     lvconv = false;
-    //	lscini = false;
+    //    lscini = false;
 
     //   write(*,1200) n
     // 1200 format(/' current airfoil nodes set from buffer airfoil nodes (', i4,' )')
@@ -1072,7 +1072,7 @@ bool XFoil::bldif(int ityp)
     double uq, uq_hka, uq_rta, uq_cfa, uq_da, uq_upw, uq_t1, uq_t2;
     double uq_d1, uq_d2, uq_u1, uq_u2, uq_ms, uq_re;
     double f_arg;// ex arg
-    //	double scc_us1, scc_us2;
+    //    double scc_us1, scc_us2;
 
     if(ityp==0)
     {
@@ -1179,8 +1179,8 @@ bool XFoil::bldif(int ityp)
             vs2[1][3] = z_ax*(ax_hk2*hk2_d2                        ) ;
             vs2[1][4] = z_ax*(ax_hk2*hk2_u2         + ax_rt2*rt2_u2);
             vs2[1][5] = -ax;
-            vsm[1]   = z_ax*(ax_hk1*hk1_ms         + ax_rt1*rt1_ms	+ ax_hk2*hk2_ms         + ax_rt2*rt2_ms);
-            vsr[1]   = z_ax*(                        ax_rt1*rt1_re	+ ax_rt2*rt2_re);
+            vsm[1]   = z_ax*(ax_hk1*hk1_ms         + ax_rt1*rt1_ms    + ax_hk2*hk2_ms         + ax_rt2*rt2_ms);
+            vsr[1]   = z_ax*(                        ax_rt1*rt1_re    + ax_rt2*rt2_re);
             vsx[1]   = 0.0;
             vsrez[1] = -rezc;
         }
@@ -1251,14 +1251,14 @@ bool XFoil::bldif(int ityp)
             uq_t2 = uq_t2             + 0.5*uq_rta*rt2_t2;
             uq_d2 = uq_d2 + 0.5*uq_da;
             uq_u2 = uq_u2             + 0.5*uq_rta*rt2_u2;
-            uq_ms = uq_ms             + 0.5*uq_rta*rt1_ms			+ 0.5*uq_rta*rt2_ms;
-            uq_re = uq_re             + 0.5*uq_rta*rt1_re			+ 0.5*uq_rta*rt2_re;
+            uq_ms = uq_ms             + 0.5*uq_rta*rt1_ms            + 0.5*uq_rta*rt2_ms;
+            uq_re = uq_re             + 0.5*uq_rta*rt1_re            + 0.5*uq_rta*rt2_re;
 
             scc = sccon*1.333/(1.0+usa);
             scc_usa = -scc/(1.0+usa);
 
-            //			scc_us1 = scc_usa*0.5;
-            //			scc_us2 = scc_usa*0.5;
+            //            scc_us1 = scc_usa*0.5;
+            //            scc_us2 = scc_usa*0.5;
 
             slog = log(s2/s1);
             dxi = x2 - x1;
@@ -1842,7 +1842,7 @@ bool XFoil::blsys()
 
     //---- for the similarity station, "1" and "2" variables are the same
     if(simi) {
-        //		for(int icom=1;icom<= ncom;icom++) com1[icom] = com2[icom];
+        //        for(int icom=1;icom<= ncom;icom++) com1[icom] = com2[icom];
         stepbl();
 
     }
@@ -1918,7 +1918,7 @@ bool XFoil::blvar(int ityp)
     double dd_us2, dd_s2, dd_rt2, di2l, di2l_hk2, di2l_rt2, de2_hk2, hdmax;
 
 
-    //	double gbcon, gccon, ctcon, hkc2;//were are they initialized?
+    //    double gbcon, gccon, ctcon, hkc2;//were are they initialized?
     if(ityp==3) hk2 = std::max(hk2,1.00005);
     if(ityp!=3) hk2 = std::max(hk2,1.05000);
 
@@ -2372,17 +2372,17 @@ bool XFoil::cft(double hk, double rt, double msq, double &cf, double &cf_hk, dou
 
 
 /** -----------------------------------------------------------
- *	   integrates surface pressures to get cl and cm.
- *	   integrates skin friction to get cdf.
- *	   calculates dcl/dalpha for prescribed-cl routines.
+ *       integrates surface pressures to get cl and cm.
+ *       integrates skin friction to get cdf.
+ *       calculates dcl/dalpha for prescribed-cl routines.
  *-----------------------------------------------------------*/
 bool XFoil::clcalc(double xref, double yref)
 {
     //techwinder addition : calculate XCp position
 
     //---- moment-reference coordinates
-    //ccc	   xref = 0.25
-    //ccc	   yref = 0.
+    //ccc       xref = 0.25
+    //ccc       yref = 0.
 
     double beta, beta_msq, bfac, bfac_msq, cginc;
     double cpi_gam, cpc_cpi;
@@ -2397,7 +2397,7 @@ bool XFoil::clcalc(double xref, double yref)
     beta     = sqrt(1.0 - minf*minf);
     beta_msq = -0.5/beta;
 
-    bfac	 = 0.5*minf*minf / (1.0 + beta);
+    bfac     = 0.5*minf*minf / (1.0 + beta);
     bfac_msq = 0.5/ (1.0 + beta)- bfac/ (1.0 + beta) * beta_msq;
 
     cl = 0.0;
@@ -2410,7 +2410,7 @@ bool XFoil::clcalc(double xref, double yref)
 
     int i = 1;
     cginc = 1.0 - (gam[i]/qinf)*(gam[i]/qinf);
-    cpg1	 = cginc/(beta + bfac*cginc);
+    cpg1     = cginc/(beta + bfac*cginc);
     cpg1_msq = -cpg1/(beta + bfac*cginc)*(beta_msq + bfac_msq*cginc);
 
     cpi_gam = -2.0*gam[i]/qinf/qinf;
@@ -2423,7 +2423,7 @@ bool XFoil::clcalc(double xref, double yref)
         if(i==n) ip = 1;
 
         cginc      = 1.0 - (gam[ip]/qinf)*(gam[ip]/qinf);
-        cpg2	   = cginc/(beta + bfac*cginc);
+        cpg2       = cginc/(beta + bfac*cginc);
         cpg2_msq   = -cpg2/(beta + bfac*cginc)*(beta_msq + bfac_msq*cginc);
 
         cpi_gam    = -2.0*gam[ip]/qinf/qinf;
@@ -2442,9 +2442,9 @@ bool XFoil::clcalc(double xref, double yref)
         ag_alf = 0.5*(cpg2_alf + cpg1_alf);
         ag_msq = 0.5*(cpg2_msq + cpg1_msq);
 
-        cl	   = cl 	+ dx* ag;
-        cdp    = cdp	- dy* ag;
-        cm	   = cm 	- dx*(ag*ax + dg*dx/12.0) - dy*(ag*ay + dg*dy/12.0);
+        cl       = cl     + dx* ag;
+        cdp    = cdp    - dy* ag;
+        cm       = cm     - dx*(ag*ax + dg*dx/12.0) - dy*(ag*ay + dg*dy/12.0);
 
         xcp += dx*ag*(x[ip]+x[i])/2.0;
 
@@ -2456,7 +2456,7 @@ bool XFoil::clcalc(double xref, double yref)
         cpg1_msq = cpg2_msq;
     }
 
-    if(fabs(cl)>0.0) 	xcp/= cl;
+    if(fabs(cl)>0.0)     xcp/= cl;
     else                xcp = 0.0;
 
     return true;
@@ -2473,7 +2473,7 @@ bool XFoil::comset()
     beta_msq = -0.5/beta;
 
     tklam   = minf*minf / (1.0 + beta)/ (1.0 + beta);
-    tkl_msq = 	1.0 / (1.0 + beta)/ (1.0 + beta)
+    tkl_msq =     1.0 / (1.0 + beta)/ (1.0 + beta)
             - 2.0*tklam/ (1.0 + beta) * beta_msq;
 
     //---- set sonic pressure coefficient and speed
@@ -2486,7 +2486,7 @@ bool XFoil::comset()
                 (pow(((1.0 + 0.5*gamm1*minf*minf)/(1.0 + 0.5*gamm1)),(gamma/gamm1))
                  - 1.0 );
         qstar = qinf/minf * sqrt( (1.0 + 0.5*gamm1*minf*minf)
-                                  /(1.0 + 0.5*gamm1		) );
+                                  /(1.0 + 0.5*gamm1        ) );
     }
 
     return true;
@@ -2738,8 +2738,8 @@ bool XFoil::dampl(double hk, double th, double rt, double &ax, double &ax_hk, do
 
 
 /** --------------------------------------------------
- *	   calculates dx/ds(ss)                         |
- *	   xs array must have been calculated by spline |
+ *       calculates dx/ds(ss)                         |
+ *       xs array must have been calculated by spline |
  * -------------------------------------------------- */
 double XFoil::deval(double ss, double x[], double xs[], double s[], int n)
 {
@@ -2747,7 +2747,7 @@ double XFoil::deval(double ss, double x[], double xs[], double s[], int n)
     double ds, t, cx1, cx2, deval;
 
     ilow = 1;
-    //	i = nc;
+    //    i = nc;
     i = n; ///techwinder modified
 
 
@@ -2761,7 +2761,7 @@ double XFoil::deval(double ss, double x[], double xs[], double s[], int n)
     ds = s[i] - s[i-1];
     t = (ss - s[i-1]) / ds;
     cx1 = ds*xs[i-1] - x[i] + x[i-1];
-    cx2 = ds*xs[i]	 - x[i] + x[i-1];
+    cx2 = ds*xs[i]     - x[i] + x[i-1];
     deval = x[i] - x[i-1] + (1.0-4.0*t+3.0*t*t)*cx1
             + t*(3.0*t-2.0)*cx2;
     deval = deval/ds;
@@ -2793,7 +2793,7 @@ bool XFoil::dil(double hk, double rt, double &di, double &di_hk, double &di_rt)
 
 bool XFoil::dilw(double hk, double rt, double &di, double &di_hk, double &di_rt)
 {
-    //	double msq = 0.0;
+    //    double msq = 0.0;
     double hs, hs_hk, hs_rt, hs_msq;
 
     hsl(hk, hs, hs_hk, hs_rt, hs_msq);
@@ -3050,7 +3050,7 @@ bool XFoil::geopar(double x[], double xp[], double y[], double yp[], double s[],
     aecalc(n,x,y,t, 2, slen,xcent,ycent,ei11t,ei22t,apx1t,apx2t);
 
     //--- old, approximate thickness,camber routine (on discrete points only)
-    //	tccalc(x,xp,y,yp,s,n, &thick, &xthick, &cambr, &xcambr );
+    //    tccalc(x,xp,y,yp,s,n, &thick, &xthick, &cambr, &xcambr );
     //--- more accurate thickness and camber estimates
 
     getcam(xcam,ycam,ncam,xthk,ythk,nthk,x,xp,y,yp,s,n );
@@ -3249,7 +3249,7 @@ void XFoil::xlfind(double &sle, double x[], double xp[], double y[], double yp[]
 
 void XFoil::sortol(double tol,int &kk,double s[],double w[])
 {
-    //	dimension s(kk), w(kk)
+    //    dimension s(kk), w(kk)
     bool done;
     int np, kks, ipass, k, kt;
     double temp, dsq;
@@ -3276,12 +3276,12 @@ void XFoil::sortol(double tol,int &kk,double s[],double w[])
         if(done)
             break;
     }
-    //	if(!done) AfxMessageBox("sort failed");
+    //    if(!done) AfxMessageBox("sort failed");
 
     //---- search for near-duplicate pairs and eliminate extra points
     //---- modified 4/24/01 hhy to check list until all duplicates removed
-    //	this cures a bug for sharp le foils where there were 3 le points in
-    //	camber, thickness lists from getcam.
+    //    this cures a bug for sharp le foils where there were 3 le points in
+    //    camber, thickness lists from getcam.
     done = false;
     while(!done)
     {
@@ -3395,7 +3395,7 @@ void XFoil::sopps(double &sopp, double si, double x[], double xp[], double y[], 
         }
     }
     if(!bFound){
-        //303		write(*,*) 'sopps: opposite-point location failed. continuing...'
+        //303        write(*,*) 'sopps: opposite-point location failed. continuing...'
         sopp = sle + sfrac*(s[inopp]-sle);
     }
     // 305  continue
@@ -3406,9 +3406,9 @@ void XFoil::sopps(double &sopp, double si, double x[], double xp[], double y[], 
 bool XFoil::getxyf(double x[], double xp[], double y[], double yp[], double s[],
                    int n, double &tops, double &bots, double xf, double &yf){
     double topy, boty, yrel;
-    //	if(xf <= -999.0)  {   //  askr("enter flap hinge x location",xf)
-    //		xf = 0.5;//arcs added
-    //	}
+    //    if(xf <= -999.0)  {   //  askr("enter flap hinge x location",xf)
+    //        xf = 0.5;//arcs added
+    //    }
     //---- find top and bottom y at hinge x location
 
     tops = s[1] + (x[1] - xf);
@@ -3418,21 +3418,21 @@ bool XFoil::getxyf(double x[], double xp[], double y[], double yp[], double s[],
     topy = seval(tops,y,yp,s,n);
     boty = seval(bots,y,yp,s,n);
 
-    //		write(*,1000) topy, boty
-    // 1000 format(/'  top	  surface:	y =', f8.4,'	 y/t = 1.0'
-    //	   &	   /'  bottom surface:	y =', f8.4,'	 y/t = 0.0')
+    //        write(*,1000) topy, boty
+    // 1000 format(/'  top      surface:    y =', f8.4,'     y/t = 1.0'
+    //       &       /'  bottom surface:    y =', f8.4,'     y/t = 0.0')
 
-    //	if(*pyf <= -999.0)
-    //		askr( 'enter flap hinge y location (or 999 to specify y/t)^',yf);
-    //		*pyf=0.0;//arcs added
+    //    if(*pyf <= -999.0)
+    //        askr( 'enter flap hinge y location (or 999 to specify y/t)^',yf);
+    //        *pyf=0.0;//arcs added
 
-    //	if(*pyf >= 999.0) {
-    //		  askr("enter flap hinge relative y/t location",yrel);
-    //		yrel = 0.5;//arcs added
-    //	}
-    //	flap y location in pyf is relative;
+    //    if(*pyf >= 999.0) {
+    //          askr("enter flap hinge relative y/t location",yrel);
+    //        yrel = 0.5;//arcs added
+    //    }
+    //    flap y location in pyf is relative;
     yrel = yf;
-    //	so convert to absolute value
+    //    so convert to absolute value
 
     yf = topy*yrel + boty*(1.0-yrel);
     return true;
@@ -3451,7 +3451,7 @@ bool XFoil::ggcalc()
     double abis=0, cbis=0, sbis=0, ds1=0, ds2=0, dsmin=0;
     double xbis=0, ybis=0, qbis=0, bwt=0;
     double bbb[IQX];
-    //	double psiinf;
+    //    double psiinf;
 
     cosa = cos(alfa);
     sina = sin(alfa);
@@ -3479,7 +3479,7 @@ bool XFoil::ggcalc()
         //------ calculate psi and dpsi/dgamma array for current node
         psilin(i, x[i], y[i], nx[i], ny[i], psi, psi_n, false, true);
 
-//		psiinf = qinf*(cosa*y[i] - sina*x[i]);
+//        psiinf = qinf*(cosa*y[i] - sina*x[i]);
 
         //------ res1 = psi( 0) - psio
         //------ res2 = psi(90) - psio
@@ -3638,13 +3638,13 @@ bool XFoil::hct(double hk, double msq, double &hc, double &hc_hk, double &hc_msq
 void XFoil::hipnt(double chpnt, double thpnt)
 {
     //      include 'xfoil.inc'
-    double	xfn[5], yfn[5], yfnp[5] ;//sfn[5]
+    double    xfn[5], yfn[5], yfnp[5] ;//sfn[5]
     double ybl, cxmax, cymax,  txmax, tymax;
     double ycc,ytt;
     double arot, sbl;
     double xcm[IQX], ycm[IQX], xtk[IQX], ytk[IQX], ycmp[IQX], ytkp[IQX];
     int ncm, ntk;
-    //	double xbl;
+    //    double xbl;
 
     //--- check chordline direction (should be unrotated for camber routines)
     //    to function correctly
@@ -3664,7 +3664,7 @@ void XFoil::hipnt(double chpnt, double thpnt)
 
     //---- find leftmost point location
     xlfind(sbl,xb,xbp,yb,ybp,sb,nb);
-    //	xbl = seval(sbl,xb,xbp,sb,nb);
+    //    xbl = seval(sbl,xb,xbp,sb,nb);
     ybl = seval(sbl,yb,ybp,sb,nb);
 
     //---- find the current buffer airfoil camber and thickness
@@ -4178,7 +4178,7 @@ bool XFoil::lefind(double &sle, double x[], double xp[], double y[], double yp[]
 
 bool XFoil::ludcmp(int n, double a[IQX][IQX], int indx[IQX])
 {
-    //	bool bimaxok = false;
+    //    bool bimaxok = false;
     int imax =0;//added techwinder
     int nvx=IQX;
     int i, j, k;
@@ -4213,10 +4213,10 @@ bool XFoil::ludcmp(int n, double a[IQX][IQX], int indx[IQX])
             if(dum>=aamax){
                 imax = i;
                 aamax = dum;
-                //				bimaxok = true;
+                //                bimaxok = true;
             }
         }
-        //		ASSERT(bimaxok);// to check imax has been initialized
+        //        ASSERT(bimaxok);// to check imax has been initialized
         if(j!=imax) {
             for (k=1; k<= n; k++){
                 dum = a[imax][k];
@@ -4238,8 +4238,8 @@ bool XFoil::ludcmp(int n, double a[IQX][IQX], int indx[IQX])
 
 
 /** ----------------------------------------------------
- * 	   calculates the hinge moment of the flap about
- * 	   (xof,yof) by integrating surface pressures.
+ *        calculates the hinge moment of the flap about
+ *        (xof,yof) by integrating surface pressures.
  * ---------------------------------------------------- */
 bool XFoil::mhinge()
 {
@@ -4302,9 +4302,9 @@ bool XFoil::mhinge()
     }
 
 
-    //	for (i=2; i<=n; i++)  {
-    //		if(s[i]>tops) goto stop31;
-    //	}
+    //    for (i=2; i<=n; i++)  {
+    //        if(s[i]>tops) goto stop31;
+    //    }
 
     //stop31
     //---- add on top surface chunk tops..s[i-1],  missed in the do 20 loop.
@@ -4313,7 +4313,7 @@ bool XFoil::mhinge()
     xmid = 0.5*(topx+x[i-1]) - xof;
     ymid = 0.5*(topy+y[i-1]) - yof;
     if(s[i] != s[i-1]) frac = (tops-s[i-1])/(s[i]-s[i-1]);
-    else	 frac = 0.0;
+    else     frac = 0.0;
 
     if(lvisc) {
         topp = cpv[i]*frac + cpv[i-1]*(1.0-frac);
@@ -4342,13 +4342,13 @@ bool XFoil::mhinge()
     }
 
 stop41:
-    //---- add on bottom surface chunk bots..s[i],	missed in the do 20 loop.
+    //---- add on bottom surface chunk bots..s[i],    missed in the do 20 loop.
     dx = x[i] - botx;
     dy = y[i] - boty;
     xmid = 0.5*(botx+x[i]) - xof;
     ymid = 0.5*(boty+y[i]) - yof;
-    if(s[i] != s[i-1])	frac = (bots-s[i-1])/(s[i]-s[i-1]);
-    else				frac = 0.0;
+    if(s[i] != s[i-1])    frac = (bots-s[i-1])/(s[i]-s[i-1]);
+    else                frac = 0.0;
 
     if(lvisc) {
         botp = cpv[i]*frac + cpv[i-1]*(1.0-frac);
@@ -4377,7 +4377,7 @@ stop41:
     xmid = 0.5*(x[1]+x[n]) - xof;
     ymid = 0.5*(y[1]+y[n]) - yof;
     if(lvisc) pmid = 0.5*(cpv[1]+cpv[n]);
-    else	  pmid = 0.5*(cpi[1]+cpi[n]);
+    else      pmid = 0.5*(cpi[1]+cpi[n]);
 
     hmom = hmom + pmid*(xmid*dx + ymid*dy);
     hfx  = hfx  - pmid* dy;
@@ -4694,7 +4694,7 @@ stop110:
             }
 
             tran = false;
-            //			qApp->processEvents();
+            //            qApp->processEvents();
             if(s_bCancel) return false;
         }//1000 continue
     }// 2000 continue
@@ -4736,7 +4736,7 @@ bool XFoil::mrchue()
         xifset(is);
 
         //---- initialize similarity station with thwaites' formula
-        //	ibl = 2;
+        //    ibl = 2;
         xsi = xssi[2][is];
         uei = uedg[2][is];
 
@@ -4848,7 +4848,7 @@ bool XFoil::mrchue()
                     if(direct)
                     {
                         //---------- update as usual
-                        if(ibl>=itran[is]) 	cti = cti + rlx*vsrez[1];
+                        if(ibl>=itran[is])     cti = cti + rlx*vsrez[1];
                         thi = thi + rlx*vsrez[2];
                         dsi = dsi + rlx*vsrez[3];
                     }
@@ -4971,7 +4971,7 @@ stop100:
             if((!simi) && (!turb)) {
                 trchek();
                 ami = ampl2;
-                if(	  tran) itran[is] = ibl;
+                if(      tran) itran[is] = ibl;
                 if(!tran) itran[is] = ibl+2;
             }
             //------- set all other extrapolated values for current station
@@ -4991,7 +4991,7 @@ stop110:
             uedg[ibl][is] = uei;
             mass[ibl][is] = dsi*uei;
             tau[ibl][is]  = 0.5*r2*u2*u2*cf2;
-            dis[ibl][is]  = 	r2*u2*u2*u2*di2*hs2*0.5;
+            dis[ibl][is]  =     r2*u2*u2*u2*di2*hs2*0.5;
             ctq[ibl][is]  = cq2;
             delt[ibl][is] = de2;
 
@@ -5171,7 +5171,7 @@ void XFoil::pangen()
     double cavp, cavp_s2, cavp_s3, fm, fp, rez;
     double dmax, ds, dds, dsrat, xbcorn, ybcorn, sbcorn;
     double dsmin, dsmax;
-    //	double gap;
+    //    double gap;
     int i,k, nn1;
     int nothing;
     nn1 = 0;
@@ -5223,9 +5223,9 @@ void XFoil::pangen()
         if(sble==sb[i] && sble==sb[i+1]) {
             ible = i;
             //TRACE("Sharp leading edge\n");
-            //			QString str;
-            //			str.Format("Sharp leading edge\n");
-            //			pXFile->WriteString(str);
+            //            QString str;
+            //            str.Format("Sharp leading edge\n");
+            //            pXFile->WriteString(str);
 
             break;
         }
@@ -5367,10 +5367,10 @@ stop51:
     if(ible==0) trisol(w2,w1,w3,w5,nb);
     else
     {
-        //		i = 1;
-        //		trisol(w2[i],w1[i],w3[i],w5[i],ible);
-        //		i = ible+1;
-        //		trisol(w2[i],w1[i],w3[i],w5[i],nb-ible);
+        //        i = 1;
+        //        trisol(w2[i],w1[i],w3[i],w5[i],ible);
+        //        i = ible+1;
+        //        trisol(w2[i],w1[i],w3[i],w5[i],nb-ible);
         i = 1;
         trisol(w2,w1,w3,w5,ible);
         i = ible+1;
@@ -5692,18 +5692,18 @@ stop25:
 
     if(sharp)
     {
-        //		QString str;
-        //		str.Format("Sharp trailing edge\n");
-        //		pXFile->WriteString(str);
+        //        QString str;
+        //        str.Format("Sharp trailing edge\n");
+        //        pXFile->WriteString(str);
         //TRACE("sharp trailing edge\n");
     }
     else
     {
-        //		gap = sqrt((x[1]-x[n])*(x[1]-x[n]) + (y[1]-y[n])*(y[1]-y[n]));
+        //        gap = sqrt((x[1]-x[n])*(x[1]-x[n]) + (y[1]-y[n])*(y[1]-y[n]));
         //TRACE("Blunt trailing edge.  Gap =%f", gap);
-        //		QString str;
-        //		str.Format("Blunt trailing edge.  Gap =%f", gap);
-        //		pXFile->WriteString(str);
+        //        QString str;
+        //        str.Format("Blunt trailing edge.  Gap =%f", gap);
+        //        pXFile->WriteString(str);
 
     }
 
@@ -5724,8 +5724,8 @@ stop25:
 
 bool XFoil::Preprocess()
 {
-    //	double xble, yble, xbte, ybte;
-    //	double xinl, xout, ybot, ytop;
+    //    double xble, yble, xbte, ybte;
+    //    double xinl, xout, ybot, ytop;
 
     //---- calculate airfoil area assuming counterclockwise ordering
     if(nb<=2) return false;//added techwinder
@@ -5740,23 +5740,23 @@ bool XFoil::Preprocess()
 
     scalc(xb,yb,sb,nb);
     segspl(xb,xbp,sb,nb);
-    //	segspl(yb,ybp,sb,nb);
+    //    segspl(yb,ybp,sb,nb);
     geopar(xb,xbp,yb,ybp,sb,nb, w1,sble,chordb,areab,radble,angbte,
            ei11ba,ei22ba,apx1ba,apx2ba,ei11bt,ei22bt,apx1bt,apx2bt);
 
-    //	xble = seval(sble,xb,xbp,sb,nb);
-    //	yble = seval(sble,yb,ybp,sb,nb);
-    //	xbte = 0.5*(xb[1] + xb[nb]);
-    //	ybte = 0.5*(yb[1] + yb[nb]);
+    //    xble = seval(sble,xb,xbp,sb,nb);
+    //    yble = seval(sble,yb,ybp,sb,nb);
+    //    xbte = 0.5*(xb[1] + xb[nb]);
+    //    ybte = 0.5*(yb[1] + yb[nb]);
     //TRACE(" le_x = %f, le_y = %f, chord=%f\n te_x = %f,  te_y = %f\n", xble,yble, chordb,xbte, ybte);
 
     //---- set reasonable mses domain parameters for non-mses coordinate file
 
-    //	xble = seval(sble,xb,xbp,sb,nb);
-    //	yble = seval(sble,yb,ybp,sb,nb);
+    //    xble = seval(sble,xb,xbp,sb,nb);
+    //    yble = seval(sble,yb,ybp,sb,nb);
 
-    //	What's the use?
-    /*		xinl = xble - 2.0*chordb;
+    //    What's the use?
+    /*        xinl = xble - 2.0*chordb;
         xout = xble + 3.0*chordb;
         ybot = yble - 2.5*chordb;
         ytop = yble + 3.5*chordb;
@@ -5778,21 +5778,21 @@ bool XFoil::Preprocess()
 
 
 /** -----------------------------------------------------------------------
- *	   Calculates current streamfunction psi at panel node or wake node
- *	   i due to freestream and all bound vorticity gam on the airfoil.
- *	   Sensitivities of psi with respect to alpha (z_alfa) and inverse
- *	   qspec dofs (z_qdof0,z_qdof1) which influence gam in inverse cases.
- *	   Also calculates the sensitivity vector dpsi/dgam (dzdg).
+ *       Calculates current streamfunction psi at panel node or wake node
+ *       i due to freestream and all bound vorticity gam on the airfoil.
+ *       Sensitivities of psi with respect to alpha (z_alfa) and inverse
+ *       qspec dofs (z_qdof0,z_qdof1) which influence gam in inverse cases.
+ *       Also calculates the sensitivity vector dpsi/dgam (dzdg).
  *
- *	   If siglin=true, then psi includes the effects of the viscous
- *	   source distribution sig and the sensitivity vector dpsi/dsig
- *	   (dzdm) is calculated.
+ *       If siglin=true, then psi includes the effects of the viscous
+ *       source distribution sig and the sensitivity vector dpsi/dsig
+ *       (dzdm) is calculated.
  *
- *	   If geolin=true, then the geometric sensitivity vector dpsi/dn
- *	   is calculated, where n is the normal motion of the jth node.
+ *       If geolin=true, then the geometric sensitivity vector dpsi/dn
+ *       is calculated, where n is the normal motion of the jth node.
  *
- *			airfoil:  1   <= i <= n         // techwinder: < to <=
- *			wake:	  n+1 <= i <= n+nw      // techwinder: < to <=
+ *            airfoil:  1   <= i <= n         // techwinder: < to <=
+ *            wake:      n+1 <= i <= n+nw      // techwinder: < to <=
  *
  * @todo mass defect array sig[] doesn't seem to be ever set,
  *       except perhaps in mixed inverse routines - check former fortran /common/ field?
@@ -5975,14 +5975,14 @@ bool XFoil::psilin(int iNode, double xi, double yi, double nxi, double nyi, doub
             logr0 = log(rsq0);
             theta0 = atan2(sgn*x0,sgn*yy) + (0.5- 0.5*sgn)*PI;
 
-            //------- calculate source contribution to psi	for  1-0  half-panel
+            //------- calculate source contribution to psi    for  1-0  half-panel
             dxinv = 1.0/(x1-x0);
             psum = x0*(theta0-apan) - x1*(theta1-apan) + 0.5*yy*(logr12-logr0);
             pdif = ((x1+x0)*psum + rsq1*(theta1-apan) - rsq0*(theta0-apan)+ (x0-x1)*yy) * dxinv;
 
-            psx1 =	-(theta1-apan);
-            psx0 =	  theta0-apan;
-            psyy =	0.5*(logr12-logr0);
+            psx1 =    -(theta1-apan);
+            psx0 =      theta0-apan;
+            psyy =    0.5*(logr12-logr0);
 
             pdx1 = ((x1+x0)*psx1 + psum + 2.0*x1*(theta1-apan) - pdif) * dxinv;
             pdx0 = ((x1+x0)*psx0 + psum - 2.0*x0*(theta0-apan) + pdif) * dxinv;
@@ -6013,18 +6013,18 @@ bool XFoil::psilin(int iNode, double xi, double yi, double nxi, double nyi, doub
             dqdm[jp] += qopi*( psni*(dsio+dsim)+ pdni*(dsio-dsim));
 
 
-            //------- calculate source contribution to psi	for  0-2  half-panel
+            //------- calculate source contribution to psi    for  0-2  half-panel
             dxinv = 1.0/(x0-x2);
             psum = x2*(theta2-apan) - x0*(theta0-apan) + 0.5*yy*(logr0-logr22);
             pdif = ((x0+x2)*psum + rsq0*(theta0-apan) - rsq2*(theta2-apan)+ (x2-x0)*yy) * dxinv;
 
             psx0 =  -(theta0-apan);
-            psx2 =	  theta2-apan;
-            psyy =	0.5*(logr0-logr22);
+            psx2 =      theta2-apan;
+            psyy =    0.5*(logr0-logr22);
 
             pdx0 = ((x0+x2)*psx0 + psum + 2.0*x0*(theta0-apan) - pdif) * dxinv;
             pdx2 = ((x0+x2)*psx2 + psum - 2.0*x2*(theta2-apan) + pdif) * dxinv;
-            pdyy = ((x0+x2)*psyy + 2.0*(x2-x0 + yy*(theta0-theta2))	 ) * dxinv;
+            pdyy = ((x0+x2)*psyy + 2.0*(x2-x0 + yy*(theta0-theta2))     ) * dxinv;
 
             dsp = sqrt((x[jq]-x[jo])*(x[jq]-x[jo]) + (y[jq]-y[jo])*(y[jq]-y[jo]));
             dsip = 1.0/dsp;
@@ -6191,13 +6191,13 @@ stop12:
 
 
 /** --------------------------------------------------------------------
- *	   Calculates current streamfunction psi and tangential velocity
- *	   qtan at panel node or wake node i due to freestream and wake
- *	   sources sig. Also calculates sensitivity vectors dpsi/dsig
- *	   (dzdm) and dqtan/dsig (dqdm).
+ *       Calculates current streamfunction psi and tangential velocity
+ *       qtan at panel node or wake node i due to freestream and wake
+ *       sources sig. Also calculates sensitivity vectors dpsi/dsig
+ *       (dzdm) and dqtan/dsig (dqdm).
  *
- *			airfoil:  1   <= i <= n         // techwinder: < to <=
- *			wake:	  n+1 <= i <= n+nw      // techwinder: < to <=
+ *            airfoil:  1   <= i <= n         // techwinder: < to <=
+ *            wake:      n+1 <= i <= n+nw      // techwinder: < to <=
  *
  *-------------------------------------------------------------------- */
 bool XFoil::pswlin(int i, double xi, double yi, double nxi, double nyi, double &psi, double &psi_ni)
@@ -6223,7 +6223,7 @@ bool XFoil::pswlin(int i, double xi, double yi, double nxi, double nyi, double &
         dqdm[jo] = 0.0;
     }
 
-    psi	 = 0.0;
+    psi     = 0.0;
     psi_ni = 0.0;
 
     for(jo=n+1; jo<=n+nw-1; jo++)
@@ -6299,7 +6299,7 @@ bool XFoil::pswlin(int i, double xi, double yi, double nxi, double nyi, double &
         g0 = log(rs0);
         t0 = atan2(sgn*x0,sgn*yy) - (0.5- 0.5*sgn)*PI;
 
-        //------- calculate source contribution to psi	for  1-0  half-panel
+        //------- calculate source contribution to psi    for  1-0  half-panel
         dxinv = 1.0/(x1-x0);
         psum = x0*(t0-apan) - x1*(t1-apan) + 0.5*yy*(g1-g0);
         pdif = ((x1+x0)*psum + rs1*(t1-apan) - rs0*(t0-apan)
@@ -6311,15 +6311,15 @@ bool XFoil::pswlin(int i, double xi, double yi, double nxi, double nyi, double &
 
         pdx1 = ((x1+x0)*psx1 + psum + 2.0*x1*(t1-apan) - pdif) * dxinv;
         pdx0 = ((x1+x0)*psx0 + psum - 2.0*x0*(t0-apan) + pdif) * dxinv;
-        pdyy = ((x1+x0)*psyy + 2.0*(x0-x1 + yy*(t1-t0))	  ) * dxinv;
+        pdyy = ((x1+x0)*psyy + 2.0*(x0-x1 + yy*(t1-t0))      ) * dxinv;
 
         dsm = sqrt((x[jp]-x[jm])*(x[jp]-x[jm]) + (y[jp]-y[jm])*(y[jp]-y[jm]));
         dsim = 1.0/dsm;
 
-        // ccc		  sig0 = (sig[jp] - sig[jo])/dso
-        // ccc		  sig1 = (sig[jp] - sig[jm])*dsim
-        // ccc		  ssum = sig0 + sig1
-        // ccc		  sdif = sig0 - sig1
+        // ccc          sig0 = (sig[jp] - sig[jo])/dso
+        // ccc          sig1 = (sig[jp] - sig[jm])*dsim
+        // ccc          ssum = sig0 + sig1
+        // ccc          sdif = sig0 - sig1
 
 
         ssum = (sig[jp] - sig[jo])/dso + (sig[jp] - sig[jm])*dsim;
@@ -6342,7 +6342,7 @@ bool XFoil::pswlin(int i, double xi, double yi, double nxi, double nyi, double &
         dqdm[jp] += qopi*( psni*(dsio+dsim)+ pdni*(dsio-dsim));
 
 
-        //------- calculate source contribution to psi	for  0-2  half-panel
+        //------- calculate source contribution to psi    for  0-2  half-panel
         dxinv = 1.0/(x0-x2);
         psum = x2*(t2-apan) - x0*(t0-apan) + 0.5*yy*(g0-g2);
         pdif = ((x0+x2)*psum + rs0*(t0-apan) - rs2*(t2-apan)+ (x2-x0)*yy) * dxinv;
@@ -6353,15 +6353,15 @@ bool XFoil::pswlin(int i, double xi, double yi, double nxi, double nyi, double &
 
         pdx0 = ((x0+x2)*psx0 + psum + 2.0*x0*(t0-apan) - pdif) * dxinv;
         pdx2 = ((x0+x2)*psx2 + psum - 2.0*x2*(t2-apan) + pdif) * dxinv;
-        pdyy = ((x0+x2)*psyy + 2.0*(x2-x0 + yy*(t0-t2))	  ) * dxinv;
+        pdyy = ((x0+x2)*psyy + 2.0*(x2-x0 + yy*(t0-t2))      ) * dxinv;
 
         dsp = sqrt((x[jq]-x[jo])*(x[jq]-x[jo]) + (y[jq]-y[jo])*(y[jq]-y[jo]));
         dsip = 1.0/dsp;
 
-        ////ccc		  sig2 = (sig[jq] - sig[jo])*dsip
-        ////ccc		  sig0 = (sig[jp] - sig[jo])/dso
-        ////ccc		  ssum = sig2 + sig0
-        ////ccc		  sdif = sig2 - sig0
+        ////ccc          sig2 = (sig[jq] - sig[jo])*dsip
+        ////ccc          sig0 = (sig[jp] - sig[jo])/dso
+        ////ccc          ssum = sig2 + sig0
+        ////ccc          sdif = sig2 - sig0
 
         ssum = (sig[jq] - sig[jo])*dsip + (sig[jp] - sig[jo])/dso;
         sdif = (sig[jq] - sig[jo])*dsip - (sig[jp] - sig[jo])/dso;
@@ -6389,8 +6389,8 @@ bool XFoil::pswlin(int i, double xi, double yi, double nxi, double nyi, double &
 
 
 /** -----------------------------------------------------
- * 	   calculates source panel influence coefficient
- * 	   matrix for current airfoil and wake geometry.
+ *        calculates source panel influence coefficient
+ *        matrix for current airfoil and wake geometry.
  * ------------------------------------------------------ */
 bool XFoil::qdcalc()
 {
@@ -6457,7 +6457,7 @@ for(int i=1; i<=n; i++)
     //---- multiply by inverse of factored dpsi/dgam matrix
     for(j=n+1; j<=n+nw;j++)
     {
-        //		baksub(iqx,n+1,aijpiv,j);
+        //        baksub(iqx,n+1,aijpiv,j);
         for (iu=0; iu<IQX; iu++) bbb[iu] = bij[iu][j];//techwinder: create a dummy array
 
         baksub(n+1,aij,aijpiv,bbb);
@@ -6950,14 +6950,14 @@ bool XFoil::segspl(double x[], double xs[], double s[], int n)
         if(s[iseg]==s[iseg+1])
         {
             nseg = iseg - iseg0 + 1;
-            //			splind(x[iseg0],xs[iseg0],s[iseg0],nseg,-999.0,-999.0);
+            //            splind(x[iseg0],xs[iseg0],s[iseg0],nseg,-999.0,-999.0);
             splind(x+iseg0-1,xs+iseg0-1,s+iseg0-1,nseg,-999.0,-999.0);
             iseg0 = iseg+1;
         }
     }
     nseg = n - iseg0 + 1;
 
-    //	splind(x[iseg0],xs[iseg0],s[iseg0],nseg,-999.0,-999.0);
+    //    splind(x[iseg0],xs[iseg0],s[iseg0],nseg,-999.0,-999.0);
     splind(x+iseg0-1,xs+iseg0-1,s+iseg0-1,nseg,-999.0,-999.0);
 
     return true;
@@ -6993,7 +6993,7 @@ bool XFoil::segspld(double x[],double xs[],double s[],int n, double xs1, double 
 }
 
 /** -------------------------------------------------
- *	   Sets up the BL Newton system coefficients for the current BL variables
+ *       Sets up the BL Newton system coefficients for the current BL variables
  *     and the edge velocities received from setup.
  *     The local BL system  coefficients are then incorporated into
  *     the global Newton system.
@@ -7051,25 +7051,25 @@ bool XFoil::setbl()
 
     //---- set parameters for compressibility correction
     qinfbl  = qinf;
-    tkbl	= tklam;
+    tkbl    = tklam;
     tkbl_ms = tkl_msq;
 
     //---- stagnation density and 1/enthalpy
-    rstbl	 = pow((1.0 + 0.5*gm1bl*minf*minf) ,(1.0/gm1bl));
+    rstbl     = pow((1.0 + 0.5*gm1bl*minf*minf) ,(1.0/gm1bl));
     rstbl_ms = 0.5*rstbl/(1.0 + 0.5*gm1bl*minf*minf);
-    hstinv	= gm1bl*(minf/qinfbl)*(minf/qinfbl) / (1.0 + 0.5*gm1bl*minf*minf);
+    hstinv    = gm1bl*(minf/qinfbl)*(minf/qinfbl) / (1.0 + 0.5*gm1bl*minf*minf);
     hstinv_ms = gm1bl*( 1.0/qinfbl)*( 1.0/qinfbl) / (1.0 + 0.5*gm1bl*minf*minf)
             - 0.5*gm1bl*hstinv / (1.0 + 0.5*gm1bl*minf*minf);
 
-    //---- sutherland's const./to	(assumes stagnation conditions are at stp)
+    //---- sutherland's const./to    (assumes stagnation conditions are at stp)
     hvrat = 0.35;
 
     //---- set reynolds number based on freestream density, velocity, viscosity
-    herat	 = 1.0 - 0.5*qinfbl*qinfbl*hstinv;
-    herat_ms =	 - 0.5*qinfbl*qinfbl*hstinv_ms;
+    herat     = 1.0 - 0.5*qinfbl*qinfbl*hstinv;
+    herat_ms =     - 0.5*qinfbl*qinfbl*hstinv_ms;
 
-    reybl	 = reinf * sqrt(herat*herat*herat) * (1.0+hvrat)/(herat+hvrat);
-    reybl_re =		   sqrt(herat*herat*herat) * (1.0+hvrat)/(herat+hvrat);
+    reybl     = reinf * sqrt(herat*herat*herat) * (1.0+hvrat)/(herat+hvrat);
+    reybl_re =           sqrt(herat*herat*herat) * (1.0+hvrat)/(herat+hvrat);
     reybl_ms = reybl * (1.5/herat - 1.0/(herat+hvrat))*herat_ms;
 
     amcrit = acrit;
@@ -7125,8 +7125,8 @@ bool XFoil::setbl()
         {
             j  = ipan[jbl][js];
             jv = isys[jbl][js];
-            ule1_m[jv] = -vti[	     2][1]*vti[jbl][js]*dij[ile1][j];
-            ule2_m[jv] = -vti[	     2][2]*vti[jbl][js]*dij[ile2][j];
+            ule1_m[jv] = -vti[         2][1]*vti[jbl][js]*dij[ile1][j];
+            ule2_m[jv] = -vti[         2][2]*vti[jbl][js]*dij[ile2][j];
             ute1_m[jv] = -vti[iblte[1]][1]*vti[jbl][js]*dij[ite1][j];
             ute2_m[jv] = -vti[iblte[2]][2]*vti[jbl][js]*dij[ite2][j];
         }
@@ -7170,7 +7170,7 @@ bool XFoil::setbl()
         //**** sweep downstream setting up bl equation linearizations
         for(ibl=2;ibl<= nbl[is];ibl++)
         {
-            iv	= isys[ibl][is];
+            iv    = isys[ibl][is];
 
             simi = (ibl==2);
             wake = (ibl>iblte[is]);
@@ -7194,7 +7194,7 @@ bool XFoil::setbl()
                 iw = ibl - iblte[is];
                 dswaki = wgap[iw];
             }
-            else		dswaki = 0.0;
+            else        dswaki = 0.0;
 
 
             //---- set derivatives of dsi (= d2)
@@ -7237,7 +7237,7 @@ bool XFoil::setbl()
             }
 
             //---- assemble 10x4 linearized system for dctau, dth, dds, due, dxi
-            //	   at the previous "1" station and the current "2" station
+            //       at the previous "1" station and the current "2" station
 
             if(ibl==iblte[is]+1)
             {
@@ -7249,9 +7249,9 @@ bool XFoil::setbl()
 
                 tte_tte1 = 1.0;
                 tte_tte2 = 1.0;
-                dte_mte1 =				 1.0  / uedg[iblte[1]][1];
+                dte_mte1 =                 1.0  / uedg[iblte[1]][1];
                 dte_ute1 = -dstr[iblte[1]][1] / uedg[iblte[1]][1];
-                dte_mte2 =				 1.0  / uedg[iblte[2]][2];
+                dte_mte2 =                 1.0  / uedg[iblte[2]][2];
                 dte_ute2 = -dstr[iblte[2]][2] / uedg[iblte[2]][2];
                 cte_cte1 = thet[iblte[1]][1]/tte;
                 cte_cte2 = thet[iblte[2]][2]/tte;
@@ -7271,7 +7271,7 @@ bool XFoil::setbl()
                 d1_m[jvte1] = d1_m[jvte1] + dte_mte1;
                 d1_m[jvte2] = d1_m[jvte2] + dte_mte2;
 
-                //----- "forced" changes from  uedg --- usav=uinv+dij*mass	mismatch
+                //----- "forced" changes from  uedg --- usav=uinv+dij*mass    mismatch
                 due1 = 0.0;
                 dds1 = dte_ute1*(uedg[iblte[1]][1] - usav[iblte[1]][1])
                      + dte_ute2*(uedg[iblte[2]][2] - usav[iblte[2]][2]);
@@ -7283,7 +7283,7 @@ bool XFoil::setbl()
 
             //---- save wall shear and equil. max shear coefficient for plotting output
             tau[ibl][is] = 0.5*r2*u2*u2*cf2;
-            dis[ibl][is] =	 r2*u2*u2*u2*di2*hs2*0.5;
+            dis[ibl][is] =     r2*u2*u2*u2*di2*hs2*0.5;
             ctq[ibl][is] = cq2;
             delt[ibl][is] = de2;
             uslp[ibl][is] = 1.60/(1.0+us2);
@@ -7314,7 +7314,7 @@ bool XFoil::setbl()
             va[1][2][iv] = vs2[1][2];
 
             if(lalfa)  vdel[1][2][iv] = vsr[1]*re_clmr + vsm[1]*msq_clmr;
-            else		 vdel[1][2][iv] =
+            else         vdel[1][2][iv] =
                     (vs1[1][4]*u1_a + vs1[1][3]*d1_a)
                     + (vs2[1][4]*u2_a + vs2[1][3]*d2_a)
                     + (vs1[1][5] + vs2[1][5] + vsx[1])
@@ -7333,14 +7333,14 @@ bool XFoil::setbl()
                         + (vs1[2][5] + vs2[2][5] + vsx[2])
                         *(xi_ule1*ule1_m[jv] + xi_ule2*ule2_m[jv]);
             }
-            vb[2][1][iv]	= vs1[2][1];
-            vb[2][2][iv]	= vs1[2][2];
+            vb[2][1][iv]    = vs1[2][1];
+            vb[2][2][iv]    = vs1[2][2];
 
             va[2][1][iv] = vs2[2][1];
             va[2][2][iv] = vs2[2][2];
 
             if(lalfa) vdel[2][2][iv] = vsr[2]*re_clmr + vsm[2]*msq_clmr;
-            else		 vdel[2][2][iv] =
+            else         vdel[2][2][iv] =
                     (vs1[2][4]*u1_a + vs1[2][3]*d1_a)
                     + (vs2[2][4]*u2_a + vs2[2][3]*d2_a)
                     + (vs1[2][5] + vs2[2][5] + vsx[2])
@@ -7369,7 +7369,7 @@ bool XFoil::setbl()
             va[3][2][iv] = vs2[3][2];
 
             if(lalfa) vdel[3][2][iv] = vsr[3]*re_clmr + vsm[3]*msq_clmr;
-            else		 vdel[3][2][iv] =
+            else         vdel[3][2][iv] =
                     (vs1[3][4]*u1_a + vs1[3][3]*d1_a)
                     + (vs2[3][4]*u2_a + vs2[3][3]*d2_a)
                     + (vs1[3][5] + vs2[3][5] + vsx[3])
@@ -7385,18 +7385,18 @@ bool XFoil::setbl()
             if(ibl==iblte[is]+1) {
 
                 //----- redefine coefficients for tte, dte, etc
-                vz[1][1]	= vs1[1][1]*cte_cte1;
-                vz[1][2]	= vs1[1][1]*cte_tte1 + vs1[1][2]*tte_tte1;
+                vz[1][1]    = vs1[1][1]*cte_cte1;
+                vz[1][2]    = vs1[1][1]*cte_tte1 + vs1[1][2]*tte_tte1;
                 vb[1][1][iv] = vs1[1][1]*cte_cte2;
                 vb[1][2][iv] = vs1[1][1]*cte_tte2 + vs1[1][2]*tte_tte2;
 
-                vz[2][1]	= vs1[2][1]*cte_cte1;
-                vz[2][2]	= vs1[2][1]*cte_tte1 + vs1[2][2]*tte_tte1;
+                vz[2][1]    = vs1[2][1]*cte_cte1;
+                vz[2][2]    = vs1[2][1]*cte_tte1 + vs1[2][2]*tte_tte1;
                 vb[2][1][iv] = vs1[2][1]*cte_cte2;
                 vb[2][2][iv] = vs1[2][1]*cte_tte2 + vs1[2][2]*tte_tte2;
 
-                vz[3][1]	= vs1[3][1]*cte_cte1;
-                vz[3][2]	= vs1[3][1]*cte_tte1 + vs1[3][2]*tte_tte1;
+                vz[3][1]    = vs1[3][1]*cte_cte1;
+                vz[3][2]    = vs1[3][1]*cte_tte1 + vs1[3][2]*tte_tte1;
                 vb[3][1][iv] = vs1[3][1]*cte_cte2;
                 vb[3][2][iv] = vs1[3][1]*cte_tte2 + vs1[3][2]*tte_tte2;
 
@@ -7412,7 +7412,7 @@ bool XFoil::setbl()
                 xssitr[is] = xt;
 
                 //------ interpolate airfoil geometry to find transition x/c
-                //		(for user output)
+                //        (for user output)
                 if(is==1) str = sst - xt;
                 else str = sst + xt;
 
@@ -7451,7 +7451,7 @@ bool XFoil::setbl()
             dds1 = dds2;
 
             //---- set bl variables for next station
-            //			for (icom=1; icom<= ncom;icom++)	com1[icom] = com2[icom];
+            //            for (icom=1; icom<= ncom;icom++)    com1[icom] = com2[icom];
             stepbl();
 
             //---- next streamwise station
@@ -7501,7 +7501,7 @@ void XFoil::scheck(double x[], double y[], int *n, double stol, bool *lchange){
     //     segment are removed).  4/24/01 hhy
     //------------------------------------------------------
 
-    //	int im1, ip1, ip2;
+    //    int im1, ip1, ip2;
     int i, l;
     double dxm1, dym1, dsm1, dxp1, dxp2,dyp1,dyp2,dsp1,dsp2;
 
@@ -7513,12 +7513,12 @@ void XFoil::scheck(double x[], double y[], int *n, double stol, bool *lchange){
         writeString(str, true);
         return;
     }
-    //	  10
+    //      10
     for (i = 2; i<= *n-2; i++)
     {
-        //		im1 = i-1;
-        //		ip1 = i+1;
-        //		ip2 = i+2;
+        //        im1 = i-1;
+        //        ip1 = i+1;
+        //        ip2 = i+2;
 
         dxm1 = x[i] - x[i-1];
         dym1 = y[i] - y[i-1];
@@ -7612,7 +7612,7 @@ bool XFoil::setexp(double s[], double ds1, double smax, int nn)
         dratio = -res/dresdr;
         ratio = ratio + dratio;
 
-        if(fabs(dratio) < 1.0e-5) 	goto stop11;
+        if(fabs(dratio) < 1.0e-5)     goto stop11;
 
     }
 
@@ -7652,8 +7652,8 @@ bool XFoil::setMach()
 }
 
 
-/**	  Calculates x(ss)
-*	   xs array must have been calculated by spline */
+/**      Calculates x(ss)
+*       xs array must have been calculated by spline */
 double XFoil::seval(double ss, double x[], double xs[], double s[], int n)
 {
     int ilow, i, imid;
@@ -7686,15 +7686,15 @@ double XFoil::sign(double a, double b)
 
 
 /**
- * 	   Calculates the "inverse" spline function s(x).
- * 	   Since s(x) can be multi-valued or not defined,
- * 	   this is not a "black-box" routine.  The calling
- * 	   program must pass via si a sufficiently good
- * 	   initial guess for s(xi).
+ *        Calculates the "inverse" spline function s(x).
+ *        Since s(x) can be multi-valued or not defined,
+ *        this is not a "black-box" routine.  The calling
+ *        program must pass via si a sufficiently good
+ *        initial guess for s(xi).
  *
- * 	   xi	   specified x value	   (input)
- * 	   si	   calculated s(xi) value  (input,output)
- * 	   x,xs,s  usual spline arrays	   (input)
+ *        xi       specified x value       (input)
+ *        si       calculated s(xi) value  (input,output)
+ *        x,xs,s  usual spline arrays       (input)
  */
 bool XFoil::sinvrt(double &si, double xi, double x[], double xs[], double s[], int n)
 {
@@ -8127,7 +8127,7 @@ void XFoil::sss(double ss, double *s1, double *s2, double del, double xbf, doubl
     *s2 = ss + (sind*sqrt(rsq) + eps*stot)*ssgn;
 
     //---- newton iteration loop
-//	for (int iter = 1; iter <= 10; iter++)
+//    for (int iter = 1; iter <= 10; iter++)
     int  iter;
     for( iter = 1; iter <= 10; iter++)
     {
@@ -8184,7 +8184,7 @@ void XFoil::sss(double ss, double *s1, double *s2, double del, double xbf, doubl
         {
 
             //------- residual 1: set included angle via small angle approximation
-//			rs1 = (r1 + r2)*sind + (s1 - s2)*ssgn;
+//            rs1 = (r1 + r2)*sind + (s1 - s2)*ssgn;
             rs1 = (r1 + r2)*sind + (*s1 - *s2)*ssgn; // corrected by Nicolas C. 2018/11/17
             a11 =  r1_s1 *sind + ssgn;
             a12 =  r2_s2 *sind - ssgn;
@@ -8227,7 +8227,7 @@ void XFoil::sss(double ss, double *s1, double *s2, double del, double xbf, doubl
         *s2 = ss;
     }
 
-//	11 continue
+//    11 continue
 
     //---- make sure points are identical if included angle is zero.
     if(del<=0.00001)
@@ -8529,8 +8529,8 @@ bool XFoil::tecalc()
     sigte = 0.5*(gam[1] - gam[n])*scs;
     gamte = -.5*(gam[1] - gam[n])*sds;
 
-    //	sigte_a = 0.5*(gam_a[1] - gam_a[n])*scs;
-    //	gamte_a = -.5*(gam_a[1] - gam_a[n])*sds;
+    //    sigte_a = 0.5*(gam_a[1] - gam_a[n])*scs;
+    //    gamte_a = -.5*(gam_a[1] - gam_a[n])*sds;
 
     return true;
 
@@ -8539,15 +8539,15 @@ bool XFoil::tecalc()
 
 bool XFoil::tesys(double cte, double tte, double dte){
     //--------------------------------------------------------
-    //	   sets up "dummy" bl system between airfoil te point
-    //	   and first wake point infinitesimally behind te.
+    //       sets up "dummy" bl system between airfoil te point
+    //       and first wake point infinitesimally behind te.
     //--------------------------------------------------------
 
     for(int k=1;k<= 4;k++){
         vsrez[k] = 0.0;
-        vsm[k]	 = 0.0;
-        vsr[k]	 = 0.0;
-        vsx[k]	 = 0.0;
+        vsm[k]     = 0.0;
+        vsr[k]     = 0.0;
+        vsx[k]     = 0.0;
         for (int l=1; l<=5;l++){
             vs1[k][l] = 0.0;
             vs2[k][l] = 0.0;
@@ -8612,7 +8612,7 @@ bool XFoil::trchek()
     double ut_a1=0.0, tt_x1=0.0, dt_x1=0.0, ut_x1=0.0, tt_x2=0.0, dt_x2=0.0, ut_x2=0.0;
     double ax_d1=0.0, ax_u1=0.0, ax_x1=0.0, ax_d2=0.0, ax_u2=0.0, ax_x2=0.0, ax_ms=0.0, ax_re=0.0;
     double z_ax=0.0, z_a1=0.0, z_t1=0.0, z_d1=0.0, z_u1=0.0, z_x1=0.0, z_a2=0.0, z_t2=0.0, z_d2=0.0, z_u2=0.0, z_x2=0.0, z_ms=0.0, z_re=0.0;
-    //	double ax_xf, tt_xf, dt_xf, ut_xf, z_xf;
+    //    double ax_xf, tt_xf, dt_xf, ut_xf, z_xf;
     double ax_at, ax_rtt, ax_tt, ax_hkt, amplt_a2, wf1, wf1_a1, wf1_a2, wf1_xf, wf1_x1, wf1_x2;
     double wf2, wf2_a1, wf2_a2, wf2_xf, wf2_x1, wf2_x2, xt_a2, dt_a2, tt_a2;
     double ut_a2, hkt, hkt_tt, hkt_dt, hkt_ut, hkt_ms, rtt_tt, rtt_ut, rtt_ms, rtt, rtt_re;
@@ -8851,9 +8851,9 @@ stop101:
     ut_x2 = u1*wf1_x2 + u2*wf2_x2;
 
     xt_xf = x1*wf1_xf + x2*wf2_xf;
-    //	tt_xf = t1*wf1_xf + t2*wf2_xf;
-    //	dt_xf = d1*wf1_xf + d2*wf2_xf;
-    //	ut_xf = u1*wf1_xf + u2*wf2_xf;
+    //    tt_xf = t1*wf1_xf + t2*wf2_xf;
+    //    dt_xf = d1*wf1_xf + d2*wf2_xf;
+    //    ut_xf = u1*wf1_xf + u2*wf2_xf;
 
     //---- at this point, ax = ax( hk1, t1, rt1, a1, hkt, tt, rtt, at )
 
@@ -8883,9 +8883,9 @@ stop101:
             + (ax_hkt*hkt_dt                        )*dt_x2
             + (ax_hkt*hkt_ut         + ax_rtt*rtt_ut)*ut_x2;
 
-    //	ax_xf = (ax_hkt*hkt_tt + ax_tt + ax_rtt*rtt_tt)*tt_xf
-    //	+ (ax_hkt*hkt_dt                        )*dt_xf
-    //	+ (ax_hkt*hkt_ut         + ax_rtt*rtt_ut)*ut_xf;
+    //    ax_xf = (ax_hkt*hkt_tt + ax_tt + ax_rtt*rtt_tt)*tt_xf
+    //    + (ax_hkt*hkt_dt                        )*dt_xf
+    //    + (ax_hkt*hkt_ut         + ax_rtt*rtt_ut)*ut_xf;
 
     ax_ms =  ax_hkt*hkt_ms         + ax_rtt*rtt_ms
             +  ax_hk1*hk1_ms         + ax_rt1*rt1_ms;
@@ -8908,7 +8908,7 @@ stop101:
     z_u2 = z_ax*ax_u2;
     z_x2 = z_ax*ax_x2 - ax;
 
-    //	z_xf = z_ax*ax_xf;
+    //    z_xf = z_ax*ax_xf;
     z_ms = z_ax*ax_ms;
     z_re = z_ax*ax_re;
 
@@ -8953,13 +8953,13 @@ bool XFoil::trdif()
     double st_d1, st_d2, st_u1, st_u2, st_xf;
     double ctr, ctr_hk2;
     int k;
-    //	double c1sav[74], c2sav[74];
+    //    double c1sav[74], c2sav[74];
 
     //---- save variables and sensitivities for future restoration
-    //	for (int icom=1; icom<= ncom;icom++){
-    //		c1sav[icom] = com1[icom];
-    //		c2sav[icom] = com2[icom];
-    //	}
+    //    for (int icom=1; icom<= ncom;icom++){
+    //        c1sav[icom] = com1[icom];
+    //        c2sav[icom] = com2[icom];
+    //    }
     saveblData(1);
     saveblData(2);
 
@@ -9127,10 +9127,10 @@ bool XFoil::trdif()
 
     //---- set "1" variables to "t" variables and reset "2" variables
     //-    to their saved turbulent values
-    //	for (icom=1; icom<= ncom; icom++){
-    //		com1[icom] = com2[icom];
-    //		com2[icom] = c2sav[icom];
-    //	}
+    //    for (icom=1; icom<= ncom; icom++){
+    //        com1[icom] = com2[icom];
+    //        com2[icom] = c2sav[icom];
+    //    }
     stepbl();
     restoreblData(2);
 
@@ -9191,9 +9191,9 @@ bool XFoil::trdif()
     //---- to be sanitary, restore "1" quantities which got clobbered
     //-    in all of the numerical gymnastics above.  the "2" variables
     //-    were already restored for the xt-x2 differencing part.
-    //	for (icom=1; icom<=ncom;icom++){
-    //		com1[icom] = c1sav[icom];
-    //	}
+    //    for (icom=1; icom<=ncom;icom++){
+    //        com1[icom] = c1sav[icom];
+    //    }
     restoreblData(1);
 
     return true;
@@ -9588,7 +9588,7 @@ bool XFoil::update()
 
     //      equivalence (va(1,1,1), unew(1,1)) , (vb(1,1,1), qnew(1)  )
     //      equivalence (va(1,1,IVX), u_ac(1,1)) , (vb(1,1,ivx), q_ac(1)  )
-    /*	for (int kk = 1; kk<250; kk++) {
+    /*    for (int kk = 1; kk<250; kk++) {
         vb[kk][1][1]   = qnew[kk];
         vb[kk][1][IVX] = q_ac[kk];
     }
@@ -9612,37 +9612,37 @@ bool XFoil::viscal()
     int ibl;
 
     //---- calculate wake trajectory from current inviscid solution if necessary
-    if(!lwake) 	xyWake();
+    if(!lwake)     xyWake();
 
-    //	---- set velocities on wake from airfoil vorticity for alpha=0, 90
+    //    ---- set velocities on wake from airfoil vorticity for alpha=0, 90
     qwcalc();
 
-    //	---- set velocities on airfoil and wake for initial alpha
+    //    ---- set velocities on airfoil and wake for initial alpha
     qiset();
 
     if(!lipan) {
 
         if(lblini) gamqv();
 
-        //	----- locate stagnation point arc length position and panel index
+        //    ----- locate stagnation point arc length position and panel index
         stfind();
 
-        //	----- set  bl position -> panel position  pointers
+        //    ----- set  bl position -> panel position  pointers
         iblpan();
 
-        //	----- calculate surface arc length array for current stagnation point location
+        //    ----- calculate surface arc length array for current stagnation point location
         xicalc();
 
-        //	----- set  bl position -> system line  pointers
+        //    ----- set  bl position -> system line  pointers
         iblsys();
 
     }
 
-    //	---- set inviscid bl edge velocity uinv from qinv
+    //    ---- set inviscid bl edge velocity uinv from qinv
     uicalc();
 
     if(!lblini) {
-        //	----- set initial ue from inviscid ue
+        //    ----- set initial ue from inviscid ue
         for (ibl=1; ibl<= nbl[1];ibl++){
             uedg[ibl][1] = uinv[ibl][1];
         }
@@ -9652,7 +9652,7 @@ bool XFoil::viscal()
     }
 
     if(lvconv) {
-        //	----- set correct cl if converged point exists
+        //    ----- set correct cl if converged point exists
         qvfue();
         /*
         if(lvisc){
@@ -9678,7 +9678,7 @@ bool XFoil::viscal()
         cdcalc();
     }
 
-    //	---- set up source influence matrix if it doesn't exist
+    //    ---- set up source influence matrix if it doesn't exist
     if(!lwdij || !ladij) qdcalc();
 
     return true;
@@ -9705,36 +9705,36 @@ bool XFoil::ViscalEnd()
 
 bool XFoil::ViscousIter()
 {
-    //	Performs one iteration
+    //    Performs one iteration
     double eps1 =0.0001;
     QString str;
 
 
-    setbl();//	------ fill newton system for bl variables
+    setbl();//    ------ fill newton system for bl variables
 
-    blsolve();//	------ solve newton system with custom solver
+    blsolve();//    ------ solve newton system with custom solver
 
-    update();//	------ update bl variables
+    update();//    ------ update bl variables
 
 
-    if(lalfa) {//	------- set new freestream mach, re from new cl
+    if(lalfa) {//    ------- set new freestream mach, re from new cl
         mrcl(cl, minf_cl, reinf_cl);
         comset();
     }
-    else{//	------- set new inviscid speeds qinv and uinv for new alpha
+    else{//    ------- set new inviscid speeds qinv and uinv for new alpha
         qiset();
         uicalc();
     }
 
-    qvfue();//	------ calculate edge velocities qvis(.) from uedg(..)
-    gamqv();//	------ set gam distribution from qvis
-    stmove();//	------ relocate stagnation point
+    qvfue();//    ------ calculate edge velocities qvis(.) from uedg(..)
+    gamqv();//    ------ set gam distribution from qvis
+    stmove();//    ------ relocate stagnation point
 
-    //	------ set updated cl,cd
+    //    ------ set updated cl,cd
     clcalc(xcmref,ycmref);
     cdcalc();
 
-    //	------ display changes and test for convergence
+    //    ------ display changes and test for convergence
     if(rlx<1.0)
     {
         str =QString("     rms:%1   max:%2 at %3 %4   rlx:%5\n")
@@ -9811,7 +9811,7 @@ bool XFoil::xicalc()
     {
 
         int i = ipan[ibl][is];
-        xssi[ibl][is] = xssi[ibl-1][is]	+ sqrt((x[i]-x[i-1])* (x[i]-x[i-1]) + (y[i]-y[i-1])*(y[i]-y[i-1]));
+        xssi[ibl][is] = xssi[ibl-1][is]    + sqrt((x[i]-x[i-1])* (x[i]-x[i-1]) + (y[i]-y[i-1])*(y[i]-y[i-1]));
     }
 
     //---- trailing edge flap length to te gap ratio
@@ -9856,7 +9856,7 @@ bool XFoil::xicalc()
 
 
 /** -----------------------------------------------------
- * 	   sets forced-transition bl coordinate locations.
+ *        sets forced-transition bl coordinate locations.
  * ----------------------------------------------------- */
 bool XFoil::xifset(int is)
 {
@@ -10021,7 +10021,7 @@ int XFoil::arefine(double x[],double y[], double s[], double xs[], double ys[],
     bool lref;
     double atolr, dxm, dym,  dxp, dyp, crsp, dotp, aseg, smid, xk, yk;
     int k;
-    //	int im, ip;
+    //    int im, ip;
 
     atolr = atol * PI/180.0;
 
@@ -10031,8 +10031,8 @@ int XFoil::arefine(double x[],double y[], double s[], double xs[], double ys[],
 
     for( int i = 2; i<=n-1; i++)
     {
-        //		im = i-1;
-        //		ip = i+1;
+        //        im = i-1;
+        //        ip = i+1;
 
         dxm = x[i] - x[i-1];
         dym = y[i] - y[i-1];
@@ -10087,14 +10087,14 @@ int XFoil::arefine(double x[],double y[], double s[], double xs[], double ys[],
     xnew[k] = x[n];
     ynew[k] = y[n];
 
-    //	nnew = k;
+    //    nnew = k;
     return k;
 
 stop90: 
     QString str = "sdouble:  Arrays will overflow.  No action taken.\n";
     writeString(str, true);
 
-    //	nnew = 0;
+    //    nnew = 0;
     return 0;
 }
 
@@ -10103,7 +10103,7 @@ stop90:
 int XFoil::cadd(int ispl, double atol, double xrf1, double xrf2)
 {
     int nnew, nbadd;
-    //	cang(xb,yb,nb,&imax,&amax); // Already done???
+    //    cang(xb,yb,nb,&imax,&amax); // Already done???
 
     if(ispl == 1)
     {
@@ -10159,7 +10159,7 @@ void XFoil::flap()
     double atop, abot, chx, chy, fvx, fvy, crsp;
     double st1, st2, sb1, sb2, xt1, yt1, xb1;
     double yb1, sb1p, sb1q, sb2p, sb2q;
-    //	double xb2, yb2, xt2, yt2;
+    //    double xb2, yb2, xt2, yt2;
     double dsavg, sfrac, st1p, st1q, st2p, st2q;
     double dsnew;
     double tops, bots;
@@ -10234,12 +10234,12 @@ void XFoil::flap()
     //-- ... and x,y coordinates
     xt1 = seval(st1,xb,xbp,sb,nb);
     yt1 = seval(st1,yb,ybp,sb,nb);
-    //	xt2 = seval(st2,xb,xbp,sb,nb);
-    //	yt2 = seval(st2,yb,ybp,sb,nb);
+    //    xt2 = seval(st2,xb,xbp,sb,nb);
+    //    yt2 = seval(st2,yb,ybp,sb,nb);
     xb1 = seval(sb1,xb,xbp,sb,nb);
     yb1 = seval(sb1,yb,ybp,sb,nb);
-    //	xb2 = seval(sb2,xb,xbp,sb,nb);
-    //	yb2 = seval(sb2,yb,ybp,sb,nb);
+    //    xb2 = seval(sb2,xb,xbp,sb,nb);
+    //    yb2 = seval(sb2,yb,ybp,sb,nb);
 
     //      write(*,1100) xt1, yt1, xt2, yt2, xb1, yb1, xb2, yb2
     // 1100 format(/' top breaks: x,y =  ', 29.5, 4x, 29.5
@@ -10332,7 +10332,7 @@ void XFoil::flap()
 
     //-- rotate flap points about the hinge point (xbf,ybf)
     for (i=1; i<=nb; i++){
-        //		if(i>=it1 && i<=ib1) go to 10
+        //        if(i>=it1 && i<=ib1) go to 10
         if(i<it1 || i>ib1) {
             xbar = xb[i] - xbf;
             ybar = yb[i] - ybf;
@@ -10444,7 +10444,7 @@ void XFoil::flap()
         }
 
     }
-    //			35 continue
+    //            35 continue
 
 
     if(fabs(abot) <= 0.000001) {
@@ -10498,7 +10498,7 @@ void XFoil::flap()
             xb[ib1+1] = xb1new;
             yb[ib1+1] = yb1new;
             xb[ib1+2] = xb1;
-            yb[ib1+2] = yb1; 	   }
+            yb[ib1+2] = yb1;        }
         else{
             xb[ib1  ] = xb1new;
             yb[ib1  ] = yb1new;
@@ -10530,9 +10530,9 @@ void XFoil::flap()
     segspl(xb,xbp,sb,nb);
     segspl(yb,ybp,sb,nb);
 
-    //	geopar(xb,xbp,yb,ybp,sb,nb,w1,sble,chordb,areab,
-    //		radble,angbte,ei11ba,ei22ba,apx1ba,apx2ba,
-    //		ei11bt,ei22bt,apx1bt,apx2bt,thickb,cambrb);
+    //    geopar(xb,xbp,yb,ybp,sb,nb,w1,sble,chordb,areab,
+    //        radble,angbte,ei11ba,ei22ba,apx1ba,apx2ba,
+    //        ei11bt,ei22bt,apx1bt,apx2bt,thickb,cambrb);
 
     geopar(xb,xbp,yb,ybp,sb,nb,w1,sble,chordb,areab,
            radble,angbte,ei11ba,ei22ba,apx1ba,apx2ba,
@@ -10540,13 +10540,13 @@ void XFoil::flap()
 
     lbflap = true;
 
-    //		if(lgsym) {
+    //        if(lgsym) {
     //       write(*,*)
     //       write(*,*) 'disabling symmetry enforcement'
-    //			lgsym = false;
-    //		}
+    //            lgsym = false;
+    //        }
 
-    //		lgeopl = false; // plot?
+    //        lgeopl = false; // plot?
     lgsame = false;// plot?
 }
 
@@ -10722,7 +10722,7 @@ void XFoil::scinit(int n, double x[], double xp[], double y[], double yp[], doub
             piqsum();
 
             if(std::abs(dcn) < ceps) break;
-            //			if(real(dcn)*real(dcn)+imag(dcn)*imag(dcn) < ceps*ceps) break;
+            //            if(real(dcn)*real(dcn)+imag(dcn)*imag(dcn) < ceps*ceps) break;
         }
 
 
@@ -11048,17 +11048,17 @@ void XFoil::qccalc(int ispec,double *alfa, double *cl, double *cm,
     //    transformed karman-tsien cp.
     //---------------------------------------------------
     complex<double> dz, za, eia, cmt,cft,cft_a;
-    //	double rr1, rr2, rr3;
+    //    double rr1, rr2, rr3;
     int icp, ic, ipass;
-    //	int ll;
+    //    int ll;
     double dalfa = 0.0;
     double alfcir, ppp, eppp;
     double sinw, sinwe;
     double cpinc1, cpi_q1, cpcom1,cpc_q1, cpc_a1;
     double cpinc2, cpi_q2, cpcom2,cpc_q2, cpc_a2;
     double qc_a[ICX+1];
-    //	double minf;
-    //	double aeps = 5.0 *pow(10,-7);
+    //    double minf;
+    //    double aeps = 5.0 *pow(10,-7);
     double aeps = 5.0e-007;
 
     //---- karman-tsien quantities
@@ -11067,7 +11067,7 @@ void XFoil::qccalc(int ispec,double *alfa, double *cl, double *cm,
 
     *ncir = nc;
 
-    /*	for (ll=1; ll<ICX+1; ll++){
+    /*    for (ll=1; ll<ICX+1; ll++){
         rr1  = xcir[ll];
         rr2  = ycir[ll];
         rr3  = scir[ll];
@@ -11282,10 +11282,10 @@ void XFoil::cgauss(int nn, complex <double> z[IMX4+1][IMX4+1],complex <double> r
         }
 
         //        for (l=1; l<= nrhs; l++){
-        //			temp = r[nx][l]*pivot;
-        //			r[nx][l] = r[np][l];
-        //			r[np][l] = temp;
-        //		}
+        //            temp = r[nx][l]*pivot;
+        //            r[nx][l] = r[np][l];
+        //            r[np][l] = temp;
+        //        }
         temp = r[nx]*pivot;
         r[nx] = r[np];
         r[np] = temp;
@@ -11299,9 +11299,9 @@ void XFoil::cgauss(int nn, complex <double> z[IMX4+1][IMX4+1],complex <double> r
             for(l=np1; l<= nn;l++){
                 z[k][l] = z[k][l] - ztmp*z[np][l];
             }
-            //			for(l=1; l<= nrhs; l++){
-            //				r[k][l] = r[k][l] - ztmp*r[np][l];
-            //			}
+            //            for(l=1; l<= nrhs; l++){
+            //                r[k][l] = r[k][l] - ztmp*r[np][l];
+            //            }
             r[k] = r[k] - ztmp*r[np];
 
         }
@@ -11309,19 +11309,19 @@ void XFoil::cgauss(int nn, complex <double> z[IMX4+1][IMX4+1],complex <double> r
     }
 
     //--- solve for last row
-    //	for(l=1; l<= nrhs;l++){
+    //    for(l=1; l<= nrhs;l++){
     //        r[nn][l] = r[nn][l]/z[nn][nn];
-    //	}
+    //    }
     r[nn] = r[nn]/z[nn][nn];
 
     //--- back substitute everything
     for(np=nn-1;np>= 1;np--){
         np1 = np+1;
-        //		for(l=1; l<= nrhs; l++){
-        //			for(k=np1; k<= nn;k++){
-        //				r[np][l] = r[np][l] - z[np][k]*r[k][l];
-        //			}
-        //		}
+        //        for(l=1; l<= nrhs; l++){
+        //            for(k=np1; k<= nn;k++){
+        //                r[np][l] = r[np][l] - z[np][k]*r[k][l];
+        //            }
+        //        }
 
         for(k=np1; k<= nn;k++){
             r[np] = r[np] - z[np][k]*r[k];
@@ -11511,7 +11511,7 @@ void XFoil::splqsp(int kqsp)
     int i;
 
     //---- usual spline with natural end bcs
-    //	splind(qspec[kqsp][2],qspecp[kqsp][2],sspec[2], nsp-2, -999.0,-999.0);
+    //    splind(qspec[kqsp][2],qspecp[kqsp][2],sspec[2], nsp-2, -999.0,-999.0);
     splind(qspec[kqsp]+2-1,qspecp[kqsp]+2-1,sspec+2-1, nsp-2, -999.0,-999.0);
 
 
@@ -11704,7 +11704,7 @@ void XFoil::HanningFilter(double cfilt, QTextStream &ts)
     ts << str0<<"\n";
     for(int kqsp=1; kqsp<= nqsp; kqsp++)
     {
-        //		qspint(alqsp[kqsp],qspec[kqsp][1],qinf,minf,clq,cmqsp[kqsp]);
+        //        qspint(alqsp[kqsp],qspec[kqsp][1],qinf,minf,clq,cmqsp[kqsp]);
         qspint(kqsp, clq);
 
         //------- set new cl only if alpha is prescribed
@@ -11785,7 +11785,7 @@ void XFoil::pert_process(int kqsp)
 {
     Q_UNUSED(kqsp);
     int m, ncn;
-    //	double dx,dy,qimoff;
+    //    double dx,dy,qimoff;
     complex<double> qq[IMX/4+1][IMX/4+1],dcn[IMX/4+1];
 
     //--------------------------------------------------------
@@ -11822,7 +11822,7 @@ void XFoil::pert_process(int kqsp)
             qq[m][l] = zc_cn[1][l] - zc_cn[nc][l];
         }
 
-        //		cgauss(IMX/4,ncn,qq,dcn,1);
+        //        cgauss(IMX/4,ncn,qq,dcn,1);
         cgauss(ncn,qq,dcn);
 
         double dcnmax = 0.0;
@@ -11855,9 +11855,9 @@ void XFoil::pert_process(int kqsp)
 
 void XFoil::InitMDES()
 {
-    //	double xsp[IBX], ysp[IBX][IPX], yspd[IBX][IPX];
+    //    double xsp[IBX], ysp[IBX][IPX], yspd[IBX][IPX];
 
-    //	int ntqspl;
+    //    int ntqspl;
     //      save comold, argold???
 
     lrecalc = false;
@@ -11868,11 +11868,11 @@ void XFoil::InitMDES()
     }
 
     lcnpl = false;
-    //	lsym = true;
+    //    lsym = true;
     ffilt = 0.0;
 
-    //	ntqspl = 1;
-    //	if(lqslop) ntqspl = 4;
+    //    ntqspl = 1;
+    //    if(lqslop) ntqspl = 4;
 
     //---- see if current qspec, if any, didn't come from mixed-inverse
     if(nsp!=nc1){
@@ -11904,7 +11904,7 @@ void XFoil::InitMDES()
     //---- set initial q for current alpha
     algam = alfa;
     mapgam(1,algam,clgam,cmgam);
-    //	TRACE("Current Q Operating conditions : %4  %4\n", algam/dtor, clgam);
+    //    TRACE("Current Q Operating conditions : %4  %4\n", algam/dtor, clgam);
 
     if(!lqspec) {
         //------ set cn coefficients from current q
@@ -11919,8 +11919,8 @@ void XFoil::InitMDES()
 
 bool XFoil::InitQDES()
 {
-    //	int ntqspl;
-    //	int kqtarg;
+    //    int ntqspl;
+    //    int kqtarg;
     double chx, chy, chsq;
 
 
@@ -11931,11 +11931,11 @@ bool XFoil::InitQDES()
         return false;
     }
 
-    //	lsym = true;
+    //    lsym = true;
 
     //---- number of sub-intervals for qspec(s) plotting
-    //	ntqspl = 1;
-    //	if(lqslop) ntqspl = 8;
+    //    ntqspl = 1;
+    //    if(lqslop) ntqspl = 8;
 
     //---- make sure a current solution exists
     specal();
@@ -11964,16 +11964,16 @@ bool XFoil::InitQDES()
     }
     ssple = sle/s[n];
 
-    //	write(*,1150) algam/dtor, clgam
-    //	1150 format(/' current q operating condition:'
-    //	&       /' alpha = ', f8.3, ' deg.      cl = ', f8.4 / )
+    //    write(*,1150) algam/dtor, clgam
+    //    1150 format(/' current q operating condition:'
+    //    &       /' alpha = ', f8.3, ' deg.      cl = ', f8.4 / )
 
     if(!lqspec) {
         //----- initialize qspec to "old" solution and notify user
         nqsp = 1;
-        //		kqtarg = 1;
+        //        kqtarg = 1;
         gamqsp(1);
-        //		write(*,1155);
+        //        write(*,1155);
         lqspec = true;
     }
 
@@ -12016,8 +12016,8 @@ bool XFoil::mixed(int kqsp)
     //     the specified surface speed array qspec.
     //-------------------------------------------------
     int i, j, iter;
-    //	int inmax, igmax;
-    //	double sina, cosa;
+    //    int inmax, igmax;
+    //    double sina, cosa;
     double bwt, fs, psi, psi_n;
     double ag1, ag2, abis, cbis, sbis;
     double ds1, ds2, dsmin, xbis, ybis, qbis;
@@ -12028,8 +12028,8 @@ bool XFoil::mixed(int kqsp)
     //    (fraction of smaller panel length adjacent to te)
     bwt = 0.1;
 
-    //	cosa = cos(alfa);
-    //	sina = sin(alfa);
+    //    cosa = cos(alfa);
+    //    sina = sin(alfa);
     scalc(x,y,s,n);
 
     //---- zero-out and set dof shape functions
@@ -12187,8 +12187,8 @@ bool XFoil::mixed(int kqsp)
 
         Gauss(n+5,q,dq);
 
-        //		inmax = 0;
-        //		igmax = 0;
+        //        inmax = 0;
+        //        igmax = 0;
         dnmax = 0.0;
         dgmax = 0.0;
 
@@ -12197,7 +12197,7 @@ bool XFoil::mixed(int kqsp)
             gam[i] += dq[i];
             if(fabs(dq[i]) > fabs(dgmax)) {
                 dgmax = dq[i];
-                //				igmax = i;
+                //                igmax = i;
             }
         }
 
@@ -12207,7 +12207,7 @@ bool XFoil::mixed(int kqsp)
             y[i] += ny[i]*dq[i];
             if(fabs(dq[i]) > fabs(dnmax)) {
                 dnmax = dq[i];
-                //				inmax = i;
+                //                inmax = i;
             }
         }
 
@@ -12216,7 +12216,7 @@ bool XFoil::mixed(int kqsp)
             gam[i] += dq[i];
             if(fabs(dq[i]) > fabs(dgmax)) {
                 dgmax = dq[i];
-                //				igmax = i;
+                //                igmax = i;
             }
         }
 
@@ -12227,8 +12227,8 @@ bool XFoil::mixed(int kqsp)
         qdof2 = qdof2 + dq[n+4];
         qdof3 = qdof3 + dq[n+5];
 
-        //		cosa = cos(alfa);
-        //		sina = sin(alfa);
+        //        cosa = cos(alfa);
+        //        sina = sin(alfa);
         scalc(x,y,s,n);
 
         //---- set correct surface speed over target segment including dof contributions
@@ -12248,7 +12248,7 @@ bool XFoil::mixed(int kqsp)
         &       /' dqf3  =',e10.3,4x,'   dqf4  =',e10.3)*/
         dnTrace[iter] = fabs(dnmax);
         dgTrace[iter] = fabs(dgmax);
-        //		TRACE("%d  dNMax = %.3e  dGMax = %.3e\n",iter, dnmax, dgmax);
+        //        TRACE("%d  dNMax = %.3e  dGMax = %.3e\n",iter, dnmax, dgmax);
         if(fabs(dnmax)<5.0e-5 && fabs(dgmax)<5.0e-4) {
             //       write(*,*)
             //       write(*,*) 'new current airfoil generated'
@@ -12259,8 +12259,8 @@ bool XFoil::mixed(int kqsp)
 
     }
     QMax = niterq;
-    //	TRACE("Unconverged - shit/Schei�e/merde !\n");
-    //	TRACE("not quite converged.  can exec again if necessary.\n");
+    //    TRACE("Unconverged - shit/Schei�e/merde !\n");
+    //    TRACE("not quite converged.  can exec again if necessary.\n");
     return false;
 }
 void XFoil::gamlin(int i, int j, double coef){
@@ -12372,8 +12372,8 @@ bool XFoil::ExecQDES()
 
 
 void XFoil::RestoreQDES(){
-    //	Foil is restored from CXInverse rather than from XFoil
-    /*	for (int i=1; i<=n; i++){
+    //    Foil is restored from CXInverse rather than from XFoil
+    /*    for (int i=1; i<=n; i++){
         x[i] = xb[i];
         y[i] = yb[i];
     }*/
@@ -12541,7 +12541,7 @@ void XFoil::inter(double x0[], double xp0[], double y0[], double yp0[], double s
     //        each surface.
     //     .....................................................................
 
-    /*	real x0(n0),y0(n0),xp0(n0),yp0(n0),s0(n0)
+    /*    real x0(n0),y0(n0),xp0(n0),yp0(n0),s0(n0)
     real x1(n1),y1(n1),xp1(n1),yp1(n1),s1(n1)
     real x(n),y(n)*/
     double f0, f1, tops0, tops1, bots0, bots1;
@@ -12570,7 +12570,7 @@ void XFoil::inter(double x0[], double xp0[], double y0[], double yp0[], double s
         //------ set actual spline parameters
         st0 = s0[i];
         if(st0< sle0) st1 = sle1 + tops1 * sn;
-        //		if(st0>=sle0) st1 = sle1 + bots1 * sn;
+        //        if(st0>=sle0) st1 = sle1 + bots1 * sn;
         else st1 = sle1 + bots1 * sn;
 
         //------ set interpolated x,y coordinates
@@ -12635,7 +12635,7 @@ double XFoil::DeRotate()
     yte = 0.5*(yb[1] + yb[nb]);
 
     arad = atan2(yte-yle,xte-xle);
-    //	call rotate(xb,yb,nb,arad);
+    //    call rotate(xb,yb,nb,arad);
 
     double sa = sin(arad);
     double ca = cos(arad);
@@ -12651,7 +12651,7 @@ double XFoil::DeRotate()
     }
 
 
-    //	write(*,1080) arad / dtor
+    //    write(*,1080) arad / dtor
     // 1080  format(/'rotating buffer airfoil by ',f8.3,' deg.')
 
     scalc(xb,yb,sb,nb);
@@ -12733,7 +12733,7 @@ void XFoil::tgap(double gapnew, double blend)
            ei11ba,ei22ba,apx1ba,apx2ba,ei11bt,ei22bt,apx1bt,apx2bt);
 
 
-    //	lgeopl = false;
+    //    lgeopl = false;
     lgsame = false;
 
 }
@@ -12746,7 +12746,7 @@ void XFoil::lerad(double rfac, double blend)
 {
     int i;
     double doc, cvmax, cv;
-    //	double radius;
+    //    double radius;
 
     doc = std::max( blend , 0.001 );
 
@@ -12772,7 +12772,7 @@ void XFoil::lerad(double rfac, double blend)
         cvmax = std::max(fabs(cv) , cvmax );
     }
 
-    //	radius = 1.0/cvmax;
+    //    radius = 1.0/cvmax;
 
     /*      write(*,1000) radius
     1000 format(/' new le radius = ',f7.5)*/
@@ -12839,7 +12839,7 @@ void XFoil::lerscl(double *x, double *xp, double* y, double *yp,
 void XFoil::naca4(int ides, int nside)
 {
     int n1, n2, n3, n4, ib, i;
-    //	double xx[nside], yt[nside], yc[nside], xb[2*nside], yb[2*nside]
+    //    double xx[nside], yt[nside], yc[nside], xb[2*nside], yb[2*nside]
 
     double *xx    = w1;
     double *yt    = w2;//thickness function
@@ -13073,7 +13073,7 @@ void XFoil::createXBL()
         {
             i = ipan[ibl][is];
             xbl[ibl][is] = x[i];
-//			xxtr[is] = xle + (xte-xle)*xoctr[is] - (yte-yle)*yoctr[is];
+//            xxtr[is] = xle + (xte-xle)*xoctr[is] - (yte-yle)*yoctr[is];
         }
     }
 

@@ -45,7 +45,7 @@ XDirectTileWidget::XDirectTileWidget(QWidget *pParent) :  GraphTileWidget(pParen
 
     m_pLegendWidget = new LegendWidget(this);
     m_pOpPointWidget = new OpPointWidget(this);
-    //	m_pLegendStack = new QStackedWidget(this);
+    //    m_pLegendStack = new QStackedWidget(this);
 
     m_nGraphWidgets = MAXPOLARGRAPHS;
 
@@ -67,7 +67,7 @@ void XDirectTileWidget::connectSignals()
     connect(s_pMainFrame->m_pResetFoilScale,  SIGNAL(triggered()), m_pOpPointWidget, SLOT(onResetFoilScale()));
     connect(s_pMainFrame->m_pXDirectStyleAct, SIGNAL(triggered()), m_pOpPointWidget, SLOT(onXDirectStyle()));
     connect(s_pMainFrame->m_pShowNeutralLine, SIGNAL(triggered()), m_pOpPointWidget, SLOT(onShowNeutralLine()));
-    //	connect(pMainFrame->m_pShowPanels,      SIGNAL(triggered()), m_pOpPointWidget, SLOT(onShowPanels()));
+    //    connect(pMainFrame->m_pShowPanels,      SIGNAL(triggered()), m_pOpPointWidget, SLOT(onShowPanels()));
     connect(m_pOpPointWidget, SIGNAL(graphChanged(Graph*)), this, SLOT(onResetCurves(Graph*)));
 
     for(int igw=0; igw<m_GraphWidget.count(); igw++)
@@ -116,9 +116,9 @@ void XDirectTileWidget::adjustLayout()
         m_pOpPointWidget->setVisible(true);
         m_pLegendWidget->setVisible(false);
 
-        //		m_pMainGridLayout->addWidget(m_GraphWidget.at(0),1,1);
+        //        m_pMainGridLayout->addWidget(m_GraphWidget.at(0),1,1);
         m_pMainGridLayout->addWidget(m_pOpPointWidget,1,1,2,3);
-        /*		m_pMainGridLayout->setRowStretch(1,5);
+        /*        m_pMainGridLayout->setRowStretch(1,5);
         m_pMainGridLayout->setRowStretch(2,3);
         m_pMainGridLayout->setColumnStretch(1,1);
         m_pMainGridLayout->setColumnStretch(2,0);
@@ -225,7 +225,7 @@ void XDirectTileWidget::setGraphList(QVector<Graph*>pGraphList, int nGraphs, int
     m_SingleGraphOrientation = orientation;
 
     m_pOpPointWidget->setGraph(&s_pXDirect->m_CpGraph);
-    //	m_pOpPointWidget->setFoilScale();
+    //    m_pOpPointWidget->setFoilScale();
 
     adjustLayout();
 

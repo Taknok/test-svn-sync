@@ -47,8 +47,8 @@
 
 /**
  * This class :
- *	 - defines the body object,
- * 	 - provides the methods for the calculation of the plane's geometric properties,
+ *     - defines the body object,
+ *      - provides the methods for the calculation of the plane's geometric properties,
  *   - porvides methods for the panel calculations.
  * The data is stored in International Standard Units, i.e. meters, kg, and seconds.
  * Angular data is stored in degrees.
@@ -162,7 +162,7 @@ public:
 
     XFLR5::enumBodyLineType m_LineType;              /**< the type of body surfaces 1=PANELS  2=NURBS */
 
-    int m_iActiveFrame;		                  /**< the currently selected Frame for display */
+    int m_iActiveFrame;                          /**< the currently selected Frame for display */
     int m_iHighlightFrame;                    /**< the currently selected Frame to highlight */
     int m_NElements;                          /**< the number of mesh elements for this Body object = m_nxPanels * m_nhPanels *2 */
     int m_nxPanels;                           /**< For a NURBS body, the number of mesh elements in the direction of the x-axis */
@@ -196,7 +196,7 @@ public:
     //avoid lengthy memory allocation times on the stack
     mutable double value, bs, cs;
     mutable Vector3d t_R, t_Prod, t_Q, t_r, t_N;
-    //	mutable Vector3d P0, P1, P2, PI;
+    //    mutable Vector3d P0, P1, P2, PI;
 
     bool m_bTextures;
 

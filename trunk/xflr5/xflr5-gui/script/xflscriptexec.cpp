@@ -344,10 +344,10 @@ void XflScriptExec::traceLog(QString strMsg)
 void XflScriptExec::readScript()
 {
     QString PathName = ":/src/script/example_script.xml";
-    /*	PathName = QFileDialog::getOpenFileName(NULL, "Open XML File",
+    /*    PathName = QFileDialog::getOpenFileName(NULL, "Open XML File",
                                             Settings::s_LastDirName,
                                             "XML file (*.xml)");
-    if(!PathName.length())		return ;*/
+    if(!PathName.length())        return ;*/
 
     int pos = PathName.lastIndexOf("/");
     if(pos>0) Settings::s_LastDirName = PathName.left(pos);

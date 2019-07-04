@@ -53,7 +53,7 @@ public:
 
 private:
     QPushButton *OKButton, *CancelButton, *ApplyButton;
-    DoubleEdit	*m_pctrlBlend, *m_pctrlLE;
+    DoubleEdit    *m_pctrlBlend, *m_pctrlLE;
     bool m_bApplied, m_bModified;
     double m_LErfac, m_Blend;
 
