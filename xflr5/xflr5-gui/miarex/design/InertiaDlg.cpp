@@ -125,7 +125,7 @@ void InertiaDlg::computeInertia()
     if(m_pPlane)
     {
         pWing[0] =  m_pPlane->wing();
-        if(m_pPlane->BiPlane()) pWing[1] = m_pPlane->wing2();
+        if(m_pPlane->biPlane()) pWing[1] = m_pPlane->wing2();
         if(m_pPlane->stab())    pWing[2] = m_pPlane->stab();
         if(m_pPlane->fin())     pWing[3] = m_pPlane->fin();
     }
@@ -394,7 +394,7 @@ void InertiaDlg::initDialog()
     else if (m_pPlane)
     {
         m_VolumeMass = m_pPlane->wing()->m_VolumeMass;
-        if(m_pPlane->BiPlane()) m_VolumeMass += m_pPlane->wing2()->m_VolumeMass;
+        if(m_pPlane->biPlane()) m_VolumeMass += m_pPlane->wing2()->m_VolumeMass;
         if(m_pPlane->stab())    m_VolumeMass += m_pPlane->stab()->m_VolumeMass;
         if(m_pPlane->fin())     m_VolumeMass += m_pPlane->fin()->m_VolumeMass;
         if(m_pPlane->body())    m_VolumeMass += m_pPlane->body()->m_VolumeMass;
@@ -409,7 +409,7 @@ void InertiaDlg::initDialog()
         m_pctrlVolumeMassLabel->setText(tr("Volume Mass:"));
         m_pctrlVolumeMass->setEnabled(false);
         m_pctrlWingInertia->setEnabled(true);
-        if(m_pPlane->BiPlane()) m_pctrlWing2Inertia->setEnabled(true);
+        if(m_pPlane->biPlane()) m_pctrlWing2Inertia->setEnabled(true);
         if(m_pPlane->stab())    m_pctrlStabInertia->setEnabled(true);
         if(m_pPlane->fin())     m_pctrlFinInertia->setEnabled(true);
         if(m_pPlane->body())    m_pctrlBodyInertia->setEnabled(true);
@@ -490,7 +490,7 @@ void InertiaDlg::onExportToAVL()
     if(m_pPlane)
     {
         pWing[0] =  m_pPlane->wing();
-        if(m_pPlane->BiPlane()) pWing[1] = m_pPlane->wing2();
+        if(m_pPlane->biPlane()) pWing[1] = m_pPlane->wing2();
         if(m_pPlane->stab())    pWing[2] = m_pPlane->stab();
         if(m_pPlane->fin())     pWing[3] = m_pPlane->fin();
     }
@@ -1190,7 +1190,7 @@ void InertiaDlg::onWingInertia()
 
 void InertiaDlg::onWing2Inertia()
 {
-    if(!m_pPlane->BiPlane()) return;
+    if(!m_pPlane->biPlane()) return;
     InertiaDlg dlg(this);
     dlg.m_pWing  = m_pPlane->wing2();
     dlg.m_pPlane = nullptr;

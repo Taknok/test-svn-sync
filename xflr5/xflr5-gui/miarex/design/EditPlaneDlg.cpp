@@ -144,16 +144,16 @@ void EditPlaneDlg::onResize()
 void EditPlaneDlg::resizeTreeView()
 {
     QList<int> leftSizes;
-    leftSizes.append((int)(height()*95/100));
-    leftSizes.append((int)(height()*5/100));
+    leftSizes.append(height()*95/100);
+    leftSizes.append(height()*5/100);
     m_pLeftSideSplitter->setSizes(leftSizes);
 
     QList<int> rightSizes;
-    rightSizes.append((int)(height()*95/100));
-    rightSizes.append((int)(height()*5/100));
+    rightSizes.append(height()*95/100);
+    rightSizes.append(height()*5/100);
     m_pRightSideSplitter->setSizes(rightSizes);
 
-    int ColumnWidth = (int)((double)(m_pStruct->width())/15);
+    int ColumnWidth = m_pStruct->width()/15;
     m_pStruct->setColumnWidth(0,ColumnWidth*6);
     m_pStruct->setColumnWidth(1,ColumnWidth*3);
     m_pStruct->setColumnWidth(2,ColumnWidth*3);
@@ -550,7 +550,7 @@ void EditPlaneDlg::initDialog(Plane *pPlane)
     m_pctrlPanels->setChecked(m_pglPlaneView->m_bVLMPanels);
     m_pctrlFoilNames->setChecked(m_pglPlaneView->m_bFoilNames);
     m_pctrlShowMasses->setChecked(m_pglPlaneView->m_bShowMasses);
-    m_pctrlClipPlanePos->setValue((int)(m_pglPlaneView->m_ClipPlanePos*100.0));
+    m_pctrlClipPlanePos->setValue(int(m_pglPlaneView->m_ClipPlanePos*100.0f));
 
     m_pctrlAutoRedraw->setChecked(s_bAutoRedraw);
     m_pctrlRedraw->setEnabled(!s_bAutoRedraw);
@@ -1315,7 +1315,7 @@ void EditPlaneDlg::readViewLevel(QModelIndex indexLevel)
 
                 m_pPlane->m_Wing[iWing].duplicate(&newwing);
                 m_pPlane->WingLE(iWing)        = wingPos;
-                m_pPlane->WingTiltAngle(iWing) = wingTiltAngle;
+                m_pPlane->setWingTiltAngle(iWing, wingTiltAngle);
                 iw++;
             }
             else if(object.compare("inertia", Qt::CaseInsensitive)==0)
@@ -1820,7 +1820,7 @@ void EditPlaneDlg::onInsertBefore()
 
 
         int ny = pWing->NYPanels(n-1);
-        pWing->NYPanels(n)   = (int)(ny/2);
+        pWing->NYPanels(n)   = ny/2;
         pWing->NYPanels(n-1) = ny-pWing->NYPanels(n);
         if(pWing->NYPanels(n)==0)   pWing->NYPanels(n)++;
         if(pWing->NYPanels(n-1)==0) pWing->NYPanels(n-1)++;
@@ -1914,7 +1914,7 @@ void EditPlaneDlg::onInsertAfter()
         pWing->leftFoil(n+1)   = pWing->leftFoil(n);
 
         int ny = pWing->NYPanels(n);
-        pWing->NYPanels(n+1) = qMax(1,(int)(ny/2));
+        pWing->NYPanels(n+1) = qMax(1,ny/2);
         pWing->NYPanels(n)   = qMax(1,ny-pWing->NYPanels(n+1));
 
         //    m_pWing->m_bVLMAutoMesh = true;

@@ -36,7 +36,7 @@ class OpPointWidget : public QWidget
     friend class XDirectStyleDlg;
     friend class MainFrame;
 public:
-    OpPointWidget(QWidget *parent = 0);
+    OpPointWidget(QWidget *parent = nullptr);
 
 public slots:
     void onXDirectStyle();

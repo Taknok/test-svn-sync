@@ -49,7 +49,7 @@ class InverseViewWidget : public QWidget
 
 
 public:
-    InverseViewWidget(QWidget *parent = 0);
+    InverseViewWidget(QWidget *parent = nullptr);
 
 protected:
     void contextMenuEvent (QContextMenuEvent *event);

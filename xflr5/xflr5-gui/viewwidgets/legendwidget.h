@@ -34,7 +34,7 @@ class LegendWidget : public QWidget
 {
     Q_OBJECT
 public:
-    LegendWidget(QWidget *pParent = 0);
+    LegendWidget(QWidget *pParent = nullptr);
     ~LegendWidget();
 
     void keyPressEvent(QKeyEvent *event);

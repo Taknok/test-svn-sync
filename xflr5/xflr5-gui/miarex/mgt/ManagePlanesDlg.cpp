@@ -361,7 +361,7 @@ void ManagePlanesDlg::onDescriptionChanged()
 {
     if(m_pPlane)
     {
-        m_pPlane->rPlaneDescription() = m_pctrlDescription->toPlainText();
+        m_pPlane->setPlaneDescription(m_pctrlDescription->toPlainText());
     }
     m_bChanged = true;
 }

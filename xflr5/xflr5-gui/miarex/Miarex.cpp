@@ -651,7 +651,7 @@ void Miarex::setControls()
     m_pctrlIDrag->setChecked(m_bICd);
     m_pctrlVDrag->setChecked(m_bVCd);
     m_pctrlStream->setChecked(m_pgl3dMiarexView->m_bStream);
-    m_pctrlClipPlanePos->setValue(int(m_pgl3dMiarexView->m_ClipPlanePos*100.0));
+    m_pctrlClipPlanePos->setValue(int(m_pgl3dMiarexView->m_ClipPlanePos*100.0f));
     m_pctrlClipPlanePos->setEnabled(W3dPrefsDlg::s_bEnableClipPlane);
 
     m_pctrlOutline->setEnabled(m_pCurPlane);
@@ -2861,13 +2861,13 @@ void Miarex::onDefineWPolar()
         {
             pNewWPolar->referenceSpanLength() = m_pCurPlane->planformSpan();
             pNewWPolar->referenceArea() = m_pCurPlane->planformArea();
-            if(m_pCurPlane && m_pCurPlane->BiPlane()) pNewWPolar->referenceArea() += m_pCurPlane->wing2()->m_PlanformArea;
+            if(m_pCurPlane && m_pCurPlane->biPlane()) pNewWPolar->referenceArea() += m_pCurPlane->wing2()->m_PlanformArea;
         }
         else if(pNewWPolar->referenceDim()==XFLR5::PROJECTEDREFDIM)
         {
             pNewWPolar->referenceSpanLength() = m_pCurPlane->projectedSpan();
             pNewWPolar->referenceArea() = m_pCurPlane->projectedArea();
-            if(m_pCurPlane && m_pCurPlane->BiPlane()) pNewWPolar->referenceArea() += m_pCurPlane->wing2()->m_ProjectedArea;
+            if(m_pCurPlane && m_pCurPlane->biPlane()) pNewWPolar->referenceArea() += m_pCurPlane->wing2()->m_ProjectedArea;
         }
 
         if(m_bDirichlet) pNewWPolar->boundaryCondition() = XFLR5::DIRICHLET;
@@ -2934,13 +2934,13 @@ void Miarex::onDefineWPolarObject()
         {
             pNewWPolar->referenceSpanLength() = m_pCurPlane->planformSpan();
             pNewWPolar->referenceArea()       = m_pCurPlane->planformArea();
-            if(m_pCurPlane && m_pCurPlane->BiPlane()) pNewWPolar->referenceArea() += m_pCurPlane->wing2()->m_PlanformArea;
+            if(m_pCurPlane && m_pCurPlane->biPlane()) pNewWPolar->referenceArea() += m_pCurPlane->wing2()->m_PlanformArea;
         }
         else if(pNewWPolar->referenceDim()==XFLR5::PROJECTEDREFDIM)
         {
             pNewWPolar->referenceSpanLength() = m_pCurPlane->projectedSpan();
             pNewWPolar->referenceArea()       = m_pCurPlane->projectedArea();
-            if(m_pCurPlane && m_pCurPlane->BiPlane()) pNewWPolar->referenceArea() += m_pCurPlane->wing2()->m_ProjectedArea;
+            if(m_pCurPlane && m_pCurPlane->biPlane()) pNewWPolar->referenceArea() += m_pCurPlane->wing2()->m_ProjectedArea;
         }
 
         //        if(m_bDirichlet) pNewWPolar->boundaryCondition() = XFLR5::DIRICHLET;
@@ -3725,7 +3725,7 @@ void Miarex::onEditCurPlane()
         if(plDlg.m_bDescriptionChanged)
         {
             emit projectModified();
-            m_pCurPlane->rPlaneDescription() = pModPlane->planeDescription();
+            m_pCurPlane->setPlaneDescription(pModPlane->planeDescription());
         }
 
         if(plDlg.m_bChanged)
