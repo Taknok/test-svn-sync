@@ -353,7 +353,7 @@ void XInverse::drawGrid(QPainter &painter, double scale)
         painter.drawLine(int(xt*scalex) + m_ptOffset.x(), m_ptOffset.y(),
                          int(xt*scalex) + m_ptOffset.x(), m_ptOffset.y()+TickSize);
         strLabel = QString("%1").arg(xt,0,'f',1);
-        painter.drawText(int(xt*scalex)+m_ptOffset.x()-5, m_ptOffset.y()+(int)(TickSize*5), strLabel);
+        painter.drawText(int(xt*scalex)+m_ptOffset.x()-5, m_ptOffset.y()+int(TickSize*5), strLabel);
         xt += XGridUnit ;
     }
 
@@ -846,16 +846,16 @@ void XInverse::mouseMoveEvent(QMouseEvent *event)
                 P2 = QPoint(m_QGraph.xToClient(m_pMCurve->x[m_SplineLeftPos+1]), m_QGraph.yToClient(m_pMCurve->y[m_SplineLeftPos+1]));
 
                 //v is the tangent to the curve in screen coordinates
-                vx = (double)((P0.x()-P1.x())*(P0.x()-P2.x())*(P1.x()-P2.x())*(P2.x()-P0.x()));
-                vy = (double)( P0.y() *(P1.x()-P2.x())            * (P1.x()-P2.x()) * (P2.x()-P0.x())
+                vx = double((P0.x()-P1.x())*(P0.x()-P2.x())*(P1.x()-P2.x())*(P2.x()-P0.x()));
+                vy = double( P0.y() *(P1.x()-P2.x())            * (P1.x()-P2.x()) * (P2.x()-P0.x())
                                - P1.y() *(2.0*P1.x()-P0.x()-P2.x()) * (P0.x()-P2.x()) * (P2.x()-P0.x())
                                - P2.y() *(P1.x()-P0.x())            * (P0.x()-P1.x()) * (P0.x()-P2.x()));
                 vnorm = sqrt(vx*vx+vy*vy);
                 vx/=vnorm;
                 vy/=vnorm;
-                scal = (double)(point.x()-P1.x())*vx + (double)(point.y()-P1.y())*vy;
-                tanpt.rx() = P1.x() + (int)(vx * scal);
-                tanpt.ry() = P1.y() + (int)(vy * scal);
+                scal = double(point.x()-P1.x())*vx + double(point.y()-P1.y())*vy;
+                tanpt.rx() = P1.x() + int(vx * scal);
+                tanpt.ry() = P1.y() + int(vy * scal);
 
                 x1 =  m_QGraph.clientTox(tanpt.x()) ;
                 y1 =  m_QGraph.clientToy(tanpt.y()) ;
@@ -895,17 +895,17 @@ void XInverse::mouseMoveEvent(QMouseEvent *event)
                 P1 = QPoint(m_QGraph.xToClient(m_pMCurve->x[m_SplineRightPos]),   m_QGraph.yToClient(m_pMCurve->y[m_SplineRightPos]));
                 P2 = QPoint(m_QGraph.xToClient(m_pMCurve->x[m_SplineRightPos+1]), m_QGraph.yToClient(m_pMCurve->y[m_SplineRightPos+1]));
                 //v is the tangent to the curve in screen coordinates
-                vx = (double)((P0.x()-P1.x())*(P0.x()-P2.x())*(P1.x()-P2.x())*(P2.x()-P0.x()));
+                vx = double((P0.x()-P1.x())*(P0.x()-P2.x())*(P1.x()-P2.x())*(P2.x()-P0.x()));
 
-                vy = (double)( P0.y() *(P1.x()-P2.x())            * (P1.x()-P2.x()) * (P2.x()-P0.x())
+                vy = double( P0.y() *(P1.x()-P2.x())            * (P1.x()-P2.x()) * (P2.x()-P0.x())
                                - P1.y() *(2.0*P1.x()-P0.x()-P2.x()) * (P0.x()-P2.x()) * (P2.x()-P0.x())
                                - P2.y() *(P1.x()-P0.x())            * (P0.x()-P1.x()) * (P0.x()-P2.x()));
                 vnorm = sqrt(vx*vx+vy*vy);
                 vx/=vnorm;
                 vy/=vnorm;
-                scal = (double)(point.x()-P1.x())*vx + (double)(point.y()-P1.y())*vy;
-                tanpt.rx() = P1.x() + (int)(vx * scal);
-                tanpt.ry() = P1.y() + (int)(vy * scal);
+                scal = double(point.x()-P1.x())*vx + double(point.y()-P1.y())*vy;
+                tanpt.rx() = P1.x() + int(vx * scal);
+                tanpt.ry() = P1.y() + int(vy * scal);
 
                 x1 =  m_QGraph.clientTox(tanpt.x()) ;
                 y1 =  m_QGraph.clientToy(tanpt.y()) ;
@@ -962,8 +962,8 @@ void XInverse::mouseMoveEvent(QMouseEvent *event)
             if(point.y()-m_PointDown.y()>0) m_fScale *= 1.02;
             else                            m_fScale /= 1.02;
 
-            a = (int)((m_rCltRect.right()+m_rCltRect.left())/2);
-            m_ptOffset.rx() = a + (int)((m_ptOffset.x()-a)*m_fScale/scale);
+            a = int((m_rCltRect.right()+m_rCltRect.left())/2);
+            m_ptOffset.rx() = a + int((m_ptOffset.x()-a)*m_fScale/scale);
         }
     }
     else
@@ -1617,8 +1617,8 @@ void XInverse::onPertubate()
 
     for (m=0; m<=qMin(32, m_pXFoil->nc); m++)
     {
-        PerturbDlg.m_cnr[m] = (double)real(m_pXFoil->cn[m]);
-        PerturbDlg.m_cni[m] = (double)imag(m_pXFoil->cn[m]);
+        PerturbDlg.m_cnr[m] = real(m_pXFoil->cn[m]);
+        PerturbDlg.m_cni[m] = imag(m_pXFoil->cn[m]);
     }
     PerturbDlg.m_nc = qMin(32, m_pXFoil->nc);
     PerturbDlg.initDialog();
@@ -1893,7 +1893,7 @@ void XInverse::paintGraph(QPainter &painter)
     if(m_rGraphRect.width()>200 && m_rGraphRect.height()>150)
     {
         m_QGraph.drawGraph(painter);
-        QPoint Place((int)(m_rGraphRect.right()-300), m_rGraphRect.top()+12);
+        QPoint Place(int(m_rGraphRect.right()-300), m_rGraphRect.top()+12);
         m_QGraph.drawLegend(painter, Place, Settings::s_TextFont, Settings::s_TextColor, Settings::backgroundColor());
     }
 
@@ -1923,7 +1923,6 @@ void XInverse::paintGraph(QPainter &painter)
     // Highlight selected points, if any
     if(m_bGetPos)
     {
-        QPoint pt;
         //QRect r;
         m_QGraph.highlight(painter, m_pMCurve,m_tmpPos);
         if(m_nPos>=1) m_QGraph.highlight(painter, m_pMCurve, m_Pos1);
@@ -2135,7 +2134,7 @@ double XInverse::qincom(double qc, double qinf, double tklam)
     {
         //----- use quadratic formula for typical case
         double tmp = 0.5*(1.0 - tklam)*qinf/(qc*tklam);
-        return (qinf*tmp*((double)sqrt(1.0 + 1.0/(tklam*tmp*tmp)) - 1.0));
+        return (qinf*tmp*(sqrt(1.0 + 1.0/(tklam*tmp*tmp)) - 1.0));
     }
 }
 
@@ -2185,7 +2184,7 @@ void XInverse::resetQ()
 void XInverse::resetScale()
 {
     int h4 = m_rCltRect.height()/4;
-    m_ptOffset.rx() = m_rGraphRect.left() +(int)(1.0*m_QGraph.margin());
+    m_ptOffset.rx() = m_rGraphRect.left() +(1*m_QGraph.margin());
     m_fRefScale  = m_rGraphRect.width()-2.0*m_QGraph.margin();
 
     m_ptOffset.ry() = m_rCltRect.bottom()-h4/2;
@@ -2431,7 +2430,7 @@ void XInverse::setXInverseScale(QRect CltRect)
     m_rCltRect = CltRect;
 
     int h = CltRect.height();
-    int h4 = (int)(h/3.0);
+    int h4 = h/3;
     m_rGraphRect = QRect(0, 0, + m_rCltRect.width(), m_rCltRect.height()-h4);
     m_QGraph.setMargin(50);
     m_QGraph.setDrawRect(m_rGraphRect);
@@ -2887,8 +2886,8 @@ void XInverse::zoomEvent(QPoint pos, double zoomFactor)
         else
         {
             m_fScale *= zoomFactor;
-            int a = (int)((m_rCltRect.right() + m_rCltRect.left())/2);
-            m_ptOffset.rx() = a + (int)((m_ptOffset.x()-a)*m_fScale/scale);
+            int a = int((m_rCltRect.right() + m_rCltRect.left())/2);
+            m_ptOffset.rx() = a + int((m_ptOffset.x()-a)*m_fScale/scale);
         }
     }
     updateView();

@@ -168,7 +168,6 @@ void XFLR5Application::addStandardBtnStrings()
 }
 
 
-
 bool XFLR5Application::event(QEvent *event)
 {
     int iApp;
