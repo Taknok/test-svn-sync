@@ -189,7 +189,7 @@ void AFoil::fillFoilTable()
     ind = m_pFoilModel->index(0, 5, QModelIndex());
     m_pFoilModel->setData(ind, points);
 
-    /*	ind = m_pFoilModel->index(0,12, QModelIndex());
+    /*    ind = m_pFoilModel->index(0,12, QModelIndex());
     if(m_pSF->m_bVisible) m_pFoilModel->setData(ind, Qt::Checked, Qt::CheckStateRole);
     else                  m_pFoilModel->setData(ind, Qt::Unchecked, Qt::CheckStateRole);
 
@@ -625,7 +625,7 @@ void AFoil::onAFoilPanels()
     {
         fillFoilTable();
         selectFoil(XDirect::curFoil());
-        //		m_pXFoil->foilName() ="";
+        //        m_pXFoil->foilName() ="";
 
     }
 
@@ -725,7 +725,7 @@ void AFoil::onAFoilFoilGeom()
     {
         fillFoilTable();
         selectFoil(XDirect::curFoil());
-        //		m_pXFoil->foilName() ="";
+        //        m_pXFoil->foilName() ="";
     }
     m_pBufferFoil->isVisible() = false;
     m_p2DWidget->update();;
@@ -775,7 +775,7 @@ void AFoil::onAFoilSetTEGap()
     {
         fillFoilTable();
         selectFoil(XDirect::curFoil());
-        //		m_pXFoil->foilName() ="";
+        //        m_pXFoil->foilName() ="";
         //to un-initialize XFoil in case user switches to XInverse
         //Thanks Jean-Marc !
     }
@@ -829,7 +829,7 @@ void AFoil::onAFoilSetLERadius()
     {
         fillFoilTable();
         selectFoil(XDirect::curFoil());
-        //		m_pXFoil->foilName() ="";
+        //        m_pXFoil->foilName() ="";
 
     }
 
@@ -1043,7 +1043,7 @@ void AFoil::onDuplicate()
  */
 void AFoil::onExportCurFoil()
 {
-    if(!XDirect::curFoil())	return;
+    if(!XDirect::curFoil())    return;
 
     QString FileName;
 
@@ -1474,7 +1474,7 @@ void AFoil::saveSettings(QSettings *pSettings)
  */
 void AFoil::onFoilTableCtxMenu(const QPoint &)
 {
-    //	m_CurrentColumn = m_pctrlFoilTable->columnAt(position.x());
+    //    m_CurrentColumn = m_pctrlFoilTable->columnAt(position.x());
     s_pMainFrame->m_pAFoilTableCtxMenu->exec(cursor().pos());
 }
 
@@ -1492,7 +1492,7 @@ void AFoil::setupLayout()
     m_pctrlFoilTable->setFont(Settings::s_TableFont);
     m_pctrlFoilTable->horizontalHeader()->setFont(Settings::s_TableFont);
 
-    //	connect(m_pctrlFoilTable, SIGNAL(pressed(const QModelIndex &)), this, SLOT(OnFoilClicked(const QModelIndex&)));
+    //    connect(m_pctrlFoilTable, SIGNAL(pressed(const QModelIndex &)), this, SLOT(OnFoilClicked(const QModelIndex&)));
     connect(m_pctrlFoilTable, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onFoilTableCtxMenu(const QPoint &)));
 
     QHBoxLayout *MainLayout = new QHBoxLayout;
@@ -1528,9 +1528,9 @@ void AFoil::setupLayout()
     m_pctrlFoilTable->setItemDelegate(m_pFoilDelegate);
     m_pFoilDelegate->m_pFoilModel = m_pFoilModel;
 
-    /*	int unitwidth = (int)(750.0/16.0);
+    /*    int unitwidth = (int)(750.0/16.0);
     m_pctrlFoilTable->setColumnWidth(0, 3*unitwidth);
-    for(int i=1; i<16; i++)		m_pctrlFoilTable->setColumnWidth(i, unitwidth);*/
+    for(int i=1; i<16; i++)        m_pctrlFoilTable->setColumnWidth(i, unitwidth);*/
     m_pctrlFoilTable->setColumnHidden(9, true);
     m_pctrlFoilTable->setColumnHidden(10, true);
     m_pctrlFoilTable->setColumnHidden(11, true);
@@ -1555,7 +1555,7 @@ void AFoil::setupLayout()
     m_precision[15] = 2;
 
     m_pFoilDelegate->m_Precision = m_precision;
-    //	connect(m_pFoilDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(OnCellChanged(QWidget *)));
+    //    connect(m_pFoilDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(OnCellChanged(QWidget *)));
 
     connect(this, SIGNAL(projectModified()), s_pMainFrame, SLOT(onProjectModified()));
 }
@@ -1794,7 +1794,7 @@ void AFoil::resizeEvent(QResizeEvent *event)
     int unitwidth = int(double(m_pctrlFoilTable->width())/double(ncol)/1.1);
 
     m_pctrlFoilTable->setColumnWidth(0, 2*unitwidth);
-    for(int i=1; i<16; i++)	m_pctrlFoilTable->setColumnWidth(i, unitwidth);
+    for(int i=1; i<16; i++)    m_pctrlFoilTable->setColumnWidth(i, unitwidth);
     event->accept();
 }
 

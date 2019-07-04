@@ -67,7 +67,7 @@ public:
 
 
     static QPoint s_Position;   /**< the position on the client area of the dialog's topleft corner */
-    static QSize s_Size;	    /**< the window size in the client area */
+    static QSize s_Size;        /**< the window size in the client area */
 
 private:
     WPolar * m_pWPolar;

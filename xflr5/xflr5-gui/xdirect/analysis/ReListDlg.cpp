@@ -91,7 +91,7 @@ void ReListDlg::initDialog(QVector<double> ReList, QVector<double> MachList, QVe
     m_Precision[2] = 2;//two digits for Mach and NCrit
     m_pFloatDelegate->setPrecision(m_Precision);
 
-    //	connect(m_pFloatDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(onCellChanged(QWidget *)));
+    //    connect(m_pFloatDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(onCellChanged(QWidget *)));
     connect(m_pReModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(onCellChanged(QModelIndex ,QModelIndex)));
 
     fillReModel();
@@ -133,8 +133,8 @@ void ReListDlg::setupLayout()
 {
     QVBoxLayout *pCommandButtons = new QVBoxLayout;
     {
-        m_pctrlInsert	= new QPushButton(tr("Insert"));
-        m_pctrlDelete	= new QPushButton(tr("Delete"));
+        m_pctrlInsert    = new QPushButton(tr("Insert"));
+        m_pctrlDelete    = new QPushButton(tr("Delete"));
 
         OKButton        = new QPushButton(tr("OK"));
         CancelButton    = new QPushButton(tr("Cancel"));
@@ -206,7 +206,7 @@ void ReListDlg::onDelete()
 void ReListDlg::onInsert()
 {
     int sel = m_pctrlReTable->currentIndex().row();
-    //	if(sel<0) return;
+    //    if(sel<0) return;
 
     m_ReList.insert(sel, 0.0);
     m_MachList.insert(sel, 0.0);

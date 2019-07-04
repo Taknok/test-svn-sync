@@ -137,7 +137,7 @@ private:
     double m_ClMax;             /**< The ending Cl coefficient */
     double m_ClInc;             /**< The Cl increment  */
 
-    //	bool m_bOutput;             /**< true if the output should be displayed in the text widget */
+    //    bool m_bOutput;             /**< true if the output should be displayed in the text widget */
     bool m_bAlpha;              /**< true if the analysis should be performed for a range of aoa rather than lift coefficient */
     bool m_bFromList;           /**< true if the analysis should be performed for a list of Re values rather than for a range */
     bool m_bFromZero;           /**< true if the iterations should start from aoa=0 rather than aoa=alpha_min */
@@ -158,7 +158,7 @@ private:
 
 
     QVector<FoilAnalysis *> m_AnalysisPair;  /**< the list of all analysis to be performed. Once performed, an analysis is removed from the list. */
-    //	XFoilTask *m_pXFoilTask;           /**< the task for a thread */
+    //    XFoilTask *m_pXFoilTask;           /**< the task for a thread */
 
     QFile *m_pXFile;                   /**< a pointer to the output log file */
 

@@ -100,7 +100,7 @@ BatchDlg::BatchDlg(QWidget *pParent) : QDialog(pParent)
 
     m_pRmsGraph = new Graph;
     m_pctrlGraphOutput->setGraph(m_pRmsGraph);
-    //	m_pRmsGraph->CopySettings(&Settings::s_RefGraph, false);
+    //    m_pRmsGraph->CopySettings(&Settings::s_RefGraph, false);
 
     m_pRmsGraph->setXTitle(tr("Iter"));
     m_pRmsGraph->setYTitle("");//Change from bl newton system solution
@@ -141,11 +141,11 @@ BatchDlg::BatchDlg(QWidget *pParent) : QDialog(pParent)
 
 BatchDlg::~BatchDlg()
 {
-    //	Trace("Destroying BatchDlg");
+    //    Trace("Destroying BatchDlg");
     if(m_pXFile) delete m_pXFile;
     if(m_pXFoilTask) delete m_pXFoilTask;
     if(m_pRmsGraph) delete m_pRmsGraph;
-    //	if(m_pRmsGraph) m_pRmsGraph->deleteCurves();;
+    //    if(m_pRmsGraph) m_pRmsGraph->deleteCurves();;
 }
 
 /**
@@ -172,7 +172,7 @@ void BatchDlg::setupLayout()
     {
         QHBoxLayout *pAnalysisTypeLayout = new QHBoxLayout;
         {
-            m_rbtype1 = new	QRadioButton(tr("Type 1"));
+            m_rbtype1 = new    QRadioButton(tr("Type 1"));
             m_rbtype2 = new QRadioButton(tr("Type 2"));
             m_rbtype3 = new QRadioButton(tr("Type 3"));
             m_rbtype4 = new QRadioButton(tr("Type 4"));
@@ -285,7 +285,7 @@ void BatchDlg::setupLayout()
     {
         QHBoxLayout *pConvergenceLayout = new QHBoxLayout;
         {
-            QLabel *pMaxIterLab	 = new QLabel(tr("Max. iterations"));
+            QLabel *pMaxIterLab     = new QLabel(tr("Max. iterations"));
             m_pctrlMaxIter = new IntEdit(XFoilTask::s_IterLim);
             m_pctrlSkipOpp   = new QPushButton(tr("Skip Opp"));
             m_pctrlSkipPolar = new QPushButton(tr("Skip Polar"));
@@ -437,7 +437,7 @@ void BatchDlg::reject()
 void BatchDlg::cleanUp()
 {
     resetCurves();
-    if(m_pXFile->isOpen())	m_pXFile->close();
+    if(m_pXFile->isOpen())    m_pXFile->close();
     m_pctrlClose->setEnabled(true);
     m_pctrlSkipOpp->setEnabled(false);
     m_pctrlSkipPolar->setEnabled(false);
@@ -541,7 +541,7 @@ void BatchDlg::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if(m_pctrlClose->hasFocus())	     done(1);
+            if(m_pctrlClose->hasFocus())         done(1);
             else if(m_pctrlAnalyze->hasFocus())  onAnalyze();
             else                                 m_pctrlAnalyze->setFocus();
             break;
@@ -816,7 +816,7 @@ void BatchDlg::onAnalyze()
     else         m_pXFoilTask->setSequence(false, m_ClMin, m_ClMax, m_ClInc);
 
     m_pXFoilTask->setReRange(m_ReMin, m_ReMax, m_ReInc);
-    /*	m_pXFoilTask->initializeTask(QXDirect::curFoil(), QXDirect::curPolar(),
+    /*    m_pXFoilTask->initializeTask(QXDirect::curFoil(), QXDirect::curPolar(),
                                  QXDirect::s_bStoreOpp, QXDirect::s_bViscous, m_bInitBL, m_bFromZero);
 */
 
@@ -951,8 +951,8 @@ void BatchDlg::onRange()
     m_pctrlReDelta->setEnabled(!m_bFromList);
     m_pctrlMach->setEnabled(!m_bFromList);
     m_pctrlNCrit->setEnabled(!m_bFromList);
-    //	m_pctrlXBotTr->setEnabled(!m_bFromList);
-    //	m_pctrlXTopTr->setEnabled(!m_bFromList);
+    //    m_pctrlXBotTr->setEnabled(!m_bFromList);
+    //    m_pctrlXTopTr->setEnabled(!m_bFromList);
 }
 
 /**

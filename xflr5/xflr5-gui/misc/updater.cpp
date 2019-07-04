@@ -273,7 +273,7 @@ void Updater::onReplyFinished(QNetworkReply* pNetReply)
             {
                 QDomNode node = nodeList.item(i);
                 QDomElement e = node.toElement();
-                /*				QString strTitle =  e.elementsByTagName("title").item(0).firstChild().nodeValue();
+                /*                QString strTitle =  e.elementsByTagName("title").item(0).firstChild().nodeValue();
                 QString strLink = e.elementsByTagName("link").item(0).firstChild().nodeValue();
                 QString strDescription = e.elementsByTagName("description").item(0).firstChild().nodeValue();
                 qDebug()<<"    "<<strTitle;

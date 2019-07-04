@@ -90,8 +90,8 @@ PlaneOpp::PlaneOpp(Plane *pPlane, WPolar *pWPolar, int PanelArraySize)
 
     CXe = CYe = CZe = CLe = CMe = CNe = 0;
 
-    //	for (int iw=0; iw<MAXWINGS; iw++) m_bWing[iw] = false;
-    //	m_bWing[0] = true;
+    //    for (int iw=0; iw<MAXWINGS; iw++) m_bWing[iw] = false;
+    //    m_bWing[0] = true;
 
     for (int iw=0; iw<MAXWINGS; iw++) m_pWOpp[iw] = nullptr;
 
@@ -127,7 +127,7 @@ PlaneOpp::PlaneOpp(Plane *pPlane, WPolar *pWPolar, int PanelArraySize)
  */
 void PlaneOpp::addWingOpp(int iw, int PanelArraySize)
 {
-    //	m_bWing[iw] = true;
+    //    m_bWing[iw] = true;
     m_pWOpp[iw] = new WingOpp(PanelArraySize);
 }
 
@@ -264,7 +264,7 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
 
         ar >> a;
         if (a!=0 && a!=1) return false;
-        //		if(a) m_bMiddle = true; else m_bMiddle = false;
+        //        if(a) m_bMiddle = true; else m_bMiddle = false;
 
         ar >> m_Style >> m_Width;
 
@@ -281,7 +281,7 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
 
 
         ar >> m_NStation;
-        ar >> f;		m_Alpha = double(f);
+        ar >> f;        m_Alpha = double(f);
         ar >> f;        m_QInf  = double(f);
         ar >> f;//        m_Weight = f;
 
@@ -327,7 +327,7 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
                 for (k=0; k<=m_NPanels; k++)
                 {
                     ar >> f;
-                    //				m_Cp[k] = f;
+                    //                m_Cp[k] = f;
                 }
             }
         }
@@ -336,8 +336,8 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
             for (k=0; k<=m_NPanels; k++)
             {
                 ar >> f;
-                //				if(ArchiveFormat<1004)	m_G[k] = f/1000.0;
-                //				else 					m_G[k] = f;
+                //                if(ArchiveFormat<1004)    m_G[k] = f/1000.0;
+                //                else                     m_G[k] = f;
             }
         }
 
@@ -346,7 +346,7 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
             for (k=0; k<=m_NPanels; k++)
             {
                 ar >> f;
-                //				m_Sigma[k] = f;
+                //                m_Sigma[k] = f;
             }
         }
 
@@ -779,7 +779,7 @@ void PlaneOpp::getPlaneOppProperties(QString &planeOppProperties, QString length
     else if(m_WPolarType==XFLR5::STABILITYPOLAR) strong += "Type 7 ("+QObject::tr("Stability analysis") +")\n";
     planeOppProperties += strong;
 
-    //	WOppProperties += QObject::tr("Method")+" = ";
+    //    WOppProperties += QObject::tr("Method")+" = ";
     if(m_AnalysisMethod==XFLR5::LLTMETHOD)                             planeOppProperties +=QObject::tr("LLT");
     else if(m_AnalysisMethod==XFLR5::PANEL4METHOD && !m_bThinSurface)   planeOppProperties +=QObject::tr("3D-Panels");
     else if(m_AnalysisMethod==XFLR5::PANEL4METHOD && m_bVLM1)           planeOppProperties +=QObject::tr("3D-Panels/VLM1");
@@ -851,7 +851,7 @@ void PlaneOpp::getPlaneOppProperties(QString &planeOppProperties, QString length
     strong  = QString(QObject::tr("VCn")+" = %1").arg(m_VYm,9,'f',5);
     planeOppProperties += strong +"\n";
 
-    /*	if(m_nFlaps>0)
+    /*    if(m_nFlaps>0)
     {
         WingOppProperties += "\n";
         for(int ip=0; ip<m_nFlaps; ip++)

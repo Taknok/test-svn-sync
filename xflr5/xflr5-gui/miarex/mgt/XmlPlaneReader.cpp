@@ -206,7 +206,7 @@ bool XMLPlaneReader::readPlane(Plane *pPlane, double lengthunit, double massunit
 }
 
 
-bool XMLPlaneReader::readWing(Wing &newwing, Vector3d &position, double tiltangle, double lengthUnit, double massUnit)
+bool XMLPlaneReader::readWing(Wing &newwing, Vector3d &position, double &tiltangle, double lengthUnit, double massUnit)
 {
     while(!atEnd() && !hasError() && readNextStartElement() )
     {

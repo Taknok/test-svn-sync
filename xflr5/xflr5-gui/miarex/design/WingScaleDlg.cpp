@@ -136,7 +136,7 @@ void WingScaleDlg::setupLayout()
         pScaleLayout->addWidget(m_pctrlNewAR,   7,3);
         pScaleLayout->addWidget(m_pctrlARRatio, 7,5);
 
-        /*		pScaleLayout->addWidget(m_pctrlScaleTR, 8,1);
+        /*        pScaleLayout->addWidget(m_pctrlScaleTR, 8,1);
         pScaleLayout->addWidget(m_pctrlRefTR,   8,2);
         pScaleLayout->addWidget(m_pctrlNewTR,   8,3);
         pScaleLayout->addWidget(m_pctrlTRRatio, 8,5);*/
@@ -172,7 +172,7 @@ void WingScaleDlg::setupLayout()
         connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
     }
 
-    /*	QHBoxLayout *pStretchLayout = new QHBoxLayout;
+    /*    QHBoxLayout *pStretchLayout = new QHBoxLayout;
     {
         pStretchLayout->addStretch(1);
         pStretchLayout->addLayout(pScaleLayout);

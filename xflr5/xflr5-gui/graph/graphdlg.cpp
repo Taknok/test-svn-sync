@@ -94,7 +94,7 @@ void GraphDlg::connectSignals()
     connect(m_pctrlGraphBack, SIGNAL(clicked()), this, SLOT(onGraphBackColor()));
     connect(m_pctrlBorderStyle, SIGNAL(clicked()), this, SLOT(onBorderStyle()));
 
-    /*	connect(m_pctrlXSel, SIGNAL(itemActivated ( QListWidgetItem*)), SLOT(OnVariableChanged()));
+    /*    connect(m_pctrlXSel, SIGNAL(itemActivated ( QListWidgetItem*)), SLOT(OnVariableChanged()));
     connect(m_pctrlYSel, SIGNAL(itemActivated ( QListWidgetItem*)), SLOT(OnVariableChanged()));
     connect(m_pctrlXSel, SIGNAL(itemClicked ( QListWidgetItem*)), SLOT(OnVariableChanged()));
     connect(m_pctrlYSel, SIGNAL(itemClicked ( QListWidgetItem*)), SLOT(OnVariableChanged()));*/
@@ -154,13 +154,13 @@ void GraphDlg::fillVariableList()
             //wing graph variable
             m_pctrlXSel->addItem(tr("Y - span"));
 
-            m_pctrlYSel->addItem(tr("Induced Angle"));						//0
-            m_pctrlYSel->addItem(tr("Total Angle"));						//1
-            m_pctrlYSel->addItem(tr("Local lift coef."));					//2
-            m_pctrlYSel->addItem(tr("Local Lift C.Cl/M.A.C."));				//3
-            m_pctrlYSel->addItem(tr("Airfoil viscous drag coef."));			//4
-            m_pctrlYSel->addItem(tr("Induced drag coef."));					//5
-            m_pctrlYSel->addItem(tr("Total drag coef."));					//6
+            m_pctrlYSel->addItem(tr("Induced Angle"));                        //0
+            m_pctrlYSel->addItem(tr("Total Angle"));                        //1
+            m_pctrlYSel->addItem(tr("Local lift coef."));                    //2
+            m_pctrlYSel->addItem(tr("Local Lift C.Cl/M.A.C."));                //3
+            m_pctrlYSel->addItem(tr("Airfoil viscous drag coef."));            //4
+            m_pctrlYSel->addItem(tr("Induced drag coef."));                    //5
+            m_pctrlYSel->addItem(tr("Total drag coef."));                    //6
             m_pctrlYSel->addItem(tr("Local Drag C.Cd/M.A.C."));              //7
             m_pctrlYSel->addItem(tr("Airfoil Pitching moment coef."));       //8
             m_pctrlYSel->addItem(tr("Total Pitching moment coef."));         //9
@@ -623,7 +623,7 @@ void GraphDlg::onYMinGridStyle()
 void GraphDlg::setApplied(bool bApplied)
 {
     m_bApplied = bApplied;
-    //	ApplyButton->setEnabled(!bApplied);
+    //    ApplyButton->setEnabled(!bApplied);
 }
 
 
@@ -881,7 +881,7 @@ void GraphDlg::setupLayout()
         MaxLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
         OriginLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
         UnitLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        //	ScaleData->addStretch(1);
+        //    ScaleData->addStretch(1);
         pScalePageLayout->addWidget(MinLabel,5,1);
         pScalePageLayout->addWidget(MaxLabel,6,1);
         pScalePageLayout->addWidget(OriginLabel,7,1);

@@ -181,8 +181,8 @@ protected:
     bool m_bIsImageLoaded;      /**< true if a backgruond image is loaded */
     QPixmap m_BackImage;        /**< the QPixmap object with the background image */
 
-    //	QAction *m_pInsertPt, *m_pRemovePt, *m_pResetScaleAction, *m_pGridSettingsAction;
-    //	QAction *m_pLoadBackImage, *m_pClearBackImage;
+    //    QAction *m_pInsertPt, *m_pRemovePt, *m_pResetScaleAction, *m_pGridSettingsAction;
+    //    QAction *m_pLoadBackImage, *m_pClearBackImage;
 
 };
 

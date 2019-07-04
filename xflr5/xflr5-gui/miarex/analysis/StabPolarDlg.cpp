@@ -509,9 +509,9 @@ void StabPolarDlg::onArea()
     else if(m_pctrlArea3->isChecked())
     {
         s_StabWPolar.referenceDim() = XFLR5::MANUALREFDIM;
-        //		m_pctrlRefArea->SetValue(s_WPolar.referenceArea()Length*Units::m2toUnit());
-        //		m_pctrlRefSpan->SetValue(s_WPolar.referenceSpanLength()*Units::mtoUnit());
-        //		m_pctrlRefChord->SetValue(s_WPolar.m_referenceChordLength*Units::mtoUnit());
+        //        m_pctrlRefArea->SetValue(s_WPolar.referenceArea()Length*Units::m2toUnit());
+        //        m_pctrlRefSpan->SetValue(s_WPolar.referenceSpanLength()*Units::mtoUnit());
+        //        m_pctrlRefChord->SetValue(s_WPolar.m_referenceChordLength*Units::mtoUnit());
     }
 
     setWPolarName();
@@ -630,7 +630,7 @@ void StabPolarDlg::onWPolarName()
 
 void StabPolarDlg::readCtrlData()
 {
-    //	s_StabPolar.m_ControlGain.clear();
+    //    s_StabPolar.m_ControlGain.clear();
     for(int icg=0; icg<s_StabWPolar.m_nControls; icg++)
     {
         s_StabWPolar.m_ControlGain[icg] = m_pAngleControlModel->index(icg, 1, QModelIndex()).data().toDouble(); //is the gain, AVL-like
@@ -650,7 +650,7 @@ void StabPolarDlg::onAutoInertia(bool isChecked)
     }
     else
     {
-        /*		m_pctrlMass->setValue(s_StabPolar.m_Mass*Units::kgtoUnit());
+        /*        m_pctrlMass->setValue(s_StabPolar.m_Mass*Units::kgtoUnit());
         m_pctrlCoGx->setValue(s_StabPolar.m_CoG.x*Units::mtoUnit());
         m_pctrlCoGz->setValue(s_StabPolar.m_CoG.z*Units::mtoUnit());
         m_pctrlIxx->setValue(s_StabPolar.m_CoGIxx*Units::kgtoUnit()*Units::mtoUnit()*Units::mtoUnit());

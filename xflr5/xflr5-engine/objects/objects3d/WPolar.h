@@ -38,7 +38,7 @@
 
 /**
 *@brief
-*	This class defines the polar object used in 2D and 3D calculations
+*    This class defines the polar object used in 2D and 3D calculations
 *
     The class stores both the analysis parameters and the analysis results.
 
@@ -60,7 +60,7 @@
 
 class XFLR5ENGINELIBSHARED_EXPORT WPolar
 {
-    //	friend class LLTAnalysis;
+    //    friend class LLTAnalysis;
 
 
 public:
@@ -167,7 +167,7 @@ private:
     ObjectColor m_Color;
 
     bool     m_bVLM1;              /**< true if the analysis is performed with horseshoe vortices, flase if quad rings */
-    //	bool     m_bDirichlet;         /**< true if Dirichlet boundary conditions should be applied, false if Neumann */
+    //    bool     m_bDirichlet;         /**< true if Dirichlet boundary conditions should be applied, false if Neumann */
     bool     m_bGround;            /**< true if ground effect should be taken into account in the analysis */
     bool     m_bIgnoreBodyPanels;  /**< true if the body panels should be ignored in the analysis */
     bool     m_bThinSurfaces;      /**< true if VLM, false if 3D-panels */

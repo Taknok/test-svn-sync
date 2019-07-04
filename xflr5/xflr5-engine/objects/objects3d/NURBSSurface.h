@@ -78,7 +78,7 @@ public:
     double splineBlend(int const &index, int const &p, double const &t, const double *knots) const;
 
 private:
-    QVector<Frame*> m_pFrame;	        /**< a pointer to the array of Frame objects */
+    QVector<Frame*> m_pFrame;            /**< a pointer to the array of Frame objects */
 
     int m_iuDegree;                 /**< the degree of the NURBS in the u direction */
     int m_ivDegree;                 /**< the degree of the NURBS in the v direction */

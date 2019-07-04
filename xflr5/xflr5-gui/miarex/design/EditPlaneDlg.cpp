@@ -137,7 +137,7 @@ void EditPlaneDlg::resizeEvent(QResizeEvent *pEvent)
 void EditPlaneDlg::onResize()
 {
     resizeTreeView();
-    //	resize3DView();
+    //    resize3DView();
 }
 
 
@@ -227,13 +227,13 @@ void EditPlaneDlg::setupLayout()
     m_pStruct->header()->setSectionResizeMode(QHeaderView::Interactive);
 #endif
 
-    //	m_pPlaneStruct->header()->setDefaultSectionSize(239);
+    //    m_pPlaneStruct->header()->setDefaultSectionSize(239);
     m_pStruct->header()->setStretchLastSection(true);
     m_pStruct->header()->setDefaultAlignment(Qt::AlignCenter);
 
     m_pStruct->setEditTriggers(QAbstractItemView::AllEditTriggers);
     m_pStruct->setSelectionBehavior (QAbstractItemView::SelectRows);
-    //	m_pStruct->setIndentation(31);
+    //    m_pStruct->setIndentation(31);
     m_pStruct->setWindowTitle(tr("Objects"));
 
     m_pModel = new QStandardItemModel(this);
@@ -440,7 +440,7 @@ void EditPlaneDlg::setupLayout()
     }
     setLayout(pMainLayout);
     connectSignals();
-    //	resize(s_Size);
+    //    resize(s_Size);
 }
 
 
@@ -501,7 +501,7 @@ void EditPlaneDlg::onOK()
     }
 
     //check the number of surfaces
-    /*	int nSurfaces = 0;
+    /*    int nSurfaces = 0;
     for (int j=0; j<m_pPlane->wing()->NWingSection()-1; j++)
     {
         if(qAbs(m_pPlane->wing()->YPosition(j)-m_pPlane->wing()->YPosition(j+1)) > Wing::s_MinPanelSize) nSurfaces+=2;
@@ -561,10 +561,10 @@ void EditPlaneDlg::initDialog(Plane *pPlane)
 
 void EditPlaneDlg::keyPressEvent(QKeyEvent *pEvent)
 {
-    //	bool bShift = false;
-    //	bool bCtrl  = false;
-    //	if(event->modifiers() & Qt::ShiftModifier)   bShift =true;
-    //	if(event->modifiers() & Qt::ControlModifier) bCtrl =true;
+    //    bool bShift = false;
+    //    bool bCtrl  = false;
+    //    if(event->modifiers() & Qt::ShiftModifier)   bShift =true;
+    //    if(event->modifiers() & Qt::ControlModifier) bCtrl =true;
 
     switch (pEvent->key())
     {
@@ -1278,7 +1278,7 @@ void EditPlaneDlg::readViewLevel(QModelIndex indexLevel)
                 double wingTiltAngle;
                 readWingTree(&newwing, wingPos, wingTiltAngle, pItem->child(0,0)->index());
 
-                /*				if(newWing.isFin()) iWing = 3;
+                /*                if(newWing.isFin()) iWing = 3;
                 else if(iw==0)      iWing = 0;
                 else if(iw==1)      iWing = 2;*/
 
@@ -1453,7 +1453,7 @@ void EditPlaneDlg::readBodyTree(Body *pBody, QModelIndex indexLevel)
                     subIndex = subIndex.sibling(subIndex.row()+1,0);
                 }while(subIndex.isValid());
             }
-            else if(object.compare("Inertia", Qt::CaseInsensitive)==0) 	readInertiaTree(pBody->volumeMass(), pBody->m_PointMass, pItem->child(0,0)->index());
+            else if(object.compare("Inertia", Qt::CaseInsensitive)==0)     readInertiaTree(pBody->volumeMass(), pBody->m_PointMass, pItem->child(0,0)->index());
             else if(object.compare("NURBS", Qt::CaseInsensitive)==0)
             {
                 subIndex = pItem->child(0,0)->index();
@@ -1917,7 +1917,7 @@ void EditPlaneDlg::onInsertAfter()
         pWing->NYPanels(n+1) = qMax(1,(int)(ny/2));
         pWing->NYPanels(n)   = qMax(1,ny-pWing->NYPanels(n+1));
 
-        //	m_pWing->m_bVLMAutoMesh = true;
+        //    m_pWing->m_bVLMAutoMesh = true;
 
         m_pStruct->closePersistentEditor(m_pStruct->currentIndex());
         fillPlaneTreeView();

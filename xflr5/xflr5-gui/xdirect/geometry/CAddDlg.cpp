@@ -135,7 +135,7 @@ void CAddDlg::onApply()
     if(s_pXFoil->Preprocess())
     {
         s_pXFoil->CheckAngles();
-        /*		for (int k=0; k<pXFoil->n;k++){
+        /*        for (int k=0; k<pXFoil->n;k++){
             m_pMemFoil->nx[k] = pXFoil->nx[k+1];
             m_pMemFoil->ny[k] = pXFoil->ny[k+1];
         }

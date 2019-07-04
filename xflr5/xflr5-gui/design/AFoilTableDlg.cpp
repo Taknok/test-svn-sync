@@ -58,7 +58,7 @@ void AFoilTableDlg::keyPressEvent(QKeyEvent *pEvent)
             if(!m_pOKButton->hasFocus() && !m_pCancelButton->hasFocus())
             {
                 m_pOKButton->setFocus();
-                //				m_bApplied  = true;
+                //                m_bApplied  = true;
             }
             else
             {

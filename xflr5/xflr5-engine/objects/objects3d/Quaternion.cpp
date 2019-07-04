@@ -1,7 +1,7 @@
 /****************************************************************************
 
     Quaternion Class
-	Copyright (C) 2008-2008 Andre Deperrois 
+    Copyright (C) 2008-2008 Andre Deperrois 
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,74 +27,74 @@
 
 void Quaternion::operator *=(Quaternion Q)
 {
-	double t1,t2,t3,t4;
+    double t1,t2,t3,t4;
 
-	t1 = a*Q.a  - qx*Q.qx - qy*Q.qy - qz*Q.qz;
-	t2 = a*Q.qx + qx*Q.a  + qy*Q.qz - qz*Q.qy ;
-	t3 = a*Q.qy + qy*Q.a  + qz*Q.qx - qx*Q.qz ;
-	t4 = a*Q.qz + qz*Q.a  + qx*Q.qy - qy*Q.qx ;
+    t1 = a*Q.a  - qx*Q.qx - qy*Q.qy - qz*Q.qz;
+    t2 = a*Q.qx + qx*Q.a  + qy*Q.qz - qz*Q.qy ;
+    t3 = a*Q.qy + qy*Q.a  + qz*Q.qx - qx*Q.qz ;
+    t4 = a*Q.qz + qz*Q.a  + qx*Q.qy - qy*Q.qx ;
 
-	a  = t1;
-	qx = t2;
-	qy = t3;
-	qz = t4;
-	Settxx();
+    a  = t1;
+    qx = t2;
+    qy = t3;
+    qz = t4;
+    Settxx();
 }
 
 
 Quaternion Quaternion::operator *(Quaternion Q)
 {
-	Quaternion prod;
+    Quaternion prod;
 
-	prod.a = a*Q.a  - qx*Q.qx - qy*Q.qy - qz*Q.qz;
+    prod.a = a*Q.a  - qx*Q.qx - qy*Q.qy - qz*Q.qz;
 
-	prod.qx = a*Q.qx + qx*Q.a  + qy*Q.qz - qz*Q.qy ;
-	prod.qy = a*Q.qy + qy*Q.a  + qz*Q.qx - qx*Q.qz ;
-	prod.qz = a*Q.qz + qz*Q.a  + qx*Q.qy - qy*Q.qx ;
-	prod.Settxx();
+    prod.qx = a*Q.qx + qx*Q.a  + qy*Q.qz - qz*Q.qy ;
+    prod.qy = a*Q.qy + qy*Q.a  + qz*Q.qx - qx*Q.qz ;
+    prod.qz = a*Q.qz + qz*Q.a  + qx*Q.qy - qy*Q.qx ;
+    prod.Settxx();
 
-	return prod;
+    return prod;
 }
 
 
 void Quaternion::operator =(Quaternion Q)
 {
-	a  = Q.a;
-	qx = Q.qx;
-	qy = Q.qy;
-	qz = Q.qz;
-	Settxx();
+    a  = Q.a;
+    qx = Q.qx;
+    qy = Q.qy;
+    qz = Q.qz;
+    Settxx();
 }
 
 
 void Quaternion::operator ~()
 {
-	qx = -qx;
-	qy = -qy;
-	qz = -qz;
-	Settxx();
+    qx = -qx;
+    qy = -qy;
+    qz = -qz;
+    Settxx();
 }
 
 
 void Quaternion::Normalize()
 {
-	double norm = sqrt(a*a + qx*qx + qy*qy + qz*qz);
-	if (norm < 1.0e-10)
-	{
-		a = 1.0;
-		qx = 0.0;
-		qy = 0.0;
-		qz = 0.0;
-	}
-	else
-	{
-		a *= 1/norm;
+    double norm = sqrt(a*a + qx*qx + qy*qy + qz*qz);
+    if (norm < 1.0e-10)
+    {
+        a = 1.0;
+        qx = 0.0;
+        qy = 0.0;
+        qz = 0.0;
+    }
+    else
+    {
+        a *= 1/norm;
 
-		qx *= 1/norm;
-		qy *= 1/norm;
-		qz *= 1/norm;
-	}
-	Settxx();
+        qx *= 1/norm;
+        qy *= 1/norm;
+        qz *= 1/norm;
+    }
+    Settxx();
 }
 
 

@@ -118,11 +118,11 @@ void gl3dMiarexView::glRenderView()
     }
     m_modelMatrix = modeMatrix;
 
-    if(pPOpp)	m_modelMatrix.rotate(float(pPOpp->alpha()),0.0,1.0,0.0);
+    if(pPOpp)    m_modelMatrix.rotate(float(pPOpp->alpha()),0.0,1.0,0.0);
     m_pvmMatrix = m_orthoMatrix * m_viewMatrix * m_modelMatrix;
 
 
-    //	if(W3dPrefsDlg::s_bEnableClipPlane) glEnable(GL_CLIP_PLANE0);
+    //    if(W3dPrefsDlg::s_bEnableClipPlane) glEnable(GL_CLIP_PLANE0);
 
     if(s_pMiarex->m_pCurPlane)
     {
@@ -241,15 +241,15 @@ void gl3dMiarexView::glRenderView()
 
             if (s_pMiarex->m_b3DCp && pPOpp && pPOpp->analysisMethod()>=XFLR5::VLMMETHOD)
             {
-                //				paintCpLegendClr();
+                //                paintCpLegendClr();
             }
             else if (s_pMiarex->m_bPanelForce && pPOpp && pPOpp->analysisMethod()>=XFLR5::VLMMETHOD)
             {
-                //				paintCpLegendClr();
+                //                paintCpLegendClr();
             }
         }
     }
-    //	if(W3dPrefsDlg::s_bEnableClipPlane) glDisable(GL_CLIP_PLANE0);
+    //    if(W3dPrefsDlg::s_bEnableClipPlane) glDisable(GL_CLIP_PLANE0);
 }
 
 
@@ -284,7 +284,7 @@ void gl3dMiarexView::contextMenuEvent (QContextMenuEvent * event)
 
 void gl3dMiarexView::on3DReset()
 {
-    //	pMiarex->setScale();
+    //    pMiarex->setScale();
     if(s_pMiarex->m_pCurPlane) startResetTimer(s_pMiarex->m_pCurPlane->span());
 }
 
@@ -306,7 +306,7 @@ void gl3dMiarexView::resizeGL(int width, int height)
     h = double(height);
     s = 1.0;
 
-    if(w>h)	m_GLViewRect.setRect(-s, s*h/w, s, -s*h/w);
+    if(w>h)    m_GLViewRect.setRect(-s, s*h/w, s, -s*h/w);
     else    m_GLViewRect.setRect(-s*w/h, s, s*w/h, -s);
 
     if(!m_PixTextOverlay.isNull()) m_PixTextOverlay = m_PixTextOverlay.scaled(rect().size()*devicePixelRatio());
@@ -314,7 +314,7 @@ void gl3dMiarexView::resizeGL(int width, int height)
 
 
     s_pMiarex->m_bResetTextLegend = true;
-    //	set3DScale();
+    //    set3DScale();
 
 }
 
@@ -439,7 +439,7 @@ bool gl3dMiarexView::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNod
         if(PlaneWing[iw]) m_NStreamLines += m_Ny[iw]+20; //in case there is a body in the middle, other wise Ny+1
     }
 
-    int streamArraySize = 	m_NStreamLines * int(GL3DScales::s_NX) * 3;
+    int streamArraySize =     m_NStreamLines * int(GL3DScales::s_NX) * 3;
     QVector<float> StreamVertexArray(streamArraySize);
 
     int p0=0;
@@ -511,8 +511,8 @@ bool gl3dMiarexView::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNod
                         }
 
                         //Tilt the geometry w.r.t. sideslip and aoa
-                        //						VA.rotateZ(pPOpp->beta());
-                        //						VB.rotateZ(pPOpp->beta());
+                        //                        VA.rotateZ(pPOpp->beta());
+                        //                        VB.rotateZ(pPOpp->beta());
                         VA.rotateY(pPOpp->alpha());
                         VB.rotateY(pPOpp->alpha());
                     }
@@ -528,7 +528,7 @@ bool gl3dMiarexView::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNod
 
                         // One very special case is where we initiate the streamlines exactly at the T.E.
                         // without offset either in X ou Z directions
-                        //							V1.Set(0.0,0.0,0.0);
+                        //                            V1.Set(0.0,0.0,0.0);
 
                         StreamVertexArray[iv++] = C.xf()+TC.xf();
                         StreamVertexArray[iv++] = C.yf()+TC.yf();
@@ -562,7 +562,7 @@ bool gl3dMiarexView::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNod
 
                     ds = GL3DScales::s_DeltaL;
 
-                    //					V1.Set(0.0,0.0,0.0);
+                    //                    V1.Set(0.0,0.0,0.0);
 
                     StreamVertexArray[iv++] = D.xf()+TD.xf();
                     StreamVertexArray[iv++] = D.yf()+TD.yf();
@@ -600,15 +600,15 @@ bool gl3dMiarexView::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNod
                     qApp->processEvents();
                 }
 
-                //				dlg.setValue(m);
+                //                dlg.setValue(m);
                 m++;
             }
-            //			if(dlg.wasCanceled()) break;
+            //            if(dlg.wasCanceled()) break;
             p0+=pWing->m_MatSize;
         }
-        //		if(dlg.wasCanceled()) break;
+        //        if(dlg.wasCanceled()) break;
     }
-    //	if(!dlg.wasCanceled()) Q_ASSERT(iv==streamArraySize);
+    //    if(!dlg.wasCanceled()) Q_ASSERT(iv==streamArraySize);
 
     m_NStreamLines = iv / GL3DScales::s_NX / 3;
 
@@ -625,7 +625,7 @@ bool gl3dMiarexView::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNod
     m_vboStreamLines.release();
     m_bStreamlinesDone = true;
 
-    //	if(dlg.wasCanceled()) return false;
+    //    if(dlg.wasCanceled()) return false;
     return true;
 }
 
@@ -771,10 +771,10 @@ void gl3dMiarexView::glMakeSurfVelocities(Panel *pPanel, WPolar *pWPolar, PlaneO
     Sigma = pPOpp->m_dSigma;
 
     // vertices array size:
-    //		nPanels x 1 arrow
+    //        nPanels x 1 arrow
     //      x3 lines per arrow
     //      x2 vertices per line
-    //		x3 = 3 vertex components
+    //        x3 = 3 vertex components
 
     int velocityVertexSize = nPanels * 3 * 2 * 3;
     QVector<float> velocityVertexArray(velocityVertexSize);
@@ -951,11 +951,11 @@ void gl3dMiarexView::glMakeLiftForce(WPolar *pWPolar, PlaneOpp *pPOpp)
 
 void gl3dMiarexView::glMakeMoments(Wing *pWing, WPolar *pWPolar, PlaneOpp *pPOpp)
 {
-    //	The most common aeronautical convention defines
-    //	- the roll as acting about the longitudinal axis, positive with the starboard wing down.
-    //	- The yaw is about the vertical body axis, positive with the nose to starboard.
-    //	- Pitch is about an axis perpendicular to the longitudinal plane of symmetry, positive nose up.
-    //	-- Wikipedia flight dynamics --
+    //    The most common aeronautical convention defines
+    //    - the roll as acting about the longitudinal axis, positive with the starboard wing down.
+    //    - The yaw is about the vertical body axis, positive with the nose to starboard.
+    //    - Pitch is about an axis perpendicular to the longitudinal plane of symmetry, positive nose up.
+    //    -- Wikipedia flight dynamics --
     if(!pWing || !pWPolar) return;
 
     int i=0;
@@ -1209,7 +1209,7 @@ void gl3dMiarexView::glMakeLiftStrip(int iWing, Wing *pWing, WPolar *pWPolar, Wi
         i = 0;
         for (j=0; j<pWing->m_Surface.size(); j++)
         {
-            /*			if(j>0 && pWing->m_Surface[j-1]->m_bJoinRight)
+            /*            if(j>0 && pWing->m_Surface[j-1]->m_bJoinRight)
             {
                 //then connect strip to previous surface's last point
                 pLiftVertexArray[iv++] = CL.xf();
@@ -1385,9 +1385,9 @@ void gl3dMiarexView::glMakeDownwash(int iWing, Wing *pWing, WPolar *pWPolar, Win
         {
             for (k=0; k< pWing->m_Surface[j]->NYPanels(); k++)
             {
-                //				m_pSurface[j+surf0]->GetTrailingPt(k, C);
+                //                m_pSurface[j+surf0]->GetTrailingPt(k, C);
                 pWing->m_Surface[j]->getTrailingPt(k, C);
-                //				if (pWOpp->m_Vd[i].z>0) sign = 1.0; else sign = -1.0;
+                //                if (pWOpp->m_Vd[i].z>0) sign = 1.0; else sign = -1.0;
                 pDownWashVertexArray[iv++] = C.xf();
                 pDownWashVertexArray[iv++] = C.yf();
                 pDownWashVertexArray[iv++] = C.zf();
@@ -1986,10 +1986,10 @@ void gl3dMiarexView::glMakePanelForces(int nPanels, Panel *pPanel, WPolar *pWPol
     range = rmax - rmin;
 
     // vertices array size:
-    //		nPanels x 1 arrow
+    //        nPanels x 1 arrow
     //      x3 lines per arrow
     //      x2 vertices per line
-    //		x6 = 3 vertex components + 3 color components
+    //        x6 = 3 vertex components + 3 color components
 
     int forceVertexSize = nPanels * 3 * 2 * 6;
     QVector<float> forceVertexArray(forceVertexSize);

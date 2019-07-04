@@ -65,7 +65,7 @@ class GL3dBodyDlg : public QDialog
     friend class gl3dBodyView;
 
 public:
-    GL3dBodyDlg(QWidget *pParent=NULL);
+    GL3dBodyDlg(QWidget *pParent=nullptr);
     ~GL3dBodyDlg();
 
 private slots:
@@ -211,7 +211,7 @@ private:
                                      we can't use the QStack though, because we need to access
                                      any point in the case of multiple undo operations */
 
-    //	bool m_bStored;
+    //    bool m_bStored;
     bool m_bResetFrame;
 
     bool m_bChanged;
@@ -228,7 +228,7 @@ private:
     Vector3d m_RealPopUp;
     QPoint m_ptPopUp;
 
-    //	QRect m_rCltRect;
+    //    QRect m_rCltRect;
 
 };
 

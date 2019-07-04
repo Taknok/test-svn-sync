@@ -88,7 +88,7 @@ Plane::Plane()
 
     m_CoG.set(0.0,0.0,0.0);
     m_CoGIxx = m_CoGIyy = m_CoGIzz = m_CoGIxz = 0.0;
-    //	m_VolumeMass = 0.0;
+    //    m_VolumeMass = 0.0;
     m_TotalMass = 0.0;
 
     m_bBody         = false;
@@ -472,7 +472,7 @@ void Plane::setPlaneName(QString planeName)
 void Plane::createSurfaces()
 {
     m_Wing[0].createSurfaces(m_WingLE[0],   0.0, m_WingTiltAngle[0]);
-    if(wing(1))	m_Wing[1].createSurfaces(m_WingLE[1],   0.0, m_WingTiltAngle[1]);
+    if(wing(1))    m_Wing[1].createSurfaces(m_WingLE[1],   0.0, m_WingTiltAngle[1]);
     if(wing(2)) m_Wing[2].createSurfaces(m_WingLE[2],   0.0, m_WingTiltAngle[2]);
     if(wing(3)) m_Wing[3].createSurfaces(m_WingLE[3], -90.0, m_WingTiltAngle[3]);
 
@@ -562,7 +562,7 @@ Wing *Plane::wing(XFLR5::enumWingType wingType)
 /** Returns a pointer to the Plane's wing with index iw, or NULL if none has been defined.  */
 Wing *Plane::wing(int iw)
 {
-    if(iw==0)	return m_Wing;
+    if(iw==0)    return m_Wing;
     else if (iw==1)
     {
         return m_bBiplane ? m_Wing+1 : nullptr;
@@ -598,7 +598,7 @@ bool Plane::serializePlaneWPA(QDataStream &ar, bool bIsStoring)
         return true;
     }
     else
-    {	// loading code
+    {    // loading code
         int k;
         //1013 : v6.09.06 added pbody serialization
         //1012 : QFLR5 v0.03 : added mass properties for inertia calculations
@@ -646,13 +646,13 @@ bool Plane::serializePlaneWPA(QDataStream &ar, bool bIsStoring)
         if(ArchiveFormat>=1005)
         {
             ar >>k;
-            //			if(k) m_bDoubleSymFin = true;  else m_bDoubleSymFin = false;
-            //			m_Wing[3].m_bDoubleSymFin = m_bDoubleSymFin;
+            //            if(k) m_bDoubleSymFin = true;  else m_bDoubleSymFin = false;
+            //            m_Wing[3].m_bDoubleSymFin = m_bDoubleSymFin;
         }
         if(ArchiveFormat>=1007)
         {
             ar >>k;
-            //			if(k) m_bCheckPanels = true;  else m_bCheckPanels = false;
+            //            if(k) m_bCheckPanels = true;  else m_bCheckPanels = false;
             ar >>k;
             if(k) m_bBiplane = true;  else m_bBiplane = false;
             ar >> m_WingLE[1].x >> m_WingLE[1].y >> m_WingLE[1].z >> m_WingTiltAngle[1];
@@ -811,7 +811,7 @@ bool Plane::serializePlaneXFL(QDataStream &ar, bool bIsStoring)
         return true;
     }
     else
-    {	// loading code
+    {    // loading code
         int k;
         ar >> ArchiveFormat;
         if (ArchiveFormat <100001 || ArchiveFormat>110000)
@@ -874,7 +874,7 @@ int Plane::spanStationCount()
     int nSpanStations = 0;
     for(int iw=0; iw<MAXWINGS; iw++)
     {
-        if(wing(iw))	nSpanStations = wing()->m_NStation;
+        if(wing(iw))    nSpanStations = wing()->m_NStation;
     }
     return nSpanStations;
 }

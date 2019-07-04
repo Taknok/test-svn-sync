@@ -42,7 +42,7 @@
 PreferencesDlg::PreferencesDlg(QWidget *pParent) : QDialog(pParent)
 {
     setWindowTitle(tr("Preferences"));
-	setupLayout();
+    setupLayout();
 }
 
 
@@ -87,37 +87,37 @@ void PreferencesDlg::setupLayout()
     m_pLanguageWt = new LanguageWt(this);
     m_pUnitsWt = new Units(this);
 
-	QHBoxLayout *pOptionsLayout = new QHBoxLayout;
-	{
-		m_pTabWidget = new QListWidget;
+    QHBoxLayout *pOptionsLayout = new QHBoxLayout;
+    {
+        m_pTabWidget = new QListWidget;
         m_pTabWidget->addItem(tr("Updates"));
         m_pTabWidget->addItem(tr("Save options"));
         m_pTabWidget->addItem(tr("Display options"));
-		m_pTabWidget->addItem(tr("Language"));
-		m_pTabWidget->addItem(tr("Units"));
-		m_pPageStack = new QStackedWidget;
+        m_pTabWidget->addItem(tr("Language"));
+        m_pTabWidget->addItem(tr("Units"));
+        m_pPageStack = new QStackedWidget;
         m_pPageStack->addWidget(pUpdateFrame);
         m_pPageStack->addWidget(m_pSaveOptionsWt);
         m_pPageStack->addWidget(m_pDisplayOptionsWt);
         m_pPageStack->addWidget(m_pLanguageWt);
         m_pPageStack->addWidget(m_pUnitsWt);
-		pOptionsLayout->addWidget(m_pTabWidget);
-		pOptionsLayout->addWidget(m_pPageStack);
-	}
+        pOptionsLayout->addWidget(m_pTabWidget);
+        pOptionsLayout->addWidget(m_pPageStack);
+    }
 
     m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Close);
     {
         connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(onButton(QAbstractButton*)));
     }
 
-	QVBoxLayout *pMainLayout = new QVBoxLayout;
-	{
-		pMainLayout->addLayout(pOptionsLayout);
+    QVBoxLayout *pMainLayout = new QVBoxLayout;
+    {
+        pMainLayout->addLayout(pOptionsLayout);
         pMainLayout->addWidget(m_pButtonBox);
-	}
-	setLayout(pMainLayout);
+    }
+    setLayout(pMainLayout);
 
-	connect(m_pTabWidget, SIGNAL(currentRowChanged(int)), this, SLOT(onPage(int)));
+    connect(m_pTabWidget, SIGNAL(currentRowChanged(int)), this, SLOT(onPage(int)));
 }
 
 
@@ -129,7 +129,7 @@ void PreferencesDlg::onButton(QAbstractButton *pButton)
 
 void PreferencesDlg::onPage(int iRow)
 {
-	m_pPageStack->setCurrentIndex(iRow);
+    m_pPageStack->setCurrentIndex(iRow);
 }
 
 
@@ -138,5 +138,5 @@ void PreferencesDlg::onClose()
     Updater::setAutoCheck(m_pctrlUpdateCheck->isChecked());
     m_pSaveOptionsWt->onOK();
 //    m_pLanguageWt->readLanguage();
-	accept();
+    accept();
 }

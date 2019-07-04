@@ -77,7 +77,7 @@ void Objects3d::addBody(Body *pBody)
             pPlane->setBody(planeBody);
         }
     }
-    /*	for(int ib=0; ib<m_poaBody->size(); ib++)
+    /*    for(int ib=0; ib<m_poaBody->size(); ib++)
     {
         Body *pOldBody = m_poaBody->at(ib);
         if(pOldBody==pBody)
@@ -256,7 +256,7 @@ void Objects3d::insertPOpp(PlaneOpp *pPOpp)
         }
     }
 
-    if (!bIsInserted) 	s_oaPOpp.append(pPOpp);
+    if (!bIsInserted)     s_oaPOpp.append(pPOpp);
 }
 
 
@@ -599,7 +599,7 @@ Plane * Objects3d::setModPlane(Plane *pModPlane)
                         break;
                     }
                 }
-                if(!bInserted)	s_oaPlane.append(pModPlane);
+                if(!bInserted)    s_oaPlane.append(pModPlane);
                 break;
 
             }
@@ -671,7 +671,7 @@ WPolar* Objects3d::insertNewWPolar(WPolar *pNewWPolar, Plane *pCurPlane)
         pOldWPolar = s_oaWPolar.at(ip);
         if(pOldWPolar==pNewWPolar)
         {
-            //			Trace("this WPolar is already in the array, nothing inserted");
+            //            Trace("this WPolar is already in the array, nothing inserted");
             return nullptr;
         }
     }

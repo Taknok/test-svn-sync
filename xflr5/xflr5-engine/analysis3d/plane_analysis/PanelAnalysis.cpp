@@ -151,7 +151,7 @@ PanelAnalysis::~PanelAnalysis()
     delete [] m_ICd;
     delete [] m_F;
     delete [] m_Vd;
-    /*	for (int i=m_PlaneOppList.size()-1; i>=0; i--)
+    /*    for (int i=m_PlaneOppList.size()-1; i>=0; i--)
     {
         PlaneOpp *pObj = m_PlaneOppList.at(i);
         m_PlaneOppList.removeAt(i);
@@ -172,7 +172,7 @@ bool PanelAnalysis::allocateMatrix(int matSize, int &memsize)
 
     releaseArrays();
 
-    //	Trace("PanelAnalysis::Allocating matrix arrays");
+    //    Trace("PanelAnalysis::Allocating matrix arrays");
 
     int size2 = matSize * matSize;
     try
@@ -198,9 +198,9 @@ bool PanelAnalysis::allocateMatrix(int matSize, int &memsize)
     {
         releaseArrays();
         m_MaxMatSize = 0;
-        //		Trace(e.what());
+        //        Trace(e.what());
         strange = "Memory allocation error: the request for additional memory has been denied.\nPlease reduce the model's size.";
-        //		Trace(strange);
+        //        Trace(strange);
         return false;
     }
 
@@ -212,7 +212,7 @@ bool PanelAnalysis::allocateMatrix(int matSize, int &memsize)
     memsize += sizeof(int)     * 1 * matSize;
 
     strange = QString("PanelAnalysis::Memory allocation for the matrix arrays is %1 MB").arg((double)memsize/1024./1024., 7, 'f', 2);
-    //	Trace(strange);
+    //    Trace(strange);
 
     memset(m_aij,     0, size2 * sizeof(double));
     memset(m_aijWake, 0, size2 * sizeof(double));
@@ -244,7 +244,7 @@ bool PanelAnalysis::allocateMatrix(int matSize, int &memsize)
     memsize += RHSSize;
 
     strange = QString("PanelAnalysis::Memory allocation for the analysis arrays is %1 MB").arg(double(memsize)/1024./1024., 7, 'f', 2);
-    //	Trace(strange);
+    //    Trace(strange);
 
     return true;
 }
@@ -256,7 +256,7 @@ bool PanelAnalysis::allocateMatrix(int matSize, int &memsize)
  */
 bool PanelAnalysis::allocateRHS(int matSize, int &memsize)
 {
-    //	Trace("PanelAnalysis::Allocating RHS arrays");
+    //    Trace("PanelAnalysis::Allocating RHS arrays");
     int size = matSize * s_MaxRHSSize;
 
     if(size==0) return false;
@@ -275,7 +275,7 @@ bool PanelAnalysis::allocateRHS(int matSize, int &memsize)
     catch(std::exception &e)
     {
         releaseArrays();
-        //		Trace(e.what());
+        //        Trace(e.what());
         return false;
     }
 
@@ -290,8 +290,8 @@ bool PanelAnalysis::allocateRHS(int matSize, int &memsize)
 
     memset(m_3DQInf, 0, s_MaxRHSSize*sizeof(double));
 
-    //	QString strange = QString("PanelAnalysis::Memory allocation for the RHS arrays is %1 MB").arg((double)memsize/1024./1024., 7, 'f', 2);
-    //	Trace(strange);
+    //    QString strange = QString("PanelAnalysis::Memory allocation for the RHS arrays is %1 MB").arg((double)memsize/1024./1024., 7, 'f', 2);
+    //    Trace(strange);
 
 
     return true;
@@ -570,7 +570,7 @@ bool PanelAnalysis::initializeAnalysis()
     strange = QString::fromUtf8("Reference length = %1m").arg(m_pWPolar->referenceSpanLength(), 11, 'g', 5);
     traceLog(strange+"\n\n");
 
-    /*	QString strUnitLabel;
+    /*    QString strUnitLabel;
     strUnitLabel= Units::areaUnitLabel();
     strange =QString("Ref. area  = %1 ").arg(m_pWPolar->referenceArea()*Units::m2toUnit(),9,'f',3)+strUnitLabel;
     traceLog(strange+"\n");
@@ -609,7 +609,7 @@ bool PanelAnalysis::initializeAnalysis()
     QString str = QString("Counted %1 panel elements\n").arg(m_MatSize,4);
     traceLog(str+"\n");
 
-    /*	for (int p=0; p<m_MatSize; p++)
+    /*    for (int p=0; p<m_MatSize; p++)
     {
         Panel const &p4 = m_pPanel[p];
         qDebug("index=%3d   iPU=%3d   iPD=%3d   iPL=%3d   iPR=%3d", p4.m_iElement, p4.m_iPU, p4.m_iPD, p4.m_iPL, p4.m_iPR);
@@ -681,7 +681,7 @@ bool PanelAnalysis::alphaLoop()
     {
         //compute wake contribution
         createWakeContribution();
-        //		display_vec(m_aijWake+17*m_MatSize, m_MatSize);
+        //        display_vec(m_aijWake+17*m_MatSize, m_MatSize);
 
         //add wake contribution to matrix and RHS
         for(int p=0; p<m_MatSize; p++)
@@ -723,7 +723,7 @@ bool PanelAnalysis::alphaLoop()
 
     computeOnBodyCp(m_vMin, m_vDelta, m_nRHS);
     if (s_bCancel) return true;
-    //for(int i=0; i<m_MatSize; i++)	displayDouble(m_Cp[i]);
+    //for(int i=0; i<m_MatSize; i++)    displayDouble(m_Cp[i]);
 
     computeAeroCoefs(m_vMin, m_vDelta, m_nRHS);
 
@@ -742,7 +742,7 @@ void PanelAnalysis::buildInfluenceMatrix()
     double phi;
 
     int Size = m_MatSize;
-    //	if(m_b3DSymetric) Size = m_SymSize;
+    //    if(m_b3DSymetric) Size = m_SymSize;
 
     traceLog("      Creating the influence matrix...");
     traceLog("\n");
@@ -750,8 +750,8 @@ void PanelAnalysis::buildInfluenceMatrix()
     for(p=0; p<m_MatSize; p++)
     {
         if(s_bCancel) return;
-        //		if(!m_b3DSymetric || m_pPanel[p].m_bIsLeftPanel)
-        //		{
+        //        if(!m_b3DSymetric || m_pPanel[p].m_bIsLeftPanel)
+        //        {
         //for each Boundary Condition point
         if(m_pPanel[p].m_Pos!=MIDSURFACE)
         {
@@ -771,12 +771,12 @@ void PanelAnalysis::buildInfluenceMatrix()
         for(pp=0; pp<m_MatSize; pp++)
         {
             if(s_bCancel) return;
-            //				if(!m_b3DSymetric || m_pPanel[pp].m_bIsLeftPanel)
-            //				{
+            //                if(!m_b3DSymetric || m_pPanel[pp].m_bIsLeftPanel)
+            //                {
             //for each panel, get the unit doublet or vortex influence at the boundary condition pt
             getDoubletInfluence(C, m_pPanel+pp, V, phi);
 
-            /*					if(m_b3DSymetric && m_pPanel[pp].m_iSym>=0) // add symmetric contribution
+            /*                    if(m_b3DSymetric && m_pPanel[pp].m_iSym>=0) // add symmetric contribution
                     {
                         GetDoubletInfluence(CC, m_pPanel+pp, VS, phiSym);
                         V.x += VS.x;
@@ -789,10 +789,10 @@ void PanelAnalysis::buildInfluenceMatrix()
             else if(m_pWPolar->bDirichlet())                              m_aij[m*Size+mm] = phi;
 
             mm++;
-            //				}
+            //                }
         }
         m++;
-        //		}
+        //        }
         m_Progress += 10.0*double(Size)/400./double(Size);
     }
 }
@@ -862,13 +862,13 @@ void PanelAnalysis::createRHS(double *RHS, Vector3d VInf, double *VField)
         }
         else VPanel = VInf;
 
-        //		if(!m_b3DSymetric || m_pPanel[p].m_bIsLeftPanel)
-        //		{
+        //        if(!m_b3DSymetric || m_pPanel[p].m_bIsLeftPanel)
+        //        {
         if(!m_pWPolar->bDirichlet() || m_pPanel[p].m_Pos==MIDSURFACE)
         {
             // first term of RHS is -V.n
             RHS[m] = - m_pPanel[p].Normal.dot(VPanel);
-            //				if(RHS[m]<PRECISION) RHS[m] = 0.0;
+            //                if(RHS[m]<PRECISION) RHS[m] = 0.0;
         }
         else if(m_pWPolar->bDirichlet()) RHS[m] = 0.0;
         if(m_pPanel[p].m_Pos!=MIDSURFACE) C = m_pPanel[p].CollPt;
@@ -901,7 +901,7 @@ void PanelAnalysis::createRHS(double *RHS, Vector3d VInf, double *VField)
             }
         }
         m++;
-        //		}
+        //        }
         m_Progress += 5.0/(double)m_MatSize;
     }
 }
@@ -927,9 +927,9 @@ void PanelAnalysis::createUnitRHS()
 /**
 * In the case of a panel analysis, adds the contribution of the wake columns to the coefficients of the influence matrix
 * Method :
-* 	- follow the method described in NASA 4023 eq. (44)
-*	- add the wake's doublet contribution to the matrix
-*	- add the difference in potential at the trailing edge panels to the RHS
+*     - follow the method described in NASA 4023 eq. (44)
+*    - add the wake's doublet contribution to the matrix
+*    - add the difference in potential at the trailing edge panels to the RHS
 * Only a flat wake is considered. Wake roll-up has been tested but did not prove robust enough for implementation.
 */
 void PanelAnalysis::createWakeContribution()
@@ -944,7 +944,7 @@ void PanelAnalysis::createWakeContribution()
     traceLog("      Adding the wake's contribution...\n");
 
     Size = m_MatSize;
-    //	if(m_b3DSymetric) Size = m_SymSize;
+    //    if(m_b3DSymetric) Size = m_SymSize;
 
     int m, mm;
     m = mm = 0;
@@ -953,7 +953,7 @@ void PanelAnalysis::createWakeContribution()
     for(p=0; p<m_MatSize; p++)
     {
         if(s_bCancel) return;
-        //		if(!m_b3DSymetric || m_pPanel[p].m_bIsLeftPanel)
+        //        if(!m_b3DSymetric || m_pPanel[p].m_bIsLeftPanel)
         {
             m_uWake[m] = m_wWake[m] = 0.0;
             C    = m_pPanel[p].CollPt;
@@ -977,7 +977,7 @@ void PanelAnalysis::createWakeContribution()
                     PHC[kw] += phi;
                     VHC[kw] += V;
 
-                    /*					if(m_b3DSymetric && m_pPanel[p].m_bIsLeftPanel)
+                    /*                    if(m_b3DSymetric && m_pPanel[p].m_bIsLeftPanel)
                     {
                         GetDoubletInfluence(CC,  m_pWakePanel+pw, VS, phiSym, true,true);
                         PHC[kw]    +=  phiSym;
@@ -994,8 +994,8 @@ void PanelAnalysis::createWakeContribution()
             mm = 0;
             for(pp=0; pp<m_MatSize; pp++) //for each matrix column
             {
-                //				if(!m_b3DSymetric || m_pPanel[pp].m_bIsLeftPanel)
-                //				{
+                //                if(!m_b3DSymetric || m_pPanel[pp].m_bIsLeftPanel)
+                //                {
                 if(s_bCancel) return;
                 m_aijWake[m*Size+mm] = 0.0;
                 // Is the panel pp shedding a wake ?
@@ -1060,7 +1060,7 @@ void PanelAnalysis::createWakeContribution()
                     }
                 }
                 mm++;
-                //				}
+                //                }
             }
             m++;
         }
@@ -1075,9 +1075,9 @@ void PanelAnalysis::createWakeContribution()
 /**
 * In the case of a panel analysis, adds the contribution of the wake columns to the coefficients of the influence matrix
 * Method :
-* 	- follow the method described in NASA 4023 eq. (44)
-*	- add the wake's doublet contribution to the matrix
-*	- add the potential difference at the trailing edge panels to the RHS ; the potential's origin
+*     - follow the method described in NASA 4023 eq. (44)
+*    - add the wake's doublet contribution to the matrix
+*    - add the potential difference at the trailing edge panels to the RHS ; the potential's origin
 *     is set arbitrarily to the geometrical orgin so that phi = V.dot(WindDirectio) x point_position
 * Only a flat wake is considered. Wake roll-up has been tested but did not prove robust enough for implementation.
 */
@@ -1092,8 +1092,8 @@ void PanelAnalysis::createWakeContribution(double *pWakeContrib, Vector3d WindDi
 
     traceLog("      Adding the wake's contribution...\n");
 
-    //	if(m_b3DSymetric) Size = m_SymSize;
-    //	else              Size = m_MatSize;
+    //    if(m_b3DSymetric) Size = m_SymSize;
+    //    else              Size = m_MatSize;
 
     int m, mm;
     m = mm = 0;
@@ -1101,8 +1101,8 @@ void PanelAnalysis::createWakeContribution(double *pWakeContrib, Vector3d WindDi
     for(p=0; p<m_MatSize; p++)
     {
         if(s_bCancel) return;
-        //		if(!m_b3DSymetric || m_pPanel[p].m_bIsLeftPanel)
-        //		{
+        //        if(!m_b3DSymetric || m_pPanel[p].m_bIsLeftPanel)
+        //        {
         pWakeContrib[m] = 0.0;
         C    = m_pPanel[p].CollPt;
         CC.x =  C.x;//symmetric point, just in case
@@ -1125,7 +1125,7 @@ void PanelAnalysis::createWakeContribution(double *pWakeContrib, Vector3d WindDi
                 PHC[kw] += phi;
                 VHC[kw] += V;
 
-                /*					if(m_b3DSymetric && m_pPanel[p].m_bIsLeftPanel)
+                /*                    if(m_b3DSymetric && m_pPanel[p].m_bIsLeftPanel)
                     {
                         GetDoubletInfluence(CC, m_pWakePanel+pw, VS, phiSym, true, true);
                         PHC[kw]    +=  phiSym;
@@ -1141,8 +1141,8 @@ void PanelAnalysis::createWakeContribution(double *pWakeContrib, Vector3d WindDi
         mm = 0;
         for(pp=0; pp<m_MatSize; pp++) //for each matrix column
         {
-            //				if(!m_b3DSymetric || m_pPanel[pp].m_bIsLeftPanel)
-            //				{
+            //                if(!m_b3DSymetric || m_pPanel[pp].m_bIsLeftPanel)
+            //                {
             if(s_bCancel) return;
 
             // Is the panel pp shedding a wake ?
@@ -1194,10 +1194,10 @@ void PanelAnalysis::createWakeContribution(double *pWakeContrib, Vector3d WindDi
                 }
             }
             mm++;
-            //				}
+            //                }
         }
         m++;
-        //		}
+        //        }
         m_Progress += 1.0/(double)m_MatSize;
     }
 
@@ -1233,13 +1233,13 @@ void PanelAnalysis::computeFarField(double QInf, double Alpha0, double AlphaDelt
 
     for (q=0; q<nval;q++)
     {
-        //		qDebug()<<"OpAlpha"<<m_OpAlpha<<"Alpha0"<<Alpha0;
+        //        qDebug()<<"OpAlpha"<<m_OpAlpha<<"Alpha0"<<Alpha0;
         if(m_pWPolar->bTilted()) alpha = m_OpAlpha;
         else
         {
             if(m_pWPolar->polarType()==XFLR5::FIXEDAOAPOLAR)       alpha = m_OpAlpha;
             else if(m_pWPolar->polarType()==XFLR5::BETAPOLAR)      alpha = m_OpAlpha;
-            //			else if(m_pWPolar->polarType()==XFLR5::STABILITYPOLAR) alpha = m_OpAlpha;
+            //            else if(m_pWPolar->polarType()==XFLR5::STABILITYPOLAR) alpha = m_OpAlpha;
             else if(fabs(m_pWPolar->Beta())>PRECISION)             alpha = m_OpAlpha;
             else                                                   alpha = Alpha0 + q*AlphaDelta;
         }
@@ -1502,7 +1502,7 @@ void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
 
     for(int iw=0; iw<MAXWINGS; iw++)
         if(m_pWingList[iw])m_pWingList[iw]->m_bWingOut = false;
-    //	m_pWing->m_bWingOut                = false;
+    //    m_pWing->m_bWingOut                = false;
 
     if(QInf >0.0)
     {
@@ -1677,7 +1677,7 @@ void PanelAnalysis::getDoubletDerivative(const int &p, double *Mu, double &Cp, V
         mu0 = Mu[PL];
         mu1 = Mu[p];
         mu2 = Mu[PR];
-        DELQ =	  mu0 *(x1-x2)       /(x0-x1)/(x0-x2)
+        DELQ =      mu0 *(x1-x2)       /(x0-x1)/(x0-x2)
                 + mu1 *(2.0*x1-x0-x2)/(x1-x0)/(x1-x2)
                 + mu2 *(x1-x0)       /(x2-x0)/(x2-x1);
     }
@@ -1694,7 +1694,7 @@ void PanelAnalysis::getDoubletDerivative(const int &p, double *Mu, double &Cp, V
             mu0 = Mu[m_pPanel[PL].m_iPL];
             mu1 = Mu[PL];
             mu2 = Mu[p];
-            DELQ =	  mu0 *(x2-x1)       /(x0-x1)/(x0-x2)
+            DELQ =      mu0 *(x2-x1)       /(x0-x1)/(x0-x2)
                     + mu1 *(x2-x0)       /(x1-x0)/(x1-x2)
                     + mu2 *(2.0*x2-x0-x1)/(x2-x0)/(x2-x1);
         }
@@ -1715,7 +1715,7 @@ void PanelAnalysis::getDoubletDerivative(const int &p, double *Mu, double &Cp, V
             mu0 = Mu[p];
             mu1 = Mu[PR];
             mu2 = Mu[m_pPanel[PR].m_iPR];
-            DELQ =	  mu0 *(2.0*x0-x1-x2)/(x0-x1)/(x0-x2)
+            DELQ =      mu0 *(2.0*x0-x1-x2)/(x0-x1)/(x0-x2)
                     + mu1 *(x0-x2)       /(x1-x0)/(x1-x2)
                     + mu2 *(x0-x1)       /(x2-x0)/(x2-x1);
         }
@@ -1740,7 +1740,7 @@ void PanelAnalysis::getDoubletDerivative(const int &p, double *Mu, double &Cp, V
         mu0 = Mu[PU];
         mu1 = Mu[p];
         mu2 = Mu[PD];
-        DELP =	  mu0 *(x1-x2)       /(x0-x1)/(x0-x2)
+        DELP =      mu0 *(x1-x2)       /(x0-x1)/(x0-x2)
                 + mu1 *(2.0*x1-x0-x2)/(x1-x0)/(x1-x2)
                 + mu2 *(x1-x0)       /(x2-x0)/(x2-x1);
     }
@@ -1756,7 +1756,7 @@ void PanelAnalysis::getDoubletDerivative(const int &p, double *Mu, double &Cp, V
             mu0 = Mu[m_pPanel[PU].m_iPU];
             mu1 = Mu[PU];
             mu2 = Mu[p];
-            DELP =	  mu0 *(x2-x1)       /(x0-x1)/(x0-x2)
+            DELP =      mu0 *(x2-x1)       /(x0-x1)/(x0-x2)
                     + mu1 *(x2-x0)       /(x1-x0)/(x1-x2)
                     + mu2 *(2.0*x2-x0-x1)/(x2-x0)/(x2-x1);
         }
@@ -1778,7 +1778,7 @@ void PanelAnalysis::getDoubletDerivative(const int &p, double *Mu, double &Cp, V
             mu0 = Mu[p];
             mu1 = Mu[PD];
             mu2 = Mu[m_pPanel[PD].m_iPD];
-            DELP =	  mu0 *(2.0*x0-x1-x2)/(x0-x1)/(x0-x2)
+            DELP =      mu0 *(2.0*x0-x1-x2)/(x0-x1)/(x0-x2)
                     + mu1 *(x0-x2)       /(x1-x0)/(x1-x2)
                     + mu2 *(x0-x1)       /(x2-x0)/(x2-x1);
         }
@@ -1802,7 +1802,7 @@ void PanelAnalysis::getDoubletDerivative(const int &p, double *Mu, double &Cp, V
     //in panel referential
     VLocal.x = -4.0*PI*(m_pPanel[p].SMP*DELP - Sl2.y*DELQ)/Sl2.x;
     VLocal.y = -4.0*PI*DELQ;
-    //	Vl.z =  4.0*PI*Sigma[p];
+    //    Vl.z =  4.0*PI*Sigma[p];
 
     VTot +=VLocal;
     VTot.z = 0.0;
@@ -1842,7 +1842,7 @@ void PanelAnalysis::computeOnBodyCp(double V0, double VDelta, int nval)
             VInf = WindDirection * m_3DQInf[q];
 
             Mu     = m_Mu    + q * m_MatSize;
-            //			Sigma  = m_Sigma + q * m_MatSize;
+            //            Sigma  = m_Sigma + q * m_MatSize;
             Cp     = m_Cp    + q * m_MatSize;
 
             for (p=0; p<m_MatSize; p++)
@@ -1871,7 +1871,7 @@ void PanelAnalysis::computeOnBodyCp(double V0, double VDelta, int nval)
             VInf = WindDirection * m_3DQInf[q];
 
             Mu     = m_Mu    + q * m_MatSize;
-            //			Sigma  = m_Sigma + q * m_MatSize;
+            //            Sigma  = m_Sigma + q * m_MatSize;
             Cp     = m_Cp    + q * m_MatSize;
 
             for (p=0; p<m_MatSize; p++)
@@ -1923,7 +1923,7 @@ void PanelAnalysis::getDoubletInfluence(Vector3d const &C, Panel *pPanel, Vector
     {
         CG.set(C.x, C.y, -C.z-2.0*m_pWPolar->m_Height);
 
-        if(pPanel->m_Pos!=MIDSURFACE || pPanel->m_bIsWakePanel)	pPanel->doubletNASA4023(CG, VG, phiG, bWake);
+        if(pPanel->m_Pos!=MIDSURFACE || pPanel->m_bIsWakePanel)    pPanel->doubletNASA4023(CG, VG, phiG, bWake);
         else
         {
             VLMGetVortexInfluence(pPanel, CG, VG, bAll);
@@ -2144,7 +2144,7 @@ bool PanelAnalysis::solveUnitRHS()
 
     QString strange;
     strange.sprintf("      Time for linear system solve: %.3f s\n", double(t.elapsed())/1000.0);
-    //	qDebug(strange.toStdString().c_str());
+    //    qDebug(strange.toStdString().c_str());
     traceLog(strange);
 
     memcpy(m_uRHS, m_RHS,           m_MatSize*sizeof(double));
@@ -2190,15 +2190,15 @@ void PanelAnalysis::createDoubletStrength(double Alpha0, double AlphaDelta, int 
     int  q, p;
     double alpha, cosa, sina;
 
-    //	int Size = m_MatSize;
-    //	if(m_b3DSymetric) Size = m_SymSize;
+    //    int Size = m_MatSize;
+    //    if(m_b3DSymetric) Size = m_SymSize;
 
     traceLog("      Calculating doublet strength...\n");
-    //	if(m_pWPolar->polarType()!=FIXEDAOAPOLAR) nrhs = nval;
-    //	else                                 nrhs = 0;
+    //    if(m_pWPolar->polarType()!=FIXEDAOAPOLAR) nrhs = nval;
+    //    else                                 nrhs = 0;
 
     //______________________________________________________________________________________
-    //	reconstruct all results from cosine and sine unit vectors
+    //    reconstruct all results from cosine and sine unit vectors
     for (q=0; q<nval;q++)
     {
         alpha = Alpha0 + q * AlphaDelta;
@@ -2302,7 +2302,7 @@ bool PanelAnalysis::unitLoop()
         // Rotate the wing panels and translate the wake to the new T.E. position
         rotateGeomY(m_OpAlpha, O, m_pWPolar->m_NXWakePanels);
 
-        //		if(m_pWPolar->polarType()==XFLR5::BETAPOLAR)
+        //        if(m_pWPolar->polarType()==XFLR5::BETAPOLAR)
         if(fabs(m_OpBeta)>PRECISION)
         {
             rotateGeomZ(m_OpBeta, O, m_pWPolar->m_NXWakePanels);
@@ -2490,8 +2490,8 @@ void PanelAnalysis::VLMGetVortexInfluence(Panel *pPanel, Vector3d const &C, Vect
                 //
                 // TODO : check influence on results
                 //
-                //				VLMCmn(m_pWakePanel[pw].A, m_pWakePanel[pw].B,C,VT,bAll);
-                //				V += VT;
+                //                VLMCmn(m_pWakePanel[pw].A, m_pWakePanel[pw].B,C,VT,bAll);
+                //                V += VT;
                 //
                 // simple really !
                 //
@@ -2565,7 +2565,7 @@ void PanelAnalysis::setInertia(double ctrl, double alpha, double beta)
 bool PanelAnalysis::controlLoop()
 {
     //
-    //	Loop for each control value
+    //    Loop for each control value
     //          Update the geometry, design variables
     //          Build the influence matrix
     //          Perform LU matrix decomposition
@@ -2587,7 +2587,7 @@ bool PanelAnalysis::controlLoop()
     //             - Solve for eigenvalues and eigenvectors
     //          Compute aero coeffs for alpha_eq
     //          Store OpPoint and polar data
-    //	end loop
+    //    end loop
     //
     int i;
     QString str, outString;
@@ -2837,8 +2837,8 @@ void PanelAnalysis::computeNDStabDerivatives()
     theta0 = 0.0;//steady level flight only ?
 
     Cw0 = m_Mass * 9.81/q/S; //E&R p.127
-    //	Cx0 =  Cw0 * sin(theta0); //E&R p.119
-    //	Cz0 = -Cw0 * cos(theta0); //E&R p.118
+    //    Cx0 =  Cw0 * sin(theta0); //E&R p.119
+    //    Cz0 = -Cw0 * cos(theta0); //E&R p.118
 
     //E&R p. 118, table 4.4
     CXu = (Xu - rho * u0*S*Cw0*sin(theta0))/(0.5*rho*u0*S);
@@ -3136,7 +3136,7 @@ void PanelAnalysis::forces(double *Mu, double *Sigma, double alpha, Vector3d Vin
         }
     }
 
-    //	if(m_pWPolar->bThinSurfaces()) Force -= WindDirection*Force.dot(WindDirection)/2.0;
+    //    if(m_pWPolar->bThinSurfaces()) Force -= WindDirection*Force.dot(WindDirection)/2.0;
 
 
     if(m_pWPolar->bViscous())
@@ -3226,7 +3226,7 @@ bool PanelAnalysis::getZeroMomentAngle()
     if(iter>=CM_ITER_MAX || s_bCancel) return false;
 
     m_AlphaEq = a*180.0/PI;
-    //	Cm = computeCm(m_AlphaEq);// for information only, should be zero
+    //    Cm = computeCm(m_AlphaEq);// for information only, should be zero
 
     return true;
 }
@@ -3441,7 +3441,7 @@ bool PanelAnalysis::computeTrimmedConditions()
         }
     }
 
-    if (!solveUnitRHS())	//solve for the u,w unit vectors
+    if (!solveUnitRHS())    //solve for the u,w unit vectors
     {
         s_bWarning = true;
         return false;
@@ -3468,7 +3468,7 @@ bool PanelAnalysis::computeTrimmedConditions()
 
     //______________________________________________________________________________________
     // Calculate the trimmed conditions for this control setting and calculated Alpha_eq
-    /*		phi = bank angle
+    /*        phi = bank angle
         V   = sqrt(2 m g / rho S CL cos(phi))    (airspeed)
         R   = V^2 / g tan(phi)        (turn radius, positive for right turn)
         W   = V / R                   (turn rate, positive for right turn)
@@ -3499,8 +3499,8 @@ bool PanelAnalysis::computeTrimmedConditions()
     forces(m_Mu, m_Sigma, m_AlphaEq, Vector3d(0.0,0.0,0.0), m_RHS+50*m_MatSize, Force, Moment);
 
     phi = m_pWPolar->m_BankAngle *PI/180.0;
-    Lift   = Force.dot(WindNormal);		//N/rho ; bank effect not included
-    //	VerticalCl = Lift*2.0/m_pWPolar->referenceArea() * cos(phi)/m_pWPolar->density();
+    Lift   = Force.dot(WindNormal);        //N/rho ; bank effect not included
+    //    VerticalCl = Lift*2.0/m_pWPolar->referenceArea() * cos(phi)/m_pWPolar->density();
     if(Lift<=0.0)
     {
         u0 = -100.0;
@@ -3514,7 +3514,7 @@ bool PanelAnalysis::computeTrimmedConditions()
     {
         double radius, W, p, q, r; //trimmed flight data
 
-        //		u0 =  sqrt( 2.0* 9.81 * m_Mass /m_pWPolar->density()/m_pWPolar->referenceArea() / VerticalCl );
+        //        u0 =  sqrt( 2.0* 9.81 * m_Mass /m_pWPolar->density()/m_pWPolar->referenceArea() / VerticalCl );
         u0 = sqrt(9.81 * m_Mass / Force.z);
         strong = QString("VInf = %1 m/s").arg(u0,0,'f',5);
         strong+= strange + "\n";
@@ -3587,7 +3587,7 @@ void PanelAnalysis::computeStabilityDerivativesOld()
     double alpha, sina, cosa, deltaspeed, deltarotation;
     QString strong;
     int Size= m_MatSize;
-    //	if(m_b3DSymetric) Size = m_SymSize;
+    //    if(m_b3DSymetric) Size = m_SymSize;
 
     strong = "      Calculating the stability derivatives\n";
     traceLog(strong);
@@ -3740,7 +3740,7 @@ void PanelAnalysis::computeStabilityDerivativesOld()
 
     // z-derivatives________________________
     alpha = atan2(Vk.z, Vk.x)* 180.0/PI;
-    //	alpha = m_AlphaEq;
+    //    alpha = m_AlphaEq;
     forces(m_wRHS, m_Sigma+2*m_MatSize, alpha, V0, m_RHS+56*m_MatSize, Force, Moment);
     Xw = (Force - Force0).dot(is)   /deltaspeed;
     Zw = (Force - Force0).dot(ks)   /deltaspeed;
@@ -3774,7 +3774,7 @@ void PanelAnalysis::computeStabilityDerivativesOld()
     // Zwp & Mwp ... ?
     // M. Drela's answer to the question posted on Yahoo Groups:
 
-    /*	May I take this opportunity to ask you about the stability derivatives w.r.t. alpha dot ?
+    /*    May I take this opportunity to ask you about the stability derivatives w.r.t. alpha dot ?
     Are they ignored in AVL and if so, is it a safe assumption ?
 
     Yes, the _alphadot derivatives are ignored, for the simple reason that there's no way to do it
@@ -3808,7 +3808,7 @@ void PanelAnalysis::computeStabilityDerivatives()
     Yv = Yp = Yr = Lv = Lp = Lr = Nv = Np  = Nr  = 0.0;
 
     int Size= m_MatSize;
-    //	if(m_b3DSymetric) Size = m_SymSize;
+    //    if(m_b3DSymetric) Size = m_SymSize;
 
     strong = "      Calculating the stability derivatives\n";
     traceLog(strong);
@@ -4115,7 +4115,7 @@ void PanelAnalysis::computeStabilityDerivatives()
     // Zwp & Mwp ... ?
     // M. Drela's answer to the question posted on Yahoo Groups:
 
-    /*	May I take this opportunity to ask you about the stability derivatives w.r.t. alpha dot ?
+    /*    May I take this opportunity to ask you about the stability derivatives w.r.t. alpha dot ?
     Are they ignored in AVL and if so, is it a safe assumption ?
 
     Yes, the _alphadot derivatives are ignored, for the simple reason that there's no way to do it
@@ -4204,14 +4204,14 @@ void PanelAnalysis::computeControlDerivatives()
     Vector3d WindDirection, H, Force, Moment, V0, is, js, ks;
     int j, p, pos, NCtrls;
     double DeltaAngle, SignedDeltaAngle, cosa, sina;
-    //	double q, S, b, mac;
+    //    double q, S, b, mac;
     QString str;
     Quaternion Quat;
 
-    //	q = 1./2. * m_pWPolar->density() * u0 * u0;
-    //	b   = m_pWPolar->m_WSpan;
-    //	S   = m_pWPolar->m_WArea;
-    //	mac = m_pPlane->mac();
+    //    q = 1./2. * m_pWPolar->density() * u0 * u0;
+    //    b   = m_pWPolar->m_WSpan;
+    //    S   = m_pWPolar->m_WArea;
+    //    mac = m_pPlane->mac();
 
     Xde = Yde =  Zde = Lde = Mde = Nde= 0.0;
 
@@ -4323,7 +4323,7 @@ void PanelAnalysis::computeControlDerivatives()
     if(!m_pWPolar->bThinSurfaces())
     {
         createWakeContribution(m_uWake,  WindDirection);// re-use m_uWake memory, which is re-calculated anyway at the next control iteration
-        for(p=0; p<m_MatSize; p++)	m_cRHS[p]+= m_uWake[p]*u0;
+        for(p=0; p<m_MatSize; p++)    m_cRHS[p]+= m_uWake[p]*u0;
     }
 
     //Solve the system
@@ -4470,7 +4470,7 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double *Gamma, double *Sigma
 
     for (l=0; l<m_pPlane->m_Wing[0].m_NStation; l++)
     {
-        if(qAbs(m_pPlane->m_Wing[0].m_BendingMoment[l])>qAbs(Cb))	Cb = m_pPlane->m_Wing[0].m_BendingMoment[l];
+        if(qAbs(m_pPlane->m_Wing[0].m_BendingMoment[l])>qAbs(Cb))    Cb = m_pPlane->m_Wing[0].m_BendingMoment[l];
     }
 
 
@@ -4655,8 +4655,8 @@ void PanelAnalysis::traceLog(QString str)
 
 void PanelAnalysis::computePhillipsFormulae()
 {
-    //	Phugoid Approximation for Conventional Airplanes, JOURNAL OF AIRCRAFT, 	Vol. 37, No. 1, January– February 2000
-    //	Improved Closed-Form Approximation for Dutch Roll, JOURNAL OF AIRCRAFT,	Vol. 37, No. 3, May– June 2000
+    //    Phugoid Approximation for Conventional Airplanes, JOURNAL OF AIRCRAFT,     Vol. 37, No. 1, January– February 2000
+    //    Improved Closed-Form Approximation for Dutch Roll, JOURNAL OF AIRCRAFT,    Vol. 37, No. 3, May– June 2000
 
     double MTOW_des,AWing,Vmax_C,Span,Chord,CL_C,CDtot_C,rho_C,Ixx,Iyy,Izz;
     double Rg,Rgy,Rza;
@@ -4692,8 +4692,8 @@ void PanelAnalysis::computePhillipsFormulae()
         }
     }
 
-    //	Rx  =-CDtot_C*rho_C*AWing*Chord/(2*MTOW_des); //unused
-    //	Rz  =-CL_C*rho_C*AWing*Chord/(2*MTOW_des); //unused
+    //    Rx  =-CDtot_C*rho_C*AWing*Chord/(2*MTOW_des); //unused
+    //    Rz  =-CL_C*rho_C*AWing*Chord/(2*MTOW_des); //unused
     Rg  = 9.81*Chord/(2*Vmax_C*Vmax_C);
     Rgy = 9.81*Span/(2*Vmax_C*Vmax_C);
     Rza = (rho_C*AWing*Chord/(4*MTOW_des))*(+CZa-CDtot_C); /** @todo check issue with sign of CZa */
@@ -4844,7 +4844,7 @@ void PanelAnalysis::rotateGeomZ(double const &Beta, Vector3d const &P, int NXWak
     int iLA, iLB, iTA, iTB;
     Vector3d Pt, Trans;
 
-    for (n=0; n<m_nNodes; n++)	m_pNode[n].rotateZ(P, Beta);
+    for (n=0; n<m_nNodes; n++)    m_pNode[n].rotateZ(P, Beta);
 
     for (p=0; p<m_MatSize; p++)
     {
@@ -5057,7 +5057,7 @@ void PanelAnalysis::setControlPositions(double t, int &NCtrls, QString &out, boo
 
                         if(qAbs(angle)>PRECISION)
                         {
-                            //							pWing->m_Surface.at(j)->RotateFlap(angle, bBCOnly);
+                            //                            pWing->m_Surface.at(j)->RotateFlap(angle, bBCOnly);
                             Quat.set(angle, pWing->m_Surface.at(j)->m_HingeVector);
                             if(bBCOnly)
                             {
@@ -5399,7 +5399,7 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
     QVector<double> GammaStrip;
     Vector3d C, Wg, dF, StripForce, WindDirection, WindNormal, VInf;
 
-    /*	if(pWPolar->m_bTiltedGeom)
+    /*    if(pWPolar->m_bTiltedGeom)
     {
         cosa = 1.0;
         sina = 0.0;
@@ -5408,7 +5408,7 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
     {*/
     cosa = cos(Alpha*PI/180.0);
     sina = sin(Alpha*PI/180.0);
-    //	}
+    //    }
 
     //   Define wind axis
     WindNormal.set(   -sina, 0.0, cosa);
@@ -5466,7 +5466,7 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
                 pWing->m_Vd[m] = Wg;
                 InducedAngle = atan2(Wg.dot(surfaceNormal), QInf);
                 pWing->m_Ai[m]      =       InducedAngle*180/PI;
-                //	qDebug("%13.7g %13.7g %13.7g %13.7g %13.7g %13.7g %13.7g ", C.x, C.y, C.z, Wg.x, Wg.y, Wg.z, pWing->m_Ai[m]);
+                //    qDebug("%13.7g %13.7g %13.7g %13.7g %13.7g %13.7g %13.7g ", C.x, C.y, C.z, Wg.x, Wg.y, Wg.z, pWing->m_Ai[m]);
 
                 // ____________________________
                 // Lift calculation
@@ -5536,9 +5536,9 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
 
             // Calculate resulting vector force
             Force     += StripForce;                          // N/q
-            pWing->m_F[m]     = StripForce * q;	                    // Newtons
+            pWing->m_F[m]     = StripForce * q;                        // Newtons
 
-            //			if(pWPolar->m_bTiltedGeom) m_F[m].RotateY(-Alpha);
+            //            if(pWPolar->m_bTiltedGeom) m_F[m].RotateY(-Alpha);
             m++;
         }
 

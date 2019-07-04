@@ -62,10 +62,10 @@ private:
     void updateSplines();
 
 
-    DoubleEdit	*m_pctrlOutExtrados;
-    DoubleEdit	*m_pctrlOutIntrados;
-    QComboBox	*m_pctrlDegExtrados;
-    QComboBox	*m_pctrlDegIntrados;
+    DoubleEdit    *m_pctrlOutExtrados;
+    DoubleEdit    *m_pctrlOutIntrados;
+    QComboBox    *m_pctrlDegExtrados;
+    QComboBox    *m_pctrlDegIntrados;
     QPushButton *OKButton, *CancelButton;
     QCheckBox *m_pctrlSymetric, *m_pctrlCloseLE, *m_pctrlCloseTE;
 

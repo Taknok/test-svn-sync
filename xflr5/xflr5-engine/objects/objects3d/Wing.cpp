@@ -105,7 +105,7 @@ Wing::Wing()
     m_CP.set(0.0, 0.0, 0.0);
 
     m_Maxa = 0.0;
-    //	m_AVLIndex = -(int)(qrand()/10000);//improbable value...
+    //    m_AVLIndex = -(int)(qrand()/10000);//improbable value...
 
     m_MatSize   = 0;
     m_NStation  = 0;
@@ -408,8 +408,8 @@ void Wing::computeGeometry()
         m_GChord  = m_PlanformArea/m_PlanformSpan*2.0;
         m_AR      = m_PlanformSpan*m_PlanformSpan/m_PlanformArea/2.0;
     }
-    if(tipChord()>0.0)	m_TR = rootChord()/tipChord();
-    else				m_TR = 99999.0;
+    if(tipChord()>0.0)    m_TR = rootChord()/tipChord();
+    else                m_TR = 99999.0;
 
     //calculate the number of flaps
     m_nFlaps = 0;
@@ -422,13 +422,13 @@ void Wing::computeGeometry()
         pFoilB = foil(rightFoil(is));
         if(pFoilA && pFoilB && (!m_bIsFin || (m_bIsFin && m_bSymFin) || (m_bIsFin && m_bDoubleFin)))
         {
-            if(pFoilA->m_bTEFlap && pFoilB->m_bTEFlap && qAbs(YPosition(is)-YPosition(is-1))>MinPanelSize)	m_nFlaps++;
+            if(pFoilA->m_bTEFlap && pFoilB->m_bTEFlap && qAbs(YPosition(is)-YPosition(is-1))>MinPanelSize)    m_nFlaps++;
         }
         pFoilA = foil(leftFoil(is-1));
         pFoilB = foil(leftFoil(is));
         if(pFoilA && pFoilB)
         {
-            if(pFoilA->m_bTEFlap && pFoilB->m_bTEFlap && qAbs(YPosition(is)-YPosition(is-1))>MinPanelSize)	m_nFlaps++;
+            if(pFoilA->m_bTEFlap && pFoilB->m_bTEFlap && qAbs(YPosition(is)-YPosition(is-1))>MinPanelSize)    m_nFlaps++;
         }
     }
 }
@@ -462,7 +462,7 @@ void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
     CoGIxx = CoGIyy = CoGIzz = CoGIxz = 0.0;
 
     //sanity check
-    //	Vector3d CoGCheck(0.0,0.0,0.0);
+    //    Vector3d CoGCheck(0.0,0.0,0.0);
     double CoGIxxCheck, CoGIyyCheck, CoGIzzCheck, CoGIxzCheck;
     CoGIxxCheck = CoGIyyCheck = CoGIzzCheck = CoGIxzCheck = 0.0;
     double recalcMass = 0.0;
@@ -498,7 +498,7 @@ void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
             PtC4.y = (Pt.y + Pt1.y)/2.0;
             PtC4.z = (Pt.z + Pt1.z)/2.0;
 
-            //			CoGCheck += LocalVolume * PtC4;
+            //            CoGCheck += LocalVolume * PtC4;
             for(int l=0; l<NXSTATIONS; l++)
             {
                 //browse mid-section
@@ -514,7 +514,7 @@ void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
                 Diag2 = ABot - CTop;
                 PointNormal = Diag1 * Diag2;
                 ElemArea = PointNormal.VAbs()/2.0;
-                //	qDebug("elemarea  %17.7g", ElemArea);
+                //    qDebug("elemarea  %17.7g", ElemArea);
                 if(ElemArea>0.0) ElemVolume[p] = ElemArea * LocalSpan;
                 else
                 {
@@ -752,7 +752,7 @@ void Wing::createSurfaces(Vector3d const &T, double XTilt, double YTilt)
             PLA.y = -YPosition(jss+1);      PLB.y = -YPosition(jss);
             PLA.z =  0.0;                   PLB.z =  0.0;
             PTA.x =  PLA.x+Chord(jss+1);    PTB.x = PLB.x+Chord(jss);
-            PTA.y =  PLA.y;	                PTB.y = PLB.y;
+            PTA.y =  PLA.y;                    PTB.y = PLB.y;
             PTA.z =  0.0;                   PTB.z =  0.0;
 
             m_Surface[iSurf]->setCornerPoints(PLA, PTA, PLB, PTB);
@@ -771,8 +771,8 @@ void Wing::createSurfaces(Vector3d const &T, double XTilt, double YTilt)
                 //translate the surface to the left tip of the previous surface
                 T1 = m_Surface[iSurf+1]->m_LA - m_Surface[iSurf]->m_LB;
                 m_Surface[iSurf]->translate(0.0,T1.y,T1.z);
-                //				m_Surface[is].m_LB = m_Surface[is+1].m_LA;
-                //				m_Surface[is].m_TB = m_Surface[is+1].m_TA;
+                //                m_Surface[is].m_LB = m_Surface[is+1].m_LA;
+                //                m_Surface[is].m_TB = m_Surface[is+1].m_TA;
             }
 
             nSurf++;
@@ -844,8 +844,8 @@ void Wing::createSurfaces(Vector3d const &T, double XTilt, double YTilt)
                     //translate the surface to the left tip of the previous surface and merge points
                     T1 = m_Surface[iSurf-1]->m_LB - m_Surface[iSurf]->m_LA ;
                     m_Surface[iSurf]->translate(0.0, T1.y, T1.z);
-                    //					m_Surface[is].m_LA = m_Surface[is-1].m_LB;
-                    //					m_Surface[is].m_TA = m_Surface[is-1].m_TB;
+                    //                    m_Surface[is].m_LA = m_Surface[is-1].m_LB;
+                    //                    m_Surface[is].m_TA = m_Surface[is-1].m_TB;
                 }
 
                 m_Surface[iSurf]->m_NXPanels = NXPanels(jss);
@@ -882,8 +882,8 @@ void Wing::createSurfaces(Vector3d const &T, double XTilt, double YTilt)
             if(m_bIsFin && m_bSymFin)
             {
                 m_Surface[jSurf]->m_bIsInSymPlane = true;
-                //				m_Surface[jSurf]->m_bIsLeftSurf   = true;
-                //				m_Surface[jSurf]->m_bIsRightSurf  = false;
+                //                m_Surface[jSurf]->m_bIsLeftSurf   = true;
+                //                m_Surface[jSurf]->m_bIsRightSurf  = false;
             }
         }
         m_Surface[NSurfaces-1]->m_bIsTipRight = true;
@@ -913,7 +913,7 @@ void Wing::createSurfaces(Vector3d const &T, double XTilt, double YTilt)
                 m_Surface[jSurf]->translate(offset);
                 m_Surface[jSurf]->m_bIsInSymPlane = false;
             }
-            /*			m_Surface[ns2-1]->m_bIsTipRight = true;
+            /*            m_Surface[ns2-1]->m_bIsTipRight = true;
             m_Surface[ns2-1]->m_bIsTipLeft  = true;
             m_Surface[0]->m_bIsTipRight   = true;
             m_Surface[0]->m_bIsTipLeft    = true;
@@ -947,7 +947,7 @@ void Wing::createSurfaces(Vector3d const &T, double XTilt, double YTilt)
         //check for a center gap greater than 1/10mm
         int nada = int(NSurfaces/2)-1;
         Q_ASSERT(nada>=0);
-        if(YPosition(0)>0.0001) 	m_Surface[int(NSurfaces/2)-1]->m_bJoinRight   = false;
+        if(YPosition(0)>0.0001)     m_Surface[int(NSurfaces/2)-1]->m_bJoinRight   = false;
 
         if(m_bIsFin && m_bDoubleFin) m_Surface[int(NSurfaces/2)-1]->m_bJoinRight   = false;
     }
@@ -1024,7 +1024,7 @@ void Wing::computeChords(int NStation)
             {
                 //calculate chords and offsets at each station
                 m_Chord[m]     = m_Surface.at(j)->chord(k);
-                //				m_StripArea[m] = m_Chord[m]* m_Surface.at(j)->Getdl(k);
+                //                m_StripArea[m] = m_Chord[m]* m_Surface.at(j)->Getdl(k);
 
                 m_Surface.at(j)->getLeadingPt(k, C);
                 m_Offset[m] = C.x-x0;
@@ -1154,7 +1154,7 @@ double Wing::averageSweep()
 {
     double xroot = rootOffset() + Chord(0)/4.0;
     double xtip  = tipOffset()  + tipChord()/4.0;
-    //	double sweep = (atan2(xtip-xroot, m_PlanformSpan/2.0)) * 180.0/PI;
+    //    double sweep = (atan2(xtip-xroot, m_PlanformSpan/2.0)) * 180.0/PI;
     return (atan2(xtip-xroot, m_PlanformSpan/2.0)) * 180.0/PI;
 }
 
@@ -1609,7 +1609,7 @@ int Wing::VLMPanelTotal(bool bThinSurface)
     for (int is=0; is<NWingSection()-1; is++)
     {
         //do not create a surface if its length is less than the critical size
-        if (qAbs(YPosition(is)-YPosition(is+1)) > MinPanelSize)	total += NXPanels(is)*NYPanels(is);
+        if (qAbs(YPosition(is)-YPosition(is+1)) > MinPanelSize)    total += NXPanels(is)*NYPanels(is);
     }
     if(!m_bIsFin) total *=2;
 
@@ -1781,7 +1781,7 @@ void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double *Gam
 
             m_VYm += viscousDragMoment.dot(WindNormal);                     // N.m/q
 
-            //			m_IYm += -m_ICd[m] * m_StripArea[m] * PtC4Strip.y ;
+            //            m_IYm += -m_ICd[m] * m_StripArea[m] * PtC4Strip.y ;
             m_IYm += GeomMoment.dot(WindNormal);                            // N.m/q
 
             m_VCm += viscousDragMoment.y;                                   // N.m/q
@@ -1816,8 +1816,8 @@ void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double *Gam
 /**
 * In input, takes the speed QInf and the distribution of lift coefficients m_Cl[] along the span
 * In output, returns for each span station
-* 	- The Reynolds number m_Re[]
-*	- The viscous drag coefficient m_PCd[]
+*     - The Reynolds number m_Re[]
+*    - The viscous drag coefficient m_PCd[]
 *      - The top and bottom transition points m_XTrtop[] and m_XTrBot[]
 */
 void Wing::panelComputeViscous(double QInf, WPolar *pWPolar, double &WingVDrag, bool bViscous, QString &OutString)
@@ -2190,7 +2190,7 @@ void Wing::getTextureUV(int iSurf, double *leftV, double *rightV, double &leftU,
         }
 
 
-        //		xRel  = 1.0/2.0*(1.0-cos( double(i)*PI   /(double)(nPoints-1)));
+        //        xRel  = 1.0/2.0*(1.0-cos( double(i)*PI   /(double)(nPoints-1)));
         xA = m_WingSection.at(iSectionA)->m_Offset + m_WingSection.at(iSectionA)->m_Chord*xRelA;
         xB = m_WingSection.at(iSectionB)->m_Offset + m_WingSection.at(iSectionB)->m_Chord*xRelB;
 
@@ -2276,7 +2276,7 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
             m_WingName = "";
             return false;
         }
-        //		m_bVLMSymetric = m_bSymetric;
+        //        m_bVLMSymetric = m_bSymetric;
 
         int NPanel;
         ar >> NPanel;
@@ -2364,7 +2364,7 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
                 ar >> f;
                 NYPanels(is) = int(f);
             }
-            else 	ar >> NYPanels(is);
+            else     ar >> NYPanels(is);
         }
         int total = 0;
         for (int is=0; is<NPanel; is++)
@@ -2705,15 +2705,15 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
 {
     /***
      *  UINT8[80] – Header
-     * 	UINT32 – Number of triangles
+     *     UINT32 – Number of triangles
      *
-     * 	foreach triangle
-     * 	REAL32[3] – Normal vector
-     * 	REAL32[3] – Vertex 1
-     * 	REAL32[3] – Vertex 2
-     * 	REAL32[3] – Vertex 3
-     * 	UINT16 – Attribute byte count
-     * 	end
+     *     foreach triangle
+     *     REAL32[3] – Normal vector
+     *     REAL32[3] – Vertex 1
+     *     REAL32[3] – Vertex 2
+     *     REAL32[3] – Vertex 3
+     *     UINT16 – Attribute byte count
+     *     end
     */
 
     Vector3d N, Pt;
@@ -2728,9 +2728,9 @@ void Wing::exportSTLBinary(QDataStream &outStream, int CHORDPANELS, int SPANPANE
     memset(NormalB.data(), 0, ulong(CHORDPANELS+1) * sizeof(Vector3d));
 
 
-    //	80 character header, avoid word "solid"
+    //    80 character header, avoid word "solid"
     //                       0123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789
-    QString strong = 	"binary STL file                                                                ";
+    QString strong =     "binary STL file                                                                ";
     writeCString(outStream, strong);
 
     //Number of triangles
@@ -3063,11 +3063,11 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
     /***
      * solid name
      *
-     * 	  facet normal ni nj nk
-     * 	    outer loop
-     * 	      vertex v1x v1y v1z
-     * 	      vertex v2x v2y v2z
-     * 	      vertex v3x v3y v3z
+     *       facet normal ni nj nk
+     *         outer loop
+     *           vertex v1x v1y v1z
+     *           vertex v2x v2y v2z
+     *           vertex v3x v3y v3z
      *      endloop
      *   endfacet
      *
@@ -3376,8 +3376,8 @@ double Wing::getInterpolatedVariable(int nVar, Foil *pFoil0, Foil *pFoil1, doubl
 */
 double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bool &bOutRe, bool &bError)
 {
-    /*	Var
-    0 =	m_Alpha;
+    /*    Var
+    0 =    m_Alpha;
     1 = m_Cl;
     2 = m_Cd;
     3 = m_Cdp;
@@ -3509,7 +3509,7 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
         }
 
         QVector<double> const &pX = pPolar1->getPlrVariable(PlrVar);
-        if(Cl < pPolar1->m_Cl[0])	   return pX.front();
+        if(Cl < pPolar1->m_Cl[0])       return pX.front();
         if(Cl > pPolar1->m_Cl[size-1]) return pX.back();
         for (int i=0; i<size-1; i++)
         {

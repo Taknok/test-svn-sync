@@ -541,10 +541,10 @@ bool GL3dWingDlg::initDialog(Wing *pWing)
 
 void GL3dWingDlg::keyPressEvent(QKeyEvent *pEvent)
 {
-    //	bool bShift = false;
-    //	bool bCtrl  = false;
-    //	if(event->modifiers() & Qt::ShiftModifier)   bShift =true;
-    //	if(event->modifiers() & Qt::ControlModifier) bCtrl =true;
+    //    bool bShift = false;
+    //    bool bCtrl  = false;
+    //    if(event->modifiers() & Qt::ShiftModifier)   bShift =true;
+    //    if(event->modifiers() & Qt::ControlModifier) bCtrl =true;
 
     switch (pEvent->key())
     {
@@ -630,7 +630,7 @@ void GL3dWingDlg::onDeleteSection()
 
     ny = m_pWing->NYPanels(m_iSection-1) + m_pWing->NYPanels(m_iSection);
 
-    /*	for (k=m_iSection; k<size-1; k++)
+    /*    for (k=m_iSection; k<size-1; k++)
     {
         m_pWing->TPos(k)      = m_pWing->TPos(k+1);
         m_pWing->TChord(k)    = m_pWing->TChord(k+1);
@@ -781,7 +781,7 @@ void GL3dWingDlg::onInsertAfter()
     m_pWing->NYPanels(n+1) = qMax(1,(int)(ny/2));
     m_pWing->NYPanels(n)   = qMax(1,ny-m_pWing->NYPanels(n+1));
 
-    //	m_pWing->m_bVLMAutoMesh = true;
+    //    m_pWing->m_bVLMAutoMesh = true;
 
     fillDataTable();
     m_pctrlWingTable->closePersistentEditor(m_pctrlWingTable->currentIndex());
@@ -971,7 +971,7 @@ void GL3dWingDlg::onSymetric()
 
 
 void GL3dWingDlg::onTextures()
-{	
+{    
     if(m_pWing) m_pWing->m_bTextures = m_pctrlTextures->isChecked();
     m_bDescriptionChanged = true;
     m_pctrlWingColor->setEnabled(m_pctrlColor->isChecked());
@@ -1073,7 +1073,7 @@ void GL3dWingDlg::readSectionData(int sel)
     }
     else
     {
-        if(m_bRightSide)	m_pWing->rightFoil(sel) = strong;
+        if(m_bRightSide)    m_pWing->rightFoil(sel) = strong;
         else                m_pWing->leftFoil(sel)  = strong;
     }
 
@@ -1086,10 +1086,10 @@ void GL3dWingDlg::readSectionData(int sel)
     pItem = m_pWingModel->item(sel,7);
     strong =pItem->text();
     strong.replace(" ","");
-    if(strong==tr("Uniform"))		m_pWing->XPanelDist(sel) = XFLR5::UNIFORM;
-    else if(strong==tr("Cosine"))	m_pWing->XPanelDist(sel) = XFLR5::COSINE;
-    else if(strong==tr("Sine"))		m_pWing->XPanelDist(sel) = XFLR5::SINE;
-    else if(strong==tr("-Sine"))	m_pWing->XPanelDist(sel) = XFLR5::INVERSESINE;
+    if(strong==tr("Uniform"))        m_pWing->XPanelDist(sel) = XFLR5::UNIFORM;
+    else if(strong==tr("Cosine"))    m_pWing->XPanelDist(sel) = XFLR5::COSINE;
+    else if(strong==tr("Sine"))        m_pWing->XPanelDist(sel) = XFLR5::SINE;
+    else if(strong==tr("-Sine"))    m_pWing->XPanelDist(sel) = XFLR5::INVERSESINE;
 
     pItem = m_pWingModel->item(sel,8);
     strong =pItem->text();
@@ -1101,10 +1101,10 @@ void GL3dWingDlg::readSectionData(int sel)
     strong =pItem->text();
     strong.replace(" ","");
 
-    if(strong==tr("Uniform"))		m_pWing->YPanelDist(sel) = XFLR5::UNIFORM;
-    else if(strong==tr("Cosine"))	m_pWing->YPanelDist(sel) = XFLR5::COSINE;
-    else if(strong==tr("Sine"))		m_pWing->YPanelDist(sel) = XFLR5::SINE;
-    else if(strong==tr("-Sine"))	m_pWing->YPanelDist(sel) = XFLR5::INVERSESINE;
+    if(strong==tr("Uniform"))        m_pWing->YPanelDist(sel) = XFLR5::UNIFORM;
+    else if(strong==tr("Cosine"))    m_pWing->YPanelDist(sel) = XFLR5::COSINE;
+    else if(strong==tr("Sine"))        m_pWing->YPanelDist(sel) = XFLR5::SINE;
+    else if(strong==tr("-Sine"))    m_pWing->YPanelDist(sel) = XFLR5::INVERSESINE;
 
 }
 
@@ -1627,7 +1627,7 @@ void GL3dWingDlg::resizeEvent(QResizeEvent *pEvent)
     m_pctrlWingTable->setColumnWidth(8, wCols);
     m_pctrlWingTable->setColumnWidth(9, wCols);
 
-    if(m_pWing)	m_pglWingView->set3DScale(m_pWing->planformSpan());
+    if(m_pWing)    m_pglWingView->set3DScale(m_pWing->planformSpan());
     m_pglWingView->update();
     pEvent->accept();
 }
@@ -1644,11 +1644,11 @@ int GL3dWingDlg::VLMGetPanelTotal()
     for (int i=0; i<m_pWing->NWingSection()-1; i++)
     {
         //do not create a surface if its length is less than the critical size
-        //			if(qAbs(m_pWing->TPos[j]-m_pWing->TPos(j+1))/m_pWing->m_Span >0.001){
+        //            if(qAbs(m_pWing->TPos[j]-m_pWing->TPos(j+1))/m_pWing->m_Span >0.001){
         if (qAbs(m_pWing->YPosition(i)-m_pWing->YPosition(i+1)) > MinPanelSize)
             total +=m_pWing->NXPanels(i)*m_pWing->NYPanels(i);
     }
-    //	if(!m_bMiddle) total *=2;
+    //    if(!m_bMiddle) total *=2;
     if(!m_pWing->m_bIsFin) return total*2;
     else                   return total;
 }
@@ -1674,13 +1674,13 @@ bool GL3dWingDlg::VLMSetAutoMesh(int total)
 
     NYTotal *= 2;
 
-    //	double d1, d2; //spanwise panel densities at i and i+1
+    //    double d1, d2; //spanwise panel densities at i and i+1
 
     for (int i=0; i<m_pWing->NWingSection()-1;i++)
     {
-        //		d1 = 5./2./m_pWing->m_Span/m_pWing->m_Span/m_pWing->m_Span *8. * pow(m_pWing->TPos[i],  3) + 0.5;
-        //		d2 = 5./2./m_pWing->m_Span/m_pWing->m_Span/m_pWing->m_Span *8. * pow(m_pWing->TPos(i+1),3) + 0.5;
-        //		m_pWing->NYPanels(i) = (int) (NYTotal * (0.8*d1+0.2*d2)* (m_pWing->TPos(i+1)-m_pWing->TPos(i))/m_pWing->m_Span);
+        //        d1 = 5./2./m_pWing->m_Span/m_pWing->m_Span/m_pWing->m_Span *8. * pow(m_pWing->TPos[i],  3) + 0.5;
+        //        d2 = 5./2./m_pWing->m_Span/m_pWing->m_Span/m_pWing->m_Span *8. * pow(m_pWing->TPos(i+1),3) + 0.5;
+        //        m_pWing->NYPanels(i) = (int) (NYTotal * (0.8*d1+0.2*d2)* (m_pWing->TPos(i+1)-m_pWing->TPos(i))/m_pWing->m_Span);
 
         m_pWing->NYPanels(i) = (int)(qAbs(m_pWing->YPosition(i+1) - m_pWing->YPosition(i))* (double)NYTotal/m_pWing->m_PlanformSpan);
 

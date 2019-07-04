@@ -292,7 +292,7 @@ void BatchThreadDlg::setupLayout()
             connect(pAdvancedSettings, SIGNAL(clicked()), this, SLOT(onAdvancedSettings()));
 
             m_pctrlClose     = new QPushButton(tr("Close"));
-            m_pctrlAnalyze   = new QPushButton(tr("Analyze"))	;
+            m_pctrlAnalyze   = new QPushButton(tr("Analyze"))    ;
             m_pctrlAnalyze->setAutoDefault(true);
 
             pCommandButtons->addStretch(1);
@@ -475,7 +475,7 @@ void BatchThreadDlg::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if(m_pctrlClose->hasFocus())	     done(1);
+            if(m_pctrlClose->hasFocus())         done(1);
             else if(m_pctrlAnalyze->hasFocus())  onAnalyze();
             else                                 m_pctrlAnalyze->setFocus();
             break;
@@ -708,7 +708,7 @@ void BatchThreadDlg::onEditReList()
 void BatchThreadDlg::onFoilList()
 {
     FoilSelectionDlg dlg(this);
-    //	dlg.SetSelectionMode(true);
+    //    dlg.SetSelectionMode(true);
 
     dlg.initDialog(Objects2d::pOAFoil(), m_FoilList);
 
@@ -923,7 +923,7 @@ void BatchThreadDlg::startAnalysis()
     if(!m_bFromList) nRe = (int)qAbs((m_ReMax-m_ReMin)/m_ReInc)+1;
     else             nRe = XDirect::s_ReList.count();
 
-    //	QThreadPool::globalInstance()->setExpiryTimeout(60000);//ms
+    //    QThreadPool::globalInstance()->setExpiryTimeout(60000);//ms
 
     //build an array of all analysis pairs to run
     m_nAnalysis = 0;
@@ -954,7 +954,7 @@ void BatchThreadDlg::startAnalysis()
     m_pctrlTextOutput->insertPlainText(strong);
 
     //Start as many threads as the user has requested
-    //	m_nThreads = QThread::idealThreadCount();
+    //    m_nThreads = QThread::idealThreadCount();
 
     XFoilTask::s_bCancel = false;
 

@@ -32,10 +32,10 @@ class XFLR5Application : public QApplication
     Q_OBJECT
 
 public:
-	XFLR5Application(int&, char**);
+    XFLR5Application(int&, char**);
 
 private:
-	bool event(QEvent *);
+    bool event(QEvent *);
     void addStandardBtnStrings();
 };
 

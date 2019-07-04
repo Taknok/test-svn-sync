@@ -163,7 +163,7 @@ void GL3dBodyDlg::connectSignals()
 
     connect(&m_gl3dBodyview, SIGNAL(viewModified()), this, SLOT(onCheckViewIcons()));
 
-    //	connect(m_pctrlEdgeWeight, SIGNAL(sliderReleased()), this, SLOT(onEdgeWeight()));
+    //    connect(m_pctrlEdgeWeight, SIGNAL(sliderReleased()), this, SLOT(onEdgeWeight()));
     connect(m_pctrlPanelBunch, SIGNAL(sliderMoved(int)), this, SLOT(onNURBSPanels()));
 
     connect(m_pctrlFlatPanels, SIGNAL(clicked()), this, SLOT(onLineType()));
@@ -634,14 +634,14 @@ void GL3dBodyDlg::onImportBodyDef()
 
 void GL3dBodyDlg::onImportBodyXML()
 {
-    //	Body memBody;
-    //	memBody.duplicate(m_pBody);
+    //    Body memBody;
+    //    memBody.duplicate(m_pBody);
 
     QString PathName;
     PathName = QFileDialog::getOpenFileName(this, tr("Open XML File"),
                                             Settings::s_LastDirName,
                                             tr("Plane XML file")+"(*.xml)");
-    if(!PathName.length())		return ;
+    if(!PathName.length())        return ;
     int pos = PathName.lastIndexOf("/");
     if(pos>0) Settings::s_LastDirName = PathName.left(pos);
 
@@ -663,7 +663,7 @@ void GL3dBodyDlg::onImportBodyXML()
     {
         QString errorMsg = planeReader.errorString() + QString("\nline %1 column %2").arg(planeReader.lineNumber()).arg(planeReader.columnNumber());
         QMessageBox::warning(this, "XML read", errorMsg, QMessageBox::Ok);
-        //		m_pBody->duplicate(&memBody);
+        //        m_pBody->duplicate(&memBody);
         return;
     }
 
@@ -729,7 +729,7 @@ void GL3dBodyDlg::onFrameCellChanged(QWidget *)
 {
     takePicture();
     m_bChanged = true;
-    //	int n = m_pBody->m_iActiveFrame;
+    //    int n = m_pBody->m_iActiveFrame;
     readFrameSectionData(m_pBody->m_iActiveFrame);
     m_gl3dBodyview.resetGLBody();
 
@@ -907,7 +907,7 @@ void GL3dBodyDlg::onSelChangeHoopDegree(int sel)
 
 void GL3dBodyDlg::onEdgeWeight()
 {
-    /*	if(!m_pBody) return;
+    /*    if(!m_pBody) return;
 
     m_bChanged = true;
     takePicture();
@@ -1055,8 +1055,8 @@ void GL3dBodyDlg::reject()
 
 void GL3dBodyDlg::resizeEvent(QResizeEvent *pEvent)
 {
-    //	SetBodyScale();
-    //	SetRectangles();
+    //    SetBodyScale();
+    //    SetRectangles();
 
     resizeTables();
     pEvent->accept();
@@ -1112,7 +1112,7 @@ void GL3dBodyDlg::setControls()
     m_pctrlUndo->setEnabled(m_StackPos>0);
     m_pctrlRedo->setEnabled(m_StackPos<m_UndoStack.size()-1);
 
-    //	m_pctrlEdgeWeight->setSliderPosition((int)((m_pBody->m_SplineSurface.m_EdgeWeightu-1.0)*100.0));
+    //    m_pctrlEdgeWeight->setSliderPosition((int)((m_pBody->m_SplineSurface.m_EdgeWeightu-1.0)*100.0));
 
     if(m_pBody && m_pBody->m_LineType==XFLR5::BODYPANELTYPE)
     {
@@ -1227,7 +1227,7 @@ void GL3dBodyDlg::setupLayout()
     szPolicyMaximum.setHorizontalPolicy(QSizePolicy::Maximum);
     szPolicyMaximum.setVerticalPolicy(QSizePolicy::Maximum);
 
-    m_gl3dBodyview.m_pParent = this;
+//    m_gl3dBodyview.m_pglBodyDlg = this;
     m_gl3dBodyview.m_bOutline    = s_bOutline;
     m_gl3dBodyview.m_bSurfaces   = s_bSurfaces;
     m_gl3dBodyview.m_bVLMPanels  = s_bVLMPanels;
@@ -1412,7 +1412,7 @@ void GL3dBodyDlg::setupLayout()
             m_pctrlHoopDegree = new QComboBox;
             m_pctrlNXPanels = new DoubleEdit;
             m_pctrlNHoopPanels = new DoubleEdit;
-            /*			m_pctrlEdgeWeight = new QSlider(Qt::Horizontal);
+            /*            m_pctrlEdgeWeight = new QSlider(Qt::Horizontal);
             m_pctrlEdgeWeight->setMinimum(0);
             m_pctrlEdgeWeight->setMaximum(100);
             m_pctrlEdgeWeight->setSliderPosition(1);
@@ -1421,7 +1421,7 @@ void GL3dBodyDlg::setupLayout()
             m_pctrlEdgeWeight->setSizePolicy(szPolicyMinimum);*/
 
             m_pctrlPanelBunch= new QSlider(Qt::Horizontal);
-            m_pctrlPanelBunch->setMinimum(0	);
+            m_pctrlPanelBunch->setMinimum(0    );
             m_pctrlPanelBunch->setMaximum(100.0);
             m_pctrlPanelBunch->setSliderPosition(0);
             m_pctrlPanelBunch->setTickInterval(10);
@@ -1447,8 +1447,8 @@ void GL3dBodyDlg::setupLayout()
             pSplineParams->addWidget(m_pctrlHoopDegree,2,3);
             pSplineParams->addWidget(m_pctrlNXPanels,3,2);
             pSplineParams->addWidget(m_pctrlNHoopPanels,3,3);
-            //			SplineParams->addWidget(labWeight,4,1);
-            //			SplineParams->addWidget(m_pctrlEdgeWeight,4,2,1,2);
+            //            SplineParams->addWidget(labWeight,4,1);
+            //            SplineParams->addWidget(m_pctrlEdgeWeight,4,2,1,2);
             pSplineParams->addWidget(labBunch,5,1);
             pSplineParams->addWidget(m_pctrlPanelBunch,5,2,1,2);
         }
@@ -1462,12 +1462,12 @@ void GL3dBodyDlg::setupLayout()
     QVBoxLayout * pFramePosLayout = new QVBoxLayout;
     {
         m_pctrlFrameTable = new QTableView;
-        //	m_pctrlFrameTable->setSizePolicy(szPolicyMinimum);
+        //    m_pctrlFrameTable->setSizePolicy(szPolicyMinimum);
         m_pctrlFrameTable->setWindowTitle(tr("Frames"));
         QLabel *LabelFrame = new QLabel(tr("Frame Positions"));
         LabelFrame->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
         pFramePosLayout->addWidget(LabelFrame);
-        //	FramePosLayout->addStretch(1);
+        //    FramePosLayout->addStretch(1);
         m_pctrlFrameTable->setSelectionMode(QAbstractItemView::SingleSelection);
         m_pctrlFrameTable->setSelectionBehavior(QAbstractItemView::SelectRows);
         m_pctrlFrameTable->setEditTriggers(
@@ -1483,12 +1483,12 @@ void GL3dBodyDlg::setupLayout()
     QVBoxLayout * pFramePointLayout = new QVBoxLayout;
     {
         m_pctrlPointTable = new QTableView;
-        //	m_pctrlPointTable->setSizePolicy(szPolicyMinimum);
+        //    m_pctrlPointTable->setSizePolicy(szPolicyMinimum);
         m_pctrlPointTable->setWindowTitle(tr("Points"));
         QLabel *LabelPoints = new QLabel(tr("Current Frame Definition"));
         LabelPoints->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
         pFramePointLayout->addWidget(LabelPoints);
-        //	FramePointLayout->addStretch(1);
+        //    FramePointLayout->addStretch(1);
         m_pctrlPointTable->setSelectionMode(QAbstractItemView::SingleSelection);
         m_pctrlPointTable->setSelectionBehavior(QAbstractItemView::SelectRows);
         m_pctrlPointTable->setEditTriggers(
@@ -1636,7 +1636,7 @@ void GL3dBodyDlg::resizeTables()
     int ColumnWidth = int(double(m_pctrlFrameTable->width())/2.5);
     m_pctrlFrameTable->setColumnWidth(0,ColumnWidth);
     m_pctrlFrameTable->setColumnWidth(1,ColumnWidth);
-    //	m_pctrlFrameTable->setColumnWidth(2,ColumnWidth);
+    //    m_pctrlFrameTable->setColumnWidth(2,ColumnWidth);
     ColumnWidth = int(double(m_pctrlPointTable->width())/4);
     m_pctrlPointTable->setColumnWidth(0,ColumnWidth);
     m_pctrlPointTable->setColumnWidth(1,ColumnWidth);

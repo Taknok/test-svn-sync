@@ -154,7 +154,7 @@ void Objects2d::insertThisFoil(Foil *pFoil)
     {
         if(pFoil == s_oaFoil.at(iFoil))
         {
-            //			Trace("This foil "+m_FoilName+" aready exists and has not been inserted");
+            //            Trace("This foil "+m_FoilName+" aready exists and has not been inserted");
             return;
         }
     }
@@ -411,7 +411,7 @@ void Objects2d::renameThisFoil(Foil *pFoil, QString newFoilName)
     }
     if(!bFound)
     {
-        //		Trace("The foil "+m_FoilName+" could not be found in the array and has not been renamed");
+        //        Trace("The foil "+m_FoilName+" could not be found in the array and has not been renamed");
         return;
     }
 

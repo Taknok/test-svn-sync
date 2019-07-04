@@ -1,7 +1,7 @@
 /****************************************************************************
 
-	Frame Class
-	Copyright (C) 2007-2016 Andre Deperrois 
+    Frame Class
+    Copyright (C) 2007-2016 Andre Deperrois 
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -41,44 +41,44 @@
 class XFLR5ENGINELIBSHARED_EXPORT Frame
 {
 public:
-	Frame(int nCtrlPts=0);
+    Frame(int nCtrlPts=0);
 
-	void    appendPoint(Vector3d const& Pt);
-	void    copyFrame(Frame *pFrame);
-	void    copyPoints(QVector<Vector3d> *pPointList);
-	double  height();
-	int     isPoint(Vector3d const &point, double const &ZoomFactor);
-	void    insertPoint(int n);
-	void    insertPoint(int n, const Vector3d &Pt);
-	int     insertPoint(Vector3d const &Real, int iAxis);
-	Vector3d point(int iPt) {return m_CtrlPoint.at(iPt);}
-	int     pointCount() {return m_CtrlPoint.size();}
-	bool    removePoint(int n);
-	void    rotateFrameY(double Angle);
-	bool    serializeFrame(QDataStream &ar, bool bIsStoring);
-	void    setPosition(Vector3d Pos);
-	void    setuPosition(double u);
-	void    setvPosition(double v);
-	void    setwPosition(double w);
-	double  zPos();
+    void    appendPoint(Vector3d const& Pt);
+    void    copyFrame(Frame *pFrame);
+    void    copyPoints(QVector<Vector3d> *pPointList);
+    double  height();
+    int     isPoint(Vector3d const &point, double const &ZoomFactor);
+    void    insertPoint(int n);
+    void    insertPoint(int n, const Vector3d &Pt);
+    int     insertPoint(Vector3d const &Real, int iAxis);
+    Vector3d point(int iPt) {return m_CtrlPoint.at(iPt);}
+    int     pointCount() {return m_CtrlPoint.size();}
+    bool    removePoint(int n);
+    void    rotateFrameY(double Angle);
+    bool    serializeFrame(QDataStream &ar, bool bIsStoring);
+    void    setPosition(Vector3d Pos);
+    void    setuPosition(double u);
+    void    setvPosition(double v);
+    void    setwPosition(double w);
+    double  zPos();
 
-	Vector3d position() const {return m_Position;}
-	Vector3d &selectedPoint() {return m_CtrlPoint[s_iSelect];}
+    Vector3d position() const {return m_Position;}
+    Vector3d &selectedPoint() {return m_CtrlPoint[s_iSelect];}
 
-	const Vector3d &ctrlPointAt(int idx) const {return m_CtrlPoint.at(idx);}
+    const Vector3d &ctrlPointAt(int idx) const {return m_CtrlPoint.at(idx);}
 
-	QVector <Vector3d> m_CtrlPoint;	/**< the array of points which define the frame.  */
-	Vector3d m_Position;             /**< the translation vector for the Frame's origin */
+    QVector <Vector3d> m_CtrlPoint;    /**< the array of points which define the frame.  */
+    Vector3d m_Position;             /**< the translation vector for the Frame's origin */
 
-	static int selectedIndex()            {return s_iSelect;}
-	static int highlightedIndex()         {return s_iHighlight;}
-	static void setSelected(int index)    {s_iSelect=index;}
-	static void setHighlighted(int index) {s_iHighlight=index;}
+    static int selectedIndex()            {return s_iSelect;}
+    static int highlightedIndex()         {return s_iHighlight;}
+    static void setSelected(int index)    {s_iSelect=index;}
+    static void setHighlighted(int index) {s_iHighlight=index;}
 
 
 private:
-	static int s_iHighlight;               /**< the point over which the mouse hovers, or -1 if none */
-	static int s_iSelect;                  /**< the selected pointed, i.e. the last point on which the user has clicked, or -1 if none */
+    static int s_iHighlight;               /**< the point over which the mouse hovers, or -1 if none */
+    static int s_iSelect;                  /**< the selected pointed, i.e. the last point on which the user has clicked, or -1 if none */
 };
 
 

@@ -56,7 +56,7 @@ void ExpFormat(double &f, int &exp)
         return;
     }
     double f1 = qAbs(f);
-    //	int sgn = int(f/f1);
+    //    int sgn = int(f/f1);
     if(f1<1)
         exp = int(log10(f1))-1;
     else
@@ -196,9 +196,9 @@ float GLGetRed(float tau)
 */
 float GLGetGreen(float tau)
 {
-    if(tau<0.f || tau>1.0f) 	return 0.0f;
-    else if(tau<1.0f/4.0f) 	return (4.0f*tau);
-    else if(tau>3.0f/4.0f) 	return (1.0f-4.0f*(tau-3.0f/4.0f));
+    if(tau<0.f || tau>1.0f)     return 0.0f;
+    else if(tau<1.0f/4.0f)     return (4.0f*tau);
+    else if(tau>3.0f/4.0f)     return (1.0f-4.0f*(tau-3.0f/4.0f));
     else                    return 1.0f;
 }
 
@@ -222,7 +222,7 @@ float GLGetBlue(float tau)
 */
 int readValues(QString line, double &x, double &y, double &z)
 {
-    /*	char *sx = new char[30];
+    /*    char *sx = new char[30];
     char *sy = new char[30];
     char *text;*/
     int res=0;
@@ -492,7 +492,7 @@ Foil *readFoilFile(QFile &xFoilFile)
     }
 
     pFoil = new Foil();
-    if(!pFoil)	return nullptr;
+    if(!pFoil)    return nullptr;
 
     while(tempStr.length()==0 && !in.atEnd())
     {
@@ -568,8 +568,8 @@ Foil *readFoilFile(QFile &xFoilFile)
     area = 0.0;
     for (i=0; i<pFoil->nb; i++)
     {
-        if(i==pFoil->nb-1)	ip = 0;
-        else				ip = i+1;
+        if(i==pFoil->nb-1)    ip = 0;
+        else                ip = i+1;
         area +=  0.5*(pFoil->yb[i]+pFoil->yb[ip])*(pFoil->xb[i]-pFoil->xb[ip]);
     }
 
@@ -780,7 +780,7 @@ void drawPoints(QPainter &painter, Foil*pFoil, double alpha, double const &scale
 
     HighPen.setColor(QColor(255,0,0));
 
-    /*	for (int i=0; i<pFoil->n;i++)
+    /*    for (int i=0; i<pFoil->n;i++)
     {
         pt1.rx() = ( pFoil->x[i]*scalex + Offset.x() - width);
         pt1.ry() = (-pFoil->y[i]*scaley + Offset.y() - width);
@@ -1039,11 +1039,11 @@ void setAutoWPolarName(WPolar *pWPolar, Plane *pPlane)
     {
         pWPolar->polarName() += "-Inviscid";
     }
-    /*	if(pWPolar->bIgnoreBodyPanels())
+    /*    if(pWPolar->bIgnoreBodyPanels())
     {
         pWPolar->polarName() += "-NoBodyPanels";
     }*/
-    //	if(pWPolar->referenceDim()==XFLR5::PROJECTEDREFDIM) pWPolar->polarName() += "-proj_area";
+    //    if(pWPolar->referenceDim()==XFLR5::PROJECTEDREFDIM) pWPolar->polarName() += "-proj_area";
 
     if(pWPolar->bTilted()) pWPolar->polarName() += "-TG";
 
@@ -1393,9 +1393,9 @@ bool serializeFoil(Foil *pFoil, QDataStream &ar, bool bIsStoring)
             for (j=0; j<pFoil->n; j++)
             {
                 ar >> f >> ff;
-                //				pFoil->x[j]=f; pFoil->y[j]=ff;
+                //                pFoil->x[j]=f; pFoil->y[j]=ff;
             }
-            /*			if(pFoil->nb==0 && pFoil->n!=0)
+            /*            if(pFoil->nb==0 && pFoil->n!=0)
             {
                 pFoil->nb = pFoil->n;
                 memcpy(pFoil->xb, pFoil->x, sizeof(pFoil->xb));
@@ -1404,7 +1404,7 @@ bool serializeFoil(Foil *pFoil, QDataStream &ar, bool bIsStoring)
         }
         else
         {
-            /*			memcpy(pFoil->x, pFoil->xb, sizeof(pFoil->xb));
+            /*            memcpy(pFoil->x, pFoil->xb, sizeof(pFoil->xb));
             memcpy(pFoil->y, pFoil->yb, sizeof(pFoil->yb));
             pFoil->n=pFoil->nb;*/
         }

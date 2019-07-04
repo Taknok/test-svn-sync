@@ -466,7 +466,7 @@ void PlaneDlg::onImportXMLBody()
     PathName = QFileDialog::getOpenFileName(this, tr("Open XML File"),
                                             Settings::s_LastDirName,
                                             tr("Plane XML file")+"(*.xml)");
-    if(!PathName.length())		return ;
+    if(!PathName.length())        return ;
     int pos = PathName.lastIndexOf("/");
     if(pos>0) Settings::s_LastDirName = PathName.left(pos);
 
@@ -494,10 +494,10 @@ void PlaneDlg::onImportXMLBody()
 
 
     m_bChanged = true;
-    //	if(m_pPlane->body()) delete m_pPlane->body();
+    //    if(m_pPlane->body()) delete m_pPlane->body();
 
-    //	Body *pXMLBody = new Body;
-    //	pXMLBody->duplicate(a_plane.body());
+    //    Body *pXMLBody = new Body;
+    //    pXMLBody->duplicate(a_plane.body());
     m_pPlane->body()->duplicate(a_plane.body());
     m_pctrlBody->setChecked(true);
 }
@@ -606,7 +606,7 @@ void PlaneDlg::onOK()
     }
 
 
-    /*	//check the number of surfaces
+    /*    //check the number of surfaces
     int nSurfaces = 0;
     for (int j=0; j<m_pPlane->wing()->NWingSection()-1; j++)
     {
@@ -667,7 +667,7 @@ void PlaneDlg::onStab()
 
 
 void PlaneDlg::onSymFin()
-{	
+{    
     if (m_pctrlSymFin->isChecked())
     {
         m_pctrlYLEFin->setEnabled(false);
@@ -678,7 +678,7 @@ void PlaneDlg::onSymFin()
     }
     else
     {
-        //		m_pctrlDoubleFin->setEnabled(true);
+        //        m_pctrlDoubleFin->setEnabled(true);
         m_pctrlYLEFin->setEnabled(true);
         m_pPlane->m_bSymFin = false;
     }
@@ -737,7 +737,7 @@ void PlaneDlg::reject()
         }
         else if(QMessageBox::Cancel == Ans) return;
     }
-    //	reject();
+    //    reject();
     done(QDialog::Rejected);
 }
 
@@ -789,8 +789,8 @@ void PlaneDlg::setResults()
 {
     QString str;
 
-    //	double area = m_pPlane->Wing()->s_Area;
-    //	if(m_pPlane->m_bBiplane) area += m_pPlane->Wing2()->m_Area;
+    //    double area = m_pPlane->Wing()->s_Area;
+    //    if(m_pPlane->m_bBiplane) area += m_pPlane->Wing2()->m_Area;
 
     str = QString("%1").arg(m_pPlane->wing()->m_PlanformArea*Units::m2toUnit(),7,'f',2);
     m_pctrlWingSurface->setText(str);
@@ -1093,7 +1093,7 @@ void PlaneDlg::setupLayout()
         m_pctrlSurf3 = new QLabel("dm2", this);
         m_pctrlLen12 = new QLabel("mm", this);
         m_pctrlLen13 = new QLabel("mm", this);
-        //		m_pctrlVolume = new QLabel("mm3", this);
+        //        m_pctrlVolume = new QLabel("mm3", this);
         pData1Layout->addWidget(lab101, 1, 1);
         pData1Layout->addWidget(m_pctrlWingSurface,1,2);
         pData1Layout->addWidget(m_pctrlSurf1, 1, 3);

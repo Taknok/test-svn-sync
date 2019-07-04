@@ -35,7 +35,7 @@
 
 /**
 *@brief
-*	This class implements the operating point object which stores the data of plane analysis
+*    This class implements the operating point object which stores the data of plane analysis
 *
     In the case of an analysis of an independant wing, the instance of this WingOpp class is
     uniquely associated to an instance of a WPolar, which is itself uniquely associated to the Wing object.
@@ -82,12 +82,12 @@ private:
     void createWOpp(void *pWingPtr, void *pWPolarPtr);
 
 private:
-    QString m_WingName;	// the wing name to which the WingOpp belongs
-    QString m_PlrName; 	// the polar name to which the WingOpp belongs
+    QString m_WingName;    // the wing name to which the WingOpp belongs
+    QString m_PlrName;     // the polar name to which the WingOpp belongs
 
-    int m_nWakeNodes;	        /**< the number of wake nodes */
-    int m_NXWakePanels;	        /**< the number of wake panels */
-    int m_nControls;	        /**< the number of control surfaces associated to the WingOpp */
+    int m_nWakeNodes;            /**< the number of wake nodes */
+    int m_NXWakePanels;            /**< the number of wake panels */
+    int m_nControls;            /**< the number of control surfaces associated to the WingOpp */
 
     double m_FirstWakePanel;    /**< the size of the first wake panel in the array. */
     double m_WakeFactor;        /**< the geometric progression factor of the panel lengths in a column of wake panels */
@@ -96,11 +96,11 @@ private:
 
 
 public:
-    bool m_bOut;		/**< true if there was an interpolation error of the viscous properties for this WingOpp */
+    bool m_bOut;        /**< true if there was an interpolation error of the viscous properties for this WingOpp */
 
-    int m_NVLMPanels;	/**< the number of panels */
-    int m_NStation;		/**< the number of stations along the span */
-    int m_nFlaps;		/**< the number of trailing edge flaps */
+    int m_NVLMPanels;    /**< the number of panels */
+    int m_NStation;        /**< the number of stations along the span */
+    int m_nFlaps;        /**< the number of trailing edge flaps */
 
     XFLR5::enumAnalysisMethod m_AnalysisMethod;   /**< defines by which type of method (LLT, VLM, PANEL), this WingOpp was calculated */
 
@@ -135,7 +135,7 @@ public:
     Vector3d m_CP;         /**< the position of the centre of pressure */
 
     double m_Chord[MAXSPANSTATIONS+1];      /**< the chord lengths at stations */
-    double m_Twist[MAXSPANSTATIONS+1];		/**< the twist at span stations */
+    double m_Twist[MAXSPANSTATIONS+1];        /**< the twist at span stations */
 
     double m_SpanPos[MAXSPANSTATIONS+1];    /**< the spanwise position of the stations */
     double m_Ai[MAXSPANSTATIONS+1];         /**< the calculated induced angles, in degrees */

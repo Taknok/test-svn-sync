@@ -25,6 +25,7 @@
 #include <gl3dview.h>
 
 class Wing;
+class GL3dWingDlg;
 
 class gl3dWingView : public gl3dView
 {
@@ -45,6 +46,7 @@ public slots:
 
 private:
     Wing *m_pWing;
+    GL3dWingDlg *m_pGL3dWingDlg;
 };
 
 #endif // GL3DWINGVIEW_H

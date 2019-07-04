@@ -128,7 +128,7 @@ QWidget *EditObjectDelegate::createEditor(QWidget *parent, const QStyleOptionVie
         }
         case XFLR5::WINGTYPE:
         {
-            /*		QComboBox *editor = new QComboBox(parent);
+            /*        QComboBox *editor = new QComboBox(parent);
             editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
             //fill comboboxes here
             editor->addItem("MAINWING");
@@ -182,7 +182,7 @@ void EditObjectDelegate::setEditorData(QWidget *editor, const QModelIndex &index
         QLineEdit *pLineEdit = (QLineEdit*)editor;
         pLineEdit->setText(strong);
     }
-    //	else if(dataType==BOOL || dataType==PANELDISTRIBUTION || dataType==FOILNAME || dataType==BODYTYPE)
+    //    else if(dataType==BOOL || dataType==PANELDISTRIBUTION || dataType==FOILNAME || dataType==BODYTYPE)
     else
     {
         QString strong = index.model()->data(index, Qt::EditRole).toString();
@@ -214,8 +214,8 @@ void EditObjectDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
         QLineEdit *pLineEdit = (QLineEdit*)editor;
         model->setData(index, pLineEdit->text(), Qt::EditRole);
     }
-    //	else if(dataType==BOOL || dataType==PANELDISTRIBUTION || dataType==FOILNAME ||
-    //			dataType==BODYTYPE || dataType==POLARTYPE || dataType==ANALYSISMETHOD || dataType==REFDIMENSIONS)
+    //    else if(dataType==BOOL || dataType==PANELDISTRIBUTION || dataType==FOILNAME ||
+    //            dataType==BODYTYPE || dataType==POLARTYPE || dataType==ANALYSISMETHOD || dataType==REFDIMENSIONS)
     else
     {
         QString strong;
@@ -256,8 +256,8 @@ void EditObjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
         myOption.displayAlignment = Qt::AlignLeft | Qt::AlignVCenter;
         strong = index.model()->data(index, Qt::DisplayRole).toString();
     }
-    //	else if(dataType==BOOL || dataType==PANELDISTRIBUTION || dataType==FOILNAME ||
-    //			dataType==BODYTYPE || dataType==POLARTYPE || dataType==ANALYSISMETHOD || dataType==REFDIMENSIONS)
+    //    else if(dataType==BOOL || dataType==PANELDISTRIBUTION || dataType==FOILNAME ||
+    //            dataType==BODYTYPE || dataType==POLARTYPE || dataType==ANALYSISMETHOD || dataType==REFDIMENSIONS)
     else
     {
         myOption.displayAlignment = Qt::AlignLeft | Qt::AlignVCenter;
@@ -266,7 +266,7 @@ void EditObjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
 
     QFont myFont(myOption.font);
 
-    /*	if(index.column()==0)
+    /*    if(index.column()==0)
     {
         myFont.setWeight(QFont::Bold);
         painter->setFont(myFont);

@@ -164,7 +164,7 @@ private:
     int m_nNodes;               /**< the number of nodes  */
     int m_MatSize;              /**< the number of panels. Is also the size of the linear problem */
     int m_nWakeNodes;           /**< the number of wake nodes */
-    int m_WakeSize;	            /**< the number of wake elements */
+    int m_WakeSize;                /**< the number of wake elements */
     int m_NWakeColumn;          /**< the number of wake columns, which is also the number of panels in the spanwise direction */
 
 
@@ -226,9 +226,9 @@ private:
     Panel *m_pRefWakePanel;     /**< a copy of the reference wake node array if wake needs to be reset */
     Panel *m_pMemPanel;         /**< a copy of the reference panel array if the panels need to be restored, for instance after control surfaces have been rotated*/
 
-    Vector3d *m_pNode;	        /**< the working array of nodes  */
-    Vector3d *m_pMemNode;	    /**< a copy of the reference node array, if the nodes need to be restored */
-    Vector3d *m_pWakeNode;	    /**< the current working wake node array */
+    Vector3d *m_pNode;            /**< the working array of nodes  */
+    Vector3d *m_pMemNode;        /**< a copy of the reference node array, if the nodes need to be restored */
+    Vector3d *m_pWakeNode;        /**< the current working wake node array */
     Vector3d *m_pRefWakeNode;   /**< a copy of the reference wake node array if the flat wake geometry needs to be restored */
     Vector3d *m_pTempWakeNode;  /**< a temporary array to hold the calculations of wake roll-up */
 
@@ -241,9 +241,9 @@ private:
     int m_NSpanStations;
     Vector3d VG, CG;
     double phiG;
-    //	Vector3d h, r0, r1, r2, Psi, t, Far;
-    //	double r1v,r2v,ftmp, Omega;
-    //	Vector3d *m_pR[5];
+    //    Vector3d h, r0, r1, r2, Psi, t, Far;
+    //    double r1v,r2v,ftmp, Omega;
+    //    Vector3d *m_pR[5];
 
 public:
     double *m_Ai;     /**< The array of calculated induced angles */
@@ -274,15 +274,15 @@ public: //stability analysis method and variables
 
     double u0;              /**< steady state x-velocity, used in stability analysis */
     double Theta0;          /**< steady state pitch angle, used in stability analysis */
-    double m_ALong[4][4];	/**< The longitudinal state matrix */
-    double m_ALat[4][4];	/**< The lateral state matrix */
+    double m_ALong[4][4];    /**< The longitudinal state matrix */
+    double m_ALat[4][4];    /**< The lateral state matrix */
     double m_BLong[4];      /**< The longitudinal control vector */
     double m_BLat[4];       /**< The lateral control vector */
-    double m_R[3][3];	    /**< Rotation matrix, used as a temp variable in the calculations */
+    double m_R[3][3];        /**< Rotation matrix, used as a temp variable in the calculations */
 
 
-    double m_Ib[3][3];	          /**< Inertia tensor in body (geometrical) axis */
-    double m_Is[3][3];	          /**< Inertia tensor in stability axis */
+    double m_Ib[3][3];              /**< Inertia tensor in body (geometrical) axis */
+    double m_Is[3][3];              /**< Inertia tensor in stability axis */
 
     std::complex<double> m_rLong[4];   /**< complex longitudinal eigenvalues resulting from the stability analysis*/
     std::complex<double> m_rLat[4];    /**< complex lateral eigenvalues resulting from the stability analysis*/

@@ -30,7 +30,7 @@
 
 gl3dWingView::gl3dWingView(QWidget *pParent) : gl3dView(pParent)
 {
-    m_pParent = pParent;
+    m_pGL3dWingDlg = dynamic_cast<GL3dWingDlg*>(pParent);
     m_pWing = nullptr;
 }
 
@@ -38,8 +38,6 @@ gl3dWingView::gl3dWingView(QWidget *pParent) : gl3dView(pParent)
 
 void gl3dWingView::glRenderView()
 {
-    GL3dWingDlg *pDlg = (GL3dWingDlg*)m_pParent;
-
     if(m_pWing)
     {
         paintWing(0, m_pWing);
@@ -47,15 +45,14 @@ void gl3dWingView::glRenderView()
         if(m_bVLMPanels)  paintEditWingMesh(m_vboEditWingMesh[0]);
         if(m_bShowMasses)
             paintMasses(m_pWing->volumeMass(), Vector3d(0.0,0.0,0.0), "Structural mass", m_pWing->m_PointMass);
-        if(pDlg->iSection()>=0) paintSectionHighlight();
+        if(m_pGL3dWingDlg->iSection()>=0) paintSectionHighlight();
     }
 }
 
 
 void gl3dWingView::paintGL()
 {
-    GL3dWingDlg *pDlg = (GL3dWingDlg*)m_pParent;
-    pDlg->glMake3DObjects();
+    m_pGL3dWingDlg->glMake3DObjects();
 
     paintGL3();
     paintOverlay();
@@ -87,9 +84,7 @@ void gl3dWingView::set3DRotationCenter(QPoint point)
 
     bool bIntersect = false;
 
-
-    GL3dWingDlg *pDlg = (GL3dWingDlg*)m_pParent;
-    if(pDlg->intersectObject(AA, m_transIncrement, I))
+    if(m_pGL3dWingDlg->intersectObject(AA, m_transIncrement, I))
     {
         bIntersect = true;
         PP.set(I);
@@ -126,13 +121,13 @@ void gl3dWingView::glMakeWingSectionHighlight(Wing *pWing, int iSectionHighLight
     for(int jSection=0; jSection<pWing->NWingSection(); jSection++)
     {
         if(jSection==iSectionHighLight) break;
-        if(jSection<pWing->NWingSection()-1 &&	fabs(pWing->YPosition(jSection+1)-pWing->YPosition(jSection)) > Wing::minPanelSize())
+        if(jSection<pWing->NWingSection()-1 &&    fabs(pWing->YPosition(jSection+1)-pWing->YPosition(jSection)) > Wing::minPanelSize())
             iSection++;
     }
 
     m_HighlightLineSize = CHORDPOINTS * 2;
     int bufferSize = m_HighlightLineSize *2 *3;
-    float *pHighlightVertexArray = new float[bufferSize];
+    QVector<float> pHighlightVertexArray(bufferSize);
 
     m_nHighlightLines = 0;
     int iv=0;
@@ -155,7 +150,7 @@ void gl3dWingView::glMakeWingSectionHighlight(Wing *pWing, int iSectionHighLight
         }
         for (int lx=CHORDPOINTS-1; lx>=0; lx--)
         {
-            double xRel = (double)lx/(double)(CHORDPOINTS-1);
+            double xRel = double(lx)/double(CHORDPOINTS-1);
             pSurf->getSidePoint(xRel, true, BOTSURFACE, Point, Normal);
             pHighlightVertexArray[iv++] = Point.xf();
             pHighlightVertexArray[iv++] = Point.yf();
@@ -219,9 +214,9 @@ void gl3dWingView::glMakeWingSectionHighlight(Wing *pWing, int iSectionHighLight
     m_vboHighlight.destroy();
     m_vboHighlight.create();
     m_vboHighlight.bind();
-    m_vboHighlight.allocate(pHighlightVertexArray, bufferSize*sizeof(float));
+    m_vboHighlight.allocate(pHighlightVertexArray.data(), bufferSize*int(sizeof(float)));
     m_vboHighlight.release();
-    delete [] pHighlightVertexArray;
+
 }
 
 

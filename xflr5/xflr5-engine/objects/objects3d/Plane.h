@@ -56,7 +56,7 @@ public:
     Plane();
     ~Plane();
 
-    //	double VolumeMass() {return m_VolumeMass;}
+    //    double VolumeMass() {return m_VolumeMass;}
     double totalMass();
     double tailVolume();
 
@@ -183,7 +183,7 @@ private:
     bool m_bFin;                                /**< true if this Plane has a fin*/
     bool m_bStab;                               /**< true if this Plane has an elevator */
 
-    //	double m_VolumeMass;                        /**< the mass of the Plane's structure, excluding point masses */
+    //    double m_VolumeMass;                        /**< the mass of the Plane's structure, excluding point masses */
     double m_TotalMass;                         /**< the Plane's total mass, i.e. the sum of the volume mass and of the point masses */
 
     QString m_PlaneName;                        /**< the Plane's name; this name is used to identify the object and as a reference for child WPolar and PlaneOpp objects. */

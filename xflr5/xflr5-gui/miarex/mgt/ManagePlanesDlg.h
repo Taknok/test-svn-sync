@@ -72,7 +72,7 @@ private:
     QTableView *m_pctrlPlaneTable;
     QStandardItemModel *m_pPlaneModel;
     PlaneTableDelegate *m_pPlaneDelegate;
-    //	QItemSelectionModel *m_pSelectionModel;
+    //    QItemSelectionModel *m_pSelectionModel;
 
     int *m_pPrecision;
 

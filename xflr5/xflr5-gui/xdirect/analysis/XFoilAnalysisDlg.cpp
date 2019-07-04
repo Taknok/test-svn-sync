@@ -93,7 +93,7 @@ XFoilAnalysisDlg::XFoilAnalysisDlg(QWidget *pParent) : QDialog(pParent)
 
 XFoilAnalysisDlg::~XFoilAnalysisDlg()
 {
-    //	Trace("Destroying XFoilAnalysisDlg");
+    //    Trace("Destroying XFoilAnalysisDlg");
     if(m_pXFoilTask) delete m_pXFoilTask;
     if(m_pXFile) delete m_pXFile;
     if(m_pRmsGraph) delete m_pRmsGraph;
@@ -361,12 +361,12 @@ void XFoilAnalysisDlg::onProgress()
     if(m_pXFoilTask->m_OutMessage.length())
     {
         m_pctrlTextOutput->insertPlainText(m_pXFoilTask->m_OutMessage);
-        //		m_pctrlTextOutput->textCursor().movePosition(QTextCursor::End);
+        //        m_pctrlTextOutput->textCursor().movePosition(QTextCursor::End);
         m_pctrlTextOutput->ensureCursorVisible();
     }
     m_pXFoilTask->m_OutMessage.clear();
-    //	m_pGraphWidget->update();
-    //	update();
+    //    m_pGraphWidget->update();
+    //    update();
 
     repaint();
 

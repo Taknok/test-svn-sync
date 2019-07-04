@@ -51,7 +51,7 @@ public slots:
 private:
     void setupMainLayout();
 
-    //	QStackedWidget *m_pLegendStack;
+    //    QStackedWidget *m_pLegendStack;
     OpPointWidget *m_pOpPointWidget;
 
     QGridLayout *m_pMainGridLayout;

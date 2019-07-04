@@ -50,12 +50,12 @@ void BodyFrameWt::setScale()
     if(!m_pBody)
     {
         //scale is set by user zooming
-        m_fRefScale = (double)rect().width();
+        m_fRefScale = rect().width();
         m_fScale = m_fRefScale;
     }
     else
     {
-        m_fRefScale = ((double)rect().width())/(m_pBody->length()/15.0);
+        m_fRefScale = (double(rect().width()))/(m_pBody->length()/15.0);
         m_fScale = m_fRefScale;
 
     }
@@ -97,8 +97,6 @@ void BodyFrameWt::paintEvent(QPaintEvent *event)
 }
 
 
-
-
 void BodyFrameWt::drawFrameLines()
 {
     if(!m_pBody) return;
@@ -111,8 +109,8 @@ void BodyFrameWt::drawFrameLines()
     QPainter painter(this);
     painter.save();
     nh = 23;
-    //	xinc = 0.1;
-    hinc = 1.0/(double)(nh-1);
+    //    xinc = 0.1;
+    hinc = 1.0/double(nh-1);
 
     QPen framePen(color(m_pBody->bodyColor()));
     framePen.setWidth(2);

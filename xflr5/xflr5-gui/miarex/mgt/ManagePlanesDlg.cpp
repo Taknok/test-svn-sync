@@ -41,7 +41,7 @@ ManagePlanesDlg::ManagePlanesDlg(QWidget *pParent) : QDialog(pParent)
     setWindowTitle(tr("Plane Object Management"));
 
     m_pPlane     = nullptr;
-    //	m_pSelectionModel = nullptr;
+    //    m_pSelectionModel = nullptr;
     m_pPlaneDelegate = nullptr;
     m_pPrecision = nullptr;
 
@@ -65,7 +65,7 @@ void ManagePlanesDlg::onButton(QAbstractButton *pButton)
 
 ManagePlanesDlg::~ManagePlanesDlg()
 {
-    //	if(m_pSelectionModel)   delete m_pSelectionModel;
+    //    if(m_pSelectionModel)   delete m_pSelectionModel;
     if(m_pPlaneDelegate)    delete m_pPlaneDelegate;
     if(m_pPrecision)        delete [] m_pPrecision;
     if(m_pPlaneModel)       delete m_pPlaneModel;
@@ -172,7 +172,7 @@ void ManagePlanesDlg::setupLayout()
             m_pctrlPlaneTable->setMinimumWidth(800);
 
             m_pctrlDescription = new QTextEdit;
-            //	m_pctrlDescription->setEnabled(false);
+            //    m_pctrlDescription->setEnabled(false);
             QLabel *Description = new QLabel(tr("Description:"));
             pLeftLayout->addWidget(m_pctrlPlaneTable);
             pLeftLayout->addWidget(Description);

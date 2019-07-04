@@ -67,7 +67,7 @@ LLTAnalysisDlg::LLTAnalysisDlg(QWidget *pParent) : QDialog(pParent)
     m_pGraphWidget->setGraph(m_pIterGraph);
     m_pIterGraph->copySettings(&Settings::s_RefGraph, false);
 
-    //	m_pIterGraph->SetXTitle(tr("Iterations"));
+    //    m_pIterGraph->SetXTitle(tr("Iterations"));
     m_pIterGraph->setYTitle("");
     QFont fnt("Symbol");
     m_pIterGraph->setTitleFont(fnt);
@@ -165,8 +165,8 @@ void LLTAnalysisDlg::setupLayout()
 {
     QDesktopWidget desktop;
     QRect r = desktop.geometry();
-    //	setMinimumHeight(r.height()*2/3);
-    //	setMinimumWidth((int)(r.width()*2.0/5.0));
+    //    setMinimumHeight(r.height()*2/3);
+    //    setMinimumWidth((int)(r.width()*2.0/5.0));
 
     m_pctrlTextOutput = new QTextEdit;
     m_pctrlTextOutput->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
@@ -345,7 +345,7 @@ void LLTAnalysisDlg::updateView()
 /**Updates the progress of the analysis in the slider widget */
 void LLTAnalysisDlg::onProgress()
 {
-    /*	if(m_strOut.length())
+    /*    if(m_strOut.length())
     {
         m_pctrlTextOutput->insertPlainText(m_strOut);
         m_pctrlTextOutput->textCursor().movePosition(QTextCursor::End);

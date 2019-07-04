@@ -96,9 +96,9 @@ Settings::Settings(QWidget *pParent) : QWidget(pParent)
 
 void Settings::setDefaultFonts()
 {
-    //	QFontDatabase fntDatabase;
-    //	QStringList fontFamiliyList = fntDatabase.families();
-    //	for (int i=0; i<fontFamiliyList.count(); i++) qDebug()<<fontFamiliyList.at(i);
+    //    QFontDatabase fntDatabase;
+    //    QStringList fontFamiliyList = fntDatabase.families();
+    //    for (int i=0; i<fontFamiliyList.count(); i++) qDebug()<<fontFamiliyList.at(i);
 
     QFont generalFont(QFontDatabase::systemFont(QFontDatabase::GeneralFont));
     QFont fixedFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
@@ -108,8 +108,8 @@ void Settings::setDefaultFonts()
     s_TextFont = QFont(fixedFont);
     s_TableFont = QFont(fixedFont);
 
-    //	qDebug()<<"done"<<s_TextFont.family()<<s_TextFont.pointSize();
-    //	qDebug()<<"______";
+    //    qDebug()<<"done"<<s_TextFont.family()<<s_TextFont.pointSize();
+    //    qDebug()<<"______";
 }
 
 void Settings::setupLayout()
@@ -389,7 +389,7 @@ void Settings::onTableFont()
 {
     bool bOK;
     QFont TableFont;
-    //	TableFont.setStyleHint(QFont::TypeWriter, QFont::OpenGLCompatible);
+    //    TableFont.setStyleHint(QFont::TypeWriter, QFont::OpenGLCompatible);
 
     TableFont = QFontDialog::getFont(&bOK, s_TableFont, this);
 
@@ -517,7 +517,7 @@ void Settings::onTheme()
 
 void Settings::setColorList()
 {
-    //	QStringList colorList = QColor::colorNames();
+    //    QStringList colorList = QColor::colorNames();
     s_colorList.clear();
     s_colorList.append("#000000");
     s_colorList.append("#0A0A0A");

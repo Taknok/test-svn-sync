@@ -186,17 +186,17 @@ void ArcBall::quatToMatrix(float* mat, Quaternion Qt)
     wy = Qt.a*Qt.qy;
     wz = Qt.a*Qt.qz;
 
-    mat[0] = (float)(1 - 2*y2 - 2*z2);
-    mat[1] = (float)(2*xy + 2*wz);
-    mat[2] = (float)(2*xz - 2*wy);
+    mat[0] = float(1 - 2*y2 - 2*z2);
+    mat[1] = float(2*xy + 2*wz);
+    mat[2] = float(2*xz - 2*wy);
 
-    mat[4] = (float)(2*xy - 2*wz);
-    mat[5] = (float)(1 - 2*x2 - 2*z2);
-    mat[6] = (float)(2*yz + 2*wx);
+    mat[4] = float(2*xy - 2*wz);
+    mat[5] = float(1 - 2*x2 - 2*z2);
+    mat[6] = float(2*yz + 2*wx);
 
-    mat[8] = (float)(2*xz + 2*wy);
-    mat[9] = (float)(2*yz - 2*wx);
-    mat[10]= (float)(1 - 2*x2 - 2*y2);
+    mat[8] = float(2*xz + 2*wy);
+    mat[9] = float(2*yz - 2*wx);
+    mat[10]= float(1 - 2*x2 - 2*y2);
 
     mat[11] = 0.0;
     mat[12] = 0.0;
@@ -208,11 +208,11 @@ void ArcBall::quatToMatrix(float* mat, Quaternion Qt)
 
 void ArcBall::matToQuat(Quaternion &qt, float *mat)
 {
-    qt.a = sqrt(1.0 + mat[0] + mat[5] + mat[10]) / 2.0;
+    qt.a = sqrt(1.0 +double(mat[0] + mat[5] + mat[10])) / 2.0;
     double w4 = (4.0 * qt.a);
-    qt.qx = (mat[8] - mat[6]) / w4;
-    qt.qy = (mat[2] - mat[8]) / w4;
-    qt.qz = (mat[4] - mat[1]) / w4;
+    qt.qx = double(mat[8] - mat[6]) / w4;
+    qt.qy = double(mat[2] - mat[8]) / w4;
+    qt.qz = double(mat[4] - mat[1]) / w4;
 }
 
 
@@ -365,7 +365,7 @@ void ArcBall::sphereCoords(double const &ax, double const &ay, Vector3d &V)
 
     if(ab_sphere2>ax*ax+ay*ay) V.set(ax,ay,sqrt(ab_sphere2-ax*ax-ay*ay));
     else                       V.set(ax,ay,0.0);
-    //	else return EdgeCoords(ax, ay);
+    //    else return EdgeCoords(ax, ay);
 
     V.normalize();
 }

@@ -95,15 +95,15 @@ void EditPolarDefDlg::setupLayout()
 #if QT_VERSION >= 0x050000
     m_pStruct->header()->setSectionResizeMode(QHeaderView::Interactive);
 #endif
-    //	m_pPlaneStruct->header()->setDefaultSectionSize(239);
+    //    m_pPlaneStruct->header()->setDefaultSectionSize(239);
 
     m_pStruct->header()->setStretchLastSection(true);
     m_pStruct->header()->setDefaultAlignment(Qt::AlignCenter);
 
-    //	m_pStruct->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed);
+    //    m_pStruct->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed);
     m_pStruct->setEditTriggers(QAbstractItemView::AllEditTriggers);
     m_pStruct->setSelectionBehavior (QAbstractItemView::SelectRows);
-    //	m_pStruct->setIndentation(31);
+    //    m_pStruct->setIndentation(31);
     m_pStruct->setWindowTitle(tr("Objects"));
 
     m_pModel = new QStandardItemModel(this);
@@ -113,7 +113,7 @@ void EditPolarDefDlg::setupLayout()
 
     m_pStruct->setModel(m_pModel);
 
-    /*	QItemSelectionModel *pSelectionModel = new QItemSelectionModel(m_pModel);
+    /*    QItemSelectionModel *pSelectionModel = new QItemSelectionModel(m_pModel);
     m_pStruct->setSelectionModel(pSelectionModel);
     connect(pSelectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(onItemClicked(QModelIndex)));*/
 
@@ -457,14 +457,14 @@ void EditPolarDefDlg::readData()
     else if (m_pWPolar->analysisMethod() == XFLR5::VLMMETHOD)
     {
         m_pWPolar->bThinSurfaces() = true;
-        //		m_pWPolar->analysisMethod() = XFLR5::PANELMETHOD;
+        //        m_pWPolar->analysisMethod() = XFLR5::PANELMETHOD;
     }
     else if (m_pWPolar->analysisMethod() == XFLR5::PANEL4METHOD)
     {
         m_pWPolar->bThinSurfaces() = false;
     }
 
-    //	m_pWPolar->bThinSurfaces() = m_pWPolar->analysisMethod()==XFLR5::PANELMETHOD && m_pPlane->isWing();
+    //    m_pWPolar->bThinSurfaces() = m_pWPolar->analysisMethod()==XFLR5::PANELMETHOD && m_pPlane->isWing();
     return;
 }
 

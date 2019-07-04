@@ -119,7 +119,7 @@ private:
 public:
     static bool s_bWindowMaximized;
     static QPoint s_WindowPosition;   /**< the position on the client area of the dialog's topleft corner */
-    static QSize s_WindowSize;	 /**< the window size in the client area */
+    static QSize s_WindowSize;     /**< the window size in the client area */
     static QByteArray m_HorizontalSplitterSizes;
 
     QPixmap m_PixText;
@@ -130,7 +130,7 @@ private:
     EditObjectDelegate *m_pDelegate;
     QStandardItemModel *m_pModel;
 
-    //	ThreeDWidget *m_pgl1Widget;
+    //    ThreeDWidget *m_pgl1Widget;
     gl3dPlaneView *m_pglPlaneView;
 
     QCheckBox *m_pctrlAxes, *m_pctrlLight, *m_pctrlSurfaces, *m_pctrlOutline, *m_pctrlPanels;

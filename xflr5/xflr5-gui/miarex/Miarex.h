@@ -376,19 +376,19 @@ public:
     bool m_bShowWingCurve[MAXWINGS];   /**< true if various plane's wing curves shoud be displayed*/
     bool m_bShowFlapMoments;           /**< true if the flap moment values should be display together with the operating point results*/
     bool m_bTrans;                     /**< true if the view is being dragged */
-    bool m_bTransGraph;	               /**< true if a graph is being dragged */
+    bool m_bTransGraph;                   /**< true if a graph is being dragged */
     bool m_bType1;                     /**< true if polars of type 1 are to be displayed */
     bool m_bType2;                     /**< true if polars of type 2 are to be displayed */
     bool m_bType4;                     /**< true if polars of type 4 are to be displayed */
     bool m_bType7;                     /**< true if polars of type 71 are to be displayed */
-    bool m_bXCmRef; 	               /**< true if the position of the reference point for the moments should be displayed in the operating point view*/
+    bool m_bXCmRef;                    /**< true if the position of the reference point for the moments should be displayed in the operating point view*/
     bool m_bXBot;                      /**< true if the transition on the bottom surface should be displayed in the operating point or in 3D view*/
     bool m_bXCP;                       /**< true if the lift curve should be displayed in the operating point or in the 3D view*/
     bool m_bXTop;                      /**< true if the transition on the top surface should be displayed in the operating point or in 3D view */
     bool m_bXPressed;                  /**< true if the X key is pressed */
     bool m_bYPressed;                  /**< true if the Y key is pressed */
 
-    static bool s_bLogFile;			       /**< true if the log file warning is turned on */
+    static bool s_bLogFile;                   /**< true if the log file warning is turned on */
 
 
 
@@ -411,9 +411,9 @@ public:
     WingOpp *m_pWOpp[MAXWINGS];   /**< an array of pointers to the operating points of the four wings of the currently selected plane */
 
 
-    static QVector<Plane*>    *m_poaPlane;		/**< for convenienece, a pointer to the array of pointers to plane objects */
-    static QVector<WPolar*>   *m_poaWPolar;		/**< for convenienece, a pointer to the array of UFO polar objects */
-    static QVector<PlaneOpp*> *m_poaPOpp;			/**< for convenienece, a pointer to the array of Plane OpPoint objects */
+    static QVector<Plane*>    *m_poaPlane;        /**< for convenienece, a pointer to the array of pointers to plane objects */
+    static QVector<WPolar*>   *m_poaWPolar;        /**< for convenienece, a pointer to the array of UFO polar objects */
+    static QVector<PlaneOpp*> *m_poaPOpp;            /**< for convenienece, a pointer to the array of Plane OpPoint objects */
 
 
     Plane * m_pCurPlane;          /**< the currently active Plane */
@@ -430,7 +430,7 @@ public:
     int m_LLTMaxIterations;     /**< the number of iterations for LLT */
     int m_posAnimateWOpp;       /**< the current animation aoa ind ex for WOpp animation */
     int m_posAnimateMode;       /**< the current animation aoa index for Mode animation */
-    int m_WakeInterNodes;		/**< number of intermediate nodes between wake panels */
+    int m_WakeInterNodes;        /**< number of intermediate nodes between wake panels */
 
     XFLR5::enumMiarexViews m_iView;    /**< defines the currently active view */
 

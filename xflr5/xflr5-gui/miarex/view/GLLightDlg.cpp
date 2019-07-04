@@ -372,12 +372,12 @@ void GLLightDlg::setLabels()
     strong.sprintf("%7.1f", double(s_Light.m_Diffuse));
     m_pctrlLightDiffuseLabel->setText(strong);
     strong.sprintf("%7.1f", double(s_Light.m_Specular));
-    m_pctrlLightSpecularLabel->setText(strong);	strong.sprintf("%7.1f", double(s_Light.m_X)*Units::mtoUnit());
+    m_pctrlLightSpecularLabel->setText(strong);    strong.sprintf("%7.1f", double(s_Light.m_X)*Units::mtoUnit());
     m_pctrlposXValue->setText(strong + Units::lengthUnitLabel());
     strong.sprintf("%7.1f", double(s_Light.m_Y)*Units::mtoUnit());
     m_pctrlposYValue->setText(strong + Units::lengthUnitLabel());
     strong.sprintf("%7.1f", double(s_Light.m_Z)*Units::mtoUnit());
-    m_pctrlposZValue->setText(strong + Units::lengthUnitLabel());	strong.sprintf("%7.1f", double(s_Light.m_Red));
+    m_pctrlposZValue->setText(strong + Units::lengthUnitLabel());    strong.sprintf("%7.1f", double(s_Light.m_Red));
     m_pctrlLightRed->setText(strong);
     strong.sprintf("%7.1f", double(s_Light.m_Green));
     m_pctrlLightGreen->setText(strong);

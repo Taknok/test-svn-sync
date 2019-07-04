@@ -34,98 +34,98 @@
 LineBtn::LineBtn(QWidget *parent)
     : QAbstractButton(parent)
 {
-	QSizePolicy szPolicyExpanding;
-	szPolicyExpanding.setHorizontalPolicy(QSizePolicy::MinimumExpanding);
-	szPolicyExpanding.setVerticalPolicy(QSizePolicy::Minimum);
-//	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-	setSizePolicy(szPolicyExpanding);
+    QSizePolicy szPolicyExpanding;
+    szPolicyExpanding.setHorizontalPolicy(QSizePolicy::MinimumExpanding);
+    szPolicyExpanding.setVerticalPolicy(QSizePolicy::Minimum);
+//    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    setSizePolicy(szPolicyExpanding);
 
-	m_LineStyle.m_Color = Qt::darkGray;
-	m_LineStyle.m_Style = 0;
-	m_LineStyle.m_Width = 1;
-	m_LineStyle.m_PointStyle = 0;
+    m_LineStyle.m_Color = Qt::darkGray;
+    m_LineStyle.m_Style = 0;
+    m_LineStyle.m_Width = 1;
+    m_LineStyle.m_PointStyle = 0;
 }
 
 
 
 void LineBtn::mouseReleaseEvent(QMouseEvent *event)
 {
-	if (event->button() == Qt::LeftButton)
-	{
-		emit clickedLB();
-	}
-	else
-		QWidget::mouseReleaseEvent(event);
+    if (event->button() == Qt::LeftButton)
+    {
+        emit clickedLB();
+    }
+    else
+        QWidget::mouseReleaseEvent(event);
 }
 
 
 QSize LineBtn::sizeHint() const
 {
-	QFontMetrics fm(Settings::s_TextFont);
-	int w = 7 * fm.averageCharWidth();
-	int h = fm.height();
-	return QSize(w, h);
+    QFontMetrics fm(Settings::s_TextFont);
+    int w = 7 * fm.averageCharWidth();
+    int h = fm.height();
+    return QSize(w, h);
 }
 
 
 void LineBtn::setColor(QColor const & color)
 {
-	m_LineStyle.m_Color = color;
-	update();
+    m_LineStyle.m_Color = color;
+    update();
 }
 
 
 void LineBtn::setStyle(int const & style)
 {
-	m_LineStyle.m_Style = style;
-	update();
+    m_LineStyle.m_Style = style;
+    update();
 }
 
 
 void LineBtn::setWidth(int const & width)
 {
-	m_LineStyle.m_Width = width;
-	update();
+    m_LineStyle.m_Width = width;
+    update();
 }
 
 
 void LineBtn::setPointStyle(int const & pointStyle)
 {
-	m_LineStyle.m_PointStyle = pointStyle;
-	update();
+    m_LineStyle.m_PointStyle = pointStyle;
+    update();
 }
 
 void LineBtn::setStyle(int const &style, int const &width, QColor const & color, int const & pointStyle)
 {
-	m_LineStyle.m_Style = style;
-	m_LineStyle.m_Width = width;
-	m_LineStyle.m_Color = color;
-	m_LineStyle.m_PointStyle = pointStyle;
-	update();
+    m_LineStyle.m_Style = style;
+    m_LineStyle.m_Width = width;
+    m_LineStyle.m_Color = color;
+    m_LineStyle.m_PointStyle = pointStyle;
+    update();
 }
 
 
 
 void LineBtn::paintEvent(QPaintEvent *event)
 {
-	QPainter painter(this);
-	painter.save();
+    QPainter painter(this);
+    painter.save();
 
-	QRect r = rect();
+    QRect r = rect();
 
 
-	if(isEnabled())
-	{
-	//	painter.setBrush(Qt::DiagCrossPattern);
-		painter.setBackgroundMode(Qt::TransparentMode);
+    if(isEnabled())
+    {
+    //    painter.setBrush(Qt::DiagCrossPattern);
+        painter.setBackgroundMode(Qt::TransparentMode);
 
-		QPen LinePen(m_LineStyle.m_Color);
-		LinePen.setStyle(getStyle(m_LineStyle.m_Style));
-		LinePen.setWidth(m_LineStyle.m_Width);
-		painter.setPen(LinePen);
-		painter.drawLine(r.left()+5, r.height()/2, r.width()-5, r.height()/2);
-	}
+        QPen LinePen(m_LineStyle.m_Color);
+        LinePen.setStyle(getStyle(m_LineStyle.m_Style));
+        LinePen.setWidth(m_LineStyle.m_Width);
+        painter.setPen(LinePen);
+        painter.drawLine(r.left()+5, r.height()/2, r.width()-5, r.height()/2);
+    }
 
-	painter.restore();
-	event->accept();
+    painter.restore();
+    event->accept();
 }
