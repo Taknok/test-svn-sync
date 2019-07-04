@@ -10812,7 +10812,7 @@ void XFoil::zcnorm(int mtest)
     //    influence coefficients  dz/dcn .
     //-----------------------------------------------
     //      include 'circle.inc'
-    complex<double> dzdw1, dzdw2;
+//    complex<double> dzdw1, dzdw2;
     complex<double> zcnew, zle, zte, zc_zte, zte_cn[IMX4+1];
     int m, ic;
     //---- find current le location

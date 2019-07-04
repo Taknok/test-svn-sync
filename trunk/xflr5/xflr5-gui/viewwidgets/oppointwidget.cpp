@@ -39,7 +39,7 @@
 #define PI 3.141592654
 
 
-void *OpPointWidget::s_pMainFrame = nullptr;
+MainFrame *OpPointWidget::s_pMainFrame = nullptr;
 
 /**
 *The public constructor
@@ -83,9 +83,9 @@ OpPointWidget::OpPointWidget(QWidget *parent) : QWidget(parent)
 *Overrides the keyPressEvent method of the base class.
 *Dispatches the handling to the active child application.
 */
-void OpPointWidget::keyPressEvent(QKeyEvent *event)
+void OpPointWidget::keyPressEvent(QKeyEvent *pEvent)
 {
-    switch (event->key())
+    switch (pEvent->key())
     {
         case Qt::Key_V:
         {
@@ -94,7 +94,7 @@ void OpPointWidget::keyPressEvent(QKeyEvent *event)
                 GraphDlg::setActivePage(0);
                 onGraphSettings();
             }
-            event->accept();
+            pEvent->accept();
             break;
         }
         case Qt::Key_G:
@@ -103,7 +103,7 @@ void OpPointWidget::keyPressEvent(QKeyEvent *event)
             {
                 onGraphSettings();
             }
-            event->accept();
+            pEvent->accept();
             break;
         }
         case Qt::Key_R:
@@ -121,7 +121,7 @@ void OpPointWidget::keyPressEvent(QKeyEvent *event)
             m_bYPressed = true;
             break;
 
-        default:event->ignore();
+        default:pEvent->ignore();
 
     }
 }
@@ -131,9 +131,9 @@ void OpPointWidget::keyPressEvent(QKeyEvent *event)
 *Overrides the keyReleaseEvent method of the base class.
 *Dispatches the handling to the active child application.
 */
-void OpPointWidget::keyReleaseEvent(QKeyEvent *event)
+void OpPointWidget::keyReleaseEvent(QKeyEvent *pEvent)
 {
-    Q_UNUSED(event);
+    Q_UNUSED(pEvent);
     m_bXPressed = m_bYPressed = false;
 }
 
@@ -143,13 +143,13 @@ void OpPointWidget::keyReleaseEvent(QKeyEvent *event)
 *Overrides the mousePressEvent method of the base class.
 *Dispatches the handling to the active child application.
 */
-void OpPointWidget::mousePressEvent(QMouseEvent *event)
+void OpPointWidget::mousePressEvent(QMouseEvent *pEvent)
 {
-    QPoint pt(event->x(), event->y()); //client coordinates
+    QPoint pt(pEvent->x(), pEvent->y()); //client coordinates
 
-    if(event->buttons() & Qt::LeftButton)
+    if(pEvent->buttons() & Qt::LeftButton)
     {
-        if (m_pCpGraph->isInDrawRect(event->pos()))
+        if (m_pCpGraph->isInDrawRect(pEvent->pos()))
         {
             m_bTransGraph = true;
         }
@@ -163,7 +163,7 @@ void OpPointWidget::mousePressEvent(QMouseEvent *event)
 //        if(!m_bAnimate) update();
     }
 
-    event->accept();
+    pEvent->accept();
 }
 
 
@@ -171,36 +171,36 @@ void OpPointWidget::mousePressEvent(QMouseEvent *event)
 *Overrides the mouseReleaseEvent method of the base class.
 *Dispatches the handling to the active child application.
 */
-void OpPointWidget::mouseReleaseEvent(QMouseEvent *event)
+void OpPointWidget::mouseReleaseEvent(QMouseEvent *pEvent)
 {
     m_bTransGraph = false;
     m_bTransFoil  = false;
     setCursor(Qt::CrossCursor);
-    event->accept();
+    pEvent->accept();
 }
 
 
 /**
 *Overrides the mouseMoveEvent method of the base class.
 */
-void OpPointWidget::mouseMoveEvent(QMouseEvent *event)
+void OpPointWidget::mouseMoveEvent(QMouseEvent *pEvent)
 {
     QPoint pt;
     double scale;
     double a;
 
-    pt.setX(event->x());
-    pt.setY(event->y()); //client coordinates
+    pt.setX(pEvent->x());
+    pt.setY(pEvent->y()); //client coordinates
     setFocus();
 
-    if (event->buttons() & Qt::LeftButton)
+    if (pEvent->buttons() & Qt::LeftButton)
     {
         if(m_bTransGraph)
         {
             QPoint point;
             double xu, yu, x1, y1, xmin, xmax, ymin, ymax;
 
-            point = event->pos();
+            point = pEvent->pos();
 
             // we translate the curves inside the graph
             m_pCpGraph->setAuto(false);
@@ -224,7 +224,7 @@ void OpPointWidget::mouseMoveEvent(QMouseEvent *event)
             m_FoilOffset.ry() += pt.y()-m_LastPoint.y();
         }
     }
-    else if (XDirect::curFoil() && ((event->buttons() & Qt::MidButton) || event->modifiers().testFlag(Qt::AltModifier)))
+    else if (XDirect::curFoil() && ((pEvent->buttons() & Qt::MidButton) || pEvent->modifiers().testFlag(Qt::AltModifier)))
     {
         // we zoom the graph or the foil
         if(XDirect::curFoil())
@@ -244,24 +244,21 @@ void OpPointWidget::mouseMoveEvent(QMouseEvent *event)
     m_LastPoint = pt;
     if(!m_bAnimate) update();
 
-    event->accept();
+    pEvent->accept();
 
 }
 
 
-
-void OpPointWidget::mouseDoubleClickEvent (QMouseEvent *event)
+void OpPointWidget::mouseDoubleClickEvent (QMouseEvent *pEvent)
 {
-    Q_UNUSED(event);
+    Q_UNUSED(pEvent);
     setCursor(Qt::CrossCursor);
-    if (m_pCpGraph->isInDrawRect(event->pos()))
+    if (m_pCpGraph->isInDrawRect(pEvent->pos()))
     {
         onGraphSettings();
         update();
     }
 }
-
-
 
 
 /**
@@ -283,19 +280,17 @@ void OpPointWidget::onGraphSettings()
 }
 
 
-
-
 /**
 *Overrides the resizeEvent function of the base class.
 *Dispatches the handling to the active child application.
 */
-void OpPointWidget::resizeEvent(QResizeEvent *event)
+void OpPointWidget::resizeEvent(QResizeEvent *pEvent)
 {
-    Q_UNUSED(event);
+    Q_UNUSED(pEvent);
     if(m_pCpGraph)
     {
         int h = rect().height();
-        int h4 = (int)(h/3.0);
+        int h4 = h/3;
         QRect rGraphRect = QRect(0, 0, + rect().width(), rect().height()-h4);
         m_pCpGraph->setMargin(50);
         m_pCpGraph->setDrawRect(rGraphRect);
@@ -321,11 +316,11 @@ void OpPointWidget::resetGraphScale()
  */
 void OpPointWidget::setFoilScale()
 {
-    int h, iMargin = 53;    
+    int iMargin = 53;
     if(m_pCpGraph)
     {
         iMargin = m_pCpGraph->margin();
-        h =  m_pCpGraph->clientRect()->height();
+        int h =  m_pCpGraph->clientRect()->height();
         m_FoilOffset.rx() = rect().left() + iMargin;
         m_FoilOffset.ry() = (rect().height()+h)/2;
 //        m_fScale = rect().width()-2.0*iMargin;
@@ -353,15 +348,15 @@ void OpPointWidget::setFoilScale()
 *Overrides the wheelEvent function of the base class.
 *Dispatches the handling to the active child application.
 */
-void OpPointWidget::wheelEvent(QWheelEvent *event)
+void OpPointWidget::wheelEvent(QWheelEvent *pEvent)
 {
-    if(m_pCpGraph && m_pCpGraph->isInDrawRect(event->pos()))
+    if(m_pCpGraph && m_pCpGraph->isInDrawRect(pEvent->pos()))
     {
         double zoomFactor=1.0;
 
-        QPoint pt(event->x(), event->y()); //client coordinates
+        QPoint pt(pEvent->x(), pEvent->y()); //client coordinates
 
-        if(event->delta()>0)
+        if(pEvent->delta()>0)
         {
             if(!Settings::s_bReverseZoom) zoomFactor = 1./1.06;
             else                          zoomFactor = 1.06;
@@ -399,9 +394,9 @@ void OpPointWidget::wheelEvent(QWheelEvent *event)
     {
         double zoomFactor=1.0;
 
-        QPoint pt(event->x(), event->y()); //client coordinates
+        QPoint pt(pEvent->x(), pEvent->y()); //client coordinates
 
-        if(event->delta()>0)
+        if(pEvent->delta()>0)
         {
             if(!Settings::s_bReverseZoom) zoomFactor = 1./1.06;
             else                          zoomFactor = 1.06;
@@ -424,9 +419,9 @@ void OpPointWidget::wheelEvent(QWheelEvent *event)
             m_fScale *= zoomFactor;
         }
 
-        int a = (int)((rect().right()+rect().left())/2);
+        int a = int((rect().right()+rect().left())/2);
 
-        m_FoilOffset.rx() = a + (int)((m_FoilOffset.x()-a)/scale*m_fScale);
+        m_FoilOffset.rx() = a + int((m_FoilOffset.x()-a)/scale*m_fScale);
 
 //        if(!m_bAnimate)
             update();
@@ -438,10 +433,9 @@ void OpPointWidget::wheelEvent(QWheelEvent *event)
 *Overrides the paintEvent function of the base class.
 *Dispatches the handling to the active child application.
 */
-void OpPointWidget::paintEvent(QPaintEvent *event)
+void OpPointWidget::paintEvent(QPaintEvent *pEvent)
 {
-    MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-    if(pMainFrame->m_iApp == XFLR5::XFOILANALYSIS)
+    if(s_pMainFrame->m_iApp == XFLR5::XFOILANALYSIS)
     {
         QPainter painter(this);
         painter.save();
@@ -457,7 +451,7 @@ void OpPointWidget::paintEvent(QPaintEvent *event)
         QPainter painter(this);
         painter.fillRect(rect(), Settings::s_BackgroundColor);
     }
-    event->accept();
+    pEvent->accept();
 }
 
 
@@ -520,8 +514,8 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
         NeutralPen.setStyle(getStyle(m_iNeutralStyle));
         NeutralPen.setWidth(m_iNeutralWidth);
         painter.setPen(NeutralPen);
-        painter.drawLine(rect().left(),  m_FoilOffset.y(),
-                         rect().right(), m_FoilOffset.y());
+        painter.drawLine(rect().left(),  int(m_FoilOffset.y()),
+                         rect().right(), int(m_FoilOffset.y()));
     }
     if(!m_pCpGraph->isInDrawRect(m_LastPoint) && MainFrame::s_bShowMousePos)
     {
@@ -824,8 +818,8 @@ void OpPointWidget::paintPressure(QPainter &painter, double scalex, double scale
 
             xe = (x-0.5)*cosa - y*sina + 0.5;
             ye = (x-0.5)*sina + y*cosa;
-            painter.drawLine(xs*scalex + offset.x(), -ys*scaley + offset.y(),
-                             xe*scalex + offset.x(), -ye*scaley + offset.y());
+            painter.drawLine(int(xs*scalex + offset.x()), int(-ys*scaley + offset.y()),
+                             int(xe*scalex + offset.x()), int(-ye*scaley + offset.y()));
 
             dx = xe - xs;
             dy = ye - ys;
@@ -841,11 +835,11 @@ void OpPointWidget::paintPressure(QPainter &painter, double scalex, double scale
             x2 = xs + 0.0085*dx - 0.005*dy;
             y2 = ys + 0.0085*dy + 0.005*dx;
 
-            painter.drawLine( xs*scalex + offset.x(), -ys*scaley + offset.y(),
-                              x1*scalex + offset.x(), -y1*scaley + offset.y());
+            painter.drawLine( int(xs*scalex + offset.x()), int(-ys*scaley + offset.y()),
+                              int(x1*scalex + offset.x()), int(-y1*scaley + offset.y()));
 
-            painter.drawLine( xs*scalex + offset.x(), -ys*scaley + offset.y(),
-                              x2*scalex + offset.x(), -y2*scaley + offset.y());
+            painter.drawLine( int(xs*scalex + offset.x()), int(-ys*scaley + offset.y()),
+                              int(x2*scalex + offset.x()), int(-y2*scaley + offset.y()));
         }
         else
         {
@@ -855,8 +849,8 @@ void OpPointWidget::paintPressure(QPainter &painter, double scalex, double scale
 
             xe = (x-0.5)*cosa - y*sina+ 0.5;
             ye = (x-0.5)*sina + y*cosa;
-            painter.drawLine( xs*scalex + offset.x(), -ys*scaley + offset.y(),
-                              xe*scalex + offset.x(), -ye*scaley + offset.y());
+            painter.drawLine( int(xs*scalex + offset.x()), int(-ys*scaley + offset.y()),
+                              int(xe*scalex + offset.x()), int(-ye*scaley + offset.y()));
 
             dx = xe - xs;
             dy = ye - ys;
@@ -872,11 +866,11 @@ void OpPointWidget::paintPressure(QPainter &painter, double scalex, double scale
             x2 = xe + 0.0085*dx - 0.005*dy;
             y2 = ye + 0.0085*dy + 0.005*dx;
 
-            painter.drawLine( xe*scalex + offset.x(), -ye*scaley + offset.y(),
-                              x1*scalex + offset.x(), -y1*scaley + offset.y());
+            painter.drawLine( int(xe*scalex + offset.x()), int(-ye*scaley + offset.y()),
+                              int(x1*scalex + offset.x()), int(-y1*scaley + offset.y()));
 
-            painter.drawLine( xe*scalex + offset.x(), -ye*scaley + offset.y(),
-                              x2*scalex + offset.x(), -y2*scaley + offset.y());
+            painter.drawLine( int(xe*scalex + offset.x()), int(-ye*scaley + offset.y()),
+                              int(x2*scalex + offset.x()), int(-y2*scaley + offset.y()));
         }
     }
     //last draw lift at XCP position
@@ -891,8 +885,8 @@ void OpPointWidget::paintPressure(QPainter &painter, double scalex, double scale
     xe = xs;
     ye = ys - XDirect::curOpp()->Cl/10.0;
 
-    painter.drawLine( xs*scalex + offset.x(), ys*scaley + offset.y(),
-                      xs*scalex + offset.x(), ye*scaley + offset.y());
+    painter.drawLine( int(xs*scalex + offset.x()), int(ys*scaley + offset.y()),
+                      int(xs*scalex + offset.x()), int(ye*scaley + offset.y()));
 
     dx = xe - xs;
     dy = ye - ys;
@@ -905,11 +899,11 @@ void OpPointWidget::paintPressure(QPainter &painter, double scalex, double scale
     x2 = xe + 0.0085*dx - 0.005*dy;
     y2 = ye + 0.0085*dy + 0.005*dx;
 
-    painter.drawLine( xe*scalex + offset.x(), ye*scaley + offset.y(),
-                      x1*scalex + offset.x(), y1*scaley + offset.y());
+    painter.drawLine( int(xe*scalex + offset.x()), int(ye*scaley + offset.y()),
+                      int(x1*scalex + offset.x()), int(y1*scaley + offset.y()));
 
-    painter.drawLine( xe*scalex + offset.x(), ye*scaley + offset.y(),
-                      x2*scalex + offset.x(), y2*scaley + offset.y());
+    painter.drawLine( int(xe*scalex + offset.x()), int(ye*scaley + offset.y()),
+                      int(x2*scalex + offset.x()), int(y2*scaley + offset.y()));
 
     painter.restore();
 }
@@ -1072,8 +1066,7 @@ void OpPointWidget::onResetFoilScale()
 void OpPointWidget::onShowNeutralLine()
 {
     m_bNeutralLine = !m_bNeutralLine;
-    MainFrame *pMainFrame = (MainFrame*)s_pMainFrame;
-    pMainFrame->m_pShowNeutralLine->setChecked(m_bNeutralLine);
+    s_pMainFrame->m_pShowNeutralLine->setChecked(m_bNeutralLine);
     update();
 }
 
@@ -1098,7 +1091,6 @@ void OpPointWidget::onShowPressure(bool bPressure)
     showPressure(bPressure);
     update();
 }
-
 
 
 /**

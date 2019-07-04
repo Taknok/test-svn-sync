@@ -24,6 +24,7 @@
 
 #include <QObject>
 #include <QWidget>
+
 #include <graph/graph.h>
 #include <objects/objects3d/vector3d.h>
 #include <objects/objects2d/OpPoint.h>
@@ -60,15 +61,15 @@ signals:
 
 protected:
     void contextMenuEvent (QContextMenuEvent *event);
-    void keyPressEvent(QKeyEvent *event);
-    void keyReleaseEvent(QKeyEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void paintEvent(QPaintEvent *event);
-    void resizeEvent(QResizeEvent *event);
-    void wheelEvent(QWheelEvent *event);
-    void mouseDoubleClickEvent(QMouseEvent *event);
+    void keyPressEvent(QKeyEvent *pEvent);
+    void keyReleaseEvent(QKeyEvent *pEvent);
+    void mouseMoveEvent(QMouseEvent *pEvent);
+    void mousePressEvent(QMouseEvent *pEvent);
+    void mouseReleaseEvent(QMouseEvent *pEvent);
+    void paintEvent(QPaintEvent *pEvent);
+    void resizeEvent(QResizeEvent *pEvent);
+    void wheelEvent(QWheelEvent *pEvent);
+    void mouseDoubleClickEvent(QMouseEvent *pEvent);
 
 
 private:
@@ -85,7 +86,8 @@ private:
 
     Vector3d mousetoReal(QPoint point);
 
-    static void *s_pMainFrame;   /**< A void pointer to the instance of the MainFrame object. */
+private:
+    static MainFrame *s_pMainFrame;   /**< A void pointer to the instance of the MainFrame object. */
 
     double m_fScale, m_fYScale;
     QPointF m_FoilOffset;

@@ -84,10 +84,10 @@ protected:
     void drawScale(QPainter &painter, double scalex);
     void drawScaleLegend(QPainter &painter);
     void drawBackImage(QPainter &painter);
-    void drawXGrid(QPainter &painter, double scalex, double scaley, QPointF Offset);
-    void drawYGrid(QPainter &painter, double scalex, double scaley, QPointF Offset);
-    void drawXMinGrid(QPainter &painter, double scalex, double scaley, QPointF Offset);
-    void drawYMinGrid(QPainter &painter, double scalex, double scaley, QPointF Offset);
+    void drawXGrid(QPainter &painter, double scalex, QPointF Offset);
+    void drawYGrid(QPainter &painter, double scaley, QPointF Offset);
+    void drawXMinGrid(QPainter &painter, double scalex, QPointF Offset);
+    void drawYMinGrid(QPainter &painter, double scaley, QPointF Offset);
 
     void releaseZoom();
     void zoomView(double zoomFactor);

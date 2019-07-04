@@ -27,6 +27,7 @@
 class MainFrame;
 class Miarex;
 class XDirect;
+class GraphTileWidget;
 class Graph;
 class WPolar;
 
@@ -47,7 +48,7 @@ public:
     void setGraph(Graph*pGraph){m_pGraph = pGraph;}
 
 public:
-    void *m_pParent;             /**< a void pointer to the instance of the GraphTileWidget object. */
+    GraphTileWidget *m_pGraphTileWt;             /**< a void pointer to the instance of the GraphTileWidget object. */
 
     static MainFrame *s_pMainFrame;   /**< a void pointer to the instance of the MainFrame object. */
     static Miarex *s_pMiarex;      /**< a void pointer to the instance of the QMiarex object. */
