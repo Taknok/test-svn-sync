@@ -1,28 +1,28 @@
 /****************************************************************************
 
-    Plane Class
-    Copyright (C) 2006-2016 Andre Deperrois
+Plane Class
+Copyright (C) 2006-2016 Andre Deperrois
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 *****************************************************************************/
 
 /** @file
- *
- * This file implements the class for the Plane object.
- */
+*
+* This file implements the class for the Plane object.
+*/
 
 
 
@@ -34,13 +34,13 @@
 
 
 /**
- *@class Plane
- *@brief
- * The class which defines the Plane object used in 3D calculations.
- *  - defines the plane object
- *  - provides the methods for the calculation of the plane's geometric properties
- * The data is stored in International Standard Units, i.e. meters, kg, and seconds
- * Angular data is stored in degrees
+*@class Plane
+*@brief
+* The class which defines the Plane object used in 3D calculations.
+*  - defines the plane object
+*  - provides the methods for the calculation of the plane's geometric properties
+* The data is stored in International Standard Units, i.e. meters, kg, and seconds
+* Angular data is stored in degrees
 */
 
 #include "Wing.h"
@@ -70,7 +70,6 @@ public:
     void computeBodyAxisInertia();
 
     void setAutoBodyName();
-    void setPlaneName(QString planeName);
 
     void setWings(bool bWing2, bool bStab, bool bFin);
     void setBody(Body *pBody);
@@ -93,29 +92,25 @@ public:
 * @return the LE position of the Wing
 */
     Vector3d &WingLE(int iw){return m_WingLE[iw];}
-
+    void setWingLE(int iw, Vector3d pos) {if(iw>=0&&iw<MAXWINGS) m_WingLE[iw]=pos;}
     /**
-* Returns the tilt angle of a specified Wing.
-* @param iw the index of the Wing for which the tilt angle will be returned
-* @return the LE position of the Wing
-*/
-    double &WingTiltAngle(int iw){ return m_WingTiltAngle[iw];}
+    * Returns the tilt angle of a specified Wing.
+    * @param iw the index of the Wing for which the tilt angle will be returned
+    * @return the LE position of the Wing
+    */
+    double const &WingTiltAngle(int iw) const{return m_WingTiltAngle[iw];}
+    void setWingTiltAngle(int iw, double ry) {if(iw>=0&&iw<MAXWINGS) m_WingTiltAngle[iw]=ry;}
 
     /** Returns true if the plane has a secondary main wing, false otherwise.*/
-    bool BiPlane(){return m_bBiplane;}
+    bool biPlane() const {return m_bBiplane;}
 
     /** Returns the Plane's name. */
     const QString& planeName() const {return m_PlaneName;}
-
-    /** Returns a reference to the QString holding the Plane's name. */
-    QString& rPlaneName() {return m_PlaneName;}
+    void setPlaneName(QString planeName);
 
     /** Returns the Plane's description. */
     const QString& planeDescription() const {return m_PlaneDescription;}
-
-    /** Returns a reference to the QString holding the Plane's description. */
-    QString& rPlaneDescription() {return m_PlaneDescription;}
-
+    void setPlaneDescription(QString desc) {m_PlaneDescription=desc;}
 
     Wing *mainWing() {return &m_Wing[0];}
 

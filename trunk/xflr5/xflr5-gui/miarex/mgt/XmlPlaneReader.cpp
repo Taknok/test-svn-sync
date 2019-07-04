@@ -102,7 +102,7 @@ bool XMLPlaneReader::readPlane(Plane *pPlane, double lengthunit, double massunit
     {
         if (name().toString().compare(QString("name"),Qt::CaseInsensitive) ==0)
         {
-            pPlane->rPlaneName() = readElementText();
+            pPlane->setPlaneName(readElementText());
         }
         else if (name().toString().compare(QString("has_body"),Qt::CaseInsensitive) ==0)
         {
@@ -110,7 +110,7 @@ bool XMLPlaneReader::readPlane(Plane *pPlane, double lengthunit, double massunit
         }
         else if (name().toString().compare(QString("description"), Qt::CaseInsensitive)==0)
         {
-            pPlane->rPlaneDescription() = readElementText();
+            pPlane->setPlaneDescription(readElementText());
         }
         else if (name().compare(QString("inertia"),         Qt::CaseInsensitive)==0)
         {
@@ -189,10 +189,8 @@ bool XMLPlaneReader::readPlane(Plane *pPlane, double lengthunit, double massunit
             if(!hasError())
             {
                 pPlane->m_Wing[iWing].duplicate(&newwing);
-                pPlane->WingLE(iWing).x      = pos.x;
-                pPlane->WingLE(iWing).y      = pos.y;
-                pPlane->WingLE(iWing).z      = pos.z;
-                pPlane->WingTiltAngle(iWing) = tiltangle;
+                pPlane->WingLE(iWing)      = pos;
+                pPlane->setWingTiltAngle(iWing, tiltangle);
             }
             iw++;
         }

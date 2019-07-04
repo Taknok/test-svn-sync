@@ -306,7 +306,7 @@ void Plane::computeBodyAxisInertia()
 
 
 /**
-* Calculates the Plane's tail volume = lever_arm_elev x Area_Elev / MAC_Wing / Area_Wing 
+* Calculates the Plane's tail volume = lever_arm_elev x Area_Elev / MAC_Wing / Area_Wing
 */
 void Plane::computePlane(void)
 {

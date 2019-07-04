@@ -38,7 +38,7 @@ class GraphWidget : public QWidget
     friend class MiarexTileWidget;
 
 public:
-    GraphWidget(QWidget *pParent=NULL);
+    GraphWidget(QWidget *pParent=nullptr);
     Graph *graph(){return m_pGraph;}
 
     void setGraph(Graph *pGraph);

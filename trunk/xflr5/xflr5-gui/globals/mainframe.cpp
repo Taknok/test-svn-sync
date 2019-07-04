@@ -5373,14 +5373,14 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
                     {
                         pWPolar->referenceArea()       = pPlane->planformArea();
                         pWPolar->referenceSpanLength() = pPlane->planformSpan();
-                        if(pPlane->BiPlane()) pWPolar->referenceArea() += pPlane->wing2()->m_PlanformArea;
+                        if(pPlane->biPlane()) pWPolar->referenceArea() += pPlane->wing2()->m_PlanformArea;
                         pWPolar->referenceChordLength() = pPlane->mac();
                     }
                     else if(pWPolar->referenceDim()==XFLR5::PROJECTEDREFDIM)
                     {
                         pWPolar->referenceArea()       = pPlane->projectedArea();
                         pWPolar->referenceSpanLength() = pPlane->projectedSpan();
-                        if(pPlane->BiPlane()) pWPolar->referenceArea() += pPlane->wing2()->m_ProjectedArea;
+                        if(pPlane->biPlane()) pWPolar->referenceArea() += pPlane->wing2()->m_ProjectedArea;
                         pWPolar->referenceChordLength() = pPlane->mac();
                     }
                 }

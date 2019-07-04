@@ -43,7 +43,7 @@ public:
     void adjustLayout();
     void setGraphList(QVector<Graph *> pGraphList, int nGraphs, int iGraphWidget, Qt::Orientation orientation =Qt::Horizontal);
 
-    OpPointWidget *opPointWidget(){return m_pOpPointWidget;}
+    OpPointWidget *opPointWidget() {return m_pOpPointWidget;}
 
 public slots:
     void onResetCurGraphScales();

@@ -58,7 +58,7 @@ class Section2dWidget : public QWidget
 
     Q_OBJECT
 public:
-    Section2dWidget(QWidget *parent = 0);
+    Section2dWidget(QWidget *parent = nullptr);
 
     QSize sizeHint() const;
     QSize minimumSizeHint() const;
