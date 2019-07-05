@@ -34,9 +34,9 @@
 #include <misc/color/ColorButton.h>
 #include <misc/line/LineBtn.h>
 #include <misc/line/LinePickerDlg.h>
-#include <misc/text/DoubleEdit.h>
-#include <misc/text/IntEdit.h>
-#include <misc/text/TextClrBtn.h>
+#include <misc/text/doubleedit.h>
+#include <misc/text/intedit.h>
+#include <misc/text/textclrbtn.h>
 #include <objects/objects2d/polar.h>
 #include <objects/objects3d/wpolar.h>
 

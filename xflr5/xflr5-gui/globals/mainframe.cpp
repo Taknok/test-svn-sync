@@ -83,21 +83,21 @@
 #include <viewwidgets/wingwidget.h>
 #include <viewwidgets/xdirecttilewidget.h>
 #include <xdirect/mgt/managefoilsdlg.h>
-#include <xdirect/XDirect.h>
+#include <xdirect/xdirect.h>
 #include <xdirect/analysis/BatchDlg.h>
 #include <xdirect/analysis/BatchThreadDlg.h>
 #include <xdirect/analysis/FoilPolarDlg.h>
 #include <xdirect/analysis/XFoilAnalysisDlg.h>
-#include <xdirect/geometry/CAddDlg.h>
-#include <xdirect/geometry/FoilCoordDlg.h>
-#include <xdirect/geometry/FoilGeomDlg.h>
-#include <xdirect/geometry/InterpolateFoilsDlg.h>
-#include <xdirect/geometry/LEDlg.h>
-#include <xdirect/geometry/NacaFoilDlg.h>
-#include <xdirect/geometry/TEGapDlg.h>
-#include <xdirect/geometry/TwoDPanelDlg.h>
+#include <xdirect/geometry/cadddlg.h>
+#include <xdirect/geometry/foilcoorddlg.h>
+#include <xdirect/geometry/foilgeomdlg.h>
+#include <xdirect/geometry/interpolatefoilsdlg.h>
+#include <xdirect/geometry/ledlg.h>
+#include <xdirect/geometry/nacafoildlg.h>
+#include <xdirect/geometry/tegapdlg.h>
+#include <xdirect/geometry/twodpaneldlg.h>
 #include <xdirect/objects2d.h>
-#include <xinverse/XInverse.h>
+#include <xinverse/xinverse.h>
 
 
 #ifdef Q_OS_MAC

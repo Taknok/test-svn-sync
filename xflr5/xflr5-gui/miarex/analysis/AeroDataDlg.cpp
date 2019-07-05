@@ -28,7 +28,7 @@
 
 #include "AeroDataDlg.h"
 #include <misc/options/units.h>
-#include <misc/text/DoubleEdit.h>
+#include <misc/text/doubleedit.h>
 
 // International Standard Atmosphere
 

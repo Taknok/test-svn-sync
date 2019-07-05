@@ -30,7 +30,7 @@
 #include <globals/globals.h>
 #include <objects/objects3d/body.h>
 #include <misc/line/LinePickerDlg.h>
-#include <misc/text/DoubleEdit.h>
+#include <misc/text/doubleedit.h>
 
 
 BodyScaleDlg::BodyScaleDlg(QWidget *pParent ): QDialog(pParent)

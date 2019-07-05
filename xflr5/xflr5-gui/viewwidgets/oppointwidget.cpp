@@ -31,8 +31,8 @@
 #include <graph_globals.h>
 
 #include <graph/graph.h>
-#include <xdirect/XDirect.h>
-#include <xdirect/XDirectStyleDlg.h>
+#include <xdirect/xdirect.h>
+#include <xdirect/xdirectstyleDlg.h>
 #include <graph/graphdlg.h>
 #include <misc/options/settings.h>
 

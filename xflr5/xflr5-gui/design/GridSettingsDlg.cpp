@@ -27,7 +27,7 @@
 #include "GridSettingsDlg.h"
 #include <misc/line/LinePickerDlg.h>
 #include <misc/line/LineBtn.h>
-#include <misc/text/DoubleEdit.h>
+#include <misc/text/doubleedit.h>
 
 
 GridSettingsDlg::GridSettingsDlg(QWidget *pParent): QDialog(pParent)

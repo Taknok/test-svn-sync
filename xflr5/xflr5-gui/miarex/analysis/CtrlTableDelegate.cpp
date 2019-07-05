@@ -25,7 +25,7 @@
 
 
 #include "CtrlTableDelegate.h"
-#include <misc/text/DoubleEdit.h>
+#include <misc/text/doubleedit.h>
 
 
 CtrlTableDelegate::CtrlTableDelegate(QObject *parent)

@@ -21,7 +21,7 @@
 *****************************************************************************/
 
 
-#include "ArcBall.h"
+#include "arcball.h"
 #include <QtOpenGL>
 #include "math.h"
 

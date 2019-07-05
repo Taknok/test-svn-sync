@@ -27,7 +27,7 @@
 #include <objects/objects2d/foil.h>
 #include <graph_globals.h>
 #include <globals/mainframe.h>
-#include <xdirect/XDirect.h>
+#include <xdirect/xdirect.h>
 #include <misc/options/settings.h>
 #include <globals/globals.h>
 #include <gui_objects/SplineFoil.h>

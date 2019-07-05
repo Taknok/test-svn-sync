@@ -29,7 +29,7 @@
 #include <QLabel>
 #include <QSettings>
 #include <misc/exponentialslider.h>
-#include <misc/text/DoubleEdit.h>
+#include <misc/text/doubleedit.h>
 
 class Miarex;
 class GL3DScales : public QWidget

@@ -39,7 +39,7 @@
 #include <miarex/objects3d.h>
 #include <misc/options/units.h>
 #include <misc/options/settings.h>
-#include <misc/text/DoubleEdit.h>
+#include <misc/text/doubleedit.h>
 #include <objects/objects3d/plane.h>
 
 

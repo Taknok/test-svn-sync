@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 
-#include <misc/text/MinTextEdit.h>
+#include <misc/text/mintextedit.h>
 #include <misc/options/settings.h>
 
 

@@ -43,7 +43,7 @@
 #include <misc/color/ColorButton.h>
 #include <misc/options/units.h>
 #include <misc/options/settings.h>
-#include <misc/text/DoubleEdit.h>
+#include <misc/text/doubleedit.h>
 #include <objects/objects3d/plane.h>
 #include <objects/objects3d/surface.h>
 #include <objects/objects3d/wing.h>

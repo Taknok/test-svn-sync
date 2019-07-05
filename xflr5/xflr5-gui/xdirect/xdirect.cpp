@@ -34,7 +34,7 @@
 #include <globals/globals.h>
 #include <objects/objects_global.h>
 #include <globals/mainframe.h>
-#include <xdirect/XDirect.h>
+#include <xdirect/xdirect.h>
 #include <xdirect/objects2d.h>
 #include <viewwidgets/xdirecttilewidget.h>
 #include <graph/graphdlg.h>
@@ -45,7 +45,7 @@
 #include <misc/line/LineBtn.h>
 #include <misc/line/LineCbBox.h>
 #include <misc/line/LineDelegate.h>
-#include <misc/text/DoubleEdit.h>
+#include <misc/text/doubleedit.h>
 #include <misc/options/settings.h>
 #include <misc/PolarFilterDlg.h>
 #include <misc/ObjectPropsDlg.h>
@@ -57,21 +57,21 @@
 #include <xdirect/analysis/BatchThreadDlg.h>
 #include <xdirect/analysis/BatchDlg.h>
 
-#include <xdirect/geometry/TwoDPanelDlg.h>
-#include <xdirect/geometry/InterpolateFoilsDlg.h>
-#include <xdirect/geometry/NacaFoilDlg.h>
-#include <xdirect/geometry/FoilCoordDlg.h>
-#include <xdirect/geometry/FoilGeomDlg.h>
-#include <xdirect/geometry/TEGapDlg.h>
-#include <xdirect/geometry/LEDlg.h>
-#include <xdirect/geometry/FlapDlg.h>
-#include <xdirect/geometry/CAddDlg.h>
+#include <xdirect/geometry/twodpaneldlg.h>
+#include <xdirect/geometry/interpolatefoilsdlg.h>
+#include <xdirect/geometry/nacafoildlg.h>
+#include <xdirect/geometry/foilcoorddlg.h>
+#include <xdirect/geometry/foilgeomdlg.h>
+#include <xdirect/geometry/tegapdlg.h>
+#include <xdirect/geometry/ledlg.h>
+#include <xdirect/geometry/flapdlg.h>
+#include <xdirect/geometry/cadddlg.h>
 
-#include <xdirect/XDirectStyleDlg.h>
+#include <xdirect/xdirectstyleDlg.h>
 
-#include <xinverse/FoilSelectionDlg.h>
+#include <xinverse/foilselectiondlg.h>
 
-#include <misc/text/MinTextEdit.h>
+#include <misc/text/mintextedit.h>
 
 Polar XDirect::s_RefPolar;
 

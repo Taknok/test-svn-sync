@@ -24,7 +24,7 @@
 #include <QPushButton>
 
 #include <objects/objects2d/foil.h>
-#include "FoilSelectionDlg.h"
+#include "foilselectiondlg.h"
 
 
 

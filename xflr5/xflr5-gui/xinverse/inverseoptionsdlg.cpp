@@ -21,8 +21,8 @@
 
 #include <globals/globals.h>
 
-#include "XInverse.h"
-#include "InverseOptionsDlg.h"
+#include "xinverse.h"
+#include "inverseoptionsdlg.h"
 #include <misc/line/LinePickerDlg.h>
 #include <objects/objects2d/foil.h>
 #include <misc/line/LineBtn.h>

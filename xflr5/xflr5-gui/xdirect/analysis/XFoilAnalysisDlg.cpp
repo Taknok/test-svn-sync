@@ -35,7 +35,7 @@
 #include <graph/graph.h>
 #include <misc/options/settings.h>
 #include <viewwidgets/graphwidget.h>
-#include <xdirect/XDirect.h>
+#include <xdirect/xdirect.h>
 #include <xdirect/analysis/XFoilTask.h>
 #include <xdirect/objects2d.h>
 

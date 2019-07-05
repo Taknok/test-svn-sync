@@ -19,7 +19,7 @@
 
 *****************************************************************************/
 
-#include <misc/text/DoubleEdit.h>
+#include <misc/text/doubleedit.h>
 #include <misc/options/settings.h>
 #include <math.h>
 

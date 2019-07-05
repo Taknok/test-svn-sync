@@ -31,7 +31,7 @@
 
 #include <misc/line/LineBtn.h>
 #include <misc/color/ColorButton.h>
-#include <misc/text/IntEdit.h>
+#include <misc/text/intedit.h>
 
 
 bool W3dPrefsDlg::s_bAutoAdjustScale = true;

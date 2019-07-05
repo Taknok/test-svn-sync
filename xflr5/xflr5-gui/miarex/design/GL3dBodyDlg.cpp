@@ -48,12 +48,12 @@
 #include <misc/line/LinePickerDlg.h>
 #include <misc/options/units.h>
 #include <misc/options/settings.h>
-#include <misc/text/DoubleEdit.h>
+#include <misc/text/doubleedit.h>
 #include <objects/objects3d/body.h>
 #include <objects/objects3d/plane.h>
 #include <viewwidgets/bodyframewt.h>
 #include <viewwidgets/bodylinewt.h>
-#include <viewwidgets/glWidgets/ArcBall.h>
+#include <viewwidgets/glWidgets/arcball.h>
 
 QByteArray GL3dBodyDlg::m_VerticalSplitterSizes;
 QByteArray GL3dBodyDlg::m_HorizontalSplitterSizes;

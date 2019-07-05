@@ -24,9 +24,9 @@
 #include <QStringList>
 #include <QHeaderView>
 
-#include "FoilCoordDlg.h"
+#include "foilcoorddlg.h"
 #include <misc/options/settings.h>
-#include <misc/text/FloatEditDelegate.h>
+#include <misc/text/floatrditdelegate.h>
 #include <objects/objects2d/foil.h>
 
 

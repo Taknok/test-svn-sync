@@ -27,7 +27,7 @@
 #include <QPushButton>
 
 #include "stlexportdialog.h"
-#include <misc/text/IntEdit.h>
+#include <misc/text/intedit.h>
 #include <objects/objects3d/plane.h>
 
 bool STLExportDlg::s_bBinary = true;

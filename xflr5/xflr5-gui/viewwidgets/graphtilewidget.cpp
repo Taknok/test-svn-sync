@@ -37,8 +37,8 @@
 #include <objects/objects3d/plane.h>
 #include <viewwidgets/graphwidget.h>
 #include <viewwidgets/legendwidget.h>
-#include <xdirect/XDirect.h>
-#include <xinverse/XInverse.h>
+#include <xdirect/xdirect.h>
+#include <xinverse/xinverse.h>
 
 
 MainFrame* GraphTileWidget::s_pMainFrame = nullptr;

@@ -25,10 +25,10 @@
 #include <QMessageBox>
 #include <QDebug>
 
-#include "FoilSelectionDlg.h"
-#include "InverseOptionsDlg.h"
-#include "PertDlg.h"
-#include "XInverse.h"
+#include "foilselectiondlg.h"
+#include "inverseoptionsdlg.h"
+#include "pertdlg.h"
+#include "xinverse.h"
 #include <xfoil.h>
 #include <globals/globals.h>
 #include <globals/mainframe.h>
@@ -36,12 +36,12 @@
 #include <graph_globals.h>
 #include <misc/RenameDlg.h>
 #include <misc/options/settings.h>
-#include <misc/text/DoubleEdit.h>
-#include <misc/text/IntEdit.h>
-#include <misc/text/MinTextEdit.h>
+#include <misc/text/doubleedit.h>
+#include <misc/text/intedit.h>
+#include <misc/text/mintextedit.h>
 #include <objects/objects2d/foil.h>
 #include <viewwidgets/inverseviewwidget.h>
-#include <xdirect/XDirect.h>
+#include <xdirect/xdirect.h>
 #include <xdirect/objects2d.h>
 #include <analysis3d/analysis3d_params.h>
 #include <graph/curve.h>

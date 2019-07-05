@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 #include <QLabel>
-#include <xdirect/XDirect.h>
+#include <xdirect/xdirect.h>
 #include "XFoilAdvancedDlg.h"
 
 

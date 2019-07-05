@@ -26,7 +26,7 @@
 #include <globals/mainframe.h>
 #include <misc/options/settings.h>
 #include <graph/graph.h>
-#include <xinverse/XInverse.h>
+#include <xinverse/xinverse.h>
 #include <viewwidgets/inverseviewwidget.h>
 
 

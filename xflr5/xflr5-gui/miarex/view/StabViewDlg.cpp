@@ -40,8 +40,8 @@
 #include <objects/objects_global.h>
 #include <objects/objects3d/wpolar.h>
 
-#include <misc/text/DoubleEdit.h>
-#include <misc/text/FloatEditDelegate.h>
+#include <misc/text/doubleedit.h>
+#include <misc/text/floatrditdelegate.h>
 #include <graph/curve.h>
 
 Miarex *StabViewDlg::s_pMiarex;

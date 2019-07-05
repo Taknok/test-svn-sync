@@ -22,12 +22,12 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 
-#include "PertDlg.h"
+#include "pertdlg.h"
 #include <misc/options/settings.h>
 
-#include <misc/text/FloatEditDelegate.h>
+#include <misc/text/floatrditdelegate.h>
 #include <objects/objects2d/foil.h>
-#include <misc/text/DoubleEdit.h>
+#include <misc/text/doubleedit.h>
 
 
 PertDlg::PertDlg(QWidget *pParent) : QDialog(pParent)

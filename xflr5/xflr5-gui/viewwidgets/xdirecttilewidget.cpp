@@ -30,7 +30,7 @@
 #include <viewwidgets/legendwidget.h>
 #include <viewwidgets/oppointwidget.h>
 #include <viewwidgets/xdirecttilewidget.h>
-#include <xdirect/XDirect.h>
+#include <xdirect/xdirect.h>
 
 
 XDirectTileWidget::XDirectTileWidget(QWidget *pParent) :  GraphTileWidget(pParent)
