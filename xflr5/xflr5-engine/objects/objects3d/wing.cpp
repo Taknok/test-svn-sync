@@ -25,13 +25,13 @@
 #include <QtDebug>
 
 
-#include <objects/objects3d/Wing.h>
-#include <objects/objects3d/WPolar.h>
-#include <objects/objects3d/Surface.h>
-#include <objects/objects3d/Panel.h>
-#include <objects/objects3d/PointMass.h>
+#include <objects/objects3d/wing.h>
+#include <objects/objects3d/wpolar.h>
+#include <objects/objects3d/surface.h>
+#include <objects/objects3d/panel.h>
+#include <objects/objects3d/pointmass.h>
 #include <objects/objects_global.h>
-#include <objects/objects2d/Polar.h>
+#include <objects/objects2d/polar.h>
 
 double Wing::s_MinPanelSize = 0.0001;
 QVector<Foil *> *Wing::s_poaFoil  = nullptr;

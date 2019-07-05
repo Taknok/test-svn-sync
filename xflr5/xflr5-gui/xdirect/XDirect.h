@@ -38,15 +38,15 @@
 #include <QSlider>
 #include <QVector>
 
-#include <objects/objects2d/Polar.h>
-#include <objects/objects2d/Foil.h>
+#include <objects/objects2d/polar.h>
+#include <objects/objects2d/foil.h>
 #include <xdirect/analysis/XFoilAnalysisDlg.h>
 #include <viewwidgets/oppointwidget.h>
 #include <globals/gui_enums.h>
-#include <objects/objects2d/OpPoint.h>
+#include <objects/objects2d/oppoint.h>
 #include <graph/graph.h>
 #include <graph/linestyle.h>
-#include <XFoil.h>
+#include <xfoil.h>
 
 class LineBtn;
 class LineCbBox;
@@ -90,85 +90,81 @@ signals:
 public slots:
     void updateView();
 
-
-
 public slots:
-    void onXFoilAdvanced();
-
-    void onPolarFilter();
-    void onInputChanged();
+    void onAlignChildrenStyle();
     void onAnalyze();
     void onAnimate(bool bChecked);
+    void onAnimateSingle();
     void onAnimateSpeed(int val);
     void onBatchAnalysis();
-    void onMultiThreadedBatchAnalysis();
+    void onCadd();
+    void onCpGraph();
     void onCpi();
     void onCurOppOnly();
+    void onCurveColor();
+    void onCurvePoints(int index);
     void onCurveStyle(int index);
     void onCurveWidth(int index);
-    void onCurvePoints(int index);
-    void onCurveColor();
-    void onDeleteCurFoil();
+    void onDefinePolar();
     void onDelCurOpp();
+    void onDeleteCurFoil();
     void onDeleteCurPolar();
+    void onDeleteFoilOpps();
     void onDeleteFoilPolars();
+    void onDeletePolarOpps();
+    void onDerotateFoil();
+    void onDuplicateFoil();
     void onEditCurPolar();
-    void onExportCurFoil();
-    void onExportCurOpp();
-    void onExportPolarOpps() ;
-    void onExportCurPolar();
     void onExportAllFoilPolars();
     void onExportAllPolarsTxt();
+    void onExportBLData();
+    void onExportCurFoil();
+    void onExportCurOpp();
+    void onExportCurPolar();
+    void onExportPolarOpps() ;
     void onExportXMLAnalysis();
+    void onFoilCoordinates();
+    void onFoilGeom();
     void onHideAllOpps();
     void onHideAllPolars();
+    void onHideFoilOpps();
     void onHideFoilPolars();
+    void onHidePolarOpps();
     void onImportJavaFoilPolar();
     void onImportXFoilPolars();
     void onImportXMLAnalysis();
+    void onInputChanged();
+    void onInterpolateFoils();
+    void onMultiThreadedBatchAnalysis();
+    void onNacaFoils();
+    void onNormalizeFoil();
+    void onOpPointProps();
     void onOpPointView();
+    void onPolarFilter();
+    void onPolarProps();
     void onPolarView();
+    void onQGraph();
+    void onRefinePanelsGlobally();
+    void onRenameCurFoil();
+    void onRenameCurPolar();
     void onResetAllPolarGraphsScales();
     void onResetCurPolar();
     void onSaveFoilPolars();
     void onSequence();
-    void onShowFoilPolarsOnly();
-    void onShowFoilPolars();
-    void onShowCurve();
+    void onSetFlap();
+    void onSetLERadius();
+    void onSetTEGap();
     void onShowAllOpps();
     void onShowAllPolars();
-    void onDefinePolar();
+    void onShowCurve();
+    void onShowFoilOpps();
+    void onShowFoilPolars();
+    void onShowFoilPolarsOnly();
+    void onShowPolarOpps();
     void onSpec();
     void onStoreOpp();
     void onViscous();
-    void onDuplicateFoil();
-    void onShowPolarOpps();
-    void onHidePolarOpps();
-    void onDeletePolarOpps();
-    void onShowFoilOpps();
-    void onHideFoilOpps();
-    void onDeleteFoilOpps();
-    void onDerotateFoil();
-    void onNormalizeFoil();
-    void onCadd();
-    void onRefinePanelsGlobally();
-    void onFoilCoordinates();
-    void onFoilGeom();
-    void onSetTEGap();
-    void onSetLERadius();
-    void onSetFlap();
-    void onInterpolateFoils();
-    void onNacaFoils();
-    void onRenameCurPolar();
-    void onAnimateSingle();
-
-    void onQGraph();
-    void onCpGraph();
-    void onExportBLData();
-
-    void onOpPointProps();
-    void onPolarProps();
-    void onRenameCurFoil();
+    void onXFoilAdvanced();
 
 
 public:
@@ -255,7 +251,8 @@ private:
 
     MinTextEdit *m_pctrlPolarProps;
 
-    QCheckBox *m_pctrlShowCurve;
+    QCheckBox *m_pctrlShowCurve, *m_pctrlAlignChildren;
+
 //    QCheckBox *m_pctrlShowPoints;
     LineCbBox *m_pctrlCurveStyle;
     LineCbBox *m_pctrlCurveWidth;

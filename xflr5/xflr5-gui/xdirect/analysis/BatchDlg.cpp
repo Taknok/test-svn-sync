@@ -39,8 +39,8 @@
 #include <misc/options/settings.h>
 #include <misc/text/DoubleEdit.h>
 #include <misc/text/IntEdit.h>
-#include <objects/objects2d/Foil.h>
-#include <objects/objects2d/Polar.h>
+#include <objects/objects2d/foil.h>
+#include <objects/objects2d/polar.h>
 #include <xdirect/XDirect.h>
 #include <xdirect/analysis/XFoilTask.h>
 #include <xdirect/analysis/xfoiltaskevent.h>
@@ -464,7 +464,7 @@ Polar *BatchDlg::createPolar(Foil *pFoil, double Spec, double Mach, double NCrit
 
     Polar *pPolar = new Polar;
 
-    if(Settings::s_bAlignChildrenStyle)
+    if(Settings::isAlignedChildrenStyle())
     {
         pPolar->m_Style = pFoil->m_FoilStyle;
         pPolar->m_Width = pFoil->m_FoilWidth;

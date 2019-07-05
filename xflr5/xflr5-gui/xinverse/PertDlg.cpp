@@ -26,7 +26,7 @@
 #include <misc/options/settings.h>
 
 #include <misc/text/FloatEditDelegate.h>
-#include <objects/objects2d/Foil.h>
+#include <objects/objects2d/foil.h>
 #include <misc/text/DoubleEdit.h>
 
 

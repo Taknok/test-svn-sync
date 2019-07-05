@@ -19,11 +19,11 @@
 
 *****************************************************************************/
 
-#include "WingOpp.h"
+#include "wingopp.h"
 
-#include "Plane.h"
+#include "plane.h"
 #include "objects_global.h"
-#include <objects/objects3d/WPolar.h>
+#include <objects/objects3d/wpolar.h>
 #include <math.h>
 #include <QTextStream>
 

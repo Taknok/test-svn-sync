@@ -33,13 +33,13 @@
 #include <misc/options/units.h>
 #include <misc/options/settings.h>
 #include <miarex/view/W3dPrefsDlg.h>
-#include <objects/objects3d/Surface.h>
+#include <objects/objects3d/surface.h>
 #include "wingseldlg.h"
 #include "EditPlaneDlg.h"
 #include <globals/globals.h>
 
 #include <gl3dplaneview.h>
-#include <objects/objects3d/Plane.h>
+#include <objects/objects3d/plane.h>
 #include <miarex/design/EditObjectDelegate.h>
 
 QSize EditPlaneDlg::s_WindowSize(1031,783);

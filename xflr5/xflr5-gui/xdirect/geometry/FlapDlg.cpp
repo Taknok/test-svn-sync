@@ -26,7 +26,7 @@
 
 #include "FlapDlg.h"
 
-#include <objects/objects2d/Foil.h>
+#include <objects/objects2d/foil.h>
 #include <misc/text/DoubleEdit.h>
 
 

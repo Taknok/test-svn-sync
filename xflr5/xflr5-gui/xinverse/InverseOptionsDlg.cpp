@@ -24,7 +24,7 @@
 #include "XInverse.h"
 #include "InverseOptionsDlg.h"
 #include <misc/line/LinePickerDlg.h>
-#include <objects/objects2d/Foil.h>
+#include <objects/objects2d/foil.h>
 #include <misc/line/LineBtn.h>
 
 

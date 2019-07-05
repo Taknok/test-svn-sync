@@ -210,7 +210,7 @@ OpPoint* Objects2d::addOpPoint(Foil *pFoil, Polar *pPolar, OpPoint *pOpPoint, bo
     if(!pPolar) pPolar = XDirect::curPolar();
     if(!pPolar) return nullptr;
 
-    if(Settings::s_bAlignChildrenStyle)
+    if(Settings::isAlignedChildrenStyle())
     {
         pOpPoint->m_Style = pPolar->m_Style;
         pOpPoint->m_Width = pPolar->m_Width;

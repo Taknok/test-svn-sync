@@ -34,9 +34,9 @@
 #include <QVarLengthArray>
 
 #include <objects/objectcolor.h>
-#include <objects/objects3d/Panel.h>
-#include <objects/objects3d/NURBSSurface.h>
-#include <objects/objects3d/PointMass.h>
+#include <objects/objects3d/panel.h>
+#include <objects/objects3d/nurbssurface.h>
+#include <objects/objects3d/pointmass.h>
 
 
 #include <analysis3d/analysis3d_enums.h>

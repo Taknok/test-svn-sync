@@ -22,7 +22,7 @@
 #include <QComboBox>
 #include <QtDebug>
 #include "EditObjectDelegate.h"
-#include <objects/objects2d/Foil.h>
+#include <objects/objects2d/foil.h>
 #include <misc/options/settings.h>
 #include <misc/text/IntEdit.h>
 #include <misc/text/DoubleEdit.h>

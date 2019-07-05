@@ -43,8 +43,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 * Angular data is stored in degrees
 */
 
-#include "Wing.h"
-#include "Body.h"
+#include "wing.h"
+#include "body.h"
 
 
 class XFLR5ENGINELIBSHARED_EXPORT Plane

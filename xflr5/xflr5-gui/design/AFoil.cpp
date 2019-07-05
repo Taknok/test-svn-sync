@@ -51,9 +51,9 @@
 #include <xdirect/geometry/FoilGeomDlg.h>
 #include <xdirect/geometry/InterpolateFoilsDlg.h>
 #include "FoilTableDelegate.h"
-#include <objects/objects2d/Foil.h>
+#include <objects/objects2d/foil.h>
 #include <gui_objects/SplineFoil.h>
-#include <XFoil.h>
+#include <xfoil.h>
 
 
 
@@ -1210,7 +1210,7 @@ void AFoil::onFoilStyle()
             QColor clr = dlg.lineColor();
             XDirect::curFoil()->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
 
-            if(Settings::s_bAlignChildrenStyle)
+            if(Settings::isAlignedChildrenStyle())
                 Objects2d::setFoilChildrenStyle(XDirect::curFoil());
 
             m_p2DWidget->update();;

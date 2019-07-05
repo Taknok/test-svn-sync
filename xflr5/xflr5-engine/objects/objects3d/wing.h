@@ -31,10 +31,10 @@
 #include <QVarLengthArray>
 #include <objects/objectcolor.h>
 #include <objects/objects3d/vector3d.h>
-#include <objects/objects3d/Panel.h>
-#include <objects/objects3d/WingSection.h>
-#include <objects/objects2d/Foil.h>
-#include <objects/objects2d/Polar.h>
+#include <objects/objects3d/panel.h>
+#include <objects/objects3d/wingsection.h>
+#include <objects/objects2d/foil.h>
+#include <objects/objects2d/polar.h>
 
 /**
  * @class Wing

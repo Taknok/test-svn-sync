@@ -29,7 +29,7 @@
 #include "InverseOptionsDlg.h"
 #include "PertDlg.h"
 #include "XInverse.h"
-#include <XFoil.h>
+#include <xfoil.h>
 #include <globals/globals.h>
 #include <globals/mainframe.h>
 #include <graph/graphdlg.h>
@@ -39,7 +39,7 @@
 #include <misc/text/DoubleEdit.h>
 #include <misc/text/IntEdit.h>
 #include <misc/text/MinTextEdit.h>
-#include <objects/objects2d/Foil.h>
+#include <objects/objects2d/foil.h>
 #include <viewwidgets/inverseviewwidget.h>
 #include <xdirect/XDirect.h>
 #include <xdirect/objects2d.h>

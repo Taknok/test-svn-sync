@@ -32,7 +32,7 @@
 #include <misc/RenameDlg.h>
 #include <xdirect/objects2d.h>
 #include <design/FoilTableDelegate.h>
-#include <objects/objects2d/Foil.h>
+#include <objects/objects2d/foil.h>
 
 ManageFoilsDlg::ManageFoilsDlg(QWidget *pParent) : QDialog(pParent)
 {

@@ -26,7 +26,7 @@
 #include <QDataStream>
 #include <QDebug>
 
-#include "XFoil.h"
+#include "xfoil.h"
 
 #define PI 3.141592654
 

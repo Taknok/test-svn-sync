@@ -37,8 +37,8 @@
 #include <misc/text/DoubleEdit.h>
 #include <misc/text/IntEdit.h>
 #include <misc/text/TextClrBtn.h>
-#include <objects/objects2d/Polar.h>
-#include <objects/objects3d/WPolar.h>
+#include <objects/objects2d/polar.h>
+#include <objects/objects3d/wpolar.h>
 
 
 int GraphDlg::s_iActivePage = 0;

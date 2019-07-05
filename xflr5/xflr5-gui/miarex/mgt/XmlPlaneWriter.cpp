@@ -22,7 +22,7 @@
 #include "XmlPlaneWriter.h"
 #include <globals/globals.h>
 #include <misc/options/units.h>
-#include <objects/objects3d/Plane.h>
+#include <objects/objects3d/plane.h>
 
 
 XMLPlaneWriter::XMLPlaneWriter(QFile &XFile)

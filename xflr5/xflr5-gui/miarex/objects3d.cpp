@@ -28,8 +28,8 @@
 #include <misc/RenameDlg.h>
 
 #include "objects3d.h"
-#include <objects/objects3d/Surface.h>
-#include <objects/objects3d/WPolar.h>
+#include <objects/objects3d/surface.h>
+#include <objects/objects3d/wpolar.h>
 
 
 QVector <Plane*>    Objects3d::s_oaPlane;

@@ -23,12 +23,12 @@
 #include <QGroupBox>
 #include <QMessageBox>
 
-#include <XFoil.h>
+#include <xfoil.h>
 #include "FoilGeomDlg.h"
 
 
 #include <misc/text/DoubleEdit.h>
-#include <objects/objects2d/Foil.h>
+#include <objects/objects2d/foil.h>
 
 
 XFoil *FoilGeomDlg::s_pXFoil;

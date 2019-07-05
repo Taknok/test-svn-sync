@@ -20,8 +20,8 @@
 *****************************************************************************/
 
 #include <QtDebug>
-#include "Foil.h"
-#include "Polar.h"
+#include "foil.h"
+#include "polar.h"
 
 #define PI 3.141592654
 

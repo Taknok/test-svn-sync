@@ -22,7 +22,7 @@
 #include <QStringList>
 
 
-#include "Body.h"
+#include "body.h"
 #include "objects_global.h"
 #include <math.h>
 

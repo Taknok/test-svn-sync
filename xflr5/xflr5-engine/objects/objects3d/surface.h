@@ -34,7 +34,7 @@
 
 
 #include <QVector>
-#include <objects/objects3d/Panel.h>
+#include <objects/objects3d/panel.h>
 #include <analysis3d/analysis3d_enums.h>
 
 #define VLMHALF 2500

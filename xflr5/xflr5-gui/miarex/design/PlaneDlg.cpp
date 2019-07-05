@@ -40,7 +40,7 @@
 #include <misc/options/units.h>
 #include <misc/options/settings.h>
 #include <misc/text/DoubleEdit.h>
-#include <objects/objects3d/Plane.h>
+#include <objects/objects3d/plane.h>
 
 
 QSize PlaneDlg::s_WindowSize(1031,783);

@@ -34,7 +34,7 @@
 #include <math.h>
 
 #include "PanelAnalysisDlg.h"
-#include <analysis3d/plane_analysis/PanelAnalysis.h>
+#include <analysis3d/plane_analysis/panelanalysis.h>
 #include <analysis3d/plane_analysis/planeanalysistask.h>
 #include <globals/globals.h>
 #include <globals/gui_params.h>
@@ -42,8 +42,8 @@
 #include <miarex/objects3d.h>
 #include <misc/options/units.h>
 #include <misc/options/settings.h>
-#include <objects/objects3d/Plane.h>
-#include <objects/objects3d/WPolar.h>
+#include <objects/objects3d/plane.h>
+#include <objects/objects3d/wpolar.h>
 #include <objects/objects3d/vector3d.h>
 
 QPoint PanelAnalysisDlg::s_Position = QPoint(200,100);
@@ -259,7 +259,7 @@ void PanelAnalysisDlg::cleanUp()
             //add the data to the polar object
             PlaneOpp *pPOpp = m_pTheTask->m_pthePanelAnalysis->m_PlaneOppList.at(iPOpp);
 
-            if(Settings::s_bAlignChildrenStyle)
+            if(Settings::isAlignedChildrenStyle())
             {
                 pPOpp->setStyle(m_pTheTask->m_pWPolar->curveStyle());
                 pPOpp->setWidth(m_pTheTask->m_pWPolar->curveWidth());

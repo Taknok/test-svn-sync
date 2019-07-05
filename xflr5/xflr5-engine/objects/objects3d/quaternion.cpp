@@ -19,7 +19,7 @@
 
 *****************************************************************************/
 
-#include "Quaternion.h"
+#include "quaternion.h"
 #include <math.h>
 #include <QtGlobal>
 

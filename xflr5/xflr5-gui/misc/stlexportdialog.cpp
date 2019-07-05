@@ -28,7 +28,7 @@
 
 #include "stlexportdialog.h"
 #include <misc/text/IntEdit.h>
-#include <objects/objects3d/Plane.h>
+#include <objects/objects3d/plane.h>
 
 bool STLExportDlg::s_bBinary = true;
 int STLExportDlg::s_iObject = 0;

@@ -39,9 +39,9 @@
 #include <globals/mainframe.h>
 #include <graph_globals.h>
 #include <misc/options/units.h>
-#include <objects/objects2d/Foil.h>
-#include <objects/objects2d/Polar.h>
-#include <objects/objects3d/WPolar.h>
+#include <objects/objects2d/foil.h>
+#include <objects/objects2d/polar.h>
+#include <objects/objects3d/wpolar.h>
 /** 
 * Returns a double number as its root and its base 10 exponent
 * @param f the double number to reformat; is returned as f = f/pow(10.0,exp);

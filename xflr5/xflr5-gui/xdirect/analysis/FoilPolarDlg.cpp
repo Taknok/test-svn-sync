@@ -26,7 +26,7 @@
 #include <misc/options/units.h>
 #include <xdirect/XDirect.h>
 #include <misc/text/DoubleEdit.h>
-#include <objects/objects2d/Polar.h>
+#include <objects/objects2d/polar.h>
 
 QByteArray FoilPolarDlg::s_WindowGeometry;
 

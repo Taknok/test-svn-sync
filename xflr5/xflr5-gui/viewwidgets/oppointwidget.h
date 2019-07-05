@@ -27,7 +27,7 @@
 
 #include <graph/graph.h>
 #include <objects/objects3d/vector3d.h>
-#include <objects/objects2d/OpPoint.h>
+#include <objects/objects2d/oppoint.h>
 
 class OpPointWidget : public QWidget
 {

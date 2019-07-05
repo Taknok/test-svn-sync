@@ -24,9 +24,9 @@
 #include <QHBoxLayout>
 
 #include "TEGapDlg.h"
-#include <XFoil.h>
+#include <xfoil.h>
 #include <misc/text/DoubleEdit.h>
-#include <objects/objects2d/Foil.h>
+#include <objects/objects2d/foil.h>
 
 
 XFoil *TEGapDlg::s_pXFoil;

@@ -37,8 +37,8 @@
 #include <misc/options/units.h>
 #include <misc/options/settings.h>
 #include <misc/text/DoubleEdit.h>
-#include <objects/objects3d/Plane.h>
-#include <objects/objects3d/WPolar.h>
+#include <objects/objects3d/plane.h>
+#include <objects/objects3d/wpolar.h>
 
 WPolar StabPolarDlg::s_StabWPolar;
 

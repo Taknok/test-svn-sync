@@ -23,7 +23,7 @@
 
 #include "xmlpolarwriter.h"
 #include <globals/globals.h>
-#include <objects/objects2d/Polar.h>
+#include <objects/objects2d/polar.h>
 
 XmlPolarWriter::XmlPolarWriter(QFile &XFile)
 {
