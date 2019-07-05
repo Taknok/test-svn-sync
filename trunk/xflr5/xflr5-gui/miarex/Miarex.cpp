@@ -74,8 +74,8 @@
 #include <misc/options/settings.h>
 #include <misc/options/units.h>
 #include <misc/stlexportdialog.h>
-#include <misc/text/DoubleEdit.h>
-#include <misc/text/MinTextEdit.h>
+#include <misc/text/doubleedit.h>
+#include <misc/text/mintextedit.h>
 #include <objects/objects3d/body.h>
 #include <objects/objects3d/plane.h>
 #include <objects/objects3d/planeopp.h>

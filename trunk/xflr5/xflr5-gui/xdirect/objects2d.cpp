@@ -22,7 +22,7 @@
 
 #include "objects2d.h"
 
-#include <xdirect/XDirect.h>
+#include <xdirect/xdirect.h>
 #include <globals/globals.h>
 #include <misc/options/settings.h>
 #include <QDebug>

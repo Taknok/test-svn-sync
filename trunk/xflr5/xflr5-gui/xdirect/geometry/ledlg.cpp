@@ -19,14 +19,14 @@
 
 *****************************************************************************/
 
-#include "LEDlg.h"
+#include "ledlg.h"
 #include <xfoil.h>
 #include <QMessageBox>
 #include <QHBoxLayout>
 #include <QLabel>
 
 
-#include <misc/text/DoubleEdit.h>
+#include <misc/text/doubleedit.h>
 #include <objects/objects2d/foil.h>
 
 XFoil *LEDlg::s_pXFoil;

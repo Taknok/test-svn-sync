@@ -1,5 +1,26 @@
 
 SOURCES += \
+    $$PWD/misc/text/doubleedit.cpp \
+    $$PWD/misc/text/floateditdelegate.cpp \
+    $$PWD/misc/text/intedit.cpp \
+    $$PWD/misc/text/mintextedit.cpp \
+    $$PWD/misc/text/textclrbtn.cpp \
+    $$PWD/viewwidgets/glWidgets/arcball.cpp \
+    $$PWD/xdirect/geometry/cadddlg.cpp \
+    $$PWD/xdirect/geometry/flapdlg.cpp \
+    $$PWD/xdirect/geometry/foilcoorddlg.cpp \
+    $$PWD/xdirect/geometry/foilgeomdlg.cpp \
+    $$PWD/xdirect/geometry/interpolatefoilsdlg.cpp \
+    $$PWD/xdirect/geometry/ledlg.cpp \
+    $$PWD/xdirect/geometry/nacafoildlg.cpp \
+    $$PWD/xdirect/geometry/tegapdlg.cpp \
+    $$PWD/xdirect/geometry/twodpaneldlg.cpp \
+    $$PWD/xdirect/xdirect.cpp \
+    $$PWD/xdirect/xdirectstyledlg.cpp \
+    $$PWD/xinverse/foilselectiondlg.cpp \
+    $$PWD/xinverse/inverseoptionsdlg.cpp \
+    $$PWD/xinverse/pertdlg.cpp \
+    $$PWD/xinverse/xinverse.cpp \
     design/AFoil.cpp \
     design/AFoilTableDlg.cpp \
     design/FoilTableDelegate.cpp \
@@ -76,17 +97,11 @@ SOURCES += \
     misc/options/units.cpp \
     misc/popup.cpp \
     misc/stlexportdialog.cpp \
-    misc/text/DoubleEdit.cpp \
-    misc/text/FloatEditDelegate.cpp \
-    misc/text/IntEdit.cpp \
-    misc/text/MinTextEdit.cpp \
-    misc/text/TextClrBtn.cpp \
     misc/updater.cpp \
     misc/voidwidget.cpp \
     misc/waitdlg.cpp \
     script/xflscriptexec.cpp \
     script/xflscriptreader.cpp \
-    viewwidgets/glWidgets/ArcBall.cpp \
     viewwidgets/glWidgets/gl3dbodyview.cpp \
     viewwidgets/glWidgets/gl3dmiarexview.cpp \
     viewwidgets/glWidgets/gl3dplaneview.cpp \
@@ -106,8 +121,6 @@ SOURCES += \
     viewwidgets/bodylinewt.cpp \
     viewwidgets/bodyframewt.cpp \
     xdirect/mgt/managefoilsdlg.cpp \
-    xdirect/XDirect.cpp \
-    xdirect/XDirectStyleDlg.cpp \
     xdirect/analysis/BatchDlg.cpp \
     xdirect/analysis/BatchThreadDlg.cpp \
     xdirect/analysis/FoilPolarDlg.cpp \
@@ -115,25 +128,33 @@ SOURCES += \
     xdirect/analysis/XFoilAdvancedDlg.cpp \
     xdirect/analysis/XFoilAnalysisDlg.cpp \
     xdirect/analysis/XFoilTask.cpp \
-    xdirect/geometry/CAddDlg.cpp \
-    xdirect/geometry/FlapDlg.cpp \
-    xdirect/geometry/FoilCoordDlg.cpp \
-    xdirect/geometry/FoilGeomDlg.cpp \
-    xdirect/geometry/InterpolateFoilsDlg.cpp \
-    xdirect/geometry/LEDlg.cpp \
-    xdirect/geometry/NacaFoilDlg.cpp \
-    xdirect/geometry/TEGapDlg.cpp \
-    xdirect/geometry/TwoDPanelDlg.cpp \
     xdirect/objects2d.cpp \
     xdirect/xml/xmlpolarreader.cpp \
-    xdirect/xml/xmlpolarwriter.cpp \
-    xinverse/FoilSelectionDlg.cpp \
-    xinverse/InverseOptionsDlg.cpp \
-    xinverse/PertDlg.cpp \
-    xinverse/XInverse.cpp
+    xdirect/xml/xmlpolarwriter.cpp
 
 
 HEADERS += \
+    $$PWD/misc/text/doubleedit.h \
+    $$PWD/misc/text/floatrditdelegate.h \
+    $$PWD/misc/text/intedit.h \
+    $$PWD/misc/text/mintextedit.h \
+    $$PWD/misc/text/textclrbtn.h \
+    $$PWD/viewwidgets/glWidgets/arcball.h \
+    $$PWD/xdirect/geometry/cadddlg.h \
+    $$PWD/xdirect/geometry/flapdlg.h \
+    $$PWD/xdirect/geometry/foilcoorddlg.h \
+    $$PWD/xdirect/geometry/foilgeomdlg.h \
+    $$PWD/xdirect/geometry/interpolatefoilsdlg.h \
+    $$PWD/xdirect/geometry/ledlg.h \
+    $$PWD/xdirect/geometry/nacafoildlg.h \
+    $$PWD/xdirect/geometry/tegapdlg.h \
+    $$PWD/xdirect/geometry/twodpaneldlg.h \
+    $$PWD/xdirect/xdirect.h \
+    $$PWD/xdirect/xdirectstyleDlg.h \
+    $$PWD/xinverse/foilselectiondlg.h \
+    $$PWD/xinverse/inverseoptionsdlg.h \
+    $$PWD/xinverse/pertdlg.h \
+    $$PWD/xinverse/xinverse.h \
     design/AFoil.h \
     design/AFoilTableDlg.h \
     design/FoilTableDelegate.h \
@@ -213,18 +234,11 @@ HEADERS += \
     misc/options/units.h \
     misc/popup.h \
     misc/stlexportdialog.h \
-    misc/text/DoubleEdit.h \
-    misc/text/DoubleEdit.h \
-    misc/text/FloatEditDelegate.h \
-    misc/text/IntEdit.h \
-    misc/text/MinTextEdit.h \
-    misc/text/TextClrBtn.h \
     misc/updater.h \
     misc/voidwidget.h \
     misc/waitdlg.h \
     script/xflscriptexec.h \
     script/xflscriptreader.h \
-    viewwidgets/glWidgets/ArcBall.h \
     viewwidgets/glWidgets/gl3dbodyview.h \
     viewwidgets/glWidgets/gl3dmiarexview.h \
     viewwidgets/glWidgets/gl3dplaneview.h \
@@ -244,8 +258,6 @@ HEADERS += \
     viewwidgets/bodyframewt.h \
     viewwidgets/bodylinewt.h \
     xdirect/mgt/managefoilsdlg.h \
-    xdirect/XDirect.h \
-    xdirect/XDirectStyleDlg.h \
     xdirect/analysis/BatchDlg.h \
     xdirect/analysis/BatchThreadDlg.h \
     xdirect/analysis/FoilPolarDlg.h \
@@ -254,22 +266,9 @@ HEADERS += \
     xdirect/analysis/XFoilAnalysisDlg.h \
     xdirect/analysis/XFoilTask.h \
     xdirect/analysis/xfoiltaskevent.h \
-    xdirect/geometry/CAddDlg.h \
-    xdirect/geometry/FlapDlg.h \
-    xdirect/geometry/FoilCoordDlg.h \
-    xdirect/geometry/FoilGeomDlg.h \
-    xdirect/geometry/InterpolateFoilsDlg.h \
-    xdirect/geometry/LEDlg.h \
-    xdirect/geometry/NacaFoilDlg.h \
-    xdirect/geometry/TEGapDlg.h \
-    xdirect/geometry/TwoDPanelDlg.h \
     xdirect/objects2d.h \
     xdirect/xml/xmlpolarreader.h \
-    xdirect/xml/xmlpolarwriter.h \
-    xinverse/FoilSelectionDlg.h \
-    xinverse/InverseOptionsDlg.h \
-    xinverse/PertDlg.h \
-    xinverse/XInverse.h
+    xdirect/xml/xmlpolarwriter.h
 
 
 RESOURCES += \

@@ -21,12 +21,12 @@
 
 #include <QMessageBox>
 
-#include "CAddDlg.h"
+#include "cadddlg.h"
 #include <QGridLayout>
 
 #include <xfoil.h>
 #include <objects/objects2d/foil.h>
-#include <misc/text/DoubleEdit.h>
+#include <misc/text/doubleedit.h>
 
 
 

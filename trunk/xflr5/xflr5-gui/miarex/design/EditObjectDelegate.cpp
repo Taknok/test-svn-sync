@@ -24,8 +24,8 @@
 #include "EditObjectDelegate.h"
 #include <objects/objects2d/foil.h>
 #include <misc/options/settings.h>
-#include <misc/text/IntEdit.h>
-#include <misc/text/DoubleEdit.h>
+#include <misc/text/intedit.h>
+#include <misc/text/doubleedit.h>
 #include <analysis3d/analysis3d_enums.h>
 
 

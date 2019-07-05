@@ -34,7 +34,7 @@
 #include <QTimer>
 
 #include <globals/gui_enums.h>
-#include <viewwidgets/glWidgets/ArcBall.h>
+#include <viewwidgets/glWidgets/arcball.h>
 
 
 #define PIf 3.141592654f

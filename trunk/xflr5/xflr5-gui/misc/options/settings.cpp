@@ -22,10 +22,10 @@
 #include "settings.h"
 #include <globals/mainframe.h>
 #include <miarex/Miarex.h>
-#include <xdirect/XDirect.h>
-#include <xinverse/XInverse.h>
+#include <xdirect/xdirect.h>
+#include <xinverse/xinverse.h>
 #include <graph/graphdlg.h>
-#include <misc/text/TextClrBtn.h>
+#include <misc/text/textclrbtn.h>
 #include "color/ColorButton.h"
 
 #include <QApplication>

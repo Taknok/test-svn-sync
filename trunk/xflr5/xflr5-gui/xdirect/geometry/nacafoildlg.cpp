@@ -20,11 +20,11 @@
 *****************************************************************************/
 
 #include <xfoil.h>
-#include "NacaFoilDlg.h"
+#include "nacafoildlg.h"
 #include <QGridLayout>
 #include <QFormLayout>
 #include <objects/objects2d/foil.h>
-#include <misc/text/IntEdit.h>
+#include <misc/text/intedit.h>
 
 XFoil *NacaFoilDlg::s_pXFoil;
 int NacaFoilDlg::s_Digits = 0;

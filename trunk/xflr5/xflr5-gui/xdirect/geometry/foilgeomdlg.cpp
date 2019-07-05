@@ -24,10 +24,10 @@
 #include <QMessageBox>
 
 #include <xfoil.h>
-#include "FoilGeomDlg.h"
+#include "foilgeomdlg.h"
 
 
-#include <misc/text/DoubleEdit.h>
+#include <misc/text/doubleedit.h>
 #include <objects/objects2d/foil.h>
 
 

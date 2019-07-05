@@ -23,9 +23,9 @@
 #include <QMessageBox>
 #include <QHBoxLayout>
 
-#include "TEGapDlg.h"
+#include "tegapdlg.h"
 #include <xfoil.h>
-#include <misc/text/DoubleEdit.h>
+#include <misc/text/doubleedit.h>
 #include <objects/objects2d/foil.h>
 
 

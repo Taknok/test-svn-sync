@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 
-#include "FloatEditDelegate.h"
+#include "floatrditdelegate.h"
 
 
 FloatEditDelegate::FloatEditDelegate(QObject *parent)

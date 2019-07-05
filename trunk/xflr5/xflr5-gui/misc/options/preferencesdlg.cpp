@@ -35,8 +35,8 @@
 #include <misc/options/settings.h>
 #include <misc/options/languagewt.h>
 #include <misc/options/saveoptions.h>
-#include <misc/text/IntEdit.h>
-#include <misc/text/TextClrBtn.h>
+#include <misc/text/intedit.h>
+#include <misc/text/textclrbtn.h>
 #include <misc/updater.h>
 
 PreferencesDlg::PreferencesDlg(QWidget *pParent) : QDialog(pParent)

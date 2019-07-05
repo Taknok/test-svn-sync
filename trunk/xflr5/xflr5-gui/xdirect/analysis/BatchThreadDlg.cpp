@@ -37,15 +37,15 @@
 #include <globals/globals.h>
 #include <globals/gui_params.h>
 #include <misc/options/settings.h>
-#include <misc/text/DoubleEdit.h>
-#include <misc/text/IntEdit.h>
+#include <misc/text/doubleedit.h>
+#include <misc/text/intedit.h>
 #include <objects/objects2d/foil.h>
 #include <objects/objects2d/polar.h>
-#include <xdirect/XDirect.h>
+#include <xdirect/xdirect.h>
 #include <xdirect/analysis/XFoilTask.h>
 #include <xdirect/analysis/xfoiltaskevent.h>
 #include <xdirect/objects2d.h>
-#include <xinverse/FoilSelectionDlg.h>
+#include <xinverse/foilselectiondlg.h>
 
 
 bool BatchThreadDlg::s_bCurrentFoil=true;

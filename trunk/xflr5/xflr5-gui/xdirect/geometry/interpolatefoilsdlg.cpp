@@ -22,12 +22,12 @@
 #include <QDebug>
 #include <QGroupBox>
 #include <QVBoxLayout>
-#include "InterpolateFoilsDlg.h"
+#include "interpolatefoilsdlg.h"
 #include <xdirect/objects2d.h>
 
 #include <xfoil.h>
 #include <objects/objects2d/foil.h>
-#include <misc/text/DoubleEdit.h>
+#include <misc/text/doubleedit.h>
 
 
 void *InterpolateFoilsDlg::s_pXFoil;

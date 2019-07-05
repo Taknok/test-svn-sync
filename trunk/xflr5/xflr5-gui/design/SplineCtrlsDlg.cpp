@@ -32,8 +32,8 @@
 #include "SplineCtrlsDlg.h"
 #include <gui_objects/SplineFoil.h>
 #include <misc/options/settings.h>
-#include <misc/text/DoubleEdit.h>
-#include <misc/text/FloatEditDelegate.h>
+#include <misc/text/doubleedit.h>
+#include <misc/text/floatrditdelegate.h>
 
 AFoil *SplineCtrlsDlg::s_pAFoil = nullptr;
 

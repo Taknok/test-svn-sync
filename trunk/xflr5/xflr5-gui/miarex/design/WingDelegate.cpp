@@ -23,7 +23,7 @@
 #include <objects/objects2d/foil.h>
 #include <miarex/design/WingDelegate.h>
 #include <miarex/design/GL3dWingDlg.h>
-#include <misc/text/DoubleEdit.h>
+#include <misc/text/doubleedit.h>
 #include <objects/objects3d/wingsection.h>
 #include <objects/objects2d/foil.h>
 

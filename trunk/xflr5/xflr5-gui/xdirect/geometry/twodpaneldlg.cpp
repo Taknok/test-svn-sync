@@ -24,12 +24,12 @@
 #include <QLabel>
 #include <QDebug>
 
-#include "TwoDPanelDlg.h"
+#include "twodpaneldlg.h"
 
 #include <objects/objects2d/foil.h>
 #include <xfoil.h>
-#include <misc/text/IntEdit.h>
-#include <misc/text/DoubleEdit.h>
+#include <misc/text/intedit.h>
+#include <misc/text/doubleedit.h>
 
 XFoil *TwoDPanelDlg::s_pXFoil;
 

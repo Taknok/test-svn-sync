@@ -30,8 +30,8 @@
 #include <QPushButton>
 #include <QCheckBox>
 
-#include <misc/text/DoubleEdit.h>
-#include <misc/text/IntEdit.h>
+#include <misc/text/doubleedit.h>
+#include <misc/text/intedit.h>
 
 
 class XFoilAdvancedDlg : public QDialog

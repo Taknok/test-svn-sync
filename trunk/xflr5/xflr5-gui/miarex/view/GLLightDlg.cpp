@@ -29,7 +29,7 @@
 #include <QLabel>
 #include <QShowEvent>
 
-#include <misc/text/DoubleEdit.h>
+#include <misc/text/doubleedit.h>
 #include "exponentialslider.h"
 
 

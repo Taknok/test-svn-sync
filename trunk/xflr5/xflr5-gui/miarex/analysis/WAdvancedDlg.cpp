@@ -31,8 +31,8 @@
 #include "WAdvancedDlg.h"
 #include <globals/globals.h>
 #include <misc/options/units.h>
-#include <misc/text/DoubleEdit.h>
-#include <misc/text/IntEdit.h>
+#include <misc/text/doubleedit.h>
+#include <misc/text/intedit.h>
 
 WAdvancedDlg::WAdvancedDlg(QWidget *pParent) : QDialog(pParent)
 {

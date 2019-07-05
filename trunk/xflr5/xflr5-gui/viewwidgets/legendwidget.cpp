@@ -36,8 +36,8 @@
 #include <misc/options/settings.h>
 #include <miarex/Miarex.h>
 #include <miarex/objects3d.h>
-#include <xinverse/XInverse.h>
-#include <xdirect/XDirect.h>
+#include <xinverse/xinverse.h>
+#include <xdirect/xdirect.h>
 #include <xdirect/objects2d.h>
 #include <graph/curve.h>
 

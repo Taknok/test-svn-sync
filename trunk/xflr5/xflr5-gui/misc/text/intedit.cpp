@@ -19,7 +19,7 @@
 
 *****************************************************************************/
 
-#include <misc/text/IntEdit.h>
+#include <misc/text/intedit.h>
 #include <misc/options/settings.h>
 
 

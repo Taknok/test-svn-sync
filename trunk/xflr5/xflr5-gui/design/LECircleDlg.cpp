@@ -25,7 +25,7 @@
 
 #include "LECircleDlg.h"
 
-#include <misc/text/DoubleEdit.h>
+#include <misc/text/doubleedit.h>
 
 
 LECircleDlg::LECircleDlg(QWidget *pParent): QDialog(pParent)

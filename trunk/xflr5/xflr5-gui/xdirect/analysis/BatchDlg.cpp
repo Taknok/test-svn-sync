@@ -37,15 +37,15 @@
 #include <graph/curve.h>
 #include <graph/graph.h>
 #include <misc/options/settings.h>
-#include <misc/text/DoubleEdit.h>
-#include <misc/text/IntEdit.h>
+#include <misc/text/doubleedit.h>
+#include <misc/text/intedit.h>
 #include <objects/objects2d/foil.h>
 #include <objects/objects2d/polar.h>
-#include <xdirect/XDirect.h>
+#include <xdirect/xdirect.h>
 #include <xdirect/analysis/XFoilTask.h>
 #include <xdirect/analysis/xfoiltaskevent.h>
 #include <xdirect/objects2d.h>
-#include <xinverse/FoilSelectionDlg.h>
+#include <xinverse/foilselectiondlg.h>
 
 bool BatchDlg::s_bCurrentFoil=true;
 XDirect * BatchDlg::s_pXDirect;

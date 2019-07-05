@@ -24,10 +24,10 @@
 #include <QLabel>
 #include <QMessageBox>
 
-#include "FlapDlg.h"
+#include "flapdlg.h"
 
 #include <objects/objects2d/foil.h>
-#include <misc/text/DoubleEdit.h>
+#include <misc/text/doubleedit.h>
 
 
 FlapDlg::FlapDlg(QWidget *pParent) : QDialog(pParent)

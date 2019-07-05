@@ -33,7 +33,7 @@
 #include <misc/line/LineBtn.h>
 #include <misc/line/LinePickerDlg.h>
 #include <misc/options/units.h>
-#include <misc/text/DoubleEdit.h>
+#include <misc/text/doubleedit.h>
 
 
 bool BodyGridDlg::s_bScale = false;
