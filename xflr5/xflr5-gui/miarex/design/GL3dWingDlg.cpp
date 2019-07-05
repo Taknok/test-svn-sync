@@ -40,7 +40,7 @@
 #include <miarex/mgt/XmlPlaneWriter.h>
 #include <miarex/objects3d.h>
 #include <miarex/view/W3dPrefsDlg.h>
-#include <misc/color/ColorButton.h>
+#include <misc/color/colorbutton.h>
 #include <misc/options/units.h>
 #include <misc/options/settings.h>
 #include <misc/text/doubleedit.h>

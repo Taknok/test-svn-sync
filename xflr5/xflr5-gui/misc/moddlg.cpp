@@ -19,7 +19,7 @@
 
 *****************************************************************************/
 
-#include "ModDlg.h"
+#include "moddlg.h"
 #include <QPushButton>
 #include <QHBoxLayout>
 

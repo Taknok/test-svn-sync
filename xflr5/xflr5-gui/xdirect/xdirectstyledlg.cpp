@@ -24,11 +24,11 @@
 
 #include "xdirectstyleDlg.h"
 #include <xdirect/xdirect.h>
-#include <misc/line/LinePickerDlg.h>
+#include <misc/line/linepickerdlg.h>
 #include <viewwidgets/oppointwidget.h>
 
 
-#include <misc/line/LineBtn.h>
+#include <misc/line/linebtn.h>
 
 
 XDirectStyleDlg::XDirectStyleDlg(OpPointWidget *pParent) : QDialog(pParent)

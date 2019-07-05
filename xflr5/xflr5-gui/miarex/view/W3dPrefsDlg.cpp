@@ -27,10 +27,10 @@
 #include <QPushButton>
 
 #include "W3dPrefsDlg.h"
-#include <misc/line/LinePickerDlg.h>
+#include <misc/line/linepickerdlg.h>
 
-#include <misc/line/LineBtn.h>
-#include <misc/color/ColorButton.h>
+#include <misc/line/linebtn.h>
+#include <misc/color/colorbutton.h>
 #include <misc/text/intedit.h>
 
 

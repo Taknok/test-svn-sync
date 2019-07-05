@@ -21,7 +21,7 @@
 
 #include <globals/globals.h>
 #include <misc/options/settings.h>
-#include "LengthUnitDlg.h"
+#include "lengthunitdlg.h"
 #include <QGridLayout>
 #include <QVBoxLayout>
 

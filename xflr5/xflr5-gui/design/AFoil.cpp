@@ -38,8 +38,8 @@
 #include <globals/mainframe.h>
 #include <xdirect/xdirect.h>
 #include <misc/options/settings.h>
-#include <misc/line/LinePickerDlg.h>
-#include <misc/RenameDlg.h>
+#include <misc/line/linepickerdlg.h>
+#include <misc/renamedlg.h>
 #include <xdirect/objects2d.h>
 #include <xdirect/geometry/nacafoildlg.h>
 #include <xdirect/geometry/cadddlg.h>

@@ -57,11 +57,11 @@
 #include <miarex/view/GL3DScales.h>
 #include <miarex/view/StabViewDlg.h>
 #include <miarex/view/W3dPrefsDlg.h>
-#include <misc/AboutQ5.h>
-#include <misc/EditPlrDlg.h>
-#include <misc/ObjectPropsDlg.h>
-#include <misc/RenameDlg.h>
-#include <misc/line/LinePickerDlg.h>
+#include <misc/aboutq5.h>
+#include <misc/editplrdlg.h>
+#include <misc/objectpropsdlg.h>
+#include <misc/renamedlg.h>
+#include <misc/line/linepickerdlg.h>
 #include <misc/options/settings.h>
 #include <misc/options/languagewt.h>
 #include <misc/options/preferencesdlg.h>

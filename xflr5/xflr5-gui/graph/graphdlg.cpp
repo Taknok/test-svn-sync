@@ -31,9 +31,9 @@
 #include <graph/graph.h>
 #include <graph/graphdlg.h>
 #include <miarex/Miarex.h>
-#include <misc/color/ColorButton.h>
-#include <misc/line/LineBtn.h>
-#include <misc/line/LinePickerDlg.h>
+#include <misc/color/colorbutton.h>
+#include <misc/line/linebtn.h>
+#include <misc/line/linepickerdlg.h>
 #include <misc/text/doubleedit.h>
 #include <misc/text/intedit.h>
 #include <misc/text/textclrbtn.h>

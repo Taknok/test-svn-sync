@@ -33,7 +33,7 @@
 #include "StabViewDlg.h"
 #include <globals/globals.h>
 #include <misc/options/settings.h>
-#include <misc/NewNameDlg.h>
+#include <misc/newnamedlg.h>
 #include <misc/options/units.h>
 #include <miarex/Miarex.h>
 #include <viewwidgets/glWidgets/gl3dmiarexview.h>

@@ -30,8 +30,8 @@
 
 #include "BodyGridDlg.h"
 #include <globals/globals.h>
-#include <misc/line/LineBtn.h>
-#include <misc/line/LinePickerDlg.h>
+#include <misc/line/linebtn.h>
+#include <misc/line/linepickerdlg.h>
 #include <misc/options/units.h>
 #include <misc/text/doubleedit.h>
 

@@ -19,7 +19,7 @@
 
 *****************************************************************************/
 
-#include "ObjectPropsDlg.h"
+#include "objectpropsdlg.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPushButton>

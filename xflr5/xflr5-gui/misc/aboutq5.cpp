@@ -25,7 +25,7 @@
 #include <QPushButton>
 
 #include <globals/gui_params.h>
-#include "AboutQ5.h"
+#include "aboutq5.h"
 
 
 AboutQ5::AboutQ5(QWidget *parent) : QDialog(parent)

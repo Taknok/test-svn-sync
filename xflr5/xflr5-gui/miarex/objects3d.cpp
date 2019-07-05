@@ -25,7 +25,7 @@
 #include <QDebug>
 
 #include <miarex/Miarex.h>
-#include <misc/RenameDlg.h>
+#include <misc/renamedlg.h>
 
 #include "objects3d.h"
 #include <objects/objects3d/surface.h>
