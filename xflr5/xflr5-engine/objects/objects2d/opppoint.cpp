@@ -69,13 +69,11 @@ OpPoint::OpPoint()
     m_Style = 0;
     m_Width = 1;
 
-    m_red   = int(((double)rand()/(double)RAND_MAX)*200);
-    m_green = int(((double)rand()/(double)RAND_MAX)*200);
-    m_blue  = int(((double)rand()/(double)RAND_MAX)*200);
+    m_red   = int((double(rand())/double(RAND_MAX))*200);
+    m_green = int((double(rand())/double(RAND_MAX))*200);
+    m_blue  = int((double(rand())/double(RAND_MAX))*200);
     m_alphaChannel = 255;
 }
-
-
 
 /**
  * Calculates the moments acting on the flap hinges
@@ -83,31 +81,28 @@ OpPoint::OpPoint()
  */
 void OpPoint::setHingeMoments(Foil *pFoil)
 {
-//    bool bFound;
-    double hmom, hfx, hfy;
-    double dx, dy, xmid, ymid, pmid;
-    double xof, yof;
-    double ymin, ymax;
-    xof = pFoil->m_TEXHinge/100.0;
-    ymin = pFoil->baseLowerY(xof);
-    ymax = pFoil->baseUpperY(xof);
-    yof = ymin + (ymax-ymin) * pFoil->m_TEYHinge/100.0;
+    double  pmid=0;
+
+    double xof = pFoil->m_TEXHinge/100.0;
+    double ymin = pFoil->baseLowerY(xof);
+    double ymax = pFoil->baseUpperY(xof);
+    double yof = ymin + (ymax-ymin) * pFoil->m_TEYHinge/100.0;
 
     if(pFoil->m_bTEFlap)
     {
-        hmom = 0.0;
-        hfx  = 0.0;
-        hfy  = 0.0;
+        double hmom = 0.0;
+        double hfx  = 0.0;
+        double hfy  = 0.0;
 
         //---- integrate pressures on top and bottom sides of flap
         for (int i=0;i<pFoil->n-1;i++)
         {
             if (pFoil->x[i]>xof &&    pFoil->x[i+1]>xof)
             {
-                dx = pFoil->x[i+1] - pFoil->x[i];
-                dy = pFoil->y[i+1] - pFoil->y[i];
-                xmid = 0.5*(pFoil->x[i+1]+pFoil->x[i]) - xof;
-                ymid = 0.5*(pFoil->y[i+1]+pFoil->y[i]) - yof;
+                double dx = pFoil->x[i+1] - pFoil->x[i];
+                double dy = pFoil->y[i+1] - pFoil->y[i];
+                double xmid = 0.5*(pFoil->x[i+1]+pFoil->x[i]) - xof;
+                double ymid = 0.5*(pFoil->y[i+1]+pFoil->y[i]) - yof;
 
                 if(m_bViscResults) pmid = 0.5*(Cpv[i+1] + Cpv[i]);
                 else               pmid = 0.5*(Cpi[i+1] + Cpi[i]);
@@ -171,7 +166,6 @@ void OpPoint::setHingeMoments(Foil *pFoil)
 
 void OpPoint::exportOpp(QTextStream &out, QString Version, bool bCSV, Foil*pFoil, bool bDataOnly)
 {
-    int k;
     QString strong;
 
     if(!bDataOnly)
@@ -192,7 +186,7 @@ void OpPoint::exportOpp(QTextStream &out, QString Version, bool bCSV, Foil*pFoil
     if(!bCSV) out << "   x        Cpi      Cpv        Qi        Qv\n";
     else      out << "x,Cpi,Cpv,Qi,Qv\n";
 
-    for (k=0; k<n; k++)
+    for (int k=0; k<n; k++)
     {
         if(!bCSV) strong=QString("%1  %2   %3   %4   %5\n")
                                        .arg(pFoil->x[k],7,'f',4).arg(Cpi[k],7,'f',3).arg(Cpv[k],7,'f',3).arg(Qi[k],7,'f',3).arg(Qv[k],7,'f',3);
@@ -282,9 +276,9 @@ void OpPoint::getColor(int &r, int &g, int &b, int &a)
 
 void OpPoint::setColor(int r, int g, int b, int a)
 {
-    m_red = r;
-    m_green = g;
-    m_blue = b;
+    m_red          = r;
+    m_green        = g;
+    m_blue         = b;
     m_alphaChannel = a;
 }
 
@@ -292,14 +286,11 @@ void OpPoint::setColor(int r, int g, int b, int a)
 QString OpPoint::opPointName()
 {
     QString name;
-    name = QString("-Re=%1-Alpha=%2-NCrit=%3-XTrTop=%4-XtrBot=%5").arg(Reynolds(),8,'f',0).arg(aoa(),5,'f',2)
+    name = QString("-Re=%1-Alpha=%2-NCrit=%3-XTrTop=%4-XtrBot=%5").arg(Reynolds(),8,'g',0).arg(aoa(),5,'f',2)
             .arg(ACrit, 5, 'f', 1).arg(Xtr1, 5, 'f', 3).arg(Xtr2, 5, 'f', 3);
     name = foilName()+name;
     return name;
 }
-
-
-
 
 
 /**
@@ -326,9 +317,9 @@ bool OpPoint::serializeOppWPA(QDataStream &ar, bool bIsStoring, int ArchiveForma
         readCString(ar, m_FoilName);
         readCString(ar, m_PlrName);
 
-        ar >> f; m_Reynolds =f;
-        ar >> f; m_Mach = f;
-        ar >> f; m_Alpha = f;
+        ar >> f; m_Reynolds =double(f);
+        ar >> f; m_Mach = double(f);
+        ar >> f; m_Alpha = double(f);
         ar >> n >> blx.nd1 >> blx.nd2 >> blx.nd3;
         ar >> a >> b;
         if(a) m_bViscResults = true; else m_bViscResults = false;
@@ -337,45 +328,46 @@ bool OpPoint::serializeOppWPA(QDataStream &ar, bool bIsStoring, int ArchiveForma
         if(b) m_bBL = true; else m_bBL = false;
         if(b!=0 && b!=1) return false;
 
-        ar >> f; Cl = f;
-        ar >> f; Cm = f;
-        ar >> f; Cd = f;
-        ar >> f; Cdp = f;
-        ar >> f; Xtr1 = f;
-        ar >> f; Xtr2 = f;
-        ar >> f; ACrit =f;
-        ar >> f; m_TEHMom = f;
-        ar >> f; Cpmn = f;
-        for (k=0; k<n; k++)    {
-            ar >> f; Cpv[k] = f;
-            ar >> f; Cpi[k] = f;
+        ar >> f; Cl = double(f);
+        ar >> f; Cm = double(f);
+        ar >> f; Cd = double(f);
+        ar >> f; Cdp = double(f);
+        ar >> f; Xtr1 = double(f);
+        ar >> f; Xtr2 = double(f);
+        ar >> f; ACrit = double(f);
+        ar >> f; m_TEHMom = double(f);
+        ar >> f; Cpmn = double(f);
+        for (k=0; k<n; k++)
+        {
+            ar >> f; Cpv[k] = double(f);
+            ar >> f; Cpi[k] = double(f);
         }
 
 //            if (Format ==2) {
         for (k=0; k<n; k++)
         {
             if(Format<=100002)    ar >> f; //s[k]  = f;
-            ar >> f; Qv[k] = f;
-            ar >> f; Qi[k] = f;
+            ar >> f; Qv[k] = double(f);
+            ar >> f; Qi[k] = double(f);
         }
 //            }
         for (k=0; k<=blx.nd1; k++)
         {
             ar >> f >> gg;
-            blx.xd1[k] = f;
-            blx.yd1[k] = gg;
+            blx.xd1[k] = double(f);
+            blx.yd1[k] = double(gg);
         }
         for (k=0; k<blx.nd2; k++)
         {
             ar >> f >> gg;
-            blx.xd2[k] = f;
-            blx.yd2[k] = gg;
+            blx.xd2[k] = double(f);
+            blx.yd2[k] = double(gg);
         }
         for (k=0; k<blx.nd3; k++)
         {
             ar >> f >> gg;
-            blx.xd3[k] = f;
-            blx.yd3[k] = gg;
+            blx.xd3[k] = double(f);
+            blx.yd3[k] = double(gg);
         }
         if(ArchiveFormat>=100002)
         {
@@ -404,9 +396,9 @@ bool OpPoint::serializeOppWPA(QDataStream &ar, bool bIsStoring, int ArchiveForma
 bool OpPoint::serializeOppXFL(QDataStream &ar, bool bIsStoring, int ArchiveFormat)
 {
     bool boolean;
-    int k;
-    float f0,f1;
-    double dble;
+    int k=0;
+    float f0=0,f1=0;
+    double dble=0;
 
     if(bIsStoring)
     {
@@ -430,15 +422,16 @@ bool OpPoint::serializeOppXFL(QDataStream &ar, bool bIsStoring, int ArchiveForma
         ar << Xtr1 << Xtr2 << m_XCP;
         ar << ACrit << m_TEHMom << Cpmn;
 
-        for (k=0; k<n; k++)         ar << (float)Cpv[k] << (float)Cpi[k];
-        for (k=0; k<n; k++)         ar << (float)Qv[k]  << (float)Qi[k];
-        for (k=0; k<=blx.nd1; k++)   ar << (float)blx.xd1[k] << (float)blx.yd1[k];
-        for (k=0; k<blx.nd2; k++)    ar << (float)blx.xd2[k] << (float)blx.yd2[k];
-        for (k=0; k<blx.nd3; k++)    ar << (float)blx.xd3[k] << (float)blx.yd3[k];
+        for (k=0; k<n; k++)          ar << float(Cpv[k])     << float(Cpi[k]);
+        for (k=0; k<n; k++)          ar << float(Qv[k])      << float(Qi[k]);
+        for (k=0; k<=blx.nd1; k++)   ar << float(blx.xd1[k]) << float(blx.yd1[k]);
+        for (k=0; k<blx.nd2; k++)    ar << float(blx.xd2[k]) << float(blx.yd2[k]);
+        for (k=0; k<blx.nd3; k++)    ar << float(blx.xd3[k]) << float(blx.yd3[k]);
 
         // space allocation for the future storage of more data, without need to change the format
         for (int i=0; i<20; i++) ar << 0;
-        for (int i=0; i<50; i++) ar << (double)0.0;
+        dble = 0;
+        for (int i=0; i<50; i++) ar << dble;
     }
     else
     {
@@ -465,32 +458,32 @@ bool OpPoint::serializeOppXFL(QDataStream &ar, bool bIsStoring, int ArchiveForma
         for (k=0; k<n; k++)
         {
             ar >> f0 >> f1;
-            Cpv[k] = f0;
-            Cpi[k] = f1;
+            Cpv[k] = double(f0);
+            Cpi[k] = double(f1);
         }
         for (k=0; k<n; k++)
         {
             ar >> f0 >> f1;
-            Qv[k] = f0;
-            Qi[k] = f1;
+            Qv[k] = double(f0);
+            Qi[k] = double(f1);
         }
         for (k=0; k<=blx.nd1; k++)
         {
             ar >> f0 >> f1;
-            blx.xd1[k] = f0;
-            blx.yd1[k] = f1;
+            blx.xd1[k] = double(f0);
+            blx.yd1[k] = double(f1);
         }
         for (k=0; k<blx.nd2; k++)
         {
             ar >> f0 >> f1;
-            blx.xd2[k] = f0;
-            blx.yd2[k] = f1;
+            blx.xd2[k] = double(f0);
+            blx.yd2[k] = double(f1);
         }
         for (k=0; k<blx.nd3; k++)
         {
             ar >> f0 >> f1;
-            blx.xd3[k] = f0;
-            blx.yd3[k] = f1;
+            blx.xd3[k] = double(f0);
+            blx.yd3[k] = double(f1);
         }
 
         // space allocation
