@@ -34,7 +34,7 @@
 #include <globals/mainframe.h>
 #include <graph/graphdlg.h>
 #include <graph_globals.h>
-#include <misc/RenameDlg.h>
+#include <misc/renamedlg.h>
 #include <misc/options/settings.h>
 #include <misc/text/doubleedit.h>
 #include <misc/text/intedit.h>

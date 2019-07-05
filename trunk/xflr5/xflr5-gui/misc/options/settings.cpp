@@ -26,7 +26,7 @@
 #include <xinverse/xinverse.h>
 #include <graph/graphdlg.h>
 #include <misc/text/textclrbtn.h>
-#include "color/ColorButton.h"
+#include "color/colorbutton.h"
 
 #include <QApplication>
 #include <QGroupBox>

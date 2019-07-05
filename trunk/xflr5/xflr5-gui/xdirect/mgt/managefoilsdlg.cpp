@@ -29,7 +29,7 @@
 
 #include "managefoilsdlg.h"
 #include <misc/options/settings.h>
-#include <misc/RenameDlg.h>
+#include <misc/renamedlg.h>
 #include <xdirect/objects2d.h>
 #include <design/FoilTableDelegate.h>
 #include <objects/objects2d/foil.h>

@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 
-#include "NewNameDlg.h"
+#include "newnamedlg.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 

@@ -29,7 +29,7 @@
 #include "GL3dBodyDlg.h"
 #include <globals/globals.h>
 #include <objects/objects3d/body.h>
-#include <misc/line/LinePickerDlg.h>
+#include <misc/line/linepickerdlg.h>
 #include <misc/text/doubleedit.h>
 
 

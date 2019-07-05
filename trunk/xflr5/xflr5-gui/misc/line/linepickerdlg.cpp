@@ -25,13 +25,13 @@
 #include <QLabel>
 #include <QGridLayout>
 
-#include "LinePickerDlg.h"
+#include "linepickerdlg.h"
 #include <globals/globals.h>
 #include <misc/options/settings.h>
 
-#include "LineBtn.h"
-#include "LineCbBox.h"
-#include "LineDelegate.h"
+#include "linebtn.h"
+#include "linecbbox.h"
+#include "linedelegate.h"
 
 
 LinePickerDlg::LinePickerDlg(QWidget *pParent): QDialog(pParent)

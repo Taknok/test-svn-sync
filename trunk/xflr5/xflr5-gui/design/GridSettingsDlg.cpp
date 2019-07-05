@@ -25,8 +25,8 @@
 
 #include "AFoil.h"
 #include "GridSettingsDlg.h"
-#include <misc/line/LinePickerDlg.h>
-#include <misc/line/LineBtn.h>
+#include <misc/line/linepickerdlg.h>
+#include <misc/line/linebtn.h>
 #include <misc/text/doubleedit.h>
 
 

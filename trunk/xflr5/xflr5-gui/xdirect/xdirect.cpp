@@ -42,15 +42,15 @@
 
 #include <xdirect/xml/xmlpolarreader.h>
 #include <xdirect/xml/xmlpolarwriter.h>
-#include <misc/line/LineBtn.h>
-#include <misc/line/LineCbBox.h>
-#include <misc/line/LineDelegate.h>
+#include <misc/line/linebtn.h>
+#include <misc/line/linecbbox.h>
+#include <misc/line/linedelegate.h>
 #include <misc/text/doubleedit.h>
 #include <misc/options/settings.h>
-#include <misc/PolarFilterDlg.h>
-#include <misc/ObjectPropsDlg.h>
-#include <misc/RenameDlg.h>
-#include <misc/EditPlrDlg.h>
+#include <misc/polarfilterdlg.h>
+#include <misc/objectpropsdlg.h>
+#include <misc/renamedlg.h>
+#include <misc/editplrdlg.h>
 
 #include <xdirect/analysis/XFoilAdvancedDlg.h>
 #include <xdirect/analysis/FoilPolarDlg.h>
@@ -4796,6 +4796,10 @@ void XDirect::setupLayout()
             {
                 m_pctrlShowCurve     = new QCheckBox(tr("Curve"));
                 m_pctrlAlignChildren = new QCheckBox(tr("Flow down style"));
+                QString tip = tr("If activated:\n"
+                                 "all changes made to the style of the polar objects will flow down to the operating points\n"
+                                 "all changes made to the style of the foil objects will flow down to the polars and the operating points");
+                m_pctrlAlignChildren->setToolTip(tip);
                 pCurveDisplay->addWidget(m_pctrlShowCurve);
                 pCurveDisplay->addWidget(m_pctrlAlignChildren);
             }

@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 #include <misc/options/settings.h>
-#include <misc/color/ColorButton.h>
+#include <misc/color/colorbutton.h>
 #include <QPainter>
 #include <QStyleOption>
 

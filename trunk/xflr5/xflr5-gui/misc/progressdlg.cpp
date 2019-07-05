@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 #include <QVBoxLayout>
-#include "ProgressDlg.h"
+#include "progressdlg.h"
 
 ProgressDlg::ProgressDlg(QWidget *pParent) : QDialog(pParent)
 {

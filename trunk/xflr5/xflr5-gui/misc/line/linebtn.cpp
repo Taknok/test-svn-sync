@@ -1,7 +1,7 @@
 /****************************************************************************
 
-    LineCbBox Class
-    Copyright (C) 2009-2016 Andre Deperrois 
+    LineBtn Class
+    Copyright (C) 2014 Andre Deperrois 
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,35 +19,47 @@
 
 *****************************************************************************/
 
+
+#include <QStyleOption>
+#include <QMouseEvent>
+#include <QPen>
+#include <QPainter>
+
+#include <misc/options/settings.h>
+#include "linebtn.h"
 #include <globals/globals.h>
 #include <graph_globals.h>
-#include <misc/options/settings.h>
-#include "LineCbBox.h"
-#include <QtDebug>
-#include <QPainter>
-#include <QPaintEvent>
 
 
-
-
-LineCbBox::LineCbBox(QWidget *pParent)
-    :QComboBox(pParent)
+LineBtn::LineBtn(QWidget *parent)
+    : QAbstractButton(parent)
 {
-    setParent(pParent);
-    m_LineStyle.m_Style = 0;
-    m_LineStyle.m_Width = 1;
-    m_LineStyle.m_Color = QColor(255,100,50);
-    m_LineStyle.m_PointStyle = 0;
-    m_bShowPoints = false;
-
     QSizePolicy szPolicyExpanding;
     szPolicyExpanding.setHorizontalPolicy(QSizePolicy::MinimumExpanding);
     szPolicyExpanding.setVerticalPolicy(QSizePolicy::Minimum);
+//    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     setSizePolicy(szPolicyExpanding);
+
+    m_LineStyle.m_Color = Qt::darkGray;
+    m_LineStyle.m_Style = 0;
+    m_LineStyle.m_Width = 1;
+    m_LineStyle.m_PointStyle = 0;
 }
 
 
-QSize LineCbBox::sizeHint() const
+
+void LineBtn::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton)
+    {
+        emit clickedLB();
+    }
+    else
+        QWidget::mouseReleaseEvent(event);
+}
+
+
+QSize LineBtn::sizeHint() const
 {
     QFontMetrics fm(Settings::s_TextFont);
     int w = 7 * fm.averageCharWidth();
@@ -56,56 +68,64 @@ QSize LineCbBox::sizeHint() const
 }
 
 
+void LineBtn::setColor(QColor const & color)
+{
+    m_LineStyle.m_Color = color;
+    update();
+}
 
-void LineCbBox::setLine(int const &style, int const &width, QColor const &color, int const &pointStyle)
+
+void LineBtn::setStyle(int const & style)
+{
+    m_LineStyle.m_Style = style;
+    update();
+}
+
+
+void LineBtn::setWidth(int const & width)
+{
+    m_LineStyle.m_Width = width;
+    update();
+}
+
+
+void LineBtn::setPointStyle(int const & pointStyle)
+{
+    m_LineStyle.m_PointStyle = pointStyle;
+    update();
+}
+
+void LineBtn::setStyle(int const &style, int const &width, QColor const & color, int const & pointStyle)
 {
     m_LineStyle.m_Style = style;
     m_LineStyle.m_Width = width;
     m_LineStyle.m_Color = color;
     m_LineStyle.m_PointStyle = pointStyle;
+    update();
 }
 
 
 
-void LineCbBox::setLine(LineStyle lineStyle)
+void LineBtn::paintEvent(QPaintEvent *event)
 {
-    m_LineStyle = lineStyle;
-}
-
-
-void LineCbBox::paintEvent (QPaintEvent *event)
-{
-    QStyleOption opt;
-    opt.initFrom(this);
     QPainter painter(this);
-    style()->drawPrimitive(QStyle::PE_Widget, &opt, &painter, this);
-
     painter.save();
+
+    QRect r = rect();
+
 
     if(isEnabled())
     {
-
-        QRect r = event->rect();
-    //    QRect g = rect();
-        painter.setBrush(Qt::NoBrush);
+    //    painter.setBrush(Qt::DiagCrossPattern);
         painter.setBackgroundMode(Qt::TransparentMode);
 
         QPen LinePen(m_LineStyle.m_Color);
         LinePen.setStyle(getStyle(m_LineStyle.m_Style));
         LinePen.setWidth(m_LineStyle.m_Width);
         painter.setPen(LinePen);
-        painter.drawLine(r.left()+5, r.center().y(), r.width()-10, r.center().y());
-
-        if(m_bShowPoints)
-        {
-            LinePen.setStyle(Qt::SolidLine);
-            painter.setPen(LinePen);
-
-            QPalette palette;
-            drawPoint(painter, m_LineStyle.m_PointStyle, palette.window().color(), r.center());
-        }
+        painter.drawLine(r.left()+5, r.height()/2, r.width()-5, r.height()/2);
     }
 
     painter.restore();
+    event->accept();
 }
-

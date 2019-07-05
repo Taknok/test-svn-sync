@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 
-#include "RenameDlg.h"
+#include "renamedlg.h"
 #include <QMessageBox>
 
 

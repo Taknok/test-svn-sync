@@ -23,7 +23,7 @@
 #include <QVBoxLayout>
 #include <QDialogButtonBox>
 
-#include "PolarFilterDlg.h"
+#include "polarfilterdlg.h"
 
 
 PolarFilterDlg::PolarFilterDlg(QWidget *pParent) : QDialog(pParent)

@@ -25,7 +25,7 @@
 #include <QHeaderView>
 
 
-#include "EditPlrDlg.h"
+#include "editplrdlg.h"
 #include <miarex/Miarex.h>
 #include <misc/options/settings.h>
 #include <misc/text/floatrditdelegate.h>

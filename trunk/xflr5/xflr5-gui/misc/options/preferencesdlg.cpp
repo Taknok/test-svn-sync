@@ -30,7 +30,7 @@
 
 #include "preferencesdlg.h"
 #include <globals/mainframe.h>
-#include <misc/color/ColorButton.h>
+#include <misc/color/colorbutton.h>
 #include <misc/options/units.h>
 #include <misc/options/settings.h>
 #include <misc/options/languagewt.h>
