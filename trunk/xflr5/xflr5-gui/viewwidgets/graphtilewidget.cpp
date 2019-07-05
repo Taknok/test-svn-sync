@@ -34,7 +34,7 @@
 #include <miarex/Miarex.h>
 #include <misc/options/units.h>
 #include <misc/options/settings.h>
-#include <objects/objects3d/Plane.h>
+#include <objects/objects3d/plane.h>
 #include <viewwidgets/graphwidget.h>
 #include <viewwidgets/legendwidget.h>
 #include <xdirect/XDirect.h>

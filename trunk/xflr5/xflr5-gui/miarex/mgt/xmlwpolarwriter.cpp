@@ -23,7 +23,7 @@
 #include "xmlwpolarwriter.h"
 #include <misc/options/units.h>
 #include <globals/globals.h>
-#include <objects/objects3d/WPolar.h>
+#include <objects/objects3d/wpolar.h>
 
 XmlWPolarWriter::XmlWPolarWriter(QFile &XFile)
 {

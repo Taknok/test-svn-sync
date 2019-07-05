@@ -24,7 +24,7 @@
 #include <design/FoilTableDelegate.h>
 #include <design/AFoil.h>
 #include <gui_objects/SplineFoil.h>
-#include <objects/objects2d/Foil.h>
+#include <objects/objects2d/foil.h>
 #include <xdirect/objects2d.h>
 #include <globals/globals.h>
 #include <graph_globals.h>

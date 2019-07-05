@@ -25,8 +25,8 @@
 #include "graphwidget.h"
 #include "graphtilewidget.h"
 #include <graph/graphdlg.h>
-#include <objects/objects2d/Polar.h>
-#include <objects/objects3d/WPolar.h>
+#include <objects/objects2d/polar.h>
+#include <objects/objects3d/wpolar.h>
 #include <miarex/Miarex.h>
 #include <misc/options/units.h>
 #include <QPen>

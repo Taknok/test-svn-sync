@@ -24,7 +24,7 @@
 #include <QPainter>
 
 #include "gl3dplaneview.h"
-#include <objects/objects3d/Plane.h>
+#include <objects/objects3d/plane.h>
 #include <miarex/design/EditPlaneDlg.h>
 
 

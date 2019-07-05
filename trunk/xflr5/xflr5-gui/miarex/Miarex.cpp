@@ -76,14 +76,14 @@
 #include <misc/stlexportdialog.h>
 #include <misc/text/DoubleEdit.h>
 #include <misc/text/MinTextEdit.h>
-#include <objects/objects3d/Body.h>
-#include <objects/objects3d/Plane.h>
+#include <objects/objects3d/body.h>
+#include <objects/objects3d/plane.h>
 #include <objects/objects3d/planeopp.h>
-#include <objects/objects3d/PointMass.h>
-#include <objects/objects3d/Surface.h>
-#include <objects/objects3d/WPolar.h>
-#include <objects/objects3d/Wing.h>
-#include <objects/objects3d/WingOpp.h>
+#include <objects/objects3d/pointmass.h>
+#include <objects/objects3d/surface.h>
+#include <objects/objects3d/wpolar.h>
+#include <objects/objects3d/wing.h>
+#include <objects/objects3d/wingopp.h>
 #include <objects/objects_global.h>
 #include <viewwidgets/glWidgets/gl3dmiarexview.h>
 #include <viewwidgets/graphwidget.h>
@@ -430,31 +430,33 @@ void Miarex::connectSignals()
 {
     connect(this, SIGNAL(projectModified()), s_pMainFrame, SLOT(onProjectModified()));
 
-    connect(m_pctrlSequence, SIGNAL(clicked()), this, SLOT(onSequence()));
-    connect(m_pctrlStoreWOpp, SIGNAL(clicked()), this, SLOT(onStoreWOpp()));
-    connect(m_pctrlInitLLTCalc, SIGNAL(clicked()), this, SLOT(onInitLLTCalc()));
-    connect(m_pctrlAnalyze, SIGNAL(clicked()), this, SLOT(onAnalyze()));
-    connect(m_pctrlCurveStyle, SIGNAL(activated(int)), this, SLOT(onCurveStyle(int)));
-    connect(m_pctrlCurveWidth, SIGNAL(activated(int)), this, SLOT(onCurveWidth(int)));
-    connect(m_pctrlCurvePoints, SIGNAL(activated(int)), this, SLOT(onCurvePoints(int)));
-    connect(m_pctrlCurveColor, SIGNAL(clickedLB()), this, SLOT(onCurveColor()));
-    connect(m_pctrlShowCurve, SIGNAL(clicked()), this, SLOT(onShowCurve()));
+    connect(m_pctrlSequence,    SIGNAL(clicked()),      SLOT(onSequence()));
+    connect(m_pctrlStoreWOpp,   SIGNAL(clicked()),      SLOT(onStoreWOpp()));
+    connect(m_pctrlInitLLTCalc, SIGNAL(clicked()),      SLOT(onInitLLTCalc()));
+    connect(m_pctrlAnalyze,     SIGNAL(clicked()),      SLOT(onAnalyze()));
+    connect(m_pctrlCurveStyle,  SIGNAL(activated(int)), SLOT(onCurveStyle(int)));
+    connect(m_pctrlCurveWidth,  SIGNAL(activated(int)), SLOT(onCurveWidth(int)));
+    connect(m_pctrlCurvePoints, SIGNAL(activated(int)), SLOT(onCurvePoints(int)));
+    connect(m_pctrlCurveColor,  SIGNAL(clickedLB()),    SLOT(onCurveColor()));
 
-    connect(m_pctrlPanelForce, SIGNAL(clicked()), this, SLOT(onPanelForce()));
-    connect(m_pctrlLift, SIGNAL(clicked()), this, SLOT(onShowLift()));
-    connect(m_pctrlIDrag, SIGNAL(clicked()), this, SLOT(onShowIDrag()));
-    connect(m_pctrlVDrag, SIGNAL(clicked()), this, SLOT(onShowVDrag()));
-    connect(m_pctrlTrans, SIGNAL(clicked()), this, SLOT(onShowTransitions()));
-    connect(m_pctrlCp, SIGNAL(clicked()),this, SLOT(on3DCp()));
-    connect(m_pctrlMoment, SIGNAL(clicked()), this, SLOT(onMoment()));
-    connect(m_pctrlDownwash, SIGNAL(clicked()), this, SLOT(onDownwash()));
-    connect(m_pctrlStream, SIGNAL(clicked()), this, SLOT(onStreamlines()));
-    connect(m_pctrlSurfVel, SIGNAL(clicked()), this, SLOT(onSurfaceSpeeds()));
+    connect(m_pctrlShowCurve,     SIGNAL(clicked()), SLOT(onShowCurve()));
+    connect(m_pctrlAlignChildren, SIGNAL(clicked()), SLOT(onAlignChildrenStyle()));
 
-    connect(m_pctrlWOppAnimate, SIGNAL(clicked()), this, SLOT(onAnimateWOpp()));
-    connect(m_pctrlAnimateWOppSpeed, SIGNAL(sliderMoved(int)), this, SLOT(onAnimateWOppSpeed(int)));
-    connect(m_pTimerWOpp, SIGNAL(timeout()), this, SLOT(onAnimateWOppSingle()));
-    connect(m_pTimerMode, SIGNAL(timeout()), this, SLOT(onAnimateModeSingle()));
+    connect(m_pctrlPanelForce,  SIGNAL(clicked()), SLOT(onPanelForce()));
+    connect(m_pctrlLift,        SIGNAL(clicked()), SLOT(onShowLift()));
+    connect(m_pctrlIDrag,       SIGNAL(clicked()), SLOT(onShowIDrag()));
+    connect(m_pctrlVDrag,       SIGNAL(clicked()), SLOT(onShowVDrag()));
+    connect(m_pctrlTrans,       SIGNAL(clicked()), SLOT(onShowTransitions()));
+    connect(m_pctrlCp,          SIGNAL(clicked()), SLOT(on3DCp()));
+    connect(m_pctrlMoment,      SIGNAL(clicked()), SLOT(onMoment()));
+    connect(m_pctrlDownwash,    SIGNAL(clicked()), SLOT(onDownwash()));
+    connect(m_pctrlStream,      SIGNAL(clicked()), SLOT(onStreamlines()));
+    connect(m_pctrlSurfVel,     SIGNAL(clicked()), SLOT(onSurfaceSpeeds()));
+
+    connect(m_pctrlWOppAnimate,      SIGNAL(clicked()),        SLOT(onAnimateWOpp()));
+    connect(m_pctrlAnimateWOppSpeed, SIGNAL(sliderMoved(int)), SLOT(onAnimateWOppSpeed(int)));
+    connect(m_pTimerWOpp,            SIGNAL(timeout()),        SLOT(onAnimateWOppSingle()));
+    connect(m_pTimerMode,            SIGNAL(timeout()),        SLOT(onAnimateModeSingle()));
 
     connect(m_pctrlSurfaces,  SIGNAL(clicked(bool)), m_pgl3dMiarexView, SLOT(onSurfaces(bool)));
     connect(m_pctrlOutline,   SIGNAL(clicked(bool)), m_pgl3dMiarexView, SLOT(onOutline(bool)));
@@ -663,6 +665,8 @@ void Miarex::setControls()
     //    m_pctrlPanels->setEnabled(m_pCurPlane && m_pCurWPolar &&  !m_pCurWPolar->isLLTMethod());
 
     setCurveParams();
+
+    m_pctrlAlignChildren->setChecked(Settings::isAlignedChildrenStyle());
 
     blockSignals(false);
 }
@@ -1313,6 +1317,7 @@ void Miarex::fillComboBoxes(bool bEnable)
     m_pctrlCurveWidth->setEnabled(bEnable);
     m_pctrlCurvePoints->setEnabled(bEnable);
     m_pctrlShowCurve->setEnabled(bEnable);
+    m_pctrlAlignChildren->setEnabled(bEnable);
 
     int LineStyle[]  = {0,0,0,0,0};
     int LineWidth[]  = {0,0,0,0,0};
@@ -5795,6 +5800,11 @@ void Miarex::onShowCurve()
 }
 
 
+void Miarex::onAlignChildrenStyle()
+{
+    Settings::setAlignedChildrenStyle(m_pctrlAlignChildren->isChecked());
+}
+
 /**
  * The user has toggled the display of stability results between longitudinal and lateral directions
  */
@@ -7140,13 +7150,19 @@ void Miarex::setupLayout()
         pPolarPropsFrame->setLayout(pPolarPropsLayout);
     }
 
-
     //_______________________Curve params
     QGroupBox *pCurveBox = new QGroupBox(tr("Curve settings"));
     {
-        QVBoxLayout *pCurveGroupLayout = new QVBoxLayout;
+        QHBoxLayout *pCheckLayout = new QHBoxLayout;
         {
             m_pctrlShowCurve   = new QCheckBox(tr("Curve"));
+            m_pctrlAlignChildren = new QCheckBox(tr("Flow down style"));
+            pCheckLayout->addWidget(m_pctrlShowCurve);
+            pCheckLayout->addWidget(m_pctrlAlignChildren);
+        }
+
+        QVBoxLayout *pCurveGroupLayout = new QVBoxLayout;
+        {
             m_pctrlCurveStyle  = new LineCbBox(this);
             m_pctrlCurveWidth  = new LineCbBox(this);
             m_pctrlCurvePoints = new LineCbBox(this);
@@ -7188,7 +7204,7 @@ void Miarex::setupLayout()
                 pCurveStyleLayout->setColumnStretch(2,5);
             }
 
-            pCurveGroupLayout->addWidget(m_pctrlShowCurve);
+            pCurveGroupLayout->addLayout(pCheckLayout);
             pCurveGroupLayout->addLayout(pCurveStyleLayout);
             //            pCurveGroupLayout->addStretch(1);
             setCurveParams();
@@ -7720,7 +7736,7 @@ void Miarex::updateCurve()
         m_pCurWPolar->points()      = m_LineStyle.m_PointStyle;
         m_pCurWPolar->isVisible()   = bCurveVisible;
 
-        if(Settings::s_bAlignChildrenStyle) Objects3d::setWPolarChildrenStyle(m_pCurWPolar);
+        if(Settings::isAlignedChildrenStyle()) Objects3d::setWPolarChildrenStyle(m_pCurWPolar);
     }
     else if(m_iView==XFLR5::STABTIMEVIEW && m_pCurWPolar)
     {
@@ -7735,7 +7751,7 @@ void Miarex::updateCurve()
         m_pCurWPolar->setCurveColor(ObjectColor(c.red(), c.green(), c.blue(), c.alpha()));
         m_pCurWPolar->points()    = m_LineStyle.m_PointStyle;
         m_pCurWPolar->isVisible() = m_pctrlShowCurve->isChecked();
-        if(Settings::s_bAlignChildrenStyle) Objects3d::setWPolarChildrenStyle(m_pCurWPolar);
+        if(Settings::isAlignedChildrenStyle()) Objects3d::setWPolarChildrenStyle(m_pCurWPolar);
     }
     else if (m_iView==XFLR5::WOPPVIEW)
     {

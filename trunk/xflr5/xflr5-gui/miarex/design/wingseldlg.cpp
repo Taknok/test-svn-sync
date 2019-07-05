@@ -24,7 +24,7 @@
 #include <QDebug>
 
 #include "wingseldlg.h"
-#include <objects/objects3d/Plane.h>
+#include <objects/objects3d/plane.h>
 #include <globals/globals.h>
 #include <analysis3d/analysis3d_enums.h>
 

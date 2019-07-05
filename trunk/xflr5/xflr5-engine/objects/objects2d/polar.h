@@ -32,7 +32,7 @@
 #include <QVector>
 
 #include <analysis3d/analysis3d_enums.h>
-#include <objects/objects2d/OpPoint.h>
+#include <objects/objects2d/oppoint.h>
 
 class Foil;
 

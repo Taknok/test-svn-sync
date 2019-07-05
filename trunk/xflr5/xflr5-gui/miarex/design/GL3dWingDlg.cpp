@@ -44,9 +44,9 @@
 #include <misc/options/units.h>
 #include <misc/options/settings.h>
 #include <misc/text/DoubleEdit.h>
-#include <objects/objects3d/Plane.h>
-#include <objects/objects3d/Surface.h>
-#include <objects/objects3d/Wing.h>
+#include <objects/objects3d/plane.h>
+#include <objects/objects3d/surface.h>
+#include <objects/objects3d/wing.h>
 #include <objects/objects_global.h>
 #include <viewwidgets/glWidgets/gl3dwingview.h>
 #include <xdirect/objects2d.h>

@@ -27,7 +27,7 @@
 #include <miarex/design/BodyScaleDlg.h>
 #include <misc/options/units.h>
 #include <globals/globals.h>
-#include <objects/objects3d/Body.h>
+#include <objects/objects3d/body.h>
 
 
 bool BodyFrameWt::s_bCurFrameOnly = false;

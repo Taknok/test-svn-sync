@@ -31,8 +31,8 @@
 #include <miarex/mgt/XmlPlaneReader.h>
 #include <miarex/mgt/xmlwpolarreader.h>
 #include <misc/options/settings.h>
-#include <objects/objects3d/Plane.h>
-#include <objects/objects3d/WPolar.h>
+#include <objects/objects3d/plane.h>
+#include <objects/objects3d/wpolar.h>
 #include <xdirect/analysis/XFoilTask.h>
 #include <xdirect/xml/xmlpolarreader.h>
 

@@ -128,6 +128,7 @@ private slots:
     void on3DView();
     void onAdjustToWing();
     void onAdvancedSettings();
+    void onAlignChildrenStyle();
     void onAnalyze();
     void onAnimateWOpp();
     void onAnimateWOppSingle();
@@ -327,7 +328,7 @@ public:
     QSlider *m_pctrlAnimateWOppSpeed;
     QCheckBox *m_pctrlMoment,  *m_pctrlDownwash, *m_pctrlCp,*m_pctrlSurfVel, *m_pctrlStream;
 
-    QCheckBox *m_pctrlShowCurve;
+    QCheckBox *m_pctrlShowCurve, *m_pctrlAlignChildren;
     LineCbBox *m_pctrlCurveStyle, *m_pctrlCurveWidth, *m_pctrlCurvePoints;
     LineBtn *m_pctrlCurveColor;
     LineDelegate *m_pStyleDelegate, *m_pWidthDelegate, *m_pPointDelegate;

@@ -19,7 +19,7 @@
 
 *****************************************************************************/
 
-#include "Frame.h"
+#include "frame.h"
 #include <math.h>
 #include <analysis3d/analysis3d_params.h>
 

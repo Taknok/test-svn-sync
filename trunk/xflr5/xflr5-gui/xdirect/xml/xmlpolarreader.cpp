@@ -23,7 +23,7 @@
 
 #include <globals/globals.h>
 #include "xmlpolarreader.h"
-#include <objects/objects2d/Polar.h>
+#include <objects/objects2d/polar.h>
 
 XmlPolarReader::XmlPolarReader(QFile &file, Polar *pPolar)
 {

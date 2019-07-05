@@ -23,11 +23,11 @@ TEMPLATE = lib
 DEFINES += XFOILLIB_LIBRARY
 
 SOURCES += \
-    XFoil.cpp
+    xfoil.cpp
 
 HEADERS +=\
     xfoil-lib_global.h \
-    XFoil.h \
+    xfoil.h \
     xfoil_params.h
 
 OBJECTS_DIR = ./objects

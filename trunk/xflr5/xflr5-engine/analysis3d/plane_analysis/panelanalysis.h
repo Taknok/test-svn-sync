@@ -31,7 +31,7 @@
 #include <QVector>
 
 #include <objects/objects3d/vector3d.h>
-#include <objects/objects3d/Panel.h>
+#include <objects/objects3d/panel.h>
 
 
 #define VLMMAXRHS 100

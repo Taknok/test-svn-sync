@@ -35,7 +35,7 @@
 
 
 
-#include "Quaternion.h"
+#include "quaternion.h"
 #include <objects/objects3d/vector3d.h>
 
 /**

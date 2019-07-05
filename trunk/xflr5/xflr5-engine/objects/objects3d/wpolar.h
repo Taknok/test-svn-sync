@@ -34,7 +34,7 @@
 
 
 
-#include <objects/objects3d/Plane.h>
+#include <objects/objects3d/plane.h>
 
 /**
 *@brief
@@ -50,7 +50,7 @@
 
 
 #include <analysis3d/analysis3d_enums.h>
-#include "WingOpp.h"
+#include "wingopp.h"
 #include "planeopp.h"
 
 #define MAXPOLARPOINTS   5000     /**< The max number of points on a polar. */

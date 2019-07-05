@@ -25,7 +25,7 @@
 #include <QMouseEvent>
 
 #include "gl3dview.h"
-#include <analysis3d/plane_analysis/LLTAnalysis.h>
+#include <analysis3d/plane_analysis/lltanalysis.h>
 #include <globals/globals.h>
 
 #include <globals/mainframe.h>
@@ -40,12 +40,12 @@
 #include <miarex/view/W3dPrefsDlg.h>
 #include <misc/options/units.h>
 #include <misc/options/settings.h>
-#include <objects/objects3d/Body.h>
-#include <objects/objects3d/Plane.h>
-#include <objects/objects3d/PointMass.h>
-#include <objects/objects3d/Surface.h>
-#include <objects/objects3d/WPolar.h>
-#include <objects/objects3d/Wing.h>
+#include <objects/objects3d/body.h>
+#include <objects/objects3d/plane.h>
+#include <objects/objects3d/pointmass.h>
+#include <objects/objects3d/surface.h>
+#include <objects/objects3d/wpolar.h>
+#include <objects/objects3d/wing.h>
 #include <objects/objects3d/vector3d.h>
 
 Miarex *gl3dView::s_pMiarex;

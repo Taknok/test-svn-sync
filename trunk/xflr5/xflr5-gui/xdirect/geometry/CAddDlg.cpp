@@ -24,8 +24,8 @@
 #include "CAddDlg.h"
 #include <QGridLayout>
 
-#include <XFoil.h>
-#include <objects/objects2d/Foil.h>
+#include <xfoil.h>
+#include <objects/objects2d/foil.h>
 #include <misc/text/DoubleEdit.h>
 
 

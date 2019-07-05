@@ -21,7 +21,7 @@
 
 #include <QtDebug>
 #include <analysis3d/analysis3d_params.h>
-#include "NURBSSurface.h"
+#include "nurbssurface.h"
 
 
 

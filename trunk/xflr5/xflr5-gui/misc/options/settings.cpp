@@ -217,7 +217,7 @@ void Settings::setupLayout()
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
         m_pctrlReverseZoom = new QCheckBox(tr("Reverse zoom direction using mouse wheel"));
-        m_pctrlAlignChildrenStyle = new QCheckBox(tr("Align the style of children objects with their parent's style"));
+        m_pctrlAlignChildrenStyle = new QCheckBox(tr("Flow down to the children objects changes made to the style of their parents style"));
         pMainLayout->addStretch(1);
         pMainLayout->addWidget(pWidgetStyleBox);
         pMainLayout->addStretch(1);

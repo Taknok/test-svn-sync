@@ -38,7 +38,7 @@
 #include <miarex/Miarex.h>
 #include <viewwidgets/glWidgets/gl3dmiarexview.h>
 #include <objects/objects_global.h>
-#include <objects/objects3d/WPolar.h>
+#include <objects/objects3d/wpolar.h>
 
 #include <misc/text/DoubleEdit.h>
 #include <misc/text/FloatEditDelegate.h>

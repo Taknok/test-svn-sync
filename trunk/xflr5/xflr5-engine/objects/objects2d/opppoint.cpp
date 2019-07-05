@@ -20,9 +20,9 @@
 *****************************************************************************/
 
 
-#include "OpPoint.h"
-#include "Foil.h"
-#include "Polar.h"
+#include "oppoint.h"
+#include "foil.h"
+#include "polar.h"
 #include "objects_global.h"
 #include <QtDebug>
 

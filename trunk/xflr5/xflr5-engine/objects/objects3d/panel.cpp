@@ -22,7 +22,7 @@
 
 
 #include <QtCore>
-#include "Panel.h"
+#include "panel.h"
 #include <math.h>
 
 double Panel::s_CoreSize = 0.000001;

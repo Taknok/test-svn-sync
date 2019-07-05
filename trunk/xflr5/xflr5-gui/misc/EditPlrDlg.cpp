@@ -29,8 +29,8 @@
 #include <miarex/Miarex.h>
 #include <misc/options/settings.h>
 #include <misc/text/FloatEditDelegate.h>
-#include <objects/objects2d/Polar.h>
-#include <objects/objects3d/WPolar.h>
+#include <objects/objects2d/polar.h>
+#include <objects/objects3d/wpolar.h>
 #include <xdirect/XDirect.h>
 
 

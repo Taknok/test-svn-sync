@@ -27,8 +27,8 @@
 #include <QEvent>
 #include <QTextStream>
 
-#include <analysis3d/plane_analysis/LLTAnalysis.h>
-#include <analysis3d/plane_analysis/PanelAnalysis.h>
+#include <analysis3d/plane_analysis/lltanalysis.h>
+#include <analysis3d/plane_analysis/panelanalysis.h>
 
 class Plane;
 class WPolar;

@@ -34,8 +34,8 @@
 #include <misc/options/units.h>
 #include <globals/globals.h>
 #include <globals/gui_enums.h>
-#include <objects/objects3d/WPolar.h>
-#include <objects/objects3d/Plane.h>
+#include <objects/objects3d/wpolar.h>
+#include <objects/objects3d/plane.h>
 #include <miarex/design/EditObjectDelegate.h>
 
 

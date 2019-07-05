@@ -26,8 +26,8 @@
 
 #include "TwoDPanelDlg.h"
 
-#include <objects/objects2d/Foil.h>
-#include <XFoil.h>
+#include <objects/objects2d/foil.h>
+#include <xfoil.h>
 #include <misc/text/IntEdit.h>
 #include <misc/text/DoubleEdit.h>
 

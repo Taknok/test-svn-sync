@@ -21,7 +21,7 @@
 *****************************************************************************/
 
 
-#include "Spline.h"
+#include "spline.h"
 #include "math.h"
 #include <QtDebug>
 

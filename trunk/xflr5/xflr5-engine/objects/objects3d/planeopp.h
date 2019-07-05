@@ -34,7 +34,7 @@
 
 #include <QDataStream>
 
-#include <objects/objects3d/WingOpp.h>
+#include <objects/objects3d/wingopp.h>
 #include <objects/objectcolor.h>
 
 class Plane;

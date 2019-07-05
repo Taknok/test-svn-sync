@@ -19,11 +19,11 @@
 
 *****************************************************************************/
 
-#include <XFoil.h>
+#include <xfoil.h>
 #include "NacaFoilDlg.h"
 #include <QGridLayout>
 #include <QFormLayout>
-#include <objects/objects2d/Foil.h>
+#include <objects/objects2d/foil.h>
 #include <misc/text/IntEdit.h>
 
 XFoil *NacaFoilDlg::s_pXFoil;

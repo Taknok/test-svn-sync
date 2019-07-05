@@ -20,12 +20,12 @@
 *****************************************************************************/
  
 
-#include <objects/objects2d/Foil.h>
+#include <objects/objects2d/foil.h>
 #include <miarex/design/WingDelegate.h>
 #include <miarex/design/GL3dWingDlg.h>
 #include <misc/text/DoubleEdit.h>
-#include <objects/objects3d/WingSection.h>
-#include <objects/objects2d/Foil.h>
+#include <objects/objects3d/wingsection.h>
+#include <objects/objects2d/foil.h>
 
 
 WingDelegate::WingDelegate(QObject *parent)

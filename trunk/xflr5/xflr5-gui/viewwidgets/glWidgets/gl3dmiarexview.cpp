@@ -31,8 +31,8 @@
 #include <misc/options/settings.h>
 #include <globals/globals.h>
 #include <miarex/view/GL3DScales.h>
-#include <objects/objects3d/Surface.h>
-#include <objects/objects3d/WPolar.h>
+#include <objects/objects3d/surface.h>
+#include <objects/objects3d/wpolar.h>
 #include <miarex/view/W3dPrefsDlg.h>
 #include <misc/waitdlg.h>
 

@@ -34,7 +34,7 @@
 
 #include "LLTAnalysisDlg.h"
 #include "graphwidget.h"
-#include <analysis3d/plane_analysis/LLTAnalysis.h>
+#include <analysis3d/plane_analysis/lltanalysis.h>
 #include <analysis3d/plane_analysis/planeanalysistask.h>
 #include <analysis3d/plane_analysis/planetaskevent.h>
 #include <globals/gui_params.h>
@@ -43,8 +43,8 @@
 #include <miarex/Miarex.h>
 #include <miarex/objects3d.h>
 #include <misc/options/settings.h>
-#include <objects/objects3d/WPolar.h>
-#include <objects/objects3d/Wing.h>
+#include <objects/objects3d/wpolar.h>
+#include <objects/objects3d/wing.h>
 
 QPoint LLTAnalysisDlg::s_Position = QPoint(200,100);
 QSize  LLTAnalysisDlg::s_WindowSize = QSize(900,550);
@@ -280,7 +280,7 @@ void LLTAnalysisDlg::cleanUp()
         for(int iPOpp=0; iPOpp<m_pTheTask->m_ptheLLTAnalysis->m_PlaneOppList.size(); iPOpp++)
         {
             PlaneOpp *pPOpp = m_pTheTask->m_ptheLLTAnalysis->m_PlaneOppList.at(iPOpp);
-            if(Settings::s_bAlignChildrenStyle)
+            if(Settings::isAlignedChildrenStyle())
             {
                 pPOpp->setStyle(m_pTheTask->m_pWPolar->curveStyle());
                 pPOpp->setWidth(m_pTheTask->m_pWPolar->curveWidth());

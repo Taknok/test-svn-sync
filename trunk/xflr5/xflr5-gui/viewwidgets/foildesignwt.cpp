@@ -24,7 +24,7 @@
 
 
 #include "foildesignwt.h"
-#include <objects/objects2d/Foil.h>
+#include <objects/objects2d/foil.h>
 #include <graph_globals.h>
 #include <globals/mainframe.h>
 #include <xdirect/XDirect.h>

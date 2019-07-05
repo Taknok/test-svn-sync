@@ -25,9 +25,9 @@
 #include <QString>
 
 
-#include "LLTAnalysis.h"
+#include "lltanalysis.h"
 #include <objects/objects3d/planeopp.h>
-#include <objects/objects3d/WPolar.h>
+#include <objects/objects3d/wpolar.h>
 #include <analysis3d/matrix.h>
 
 int LLTAnalysis::s_IterLim = 100;

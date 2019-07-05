@@ -69,9 +69,9 @@
 #include <misc/options/units.h>
 #include <misc/popup.h>
 #include <misc/updater.h>
-#include <objects/objects2d/Foil.h>
-#include <objects/objects2d/Polar.h>
-#include <objects/objects3d/Wing.h>
+#include <objects/objects2d/foil.h>
+#include <objects/objects2d/polar.h>
+#include <objects/objects3d/wing.h>
 #include <script/xflscriptexec.h>
 #include <script/xflscriptreader.h>
 #include <viewwidgets/foildesignwt.h>
@@ -3714,7 +3714,7 @@ void MainFrame::onCurFoilStyle()
         XDirect::curFoil()->foilLineWidth() = dlg.lineWidth();
         XDirect::curFoil()->foilPointStyle() = dlg.pointStyle();
 
-        if(Settings::s_bAlignChildrenStyle)
+        if(Settings::isAlignedChildrenStyle())
             Objects2d::setFoilChildrenStyle(XDirect::curFoil());
 
         m_pXDirect->setControls();
@@ -5352,6 +5352,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
             if(pPlane->serializePlaneXFL(ar, bIsStoring)) Objects3d::s_oaPlane.append(pPlane);
             else
             {
+                delete pPlane;
                 QMessageBox::warning(this,tr("Warning"), tr("Error reading the file")+"\n"+tr("Saved the valid part"));
                 return false;
             }
@@ -5390,6 +5391,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
             }
             else
             {
+                delete pWPolar;
                 QMessageBox::warning(this,tr("Warning"), tr("Error reading the file")+"\n"+tr("Saved the valid part"));
                 return false;
             }
@@ -5414,6 +5416,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
             }
             else
             {
+                delete pPOpp;
                 QMessageBox::warning(this,tr("Warning"), tr("Error reading the file")+"\n"+tr("Saved the valid part"));
                 return false;
             }
@@ -5434,6 +5437,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
             }
             else
             {
+                delete pFoil;
                 QMessageBox::warning(this,tr("Warning"), tr("Error reading the file")+"\n"+tr("Saved the valid part"));
                 return false;
             }
@@ -5448,6 +5452,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
             if(serializePolarXFL(pPolar, ar, bIsStoring)) Objects2d::appendPolar(pPolar);
             else
             {
+                delete pPolar;
                 QMessageBox::warning(this,tr("Warning"), tr("Error reading the file")+"\n"+tr("Saved the valid part"));
                 return false;
             }
@@ -5461,6 +5466,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
             if(pOpp->serializeOppXFL(ar, bIsStoring))  Objects2d::appendOpp(pOpp);
             else
             {
+                delete pOpp;
                 QMessageBox::warning(this,tr("Warning"), tr("Error reading the file")+"\n"+tr("Saved the valid part"));
                 return false;
             }
@@ -6984,7 +6990,7 @@ void MainFrame::onPreferences()
             m_pSaveTimer = new QTimer(this);
             m_pSaveTimer->setInterval(m_SaveInterval*60*1000);
             m_pSaveTimer->start();
-            connect(m_pSaveTimer, SIGNAL(timeout()), this, SLOT(onSaveTimer()));
+            connect(m_pSaveTimer, SIGNAL(timeout()), SLOT(onSaveTimer()));
         }
 
         saveSettings();
@@ -7011,6 +7017,7 @@ void MainFrame::onPreferences()
 
     m_pMiarex->m_CpGraph.setInverted(true);
     m_pMiarex->m_bResetTextLegend = true;
+    m_pMiarex->setControls();
 
     m_pXDirect->CpGraph()->setInverted(true);
 

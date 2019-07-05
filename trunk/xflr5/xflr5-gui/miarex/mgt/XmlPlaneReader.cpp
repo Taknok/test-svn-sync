@@ -25,7 +25,7 @@
 
 #include "XmlPlaneReader.h"
 #include <globals/globals.h>
-#include <objects/objects3d/Plane.h>
+#include <objects/objects3d/plane.h>
 
 XMLPlaneReader::XMLPlaneReader(QFile &file, Plane *pPlane)
 {

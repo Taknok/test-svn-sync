@@ -27,12 +27,12 @@
 #include <globals/globals.h>
 #include <graph_globals.h>
 #include <globals/mainframe.h>
-#include <objects/objects3d/Plane.h>
-#include <objects/objects3d/WPolar.h>
+#include <objects/objects3d/plane.h>
+#include <objects/objects3d/wpolar.h>
 #include <objects/objects3d/planeopp.h>
-#include <objects/objects2d/Foil.h>
-#include <objects/objects2d/Polar.h>
-#include <objects/objects2d/OpPoint.h>
+#include <objects/objects2d/foil.h>
+#include <objects/objects2d/polar.h>
+#include <objects/objects2d/oppoint.h>
 #include <misc/options/settings.h>
 #include <miarex/Miarex.h>
 #include <miarex/objects3d.h>

@@ -29,7 +29,7 @@
 
 
 #include "XFoilAnalysisDlg.h"
-#include <XFoil.h>
+#include <xfoil.h>
 #include <globals/gui_params.h>
 #include <graph/curve.h>
 #include <graph/graph.h>

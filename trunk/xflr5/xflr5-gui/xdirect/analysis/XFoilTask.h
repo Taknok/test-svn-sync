@@ -26,10 +26,10 @@
 
 #include <QRunnable>
 
-#include "XFoil.h"
+#include "xfoil.h"
 
-#include <objects/objects2d/Polar.h>
-#include <objects/objects2d/Foil.h>
+#include <objects/objects2d/polar.h>
+#include <objects/objects2d/foil.h>
 
 
 

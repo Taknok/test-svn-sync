@@ -35,7 +35,7 @@
 #include <QDialogButtonBox>
 #include <QStandardItemModel>
 
-#include <objects/objects3d/WPolar.h>
+#include <objects/objects3d/wpolar.h>
 
 class Plane;
 class DoubleEdit;

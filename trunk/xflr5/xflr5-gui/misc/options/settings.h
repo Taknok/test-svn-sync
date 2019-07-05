@@ -77,6 +77,9 @@ public:
     static void setPlrDirName(QString dirname) {s_plrDirName=dirname;}
     static QString plrDirName() {return s_plrDirName;}
 
+    static void setAlignedChildrenStyle(bool bAlign) {s_bAlignChildrenStyle = bAlign;}
+    static bool isAlignedChildrenStyle() {return s_bAlignChildrenStyle;}
+
 private slots:
     void onStyleChanged(const QString &StyleName);
     void onBackgroundColor2d();

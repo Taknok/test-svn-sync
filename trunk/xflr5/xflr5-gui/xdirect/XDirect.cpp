@@ -318,6 +318,8 @@ void XDirect::setControls()
     s_pMainFrame->m_pExportCurOpp->setEnabled(m_pCurOpp);
 
     s_pMainFrame->checkGraphActions();
+
+    m_pctrlAlignChildren->setChecked(Settings::isAlignedChildrenStyle());
 }
 
 
@@ -327,27 +329,28 @@ void XDirect::setControls()
 void XDirect::connectSignals()
 {
     connect(this, SIGNAL(projectModified()), s_pMainFrame, SLOT(onProjectModified()));
-    connect(m_pctrlSpec1, SIGNAL(clicked()), this, SLOT(onSpec()));
-    connect(m_pctrlSpec2, SIGNAL(clicked()), this, SLOT(onSpec()));
-    connect(m_pctrlSpec3, SIGNAL(clicked()), this, SLOT(onSpec()));
-    connect(m_pctrlAnalyze, SIGNAL(clicked()), this, SLOT(onAnalyze()));
-    connect(m_pctrlAlphaMin, SIGNAL(editingFinished()), this, SLOT(onInputChanged()));
-    connect(m_pctrlAlphaMax, SIGNAL(editingFinished()), this, SLOT(onInputChanged()));
-    connect(m_pctrlAlphaDelta, SIGNAL(editingFinished()), this, SLOT(onInputChanged()));
-    connect(m_pctrlCurveStyle, SIGNAL(activated(int)),    SLOT(onCurveStyle(int)));
-    connect(m_pctrlCurveWidth, SIGNAL(activated(int)),    SLOT(onCurveWidth(int)));
-    connect(m_pctrlPointStyle, SIGNAL(activated(int)),    SLOT(onCurvePoints(int)));
-    connect(m_pctrlCurveColor, SIGNAL(clickedLB()),       SLOT(onCurveColor()));
-    connect(m_pctrlSequence, SIGNAL(clicked()), this, SLOT(onSequence()));
-    connect(m_pctrlViscous, SIGNAL(clicked()), this, SLOT(onViscous()));
-    connect(m_pctrlStoreOpp, SIGNAL(clicked()), this, SLOT(onStoreOpp()));
-    //    connect(m_pctrlShowPoints, SIGNAL(clicked()), this, SLOT(onShowCurvePoints()));
-    connect(m_pctrlShowCurve, SIGNAL(clicked()), this, SLOT(onShowCurve()));
-    //    connect(m_pctrlHighlightOpp, SIGNAL(clicked()), this, SLOT(OnHighlightOpp()));
 
-    connect(m_pctrlAnimate, SIGNAL(clicked(bool)), this, SLOT(onAnimate(bool)));
-    connect(m_pctrlAnimateSpeed, SIGNAL(sliderMoved(int)), this, SLOT(onAnimateSpeed(int)));
-    connect(m_pAnimateTimer, SIGNAL(timeout()), this, SLOT(onAnimateSingle()));
+    connect(m_pctrlSpec1,      SIGNAL(clicked()),          SLOT(onSpec()));
+    connect(m_pctrlSpec2,      SIGNAL(clicked()),          SLOT(onSpec()));
+    connect(m_pctrlSpec3,      SIGNAL(clicked()),          SLOT(onSpec()));
+    connect(m_pctrlAnalyze,    SIGNAL(clicked()),          SLOT(onAnalyze()));
+    connect(m_pctrlAlphaMin,   SIGNAL(editingFinished()),  SLOT(onInputChanged()));
+    connect(m_pctrlAlphaMax,   SIGNAL(editingFinished()),  SLOT(onInputChanged()));
+    connect(m_pctrlAlphaDelta, SIGNAL(editingFinished()),  SLOT(onInputChanged()));
+    connect(m_pctrlCurveStyle, SIGNAL(activated(int)),     SLOT(onCurveStyle(int)));
+    connect(m_pctrlCurveWidth, SIGNAL(activated(int)),     SLOT(onCurveWidth(int)));
+    connect(m_pctrlPointStyle, SIGNAL(activated(int)),     SLOT(onCurvePoints(int)));
+    connect(m_pctrlCurveColor, SIGNAL(clickedLB()),        SLOT(onCurveColor()));
+    connect(m_pctrlSequence,   SIGNAL(clicked()),          SLOT(onSequence()));
+    connect(m_pctrlViscous,    SIGNAL(clicked()),          SLOT(onViscous()));
+    connect(m_pctrlStoreOpp,   SIGNAL(clicked()),          SLOT(onStoreOpp()));
+
+    connect(m_pctrlShowCurve,     SIGNAL(clicked()),  SLOT(onShowCurve()));
+    connect(m_pctrlAlignChildren, SIGNAL(clicked()),  SLOT(onAlignChildrenStyle()));
+
+    connect(m_pctrlAnimate,      SIGNAL(clicked(bool)),    SLOT(onAnimate(bool)));
+    connect(m_pctrlAnimateSpeed, SIGNAL(sliderMoved(int)), SLOT(onAnimateSpeed(int)));
+    connect(m_pAnimateTimer,     SIGNAL(timeout()),        SLOT(onAnimateSingle()));
 
 
     connect(m_pctrlShowBL,       SIGNAL(clicked(bool)), s_pMainFrame->m_pXDirectTileWidget->opPointWidget(), SLOT(onShowBL(bool)));
@@ -494,8 +497,10 @@ void XDirect::fillComboBoxes(bool bEnable)
     m_pctrlCurveColor->setEnabled(bEnable);
     m_pctrlCurveStyle->setEnabled(bEnable);
     m_pctrlCurveWidth->setEnabled(bEnable);
-    m_pctrlShowCurve->setEnabled(bEnable);
     m_pctrlPointStyle->setEnabled(bEnable);
+
+    m_pctrlShowCurve->setEnabled(bEnable);
+    m_pctrlAlignChildren->setEnabled(bEnable);
 
     int LineWidth[5];
     int LineStyle[5];
@@ -1809,7 +1814,7 @@ void XDirect::onDefinePolar()
     {
         setCurPolar(new Polar());
 
-        if(Settings::s_bAlignChildrenStyle)
+        if(Settings::isAlignedChildrenStyle())
         {
             m_pCurPolar->m_Style = m_pCurFoil->m_FoilStyle;
             m_pCurPolar->m_Width = m_pCurFoil->m_FoilWidth;
@@ -3973,6 +3978,12 @@ void XDirect::onShowCurve()
 }
 
 
+void XDirect::onAlignChildrenStyle()
+{
+    Settings::setAlignedChildrenStyle(m_pctrlAlignChildren->isChecked());
+}
+
+
 /**
  * The user has requested the display of only the Polar curves associated to the active Foil
  */
@@ -4783,8 +4794,10 @@ void XDirect::setupLayout()
         {
             QHBoxLayout *pCurveDisplay = new QHBoxLayout;
             {
-                m_pctrlShowCurve  = new QCheckBox(tr("Curve"));
+                m_pctrlShowCurve     = new QCheckBox(tr("Curve"));
+                m_pctrlAlignChildren = new QCheckBox(tr("Flow down style"));
                 pCurveDisplay->addWidget(m_pctrlShowCurve);
+                pCurveDisplay->addWidget(m_pctrlAlignChildren);
             }
 
             m_pctrlCurveStyle = new LineCbBox(this);
@@ -4883,7 +4896,7 @@ void XDirect::updateCurveStyle()
         m_pCurPolar->setPolarWidth(m_LineStyle.m_Width);
         m_pCurPolar->setPointStyle(m_LineStyle.m_PointStyle);
 
-        if(Settings::s_bAlignChildrenStyle)
+        if(Settings::isAlignedChildrenStyle())
         {
             Objects2d::setPolarChildrenStyle(m_pCurPolar);
         }

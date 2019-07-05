@@ -25,9 +25,9 @@
 
 
 #include "planeanalysistask.h"
-#include <objects/objects3d/Plane.h>
-#include <objects/objects3d/WPolar.h>
-#include <objects/objects3d/Surface.h>
+#include <objects/objects3d/plane.h>
+#include <objects/objects3d/wpolar.h>
+#include <objects/objects3d/surface.h>
 
 
 bool PlaneAnalysisTask::s_bCancel = false;

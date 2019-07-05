@@ -30,7 +30,7 @@
 
 
 
-#include "Frame.h"
+#include "frame.h"
 
 #define MAXVLINES      100
 #define MAXULINES      100

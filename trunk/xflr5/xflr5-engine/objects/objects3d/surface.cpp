@@ -21,12 +21,12 @@
 
 #include <QtDebug>
 #include <math.h>
-#include "Surface.h"
-#include <objects/objects3d/Quaternion.h>
-#include <objects/objects2d/Foil.h>
-#include "Body.h"
+#include "surface.h"
+#include <objects/objects3d/quaternion.h>
+#include <objects/objects2d/foil.h>
+#include "body.h"
 #include <objects/objects3d/vector3d.h>
-#include "WingSection.h"
+#include "wingsection.h"
 
 Vector3d *Surface::s_pNode;
 Panel *Surface::s_pPanel;

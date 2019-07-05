@@ -35,7 +35,7 @@
 #include <QFile>
 #include <QVector>
 #include <QTextStream>
-#include <objects/objects2d/Spline.h>
+#include <objects/objects2d/spline.h>
 #include <objects/objects3d/vector3d.h>
 
 

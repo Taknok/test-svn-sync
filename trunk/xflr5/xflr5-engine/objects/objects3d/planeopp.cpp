@@ -20,8 +20,8 @@
 *****************************************************************************/
 
 #include "planeopp.h"
-#include "Plane.h"
-#include "WPolar.h"
+#include "plane.h"
+#include "wpolar.h"
 #include "objects_global.h"
 
 bool  PlaneOpp::s_bStoreOpps=true;

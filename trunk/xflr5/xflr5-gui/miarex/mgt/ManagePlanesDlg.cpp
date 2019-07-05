@@ -32,7 +32,7 @@
 #include <globals/globals.h>
 #include <misc/options/settings.h>
 #include "PlaneTableDelegate.h"
-#include <objects/objects3d/Plane.h>
+#include <objects/objects3d/plane.h>
 
 
 
