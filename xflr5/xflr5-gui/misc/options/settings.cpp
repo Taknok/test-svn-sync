@@ -21,7 +21,7 @@
 
 #include "settings.h"
 #include <globals/mainframe.h>
-#include <miarex/Miarex.h>
+#include <miarex/miarex.h>
 #include <xdirect/xdirect.h>
 #include <xinverse/xinverse.h>
 #include <graph/graphdlg.h>

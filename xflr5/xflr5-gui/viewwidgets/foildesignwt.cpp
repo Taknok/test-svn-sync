@@ -30,7 +30,7 @@
 #include <xdirect/xdirect.h>
 #include <misc/options/settings.h>
 #include <globals/globals.h>
-#include <gui_objects/SplineFoil.h>
+#include <gui_objects/splinefoil.h>
 
 FoilDesignWt::FoilDesignWt(QWidget *pParent) : Section2dWidget(pParent)
 {

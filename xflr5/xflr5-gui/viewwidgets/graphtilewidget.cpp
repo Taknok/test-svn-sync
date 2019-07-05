@@ -31,7 +31,7 @@
 #include "graphtilewidget.h"
 #include <globals/mainframe.h>
 #include <graph/graphdlg.h>
-#include <miarex/Miarex.h>
+#include <miarex/miarex.h>
 #include <misc/options/units.h>
 #include <misc/options/settings.h>
 #include <objects/objects3d/plane.h>

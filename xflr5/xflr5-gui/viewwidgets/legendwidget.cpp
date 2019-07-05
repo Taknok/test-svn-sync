@@ -34,7 +34,7 @@
 #include <objects/objects2d/polar.h>
 #include <objects/objects2d/oppoint.h>
 #include <misc/options/settings.h>
-#include <miarex/Miarex.h>
+#include <miarex/miarex.h>
 #include <miarex/objects3d.h>
 #include <xinverse/xinverse.h>
 #include <xdirect/xdirect.h>

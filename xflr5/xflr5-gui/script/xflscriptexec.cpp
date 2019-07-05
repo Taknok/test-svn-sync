@@ -28,12 +28,12 @@
 #include <analysis3d/plane_analysis/planeanalysistask.h>
 #include <globals/globals.h>
 #include <globals/gui_params.h>
-#include <miarex/mgt/XmlPlaneReader.h>
+#include <miarex/mgt/xmlplanereader.h>
 #include <miarex/mgt/xmlwpolarreader.h>
 #include <misc/options/settings.h>
 #include <objects/objects3d/plane.h>
 #include <objects/objects3d/wpolar.h>
-#include <xdirect/analysis/XFoilTask.h>
+#include <xdirect/analysis/xfoiltask.h>
 #include <xdirect/xml/xmlpolarreader.h>
 
 XflScriptExec::XflScriptExec()

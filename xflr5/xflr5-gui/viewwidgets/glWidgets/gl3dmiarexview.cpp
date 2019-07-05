@@ -25,15 +25,15 @@
 #include <QOpenGLPaintDevice>
 
 #include "gl3dmiarexview.h"
-#include <miarex/Miarex.h>
+#include <miarex/miarex.h>
 #include <globals/mainframe.h>
 
 #include <misc/options/settings.h>
 #include <globals/globals.h>
-#include <miarex/view/GL3DScales.h>
+#include <miarex/view/gl3dscales.h>
 #include <objects/objects3d/surface.h>
 #include <objects/objects3d/wpolar.h>
-#include <miarex/view/W3dPrefsDlg.h>
+#include <miarex/view/w3drefsdlg.h>
 #include <misc/waitdlg.h>
 
 

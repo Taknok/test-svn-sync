@@ -40,7 +40,7 @@
 
 #include <objects/objects2d/polar.h>
 #include <objects/objects2d/foil.h>
-#include <xdirect/analysis/XFoilAnalysisDlg.h>
+#include <xdirect/analysis/xfoilanalysisdlg.h>
 #include <viewwidgets/oppointwidget.h>
 #include <globals/gui_enums.h>
 #include <objects/objects2d/oppoint.h>

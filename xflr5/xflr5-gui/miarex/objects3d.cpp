@@ -24,7 +24,7 @@
 #include <QProcess>
 #include <QDebug>
 
-#include <miarex/Miarex.h>
+#include <miarex/miarex.h>
 #include <misc/renamedlg.h>
 
 #include "objects3d.h"

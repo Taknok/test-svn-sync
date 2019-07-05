@@ -29,8 +29,8 @@
 #include "wingwidget.h"
 #include <misc/options/settings.h>
 #include <miarex/objects3d.h>
-#include <miarex/view/W3dPrefsDlg.h>
-#include <miarex/Miarex.h>
+#include <miarex/view/w3drefsdlg.h>
+#include <miarex/miarex.h>
 #include <objects/objects3d/wpolar.h>
 #include <objects/objects3d/plane.h>
 #include <objects/objects3d/planeopp.h>

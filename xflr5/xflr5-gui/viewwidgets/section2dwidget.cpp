@@ -29,7 +29,7 @@
 #include "section2dwidget.h"
 #include <globals/globals.h>
 #include <misc/options/settings.h>
-#include <design/GridSettingsDlg.h>
+#include <design/gridsettingsdlg.h>
 #include <graph_globals.h>
 
 

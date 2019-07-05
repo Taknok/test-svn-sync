@@ -31,7 +31,7 @@
 #include <misc/options/settings.h>
 #include <misc/renamedlg.h>
 #include <xdirect/objects2d.h>
-#include <design/FoilTableDelegate.h>
+#include <design/foiltabledelegate.h>
 #include <objects/objects2d/foil.h>
 
 ManageFoilsDlg::ManageFoilsDlg(QWidget *pParent) : QDialog(pParent)
