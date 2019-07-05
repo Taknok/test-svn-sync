@@ -52,10 +52,10 @@
 #include <misc/renamedlg.h>
 #include <misc/editplrdlg.h>
 
-#include <xdirect/analysis/XFoilAdvancedDlg.h>
-#include <xdirect/analysis/FoilPolarDlg.h>
-#include <xdirect/analysis/BatchThreadDlg.h>
-#include <xdirect/analysis/BatchDlg.h>
+#include <xdirect/analysis/xfoiladvanceddlg.h>
+#include <xdirect/analysis/foilpolardlg.h>
+#include <xdirect/analysis/batchthreaddlg.h>
+#include <xdirect/analysis/batchdlg.h>
 
 #include <xdirect/geometry/twodpaneldlg.h>
 #include <xdirect/geometry/interpolatefoilsdlg.h>

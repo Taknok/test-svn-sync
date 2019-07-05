@@ -23,7 +23,7 @@
 #include <QSurfaceFormat>
 #include <QDebug>
 
-#include "XFLR5Application.h"
+#include "xflr5application.h"
 #include <globals/mainframe.h>
 
 

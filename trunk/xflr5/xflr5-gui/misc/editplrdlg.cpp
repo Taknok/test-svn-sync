@@ -26,7 +26,7 @@
 
 
 #include "editplrdlg.h"
-#include <miarex/Miarex.h>
+#include <miarex/miarex.h>
 #include <misc/options/settings.h>
 #include <misc/text/floatrditdelegate.h>
 #include <objects/objects2d/polar.h>

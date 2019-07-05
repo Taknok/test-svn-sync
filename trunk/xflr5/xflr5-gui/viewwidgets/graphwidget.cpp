@@ -27,7 +27,7 @@
 #include <graph/graphdlg.h>
 #include <objects/objects2d/polar.h>
 #include <objects/objects3d/wpolar.h>
-#include <miarex/Miarex.h>
+#include <miarex/miarex.h>
 #include <misc/options/units.h>
 #include <QPen>
 #include <QPainterPath>

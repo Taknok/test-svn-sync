@@ -24,8 +24,8 @@
 
 #include "gl3dbodyview.h"
 #include <misc/options/settings.h>
-#include <miarex/view/W3dPrefsDlg.h>
-#include <miarex/design/GL3dBodyDlg.h>
+#include <miarex/view/w3drefsdlg.h>
+#include <miarex/design/gl3dbodydlg.h>
 #include <globals/mainframe.h>
 #include <objects/objects3d/body.h>
 

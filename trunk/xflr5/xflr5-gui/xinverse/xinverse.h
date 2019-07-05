@@ -41,7 +41,7 @@
 
 #include <graph/graph.h>
 
-#include <gui_objects/Spline5.h>
+#include <gui_objects/spline5.h>
 
 class MainFrame;
 class InverseViewWidget;

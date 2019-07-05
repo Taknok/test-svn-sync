@@ -25,7 +25,7 @@
 
 #include "gl3dplaneview.h"
 #include <objects/objects3d/plane.h>
-#include <miarex/design/EditPlaneDlg.h>
+#include <miarex/design/editplanedlg.h>
 
 
 gl3dPlaneView::gl3dPlaneView(QWidget *pParent) : gl3dView(pParent)

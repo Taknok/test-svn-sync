@@ -30,7 +30,7 @@
 
 #include <graph/graph.h>
 #include <graph/graphdlg.h>
-#include <miarex/Miarex.h>
+#include <miarex/miarex.h>
 #include <misc/color/colorbutton.h>
 #include <misc/line/linebtn.h>
 #include <misc/line/linepickerdlg.h>

@@ -24,7 +24,7 @@
 #include <QtDebug>
 
 #include <globals/globals.h>
-#include <miarex/design/BodyScaleDlg.h>
+#include <miarex/design/bodyscaledlg.h>
 #include <misc/options/settings.h>
 #include <misc/options/units.h>
 #include <objects/objects3d/body.h>

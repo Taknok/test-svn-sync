@@ -45,7 +45,7 @@
 #include <globals/gui_enums.h>
 #include <analysis3d/analysis3d_enums.h>
 #include <graph/graph.h>
-#include <miarex/view/GLLightDlg.h>
+#include <miarex/view/gllightdlg.h>
 #include <misc/voidwidget.h>
 
 class AFoil;

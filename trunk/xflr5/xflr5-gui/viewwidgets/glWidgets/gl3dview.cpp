@@ -29,15 +29,15 @@
 #include <globals/globals.h>
 
 #include <globals/mainframe.h>
-#include <miarex/Miarex.h>
-#include <miarex/design/EditBodyDlg.h>
-#include <miarex/design/EditPlaneDlg.h>
-#include <miarex/design/GL3dBodyDlg.h>
-#include <miarex/design/GL3dWingDlg.h>
+#include <miarex/miarex.h>
+#include <miarex/design/editbodydlg.h>
+#include <miarex/design/editplanedlg.h>
+#include <miarex/design/gl3dbodydlg.h>
+#include <miarex/design/gl3dwingdlg.h>
 #include <miarex/objects3d.h>
-#include <miarex/view/GL3DScales.h>
-#include <miarex/view/GLLightDlg.h>
-#include <miarex/view/W3dPrefsDlg.h>
+#include <miarex/view/gl3dscales.h>
+#include <miarex/view/gllightdlg.h>
+#include <miarex/view/w3drefsdlg.h>
 #include <misc/options/units.h>
 #include <misc/options/settings.h>
 #include <objects/objects3d/body.h>

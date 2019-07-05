@@ -1,59 +1,59 @@
 
 SOURCES += \
-    design/AFoil.cpp \
-    design/AFoilTableDlg.cpp \
-    design/FoilTableDelegate.cpp \
-    design/GridSettingsDlg.cpp \
-    design/LECircleDlg.cpp \
-    design/SplineCtrlsDlg.cpp \
+    $$PWD/miarex/view/gl3dscales.cpp \
+    $$PWD/miarex/view/gllightdlg.cpp \
+    $$PWD/miarex/view/stabviewdlg.cpp \
+    $$PWD/miarex/view/targetcurvedlg.cpp \
+    $$PWD/miarex/view/w3dprefsdlg.cpp \
+    design/afoil.cpp \
+    design/afoiltabledlg.cpp \
+    design/foiltabledelegate.cpp \
+    design/gridsettingsdlg.cpp \
+    design/lecircledlg.cpp \
+    design/splinectrlsdlg.cpp \
     glcontextinfo/glrenderwindow.cpp \
     glcontextinfo/view3dtestdlg.cpp \
-    globals/XFLR5Application.cpp \
     globals/globals.cpp \
     globals/main.cpp \
     globals/mainframe.cpp \
+    globals/xflr5application.cpp \
     graph/curve.cpp \
     graph/graph.cpp \
     graph/graph_globals.cpp \
     graph/graphdlg.cpp \
-    gui_objects/Spline5.cpp \
-    gui_objects/SplineFoil.cpp \
-    miarex/Miarex.cpp \
-    miarex/analysis/AeroDataDlg.cpp \
-    miarex/analysis/CtrlTableDelegate.cpp \
-    miarex/analysis/EditPolarDefDlg.cpp \
-    miarex/analysis/LLTAnalysisDlg.cpp \
-    miarex/analysis/PanelAnalysisDlg.cpp \
-    miarex/analysis/StabPolarDlg.cpp \
-    miarex/analysis/WAdvancedDlg.cpp \
-    miarex/analysis/WPolarDlg.cpp  \
-    miarex/design/BodyGridDlg.cpp \
-    miarex/design/BodyScaleDlg.cpp \
-    miarex/design/BodyTableDelegate.cpp \
-    miarex/design/BodyTransDlg.cpp \
-    miarex/design/EditBodyDlg.cpp \
-    miarex/design/EditObjectDelegate.cpp \
-    miarex/design/EditPlaneDlg.cpp \
-    miarex/design/GL3dBodyDlg.cpp \
-    miarex/design/GL3dWingDlg.cpp \
-    miarex/design/InertiaDlg.cpp \
-    miarex/design/PlaneDlg.cpp \
-    miarex/design/WingDelegate.cpp \
-    miarex/design/WingScaleDlg.cpp \
+    gui_objects/spline5.cpp \
+    gui_objects/splinefoil.cpp \
+    miarex/analysis/aerodatadlg.cpp \
+    miarex/analysis/ctrltabledelegate.cpp \
+    miarex/analysis/editpolardefdlg.cpp \
+    miarex/analysis/lltanalysisdlg.cpp \
+    miarex/analysis/panelanalysisdlg.cpp \
+    miarex/analysis/stabpolardlg.cpp \
+    miarex/analysis/wadvanceddlg.cpp \
+    miarex/analysis/wpolardlg.cpp \
+    miarex/design/bodygriddlg.cpp \
+    miarex/design/bodyscaledlg.cpp \
+    miarex/design/bodytabledelegate.cpp \
+    miarex/design/bodytransdlg.cpp \
+    miarex/design/editbodydlg.cpp \
+    miarex/design/editobjectdelegate.cpp \
+    miarex/design/editplanedlg.cpp \
+    miarex/design/gl3dbodydlg.cpp \
+    miarex/design/gl3dwingdlg.cpp \
+    miarex/design/inertiadlg.cpp \
+    miarex/design/planedlg.cpp \
+    miarex/design/wingdelegate.cpp \
+    miarex/design/wingscaledlg.cpp \
     miarex/design/wingseldlg.cpp \
-    miarex/mgt/ImportObjectDlg.cpp\
-    miarex/mgt/ManagePlanesDlg.cpp \
-    miarex/mgt/PlaneTableDelegate.cpp \
-    miarex/mgt/XmlPlaneReader.cpp \
-    miarex/mgt/XmlPlaneWriter.cpp \
+    miarex/mgt/importobjectdlg.cpp \
+    miarex/mgt/manageplanesdlg.cpp \
+    miarex/mgt/planetabledelegate.cpp \
+    miarex/mgt/xmlplanereader.cpp \
+    miarex/mgt/xmlplanewriter.cpp \
     miarex/mgt/xmlwpolarreader.cpp \
     miarex/mgt/xmlwpolarwriter.cpp \
+    miarex/miarex.cpp \
     miarex/objects3d.cpp \
-    miarex/view/GL3DScales.cpp \
-    miarex/view/GLLightDlg.cpp \
-    miarex/view/StabViewDlg.cpp \
-    miarex/view/TargetCurveDlg.cpp \
-    miarex/view/W3dPrefsDlg.cpp \
     misc/aboutq5.cpp \
     misc/color/ColorButton.cpp \
     misc/editplrdlg.cpp \
@@ -105,13 +105,13 @@ SOURCES += \
     viewwidgets/section2dwidget.cpp \
     viewwidgets/wingwidget.cpp \
     viewwidgets/xdirecttilewidget.cpp \
-    xdirect/analysis/BatchDlg.cpp \
-    xdirect/analysis/BatchThreadDlg.cpp \
-    xdirect/analysis/FoilPolarDlg.cpp \
-    xdirect/analysis/ReListDlg.cpp \
-    xdirect/analysis/XFoilAdvancedDlg.cpp \
-    xdirect/analysis/XFoilAnalysisDlg.cpp \
-    xdirect/analysis/XFoilTask.cpp \
+    xdirect/analysis/batchdlg.cpp \
+    xdirect/analysis/batchthreaddlg.cpp \
+    xdirect/analysis/foilpolardlg.cpp \
+    xdirect/analysis/relistdlg.cpp \
+    xdirect/analysis/xfoiladvanceddlg.cpp \
+    xdirect/analysis/xfoilanalysisdlg.cpp \
+    xdirect/analysis/xfoiltask.cpp \
     xdirect/geometry/cadddlg.cpp \
     xdirect/geometry/flapdlg.cpp \
     xdirect/geometry/foilcoorddlg.cpp \
@@ -134,62 +134,62 @@ SOURCES += \
 
 
 HEADERS += \
-    design/AFoil.h \
-    design/AFoilTableDlg.h \
-    design/FoilTableDelegate.h \
-    design/GridSettingsDlg.h \
-    design/LECircleDlg.h \
-    design/SplineCtrlsDlg.h \
+    $$PWD/miarex/view/gl3dscales.h \
+    $$PWD/miarex/view/gllightdlg.h \
+    $$PWD/miarex/view/stabviewdlg.h \
+    $$PWD/miarex/view/targetcurvedlg.h \
+    $$PWD/miarex/view/w3drefsdlg.h \
+    design/afoil.h \
+    design/afoiltabledlg.h \
+    design/foiltabledelegate.h \
+    design/gridsettingsdlg.h \
+    design/lecircledlg.h \
+    design/splinectrlsdlg.h \
     glcontextinfo/glrenderwindow.h \
     glcontextinfo/view3dtestdlg.h \
-    globals/XFLR5Application.h \
     globals/globals.h \
     globals/gui_enums.h \
     globals/gui_params.h \
     globals/mainframe.h \
+    globals/xflr5application.h \
     graph/curve.h \
     graph/graph.h \
     graph/graph_globals.h \
     graph/graphdlg.h \
     graph/linestyle.h \
-    gui_objects/Spline5.h \
-    gui_objects/SplineFoil.h \
-    miarex/Miarex.h \
-    miarex/analysis/AeroDataDlg.h \
-    miarex/analysis/CtrlTableDelegate.h \
-    miarex/analysis/EditPolarDefDlg.h \
-    miarex/analysis/LLTAnalysisDlg.h \
-    miarex/analysis/PanelAnalysisDlg.h \
-    miarex/analysis/StabPolarDlg.h \
-    miarex/analysis/WAdvancedDlg.h \
-    miarex/analysis/WPolarDlg.h \
-    miarex/design/BodyGridDlg.h \
-    miarex/design/BodyScaleDlg.h \
-    miarex/design/BodyTableDelegate.h \
-    miarex/design/BodyTransDlg.h \
-    miarex/design/EditBodyDlg.h \
-    miarex/design/EditObjectDelegate.h \
-    miarex/design/EditPlaneDlg.h \
-    miarex/design/GL3dBodyDlg.h \
-    miarex/design/GL3dWingDlg.h \
-    miarex/design/InertiaDlg.h \
-    miarex/design/PlaneDlg.h \
-    miarex/design/WingDelegate.h \
-    miarex/design/WingScaleDlg.h \
+    gui_objects/spline5.h \
+    gui_objects/splinefoil.h \
+    miarex/analysis/aerodatadlg.h \
+    miarex/analysis/ctrltabledelegate.h \
+    miarex/analysis/editpolardefdlg.h \
+    miarex/analysis/lltanalysisdlg.h \
+    miarex/analysis/panelanalysisdlg.h \
+    miarex/analysis/stabpolardlg.h \
+    miarex/analysis/wadvanceddlg.h \
+    miarex/analysis/wpolardlg.h \
+    miarex/design/bodygriddlg.h \
+    miarex/design/bodyscaledlg.h \
+    miarex/design/bodytabledelegate.h \
+    miarex/design/bodytransdlg.h \
+    miarex/design/editbodydlg.h \
+    miarex/design/editobjectdelegate.h \
+    miarex/design/editplanedlg.h \
+    miarex/design/gl3dbodydlg.h \
+    miarex/design/gl3dwingdlg.h \
+    miarex/design/inertiadlg.h \
+    miarex/design/planedlg.h \
+    miarex/design/wingdelegate.h \
+    miarex/design/wingscaledlg.h \
     miarex/design/wingseldlg.h \
-    miarex/mgt/ImportObjectDlg.h \
-    miarex/mgt/ManagePlanesDlg.h \
-    miarex/mgt/PlaneTableDelegate.h \
-    miarex/mgt/XmlPlaneReader.h \
-    miarex/mgt/XmlPlaneWriter.h \
+    miarex/mgt/importobjectdlg.h \
+    miarex/mgt/manageplanesdlg.h \
+    miarex/mgt/planetabledelegate.h \
+    miarex/mgt/xmlplanereader.h \
+    miarex/mgt/xmlplanewriter.h \
     miarex/mgt/xmlwpolarreader.h \
     miarex/mgt/xmlwpolarwriter.h \
+    miarex/miarex.h \
     miarex/objects3d.h \
-    miarex/view/GL3DScales.h \
-    miarex/view/GLLightDlg.h \
-    miarex/view/StabViewDlg.h \
-    miarex/view/TargetCurveDlg.h \
-    miarex/view/W3dPrefsDlg.h \
     misc/aboutq5.h \
     misc/color/colorbutton.h \
     misc/editplrdlg.h \
@@ -241,13 +241,13 @@ HEADERS += \
     viewwidgets/section2dwidget.h \
     viewwidgets/wingwidget.h \
     viewwidgets/xdirecttilewidget.h \
-    xdirect/analysis/BatchDlg.h \
-    xdirect/analysis/BatchThreadDlg.h \
-    xdirect/analysis/FoilPolarDlg.h \
-    xdirect/analysis/ReListDlg.h \
-    xdirect/analysis/XFoilAdvancedDlg.h \
-    xdirect/analysis/XFoilAnalysisDlg.h \
-    xdirect/analysis/XFoilTask.h \
+    xdirect/analysis/batchdlg.h \
+    xdirect/analysis/batchthreaddlg.h \
+    xdirect/analysis/foilpolardlg.h \
+    xdirect/analysis/relistdlg.h \
+    xdirect/analysis/xfoiladvanceddlg.h \
+    xdirect/analysis/xfoilanalysisdlg.h \
+    xdirect/analysis/xfoiltask.h \
     xdirect/analysis/xfoiltaskevent.h \
     xdirect/geometry/cadddlg.h \
     xdirect/geometry/flapdlg.h \
@@ -259,15 +259,15 @@ HEADERS += \
     xdirect/geometry/tegapdlg.h \
     xdirect/geometry/twodpaneldlg.h \
     xdirect/mgt/managefoilsdlg.h \
-    xdirect/xml/xmlpolarwriter.h \
     xdirect/objects2d.h \
     xdirect/xdirect.h \
     xdirect/xdirectstyleDlg.h \
     xdirect/xml/xmlpolarreader.h \
+    xdirect/xml/xmlpolarwriter.h \
     xinverse/foilselectiondlg.h \
     xinverse/inverseoptionsdlg.h \
     xinverse/pertdlg.h \
-    xinverse/xinverse.h
+    xinverse/xinverse.h \
 
 
 RESOURCES += \
