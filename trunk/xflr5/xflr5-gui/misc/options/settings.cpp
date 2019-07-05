@@ -217,7 +217,11 @@ void Settings::setupLayout()
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
         m_pctrlReverseZoom = new QCheckBox(tr("Reverse zoom direction using mouse wheel"));
-        m_pctrlAlignChildrenStyle = new QCheckBox(tr("Flow down to the children objects changes made to the style of their parents style"));
+        m_pctrlAlignChildrenStyle = new QCheckBox(tr("Flow down changes made to the style of objects to their children"));
+        QString tip = tr("If activated:\n"
+                         "all changes made to the style of the polar objects will flow down to the operating points\n"
+                         "all changes made to the style of the foil objects will flow down to the polars and to the operating points");
+        m_pctrlAlignChildrenStyle->setToolTip(tip);
         pMainLayout->addStretch(1);
         pMainLayout->addWidget(pWidgetStyleBox);
         pMainLayout->addStretch(1);

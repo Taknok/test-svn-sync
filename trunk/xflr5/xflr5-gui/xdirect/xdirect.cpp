@@ -4798,7 +4798,7 @@ void XDirect::setupLayout()
                 m_pctrlAlignChildren = new QCheckBox(tr("Flow down style"));
                 QString tip = tr("If activated:\n"
                                  "all changes made to the style of the polar objects will flow down to the operating points\n"
-                                 "all changes made to the style of the foil objects will flow down to the polars and the operating points");
+                                 "all changes made to the style of the foil objects will flow down to the polars and to the operating points");
                 m_pctrlAlignChildren->setToolTip(tip);
                 pCurveDisplay->addWidget(m_pctrlShowCurve);
                 pCurveDisplay->addWidget(m_pctrlAlignChildren);

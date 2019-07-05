@@ -1470,7 +1470,7 @@ bool PlaneAnalysisTask::allocatePanelArrays(int &memsize)
         m_WakePanel    = new Panel[m_MaxPanelSize];
         m_RefWakePanel = new Panel[m_MaxPanelSize];*/
     }
-    catch(std::exception & e)
+    catch(std::exception &)
     {
         releasePanelMemory();
         m_MaxPanelSize = 0;

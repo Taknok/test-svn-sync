@@ -272,7 +272,7 @@ bool PanelAnalysis::allocateRHS(int matSize, int &memsize)
 
         m_3DQInf   = new double[s_MaxRHSSize];
     }
-    catch(std::exception &e)
+    catch(std::exception &)
     {
         releaseArrays();
         //        Trace(e.what());

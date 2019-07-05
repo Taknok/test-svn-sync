@@ -540,8 +540,8 @@ bool XInverse::initXFoil(Foil * pFoil)
  */
 void XInverse::keyPressEvent(QKeyEvent *event)
 {
-    bool bCtrl = false;
-    if(event->modifiers() & Qt::ControlModifier)   bCtrl =true;
+//    bool bCtrl = false;
+//    if(event->modifiers() & Qt::ControlModifier)   bCtrl =true;
     switch (event->key())
     {
         case Qt::Key_X:
