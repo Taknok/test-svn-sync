@@ -189,7 +189,7 @@ void EditPolarDefDlg::onItemChanged()
 {
     readData();
 
-    m_pWPolar->polarName()="a wing polar name";
+    m_pWPolar->setPolarName("a wing polar name");
     setAutoWPolarName(m_pWPolar, m_pPlane);
 
     QModelIndex indexLevel = m_pModel->index(0,0);
@@ -407,11 +407,11 @@ void EditPolarDefDlg::fillInertiaData(QList<QStandardItem *> inertiaFolder)
     if(m_pWPolar->m_bAutoInertia)
     {
         m_pWPolar->setMass(m_pPlane->totalMass());
-        m_pWPolar->CoG()    = m_pPlane->CoG();
-        m_pWPolar->CoGIxx() = m_pPlane->m_CoGIxx;
-        m_pWPolar->CoGIyy() = m_pPlane->m_CoGIyy;
-        m_pWPolar->CoGIzz() = m_pPlane->m_CoGIzz;
-        m_pWPolar->CoGIxz() = m_pPlane->m_CoGIxz;
+        m_pWPolar->setCoG(m_pPlane->CoG());
+        m_pWPolar->setCoGIxx(m_pPlane->m_CoGIxx);
+        m_pWPolar->setCoGIyy(m_pPlane->m_CoGIyy);
+        m_pWPolar->setCoGIzz(m_pPlane->m_CoGIzz);
+        m_pWPolar->setCoGIxz(m_pPlane->m_CoGIxz);
     }
 
     dataItem = prepareBoolRow("", "Use plane inertia", m_pWPolar->bAutoInertia());
@@ -491,7 +491,7 @@ void EditPolarDefDlg::readViewLevel(QModelIndex indexLevel)
             QModelIndex dataIndex = indexLevel.sibling(indexLevel.row(),2);
             QString value = indexLevel.sibling(indexLevel.row(),2).data().toString();
 
-            if     (field.compare("Name")==0)                    m_pWPolar->polarName()            = value;
+            if     (field.compare("Name")==0)                    m_pWPolar->setPolarName(value);
             else if(field.compare("Type")==0)                    m_pWPolar->setPolarType(WPolarType(value));
             else if(field.compare("Velocity")==0)                m_pWPolar->setVelocity(dataIndex.data().toDouble()/Units::mstoUnit());
             else if(field.compare("Alpha")==0)                   m_pWPolar->setAlpha(dataIndex.data().toDouble());
@@ -503,16 +503,16 @@ void EditPolarDefDlg::readViewLevel(QModelIndex indexLevel)
             else if(field.compare("Ignore body panels")==0)      m_pWPolar->bIgnoreBodyPanels()    = stringToBool(value);
             else if(field.compare("Use plane inertia")==0)       m_pWPolar->bAutoInertia()         = stringToBool(value);
             else if(field.compare("Mass")==0)                    m_pWPolar->setMass(dataIndex.data().toDouble()/Units::kgtoUnit());
-            else if(field.compare("x")==0)                       m_pWPolar->CoG().x                = dataIndex.data().toDouble()/Units::mtoUnit();
-            else if(field.compare("z")==0)                       m_pWPolar->CoG().z                = dataIndex.data().toDouble()/Units::mtoUnit();
-            else if(field.compare("Ixx")==0)                     m_pWPolar->CoGIxx()               = dataIndex.data().toDouble()/Units::kgm2toUnit();
-            else if(field.compare("Iyy")==0)                     m_pWPolar->CoGIyy()               = dataIndex.data().toDouble()/Units::kgm2toUnit();
-            else if(field.compare("Izz")==0)                     m_pWPolar->CoGIzz()               = dataIndex.data().toDouble()/Units::kgm2toUnit();
-            else if(field.compare("Ixz")==0)                     m_pWPolar->CoGIxz()               = dataIndex.data().toDouble()/Units::kgm2toUnit();
-            else if(field.compare("Area")==0)                    m_pWPolar->referenceArea()        = referenceDimension(value);
-            else if(field.compare("Reference Area")==0)          m_pWPolar->referenceArea()        = dataIndex.data().toDouble()/Units::m2toUnit();
-            else if(field.compare("Reference Span Length")==0)   m_pWPolar->referenceSpanLength()  = dataIndex.data().toDouble()/Units::mtoUnit();
-            else if(field.compare("Reference Chord Length")==0)  m_pWPolar->referenceChordLength() = dataIndex.data().toDouble()/Units::mtoUnit();
+            else if(field.compare("x")==0)                       m_pWPolar->setCoGx(dataIndex.data().toDouble()/Units::mtoUnit());
+            else if(field.compare("z")==0)                       m_pWPolar->setCoGz(dataIndex.data().toDouble()/Units::mtoUnit());
+            else if(field.compare("Ixx")==0)                     m_pWPolar->setCoGIxx(dataIndex.data().toDouble()/Units::kgm2toUnit());
+            else if(field.compare("Iyy")==0)                     m_pWPolar->setCoGIyy(dataIndex.data().toDouble()/Units::kgm2toUnit());
+            else if(field.compare("Izz")==0)                     m_pWPolar->setCoGIzz(dataIndex.data().toDouble()/Units::kgm2toUnit());
+            else if(field.compare("Ixz")==0)                     m_pWPolar->setCoGIxz(dataIndex.data().toDouble()/Units::kgm2toUnit());
+            else if(field.compare("Area")==0)                    m_pWPolar->setReferenceDim(referenceDimension(value));
+            else if(field.compare("Reference Area")==0)          m_pWPolar->setReferenceArea(dataIndex.data().toDouble()/Units::m2toUnit());
+            else if(field.compare("Reference Span Length")==0)   m_pWPolar->setReferenceSpanLength(dataIndex.data().toDouble()/Units::mtoUnit());
+            else if(field.compare("Reference Chord Length")==0)  m_pWPolar->setReferenceChordLength(dataIndex.data().toDouble()/Units::mtoUnit());
             else if(field.compare("Density")==0)                 m_pWPolar->setDensity(dataIndex.data().toDouble());
             else if(field.compare("Viscosity")==0)               m_pWPolar->setViscosity(dataIndex.data().toDouble());
             else if(field.compare("Ground effect")==0)           m_pWPolar->bGround()              = stringToBool(value);

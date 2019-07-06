@@ -28,13 +28,13 @@
 class ColorButton : public QAbstractButton
 {
 public:
-    ColorButton(QWidget *pParent = NULL);
+    ColorButton(QWidget *pParent = nullptr);
 
-    void paintEvent ( QPaintEvent * event );
+    void paintEvent (QPaintEvent *pEvent);
     QSize sizeHint() const;
 
     void setColor(QColor const & color);
-    QColor &color();
+    QColor const &color() const {return m_Color;}
 
 private:
     QColor m_Color;

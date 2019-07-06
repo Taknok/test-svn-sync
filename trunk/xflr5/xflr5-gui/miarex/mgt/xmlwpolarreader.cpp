@@ -95,11 +95,11 @@ void XmlWPolarReader::readWPolar(WPolar *pWPolar, double lengthunit, double area
     {
         if (name().toString().compare(QString("polar_name"),Qt::CaseInsensitive) ==0)
         {
-            pWPolar->polarName() = readElementText();
+            pWPolar->setPolarName(readElementText());
         }
         else if (name().toString().compare(QString("plane_name"),Qt::CaseInsensitive) ==0)
         {
-            pWPolar->planeName() = readElementText();
+            pWPolar->setPlaneName(readElementText());
         }
         else if (name().toString().compare(QString("type"),Qt::CaseInsensitive) ==0)
         {
@@ -167,19 +167,19 @@ void XmlWPolarReader::readWPolar(WPolar *pWPolar, double lengthunit, double area
         }
         else if (name().compare(QString("Reference_Dimensions"), Qt::CaseInsensitive)==0)
         {
-            pWPolar->referenceDim() = referenceDimension(readElementText());
+            pWPolar->setReferenceDim(referenceDimension(readElementText()));
         }
         else if (name().compare(QString("Reference_Area"), Qt::CaseInsensitive)==0)
         {
-            pWPolar->referenceArea() = readElementText().toDouble()*areaunit;
+            pWPolar->setReferenceArea(readElementText().toDouble()*areaunit);
         }
         else if (name().compare(QString("Reference_Span_Length"), Qt::CaseInsensitive)==0)
         {
-            pWPolar->referenceSpanLength() = readElementText().toDouble()*lengthunit;
+            pWPolar->setReferenceSpanLength(readElementText().toDouble()*lengthunit);
         }
         else if (name().compare(QString("Reference_Chord_Length"), Qt::CaseInsensitive)==0)
         {
-            pWPolar->referenceChordLength() = readElementText().toDouble()*lengthunit;
+            pWPolar->setReferenceChordLength(readElementText().toDouble()*lengthunit);
         }
         else if (name().compare(QString("ExtraDrag"),         Qt::CaseInsensitive)==0)
         {
@@ -239,25 +239,25 @@ void XmlWPolarReader::readWPolar(WPolar *pWPolar, double lengthunit, double area
                     QStringList coordList = readElementText().split(",");
                     if(coordList.length()>=3)
                     {
-                        m_pWPolar->CoG().x = coordList.at(0).toDouble()*lengthunit;
-                        m_pWPolar->CoG().z = coordList.at(2).toDouble()*lengthunit;
+                        m_pWPolar->setCoGx(coordList.at(0).toDouble()*lengthunit);
+                        m_pWPolar->setCoGz(coordList.at(2).toDouble()*lengthunit);
                     }
                 }
                 else if (name().compare(QString("CoG_Ixx"), Qt::CaseInsensitive)==0)
                 {
-                    pWPolar->CoGIxx() = readElementText().toDouble()*inertiaunit;
+                    pWPolar->setCoGIxx(readElementText().toDouble()*inertiaunit);
                 }
                 else if (name().compare(QString("CoG_Iyy"), Qt::CaseInsensitive)==0)
                 {
-                    pWPolar->CoGIyy() = readElementText().toDouble()*inertiaunit;
+                    pWPolar->setCoGIyy(readElementText().toDouble()*inertiaunit);
                 }
                 else if (name().compare(QString("CoG_Izz"), Qt::CaseInsensitive)==0)
                 {
-                    pWPolar->CoGIzz() = readElementText().toDouble()*inertiaunit;
+                    pWPolar->setCoGIzz(readElementText().toDouble()*inertiaunit);
                 }
                 else if (name().compare(QString("CoG_Izz"), Qt::CaseInsensitive)==0)
                 {
-                    pWPolar->CoGIxz() = readElementText().toDouble()*inertiaunit;
+                    pWPolar->setCoGIxz(readElementText().toDouble()*inertiaunit);
                 }
                 else
                     skipCurrentElement();

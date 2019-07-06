@@ -279,11 +279,11 @@ WPolar* PlaneAnalysisTask::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar)
         if(pCurPlane)
         {
             m_pWPolar->setMass(pCurPlane->totalMass());
-            m_pWPolar->CoG()    = pCurPlane->CoG();
-            m_pWPolar->CoGIxx() = pCurPlane->CoGIxx();
-            m_pWPolar->CoGIyy() = pCurPlane->CoGIyy();
-            m_pWPolar->CoGIzz() = pCurPlane->CoGIzz();
-            m_pWPolar->CoGIxz() = pCurPlane->CoGIxz();
+            m_pWPolar->setCoG(pCurPlane->CoG());
+            m_pWPolar->setCoGIxx(pCurPlane->CoGIxx());
+            m_pWPolar->setCoGIyy(pCurPlane->CoGIyy());
+            m_pWPolar->setCoGIzz(pCurPlane->CoGIzz());
+            m_pWPolar->setCoGIxz(pCurPlane->CoGIxz());
         }
     }
 
@@ -623,7 +623,7 @@ int PlaneAnalysisTask::createBodyElements(Plane *pCurPlane)
             for (int l=0; l<nh; l++)
             {
                 //start with left side... same as for wings
-                v = (double)(l+1) / (double)(nh);
+                v = double(l+1) / double(nh);
                 pCurBody->getPoint(uk,  v, false, LA);
                 pCurBody->getPoint(uk1, v, false, TA);
 

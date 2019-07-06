@@ -2048,9 +2048,9 @@ bool Miarex::loadSettings(QSettings &settings)
 
         StabPolarDlg::s_StabWPolar.m_bAutoInertia = settings.value("StabPolarAutoInertia", true).toBool();
         StabPolarDlg::s_StabWPolar.setMass(settings.value("StabPolarMass", 0.0).toDouble());
-        StabPolarDlg::s_StabWPolar.CoG().x  = settings.value("StabPolarCoGx", 0.0).toDouble();
-        StabPolarDlg::s_StabWPolar.CoG().y  = settings.value("StabPolarCoGy", 0.0).toDouble();
-        StabPolarDlg::s_StabWPolar.CoG().z  = settings.value("StabPolarCoGz", 0.0).toDouble();
+        StabPolarDlg::s_StabWPolar.setCoGx(settings.value("StabPolarCoGx", 0.0).toDouble());
+        StabPolarDlg::s_StabWPolar.setCoGy(settings.value("StabPolarCoGy", 0.0).toDouble());
+        StabPolarDlg::s_StabWPolar.setCoGz(settings.value("StabPolarCoGz", 0.0).toDouble());
         StabPolarDlg::s_StabWPolar.m_CoGIxx = settings.value("StabPolarCoGIxx", 0.0).toDouble();
         StabPolarDlg::s_StabWPolar.m_CoGIyy = settings.value("StabPolarCoGIyy", 0.0).toDouble();
         StabPolarDlg::s_StabWPolar.m_CoGIzz = settings.value("StabPolarCoGIzz", 0.0).toDouble();
@@ -2780,7 +2780,7 @@ void Miarex::onDefineStabPolar()
 
     StabPolarDlg::s_StabWPolar.setViscosity(WPolarDlg::s_WPolar.viscosity());
     StabPolarDlg::s_StabWPolar.setDensity(WPolarDlg::s_WPolar.density());
-    StabPolarDlg::s_StabWPolar.referenceDim()  = WPolarDlg::s_WPolar.referenceDim();
+    StabPolarDlg::s_StabWPolar.setReferenceDim(WPolarDlg::s_WPolar.referenceDim());
     StabPolarDlg::s_StabWPolar.bThinSurfaces() = WPolarDlg::s_WPolar.bThinSurfaces();
 
     StabPolarDlg spDlg(s_pMainFrame);
@@ -2792,20 +2792,20 @@ void Miarex::onDefineStabPolar()
         emit projectModified();
 
         WPolar* pNewStabPolar      = new WPolar;
-        pNewStabPolar->planeName() = m_pCurPlane->planeName();
+        pNewStabPolar->setPlaneName(m_pCurPlane->planeName());
         QColor clr = MainFrame::getColor(4);
         pNewStabPolar->setCurveColor(ObjectColor(clr.red(), clr.green(), clr.blue(), clr.alpha()));
-        pNewStabPolar->curveWidth() = 2;
-        pNewStabPolar->points() = 1;
-        pNewStabPolar->isVisible()  = true;
+        pNewStabPolar->setCurveWidth(2);
+        pNewStabPolar->setPoints(1);
+        pNewStabPolar->setVisible(true);
 
-        pNewStabPolar->referenceChordLength()  = m_pCurPlane->mac();
+        pNewStabPolar->setReferenceChordLength(m_pCurPlane->mac());
 
         pNewStabPolar->duplicateSpec(&StabPolarDlg::s_StabWPolar);
 
         if(pNewStabPolar->polarName().length()>60)
         {
-            pNewStabPolar->polarName() = pNewStabPolar->polarName().left(60)+"..."+QString("(%1)").arg(m_poaWPolar->size());
+            pNewStabPolar->setPolarName(pNewStabPolar->polarName().left(60)+"..."+QString("(%1)").arg(m_poaWPolar->size()));
         }
 
         pNewStabPolar->bVLM1()           = false;
@@ -2859,20 +2859,22 @@ void Miarex::onDefineWPolar()
         //Then add WPolar to array
         emit projectModified();
         pNewWPolar->duplicateSpec(&WPolarDlg::s_WPolar);
-        pNewWPolar->planeName() = m_pCurPlane->planeName();
-        pNewWPolar->polarName() = wpDlg.s_WPolar.polarName();
+        pNewWPolar->setPlaneName(m_pCurPlane->planeName());
+        pNewWPolar->setPolarName(wpDlg.s_WPolar.polarName());
 
         if(pNewWPolar->referenceDim()==XFLR5::PLANFORMREFDIM)
         {
-            pNewWPolar->referenceSpanLength() = m_pCurPlane->planformSpan();
-            pNewWPolar->referenceArea() = m_pCurPlane->planformArea();
-            if(m_pCurPlane && m_pCurPlane->biPlane()) pNewWPolar->referenceArea() += m_pCurPlane->wing2()->m_PlanformArea;
+            pNewWPolar->setReferenceSpanLength(m_pCurPlane->planformSpan());
+            double area = m_pCurPlane->planformArea();
+            if(m_pCurPlane && m_pCurPlane->biPlane()) area += m_pCurPlane->wing2()->m_PlanformArea;
+            pNewWPolar->setReferenceArea(area);
         }
         else if(pNewWPolar->referenceDim()==XFLR5::PROJECTEDREFDIM)
         {
-            pNewWPolar->referenceSpanLength() = m_pCurPlane->projectedSpan();
-            pNewWPolar->referenceArea() = m_pCurPlane->projectedArea();
-            if(m_pCurPlane && m_pCurPlane->biPlane()) pNewWPolar->referenceArea() += m_pCurPlane->wing2()->m_ProjectedArea;
+            pNewWPolar->setReferenceSpanLength(m_pCurPlane->projectedSpan());
+            double area = m_pCurPlane->projectedArea();
+            if(m_pCurPlane && m_pCurPlane->biPlane()) area += m_pCurPlane->wing2()->m_ProjectedArea;
+            pNewWPolar->setReferenceArea(area);
         }
 
         if(m_bDirichlet) pNewWPolar->boundaryCondition() = XFLR5::DIRICHLET;
@@ -2905,8 +2907,6 @@ void Miarex::onDefineWPolar()
 }
 
 
-
-
 /**
  * The user has requested the creation of a new performance polar.
  * A new WPolar object is created and is attached to the owning plane or wing.
@@ -2919,11 +2919,10 @@ void Miarex::onDefineWPolarObject()
 
     WPolar* pNewWPolar  = new WPolar;
     pNewWPolar->duplicateSpec(&WPolarDlg::s_WPolar);
-    pNewWPolar->planeName() = m_pCurPlane->planeName();
-    //    pNewWPolar->polarName() = WPolarDlg::s_WPolar.polarName();
-    pNewWPolar->referenceArea()        = m_pCurPlane->planformArea();
-    pNewWPolar->referenceSpanLength()  = m_pCurPlane->planformSpan();
-    pNewWPolar->referenceChordLength() = m_pCurPlane->mac();
+    pNewWPolar->setPlaneName(m_pCurPlane->planeName());
+    pNewWPolar->setReferenceArea(m_pCurPlane->planformArea());
+    pNewWPolar->setReferenceSpanLength(m_pCurPlane->planformSpan());
+    pNewWPolar->setReferenceChordLength(m_pCurPlane->mac());
     QColor clr = MainFrame::getColor(4);
     pNewWPolar->setCurveColor(ObjectColor(clr.red(), clr.green(), clr.blue(), clr.alpha()));
 
@@ -2937,20 +2936,22 @@ void Miarex::onDefineWPolarObject()
 
         if(pNewWPolar->referenceDim()==XFLR5::PLANFORMREFDIM)
         {
-            pNewWPolar->referenceSpanLength() = m_pCurPlane->planformSpan();
-            pNewWPolar->referenceArea()       = m_pCurPlane->planformArea();
-            if(m_pCurPlane && m_pCurPlane->biPlane()) pNewWPolar->referenceArea() += m_pCurPlane->wing2()->m_PlanformArea;
+            pNewWPolar->setReferenceSpanLength(m_pCurPlane->planformSpan());
+            double area = m_pCurPlane->planformArea();
+            if(m_pCurPlane && m_pCurPlane->biPlane()) area += m_pCurPlane->wing2()->m_PlanformArea;
+            pNewWPolar->setReferenceArea(area);
         }
         else if(pNewWPolar->referenceDim()==XFLR5::PROJECTEDREFDIM)
         {
-            pNewWPolar->referenceSpanLength() = m_pCurPlane->projectedSpan();
-            pNewWPolar->referenceArea()       = m_pCurPlane->projectedArea();
-            if(m_pCurPlane && m_pCurPlane->biPlane()) pNewWPolar->referenceArea() += m_pCurPlane->wing2()->m_ProjectedArea;
+            pNewWPolar->setReferenceSpanLength(m_pCurPlane->projectedSpan());
+            double area = m_pCurPlane->projectedArea();
+            if(m_pCurPlane && m_pCurPlane->biPlane()) area += m_pCurPlane->wing2()->m_ProjectedArea;
+            pNewWPolar->setReferenceArea(area);
         }
 
         //        if(m_bDirichlet) pNewWPolar->boundaryCondition() = XFLR5::DIRICHLET;
         //        else             pNewWPolar->boundaryCondition() = XFLR5::NEUMANN;
-        pNewWPolar->isVisible() = true;
+        pNewWPolar->setVisible(true);
 
         m_pCurWPolar = Objects3d::insertNewWPolar(pNewWPolar, m_pCurPlane);
         m_pCurPOpp = nullptr;
@@ -3009,14 +3010,14 @@ void Miarex::onEditCurWPolar()
     {
         emit projectModified();
 
-        pNewWPolar->planeName() = m_pCurPlane->planeName();
-        pNewWPolar->polarName() = WPolarName;
+        pNewWPolar->setPlaneName(m_pCurPlane->planeName());
+        pNewWPolar->setPolarName(WPolarName);
 
         //        pNewWPolar->bDirichlet() = m_bDirichlet;
 
         QColor clr = MainFrame::getColor(4);
         pNewWPolar->setCurveColor(ObjectColor(clr.red(), clr.green(), clr.blue(), clr.alpha()));
-        pNewWPolar->isVisible() = true;
+        pNewWPolar->setVisible(true);
 
         m_pCurWPolar = Objects3d::insertNewWPolar(pNewWPolar, m_pCurPlane);
         m_pCurPOpp = nullptr;
@@ -3057,13 +3058,13 @@ void Miarex::onEditCurWPolarObject()
     {
         emit projectModified();
 
-        pNewWPolar->planeName() = m_pCurPlane->planeName();
+        pNewWPolar->setPlaneName(m_pCurPlane->planeName());
 
         //        pNewWPolar->bDirichlet() = m_bDirichlet;
 
         QColor clr = MainFrame::getColor(4);
         pNewWPolar->setCurveColor(ObjectColor(clr.red(), clr.green(), clr.blue(), clr.alpha()));
-        pNewWPolar->isVisible() = true;
+        pNewWPolar->setVisible(true);
 
 
         m_pCurWPolar = Objects3d::insertNewWPolar(pNewWPolar, m_pCurPlane);
@@ -3108,7 +3109,7 @@ void Miarex::onEditCurWPolarPts()
 
 
     bool bPoints = m_pCurWPolar->points();
-    m_pCurWPolar->points() = true;
+    m_pCurWPolar->setPoints(1);
 
     s_bResetCurves = true;
     updateView();
@@ -3121,7 +3122,7 @@ void Miarex::onEditCurWPolarPts()
     {
         m_pCurWPolar->copy(pMemWPolar);
     }
-    m_pCurWPolar->points() = bPoints;
+    m_pCurWPolar->setPoints(bPoints);
 
     m_bResetTextLegend = true;
     s_bResetCurves = true;
@@ -4851,8 +4852,6 @@ void Miarex::onGL3DScale()
 }
 
 
-
-
 /**
  * The user has requested that all polars curves be hidden
  */
@@ -4861,7 +4860,7 @@ void Miarex::onHideAllWPolars()
     for (int i=0; i<m_poaWPolar->size(); i++)
     {
         WPolar *pWPolar = m_poaWPolar->at(i);
-        pWPolar->isVisible() = false;
+        pWPolar->setVisible(false);
         //        if(pWPolar->polarType()==XFLR5::STABILITYPOLAR) pWPolar->points() = false;
     }
 
@@ -4870,7 +4869,6 @@ void Miarex::onHideAllWPolars()
     s_bResetCurves = true;
     updateView();
 }
-
 
 
 /**
@@ -4956,8 +4954,8 @@ void Miarex::onHidePlaneWPolars()
         WPolar *pWPolar = m_poaWPolar->at(i);
         if (pWPolar->planeName() == PlaneName)
         {
-            pWPolar->isVisible() = false;
-            if(pWPolar->polarType()==XFLR5::STABILITYPOLAR) pWPolar->points() = false;
+            pWPolar->setVisible(false);
+            if(pWPolar->polarType()==XFLR5::STABILITYPOLAR) pWPolar->setPoints(0);
         }
     }
 
@@ -5023,14 +5021,14 @@ void Miarex::onImportWPolars()
             {
                 WPolar *pWPolar = new WPolar();
 
-                pWPolar->planeName() = PlaneName;
-                pWPolar->referenceArea()        = pPlane->planformArea();
-                pWPolar->referenceChordLength() = pPlane->mac();
-                pWPolar->referenceSpanLength()  = pPlane->planformSpan();
+                pWPolar->setPlaneName(PlaneName);
+                pWPolar->setReferenceArea(pPlane->projectedArea());
+                pWPolar->setReferenceChordLength(pPlane->mac());
+                pWPolar->setReferenceSpanLength(pPlane->projectedSpan());
 
                 strong = inStream.readLine();
                 polarName = strong.right(strong.length()-19);
-                pWPolar->polarName() = polarName;
+                pWPolar->setPolarName(polarName);
 
                 strong = inStream.readLine();// blank line
 
@@ -5395,7 +5393,7 @@ void Miarex::onRenameCurWPolar()
         }
     }
 
-    m_pCurWPolar->polarName() = dlg.newName();
+    m_pCurWPolar->setPolarName(dlg.newName());
 
     //insert alphabetically
     bool bInserted = false;
@@ -5545,7 +5543,7 @@ void Miarex::onShowAllWPolars()
     for (i=0; i<m_poaWPolar->size(); i++)
     {
         pWPolar = m_poaWPolar->at(i);
-        pWPolar->isVisible() = true;
+        pWPolar->setVisible(true);
     }
 
     emit projectModified();
@@ -5563,11 +5561,10 @@ void Miarex::onShowPlaneWPolarsOnly()
 {
     if(!m_pCurPlane) return;
 
-    WPolar *pWPolar;
     for (int i=0; i<m_poaWPolar->size(); i++)
     {
-        pWPolar = m_poaWPolar->at(i);
-        pWPolar->isVisible() = (pWPolar->planeName() == m_pCurPlane->planeName());
+        WPolar *pWPolar = m_poaWPolar->at(i);
+        pWPolar->setVisible((pWPolar->planeName() == m_pCurPlane->planeName()));
     }
 
     setCurveParams();
@@ -5610,7 +5607,7 @@ void Miarex::onShowPlaneWPolars()
     for (i=0; i<m_poaWPolar->size(); i++)
     {
         pWPolar = m_poaWPolar->at(i);
-        if (pWPolar->planeName() == PlaneName) pWPolar->isVisible() = true;
+        if (pWPolar->planeName() == PlaneName) pWPolar->setVisible(true);
     }
 
 
@@ -7205,6 +7202,7 @@ void Miarex::setupLayout()
                 pCurveStyleLayout->addWidget(m_pctrlCurveStyle,2,2);
                 pCurveStyleLayout->addWidget(m_pctrlCurveWidth,3,2);
                 pCurveStyleLayout->addWidget(m_pctrlCurveColor,4,2);
+
                 pCurveStyleLayout->setColumnStretch(2,5);
             }
 
@@ -7515,11 +7513,11 @@ void Miarex::setWPolar(bool bCurrent, QString WPlrName)
             if(m_pCurPlane)
             {
                 m_pCurWPolar->setMass(m_pCurPlane->totalMass());
-                m_pCurWPolar->CoG()    = m_pCurPlane->CoG();
-                m_pCurWPolar->CoGIxx() = m_pCurPlane->CoGIxx();
-                m_pCurWPolar->CoGIyy() = m_pCurPlane->CoGIyy();
-                m_pCurWPolar->CoGIzz() = m_pCurPlane->CoGIzz();
-                m_pCurWPolar->CoGIxz() = m_pCurPlane->CoGIxz();
+                m_pCurWPolar->setCoG(m_pCurPlane->CoG());
+                m_pCurWPolar->setCoGIxx(m_pCurPlane->CoGIxx());
+                m_pCurWPolar->setCoGIyy(m_pCurPlane->CoGIyy());
+                m_pCurWPolar->setCoGIzz(m_pCurPlane->CoGIzz());
+                m_pCurWPolar->setCoGIxz(m_pCurPlane->CoGIxz());
             }
         }
 
@@ -7530,16 +7528,15 @@ void Miarex::setWPolar(bool bCurrent, QString WPlrName)
             // just a safety precaution
             if(m_pCurWPolar->referenceDim()==XFLR5::PLANFORMREFDIM)
             {
-                m_pCurWPolar->referenceArea()       = m_pCurPlane->planformArea();
-                m_pCurWPolar->referenceSpanLength() = m_pCurPlane->planformSpan();
+                m_pCurWPolar->setReferenceArea(m_pCurPlane->planformArea());
+                m_pCurWPolar->setReferenceSpanLength(m_pCurPlane->planformSpan());
             }
             else if(m_pCurWPolar->referenceDim()==XFLR5::PROJECTEDREFDIM)
             {
-                m_pCurWPolar->referenceArea()       = m_pCurPlane->projectedArea();
-                m_pCurWPolar->referenceSpanLength() = m_pCurPlane->projectedSpan();
+                m_pCurWPolar->setReferenceArea(m_pCurPlane->projectedArea());
+                m_pCurWPolar->setReferenceSpanLength(m_pCurPlane->projectedSpan());
             }
         }
-
 
         QString PolarProps;
         getPolarProperties(m_pCurWPolar, PolarProps);
@@ -7733,12 +7730,12 @@ void Miarex::updateCurve()
     bool bCurveVisible = m_pctrlShowCurve->isChecked();
     if(m_iView==XFLR5::WPOLARVIEW && m_pCurWPolar)
     {
-        m_pCurWPolar->curveStyle()  = m_LineStyle.m_Style;
-        m_pCurWPolar->curveWidth()  = m_LineStyle.m_Width;
+        m_pCurWPolar->setCurveStyle(m_LineStyle.m_Style);
+        m_pCurWPolar->setCurveWidth(m_LineStyle.m_Width);
         QColor c = m_LineStyle.m_Color;
         m_pCurWPolar->setCurveColor(ObjectColor(c.red(), c.green(), c.blue(), c.alpha()));
-        m_pCurWPolar->points()      = m_LineStyle.m_PointStyle;
-        m_pCurWPolar->isVisible()   = bCurveVisible;
+        m_pCurWPolar->setPoints(m_LineStyle.m_PointStyle);
+        m_pCurWPolar->setVisible(bCurveVisible);
 
         if(Settings::isAlignedChildrenStyle()) Objects3d::setWPolarChildrenStyle(m_pCurWPolar);
     }
@@ -7749,12 +7746,12 @@ void Miarex::updateCurve()
     }
     else if(m_iView==XFLR5::STABPOLARVIEW)
     {
-        m_pCurWPolar->curveStyle()  = m_LineStyle.m_Style;
-        m_pCurWPolar->curveWidth()  = m_LineStyle.m_Width;
+        m_pCurWPolar->setCurveStyle(m_LineStyle.m_Style);
+        m_pCurWPolar->setCurveWidth(m_LineStyle.m_Width);
         QColor c = m_LineStyle.m_Color;
         m_pCurWPolar->setCurveColor(ObjectColor(c.red(), c.green(), c.blue(), c.alpha()));
-        m_pCurWPolar->points()    = m_LineStyle.m_PointStyle;
-        m_pCurWPolar->isVisible() = m_pctrlShowCurve->isChecked();
+        m_pCurWPolar->setPoints(m_LineStyle.m_PointStyle);
+        m_pCurWPolar->setVisible(m_pctrlShowCurve->isChecked());
         if(Settings::isAlignedChildrenStyle()) Objects3d::setWPolarChildrenStyle(m_pCurWPolar);
     }
     else if (m_iView==XFLR5::WOPPVIEW)
@@ -8673,7 +8670,7 @@ void Miarex::importWPolarFromXML(QFile &xmlFile)
         if(!pPlane && m_pCurPlane)
         {
             s_pMainFrame->statusBar()->showMessage(tr("Attaching the analysis to the active plane"));
-            pWPolar->planeName() = m_pCurPlane->planeName();
+            pWPolar->setPlaneName(m_pCurPlane->planeName());
             pPlane = m_pCurPlane;
         }
         else if(!pPlane)

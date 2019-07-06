@@ -5329,9 +5329,9 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
 
             ar >> dble;    WPolarDlg::s_WPolar.setMass(dble);
             ar >> WPolarDlg::s_WPolar.m_QInfSpec;
-            ar >> WPolarDlg::s_WPolar.CoG().x;
-            ar >> WPolarDlg::s_WPolar.CoG().y;
-            ar >> WPolarDlg::s_WPolar.CoG().z;
+            double x=0, y=0, z=0;
+            ar >> x >> y >> z;
+            WPolarDlg::s_WPolar.setCoG({x,y,z});
 
             ar >> f; WPolarDlg::s_WPolar.setDensity(double(f));
             ar >> f; WPolarDlg::s_WPolar.setViscosity(double(f));
@@ -5372,18 +5372,19 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
                     Objects3d::s_oaWPolar.append(pWPolar);
                     if(pWPolar->referenceDim()==XFLR5::PLANFORMREFDIM)
                     {
-                        pWPolar->referenceArea()       = pPlane->planformArea();
-                        pWPolar->referenceSpanLength() = pPlane->planformSpan();
-                        if(pPlane->biPlane()) pWPolar->referenceArea() += pPlane->wing2()->m_PlanformArea;
-                        pWPolar->referenceChordLength() = pPlane->mac();
+                        pWPolar->setReferenceSpanLength(pPlane->planformSpan());
+                        double area  = pPlane->planformArea();
+                        if(pPlane->biPlane()) area += pPlane->wing2()->m_PlanformArea;
+                        pWPolar->setReferenceArea(area);
                     }
                     else if(pWPolar->referenceDim()==XFLR5::PROJECTEDREFDIM)
                     {
-                        pWPolar->referenceArea()       = pPlane->projectedArea();
-                        pWPolar->referenceSpanLength() = pPlane->projectedSpan();
-                        if(pPlane->biPlane()) pWPolar->referenceArea() += pPlane->wing2()->m_ProjectedArea;
-                        pWPolar->referenceChordLength() = pPlane->mac();
+                        pWPolar->setReferenceSpanLength(pPlane->projectedSpan());
+                        double area = pPlane->projectedArea();
+                        if(pPlane->biPlane()) area += pPlane->wing2()->m_ProjectedArea;
+                        pWPolar->setReferenceArea(area);
                     }
+                    pWPolar->setReferenceChordLength(pPlane->mac());
                 }
                 else
                 {
@@ -5479,15 +5480,13 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
         ar >> n; Units::setInertiaUnitIndex(n);
 
         // space allocation
-        int k ;
-        double dble;
+        int k=0;
+        double dble=0;
         for (int i=2; i<20; i++) ar >> k;
         for (int i=0; i<50; i++) ar >> dble;
     }
-
     return true;
 }
-
 
 
 bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
@@ -5503,7 +5502,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 
     QString str;
     int i=0, n=0, j=0, k=0;
-    float f=0;
+    float f=0, g=0, h=0;
 
     if (bIsStoring)
     {
@@ -5553,17 +5552,16 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
                 ar >> f; WPolarDlg::s_WPolar.m_QInfSpec=double(f);
                 if(ArchiveFormat>=100013)
                 {
-                    ar >> f; WPolarDlg::s_WPolar.CoG().x=double(f);
-                    ar >> f; WPolarDlg::s_WPolar.CoG().y=double(f);
-                    ar >> f; WPolarDlg::s_WPolar.CoG().z=double(f);
+                    ar >> f >> g >> h;
+                    WPolarDlg::s_WPolar.setCoG({double(f), double(g), double(h)});
                 }
                 else
                 {
-                    ar >> f; WPolarDlg::s_WPolar.CoG().x=double(f);
-                    WPolarDlg::s_WPolar.CoG().y=0;
-                    WPolarDlg::s_WPolar.CoG().z=0;
+                    ar >> f; WPolarDlg::s_WPolar.setCoGx(double(f));
+                    WPolarDlg::s_WPolar.setCoGy(0);
+                    WPolarDlg::s_WPolar.setCoGz(0);
                 }
-                if(ArchiveFormat<100010) WPolarDlg::s_WPolar.CoG().x=double(f)/1000.0;
+                if(ArchiveFormat<100010) WPolarDlg::s_WPolar.setCoGx(double(f)/1000.0);
                 ar >> f; WPolarDlg::s_WPolar.setDensity(double(f));
                 ar >> f; WPolarDlg::s_WPolar.setViscosity(double(f));
                 ar >> f; WPolarDlg::s_WPolar.m_AlphaSpec     = double(f);
@@ -5813,7 +5811,6 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
         return true;
     }
 }
-
 
 
 void MainFrame::setMenus()

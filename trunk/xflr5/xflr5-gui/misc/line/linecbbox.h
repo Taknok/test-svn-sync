@@ -1,7 +1,7 @@
 /****************************************************************************
 
     LineCbBox Class
-    Copyright (C) 2009 Andre Deperrois 
+    Copyright (C) 2009-2019 Andre Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -31,10 +31,10 @@ class LineCbBox : public QComboBox
 {
 
 public:
-    LineCbBox(QWidget *pParent=NULL);
+    LineCbBox(QWidget *pParent=nullptr);
 
     QSize sizeHint() const;
-    void paintEvent (QPaintEvent *event);
+    void paintEvent (QPaintEvent *pEvent);
 
     void setLine(int const &style, int const &width, QColor const &color, const int &pointStyle);
     void setLine(LineStyle lineStyle);

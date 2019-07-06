@@ -26,8 +26,7 @@
 #include <graph_globals.h>
 
 
-LineDelegate::LineDelegate(QObject *parent)
-    : QAbstractItemDelegate(parent)
+LineDelegate::LineDelegate(LineCbBox *parent) : QAbstractItemDelegate(parent)
 {
     //initialize with something, just in case
     for (int i=0; i<5; i++)
@@ -43,7 +42,6 @@ LineDelegate::LineDelegate(QObject *parent)
 
     m_pCbBox = parent;
 }
-
 
 
 void LineDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
@@ -65,8 +63,7 @@ void LineDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, 
                       option.rect.width()-6,
                       option.rect.center().y());
 
-
-    if(m_pCbBox && ((LineCbBox*)m_pCbBox)->points())
+    if(m_pCbBox && (m_pCbBox)->points())
     {
         LinePen.setStyle(Qt::SolidLine);
         painter->setPen(LinePen);

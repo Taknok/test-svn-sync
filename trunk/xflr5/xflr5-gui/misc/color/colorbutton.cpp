@@ -32,7 +32,6 @@ ColorButton::ColorButton(QWidget *pParent) : QAbstractButton(pParent)
     szPolicyExpanding.setHorizontalPolicy(QSizePolicy::Minimum);
     szPolicyExpanding.setVerticalPolicy(QSizePolicy::Minimum);
     setSizePolicy(szPolicyExpanding);
-
 }
 
 
@@ -52,13 +51,7 @@ void ColorButton::setColor(QColor const & color)
 }
 
 
-QColor &ColorButton::color()
-{
-    return m_Color;
-}
-
-
-void ColorButton::paintEvent ( QPaintEvent * event )
+void ColorButton::paintEvent(QPaintEvent *pEvent)
 {
     QColor paintcolor;
 
@@ -88,7 +81,7 @@ void ColorButton::paintEvent ( QPaintEvent * event )
     painter.setPen(blackPen);
     painter.drawRoundedRect(r, 5, 25, Qt::RelativeSize);
 
-    event->accept();
+    pEvent->accept();
 }
 
 

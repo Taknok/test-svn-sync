@@ -760,7 +760,7 @@ WPolar* Objects3d::insertNewWPolar(WPolar *pNewWPolar, Plane *pCurPlane)
         }
 
         //room has been made, insert the new WPolar in alphabetical order
-        pNewWPolar->polarName() = dlg.newName();
+        pNewWPolar->setPolarName(dlg.newName());
         for (l=0; l<s_oaWPolar.size();l++)
         {
             pOldWPolar = s_oaWPolar.at(l);
@@ -784,7 +784,7 @@ WPolar* Objects3d::insertNewWPolar(WPolar *pNewWPolar, Plane *pCurPlane)
     else if(resp==QDialog::Accepted)
     {
         //not rejected, no overwrite, else the user has selected a non-existing name, rename and insert
-        pNewWPolar->polarName()=dlg.newName();
+        pNewWPolar->setPolarName(dlg.newName());
         for (l=0; l<s_oaWPolar.size();l++)
         {
             pOldWPolar = s_oaWPolar.at(l);
@@ -832,7 +832,7 @@ void Objects3d::renamePlane(QString PlaneName)
             pWPolar = s_oaWPolar.at(l);
             if (pWPolar->planeName() == OldName)
             {
-                pWPolar->planeName() = pPlane->planeName();
+                pWPolar->setPlaneName(pPlane->planeName());
             }
         }
         for (l=s_oaPOpp.size()-1;l>=0; l--)

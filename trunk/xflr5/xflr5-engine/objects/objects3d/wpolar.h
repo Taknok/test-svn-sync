@@ -27,11 +27,8 @@
  */
 
 
-
 #ifndef WPOLAR_H
 #define WPOLAR_H
-
-
 
 
 #include <objects/objects3d/plane.h>
@@ -84,8 +81,8 @@ public:
     bool serializeWPlrWPA(QDataStream &ar, bool bIsStoring);
     bool serializeWPlrXFL(QDataStream &ar, bool bIsStoring);
 
-    XFLR5::enumPolarType const &polarType()           const {return m_WPolarType;}       /**< returns the type of the polar as an index in the enumeration. */
-    XFLR5::enumAnalysisMethod const &analysisMethod() const {return m_AnalysisMethod;}   /**< returns the analysis method of the polar as an index in the enumeration. */
+    XFLR5::enumPolarType polarType()           const {return m_WPolarType;}       /**< returns the type of the polar as an index in the enumeration. */
+    XFLR5::enumAnalysisMethod analysisMethod() const {return m_AnalysisMethod;}   /**< returns the analysis method of the polar as an index in the enumeration. */
     void setPolarType(XFLR5::enumPolarType type) {m_WPolarType=type;}
     void setAnalysisMethod(XFLR5::enumAnalysisMethod method) {m_AnalysisMethod=method;}
 
@@ -97,11 +94,13 @@ public:
     bool isTriLinearMethod()   {return m_AnalysisMethod==XFLR5::TRILINMETHOD;}
     bool isTriangleMethod()    {return isTriCstMethod() || isTriLinearMethod();}
 
-    QString &polarName()                 {return m_WPlrName;}       /**< returns the polar's name as a QString object. */
-    QString &planeName()                 {return m_PlaneName;}      /**< returns the name of the polar's parent object as a QString object. */
+    QString const &polarName() const {return m_WPlrName;}       /**< returns the polar's name as a QString object. */
+    QString const &planeName() const {return m_PlaneName;}      /**< returns the name of the polar's parent object as a QString object. */
+    void setPolarName(QString const &name) {m_WPlrName=name;}
+    void setPlaneName(QString const &name) {m_PlaneName=name;}
 
-    double const &density()    const                {return m_Density;}        /**< returns the fluid's density, in IS units. */
-    double const &viscosity()  const                {return m_Viscosity;}      /**< returns the fluid's kinematic viscosity, in IS units. */
+    double density()    const {return m_Density;}        /**< returns the fluid's density, in IS units. */
+    double viscosity()  const {return m_Viscosity;}      /**< returns the fluid's kinematic viscosity, in IS units. */
     void setDensity(double f) {m_Density=f;}
     void setViscosity(double f) {m_Viscosity=f;}
 
@@ -111,6 +110,7 @@ public:
     bool isStabilityPolar()  const    {return m_WPolarType==XFLR5::STABILITYPOLAR;}       /**< returns true if the polar is of the STABILITYPOLAR type, false otherwise >*/
     bool isBetaPolar()       const    {return m_WPolarType==XFLR5::BETAPOLAR;}            /**< returns true if the polar is of the BETAPOLAR type, false otherwise >*/
 
+    /** @todo remove remaining non-const reference access functions */
     bool &bThinSurfaces() {return m_bThinSurfaces;}  /**< returns true if the analysis if using thin surfaces, i.e. VLM, false if 3D Panels for the Wing objects. */
     bool &bWakeRollUp()  {return m_bWakeRollUp;}
     bool &bTilted() {return m_bTiltedGeom; }
@@ -121,20 +121,27 @@ public:
     bool &bAutoInertia() {return m_bAutoInertia;}
     bool bDirichlet() {return m_BoundaryCondition==XFLR5::DIRICHLET;}
 
-    int &polarFormat() {return m_PolarFormat;}
+    int polarFormat() {return m_PolarFormat;}
+    void setPolarFormat(int fmt) {m_PolarFormat=fmt;}
 
     XFLR5::enumBC &boundaryCondition() {return m_BoundaryCondition;}
-    XFLR5::enumRefDimension  &referenceDim(){return m_ReferenceDim;}
-    double &referenceArea()  {return m_referenceArea;}
-    double &referenceSpanLength()  {return m_referenceSpanLength;}
-    double &referenceChordLength() {return m_referenceChordLength;}
 
-    double const &velocity()     const {return m_QInfSpec;}
-    double const &Alpha()        const {return m_AlphaSpec;}
-    double const &Beta()         const {return m_BetaSpec;}
-    double const &Phi()          const {return m_BankAngle;}
-    double const &mass()         const {return m_Mass;}
-    double const &groundHeight() const {return m_Height;}
+    XFLR5::enumRefDimension  const &referenceDim() const {return m_ReferenceDim;}
+    double referenceArea()  const{return m_referenceArea;}
+    double referenceSpanLength()  const {return m_referenceSpanLength;}
+    double referenceChordLength() const {return m_referenceChordLength;}
+    void setReferenceDim(XFLR5::enumRefDimension dim) {m_ReferenceDim=dim;}
+    void setReferenceArea(double a) {m_referenceArea=a;}
+    void setReferenceSpanLength(double l) {m_referenceSpanLength=l;}
+    void setReferenceChordLength(double c) {m_referenceChordLength=c;}
+
+
+    double velocity()     const {return m_QInfSpec;}
+    double Alpha()        const {return m_AlphaSpec;}
+    double Beta()         const {return m_BetaSpec;}
+    double Phi()          const {return m_BankAngle;}
+    double mass()         const {return m_Mass;}
+    double groundHeight() const {return m_Height;}
 
     void setVelocity(double Q)     {m_QInfSpec=Q;}
     void setAlpha(double aoa)      {m_AlphaSpec=aoa;}
@@ -143,19 +150,31 @@ public:
     void setMass(double m)         {m_Mass=m;}
     void setGroundHeight(double h) {m_Height=h;}
 
-    Vector3d &CoG() {return m_CoG;}
-    double &CoGIxx() {return m_CoGIxx;}
-    double &CoGIyy() {return m_CoGIyy;}
-    double &CoGIzz() {return m_CoGIzz;}
-    double &CoGIxz() {return m_CoGIxz;}
+    Vector3d CoG() const {return m_CoG;}
+    double CoGIxx() const {return m_CoGIxx;}
+    double CoGIyy() const {return m_CoGIyy;}
+    double CoGIzz() const {return m_CoGIzz;}
+    double CoGIxz() const {return m_CoGIxz;}
 
+    void setCoG(Vector3d cg) {m_CoG=cg;}
+    void setCoGx(double x) {m_CoG.x=x;}
+    void setCoGy(double y) {m_CoG.y=y;}
+    void setCoGz(double z) {m_CoG.z=z;}
+    void setCoGIxx(double ixx) {m_CoGIxx=ixx;}
+    void setCoGIyy(double iyy) {m_CoGIyy=iyy;}
+    void setCoGIzz(double izz) {m_CoGIzz=izz;}
+    void setCoGIxz(double ixz) {m_CoGIxz=ixz;}
 
-    bool &isVisible()      {return m_bIsVisible;}
-    int &points()          {return m_PointStyle;}
-    int &curveStyle()      {return m_Style;}
-    int &curveWidth()      {return m_Width;}
-
+    bool isVisible() const {return m_bIsVisible;}
+    int points()     const {return m_PointStyle;}
+    int curveStyle() const {return m_Style;}
+    int curveWidth() const {return m_Width;}
     ObjectColor curveColor()  const {return m_Color;}
+
+    void setVisible(bool bvis) {m_bIsVisible=bvis;}
+    void setPoints(int pts) {m_PointStyle=pts;}
+    void setCurveStyle(int s) {m_Style=s;}
+    void setCurveWidth(int w) {m_Width=w;}
     void setCurveColor(ObjectColor colour) {m_Color=colour;}
 
     int dataSize() const {return m_Alpha.size();}

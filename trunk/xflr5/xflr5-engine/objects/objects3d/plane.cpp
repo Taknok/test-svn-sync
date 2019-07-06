@@ -555,7 +555,6 @@ Wing *Plane::wing(XFLR5::enumWingType wingType)
         default:
             return nullptr;
     }
-    return nullptr;
 }
 
 
@@ -587,8 +586,8 @@ Wing *Plane::wing(int iw)
  */
 bool Plane::serializePlaneWPA(QDataStream &ar, bool bIsStoring)
 {
-    int nMass;
-    float f,g,h;
+    int nMass=0;
+    float f=0,g=0,h=0;
 
     QString strong = "";
     int ArchiveFormat;// identifies the format of the file
@@ -703,20 +702,20 @@ bool Plane::serializePlaneWPA(QDataStream &ar, bool bIsStoring)
         if(ArchiveFormat>=1012)
         {
             ar >> nMass;
-            double* mass      = new double[nMass];
-            Vector3d* position = new Vector3d[nMass];
+            QVector<double> mass(nMass, 0);
+            QVector<Vector3d> position(nMass);
             QStringList tag;
 
 
             for(int im=0; im<nMass; im++)
             {
                 ar >> f;
-                mass[im] = f;
+                mass[im] = double(f);
             }
             for(int im=0; im<nMass; im++)
             {
                 ar >> f >> g >> h;
-                position[im] = Vector3d(f,g,h);
+                position[im] = Vector3d(double(f),double(g),double(h));
             }
             for(int im=0; im<nMass; im++)
             {
@@ -731,9 +730,6 @@ bool Plane::serializePlaneWPA(QDataStream &ar, bool bIsStoring)
                 pPM = new PointMass(mass[im], position[im], tag[im]);
                 m_PointMass.append(pPM);
             }
-
-            delete [] mass;
-            delete [] position;
             tag.clear();
         }
 
@@ -752,9 +748,6 @@ bool Plane::serializePlaneWPA(QDataStream &ar, bool bIsStoring)
 }
 
 
-
-
-
 /**
  * Loads or Saves the data of this Plane to a binary file.
  * @param ar the QDataStream object from/to which the data should be serialized
@@ -763,7 +756,8 @@ bool Plane::serializePlaneWPA(QDataStream &ar, bool bIsStoring)
  */
 bool Plane::serializePlaneXFL(QDataStream &ar, bool bIsStoring)
 {
-    double dble, m, px, py, pz;
+    int k=0;
+    double dble=0, mass=0, px=0, py=0, pz=0;
     QString str;
 
     int ArchiveFormat;// identifies the format of the file
@@ -805,14 +799,15 @@ bool Plane::serializePlaneXFL(QDataStream &ar, bool bIsStoring)
         }
 
         // space allocation for the future storage of more data, without need to change the format
-        for (int i=0; i<20; i++) ar << 0;
-        for (int i=0; i<50; i++) ar << (double)0.0;
+        k=0;
+        for (int i=0; i<20; i++) ar << k;
+        dble=0;
+        for (int i=0; i<50; i++) ar << dble;
 
         return true;
     }
     else
     {    // loading code
-        int k;
         ar >> ArchiveFormat;
         if (ArchiveFormat <100001 || ArchiveFormat>110000)
         {
@@ -852,9 +847,9 @@ bool Plane::serializePlaneXFL(QDataStream &ar, bool bIsStoring)
         ar >> k;
         for(int i=0; i<k; i++)
         {
-            ar >> m >> px >>py >> pz;
+            ar >> mass >> px >>py >> pz;
             ar >> str;
-            m_PointMass.append(new PointMass(m, Vector3d(px, py, pz), str));
+            m_PointMass.append(new PointMass(mass, Vector3d(px, py, pz), str));
         }
 
         // space allocation

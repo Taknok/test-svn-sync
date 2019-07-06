@@ -5,6 +5,7 @@ SOURCES += \
     $$PWD/miarex/view/stabviewdlg.cpp \
     $$PWD/miarex/view/targetcurvedlg.cpp \
     $$PWD/miarex/view/w3dprefsdlg.cpp \
+    $$PWD/misc/color/colorbutton.cpp \
     design/afoil.cpp \
     design/afoiltabledlg.cpp \
     design/foiltabledelegate.cpp \
@@ -55,7 +56,6 @@ SOURCES += \
     miarex/miarex.cpp \
     miarex/objects3d.cpp \
     misc/aboutq5.cpp \
-    misc/color/ColorButton.cpp \
     misc/editplrdlg.cpp \
     misc/exponentialslider.cpp \
     misc/lengthunitdlg.cpp \

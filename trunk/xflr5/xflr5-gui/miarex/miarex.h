@@ -479,13 +479,9 @@ public:
     double m_LastAlpha;          /**< last angle of attack selected in the top list box>*/
     double m_LastBeta;           /**< last sideslip angle selected in the top list box>*/
 
-
 public:
     static MainFrame *s_pMainFrame;       /**< a pointer to the frame class */
     gl3dMiarexView *m_pgl3dMiarexView;              /**< a pointer to the openGL 3.0 widget where 3d calculations and rendering are performed */
-
-
-
 };
 
 #endif // QMIAREX_H
