@@ -229,7 +229,7 @@ void InertiaDlg::computeInertia()
             {
                 for(i=0; i<pWing[iw]->m_PointMass.size(); i++)
                 {
-                    MassPos = TotalCoG - (pWing[iw]->m_PointMass[i]->position() + (m_pPlane != NULL ? m_pPlane->WingLE(iw) : Vector3d(0.0, 0.0, 0.0)));
+                    MassPos = TotalCoG - (pWing[iw]->m_PointMass[i]->position() + (m_pPlane != nullptr ? m_pPlane->WingLE(iw) : Vector3d(0.0, 0.0, 0.0)));
                     TotalIxx  += pWing[iw]->m_PointMass[i]->mass() * (MassPos.y*MassPos.y + MassPos.z*MassPos.z);
                     TotalIyy  += pWing[iw]->m_PointMass[i]->mass() * (MassPos.x*MassPos.x + MassPos.z*MassPos.z);
                     TotalIzz  += pWing[iw]->m_PointMass[i]->mass() * (MassPos.x*MassPos.x + MassPos.y*MassPos.y);
@@ -434,12 +434,10 @@ void InertiaDlg::keyPressEvent(QKeyEvent *event)
             if(!m_pButtonBox->hasFocus())
             {
                 m_pButtonBox->setFocus();
-                return;
             }
             else
             {
                 onOK();
-                return;
             }
             break;
         }

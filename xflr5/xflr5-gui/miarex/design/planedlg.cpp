@@ -161,14 +161,12 @@ void PlaneDlg::keyPressEvent(QKeyEvent *event)
             if(!m_pButtonBox->hasFocus())
             {
                 m_pButtonBox->setFocus();
-                return;
             }
             else
             {
                 onOK();
-                return;
-            }
-            break;
+             }
+            return;
         }
         case Qt::Key_Escape:
         {
@@ -239,7 +237,6 @@ void PlaneDlg::onDescriptionChanged()
 {
     m_bDescriptionChanged = true;
 }
-
 
 
 void PlaneDlg::onDefineWing()

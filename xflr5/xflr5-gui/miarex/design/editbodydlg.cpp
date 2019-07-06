@@ -46,10 +46,9 @@
 #include <misc/options/settings.h>
 
 
-QSize EditBodyDlg::s_WindowSize(1031,783);
-QPoint EditBodyDlg::s_WindowPosition(131, 77);
-bool EditBodyDlg::s_bWindowMaximized =false;
-QByteArray EditBodyDlg::m_HorizontalSplitterSizes;
+
+QByteArray EditBodyDlg::s_WindowGeometry;
+QByteArray EditBodyDlg::m_HSplitterSizes;
 
 
 bool EditBodyDlg::s_bOutline    = true;
@@ -122,12 +121,11 @@ void EditBodyDlg::createActions()
  */
 void EditBodyDlg::showEvent(QShowEvent *pEvent)
 {
-    move(s_WindowPosition);
-    resize(s_WindowSize);
-    if(m_HorizontalSplitterSizes.length()>0)
-        m_pHorizontalSplitter->restoreState(m_HorizontalSplitterSizes);
+    restoreGeometry(s_WindowGeometry);
+    if(m_HSplitterSizes.length()>0)
+        m_pHorizontalSplitter->restoreState(m_HSplitterSizes);
     resizeTreeView();
-    if(s_bWindowMaximized) setWindowState(Qt::WindowMaximized);
+
 
     m_pglBodyView->update();
 
@@ -142,10 +140,10 @@ void EditBodyDlg::showEvent(QShowEvent *pEvent)
  */
 void EditBodyDlg::hideEvent(QHideEvent *pEvent)
 {
-    m_HorizontalSplitterSizes  = m_pHorizontalSplitter->saveState();
+    m_HSplitterSizes  = m_pHorizontalSplitter->saveState();
     //    m_LeftSplitterSizes        = m_pLeftSplitter->saveState();
     //    m_MiddleSplitterSizes      = m_pMiddleSplitter->saveState();
-    s_WindowPosition = pos();
+    s_WindowGeometry = saveGeometry();
     pEvent->accept();
 }
 
@@ -162,7 +160,6 @@ void EditBodyDlg::resizeEvent(QResizeEvent *pEvent)
 }
 
 
-
 void EditBodyDlg::onResize()
 {
     resizeTreeView();
@@ -173,24 +170,22 @@ void EditBodyDlg::onResize()
 void EditBodyDlg::resizeTreeView()
 {
     QList<int> leftSizes;
-    leftSizes.append((int)(height()*95/100));
-    leftSizes.append((int)(height()*5/100));
+    leftSizes.append(int(height()*95/100));
+    leftSizes.append(int(height()*5/100));
     m_pLeftSplitter->setSizes(leftSizes);
 
     QList<int> midlleSizes;
-    midlleSizes.append((int)(height()*45/100));
-    midlleSizes.append((int)(height()*45/100));
-    midlleSizes.append((int)(height()*5/100));
+    midlleSizes.append(int(height()*45/100));
+    midlleSizes.append(int(height()*45/100));
+    midlleSizes.append(int(height()*5/100));
     m_pMiddleSplitter->setSizes(midlleSizes);
 
 
-    int ColumnWidth = (int)((double)(m_pStruct->width())/15);
+    int ColumnWidth = int(double(m_pStruct->width())/15);
     m_pStruct->setColumnWidth(0,ColumnWidth*6);
     m_pStruct->setColumnWidth(1,ColumnWidth*3);
     m_pStruct->setColumnWidth(2,ColumnWidth*3);
-
 }
-
 
 
 void EditBodyDlg::contextMenuEvent(QContextMenuEvent *event)
@@ -495,13 +490,8 @@ void EditBodyDlg::keyPressEvent(QKeyEvent *event)
 }
 
 
-
 void EditBodyDlg::accept()
 {
-    s_bWindowMaximized= isMaximized();
-    s_WindowPosition = pos();
-    s_WindowSize = size();
-
     s_bOutline    = m_pglBodyView->m_bOutline;
     s_bSurfaces   = m_pglBodyView->m_bSurfaces;
     s_bVLMPanels  = m_pglBodyView->m_bVLMPanels;
@@ -515,10 +505,6 @@ void EditBodyDlg::accept()
 
 void EditBodyDlg::reject()
 {
-    s_bWindowMaximized= isMaximized();
-    s_WindowPosition = pos();
-    s_WindowSize = size();
-
     if(m_bChanged)
     {
         QString strong = tr("Save the changes ?");
@@ -1265,42 +1251,30 @@ void EditBodyDlg::paintBodyLegend(QPainter &painter)
 }
 
 
-
 bool EditBodyDlg::loadSettings(QSettings &settings)
 {
     settings.beginGroup("EditBodyDlg");
     {
         //  we're reading/loading
-        s_WindowSize              = settings.value("WindowSize", QSize(1031,783)).toSize();
-        s_bWindowMaximized        = settings.value("WindowMaximized", false).toBool();
-        s_WindowPosition          = settings.value("WindowPosition", QPoint(131, 77)).toPoint();
-        m_HorizontalSplitterSizes = settings.value("HorizontalSplitterSizes").toByteArray();
-        //        m_LeftSplitterSizes       = settings.value("LeftSplitterSizes").toByteArray();
-        //        m_MiddleSplitterSizes     = settings.value("RightSplitterSizes").toByteArray();
+        s_WindowGeometry = settings.value("Geometry").toByteArray();
+        m_HSplitterSizes     = settings.value("HorizontalSplitterSizes").toByteArray();
     }
     settings.endGroup();
     return true;
 }
-
-
 
 
 bool EditBodyDlg::saveSettings(QSettings &settings)
 {
     settings.beginGroup("EditBodyDlg");
     {
-        settings.setValue("WindowSize", s_WindowSize);
-        settings.setValue("WindowMaximized", s_bWindowMaximized);
-        settings.setValue("WindowPosition", s_WindowPosition);
-        settings.setValue("HorizontalSplitterSizes", m_HorizontalSplitterSizes);
-        //        settings.setValue("LeftSplitterSizes",       m_LeftSplitterSizes);
-        //        settings.setValue("RightSplitterSizes",      m_MiddleSplitterSizes);
+        settings.setValue("Geometry", s_WindowGeometry);
+        settings.setValue("HorizontalSplitterSizes", m_HSplitterSizes);
     }
     settings.endGroup();
 
     return true;
 }
-
 
 
 void EditBodyDlg::onExportBodyGeom()

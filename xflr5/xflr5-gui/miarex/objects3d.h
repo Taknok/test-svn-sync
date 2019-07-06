@@ -57,13 +57,21 @@ public:
     static bool      planeExists(QString planeName);
     static void      renamePlane(QString PlaneName);
     static Plane *   setModPlane(Plane *pModPlane);
-    static void      setStaticPointers();
     static void      setWPolarChildrenStyle(WPolar *pWPolar);
+
+    static Plane*    planeAt(int idx)    {if(idx<0 || idx>=s_oaPlane.size())  return nullptr; else return s_oaPlane.at(idx);}
+    static WPolar*   polarAt(int idx)    {if(idx<0 || idx>=s_oaWPolar.size()) return nullptr; else return s_oaWPolar.at(idx);}
+    static PlaneOpp* planeOppAt(int idx) {if(idx<0 || idx>=s_oaPOpp.size())   return nullptr; else return s_oaPOpp.at(idx);}
+
+    static int       planeCount()   {return s_oaPlane.size();}
+    static int       polarCount()    {return s_oaWPolar.size();}
+    static int       planeOppCount() {return s_oaPOpp.size();}
+
 public:
     // object variable lists
 
     static QVector <Plane*>    s_oaPlane;   /**< The array of void pointers to the Plane objects. */
-    static QVector <Body*>     s_oaBody;    /**< The array of void pointers to the Body objects. */
+    static QVector <Body*>     s_oaBody;    /**< The array of void pointers to the Body objects. @todo deprecated, remove*/
     static QVector <WPolar*>   s_oaWPolar;  /**< The array of void pointers to the WPolar objects. */
     static QVector <PlaneOpp*> s_oaPOpp;    /**< The array of void pointers to the PlaneOpp objects. */
 };

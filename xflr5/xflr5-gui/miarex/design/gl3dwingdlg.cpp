@@ -44,6 +44,7 @@
 #include <misc/options/units.h>
 #include <misc/options/settings.h>
 #include <misc/text/doubleedit.h>
+#include <xdirect/objects2d.h>
 #include <objects/objects3d/plane.h>
 #include <objects/objects3d/surface.h>
 #include <objects/objects3d/wing.h>
@@ -53,10 +54,9 @@
 
 
 
-
-QVector <Foil*> *GL3dWingDlg::s_poaFoil;
-
 QByteArray GL3dWingDlg::s_WindowGeometry;
+QByteArray GL3dWingDlg::s_HSplitterSizes;
+QByteArray GL3dWingDlg::s_LeftSplitterSizes;
 
 bool GL3dWingDlg::s_bOutline    = true;
 bool GL3dWingDlg::s_bSurfaces   = true;
@@ -76,7 +76,7 @@ GL3dWingDlg::GL3dWingDlg(QWidget *pParent) : QDialog(pParent)
 
     m_iSection   = -1;
 
-    m_pLeftSideSplitter = nullptr;
+    m_pctrlLeftSideSplitter = nullptr;
 
     m_bResetglSectionHighlight = true;
     m_bResetglWing             = true;
@@ -110,14 +110,12 @@ GL3dWingDlg::GL3dWingDlg(QWidget *pParent) : QDialog(pParent)
 }
 
 
-
 GL3dWingDlg::~GL3dWingDlg()
 {
     if(m_pWingModel)    delete m_pWingModel;
     if(m_pWingDelegate) delete m_pWingDelegate;
     if(m_precision)     delete [] m_precision;
 }
-
 
 
 bool GL3dWingDlg::checkWing()
@@ -190,7 +188,7 @@ void GL3dWingDlg::computeGeometry()
     m_pWing->createSurfaces(Vector3d(0.0,0.0,0.0), 0.0, 0.0);
 
     for (int j=0; j<m_pWing->m_Surface.size(); j++)
-        m_pWing->m_Surface.at(j)->setSidePoints(NULL, 0.0, 0.0);
+        m_pWing->m_Surface.at(j)->setSidePoints(nullptr, 0.0, 0.0);
 }
 
 
@@ -282,21 +280,21 @@ void GL3dWingDlg::createXPoints(int NXPanels, int XDist, Foil *pFoilA, Foil *pFo
     if(pFoilA && pFoilA->m_bTEFlap) xHingeA=pFoilA->m_TEXHinge/100.0; else xHingeA=1.0;
     if(pFoilB && pFoilB->m_bTEFlap) xHingeB=pFoilB->m_TEXHinge/100.0; else xHingeB=1.0;
 
-    NXFlapA = (int)((1.0-xHingeA) * NXPanels);
-    NXFlapB = (int)((1.0-xHingeB) * NXPanels);
+    NXFlapA = int((1.0-xHingeA) * NXPanels);
+    NXFlapB = int((1.0-xHingeB) * NXPanels);
     if(pFoilA && pFoilA->m_bTEFlap && NXFlapA==0) NXFlapA++;
     if(pFoilB && pFoilB->m_bTEFlap && NXFlapB==0) NXFlapB++;
     NXLeadA = NXPanels - NXFlapA;
     NXLeadB = NXPanels - NXFlapB;
 
     NXFlap  = qMax(NXFlapA, NXFlapB);
-    if(NXFlap>NXPanels/2) NXFlap=(int)NXPanels/2;
+    if(NXFlap>NXPanels/2) NXFlap=int(NXPanels/2);
     NXLead  = NXPanels - NXFlap;
 
     for(l=0; l<NXFlapA; l++)
     {
-        dl =  (double)l;
-        dl2 = (double)NXFlapA;
+        dl =  double(l);
+        dl2 = double(NXFlapA);
         if(XDist==1)
             xPointA[l] = 1.0 - (1.0-xHingeA)/2.0 * (1.0-cos(dl*PI /dl2));
         else
@@ -304,8 +302,8 @@ void GL3dWingDlg::createXPoints(int NXPanels, int XDist, Foil *pFoilA, Foil *pFo
     }
     for(l=0; l<NXLeadA; l++)
     {
-        dl =  (double)l;
-        dl2 = (double)NXLeadA;
+        dl =  double(l);
+        dl2 = double(NXLeadA);
         if(XDist==1)
             xPointA[l+NXFlapA] = xHingeA - (xHingeA)/2.0 * (1.0-cos(dl*PI /dl2));
         else
@@ -314,8 +312,8 @@ void GL3dWingDlg::createXPoints(int NXPanels, int XDist, Foil *pFoilA, Foil *pFo
 
     for(l=0; l<NXFlapB; l++)
     {
-        dl =  (double)l;
-        dl2 = (double)NXFlapB;
+        dl =  double(l);
+        dl2 = double(NXFlapB);
         if(XDist==1)
             xPointB[l] = 1.0 - (1.0-xHingeB)/2.0 * (1.0-cos(dl*PI /dl2));
         else
@@ -323,8 +321,8 @@ void GL3dWingDlg::createXPoints(int NXPanels, int XDist, Foil *pFoilA, Foil *pFo
     }
     for(l=0; l<NXLeadB; l++)
     {
-        dl =  (double)l;
-        dl2 = (double)NXLeadB;
+        dl =  double(l);
+        dl2 = double(NXLeadB);
         if(XDist==1)
             xPointB[l+NXFlapB] = xHingeB - (xHingeB)/2.0 * (1.0-cos(dl*PI /dl2));
         else
@@ -530,7 +528,7 @@ bool GL3dWingDlg::initDialog(Wing *pWing)
     m_precision[9] = 0;
     m_pWingDelegate->setPrecision(m_precision);
     m_pWingDelegate->m_pWingSection = &m_pWing->m_WingSection;
-    m_pWingDelegate->m_poaFoil = s_poaFoil;
+
     fillDataTable();
     setWingData();
     m_pctrlWingTable->selectRow(m_iSection);
@@ -724,7 +722,7 @@ void GL3dWingDlg::onInsertBefore()
 
 
     int ny = m_pWing->NYPanels(n-1);
-    m_pWing->NYPanels(n)   = (int)(ny/2);
+    m_pWing->NYPanels(n)   = ny/2;
     m_pWing->NYPanels(n-1) = ny-m_pWing->NYPanels(n);
     if(m_pWing->NYPanels(n)==0)   m_pWing->NYPanels(n)++;
     if(m_pWing->NYPanels(n-1)==0) m_pWing->NYPanels(n-1)++;
@@ -778,7 +776,7 @@ void GL3dWingDlg::onInsertAfter()
     m_pWing->leftFoil(n+1)   = m_pWing->leftFoil(n);
 
     int ny = m_pWing->NYPanels(n);
-    m_pWing->NYPanels(n+1) = qMax(1,(int)(ny/2));
+    m_pWing->NYPanels(n+1) = qMax(1,ny/2);
     m_pWing->NYPanels(n)   = qMax(1,ny-m_pWing->NYPanels(n+1));
 
     //    m_pWing->m_bVLMAutoMesh = true;
@@ -1081,21 +1079,21 @@ void GL3dWingDlg::readSectionData(int sel)
     strong =pItem->text();
     strong.replace(" ","");
     d =strong.toDouble(&bOK);
-    if(bOK) m_pWing->NXPanels(sel) = (int)qMax(1.0,d);
+    if(bOK) m_pWing->NXPanels(sel) = int(qMax(1.0,d));
 
     pItem = m_pWingModel->item(sel,7);
     strong =pItem->text();
     strong.replace(" ","");
     if(strong==tr("Uniform"))        m_pWing->XPanelDist(sel) = XFLR5::UNIFORM;
     else if(strong==tr("Cosine"))    m_pWing->XPanelDist(sel) = XFLR5::COSINE;
-    else if(strong==tr("Sine"))        m_pWing->XPanelDist(sel) = XFLR5::SINE;
-    else if(strong==tr("-Sine"))    m_pWing->XPanelDist(sel) = XFLR5::INVERSESINE;
+    else if(strong==tr("Sine"))      m_pWing->XPanelDist(sel) = XFLR5::SINE;
+    else if(strong==tr("-Sine"))     m_pWing->XPanelDist(sel) = XFLR5::INVERSESINE;
 
     pItem = m_pWingModel->item(sel,8);
     strong =pItem->text();
     strong.replace(" ","");
     d =strong.toDouble(&bOK);
-    if(bOK) m_pWing->NYPanels(sel) =(int)qMax(1.0,d);
+    if(bOK) m_pWing->NYPanels(sel) =int(qMax(1.0,d));
 
     pItem = m_pWingModel->item(sel,9);
     strong =pItem->text();
@@ -1103,9 +1101,8 @@ void GL3dWingDlg::readSectionData(int sel)
 
     if(strong==tr("Uniform"))        m_pWing->YPanelDist(sel) = XFLR5::UNIFORM;
     else if(strong==tr("Cosine"))    m_pWing->YPanelDist(sel) = XFLR5::COSINE;
-    else if(strong==tr("Sine"))        m_pWing->YPanelDist(sel) = XFLR5::SINE;
-    else if(strong==tr("-Sine"))    m_pWing->YPanelDist(sel) = XFLR5::INVERSESINE;
-
+    else if(strong==tr("Sine"))      m_pWing->YPanelDist(sel) = XFLR5::SINE;
+    else if(strong==tr("-Sine"))     m_pWing->YPanelDist(sel) = XFLR5::INVERSESINE;
 }
 
 
@@ -1251,7 +1248,7 @@ void GL3dWingDlg::setupLayout()
 
     /*_____________Start Top Layout Here____________*/
 
-    m_pLeftSideSplitter = new QSplitter(Qt::Vertical, this);
+    m_pctrlLeftSideSplitter = new QSplitter(Qt::Vertical, this);
     {
         QWidget *pNameWidget = new QWidget(this);
         {
@@ -1319,10 +1316,14 @@ void GL3dWingDlg::setupLayout()
         pSymWidget->sizePolicy().setVerticalStretch(1);
         m_pctrlWingTable->sizePolicy().setVerticalStretch(2);
         m_pglWingView->sizePolicy().setVerticalStretch(10);
-        m_pLeftSideSplitter->addWidget(pNameWidget);
-        m_pLeftSideSplitter->addWidget(pSymWidget);
-        m_pLeftSideSplitter->addWidget(m_pctrlWingTable);
-        m_pLeftSideSplitter->addWidget(m_pglWingView);
+        m_pctrlLeftSideSplitter->addWidget(pNameWidget);
+        m_pctrlLeftSideSplitter->addWidget(pSymWidget);
+        m_pctrlLeftSideSplitter->addWidget(m_pctrlWingTable);
+        m_pctrlLeftSideSplitter->addWidget(m_pglWingView);
+        m_pctrlLeftSideSplitter->setStretchFactor(0,1);
+        m_pctrlLeftSideSplitter->setStretchFactor(1,1);
+        m_pctrlLeftSideSplitter->setStretchFactor(2,9);
+        m_pctrlLeftSideSplitter->setStretchFactor(3,9);
     }
 
     QWidget *pDataWidget = new QWidget(this);
@@ -1426,6 +1427,9 @@ void GL3dWingDlg::setupLayout()
             QLabel *lab30 = new QLabel(QString::fromUtf8("°"));
             lab30->setAlignment(Qt::AlignLeft);
             pDataLayout->addWidget(lab30, 11, 3);
+
+            pDataLayout->setRowStretch(15,1);
+            pDataLayout->setColumnStretch(3,1);
         }
         pDataWidget->setLayout(pDataLayout);
     }
@@ -1561,60 +1565,60 @@ void GL3dWingDlg::setupLayout()
             pRightSideLayout->addWidget(m_pctrlWingDescription);
             pRightSideLayout->addWidget(pDataWidget);
             pRightSideLayout->addWidget(pAll3DControlsWidget);
+
+            pRightSideLayout->setStretchFactor(pDataWidget, 1);
+
             pRightSideWidget->setLayout(pRightSideLayout);
         }
     }
 
-    QSplitter *pHorizontSplitter = new QSplitter(Qt::Horizontal, this);
+    m_pctrlHSplitter = new QSplitter(Qt::Horizontal, this);
     {
-        pHorizontSplitter->addWidget(m_pLeftSideSplitter);
-        pHorizontSplitter->addWidget(pRightSideWidget);
-        m_pLeftSideSplitter->sizePolicy().setHorizontalStretch(4);
+        m_pctrlHSplitter->addWidget(m_pctrlLeftSideSplitter);
+        m_pctrlHSplitter->addWidget(pRightSideWidget);
+        m_pctrlLeftSideSplitter->sizePolicy().setHorizontalStretch(4);
         pRightSideWidget->sizePolicy().setHorizontalStretch(1);
     }
 
     QHBoxLayout *pMainLayout = new QHBoxLayout;
-    pMainLayout->addWidget(pHorizontSplitter);
+    pMainLayout->addWidget(m_pctrlHSplitter);
 
     setLayout(pMainLayout);
 }
 
 
-void GL3dWingDlg::showEvent(QShowEvent *pEvent)
+void GL3dWingDlg::showEvent(QShowEvent *)
 {
     restoreGeometry(s_WindowGeometry);
+    if(s_HSplitterSizes.length()>0)
+        m_pctrlHSplitter->restoreState(s_HSplitterSizes);
+    if(s_LeftSplitterSizes.length()>0)
+        m_pctrlLeftSideSplitter->restoreState(s_LeftSplitterSizes);
+
     m_bChanged = false;
     m_bResetglWing = true;
 
     m_pglWingView->update();
-    pEvent->accept();
+
+    resizeEvent(nullptr);
 }
 
 
-void GL3dWingDlg::hideEvent(QHideEvent *pEvent)
+void GL3dWingDlg::hideEvent(QHideEvent *)
 {
+    s_HSplitterSizes  = m_pctrlHSplitter->saveState();
+    s_LeftSplitterSizes  = m_pctrlLeftSideSplitter->saveState();
+
     s_WindowGeometry = saveGeometry();
-    pEvent->accept();
 }
 
 
-void GL3dWingDlg::resizeEvent(QResizeEvent *pEvent)
+void GL3dWingDlg::resizeEvent(QResizeEvent *)
 {
-    if(m_pLeftSideSplitter)
-    {
-        QList<int>leftSideSizes;
-        leftSideSizes.clear();
-        leftSideSizes.append((int)height()/30);
-        leftSideSizes.append((int)height()/30);
-        leftSideSizes.append((int)5*height()/20);
-        leftSideSizes.append((int)13*height()/20);
-        m_pLeftSideSplitter->setSizes(leftSideSizes);
-    }
-
-
-    double w = (double)m_pctrlWingTable->width()*.97;
-    int wFoil  = (int)(w/5.);
-    int wCols  = (int)(w/11);
+    int w = m_pctrlWingTable->width();
+    w = int(double(w) *93.0/100.0);
+    int wFoil  = w/5;
+    int wCols  = w/11;
 
     m_pctrlWingTable->setColumnWidth(0, wCols);
     m_pctrlWingTable->setColumnWidth(1, wCols);
@@ -1629,7 +1633,6 @@ void GL3dWingDlg::resizeEvent(QResizeEvent *pEvent)
 
     if(m_pWing)    m_pglWingView->set3DScale(m_pWing->planformSpan());
     m_pglWingView->update();
-    pEvent->accept();
 }
 
 
@@ -1663,13 +1666,13 @@ bool GL3dWingDlg::VLMSetAutoMesh(int total)
 
     if(!total)
     {
-        size = (int)(2000/4);//why not ? Too much refinement isn't worthwile
+        size = 2000/4;//why not ? Too much refinement isn't worthwile
         NYTotal = 22;
     }
     else
     {
         size = total;
-        NYTotal = (int)sqrt((float)size);
+        NYTotal = int(sqrt(float(size)));
     }
 
     NYTotal *= 2;
@@ -1682,9 +1685,9 @@ bool GL3dWingDlg::VLMSetAutoMesh(int total)
         //        d2 = 5./2./m_pWing->m_Span/m_pWing->m_Span/m_pWing->m_Span *8. * pow(m_pWing->TPos(i+1),3) + 0.5;
         //        m_pWing->NYPanels(i) = (int) (NYTotal * (0.8*d1+0.2*d2)* (m_pWing->TPos(i+1)-m_pWing->TPos(i))/m_pWing->m_Span);
 
-        m_pWing->NYPanels(i) = (int)(qAbs(m_pWing->YPosition(i+1) - m_pWing->YPosition(i))* (double)NYTotal/m_pWing->m_PlanformSpan);
+        m_pWing->NYPanels(i) = int(qAbs(m_pWing->YPosition(i+1) - m_pWing->YPosition(i))* double(NYTotal)/m_pWing->m_PlanformSpan);
 
-        m_pWing->NXPanels(i) = (int) (size/NYTotal);
+        m_pWing->NXPanels(i) = int(size/NYTotal);
 
         if(m_pWing->NYPanels(i)==0) m_pWing->NYPanels(i) = 1;
         if(m_pWing->NXPanels(i)==0) m_pWing->NXPanels(i) = 1;
@@ -1694,11 +1697,10 @@ bool GL3dWingDlg::VLMSetAutoMesh(int total)
 }
 
 
-
 void GL3dWingDlg::onImportWingFromXML()
 {
     QString path_to_file;
-    path_to_file = QFileDialog::getOpenFileName(0,
+    path_to_file = QFileDialog::getOpenFileName(nullptr,
                                                 QString("Open XML File"),
                                                 Settings::s_LastDirName,
                                                 tr("Plane XML file")+"(*.xml)");
@@ -1722,7 +1724,7 @@ void GL3dWingDlg::onImportWingFromXML()
         QString strong;
         QString errorMsg;
         errorMsg = "Failed to read the file "+path_to_file+"\n";
-        strong.sprintf("error on line %d column %d",(int)planereader.lineNumber(),(int)planereader.columnNumber());
+        strong.sprintf("error on line %d column %d", int(planereader.lineNumber()), int(planereader.columnNumber()));
         errorMsg += planereader.errorString() + " at " + strong;
         QMessageBox::warning(this, "XML read", errorMsg, QMessageBox::Ok);
         return;
@@ -1770,7 +1772,7 @@ void GL3dWingDlg::onExportWingToXML()
 void GL3dWingDlg::onImportWing()
 {
     QString path_to_file;
-    path_to_file = QFileDialog::getOpenFileName(0,
+    path_to_file = QFileDialog::getOpenFileName(nullptr,
                                                 QString("Open File"),
                                                 Settings::s_LastDirName,
                                                 QString("XFLR5 Wing file (*.xwimp)"));
@@ -1791,7 +1793,7 @@ void GL3dWingDlg::onImportWing()
 void GL3dWingDlg::onExportWing()
 {
     QString path_to_file;
-    path_to_file = QFileDialog::getSaveFileName(0,
+    path_to_file = QFileDialog::getSaveFileName(nullptr,
                                                 QString("Save File"),
                                                 Settings::s_LastDirName,
                                                 QString("XFLR5 Wing file (*.xwimp)"));
@@ -1825,29 +1827,28 @@ bool GL3dWingDlg::intersectObject(Vector3d AA,  Vector3d U, Vector3d &I)
 }
 
 
-
 void GL3dWingDlg::loadSettings(QSettings &settings)
 {
     settings.beginGroup("GL3dWingDlg");
     {
-        s_WindowGeometry = settings.value("GL3dWingDlgGeom").toByteArray();
+        s_WindowGeometry = settings.value("Geometry").toByteArray();
+        s_HSplitterSizes = settings.value("HorizontalSplitterSizes").toByteArray();
+        s_LeftSplitterSizes = settings.value("LeftSideSplitterSizes").toByteArray();
     }
     settings.endGroup();
 }
-
 
 
 void GL3dWingDlg::saveSettings(QSettings &settings)
 {
     settings.beginGroup("GL3dWingDlg");
     {
-        settings.setValue("GL3dWingDlgGeom", s_WindowGeometry);
+        settings.setValue("Geometry", s_WindowGeometry);
+        settings.setValue("HorizontalSplitterSizes", s_HSplitterSizes);
+        settings.setValue("LeftSideSplitterSizes", s_LeftSplitterSizes);
     }
     settings.endGroup();
 }
-
-
-
 
 
 

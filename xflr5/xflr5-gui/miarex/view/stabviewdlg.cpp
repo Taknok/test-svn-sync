@@ -59,7 +59,7 @@ StabViewDlg::StabViewDlg(QWidget *parent) : QWidget(parent)
     m_pCurve = nullptr;
     for(int i=0; i<20; i++)
     {
-        m_Time[i] = (double)i;
+        m_Time[i] = double(i);
         m_Amplitude[i] = 0.0;
     }
     setupLayout();
@@ -355,7 +355,7 @@ void StabViewDlg::onAnimate()
 
 void StabViewDlg::onAnimationAmplitude(int val)
 {
-    m_ModeAmplitude = (double)val/500.0;
+    m_ModeAmplitude = double(val)/500.0;
     Miarex * pMiarex = s_pMiarex;
     pMiarex->onAnimateModeSingle(false);
 }

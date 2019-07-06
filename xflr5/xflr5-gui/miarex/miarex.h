@@ -412,10 +412,10 @@ public:
     WingOpp *m_pWOpp[MAXWINGS];   /**< an array of pointers to the operating points of the four wings of the currently selected plane */
 
 
-    static QVector<Plane*>    *m_poaPlane;        /**< for convenienece, a pointer to the array of pointers to plane objects */
-    static QVector<WPolar*>   *m_poaWPolar;        /**< for convenienece, a pointer to the array of UFO polar objects */
-    static QVector<PlaneOpp*> *m_poaPOpp;            /**< for convenienece, a pointer to the array of Plane OpPoint objects */
-
+/*    static QVector<Plane*>    *m_poaPlane;
+    static QVector<WPolar*>   *m_poaWPolar;
+    static QVector<PlaneOpp*> *m_poaPOpp;
+*/
 
     Plane * m_pCurPlane;          /**< the currently active Plane */
     WPolar * m_pCurWPolar;        /**< the currently active WPolar */

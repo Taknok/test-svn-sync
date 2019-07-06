@@ -28,8 +28,10 @@
 #include <QCheckBox>
 #include <QLabel>
 #include <QSettings>
-#include <misc/exponentialslider.h>
-#include <misc/text/doubleedit.h>
+
+class IntEdit;
+class DoubleEdit;
+class ExponentialSlider;
 
 class Miarex;
 class GL3DScales : public QWidget
@@ -70,7 +72,8 @@ private:
     QCheckBox *m_pctrlAutoCpScale;
     DoubleEdit    *m_pctrlLegendMin, *m_pctrlLegendMax;
 
-    DoubleEdit *m_pctrlNXPoint, *m_pctrlDeltaL, *m_pctrlXFactor, *m_pctrlXOffset, *m_pctrlZOffset;
+    IntEdit *m_pctrlNXPoint;
+    DoubleEdit *m_pctrlDeltaL, *m_pctrlXFactor, *m_pctrlXOffset, *m_pctrlZOffset;
     QRadioButton *m_pctrlLE, *m_pctrlTE, *m_pctrlLine;
 
     QLabel *m_pctrlLengthUnit1, *m_pctrlLengthUnit2, *m_pctrlLengthUnit3;

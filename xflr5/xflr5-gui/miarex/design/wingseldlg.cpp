@@ -36,7 +36,6 @@ WingSelDlg::WingSelDlg(QWidget *pParent) : QDialog(pParent)
 }
 
 
-
 void WingSelDlg::setupLayout()
 {
     QVBoxLayout *pWingLayout = new QVBoxLayout;
@@ -45,7 +44,7 @@ void WingSelDlg::setupLayout()
         pWingLayout->addWidget(m_pctrlBody);
         for(int iw=XFLR5::MAINWING; iw!=XFLR5::OTHERWING; iw++)
         {
-            XFLR5::enumWingType wType = (XFLR5::enumWingType)iw;
+            XFLR5::enumWingType wType = XFLR5::enumWingType(iw);
             m_pctrlWing[iw] = new QCheckBox(wingType(wType));
             pWingLayout->addWidget(m_pctrlWing[iw]);
         }
@@ -58,6 +57,7 @@ void WingSelDlg::setupLayout()
     pMainLayout->addWidget(pOKButton);
     setLayout(pMainLayout);
 }
+
 
 void WingSelDlg::initDialog(Plane *pPlane)
 {

@@ -27,6 +27,9 @@
 #include "gl3dscales.h"
 #include <miarex/miarex.h>
 #include <misc/options/units.h>
+#include <misc/exponentialslider.h>
+#include <misc/text/intedit.h>
+#include <misc/text/doubleedit.h>
 #include <globals/globals.h>
 #include <misc/options/settings.h>
 #include <viewwidgets/glWidgets/gl3dmiarexview.h>
@@ -182,8 +185,7 @@ void GL3DScales::setupLayout()
 
     QGroupBox *pLengthBox = new QGroupBox(tr("Streamline length"));
     {
-        m_pctrlNXPoint = new DoubleEdit(33,0);
-        m_pctrlNXPoint->setPrecision(0);
+        m_pctrlNXPoint = new IntEdit(0);
         m_pctrlDeltaL = new DoubleEdit(12.34,2);
         m_pctrlXFactor       = new DoubleEdit(1.23,2);
         m_pctrlLengthUnit1 = new QLabel("miles");
@@ -340,7 +342,7 @@ void GL3DScales::onApply()
 void GL3DScales::onLiftEdit()
 {
     gl3dMiarexView::s_LiftScale = m_pctrlLiftScale->value();
-    m_pctrlLiftScaleSlider->setValue(gl3dMiarexView::s_LiftScale);
+    m_pctrlLiftScaleSlider->setValue(int(gl3dMiarexView::s_LiftScale));
     gl3dMiarexView::s_bResetglLift = true;
     gl3dMiarexView::s_bResetglPanelForce = true;
     s_pMiarex->updateView();
@@ -350,7 +352,7 @@ void GL3DScales::onLiftEdit()
 void GL3DScales::onDragEdit()
 {
     gl3dMiarexView::s_DragScale = m_pctrlDragScale->value();
-    m_pctrlDragScaleSlider->setValue(gl3dMiarexView::s_DragScale);
+    m_pctrlDragScaleSlider->setValue(int(gl3dMiarexView::s_DragScale));
     gl3dMiarexView::s_bResetglDrag = true;
     s_pMiarex->updateView();
 }
@@ -359,7 +361,7 @@ void GL3DScales::onDragEdit()
 void GL3DScales::onVelocityEdit()
 {
     gl3dMiarexView::s_VelocityScale = m_pctrlVelocityScale->value();
-    m_pctrlVelocityScaleSlider->setValue(gl3dMiarexView::s_VelocityScale);
+    m_pctrlVelocityScaleSlider->setValue(int(gl3dMiarexView::s_VelocityScale));
     gl3dMiarexView::s_bResetglDownwash = true;
     gl3dMiarexView::s_bResetglSurfVelocities = true;
     s_pMiarex->updateView();

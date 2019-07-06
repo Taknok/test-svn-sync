@@ -28,7 +28,7 @@
 #include <QLabel>
 
 class DoubleEdit;
-
+class IntEdit;
 class BodyTransDlg : public QDialog
 {
     Q_OBJECT
@@ -53,7 +53,7 @@ private:
     DoubleEdit *m_pctrlXTransFactor;
     DoubleEdit *m_pctrlYTransFactor;
     DoubleEdit *m_pctrlZTransFactor;
-    DoubleEdit *m_pctrlFrameID;
+    IntEdit *m_pctrlFrameID;
     QCheckBox *m_pctrlFrameOnly;
     QLabel *m_pctrlLength1;
     QLabel *m_pctrlLength2;

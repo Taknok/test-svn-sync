@@ -101,10 +101,10 @@ MainFrame *Miarex::s_pMainFrame = nullptr;
 bool Miarex::s_bResetCurves = true;
 bool Miarex::s_bLogFile = true;
 
-QVector<Plane*>    *Miarex::m_poaPlane = nullptr;
+/*QVector<Plane*>    *Miarex::m_poaPlane = nullptr;
 QVector<WPolar*>   *Miarex::m_poaWPolar = nullptr;
 QVector<PlaneOpp*> *Miarex::m_poaPOpp = nullptr;
-
+*/
 
 /**
  * The public constructor.
@@ -808,9 +808,9 @@ void Miarex::createWOppCurves()
 
     // Browse through the array of plane operating points
     // add a curve for those selected, and fill them with data
-    for (int k=0; k<m_poaPOpp->size(); k++)
+    for (int k=0; k<Objects3d::planeOppCount(); k++)
     {
-        PlaneOpp *pPOpp = m_poaPOpp->at(k);
+        PlaneOpp *pPOpp = Objects3d::planeOppAt(k);
         if (pPOpp->isVisible() && (!m_bCurPOppOnly || (m_pCurPOpp==pPOpp)))
         {
             for(int iw=0; iw<MAXWINGS; iw++)
@@ -927,9 +927,9 @@ void Miarex::createWPolarCurves()
 
     for(int ig=0; ig<m_WPlrGraph.count(); ig++) m_WPlrGraph[ig]->deleteCurves();
 
-    for (int k=0; k<m_poaWPolar->size(); k++)
+    for (int k=0; k<Objects3d::polarCount(); k++)
     {
-        pWPolar = m_poaWPolar->at(k);
+        pWPolar = Objects3d::polarAt(k);
         if (pWPolar->isVisible() && pWPolar->dataSize()>0 &&
                 ((m_bType1 && pWPolar->polarType()==XFLR5::FIXEDSPEEDPOLAR) ||
                  (m_bType2 && pWPolar->polarType()==XFLR5::FIXEDLIFTPOLAR) ||
@@ -1270,9 +1270,9 @@ void Miarex::createStabRLCurves()
     m_StabPlrGraph.at(0)->deleteCurves();
     m_StabPlrGraph.at(1)->deleteCurves();
 
-    for (int k=0; k<m_poaWPolar->size(); k++)
+    for (int k=0; k<Objects3d::polarCount(); k++)
     {
-        WPolar *pWPolar = m_poaWPolar->at(k);
+        WPolar *pWPolar = Objects3d::polarAt(k);
         if ((pWPolar->isVisible())
                 && pWPolar->dataSize()>0 && (m_bType7 && pWPolar->isStabilityPolar()))
         {
@@ -2346,9 +2346,9 @@ void Miarex::onAnimateWOpp()
     {
         if(m_pCurPlane)
         {
-            for (l=0; l< m_poaPOpp->size(); l++)
+            for (l=0; l< Objects3d::planeOppCount(); l++)
             {
-                pPOpp = m_poaPOpp->at(l);
+                pPOpp = Objects3d::planeOppAt(l);
 
                 if (pPOpp &&
                         pPOpp->polarName() == m_pCurWPolar->polarName() &&
@@ -2482,7 +2482,7 @@ void Miarex::onAnimateWOppSingle()
     if(m_iView!=XFLR5::W3DVIEW && m_iView !=XFLR5::WOPPVIEW) return; //nothing to animate
     if(!m_pCurPlane || !m_pCurWPolar) return;
 
-    if(m_pCurPlane)    size = m_poaPOpp->size();
+    if(m_pCurPlane)    size = Objects3d::planeOppCount();
     if(size<=1) return;
 
     bIsValid = false;
@@ -2495,7 +2495,7 @@ void Miarex::onAnimateWOppSingle()
 
         if(m_pCurPlane)
         {
-            pPOpp = m_poaPOpp->at(m_posAnimateWOpp);
+            pPOpp = Objects3d::planeOppAt(m_posAnimateWOpp);
             if(!pPOpp) return;
         }
         if(m_pCurPlane)
@@ -2805,7 +2805,7 @@ void Miarex::onDefineStabPolar()
 
         if(pNewStabPolar->polarName().length()>60)
         {
-            pNewStabPolar->setPolarName(pNewStabPolar->polarName().left(60)+"..."+QString("(%1)").arg(m_poaWPolar->size()));
+            pNewStabPolar->setPolarName(pNewStabPolar->polarName().left(60)+"..."+QString("(%1)").arg(Objects3d::polarCount()));
         }
 
         pNewStabPolar->bVLM1()           = false;
@@ -3145,13 +3145,13 @@ void Miarex::onDeleteAllWPlrOpps()
 
     if(m_pCurPlane)
     {
-        for (int i = m_poaPOpp->size()-1; i>=0; i--)
+        for (int i = Objects3d::planeOppCount()-1; i>=0; i--)
         {
-            PlaneOpp* pPOpp =  m_poaPOpp->at(i);
+            PlaneOpp* pPOpp =  Objects3d::planeOppAt(i);
             if(pPOpp->polarName() == m_pCurWPolar->polarName() &&
                     pPOpp->planeName() == m_pCurPlane->planeName())
             {
-                m_poaPOpp->removeAt(i);
+                Objects3d::s_oaPOpp.removeAt(i);
                 delete pPOpp;
             }
         }
@@ -3174,10 +3174,10 @@ void Miarex::onDeleteAllWOpps()
 {
     emit projectModified();
 
-    for (int i = m_poaPOpp->size()-1; i>=0; i--)
+    for (int i = Objects3d::planeOppCount()-1; i>=0; i--)
     {
-        PlaneOpp* pPOpp =  m_poaPOpp->at(i);
-        m_poaPOpp->removeAt(i);
+        PlaneOpp* pPOpp =  Objects3d::planeOppAt(i);
+        Objects3d::s_oaPOpp.removeAt(i);
         delete pPOpp;
     }
 
@@ -3232,12 +3232,12 @@ void Miarex::onDeleteCurWOpp()
     {
         alpha = m_pCurPOpp->alpha();
 
-        for (int i = m_poaPOpp->size()-1; i>=0; i--)
+        for (int i = Objects3d::planeOppCount()-1; i>=0; i--)
         {
-            PlaneOpp* pPOpp = m_poaPOpp->at(i);
+            PlaneOpp* pPOpp = Objects3d::planeOppAt(i);
             if(pPOpp == m_pCurPOpp)
             {
-                m_poaPOpp->removeAt(i);
+                Objects3d::s_oaPOpp.removeAt(i);
                 delete pPOpp;
                 break;
             }
@@ -3271,12 +3271,12 @@ void Miarex::onDeletePlanePOpps()
 
     if(m_pCurPlane)
     {
-        for (int i=m_poaPOpp->size()-1; i>=0; i--)
+        for (int i=Objects3d::planeOppCount()-1; i>=0; i--)
         {
-            PlaneOpp *pPOpp = m_poaPOpp->at(i);
+            PlaneOpp *pPOpp = Objects3d::planeOppAt(i);
             if (pPOpp->planeName() == m_pCurPlane->planeName())
             {
-                m_poaPOpp->removeAt(i);
+                Objects3d::s_oaPOpp.removeAt(i);
                 delete pPOpp;
             }
         }
@@ -3390,15 +3390,15 @@ void Miarex::onEditCurBody()
 
     Plane *pPlane=nullptr;
     WPolar *pWPolar=nullptr;
-    for (int i=0; i< m_poaPlane->size(); i++)
+    for (int i=0; i<Objects3d::planeCount(); i++)
     {
-        pPlane = m_poaPlane->at(i);
+        pPlane = Objects3d::planeAt(i);
         if(pPlane->body() && pPlane->body()==pCurBody)
         {
             // Does this plane have results
-            for(int j=0; j<m_poaWPolar->size(); j++)
+            for(int j=0; j<Objects3d::polarCount(); j++)
             {
-                pWPolar = m_poaWPolar->at(j);
+                pWPolar = Objects3d::polarAt(j);
                 if(pWPolar->planeName()==pPlane->planeName() && pWPolar->dataSize())
                 {
                     bUsed = true;
@@ -3498,15 +3498,15 @@ void Miarex::onEditCurBodyObject()
 
     Plane *pPlane = nullptr;
     WPolar *pWPolar = nullptr;
-    for (int i=0; i<m_poaPlane->size(); i++)
+    for (int i=0; i<Objects3d::planeCount(); i++)
     {
-        pPlane = m_poaPlane->at(i);
+        pPlane = Objects3d::planeAt(i);
         if(pPlane->body() && pPlane->body()==pCurBody)
         {
             // Does this plane have results
-            for(int j=0; j<m_poaWPolar->size(); j++)
+            for(int j=0; j<Objects3d::polarCount(); j++)
             {
-                pWPolar = m_poaWPolar->at(j);
+                pWPolar = Objects3d::polarAt(j);
                 if(pWPolar->planeName()==pPlane->planeName() && pWPolar->dataSize())
                 {
                     bUsed = true;
@@ -3590,9 +3590,9 @@ void Miarex::onEditCurObject()
     PlaneOpp* pPOpp = nullptr;
 
     bool bHasResults = false;
-    for (int i=0; i< m_poaWPolar->size(); i++)
+    for (int i=0; i< Objects3d::polarCount(); i++)
     {
-        pWPolar = m_poaWPolar->at(i);
+        pWPolar = Objects3d::polarAt(i);
         if(pWPolar->dataSize() && pWPolar->planeName() == m_pCurPlane->planeName())
         {
             bHasResults = true;
@@ -3600,9 +3600,9 @@ void Miarex::onEditCurObject()
         }
     }
 
-    for (int i=0; i<m_poaPOpp->size(); i++)
+    for (int i=0; i<Objects3d::planeOppCount(); i++)
     {
-        pPOpp = m_poaPOpp->at(i);
+        pPOpp = Objects3d::planeOppAt(i);
         if(pPOpp->planeName() == m_pCurPlane->planeName())
         {
             bHasResults = true;
@@ -3691,9 +3691,9 @@ void Miarex::onEditCurPlane()
     WPolar *pWPolar = nullptr;
     PlaneOpp* pPOpp = nullptr;
     bool bHasResults = false;
-    for (int i=0; i<m_poaWPolar->size(); i++)
+    for (int i=0; i<Objects3d::polarCount(); i++)
     {
-        pWPolar = m_poaWPolar->at(i);
+        pWPolar = Objects3d::polarAt(i);
         if(pWPolar->dataSize() && pWPolar->planeName() == m_pCurPlane->planeName())
         {
             bHasResults = true;
@@ -3701,9 +3701,9 @@ void Miarex::onEditCurPlane()
         }
     }
 
-    for (int i=0; i<m_poaPOpp->size(); i++)
+    for (int i=0; i<Objects3d::planeOppCount(); i++)
     {
-        pPOpp = m_poaPOpp->at(i);
+        pPOpp = Objects3d::planeOppAt(i);
         if(pPOpp->planeName() == m_pCurPlane->planeName())
         {
             bHasResults = true;
@@ -3804,9 +3804,9 @@ void Miarex::onEditCurWing()
     WPolar *pWPolar = nullptr;
     PlaneOpp* pPOpp = nullptr;
     bool bHasResults = false;
-    for (int i=0; i<m_poaWPolar->size(); i++)
+    for (int i=0; i<Objects3d::polarCount(); i++)
     {
-        pWPolar = m_poaWPolar->at(i);
+        pWPolar = Objects3d::polarAt(i);
         if(pWPolar->dataSize() && pWPolar->planeName() == m_pCurPlane->planeName())
         {
             bHasResults = true;
@@ -3814,9 +3814,9 @@ void Miarex::onEditCurWing()
         }
     }
 
-    for (int i=0; i<m_poaPOpp->size(); i++)
+    for (int i=0; i<Objects3d::planeOppCount(); i++)
     {
-        pPOpp = m_poaPOpp->at(i);
+        pPOpp = Objects3d::planeOppAt(i);
         if(pPOpp->planeName() == m_pCurPlane->planeName())
         {
             bHasResults = true;
@@ -3911,9 +3911,9 @@ void Miarex::onScaleWing()
     WPolar *pWPolar = nullptr;
     PlaneOpp* pPOpp = nullptr;
     bool bHasResults = false;
-    for (int i=0; i< m_poaWPolar->size(); i++)
+    for (int i=0; i< Objects3d::polarCount(); i++)
     {
-        pWPolar = m_poaWPolar->at(i);
+        pWPolar = Objects3d::polarAt(i);
         if(pWPolar->dataSize() && pWPolar->planeName() == m_pCurPlane->planeName())
         {
             bHasResults = true;
@@ -3921,9 +3921,9 @@ void Miarex::onScaleWing()
         }
     }
 
-    for (int i=0; i<m_poaPOpp->size(); i++)
+    for (int i=0; i<Objects3d::planeOppCount(); i++)
     {
-        pPOpp = m_poaPOpp->at(i);
+        pPOpp = Objects3d::planeOppAt(i);
         if(pPOpp->planeName() == m_pCurPlane->planeName())
         {
             bHasResults = true;
@@ -4366,9 +4366,9 @@ void Miarex::onExportWPolars()
     DirName = QFileDialog::getExistingDirectory(this,  tr("Export Directory"), Settings::s_LastDirName);
 
     WPolar *pWPolar=nullptr;
-    for(int l=0; l<m_poaWPolar->size(); l++)
+    for(int l=0; l<Objects3d::polarCount(); l++)
     {
-        pWPolar = m_poaWPolar->at(l);
+        pWPolar = Objects3d::polarAt(l);
         fileName = pWPolar->planeName() + "_" + pWPolar->polarName();
         fileName.replace("/", "_");
         fileName.replace(".", "_");
@@ -4857,9 +4857,9 @@ void Miarex::onGL3DScale()
  */
 void Miarex::onHideAllWPolars()
 {
-    for (int i=0; i<m_poaWPolar->size(); i++)
+    for (int i=0; i<Objects3d::polarCount(); i++)
     {
-        WPolar *pWPolar = m_poaWPolar->at(i);
+        WPolar *pWPolar = Objects3d::polarAt(i);
         pWPolar->setVisible(false);
         //        if(pWPolar->polarType()==XFLR5::STABILITYPOLAR) pWPolar->points() = false;
     }
@@ -4879,9 +4879,9 @@ void Miarex::onHideAllWPlrOpps()
     m_bCurPOppOnly = false;
     if(m_pCurPlane)
     {
-        for (int i=0; i< m_poaPOpp->size(); i++)
+        for (int i=0; i< Objects3d::planeOppCount(); i++)
         {
-            PlaneOpp *pPOpp = m_poaPOpp->at(i);
+            PlaneOpp *pPOpp = Objects3d::planeOppAt(i);
             if (pPOpp->planeName() == m_pCurWPolar->planeName() &&
                     pPOpp->polarName()   == m_pCurWPolar->polarName())
             {
@@ -4904,9 +4904,9 @@ void Miarex::onHideAllWOpps()
 {
     m_bCurPOppOnly = false;
 
-    for (int i=0; i< m_poaPOpp->size(); i++)
+    for (int i=0; i< Objects3d::planeOppCount(); i++)
     {
-        PlaneOpp *pPOpp = m_poaPOpp->at(i);
+        PlaneOpp *pPOpp = Objects3d::planeOppAt(i);
         pPOpp->setVisible(false);
     }
     emit projectModified();
@@ -4922,9 +4922,9 @@ void Miarex::onHideAllWOpps()
  */
 void Miarex::onHidePlaneOpps()
 {
-    for (int i=0; i< m_poaPOpp->size(); i++)
+    for (int i=0; i< Objects3d::planeOppCount(); i++)
     {
-        PlaneOpp *pPOpp = m_poaPOpp->at(i);
+        PlaneOpp *pPOpp = Objects3d::planeOppAt(i);
         if (pPOpp->planeName() == m_pCurWPolar->planeName())
         {
             pPOpp->setVisible(false);
@@ -4949,9 +4949,9 @@ void Miarex::onHidePlaneWPolars()
     if(m_pCurPlane)     PlaneName = m_pCurPlane->planeName();
     else return;
 
-    for (int i=0; i<m_poaWPolar->size(); i++)
+    for (int i=0; i<Objects3d::polarCount(); i++)
     {
-        WPolar *pWPolar = m_poaWPolar->at(i);
+        WPolar *pWPolar = Objects3d::polarAt(i);
         if (pWPolar->planeName() == PlaneName)
         {
             pWPolar->setVisible(false);
@@ -5338,9 +5338,9 @@ void Miarex::onRenameCurWPolar()
 
     //make a list of existing WPolar names for that Plane
     QStringList NameList;
-    for(int k=0; k<m_poaWPolar->size(); k++)
+    for(int k=0; k<Objects3d::polarCount(); k++)
     {
-        pWPolar = m_poaWPolar->at(k);
+        pWPolar = Objects3d::polarAt(k);
         if(pWPolar->planeName()==m_pCurPlane->planeName())
             NameList.append(pWPolar->polarName());
     }
@@ -5360,9 +5360,9 @@ void Miarex::onRenameCurWPolar()
         // it's a real overwrite
         // so find and delete the existing WPolar with the new name
         pWPolar = nullptr;
-        for(int ipb=0; ipb<m_poaWPolar->size(); ipb++)
+        for(int ipb=0; ipb<Objects3d::polarCount(); ipb++)
         {
-            pOldWPolar = m_poaWPolar->at(ipb);
+            pOldWPolar = Objects3d::polarAt(ipb);
             if(pOldWPolar->polarName()==dlg.newName() && pOldWPolar->planeName()==m_pCurPlane->planeName())
             {
                 Objects3d::deleteWPolar(pOldWPolar);
@@ -5373,20 +5373,20 @@ void Miarex::onRenameCurWPolar()
 
     //ready to insert
     //remove the WPolar from its current position in the array
-    for (int l=0; l<m_poaWPolar->size();l++)
+    for (int l=0; l<Objects3d::polarCount();l++)
     {
-        pOldWPolar = m_poaWPolar->at(l);
+        pOldWPolar = Objects3d::polarAt(l);
         if(pOldWPolar==m_pCurWPolar)
         {
-            m_poaWPolar->removeAt(l);
+            Objects3d::s_oaWPolar.removeAt(l);
             break;
         }
     }
 
     //set the new name
-    for (int l=m_poaPOpp->size()-1;l>=0; l--)
+    for (int l=Objects3d::planeOppCount()-1;l>=0; l--)
     {
-        PlaneOpp *pPOpp = m_poaPOpp->at(l);
+        PlaneOpp *pPOpp = Objects3d::planeOppAt(l);
         if (pPOpp->planeName() == m_pCurPlane->planeName() && pPOpp->polarName()==m_pCurWPolar->polarName())
         {
             pPOpp->setPolarName(dlg.newName());
@@ -5397,20 +5397,20 @@ void Miarex::onRenameCurWPolar()
 
     //insert alphabetically
     bool bInserted = false;
-    for (int l=0; l<m_poaWPolar->size();l++)
+    for (int l=0; l<Objects3d::polarCount();l++)
     {
-        pOldWPolar = m_poaWPolar->at(l);
+        pOldWPolar = Objects3d::polarAt(l);
 
         if(pOldWPolar->polarName().compare(m_pCurWPolar->polarName(), Qt::CaseInsensitive) >0)
         {
             //then insert before
-            m_poaWPolar->insert(l, m_pCurWPolar);
+            Objects3d::s_oaWPolar.insert(l, m_pCurWPolar);
             bInserted = true;
             break;
         }
     }
 
-    if(!bInserted) m_poaWPolar->append(m_pCurWPolar);
+    if(!bInserted) Objects3d::s_oaWPolar.append(m_pCurWPolar);
 
 
     s_pMainFrame->updateWPolarListBox();
@@ -5468,12 +5468,12 @@ void Miarex::onResetCurWPolar()
     PlaneOpp *pPOpp;
     if(m_pCurPlane)
     {
-        for(int i=m_poaPOpp->size()-1; i>=0; --i)
+        for(int i=Objects3d::planeOppCount()-1; i>=0; --i)
         {
-            pPOpp =  m_poaPOpp->at(i);
+            pPOpp =  Objects3d::planeOppAt(i);
             if(pPOpp->polarName()==m_pCurWPolar->polarName() && pPOpp->planeName()==m_pCurPlane->planeName())
             {
-                m_poaPOpp->removeAt(i);
+                Objects3d::s_oaPOpp.removeAt(i);
                 delete pPOpp;
             }
         }
@@ -5518,9 +5518,9 @@ void Miarex::onShowAllWOpps()
     m_bCurPOppOnly = false;
     s_pMainFrame->m_pShowCurWOppOnly->setChecked(false);
 
-    for (int i=0; i< m_poaPOpp->size(); i++)
+    for (int i=0; i< Objects3d::planeOppCount(); i++)
     {
-        PlaneOpp *pPOpp = m_poaPOpp->at(i);
+        PlaneOpp *pPOpp = Objects3d::planeOppAt(i);
         pPOpp->setVisible(true);
     }
 
@@ -5540,9 +5540,9 @@ void Miarex::onShowAllWPolars()
 {
     int i;
     WPolar *pWPolar;
-    for (i=0; i<m_poaWPolar->size(); i++)
+    for (i=0; i<Objects3d::polarCount(); i++)
     {
-        pWPolar = m_poaWPolar->at(i);
+        pWPolar = Objects3d::polarAt(i);
         pWPolar->setVisible(true);
     }
 
@@ -5561,9 +5561,9 @@ void Miarex::onShowPlaneWPolarsOnly()
 {
     if(!m_pCurPlane) return;
 
-    for (int i=0; i<m_poaWPolar->size(); i++)
+    for (int i=0; i<Objects3d::polarCount(); i++)
     {
-        WPolar *pWPolar = m_poaWPolar->at(i);
+        WPolar *pWPolar = Objects3d::polarAt(i);
         pWPolar->setVisible((pWPolar->planeName() == m_pCurPlane->planeName()));
     }
 
@@ -5578,9 +5578,9 @@ void Miarex::onShowPlaneWPolarsOnly()
 void Miarex::onShowWPolarOppsOnly()
 {
     if(!m_pCurPlane || !m_pCurWPolar) return;
-    for(int i=0; i<m_poaPOpp->size(); i++)
+    for(int i=0; i<Objects3d::planeOppCount(); i++)
     {
-        PlaneOpp *pPOpp = m_poaPOpp->at(i);
+        PlaneOpp *pPOpp = Objects3d::planeOppAt(i);
         if(pPOpp->planeName().compare(m_pCurPlane->planeName())==0 && pPOpp->polarName().compare(m_pCurWPolar->polarName())==0)
         {
             pPOpp->setVisible(true);
@@ -5604,9 +5604,9 @@ void Miarex::onShowPlaneWPolars()
     else return;
 
     WPolar *pWPolar;
-    for (i=0; i<m_poaWPolar->size(); i++)
+    for (i=0; i<Objects3d::polarCount(); i++)
     {
-        pWPolar = m_poaWPolar->at(i);
+        pWPolar = Objects3d::polarAt(i);
         if (pWPolar->planeName() == PlaneName) pWPolar->setVisible(true);
     }
 
@@ -5626,9 +5626,9 @@ void Miarex::onShowPlaneOpps()
 {
     PlaneOpp *pPOpp;
     int i;
-    for (i=0; i< m_poaPOpp->size(); i++)
+    for (i=0; i< Objects3d::planeOppCount(); i++)
     {
-        pPOpp = m_poaPOpp->at(i);
+        pPOpp = Objects3d::planeOppAt(i);
         if (pPOpp->planeName() == m_pCurWPolar->planeName())
         {
             pPOpp->setVisible(true);
@@ -5654,9 +5654,9 @@ void Miarex::onShowAllWPlrOpps()
     PlaneOpp *pPOpp;
     if(m_pCurPlane)
     {
-        for (i=0; i< m_poaPOpp->size(); i++)
+        for (i=0; i< Objects3d::planeOppCount(); i++)
         {
-            pPOpp = m_poaPOpp->at(i);
+            pPOpp = Objects3d::planeOppAt(i);
             if (pPOpp->planeName() == m_pCurWPolar->planeName() &&
                     pPOpp->polarName()   == m_pCurWPolar->polarName())
             {
@@ -5988,9 +5988,9 @@ void Miarex::onPlaneInertia()
         iDlg.m_pPlane = m_pCurPlane;
     }
 
-    for (int i=0; i<m_poaWPolar->size(); i++)
+    for (int i=0; i<Objects3d::polarCount(); i++)
     {
-        pWPolar = m_poaWPolar->at(i);
+        pWPolar = Objects3d::polarAt(i);
         if(pWPolar->dataSize() && pWPolar->planeName()==PlaneName && pWPolar->m_bAutoInertia)
         {
             bHasResults = true;
@@ -6037,20 +6037,20 @@ void Miarex::onPlaneInertia()
 
             //last case, user wants to overwrite, so reset all polars, WOpps and POpps with autoinertia associated to the Plane
 
-            for (int i=0; i<m_poaWPolar->size(); i++)
+            for (int i=0; i<Objects3d::polarCount(); i++)
             {
-                pWPolar = m_poaWPolar->at(i);
+                pWPolar = Objects3d::polarAt(i);
                 if(pWPolar && pWPolar->planeName()==PlaneName && pWPolar->m_bAutoInertia)
                 {
                     pWPolar->clearData();
                     if(m_pCurPlane) pWPolar->retrieveInertia(m_pCurPlane);
 
-                    for (int i=m_poaPOpp->size()-1; i>=0; i--)
+                    for (int i=Objects3d::planeOppCount()-1; i>=0; i--)
                     {
-                        PlaneOpp *pPOpp = m_poaPOpp->at(i);
+                        PlaneOpp *pPOpp = Objects3d::planeOppAt(i);
                         if(pPOpp && pPOpp->planeName()==PlaneName && pPOpp->polarName()==pWPolar->polarName())
                         {
-                            m_poaPOpp->removeAt(i);
+                            Objects3d::s_oaPOpp.removeAt(i);
                             delete pPOpp;
                         }
                     }
