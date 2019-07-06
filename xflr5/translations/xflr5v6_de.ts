@@ -624,7 +624,7 @@ Max = %1</translation>
     <message>
         <location filename="../xflr5-gui/xdirect/analysis/batchdlg.cpp" line="910"/>
         <source>Foils to analyze:</source>
-        <translation type="unfinished">Zu analysierende Profile:</translation>
+        <translation>Zu analysierende Profile:</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/xdirect/analysis/batchdlg.cpp" line="1193"/>
@@ -2187,19 +2187,7 @@ Ausschalten um die Analysegeschwindigkeit zu erhöhen.</translation>
     <message>
         <location filename="../xflr5-gui/xinverse/foilselectiondlg.cpp" line="50"/>
         <source>Select all</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select All</source>
-        <translation type="vanished">Alles auswählen</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="vanished">OK</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="vanished">Abbrechen</translation>
+        <translation>Alle auswählen</translation>
     </message>
 </context>
 <context>
@@ -4646,10 +4634,6 @@ Ausschalten um die Analysegeschwindigkeit zu erhöhen.</translation>
         <translation>Zugehörige Polaren ausblenden</translation>
     </message>
     <message>
-        <source>Save associated polars</source>
-        <translation type="vanished">Zugehörige Polaren speichern</translation>
-    </message>
-    <message>
         <location filename="../xflr5-gui/globals/mainframe.cpp" line="2318"/>
         <location filename="../xflr5-gui/globals/mainframe.cpp" line="2330"/>
         <source>Hide associated OpPoints</source>
@@ -5168,17 +5152,17 @@ Ausschalten um die Analysegeschwindigkeit zu erhöhen.</translation>
     <message>
         <location filename="../xflr5-gui/globals/mainframe.cpp" line="2315"/>
         <source>Export polars to .plr file</source>
-        <translation type="unfinished"></translation>
+        <translation>Polare in .plr-Datei exportieren</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/globals/mainframe.cpp" line="2369"/>
         <source>to text format</source>
-        <translation type="unfinished"></translation>
+        <translation>in .txt-Format</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/globals/mainframe.cpp" line="2372"/>
         <source>to .plr format</source>
-        <translation type="unfinished"></translation>
+        <translation>in .plr-Format</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/globals/mainframe.cpp" line="2486"/>
@@ -5204,7 +5188,7 @@ Ausschalten um die Analysegeschwindigkeit zu erhöhen.</translation>
     <message>
         <location filename="../xflr5-gui/globals/mainframe.cpp" line="2596"/>
         <source>Export all</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle Polare exportieren</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/globals/mainframe.cpp" line="2823"/>
@@ -6711,14 +6695,16 @@ Fortfahren?</translation>
     <message>
         <location filename="../xflr5-gui/miarex/miarex.cpp" line="7159"/>
         <source>Flow down style</source>
-        <translation type="unfinished"></translation>
+        <translation>Stil vererben</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/miarex.cpp" line="7160"/>
         <source>If activated:
 all changes made to the style of the polar objects will flow down to the operating points
 all changes made to the style of the foil objects will flow down to the polars and to the operating points</source>
-        <translation type="unfinished"></translation>
+        <translation>Wenn aktiviert:
+Alle Änderungen am Anzeigestil der Polare werden an die zugehörigen Arbeitspunkte vererbt.
+Alle Änderungen am Anzeigestil des Profils werden an seine Polare und die zugehörigen Arbeitspunkte vererbt.</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/miarex/miarex.cpp" line="7178"/>
@@ -8547,149 +8533,81 @@ Kompressibilitäts-Korrekturen ungültig</translation>
     </message>
 </context>
 <context>
-    <name>STLExportDialog</name>
-    <message>
-        <source>File format</source>
-        <translation type="vanished">Dateiformat</translation>
-    </message>
-    <message>
-        <source>Binary</source>
-        <translation type="vanished">Binär</translation>
-    </message>
-    <message>
-        <source>ASCII</source>
-        <translation type="vanished">ASCII</translation>
-    </message>
-    <message>
-        <source>Object to export</source>
-        <translation type="vanished">Zu exportierendes Objekt</translation>
-    </message>
-    <message>
-        <source>Body</source>
-        <translation type="vanished">Rumpf</translation>
-    </message>
-    <message>
-        <source>Main Wing</source>
-        <translation type="vanished">Haupt-Tragfläche</translation>
-    </message>
-    <message>
-        <source>Second Wing</source>
-        <translation type="vanished">2. Tragfläche</translation>
-    </message>
-    <message>
-        <source>Elevator</source>
-        <translation type="vanished">Höhenleitwerk</translation>
-    </message>
-    <message>
-        <source>Fin</source>
-        <translation type="vanished">Seitenleitwerk</translation>
-    </message>
-    <message>
-        <source>Output Resolution</source>
-        <translation type="vanished">Ausgabeauflösung</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="vanished">OK</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="vanished">Abbrechen</translation>
-    </message>
-    <message>
-        <source>Number of x-panels</source>
-        <translation type="vanished">Anzahl der X-Panels</translation>
-    </message>
-    <message>
-        <source>Number of hoop panels</source>
-        <translatorcomment>a ring of wood, metall or plastic!</translatorcomment>
-        <translation type="vanished">Anzahl der Hoop-Panels</translation>
-    </message>
-    <message>
-        <source>Number of chordwise panels</source>
-        <translation type="vanished">Anzahl der Panel in Tiefenrichtung</translation>
-    </message>
-    <message>
-        <source>Number of span panels per surface</source>
-        <translation type="vanished">Anzahl der Spannweiten-Panels pro Oberfläche</translation>
-    </message>
-</context>
-<context>
     <name>STLExportDlg</name>
     <message>
         <location filename="../xflr5-gui/misc/stlexportdialog.cpp" line="40"/>
         <source>STL exporter</source>
-        <translation type="unfinished"></translation>
+        <translation>STL Export</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/misc/stlexportdialog.cpp" line="54"/>
         <source>File format</source>
-        <translation type="unfinished">Dateiformat</translation>
+        <translation>Dateiformat</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/misc/stlexportdialog.cpp" line="58"/>
         <source>Binary</source>
-        <translation type="unfinished">Binär</translation>
+        <translation>Binär</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/misc/stlexportdialog.cpp" line="59"/>
         <source>ASCII</source>
-        <translation type="unfinished">ASCII</translation>
+        <translation>ASCII</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/misc/stlexportdialog.cpp" line="66"/>
         <source>Object to export</source>
-        <translation type="unfinished">Zu exportierendes Objekt</translation>
+        <translation>Zu exportierendes Objekt</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/misc/stlexportdialog.cpp" line="70"/>
         <source>Body</source>
-        <translation type="unfinished">Rumpf</translation>
+        <translation>Rumpf</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/misc/stlexportdialog.cpp" line="71"/>
         <source>Main Wing</source>
-        <translation type="unfinished"></translation>
+        <translation>Hauptflügel</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/misc/stlexportdialog.cpp" line="72"/>
         <source>Second Wing</source>
-        <translation type="unfinished"></translation>
+        <translation>Zweiter Flügel</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/misc/stlexportdialog.cpp" line="73"/>
         <source>Elevator</source>
-        <translation type="unfinished"></translation>
+        <translation>Höhenleitwerk</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/misc/stlexportdialog.cpp" line="74"/>
         <source>Fin</source>
-        <translation type="unfinished"></translation>
+        <translation>Seitenleitwerk</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/misc/stlexportdialog.cpp" line="84"/>
         <source>Output Resolution</source>
-        <translation type="unfinished">Ausgabeauflösung</translation>
+        <translation>Ausgabeauflösung</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/misc/stlexportdialog.cpp" line="208"/>
         <source>Number of x-panels</source>
-        <translation type="unfinished">Anzahl der X-Panels</translation>
+        <translation>Anzahl der X-Panels</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/misc/stlexportdialog.cpp" line="209"/>
         <source>Number of hoop/y panels</source>
-        <translation type="unfinished"></translation>
+        <translation>Anzahl der Umfangs-Panels</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/misc/stlexportdialog.cpp" line="213"/>
         <source>Number of chordwise panels</source>
-        <translation type="unfinished">Anzahl der Panel in Tiefenrichtung</translation>
+        <translation>Anzahl der Panel in Tiefenrichtung</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/misc/stlexportdialog.cpp" line="214"/>
         <source>Number of span panels per surface</source>
-        <translation type="unfinished">Anzahl der Spannweiten-Panels pro Oberfläche</translation>
+        <translation>Anzahl der Spannweiten-Panels pro Oberfläche</translation>
     </message>
 </context>
 <context>
@@ -8847,14 +8765,16 @@ Kompressibilitäts-Korrekturen ungültig</translation>
     <message>
         <location filename="../xflr5-gui/misc/options/settings.cpp" line="220"/>
         <source>Flow down changes made to the style of objects to their children</source>
-        <translation type="unfinished"></translation>
+        <translation>Vererbe die Veränderungen des Anzeigestils eines Objekts (Profil, Polare) an seine Kind-Objekte</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/misc/options/settings.cpp" line="221"/>
         <source>If activated:
 all changes made to the style of the polar objects will flow down to the operating points
 all changes made to the style of the foil objects will flow down to the polars and to the operating points</source>
-        <translation type="unfinished"></translation>
+        <translation>Wenn aktiviert:
+Alle Änderungen am Anzeigestil der Polare werden an die zugehörigen Arbeitspunkte vererbt.
+Alle Änderungen am Anzeigestil des Profils werden an seine Polare und die zugehörigen Arbeitspunkte vererbt.</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/misc/options/settings.cpp" line="176"/>
@@ -9963,18 +9883,6 @@ zu verbessern. Das kann die Anzeigegeschwindigkeit reduzieren
         <source>3D Panel boundary conditions</source>
         <translation>3D-Panel-Randbedingungen</translation>
     </message>
-    <message>
-        <source>OK</source>
-        <translation type="vanished">OK</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="vanished">Abbrechen</translation>
-    </message>
-    <message>
-        <source>Reset Defaults</source>
-        <translation type="vanished">Standardwerte</translation>
-    </message>
 </context>
 <context>
     <name>WPolarDlg</name>
@@ -10764,14 +10672,16 @@ gefunden. Die Polare(n) wird nicht gespeichert</translation>
     <message>
         <location filename="../xflr5-gui/xdirect/xdirect.cpp" line="4798"/>
         <source>Flow down style</source>
-        <translation type="unfinished"></translation>
+        <translation>Stil vererben</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/xdirect/xdirect.cpp" line="4799"/>
         <source>If activated:
 all changes made to the style of the polar objects will flow down to the operating points
 all changes made to the style of the foil objects will flow down to the polars and to the operating points</source>
-        <translation type="unfinished"></translation>
+        <translation>Wenn aktiviert:
+Alle Änderungen am Anzeigestil der Polare werden an die zugehörigen Arbeitspunkte vererbt.
+Alle Änderungen am Anzeigestil des Profils werden an seine Polare und die zugehörigen Arbeitspunkte vererbt.</translation>
     </message>
     <message>
         <location filename="../xflr5-gui/xdirect/xdirect.cpp" line="4829"/>
