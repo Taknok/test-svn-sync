@@ -171,14 +171,12 @@ void BodyScaleDlg::keyPressEvent(QKeyEvent *event)
             if(!m_pOKButton->hasFocus() && !m_pCancelButton->hasFocus())
             {
                 m_pOKButton->setFocus();
-                return;
             }
             else
             {
                 onOK();
-                return;
             }
-            break;
+            return;
         }
         case Qt::Key_Escape:
         {

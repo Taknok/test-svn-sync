@@ -28,6 +28,7 @@
 #include "bodytransdlg.h"
 #include <misc/options/units.h>
 #include <globals/globals.h>
+#include <misc/text/intedit.h>
 #include <misc/text/doubleedit.h>
 
 
@@ -73,14 +74,12 @@ void BodyTransDlg::keyPressEvent(QKeyEvent *event)
             if(!m_pOKButton->hasFocus() && !m_pCancelButton->hasFocus())
             {
                 m_pOKButton->setFocus();
-                return;
             }
             else
             {
                 onOK();
-                return;
             }
-            break;
+            return;
         }
         case Qt::Key_Escape:
         {
@@ -118,7 +117,7 @@ void BodyTransDlg::setupLayout()
     QHBoxLayout *pFrameIDLayout = new QHBoxLayout;
     {
         m_pctrlFrameOnly = new QCheckBox(tr("Frame Only"));
-        m_pctrlFrameID = new DoubleEdit(0.0,0);
+        m_pctrlFrameID = new IntEdit(0);
         pFrameIDLayout->addWidget(m_pctrlFrameOnly);
         pFrameIDLayout->addWidget(m_pctrlFrameID);
     }

@@ -54,7 +54,7 @@ class GL3dWingDlg: public QDialog
 {
     Q_OBJECT
 
-    friend class MainFrame;
+
     friend class Miarex;
     friend class gl3dView;
     friend class gl3dWingView;
@@ -70,7 +70,7 @@ public:
     bool intersectObject(Vector3d AA,  Vector3d U, Vector3d &I);
     void glMake3DObjects();
     void glMakeSectionHighlight(QOpenGLBuffer &vbo, int &nStrips, int &stripSize);
-    int iSection(){return m_iSection;}
+    int iSection() const {return m_iSection;}
 
     static void loadSettings(QSettings &settings);
     static void saveSettings(QSettings &settings);
@@ -136,7 +136,6 @@ private:
 
 
 private:
-    static QVector <Foil*> *s_poaFoil;
 
     static QByteArray s_WindowGeometry;
 
@@ -188,7 +187,12 @@ private:
     QAction *m_pInsertBefore, *m_pInsertAfter, *m_pDeleteSection, *m_pResetSection;
 
     QWidget *m_pctrlControlsWidget;
-    QSplitter *m_pLeftSideSplitter;
+    QSplitter *m_pctrlLeftSideSplitter;
+    QSplitter *m_pctrlHSplitter;
+
+    static QByteArray s_LeftSplitterSizes;
+    static QByteArray s_HSplitterSizes;
+
 
     Wing *m_pWing;
 

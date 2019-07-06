@@ -38,7 +38,7 @@ class WingDelegate : public QStyledItemDelegate
     friend class GL3dWingDlg;
 
 public:
-    WingDelegate(QObject *parent = 0);
+    WingDelegate(QObject *parent = nullptr);
 
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &index) const;
     void setEditorData(QWidget *editor, const QModelIndex &index) const;
@@ -50,7 +50,6 @@ public:
 private:
     void *m_pWingDlg;
     int *m_Precision; ///table of float precisions for each column
-    QVector<Foil*> *m_poaFoil;
     QVector<WingSection*> *m_pWingSection;
 };
 

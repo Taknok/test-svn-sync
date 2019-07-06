@@ -31,8 +31,8 @@
 class DoubleEdit : public QLineEdit
 {
 public:
-    DoubleEdit(QWidget *pParent=NULL);
-    DoubleEdit(double val, int decimals=2, QWidget *pParent=NULL);
+    DoubleEdit(QWidget *pParent=nullptr);
+    DoubleEdit(double val, int decimals=2, QWidget *pParent=nullptr);
 
     ~DoubleEdit() {delete m_pDV;}
 

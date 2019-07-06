@@ -20,10 +20,10 @@
 *****************************************************************************/
  
 
-#include <objects/objects2d/foil.h>
 #include <miarex/design/wingdelegate.h>
 #include <miarex/design/gl3dwingdlg.h>
 #include <misc/text/doubleedit.h>
+#include <xdirect/objects2d.h>
 #include <objects/objects3d/wingsection.h>
 #include <objects/objects2d/foil.h>
 
@@ -32,6 +32,9 @@ WingDelegate::WingDelegate(QObject *parent)
  : QStyledItemDelegate(parent)
 {
     m_pWingDlg = parent;
+
+    m_Precision = nullptr; ///table of float precisions for each column
+    m_pWingSection = nullptr;
 }
 
 
@@ -39,50 +42,49 @@ QWidget *WingDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem 
 {
     if(index.column()!=5 && index.column()!=7 && index.column()!=9)
     {
-        DoubleEdit *editor = new DoubleEdit(parent);
-        editor->setAlignment(Qt::AlignRight);
+        DoubleEdit *pEditor = new DoubleEdit(parent);
+        pEditor->setAlignment(Qt::AlignRight);
 
-        editor->setPrecision(m_Precision[index.column()]);
+        pEditor->setPrecision(m_Precision[index.column()]);
         if(index.column()==6)
         {
-            editor->setMin(1);
+            pEditor->setMin(1);
         }
         if(index.column()==8)
         {
-            editor->setMin(1);
+            pEditor->setMin(1);
         }
-        return editor;
+        return pEditor;
     }
     else
     {
         QString strong;
-        QComboBox *editor = new QComboBox(parent);
-        editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+        QComboBox *pEditor = new QComboBox(parent);
+        pEditor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
         //fill comboboxes here
         if(index.column()==5)
         {
-            for(int i=0; i<m_poaFoil->size(); i++)
+            for(int i=0; i<Objects2d::foilCount(); i++)
             {
-                Foil *pFoil = (Foil*)m_poaFoil->at(i);
+                Foil *pFoil = Objects2d::foilAt(i);
                 strong = pFoil->foilName();
-                editor->addItem(strong);
+                pEditor->addItem(strong);
             }
         }
         else if(index.column()==7)
         {
-            editor->addItem(tr("Uniform"));
-            editor->addItem(tr("Cosine"));
+            pEditor->addItem(tr("Uniform"));
+            pEditor->addItem(tr("Cosine"));
         }
         else if(index.column()==9)
         {
-            editor->addItem(tr("Uniform"));
-            editor->addItem(tr("Cosine"));
-            editor->addItem(tr("Sine"));
-            editor->addItem(tr("-Sine"));
+            pEditor->addItem(tr("Uniform"));
+            pEditor->addItem(tr("Cosine"));
+            pEditor->addItem(tr("Sine"));
+            pEditor->addItem(tr("-Sine"));
         }
-        return editor;
+        return pEditor;
     }
-    return nullptr;
 }
 
 
@@ -146,7 +148,7 @@ void WingDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, 
     }
 //    drawDisplay(painter, myOption, myOption.rect, strong);
 //    drawFocus(painter, myOption, myOption.rect);
-    painter->drawText( myOption.rect, myOption.displayAlignment , strong);
+    painter->drawText(myOption.rect, myOption.displayAlignment , strong);
 }
 
 

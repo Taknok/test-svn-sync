@@ -23,6 +23,7 @@
 #include <QApplication>
 #include <QProgressDialog>
 #include <QOpenGLPaintDevice>
+#include <QContextMenuEvent>
 
 #include "gl3dmiarexview.h"
 #include <miarex/miarex.h>
@@ -266,9 +267,9 @@ void gl3dMiarexView::paintGL()
 *Overrides the contextMenuEvent method of the base class.
 *Dispatches the handling to the active child application.
 */
-void gl3dMiarexView::contextMenuEvent (QContextMenuEvent * event)
+void gl3dMiarexView::contextMenuEvent(QContextMenuEvent * pEvent)
 {
-    QPoint ScreenPt = event->globalPos();
+    QPoint ScreenPt = pEvent->globalPos();
     m_bArcball = false;
     update();
 
@@ -278,7 +279,6 @@ void gl3dMiarexView::contextMenuEvent (QContextMenuEvent * event)
             s_pMainFrame->m_pW3DStabCtxMenu->exec(ScreenPt);
         else s_pMainFrame->m_pW3DCtxMenu->exec(ScreenPt);
     }
-
 }
 
 

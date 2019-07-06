@@ -1,11 +1,5 @@
 
 SOURCES += \
-    $$PWD/miarex/view/gl3dscales.cpp \
-    $$PWD/miarex/view/gllightdlg.cpp \
-    $$PWD/miarex/view/stabviewdlg.cpp \
-    $$PWD/miarex/view/targetcurvedlg.cpp \
-    $$PWD/miarex/view/w3dprefsdlg.cpp \
-    $$PWD/misc/color/colorbutton.cpp \
     design/afoil.cpp \
     design/afoiltabledlg.cpp \
     design/foiltabledelegate.cpp \
@@ -55,7 +49,13 @@ SOURCES += \
     miarex/mgt/xmlwpolarwriter.cpp \
     miarex/miarex.cpp \
     miarex/objects3d.cpp \
+    miarex/view/gl3dscales.cpp \
+    miarex/view/gllightdlg.cpp \
+    miarex/view/stabviewdlg.cpp \
+    miarex/view/targetcurvedlg.cpp \
+    miarex/view/w3dprefsdlg.cpp \
     misc/aboutq5.cpp \
+    misc/color/colorbutton.cpp \
     misc/editplrdlg.cpp \
     misc/exponentialslider.cpp \
     misc/lengthunitdlg.cpp \
@@ -134,11 +134,6 @@ SOURCES += \
 
 
 HEADERS += \
-    $$PWD/miarex/view/gl3dscales.h \
-    $$PWD/miarex/view/gllightdlg.h \
-    $$PWD/miarex/view/stabviewdlg.h \
-    $$PWD/miarex/view/targetcurvedlg.h \
-    $$PWD/miarex/view/w3drefsdlg.h \
     design/afoil.h \
     design/afoiltabledlg.h \
     design/foiltabledelegate.h \
@@ -190,6 +185,11 @@ HEADERS += \
     miarex/mgt/xmlwpolarwriter.h \
     miarex/miarex.h \
     miarex/objects3d.h \
+    miarex/view/gl3dscales.h \
+    miarex/view/gllightdlg.h \
+    miarex/view/stabviewdlg.h \
+    miarex/view/targetcurvedlg.h \
+    miarex/view/w3drefsdlg.h \
     misc/aboutq5.h \
     misc/color/colorbutton.h \
     misc/editplrdlg.h \
@@ -267,7 +267,7 @@ HEADERS += \
     xinverse/foilselectiondlg.h \
     xinverse/inverseoptionsdlg.h \
     xinverse/pertdlg.h \
-    xinverse/xinverse.h \
+    xinverse/xinverse.h
 
 
 RESOURCES += \

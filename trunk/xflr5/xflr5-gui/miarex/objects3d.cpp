@@ -44,17 +44,6 @@ Objects3d::Objects3d()
 
 
 /**
- * Creates local pointers in the classes, for programming convenience.
- */
-void Objects3d::setStaticPointers()
-{
-    Miarex::m_poaPlane  = &s_oaPlane;
-    Miarex::m_poaWPolar = &s_oaWPolar;
-    Miarex::m_poaPOpp   = &s_oaPOpp;
-}
-
-
-/**
  * If the body is associated to a plane, duplicates the body and attaches it to the Plane
  * Else destroys the Body.
  * Used only to import body Objects from files prior to v6.09.06

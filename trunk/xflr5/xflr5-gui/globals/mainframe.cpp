@@ -278,8 +278,6 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
         readStyleSheet(Settings::s_StyleSheetName, styleSheet);
     }
 
-    Objects3d::setStaticPointers();
-
     /*    if(m_bAutoLoadLast)
     {
         onLoadLastProject();
@@ -1004,7 +1002,6 @@ void MainFrame::createDockWindows()
     m_pXInverse->s_pMainFrame       = this;
     m_pXInverse->m_pXFoil           = &m_pXDirect->m_XFoil;
 
-    GL3dWingDlg::s_poaFoil = Objects2d::pOAFoil();
     EditObjectDelegate::s_poaFoil = Objects2d::pOAFoil();
 
     gl3dMiarexView::s_pMiarex = m_pMiarex;
