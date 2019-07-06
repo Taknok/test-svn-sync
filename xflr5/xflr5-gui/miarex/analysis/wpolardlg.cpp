@@ -204,7 +204,7 @@ void WPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
     }
 
     //initialize the name box
-    s_WPolar.planeName() = m_pPlane->planeName();
+    s_WPolar.setPlaneName(m_pPlane->planeName());
 
     // initialize units
     if(m_UnitType==1) m_pctrlUnit1->setChecked(true);
@@ -225,8 +225,8 @@ void WPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
         m_pctrlXCmRef->setValue(m_pPlane->CoG().x * Units::mtoUnit());
         m_pctrlZCmRef->setValue(m_pPlane->CoG().z * Units::mtoUnit());
         s_WPolar.setMass(m_pPlane->totalMass());
-        s_WPolar.CoG().x   = m_pPlane->CoG().x;
-        s_WPolar.CoG().z   = m_pPlane->CoG().z;
+        s_WPolar.setCoGx(m_pPlane->CoG().x);
+        s_WPolar.setCoGz(m_pPlane->CoG().z);
     }
     else
     {
@@ -301,15 +301,15 @@ void WPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
 
     if(m_pctrlArea1->isChecked())
     {
-        s_WPolar.referenceArea() = m_pPlane->planformArea();
-        s_WPolar.referenceSpanLength() = m_pPlane->planformSpan();
+        s_WPolar.setReferenceArea(m_pPlane->planformArea());
+        s_WPolar.setReferenceSpanLength(m_pPlane->planformSpan());
         m_pctrlRefArea->setValue(m_pPlane->planformArea()*Units::m2toUnit());
         m_pctrlRefSpan->setValue(m_pPlane->planformSpan()*Units::mtoUnit());
     }
     else if(m_pctrlArea2->isChecked())
     {
-        s_WPolar.referenceArea() = m_pPlane->projectedArea();
-        s_WPolar.referenceSpanLength() = m_pPlane->projectedSpan();
+        s_WPolar.setReferenceArea(m_pPlane->projectedArea());
+        s_WPolar.setReferenceSpanLength(m_pPlane->projectedSpan());
         m_pctrlRefArea->setValue(m_pPlane->projectedArea()*Units::m2toUnit());
         m_pctrlRefSpan->setValue(m_pPlane->projectedSpan()*Units::mtoUnit());
     }
@@ -319,7 +319,7 @@ void WPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
         m_pctrlRefSpan->setValue(s_WPolar.referenceSpanLength()*Units::mtoUnit());
     }
 
-    s_WPolar.referenceChordLength() = m_pPlane->mac();
+    s_WPolar.setReferenceChordLength(m_pPlane->mac());
     m_pctrlRefChord->setValue(s_WPolar.referenceChordLength()*Units::mtoUnit());
 
     s_WPolar.bWakeRollUp() = false;
@@ -380,21 +380,21 @@ void WPolarDlg::onArea()
 {
     if(m_pctrlArea1->isChecked())
     {
-        s_WPolar.referenceDim() = XFLR5::PLANFORMREFDIM;
+        s_WPolar.setReferenceDim(XFLR5::PLANFORMREFDIM);
         m_pctrlRefArea->setValue(m_pPlane->planformArea()*Units::m2toUnit());
         m_pctrlRefChord->setValue(m_pPlane->mac()*Units::mtoUnit());
         m_pctrlRefSpan->setValue(m_pPlane->planformSpan()*Units::mtoUnit());
     }
     else if(m_pctrlArea2->isChecked())
     {
-        s_WPolar.referenceDim() = XFLR5::PROJECTEDREFDIM;
+        s_WPolar.setReferenceDim(XFLR5::PROJECTEDREFDIM);
         m_pctrlRefArea->setValue(m_pPlane->projectedArea()*Units::m2toUnit());
         m_pctrlRefSpan->setValue(m_pPlane->projectedSpan()*Units::mtoUnit());
         m_pctrlRefChord->setValue(m_pPlane->mac()*Units::mtoUnit());
     }
     else if(m_pctrlArea3->isChecked())
     {
-        s_WPolar.referenceDim() = XFLR5::MANUALREFDIM;
+        s_WPolar.setReferenceDim(XFLR5::MANUALREFDIM);
         //        m_pctrlRefArea->SetValue(s_WPolar.referenceArea()Length*Units::m2toUnit());
         //        m_pctrlRefSpan->SetValue(s_WPolar.referenceSpanLength()*Units::mtoUnit());
         //        m_pctrlRefChord->SetValue(s_WPolar.referenceChordLength()*Units::mtoUnit());
@@ -442,15 +442,14 @@ void WPolarDlg::onPlaneInertia()
             m_pctrlXCmRef->setValue(m_pPlane->CoG().x * Units::mtoUnit());
             m_pctrlZCmRef->setValue(m_pPlane->CoG().z * Units::mtoUnit());
             s_WPolar.setMass(m_pPlane->totalMass());
-            s_WPolar.CoG().x   = m_pPlane->CoG().x;
-            s_WPolar.CoG().z   = m_pPlane->CoG().z;
+            s_WPolar.setCoG(m_pPlane->CoG());
         }
     }
     else
     {
         s_WPolar.setMass(m_pctrlWeight->value() / Units::kgtoUnit());
-        s_WPolar.CoG().x   = m_pctrlXCmRef->value() / Units::mtoUnit();
-        s_WPolar.CoG().z   = m_pctrlZCmRef->value() / Units::mtoUnit();
+        s_WPolar.setCoGx(m_pctrlXCmRef->value() / Units::mtoUnit());
+        s_WPolar.setCoGz(m_pctrlZCmRef->value() / Units::mtoUnit());
     }
     s_WPolar.m_bAutoInertia = m_pctrlPlaneInertia->isChecked();
     setWPolarName();
@@ -528,7 +527,7 @@ void WPolarDlg::onOK()
         m_pctrlWPolarName->setFocus();
         return;
     }
-    s_WPolar.polarName() = m_pctrlWPolarName->text();
+    s_WPolar.setPolarName(m_pctrlWPolarName->text());
 
     if(qAbs(s_WPolar.mass())<PRECISION && s_WPolar.polarType()==XFLR5::FIXEDLIFTPOLAR)
     {
@@ -623,8 +622,8 @@ void WPolarDlg::readValues()
     }
 
     s_WPolar.setMass(m_pctrlWeight->value() / Units::kgtoUnit());
-    s_WPolar.CoG().x         = m_pctrlXCmRef->value() / Units::mtoUnit();
-    s_WPolar.CoG().z         = m_pctrlZCmRef->value() / Units::mtoUnit();
+    s_WPolar.setCoGx(m_pctrlXCmRef->value() / Units::mtoUnit());
+    s_WPolar.setCoGz(m_pctrlZCmRef->value() / Units::mtoUnit());
     s_WPolar.m_QInfSpec      = m_pctrlQInf->value() / Units::mstoUnit();
     s_WPolar.m_Height        = m_pctrlHeight->value() / Units::mtoUnit();
 
@@ -643,24 +642,24 @@ void WPolarDlg::readValues()
 
     if(m_pctrlArea1->isChecked())
     {
-        s_WPolar.referenceDim() = XFLR5::PLANFORMREFDIM;
-        s_WPolar.referenceArea()       = m_pPlane->planformArea();
-        s_WPolar.referenceSpanLength() = m_pPlane->planformSpan();
+        s_WPolar.setReferenceDim(XFLR5::PLANFORMREFDIM);
+        s_WPolar.setReferenceArea(m_pPlane->planformArea());
+        s_WPolar.setReferenceSpanLength(m_pPlane->planformSpan());
     }
     else if(m_pctrlArea2->isChecked())
     {
-        s_WPolar.referenceDim() = XFLR5::PROJECTEDREFDIM;
-        s_WPolar.referenceArea()       = m_pPlane->projectedArea();
-        s_WPolar.referenceSpanLength() = m_pPlane->projectedSpan();
+        s_WPolar.setReferenceDim(XFLR5::PROJECTEDREFDIM);
+        s_WPolar.setReferenceArea(m_pPlane->projectedArea());
+        s_WPolar.setReferenceSpanLength(m_pPlane->projectedSpan());
     }
     else if(m_pctrlArea3->isChecked())
     {
-        s_WPolar.referenceDim() = XFLR5::MANUALREFDIM;
-        s_WPolar.referenceArea()       = m_pctrlRefArea->value() /Units::m2toUnit();
-        s_WPolar.referenceSpanLength() = m_pctrlRefSpan->value() /Units::mtoUnit();
+        s_WPolar.setReferenceDim(XFLR5::MANUALREFDIM);
+        s_WPolar.setReferenceArea(m_pctrlRefArea->value() /Units::m2toUnit());
+        s_WPolar.setReferenceSpanLength(m_pctrlRefSpan->value() /Units::mtoUnit());
     }
 
-    s_WPolar.referenceChordLength() = m_pctrlRefChord->value() /Units::mtoUnit();
+    s_WPolar.setReferenceChordLength(m_pctrlRefChord->value() /Units::mtoUnit());
 
     setDensity();
 

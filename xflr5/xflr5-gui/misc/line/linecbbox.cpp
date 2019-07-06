@@ -1,7 +1,7 @@
 /****************************************************************************
 
     LineCbBox Class
-    Copyright (C) 2009-2016 Andre Deperrois 
+    Copyright (C) 2009-2019 Andre Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,6 +18,8 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 *****************************************************************************/
+
+#include <iostream>
 
 #include <globals/globals.h>
 #include <graph_globals.h>
@@ -56,7 +58,6 @@ QSize LineCbBox::sizeHint() const
 }
 
 
-
 void LineCbBox::setLine(int const &style, int const &width, QColor const &color, int const &pointStyle)
 {
     m_LineStyle.m_Style = style;
@@ -66,45 +67,48 @@ void LineCbBox::setLine(int const &style, int const &width, QColor const &color,
 }
 
 
-
 void LineCbBox::setLine(LineStyle lineStyle)
 {
     m_LineStyle = lineStyle;
 }
 
 
-void LineCbBox::paintEvent (QPaintEvent *event)
+void LineCbBox::paintEvent (QPaintEvent *pEvent)
 {
     QStyleOption opt;
     opt.initFrom(this);
+
     QPainter painter(this);
-    style()->drawPrimitive(QStyle::PE_Widget, &opt, &painter, this);
+//    style()->drawPrimitive(QStyle::PE_Widget, &opt, &painter, this);
 
     painter.save();
-
-    if(isEnabled())
+    QColor clr = m_LineStyle.m_Color;
+    if(!isEnabled())
     {
-
-        QRect r = event->rect();
-    //    QRect g = rect();
-        painter.setBrush(Qt::NoBrush);
-        painter.setBackgroundMode(Qt::TransparentMode);
-
-        QPen LinePen(m_LineStyle.m_Color);
-        LinePen.setStyle(getStyle(m_LineStyle.m_Style));
-        LinePen.setWidth(m_LineStyle.m_Width);
-        painter.setPen(LinePen);
-        painter.drawLine(r.left()+5, r.center().y(), r.width()-10, r.center().y());
-
-        if(m_bShowPoints)
-        {
-            LinePen.setStyle(Qt::SolidLine);
-            painter.setPen(LinePen);
-
-            QPalette palette;
-            drawPoint(painter, m_LineStyle.m_PointStyle, palette.window().color(), r.center());
-        }
+        QPalette pal;
+        clr = pal.color(QPalette::Disabled, QPalette::Button);
     }
+
+    QRect r = pEvent->rect();
+
+    painter.setBrush(Qt::NoBrush);
+    painter.setBackgroundMode(Qt::TransparentMode);
+
+    QPen LinePen(clr);
+    LinePen.setStyle(getStyle(m_LineStyle.m_Style));
+    LinePen.setWidth(m_LineStyle.m_Width);
+    painter.setPen(LinePen);
+    painter.drawLine(r.left()+5, r.center().y(), r.width()-10, r.center().y());
+
+    if(m_bShowPoints)
+    {
+        LinePen.setStyle(Qt::SolidLine);
+        painter.setPen(LinePen);
+
+        QPalette palette;
+        drawPoint(painter, m_LineStyle.m_PointStyle, palette.window().color(), r.center());
+    }
+
 
     painter.restore();
 }

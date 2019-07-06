@@ -42,10 +42,10 @@ public:
 
     void keyPressEvent(QKeyEvent *event);
 
-    int &pointStyle();
-    int &lineStyle();
-    int &lineWidth();
-    QColor &lineColor();
+    int pointStyle()   const {return m_PointStyle;}
+    int lineStyle()    const {return m_LineStyle;}
+    int lineWidth()    const {return m_LineWidth;}
+    QColor lineColor() const {return m_LineColor;}
 
     void setPointStyle(int pointStyle);
     void setLineStyle(int lineStyle);
@@ -55,6 +55,11 @@ public:
     void fillBoxes();
     void setupLayout();
 
+private slots:
+    void onPointStyle(int val);
+    void onLineStyle(int val);
+    void onLineWidth(int val);
+    void onLineColor();
 
 protected:
     LineBtn *m_pctrlLineColor;
@@ -70,11 +75,6 @@ private:
     LineDelegate *m_pPointStyleDelegate, *m_pLineStyleDelegate, *m_pWidthDelegate;
 
 
-private slots:
-    void onPointStyle(int val);
-    void onLineStyle(int val);
-    void onLineWidth(int val);
-    void onLineColor();
 
 };
 

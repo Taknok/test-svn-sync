@@ -84,7 +84,7 @@ bool Frame::serializeFrame(QDataStream &ar, bool bIsStoring)
         ar << m_CtrlPoint.size();
         for(k=0; k<m_CtrlPoint.size(); k++)
         {
-            ar << (float)m_CtrlPoint[k].x << (float)m_CtrlPoint[k].y << (float)m_CtrlPoint[k].z;
+            ar << m_CtrlPoint[k].xf() << m_CtrlPoint[k].yf() << m_CtrlPoint[k].zf();
         }
     }
     else
@@ -98,7 +98,7 @@ bool Frame::serializeFrame(QDataStream &ar, bool bIsStoring)
             ar >> fx;
             ar >> fy;
             ar >> fz;
-            m_CtrlPoint.append(Vector3d((double)fx, (double)fy, (double)fz));
+            m_CtrlPoint.append(Vector3d(double(fx), double(fy), double(fz)));
         }
     }
     return true;

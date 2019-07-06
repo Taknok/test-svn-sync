@@ -33,7 +33,7 @@ class LineBtn : public QAbstractButton
     Q_OBJECT
 
 public:
-    LineBtn(QWidget *parent = 0);
+    LineBtn(QWidget *parent = nullptr);
 
     void setStyle(int const &lineStyle, int const &width, QColor const & color, const int &pointStyle);
     void setColor(QColor const & color);
@@ -41,10 +41,10 @@ public:
     void setWidth(int const &width);
     void setPointStyle(int const & pointStyle);
 
-    QColor &color()    {return m_LineStyle.m_Color;}
-    int & lineStyle()  {return m_LineStyle.m_Style;}
-    int & width()      {return m_LineStyle.m_Width;}
-    int & pointStyle() {return m_LineStyle.m_PointStyle;}
+    QColor color()   const {return m_LineStyle.m_Color;}
+    int lineStyle()  const {return m_LineStyle.m_Style;}
+    int lineWidth()  const {return m_LineStyle.m_Width;}
+    int pointStyle() const {return m_LineStyle.m_PointStyle;}
 
 signals:
     void clickedLB();

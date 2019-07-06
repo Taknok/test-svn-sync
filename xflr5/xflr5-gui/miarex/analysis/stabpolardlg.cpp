@@ -46,8 +46,8 @@ StabPolarDlg::StabPolarDlg(QWidget *pParent) : QDialog(pParent)
 {
     setWindowTitle(tr("Stability Polar Definition"));
 
-    s_StabWPolar.points()=2;
-    s_StabWPolar.curveWidth()=2;
+    s_StabWPolar.setPoints(2);
+    s_StabWPolar.setCurveWidth(2);
     m_bAutoName = true;
     m_UnitType   = 1;
 
@@ -134,11 +134,11 @@ void StabPolarDlg::fillInertiaPage()
     if(s_StabWPolar.m_bAutoInertia)
     {
         s_StabWPolar.setMass(m_pPlane->totalMass());
-        s_StabWPolar.CoG()    = m_pPlane->CoG();
-        s_StabWPolar.CoGIxx() = m_pPlane->m_CoGIxx;
-        s_StabWPolar.CoGIyy() = m_pPlane->m_CoGIyy;
-        s_StabWPolar.CoGIzz() = m_pPlane->m_CoGIzz;
-        s_StabWPolar.CoGIxz() = m_pPlane->m_CoGIxz;
+        s_StabWPolar.setCoG(m_pPlane->CoG());
+        s_StabWPolar.setCoGIxx(m_pPlane->m_CoGIxx);
+        s_StabWPolar.setCoGIyy(m_pPlane->m_CoGIyy);
+        s_StabWPolar.setCoGIzz(m_pPlane->m_CoGIzz);
+        s_StabWPolar.setCoGIxz(m_pPlane->m_CoGIxz);
     }
 
     m_pInertiaControlModel->setRowCount(7);
@@ -391,7 +391,7 @@ void StabPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
 
     m_pctrlAutoName->setChecked(m_bAutoName);
 
-    s_StabWPolar.planeName() = m_pPlane->planeName();
+    s_StabWPolar.setPlaneName(m_pPlane->planeName());
     m_pctrlWPolarName->setText(s_StabWPolar.polarName());
 
     if(m_pPlane->isWing()) m_pctrlAnalysisControls->setCurrentIndex(0);
@@ -494,21 +494,21 @@ void StabPolarDlg::onArea()
 {
     if(m_pctrlArea1->isChecked())
     {
-        s_StabWPolar.referenceDim() = XFLR5::PLANFORMREFDIM;
+        s_StabWPolar.setReferenceDim(XFLR5::PLANFORMREFDIM);
         m_pctrlRefArea->setValue(m_pPlane->planformArea()*Units::m2toUnit());
         m_pctrlRefChord->setValue(m_pPlane->mac()*Units::mtoUnit());
         m_pctrlRefSpan->setValue(m_pPlane->planformSpan()*Units::mtoUnit());
     }
     else if(m_pctrlArea2->isChecked())
     {
-        s_StabWPolar.referenceDim() = XFLR5::PROJECTEDREFDIM;
+        s_StabWPolar.setReferenceDim(XFLR5::PROJECTEDREFDIM);
         m_pctrlRefArea->setValue(m_pPlane->projectedArea()*Units::m2toUnit());
         m_pctrlRefSpan->setValue(m_pPlane->projectedSpan()*Units::mtoUnit());
         m_pctrlRefChord->setValue(m_pPlane->mac()*Units::mtoUnit());
     }
     else if(m_pctrlArea3->isChecked())
     {
-        s_StabWPolar.referenceDim() = XFLR5::MANUALREFDIM;
+        s_StabWPolar.setReferenceDim(XFLR5::MANUALREFDIM);
         //        m_pctrlRefArea->SetValue(s_WPolar.referenceArea()Length*Units::m2toUnit());
         //        m_pctrlRefSpan->SetValue(s_WPolar.referenceSpanLength()*Units::mtoUnit());
         //        m_pctrlRefChord->SetValue(s_WPolar.m_referenceChordLength*Units::mtoUnit());
@@ -599,7 +599,7 @@ void StabPolarDlg::onOK()
         m_pctrlWPolarName->setFocus();
         return;
     }
-    s_StabWPolar.polarName() = m_pctrlWPolarName->text();
+    s_StabWPolar.setPolarName(m_pctrlWPolarName->text());
 
     accept();
 }
@@ -675,12 +675,12 @@ void StabPolarDlg::readInertiaData()
     else
     {
         s_StabWPolar.setMass(m_pInertiaControlModel->index(0, 1, QModelIndex()).data().toDouble() / Units::kgtoUnit());
-        s_StabWPolar.CoG().x  = m_pInertiaControlModel->index(1, 1, QModelIndex()).data().toDouble() / Units::mtoUnit();
-        s_StabWPolar.CoG().z  = m_pInertiaControlModel->index(2, 1, QModelIndex()).data().toDouble() / Units::mtoUnit();
-        s_StabWPolar.CoGIxx() = m_pInertiaControlModel->index(3, 1, QModelIndex()).data().toDouble() / Units::kgm2toUnit();
-        s_StabWPolar.CoGIyy() = m_pInertiaControlModel->index(4, 1, QModelIndex()).data().toDouble() / Units::kgm2toUnit();
-        s_StabWPolar.CoGIzz() = m_pInertiaControlModel->index(5, 1, QModelIndex()).data().toDouble() / Units::kgm2toUnit();
-        s_StabWPolar.CoGIxz() = m_pInertiaControlModel->index(6, 1, QModelIndex()).data().toDouble() / Units::kgm2toUnit();
+        s_StabWPolar.setCoGx(m_pInertiaControlModel->index(1, 1, QModelIndex()).data().toDouble() / Units::mtoUnit());
+        s_StabWPolar.setCoGz(m_pInertiaControlModel->index(2, 1, QModelIndex()).data().toDouble() / Units::mtoUnit());
+        s_StabWPolar.setCoGIxx(m_pInertiaControlModel->index(3, 1, QModelIndex()).data().toDouble() / Units::kgm2toUnit());
+        s_StabWPolar.setCoGIyy(m_pInertiaControlModel->index(4, 1, QModelIndex()).data().toDouble() / Units::kgm2toUnit());
+        s_StabWPolar.setCoGIzz(m_pInertiaControlModel->index(5, 1, QModelIndex()).data().toDouble() / Units::kgm2toUnit());
+        s_StabWPolar.setCoGIxz(m_pInertiaControlModel->index(6, 1, QModelIndex()).data().toDouble() / Units::kgm2toUnit());
 
         s_StabWPolar.m_inertiaGain[0] = m_pInertiaControlModel->index(0, 2, QModelIndex()).data().toDouble() / Units::kgtoUnit();
         s_StabWPolar.m_inertiaGain[1] = m_pInertiaControlModel->index(1, 2, QModelIndex()).data().toDouble() / Units::mtoUnit();
@@ -716,26 +716,24 @@ void StabPolarDlg::readData()
 
     if(m_pctrlArea1->isChecked())
     {
-        s_StabWPolar.referenceDim() = XFLR5::PLANFORMREFDIM;
-        s_StabWPolar.referenceArea()       = m_pPlane->planformArea();
-        s_StabWPolar.referenceSpanLength() = m_pPlane->planformSpan() ;
+        s_StabWPolar.setReferenceDim(XFLR5::PLANFORMREFDIM);
+        s_StabWPolar.setReferenceArea(m_pPlane->planformArea());
+        s_StabWPolar.setReferenceSpanLength(m_pPlane->planformSpan());
     }
     else if(m_pctrlArea2->isChecked())
     {
-        s_StabWPolar.referenceDim() = XFLR5::PROJECTEDREFDIM;
-        s_StabWPolar.referenceArea()       = m_pPlane->projectedArea();
-        s_StabWPolar.referenceSpanLength() = m_pPlane->projectedSpan();
+        s_StabWPolar.setReferenceDim(XFLR5::PROJECTEDREFDIM);
+        s_StabWPolar.setReferenceArea(m_pPlane->projectedArea());
+        s_StabWPolar.setReferenceSpanLength(m_pPlane->projectedSpan());
     }
     else if(m_pctrlArea3->isChecked())
     {
-        s_StabWPolar.referenceDim() = XFLR5::MANUALREFDIM;
-        s_StabWPolar.referenceArea()       = m_pctrlRefArea->value() /Units::m2toUnit();
-        s_StabWPolar.referenceSpanLength() = m_pctrlRefSpan->value() /Units::mtoUnit();
+        s_StabWPolar.setReferenceDim(XFLR5::MANUALREFDIM);
+        s_StabWPolar.setReferenceArea(m_pctrlRefArea->value() /Units::m2toUnit());
+        s_StabWPolar.setReferenceSpanLength(m_pctrlRefSpan->value() /Units::mtoUnit());
     }
-    s_StabWPolar.referenceChordLength() = m_pctrlRefChord->value() /Units::mtoUnit();
+    s_StabWPolar.setReferenceChordLength(m_pctrlRefChord->value() /Units::mtoUnit());
 }
-
-
 
 
 void StabPolarDlg::setDensity()

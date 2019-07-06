@@ -45,9 +45,9 @@ LinePickerDlg::LinePickerDlg(QWidget *pParent): QDialog(pParent)
     m_LineColor  = QColor(0,255,0);
     setupLayout();
 
-    m_pPointStyleDelegate = new LineDelegate(this);//will intercept painting operations
-    m_pLineStyleDelegate = new LineDelegate(this);//will intercept painting operations
-    m_pWidthDelegate = new LineDelegate(this);//will intercept painting operations
+    m_pPointStyleDelegate = new LineDelegate(m_pctrlPointStyle);
+    m_pLineStyleDelegate  = new LineDelegate(m_pctrlLineStyle);
+    m_pWidthDelegate      = new LineDelegate(m_pctrlLineWidth);
 
     m_pctrlPointStyle->setItemDelegate(m_pPointStyleDelegate);
     m_pctrlLineStyle->setItemDelegate(m_pLineStyleDelegate);
@@ -150,7 +150,6 @@ void LinePickerDlg::keyPressEvent(QKeyEvent *event)
                 accept();
                 return;
             }
-            break;
         }
         case Qt::Key_Escape:
         {
@@ -204,29 +203,6 @@ void LinePickerDlg::onLineColor()
     OKButton->setFocus();
 }
 
-
-int & LinePickerDlg::pointStyle()
-{
-    return m_PointStyle;
-}
-
-
-int & LinePickerDlg::lineStyle()
-{
-    return m_LineStyle;
-}
-
-
-int & LinePickerDlg::lineWidth()
-{
-    return m_LineWidth;
-}
-
-
-QColor & LinePickerDlg::lineColor()
-{
-    return m_LineColor;
-}
 
 void LinePickerDlg::setLineColor(QColor color)
 {

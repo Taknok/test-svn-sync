@@ -47,7 +47,6 @@ LineBtn::LineBtn(QWidget *parent)
 }
 
 
-
 void LineBtn::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
@@ -95,6 +94,7 @@ void LineBtn::setPointStyle(int const & pointStyle)
     update();
 }
 
+
 void LineBtn::setStyle(int const &style, int const &width, QColor const & color, int const & pointStyle)
 {
     m_LineStyle.m_Style = style;
@@ -105,14 +105,12 @@ void LineBtn::setStyle(int const &style, int const &width, QColor const & color,
 }
 
 
-
 void LineBtn::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
     painter.save();
 
     QRect r = rect();
-
 
     if(isEnabled())
     {

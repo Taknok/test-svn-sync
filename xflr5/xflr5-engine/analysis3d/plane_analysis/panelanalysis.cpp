@@ -211,7 +211,7 @@ bool PanelAnalysis::allocateMatrix(int matSize, int &memsize)
     memsize += sizeof(Vector3d) * 3 * matSize;
     memsize += sizeof(int)     * 1 * matSize;
 
-    strange = QString("PanelAnalysis::Memory allocation for the matrix arrays is %1 MB").arg((double)memsize/1024./1024., 7, 'f', 2);
+    strange = QString("PanelAnalysis::Memory allocation for the matrix arrays is %1 MB").arg(double(memsize)/1024./1024., 7, 'f', 2);
     //    Trace(strange);
 
     memset(m_aij,     0, size2 * sizeof(double));
@@ -545,24 +545,24 @@ bool PanelAnalysis::initializeAnalysis()
     if(m_pWPolar->bAutoInertia())
     {
         m_pWPolar->setMass(m_pPlane->totalMass());
-        m_pWPolar->CoG()    = m_pPlane->CoG();
-        m_pWPolar->CoGIxx() = m_pPlane->CoGIxx();
-        m_pWPolar->CoGIyy() = m_pPlane->CoGIyy();
-        m_pWPolar->CoGIzz() = m_pPlane->CoGIzz();
-        m_pWPolar->CoGIxz() = m_pPlane->CoGIxz();
+        m_pWPolar->setCoG(m_pPlane->CoG());
+        m_pWPolar->setCoGIxx(m_pPlane->CoGIxx());
+        m_pWPolar->setCoGIyy(m_pPlane->CoGIyy());
+        m_pWPolar->setCoGIzz(m_pPlane->CoGIzz());
+        m_pWPolar->setCoGIxz(m_pPlane->CoGIxz());
     }
 
     if(m_pWPolar->referenceDim()!=XFLR5::MANUALREFDIM)
     {
         if(m_pWPolar->referenceDim()==XFLR5::PLANFORMREFDIM)
         {
-            m_pWPolar->referenceArea()       = m_pPlane->planformArea();
-            m_pWPolar->referenceSpanLength() = m_pPlane->planformSpan();
+            m_pWPolar->setReferenceArea(m_pPlane->planformArea());
+            m_pWPolar->setReferenceSpanLength(m_pPlane->planformSpan());
         }
         else if(m_pWPolar->referenceDim()==XFLR5::PLANFORMREFDIM)
         {
-            m_pWPolar->referenceArea()       = m_pPlane->projectedArea();
-            m_pWPolar->referenceSpanLength() = m_pPlane->projectedSpan();
+            m_pWPolar->setReferenceArea(m_pPlane->projectedArea());
+            m_pWPolar->setReferenceSpanLength(m_pPlane->projectedSpan());
         }
     }
     strange = QString::fromUtf8("Reference Area   = %1m²").arg(m_pWPolar->referenceArea(), 11, 'g', 5);

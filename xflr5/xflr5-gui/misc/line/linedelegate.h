@@ -29,13 +29,13 @@
 #include <QColor>
 #include <QAbstractItemModel>
 
-
+class LineCbBox;
 class LineDelegate : public QAbstractItemDelegate
 {
     Q_OBJECT
 
 public:
-    LineDelegate (QObject *parent = NULL);
+    LineDelegate (LineCbBox *parent = nullptr);
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
     QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index ) const;
@@ -47,7 +47,7 @@ public:
 
 
 private:
-    void * m_pCbBox; //pointer to the parent QLineComboBox
+    LineCbBox * m_pCbBox; //pointer to the parent QLineComboBox
     QSize m_Size;
 
     int m_LineStyle[5]; // values depend on whether we have a line or width CbBox....

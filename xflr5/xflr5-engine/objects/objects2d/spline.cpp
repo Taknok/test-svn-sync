@@ -32,9 +32,9 @@ Spline::Spline()
 {
     m_Style = 0;
     m_Width = 1;
-    m_red   = (int)(((double)rand()/(double)RAND_MAX)*200);
-    m_green = (int)(((double)rand()/(double)RAND_MAX)*200);
-    m_blue  = (int)(((double)rand()/(double)RAND_MAX)*200);
+    m_red   = int((double(rand())/double(RAND_MAX))*200);
+    m_green = int((double(rand())/double(RAND_MAX))*200);
+    m_blue  = int((double(rand())/double(RAND_MAX))*200);
     m_alphaChannel = 255;
 
     m_CtrlPoint.clear();
@@ -316,7 +316,7 @@ void Spline::splineCurve()
     if (m_CtrlPoint.size()>=3)
     {
         t = 0;
-        increment = 1.0/(double)(m_iRes - 1);
+        increment = 1.0/double(m_iRes - 1);
         
         for (j=0;j<m_iRes;j++)
         {
@@ -360,8 +360,8 @@ void Spline::splineKnots()
         {
             if(j<m_CtrlPoint.size())
             {
-                a = (double)(j-iDegree);
-                b = (double)(nKnots-2*iDegree-1);
+                a = double(j-iDegree);
+                b = double(nKnots-2*iDegree-1);
                 if(qAbs(b)>0.0) m_knot.append(a/b);
                 else            m_knot.append(1.0);
             }
@@ -369,11 +369,6 @@ void Spline::splineKnots()
         }
     }
 }
-
-
-
-
-
 
 
 void Spline::getColor(int &r, int &g, int &b, int &a)

@@ -728,8 +728,8 @@ void Surface::getYDist(int const &k, double &y1, double &y2) const
     //leading edge
 
     double YPanels, dk;
-    YPanels = (double)m_NYPanels;
-    dk      = (double)k;
+    YPanels = double(m_NYPanels);
+    dk      = double(k);
 
     if(m_YDistType==XFLR5::COSINE)
     {
@@ -1243,8 +1243,8 @@ void Surface::createXPoints()
     if(m_pFoilA && m_pFoilA->m_bTEFlap) xHingeA=m_pFoilA->m_TEXHinge/100.0; else xHingeA=1.0;
     if(m_pFoilB && m_pFoilB->m_bTEFlap) xHingeB=m_pFoilB->m_TEXHinge/100.0; else xHingeB=1.0;
 
-    NXFlapA = (int)((1.0-xHingeA) * (double)m_NXPanels*1.000123);// to avoid numerical errors if exact division
-    NXFlapB = (int)((1.0-xHingeB) * (double)m_NXPanels *1.000123);
+    NXFlapA = int((1.0-xHingeA) * double(m_NXPanels) *1.000123);// to avoid numerical errors if exact division
+    NXFlapB = int((1.0-xHingeB) * double(m_NXPanels) *1.000123);
 
     if(m_pFoilA && m_pFoilA->m_bTEFlap && NXFlapA==0) NXFlapA++;
     if(m_pFoilB && m_pFoilB->m_bTEFlap && NXFlapB==0) NXFlapB++;
@@ -1252,7 +1252,7 @@ void Surface::createXPoints()
     // uniformize the number of flap panels if flaps are defined at each end
     if(NXFlapA>0 && NXFlapB>0)
     {
-        int n = (int)((NXFlapA+NXFlapB)/2);
+        int n = int((NXFlapA+NXFlapB)/2);
         NXFlapA = n;
         NXFlapB = n;
     }
@@ -1261,13 +1261,13 @@ void Surface::createXPoints()
     NXLeadB = m_NXPanels - NXFlapB;
 
     m_NXFlap  = qMax(NXFlapA, NXFlapB);
-    if(m_NXFlap>m_NXPanels/2) m_NXFlap=(int)m_NXPanels/2;
+    if(m_NXFlap>m_NXPanels/2) m_NXFlap=int(m_NXPanels/2);
     m_NXLead  = m_NXPanels - m_NXFlap;
 
     for(l=0; l<NXFlapA; l++)
     {
-        dl =  (double)l;
-        dl2 = (double)NXFlapA;
+        dl =  double(l);
+        dl2 = double(NXFlapA);
         if(m_XDistType==XFLR5::COSINE)
             m_xPointA[l] = 1.0 - (1.0-xHingeA)/2.0 * (1.0-cos(dl*PI /dl2));
         else
@@ -1276,8 +1276,8 @@ void Surface::createXPoints()
 
     for(l=0; l<NXLeadA; l++)
     {
-        dl =  (double)l;
-        dl2 = (double)NXLeadA;
+        dl =  double(l);
+        dl2 = double(NXLeadA);
         if(m_XDistType==XFLR5::COSINE)
             m_xPointA[l+NXFlapA] = xHingeA - (xHingeA)/2.0 * (1.0-cos(dl*PI /dl2));
         else
@@ -1286,8 +1286,8 @@ void Surface::createXPoints()
 
     for(l=0; l<NXFlapB; l++)
     {
-        dl =  (double)l;
-        dl2 = (double)NXFlapB;
+        dl =  double(l);
+        dl2 = double(NXFlapB);
         if(m_XDistType==XFLR5::COSINE)
             m_xPointB[l] = 1.0 - (1.0-xHingeB)/2.0 * (1.0-cos(dl*PI /dl2));
         else
@@ -1296,8 +1296,8 @@ void Surface::createXPoints()
 
     for(l=0; l<NXLeadB; l++)
     {
-        dl =  (double)l;
-        dl2 = (double)NXLeadB;
+        dl =  double(l);
+        dl2 = double(NXLeadB);
         if(m_XDistType==XFLR5::COSINE)
             m_xPointB[l+NXFlapB] = xHingeB - (xHingeB)/2.0 * (1.0-cos(dl*PI /dl2));
         else
@@ -1305,7 +1305,8 @@ void Surface::createXPoints()
     }
 
     m_xPointA[m_NXPanels] = 0.0;
-    m_xPointB[m_NXPanels] = 0.0;}
+    m_xPointB[m_NXPanels] = 0.0;
+}
 
 
 /**
