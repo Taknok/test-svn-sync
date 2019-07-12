@@ -72,7 +72,7 @@ public:
 
     Foil * foilPtr()   const {return m_pFoil;}
     Polar * polarPtr() const {return m_pPolar;}
-    OpPoint * oppPtr() {return m_pOpPoint;}
+    OpPoint * oppPtr() const {return m_pOpPoint;}
 
 private:
     Foil *m_pFoil=nullptr;
