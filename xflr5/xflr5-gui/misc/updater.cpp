@@ -83,7 +83,7 @@ void Updater::checkForUpdates()
             break;
     }
 
-    QUrl url("https://www.xflr5.com/rss/rssfeed.xml");
+    QUrl url("https://www.xflr5.tech/rss/rssfeed.xml");
 
     QNetworkRequest request;
     request.setUrl(url);
@@ -209,7 +209,6 @@ void Updater::slotError(QNetworkReply::NetworkError neterror)
         case QNetworkReply::ProtocolFailure:
             Trace("A breakdown in protocol was detected (parsing error, invalid or unexpected responses, etc.)");
             break;
-        default:
         case QNetworkReply::UnknownServerError:
             Trace("An unknown error related to the server response was detected");
             break;

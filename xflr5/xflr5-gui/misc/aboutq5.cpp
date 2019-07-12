@@ -45,7 +45,7 @@ void AboutQ5::setupLayout()
         QLabel *lab1  = new QLabel(VERSIONNAME);
         lab1->setAlignment(Qt::AlignVCenter| Qt::AlignLeft);
         QLabel *XFLR5Link = new QLabel;
-        XFLR5Link->setText("<a href=http://www.xflr5.com>http://www.xflr5.com</a>");
+        XFLR5Link->setText("<a href=http://www.xflr5.tech>http://www.xflr5.tech</a>");
         XFLR5Link->setOpenExternalLinks(true);
         XFLR5Link->setTextInteractionFlags(Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse);
         XFLR5Link->setAlignment(Qt::AlignVCenter| Qt::AlignLeft);
