@@ -61,7 +61,7 @@ public:
     static void      addPolar(Polar *pPolar);
     static void      appendPolar(Polar *pPolar) {s_oaPolar.append(pPolar);}
     static Polar*    insertNewPolar(Polar *pModPolar, Foil *pCurFoil);
-    static Polar*    getPolar(Foil *pFoil, QString PolarName);
+    static Polar*    getPolar(Foil const *pFoil, QString PolarName);
     static Polar*    getPolar(QString m_FoilName, QString PolarName);
     static Polar*    polarAt(int index);
     static void      deletePolar(Polar *pPolar);
@@ -71,10 +71,10 @@ public:
     static OpPoint*  getOpp(Foil *pFoil, Polar *pPolar, double Alpha);
     static OpPoint*  getFoilOpp(Foil *pFoil, Polar *pPolar, double x);
     static void      insertOpPoint(OpPoint *pNewPoint);
-    static void      appendOpp(OpPoint*pOpp) {s_oaOpp.append(pOpp);}
+    static void      appendOpp(OpPoint *pOpp) {s_oaOpp.append(pOpp);}
     static bool      deleteOpp(OpPoint *pOpp);
     static void      deleteOppAt(int index);
-    static OpPoint*  addOpPoint(Foil *pFoil, Polar *pPolar, OpPoint *pOpPoint, bool bStoreOpp);
+    static OpPoint*  addOpPoint(const Foil *pFoil, Polar *pPolar, OpPoint *pOpPoint, bool bStoreOpp);
 
     static int foilCount() {return s_oaFoil.size();}
     static int polarCount() {return s_oaPolar.size();}

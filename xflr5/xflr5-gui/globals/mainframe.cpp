@@ -3541,7 +3541,7 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString pathname)
 
         XFile.close();
 
-        addRecentFile(pathname);
+//        addRecentFile(pathname);
         setSaveState(false);
         m_pXDirect->setControls();
         return XFLR5::XFOILANALYSIS;
@@ -3567,7 +3567,7 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString pathname)
             XFile.close();
 
             setSaveState(false);
-            addRecentFile(pathname);
+//            addRecentFile(pathname);
 
             if(m_iApp==XFLR5::XFOILANALYSIS)
             {

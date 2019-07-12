@@ -203,7 +203,7 @@ void Objects2d::insertThisFoil(Foil *pFoil)
 * @param pPolarPtr a point to the parent Polar object to which the OpPoint should be attached.
 * @return a pointer to the OpPoint which has been created, or NULL if it wasn't stored.
 */
-OpPoint* Objects2d::addOpPoint(Foil *pFoil, Polar *pPolar, OpPoint *pOpPoint, bool bStoreOpp)
+OpPoint* Objects2d::addOpPoint(Foil const *pFoil, Polar *pPolar, OpPoint *pOpPoint, bool bStoreOpp)
 {
     if(!pFoil || !pOpPoint) return nullptr;
 
@@ -666,7 +666,7 @@ void Objects2d::addPolar(Polar *pPolar)
 }
 
 
-Polar *Objects2d::getPolar(Foil *pFoil, QString PolarName)
+Polar *Objects2d::getPolar(const Foil *pFoil, QString PolarName)
 {
     if (!PolarName.length()) return nullptr;
 

@@ -60,8 +60,8 @@ public:
 
     void initDialog();
 
-    void handleXFoilTaskEvent(const XFoilTaskEvent *event);
-    void customEvent(QEvent * event);
+    void handleXFoilTaskEvent(const XFoilTaskEvent *pEvent);
+    void customEvent(QEvent *pEvent);
 
 private slots:
     void onCancelAnalysis();

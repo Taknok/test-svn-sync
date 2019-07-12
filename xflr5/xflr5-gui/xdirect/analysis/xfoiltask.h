@@ -52,7 +52,7 @@ struct FoilAnalysis
 class XFoilTask : public QRunnable
 {
 public:
-    XFoilTask(void *pParent = nullptr);
+    XFoilTask(QObject *pParent = nullptr);
 
 
 public:
@@ -65,7 +65,7 @@ public:
     bool initializeTask(Foil *pFoil, Polar *pPolar, bool bStoreOpp, bool bViscous=true, bool bInitBL=true, bool bFromZero=false);
     bool iterate();
 
-    void setSequence(double bAlpha, double SpMin, double SpMax, double SpInc);
+    void setSequence(bool bAlpha, double SpMin, double SpMax, double SpInc);
     void setReRange(double ReMin, double ReMax, double ReInc);
     void traceLog(QString str);
 
@@ -108,7 +108,7 @@ public:
 
     QVector<OpPoint*> m_OppList;
 
-    void *m_pParent;
+    QObject *m_pParent;
 
 private:
     Foil *m_pFoil;           /**< A pointer to the instance of the Foil object for which the calculation is performed */

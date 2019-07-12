@@ -39,7 +39,7 @@ bool XFoilTask::s_bSkipPolar = false;
 /**
 * The public constructor
 */
-XFoilTask::XFoilTask(void *pParent)
+XFoilTask::XFoilTask(QObject *pParent)
 {
     setAutoDelete(true);
     m_pParent = pParent;
@@ -57,7 +57,7 @@ XFoilTask::XFoilTask(void *pParent)
     m_bStoreOpp = false;
 
     m_OutMessage.clear();
-    m_OutStream.setDevice(NULL);
+    m_OutStream.setDevice(nullptr);
 
     m_bErrors = false;
     m_x0 = m_x1 = m_y0 = m_y1 = nullptr;
@@ -71,7 +71,6 @@ XFoilTask::XFoilTask(void *pParent)
 */
 void XFoilTask::run()
 {
-
     if(s_bCancel || !m_pPolar || !m_pFoil)
     {
         m_bIsFinished = true;
@@ -85,7 +84,9 @@ void XFoilTask::run()
 
     // For multithreaded analysis, post an event to notify parent window that the task is done
     if(m_pParent)
-        qApp->postEvent((QObject*)m_pParent, new XFoilTaskEvent(m_pFoil, m_pPolar));
+    {
+        qApp->postEvent(m_pParent, new XFoilTaskEvent(m_pFoil, m_pPolar));
+    }
 }
 
 /**
@@ -138,7 +139,7 @@ bool XFoilTask::initializeTask(Foil *pFoil, Polar *pPolar, bool bStoreOpp, bool 
  * @param SpMax the maximum value of the range to analyze
  * @param SpInc the increment value for the parameter
  */
-void XFoilTask::setSequence(double bAlpha, double SpMin, double SpMax, double SpInc)
+void XFoilTask::setSequence(bool bAlpha, double SpMin, double SpMax, double SpInc)
 {
     m_bAlpha = bAlpha;
     if(bAlpha)
@@ -177,11 +178,9 @@ bool XFoilTask::alphaSequence()
 {
     QString str;
 
-    double alphadeg;
-    int ia, iSeries, total, MaxSeries;
-    double SpMin, SpMax, SpInc;
+    double SpMin=0, SpMax=0, SpInc=0;
 
-    MaxSeries = 1;
+    int MaxSeries = 1;
     if(m_bAlpha)
     {
         SpMin = m_AlphaMin;
@@ -203,13 +202,13 @@ bool XFoilTask::alphaSequence()
 
     if(SpMin > SpMax) SpInc = -qAbs(SpInc);
 
-    for (iSeries=0; iSeries<MaxSeries; iSeries++)
+    for (int iSeries=0; iSeries<MaxSeries; iSeries++)
     {
         if(s_bCancel) break;
 
         qApp->processEvents();
 
-        total = (int)qAbs((SpMax*1.0001-SpMin)/SpInc);//*1.0001 to make sure upper limit is included
+        int total = int(qAbs((SpMax*1.0001-SpMin)/SpInc));//*1.0001 to make sure upper limit is included
 
         if(m_bInitBL)
         {
@@ -217,7 +216,7 @@ bool XFoilTask::alphaSequence()
             m_XFoilInstance.lipan = false;
         }
 
-        for (ia=0; ia<=total; ia++)
+        for (int ia=0; ia<=total; ia++)
         {
             if(s_bCancel) break;
             if(s_bSkipPolar)
@@ -232,7 +231,7 @@ bool XFoilTask::alphaSequence()
 
             if(m_bAlpha)
             {
-                alphadeg = SpMin+ia*SpInc;
+                double alphadeg = SpMin+ia*SpInc;
 
                 m_XFoilInstance.setAlpha(alphadeg * PI/180.0);
                 m_XFoilInstance.lalfa = true;
@@ -278,6 +277,12 @@ bool XFoilTask::alphaSequence()
             {
                 str = QString(QObject::tr("   ...converged after %1 iterations\n")).arg(m_Iterations);
                 traceLog(str);
+                if(m_pParent)
+                {
+                    OpPoint *pOpPoint = new OpPoint;
+                    addXFoilData(pOpPoint, &m_XFoilInstance, m_pFoil);
+                    qApp->postEvent(m_pParent, new XFoilOppEvent(m_pFoil, m_pPolar, pOpPoint));
+                }
             }
             else
             {
@@ -286,20 +291,12 @@ bool XFoilTask::alphaSequence()
                 m_bErrors = true;
             }
 
-            if(m_pParent)
-            {
-                OpPoint *pOpPoint = new OpPoint;
-                addXFoilData(pOpPoint, &m_XFoilInstance, m_pFoil);
-                qApp->postEvent((QObject*)m_pParent, new XFoilOppEvent(m_pFoil, m_pPolar, pOpPoint));
-            }
-
             if(XFoil::fullReport())
             {
                 m_XFoilStream.flush();
                 traceLog(m_XFoilLog);
                 m_XFoilLog.clear();
             }
-
 
             if(m_x0) m_x0->clear();
             if(m_x1) m_x1->clear();
@@ -392,7 +389,7 @@ bool XFoilTask::ReSequence()
         {
             OpPoint *pOpPoint = new OpPoint;
             addXFoilData(pOpPoint, &m_XFoilInstance, m_pFoil);
-            qApp->postEvent((QObject*)m_pParent, new XFoilOppEvent(m_pFoil, m_pPolar, pOpPoint));
+            qApp->postEvent(m_pParent, new XFoilOppEvent(m_pFoil, m_pPolar, pOpPoint));
         }
 
         if(XFoil::fullReport())
@@ -431,12 +428,12 @@ bool XFoilTask::iterate()
         {
             if(m_x0 && m_y0)
             {
-                m_x0->append((double)m_Iterations);
+                m_x0->append(double(m_Iterations));
                 m_y0->append(m_XFoilInstance.rmsbl);
             }
             if(m_x1 && m_y1)
             {
-                m_x1->append((double)m_Iterations);
+                m_x1->append(double(m_Iterations));
                 m_y1->append(m_XFoilInstance.rmxbl);
             }
             m_Iterations++;
@@ -487,7 +484,6 @@ bool XFoilTask::iterate()
         m_XFoilInstance.fcpmin();// Is it of any use ?
         return true;
     }
-    return false;
 }
 
 

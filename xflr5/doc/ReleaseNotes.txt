@@ -15,7 +15,14 @@
 *******************************************************************************
 
 
-xflr5 v6.47 July xxxth, 2019
+
+xflr5 v6.48 July xxxth, 2019
+    - corrected the bug which caused unconverged XFoil operating points to be stored
+    - removed the addition of .dat and .plr type files to the recent file menu list
+
+
+
+xflr5 v6.47 July 7th, 2019
     - Fixed the problem of initial settings when running an LLT analysis
     - Modified the color display of Cp coefficients in the 3d view, to render more accurately the uniformity of singularities on panels
     - Added an option to align the children objects style with their parent's style
