@@ -112,23 +112,19 @@ void Spline::copySymetric(Spline *pSpline)
 }
 
 
-
 /** Returns the y-coordinate of the spline at the specified x-coordinate
  *@param x the x-coordinate
  *@return the y-value
  */
-double Spline::getY(double const &x)
+double Spline::getY(double const &x) const
 {
-    int i;
-    double y;
-
     if(x<=0.0 || x>=1.0) return 0.0;
 
-    for (i=0; i<m_iRes-1; i++)
+    for (int i=0; i<m_iRes-1; i++)
     {
         if (m_Output[i].x <m_Output[i+1].x  && m_Output[i].x <= x && x<=m_Output[i+1].x )
         {
-            y = (m_Output[i].y     + (m_Output[i+1].y-m_Output[i].y)
+            double y = (m_Output[i].y     + (m_Output[i+1].y-m_Output[i].y)
             /(m_Output[i+1].x-m_Output[i].x)*(x-m_Output[i].x));
             return y;
         }
@@ -193,7 +189,7 @@ bool Spline::insertPoint(double const &x, double const &y)
 *@param Real the input point to compare with the control points
 *@return the index of the first control point which matches, or -10 if none matches.
 */
-int Spline::isControlPoint(Vector3d const &Real)
+int Spline::isControlPoint(Vector3d const &Real) const
 {
     int k;
     for (k=0; k<m_CtrlPoint.size(); k++)
@@ -210,7 +206,7 @@ int Spline::isControlPoint(Vector3d const &Real)
 *@param ZoomFactor the scaling factor to withdraw from the input point @todo withdrawal to be performed from within the calling function.
 *@return the index of the first control point which matches, or -10 if none matches.
 */
-int Spline::isControlPoint(Vector3d const &Real, double const &ZoomFactor)
+int Spline::isControlPoint(Vector3d const &Real, double const &ZoomFactor) const
 {
     int k;
     for (k=0; k<m_CtrlPoint.size(); k++)
@@ -229,7 +225,7 @@ int Spline::isControlPoint(Vector3d const &Real, double const &ZoomFactor)
 *@param zy the scaling factor of the y-scale, to withdraw from the input point @todo withdrawal to be performed from within the calling function.
 *@return the index of the first control point which matches, or -10 if none matches.
 */
-int Spline::isControlPoint(double const &x, double const &y, double const &zx, double const &zy)
+int Spline::isControlPoint(double const &x, double const &y, double const &zx, double const &zy) const
 {
     int k;
     for (k=0; k<m_CtrlPoint.size(); k++)

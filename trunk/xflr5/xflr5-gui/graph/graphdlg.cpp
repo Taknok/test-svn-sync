@@ -233,7 +233,6 @@ void GraphDlg::keyPressEvent(QKeyEvent *event)
                 onOK();
                 return;
             }
-            break;
         }
         case Qt::Key_Escape:
         {

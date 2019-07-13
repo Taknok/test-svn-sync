@@ -17,7 +17,7 @@
 
 
 GLRenderWindow::GLRenderWindow(const QSurfaceFormat &format)
-    : m_pContext(0),
+    : m_pContext(nullptr),
       m_initialized(false),
       m_forceGLSL110(false),
       m_angle(0.0f)
@@ -29,7 +29,7 @@ GLRenderWindow::GLRenderWindow(const QSurfaceFormat &format)
     if (!m_pContext->create())
     {
         delete m_pContext;
-        m_pContext = 0;
+        m_pContext = nullptr;
     }
     xRot = yRot = zRot = 0;
     m_pOpenGLTexture = nullptr;
@@ -175,7 +175,7 @@ void GLRenderWindow::render()
         return;
 
     const qreal retinaScale = devicePixelRatio();
-    f->glViewport(0, 0, width() * retinaScale, height() * retinaScale);
+    f->glViewport(0, 0, int(width() * retinaScale), int(height() * retinaScale));
     f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     m_pShaderProgram->bind();
@@ -219,8 +219,6 @@ void GLRenderWindow::render()
 }
 
 
-
-
 void GLRenderWindow::makeObject()
 {
     static const int coords[4][3] =    { { +1, -1, -1 }, { -1, -1, -1 }, { -1, +1, -1 }, { +1, +1, -1 } };
@@ -230,9 +228,9 @@ void GLRenderWindow::makeObject()
     QVector<GLfloat> vertData;
     for (int j=0; j<4; ++j) {
         // vertex position
-        vertData.append(0.1 * coords[j][0]);
-        vertData.append(0.4 * coords[j][1]);
-        vertData.append(0.1 * coords[j][2]);
+        vertData.append(0.1f * coords[j][0]);
+        vertData.append(0.4f * coords[j][1]);
+        vertData.append(0.1f * coords[j][2]);
         // texture coordinate
         vertData.append(j == 0 || j == 1);
         vertData.append(j == 0 || j == 3);
@@ -240,6 +238,6 @@ void GLRenderWindow::makeObject()
 
     m_vbo.create();
     m_vbo.bind();
-    m_vbo.allocate(vertData.constData(), vertData.count() * sizeof(GLfloat));
+    m_vbo.allocate(vertData.constData(), vertData.count() * int(sizeof(GLfloat)));
 }
 

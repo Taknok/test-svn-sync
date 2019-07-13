@@ -52,20 +52,20 @@ public:
     SplineFoil();
     SplineFoil(SplineFoil *pSF);
 
-    bool isVisible(){return m_bVisible;}
-    bool isSymetric(){return m_bSymetric;}
-    bool showOutPoints(){return m_bOutPoints;}
-    bool showCenterLine(){return m_bCenterLine;}
-    int splineFoilWidth(){return m_FoilWidth;}
-    int splineFoilStyle(){return m_FoilStyle;}
-    int splinePointStyle(){return m_PointStyle;}
-    QColor splineFoilColor(){return m_FoilColor;}
-    QString splineFoilName(){return m_strFoilName;}
+    bool isVisible()         const {return m_bVisible;}
+    bool isSymetric()        const {return m_bSymetric;}
+    bool showOutPoints()     const {return m_bOutPoints;}
+    bool showCenterLine()    const {return m_bCenterLine;}
+    int splineFoilWidth()    const {return m_FoilWidth;}
+    int splineFoilStyle()    const {return m_FoilStyle;}
+    int splinePointStyle()   const {return m_PointStyle;}
+    QColor splineFoilColor() const {return m_FoilColor;}
+    QString splineFoilName() const {return m_strFoilName;}
 
     Spline *extrados(){return &m_Extrados;}
     Spline *intrados(){return &m_Intrados;}
 
-    bool isModified(){return m_bModified;}
+    bool isModified() const  {return m_bModified;}
     void setModified(bool bModified){m_bModified = bModified;}
 
     void setVisible(bool bVisible){m_bVisible = bVisible;}

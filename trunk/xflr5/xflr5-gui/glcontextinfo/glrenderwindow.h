@@ -56,8 +56,8 @@ class GLRenderWindow : public QWindow
 
 public:
     GLRenderWindow(const QSurfaceFormat &format);
-    ~GLRenderWindow();
-    QOpenGLContext *context() { return m_pContext; }
+    ~GLRenderWindow() override;
+    QOpenGLContext *context() {return m_pContext; }
     void exposeEvent(QExposeEvent *) Q_DECL_OVERRIDE;
     void setForceGLSL110(bool enable) { m_forceGLSL110 = enable; }
 

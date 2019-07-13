@@ -58,11 +58,11 @@ public:
 
     bool insertPoint(double const &x, double const &y);
     bool removePoint(int const &k);
-    int isControlPoint(Vector3d const &Real);
-    int isControlPoint(double const &x, double const &y, double const &zx, double const &zy);
-    int isControlPoint(Vector3d const &Real, double const &ZoomFactor);
+    int isControlPoint(Vector3d const &Real) const;
+    int isControlPoint(double const &x, double const &y, double const &zx, double const &zy) const;
+    int isControlPoint(Vector3d const &Real, double const &ZoomFactor) const;
     double splineBlend(int const &i, int const &p, double const &t);
-    double getY(double const &x);
+    double getY(double const &x) const;
 
     void clearPoints() {m_CtrlPoint.clear();}
 
@@ -75,11 +75,12 @@ public:
     void setWidth(int width){m_Width = width;}
     void getColor(int &r, int &g, int &b, int &a);
     void setColor(int r, int g, int b, int a=255);
-    int red() {return m_red;}
-    int green() {return m_green;}
-    int blue() {return m_blue;}
-    int alphaChannel(){return m_alphaChannel;}
-
+    int red() const {return m_red;}
+    int green() const {return m_green;}
+    int blue() const {return m_blue;}
+    int alphaChannel() const {return m_alphaChannel;}
+    int style() const {return m_Style;}
+    int width() const {return m_Width;}
 
     int m_iHighlight;                /**< the index of the currently highlighted control point, i.e. the point over which the mouse hovers, or -1 of none. */
     int m_iSelect;                   /**< the index of the currently selected control point, i.e. the point on which the user has last click, or -1 if none. */

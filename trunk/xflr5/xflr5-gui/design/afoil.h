@@ -74,7 +74,7 @@ class AFoil : public QWidget
     friend class CAddDlg;
 
 public:
-    AFoil(QWidget *parent = NULL);
+    AFoil(QWidget *parent = nullptr);
     ~AFoil();
 
     void setupLayout();
@@ -129,7 +129,7 @@ private:
     void fillTableRow(int row);
     void showFoil(Foil* pFoil, bool bShow=true);
     void setAFoilParams();
-    void selectFoil(Foil* pFoil = NULL);
+    void selectFoil(Foil* pFoil = nullptr);
     void paintSplines(QPainter &painter);
     void paintFoils(QPainter &painter);
     void setTableFont();

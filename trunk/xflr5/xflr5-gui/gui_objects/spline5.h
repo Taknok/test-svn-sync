@@ -85,14 +85,11 @@ public:
         m_Color = color;
     }
 
-    QColor color() {return m_Color;}
-    int style() {return m_Style;}
-    int width() {return m_Width;}
+    QColor color() const {return m_Color;}
+
 
 private:
     QColor m_Color;                  /**< the spline's display color */
-    int m_Style;                     /**< the index of the spline's style */
-    int m_Width;                     /**< the width of the spline */
 };
 
 

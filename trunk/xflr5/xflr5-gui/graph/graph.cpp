@@ -181,7 +181,7 @@ void Graph::drawCurve(int nIndex, QPainter &painter)
 
     QPen CurvePen(pCurve->color());
     CurvePen.setStyle(getStyle(pCurve->style()));
-    CurvePen.setWidth((int)pCurve->width());
+    CurvePen.setWidth(pCurve->width());
     painter.setPen(CurvePen);
 
     Min.setX(int(xmin/m_scalex) +m_ptoffset.x());
@@ -226,7 +226,7 @@ void Graph::drawCurve(int nIndex, QPainter &painter)
         {
             //highlight
             QColor HighColor(200, 100, 77);
-            CurvePen.setWidth((int)pCurve->width()+1);
+            CurvePen.setWidth(pCurve->width()+1);
             CurvePen.setColor(HighColor);
             painter.setPen(CurvePen);
             To.setX(int(pCurve->x[point]/m_scalex+m_ptoffset.x()));
@@ -255,8 +255,8 @@ void Graph::drawAxes(QPainter &painter)
     else if(xo>xmax)         xp = xmax;
     else                     xp = xmin;
 
-    painter.drawLine((int)(xp/m_scalex) + m_ptoffset.x(), (int)(ymin/scaley) + m_ptoffset.y(),
-                     (int)(xp/m_scalex) + m_ptoffset.x(), (int)(ymax/scaley) + m_ptoffset.y());
+    painter.drawLine(int(xp/m_scalex) + m_ptoffset.x(), int(ymin/scaley) + m_ptoffset.y(),
+                     int(xp/m_scalex) + m_ptoffset.x(), int(ymax/scaley) + m_ptoffset.y());
 
     //horizontal axis
     if(yo>=ymin && yo<=ymax) yp = yo;
@@ -264,8 +264,8 @@ void Graph::drawAxes(QPainter &painter)
     else                     yp = ymin;
 
 
-    painter.drawLine((int)(xmin/m_scalex) +m_ptoffset.x(), (int)(yp/scaley) + m_ptoffset.y(),
-                     (int)(xmax/m_scalex) +m_ptoffset.x(), (int)( yp/scaley) + m_ptoffset.y());
+    painter.drawLine(int(xmin/m_scalex) +m_ptoffset.x(), int(yp/scaley) + m_ptoffset.y(),
+                     int(xmax/m_scalex) +m_ptoffset.x(), int( yp/scaley) + m_ptoffset.y());
 
     painter.restore();
 }
@@ -298,10 +298,10 @@ void Graph::drawTitles(QPainter &painter)
     QPen TitlePen(m_TitleColor);
     painter.setPen(TitlePen);
 
-    painter.drawText(  (int)(xmax/m_scalex) + m_ptoffset.x() + XPosXTitle,
-                       (int)(yp  /scaley)   + m_ptoffset.y() + YPosXTitle, m_XTitle);
+    painter.drawText(  int(xmax/m_scalex) + m_ptoffset.x() + XPosXTitle,
+                       int(yp  /scaley)   + m_ptoffset.y() + YPosXTitle, m_XTitle);
 
-    painter.drawText(  m_ptoffset.x() + (int)(xp/m_scalex)   + XPosYTitle,
+    painter.drawText(  m_ptoffset.x() + int(xp/m_scalex)   + XPosYTitle,
                        m_rCltRect.top() + m_iMargin - YPosYTitle, m_YTitle);
     painter.restore();
 }
@@ -337,7 +337,7 @@ void Graph::drawXTicks(QPainter &painter)
     LabelPen.setWidth(m_AxisWidth);
     painter.setPen(LabelPen);
     xt = xo-(xo-xmin);//one tick at the origin
-    nx = (int)((xo-xmin)/xunit);
+    nx = int((xo-xmin)/xunit);
     xt = xo - nx*xunit;
 
     if(yo>=ymin && yo<=ymax) yp = yo;
@@ -359,8 +359,8 @@ void Graph::drawXTicks(QPainter &painter)
             if(fabs(xt)<MININTERVAL)
             {
                 strLabel = "0";
-                painter.drawText((int)(xt/m_scalex) - fm.width(strLabel)/2 + m_ptoffset.x(),
-                                 (int)(yp/scaley)   + TickSize*2 +height   + m_ptoffset.y(),
+                painter.drawText(int(xt/m_scalex) - fm.width(strLabel)/2 + m_ptoffset.x(),
+                                 int(yp/scaley)   + TickSize*2 +height   + m_ptoffset.y(),
                                  strLabel);
             }
             else if(exp_x>=4 || exp_x<=-4)
@@ -384,8 +384,8 @@ void Graph::drawXTicks(QPainter &painter)
                 else if (exp_x>=-1) strLabel = QString("%1").arg(xt,6,'f',1);
                 else if (exp_x>=-2) strLabel = QString("%1").arg(xt,6,'f',2);
                 else if (exp_x>=-3) strLabel = QString("%1").arg(xt,6,'f',3);
-                painter.drawText((int)(xt/m_scalex) - fm.width(strLabel)/2 + m_ptoffset.x(),
-                                 (int)(yp/scaley)   + TickSize*2 +height   + m_ptoffset.y(),
+                painter.drawText(int(xt/m_scalex) - fm.width(strLabel)/2 + m_ptoffset.x(),
+                                 int(yp/scaley)   + TickSize*2 +height   + m_ptoffset.y(),
                                  strLabel);
             }
         }
@@ -412,7 +412,7 @@ void Graph::drawYTicks(QPainter &painter)
     painter.setFont(m_LabelFont);
 
     fmheight  = fm.height();
-    fmheight4 = (int)((double)fmheight/4.0);
+    fmheight4 = int(double(fmheight)/4.0);
 
     TickSize = 5;
 
@@ -435,8 +435,8 @@ void Graph::drawYTicks(QPainter &painter)
         if(yt>=ymin)
         {
             painter.setPen(LabelPen);
-            painter.drawLine((int)(xp/m_scalex)          + m_ptoffset.x(), (int)(yt/scaley) + m_ptoffset.y(),
-                             (int)(xp/m_scalex)-TickSize + m_ptoffset.x(), (int)(yt/scaley) + m_ptoffset.y());
+            painter.drawLine(int(xp/m_scalex)          + m_ptoffset.x(), int(yt/scaley) + m_ptoffset.y(),
+                             int(xp/m_scalex)-TickSize + m_ptoffset.x(), int(yt/scaley) + m_ptoffset.y());
 
             painter.setPen(m_LabelColor);
 
@@ -444,8 +444,8 @@ void Graph::drawYTicks(QPainter &painter)
             if(fabs(yt)<MININTERVAL)
             {
                 strLabel = "0";
-                painter.drawText((int)(xp/m_scalex) - fm.width(strLabel)-TickSize*2 +m_ptoffset.x(),
-                                 (int)(yt/scaley)   + fmheight4 +m_ptoffset.y(),
+                painter.drawText(int(xp/m_scalex) - fm.width(strLabel)-TickSize*2 +m_ptoffset.x(),
+                                 int(yt/scaley)   + fmheight4 +m_ptoffset.y(),
                                  strLabel);
             }
             else if(abs(exp_y)>=4)
@@ -456,14 +456,14 @@ void Graph::drawYTicks(QPainter &painter)
                 strLabel    = QString("%1 10").arg(main,5,'f',1);
                 strLabelExp = QString("%1").arg(exp);
 
-                painter.drawText((int)(xp/m_scalex)   - fm.width(strLabel)-TickSize*3 + m_ptoffset.x(),
-                                 (int)(yt/scaley) + fmheight4                     + m_ptoffset.y(),
+                painter.drawText(int(xp/m_scalex) - fm.width(strLabel)-TickSize*3 + m_ptoffset.x(),
+                                 int(yt/scaley)   + fmheight4                     + m_ptoffset.y(),
                                  strLabel);
 
                 if(exp_y>=4)
                 {
                     painter.drawText(int(xp/m_scalex)   - TickSize*3 + m_ptoffset.x(),
-                                     int(yt/scaley)              + m_ptoffset.y(),
+                                     int(yt/scaley)                  + m_ptoffset.y(),
                                      strLabelExp);
                 }
                 else
@@ -480,8 +480,8 @@ void Graph::drawYTicks(QPainter &painter)
                 else if (exp_y>=-2) strLabel = QString("%1").arg(yt,6,'f',2);
                 else if (exp_y>=-3) strLabel = QString("%1").arg(yt,6,'f',3);
 
-                painter.drawText((int)(xp/m_scalex)   - fm.width(strLabel)-TickSize*2 +m_ptoffset.x(),
-                                 (int)(yt/scaley) + fmheight4 +m_ptoffset.y(),
+                painter.drawText(int(xp/m_scalex)   - fm.width(strLabel)-TickSize*2 +m_ptoffset.x(),
+                                 int(yt/scaley) + fmheight4 +m_ptoffset.y(),
                                  strLabel);
             }
         }
@@ -507,8 +507,8 @@ void Graph::drawXMajGrid(QPainter &painter)
     GridPen.setWidth(m_XMajWidth);
     painter.setPen(GridPen);
 
-    YMin = (int)(ymin/scaley) + m_ptoffset.y();
-    YMax = (int)(ymax/scaley) + m_ptoffset.y();
+    YMin = int(ymin/scaley) + m_ptoffset.y();
+    YMax = int(ymax/scaley) + m_ptoffset.y();
 
 
     double xt = xo-int((xo-xmin)*1.0001/xunit)*xunit;//one tick at the origin
@@ -542,14 +542,14 @@ void Graph::drawYMajGrid(QPainter &painter)
 
     double yt = yo-int((yo-ymin)*1.0001/yunit)*yunit;//one tick at the origin
 
-    int XMin = qMax((int)(xmin/m_scalex + m_ptoffset.x()), m_rCltRect.left());
-    int XMax = qMin((int)(xmax/m_scalex + m_ptoffset.x()), m_rCltRect.right());
+    int XMin = qMax(int(xmin/m_scalex + m_ptoffset.x()), m_rCltRect.left());
+    int XMax = qMin(int(xmax/m_scalex + m_ptoffset.x()), m_rCltRect.right());
 
     while(yt<=ymax*1.0001)
     {
         if(yt>=ymin)
         {
-            painter.drawLine(XMin, (int)(yt/scaley)   + m_ptoffset.y(), XMax, (int)(yt/scaley)   + m_ptoffset.y());
+            painter.drawLine(XMin, int(yt/scaley)   + m_ptoffset.y(), XMax, int(yt/scaley)   + m_ptoffset.y());
         }
         yt += yunit ;
     }
@@ -572,8 +572,8 @@ void Graph::drawXMinGrid(QPainter &painter)
     painter.setPen(GridPen);
 
 
-    YMin = (int)(ymin/scaley)+ m_ptoffset.y();
-    YMax = (int)(ymax/scaley)+ m_ptoffset.y();
+    YMin = int(ymin/scaley)+ m_ptoffset.y();
+    YMax = int(ymax/scaley)+ m_ptoffset.y();
 
     double xDelta = m_XMinorUnit;
     double xt = xo-int((xo-xmin)*1.0001/xDelta)*xDelta;//one tick at the origin
@@ -606,14 +606,14 @@ void Graph::drawYMinGrid(QPainter &painter)
 
     double yDelta = m_YMinorUnit;
     double yt = yo-int((yo-ymin)*1.0001/yDelta)*yDelta;//one tick at the origin
-    int XMin = qMax((int)(xmin/m_scalex + m_ptoffset.x()), m_rCltRect.left());
-    int XMax = qMin((int)(xmax/m_scalex + m_ptoffset.x()), m_rCltRect.right());
+    int XMin = qMax(int(xmin/m_scalex + m_ptoffset.x()), m_rCltRect.left());
+    int XMax = qMin(int(xmax/m_scalex + m_ptoffset.x()), m_rCltRect.right());
 
     while(yt<=ymax*1.0001)
     {
         if(yt>=ymin)
         {
-            painter.drawLine(XMin, (int)(yt/scaley)   + m_ptoffset.y(), XMax, (int)(yt/scaley)   + m_ptoffset.y());
+            painter.drawLine(XMin, int(yt/scaley)   + m_ptoffset.y(), XMax, int(yt/scaley)   + m_ptoffset.y());
         }
         yt += yDelta ;
     }
@@ -660,17 +660,17 @@ void Graph::drawLegend(QPainter &painter, QPoint &Place, QFont &LegendFont, QCol
                 painter.setPen(LegendPen);
 
                 painter.drawLine(Place.x(),                     Place.y() + ypos*npos + ypos/3,
-                                 Place.x() + (int)(LegendSize), Place.y() + ypos*npos + ypos/3);
+                                 Place.x() + int(LegendSize), Place.y() + ypos*npos + ypos/3);
                 if(pCurve->pointStyle())
                 {
-                    int x1 = Place.x() + 0.5*LegendSize;
-                    int y1 = Place.y() + 1.*ypos*npos+ ypos/3;
+                    int x1 = Place.x() + int(LegendSize/2);
+                    int y1 = Place.y() + int(ypos*npos+ ypos/3);
 
                     drawPoint(painter, pCurve->pointStyle(), QPoint(x1, y1), m_BkColor);
                 }
 
                 painter.setPen(TextPen);
-                painter.drawText(Place.x() + (int)(1.5*LegendSize),    Place.y()  + ypos*npos+(int)(ypos/2),
+                painter.drawText(Place.x() + int(LegendSize*3/2),    Place.y()  + ypos*npos + int(ypos/2),
                                  strong);
 
                 npos++;
@@ -693,9 +693,9 @@ void Graph::expFormat(double &f, int &exp)
     }
     double f1 = fabs(f);
     if(f1<1)
-        exp = (int)log10(f1)-1;
+        exp = int(log10(f1)-1);
     else
-        exp = (int)log10(f1);
+        exp = int(log10(f1));
 
     f = f/pow(10.0,exp);
 
@@ -1021,12 +1021,12 @@ double Graph::clientToy(double y) const
 
 double Graph::clientTox(int x) const
 {
-    return ((double)x-(double)m_ptoffset.x())*m_scalex;
+    return (double(x)-double(m_ptoffset.x()))*m_scalex;
 }
 
 double Graph::clientToy(int y) const
 {
-    return ((double)y-(double)m_ptoffset.y())*m_scaley;
+    return (double(y)-double(m_ptoffset.y()))*m_scaley;
 }
 
 
@@ -1515,11 +1515,11 @@ void Graph::setAutoXUnit()
 
     if (xunit<1.0)
     {
-        exp_x = (int)log10(xunit*1.00001)-1;
+        exp_x = int(log10(xunit*1.00001)-1);
         exp_x = qMax(-4, exp_x);
     }
-    else exp_x = (int)log10(xunit*1.00001);
-    int main_x = (int)(xunit/pow(10.0, exp_x)*1.000001);
+    else exp_x = int(log10(xunit*1.00001));
+    int main_x = int(xunit/pow(10.0, exp_x)*1.000001);
 
 
     if(main_x<2)
@@ -1545,12 +1545,12 @@ void Graph::setAutoYUnit()
     yunit = (ymax-ymin)/5.0;
     if (yunit<1.0)
     {
-        exp_y = (int)log10(yunit*1.00001)-1;
+        exp_y = int(log10(yunit*1.00001)-1);
         //        exp_y = qMax(-4, exp_y);
     }
-    else  exp_y = (int)log10(yunit*1.00001);
+    else  exp_y = int(log10(yunit*1.00001));
 
-    int main_y = (int)(yunit/pow(10.0, exp_y));
+    int main_y = int(yunit/pow(10.0, exp_y));
 
     if(main_y<2)
         yunit = pow(10.0,exp_y);
@@ -1874,10 +1874,10 @@ bool Graph::setXScale()
         //        m_scalex   =  (xmax-xmin)/m_w;
         if (xunit<1.0)
         {
-            exp_x = (int)log10(xunit*1.00001)-1;
+            exp_x = int(log10(xunit*1.00001)-1);
             exp_x = qMax(-4, exp_x);
         }
-        else exp_x = (int)log10(xunit*1.00001);
+        else exp_x = int(log10(xunit*1.00001));
 
     }
     m_scalex   =  (xmax-xmin)/m_w;
@@ -1885,7 +1885,7 @@ bool Graph::setXScale()
     //graph center position
     int Xg = (m_rCltRect.right() + m_rCltRect.left())/2;
     // curves center position
-    int Xc = (int)((xmin+xmax)/2.0/m_scalex);
+    int Xc = int((xmin+xmax)/2.0/m_scalex);
     // center graph in drawing rectangle
     m_ptoffset.rx() = (Xg-Xc);
     return true;
@@ -2055,17 +2055,17 @@ bool Graph::setYScale()
 
         if (yunit<1.0)
         {
-            exp_y = (int)log10(yunit*1.00001)-1;
+            exp_y = int(log10(yunit*1.00001)-1);
             exp_y = qMax(-4, exp_y);
         }
-        else  exp_y = (int)log10(yunit*1.00001);
+        else  exp_y = int(log10(yunit*1.00001));
 
     }
 
     //graph center position
     int Yg = (m_rCltRect.top() + m_rCltRect.bottom())/2;
     // curves center position
-    int Yc = (int)((ymin+ymax)/2.0/m_scaley);
+    int Yc = int((ymin+ymax)/2.0/m_scaley);
     // center graph in drawing rectangle
     m_ptoffset.ry() = (Yg-Yc);
 
@@ -2086,6 +2086,7 @@ void Graph::setYMajGrid(bool const &bGrid)
     m_bYMajGrid = bGrid;
 }
 
+
 void Graph::setYMinGrid(bool state, bool bAuto, QColor clr, int style, int width, double unit)
 {
     m_bYMinGrid = state;
@@ -2103,7 +2104,6 @@ void Graph::setYMinGrid(bool const &bGrid)
 }
 
 
-
 void Graph::setYVariable(int const & Y)
 {
     m_Y = Y;
@@ -2112,16 +2112,14 @@ void Graph::setYVariable(int const & Y)
 
 int Graph::xToClient(double x) const
 {
-    return (int)(x/m_scalex + m_ptoffset.x());
+    return int(x/m_scalex + m_ptoffset.x());
 }
-
 
 
 int Graph::yToClient(double y) const
 {
-    return (int)(y/m_scaley + m_ptoffset.y());
+    return int(y/m_scaley + m_ptoffset.y());
 }
-
 
 
 Curve*  Graph::getClosestPoint(const double &x, const double &y, double &xSel, double &ySel, int &nSel)
@@ -2208,7 +2206,6 @@ bool Graph::selectPoint(QString const &CurveName, int sel)
     //    pCurve->SetSelected(-1);
     return false;
 }
-
 
 
 void Graph::deselectPoint()
