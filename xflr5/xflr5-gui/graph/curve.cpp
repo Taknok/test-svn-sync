@@ -97,7 +97,6 @@ void Curve::copyData(Curve *pCurve)
  */
 int Curve::closestPoint(double xs, double ys, double &dist )
 {
-    Graph *pGraph = (Graph*)m_pParentGraph;
     int ref;
     double d2;
     ref = -1;
@@ -105,8 +104,8 @@ int Curve::closestPoint(double xs, double ys, double &dist )
     if (size()<1) return -1;
     for(int i=0; i<size(); i++)
     {
-        d2 =   (xs-x[i])*(xs-x[i])/pGraph->xScale()/pGraph->xScale() 
-             + (ys-y[i])*(ys-y[i])/pGraph->yScale()/pGraph->yScale();
+        d2 =   (xs-x[i])*(xs-x[i])/m_pParentGraph->xScale()/m_pParentGraph->xScale()
+             + (ys-y[i])*(ys-y[i])/m_pParentGraph->yScale()/m_pParentGraph->yScale();
         if (d2<dist)
         {
             dist = d2;
@@ -128,14 +127,12 @@ int Curve::closestPoint(double xs, double ys, double &dist )
  */
 void Curve::closestPoint(double xs, double ys, double &dist, int &n)
 {
-    Graph *pGraph = (Graph*)m_pParentGraph;
-    double d2;
     dist = 1.e10;
     if (n<1) return;
     for(int i=0; i<n; i++)
     {
-        d2 =   (xs-x[i])*(xs-x[i])/pGraph->xScale()/pGraph->xScale()
-             + (ys-y[i])*(ys-y[i])/pGraph->yScale()/pGraph->yScale();
+        double d2 =   (xs-x[i])*(xs-x[i])/m_pParentGraph->xScale()/m_pParentGraph->xScale()
+                    + (ys-y[i])*(ys-y[i])/m_pParentGraph->yScale()/m_pParentGraph->yScale();
         if (d2<dist)
         {
             dist = d2;

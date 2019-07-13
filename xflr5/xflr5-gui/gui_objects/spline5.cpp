@@ -45,9 +45,8 @@ void Spline5::drawCtrlPoints(QPainter &painter, double const &scalex, double con
     painter.save();
 
     QPointF pt;
-    int i, width;
 
-    width  = 3;
+    int width  = 3;
 
     QPen PointPen;
     QBrush NoBrush(Qt::NoBrush);
@@ -56,7 +55,7 @@ void Spline5::drawCtrlPoints(QPainter &painter, double const &scalex, double con
     painter.setPen(PointPen);
     painter.setBrush(NoBrush);
 
-    for (i=0; i<m_CtrlPoint.size(); i++)
+    for (int i=0; i<m_CtrlPoint.size(); i++)
     {
         pt.rx() =  m_CtrlPoint[i].x*scalex + Offset.x();
         pt.ry() = -m_CtrlPoint[i].y*scaley + Offset.y();
@@ -77,7 +76,7 @@ void Spline5::drawCtrlPoints(QPainter &painter, double const &scalex, double con
             PointPen.setColor(m_Color);
         }
         painter.setPen(PointPen);
-        painter.drawEllipse(pt.x()-width, pt.y()-width, 2*width, 2*width);
+        painter.drawEllipse(int(pt.x()-width), int(pt.y()-width), 2*width, 2*width);
     }
     painter.restore();
 }
@@ -92,22 +91,21 @@ void Spline5::drawOutputPoints(QPainter & painter, double const &scalex, double 
     painter.save();
 
     QPointF pt;
-    int i, width;
     QPen OutPen;
 
-    width = 2;
+    int width = 2;
 
     OutPen.setColor(m_Color);
     OutPen.setStyle(Qt::SolidLine);
     OutPen.setWidth(1);
     painter.setPen(OutPen);
 
-    for (i=0; i<m_iRes;i++)
+    for (int i=0; i<m_iRes;i++)
     {
         pt.rx() =  m_Output[i].x*scalex + Offset.x();
         pt.ry() = -m_Output[i].y*scaley + Offset.y();
 
-        painter.drawRect(pt.x()-width, pt.y()-width, 2*width, 2*width);
+        painter.drawRect(int(pt.x()-width), int(pt.y()-width), 2*width, 2*width);
     }
 
     painter.restore();

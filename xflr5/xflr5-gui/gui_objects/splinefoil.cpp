@@ -122,7 +122,7 @@ void SplineFoil::compMidLine()
     m_rpMid[0].x   = 0.0;
     m_rpMid[0].y   = 0.0;
 
-    double step = 1.0/(double)MIDPOINTCOUNT;
+    double step = 1.0/double(MIDPOINTCOUNT);
 
     for (int k=0; k<MIDPOINTCOUNT; k++)
     {
@@ -242,7 +242,7 @@ bool SplineFoil::serialize(QDataStream &ar, bool bIsStoring)
         {
             ar >> x;
             ar >> y;
-            m_Extrados.m_CtrlPoint.append(Vector3d(x,y,0.0));
+            m_Extrados.m_CtrlPoint.append(Vector3d(double(x), double(y),0.0));
         }
         if(ArchiveFormat<100306)
         {
@@ -258,7 +258,7 @@ bool SplineFoil::serialize(QDataStream &ar, bool bIsStoring)
         {
             ar >> x;
             ar >> y;
-            m_Intrados.m_CtrlPoint.append(Vector3d(x,y,0.0));
+            m_Intrados.m_CtrlPoint.append(Vector3d(double(x), double(y), 0.0));
         }
         if(ArchiveFormat<100306)
         {
@@ -303,8 +303,8 @@ bool SplineFoil::serialize(QDataStream &ar, bool bIsStoring)
  */
 bool SplineFoil::serializeXFL(QDataStream &ar, bool bIsStoring)
 {
-    double dble, x,y;
-    int ArchiveFormat,k,n;
+    double dble=0, x=0,y=0;
+    int ArchiveFormat=0,k=0,n=0;
 
     if(bIsStoring)
     {
@@ -335,8 +335,10 @@ bool SplineFoil::serializeXFL(QDataStream &ar, bool bIsStoring)
         if(m_bForceCloseTE) k=1; else k=0;
         ar << k;
         // space allocation for the future storage of more data, without need to change the format
-        for (int i=0; i<8; i++) ar << 0;
-        for (int i=0; i<10; i++) ar << (double)0.0;
+        n=0;
+        for (int i=0; i<8; i++) ar << n;
+        dble=0;
+        for (int i=0; i<10; i++) ar << dble;
     }
     else
     {
@@ -448,7 +450,7 @@ void SplineFoil::drawFoil(QPainter &painter, double scalex, double scaley, QPoin
 void SplineFoil::drawMidLine(QPainter &painter, double scalex, double scaley, QPointF Offset)
 {
     painter.save();
-    int k;
+
     QPointF From, To;
 
     QPen MidPen(m_FoilColor);
@@ -456,16 +458,16 @@ void SplineFoil::drawMidLine(QPainter &painter, double scalex, double scaley, QP
     MidPen.setWidth(1);
     painter.setPen(MidPen);
 
-    From = QPoint((int)(m_rpMid[0].x*scalex) + Offset.x(), (int)(-m_rpMid[0].y*scaley) + Offset.y());
+    From = QPointF(m_rpMid[0].x*scalex + Offset.x(), -m_rpMid[0].y*scaley + Offset.y());
 
-    for (k=1; k<MIDPOINTCOUNT; k+=10)
+    for (int k=1; k<MIDPOINTCOUNT; k+=10)
     {
-        To.rx() = (int)( m_rpMid[k].x*scalex) + Offset.x();
-        To.ry() = (int)(-m_rpMid[k].y*scaley) + Offset.y();
+        To.rx() =  m_rpMid[k].x*scalex + Offset.x();
+        To.ry() = -m_rpMid[k].y*scaley + Offset.y();
         painter.drawLine(From, To);
         From = To;
     }
 
-    painter.drawLine(From, QPoint((int)(m_rpMid[MIDPOINTCOUNT-1].x*scalex) + Offset.x(), (int)(-m_rpMid[MIDPOINTCOUNT-1].y*scaley) + Offset.y()));
+    painter.drawLine(From, QPointF(m_rpMid[MIDPOINTCOUNT-1].x*scalex + Offset.x(), -m_rpMid[MIDPOINTCOUNT-1].y*scaley + Offset.y()));
     painter.restore();
 }
