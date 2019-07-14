@@ -43,7 +43,7 @@ class XFoilAdvancedDlg : public QDialog
     friend class BatchDlg;
 
 public:
-    XFoilAdvancedDlg(QWidget *pParent=NULL);
+    XFoilAdvancedDlg(QWidget *pParent=nullptr);
     void initDialog();
 
 

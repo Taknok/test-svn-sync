@@ -58,7 +58,6 @@ class GL3dBodyDlg : public QDialog
     friend class Miarex;
     friend class GLLightDlg;
     friend class BodyScaleDlg;
-    friend class ManageBodiesDlg;
     friend class BoatDlg;
     friend class PlaneDlg;
     friend class gl3dView;

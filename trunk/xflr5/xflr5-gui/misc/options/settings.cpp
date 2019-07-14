@@ -55,6 +55,7 @@ QString Settings::s_plrDirName = QDir::homePath();
 QStringList Settings::s_colorList;
 QStringList Settings::s_colorNames;
 
+bool Settings::s_bShowMousePos = true;
 bool Settings::s_bAlignChildrenStyle = true;
 
 SETTINGS::enumThemeType Settings::s_Theme = SETTINGS::DARKTHEME;
@@ -66,7 +67,6 @@ Settings::Settings(QWidget *pParent) : QWidget(pParent)
 
     s_RefGraph.setGraphName("Reference_Graph");
 
-    m_pMainFrame = pParent;
     m_bIsGraphModified = false;
 
 #ifdef Q_OS_MAC
@@ -310,20 +310,9 @@ void Settings::onBackgroundColor2d()
 }
 
 
-
-
-void Settings::reject()
-{
-    setAllGraphSettings(&m_MemGraph);
-}
-
-
-
 void Settings::onGraphSettings()
 {
-    MainFrame *pMainFrame = (MainFrame*)m_pMainFrame;
-
-    GraphDlg dlg(pMainFrame);
+    GraphDlg dlg(this);
 
     dlg.setGraph(&s_RefGraph);
 
@@ -336,38 +325,12 @@ void Settings::onGraphSettings()
 }
 
 
-void Settings::setAllGraphSettings(Graph *pGraph)
-{
-    MainFrame *pMainFrame = (MainFrame*)m_pMainFrame;
-    XDirect *pXDirect   = (XDirect*)pMainFrame->m_pXDirect;
-    Miarex *pMiarex     = (Miarex*)pMainFrame->m_pMiarex;
-    XInverse *pXInverse = (XInverse*)pMainFrame->m_pXInverse;
-
-    pXDirect->CpGraph()->copySettings(pGraph);
-    pXDirect->CpGraph()->setInverted(true);
-
-    for(int ig=0; ig<pXDirect->m_PlrGraph.count(); ig++)     pXDirect->PlrGraph(ig)->copySettings(pGraph);
-    for(int ig=0; ig<pMiarex->m_WingGraph.count(); ig++)     pMiarex->m_WingGraph.at(ig)->copySettings(pGraph);
-    for(int ig=0; ig<pMiarex->m_WPlrGraph.count(); ig++)     pMiarex->m_WPlrGraph.at(ig)->copySettings(pGraph);
-    for(int ig=0; ig<pMiarex->m_StabPlrGraph.count(); ig++)  pMiarex->m_StabPlrGraph.at(ig)->copySettings(pGraph);
-    for(int ig=0; ig<pMiarex->m_TimeGraph.count(); ig++)     pMiarex->m_TimeGraph.at(ig)->copySettings(pGraph);
-
-    pMiarex->m_CpGraph.copySettings(pGraph);
-    pMiarex->m_CpGraph.setInverted(true);
-
-    pXInverse->m_QGraph.copySettings(pGraph);
-    pXInverse->m_QGraph.setInverted(true);
-
-}
-
-
 void Settings::onTextColor()
 {
     QColor Color = QColorDialog::getColor(s_TextColor);
     if(Color.isValid()) s_TextColor = Color;
     m_pctrlTextClr->setTextColor(s_TextColor);
 }
-
 
 
 void Settings::onTextFont()
@@ -429,7 +392,11 @@ void Settings::saveSettings(QSettings &settings)
 
         settings.setValue("ReverseZoom", s_bReverseZoom);
 
+        settings.setValue("ShowMousePos", s_bShowMousePos);
         settings.setValue("AligneChildrenStyle", s_bAlignChildrenStyle);
+
+        settings.setValue("ShowStyleSheets", s_bStyleSheets);
+        settings.setValue("StyleSheetName", s_StyleSheetName);
 
         if(isLightTheme()) settings.setValue("Theme",0);
         else               settings.setValue("Theme",1);
@@ -466,6 +433,10 @@ void Settings::loadSettings(QSettings &settings)
         s_bReverseZoom   = settings.value("ReverseZoom", false).toBool();
         s_bAlignChildrenStyle = settings.value("AligneChildrenStyle", true).toBool();
 
+        s_bShowMousePos = settings.value("ShowMousePos", true).toBool();
+
+        s_bStyleSheets   = settings.value("ShowStyleSheets", false).toBool();
+        s_StyleSheetName = settings.value("StyleSheetName", "xflr5_style").toString();
 
         int iTheme = settings.value("Theme",1).toInt();
         if(iTheme==0) s_Theme = SETTINGS::LIGHTTHEME;

@@ -42,7 +42,7 @@
 #include <miarex/design/inertiadlg.h>
 #include <miarex/mgt/xmlplanereader.h>
 #include <miarex/mgt/xmlplanewriter.h>
-#include <miarex/view/w3drefsdlg.h>
+#include <miarex/view/w3dprefsdlg.h>
 #include <misc/lengthunitdlg.h>
 #include <misc/color/colorbutton.h>
 #include <misc/line/linepickerdlg.h>

@@ -24,7 +24,9 @@
 
 #include <QDialog>
 
+class XInverse;
 class LineBtn;
+
 class InverseOptionsDlg:public QDialog
 {
     Q_OBJECT
@@ -46,7 +48,7 @@ private:
 
     LineBtn *m_pctrlRefFoil, *m_pctrlModFoil, *m_pctrlSpline, *m_pctrlReflected;
 
-    void * m_pXInverse;
+    XInverse * m_pXInverse;
 };
 
 #endif // INVERSEOPTIONSDLG_H

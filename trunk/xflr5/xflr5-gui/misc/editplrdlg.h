@@ -27,7 +27,8 @@
 #include <QTableView>
 #include <QStandardItemModel>
 
-
+class XDirect;
+class Miarex;
 class Polar;
 class WPolar;
 class FloatEditDelegate;
@@ -44,7 +45,7 @@ public:
     ~EditPlrDlg();
 
 
-    void initDialog(void *pXDirect, Polar *pPolar, void *pMiarex, WPolar *pWPolar);
+    void initDialog(XDirect *pXDirect, Polar *pPolar, Miarex *pMiarex, WPolar *pWPolar);
 
 private slots:
     void onDeletePoint();
@@ -71,8 +72,8 @@ private:
     QStandardItemModel *m_pPointModel;
     FloatEditDelegate *m_pFloatDelegate;
 
-    void *m_pXDirect;
-    void *m_pMiarex;
+    XDirect *m_pXDirect;
+    Miarex *m_pMiarex;
 
     int  *m_precision;
 

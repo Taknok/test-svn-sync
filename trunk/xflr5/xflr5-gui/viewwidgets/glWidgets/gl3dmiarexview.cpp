@@ -34,9 +34,7 @@
 #include <miarex/view/gl3dscales.h>
 #include <objects/objects3d/surface.h>
 #include <objects/objects3d/wpolar.h>
-#include <miarex/view/w3drefsdlg.h>
-#include <misc/waitdlg.h>
-
+#include <miarex/view/w3dprefsdlg.h>
 
 
 bool gl3dMiarexView::s_bResetglGeom = true;

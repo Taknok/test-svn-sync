@@ -37,7 +37,7 @@ class GridSettingsDlg : public QDialog
     friend class Section2dWidget;
 
 public:
-    GridSettingsDlg(QWidget *pParent=NULL);
+    GridSettingsDlg(QWidget *pParent=nullptr);
     void initDialog();
 
 private slots:

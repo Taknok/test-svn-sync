@@ -24,7 +24,7 @@
 #include "gl3dwingview.h"
 #include <QOpenGLPaintDevice>
 #include <miarex/design/gl3dwingdlg.h>
-#include <miarex/view/w3drefsdlg.h>
+#include <miarex/view/w3dprefsdlg.h>
 #include <objects/objects3d/wing.h>
 #include <objects/objects3d/surface.h>
 

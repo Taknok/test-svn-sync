@@ -44,8 +44,6 @@ public:
     void setGraph(Graph *pGraph);
     void setTitles(QString &Title, QPoint &Place);
 
-    bool &bResetCurves(){return m_bResetCurves;}
-
 protected:
     void paintEvent(QPaintEvent *event);
     void resizeEvent (QResizeEvent *event);
@@ -86,7 +84,6 @@ private:
     bool m_bTransGraph;
     bool m_bXPressed;                  /**< true if the X key is pressed */
     bool m_bYPressed;                  /**< true if the Y key is pressed */
-    bool m_bResetCurves;
 };
 
 #endif // GRAPHWIDGET_H

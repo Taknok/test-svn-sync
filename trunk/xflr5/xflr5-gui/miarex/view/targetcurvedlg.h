@@ -31,7 +31,7 @@ class TargetCurveDlg : public QDialog
 {
     Q_OBJECT
 public:
-    TargetCurveDlg(QWidget *pParent=NULL);
+    TargetCurveDlg(QWidget *pParent=nullptr);
     void initDialog(bool bShowElliptic, bool bShowBell, bool bMaxCl, double curveExp);
 
 private:

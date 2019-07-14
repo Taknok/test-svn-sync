@@ -32,6 +32,8 @@ public:
     ObjectPropsDlg(QWidget *pParent);
     void initDialog(QString title, QString props);
 
+    QSize sizeHint() const {return QSize(700,550);}
+
 private:
     void setupLayout();
 

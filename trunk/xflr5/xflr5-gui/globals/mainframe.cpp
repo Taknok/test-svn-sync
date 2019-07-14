@@ -56,7 +56,7 @@
 #include <miarex/objects3d.h>
 #include <miarex/view/gl3dscales.h>
 #include <miarex/view/stabviewdlg.h>
-#include <miarex/view/w3drefsdlg.h>
+#include <miarex/view/w3dprefsdlg.h>
 #include <misc/aboutq5.h>
 #include <misc/editplrdlg.h>
 #include <misc/objectpropsdlg.h>
@@ -112,7 +112,7 @@ QString MainFrame::s_LanguageFilePath = "";
 QDir MainFrame::s_StylesheetDir;
 QDir MainFrame::s_TranslationDir;
 
-bool MainFrame::s_bShowMousePos = true;
+
 bool MainFrame::s_bSaved = true;
 bool MainFrame::s_bOpenGL = true;
 
@@ -227,6 +227,8 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 
         GL3DScales::loadSettings(&settings);
         W3dPrefsDlg::loadSettings(&settings);
+        Units::loadSettings(settings);
+        Updater::loadSettings(settings);
     }
 
     if(m_pSaveTimer)
@@ -1155,7 +1157,7 @@ void MainFrame::createGraphActions()
 
     m_pShowMousePosAct     = new QAction(tr("Display mouse coordinates"), this);
     m_pShowMousePosAct->setCheckable(true);
-    m_pShowMousePosAct->setChecked(s_bShowMousePos);
+    m_pShowMousePosAct->setChecked(Settings::bMousePos());
     m_pShowMousePosAct->setStatusTip(tr("Display the coordinates of the mouse on the top right corner of the graph"));
     connect(m_pShowMousePosAct, SIGNAL(triggered()), this, SLOT(onShowMousePos()));
 
@@ -3434,15 +3436,6 @@ bool MainFrame::loadSettings()
         m_ImageDirName = settings.value("ImageDirName").toString();
         m_ExportLastDirName = settings.value("ExportLastDirName").toString();
 
-        Units::setLengthUnitIndex(settings.value("LengthUnit").toInt());
-        Units::setAreaUnitIndex(settings.value("AreaUnit").toInt());
-        Units::setWeightUnitIndex(settings.value("WeightUnit").toInt());
-        Units::setSpeedUnitIndex(settings.value("SpeedUnit").toInt());
-        Units::setForceUnitIndex(settings.value("ForceUnit").toInt());
-        Units::setMomentUnitIndex(settings.value("MomentUnit").toInt());
-        Units::setPressureUnitIndex(settings.value("PressureUnit").toInt());
-        Units::setInertiaUnitIndex(settings.value("InertiaUnit").toInt());
-        Units::setUnitConversionFactors();
 
         Graph::setOppHighlighting(settings.value("HighlightOpp").toBool());
 
@@ -3486,12 +3479,6 @@ bool MainFrame::loadSettings()
             else break;
         }while(n<MAXRECENTFILES);
 
-
-        Settings::s_bStyleSheets   = settings.value("ShowStyleSheets", false).toBool();
-        Settings::s_StyleSheetName = settings.value("StyleSheetName", "xflr5_style").toString();
-        s_bShowMousePos = settings.value("ShowMousePosition", true).toBool();
-
-        Updater::loadSettings(settings);
     }
 
     return true;
@@ -4340,11 +4327,9 @@ void MainFrame::onSelChangeOpp(int sel)
 
 void MainFrame::onShowMousePos()
 {
-    s_bShowMousePos = !s_bShowMousePos;
-    m_pShowMousePosAct->setChecked(s_bShowMousePos);
+    Settings::showMousePos(!Settings::bMousePos());
+    m_pShowMousePosAct->setChecked(Settings::bMousePos());
 }
-
-
 
 
 void MainFrame::onXDirect()
@@ -4872,15 +4857,6 @@ void MainFrame::saveSettings()
         settings.setValue("ImageDirName", m_ImageDirName);
         settings.setValue("ExportLastDirName", m_ExportLastDirName);
 
-        settings.setValue("LengthUnit",   Units::lengthUnitIndex());
-        settings.setValue("AreaUnit",     Units::areaUnitIndex());
-        settings.setValue("WeightUnit",   Units::weightUnitIndex());
-        settings.setValue("SpeedUnit",    Units::speedUnitIndex());
-        settings.setValue("ForceUnit",    Units::forceUnitIndex());
-        settings.setValue("MomentUnit",   Units::momentUnitIndex());
-        settings.setValue("PressureUnit", Units::pressureUnitIndex());
-        settings.setValue("InertiaUnit",  Units::inertiaUnitIndex());
-
         settings.setValue("LanguageFilePath", s_LanguageFilePath);
         settings.setValue("ImageFormat", m_ImageFormat);
         settings.setValue("AutoSaveProject", m_bAutoSave);
@@ -4889,10 +4865,7 @@ void MainFrame::saveSettings()
         settings.setValue("SaveOpps", m_bSaveOpps);
         settings.setValue("SaveWOpps", m_bSaveWOpps);
         settings.setValue("RecentFileSize", m_RecentFiles.size());
-        settings.setValue("ShowStyleSheets", Settings::s_bStyleSheets);
-        settings.setValue("StyleSheetName", Settings::s_StyleSheetName);
 
-        settings.setValue("ShowMousePosition", s_bShowMousePos);
 
         QString RecentF;
         for(int i=0; i<m_RecentFiles.size() && i<MAXRECENTFILES; i++)
@@ -4907,7 +4880,6 @@ void MainFrame::saveSettings()
             settings.setValue(RecentF, "");
         }
 
-        Updater::saveSettings(settings);
     }
     settings.endGroup();
 
@@ -4918,6 +4890,8 @@ void MainFrame::saveSettings()
     m_pXInverse->saveSettings(settings);
     GL3DScales::saveSettings(&settings);
     W3dPrefsDlg::saveSettings(&settings);
+    Updater::saveSettings(settings);
+    Units::saveSettings(settings);
 }
 
 

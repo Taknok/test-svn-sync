@@ -51,8 +51,8 @@ public:
 
     XFLR5::enumApp xflr5App() const {return m_xflr5App;}
 
-    int graphWidgetCount(){return m_GraphWidget.count();}
-    int activeGraphIndex(){return m_iActiveGraphWidget;}
+    int graphWidgetCount() const {return m_GraphWidget.count();}
+    int activeGraphIndex() const {return m_iActiveGraphWidget;}
 
     void keyPressEvent(QKeyEvent *event);
     void contextMenuEvent (QContextMenuEvent *event);

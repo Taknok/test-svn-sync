@@ -46,7 +46,7 @@ private slots:
     void onButton(QAbstractButton *pButton);
 
 public:
-    RenameDlg(QWidget *pParent=NULL);
+    RenameDlg(QWidget *pParent=nullptr);
     void initDialog(QStringList *pStrList, QString startName, QString question);
     void setOverwriteEnable(bool bEnable){m_bEnableOverwrite = bEnable;}
     QString newName(){return m_strName;}

@@ -29,7 +29,7 @@ class Popup : public QWidget
 {
     Q_OBJECT
 public:
-    Popup(QWidget *pParent=NULL);
+    Popup(QWidget *pParent=nullptr);
     Popup(QString const &message, QWidget *pParent);
     void appendTextMessage(QString const &text);
     void setTextMessage(QString const &text);

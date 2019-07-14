@@ -35,7 +35,7 @@
 #include <globals/gui_enums.h>
 #include <graph/graph.h>
 
-
+class MainFrame;
 class TextClrBtn;
 class ColorButton;
 
@@ -56,6 +56,7 @@ class Settings : public QWidget
 public:
     Settings(QWidget *pParent);
     void initWidget();
+
     static void loadSettings(QSettings &settings);
     static void saveSettings(QSettings &settings);
 
@@ -80,6 +81,9 @@ public:
     static void setAlignedChildrenStyle(bool bAlign) {s_bAlignChildrenStyle = bAlign;}
     static bool isAlignedChildrenStyle() {return s_bAlignChildrenStyle;}
 
+    static void showMousePos(bool bShow) {s_bShowMousePos=bShow;}
+    static bool bMousePos() {return s_bShowMousePos;}
+
 private slots:
     void onStyleChanged(const QString &StyleName);
     void onBackgroundColor2d();
@@ -92,9 +96,7 @@ private slots:
     void onTheme();
 
 private:
-    void reject();
     void setupLayout();
-    void setAllGraphSettings(Graph *pGraph);
 
     ColorButton *m_pctrlBackColor;
     TextClrBtn *m_pctrlTextClr;
@@ -106,11 +108,8 @@ private:
 
     QComboBox *m_pctrlStyles;
 
-
     QRadioButton *m_prbDark, *m_prbLight, *m_prbCustom;
 
-
-    void *m_pMainFrame;
     QDir m_StyleSheetDir;
     Graph m_MemGraph;
     bool m_bIsGraphModified;
@@ -129,6 +128,7 @@ public:
     static QStringList s_colorList;
     static QStringList s_colorNames;
     static SETTINGS::enumThemeType s_Theme;
+    static bool s_bShowMousePos;
 
     static bool s_bAlignChildrenStyle;
 };

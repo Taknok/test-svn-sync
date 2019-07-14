@@ -33,7 +33,7 @@ class NewNameDlg : public QDialog
     friend class StabViewDlg;
     Q_OBJECT
 public:
-    NewNameDlg(QWidget *pParent=NULL);
+    NewNameDlg(QWidget *pParent=nullptr);
     void InitDialog();
     void keyPressEvent(QKeyEvent *event);
     
@@ -44,7 +44,7 @@ private slots:
     void OnOK();
     
 private:
-    QPushButton *OKButton;
+    QPushButton *m_pctrlOKButton;
     QLineEdit *m_pctrlName;
     QString m_OldName;
     QString m_NewName;

@@ -32,7 +32,7 @@
 
 #include <misc/options/units.h>
 #include <misc/options/settings.h>
-#include <miarex/view/w3drefsdlg.h>
+#include <miarex/view/w3dprefsdlg.h>
 #include <objects/objects3d/surface.h>
 #include "wingseldlg.h"
 #include "editplanedlg.h"

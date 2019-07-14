@@ -1870,7 +1870,6 @@ void XInverse::onZoomIn()
 }
 
 
-
 /** The user has toggled the requirement for a spline tangent to the specification curve */
 void XInverse::onTangentSpline()
 {
@@ -1906,7 +1905,6 @@ void XInverse::paintGraph(QPainter &painter)
         ZoomPen.setStyle(Qt::DashLine);
         painter.setPen(ZoomPen);
         painter.drawRect(ZRect);
-
     }
 
     //Draw spline, if any
@@ -1956,8 +1954,7 @@ void XInverse::paintGraph(QPainter &painter)
         }
     }
 
-
-    if(m_QGraph.isInDrawRect(m_PointDown) && MainFrame::s_bShowMousePos)
+    if(m_QGraph.isInDrawRect(m_PointDown) && Settings::bMousePos())
     {
         QPen textPen(Settings::textColor());
         QFontMetrics fm(Settings::textFont());
@@ -1971,7 +1968,6 @@ void XInverse::paintGraph(QPainter &painter)
     }
     painter.restore();
 }
-
 
 
 /**

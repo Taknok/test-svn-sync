@@ -38,7 +38,7 @@ public:
     void drawScaleLegend(QPainter &painter);
 
     void paintEvent(QPaintEvent *pEvent);
-    void resizeEvent (QResizeEvent *pEvent);
+    void resizeEvent(QResizeEvent *pEvent);
     void setScale();
 
     int highlightPoint(Vector3d real);

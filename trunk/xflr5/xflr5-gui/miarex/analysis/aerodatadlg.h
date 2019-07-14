@@ -53,7 +53,7 @@ class AeroDataDlg : public QDialog
     friend class Miarex;
 
 public:
-    AeroDataDlg(QWidget *parent = NULL);
+    AeroDataDlg(QWidget *parent = nullptr);
 
 public:
     double AirDensity();   //[kg/m3]
