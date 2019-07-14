@@ -61,7 +61,7 @@ EditPlrDlg::~EditPlrDlg()
     delete [] m_precision;
 }
 
-void EditPlrDlg::initDialog(void *pXDirect, Polar* pPolar, void *pMiarex, WPolar*pWPolar)
+void EditPlrDlg::initDialog(XDirect *pXDirect, Polar* pPolar, Miarex *pMiarex, WPolar*pWPolar)
 {
     m_pXDirect = pXDirect;
     m_pMiarex = pMiarex;
@@ -232,25 +232,22 @@ void EditPlrDlg::keyPressEvent(QKeyEvent *event)
 
 void EditPlrDlg::onDeletePoint()
 {
-    XDirect *pXDirect = (XDirect*)m_pXDirect;
-    Miarex *pMiarex= (Miarex*)m_pMiarex;
-
     QModelIndex index = m_pctrlPointTable->currentIndex();
 
-    if(pXDirect)
+    if(m_pXDirect)
     {
         m_pPolar->removePoint(index.row());
         fillPolarData();
-        pXDirect->createPolarCurves();
-        pXDirect->updateView();
+        m_pXDirect->createPolarCurves();
+        m_pXDirect->updateView();
     }
-    else if(pMiarex)
+    else if(m_pMiarex)
     {
         m_pWPolar->remove(index.row());
         fillWPolarData();
         Miarex::s_bResetCurves = true;
 //        pMiarex->createWPolarCurves();
-        pMiarex->updateView();
+        m_pMiarex->updateView();
     }
 
     if(index.row()>=m_pPointModel->rowCount()-1)
@@ -264,22 +261,19 @@ void EditPlrDlg::onDeletePoint()
 
 void EditPlrDlg::onDeleteAllPoints()
 {
-    XDirect *pXDirect = (XDirect*)m_pXDirect;
-    Miarex *pMiarex= (Miarex*)m_pMiarex;
-
-    if(pXDirect)
+    if(m_pXDirect)
     {
         m_pPolar->resetPolar();
         fillPolarData();
-        pXDirect->createPolarCurves();
-        pXDirect->updateView();
+        m_pXDirect->createPolarCurves();
+        m_pXDirect->updateView();
     }
-    else if(pMiarex)
+    else if(m_pMiarex)
     {
         m_pWPolar->clearData();
         fillWPolarData();
         Miarex::s_bResetCurves = true;
-        pMiarex->updateView();
+        m_pMiarex->updateView();
     }
 }
 
@@ -354,7 +348,7 @@ void EditPlrDlg::resizeEvent(QResizeEvent*event)
     if(!m_pPointModel || !m_pctrlPointTable) return;
     int n = m_pPointModel->columnCount();
     int w = m_pctrlPointTable->width();
-    int w14 = (int)((double)(w-25)/(double)n);
+    int w14 = int(double(w-25)/double(n));
 
     for(int i=0; i<m_pPointModel->columnCount(); i++)
         m_pctrlPointTable->setColumnWidth(i,w14);

@@ -43,7 +43,7 @@ public:
     void dragSelectedPoint(double x, double y);
 
     void setNeutralLineColor(QColor clr){m_NeutralColor = clr;}
-    QColor neutralLineColor(){return m_NeutralColor;}
+    QColor neutralLineColor() const {return m_NeutralColor;}
 
 public slots:
     void onInsertPt();

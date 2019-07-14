@@ -37,7 +37,7 @@
 #include <miarex/objects3d.h>
 #include <miarex/view/gl3dscales.h>
 #include <miarex/view/gllightdlg.h>
-#include <miarex/view/w3drefsdlg.h>
+#include <miarex/view/w3dprefsdlg.h>
 #include <misc/options/units.h>
 #include <misc/options/settings.h>
 #include <objects/objects3d/body.h>
@@ -1567,12 +1567,12 @@ void gl3dView::paintGL3()
 
     if(s_pMainFrame->m_glLightDlg.isVisible())
     {
-        Vector3d lightPos(GLLightDlg::s_Light.m_X, GLLightDlg::s_Light.m_Y, GLLightDlg::s_Light.m_Z);
-        double radius = (GLLightDlg::s_Light.m_Z+2.0)/73.0;
+        Vector3d lightPos(double(GLLightDlg::s_Light.m_X), double(GLLightDlg::s_Light.m_Y), double(GLLightDlg::s_Light.m_Z));
+        double radius = double(GLLightDlg::s_Light.m_Z+2.0f)/73.0;
         QColor lightColor;
-        lightColor.setRedF(GLLightDlg::s_Light.m_Red);
-        lightColor.setGreenF(GLLightDlg::s_Light.m_Green);
-        lightColor.setBlueF(GLLightDlg::s_Light.m_Blue);
+        lightColor.setRedF(  double(GLLightDlg::s_Light.m_Red));
+        lightColor.setGreenF(double(GLLightDlg::s_Light.m_Green));
+        lightColor.setBlueF( double(GLLightDlg::s_Light.m_Blue));
         lightColor.setAlphaF(1.0);
         m_pvmMatrix = m_orthoMatrix;
         paintSphere(lightPos, radius, lightColor, false);

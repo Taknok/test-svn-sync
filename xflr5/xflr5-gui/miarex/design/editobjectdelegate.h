@@ -30,7 +30,7 @@ class Foil;
 class EditObjectDelegate  : public QStyledItemDelegate
 {
 public:
-    EditObjectDelegate(QWidget *pParent=NULL);
+    EditObjectDelegate(QWidget *pParent=nullptr);
 
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &index) const;
     void setEditorData(QWidget *editor, const QModelIndex &index) const;

@@ -27,6 +27,7 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QLabel>
+#include <QSettings>
 
 class Units : public QWidget
 {
@@ -82,6 +83,10 @@ public:
     static void setInertiaUnitIndex(int index)  { s_InertiaUnitIndex  = index;}
 
     static void setUnitConversionFactors();
+
+    static void loadSettings(QSettings &settings);
+    static void saveSettings(QSettings &settings);
+
 
 private slots:
     void onSelChanged(const QString &);

@@ -38,7 +38,7 @@
 #include <gl3dbodyview.h>
 #include <miarex/mgt/xmlplanereader.h>
 #include <miarex/mgt/xmlplanewriter.h>
-#include <miarex/view/w3drefsdlg.h>
+#include <miarex/view/w3dprefsdlg.h>
 #include <objects/objects3d/plane.h>
 #include <objects/objects3d/body.h>
 #include <globals/globals.h>

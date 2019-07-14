@@ -939,4 +939,39 @@ void Units::setUnitConversionFactors()
 }
 
 
+void Units::loadSettings(QSettings &settings)
+{
+    settings.beginGroup("Units");
+    {
+        setLengthUnitIndex(  settings.value("LengthUnit").toInt());
+        setAreaUnitIndex(    settings.value("AreaUnit").toInt());
+        setWeightUnitIndex(  settings.value("WeightUnit").toInt());
+        setSpeedUnitIndex(   settings.value("SpeedUnit").toInt());
+        setForceUnitIndex(   settings.value("ForceUnit").toInt());
+        setMomentUnitIndex(  settings.value("MomentUnit").toInt());
+        setPressureUnitIndex(settings.value("PressureUnit").toInt());
+        setInertiaUnitIndex( settings.value("InertiaUnit").toInt());
+
+        setUnitConversionFactors();
+    }
+    settings.endGroup();
+}
+
+
+void Units::saveSettings(QSettings &settings)
+{
+    settings.beginGroup("Units");
+    {
+        settings.setValue("LengthUnit",   lengthUnitIndex());
+        settings.setValue("AreaUnit",     areaUnitIndex());
+        settings.setValue("WeightUnit",   weightUnitIndex());
+        settings.setValue("SpeedUnit",    speedUnitIndex());
+        settings.setValue("ForceUnit",    forceUnitIndex());
+        settings.setValue("MomentUnit",   momentUnitIndex());
+        settings.setValue("PressureUnit", pressureUnitIndex());
+        settings.setValue("InertiaUnit",  inertiaUnitIndex());
+
+    }
+    settings.endGroup();
+}
 

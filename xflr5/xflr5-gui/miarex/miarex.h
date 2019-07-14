@@ -96,7 +96,6 @@ class Miarex : public QWidget
     friend class GL3dWingDlg;
     friend class LLTAnalysisDlg;
     friend class MainFrame;
-    friend class ManageBodiesDlg;
     friend class ManageUFOsDlg;
     friend class PanelAnalysisDlg;
     friend class Plane;

@@ -40,28 +40,31 @@ void NewNameDlg::InitDialog()
 
 void NewNameDlg::SetupLayout()
 {
-    QVBoxLayout *MainLayout = new QVBoxLayout;
-    m_pctrlName = new QLineEdit(this);
-    QHBoxLayout *CommandButtons = new QHBoxLayout;
-    OKButton = new QPushButton(tr("OK"));
-    OKButton->setAutoDefault(false);
-    QPushButton *CancelButton = new QPushButton(tr("Cancel"));
-    CancelButton->setAutoDefault(false);
-    CommandButtons->addStretch(1);
-    CommandButtons->addWidget(OKButton);
-    CommandButtons->addStretch(1);
-    CommandButtons->addWidget(CancelButton);
-    CommandButtons->addStretch(1);
-    
-    MainLayout->addStretch(1);
-    MainLayout->addWidget(m_pctrlName);
-    MainLayout->addStretch(1);
-    MainLayout->addLayout(CommandButtons);    
-    setLayout(MainLayout);
-    
-    connect(OKButton, SIGNAL(clicked()),this, SLOT(OnOK()));
-    connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+    QVBoxLayout *pMainLayout = new QVBoxLayout;
+    {
+        m_pctrlName = new QLineEdit(this);
+        QHBoxLayout *CommandButtons = new QHBoxLayout;
+        m_pctrlOKButton = new QPushButton(tr("OK"));
+        m_pctrlOKButton->setAutoDefault(false);
+        QPushButton *CancelButton = new QPushButton(tr("Cancel"));
+        CancelButton->setAutoDefault(false);
+        CommandButtons->addStretch(1);
+        CommandButtons->addWidget(m_pctrlOKButton);
+        CommandButtons->addStretch(1);
+        CommandButtons->addWidget(CancelButton);
+        CommandButtons->addStretch(1);
+
+        pMainLayout->addStretch(1);
+        pMainLayout->addWidget(m_pctrlName);
+        pMainLayout->addStretch(1);
+        pMainLayout->addLayout(CommandButtons);
+
+        connect(m_pctrlOKButton, SIGNAL(clicked()),this, SLOT(OnOK()));
+        connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+    }
+    setLayout(pMainLayout);
 }
+
 
 void NewNameDlg::OnOK()
 {
@@ -77,7 +80,7 @@ void NewNameDlg::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if(!OKButton->hasFocus()) OKButton->setFocus();
+            if(!m_pctrlOKButton->hasFocus()) m_pctrlOKButton->setFocus();
             else OnOK();
              
             break;

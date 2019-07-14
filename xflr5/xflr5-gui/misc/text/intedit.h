@@ -31,8 +31,8 @@
 class IntEdit : public QLineEdit
 {
 public:
-    IntEdit(QWidget *pParent=NULL);
-    IntEdit(int val, QWidget *pParent=NULL);
+    IntEdit(QWidget *pParent=nullptr);
+    IntEdit(int val, QWidget *pParent=nullptr);
 
     ~IntEdit() {delete m_pDV;}
 
@@ -41,7 +41,7 @@ public:
     QSize sizeHint() const;
 
 
-    int value(){return m_Value;}
+    int value() const {return m_Value;}
     void setValue(int val);
 
 
@@ -51,8 +51,6 @@ public:
     int readValue();
     void setMin(int min) {m_pDV->setBottom(min);}
     void setMax(int max) {m_pDV->setTop(max);}
-
-
 
 public:
     QIntValidator *m_pDV;

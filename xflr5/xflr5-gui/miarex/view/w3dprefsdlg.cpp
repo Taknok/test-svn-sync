@@ -26,7 +26,7 @@
 #include <QColorDialog>
 #include <QPushButton>
 
-#include "w3drefsdlg.h"
+#include "w3dprefsdlg.h"
 #include <misc/line/linepickerdlg.h>
 
 #include <misc/line/linebtn.h>

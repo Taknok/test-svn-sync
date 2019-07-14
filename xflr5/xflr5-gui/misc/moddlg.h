@@ -30,9 +30,7 @@
 class ModDlg : public QDialog
 {
     Q_OBJECT
-
     friend class Miarex;
-    friend class ManageBodiesDlg;
 public:
     ModDlg(QWidget *pParent);
 

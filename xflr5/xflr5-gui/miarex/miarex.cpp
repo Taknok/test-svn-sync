@@ -61,12 +61,12 @@
 #include <miarex/view/gllightdlg.h>
 #include <miarex/view/stabviewdlg.h>
 #include <miarex/view/targetcurvedlg.h>
-#include <miarex/view/w3drefsdlg.h>
+#include <miarex/view/w3dprefsdlg.h>
 #include <misc/editplrdlg.h>
 #include <misc/moddlg.h>
 #include <misc/objectpropsdlg.h>
 #include <misc/polarfilterdlg.h>
-#include <misc/progressdlg.h>
+
 #include <misc/renamedlg.h>
 #include <misc/line/linebtn.h>
 #include <misc/line/linecbbox.h>
@@ -625,7 +625,7 @@ void Miarex::setControls()
     s_pMainFrame->m_pCurWOppMenu_W3DCtxMenu->setEnabled(m_pCurPOpp);
     s_pMainFrame->m_pCurWOppMenu_W3DStabCtxMenu->setEnabled(m_pCurPOpp);
 
-    //    s_pMainFrame->CurBodyMenu->setVisible(m_pCurPlane!=NULL);
+    //    s_pMainFrame->CurBodyMenu->setVisible(m_pCurPlane!=nullptr);
     s_pMainFrame->m_pEditWingAct->setEnabled(m_pCurPlane);
     s_pMainFrame->m_pEditBodyAct->setEnabled(m_pCurPlane && m_pCurPlane->body());
     s_pMainFrame->m_pEditBodyObjectAct->setEnabled(m_pCurPlane && m_pCurPlane->body());

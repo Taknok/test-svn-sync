@@ -37,10 +37,6 @@ ObjectPropsDlg::ObjectPropsDlg(QWidget *pParent) : QDialog(pParent)
 
 void ObjectPropsDlg::setupLayout()
 {
-    setMinimumHeight(550);
-    setMinimumWidth(700);
-
-
     QHBoxLayout *pCommandButtonsLayout = new QHBoxLayout;
     {
         QPushButton *OKButton = new QPushButton(tr("OK"));
@@ -50,7 +46,7 @@ void ObjectPropsDlg::setupLayout()
         connect(OKButton, SIGNAL(clicked()),this, SLOT(accept()));
     }
 
-    QVBoxLayout * pMainLayout = new QVBoxLayout(this);
+    QVBoxLayout *pMainLayout = new QVBoxLayout(this);
     {
         m_pctrlDescription = new QTextEdit;
         m_pctrlDescription->setFontFamily("Courier");

@@ -478,7 +478,7 @@ void OpPointWidget::paintGraph(QPainter &painter)
     }
 
 
-    if(m_pCpGraph->isInDrawRect(m_LastPoint) && MainFrame::s_bShowMousePos)
+    if(m_pCpGraph->isInDrawRect(m_LastPoint) && Settings::bMousePos())
     {
         QPen textPen(Settings::textColor());
 
@@ -517,7 +517,7 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
         painter.drawLine(rect().left(),  int(m_FoilOffset.y()),
                          rect().right(), int(m_FoilOffset.y()));
     }
-    if(!m_pCpGraph->isInDrawRect(m_LastPoint) && MainFrame::s_bShowMousePos)
+    if(!m_pCpGraph->isInDrawRect(m_LastPoint) && Settings::bMousePos())
     {
         QPen textPen(Settings::textColor());
         QFontMetrics fm(Settings::textFont());

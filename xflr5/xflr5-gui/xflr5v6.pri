@@ -73,7 +73,6 @@ SOURCES += \
     misc/options/units.cpp \
     misc/polarfilterdlg.cpp \
     misc/popup.cpp \
-    misc/progressdlg.cpp \
     misc/renamedlg.cpp \
     misc/stlexportdialog.cpp \
     misc/text/doubleedit.cpp \
@@ -83,7 +82,6 @@ SOURCES += \
     misc/text/textclrbtn.cpp \
     misc/updater.cpp \
     misc/voidwidget.cpp \
-    misc/waitdlg.cpp \
     script/xflscriptexec.cpp \
     script/xflscriptreader.cpp \
     viewwidgets/bodyframewt.cpp \
@@ -130,7 +128,7 @@ SOURCES += \
     xinverse/foilselectiondlg.cpp \
     xinverse/inverseoptionsdlg.cpp \
     xinverse/pertdlg.cpp \
-    xinverse/xinverse.cpp
+    xinverse/xinverse.cpp \
 
 
 HEADERS += \
@@ -189,7 +187,7 @@ HEADERS += \
     miarex/view/gllightdlg.h \
     miarex/view/stabviewdlg.h \
     miarex/view/targetcurvedlg.h \
-    miarex/view/w3drefsdlg.h \
+    miarex/view/w3dprefsdlg.h \
     misc/aboutq5.h \
     misc/color/colorbutton.h \
     misc/editplrdlg.h \
@@ -209,7 +207,6 @@ HEADERS += \
     misc/options/units.h \
     misc/polarfilterdlg.h \
     misc/popup.h \
-    misc/progressdlg.h \
     misc/renamedlg.h \
     misc/stlexportdialog.h \
     misc/text/doubleedit.h \
@@ -219,7 +216,6 @@ HEADERS += \
     misc/text/textclrbtn.h \
     misc/updater.h \
     misc/voidwidget.h \
-    misc/waitdlg.h \
     script/xflscriptexec.h \
     script/xflscriptreader.h \
     viewwidgets/bodyframewt.h \
@@ -267,7 +263,7 @@ HEADERS += \
     xinverse/foilselectiondlg.h \
     xinverse/inverseoptionsdlg.h \
     xinverse/pertdlg.h \
-    xinverse/xinverse.h
+    xinverse/xinverse.h \
 
 
 RESOURCES += \

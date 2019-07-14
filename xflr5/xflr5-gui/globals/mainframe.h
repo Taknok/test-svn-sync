@@ -84,54 +84,23 @@ class gl3dMiarexView;
 class MainFrame : public QMainWindow
 {
     friend class AFoil;
-    friend class BatchDlg;
-    friend class BatchThreadDlg;
-    friend class Body;
-    friend class BodyGridDlg;
-    friend class BodyTransDlg;
-    friend class FoilDesignWt;
-    friend class FoilPolarDlg;
-    friend class GL3DScales;
-    friend class GL3dBodyDlg;
-    friend class GL3dWingDlg;
-    friend class GraphDlg;
     friend class GraphTileWidget;
-    friend class InertiaDlg;
-    friend class InterpolateFoilsDlg;
     friend class InverseViewWidget;
-    friend class LLTAnalysisDlg;
-    friend class ManageBodiesDlg;
-    friend class ManageFoilsDlg;
-    friend class ManagePlanesDlg;
+    friend class LanguageWt;
     friend class Miarex;
     friend class MiarexTileWidget;
-    friend class Objects3D;
-    friend class OpPoint;
     friend class OpPointWidget;
-    friend class PanelAnalysisDlg;
-    friend class Plane;
-    friend class PlaneDlg;
     friend class Settings;
-    friend class StabPolarDlg;
-    friend class StabViewDlg;
-    friend class WAdvancedDlg;
-    friend class WPolar;
-    friend class WPolarDlg;
-    friend class Wing;
-    friend class WingDlg;
-    friend class WingScaleDlg;
     friend class XDirect;
     friend class XDirectTileWidget;
-    friend class XFoilAnalysisDlg;
     friend class XInverse;
     friend class gl3dMiarexView;
     friend class gl3dView;
-    friend class LanguageWt;
 
     Q_OBJECT
 
 public:
-    MainFrame(QWidget * parent = nullptr, Qt::WindowFlags flags = 0);
+    MainFrame(QWidget * parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
     ~MainFrame();
 
     XFLR5::enumApp loadXFLR5File(QString PathName);
@@ -461,7 +430,6 @@ private:
 
 public:
     static bool s_bTrace;
-    static bool s_bShowMousePos;
     static bool s_bOpenGL;
     static QFile *s_pTraceFile;
     static QString s_ProjectName;      /**< The Project's name. */

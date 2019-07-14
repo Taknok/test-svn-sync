@@ -39,7 +39,7 @@
 #include <miarex/mgt/xmlplanereader.h>
 #include <miarex/mgt/xmlplanewriter.h>
 #include <miarex/objects3d.h>
-#include <miarex/view/w3drefsdlg.h>
+#include <miarex/view/w3dprefsdlg.h>
 #include <misc/color/colorbutton.h>
 #include <misc/options/units.h>
 #include <misc/options/settings.h>

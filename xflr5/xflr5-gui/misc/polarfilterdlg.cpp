@@ -66,7 +66,6 @@ void PolarFilterDlg::setupLayout()
         pMainLayout->addStretch(1);
     }
     setLayout(pMainLayout);
-
 }
 
 

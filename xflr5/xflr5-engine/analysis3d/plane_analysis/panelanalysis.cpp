@@ -584,7 +584,7 @@ bool PanelAnalysis::initializeAnalysis()
     m_NSpanStations = 0;
     for(int iw=0; iw<MAXWINGS; iw++)
     {
-        if(m_pWingList[iw] != NULL) m_NSpanStations += m_pWingList[iw]->m_NStation;
+        if(m_pWingList[iw] != nullptr) m_NSpanStations += m_pWingList[iw]->m_NStation;
     }
 
     m_PlaneOppList.clear();
