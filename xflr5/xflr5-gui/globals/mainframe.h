@@ -116,6 +116,7 @@ public slots:
     void onMiarex();
     void onExecuteScript();
     void onLoadLastProject();
+    void onAlignChildrenStyle(bool bAlign);
 
 private slots:
     void aboutQt();
@@ -327,6 +328,7 @@ private:
     QAction *m_pUndoAFoilAct, *m_pRedoAFoilAct;
     QAction *m_pHideAllFoils, *m_pShowAllFoils, *m_pShowCurrentFoil, *m_pHideCurrentFoil;
     QAction *m_pStoreSplineAct, *m_pNewSplinesAct, *m_pSplineControlsAct, *m_pExportSplinesToFileAct;
+
     QAction *m_pInsertSplinePt, *m_pRemoveSplinePt;
     QAction *m_pAFoilTableColumns, *m_pAFoilTableColumnWidths;
     QAction *m_pAFoilLoadImage, *m_pAFoilClearImage;

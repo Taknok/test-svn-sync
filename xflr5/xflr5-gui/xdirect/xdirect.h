@@ -91,7 +91,6 @@ public slots:
     void updateView();
 
 public slots:
-    void onAlignChildrenStyle();
     void onAnalyze();
     void onAnimate(bool bChecked);
     void onAnimateSingle();

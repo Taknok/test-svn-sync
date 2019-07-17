@@ -893,6 +893,11 @@ void MainFrame::createAFoilToolbar()
 }
 
 
+void MainFrame::onAlignChildrenStyle(bool bAlign)
+{
+    Settings::setAlignedChildrenStyle(bAlign);
+}
+
 
 void MainFrame::createDockWindows()
 {
@@ -3689,7 +3694,7 @@ void MainFrame::onCurFoilStyle()
 
     LinePickerDlg dlg(this);
     dlg.initDialog(XDirect::curFoil()->foilPointStyle(), XDirect::curFoil()->foilLineStyle(), XDirect::curFoil()->foilLineWidth(),
-                   colour(XDirect::curFoil()), true);
+                   colour(XDirect::curFoil()), true, true);
 
     if(QDialog::Accepted==dlg.exec())
     {

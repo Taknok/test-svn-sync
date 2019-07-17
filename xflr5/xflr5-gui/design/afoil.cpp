@@ -1187,7 +1187,7 @@ void AFoil::onFoilStyle()
     if(!XDirect::curFoil())
     {
         LinePickerDlg dlg(this);
-        dlg.initDialog(m_pSF->splineFoilStyle(), m_pSF->splineFoilStyle(), m_pSF->splineFoilWidth(), m_pSF->splineFoilColor(), true);
+        dlg.initDialog(m_pSF->splineFoilStyle(), m_pSF->splineFoilStyle(), m_pSF->splineFoilWidth(), m_pSF->splineFoilColor(), true, true);
 
         if(QDialog::Accepted==dlg.exec())
         {
@@ -1199,7 +1199,7 @@ void AFoil::onFoilStyle()
     {
         LinePickerDlg dlg(this);
         dlg.initDialog(XDirect::curFoil()->foilPointStyle(), XDirect::curFoil()->foilLineStyle(),
-                       XDirect::curFoil()->foilLineWidth(), colour(XDirect::curFoil()), true);
+                       XDirect::curFoil()->foilLineWidth(), colour(XDirect::curFoil()), true, true);
 
         if(QDialog::Accepted==dlg.exec())
         {

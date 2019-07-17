@@ -346,7 +346,7 @@ void XDirect::connectSignals()
     connect(m_pctrlStoreOpp,   SIGNAL(clicked()),          SLOT(onStoreOpp()));
 
     connect(m_pctrlShowCurve,     SIGNAL(clicked()),  SLOT(onShowCurve()));
-    connect(m_pctrlAlignChildren, SIGNAL(clicked()),  SLOT(onAlignChildrenStyle()));
+    connect(m_pctrlAlignChildren, SIGNAL(clicked(bool)),  s_pMainFrame, SLOT(onAlignChildrenStyle(bool)));
 
     connect(m_pctrlAnimate,      SIGNAL(clicked(bool)),    SLOT(onAnimate(bool)));
     connect(m_pctrlAnimateSpeed, SIGNAL(sliderMoved(int)), SLOT(onAnimateSpeed(int)));
@@ -3950,8 +3950,6 @@ void XDirect::onShowAllPolars()
 }
 
 
-
-
 /**
  * The user has toggled the display of the curve of the active object
  */
@@ -3975,12 +3973,6 @@ void XDirect::onShowCurve()
     }
     emit projectModified();
     updateView();
-}
-
-
-void XDirect::onAlignChildrenStyle()
-{
-    Settings::setAlignedChildrenStyle(m_pctrlAlignChildren->isChecked());
 }
 
 
@@ -4050,7 +4042,6 @@ void XDirect::onShowFoilOpps()
 }
 
 
-
 /**
  * The user has requested the display of the curves of all OpPoint objects associated to the active Polar.
  */
@@ -4103,8 +4094,6 @@ void XDirect::onViscous()
 }
 
 
-
-
 /**
  * The user has requested the launch of the interface used to define advanced settings for the XFoil analysis
  */
@@ -4125,7 +4114,6 @@ void XDirect::onXFoilAdvanced()
         XFoilTask::s_IterLim      = xfaDlg.m_IterLimit;
     }
 }
-
 
 
 /**

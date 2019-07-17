@@ -24,7 +24,7 @@
 
 #include <QDialog>
 #include <QComboBox>
-
+#include <QCheckBox>
 
 class LineBtn;
 class LineCbBox;
@@ -37,8 +37,8 @@ class LinePickerDlg : public QDialog
 public:
     LinePickerDlg(QWidget *pParent);
 
-    void initDialog();
-    void initDialog(int pointStyle, int lineStyle, int lineWidth, QColor lineColor, bool bAcceptPointStyle=false);
+    void initDialog(bool bFlowDownEnable);
+    void initDialog(int pointStyle, int lineStyle, int lineWidth, QColor lineColor, bool bAcceptPointStyle, bool bFlowDownEnable);
 
     void keyPressEvent(QKeyEvent *event);
 
@@ -55,18 +55,24 @@ public:
     void fillBoxes();
     void setupLayout();
 
+    bool bFlowDownStyle() const {return m_pctrlFlowDownStyle->isChecked();}
+
 private slots:
     void onPointStyle(int val);
     void onLineStyle(int val);
     void onLineWidth(int val);
     void onLineColor();
 
-protected:
-    LineBtn *m_pctrlLineColor;
-    LineCbBox *m_pctrlPointStyle, *m_pctrlLineWidth, *m_pctrlLineStyle;
-    QPushButton *OKButton, *CancelButton;
+    void accept();
+    void reject();
 
 private:
+    LineBtn *m_pctrlLineColor;
+    LineCbBox *m_pctrlPointStyle, *m_pctrlLineWidth, *m_pctrlLineStyle;
+    QCheckBox *m_pctrlFlowDownStyle;
+    QPushButton *OKButton, *CancelButton;
+
+
     bool m_bAcceptPointStyle;
     int m_PointStyle;
     int m_LineStyle;
