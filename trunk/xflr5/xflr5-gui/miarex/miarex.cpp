@@ -440,7 +440,7 @@ void Miarex::connectSignals()
     connect(m_pctrlCurveColor,  SIGNAL(clickedLB()),    SLOT(onCurveColor()));
 
     connect(m_pctrlShowCurve,     SIGNAL(clicked()), SLOT(onShowCurve()));
-    connect(m_pctrlAlignChildren, SIGNAL(clicked()), SLOT(onAlignChildrenStyle()));
+    connect(m_pctrlAlignChildren, SIGNAL(clicked(bool)), s_pMainFrame, SLOT(onAlignChildrenStyle(bool)));
 
     connect(m_pctrlPanelForce,  SIGNAL(clicked()), SLOT(onPanelForce()));
     connect(m_pctrlLift,        SIGNAL(clicked()), SLOT(onShowLift()));
@@ -5797,10 +5797,6 @@ void Miarex::onShowCurve()
 }
 
 
-void Miarex::onAlignChildrenStyle()
-{
-    Settings::setAlignedChildrenStyle(m_pctrlAlignChildren->isChecked());
-}
 
 /**
  * The user has toggled the display of stability results between longitudinal and lateral directions

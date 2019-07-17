@@ -290,7 +290,7 @@ void GraphDlg::onAutoY()
 void GraphDlg::onAxisStyle()
 {
     LinePickerDlg dlg(this);
-    dlg.initDialog(0, m_pGraph->axisStyle(), m_pGraph->axisWidth(), m_pGraph->axisColor());
+    dlg.initDialog(0, m_pGraph->axisStyle(), m_pGraph->axisWidth(), m_pGraph->axisColor(), false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {
@@ -310,7 +310,7 @@ void GraphDlg::onBorderStyle()
     s = m_pGraph->borderStyle();
     w = m_pGraph->borderWidth();
     color = m_pGraph->borderColor();
-    dlg.initDialog(0,s,w,color);
+    dlg.initDialog(0,s,w,color, false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {
@@ -497,7 +497,7 @@ void GraphDlg::onXMajGridStyle()
     QColor color;
     bool bShow;
     m_pGraph->bXMajGrid(bShow,color,s,w);
-    dlg.initDialog(0,s,w,color);
+    dlg.initDialog(0,s,w,color, false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {
@@ -517,7 +517,7 @@ void GraphDlg::onXMinGridStyle()
     bool bShow, bAuto;
     double unit;
     m_pGraph->bXMinGrid(bShow, bAuto,color,s,w,unit);
-    dlg.initDialog(0,s,w,color);
+    dlg.initDialog(0,s,w,color, false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {
@@ -574,7 +574,7 @@ void GraphDlg::onYMajGridStyle()
     QColor color;
     bool bShow;
     m_pGraph->yMajGrid(bShow,color,s,w);
-    dlg.initDialog(0,s,w,color);
+    dlg.initDialog(0,s,w,color, false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {
@@ -606,7 +606,7 @@ void GraphDlg::onYMinGridStyle()
     bool bShow, bAuto;
     double unit;
     m_pGraph->bYMinGrid(bShow, bAuto,color,s,w,unit);
-    dlg.initDialog(0,s,w,color);
+    dlg.initDialog(0,s,w,color, false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {

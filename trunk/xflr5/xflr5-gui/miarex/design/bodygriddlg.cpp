@@ -263,7 +263,7 @@ void BodyGridDlg::onMinGrid2()
 void BodyGridDlg::onLineStyle()
 {
     LinePickerDlg dlg(this);
-    dlg.initDialog(0, s_Style, s_Width, s_Color);
+    dlg.initDialog(0, s_Style, s_Width, s_Color, false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {
@@ -280,7 +280,7 @@ void BodyGridDlg::onLineStyle()
 void BodyGridDlg::onLine2Style()
 {
     LinePickerDlg dlg(this);
-    dlg.initDialog(0, s_Style2, s_Width2, s_Color2);
+    dlg.initDialog(0, s_Style2, s_Width2, s_Color2, false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {
@@ -297,7 +297,7 @@ void BodyGridDlg::onLine2Style()
 void BodyGridDlg::onMinLineStyle()
 {
     LinePickerDlg dlg(this);
-    dlg.initDialog(0, s_MinStyle, s_MinWidth, s_MinColor);
+    dlg.initDialog(0, s_MinStyle, s_MinWidth, s_MinColor, false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {
@@ -314,7 +314,7 @@ void BodyGridDlg::onMinLineStyle()
 void BodyGridDlg::onMinLine2Style()
 {
     LinePickerDlg dlg(this);
-    dlg.initDialog(0, s_MinStyle2, s_MinWidth2, s_MinColor2);
+    dlg.initDialog(0, s_MinStyle2, s_MinWidth2, s_MinColor2, false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {
@@ -326,7 +326,6 @@ void BodyGridDlg::onMinLine2Style()
         m_pctrlMinLine2->setColor(s_MinColor2);
     }
 }
-
 
 
 void BodyGridDlg::loadSettings (QSettings &settings)

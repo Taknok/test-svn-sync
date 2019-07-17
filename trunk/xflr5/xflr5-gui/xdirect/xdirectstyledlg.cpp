@@ -111,7 +111,7 @@ void XDirectStyleDlg::setupLayout()
 void XDirectStyleDlg::onNeutralStyle()
 {
     LinePickerDlg dlg(this);
-    dlg.initDialog(0, m_iNeutralStyle, m_iNeutralWidth, m_crNeutralColor);
+    dlg.initDialog(0, m_iNeutralStyle, m_iNeutralWidth, m_crNeutralColor, false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {
@@ -127,7 +127,7 @@ void XDirectStyleDlg::onNeutralStyle()
 void XDirectStyleDlg::onPressureStyle()
 {
     LinePickerDlg dlg(this);
-    dlg.initDialog(0, m_iPressureStyle, m_iPressureWidth, m_crPressureColor);
+    dlg.initDialog(0, m_iPressureStyle, m_iPressureWidth, m_crPressureColor, false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {
@@ -143,7 +143,7 @@ void XDirectStyleDlg::onPressureStyle()
 void XDirectStyleDlg::onBLStyle()
 {
     LinePickerDlg dlg(this);
-    dlg.initDialog(0, m_iBLStyle, m_iBLWidth, m_crBLColor);
+    dlg.initDialog(0, m_iBLStyle, m_iBLWidth, m_crBLColor, false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {
@@ -155,8 +155,6 @@ void XDirectStyleDlg::onBLStyle()
 
     OKButton->setFocus();
 }
-
-
 
 
 void XDirectStyleDlg::onRestoreDefaults()

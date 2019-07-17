@@ -314,7 +314,7 @@ void W3dPrefsDlg::onOutline()
     LPdlg.setLineColor(s_OutlineColor);
     LPdlg.setLineStyle(s_OutlineStyle);
     LPdlg.setLineWidth(s_OutlineWidth);
-    LPdlg.initDialog();
+    LPdlg.initDialog(false);
     if (QDialog::Accepted == LPdlg.exec())
     {
         s_OutlineColor = LPdlg.lineColor();
@@ -330,7 +330,7 @@ void W3dPrefsDlg::on3DAxis()
     LPdlg.setLineColor(s_3DAxisColor);
     LPdlg.setLineStyle(s_3DAxisStyle);
     LPdlg.setLineWidth(s_3DAxisWidth);
-    LPdlg.initDialog();
+    LPdlg.initDialog(false);
 
     if (QDialog::Accepted == LPdlg.exec())
     {
@@ -347,7 +347,7 @@ void W3dPrefsDlg::onTopTrans()
     LPdlg.setLineColor(s_TopColor);
     LPdlg.setLineStyle(s_TopStyle);
     LPdlg.setLineWidth(s_TopWidth);
-    LPdlg.initDialog();
+    LPdlg.initDialog(false);
 
     if (QDialog::Accepted == LPdlg.exec())
     {
@@ -364,7 +364,7 @@ void W3dPrefsDlg::onBotTrans()
     LPdlg.setLineColor(s_BotColor);
     LPdlg.setLineStyle(s_BotStyle);
     LPdlg.setLineWidth(s_BotWidth);
-    LPdlg.initDialog();
+    LPdlg.initDialog(false);
 
     if (QDialog::Accepted == LPdlg.exec())
     {
@@ -381,7 +381,7 @@ void W3dPrefsDlg::onIDrag()
     LPdlg.setLineColor(s_IDragColor);
     LPdlg.setLineStyle(s_IDragStyle);
     LPdlg.setLineWidth(s_IDragWidth);
-    LPdlg.initDialog();
+    LPdlg.initDialog(false);
 
     if (QDialog::Accepted == LPdlg.exec())
     {
@@ -398,7 +398,7 @@ void W3dPrefsDlg::onVDrag()
     LPdlg.setLineColor(s_VDragColor);
     LPdlg.setLineStyle(s_VDragStyle);
     LPdlg.setLineWidth(s_VDragWidth);
-    LPdlg.initDialog();
+    LPdlg.initDialog(false);
 
     if (QDialog::Accepted == LPdlg.exec())
     {
@@ -415,7 +415,7 @@ void W3dPrefsDlg::onXCP()
     LPdlg.setLineColor(s_XCPColor);
     LPdlg.setLineStyle(s_XCPStyle);
     LPdlg.setLineWidth(s_XCPWidth);
-    LPdlg.initDialog();
+    LPdlg.initDialog(false);
 
     if (QDialog::Accepted == LPdlg.exec())
     {
@@ -432,7 +432,7 @@ void W3dPrefsDlg::onMoments()
     LPdlg.setLineColor(s_MomentColor);
     LPdlg.setLineStyle(s_MomentStyle);
     LPdlg.setLineWidth(s_MomentWidth);
-    LPdlg.initDialog();
+    LPdlg.initDialog(false);
 
     if (QDialog::Accepted == LPdlg.exec())
     {
@@ -449,7 +449,7 @@ void W3dPrefsDlg::onDownwash()
     LPdlg.setLineColor(s_DownwashColor);
     LPdlg.setLineStyle(s_DownwashStyle);
     LPdlg.setLineWidth(s_DownwashWidth);
-    LPdlg.initDialog();
+    LPdlg.initDialog(false);
 
     if (QDialog::Accepted == LPdlg.exec())
     {
@@ -466,7 +466,7 @@ void W3dPrefsDlg::onStreamLines()
     LPdlg.setLineColor(s_StreamLinesColor);
     LPdlg.setLineStyle(s_StreamLinesStyle);
     LPdlg.setLineWidth(s_StreamLinesWidth);
-    LPdlg.initDialog();
+    LPdlg.initDialog(false);
 
     if (QDialog::Accepted == LPdlg.exec())
     {
@@ -483,7 +483,7 @@ void W3dPrefsDlg::onWakePanels()
     LPdlg.setLineColor(s_WakeColor);
     LPdlg.setLineStyle(s_WakeStyle);
     LPdlg.setLineWidth(s_WakeWidth);
-    LPdlg.initDialog();
+    LPdlg.initDialog(false);
 
     if (QDialog::Accepted == LPdlg.exec())
     {
@@ -500,7 +500,7 @@ void W3dPrefsDlg::onVLMMesh()
     LPdlg.setLineColor(s_VLMColor);
     LPdlg.setLineStyle(s_VLMStyle);
     LPdlg.setLineWidth(s_VLMWidth);
-    LPdlg.initDialog();
+    LPdlg.initDialog(false);
 
     if (QDialog::Accepted == LPdlg.exec())
     {

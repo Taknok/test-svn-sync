@@ -43,6 +43,7 @@ LinePickerDlg::LinePickerDlg(QWidget *pParent): QDialog(pParent)
     m_LineStyle  = 0;
     m_LineWidth  = 1;
     m_LineColor  = QColor(0,255,0);
+
     setupLayout();
 
     m_pPointStyleDelegate = new LineDelegate(m_pctrlPointStyle);
@@ -103,19 +104,18 @@ void LinePickerDlg::fillBoxes()
 }
 
 
-void LinePickerDlg::initDialog(int pointStyle, int lineStyle, int lineWidth, QColor lineColor, bool bAcceptPointStyle)
+void LinePickerDlg::initDialog(int pointStyle, int lineStyle, int lineWidth, QColor lineColor, bool bAcceptPointStyle, bool bFlowDownEnable)
 {
     m_bAcceptPointStyle = bAcceptPointStyle;
     m_PointStyle = pointStyle;
     m_LineStyle = lineStyle;
     m_LineWidth = lineWidth;
     m_LineColor = lineColor;
-    initDialog();
+    initDialog(bFlowDownEnable);
 }
 
 
-
-void LinePickerDlg::initDialog()
+void LinePickerDlg::initDialog(bool bFlowDownEnable)
 {
     QString str;
     for (int i=0; i<5; i++)
@@ -126,9 +126,11 @@ void LinePickerDlg::initDialog()
         m_pctrlLineStyle->addItem(str);//string doesn't matter, will be replaced when the boxes are filled
     }
 
+    m_pctrlFlowDownStyle->setVisible(bFlowDownEnable);
+    m_pctrlFlowDownStyle->setChecked(Settings::isAlignedChildrenStyle());
+
     fillBoxes();
 }
-
 
 
 void LinePickerDlg::keyPressEvent(QKeyEvent *event)
@@ -146,7 +148,6 @@ void LinePickerDlg::keyPressEvent(QKeyEvent *event)
             }
             else
             {
-
                 accept();
                 return;
             }
@@ -157,6 +158,20 @@ void LinePickerDlg::keyPressEvent(QKeyEvent *event)
             return;
         }
     }
+}
+
+
+void LinePickerDlg::accept()
+{
+    Settings::setAlignedChildrenStyle(m_pctrlFlowDownStyle->isChecked());
+    QDialog::accept();
+}
+
+
+void LinePickerDlg::reject()
+{
+    Settings::setAlignedChildrenStyle(m_pctrlFlowDownStyle->isChecked());
+    QDialog::reject();
 }
 
 
@@ -239,6 +254,8 @@ void LinePickerDlg::setLineWidth(int width)
 
 void LinePickerDlg::setupLayout()
 {
+    m_pctrlFlowDownStyle = new QCheckBox(tr("Flow down style"));
+
     QGridLayout *pStyleLayout = new QGridLayout;
     {
         QLabel *lab0 = new QLabel(tr("Points"));
@@ -292,13 +309,13 @@ void LinePickerDlg::setupLayout()
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
         pMainLayout->addStretch(1);
+        pMainLayout->addWidget(m_pctrlFlowDownStyle);
         pMainLayout->addLayout(pStyleLayout);
         pMainLayout->addStretch(1);
         pMainLayout->addLayout(pCommandButtons);
         pMainLayout->addStretch(1);
     }
 
-    setMinimumHeight(170);
     setLayout(pMainLayout);
 }
 

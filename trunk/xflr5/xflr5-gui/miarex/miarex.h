@@ -127,7 +127,6 @@ private slots:
     void on3DView();
     void onAdjustToWing();
     void onAdvancedSettings();
-    void onAlignChildrenStyle();
     void onAnalyze();
     void onAnimateWOpp();
     void onAnimateWOppSingle();
