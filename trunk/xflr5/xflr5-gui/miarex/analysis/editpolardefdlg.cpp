@@ -39,9 +39,7 @@
 #include <miarex/design/editobjectdelegate.h>
 
 
-QSize EditPolarDefDlg::s_Size(579,783);
-QPoint EditPolarDefDlg::s_Position(231, 97);
-
+QByteArray EditPolarDefDlg::s_Geometry;
 
 EditPolarDefDlg::EditPolarDefDlg(QWidget *pParent) : QDialog(pParent)
 {
@@ -52,14 +50,13 @@ EditPolarDefDlg::EditPolarDefDlg(QWidget *pParent) : QDialog(pParent)
 }
 
 
-
 /**
  * Overrides the base class showEvent method. Moves the window to its former location.
  * @param event the showEvent.
  */
 void EditPolarDefDlg::showEvent(QShowEvent *pEvent)
 {
-    move(s_Position);
+    restoreGeometry(s_Geometry);
     pEvent->accept();
 }
 
@@ -70,14 +67,13 @@ void EditPolarDefDlg::showEvent(QShowEvent *pEvent)
  */
 void EditPolarDefDlg::hideEvent(QHideEvent *pEvent)
 {
-    s_Position = pos();
+    s_Geometry = saveGeometry();
     pEvent->accept();
 }
 
 
 void EditPolarDefDlg::resizeEvent(QResizeEvent *pEvent)
 {
-    s_Size = size();
     int ColumnWidth = int(double(m_pStruct->width())/4.0);
     m_pStruct->setColumnWidth(0,ColumnWidth);
     m_pStruct->setColumnWidth(1,ColumnWidth);
@@ -133,23 +129,21 @@ void EditPolarDefDlg::setupLayout()
     {
         pVBox->addWidget(m_pStruct);
 
-        QHBoxLayout *pCommandButtons = new QHBoxLayout;
+        m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Discard);
         {
-            pOKButton = new QPushButton(tr("OK"));
-            pOKButton->setDefault(true);
-            pCancelButton = new QPushButton(tr("Cancel"));
-            pCommandButtons->addStretch(1);
-            pCommandButtons->addWidget(pOKButton);
-            pCommandButtons->addStretch(1);
-            pCommandButtons->addWidget(pCancelButton);
-            pCommandButtons->addStretch(1);
-            connect(pOKButton,     SIGNAL(clicked()), this, SLOT(onOK()));
-            connect(pCancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+            connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(onButton(QAbstractButton*)));
         }
-        pVBox->addLayout(pCommandButtons);
+
+        pVBox->addWidget(m_pButtonBox);
     }
     setLayout(pVBox);
-    resize(s_Size);
+}
+
+
+void EditPolarDefDlg::onButton(QAbstractButton *pButton)
+{
+    if (     m_pButtonBox->button(QDialogButtonBox::Ok)      == pButton)  accept();
+    else if (m_pButtonBox->button(QDialogButtonBox::Discard) == pButton)  reject();
 }
 
 
@@ -161,15 +155,15 @@ void EditPolarDefDlg::keyPressEvent(QKeyEvent *pEvent)
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if(!pOKButton->hasFocus() && !pCancelButton->hasFocus())
+            if(!m_pButtonBox->hasFocus())
             {
                 readData();
-                pOKButton->setFocus();
+                m_pButtonBox->setFocus();
                 return;
             }
             else
             {
-                onOK();
+                accept();
                 return;
             }
         }
@@ -182,7 +176,6 @@ void EditPolarDefDlg::keyPressEvent(QKeyEvent *pEvent)
             pEvent->ignore();
     }
 }
-
 
 
 void EditPolarDefDlg::onItemChanged()
@@ -208,7 +201,7 @@ void EditPolarDefDlg::onItemChanged()
 }
 
 
-void EditPolarDefDlg::onOK()
+void EditPolarDefDlg::accept()
 {
     readData();
 
@@ -225,7 +218,7 @@ void EditPolarDefDlg::onOK()
     {
         m_pWPolar->bThinSurfaces()  = false;
     }
-    accept();
+    QDialog::accept();
 }
 
 

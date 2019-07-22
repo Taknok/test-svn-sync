@@ -112,7 +112,7 @@ QWidget *EditObjectDelegate::createEditor(QWidget *parent, const QStyleOptionVie
             //fill comboboxes here
             for(int i=0; i<s_poaFoil->size(); i++)
             {
-                Foil *pFoil = (Foil*)s_poaFoil->at(i);
+                Foil *pFoil = s_poaFoil->at(i);
                 editor->addItem(pFoil->foilName());
             }
             return editor;
@@ -157,7 +157,6 @@ QWidget *EditObjectDelegate::createEditor(QWidget *parent, const QStyleOptionVie
             else                                     return nullptr;
         }
     }
-    return nullptr;
 }
 
 
@@ -179,7 +178,7 @@ void EditObjectDelegate::setEditorData(QWidget *editor, const QModelIndex &index
     else if(dataType==XFLR5::STRING)
     {
         QString strong = index.model()->data(index, Qt::EditRole).toString();
-        QLineEdit *pLineEdit = (QLineEdit*)editor;
+        QLineEdit *pLineEdit = dynamic_cast<QLineEdit*>(editor);
         pLineEdit->setText(strong);
     }
     //    else if(dataType==BOOL || dataType==PANELDISTRIBUTION || dataType==FOILNAME || dataType==BODYTYPE)
@@ -211,7 +210,7 @@ void EditObjectDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
     }
     else if(dataType==XFLR5::STRING)
     {
-        QLineEdit *pLineEdit = (QLineEdit*)editor;
+        QLineEdit *pLineEdit = dynamic_cast<QLineEdit*>(editor);
         model->setData(index, pLineEdit->text(), Qt::EditRole);
     }
     //    else if(dataType==BOOL || dataType==PANELDISTRIBUTION || dataType==FOILNAME ||
@@ -282,7 +281,7 @@ void EditObjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
     }*/
 
     QFontMetrics fm(myFont);
-    int w = (int)((double)fm.height()/2);//pixels
+    int w = int(double(fm.height())/2);//pixels
 
     if (option.state & QStyle::State_Selected)
         painter->fillRect(option.rect, option.palette.highlight());
@@ -290,8 +289,7 @@ void EditObjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
     QRect sR3 = myOption.rect;
     sR3.setLeft(sR3.left()+w);
     sR3.setRight(sR3.right()-w);
-    painter->drawText(sR3, myOption.displayAlignment , strong);
-
+    painter->drawText(sR3, int(myOption.displayAlignment), strong);
 }
 
 

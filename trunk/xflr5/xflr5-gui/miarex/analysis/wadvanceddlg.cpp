@@ -254,7 +254,6 @@ void WAdvancedDlg::keyPressEvent(QKeyEvent *pEvent)
                 onOK();
                 return;
             }
-            break;
         }
         default:
             pEvent->ignore();

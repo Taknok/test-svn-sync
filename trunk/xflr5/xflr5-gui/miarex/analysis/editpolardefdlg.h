@@ -24,7 +24,7 @@
 #include <QDialog>
 #include <QTreeView>
 #include <QStandardItemModel>
-
+#include <QDialogButtonBox>
 
 class WPolar;
 class Plane;
@@ -40,8 +40,9 @@ class EditPolarDefDlg : public QDialog
     friend class WPolar;
 
 private slots:
-    void onOK();
+    void accept();
     void onItemChanged();
+    void onButton(QAbstractButton *pButton);
 
 public:
     EditPolarDefDlg(QWidget *pParent=nullptr);
@@ -50,6 +51,8 @@ public:
     void hideEvent(QHideEvent *pEvent);
     void resizeEvent(QResizeEvent *pEvent);
     void keyPressEvent(QKeyEvent *pEvent);
+
+    QSize sizeHint() const {return QSize(700,900);}
 
     void initDialog(Plane *pPlane, WPolar *pWPolar);
     void setupLayout();
@@ -66,18 +69,14 @@ public:
     QList<QStandardItem *> prepareDoubleRow(const QString &object, const QString &field, const double &value,  const QString &unit);
 
 
-    static QPoint s_Position;   /**< the position on the client area of the dialog's topleft corner */
-    static QSize s_Size;        /**< the window size in the client area */
-
 private:
     WPolar * m_pWPolar;
     Plane * m_pPlane;
     QTreeView * m_pStruct;
     QStandardItemModel *m_pModel;
     EditObjectDelegate *m_pDelegate;
+    QDialogButtonBox *m_pButtonBox;
 
-
-    QPushButton *pOKButton, *pCancelButton;
-
+    static QByteArray s_Geometry;
 };
 

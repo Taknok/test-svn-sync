@@ -59,9 +59,6 @@ bool EditBodyDlg::s_bShowMasses = false;
 bool EditBodyDlg::s_bFoilNames  = false;
 
 
-#define SECTIONHIGHLIGHT    1702
-
-
 EditBodyDlg::EditBodyDlg(QWidget *pParent) : QDialog(pParent)
 {
     setWindowTitle("Body object explorer");
@@ -532,14 +529,14 @@ void EditBodyDlg::reject()
 
 void EditBodyDlg::connectSignals()
 {
-    connect(m_pBodyLineWidget, SIGNAL(objectModified()), this, SLOT(onRefillBodyTree()));
-    connect(m_pFrameWidget,    SIGNAL(objectModified()), this, SLOT(onRefillBodyTree()));
+    connect(m_pBodyLineWidget, SIGNAL(objectModified()), SLOT(onRefillBodyTree()));
+    connect(m_pFrameWidget,    SIGNAL(objectModified()), SLOT(onRefillBodyTree()));
 
-    connect(m_pInsertBefore,   SIGNAL(triggered()), this, SLOT(onInsertBefore()));
-    connect(m_pInsertAfter,    SIGNAL(triggered()), this, SLOT(onInsertAfter()));
-    connect(m_pDeleteItem,     SIGNAL(triggered()), this, SLOT(onDelete()));
+    connect(m_pInsertBefore,   SIGNAL(triggered()), SLOT(onInsertBefore()));
+    connect(m_pInsertAfter,    SIGNAL(triggered()), SLOT(onInsertAfter()));
+    connect(m_pDeleteItem,     SIGNAL(triggered()), SLOT(onDelete()));
 
-    connect(m_pctrlRedraw,     SIGNAL(clicked()), this, SLOT(onRedraw()));
+    connect(m_pctrlRedraw,     SIGNAL(clicked()), SLOT(onRedraw()));
 
     connect(m_pctrlReset,      SIGNAL(clicked()), m_pglBodyView, SLOT(on3DReset()));
 
@@ -555,9 +552,9 @@ void EditBodyDlg::connectSignals()
     connect(m_pctrlZ,          SIGNAL(clicked()), m_pglBodyView, SLOT(on3DTop()));
     connect(m_pctrlFlip,       SIGNAL(clicked()), m_pglBodyView, SLOT(on3DFlip()));
 
-    connect(m_pHorizontalSplitter, SIGNAL(splitterMoved(int,int)), this, SLOT(onResize()));
+    connect(m_pHorizontalSplitter, SIGNAL(splitterMoved(int,int)), SLOT(onResize()));
 
-    connect(m_pglBodyView, SIGNAL(viewModified()), this, SLOT(onCheckViewIcons()));
+    connect(m_pglBodyView, SIGNAL(viewModified()), SLOT(onCheckViewIcons()));
 }
 
 
@@ -803,7 +800,6 @@ void EditBodyDlg::updateViews()
 }
 
 
-
 void EditBodyDlg::onRedraw()
 {
     QStandardItem *pItem = m_pModel->itemFromIndex(m_pModel->index(0,0));
@@ -825,8 +821,6 @@ void EditBodyDlg::onRefillBodyTree()
     m_pBodyLineWidget->update();
     m_pFrameWidget->update();
 }
-
-
 
 
 void EditBodyDlg::readBodyTree(QModelIndex indexLevel)
@@ -1308,7 +1302,7 @@ void EditBodyDlg::onExportBodyGeom()
 
     QTextStream out(&XFile);
 
-    m_pBody->exportGeometry(out, Units::mtoUnit(), type, NXPOINTS, NHOOPPOINTS);
+    m_pBody->exportGeometry(out, type, Units::mtoUnit(), NXPOINTS, NHOOPPOINTS);
 }
 
 
