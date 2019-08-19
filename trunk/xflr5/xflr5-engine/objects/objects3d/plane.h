@@ -54,7 +54,7 @@ public:
     ~Plane();
 
     //    double VolumeMass() {return m_VolumeMass;}
-    double totalMass();
+    double totalMass() const;
     double tailVolume();
 
     void duplicate(Plane *pPlane);
@@ -81,21 +81,22 @@ public:
 * Returns the translation to be applied to the Body object.
 * @return the translation to be applied to the Body object.
 */
-    Vector3d &bodyPos() {return m_BodyPos;}
+    Vector3d const &bodyPos() const {return m_BodyPos;}
+    void setBodyPos(Vector3d pos) {m_BodyPos=pos;}
 
     /**
 * Returns the leading edge, root position of a specified Wing.
 * @param iw the index of the Wing for which the LE position will be returned
 * @return the LE position of the Wing
 */
-    Vector3d &WingLE(int iw){return m_WingLE[iw];}
+    Vector3d wingLE(int iw) const {return m_WingLE[iw];}
     void setWingLE(int iw, Vector3d pos) {if(iw>=0&&iw<MAXWINGS) m_WingLE[iw]=pos;}
     /**
     * Returns the tilt angle of a specified Wing.
     * @param iw the index of the Wing for which the tilt angle will be returned
     * @return the LE position of the Wing
     */
-    double const &WingTiltAngle(int iw) const{return m_WingTiltAngle[iw];}
+    double wingTiltAngle(int iw) const{return m_WingTiltAngle[iw];}
     void setWingTiltAngle(int iw, double ry) {if(iw>=0&&iw<MAXWINGS) m_WingTiltAngle[iw]=ry;}
 
     /** Returns true if the plane has a secondary main wing, false otherwise.*/
@@ -112,6 +113,7 @@ public:
     Wing *mainWing() {return &m_Wing[0];}
 
     Wing *wing(int iw);
+    Wing const *wingAt(int iw) const;
     Wing *wing(XFLR5::enumWingType wingType);
 
     /** Returns a pointer to the Plane's main wing. Never NULL, a Plane always has a main Wing. */
@@ -128,14 +130,21 @@ public:
 
     /** Returns a pointer to the Plane's Body, or NULL if none. */
     Body *body()  {if(m_bBody)    return &m_Body; else return nullptr;}
+    Body const *body() const  {if(m_bBody)    return &m_Body; else return nullptr;}
 
     /** Returns the Plane's CoG position */
-    Vector3d &CoG()  {return m_CoG;}
+    Vector3d const &CoG() const  {return m_CoG;}
+    void setCoG(Vector3d cg) {m_CoG=cg;}
 
-    double &CoGIxx() {return m_CoGIxx;}
-    double &CoGIyy() {return m_CoGIyy;}
-    double &CoGIzz() {return m_CoGIzz;}
-    double &CoGIxz() {return m_CoGIxz;}
+    double const &CoGIxx() const {return m_CoGIxx;}
+    double const &CoGIyy() const {return m_CoGIyy;}
+    double const &CoGIzz() const {return m_CoGIzz;}
+    double const &CoGIxz() const {return m_CoGIxz;}
+
+    void setCoGIxx(double ixx) {m_CoGIxx=ixx;}
+    void setCoGIyy(double iyy) {m_CoGIxx=iyy;}
+    void setCoGIzz(double izz) {m_CoGIxx=izz;}
+    void setCoGIxz(double ixz) {m_CoGIxx=ixz;}
 
 
     double mac()           {return m_Wing[0].m_MAChord;}

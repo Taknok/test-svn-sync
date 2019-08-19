@@ -251,16 +251,13 @@ void Body::duplicate(Body const *pBody)
 }
 
 
-
-
-
 /**
  * Calculates and returns the length of the Body measured from nose to tail.
  * @return the Body length
  */
-double Body::length()
+double Body::length() const
 {
-    if(m_SplineSurface.m_pFrame.size())    return qAbs(m_SplineSurface.m_pFrame.last()->m_Position.x - m_SplineSurface.m_pFrame.first()->m_Position.x);
+    if(m_SplineSurface.m_pFrame.size()) return qAbs(m_SplineSurface.m_pFrame.last()->m_Position.x - m_SplineSurface.m_pFrame.first()->m_Position.x);
     else                                return 0.0;
 }
 
@@ -300,7 +297,7 @@ double Body::getSectionArcLength(double x)
     int NPoints = 10;//why not ?
     for(int i=1; i<=NPoints; i++)
     {
-        getPoint(ux, (double)i/(double)NPoints, true, Pt);
+        getPoint(ux, double(i)/double(NPoints), true, Pt);
         length += sqrt((Pt.y-Pt1.y)*(Pt.y-Pt1.y) + (Pt.z-Pt1.z)*(Pt.z-Pt1.z));
         Pt1.y = Pt.y;
         Pt1.z = Pt.z;
@@ -326,7 +323,7 @@ Vector3d Body::centerPoint(double u)
  * and for the left side if false
  * @param Pt the calculated point position
  */
-void Body::getPoint(double u, double v, bool bRight, Vector3d &Pt)
+void Body::getPoint(double u, double v, bool bRight, Vector3d &Pt) const
 {
     m_SplineSurface.getPoint(u, v, Pt);
     if(!bRight)  Pt.y = -Pt.y;
@@ -340,7 +337,7 @@ void Body::getPoint(double u, double v, bool bRight, Vector3d &Pt)
  * @param bRight if true, the position of the point will be returned for the right side,
  * and for the left side if false
  */
-Vector3d Body::Point(double u, double v, bool bRight)
+Vector3d Body::Point(double u, double v, bool bRight) const
 {
     Vector3d Pt = m_SplineSurface.point(u, v);
     if(!bRight)  Pt.y = -Pt.y;
@@ -353,7 +350,7 @@ Vector3d Body::Point(double u, double v, bool bRight)
  * @param x in input, the longitudinal position
  * @return the longitudinal paramater on the NURBS surface
  */
-double Body::getu(double x)
+double Body::getu(double x) const
 {
     return m_SplineSurface.getu(x,0.0);
 }
@@ -367,7 +364,7 @@ double Body::getu(double x)
  * @param bRight true if the intersection should be calculated on the Body's right side, and flase if on the left
  * @return the value of the hoop parameter
  */
-double Body::getv(double u, Vector3d r, bool bRight)
+double Body::getv(double u, Vector3d r, bool bRight) const
 {
     double sine = 10000.0;
 
@@ -586,7 +583,7 @@ int Body::insertFrame(Vector3d Real)
  * @param bRight true if the intersection was found on the right side, false if found on the left side.
  * @return true if an intersection point has been found, false otherwise.
  */
-bool Body::intersect(Vector3d A, Vector3d B, Vector3d &I, bool bRight)
+bool Body::intersect(Vector3d A, Vector3d B, Vector3d &I, bool bRight) const
 {
     if(m_LineType==XFLR5::BODYPANELTYPE)
     {
@@ -607,7 +604,7 @@ bool Body::intersect(Vector3d A, Vector3d B, Vector3d &I, bool bRight)
  * @param bRight true if the intersection was found on the right side, false if found on the left side.
  * @return true if an intersection point has been found, false otherwise.
  */
-bool Body::intersectNURBS(Vector3d A, Vector3d B, Vector3d &I, bool bRight)
+bool Body::intersectNURBS(Vector3d A, Vector3d B, Vector3d &I, bool bRight) const
 {
     //intersect line AB with right or left body surface
     //intersection point is I
@@ -844,7 +841,7 @@ int Body::isFramePos(Vector3d Real, double ZoomFactor)
  * @param Pt the input point, in the x-z plane, i.e. y=0
  * @return true if the point is inside the Body, false otherwise
  */
-bool Body::isInNURBSBody(double x, double z)
+bool Body::isInNURBSBody(double x, double z) const
 {
     double u = getu(x);
     if (u <= 0.0 || u >= 1.0) return false;
@@ -975,7 +972,7 @@ void Body::setPanelPos()
     m_XPanelPos.clear();
     for(i=0; i<=m_nxPanels; i++)
     {
-        x = (double)(i)/(double)m_nxPanels;
+        x = double(i)/double(m_nxPanels);
         y = 1.0/(1.0+exp((0.5-x)*a));
         m_XPanelPos.append(0.5-((0.5-y)/(0.5-norm))/2.0);
     }
@@ -1039,6 +1036,12 @@ Frame *Body::frame(int iFrame)
     return nullptr;
 }
 
+
+Frame const *Body::frameAt(int iFrame) const
+{
+    if(iFrame>=0 && iFrame<frameCount()) return m_SplineSurface.m_pFrame[iFrame];
+    return nullptr;
+}
 
 /**
  * Returns the longitudinal position of a Frame defined by its index
@@ -1201,8 +1204,8 @@ void Body::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
         {
             for (int j=0; j<m_xPanels[i]; j++)
             {
-                dj  = (double) j   /(double)(m_xPanels[i]);
-                dj1 = (double)(j+1)/(double)(m_xPanels[i]);
+                dj  = double(j)  /double(m_xPanels[i]);
+                dj1 = double(j+1)/double(m_xPanels[i]);
                 SectionArea = 0.0;
 
                 PLA.x = PLB.x = (1.0- dj) * framePosition(i)  +  dj * framePosition(i+1);
@@ -1250,8 +1253,8 @@ void Body::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
         {
             for (int j=0; j<m_xPanels[i]; j++)
             {
-                dj  = (double) j   /(double)(m_xPanels[i]);
-                dj1 = (double)(j+1)/(double)(m_xPanels[i]);
+                dj  = double(j)  /double(m_xPanels[i]);
+                dj1 = double(j+1)/double(m_xPanels[i]);
                 SectionArea = 0.0;
 
                 PLA.x = PLB.x = (1.0- dj) * framePosition(i)   +  dj * framePosition(i+1);
@@ -1296,7 +1299,7 @@ void Body::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
     {
         int NSections = 20;//why not ?
         xpos = framePosition(0);
-        dl = length()/(double)(NSections-1);
+        dl = length()/double(NSections-1);
 
         for (int j=0; j<NSections-1; j++)
         {
@@ -1352,7 +1355,7 @@ void Body::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
  * Returns the sum of volume and point masses
  * @return the sum of volume and point masses
  */
-double Body::totalMass()
+double Body::totalMass() const
 {
     double TotalMass = m_VolumeMass;
     for(int im=0; im<m_PointMass.size(); im++)
@@ -1468,11 +1471,11 @@ void Body::exportGeometry(QTextStream &outStream, int type, double mtoUnit, int 
         strong = QString(("  Cross Section ")+str+"%1\n").arg(k+1,3);
         outStream  << (strong);
 
-        u = (double)k / (double)(nx-1);
+        u = double(k) / double(nx-1);
 
         for (l=0; l<nh; l++)
         {
-            v = (double)l / (double)(nh-1);
+            v = double(l) / double(nh-1);
             getPoint(u,  v, true, Point);
 
             //increased precision i.a.w. request #18
@@ -1504,10 +1507,10 @@ void Body::exportGeometry(QTextStream &outStream, int type, double mtoUnit, int 
  */
 bool Body::serializeBodyWPA(QDataStream &ar, bool bIsStoring)
 {
-    int ArchiveFormat;
-    int k, p, nStations;
-    float f,h;
-    double x,y,z;
+    int ArchiveFormat=0;
+    int k=0, p=0, nStations=0;
+    float f=0,h=0;
+    double x=0,y=0,z=0;
 
     if(bIsStoring)
     {
@@ -1543,7 +1546,7 @@ bool Body::serializeBodyWPA(QDataStream &ar, bool bIsStoring)
 
         if(ArchiveFormat>=1001)
         {
-            ar >> f; m_Bunch = f;
+            ar >> f; m_Bunch = double(f);
         }
 
         m_xPanels.clear();
@@ -1576,16 +1579,16 @@ bool Body::serializeBodyWPA(QDataStream &ar, bool bIsStoring)
 
         for (k=0; k<nStations;k++)
         {
-            ar >> f; m_SplineSurface.m_pFrame[k]->setuPosition(f);
+            ar >> f; m_SplineSurface.m_pFrame[k]->setuPosition(double(f));
             for(int ic=0; ic<m_SplineSurface.m_pFrame[k]->m_CtrlPoint.size(); ic++)
             {
-                m_SplineSurface.m_pFrame[k]->m_CtrlPoint[ic].x = f;
+                m_SplineSurface.m_pFrame[k]->m_CtrlPoint[ic].x = double(f);
             }
             ar >> f; //m_FramePosition[k].z =f;
         }
         if(ArchiveFormat>=1004)
         {
-            ar >> f;  m_VolumeMass = f;
+            ar >> f;  m_VolumeMass = double(f);
             int nMass;
             ar >> nMass;
 
@@ -1596,12 +1599,12 @@ bool Body::serializeBodyWPA(QDataStream &ar, bool bIsStoring)
             for(int im=0; im<nMass; im++)
             {
                 ar >> f;
-                mass.append(f);
+                mass.append(double(f));
             }
             for(int im=0; im<nMass; im++)
             {
                 ar >> f >> g >> h;
-                position.append(Vector3d(f,g,h));
+                position.append({double(f),double(g),double(h)});
             }
             for(int im=0; im<nMass; im++)
             {
@@ -1686,7 +1689,8 @@ bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
         if(m_bTextures) ar << 1; else ar <<0;
         for (int i=1; i<18; i++) ar << 0;
         ar << m_SplineSurface.uDegree()<<m_SplineSurface.vDegree();
-        for (int i=0; i<50; i++) ar << (double)0.0;
+        double dble=0.0;
+        for (int i=0; i<50; i++) ar << dble;
     }
     else
     {
@@ -1773,7 +1777,7 @@ bool Body::Rewind1Line(QTextStream &in, int &Line, QString &strong)
 {
     int length = strong.length() * 1+2;//1 char takes one byte in the file ?
 
-    int pos = in.pos();
+    int pos = int(in.pos());
     in.seek(pos-length);
     Line--;
     return true;
@@ -2016,19 +2020,21 @@ void Body::exportSTLBinary(QDataStream &outStream, int nXPanels, int nHoopPanels
 }
 
 
-void Body::exportSTLBinarySplines(QDataStream &outStream, int nXPanels, int nHoopPanels, double unit)
+void Body::exportSTLBinarySplines(QDataStream &outStream, int nXPanels, int nHoopPanels, double unitd)
 {
     Vector3d N, Pt;
-    Vector3d *m_T = new Vector3d[(nXPanels+1)*(nHoopPanels+1)]; //temporary points to save calculation times for body NURBS surfaces
+    QVector<Vector3d> m_T((nXPanels+1)*(nHoopPanels+1)); //temporary points to save calculation times for body NURBS surfaces
     Vector3d TALB, LATB;
+
+    float unitf = float(unitd);
 
     int p = 0;
     for (int k=0; k<=nXPanels; k++)
     {
-        double u = (double)k / (double)nXPanels;
+        double u = double(k) / double(nXPanels);
         for (int l=0; l<=nHoopPanels; l++)
         {
-            double v = (double)l / (double)nHoopPanels;
+            double v = double(l) / double(nHoopPanels);
             getPoint(u,  v, true, m_T[p]);
 
             p++;
@@ -2041,7 +2047,7 @@ void Body::exportSTLBinarySplines(QDataStream &outStream, int nXPanels, int nHoo
     //     x2 : 2 triangles/quad
     //     x2 : 2 sides
 
-    uint nTriangles = nXPanels *nHoopPanels *2*2;
+    int nTriangles = nXPanels *nHoopPanels *2*2;
     outStream << nTriangles;
 
     short zero = 0;
@@ -2067,17 +2073,17 @@ void Body::exportSTLBinarySplines(QDataStream &outStream, int nXPanels, int nHoo
             writeFloat(outStream, N.yf());
             writeFloat(outStream, N.zf());
             Pt = m_T[p];
-            writeFloat(outStream, Pt.xf()*unit);
-            writeFloat(outStream, Pt.yf()*unit);
-            writeFloat(outStream, Pt.zf()*unit);
+            writeFloat(outStream, Pt.xf()*unitf);
+            writeFloat(outStream, Pt.yf()*unitf);
+            writeFloat(outStream, Pt.zf()*unitf);
             Pt = m_T[p+nHoopPanels+1];
-            writeFloat(outStream, Pt.xf()*unit);
-            writeFloat(outStream, Pt.yf()*unit);
-            writeFloat(outStream, Pt.zf()*unit);
+            writeFloat(outStream, Pt.xf()*unitf);
+            writeFloat(outStream, Pt.yf()*unitf);
+            writeFloat(outStream, Pt.zf()*unitf);
             Pt = m_T[p+1];
-            writeFloat(outStream, Pt.xf()*unit);
-            writeFloat(outStream, Pt.yf()*unit);
-            writeFloat(outStream, Pt.zf()*unit);
+            writeFloat(outStream, Pt.xf()*unitf);
+            writeFloat(outStream, Pt.yf()*unitf);
+            writeFloat(outStream, Pt.zf()*unitf);
 
             memcpy(buffer, &zero, sizeof(short));
             outStream.writeRawData(buffer, 2);
@@ -2087,17 +2093,17 @@ void Body::exportSTLBinarySplines(QDataStream &outStream, int nXPanels, int nHoo
             writeFloat(outStream, N.yf());
             writeFloat(outStream, N.zf());
             Pt = m_T[p+nHoopPanels+1];
-            writeFloat(outStream, Pt.xf()*unit);
-            writeFloat(outStream, Pt.yf()*unit);
-            writeFloat(outStream, Pt.zf()*unit);
+            writeFloat(outStream, Pt.xf()*unitf);
+            writeFloat(outStream, Pt.yf()*unitf);
+            writeFloat(outStream, Pt.zf()*unitf);
             Pt = m_T[p+nHoopPanels+2];
-            writeFloat(outStream, Pt.xf()*unit);
-            writeFloat(outStream, Pt.yf()*unit);
-            writeFloat(outStream, Pt.zf()*unit);
+            writeFloat(outStream, Pt.xf()*unitf);
+            writeFloat(outStream, Pt.yf()*unitf);
+            writeFloat(outStream, Pt.zf()*unitf);
             Pt = m_T[p+1];
-            writeFloat(outStream, Pt.xf()*unit);
-            writeFloat(outStream, Pt.yf()*unit);
-            writeFloat(outStream, Pt.zf()*unit);
+            writeFloat(outStream, Pt.xf()*unitf);
+            writeFloat(outStream, Pt.yf()*unitf);
+            writeFloat(outStream, Pt.zf()*unitf);
 
             memcpy(buffer, &zero, sizeof(short));
             outStream.writeRawData(buffer, 2);
@@ -2123,17 +2129,17 @@ void Body::exportSTLBinarySplines(QDataStream &outStream, int nXPanels, int nHoo
             writeFloat(outStream, -N.yf());
             writeFloat(outStream, -N.zf());
             Pt = m_T[p];
-            writeFloat(outStream,  Pt.xf()*unit);
-            writeFloat(outStream, -Pt.yf()*unit);
-            writeFloat(outStream,  Pt.zf()*unit);
+            writeFloat(outStream,  Pt.xf()*unitf);
+            writeFloat(outStream, -Pt.yf()*unitf);
+            writeFloat(outStream,  Pt.zf()*unitf);
             Pt = m_T[p+1];
-            writeFloat(outStream,  Pt.xf()*unit);
-            writeFloat(outStream, -Pt.yf()*unit);
-            writeFloat(outStream,  Pt.zf()*unit);
+            writeFloat(outStream,  Pt.xf()*unitf);
+            writeFloat(outStream, -Pt.yf()*unitf);
+            writeFloat(outStream,  Pt.zf()*unitf);
             Pt = m_T[p+nHoopPanels+1];
-            writeFloat(outStream,  Pt.xf()*unit);
-            writeFloat(outStream, -Pt.yf()*unit);
-            writeFloat(outStream,  Pt.zf()*unit);
+            writeFloat(outStream,  Pt.xf()*unitf);
+            writeFloat(outStream, -Pt.yf()*unitf);
+            writeFloat(outStream,  Pt.zf()*unitf);
 
             memcpy(buffer, &zero, sizeof(short));
             outStream.writeRawData(buffer, 2);
@@ -2143,17 +2149,17 @@ void Body::exportSTLBinarySplines(QDataStream &outStream, int nXPanels, int nHoo
             writeFloat(outStream, -N.yf());
             writeFloat(outStream, -N.zf());
             Pt = m_T[p+nHoopPanels+1];
-            writeFloat(outStream,  Pt.xf()*unit);
-            writeFloat(outStream, -Pt.yf()*unit);
-            writeFloat(outStream,  Pt.zf()*unit);
+            writeFloat(outStream,  Pt.xf()*unitf);
+            writeFloat(outStream, -Pt.yf()*unitf);
+            writeFloat(outStream,  Pt.zf()*unitf);
             Pt = m_T[p+1];
-            writeFloat(outStream,  Pt.xf()*unit);
-            writeFloat(outStream, -Pt.yf()*unit);
-            writeFloat(outStream,  Pt.zf()*unit);
+            writeFloat(outStream,  Pt.xf()*unitf);
+            writeFloat(outStream, -Pt.yf()*unitf);
+            writeFloat(outStream,  Pt.zf()*unitf);
             Pt = m_T[p+nHoopPanels+2];
-            writeFloat(outStream,  Pt.xf()*unit);
-            writeFloat(outStream, -Pt.yf()*unit);
-            writeFloat(outStream,  Pt.zf()*unit);
+            writeFloat(outStream,  Pt.xf()*unitf);
+            writeFloat(outStream, -Pt.yf()*unitf);
+            writeFloat(outStream,  Pt.zf()*unitf);
 
             memcpy(buffer, &zero, sizeof(short));
             outStream.writeRawData(buffer, 2);
@@ -2164,18 +2170,19 @@ void Body::exportSTLBinarySplines(QDataStream &outStream, int nXPanels, int nHoo
         p++;
     }
 
-
     //    Q_ASSERT(iTriangles==nTriangles);
-    delete [] m_T;
+
 }
 
 
-void Body::exportSTLBinaryFlatPanels(QDataStream &outStream, double unit)
+void Body::exportSTLBinaryFlatPanels(QDataStream &outStream, double unitd)
 {
     Vector3d P1, P2, P3, P4, N, P1P3, P2P4;
 
     int nTriangles = (sideLineCount()-1) * (frameCount()-1); //quads
     nTriangles *= 2;  // two triangles per quad
+
+    float unitf = float(unitd);
 
     // count the non-null triangles
     nTriangles=0;
@@ -2183,10 +2190,10 @@ void Body::exportSTLBinaryFlatPanels(QDataStream &outStream, double unit)
     {
         for (int j=0; j<frameCount()-1;j++)
         {
-            P1 = frame(j)->ctrlPointAt(k);       P1.x = frame(j)->position().x;
-            P2 = frame(j+1)->ctrlPointAt(k);     P2.x = frame(j+1)->position().x;
-            P3 = frame(j+1)->ctrlPointAt(k+1);   P3.x = frame(j+1)->position().x;
-            P4 = frame(j)->ctrlPointAt(k+1);     P4.x = frame(j)->position().x;
+            P1 = frameAt(j)->ctrlPointAt(k);       P1.x = frameAt(j)->position().x;
+            P2 = frameAt(j+1)->ctrlPointAt(k);     P2.x = frameAt(j+1)->position().x;
+            P3 = frameAt(j+1)->ctrlPointAt(k+1);   P3.x = frameAt(j+1)->position().x;
+            P4 = frameAt(j)->ctrlPointAt(k+1);     P4.x = frameAt(j)->position().x;
             // check if triangle P1-P2-P4 is not NULL
             if(!P1.isSame(P2) && !P2.isSame(P4) && !P4.isSame(P1)) nTriangles++;
             // check if triangle P4-P2-P3 is not NULL
@@ -2226,17 +2233,17 @@ void Body::exportSTLBinaryFlatPanels(QDataStream &outStream, double unit)
                 writeFloat(outStream, N.yf());
                 writeFloat(outStream, N.zf());
 
-                writeFloat(outStream, P1.xf()*unit);
-                writeFloat(outStream, P1.yf()*unit);
-                writeFloat(outStream, P1.zf()*unit);
+                writeFloat(outStream, P1.xf()*unitf);
+                writeFloat(outStream, P1.yf()*unitf);
+                writeFloat(outStream, P1.zf()*unitf);
 
-                writeFloat(outStream, P2.xf()*unit);
-                writeFloat(outStream, P2.yf()*unit);
-                writeFloat(outStream, P2.zf()*unit);
+                writeFloat(outStream, P2.xf()*unitf);
+                writeFloat(outStream, P2.yf()*unitf);
+                writeFloat(outStream, P2.zf()*unitf);
 
-                writeFloat(outStream, P4.xf()*unit);
-                writeFloat(outStream, P4.yf()*unit);
-                writeFloat(outStream, P4.zf()*unit);
+                writeFloat(outStream, P4.xf()*unitf);
+                writeFloat(outStream, P4.yf()*unitf);
+                writeFloat(outStream, P4.zf()*unitf);
 
                 memcpy(buffer, &zero, sizeof(short));
                 outStream.writeRawData(buffer, 2);
@@ -2249,17 +2256,17 @@ void Body::exportSTLBinaryFlatPanels(QDataStream &outStream, double unit)
                 writeFloat(outStream, N.yf());
                 writeFloat(outStream, N.zf());
 
-                writeFloat(outStream, P4.xf()*unit);
-                writeFloat(outStream, P4.yf()*unit);
-                writeFloat(outStream, P4.zf()*unit);
+                writeFloat(outStream, P4.xf()*unitf);
+                writeFloat(outStream, P4.yf()*unitf);
+                writeFloat(outStream, P4.zf()*unitf);
 
-                writeFloat(outStream, P2.xf()*unit);
-                writeFloat(outStream, P2.yf()*unit);
-                writeFloat(outStream, P2.zf()*unit);
+                writeFloat(outStream, P2.xf()*unitf);
+                writeFloat(outStream, P2.yf()*unitf);
+                writeFloat(outStream, P2.zf()*unitf);
 
-                writeFloat(outStream, P3.xf()*unit);
-                writeFloat(outStream, P3.yf()*unit);
-                writeFloat(outStream, P3.zf()*unit);
+                writeFloat(outStream, P3.xf()*unitf);
+                writeFloat(outStream, P3.yf()*unitf);
+                writeFloat(outStream, P3.zf()*unitf);
 
                 memcpy(buffer, &zero, sizeof(short));
                 outStream.writeRawData(buffer, 2);
@@ -2295,17 +2302,17 @@ void Body::exportSTLBinaryFlatPanels(QDataStream &outStream, double unit)
                 writeFloat(outStream, -N.yf());
                 writeFloat(outStream, -N.zf());
 
-                writeFloat(outStream, P2.xf()*unit);
-                writeFloat(outStream, P2.yf()*unit);
-                writeFloat(outStream, P2.zf()*unit);
+                writeFloat(outStream, P2.xf()*unitf);
+                writeFloat(outStream, P2.yf()*unitf);
+                writeFloat(outStream, P2.zf()*unitf);
 
-                writeFloat(outStream, P1.xf()*unit);
-                writeFloat(outStream, P1.yf()*unit);
-                writeFloat(outStream, P1.zf()*unit);
+                writeFloat(outStream, P1.xf()*unitf);
+                writeFloat(outStream, P1.yf()*unitf);
+                writeFloat(outStream, P1.zf()*unitf);
 
-                writeFloat(outStream, P4.xf()*unit);
-                writeFloat(outStream, P4.yf()*unit);
-                writeFloat(outStream, P4.zf()*unit);
+                writeFloat(outStream, P4.xf()*unitf);
+                writeFloat(outStream, P4.yf()*unitf);
+                writeFloat(outStream, P4.zf()*unitf);
 
                 memcpy(buffer, &zero, sizeof(short));
                 outStream.writeRawData(buffer, 2);
@@ -2318,17 +2325,17 @@ void Body::exportSTLBinaryFlatPanels(QDataStream &outStream, double unit)
                 writeFloat(outStream, -N.yf());
                 writeFloat(outStream, -N.zf());
 
-                writeFloat(outStream, P2.xf()*unit);
-                writeFloat(outStream, P2.yf()*unit);
-                writeFloat(outStream, P2.zf()*unit);
+                writeFloat(outStream, P2.xf()*unitf);
+                writeFloat(outStream, P2.yf()*unitf);
+                writeFloat(outStream, P2.zf()*unitf);
 
-                writeFloat(outStream, P4.xf()*unit);
-                writeFloat(outStream, P4.yf()*unit);
-                writeFloat(outStream, P4.zf()*unit);
+                writeFloat(outStream, P4.xf()*unitf);
+                writeFloat(outStream, P4.yf()*unitf);
+                writeFloat(outStream, P4.zf()*unitf);
 
-                writeFloat(outStream, P3.xf()*unit);
-                writeFloat(outStream, P3.yf()*unit);
-                writeFloat(outStream, P3.zf()*unit);
+                writeFloat(outStream, P3.xf()*unitf);
+                writeFloat(outStream, P3.yf()*unitf);
+                writeFloat(outStream, P3.zf()*unitf);
 
                 memcpy(buffer, &zero, sizeof(short));
                 outStream.writeRawData(buffer, 2);

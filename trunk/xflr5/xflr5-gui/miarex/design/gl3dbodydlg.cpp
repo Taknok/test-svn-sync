@@ -1161,8 +1161,8 @@ bool GL3dBodyDlg::setBody(Body *pBody)
 {
     if(pBody) m_pBody = pBody;
 
-    m_pctrlColor->setChecked(!m_pBody->textures());
-    m_pctrlTextures->setChecked(m_pBody->textures());
+    m_pctrlColor->setChecked(!m_pBody->hasTextures());
+    m_pctrlTextures->setChecked(m_pBody->hasTextures());
 
     m_pctrlFlatPanels->setChecked(m_pBody->m_LineType==XFLR5::BODYPANELTYPE);
     m_pctrlBSplines->setChecked(m_pBody->m_LineType==XFLR5::BODYSPLINETYPE);
@@ -1212,7 +1212,6 @@ void GL3dBodyDlg::setFrame(Frame *pFrame)
 
 void GL3dBodyDlg::setupLayout()
 {
-    int i;
     QString str;
 
     QSizePolicy szPolicyExpanding;
@@ -1547,7 +1546,7 @@ void GL3dBodyDlg::setupLayout()
     }
     setLayout(pMainLayout);
 
-    for (i=1; i<6; i++)
+    for (int i=1; i<6; i++)
     {
         str = QString("%1").arg(i);
         m_pctrlXDegree->addItem(str);

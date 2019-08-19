@@ -86,13 +86,13 @@ public:
     void setPolarType(XFLR5::enumPolarType type) {m_WPolarType=type;}
     void setAnalysisMethod(XFLR5::enumAnalysisMethod method) {m_AnalysisMethod=method;}
 
-    bool isLLTMethod()         {return m_AnalysisMethod==XFLR5::LLTMETHOD;}
-    bool isVLMMethod()         {return m_AnalysisMethod==XFLR5::VLMMETHOD;}
-    bool isPanel4Method()      {return m_AnalysisMethod==XFLR5::PANEL4METHOD;}
-    bool isQuadMethod()        {return isPanel4Method() || isVLMMethod();}
-    bool isTriCstMethod()      {return m_AnalysisMethod==XFLR5::TRICSTMETHOD;}
-    bool isTriLinearMethod()   {return m_AnalysisMethod==XFLR5::TRILINMETHOD;}
-    bool isTriangleMethod()    {return isTriCstMethod() || isTriLinearMethod();}
+    bool isLLTMethod()         const {return m_AnalysisMethod==XFLR5::LLTMETHOD;}
+    bool isVLMMethod()         const {return m_AnalysisMethod==XFLR5::VLMMETHOD;}
+    bool isPanel4Method()      const {return m_AnalysisMethod==XFLR5::PANEL4METHOD;}
+    bool isQuadMethod()        const {return isPanel4Method() || isVLMMethod();}
+    bool isTriCstMethod()      const {return m_AnalysisMethod==XFLR5::TRICSTMETHOD;}
+    bool isTriLinearMethod()   const {return m_AnalysisMethod==XFLR5::TRILINMETHOD;}
+    bool isTriangleMethod()    const {return isTriCstMethod() || isTriLinearMethod();}
 
     QString const &polarName() const {return m_WPlrName;}       /**< returns the polar's name as a QString object. */
     QString const &planeName() const {return m_PlaneName;}      /**< returns the name of the polar's parent object as a QString object. */

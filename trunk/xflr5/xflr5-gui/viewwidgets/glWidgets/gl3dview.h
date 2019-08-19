@@ -113,15 +113,15 @@ public:
 
 protected:
     void getTextureFile(QString planeName, QString surfaceName, QImage & textureImage);
-    void glDrawMasses(Plane *pPlane);
+    void glDrawMasses(const Plane *pPlane);
     void getGLError();
     void glInverseMatrix();
     void glMakeUnitSphere();
     void glMakeArcPoint();
     void glMakeArcBall();
-    void glMakeBody3DFlatPanels(Body *pBody);
-    void glMakeBodySplines(Body *pBody);
-    void glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody);
+    void glMakeBody3DFlatPanels(const Body *pBody);
+    void glMakeBodySplines(Body const *pBody);
+    void glMakeWingGeometry(int iWing, Wing *pWing, Body const *pBody);
     void glMakeWingEditMesh(QOpenGLBuffer &vbo, Wing *pWing);
     void glMakeBodyFrameHighlight(Body *pBody, Vector3d bodyPos, int iFrame);
     void glMakeEditBodyMesh(Body *pBody, Vector3d BodyPosition);
@@ -134,21 +134,20 @@ protected:
     virtual void paintOverlay() {}
 
     void paintGL3();
-    void paintFoilNames(Wing *pWingPtr);
+    void paintFoilNames(const Wing *pWing);
     void paintMasses(double volumeMass, Vector3d pos, QString tag, const QVector<PointMass *> &ptMasses);
     void paintArcBall();
     void paintAxes();
-    void paintWingMesh(Wing *pWing);
     void paintEditWingMesh(QOpenGLBuffer &vbo);
     void paintSectionHighlight();
-    void paintBody(Body *pBody);
-    void paintEditBodyMesh(Body *pBody);
-    void paintWing(int iWing, Wing *pWing);
+    void paintBody(Body const *pBody);
+    void paintEditBodyMesh(Body const *pBody);
+    void paintWing(int iWing, const Wing *pWing);
     void paintSphere(Vector3d place, double radius, QColor sphereColor, bool bLight=true);
     void printFormat(const QSurfaceFormat &format);
     void reset3DRotationCenter();
     void set3DScale(double length=-1.0);
-    void setSpanStations(Plane *pPlane, WPolar *pWPolar, PlaneOpp *pPOpp);
+    void setSpanStations(Plane const *pPlane, WPolar const *pWPolar, PlaneOpp const *pPOpp);
     void startResetTimer(double length);
     void startRotationTimer();
     void startTranslationTimer(Vector3d PP);

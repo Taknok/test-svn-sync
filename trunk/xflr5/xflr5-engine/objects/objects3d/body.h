@@ -59,11 +59,11 @@ public:
     Body();
     ~Body();
 
-    bool isInNURBSBody(double x, double z);
+    bool isInNURBSBody(double x, double z) const;
     bool isInNURBSBodyOld(Vector3d Pt);
-    bool intersect(Vector3d A, Vector3d B, Vector3d &I, bool bRight);
+    bool intersect(Vector3d A, Vector3d B, Vector3d &I, bool bRight) const;
     bool intersectFlatPanels(const Vector3d &A, const Vector3d &B, Vector3d &I) const;
-    bool intersectNURBS(Vector3d A, Vector3d B, Vector3d &I, bool bRight);
+    bool intersectNURBS(Vector3d A, Vector3d B, Vector3d &I, bool bRight) const;
 
     bool importDefinition(QTextStream &inStream, double mtoUnit, QString &errorMessage);
 
@@ -75,10 +75,10 @@ public:
     int removeFrame(int n);
     int readFrame(QTextStream &in, int &Line, Frame *pFrame, double const &Unit);
 
-    double length();
+    double length() const;
 
-    double getu(double x);
-    double getv(double u, Vector3d r, bool bRight);
+    double getu(double x) const;
+    double getv(double u, Vector3d r, bool bRight) const;
     double getSectionArcLength(double x);
 
     Vector3d centerPoint(double u);
@@ -88,8 +88,8 @@ public:
     void computeAero(double *Cp, double &XCP, double &YCP, double &ZCP,
                      double &GCm, double &GRm, double &GYm, double &Alpha, Vector3d &CoG);
     void duplicate(const Body *pBody);
-    void getPoint(double u, double v, bool bRight, Vector3d &Pt);
-    Vector3d Point(double u, double v, bool bRight);
+    void getPoint(double u, double v, bool bRight, Vector3d &Pt) const;
+    Vector3d Point(double u, double v, bool bRight) const;
     void removeActiveFrame();
     void removeSideLine(int SideLine);
     void scale(double XFactor, double YFactor, double ZFactor, bool bFrameOnly=false, int FrameID=0);
@@ -100,6 +100,7 @@ public:
     void setEdgeWeight(double uw, double vw);
 
     Frame *frame(int iFrame);
+    Frame const *frameAt(int iFrame) const;
     Frame *activeFrame();
 
     int setActiveFrame(Frame *pFrame);
@@ -113,15 +114,18 @@ public:
 
     void computeBodyAxisInertia();
     void computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz);
-    double totalMass();
-    double &volumeMass(){return m_VolumeMass;}
+    double totalMass() const;
+    double const &volumeMass() const {return m_VolumeMass;}
+    void setVolumeMass(double m) {m_VolumeMass=m;}
 
     Vector3d CoG() {return m_CoG;}
 
 
     QString &bodyName(){return m_BodyName;}
     QString &bodyDescription() {return m_BodyDescription;}
-    bool &textures(){return m_bTextures;}
+
+    bool hasTextures() const {return m_bTextures;}
+    void setTextures(bool bTextures) {m_bTextures = bTextures;}
 
     ObjectColor bodyColor() const {return m_BodyColor;}
     void setBodyColor(ObjectColor color) {m_BodyColor=color;}
@@ -142,7 +146,7 @@ public:
     void exportGeometry(QTextStream &outStream, int type, double mtoUnit, int nx, int nh);
     void exportSTLBinary(QDataStream &outStream, int nXPanels, int nHoopPanels, double unit);
     void exportSTLBinarySplines(QDataStream &outStream, int nXPanels, int nHoopPanels, double unit);
-    void exportSTLBinaryFlatPanels(QDataStream &outStream, double unit);
+    void exportSTLBinaryFlatPanels(QDataStream &outStream, double unitd);
 
     bool exportBodyDefinition(QTextStream &outStream, double mtoUnit);
 

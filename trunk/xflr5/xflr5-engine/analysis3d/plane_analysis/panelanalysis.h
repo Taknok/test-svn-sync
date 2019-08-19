@@ -125,7 +125,7 @@ public:
     void setArrayPointers(Panel *pPanel, Panel *pMemPanel, Panel *pWakePanel, Panel *pRefWakePanel, Vector3d *pNode, Vector3d *pMemNode, Vector3d *pWakeNode, Vector3d *pRefWakeNode, Vector3d *pTempWakeNode);
     void setArraySize(int MatSize, int WakeSize, int nNodes, int nWakeNodes, int NWakeColumn);
     void setInertia(double ctrl, double alpha, double beta);
-    void setObjectPointers(Plane *pPlane, void *pSurfaceList);
+    void setObjectPointers(Plane *pPlane, QVector<Surface *> *pSurfaceList);
     void setRange(double vMin, double VMax, double vDelta, bool bSequence);
     void setWPolar(WPolar*pWPolar){m_pWPolar = pWPolar;}
     PlaneOpp* createPlaneOpp(double *Cp, double *Gamma, double *Sigma);
@@ -155,7 +155,7 @@ private:
     static int s_MaxWakeIter;                 /**< wake roll-up iteration limit */
 
     double m_Progress;   /**< A measure of the progress of the analysis, used to provide feedback to the user */
-    int m_TotalTime;     /**< the esimated total time of the analysis, used to set the progress bar. No specific unit. */
+    double m_TotalTime;     /**< the esimated total time of the analysis, used to set the progress bar. No specific unit. */
 
     bool m_bPointOut;           /**< true if an interpolation was outside the min or max Cl */
     bool m_bSequence;           /**< true if the calculation is should be performed for a range of aoa */

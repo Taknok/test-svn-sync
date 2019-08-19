@@ -39,7 +39,7 @@ public:
     void writeXMLBody(Body *pBody);
     void writeXMLWing(Wing &wing);
     void writeBody(Body *pBody, Vector3d position, double lengthUnit, double massUnit);
-    void writeWing(Wing &wing, Vector3d position, double Ry);
+    void writeWing(const Wing &wing, Vector3d position, double Ry);
 
 
 private:

@@ -181,7 +181,7 @@ void InertiaDlg::computeInertia()
                 for(i=0; i<pWing[iw]->m_PointMass.size(); i++)
                 {
                     TotalMass +=  pWing[iw]->m_PointMass[i]->mass();
-                    TotalCoG  += (pWing[iw]->m_PointMass[i]->position() + m_pPlane->WingLE(iw)) * pWing[iw]->m_PointMass[i]->mass();
+                    TotalCoG  += (pWing[iw]->m_PointMass[i]->position() + m_pPlane->wingLE(iw)) * pWing[iw]->m_PointMass[i]->mass();
                 }
             }
         }
@@ -229,7 +229,7 @@ void InertiaDlg::computeInertia()
             {
                 for(i=0; i<pWing[iw]->m_PointMass.size(); i++)
                 {
-                    MassPos = TotalCoG - (pWing[iw]->m_PointMass[i]->position() + (m_pPlane != nullptr ? m_pPlane->WingLE(iw) : Vector3d(0.0, 0.0, 0.0)));
+                    MassPos = TotalCoG - (pWing[iw]->m_PointMass[i]->position() + (m_pPlane != nullptr ? m_pPlane->wingLE(iw) : Vector3d(0.0, 0.0, 0.0)));
                     TotalIxx  += pWing[iw]->m_PointMass[i]->mass() * (MassPos.y*MassPos.y + MassPos.z*MassPos.z);
                     TotalIyy  += pWing[iw]->m_PointMass[i]->mass() * (MassPos.x*MassPos.x + MassPos.z*MassPos.z);
                     TotalIzz  += pWing[iw]->m_PointMass[i]->mass() * (MassPos.x*MassPos.x + MassPos.y*MassPos.y);
@@ -668,9 +668,9 @@ void InertiaDlg::onExportToAVL()
                     {
                         strong = QString("%1 %2 %3 %4      0.000      0.000      0.000")
                                 .arg(pWing[iw]->m_PointMass[i]->mass() / Munit,    10, 'g', 3)
-                                .arg((pWing[iw]->m_PointMass[i]->position().x+m_pPlane->WingLE(iw).x)/Lunit, 10, 'g', 3)
-                                .arg((pWing[iw]->m_PointMass[i]->position().y+m_pPlane->WingLE(iw).y)/Lunit, 10, 'g', 3)
-                                .arg((pWing[iw]->m_PointMass[i]->position().z+m_pPlane->WingLE(iw).z)/Lunit, 10, 'g', 3);
+                                .arg((pWing[iw]->m_PointMass[i]->position().x+m_pPlane->wingLE(iw).x)/Lunit, 10, 'g', 3)
+                                .arg((pWing[iw]->m_PointMass[i]->position().y+m_pPlane->wingLE(iw).y)/Lunit, 10, 'g', 3)
+                                .arg((pWing[iw]->m_PointMass[i]->position().z+m_pPlane->wingLE(iw).z)/Lunit, 10, 'g', 3);
 
                         strong += " ! " + pWing[iw]->m_PointMass[i]->tag();
                         out << strong+"\n";
@@ -1250,7 +1250,7 @@ void InertiaDlg::resizeEvent(QResizeEvent *pEvent)
 {
     if(!m_pctrlMassTable || !m_pMassModel) return;
     int w = m_pctrlMassTable->width();
-    int w7 = int((double)(w-25)/7);
+    int w7 = int(double(w-25)/7);
 
     m_pctrlMassTable->setColumnWidth(0,w7);
     m_pctrlMassTable->setColumnWidth(1,w7);

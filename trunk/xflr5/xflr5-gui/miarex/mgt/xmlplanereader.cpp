@@ -69,7 +69,9 @@ bool XMLPlaneReader::readXMLPlaneFile()
                 else if (name().toString().compare(QString("body"), Qt::CaseInsensitive)==0)
                 {
                     m_pPlane->hasBody() = true;
-                    readBody(m_pPlane->body(), m_pPlane->bodyPos(), lengthunit, massunit);
+                    Vector3d pos;
+                    readBody(m_pPlane->body(), pos, lengthunit, massunit);
+                    m_pPlane->setBodyPos(pos);
                 }
                 else if (name().toString().compare(QString("wing"), Qt::CaseInsensitive)==0)
                 {
@@ -129,7 +131,9 @@ bool XMLPlaneReader::readPlane(Plane *pPlane, double lengthunit, double massunit
         else if (name().toString().compare(QString("body"), Qt::CaseInsensitive)==0)
         {
             pPlane->setBody(new Body);
-            readBody(pPlane->body(), pPlane->bodyPos(), lengthunit, massunit);
+            Vector3d pos;
+            readBody(pPlane->body(), pos, lengthunit, massunit);
+            pPlane->setBodyPos(pos);
         }
         else if (name().toString().compare(QString("wing"), Qt::CaseInsensitive)==0)
         {
@@ -189,7 +193,7 @@ bool XMLPlaneReader::readPlane(Plane *pPlane, double lengthunit, double massunit
             if(!hasError())
             {
                 pPlane->m_Wing[iWing].duplicate(&newwing);
-                pPlane->WingLE(iWing)      = pos;
+                pPlane->setWingLE(iWing, pos);
                 pPlane->setWingTiltAngle(iWing, tiltangle);
             }
             iw++;
@@ -252,15 +256,15 @@ bool XMLPlaneReader::readWing(Wing &newwing, Vector3d &position, double &tiltang
         }
         else if (name().compare(QString("isFin"),           Qt::CaseInsensitive)==0)
         {
-            newwing.isFin() = readElementText().compare(QString("true"), Qt::CaseInsensitive)==0;
+            newwing.setFin(readElementText().compare(QString("true"), Qt::CaseInsensitive)==0);
         }
         else if (name().compare(QString("isDoubleFin"),     Qt::CaseInsensitive)==0)
         {
-            newwing.isDoubleFin() = readElementText().compare(QString("true"), Qt::CaseInsensitive)==0;
+            newwing.setDoubleFin(readElementText().compare(QString("true"), Qt::CaseInsensitive)==0);
         }
         else if (name().compare(QString("isSymFin"),        Qt::CaseInsensitive)==0)
         {
-            newwing.isSymFin() = readElementText().compare(QString("true"), Qt::CaseInsensitive)==0;
+            newwing.setSymFin(readElementText().compare(QString("true"), Qt::CaseInsensitive)==0);
         }
         else if (name().compare(QString("Inertia"),         Qt::CaseInsensitive)==0)
         {
@@ -268,7 +272,7 @@ bool XMLPlaneReader::readWing(Wing &newwing, Vector3d &position, double &tiltang
             {
                 if (name().compare(QString("volume_mass"), Qt::CaseInsensitive)==0)
                 {
-                    newwing.volumeMass() = readElementText().toDouble();
+                    newwing.setVolumeMass(readElementText().toDouble());
                 }
                 else if (name().compare(QString("point_mass"), Qt::CaseInsensitive)==0)
                 {

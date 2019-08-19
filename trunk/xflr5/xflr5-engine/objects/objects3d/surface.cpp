@@ -478,7 +478,7 @@ void Surface::getSidePoint(double xRel, bool bRight, enumPanelPosition pos, Vect
  * @param nPoints the number of side points to define on each tip
  */
 void Surface::getSidePoints(enumPanelPosition pos,
-                            Body *pBody,
+                            Body const*pBody,
                             Vector3d *PtA, Vector3d *PtB, Vector3d *NA, Vector3d *NB, int nPoints)
 {
     double xRelA=0, xRelB=0;

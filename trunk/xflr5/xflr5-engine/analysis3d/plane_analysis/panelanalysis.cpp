@@ -206,16 +206,16 @@ bool PanelAnalysis::allocateMatrix(int matSize, int &memsize)
 
     m_MaxMatSize = matSize;
 
-    memsize  = sizeof(double)  * 2 * size2; //bytes
-    memsize += sizeof(double)  * 9 * matSize; //bytes
-    memsize += sizeof(Vector3d) * 3 * matSize;
-    memsize += sizeof(int)     * 1 * matSize;
+    memsize  = int(sizeof(double))  * 2 * size2; //bytes
+    memsize += int(sizeof(double))  * 9 * matSize; //bytes
+    memsize += int(sizeof(Vector3d)) * 3 * matSize;
+    memsize += int(sizeof(int))     * 1 * matSize;
 
     strange = QString("PanelAnalysis::Memory allocation for the matrix arrays is %1 MB").arg(double(memsize)/1024./1024., 7, 'f', 2);
     //    Trace(strange);
 
-    memset(m_aij,     0, size2 * sizeof(double));
-    memset(m_aijWake, 0, size2 * sizeof(double));
+    memset(m_aij,     0, uint(size2) * sizeof(double));
+    memset(m_aijWake, 0, uint(size2) * sizeof(double));
 
     memset(m_uRHS,  0, ulong(matSize)*sizeof(double));
     memset(m_vRHS,  0, ulong(matSize)*sizeof(double));
@@ -257,7 +257,7 @@ bool PanelAnalysis::allocateMatrix(int matSize, int &memsize)
 bool PanelAnalysis::allocateRHS(int matSize, int &memsize)
 {
     //    Trace("PanelAnalysis::Allocating RHS arrays");
-    int size = matSize * s_MaxRHSSize;
+    uint size = uint(matSize * s_MaxRHSSize);
 
     if(size==0) return false;
 
@@ -270,7 +270,7 @@ bool PanelAnalysis::allocateRHS(int matSize, int &memsize)
         m_Mu       = new double[size];
         m_Cp       = new double[size];
 
-        m_3DQInf   = new double[s_MaxRHSSize];
+        m_3DQInf   = new double[uint(s_MaxRHSSize)];
     }
     catch(std::exception &)
     {
@@ -279,7 +279,7 @@ bool PanelAnalysis::allocateRHS(int matSize, int &memsize)
         return false;
     }
 
-    memsize = sizeof(double) * 6 * size;
+    memsize = int(sizeof(double) * 6 * size);
 
     memset(m_RHS,       0, size*sizeof(double));
     memset(m_RHSRef,    0, size*sizeof(double));
@@ -288,7 +288,7 @@ bool PanelAnalysis::allocateRHS(int matSize, int &memsize)
     memset(m_Mu,        0, size*sizeof(double));
     memset(m_Cp,        0, size*sizeof(double));
 
-    memset(m_3DQInf, 0, s_MaxRHSSize*sizeof(double));
+    memset(m_3DQInf, 0, uint(s_MaxRHSSize)*sizeof(double));
 
     //    QString strange = QString("PanelAnalysis::Memory allocation for the RHS arrays is %1 MB").arg((double)memsize/1024./1024., 7, 'f', 2);
     //    Trace(strange);
@@ -340,7 +340,7 @@ void PanelAnalysis::releaseArrays()
 }
 
 
-void PanelAnalysis::setObjectPointers(Plane *pPlane, void *pSurfaceList)
+void PanelAnalysis::setObjectPointers(Plane *pPlane, QVector<Surface*>*pSurfaceList)
 {
     m_pPlane    = pPlane;
     for(int iw=0; iw<MAXWINGS; iw++)
@@ -348,7 +348,7 @@ void PanelAnalysis::setObjectPointers(Plane *pPlane, void *pSurfaceList)
         m_pWingList[iw] = m_pPlane->wing(iw);
     }
 
-    m_ppSurface = (QVector<Surface*>*)pSurfaceList;
+    m_ppSurface = pSurfaceList;
 }
 
 
@@ -361,7 +361,7 @@ void PanelAnalysis::setRange(double vMin, double vMax, double vDelta, bool bSequ
     m_vMax = vMax;
     m_vDelta = vDelta;
 
-    m_nRHS = (int)qAbs((m_vMax-m_vMin)*1.0001/m_vDelta) +1;
+    m_nRHS = int(qAbs((m_vMax-m_vMin)*1.0001/m_vDelta) +1);
 
     if(!m_bSequence) m_nRHS = 1;
     else if(m_nRHS>=VLMMAXRHS)
@@ -369,7 +369,7 @@ void PanelAnalysis::setRange(double vMin, double vMax, double vDelta, bool bSequ
         QString strange = QString("The number of points to be calculated will be limited to %1\n\n").arg(VLMMAXRHS);
         traceLog(strange);
         m_nRHS = VLMMAXRHS-1;
-        s_MaxRHSSize = (int)((double)m_nRHS * 1.2);
+        s_MaxRHSSize = int(double(m_nRHS) * 1.2);
     }
 
 
@@ -388,14 +388,14 @@ void PanelAnalysis::setRange(double vMin, double vMax, double vDelta, bool bSequ
         //RelaxWake :                20 x nrhs x MaxWakeIter *
         //ComputeAeroCoefs :          5 x nrhs
 
-        m_TotalTime      =  10.*(double)m_MatSize/400.
+        m_TotalTime      =  10.*double(m_MatSize)/400.
                 +  10.
-                + 400.*(double)m_MatSize/400.
-                +  10.*(double)m_MatSize/400
+                + 400.*double(m_MatSize)/400.
+                +  10.*double(m_MatSize)/400
                 +   1.
                 +   5.;
 
-        m_TotalTime *= (double)m_nRHS;
+        m_TotalTime *= double(m_nRHS);
 
     }
     else if(m_pWPolar->polarType()<XFLR5::FIXEDAOAPOLAR)
@@ -414,12 +414,12 @@ void PanelAnalysis::setRange(double vMin, double vMax, double vDelta, bool bSequ
 
         if(m_pWPolar->bWakeRollUp()) m_TotalTime += 20*m_nRHS*MaxWakeIter;
 
-        m_TotalTime      = 10.0*(double)m_MatSize/400.
+        m_TotalTime      = 10.0*double(m_MatSize)/400.
                 + 10.
-                + 400.*(double)m_MatSize/400.
-                + 10*(double)m_MatSize/400*(double)m_nRHS
-                + 1*(double)m_nRHS
-                + 5*(double)m_nRHS ;
+                + 400.*double(m_MatSize)/400.
+                + 10*double(m_MatSize)/400*double(m_nRHS)
+                + 1*double(m_nRHS)
+                + 5*double(m_nRHS) ;
     }
     else if(m_pWPolar->polarType()==XFLR5::FIXEDAOAPOLAR)
     {
@@ -432,26 +432,26 @@ void PanelAnalysis::setRange(double vMin, double vMax, double vDelta, bool bSequ
         //RelaxWake :                20 x nrhs x MaxWakeIter *
         //ComputeAeroCoefs :          5 x nrhs
 
-        m_TotalTime      = 10.0*(double)m_MatSize/400.
+        m_TotalTime      = 10.0*double(m_MatSize)/400.
                 + 10.
-                + 400.*(double)m_MatSize/400.
-                + 10*(double)m_MatSize/400*1.
-                + 1*(double)m_nRHS
-                + 5*(double)m_nRHS ;
+                + 400.*double(m_MatSize)/400.
+                + 10*double(m_MatSize)/400*1.
+                + 1*double(m_nRHS)
+                + 5*double(m_nRHS) ;
     }
     else if(m_pWPolar->polarType()==XFLR5::STABILITYPOLAR)
     {
         if(!m_bSequence) m_nRHS = 1;
         else if(m_nRHS==0) m_nRHS = 1;//compute at least nominal control positions, even if none is active nor defined
 
-        m_TotalTime      = 10.0*(double)m_MatSize/400.       //BuildInfluenceMatrix
+        m_TotalTime      = 10.0*double(m_MatSize)/400.       //BuildInfluenceMatrix
                 + 10.                               //CreateRHS
-                + 400.*(double)m_MatSize/400.       //SolveUnitRHS
-                + 10*(double)m_MatSize/400          //ComputeFarField
+                + 400.*double(m_MatSize)/400.       //SolveUnitRHS
+                + 10*double(m_MatSize)/400          //ComputeFarField
                 + 2+5*6                             //ComputeStabDer
                 + 1                                 //ComputeOnBodyCp
                 + 5;                                //ComputeAeroCoefs
-        m_TotalTime *= (double)m_nRHS;
+        m_TotalTime *= double(m_nRHS);
     }
 }
 
@@ -594,11 +594,11 @@ bool PanelAnalysis::initializeAnalysis()
     if(m_ICd) delete [] m_ICd;
     if(m_F)   delete [] m_F;
     if(m_Vd)  delete [] m_Vd;
-    m_Ai   = new double[ MAXWINGS*VLMMAXRHS * m_NSpanStations];
-    m_Cl   = new double[ MAXWINGS*VLMMAXRHS * m_NSpanStations];
-    m_ICd  = new double[ MAXWINGS*VLMMAXRHS * m_NSpanStations];
-    m_F    = new Vector3d[ MAXWINGS*VLMMAXRHS * m_NSpanStations];
-    m_Vd   = new Vector3d[ MAXWINGS*VLMMAXRHS * m_NSpanStations];
+    m_Ai   = new double[ MAXWINGS*VLMMAXRHS * uint(m_NSpanStations)];
+    m_Cl   = new double[ MAXWINGS*VLMMAXRHS * uint(m_NSpanStations)];
+    m_ICd  = new double[ MAXWINGS*VLMMAXRHS * uint(m_NSpanStations)];
+    m_F    = new Vector3d[ MAXWINGS*VLMMAXRHS * uint(m_NSpanStations)];
+    m_Vd   = new Vector3d[ MAXWINGS*VLMMAXRHS * uint(m_NSpanStations)];
 
     m_Progress = 0.0;
 
@@ -902,7 +902,7 @@ void PanelAnalysis::createRHS(double *RHS, Vector3d VInf, double *VField)
         }
         m++;
         //        }
-        m_Progress += 5.0/(double)m_MatSize;
+        m_Progress += 5.0/double(m_MatSize);
     }
 }
 
@@ -1087,8 +1087,8 @@ void PanelAnalysis::createWakeContribution(double *pWakeContrib, Vector3d WindDi
 
     Vector3d V, C, CC, TrPt;
     double phi;
-    double* PHC = new double[m_NWakeColumn];
-    Vector3d* VHC = new Vector3d[m_NWakeColumn];
+    double* PHC = new double[uint(m_NWakeColumn)];
+    Vector3d* VHC = new Vector3d[uint(m_NWakeColumn)];
 
     traceLog("      Adding the wake's contribution...\n");
 
@@ -1198,7 +1198,7 @@ void PanelAnalysis::createWakeContribution(double *pWakeContrib, Vector3d WindDi
         }
         m++;
         //        }
-        m_Progress += 1.0/(double)m_MatSize;
+        m_Progress += 1.0/double(m_MatSize);
     }
 
     delete [] PHC;
@@ -1228,18 +1228,17 @@ void PanelAnalysis::computeFarField(double QInf, double Alpha0, double AlphaDelt
 
     for(int iw=0; iw<MAXWINGS; iw++)
     {
-        if(m_pWingList[iw]) ThinSize += (double)m_pWingList[iw]->m_MatSize;
+        if(m_pWingList[iw]) ThinSize += double(m_pWingList[iw]->m_MatSize);
     }
 
     for (q=0; q<nval;q++)
     {
-        //        qDebug()<<"OpAlpha"<<m_OpAlpha<<"Alpha0"<<Alpha0;
         if(m_pWPolar->bTilted()) alpha = m_OpAlpha;
         else
         {
             if(m_pWPolar->polarType()==XFLR5::FIXEDAOAPOLAR)       alpha = m_OpAlpha;
             else if(m_pWPolar->polarType()==XFLR5::BETAPOLAR)      alpha = m_OpAlpha;
-            //            else if(m_pWPolar->polarType()==XFLR5::STABILITYPOLAR) alpha = m_OpAlpha;
+//            else if(m_pWPolar->polarType()==XFLR5::STABILITYPOLAR) alpha = m_OpAlpha;
             else if(fabs(m_pWPolar->Beta())>PRECISION)             alpha = m_OpAlpha;
             else                                                   alpha = Alpha0 + q*AlphaDelta;
         }
@@ -1263,15 +1262,15 @@ void PanelAnalysis::computeFarField(double QInf, double Alpha0, double AlphaDelt
                 m_WingForce[q*MAXWINGS+iw] = WingForce;  // N/q
                 m_WingIDrag[q*MAXWINGS+iw] = IDrag;
 
-                memcpy(m_Cl  + (q*MAXWINGS+iw)*m_NSpanStations, m_pWingList[iw]->m_Cl,  m_pWingList[iw]->m_NStation*sizeof(double));
-                memcpy(m_ICd + (q*MAXWINGS+iw)*m_NSpanStations, m_pWingList[iw]->m_ICd, m_pWingList[iw]->m_NStation*sizeof(double));
-                memcpy(m_Ai  + (q*MAXWINGS+iw)*m_NSpanStations, m_pWingList[iw]->m_Ai,  m_pWingList[iw]->m_NStation*sizeof(double));
-                memcpy(m_F   + (q*MAXWINGS+iw)*m_NSpanStations, m_pWingList[iw]->m_F,   m_pWingList[iw]->m_NStation*sizeof(Vector3d));
-                memcpy(m_Vd  + (q*MAXWINGS+iw)*m_NSpanStations, m_pWingList[iw]->m_Vd,  m_pWingList[iw]->m_NStation*sizeof(Vector3d));
+                memcpy(m_Cl  + (q*MAXWINGS+iw)*m_NSpanStations, m_pWingList[iw]->m_Cl,  uint(m_pWingList[iw]->m_NStation)*sizeof(double));
+                memcpy(m_ICd + (q*MAXWINGS+iw)*m_NSpanStations, m_pWingList[iw]->m_ICd, uint(m_pWingList[iw]->m_NStation)*sizeof(double));
+                memcpy(m_Ai  + (q*MAXWINGS+iw)*m_NSpanStations, m_pWingList[iw]->m_Ai,  uint(m_pWingList[iw]->m_NStation)*sizeof(double));
+                memcpy(m_F   + (q*MAXWINGS+iw)*m_NSpanStations, m_pWingList[iw]->m_F,   uint(m_pWingList[iw]->m_NStation)*sizeof(Vector3d));
+                memcpy(m_Vd  + (q*MAXWINGS+iw)*m_NSpanStations, m_pWingList[iw]->m_Vd,  uint(m_pWingList[iw]->m_NStation)*sizeof(Vector3d));
 
                 pos += m_pWingList[iw]->m_MatSize;
 
-                m_Progress += 10.0 * (double)m_pWingList[iw]->m_MatSize/ThinSize *(double)m_MatSize/400.;
+                m_Progress += 10.0 * double(m_pWingList[iw]->m_MatSize)/ThinSize *double(m_MatSize)/400.;
                 if(s_bCancel)return;
             }
         }
@@ -1340,8 +1339,8 @@ void PanelAnalysis::scaleResultstoSpeed(int nval)
     QString strong="\n";
     traceLog(strong);
 
-    memcpy(m_SigmaRef, m_Sigma, nval*m_MatSize*sizeof(double));
-    memcpy(m_RHSRef,   m_Mu,    nval*m_MatSize*sizeof(double));
+    memcpy(m_SigmaRef, m_Sigma, uint(nval*m_MatSize)*sizeof(double));
+    memcpy(m_RHSRef,   m_Mu,    uint(nval*m_MatSize)*sizeof(double));
 
     if(m_pWPolar->polarType()!=XFLR5::FIXEDAOAPOLAR)
     {
@@ -1430,7 +1429,7 @@ void PanelAnalysis::computeAeroCoefs(double V0, double VDelta, int nrhs)
             str = QString("      Computing Plane for QInf=%1m/s").arg((V0+q*VDelta),7,'f',2);
             traceLog(str);
             computePlane(m_OpAlpha, V0+q*VDelta, q);
-            m_Progress += 5.0*(double)nrhs /(double)nrhs;
+            m_Progress += 5.0*double(nrhs) /double(nrhs);
         }
     }
     else if(m_pWPolar->isBetaPolar())
@@ -1442,7 +1441,7 @@ void PanelAnalysis::computeAeroCoefs(double V0, double VDelta, int nrhs)
             str += QString::fromUtf8("°\n");
             traceLog(str);
             computePlane(m_OpAlpha, m_3DQInf[q], q);
-            m_Progress += 5.0*(double)nrhs /(double)nrhs;
+            m_Progress += 5.0*double(nrhs) /double(nrhs);
         }
     }
     else
@@ -1458,7 +1457,7 @@ void PanelAnalysis::computeAeroCoefs(double V0, double VDelta, int nrhs)
                 traceLog(str);
                 computePlane(V0+q*VDelta, m_3DQInf[q], q);
             }
-            m_Progress += 5.0*(double)nrhs/(double)nrhs;
+            m_Progress += 5.0*double(nrhs)/double(nrhs);
         }
     }
 }
@@ -1523,19 +1522,19 @@ void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
                 //restore the saved FF results
                 if(m_pWPolar->polarType()!=XFLR5::FIXEDAOAPOLAR)
                 {
-                    memcpy(m_pWingList[iw]->m_Cl,  m_Cl  + (qrhs*MAXWINGS+iw)*m_NSpanStations, m_pWingList[iw]->m_NStation*sizeof(double));
-                    memcpy(m_pWingList[iw]->m_ICd, m_ICd + (qrhs*MAXWINGS+iw)*m_NSpanStations, m_pWingList[iw]->m_NStation*sizeof(double));
-                    memcpy(m_pWingList[iw]->m_Ai,  m_Ai  + (qrhs*MAXWINGS+iw)*m_NSpanStations, m_pWingList[iw]->m_NStation*sizeof(double));
-                    memcpy(m_pWingList[iw]->m_F,   m_F   + (qrhs*MAXWINGS+iw)*m_NSpanStations, m_pWingList[iw]->m_NStation*sizeof(Vector3d));
-                    memcpy(m_pWingList[iw]->m_Vd,  m_Vd  + (qrhs*MAXWINGS+iw)*m_NSpanStations, m_pWingList[iw]->m_NStation*sizeof(Vector3d));
+                    memcpy(m_pWingList[iw]->m_Cl,  m_Cl  + (qrhs*MAXWINGS+iw)*m_NSpanStations, uint(m_pWingList[iw]->m_NStation)*sizeof(double));
+                    memcpy(m_pWingList[iw]->m_ICd, m_ICd + (qrhs*MAXWINGS+iw)*m_NSpanStations, uint(m_pWingList[iw]->m_NStation)*sizeof(double));
+                    memcpy(m_pWingList[iw]->m_Ai,  m_Ai  + (qrhs*MAXWINGS+iw)*m_NSpanStations, uint(m_pWingList[iw]->m_NStation)*sizeof(double));
+                    memcpy(m_pWingList[iw]->m_F,   m_F   + (qrhs*MAXWINGS+iw)*m_NSpanStations, uint(m_pWingList[iw]->m_NStation)*sizeof(Vector3d));
+                    memcpy(m_pWingList[iw]->m_Vd,  m_Vd  + (qrhs*MAXWINGS+iw)*m_NSpanStations, uint(m_pWingList[iw]->m_NStation)*sizeof(Vector3d));
                 }
                 else
                 {
-                    memcpy(m_pWingList[iw]->m_Cl,  m_Cl +iw*m_NSpanStations, m_pWingList[iw]->m_NStation*sizeof(double));
-                    memcpy(m_pWingList[iw]->m_ICd, m_ICd+iw*m_NSpanStations, m_pWingList[iw]->m_NStation*sizeof(double));
-                    memcpy(m_pWingList[iw]->m_Ai,  m_Ai +iw*m_NSpanStations, m_pWingList[iw]->m_NStation*sizeof(double));
-                    memcpy(m_pWingList[iw]->m_F,   m_F  +iw*m_NSpanStations, m_pWingList[iw]->m_NStation*sizeof(Vector3d));
-                    memcpy(m_pWingList[iw]->m_Vd,  m_Vd +iw*m_NSpanStations, m_pWingList[iw]->m_NStation*sizeof(Vector3d));
+                    memcpy(m_pWingList[iw]->m_Cl,  m_Cl +iw*m_NSpanStations, uint(m_pWingList[iw]->m_NStation)*sizeof(double));
+                    memcpy(m_pWingList[iw]->m_ICd, m_ICd+iw*m_NSpanStations, uint(m_pWingList[iw]->m_NStation)*sizeof(double));
+                    memcpy(m_pWingList[iw]->m_Ai,  m_Ai +iw*m_NSpanStations, uint(m_pWingList[iw]->m_NStation)*sizeof(double));
+                    memcpy(m_pWingList[iw]->m_F,   m_F  +iw*m_NSpanStations, uint(m_pWingList[iw]->m_NStation)*sizeof(Vector3d));
+                    memcpy(m_pWingList[iw]->m_Vd,  m_Vd +iw*m_NSpanStations, uint(m_pWingList[iw]->m_NStation)*sizeof(Vector3d));
                 }
 
                 Force += m_WingForce[qrhs*MAXWINGS+iw];
@@ -1835,7 +1834,7 @@ void PanelAnalysis::computeOnBodyCp(double V0, double VDelta, int nval)
         for (q=0; q<nval; q++)
         {
             //   Define wind axis
-            Alpha = V0 + (double)q * VDelta;
+            Alpha = V0 + double(q) * VDelta;
             cosa = cos(Alpha*PI/180.0);
             sina = sin(Alpha*PI/180.0);
             WindDirection.set(cosa, 0.0, sina);
@@ -1859,7 +1858,7 @@ void PanelAnalysis::computeOnBodyCp(double V0, double VDelta, int nval)
                 if(s_bCancel) return;
             }
             if(s_bCancel) return;
-            m_Progress += 1.0 *(double)nval/(double)nval;
+            m_Progress += 1.0 *double(nval)/double(nval);
         }
     }
     else //FIXEDAOAPOLAR
@@ -1882,7 +1881,7 @@ void PanelAnalysis::computeOnBodyCp(double V0, double VDelta, int nval)
                 else                              getVortexCp(p, Mu, Cp, WindDirection);
             }
 
-            m_Progress += 1.0  *(double)nval/(double)nval;
+            m_Progress += 1.0  *double(nval)/double(nval);
         }
         for (q=1; q<nval; q++)
         {
@@ -2033,11 +2032,11 @@ bool PanelAnalysis::QInfLoop()
     if(m_pWPolar->bTilted())
     {
         //reset the initial geometry before a new angle is processed
-        memcpy(m_pPanel,     m_pMemPanel,     m_MatSize * sizeof(Panel));
-        memcpy(m_pNode,      m_pMemNode,      m_nNodes  * sizeof(Vector3d));
-        memcpy(m_pWakePanel, m_pRefWakePanel, m_WakeSize * sizeof(Panel));
-        memcpy(m_pWakeNode,  m_pRefWakeNode,  m_nWakeNodes * sizeof(Vector3d));
-        memcpy(m_pTempWakeNode,  m_pRefWakeNode,  m_nWakeNodes * sizeof(Vector3d));
+        memcpy(m_pPanel,        m_pMemPanel,     uint(m_MatSize) * sizeof(Panel));
+        memcpy(m_pNode,         m_pMemNode,      uint(m_nNodes) * sizeof(Vector3d));
+        memcpy(m_pWakePanel,    m_pRefWakePanel, uint(m_WakeSize) * sizeof(Panel));
+        memcpy(m_pWakeNode,     m_pRefWakeNode,  uint(m_nWakeNodes) * sizeof(Vector3d));
+        memcpy(m_pTempWakeNode, m_pRefWakeNode,  uint(m_nWakeNodes) * sizeof(Vector3d));
 
         // Rotate the wing panels and translate the wake to the new T.E. position
         Vector3d O;
@@ -2127,12 +2126,12 @@ bool PanelAnalysis::solveUnitRHS()
     QTime t;
     t.start();
 
-    memcpy(m_RHS,      m_uRHS, Size * sizeof(double));
-    memcpy(m_RHS+Size, m_wRHS, Size * sizeof(double));
+    memcpy(m_RHS,      m_uRHS, uint(Size) * sizeof(double));
+    memcpy(m_RHS+Size, m_wRHS, uint(Size) * sizeof(double));
 
     traceLog("      Performing LU Matrix decomposition...\n");
 
-    if(!Crout_LU_Decomposition_with_Pivoting(m_aij, m_Index, Size, &s_bCancel, taskTime*(double)m_MatSize/400.0, m_Progress))
+    if(!Crout_LU_Decomposition_with_Pivoting(m_aij, m_Index, Size, &s_bCancel, taskTime*double(m_MatSize)/400.0, m_Progress))
     {
         traceLog("      Singular Matrix.... Aborting calculation...\n");
         return false;
@@ -2147,8 +2146,8 @@ bool PanelAnalysis::solveUnitRHS()
     //    qDebug(strange.toStdString().c_str());
     traceLog(strange);
 
-    memcpy(m_uRHS, m_RHS,           m_MatSize*sizeof(double));
-    memcpy(m_wRHS, m_RHS+m_MatSize, m_MatSize*sizeof(double));
+    memcpy(m_uRHS, m_RHS,           uint(m_MatSize)*sizeof(double));
+    memcpy(m_wRHS, m_RHS+m_MatSize, uint(m_MatSize)*sizeof(double));
 
     //   Define unit local velocity vector, necessary for moment calculations in stability analysis of 3D panels
     Vector3d u(1.0, 0.0, 0.0);
@@ -2293,11 +2292,11 @@ bool PanelAnalysis::unitLoop()
         traceLog(str);
 
         //reset the initial geometry before a new angle is processed
-        memcpy(m_pPanel,     m_pMemPanel,     m_MatSize    * sizeof(Panel));
-        memcpy(m_pNode,      m_pMemNode,      m_nNodes     * sizeof(Vector3d));
-        memcpy(m_pWakePanel, m_pRefWakePanel, m_WakeSize   * sizeof(Panel));
-        memcpy(m_pWakeNode,  m_pRefWakeNode,  m_nWakeNodes * sizeof(Vector3d));
-        memcpy(m_pTempWakeNode,  m_pRefWakeNode,  m_nWakeNodes * sizeof(Vector3d));
+        memcpy(m_pPanel,         m_pMemPanel,     uint(m_MatSize)    * sizeof(Panel));
+        memcpy(m_pNode,          m_pMemNode,      uint(m_nNodes)     * sizeof(Vector3d));
+        memcpy(m_pWakePanel,     m_pRefWakePanel, uint(m_WakeSize)   * sizeof(Panel));
+        memcpy(m_pWakeNode,      m_pRefWakeNode,  uint(m_nWakeNodes) * sizeof(Vector3d));
+        memcpy(m_pTempWakeNode,  m_pRefWakeNode,  uint(m_nWakeNodes) * sizeof(Vector3d));
 
         // Rotate the wing panels and translate the wake to the new T.E. position
         rotateGeomY(m_OpAlpha, O, m_pWPolar->m_NXWakePanels);
@@ -2393,11 +2392,11 @@ bool PanelAnalysis::unitLoop()
     }
 
     //leave things as they were
-    memcpy(m_pPanel,     m_pMemPanel,     m_MatSize    * sizeof(Panel));
-    memcpy(m_pNode,      m_pMemNode,      m_nNodes     * sizeof(Vector3d));
-    memcpy(m_pWakePanel, m_pRefWakePanel, m_WakeSize   * sizeof(Panel));
-    memcpy(m_pWakeNode,  m_pRefWakeNode,  m_nWakeNodes * sizeof(Vector3d));
-    memcpy(m_pTempWakeNode,  m_pRefWakeNode,  m_nWakeNodes * sizeof(Vector3d));
+    memcpy(m_pPanel,         m_pMemPanel,     uint(m_MatSize)    * sizeof(Panel));
+    memcpy(m_pNode,          m_pMemNode,      uint(m_nNodes)     * sizeof(Vector3d));
+    memcpy(m_pWakePanel,     m_pRefWakePanel, uint(m_WakeSize)   * sizeof(Panel));
+    memcpy(m_pWakeNode,      m_pRefWakeNode,  uint(m_nWakeNodes) * sizeof(Vector3d));
+    memcpy(m_pTempWakeNode,  m_pRefWakeNode,  uint(m_nWakeNodes) * sizeof(Vector3d));
 
     return true;
 }
@@ -2603,12 +2602,12 @@ bool PanelAnalysis::controlLoop()
     {
         // create the geometry for the control parameter
         // so first restore the initial geometry
-        memcpy(m_pPanel, m_pMemPanel, m_MatSize * sizeof(Panel));
-        memcpy(m_pNode,  m_pMemNode,  m_nNodes  * sizeof(Vector3d));
+        memcpy(m_pPanel, m_pMemPanel, uint(m_MatSize) * sizeof(Panel));
+        memcpy(m_pNode,  m_pMemNode,  uint(m_nNodes)  * sizeof(Vector3d));
 
         m_OpAlpha = 0.0;
         //define the control position for this iteration
-        m_Ctrl = m_vMin +(double)i *m_vDelta;
+        m_Ctrl = m_vMin +double(i) *m_vDelta;
         str = QString("      Calculation for control position %1\n").arg(m_Ctrl ,5,'f',2);
         traceLog(str);
         outString.clear();
@@ -3706,12 +3705,12 @@ void PanelAnalysis::computeStabilityDerivativesOld()
     Crout_LU_with_Pivoting_Solve(m_aij, m_qRHS, m_Index, m_RHS+4*m_MatSize, Size, &s_bCancel);
     Crout_LU_with_Pivoting_Solve(m_aij, m_rRHS, m_Index, m_RHS+5*m_MatSize, Size, &s_bCancel);
 
-    memcpy(m_uRHS, m_RHS,             m_MatSize*sizeof(double));
-    memcpy(m_vRHS, m_RHS+  m_MatSize, m_MatSize*sizeof(double));
-    memcpy(m_wRHS, m_RHS+2*m_MatSize, m_MatSize*sizeof(double));
-    memcpy(m_pRHS, m_RHS+3*m_MatSize, m_MatSize*sizeof(double));
-    memcpy(m_qRHS, m_RHS+4*m_MatSize, m_MatSize*sizeof(double));
-    memcpy(m_rRHS, m_RHS+5*m_MatSize, m_MatSize*sizeof(double));
+    memcpy(m_uRHS, m_RHS,             uint(m_MatSize)*sizeof(double));
+    memcpy(m_vRHS, m_RHS+  m_MatSize, uint(m_MatSize)*sizeof(double));
+    memcpy(m_wRHS, m_RHS+2*m_MatSize, uint(m_MatSize)*sizeof(double));
+    memcpy(m_pRHS, m_RHS+3*m_MatSize, uint(m_MatSize)*sizeof(double));
+    memcpy(m_qRHS, m_RHS+4*m_MatSize, uint(m_MatSize)*sizeof(double));
+    memcpy(m_rRHS, m_RHS+5*m_MatSize, uint(m_MatSize)*sizeof(double));
 
 
     strong = "         Calculating forces and derivatives\n";
@@ -3925,12 +3924,12 @@ void PanelAnalysis::computeStabilityDerivatives()
     Crout_LU_with_Pivoting_Solve(m_aij, m_qRHS, m_Index, m_RHS+4*m_MatSize, Size, &s_bCancel);
     Crout_LU_with_Pivoting_Solve(m_aij, m_rRHS, m_Index, m_RHS+5*m_MatSize, Size, &s_bCancel);
 
-    memcpy(m_uRHS, m_RHS+0*m_MatSize, m_MatSize*sizeof(double));
-    memcpy(m_vRHS, m_RHS+1*m_MatSize, m_MatSize*sizeof(double));
-    memcpy(m_wRHS, m_RHS+2*m_MatSize, m_MatSize*sizeof(double));
-    memcpy(m_pRHS, m_RHS+3*m_MatSize, m_MatSize*sizeof(double));
-    memcpy(m_qRHS, m_RHS+4*m_MatSize, m_MatSize*sizeof(double));
-    memcpy(m_rRHS, m_RHS+5*m_MatSize, m_MatSize*sizeof(double));
+    memcpy(m_uRHS, m_RHS+0*m_MatSize, uint(m_MatSize)*sizeof(double));
+    memcpy(m_vRHS, m_RHS+1*m_MatSize, uint(m_MatSize)*sizeof(double));
+    memcpy(m_wRHS, m_RHS+2*m_MatSize, uint(m_MatSize)*sizeof(double));
+    memcpy(m_pRHS, m_RHS+3*m_MatSize, uint(m_MatSize)*sizeof(double));
+    memcpy(m_qRHS, m_RHS+4*m_MatSize, uint(m_MatSize)*sizeof(double));
+    memcpy(m_rRHS, m_RHS+5*m_MatSize, uint(m_MatSize)*sizeof(double));
 
     //________________________________________________
     // 1st ORDER STABILITY DERIVATIVES
@@ -4073,12 +4072,12 @@ void PanelAnalysis::computeStabilityDerivatives()
     Crout_LU_with_Pivoting_Solve(m_aij, m_qRHS, m_Index, m_RHS+4*m_MatSize, Size, &s_bCancel);
     Crout_LU_with_Pivoting_Solve(m_aij, m_rRHS, m_Index, m_RHS+5*m_MatSize, Size, &s_bCancel);
 
-    memcpy(m_uRHS, m_RHS+0*m_MatSize, m_MatSize*sizeof(double));
-    memcpy(m_vRHS, m_RHS+1*m_MatSize, m_MatSize*sizeof(double));
-    memcpy(m_wRHS, m_RHS+2*m_MatSize, m_MatSize*sizeof(double));
-    memcpy(m_pRHS, m_RHS+3*m_MatSize, m_MatSize*sizeof(double));
-    memcpy(m_qRHS, m_RHS+4*m_MatSize, m_MatSize*sizeof(double));
-    memcpy(m_rRHS, m_RHS+5*m_MatSize, m_MatSize*sizeof(double));
+    memcpy(m_uRHS, m_RHS+0*m_MatSize, uint(m_MatSize)*sizeof(double));
+    memcpy(m_vRHS, m_RHS+1*m_MatSize, uint(m_MatSize)*sizeof(double));
+    memcpy(m_wRHS, m_RHS+2*m_MatSize, uint(m_MatSize)*sizeof(double));
+    memcpy(m_pRHS, m_RHS+3*m_MatSize, uint(m_MatSize)*sizeof(double));
+    memcpy(m_qRHS, m_RHS+4*m_MatSize, uint(m_MatSize)*sizeof(double));
+    memcpy(m_rRHS, m_RHS+5*m_MatSize, uint(m_MatSize)*sizeof(double));
 
 
     //________________________________________________
@@ -4261,7 +4260,7 @@ void PanelAnalysis::computeControlDerivatives()
 
             for(p=0; p<m_pWingList[0]->m_MatSize; p++)
             {
-                (m_pWingList[0]->m_pWingPanel+p)->rotateBC(m_pPlane->WingLE(0), Quat);
+                (m_pWingList[0]->m_pWingPanel+p)->rotateBC(m_pPlane->wingLE(0), Quat);
             }
         }
 
@@ -4284,7 +4283,7 @@ void PanelAnalysis::computeControlDerivatives()
 
             for(p=0; p<m_pWingList[2]->m_MatSize; p++)
             {
-                (m_pWingList[2]->m_pWingPanel+p)->rotateBC(m_pPlane->WingLE(2), Quat);
+                (m_pWingList[2]->m_pWingPanel+p)->rotateBC(m_pPlane->wingLE(2), Quat);
             }
         }
         pos += m_pWingList[2]->m_MatSize;
@@ -4338,7 +4337,7 @@ void PanelAnalysis::computeControlDerivatives()
     traceLog(strong);
 
     Crout_LU_with_Pivoting_Solve(m_aij, m_cRHS, m_Index, m_RHS, m_MatSize, &s_bCancel);
-    memcpy(m_cRHS, m_RHS, m_MatSize*sizeof(double));
+    memcpy(m_cRHS, m_RHS, uint(m_MatSize)*sizeof(double));
 
     forces(m_cRHS, m_Sigma, m_AlphaEq, V0, m_RHS+50*m_MatSize, Force, Moment);
 
@@ -4416,21 +4415,18 @@ double PanelAnalysis::computeCm(double Alpha)
 }
 
 
-
 void PanelAnalysis::restorePanels()
 {
     if(m_pWPolar && (m_pWPolar->polarType()==XFLR5::STABILITYPOLAR || m_pWPolar->bTilted() || m_pWPolar->bWakeRollUp()))
     {
         //restore the panels and nodes;
-        memcpy(m_pPanel, m_pMemPanel, m_MatSize * sizeof(Panel));
-        memcpy(m_pNode,  m_pMemNode,  m_nNodes  * sizeof(Vector3d));
-        memcpy(m_pWakePanel, m_pRefWakePanel, m_WakeSize * sizeof(Panel));
-        memcpy(m_pWakeNode,  m_pRefWakeNode,  m_nWakeNodes * sizeof(Vector3d));
-        memcpy(m_pTempWakeNode,  m_pRefWakeNode,  m_nWakeNodes * sizeof(Vector3d));
+        memcpy(m_pPanel,        m_pMemPanel,     uint(m_MatSize) * sizeof(Panel));
+        memcpy(m_pNode,         m_pMemNode,      uint(m_nNodes)  * sizeof(Vector3d));
+        memcpy(m_pWakePanel,    m_pRefWakePanel, uint(m_WakeSize) * sizeof(Panel));
+        memcpy(m_pWakeNode,     m_pRefWakeNode,  uint(m_nWakeNodes) * sizeof(Vector3d));
+        memcpy(m_pTempWakeNode, m_pRefWakeNode,  uint(m_nWakeNodes) * sizeof(Vector3d));
     }
 }
-
-
 
 
 /**
@@ -4610,9 +4606,9 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double *Gamma, double *Sigma
         }
     }
 
-    memcpy(pPOpp->m_dCp,    Cp,    pPOpp->m_NPanels*sizeof(double));
-    memcpy(pPOpp->m_dG,     Gamma, pPOpp->m_NPanels*sizeof(double));
-    memcpy(pPOpp->m_dSigma, Sigma, pPOpp->m_NPanels*sizeof(double));
+    memcpy(pPOpp->m_dCp,    Cp,    uint(pPOpp->m_NPanels)*sizeof(double));
+    memcpy(pPOpp->m_dG,     Gamma, uint(pPOpp->m_NPanels)*sizeof(double));
+    memcpy(pPOpp->m_dSigma, Sigma, uint(pPOpp->m_NPanels)*sizeof(double));
 
     int pos = 0;
     for(int iw=0; iw<MAXWINGS; iw++)
@@ -4951,7 +4947,7 @@ void PanelAnalysis::setControlPositions(double t, int &NCtrls, QString &out, boo
         {
             //wing tilt
             angle = m_pWPolar->m_ControlGain[0] * t; //maxcontrol is the gain
-            TotalAngle = m_pPlane->WingTiltAngle(0) + angle;
+            TotalAngle = m_pPlane->wingTiltAngle(0) + angle;
             strange = QString::fromUtf8("    Rotating the wing by %1°, total angle is %2°").arg(angle, 5, 'f',2).arg(TotalAngle, 5, 'f',2);
 
             strange += "\n";
@@ -4964,7 +4960,7 @@ void PanelAnalysis::setControlPositions(double t, int &NCtrls, QString &out, boo
                 for(int p=0; p<m_pPlane->wing()->m_MatSize; p++)
                 {
                     memcpy(m_pPanel+p, m_pMemPanel+p, sizeof(Panel));
-                    (m_pPanel+p)->rotateBC(m_pPlane->WingLE(0), Quat);
+                    (m_pPanel+p)->rotateBC(m_pPlane->wingLE(0), Quat);
                 }
             }
             else
@@ -4974,9 +4970,9 @@ void PanelAnalysis::setControlPositions(double t, int &NCtrls, QString &out, boo
                     if(m_pPlane->wing()->isWingNode(n))
                     {
                         m_pNode[n].copy(m_pMemNode[n]);
-                        W = m_pNode[n] - m_pPlane->WingLE(0);
+                        W = m_pNode[n] - m_pPlane->wingLE(0);
                         Quat.Conjugate(W);
-                        m_pNode[n] = W + m_pPlane->WingLE(0);
+                        m_pNode[n] = W + m_pPlane->wingLE(0);
                     }
                 }
                 for(int p=0; p<m_MatSize; p++)
@@ -4994,7 +4990,7 @@ void PanelAnalysis::setControlPositions(double t, int &NCtrls, QString &out, boo
             {
                 //Elevator tilt
                 angle = m_pWPolar->m_ControlGain[1] * t; //maxcontrol is the gain
-                TotalAngle = m_pPlane->WingTiltAngle(2) + angle;
+                TotalAngle = m_pPlane->wingTiltAngle(2) + angle;
                 strange = QString::fromUtf8("         Rotating the elevator by %1°, total angle is %2°").arg(angle, 5, 'f',2).arg(TotalAngle, 5, 'f',2);
 
                 strange += "\n";
@@ -5008,9 +5004,9 @@ void PanelAnalysis::setControlPositions(double t, int &NCtrls, QString &out, boo
                         if(m_pPlane->stab()->isWingNode(n))
                         {
                             m_pNode[n].copy(m_pMemNode[n]);
-                            W = m_pNode[n] - m_pPlane->WingLE(2);
+                            W = m_pNode[n] - m_pPlane->wingLE(2);
                             Quat.Conjugate(W);
-                            m_pNode[n] = W + m_pPlane->WingLE(2);
+                            m_pNode[n] = W + m_pPlane->wingLE(2);
                         }
                     }
                     for(int p=0; p<m_MatSize; p++)
@@ -5022,7 +5018,7 @@ void PanelAnalysis::setControlPositions(double t, int &NCtrls, QString &out, boo
                 {
                     for(int p=0; p<m_pPlane->stab()->m_MatSize; p++)
                     {
-                        m_pPlane->stab()->m_pWingPanel[p].rotateBC(m_pPlane->WingLE(2), Quat);
+                        m_pPlane->stab()->m_pWingPanel[p].rotateBC(m_pPlane->wingLE(2), Quat);
                     }
                 }
             }
@@ -5045,7 +5041,8 @@ void PanelAnalysis::setControlPositions(double t, int &NCtrls, QString &out, boo
                     {
                         angle = m_pWPolar->m_ControlGain[NCtrls] * t; //maxcontrol is the gain
 
-                        if(pWing->m_Surface.at(j)->m_pFoilA->m_TEFlapAngle && pWing->m_Surface.at(j)->m_pFoilA->m_TEFlapAngle)
+                        if(fabs(pWing->m_Surface.at(j)->m_pFoilA->m_TEFlapAngle)>0.0 &&
+                           fabs(pWing->m_Surface.at(j)->m_pFoilA->m_TEFlapAngle)>0.0)
                             TotalAngle = angle + (pWing->m_Surface.at(j)->m_pFoilA->m_TEFlapAngle + pWing->m_Surface.at(j)->m_pFoilB->m_TEFlapAngle)/2.0;
                         else
                             TotalAngle = angle;
@@ -5572,7 +5569,7 @@ void PanelAnalysis::relaxWake()
 
     traceLog("      Relaxing the wake...\n");
 
-    memcpy(m_pTempWakeNode, m_pWakeNode, m_nWakeNodes * sizeof(Vector3d));
+    memcpy(m_pTempWakeNode, m_pWakeNode, uint(m_nWakeNodes) * sizeof(Vector3d));
 
     int mw = 0;
 
@@ -5589,7 +5586,7 @@ void PanelAnalysis::relaxWake()
             WTA.copy(m_pTempWakeNode[m_pWakePanel[mw].m_iTA]);
             WTemp.copy(WLA);
 
-            nInter = (int)((WTA.x - WLA.x)/dx0) ;
+            nInter = int((WTA.x - WLA.x)/dx0) ;
             dx = (WTA.x - WLA.x)/nInter;
 
             for (int llw=0; llw<nInter; llw++)
@@ -5610,7 +5607,7 @@ void PanelAnalysis::relaxWake()
         WTB.copy(m_pTempWakeNode[m_pWakePanel[mw].m_iTB]);
         WTemp.copy(WLB);
 
-        nInter = (int)((WTB.x - WLB.x)/dx0);
+        nInter = int((WTB.x - WLB.x)/dx0);
         dx = (WTB.x - WLB.x)/nInter;
 
         for (int llw=0; llw<nInter; llw++)
@@ -5624,12 +5621,12 @@ void PanelAnalysis::relaxWake()
             WTemp.z += VL.z * t;
         }
         m_pTempWakeNode[m_pWakePanel[mw].m_iTB] = WTemp;
-        m_Progress += 20.0/(double)m_pWPolar->m_NXWakePanels;
+        m_Progress += 20.0/double(m_pWPolar->m_NXWakePanels);
         qApp->processEvents();
     }
 
     // Paste the new wake nodes back into the wake node array
-    memcpy(m_pWakeNode, m_pTempWakeNode, m_nWakeNodes * sizeof(Vector3d));
+    memcpy(m_pWakeNode, m_pTempWakeNode, uint(m_nWakeNodes) * sizeof(Vector3d));
 
     // Re-create the wake panels
     mw=0;

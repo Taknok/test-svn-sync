@@ -3464,7 +3464,7 @@ void Miarex::onEditCurBody()
     if(m_pCurPlane->body())
     {
         m_pCurPlane->body()->setBodyColor( pModPlane->body()->bodyColor());
-        m_pCurPlane->body()->textures()  = pModPlane->body()->textures();
+        m_pCurPlane->body()->setTextures(pModPlane->body()->hasTextures());
     }
 
     delete pModPlane; // clean up, we don't need it any more
@@ -4459,12 +4459,12 @@ void Miarex::onExporttoAVL()
 
     int index = int(double(qrand())/double(RAND_MAX) * 10000);
 
-    exportAVLWing(m_pCurPlane->wing(0), out, index, 0.0, m_pCurPlane->WingTiltAngle(0));
+    exportAVLWing(m_pCurPlane->wing(0), out, index, 0.0, m_pCurPlane->wingTiltAngle(0));
 
     for(int iw=1; iw<MAXWINGS; iw++)
     {
         if(m_pCurPlane->wing(iw))
-            exportAVLWing(m_pCurPlane->wing(iw), out, index+iw, 0.0, m_pCurPlane->WingTiltAngle(iw));
+            exportAVLWing(m_pCurPlane->wing(iw), out, index+iw, 0.0, m_pCurPlane->wingTiltAngle(iw));
     }
     XFile.close();
 }

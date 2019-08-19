@@ -929,7 +929,7 @@ void EditPlaneDlg::fillWingTreeView(int iw, QList<QStandardItem*> &planeRootItem
     dataItem.at(2)->setData(XFLR5::BOOLVALUE, Qt::UserRole);
     wingFolder.first()->appendRow(dataItem);
 
-    dataItem = prepareDoubleRow("Pitch angle", "Angle", m_pPlane->WingTiltAngle(iw),QString::fromUtf8("°"));
+    dataItem = prepareDoubleRow("Pitch angle", "Angle", m_pPlane->wingTiltAngle(iw),QString::fromUtf8("°"));
     dataItem.at(2)->setData(XFLR5::DOUBLEVALUE, Qt::UserRole);
     wingFolder.first()->appendRow(dataItem);
 
@@ -968,15 +968,15 @@ void EditPlaneDlg::fillWingTreeView(int iw, QList<QStandardItem*> &planeRootItem
     QList<QStandardItem*> wingPositionFolder = prepareRow("Position");
     wingFolder.first()->appendRow(wingPositionFolder);
     {
-        dataItem = prepareDoubleRow("", "x", m_pPlane->WingLE(iw).x*Units::mtoUnit(), Units::lengthUnitLabel());
+        dataItem = prepareDoubleRow("", "x", m_pPlane->wingLE(iw).x*Units::mtoUnit(), Units::lengthUnitLabel());
         dataItem.at(2)->setData(XFLR5::DOUBLEVALUE, Qt::UserRole);
         wingPositionFolder.first()->appendRow(dataItem);
 
-        dataItem = prepareDoubleRow("", "y", m_pPlane->WingLE(iw).y*Units::mtoUnit(), Units::lengthUnitLabel());
+        dataItem = prepareDoubleRow("", "y", m_pPlane->wingLE(iw).y*Units::mtoUnit(), Units::lengthUnitLabel());
         dataItem.at(2)->setData(XFLR5::DOUBLEVALUE, Qt::UserRole);
         wingPositionFolder.first()->appendRow(dataItem);
 
-        dataItem = prepareDoubleRow("", "z", m_pPlane->WingLE(iw).z*Units::mtoUnit(), Units::lengthUnitLabel());
+        dataItem = prepareDoubleRow("", "z", m_pPlane->wingLE(iw).z*Units::mtoUnit(), Units::lengthUnitLabel());
         dataItem.at(2)->setData(XFLR5::DOUBLEVALUE, Qt::UserRole);
         wingPositionFolder.first()->appendRow(dataItem);
     }
@@ -1314,7 +1314,7 @@ void EditPlaneDlg::readViewLevel(QModelIndex indexLevel)
                 newwing.setWingColor(m_pPlane->m_Wing[iWing].wingColor());
 
                 m_pPlane->m_Wing[iWing].duplicate(&newwing);
-                m_pPlane->WingLE(iWing)        = wingPos;
+                m_pPlane->setWingLE(iWing, wingPos);
                 m_pPlane->setWingTiltAngle(iWing, wingTiltAngle);
                 iw++;
             }
@@ -1378,14 +1378,19 @@ void EditPlaneDlg::readWingTree(Wing *pWing, Vector3d &wingLE, double &tiltAngle
                     field = subIndex.sibling(subIndex.row(),1).data().toString();
                     value = subIndex.sibling(subIndex.row(),2).data().toString();
 
-                    if(field.compare("is Fin:", Qt::CaseInsensitive)==0)               pWing->isFin() = stringToBool(value);
-                    else if(field.compare("is Symetric Fin:", Qt::CaseInsensitive)==0) pWing->isSymFin() = stringToBool(value);
-                    else if(field.compare("is Double Fin:", Qt::CaseInsensitive)==0)   pWing->isDoubleFin() = stringToBool(value);
+                    if     (field.compare("is Fin:", Qt::CaseInsensitive)==0)          pWing->setFin(stringToBool(value));
+                    else if(field.compare("is Symetric Fin:", Qt::CaseInsensitive)==0) pWing->setSymFin(stringToBool(value));
+                    else if(field.compare("is Double Fin:", Qt::CaseInsensitive)==0)   pWing->setDoubleFin(stringToBool(value));
 
                     subIndex = subIndex.sibling(subIndex.row()+1,0);
                 }while(subIndex.isValid());
             }
-            else if(object.compare("Inertia", Qt::CaseInsensitive)==0)  readInertiaTree(pWing->volumeMass(), pWing->m_PointMass, pItem->child(0,0)->index());
+            else if(object.compare("Inertia", Qt::CaseInsensitive)==0)
+            {
+                double mass=0;
+                readInertiaTree(mass, pWing->m_PointMass, pItem->child(0,0)->index());
+                pWing->setVolumeMass(mass);
+            }
             else if(object.compare("Sections", Qt::CaseInsensitive)==0)
             {
                 QModelIndex subIndex = pItem->child(0,0)->index();
@@ -1433,7 +1438,12 @@ void EditPlaneDlg::readBodyTree(Body *pBody, QModelIndex indexLevel)
             field = indexLevel.sibling(indexLevel.row(),1).data().toString();
             value = indexLevel.sibling(indexLevel.row(),2).data().toString();
 
-            if(object.compare("Position", Qt::CaseInsensitive)==0) readVectorTree(m_pPlane->bodyPos(), pItem->child(0,0)->index());
+            if(object.compare("Position", Qt::CaseInsensitive)==0)
+            {
+                Vector3d pos;
+                readVectorTree(pos, pItem->child(0,0)->index());
+                m_pPlane->setBodyPos(pos);
+            }
             else if(object.compare("Color", Qt::CaseInsensitive)==0)
             {
                 subIndex = pItem->child(0,0)->index();
@@ -1447,13 +1457,18 @@ void EditPlaneDlg::readBodyTree(Body *pBody, QModelIndex indexLevel)
 
                     if(field.compare("red", Qt::CaseInsensitive)==0)         pBody->bodyColor().setRed(dataIndex.data().toInt());
                     else if(field.compare("green", Qt::CaseInsensitive)==0)  pBody->bodyColor().setGreen(dataIndex.data().toInt());
-                    else if(field.compare("blue", Qt::CaseInsensitive)==0)   pBody->bodyColor().setBlue(dataIndex.data().toInt());
+                    else if(field.compare("blue",  Qt::CaseInsensitive)==0)  pBody->bodyColor().setBlue(dataIndex.data().toInt());
                     else if(field.compare("alpha", Qt::CaseInsensitive)==0)  pBody->bodyColor().setAlpha(dataIndex.data().toInt());
 
                     subIndex = subIndex.sibling(subIndex.row()+1,0);
                 }while(subIndex.isValid());
             }
-            else if(object.compare("Inertia", Qt::CaseInsensitive)==0)     readInertiaTree(pBody->volumeMass(), pBody->m_PointMass, pItem->child(0,0)->index());
+            else if(object.compare("Inertia", Qt::CaseInsensitive)==0)
+            {
+                double m=0;
+                readInertiaTree(m, pBody->m_PointMass, pItem->child(0,0)->index());
+                pBody->setVolumeMass(m);
+            }
             else if(object.compare("NURBS", Qt::CaseInsensitive)==0)
             {
                 subIndex = pItem->child(0,0)->index();
