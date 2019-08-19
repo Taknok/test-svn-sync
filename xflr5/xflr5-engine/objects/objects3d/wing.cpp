@@ -1331,7 +1331,7 @@ void Wing::getFoils(Foil **pFoil0, Foil **pFoil1, double y, double &t)
  * Returns the total mass of the wing, as the sum of volume and point masses
  * @return the total mass
  */
-double Wing::totalMass()
+double Wing::totalMass() const
 {
     double TotalMass = m_VolumeMass;
     for(int im=0; im<m_PointMass.size(); im++)

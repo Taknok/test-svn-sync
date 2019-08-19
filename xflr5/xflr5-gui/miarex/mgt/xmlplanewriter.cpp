@@ -106,7 +106,7 @@ void XMLPlaneWriter::writeXMLPlane(Plane *m_pPlane)
         {
             if(m_pPlane->wing(iw))
             {
-                writeWing(*m_pPlane->wing(iw), m_pPlane->WingLE(iw), m_pPlane->WingTiltAngle(iw));
+                writeWing(*m_pPlane->wing(iw), m_pPlane->wingLE(iw), m_pPlane->wingTiltAngle(iw));
             }
         }
     }
@@ -118,7 +118,7 @@ void XMLPlaneWriter::writeXMLPlane(Plane *m_pPlane)
 
 
 
-void XMLPlaneWriter::writeWing(Wing &wing, Vector3d position, double Ry)
+void XMLPlaneWriter::writeWing(Wing const &wing, Vector3d position, double Ry)
 {
     writeStartElement("wing");
     {

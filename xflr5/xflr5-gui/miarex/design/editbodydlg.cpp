@@ -860,7 +860,11 @@ void EditBodyDlg::readBodyTree(QModelIndex indexLevel)
             {
                 QStandardItem *pItem = m_pModel->itemFromIndex(indexLevel);
                 if(pItem)
-                    readInertiaTree(m_pBody->volumeMass(), m_pBody->m_PointMass, pItem->child(0,0)->index());
+                {
+                    double m=0;
+                    readInertiaTree(m, m_pBody->m_PointMass, pItem->child(0,0)->index());
+                    m_pBody->setVolumeMass(m);
+                }
             }
             else if(object.compare("NURBS", Qt::CaseInsensitive)==0)
             {

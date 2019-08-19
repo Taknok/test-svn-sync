@@ -414,11 +414,9 @@ double Plane::tailVolume()
 * Returns the Plane's total mass, i.e. the sum of Volume and Point masses of all its components.
 * @return the Plane's total mass.
 */
-double Plane::totalMass()
+double Plane::totalMass() const
 {
-    static double Mass;
-
-    Mass = m_Wing[0].totalMass();
+    double Mass = m_Wing[0].totalMass();
     if(m_bBiplane) Mass += m_Wing[1].totalMass();
     if(m_bStab)    Mass += m_Wing[2].totalMass();
     if(m_bFin)     Mass += m_Wing[3].totalMass();
@@ -560,6 +558,26 @@ Wing *Plane::wing(XFLR5::enumWingType wingType)
 
 /** Returns a pointer to the Plane's wing with index iw, or NULL if none has been defined.  */
 Wing *Plane::wing(int iw)
+{
+    if(iw==0)    return m_Wing;
+    else if (iw==1)
+    {
+        return m_bBiplane ? m_Wing+1 : nullptr;
+    }
+    else if (iw==2)
+    {
+        return m_bStab    ? m_Wing+2 : nullptr;
+    }
+    else if (iw==3)
+    {
+        return m_bFin     ? m_Wing+3 : nullptr;
+    }
+    return nullptr;
+}
+
+
+/** Returns a pointer to the Plane's wing with index iw, or NULL if none has been defined.  */
+Wing const *Plane::wingAt(int iw) const
 {
     if(iw==0)    return m_Wing;
     else if (iw==1)

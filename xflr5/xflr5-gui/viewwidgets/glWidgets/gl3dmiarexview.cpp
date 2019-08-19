@@ -182,7 +182,6 @@ void gl3dMiarexView::glRenderView()
             }
         }
 
-
         //streamlines and velocities are rotated by aoa when constructed
         if(pPOpp && m_bStream && pPOpp && !pPOpp->isLLTMethod() && !s_bResetglStream)
             paintStreamLines();

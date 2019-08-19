@@ -154,8 +154,8 @@ Plane * PlaneAnalysisTask::setPlaneObject(Plane *pPlane)
     {
         if(pPlane->wing(iw))
         {
-            if(iw<3)         pPlane->wing(iw)->createSurfaces(pPlane->WingLE(iw),   0.0, pPlane->WingTiltAngle(iw));
-            else if(iw==3)   pPlane->wing(iw)->createSurfaces(pPlane->WingLE(iw), -90.0, pPlane->WingTiltAngle(iw));
+            if(iw<3)         pPlane->wing(iw)->createSurfaces(pPlane->wingLE(iw),   0.0, pPlane->wingTiltAngle(iw));
+            else if(iw==3)   pPlane->wing(iw)->createSurfaces(pPlane->wingLE(iw), -90.0, pPlane->wingTiltAngle(iw));
 
             for (int j=0; j<pPlane->wing(iw)->m_Surface.size(); j++)
             {
@@ -219,7 +219,7 @@ WPolar* PlaneAnalysisTask::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar)
                 SpanPos = 0;
                 for (int j=0; j<pWingList[iw]->m_Surface.size(); j++)    NStation += pWingList[iw]->m_Surface.at(j)->m_NYPanels;
 
-                for (int j=(int)(pWingList[iw]->m_Surface.size()/2); j<pWingList[iw]->m_Surface.size(); j++)
+                for (int j=int(pWingList[iw]->m_Surface.size()/2); j<pWingList[iw]->m_Surface.size(); j++)
                 {
                     for(int k=0; k<pWingList[iw]->m_Surface.at(j)->m_NYPanels; k++)
                     {
@@ -321,7 +321,7 @@ bool PlaneAnalysisTask::initializePanels()
 //        Trace(QString("PlaneAnalysisTask::Requesting additional memory for %1 panels").arg(PanelArraySize));
 
         // allocate 10% more than needed to avoid repeating the operation if the user requirement increases sightly again.
-        m_MaxPanelSize = (int)((double)PanelArraySize *1.1);
+        m_MaxPanelSize = int(double(PanelArraySize) *1.1);
         releasePanelMemory();
 
         if(!allocatePanelArrays(memsize))
@@ -425,16 +425,13 @@ bool PlaneAnalysisTask::initializePanels()
     }
 
     //back-up the current geometry
-    memcpy(m_MemPanel, m_Panel, m_MatSize* sizeof(Panel));
-    memcpy(m_MemNode,  m_Node,  m_nNodes * sizeof(Vector3d));
-    memcpy(m_RefWakePanel, m_WakePanel, m_WakeSize* sizeof(Panel));
-    memcpy(m_RefWakeNode,  m_WakeNode,  m_nWakeNodes * sizeof(Vector3d));
+    memcpy(m_MemPanel,     m_Panel,     uint(m_MatSize)* sizeof(Panel));
+    memcpy(m_MemNode,      m_Node,      uint(m_nNodes) * sizeof(Vector3d));
+    memcpy(m_RefWakePanel, m_WakePanel, uint(m_WakeSize)* sizeof(Panel));
+    memcpy(m_RefWakeNode,  m_WakeNode,  uint(m_nWakeNodes) * sizeof(Vector3d));
 
     return true;
 }
-
-
-
 
 
 /**
@@ -490,8 +487,8 @@ int PlaneAnalysisTask::createBodyElements(Plane *pCurPlane)
         {
             for (int j=0; j<pCurBody->m_xPanels[i]; j++)
             {
-                dj  = (double) j   /(double)(pCurBody->m_xPanels[i]);
-                dj1 = (double)(j+1)/(double)(pCurBody->m_xPanels[i]);
+                dj  = double( j) /double(pCurBody->m_xPanels[i]);
+                dj1 = double(j+1)/double(pCurBody->m_xPanels[i]);
 
                 //body left side
                 lnh = 0;
@@ -519,7 +516,7 @@ int PlaneAnalysisTask::createBodyElements(Plane *pCurPlane)
 
                     for (int l=0; l<pCurBody->m_hPanels[k]; l++)
                     {
-                        dl1  = (double)(l+1) / (double)(pCurBody->m_hPanels[k]);
+                        dl1  = double(l+1) / double(pCurBody->m_hPanels[k]);
                         LA = PLB * (1.0- dl1) + PLA * dl1;
                         TA = PTB * (1.0- dl1) + PTA * dl1;
 
@@ -1418,8 +1415,8 @@ bool PlaneAnalysisTask::allocatePanelArrays(int &memsize)
 {
     try
     {
-        m_Node        = new Vector3d[2*m_MaxPanelSize];
-        m_MemNode     = new Vector3d[2*m_MaxPanelSize];
+        m_Node        = new Vector3d[ulong(2*m_MaxPanelSize)];
+        m_MemNode     = new Vector3d[ulong(2*m_MaxPanelSize)];
 
         //Wake Node size
         m_NWakeColumn = 0;
@@ -1449,15 +1446,15 @@ bool PlaneAnalysisTask::allocatePanelArrays(int &memsize)
 //qDebug()<<"____";
 //WakeNodeSize +=10;
 //qDebug()<<WakeNodeSize;
-        m_WakeNode    = new Vector3d[WakeNodeSize];
-        m_RefWakeNode = new Vector3d[WakeNodeSize];
-        m_TempWakeNode = new Vector3d[WakeNodeSize];
+        m_WakeNode    = new Vector3d[ulong(WakeNodeSize)];
+        m_RefWakeNode = new Vector3d[ulong(WakeNodeSize)];
+        m_TempWakeNode = new Vector3d[ulong(WakeNodeSize)];
 //qDebug()<<"Allocated"<<WakeNodeSize;
 
-        m_Panel        = new Panel[m_MaxPanelSize];
-        m_MemPanel     = new Panel[m_MaxPanelSize];
-        m_WakePanel    = new Panel[WakePanelSize];
-        m_RefWakePanel = new Panel[WakePanelSize];
+        m_Panel        = new Panel[ulong(m_MaxPanelSize)];
+        m_MemPanel     = new Panel[ulong(m_MaxPanelSize)];
+        m_WakePanel    = new Panel[ulong(WakePanelSize)];
+        m_RefWakePanel = new Panel[ulong(WakePanelSize)];
 
 /*        m_Node        = new Vector3d[2*m_MaxPanelSize];
         m_MemNode     = new Vector3d[2*m_MaxPanelSize];
@@ -1481,8 +1478,8 @@ bool PlaneAnalysisTask::allocatePanelArrays(int &memsize)
         return false;
     }
 
-    memsize  = sizeof(Vector3d) * 8 * 2 * m_MaxPanelSize; //bytes
-    memsize += sizeof(Panel)   * 8 * 2 * m_MaxPanelSize; //bytes
+    memsize  = int(sizeof(Vector3d)) * 8 * 2 * m_MaxPanelSize; //bytes
+    memsize += int(sizeof(Panel))   * 8 * 2 * m_MaxPanelSize; //bytes
 
 //    Trace(QString("Objects3D::   ...Allocated %1MB for the panel and node arrays").arg((double)memsize/1024./1024.));
 

@@ -136,10 +136,16 @@ public:
 
     void surfacePoint(double xRel, double ypos, enumPanelPosition pos, Vector3d &Point, Vector3d &PtNormal);
 
-    bool isWingOut()      {return m_bWingOut;}
-    bool &isFin()          {return m_bIsFin;}
-    bool &isDoubleFin()    {return m_bDoubleFin;}
-    bool &isSymFin()       {return m_bSymFin;}
+    bool isWingOut() const {return m_bWingOut;}
+
+    bool const &isFin() const {return m_bIsFin;}
+    void setFin(bool bFin) {m_bIsFin = bFin;}
+
+    bool const &isDoubleFin() const {return m_bDoubleFin;}
+    void setDoubleFin(bool bDouble) {m_bDoubleFin=bDouble;}
+
+    bool const &isSymFin()    const {return m_bSymFin;}
+    void setSymFin(bool bSym) {m_bSymFin=bSym;}
 
     void insertSection(int iSection);
     bool appendWingSection();
@@ -152,7 +158,7 @@ public:
     void clearSurfaces();
 
     //access methods
-    int NWingSection() {return m_WingSection.count();}
+    int NWingSection()  const {return m_WingSection.count();}
     int &NXPanels(const int &iSection);
     int &NYPanels(const int &iSection);
     int NYPanels();
@@ -185,14 +191,17 @@ public:
     double getDihedral(double yob);
     double getTwist(double y);
     double averageSweep();
-    double &volumeMass() {return m_VolumeMass;}
-    double totalMass();
+
+    double const &volumeMass() const {return m_VolumeMass;}
+    void setVolumeMass(double m) {m_VolumeMass=m;}
+
+    double totalMass() const;
     double C4(double yob, double xRef);
     double ZPosition(double y);
     double Beta(int m, int k);
 
     void setSymetric(bool bSymetric) {m_bSymetric=bSymetric;}
-    bool const &isSymetric() {return m_bSymetric;}
+    bool const &isSymetric() const {return m_bSymetric;}
 
     int &nFlaps() {return m_nFlaps;}
 

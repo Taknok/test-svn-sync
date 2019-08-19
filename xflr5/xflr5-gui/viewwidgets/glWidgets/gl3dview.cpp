@@ -871,7 +871,7 @@ void gl3dView::glMakeArcPoint()
 }
 
 
-void gl3dView::glMakeBody3DFlatPanels(Body *pBody)
+void gl3dView::glMakeBody3DFlatPanels(Body const *pBody)
 {
     Vector3d P1, P2, P3, P4, N, P1P3, P2P4, Tj, Tjp1;
 
@@ -921,20 +921,20 @@ void gl3dView::glMakeBody3DFlatPanels(Body *pBody)
     float fLength = float(pBody->length());
 
     float tip = 0.0;
-    if(pBody->frameCount()) tip = pBody->frame(0)->m_Position.xf();
+    if(pBody->frameCount()) tip = pBody->frameAt(0)->position().xf();
 
     //surfaces
     for (int k=0; k<pBody->sideLineCount()-1;k++)
     {
         for (int j=0; j<pBody->frameCount()-1;j++)
         {
-            Tj.set(pBody->frame(j)->m_Position.x,     0.0, 0.0);
-            Tjp1.set(pBody->frame(j+1)->m_Position.x, 0.0, 0.0);
+            Tj.set(pBody->frameAt(j)->position().x,     0.0, 0.0);
+            Tjp1.set(pBody->frameAt(j+1)->position().x, 0.0, 0.0);
 
-            P1 = pBody->frame(j)->m_CtrlPoint[k];       P1.x = pBody->frame(j)->m_Position.x;
-            P2 = pBody->frame(j+1)->m_CtrlPoint[k];     P2.x = pBody->frame(j+1)->m_Position.x;
-            P3 = pBody->frame(j+1)->m_CtrlPoint[k+1];   P3.x = pBody->frame(j+1)->m_Position.x;
-            P4 = pBody->frame(j)->m_CtrlPoint[k+1];     P4.x = pBody->frame(j)->m_Position.x;
+            P1 = pBody->frameAt(j)->m_CtrlPoint[k];       P1.x = pBody->frameAt(j)->position().x;
+            P2 = pBody->frameAt(j+1)->m_CtrlPoint[k];     P2.x = pBody->frameAt(j+1)->position().x;
+            P3 = pBody->frameAt(j+1)->m_CtrlPoint[k+1];   P3.x = pBody->frameAt(j+1)->position().x;
+            P4 = pBody->frameAt(j)->m_CtrlPoint[k+1];     P4.x = pBody->frameAt(j)->position().x;
 
             P1P3 = P3-P1;
             P2P4 = P4-P2;
@@ -995,13 +995,13 @@ void gl3dView::glMakeBody3DFlatPanels(Body *pBody)
     {
         for (int j=0; j<pBody->frameCount()-1;j++)
         {
-            Tj.set(pBody->frame(j)->m_Position.x,     0.0, 0.0);
-            Tjp1.set(pBody->frame(j+1)->m_Position.x, 0.0, 0.0);
+            Tj.set(pBody->frameAt(j)->position().x,     0.0, 0.0);
+            Tjp1.set(pBody->frameAt(j+1)->position().x, 0.0, 0.0);
 
-            P1 = pBody->frame(j)->m_CtrlPoint[k];       P1.x = pBody->frame(j)->m_Position.x;
-            P2 = pBody->frame(j+1)->m_CtrlPoint[k];     P2.x = pBody->frame(j+1)->m_Position.x;
-            P3 = pBody->frame(j+1)->m_CtrlPoint[k+1];   P3.x = pBody->frame(j+1)->m_Position.x;
-            P4 = pBody->frame(j)->m_CtrlPoint[k+1];     P4.x = pBody->frame(j)->m_Position.x;
+            P1 = pBody->frameAt(j)->m_CtrlPoint[k];       P1.x = pBody->frameAt(j)->position().x;
+            P2 = pBody->frameAt(j+1)->m_CtrlPoint[k];     P2.x = pBody->frameAt(j+1)->position().x;
+            P3 = pBody->frameAt(j+1)->m_CtrlPoint[k+1];   P3.x = pBody->frameAt(j+1)->position().x;
+            P4 = pBody->frameAt(j)->m_CtrlPoint[k+1];     P4.x = pBody->frameAt(j)->position().x;
 
             P1P3 = P3-P1;
             P2P4 = P4-P2;
@@ -1075,7 +1075,7 @@ void gl3dView::glMakeBody3DFlatPanels(Body *pBody)
 }
 
 
-void gl3dView::glMakeBodySplines(Body *pBody)
+void gl3dView::glMakeBodySplines(Body const *pBody)
 {
     int NXXXX = W3dPrefsDlg::bodyAxialRes();
     int NHOOOP = W3dPrefsDlg::bodyHoopRes();
@@ -1216,7 +1216,7 @@ void gl3dView::glMakeBodySplines(Body *pBody)
     // frames : frameCount() x (NH+1)
     for (int iFr=0; iFr<pBody->frameCount(); iFr++)
     {
-        u = pBody->getu(pBody->frame(iFr)->m_Position.x);
+        u = pBody->getu(pBody->frameAt(iFr)->m_Position.x);
         for (j=0; j<=NHOOOP; j++)
         {
             v = double(j)*hinc;
@@ -1612,7 +1612,7 @@ void gl3dView::setScale(double refLength)
 }
 
 
-void gl3dView::paintFoilNames(Wing *pWing)
+void gl3dView::paintFoilNames(Wing const *pWing)
 {
     int j=0;
     Foil *pFoil=nullptr;
@@ -1637,17 +1637,17 @@ void gl3dView::paintFoilNames(Wing *pWing)
 /**
  * Draws the point masses, the object masses, and the CG position in the OpenGL viewport
 */
-void gl3dView::glDrawMasses(Plane *pPlane)
+void gl3dView::glDrawMasses(Plane const *pPlane)
 {
     if(!pPlane) return;
     double delta = 0.02/m_glScaled;
 
     for(int iw=0; iw<MAXWINGS; iw++)
     {
-        if(pPlane->wing(iw))
+        if(pPlane->wingAt(iw))
         {
-            paintMasses(pPlane->wing(iw)->m_VolumeMass, pPlane->WingLE(iw),
-                        pPlane->wing(iw)->m_WingName,   pPlane->wing(iw)->m_PointMass);
+            paintMasses(pPlane->wingAt(iw)->m_VolumeMass, pPlane->wingLE(iw),
+                        pPlane->wingAt(iw)->m_WingName,   pPlane->wingAt(iw)->m_PointMass);
         }
     }
 
@@ -1656,7 +1656,7 @@ void gl3dView::glDrawMasses(Plane *pPlane)
 
     if(pPlane->body())
     {
-        Body *pCurBody = pPlane->body();
+        Body const *pCurBody = pPlane->body();
 
         paintMasses(pCurBody->m_VolumeMass,
                     pPlane->bodyPos(),
@@ -1844,10 +1844,10 @@ void gl3dView::paintAxes()
 }
 
 
-void gl3dView::setSpanStations(Plane *pPlane, WPolar *pWPolar, PlaneOpp *pPOpp)
+void gl3dView::setSpanStations(Plane const *pPlane, WPolar const *pWPolar, PlaneOpp const*pPOpp)
 {
     if(!pPlane || !pWPolar || !pPOpp) return;
-    Wing *pWing;
+    Wing const *pWing = nullptr;
 
     if(pWPolar->isLLTMethod())
     {
@@ -1866,7 +1866,7 @@ void gl3dView::setSpanStations(Plane *pPlane, WPolar *pWPolar, PlaneOpp *pPOpp)
     {
         for(int iWing=0; iWing<MAXWINGS; iWing++)
         {
-            pWing = pPlane->wing(iWing);
+            pWing = pPlane->wingAt(iWing);
             if(pWing)
             {
                 m_Ny[iWing]=0;
@@ -1880,7 +1880,7 @@ void gl3dView::setSpanStations(Plane *pPlane, WPolar *pWPolar, PlaneOpp *pPOpp)
 }
 
 
-void gl3dView::paintBody(Body *pBody)
+void gl3dView::paintBody(Body const *pBody)
 {
     if(!pBody) return;
 
@@ -1890,7 +1890,7 @@ void gl3dView::paintBody(Body *pBody)
     int NXXXX = W3dPrefsDlg::bodyAxialRes();
     int NHOOOP = W3dPrefsDlg::bodyHoopRes();
 
-    bool bTextures = pBody->textures() && (m_pLeftBodyTexture && m_pRightBodyTexture);
+    bool bTextures = pBody->hasTextures() && (m_pLeftBodyTexture && m_pRightBodyTexture);
     if(bTextures)
     {
         m_ShaderProgramTexture.bind();
@@ -2001,7 +2001,7 @@ void gl3dView::paintBody(Body *pBody)
 
 
 /** Default mesh, if no polar has been defined */
-void gl3dView::paintEditBodyMesh(Body *pBody)
+void gl3dView::paintEditBodyMesh(const Body *pBody)
 {
     if(!pBody) return;
 
@@ -2082,7 +2082,7 @@ void gl3dView::paintEditBodyMesh(Body *pBody)
 }
 
 
-void gl3dView::paintWing(int iWing, Wing *pWing)
+void gl3dView::paintWing(int iWing, Wing const *pWing)
 {
     if(!pWing) return;
 
@@ -2149,29 +2149,30 @@ void gl3dView::paintWing(int iWing, Wing *pWing)
         pos = 0;
         for (int j=0; j<pWing->m_Surface.count(); j++)
         {
+            Surface const *pSurf = pWing->m_Surface.at(j);
             //top surface
             if(bTextures)
             {
-                if(pWing->m_Surface.at(j)->isLeftSurf()) m_pWingTopLeftTexture[iWing]->bind();
+                if(pSurf->isLeftSurf()) m_pWingTopLeftTexture[iWing]->bind();
                 else                                     m_pWingTopRightTexture[iWing]->bind();
             }
             glDrawElements(GL_TRIANGLES, (CHORDPOINTS-1)*2*3, GL_UNSIGNED_SHORT, wingIndicesArray.data()+pos);
             if(bTextures)
             {
-                if(pWing->m_Surface.at(j)->isLeftSurf()) m_pWingTopLeftTexture[iWing]->release();
+                if(pSurf->isLeftSurf()) m_pWingTopLeftTexture[iWing]->release();
                 else                                     m_pWingTopRightTexture[iWing]->release();
             }
             pos += (CHORDPOINTS-1)*2*3;
             // bottom surface
             if(bTextures)
             {
-                if(pWing->m_Surface.at(j)->isLeftSurf()) m_pWingBotLeftTexture[iWing]->bind();
+                if(pSurf->isLeftSurf()) m_pWingBotLeftTexture[iWing]->bind();
                 else                                     m_pWingBotRightTexture[iWing]->bind();
             }
             glDrawElements(GL_TRIANGLES, (CHORDPOINTS-1)*2*3, GL_UNSIGNED_SHORT, wingIndicesArray.data()+pos);
             if(bTextures)
             {
-                if(pWing->m_Surface.at(j)->isLeftSurf()) m_pWingBotLeftTexture[iWing]->release();
+                if(pSurf->isLeftSurf()) m_pWingBotLeftTexture[iWing]->release();
                 else                                     m_pWingBotRightTexture[iWing]->release();
             }
             pos += (CHORDPOINTS-1)*2*3;
@@ -2179,14 +2180,15 @@ void gl3dView::paintWing(int iWing, Wing *pWing)
 
         for (int j=0; j<pWing->m_Surface.count(); j++)
         {
+            Surface const *pSurf = pWing->m_Surface.at(j);
             //tip ssurface
-            if(pWing->m_Surface.at(j)->isTipLeft())
+            if(pSurf->isTipLeft())
             {
                 glDrawElements(GL_TRIANGLES, (CHORDPOINTS-1)*2*3, GL_UNSIGNED_SHORT, wingIndicesArray.data()+pos);
                 pos += (CHORDPOINTS-1)*2*3;
             }
 
-            if(pWing->m_Surface.at(j)->isTipRight())
+            if(pSurf->isTipRight())
             {
                 glDrawElements(GL_TRIANGLES, (CHORDPOINTS-1)*2*3, GL_UNSIGNED_SHORT, wingIndicesArray.data()+pos);
                 pos += (CHORDPOINTS-1)*2*3;
@@ -2238,10 +2240,10 @@ void gl3dView::paintWing(int iWing, Wing *pWing)
 
 
 /**
-*Creates the OpenGL List for the ArcBall.
-*@param ArcBall the ArcBall object associated to the view
-*@param GLScale the overall scaling factor for the view
-*/
+ * Creates the OpenGL List for the ArcBall.
+ * @param ArcBall the ArcBall object associated to the view
+ * @param GLScale the overall scaling factor for the view
+ */
 void gl3dView::glMakeArcBall()
 {
     float GLScale = 1.0f;
@@ -2405,7 +2407,7 @@ void gl3dView::paintSphere(Vector3d place, double radius, QColor sphereColor, bo
 }
 
 
-void gl3dView::glMakeWingGeometry(int iWing, Wing *pWing, Body *pBody)
+void gl3dView::glMakeWingGeometry(int iWing, Wing *pWing, const Body *pBody)
 {
     ushort CHORDPOINTS = ushort(W3dPrefsDlg::chordwiseRes());
 

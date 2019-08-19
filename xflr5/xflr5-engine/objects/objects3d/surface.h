@@ -125,7 +125,7 @@ public:
     void getSurfacePoint(double xArel, double xBrel, double yrel, enumPanelPosition pos, Vector3d &Point, Vector3d &PtNormal) const;
     void getSection(double const &tau, double &Chord, double &Area, Vector3d &PtC4);
     void getYDist(int const &k, double &y1, double &y2) const;
-    void getSidePoints(enumPanelPosition pos, Body * pBody, Vector3d *PtA, Vector3d *PtB, Vector3d *NA, Vector3d *NB, int nPoints);
+    void getSidePoints(enumPanelPosition pos, const Body *pBody, Vector3d *PtA, Vector3d *PtB, Vector3d *NA, Vector3d *NB, int nPoints);
     void init();
     void resetFlap();
     void rotateX(Vector3d const &O, double XTilt);
