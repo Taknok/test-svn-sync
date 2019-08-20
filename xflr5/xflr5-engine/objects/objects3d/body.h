@@ -140,21 +140,21 @@ public:
 
     void setNXPanels(int nx) {m_nxPanels=nx;}
     void setNHPanels(int nh) {m_nhPanels=nh;}
-    int const & nxPanels() const {return m_nxPanels;}
-    int const & nhPanels() const {return m_nhPanels;}
+    int nxPanels() const {return m_nxPanels;}
+    int nhPanels() const {return m_nhPanels;}
 
-    void exportGeometry(QTextStream &outStream, int type, double mtoUnit, int nx, int nh);
-    void exportSTLBinary(QDataStream &outStream, int nXPanels, int nHoopPanels, double unit);
-    void exportSTLBinarySplines(QDataStream &outStream, int nXPanels, int nHoopPanels, double unit);
-    void exportSTLBinaryFlatPanels(QDataStream &outStream, double unitd);
+    void exportGeometry(QTextStream &outStream, int type, double mtoUnit, int nx, int nh) const;
+    void exportSTLBinary(QDataStream &outStream, int nXPanels, int nHoopPanels, double unit) const;
+    void exportSTLBinarySplines(QDataStream &outStream, int nXPanels, int nHoopPanels, double unit) const;
+    void exportSTLBinaryFlatPanels(QDataStream &outStream, double unitd) const;
 
-    bool exportBodyDefinition(QTextStream &outStream, double mtoUnit);
+    bool exportBodyDefinition(QTextStream &outStream, double mtoUnit) const;
 
     bool serializeBodyWPA(QDataStream &ar, bool bIsStoring);
     bool serializeBodyXFL(QDataStream &ar, bool bIsStoring);
 
-    int readValues(QString line, double &x, double &y, double &z);
-    bool Rewind1Line(QTextStream &in, int &Line, QString &strong);
+    int readValues(QString line, double &x, double &y, double &z) const;
+    bool Rewind1Line(QTextStream &in, int &Line, QString &strong) const;
 
 
     //____________________VARIABLES_____________________________________________
@@ -189,9 +189,9 @@ public:
     Vector3d m_CoG;                             /**< the position of the CoG */
 
 
-    QVarLengthArray<int> m_xPanels;              /**< the number of mesh panels between two frames */
-    QVarLengthArray<int> m_hPanels;              /**< the number of mesh panels in the hoop direction between two sidelines */
-    QVarLengthArray<double> m_XPanelPos;
+    QVector<int> m_xPanels;              /**< the number of mesh panels between two frames */
+    QVector<int> m_hPanels;              /**< the number of mesh panels in the hoop direction between two sidelines */
+    QVector<double> m_XPanelPos;
 
 
     Panel *m_pBodyPanel;                       /** A pointer to the first body panel in the array */

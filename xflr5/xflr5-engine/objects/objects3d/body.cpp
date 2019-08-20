@@ -227,17 +227,11 @@ void Body::duplicate(Body const *pBody)
         m_SplineSurface.m_pFrame[i]->copyFrame(pBody->m_SplineSurface.m_pFrame[i]);
     }
 
-    m_xPanels.clear();
-    for(int i=0; i<pBody->m_xPanels.count(); i++)
-        m_xPanels.append(pBody->m_xPanels.at(i));
 
-    m_hPanels.clear();
-    for(int i=0; i<pBody->m_hPanels.count(); i++)
-        m_hPanels.append(pBody->m_hPanels.at(i));
+    m_xPanels = pBody->m_xPanels;
+    m_hPanels = pBody->m_hPanels;
 
-    m_XPanelPos.clear();
-    for(int i=0; i<pBody->m_XPanelPos.count(); i++)
-        m_XPanelPos.append(pBody->m_XPanelPos.at(i));
+    m_XPanelPos = pBody->m_XPanelPos;
 
     setNURBSKnots();
 
@@ -949,35 +943,24 @@ void Body::scale(double XFactor, double YFactor, double ZFactor, bool bFrameOnly
 }
 
 
-
-
-
 /**
  * For a NURBS Body, sets the default position of the longitudinal parameters
  */
 void Body::setPanelPos()
 {
-    int i;
-    /*    for(i=0; i<=m_nxPanels; i++)
-    {
-        s_XPanelPos[i] =(double)i/(double)m_nxPanels;
-    }
-    return;*/
-    double y, x;
     double a = (m_Bunch+1.0)*.48 ;
     a = 1./(1.0-a);
 
     double norm = 1/(1+exp(0.5*a));
 
     m_XPanelPos.clear();
-    for(i=0; i<=m_nxPanels; i++)
+    for(int i=0; i<=m_nxPanels; i++)
     {
-        x = double(i)/double(m_nxPanels);
-        y = 1.0/(1.0+exp((0.5-x)*a));
+        double x = double(i)/double(m_nxPanels);
+        double y = 1.0/(1.0+exp((0.5-x)*a));
         m_XPanelPos.append(0.5-((0.5-y)/(0.5-norm))/2.0);
     }
 }
-
 
 
 /**
@@ -990,8 +973,7 @@ void Body::setPanelPos()
  */
 void Body::translate(double XTrans, double , double ZTrans, bool bFrameOnly, int FrameID)
 {
-    int i,j;
-    for (i=0; i<frameCount(); i++)
+    for (int i=0; i<frameCount(); i++)
     {
         if((bFrameOnly &&  i==FrameID) || !bFrameOnly)
         {
@@ -999,7 +981,7 @@ void Body::translate(double XTrans, double , double ZTrans, bool bFrameOnly, int
             //            m_SplineSurface.m_pFrame[i]->m_Position.y += YTrans;
             m_SplineSurface.m_pFrame[i]->m_Position.z += ZTrans;
 
-            for(j=0; j<m_SplineSurface.m_pFrame[i]->m_CtrlPoint.size(); j++)
+            for(int j=0; j<m_SplineSurface.m_pFrame[i]->m_CtrlPoint.size(); j++)
             {
                 m_SplineSurface.m_pFrame[i]->m_CtrlPoint[j].x += XTrans;
                 m_SplineSurface.m_pFrame[i]->m_CtrlPoint[j].z += ZTrans;
@@ -1008,8 +990,6 @@ void Body::translate(double XTrans, double , double ZTrans, bool bFrameOnly, int
     }
     //    ComputeCenterLine();
 }
-
-
 
 
 /**
@@ -1397,7 +1377,7 @@ void Body::clearPointMasses()
  * the NURBS degree and other related data.
  * @return true if the Body definition was correctly exported, false otherwise.
  */
-bool Body::exportBodyDefinition(QTextStream &outStream, double mtoUnit)
+bool Body::exportBodyDefinition(QTextStream &outStream, double mtoUnit) const
 {
     int i, j;
     QString strong;
@@ -1447,7 +1427,7 @@ bool Body::exportBodyDefinition(QTextStream &outStream, double mtoUnit)
  * some mean to access the surface geometry.
  * @todo remove.
  */
-void Body::exportGeometry(QTextStream &outStream, int type, double mtoUnit, int nx, int nh)
+void Body::exportGeometry(QTextStream &outStream, int type, double mtoUnit, int nx, int nh) const
 {
     QString strong, LengthUnit,str;
     int k,l;
@@ -1773,7 +1753,7 @@ bool Body::serializeBodyXFL(QDataStream &ar, bool bIsStoring)
 *@param Line the index of the next Line to read
 *@param strong the line to =ewind
 */
-bool Body::Rewind1Line(QTextStream &in, int &Line, QString &strong)
+bool Body::Rewind1Line(QTextStream &in, int &Line, QString &strong) const
 {
     int length = strong.length() * 1+2;//1 char takes one byte in the file ?
 
@@ -1786,7 +1766,7 @@ bool Body::Rewind1Line(QTextStream &in, int &Line, QString &strong)
 /**
 * Extracts three double values from a QString, and returns the number of extracted values.
 */
-int Body::readValues(QString line, double &x, double &y, double &z)
+int Body::readValues(QString line, double &x, double &y, double &z) const
 {
     /*    char *sx = new char[30];
     char *sy = new char[30];
@@ -1994,7 +1974,7 @@ int Body::readFrame(QTextStream &in, int &Line, Frame *pFrame, double const &Uni
  * Export the wing geometry to a binary file in STL Format.
  * @param out the instance of the QTextStream to which the output will be directed
  */
-void Body::exportSTLBinary(QDataStream &outStream, int nXPanels, int nHoopPanels, double unit)
+void Body::exportSTLBinary(QDataStream &outStream, int nXPanels, int nHoopPanels, double unit) const
 {
     /***
      *  UINT8[80] – Header
@@ -2020,7 +2000,7 @@ void Body::exportSTLBinary(QDataStream &outStream, int nXPanels, int nHoopPanels
 }
 
 
-void Body::exportSTLBinarySplines(QDataStream &outStream, int nXPanels, int nHoopPanels, double unitd)
+void Body::exportSTLBinarySplines(QDataStream &outStream, int nXPanels, int nHoopPanels, double unitd) const
 {
     Vector3d N, Pt;
     QVector<Vector3d> m_T((nXPanels+1)*(nHoopPanels+1)); //temporary points to save calculation times for body NURBS surfaces
@@ -2175,7 +2155,7 @@ void Body::exportSTLBinarySplines(QDataStream &outStream, int nXPanels, int nHoo
 }
 
 
-void Body::exportSTLBinaryFlatPanels(QDataStream &outStream, double unitd)
+void Body::exportSTLBinaryFlatPanels(QDataStream &outStream, double unitd) const
 {
     Vector3d P1, P2, P3, P4, N, P1P3, P2P4;
 
@@ -2216,10 +2196,10 @@ void Body::exportSTLBinaryFlatPanels(QDataStream &outStream, double unitd)
     {
         for (int j=0; j<frameCount()-1;j++)
         {
-            P1 = frame(j)->ctrlPointAt(k);       P1.x = frame(j)->position().x;
-            P2 = frame(j+1)->ctrlPointAt(k);     P2.x = frame(j+1)->position().x;
-            P3 = frame(j+1)->ctrlPointAt(k+1);   P3.x = frame(j+1)->position().x;
-            P4 = frame(j)->ctrlPointAt(k+1);     P4.x = frame(j)->position().x;
+            P1 = frameAt(j)->ctrlPointAt(k);       P1.x = frameAt(j)->position().x;
+            P2 = frameAt(j+1)->ctrlPointAt(k);     P2.x = frameAt(j+1)->position().x;
+            P3 = frameAt(j+1)->ctrlPointAt(k+1);   P3.x = frameAt(j+1)->position().x;
+            P4 = frameAt(j)->ctrlPointAt(k+1);     P4.x = frameAt(j)->position().x;
 
             if(!P1.isSame(P2) && !P2.isSame(P4) && !P4.isSame(P1))
             {
@@ -2280,10 +2260,10 @@ void Body::exportSTLBinaryFlatPanels(QDataStream &outStream, double unitd)
     {
         for (int j=0; j<frameCount()-1;j++)
         {
-            P1 = frame(j)->ctrlPointAt(k);       P1.x = frame(j)->position().x;
-            P2 = frame(j+1)->ctrlPointAt(k);     P2.x = frame(j+1)->position().x;
-            P3 = frame(j+1)->ctrlPointAt(k+1);   P3.x = frame(j+1)->position().x;
-            P4 = frame(j)->ctrlPointAt(k+1);     P4.x = frame(j)->position().x;
+            P1 = frameAt(j)->ctrlPointAt(k);       P1.x = frameAt(j)->position().x;
+            P2 = frameAt(j+1)->ctrlPointAt(k);     P2.x = frameAt(j+1)->position().x;
+            P3 = frameAt(j+1)->ctrlPointAt(k+1);   P3.x = frameAt(j+1)->position().x;
+            P4 = frameAt(j)->ctrlPointAt(k+1);     P4.x = frameAt(j)->position().x;
 
             P1.y = -P1.y;
             P2.y = -P2.y;

@@ -59,13 +59,13 @@ public:
 private:
     void drawWPolarLegend(QPainter &painter, QPointF place, int bottom);
     void drawPOppGraphLegend(QPainter &painter, QPointF place, double bottom);
-    void drawStabTimeLegend(QPainter &painter, Graph *pGraph, QPointF place, int bottom);
-    void drawCpLegend(QPainter &painter, Graph *pGraph, QPointF place, int bottom);
+    void drawStabTimeLegend(QPainter &painter, const Graph *pGraph, QPointF place, int bottom);
+    void drawCpLegend(QPainter &painter, const Graph *pGraph, QPointF place, int bottom);
     void drawPolarLegend(QPainter &painter, QPointF place, int bottom);
     bool isFiltered(WPolar *pWPolar);
 
 private:
-    Graph *m_pGraph;
+    Graph const *m_pGraph;
 
     XFLR5::enumMiarexViews m_MiarexView;
     QPointF m_LegendPosition;

@@ -174,7 +174,7 @@ void Curve::closestPoint(double const &xs, double const &ys, double &xSel, doubl
  * Returns the minimum x value of this curve
  *@return the x min value, or +99999999.0 if the curve has no points
  */
-double Curve::xMin()
+double Curve::xMin() const
 {
     double xMin = 99999999.0;
 //    if(n==0) xmin = .0; 
@@ -189,7 +189,7 @@ double Curve::xMin()
  * Returns the maximum x value of this curve
  *@return the x max value, or -99999999.0 if the curve has no points
  */
-double Curve::xMax()
+double Curve::xMax() const
 {
     double xMax = -99999999.0;
 //    if(n==0) xmax = 1.0; 
@@ -204,7 +204,7 @@ double Curve::xMax()
  * Returns the minimum y value of this curve
  *@return the y min value, or +99999999.0 if the curve has no points
  */
-double Curve::yMin()
+double Curve::yMin()  const
 {
     double yMin = 99999999.0;
 //    if(n==0) ymin = .0; 
@@ -219,7 +219,7 @@ double Curve::yMin()
  * Returns the maximum y value of this curve
  *@return the y max value, or -99999999.0 if the curve has no points
  */
-double Curve::yMax()
+double Curve::yMax() const
 {
     double yMax = -99999999.0;
 //    if(n==0) ymax = 1.0; 

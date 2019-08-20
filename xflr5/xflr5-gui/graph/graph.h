@@ -201,6 +201,7 @@ public:
 
     QString graphName(){return m_GraphName;}
     Curve* curve(int nIndex);
+    Curve const* curveAt(int nIndex) const;
     Curve* curve(QString CurveTitle);
     Curve* addCurve();
     Curve* addCurve(Curve *pCurve);
