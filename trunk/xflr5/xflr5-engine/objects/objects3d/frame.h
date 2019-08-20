@@ -47,12 +47,12 @@ public:
     void    copyFrame(Frame *pFrame);
     void    copyPoints(QVector<Vector3d> *pPointList);
     double  height();
-    int     isPoint(Vector3d const &point, double const &ZoomFactor);
+    int     isPoint(Vector3d const &point, double const &ZoomFactor) const;
     void    insertPoint(int n);
     void    insertPoint(int n, const Vector3d &Pt);
     int     insertPoint(Vector3d const &Real, int iAxis);
-    Vector3d point(int iPt) {return m_CtrlPoint.at(iPt);}
-    int     pointCount() {return m_CtrlPoint.size();}
+    Vector3d point(int iPt) const {return m_CtrlPoint.at(iPt);}
+    int     pointCount() const {return m_CtrlPoint.size();}
     bool    removePoint(int n);
     void    rotateFrameY(double Angle);
     bool    serializeFrame(QDataStream &ar, bool bIsStoring);
@@ -60,21 +60,23 @@ public:
     void    setuPosition(double u);
     void    setvPosition(double v);
     void    setwPosition(double w);
-    double  zPos();
+    double  zPos() const;
 
     Vector3d position() const {return m_Position;}
-    Vector3d &selectedPoint() {return m_CtrlPoint[s_iSelect];}
+    Vector3d const &selectedPoint() const {return m_CtrlPoint[s_iSelect];}
+    void setSelectedPoint(Vector3d pt) {if(s_iSelect>=0 && s_iSelect<m_CtrlPoint.size()) m_CtrlPoint[s_iSelect]=pt;}
 
     const Vector3d &ctrlPointAt(int idx) const {return m_CtrlPoint.at(idx);}
 
-    QVector <Vector3d> m_CtrlPoint;    /**< the array of points which define the frame.  */
-    Vector3d m_Position;             /**< the translation vector for the Frame's origin */
 
     static int selectedIndex()            {return s_iSelect;}
     static int highlightedIndex()         {return s_iHighlight;}
     static void setSelected(int index)    {s_iSelect=index;}
     static void setHighlighted(int index) {s_iHighlight=index;}
 
+public:
+    QVector <Vector3d> m_CtrlPoint;    /**< the array of points which define the frame.  */
+    Vector3d m_Position;             /**< the translation vector for the Frame's origin */
 
 private:
     static int s_iHighlight;               /**< the point over which the mouse hovers, or -1 if none */

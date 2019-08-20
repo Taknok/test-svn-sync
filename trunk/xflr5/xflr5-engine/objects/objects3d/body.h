@@ -101,7 +101,7 @@ public:
 
     Frame *frame(int iFrame);
     Frame const *frameAt(int iFrame) const;
-    Frame *activeFrame();
+    Frame *activeFrame() const;
 
     int setActiveFrame(Frame *pFrame);
     Frame *setActiveFrame(int iFrame);

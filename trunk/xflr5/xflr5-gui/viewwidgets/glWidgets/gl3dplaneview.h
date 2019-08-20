@@ -35,18 +35,24 @@ public:
 
 private:
     void glRenderView();
-    void paintGL();
+
     void paintOverlay();
     void resizeGL(int width, int height);
     void set3DRotationCenter(QPoint point);
+    void glMake3dObjects();
 
 public slots:
     void on3DReset();
 
 private:
-    Plane* m_pPlane;
+    Plane const* m_pPlane;
+
 
     EditPlaneDlg *m_pEditPlaneDlg;
+
+public:
+    bool m_bResetglSectionHighlight;
+    bool m_bResetglPlane, m_bResetglBody;
 };
 
 #endif // GL3DPLANEVIEW_H

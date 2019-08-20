@@ -202,8 +202,6 @@ private:
     bool m_bTrans;
     bool m_bStored;
     bool m_bEnableName;
-    bool m_bResetglWing;
-    bool m_bResetglSectionHighlight;
 
 
     int m_iSection;

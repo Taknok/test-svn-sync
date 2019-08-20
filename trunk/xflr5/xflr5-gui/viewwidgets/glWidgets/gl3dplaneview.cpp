@@ -32,6 +32,10 @@ gl3dPlaneView::gl3dPlaneView(QWidget *pParent) : gl3dView(pParent)
 {
     m_pEditPlaneDlg = dynamic_cast<EditPlaneDlg*>(pParent);
     m_pPlane = nullptr;
+
+    m_bResetglSectionHighlight = true;
+    m_bResetglPlane            = true;
+    m_bResetglBody             = true;
 }
 
 
@@ -52,16 +56,6 @@ void gl3dPlaneView::glRenderView()
         if(m_bShowMasses) glDrawMasses(m_pEditPlaneDlg->m_pPlane);
     }
 }
-
-
-void gl3dPlaneView::paintGL()
-{
-    m_pEditPlaneDlg->glMake3DObjects();
-
-    paintGL3();
-    paintOverlay();
-}
-
 
 
 void gl3dPlaneView::on3DReset()
@@ -141,6 +135,38 @@ void gl3dPlaneView::paintOverlay()
 }
 
 
+/**
+* Creates the VertexBufferObjects for OpenGL 3.0
+*/
+void gl3dPlaneView::glMake3dObjects()
+{
+    if(!m_pPlane) return;
 
+    Body TranslatedBody;
+    if(m_pPlane->body())
+    {
+        TranslatedBody.duplicate(m_pPlane->body());
+        TranslatedBody.translate(m_pPlane->bodyPos());
+        if(m_bResetglPlane || m_bResetglBody)
+        {
+            glMakeBodySplines(&TranslatedBody);
+            m_bResetglBody = false;
+        }
+    }
+
+
+    if(m_bResetglPlane)
+    {
+        for(int iw=0; iw<MAXWINGS; iw++)
+        {
+            if(m_pPlane->wingAt(iw))
+            {
+                glMakeWingGeometry(iw, m_pPlane->wingAt(iw), &TranslatedBody);
+            }
+        }
+
+        m_bResetglPlane = false;
+    }
+}
 
 

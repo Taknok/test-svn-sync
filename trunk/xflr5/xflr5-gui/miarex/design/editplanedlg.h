@@ -65,10 +65,10 @@ public:
     void resizeEvent(QResizeEvent *event);
     void keyPressEvent(QKeyEvent *pEvent);
     void contextMenuEvent(QContextMenuEvent *event);
+    void glMake3dObjects();
 
     bool intersectObject(Vector3d AA,  Vector3d U, Vector3d &I);
     void connectSignals();
-    void glMake3DObjects();
     void identifySelection(const QModelIndex &indexSel);
     void initDialog(Plane *pPlane);
     void setupLayout();
@@ -151,8 +151,7 @@ private:
     QSlider *m_pctrlClipPlanePos;
 
     bool m_bChanged;
-    bool m_bResetglSectionHighlight;
-    bool m_bResetglPlane, m_bResetglBody;
+
     static bool s_bAutoRedraw;
 
     static bool s_bOutline;

@@ -32,8 +32,11 @@ gl3dWingView::gl3dWingView(QWidget *pParent) : gl3dView(pParent)
 {
     m_pGL3dWingDlg = dynamic_cast<GL3dWingDlg*>(pParent);
     m_pWing = nullptr;
-}
 
+
+    m_bResetglSectionHighlight = true;
+    m_bResetglWing             = true;
+}
 
 
 void gl3dWingView::glRenderView()
@@ -47,15 +50,6 @@ void gl3dWingView::glRenderView()
             paintMasses(m_pWing->volumeMass(), Vector3d(0.0,0.0,0.0), "Structural mass", m_pWing->m_PointMass);
         if(m_pGL3dWingDlg->iSection()>=0) paintSectionHighlight();
     }
-}
-
-
-void gl3dWingView::paintGL()
-{
-    m_pGL3dWingDlg->glMake3DObjects();
-
-    paintGL3();
-    paintOverlay();
 }
 
 
@@ -220,7 +214,28 @@ void gl3dWingView::glMakeWingSectionHighlight(Wing *pWing, int iSectionHighLight
 }
 
 
+/**
+* Creates the VertexBufferObjects for OpenGL 3.0
+*/
+void gl3dWingView::glMake3dObjects()
+{
+    if(m_bResetglSectionHighlight || m_bResetglWing)
+    {
+        if(m_pGL3dWingDlg->m_iSection>=0)
+        {
+            glMakeWingSectionHighlight(m_pWing, m_pGL3dWingDlg->m_iSection, m_pGL3dWingDlg->m_bRightSide);
+            m_bResetglSectionHighlight = false;
+        }
+    }
 
+    if(m_bResetglWing)
+    {
+        m_bResetglWing = false;
+
+        glMakeWingGeometry(0, m_pWing, nullptr);
+        glMakeWingEditMesh(m_vboEditWingMesh[0], m_pWing);
+    }
+}
 
 
 

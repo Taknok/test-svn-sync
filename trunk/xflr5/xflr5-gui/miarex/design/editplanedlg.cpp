@@ -74,9 +74,6 @@ EditPlaneDlg::EditPlaneDlg(QWidget *pParent) : QDialog(pParent)
     m_iActiveFrame     = -1;
     m_iActivePointMass = -1;
 
-    m_bResetglSectionHighlight = true;
-    m_bResetglPlane            = true;
-    m_bResetglBody             = true;
     m_bChanged                 = false;
 
     m_pInsertBefore  = new QAction(tr("Insert Before"), this);
@@ -444,40 +441,6 @@ void EditPlaneDlg::setupLayout()
 }
 
 
-/**
-* Creates the VertexBufferObjects for OpenGL 3.0
-*/
-void EditPlaneDlg::glMake3DObjects()
-{
-    if(!m_pPlane) return;
-
-    Body TranslatedBody;
-    if(m_pPlane->body())
-    {
-        TranslatedBody.duplicate(m_pPlane->body());
-        TranslatedBody.translate(m_pPlane->bodyPos());
-        if(m_bResetglPlane || m_bResetglBody)
-        {
-            m_pglPlaneView->glMakeBodySplines(&TranslatedBody);
-            m_bResetglBody = false;
-        }
-    }
-
-
-    if(m_bResetglPlane)
-    {
-        for(int iw=0; iw<MAXWINGS; iw++)
-        {
-            if(m_pPlane->wing(iw))
-            {
-                m_pglPlaneView->glMakeWingGeometry(iw, m_pPlane->wing(iw), &TranslatedBody);
-            }
-        }
-
-        m_bResetglPlane = false;
-    }
-}
-
 void EditPlaneDlg::onButton(QAbstractButton *pButton)
 {
     if (m_pButtonBox->button(QDialogButtonBox::Save) == pButton)           onOK();
@@ -712,7 +675,7 @@ void EditPlaneDlg::onRedraw()
     m_pPlane->computePlane();
 
 
-    m_bResetglPlane = true;
+    m_pglPlaneView->m_bResetglPlane = true;
     m_bChanged = true;
 
     m_PixText.fill(Qt::transparent);
@@ -1326,10 +1289,10 @@ void EditPlaneDlg::readViewLevel(QModelIndex indexLevel)
 
             else readViewLevel(pItem->child(0,0)->index());
         }
-        else if(field.compare("hasBody", Qt::CaseInsensitive)==0)        m_pPlane->hasBody()       = stringToBool(value);
-        else if(field.compare("hasSecondWing", Qt::CaseInsensitive)==0)  m_pPlane->hasSecondWing() = stringToBool(value);
-        else if(field.compare("hasElevator", Qt::CaseInsensitive)==0)    m_pPlane->hasElevator()   = stringToBool(value);
-        else if(field.compare("hasFin", Qt::CaseInsensitive)==0)         m_pPlane->hasFin()        = stringToBool(value);
+        else if(field.compare("hasBody", Qt::CaseInsensitive)==0)        m_pPlane->setBody(stringToBool(value));
+        else if(field.compare("hasSecondWing", Qt::CaseInsensitive)==0)  m_pPlane->setSecondWing(stringToBool(value));
+        else if(field.compare("hasElevator", Qt::CaseInsensitive)==0)    m_pPlane->setElevator(stringToBool(value));
+        else if(field.compare("hasFin", Qt::CaseInsensitive)==0)         m_pPlane->setFin(stringToBool(value));
         indexLevel = indexLevel.sibling(indexLevel.row()+1,0);
     } while(indexLevel.isValid());
 }
@@ -1409,7 +1372,7 @@ void EditPlaneDlg::readWingTree(Wing *pWing, Vector3d &wingLE, double &tiltAngle
             QString field = indexLevel.sibling(indexLevel.row(),1).data().toString();
             QString value = indexLevel.sibling(indexLevel.row(),2).data().toString();
 
-            if     (field.compare("Name", Qt::CaseInsensitive)==0)     pWing->rWingName() = value;
+            if     (field.compare("Name", Qt::CaseInsensitive)==0)     pWing->setWingName(value);
             else if(field.compare("Angle", Qt::CaseInsensitive)==0)    tiltAngle = value.toDouble();
             else if(field.compare("Symetric", Qt::CaseInsensitive)==0) pWing->setSymetric(stringToBool(value));
         }
@@ -1739,7 +1702,7 @@ void EditPlaneDlg::identifySelection(const QModelIndex &indexSel)
 
             m_iActiveFrame = -1;
             m_iActivePointMass = -1;
-            m_bResetglSectionHighlight = true;
+            m_pglPlaneView->m_bResetglSectionHighlight = true;
             return;
         }
         else if(object.indexOf("Frame_", 0, Qt::CaseInsensitive)>=0)
@@ -1748,7 +1711,7 @@ void EditPlaneDlg::identifySelection(const QModelIndex &indexSel)
             m_iActiveFrame = object.right(object.length()-6).toInt() -1;
             m_iActiveSection = -1;
             m_iActivePointMass = -1;
-            m_bResetglSectionHighlight = true;
+            m_pglPlaneView->m_bResetglSectionHighlight = true;
             return;
         }
         else if(object.indexOf("Point_Mass_", 0, Qt::CaseInsensitive)>=0)
@@ -1819,7 +1782,7 @@ void EditPlaneDlg::onInsertBefore()
 
         pWing->insertSection(m_iActiveSection);
 
-        pWing->YPosition(n) = (pWing->YPosition(n+1) + pWing->YPosition(n-1)) /2.0;
+        pWing->setYPosition(n, (pWing->YPosition(n+1) + pWing->YPosition(n-1)) /2.0);
         pWing->Chord(n)     = (pWing->Chord(n+1)     + pWing->Chord(n-1))     /2.0;
         pWing->Offset(n)    = (pWing->Offset(n+1)    + pWing->Offset(n-1))    /2.0;
         pWing->Twist(n)     = (pWing->Twist(n+1)     + pWing->Twist(n-1))     /2.0;
@@ -1846,8 +1809,8 @@ void EditPlaneDlg::onInsertBefore()
         m_pPlane->createSurfaces();
 
         m_bChanged = true;
-        m_bResetglSectionHighlight = true;
-        m_bResetglPlane = true;
+        m_pglPlaneView->m_bResetglSectionHighlight = true;
+        m_pglPlaneView->m_bResetglPlane = true;
         m_pglPlaneView->update();
     }
     else if(m_pPlane->body() && m_iActiveFrame>=0)
@@ -1859,9 +1822,9 @@ void EditPlaneDlg::onInsertBefore()
         m_pPlane->createSurfaces();
 
         m_bChanged = true;
-        m_bResetglSectionHighlight = true;
-        m_bResetglPlane = true;
-        m_bResetglBody   = true;
+        m_pglPlaneView->m_bResetglSectionHighlight = true;
+        m_pglPlaneView->m_bResetglPlane = true;
+        m_pglPlaneView->m_bResetglBody  = true;
         m_pglPlaneView->update();
     }
     else if(m_enumActiveObject!=NOOBJECT && m_iActivePointMass>=0)
@@ -1885,7 +1848,7 @@ void EditPlaneDlg::onInsertBefore()
         m_pPlane->createSurfaces();
 
         m_bChanged = true;
-        m_bResetglSectionHighlight = true;
+        m_pglPlaneView->m_bResetglSectionHighlight = true;
         m_pglPlaneView->update();
 
     }
@@ -1907,20 +1870,20 @@ void EditPlaneDlg::onInsertAfter()
 
         if(n<pWing->NWingSection()-2)
         {
-            pWing->YPosition(n+1)      = (pWing->YPosition(n)      + pWing->YPosition(n+2))     /2.0;
+            pWing->setYPosition(n+1, (pWing->YPosition(n) + pWing->YPosition(n+2))  /2.0);
             pWing->Chord(n+1)    = (pWing->Chord(n)    + pWing->Chord(n+2))   /2.0;
             pWing->Offset(n+1)   = (pWing->Offset(n)   + pWing->Offset(n+2))  /2.0;
             pWing->Twist(n+1)    = (pWing->Twist(n)    + pWing->Twist(n+2))   /2.0;
         }
         else
         {
-            pWing->YPosition(n+1)     = pWing->YPosition(n)*1.1;
+            pWing->setYPosition(n+1, pWing->YPosition(n)*1.1);
             pWing->Chord(n+1)   = pWing->Chord(n)/1.1;
             pWing->Offset(n+1)  = pWing->Offset(n) + pWing->Chord(n) - pWing->Chord(n) ;
-            pWing->Twist(n+1)     = pWing->Twist(n);
+            pWing->Twist(n+1)   = pWing->Twist(n);
         }
 
-        pWing->Dihedral(n+1)  = pWing->Dihedral(n);
+        pWing->Dihedral(n+1)   = pWing->Dihedral(n);
         pWing->NXPanels(n+1)   = pWing->NXPanels(n);
         pWing->NYPanels(n+1)   = pWing->NYPanels(n);
         pWing->XPanelDist(n+1) = pWing->XPanelDist(n);
@@ -1941,8 +1904,8 @@ void EditPlaneDlg::onInsertAfter()
 
         m_iActiveSection++;
         m_bChanged = true;
-        m_bResetglSectionHighlight = true;
-        m_bResetglPlane = true;
+        m_pglPlaneView->m_bResetglSectionHighlight = true;
+        m_pglPlaneView->m_bResetglPlane = true;
         m_pglPlaneView->update();
     }
     else if(m_pPlane->body() && m_iActiveFrame>=0)
@@ -1955,9 +1918,9 @@ void EditPlaneDlg::onInsertAfter()
 
         m_iActiveFrame++;
         m_bChanged = true;
-        m_bResetglSectionHighlight = true;
-        m_bResetglPlane = true;
-        m_bResetglBody   = true;
+        m_pglPlaneView->m_bResetglSectionHighlight = true;
+        m_pglPlaneView->m_bResetglPlane = true;
+        m_pglPlaneView->m_bResetglBody  = true;
         m_pglPlaneView->update();
     }
     else if(m_enumActiveObject!=NOOBJECT && m_iActivePointMass>=0)
@@ -1984,7 +1947,7 @@ void EditPlaneDlg::onInsertAfter()
         m_pPlane->createSurfaces();
 
         m_bChanged = true;
-        m_bResetglSectionHighlight = true;
+        m_pglPlaneView->m_bResetglSectionHighlight = true;
         m_pglPlaneView->update();
 
     }
@@ -2019,8 +1982,8 @@ void EditPlaneDlg::onDelete()
         m_pPlane->createSurfaces();
 
         m_bChanged = true;
-        m_bResetglSectionHighlight = true;
-        m_bResetglPlane = true;
+        m_pglPlaneView->m_bResetglSectionHighlight = true;
+        m_pglPlaneView->m_bResetglPlane = true;
         m_pglPlaneView->update();
     }
     else if(m_pPlane->body() && m_iActiveFrame>=0)
@@ -2032,9 +1995,9 @@ void EditPlaneDlg::onDelete()
         m_pPlane->createSurfaces();
 
         m_bChanged = true;
-        m_bResetglSectionHighlight = true;
-        m_bResetglPlane = true;
-        m_bResetglBody   = true;
+        m_pglPlaneView->m_bResetglSectionHighlight = true;
+        m_pglPlaneView->m_bResetglPlane = true;
+        m_pglPlaneView->m_bResetglBody   = true;
         m_pglPlaneView->update();
     }
     else if(m_enumActiveObject!=NOOBJECT && m_iActivePointMass>=0)
@@ -2058,7 +2021,7 @@ void EditPlaneDlg::onDelete()
         m_pPlane->createSurfaces();
 
         m_bChanged = true;
-        m_bResetglSectionHighlight = true;
+        m_pglPlaneView->m_bResetglSectionHighlight = true;
         m_pglPlaneView->update();
     }
 }

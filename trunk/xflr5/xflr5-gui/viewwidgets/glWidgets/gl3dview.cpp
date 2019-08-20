@@ -1504,6 +1504,8 @@ void gl3dView::glSetupLight()
 
 void gl3dView::paintGL()
 {
+    glMake3dObjects();
+
     paintGL3();
     paintOverlay();
 }
@@ -1615,7 +1617,11 @@ void gl3dView::setScale(double refLength)
 void gl3dView::paintFoilNames(Wing const *pWing)
 {
     int j=0;
-    Foil *pFoil=nullptr;
+    Foil const *pFoil=nullptr;
+
+    QColor clr(105,105,195);
+    if(Settings::isLightTheme()) clr = clr.darker();
+    else                         clr = clr.lighter();
 
     for(j=0; j<pWing->m_Surface.size(); j++)
     {
@@ -1623,14 +1629,14 @@ void gl3dView::paintFoilNames(Wing const *pWing)
 
         if(pFoil) glRenderText(pWing->m_Surface.at(j)->m_TA.x, pWing->m_Surface.at(j)->m_TA.y, pWing->m_Surface.at(j)->m_TA.z,
                                pFoil->foilName(),
-                               QColor(Qt::cyan).lighter(175));
+                               clr);
     }
 
     j = pWing->m_Surface.size()-1;
     pFoil = pWing->m_Surface.at(j)->foilB();
     if(pFoil) glRenderText(pWing->m_Surface.at(j)->m_TB.x, pWing->m_Surface.at(j)->m_TB.y, pWing->m_Surface.at(j)->m_TB.z,
                            pFoil->foilName(),
-                           QColor(Qt::cyan).lighter(175));
+                           clr);
 }
 
 
@@ -1664,14 +1670,18 @@ void gl3dView::glDrawMasses(Plane const *pPlane)
                     pCurBody->m_PointMass);
     }
 
+    QColor massclr = W3dPrefsDlg::s_MassColor;
+    if(Settings::isLightTheme()) massclr = massclr.darker();
+    else                         massclr = massclr.lighter();
+
     //plot CG
     Vector3d Place(pPlane->CoG().x, pPlane->CoG().y, pPlane->CoG().z);
     paintSphere(Place, W3dPrefsDlg::s_MassRadius*2.0/m_glScaled,
-                W3dPrefsDlg::s_MassColor.lighter());
+                massclr);
 
     glRenderText(pPlane->CoG().x, pPlane->CoG().y, pPlane->CoG().z + delta,
                  "CoG "+QString("%1").arg(pPlane->totalMass()*Units::kgtoUnit(), 7,'g',3)
-                 +Units::weightUnitLabel(), W3dPrefsDlg::s_MassColor.lighter(125));
+                 +Units::weightUnitLabel(), massclr);
 }
 
 
@@ -1686,11 +1696,15 @@ void gl3dView::paintMasses(double volumeMass, Vector3d pos, QString tag, const Q
                      tag + QString(" (%1").arg(volumeMass*Units::kgtoUnit(), 0,'g',3) + Units::weightUnitLabel()+")", W3dPrefsDlg::s_MassColor.lighter(125));
     }
 
+    QColor massclr = W3dPrefsDlg::s_MassColor;
+    if(Settings::isLightTheme()) massclr = massclr.darker();
+    else                         massclr = massclr.lighter();
+
     for(int im=0; im<ptMasses.size(); im++)
     {
         paintSphere(ptMasses[im]->position() +pos,
                     W3dPrefsDlg::s_MassRadius/m_glScaled,
-                    W3dPrefsDlg::s_MassColor.lighter(),
+                    massclr,
                     true);
         glRenderText(ptMasses[im]->position().x + pos.x,
                      ptMasses[im]->position().y + pos.y,
@@ -2407,7 +2421,7 @@ void gl3dView::paintSphere(Vector3d place, double radius, QColor sphereColor, bo
 }
 
 
-void gl3dView::glMakeWingGeometry(int iWing, Wing *pWing, const Body *pBody)
+void gl3dView::glMakeWingGeometry(int iWing, Wing const *pWing, Body const *pBody)
 {
     ushort CHORDPOINTS = ushort(W3dPrefsDlg::chordwiseRes());
 
@@ -2906,7 +2920,7 @@ void gl3dView::getTextureFile(QString planeName, QString surfaceName, QImage &te
 
 
 /** Default mesh, if no polar has been defined */
-void gl3dView::glMakeWingEditMesh(QOpenGLBuffer &vbo, Wing *pWing)
+void gl3dView::glMakeWingEditMesh(QOpenGLBuffer &vbo, Wing const *pWing)
 {
     int l,k;
     //not necessarily the same Nx for all surfaces, so we need to count the quad panels
@@ -3081,7 +3095,7 @@ void gl3dView::glMakeWingEditMesh(QOpenGLBuffer &vbo, Wing *pWing)
 }
 
 
-void gl3dView::glMakeBodyFrameHighlight(Body *pBody, Vector3d bodyPos, int iFrame)
+void gl3dView::glMakeBodyFrameHighlight(const Body *pBody, Vector3d bodyPos, int iFrame)
 {
     //    int NXXXX = W3dPrefsDlg::bodyAxialRes();
     int NHOOOP = W3dPrefsDlg::bodyHoopRes();
@@ -3090,7 +3104,7 @@ void gl3dView::glMakeBodyFrameHighlight(Body *pBody, Vector3d bodyPos, int iFram
     double hinc, u, v;
     if(iFrame<0) return;
 
-    Frame *pFrame = pBody->frame(iFrame);
+    Frame const*pFrame = pBody->frameAt(iFrame);
     //    xinc = 0.1;
     hinc = 1.0/double(NHOOOP-1);
 
@@ -3344,10 +3358,10 @@ void gl3dView::glMakeEditBodyMesh(Body *pBody, Vector3d BodyPosition)
         {
             for (int k=0; k<pBody->sideLineCount()-1;k++)
             {
-                P1 = pBody->frame(j)->m_CtrlPoint[k];       P1.x = pBody->frame(j)->m_Position.x;
-                P2 = pBody->frame(j+1)->m_CtrlPoint[k];     P2.x = pBody->frame(j+1)->m_Position.x;
-                P3 = pBody->frame(j+1)->m_CtrlPoint[k+1];   P3.x = pBody->frame(j+1)->m_Position.x;
-                P4 = pBody->frame(j)->m_CtrlPoint[k+1];     P4.x = pBody->frame(j)->m_Position.x;
+                P1 = pBody->frameAt(j)->m_CtrlPoint[k];       P1.x = pBody->frameAt(j)->m_Position.x;
+                P2 = pBody->frameAt(j+1)->m_CtrlPoint[k];     P2.x = pBody->frameAt(j+1)->m_Position.x;
+                P3 = pBody->frameAt(j+1)->m_CtrlPoint[k+1];   P3.x = pBody->frameAt(j+1)->m_Position.x;
+                P4 = pBody->frameAt(j)->m_CtrlPoint[k+1];     P4.x = pBody->frameAt(j)->m_Position.x;
 
                 P1.x+=double(dx);   P2.x+=double(dx);   P3.x+=double(dx);   P4.x+=double(dx);
                 P1.y+=double(dy);   P2.y+=double(dy);   P3.y+=double(dy);   P4.y+=double(dy);

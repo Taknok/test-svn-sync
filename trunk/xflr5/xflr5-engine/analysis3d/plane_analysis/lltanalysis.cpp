@@ -260,7 +260,7 @@ void LLTAnalysis::computeWing(double QInf, double Alpha, QString &ErrorMessage)
         arad = (Alpha+m_Ai[m]+m_Twist[m])*PI/180.0;
         //        arad = (s_Alpha-m_Ai[m])*PI/180.0;
         c4   = m_pWing->C4(yob, m_pWPolar->CoG().x)/m_Chord[m];
-        zpos = m_pWing->ZPosition(yob*m_pWing->m_PlanformSpan/2.0)/m_Chord[m];
+        zpos = m_pWing->zPos(yob*m_pWing->m_PlanformSpan/2.0)/m_Chord[m];
 
         m_Cm[m]      = m_CmAirf[m]- c4  * (m_Cl[m]*cos(arad) + m_PCd[m]*sin(arad)) - zpos* (m_Cl[m]*sin(arad) - m_PCd[m]*cos(arad));
         ViscCm       = (-c4 *sin(arad) + zpos*cos(arad))* m_PCd[m];

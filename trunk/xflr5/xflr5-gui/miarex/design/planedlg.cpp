@@ -476,7 +476,7 @@ void PlaneDlg::onImportXMLBody()
     }
 
     Plane a_plane;
-    a_plane.hasBody() = true;
+    a_plane.setBody(true);
     XMLPlaneReader planeReader(XFile, &a_plane);
     planeReader.readXMLPlaneFile();
 

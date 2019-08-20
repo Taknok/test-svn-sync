@@ -35,7 +35,6 @@ public:
 private:
     void glRenderView();
     void contextMenuEvent(QContextMenuEvent *pEvent);
-    void paintGL();
     void paintOverlay();
     void set3DRotationCenter(QPoint point);
     void resizeGL(int width, int height);

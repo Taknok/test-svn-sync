@@ -78,6 +78,8 @@ protected:
     void initializeGL();
     virtual void paintGL();
     virtual void resizeGL(int width, int height);
+    virtual void glMake3dObjects() = 0;
+
     void keyReleaseEvent(QKeyEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
@@ -121,9 +123,9 @@ protected:
     void glMakeArcBall();
     void glMakeBody3DFlatPanels(const Body *pBody);
     void glMakeBodySplines(Body const *pBody);
-    void glMakeWingGeometry(int iWing, Wing *pWing, Body const *pBody);
-    void glMakeWingEditMesh(QOpenGLBuffer &vbo, Wing *pWing);
-    void glMakeBodyFrameHighlight(Body *pBody, Vector3d bodyPos, int iFrame);
+    void glMakeWingGeometry(int iWing, Wing const *pWing, Body const *pBody);
+    void glMakeWingEditMesh(QOpenGLBuffer &vbo, const Wing *pWing);
+    void glMakeBodyFrameHighlight(Body const *pBody, Vector3d bodyPos, int iFrame);
     void glMakeEditBodyMesh(Body *pBody, Vector3d BodyPosition);
     void glRenderText(int x, int y, const QString & str, QColor textColor = QColor(Qt::white));
     void glRenderText(double x, double y, double z, const QString & str, QColor textColor = QColor(Qt::white));

@@ -37,11 +37,10 @@ public:
 private:
     void glRenderView();
     void contextMenuEvent (QContextMenuEvent * event);
-    void paintGL();
     void paintOverlay();
     void set3DRotationCenter(QPoint point);
 
-    void glMake3DObjects();
+    void glMake3dObjects();
 
 public slots:
     void on3DReset();

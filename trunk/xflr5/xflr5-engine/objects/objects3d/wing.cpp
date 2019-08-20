@@ -129,7 +129,7 @@ Wing::Wing()
     for (int is=0; is<m_WingSection.size(); is++)
     {
         length += Length(is);
-        YPosition(is)  = length;
+        setYPosition(is, length);
         XPanelDist(is) =  XFLR5::COSINE;
     }
 }
@@ -256,7 +256,7 @@ bool Wing::importDefinition(QString path_to_file, QString errorMessage)
         for (int is=0; is<m_WingSection.size(); is++)
         {
             length += Length(is);
-            YPosition(is)     = length;
+            setYPosition(is, length);
             XPanelDist(is) =  XFLR5::COSINE;
         }
     }
@@ -1102,7 +1102,7 @@ void Wing::duplicate(Wing *pWing)
     {
         appendWingSection();
         Chord(is)      = pWing->Chord(is);
-        YPosition(is)  = pWing->YPosition(is);
+        setYPosition(is, pWing->YPosition(is));
         Offset(is)     = pWing->Offset(is);
         Length(is)     = pWing->Length(is);
         NXPanels(is)   = pWing->NXPanels(is) ;
@@ -1111,7 +1111,7 @@ void Wing::duplicate(Wing *pWing)
         YPanelDist(is) = pWing->YPanelDist(is);
         Twist(is)      = pWing->Twist(is);
         Dihedral(is)   = pWing->Dihedral(is);
-        ZPosition(is)  = pWing->ZPosition(is);
+        m_WingSection[is]->m_ZPos  = pWing->ZPosition(is);
         YProj(is)      = pWing->YProj(is);
 
         rightFoil(is)  = pWing->rightFoil(is);
@@ -1150,7 +1150,7 @@ void Wing::duplicate(Wing *pWing)
 * The sweep is calulated as the arctangent of the root and tip quarter-chord points
 *@return the value of the average sweep, in degrees
 */
-double Wing::averageSweep()
+double Wing::averageSweep() const
 {
     double xroot = rootOffset() + Chord(0)/4.0;
     double xtip  = tipOffset()  + tipChord()/4.0;
@@ -1165,7 +1165,7 @@ double Wing::averageSweep()
  *@param xRef the reference position
  *@return the quarter-chord position
  */
-double Wing::C4(double yob, double xRef)
+double Wing::C4(double yob, double xRef) const
 {
     double chord, offset, tau;
     double C4 = 0.0;
@@ -1189,7 +1189,7 @@ double Wing::C4(double yob, double xRef)
  * @param yob the relative span position in %, where the chord length will be calculated
  * @return the chord length
  */
-double Wing::getChord(double yob)
+double Wing::getChord(double yob) const
 {
     double chord = 0.0;
     double tau;
@@ -1214,7 +1214,7 @@ double Wing::getChord(double yob)
  * @param yob the relative span position in %, where the offset will be calculated
  * @return the offset value
  */
-double Wing::getOffset(double yob)
+double Wing::getOffset(double yob) const
 {
     double tau, y;
     double offset = 0.0;
@@ -1240,7 +1240,7 @@ double Wing::getOffset(double yob)
  * @param yob the relative position where the twist angle will be calculated
  * @return the twist angle in degrees
  */
-double Wing::getTwist(double yob)
+double Wing::getTwist(double yob) const
 {
     double tau;
 
@@ -1269,7 +1269,7 @@ double Wing::getTwist(double yob)
  * @param yob the relative position where the dihedral angle will be calculated
  * @return the dihedral angle in degrees
  */
-double Wing::getDihedral(double yob)
+double Wing::getDihedral(double yob) const
 {
     double y= qAbs(yob*m_PlanformSpan/2.0);//geometry is symetric
     for(int is=0; is<NWingSection()-1; is++)
@@ -1376,7 +1376,7 @@ void Wing::surfacePoint(double xRel, double ypos, enumPanelPosition pos, Vector3
  * @param SpanPos the absolute span position
  * @return the relative position, in %
  */
-double Wing::yrel(double SpanPos)
+double Wing::yrel(double SpanPos) const
 {
     double y = qAbs(SpanPos);
     for(int is=0; is<NWingSection()-1; is++)
@@ -1396,7 +1396,7 @@ double Wing::yrel(double SpanPos)
  * @param y the abolute span position
  * @return the absolute z-position
  */
-double Wing::ZPosition(double y)
+double Wing::zPos(double y) const
 {
     double tau;
     double ZPos =0.0;
@@ -1517,7 +1517,8 @@ void Wing::scaleSpan(double NewSpan)
 {
     for (int is=0; is<m_WingSection.size(); is++)
     {
-        YPosition(is)      *= NewSpan/m_PlanformSpan;
+        double ypos = YPosition(is) * NewSpan/m_PlanformSpan;
+        setYPosition(is, ypos);
         Length(is)   *= NewSpan/m_PlanformSpan;
     }
     computeGeometry();
@@ -1586,7 +1587,8 @@ void Wing::scaleArea(double newArea)
 
     for (int is=0; is<m_WingSection.size(); is++)
     {
-        YPosition(is) *= ratio;
+        double ypos = YPosition(is)*ratio;
+        setYPosition(is, ypos);
         Chord(is)     *= ratio;
     }
     computeGeometry();
@@ -1941,49 +1943,57 @@ bool Wing::isWingNode(int nNode)
 *@param iSection the index of the section
 *@return the value of the offset
 */
-double & Wing::Offset(const int &iSection)    {return m_WingSection[iSection]->m_Offset;}
+double & Wing::Offset(const int &iSection) const    {return m_WingSection[iSection]->m_Offset;}
 
 /** Returns the dihedral angle at a span section identified by its index
 *@param iSection the index of the section
 *@return the value of the dihedral angle, in degrees
 */
-double & Wing::Dihedral(const int &iSection)  {return m_WingSection[iSection]->m_Dihedral;}
+double & Wing::Dihedral(const int &iSection) const  {return m_WingSection[iSection]->m_Dihedral;}
 
 /** Returns the chord length at a span section identified by its index
 *@param iSection the index of the section
 *@return the value of the chord length
 */
-double & Wing::Chord(const int &iSection)     {return m_WingSection[iSection]->m_Chord;}
+double & Wing::Chord(const int &iSection) const     {return m_WingSection[iSection]->m_Chord;}
 
 /** Returns the twist angle at a span section identified by its index
 *@param iSection the index of the section
 *@return the value of the twist angle, in degrees
 */
-double & Wing::Twist(const int &iSection)     {return m_WingSection[iSection]->m_Twist;}
+double & Wing::Twist(const int &iSection) const     {return m_WingSection[iSection]->m_Twist;}
 
 /** Returns the span position at a span section identified by its index
 *@param iSection the index of the section
 *@return the value of the span position
 */
-double & Wing::YPosition(const int &iSection) {return m_WingSection[iSection]->m_YPosition;}
+double const & Wing::YPosition(const int &iSection) const
+{
+    return m_WingSection[iSection]->m_YPosition;
+}
+
+void Wing::setYPosition(int iSection, double ypos)
+{
+    if(iSection>=0 && iSection<MAXSPANSTATIONS) m_WingSection[iSection]->m_YPosition=ypos;
+}
 
 /** Returns the length between a span section identified by its index and the next spanwise section
 *@param iSection the index of the section
 *@return the value of the length of the panel
 */
-double & Wing::Length(const int &iSection)    {return m_WingSection[iSection]->m_Length;}
+double & Wing::Length(const int &iSection) const    {return m_WingSection[iSection]->m_Length;}
 
 /** Returns the span position of a span section identified by its index, projected on the x-y plane
 *@param iSection the index of the section
 *@return the value of the projected span position
 */
-double & Wing::YProj(const int &iSection)     {return m_WingSection[iSection]->m_YProj;}
+double & Wing::YProj(const int &iSection) const     {return m_WingSection[iSection]->m_YProj;}
 
 /** Returns the z-position at a span section identified by its index
 *@param iSection the index of the section
 *@return the value of the z-position
 */
-double & Wing::ZPosition(const int &iSection) {return m_WingSection[iSection]->m_ZPos;}
+double & Wing::ZPosition(const int &iSection) const {return m_WingSection[iSection]->m_ZPos;}
 
 
 /** Returns the number of chordwise panels at a span section identified by its index
@@ -2015,14 +2025,14 @@ XFLR5::enumPanelDistribution & Wing::YPanelDist(const int &iSection) {return m_W
  * @param iSection the index of the section
  * @return the name of the foil on the right side of the section
  */
-QString & Wing::rightFoil(const int &iSection) {return m_WingSection[iSection]->m_RightFoilName;}
+QString & Wing::rightFoil(const int &iSection) const {return m_WingSection[iSection]->m_RightFoilName;}
 
 /**
  * Returns the name of the foil on the left side of a span section
  * @param iSection the index of the section
  * @return the name of the foil on the left side of the section
  */
-QString & Wing::leftFoil(const int &iSection)  {return m_WingSection[iSection]->m_LeftFoilName;}
+QString & Wing::leftFoil(const int &iSection)  const {return m_WingSection[iSection]->m_LeftFoilName;}
 
 
 /**
@@ -2139,7 +2149,7 @@ bool Wing::intersectWing(Vector3d O,  Vector3d U, Vector3d &I)
 
 
 
-void Wing::getTextureUV(int iSurf, double *leftV, double *rightV, double &leftU, double &rightU, int nPoints)
+void Wing::getTextureUV(int iSurf, double *leftV, double *rightV, double &leftU, double &rightU, int nPoints) const
 {
     double xRelA, xRelB, xA, xB, yA, yB;
     double xMin=100000, xMax=-100000, yMin, yMax;
@@ -2310,7 +2320,7 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
 
         for (int is=0; is<=NPanel; is++)
         {
-            ar >> f; YPosition(is)=double(f);
+            ar >> f;   setYPosition(is, double(f));
             if (qAbs(YPosition(is)) <0.0)
             {
                 m_WingName = "";
@@ -2327,7 +2337,8 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
             //convert mm to m
             for (int is=0; is<=NPanel; is++)
             {
-                YPosition(is)    /= 1000.0;
+                double ypos = YPosition(is)/1000.0;
+                setYPosition(is, ypos);
                 Chord(is)  /= 1000.0;
                 Offset(is) /= 1000.0;
             }
@@ -2668,7 +2679,8 @@ void Wing::scaleAR(double newAR)
 
     for (int is=0; is<m_WingSection.size(); is++)
     {
-        YPosition(is) *= ratio;
+        double ypos = YPosition(is)*ratio;
+        setYPosition(is, ypos);
         Chord(is)     /= ratio;
     }
     computeGeometry();

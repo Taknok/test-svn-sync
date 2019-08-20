@@ -3844,7 +3844,7 @@ void Miarex::onEditCurWing()
         {
             emit projectModified();
             m_pCurPlane->wing(iWing)->setWingColor(pModPlane->wing(iWing)->wingColor());
-            m_pCurPlane->wing(iWing)->m_WingDescription = pModPlane->wing(iWing)->WingDescription();
+            m_pCurPlane->wing(iWing)->m_WingDescription = pModPlane->wing(iWing)->wingDescription();
             m_pCurPlane->wing(iWing)->setTextures(pModPlane->wing(iWing)->textures());
         }
 
