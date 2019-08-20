@@ -355,8 +355,8 @@ bool PlaneAnalysisTask::initializePanels()
     m_nWakeNodes  = 0;
     m_WakeSize    = 0;
 
-    memset(m_Panel, 0, m_MaxPanelSize * sizeof(Panel));
-    memset(m_Node,  0, 2 * m_MaxPanelSize * sizeof(Vector3d));
+    memset(m_Panel, 0,     uint(m_MaxPanelSize) * sizeof(Panel));
+    memset(m_Node,  0, 2 * uint(m_MaxPanelSize) * sizeof(Vector3d));
 
     Panel *ptr = m_Panel;
 

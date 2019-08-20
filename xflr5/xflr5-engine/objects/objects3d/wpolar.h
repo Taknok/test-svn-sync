@@ -267,7 +267,7 @@ public:
     QVector <double>  m_Oswald;     /**< Oswald's efficiency factor */
     QVector <double>  m_PCd;        /**< profile drag coef. */
 
-    complex<double> m_EigenValue[8][MAXPOLARPOINTS]; /**< until we have a QVector<complex<double>> ? */
+    std::complex<double> m_EigenValue[8][MAXPOLARPOINTS]; /**< until we have a QVector<complex<double>> ? */
     QVector <double>  m_PhugoidFrequency;        /**< the phugoid's frequency, as a result of stability analysis only */
     QVector <double>  m_PhugoidDamping;          /**< the phugoid's damping factor, as a result of stability analysis only */
     QVector <double>  m_RollDampingT2;           /**< the time to double or half for the damping of the roll-damping mode, as a result of stability analysis only */

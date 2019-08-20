@@ -158,8 +158,6 @@ private:
     static bool s_bFoilNames;
 
 
-    QPixmap m_pixTextLegend;
-
     QWidget *m_pctrlControlsWidget;
 
     QSplitter *m_pLeftSplitter, *m_pHorizontalSplitter, *m_pVerticalSplitter;

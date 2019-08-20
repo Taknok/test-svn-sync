@@ -38,7 +38,7 @@ public:
 
 private:
     void glRenderView();
-    void paintOverlay();
+
     void set3DRotationCenter(QPoint point);
     void glMake3dObjects();
 

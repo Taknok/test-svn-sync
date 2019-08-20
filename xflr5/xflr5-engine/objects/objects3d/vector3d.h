@@ -76,12 +76,12 @@ public:
         return (V.x-x)*(V.x-x) + (V.y-y)*(V.y-y) + (V.z-z)*(V.z-z)<0.000000001;
     }
 
-    void operator =(Vector3d const &T)
+/*    void operator =(Vector3d const &T)
     {
         x = T.x;
         y = T.y;
         z = T.z;
-    }
+    } */
 
     void operator+=(Vector3d const &T)
     {

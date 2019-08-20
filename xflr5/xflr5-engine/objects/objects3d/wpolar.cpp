@@ -1332,16 +1332,16 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
                 ar>>r0>>r1>>r2>>r3;
                 ar>>i0>>i1>>i2>>i3;
 
-                m_EigenValue[0][i] = complex<double>(double(r0),double(i0));
-                m_EigenValue[1][i] = complex<double>(double(r1),double(i1));
-                m_EigenValue[2][i] = complex<double>(double(r2),double(i2));
-                m_EigenValue[3][i] = complex<double>(double(r3),double(i3));
+                m_EigenValue[0][i] = std::complex<double>(double(r0),double(i0));
+                m_EigenValue[1][i] = std::complex<double>(double(r1),double(i1));
+                m_EigenValue[2][i] = std::complex<double>(double(r2),double(i2));
+                m_EigenValue[3][i] = std::complex<double>(double(r3),double(i3));
                 ar>>r0>>r1>>r2>>r3;
                 ar>>i0>>i1>>i2>>i3;
-                m_EigenValue[4][i] = complex<double>(double(r0),double(i0));
-                m_EigenValue[5][i] = complex<double>(double(r1),double(i1));
-                m_EigenValue[6][i] = complex<double>(double(r2),double(i2));
-                m_EigenValue[7][i] = complex<double>(double(r3),double(i3));
+                m_EigenValue[4][i] = std::complex<double>(double(r0),double(i0));
+                m_EigenValue[5][i] = std::complex<double>(double(r1),double(i1));
+                m_EigenValue[6][i] = std::complex<double>(double(r2),double(i2));
+                m_EigenValue[7][i] = std::complex<double>(double(r3),double(i3));
                 calculatePoint(i);
             }
         }
@@ -1592,14 +1592,14 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
             ar >> i0 >> i1 >>i2 >> i3;
             ar >> r4 >> r5 >>r6 >> r7;
             ar >> i4 >> i5 >>i6 >> i7;
-            m_EigenValue[0][i] = complex<double>(r0, i0);
-            m_EigenValue[1][i] = complex<double>(r1, i1);
-            m_EigenValue[2][i] = complex<double>(r2, i2);
-            m_EigenValue[3][i] = complex<double>(r3, i3);
-            m_EigenValue[4][i] = complex<double>(r4, i4);
-            m_EigenValue[5][i] = complex<double>(r5, i5);
-            m_EigenValue[6][i] = complex<double>(r6, i6);
-            m_EigenValue[7][i] = complex<double>(r7, i7);
+            m_EigenValue[0][i] = std::complex<double>(r0, i0);
+            m_EigenValue[1][i] = std::complex<double>(r1, i1);
+            m_EigenValue[2][i] = std::complex<double>(r2, i2);
+            m_EigenValue[3][i] = std::complex<double>(r3, i3);
+            m_EigenValue[4][i] = std::complex<double>(r4, i4);
+            m_EigenValue[5][i] = std::complex<double>(r5, i5);
+            m_EigenValue[6][i] = std::complex<double>(r6, i6);
+            m_EigenValue[7][i] = std::complex<double>(r7, i7);
 
         }
     }

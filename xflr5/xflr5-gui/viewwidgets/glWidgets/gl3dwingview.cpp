@@ -92,19 +92,6 @@ void gl3dWingView::set3DRotationCenter(QPoint point)
 }
 
 
-void gl3dWingView::paintOverlay()
-{
-    QOpenGLPaintDevice device(size() * devicePixelRatio());
-    QPainter painter(&device);
-
-    if(!m_PixTextOverlay.isNull())
-    {
-        painter.drawPixmap(0,0, m_PixTextOverlay);
-        m_PixTextOverlay.fill(Qt::transparent);
-    }
-}
-
-
 void gl3dWingView::glMakeWingSectionHighlight(Wing *pWing, int iSectionHighLight, bool bRightSide)
 {
     Vector3d Point, Normal;

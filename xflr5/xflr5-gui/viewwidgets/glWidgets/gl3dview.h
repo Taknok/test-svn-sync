@@ -133,7 +133,7 @@ protected:
 
     virtual void glRenderView() = 0;
     virtual void set3DRotationCenter(QPoint point) = 0;
-    virtual void paintOverlay() {}
+    virtual void paintOverlay();
 
     void paintGL3();
     void paintFoilNames(const Wing *pWing);
