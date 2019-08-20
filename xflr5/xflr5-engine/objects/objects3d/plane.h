@@ -147,30 +147,35 @@ public:
     void setCoGIxz(double ixz) {m_CoGIxx=ixz;}
 
 
-    double mac()           {return m_Wing[0].m_MAChord;}
-    double span()          {return m_Wing[0].m_PlanformSpan;}
-    double rootChord()     {return m_Wing[0].rootChord();}
-    double tipChord()      {return m_Wing[0].tipChord();}
+    double mac()           const {return m_Wing[0].m_MAChord;}
+    double span()          const {return m_Wing[0].m_PlanformSpan;}
+    double rootChord()     const {return m_Wing[0].rootChord();}
+    double tipChord()      const {return m_Wing[0].tipChord();}
 
-    double projectedArea() {return m_Wing[0].m_ProjectedArea;}
-    double planformArea()  {return m_Wing[0].m_PlanformArea;}
+    double projectedArea() const {return m_Wing[0].m_ProjectedArea;}
+    double planformArea()  const {return m_Wing[0].m_PlanformArea;}
 
-    double projectedSpan() {return m_Wing[0].m_ProjectedSpan;}
-    double planformSpan()  {return m_Wing[0].m_PlanformSpan;}
+    double projectedSpan() const {return m_Wing[0].m_ProjectedSpan;}
+    double planformSpan()  const {return m_Wing[0].m_PlanformSpan;}
 
-    bool isWing() {return !m_bBiplane&& !m_bStab && !m_bFin && !m_bBody;}
+    bool isWing() const {return !m_bBiplane&& !m_bStab && !m_bFin && !m_bBody;}
 
-    double aspectRatio()  {return m_Wing[0].m_AR;}
-    double taperRatio()   {return m_Wing[0].m_TR;}
+    double aspectRatio()  const {return m_Wing[0].m_AR;}
+    double taperRatio()   const {return m_Wing[0].m_TR;}
 
     int spanStationCount();
 
-    bool &hasBody()       {return m_bBody;}
-    bool &hasElevator()   {return m_bStab;}
-    bool &hasSecondWing() {return m_bBiplane;}
-    bool &hasFin()        {return m_bFin;}
+    bool const &hasBody()       const {return m_bBody;}
+    bool const &hasElevator()   const {return m_bStab;}
+    bool const &hasSecondWing() const {return m_bBiplane;}
+    bool const &hasFin()        const {return m_bFin;}
 
-    QString bodyName()    {return m_BodyName;}
+    void setBody(bool bBody)          {m_bBody=bBody;}
+    void setElevator(bool bStab)      {m_bStab=bStab;}
+    void setSecondWing(bool bBiPlane) {m_bBiplane=bBiPlane;}
+    void setFin(bool bFin)            {m_bFin = bFin;}
+
+    QString const &bodyName()    const {return m_BodyName;}
 
 public:
     Wing m_Wing[MAXWINGS];                      /**< the array of Wing objects used to define this Plane */

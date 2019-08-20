@@ -32,6 +32,7 @@ public:
     gl3dTestView(QWidget *pParent = nullptr);
     void glRenderView();
     void set3DRotationCenter(QPoint);
+    void glMake3dObjects() {}
 
 signals:
     void ready() const;

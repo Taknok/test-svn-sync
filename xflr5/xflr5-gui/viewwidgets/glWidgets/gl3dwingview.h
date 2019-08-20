@@ -29,6 +29,8 @@ class GL3dWingDlg;
 
 class gl3dWingView : public gl3dView
 {
+    friend class GL3dWingDlg;
+
 public:
     gl3dWingView(QWidget *pParent = nullptr);
     void setWing(Wing *pWing){m_pWing = pWing;}
@@ -36,10 +38,9 @@ public:
 
 private:
     void glRenderView();
-    void paintGL();
     void paintOverlay();
     void set3DRotationCenter(QPoint point);
-
+    void glMake3dObjects();
 
 public slots:
     void on3DReset();
@@ -47,6 +48,10 @@ public slots:
 private:
     Wing *m_pWing;
     GL3dWingDlg *m_pGL3dWingDlg;
+
+    bool m_bResetglWing;
+    bool m_bResetglSectionHighlight;
+
 };
 
 #endif // GL3DWINGVIEW_H

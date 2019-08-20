@@ -60,7 +60,6 @@ class GL3dBodyDlg : public QDialog
     friend class BodyScaleDlg;
     friend class BoatDlg;
     friend class PlaneDlg;
-    friend class gl3dView;
     friend class gl3dBodyView;
 
 public:

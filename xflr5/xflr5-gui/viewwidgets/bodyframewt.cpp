@@ -330,7 +330,6 @@ int BodyFrameWt::selectPoint(Vector3d real)
 }
 
 
-
 void BodyFrameWt::dragSelectedPoint(double x, double y)
 {
     if (!m_pBody->activeFrame() || (Frame::selectedIndex()<0) || (Frame::selectedIndex() > m_pBody->activeFrame()->pointCount()))
@@ -338,7 +337,7 @@ void BodyFrameWt::dragSelectedPoint(double x, double y)
 
     if(Frame::selectedIndex()==0 || Frame::selectedIndex()==m_pBody->activeFrame()->pointCount()-1) x=0.0;
     x = std::max(x,0.0);
-    m_pBody->activeFrame()->selectedPoint().set(m_pBody->activeFrame()->position().x, x, y);
+    m_pBody->activeFrame()->setSelectedPoint({m_pBody->activeFrame()->position().x, x, y});
 }
 
 

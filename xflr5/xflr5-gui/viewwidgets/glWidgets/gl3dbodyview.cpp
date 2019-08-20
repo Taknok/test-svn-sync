@@ -47,7 +47,8 @@ void gl3dBodyView::glRenderView()
         paintBody(m_pBody);
 
         if(m_pBody->activeFrame()) paintSectionHighlight();
-        if(m_bShowMasses) paintMasses(m_pBody->volumeMass(), Vector3d(0.0,0.0,0.0), "Structural mass", m_pBody->m_PointMass);
+        if(m_bShowMasses)
+            paintMasses(m_pBody->volumeMass(), Vector3d(0.0,0.0,0.0), "Structural mass", m_pBody->m_PointMass);
     }
 }
 
@@ -73,19 +74,10 @@ void gl3dBodyView::on3DReset()
 }
 
 
-void gl3dBodyView::paintGL()
-{
-    glMake3DObjects();
-
-    paintGL3();
-    paintOverlay();
-}
-
-
 /**
 * Creates the VertexBufferObjects for OpenGL 3.0
 */
-void gl3dBodyView::glMake3DObjects()
+void gl3dBodyView::glMake3dObjects()
 {
     if(m_bResetglFrameHighlight || m_bResetglBody)
     {

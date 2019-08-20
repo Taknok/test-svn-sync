@@ -50,7 +50,7 @@ Frame::Frame(int nCtrlPts)
 * @todo withdrawal to be performed from within the calling function.
 *@return the index of the point in the array which matches with the input point
 */
-int Frame::isPoint(const Vector3d &Point, const double &ZoomFactor)
+int Frame::isPoint(const Vector3d &Point, const double &ZoomFactor) const
 {
     int l;
     for(l=0; l<m_CtrlPoint.size(); l++)
@@ -240,7 +240,7 @@ double Frame::height()
  * Returns the Frame's z-position as the highest and lowest z-values in the array of control points.
  *@return the Frame's z-position
  */
-double Frame::zPos()
+double Frame::zPos() const
 {
     double hmin    =  10.0;
     double hmax = -10.0;

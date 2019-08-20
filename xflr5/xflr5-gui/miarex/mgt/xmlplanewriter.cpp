@@ -125,7 +125,7 @@ void XMLPlaneWriter::writeWing(Wing const &wing, Vector3d position, double Ry)
         writeTextElement("Name", wing.wingName());
         writeTextElement("Type",   wingType(wing.wingType()));
         writeColor(color(wing.wingColor()));
-        writeTextElement("Description", wing.WingDescription());
+        writeTextElement("Description", wing.wingDescription());
         writeTextElement("Position",QString("%1, %2, %3").arg(position.x*Units::mtoUnit(), 11,'g',5)
                          .arg(position.y*Units::mtoUnit(), 11,'g',5)
                          .arg(position.z*Units::mtoUnit(), 11,'g',5));

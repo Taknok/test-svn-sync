@@ -1058,7 +1058,7 @@ double Body::framePosition(int iFrame)
  * Returns a pointer to the active Frame object
  * @return a pointer to the active Frame object
  */
-Frame *Body::activeFrame()
+Frame *Body::activeFrame() const
 {
     if(m_iActiveFrame>=0 && m_iActiveFrame<frameCount()) return m_SplineSurface.m_pFrame[m_iActiveFrame];
     else                                                 return nullptr;

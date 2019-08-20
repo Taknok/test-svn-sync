@@ -71,11 +71,11 @@ void WingSelDlg::initDialog(Plane *pPlane)
 
 void WingSelDlg::onOK()
 {
-    m_pPlane->hasSecondWing() = m_pctrlWing[1]->isChecked();
-    m_pPlane->hasElevator()   = m_pctrlWing[2]->isChecked();
-    m_pPlane->hasFin()        = m_pctrlWing[3]->isChecked();
+    m_pPlane->setSecondWing(m_pctrlWing[1]->isChecked());
+    m_pPlane->setElevator(m_pctrlWing[2]->isChecked());
+    m_pPlane->setFin(m_pctrlWing[3]->isChecked());
 
-    m_pPlane->hasBody() = m_pctrlBody->isChecked();
+    m_pPlane->setBody(m_pctrlBody->isChecked());
     accept();
 }
 

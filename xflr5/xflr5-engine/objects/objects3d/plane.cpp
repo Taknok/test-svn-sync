@@ -43,8 +43,8 @@ Plane::Plane()
     m_Wing[2].m_bIsFin      = false;
     m_Wing[2].Chord(0)      = 0.100;
     m_Wing[2].Chord(1)      = 0.080;
-    m_Wing[2].YPosition(0)  =   0.0;
-    m_Wing[2].YPosition(1)  = 0.170;
+    m_Wing[2].setYPosition(0, 0.0);
+    m_Wing[2].setYPosition(1, 0.170);
     m_Wing[2].Length(0)     =   0.0;
     m_Wing[2].Length(1)     = 0.150;
     m_Wing[2].Offset(0)     =   0.0;
@@ -60,8 +60,8 @@ Plane::Plane()
     m_Wing[3].m_bIsFin      = true;
     m_Wing[3].Chord(0)      = 0.100;
     m_Wing[3].Chord(1)      = 0.060;
-    m_Wing[3].YPosition(0)  = 0.000;
-    m_Wing[3].YPosition(1)  = 0.120;
+    m_Wing[3].setYPosition(0, 0.000);
+    m_Wing[3].setYPosition(1, 0.120);
     m_Wing[3].Length(0)     = 0.000;
     m_Wing[3].Length(1)     = 0.120;
     m_Wing[3].Offset(0)     = 0.000;

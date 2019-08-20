@@ -78,8 +78,6 @@ GL3dWingDlg::GL3dWingDlg(QWidget *pParent) : QDialog(pParent)
 
     m_pctrlLeftSideSplitter = nullptr;
 
-    m_bResetglSectionHighlight = true;
-    m_bResetglWing             = true;
     m_bEnableName              = true;
     m_bAcceptName              = true;
     m_bTrans                   = false;
@@ -407,34 +405,6 @@ void GL3dWingDlg::fillTableRow(int row)
 }
 
 
-
-
-
-/**
-* Creates the VertexBufferObjects for OpenGL 3.0
-*/
-void GL3dWingDlg::glMake3DObjects()
-{
-    if(m_bResetglSectionHighlight || m_bResetglWing)
-    {
-        if(m_iSection>=0)
-        {
-            m_pglWingView->glMakeWingSectionHighlight(m_pWing, m_iSection, m_bRightSide);
-            m_bResetglSectionHighlight = false;
-        }
-    }
-
-    if(m_bResetglWing)
-    {
-        m_bResetglWing = false;
-
-        m_pglWingView->glMakeWingGeometry(0, m_pWing, nullptr);
-        m_pglWingView->glMakeWingEditMesh(m_pglWingView->m_vboEditWingMesh[0], m_pWing);
-    }
-}
-
-
-
 bool GL3dWingDlg::initDialog(Wing *pWing)
 {
     QString str;
@@ -602,7 +572,7 @@ void GL3dWingDlg::onDescriptionChanged()
 void GL3dWingDlg::onCellChanged(QWidget *)
 {
     m_bChanged = true;
-    m_bResetglWing = true;
+    m_pglWingView->m_bResetglWing = true;
     readParams();
     setWingData();
     m_pglWingView->update();
@@ -653,7 +623,7 @@ void GL3dWingDlg::onDeleteSection()
     computeGeometry();
     setWingData();
     m_bChanged = true;
-    m_bResetglWing = true;
+    m_pglWingView->m_bResetglWing = true;
     m_pglWingView->update();
 }
 
@@ -706,7 +676,7 @@ void GL3dWingDlg::onInsertBefore()
 
     m_pWing->insertSection(m_iSection);
 
-    m_pWing->YPosition(n) = (m_pWing->YPosition(n+1) + m_pWing->YPosition(n-1)) /2.0;
+    m_pWing->setYPosition(n, (m_pWing->YPosition(n+1) + m_pWing->YPosition(n-1)) /2.0);
     m_pWing->Chord(n)     = (m_pWing->Chord(n+1)     + m_pWing->Chord(n-1))     /2.0;
     m_pWing->Offset(n)    = (m_pWing->Offset(n+1)    + m_pWing->Offset(n-1))    /2.0;
     m_pWing->Twist(n)     = (m_pWing->Twist(n+1)     + m_pWing->Twist(n-1))     /2.0;
@@ -734,8 +704,8 @@ void GL3dWingDlg::onInsertBefore()
     setWingData();
 
     m_bChanged = true;
-    m_bResetglSectionHighlight = true;
-    m_bResetglWing = true;
+    m_pglWingView->m_bResetglSectionHighlight = true;
+    m_pglWingView->m_bResetglWing = true;
     m_pglWingView->update();
 }
 
@@ -754,14 +724,14 @@ void GL3dWingDlg::onInsertAfter()
 
     if(n<m_pWing->NWingSection()-2)
     {
-        m_pWing->YPosition(n+1)      = (m_pWing->YPosition(n)      + m_pWing->YPosition(n+2))     /2.0;
+        m_pWing->setYPosition(n+1, (m_pWing->YPosition(n)      + m_pWing->YPosition(n+2))     /2.0);
         m_pWing->Chord(n+1)    = (m_pWing->Chord(n)    + m_pWing->Chord(n+2))   /2.0;
         m_pWing->Offset(n+1)   = (m_pWing->Offset(n)   + m_pWing->Offset(n+2))  /2.0;
         m_pWing->Twist(n+1)    = (m_pWing->Twist(n)    + m_pWing->Twist(n+2))   /2.0;
     }
     else
     {
-        m_pWing->YPosition(n+1)     = m_pWing->YPosition(n)*1.1;
+        m_pWing->setYPosition(n+1, m_pWing->YPosition(n)*1.1);
         m_pWing->Chord(n+1)   = m_pWing->Chord(n)/1.1;
         m_pWing->Offset(n+1)  = m_pWing->Offset(n) + m_pWing->Chord(n) - m_pWing->Chord(n) ;
         m_pWing->Twist(n+1)     = m_pWing->Twist(n);
@@ -787,7 +757,7 @@ void GL3dWingDlg::onInsertAfter()
     computeGeometry();
     setWingData();
     m_bChanged = true;
-    m_bResetglWing = true;
+    m_pglWingView->m_bResetglWing = true;
     m_pglWingView->update();
 }
 
@@ -811,7 +781,7 @@ void GL3dWingDlg::onResetSection()
         setWingData();
         computeGeometry();
         m_bChanged = true;
-        m_bResetglWing = true;
+        m_pglWingView->m_bResetglWing = true;
         m_pglWingView->update();
     }
 }
@@ -890,10 +860,9 @@ void GL3dWingDlg::onResetMesh()
     setWingData();
     computeGeometry();
     m_bChanged = true;
-    m_bResetglWing = true;
+    m_pglWingView->m_bResetglWing = true;
     m_pglWingView->update();
 }
-
 
 
 void GL3dWingDlg::onScaleWing()
@@ -922,8 +891,8 @@ void GL3dWingDlg::onScaleWing()
 
         fillDataTable();
         m_bChanged = true;
-        m_bResetglWing = true;
-        m_bResetglSectionHighlight = true;
+        m_pglWingView->m_bResetglWing = true;
+        m_pglWingView->m_bResetglSectionHighlight = true;
         computeGeometry();
         m_pglWingView->update();
     }
@@ -936,7 +905,7 @@ void GL3dWingDlg::onSide()
     fillDataTable();
 
     m_bChanged = true;
-    m_bResetglSectionHighlight = true;
+    m_pglWingView->m_bResetglSectionHighlight = true;
     m_pglWingView->update();
 }
 
@@ -962,8 +931,8 @@ void GL3dWingDlg::onSymetric()
 
     m_bChanged = true;
     computeGeometry();
-    m_bResetglWing             = true;
-    m_bResetglSectionHighlight = true;
+    m_pglWingView->m_bResetglWing             = true;
+    m_pglWingView->m_bResetglSectionHighlight = true;
     m_pglWingView->update();
 }
 
@@ -973,7 +942,7 @@ void GL3dWingDlg::onTextures()
     if(m_pWing) m_pWing->m_bTextures = m_pctrlTextures->isChecked();
     m_bDescriptionChanged = true;
     m_pctrlWingColor->setEnabled(m_pctrlColor->isChecked());
-    m_bResetglWing = true;
+    m_pglWingView->m_bResetglWing = true;
     m_pglWingView->update();
 }
 
@@ -997,7 +966,7 @@ void GL3dWingDlg::onWingColor()
     }
 
     m_pctrlWingColor->setColor(color(m_pWing->wingColor()));
-    m_bResetglWing = true;
+    m_pglWingView->m_bResetglWing = true;
     m_pglWingView->update();
 }
 
@@ -1035,7 +1004,7 @@ void GL3dWingDlg::readSectionData(int sel)
     strong =pItem->text();
     strong.replace(" ","");
     d =strong.toDouble(&bOK);
-    if(bOK) m_pWing->YPosition(sel) =d / Units::mtoUnit();
+    if(bOK) m_pWing->setYPosition(sel, d / Units::mtoUnit());
 
     pItem = m_pWingModel->item(sel,1);
     strong =pItem->text();
@@ -1173,7 +1142,7 @@ void GL3dWingDlg::setCurrentSection(int section)
         str = QString(str).arg(m_iSection+1);
         m_pctrlDeleteSection->setText(str);
     }
-    m_bResetglSectionHighlight = true;
+    m_pglWingView->m_bResetglSectionHighlight = true;
 }
 
 
@@ -1596,7 +1565,7 @@ void GL3dWingDlg::showEvent(QShowEvent *)
         m_pctrlLeftSideSplitter->restoreState(s_LeftSplitterSizes);
 
     m_bChanged = false;
-    m_bResetglWing = true;
+    m_pglWingView->m_bResetglWing = true;
 
     m_pglWingView->update();
 
@@ -1736,7 +1705,7 @@ void GL3dWingDlg::onImportWingFromXML()
     setWingData();
     m_bChanged = true;
 
-    m_bResetglWing = true;
+    m_pglWingView->m_bResetglWing = true;
     m_pglWingView->update();
 }
 
@@ -1785,7 +1754,7 @@ void GL3dWingDlg::onImportWing()
     readParams();
     setWingData();
     m_bChanged = true;
-    m_bResetglWing = true;
+    m_pglWingView->m_bResetglWing = true;
     m_pglWingView->update();
 }
 

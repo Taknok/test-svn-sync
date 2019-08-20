@@ -167,38 +167,40 @@ public:
     XFLR5::enumPanelDistribution &YPanelDist(const int &iSection);
 
     bool isWingFoil(Foil *pFoil);
-    double rootChord()     {return m_WingSection.first()->m_Chord;}
-    double rootOffset()    {return m_WingSection.first()->m_Offset;}
-    double tipChord()      {return m_WingSection.last()->m_Chord;}
-    double tipTwist()      {return m_WingSection.last()->m_Twist;}
-    double tipOffset()     {return m_WingSection.last()->m_Offset;}
-    double tipPos()        {return m_WingSection.last()->m_YPosition;}
-    double planformSpan()  {return m_PlanformSpan;}
-    double projectedSpan() {return m_ProjectedSpan;}
+    double rootChord()     const {return m_WingSection.first()->m_Chord;}
+    double rootOffset()    const {return m_WingSection.first()->m_Offset;}
+    double tipChord()      const {return m_WingSection.last()->m_Chord;}
+    double tipTwist()      const {return m_WingSection.last()->m_Twist;}
+    double tipOffset()     const {return m_WingSection.last()->m_Offset;}
+    double tipPos()        const {return m_WingSection.last()->m_YPosition;}
+    double planformSpan()  const {return m_PlanformSpan;}
+    double projectedSpan() const {return m_ProjectedSpan;}
 
-    double &Chord(const int &iSection);
-    double &Twist(const int &iSection);
-    double &YPosition(const int &iSection);
-    double &Dihedral(const int &iSection);
-    double &Offset(const int &iSection);
-    double &Length(const int &iSection);
-    double &YProj(const int &iSection);
-    double &ZPosition(const int &iSection);
+    double const &YPosition(const int &iSection) const;
+    void setYPosition(int iSection, double ypos);
 
-    double yrel(double SpanPos);
-    double getChord(double yob);
-    double getOffset(double yob);
-    double getDihedral(double yob);
-    double getTwist(double y);
-    double averageSweep();
+    double &Chord(const int &iSection) const;
+    double &Twist(const int &iSection) const;
+    double &Dihedral(const int &iSection) const;
+    double &Offset(const int &iSection) const;
+    double &Length(const int &iSection) const;
+    double &YProj(const int &iSection) const;
+    double &ZPosition(const int &iSection) const;
+
+    double yrel(double SpanPos) const;
+    double getChord(double yob) const;
+    double getOffset(double yob) const;
+    double getDihedral(double yob) const;
+    double getTwist(double y) const;
+    double averageSweep() const;
 
     double const &volumeMass() const {return m_VolumeMass;}
     void setVolumeMass(double m) {m_VolumeMass=m;}
 
     double totalMass() const;
-    double C4(double yob, double xRef);
-    double ZPosition(double y);
-    double Beta(int m, int k);
+    double C4(double yob, double xRef) const;
+    double zPos(double y) const;
+
 
     void setSymetric(bool bSymetric) {m_bSymetric=bSymetric;}
     bool const &isSymetric() const {return m_bSymetric;}
@@ -207,13 +209,16 @@ public:
 
     static double minPanelSize() {return s_MinPanelSize;}
 
-    Vector3d CoG() {return m_CoG;}
-    const QString& wingName() const {return m_WingName;}
-    QString& rWingName() {return m_WingName;}
-    const QString& WingDescription() const {return m_WingDescription;}
-    QString &rightFoil(const int &iSection);
-    QString &leftFoil(const int &iSection);
-    QString& rWingDescription() {return m_WingDescription;}
+    Vector3d CoG() const {return m_CoG;}
+
+    QString const &wingName() const {return m_WingName;}
+    void setWingName(QString name) {m_WingName=name;}
+
+    QString const& wingDescription() const {return m_WingDescription;}
+    void setWingDescription(QString desc) {m_WingDescription=desc;}
+
+    QString &rightFoil(const int &iSection) const;
+    QString &leftFoil(const int &iSection) const;
 
     bool textures() const {return m_bTextures;}
     void setTextures(bool bTextures) {m_bTextures=bTextures;}
@@ -224,7 +229,7 @@ public:
     XFLR5::enumWingType const &wingType() const {return m_WingType;}
     void setWingType(XFLR5::enumWingType type) {m_WingType=type;}
 
-    void getTextureUV(int iSurf, double *leftV, double *rightV, double &leftU, double &rightU, int nPoints);
+    void getTextureUV(int iSurf, double *leftV, double *rightV, double &leftU, double &rightU, int nPoints) const;
 
     bool serializeWingWPA(QDataStream &ar, bool bIsStoring);
     bool serializeWingXFL(QDataStream &ar, bool bIsStoring);

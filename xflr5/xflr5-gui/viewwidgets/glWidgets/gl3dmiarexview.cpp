@@ -251,15 +251,6 @@ void gl3dMiarexView::glRenderView()
 }
 
 
-void gl3dMiarexView::paintGL()
-{
-    glMake3dObjects();
-
-    paintGL3();
-    paintOverlay();
-}
-
-
 /**
 *Overrides the contextMenuEvent method of the base class.
 *Dispatches the handling to the active child application.
