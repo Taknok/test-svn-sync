@@ -121,38 +121,38 @@ public:
 
 
     /** Return the visibility of the curve as a boolean. */
-    bool isVisible() {return m_curveStyle.m_bIsVisible;}
+    bool isVisible() const {return m_curveStyle.m_bIsVisible;}
 
     /** Return the visibility of the points as a boolean. */
-    bool pointsVisible() {return m_curveStyle.m_PointStyle>0; }
+    bool pointsVisible() const {return m_curveStyle.m_PointStyle>0; }
 
     /** Returns the Curve's number of points. */
-    int size() {return x.count();}
+    int size() const {return x.count();}
 
     /** Returns the Curve's number of points. */
-    int count() {return x.size();}
+    int count() const {return x.size();}
 
     /** Returns the Curve style*/
-    int style() {return m_curveStyle.m_Style;}
+    int style() const {return m_curveStyle.m_Style;}
 
     /** Returns the Curve width*/
-    int width() {return m_curveStyle.m_Width;}
+    int width() const {return m_curveStyle.m_Width;}
 
     /** Returns the Curve color*/
-    QColor  color() {return m_curveStyle.m_Color;}
+    QColor  color() const {return m_curveStyle.m_Color;}
 
-    int pointStyle() {return m_curveStyle.m_PointStyle;}
-
-    /** Returns the Curve's title */
-    void curveName(QString &string) {string =  m_CurveName;}
+    int pointStyle() const {return m_curveStyle.m_PointStyle;}
 
     /** Returns the Curve's title */
-    QString curveName(){ return m_CurveName;}
+    void curveName(QString &string) const {string =  m_CurveName;}
 
-    double  xMin();
-    double  xMax();
-    double  yMin();
-    double  yMax();
+    /** Returns the Curve's title */
+    QString curveName() const { return m_CurveName;}
+
+    double  xMin() const;
+    double  xMax() const;
+    double  yMin() const;
+    double  yMax() const;
 
 
 public:

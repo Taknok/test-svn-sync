@@ -1207,6 +1207,14 @@ Curve* Graph::curve(int nIndex)
 }
 
 
+Curve const* Graph::curveAt(int nIndex) const
+{
+    if(m_oaCurves.size()>nIndex)
+        return m_oaCurves[nIndex];
+    else return nullptr;
+}
+
+
 Curve* Graph::curve(QString CurveTitle)
 {
     QString strong;

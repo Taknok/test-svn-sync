@@ -432,12 +432,12 @@ void LegendWidget::drawPOppGraphLegend(QPainter &painter, QPointF place, double 
 *@param the top left postition where the legend is to be drawn
 *@param the y coordinate of the bottom of the drawing rectangle
 */
-void LegendWidget::drawCpLegend(QPainter &painter, Graph *pGraph, QPointF place, int bottom)
+void LegendWidget::drawCpLegend(QPainter &painter, Graph const *pGraph, QPointF place, int bottom)
 {
     painter.save();
 
     int i, ny;
-    Curve *pCurve=nullptr;
+    Curve const *pCurve=nullptr;
     QString strong;
 
     double LegendSize = 30;
@@ -452,7 +452,7 @@ void LegendWidget::drawCpLegend(QPainter &painter, Graph *pGraph, QPointF place,
 
     for (i=0; i<pGraph->curveCount(); i++)
     {
-        pCurve = pGraph->curve(i);
+        pCurve = pGraph->curveAt(i);
         if(pCurve->size())
         {
             ny++;
@@ -496,11 +496,11 @@ void LegendWidget::drawCpLegend(QPainter &painter, Graph *pGraph, QPointF place,
 *@param the top left postition where the legend is to be drawn
 *@param the y coordinate of the bottom of the drawing rectangle
 */
-void LegendWidget::drawStabTimeLegend(QPainter &painter, Graph *pGraph, QPointF place, int bottom)
+void LegendWidget::drawStabTimeLegend(QPainter &painter, Graph const *pGraph, QPointF place, int bottom)
 {
     painter.save();
 
-    Curve *pCurve=nullptr;
+    Curve const *pCurve=nullptr;
     QString strong;
 
     double LegendSize = 30;
@@ -515,7 +515,7 @@ void LegendWidget::drawStabTimeLegend(QPainter &painter, Graph *pGraph, QPointF 
 
     for (int i=0; i<pGraph->curveCount(); i++)
     {
-        pCurve = pGraph->curve(i);
+        pCurve = pGraph->curveAt(i);
         if(pCurve->size() && pCurve->isVisible())
         {
             ny++;

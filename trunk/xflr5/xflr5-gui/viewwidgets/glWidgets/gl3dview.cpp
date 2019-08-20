@@ -3426,8 +3426,10 @@ void gl3dView::glMakeEditBodyMesh(Body *pBody, Vector3d BodyPosition)
     }
     else if(pBody->isSplineType()) //NURBS
     {
-        nx = pBody->m_nxPanels;
-        nh = pBody->m_nhPanels;
+        pBody->setPanelPos();
+
+        nx = pBody->nxPanels();
+        nh = pBody->nhPanels();
 
         bufferSize = 0;
         bufferSize += nh * NXXXX; // nh longitudinal lines
@@ -3437,7 +3439,6 @@ void gl3dView::glMakeEditBodyMesh(Body *pBody, Vector3d BodyPosition)
 
         meshVertexArray.resize(bufferSize);
 
-        pBody->setPanelPos();
         //x-lines;
         for (int l=0; l<nh; l++)
         {
