@@ -1689,16 +1689,17 @@ void gl3dView::paintMasses(double volumeMass, Vector3d pos, QString tag, const Q
 {
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
 
+    QColor massclr = W3dPrefsDlg::s_MassColor;
+    if(Settings::isLightTheme()) massclr = massclr.darker();
+    else                         massclr = massclr.lighter();
+
     double delta = 0.02/m_glScaled;
     if(qAbs(volumeMass)>PRECISION)
     {
         glRenderText(pos.x, pos.y, pos.z + delta,
-                     tag + QString(" (%1").arg(volumeMass*Units::kgtoUnit(), 0,'g',3) + Units::weightUnitLabel()+")", W3dPrefsDlg::s_MassColor.lighter(125));
+                     tag + QString(" (%1").arg(volumeMass*Units::kgtoUnit(), 0,'g',3) + Units::weightUnitLabel()+")",
+                     massclr);
     }
-
-    QColor massclr = W3dPrefsDlg::s_MassColor;
-    if(Settings::isLightTheme()) massclr = massclr.darker();
-    else                         massclr = massclr.lighter();
 
     for(int im=0; im<ptMasses.size(); im++)
     {
@@ -1709,10 +1710,10 @@ void gl3dView::paintMasses(double volumeMass, Vector3d pos, QString tag, const Q
         glRenderText(ptMasses[im]->position().x + pos.x,
                      ptMasses[im]->position().y + pos.y,
                      ptMasses[im]->position().z + pos.z + delta,
-                     ptMasses[im]->tag()+QString(" (%1").arg(ptMasses[im]->mass()*Units::kgtoUnit(), 0,'g',3)+Units::weightUnitLabel()+")", W3dPrefsDlg::s_MassColor.lighter(125));
+                     ptMasses[im]->tag()+QString(" (%1").arg(ptMasses[im]->mass()*Units::kgtoUnit(), 0,'g',3)+Units::weightUnitLabel()+")",
+                     massclr);
     }
 }
-
 
 
 /** used in GL3DWingDlg and gl3dBodyView*/
@@ -3726,4 +3727,17 @@ void gl3dView::glMakeAxis()
     m_vboAxis.bind();
     m_vboAxis.allocate(axisVertexArray.data(), axisVertexArray.size() * int(sizeof(GLfloat)));
     m_vboAxis.release();
+}
+
+
+void gl3dView::paintOverlay()
+{
+    QOpenGLPaintDevice device(size() * devicePixelRatio());
+    QPainter painter(&device);
+
+    if(!m_PixTextOverlay.isNull())
+    {
+        painter.drawPixmap(0,0, m_PixTextOverlay);
+        m_PixTextOverlay.fill(Qt::transparent);
+    }
 }

@@ -180,16 +180,12 @@ double WingOpp::maxLift()
 *@param pWOpp  a pointer to the CWOpp object which is to be filled with the results of the analysis which has been completed
 *@param to the wing object for which the CWOpp will be created
 */
-void WingOpp::createWOpp(void *pWingPtr, void *pWPolarPtr)
+void WingOpp::createWOpp(Wing *pWing, WPolar *pWPolar)
 {
-    Wing *pWing = (Wing*)pWingPtr;
-    WPolar *pWPolar = (WPolar*)pWPolarPtr;
-
-
-    m_WingName            = pWing->m_WingName;
+    m_WingName            = pWing->wingName();
     m_NVLMPanels          = pWing->m_MatSize;
-    m_NStation            = pWing->m_NStation;
-    m_nFlaps              = pWing->m_nFlaps;
+    m_NStation            = pWing->NStations();
+    m_nFlaps              = pWing->nFlaps();
 
     m_PlrName             = pWPolar->polarName();
     m_AnalysisMethod      = pWPolar->analysisMethod();
@@ -448,58 +444,58 @@ bool WingOpp::serializeWingOppWPA(QDataStream &ar, bool bIsStoring)
         else return false;*/
 
         ar >> m_NStation;
-        ar >> f; m_Alpha =f;
-        ar >> f; m_QInf =f;
-        ar >> f; m_Weight =f;
-        ar >> f; m_Span =f;
-        ar >> f; m_MAChord =f;
-        ar >> f; m_CL =f;
-        ar >> f; m_VCD =f;
-        ar >> f; m_ICD =f;
+        ar >> f; m_Alpha   = double(f);
+        ar >> f; m_QInf    = double(f);
+        ar >> f; m_Weight  = double(f);
+        ar >> f; m_Span    = double(f);
+        ar >> f; m_MAChord = double(f);
+        ar >> f; m_CL      = double(f);
+        ar >> f; m_VCD     = double(f);
+        ar >> f; m_ICD     = double(f);
         if(ArchiveFormat>=1015)
         {
-            ar >> f; m_Beta=f;
-            ar >> f; m_CX =f;
-            ar >> f; m_CY =f;
+            ar >> f; m_Beta=double(f);
+            ar >> f; m_CX =double(f);
+            ar >> f; m_CY =double(f);
         }
-        ar >> f; m_GCm =f;
-        ar >> f; m_GRm =f;
-        ar >> f; m_GYm =f;
-        ar >> f; //m_VCm =f;
-        ar >> f; m_VYm =f;
-        ar >> f; m_IYm =f;
+        ar >> f; m_GCm   = double(f);
+        ar >> f; m_GRm   = double(f);
+        ar >> f; m_GYm   = double(f);
+        ar >> f; //m_VCm = double(f);
+        ar >> f; m_VYm   = double(f);
+        ar >> f; m_IYm   = double(f);
 
         if(ArchiveFormat<1014 && m_AnalysisMethod>XFLR5::LLTMETHOD)
         {
             m_GCm = m_GRm = m_GYm = m_VYm = m_IYm = 0.0;
         }
 
-        ar >> f; m_CP.x =f;
-        ar >> f; m_CP.y =f;
+        ar >> f; m_CP.x = double(f);
+        ar >> f; m_CP.y = double(f);
 
         for (k=0; k<m_NStation; k++)
         {
-            ar >> f; m_Re[k] =f;
-            ar >> f; m_Chord[k] =f;
-            ar >> f; m_Twist[k] =f;
-            ar >> f; m_Ai[k] =f;
-            ar >> f; m_Cl[k] =f;
-            ar >> f; m_PCd[k] =f;
-            ar >> f; m_ICd[k] =f;
-            ar >> f; m_Cm[k] =f;
-            ar >> f; m_CmAirf[k] =f;
+            ar >> f; m_Re[k]     = double(f);
+            ar >> f; m_Chord[k]  = double(f);
+            ar >> f; m_Twist[k]  = double(f);
+            ar >> f; m_Ai[k]     = double(f);
+            ar >> f; m_Cl[k]     = double(f);
+            ar >> f; m_PCd[k]    = double(f);
+            ar >> f; m_ICd[k]    = double(f);
+            ar >> f; m_Cm[k]     = double(f);
+            ar >> f; m_CmAirf[k] = double(f);
             ar >> f; //f=0.0;
-            ar >> f; m_XCPSpanRel[k] =f;
-            if(ArchiveFormat>=1007){ar >> f; m_XCPSpanAbs[k] =f;}
-            ar >> f; m_XTrTop[k] =f;
-            ar >> f; m_XTrBot[k] =f;
-            if(ArchiveFormat>=1002)    {ar >> f; m_BendingMoment[k]=f;}
+            ar >> f; m_XCPSpanRel[k] =double(f);
+            if(ArchiveFormat>=1007){ar >> f; m_XCPSpanAbs[k] = double(f);}
+            ar >> f; m_XTrTop[k] = double(f);
+            ar >> f; m_XTrBot[k] = double(f);
+            if(ArchiveFormat>=1002)    {ar >> f; m_BendingMoment[k]=double(f);}
             else m_BendingMoment[k] = 0.0;
             if(ArchiveFormat>=1005)
             {
-                ar >> f; m_Vd[k].x=f;
-                ar >> f; m_Vd[k].y=f;
-                ar >> f; m_Vd[k].z=f;
+                ar >> f; m_Vd[k].x=double(f);
+                ar >> f; m_Vd[k].y=double(f);
+                ar >> f; m_Vd[k].z=double(f);
             }
             else
             {
@@ -509,9 +505,9 @@ bool WingOpp::serializeWingOppWPA(QDataStream &ar, bool bIsStoring)
             }
             if(ArchiveFormat>=1006)
             {
-                ar >> f; m_F[k].x=f;
-                ar >> f; m_F[k].y=f;
-                ar >> f; m_F[k].z=f;
+                ar >> f; m_F[k].x=double(f);
+                ar >> f; m_F[k].y=double(f);
+                ar >> f; m_F[k].z=double(f);
             }
             else {
                 m_F[k].x = 0.0;
@@ -528,12 +524,14 @@ bool WingOpp::serializeWingOppWPA(QDataStream &ar, bool bIsStoring)
         for (k=0; k<=m_NStation; k++)
         {
             ar >> f1;
-            if(m_AnalysisMethod==XFLR5::LLTMETHOD  && ArchiveFormat<=1004) m_SpanPos[k] = -f1;
-            else                                                    m_SpanPos[k] =  f1;
+            if(m_AnalysisMethod==XFLR5::LLTMETHOD  && ArchiveFormat<=1004)
+                m_SpanPos[k] = -double(f1);
+            else
+                m_SpanPos[k] =  double(f1);
             if(ArchiveFormat>=1012)
             {
                 ar >> f2;
-                m_StripArea[k] = f2;
+                m_StripArea[k] = double(f2);
             }
             else m_StripArea[k] = 0.0;
 
@@ -587,7 +585,7 @@ bool WingOpp::serializeWingOppWPA(QDataStream &ar, bool bIsStoring)
             for(k=0; k<m_nFlaps; k++)
             {
                 ar >> f;
-                m_FlapMoment.append(f);
+                m_FlapMoment.append(double(f));
             }
         }
 
@@ -609,12 +607,12 @@ bool WingOpp::serializeWingOppWPA(QDataStream &ar, bool bIsStoring)
             for(k=0; k<8;k++)
             {
                 ar >> f1 >> f2;
-                m_oldEigenValue[k] = complex<double>(f1, f2);
+                m_oldEigenValue[k] = std::complex<double>(double(f1), double(f2));
 
                 for(l=0; l<4; l++)
                 {
                     ar >> f1 >> f2;
-                    m_oldEigenVector[k][l] = complex<double>(f1, f2);
+                    m_oldEigenVector[k][l] = std::complex<double>(double(f1), double(f2));
                 }
             }
         }
@@ -684,7 +682,7 @@ bool WingOpp::serializeWingOppWPA(QDataStream &ar, bool bIsStoring)
 
         if(ArchiveFormat>=1019)
         {
-            ar>>f;    m_oldCtrl=f;
+            ar>>f;    m_oldCtrl=double(f);
 
             //provision
             for(int i=1; i<20; i++)
@@ -698,7 +696,7 @@ bool WingOpp::serializeWingOppWPA(QDataStream &ar, bool bIsStoring)
         }
         if(ArchiveFormat>=1021)
         {
-            ar >> f; m_CP.z=f;
+            ar >> f; m_CP.z=double(f);
         }
 
 

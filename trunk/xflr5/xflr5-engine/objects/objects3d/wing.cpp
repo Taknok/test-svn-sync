@@ -260,7 +260,7 @@ bool Wing::importDefinition(QString path_to_file, QString errorMessage)
             XPanelDist(is) =  XFLR5::COSINE;
         }
     }
-    catch (iostream::failure e)
+    catch (std::iostream::failure e)
     {
         errorMessage = "Unable to import wing definition\n";
         return false;
@@ -340,7 +340,7 @@ bool Wing::exportDefinition(QString path_to_file, QString errorMessage)
             fp.close();
         }
     }
-    catch (iostream::failure e){
+    catch (std::iostream::failure e){
         errorMessage = "Unable to import wing definition\n";
         return false;
     }
@@ -355,17 +355,13 @@ bool Wing::exportDefinition(QString path_to_file, QString errorMessage)
  */
 void Wing::computeGeometry()
 {
-    Foil *pFoilA, *pFoilB;
-    double MinPanelSize;
-    int is;
-
     double surface = 0.0;
     double xysurface = 0.0;
     Length(0) = 0.0;
     YProj(0)  = YPosition(0);
-    for (is=1; is<NWingSection(); is++)
+    for (int is=1; is<NWingSection(); is++)
         Length(is) = YPosition(is) - YPosition(is-1);
-    for (is=1; is<NWingSection(); is++)
+    for (int is=1; is<NWingSection(); is++)
     {
         YProj(is) = YProj(is-1) + Length(is) * cos(Dihedral(is-1)*PI/180.0);
     }
@@ -375,10 +371,10 @@ void Wing::computeGeometry()
     m_MAChord = 0.0;
     m_yMac    = 0.0;
 
-    for (is=0; is<NWingSection()-1; is++)
+    for (int is=0; is<NWingSection()-1; is++)
     {
-        pFoilA = foil(rightFoil(is));
-        pFoilB = foil(rightFoil(is+1));
+//        Foil const*pFoilA = foil(rightFoil(is));
+//        Foil const*pFoilB = foil(rightFoil(is+1));
         surface   += Length(is+1)*(Chord(is)+Chord(is+1))/2.0;//m2
         xysurface += (Length(is+1)*(Chord(is)+Chord(is+1))/2.0)*cos(Dihedral(is)*PI/180.0);
         m_ProjectedSpan += Length(is+1)*cos(Dihedral(is)*PI/180.0);
@@ -413,13 +409,14 @@ void Wing::computeGeometry()
 
     //calculate the number of flaps
     m_nFlaps = 0;
+    double MinPanelSize = 0.0;
     if(s_MinPanelSize>0.0) MinPanelSize = s_MinPanelSize;
     else                   MinPanelSize = m_PlanformSpan;
 
     for (int is=1; is<NWingSection(); is++)
     {
-        pFoilA = foil(rightFoil(is-1));
-        pFoilB = foil(rightFoil(is));
+        Foil const*pFoilA = foil(rightFoil(is-1));
+        Foil const*pFoilB = foil(rightFoil(is));
         if(pFoilA && pFoilB && (!m_bIsFin || (m_bIsFin && m_bSymFin) || (m_bIsFin && m_bDoubleFin)))
         {
             if(pFoilA->m_bTEFlap && pFoilB->m_bTEFlap && qAbs(YPosition(is)-YPosition(is-1))>MinPanelSize)    m_nFlaps++;

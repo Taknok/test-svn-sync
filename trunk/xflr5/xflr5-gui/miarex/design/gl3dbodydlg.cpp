@@ -89,16 +89,6 @@ GL3dBodyDlg::GL3dBodyDlg(QWidget *pParent): QDialog(pParent)
     m_pPointModel = nullptr;
     m_pFrameModel = nullptr;
 
-    //create a default pix from a random image - couldn't find a better way to do this
-    m_pixTextLegend = QPixmap(":/images/xflr5_64.png");
-    m_pixTextLegend.fill(Qt::transparent);
-
-    QFontMetrics fm(Settings::s_TextFont);
-    int w = fm.averageCharWidth()*19;
-    int h = fm.height()*5;
-    QRect rect(0,0,w,h);
-    m_pixTextLegend = m_pixTextLegend.scaled(rect.size());
-
     m_StackPos  = 0; //the current position on the stack
     m_bResetFrame = true;
 

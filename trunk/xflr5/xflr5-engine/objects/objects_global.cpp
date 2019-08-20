@@ -50,7 +50,7 @@ void readCString(QDataStream &ar, QString &strong)
 */
 void writeCString(QDataStream &ar, QString const &strong)
 {
-    qint8 qi = strong.length();
+    qint8 qi = qint8(strong.length());
 
     QByteArray textline;
     char *text;
@@ -91,13 +91,13 @@ void readQColor(QDataStream &ar, int &r, int &g, int &b, int &a)
 
     ar>>byte;//probably a format identificator
     ar>>byte>>byte;
-    a = (int)byte;
+    a = int(byte);
     ar>>byte>>byte;
-    r = (int)byte;
+    r = int(byte);
     ar>>byte>>byte;
-    g = (int)byte;
+    g = int(byte);
     ar>>byte>>byte;
-    b = (int)byte;
+    b = int(byte);
     ar>>byte>>byte; //
 }
 
@@ -177,9 +177,9 @@ void readCOLORREF(QDataStream &ar, int &r, int &g, int &b)
     qint32 colorref;
 
     ar >> colorref;
-    b = (int)(colorref/256/256);
+    b = int(colorref/256/256);
     colorref -= b*256*256;
-    g = (int)(colorref/256);
+    g = int(colorref/256);
     r = colorref - g*256;
 }
 

@@ -90,6 +90,7 @@ class XFLR5ENGINELIBSHARED_EXPORT Wing
     friend class EditBodyDlg;
     friend class gl3dView;
     friend class XMLPlaneReader;
+    friend class WingOpp;
 
 
 public:
@@ -205,7 +206,8 @@ public:
     void setSymetric(bool bSymetric) {m_bSymetric=bSymetric;}
     bool const &isSymetric() const {return m_bSymetric;}
 
-    int &nFlaps() {return m_nFlaps;}
+    int const &nFlaps() const {return m_nFlaps;}
+    void setNFlaps(int nf) {m_nFlaps=nf;}
 
     static double minPanelSize() {return s_MinPanelSize;}
 
@@ -230,6 +232,8 @@ public:
     void setWingType(XFLR5::enumWingType type) {m_WingType=type;}
 
     void getTextureUV(int iSurf, double *leftV, double *rightV, double &leftU, double &rightU, int nPoints) const;
+
+    int NStations() const {return m_NStation;}
 
     bool serializeWingWPA(QDataStream &ar, bool bIsStoring);
     bool serializeWingXFL(QDataStream &ar, bool bIsStoring);

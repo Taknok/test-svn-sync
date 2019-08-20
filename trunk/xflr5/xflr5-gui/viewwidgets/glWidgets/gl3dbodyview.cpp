@@ -36,6 +36,17 @@ gl3dBodyView::gl3dBodyView(QWidget *pParent) : gl3dView(pParent)
     m_pBody = nullptr;
     m_bResetglFrameHighlight   = true;
     m_bResetglBody        = true;//otherwise endless repaint if no body present
+
+    //create a default pix from a random image - couldn't find a better way to do this
+/*    m_pixTextLegend = QPixmap(":/images/xflr5_64.png");
+    m_pixTextLegend.fill(Qt::transparent);
+
+    QFontMetrics fm(Settings::s_TextFont);
+    int w = fm.averageCharWidth()*19;
+    int h = fm.height()*5;
+    QRect rect(0,0,w,h);
+    m_pixTextLegend = m_pixTextLegend.scaled(rect.size());
+*/
 }
 
 
@@ -130,23 +141,6 @@ void gl3dBodyView::set3DRotationCenter(QPoint point)
         startTranslationTimer(PP);
     }
 }
-
-
-void gl3dBodyView::paintOverlay()
-{
-    //    QOpenGLPaintDevice device(size() * devicePixelRatio());
-    //    QPainter painter(&device);
-
-    /*    EditBodyDlg *pDlg = (EditBodyDlg*)m_pParent;
-        painter.drawPixmap(0,0, pDlg->m_PixText);
-        painter.drawPixmap(0,0, m_PixTextOverlay);
-        m_PixTextOverlay.fill(Qt::transparent);
-    */
-}
-
-
-
-
 
 
 

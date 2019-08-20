@@ -77,8 +77,8 @@ PlaneOpp::PlaneOpp(Plane *pPlane, WPolar *pWPolar, int PanelArraySize)
     memset(m_EigenValue, 0, sizeof(m_EigenValue)); //four longitudinal and four lateral modes
     memset(m_EigenVector, 0, sizeof(m_EigenVector));
 
-    m_phiPH = complex<double>(0.0, 0.0);
-    m_phiDR = complex<double>(0.0, 0.0);
+    m_phiPH = std::complex<double>(0.0, 0.0);
+    m_phiDR = std::complex<double>(0.0, 0.0);
 
     CXu = CZu = Cmu = 0.0;
     CXa = CLa = Cma = CXq = CLq = Cmq = CYb = CYp = CYr = Clb = Clp = Clr = Cnb = Cnp = Cnr = 0.0;
@@ -737,12 +737,12 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
         for(int kv=0; kv<8;kv++)
         {
             ar >> dbl1 >> dbl2;
-            m_EigenValue[kv] = complex<double>(dbl1, dbl2);
+            m_EigenValue[kv] = std::complex<double>(dbl1, dbl2);
 
             for(int lv=0; lv<4; lv++)
             {
                 ar >> dbl1 >> dbl2;
-                m_EigenVector[kv][lv] = complex<double>(dbl1, dbl2);
+                m_EigenVector[kv][lv] = std::complex<double>(dbl1, dbl2);
             }
         }
 
@@ -754,9 +754,9 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
 
         double real, imag;
         ar >> real >> imag;
-        m_phiPH = complex<double>(real, imag);
+        m_phiPH = std::complex<double>(real, imag);
         ar >> real >> imag;
-        m_phiDR = complex<double>(real, imag);
+        m_phiDR = std::complex<double>(real, imag);
 
         for (int i=6; i<50; i++) ar >> dble;
     }
@@ -772,15 +772,15 @@ void PlaneOpp::getPlaneOppProperties(QString &planeOppProperties, QString length
 
     planeOppProperties.clear();
 
-    if(m_WPolarType==XFLR5::FIXEDSPEEDPOLAR)     strong += "Type 1 ("+QObject::tr("Fixed speed") +")\n";
-    else if(m_WPolarType==XFLR5::FIXEDLIFTPOLAR) strong += "Type 2 ("+QObject::tr("Fixed lift") +")\n";
-    else if(m_WPolarType==XFLR5::FIXEDAOAPOLAR)  strong += "Type 4 ("+QObject::tr("Fixed angle of attack") +")\n";
-    else if(m_WPolarType==XFLR5::BETAPOLAR)      strong += "Type 5 ("+QObject::tr("Beta range") +")\n";
-    else if(m_WPolarType==XFLR5::STABILITYPOLAR) strong += "Type 7 ("+QObject::tr("Stability analysis") +")\n";
+    if     (m_WPolarType==XFLR5::FIXEDSPEEDPOLAR) strong += "Type 1 ("+QObject::tr("Fixed speed") +")\n";
+    else if(m_WPolarType==XFLR5::FIXEDLIFTPOLAR)  strong += "Type 2 ("+QObject::tr("Fixed lift") +")\n";
+    else if(m_WPolarType==XFLR5::FIXEDAOAPOLAR)   strong += "Type 4 ("+QObject::tr("Fixed angle of attack") +")\n";
+    else if(m_WPolarType==XFLR5::BETAPOLAR)       strong += "Type 5 ("+QObject::tr("Beta range") +")\n";
+    else if(m_WPolarType==XFLR5::STABILITYPOLAR)  strong += "Type 7 ("+QObject::tr("Stability analysis") +")\n";
     planeOppProperties += strong;
 
     //    WOppProperties += QObject::tr("Method")+" = ";
-    if(m_AnalysisMethod==XFLR5::LLTMETHOD)                             planeOppProperties +=QObject::tr("LLT");
+    if     (m_AnalysisMethod==XFLR5::LLTMETHOD)                         planeOppProperties +=QObject::tr("LLT");
     else if(m_AnalysisMethod==XFLR5::PANEL4METHOD && !m_bThinSurface)   planeOppProperties +=QObject::tr("3D-Panels");
     else if(m_AnalysisMethod==XFLR5::PANEL4METHOD && m_bVLM1)           planeOppProperties +=QObject::tr("3D-Panels/VLM1");
     else if(m_AnalysisMethod==XFLR5::PANEL4METHOD && !m_bVLM1)          planeOppProperties +=QObject::tr("3D-Panels/VLM2");
@@ -922,7 +922,7 @@ void PlaneOpp::getPlaneOppProperties(QString &planeOppProperties, QString length
             planeOppProperties += strong +"\n\n";
         }
 
-        complex<double> c, angle;
+        std::complex<double> c, angle;
         double OmegaN, Omega1, Dsi, u0, mac, span;
         u0   = m_QInf;
         mac  = m_MAChord;

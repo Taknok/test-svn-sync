@@ -154,11 +154,11 @@ public:
     int m_NPanels;                        /**<  the number of VLM or 3D-panels */
     int m_nControls;                      /**< the number of control surfaces associated to the WingOpp */
 
-    complex<double> m_EigenValue[8];      /**< the eigenvalues of the four longitudinal and four lateral modes */
-    complex<double> m_EigenVector[8][4];  /**< the longitudinal and lateral eigenvectors (4 longitudinal + 4 lateral) x 4 components */
+    std::complex<double> m_EigenValue[8];      /**< the eigenvalues of the four longitudinal and four lateral modes */
+    std::complex<double> m_EigenVector[8][4];  /**< the longitudinal and lateral eigenvectors (4 longitudinal + 4 lateral) x 4 components */
 
-    complex<double> m_phiPH;      /**< complex phugoid eigenvalue computed using Phillip's formula */
-    complex<double> m_phiDR;      /**< complex Dutch roll eigenvalue computed using Phillip's formula */
+    std::complex<double> m_phiPH;      /**< complex phugoid eigenvalue computed using Phillip's formula */
+    std::complex<double> m_phiDR;      /**< complex Dutch roll eigenvalue computed using Phillip's formula */
 
     //non dimensional stability derivatives
     double CXu, CZu, Cmu, CXa, CLa, Cma, CXq, CLq, Cmq, CYb, CYp, CYr, Clb, Clp, Clr, Cnb, Cnp, Cnr;

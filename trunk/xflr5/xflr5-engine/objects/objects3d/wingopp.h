@@ -53,7 +53,8 @@
 #include <complex>
 #include <objects/objects3d/vector3d.h>
 
-using namespace std;
+class Wing;
+class WPolar;
 
 class XFLR5ENGINELIBSHARED_EXPORT WingOpp
 {
@@ -77,9 +78,9 @@ private:
     bool serializeWingOppWPA(QDataStream &ar, bool bIsStoring);
     bool serializeWingOppXFL(QDataStream &ar, bool bIsStoring);
     bool exportWOpp(QTextStream &out, bool bCSV);
-    void GetWingOppProperties(QString &WingOppProperties);
+
     double maxLift();
-    void createWOpp(void *pWingPtr, void *pWPolarPtr);
+    void createWOpp(Wing *pWing, WPolar *pWPolar);
 
 private:
     QString m_WingName;    // the wing name to which the WingOpp belongs
@@ -159,8 +160,8 @@ public:
     Vector3d m_Vd[MAXSPANSTATIONS];          /**< the downwash at the trailing edge */
     Vector3d m_F[MAXSPANSTATIONS];           /**< the force acting on the chordwise = sum of the panel forces on this strip*/
 
-    complex<double> m_oldEigenValue[8];      /**< the eigenvalues of the four longitudinal and four lateral modes. @deprecated, kept for compatibility with former .wpa files */
-    complex<double> m_oldEigenVector[8][4];  /**< the longitudinal and lateral eigenvectors (4 longitudinal + 4 lateral) x 4 components. @deprecated, kept for compatibility with former .wpa files */
+    std::complex<double> m_oldEigenValue[8];      /**< the eigenvalues of the four longitudinal and four lateral modes. @deprecated, kept for compatibility with former .wpa files */
+    std::complex<double> m_oldEigenVector[8][4];  /**< the longitudinal and lateral eigenvectors (4 longitudinal + 4 lateral) x 4 components. @deprecated, kept for compatibility with former .wpa files */
 
 };
 #endif

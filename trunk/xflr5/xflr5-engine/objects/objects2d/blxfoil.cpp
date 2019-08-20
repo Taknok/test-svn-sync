@@ -99,20 +99,20 @@ void BLXFoil::serialize(QDataStream &ar, bool bIsStoring)
         for (int k=0; k<=nd1; k++)
         {
             ar >> f0 >> f1;
-            xd1[k] = f0;
-            yd1[k] = f1;
+            xd1[k] = double(f0);
+            yd1[k] = double(f1);
         }
         for (int k=0; k<nd2; k++)
         {
             ar >> f0 >> f1;
-            xd2[k] = f0;
-            yd2[k] = f1;
+            xd2[k] = double(f0);
+            yd2[k] = double(f1);
         }
         for (int k=0; k<nd3; k++)
         {
             ar >> f0 >> f1;
-            xd3[k] = f0;
-            yd3[k] = f1;
+            xd3[k] = double(f0);
+            yd3[k] = double(f1);
         }
 
         // space allocation
