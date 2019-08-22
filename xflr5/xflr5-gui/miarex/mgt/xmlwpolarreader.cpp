@@ -111,31 +111,31 @@ void XmlWPolarReader::readWPolar(WPolar *pWPolar, double lengthunit, double area
         }
         else if (name().compare(QString("Ignore_Body_Panels"),         Qt::CaseInsensitive)==0)
         {
-            pWPolar->bIgnoreBodyPanels() = stringToBool(readElementText());
+            pWPolar->setIgnoreBodyPanels(stringToBool(readElementText()));
         }
         else if (name().compare(QString("Use_VLM1"),         Qt::CaseInsensitive)==0)
         {
-            pWPolar->bVLM1() = stringToBool(readElementText());
+            pWPolar->setVLM1(stringToBool(readElementText()));
         }
         else if (name().compare(QString("Viscous_Analysis"),         Qt::CaseInsensitive)==0)
         {
-            pWPolar->bViscous() = stringToBool(readElementText());
+            pWPolar->setViscous(stringToBool(readElementText()));
         }
         else if (name().compare(QString("Thin_Surfaces"),         Qt::CaseInsensitive)==0)
         {
-            pWPolar->bThinSurfaces() = stringToBool(readElementText());
+            pWPolar->setThinSurfaces(stringToBool(readElementText()));
         }
         else if (name().compare(QString("Wake_Rollup"),         Qt::CaseInsensitive)==0)
         {
-            pWPolar->bWakeRollUp() = stringToBool(readElementText());
+            pWPolar->setWakeRollUp(stringToBool(readElementText()));
         }
         else if (name().compare(QString("Tilted_Analysis"),         Qt::CaseInsensitive)==0)
         {
-            pWPolar->bTilted() = stringToBool(readElementText());
+            pWPolar->setTilted(stringToBool(readElementText()));
         }
         else if (name().compare(QString("Ground_Effect"),         Qt::CaseInsensitive)==0)
         {
-            pWPolar->bGround() = stringToBool(readElementText());
+            pWPolar->setGroundEffect(stringToBool(readElementText()));
         }
         else if (name().compare(QString("Ground_Height"),         Qt::CaseInsensitive)==0)
         {
@@ -224,7 +224,7 @@ void XmlWPolarReader::readWPolar(WPolar *pWPolar, double lengthunit, double area
         }
         else if (name().compare(QString("Use_Plane_Inertia"), Qt::CaseInsensitive)==0)
         {
-            pWPolar->bAutoInertia() = stringToBool(readElementText());
+            pWPolar->setAutoInertia(stringToBool(readElementText()));
         }
         else if (name().compare(QString("Inertia_Value"),         Qt::CaseInsensitive)==0)
         {

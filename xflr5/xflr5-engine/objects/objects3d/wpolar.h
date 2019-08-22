@@ -70,9 +70,9 @@ public:
                       double ICm, double VCm, double GRm, double GYm, double IYm, double VYm, double XCP, double YCP,
                       double ZCP, double Cb, double XNP);
     void calculatePoint(int iPt);
-    void copy(WPolar *pWPolar);
-    void duplicateSpec(WPolar *pWPolar);
-    QVector<double> *getWPlrVariable(int iVar);
+    void copy(WPolar const *pWPolar);
+    void duplicateSpec(WPolar const *pWPolar);
+    const QVector<double> *getWPlrVariable(int iVar) const;
     void remove(int i);
     void remove(double alpha);
     void clearData();
@@ -110,21 +110,30 @@ public:
     bool isStabilityPolar()  const    {return m_WPolarType==XFLR5::STABILITYPOLAR;}       /**< returns true if the polar is of the STABILITYPOLAR type, false otherwise >*/
     bool isBetaPolar()       const    {return m_WPolarType==XFLR5::BETAPOLAR;}            /**< returns true if the polar is of the BETAPOLAR type, false otherwise >*/
 
-    /** @todo remove remaining non-const reference access functions */
-    bool &bThinSurfaces() {return m_bThinSurfaces;}  /**< returns true if the analysis if using thin surfaces, i.e. VLM, false if 3D Panels for the Wing objects. */
-    bool &bWakeRollUp()  {return m_bWakeRollUp;}
-    bool &bTilted() {return m_bTiltedGeom; }
-    bool &bGround() {return m_bGround;}
-    bool &bIgnoreBodyPanels() {return m_bIgnoreBodyPanels;}
-    bool &bViscous() {return m_bViscous;}
-    bool &bVLM1() {return m_bVLM1;}
-    bool &bAutoInertia() {return m_bAutoInertia;}
-    bool bDirichlet() {return m_BoundaryCondition==XFLR5::DIRICHLET;}
+    bool const &bThinSurfaces()     const {return m_bThinSurfaces;}  /**< returns true if the analysis if using thin surfaces, i.e. VLM, false if 3D Panels for the Wing objects. */
+    bool const &bWakeRollUp()       const {return m_bWakeRollUp;}
+    bool const &bTilted()           const {return m_bTiltedGeom; }
+    bool const &bGround()           const {return m_bGround;}
+    bool const &bIgnoreBodyPanels() const {return m_bIgnoreBodyPanels;}
+    bool const &bViscous()          const {return m_bViscous;}
+    bool const &bVLM1()             const {return m_bVLM1;}
+    bool const &bAutoInertia()      const {return m_bAutoInertia;}
+    bool bDirichlet()               const {return m_BoundaryCondition==XFLR5::DIRICHLET;}
 
-    int polarFormat() {return m_PolarFormat;}
+    void setThinSurfaces(bool b)     {m_bThinSurfaces=b;}
+    void setTilted(bool b)           {m_bTiltedGeom=b;}
+    void setWakeRollUp(bool b)       {m_bWakeRollUp=b;}
+    void setVLM1(bool b)             {m_bVLM1=b;}
+    void setViscous(bool b)          {m_bViscous=b;}
+    void setIgnoreBodyPanels(bool b) {m_bIgnoreBodyPanels=b;}
+    void setAutoInertia(bool b)      {m_bAutoInertia=b;}
+    void setGroundEffect(bool b)     {m_bGround=b;}
+
+    int polarFormat() const {return m_PolarFormat;}
     void setPolarFormat(int fmt) {m_PolarFormat=fmt;}
 
-    XFLR5::enumBC &boundaryCondition() {return m_BoundaryCondition;}
+    XFLR5::enumBC const &boundaryCondition() const {return m_BoundaryCondition;}
+    void setBoundaryCondition(XFLR5::enumBC bc) {m_BoundaryCondition=bc;}
 
     XFLR5::enumRefDimension  const &referenceDim() const {return m_ReferenceDim;}
     double referenceArea()  const{return m_referenceArea;}

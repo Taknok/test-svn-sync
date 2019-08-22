@@ -56,7 +56,7 @@ public:
 
     void addPoint(double Alpha, double Cd, double Cdp, double Cl, double Cm,
                   double Xtr1, double Xtr2, double HMom, double Cpmn, double Reynolds, double XCp);
-    void exportPolar(QTextStream &out, QString versionName, bool bCSV, bool bDataOnly=false);
+    void exportPolar(QTextStream &out, QString versionName, bool bCSV, bool bDataOnly=false) const;
     void resetPolar();
 
 
@@ -68,11 +68,11 @@ public:
     void insertOppDataAt(int pos, OpPoint *pOpp);
     void removePoint(int i);
 
-    double getCm0();
-    double getZeroLiftAngle();
-    void getAlphaLimits(double &amin, double &amax);
-    void getClLimits(double &Clmin, double &Clmax);
-    void getLinearizedCl(double &Alpha0, double &slope);
+    double getCm0() const;
+    double getZeroLiftAngle() const;
+    void getAlphaLimits(double &amin, double &amax) const;
+    void getClLimits(double &Clmin, double &Clmax) const;
+    void getLinearizedCl(double &Alpha0, double &slope) const;
 
     QString const &foilName() const {return m_FoilName;}
     QString const &polarName() const {return m_PlrName;}
@@ -84,8 +84,8 @@ public:
 
     void setAutoPolarName();
 
-    void getPolarProperties(QString &polarProps);
-    const QVector<double> &getPlrVariable(int iVar);
+    void getPolarProperties(QString &polarProps) const;
+    QVector<double> const &getPlrVariable(int iVar) const;
 
     void getColor(int &r, int &g, int &b, int &a) const;
     void setColor(int r, int g, int b, int a=255);
@@ -123,7 +123,7 @@ public:
     void setReType(int type) {m_ReType=type;}
     void setMaType(int type) {m_MaType=type;}
 
-    XFLR5::enumPolarType const &polarType() {return m_PolarType;}
+    XFLR5::enumPolarType polarType() const {return m_PolarType;}
 
     bool isFixedSpeedPolar()  const {return m_PolarType==XFLR5::FIXEDSPEEDPOLAR;}   /**< returns true if the polar is of the FIXEDSPEEDPOLAR type, false otherwise >*/
     bool isFixedLiftPolar()   const {return m_PolarType==XFLR5::FIXEDLIFTPOLAR;}    /**< returns true if the polar is of the FIXEDLIFTPOLAR type, false otherwise >*/

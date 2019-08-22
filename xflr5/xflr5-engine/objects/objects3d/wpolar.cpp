@@ -480,7 +480,7 @@ void WPolar::calculatePoint(int iPt)
  * Copies the polar's analysis parameters from an existing polar
  * @param pWPolar a pointer to the instance of the reference CWPolar object from which the parameters should be copied
  */
-void WPolar::duplicateSpec(WPolar *pWPolar)
+void WPolar::duplicateSpec(const WPolar *pWPolar)
 {
     m_PlaneName   = pWPolar->m_PlaneName;
     m_WPlrName    = pWPolar->m_WPlrName;
@@ -554,10 +554,10 @@ void WPolar::duplicateSpec(WPolar *pWPolar)
  * @param iVar the index of the variable
  * @return a void pointer to the array of data
  */
-QVector <double> * WPolar::getWPlrVariable(int iVar)
+QVector <double> const * WPolar::getWPlrVariable(int iVar) const
 {
     // returns a pointer to the variable array defined by its index iVar
-    QVector <double> * pVar=nullptr;
+    QVector <double> const * pVar=nullptr;
     switch (iVar)
     {
         case 0:
@@ -901,7 +901,7 @@ void WPolar::retrieveInertia(Plane *pPlane)
 }
 
 
-void WPolar::copy(WPolar *pWPolar)
+void WPolar::copy(const WPolar *pWPolar)
 {
     int i;
     m_bIsVisible = pWPolar->isVisible();

@@ -242,7 +242,7 @@ WPolar* PlaneAnalysisTask::setWPolarObject(Plane *pCurPlane, WPolar *pCurWPolar)
     if(m_pWPolar->isPanel4Method())
     {
         // if more than one wing, force thin surfaces
-        if(!m_pPlane->isWing()) m_pWPolar->bThinSurfaces() = true;
+        if(!m_pPlane->isWing()) m_pWPolar->setThinSurfaces(true);
     }
 
     if(!initializePanels()) return nullptr;

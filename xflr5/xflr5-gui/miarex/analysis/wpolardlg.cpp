@@ -199,7 +199,7 @@ void WPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
     else
     {
         s_WPolar.setAnalysisMethod(XFLR5::VLMMETHOD);
-        s_WPolar.bThinSurfaces() = true;
+        s_WPolar.setThinSurfaces(true);
         m_pctrlPanelMethod->setVisible(false);
     }
 
@@ -263,7 +263,7 @@ void WPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
     m_pctrlTiltGeom->setChecked(s_WPolar.bTilted());
 
     // force ignore body panels by default
-    s_WPolar.bIgnoreBodyPanels()=true;
+    s_WPolar.setIgnoreBodyPanels(true);
     m_pctrlIgnoreBodyPanels->setChecked(m_pPlane->body() || s_WPolar.bIgnoreBodyPanels());
     //    if(!m_pPlane) s_WPolar.bIgnoreBodyPanels()=false;
 
@@ -322,7 +322,7 @@ void WPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
     s_WPolar.setReferenceChordLength(m_pPlane->mac());
     m_pctrlRefChord->setValue(s_WPolar.referenceChordLength()*Units::mtoUnit());
 
-    s_WPolar.bWakeRollUp() = false;
+    s_WPolar.setWakeRollUp(false);
 
     m_pctrlPlaneInertia->setChecked(s_WPolar.m_bAutoInertia);
 
@@ -426,7 +426,7 @@ void WPolarDlg::onAutoName()
 
 void WPolarDlg::onTiltedGeom()
 {
-    s_WPolar.bTilted() = m_pctrlTiltGeom->isChecked();
+    s_WPolar.setTilted(m_pctrlTiltGeom->isChecked());
     setWPolarName();
     enableControls();
 }
@@ -459,7 +459,7 @@ void WPolarDlg::onPlaneInertia()
 
 void WPolarDlg::onViscous()
 {
-    s_WPolar.bViscous() = m_pctrlViscous->isChecked();
+    s_WPolar.setViscous(m_pctrlViscous->isChecked());
     setWPolarName();
     enableControls();
 }
@@ -467,7 +467,7 @@ void WPolarDlg::onViscous()
 
 void WPolarDlg::onIgnoreBodyPanels()
 {
-    s_WPolar.bIgnoreBodyPanels() = m_pctrlIgnoreBodyPanels->isChecked();
+    s_WPolar.setIgnoreBodyPanels(m_pctrlIgnoreBodyPanels->isChecked());
     setWPolarName();
     enableControls();
 }
@@ -475,7 +475,7 @@ void WPolarDlg::onIgnoreBodyPanels()
 
 void WPolarDlg::onGroundEffect()
 {
-    s_WPolar.bGround() = m_pctrlGroundEffect->isChecked();
+    s_WPolar.setGroundEffect(m_pctrlGroundEffect->isChecked());
     m_pctrlHeight->setEnabled(s_WPolar.bGround());
     setWPolarName();
 }
@@ -485,22 +485,22 @@ void WPolarDlg::onMethod()
 {
     if (m_pctrlLLTMethod->isChecked())
     {
-        s_WPolar.bViscous()      = true;
-        s_WPolar.bThinSurfaces() = true;
-        s_WPolar.bWakeRollUp()   = false;
-        s_WPolar.bTilted()   = false;
+        s_WPolar.setViscous(true);
+        s_WPolar.setThinSurfaces(true);
+        s_WPolar.setWakeRollUp(false);
+        s_WPolar.setTilted(false);
         s_WPolar.setAnalysisMethod(XFLR5::LLTMETHOD);
         m_pctrlTiltGeom->setChecked(false);
     }
     else if (m_pctrlVLM1Method->isChecked() || m_pctrlVLM2Method->isChecked())
     {
-        s_WPolar.bVLM1() = m_pctrlVLM1Method->isChecked();
-        s_WPolar.bThinSurfaces() = true;
+        s_WPolar.setVLM1(m_pctrlVLM1Method->isChecked());
+        s_WPolar.setThinSurfaces(true);
         s_WPolar.setAnalysisMethod(XFLR5::PANEL4METHOD);
     }
     else if (m_pctrlPanelMethod->isChecked())
     {
-        s_WPolar.bThinSurfaces() = false;
+        s_WPolar.setThinSurfaces(false);
         s_WPolar.setAnalysisMethod(XFLR5::PANEL4METHOD);
     }
 
@@ -535,7 +535,7 @@ void WPolarDlg::onOK()
         m_pctrlWeight->setFocus();
         return;
     }
-    if(!m_pPlane->isWing() && s_WPolar.analysisMethod()==XFLR5::PANEL4METHOD) s_WPolar.bThinSurfaces() = true;
+    if(!m_pPlane->isWing() && s_WPolar.analysisMethod()==XFLR5::PANEL4METHOD) s_WPolar.setThinSurfaces(true);
 
     readExtraDragData();
 
@@ -588,7 +588,7 @@ void WPolarDlg::onPolarType()
     else if(m_pctrlType5->isChecked())
     {
         s_WPolar.setPolarType(XFLR5::BETAPOLAR);
-        s_WPolar.bVLM1() = false;
+        s_WPolar.setVLM1(false);
         if(m_pctrlVLM1Method->isChecked())
         {
             m_pctrlVLM1Method->blockSignals(true);
@@ -610,7 +610,7 @@ void WPolarDlg::readValues()
     s_WPolar.m_BetaSpec      = m_pctrlBeta->value();
     if(fabs(s_WPolar.m_BetaSpec)>PRECISION)
     {
-        s_WPolar.bVLM1() = false;
+        s_WPolar.setVLM1(false);
         if(m_pctrlVLM1Method->isChecked())
         {
             m_pctrlVLM1Method->blockSignals(true);

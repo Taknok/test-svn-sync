@@ -207,16 +207,16 @@ void EditPolarDefDlg::accept()
 
     if (m_pWPolar->analysisMethod()==XFLR5::VLMMETHOD)
     {
-        m_pWPolar->bThinSurfaces()  = true;
+        m_pWPolar->setThinSurfaces(true);
         m_pWPolar->setAnalysisMethod(XFLR5::PANEL4METHOD);
     }
     else if (m_pWPolar->analysisMethod()==XFLR5::PANEL4METHOD && !m_pPlane->isWing())
     {
-        m_pWPolar->bThinSurfaces()  = true;
+        m_pWPolar->setThinSurfaces(true);
     }
     else if (m_pWPolar->analysisMethod()==XFLR5::PANEL4METHOD && m_pPlane->isWing())
     {
-        m_pWPolar->bThinSurfaces()  = false;
+        m_pWPolar->setThinSurfaces(false);
     }
     QDialog::accept();
 }
@@ -442,19 +442,19 @@ void EditPolarDefDlg::readData()
     readViewLevel(m_pModel->index(0,0));
     if (m_pWPolar->analysisMethod() == XFLR5::LLTMETHOD)
     {
-        m_pWPolar->bViscous()      = true;
-        m_pWPolar->bThinSurfaces() = true;
-        m_pWPolar->bWakeRollUp()   = false;
-        m_pWPolar->bTilted()       = false;
+        m_pWPolar->setViscous(true) ;
+        m_pWPolar->setThinSurfaces(true);
+        m_pWPolar->setWakeRollUp(false);
+        m_pWPolar->setTilted(false);
     }
     else if (m_pWPolar->analysisMethod() == XFLR5::VLMMETHOD)
     {
-        m_pWPolar->bThinSurfaces() = true;
+        m_pWPolar->setThinSurfaces(true);
         //        m_pWPolar->analysisMethod() = XFLR5::PANELMETHOD;
     }
     else if (m_pWPolar->analysisMethod() == XFLR5::PANEL4METHOD)
     {
-        m_pWPolar->bThinSurfaces() = false;
+        m_pWPolar->setThinSurfaces(false);
     }
 
     //    m_pWPolar->bThinSurfaces() = m_pWPolar->analysisMethod()==XFLR5::PANELMETHOD && m_pPlane->isWing();
@@ -490,11 +490,11 @@ void EditPolarDefDlg::readViewLevel(QModelIndex indexLevel)
             else if(field.compare("Alpha")==0)                   m_pWPolar->setAlpha(dataIndex.data().toDouble());
             else if(field.compare("Beta")==0)                    m_pWPolar->setBeta(dataIndex.data().toDouble());
             else if(field.compare("Method")==0)                  m_pWPolar->setAnalysisMethod(analysisMethod(value));
-            else if(field.compare("Boundary condition")==0)      m_pWPolar->boundaryCondition()    = boundaryCondition(value);
-            else if(field.compare("Viscous")==0)                 m_pWPolar->bViscous()             = stringToBool(value);
-            else if(field.compare("Tilted geometry")==0)         m_pWPolar->bTilted()              = stringToBool(value);
-            else if(field.compare("Ignore body panels")==0)      m_pWPolar->bIgnoreBodyPanels()    = stringToBool(value);
-            else if(field.compare("Use plane inertia")==0)       m_pWPolar->bAutoInertia()         = stringToBool(value);
+            else if(field.compare("Boundary condition")==0)      m_pWPolar->setBoundaryCondition(boundaryCondition(value));
+            else if(field.compare("Viscous")==0)                 m_pWPolar->setViscous(stringToBool(value));
+            else if(field.compare("Tilted geometry")==0)         m_pWPolar->setTilted(stringToBool(value));
+            else if(field.compare("Ignore body panels")==0)      m_pWPolar->setIgnoreBodyPanels(stringToBool(value));
+            else if(field.compare("Use plane inertia")==0)       m_pWPolar->setAutoInertia(stringToBool(value));
             else if(field.compare("Mass")==0)                    m_pWPolar->setMass(dataIndex.data().toDouble()/Units::kgtoUnit());
             else if(field.compare("x")==0)                       m_pWPolar->setCoGx(dataIndex.data().toDouble()/Units::mtoUnit());
             else if(field.compare("z")==0)                       m_pWPolar->setCoGz(dataIndex.data().toDouble()/Units::mtoUnit());
@@ -508,7 +508,7 @@ void EditPolarDefDlg::readViewLevel(QModelIndex indexLevel)
             else if(field.compare("Reference Chord Length")==0)  m_pWPolar->setReferenceChordLength(dataIndex.data().toDouble()/Units::mtoUnit());
             else if(field.compare("Density")==0)                 m_pWPolar->setDensity(dataIndex.data().toDouble());
             else if(field.compare("Viscosity")==0)               m_pWPolar->setViscosity(dataIndex.data().toDouble());
-            else if(field.compare("Ground effect")==0)           m_pWPolar->bGround()              = stringToBool(value);
+            else if(field.compare("Ground effect")==0)           m_pWPolar->setGroundEffect(stringToBool(value));
             else if(field.compare("Height flight")==0)           m_pWPolar->setGroundHeight(dataIndex.data().toDouble()/Units::mtoUnit());
 
         }

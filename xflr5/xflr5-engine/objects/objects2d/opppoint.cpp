@@ -164,7 +164,7 @@ void OpPoint::setHingeMoments(Foil *pFoil)
  * @param bDataOnly true if the analysis parameters should not be output
  */
 
-void OpPoint::exportOpp(QTextStream &out, QString Version, bool bCSV, Foil*pFoil, bool bDataOnly)
+void OpPoint::exportOpp(QTextStream &out, QString Version, bool bCSV, Foil*pFoil, bool bDataOnly) const
 {
     QString strong;
 
@@ -204,7 +204,7 @@ void OpPoint::exportOpp(QTextStream &out, QString Version, bool bCSV, Foil*pFoil
  * @param &OpPointProperties the reference of the QString object to be filled with the description
  * @param bData true if the analysis data should be appended to the string
  */
-void OpPoint::getOppProperties(QString &OpPointProperties, Foil *pFoil, bool bData)
+void OpPoint::getOppProperties(QString &OpPointProperties, Foil *pFoil, bool bData) const
 {
     QString strong;
     OpPointProperties.clear();
@@ -265,7 +265,7 @@ void OpPoint::getOppProperties(QString &OpPointProperties, Foil *pFoil, bool bDa
 }
 
 
-void OpPoint::getColor(int &r, int &g, int &b, int &a)
+void OpPoint::getColor(int &r, int &g, int &b, int &a) const
 {
     r = m_red;
     g = m_green;
@@ -283,7 +283,7 @@ void OpPoint::setColor(int r, int g, int b, int a)
 }
 
 
-QString OpPoint::opPointName()
+QString OpPoint::opPointName() const
 {
     QString name;
     name = QString("-Re=%1-Alpha=%2-NCrit=%3-XTrTop=%4-XtrBot=%5").arg(Reynolds(),8,'g',0).arg(aoa(),5,'f',2)

@@ -230,8 +230,8 @@ OpPoint* Objects2d::addOpPoint(Foil const *pFoil, Polar *pPolar, OpPoint *pOpPoi
     }
     else
     {
-        pOpPoint->foilName() = pFoil->foilName();
-        pOpPoint->polarName()  = pPolar->polarName();
+        pOpPoint->setFoilName(pFoil->foilName());
+        pOpPoint->setPolarName(pPolar->polarName());
     }
 
     if(bStoreOpp)

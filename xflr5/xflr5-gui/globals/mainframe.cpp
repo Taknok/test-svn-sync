@@ -5150,6 +5150,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
     int i=0, n=0;
     float f=0;
     double dble=0;
+    bool boolean=false;
 
     if (bIsStoring)
     {
@@ -5314,8 +5315,8 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
             ar >> WPolarDlg::s_WPolar.m_AlphaSpec;
             ar >> WPolarDlg::s_WPolar.m_BetaSpec;
 
-            ar >> WPolarDlg::s_WPolar.bTilted();
-            ar >> WPolarDlg::s_WPolar.bWakeRollUp();
+            ar >> boolean;  WPolarDlg::s_WPolar.setTilted(boolean);
+            ar >> boolean;  WPolarDlg::s_WPolar.setWakeRollUp(boolean);
         }
         else if(ArchiveFormat==200002) WPolarDlg::s_WPolar.serializeWPlrXFL(ar, false);
 
@@ -5554,8 +5555,8 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
             if(ArchiveFormat>=100006)
             {
                 ar >> k;
-                if (k) WPolarDlg::s_WPolar.bVLM1() = true;
-                else   WPolarDlg::s_WPolar.bVLM1() = false;
+                if (k) WPolarDlg::s_WPolar.setVLM1(true);
+                else   WPolarDlg::s_WPolar.setVLM1(false);
 
                 ar >> k;
             }
@@ -5563,12 +5564,12 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
             if(ArchiveFormat>=100008)
             {
                 ar >> k;
-                if (k) WPolarDlg::s_WPolar.bTilted() = true;
-                else   WPolarDlg::s_WPolar.bTilted() = false;
+                if (k) WPolarDlg::s_WPolar.setTilted(true);
+                else   WPolarDlg::s_WPolar.setTilted(false);
 
                 ar >> k;
-                if (k) WPolarDlg::s_WPolar.bWakeRollUp() = true;
-                else   WPolarDlg::s_WPolar.bWakeRollUp() = false;
+                if (k) WPolarDlg::s_WPolar.setWakeRollUp(true);
+                else   WPolarDlg::s_WPolar.setWakeRollUp(false);
             }
             // and read n again
             ar >> n;
@@ -5607,7 +5608,8 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
             pWPolar = new WPolar;
             bWPolarOK = pWPolar->serializeWPlrWPA(ar, bIsStoring);
             //force compatibilty
-            if(pWPolar->analysisMethod()==XFLR5::PANEL4METHOD && pWPolar->polarType()==XFLR5::STABILITYPOLAR) pWPolar->bThinSurfaces() = true;
+            if(pWPolar->analysisMethod()==XFLR5::PANEL4METHOD && pWPolar->polarType()==XFLR5::STABILITYPOLAR)
+                pWPolar->setThinSurfaces(true);
 
             if (!bWPolarOK)
             {
@@ -5615,7 +5617,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
                 return false;
             }
             if(pWPolar->analysisMethod()!=XFLR5::LLTMETHOD && ArchiveFormat <100003)    pWPolar->clearData();//former VLM version was flawed
-            //            if(pWPolar->polarType()==STABILITYPOLAR)    pWPolar->bThinSurfaces() = true;
+            //            if(pWPolar->polarType()==STABILITYPOLAR)    pWPolar->setThinSurfaces(true);
 
             if(pWPolar->polarFormat()!=1020 || pWPolar->polarType()!=XFLR5::STABILITYPOLAR)
                 Objects3d::addWPolar(pWPolar);

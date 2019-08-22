@@ -247,12 +247,12 @@ public:
     void drawTextLegend();
     void exportAVLWing_Old(Wing *pWing, QTextStream &out, int index, double y, double Thetay);
     void exportAVLWing(Wing *pWing, QTextStream &out, int index, double y, double Thetay);
-    void exportToTextStream(WPolar *pWPolar, QTextStream &out, XFLR5::enumTextFileType FileType, bool bDataOnly=false);
+    void exportToTextStream(const WPolar *pWPolar, QTextStream &out, XFLR5::enumTextFileType FileType, bool bDataOnly=false);
     void fillComboBoxes(bool bEnable = true);
-    void fillWPlrCurve(Curve *pCurve, WPolar *pWPolar, int XVar, int YVar);
-    void fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve);
-    void fillStabCurve(Curve *pCurve, WPolar *pWPolar, int iMode);
-    void getPolarProperties(WPolar *pWPolar, QString &polarProps, bool bData=false);
+    void fillWPlrCurve(Curve *pCurve, const WPolar *pWPolar, int XVar, int YVar);
+    void fillWOppCurve(WingOpp const*pWOpp, Graph *pGraph, Curve *pCurve);
+    void fillStabCurve(Curve *pCurve, WPolar const *pWPolar, int iMode);
+    void getPolarProperties(WPolar const *pWPolar, QString &polarProps, bool bData=false);
     void importPlaneFromXML(QFile &xmlFile);
     void importWPolarFromXML(QFile &xmlFile);
     bool intersectObject(Vector3d O,  Vector3d U, Vector3d &I);
