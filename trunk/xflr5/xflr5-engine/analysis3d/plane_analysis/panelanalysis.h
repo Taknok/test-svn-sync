@@ -130,7 +130,7 @@ public:
     void setWPolar(WPolar*pWPolar){m_pWPolar = pWPolar;}
     PlaneOpp* createPlaneOpp(double *Cp, double *Gamma, double *Sigma);
 
-    void getSpeedVector(Vector3d const &C, double *Mu, double *Sigma, Vector3d &VT, bool bAll=true);
+    void getSpeedVector(Vector3d const &C, const double *Mu, const double *Sigma, Vector3d &VT, bool bAll=true);
     void computePhillipsFormulae();
 
     void clearPOppList();

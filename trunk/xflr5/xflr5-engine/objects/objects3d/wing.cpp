@@ -1337,8 +1337,7 @@ double Wing::totalMass() const
 }
 
 
-
-void Wing::surfacePoint(double xRel, double ypos, enumPanelPosition pos, Vector3d &Point, Vector3d &PtNormal)
+void Wing::surfacePoint(double xRel, double ypos, enumPanelPosition pos, Vector3d &Point, Vector3d &PtNormal) const
 {
     Surface *pSurface = nullptr;
     double fy = qAbs(ypos);

@@ -1968,7 +1968,7 @@ void PanelAnalysis::getSourceInfluence(Vector3d const &C, Panel *pPanel, Vector3
 * @param VT the resulting perturbation velocity
 * @param bAll true if the influence of the bound vortex should be included, in the case of a VLM analysis
 */
-void PanelAnalysis::getSpeedVector(Vector3d const &C, double *Mu, double *Sigma, Vector3d &VT, bool bAll)
+void PanelAnalysis::getSpeedVector(Vector3d const &C, double const *Mu, double const *Sigma, Vector3d &VT, bool bAll)
 {
     Vector3d V;
     int pp, pw, lw;
