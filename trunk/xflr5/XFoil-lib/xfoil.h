@@ -405,7 +405,7 @@ private:
     double w1[6*IQX], w2[6*IQX], w3[6*IQX], w4[6*IQX];
     double w5[6*IQX], w6[6*IQX], w7[6*IQX], w8[6*IQX];
     int nsys;
-    double isys[IVX][ISX];
+    int isys[IVX][ISX];
     double xbp[IBX],ybp[IBX],sb[IBX],snew[4*IBX];
     double xof,yof,sble,chordb;
 //    double xbmin,xbmax,ybmin,ybmax;
