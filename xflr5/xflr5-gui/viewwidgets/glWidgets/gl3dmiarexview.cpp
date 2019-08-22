@@ -63,9 +63,9 @@ double gl3dMiarexView::s_LegendMax =  1.0;
 
 gl3dMiarexView::gl3dMiarexView(QWidget *parent) : gl3dView(parent)
 {
-    m_bStream            = false;
-    m_bSurfVelocities    = false;
-    m_bStreamlinesDone   = false;
+    m_bStream             = false;
+    m_bSurfVelocities     = false;
+    m_bStreamlinesDone    = false;
     m_bSurfVelocitiesDone = false;
     m_NStreamLines = 0;
 }
@@ -386,8 +386,8 @@ void gl3dMiarexView::glMakeCpLegendClr()
 }
 
 
-bool gl3dMiarexView::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNode,
-                                       WPolar *pWPolar, PlaneOpp *pPOpp, int nPanels)
+bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d const *pNode,
+                                       WPolar const *pWPolar, PlaneOpp const *pPOpp, int /*nPanels*/)
 {
     if(!isVisible()) return false;
     if(s_pMainFrame->m_iApp!=XFLR5::MIAREX) return false;
@@ -399,11 +399,11 @@ bool gl3dMiarexView::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNod
     double memcoresize = Panel::coreSize();
     Panel::setCoreSize(0.0005); //mm, just for the time needed to build the streamlines which are very sensitive to trailing vortex interference
 
-    Wing *pWing=nullptr;
+    Wing const *pWing=nullptr;
 
-    QProgressDialog pdlg(tr("Streamlines calculation"), tr("Abort"), 0, nPanels);
-    pdlg.setWindowModality(Qt::WindowModal);
-    pdlg.show();
+//    QProgressDialog pdlg(tr("Streamlines calculation"), tr("Abort"), 0, nPanels);
+//    pdlg.setWindowModality(Qt::WindowModal);
+//    pdlg.show();
 
     bool bFound=false;
     double ds=0;
@@ -413,8 +413,8 @@ bool gl3dMiarexView::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNod
 
     D1.set(987654321.0, 0.0, 0.0);
 
-    double *Mu    = pPOpp->m_dG;
-    double *Sigma = pPOpp->m_dSigma;
+    double const *Mu    = pPOpp->m_dG;
+    double const *Sigma = pPOpp->m_dSigma;
 
     VInf.set(pPOpp->m_QInf,0.0,0.0);
 
@@ -427,8 +427,8 @@ bool gl3dMiarexView::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNod
         if(PlaneWing[iw]) m_NStreamLines += m_Ny[iw]+20; //in case there is a body in the middle, other wise Ny+1
     }
 
-    int streamArraySize =     m_NStreamLines * int(GL3DScales::s_NX) * 3;
-    QVector<float> StreamVertexArray(streamArraySize);
+    int streamArraySize = m_NStreamLines * int(GL3DScales::s_NX) * 3;
+    QVector<float> StreamVertexArray(streamArraySize, 0.0f);
 
     int p0=0;
     int iv = 0;
@@ -471,7 +471,6 @@ bool gl3dMiarexView::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNod
                     TD.rotateZ(RefPoint, pPOpp->beta());
                     TC.rotateY(RefPoint, pPOpp->alpha());
                     TD.rotateY(RefPoint, pPOpp->alpha());
-
 
                     TC -= C;
                     TD -= D;
@@ -576,7 +575,7 @@ bool gl3dMiarexView::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNod
                         nVertex +=1;
                     }
 
-                    if(pdlg.wasCanceled())
+/*                    if(pdlg.wasCanceled())
                     {
                         qDebug()<<"cancelled....";
                         break;
@@ -584,7 +583,7 @@ bool gl3dMiarexView::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNod
                     else
                     {
                         pdlg.setValue(p0+p);
-                    }
+                    }*/
                     qApp->processEvents();
                 }
 
@@ -618,7 +617,132 @@ bool gl3dMiarexView::glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNod
 }
 
 
-void gl3dMiarexView::glMakeTransitions(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp)
+void gl3dMiarexView::glMakeSurfVelocities(Panel const*pPanel, WPolar const *pWPolar, PlaneOpp const *pPOpp, int nPanels)
+{
+    if(!isVisible()) return;
+    if(s_pMainFrame->m_iApp!=XFLR5::MIAREX) return;
+    if(s_pMiarex->m_iView!=XFLR5::W3DVIEW) return;
+    if(!pWPolar || !pPOpp || pPOpp->isLLTMethod() || !pPanel)
+        return;
+
+    float length=0.0, sinT=0.0, cosT=0.0;
+
+    float x1=0.0, x2=0.0, y1=0.0, y2=0.0, z1=0.0, z2=0.0, xe=0.0, ye=0.0, ze=0.0, dlx=0.0, dlz=0.0;
+    Vector3d C, V, VT;
+    Vector3d RefPoint(0.0,0.0,0.0);
+
+    float factor = float(s_VelocityScale)/100.0f;
+
+//    QProgressDialog dlg(tr("Velocities calculation"), tr("Abort"), 0, nPanels);
+//    dlg.setWindowModality(Qt::WindowModal);
+//    dlg.show();
+
+
+    double const *Mu    = pPOpp->m_dG;
+    double const *Sigma = pPOpp->m_dSigma;
+
+    // vertices array size:
+    //        nPanels x 1 arrow
+    //      x3 lines per arrow
+    //      x2 vertices per line
+    //        x3 = 3 vertex components
+
+    int velocityVertexSize = nPanels * 3 * 2 * 3;
+    QVector<float> velocityVertexArray(velocityVertexSize, 0.0f);
+
+    int iv=0;
+    for (int p=0; p<nPanels; p++)
+    {
+        VT.set(pPOpp->m_QInf,0.0,0.0);
+
+        if(pWPolar->analysisMethod()==XFLR5::PANEL4METHOD)
+        {
+            if(pPanel[p].m_Pos==MIDSURFACE) C.copy(pPanel[p].CtrlPt);
+            else                            C.copy(pPanel[p].CollPt);
+            s_pMiarex->m_theTask.m_pthePanelAnalysis->getSpeedVector(C, Mu, Sigma, V);
+
+            VT += V;
+
+            //Tilt the geometry w.r.t. sideslip and aoa
+            C.rotateZ(RefPoint, pPOpp->beta());
+            C.rotateY(RefPoint, pPOpp->alpha());
+
+        }
+        length = float(VT.VAbs())*factor;
+        xe     = C.xf()+factor*VT.xf();
+        ye     = C.yf()+factor*VT.yf();
+        ze     = C.zf()+factor*VT.zf();
+        if(length>0.0f)
+        {
+            cosT   = (xe-C.xf())/length;
+            sinT   = (ze-C.zf())/length;
+            dlx    = 0.15f*length;
+            dlz    = 0.07f*length;
+        }
+        else
+        {
+            cosT   = 0.0;
+            sinT   = 0.0;
+            dlx    = 0.0;
+            dlz    = 0.0;
+        }
+
+        x1 = xe -dlx*cosT - dlz*sinT;
+        y1 = ye;
+        z1 = ze -dlx*sinT + dlz*cosT;
+
+        x2 = xe -dlx*cosT + dlz*sinT;
+        y2 = ye;
+        z2 = ze -dlx*sinT - dlz*cosT;
+
+        velocityVertexArray[iv++] = C.xf();
+        velocityVertexArray[iv++] = C.yf();
+        velocityVertexArray[iv++] = C.zf();
+        velocityVertexArray[iv++] = xe;
+        velocityVertexArray[iv++] = ye;
+        velocityVertexArray[iv++] = ze;
+
+        velocityVertexArray[iv++] = xe;
+        velocityVertexArray[iv++] = ye;
+        velocityVertexArray[iv++] = ze;
+        velocityVertexArray[iv++] = x1;
+        velocityVertexArray[iv++] = y1;
+        velocityVertexArray[iv++] = z1;
+
+        velocityVertexArray[iv++] = xe;
+        velocityVertexArray[iv++] = ye;
+        velocityVertexArray[iv++] = ze;
+        velocityVertexArray[iv++] = x2;
+        velocityVertexArray[iv++] = y2;
+        velocityVertexArray[iv++] = z2;
+//        dlg.setValue(p);
+        qApp->processEvents();
+//        if(dlg.wasCanceled()) break;
+    }
+
+
+/*    if(dlg.wasCanceled())
+    {
+        memset(velocityVertexArray.data(), 0, size_t(velocityVertexSize) * sizeof(float));
+    }
+    else
+    {
+        Q_ASSERT(iv==velocityVertexSize);
+    }*/
+    m_vboSurfaceVelocities.destroy();
+    m_vboSurfaceVelocities.create();
+    m_vboSurfaceVelocities.bind();
+    m_vboSurfaceVelocities.allocate(velocityVertexArray.data(), velocityVertexSize * int(sizeof(GLfloat)));
+    m_vboSurfaceVelocities.release();
+
+    m_bSurfVelocitiesDone = true; // vbo is ready for rendering
+    m_bSurfVelocities = true;
+    update();
+}
+
+
+
+void gl3dMiarexView::glMakeTransitions(int iWing, Wing const *pWing, WPolar const *pWPolar, WingOpp const*pWOpp)
 {
     if(!pWing || !pWPolar || !pWOpp) return;
     Vector3d Pt, N;
@@ -733,127 +857,6 @@ void gl3dMiarexView::glMakeTransitions(int iWing, Wing *pWing, WPolar *pWPolar, 
 }
 
 
-void gl3dMiarexView::glMakeSurfVelocities(Panel *pPanel, WPolar *pWPolar, PlaneOpp *pPOpp, int nPanels)
-{
-    if(!isVisible()) return;
-    if(s_pMainFrame->m_iApp!=XFLR5::MIAREX) return;
-    if(s_pMiarex->m_iView!=XFLR5::W3DVIEW) return;
-    if(!pWPolar || !pPOpp || pPOpp->isLLTMethod() || !pPanel)
-        return;
-
-    float length, sinT, cosT;
-
-    double *Mu, *Sigma;
-    float x1, x2, y1, y2, z1, z2, xe, ye, ze, dlx, dlz;
-    Vector3d C, V, VT;
-    Vector3d RefPoint(0.0,0.0,0.0);
-
-    float factor = float(s_VelocityScale)/100.0f;
-
-    QProgressDialog dlg(tr("Velocities calculation"), tr("Abort"), 0, nPanels);
-    dlg.setWindowModality(Qt::WindowModal);
-    dlg.show();
-
-
-    Mu    = pPOpp->m_dG;
-    Sigma = pPOpp->m_dSigma;
-
-    // vertices array size:
-    //        nPanels x 1 arrow
-    //      x3 lines per arrow
-    //      x2 vertices per line
-    //        x3 = 3 vertex components
-
-    int velocityVertexSize = nPanels * 3 * 2 * 3;
-    QVector<float> velocityVertexArray(velocityVertexSize);
-
-    int iv=0;
-    for (int p=0; p<nPanels; p++)
-    {
-        VT.set(pPOpp->m_QInf,0.0,0.0);
-
-        if(pWPolar->analysisMethod()==XFLR5::PANEL4METHOD)
-        {
-            if(pPanel[p].m_Pos==MIDSURFACE) C.copy(pPanel[p].CtrlPt);
-            else                            C.copy(pPanel[p].CollPt);
-            s_pMiarex->m_theTask.m_pthePanelAnalysis->getSpeedVector(C, Mu, Sigma, V);
-
-            VT += V;
-
-            //Tilt the geometry w.r.t. sideslip and aoa
-            C.rotateZ(RefPoint, pPOpp->beta());
-            C.rotateY(RefPoint, pPOpp->alpha());
-
-        }
-        length = float(VT.VAbs())*factor;
-        xe     = C.xf()+factor*VT.xf();
-        ye     = C.yf()+factor*VT.yf();
-        ze     = C.zf()+factor*VT.zf();
-        if(length>0.0f)
-        {
-            cosT   = (xe-C.xf())/length;
-            sinT   = (ze-C.zf())/length;
-            dlx    = 0.15f*length;
-            dlz    = 0.07f*length;
-        }
-        else
-        {
-            cosT   = 0.0;
-            sinT   = 0.0;
-            dlx    = 0.0;
-            dlz    = 0.0;
-        }
-
-        x1 = xe -dlx*cosT - dlz*sinT;
-        y1 = ye;
-        z1 = ze -dlx*sinT + dlz*cosT;
-
-        x2 = xe -dlx*cosT + dlz*sinT;
-        y2 = ye;
-        z2 = ze -dlx*sinT - dlz*cosT;
-
-        velocityVertexArray[iv++] = C.xf();
-        velocityVertexArray[iv++] = C.yf();
-        velocityVertexArray[iv++] = C.zf();
-        velocityVertexArray[iv++] = xe;
-        velocityVertexArray[iv++] = ye;
-        velocityVertexArray[iv++] = ze;
-
-        velocityVertexArray[iv++] = xe;
-        velocityVertexArray[iv++] = ye;
-        velocityVertexArray[iv++] = ze;
-        velocityVertexArray[iv++] = x1;
-        velocityVertexArray[iv++] = y1;
-        velocityVertexArray[iv++] = z1;
-
-        velocityVertexArray[iv++] = xe;
-        velocityVertexArray[iv++] = ye;
-        velocityVertexArray[iv++] = ze;
-        velocityVertexArray[iv++] = x2;
-        velocityVertexArray[iv++] = y2;
-        velocityVertexArray[iv++] = z2;
-        dlg.setValue(p);
-        qApp->processEvents();
-        if(dlg.wasCanceled()) break;
-    }
-
-
-    if(dlg.wasCanceled())
-    {
-        memset(velocityVertexArray.data(), 0, size_t(velocityVertexSize) * sizeof(float));
-    }
-    else
-    {
-        Q_ASSERT(iv==velocityVertexSize);
-    }
-    m_vboSurfaceVelocities.destroy();
-    m_vboSurfaceVelocities.create();
-    m_vboSurfaceVelocities.bind();
-    m_vboSurfaceVelocities.allocate(velocityVertexArray.data(), velocityVertexSize * int(sizeof(GLfloat)));
-    m_vboSurfaceVelocities.release();
-    m_bSurfVelocitiesDone = true; // vbo is ready for rendering
-}
-
 
 void gl3dMiarexView::paintDownwash(int iWing)
 {
@@ -884,7 +887,7 @@ void gl3dMiarexView::paintDownwash(int iWing)
 }
 
 
-void gl3dMiarexView::glMakeLiftForce(WPolar *pWPolar, PlaneOpp *pPOpp)
+void gl3dMiarexView::glMakeLiftForce(const WPolar *pWPolar, const PlaneOpp *pPOpp)
 {
     if(!pWPolar || !pPOpp) return;
 
@@ -937,7 +940,7 @@ void gl3dMiarexView::glMakeLiftForce(WPolar *pWPolar, PlaneOpp *pPOpp)
 }
 
 
-void gl3dMiarexView::glMakeMoments(Wing *pWing, WPolar *pWPolar, PlaneOpp *pPOpp)
+void gl3dMiarexView::glMakeMoments(Wing const *pWing, const WPolar *pWPolar, const PlaneOpp *pPOpp)
 {
     //    The most common aeronautical convention defines
     //    - the roll as acting about the longitudinal axis, positive with the starboard wing down.
@@ -1118,7 +1121,7 @@ void gl3dMiarexView::glMakeMoments(Wing *pWing, WPolar *pWPolar, PlaneOpp *pPOpp
 }
 
 
-void gl3dMiarexView::glMakeLiftStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp)
+void gl3dMiarexView::glMakeLiftStrip(int iWing, const Wing *pWing, const WPolar *pWPolar, const WingOpp *pWOpp)
 {
     if(!pWing || !pWPolar || !pWOpp) return;
     int i=0,j=0,k=0;
@@ -1306,7 +1309,7 @@ void gl3dMiarexView::paintMoments()
 }
 
 
-void gl3dMiarexView::glMakeDownwash(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp)
+void gl3dMiarexView::glMakeDownwash(int iWing, const Wing *pWing, const WPolar *pWPolar, const WingOpp *pWOpp)
 {
     if(!pWing || !pWPolar || !pWOpp) return;
 
@@ -1421,7 +1424,7 @@ void gl3dMiarexView::glMakeDownwash(int iWing, Wing *pWing, WPolar *pWPolar, Win
 }
 
 
-void gl3dMiarexView::glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, double beta)
+void gl3dMiarexView::glMakeDragStrip(int iWing, const Wing *pWing, const WPolar *pWPolar, const WingOpp *pWOpp, double beta)
 {
     if(!pWing || !pWPolar || !pWOpp) return;
     Vector3d C, Pt, PtNormal;
@@ -1728,6 +1731,7 @@ void gl3dMiarexView::paintStreamLines()
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
 
     if(!m_bStreamlinesDone) return; // don't render until the vbo is ready
+
     QMatrix4x4 idMatrix;
     m_ShaderProgramLine.bind();
     m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, idMatrix);
@@ -1936,7 +1940,7 @@ void gl3dMiarexView::set3DRotationCenter(QPoint point)
 }
 
 
-void gl3dMiarexView::glMakePanelForces(int nPanels, Panel *pPanel, WPolar *pWPolar, PlaneOpp *pPOpp)
+void gl3dMiarexView::glMakePanelForces(int nPanels, Panel const *pPanel, WPolar const *pWPolar, PlaneOpp const *pPOpp)
 {
     if( !pPOpp || !pWPolar || !pPanel || !nPanels) return;
 
@@ -2197,7 +2201,7 @@ void gl3dMiarexView::glMakePanelForces(int nPanels, Panel *pPanel, WPolar *pWPol
 }
 
 
-void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , Vector3d *pNode, Panel *pPanel, PlaneOpp *pPOpp)
+void gl3dMiarexView::glMakePanels(QOpenGLBuffer &vbo, int nPanels, int , const Vector3d *pNode, const Panel *pPanel, const PlaneOpp *pPOpp)
 {
     if(!pPanel || !pNode || !nPanels) return;
 
@@ -2572,31 +2576,28 @@ void gl3dMiarexView::glMake3dObjects()
     }
 
 
-    if((s_bResetglStream))
+    if (s_bResetglStream &&m_bStream)
     {
-        if(m_bStream)
+        m_bStream = false; //Disable temporarily during calculation
+        m_bStreamlinesDone = false; // don't render until the vbo is built
+        //no need to recalculate if not showing
+        if(pCurPlane && pCurPOpp && pCurPOpp->analysisMethod()>=XFLR5::VLMMETHOD)
         {
-            m_bStream = false; //Disable temporarily during calculation
-            m_bStreamlinesDone = false; // don't render until the vbo is built
-            //no need to recalculate if not showing
-            if(pCurPlane && pCurPOpp && pCurPOpp->analysisMethod()>=XFLR5::VLMMETHOD)
+            Wing const *pWingList[MAXWINGS];
+            for(int iw=0; iw<MAXWINGS;iw++) pWingList[iw]=pCurPlane->wing(iw);
+            if(!glMakeStreamLines(pWingList, theTask.m_Node, pCurWPolar, pCurPOpp, theTask.m_MatSize))
             {
-                Wing *pWingList[MAXWINGS];
-                for(int iw=0; iw<MAXWINGS;iw++) pWingList[iw]=pCurPlane->wing(iw);
-                if(!glMakeStreamLines(pWingList, theTask.m_Node, pCurWPolar, pCurPOpp, theTask.m_MatSize))
-                {
-                    m_bStream  = false;
-                    s_bResetglStream = true;
-                    s_pMiarex->m_pctrlStream->blockSignals(true);
-                    s_pMiarex->m_pctrlStream->setChecked(false);
-                    s_pMiarex->m_pctrlStream->blockSignals(false);
-                }
-                else
-                {
-                    m_bStream  = true;
-                    s_bResetglStream = false;
-                    update(); // make sure the streamlines are displayed
-                }
+                m_bStream  = false;
+                s_bResetglStream = true;
+                s_pMiarex->m_pctrlStream->blockSignals(true);
+                s_pMiarex->m_pctrlStream->setChecked(false);
+                s_pMiarex->m_pctrlStream->blockSignals(false);
+            }
+            else
+            {
+                m_bStream  = true;
+                s_bResetglStream = false;
+                update(); // make sure the streamlines are displayed
             }
         }
     }
@@ -2605,6 +2606,9 @@ void gl3dMiarexView::glMake3dObjects()
     {
         s_bResetglSurfVelocities = false; // prevent double repaints if calculations is not done yet
         m_bSurfVelocitiesDone  = false; // prevent painting if vbo is not yet built
+
+        m_bSurfVelocities = false;
+
         if(pCurPlane && pCurPOpp && pCurPOpp->analysisMethod()>=XFLR5::VLMMETHOD)
         {
             glMakeSurfVelocities(theTask.m_Panel, pCurWPolar, pCurPOpp, theTask.m_MatSize);

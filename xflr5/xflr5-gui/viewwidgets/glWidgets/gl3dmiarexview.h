@@ -42,16 +42,16 @@ private:
 public:
     void glMake3dObjects();
     void glMakeCpLegendClr();
-    bool glMakeStreamLines(Wing *PlaneWing[MAXWINGS], Vector3d *pNode, WPolar *pWPolar, PlaneOpp *pPOpp, int nPanels);
-    void glMakeSurfVelocities(Panel *pPanel, WPolar *pWPolar, PlaneOpp *pPOpp, int nPanels);
-    void glMakeTransitions(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
-    void glMakeLiftStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
-    void glMakeLiftForce(WPolar *pWPolar, PlaneOpp *pPOpp);
-    void glMakeMoments(Wing *pWing, WPolar *pWPolar, PlaneOpp *pPOpp);
-    void glMakeDownwash(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp);
-    void glMakeDragStrip(int iWing, Wing *pWing, WPolar *pWPolar, WingOpp *pWOpp, double beta);
-    void glMakePanelForces(int nPanels, Panel *pPanel, WPolar *pWPolar, PlaneOpp *pPOpp);
-    void glMakePanels(QOpenGLBuffer &vbo, int nPanels, int nNodes, Vector3d *pNode, Panel *pPanel, PlaneOpp *pPOpp);
+    bool glMakeStreamLines(const Wing *PlaneWing[], const Vector3d *pNode, const WPolar *pWPolar, const PlaneOpp *pPOpp, int nPanels);
+    void glMakeSurfVelocities(Panel const *pPanel, const WPolar *pWPolar, PlaneOpp const *pPOpp, int nPanels);
+    void glMakeTransitions(int iWing, const Wing *pWing, const WPolar *pWPolar, const WingOpp *pWOpp);
+    void glMakeLiftStrip(int iWing, Wing const *pWing, WPolar const *pWPolar, WingOpp const*pWOpp);
+    void glMakeLiftForce(WPolar const *pWPolar, PlaneOpp const *pPOpp);
+    void glMakeMoments(Wing const *pWing, WPolar const *pWPolar, PlaneOpp const*pPOpp);
+    void glMakeDownwash(int iWing, Wing const *pWing, WPolar const*pWPolar, WingOpp const*pWOpp);
+    void glMakeDragStrip(int iWing, Wing const *pWing, WPolar const *pWPolar, WingOpp const *pWOpp, double beta);
+    void glMakePanelForces(int nPanels, Panel const*pPanel, WPolar const*pWPolar, PlaneOpp const*pPOpp);
+    void glMakePanels(QOpenGLBuffer &vbo, int nPanels, int nNodes, Vector3d const *pNode, Panel const *pPanel, PlaneOpp const *pPOpp);
 
     void paintLift(int iWing);
     void paintMoments();
