@@ -61,10 +61,9 @@ Polar::Polar()
  * @param FileType TXT if the data is separated by spaces, CSV for a comma separator
  * @param bDataOnly true if the analysis parameters should not be output
  */
-void Polar::exportPolar(QTextStream &out, QString versionName, bool bCSV, bool bDataOnly)
+void Polar::exportPolar(QTextStream &out, QString versionName, bool bCSV, bool bDataOnly) const
 {
     QString Header, strong;
-    int j;
 
     if(!bDataOnly)
     {
@@ -106,7 +105,7 @@ void Polar::exportPolar(QTextStream &out, QString versionName, bool bCSV, bool b
             Header=QString(" ------- -------- --------- --------- -------- ------- ------- -------- --------- ---------\n");
             out << Header;
         }
-        for (j=0; j<m_Alpha.size(); j++)
+        for (int j=0; j<m_Alpha.size(); j++)
         {
             if(!bCSV) strong = QString(" %1  %2  %3  %4  %5")
                                             .arg(m_Alpha[j],7,'f',3)
@@ -143,7 +142,7 @@ void Polar::exportPolar(QTextStream &out, QString versionName, bool bCSV, bool b
             Header=QString(" ------- -------- -------- --------- --------- -------- ------- ------- -------- --------- ---------\n");
             out << Header;
         }
-        for (j=0; j<m_Alpha.size(); j++)
+        for (int j=0; j<m_Alpha.size(); j++)
         {
             if(!bCSV) strong=QString(" %1 %2  %3  %4  %5  %6")
                                             .arg(m_Alpha[j],7,'f',3)
@@ -357,17 +356,17 @@ void Polar::addPoint(double Alpha, double Cd, double Cdp, double Cl, double Cm, 
 {
     OpPoint *pOpp = new OpPoint;
     pOpp->m_bViscResults = true;
-    pOpp->aoa()    = Alpha;
-    pOpp->Cd       = Cd;
-    pOpp->Cdp      = Cdp;
-    pOpp->Cl       = Cl;
-    pOpp->Cm       = Cm;
-    pOpp->Xtr1     = Xtr1;
-    pOpp->Xtr2     = Xtr2;
-    pOpp->m_TEHMom = HMom;
-    pOpp->Cpmn     = Cpmn;
-    pOpp->Reynolds() = Reynolds;
-    pOpp->m_XCP    = XCp;
+    pOpp->m_Alpha    = Alpha;
+    pOpp->Cd         = Cd;
+    pOpp->Cdp        = Cdp;
+    pOpp->Cl         = Cl;
+    pOpp->Cm         = Cm;
+    pOpp->Xtr1       = Xtr1;
+    pOpp->Xtr2       = Xtr2;
+    pOpp->m_TEHMom   = HMom;
+    pOpp->Cpmn       = Cpmn;
+    pOpp->m_Reynolds = Reynolds;
+    pOpp->m_XCP      = XCp;
 
     addOpPointData(pOpp);
     delete pOpp;
@@ -457,9 +456,10 @@ void Polar::removePoint(int i)
 *@param &amin the miminum aoa
 *@param &amax the maximum aoa
 */
-void Polar::getAlphaLimits(double &amin, double &amax)
+void Polar::getAlphaLimits(double &amin, double &amax) const
 {
-    if(!m_Alpha.size()){
+    if(!m_Alpha.size())
+    {
         amin = 0.0;
         amax = 0.0;
     }
@@ -476,7 +476,7 @@ void Polar::getAlphaLimits(double &amin, double &amax)
 *@param &Clmin the miminum lift coefficient
 *@param &Clmax the maximum lift coefficient
 */
-void Polar::getClLimits(double &Clmin, double &Clmax)
+void Polar::getClLimits(double &Clmin, double &Clmax) const
 {
     if(!m_Cl.size())
     {
@@ -503,7 +503,7 @@ void Polar::getClLimits(double &Clmin, double &Clmax)
 * If no such pair is found, the method returns 0.
 *@return Cm0
 */
-double Polar::getCm0()
+double Polar::getCm0() const
 {
     int i;
     double Clmin =  1000.0;
@@ -537,7 +537,7 @@ double Polar::getCm0()
 * If no such pair is found, the method returns 0.
 *@return Cm0
 */
-double Polar::getZeroLiftAngle()
+double Polar::getZeroLiftAngle() const
 {
     double Clmin =  1000.0;
     double Clmax = -1000.0;
@@ -569,7 +569,7 @@ double Polar::getZeroLiftAngle()
 * @param Alpha0 the zero-lift angle, i.e.such that Cl = 0, in degrees
 * @param slope the slope of the curve Cl=f(aoa), in units 1/°
 */
-void Polar::getLinearizedCl(double &Alpha0, double &slope)
+void Polar::getLinearizedCl(double &Alpha0, double &slope) const
 {
     int n = m_Cl.size();
 
@@ -753,15 +753,12 @@ QString Polar::autoPolarName(XFLR5::enumPolarType polarType, double Re, double M
 }
 
 
-
-
-
 /**
  * Returns a QString object holding the description and value of the polar's parameters
  * @param &PolarProperties the reference of the QString object to be filled with the description
  * @param bData true if the analysis data should be appended to the string
  */
-void Polar::getPolarProperties(QString &polarProps)
+void Polar::getPolarProperties(QString &polarProps) const
 {
     QString strong;
     polarProps = m_PlrName +"\n\n";
@@ -855,7 +852,7 @@ void Polar::setColor(int r, int g, int b, int a)
 * @param iVar the index of the variable
 * @return the pointer to the array holding the values of the variable
 */
-QVector<double> const & Polar::getPlrVariable(int iVar)
+QVector<double> const & Polar::getPlrVariable(int iVar) const
 {
     switch (iVar)
     {
@@ -886,5 +883,6 @@ QVector<double> const & Polar::getPlrVariable(int iVar)
         default:
             return m_Alpha;
     }
-    return m_Alpha;
 }
+
+

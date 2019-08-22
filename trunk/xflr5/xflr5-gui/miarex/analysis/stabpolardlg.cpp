@@ -63,7 +63,7 @@ StabPolarDlg::StabPolarDlg(QWidget *pParent) : QDialog(pParent)
 
 
     s_StabWPolar.setPolarType(XFLR5::STABILITYPOLAR);
-    s_StabWPolar.bVLM1() = false;
+    s_StabWPolar.setVLM1(false);
 
     setupLayout();
     connectSignals();
@@ -337,7 +337,7 @@ void StabPolarDlg::setViscous()
     {
         m_pctrlViscous->setChecked(false);
         m_pctrlViscous->setEnabled(false);
-        s_StabWPolar.bViscous() = false;
+        s_StabWPolar.setViscous(false);
     }
     else
     {
@@ -422,7 +422,7 @@ void StabPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
     if(s_StabWPolar.analysisMethod()==XFLR5::LLTMETHOD)
     {
         s_StabWPolar.setAnalysisMethod(XFLR5::PANEL4METHOD);
-        s_StabWPolar.bThinSurfaces() = true;
+        s_StabWPolar.setThinSurfaces(true);
     }
 
     if(!m_pPlane->isWing()) m_pctrlPanelMethod->setChecked(true);
@@ -438,7 +438,7 @@ void StabPolarDlg::initDialog(Plane *pPlane, WPolar *pWPolar)
     m_pctrlIgnoreBodyPanels->setEnabled(m_pPlane && m_pPlane->body());
     m_pctrlIgnoreBodyPanels->setChecked(m_pPlane && m_pPlane->body() && s_StabWPolar.bIgnoreBodyPanels());
 
-    if(!m_pPlane || !m_pPlane->body()) s_StabWPolar.bIgnoreBodyPanels()=false;
+    if(!m_pPlane || !m_pPlane->body()) s_StabWPolar.setIgnoreBodyPanels(false);
 
     fillControlList();
 
@@ -608,7 +608,7 @@ void StabPolarDlg::onOK()
 
 void StabPolarDlg::onViscous()
 {
-    s_StabWPolar.bViscous() = m_pctrlViscous->isChecked();
+    s_StabWPolar.setViscous(m_pctrlViscous->isChecked());
     setWPolarName();
 }
 
@@ -616,7 +616,7 @@ void StabPolarDlg::onViscous()
 
 void StabPolarDlg::onIgnoreBodyPanels()
 {
-    s_StabWPolar.bIgnoreBodyPanels() = m_pctrlIgnoreBodyPanels->isChecked();
+    s_StabWPolar.setIgnoreBodyPanels(m_pctrlIgnoreBodyPanels->isChecked());
     setWPolarName();
 }
 
@@ -710,8 +710,8 @@ void StabPolarDlg::readData()
     s_StabWPolar.m_BankAngle = m_pctrlPhi->value();
     setDensity();
 
-    s_StabWPolar.bViscous() = m_pctrlViscous->isChecked();
-    s_StabWPolar.bIgnoreBodyPanels() = m_pctrlIgnoreBodyPanels->isChecked();
+    s_StabWPolar.setViscous(m_pctrlViscous->isChecked());
+    s_StabWPolar.setIgnoreBodyPanels(m_pctrlIgnoreBodyPanels->isChecked());
 
 
     if(m_pctrlArea1->isChecked())
@@ -1213,7 +1213,6 @@ void StabPolarDlg::enableControls()
 }
 
 
-
 void StabPolarDlg::setWPolarName()
 {
     if(!m_bAutoName || !m_pPlane) return;
@@ -1223,17 +1222,16 @@ void StabPolarDlg::setWPolarName()
 }
 
 
-
 void StabPolarDlg::onMethod()
 {
     if (m_pctrlWingMethod2->isChecked())
     {
-        s_StabWPolar.bThinSurfaces()  = true;
+        s_StabWPolar.setThinSurfaces(true);
         s_StabWPolar.setAnalysisMethod(XFLR5::VLMMETHOD);
     }
     else if (m_pctrlWingMethod3->isChecked())
     {
-        s_StabWPolar.bThinSurfaces()  = false;
+        s_StabWPolar.setThinSurfaces(false);
         s_StabWPolar.setAnalysisMethod(XFLR5::PANEL4METHOD);
     }
 

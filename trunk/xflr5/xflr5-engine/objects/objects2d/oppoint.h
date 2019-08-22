@@ -63,37 +63,40 @@ public:
 
     void setHingeMoments(Foil *pFoil);
 
-    void exportOpp(QTextStream &out, QString Version, bool bCSV, Foil *pFoil, bool bDataOnly=false);
+    void exportOpp(QTextStream &out, QString Version, bool bCSV, Foil *pFoil, bool bDataOnly=false) const;
 
     bool serializeOppWPA(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
     bool serializeOppXFL(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
-    void getOppProperties(QString &OpPointProperties, Foil *pFoil, bool bData=false);
+    void getOppProperties(QString &OpPointProperties, Foil *pFoil, bool bData=false) const;
 
 
-    QString &foilName()  {return m_FoilName;}
-    QString &polarName() {return m_PlrName;}
-    QString opPointName();
+    QString const &foilName()  const {return m_FoilName;}
+    QString const &polarName() const {return m_PlrName;}
+    QString opPointName() const;
 
     void setFoilName(QString newFoilName) {m_FoilName = newFoilName;}
+    void setPolarName(QString newPlrName) {m_PlrName = newPlrName;}
 
-    bool &bViscResults(){return m_bViscResults;}
-    bool &bBL(){return m_bBL;}
+    bool const &bViscResults() const {return m_bViscResults;}
+    bool const &bBL()          const {return m_bBL;}
 
-    int &oppStyle()        {return m_Style;}
-    int &oppWidth()        {return m_Width;}
-    bool &isVisible()      {return m_bIsVisible;}
-    int &pointStyle()      {return m_PointStyle;}
+    int const &oppStyle()    const {return m_Style;}
+    int const &oppWidth()    const {return m_Width;}
+    int const &pointStyle()  const {return m_PointStyle;}
+    bool const &isVisible()  const {return m_bIsVisible;}
 
-    double &aoa() {return m_Alpha;}
-    double &Reynolds() {return m_Reynolds;}
-    double &Mach(){return m_Mach; }
+    void setVisible(bool bShow) {m_bIsVisible=bShow;}
 
-    void getColor(int &r, int &g, int &b, int &a);
+    double const &aoa()      const {return m_Alpha;}
+    double const &Reynolds() const {return m_Reynolds;}
+    double const &Mach()     const {return m_Mach; }
+
+    void getColor(int &r, int &g, int &b, int &a) const;
     void setColor(int r, int g, int b, int a);
-    int red() {return m_red;}
-    int green() {return m_green;}
-    int blue() {return m_blue;}
-    int alphaChannel(){return m_alphaChannel;}
+    int red()          const {return m_red;}
+    int green()        const {return m_green;}
+    int blue()         const {return m_blue;}
+    int alphaChannel() const {return m_alphaChannel;}
 
 public:
     bool m_bViscResults;        /**< true if viscous results are stored in this OpPoint */

@@ -1748,7 +1748,7 @@ void XDirect::onCurOppOnly()
     m_bCurOppOnly = !m_bCurOppOnly;
     s_pMainFrame->m_pShowCurOppOnly->setChecked(m_bCurOppOnly);
 
-    if(m_pCurOpp) m_pCurOpp->isVisible() = true;
+    if(m_pCurOpp) m_pCurOpp->setVisible(true);
     m_bResetCurves = true;
     setAnalysisParams();
     updateView();
@@ -2873,7 +2873,7 @@ void XDirect::onHideAllOpps()
     for (int i=0; i<m_poaOpp->size(); i++)
     {
         pOpp = m_poaOpp->at(i);
-        pOpp->isVisible() = false;
+        pOpp->setVisible(false);
     }
     emit projectModified();
     m_bResetCurves = true;
@@ -2932,7 +2932,7 @@ void XDirect::onHideFoilOpps()
     {
         OpPoint *pOpp = m_poaOpp->at(i);
         if(pOpp->foilName()==m_pCurFoil->foilName())
-            pOpp->isVisible() = false;
+            pOpp->setVisible(false);
     }
     emit projectModified();
     m_bResetCurves = true;
@@ -2954,7 +2954,7 @@ void XDirect::onHidePolarOpps()
     {
         pOpp = m_poaOpp->at(i);
         if(pOpp->foilName()==m_pCurFoil->foilName() && pOpp->polarName()==m_pCurPolar->polarName())
-            pOpp->isVisible() = false;
+            pOpp->setVisible(false);
     }
     emit projectModified();
     m_bResetCurves = true;
@@ -3612,7 +3612,7 @@ void XDirect::onRenameCurPolar()
                     if (pOpp->polarName() == OldName &&
                             pOpp->foilName() == m_pCurFoil->foilName())
                     {
-                        pOpp->polarName() = renDlg.newName();
+                        pOpp->setPolarName(renDlg.newName());
                     }
                 }
                 m_pCurPolar->setPolarName(renDlg.newName());
@@ -3657,7 +3657,7 @@ void XDirect::onRenameCurPolar()
                 if (pOpp->polarName() == OldName &&
                         pOpp->foilName() == m_pCurFoil->foilName())
                 {
-                    pOpp->polarName() = renDlg.newName();
+                    pOpp->setPolarName(renDlg.newName());
                 }
             }
 
@@ -3691,8 +3691,6 @@ void XDirect::onOpPointProps()
 }
 
 
-
-
 /**
  *The user has requested the display of the detailed properties of the active Polar object.
  */
@@ -3705,8 +3703,6 @@ void XDirect::onPolarProps()
     opDlg.initDialog(tr("Polar properties"), strangeProps);
     opDlg.exec();
 }
-
-
 
 
 /**
@@ -3923,7 +3919,7 @@ void XDirect::onShowAllOpps()
     for (int i=0; i<m_poaOpp->size(); i++)
     {
         pOpp = m_poaOpp->at(i);
-        pOpp->isVisible() = true;
+        pOpp->setVisible(true);
     }
     emit projectModified();
     m_bResetCurves = true;
@@ -3968,7 +3964,7 @@ void XDirect::onShowCurve()
     }
     else if (m_pCurOpp)
     {
-        m_pCurOpp->isVisible() = m_pctrlShowCurve->isChecked();
+        m_pCurOpp->setVisible(m_pctrlShowCurve->isChecked());
         m_bResetCurves = true;
     }
     emit projectModified();
@@ -4032,7 +4028,7 @@ void XDirect::onShowFoilOpps()
     {
         OpPoint *pOpp = m_poaOpp->at(i);
         if(pOpp->foilName()==m_pCurFoil->foilName())
-            pOpp->isVisible() = true;
+            pOpp->setVisible(true);
     }
     emit projectModified();
     if(!m_bPolarView) m_bResetCurves = true;
@@ -4056,7 +4052,7 @@ void XDirect::onShowPolarOpps()
     {
         OpPoint *pOpp = m_poaOpp->at(i);
         if(pOpp->foilName()==m_pCurFoil->foilName() && pOpp->polarName()==m_pCurPolar->polarName())
-            pOpp->isVisible() = true;
+            pOpp->setVisible(true);
     }
     emit projectModified();
     if(!m_bPolarView) m_bResetCurves = true;
@@ -4898,9 +4894,9 @@ void XDirect::updateCurveStyle()
     else if (!m_bPolarView && m_pCurOpp)
     {
         m_pCurOpp->setColor(m_LineStyle.m_Color.red(), m_LineStyle.m_Color.green(), m_LineStyle.m_Color.blue(), m_LineStyle.m_Color.alpha());
-        m_pCurOpp->oppStyle() = m_LineStyle.m_Style;
-        m_pCurOpp->oppWidth() = m_LineStyle.m_Width;
-        m_pCurOpp->pointStyle() = m_LineStyle.m_PointStyle;
+        m_pCurOpp->m_Style = m_LineStyle.m_Style;
+        m_pCurOpp->m_Width = m_LineStyle.m_Width;
+        m_pCurOpp->m_PointStyle = m_LineStyle.m_PointStyle;
         m_bResetCurves = true;
     }
 
@@ -4924,8 +4920,6 @@ void XDirect::updateView()
     }
     s_pMainFrame->m_pXDirectTileWidget->update();
 }
-
-
 
 
 /**
@@ -5015,7 +5009,6 @@ void XDirect::renameFoil(Foil *pFoil)
 }
 
 
-
 void XDirect::setView(XFLR5::enumGraphView eView)
 {
     if (m_bPolarView)
@@ -5023,7 +5016,6 @@ void XDirect::setView(XFLR5::enumGraphView eView)
         m_iPlrView = eView;
     }
 }
-
 
 
 void XDirect::setGraphTiles()
@@ -5055,8 +5047,6 @@ void XDirect::setGraphTiles()
 }
 
 
-
-
 /**
  * Sets the Foil scale in the OpPoint view.
  */
@@ -5064,7 +5054,6 @@ void XDirect::setFoilScale()
 {
     s_pMainFrame->m_pXDirectTileWidget->opPointWidget()->setFoilScale();
 }
-
 
 
 /**
@@ -5091,7 +5080,6 @@ void XDirect::onImportXMLAnalysis()
     XFile.close();
     importAnalysisFromXML(XFile);
 }
-
 
 
 /**
@@ -5144,7 +5132,6 @@ void XDirect::importAnalysisFromXML(QFile &xmlFile)
 }
 
 
-
 /**
  * Exports the analysis data to an XML file
  */
@@ -5181,13 +5168,6 @@ void XDirect::onExportXMLAnalysis()
 
     XFile.close();
 }
-
-
-
-
-
-
-
 
 
 

@@ -1386,7 +1386,7 @@ void Miarex::fillComboBoxes(bool bEnable)
 *@param pGraph a pointer to the instance of the Graph object to which the curve belongs
 *@param pCurve a pointer to the instance of the CCurve object to be filled with the data from the CWOpp object
 */
-void Miarex::fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
+void Miarex::fillWOppCurve(WingOpp const *pWOpp, Graph *pGraph, Curve *pCurve)
 {
     if(!pWOpp || !pGraph || !pCurve) return;
     int Var = pGraph->yVariable();
@@ -1554,17 +1554,14 @@ void Miarex::fillWOppCurve(WingOpp *pWOpp, Graph *pGraph, Curve *pCurve)
 *@param pWPolar a pointer to the instance of the CWPolar object from which the data is to be extracted
 *@param iMode the index of the mode for which the curve is to be created
 */
-void Miarex::fillStabCurve(Curve *pCurve, WPolar *pWPolar, int iMode)
+void Miarex::fillStabCurve(Curve *pCurve, WPolar const *pWPolar, int iMode)
 {
-    int i;
-    double x,y;
-
     pCurve->setSelected(-1);
 
-    for (i=0; i<pWPolar->dataSize(); i++)
+    for (int i=0; i<pWPolar->dataSize(); i++)
     {
-        x = pWPolar->m_EigenValue[iMode][i].real();
-        y = pWPolar->m_EigenValue[iMode][i].imag()/2./PI;
+        double x = pWPolar->m_EigenValue[iMode][i].real();
+        double y = pWPolar->m_EigenValue[iMode][i].imag()/2./PI;
 
         pCurve->appendPoint(x, y);
         if(m_pCurPlane && m_pCurPOpp && Graph::isHighLighting())
@@ -1588,25 +1585,21 @@ void Miarex::fillStabCurve(Curve *pCurve, WPolar *pWPolar, int iMode)
 *@param XVar the index of the variable to appear on the x-axis
 *@param YVar the index of the variable to appear on the y-axis
 */
-void Miarex::fillWPlrCurve(Curve *pCurve, WPolar *pWPolar, int XVar, int YVar)
+void Miarex::fillWPlrCurve(Curve *pCurve, WPolar const *pWPolar, int XVar, int YVar)
 {
-    bool bAdd;
-    int i;
-    double x,y;
     QString PlaneName;
-    if(m_pCurPlane)     PlaneName=m_pCurPlane->planeName();
-    QVector <double> *pX;
-    QVector <double> *pY;
-    pX = pWPolar->getWPlrVariable(XVar);
-    pY = pWPolar->getWPlrVariable(YVar);
+    if(m_pCurPlane) PlaneName=m_pCurPlane->planeName();
+
+    QVector <double> const *pX = pWPolar->getWPlrVariable(XVar);
+    QVector <double> const *pY = pWPolar->getWPlrVariable(YVar);
 
     pCurve->setSelected(-1);
-    for (i=0; i<pWPolar->dataSize(); i++)
+    for (int i=0; i<pWPolar->dataSize(); i++)
     {
-        bAdd = true;
+        bool bAdd = true;
 
-        x = (*pX)[i];
-        y = (*pY)[i];
+        double x = (*pX)[i];
+        double y = (*pY)[i];
 
         //        if((XVar==16 || XVar==17 || XVar==20) && x<0) bAdd = false;
         //        if((YVar==16 || YVar==17 || YVar==20) && y<0) bAdd = false;
@@ -2058,7 +2051,7 @@ bool Miarex::loadSettings(QSettings &settings)
 
 
         WPolarDlg::s_WPolar.m_bAutoInertia =    settings.value("bAutoInertia", false).toBool();
-        WPolarDlg::s_WPolar.bVLM1() = settings.value("bVLM1").toBool();
+        WPolarDlg::s_WPolar.setVLM1(settings.value("bVLM1").toBool());
 
         PlaneOpp::s_bKeepOutOpps  = settings.value("KeepOutOpps").toBool();
 
@@ -2781,7 +2774,7 @@ void Miarex::onDefineStabPolar()
     StabPolarDlg::s_StabWPolar.setViscosity(WPolarDlg::s_WPolar.viscosity());
     StabPolarDlg::s_StabWPolar.setDensity(WPolarDlg::s_WPolar.density());
     StabPolarDlg::s_StabWPolar.setReferenceDim(WPolarDlg::s_WPolar.referenceDim());
-    StabPolarDlg::s_StabWPolar.bThinSurfaces() = WPolarDlg::s_WPolar.bThinSurfaces();
+    StabPolarDlg::s_StabWPolar.setThinSurfaces(WPolarDlg::s_WPolar.bThinSurfaces());
 
     StabPolarDlg spDlg(s_pMainFrame);
     spDlg.initDialog(m_pCurPlane);
@@ -2808,16 +2801,16 @@ void Miarex::onDefineStabPolar()
             pNewStabPolar->setPolarName(pNewStabPolar->polarName().left(60)+"..."+QString("(%1)").arg(Objects3d::polarCount()));
         }
 
-        pNewStabPolar->bVLM1()           = false;
+        pNewStabPolar->setVLM1(false);
 
 
-        if(m_bDirichlet) pNewStabPolar->boundaryCondition() = XFLR5::DIRICHLET;
-        else             pNewStabPolar->boundaryCondition() = XFLR5::NEUMANN;
+        if(m_bDirichlet) pNewStabPolar->setBoundaryCondition(XFLR5::DIRICHLET);
+        else             pNewStabPolar->setBoundaryCondition(XFLR5::NEUMANN);
 
-        pNewStabPolar->bTilted()         = false;
-        pNewStabPolar->bWakeRollUp()     = false;
+        pNewStabPolar->setTilted(false);
+        pNewStabPolar->setWakeRollUp(false);
         pNewStabPolar->setAnalysisMethod(XFLR5::PANEL4METHOD);
-        pNewStabPolar->bGround()         = false;
+        pNewStabPolar->setGroundEffect(false);
         pNewStabPolar->m_AlphaSpec       = 0.0;
         pNewStabPolar->m_Height          = 0.0;
 
@@ -2877,8 +2870,8 @@ void Miarex::onDefineWPolar()
             pNewWPolar->setReferenceArea(area);
         }
 
-        if(m_bDirichlet) pNewWPolar->boundaryCondition() = XFLR5::DIRICHLET;
-        else             pNewWPolar->boundaryCondition() = XFLR5::NEUMANN;
+        if(m_bDirichlet) pNewWPolar->setBoundaryCondition(XFLR5::DIRICHLET);
+        else             pNewWPolar->setBoundaryCondition(XFLR5::NEUMANN);
 
 
         QColor clr = MainFrame::getColor(4);
@@ -2893,7 +2886,6 @@ void Miarex::onDefineWPolar()
         gl3dMiarexView::s_bResetglWake = true;
 
         setWPolar();
-
 
         s_pMainFrame->updateWPolarListBox();
         updateView();
@@ -8804,15 +8796,13 @@ void Miarex::onExportAnalysisToXML()
 
 
 
-
-
 /**
  * Returns a QString object holding the description and value of the polar's parameters
  * @param *pWPolar a pointer to the polar object
  * @param &PolarProperties the reference of the QString object to be filled with the description
  * @param bData true if the analysis data should be appended to the string
  */
-void Miarex::getPolarProperties(WPolar *pWPolar, QString &polarProps, bool bData)
+void Miarex::getPolarProperties(const WPolar *pWPolar, QString &polarProps, bool bData)
 {
     QString strong, lenunit, massunit, speedunit, areaunit;
     Units::getLengthUnitLabel(lenunit);
@@ -9128,7 +9118,7 @@ void Miarex::getPolarProperties(WPolar *pWPolar, QString &polarProps, bool bData
  * @param FileType TXT if the data is separated by spaces, CSV for a comma separator
  * @param bDataOnly true if the analysis parameters should not be output
  */
-void Miarex::exportToTextStream(WPolar *pWPolar, QTextStream &out, XFLR5::enumTextFileType FileType, bool bDataOnly)
+void Miarex::exportToTextStream(WPolar const *pWPolar, QTextStream &out, XFLR5::enumTextFileType FileType, bool bDataOnly)
 {
     QString Header, strong, str;
 
