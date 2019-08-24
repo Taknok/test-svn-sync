@@ -132,6 +132,7 @@ SOURCES += \
 
 
 HEADERS += \
+    $$PWD/xdirect/xdirectstyledlg.h \
     design/afoil.h \
     design/afoiltabledlg.h \
     design/foiltabledelegate.h \
@@ -257,7 +258,6 @@ HEADERS += \
     xdirect/mgt/managefoilsdlg.h \
     xdirect/objects2d.h \
     xdirect/xdirect.h \
-    xdirect/xdirectstyleDlg.h \
     xdirect/xml/xmlpolarreader.h \
     xdirect/xml/xmlpolarwriter.h \
     xinverse/foilselectiondlg.h \

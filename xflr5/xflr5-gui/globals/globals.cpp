@@ -1308,8 +1308,8 @@ bool serializeFoil(Foil *pFoil, QDataStream &ar, bool bIsStoring)
         ar << ArchiveFormat;
         writeString(ar, pFoil->m_FoilName);
         writeString(ar, pFoil->m_FoilDescription);
-        ar << pFoil->m_FoilStyle << pFoil->m_FoilWidth;
-        writeColor(ar, pFoil->m_red, pFoil->m_green, pFoil->m_blue);
+        ar << pFoil->m_Stipple << pFoil->m_Width;
+        writeColor(ar, pFoil->m_Color.red(), pFoil->m_Color.green(), pFoil->m_Color.blue());
 
         if (pFoil->m_bIsFoilVisible) ar << 1; else ar << 0;
         if (pFoil->m_PointStyle>0)   ar << 1; else ar << 0;//1004
@@ -1345,8 +1345,10 @@ bool serializeFoil(Foil *pFoil, QDataStream &ar, bool bIsStoring)
         }
         if(ArchiveFormat>=1002)
         {
-            ar >> pFoil->m_FoilStyle >> pFoil->m_FoilWidth;
-            readColor(ar, pFoil->m_red, pFoil->m_green, pFoil->m_blue);
+            ar >> pFoil->m_Stipple >> pFoil->m_Width;
+            int r=0,g=0,b=0;
+            readColor(ar, r, g, b);
+            pFoil->setColor(r,g,b);
         }
         if(ArchiveFormat>=1003)
         {

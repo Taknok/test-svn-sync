@@ -67,7 +67,7 @@
 #include <xdirect/geometry/flapdlg.h>
 #include <xdirect/geometry/cadddlg.h>
 
-#include <xdirect/xdirectstyleDlg.h>
+#include <xdirect/xdirectstyledlg.h>
 
 #include <xinverse/foilselectiondlg.h>
 
@@ -104,7 +104,7 @@ XDirect::XDirect(QWidget *parent) : QWidget(parent)
 
     m_pOpPointWidget = nullptr;
 
-    m_LineStyle.m_Style = 0;
+    m_LineStyle.m_Stipple = 0;
     m_LineStyle.m_Width = 1;
     m_LineStyle.m_Color = QColor(0,0,0);
     m_LineStyle.m_PointStyle = 0;
@@ -508,7 +508,7 @@ void XDirect::fillComboBoxes(bool bEnable)
 
     for (int i=0; i<5;i++)
     {
-        LineStyle[i] = m_LineStyle.m_Style;
+        LineStyle[i] = m_LineStyle.m_Stipple;
         LineWidth[i]  = m_LineStyle.m_Width;
         PointStyle[i] = m_LineStyle.m_PointStyle;
     }
@@ -537,11 +537,11 @@ void XDirect::fillComboBoxes(bool bEnable)
 
     if(bEnable)
     {
-        m_pctrlCurveStyle->setLine( m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
-        m_pctrlCurveWidth->setLine( m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
-        m_pctrlPointStyle->setLine(m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
+        m_pctrlCurveStyle->setLine( m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
+        m_pctrlCurveWidth->setLine( m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
+        m_pctrlPointStyle->setLine(m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
         m_pctrlCurveColor->setColor(m_LineStyle.m_Color);
-        m_pctrlCurveColor->setStyle(m_LineStyle.m_Style);
+        m_pctrlCurveColor->setStipple(m_LineStyle.m_Stipple);
         m_pctrlCurveColor->setWidth(m_LineStyle.m_Width);
         m_pctrlCurveColor->setPointStyle(m_LineStyle.m_PointStyle);
     }
@@ -551,7 +551,7 @@ void XDirect::fillComboBoxes(bool bEnable)
         m_pctrlCurveWidth->setLine( 0, 1, QColor(100,100,100), 0);
         m_pctrlPointStyle->setLine(0, 1, QColor(100,100,100), 0);
         m_pctrlCurveColor->setColor(QColor(100,100,100));
-        m_pctrlCurveColor->setStyle(0);
+        m_pctrlCurveColor->setStipple(0);
         m_pctrlCurveColor->setWidth(1);
         m_pctrlCurveColor->setPointStyle(0);
     }
@@ -563,7 +563,7 @@ void XDirect::fillComboBoxes(bool bEnable)
     m_pctrlPointStyle->update();
     m_pctrlCurveColor->update();
 
-    m_pctrlCurveStyle->setCurrentIndex(m_LineStyle.m_Style);
+    m_pctrlCurveStyle->setCurrentIndex(m_LineStyle.m_Stipple);
     m_pctrlCurveWidth->setCurrentIndex(m_LineStyle.m_Width-1);
     m_pctrlPointStyle->setCurrentIndex(m_LineStyle.m_PointStyle);
 }
@@ -1773,7 +1773,7 @@ void XDirect::onCurveColor()
  */
 void XDirect::onCurveStyle(int index)
 {
-    m_LineStyle.m_Style = index;
+    m_LineStyle.m_Stipple = index;
     fillComboBoxes();
     updateCurveStyle();
 }
@@ -1816,9 +1816,9 @@ void XDirect::onDefinePolar()
 
         if(Settings::isAlignedChildrenStyle())
         {
-            m_pCurPolar->m_Style = m_pCurFoil->m_FoilStyle;
-            m_pCurPolar->m_Width = m_pCurFoil->m_FoilWidth;
-            m_pCurPolar->setColor(m_pCurFoil->m_red, m_pCurFoil->m_green, m_pCurFoil->m_blue, m_pCurFoil->alphaChannel());
+            m_pCurPolar->m_Style = m_pCurFoil->m_Stipple;
+            m_pCurPolar->m_Width = m_pCurFoil->m_Width;
+            m_pCurPolar->setColor(m_pCurFoil->red(), m_pCurFoil->green(), m_pCurFoil->blue(), m_pCurFoil->alphaChannel());
             m_pCurPolar->m_PointStyle = m_pCurFoil->m_PointStyle;
         }
         else
@@ -2212,7 +2212,7 @@ void XDirect::onEditCurPolar()
     epDlg.initDialog(this, m_pCurPolar, nullptr, nullptr);
 
     LineStyle style;
-    style.m_Style = m_pCurPolar->polarStyle();
+    style.m_Stipple = m_pCurPolar->polarStyle();
     style.m_Width= m_pCurPolar->polarWidth();
     style.m_Color= colour(m_pCurPolar);
     style.m_bIsVisible= m_pCurPolar->isVisible();
@@ -2231,7 +2231,7 @@ void XDirect::onEditCurPolar()
     {
         m_pCurPolar->copyPolar(pMemPolar);
     }
-    m_pCurPolar->setPolarStyle(style.m_Style);
+    m_pCurPolar->setPolarStyle(style.m_Stipple);
     m_pCurPolar->setPolarWidth(style.m_Width);
     m_pCurPolar->setColor(style.m_Color.red(), style.m_Color.green(), style.m_Color.blue());
     m_pCurPolar->setPointStyle(style.m_PointStyle);
@@ -4324,7 +4324,7 @@ void XDirect::setCurveParams()
             if(m_pCurPolar->isVisible())  m_pctrlShowCurve->setChecked(true);  else  m_pctrlShowCurve->setChecked(false);
 
             m_LineStyle.m_Color = colour(m_pCurPolar);
-            m_LineStyle.m_Style = m_pCurPolar->polarStyle();
+            m_LineStyle.m_Stipple = m_pCurPolar->polarStyle();
             m_LineStyle.m_Width = m_pCurPolar->polarWidth();
             m_LineStyle.m_PointStyle = m_pCurPolar->pointStyle();
             fillComboBoxes();
@@ -4342,7 +4342,7 @@ void XDirect::setCurveParams()
             if(m_pCurOpp->isVisible())  m_pctrlShowCurve->setChecked(true);  else  m_pctrlShowCurve->setChecked(false);
 
             m_LineStyle.m_Color  = colour(m_pCurOpp);
-            m_LineStyle.m_Style  = m_pCurOpp->oppStyle();
+            m_LineStyle.m_Stipple  = m_pCurOpp->oppStyle();
             m_LineStyle.m_Width  = m_pCurOpp->oppWidth();
             m_LineStyle.m_PointStyle = m_pCurOpp->pointStyle();
             fillComboBoxes();
@@ -4880,7 +4880,7 @@ void XDirect::updateCurveStyle()
     if(m_bPolarView && m_pCurPolar)
     {
         m_pCurPolar->setColor(m_LineStyle.m_Color.red(), m_LineStyle.m_Color.green(), m_LineStyle.m_Color.blue());
-        m_pCurPolar->setPolarStyle(m_LineStyle.m_Style);
+        m_pCurPolar->setPolarStyle(m_LineStyle.m_Stipple);
         m_pCurPolar->setPolarWidth(m_LineStyle.m_Width);
         m_pCurPolar->setPointStyle(m_LineStyle.m_PointStyle);
 
@@ -4894,7 +4894,7 @@ void XDirect::updateCurveStyle()
     else if (!m_bPolarView && m_pCurOpp)
     {
         m_pCurOpp->setColor(m_LineStyle.m_Color.red(), m_LineStyle.m_Color.green(), m_LineStyle.m_Color.blue(), m_LineStyle.m_Color.alpha());
-        m_pCurOpp->m_Style = m_LineStyle.m_Style;
+        m_pCurOpp->m_Style = m_LineStyle.m_Stipple;
         m_pCurOpp->m_Width = m_LineStyle.m_Width;
         m_pCurOpp->m_PointStyle = m_LineStyle.m_PointStyle;
         m_bResetCurves = true;

@@ -41,7 +41,7 @@ LineBtn::LineBtn(QWidget *parent)
     setSizePolicy(szPolicyExpanding);
 
     m_LineStyle.m_Color = Qt::darkGray;
-    m_LineStyle.m_Style = 0;
+    m_LineStyle.m_Stipple = 0;
     m_LineStyle.m_Width = 1;
     m_LineStyle.m_PointStyle = 0;
 }
@@ -74,9 +74,9 @@ void LineBtn::setColor(QColor const & color)
 }
 
 
-void LineBtn::setStyle(int const & style)
+void LineBtn::setStipple(int const & style)
 {
-    m_LineStyle.m_Style = style;
+    m_LineStyle.m_Stipple = style;
     update();
 }
 
@@ -95,9 +95,9 @@ void LineBtn::setPointStyle(int const & pointStyle)
 }
 
 
-void LineBtn::setStyle(int const &style, int const &width, QColor const & color, int const & pointStyle)
+void LineBtn::setTheStyle(int const &style, int const &width, QColor const & color, int const & pointStyle)
 {
-    m_LineStyle.m_Style = style;
+    m_LineStyle.m_Stipple = style;
     m_LineStyle.m_Width = width;
     m_LineStyle.m_Color = color;
     m_LineStyle.m_PointStyle = pointStyle;
@@ -118,7 +118,7 @@ void LineBtn::paintEvent(QPaintEvent *event)
         painter.setBackgroundMode(Qt::TransparentMode);
 
         QPen LinePen(m_LineStyle.m_Color);
-        LinePen.setStyle(getStyle(m_LineStyle.m_Style));
+        LinePen.setStyle(getStyle(m_LineStyle.m_Stipple));
         LinePen.setWidth(m_LineStyle.m_Width);
         painter.setPen(LinePen);
         painter.drawLine(r.left()+5, r.height()/2, r.width()-5, r.height()/2);

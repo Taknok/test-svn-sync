@@ -93,7 +93,7 @@ public:
      * Sets the curve's style
      * @param nStyle the index of the new curve's style
      */
-    void setStyle(int nStyle){ m_curveStyle.m_Style = nStyle;}
+    void setStyle(int nStyle){ m_curveStyle.m_Stipple = nStyle;}
 
     void setLineStyle(LineStyle lineStyle) { m_curveStyle = lineStyle; }
 
@@ -133,7 +133,7 @@ public:
     int count() const {return x.size();}
 
     /** Returns the Curve style*/
-    int style() const {return m_curveStyle.m_Style;}
+    int style() const {return m_curveStyle.m_Stipple;}
 
     /** Returns the Curve width*/
     int width() const {return m_curveStyle.m_Width;}

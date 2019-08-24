@@ -36,12 +36,12 @@
 Foil::Foil()
 {
     m_PointStyle = 0; //no points to start with
-    m_FoilStyle = 0;
-    m_FoilWidth = 1;
-    m_red   = int((double(rand())/double(RAND_MAX))*200);
-    m_green = int((double(rand())/double(RAND_MAX))*200);
-    m_blue  = int((double(rand())/double(RAND_MAX))*200);
-    m_alphaChannel = 255;
+    m_Stipple = 0;
+    m_Width = 1;
+    m_Color.setRed(int((double(rand())/double(RAND_MAX))*200));
+    m_Color.setGreen(int((double(rand())/double(RAND_MAX))*200));
+    m_Color.setBlue(int((double(rand())/double(RAND_MAX))*200));
+    m_Color.setAlpha(255);
 
 
     m_iHighLight = -1;
@@ -188,12 +188,9 @@ void Foil::copyFoil(Foil *pSrcFoil)
     m_TEXHinge    = pSrcFoil->m_TEXHinge;
     m_TEYHinge    = pSrcFoil->m_TEYHinge;
 
-    m_red          = pSrcFoil->m_red;
-    m_green        = pSrcFoil->m_green;
-    m_blue         = pSrcFoil->m_blue;
-    m_alphaChannel = pSrcFoil->m_alphaChannel;
-    m_FoilStyle   = pSrcFoil->foilLineStyle();
-    m_FoilWidth   = pSrcFoil->foilLineWidth();
+    m_Color       = pSrcFoil->m_Color;
+    m_Stipple     = pSrcFoil->foilLineStyle();
+    m_Width       = pSrcFoil->foilLineWidth();
     m_bCenterLine = pSrcFoil->m_bCenterLine;
     m_PointStyle  = pSrcFoil->foilPointStyle();
 }
@@ -1477,26 +1474,19 @@ void Foil::setFlap()
 }
 
 
-
-
 void Foil::getColor(int &r, int &g, int &b, int &a)
 {
-    r = m_red;
-    g = m_green;
-    b = m_blue;
-    a = m_alphaChannel;
+    r = m_Color.red();
+    g = m_Color.green();
+    b = m_Color.blue();
+    a = m_Color.alpha();
 }
-
 
 
 void Foil::setColor(int r, int g, int b, int a)
 {
-    m_red = r;
-    m_green = g;
-    m_blue = b;
-    m_alphaChannel = a;
+    m_Color = {r,g,b,a};
 }
-
 
 
 /** For debug purposes only */
@@ -1520,3 +1510,10 @@ void Foil::displayCoords(bool bBaseCoords)
 
 
 
+void Foil::setTheStyle(int stipple, int w, QColor clr, int pointstyle)
+{
+    m_Stipple = stipple;
+    m_Width = w;
+    m_Color = clr;
+    m_PointStyle = pointstyle;
+}

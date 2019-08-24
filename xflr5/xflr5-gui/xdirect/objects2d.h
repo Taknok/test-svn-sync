@@ -81,7 +81,7 @@ public:
     static int oppCount() {return s_oaOpp.size();}
 
     static void setFoilChildrenStyle(Foil *pFoil);
-    static void setPolarChildrenStyle(Polar *pPolar);
+    static void setPolarChildrenStyle(const Polar *pPolar);
 
     static QVector<Foil*> * pOAFoil() {return &s_oaFoil;}
     static QVector<Polar*> * pOAPolar() {return &s_oaPolar;}

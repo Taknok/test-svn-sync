@@ -166,12 +166,9 @@ void Objects2d::insertThisFoil(Foil *pFoil)
         if(pOldFoil->foilName()==oldFoilName && pOldFoil!=pFoil)
         {
             //copy the old foil's style
-            pFoil->m_red          = pOldFoil->m_red;
-            pFoil->m_green        = pOldFoil->m_green;
-            pFoil->m_blue         = pOldFoil->m_blue;
-            pFoil->m_alphaChannel = pOldFoil->m_alphaChannel;
-            pFoil->m_FoilStyle = pOldFoil->foilLineStyle();
-            pFoil->m_FoilWidth = pOldFoil->foilLineWidth();
+            pFoil->m_Color   = pOldFoil->m_Color;
+            pFoil->m_Stipple = pOldFoil->foilLineStyle();
+            pFoil->m_Width   = pOldFoil->foilLineWidth();
 
             //we overwrite the old foil and delete its children objects
             deleteFoil(pOldFoil);
@@ -756,9 +753,9 @@ void Objects2d::setFoilChildrenStyle(Foil *pFoil)
         OpPoint *pOpPoint = s_oaOpp[j];
         if(pOpPoint->foilName() == pFoil->foilName())
         {
-            pOpPoint->m_Style = pFoil->m_FoilStyle;
-            pOpPoint->m_Width = pFoil->m_FoilWidth;
-            pOpPoint->setColor(pFoil->m_red, pFoil->m_green, pFoil->m_blue, pFoil->alphaChannel());
+            pOpPoint->m_Style = pFoil->m_Stipple;
+            pOpPoint->m_Width = pFoil->m_Width;
+            pOpPoint->setColor(pFoil->red(), pFoil->green(), pFoil->blue(), pFoil->alphaChannel());
             pOpPoint->m_PointStyle = pFoil->m_PointStyle;
         }
     }
@@ -768,16 +765,16 @@ void Objects2d::setFoilChildrenStyle(Foil *pFoil)
         Polar *pPolar = s_oaPolar.at(j);
         if(pPolar->foilName() == pFoil->foilName())
         {
-            pPolar->m_Style = pFoil->m_FoilStyle;
-            pPolar->m_Width = pFoil->m_FoilWidth;
-            pPolar->setColor(pFoil->m_red, pFoil->m_green, pFoil->m_blue, pFoil->alphaChannel());
+            pPolar->m_Style = pFoil->m_Stipple;
+            pPolar->m_Width = pFoil->m_Width;
+            pPolar->setColor(pFoil->red(), pFoil->green(), pFoil->blue(), pFoil->alphaChannel());
             pPolar->m_PointStyle = pFoil->m_PointStyle;
         }
     }
 }
 
 
-void Objects2d::setPolarChildrenStyle(Polar *pPolar)
+void Objects2d::setPolarChildrenStyle(Polar const *pPolar)
 {
     if(!pPolar) return;
     for (int j=s_oaOpp.size()-1; j>=0; j--)

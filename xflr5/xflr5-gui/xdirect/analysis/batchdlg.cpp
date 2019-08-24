@@ -466,9 +466,9 @@ Polar *BatchDlg::createPolar(Foil *pFoil, double Spec, double Mach, double NCrit
 
     if(Settings::isAlignedChildrenStyle())
     {
-        pPolar->m_Style = pFoil->m_FoilStyle;
-        pPolar->m_Width = pFoil->m_FoilWidth;
-        pPolar->setColor(pFoil->m_red, pFoil->m_green, pFoil->m_blue, pFoil->alphaChannel());
+        pPolar->m_Style = pFoil->m_Stipple;
+        pPolar->m_Width = pFoil->m_Width;
+        pPolar->setColor(pFoil->red(), pFoil->green(), pFoil->blue(), pFoil->alphaChannel());
         pPolar->m_PointStyle = pFoil->m_PointStyle;
     }
     else

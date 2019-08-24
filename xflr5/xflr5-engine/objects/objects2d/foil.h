@@ -33,7 +33,7 @@
 
 #include <QTextStream>
 #include <QPoint>
-
+#include <QColor>
 
 #include <objects/objects3d/vector3d.h>
 #include <xfoil_params.h>
@@ -93,21 +93,29 @@ public:
 
     bool intersect(Vector3d const &A, Vector3d const &B, Vector3d const &C, Vector3d const &D, Vector3d *M);
 
-    bool &isVisible() {return m_bIsFoilVisible;}
     bool &showCenterLine() {return m_bCenterLine;}
-    int &foilLineWidth() {return m_FoilWidth;}
-    int &foilLineStyle() {return m_FoilStyle;}
+
+    void setTheStyle(int stipple, int w, QColor clr, int pointstyle);
+    bool &isVisible() {return m_bIsFoilVisible;}
+    int &foilLineWidth() {return m_Width;}
+    int &foilLineStyle() {return m_Stipple;}
     int &foilPointStyle() {return m_PointStyle;}
+    void setVisible(bool bVis) {m_bIsFoilVisible=bVis;}
+    void setLineStipple(int s) {m_Stipple=s;}
+    void setLineWidth(int w)   {m_Width=w;}
+    void setPointStyle(int pts) {m_PointStyle=pts;}
+
     QString const &foilName() const {return m_FoilName;}
     void setFoilName(QString const &FoilName) {m_FoilName = FoilName;}
 
-
+    QColor foilColor() const {return m_Color;}
+    void setColor(QColor &clr) {m_Color=clr;}
     void getColor(int &r, int &g, int &b, int &a);
     void setColor(int r, int g, int b, int a=255);
-    int red() const {return m_red;}
-    int green() const {return m_green;}
-    int blue() const {return m_blue;}
-    int alphaChannel() const {return m_alphaChannel;}
+    int red() const {return m_Color.red();}
+    int green() const {return m_Color.green();}
+    int blue() const {return m_Color.blue();}
+    int alphaChannel() const {return m_Color.alpha();}
 
     QString foilDescription() const {return m_FoilDescription;}
     void setFoilDescription(QString const &description) {m_FoilDescription=description;}
@@ -152,9 +160,9 @@ public:
     int m_iExt;                          /**< the number of points on the upper surface of the current foil */
 
     int m_PointStyle;                    /**< the index of the style for the foil's points*/
-    int m_FoilStyle;                     /**< the index of the style with which to draw the Foil contour*/
-    int m_FoilWidth;                     /**< the width with which to draw the Foil */
-    int m_red, m_blue, m_green, m_alphaChannel;    /**< the color with which to draw the Foil */
+    int m_Stipple;                     /**< the index of the style with which to draw the Foil contour*/
+    int m_Width;                     /**< the width with which to draw the Foil */
+    QColor m_Color;
 
     int m_iHighLight;                    /**< the index of the point to highlight in the display */
 

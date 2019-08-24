@@ -75,7 +75,6 @@ struct blData
 
 class XFOILLIBSHARED_EXPORT XFoil
 {
-
 public:
     XFoil();
     virtual ~XFoil();

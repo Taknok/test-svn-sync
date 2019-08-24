@@ -83,10 +83,10 @@ private:
     void writeString(QString &strong);
 
 protected:
-    void customEvent(QEvent *event); // This overrides QObject::customEvent()
+    void customEvent(QEvent *pEvent); // This overrides QObject::customEvent()
 
 private:
-    void handleXFoilTaskEvent(const XFoilTaskEvent *event);
+    void handleXFoilTaskEvent(const XFoilTaskEvent *pEvent);
 
 private slots:
     void onSpecChanged();

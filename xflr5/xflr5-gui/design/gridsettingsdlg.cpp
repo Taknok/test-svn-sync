@@ -115,12 +115,12 @@ void GridSettingsDlg::keyPressEvent(QKeyEvent *event)
 
 void GridSettingsDlg::initDialog()
 {
-    m_pctrlNeutralStyle->setStyle(m_NeutralStyle, m_NeutralWidth, m_NeutralColor,0);
+    m_pctrlNeutralStyle->setTheStyle(m_NeutralStyle, m_NeutralWidth, m_NeutralColor,0);
 
-    m_pctrlXMajStyle->setStyle(m_XStyle, m_XWidth, m_XColor,0);
-    m_pctrlXMinStyle->setStyle(m_XMinStyle, m_XMinWidth, m_XMinColor,0);
-    m_pctrlYMajStyle->setStyle(m_YStyle, m_YWidth, m_YColor,0);
-    m_pctrlYMinStyle->setStyle(m_YMinStyle, m_YMinWidth, m_YMinColor,0);
+    m_pctrlXMajStyle->setTheStyle(m_XStyle, m_XWidth, m_XColor,0);
+    m_pctrlXMinStyle->setTheStyle(m_XMinStyle, m_XMinWidth, m_XMinColor,0);
+    m_pctrlYMajStyle->setTheStyle(m_YStyle, m_YWidth, m_YColor,0);
+    m_pctrlYMinStyle->setTheStyle(m_YMinStyle, m_YMinWidth, m_YMinColor,0);
 
     m_pctrlNeutralStyle->setEnabled(m_bNeutralLine);
     m_pctrlXMajStyle->setEnabled(m_bXGrid);
@@ -219,10 +219,10 @@ void GridSettingsDlg::onNeutralStyle()
 
     if(QDialog::Accepted==dlg.exec())
     {
-        m_NeutralStyle = dlg.lineStyle();
+        m_NeutralStyle = dlg.lineStipple();
         m_NeutralWidth = dlg.lineWidth();
         m_NeutralColor = dlg.lineColor();
-        m_pctrlNeutralStyle->setStyle(dlg.lineStyle());
+        m_pctrlNeutralStyle->setStipple(dlg.lineStipple());
         m_pctrlNeutralStyle->setWidth(dlg.lineWidth());
         m_pctrlNeutralStyle->setColor(dlg.lineColor());
     }
@@ -236,10 +236,10 @@ void GridSettingsDlg::onXMajStyle()
 
     if(QDialog::Accepted==dlg.exec())
     {
-        m_XStyle = dlg.lineStyle();
+        m_XStyle = dlg.lineStipple();
         m_XWidth = dlg.lineWidth();
         m_XColor = dlg.lineColor();
-        m_pctrlXMajStyle->setStyle(dlg.lineStyle());
+        m_pctrlXMajStyle->setStipple(dlg.lineStipple());
         m_pctrlXMajStyle->setWidth(dlg.lineWidth());
         m_pctrlXMajStyle->setColor(dlg.lineColor());
     }
@@ -252,10 +252,10 @@ void GridSettingsDlg::onXMinStyle()
 
     if(QDialog::Accepted==dlg.exec())
     {
-        m_XMinStyle = dlg.lineStyle();
+        m_XMinStyle = dlg.lineStipple();
         m_XMinWidth = dlg.lineWidth();
         m_XMinColor = dlg.lineColor();
-        m_pctrlXMinStyle->setStyle(dlg.lineStyle());
+        m_pctrlXMinStyle->setStipple(dlg.lineStipple());
         m_pctrlXMinStyle->setWidth(dlg.lineWidth());
         m_pctrlXMinStyle->setColor(dlg.lineColor());
     }
@@ -270,10 +270,10 @@ void GridSettingsDlg::onYMajStyle()
 
     if(QDialog::Accepted==dlg.exec())
     {
-        m_YStyle = dlg.lineStyle();
+        m_YStyle = dlg.lineStipple();
         m_YWidth = dlg.lineWidth();
         m_YColor = dlg.lineColor();
-        m_pctrlYMajStyle->setStyle(dlg.lineStyle());
+        m_pctrlYMajStyle->setStipple(dlg.lineStipple());
         m_pctrlYMajStyle->setWidth(dlg.lineWidth());
         m_pctrlYMajStyle->setColor(dlg.lineColor());
     }
@@ -287,10 +287,10 @@ void GridSettingsDlg::onYMinStyle()
 
     if(QDialog::Accepted==dlg.exec())
     {
-        m_YMinStyle = dlg.lineStyle();
+        m_YMinStyle = dlg.lineStipple();
         m_YMinWidth = dlg.lineWidth();
         m_YMinColor = dlg.lineColor();
-        m_pctrlYMinStyle->setStyle(dlg.lineStyle());
+        m_pctrlYMinStyle->setStipple(dlg.lineStipple());
         m_pctrlYMinStyle->setWidth(dlg.lineWidth());
         m_pctrlYMinStyle->setColor(dlg.lineColor());
     }

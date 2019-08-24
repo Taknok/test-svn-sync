@@ -25,6 +25,8 @@
 #include <QDialog>
 #include <QKeyEvent>
 
+#include <graph/linestyle.h>
+
 class LineBtn;
 class OpPointWidget;
 
@@ -43,18 +45,17 @@ private slots:
     void onPressureStyle();
 
 private:
-    void keyPressEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *pEvent);
     void setupLayout();
 
     OpPointWidget *m_pOpPointWt;
     LineBtn *m_pctrlBL, *m_pctrlPressure, *m_pctrlNeutral;
-    QPushButton *OKButton;
+    QPushButton *m_pctrlOKButton;
 
-    QColor m_crFoilColor, m_crBLColor, m_crPressureColor, m_crNeutralColor; //foil display parameters
-    int m_iFoilStyle, m_iFoilWidth;
-    int m_iBLStyle, m_iBLWidth;
-    int m_iPressureStyle, m_iPressureWidth;
-    int m_iNeutralStyle, m_iNeutralWidth;
+    LineStyle m_FoilStyle;
+    LineStyle m_BLStyle;
+    LineStyle m_PressureStyle;
+    LineStyle m_NeutralStyle;
 };
 
 #endif // XDIRECTSTYLEDLG_H

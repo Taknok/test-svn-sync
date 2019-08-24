@@ -3699,9 +3699,9 @@ void MainFrame::onCurFoilStyle()
     if(QDialog::Accepted==dlg.exec())
     {
         XDirect::curFoil()->setColor(dlg.lineColor().red(), dlg.lineColor().green(), dlg.lineColor().blue(), dlg.lineColor().alpha());
-        XDirect::curFoil()->foilLineStyle() = dlg.lineStyle();
-        XDirect::curFoil()->foilLineWidth() = dlg.lineWidth();
-        XDirect::curFoil()->foilPointStyle() = dlg.pointStyle();
+        XDirect::curFoil()->setLineStipple(dlg.lineStipple());
+        XDirect::curFoil()->setLineWidth(dlg.lineWidth());
+        XDirect::curFoil()->setPointStyle(dlg.pointStyle());
 
         if(Settings::isAlignedChildrenStyle())
             Objects2d::setFoilChildrenStyle(XDirect::curFoil());
@@ -6639,8 +6639,8 @@ bool MainFrame::serializeFoilXFL(Foil *pFoil, QDataStream &ar, bool bIsStoring)
         ar << ArchiveFormat;
         ar << pFoil->m_FoilName;
         ar << pFoil->m_FoilDescription;
-        ar << pFoil->m_FoilStyle << pFoil->m_FoilWidth;
-        writeColor(ar, pFoil->m_red, pFoil->m_green, pFoil->m_blue, pFoil->m_alphaChannel);
+        ar << pFoil->m_Stipple << pFoil->m_Width;
+        writeColor(ar, pFoil->red(), pFoil->green(), pFoil->blue(), pFoil->alphaChannel());
 
         ar << pFoil->m_bIsFoilVisible;
         //        ar << m_bShowFoilPoints;
@@ -6666,9 +6666,11 @@ bool MainFrame::serializeFoilXFL(Foil *pFoil, QDataStream &ar, bool bIsStoring)
         ar >> strange;
         pFoil->setFoilDescription(strange);
 
-        ar >> pFoil->m_FoilStyle >> pFoil->m_FoilWidth;
+        ar >> pFoil->m_Stipple >> pFoil->m_Width;
 
-        readColor(ar, pFoil->m_red, pFoil->m_green, pFoil->m_blue, pFoil->m_alphaChannel);
+        int r=0,g=0,blue=0,a=0;
+        readColor(ar, r,g,blue,a);
+        pFoil->setColor(r,g,blue,a);
 
         ar >> pFoil->m_bIsFoilVisible;
         //        ar >> m_bShowFoilPoints;

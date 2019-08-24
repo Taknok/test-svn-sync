@@ -35,14 +35,17 @@ class LineBtn : public QAbstractButton
 public:
     LineBtn(QWidget *parent = nullptr);
 
-    void setStyle(int const &lineStyle, int const &width, QColor const & color, const int &pointStyle);
+    void setTheStyle(LineStyle const &ls) {m_LineStyle=ls;}
+    void setTheStyle(int const &lineStyle, int const &width, QColor const & color, const int &pointStyle);
+    LineStyle theStyle() const {return m_LineStyle;}
+
     void setColor(QColor const & color);
-    void setStyle(int const &lineStyle);
+    void setStipple(int const &lineStyle);
     void setWidth(int const &width);
     void setPointStyle(int const & pointStyle);
 
     QColor color()   const {return m_LineStyle.m_Color;}
-    int lineStyle()  const {return m_LineStyle.m_Style;}
+    int lineStyle()  const {return m_LineStyle.m_Stipple;}
     int lineWidth()  const {return m_LineStyle.m_Width;}
     int pointStyle() const {return m_LineStyle.m_PointStyle;}
 
