@@ -26,6 +26,8 @@
 #include <QComboBox>
 #include <QCheckBox>
 
+#include <graph/linestyle.h>
+
 class LineBtn;
 class LineCbBox;
 class LineDelegate;
@@ -38,17 +40,21 @@ public:
     LinePickerDlg(QWidget *pParent);
 
     void initDialog(bool bFlowDownEnable);
+    void initDialog(LineStyle const &ls, bool bAcceptPointStyle, bool bFlowDownEnable);
     void initDialog(int pointStyle, int lineStyle, int lineWidth, QColor lineColor, bool bAcceptPointStyle, bool bFlowDownEnable);
 
     void keyPressEvent(QKeyEvent *event);
 
-    int pointStyle()   const {return m_PointStyle;}
-    int lineStyle()    const {return m_LineStyle;}
-    int lineWidth()    const {return m_LineWidth;}
-    QColor lineColor() const {return m_LineColor;}
+    LineStyle theStyle() const {return LineStyle();}
+    void setTheStyle(LineStyle const &ls);
+
+    int pointStyle()   const {return m_LineStyle.m_PointStyle;}
+    int lineStipple()  const {return m_LineStyle.m_Stipple;}
+    int lineWidth()    const {return m_LineStyle.m_Width;}
+    QColor lineColor() const {return m_LineStyle.m_Color;}
 
     void setPointStyle(int pointStyle);
-    void setLineStyle(int lineStyle);
+    void setLineStipple(int lineStyle);
     void setLineWidth(int width);
     void setLineColor(QColor color);
 
@@ -70,18 +76,11 @@ private:
     LineBtn *m_pctrlLineColor;
     LineCbBox *m_pctrlPointStyle, *m_pctrlLineWidth, *m_pctrlLineStyle;
     QCheckBox *m_pctrlFlowDownStyle;
-    QPushButton *OKButton, *CancelButton;
-
+    QPushButton *m_pctrlOKButton, *m_pctrlCancelButton;
 
     bool m_bAcceptPointStyle;
-    int m_PointStyle;
-    int m_LineStyle;
-    int m_LineWidth;
-    QColor m_LineColor;
+    LineStyle m_LineStyle;
     LineDelegate *m_pPointStyleDelegate, *m_pLineStyleDelegate, *m_pWidthDelegate;
-
-
-
 };
 
 #endif // LINEPICKERDLG_H

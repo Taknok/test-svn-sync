@@ -22,7 +22,7 @@
 #include <QGridLayout>
 #include <QLabel>
 
-#include "xdirectstyleDlg.h"
+#include "xdirectstyledlg.h"
 #include <xdirect/xdirect.h>
 #include <misc/line/linepickerdlg.h>
 #include <viewwidgets/oppointwidget.h>
@@ -36,24 +36,15 @@ XDirectStyleDlg::XDirectStyleDlg(OpPointWidget *pParent) : QDialog(pParent)
     setWindowTitle(tr("XDirect Styles"));
     m_pOpPointWt = pParent;
 
-    OpPointWidget *pOpPointWidget = (OpPointWidget*)m_pOpPointWt;
-    m_iNeutralStyle  = pOpPointWidget->m_iNeutralStyle;
-    m_iNeutralWidth  = pOpPointWidget->m_iNeutralWidth;
-    m_crNeutralColor = pOpPointWidget->m_crNeutralColor;
-
-    m_iBLStyle  = pOpPointWidget->m_iBLStyle;
-    m_iBLWidth  = pOpPointWidget->m_iBLWidth;
-    m_crBLColor = pOpPointWidget->m_crBLColor;
-
-    m_iPressureStyle  = pOpPointWidget->m_iPressureStyle;
-    m_iPressureWidth  = pOpPointWidget->m_iPressureWidth;
-    m_crPressureColor = pOpPointWidget->m_crPressureColor;
+    m_NeutralStyle  = m_pOpPointWt->m_NeutralStyle;
+    m_BLStyle  = m_pOpPointWt->m_BLStyle;
+    m_PressureStyle  = m_pOpPointWt->m_PressureStyle;
 
     setupLayout();
 
-    m_pctrlNeutral->setStyle(m_iNeutralStyle, m_iNeutralWidth, m_crNeutralColor,0);
-    m_pctrlBL->setStyle(m_iBLStyle, m_iBLWidth, m_crBLColor,0);
-    m_pctrlPressure->setStyle(m_iPressureStyle, m_iPressureWidth, m_crPressureColor,0);
+    m_pctrlNeutral->setTheStyle(m_NeutralStyle);
+    m_pctrlBL->setTheStyle(m_BLStyle);
+    m_pctrlPressure->setTheStyle(m_PressureStyle);
 }
 
 
@@ -80,17 +71,17 @@ void XDirectStyleDlg::setupLayout()
 
     QHBoxLayout *pCommandButtons = new QHBoxLayout;
     {
-        OKButton = new QPushButton(tr("OK"));
+        m_pctrlOKButton = new QPushButton(tr("OK"));
         QPushButton *DefaultsButton = new QPushButton(tr("Defaults"));
         QPushButton *CancelButton   = new QPushButton(tr("Cancel"));
         pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(OKButton);
+        pCommandButtons->addWidget(m_pctrlOKButton);
         pCommandButtons->addStretch(1);
         pCommandButtons->addWidget(DefaultsButton);
         pCommandButtons->addStretch(1);
         pCommandButtons->addWidget(CancelButton);
         pCommandButtons->addStretch(1);
-        connect(OKButton, SIGNAL(clicked()),this, SLOT(accept()));
+        connect(m_pctrlOKButton, SIGNAL(clicked()),this, SLOT(accept()));
         connect(DefaultsButton, SIGNAL(clicked()),this, SLOT(onRestoreDefaults()));
         connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
     }
@@ -111,82 +102,70 @@ void XDirectStyleDlg::setupLayout()
 void XDirectStyleDlg::onNeutralStyle()
 {
     LinePickerDlg dlg(this);
-    dlg.initDialog(0, m_iNeutralStyle, m_iNeutralWidth, m_crNeutralColor, false, false);
+    dlg.initDialog(m_NeutralStyle, false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {
-        m_iNeutralStyle = dlg.lineStyle();
-        m_iNeutralWidth = dlg.lineWidth();
-        m_crNeutralColor = dlg.lineColor();
-        m_pctrlNeutral->setStyle(m_iNeutralStyle, m_iNeutralWidth, m_crNeutralColor,0);
+        m_NeutralStyle = dlg.theStyle();
+        m_pctrlNeutral->setTheStyle(m_NeutralStyle);
     }
-    OKButton->setFocus();
+    m_pctrlOKButton->setFocus();
 }
 
 
 void XDirectStyleDlg::onPressureStyle()
 {
     LinePickerDlg dlg(this);
-    dlg.initDialog(0, m_iPressureStyle, m_iPressureWidth, m_crPressureColor, false, false);
+    dlg.initDialog(m_PressureStyle, false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {
-        m_iPressureStyle = dlg.lineStyle();
-        m_iPressureWidth = dlg.lineWidth();
-        m_crPressureColor = dlg.lineColor();
-        m_pctrlPressure->setStyle(m_iPressureStyle, m_iPressureWidth, m_crPressureColor,0);
+        m_PressureStyle = dlg.theStyle();
+        m_pctrlPressure->setTheStyle(m_PressureStyle);
     }
-    OKButton->setFocus();
+    m_pctrlOKButton->setFocus();
 }
 
 
 void XDirectStyleDlg::onBLStyle()
 {
     LinePickerDlg dlg(this);
-    dlg.initDialog(0, m_iBLStyle, m_iBLWidth, m_crBLColor, false, false);
+    dlg.initDialog(m_BLStyle, false, false);
 
     if(QDialog::Accepted==dlg.exec())
     {
-        m_iBLStyle = dlg.lineStyle();
-        m_iBLWidth = dlg.lineWidth();
-        m_crBLColor = dlg.lineColor();
-        m_pctrlBL->setStyle(m_iBLStyle, m_iBLWidth, m_crBLColor,0);
+        m_BLStyle = dlg.theStyle();
+        m_pctrlBL->setTheStyle(m_BLStyle);
     }
 
-    OKButton->setFocus();
+    m_pctrlOKButton->setFocus();
 }
 
 
 void XDirectStyleDlg::onRestoreDefaults()
 {
-    m_iNeutralStyle = 2;
-    m_iNeutralWidth = 1;
-    m_crNeutralColor = QColor(200,200,255);
-    m_pctrlNeutral->setStyle(m_iNeutralStyle, m_iNeutralWidth, m_crNeutralColor,0);
+    m_NeutralStyle = {true, 2, 1, QColor(155,155,155), 0};
+    m_pctrlNeutral->setTheStyle(m_NeutralStyle);
 
-    m_crBLColor = QColor(200,70,70);
-    m_iBLStyle = 1;
-    m_iBLWidth = 1;
-    m_pctrlBL->setStyle(m_iBLStyle, m_iBLWidth, m_crBLColor,0);
+    m_BLStyle = {true, 1, 1, QColor(205,55,55), 0};
+    m_pctrlBL->setTheStyle(m_BLStyle);
 
-    m_crPressureColor= QColor(0,255,0);
-    m_iPressureStyle = 0;
-    m_iPressureWidth = 1;
-    m_pctrlPressure->setStyle(m_iPressureStyle, m_iPressureWidth, m_crPressureColor,0);
+    m_PressureStyle = {true, 0 , 1, QColor(55,155,55), 0};
+    m_pctrlPressure->setTheStyle(m_PressureStyle);
 }
 
 
-void XDirectStyleDlg::keyPressEvent(QKeyEvent *event)
+void XDirectStyleDlg::keyPressEvent(QKeyEvent *pEvent)
 {
     // Prevent Return Key from closing App
-    switch (event->key())
+    switch (pEvent->key())
     {
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if(!OKButton->hasFocus())
+            if(!m_pctrlOKButton->hasFocus())
             {
-                OKButton->setFocus();
+                m_pctrlOKButton->setFocus();
                 return;
             }
             else
@@ -194,8 +173,6 @@ void XDirectStyleDlg::keyPressEvent(QKeyEvent *event)
                 accept();
                 return;
             }
-            event->ignore();
-            break;
         }
         case Qt::Key_Escape:
         {

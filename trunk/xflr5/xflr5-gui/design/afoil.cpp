@@ -1191,7 +1191,7 @@ void AFoil::onFoilStyle()
 
         if(QDialog::Accepted==dlg.exec())
         {
-            m_pSF->setCurveParams(dlg.lineStyle(), dlg.lineWidth(), dlg.lineColor());
+            m_pSF->setCurveParams(dlg.lineStipple(), dlg.lineWidth(), dlg.lineColor());
             m_p2DWidget->update();;
         }
     }
@@ -1205,7 +1205,7 @@ void AFoil::onFoilStyle()
         {
             emit projectModified();
             XDirect::curFoil()->foilPointStyle() = dlg.pointStyle();
-            XDirect::curFoil()->foilLineStyle()  = dlg.lineStyle();
+            XDirect::curFoil()->foilLineStyle()  = dlg.lineStipple();
             XDirect::curFoil()->foilLineWidth()  = dlg.lineWidth();
             QColor clr = dlg.lineColor();
             XDirect::curFoil()->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());

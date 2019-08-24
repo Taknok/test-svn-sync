@@ -28,6 +28,7 @@
 #include <graph/graph.h>
 #include <objects/objects3d/vector3d.h>
 #include <objects/objects2d/oppoint.h>
+#include <graph/linestyle.h>
 
 class OpPointWidget : public QWidget
 {
@@ -50,8 +51,8 @@ public slots:
 
     void onGraphSettings();
 
-    void setNeutralLineColor(QColor clr){m_crNeutralColor = clr;}
-    QColor neutralLineColor(){return m_crNeutralColor;}
+    void setNeutralLineColor(QColor clr){m_NeutralStyle.m_Color = clr;}
+    QColor neutralLineColor() const {return m_NeutralStyle.m_Color;}
     void setGraph(Graph* pGraph){m_pCpGraph = pGraph;}
     void loadSettings(QSettings &settings);
     void saveSettings(QSettings &settings);
@@ -60,7 +61,6 @@ signals:
     void graphChanged(Graph *);
 
 protected:
-    void contextMenuEvent (QContextMenuEvent *event);
     void keyPressEvent(QKeyEvent *pEvent);
     void keyReleaseEvent(QKeyEvent *pEvent);
     void mouseMoveEvent(QMouseEvent *pEvent);
@@ -92,15 +92,9 @@ private:
     double m_fScale, m_fYScale;
     QPointF m_FoilOffset;
 
-    QColor m_crBLColor;         /**< the color used to draw the boundary layer */
-    QColor m_crPressureColor;   /**< the color used to draw the pressure arrows */
-    QColor m_crNeutralColor;    /**< the color used to draw the neutral line */
-    int m_iBLStyle;             /**< the index of the style used to draw the boundary layer */
-    int m_iBLWidth;             /**< the width of the line used to draw the boundary layer */
-    int m_iPressureStyle;       /**< the index of the style used to draw the pressure arrows*/
-    int m_iPressureWidth;       /**< the width of the line used to draw the pressure arrows */
-    int m_iNeutralStyle;        /**< the index of the style used to draw the neutral line */
-    int m_iNeutralWidth;        /**< the width of the line used to draw the neutral line */
+    LineStyle m_BLStyle;             /**< the index of the style used to draw the boundary layer */
+    LineStyle m_PressureStyle;       /**< the index of the style used to draw the pressure arrows*/
+    LineStyle m_NeutralStyle;        /**< the index of the style used to draw the neutral line */
 
     bool m_bTransFoil;
     bool m_bTransGraph;

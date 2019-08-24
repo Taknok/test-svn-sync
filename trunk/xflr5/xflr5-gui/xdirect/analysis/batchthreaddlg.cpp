@@ -407,9 +407,9 @@ Polar * BatchThreadDlg::createPolar(Foil *pFoil, double Re, double Mach, double 
     Polar *pNewPolar = new Polar;
     if(Settings::isAlignedChildrenStyle())
     {
-        pNewPolar->m_Style = pFoil->m_FoilStyle;
-        pNewPolar->m_Width = pFoil->m_FoilWidth;
-        pNewPolar->setColor(pFoil->m_red, pFoil->m_green, pFoil->m_blue, pFoil->alphaChannel());
+        pNewPolar->m_Style = pFoil->m_Stipple;
+        pNewPolar->m_Width = pFoil->m_Width;
+        pNewPolar->setColor(pFoil->red(), pFoil->green(), pFoil->blue(), pFoil->alphaChannel());
         pNewPolar->m_PointStyle = pFoil->m_PointStyle;
     }
     else
@@ -1047,30 +1047,30 @@ void BatchThreadDlg::startThread()
     }
 }
 
-void BatchThreadDlg::customEvent(QEvent * event)
+
+void BatchThreadDlg::customEvent(QEvent * pEvent)
 {
     // When we get here, we've crossed the thread boundary and are now
     // executing in this widget's thread
 
-    if(event->type() == XFOIL_END_TASK_EVENT)
+    if(pEvent->type() == XFOIL_END_TASK_EVENT)
     {
-        handleXFoilTaskEvent(static_cast<XFoilTaskEvent *>(event));
+        handleXFoilTaskEvent(static_cast<XFoilTaskEvent *>(pEvent));
     }
-    else if(event->type() == XFOIL_END_OPP_EVENT)
+    else if(pEvent->type() == XFOIL_END_OPP_EVENT)
     {
-        XFoilOppEvent *pOppEvent = (XFoilOppEvent*)event;
+        XFoilOppEvent *pOppEvent = dynamic_cast<XFoilOppEvent*>(pEvent);
         Objects2d::addOpPoint(pOppEvent->foilPtr(), pOppEvent->polarPtr(), pOppEvent->oppPtr(), XDirect::s_bStoreOpp);
     }
 }
 
 
-
-void BatchThreadDlg::handleXFoilTaskEvent(const XFoilTaskEvent *event)
+void BatchThreadDlg::handleXFoilTaskEvent(const XFoilTaskEvent *pEvent)
 {
     // Now we can safely do something with our Qt objects.
     m_nTaskDone++; //one down, more to go
-    QString str = tr("   ...Finished ")+ ((Foil*)event->foilPtr())->foilName()+" / "
-            +((Polar*)event->polarPtr())->polarName()+"\n";
+    QString str = tr("   ...Finished ")+ (pEvent->foilPtr())->foilName()+" / "
+            +((Polar*)pEvent->polarPtr())->polarName()+"\n";
     updateOutput(str);
 
 

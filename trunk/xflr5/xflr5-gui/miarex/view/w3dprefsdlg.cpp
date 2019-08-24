@@ -114,18 +114,18 @@ W3dPrefsDlg::W3dPrefsDlg(QWidget *pParent) : QDialog(pParent)
 
 void W3dPrefsDlg::initDialog()
 {
-    m_pctrlAxis->setStyle(s_3DAxisStyle,s_3DAxisWidth, s_3DAxisColor, 0);
-    m_pctrlOutline->setStyle(s_OutlineStyle, s_OutlineWidth, s_OutlineColor, 0);
-    m_pctrlVLMMesh->setStyle(s_VLMStyle, s_VLMWidth, s_VLMColor, 0);
-    m_pctrlLift->setStyle(s_XCPStyle, s_XCPWidth, s_XCPColor, 0);
-    m_pctrlMoments->setStyle(s_MomentStyle, s_MomentWidth, s_MomentColor, 0);
-    m_pctrlInducedDrag->setStyle(s_IDragStyle, s_IDragWidth, s_IDragColor, 0);
-    m_pctrlViscousDrag->setStyle(s_VDragStyle, s_VDragWidth, s_VDragColor, 0);
-    m_pctrlDownwash->setStyle(s_DownwashStyle, s_DownwashWidth, s_DownwashColor, 0);
-    m_pctrlWakePanels->setStyle(s_WakeStyle, s_WakeWidth, s_WakeColor, 0);
-    m_pctrlStreamLines->setStyle(s_StreamLinesStyle, s_StreamLinesWidth, s_StreamLinesColor, 0);
-    m_pctrlTopTrans->setStyle(s_TopStyle, s_TopWidth, s_TopColor, 0);
-    m_pctrlBotTrans->setStyle(s_BotStyle, s_BotWidth, s_BotColor, 0);
+    m_pctrlAxis->setTheStyle(s_3DAxisStyle,s_3DAxisWidth, s_3DAxisColor, 0);
+    m_pctrlOutline->setTheStyle(s_OutlineStyle, s_OutlineWidth, s_OutlineColor, 0);
+    m_pctrlVLMMesh->setTheStyle(s_VLMStyle, s_VLMWidth, s_VLMColor, 0);
+    m_pctrlLift->setTheStyle(s_XCPStyle, s_XCPWidth, s_XCPColor, 0);
+    m_pctrlMoments->setTheStyle(s_MomentStyle, s_MomentWidth, s_MomentColor, 0);
+    m_pctrlInducedDrag->setTheStyle(s_IDragStyle, s_IDragWidth, s_IDragColor, 0);
+    m_pctrlViscousDrag->setTheStyle(s_VDragStyle, s_VDragWidth, s_VDragColor, 0);
+    m_pctrlDownwash->setTheStyle(s_DownwashStyle, s_DownwashWidth, s_DownwashColor, 0);
+    m_pctrlWakePanels->setTheStyle(s_WakeStyle, s_WakeWidth, s_WakeColor, 0);
+    m_pctrlStreamLines->setTheStyle(s_StreamLinesStyle, s_StreamLinesWidth, s_StreamLinesColor, 0);
+    m_pctrlTopTrans->setTheStyle(s_TopStyle, s_TopWidth, s_TopColor, 0);
+    m_pctrlBotTrans->setTheStyle(s_BotStyle, s_BotWidth, s_BotColor, 0);
 
     m_pctrlMassColor->setColor(s_MassColor);
     m_pctrlChordwiseRes->setValue(s_iChordwiseRes);
@@ -312,15 +312,15 @@ void W3dPrefsDlg::onOutline()
 {
     LinePickerDlg LPdlg(this);
     LPdlg.setLineColor(s_OutlineColor);
-    LPdlg.setLineStyle(s_OutlineStyle);
+    LPdlg.setLineStipple(s_OutlineStyle);
     LPdlg.setLineWidth(s_OutlineWidth);
     LPdlg.initDialog(false);
     if (QDialog::Accepted == LPdlg.exec())
     {
         s_OutlineColor = LPdlg.lineColor();
-        s_OutlineStyle = LPdlg.lineStyle();
+        s_OutlineStyle = LPdlg.lineStipple();
         s_OutlineWidth = LPdlg.lineWidth();
-        m_pctrlOutline->setStyle(s_OutlineStyle, s_OutlineWidth, s_OutlineColor, 0);
+        m_pctrlOutline->setTheStyle(s_OutlineStyle, s_OutlineWidth, s_OutlineColor, 0);
     }
 }
 
@@ -328,16 +328,16 @@ void W3dPrefsDlg::on3DAxis()
 {
     LinePickerDlg LPdlg(this);
     LPdlg.setLineColor(s_3DAxisColor);
-    LPdlg.setLineStyle(s_3DAxisStyle);
+    LPdlg.setLineStipple(s_3DAxisStyle);
     LPdlg.setLineWidth(s_3DAxisWidth);
     LPdlg.initDialog(false);
 
     if (QDialog::Accepted == LPdlg.exec())
     {
         s_3DAxisColor = LPdlg.lineColor();
-        s_3DAxisStyle = LPdlg.lineStyle();
+        s_3DAxisStyle = LPdlg.lineStipple();
         s_3DAxisWidth = LPdlg.lineWidth();
-        m_pctrlAxis->setStyle(s_3DAxisStyle, s_3DAxisWidth, s_3DAxisColor, 0);
+        m_pctrlAxis->setTheStyle(s_3DAxisStyle, s_3DAxisWidth, s_3DAxisColor, 0);
     }
 }
 
@@ -345,16 +345,16 @@ void W3dPrefsDlg::onTopTrans()
 {
     LinePickerDlg LPdlg(this);
     LPdlg.setLineColor(s_TopColor);
-    LPdlg.setLineStyle(s_TopStyle);
+    LPdlg.setLineStipple(s_TopStyle);
     LPdlg.setLineWidth(s_TopWidth);
     LPdlg.initDialog(false);
 
     if (QDialog::Accepted == LPdlg.exec())
     {
         s_TopColor = LPdlg.lineColor();
-        s_TopStyle = LPdlg.lineStyle();
+        s_TopStyle = LPdlg.lineStipple();
         s_TopWidth = LPdlg.lineWidth();
-        m_pctrlTopTrans->setStyle(s_TopStyle, s_TopWidth, s_TopColor, 0);
+        m_pctrlTopTrans->setTheStyle(s_TopStyle, s_TopWidth, s_TopColor, 0);
     }
 }
 
@@ -362,16 +362,16 @@ void W3dPrefsDlg::onBotTrans()
 {
     LinePickerDlg LPdlg(this);
     LPdlg.setLineColor(s_BotColor);
-    LPdlg.setLineStyle(s_BotStyle);
+    LPdlg.setLineStipple(s_BotStyle);
     LPdlg.setLineWidth(s_BotWidth);
     LPdlg.initDialog(false);
 
     if (QDialog::Accepted == LPdlg.exec())
     {
         s_BotColor = LPdlg.lineColor();
-        s_BotStyle = LPdlg.lineStyle();
+        s_BotStyle = LPdlg.lineStipple();
         s_BotWidth = LPdlg.lineWidth();
-        m_pctrlBotTrans->setStyle(s_BotStyle, s_BotWidth, s_BotColor, 0);
+        m_pctrlBotTrans->setTheStyle(s_BotStyle, s_BotWidth, s_BotColor, 0);
     }
 }
 
@@ -379,16 +379,16 @@ void W3dPrefsDlg::onIDrag()
 {
     LinePickerDlg LPdlg(this);
     LPdlg.setLineColor(s_IDragColor);
-    LPdlg.setLineStyle(s_IDragStyle);
+    LPdlg.setLineStipple(s_IDragStyle);
     LPdlg.setLineWidth(s_IDragWidth);
     LPdlg.initDialog(false);
 
     if (QDialog::Accepted == LPdlg.exec())
     {
         s_IDragColor = LPdlg.lineColor();
-        s_IDragStyle = LPdlg.lineStyle();
+        s_IDragStyle = LPdlg.lineStipple();
         s_IDragWidth = LPdlg.lineWidth();
-        m_pctrlInducedDrag->setStyle(s_IDragStyle, s_IDragWidth, s_IDragColor, 0);
+        m_pctrlInducedDrag->setTheStyle(s_IDragStyle, s_IDragWidth, s_IDragColor, 0);
     }
 }
 
@@ -396,16 +396,16 @@ void W3dPrefsDlg::onVDrag()
 {
     LinePickerDlg LPdlg(this);
     LPdlg.setLineColor(s_VDragColor);
-    LPdlg.setLineStyle(s_VDragStyle);
+    LPdlg.setLineStipple(s_VDragStyle);
     LPdlg.setLineWidth(s_VDragWidth);
     LPdlg.initDialog(false);
 
     if (QDialog::Accepted == LPdlg.exec())
     {
         s_VDragColor = LPdlg.lineColor();
-        s_VDragStyle = LPdlg.lineStyle();
+        s_VDragStyle = LPdlg.lineStipple();
         s_VDragWidth = LPdlg.lineWidth();
-        m_pctrlViscousDrag->setStyle(s_VDragStyle, s_VDragWidth, s_VDragColor, 0);
+        m_pctrlViscousDrag->setTheStyle(s_VDragStyle, s_VDragWidth, s_VDragColor, 0);
     }
 }
 
@@ -413,16 +413,16 @@ void W3dPrefsDlg::onXCP()
 {
     LinePickerDlg LPdlg(this);
     LPdlg.setLineColor(s_XCPColor);
-    LPdlg.setLineStyle(s_XCPStyle);
+    LPdlg.setLineStipple(s_XCPStyle);
     LPdlg.setLineWidth(s_XCPWidth);
     LPdlg.initDialog(false);
 
     if (QDialog::Accepted == LPdlg.exec())
     {
         s_XCPColor = LPdlg.lineColor();
-        s_XCPStyle = LPdlg.lineStyle();
+        s_XCPStyle = LPdlg.lineStipple();
         s_XCPWidth = LPdlg.lineWidth();
-        m_pctrlLift->setStyle(s_XCPStyle, s_XCPWidth, s_XCPColor, 0);
+        m_pctrlLift->setTheStyle(s_XCPStyle, s_XCPWidth, s_XCPColor, 0);
     }
 }
 
@@ -430,16 +430,16 @@ void W3dPrefsDlg::onMoments()
 {
     LinePickerDlg LPdlg(this);
     LPdlg.setLineColor(s_MomentColor);
-    LPdlg.setLineStyle(s_MomentStyle);
+    LPdlg.setLineStipple(s_MomentStyle);
     LPdlg.setLineWidth(s_MomentWidth);
     LPdlg.initDialog(false);
 
     if (QDialog::Accepted == LPdlg.exec())
     {
         s_MomentColor = LPdlg.lineColor();
-        s_MomentStyle = LPdlg.lineStyle();
+        s_MomentStyle = LPdlg.lineStipple();
         s_MomentWidth = LPdlg.lineWidth();
-        m_pctrlMoments->setStyle(s_MomentStyle, s_MomentWidth, s_MomentColor, 0);
+        m_pctrlMoments->setTheStyle(s_MomentStyle, s_MomentWidth, s_MomentColor, 0);
     }
 }
 
@@ -447,16 +447,16 @@ void W3dPrefsDlg::onDownwash()
 {
     LinePickerDlg LPdlg(this);
     LPdlg.setLineColor(s_DownwashColor);
-    LPdlg.setLineStyle(s_DownwashStyle);
+    LPdlg.setLineStipple(s_DownwashStyle);
     LPdlg.setLineWidth(s_DownwashWidth);
     LPdlg.initDialog(false);
 
     if (QDialog::Accepted == LPdlg.exec())
     {
         s_DownwashColor = LPdlg.lineColor();
-        s_DownwashStyle = LPdlg.lineStyle();
+        s_DownwashStyle = LPdlg.lineStipple();
         s_DownwashWidth = LPdlg.lineWidth();
-        m_pctrlDownwash->setStyle(s_DownwashStyle, s_DownwashWidth,s_DownwashColor, 0);
+        m_pctrlDownwash->setTheStyle(s_DownwashStyle, s_DownwashWidth,s_DownwashColor, 0);
     }
 }
 
@@ -464,16 +464,16 @@ void W3dPrefsDlg::onStreamLines()
 {
     LinePickerDlg LPdlg(this);
     LPdlg.setLineColor(s_StreamLinesColor);
-    LPdlg.setLineStyle(s_StreamLinesStyle);
+    LPdlg.setLineStipple(s_StreamLinesStyle);
     LPdlg.setLineWidth(s_StreamLinesWidth);
     LPdlg.initDialog(false);
 
     if (QDialog::Accepted == LPdlg.exec())
     {
         s_StreamLinesColor = LPdlg.lineColor();
-        s_StreamLinesStyle = LPdlg.lineStyle();
+        s_StreamLinesStyle = LPdlg.lineStipple();
         s_StreamLinesWidth = LPdlg.lineWidth();
-        m_pctrlStreamLines->setStyle(s_StreamLinesStyle, s_StreamLinesWidth, s_StreamLinesColor, 0);
+        m_pctrlStreamLines->setTheStyle(s_StreamLinesStyle, s_StreamLinesWidth, s_StreamLinesColor, 0);
     }
 }
 
@@ -481,16 +481,16 @@ void W3dPrefsDlg::onWakePanels()
 {
     LinePickerDlg LPdlg(this);
     LPdlg.setLineColor(s_WakeColor);
-    LPdlg.setLineStyle(s_WakeStyle);
+    LPdlg.setLineStipple(s_WakeStyle);
     LPdlg.setLineWidth(s_WakeWidth);
     LPdlg.initDialog(false);
 
     if (QDialog::Accepted == LPdlg.exec())
     {
         s_WakeColor = LPdlg.lineColor();
-        s_WakeStyle = LPdlg.lineStyle();
+        s_WakeStyle = LPdlg.lineStipple();
         s_WakeWidth = LPdlg.lineWidth();
-        m_pctrlWakePanels->setStyle(s_WakeStyle, s_WakeWidth, s_WakeColor, 0);
+        m_pctrlWakePanels->setTheStyle(s_WakeStyle, s_WakeWidth, s_WakeColor, 0);
     }
 }
 
@@ -498,16 +498,16 @@ void W3dPrefsDlg::onVLMMesh()
 {
     LinePickerDlg LPdlg(this);
     LPdlg.setLineColor(s_VLMColor);
-    LPdlg.setLineStyle(s_VLMStyle);
+    LPdlg.setLineStipple(s_VLMStyle);
     LPdlg.setLineWidth(s_VLMWidth);
     LPdlg.initDialog(false);
 
     if (QDialog::Accepted == LPdlg.exec())
     {
         s_VLMColor = LPdlg.lineColor();
-        s_VLMStyle = LPdlg.lineStyle();
+        s_VLMStyle = LPdlg.lineStipple();
         s_VLMWidth = LPdlg.lineWidth();
-        m_pctrlVLMMesh->setStyle(s_VLMStyle, s_VLMWidth, s_VLMColor, 0);
+        m_pctrlVLMMesh->setTheStyle(s_VLMStyle, s_VLMWidth, s_VLMColor, 0);
     }
     repaint();
 }

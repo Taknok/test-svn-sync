@@ -35,7 +35,7 @@ Curve::Curve()
     m_curveStyle.m_bIsVisible = true;
     m_curveStyle.m_PointStyle = 0;
     m_curveStyle.m_Width = 1;
-    m_curveStyle.m_Style = Qt::SolidLine;
+    m_curveStyle.m_Stipple = Qt::SolidLine;
     m_iSelected = -1;
 }
 
@@ -233,7 +233,7 @@ double Curve::yMax() const
 
 void Curve::setLineStyle(int Style, int Width, QColor color, int PointStyle, bool bVisible)
 {
-    m_curveStyle.m_Style = Style;
+    m_curveStyle.m_Stipple = Style;
     m_curveStyle.m_Width = Width;
     m_curveStyle.m_Color = color;
     m_curveStyle.m_PointStyle = PointStyle;

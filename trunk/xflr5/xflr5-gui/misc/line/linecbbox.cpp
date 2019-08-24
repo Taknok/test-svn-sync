@@ -36,7 +36,7 @@ LineCbBox::LineCbBox(QWidget *pParent)
     :QComboBox(pParent)
 {
     setParent(pParent);
-    m_LineStyle.m_Style = 0;
+    m_LineStyle.m_Stipple = 0;
     m_LineStyle.m_Width = 1;
     m_LineStyle.m_Color = QColor(255,100,50);
     m_LineStyle.m_PointStyle = 0;
@@ -60,7 +60,7 @@ QSize LineCbBox::sizeHint() const
 
 void LineCbBox::setLine(int const &style, int const &width, QColor const &color, int const &pointStyle)
 {
-    m_LineStyle.m_Style = style;
+    m_LineStyle.m_Stipple = style;
     m_LineStyle.m_Width = width;
     m_LineStyle.m_Color = color;
     m_LineStyle.m_PointStyle = pointStyle;
@@ -95,7 +95,7 @@ void LineCbBox::paintEvent (QPaintEvent *pEvent)
     painter.setBackgroundMode(Qt::TransparentMode);
 
     QPen LinePen(clr);
-    LinePen.setStyle(getStyle(m_LineStyle.m_Style));
+    LinePen.setStyle(getStyle(m_LineStyle.m_Stipple));
     LinePen.setWidth(m_LineStyle.m_Width);
     painter.setPen(LinePen);
     painter.drawLine(r.left()+5, r.center().y(), r.width()-10, r.center().y());

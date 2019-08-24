@@ -83,22 +83,22 @@ void BodyGridDlg::initDialog()
 
     m_pctrlScales->setChecked(s_bScale);
     m_pctrlGrid->setChecked(s_bGrid);
-    m_pctrlLine->setStyle(s_Style);
+    m_pctrlLine->setStipple(s_Style);
     m_pctrlLine->setWidth(s_Width);
     m_pctrlLine->setColor(s_Color);
     m_pctrlMinGrid->setChecked(s_bMinGrid);
-    m_pctrlMinLine->setStyle(s_MinStyle);
+    m_pctrlMinLine->setStipple(s_MinStyle);
     m_pctrlMinLine->setWidth(s_MinWidth);
     m_pctrlMinLine->setColor(s_MinColor);
     m_pctrlUnit->setValue(s_Unit*Units::mtoUnit());
     m_pctrlMinUnit->setValue(s_MinorUnit*Units::mtoUnit());
 
     m_pctrlGrid2->setChecked(s_bGrid2);
-    m_pctrlLine2->setStyle(s_Style2);
+    m_pctrlLine2->setStipple(s_Style2);
     m_pctrlLine2->setWidth(s_Width2);
     m_pctrlLine2->setColor(s_Color2);
     m_pctrlMinGrid2->setChecked(s_bMinGrid2);
-    m_pctrlMinLine2->setStyle(s_MinStyle2);
+    m_pctrlMinLine2->setStipple(s_MinStyle2);
     m_pctrlMinLine2->setWidth(s_MinWidth2);
     m_pctrlMinLine2->setColor(s_MinColor2);
     m_pctrlUnit2->setValue(s_Unit2*Units::mtoUnit());
@@ -267,10 +267,10 @@ void BodyGridDlg::onLineStyle()
 
     if(QDialog::Accepted==dlg.exec())
     {
-        s_Style = dlg.lineStyle();
+        s_Style = dlg.lineStipple();
         s_Width = dlg.lineWidth();
         s_Color = dlg.lineColor();
-        m_pctrlLine->setStyle(s_Style);
+        m_pctrlLine->setStipple(s_Style);
         m_pctrlLine->setWidth(s_Width);
         m_pctrlLine->setColor(s_Color);
     }
@@ -284,10 +284,10 @@ void BodyGridDlg::onLine2Style()
 
     if(QDialog::Accepted==dlg.exec())
     {
-        s_Style2 = dlg.lineStyle();
+        s_Style2 = dlg.lineStipple();
         s_Width2 = dlg.lineWidth();
         s_Color2 = dlg.lineColor();
-        m_pctrlLine2->setStyle(s_Style2);
+        m_pctrlLine2->setStipple(s_Style2);
         m_pctrlLine2->setWidth(s_Width2);
         m_pctrlLine2->setColor(s_Color2);
     }
@@ -301,10 +301,10 @@ void BodyGridDlg::onMinLineStyle()
 
     if(QDialog::Accepted==dlg.exec())
     {
-        s_MinStyle = dlg.lineStyle();
+        s_MinStyle = dlg.lineStipple();
         s_MinWidth = dlg.lineWidth();
         s_MinColor = dlg.lineColor();
-        m_pctrlMinLine->setStyle(s_MinStyle);
+        m_pctrlMinLine->setStipple(s_MinStyle);
         m_pctrlMinLine->setWidth(s_MinWidth);
         m_pctrlMinLine->setColor(s_MinColor);
     }
@@ -318,10 +318,10 @@ void BodyGridDlg::onMinLine2Style()
 
     if(QDialog::Accepted==dlg.exec())
     {
-        s_MinStyle2 = dlg.lineStyle();
+        s_MinStyle2 = dlg.lineStipple();
         s_MinWidth2 = dlg.lineWidth();
         s_MinColor2 = dlg.lineColor();
-        m_pctrlMinLine2->setStyle(s_MinStyle2);
+        m_pctrlMinLine2->setStipple(s_MinStyle2);
         m_pctrlMinLine2->setWidth(s_MinWidth2);
         m_pctrlMinLine2->setColor(s_MinColor2);
     }

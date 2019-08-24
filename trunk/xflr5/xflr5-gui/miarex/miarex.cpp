@@ -180,7 +180,7 @@ Miarex::Miarex(QWidget *parent) : QWidget(parent)
     Panel::s_VortexPos = 0.25;
     Panel::s_CtrlPos   = 0.75;
 
-    m_LineStyle.m_Style = 0;
+    m_LineStyle.m_Stipple = 0;
     m_LineStyle.m_Width = 1;
     m_LineStyle.m_PointStyle  = 0;
     m_LineStyle.m_Color = QColor(127, 255, 70);
@@ -363,7 +363,7 @@ Miarex::Miarex(QWidget *parent) : QWidget(parent)
 
 
     m_CpLineStyle.m_Color = QColor(255,100,150);
-    m_CpLineStyle.m_Style = 0;
+    m_CpLineStyle.m_Stipple = 0;
     m_CpLineStyle.m_Width = 1;
     m_CpLineStyle.m_PointStyle = 0;
     m_bShowCp       = true;
@@ -780,7 +780,7 @@ void Miarex::createCpCurves()
                 {
                     pCurve = m_CpGraph.curve(iw);
                     pCurve->setColor(m_CpLineStyle.m_Color);
-                    pCurve->setStyle(m_CpLineStyle.m_Style);
+                    pCurve->setStyle(m_CpLineStyle.m_Stipple);
                     pCurve->setWidth(m_CpLineStyle.m_Width);
                     pCurve->setPoints(m_CpLineStyle.m_PointStyle);
 
@@ -1326,7 +1326,7 @@ void Miarex::fillComboBoxes(bool bEnable)
     for (int i=0; i<5;i++)
     {
         LineWidth[i] = m_LineStyle.m_Width;
-        LineStyle[i] = m_LineStyle.m_Style;
+        LineStyle[i] = m_LineStyle.m_Stipple;
         LinePoints[i] = m_LineStyle.m_PointStyle;
     }
 
@@ -1350,11 +1350,11 @@ void Miarex::fillComboBoxes(bool bEnable)
 
     if(bEnable)
     {
-        m_pctrlCurveStyle->setLine( m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
-        m_pctrlCurveWidth->setLine( m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
-        m_pctrlCurvePoints->setLine(m_LineStyle.m_Style, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
+        m_pctrlCurveStyle->setLine( m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
+        m_pctrlCurveWidth->setLine( m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
+        m_pctrlCurvePoints->setLine(m_LineStyle.m_Stipple, m_LineStyle.m_Width, m_LineStyle.m_Color, m_LineStyle.m_PointStyle);
         m_pctrlCurveColor->setColor(m_LineStyle.m_Color);
-        m_pctrlCurveColor->setStyle(m_LineStyle.m_Style);
+        m_pctrlCurveColor->setStipple(m_LineStyle.m_Stipple);
         m_pctrlCurveColor->setWidth(m_LineStyle.m_Width);
     }
     else
@@ -1363,7 +1363,7 @@ void Miarex::fillComboBoxes(bool bEnable)
         m_pctrlCurveWidth->setLine( 0, 1, QColor(100,100,100), 0);
         m_pctrlCurvePoints->setLine(0, 1, QColor(100,100,100), 0);
         m_pctrlCurveColor->setColor(QColor(100,100,100));
-        m_pctrlCurveColor->setStyle(0);
+        m_pctrlCurveColor->setStipple(0);
         m_pctrlCurveColor->setWidth(1);
     }
 
@@ -1373,7 +1373,7 @@ void Miarex::fillComboBoxes(bool bEnable)
     m_pctrlCurvePoints->update();
     m_pctrlCurveColor->update();
 
-    m_pctrlCurveStyle->setCurrentIndex(m_LineStyle.m_Style);
+    m_pctrlCurveStyle->setCurrentIndex(m_LineStyle.m_Stipple);
     m_pctrlCurveWidth->setCurrentIndex(m_LineStyle.m_Width-1);
     m_pctrlCurvePoints->setCurrentIndex(m_LineStyle.m_PointStyle);
 }
@@ -1965,7 +1965,7 @@ bool Miarex::loadSettings(QSettings &settings)
         m_ControlMax    = settings.value("ControlMax").toDouble();
         m_ControlDelta  = settings.value("ControlDelta").toDouble();
 
-        m_CpLineStyle.m_Style = settings.value("CpStyle").toInt();
+        m_CpLineStyle.m_Stipple = settings.value("CpStyle").toInt();
         m_CpLineStyle.m_Width = settings.value("CpWidth").toInt();
         m_CpLineStyle.m_Color = settings.value("CpColor").value<QColor>();
         m_CpLineStyle.m_PointStyle = settings.value("CpPointStyle").toInt();
@@ -2730,7 +2730,7 @@ void Miarex::onCurveColor()
 */
 void Miarex::onCurveStyle(int index)
 {
-    m_LineStyle.m_Style = index;
+    m_LineStyle.m_Stipple = index;
     fillComboBoxes();
     updateCurve();
 }
@@ -5102,7 +5102,7 @@ void Miarex::onKeepCpSection()
     m_CpLineStyle.m_Color = randomColor(!Settings::isLightTheme());
     pCurrentCurve->setColor(m_CpLineStyle.m_Color);
 
-    m_CpLineStyle.m_Style = 0;
+    m_CpLineStyle.m_Stipple = 0;
     m_CpLineStyle.m_Width = 1;
     m_CpLineStyle.m_PointStyle = 0;
     setCurveParams();
@@ -6532,7 +6532,7 @@ bool Miarex::saveSettings(QSettings &settings)
         settings.setValue("bAutoInertia", WPolarDlg::s_WPolar.m_bAutoInertia);
         settings.setValue("showFlapMoments", m_bShowFlapMoments);
 
-        settings.setValue("CpStyle", m_CpLineStyle.m_Style);
+        settings.setValue("CpStyle", m_CpLineStyle.m_Stipple);
         settings.setValue("CpWidth", m_CpLineStyle.m_Width);
         settings.setValue("CpColor", m_CpLineStyle.m_Color);
         settings.setValue("CpPointStyle", m_CpLineStyle.m_PointStyle);
@@ -6807,7 +6807,7 @@ void Miarex::setCurveParams()
             m_pctrlShowCurve->setChecked(m_pCurWPolar->isVisible());
             m_bCurveVisible     = m_pCurWPolar->isVisible();
             m_LineStyle.m_Color = color(m_pCurWPolar->curveColor());
-            m_LineStyle.m_Style = m_pCurWPolar->curveStyle();
+            m_LineStyle.m_Stipple = m_pCurWPolar->curveStyle();
             m_LineStyle.m_Width = m_pCurWPolar->curveWidth();
             m_LineStyle.m_PointStyle = m_pCurWPolar->points();
             fillComboBoxes();
@@ -6824,7 +6824,7 @@ void Miarex::setCurveParams()
         {
             m_bCurveVisible     = pStabView->m_pCurve->isVisible();
             m_LineStyle.m_Color = pStabView->m_pCurve->color();
-            m_LineStyle.m_Style = pStabView->m_pCurve->style();
+            m_LineStyle.m_Stipple = pStabView->m_pCurve->style();
             m_LineStyle.m_Width = pStabView->m_pCurve->width();
             m_LineStyle.m_PointStyle = pStabView->m_pCurve->pointStyle();
             m_pctrlShowCurve->setChecked(pStabView->m_pCurve->isVisible());
@@ -6840,7 +6840,7 @@ void Miarex::setCurveParams()
 
             m_bCurveVisible     = m_pCurPOpp->isVisible();
             m_LineStyle.m_Color = color(m_pCurPOpp->color());
-            m_LineStyle.m_Style = m_pCurPOpp->style();
+            m_LineStyle.m_Stipple = m_pCurPOpp->style();
             m_LineStyle.m_Width = m_pCurPOpp->width();
             m_LineStyle.m_PointStyle = m_pCurPOpp->points();
             fillComboBoxes();
@@ -7718,7 +7718,7 @@ void Miarex::updateCurve()
     bool bCurveVisible = m_pctrlShowCurve->isChecked();
     if(m_iView==XFLR5::WPOLARVIEW && m_pCurWPolar)
     {
-        m_pCurWPolar->setCurveStyle(m_LineStyle.m_Style);
+        m_pCurWPolar->setCurveStyle(m_LineStyle.m_Stipple);
         m_pCurWPolar->setCurveWidth(m_LineStyle.m_Width);
         QColor c = m_LineStyle.m_Color;
         m_pCurWPolar->setCurveColor(ObjectColor(c.red(), c.green(), c.blue(), c.alpha()));
@@ -7730,11 +7730,11 @@ void Miarex::updateCurve()
     else if(m_iView==XFLR5::STABTIMEVIEW && m_pCurWPolar)
     {
         StabViewDlg *pStabView = s_pMainFrame->m_pStabView;
-        pStabView->setTimeCurveStyle(m_LineStyle.m_Color, m_LineStyle.m_Style, m_LineStyle.m_Width, bCurveVisible, m_LineStyle.m_PointStyle);
+        pStabView->setTimeCurveStyle(m_LineStyle.m_Color, m_LineStyle.m_Stipple, m_LineStyle.m_Width, bCurveVisible, m_LineStyle.m_PointStyle);
     }
     else if(m_iView==XFLR5::STABPOLARVIEW)
     {
-        m_pCurWPolar->setCurveStyle(m_LineStyle.m_Style);
+        m_pCurWPolar->setCurveStyle(m_LineStyle.m_Stipple);
         m_pCurWPolar->setCurveWidth(m_LineStyle.m_Width);
         QColor c = m_LineStyle.m_Color;
         m_pCurWPolar->setCurveColor(ObjectColor(c.red(), c.green(), c.blue(), c.alpha()));
@@ -7746,7 +7746,7 @@ void Miarex::updateCurve()
     {
         if(m_pCurPOpp)
         {
-            m_pCurPOpp->setStyle(m_LineStyle.m_Style);
+            m_pCurPOpp->setStyle(m_LineStyle.m_Stipple);
             m_pCurPOpp->setWidth(m_LineStyle.m_Width);
             QColor c = m_LineStyle.m_Color;
             m_pCurPOpp->setColor(ObjectColor(c.red(), c.green(), c.blue(), c.alpha()));

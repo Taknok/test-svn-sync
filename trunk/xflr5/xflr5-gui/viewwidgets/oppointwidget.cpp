@@ -32,7 +32,7 @@
 
 #include <graph/graph.h>
 #include <xdirect/xdirect.h>
-#include <xdirect/xdirectstyleDlg.h>
+#include <xdirect/xdirectstyledlg.h>
 #include <graph/graphdlg.h>
 #include <misc/options/settings.h>
 
@@ -63,16 +63,9 @@ OpPointWidget::OpPointWidget(QWidget *parent) : QWidget(parent)
 //    m_bShowPanels  = false;
     m_bXPressed = m_bYPressed = false;
 
-    m_iNeutralStyle = 3;
-    m_iNeutralWidth = 1;
-    m_crNeutralColor = QColor(200,200,255);
-
-    m_crBLColor = QColor(255,50,50);
-    m_iBLStyle = 1;
-    m_iBLWidth = 1;
-    m_crPressureColor= QColor(100,150,100);
-    m_iPressureStyle = 0;
-    m_iPressureWidth = 1;
+    m_NeutralStyle  = {true, 3, 1, QColor(155, 155,155), false};
+    m_BLStyle       = {true, 3, 2, QColor(255, 55,  55), false};
+    m_PressureStyle = {true, 3, 2, QColor( 95, 155, 95), false};
 
     m_fScale = m_fYScale = 1.0;
     m_pCpGraph = nullptr;
@@ -510,9 +503,9 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
 
     if(m_bNeutralLine)
     {
-        QPen NeutralPen(m_crNeutralColor);
-        NeutralPen.setStyle(getStyle(m_iNeutralStyle));
-        NeutralPen.setWidth(m_iNeutralWidth);
+        QPen NeutralPen(m_NeutralStyle.m_Color);
+        NeutralPen.setStyle(getStyle(m_NeutralStyle.m_Stipple));
+        NeutralPen.setWidth(m_NeutralStyle.m_Width);
         painter.setPen(NeutralPen);
         painter.drawLine(rect().left(),  int(m_FoilOffset.y()),
                          rect().right(), int(m_FoilOffset.y()));
@@ -795,9 +788,9 @@ void OpPointWidget::paintPressure(QPainter &painter, double scalex, double scale
 
     painter.save();
 
-    QPen CpvPen(m_crPressureColor);
-    CpvPen.setStyle(getStyle(m_iPressureStyle));
-    CpvPen.setWidth(m_iPressureWidth);
+    QPen CpvPen(m_PressureStyle.m_Color);
+    CpvPen.setStyle(getStyle(m_PressureStyle.m_Stipple));
+    CpvPen.setWidth(m_PressureStyle.m_Width);
     painter.setPen(CpvPen);
 
 
@@ -874,9 +867,9 @@ void OpPointWidget::paintPressure(QPainter &painter, double scalex, double scale
         }
     }
     //last draw lift at XCP position
-    QPen LiftPen(m_crPressureColor);
-    LiftPen.setStyle(getStyle(m_iPressureStyle));
-    LiftPen.setWidth(m_iPressureWidth+1);
+    QPen LiftPen(m_PressureStyle.m_Color);
+    LiftPen.setStyle(getStyle(m_PressureStyle.m_Stipple));
+    LiftPen.setWidth(m_PressureStyle.m_Width+1);
     painter.setPen(LiftPen);
 
     xs =  (XDirect::curOpp()->m_XCP-0.5)*cosa  + 0.5;
@@ -935,9 +928,9 @@ void OpPointWidget::paintBL(QPainter &painter, OpPoint* pOpPoint, double scalex,
 
     offset = m_FoilOffset;
 
-    QPen WakePen(m_crBLColor);
-    WakePen.setStyle(getStyle(m_iBLStyle));
-    WakePen.setWidth(m_iBLWidth);
+    QPen WakePen(m_BLStyle.m_Color);
+    WakePen.setStyle(getStyle(m_BLStyle.m_Stipple));
+    WakePen.setWidth(m_BLStyle.m_Width);
 
     painter.setPen(WakePen);
 
@@ -986,46 +979,33 @@ void OpPointWidget::paintBL(QPainter &painter, OpPoint* pOpPoint, double scalex,
 }
 
 
-
-
-/**
-*Overrides the contextMenuEvent function of the base class.
-*Dispatches the handling to the active child application.
-*/
-void OpPointWidget::contextMenuEvent (QContextMenuEvent * event)
-{
-    event->ignore();
-}
-
-
-
 /**
  * The user has requested the launch of the interface used to define the display style of the Foil
  */
 void OpPointWidget::onXDirectStyle()
 {
     XDirectStyleDlg xdsDlg(this);
-    xdsDlg.m_iBLStyle         = m_iBLStyle;
-    xdsDlg.m_iBLWidth         = m_iBLWidth;
-    xdsDlg.m_crBLColor        = m_crBLColor;
-    xdsDlg.m_iPressureStyle   = m_iPressureStyle;
-    xdsDlg.m_iPressureWidth   = m_iPressureWidth;
-    xdsDlg.m_crPressureColor  = m_crPressureColor;
-    xdsDlg.m_iNeutralStyle    = m_iNeutralStyle;
-    xdsDlg.m_iNeutralWidth    = m_iNeutralWidth;
-    xdsDlg.m_crNeutralColor   = m_crNeutralColor;
+    xdsDlg.m_BLStyle.m_Stipple        = m_BLStyle.m_Stipple;
+    xdsDlg.m_BLStyle.m_Width        = m_BLStyle.m_Width;
+    xdsDlg.m_BLStyle.m_Color        = m_BLStyle.m_Color;
+    xdsDlg.m_PressureStyle.m_Stipple  = m_PressureStyle.m_Stipple;
+    xdsDlg.m_PressureStyle.m_Width  = m_PressureStyle.m_Width;
+    xdsDlg.m_PressureStyle.m_Color  = m_PressureStyle.m_Color;
+    xdsDlg.m_NeutralStyle.m_Stipple    = m_NeutralStyle.m_Stipple;
+    xdsDlg.m_NeutralStyle.m_Width    = m_NeutralStyle.m_Width;
+    xdsDlg.m_NeutralStyle.m_Color   = m_NeutralStyle.m_Color;
 
     if(xdsDlg.exec() == QDialog::Accepted)
     {
-        m_iBLStyle         = xdsDlg.m_iBLStyle;
-        m_iBLWidth         = xdsDlg.m_iBLWidth;
-        m_crBLColor        = xdsDlg.m_crBLColor;
-        m_iPressureStyle   = xdsDlg.m_iPressureStyle;
-        m_iPressureWidth   = xdsDlg.m_iPressureWidth;
-        m_crPressureColor  = xdsDlg.m_crPressureColor;
-        m_iNeutralStyle    = xdsDlg.m_iNeutralStyle;
-        m_iNeutralWidth    = xdsDlg.m_iNeutralWidth;
-        m_crNeutralColor   = xdsDlg.m_crNeutralColor;
+        m_BLStyle.m_Stipple         = xdsDlg.m_BLStyle.m_Stipple;
+        m_BLStyle.m_Width         = xdsDlg.m_BLStyle.m_Width;
+        m_BLStyle.m_Color        = xdsDlg.m_BLStyle.m_Color;
+        m_PressureStyle.m_Stipple   = xdsDlg.m_PressureStyle.m_Stipple;
+        m_PressureStyle.m_Width   = xdsDlg.m_PressureStyle.m_Width;
+        m_PressureStyle.m_Color  = xdsDlg.m_PressureStyle.m_Color;
+        m_NeutralStyle.m_Stipple    = xdsDlg.m_NeutralStyle.m_Stipple;
+        m_NeutralStyle.m_Width    = xdsDlg.m_NeutralStyle.m_Width;
+        m_NeutralStyle.m_Color   = xdsDlg.m_NeutralStyle.m_Color;
     }
     update();
 }
@@ -1107,17 +1087,17 @@ void OpPointWidget::saveSettings(QSettings &settings)
 {
     settings.beginGroup("OpPointSettings");
     {
-        settings.setValue("BLColor", m_crBLColor);
-        settings.setValue("BLWidth", m_iBLWidth);
-        settings.setValue("BLStyle", m_iBLStyle);
+        settings.setValue("BLColor", m_BLStyle.m_Color);
+        settings.setValue("BLWidth", m_BLStyle.m_Width);
+        settings.setValue("BLStyle", m_BLStyle.m_Stipple);
 
-        settings.setValue("PressureWidth", m_iPressureWidth);
-        settings.setValue("PressureStyle", m_iPressureStyle);
-        settings.setValue("PressureColor", m_crPressureColor);
+        settings.setValue("PressureWidth", m_PressureStyle.m_Width);
+        settings.setValue("PressureStyle", m_PressureStyle.m_Stipple);
+        settings.setValue("PressureColor", m_PressureStyle.m_Color);
 
-        settings.setValue("NeutralColor", m_crNeutralColor);
-        settings.setValue("NeutralWidth", m_iNeutralWidth);
-        settings.setValue("NeutralStyle", m_iNeutralStyle);
+        settings.setValue("NeutralColor", m_NeutralStyle.m_Color);
+        settings.setValue("NeutralWidth", m_NeutralStyle.m_Width);
+        settings.setValue("NeutralStyle", m_NeutralStyle.m_Stipple);
     }
     settings.endGroup();
 }
@@ -1128,17 +1108,17 @@ void OpPointWidget::loadSettings(QSettings &settings)
 {
     settings.beginGroup("OpPointSettings");
     {
-        m_iBLStyle  = settings.value("BLStyle", 1).toInt();
-        m_iBLWidth  = settings.value("BLWidth", 1).toInt();
-        m_crBLColor = settings.value("BLColor",QColor(235,50,50)).value<QColor>();
+        m_BLStyle.m_Stipple  = settings.value("BLStyle", 1).toInt();
+        m_BLStyle.m_Width  = settings.value("BLWidth", 1).toInt();
+        m_BLStyle.m_Color = settings.value("BLColor",QColor(235,50,50)).value<QColor>();
 
-        m_iPressureStyle  = settings.value("PressureStyle", 0).toInt();
-        m_iPressureWidth  = settings.value("PressureWidth", 1).toInt();
-        m_crPressureColor = settings.value("PressureColor",QColor(100,150,100)).value<QColor>();
+        m_PressureStyle.m_Stipple  = settings.value("PressureStyle", 0).toInt();
+        m_PressureStyle.m_Width  = settings.value("PressureWidth", 1).toInt();
+        m_PressureStyle.m_Color = settings.value("PressureColor",QColor(100,150,100)).value<QColor>();
 
-        m_iNeutralStyle  = settings.value("NeutralStyle", 3).toInt();
-        m_iNeutralWidth  = settings.value("NeutralWidth", 1).toInt();
-        m_crNeutralColor = settings.value("NeutralColor",QColor(190,190,190)).value<QColor>();
+        m_NeutralStyle.m_Stipple  = settings.value("NeutralStyle", 3).toInt();
+        m_NeutralStyle.m_Width  = settings.value("NeutralWidth", 1).toInt();
+        m_NeutralStyle.m_Color = settings.value("NeutralColor",QColor(190,190,190)).value<QColor>();
     }
     settings.endGroup();
 }
