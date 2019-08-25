@@ -133,13 +133,13 @@ public:
     Body const *body() const  {if(m_bBody)    return &m_Body; else return nullptr;}
 
     /** Returns the Plane's CoG position */
-    Vector3d const &CoG() const  {return m_CoG;}
+    Vector3d CoG() const  {return m_CoG;}
     void setCoG(Vector3d cg) {m_CoG=cg;}
 
-    double const &CoGIxx() const {return m_CoGIxx;}
-    double const &CoGIyy() const {return m_CoGIyy;}
-    double const &CoGIzz() const {return m_CoGIzz;}
-    double const &CoGIxz() const {return m_CoGIxz;}
+    double CoGIxx() const {return m_CoGIxx;}
+    double CoGIyy() const {return m_CoGIyy;}
+    double CoGIzz() const {return m_CoGIzz;}
+    double CoGIxz() const {return m_CoGIxz;}
 
     void setCoGIxx(double ixx) {m_CoGIxx=ixx;}
     void setCoGIyy(double iyy) {m_CoGIxx=iyy;}
@@ -165,17 +165,17 @@ public:
 
     int spanStationCount();
 
-    bool const &hasBody()       const {return m_bBody;}
-    bool const &hasElevator()   const {return m_bStab;}
-    bool const &hasSecondWing() const {return m_bBiplane;}
-    bool const &hasFin()        const {return m_bFin;}
+    bool hasBody()       const {return m_bBody;}
+    bool hasElevator()   const {return m_bStab;}
+    bool hasSecondWing() const {return m_bBiplane;}
+    bool hasFin()        const {return m_bFin;}
 
     void setBody(bool bBody)          {m_bBody=bBody;}
     void setElevator(bool bStab)      {m_bStab=bStab;}
     void setSecondWing(bool bBiPlane) {m_bBiplane=bBiPlane;}
     void setFin(bool bFin)            {m_bFin = bFin;}
 
-    QString const &bodyName()    const {return m_BodyName;}
+    QString bodyName()    const {return m_BodyName;}
 
 public:
     Wing m_Wing[MAXWINGS];                      /**< the array of Wing objects used to define this Plane */

@@ -159,34 +159,45 @@ public:
     void clearSurfaces();
 
     //access methods
-    int NWingSection()  const {return m_WingSection.count();}
-    int &NXPanels(const int &iSection);
-    int &NYPanels(const int &iSection);
+    int NWingSection()  const {return m_Section.count();}
+    int NXPanels(const int &iSection);
+    int NYPanels(const int &iSection);
+    void setNXPanels(int iSec, int nx) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_NXPanels=nx;}
+    void setNYPanels(int iSec, int ny) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_NXPanels=ny;}
+
     int NYPanels();
 
-    XFLR5::enumPanelDistribution &XPanelDist(const int &iSection);
-    XFLR5::enumPanelDistribution &YPanelDist(const int &iSection);
+    XFLR5::enumPanelDistribution XPanelDist(const int &iSection) const;
+    XFLR5::enumPanelDistribution YPanelDist(const int &iSection) const;
+    void setXPanelDist(int iSec, XFLR5::enumPanelDistribution dist) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_XPanelDist = dist;}
+    void setYPanelDist(int iSec, XFLR5::enumPanelDistribution dist) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_YPanelDist = dist;}
 
-    bool isWingFoil(Foil *pFoil);
-    double rootChord()     const {return m_WingSection.first()->m_Chord;}
-    double rootOffset()    const {return m_WingSection.first()->m_Offset;}
-    double tipChord()      const {return m_WingSection.last()->m_Chord;}
-    double tipTwist()      const {return m_WingSection.last()->m_Twist;}
-    double tipOffset()     const {return m_WingSection.last()->m_Offset;}
-    double tipPos()        const {return m_WingSection.last()->m_YPosition;}
+    bool isWingFoil(Foil const*pFoil) const;
+    double rootChord()     const {return m_Section.first()->m_Chord;}
+    double rootOffset()    const {return m_Section.first()->m_Offset;}
+    double tipChord()      const {return m_Section.last()->m_Chord;}
+    double tipTwist()      const {return m_Section.last()->m_Twist;}
+    double tipOffset()     const {return m_Section.last()->m_Offset;}
+    double tipPos()        const {return m_Section.last()->m_YPosition;}
     double planformSpan()  const {return m_PlanformSpan;}
     double projectedSpan() const {return m_ProjectedSpan;}
 
-    double const &YPosition(const int &iSection) const;
+    double YPosition(const int &iSection) const;
     void setYPosition(int iSection, double ypos);
-
-    double &Chord(const int &iSection) const;
-    double &Twist(const int &iSection) const;
-    double &Dihedral(const int &iSection) const;
-    double &Offset(const int &iSection) const;
-    double &Length(const int &iSection) const;
-    double &YProj(const int &iSection) const;
-    double &ZPosition(const int &iSection) const;
+    double Chord(const int &iSection) const;
+    void setChord(int iSec, double c) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_Chord=c;}
+    double Twist(const int &iSection) const;
+    void setTwist(int iSec, double t) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_Twist=t;}
+    double Dihedral(const int &iSection) const;
+    void setDihedral(int iSec, double d) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_Dihedral=d;}
+    double Offset(const int &iSection) const;
+    void setOffset(int iSec, double o) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_Offset=o;}
+    double Length(const int &iSection) const;
+    void setLength(int iSec, double l) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_Length=l;}
+    double YProj(const int &iSection) const;
+    void setYProj(int iSec, double y) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_YProj=y;}
+    double ZPosition(const int &iSection) const;
+    void setZPosition(int iSec, double z) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_ZPos=z;}
 
     double yrel(double SpanPos) const;
     double getChord(double yob) const;
@@ -219,8 +230,11 @@ public:
     QString const& wingDescription() const {return m_WingDescription;}
     void setWingDescription(QString desc) {m_WingDescription=desc;}
 
-    QString &rightFoil(const int &iSection) const;
-    QString &leftFoil(const int &iSection) const;
+    QString const &rightFoilName(const int &iSection) const;
+    QString const &leftFoilName(const int &iSection) const;
+    void setRightFoilName(int iSec, QString foilname) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_RightFoilName=foilname;}
+    void setLeftFoilName(int iSec, QString foilname) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_LeftFoilName=foilname;}
+
 
     bool textures() const {return m_bTextures;}
     void setTextures(bool bTextures) {m_bTextures=bTextures;}
@@ -243,8 +257,8 @@ public:
 
     Foil* foil(QString strFoilName);
 
-    double IntegralC2(double y1, double y2, double c1, double c2);
-    double IntegralCy(double y1, double y2, double c1, double c2);
+    double IntegralC2(double y1, double y2, double c1, double c2) const;
+    double IntegralCy(double y1, double y2, double c1, double c2) const;
 
 
     static double getInterpolatedVariable(int nVar, Foil *pFoil0, Foil *pFoil1, double Re, double Cl, double Tau, bool &bOutRe, bool &bError);
@@ -326,7 +340,7 @@ private:
 public:    
 
 
-    QVector<WingSection*> m_WingSection;         /**< the array of wing sections. A WingSection extends between a foil and the next. */
+    QVector<WingSection*> m_Section;         /**< the array of wing sections. A WingSection extends between a foil and the next. */
     QVector<PointMass*> m_PointMass;             /**< the array of PointMass objects associated to this Wing object*/
 
     QVector<Surface*> m_Surface;                 /**< the array of Surface objects associated to the wing */

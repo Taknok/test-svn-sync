@@ -28,6 +28,37 @@
 
 
 
+void customLogHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg)
+{
+    (void)context;
+    QByteArray localMsg = msg.toLocal8Bit();
+//    const char *file = context.file ? context.file : "";
+//    const char *function = context.function ? context.function : "";
+    switch (type)
+    {
+        case QtDebugMsg:
+//            fprintf(stderr, "Debug: %s (%s:%u, %s)\n", localMsg.constData(), file, context.line, function);
+            fprintf(stderr, "%s\n", localMsg.constData());
+            break;
+        case QtInfoMsg:
+//            fprintf(stderr, "Info: %s (%s:%u, %s)\n", localMsg.constData(), file, context.line, function);
+            fprintf(stderr, "Info: %s\n", localMsg.constData());
+            break;
+        case QtWarningMsg:
+//            fprintf(stderr, "Warning: %s (%s:%u, %s)\n", localMsg.constData(), file, context.line, function);
+            fprintf(stderr, "Warning: %s\n", localMsg.constData());
+            break;
+        case QtCriticalMsg:
+//            fprintf(stderr, "Critical: %s (%s:%u, %s)\n", localMsg.constData(), file, context.line, function);
+            fprintf(stderr, "Critical: %s\n", localMsg.constData());
+            break;
+        case QtFatalMsg:
+//            fprintf(stderr, "Fatal: %s (%s:%u, %s)\n", localMsg.constData(), file, context.line, function);
+            fprintf(stderr, "Fatal: %s\n", localMsg.constData());
+            break;
+    }
+}
+
 /**
 *The app's point of entry !
 */
@@ -94,6 +125,8 @@ int main(int argc, char *argv[])
 #endif*/
 
     QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL);
+
+    qInstallMessageHandler(&customLogHandler);
     XFLR5Application app(argc, argv);
 
     return app.exec();

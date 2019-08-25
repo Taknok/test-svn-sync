@@ -145,9 +145,9 @@ void XMLPlaneWriter::writeWing(Wing const &wing, Vector3d position, double Ry)
         writeEndElement();
         writeStartElement("Sections");
         {
-            for(int ips=0; ips<wing.m_WingSection.size(); ips++)
+            for(int ips=0; ips<wing.m_Section.size(); ips++)
             {
-                WingSection *ws = wing.m_WingSection.at(ips);
+                WingSection *ws = wing.m_Section.at(ips);
                 writeStartElement("Section");
                 {
                     writeTextElement("y_position", QString("%1").arg(ws->m_YPosition*Units::mtoUnit(), 7, 'f', 3));

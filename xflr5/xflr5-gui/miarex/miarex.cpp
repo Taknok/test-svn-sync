@@ -2268,17 +2268,17 @@ void Miarex::onAnalyze()
         {
             for (l=0; l<pWing(iw)->NWingSection(); l++)
             {
-                if (!Objects2d::foil(pWing(iw)->rightFoil(l)))
+                if (!Objects2d::foil(pWing(iw)->rightFoilName(l)))
                 {
                     QString strong;
-                    strong = pWing(iw)->m_WingName + ": "+tr("Could not find the wing's foil ")+ pWing(iw)->rightFoil(l) +tr("...\nAborting Calculation");
+                    strong = pWing(iw)->m_WingName + ": "+tr("Could not find the wing's foil ")+ pWing(iw)->rightFoilName(l) +tr("...\nAborting Calculation");
                     QMessageBox::warning(s_pMainFrame, tr("Warning"), strong);
                     return;
                 }
-                if (!Objects2d::foil(pWing(iw)->leftFoil(l)))
+                if (!Objects2d::foil(pWing(iw)->leftFoilName(l)))
                 {
                     QString strong;
-                    strong = pWing(iw)->m_WingName + ": "+tr("Could not find the wing's foil ")+ pWing(iw)->leftFoil(l) +tr("...\nAborting Calculation");
+                    strong = pWing(iw)->m_WingName + ": "+tr("Could not find the wing's foil ")+ pWing(iw)->leftFoilName(l) +tr("...\nAborting Calculation");
                     QMessageBox::warning(s_pMainFrame, tr("Warning"), strong);
                     return;
                 }
