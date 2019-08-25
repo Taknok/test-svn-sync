@@ -365,9 +365,9 @@ void Surface::getTrailingPt(int k, Vector3d &C)
  * @param l the index of the panel in the chordwise direction. 0<=l<m_NXPanels
  * @param pos defines on which surface (BOTSURFACE, TOPSURFACE, MIDSURFACE) the node positions should be calculated.
  */
-void Surface::getPanel(int const &k, int const &l, enumPanelPosition pos)
+void Surface::getPanel(int const &k, int const &l, enumPanelPosition pos) const
 {
-    double y1, y2;
+    double y1=0, y2=0;
     getYDist(k,y1,y2);
     if(pos==MIDSURFACE)
     {
@@ -427,7 +427,7 @@ void Surface::getPanel(int const &k, int const &l, enumPanelPosition pos)
  * @param k the index of the strip 0<=k<m_NYPanels
  * @return the strip width
  */
-double Surface::stripWidth(int k)
+double Surface::stripWidth(int k) const
 {
     getPanel(k, 0, MIDSURFACE);
     return fabs(LA.y-LB.y);

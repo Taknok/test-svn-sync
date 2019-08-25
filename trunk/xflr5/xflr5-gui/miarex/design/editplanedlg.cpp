@@ -997,9 +997,9 @@ void EditPlaneDlg::fillWingTreeView(int iw, QList<QStandardItem*> &planeRootItem
         {
             m_pStruct->expand(m_pModel->indexFromItem(wingSectionFolder.first()));
         }
-        for(int iws=0; iws<pWing->m_WingSection.size(); iws++)
+        for(int iws=0; iws<pWing->m_Section.size(); iws++)
         {
-            WingSection *wingsec = pWing->m_WingSection.at(iws);
+            WingSection *wingsec = pWing->m_Section.at(iws);
 
             QList<QStandardItem*> sectionFolder = prepareRow(QString("Section_%1").arg(iws+1));
             wingSectionFolder.first()->appendRow(sectionFolder);
@@ -1568,7 +1568,7 @@ void EditPlaneDlg::readWingSectionTree(Wing *pWing, QModelIndex indexLevel)
         indexLevel = indexLevel.sibling(indexLevel.row()+1,0);
     } while(indexLevel.isValid());
 
-    pWing->m_WingSection.append(pWS);
+    pWing->m_Section.append(pWS);
 
 }
 
@@ -1783,25 +1783,23 @@ void EditPlaneDlg::onInsertBefore()
         pWing->insertSection(m_iActiveSection);
 
         pWing->setYPosition(n, (pWing->YPosition(n+1) + pWing->YPosition(n-1)) /2.0);
-        pWing->Chord(n)     = (pWing->Chord(n+1)     + pWing->Chord(n-1))     /2.0;
-        pWing->Offset(n)    = (pWing->Offset(n+1)    + pWing->Offset(n-1))    /2.0;
-        pWing->Twist(n)     = (pWing->Twist(n+1)     + pWing->Twist(n-1))     /2.0;
-        pWing->Dihedral(n)  = (pWing->Dihedral(n+1)  + pWing->Dihedral(n-1))  /2.0;
+        pWing->setChord(n,     (pWing->Chord(n+1)     + pWing->Chord(n-1))     /2.0);
+        pWing->setOffset(n,    (pWing->Offset(n+1)    + pWing->Offset(n-1))    /2.0);
+        pWing->setTwist(n,     (pWing->Twist(n+1)     + pWing->Twist(n-1))     /2.0);
+        pWing->setDihedral(n,  (pWing->Dihedral(n+1)  + pWing->Dihedral(n-1))  /2.0);
 
-        pWing->XPanelDist(n) = pWing->XPanelDist(n-1);
-        pWing->YPanelDist(n) = pWing->YPanelDist(n-1);
+        pWing->setXPanelDist(n, pWing->XPanelDist(n-1));
+        pWing->setYPanelDist(n, pWing->YPanelDist(n-1));
 
-        pWing->rightFoil(n) = pWing->rightFoil(n-1);
-        pWing->leftFoil(n)  = pWing->leftFoil(n-1);
+        pWing->m_Section[n]->m_RightFoilName = pWing->rightFoilName(n-1);
+        pWing->m_Section[n]->m_LeftFoilName  = pWing->leftFoilName(n-1);
 
-        pWing->NXPanels(n)   = pWing->NXPanels(n-1);
+        pWing->setNXPanels(n, pWing->NXPanels(n-1));
 
 
         int ny = pWing->NYPanels(n-1);
-        pWing->NYPanels(n)   = ny/2;
-        pWing->NYPanels(n-1) = ny-pWing->NYPanels(n);
-        if(pWing->NYPanels(n)==0)   pWing->NYPanels(n)++;
-        if(pWing->NYPanels(n-1)==0) pWing->NYPanels(n-1)++;
+        pWing->setNYPanels(n,   std::max(2,ny/2));
+        pWing->setNYPanels(n-1, std::max(2,ny-pWing->NYPanels(n)));
 
 
         m_pStruct->closePersistentEditor(m_pStruct->currentIndex());
@@ -1871,29 +1869,29 @@ void EditPlaneDlg::onInsertAfter()
         if(n<pWing->NWingSection()-2)
         {
             pWing->setYPosition(n+1, (pWing->YPosition(n) + pWing->YPosition(n+2))  /2.0);
-            pWing->Chord(n+1)    = (pWing->Chord(n)    + pWing->Chord(n+2))   /2.0;
-            pWing->Offset(n+1)   = (pWing->Offset(n)   + pWing->Offset(n+2))  /2.0;
-            pWing->Twist(n+1)    = (pWing->Twist(n)    + pWing->Twist(n+2))   /2.0;
+            pWing->setChord(n+1, (pWing->Chord(n)    + pWing->Chord(n+2))   /2.0);
+            pWing->setOffset(n+1, (pWing->Offset(n)   + pWing->Offset(n+2))  /2.0);
+            pWing->setTwist(n+1, (pWing->Twist(n)    + pWing->Twist(n+2))   /2.0);
         }
         else
         {
             pWing->setYPosition(n+1, pWing->YPosition(n)*1.1);
-            pWing->Chord(n+1)   = pWing->Chord(n)/1.1;
-            pWing->Offset(n+1)  = pWing->Offset(n) + pWing->Chord(n) - pWing->Chord(n) ;
-            pWing->Twist(n+1)   = pWing->Twist(n);
+            pWing->setChord(n+1, pWing->Chord(n)/1.1);
+            pWing->setOffset(n+1, pWing->Offset(n) + pWing->Chord(n) - pWing->Chord(n));
+            pWing->setTwist(n+1, pWing->Twist(n));
         }
 
-        pWing->Dihedral(n+1)   = pWing->Dihedral(n);
-        pWing->NXPanels(n+1)   = pWing->NXPanels(n);
-        pWing->NYPanels(n+1)   = pWing->NYPanels(n);
-        pWing->XPanelDist(n+1) = pWing->XPanelDist(n);
-        pWing->YPanelDist(n+1) = pWing->YPanelDist(n);
-        pWing->rightFoil(n+1)  = pWing->rightFoil(n);
-        pWing->leftFoil(n+1)   = pWing->leftFoil(n);
+        pWing->setDihedral(n+1, pWing->Dihedral(n));
+        pWing->setNXPanels(n+1, pWing->NXPanels(n));
+        pWing->setNYPanels(n+1, pWing->NYPanels(n));
+        pWing->setXPanelDist(n+1, pWing->XPanelDist(n));
+        pWing->setYPanelDist(n+1, pWing->YPanelDist(n));
+        pWing->m_Section[n+1]->m_RightFoilName  = pWing->rightFoilName(n);
+        pWing->m_Section[n+1]->m_LeftFoilName   = pWing->leftFoilName(n);
 
         int ny = pWing->NYPanels(n);
-        pWing->NYPanels(n+1) = qMax(1,ny/2);
-        pWing->NYPanels(n)   = qMax(1,ny-pWing->NYPanels(n+1));
+        pWing->setNYPanels(n+1, qMax(1,ny/2));
+        pWing->setNYPanels(n, qMax(1,ny-pWing->NYPanels(n+1)));
 
         //    m_pWing->m_bVLMAutoMesh = true;
 
@@ -1976,7 +1974,7 @@ void EditPlaneDlg::onDelete()
 
         int ny = pWing->NYPanels(m_iActiveSection-1) + pWing->NYPanels(m_iActiveSection);
         pWing->removeWingSection(m_iActiveSection);
-        pWing->NYPanels(m_iActiveSection-1) = ny;
+        pWing->setNYPanels(m_iActiveSection-1, ny);
 
         fillPlaneTreeView();
         m_pPlane->createSurfaces();

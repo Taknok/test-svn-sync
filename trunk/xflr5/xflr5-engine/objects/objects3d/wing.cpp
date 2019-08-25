@@ -126,11 +126,11 @@ Wing::Wing()
     computeGeometry();
 
     double length = Length(0);
-    for (int is=0; is<m_WingSection.size(); is++)
+    for (int is=0; is<m_Section.size(); is++)
     {
         length += Length(is);
         setYPosition(is, length);
-        XPanelDist(is) =  XFLR5::COSINE;
+        setXPanelDist(is,  XFLR5::COSINE);
     }
 }
 
@@ -147,10 +147,10 @@ Wing::~Wing()
 /** Destroys the WingSection objects in good order to avoid memory leaks */
 void Wing::clearWingSections()
 {
-    for(int iws=m_WingSection.size()-1; iws>=0; iws--)
+    for(int iws=m_Section.size()-1; iws>=0; iws--)
     {
-        delete m_WingSection.at(iws);
-        m_WingSection.removeAt(iws);
+        delete m_Section.at(iws);
+        m_Section.removeAt(iws);
     }
 }
 
@@ -253,11 +253,11 @@ bool Wing::importDefinition(QString path_to_file, QString errorMessage)
         //Build the Geometry
         computeGeometry();
         double length = Length(0);
-        for (int is=0; is<m_WingSection.size(); is++)
+        for (int is=0; is<m_Section.size(); is++)
         {
             length += Length(is);
             setYPosition(is, length);
-            XPanelDist(is) =  XFLR5::COSINE;
+            setXPanelDist(is,  XFLR5::COSINE);
         }
     }
     catch (std::iostream::failure e)
@@ -284,7 +284,7 @@ bool Wing::exportDefinition(QString path_to_file, QString errorMessage)
             QTextStream out_file(&fp);
             //Iterate the wing sections are write out the data...
             out_file << this->m_WingName << endl;
-            for (int is=0; is<m_WingSection.size(); is++)
+            for (int is=0; is<m_Section.size(); is++)
             {
                 out_file << YPosition(is) << " " << Chord(is) << " " << Offset(is) \
                          << " " << Dihedral(is) << " " << Twist(is) << " " << NXPanels(is) \
@@ -325,15 +325,17 @@ bool Wing::exportDefinition(QString path_to_file, QString errorMessage)
                 }
 
 
-                if(rightFoil(is).isEmpty()){
+                if(rightFoilName(is).isEmpty()){
                     out_file  << " " << "/_/";
                 } else {
-                    out_file  << " " << rightFoil(is).replace(QString(" "), QString("/_/")).toLatin1().data();
+                    QString rightfoilname = rightFoilName(is);
+                    out_file  << " " << rightfoilname.replace(QString(" "), QString("/_/")).toLatin1().data();
                 }
-                if(leftFoil(is).isEmpty()) {
+                if(leftFoilName(is).isEmpty()) {
                     out_file  << " " << "/_/";
                 } else {
-                    out_file  << " " << leftFoil(is).replace(QString(" "), QString("/_/")).toLatin1().data();
+                    QString leftfoilname = leftFoilName(is);
+                    out_file  << " " << leftfoilname.replace(QString(" "), QString("/_/")).toLatin1().data();
                 }
                 out_file << endl;
             }
@@ -357,13 +359,13 @@ void Wing::computeGeometry()
 {
     double surface = 0.0;
     double xysurface = 0.0;
-    Length(0) = 0.0;
-    YProj(0)  = YPosition(0);
+    setLength(0, 0.0);
+    m_Section[0]->m_YProj  = YPosition(0);
     for (int is=1; is<NWingSection(); is++)
-        Length(is) = YPosition(is) - YPosition(is-1);
+        m_Section[is]->m_Length = YPosition(is) - YPosition(is-1);
     for (int is=1; is<NWingSection(); is++)
     {
-        YProj(is) = YProj(is-1) + Length(is) * cos(Dihedral(is-1)*PI/180.0);
+        m_Section[is]->m_YProj = YProj(is-1) + Length(is) * cos(Dihedral(is-1)*PI/180.0);
     }
 
     m_PlanformSpan  = 2.0 * tipPos();
@@ -415,14 +417,14 @@ void Wing::computeGeometry()
 
     for (int is=1; is<NWingSection(); is++)
     {
-        Foil const*pFoilA = foil(rightFoil(is-1));
-        Foil const*pFoilB = foil(rightFoil(is));
+        Foil const*pFoilA = foil(rightFoilName(is-1));
+        Foil const*pFoilB = foil(rightFoilName(is));
         if(pFoilA && pFoilB && (!m_bIsFin || (m_bIsFin && m_bSymFin) || (m_bIsFin && m_bDoubleFin)))
         {
             if(pFoilA->m_bTEFlap && pFoilB->m_bTEFlap && qAbs(YPosition(is)-YPosition(is-1))>MinPanelSize)    m_nFlaps++;
         }
-        pFoilA = foil(leftFoil(is-1));
-        pFoilB = foil(leftFoil(is));
+        pFoilA = foil(leftFoilName(is-1));
+        pFoilB = foil(leftFoilName(is));
         if(pFoilA && pFoilB)
         {
             if(pFoilA->m_bTEFlap && pFoilB->m_bTEFlap && qAbs(YPosition(is)-YPosition(is-1))>MinPanelSize)    m_nFlaps++;
@@ -643,7 +645,7 @@ int Wing::NYPanels()
         }
         else
         {
-            ny += m_WingSection.at(is)->m_NYPanels;
+            ny += m_Section.at(is)->m_NYPanels;
         }
     }
     return ny*2;
@@ -740,8 +742,8 @@ void Wing::createSurfaces(Vector3d const &T, double XTilt, double YTilt)
         }
         else
         {
-            m_Surface[iSurf]->m_pFoilA   = foil(leftFoil(jss+1));
-            m_Surface[iSurf]->m_pFoilB   = foil(leftFoil(jss));
+            m_Surface[iSurf]->m_pFoilA   = foil(leftFoilName(jss+1));
+            m_Surface[iSurf]->m_pFoilB   = foil(leftFoilName(jss));
 
             m_Surface[iSurf]->m_Length   =  YPosition(jss+1) - YPosition(jss);
 
@@ -813,8 +815,8 @@ void Wing::createSurfaces(Vector3d const &T, double XTilt, double YTilt)
             }
             else
             {
-                m_Surface[iSurf]->m_pFoilA   = foil(rightFoil(jss));
-                m_Surface[iSurf]->m_pFoilB   = foil(rightFoil(jss+1));
+                m_Surface[iSurf]->m_pFoilA   = foil(rightFoilName(jss));
+                m_Surface[iSurf]->m_pFoilB   = foil(rightFoilName(jss+1));
 
                 m_Surface[iSurf]->m_Length   =  YPosition(jss+1) - YPosition(jss);
 
@@ -1095,24 +1097,24 @@ void Wing::duplicate(Wing *pWing)
 
     clearWingSections();
 
-    for (int is=0; is<pWing->m_WingSection.size(); is++)
+    for (int is=0; is<pWing->m_Section.size(); is++)
     {
         appendWingSection();
-        Chord(is)      = pWing->Chord(is);
-        setYPosition(is, pWing->YPosition(is));
-        Offset(is)     = pWing->Offset(is);
-        Length(is)     = pWing->Length(is);
-        NXPanels(is)   = pWing->NXPanels(is) ;
-        NYPanels(is)   = pWing->NYPanels(is);
-        XPanelDist(is) = pWing->XPanelDist(is);
-        YPanelDist(is) = pWing->YPanelDist(is);
-        Twist(is)      = pWing->Twist(is);
-        Dihedral(is)   = pWing->Dihedral(is);
-        m_WingSection[is]->m_ZPos  = pWing->ZPosition(is);
-        YProj(is)      = pWing->YProj(is);
+        m_Section[is]->m_Chord      = pWing->Chord(is);
+        m_Section[is]->m_YPosition  = pWing->YPosition(is);
+        m_Section[is]->m_Offset     = pWing->Offset(is);
+        m_Section[is]->m_Length     = pWing->Length(is);
+        m_Section[is]->m_NXPanels   = pWing->NXPanels(is) ;
+        m_Section[is]->m_NYPanels   = pWing->NYPanels(is);
+        m_Section[is]->m_XPanelDist = pWing->XPanelDist(is);
+        m_Section[is]->m_YPanelDist = pWing->YPanelDist(is);
+        m_Section[is]->m_Twist      = pWing->Twist(is);
+        m_Section[is]->m_Dihedral   = pWing->Dihedral(is);
+        m_Section[is]->m_ZPos       = pWing->ZPosition(is);
+        m_Section[is]->m_YProj      = pWing->YProj(is);
 
-        rightFoil(is)  = pWing->rightFoil(is);
-        leftFoil(is)   = pWing->leftFoil(is);
+        m_Section[is]->m_RightFoilName  = pWing->rightFoilName(is);
+        m_Section[is]->m_LeftFoilName   = pWing->leftFoilName(is);
     }
 
     computeGeometry();
@@ -1296,8 +1298,8 @@ void Wing::getFoils(Foil **pFoil0, Foil **pFoil1, double y, double &t)
         {
             if (YPosition(is)<=y && y<=YPosition(is+1))
             {
-                *pFoil0 = foil(rightFoil(is));
-                *pFoil1 = foil(rightFoil(is+1));
+                *pFoil0 = foil(rightFoilName(is));
+                *pFoil1 = foil(rightFoilName(is+1));
                 t = (y-YPosition(is))/(YPosition(is+1) - YPosition(is));
                 return;
             }
@@ -1311,8 +1313,8 @@ void Wing::getFoils(Foil **pFoil0, Foil **pFoil1, double y, double &t)
         {
             if (YPosition(is)<=y && y<YPosition(is+1))
             {
-                *pFoil0 = foil(leftFoil(is));
-                *pFoil1 = foil(leftFoil(is+1));
+                *pFoil0 = foil(leftFoilName(is));
+                *pFoil1 = foil(leftFoilName(is+1));
                 t = (y-YPosition(is))/(YPosition(is+1) - YPosition(is));
                 return;
             }
@@ -1496,10 +1498,10 @@ void Wing::panelComputeBending(bool bThinSurface)
 void Wing::scaleChord(double NewChord)
 {
     double ratio = NewChord/Chord(0);
-    for (int is=0; is<m_WingSection.size(); is++)
+    for (int is=0; is<m_Section.size(); is++)
     {
-        Chord(is)    *= ratio;
-        Offset(is)   *= ratio;
+        m_Section[is]->m_Chord  *= ratio;
+        m_Section[is]->m_Offset *= ratio;
     }
     computeGeometry();
 }
@@ -1511,11 +1513,11 @@ void Wing::scaleChord(double NewChord)
 */
 void Wing::scaleSpan(double NewSpan)
 {
-    for (int is=0; is<m_WingSection.size(); is++)
+    for (int is=0; is<m_Section.size(); is++)
     {
         double ypos = YPosition(is) * NewSpan/m_PlanformSpan;
         setYPosition(is, ypos);
-        Length(is)   *= NewSpan/m_PlanformSpan;
+        m_Section[is]->m_Length *= NewSpan/m_PlanformSpan;
     }
     computeGeometry();
 }
@@ -1527,14 +1529,14 @@ void Wing::scaleSpan(double NewSpan)
 */
 void Wing::scaleSweep(double newSweep)
 {
-    double rootOffset = m_WingSection.first()->m_Offset;
+    double rootOffset = m_Section.first()->m_Offset;
     double rootchord4 = rootOffset + Chord(0)/4.0;
 
     //scale each panel's offset
     for(int is=1; is<NWingSection(); is++)
     {
-        double chord4Offset = rootchord4 + tan(newSweep*PI/180.0) * m_WingSection.at(is)->m_YPosition;
-        Offset(is) = chord4Offset - Chord(is)/4.0;
+        double chord4Offset = rootchord4 + tan(newSweep*PI/180.0) * m_Section.at(is)->m_YPosition;
+        m_Section[is]->m_Offset = chord4Offset - Chord(is)/4.0;
     }
     computeGeometry();
 }
@@ -1553,7 +1555,7 @@ void Wing::scaleTwist(double NewTwist)
 
         for(int is=1; is<NWingSection(); is++)
         {
-            Twist(is) *= ratio;
+            m_Section[is]->m_Twist *= ratio;
         }
     }
     else
@@ -1561,7 +1563,7 @@ void Wing::scaleTwist(double NewTwist)
         //Set each panel's twist in the ratio of the span position
         for(int is=1; is<NWingSection(); is++)
         {
-            Twist(is) = NewTwist*YPosition(is)/(m_PlanformSpan/2.0);
+            m_Section[is]->m_Twist = NewTwist*YPosition(is)/(m_PlanformSpan/2.0);
         }
     }
     computeGeometry();
@@ -1581,11 +1583,11 @@ void Wing::scaleArea(double newArea)
 
     double ratio = sqrt(newArea/m_PlanformArea);
 
-    for (int is=0; is<m_WingSection.size(); is++)
+    for (int is=0; is<m_Section.size(); is++)
     {
         double ypos = YPosition(is)*ratio;
         setYPosition(is, ypos);
-        Chord(is)     *= ratio;
+        m_Section[is]->m_Chord     *= ratio;
     }
     computeGeometry();
 }
@@ -1939,96 +1941,96 @@ bool Wing::isWingNode(int nNode)
 *@param iSection the index of the section
 *@return the value of the offset
 */
-double & Wing::Offset(const int &iSection) const    {return m_WingSection[iSection]->m_Offset;}
+double Wing::Offset(const int &iSection) const    {return m_Section[iSection]->m_Offset;}
 
 /** Returns the dihedral angle at a span section identified by its index
 *@param iSection the index of the section
 *@return the value of the dihedral angle, in degrees
 */
-double & Wing::Dihedral(const int &iSection) const  {return m_WingSection[iSection]->m_Dihedral;}
+double Wing::Dihedral(const int &iSection) const  {return m_Section[iSection]->m_Dihedral;}
 
 /** Returns the chord length at a span section identified by its index
 *@param iSection the index of the section
 *@return the value of the chord length
 */
-double & Wing::Chord(const int &iSection) const     {return m_WingSection[iSection]->m_Chord;}
+double Wing::Chord(const int &iSection) const     {return m_Section[iSection]->m_Chord;}
 
 /** Returns the twist angle at a span section identified by its index
 *@param iSection the index of the section
 *@return the value of the twist angle, in degrees
 */
-double & Wing::Twist(const int &iSection) const     {return m_WingSection[iSection]->m_Twist;}
+double Wing::Twist(const int &iSection) const     {return m_Section[iSection]->m_Twist;}
 
 /** Returns the span position at a span section identified by its index
 *@param iSection the index of the section
 *@return the value of the span position
 */
-double const & Wing::YPosition(const int &iSection) const
+double Wing::YPosition(const int &iSection) const
 {
-    return m_WingSection[iSection]->m_YPosition;
+    return m_Section[iSection]->m_YPosition;
 }
 
 void Wing::setYPosition(int iSection, double ypos)
 {
-    if(iSection>=0 && iSection<MAXSPANSTATIONS) m_WingSection[iSection]->m_YPosition=ypos;
+    if(iSection>=0 && iSection<MAXSPANSTATIONS) m_Section[iSection]->m_YPosition=ypos;
 }
 
 /** Returns the length between a span section identified by its index and the next spanwise section
 *@param iSection the index of the section
 *@return the value of the length of the panel
 */
-double & Wing::Length(const int &iSection) const    {return m_WingSection[iSection]->m_Length;}
+double Wing::Length(const int &iSection) const    {return m_Section[iSection]->m_Length;}
 
 /** Returns the span position of a span section identified by its index, projected on the x-y plane
 *@param iSection the index of the section
 *@return the value of the projected span position
 */
-double & Wing::YProj(const int &iSection) const     {return m_WingSection[iSection]->m_YProj;}
+double Wing::YProj(const int &iSection) const     {return m_Section[iSection]->m_YProj;}
 
 /** Returns the z-position at a span section identified by its index
 *@param iSection the index of the section
 *@return the value of the z-position
 */
-double & Wing::ZPosition(const int &iSection) const {return m_WingSection[iSection]->m_ZPos;}
+double Wing::ZPosition(const int &iSection) const {return m_Section[iSection]->m_ZPos;}
 
 
 /** Returns the number of chordwise panels at a span section identified by its index
 *@param iSection the index of the section
 *@return the number of chordwise panels
 */
-int & Wing::NXPanels(const int &iSection)   {return m_WingSection[iSection]->m_NXPanels;}
+int Wing::NXPanels(const int &iSection)   {return m_Section[iSection]->m_NXPanels;}
 
 /** Returns the number of spanwise panels at a span section identified by its index
 *@param iSection the index of the section
 *@return the number of spanwise panels
 */
-int & Wing::NYPanels(const int &iSection)   {return m_WingSection[iSection]->m_NYPanels;}
+int Wing::NYPanels(const int &iSection)   {return m_Section[iSection]->m_NYPanels;}
 
 /** Returns the type of distribution of chordwise panels at a span section identified by its index - always XFLR5::COSINE type
 *@param iSection the index of the section
 *@return the type of distribution of chordwise panels - always XFLR5::COSINE type
 */
-XFLR5::enumPanelDistribution & Wing::XPanelDist(const int &iSection) {return m_WingSection[iSection]->m_XPanelDist;}
+XFLR5::enumPanelDistribution Wing::XPanelDist(const int &iSection) const {return m_Section[iSection]->m_XPanelDist;}
 
 /** Returns the type of distribution of spanwise panels at a span section identified by its index
 *@param iSection the index of the section
 *@return the type of distribution of spanwise panels
 */
-XFLR5::enumPanelDistribution & Wing::YPanelDist(const int &iSection) {return m_WingSection[iSection]->m_YPanelDist;}
+XFLR5::enumPanelDistribution Wing::YPanelDist(const int &iSection) const {return m_Section[iSection]->m_YPanelDist;}
 
 /**
  * Returns the name of the foil on the right side of a span section
  * @param iSection the index of the section
  * @return the name of the foil on the right side of the section
  */
-QString & Wing::rightFoil(const int &iSection) const {return m_WingSection[iSection]->m_RightFoilName;}
+QString const & Wing::rightFoilName(const int &iSection) const {return m_Section[iSection]->m_RightFoilName;}
 
 /**
  * Returns the name of the foil on the left side of a span section
  * @param iSection the index of the section
  * @return the name of the foil on the left side of the section
  */
-QString & Wing::leftFoil(const int &iSection)  const {return m_WingSection[iSection]->m_LeftFoilName;}
+QString const & Wing::leftFoilName(const int &iSection)  const {return m_Section[iSection]->m_LeftFoilName;}
 
 
 /**
@@ -2037,8 +2039,8 @@ QString & Wing::leftFoil(const int &iSection)  const {return m_WingSection[iSect
  */
 void Wing::removeWingSection(int const iSection)
 {
-    if(iSection<0 || iSection>=m_WingSection.size()) return;
-    m_WingSection.removeAt(iSection);
+    if(iSection<0 || iSection>=m_Section.size()) return;
+    m_Section.removeAt(iSection);
 }
 
 
@@ -2048,9 +2050,9 @@ void Wing::removeWingSection(int const iSection)
  */
 void Wing::insertSection(int iSection)
 {
-    if(iSection==0)                          m_WingSection.prepend(new WingSection);
-    else if(iSection>=m_WingSection.size())  m_WingSection.append(new WingSection);
-    else                                     m_WingSection.insert(iSection, new WingSection);
+    if(iSection==0)                          m_Section.prepend(new WingSection);
+    else if(iSection>=m_Section.size())  m_Section.append(new WingSection);
+    else                                     m_Section.insert(iSection, new WingSection);
 }
 
 
@@ -2060,7 +2062,7 @@ void Wing::insertSection(int iSection)
  */
 bool Wing::appendWingSection()
 {
-    m_WingSection.append(new WingSection());
+    m_Section.append(new WingSection());
     return true;
 }
 
@@ -2073,7 +2075,7 @@ bool Wing::appendWingSection(double Chord, double Twist, double Pos, double Dihe
                              QString RightFoilName, QString LeftFoilName)
 {
     WingSection *pWS = new WingSection();
-    m_WingSection.append(pWS);
+    m_Section.append(pWS);
     pWS->m_Chord      = Chord;
     pWS->m_Twist      = Twist;
     pWS->m_YPosition  = Pos ;
@@ -2092,13 +2094,13 @@ bool Wing::appendWingSection(double Chord, double Twist, double Pos, double Dihe
 }
 
 
-bool Wing::isWingFoil(Foil *pFoil)
+bool Wing::isWingFoil(const Foil *pFoil) const
 {
     if(!pFoil) return false;
 
     for (int iws=0; iws<NWingSection(); iws++)
     {
-        if(pFoil->foilName() == m_WingSection.at(iws)->m_RightFoilName)
+        if(pFoil->foilName() == m_Section.at(iws)->m_RightFoilName)
         {
             return true;
         }
@@ -2108,7 +2110,7 @@ bool Wing::isWingFoil(Foil *pFoil)
     {
         for (int iws=0; iws<NWingSection(); iws++)
         {
-            if(pFoil->foilName() == m_WingSection.at(iws)->m_LeftFoilName)
+            if(pFoil->foilName() == m_Section.at(iws)->m_LeftFoilName)
             {
                 return true;
             }
@@ -2116,11 +2118,6 @@ bool Wing::isWingFoil(Foil *pFoil)
     }
     return false;
 }
-
-
-
-
-
 
 
 /** Finds the intersection point of a line originating at point O and with unit vector U
@@ -2164,10 +2161,10 @@ void Wing::getTextureUV(int iSurf, double *leftV, double *rightV, double &leftU,
         iSectionB = pSurf->outerSection();
     }
 
-    for(int is=0; is<m_WingSection.count(); is++)
+    for(int is=0; is<m_Section.count(); is++)
     {
-        xMin = std::min(xMin, m_WingSection.at(is)->m_Offset);
-        xMax = std::max(xMax, m_WingSection.at(is)->m_Offset + m_WingSection.at(is)->m_Chord);
+        xMin = std::min(xMin, m_Section.at(is)->m_Offset);
+        xMax = std::max(xMax, m_Section.at(is)->m_Offset + m_Section.at(is)->m_Chord);
     }
 
     for(int i=0; i<nPoints; i++)
@@ -2197,19 +2194,19 @@ void Wing::getTextureUV(int iSurf, double *leftV, double *rightV, double &leftU,
 
 
         //        xRel  = 1.0/2.0*(1.0-cos( double(i)*PI   /(double)(nPoints-1)));
-        xA = m_WingSection.at(iSectionA)->m_Offset + m_WingSection.at(iSectionA)->m_Chord*xRelA;
-        xB = m_WingSection.at(iSectionB)->m_Offset + m_WingSection.at(iSectionB)->m_Chord*xRelB;
+        xA = m_Section.at(iSectionA)->m_Offset + m_Section.at(iSectionA)->m_Chord*xRelA;
+        xB = m_Section.at(iSectionB)->m_Offset + m_Section.at(iSectionB)->m_Chord*xRelB;
 
         leftV[i]  = (xA-xMin)/(xMax-xMin);
         rightV[i] = (xB-xMin)/(xMax-xMin);
     }
 
 
-    yMin = m_WingSection.first()->m_YPosition;
-    yMax = m_WingSection.last()->m_YPosition;
+    yMin = m_Section.first()->m_YPosition;
+    yMax = m_Section.last()->m_YPosition;
 
-    yA = m_WingSection.at(iSectionA)->m_YPosition;
-    yB = m_WingSection.at(iSectionB)->m_YPosition;
+    yA = m_Section.at(iSectionA)->m_YPosition;
+    yB = m_Section.at(iSectionB)->m_YPosition;
     if(pSurf->isLeftSurf())
     {
         leftU = 1.0-(yA-yMin)/(yMax-yMin);
@@ -2289,24 +2286,24 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
         if(NPanel <0 || NPanel>1000) return false;
 
         clearWingSections();
-        for(int is=0; is<=NPanel; is++) m_WingSection.append(new WingSection);
+        for(int is=0; is<=NPanel; is++) m_Section.append(new WingSection);
 
         QString strFoil;
 
         for (int is=0; is<=NPanel; is++)
         {
             readCString(ar, strFoil);
-            rightFoil(is) = strFoil;
+            m_Section[is]->m_RightFoilName = strFoil;
         }
         for (int is=0; is<=NPanel; is++)
         {
             readCString(ar, strFoil);
-            leftFoil(is) = strFoil;
+            m_Section[is]->m_LeftFoilName = strFoil;
         }
 
         for (int is=0; is<=NPanel; is++)
         {
-            ar >> f; Chord(is)=double(f);
+            ar >> f; m_Section[is]->m_Chord=double(f);
             if (qAbs(Chord(is)) <0.0)
             {
                 m_WingName = "";
@@ -2325,7 +2322,7 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
         }
         for (int is=0; is<=NPanel; is++)
         {
-            ar >> f; Offset(is)=double(f);
+            ar >> f; m_Section[is]->m_Offset=double(f);
         }
 
         if(ArchiveFormat<1007)
@@ -2335,18 +2332,18 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
             {
                 double ypos = YPosition(is)/1000.0;
                 setYPosition(is, ypos);
-                Chord(is)  /= 1000.0;
-                Offset(is) /= 1000.0;
+                m_Section[is]->m_Chord  /= 1000.0;
+                m_Section[is]->m_Offset /= 1000.0;
             }
 
         }
         for (int is=0; is<=NPanel; is++)
         {
-            ar >> f; Dihedral(is)=double(f);
+            ar >> f; m_Section[is]->m_Dihedral=double(f);
         }
         for (int is=0; is<=NPanel; is++)
         {
-            ar >> f; Twist(is)=double(f);
+            ar >> f; m_Section[is]->m_Twist=double(f);
         }
 
         ar >> f; //m_XCmRef=f;
@@ -2358,10 +2355,10 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
             if(ArchiveFormat<=1003)
             {
                 ar >> f;
-                NXPanels(is) = int(f);
+                m_Section[is]->m_NXPanels = int(f);
             }
             else
-                ar >> NXPanels(is);
+                ar >> m_Section[is]->m_NXPanels;
         }
 
         for (int is=0; is<=NPanel; is++)
@@ -2369,9 +2366,9 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
             if(ArchiveFormat<=1003)
             {
                 ar >> f;
-                NYPanels(is) = int(f);
+                m_Section[is]->m_NYPanels = int(f);
             }
-            else     ar >> NYPanels(is);
+            else     ar >> m_Section[is]->m_NYPanels;
         }
         int total = 0;
         for (int is=0; is<NPanel; is++)
@@ -2394,20 +2391,20 @@ bool Wing::serializeWingWPA(QDataStream &ar, bool bIsStoring)
             for(int is=0; is<=NPanel; is++)
             {
                 ar >> k;
-                if(k==1)       XPanelDist(is) = XFLR5::COSINE;
-                else if(k==2)  XPanelDist(is) = XFLR5::SINE;
-                else if(k==-2) XPanelDist(is) = XFLR5::INVERSESINE;
-                else           XPanelDist(is) = XFLR5::UNIFORM;  //case 0
+                if     (k==1)  setXPanelDist(is, XFLR5::COSINE);
+                else if(k==2)  setXPanelDist(is, XFLR5::SINE);
+                else if(k==-2) setXPanelDist(is, XFLR5::INVERSESINE);
+                else           setXPanelDist(is, XFLR5::UNIFORM);  //case 0
             }
         }
 
         for (int is=0; is<=NPanel; is++)
         {
             ar >> k;
-            if(k==1)       YPanelDist(is) = XFLR5::COSINE;
-            else if(k==2)  YPanelDist(is) = XFLR5::SINE;
-            else if(k==-2) YPanelDist(is) = XFLR5::INVERSESINE;
-            else           YPanelDist(is) = XFLR5::UNIFORM;  //case 0
+            if     (k==1)  setYPanelDist(is, XFLR5::COSINE);
+            else if(k==2)  setYPanelDist(is, XFLR5::SINE);
+            else if(k==-2) setYPanelDist(is, XFLR5::INVERSESINE);
+            else           setYPanelDist(is, XFLR5::UNIFORM);  //case 0
         }
 
         if(ArchiveFormat>=1006)
@@ -2495,8 +2492,8 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
 
         for (is=0; is<NWingSection(); is++)
         {
-            ar << rightFoil(is);
-            ar << leftFoil(is);
+            ar << rightFoilName(is);
+            ar << leftFoilName(is);
             ar << Chord(is);
             ar << YPosition(is);
             ar << Offset(is);
@@ -2673,11 +2670,11 @@ void Wing::scaleAR(double newAR)
 
     double ratio = sqrt(newAR/m_AR);
 
-    for (int is=0; is<m_WingSection.size(); is++)
+    for (int is=0; is<m_Section.size(); is++)
     {
         double ypos = YPosition(is)*ratio;
         setYPosition(is, ypos);
-        Chord(is)     /= ratio;
+        m_Section[is]->m_Chord     /= ratio;
     }
     computeGeometry();
 }
@@ -2694,11 +2691,11 @@ void Wing::scaleTR(double newTR)
     if(newTR<PRECISION) return;
 
     double Ratio = m_TR/newTR;
-    for (int is=0; is<m_WingSection.size(); is++)
+    for (int is=0; is<m_Section.size(); is++)
     {
         double yRel = YPosition(is)/m_PlanformSpan *2.0;
         double cRatio = 1.0 +  yRel * (Ratio-1.0);
-        Chord(is)     *= cRatio;
+        m_Section[is]->m_Chord     *= cRatio;
     }
     computeGeometry();
 }
@@ -3722,7 +3719,7 @@ double Wing::getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bo
 /**
  Auxiliary integral used in LLT calculations
 */
-double Wing::IntegralC2(double y1, double y2, double c1, double c2)
+double Wing::IntegralC2(double y1, double y2, double c1, double c2) const
 {
     double res = 0.0;
 
@@ -3740,7 +3737,7 @@ double Wing::IntegralC2(double y1, double y2, double c1, double c2)
 /**
  Auxiliary integral used in LLT calculations
 */
-double Wing::IntegralCy(double y1, double y2, double c1, double c2)
+double Wing::IntegralCy(double y1, double y2, double c1, double c2) const
 {
     double res = 0.0;
     if (qAbs(y2-y1)<1.e-5) return (y1+y2)/2.0 * (c1+c2)/2.0;

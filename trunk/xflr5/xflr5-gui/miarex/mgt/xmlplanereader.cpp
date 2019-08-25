@@ -142,7 +142,7 @@ bool XMLPlaneReader::readPlane(Plane *pPlane, double lengthunit, double massunit
             newwing.clearSurfaces();
             newwing.clearWingSections();
             newwing.setWingType(XFLR5::OTHERWING);
-            newwing.m_WingSection.clear();
+            newwing.m_Section.clear();
 
             Vector3d pos;
             double tiltangle=0.0;
@@ -291,7 +291,7 @@ bool XMLPlaneReader::readWing(Wing &newwing, Vector3d &position, double &tiltang
                 if (name().compare(QString("Section"),  Qt::CaseInsensitive)==0)
                 {
                     WingSection *pWingSec = new WingSection;
-                    newwing.m_WingSection.append(pWingSec);
+                    newwing.m_Section.append(pWingSec);
                     while(!atEnd() && !hasError() && readNextStartElement() )
                     {
                         if (name().compare(QString("x_number_of_panels"), Qt::CaseInsensitive)==0)

@@ -120,7 +120,7 @@ public:
     void getLeadingPt(int k, Vector3d &C);
     void getNormal(double yrel, Vector3d &N) const;
     void getTrailingPt(int k, Vector3d &C);
-    void getPanel(int const &k, int const &l, enumPanelPosition pos);
+    void getPanel(int const &k, int const &l, enumPanelPosition pos) const;
     void getSidePoint(double xRel, bool bRight, enumPanelPosition pos, Vector3d &Point, Vector3d &PtNormal) const;
     void getSurfacePoint(double xArel, double xBrel, double yrel, enumPanelPosition pos, Vector3d &Point, Vector3d &PtNormal) const;
     void getSection(double const &tau, double &Chord, double &Area, Vector3d &PtC4);
@@ -158,7 +158,7 @@ public:
     double offset(double tau) const;
     double stripSpanPos(int k);
     double foilArea(double tau) const;
-    double stripWidth(int k);
+    double stripWidth(int k) const;
     double spanLength() const;
     double planformLength() const {return m_Length;}
 
@@ -172,8 +172,8 @@ public:
     void setNElements(int n) {m_NElements=n;}
     int NElements() const {return m_NElements;}
 
-    Foil *foilA() {return m_pFoilA;}
-    Foil *foilB() {return m_pFoilB;}
+    Foil const *foilA() const {return m_pFoilA;}
+    Foil const *foilB() const {return m_pFoilB;}
 
     static void setPanelPointers(Panel *pPanel, Vector3d *pNode);
 
@@ -240,9 +240,11 @@ private :
 
 public:
     bool m_bJoinRight;             /**< true if the surface's right side should be connected to the next right surface's right left side - for panel analysis only */
-    Vector3d LA, LB, TA, TB; /**< leading and trailing corners of strip k */
     Foil *m_pFoilA;                /**< a pointer to the Surface's left Foil object */
     Foil *m_pFoilB;                /**< a pointer to the Surface's right Foil object */
+
+    // temporary variables
+    mutable Vector3d LA, LB, TA, TB; /**< leading and trailing corners of strip k */
 
 };
 #endif

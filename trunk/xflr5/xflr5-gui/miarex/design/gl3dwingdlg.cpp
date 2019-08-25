@@ -141,7 +141,7 @@ bool GL3dWingDlg::checkWing()
             QMessageBox::warning(this, tr("Warning"), tr("Zero length chords will cause a division by zero and should be avoided."));
             return false;
         }
-        WingSection *pSection = m_pWing->m_WingSection.at(k);
+        WingSection *pSection = m_pWing->m_Section.at(k);
         Foil *pLeftFoil = Objects2d::foil(pSection->m_LeftFoilName);
         Foil *pRightFoil = Objects2d::foil(pSection->m_RightFoilName);
         if(pLeftFoil )
@@ -367,8 +367,8 @@ void GL3dWingDlg::fillTableRow(int row)
     m_pWingModel->setData(ind, m_pWing->Twist(row));
 
     ind = m_pWingModel->index(row, 5, QModelIndex());
-    if(m_bRightSide) m_pWingModel->setData(ind, m_pWing->rightFoil(row));
-    else             m_pWingModel->setData(ind, m_pWing->leftFoil(row));
+    if(m_bRightSide) m_pWingModel->setData(ind, m_pWing->rightFoilName(row));
+    else             m_pWingModel->setData(ind, m_pWing->leftFoilName(row));
 
     if(row<m_pWing->NWingSection())
     {
@@ -497,7 +497,7 @@ bool GL3dWingDlg::initDialog(Wing *pWing)
     m_precision[8] = 0;
     m_precision[9] = 0;
     m_pWingDelegate->setPrecision(m_precision);
-    m_pWingDelegate->m_pWingSection = &m_pWing->m_WingSection;
+    m_pWingDelegate->m_pWingSection = &m_pWing->m_Section;
 
     fillDataTable();
     setWingData();
@@ -617,7 +617,7 @@ void GL3dWingDlg::onDeleteSection()
     m_pWing->removeWingSection(m_iSection);
 
 
-    m_pWing->NYPanels(m_iSection-1) = ny;
+    m_pWing->setNYPanels(m_iSection-1, ny);
 
     fillDataTable();
     computeGeometry();
@@ -677,25 +677,23 @@ void GL3dWingDlg::onInsertBefore()
     m_pWing->insertSection(m_iSection);
 
     m_pWing->setYPosition(n, (m_pWing->YPosition(n+1) + m_pWing->YPosition(n-1)) /2.0);
-    m_pWing->Chord(n)     = (m_pWing->Chord(n+1)     + m_pWing->Chord(n-1))     /2.0;
-    m_pWing->Offset(n)    = (m_pWing->Offset(n+1)    + m_pWing->Offset(n-1))    /2.0;
-    m_pWing->Twist(n)     = (m_pWing->Twist(n+1)     + m_pWing->Twist(n-1))     /2.0;
-    m_pWing->Dihedral(n)  = (m_pWing->Dihedral(n+1)  + m_pWing->Dihedral(n-1))  /2.0;
+    m_pWing->setChord(n,     (m_pWing->Chord(n+1)     + m_pWing->Chord(n-1))     /2.0);
+    m_pWing->setOffset(n,    (m_pWing->Offset(n+1)    + m_pWing->Offset(n-1))    /2.0);
+    m_pWing->setTwist(n,     (m_pWing->Twist(n+1)     + m_pWing->Twist(n-1))     /2.0);
+    m_pWing->setDihedral(n,  (m_pWing->Dihedral(n+1)  + m_pWing->Dihedral(n-1))  /2.0);
 
-    m_pWing->XPanelDist(n) = m_pWing->XPanelDist(n-1);
-    m_pWing->YPanelDist(n) = m_pWing->YPanelDist(n-1);
+    m_pWing->setXPanelDist(n, m_pWing->XPanelDist(n-1));
+    m_pWing->setYPanelDist(n, m_pWing->YPanelDist(n-1));
 
-    m_pWing->rightFoil(n) = m_pWing->rightFoil(n-1);
-    m_pWing->leftFoil(n)  = m_pWing->leftFoil(n-1);
+    m_pWing->setRightFoilName(n, m_pWing->rightFoilName(n-1));
+    m_pWing->setLeftFoilName(n, m_pWing->leftFoilName(n-1));
 
-    m_pWing->NXPanels(n)   = m_pWing->NXPanels(n-1);
+    m_pWing->setNXPanels(n, m_pWing->NXPanels(n-1));
 
 
     int ny = m_pWing->NYPanels(n-1);
-    m_pWing->NYPanels(n)   = ny/2;
-    m_pWing->NYPanels(n-1) = ny-m_pWing->NYPanels(n);
-    if(m_pWing->NYPanels(n)==0)   m_pWing->NYPanels(n)++;
-    if(m_pWing->NYPanels(n-1)==0) m_pWing->NYPanels(n-1)++;
+    m_pWing->setNYPanels(n, std::max(2, ny/2));
+    m_pWing->setNYPanels(n-1, std::max(2,ny-m_pWing->NYPanels(n)));
 
 
     fillDataTable();
@@ -725,29 +723,29 @@ void GL3dWingDlg::onInsertAfter()
     if(n<m_pWing->NWingSection()-2)
     {
         m_pWing->setYPosition(n+1, (m_pWing->YPosition(n)      + m_pWing->YPosition(n+2))     /2.0);
-        m_pWing->Chord(n+1)    = (m_pWing->Chord(n)    + m_pWing->Chord(n+2))   /2.0;
-        m_pWing->Offset(n+1)   = (m_pWing->Offset(n)   + m_pWing->Offset(n+2))  /2.0;
-        m_pWing->Twist(n+1)    = (m_pWing->Twist(n)    + m_pWing->Twist(n+2))   /2.0;
+        m_pWing->setChord(n+1,     (m_pWing->Chord(n)    + m_pWing->Chord(n+2))   /2.0);
+        m_pWing->setOffset(n+1,    (m_pWing->Offset(n)   + m_pWing->Offset(n+2))  /2.0);
+        m_pWing->setTwist(n+1,     (m_pWing->Twist(n)    + m_pWing->Twist(n+2))   /2.0);
     }
     else
     {
         m_pWing->setYPosition(n+1, m_pWing->YPosition(n)*1.1);
-        m_pWing->Chord(n+1)   = m_pWing->Chord(n)/1.1;
-        m_pWing->Offset(n+1)  = m_pWing->Offset(n) + m_pWing->Chord(n) - m_pWing->Chord(n) ;
-        m_pWing->Twist(n+1)     = m_pWing->Twist(n);
+        m_pWing->setChord(n+1, m_pWing->Chord(n)/1.1);
+        m_pWing->setOffset(n+1, m_pWing->Offset(n) + m_pWing->Chord(n) - m_pWing->Chord(n));
+        m_pWing->setTwist(n+1, m_pWing->Twist(n));
     }
 
-    m_pWing->Dihedral(n+1)  = m_pWing->Dihedral(n);
-    m_pWing->NXPanels(n+1)   = m_pWing->NXPanels(n);
-    m_pWing->NYPanels(n+1)   = m_pWing->NYPanels(n);
-    m_pWing->XPanelDist(n+1) = m_pWing->XPanelDist(n);
-    m_pWing->YPanelDist(n+1) = m_pWing->YPanelDist(n);
-    m_pWing->rightFoil(n+1)  = m_pWing->rightFoil(n);
-    m_pWing->leftFoil(n+1)   = m_pWing->leftFoil(n);
+    m_pWing->setDihedral(n+1, m_pWing->Dihedral(n));
+    m_pWing->setNXPanels(n+1, m_pWing->NXPanels(n));
+    m_pWing->setNYPanels(n+1, m_pWing->NYPanels(n));
+    m_pWing->setXPanelDist(n+1, m_pWing->XPanelDist(n));
+    m_pWing->setYPanelDist(n+1, m_pWing->YPanelDist(n));
+    m_pWing->setRightFoilName(n+1, m_pWing->rightFoilName(n));
+    m_pWing->setLeftFoilName(n+1, m_pWing->leftFoilName(n));
 
     int ny = m_pWing->NYPanels(n);
-    m_pWing->NYPanels(n+1) = qMax(1,ny/2);
-    m_pWing->NYPanels(n)   = qMax(1,ny-m_pWing->NYPanels(n+1));
+    m_pWing->setNYPanels(n+1, std::max(2,ny/2));
+    m_pWing->setNYPanels(n, std::max(2,ny-m_pWing->NYPanels(n+1)));
 
     //    m_pWing->m_bVLMAutoMesh = true;
 
@@ -772,9 +770,9 @@ void GL3dWingDlg::onResetSection()
         double ratio;
         ratio = (m_pWing->YPosition(n) - m_pWing->YPosition(n - 1)) / (m_pWing->YPosition(n + 1) - m_pWing->YPosition(n - 1));
 
-        m_pWing->Chord   (n) = m_pWing->Chord   (n-1) + ratio * (m_pWing->Chord   (n+1) - m_pWing->Chord   (n-1));
-        m_pWing->Offset  (n) = m_pWing->Offset  (n-1) + ratio * (m_pWing->Offset  (n+1) - m_pWing->Offset  (n-1));
-        m_pWing->Twist   (n) = m_pWing->Twist   (n-1) + ratio * (m_pWing->Twist   (n+1) - m_pWing->Twist   (n-1));
+        m_pWing->setChord(n,  m_pWing->Chord(n-1)  + ratio * (m_pWing->Chord(n+1) - m_pWing->Chord(n-1)));
+        m_pWing->setOffset(n, m_pWing->Offset(n-1) + ratio * (m_pWing->Offset(n+1) - m_pWing->Offset(n-1)));
+        m_pWing->setTwist(n,  m_pWing->Twist(n-1)  + ratio * (m_pWing->Twist(n+1) - m_pWing->Twist(n-1)));
 
         // same code here that in OnResetMesh
         fillDataTable();
@@ -812,7 +810,7 @@ void GL3dWingDlg::onOK()
     {
         for (int i=0; i<m_pWing->NWingSection(); i++)
         {
-            m_pWing->leftFoil(i)   = m_pWing->rightFoil(i);
+            m_pWing->setLeftFoilName(i, m_pWing->rightFoilName(i));
         }
     }
 
@@ -920,7 +918,7 @@ void GL3dWingDlg::onSymetric()
         m_pctrlRightSide->setChecked(true);
         for(int i=0; i<m_pWing->NWingSection(); i++)
         {
-            m_pWing->leftFoil(i) = m_pWing->rightFoil(i);
+            m_pWing->setLeftFoilName(i, m_pWing->rightFoilName(i));
         }
     }
     else
@@ -1010,68 +1008,68 @@ void GL3dWingDlg::readSectionData(int sel)
     strong =pItem->text();
     strong.replace(" ","");
     d =strong.toDouble(&bOK);
-    if(bOK) m_pWing->Chord(sel) =d / Units::mtoUnit();
+    if(bOK) m_pWing->setChord(sel, d / Units::mtoUnit());
 
     pItem = m_pWingModel->item(sel,2);
     strong =pItem->text();
     strong.replace(" ","");
     d =strong.toDouble(&bOK);
-    if(bOK) m_pWing->Offset(sel) =d / Units::mtoUnit();
+    if(bOK) m_pWing->setOffset(sel, d / Units::mtoUnit());
 
     pItem = m_pWingModel->item(sel,3);
     strong =pItem->text();
     strong.replace(" ","");
     d =strong.toDouble(&bOK);
-    if(bOK) m_pWing->Dihedral(sel) =d;
+    if(bOK) m_pWing->setDihedral(sel,d);
 
     pItem = m_pWingModel->item(sel,4);
     strong =pItem->text();
     strong.replace(" ","");
     d =strong.toDouble(&bOK);
-    if(bOK) m_pWing->Twist(sel) =d;
+    if(bOK) m_pWing->setTwist(sel, d);
 
     pItem = m_pWingModel->item(sel,5);
     strong =pItem->text();
 
     if(m_pWing->m_bSymetric)
     {
-        m_pWing->rightFoil(sel) = strong;
-        m_pWing->leftFoil(sel)  = strong;
+        m_pWing->setRightFoilName(sel, strong);
+        m_pWing->setLeftFoilName(sel, strong);
     }
     else
     {
-        if(m_bRightSide)    m_pWing->rightFoil(sel) = strong;
-        else                m_pWing->leftFoil(sel)  = strong;
+        if(m_bRightSide)    m_pWing->setRightFoilName(sel, strong);
+        else                m_pWing->setLeftFoilName(sel, strong);
     }
 
     pItem = m_pWingModel->item(sel,6);
     strong =pItem->text();
     strong.replace(" ","");
     d =strong.toDouble(&bOK);
-    if(bOK) m_pWing->NXPanels(sel) = int(qMax(1.0,d));
+    if(bOK) m_pWing->setNXPanels(sel, int(qMax(1.0,d)));
 
     pItem = m_pWingModel->item(sel,7);
     strong =pItem->text();
     strong.replace(" ","");
-    if(strong==tr("Uniform"))        m_pWing->XPanelDist(sel) = XFLR5::UNIFORM;
-    else if(strong==tr("Cosine"))    m_pWing->XPanelDist(sel) = XFLR5::COSINE;
-    else if(strong==tr("Sine"))      m_pWing->XPanelDist(sel) = XFLR5::SINE;
-    else if(strong==tr("-Sine"))     m_pWing->XPanelDist(sel) = XFLR5::INVERSESINE;
+    if     (strong==tr("Uniform"))   m_pWing->setXPanelDist(sel, XFLR5::UNIFORM);
+    else if(strong==tr("Cosine"))    m_pWing->setXPanelDist(sel, XFLR5::COSINE);
+    else if(strong==tr("Sine"))      m_pWing->setXPanelDist(sel, XFLR5::SINE);
+    else if(strong==tr("-Sine"))     m_pWing->setXPanelDist(sel, XFLR5::INVERSESINE);
 
     pItem = m_pWingModel->item(sel,8);
     strong =pItem->text();
     strong.replace(" ","");
     d =strong.toDouble(&bOK);
-    if(bOK) m_pWing->NYPanels(sel) =int(qMax(1.0,d));
+    if(bOK) m_pWing->setNYPanels(sel, int(qMax(1.0,d)));
 
     pItem = m_pWingModel->item(sel,9);
     strong =pItem->text();
     strong.replace(" ","");
 
-    if(strong==tr("Uniform"))        m_pWing->YPanelDist(sel) = XFLR5::UNIFORM;
-    else if(strong==tr("Cosine"))    m_pWing->YPanelDist(sel) = XFLR5::COSINE;
-    else if(strong==tr("Sine"))      m_pWing->YPanelDist(sel) = XFLR5::SINE;
-    else if(strong==tr("-Sine"))     m_pWing->YPanelDist(sel) = XFLR5::INVERSESINE;
+    if     (strong==tr("Uniform"))   m_pWing->setYPanelDist(sel, XFLR5::UNIFORM);
+    else if(strong==tr("Cosine"))    m_pWing->setYPanelDist(sel, XFLR5::COSINE);
+    else if(strong==tr("Sine"))      m_pWing->setYPanelDist(sel, XFLR5::SINE);
+    else if(strong==tr("-Sine"))     m_pWing->setYPanelDist(sel, XFLR5::INVERSESINE);
 }
 
 
@@ -1654,12 +1652,12 @@ bool GL3dWingDlg::VLMSetAutoMesh(int total)
         //        d2 = 5./2./m_pWing->m_Span/m_pWing->m_Span/m_pWing->m_Span *8. * pow(m_pWing->TPos(i+1),3) + 0.5;
         //        m_pWing->NYPanels(i) = (int) (NYTotal * (0.8*d1+0.2*d2)* (m_pWing->TPos(i+1)-m_pWing->TPos(i))/m_pWing->m_Span);
 
-        m_pWing->NYPanels(i) = int(qAbs(m_pWing->YPosition(i+1) - m_pWing->YPosition(i))* double(NYTotal)/m_pWing->m_PlanformSpan);
+        m_pWing->setNYPanels(i, int(qAbs(m_pWing->YPosition(i+1) - m_pWing->YPosition(i))* double(NYTotal)/m_pWing->m_PlanformSpan));
 
-        m_pWing->NXPanels(i) = int(size/NYTotal);
+        m_pWing->setNXPanels(i, int(size/NYTotal));
 
-        if(m_pWing->NYPanels(i)==0) m_pWing->NYPanels(i) = 1;
-        if(m_pWing->NXPanels(i)==0) m_pWing->NXPanels(i) = 1;
+        if(m_pWing->NYPanels(i)<2) m_pWing->setNYPanels(i, 2);
+        if(m_pWing->NXPanels(i)<2) m_pWing->setNXPanels(i, 2);
     }
 
     return true;

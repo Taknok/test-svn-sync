@@ -389,6 +389,7 @@ void gl3dMiarexView::glMakeCpLegendClr()
 bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d const *pNode,
                                        WPolar const *pWPolar, PlaneOpp const *pPOpp, int /*nPanels*/)
 {
+    qDebug("gl3dMiarexView::glMakeStreamLines");
     if(!isVisible()) return false;
     if(s_pMainFrame->m_iApp!=XFLR5::MIAREX) return false;
     if(s_pMiarex->m_iView!=XFLR5::W3DVIEW) return false;
@@ -437,6 +438,7 @@ bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d
         if(PlaneWing[iWing])
         {
             pWing = PlaneWing[iWing];
+qDebug("gl3dMiarexView::glMakeStreamLines processing wing %d", iWing);
             int nVertex = 0;
             for (int p=0; p<pWing->m_MatSize; p++)
             {
@@ -591,15 +593,16 @@ bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d
                 m++;
             }
             //            if(dlg.wasCanceled()) break;
+qDebug("gl3dMiarexView::glMakeStreamLines done wing %d", iWing);
+
             p0+=pWing->m_MatSize;
         }
         //        if(dlg.wasCanceled()) break;
     }
     //    if(!dlg.wasCanceled()) Q_ASSERT(iv==streamArraySize);
+qDebug("gl3dMiarexView::glMakeStreamLines done plane");
 
     m_NStreamLines = iv / GL3DScales::s_NX / 3;
-
-    //qDebug() << iv << streamArraySize;
 
     //restore things as they were
     Panel::setCoreSize(memcoresize);
@@ -612,7 +615,7 @@ bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d
     m_vboStreamLines.release();
     m_bStreamlinesDone = true;
 
-    //    if(dlg.wasCanceled()) return false;
+qDebug("gl3dMiarexView::glMakeStreamLines done VBO");
     return true;
 }
 
@@ -1728,15 +1731,21 @@ void gl3dMiarexView::paintDrag(int iWing)
 
 void gl3dMiarexView::paintStreamLines()
 {
-    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
+qDebug("gl3dMiarexView::paintStreamLines");
 
-    if(!m_bStreamlinesDone) return; // don't render until the vbo is ready
+    if(!m_bStreamlinesDone)
+    {
+qDebug("gl3dMiarexView::paintStreamLines VBO not ready");
+        return; // don't render until the vbo is ready
+    }
+    QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
 
     QMatrix4x4 idMatrix;
     m_ShaderProgramLine.bind();
     m_ShaderProgramLine.setUniformValue(m_mMatrixLocationLine, idMatrix);
     m_ShaderProgramLine.setUniformValue(m_vMatrixLocationLine, m_viewMatrix);
     m_ShaderProgramLine.setUniformValue(m_pvmMatrixLocationLine, m_orthoMatrix * m_viewMatrix);
+qDebug("gl3dMiarexView::paintStreamLines binding VBO");
 
     m_vboStreamLines.bind();
     m_ShaderProgramLine.enableAttributeArray(m_VertexLocationLine);
@@ -1753,16 +1762,20 @@ void gl3dMiarexView::paintStreamLines()
 
     int pos=0;
 
+qDebug("gl3dMiarexView::paintStreamLines Drawing arrays");
     for(int il=0; il<m_NStreamLines; il++)
     {
         glDrawArrays(GL_LINE_STRIP, pos, GL3DScales::s_NX);
         pos += GL3DScales::s_NX;
     }
+qDebug("gl3dMiarexView::paintStreamLines done draw arrays");
 
     glDisable (GL_LINE_STIPPLE);
     m_ShaderProgramLine.disableAttributeArray(m_VertexLocationLine);
     m_vboStreamLines.release();
     m_ShaderProgramLine.release();
+qDebug("gl3dMiarexView::paintStreamLines released VBO");
+
 }
 
 

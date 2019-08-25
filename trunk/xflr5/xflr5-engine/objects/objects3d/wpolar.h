@@ -94,8 +94,8 @@ public:
     bool isTriLinearMethod()   const {return m_AnalysisMethod==XFLR5::TRILINMETHOD;}
     bool isTriangleMethod()    const {return isTriCstMethod() || isTriLinearMethod();}
 
-    QString const &polarName() const {return m_WPlrName;}       /**< returns the polar's name as a QString object. */
-    QString const &planeName() const {return m_PlaneName;}      /**< returns the name of the polar's parent object as a QString object. */
+    QString polarName() const {return m_WPlrName;}       /**< returns the polar's name as a QString object. */
+    QString planeName() const {return m_PlaneName;}      /**< returns the name of the polar's parent object as a QString object. */
     void setPolarName(QString const &name) {m_WPlrName=name;}
     void setPlaneName(QString const &name) {m_PlaneName=name;}
 
@@ -110,14 +110,14 @@ public:
     bool isStabilityPolar()  const    {return m_WPolarType==XFLR5::STABILITYPOLAR;}       /**< returns true if the polar is of the STABILITYPOLAR type, false otherwise >*/
     bool isBetaPolar()       const    {return m_WPolarType==XFLR5::BETAPOLAR;}            /**< returns true if the polar is of the BETAPOLAR type, false otherwise >*/
 
-    bool const &bThinSurfaces()     const {return m_bThinSurfaces;}  /**< returns true if the analysis if using thin surfaces, i.e. VLM, false if 3D Panels for the Wing objects. */
-    bool const &bWakeRollUp()       const {return m_bWakeRollUp;}
-    bool const &bTilted()           const {return m_bTiltedGeom; }
-    bool const &bGround()           const {return m_bGround;}
-    bool const &bIgnoreBodyPanels() const {return m_bIgnoreBodyPanels;}
-    bool const &bViscous()          const {return m_bViscous;}
-    bool const &bVLM1()             const {return m_bVLM1;}
-    bool const &bAutoInertia()      const {return m_bAutoInertia;}
+    bool bThinSurfaces()     const {return m_bThinSurfaces;}  /**< returns true if the analysis if using thin surfaces, i.e. VLM, false if 3D Panels for the Wing objects. */
+    bool bWakeRollUp()       const {return m_bWakeRollUp;}
+    bool bTilted()           const {return m_bTiltedGeom; }
+    bool bGround()           const {return m_bGround;}
+    bool bIgnoreBodyPanels() const {return m_bIgnoreBodyPanels;}
+    bool bViscous()          const {return m_bViscous;}
+    bool bVLM1()             const {return m_bVLM1;}
+    bool bAutoInertia()      const {return m_bAutoInertia;}
     bool bDirichlet()               const {return m_BoundaryCondition==XFLR5::DIRICHLET;}
 
     void setThinSurfaces(bool b)     {m_bThinSurfaces=b;}

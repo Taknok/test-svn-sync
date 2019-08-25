@@ -96,10 +96,10 @@ public:
 
     bool isOut() const {return m_bOut;}
 
-    bool const &isVisible() const     {return m_bIsVisible;}
-    int const&points()      const     {return m_PointStyle;}
-    int const&style()       const     {return m_Style;}
-    int const&width()       const     {return m_Width;}
+    bool isVisible() const     {return m_bIsVisible;}
+    int  points()    const     {return m_PointStyle;}
+    int  style()     const     {return m_Style;}
+    int  width()     const     {return m_Width;}
     void setVisible(bool b) {m_bIsVisible=b;}
     void setStyle(int s) {m_Style=s;}
     void setWidth(int w) {m_Width=w;}
