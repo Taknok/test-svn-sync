@@ -65,7 +65,7 @@ public:
     void   getPoint(double u, double v, Vector3d &Pt) const;
     Vector3d point(double u, double v) const;
     void   insertFrame(Frame *pNewFrame);
-    bool   intersectNURBS(Vector3d A, Vector3d B, Vector3d &I);
+    bool   intersectNURBS(Vector3d A, Vector3d B, Vector3d &I) const;
     void   removeFrame(int iFrame);
     void   setKnots();
     int    setvDegree(int nvDegree);

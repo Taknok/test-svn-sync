@@ -46,7 +46,7 @@ public:
     void    appendPoint(Vector3d const& Pt);
     void    copyFrame(Frame *pFrame);
     void    copyPoints(QVector<Vector3d> *pPointList);
-    double  height();
+    double  height() const;
     int     isPoint(Vector3d const &point, double const &ZoomFactor) const;
     void    insertPoint(int n);
     void    insertPoint(int n, const Vector3d &Pt);

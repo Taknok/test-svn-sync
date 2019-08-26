@@ -35,9 +35,9 @@ void transpose33(double *l)
 /** Inverts in place a 3x3 matrix */
 bool invert33(double *l)
 {
-    double mat[9];
-    double det;
+    double det=0;
 
+    double mat[9];
     memcpy(mat,l,sizeof(mat));
 
     det  = mat[0] *(mat[4] * mat[8] - mat[5]* mat[7]);
@@ -87,9 +87,9 @@ int Compare(complex<double> a, complex<double>b)
 */
 void ComplexSort(complex<double>*array, int ub)
 {
-    int indx, indx2;
-    complex<double> temp, temp2;
-    int flipped;
+    int indx=0, indx2=0;
+    complex<double> temp=0, temp2=0;
+    int flipped=0;
 
     if (ub <= 1) return;
 
@@ -119,7 +119,7 @@ void ComplexSort(complex<double>*array, int ub)
  * @param v the input vector;
  * @param p the output vector;
  */
-void AV33(double *A, double *v, double *p)
+void AV33(double const*A, double const*v, double *p)
 {
     p[0] = A[0]*v[0] + A[1]*v[1] + A[2]*v[2];
     p[1] = A[3]*v[0] + A[4]*v[1] + A[5]*v[2];
@@ -139,8 +139,9 @@ void AV33(double *A, double *v, double *p)
 */
 bool Gauss(double *A, int n, double *B, int m, bool *pbCancel)
 {
-    int row, i, j, pivot_row, k;
-    double max, dum, *pa, *pA, *A_pivot_row;
+    int row=0, i=0, j=0, pivot_row=0, k=0;
+    double max=0, dum=0;
+    double *pa=nullptr, *pA=nullptr, *A_pivot_row=nullptr;
     
     // for each variable find pivot row and perform forward substitution
     pa = A;
@@ -225,20 +226,19 @@ bool Gauss(double *A, int n, double *B, int m, bool *pbCancel)
 *@param aout in output, a pointer to a one-dimensional array holding the 16 complex values of the inverted matrix
 *@return if the inversion was successful
 */
-bool Invert44(complex<double> *ain, complex<double> *aout)
+bool Invert44(complex<double> const *ain, complex<double> *aout)
 {
     //small size, use the direct method
-    int i,j;
-    complex<double> det;
-    double sign;
+    complex<double> det=0;
+    double sign=0;
 
     det = det44(ain);
 
     if(abs(det)<PRECISION) return false;
 
-    for(i=0; i<4; i++)
+    for(int i=0; i<4; i++)
     {
-        for(j=0; j<4; j++)
+        for(int j=0; j<4; j++)
         {
             sign = pow(-1.0,i+j);
             aout[4*j+i] = sign * cofactor44(ain, i, j)/det;
@@ -253,11 +253,11 @@ bool Invert44(complex<double> *ain, complex<double> *aout)
 *@param aij a pointer to a one-dimensional array holding the 9 double values of the matrix
 *@return the matrix's determinant
 */
-double det33(double *aij)
+double det33(double const *aij)
 {
     //returns the determinant of a 3x3 matrix
 
-    double det;
+    double det=0;
 
     det  = aij[0]*aij[4]*aij[8];
     det -= aij[0]*aij[5]*aij[7];
@@ -278,10 +278,10 @@ double det33(double *aij)
 *@param aij a pointer to a one-dimensional array holding the 9 complex values of the matrix
 *@return the matrix's determinant
 */
-complex<double> det33(complex<double> *aij)
+complex<double> det33(complex<double> const *aij)
 {
     //returns the determinant of a 3x3 matrix
-    complex<double> det;
+    complex<double> det=0;
 
     det  = aij[0]*aij[4]*aij[8];
     det -= aij[0]*aij[5]*aij[7];
@@ -301,23 +301,22 @@ complex<double> det33(complex<double> *aij)
 *@param aij a pointer to a one-dimensional array holding the 16 double values of the matrix
 *@return the matrix's determinant
 */
-double det44(double *aij)
+double det44(double const *aij)
 {
 //    returns the determinant of a 4x4 matrix
-
-    int i,j,k,l,p,q;
-    double det, sign, a33[16];
+    double det=0, sign=0;
+    double a33[16];
 
     det = 0.0;
-    for(i=0; i<4; i++)
+    for(int i=0; i<4; i++)
     {
-        for(j=0; j<4; j++)
+        for(int j=0; j<4; j++)
         {
-            p = 0;
-            for(k=0; k<4 && k!=i; k++)
+            int p = 0;
+            for(int k=0; k<4 && k!=i; k++)
             {
-                q = 0;
-                for(l=0; l<4 && l!=j; l++)
+                int q = 0;
+                for(int l=0; l<4 && l!=j; l++)
                 {
                     *(a33+p*3+q) = *(aij+4*k+l);// could also do it by address, to be a little faster
                     q++;
@@ -332,7 +331,6 @@ double det44(double *aij)
 }
 
 
-
 /**
 *Returns the cofactor of an element in a 4x4 matrix of complex values.
 *@param aij a pointer to a one-dimensional array holding the 16 complex values of the matrix.
@@ -340,19 +338,18 @@ double det44(double *aij)
 *@param j the number of the element's column, starting at 0.
 *@return the cofactor of element (i,j).
 */
-complex<double> cofactor44(complex<double> *aij, int &i, int &j)
+complex<double> cofactor44(complex<double> const*aij, int &i, int &j)
 {
-    //returns the complex cofactor    of element i,j, in the 4x4 matrix aij
-    int k,l,p,q;
+    //returns the complex cofactor of element i,j, in the 4x4 matrix aij
     complex<double> a33[9];
 
-    p = 0;
-    for(k=0; k<4; k++)
+    int p = 0;
+    for(int k=0; k<4; k++)
     {
         if(k!=i)
         {
-            q = 0;
-            for(l=0; l<4; l++)
+            int q = 0;
+            for(int l=0; l<4; l++)
             {
                 if(l!=j)
                 {
@@ -371,25 +368,23 @@ complex<double> cofactor44(complex<double> *aij, int &i, int &j)
 * @param aij a pointer to a one-dimensional array holding the 16 complex double values of the matrix
 * @return the matrix's determinant
 */
-complex<double> det44(complex<double> *aij)
+complex<double> det44(complex<double> const *aij)
 {
 //    returns the determinant of a 4x4 matrix
-
-    int i,j,k,l,p,q;
-    double sign;
-    complex<double> det, a33[16];
+    double sign=0;
+    complex<double> det=0, a33[16];
     det = 0.0;
 
-    i=0;
-    for(j=0; j<4; j++)
+    int i=0;
+    for(int j=0; j<4; j++)
     {
-        p = 0;
-        for(k=0; k<4; k++)
+        int p = 0;
+        for(int k=0; k<4; k++)
         {
             if(k!=i)
             {
-                q = 0;
-                for(l=0; l<4; l++)
+                int q = 0;
+                for(int l=0; l<4; l++)
                 {
                     if(l!=j)
                     {
@@ -546,10 +541,10 @@ bool Crout_LU_Decomposition_with_Pivoting(double *A, int pivot[], int n, bool *p
      false : Failure - The matrix A is singular.
 
 */
-bool Crout_LU_with_Pivoting_Solve(double *LU, double B[], int pivot[], double x[], int Size, bool *pbCancel)
+bool Crout_LU_with_Pivoting_Solve(double const*LU, double B[], int pivot[], double x[], int Size, bool *pbCancel)
 {
     int i, k;
-    double *p_k;
+    double const *p_k;
     double dum;
 
     //  Solve the linear equation Lx = B for x, where L is a lower triangular matrix.
@@ -933,7 +928,7 @@ bool LinBairstow(double *p, complex<double> *root, int n)
 
 
 /** Simple routine for displaying a matrix. */
-void display_mat(double *mat, int rows, int cols)
+void display_mat(const double *mat, int rows, int cols)
 {
     for(int i=0; i<rows; i++)
     {
@@ -947,7 +942,7 @@ void display_mat(double *mat, int rows, int cols)
 }
 
 /** Simple routine for displaying a vector. */
-void display_vec(double *vec, int rows)
+void display_vec(double const *vec, int rows)
 {
     for(int i=0; i<rows; i++)
         qDebug("  %17.9g", vec[i]);

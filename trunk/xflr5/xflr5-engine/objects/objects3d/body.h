@@ -79,14 +79,14 @@ public:
 
     double getu(double x) const;
     double getv(double u, Vector3d r, bool bRight) const;
-    double getSectionArcLength(double x);
+    double getSectionArcLength(double x) const;
 
-    Vector3d centerPoint(double u);
-    Vector3d leadingPoint();
+    Vector3d centerPoint(double u) const;
+    Vector3d leadingPoint() const;
 
     void clearPointMasses();
     void computeAero(double *Cp, double &XCP, double &YCP, double &ZCP,
-                     double &GCm, double &GRm, double &GYm, double &Alpha, Vector3d &CoG);
+                     double &GCm, double &GRm, double &GYm, double &Alpha, Vector3d &CoG) const;
     void duplicate(const Body *pBody);
     void getPoint(double u, double v, bool bRight, Vector3d &Pt) const;
     Vector3d Point(double u, double v, bool bRight) const;
@@ -103,7 +103,7 @@ public:
     Frame const *frameAt(int iFrame) const;
     Frame *activeFrame() const;
 
-    int setActiveFrame(Frame *pFrame);
+    int setActiveFrame(Frame const*pFrame);
     Frame *setActiveFrame(int iFrame);
 
 

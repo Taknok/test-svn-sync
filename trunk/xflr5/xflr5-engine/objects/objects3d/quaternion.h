@@ -115,7 +115,8 @@ public:
         V.x = 2.0*( (t8 + t10)*R.x + (t6 -  t4)*R.y + (t3 + t7)*R.z ) + R.x;
         V.y = 2.0*( (t4 +  t6)*R.x + (t5 + t10)*R.y + (t9 - t2)*R.z ) + R.y;
         V.z = 2.0*( (t7 -  t3)*R.x + (t2 +  t9)*R.y + (t5 + t8)*R.z ) + R.z;
-    };
+    }
+
     void Conjugate(double &x, double &y, double &z)
     {
         R.x = x;
@@ -139,7 +140,6 @@ public:
         t9 =   qy*qz;
         t10 = -qz*qz;    
     }
-
 
     void set(double const &real, double const &x, double const &y, double const &z)
     {    

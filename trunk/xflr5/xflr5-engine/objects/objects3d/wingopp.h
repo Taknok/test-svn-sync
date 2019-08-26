@@ -79,8 +79,8 @@ private:
     bool serializeWingOppXFL(QDataStream &ar, bool bIsStoring);
     bool exportWOpp(QTextStream &out, bool bCSV);
 
-    double maxLift();
-    void createWOpp(Wing *pWing, WPolar *pWPolar);
+    double maxLift() const;
+    void createWOpp(Wing const *pWing, WPolar const*pWPolar);
 
 private:
     QString m_WingName;    // the wing name to which the WingOpp belongs

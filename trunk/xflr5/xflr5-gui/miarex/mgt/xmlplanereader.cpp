@@ -351,8 +351,6 @@ bool XMLPlaneReader::readWing(Wing &newwing, Vector3d &position, double &tiltang
         else
             skipCurrentElement();
     }
-
-
     return(hasError());
 }
 
@@ -361,24 +359,22 @@ bool XMLPlaneReader::readPointMass(PointMass *ppm, double massUnit, double lengt
 {
     while(!atEnd() && !hasError() && readNextStartElement() )
     {
-        if (name().compare(QString("tag"), Qt::CaseInsensitive)==0)       ppm->tag() = readElementText();
-        else if (name().compare(QString("mass"), Qt::CaseInsensitive)==0) ppm->mass() =  readElementText().toDouble()*massUnit;
+        if (name().compare(QString("tag"), Qt::CaseInsensitive)==0)       ppm->setTag(readElementText());
+        else if (name().compare(QString("mass"), Qt::CaseInsensitive)==0) ppm->setMass(readElementText().toDouble()*massUnit);
         else if (name().compare(QString("coordinates"), Qt::CaseInsensitive)==0)
         {
             QStringList coordList = readElementText().split(",");
             if(coordList.length()>=3)
             {
-                ppm->position().x = coordList.at(0).toDouble()*lengthUnit;
-                ppm->position().y = coordList.at(1).toDouble()*lengthUnit;
-                ppm->position().z = coordList.at(2).toDouble()*lengthUnit;
+                ppm->setXPos(coordList.at(0).toDouble()*lengthUnit);
+                ppm->setYPos(coordList.at(1).toDouble()*lengthUnit);
+                ppm->setZPos(coordList.at(2).toDouble()*lengthUnit);
             }
         }
         else skipCurrentElement();
     }
     return(hasError());
 }
-
-
 
 
 bool XMLPlaneReader::readBody(Body *pBody, Vector3d &position, double lengthUnit, double massUnit)

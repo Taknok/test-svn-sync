@@ -158,28 +158,26 @@ void Body::setNURBSKnots()
  * @param CoG the position of the CoG
  */
 void Body::computeAero(double *Cp, double &XCP, double &YCP, double &ZCP,
-                       double &GCm, double &GRm, double &GYm, double &Alpha, Vector3d &CoG)
+                       double &GCm, double &GRm, double &GYm, double &Alpha, Vector3d &CoG) const
 {
-    int p;
-    double cosa, sina, PanelLift;
     Vector3d PanelForce, LeverArm, WindNormal, WindDirection;
     Vector3d GeomMoment;
 
-    cosa = cos(Alpha*PI/180.0);
-    sina = sin(Alpha*PI/180.0);
+    double cosa = cos(Alpha*PI/180.0);
+    double sina = sin(Alpha*PI/180.0);
 
 
     //   Define wind axis
     WindNormal.set(   -sina, 0.0, cosa);
     WindDirection.set( cosa, 0.0, sina);
 
-    for (p=0; p<m_NElements; p++)
+    for (int p=0; p<m_NElements; p++)
     {
         PanelForce.x = m_pBodyPanel[p].Normal.x * (-Cp[p]) * m_pBodyPanel[p].Area;
         PanelForce.y = m_pBodyPanel[p].Normal.y * (-Cp[p]) * m_pBodyPanel[p].Area;
         PanelForce.z = m_pBodyPanel[p].Normal.z * (-Cp[p]) * m_pBodyPanel[p].Area; // N/q
 
-        PanelLift = PanelForce.dot(WindNormal);
+        double PanelLift = PanelForce.dot(WindNormal);
         XCP   += m_pBodyPanel[p].CollPt.x * PanelLift;
         YCP   += m_pBodyPanel[p].CollPt.y * PanelLift;
         ZCP   += m_pBodyPanel[p].CollPt.z * PanelLift;
@@ -260,7 +258,7 @@ double Body::length() const
  * Returns the posistion of the Body nose
  * @return the Vector3d which defines the position of the Body nose.
  */
-Vector3d Body::leadingPoint()
+Vector3d Body::leadingPoint() const
 {
     if(m_SplineSurface.m_pFrame.size())
     {
@@ -278,7 +276,7 @@ Vector3d Body::leadingPoint()
  * @param x the longitudinal position at which the arc length is to be calculated.
  * @return  the arc length, in meters.
  */
-double Body::getSectionArcLength(double x)
+double Body::getSectionArcLength(double x) const
 {
     //NURBS only
     if(m_LineType==XFLR5::BODYPANELTYPE) return 0.0;
@@ -300,7 +298,7 @@ double Body::getSectionArcLength(double x)
 }
 
 
-Vector3d Body::centerPoint(double u)
+Vector3d Body::centerPoint(double u) const
 {
     Vector3d Top, Bot;
     getPoint(u, 0.0, true, Top);
@@ -408,11 +406,8 @@ double Body::getv(double u, Vector3d r, bool bRight) const
  */
 int Body::insertPoint(Vector3d Real)
 {
-    int i, n;
-
-
-    n = activeFrame()->insertPoint(Real, 3);
-    for (i=0; i<frameCount(); i++)
+    int n = activeFrame()->insertPoint(Real, 3);
+    for (int i=0; i<frameCount(); i++)
     {
         Frame *pFrame = m_SplineSurface.m_pFrame[i];
         if(pFrame != activeFrame())
@@ -505,7 +500,7 @@ int Body::insertFrameAfter(int iFrame)
  */
 int Body::insertFrame(Vector3d Real)
 {
-    int k, n=0;
+    int k=0, n=0;
 
     if(Real.x<m_SplineSurface.m_pFrame[0]->m_Position.x)
     {
@@ -603,7 +598,7 @@ bool Body::intersectNURBS(Vector3d A, Vector3d B, Vector3d &I, bool bRight) cons
     //intersect line AB with right or left body surface
     //intersection point is I
     Vector3d N, tmp, M0, M1;
-    double u, v, dist, t, tp;
+    double u=0, v=0, dist=0, t=0, tp=0;
     int iter = 0;
     int itermax = 20;
     double dmax = 1.0e-5;
@@ -671,18 +666,17 @@ bool Body::intersectNURBS(Vector3d A, Vector3d B, Vector3d &I, bool bRight) cons
  */
 bool Body::intersectFlatPanels(Vector3d const &A, Vector3d const &B, Vector3d &I) const
 {
-    bool b1, b2, b3, b4, b5;
-    int i,k;
-    double r,s,t;
+    bool b1=0, b2=0, b3=0, b4=0, b5=0;
+    double r=0,s=0,t=0;
     Vector3d LA, TA, LB, TB, U, V, W, H, D1, D2, N, C, P;
     bool bIntersect = false;
 
     U = B-A;
     U.normalize();
 
-    for (i=0; i<frameCount()-1; i++)
+    for (int i=0; i<frameCount()-1; i++)
     {
-        for (k=0; k<sideLineCount()-1; k++)
+        for (int k=0; k<sideLineCount()-1; k++)
         {
             //build the four corner points of the Quad Panel
             LB.x =  m_SplineSurface.m_pFrame[i]->m_Position.x     ;
@@ -819,8 +813,7 @@ bool Body::intersectFlatPanels(Vector3d const &A, Vector3d const &B, Vector3d &I
  */
 int Body::isFramePos(Vector3d Real, double ZoomFactor)
 {
-    int k;
-    for (k=0; k<frameCount(); k++)
+    for (int k=0; k<frameCount(); k++)
     {
         if (qAbs(Real.x-m_SplineSurface.m_pFrame[k]->m_Position.x) < 0.01 *length()/ZoomFactor &&
                 qAbs(Real.z-m_SplineSurface.m_pFrame[k]->zPos())       < 0.01 *length()/ZoomFactor)
@@ -851,18 +844,15 @@ bool Body::isInNURBSBody(double x, double z) const
  */
 bool Body::isInNURBSBodyOld(Vector3d Pt)
 {
-    double u, v;
-    bool bRight;
-
-    u = getu(Pt.x);
+    double u = getu(Pt.x);
 
     if (u <= 0.0 || u >= 1.0) return false;
 
     t_r.set(0.0, Pt.y, Pt.z);
 
-    bRight = (Pt.y>=0.0);
+    bool bRight = (Pt.y>=0.0);
 
-    v = getv(u, t_r, bRight);
+    double v = getv(u, t_r, bRight);
     getPoint(u, v, bRight, t_N);
 
     t_N.x = 0.0;
@@ -895,7 +885,6 @@ void Body::removeActiveFrame()
 {
     m_SplineSurface.removeFrame(m_iActiveFrame);
 
-
     m_iHighlightFrame = -1;
     setNURBSKnots();
 }
@@ -924,14 +913,13 @@ void Body::removeSideLine(int SideLine)
  */
 void Body::scale(double XFactor, double YFactor, double ZFactor, bool bFrameOnly, int FrameID)
 {
-    int i,j;
-    for (i=0; i<frameCount(); i++)
+    for (int i=0; i<frameCount(); i++)
     {
         if((bFrameOnly &&  i==FrameID) || !bFrameOnly)
         {
             if(!bFrameOnly) m_SplineSurface.m_pFrame[i]->m_Position.x *= XFactor;
 
-            for(j=0; j<m_SplineSurface.m_pFrame[i]->m_CtrlPoint.size(); j++)
+            for(int j=0; j<m_SplineSurface.m_pFrame[i]->m_CtrlPoint.size(); j++)
             {
                 m_SplineSurface.m_pFrame[i]->m_CtrlPoint[j].x  = m_SplineSurface.m_pFrame[i]->m_Position.x;
                 m_SplineSurface.m_pFrame[i]->m_CtrlPoint[j].y *= YFactor;
@@ -1050,7 +1038,7 @@ Frame *Body::activeFrame() const
  * @param pFrame a pointer to the Frame object to be set as active
  * @return the index of the newly selected Frame
  */
-int Body::setActiveFrame(Frame *pFrame)
+int Body::setActiveFrame(Frame const*pFrame)
 {
     for(int ifr=0; ifr<m_SplineSurface.m_pFrame.size(); ifr++)
     {

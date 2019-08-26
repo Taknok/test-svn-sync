@@ -419,7 +419,7 @@ bool Panel::intersect(Vector3d const &A, Vector3d const &U, Vector3d &I, double 
 /**
 *Returns the panel's width, measured at the leading edge 
 */
-double Panel::width()
+double Panel::width() const
 {
     return sqrt( (s_pNode[m_iLB].y - s_pNode[m_iLA].y)*(s_pNode[m_iLB].y - s_pNode[m_iLA].y)
                  +(s_pNode[m_iLB].z - s_pNode[m_iLA].z)*(s_pNode[m_iLB].z - s_pNode[m_iLA].z));
@@ -480,10 +480,6 @@ void Panel::rotateBC(Vector3d const &HA, Quaternion &Qt)
 }
 
 
-
-
-
-
 /**
 * Evaluates the influence of a uniform source at a point outside the panel.
 *
@@ -496,12 +492,11 @@ void Panel::rotateBC(Vector3d const &HA, Quaternion &Qt)
 *@param V the perturbation velocity at point C
 *@param phi the potential at point C
 */
-void Panel::sourceNASA4023(Vector3d const &C,  Vector3d &V, double &phi)
+void Panel::sourceNASA4023(Vector3d const &C,  Vector3d &V, double &phi) const
 {
-    int i;
-    double RNUM, DNOM, pjk, CJKi;
-    double PN, A, B, PA, PB, SM, SL, AM, AL, Al;
-    double side, sign, S, GL;
+    double RNUM=0, DNOM=0, pjk=0, CJKi=0;
+    double PN=0, A=0, B=0, PA=0, PB=0, SM=0, SL=0, AM=0, AL=0, Al=0;
+    double side=0, sign=0, S=0, GL=0;
     Vector3d PJK, a, b, s, T1, T2, h;
     Vector3d *m_pR[5];
     //we use a default core size, unless the user has specified one
@@ -545,7 +540,7 @@ void Panel::sourceNASA4023(Vector3d const &C,  Vector3d &V, double &phi)
         m_pR[4] = s_pNode + m_iLB;
     }
 
-    for (i=0; i<4; i++)
+    for (int i=0; i<4; i++)
     {
         a.x  = C.x - m_pR[i]->x;
         a.y  = C.y - m_pR[i]->y;
@@ -649,14 +644,13 @@ void Panel::sourceNASA4023(Vector3d const &C,  Vector3d &V, double &phi)
  * @param phi the potential at point C
  * @param bWake true if the panel is a wake panel, false if it is a surface panel
  */
-void Panel::doubletNASA4023(Vector3d const &C, Vector3d &V, double &phi, bool bWake)
+void Panel::doubletNASA4023(Vector3d const &C, Vector3d &V, double &phi, bool bWake) const
 {
-    int i;
     Vector3d *m_pR[5];
     Vector3d PJK, a, b, s, T1, h;
-    double RNUM, DNOM, pjk, CJKi;
-    double PN, A, B, PA, PB, SM, SL, AM, AL, Al;
-    double side, sign, GL;
+    double RNUM=0, DNOM=0, pjk=0, CJKi=0;
+    double PN=0, A=0, B=0, PA=0, PB=0, SM=0, SL=0, AM=0, AL=0, Al=0;
+    double side=0, sign=0, GL=0;
 
 
     //we use a default core size, unless the user has specified one
@@ -708,7 +702,7 @@ void Panel::doubletNASA4023(Vector3d const &C, Vector3d &V, double &phi, bool bW
         m_pR[4] = pNode + m_iLB;
     }
 
-    for (i=0; i<4; i++)
+    for (int i=0; i<4; i++)
     {
         a.x  = C.x - m_pR[i]->x;
         a.y  = C.y - m_pR[i]->y;

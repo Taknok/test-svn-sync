@@ -306,7 +306,7 @@ double NURBSSurface::Weight(int i, int N)
  *@param I the intersection point
  *@return true if an intersection point could be determined
  */
-bool NURBSSurface::intersectNURBS(Vector3d A, Vector3d B, Vector3d &I)
+bool NURBSSurface::intersectNURBS(Vector3d A, Vector3d B, Vector3d &I) const
 {
     Vector3d  tmp, M0, M1;
     double u, v, dist, t, tp;

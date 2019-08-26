@@ -63,10 +63,10 @@ struct ObjectColor
 
     void setAlphaF(float a) {m_alpha = int(a*255.0f);}
 
-    float redf() const {return (float)m_red/255.0f;}
-    float greenf() const {return (float)m_green/255.0f;}
-    float bluef() const {return (float)m_blue/255.0f;}
-    float alphaf() const {return (float)m_alpha/255.0f;}
+    float redf() const {return float(m_red)/255.0f;}
+    float greenf() const {return float(m_green)/255.0f;}
+    float bluef() const {return float(m_blue)/255.0f;}
+    float alphaf() const {return float(m_alpha)/255.0f;}
 
 private:
     int m_red;

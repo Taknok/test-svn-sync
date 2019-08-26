@@ -76,8 +76,8 @@ public:
     Panel();
 
     void VLMCmn(Vector3d const &C, Vector3d &VTest, bool const &bAll);
-    void doubletNASA4023(Vector3d const &C, Vector3d &VTest, double &phi, bool bWake);
-    void sourceNASA4023(Vector3d const &C, Vector3d &VTest, double &phi);
+    void doubletNASA4023(Vector3d const &C, Vector3d &VTest, double &phi, bool bWake) const;
+    void sourceNASA4023(Vector3d const &C, Vector3d &VTest, double &phi) const;
 
     void rotateBC(Vector3d const &HA, Quaternion & Qt);
     void reset();
@@ -90,7 +90,7 @@ public:
     Vector3d globalToLocal(double const &Vx, double const &Vy, double const &Vz);
     Vector3d localToGlobal(Vector3d const &VTest);
 
-    double width();
+    double width() const;
     double area() const {return Area;}
     Vector3d ctrlPt() const {return CtrlPt;}
     Vector3d collPt() const {return CollPt;}

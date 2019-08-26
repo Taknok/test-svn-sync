@@ -153,14 +153,14 @@ bool WingOpp::exportWOpp(QTextStream &out, bool bCSV)
  * Used to calibrate the display of the optimal elliptic curve in hte WingOpp graph.
  * @return the maximum local lift.
 */
-double WingOpp::maxLift()
+double WingOpp::maxLift() const
 {
-    int i,nStart;
+    int nStart = 0;
     if(m_AnalysisMethod==XFLR5::LLTMETHOD) nStart = 1;
     else                                   nStart = 0;
 
     double maxlift = 0.0;
-    for (i=nStart; i<m_NStation; i++)
+    for (int i=nStart; i<m_NStation; i++)
     {
         if(m_Cl[i] * m_Chord[i]/m_MAChord>maxlift)
         {
@@ -180,7 +180,7 @@ double WingOpp::maxLift()
 *@param pWOpp  a pointer to the CWOpp object which is to be filled with the results of the analysis which has been completed
 *@param to the wing object for which the CWOpp will be created
 */
-void WingOpp::createWOpp(Wing *pWing, WPolar *pWPolar)
+void WingOpp::createWOpp(const Wing *pWing, const WPolar *pWPolar)
 {
     m_WingName            = pWing->wingName();
     m_NVLMPanels          = pWing->m_MatSize;
@@ -248,9 +248,9 @@ void WingOpp::createWOpp(Wing *pWing, WPolar *pWPolar)
  */
 bool WingOpp::serializeWingOppXFL(QDataStream &ar, bool bIsStoring)
 {
-    int ArchiveFormat;
-    int k, n;
-    double dble;
+    int ArchiveFormat=0;
+    int k=0, n=0;
+    double dble=0;
 
     if(bIsStoring)
     {
@@ -376,9 +376,9 @@ bool WingOpp::serializeWingOppXFL(QDataStream &ar, bool bIsStoring)
  */
 bool WingOpp::serializeWingOppWPA(QDataStream &ar, bool bIsStoring)
 {
-    int ArchiveFormat;
-    int a,p,k,l,n;
-    float f, f0, f1, f2, f3;
+    int ArchiveFormat=0;
+    int a=0,p=0,k=0,l=0,n=0;
+    float f=0, f0=0, f1=0, f2=0, f3=0;
 
     if(bIsStoring)
     {

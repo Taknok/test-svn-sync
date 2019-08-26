@@ -72,7 +72,7 @@ public:
     void calculatePoint(int iPt);
     void copy(WPolar const *pWPolar);
     void duplicateSpec(WPolar const *pWPolar);
-    const QVector<double> *getWPlrVariable(int iVar) const;
+    QVector<double> const *getWPlrVariable(int iVar) const;
     void remove(int i);
     void remove(double alpha);
     void clearData();
@@ -118,7 +118,7 @@ public:
     bool bViscous()          const {return m_bViscous;}
     bool bVLM1()             const {return m_bVLM1;}
     bool bAutoInertia()      const {return m_bAutoInertia;}
-    bool bDirichlet()               const {return m_BoundaryCondition==XFLR5::DIRICHLET;}
+    bool bDirichlet()        const {return m_BoundaryCondition==XFLR5::DIRICHLET;}
 
     void setThinSurfaces(bool b)     {m_bThinSurfaces=b;}
     void setTilted(bool b)           {m_bTiltedGeom=b;}
@@ -135,8 +135,8 @@ public:
     XFLR5::enumBC const &boundaryCondition() const {return m_BoundaryCondition;}
     void setBoundaryCondition(XFLR5::enumBC bc) {m_BoundaryCondition=bc;}
 
-    XFLR5::enumRefDimension  const &referenceDim() const {return m_ReferenceDim;}
-    double referenceArea()  const{return m_referenceArea;}
+    XFLR5::enumRefDimension referenceDim() const {return m_ReferenceDim;}
+    double referenceArea()  const {return m_referenceArea;}
     double referenceSpanLength()  const {return m_referenceSpanLength;}
     double referenceChordLength() const {return m_referenceChordLength;}
     void setReferenceDim(XFLR5::enumRefDimension dim) {m_ReferenceDim=dim;}
@@ -195,7 +195,7 @@ private:
     ObjectColor m_Color;
 
     bool     m_bVLM1;              /**< true if the analysis is performed with horseshoe vortices, flase if quad rings */
-    //    bool     m_bDirichlet;         /**< true if Dirichlet boundary conditions should be applied, false if Neumann */
+
     bool     m_bGround;            /**< true if ground effect should be taken into account in the analysis */
     bool     m_bIgnoreBodyPanels;  /**< true if the body panels should be ignored in the analysis */
     bool     m_bThinSurfaces;      /**< true if VLM, false if 3D-panels */
