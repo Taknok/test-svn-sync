@@ -32,26 +32,26 @@ using namespace std;
 
 void transpose33(double *l);
 bool invert33(double *l);
-void AV33(double *A, double *v, double *p);
+void AV33(const double *A, const double *v, double *p);
 
 
-double det33(double *aij);
-complex<double> det33(complex<double> *aij);
+double det33(const double *aij);
+complex<double> det33(const complex<double> *aij);
 
 
-double det44(double *aij);
+double det44(const double *aij);
 
-complex<double> det44(complex<double> *aij);
-complex<double> cofactor44(complex<double> *aij, int &i, int &j);
+complex<double> det44(const complex<double> *aij);
+complex<double> cofactor44(const complex<double> *aij, int &i, int &j);
 
-bool XFLR5ENGINELIBSHARED_EXPORT Invert44(complex<double> *ain, complex<double> *aout);
+bool XFLR5ENGINELIBSHARED_EXPORT Invert44(const complex<double> *ain, complex<double> *aout);
 
 
 bool Gauss(double *A, int n, double *B, int m, bool *pbCancel);
 
 
 bool Crout_LU_Decomposition_with_Pivoting(double *A, int pivot[], int n, bool *pbCancel, double TaskSize, double &Progress);
-bool Crout_LU_with_Pivoting_Solve(double *LU, double B[], int pivot[], double x[], int n, bool *pbCancel);
+bool Crout_LU_with_Pivoting_Solve(const double *LU, double B[], int pivot[], double x[], int n, bool *pbCancel);
 
 
 void TestEigen();
@@ -64,8 +64,8 @@ int Compare(complex<double> a, complex<double>b);
 void ComplexSort(complex<double>*array, int ub);
 
 
-void display_mat(double *mat, int rows, int cols);
-void display_vec(double *vec, int rows);
+void display_mat(double const *mat, int rows, int cols);
+void display_vec(double const *vec, int rows);
 
 void displayDouble(double d0, double d1=-2.0e50, double d2=-2.0e50, double d3=-2.0e50, double d4=-2.0e50, double d5=-2.0e50, double d6=-2.0e50, double d7=-2.0e50, double d8=-2.0e50, double d9=-2.0e50);
 

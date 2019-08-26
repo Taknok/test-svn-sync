@@ -64,8 +64,8 @@ public:
     }
 
 
-    QString rightFoilName() {return m_RightFoilName;}
-    QString leftFoilName() {return m_LeftFoilName;}
+    QString rightFoilName() const {return m_RightFoilName;}
+    QString leftFoilName()  const {return m_LeftFoilName;}
 
     int m_NXPanels;         /**< VLM Panels along chord, for each Wing Panel */
     int m_NYPanels;         /**< VLM Panels along span, for each Wing Panel */

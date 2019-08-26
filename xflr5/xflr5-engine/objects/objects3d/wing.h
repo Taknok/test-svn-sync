@@ -103,7 +103,7 @@ public:
 
     void createSurfaces(Vector3d const &T, double XTilt, double YTilt);//generic surface, LLT, VLM or Panel
 
-    int  VLMPanelTotal(bool bThinSurface);
+    int  VLMPanelTotal(bool bThinSurface) const;
     void VLMSetBending();
 
     void panelComputeOnBody(double QInf, double Alpha, double *Cp, double *Gamma, double &XCP, double &YCP, double &ZCP,
@@ -160,12 +160,12 @@ public:
 
     //access methods
     int NWingSection()  const {return m_Section.count();}
-    int NXPanels(const int &iSection);
-    int NYPanels(const int &iSection);
+    int NXPanels(const int &iSection) const;
+    int NYPanels(const int &iSection) const;
     void setNXPanels(int iSec, int nx) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_NXPanels=nx;}
     void setNYPanels(int iSec, int ny) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_NXPanels=ny;}
 
-    int NYPanels();
+//    int NYPanels();
 
     XFLR5::enumPanelDistribution XPanelDist(const int &iSection) const;
     XFLR5::enumPanelDistribution YPanelDist(const int &iSection) const;

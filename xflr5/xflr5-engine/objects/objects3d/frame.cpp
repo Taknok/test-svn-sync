@@ -222,7 +222,7 @@ int Frame::insertPoint(const Vector3d &Real, int iAxis)
  * Returns the Frame's height as the difference of the z-coordinate of the last and first control points.
  *@return the Frame's height
  */
-double Frame::height()
+double Frame::height() const
 {
     return (m_CtrlPoint.last() - m_CtrlPoint.first()).VAbs();
 /*    double hmin    =  10.0;

@@ -27,8 +27,6 @@
 #include <objects/objects3d/vector3d.h>
 
 
-
-
 class XFLR5ENGINELIBSHARED_EXPORT PointMass
 {
 public:
@@ -39,7 +37,7 @@ public:
     }
 
     /** Overloaded public constructor */
-    PointMass(PointMass *pPtMass)
+    PointMass(PointMass const* pPtMass)
     {
         m_Mass = pPtMass->m_Mass;
         m_Position = pPtMass->m_Position;
@@ -54,14 +52,28 @@ public:
         m_Tag = tag;
     }
 
+    void setPointMass(double m, Vector3d const &pos, QString const &name)
+    {
+        m_Mass = m;
+        m_Position = pos;
+        m_Tag = name;
+    }
+
     /** Returns the the value of the mass */
-    double &mass()      {return m_Mass;}
-    
+    double mass()  const {return m_Mass;}
+    void setMass(double m) {m_Mass=m;}
+
     /** Returns the the position of the mass */
-    Vector3d &position() {return m_Position;}
-    
+    Vector3d const &position() const {return m_Position;}
+    void setPosition(Vector3d pos) {m_Position=pos;}
+    void setXPos(double x) {m_Position.x=x;}
+    void setYPos(double y) {m_Position.x=y;}
+    void setZPos(double z) {m_Position.x=z;}
+
+
     /** Returns the the tag of the mass */
-    QString &tag()      {return m_Tag;}
+    QString const &tag() const {return m_Tag;}
+    void setTag(QString name) {m_Tag=name;}
 
 private:
     double m_Mass;          /**< the value of the point mass, in kg */

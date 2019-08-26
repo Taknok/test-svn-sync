@@ -1622,11 +1622,11 @@ void EditPlaneDlg::readPointMassTree(PointMass *ppm, QModelIndex indexLevel)
         value = indexLevel.sibling(indexLevel.row(),2).data().toString();
         dataIndex = indexLevel.sibling(indexLevel.row(),2);
 
-        if      (field.compare("mass", Qt::CaseInsensitive)==0) ppm->mass() = dataIndex.data().toDouble()/Units::kgtoUnit();
-        else if (field.compare("tag",  Qt::CaseInsensitive)==0) ppm->tag()  = value;
-        else if (field.compare("x",    Qt::CaseInsensitive)==0) ppm->position().x = dataIndex.data().toDouble()/Units::mtoUnit();
-        else if (field.compare("y",    Qt::CaseInsensitive)==0) ppm->position().y = dataIndex.data().toDouble()/Units::mtoUnit();
-        else if (field.compare("z",    Qt::CaseInsensitive)==0) ppm->position().z = dataIndex.data().toDouble()/Units::mtoUnit();
+        if      (field.compare("mass", Qt::CaseInsensitive)==0) ppm->setMass(dataIndex.data().toDouble()/Units::kgtoUnit());
+        else if (field.compare("tag",  Qt::CaseInsensitive)==0) ppm->setTag(value);
+        else if (field.compare("x",    Qt::CaseInsensitive)==0) ppm->setXPos(dataIndex.data().toDouble()/Units::mtoUnit());
+        else if (field.compare("y",    Qt::CaseInsensitive)==0) ppm->setYPos(dataIndex.data().toDouble()/Units::mtoUnit());
+        else if (field.compare("z",    Qt::CaseInsensitive)==0) ppm->setZPos(dataIndex.data().toDouble()/Units::mtoUnit());
 
         indexLevel = indexLevel.sibling(indexLevel.row()+1,0);
 

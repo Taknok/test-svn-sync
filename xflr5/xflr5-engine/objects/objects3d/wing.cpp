@@ -627,7 +627,7 @@ void Wing::computeBodyAxisInertia()
     }
 }
 
-
+/*
 int Wing::NYPanels()
 {
     double MinPanelSize;
@@ -649,7 +649,7 @@ int Wing::NYPanels()
         }
     }
     return ny*2;
-}
+} */
 
 
 /**
@@ -1599,12 +1599,12 @@ void Wing::scaleArea(double newArea)
  * Returns the number of mesh panels defined on this Wing's surfaces; the number is given for a double-side mesh of the wing
  * @return the total number of panels
  */
-int Wing::VLMPanelTotal(bool bThinSurface)
+int Wing::VLMPanelTotal(bool bThinSurface) const
 {
-    double MinPanelSize;
+    double MinPanelSize=0.0;
 
     if(s_MinPanelSize>0.0) MinPanelSize = s_MinPanelSize;
-    else                              MinPanelSize = m_PlanformSpan/1000.0;
+    else                   MinPanelSize = m_PlanformSpan/1000.0;
     int total = 0;
     for (int is=0; is<NWingSection()-1; is++)
     {
@@ -1998,13 +1998,13 @@ double Wing::ZPosition(const int &iSection) const {return m_Section[iSection]->m
 *@param iSection the index of the section
 *@return the number of chordwise panels
 */
-int Wing::NXPanels(const int &iSection)   {return m_Section[iSection]->m_NXPanels;}
+int Wing::NXPanels(const int &iSection)  const {return m_Section[iSection]->m_NXPanels;}
 
 /** Returns the number of spanwise panels at a span section identified by its index
 *@param iSection the index of the section
 *@return the number of spanwise panels
 */
-int Wing::NYPanels(const int &iSection)   {return m_Section[iSection]->m_NYPanels;}
+int Wing::NYPanels(const int &iSection) const  {return m_Section[iSection]->m_NYPanels;}
 
 /** Returns the type of distribution of chordwise panels at a span section identified by its index - always XFLR5::COSINE type
 *@param iSection the index of the section
