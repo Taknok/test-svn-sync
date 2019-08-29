@@ -40,7 +40,7 @@ public:
     void setLine(LineStyle lineStyle);
     void showPoints(bool bShow){m_bShowPoints=bShow;}
 
-    bool points() {return m_bShowPoints; }
+    bool points() const {return m_bShowPoints; }
 
 private:
     LineStyle m_LineStyle;

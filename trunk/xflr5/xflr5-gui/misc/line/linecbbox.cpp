@@ -73,7 +73,7 @@ void LineCbBox::setLine(LineStyle lineStyle)
 }
 
 
-void LineCbBox::paintEvent (QPaintEvent *pEvent)
+void LineCbBox::paintEvent (QPaintEvent *)
 {
     QStyleOption opt;
     opt.initFrom(this);
@@ -89,7 +89,7 @@ void LineCbBox::paintEvent (QPaintEvent *pEvent)
         clr = pal.color(QPalette::Disabled, QPalette::Button);
     }
 
-    QRect r = pEvent->rect();
+    QRect r = opt.rect;
 
     painter.setBrush(Qt::NoBrush);
     painter.setBackgroundMode(Qt::TransparentMode);
@@ -108,7 +108,6 @@ void LineCbBox::paintEvent (QPaintEvent *pEvent)
         QPalette palette;
         drawPoint(painter, m_LineStyle.m_PointStyle, palette.window().color(), r.center());
     }
-
 
     painter.restore();
 }
