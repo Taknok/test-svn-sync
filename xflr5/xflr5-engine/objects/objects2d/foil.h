@@ -58,11 +58,10 @@ class XFLR5ENGINELIBSHARED_EXPORT Foil
 public:
     Foil();
 
+    int isPoint(Vector3d const &Real) const;
 
-    int isPoint(Vector3d const &Real);
-
-    void getLowerY(double x, double &y, double &normx, double &normy);
-    void getUpperY(double x, double &y, double &normx, double &normy);
+    void getLowerY(double x, double &y, double &normx, double &normy) const;
+    void getUpperY(double x, double &y, double &normx, double &normy) const;
 
     double deRotate();
     double baseUpperY(double x) const;
@@ -82,7 +81,7 @@ public:
     bool exportFoil(QTextStream &out);
     bool initFoil();
 
-    void copyFoil(Foil *pSrcFoil);
+    void copyFoil(Foil const *pSrcFoil);
 
     void setFlap();
     void setTEFlap();
@@ -93,13 +92,14 @@ public:
 
     bool intersect(Vector3d const &A, Vector3d const &B, Vector3d const &C, Vector3d const &D, Vector3d *M);
 
-    bool &showCenterLine() {return m_bCenterLine;}
+    bool bCenterLine() const{return m_bCenterLine;}
+    void showCenterLine(bool bShow) {m_bCenterLine=bShow;}
 
     void setTheStyle(int stipple, int w, QColor clr, int pointstyle);
-    bool &isVisible() {return m_bIsFoilVisible;}
-    int &foilLineWidth() {return m_Width;}
-    int &foilLineStyle() {return m_Stipple;}
-    int &foilPointStyle() {return m_PointStyle;}
+    bool isVisible() const {return m_bIsFoilVisible;}
+    int foilLineWidth() const {return m_Width;}
+    int foilLineStyle() const {return m_Stipple;}
+    int foilPointStyle() const {return m_PointStyle;}
     void setVisible(bool bVis) {m_bIsFoilVisible=bVis;}
     void setLineStipple(int s) {m_Stipple=s;}
     void setLineWidth(int w)   {m_Width=w;}
@@ -129,7 +129,7 @@ public:
     int iHighLight() const {return m_iHighLight;}
     void setHighLight(int iH) {m_iHighLight = iH;}
 
-    void displayCoords(bool bBaseCoords=false);
+    void displayCoords(bool bBaseCoords=false) const;
 
 
 public:

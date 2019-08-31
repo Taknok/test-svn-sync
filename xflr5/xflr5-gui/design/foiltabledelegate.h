@@ -26,6 +26,7 @@
 #include <QStandardItemModel>
 
 class DoubleEdit;
+class AFoil;
 
 class FoilTableDelegate : public QItemDelegate
 {
@@ -34,9 +35,7 @@ class FoilTableDelegate : public QItemDelegate
     friend class ManageFoilsDlg;
 
 public:
-    FoilTableDelegate(QObject *pParent = 0);
-
-    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &index) const;
+    FoilTableDelegate(QObject *pParent = nullptr);
 
     bool editorEvent(QEvent *event, QAbstractItemModel *pModel, const QStyleOptionViewItem &option, const QModelIndex &index);
 
@@ -49,7 +48,7 @@ public:
 private:
     QStandardItemModel *m_pFoilModel;
     int *m_Precision; ///table of float precisions for each column
-    void *m_pAFoil;
+    AFoil *m_pAFoil;
     void *m_pManageFoils;
 };
 

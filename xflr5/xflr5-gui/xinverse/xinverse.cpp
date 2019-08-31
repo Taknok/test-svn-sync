@@ -84,11 +84,11 @@ XInverse::XInverse(QWidget *parent)
     m_pRefFoil = new Foil();
     m_pModFoil = new Foil();
     m_pRefFoil->setColor(255,100,100);
-    m_pRefFoil->foilLineStyle() = 0;
-    m_pRefFoil->foilLineWidth() = 0;
+    m_pRefFoil->setLineStipple(0);
+    m_pRefFoil->setLineWidth(1);
     m_pModFoil->setColor(100,100,255);
-    m_pModFoil->foilLineStyle() = 0;
-    m_pModFoil->foilLineWidth() = 1;
+    m_pModFoil->setLineStipple(0);
+    m_pModFoil->setLineWidth(1);
 
     m_pOverlayFoil = nullptr;
 
@@ -705,13 +705,13 @@ void XInverse::loadSettings(QSettings &settings)
         m_Spline.setWidth(settings.value("SplineWdth").toInt());
         QColor clr  = settings.value("BaseFoilColor").value<QColor>();
         m_pRefFoil->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
-        m_pRefFoil->foilLineStyle()  = settings.value("BaseFoilStyle").toInt();
-        m_pRefFoil->foilLineWidth()  = settings.value("BaseFoilWidth").toInt();
+        m_pRefFoil->setLineStipple(settings.value("BaseFoilStyle").toInt());
+        m_pRefFoil->setLineWidth(settings.value("BaseFoilWidth").toInt());
 
         clr  = settings.value("ModFoilColor").value<QColor>();
         m_pModFoil->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
-        m_pModFoil->foilLineStyle()  = settings.value("ModFoilStyle").toInt();
-        m_pModFoil->foilLineWidth()  = settings.value("ModFoilWidth").toInt();
+        m_pModFoil->setLineStipple(settings.value("ModFoilStyle").toInt());
+        m_pModFoil->setLineWidth(settings.value("ModFoilWidth").toInt());
     }
     settings.endGroup();
     m_QGraph.loadSettings(settings);
@@ -1809,8 +1809,8 @@ void XInverse::onStoreFoil()
 
     Foil* pNewFoil = new Foil();
     pNewFoil->copyFoil(m_pModFoil);
-    pNewFoil->foilLineStyle() = 0;
-    pNewFoil->foilLineWidth() = 1;
+    pNewFoil->setLineStipple(0);
+    pNewFoil->setLineWidth(1);
     memcpy(pNewFoil->xb, m_pModFoil->x, sizeof(m_pModFoil->x));
     memcpy(pNewFoil->yb, m_pModFoil->y, sizeof(m_pModFoil->y));
     pNewFoil->nb = m_pModFoil->n;

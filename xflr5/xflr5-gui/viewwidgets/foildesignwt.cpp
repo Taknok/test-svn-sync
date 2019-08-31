@@ -165,7 +165,7 @@ void FoilDesignWt::paintFoils(QPainter &painter)
             painter.setPen(FoilPen);
 
             drawFoil(painter, pFoil, 0.0, m_fScale, m_fScale*m_fScaleY,m_ptOffset);
-            if (pFoil->showCenterLine())
+            if (pFoil->bCenterLine())
             {
                 CenterPen.setColor(colour(pFoil));
                 CenterPen.setStyle(Qt::DashLine);
@@ -181,7 +181,7 @@ void FoilDesignWt::paintFoils(QPainter &painter)
     {
         drawFoil(painter, m_pBufferFoil, 0.0, m_fScale, m_fScale*m_fScaleY,m_ptOffset);
 
-        if (m_pBufferFoil->showCenterLine())
+        if (m_pBufferFoil->bCenterLine())
         {
             CenterPen.setColor(colour(m_pBufferFoil));
             CenterPen.setStyle(Qt::DashLine);

@@ -179,7 +179,6 @@ public:
     double m_Bunch;                            /**< a bunch parameter to set the density of the points of the NURBS surface; unused */
 
     double m_VolumeMass;                       /**< the mass of the Body's structure, excluding point masses */
-    double m_TotalMass;                        /**< the wing's total mass, i.e. the sum of the volume mass and of the point masses */
     QVector<PointMass*> m_PointMass;             /**< the array of PointMass objects */
 
     double m_CoGIxx;                           /**< the Ixx component of the inertia tensor, calculated at the CoG */

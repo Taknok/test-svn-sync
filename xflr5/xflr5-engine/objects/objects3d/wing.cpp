@@ -68,7 +68,7 @@ Wing::Wing()
 
     m_CoG.set(0.0,0.0,0.0);
     m_CoGIxx = m_CoGIyy = m_CoGIzz = m_CoGIxz = 0.0;
-    m_VolumeMass = m_TotalMass = 0.0;
+    m_VolumeMass = 0.0;
 
     clearPointMasses();
 
@@ -86,8 +86,6 @@ Wing::Wing()
     m_WingColor.setRed(  int((double(qrand())/double(RAND_MAX))*155)+100);
     m_WingColor.setGreen(int((double(qrand())/double(RAND_MAX))*155)+100);
     m_WingColor.setBlue( int((double(qrand())/double(RAND_MAX))*155)+100);
-
-    m_QInf0    = 0.0;
 
     m_pWingPanel     = nullptr;
 
@@ -593,18 +591,18 @@ void Wing::computeBodyAxisInertia()
 
     //Get the volume inertia properties in the volume CoG frame of reference
     computeVolumeInertia(VolumeCoG, Ixx, Iyy, Izz, Ixz);
-    m_TotalMass = m_VolumeMass;
+    double TotalMass = m_VolumeMass;
 
     m_CoG = VolumeCoG *m_VolumeMass;
 
     // add point masses
     for(int im=0; im<m_PointMass.size(); im++)
     {
-        m_TotalMass += m_PointMass[im]->mass();
+        TotalMass += m_PointMass[im]->mass();
         m_CoG       += m_PointMass[im]->position() * m_PointMass[im]->mass();
     }
 
-    if(m_TotalMass>0.0) m_CoG = m_CoG/m_TotalMass;
+    if(TotalMass>0.0) m_CoG = m_CoG/TotalMass;
     else                m_CoG.set(0.0,0.0,0.0);
 
     // The CoG position is now available, so calculate the inertia w.r.t the CoG
@@ -1077,7 +1075,7 @@ void Wing::computeChords(int NStation, double *chord, double *offset, double *tw
 * Copies the gemetrical data from an existing Wing
 *@param pWing a pointer to the instance of the source Wing object
 */
-void Wing::duplicate(Wing *pWing)
+void Wing::duplicate(Wing const*pWing)
 {
     m_NStation      = pWing->m_NStation;
     m_PlanformSpan  = pWing->m_PlanformSpan;
@@ -1122,7 +1120,7 @@ void Wing::duplicate(Wing *pWing)
     m_nFlaps = pWing->m_nFlaps;
 
     m_VolumeMass = pWing->m_VolumeMass;
-    m_TotalMass  = pWing->m_TotalMass;
+
     m_CoG = pWing->m_CoG;
     m_CoGIxx = pWing->m_CoGIxx;
     m_CoGIyy = pWing->m_CoGIyy;

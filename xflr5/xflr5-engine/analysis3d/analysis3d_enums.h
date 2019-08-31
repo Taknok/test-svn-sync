@@ -26,7 +26,7 @@
 namespace XFLR5
 {
     /** @enum The different types of analysis methods for 3D calculations of wings and planes. */
-    typedef enum {LLTMETHOD, VLMMETHOD, PANEL4METHOD, TRILINMETHOD, TRICSTMETHOD} enumAnalysisMethod;
+    typedef enum {LLTMETHOD, VLMMETHOD, PANEL4METHOD, TRILINMETHOD, TRIUNIMETHOD} enumAnalysisMethod;
 
     /** @enum The different types of polar available for 2D and 3D calculations. */
     typedef enum {FIXEDSPEEDPOLAR, FIXEDLIFTPOLAR, RUBBERCHORDPOLAR, FIXEDAOAPOLAR, STABILITYPOLAR, BETAPOLAR} enumPolarType;

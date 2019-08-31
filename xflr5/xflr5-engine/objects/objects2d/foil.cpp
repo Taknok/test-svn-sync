@@ -145,7 +145,7 @@ void Foil::compMidLine(bool bParams)
 * Copies the data from an existing foil and maps it to this foil's variables.
 * @param pSrcFoil a pointer to the reference foil from which the data wil be copied
 */
-void Foil::copyFoil(Foil *pSrcFoil)
+void Foil::copyFoil(const Foil *pSrcFoil)
 {
     memcpy(x, pSrcFoil->x,  sizeof(pSrcFoil->x));
     memcpy(y, pSrcFoil->y,  sizeof(pSrcFoil->y));
@@ -194,8 +194,6 @@ void Foil::copyFoil(Foil *pSrcFoil)
     m_bCenterLine = pSrcFoil->m_bCenterLine;
     m_PointStyle  = pSrcFoil->foilPointStyle();
 }
-
-
 
 
 /**
@@ -549,7 +547,7 @@ Vector3d Foil::lowerYRel(double xRel, double &normx, double &normy) const
 * @param &normx a reference to variable holding the x-component of the normal to the surface
 * @param &normy a reference to variable holding the y-component of the normal to the surface
 */
-void Foil::getLowerY(double x, double &y, double &normx, double &normy)
+void Foil::getLowerY(double x, double &y, double &normx, double &normy) const
 {
     double nabs;
     x = m_rpIntrados[0].x + x*(m_rpIntrados[m_iInt].x-m_rpIntrados[0].x);
@@ -593,7 +591,7 @@ void Foil::getLowerY(double x, double &y, double &normx, double &normy)
 *@param &normx a reference to variable holding the x-component of the normal to the surface
 *@param &normy a reference to variable holding the y-component of the normal to the surface
 */
-void Foil::getUpperY(double x, double &y, double &normx, double &normy)
+void Foil::getUpperY(double x, double &y, double &normx, double &normy) const
 {
     double nabs;
     x = m_rpExtrados[0].x + x*(m_rpExtrados[m_iExt].x-m_rpExtrados[0].x);
@@ -774,10 +772,9 @@ bool Foil::intersect(Vector3d const &A, Vector3d const &B, Vector3d const &C, Ve
 *Returns the index of foil's point which coincides with the input point, if any, otherwise returns -10.
 *@param &Real the Vector3d which defines the input point
 */
-int Foil::isPoint(Vector3d const &Real)
+int Foil::isPoint(Vector3d const &Real) const
 {
-    int k;
-    for (k=0; k<n; k++)
+    for (int k=0; k<n; k++)
     {
         if(qAbs(Real.x-x[k])<0.005 && qAbs(Real.y-y[k])<0.005) return k;
     }
@@ -1490,7 +1487,7 @@ void Foil::setColor(int r, int g, int b, int a)
 
 
 /** For debug purposes only */
-void Foil::displayCoords(bool bBaseCoords)
+void Foil::displayCoords(bool bBaseCoords) const
 {
     if(bBaseCoords)
     {

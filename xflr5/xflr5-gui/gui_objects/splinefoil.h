@@ -20,9 +20,6 @@
 *****************************************************************************/
 
 
-
-
-
 /**
  *@file This class defines the splined foil object used in foil design.
  */
@@ -34,6 +31,7 @@
 
 #include "spline5.h"
 #include <objects/objects2d/foil.h>
+#include <graph/linestyle.h>
 
 /**
 *@class SplineFoil
@@ -52,14 +50,10 @@ public:
     SplineFoil();
     SplineFoil(SplineFoil *pSF);
 
-    bool isVisible()         const {return m_bVisible;}
     bool isSymetric()        const {return m_bSymetric;}
     bool showOutPoints()     const {return m_bOutPoints;}
     bool showCenterLine()    const {return m_bCenterLine;}
-    int splineFoilWidth()    const {return m_FoilWidth;}
-    int splineFoilStyle()    const {return m_FoilStyle;}
-    int splinePointStyle()   const {return m_PointStyle;}
-    QColor splineFoilColor() const {return m_FoilColor;}
+
     QString splineFoilName() const {return m_strFoilName;}
 
     Spline *extrados(){return &m_Extrados;}
@@ -68,7 +62,6 @@ public:
     bool isModified() const  {return m_bModified;}
     void setModified(bool bModified){m_bModified = bModified;}
 
-    void setVisible(bool bVisible){m_bVisible = bVisible;}
 
     void compMidLine();
 
@@ -85,7 +78,7 @@ public:
     void exportToBuffer(Foil *pFoil);
     void exportToFile(QTextStream &out);
     void updateSplineFoil();
-    void setCurveParams(int style, int width, QColor color);
+    void setCurveParams(int style, int width, QColor splineFoilColor);
 
     double camber() const {return m_fCamber;}
     double xCamber() const {return m_fxCambMax;}
@@ -97,10 +90,26 @@ public:
     void setClosedTE(bool bClosed) {m_bForceCloseTE=bClosed;}
     void setClosedLE(bool bClosed) {m_bForceCloseLE=bClosed;}
 
+    void setTheStyle(LineStyle const &ls) {m_LineStyle=ls;}
+    void setTheStyle(int const &splineFoilStyle, int const &width, QColor const & splineFoilColor, const int &splinePointStyle);
+    LineStyle theStyle() const {return m_LineStyle;}
+
+    void setColor(QColor const & splineFoilColor);
+    void setStipple(int const &splineFoilStyle);
+    void setWidth(int const &width);
+    void setPointStyle(int const & splinePointStyle);
+
+    QColor splineFoilColor()   const {return m_LineStyle.m_Color;}
+    int splineFoilStyle()  const {return m_LineStyle.m_Stipple;}
+    int splineFoilWidth()  const {return m_LineStyle.m_Width;}
+    int splinePointStyle() const {return m_LineStyle.m_PointStyle;}
+
+    void setVisible(bool bVisible){m_LineStyle.m_bIsVisible = bVisible;}
+    bool isVisible()         const {return m_LineStyle.m_bIsVisible;}
+
 
 private:
     bool m_bModified;                /**< false if the SplineFoil has been serialized in its current dtate, false otherwise */
-    bool m_bVisible;                 /**< true if this SplineFoil object is visible */
     bool m_bOutPoints;               /**< true if the ouput line points should be displayed */
     bool m_bCenterLine;              /**< true if the SplineFoil's mean camber line is to be displayed */
     bool m_bSymetric;                /**< true if the SplineFoil is symetric. In which case the lower surface is set as symetric of the upper surface. */
@@ -108,10 +117,8 @@ private:
     bool m_bForceCloseTE;            /**< true if the traling end points of the top and bottom spline should be positioned at the same place */
     int m_OutPoints;                 /**< the number of output points with which to draw the SplineFoil. */
 
-    int m_PointStyle;                /**< the index of the style for the SplineFoil's points*/
-    int m_FoilStyle;                 /**< the index of the style with which to draw the SplineFoil */
-    int m_FoilWidth;                 /**< the width with which to draw the SplineFoil */
-    QColor m_FoilColor;              /**< the color with which to draw the SplineFoil */
+    LineStyle m_LineStyle;
+
 
     double m_fCamber;                /**< the SplineFoil's max camber */
     double m_fThickness;             /**< the SplineFoil's max thickness */

@@ -181,9 +181,9 @@ private:
 
     XFoil *m_pXFoil;             /**< a void pointer to the unique instance of the XFoil object */
 
-    Foil* m_pRefFoil;           /**< a pointer to the reference foil geometry used for inverse design */
-    Foil* m_pModFoil;           /**< a pointer to the resulting Foil modified by inverse design operations */
-    Foil* m_pOverlayFoil;
+    Foil *m_pRefFoil;           /**< a pointer to the reference foil geometry used for inverse design */
+    Foil *m_pModFoil;           /**< a pointer to the resulting Foil modified by inverse design operations */
+    Foil const *m_pOverlayFoil;
 
     Spline5 m_Spline;            /**< the spline oject to modify the velocity curve */
 

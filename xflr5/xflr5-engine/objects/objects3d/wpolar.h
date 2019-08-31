@@ -90,7 +90,7 @@ public:
     bool isVLMMethod()         const {return m_AnalysisMethod==XFLR5::VLMMETHOD;}
     bool isPanel4Method()      const {return m_AnalysisMethod==XFLR5::PANEL4METHOD;}
     bool isQuadMethod()        const {return isPanel4Method() || isVLMMethod();}
-    bool isTriCstMethod()      const {return m_AnalysisMethod==XFLR5::TRICSTMETHOD;}
+    bool isTriCstMethod()      const {return m_AnalysisMethod==XFLR5::TRIUNIMETHOD;}
     bool isTriLinearMethod()   const {return m_AnalysisMethod==XFLR5::TRILINMETHOD;}
     bool isTriangleMethod()    const {return isTriCstMethod() || isTriLinearMethod();}
 

@@ -78,7 +78,7 @@ public:
     *@param width the width of the spline
     *@param color the spline's color
     */
-    void setSplineParams(int style, int width, QColor color)
+    void setSplineStyle(int style, int width, QColor color)
     {
         m_Width = width;
         m_Style = style;
