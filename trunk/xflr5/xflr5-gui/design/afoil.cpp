@@ -280,8 +280,8 @@ void AFoil::fillTableRow(int row)
     if(pItem) pItem->setFlags(Qt::ItemIsEnabled|Qt::ItemIsUserCheckable);
 
     ind = m_pFoilModel->index(row, 13, QModelIndex());
-    if(pFoil->showCenterLine()) m_pFoilModel->setData(ind, Qt::Checked, Qt::CheckStateRole);
-    else                       m_pFoilModel->setData(ind, Qt::Unchecked, Qt::CheckStateRole);
+    if(pFoil->bCenterLine()) m_pFoilModel->setData(ind, Qt::Checked, Qt::CheckStateRole);
+    else                     m_pFoilModel->setData(ind, Qt::Unchecked, Qt::CheckStateRole);
     pItem = m_pFoilModel->item(row,13);
     if(pItem) pItem->setFlags(Qt::ItemIsEnabled|Qt::ItemIsUserCheckable);
 }
@@ -400,7 +400,7 @@ void AFoil::loadSettings(QSettings *pSettings)
         m_pSF->setCurveParams(style, width, color);
 
 
-        m_pSF->m_bVisible    = pSettings->value("SFVisible").toBool();
+        m_pSF->setVisible(pSettings->value("SFVisible").toBool());
         m_pSF->m_bOutPoints  = pSettings->value("SFOutPoints").toBool();
         m_pSF->m_bCenterLine = pSettings->value("SFCenterLine").toBool();
 
@@ -468,11 +468,11 @@ void AFoil::onAFoilDerotateFoil()
     if(!XDirect::curFoil()) return;
 
     m_pBufferFoil->copyFoil(XDirect::curFoil());
-    m_pBufferFoil->isVisible() = true;
+    m_pBufferFoil->setVisible(true);
     m_pBufferFoil->setFoilName(XDirect::curFoil()->foilName());
     m_pBufferFoil->setColor(160,160,160);
-    m_pBufferFoil->foilLineStyle() = 1;
-    m_pBufferFoil->foilLineWidth() = 1;
+    m_pBufferFoil->setLineStipple(1);
+    m_pBufferFoil->setLineWidth(1);
 
     m_p2DWidget->update();;
 
@@ -484,16 +484,16 @@ void AFoil::onAFoilDerotateFoil()
     Foil *pNewFoil = new Foil();
     pNewFoil->copyFoil(m_pBufferFoil);
     setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
-    pNewFoil->foilLineStyle() = 0;
-    pNewFoil->foilLineWidth() = 1;
+    pNewFoil->setLineStipple(0);
+    pNewFoil->setLineWidth(1);
 
     addNewFoil(pNewFoil);
     fillFoilTable();
     selectFoil(pNewFoil);
 
-    m_pBufferFoil->isVisible() = false;
+    m_pBufferFoil->setVisible(false);
 
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 }
 
 
@@ -523,10 +523,10 @@ void AFoil::onAFoilCadd()
     m_pBufferFoil->copyFoil(XDirect::curFoil());
     m_pBufferFoil->setFoilName(XDirect::curFoil()->foilName());
     m_pBufferFoil->setColor(160,160,160);
-    m_pBufferFoil->foilLineStyle() = 1;
-    m_pBufferFoil->foilLineWidth() = 1;
-    m_pBufferFoil->foilPointStyle() = 1;
-    m_pBufferFoil->isVisible()   = true;
+    m_pBufferFoil->setLineStipple(1);
+    m_pBufferFoil->setLineWidth(1);
+    m_pBufferFoil->setPointStyle(1);
+    m_pBufferFoil->setVisible(true);
 
     m_p2DWidget->update();;
 
@@ -541,9 +541,9 @@ void AFoil::onAFoilCadd()
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
         setRandomFoilColor(pNewFoil, Settings::isLightTheme());
-        pNewFoil->foilLineStyle() = 0;
-        pNewFoil->foilLineWidth() = 1;
-        pNewFoil->foilPointStyle() = 0;
+        pNewFoil->setLineStipple(0);
+        pNewFoil->setLineWidth(1);
+        pNewFoil->setPointStyle(0);
 
         if(addNewFoil(pNewFoil))
         {
@@ -558,7 +558,7 @@ void AFoil::onAFoilCadd()
         selectFoil(XDirect::curFoil());
 
     }
-    m_pBufferFoil->isVisible() = false;
+    m_pBufferFoil->setVisible(false);
     m_p2DWidget->update();;
 }
 
@@ -591,10 +591,10 @@ void AFoil::onAFoilPanels()
     m_pBufferFoil->copyFoil(XDirect::curFoil());
     m_pBufferFoil->setFoilName(XDirect::curFoil()->foilName());
     m_pBufferFoil->setColor(160,160,160);
-    m_pBufferFoil->foilLineStyle() = 1;
-    m_pBufferFoil->foilLineWidth() = 1;
-    m_pBufferFoil->foilPointStyle() = 1;
-    m_pBufferFoil->isVisible()  = true;
+    m_pBufferFoil->setLineStipple(1);
+    m_pBufferFoil->setLineWidth(1);
+    m_pBufferFoil->setPointStyle(1);
+    m_pBufferFoil->setVisible(true);
 
     m_p2DWidget->update();;
 
@@ -609,9 +609,9 @@ void AFoil::onAFoilPanels()
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
         setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
-        pNewFoil->foilLineStyle() = 0;
-        pNewFoil->foilLineWidth() = 1;
-        pNewFoil->foilPointStyle() = 0;
+        pNewFoil->setLineStipple(0);
+        pNewFoil->setLineWidth(1);
+        pNewFoil->setPointStyle(0);
 
         if(addNewFoil(pNewFoil))
         {
@@ -629,7 +629,7 @@ void AFoil::onAFoilPanels()
 
     }
 
-    m_pBufferFoil->isVisible() = false;
+    m_pBufferFoil->setVisible(false);
     m_p2DWidget->update();;
 }
 
@@ -641,12 +641,12 @@ void AFoil::onAFoilFoilCoordinates()
     if(!XDirect::curFoil()) return;
 
     m_pBufferFoil->copyFoil(XDirect::curFoil());
-    m_pBufferFoil->foilPointStyle() = 1;
-    m_pBufferFoil->isVisible() = true;
+    m_pBufferFoil->setPointStyle(1);
+    m_pBufferFoil->setVisible(true);
     m_pBufferFoil->setFoilName(XDirect::curFoil()->foilName());
     m_pBufferFoil->setColor(160,160,160);
-    m_pBufferFoil->foilLineStyle() = 1;
-    m_pBufferFoil->foilLineWidth() = 1;
+    m_pBufferFoil->setLineStipple(1);
+    m_pBufferFoil->setLineWidth(1);
 
     m_p2DWidget->update();;
 
@@ -660,10 +660,10 @@ void AFoil::onAFoilFoilCoordinates()
         //then duplicate the buffer foil and add it
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
-        pNewFoil->foilPointStyle() = 0;
+        pNewFoil->setPointStyle(0);
         setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
-        pNewFoil->foilLineStyle() = 0;
-        pNewFoil->foilLineWidth() = 1;
+        pNewFoil->setLineStipple(0);
+        pNewFoil->setLineWidth(1);
         pNewFoil->setHighLight(-1);
 
         addNewFoil(pNewFoil);
@@ -675,7 +675,7 @@ void AFoil::onAFoilFoilCoordinates()
         fillFoilTable();
         selectFoil(XDirect::curFoil());
     }
-    m_pBufferFoil->isVisible() = false;
+    m_pBufferFoil->setVisible(false);
     m_p2DWidget->update();;
 }
 
@@ -688,12 +688,12 @@ void AFoil::onAFoilFoilGeom()
     if(!XDirect::curFoil()) return;
 
     m_pBufferFoil->copyFoil(XDirect::curFoil());
-    m_pBufferFoil->foilPointStyle() = 1;
-    m_pBufferFoil->isVisible() = true;
+    m_pBufferFoil->setPointStyle(1);
+    m_pBufferFoil->setVisible(true);
     m_pBufferFoil->setFoilName(XDirect::curFoil()->foilName());
     m_pBufferFoil->setColor(160,160,160);
-    m_pBufferFoil->foilLineStyle() = 1;
-    m_pBufferFoil->foilLineWidth() = 1;
+    m_pBufferFoil->setLineStipple(1);
+    m_pBufferFoil->setLineWidth(1);
 
     m_p2DWidget->update();;
 
@@ -708,9 +708,9 @@ void AFoil::onAFoilFoilGeom()
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
         setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
-        pNewFoil->foilLineStyle() = 0;
-        pNewFoil->foilLineWidth() = 1;
-        pNewFoil->foilPointStyle() = 0;
+        pNewFoil->setLineStipple(0);
+        pNewFoil->setLineWidth(1);
+        pNewFoil->setPointStyle(0);
         if(addNewFoil(pNewFoil))
         {
             fillFoilTable();
@@ -727,7 +727,7 @@ void AFoil::onAFoilFoilGeom()
         selectFoil(XDirect::curFoil());
         //        m_pXFoil->foilName() ="";
     }
-    m_pBufferFoil->isVisible() = false;
+    m_pBufferFoil->setVisible(false);
     m_p2DWidget->update();;
 }
 
@@ -740,12 +740,12 @@ void AFoil::onAFoilSetTEGap()
     if(!XDirect::curFoil()) return;
 
     m_pBufferFoil->copyFoil(XDirect::curFoil());
-    m_pBufferFoil->foilPointStyle() = 1;
-    m_pBufferFoil->isVisible()   = true;
+    m_pBufferFoil->setPointStyle(1);
+    m_pBufferFoil->setVisible(true);
     m_pBufferFoil->setFoilName(XDirect::curFoil()->foilName());
     m_pBufferFoil->setColor(160,160,160);
-    m_pBufferFoil->foilLineStyle() = 1;
-    m_pBufferFoil->foilLineWidth() = 1;
+    m_pBufferFoil->setLineStipple(1);
+    m_pBufferFoil->setLineWidth(1);
 
     m_p2DWidget->update();;
 
@@ -760,9 +760,9 @@ void AFoil::onAFoilSetTEGap()
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
         setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
-        pNewFoil->foilLineStyle() = 0;
-        pNewFoil->foilLineWidth() = 1;
-        pNewFoil->foilPointStyle() = 0;
+        pNewFoil->setLineStipple(0);
+        pNewFoil->setLineWidth(1);
+        pNewFoil->setPointStyle(0);
 
         if(addNewFoil(pNewFoil))
         {
@@ -780,7 +780,7 @@ void AFoil::onAFoilSetTEGap()
         //Thanks Jean-Marc !
     }
 
-    m_pBufferFoil->isVisible() = false;
+    m_pBufferFoil->setVisible(false);
     m_p2DWidget->update();;
 }
 
@@ -793,12 +793,12 @@ void AFoil::onAFoilSetLERadius()
     if(!XDirect::curFoil()) return;
 
     m_pBufferFoil->copyFoil(XDirect::curFoil());
-    m_pBufferFoil->isVisible()   = true;
-    m_pBufferFoil->foilPointStyle() = 1;
+    m_pBufferFoil->setVisible(true);
+    m_pBufferFoil->setPointStyle(1);
     m_pBufferFoil->setFoilName(XDirect::curFoil()->foilName());
     m_pBufferFoil->setColor(160,160,160);
-    m_pBufferFoil->foilLineStyle() = 1;
-    m_pBufferFoil->foilLineWidth() = 1;
+    m_pBufferFoil->setLineStipple(1);
+    m_pBufferFoil->setLineWidth(1);
 
     m_p2DWidget->update();;
 
@@ -813,9 +813,9 @@ void AFoil::onAFoilSetLERadius()
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
         setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
-        pNewFoil->foilLineStyle() = 0;
-        pNewFoil->foilLineWidth() = 1;
-        pNewFoil->foilPointStyle() = 0;
+        pNewFoil->setLineStipple(0);
+        pNewFoil->setLineWidth(1);
+        pNewFoil->setPointStyle(0);
 
         if(addNewFoil(pNewFoil))
         {
@@ -833,7 +833,7 @@ void AFoil::onAFoilSetLERadius()
 
     }
 
-    m_pBufferFoil->isVisible() = false;
+    m_pBufferFoil->setVisible(false);
     m_p2DWidget->update();;
 }
 
@@ -854,10 +854,10 @@ void AFoil::onAFoilInterpolateFoils()
     m_pBufferFoil->copyFoil(XDirect::curFoil());
     m_pBufferFoil->setFoilName(XDirect::curFoil()->foilName());
     m_pBufferFoil->setColor(160,160,160);
-    m_pBufferFoil->foilLineStyle() = 1;
-    m_pBufferFoil->foilLineWidth() = 1;
-    m_pBufferFoil->foilPointStyle() = 1;
-    m_pBufferFoil->isVisible()  = true;
+    m_pBufferFoil->setLineStipple(1);
+    m_pBufferFoil->setLineWidth(1);
+    m_pBufferFoil->setPointStyle(1);
+    m_pBufferFoil->setVisible(true);
 
     m_p2DWidget->update();;
 
@@ -872,9 +872,9 @@ void AFoil::onAFoilInterpolateFoils()
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
         setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
-        pNewFoil->foilLineStyle() = 0;
-        pNewFoil->foilLineWidth() = 1;
-        pNewFoil->foilPointStyle() = 0;
+        pNewFoil->setLineStipple(0);
+        pNewFoil->setLineWidth(1);
+        pNewFoil->setPointStyle(0);
         pNewFoil->setFoilName(ifDlg.m_NewFoilName);
 
         if(addNewFoil(pNewFoil))
@@ -890,7 +890,7 @@ void AFoil::onAFoilInterpolateFoils()
         fillFoilTable();
         selectFoil(XDirect::curFoil());
     }
-    m_pBufferFoil->isVisible() = false;
+    m_pBufferFoil->setVisible(false);
     m_p2DWidget->update();;
 }
 
@@ -901,12 +901,12 @@ void AFoil::onAFoilInterpolateFoils()
 void AFoil::onAFoilNacaFoils()
 {
     m_pBufferFoil->setNaca009();
-    m_pBufferFoil->foilPointStyle() = 1;
-    m_pBufferFoil->isVisible() = true;
+    m_pBufferFoil->setPointStyle(1);
+    m_pBufferFoil->setVisible(true);
     m_pBufferFoil->setFoilName("Naca xxxx");
     m_pBufferFoil->setColor(160,160,160);
-    m_pBufferFoil->foilLineStyle() = 1;
-    m_pBufferFoil->foilLineWidth() = 1;
+    m_pBufferFoil->setLineStipple(1);
+    m_pBufferFoil->setLineWidth(1);
 
     m_p2DWidget->update();;
 
@@ -927,9 +927,9 @@ void AFoil::onAFoilNacaFoils()
         Foil *pNewFoil    = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
         setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
-        pNewFoil->foilLineStyle() = 0;
-        pNewFoil->foilLineWidth() = 1;
-        pNewFoil->foilPointStyle() = 0;
+        pNewFoil->setLineStipple(0);
+        pNewFoil->setLineWidth(1);
+        pNewFoil->setPointStyle(0);
         pNewFoil->setFoilName(str);
 
         if(addNewFoil(pNewFoil))
@@ -946,7 +946,7 @@ void AFoil::onAFoilNacaFoils()
     }
 
     setControls();
-    m_pBufferFoil->isVisible() = false;
+    m_pBufferFoil->setVisible(false);
     m_p2DWidget->update();;
 }
 
@@ -959,11 +959,11 @@ void AFoil::onAFoilSetFlap()
     if(!XDirect::curFoil()) return;
 
     m_pBufferFoil->copyFoil(XDirect::curFoil());
-    m_pBufferFoil->isVisible() = true;
+    m_pBufferFoil->setVisible(true);
     m_pBufferFoil->setFoilName(XDirect::curFoil()->foilName());
     m_pBufferFoil->setColor(160,160,160);
-    m_pBufferFoil->foilLineStyle() = 1;
-    m_pBufferFoil->foilLineWidth() = 1;
+    m_pBufferFoil->setLineStipple(1);
+    m_pBufferFoil->setLineWidth(1);
 
     m_p2DWidget->update();;
 
@@ -978,8 +978,8 @@ void AFoil::onAFoilSetFlap()
         Foil *pNewFoil = new Foil();
         pNewFoil->copyFoil(m_pBufferFoil);
         setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
-        pNewFoil->foilLineStyle() = 0;
-        pNewFoil->foilLineWidth() = 1;
+        pNewFoil->setLineStipple(0);
+        pNewFoil->setLineWidth(1);
 
         if(addNewFoil(pNewFoil))
         {
@@ -993,7 +993,7 @@ void AFoil::onAFoilSetFlap()
         fillFoilTable();
         selectFoil(XDirect::curFoil());
     }
-    m_pBufferFoil->isVisible() = false;
+    m_pBufferFoil->setVisible(false);
     m_p2DWidget->update();;
 }
 
@@ -1142,7 +1142,7 @@ void AFoil::onFoilClicked(const QModelIndex& index)
         XDirect::setCurFoil(nullptr);
         if(index.column()==12)
         {
-            m_pSF->m_bVisible = !m_pSF->m_bVisible;
+            m_pSF->setVisible(!m_pSF->isVisible());
         }
         else if(index.column()==13)
         {
@@ -1159,11 +1159,11 @@ void AFoil::onFoilClicked(const QModelIndex& index)
         {
             if(index.column()==12)
             {
-                pFoil->isVisible() = !pFoil->isVisible();
+                pFoil->setVisible(!pFoil->isVisible());
             }
             else if(index.column()==13)
             {
-                pFoil->showCenterLine() = !pFoil->showCenterLine();
+                pFoil->showCenterLine(!pFoil->bCenterLine());
             }
         }
         emit projectModified();
@@ -1204,9 +1204,9 @@ void AFoil::onFoilStyle()
         if(QDialog::Accepted==dlg.exec())
         {
             emit projectModified();
-            XDirect::curFoil()->foilPointStyle() = dlg.pointStyle();
-            XDirect::curFoil()->foilLineStyle()  = dlg.lineStipple();
-            XDirect::curFoil()->foilLineWidth()  = dlg.lineWidth();
+            XDirect::curFoil()->setPointStyle(dlg.pointStyle());
+            XDirect::curFoil()->setLineStipple(dlg.lineStipple());
+            XDirect::curFoil()->setLineWidth(dlg.lineWidth());
             QColor clr = dlg.lineColor();
             XDirect::curFoil()->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
 
@@ -1229,7 +1229,7 @@ void AFoil::onHideAllFoils()
     for (int k=0; k<m_poaFoil->size(); k++)
     {
         pFoil = m_poaFoil->at(k);
-        pFoil->isVisible() = false;
+        pFoil->setVisible(false);
     }
     fillFoilTable();
     m_p2DWidget->update();;
@@ -1311,7 +1311,7 @@ void AFoil::onShowAllFoils()
     for (int k=0; k<m_poaFoil->size(); k++)
     {
         pFoil = m_poaFoil->at(k);
-        pFoil->isVisible() = true;
+        pFoil->setVisible(true);
     }
     fillFoilTable();
     m_p2DWidget->update();;
@@ -1394,9 +1394,6 @@ void AFoil::onSplineControls()
 }
 
 
-
-
-
 /**
  * Saves the user-defined settings.
  * @param pSettings a pointer to the QSetting object.
@@ -1409,7 +1406,7 @@ void AFoil::saveSettings(QSettings *pSettings)
         pSettings->setValue("SFWidth", m_pSF->splineFoilWidth());
         pSettings->setValue("SFColor", m_pSF->splineFoilColor());
 
-        pSettings->setValue("SFVisible", m_pSF->m_bVisible);
+        pSettings->setValue("SFVisible", m_pSF->isVisible());
         pSettings->setValue("SFOutPoints", m_pSF->m_bOutPoints);
         pSettings->setValue("SFCenterLine", m_pSF->m_bCenterLine);
 
@@ -1630,7 +1627,7 @@ void AFoil::onSplinesModified()
 void AFoil::showFoil(Foil* pFoil, bool bShow)
 {
     if(!pFoil) return;
-    XDirect::curFoil()->isVisible() = bShow;
+    pFoil->setVisible(bShow);
     emit projectModified();
 }
 

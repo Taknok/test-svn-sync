@@ -5301,7 +5301,7 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
             if(n==1)      WPolarDlg::s_WPolar.setAnalysisMethod(XFLR5::LLTMETHOD);
             else if(n==2) WPolarDlg::s_WPolar.setAnalysisMethod(XFLR5::VLMMETHOD);
             else if(n==3) WPolarDlg::s_WPolar.setAnalysisMethod(XFLR5::PANEL4METHOD);
-            else if(n==4) WPolarDlg::s_WPolar.setAnalysisMethod(XFLR5::TRICSTMETHOD);
+            else if(n==4) WPolarDlg::s_WPolar.setAnalysisMethod(XFLR5::TRIUNIMETHOD);
             else if(n==5) WPolarDlg::s_WPolar.setAnalysisMethod(XFLR5::TRILINMETHOD);
 
             ar >> dble;    WPolarDlg::s_WPolar.setMass(dble);

@@ -672,11 +672,6 @@ Foil* readPolarFile(QFile &plrFile, QVector<Polar*> &polarList)
 }
 
 
-
-
-
-
-
 /**
  * Draws the foil in the client area.
  * @param painter a reference to the QPainter object on which the foil will be drawn
@@ -685,7 +680,7 @@ Foil* readPolarFile(QFile &plrFile, QVector<Polar*> &polarList)
  * @param scaley the scaling factor in the y-direction
  * @param Offset the foil offset in the client area
  */
-void drawFoil(QPainter &painter, Foil*pFoil, double const &alpha, double const &scalex, double const &scaley, QPointF const &Offset)
+void drawFoil(QPainter &painter, Foil const*pFoil, double const &alpha, double const &scalex, double const &scaley, QPointF const &Offset)
 {
     double xa, ya, sina, cosa;
     QPointF From, To;
@@ -730,10 +725,10 @@ void drawFoil(QPainter &painter, Foil*pFoil, double const &alpha, double const &
  * @param scaley the scaling factor in the y-direction
  * @param Offset the foil offset in the client area
  */
-void drawMidLine(QPainter &painter, Foil*pFoil, double const &scalex, double const &scaley, QPointF const &Offset)
+void drawMidLine(QPainter &painter, const Foil *pFoil, double const &scalex, double const &scaley, QPointF const &Offset)
 {
     QPointF From, To;
-    int k;
+
     QPen FoilPen;
 
     FoilPen.setColor(colour(pFoil));
@@ -746,7 +741,7 @@ void drawMidLine(QPainter &painter, Foil*pFoil, double const &scalex, double con
     From.ry() = (-pFoil->m_rpMid[0].y*scaley)  +Offset.y();
 
 
-    for (k=0; k<MIDPOINTCOUNT; k++)
+    for (int k=0; k<MIDPOINTCOUNT; k++)
     {
         To.rx() = ( pFoil->m_rpMid[k].x*scalex)+Offset.x();
         To.ry() = (-pFoil->m_rpMid[k].y*scaley)+Offset.y();
@@ -768,7 +763,7 @@ void drawMidLine(QPainter &painter, Foil*pFoil, double const &scalex, double con
  * @param scaley the scaling factor in the y-direction
  * @param Offset the foil offset in the client area
  */
-void drawPoints(QPainter &painter, Foil*pFoil, double alpha, double const &scalex, double const &scaley,
+void drawPoints(QPainter &painter, Foil const*pFoil, double alpha, double const &scalex, double const &scaley,
                 QPointF const &Offset, QColor backColor)
 {
     QPen FoilPen, HighPen;
@@ -1132,17 +1127,17 @@ QColor getColor(int r, int g, int b, int a)
     return QColor(r,g,b,a);
 }
 
-QColor colour(OpPoint *pOpp)
+QColor colour(OpPoint const *pOpp)
 {
     return QColor(pOpp->red(), pOpp->green(), pOpp->blue(), pOpp->alphaChannel());
 }
 
-QColor colour(Polar *pPolar)
+QColor colour(Polar const *pPolar)
 {
     return QColor(pPolar->red(), pPolar->green(), pPolar->blue(), pPolar->alphaChannel());
 }
 
-QColor colour(Foil *pFoil)
+QColor colour(Foil const *pFoil)
 {
     return QColor(pFoil->red(), pFoil->green(), pFoil->blue(), pFoil->alphaChannel());
 }

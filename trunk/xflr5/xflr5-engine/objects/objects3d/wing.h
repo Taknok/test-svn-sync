@@ -118,7 +118,7 @@ public:
     bool isWingNode(int nNode);
 
     void getFoils(Foil **pFoil0, Foil **pFoil1, double y, double &t);
-    void duplicate(Wing *pWing);
+    void duplicate(const Wing *pWing);
     void computeChords(int NStation=0);
     void computeChords(int NStation, double *chord, double *offset, double *twist);
     void computeGeometry();
@@ -290,10 +290,7 @@ private:
     int m_nFlaps;                    /**< the number of T.E. flaps, numbered from left wing to right wing; for a main wing this number is even*/
     QVector<double> m_FlapMoment;      /**< the flap moments resulting from the panel of VLM analysis */
 
-    double m_QInf0;                  /**< the freestream velocity */
-
     double m_VolumeMass;             /**< the mass of the Wing's structure, excluding point masses */
-    double m_TotalMass;              /**< the Wing's total mass, i.e. the sum of the volume mass and of the point masses */
 
     double m_GChord;                 /**< the mean geometric chord */
     double m_yMac;                   /**< the mean aerodynamic chord span position  -  @todo meaning and calculation are unclear*/
@@ -338,12 +335,10 @@ private:
     Vector3d m_F[MAXSPANSTATIONS];              /**< the lift vector at span stations */
 
 public:    
+    QVector<WingSection*> m_Section;           /**< the array of wing sections. A WingSection extends between a foil and the next. */
+    QVector<PointMass*> m_PointMass;           /**< the array of PointMass objects associated to this Wing object*/
 
-
-    QVector<WingSection*> m_Section;         /**< the array of wing sections. A WingSection extends between a foil and the next. */
-    QVector<PointMass*> m_PointMass;             /**< the array of PointMass objects associated to this Wing object*/
-
-    QVector<Surface*> m_Surface;                 /**< the array of Surface objects associated to the wing */
+    QVector<Surface*> m_Surface;               /**< the array of Surface objects associated to the wing */
     
     double m_MAChord;                          /**< the wing's mean aerodynamic chord */
     double m_PlanformSpan;                     /**< the planform span, i.e. if the dihedral was 0 at each junction */

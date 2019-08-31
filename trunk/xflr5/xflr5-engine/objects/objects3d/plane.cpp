@@ -88,8 +88,6 @@ Plane::Plane()
 
     m_CoG.set(0.0,0.0,0.0);
     m_CoGIxx = m_CoGIyy = m_CoGIzz = m_CoGIxz = 0.0;
-    //    m_VolumeMass = 0.0;
-    m_TotalMass = 0.0;
 
     m_bBody         = false;
     m_bFin          = true;
@@ -102,6 +100,7 @@ Plane::Plane()
 
     m_PlaneName  = QObject::tr("Plane Name");
 }
+
 
 Plane::~Plane()
 {
@@ -119,14 +118,14 @@ Plane::~Plane()
  * @param  &CoGIzz zz axis component of the inertia tensor, calculated at the Plane's CoG
  * @param  &CoGIxz xz axis component of the inertia tensor, calculated at the Plane's CoG
 */
-void Plane::computeVolumeInertia(double &Mass, Vector3d & CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz)
+void Plane::computeVolumeInertia(double &Mass, Vector3d &CoG, double &CoGIxx, double &CoGIyy, double &CoGIzz, double &CoGIxz)
 {
-    double Ixx, Iyy, Izz, Ixz, PlaneMass;
+    double Ixx=0, Iyy=0, Izz=0, Ixz=0;
+
     Vector3d Pt;
     Vector3d CoGBody;
     Vector3d CoGWing[MAXWINGS];
-    Wing *pWing[MAXWINGS];
-    pWing[0] = pWing[1] = pWing[2] = pWing[3] = nullptr;
+    Wing *pWing[] = {nullptr,nullptr,nullptr,nullptr};
 
     pWing[0] = m_Wing;
     if(m_bBiplane) pWing[1] = m_Wing+1;
@@ -135,7 +134,7 @@ void Plane::computeVolumeInertia(double &Mass, Vector3d & CoG, double &CoGIxx, d
 
     CoG.set(0.0, 0.0, 0.0);
     CoGIxx = CoGIyy = CoGIzz = CoGIxz = 0.0;
-    PlaneMass = 0.0;
+    double PlaneMass = 0.0;
 
     //get the wing's inertias
     for(int iw=0; iw<MAXWINGS; iw++)
@@ -172,7 +171,7 @@ void Plane::computeVolumeInertia(double &Mass, Vector3d & CoG, double &CoGIxx, d
     else              CoG.set(0.0, 0.0, 0.0);
 
 
-    // Deduce inertia tensor in plane CoG from Huygens/Steiner theorem
+    // Deduce inertia tensor in the Plane's CoG frame from Huygens/Steiner theorem
     // we transfer the inertia of each component, defined in its own CG,
     // to the new origin which is the plane's Volume CoG, excluding point masses
 
@@ -200,8 +199,6 @@ void Plane::computeVolumeInertia(double &Mass, Vector3d & CoG, double &CoGIxx, d
 }
 
 
-
-
 /**
 * Calculates the inertia tensor in geometrical (body) axis :
 *  - adds the volume inertia AND the inertia of point masses of all components
@@ -210,64 +207,64 @@ void Plane::computeVolumeInertia(double &Mass, Vector3d & CoG, double &CoGIxx, d
 */
 void Plane::computeBodyAxisInertia()
 {
-    int i, iw;
     Vector3d VolumeCoG, MassPos;
-    Wing *pWing[MAXWINGS];
-    double Ixx, Iyy, Izz, Ixz,  VolumeMass;
-    Ixx = Iyy = Izz = Ixz = VolumeMass = 0.0;
-
+    Wing *pWing[] = {nullptr, nullptr, nullptr, nullptr};
+    double Ixx=0, Iyy=0, Izz=0, Ixz=0, VolumeMass=0;
 
     pWing[0] = m_Wing;
-    if(m_bBiplane) pWing[1] = m_Wing+1; else pWing[1] = nullptr;
-    if(m_bStab)    pWing[2] = m_Wing+2; else pWing[2] = nullptr;
-    if(m_bFin)     pWing[3] = m_Wing+3; else pWing[3] = nullptr;
+    if(m_bBiplane) pWing[1] = m_Wing+1;
+    if(m_bStab)    pWing[2] = m_Wing+2;
+    if(m_bFin)     pWing[3] = m_Wing+3;
 
     computeVolumeInertia(VolumeMass, VolumeCoG, Ixx, Iyy, Izz, Ixz);
-    m_TotalMass = VolumeMass;
+    double TotalMass = VolumeMass;
 
     m_CoG = VolumeCoG *VolumeMass;
 
-    // add point masses
-    for(i=0; i<m_PointMass.size(); i++)
-    {
-        m_TotalMass += m_PointMass[i]->mass();
-        m_CoG       += m_PointMass[i]->position() * m_PointMass[i]->mass();
-    }
-
-    for(iw=0; iw<MAXWINGS; iw++)
+    //add the wing's point masses
+    for(int iw=0; iw<MAXWINGS; iw++)
     {
         if(pWing[iw])
         {
-            for(i=0; i<pWing[iw]->m_PointMass.size(); i++)
+            for(int i=0; i<pWing[iw]->m_PointMass.size(); i++)
             {
-                m_TotalMass +=  pWing[iw]->m_PointMass[i]->mass();
+                TotalMass +=  pWing[iw]->m_PointMass[i]->mass();
                 m_CoG       += (pWing[iw]->m_PointMass[i]->position()+ m_WingLE[iw]) * pWing[iw]->m_PointMass[i]->mass();
             }
         }
     }
 
+    //add the body's point masses
     if(m_bBody)
     {
-        for(i=0; i<m_Body.m_PointMass.size(); i++)
+        for(int i=0; i<m_Body.m_PointMass.size(); i++)
         {
-            m_TotalMass +=  m_Body.m_PointMass[i]->mass();
+            TotalMass +=  m_Body.m_PointMass[i]->mass();
             m_CoG       += (m_Body.m_PointMass[i]->position()+m_BodyPos) * m_Body.m_PointMass[i]->mass();
         }
     }
-    if(m_TotalMass>PRECISION) m_CoG = m_CoG/m_TotalMass;
+
+    // add the plane's point masses
+    for(int i=0; i<m_PointMass.size(); i++)
+    {
+        TotalMass += m_PointMass[i]->mass();
+        m_CoG       += m_PointMass[i]->position() * m_PointMass[i]->mass();
+    }
+
+
+    if(TotalMass>PRECISION) m_CoG = m_CoG/TotalMass;
     else                      m_CoG.set(0.0,0.0,0.0);
 
 
     // The CoG position is now available, so calculate the inertia w.r.t the Total CoG, including point masses
     // The total CoG is the new origin for this calculation, so we transfer the other inertias using Huygens/Steiner theorem
-    // LA is the displacement vector from the centre of mass to the new axis
     MassPos = m_CoG - VolumeCoG;
     m_CoGIxx = Ixx + VolumeMass * (MassPos.y*MassPos.y+ MassPos.z*MassPos.z);
     m_CoGIyy = Iyy + VolumeMass * (MassPos.x*MassPos.x+ MassPos.z*MassPos.z);
     m_CoGIzz = Izz + VolumeMass * (MassPos.x*MassPos.x+ MassPos.y*MassPos.y);
     m_CoGIxz = Ixz - VolumeMass *  MassPos.x*MassPos.z;
 
-    for(i=0; i<m_PointMass.size(); i++)
+    for(int i=0; i<m_PointMass.size(); i++)
     {
         MassPos = m_CoG - m_PointMass[i]->position();
         m_CoGIxx += m_PointMass[i]->mass() * (MassPos.y*MassPos.y + MassPos.z*MassPos.z);
@@ -276,33 +273,35 @@ void Plane::computeBodyAxisInertia()
         m_CoGIxz -= m_PointMass[i]->mass() * (MassPos.x*MassPos.z);
     }
 
-    for(iw=0; iw<MAXWINGS; iw++)
+    for(int iw=0; iw<MAXWINGS; iw++)
     {
         if(pWing[iw])
         {
-            for(i=0; i<pWing[iw]->m_PointMass.size(); i++)
+            for(int i=0; i<pWing[iw]->m_PointMass.size(); i++)
             {
-                MassPos = m_CoG - (pWing[iw]->m_PointMass[i]->position() + m_WingLE[iw]);
-                m_CoGIxx += pWing[iw]->m_PointMass[i]->mass() * (MassPos.y*MassPos.y + MassPos.z*MassPos.z);
-                m_CoGIyy += pWing[iw]->m_PointMass[i]->mass() * (MassPos.x*MassPos.x + MassPos.z*MassPos.z);
-                m_CoGIzz += pWing[iw]->m_PointMass[i]->mass() * (MassPos.x*MassPos.x + MassPos.y*MassPos.y);
-                m_CoGIxz -= pWing[iw]->m_PointMass[i]->mass() * (MassPos.x*MassPos.z);
+                PointMass const *pm = pWing[iw]->m_PointMass[i];
+                MassPos = m_CoG - (pm->position() + m_WingLE[iw]);
+                m_CoGIxx += pm->mass() * (MassPos.y*MassPos.y + MassPos.z*MassPos.z);
+                m_CoGIyy += pm->mass() * (MassPos.x*MassPos.x + MassPos.z*MassPos.z);
+                m_CoGIzz += pm->mass() * (MassPos.x*MassPos.x + MassPos.y*MassPos.y);
+                m_CoGIxz -= pm->mass() * (MassPos.x*MassPos.z);
             }
         }
     }
+
     if(m_bBody)
     {
-        for(i=0; i<m_Body.m_PointMass.size(); i++)
+        for(int i=0; i<m_Body.m_PointMass.size(); i++)
         {
-            MassPos = m_CoG - (m_Body.m_PointMass[i]->position() + m_BodyPos);
-            m_CoGIxx += m_Body.m_PointMass[i]->mass() * (MassPos.y*MassPos.y + MassPos.z*MassPos.z);
-            m_CoGIyy += m_Body.m_PointMass[i]->mass() * (MassPos.x*MassPos.x + MassPos.z*MassPos.z);
-            m_CoGIzz += m_Body.m_PointMass[i]->mass() * (MassPos.x*MassPos.x + MassPos.y*MassPos.y);
-            m_CoGIxz -= m_Body.m_PointMass[i]->mass() * (MassPos.x*MassPos.z);
+            PointMass const *pm = m_Body.m_PointMass[i];
+            MassPos = m_CoG - (pm->position() + m_BodyPos);
+            m_CoGIxx += pm->mass() * (MassPos.y*MassPos.y + MassPos.z*MassPos.z);
+            m_CoGIyy += pm->mass() * (MassPos.x*MassPos.x + MassPos.z*MassPos.z);
+            m_CoGIzz += pm->mass() * (MassPos.x*MassPos.x + MassPos.y*MassPos.y);
+            m_CoGIxz -= pm->mass() * (MassPos.x*MassPos.z);
         }
     }
 }
-
 
 
 /**
@@ -310,7 +309,6 @@ void Plane::computeBodyAxisInertia()
 */
 void Plane::computePlane(void)
 {
-    int i;
     if(m_bStab)
     {
         double SLA = m_WingLE[2].x + m_Wing[2].Chord(0)/4.0 - m_WingLE[0].x - m_Wing[0].Chord(0)/4.0;
@@ -318,7 +316,7 @@ void Plane::computePlane(void)
         if(m_bBiplane) area += m_Wing[1].m_ProjectedArea;
 
         double ProjectedArea = 0.0;
-        for (i=0;i<m_Wing[2].NWingSection()-1; i++)
+        for (int i=0;i<m_Wing[2].NWingSection()-1; i++)
         {
             ProjectedArea += m_Wing[2].Length(i+1)*(m_Wing[2].Chord(i)+m_Wing[2].Chord(i+1))/2.0
                     *cos(m_Wing[2].Dihedral(i)*PI/180.0)*cos(m_Wing[2].Dihedral(i)*PI/180.0);//m2
@@ -338,7 +336,7 @@ void Plane::computePlane(void)
 * Copies the data from an existing Plane
 *@param pPlane a pointer to the instance of the source Plane object
 */
-void Plane::duplicate(Plane *pPlane)
+void Plane::duplicate(Plane const *pPlane)
 {
     m_PlaneName        = pPlane->m_PlaneName;
     m_PlaneDescription = pPlane->m_PlaneDescription;
@@ -356,12 +354,12 @@ void Plane::duplicate(Plane *pPlane)
     {
         m_WingTiltAngle[iw] = pPlane->m_WingTiltAngle[iw];
         m_WingLE[iw]        = pPlane->m_WingLE[iw];
+
         m_Wing[iw].duplicate(pPlane->m_Wing+iw);
     }
 
     m_BodyPos.copy(pPlane->m_BodyPos);
 
-    m_TotalMass  = pPlane->m_TotalMass;
     m_CoG = pPlane->m_CoG;
     m_CoGIxx = pPlane->m_CoGIxx;
     m_CoGIyy = pPlane->m_CoGIyy;
@@ -400,6 +398,7 @@ void Plane::setWings(bool bWing2, bool bStab, bool bFin)
     m_bFin = bFin;
 }
 
+
 /**
 * Returns the plane's tail volume
 * @return the plane's tail volume
@@ -409,6 +408,7 @@ double Plane::tailVolume()
     if(m_bStab) return m_TailVolume;
     else        return 0.0;
 }
+
 
 /**
 * Returns the Plane's total mass, i.e. the sum of Volume and Point masses of all its components.
@@ -420,14 +420,13 @@ double Plane::totalMass() const
     if(m_bBiplane) Mass += m_Wing[1].totalMass();
     if(m_bStab)    Mass += m_Wing[2].totalMass();
     if(m_bFin)     Mass += m_Wing[3].totalMass();
-    if(m_bBody)  Mass += m_Body.totalMass();
+    if(m_bBody)    Mass += m_Body.totalMass();
 
     for(int i=0; i<m_PointMass.size(); i++)
         Mass += m_PointMass[i]->mass();
 
     return Mass;
 }
-
 
 
 /** Destroys the PointMass objects in good order to avoid memory leaks */

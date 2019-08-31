@@ -2093,12 +2093,12 @@ void XDirect::onCadd()
     caDlg.m_pMemFoil    = pCurFoil;
     caDlg.initDialog();
     int psState = pNewFoil->foilPointStyle();
-    if(psState==0) pNewFoil->foilPointStyle() = 1;
+    if(psState==0) pNewFoil->setPointStyle(1);
     updateView();
 
     if(QDialog::Accepted == caDlg.exec())
     {
-        pNewFoil->foilPointStyle() = psState;
+        pNewFoil->setPointStyle(psState);
         setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
         setCurOpp(pOpPoint);
 
@@ -2752,7 +2752,7 @@ void XDirect::onFoilCoordinates()
     Foil *pCurFoil = curFoil();
     Foil *pNewFoil = new Foil;
     pNewFoil->copyFoil(pCurFoil);
-    pNewFoil->foilPointStyle() = 1;
+    pNewFoil->setPointStyle(1);
     OpPoint* pOpPoint = m_pCurOpp;
     setCurOpp(nullptr);
     m_bResetCurves = true;
@@ -3507,7 +3507,7 @@ void XDirect::onRefinePanelsGlobally()
     tdpDlg.m_pBufferFoil = pNewFoil;
     tdpDlg.m_pMemFoil    = pCurFoil;
     int psState = pNewFoil->foilPointStyle();
-    if(psState==0)    pNewFoil->foilPointStyle() = 1;
+    if(psState==0)    pNewFoil->setPointStyle(1);
 
     updateView();
 
@@ -3515,7 +3515,7 @@ void XDirect::onRefinePanelsGlobally()
 
     if(QDialog::Accepted == tdpDlg.exec())
     {
-        pNewFoil->foilPointStyle() = psState;
+        pNewFoil->setPointStyle(psState);
         setRandomFoilColor(pNewFoil, !Settings::isLightTheme());
         setCurOpp(pOpPoint);
         if(addNewFoil(pNewFoil))

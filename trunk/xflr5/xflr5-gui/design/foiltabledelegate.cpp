@@ -41,41 +41,18 @@ FoilTableDelegate::FoilTableDelegate(QObject *pParent)
 }
 
 
-QWidget *FoilTableDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & index ) const
-{
-    return nullptr;//No edition possible - display only
-
-    if(index.column()==0)
-    {
-        QLineEdit *editor = new QLineEdit(parent);
-        editor->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        return editor;
-    }
-    else
-    {
-        DoubleEdit *editor = new DoubleEdit(parent);
-        editor->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        editor->setPrecision(m_Precision[index.column()]);
-        return editor;
-    }
-
-    return nullptr;
-}
-
-
-bool FoilTableDelegate::editorEvent(QEvent *event, QAbstractItemModel *pModel, const QStyleOptionViewItem &option,
-                             const QModelIndex &index)
+bool FoilTableDelegate::editorEvent(QEvent *pEvent, QAbstractItemModel *pModel, const QStyleOptionViewItem &option,
+                                    const QModelIndex &index)
 {
 //    if(index.column()<12) return false;
     if(m_pAFoil)
     {
-        AFoil *pAFoil = (AFoil*)m_pAFoil;
-        QMouseEvent *pEvent = (QMouseEvent*)event;
-        if(pEvent->buttons() & Qt::LeftButton) pAFoil->onFoilClicked(index);
-        event->accept();
+        QMouseEvent *pMouseEvent = dynamic_cast<QMouseEvent*>(pEvent);
+        if(pMouseEvent->buttons() & Qt::LeftButton) m_pAFoil->onFoilClicked(index);
+        pMouseEvent->accept();
         return true;
     }
-    else return QItemDelegate::editorEvent(event, pModel, option, index);
+    else return QItemDelegate::editorEvent(pEvent, pModel, option, index);
 }
 
 
@@ -83,7 +60,7 @@ void FoilTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
 {
     QString strong;
     QStyleOptionViewItem myOption = option;
-    AFoil *pAFoil = (AFoil*)m_pAFoil;
+
     int NFoils = Objects2d::foilCount();
 
     if(index.row()> NFoils)
@@ -115,9 +92,9 @@ void FoilTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
     }
     else if(index.column()==12)
     {
-        if(pAFoil)
+        if(m_pAFoil)
         {
-            if(index.row()==0)    drawCheckBox(painter, myOption.rect, pAFoil->m_pSF->m_bVisible);
+            if(index.row()==0)    drawCheckBox(painter, myOption.rect, m_pAFoil->m_pSF->isVisible());
             else
             {
                 Foil *pFoil = Objects2d::foilAt(index.row()-1);
@@ -127,19 +104,19 @@ void FoilTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
     }
     else if(index.column()==13)
     {
-        if(pAFoil)
+        if(m_pAFoil)
         {
-            if(index.row()==0)    drawCheckBox(painter, myOption.rect, pAFoil->m_pSF->m_bCenterLine);
+            if(index.row()==0)    drawCheckBox(painter, myOption.rect, m_pAFoil->m_pSF->m_bCenterLine);
             else
             {
                 Foil *pFoil = Objects2d::foilAt(index.row()-1);
-                drawCheckBox(painter, myOption.rect, pFoil->showCenterLine());
+                drawCheckBox(painter, myOption.rect, pFoil->bCenterLine());
             }
         }
     }
     else if(index.column()==14)
     {
-        if(pAFoil)
+        if(m_pAFoil)
         {
             QColor color;
             int pointStyle, lineStyle, lineWidth;
@@ -147,10 +124,10 @@ void FoilTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
 
             if(index.row()==0)
             {
-                color = pAFoil->m_pSF->splineFoilColor();
-                pointStyle = pAFoil->m_pSF->splinePointStyle();
-                lineStyle = pAFoil->m_pSF->splineFoilStyle();
-                lineWidth = pAFoil->m_pSF->splineFoilWidth();
+                color = m_pAFoil->m_pSF->splineFoilColor();
+                pointStyle = m_pAFoil->m_pSF->splinePointStyle();
+                lineStyle = m_pAFoil->m_pSF->splineFoilStyle();
+                lineWidth = m_pAFoil->m_pSF->splineFoilWidth();
             }
             else
             {
@@ -161,7 +138,7 @@ void FoilTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
                 lineWidth = pFoil->foilLineWidth();
             }
             QRect r = option.rect;
-            r = pAFoil->m_pctrlFoilTable->visualRect(index);;
+            r = m_pAFoil->m_pctrlFoilTable->visualRect(index);;
 
             painter->save();
 
@@ -197,9 +174,9 @@ void FoilTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
 void FoilTableDelegate::drawCheckBox(QPainter *painter, QRect const & r, bool bChecked) const
 {
     QFontMetrics fm(Settings::s_TextFont);
-    int h23 = (int)((double)fm.height()*3./5.);//pixels
-    int h3 = (int)((double)fm.height()/3.5);//pixels
-    double h4 = (double)fm.height()/5.0;
+    int h23 = int(double(fm.height())*3./5.);//pixels
+    int h3 = int(double(fm.height())/3.5);//pixels
+    double h4 = double(fm.height())/5.0;
 
     QPoint center = r.center();
 
@@ -239,18 +216,18 @@ void FoilTableDelegate::drawCheckBox(QPainter *painter, QRect const & r, bool bC
 }
 
 
-void FoilTableDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
+void FoilTableDelegate::setEditorData(QWidget *pEditor, const QModelIndex &index) const
 {
     if(index.column()==0)
     {
         QString strong = index.model()->data(index, Qt::EditRole).toString();
-        QLineEdit *lineEdit = (QLineEdit*)editor;
+        QLineEdit *lineEdit = dynamic_cast<QLineEdit*>(pEditor);
         lineEdit->setText(strong);
     }
     else
     {
         double value = index.model()->data(index, Qt::EditRole).toDouble();
-        DoubleEdit *pDE = static_cast<DoubleEdit*>(editor);
+        DoubleEdit *pDE = static_cast<DoubleEdit*>(pEditor);
         pDE->setValue(value);
     }
 }

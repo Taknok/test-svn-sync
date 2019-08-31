@@ -57,7 +57,7 @@ public:
     double totalMass() const;
     double tailVolume();
 
-    void duplicate(Plane *pPlane);
+    void duplicate(const Plane *pPlane);
     void computePlane(void);
     void createSurfaces();
     void renameWings();
@@ -189,24 +189,21 @@ private:
     bool m_bFin;                                /**< true if this Plane has a fin*/
     bool m_bStab;                               /**< true if this Plane has an elevator */
 
-    //    double m_VolumeMass;                        /**< the mass of the Plane's structure, excluding point masses */
-    double m_TotalMass;                         /**< the Plane's total mass, i.e. the sum of the volume mass and of the point masses */
-
     QString m_PlaneName;                        /**< the Plane's name; this name is used to identify the object and as a reference for child WPolar and PlaneOpp objects. */
     QString m_PlaneDescription;                 /**< a free description */
     double m_TailVolume;                        /**< the tail volume, i.e lever_arm_elev x Area_Elev / MAC_wing / Area_wing */
-    Vector3d m_CoG;                              /**< the position of the CoG */
+    Vector3d m_CoG;                             /**< the position of the CoG */
 
     Vector3d m_WingLE[MAXWINGS];                 /**< the array of the leading edge postion of each Wing */
     double m_WingTiltAngle[MAXWINGS];           /**< the rotation in degrees of each Wing about the y-axis */
-    Vector3d m_BodyPos;                          /**< the translation vector to apply to the Body */
+    Vector3d m_BodyPos;                         /**< the translation vector to apply to the Body */
 
 
 public:
     QString m_BodyName;                         /**< identifies this plane's body */
 
 
-    QVector<PointMass*> m_PointMass;              /**< the array of PointMass objects */
+    QVector<PointMass*> m_PointMass;            /**< the array of PointMass objects @todo pointers not necessary, objects are constructed on the heap anyway*/
     double m_CoGIxx;                            /**< the Ixx component of the inertia tensor, calculated at the CoG */
     double m_CoGIyy;                            /**< the Iyy component of the inertia tensor, calculated at the CoG */
     double m_CoGIzz;                            /**< the Izz component of the inertia tensor, calculated at the CoG */

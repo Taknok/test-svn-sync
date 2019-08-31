@@ -162,7 +162,7 @@ Plane * PlaneAnalysisTask::setPlaneObject(Plane *pPlane)
                 pPlane->wing(iw)->m_Surface.at(j)->setSidePoints(pCurBody, dx, dz);
                 m_SurfaceList.append(pPlane->wing(iw)->m_Surface.at(j));
             }
-            pPlane->wing(iw)->computeBodyAxisInertia();
+//            pPlane->wing(iw)->computeBodyAxisInertia(); // redundant with inertia calculation at plane level
         }
     }
 
@@ -170,8 +170,6 @@ Plane * PlaneAnalysisTask::setPlaneObject(Plane *pPlane)
 
     return pPlane;
 }
-
-
 
 
 /**

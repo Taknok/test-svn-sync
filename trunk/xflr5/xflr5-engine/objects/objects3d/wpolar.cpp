@@ -1424,7 +1424,7 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
         else if(m_AnalysisMethod==XFLR5::VLMMETHOD)    ar<<2;
         else if(m_AnalysisMethod==XFLR5::PANEL4METHOD) ar<<3;
         else if(m_AnalysisMethod==XFLR5::TRILINMETHOD) ar<<4;
-        else if(m_AnalysisMethod==XFLR5::TRICSTMETHOD) ar<<5;
+        else if(m_AnalysisMethod==XFLR5::TRIUNIMETHOD) ar<<5;
         else                                           ar<<0;
 
         if     (m_WPolarType==XFLR5::FIXEDSPEEDPOLAR) ar<<1;
@@ -1515,14 +1515,14 @@ bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
         ar >> m_bIsVisible >> boolean;
 
         ar >> n;
-        if(n==1)      m_AnalysisMethod=XFLR5::LLTMETHOD;
+        if     (n==1) m_AnalysisMethod=XFLR5::LLTMETHOD;
         else if(n==2) m_AnalysisMethod=XFLR5::VLMMETHOD;
         else if(n==3) m_AnalysisMethod=XFLR5::PANEL4METHOD;
         else if(n==4) m_AnalysisMethod=XFLR5::TRILINMETHOD;
-        else if(n==5) m_AnalysisMethod=XFLR5::TRICSTMETHOD;
+        else if(n==5) m_AnalysisMethod=XFLR5::TRIUNIMETHOD;
 
         ar >> n;
-        if(n==1)      m_WPolarType=XFLR5::FIXEDSPEEDPOLAR;
+        if     (n==1) m_WPolarType=XFLR5::FIXEDSPEEDPOLAR;
         else if(n==2) m_WPolarType=XFLR5::FIXEDLIFTPOLAR;
         else if(n==4) m_WPolarType=XFLR5::FIXEDAOAPOLAR;
         else if(n==5) m_WPolarType=XFLR5::BETAPOLAR;

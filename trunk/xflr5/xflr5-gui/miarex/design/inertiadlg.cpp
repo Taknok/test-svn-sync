@@ -112,15 +112,13 @@ void InertiaDlg::computeBodyAxisInertia()
 */
 void InertiaDlg::computeInertia()
 {
-    int i, iw;
     double TotalMass, TotalIxx, TotalIyy, TotalIzz, TotalIxz;
     Vector3d TotalCoG, MassPos;
 
     m_CoGIxx = m_CoGIyy = m_CoGIzz = m_CoGIxz = 0.0;
     m_VolumeCoG.set(0.0, 0.0, 0.0);
 
-    Wing *pWing[MAXWINGS];
-    pWing[0] = pWing[1] = pWing[2] = pWing[3] = nullptr;
+    Wing const *pWing[] = {nullptr,nullptr,nullptr,nullptr};
 
     if(m_pPlane)
     {
@@ -166,7 +164,7 @@ void InertiaDlg::computeInertia()
     TotalMass = m_VolumeMass;
     TotalIxx = TotalIyy = TotalIzz = TotalIxz = 0.0;
 
-    for(i=0; i<m_PointMass.size(); i++)
+    for(int i=0; i<m_PointMass.size(); i++)
     {
         TotalMass += m_PointMass[i]->mass();
         TotalCoG  += m_PointMass[i]->position() * m_PointMass[i]->mass();
@@ -174,11 +172,11 @@ void InertiaDlg::computeInertia()
 
     if(m_pPlane)
     {
-        for(iw=0; iw<MAXWINGS; iw++)
+        for(int iw=0; iw<MAXWINGS; iw++)
         {
             if(pWing[iw])
             {
-                for(i=0; i<pWing[iw]->m_PointMass.size(); i++)
+                for(int i=0; i<pWing[iw]->m_PointMass.size(); i++)
                 {
                     TotalMass +=  pWing[iw]->m_PointMass[i]->mass();
                     TotalCoG  += (pWing[iw]->m_PointMass[i]->position() + m_pPlane->wingLE(iw)) * pWing[iw]->m_PointMass[i]->mass();
@@ -189,7 +187,7 @@ void InertiaDlg::computeInertia()
 
     if(m_pPlane && m_pPlane->body())
     {
-        for(i=0; i<m_pPlane->body()->m_PointMass.size(); i++)
+        for(int i=0; i<m_pPlane->body()->m_PointMass.size(); i++)
         {
             TotalMass +=  m_pPlane->body()->m_PointMass[i]->mass();
             TotalCoG  += (m_pPlane->body()->m_PointMass[i]->position()+m_pPlane->bodyPos()) * m_pPlane->body()->m_PointMass[i]->mass();
@@ -208,7 +206,7 @@ void InertiaDlg::computeInertia()
     TotalIxz = m_CoGIxz - m_VolumeMass *  LA.x*LA.z;
 
     //add the inertia contribution of all point masses in the Total CoG frame of reference
-    for(i=0; i<m_PointMass.size(); i++)
+    for(int i=0; i<m_PointMass.size(); i++)
     {
         if(m_PointMass[i]->mass()>PRECISION)
         {
@@ -223,11 +221,11 @@ void InertiaDlg::computeInertia()
 
     if(m_pPlane)
     {
-        for(iw=0; iw<MAXWINGS; iw++)
+        for(int iw=0; iw<MAXWINGS; iw++)
         {
             if(pWing[iw])
             {
-                for(i=0; i<pWing[iw]->m_PointMass.size(); i++)
+                for(int i=0; i<pWing[iw]->m_PointMass.size(); i++)
                 {
                     MassPos = TotalCoG - (pWing[iw]->m_PointMass[i]->position() + (m_pPlane != nullptr ? m_pPlane->wingLE(iw) : Vector3d(0.0, 0.0, 0.0)));
                     TotalIxx  += pWing[iw]->m_PointMass[i]->mass() * (MassPos.y*MassPos.y + MassPos.z*MassPos.z);
@@ -240,7 +238,7 @@ void InertiaDlg::computeInertia()
 
         if(m_pPlane && m_pPlane->body())
         {
-            for(i=0; i<m_pPlane->body()->m_PointMass.size(); i++)
+            for(int i=0; i<m_pPlane->body()->m_PointMass.size(); i++)
             {
                 MassPos = TotalCoG - (m_pPlane->bodyPos() + m_pPlane->body()->m_PointMass[i]->position());
                 TotalIxx  += m_pPlane->body()->m_PointMass[i]->mass() * (MassPos.y*MassPos.y + MassPos.z*MassPos.z);

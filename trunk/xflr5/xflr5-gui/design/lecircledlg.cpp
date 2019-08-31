@@ -37,39 +37,41 @@ LECircleDlg::LECircleDlg(QWidget *pParent): QDialog(pParent)
 
 void LECircleDlg::setupLayout()
 {
-    QHBoxLayout *pLERadius = new QHBoxLayout;
-    {
-        m_pctrlRadius = new DoubleEdit(0.0,3);
-        QLabel *lab0 = new QLabel(tr("r="));
-        QLabel *lab1 = new QLabel(tr("% Chord"));
-        lab0->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        pLERadius->addStretch(1);
-        pLERadius->addWidget(lab0);
-        pLERadius->addWidget(m_pctrlRadius);
-        pLERadius->addWidget(lab1);
-    }
-
-    m_pctrlShow = new QCheckBox(tr("Show"));
-
-    QHBoxLayout *pCommandButtons = new QHBoxLayout;
-    {
-        OKButton     = new QPushButton(tr("OK"));
-        CancelButton = new QPushButton(tr("Cancel"));
-
-        pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(OKButton);
-        pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(CancelButton);
-        pCommandButtons->addStretch(1);
-    }
-
     QVBoxLayout *pMainLayout = new QVBoxLayout;
-    pMainLayout->addWidget(m_pctrlShow);
-    pMainLayout->addStretch(1);
-    pMainLayout->addLayout(pLERadius);
-    pMainLayout->addStretch(1);
-    pMainLayout->addLayout(pCommandButtons);
-    pMainLayout->addStretch(1);
+    {
+        QHBoxLayout *pLERadius = new QHBoxLayout;
+        {
+            m_pctrlRadius = new DoubleEdit(0.0,3);
+            QLabel *lab0 = new QLabel(tr("r="));
+            QLabel *lab1 = new QLabel(tr("% Chord"));
+            lab0->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+            pLERadius->addStretch(1);
+            pLERadius->addWidget(lab0);
+            pLERadius->addWidget(m_pctrlRadius);
+            pLERadius->addWidget(lab1);
+        }
+
+        m_pctrlShow = new QCheckBox(tr("Show"));
+
+        QHBoxLayout *pCommandButtons = new QHBoxLayout;
+        {
+            OKButton     = new QPushButton(tr("OK"));
+            CancelButton = new QPushButton(tr("Cancel"));
+
+            pCommandButtons->addStretch(1);
+            pCommandButtons->addWidget(OKButton);
+            pCommandButtons->addStretch(1);
+            pCommandButtons->addWidget(CancelButton);
+            pCommandButtons->addStretch(1);
+        }
+
+        pMainLayout->addWidget(m_pctrlShow);
+        pMainLayout->addStretch(1);
+        pMainLayout->addLayout(pLERadius);
+        pMainLayout->addStretch(1);
+        pMainLayout->addLayout(pCommandButtons);
+        pMainLayout->addStretch(1);
+    }
 
     setLayout(pMainLayout);
 

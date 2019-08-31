@@ -52,7 +52,7 @@ Body::Body()
 
     //    m_BodyLEPosition.Set(0.0,0.0,0.0);
     m_CoG.set(0.0,0.0,0.0);
-    m_VolumeMass =  m_TotalMass = 0.0;        //for inertia calculations
+    m_VolumeMass = 0.0;        //for inertia calculations
     m_CoGIxx = m_CoGIyy = m_CoGIzz = m_CoGIxz = 0.0;
     clearPointMasses();
 
@@ -1075,23 +1075,22 @@ Frame * Body::setActiveFrame(int iFrame)
 void Body::computeBodyAxisInertia()
 {
     Vector3d LA, VolumeCoG;
-    double Ixx, Iyy, Izz, Ixz, VolumeMass;
-    Ixx = Iyy = Izz = Ixz = VolumeMass = 0.0;
+    double Ixx=0, Iyy=0, Izz=0, Ixz=0;
 
     computeVolumeInertia(VolumeCoG, Ixx, Iyy, Izz, Ixz);
-    m_TotalMass = m_VolumeMass;
+    double TotalMass = m_VolumeMass;
 
     m_CoG = VolumeCoG *m_VolumeMass;
 
     // add point masses
     for(int im=0; im<m_PointMass.size(); im++)
     {
-        m_TotalMass += m_PointMass[im]->mass();
+        TotalMass += m_PointMass[im]->mass();
         m_CoG += m_PointMass[im]->position() * m_PointMass[im]->mass();
     }
 
-    if(m_TotalMass>0) m_CoG = m_CoG/m_TotalMass;
-    else              m_CoG.set(0.0,0.0,0.0);
+    if(TotalMass>0) m_CoG = m_CoG/TotalMass;
+    else            m_CoG.set(0.0,0.0,0.0);
 
     // The CoG position is now available, so calculate the inertia w.r.t the CoG
     // using Huygens theorem
@@ -1123,12 +1122,13 @@ void Body::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
 {
     //evaluate roughly the Body's wetted area
 
-    double ux, rho;
-    double dj, dj1;
+    double ux=0, rho=0;
+    double dj=0, dj1=0;
+    double BodyArea=0;
+    double SectionArea=0;
+    double xpos=0, dl=0;
     Vector3d Pt, LATB, TALB, N, PLA, PTA, PLB, PTB, Top, Bot;
-    double BodyArea = 0.0;
-    double SectionArea;
-    double xpos, dl;
+
     CoG.set(0.0, 0.0, 0.0);
     CoGIxx = CoGIyy = CoGIzz = CoGIxz = 0.0;
 

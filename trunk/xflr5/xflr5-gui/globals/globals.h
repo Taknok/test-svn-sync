@@ -93,9 +93,9 @@ QString boundaryCondition(XFLR5::enumBC boundaryCondition);
 Foil *readFoilFile(QFile &xFoilFile);
 Foil *readPolarFile(QFile &plrFile, QVector<Polar*> &polarList);
 
-void drawFoil(QPainter &painter, Foil*pFoil, double const &alpha, double const &scalex, double const &scaley, QPointF const &Offset);
-void drawMidLine(QPainter &painter, Foil*pFoil, double const &scalex, double const &scaley, QPointF const &Offset);
-void drawPoints(QPainter &painter, Foil*pFoil, double alpha, double const &scalex, double const &scaley, QPointF const &Offset, QColor backColor);
+void drawFoil(QPainter &painter, const Foil *pFoil, double const &alpha, double const &scalex, double const &scaley, QPointF const &Offset);
+void drawMidLine(QPainter &painter, Foil const*pFoil, double const &scalex, double const &scaley, QPointF const &Offset);
+void drawPoints(QPainter &painter, Foil const*pFoil, double alpha, double const &scalex, double const &scaley, QPointF const &Offset, QColor backColor);
 void drawPoint(QPainter &painter, int pointStyle, QColor bkColor, QPoint pt);
 
 bool stringToBool(QString str);
@@ -111,9 +111,9 @@ void setAutoWPolarName(WPolar * pWPolar, Plane *pPlane);
 void ReynoldsFormat(QString &str, double f);
 
 QColor getColor(int r, int g, int b, int a=255);
-QColor colour(OpPoint *pOpp);
-QColor colour(Polar *pPolar);
-QColor colour(Foil *pFoil);
+QColor colour(const OpPoint *pOpp);
+QColor colour(const Polar *pPolar);
+QColor colour(const Foil *pFoil);
 void setRandomFoilColor(Foil *pFoil, bool bLightTheme);
 
 

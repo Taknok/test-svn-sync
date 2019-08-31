@@ -254,6 +254,10 @@ void LinePickerDlg::setLineWidth(int width)
 void LinePickerDlg::setupLayout()
 {
     m_pctrlFlowDownStyle = new QCheckBox(tr("Flow down style"));
+    QString tip = tr("If activated:\n"
+                     "all changes made to the style of the polar objects will flow down to the operating points\n"
+                     "all changes made to the style of the foil objects will flow down to the polars and to the operating points");
+    m_pctrlFlowDownStyle->setToolTip(tip);
 
     QGridLayout *pStyleLayout = new QGridLayout;
     {
