@@ -60,7 +60,7 @@ private:
     QWidget *m_pParent;
 
     Foil* m_pBufferFoil;
-    Foil* m_pMemFoil;
+    Foil const*m_pMemFoil;
 };
 
 #endif // LEDLG_H

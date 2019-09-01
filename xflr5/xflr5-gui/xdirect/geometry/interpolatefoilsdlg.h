@@ -30,6 +30,7 @@
 #include <QLabel>
 #include <QSlider>
 
+class XFoil;
 class Foil;
 class DoubleEdit;
 
@@ -62,13 +63,16 @@ private:
     QPushButton *OKButton, *CancelButton;
 
 public:
-    static void *s_pXFoil;
+
     Foil* m_pBufferFoil;
     QVector<Foil*> *m_poaFoil;
 
     QWidget *m_pParent;
     double m_Frac;
     QString m_NewFoilName;
+
+
+    static XFoil *s_pXFoil;
 };
 
 #endif // INTERPOLATEFOILSDLG_H

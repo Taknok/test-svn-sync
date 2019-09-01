@@ -70,7 +70,7 @@ private:
     QStandardItemModel *m_pCoordModel;
     FloatEditDelegate *m_pFloatDelegate;
 
-    Foil * m_pMemFoil;
+    Foil const *m_pMemFoil;
     Foil * m_pBufferFoil;
 
     int *m_precision;

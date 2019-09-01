@@ -71,8 +71,8 @@ void FoilCoordDlg::initDialog()
     if(!m_pMemFoil || !m_pBufferFoil) return;
 
     int w = m_pctrlCoordTable->width();
-    m_pctrlCoordTable->setColumnWidth(0,(int)(w/2));
-    m_pctrlCoordTable->setColumnWidth(1,(int)(w/2));
+    m_pctrlCoordTable->setColumnWidth(0,int(w/2));
+    m_pctrlCoordTable->setColumnWidth(1,int(w/2));
     QHeaderView *HorizontalHeader = m_pctrlCoordTable->horizontalHeader();
     HorizontalHeader->setStretchLastSection(true);
 
@@ -114,10 +114,9 @@ void FoilCoordDlg::initDialog()
 }
 
 
-
 void FoilCoordDlg::resizeEvent(QResizeEvent *event)
 {
-    int w2 = (int)((double)m_pctrlCoordTable->width()*.7/2);
+    int w2 = int(double(m_pctrlCoordTable->width())*.7/2);
 
     m_pctrlCoordTable->setColumnWidth(0,w2);
     m_pctrlCoordTable->setColumnWidth(1,w2);

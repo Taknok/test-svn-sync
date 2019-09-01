@@ -34,6 +34,9 @@
 #include <design/foiltabledelegate.h>
 #include <objects/objects2d/foil.h>
 
+QByteArray ManageFoilsDlg::s_Geometry;
+
+
 ManageFoilsDlg::ManageFoilsDlg(QWidget *pParent) : QDialog(pParent)
 {
     setWindowTitle(tr("Foil Management"));
@@ -49,8 +52,6 @@ ManageFoilsDlg::ManageFoilsDlg(QWidget *pParent) : QDialog(pParent)
     connect(m_pctrlRename, SIGNAL(clicked()),this, SLOT(onRename()));
     connect(m_pctrlExport, SIGNAL(clicked()),this, SLOT(onExport()));
     connect(m_pctrlFoilTable, SIGNAL(doubleClicked(const QModelIndex &)), this, SLOT(onDoubleClickTable(const QModelIndex &)));
-
-    connect(CloseButton, SIGNAL(clicked()),this, SLOT(accept()));
 }
 
 
@@ -92,15 +93,15 @@ void ManageFoilsDlg::initDialog(QString FoilName)
 }
 
 
-void ManageFoilsDlg::keyPressEvent(QKeyEvent *event)
+void ManageFoilsDlg::keyPressEvent(QKeyEvent *pEvent)
 {
-    switch (event->key())
+    switch (pEvent->key())
     {
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if(!CloseButton->hasFocus()) CloseButton->setFocus();
-            else                         accept();
+            if(!m_pButtonBox->hasFocus()) m_pButtonBox->setFocus();
+            else                          accept();
 
             break;
         }
@@ -110,9 +111,23 @@ void ManageFoilsDlg::keyPressEvent(QKeyEvent *event)
             return;
         }
         default:
-            event->ignore();
+            pEvent->ignore();
     }
 }
+
+
+void ManageFoilsDlg::showEvent(QShowEvent *)
+{
+    restoreGeometry(s_Geometry);
+}
+
+
+
+void ManageFoilsDlg::hideEvent(QHideEvent*)
+{
+    s_Geometry = saveGeometry();
+}
+
 
 void ManageFoilsDlg::setupLayout()
 {
@@ -122,14 +137,17 @@ void ManageFoilsDlg::setupLayout()
         m_pctrlRename     = new QPushButton(tr("Rename"));
         m_pctrlExport     = new QPushButton(tr("Export Foil"));
 
-        CloseButton     = new QPushButton(tr("Close"));
+        m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Close);
+        {
+            connect(m_pButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+        }
 
         pCommandButtons->addStretch(1);
         pCommandButtons->addWidget(m_pctrlDelete);
         pCommandButtons->addWidget(m_pctrlRename);
         pCommandButtons->addWidget(m_pctrlExport);
         pCommandButtons->addStretch(2);
-        pCommandButtons->addWidget(CloseButton);
+        pCommandButtons->addWidget(m_pButtonBox);
         pCommandButtons->addStretch(1);
     }
 
@@ -143,18 +161,19 @@ void ManageFoilsDlg::setupLayout()
     szPolicyExpanding.setHorizontalPolicy(QSizePolicy::MinimumExpanding);
     szPolicyExpanding.setVerticalPolicy(QSizePolicy::Expanding);
     m_pctrlFoilTable->setSizePolicy(szPolicyExpanding);
-    m_pctrlFoilTable->setMinimumWidth(800);
 
     QHBoxLayout * pMainLayout = new QHBoxLayout(this);
     {
         pMainLayout->addWidget(m_pctrlFoilTable);
         pMainLayout->addLayout(pCommandButtons);
+
+        pMainLayout->setStretchFactor(m_pctrlFoilTable,1);
     }
     setLayout(pMainLayout);
 
 
-    connect(m_pctrlFoilTable, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onFoilClicked(const QModelIndex&)));
-    connect(m_pctrlFoilTable, SIGNAL(pressed(const QModelIndex &)), this, SLOT(onFoilClicked(const QModelIndex&)));
+    connect(m_pctrlFoilTable, SIGNAL(clicked(const QModelIndex &)), SLOT(onFoilClicked(const QModelIndex&)));
+    connect(m_pctrlFoilTable, SIGNAL(pressed(const QModelIndex &)), SLOT(onFoilClicked(const QModelIndex&)));
 
 
     m_pFoilModel = new QStandardItemModel(this);
@@ -365,11 +384,11 @@ void ManageFoilsDlg::onFoilClicked(const QModelIndex& index)
 }
 
 
-void ManageFoilsDlg::resizeEvent(QResizeEvent *event)
+void ManageFoilsDlg::resizeEvent(QResizeEvent *pEvent)
 {
     int w = m_pctrlFoilTable->width();
-    int w12 = (int)((double)w/13.0);
-    int w14 = (int)((double)w/15.0);
+    int w12 = int(double(w)/13.0);
+    int w14 = int(double(w)/15.0);
 
     m_pctrlFoilTable->setColumnWidth(1,w12);
     m_pctrlFoilTable->setColumnWidth(2,w12);
@@ -386,7 +405,7 @@ void ManageFoilsDlg::resizeEvent(QResizeEvent *event)
     m_pctrlFoilTable->setColumnWidth(11,w12);//LE YHinge
 
     m_pctrlFoilTable->setColumnWidth(0,w-8*w12-3*w14-40);
-    event->accept();
+    pEvent->accept();
 }
 
 

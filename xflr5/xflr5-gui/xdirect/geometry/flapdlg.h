@@ -76,7 +76,8 @@ private:
 
     double m_LEXHinge, m_LEYHinge, m_LEFlapAngle;
     double m_TEXHinge, m_TEYHinge, m_TEFlapAngle;
-    Foil *m_pMemFoil, *m_pBufferFoil;
+    Foil const *m_pMemFoil;
+    Foil *m_pBufferFoil;
 
     QWidget *m_pParent;
 

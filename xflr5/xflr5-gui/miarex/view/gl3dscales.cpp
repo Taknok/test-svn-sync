@@ -427,43 +427,42 @@ void GL3DScales::readStreamParams()
 
 
 
-bool GL3DScales::loadSettings(QSettings *pSettings)
+bool GL3DScales::loadSettings(QSettings &settings)
 {
-    pSettings->beginGroup("GL3DScales");
+    settings.beginGroup("GL3DScales");
     {
-        gl3dMiarexView::s_bAutoCpScale = pSettings->value("AutoCpScale").toBool();
-        gl3dMiarexView::s_LegendMin    = pSettings->value("LegendMin").toDouble();
-        gl3dMiarexView::s_LegendMax    = pSettings->value("LegendMax").toDouble();
-        s_pos     = pSettings->value("Position").toInt();
-        s_NX      = pSettings->value("NX").toInt();
-        s_DeltaL  = pSettings->value("DeltaL").toDouble();
-        s_XFactor = pSettings->value("XFactor").toDouble();
-        s_XOffset = pSettings->value("XOffset").toDouble();
-        s_ZOffset = pSettings->value("ZOffset").toDouble();
+        gl3dMiarexView::s_bAutoCpScale = settings.value("AutoCpScale").toBool();
+        gl3dMiarexView::s_LegendMin    = settings.value("LegendMin").toDouble();
+        gl3dMiarexView::s_LegendMax    = settings.value("LegendMax").toDouble();
+        s_pos     = settings.value("Position").toInt();
+        s_NX      = settings.value("NX").toInt();
+        s_DeltaL  = settings.value("DeltaL").toDouble();
+        s_XFactor = settings.value("XFactor").toDouble();
+        s_XOffset = settings.value("XOffset").toDouble();
+        s_ZOffset = settings.value("ZOffset").toDouble();
     }
-    pSettings->endGroup();
+    settings.endGroup();
     return true;
 }
 
 
-bool GL3DScales::saveSettings(QSettings *pSettings)
+bool GL3DScales::saveSettings(QSettings &settings)
 {
-    pSettings->beginGroup("GL3DScales");
+    settings.beginGroup("GL3DScales");
     {
-        pSettings->setValue("AutoCpScale", gl3dMiarexView::s_bAutoCpScale);
-        pSettings->setValue("LegendMin", gl3dMiarexView::s_LegendMin);
-        pSettings->setValue("LegendMax", gl3dMiarexView::s_LegendMax);
-        pSettings->setValue("Position", s_pos);
-        pSettings->setValue("NX", s_NX);
-        pSettings->setValue("DeltaL", s_DeltaL);
-        pSettings->setValue("XFactor", s_XFactor);
-        pSettings->setValue("XOffset", s_XOffset);
-        pSettings->setValue("ZOffset", s_ZOffset);
+        settings.setValue("AutoCpScale", gl3dMiarexView::s_bAutoCpScale);
+        settings.setValue("LegendMin", gl3dMiarexView::s_LegendMin);
+        settings.setValue("LegendMax", gl3dMiarexView::s_LegendMax);
+        settings.setValue("Position", s_pos);
+        settings.setValue("NX", s_NX);
+        settings.setValue("DeltaL", s_DeltaL);
+        settings.setValue("XFactor", s_XFactor);
+        settings.setValue("XOffset", s_XOffset);
+        settings.setValue("ZOffset", s_ZOffset);
     }
-    pSettings->endGroup();
+    settings.endGroup();
     return true;
 }
-
 
 
 void GL3DScales::keyPressEvent(QKeyEvent *event)
