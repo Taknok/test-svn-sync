@@ -53,7 +53,7 @@ public:
     void initDialog();
 
 private:
-    void keyPressEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *pEvent);
     void setupLayout();
     void readParams();
 
@@ -76,7 +76,7 @@ private:
     double xpref2;
 
     Foil *m_pBufferFoil;
-    Foil *m_pMemFoil;
+    Foil const*m_pMemFoil;
 
     QWidget *m_pParent;
 };

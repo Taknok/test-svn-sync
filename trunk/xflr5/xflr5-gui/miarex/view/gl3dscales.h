@@ -63,8 +63,8 @@ private:
     void setupLayout();
     void readStreamParams();
 
-    static bool loadSettings(QSettings *pSettings);
-    static bool saveSettings(QSettings *pSettings);
+    static bool loadSettings(QSettings &settings);
+    static bool saveSettings(QSettings &settings);
 
     ExponentialSlider *m_pctrlLiftScaleSlider, *m_pctrlDragScaleSlider, *m_pctrlVelocityScaleSlider;
     DoubleEdit *m_pctrlLiftScale, *m_pctrlDragScale, *m_pctrlVelocityScale;

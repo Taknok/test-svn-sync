@@ -78,8 +78,8 @@ private:
     double m_fThickness;
     double m_fXCamber;
     double m_fXThickness;
-    Foil* m_pBufferFoil;
-    Foil* m_pMemFoil;
+    Foil *m_pBufferFoil;
+    Foil const*m_pMemFoil;
 
     QWidget *m_pParent;
 

@@ -225,7 +225,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
         m_pMiarex->loadSettings(settings);
         m_pXInverse->loadSettings(settings);
 
-        GL3DScales::loadSettings(&settings);
+        GL3DScales::loadSettings(settings);
         W3dPrefsDlg::loadSettings(&settings);
         Units::loadSettings(settings);
         Updater::loadSettings(settings);
@@ -3484,14 +3484,17 @@ bool MainFrame::loadSettings()
             else break;
         }while(n<MAXRECENTFILES);
 
+        ManageFoilsDlg::s_Geometry = settings.value("ManageFoilsDlgGeom").toByteArray();
     }
 
     return true;
 }
 
 
-MainFrame* MainFrame::self() {
-    if (!_self) {
+MainFrame* MainFrame::self()
+{
+    if (!_self)
+    {
         _self = new MainFrame;
     }
     return _self;
@@ -4885,6 +4888,7 @@ void MainFrame::saveSettings()
             settings.setValue(RecentF, "");
         }
 
+        settings.setValue("ManageFoilsDlgGeom", ManageFoilsDlg::s_Geometry);
     }
     settings.endGroup();
 
@@ -4893,7 +4897,7 @@ void MainFrame::saveSettings()
     m_pXDirect->saveSettings(settings);
     m_pMiarex->saveSettings(settings);
     m_pXInverse->saveSettings(settings);
-    GL3DScales::saveSettings(&settings);
+    GL3DScales::saveSettings(settings);
     W3dPrefsDlg::saveSettings(&settings);
     Updater::saveSettings(settings);
     Units::saveSettings(settings);
@@ -4909,7 +4913,7 @@ void MainFrame::setMainFrameCentralWidget()
     else if(m_iApp==XFLR5::MIAREX)
     {
         if (m_pMiarex->m_iView==XFLR5::WOPPVIEW || m_pMiarex->m_iView==XFLR5::WPOLARVIEW || m_pMiarex->m_iView==XFLR5::WCPVIEW ||
-                m_pMiarex->m_iView==XFLR5::STABPOLARVIEW  || m_pMiarex->m_iView==XFLR5::STABTIMEVIEW)
+            m_pMiarex->m_iView==XFLR5::STABPOLARVIEW  || m_pMiarex->m_iView==XFLR5::STABTIMEVIEW)
         {
             m_pctrlCentralWidget->setCurrentWidget(m_pMiarexTileWidget);
             m_pMiarex->setGraphTiles();
@@ -6333,7 +6337,6 @@ void MainFrame::onProjectModified()
 }
 
 
-
 /**
  * The user has requested the launch of the interface to manage Foil objects.
  */
@@ -6367,7 +6370,6 @@ void MainFrame::onManageFoils()
 
     updateView();
 }
-
 
 
 void MainFrame::checkGraphActions()

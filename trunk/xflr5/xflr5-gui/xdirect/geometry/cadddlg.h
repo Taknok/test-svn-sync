@@ -78,7 +78,7 @@ private:
     DoubleEdit    *m_pctrlFrom;
     DoubleEdit    *m_pctrlAngTol;
 
-    Foil* m_pMemFoil;
+    Foil const* m_pMemFoil;
     Foil* m_pBufferFoil;
     QWidget *m_pParent;
     double atol;

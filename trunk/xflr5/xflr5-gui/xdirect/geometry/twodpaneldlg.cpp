@@ -45,7 +45,6 @@ TwoDPanelDlg::TwoDPanelDlg(QWidget *pParent) : QDialog(pParent)
 }
 
 
-
 void TwoDPanelDlg::setupLayout()
 {
     setWindowTitle(tr("Global Panel Refinement"));
@@ -149,10 +148,10 @@ void TwoDPanelDlg::onButton(QAbstractButton *pButton)
 }
 
 
-void TwoDPanelDlg::keyPressEvent(QKeyEvent *event)
+void TwoDPanelDlg::keyPressEvent(QKeyEvent *pEvent)
 {
     // Prevent Return Key from closing App
-    switch (event->key())
+    switch (pEvent->key())
     {
         case Qt::Key_Escape:
         {
@@ -172,14 +171,12 @@ void TwoDPanelDlg::keyPressEvent(QKeyEvent *event)
                 onOK();
                 return;
             }
-            break;
         }
         default:
-            event->ignore();
+            pEvent->ignore();
             break;
     }
 }
-
 
 
 void TwoDPanelDlg::onChanged()
@@ -187,7 +184,6 @@ void TwoDPanelDlg::onChanged()
     m_bApplied  = false;
     onApply();
 }
-
 
 
 void TwoDPanelDlg::onApply()

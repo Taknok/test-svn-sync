@@ -60,7 +60,7 @@ public:
     QWidget *m_pParent;
 
     Foil* m_pBufferFoil;
-    Foil* m_pMemFoil;
+    Foil const*m_pMemFoil;
     static XFoil* s_pXFoil;
 };
 

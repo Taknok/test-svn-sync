@@ -28,7 +28,7 @@
 #include <QPushButton>
 #include <QTableView>
 #include <QStandardItemModel>
-
+#include <QDialogButtonBox>
 
 class FoilTableDelegate;
 class Foil;
@@ -44,6 +44,12 @@ public:
     ~ManageFoilsDlg();
 
     void initDialog(QString FoilName);
+    void resizeEvent(QResizeEvent *pEvent);
+    void keyPressEvent(QKeyEvent *pEvent);
+    void showEvent(QShowEvent *pEvent);
+    void hideEvent(QHideEvent *pEvent);
+
+    QSize sizeHint() const {return QSize(1200,700);}
 
 private slots:
     void onDelete();
@@ -53,8 +59,6 @@ private slots:
     void onDoubleClickTable(const QModelIndex &index);
 
 private:
-    void resizeEvent(QResizeEvent *event);
-    void keyPressEvent(QKeyEvent *event);
 
     void fillFoilTable();
     void fillTableRow(int row);
@@ -62,7 +66,8 @@ private:
     void setupLayout();
 
 private:
-    QPushButton *CloseButton;
+    QDialogButtonBox *m_pButtonBox;
+
     QPushButton *m_pctrlRename, *m_pctrlDelete, *m_pctrlSelect, *m_pctrlExport;
     QTableView *m_pctrlFoilTable;
     QStandardItemModel *m_pFoilModel;
@@ -72,6 +77,8 @@ private:
     Foil *m_pFoil;
     int  *m_precision;
     bool m_bChanged;
+
+    static QByteArray s_Geometry;
 };
 
 #endif // MANAGEFOILSDLG_H

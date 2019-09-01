@@ -30,7 +30,7 @@
 #include <misc/text/doubleedit.h>
 
 
-void *InterpolateFoilsDlg::s_pXFoil;
+XFoil *InterpolateFoilsDlg::s_pXFoil;
 
 #define SLIDERSCALE 10000
 
@@ -41,7 +41,6 @@ InterpolateFoilsDlg::InterpolateFoilsDlg(QWidget *pParent) : QDialog(pParent)
     m_pParent = pParent;
     m_pBufferFoil = nullptr;
     m_poaFoil = nullptr;
-
 
     setupLayout();
 
@@ -138,13 +137,12 @@ void InterpolateFoilsDlg::setupLayout()
 
 void InterpolateFoilsDlg::initDialog()
 {
-    int i;
-    Foil* pFoil;
+    Foil const* pFoil;
     m_pctrlFoil1->clear();
     m_pctrlFoil2->clear();
-    for (i=0; i<m_poaFoil->size(); i++)
+    for (int i=0; i<m_poaFoil->size(); i++)
     {
-        pFoil = (Foil*)m_poaFoil->at(i);
+        pFoil = m_poaFoil->at(i);
         if(pFoil)
         {
             m_pctrlFoil1->addItem(pFoil->foilName());
@@ -252,7 +250,6 @@ void InterpolateFoilsDlg::onSelChangeFoil2(int)
 
 void InterpolateFoilsDlg::update()
 {
-    XFoil *pXFoil = (XFoil*)s_pXFoil;
     QString strong;
 
     strong = m_pctrlFoil1->currentText();
@@ -263,7 +260,7 @@ void InterpolateFoilsDlg::update()
 
     if(!pFoil1 || !pFoil2) return;
 
-    pXFoil->interpolate(pFoil1->x, pFoil1->y, pFoil1->n,
+    s_pXFoil->interpolate(pFoil1->x, pFoil1->y, pFoil1->n,
                         pFoil2->x, pFoil2->y, pFoil2->n,
                         m_Frac/100.0);
 /*
@@ -277,10 +274,10 @@ qDebug()<<"________";*/
 
     for (int j=0; j< pFoil1->n; j++)
     {
-        m_pBufferFoil->x[j]  = pXFoil->xb[j+1];
-        m_pBufferFoil->y[j]  = pXFoil->yb[j+1];
-        m_pBufferFoil->xb[j] = pXFoil->xb[j+1];
-        m_pBufferFoil->yb[j] = pXFoil->yb[j+1];
+        m_pBufferFoil->x[j]  = s_pXFoil->xb[j+1];
+        m_pBufferFoil->y[j]  = s_pXFoil->yb[j+1];
+        m_pBufferFoil->xb[j] = s_pXFoil->xb[j+1];
+        m_pBufferFoil->yb[j] = s_pXFoil->yb[j+1];
     }
 
     m_pBufferFoil->n  = pFoil1->n;
@@ -309,7 +306,7 @@ qDebug()<<"________";*/
 void InterpolateFoilsDlg::onFrac()
 {
     m_Frac = m_pctrlFrac->value();
-    m_pctrlSlider->setSliderPosition((int)(m_Frac/100.0*SLIDERSCALE));
+    m_pctrlSlider->setSliderPosition(int(m_Frac/100.0*SLIDERSCALE));
     m_Frac = 100.0 - m_Frac;
 
     update();
@@ -327,7 +324,7 @@ void InterpolateFoilsDlg::onOK()
 void InterpolateFoilsDlg::onVScroll(int val)
 {
     val = m_pctrlSlider->sliderPosition();
-    m_Frac = (SLIDERSCALE - (double)val)/SLIDERSCALE*100.0;
+    m_Frac = (SLIDERSCALE - double(val))/SLIDERSCALE*100.0;
     m_pctrlFrac->setValue(100.0-m_Frac);
     update();
 }
