@@ -966,7 +966,8 @@ void Wing::computeChords(int NStation)
     int NSurfaces = m_Surface.size();
 
     if(NStation !=0)
-    {//LLT based
+    {
+        //LLT based
         m_NStation = NStation;
 
         for (k=0; k<=NStation; k++)
@@ -1036,7 +1037,6 @@ void Wing::computeChords(int NStation)
 }
 
 
-
 /**
 * Calculates the chord lengths at each position of the NStation defined by the LLT or the Panel analysis
 * Overloaded function
@@ -1048,7 +1048,8 @@ void Wing::computeChords(int NStation)
 void Wing::computeChords(int NStation, double *chord, double *offset, double *twist)
 {
     if(NStation !=0)
-    {//LLT based
+    {
+        //LLT based
         m_NStation = NStation;
 
         for (int k=0; k<=NStation; k++)

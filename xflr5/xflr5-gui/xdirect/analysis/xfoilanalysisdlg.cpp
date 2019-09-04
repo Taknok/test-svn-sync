@@ -40,9 +40,8 @@
 #include <xdirect/objects2d.h>
 
 
-
 XDirect *XFoilAnalysisDlg::s_pXDirect;
-QPoint XFoilAnalysisDlg::s_Position;
+QByteArray XFoilAnalysisDlg::s_Geometry;
 
 
 XFoilAnalysisDlg::XFoilAnalysisDlg(QWidget *pParent) : QDialog(pParent)
@@ -141,15 +140,6 @@ void XFoilAnalysisDlg::setupLayout()
 }
 
 
-
-void XFoilAnalysisDlg::showEvent(QShowEvent *event)
-{
-    move(s_Position);
-    event->accept();
-}
-
-
-
 void XFoilAnalysisDlg::initDialog()
 {
     m_pctrlLogFile->setChecked(XDirect::s_bKeepOpenErrors);
@@ -186,9 +176,9 @@ void XFoilAnalysisDlg::initDialog()
     pCurve1->setStyle(0);
 
     m_pRmsGraph->setXMin(0.0);
-    m_pRmsGraph->setXMax((double)XFoilTask::s_IterLim);
+    m_pRmsGraph->setXMax(double(XFoilTask::s_IterLim));
     m_pRmsGraph->setX0(0.0);
-    m_pRmsGraph->setXUnit((int)(XFoilTask::s_IterLim/5.0));
+    m_pRmsGraph->setXUnit(int(XFoilTask::s_IterLim/5.0));
 
     m_pRmsGraph->setY0(0.0);
     m_pRmsGraph->setYMin(0.0);
@@ -199,6 +189,17 @@ void XFoilAnalysisDlg::initDialog()
     m_pctrlTextOutput->clear();
 }
 
+
+void XFoilAnalysisDlg::showEvent(QShowEvent *)
+{
+    restoreGeometry(s_Geometry);
+}
+
+
+void XFoilAnalysisDlg::hideEvent(QHideEvent *)
+{
+    s_Geometry = saveGeometry();
+}
 
 
 void XFoilAnalysisDlg::onCancelAnalysis()
@@ -227,7 +228,7 @@ void XFoilAnalysisDlg::reject()
         m_pXFoilTask->m_OutStream.flush();
         m_pXFile->close();
     }
-    s_Position = pos();
+
     QDialog::reject();
 }
 
@@ -242,7 +243,6 @@ void XFoilAnalysisDlg::accept()
         m_pXFile->close();
     }
 
-    s_Position = pos();
     QDialog::accept();
 }
 
@@ -351,7 +351,6 @@ void XFoilAnalysisDlg::analyze()
     m_pctrlCancel->setText(tr("Close"));
     m_pctrlSkip->setEnabled(false);
     update();
-    s_Position = pos();
 }
 
 

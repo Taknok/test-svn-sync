@@ -101,6 +101,7 @@ void readQColor(QDataStream &ar, int &r, int &g, int &b, int &a)
     ar>>byte>>byte; //
 }
 
+
 /**
 * Writes the RGB int values of a color to a binary datastream. Inherited from the MFC versions of XFLR5.
 * @param ar the binary datastream
@@ -126,8 +127,6 @@ void writeQColor(QDataStream &ar, int r, int g, int b, int a)
     byte = 0;
     ar << byte<<byte;
 }
-
-
 
 
 /**

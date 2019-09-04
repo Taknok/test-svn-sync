@@ -33,12 +33,7 @@
 #include <objects/objects3d/wpolar.h>
 #include <xdirect/xdirect.h>
 
-
-QPoint EditPlrDlg::s_Position;
-QSize  EditPlrDlg::s_WindowSize;
-bool EditPlrDlg::s_bWindowMaximized;
-
-
+QByteArray EditPlrDlg::s_Geometry;
 
 EditPlrDlg::EditPlrDlg(QWidget *pParent) : QDialog(pParent)
 {
@@ -209,9 +204,9 @@ void EditPlrDlg::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if(!OKButton->hasFocus() && !CancelButton->hasFocus())
+            if(!m_pButtonBox->hasFocus())
             {
-                OKButton->setFocus();
+                m_pButtonBox->setFocus();
             }
             else
             {
@@ -230,7 +225,7 @@ void EditPlrDlg::keyPressEvent(QKeyEvent *event)
 }
 
 
-void EditPlrDlg::onDeletePoint()
+void EditPlrDlg::deletePoint()
 {
     QModelIndex index = m_pctrlPointTable->currentIndex();
 
@@ -259,7 +254,7 @@ void EditPlrDlg::onDeletePoint()
 
 
 
-void EditPlrDlg::onDeleteAllPoints()
+void EditPlrDlg::deleteAllPoints()
 {
     if(m_pXDirect)
     {
@@ -280,65 +275,50 @@ void EditPlrDlg::onDeleteAllPoints()
 
 void EditPlrDlg::setupLayout()
 {
-    QHBoxLayout *pCommandButtonsLayout = new QHBoxLayout;
+    m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Discard);
     {
         m_pctrlDeleteAllPoints = new QPushButton(tr("Delete All Points"));
-        m_pctrlDeleteAllPoints->adjustSize();
         m_pctrlDeletePoint       = new QPushButton(tr("Delete Point"));
-        OKButton               = new QPushButton(tr("OK"));
-        CancelButton           = new QPushButton(tr("Cancel"));
-        pCommandButtonsLayout->addStretch(1);
-        pCommandButtonsLayout->addWidget(m_pctrlDeleteAllPoints);
-        pCommandButtonsLayout->addWidget(m_pctrlDeletePoint);
-        pCommandButtonsLayout->addStretch(2);
-        pCommandButtonsLayout->addWidget(OKButton);
-        pCommandButtonsLayout->addWidget(CancelButton);
-        pCommandButtonsLayout->addStretch(1);
+        m_pButtonBox->addButton(m_pctrlDeleteAllPoints, QDialogButtonBox::ActionRole);
+        m_pButtonBox->addButton(m_pctrlDeletePoint, QDialogButtonBox::ActionRole);
+        connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
     }
 
     m_pctrlPointTable = new QTableView(this);
     m_pctrlPointTable->setFont(Settings::s_TableFont);
-    m_pctrlPointTable->setMinimumHeight(500);
-    m_pctrlPointTable->setMinimumWidth(500);
     m_pctrlPointTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_pctrlPointTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     m_pctrlPointTable->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    QVBoxLayout * MainLayout = new QVBoxLayout(this);
+    QVBoxLayout * pMainLayout = new QVBoxLayout(this);
     {
-        MainLayout->addWidget(m_pctrlPointTable);
-        MainLayout->addLayout(pCommandButtonsLayout);
+        pMainLayout->addWidget(m_pctrlPointTable);
+        pMainLayout->addWidget(m_pButtonBox);
     }
 
-    setLayout(MainLayout);
+    setLayout(pMainLayout);
+}
 
 
-    connect(m_pctrlDeletePoint, SIGNAL(clicked()),this, SLOT(onDeletePoint()));
-    connect(m_pctrlDeleteAllPoints, SIGNAL(clicked()),this, SLOT(onDeleteAllPoints()));
-
-    connect(OKButton, SIGNAL(clicked()),this, SLOT(accept()));
-    connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+void EditPlrDlg::onButton(QAbstractButton *pButton)
+{
+    if      (pButton==m_pButtonBox->button(QDialogButtonBox::Save))     accept();
+    else if (pButton== m_pButtonBox->button(QDialogButtonBox::Discard)) reject();
+    else if (pButton==m_pctrlDeletePoint)                               deletePoint();
+    else if (pButton==m_pctrlDeleteAllPoints)                           deleteAllPoints();
 }
 
 
 
-
-void EditPlrDlg::showEvent(QShowEvent *event)
+void EditPlrDlg::showEvent(QShowEvent *)
 {
-    move(s_Position);
-    resize(s_WindowSize);
-    if(s_bWindowMaximized) setWindowState(Qt::WindowMaximized);
-
-    event->accept();
+    restoreGeometry(s_Geometry);
 }
 
 
-void EditPlrDlg::hideEvent(QHideEvent*event)
+void EditPlrDlg::hideEvent(QHideEvent*)
 {
-    s_Position = pos();
-    s_WindowSize = size();
-    s_bWindowMaximized = isMaximized();
-    event->accept();
+    s_Geometry = saveGeometry();
 }
 
 

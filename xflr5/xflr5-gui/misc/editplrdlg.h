@@ -26,6 +26,7 @@
 #include <QPushButton>
 #include <QTableView>
 #include <QStandardItemModel>
+#include <QDialogButtonBox>
 
 class XDirect;
 class Miarex;
@@ -44,15 +45,16 @@ public:
     EditPlrDlg(QWidget *pParent=nullptr);
     ~EditPlrDlg();
 
+    QSize sizeHint() const {return QSize(1100,700);}
 
     void initDialog(XDirect *pXDirect, Polar *pPolar, Miarex *pMiarex, WPolar *pWPolar);
 
 private slots:
-    void onDeletePoint();
-    void onDeleteAllPoints();
-
+    void onButton(QAbstractButton *pButton);
 
 private:
+    void deletePoint();
+    void deleteAllPoints();
     void setupLayout();
     void fillPolarData();
     void fillWPolarData();
@@ -63,7 +65,7 @@ private:
 
 private:
     QPushButton *m_pctrlDeletePoint, *m_pctrlDeleteAllPoints;
-    QPushButton *OKButton, *CancelButton;
+
 
     Polar *m_pPolar;
     WPolar *m_pWPolar;
@@ -71,17 +73,15 @@ private:
     QTableView *m_pctrlPointTable;
     QStandardItemModel *m_pPointModel;
     FloatEditDelegate *m_pFloatDelegate;
+    QDialogButtonBox *m_pButtonBox;
 
     XDirect *m_pXDirect;
     Miarex *m_pMiarex;
 
     int  *m_precision;
 
-    static QSize  s_WindowSize;
-    static bool s_bWindowMaximized;
 
-public:
-    static QPoint s_Position;
+    static QByteArray s_Geometry;
 };
 
 #endif // EDITPLRDLG_H

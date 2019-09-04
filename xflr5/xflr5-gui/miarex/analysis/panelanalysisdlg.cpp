@@ -46,10 +46,7 @@
 #include <objects/objects3d/wpolar.h>
 #include <objects/objects3d/vector3d.h>
 
-QPoint PanelAnalysisDlg::s_Position = QPoint(200,100);
-QSize  PanelAnalysisDlg::s_WindowSize = QSize(900,550);
-bool PanelAnalysisDlg::s_bWindowMaximized=false;
-
+QByteArray PanelAnalysisDlg::s_Geometry;
 
 /**
 * The public constructor
@@ -79,7 +76,7 @@ PanelAnalysisDlg::~PanelAnalysisDlg()
 void PanelAnalysisDlg::initDialog()
 {
     m_Progress = 0.0;
-    m_pctrlProgress->setValue(m_Progress);
+    m_pctrlProgress->setValue(int(m_Progress));
     m_pctrlTextOutput->clear();
     m_pctrlLogFile->setChecked(Miarex::s_bLogFile);
 }
@@ -128,8 +125,8 @@ void PanelAnalysisDlg::onProgress()
     QString str = dt.toString("hh:mm:ss.zzz");
     qDebug() << str;*/
 
-    m_pctrlProgress->setMaximum(m_pTheTask->m_pthePanelAnalysis->m_TotalTime);
-    m_pctrlProgress->setValue(m_pTheTask->m_pthePanelAnalysis->m_Progress);
+    m_pctrlProgress->setMaximum(int(m_pTheTask->m_pthePanelAnalysis->m_TotalTime));
+    m_pctrlProgress->setValue(int(m_pTheTask->m_pthePanelAnalysis->m_Progress));
     if(m_strOut.length())
     {
         m_pctrlTextOutput->insertPlainText(m_strOut);
@@ -303,7 +300,7 @@ void PanelAnalysisDlg::cleanUp()
         QDateTime dt = QDateTime::currentDateTime();
         QString str = dt.toString(Qt::DefaultLocaleLongDate);
         outstream << "Analysis ended "<<str<<"\n";
-        outstream << "Elapsed: "<<(double)clock.elapsed()/1000.0<<"s";
+        outstream << "Elapsed: "<<double(clock.elapsed())/1000.0<<"s";
         outstream << "\n";
         outstream.flush();
         pXFile->close();
@@ -340,25 +337,17 @@ void PanelAnalysisDlg::onMessage(QString msg)
 }
 
 
-void PanelAnalysisDlg::showEvent(QShowEvent *event)
+void PanelAnalysisDlg::showEvent(QShowEvent *)
 {
-    move(s_Position);
-    resize(s_WindowSize);
-    if(s_bWindowMaximized) setWindowState(Qt::WindowMaximized);
-
-    event->accept();
+    restoreGeometry(s_Geometry);
 }
 
 
-
-void PanelAnalysisDlg::hideEvent(QHideEvent *event)
+void PanelAnalysisDlg::hideEvent(QHideEvent *)
 {
-    s_WindowSize = size();
-    s_bWindowMaximized = isMaximized();
-    s_Position = pos();
-
-    event->accept();
+    s_Geometry = saveGeometry();
 }
+
 
 void PanelAnalysisDlg::deleteTask()
 {

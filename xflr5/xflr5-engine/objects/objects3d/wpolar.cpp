@@ -1397,11 +1397,11 @@ bool WPolar::serializeWPlrWPA(QDataStream &ar, bool bIsStoring)
  */
 bool WPolar::serializeWPlrXFL(QDataStream &ar, bool bIsStoring)
 {
-    bool boolean;
-    int i, k, n;
-    double dble;
-    double r0, r1, r2, r3, r4, r5, r6, r7;
-    double i0, i1, i2, i3, i4, i5, i6, i7;
+    bool boolean=false;
+    int i=0, k=0, n=0;
+    double dble=0;
+    double r0=0, r1=0, r2=0, r3=0, r4=0, r5=0, r6=0, r7=0;
+    double i0=0, i1=0, i2=0, i3=0, i4=0, i5=0, i6=0, i7=0;
 
     m_PolarFormat = 200013;
     // 200011 : v0.00
