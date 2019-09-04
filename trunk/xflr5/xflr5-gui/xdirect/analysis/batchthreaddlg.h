@@ -124,7 +124,6 @@ private:
     static XDirect* s_pXDirect;           /**< a void pointer to the unique instance of the QXDirect class */
     static bool s_bCurrentFoil;        /**< true if the analysis should be performed only for the current foil */
     static bool s_bUpdatePolarView;    /**< true if the polar graphs should be updated during the analysis */
-    static QPoint s_Position;          /**< the position on the client area of the dialog's topleft corner */
     static int s_nThreads;             /**< the number of available threads */
 
     double m_ReMin;             /**< the min Re for a range analysis */
@@ -167,6 +166,8 @@ private:
     QStringList m_FoilList;            /**< the list of foils to analyze */
 
     QTimer *m_pTimer;
+
+    static QByteArray s_Geometry;
 };
 
 #endif // BATCHTHREADDLG_H

@@ -78,7 +78,6 @@ public:
     void deleteTask();
     void analyze();
     void cleanUp();
-    static void setPosition(QPoint pos) {s_Position = pos;}
 
     Graph* iterGraph(){return m_pIterGraph;}
 
@@ -102,10 +101,6 @@ private:
 
     PlaneAnalysisTask *m_pTheTask; /**< a pointer to the one and only instance of the PlaneAnalysisTask class */
 
-    static QPoint s_Position;   /**< the position on the client area of the dialog's topleft corner */
-    static QSize  s_WindowSize;
-    static bool s_bWindowMaximized;
-
     bool m_bCancel;             /**< true if the user has cancelled the analysis */
     bool m_bFinished;           /**< true if the analysis is completed, false if it is running */
     Graph *m_pIterGraph;         /**< A pointer to the QGraph object where the progress of the iterations are displayed */
@@ -121,6 +116,8 @@ private:
     GraphWidget * m_pGraphWidget;
     QTextEdit *m_pctrlTextOutput;
     QCheckBox * m_pctrlLogFile;
+
+    static QByteArray s_Geometry;
 };
 
 #endif

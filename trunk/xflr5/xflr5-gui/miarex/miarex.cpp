@@ -3093,10 +3093,6 @@ void Miarex::onEditCurWPolarPts()
     pMemWPolar->copy(m_pCurWPolar);
 
     EditPlrDlg epDlg(s_pMainFrame);
-    epDlg.move(EditPlrDlg::s_Position);
-    epDlg.resize(EditPlrDlg::s_WindowSize);
-    if(EditPlrDlg::s_bWindowMaximized) epDlg.setWindowState(Qt::WindowMaximized);
-
     epDlg.initDialog(nullptr, nullptr, this, m_pCurWPolar);
 
 

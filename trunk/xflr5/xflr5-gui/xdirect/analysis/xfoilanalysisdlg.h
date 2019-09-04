@@ -70,10 +70,10 @@ private slots:
     void onProgress();
 
 private:
-    void showEvent(QShowEvent *event);
-
     void accept();
     void reject();
+    void showEvent(QShowEvent *event);
+    void hideEvent(QHideEvent *event);
 
     void resetCurves();
     void setAlpha(double AlphaMin, double AlphaMax, double DeltaAlpha);
@@ -90,8 +90,6 @@ private:
     QPushButton* m_pctrlCancel, *m_pctrlSkip;
     QCheckBox* m_pctrlLogFile;
 
-    static XDirect* s_pXDirect;     /**< a void pointer to the instance of the QXDirect object >*/
-    static QPoint s_Position;   /**< the position on the client area of he dialog's topleft corner */
 
     bool m_bAlpha;                 /**< true if the analysis should be performed for a range of aoa, false if for a range of licf coefficient.>*/
     bool m_bErrors;                /**< true if some points are unconverged. Used by the calling class to know if the window should be kept visible at the end of the analysis.>*/
@@ -106,6 +104,8 @@ private:
 
     XFoilTask *m_pXFoilTask;       /**< A pointer to the instance of the XFoilTask associated to this analysis. >*/
 
+    static QByteArray s_Geometry;
+    static XDirect* s_pXDirect;     /**< a void pointer to the instance of the QXDirect object >*/
 };
 
 #endif

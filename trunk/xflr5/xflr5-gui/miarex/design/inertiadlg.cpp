@@ -834,11 +834,13 @@ void InertiaDlg::setupLayout()
     szPolicyMaximum.setHorizontalPolicy(QSizePolicy::Maximum);
     szPolicyMaximum.setVerticalPolicy(QSizePolicy::Maximum);
 
-    QVBoxLayout *MessageLayout = new QVBoxLayout;
-    QLabel *Label1 = new QLabel(tr("This is a calculation form for a rough order of magnitude for the inertia tensor."));
-    QLabel *Label2 = new QLabel(tr("Refer to the Guidelines for explanations."));
-    MessageLayout->addWidget(Label1);
-    MessageLayout->addWidget(Label2);
+    QVBoxLayout *pMessageLayout = new QVBoxLayout;
+    {
+        QLabel *pLabel1 = new QLabel(tr("This is a calculation form for a rough order of magnitude for the inertia tensor."));
+        QLabel *pLabel2 = new QLabel(tr("Refer to the Guidelines for explanations."));
+        pMessageLayout->addWidget(pLabel1);
+        pMessageLayout->addWidget(pLabel2);
+    }
 
     //___________Volume Mass, Center of gravity, and inertias__________
     m_pctrlTopStack = new QStackedWidget;
@@ -1101,24 +1103,24 @@ void InertiaDlg::setupLayout()
                 m_pctrlTotalIyy->setEnabled(false);
                 m_pctrlTotalIzz->setEnabled(false);
                 m_pctrlTotalIxz->setEnabled(false);
-                QLabel *LabTotIxx = new QLabel("Ixx=");
-                QLabel *LabTotIyy = new QLabel("Iyy=");
-                QLabel *LabTotIzz = new QLabel("Izz=");
-                QLabel *LabTotIxz = new QLabel("Ixz=");
-                LabTotIxx->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-                LabTotIyy->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-                LabTotIzz->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-                LabTotIxz->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+                QLabel *pLabTotIxx = new QLabel("Ixx=");
+                QLabel *pLabTotIyy = new QLabel("Iyy=");
+                QLabel *pLabTotIzz = new QLabel("Izz=");
+                QLabel *pLabTotIxz = new QLabel("Ixz=");
+                pLabTotIxx->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+                pLabTotIyy->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+                pLabTotIzz->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+                pLabTotIxz->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
                 QLabel *LabInertiaTotal = new QLabel(tr("Inertia in CoG Frame"));
                 LabInertiaTotal->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
                 m_pctrlInertiaUnit10 = new QLabel("kg.m2");
                 m_pctrlInertiaUnit20 = new QLabel("kg.m2");
                 m_pctrlInertiaUnit30 = new QLabel("kg.m2");
                 m_pctrlInertiaUnit40 = new QLabel("kg.m2");
-                pTotalInertiaLayout->addWidget(LabTotIxx,1,1);
-                pTotalInertiaLayout->addWidget(LabTotIyy,2,1);
-                pTotalInertiaLayout->addWidget(LabTotIzz,3,1);
-                pTotalInertiaLayout->addWidget(LabTotIxz,4,1);
+                pTotalInertiaLayout->addWidget(pLabTotIxx,1,1);
+                pTotalInertiaLayout->addWidget(pLabTotIyy,2,1);
+                pTotalInertiaLayout->addWidget(pLabTotIzz,3,1);
+                pTotalInertiaLayout->addWidget(pLabTotIxz,4,1);
                 pTotalInertiaLayout->addWidget(m_pctrlTotalIxx,1,2);
                 pTotalInertiaLayout->addWidget(m_pctrlTotalIyy,2,2);
                 pTotalInertiaLayout->addWidget(m_pctrlTotalIzz,3,2);
@@ -1149,7 +1151,7 @@ void InertiaDlg::setupLayout()
 
     QVBoxLayout * pMainLayout = new QVBoxLayout(this);
     {
-        pMainLayout->addLayout(MessageLayout);
+        pMainLayout->addLayout(pMessageLayout);
         pMainLayout->addWidget(m_pctrlTopStack);
         pMainLayout->addWidget(pPointMasses);
         pMainLayout->addWidget(m_pctrlMassTable);

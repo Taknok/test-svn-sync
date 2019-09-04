@@ -156,6 +156,8 @@ private:
 
     XFoilTask *m_pXFoilTask;       /**< A pointer to the instance of the XFoilTask associated to this batch analysis.
                                         The task is unique to the instance of this class, and re-used each time a new analysis is launched.>*/
+
+    static QByteArray s_Geometry;
 };
 
 #endif // BATCHDLG_H

@@ -187,25 +187,12 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 #endif
 
     QString str;
-    int kx=117, ky=57;
-    bool bOK;
     settings.beginGroup("MainFrame");
     {
         str = settings.value("LanguageFilePath").toString();
         if(str.length()) s_LanguageFilePath = str;
-        kx = settings.value("FrameGeometryx", 117).toInt(&bOK);
-        ky = settings.value("FrameGeometryy",  57).toInt(&bOK);
     }
     settings.endGroup();
-
-    XFoilAnalysisDlg::s_Position = QPoint(kx+31, ky+31);
-    BatchThreadDlg::s_Position   = QPoint(kx+31, ky+31);
-    BatchDlg::s_Position         = QPoint(kx+31, ky+31);
-    LLTAnalysisDlg::setPosition(QPoint(kx+31, ky+31));
-    PanelAnalysisDlg::s_Position = QPoint(kx+31, ky+31);
-    EditPlrDlg::s_Position       = QPoint(kx+31, ky+31);
-
-
 
     if(s_LanguageFilePath.length())
     {
@@ -5170,36 +5157,6 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
         ar << Units::speedUnitIndex();
         ar << Units::forceUnitIndex();
         ar << Units::momentUnitIndex();
-
-
-        //Save default Polar data. Not in the Settings, since this is Project dependant
-        /*        if(WPolarDlg::s_WPolar.isFixedSpeedPolar())       ar<<1;
-        else if(WPolarDlg::s_WPolar.isFixedLiftPolar())   ar<<2;
-        else if(WPolarDlg::s_WPolar.isFixedaoaPolar())    ar<<4;
-        else if(WPolarDlg::s_WPolar.isBetaPolar())        ar<<5;
-        else if(WPolarDlg::s_WPolar.isStabilityPolar())   ar<<7;
-        else ar << 0;
-
-        if(WPolarDlg::s_WPolar.isLLTMethod())             ar << 1;
-        else if(WPolarDlg::s_WPolar.isVLMMethod())        ar << 2;
-        else if(WPolarDlg::s_WPolar.isPanel4Method())     ar << 3;
-        else if(WPolarDlg::s_WPolar.isTriCstMethod())     ar << 4;
-        else if(WPolarDlg::s_WPolar.isTriLinearMethod())  ar << 5;
-        else ar << 0;
-
-        ar << WPolarDlg::s_WPolar.mass();
-        ar << WPolarDlg::s_WPolar.m_QInfSpec;
-        ar << WPolarDlg::s_WPolar.CoG().x;
-        ar << WPolarDlg::s_WPolar.CoG().y;
-        ar << WPolarDlg::s_WPolar.CoG().z;
-
-        ar << WPolarDlg::s_WPolar.density();
-        ar << WPolarDlg::s_WPolar.viscosity();
-        ar << WPolarDlg::s_WPolar.m_AlphaSpec;
-        ar << WPolarDlg::s_WPolar.m_BetaSpec;
-
-        ar << WPolarDlg::s_WPolar.bTilted();
-        ar << WPolarDlg::s_WPolar.bWakeRollUp();*/
 
         // format 200002
         // saving WPolar full data including extra drag

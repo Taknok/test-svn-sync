@@ -46,10 +46,7 @@
 #include <objects/objects3d/wpolar.h>
 #include <objects/objects3d/wing.h>
 
-QPoint LLTAnalysisDlg::s_Position = QPoint(200,100);
-QSize  LLTAnalysisDlg::s_WindowSize = QSize(900,550);
-bool LLTAnalysisDlg::s_bWindowMaximized=false;
-
+QByteArray LLTAnalysisDlg::s_Geometry;
 
 /**
 *The public constructor
@@ -367,23 +364,15 @@ void LLTAnalysisDlg::updateOutput(QString &strong)
 }
 
 
-
-void LLTAnalysisDlg::showEvent(QShowEvent *pEvent)
+void LLTAnalysisDlg::showEvent(QShowEvent *)
 {
-    move(s_Position);
-    resize(s_WindowSize);
-    if(s_bWindowMaximized) setWindowState(Qt::WindowMaximized);
-
-    pEvent->accept();
+    restoreGeometry(s_Geometry);
 }
 
-void LLTAnalysisDlg::hideEvent(QHideEvent *pEvent)
-{
-    s_WindowSize = size();
-    s_bWindowMaximized = isMaximized();
-    s_Position = pos();
 
-    pEvent->accept();
+void LLTAnalysisDlg::hideEvent(QHideEvent *)
+{
+    s_Geometry = saveGeometry();
 }
 
 

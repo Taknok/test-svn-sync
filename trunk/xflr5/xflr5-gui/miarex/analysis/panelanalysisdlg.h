@@ -98,10 +98,6 @@ private:
     QCheckBox * m_pctrlLogFile;
     QProgressBar *m_pctrlProgress;
 
-    static QPoint s_Position;        /**< the position on the client area of the dialog's topleft corner */
-    static QSize  s_WindowSize;
-    static bool s_bWindowMaximized;
-
     QTime clock;
 
     bool m_bIsFinished;         /**< true if the analysis is completed */
@@ -119,6 +115,8 @@ public:
     bool m_bTrace;
 
     PlaneAnalysisTask *m_pTheTask; /**< a pointer to the one and only instance of the PlaneAnalysisTask class */
+
+    static QByteArray s_Geometry;
 };
 
 #endif // PANELANALYSISDLG_H

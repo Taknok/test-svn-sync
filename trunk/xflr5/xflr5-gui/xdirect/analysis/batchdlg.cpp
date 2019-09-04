@@ -49,7 +49,7 @@
 
 bool BatchDlg::s_bCurrentFoil=true;
 XDirect * BatchDlg::s_pXDirect;
-QPoint BatchDlg::s_Position;
+QByteArray BatchDlg::s_Geometry;
 
 
 /**
@@ -1258,10 +1258,9 @@ void BatchDlg::outputMsg(QString &msg)
  * Overrides the base class showEvent method. Moves the window to its former location.
  * @param event the showEvent.
  */
-void BatchDlg::showEvent(QShowEvent *event)
+void BatchDlg::showEvent(QShowEvent *)
 {
-    move(s_Position);
-    event->accept();
+    restoreGeometry(s_Geometry);
 }
 
 
@@ -1269,10 +1268,9 @@ void BatchDlg::showEvent(QShowEvent *event)
  * Overrides the base class hideEvent method. Stores the window's current position.
  * @param event the hideEvent.
  */
-void BatchDlg::hideEvent(QHideEvent *event)
+void BatchDlg::hideEvent(QHideEvent *)
 {
-    s_Position = pos();
-    event->accept();
+    s_Geometry = saveGeometry();
 }
 
 

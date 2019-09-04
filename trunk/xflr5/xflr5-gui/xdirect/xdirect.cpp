@@ -2205,10 +2205,6 @@ void XDirect::onEditCurPolar()
     pMemPolar->copyPolar(m_pCurPolar);
 
     EditPlrDlg epDlg(s_pMainFrame);
-    epDlg.move(EditPlrDlg::s_Position);
-    epDlg.resize(EditPlrDlg::s_WindowSize);
-    if(EditPlrDlg::s_bWindowMaximized) epDlg.setWindowState(Qt::WindowMaximized);
-
     epDlg.initDialog(this, m_pCurPolar, nullptr, nullptr);
 
     LineStyle style;

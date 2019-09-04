@@ -51,8 +51,10 @@
 bool BatchThreadDlg::s_bCurrentFoil=true;
 bool BatchThreadDlg::s_bUpdatePolarView = false;
 XDirect * BatchThreadDlg::s_pXDirect;
-QPoint BatchThreadDlg::s_Position;
+
 int BatchThreadDlg::s_nThreads = 1;
+
+QByteArray BatchThreadDlg::s_Geometry;
 
 /**
  * The public contructor
@@ -920,7 +922,7 @@ void BatchThreadDlg::startAnalysis()
     m_pctrlAnalyze->setText(tr("Cancel"));
 
 
-    if(!m_bFromList) nRe = (int)qAbs((m_ReMax-m_ReMin)/m_ReInc)+1;
+    if(!m_bFromList) nRe = int(qAbs((m_ReMax-m_ReMin)/m_ReInc)+1);
     else             nRe = XDirect::s_ReList.count();
 
     //    QThreadPool::globalInstance()->setExpiryTimeout(60000);//ms
@@ -1023,7 +1025,7 @@ void BatchThreadDlg::startThread()
         XFoilTask *pXFoilTask = new XFoilTask(this);
 
         //take the last analysis in the array
-        pAnalysis = (FoilAnalysis*)m_AnalysisPair.at(m_AnalysisPair.size()-1);
+        pAnalysis = m_AnalysisPair.at(m_AnalysisPair.size()-1);
 
         pAnalysis->pPolar->setVisible(true);
 
@@ -1070,7 +1072,7 @@ void BatchThreadDlg::handleXFoilTaskEvent(const XFoilTaskEvent *pEvent)
     // Now we can safely do something with our Qt objects.
     m_nTaskDone++; //one down, more to go
     QString str = tr("   ...Finished ")+ (pEvent->foilPtr())->foilName()+" / "
-            +((Polar*)pEvent->polarPtr())->polarName()+"\n";
+            +(pEvent->polarPtr())->polarName()+"\n";
     updateOutput(str);
 
 
@@ -1131,20 +1133,18 @@ void BatchThreadDlg::outputReList()
  * Overrides the base class showEvent method. Moves the window to its former location.
  * @param event the showEvent.
  */
-void BatchThreadDlg::showEvent(QShowEvent *event)
+void BatchThreadDlg::showEvent(QShowEvent *)
 {
-    move(s_Position);
-    event->accept();
+    restoreGeometry(s_Geometry);
 }
 
 /**
  * Overrides the base class hideEvent method. Stores the window's current position.
  * @param event the hideEvent.
  */
-void BatchThreadDlg::hideEvent(QHideEvent *event)
+void BatchThreadDlg::hideEvent(QHideEvent *)
 {
-    s_Position = pos();
-    event->accept();
+    s_Geometry = saveGeometry();
 }
 
 
