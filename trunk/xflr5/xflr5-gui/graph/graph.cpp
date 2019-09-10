@@ -167,11 +167,10 @@ void Graph::drawCurve(int nIndex, QPainter &painter)
 {
     painter.save();
     double scaley;
-    int i, ptside;
-    QPoint From, To, Min, Max;
+    QPoint To, Min, Max;
     QRect rViewRect;
 
-    ptside = 5;
+    int ptside = 5;
     Curve* pCurve = curve(nIndex);
 
     scaley = m_scaley;
@@ -191,32 +190,19 @@ void Graph::drawCurve(int nIndex, QPainter &painter)
     rViewRect.setTopLeft(Min);
     rViewRect.setBottomRight(Max);
 
-    if(pCurve->size()>=1)
+    QPolygonF polycurve(pCurve->size());
+    if(pCurve->size()>=1 && pCurve->isVisible())
     {
-        From.setX(int(pCurve->x[0]/m_scalex+m_ptoffset.x()));
-        From.setY(int(pCurve->y[0]/scaley  +m_ptoffset.y()));
-
-        if(pCurve->isVisible())
+        for (int i=0; i<pCurve->size();i++)
         {
-            for (i=1; i<pCurve->size();i++)
-            {
-                To.setX(int(pCurve->x[i]/m_scalex+m_ptoffset.x()));
-                To.setY(int(pCurve->y[i]/scaley  +m_ptoffset.y()));
-                painter.drawLine(From, To);
-
-                From = To;
-            }
+            polycurve[i] = {pCurve->x[i]/m_scalex+m_ptoffset.x(), pCurve->y[i]/  scaley+m_ptoffset.y()};
         }
+        painter.drawPolyline(polycurve);
 
-        if(pCurve->pointsVisible())
+        for (int i=0; i<pCurve->size();i++)
         {
-            for (i=0; i<pCurve->size();i++)
-            {
-                QPoint pt(int(pCurve->x[i]/m_scalex+m_ptoffset.x()), int(pCurve->y[i]/  scaley+m_ptoffset.y()));
-                drawPoint(painter, pCurve->pointStyle(), pt, m_BkColor);
-            }
+            drawPoint(painter, pCurve->pointStyle(), {int(polycurve.at(i).x()), int(polycurve.at(i).y())}, m_BkColor);
         }
-
     }
 
     if(s_bHighlightPoint)
@@ -240,9 +226,9 @@ void Graph::drawCurve(int nIndex, QPainter &painter)
 
 void Graph::drawAxes(QPainter &painter)
 {
-    double xp, yp, scaley;
+    double xp=0, yp=0;
     QPen AxesPen;
-    scaley = m_scaley;
+    double scaley = m_scaley;
     painter.save();
 
     AxesPen.setColor(m_AxisColor);
@@ -274,16 +260,15 @@ void Graph::drawAxes(QPainter &painter)
 void Graph::drawTitles(QPainter &painter)
 {
     //draws the x & y axis name
-    double scaley;
-    int XPosXTitle, YPosXTitle, XPosYTitle, YPosYTitle;
-    double xp, yp;
 
-    scaley = m_scaley;
+    double xp=0, yp=0;
+
+    double scaley = m_scaley;
     painter.save();
-    XPosXTitle = 5;
-    YPosXTitle = -10;
-    XPosYTitle = -5;
-    YPosYTitle =  5;
+    int XPosXTitle = 5;
+    int YPosXTitle = -10;
+    int XPosYTitle = -5;
+    int YPosYTitle =  5;
 
     if(xo>=xmin && xo<=xmax) xp = xo;
     else if(xo>xmax)         xp = xmax;
@@ -309,15 +294,12 @@ void Graph::drawTitles(QPainter &painter)
 
 void Graph::drawXTicks(QPainter &painter)
 {
-    double main, scaley, xt, yp;
-    int exp, TickSize, height, yExpOff, nx;
-
-    exp=0;
+    int exp=0;
 
     if(fabs(xunit)<0.00000001) return;
     if(fabs(xmax-xmin)/xunit>30.0) return;
 
-    scaley = m_scaley;
+    double scaley = m_scaley;
     painter.save();
     QString strLabel, strLabelExp;
 
@@ -326,9 +308,9 @@ void Graph::drawXTicks(QPainter &painter)
     painter.setFont(m_LabelFont);
 
 
-    TickSize = 5;
-    height  = fm.height()/2;
-    yExpOff = height/2;
+    int TickSize = 5;
+    int height  = fm.height()/2;
+    int yExpOff = height/2;
 
 
     QPen LabelPen(m_AxisColor);
@@ -336,10 +318,11 @@ void Graph::drawXTicks(QPainter &painter)
     LabelPen.setStyle(getStyle(m_AxisStyle));
     LabelPen.setWidth(m_AxisWidth);
     painter.setPen(LabelPen);
-    xt = xo-(xo-xmin);//one tick at the origin
-    nx = int((xo-xmin)/xunit);
+    double xt = xo-(xo-xmin);//one tick at the origin
+    int nx = int((xo-xmin)/xunit);
     xt = xo - nx*xunit;
 
+    double yp = 0;
     if(yo>=ymin && yo<=ymax) yp = yo;
     else if(yo>ymax)         yp = ymax;
     else                     yp = ymin;
@@ -365,7 +348,7 @@ void Graph::drawXTicks(QPainter &painter)
             }
             else if(exp_x>=4 || exp_x<=-4)
             {
-                main = xt;
+                double main = xt;
                 expFormat(main, exp);
 
                 strLabel = QString("%1 10").arg(main,5,'f',1);
@@ -396,36 +379,32 @@ void Graph::drawXTicks(QPainter &painter)
 }
 
 
-
-
 void Graph::drawYTicks(QPainter &painter)
 {
-    double scaley, xp, main, yt;
-    int TickSize, fmheight, fmheight4, exp;
     if(fabs(xunit)<0.00000001) return;
     if(fabs(ymax-ymin)/yunit>30.0) return;
-    scaley = m_scaley;
+    double scaley = m_scaley;
     painter.save();
     QString strLabel, strLabelExp;
-    exp = 0;
+    int exp = 0;
     QFontMetrics fm(m_LabelFont);
     painter.setFont(m_LabelFont);
 
-    fmheight  = fm.height();
-    fmheight4 = int(double(fmheight)/4.0);
+    int fmheight  = fm.height();
+    int fmheight4 = int(double(fmheight)/4.0);
 
-    TickSize = 5;
+    int TickSize = 5;
 
     QPen LabelPen(m_AxisColor);
     LabelPen.setStyle(getStyle(m_AxisStyle));
     LabelPen.setWidth(m_AxisWidth);
 
-
+    double xp=0;
     if(xo>=xmin && xo<=xmax) xp = xo;
     else if(xo>xmax)         xp = xmax;
     else                     xp = xmin;
 
-    yt = yo-int((yo-ymin)*1.0001/yunit)*yunit;//one tick at the origin
+    double yt = yo-int((yo-ymin)*1.0001/yunit)*yunit;//one tick at the origin
 
     int iTick=0;
 
@@ -450,7 +429,7 @@ void Graph::drawYTicks(QPainter &painter)
             }
             else if(abs(exp_y)>=4)
             {
-                main = yt;
+                double main = yt;
                 expFormat(main, exp);
 
                 strLabel    = QString("%1 10").arg(main,5,'f',1);
@@ -679,12 +658,11 @@ void Graph::drawLegend(QPainter &painter, QPoint &Place, QFont &LegendFont, QCol
     }
 
     painter.restore();
-
 }
 
-void Graph::expFormat(double &f, int &exp)
-{
 
+void Graph::expFormat(double &f, int &exp) const
+{
     if (f==0.0)
     {
         exp = 0;
@@ -698,10 +676,7 @@ void Graph::expFormat(double &f, int &exp)
         exp = int(log10(f1));
 
     f = f/pow(10.0,exp);
-
 }
-
-
 
 
 void Graph::exportToFile(QFile &XFile, bool bCSV)
@@ -747,13 +722,6 @@ void Graph::exportToFile(QFile &XFile, bool bCSV)
     }
     out<<"\n"; //end of file
     XFile.close();
-}
-
-
-
-QPoint Graph::getOffset()
-{
-    return m_ptoffset;
 }
 
 
@@ -883,14 +851,14 @@ void Graph::loadSettings(QSettings &settings)
         clr = settings.value("LabelColor", QColor(255,255,255)).value<QColor>();
         setLabelColor(clr);
 
-        lgft = QFont(settings.value("TitleFontName","Comic Sans MS").toString());
+        lgft = QFont(settings.value("TitleFontName", QString()).toString());
         int size = settings.value("TitleFontSize",8).toInt();
         if(size>0) lgft.setPointSize(size);
         lgft.setItalic(settings.value("TitleFontItalic", false).toBool());
         lgft.setBold(settings.value("TitleFontBold", false).toBool());
         setTitleFont(lgft);
 
-        lgft = QFont(settings.value("LabelFontName","Comic Sans MS").toString());
+        lgft = QFont(settings.value("LabelFontName", QString()).toString());
         size = settings.value("LabelFontSize",8).toInt();
         if(size>0) lgft.setPointSize(size);
         lgft.setItalic(settings.value("LabelFontItalic", false).toBool());
@@ -945,38 +913,6 @@ void Graph::loadSettings(QSettings &settings)
     }
     settings.endGroup();
 }
-
-
-void Graph::setLabelFont(QFont &font)
-{
-    m_LabelFont = font;
-}
-
-
-void Graph::setTitleFont(QFont &font)
-{
-    m_TitleFont = font;
-}
-
-
-
-
-void Graph::getTitleFont(QFont &titleFont)
-{
-    titleFont = m_TitleFont;
-}
-void Graph::getLabelFont(QFont &labelFont)
-{
-    labelFont = m_LabelFont;
-}
-
-
-
-
-
-
-
-
 
 
 Curve* Graph::addCurve()

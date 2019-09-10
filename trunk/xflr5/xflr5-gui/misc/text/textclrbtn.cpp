@@ -85,15 +85,11 @@ void TextClrBtn::setBackgroundColor(QColor const & color)
 }
 
 
-
 void TextClrBtn::setFont(QFont const & font)
 {
     m_TextFont = font;
     update();
 }
-
-
-QColor TextClrBtn::textColor() { return m_TextColor;}
 
 
 void TextClrBtn::paintEvent(QPaintEvent *event)

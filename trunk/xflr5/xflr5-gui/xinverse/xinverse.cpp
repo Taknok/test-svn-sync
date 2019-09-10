@@ -1911,7 +1911,7 @@ void XInverse::paintGraph(QPainter &painter)
     if(m_bSpline && !m_bGetPos)
     {
 
-        QPoint pt = m_QGraph.getOffset();
+        QPoint pt = m_QGraph.offset();
 
         m_Spline.drawSpline(painter, 1.0/m_QGraph.xScale(), -1.0/m_QGraph.yScale(), pt);
         m_Spline.drawCtrlPoints(painter, 1.0/m_QGraph.xScale(), -1.0/m_QGraph.yScale(), pt);

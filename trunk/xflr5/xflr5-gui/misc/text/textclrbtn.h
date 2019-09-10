@@ -34,12 +34,12 @@ class TextClrBtn : public QAbstractButton
     Q_OBJECT
 
 public:
-    TextClrBtn(QWidget *parent = 0);
+    TextClrBtn(QWidget *parent = nullptr);
 
     void setFont(QFont const &font);
     void setTextColor(QColor const & textColor);
     void setBackgroundColor(QColor const & textColor);
-    QColor textColor();
+    QColor textColor() const {return m_TextColor;}
 
 
 signals:
