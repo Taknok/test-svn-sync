@@ -105,7 +105,7 @@ public:
     int splinePointStyle() const {return m_LineStyle.m_PointStyle;}
 
     void setVisible(bool bVisible){m_LineStyle.m_bIsVisible = bVisible;}
-    bool isVisible()         const {return m_LineStyle.m_bIsVisible;}
+    bool isVisible()   const {return m_LineStyle.m_bIsVisible;}
 
 
 private:

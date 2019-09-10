@@ -65,8 +65,6 @@ Settings::Settings(QWidget *pParent) : QWidget(pParent)
 {
     setWindowTitle(tr("General Display Settings"));
 
-    s_RefGraph.setGraphName("Reference_Graph");
-
     m_bIsGraphModified = false;
 
 #ifdef Q_OS_MAC
@@ -401,6 +399,7 @@ void Settings::saveSettings(QSettings &settings)
         if(isLightTheme()) settings.setValue("Theme",0);
         else               settings.setValue("Theme",1);
 
+        s_RefGraph.setGraphName("Reference_Graph");
         s_RefGraph.saveSettings(settings);
     }
     settings.endGroup();
@@ -419,13 +418,15 @@ void Settings::loadSettings(QSettings &settings)
 
         s_TextColor = settings.value("TextColor", QColor(237,237,237)).value<QColor>();
 
-        s_TextFont = QFont(settings.value("TextFontFamily", "Courier").toString());
+        if(settings.contains("TextFontFamily"))
+            s_TextFont = QFont(settings.value("TextFontFamily").toString());
         s_TextFont.setPointSize(settings.value("TextFontPointSize", 10).toInt());
         s_TextFont.setItalic(settings.value("TextFontItalic", false).toBool());
         s_TextFont.setBold(settings.value("TextFontBold", false).toBool());
         s_TextFont.setStyleStrategy(QFont::OpenGLCompatible);
 
-        s_TableFont = QFont(settings.value("TableFontFamily", "Courier").toString());
+        if(settings.contains("TableFontFamily"))
+            s_TableFont = QFont(settings.value("TableFontFamily").toString());
         s_TableFont.setPointSize(settings.value("TableFontPointSize", 10).toInt());
         s_TableFont.setItalic(settings.value("TableFontItalic", false).toBool());
         s_TableFont.setBold(settings.value("TableFontBold", false).toBool());
@@ -441,6 +442,8 @@ void Settings::loadSettings(QSettings &settings)
         int iTheme = settings.value("Theme",1).toInt();
         if(iTheme==0) s_Theme = SETTINGS::LIGHTTHEME;
         else          s_Theme = SETTINGS::DARKTHEME;
+
+        s_RefGraph.setGraphName("Reference_Graph");
         s_RefGraph.loadSettings(settings);
     }
     settings.endGroup();

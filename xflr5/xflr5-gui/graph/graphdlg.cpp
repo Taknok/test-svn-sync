@@ -358,10 +358,9 @@ void GraphDlg::onLabelColor()
 }
 
 
-
 void GraphDlg::onLabelFont()
 {
-    bool ok;
+    bool ok=false;
     QFont LabelFont("Courier");
     m_pGraph->getLabelFont(LabelFont);
     QFont font = QFontDialog::getFont(&ok, LabelFont, this);

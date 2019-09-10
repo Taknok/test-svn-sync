@@ -344,7 +344,7 @@ void Updater::loadSettings(QSettings &settings)
         s_bAutoCheck = settings.value("AutoUpdateCheck", true).toBool();
         s_LastCheckDate = settings.value("LastCheckDate", false).toDate();
     }
-    Trace("loading lastcheckdate: "+s_LastCheckDate.toString("yyyy.MM.dd"));
+//    Trace("loading lastcheckdate: "+s_LastCheckDate.toString("yyyy.MM.dd"));
     settings.endGroup();
 
     s_bAutoCheck = false; // until crash bugs are fixed
@@ -355,7 +355,7 @@ void Updater::saveSettings(QSettings &settings)
 {
     settings.beginGroup("Updater");
     {
-        Trace("Saving lastcheckdate: "+s_LastCheckDate.toString("yyyy.MM.dd"));
+//        Trace("Saving lastcheckdate: "+s_LastCheckDate.toString("yyyy.MM.dd"));
         settings.setValue("AutoUpdateCheck", s_bAutoCheck);
         settings.setValue("LastCheckDate", s_LastCheckDate);
     }

@@ -36,9 +36,9 @@ RenameDlg::RenameDlg(QWidget *pParent) : QDialog(pParent)
 
 void RenameDlg::onButton(QAbstractButton *pButton)
 {
-    if (m_pButtonBox->button(QDialogButtonBox::Ok) == pButton)            onOK();
+    if      (m_pButtonBox->button(QDialogButtonBox::Ok) == pButton)       onOK();
     else if (m_pButtonBox->button(QDialogButtonBox::Discard) == pButton)  reject();
-    else if(m_pctrlOverwrite==pButton)                                  onOverwrite();
+    else if (m_pctrlOverwrite==pButton)                                   onOverwrite();
 }
 
 
@@ -127,7 +127,6 @@ void RenameDlg::initDialog(QStringList *pStrList, QString startName, QString que
 }
 
 
-
 void RenameDlg::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key())
@@ -147,7 +146,6 @@ void RenameDlg::keyPressEvent(QKeyEvent *event)
             event->ignore();
     }
 }
-
 
 
 void RenameDlg::onOverwrite()
@@ -191,7 +189,6 @@ void RenameDlg::onOK()
 
     QDialog::accept();
 }
-
 
 
 void RenameDlg::onSelChangeList(int)

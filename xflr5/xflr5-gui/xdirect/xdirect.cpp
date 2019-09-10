@@ -1175,7 +1175,7 @@ void XDirect::keyPressEvent(QKeyEvent *pEvent)
         {
             if (pEvent->modifiers().testFlag(Qt::ShiftModifier))        onBatchAnalysis();
             else if (pEvent->modifiers().testFlag(Qt::ControlModifier)) onMultiThreadedBatchAnalysis();
-            else                                                       onDefinePolar();
+            else                                                        onDefinePolar();
             break;
         }
         case Qt::Key_F8:
@@ -4376,7 +4376,26 @@ Foil* XDirect::setFoil(Foil* pFoil)
 
     Foil *pCurFoil = m_pCurFoil;
     bool bRes = false;
-    if(pCurFoil) bRes = m_XFoil.initXFoilGeometry(pCurFoil->n, pCurFoil->x,pCurFoil->y, pCurFoil->nx, pCurFoil->ny);
+    if(pCurFoil)
+    {
+        if(pCurFoil->n>=IQX-2)
+        {
+            QString strange;
+            strange.sprintf("Cannot initialize the foil %s:\nNumber of panels=%d, Max. size=%d,\nRecommended size=100-150 panels",
+                            pCurFoil->foilName().toStdString().c_str(), pCurFoil->n, IQX-2);
+            QMessageBox::warning(s_pMainFrame, tr("Warning"), strange);
+        }
+        else
+        {
+            bRes = m_XFoil.initXFoilGeometry(pCurFoil->n, pCurFoil->x,pCurFoil->y, pCurFoil->nx, pCurFoil->ny);
+            if(!bRes)
+            {
+                QString strange;
+                strange.sprintf("Error while initializing the foil %s", pCurFoil->foilName().toStdString().c_str());
+                QMessageBox::warning(s_pMainFrame, tr("Warning"), strange);
+            }
+        }
+    }
 
     if(pCurFoil && !bRes)
     {

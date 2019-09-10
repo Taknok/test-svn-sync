@@ -70,26 +70,26 @@ public:
     void getOppProperties(QString &OpPointProperties, Foil *pFoil, bool bData=false) const;
 
 
-    QString const &foilName()  const {return m_FoilName;}
-    QString const &polarName() const {return m_PlrName;}
+    QString foilName()  const {return m_FoilName;}
+    QString polarName() const {return m_PlrName;}
     QString opPointName() const;
 
     void setFoilName(QString newFoilName) {m_FoilName = newFoilName;}
     void setPolarName(QString newPlrName) {m_PlrName = newPlrName;}
 
-    bool const &bViscResults() const {return m_bViscResults;}
-    bool const &bBL()          const {return m_bBL;}
+    bool bViscResults() const {return m_bViscResults;}
+    bool bBL()          const {return m_bBL;}
 
-    int const &oppStyle()    const {return m_Style;}
-    int const &oppWidth()    const {return m_Width;}
-    int const &pointStyle()  const {return m_PointStyle;}
-    bool const &isVisible()  const {return m_bIsVisible;}
+    int oppStyle()    const {return m_Style;}
+    int oppWidth()    const {return m_Width;}
+    int pointStyle()  const {return m_PointStyle;}
+    bool isVisible()  const {return m_bIsVisible;}
 
     void setVisible(bool bShow) {m_bIsVisible=bShow;}
 
-    double const &aoa()      const {return m_Alpha;}
-    double const &Reynolds() const {return m_Reynolds;}
-    double const &Mach()     const {return m_Mach; }
+    double aoa()      const {return m_Alpha;}
+    double Reynolds() const {return m_Reynolds;}
+    double Mach()     const {return m_Mach; }
 
     void getColor(int &r, int &g, int &b, int &a) const;
     void setColor(int r, int g, int b, int a);

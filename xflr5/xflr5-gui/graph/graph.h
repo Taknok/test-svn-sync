@@ -39,7 +39,7 @@ class Curve;
 
 namespace GRAPH
 {
-typedef enum{OPPGRAPH, POLARGRAPH, POPPGRAPH, WPOLARGRAPH, STABTIMEGRAPH, CPGRAPH, INVERSEGRAPH, OTHERGRAPH} enumGraphType;
+    typedef enum{OPPGRAPH, POLARGRAPH, POPPGRAPH, WPOLARGRAPH, STABTIMEGRAPH, CPGRAPH, INVERSEGRAPH, OTHERGRAPH} enumGraphType;
 }
 
 class MainFrame;
@@ -61,20 +61,23 @@ public:
     void drawYMajGrid(QPainter &painter);
     void drawXTicks(QPainter &painter);
     void drawYTicks(QPainter &painter);
-    void expFormat(double &f, int &exp);
+
+    void expFormat(double &f, int &exp) const;
     void exportToFile(QFile &XFile, bool bCSV);
-    void highlight(QPainter &painter, Curve *pCurve, int ref);
 
     void loadSettings(QSettings &settings);
     void saveSettings(QSettings &settings);
-    QPoint getOffset();
 
-    void getLabelFont(QFont &labelFont);
-    void getTitleFont(QFont &titleFont);
-    void setLabelFont(QFont &font);
-    void setTitleFont(QFont &font);
+    QPoint offset() const {return m_ptoffset;}
 
+    QFont const &labelFont() const {return m_LabelFont;}
+    QFont const &titleFont() const {return m_TitleFont;}
+    void getLabelFont(QFont &labelFont) const {labelFont = m_LabelFont;}
+    void getTitleFont(QFont &titleFont) const {titleFont = m_TitleFont;}
+    void setLabelFont(QFont &font) {m_LabelFont = font;}
+    void setTitleFont(QFont &font) {m_TitleFont = font;}
 
+    void highlight(QPainter &painter, Curve *pCurve, int ref);
     static void setOppHighlighting(bool bHighLight){s_bHighlightPoint = bHighLight;}
     static bool isHighLighting(){return s_bHighlightPoint;}
 
