@@ -30,8 +30,10 @@
 #include <QTableView>
 #include <QStandardItemModel>
 #include <QCheckBox>
+#include <QDialogButtonBox>
 
-class DoubleEdit;
+
+class IntEdit;
 class FloatEditDelegate;
 class SplineFoil;
 class AFoil;
@@ -50,6 +52,7 @@ public:
 private slots:
     void onOK();
     void onUpdate();
+    void onButton(QAbstractButton *pButton);
 
 private:
     void keyPressEvent(QKeyEvent *event);
@@ -62,18 +65,19 @@ private:
     void updateSplines();
 
 
-    DoubleEdit    *m_pctrlOutExtrados;
-    DoubleEdit    *m_pctrlOutIntrados;
+    IntEdit    *m_pctrlOutExtrados;
+    IntEdit    *m_pctrlOutIntrados;
     QComboBox    *m_pctrlDegExtrados;
     QComboBox    *m_pctrlDegIntrados;
-    QPushButton *OKButton, *CancelButton;
     QCheckBox *m_pctrlSymetric, *m_pctrlCloseLE, *m_pctrlCloseTE;
+
+    QDialogButtonBox *m_pButtonBox;
 
     QTableView *m_pctrlUpperList, *m_pctrlLowerList;
     QStandardItemModel *m_pUpperListModel,*m_pLowerListModel;
     FloatEditDelegate *m_pUpperFloatDelegate, *m_pLowerFloatDelegate;
 
-    int *m_precision;
+    QLineEdit *m_pctrlSFName;
 
 protected:
     SplineFoil *m_pSF;

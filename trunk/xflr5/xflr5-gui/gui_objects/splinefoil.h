@@ -55,13 +55,13 @@ public:
     bool showCenterLine()    const {return m_bCenterLine;}
 
     QString splineFoilName() const {return m_strFoilName;}
+    void setSplineFoilName(QString const &name) {m_strFoilName=name;}
 
-    Spline *extrados(){return &m_Extrados;}
-    Spline *intrados(){return &m_Intrados;}
+    Spline *extrados() {return &m_Extrados;}
+    Spline *intrados() {return &m_Intrados;}
 
     bool isModified() const  {return m_bModified;}
     void setModified(bool bModified){m_bModified = bModified;}
-
 
     void compMidLine();
 

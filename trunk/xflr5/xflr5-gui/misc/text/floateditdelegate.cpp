@@ -83,18 +83,16 @@ void FloatEditDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
 }
 
 
-void FloatEditDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
+void FloatEditDelegate::updateEditorGeometry(QWidget *pEditor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
 {
-    editor->setGeometry(option.rect);
+    pEditor->setGeometry(option.rect);
 }
 
 
-
-void FloatEditDelegate::setPrecision(int *PrecisionTable)
+void FloatEditDelegate::setPrecision(QVector<int> const &Precision)
 {
-    m_Precision = PrecisionTable;
+    m_Precision = Precision;
 }
-
 
 
 void FloatEditDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
@@ -115,18 +113,4 @@ void FloatEditDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
     drawDisplay(painter, myOption, myOption.rect, strong);
     drawFocus(painter, myOption, myOption.rect);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -78,9 +78,6 @@ private:
     XDirect *m_pXDirect;
     Miarex *m_pMiarex;
 
-    int  *m_precision;
-
-
     static QByteArray s_Geometry;
 };
 

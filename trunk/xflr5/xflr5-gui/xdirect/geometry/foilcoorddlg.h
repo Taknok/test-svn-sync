@@ -73,8 +73,6 @@ private:
     Foil const *m_pMemFoil;
     Foil * m_pBufferFoil;
 
-    int *m_precision;
-
     bool m_bApplied, m_bModified;
     QWidget *m_pParent;
 };

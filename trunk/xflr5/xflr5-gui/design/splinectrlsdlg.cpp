@@ -32,7 +32,7 @@
 #include "splinectrlsdlg.h"
 #include <gui_objects/splinefoil.h>
 #include <misc/options/settings.h>
-#include <misc/text/doubleedit.h>
+#include <misc/text/intedit.h>
 #include <misc/text/floatrditdelegate.h>
 
 AFoil *SplineCtrlsDlg::s_pAFoil = nullptr;
@@ -47,13 +47,15 @@ SplineCtrlsDlg::SplineCtrlsDlg(QWidget *pParent): QDialog(pParent)
 
 SplineCtrlsDlg::~SplineCtrlsDlg()
 {
-    delete [] m_precision;
 }
 
 
 void SplineCtrlsDlg::initDialog()
 {
     QString str;
+
+    m_pctrlSFName->setText(m_pSF->splineFoilName());
+
     m_pctrlDegExtrados->clear();
     m_pctrlDegIntrados->clear();
     for (int i=2; i<6; i++)
@@ -64,7 +66,6 @@ void SplineCtrlsDlg::initDialog()
     }
     m_pctrlDegExtrados->setEnabled(true);
     m_pctrlDegIntrados->setEnabled(true);
-
 
     m_pctrlDegExtrados->setCurrentIndex(m_pSF->m_Extrados.m_iDegree-2);
     m_pctrlDegIntrados->setCurrentIndex(m_pSF->m_Intrados.m_iDegree-2);
@@ -106,120 +107,112 @@ void SplineCtrlsDlg::initDialog()
     m_pLowerFloatDelegate = new FloatEditDelegate(this);
     m_pctrlLowerList->setItemDelegate(m_pLowerFloatDelegate);
 
-    m_precision = new int[3];
-    m_precision[0] = 0;
-    m_precision[1] = 5;
-    m_precision[2] = 5;
-    m_pUpperFloatDelegate->setPrecision(m_precision);
-    m_pLowerFloatDelegate->setPrecision(m_precision);
+    QVector<int> precision = {0,5,5};
+    m_pUpperFloatDelegate->setPrecision(precision);
+    m_pLowerFloatDelegate->setPrecision(precision);
 
     connect(m_pUpperFloatDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(onUpdate()));
     connect(m_pLowerFloatDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(onUpdate()));
 
-
     fillPointLists();
-
     setControls();
 }
 
 
-void SplineCtrlsDlg::showEvent(QShowEvent *event)
+void SplineCtrlsDlg::showEvent(QShowEvent *)
 {
     int w = m_pctrlUpperList->width();
-    m_pctrlUpperList->setColumnWidth(0,(int)(w/3)-20);
-    m_pctrlUpperList->setColumnWidth(1,(int)(w/3)-20);
-    m_pctrlUpperList->setColumnWidth(2,(int)(w/3)-20);
+    m_pctrlUpperList->setColumnWidth(0,int(w/3)-20);
+    m_pctrlUpperList->setColumnWidth(1,int(w/3)-20);
+    m_pctrlUpperList->setColumnWidth(2,int(w/3)-20);
     w = m_pctrlLowerList->width();
-    m_pctrlLowerList->setColumnWidth(0,(int)(w/3)-20);
-    m_pctrlLowerList->setColumnWidth(1,(int)(w/3)-20);
-    m_pctrlLowerList->setColumnWidth(2,(int)(w/3)-20);
-    event->accept();
+    m_pctrlLowerList->setColumnWidth(0,int(w/3)-20);
+    m_pctrlLowerList->setColumnWidth(1,int(w/3)-20);
+    m_pctrlLowerList->setColumnWidth(2,int(w/3)-20);
 }
-
 
 
 void SplineCtrlsDlg::setupLayout()
 {
-    QGroupBox *pUpperSideBox = new QGroupBox(tr("Upper side"));
-    {
-        QVBoxLayout *pUpperSideLayout = new QVBoxLayout;
-        {
-            QGridLayout *pUpperLayout = new QGridLayout;
-            {
-                QLabel *labupper1 = new QLabel(tr("Spline degree"));
-                QLabel *labupper2 = new QLabel(tr("Output"));
-                m_pctrlDegExtrados = new QComboBox;
-                m_pctrlOutExtrados = new DoubleEdit;
-                m_pctrlOutExtrados->setPrecision(0);
-                pUpperLayout->addWidget(labupper1, 1,1);
-                pUpperLayout->addWidget(labupper2, 2,1);
-                pUpperLayout->addWidget(m_pctrlDegExtrados, 1,2);
-                pUpperLayout->addWidget(m_pctrlOutExtrados, 2,2);
-            }
-
-
-            m_pctrlUpperList = new QTableView(this);
-            m_pctrlUpperList->setFont(Settings::s_TableFont);
-            m_pctrlUpperList->setWindowTitle(QObject::tr("Upper side points"));
-            m_pctrlUpperList->setMinimumHeight(200);
-            m_pctrlUpperList->setMinimumWidth(250);
-            m_pctrlUpperList->setSelectionBehavior(QAbstractItemView::SelectRows);
-            pUpperSideLayout->addLayout(pUpperLayout);
-            pUpperSideLayout->addStretch(1);
-            pUpperSideLayout->addWidget(m_pctrlUpperList);
-        }
-        pUpperSideBox->setLayout(pUpperSideLayout);
-    }
-
-    QGroupBox *pLowerSideBox = new QGroupBox(tr("Lower side"));
-    {
-        QVBoxLayout *pLowerSideLayout = new QVBoxLayout;
-        {
-            QGridLayout *pLowerLayout = new QGridLayout;
-            {
-                QLabel *lablower1 = new QLabel(tr("Spline degree"));
-                QLabel *lablower2 = new QLabel(tr("Output"));
-                m_pctrlDegIntrados = new QComboBox;
-                m_pctrlOutIntrados = new DoubleEdit;
-                m_pctrlOutIntrados->setPrecision(0);
-                pLowerLayout->addWidget(lablower1, 1,1);
-                pLowerLayout->addWidget(lablower2, 2,1);
-                pLowerLayout->addWidget(m_pctrlDegIntrados, 1,2);
-                pLowerLayout->addWidget(m_pctrlOutIntrados, 2,2);
-            }
-
-            m_pctrlLowerList = new QTableView(this);
-            m_pctrlLowerList->setFont(Settings::s_TableFont);
-            m_pctrlLowerList->setWindowTitle(QObject::tr("Lower side points"));
-            m_pctrlLowerList->setMinimumHeight(200);
-            m_pctrlLowerList->setMinimumWidth(250);
-            m_pctrlLowerList->setSelectionBehavior(QAbstractItemView::SelectRows);
-            pLowerSideLayout->addLayout(pLowerLayout);
-            pLowerSideLayout->addStretch(1);
-            pLowerSideLayout->addWidget(m_pctrlLowerList);
-        }
-        pLowerSideBox->setLayout(pLowerSideLayout);
-    }
-
-    QHBoxLayout *pSideLayout = new QHBoxLayout;
-    {
-        pSideLayout->addWidget(pUpperSideBox);
-        pSideLayout->addWidget(pLowerSideBox);
-    }
-
-
-    QHBoxLayout *pCommandButtons = new QHBoxLayout;
-    {
-        OKButton        = new QPushButton(tr("OK"));
-        CancelButton    = new QPushButton(tr("Cancel"));
-        pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(OKButton);
-        pCommandButtons->addWidget(CancelButton);
-        pCommandButtons->addStretch(1);
-    }
-
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
+        QHBoxLayout *pNameLayout = new QHBoxLayout;
+        {
+            QLabel *pLabName = new QLabel(tr("Name"));
+            m_pctrlSFName = new QLineEdit;
+            pNameLayout->addWidget(pLabName);
+            pNameLayout->addWidget(m_pctrlSFName);
+        }
+
+        QHBoxLayout *pSideLayout = new QHBoxLayout;
+        {
+            QGroupBox *pUpperSideBox = new QGroupBox(tr("Upper side"));
+            {
+                QVBoxLayout *pUpperSideLayout = new QVBoxLayout;
+                {
+                    QGridLayout *pUpperLayout = new QGridLayout;
+                    {
+                        QLabel *labupper1 = new QLabel(tr("Spline degree"));
+                        QLabel *labupper2 = new QLabel(tr("Output"));
+                        m_pctrlDegExtrados = new QComboBox;
+                        m_pctrlOutExtrados = new IntEdit;
+                        pUpperLayout->addWidget(labupper1, 1,1);
+                        pUpperLayout->addWidget(labupper2, 2,1);
+                        pUpperLayout->addWidget(m_pctrlDegExtrados, 1,2);
+                        pUpperLayout->addWidget(m_pctrlOutExtrados, 2,2);
+                    }
+
+                    m_pctrlUpperList = new QTableView(this);
+                    m_pctrlUpperList->setFont(Settings::s_TableFont);
+                    m_pctrlUpperList->setWindowTitle(QObject::tr("Upper side points"));
+                    m_pctrlUpperList->setMinimumHeight(200);
+                    m_pctrlUpperList->setMinimumWidth(250);
+                    m_pctrlUpperList->setSelectionBehavior(QAbstractItemView::SelectRows);
+                    pUpperSideLayout->addLayout(pUpperLayout);
+                    pUpperSideLayout->addStretch(1);
+                    pUpperSideLayout->addWidget(m_pctrlUpperList);
+                }
+                pUpperSideBox->setLayout(pUpperSideLayout);
+            }
+
+            QGroupBox *pLowerSideBox = new QGroupBox(tr("Lower side"));
+            {
+                QVBoxLayout *pLowerSideLayout = new QVBoxLayout;
+                {
+                    QGridLayout *pLowerLayout = new QGridLayout;
+                    {
+                        QLabel *lablower1 = new QLabel(tr("Spline degree"));
+                        QLabel *lablower2 = new QLabel(tr("Output"));
+                        m_pctrlDegIntrados = new QComboBox;
+                        m_pctrlOutIntrados = new IntEdit;
+                        pLowerLayout->addWidget(lablower1, 1,1);
+                        pLowerLayout->addWidget(lablower2, 2,1);
+                        pLowerLayout->addWidget(m_pctrlDegIntrados, 1,2);
+                        pLowerLayout->addWidget(m_pctrlOutIntrados, 2,2);
+                    }
+
+                    m_pctrlLowerList = new QTableView(this);
+                    m_pctrlLowerList->setFont(Settings::s_TableFont);
+                    m_pctrlLowerList->setWindowTitle(QObject::tr("Lower side points"));
+                    m_pctrlLowerList->setMinimumHeight(200);
+                    m_pctrlLowerList->setMinimumWidth(250);
+                    m_pctrlLowerList->setSelectionBehavior(QAbstractItemView::SelectRows);
+                    pLowerSideLayout->addLayout(pLowerLayout);
+                    pLowerSideLayout->addStretch(1);
+                    pLowerSideLayout->addWidget(m_pctrlLowerList);
+                }
+                pLowerSideBox->setLayout(pLowerSideLayout);
+            }
+
+            pSideLayout->addWidget(pUpperSideBox);
+            pSideLayout->addWidget(pLowerSideBox);
+        }
+
+        m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+        {
+            connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
+        }
+
         m_pctrlSymetric = new QCheckBox(tr("Symetric foil"));
         QHBoxLayout *pClosedLayout = new QHBoxLayout;
         {
@@ -228,27 +221,29 @@ void SplineCtrlsDlg::setupLayout()
             pClosedLayout->addWidget(m_pctrlCloseLE);
             pClosedLayout->addWidget(m_pctrlCloseTE);
         }
+
+        pMainLayout->addLayout(pNameLayout);
         pMainLayout->addLayout(pSideLayout);
-        pMainLayout->addStretch(1);
         pMainLayout->addWidget(m_pctrlSymetric);
         pMainLayout->addLayout(pClosedLayout);
-        pMainLayout->addStretch(1);
 
-        pMainLayout->addLayout(pCommandButtons);
+        pMainLayout->addWidget(m_pButtonBox);
         setLayout(pMainLayout);
     }
 
-
-    connect(OKButton, SIGNAL(clicked()),this, SLOT(onOK()));
-    connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
-
-    connect(m_pctrlSymetric, SIGNAL(clicked()), this, SLOT(onUpdate()));
-    connect(m_pctrlDegExtrados, SIGNAL(activated(int)), this, SLOT(onUpdate()));
-    connect(m_pctrlDegIntrados, SIGNAL(activated(int)), this, SLOT(onUpdate()));
-    connect(m_pctrlOutExtrados, SIGNAL(editingFinished()), this, SLOT(onUpdate()));
-    connect(m_pctrlOutIntrados, SIGNAL(editingFinished()), this, SLOT(onUpdate()));
+    connect(m_pctrlSymetric,    SIGNAL(clicked()),         SLOT(onUpdate()));
+    connect(m_pctrlDegExtrados, SIGNAL(activated(int)),    SLOT(onUpdate()));
+    connect(m_pctrlDegIntrados, SIGNAL(activated(int)),    SLOT(onUpdate()));
+    connect(m_pctrlOutExtrados, SIGNAL(editingFinished()), SLOT(onUpdate()));
+    connect(m_pctrlOutIntrados, SIGNAL(editingFinished()), SLOT(onUpdate()));
 }
 
+
+void SplineCtrlsDlg::onButton(QAbstractButton *pButton)
+{
+    if (     m_pButtonBox->button(QDialogButtonBox::Ok)     == pButton)  onOK();
+    else if (m_pButtonBox->button(QDialogButtonBox::Cancel) == pButton)  reject();
+}
 
 
 void SplineCtrlsDlg::fillPointLists()
@@ -283,6 +278,8 @@ void SplineCtrlsDlg::fillPointLists()
 
 void SplineCtrlsDlg::readData()
 {
+    m_pSF->setSplineFoilName(m_pctrlSFName->text());
+
     for(int i=0; i<m_pSF->m_Extrados.m_CtrlPoint.size(); i++)
     {
         QModelIndex index = m_pUpperListModel->index(i, 1, QModelIndex());
@@ -361,8 +358,6 @@ void SplineCtrlsDlg::setControls()
 }
 
 
-
-
 void SplineCtrlsDlg::keyPressEvent(QKeyEvent *event)
 {
     // Prevent Return Key from closing App
@@ -376,13 +371,9 @@ void SplineCtrlsDlg::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if(!OKButton->hasFocus() && !CancelButton->hasFocus())
+            if(!m_pButtonBox->hasFocus())
             {
-                OKButton->setFocus();
-            }
-            else
-            {
-                onOK();
+                m_pButtonBox->setFocus();
             }
             break;
         }
@@ -391,6 +382,7 @@ void SplineCtrlsDlg::keyPressEvent(QKeyEvent *event)
             break;
     }
 }
+
 
 void SplineCtrlsDlg::onOK()
 {

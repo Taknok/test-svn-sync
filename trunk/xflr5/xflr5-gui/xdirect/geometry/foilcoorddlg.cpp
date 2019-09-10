@@ -48,7 +48,6 @@ FoilCoordDlg::FoilCoordDlg(QWidget *pParent) : QDialog(pParent)
 
 FoilCoordDlg::~FoilCoordDlg()
 {
-    if(m_precision) delete [] m_precision;
 }
 
 void FoilCoordDlg::fillList()
@@ -87,10 +86,8 @@ void FoilCoordDlg::initDialog()
     m_pFloatDelegate = new FloatEditDelegate(this);
     m_pctrlCoordTable->setItemDelegate(m_pFloatDelegate);
 
-    m_precision = new int[2];
-    m_precision[0] = 5;//five digits for x and y coordinates
-    m_precision[1] = 5;
-    m_pFloatDelegate->setPrecision(m_precision);
+    QVector<int> precision = {5,5};
+    m_pFloatDelegate->setPrecision(precision);
 
 //void QAbstractItemDelegate::closeEditor ( QWidget * editor, QAbstractItemDelegate::EndEditHint hint = NoHint )
     connect(m_pFloatDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(onCellChanged(QWidget *)));

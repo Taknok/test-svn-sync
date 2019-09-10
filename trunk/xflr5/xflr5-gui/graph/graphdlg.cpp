@@ -729,16 +729,14 @@ void GraphDlg::setControls()
 }
 
 
-
 void GraphDlg::setupLayout()
 {
     QFontMetrics fm(font());
 
     m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Discard | QDialogButtonBox::Reset);
     {
-        connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(onButton(QAbstractButton*)));
+        connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
     }
-
 
     m_pTabWidget = new QTabWidget(this);
     m_pScalePage    = new QWidget(this);

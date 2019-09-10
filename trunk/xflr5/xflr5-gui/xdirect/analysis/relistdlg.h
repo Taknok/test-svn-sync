@@ -71,8 +71,6 @@ private:
     QVector<double> m_NCritList;
 
     int m_iSelection;
-
-    int *m_Precision;
 };
 
 #endif // RELISTDLG_H

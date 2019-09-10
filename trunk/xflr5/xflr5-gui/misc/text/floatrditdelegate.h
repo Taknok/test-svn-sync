@@ -31,7 +31,7 @@ class FloatEditDelegate : public QItemDelegate
     Q_OBJECT
 
 public:
-    FloatEditDelegate(QObject *parent = 0);
+    FloatEditDelegate(QObject *parent = nullptr);
 
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &index) const;
 
@@ -40,10 +40,10 @@ public:
                    const QModelIndex &index) const;
     void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-    void setPrecision(int*PrecisionTable);
+    void setPrecision(const QVector<int> &Precision);
 
 private:
-    int *m_Precision; ///table of float precisions for each column
+    QVector<int> m_Precision; ///table of float precisions for each column
 };
 
 #endif // FLOATEDITDELEGATE_H

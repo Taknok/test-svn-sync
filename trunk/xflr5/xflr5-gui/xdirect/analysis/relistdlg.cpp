@@ -36,7 +36,6 @@ ReListDlg::ReListDlg(QWidget *pParent) : QDialog(pParent)
     m_iSelection = 0;
 
     m_pFloatDelegate = nullptr;
-    m_Precision = nullptr;
 
     setupLayout();
 
@@ -50,7 +49,6 @@ ReListDlg::ReListDlg(QWidget *pParent) : QDialog(pParent)
 
 ReListDlg::~ReListDlg()
 {
-    if(m_Precision)      delete [] m_Precision;
     if(m_pFloatDelegate) delete m_pFloatDelegate;
 }
 
@@ -76,20 +74,17 @@ void ReListDlg::initDialog(QVector<double> ReList, QVector<double> MachList, QVe
     m_pctrlReTable->setModel(m_pReModel);
 
     int w = m_pctrlReTable->width();
-    m_pctrlReTable->setColumnWidth(0,(int)(w/3));
-    m_pctrlReTable->setColumnWidth(1,(int)(w/3));
-    m_pctrlReTable->setColumnWidth(2,(int)(w/3));
-    QHeaderView *HorizontalHeader = m_pctrlReTable->horizontalHeader();
-    HorizontalHeader->setStretchLastSection(true);
+    m_pctrlReTable->setColumnWidth(0,int(w/3));
+    m_pctrlReTable->setColumnWidth(1,int(w/3));
+    m_pctrlReTable->setColumnWidth(2,int(w/3));
+    QHeaderView *pHorizontalHeader = m_pctrlReTable->horizontalHeader();
+    pHorizontalHeader->setStretchLastSection(true);
 
     m_pFloatDelegate = new FloatEditDelegate(this);
     m_pctrlReTable->setItemDelegate(m_pFloatDelegate);
 
-    m_Precision = new int[3];
-    m_Precision[0] = 0;//no digits for Re Number
-    m_Precision[1] = 2;//two digits for Mach and NCrit
-    m_Precision[2] = 2;//two digits for Mach and NCrit
-    m_pFloatDelegate->setPrecision(m_Precision);
+    QVector<int> precision = {0,2,2};
+    m_pFloatDelegate->setPrecision(precision);
 
     //    connect(m_pFloatDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(onCellChanged(QWidget *)));
     connect(m_pReModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(onCellChanged(QModelIndex ,QModelIndex)));
@@ -121,9 +116,8 @@ void ReListDlg::keyPressEvent(QKeyEvent *event)
 }
 
 
-void ReListDlg::onCellChanged(QModelIndex topLeft, QModelIndex botRight)
+void ReListDlg::onCellChanged(QModelIndex topLeft, QModelIndex )
 {
-    Q_UNUSED(botRight);
     if(topLeft.column()==0)
         sortData();
 }
