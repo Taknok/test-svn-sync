@@ -40,8 +40,7 @@ PertDlg::PertDlg(QWidget *pParent) : QDialog(pParent)
     memset(m_backi, 0, sizeof(m_backi));
 
 //    m_pCnModel = nullptr;
-    m_precision = nullptr;
-    m_pFloatDelegate = nullptr;
+     m_pFloatDelegate = nullptr;
 
     setupLayout();
 
@@ -53,7 +52,6 @@ PertDlg::PertDlg(QWidget *pParent) : QDialog(pParent)
 
 PertDlg::~PertDlg()
 {
-    if(m_precision)       delete [] m_precision;
 //    if(m_pCnModel)        delete m_pCnModel;
     if (m_pFloatDelegate) delete m_pFloatDelegate;
 }
@@ -68,11 +66,8 @@ void PertDlg::setupLayout()
     m_CnModel.setHeaderData(2, Qt::Horizontal, "Ci");
 
     m_pFloatDelegate = new FloatEditDelegate(this);
-    m_precision = new int[3];
-    m_precision[0] = 0;
-    m_precision[1] = 5;
-    m_precision[2] = 5;
-    m_pFloatDelegate->setPrecision(m_precision);
+    QVector<int> precision = {0,5,5};
+    m_pFloatDelegate->setPrecision(precision);
 
     m_pctrlCnTable = new QTableView(this);
     m_pctrlCnTable->setFont(Settings::s_TableFont);

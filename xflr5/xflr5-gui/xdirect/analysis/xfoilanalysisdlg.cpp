@@ -354,7 +354,6 @@ void XFoilAnalysisDlg::analyze()
 }
 
 
-
 void XFoilAnalysisDlg::onProgress()
 {
     if(m_pXFoilTask->m_OutMessage.length())

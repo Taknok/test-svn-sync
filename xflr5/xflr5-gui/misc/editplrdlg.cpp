@@ -53,7 +53,6 @@ EditPlrDlg::EditPlrDlg(QWidget *pParent) : QDialog(pParent)
 
 EditPlrDlg::~EditPlrDlg()
 {
-    delete [] m_precision;
 }
 
 void EditPlrDlg::initDialog(XDirect *pXDirect, Polar* pPolar, Miarex *pMiarex, WPolar*pWPolar)
@@ -92,21 +91,8 @@ void EditPlrDlg::initDialog(XDirect *pXDirect, Polar* pPolar, Miarex *pMiarex, W
     m_pFloatDelegate = new FloatEditDelegate(this);
     m_pctrlPointTable->setItemDelegate(m_pFloatDelegate);
 
-    m_precision = new int[14];
-    m_precision[0] = 3;
-    m_precision[1] = 3;
-    m_precision[2] = 3;
-    m_precision[3] = 3;
-    m_precision[4] = 3;
-    m_precision[5] = 3;
-    m_precision[6] = 3;
-    m_precision[7] = 3;
-    m_precision[8] = 3;
-    m_precision[9] = 3;
-    m_precision[10] = 3;
-    m_precision[11] = 3;
-    m_precision[12] = 3;
-    m_precision[13] = 0;
+    QVector<int>  m_precision(14, 3);
+    m_precision.last() = 0;
 
     m_pFloatDelegate->setPrecision(m_precision);
 
@@ -309,7 +295,6 @@ void EditPlrDlg::onButton(QAbstractButton *pButton)
 }
 
 
-
 void EditPlrDlg::showEvent(QShowEvent *)
 {
     restoreGeometry(s_Geometry);
@@ -322,13 +307,12 @@ void EditPlrDlg::hideEvent(QHideEvent*)
 }
 
 
-
 void EditPlrDlg::resizeEvent(QResizeEvent*event)
 {
     if(!m_pPointModel || !m_pctrlPointTable) return;
     int n = m_pPointModel->columnCount();
     int w = m_pctrlPointTable->width();
-    int w14 = int(double(w-25)/double(n));
+    int w14 = int(double(w)*0.9/double(n));
 
     for(int i=0; i<m_pPointModel->columnCount(); i++)
         m_pctrlPointTable->setColumnWidth(i,w14);

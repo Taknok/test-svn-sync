@@ -74,7 +74,6 @@ InertiaDlg::~InertiaDlg()
 {
     clearPointMasses();
     delete m_pMassModel;
-    delete [] m_precision;
 }
 
 
@@ -1028,12 +1027,7 @@ void InertiaDlg::setupLayout()
 
     m_pFloatDelegate = new FloatEditDelegate(this);
     m_pctrlMassTable->setItemDelegate(m_pFloatDelegate);
-    m_precision = new int[5];
-    m_precision[0] = 3;
-    m_precision[1] = 3;
-    m_precision[2] = 3;
-    m_precision[3] = 3;
-    m_precision[4] = -1;// Not a number, will be detected as such by FloatEditDelegate
+    m_precision = {3,3,3,3,-1};
     m_pFloatDelegate->setPrecision(m_precision);
 
     connect(m_pFloatDelegate,  SIGNAL(closeEditor(QWidget *)), this, SLOT(onCellChanged(QWidget *)));

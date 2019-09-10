@@ -151,7 +151,6 @@ void AFoil::setControls()
  */
 void AFoil::fillFoilTable()
 {
-    int i;
     m_pFoilModel->setRowCount(m_poaFoil->size()+1);
 
     QString name;
@@ -163,7 +162,7 @@ void AFoil::fillFoilTable()
 
     if(m_pSF)
     {
-        name = tr("Spline foil");
+        name = m_pSF->splineFoilName();
         Thickness  = m_pSF->thickness();
         xThickness = m_pSF->xThickness();
         Camber     = m_pSF->camber();
@@ -189,31 +188,7 @@ void AFoil::fillFoilTable()
     ind = m_pFoilModel->index(0, 5, QModelIndex());
     m_pFoilModel->setData(ind, points);
 
-    /*    ind = m_pFoilModel->index(0,12, QModelIndex());
-    if(m_pSF->m_bVisible) m_pFoilModel->setData(ind, Qt::Checked, Qt::CheckStateRole);
-    else                  m_pFoilModel->setData(ind, Qt::Unchecked, Qt::CheckStateRole);
-
-    QStandardItem *pItem = m_pFoilModel->item(0,12);
-    pItem->setFlags(Qt::ItemIsEnabled|Qt::ItemIsUserCheckable);
-
-
-    ind = m_pFoilModel->index(0,13, QModelIndex());
-    if(m_pSF->m_bOutPoints) m_pFoilModel->setData(ind, Qt::Checked, Qt::CheckStateRole);
-    else                    m_pFoilModel->setData(ind, Qt::Unchecked, Qt::CheckStateRole);
-
-    pItem = m_pFoilModel->item(0,13);
-    pItem->setFlags(Qt::ItemIsEnabled|Qt::ItemIsUserCheckable);
-
-
-    ind = m_pFoilModel->index(0,14, QModelIndex());
-    if(m_pSF->m_bCenterLine) m_pFoilModel->setData(ind, Qt::Checked,   Qt::CheckStateRole);
-    else                     m_pFoilModel->setData(ind, Qt::Unchecked, Qt::CheckStateRole);
-
-    pItem = m_pFoilModel->item(0,14);
-    pItem->setFlags(Qt::ItemIsEnabled|Qt::ItemIsUserCheckable);
-*/
-
-    for(i=0; i<m_poaFoil->size(); i++)
+    for(int i=0; i<m_poaFoil->size(); i++)
     {
         fillTableRow(i+1);
     }
@@ -228,7 +203,7 @@ void AFoil::fillTableRow(int row)
 {
     QModelIndex ind;
 
-    Foil *pFoil = m_poaFoil->at(row-1);
+    Foil const*pFoil = m_poaFoil->at(row-1);
 
     ind = m_pFoilModel->index(row, 0, QModelIndex());
     m_pFoilModel->setData(ind,pFoil->foilName());
@@ -345,37 +320,6 @@ void AFoil::keyPressEvent(QKeyEvent *pEvent)
             break;
         }
 
-/*        case Qt::Key_3:
-        {
-            if(bCtrl)
-            {
-                s_pMainFrame->onXInverse();
-                return;
-            }
-            break;
-        }
-        case Qt::Key_4:
-            if(bCtrl)
-            {
-                s_pMainFrame->onXInverseMixed();
-                return;
-            }
-            break;
-        case Qt::Key_5:
-            if(bCtrl)
-            {
-                s_pMainFrame->onXDirect();
-                return;
-            }
-            break;
-        case Qt::Key_6:
-            if(bCtrl)
-            {
-                s_pMainFrame->onMiarex();
-                return;
-            }
-            break;*/
-
         default:
             pEvent->ignore();
     }
@@ -389,8 +333,8 @@ void AFoil::keyPressEvent(QKeyEvent *pEvent)
  */
 void AFoil::loadSettings(QSettings *pSettings)
 {
-    int style, width;
-    QColor color;
+    int style=0, width=1;
+    QColor color=Qt::red;
 
     pSettings->beginGroup("DirectDesign");
     {
@@ -457,9 +401,6 @@ void AFoil::loadSettings(QSettings *pSettings)
 }
 
 
-
-
-
 /**
  * The user has requested that the foil be derotated.
  */
@@ -474,7 +415,7 @@ void AFoil::onAFoilDerotateFoil()
     m_pBufferFoil->setLineStipple(1);
     m_pBufferFoil->setLineWidth(1);
 
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 
     double angle = m_pBufferFoil->deRotate();
     QString str = QString(tr("Foil has been de-rotated by %1 degrees")).arg(angle,6,'f',3);
@@ -509,7 +450,7 @@ void AFoil::onAFoilNormalizeFoil()
 
     s_pMainFrame->statusBar()->showMessage(str);
 
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 }
 
 
@@ -528,7 +469,7 @@ void AFoil::onAFoilCadd()
     m_pBufferFoil->setPointStyle(1);
     m_pBufferFoil->setVisible(true);
 
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 
     CAddDlg caDlg(s_pMainFrame);
     caDlg.m_pBufferFoil = m_pBufferFoil;
@@ -559,7 +500,7 @@ void AFoil::onAFoilCadd()
 
     }
     m_pBufferFoil->setVisible(false);
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 }
 
 /**
@@ -577,7 +518,7 @@ void AFoil::onAFoilLECircle()
         m_p2DWidget->m_LERad = LECircleDlg.m_Radius;
         m_p2DWidget->m_bLECircle = LECircleDlg.m_bShowRadius;
     }
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 }
 
 
@@ -596,7 +537,7 @@ void AFoil::onAFoilPanels()
     m_pBufferFoil->setPointStyle(1);
     m_pBufferFoil->setVisible(true);
 
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 
     TwoDPanelDlg tdpDlg(s_pMainFrame);
     tdpDlg.m_pBufferFoil = m_pBufferFoil;
@@ -630,7 +571,7 @@ void AFoil::onAFoilPanels()
     }
 
     m_pBufferFoil->setVisible(false);
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 }
 
 /**
@@ -648,7 +589,7 @@ void AFoil::onAFoilFoilCoordinates()
     m_pBufferFoil->setLineStipple(1);
     m_pBufferFoil->setLineWidth(1);
 
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 
     FoilCoordDlg fcDlg(s_pMainFrame);
     fcDlg.m_pMemFoil    = XDirect::curFoil();
@@ -676,7 +617,7 @@ void AFoil::onAFoilFoilCoordinates()
         selectFoil(XDirect::curFoil());
     }
     m_pBufferFoil->setVisible(false);
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 }
 
 
@@ -695,7 +636,7 @@ void AFoil::onAFoilFoilGeom()
     m_pBufferFoil->setLineStipple(1);
     m_pBufferFoil->setLineWidth(1);
 
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 
     FoilGeomDlg fgeDlg(s_pMainFrame);
     fgeDlg.m_pMemFoil    = XDirect::curFoil();
@@ -728,7 +669,7 @@ void AFoil::onAFoilFoilGeom()
         //        m_pXFoil->foilName() ="";
     }
     m_pBufferFoil->setVisible(false);
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 }
 
 
@@ -747,7 +688,7 @@ void AFoil::onAFoilSetTEGap()
     m_pBufferFoil->setLineStipple(1);
     m_pBufferFoil->setLineWidth(1);
 
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 
     TEGapDlg teDlg(s_pMainFrame);
     teDlg.m_pBufferFoil = m_pBufferFoil;
@@ -781,7 +722,7 @@ void AFoil::onAFoilSetTEGap()
     }
 
     m_pBufferFoil->setVisible(false);
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 }
 
 
@@ -800,7 +741,7 @@ void AFoil::onAFoilSetLERadius()
     m_pBufferFoil->setLineStipple(1);
     m_pBufferFoil->setLineWidth(1);
 
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 
     LEDlg leDlg(s_pMainFrame);
     leDlg.m_pBufferFoil = m_pBufferFoil;
@@ -834,7 +775,7 @@ void AFoil::onAFoilSetLERadius()
     }
 
     m_pBufferFoil->setVisible(false);
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 }
 
 
@@ -859,7 +800,7 @@ void AFoil::onAFoilInterpolateFoils()
     m_pBufferFoil->setPointStyle(1);
     m_pBufferFoil->setVisible(true);
 
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 
     InterpolateFoilsDlg ifDlg(s_pMainFrame);
     ifDlg.m_poaFoil = m_poaFoil;
@@ -891,7 +832,7 @@ void AFoil::onAFoilInterpolateFoils()
         selectFoil(XDirect::curFoil());
     }
     m_pBufferFoil->setVisible(false);
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 }
 
 
@@ -908,7 +849,7 @@ void AFoil::onAFoilNacaFoils()
     m_pBufferFoil->setLineStipple(1);
     m_pBufferFoil->setLineWidth(1);
 
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 
     NacaFoilDlg nacaDlg(s_pMainFrame);
     nacaDlg.m_pBufferFoil = m_pBufferFoil;
@@ -941,13 +882,13 @@ void AFoil::onAFoilNacaFoils()
     }
     else
     {
-        fillFoilTable();;
+        fillFoilTable();
         if(XDirect::curFoil()) selectFoil(XDirect::curFoil());
     }
 
     setControls();
     m_pBufferFoil->setVisible(false);
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 }
 
 
@@ -965,7 +906,7 @@ void AFoil::onAFoilSetFlap()
     m_pBufferFoil->setLineStipple(1);
     m_pBufferFoil->setLineWidth(1);
 
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 
     FlapDlg flDlg(s_pMainFrame);
     flDlg.m_pMemFoil    = XDirect::curFoil();
@@ -994,7 +935,7 @@ void AFoil::onAFoilSetFlap()
         selectFoil(XDirect::curFoil());
     }
     m_pBufferFoil->setVisible(false);
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 }
 
 
@@ -1148,7 +1089,7 @@ void AFoil::onFoilClicked(const QModelIndex& index)
         {
             m_pSF->m_bCenterLine = !m_pSF->m_bCenterLine;
         }
-        m_p2DWidget->update();;
+        m_p2DWidget->update();
     }
     else if(index.row()>0)
     {
@@ -1167,7 +1108,7 @@ void AFoil::onFoilClicked(const QModelIndex& index)
             }
         }
         emit projectModified();
-        m_p2DWidget->update();;
+        m_p2DWidget->update();
     }
 
     if(index.column()==14) onFoilStyle();
@@ -1192,7 +1133,7 @@ void AFoil::onFoilStyle()
         if(QDialog::Accepted==dlg.exec())
         {
             m_pSF->setCurveParams(dlg.lineStipple(), dlg.lineWidth(), dlg.lineColor());
-            m_p2DWidget->update();;
+            m_p2DWidget->update();
         }
     }
     else
@@ -1213,7 +1154,7 @@ void AFoil::onFoilStyle()
             if(Settings::isAlignedChildrenStyle())
                 Objects2d::setFoilChildrenStyle(XDirect::curFoil());
 
-            m_p2DWidget->update();;
+            m_p2DWidget->update();
         }
     }
 }
@@ -1232,7 +1173,7 @@ void AFoil::onHideAllFoils()
         pFoil->setVisible(false);
     }
     fillFoilTable();
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 }
 
 
@@ -1243,7 +1184,7 @@ void AFoil::onHideCurrentFoil()
 {
     if(!XDirect::curFoil()) return;
     showFoil(XDirect::curFoil(), false);
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 
 }
 
@@ -1268,7 +1209,7 @@ void AFoil::onNewSplines()
     takePicture();
 
     emit projectModified();
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 }
 
 
@@ -1297,7 +1238,7 @@ void AFoil::onRenameFoil()
     }
 
     fillFoilTable();
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 }
 
 
@@ -1314,7 +1255,7 @@ void AFoil::onShowAllFoils()
         pFoil->setVisible(true);
     }
     fillFoilTable();
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 }
 
 
@@ -1325,7 +1266,7 @@ void AFoil::onShowCurrentFoil()
 {
     if(!XDirect::curFoil()) return;
     showFoil(XDirect::curFoil(), true);
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 
 }
 
@@ -1336,7 +1277,7 @@ void AFoil::onShowCurrentFoil()
 void AFoil::onShowLegend()
 {
     m_p2DWidget->m_bShowLegend = !m_p2DWidget->m_bShowLegend;
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
     setControls();
 }
 
@@ -1368,10 +1309,8 @@ void AFoil::onStoreSplines()
     fillFoilTable();
     selectFoil(pNewFoil);
 
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 }
-
-
 
 
 /**
@@ -1389,6 +1328,7 @@ void AFoil::onSplineControls()
     if(dlg.exec() == QDialog::Accepted)
     {
         takePicture();
+        fillFoilTable();
     }
     else m_pSF->copy(&memSF);
 }
@@ -1669,7 +1609,7 @@ void AFoil::setPicture()
     m_pSF->m_Extrados.splineCurve();
     m_pSF->updateSplineFoil();
 
-    m_p2DWidget->update();;
+    m_p2DWidget->update();
 }
 
 

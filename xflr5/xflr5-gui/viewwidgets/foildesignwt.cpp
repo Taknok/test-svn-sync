@@ -67,9 +67,8 @@ void FoilDesignWt::setScale()
 }
 
 
-void FoilDesignWt::paintEvent(QPaintEvent *event)
+void FoilDesignWt::paintEvent(QPaintEvent *)
 {
-    Q_UNUSED(event);
     QPainter painter(this);
     painter.fillRect(rect(), Settings::s_BackgroundColor);
 
@@ -215,15 +214,13 @@ void FoilDesignWt::paintLegend(QPainter &painter)
         QFontMetrics fm(fnt);
         int fmw = fm.averageCharWidth();
 
-        Foil* pRefFoil;
+        Foil const* pRefFoil;
         QString strong;
         QPoint Place(rect().right()-35*fmw, 10);
-        int LegendSize, ypos, x1, n, k, delta;
 
-
-        LegendSize = 10*fmw;
-        ypos = 15;
-        delta = 5;
+        int LegendSize = 10*fmw;
+        int ypos = 15;
+        int delta = 5;
 
         painter.setBackgroundMode(Qt::TransparentMode);
 
@@ -235,7 +232,7 @@ void FoilDesignWt::paintLegend(QPainter &painter)
 
         QPen LegendPen;
 
-        k=0;
+        int k=0;
 
         if(m_pSF && m_pSF->isVisible())
         {
@@ -249,7 +246,7 @@ void FoilDesignWt::paintLegend(QPainter &painter)
             {
 //                    x1 = Place.x + (int)(0.5*LegendSize);
 //                    pDC->Rectangle(x1-2, Place.y + ypos*k-2, x1+2, Place.y + ypos*k+2);
-                x1 = Place.x() + int(0.5*LegendSize);
+                int x1 = Place.x() + int(0.5*LegendSize);
                 painter.drawRect(x1-2, Place.y() + ypos*k-2, 4,4);
             }
             painter.setPen(TextPen);
@@ -260,7 +257,7 @@ void FoilDesignWt::paintLegend(QPainter &painter)
 
         if(m_poaFoil)
         {
-            for (n=0; n < m_poaFoil->size(); n++)
+            for (int n=0; n < m_poaFoil->size(); n++)
             {
                 pRefFoil = m_poaFoil->at(n);
                 if(pRefFoil && pRefFoil->isVisible())
@@ -275,7 +272,7 @@ void FoilDesignWt::paintLegend(QPainter &painter)
                         painter.setPen(LegendPen);
                         painter.drawLine(Place.x(), Place.y() + ypos*k, Place.x() + LegendSize, Place.y() + ypos*k);
 
-                        x1 = Place.x() + int(0.5*LegendSize);
+                        int x1 = Place.x() + int(0.5*LegendSize);
 /*                        if(pRefFoil->showPoints())
                         {
                             painter.drawRect(x1-2, Place.y() + ypos*k-2, 4,4);
@@ -353,10 +350,8 @@ int FoilDesignWt::selectPoint(Vector3d real)
 }
 
 
-void FoilDesignWt::dragSelectedPoint(double x, double y)
+void FoilDesignWt::dragSelectedPoint(double , double )
 {
-    Q_UNUSED(x);
-    Q_UNUSED(y);
     if(!m_pSF->isVisible()) return;
 
     // user is dragging the point

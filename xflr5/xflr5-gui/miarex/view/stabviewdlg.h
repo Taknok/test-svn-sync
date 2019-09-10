@@ -118,8 +118,6 @@ private:
     double m_ModeAmplitude;
     double m_vabs[4], m_phi[4];
 
-    int  *m_precision;
-
 public:
     int m_iCurrentMode;    
     Curve *m_pCurve;

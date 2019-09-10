@@ -20,6 +20,8 @@
 
 *****************************************************************************/
 
+#include <QPolygon>
+
 #include <globals/globals.h>
 #include <graph_globals.h>
 #include "spline5.h"
@@ -119,8 +121,6 @@ void Spline5::drawSpline(QPainter & painter, double const &scalex, double const 
 {
     painter.save();
 
-    QPointF From, To;
-    int k;
     QPen SplinePen;
 
     SplinePen.setColor(m_Color);
@@ -128,25 +128,19 @@ void Spline5::drawSpline(QPainter & painter, double const &scalex, double const 
     SplinePen.setWidth(m_Width);
     painter.setPen(SplinePen);
 
+    QPolygonF poly;
 
     if(m_CtrlPoint.size()>=3)
     { 
-        From.rx() =  m_Output[0].x * scalex + Offset.x();
-        From.ry() = -m_Output[0].y * scaley + Offset.y();
 
-        for(k=1; k<m_iRes;k++) 
+        for(int k=0; k<m_iRes;k++)
         {
-            To.rx() =  m_Output[k].x * scalex + Offset.x();
-            To.ry() = -m_Output[k].y * scaley + Offset.y();
-
-            painter.drawLine(From, To);
-
-            From = To;
+            poly.append({m_Output[k].x * scalex + Offset.x(), -m_Output[k].y * scaley + Offset.y()});
         }
+        painter.drawPolyline(poly);
     }
     painter.restore();
 }
-
 
 
 /**

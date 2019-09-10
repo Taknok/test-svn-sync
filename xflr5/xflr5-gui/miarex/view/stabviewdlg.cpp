@@ -68,16 +68,13 @@ StabViewDlg::StabViewDlg(QWidget *parent) : QWidget(parent)
 
 StabViewDlg::~StabViewDlg()
 {
-    delete [] m_precision;
 }
 
 
 void StabViewDlg::connectSignals()
 {
-    Miarex * pMiarex = s_pMiarex;
-
-    connect(m_pctrlLongDynamics, SIGNAL(clicked()), pMiarex, SLOT(onStabilityDirection()));
-    connect(m_pctrlLatDynamics,  SIGNAL(clicked()), pMiarex, SLOT(onStabilityDirection()));
+    connect(m_pctrlLongDynamics, SIGNAL(clicked()), s_pMiarex, SLOT(onStabilityDirection()));
+    connect(m_pctrlLatDynamics,  SIGNAL(clicked()), s_pMiarex, SLOT(onStabilityDirection()));
 
     connect(m_pctrlPlotStabGraph, SIGNAL(clicked()), this , SLOT(onPlotStabilityGraph()));
 
@@ -150,7 +147,6 @@ void StabViewDlg::readControlModelData()
 
 void StabViewDlg::fillEigenThings()
 {
-    Miarex * pMiarex = s_pMiarex;
     complex<double> eigenvalue;
     double OmegaN, Omega1, Zeta;
     QString strange;
@@ -161,14 +157,14 @@ void StabViewDlg::fillEigenThings()
 
     QString ModeDescription = tr("<small>Mode Properties:")+"<br/>";
 
-    if(pMiarex->m_pCurPlane && pMiarex->m_pCurPOpp && pMiarex->m_pCurWPolar->polarType()==XFLR5::STABILITYPOLAR)
+    if(s_pMiarex->m_pCurPlane && s_pMiarex->m_pCurPOpp && s_pMiarex->m_pCurWPolar->polarType()==XFLR5::STABILITYPOLAR)
     {
         //We normalize the mode before display and only for display purposes
-        u0   = pMiarex->m_pCurPOpp->m_QInf;
-        mac  = pMiarex->m_pCurPlane->m_Wing[0].m_MAChord;
-        span = pMiarex->m_pCurPlane->m_Wing[0].m_PlanformSpan;
+        u0   = s_pMiarex->m_pCurPOpp->m_QInf;
+        mac  = s_pMiarex->m_pCurPlane->m_Wing[0].m_MAChord;
+        span = s_pMiarex->m_pCurPlane->m_Wing[0].m_PlanformSpan;
 
-        eigenvalue = pMiarex->m_pCurPOpp->m_EigenValue[m_iCurrentMode];
+        eigenvalue = s_pMiarex->m_pCurPOpp->m_EigenValue[m_iCurrentMode];
         if(eigenvalue.imag()>=0.0) strange.sprintf("%9.4f+%9.4fi", eigenvalue.real(), eigenvalue.imag());
         else                       strange.sprintf("%9.4f-%9.4fi", eigenvalue.real(), eigenvalue.imag());
         m_pctrlEigenValue->setText(strange);
@@ -226,56 +222,56 @@ void StabViewDlg::fillEigenThings()
         }
 
 
-        if(pMiarex->m_bLongitudinal && pMiarex->m_pCurPOpp)
+        if(s_pMiarex->m_bLongitudinal && s_pMiarex->m_pCurPOpp)
         {
-            angle = pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][3];
-            eigenvalue = pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][0]/u0;
+            angle = s_pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][3];
+            eigenvalue = s_pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][0]/u0;
             if(eigenvalue.imag()>=0.0) strange.sprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
             else                       strange.sprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
             m_pctrlEigenVector1->setText(strange);
             ModeDescription.append("v1="+strange+"<br/>");
 
-            eigenvalue = pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][1]/u0;
+            eigenvalue = s_pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][1]/u0;
             if(eigenvalue.imag()>=0.0) strange.sprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
             else                       strange.sprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
             m_pctrlEigenVector2->setText(strange);
             ModeDescription.append("v2="+strange+"<br/>");
 
-            eigenvalue = pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][2]/(2.0*u0/mac);
+            eigenvalue = s_pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][2]/(2.0*u0/mac);
             if(eigenvalue.imag()>=0.0) strange.sprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
             else                       strange.sprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
             m_pctrlEigenVector3->setText(strange);
             ModeDescription.append("v3="+strange+"<br/>");
 
-            eigenvalue = pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][3]/angle;
+            eigenvalue = s_pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][3]/angle;
             if(eigenvalue.imag()>=0.0) strange.sprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
             else                       strange.sprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
             m_pctrlEigenVector4->setText(strange);
             ModeDescription.append("v4="+strange);
         }
-        else if(!pMiarex->m_bLongitudinal && pMiarex->m_pCurPOpp)
+        else if(!s_pMiarex->m_bLongitudinal && s_pMiarex->m_pCurPOpp)
         {
-            angle = pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][3];
+            angle = s_pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][3];
 
-            eigenvalue = pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][0]/u0;
+            eigenvalue = s_pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][0]/u0;
             if(eigenvalue.imag()>=0.0) strange.sprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
             else                       strange.sprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
             m_pctrlEigenVector1->setText(strange);
             ModeDescription.append("v1="+strange+"<br/>");
 
-            eigenvalue = pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][1]/(2.0*u0/span);
+            eigenvalue = s_pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][1]/(2.0*u0/span);
             if(eigenvalue.imag()>=0.0) strange.sprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
             else                       strange.sprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
             m_pctrlEigenVector2->setText(strange);
             ModeDescription.append("v2="+strange+"<br/>");
 
-            eigenvalue = pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][2]/(2.0*u0/span);
+            eigenvalue = s_pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][2]/(2.0*u0/span);
             if(eigenvalue.imag()>=0.0) strange.sprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
             else                       strange.sprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
             m_pctrlEigenVector3->setText(strange);
             ModeDescription.append("v3="+strange+"<br/>");
 
-            eigenvalue = pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][3]/angle;
+            eigenvalue = s_pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][3]/angle;
             if(eigenvalue.imag()>=0.0) strange.sprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
             else                       strange.sprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
             m_pctrlEigenVector4->setText(strange);
@@ -322,8 +318,7 @@ void StabViewDlg::keyPressEvent(QKeyEvent *event)
         }
         default:
         {
-            Miarex * pMiarex = s_pMiarex;
-            pMiarex->keyPressEvent(event);
+            s_pMiarex->keyPressEvent(event);
         }
 //        event->ignore();
     }
@@ -332,40 +327,36 @@ void StabViewDlg::keyPressEvent(QKeyEvent *event)
 
 void StabViewDlg::onAnimate()
 {
-    Miarex * pMiarex = s_pMiarex;
     if(m_pctrlAnimate->isChecked())
     {
 //        pMiarex->m_iView = WSTABVIEW;
-        pMiarex->m_iView=XFLR5::W3DVIEW;
-        pMiarex->setControls();
+        s_pMiarex->m_iView=XFLR5::W3DVIEW;
+        s_pMiarex->setControls();
         
-        pMiarex->m_Modedt = m_pctrlModeStep->value();
-        pMiarex->m_bAnimateMode  = true;
+        s_pMiarex->m_Modedt = m_pctrlModeStep->value();
+        s_pMiarex->m_bAnimateMode  = true;
         int speed = m_pctrlAnimationSpeed->value();
-        pMiarex->m_pTimerMode->setInterval(400-speed);
-        pMiarex->m_pTimerMode->start();
+        s_pMiarex->m_pTimerMode->setInterval(400-speed);
+        s_pMiarex->m_pTimerMode->start();
     }
     else
     {
-        pMiarex->stopAnimate();
+        s_pMiarex->stopAnimate();
     }
 }
-
 
 
 void StabViewDlg::onAnimationAmplitude(int val)
 {
     m_ModeAmplitude = double(val)/500.0;
-    Miarex * pMiarex = s_pMiarex;
-    pMiarex->onAnimateModeSingle(false);
+    s_pMiarex->onAnimateModeSingle(false);
 }
 
 
 void StabViewDlg::onAnimationSpeed(int val)
 {
     m_ModeInterval = val;
-    Miarex * pMiarex = s_pMiarex;
-    pMiarex->m_pTimerMode->setInterval(400-val);
+    s_pMiarex->m_pTimerMode->setInterval(400-val);
 }
 
 
@@ -376,21 +367,20 @@ void StabViewDlg::onAnimateRestart()
 
     for(int im=0; im<6; im++) ModeState[im] = 0;
 
-    Miarex * pMiarex = s_pMiarex;
-    PlaneOpp *pPOpp = pMiarex->m_pCurPOpp;
-    Plane *pPlane = pMiarex->m_pCurPlane;
+    PlaneOpp *pPOpp = s_pMiarex->m_pCurPOpp;
+    Plane *pPlane = s_pMiarex->m_pCurPlane;
 
-    pMiarex->m_ModeTime = 0.0;
+    s_pMiarex->m_ModeTime = 0.0;
 
     if(!pPOpp || !pPlane)
     {
-        pMiarex->m_ModeState[0] = 0.0;
-        pMiarex->m_ModeState[1] = 0.0;
-        pMiarex->m_ModeState[2] = 0.0;
-        pMiarex->m_ModeState[3] = 0.0;
-        pMiarex->m_ModeState[4] = 0.0;
-        pMiarex->m_ModeState[5] = 0.0;
-        pMiarex->updateView();
+        s_pMiarex->m_ModeState[0] = 0.0;
+        s_pMiarex->m_ModeState[1] = 0.0;
+        s_pMiarex->m_ModeState[2] = 0.0;
+        s_pMiarex->m_ModeState[3] = 0.0;
+        s_pMiarex->m_ModeState[4] = 0.0;
+        s_pMiarex->m_ModeState[5] = 0.0;
+        s_pMiarex->updateView();
         return;
     }
 
@@ -403,7 +393,7 @@ void StabViewDlg::onAnimateRestart()
     //calculate state at t=0 for normalization
     if(s2+o2>PRECISION)
     {
-        if(pMiarex->m_bLongitudinal)
+        if(s_pMiarex->m_bLongitudinal)
         {
             //x, z, theta are evaluated by direct inegration of u, w, q
             ModeState[1] = 0.0;
@@ -457,10 +447,10 @@ void StabViewDlg::onAnimateRestart()
     if(norm2>PRECISION)  norm2 = PI*(10.0/180.0)/ norm2;
     else                 norm2 = 1.0;
 
-    pMiarex->m_ModeNorm = qMin(norm1, norm2);
+    s_pMiarex->m_ModeNorm = qMin(norm1, norm2);
 
     //set initial mode positions, i.e. t=0
-    pMiarex->onAnimateModeSingle(false);
+    s_pMiarex->onAnimateModeSingle(false);
 }
 
 
@@ -472,53 +462,50 @@ void StabViewDlg::onCellChanged(QWidget *)
 
 void StabViewDlg::onPlotStabilityGraph()
 {
-    Miarex * pMiarex = s_pMiarex;
-    if(!pMiarex->m_TimeGraph[0]->curveCount())
+    if(!s_pMiarex->m_TimeGraph[0]->curveCount())
     {
         //we don't have a curve yet
         // so return
         return;
     }
     
-    pMiarex->createStabilityCurves();
-    pMiarex->updateView();
-    pMiarex->setFocus();
+    s_pMiarex->createStabilityCurves();
+    s_pMiarex->updateView();
+    s_pMiarex->setFocus();
 }
 
 
 void StabViewDlg::onModeSelection()
 {
-    Miarex * pMiarex = s_pMiarex;
-    if(pMiarex->m_iView==XFLR5::STABTIMEVIEW)
+    if(s_pMiarex->m_iView==XFLR5::STABTIMEVIEW)
     {
         if(m_pctrlTimeMode1->isChecked())      m_iCurrentMode = 0;
         else if(m_pctrlTimeMode2->isChecked()) m_iCurrentMode = 1;
         else if(m_pctrlTimeMode3->isChecked()) m_iCurrentMode = 2;
         else if(m_pctrlTimeMode4->isChecked()) m_iCurrentMode = 3;
     }
-    else if(pMiarex->m_iView==XFLR5::STABPOLARVIEW || pMiarex->m_iView==XFLR5::W3DVIEW)
+    else if(s_pMiarex->m_iView==XFLR5::STABPOLARVIEW || s_pMiarex->m_iView==XFLR5::W3DVIEW)
     {
         if(m_pctrlRLMode1->isChecked())      m_iCurrentMode = 0;
         else if(m_pctrlRLMode2->isChecked()) m_iCurrentMode = 1;
         else if(m_pctrlRLMode3->isChecked()) m_iCurrentMode = 2;
         else if(m_pctrlRLMode4->isChecked()) m_iCurrentMode = 3;
     }
-    if(!pMiarex->m_bLongitudinal) m_iCurrentMode +=4;
+    if(!s_pMiarex->m_bLongitudinal) m_iCurrentMode +=4;
     setMode(m_iCurrentMode);
 
-    if(pMiarex->m_iView==XFLR5::STABPOLARVIEW && Graph::isHighLighting())
+    if(s_pMiarex->m_iView==XFLR5::STABPOLARVIEW && Graph::isHighLighting())
     {
-        pMiarex->createStabRLCurves();
-        pMiarex->updateView();
+        s_pMiarex->createStabRLCurves();
+        s_pMiarex->updateView();
     }
 }
 
 
 void StabViewDlg::onReadData()
 {
-    Miarex * pMiarex = s_pMiarex;
-    pMiarex->m_Modedt = m_pctrlModeStep->value();
-    pMiarex->m_Deltat = m_pctrlDeltat->value();
+    s_pMiarex->m_Modedt = m_pctrlModeStep->value();
+    s_pMiarex->m_Deltat = m_pctrlDeltat->value();
 }
 
 
@@ -526,29 +513,27 @@ void StabViewDlg::onReadData()
 void StabViewDlg::onResponseType()
 {
     int type=0;
-    Miarex * pMiarex = s_pMiarex;
     
     if(m_pctrlInitCondResponse->isChecked())    type=0;
     else if(m_pctrlForcedResponse->isChecked()) type=1;
     else if(m_pctrlModalResponse->isChecked())  type=2;
     
-    if(type==pMiarex->m_StabilityResponseType) return;
+    if(type==s_pMiarex->m_StabilityResponseType) return;
     
-    pMiarex->m_StabilityResponseType=type;
+    s_pMiarex->m_StabilityResponseType=type;
     setControls();
 //    pMiarex->CreateStabilityCurves();
-    pMiarex->updateView();
+    s_pMiarex->updateView();
     
 }
 
 
 void StabViewDlg::setMode(int iMode)
 {
-    Miarex * pMiarex = s_pMiarex;
     if(iMode>=0)
     {
         m_iCurrentMode = iMode%4;
-        if(!pMiarex->m_bLongitudinal) m_iCurrentMode += 4;
+        if(!s_pMiarex->m_bLongitudinal) m_iCurrentMode += 4;
     }
     else if(m_iCurrentMode<0) m_iCurrentMode=0;
 
@@ -557,7 +542,7 @@ void StabViewDlg::setMode(int iMode)
     m_pctrlRLMode3->setChecked(m_iCurrentMode%4==2);
     m_pctrlRLMode4->setChecked(m_iCurrentMode%4==3);
     fillEigenThings();
-    PlaneOpp *pPOpp = pMiarex->m_pCurPOpp;
+    PlaneOpp *pPOpp = s_pMiarex->m_pCurPOpp;
 
     if(pPOpp)
     {
@@ -666,11 +651,8 @@ void StabViewDlg::setupLayout()
             m_pctrlControlTable->setSelectionMode(QAbstractItemView::SingleSelection);
             m_pctrlControlTable->setSelectionBehavior(QAbstractItemView::SelectRows);
             m_pCtrlDelegate = new FloatEditDelegate(this);
-            m_precision = new int[3];
-            m_precision[0]  = 3;
-            m_precision[1]  = 3;
-            m_precision[2]  = 3;
 
+            QVector<int> m_precision(3, 3);
             m_pCtrlDelegate->setPrecision(m_precision);
             m_pctrlControlTable->setItemDelegate(m_pCtrlDelegate);
 //            m_pCtrlDelegate->m_pCtrlModel = m_pControlModel;
@@ -922,7 +904,7 @@ void StabViewDlg::setupLayout()
                 m_pctrlAnimationAmplitude  = new QDial();
                 m_pctrlAnimationAmplitude->setMinimum(0);
                 m_pctrlAnimationAmplitude->setMaximum(1000);
-                m_pctrlAnimationAmplitude->setSliderPosition((int)(m_ModeAmplitude*500));
+                m_pctrlAnimationAmplitude->setSliderPosition(int(m_ModeAmplitude*500));
                 m_pctrlAnimationAmplitude->setNotchesVisible(true);
                 m_pctrlAnimationAmplitude->setSingleStep(20);
                 m_pctrlAnimationAmplitude->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
@@ -991,35 +973,34 @@ void StabViewDlg::setupLayout()
 
 void StabViewDlg::setControls()
 {
-    Miarex * pMiarex = s_pMiarex;
     QString str, strong;
     Units::getSpeedUnitLabel(str);
 
     blockSignals(true);
 
-    m_pctrlLongDynamics->setChecked(pMiarex->m_bLongitudinal);
-    m_pctrlLatDynamics->setChecked(!pMiarex->m_bLongitudinal);
+    m_pctrlLongDynamics->setChecked(s_pMiarex->m_bLongitudinal);
+    m_pctrlLatDynamics->setChecked(!s_pMiarex->m_bLongitudinal);
 
-    if(pMiarex->m_pCurWPolar && pMiarex->m_pCurWPolar->polarType()!=XFLR5::STABILITYPOLAR)
+    if(s_pMiarex->m_pCurWPolar && s_pMiarex->m_pCurWPolar->polarType()!=XFLR5::STABILITYPOLAR)
     {
 //        m_pControlModel->setRowCount(0);
     }
 
-    if(pMiarex->m_iView==XFLR5::STABTIMEVIEW)
+    if(s_pMiarex->m_iView==XFLR5::STABTIMEVIEW)
     {
         m_pctrlStackWidget->setCurrentIndex(0);
-        m_pctrlInitialConditionsWidget->setCurrentIndex(pMiarex->m_StabilityResponseType);
+        m_pctrlInitialConditionsWidget->setCurrentIndex(s_pMiarex->m_StabilityResponseType);
         
-        m_pctrlInitCondResponse->setChecked(pMiarex->m_StabilityResponseType==0);
-        m_pctrlForcedResponse->setChecked(pMiarex->m_StabilityResponseType==1);
-        m_pctrlModalResponse->setChecked(pMiarex->m_StabilityResponseType==2);
+        m_pctrlInitCondResponse->setChecked(s_pMiarex->m_StabilityResponseType==0);
+        m_pctrlForcedResponse->setChecked(s_pMiarex->m_StabilityResponseType==1);
+        m_pctrlModalResponse->setChecked(s_pMiarex->m_StabilityResponseType==2);
     }
-    else if(pMiarex->m_iView==XFLR5::STABPOLARVIEW)
+    else if(s_pMiarex->m_iView==XFLR5::STABPOLARVIEW)
     {
         m_pctrlStackWidget->setCurrentIndex(1);
         m_pctrlModeViewType->setCurrentIndex(0);
     }
-    else if(pMiarex->m_iView==XFLR5::W3DVIEW)
+    else if(s_pMiarex->m_iView==XFLR5::W3DVIEW)
     {
         m_pctrlStackWidget->setCurrentIndex(1);
         m_pctrlModeViewType->setCurrentIndex(1);
@@ -1027,7 +1008,7 @@ void StabViewDlg::setControls()
     setMode(m_iCurrentMode);
 
     strong = QString::fromUtf8("°/s");
-    if(pMiarex->m_bLongitudinal)
+    if(s_pMiarex->m_bLongitudinal)
     {
         m_pctrlStabLabel1->setText(tr("u0="));
         m_pctrlStabLabel2->setText(tr("w0="));
@@ -1046,11 +1027,11 @@ void StabViewDlg::setControls()
         m_pctrlUnit3->setText(strong);
     }
 
-    m_pctrlStabVar1->setValue(pMiarex->m_TimeInput[0]);
-    m_pctrlStabVar2->setValue(pMiarex->m_TimeInput[1]);
-    m_pctrlStabVar3->setValue(pMiarex->m_TimeInput[2]);
-    m_pctrlTotalTime->setValue(pMiarex->m_TotalTime);
-    m_pctrlDeltat->setValue(pMiarex->m_Deltat);
+    m_pctrlStabVar1->setValue(s_pMiarex->m_TimeInput[0]);
+    m_pctrlStabVar2->setValue(s_pMiarex->m_TimeInput[1]);
+    m_pctrlStabVar3->setValue(s_pMiarex->m_TimeInput[2]);
+    m_pctrlTotalTime->setValue(s_pMiarex->m_TotalTime);
+    m_pctrlDeltat->setValue(s_pMiarex->m_Deltat);
 
     m_pctrlTimeMode1->setChecked(m_iCurrentMode%4==0);
     m_pctrlTimeMode2->setChecked(m_iCurrentMode%4==1);
@@ -1062,13 +1043,13 @@ void StabViewDlg::setControls()
     m_pctrlRLMode4->setChecked(m_iCurrentMode%4==3);
 
 
-    bool bStabPOpp = pMiarex->m_pCurWPolar && pMiarex->m_pCurWPolar->isStabilityPolar() && pMiarex->m_pCurPOpp && pMiarex->m_iView>=XFLR5::W3DVIEW;
+    bool bStabPOpp = s_pMiarex->m_pCurWPolar && s_pMiarex->m_pCurWPolar->isStabilityPolar() && s_pMiarex->m_pCurPOpp && s_pMiarex->m_iView>=XFLR5::W3DVIEW;
     m_pctrlRLMode1->setEnabled(bStabPOpp);
     m_pctrlRLMode2->setEnabled(bStabPOpp);
     m_pctrlRLMode3->setEnabled(bStabPOpp);
     m_pctrlRLMode4->setEnabled(bStabPOpp);
 
-    bool bEnableTimeCtrl = pMiarex->m_pCurPOpp && pMiarex->m_pCurPOpp->polarType()==XFLR5::STABILITYPOLAR && pMiarex->m_iView==XFLR5::STABTIMEVIEW;
+    bool bEnableTimeCtrl = s_pMiarex->m_pCurPOpp && s_pMiarex->m_pCurPOpp->polarType()==XFLR5::STABILITYPOLAR && s_pMiarex->m_iView==XFLR5::STABTIMEVIEW;
     m_pctrlAddCurve->setEnabled(bEnableTimeCtrl);
     m_pctrlRenameCurve->setEnabled(m_pctrlCurveList->count());
     m_pctrlPlotStabGraph->setEnabled(m_pctrlCurveList->count());
@@ -1091,13 +1072,13 @@ void StabViewDlg::setControls()
     //   - the polar's type is 7
     //   - we have an active wopp
     //   - the StabilityView is 3
-    bool bEnable3DAnimation = pMiarex->m_iView==XFLR5::W3DVIEW && pMiarex->m_pCurPOpp && pMiarex->m_pCurPOpp->polarType()==XFLR5::STABILITYPOLAR;
+    bool bEnable3DAnimation = s_pMiarex->m_iView==XFLR5::W3DVIEW && s_pMiarex->m_pCurPOpp && s_pMiarex->m_pCurPOpp->polarType()==XFLR5::STABILITYPOLAR;
     m_pctrlAnimate->setEnabled(bEnable3DAnimation);
     m_pctrlAnimateRestart->setEnabled(bEnable3DAnimation);
     m_pctrlAnimationAmplitude->setEnabled(bEnable3DAnimation);
     m_pctrlAnimationSpeed->setEnabled(bEnable3DAnimation);
 
-    m_pctrlModeStep->setValue(pMiarex->m_Modedt);
+    m_pctrlModeStep->setValue(s_pMiarex->m_Modedt);
 
     fillEigenThings();
 
@@ -1109,16 +1090,14 @@ void StabViewDlg::setControls()
 void StabViewDlg::setTimeCurveStyle(QColor const &Color, int const&Style, int const &Width, bool const& bCurve, int const& PointStyle)
 {
     if(!m_pCurve) return;
-    Miarex * pMiarex = s_pMiarex;
-    Curve *pCurve;
-    for (int i=0; i<pMiarex->m_TimeGraph[0]->curveCount(); i++)
+    for (int i=0; i<s_pMiarex->m_TimeGraph[0]->curveCount(); i++)
     {
-        pCurve = pMiarex->m_TimeGraph[0]->curve(i);
+        Curve *pCurve = s_pMiarex->m_TimeGraph[0]->curve(i);
         if(pCurve == m_pCurve)
         {
             for(int ig=0; ig<4; ig++)
             {
-                pCurve = pMiarex->m_TimeGraph[ig]->curve(i);
+                pCurve = s_pMiarex->m_TimeGraph[ig]->curve(i);
                 pCurve->setColor(Color);
                 pCurve->setStyle(Style);
                 pCurve->setWidth(Width);
@@ -1134,9 +1113,6 @@ void StabViewDlg::setTimeCurveStyle(QColor const &Color, int const&Style, int co
 
 void StabViewDlg::onRenameCurve()
 {
-    Miarex * pMiarex = s_pMiarex;
-    
-    Curve *pCurve;
     if(!m_pCurve) return;
 
     QString NewName = "Test Name";
@@ -1147,14 +1123,14 @@ void StabViewDlg::onRenameCurve()
     if(dlg.exec() != QDialog::Accepted) return;
     NewName = dlg.m_NewName;
 
-    for (int i=0; i<pMiarex->m_TimeGraph[0]->curveCount(); i++)
+    for (int i=0; i<s_pMiarex->m_TimeGraph[0]->curveCount(); i++)
     {
-        pCurve = pMiarex->m_TimeGraph[0]->curve(i);
+        Curve *pCurve = s_pMiarex->m_TimeGraph[0]->curve(i);
         if(pCurve && (pCurve == m_pCurve))
         {
             for(int ig=0; ig<4; ig++)
             {
-                pCurve = pMiarex->m_TimeGraph[ig]->curve(i);
+                pCurve = s_pMiarex->m_TimeGraph[ig]->curve(i);
                 pCurve->setCurveName(NewName);
             }
 
@@ -1168,12 +1144,11 @@ void StabViewDlg::onRenameCurve()
 
 void StabViewDlg::onSelChangeCurve(int sel)
 {
-    Miarex * pMiarex = s_pMiarex;
     QString strong = m_pctrlCurveList->itemText(sel);
-    m_pCurve = pMiarex->m_TimeGraph[0]->curve(strong);
+    m_pCurve = s_pMiarex->m_TimeGraph[0]->curve(strong);
     m_pCurve->curveName(strong);
     
-    pMiarex->setCurveParams();
+    s_pMiarex->setCurveParams();
 }
 
 
@@ -1191,62 +1166,59 @@ void StabViewDlg::onAddCurve()
 
 void StabViewDlg::onDeleteCurve()
 {
-    Miarex * pMiarex = s_pMiarex;
     if(!m_pCurve) return;
     QString CurveTitle = m_pCurve->curveName();
-    for(int ig=0; ig<MAXTIMEGRAPHS; ig++)    pMiarex->m_TimeGraph[ig]->deleteCurve(CurveTitle);
+    for(int ig=0; ig<MAXTIMEGRAPHS; ig++)    s_pMiarex->m_TimeGraph[ig]->deleteCurve(CurveTitle);
     m_pCurve = nullptr;
 
     fillCurveList();
     m_pctrlCurveList->setCurrentIndex(0);
-    m_pctrlPlotStabGraph->setEnabled(pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
-    m_pctrlRenameCurve->setEnabled(  pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
-    m_pctrlDeleteCurve->setEnabled(  pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
-    m_pctrlCurveList->setEnabled(    pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
+    m_pctrlPlotStabGraph->setEnabled(s_pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
+    m_pctrlRenameCurve->setEnabled(  s_pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
+    m_pctrlDeleteCurve->setEnabled(  s_pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
+    m_pctrlCurveList->setEnabled(    s_pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
 
-    if(m_pctrlCurveList->count()) m_pCurve = pMiarex->m_TimeGraph[0]->curve(m_pctrlCurveList->itemText(0));
+    if(m_pctrlCurveList->count()) m_pCurve = s_pMiarex->m_TimeGraph[0]->curve(m_pctrlCurveList->itemText(0));
     else                          m_pCurve = nullptr;
 
-    pMiarex->setCurveParams();
-    pMiarex->createStabilityCurves();
-    pMiarex->updateView();
-    pMiarex->setFocus();
+    s_pMiarex->setCurveParams();
+    s_pMiarex->createStabilityCurves();
+    s_pMiarex->updateView();
+    s_pMiarex->setFocus();
 }
 
 
 void StabViewDlg::addCurve()
 {
-    Miarex * pMiarex = s_pMiarex;
-    int nCurves = pMiarex->m_TimeGraph.at(0)->curveCount();
+    int nCurves = s_pMiarex->m_TimeGraph.at(0)->curveCount();
     QString strong = tr("New curve") + QString(" %1").arg(nCurves);
 
-    Curve *pCurve;
-    for(int ig=0; ig<pMiarex->m_TimeGraph.size(); ig++)
+    Curve *pCurve = nullptr;
+    for(int ig=0; ig<s_pMiarex->m_TimeGraph.size(); ig++)
     {
-        pCurve = pMiarex->m_TimeGraph[ig]->addCurve();
+        pCurve = s_pMiarex->m_TimeGraph[ig]->addCurve();
         pCurve->setCurveName(strong);
         if(ig==0) m_pCurve = pCurve;
     }
 
-    m_pctrlCurveList->addItem(pCurve->curveName());
-    m_pctrlPlotStabGraph->setEnabled(pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
-    m_pctrlRenameCurve->setEnabled(  pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
-    m_pctrlDeleteCurve->setEnabled(  pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
-    m_pctrlCurveList->setEnabled(    pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
+    if(pCurve) m_pctrlCurveList->addItem(pCurve->curveName());
 
-    pMiarex->setCurveParams();
+    m_pctrlPlotStabGraph->setEnabled(s_pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
+    m_pctrlRenameCurve->setEnabled(  s_pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
+    m_pctrlDeleteCurve->setEnabled(  s_pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
+    m_pctrlCurveList->setEnabled(    s_pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
+
+    s_pMiarex->setCurveParams();
 }
-
 
 
 void StabViewDlg::fillCurveList()
 {
-    Miarex * pMiarex = s_pMiarex;
     m_pctrlCurveList->clear();
     QString strong;
-    for(int i=0; i<pMiarex->m_TimeGraph[0]->curveCount(); i++)
+    for(int i=0; i<s_pMiarex->m_TimeGraph[0]->curveCount(); i++)
     {
-        pMiarex->m_TimeGraph[0]->curve(i)->curveName(strong);
+        s_pMiarex->m_TimeGraph[0]->curve(i)->curveName(strong);
         m_pctrlCurveList->addItem(strong);
     }
     if(m_pCurve)
@@ -1259,7 +1231,7 @@ void StabViewDlg::fillCurveList()
 
 double StabViewDlg::getControlInput(const double &time)
 {
-    static double t1, t2, in1, in2;
+    double t1, t2, in1, in2;
     t1 = t2 = 0.0;
     t1 = m_pControlModel->index(0, 0, QModelIndex()).data().toDouble();
     for(int i=1; i<m_pControlModel->rowCount()-1; i++)

@@ -2332,22 +2332,19 @@ void Miarex::onAnimateWOpp()
     }
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-    PlaneOpp*pPOpp;
-    int l;
-
     if(m_pctrlWOppAnimate->isChecked())
     {
-        if(m_pCurPlane)
+        if(m_pCurPlane && m_pCurPOpp)
         {
-            for (l=0; l< Objects3d::planeOppCount(); l++)
+            for (int l=0; l< Objects3d::planeOppCount(); l++)
             {
-                pPOpp = Objects3d::planeOppAt(l);
+                PlaneOpp*pPOpp = Objects3d::planeOppAt(l);
 
                 if (pPOpp &&
                         pPOpp->polarName() == m_pCurWPolar->polarName() &&
                         pPOpp->planeName() == m_pCurPlane->planeName())
                 {
-                    if(m_pCurPOpp->alpha() - pPOpp->alpha()<0.0001)
+                    if(fabs(m_pCurPOpp->alpha() - pPOpp->alpha())<0.0001)
                         m_posAnimateWOpp = l;
                 }
             }

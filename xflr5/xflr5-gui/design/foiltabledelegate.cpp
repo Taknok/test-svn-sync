@@ -48,8 +48,11 @@ bool FoilTableDelegate::editorEvent(QEvent *pEvent, QAbstractItemModel *pModel, 
     if(m_pAFoil)
     {
         QMouseEvent *pMouseEvent = dynamic_cast<QMouseEvent*>(pEvent);
-        if(pMouseEvent->buttons() & Qt::LeftButton) m_pAFoil->onFoilClicked(index);
-        pMouseEvent->accept();
+        if(pMouseEvent)
+        {
+            if(pMouseEvent->buttons() & Qt::LeftButton) m_pAFoil->onFoilClicked(index);
+            pMouseEvent->accept();
+        }
         return true;
     }
     else return QItemDelegate::editorEvent(pEvent, pModel, option, index);
@@ -221,8 +224,9 @@ void FoilTableDelegate::setEditorData(QWidget *pEditor, const QModelIndex &index
     if(index.column()==0)
     {
         QString strong = index.model()->data(index, Qt::EditRole).toString();
-        QLineEdit *lineEdit = dynamic_cast<QLineEdit*>(pEditor);
-        lineEdit->setText(strong);
+        QLineEdit *pLineEdit = dynamic_cast<QLineEdit*>(pEditor);
+        if(pLineEdit)
+            pLineEdit->setText(strong);
     }
     else
     {

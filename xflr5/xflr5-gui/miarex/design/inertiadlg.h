@@ -112,7 +112,7 @@ private:
     QMenu *m_pContextMenu;
     QAction *m_pInsertMassRow, *m_pDeleteMassRow;
 
-    int  *m_precision;
+    QVector<int> m_precision;
 
     //member variables
     Body *m_pBody;

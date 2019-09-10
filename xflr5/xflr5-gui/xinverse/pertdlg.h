@@ -66,8 +66,6 @@ private:
     QStandardItemModel m_CnModel;
     FloatEditDelegate *m_pFloatDelegate;
 
-    int *m_precision;
-
 protected:
     void keyPressEvent(QKeyEvent *event);
 
