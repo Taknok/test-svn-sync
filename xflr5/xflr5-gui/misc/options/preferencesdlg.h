@@ -22,13 +22,9 @@
 #pragma once
 
 #include <QDialog>
-#include <QTabWidget>
 #include <QStackedWidget>
 #include <QCheckBox>
-#include <QRadioButton>
-#include <QComboBox>
 #include <QListWidget>
-#include <QLabel>
 #include <QDialogButtonBox>
 
 class LanguageWt;

@@ -68,8 +68,8 @@ private slots:
 private:
     void setupLayout();
     void readSettings();
-    static void saveSettings(QSettings *pSettings);
-    static void loadSettings(QSettings *pSettings);
+    static void saveSettings(QSettings &settings);
+    static void loadSettings(QSettings &settings);
     static void resetDefaults();
 
     LineBtn *m_pctrlAxis, *m_pctrlOutline, *m_pctrlVLMMesh, *m_pctrlTopTrans, *m_pctrlBotTrans;

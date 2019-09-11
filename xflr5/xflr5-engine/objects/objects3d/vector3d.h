@@ -24,7 +24,7 @@
 
 #include <QString>
 
-#include <math.h>
+
 
 #include <xflr5-engine_global.h>
 

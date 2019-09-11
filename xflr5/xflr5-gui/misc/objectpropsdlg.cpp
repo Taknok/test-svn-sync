@@ -19,12 +19,13 @@
 
 *****************************************************************************/
 
-#include "objectpropsdlg.h"
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QStringList>
 
+#include "objectpropsdlg.h"
 #include <globals/globals.h>
 
 
@@ -39,11 +40,11 @@ void ObjectPropsDlg::setupLayout()
 {
     QHBoxLayout *pCommandButtonsLayout = new QHBoxLayout;
     {
-        QPushButton *OKButton = new QPushButton(tr("OK"));
+        QPushButton *pOKButton = new QPushButton(tr("OK"));
         pCommandButtonsLayout->addStretch(1);
-        pCommandButtonsLayout->addWidget(OKButton);
+        pCommandButtonsLayout->addWidget(pOKButton);
         pCommandButtonsLayout->addStretch(1);
-        connect(OKButton, SIGNAL(clicked()),this, SLOT(accept()));
+        connect(pOKButton, SIGNAL(clicked()), SLOT(accept()));
     }
 
     QVBoxLayout *pMainLayout = new QVBoxLayout(this);
@@ -64,9 +65,9 @@ void ObjectPropsDlg::setupLayout()
 
 void ObjectPropsDlg::initDialog(QString title, QString props)
 {
-    QString strange;
+/*    QString strange;
 
-/*    if(m_pXDirect)
+    if(m_pXDirect)
     {
         if(m_pPolar)
         {

@@ -31,7 +31,7 @@
 #include <QDir>
 #include <QKeyEvent>
 #include <QFontDatabase>
-#include <math.h>
+
 
 #include "panelanalysisdlg.h"
 #include <analysis3d/plane_analysis/panelanalysis.h>

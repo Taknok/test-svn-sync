@@ -36,7 +36,6 @@
 #include <QLineEdit>
 #include <QLabel>
 #include <QStackedWidget>
-#include <QVBoxLayout>
 #include <QSettings>
 
 #include <graph/graph.h>

@@ -26,7 +26,7 @@
 #include <QGroupBox>
 #include <QMessageBox>
 #include <QMenu>
-#include <math.h>
+
 
 #include <globals/globals.h>
 #include <miarex/design/editbodydlg.h>

@@ -32,7 +32,7 @@
 #include <QTextStream>
 #include <QDir>
 #include <QByteArray>
-#include <math.h>
+
 #include <qopengl.h>
 
 #include <globals/globals.h>

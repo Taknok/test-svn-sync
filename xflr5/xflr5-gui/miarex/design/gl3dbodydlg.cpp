@@ -29,7 +29,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QHeaderView>
-#include <math.h>
+
 
 
 #include <gl3dbodyview.h>

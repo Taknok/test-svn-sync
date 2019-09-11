@@ -19,13 +19,12 @@
 
 *****************************************************************************/
 
-#include <globals/globals.h>
-#include <misc/options/settings.h>
-#include "lengthunitdlg.h"
 #include <QGridLayout>
 #include <QVBoxLayout>
 
-
+#include <globals/globals.h>
+#include <misc/options/settings.h>
+#include "lengthunitdlg.h"
 
 
 LengthUnitDlg::LengthUnitDlg(QWidget *parent): QDialog(parent)

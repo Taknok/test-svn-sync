@@ -22,7 +22,7 @@
 #include "oppointwidget.h"
 
 
-#include <math.h>
+
 #include <QAction>
 
 

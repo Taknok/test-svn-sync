@@ -22,14 +22,13 @@
 #include <QTimer>
 #include <QAction>
 #include <QMenu>
-#include <QStatusBar>
 #include <QMessageBox>
 #include <QColorDialog>
 #include <QFileDialog>
 #include <QGroupBox>
 #include <QThread>
+#include <QStatusBar>
 #include <QtDebug>
-#include <math.h>
 
 #include <globals/globals.h>
 #include <objects/objects_global.h>

@@ -22,7 +22,7 @@
 #ifndef XDIRECTTILEWIDGET_H
 #define XDIRECTTILEWIDGET_H
 
-#include <QStackedWidget>
+
 #include <QGridLayout>
 
 #include "graphtilewidget.h"

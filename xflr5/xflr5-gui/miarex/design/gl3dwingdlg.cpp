@@ -26,7 +26,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QColorDialog>
-#include <math.h>
+
 
 #include <globals/globals.h>
 #include <miarex/design/gl3dwingdlg.h>

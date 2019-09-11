@@ -20,13 +20,13 @@
 *****************************************************************************/
 
 
-#include <math.h>
+
 
 #include <graph/graph.h>
 #include <graph/curve.h>
 #include <graph/graph_globals.h>
 
-#include <math.h>
+
 #include <QPainter>
 #include <QFontMetrics>
 #include <QTextStream>

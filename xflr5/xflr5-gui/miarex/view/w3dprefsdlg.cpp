@@ -536,147 +536,147 @@ void W3dPrefsDlg::onShowWake()
 }
 
 
-void W3dPrefsDlg::saveSettings(QSettings *pSettings)
+void W3dPrefsDlg::saveSettings(QSettings &settings)
 {
-    pSettings->beginGroup("3DPrefs");
+    settings.beginGroup("3DPrefs");
     {
-        pSettings->setValue("3DAxisStyle", s_3DAxisStyle );
-        pSettings->setValue("3DAXisWidth", s_3DAxisWidth );
-        pSettings->setValue("3DAxisColor", s_3DAxisColor);
+        settings.setValue("3DAxisStyle", s_3DAxisStyle );
+        settings.setValue("3DAXisWidth", s_3DAxisWidth );
+        settings.setValue("3DAxisColor", s_3DAxisColor);
 
-        pSettings->setValue("VLMStyle", s_VLMStyle);
-        pSettings->setValue("VLMWidth", s_VLMWidth);
-        pSettings->setValue("VLMColor", s_VLMColor);
+        settings.setValue("VLMStyle", s_VLMStyle);
+        settings.setValue("VLMWidth", s_VLMWidth);
+        settings.setValue("VLMColor", s_VLMColor);
 
-        pSettings->setValue("OutlineStyle", s_OutlineStyle);
-        pSettings->setValue("OutlineWidth", s_OutlineWidth);
-        pSettings->setValue("OutlineColor", s_OutlineColor);
+        settings.setValue("OutlineStyle", s_OutlineStyle);
+        settings.setValue("OutlineWidth", s_OutlineWidth);
+        settings.setValue("OutlineColor", s_OutlineColor);
 
-        pSettings->setValue("XCPStyle", s_XCPStyle);
-        pSettings->setValue("XCPWidth", s_XCPWidth);
-        pSettings->setValue("XCPColor", s_XCPColor);
+        settings.setValue("XCPStyle", s_XCPStyle);
+        settings.setValue("XCPWidth", s_XCPWidth);
+        settings.setValue("XCPColor", s_XCPColor);
 
-        pSettings->setValue("MomentStyle", s_MomentStyle);
-        pSettings->setValue("MomentWidth", s_MomentWidth);
-        pSettings->setValue("MomentColor", s_MomentColor);
+        settings.setValue("MomentStyle", s_MomentStyle);
+        settings.setValue("MomentWidth", s_MomentWidth);
+        settings.setValue("MomentColor", s_MomentColor);
 
-        pSettings->setValue("IDragStyle", s_IDragStyle);
-        pSettings->setValue("IDragWidth", s_IDragWidth);
-        pSettings->setValue("IDragColor", s_IDragColor);
+        settings.setValue("IDragStyle", s_IDragStyle);
+        settings.setValue("IDragWidth", s_IDragWidth);
+        settings.setValue("IDragColor", s_IDragColor);
 
-        pSettings->setValue("VDragStyle", s_VDragStyle);
-        pSettings->setValue("VDragWidth", s_VDragWidth);
-        pSettings->setValue("VDragColor", s_VDragColor);
+        settings.setValue("VDragStyle", s_VDragStyle);
+        settings.setValue("VDragWidth", s_VDragWidth);
+        settings.setValue("VDragColor", s_VDragColor);
 
-        pSettings->setValue("DownwashStyle", s_DownwashStyle );
-        pSettings->setValue("DownwashWidth", s_DownwashWidth );
-        pSettings->setValue("DownwashColor", s_DownwashColor);
+        settings.setValue("DownwashStyle", s_DownwashStyle );
+        settings.setValue("DownwashWidth", s_DownwashWidth );
+        settings.setValue("DownwashColor", s_DownwashColor);
 
-        pSettings->setValue("WakeStyle", s_WakeStyle );
-        pSettings->setValue("WakeWidth", s_WakeWidth );
-        pSettings->setValue("WakeColor", s_WakeColor);
+        settings.setValue("WakeStyle", s_WakeStyle );
+        settings.setValue("WakeWidth", s_WakeWidth );
+        settings.setValue("WakeColor", s_WakeColor);
 
-        pSettings->setValue("CpStyle", s_CpStyle);
-        pSettings->setValue("CpWidth", s_CpWidth);
-        pSettings->setValue("CpColor", s_CpColor);
+        settings.setValue("CpStyle", s_CpStyle);
+        settings.setValue("CpWidth", s_CpWidth);
+        settings.setValue("CpColor", s_CpColor);
 
-        pSettings->setValue("TopStyle", s_TopStyle);
-        pSettings->setValue("TopWidth", s_TopWidth);
-        pSettings->setValue("TopColor", s_TopColor);
+        settings.setValue("TopStyle", s_TopStyle);
+        settings.setValue("TopWidth", s_TopWidth);
+        settings.setValue("TopColor", s_TopColor);
 
-        pSettings->setValue("BotStyle", s_BotStyle);
-        pSettings->setValue("BotWidth", s_BotWidth);
-        pSettings->setValue("BotColor", s_BotColor);
+        settings.setValue("BotStyle", s_BotStyle);
+        settings.setValue("BotWidth", s_BotWidth);
+        settings.setValue("BotColor", s_BotColor);
 
-        pSettings->setValue("StreamLinesStyle", s_StreamLinesStyle);
-        pSettings->setValue("StreamLinesWidth", s_StreamLinesWidth);
-        pSettings->setValue("StreamLinesColor", s_StreamLinesColor);
+        settings.setValue("StreamLinesStyle", s_StreamLinesStyle);
+        settings.setValue("StreamLinesWidth", s_StreamLinesWidth);
+        settings.setValue("StreamLinesColor", s_StreamLinesColor);
 
-        pSettings->setValue("showWakePanels", s_bWakePanels);
+        settings.setValue("showWakePanels", s_bWakePanels);
 
-        pSettings->setValue("MassColor", s_MassColor);
+        settings.setValue("MassColor", s_MassColor);
 
-        pSettings->setValue("AutoAdjustScale", s_bAutoAdjustScale);
-        pSettings->setValue("AnimateTransitions", s_bAnimateTransitions);
-        pSettings->setValue("EnableClipPlane", s_bEnableClipPlane);
+        settings.setValue("AutoAdjustScale", s_bAutoAdjustScale);
+        settings.setValue("AnimateTransitions", s_bAnimateTransitions);
+        settings.setValue("EnableClipPlane", s_bEnableClipPlane);
 
-        pSettings->setValue("ChordwiseResolution", s_iChordwiseRes);
-        pSettings->setValue("BodyAxialRes", s_iBodyAxialRes);
-        pSettings->setValue("BodyHoopRes", s_iBodyHoopRes);
+        settings.setValue("ChordwiseResolution", s_iChordwiseRes);
+        settings.setValue("BodyAxialRes", s_iBodyAxialRes);
+        settings.setValue("BodyHoopRes", s_iBodyHoopRes);
 
     }
-    pSettings->endGroup();
+    settings.endGroup();
 }
 
 
-void W3dPrefsDlg::loadSettings(QSettings *pSettings)
+void W3dPrefsDlg::loadSettings(QSettings &settings)
 {
     resetDefaults();
-    pSettings->beginGroup("3DPrefs");
+    settings.beginGroup("3DPrefs");
     {
-        s_3DAxisStyle   = pSettings->value("3DAxisStyle", 3).toInt();
-        s_3DAxisWidth   = pSettings->value("3DAXisWidth",1).toInt();
-        s_3DAxisColor = pSettings->value("3DAxisColor").value<QColor>();
+        s_3DAxisStyle   = settings.value("3DAxisStyle", 3).toInt();
+        s_3DAxisWidth   = settings.value("3DAXisWidth",1).toInt();
+        s_3DAxisColor = settings.value("3DAxisColor").value<QColor>();
 
-        s_VLMStyle = pSettings->value("VLMStyle", 0).toInt();
-        s_VLMWidth = pSettings->value("VLMWidth",1).toInt();
-        s_VLMColor = pSettings->value("VLMColor").value<QColor>();
+        s_VLMStyle = settings.value("VLMStyle", 0).toInt();
+        s_VLMWidth = settings.value("VLMWidth",1).toInt();
+        s_VLMColor = settings.value("VLMColor").value<QColor>();
 
-        s_OutlineStyle = pSettings->value("OutlineStyle",0).toInt();
-        s_OutlineWidth = pSettings->value("OutlineWidth",1).toInt();
-        s_OutlineColor = pSettings->value("OutlineColor").value<QColor>();
+        s_OutlineStyle = settings.value("OutlineStyle",0).toInt();
+        s_OutlineWidth = settings.value("OutlineWidth",1).toInt();
+        s_OutlineColor = settings.value("OutlineColor").value<QColor>();
 
-        s_XCPStyle = pSettings->value("XCPStyle",0).toInt();
-        s_XCPWidth = pSettings->value("XCPWidth",2).toInt();
-        s_XCPColor = pSettings->value("XCPColor").value<QColor>();
+        s_XCPStyle = settings.value("XCPStyle",0).toInt();
+        s_XCPWidth = settings.value("XCPWidth",2).toInt();
+        s_XCPColor = settings.value("XCPColor").value<QColor>();
 
-        s_MomentStyle = pSettings->value("MomentStyle",0).toInt();
-        s_MomentWidth = pSettings->value("MomentWidth",3).toInt();
-        s_MomentColor = pSettings->value("MomentColor").value<QColor>();
+        s_MomentStyle = settings.value("MomentStyle",0).toInt();
+        s_MomentWidth = settings.value("MomentWidth",3).toInt();
+        s_MomentColor = settings.value("MomentColor").value<QColor>();
 
-        s_IDragStyle = pSettings->value("IDragStyle",0).toInt();
-        s_IDragWidth = pSettings->value("IDragWidth",1).toInt();
-        s_IDragColor = pSettings->value("IDragColor").value<QColor>();
+        s_IDragStyle = settings.value("IDragStyle",0).toInt();
+        s_IDragWidth = settings.value("IDragWidth",1).toInt();
+        s_IDragColor = settings.value("IDragColor").value<QColor>();
 
-        s_VDragStyle = pSettings->value("VDragStyle",0).toInt();
-        s_VDragWidth = pSettings->value("VDragWidth",1).toInt();
-        s_VDragColor = pSettings->value("VDragColor").value<QColor>();
+        s_VDragStyle = settings.value("VDragStyle",0).toInt();
+        s_VDragWidth = settings.value("VDragWidth",1).toInt();
+        s_VDragColor = settings.value("VDragColor").value<QColor>();
 
-        s_DownwashStyle = pSettings->value("DownwashStyle",0).toInt();
-        s_DownwashWidth = pSettings->value("DownwashWidth",1).toInt();
-        s_DownwashColor = pSettings->value("DownwashColor").value<QColor>();
+        s_DownwashStyle = settings.value("DownwashStyle",0).toInt();
+        s_DownwashWidth = settings.value("DownwashWidth",1).toInt();
+        s_DownwashColor = settings.value("DownwashColor").value<QColor>();
 
-        s_WakeStyle = pSettings->value("WakeStyle",2).toInt();
-        s_WakeWidth = pSettings->value("WakeWidth",1).toInt();
-        s_WakeColor = pSettings->value("WakeColor").value<QColor>();
+        s_WakeStyle = settings.value("WakeStyle",2).toInt();
+        s_WakeWidth = settings.value("WakeWidth",1).toInt();
+        s_WakeColor = settings.value("WakeColor").value<QColor>();
 
-        s_CpStyle = pSettings->value("CpStyle",0).toInt();
-        s_CpWidth = pSettings->value("CpWidth",1).toInt();
-        s_CpColor = pSettings->value("CpColor").value<QColor>();
+        s_CpStyle = settings.value("CpStyle",0).toInt();
+        s_CpWidth = settings.value("CpWidth",1).toInt();
+        s_CpColor = settings.value("CpColor").value<QColor>();
 
-        s_TopStyle = pSettings->value("TopStyle",0).toInt();
-        s_TopWidth = pSettings->value("TopWidth",1).toInt();
-        s_TopColor = pSettings->value("TopColor",QColor(171, 103, 220)).value<QColor>();
+        s_TopStyle = settings.value("TopStyle",0).toInt();
+        s_TopWidth = settings.value("TopWidth",1).toInt();
+        s_TopColor = settings.value("TopColor",QColor(171, 103, 220)).value<QColor>();
 
-        s_BotStyle = pSettings->value("BotStyle",1).toInt();
-        s_BotWidth = pSettings->value("BotWidth",1).toInt();
-        s_BotColor = pSettings->value("BotColor", QColor(171, 103, 220)).value<QColor>();
+        s_BotStyle = settings.value("BotStyle",1).toInt();
+        s_BotWidth = settings.value("BotWidth",1).toInt();
+        s_BotColor = settings.value("BotColor", QColor(171, 103, 220)).value<QColor>();
 
-        s_StreamLinesStyle = pSettings->value("StreamLinesStyle", 0).toInt();
-        s_StreamLinesWidth = pSettings->value("StreamLinesWidth", 1).toInt();
-        s_StreamLinesColor = pSettings->value("StreamLinesColor", QColor(150, 140, 255)).value<QColor>();
+        s_StreamLinesStyle = settings.value("StreamLinesStyle", 0).toInt();
+        s_StreamLinesWidth = settings.value("StreamLinesWidth", 1).toInt();
+        s_StreamLinesColor = settings.value("StreamLinesColor", QColor(150, 140, 255)).value<QColor>();
 
-        s_MassColor = pSettings->value("MassColor", QColor(67, 151, 169)).value<QColor>();
-        s_bWakePanels = pSettings->value("showWakePanels", true).toBool();
-        s_bEnableClipPlane = pSettings->value("EnableClipPlane", false).toBool();
+        s_MassColor = settings.value("MassColor", QColor(67, 151, 169)).value<QColor>();
+        s_bWakePanels = settings.value("showWakePanels", true).toBool();
+        s_bEnableClipPlane = settings.value("EnableClipPlane", false).toBool();
 
-        s_bAutoAdjustScale = pSettings->value("AutoAdjustScale", true).toBool();
-        s_bAnimateTransitions = pSettings->value("AnimateTransitions", true).toBool();
-        s_iChordwiseRes = pSettings->value("ChordwiseResolution", 50).toInt();
-        s_iBodyAxialRes = pSettings->value("BodyAxialRes", 23).toInt();
-        s_iBodyHoopRes = pSettings->value("BodyHoopRes", 17).toInt();
+        s_bAutoAdjustScale = settings.value("AutoAdjustScale", true).toBool();
+        s_bAnimateTransitions = settings.value("AnimateTransitions", true).toBool();
+        s_iChordwiseRes = settings.value("ChordwiseResolution", 50).toInt();
+        s_iBodyAxialRes = settings.value("BodyAxialRes", 23).toInt();
+        s_iBodyHoopRes = settings.value("BodyHoopRes", 17).toInt();
     }
-    pSettings->endGroup();
+    settings.endGroup();
 }
 
 

@@ -21,14 +21,16 @@
 
 #include <iostream>
 
-#include <globals/globals.h>
-#include <graph_globals.h>
-#include <misc/options/settings.h>
-#include "linecbbox.h"
 #include <QtDebug>
 #include <QPainter>
 #include <QPaintEvent>
 
+
+#include "linecbbox.h"
+
+#include <globals/globals.h>
+#include <graph_globals.h>
+#include <misc/options/settings.h>
 
 
 

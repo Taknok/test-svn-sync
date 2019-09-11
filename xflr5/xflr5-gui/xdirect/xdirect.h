@@ -28,15 +28,12 @@
 #ifndef QXDIRECT_H
 #define QXDIRECT_H
 
-#include <QPixmap>
 #include <QSettings>
-#include <QLabel>
-#include <QPushButton>
-#include <QRadioButton>
-#include <QCheckBox>
-#include <QStackedWidget>
-#include <QSlider>
 #include <QVector>
+#include <QStackedWidget>
+#include <QLabel>
+#include <QRadioButton>
+#include <QSlider>
 
 #include <objects/objects2d/polar.h>
 #include <objects/objects2d/foil.h>

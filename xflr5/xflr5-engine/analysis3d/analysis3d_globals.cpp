@@ -29,7 +29,6 @@
 #include <QFile>
 #include <QTextStream>
 #include <QByteArray>
-#include <math.h>
 
 #include <QtCore>
 

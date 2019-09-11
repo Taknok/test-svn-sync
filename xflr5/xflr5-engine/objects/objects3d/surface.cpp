@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 #include <QtDebug>
-#include <math.h>
+
 #include "surface.h"
 #include <objects/objects3d/quaternion.h>
 #include <objects/objects2d/foil.h>

@@ -19,10 +19,12 @@
 
 *****************************************************************************/
 
-#include <misc/options/settings.h>
-#include <misc/color/colorbutton.h>
 #include <QPainter>
 #include <QStyleOption>
+
+#include <misc/options/settings.h>
+#include <misc/color/colorbutton.h>
+
 
 ColorButton::ColorButton(QWidget *pParent) : QAbstractButton(pParent)
 {

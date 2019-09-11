@@ -27,7 +27,7 @@
 #include <QGroupBox>
 #include <QMessageBox>
 
-#include <math.h>
+
 
 #include "aerodatadlg.h"
 #include "ctrltabledelegate.h"

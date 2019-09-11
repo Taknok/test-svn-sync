@@ -24,7 +24,7 @@
 #include "foil.h"
 #include <objects/objects2d/spline.h>
 #include <objects/objects2d/polar.h>
-#include <math.h>
+
 #include <QTextStream>
 #include <QtDebug>
 
