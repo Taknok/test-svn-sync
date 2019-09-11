@@ -44,7 +44,6 @@ class MainFrame;
 #include <QVector>
 #include <QDialog>
 #include <QSettings>
-#include <QXmlStreamWriter>
 
 #include <globals/gui_enums.h>
 
@@ -409,11 +408,6 @@ public:
 
     WingOpp *m_pWOpp[MAXWINGS];   /**< an array of pointers to the operating points of the four wings of the currently selected plane */
 
-
-/*    static QVector<Plane*>    *m_poaPlane;
-    static QVector<WPolar*>   *m_poaWPolar;
-    static QVector<PlaneOpp*> *m_poaPOpp;
-*/
 
     Plane * m_pCurPlane;          /**< the currently active Plane */
     WPolar * m_pCurWPolar;        /**< the currently active WPolar */

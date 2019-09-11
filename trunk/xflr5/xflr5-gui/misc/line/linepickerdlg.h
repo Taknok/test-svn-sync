@@ -23,7 +23,6 @@
 #define LINEPICKERDLG_H
 
 #include <QDialog>
-#include <QComboBox>
 #include <QCheckBox>
 
 #include <graph/linestyle.h>

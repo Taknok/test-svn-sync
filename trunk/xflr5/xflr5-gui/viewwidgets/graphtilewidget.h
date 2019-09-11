@@ -24,8 +24,10 @@
 #define GRAPHTILEWIDGET_H
 
 #include <QWidget>
-#include <graph/graph.h>
 #include <QSplitter>
+
+#include <graph/graph.h>
+
 
 #include <globals/gui_enums.h>
 #include <analysis3d/analysis3d_enums.h>

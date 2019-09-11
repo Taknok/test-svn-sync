@@ -31,10 +31,7 @@
 
 #include <QWidget>
 #include <QTableView>
-#include <QPushButton>
-#include <QCheckBox>
 #include <QStandardItemModel>
-#include <QRadioButton>
 #include <QSettings>
 #include <QVector>
 
@@ -134,8 +131,8 @@ private:
     void paintFoils(QPainter &painter);
     void setTableFont();
 
-    void loadSettings(QSettings *pSettings);
-    void saveSettings(QSettings *pSettings);
+    void loadSettings(QSettings &settings);
+    void saveSettings(QSettings &settings);
 
     void takePicture();
     void setPicture();

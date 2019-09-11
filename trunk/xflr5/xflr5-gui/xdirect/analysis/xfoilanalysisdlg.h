@@ -27,14 +27,12 @@
 #define XFOILANALYSISDLG_H
 
 #include <QDialog>
-#include <QEventLoop>
 #include <QShowEvent>
 #include <QString>
 #include <QFile>
 #include <QTextEdit>
 #include <QPushButton>
 #include <QCheckBox>
-#include <QPoint>
 
 #include <xdirect/analysis/xfoiltask.h>
 #include <xdirect/analysis/xfoiltaskevent.h>

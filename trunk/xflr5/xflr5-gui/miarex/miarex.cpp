@@ -27,9 +27,9 @@
 #include <QDockWidget>
 #include <QFileDialog>
 #include <QMenu>
-#include <QMessageBox>
 #include <QStatusBar>
-#include <math.h>
+#include <QMessageBox>
+
 
 #include "miarex.h"
 #include "graphtilewidget.h"
@@ -499,7 +499,6 @@ void Miarex::onCheckViewIcons()
     m_pctrlY->setChecked(false);
     m_pctrlZ->setChecked(false);
 }
-
 
 
 /**

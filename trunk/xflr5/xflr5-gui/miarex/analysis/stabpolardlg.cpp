@@ -26,7 +26,7 @@
 #include <QGroupBox>
 #include <QHeaderView>
 #include <QMessageBox>
-#include <math.h>
+
 #include <QDebug>
 
 #include "./ctrltabledelegate.h"

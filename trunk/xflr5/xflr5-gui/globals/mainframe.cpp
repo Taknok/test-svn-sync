@@ -207,13 +207,13 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
     {
         Settings::loadSettings(settings);
 
-        m_pAFoil->loadSettings(&settings);
+        m_pAFoil->loadSettings(settings);
         m_pXDirect->loadSettings(settings);
         m_pMiarex->loadSettings(settings);
         m_pXInverse->loadSettings(settings);
 
         GL3DScales::loadSettings(settings);
-        W3dPrefsDlg::loadSettings(&settings);
+        W3dPrefsDlg::loadSettings(settings);
         Units::loadSettings(settings);
         Updater::loadSettings(settings);
     }
@@ -4880,12 +4880,12 @@ void MainFrame::saveSettings()
     settings.endGroup();
 
     Settings::saveSettings(settings);
-    m_pAFoil->saveSettings(&settings);
+    m_pAFoil->saveSettings(settings);
     m_pXDirect->saveSettings(settings);
     m_pMiarex->saveSettings(settings);
     m_pXInverse->saveSettings(settings);
     GL3DScales::saveSettings(settings);
-    W3dPrefsDlg::saveSettings(&settings);
+    W3dPrefsDlg::saveSettings(settings);
     Updater::saveSettings(settings);
     Units::saveSettings(settings);
 }

@@ -24,7 +24,7 @@
 
 #include "body.h"
 #include "objects_global.h"
-#include <math.h>
+
 
 /**
  * The public constructor

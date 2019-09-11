@@ -23,7 +23,7 @@
 
 #include "plane.h"
 #include <objects/objects3d/surface.h>
-#include <math.h>
+
 #include "objects_global.h"
 
 

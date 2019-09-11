@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 #include <QCoreApplication>
-#include <math.h>
+
 #include <QtDebug>
 #include <QString>
 

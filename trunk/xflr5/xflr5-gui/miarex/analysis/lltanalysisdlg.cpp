@@ -19,7 +19,7 @@
 
 *****************************************************************************/
 
-#include <math.h>
+
 #include <QApplication>
 #include <QDir>
 #include <QThreadPool>

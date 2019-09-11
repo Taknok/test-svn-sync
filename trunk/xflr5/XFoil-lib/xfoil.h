@@ -42,7 +42,7 @@ See http://raphael.mit.edu/xfoil for more information.
 #include "xfoil-lib_global.h"
 
 #include <QTextStream>
-#include <math.h>
+
 #include <complex>
 
 #include <xfoil_params.h>

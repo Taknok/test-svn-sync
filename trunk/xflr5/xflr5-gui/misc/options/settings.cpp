@@ -19,6 +19,17 @@
 
 *****************************************************************************/
 
+#include <QApplication>
+#include <QGroupBox>
+#include <QColorDialog>
+#include <QFontDialog>
+#include <QStyleFactory>
+#include <QDir>
+#include <QMessageBox>
+#include <QFontDatabase>
+#include <QHBoxLayout>
+#include <QtDebug>
+
 #include "settings.h"
 #include <globals/mainframe.h>
 #include <miarex/miarex.h>
@@ -28,15 +39,6 @@
 #include <misc/text/textclrbtn.h>
 #include "color/colorbutton.h"
 
-#include <QApplication>
-#include <QGroupBox>
-#include <QColorDialog>
-#include <QFontDialog>
-#include <QStyleFactory>
-#include <QDir>
-#include <QMessageBox>
-#include <QFontDatabase>
-#include <QtDebug>
 
 bool Settings::s_bStyleSheets = true;
 QString Settings::s_StyleName;

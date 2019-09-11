@@ -24,7 +24,6 @@
 #include <QStatusBar>
 #include <QMessageBox>
 #include <QFileDialog>
-#include <QDesktopWidget>
 #include <QHeaderView>
 #include <QHBoxLayout>
 #include <QtDebug>
@@ -331,73 +330,73 @@ void AFoil::keyPressEvent(QKeyEvent *pEvent)
  * Loads the user's default settings from the application QSettings object.
  * @param pSettings a pointer to the QSettings object
  */
-void AFoil::loadSettings(QSettings *pSettings)
+void AFoil::loadSettings(QSettings &settings)
 {
     int style=0, width=1;
     QColor color=Qt::red;
 
-    pSettings->beginGroup("DirectDesign");
+    settings.beginGroup("DirectDesign");
     {
-        style  = pSettings->value("SFStyle", 0).toInt();
-        width  = pSettings->value("SFWidth", 1).toInt();
-        color  = pSettings->value("SFColor",QColor(216,183,83)).value<QColor>();
+        style  = settings.value("SFStyle", 0).toInt();
+        width  = settings.value("SFWidth", 1).toInt();
+        color  = settings.value("SFColor",QColor(216,183,83)).value<QColor>();
         m_pSF->setCurveParams(style, width, color);
 
 
-        m_pSF->setVisible(pSettings->value("SFVisible").toBool());
-        m_pSF->m_bOutPoints  = pSettings->value("SFOutPoints").toBool();
-        m_pSF->m_bCenterLine = pSettings->value("SFCenterLine").toBool();
+        m_pSF->setVisible(settings.value("SFVisible").toBool());
+        m_pSF->m_bOutPoints  = settings.value("SFOutPoints").toBool();
+        m_pSF->m_bCenterLine = settings.value("SFCenterLine").toBool();
 
-        m_pSF->m_Intrados.m_iRes =  qMax(pSettings->value("LowerRes",79).toInt(), 10);
-        m_pSF->m_Extrados.m_iRes =  qMax(pSettings->value("UpperRes",79).toInt(), 10);
+        m_pSF->m_Intrados.m_iRes =  qMax(settings.value("LowerRes",79).toInt(), 10);
+        m_pSF->m_Extrados.m_iRes =  qMax(settings.value("UpperRes",79).toInt(), 10);
 
         m_pSF->m_Extrados.splineCurve();
         m_pSF->m_Intrados.splineCurve();
 
-        m_p2DWidget->m_bLECircle          = pSettings->value("LECircle").toBool();
-        m_p2DWidget->m_bShowLegend        = pSettings->value("Legend").toBool();
-        m_p2DWidget->setNeutralLineColor(pSettings->value("NeutralLineColor", QColor(125,125,125)).value<QColor>());
+        m_p2DWidget->m_bLECircle          = settings.value("LECircle").toBool();
+        m_p2DWidget->m_bShowLegend        = settings.value("Legend").toBool();
+        m_p2DWidget->setNeutralLineColor(settings.value("NeutralLineColor", QColor(125,125,125)).value<QColor>());
 
         QString str;
         for(int i=0; i<16; i++)
         {
             str = QString("Column_%1").arg(i);
-            m_pctrlFoilTable->setColumnWidth(i, pSettings->value(str,40).toInt());
-            if(pSettings->value(str+"_hidden", false).toBool()) m_pctrlFoilTable->hideColumn(i);
+            m_pctrlFoilTable->setColumnWidth(i, settings.value(str,40).toInt());
+            if(settings.value(str+"_hidden", false).toBool()) m_pctrlFoilTable->hideColumn(i);
         }
 
 
-        m_p2DWidget->m_bScale = pSettings->value("x-scale", false).toBool();
-        m_p2DWidget->m_bNeutralLine = pSettings->value("NeutralLine", true).toBool();
-        m_p2DWidget->m_NeutralStyle = pSettings->value("NeutralLineStyle", 3).toInt();
-        m_p2DWidget->m_NeutralWidth = pSettings->value("NeutralLineWidth", 1).toInt();
-        m_p2DWidget->m_NeutralColor = pSettings->value("NeutralLineColor", QColor(70,70,70)).value<QColor>();
+        m_p2DWidget->m_bScale = settings.value("x-scale", false).toBool();
+        m_p2DWidget->m_bNeutralLine = settings.value("NeutralLine", true).toBool();
+        m_p2DWidget->m_NeutralStyle = settings.value("NeutralLineStyle", 3).toInt();
+        m_p2DWidget->m_NeutralWidth = settings.value("NeutralLineWidth", 1).toInt();
+        m_p2DWidget->m_NeutralColor = settings.value("NeutralLineColor", QColor(70,70,70)).value<QColor>();
 
-        m_p2DWidget->m_bXGrid = pSettings->value("XGrid", false).toBool();
-        m_p2DWidget->m_XGridStyle = pSettings->value("XGridStyle", 1).toInt();
-        m_p2DWidget->m_XGridWidth = pSettings->value("XGridWidth", 1).toInt();
-        m_p2DWidget->m_XGridColor = pSettings->value("XGridColor", QColor(150,150,150)).value<QColor>();
-        m_p2DWidget->m_XGridUnit  = pSettings->value("XGridUnit", 0.05).toDouble();
+        m_p2DWidget->m_bXGrid = settings.value("XGrid", false).toBool();
+        m_p2DWidget->m_XGridStyle = settings.value("XGridStyle", 1).toInt();
+        m_p2DWidget->m_XGridWidth = settings.value("XGridWidth", 1).toInt();
+        m_p2DWidget->m_XGridColor = settings.value("XGridColor", QColor(150,150,150)).value<QColor>();
+        m_p2DWidget->m_XGridUnit  = settings.value("XGridUnit", 0.05).toDouble();
 
-        m_p2DWidget->m_bXMinGrid = pSettings->value("XMinGrid", false).toBool();
-        m_p2DWidget->m_XMinStyle = pSettings->value("XMinGridStyle", 2).toInt();
-        m_p2DWidget->m_XMinWidth = pSettings->value("XMinGridWidth", 1).toInt();
-        m_p2DWidget->m_XMinColor = pSettings->value("XMinGridColor", QColor(70,70,70)).value<QColor>();
-        m_p2DWidget->m_XMinUnit  = pSettings->value("XMinGridUnit", 0.01).toDouble();
+        m_p2DWidget->m_bXMinGrid = settings.value("XMinGrid", false).toBool();
+        m_p2DWidget->m_XMinStyle = settings.value("XMinGridStyle", 2).toInt();
+        m_p2DWidget->m_XMinWidth = settings.value("XMinGridWidth", 1).toInt();
+        m_p2DWidget->m_XMinColor = settings.value("XMinGridColor", QColor(70,70,70)).value<QColor>();
+        m_p2DWidget->m_XMinUnit  = settings.value("XMinGridUnit", 0.01).toDouble();
 
-        m_p2DWidget->m_bYGrid = pSettings->value("YGrid", false).toBool();
-        m_p2DWidget->m_YGridStyle = pSettings->value("YGridStyle", 1).toInt();
-        m_p2DWidget->m_YGridWidth = pSettings->value("YGridWidth", 1).toInt();
-        m_p2DWidget->m_YGridColor = pSettings->value("YGridColor", QColor(150,150,150)).value<QColor>();
-        m_p2DWidget->m_YGridUnit  = pSettings->value("YGridUnit", 0.05).toDouble();
+        m_p2DWidget->m_bYGrid = settings.value("YGrid", false).toBool();
+        m_p2DWidget->m_YGridStyle = settings.value("YGridStyle", 1).toInt();
+        m_p2DWidget->m_YGridWidth = settings.value("YGridWidth", 1).toInt();
+        m_p2DWidget->m_YGridColor = settings.value("YGridColor", QColor(150,150,150)).value<QColor>();
+        m_p2DWidget->m_YGridUnit  = settings.value("YGridUnit", 0.05).toDouble();
 
-        m_p2DWidget->m_bYMinGrid = pSettings->value("YMinGrid", false).toBool();
-        m_p2DWidget->m_YMinStyle = pSettings->value("YMinGridStyle", 2).toInt();
-        m_p2DWidget->m_YMinWidth = pSettings->value("YMinGridWidth", 1).toInt();
-        m_p2DWidget->m_YMinColor = pSettings->value("YMinGridColor", QColor(70,70,70)).value<QColor>();
-        m_p2DWidget->m_YMinUnit  = pSettings->value("YMinGridUnit", 0.01).toDouble();
+        m_p2DWidget->m_bYMinGrid = settings.value("YMinGrid", false).toBool();
+        m_p2DWidget->m_YMinStyle = settings.value("YMinGridStyle", 2).toInt();
+        m_p2DWidget->m_YMinWidth = settings.value("YMinGridWidth", 1).toInt();
+        m_p2DWidget->m_YMinColor = settings.value("YMinGridColor", QColor(70,70,70)).value<QColor>();
+        m_p2DWidget->m_YMinUnit  = settings.value("YMinGridUnit", 0.01).toDouble();
     }
-    pSettings->endGroup();
+    settings.endGroup();
 }
 
 
@@ -1338,69 +1337,69 @@ void AFoil::onSplineControls()
  * Saves the user-defined settings.
  * @param pSettings a pointer to the QSetting object.
  */
-void AFoil::saveSettings(QSettings *pSettings)
+void AFoil::saveSettings(QSettings &settings)
 {
-    pSettings->beginGroup("DirectDesign");
+    settings.beginGroup("DirectDesign");
     {
-        pSettings->setValue("SFStyle", m_pSF->splineFoilStyle());
-        pSettings->setValue("SFWidth", m_pSF->splineFoilWidth());
-        pSettings->setValue("SFColor", m_pSF->splineFoilColor());
+        settings.setValue("SFStyle", m_pSF->splineFoilStyle());
+        settings.setValue("SFWidth", m_pSF->splineFoilWidth());
+        settings.setValue("SFColor", m_pSF->splineFoilColor());
 
-        pSettings->setValue("SFVisible", m_pSF->isVisible());
-        pSettings->setValue("SFOutPoints", m_pSF->m_bOutPoints);
-        pSettings->setValue("SFCenterLine", m_pSF->m_bCenterLine);
+        settings.setValue("SFVisible", m_pSF->isVisible());
+        settings.setValue("SFOutPoints", m_pSF->m_bOutPoints);
+        settings.setValue("SFCenterLine", m_pSF->m_bCenterLine);
 
-        pSettings->setValue("LowerRes", m_pSF->m_Intrados.m_iRes);
-        pSettings->setValue("UpperRes", m_pSF->m_Extrados.m_iRes);
+        settings.setValue("LowerRes", m_pSF->m_Intrados.m_iRes);
+        settings.setValue("UpperRes", m_pSF->m_Extrados.m_iRes);
 
-        pSettings->setValue("LECircle", m_p2DWidget->m_bLECircle);
-        pSettings->setValue("Legend", m_p2DWidget->m_bShowLegend );
+        settings.setValue("LECircle", m_p2DWidget->m_bLECircle);
+        settings.setValue("Legend", m_p2DWidget->m_bShowLegend );
 
-        pSettings->setValue("NeutralLineColor", m_p2DWidget->neutralLineColor());
+        settings.setValue("NeutralLineColor", m_p2DWidget->neutralLineColor());
 
         QString str;
         for(int i=0; i<16; i++)
         {
             str = QString("Column_%1").arg(i);
-            pSettings->setValue(str,m_pctrlFoilTable->columnWidth(i));
+            settings.setValue(str,m_pctrlFoilTable->columnWidth(i));
         }
         for(int i=0; i<16; i++)
         {
             str = QString("Column_%1").arg(i);
-            pSettings->setValue(str+"_hidden", m_pctrlFoilTable->isColumnHidden(i));
+            settings.setValue(str+"_hidden", m_pctrlFoilTable->isColumnHidden(i));
         }
 
-        pSettings->setValue("x-scale", m_p2DWidget->m_bScale);
-        pSettings->setValue("NeutralLine", m_p2DWidget->m_bNeutralLine);
-        pSettings->setValue("NeutralLineStyle", m_p2DWidget->m_NeutralStyle);
-        pSettings->setValue("NeutralLineWidth", m_p2DWidget->m_NeutralWidth);
-        pSettings->setValue("NeutralLineColor", m_p2DWidget->m_NeutralColor);
+        settings.setValue("x-scale", m_p2DWidget->m_bScale);
+        settings.setValue("NeutralLine", m_p2DWidget->m_bNeutralLine);
+        settings.setValue("NeutralLineStyle", m_p2DWidget->m_NeutralStyle);
+        settings.setValue("NeutralLineWidth", m_p2DWidget->m_NeutralWidth);
+        settings.setValue("NeutralLineColor", m_p2DWidget->m_NeutralColor);
 
-        pSettings->setValue("XGrid", m_p2DWidget->m_bXGrid);
-        pSettings->setValue("XGridStyle", m_p2DWidget->m_XGridStyle);
-        pSettings->setValue("XGridWidth", m_p2DWidget->m_XGridWidth);
-        pSettings->setValue("XGridColor", m_p2DWidget->m_XGridColor);
-        pSettings->setValue("XGridUnit", m_p2DWidget->m_XGridUnit);
+        settings.setValue("XGrid", m_p2DWidget->m_bXGrid);
+        settings.setValue("XGridStyle", m_p2DWidget->m_XGridStyle);
+        settings.setValue("XGridWidth", m_p2DWidget->m_XGridWidth);
+        settings.setValue("XGridColor", m_p2DWidget->m_XGridColor);
+        settings.setValue("XGridUnit", m_p2DWidget->m_XGridUnit);
 
-        pSettings->setValue("YGrid", m_p2DWidget->m_bYGrid);
-        pSettings->setValue("YGridStyle", m_p2DWidget->m_YGridStyle);
-        pSettings->setValue("YGridWidth", m_p2DWidget->m_YGridWidth);
-        pSettings->setValue("YGridColor", m_p2DWidget->m_YGridColor);
-        pSettings->setValue("YGridUnit", m_p2DWidget->m_YGridUnit);
+        settings.setValue("YGrid", m_p2DWidget->m_bYGrid);
+        settings.setValue("YGridStyle", m_p2DWidget->m_YGridStyle);
+        settings.setValue("YGridWidth", m_p2DWidget->m_YGridWidth);
+        settings.setValue("YGridColor", m_p2DWidget->m_YGridColor);
+        settings.setValue("YGridUnit", m_p2DWidget->m_YGridUnit);
 
-        pSettings->setValue("XMinGrid", m_p2DWidget->m_bXMinGrid);
-        pSettings->setValue("XMinGridStyle", m_p2DWidget->m_XMinStyle);
-        pSettings->setValue("XMinGridWidth", m_p2DWidget->m_XMinWidth);
-        pSettings->setValue("XMinGridColor", m_p2DWidget->m_XMinColor);
-        pSettings->setValue("XMinGridUnit", m_p2DWidget->m_XMinUnit);
+        settings.setValue("XMinGrid", m_p2DWidget->m_bXMinGrid);
+        settings.setValue("XMinGridStyle", m_p2DWidget->m_XMinStyle);
+        settings.setValue("XMinGridWidth", m_p2DWidget->m_XMinWidth);
+        settings.setValue("XMinGridColor", m_p2DWidget->m_XMinColor);
+        settings.setValue("XMinGridUnit", m_p2DWidget->m_XMinUnit);
 
-        pSettings->setValue("YMinGrid", m_p2DWidget->m_bYMinGrid);
-        pSettings->setValue("YMinGridStyle", m_p2DWidget->m_YMinStyle);
-        pSettings->setValue("YMinGridWidth", m_p2DWidget->m_YMinWidth);
-        pSettings->setValue("YMinGridColor", m_p2DWidget->m_YMinColor);
-        pSettings->setValue("YMinGridUnit", m_p2DWidget->m_YMinUnit);
+        settings.setValue("YMinGrid", m_p2DWidget->m_bYMinGrid);
+        settings.setValue("YMinGridStyle", m_p2DWidget->m_YMinStyle);
+        settings.setValue("YMinGridWidth", m_p2DWidget->m_YMinWidth);
+        settings.setValue("YMinGridColor", m_p2DWidget->m_YMinColor);
+        settings.setValue("YMinGridUnit", m_p2DWidget->m_YMinUnit);
     }
-    pSettings->endGroup();
+    settings.endGroup();
 }
 
 
@@ -1432,9 +1431,9 @@ void AFoil::setupLayout()
     //    connect(m_pctrlFoilTable, SIGNAL(pressed(const QModelIndex &)), this, SLOT(OnFoilClicked(const QModelIndex&)));
     connect(m_pctrlFoilTable, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onFoilTableCtxMenu(const QPoint &)));
 
-    QHBoxLayout *MainLayout = new QHBoxLayout;
-    MainLayout->addWidget(m_pctrlFoilTable);
-    setLayout(MainLayout);
+    QHBoxLayout *pMainLayout = new QHBoxLayout;
+    pMainLayout->addWidget(m_pctrlFoilTable);
+    setLayout(pMainLayout);
 
 
     m_pFoilModel = new QStandardItemModel(this);

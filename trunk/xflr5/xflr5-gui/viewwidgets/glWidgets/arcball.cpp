@@ -22,8 +22,6 @@
 
 
 #include "arcball.h"
-#include <QtOpenGL>
-#include "math.h"
 
 
 ArcBall::ArcBall(void)

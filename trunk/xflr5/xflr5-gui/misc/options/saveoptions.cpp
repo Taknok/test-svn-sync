@@ -19,14 +19,15 @@
 
 *****************************************************************************/
 
-#include "saveoptions.h"
-#include <misc/text/intedit.h>
 #include <QGroupBox>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
 
+
+#include "saveoptions.h"
+#include <misc/text/intedit.h>
 #include "saveoptions.h"
 
 SaveOptions::SaveOptions(QWidget *parent) : QWidget(parent)

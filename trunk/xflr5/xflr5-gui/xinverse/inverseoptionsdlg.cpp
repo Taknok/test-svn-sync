@@ -19,6 +19,8 @@
 
 *****************************************************************************/
 
+#include <QGridLayout>
+
 #include <globals/globals.h>
 
 #include "xinverse.h"

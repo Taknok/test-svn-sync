@@ -21,7 +21,7 @@
 
 #include <QDebug>
 
-#include <math.h>
+
 #include "splinefoil.h"
 #include <objects/objects2d/foil.h>
 #include <globals/globals.h>

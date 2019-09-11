@@ -27,7 +27,7 @@
 #include <QModelIndex>
 #include <QSize>
 #include <QColor>
-#include <QAbstractItemModel>
+
 
 class LineCbBox;
 class LineDelegate : public QAbstractItemDelegate

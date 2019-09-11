@@ -19,11 +19,10 @@
 
 *****************************************************************************/
 
-
-#include "newnamedlg.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
+#include "newnamedlg.h"
 
 
 NewNameDlg::NewNameDlg(QWidget *pParent) : QDialog(pParent)

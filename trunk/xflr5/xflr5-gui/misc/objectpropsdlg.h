@@ -21,6 +21,7 @@
 
 #ifndef ObjectPropsDlg_H
 #define ObjectPropsDlg_H
+
 #include <QTextEdit>
 #include <QDialog>
 

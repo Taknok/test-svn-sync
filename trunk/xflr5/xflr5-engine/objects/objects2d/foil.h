@@ -32,7 +32,6 @@
 #define FOIL_H
 
 #include <QTextStream>
-#include <QPoint>
 #include <QColor>
 
 #include <objects/objects3d/vector3d.h>

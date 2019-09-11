@@ -20,7 +20,6 @@
 *****************************************************************************/
 
 
-#include <QStyleOption>
 #include <QMouseEvent>
 #include <QPen>
 #include <QPainter>

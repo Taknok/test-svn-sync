@@ -23,7 +23,7 @@
 #include "wpolar.h"
 #include <objects/objects3d/surface.h>
 #include <objects/objects3d/plane.h>
-#include <math.h>
+
 #include "objects_global.h"
 #include <QtDebug>
 

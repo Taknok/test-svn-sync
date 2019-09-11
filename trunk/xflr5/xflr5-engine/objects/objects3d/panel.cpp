@@ -23,7 +23,7 @@
 
 #include <QtCore>
 #include "panel.h"
-#include <math.h>
+
 
 double Panel::s_CoreSize = 0.000001;
 double Panel::s_VortexPos = 0.25;

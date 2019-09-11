@@ -24,7 +24,7 @@
 #include "plane.h"
 #include "objects_global.h"
 #include <objects/objects3d/wpolar.h>
-#include <math.h>
+
 #include <QTextStream>
 
 
