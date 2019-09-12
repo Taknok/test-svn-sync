@@ -21,8 +21,6 @@
 
 
 
-
-
 #include "vector3d.h"
 #include <analysis3d/analysis3d_params.h>
 

@@ -22,9 +22,9 @@
   @file This file implements the Vector3d class
   */
 
+#include <math.h>
+
 #include <QString>
-
-
 
 #include <xflr5-engine_global.h>
 

@@ -21,7 +21,7 @@
 
 #include "exponentialslider.h"
 
-
+#include <math.h>
 
 //caution, use only for "symetrical" sliders ranging from -range to +range
 
