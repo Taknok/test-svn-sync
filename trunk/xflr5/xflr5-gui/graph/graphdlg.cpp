@@ -22,7 +22,7 @@
 
 #include <QFontDialog>
 #include <QColorDialog>
-#include <QPalette>
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QGroupBox>
@@ -104,8 +104,6 @@ void GraphDlg::connectSignals()
     connect(m_pctrlXSel, SIGNAL(itemDoubleClicked (QListWidgetItem *)), SLOT(onOK()));
     connect(m_pctrlYSel, SIGNAL(itemDoubleClicked (QListWidgetItem *)), SLOT(onOK()));
 }
-
-
 
 
 void GraphDlg::fillVariableList()
@@ -208,7 +206,6 @@ void GraphDlg::reject()
 }
 
 
-
 void GraphDlg::showEvent(QShowEvent *event)
 {
     m_pTabWidget->setCurrentIndex(s_iActivePage);
@@ -251,8 +248,6 @@ void GraphDlg::onActivePage(int index)
 }
 
 
-
-
 void GraphDlg::onAutoMinGrid()
 {
     bool bAuto;
@@ -287,6 +282,7 @@ void GraphDlg::onAutoY()
     setApplied(false);
 }
 
+
 void GraphDlg::onAxisStyle()
 {
     LinePickerDlg dlg(this);
@@ -302,13 +298,14 @@ void GraphDlg::onAxisStyle()
     }
 }
 
+
 void GraphDlg::onBorderStyle()
 {
     LinePickerDlg dlg(this);
-    int s,w;
+
     QColor color;
-    s = m_pGraph->borderStyle();
-    w = m_pGraph->borderWidth();
+    int s = m_pGraph->borderStyle();
+    int w = m_pGraph->borderWidth();
     color = m_pGraph->borderColor();
     dlg.initDialog(0,s,w,color, false, false);
 
@@ -347,7 +344,7 @@ void GraphDlg::onGraphBackColor()
 void GraphDlg::onLabelColor()
 {
     QColor color = m_pGraph->labelColor();
-    color = QColorDialog::getRgba(color.rgba());
+    color = QColorDialog::getColor(color);
 
     m_pGraph->setLabelColor(color);
     m_pctrlLabelClr->setTextColor(color);
@@ -448,7 +445,7 @@ void GraphDlg::onRestoreParams()
 void GraphDlg::onTitleColor()
 {
     QColor color = m_pGraph->titleColor();
-    color = QColorDialog::getRgba(color.rgba());
+    color = QColorDialog::getColor(color);
 
     m_pGraph->setTitleColor(color);
     m_pctrlTitleClr->setTextColor(color);
@@ -460,7 +457,7 @@ void GraphDlg::onTitleColor()
 
 void GraphDlg::onTitleFont()
 {
-    bool bOk;
+    bool bOk=false;
     QFont TitleFont("Arial");
     m_pGraph->getTitleFont(TitleFont);
 

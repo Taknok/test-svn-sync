@@ -25,7 +25,7 @@
 #include <QVBoxLayout>
 #include <QLabel>
 
-#include <math.h>
+#include <cmath>
 
 #include "aerodatadlg.h"
 #include <misc/options/units.h>
