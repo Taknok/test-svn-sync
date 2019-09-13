@@ -163,7 +163,7 @@ public:
     int NXPanels(const int &iSection) const;
     int NYPanels(const int &iSection) const;
     void setNXPanels(int iSec, int nx) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_NXPanels=nx;}
-    void setNYPanels(int iSec, int ny) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_NXPanels=ny;}
+    void setNYPanels(int iSec, int ny) {if(iSec>=0 && iSec<m_Section.size()) m_Section[iSec]->m_NYPanels=ny;}
 
 //    int NYPanels();
 
