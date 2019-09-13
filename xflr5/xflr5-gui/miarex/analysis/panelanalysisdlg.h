@@ -68,11 +68,13 @@ class PanelAnalysisDlg : public QDialog
 
 public:
     PanelAnalysisDlg(QWidget *pParent);
-    ~PanelAnalysisDlg();
+    ~PanelAnalysisDlg() override;
 
     void initDialog();
     void setTask(PlaneAnalysisTask *pTask){m_pTheTask = pTask;}
     void deleteTask();
+
+    QSize sizeHint() const override {return QSize(950,700);}
 
 private slots:
     void onCancelAnalysis();
@@ -81,9 +83,9 @@ private slots:
     void onMessage(QString msg);
 
 private:
-    void showEvent(QShowEvent *event);
-    void hideEvent(QHideEvent *event);
-    void keyPressEvent(QKeyEvent *event);
+    void showEvent(QShowEvent *event) override;
+    void hideEvent(QHideEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
 
     void setupLayout();
     void analyze();

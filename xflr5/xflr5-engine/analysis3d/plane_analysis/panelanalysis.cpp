@@ -3166,21 +3166,20 @@ void PanelAnalysis::forces(double *Mu, double *Sigma, double alpha, Vector3d Vin
 */
 bool PanelAnalysis::getZeroMomentAngle()
 {
-    int iter;
-    double a, a0, a1, Cm, Cm0, Cm1, tmp;
+    double tmp=0;
     double eps = 1.e-7;
 
-    iter = 0;
-    a0 = -PI/4.0;
-    a1 =  PI/4.0;
+    int iter = 0;
+    double a0 = -PI/4.0;
+    double a1 =  PI/4.0;
 
-    a = 0.0;
-    Cm0 = computeCm(a0*180.0/PI);
-    Cm1 = computeCm(a1*180.0/PI);
-    Cm = 1.0;
+    double a = 0.0;
+    double Cm0 = computeCm(a0*180.0/PI);
+    double Cm1 = computeCm(a1*180.0/PI);
+    double Cm = 1.0;
 
     //are there two initial values of opposite signs ?
-    while(Cm0*Cm1>0.0 && iter <=20)
+    while(Cm0*Cm1>0.0 && iter <20)
     {
         a0 *=0.9;
         a1 *=0.9;
@@ -3189,7 +3188,7 @@ bool PanelAnalysis::getZeroMomentAngle()
         iter++;
         if(s_bCancel) break;
     }
-    if(iter>=100 || s_bCancel) return false;
+    if(iter>=20 || s_bCancel) return false;
 
     iter = 0;
 

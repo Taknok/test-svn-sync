@@ -991,11 +991,11 @@ void GL3dWingDlg::readParams()
 void GL3dWingDlg::readSectionData(int sel)
 {
     if(sel>=m_pWingModel->rowCount()) return;
-    double d;
+    double d=0;
 
-    bool bOK;
+    bool bOK=false;
     QString strong;
-    QStandardItem *pItem;
+    QStandardItem *pItem=nullptr;
 
     pItem = m_pWingModel->item(sel,0);
 
