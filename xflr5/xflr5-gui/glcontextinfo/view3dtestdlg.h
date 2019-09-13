@@ -23,9 +23,7 @@
 #include <QWidget>
 #include <QDialog>
 #include <QComboBox>
-#include <QTextEdit>
 #include <QPlainTextEdit>
-#include <QVBoxLayout>
 #include <QSurface>
 #include <QStackedWidget>
 

@@ -22,7 +22,7 @@
   @file This file implements the Vector3d class
   */
 
-#include <math.h>
+#include <cmath>
 
 #include <QString>
 

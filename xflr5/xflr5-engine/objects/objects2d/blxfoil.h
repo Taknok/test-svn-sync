@@ -24,7 +24,7 @@
 
 
 #include <QDataStream>
-#include <QVector>
+
 
 #include <xfoil_params.h>
 #include <xflr5-engine_global.h>

@@ -4358,19 +4358,16 @@ void PanelAnalysis::computeControlDerivatives()
 */
 double PanelAnalysis::computeCm(double Alpha)
 {
-    int p;
-    double Cm, cosa, sina, Gamma, Gammap1;
     Vector3d VInf, Force, PanelLeverArm, ForcePt, PanelForce, WindDirection, VLocal;
-    double Speed2, Cp;
 
     // Define the wind axis
-    cosa = cos(Alpha*PI/180.0);
-    sina = sin(Alpha*PI/180.0);
+    double cosa = cos(Alpha*PI/180.0);
+    double sina = sin(Alpha*PI/180.0);
     WindDirection.set( cosa, 0.0, sina);
     VInf.set(cosa, 0.0, sina);
 
-    Cm = 0.0;
-    for(p=0; p<m_MatSize; p++)
+    double Cm = 0.0;
+    for(int p=0; p<m_MatSize; p++)
     {
         //write vector operations in-line, more efficient
         if(m_pPanel[p].m_Pos!=MIDSURFACE)
@@ -4378,8 +4375,8 @@ double PanelAnalysis::computeCm(double Alpha)
             //first calculate Cp for this angle
             m_pPanel[p].globalToLocal(VInf, VLocal);
             VLocal += m_uVl[p]*cosa + m_wVl[p]*sina;
-            Speed2 = VLocal.x*VLocal.x + VLocal.y*VLocal.y;
-            Cp  = 1.0-Speed2; // QInf=unit, /1.0/1.0;
+            double Speed2 = VLocal.x*VLocal.x + VLocal.y*VLocal.y;
+            double Cp  = 1.0-Speed2; // QInf=unit, /1.0/1.0;
             m_Cp[p] = Cp; /** @todo : remove, for information only*/
 
             //next calculate the force acting on the panel
@@ -4389,14 +4386,14 @@ double PanelAnalysis::computeCm(double Alpha)
         else
         {
             // for each panel along the chord, add the lift coef
-            Gamma   = m_uRHS[p]  *cosa + m_wRHS[p]  *sina;
+            double Gamma = m_uRHS[p]  *cosa + m_wRHS[p]  *sina;
             ForcePt = m_pPanel[p].VortexPos;
             PanelForce  = WindDirection * m_pPanel[p].Vortex;
             PanelForce *= 2.0 * Gamma;                                       //Newtons/q   (QInf = unit)
             if(!m_pWPolar->bVLM1() && !m_pPanel[p].m_bIsLeading)
             {
                 Q_ASSERT(p+1<m_MatSize);
-                Gammap1 = m_uRHS[p+1]*cosa + m_wRHS[p+1]*sina;
+                double Gammap1 = m_uRHS[p+1]*cosa + m_wRHS[p+1]*sina;
                 Force       = WindDirection * m_pPanel[p].Vortex;
                 Force      *= 2.0 * Gammap1;       //Newtons/q/QInf
                 PanelForce -= Force;

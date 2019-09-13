@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 
-#include <math.h>
+#include <cmath>
 
 #include <graph/graph.h>
 #include <graph/curve.h>

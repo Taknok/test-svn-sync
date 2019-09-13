@@ -44,7 +44,6 @@
 #include <QWindow>
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer>
-#include <QTextStream>
 #include <QOpenGLTexture>
 
 QT_FORWARD_DECLARE_CLASS(QOpenGLContext)

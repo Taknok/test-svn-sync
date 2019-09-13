@@ -22,7 +22,7 @@
 #include <misc/text/doubleedit.h>
 #include <misc/options/settings.h>
 
-#include <math.h>
+#include <cmath>
 
 DoubleEdit::DoubleEdit(QWidget *pParent)  : QLineEdit(pParent)
 {
