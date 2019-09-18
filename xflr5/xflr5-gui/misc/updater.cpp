@@ -99,10 +99,9 @@ void Updater::checkForUpdates()
     Trace("pNetworkReply->isReadable(): ", pNetworkReply->isReadable());
     Trace("pNetworkReply->isWritable(): ", pNetworkReply->isWritable());
 
-    connect(pNetworkReply, SIGNAL(readyRead()),                        this, SLOT(onReadyRead()));
-    connect(pNetworkReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(slotError(QNetworkReply::NetworkError)));
-    connect(pNetworkReply, SIGNAL(sslErrors(QVector<QSslError>)),        this, SLOT(slotSslErrors(QVector<QSslError>)));
-
+    connect(pNetworkReply, SIGNAL(readyRead()),                        SLOT(onReadyRead()));
+    connect(pNetworkReply, SIGNAL(error(QNetworkReply::NetworkError)), SLOT(slotError(QNetworkReply::NetworkError)));
+    connect(pNetworkReply, SIGNAL(sslErrors(QList<QSslError>)),        SLOT(slotSslErrors(QList<QSslError>)));
 }
 
 
@@ -334,7 +333,6 @@ bool Updater::hasUpdate()
     }
     return false;
 }
-
 
 
 void Updater::loadSettings(QSettings &settings)
