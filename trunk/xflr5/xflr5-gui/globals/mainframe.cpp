@@ -6961,9 +6961,6 @@ void MainFrame::onPreferences()
 
     setMainFrameCentralWidget();
 
-    saveSettings();
-    //    setSaveState(false);
-
     updateView();
 }
 
@@ -6998,48 +6995,41 @@ void MainFrame::checkForUpdates()
     if(!m_pUpdater)
     {
         m_pUpdater = new Updater(this);
-        connect(m_pUpdater, SIGNAL(finishedUpdate()), this, SLOT(onFinishedUpdater()));
+        connect(m_pUpdater, SIGNAL(finishedUpdate()), SLOT(onFinishedUpdater()));
     }
     if(m_pUpdater)
         QTimer::singleShot(0, m_pUpdater, SLOT(checkForUpdates()));
 
- /*
-    QThread *pThread = new QThread;
-    m_pUpdater->moveToThread(pThread);
-    connect(pThread,    SIGNAL(started()),        m_pUpdater, SLOT(checkForUpdates()));
-    connect(pThread,    SIGNAL(finished()),       pThread,    SLOT(deleteLater()));
-    pThread->start();
-    pThread->setPriority(QThread::LowPriority);*/
 }
 
 
 void MainFrame::onFinishedUpdater()
 {
     if(!m_pUpdater) return;
-    Popup *pPopup = new Popup;
+    PopUp *pPopUp = new PopUp;
+    pPopUp->setFont(Settings::textFont());
 
     Trace("Finished update check; available version: ", double(Updater::majorVersion())+double(Updater::minorVersion())/100.0);
 
-    if(m_pUpdater->hasUpdate())  pPopup->setRed();
-    else                         pPopup->setGreen();
+    if(m_pUpdater->hasUpdate())  pPopUp->setRed();
+    else                         pPopUp->setGreen();
 
     if(m_pUpdater->hasUpdate() || m_bManualUpdateCheck)
     {
         QString strange;
         strange.sprintf("Latest version %d.%d", Updater::majorVersion(), Updater::minorVersion());
-        pPopup->setTextMessage(strange);
-        pPopup->appendTextMessage("Release date: " + m_pUpdater->releaseDate());
+        pPopUp->setTextMessage(strange);
+        pPopUp->appendTextMessage("Release date: " + m_pUpdater->releaseDate());
         strange.sprintf("%d.%d", MAJOR_VERSION, MINOR_VERSION);
-        pPopup->appendTextMessage("Your version: " + strange);
+        pPopUp->appendTextMessage("Your version: " + strange);
         //        aPopup->appendTextMessage(m_pUpdater->releaseDescription()+"\n");
 
-        QSize sz = pPopup->size();
+        QSize sz = pPopUp->size();
         QRect rr = centralWidget()->frameGeometry();
         QPoint tr = rr.topRight();
 
-        pPopup->setWindowPos(QPoint(pos().x()+centralWidget()->pos().x() + tr.x()-sz.width(),
-                                    pos().y()+centralWidget()->pos().y()));
-        pPopup->show();
-
+        pPopUp->move(QPoint(pos().x()+centralWidget()->pos().x() + tr.x()-sz.width(),
+                            pos().y()+centralWidget()->pos().y()));
+        pPopUp->show();
     }
 }

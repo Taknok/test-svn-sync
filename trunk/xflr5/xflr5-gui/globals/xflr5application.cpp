@@ -170,7 +170,7 @@ void XFLR5Application::addStandardBtnStrings()
 
 bool XFLR5Application::event(QEvent *event)
 {
-    int iApp;
+    int iApp = XFLR5::NOAPP;
     switch (event->type())
     {
         case QEvent::FileOpen:
