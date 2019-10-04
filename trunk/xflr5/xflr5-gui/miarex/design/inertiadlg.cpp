@@ -37,7 +37,7 @@
 #include <misc/options/units.h>
 #include <misc/options/settings.h>
 #include <misc/text/doubleedit.h>
-#include <misc/text/floatrditdelegate.h>
+#include <misc/text/floateditdelegate.h>
 #include <objects/objects3d/plane.h>
 
 QByteArray InertiaDlg::s_Geometry;

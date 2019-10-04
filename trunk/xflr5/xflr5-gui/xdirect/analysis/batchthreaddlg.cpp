@@ -682,7 +682,6 @@ void BatchThreadDlg::reject()
 }
 
 
-
 /**
  * The user has requested an edition of the Re list
 */

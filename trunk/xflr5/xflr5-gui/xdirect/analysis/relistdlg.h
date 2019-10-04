@@ -28,6 +28,7 @@
 #include <QPushButton>
 #include <QTableView>
 #include <QStandardItemModel>
+#include <QDialogButtonBox>
 
 class FloatEditDelegate;
 
@@ -40,7 +41,9 @@ class ReListDlg : public QDialog
 
 public:
     ReListDlg(QWidget *pParent=nullptr);
-    ~ReListDlg();
+    ~ReListDlg() override;
+
+    QSize sizeHint() const override {return QSize(600,700);}
 
     void initDialog(QVector<double> ReList, QVector<double> MachList, QVector<double> NCritList);
 
@@ -49,17 +52,20 @@ private slots:
     void onInsert();
     void onOK();
     void onCellChanged(QModelIndex topLeft, QModelIndex botRight);
+    void onButton(QAbstractButton *pButton);
 
 private:
     void fillReModel();
     void setupLayout();
     void sortData();
     void sortRe();
-    void keyPressEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *pEvent) override;
+    void resizeEvent(QResizeEvent *pEvent) override;
+    void showEvent(QShowEvent *pEvent) override;
 
 private:
     QPushButton *m_pctrlInsert, *m_pctrlDelete;
-    QPushButton *OKButton, *CancelButton;
+    QDialogButtonBox *m_pButtonBox;
 
 
     QTableView *m_pctrlReTable;
@@ -69,8 +75,6 @@ private:
     QVector<double> m_ReList;
     QVector<double> m_MachList;
     QVector<double> m_NCritList;
-
-    int m_iSelection;
 };
 
 #endif // RELISTDLG_H
