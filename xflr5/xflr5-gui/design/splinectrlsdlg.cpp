@@ -33,7 +33,7 @@
 #include <gui_objects/splinefoil.h>
 #include <misc/options/settings.h>
 #include <misc/text/intedit.h>
-#include <misc/text/floatrditdelegate.h>
+#include <misc/text/floateditdelegate.h>
 
 AFoil *SplineCtrlsDlg::s_pAFoil = nullptr;
 

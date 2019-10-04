@@ -41,7 +41,7 @@
 #include <objects/objects3d/wpolar.h>
 
 #include <misc/text/doubleedit.h>
-#include <misc/text/floatrditdelegate.h>
+#include <misc/text/floateditdelegate.h>
 #include <graph/curve.h>
 
 Miarex *StabViewDlg::s_pMiarex;

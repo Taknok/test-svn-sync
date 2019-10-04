@@ -132,6 +132,7 @@ SOURCES += \
 
 
 HEADERS += \
+    $$PWD/misc/text/floateditdelegate.h \
     $$PWD/xdirect/xdirectstyledlg.h \
     design/afoil.h \
     design/afoiltabledlg.h \
@@ -211,7 +212,6 @@ HEADERS += \
     misc/renamedlg.h \
     misc/stlexportdialog.h \
     misc/text/doubleedit.h \
-    misc/text/floatrditdelegate.h \
     misc/text/intedit.h \
     misc/text/mintextedit.h \
     misc/text/textclrbtn.h \

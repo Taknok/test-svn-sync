@@ -27,23 +27,18 @@
 #include "relistdlg.h"
 #include <misc/options/settings.h>
 #include <misc/text/doubleedit.h>
-#include <misc/text/floatrditdelegate.h>
+#include <misc/text/floateditdelegate.h>
 
 ReListDlg::ReListDlg(QWidget *pParent) : QDialog(pParent)
 {
     setWindowTitle(tr("Reynolds Number List"));
 
-    m_iSelection = 0;
-
     m_pFloatDelegate = nullptr;
 
     setupLayout();
 
-    connect(m_pctrlDelete, SIGNAL(clicked()),this, SLOT(onDelete()));
-    connect(m_pctrlInsert, SIGNAL(clicked()),this, SLOT(onInsert()));
-
-    connect(OKButton, SIGNAL(clicked()),this, SLOT(onOK()));
-    connect(CancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+    connect(m_pctrlDelete, SIGNAL(clicked()), SLOT(onDelete()));
+    connect(m_pctrlInsert, SIGNAL(clicked()), SLOT(onInsert()));
 }
 
 
@@ -67,16 +62,13 @@ void ReListDlg::initDialog(QVector<double> ReList, QVector<double> MachList, QVe
     m_pReModel->setRowCount(5);//temporary
     m_pReModel->setColumnCount(3);
 
+    m_pReModel->setColumnCount(3);
     m_pReModel->setHeaderData(0, Qt::Horizontal, QObject::tr("Re"));
     m_pReModel->setHeaderData(1, Qt::Horizontal, QObject::tr("Mach"));
     m_pReModel->setHeaderData(2, Qt::Horizontal, QObject::tr("NCrit"));
 
     m_pctrlReTable->setModel(m_pReModel);
 
-    int w = m_pctrlReTable->width();
-    m_pctrlReTable->setColumnWidth(0,int(w/3));
-    m_pctrlReTable->setColumnWidth(1,int(w/3));
-    m_pctrlReTable->setColumnWidth(2,int(w/3));
     QHeaderView *pHorizontalHeader = m_pctrlReTable->horizontalHeader();
     pHorizontalHeader->setStretchLastSection(true);
 
@@ -93,15 +85,15 @@ void ReListDlg::initDialog(QVector<double> ReList, QVector<double> MachList, QVe
 }
 
 
-void ReListDlg::keyPressEvent(QKeyEvent *event)
+void ReListDlg::keyPressEvent(QKeyEvent *pEvent)
 {
-    switch (event->key())
+    switch (pEvent->key())
     {
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if(!OKButton->hasFocus()) OKButton->setFocus();
-            else                      accept();
+            if(!m_pButtonBox->hasFocus()) m_pButtonBox->setFocus();
+            else                          accept();
 
             break;
         }
@@ -111,7 +103,7 @@ void ReListDlg::keyPressEvent(QKeyEvent *event)
             return;
         }
         default:
-            event->ignore();
+            pEvent->ignore();
     }
 }
 
@@ -125,43 +117,49 @@ void ReListDlg::onCellChanged(QModelIndex topLeft, QModelIndex )
 
 void ReListDlg::setupLayout()
 {
-    QVBoxLayout *pCommandButtons = new QVBoxLayout;
+    QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
-        m_pctrlInsert    = new QPushButton(tr("Insert"));
-        m_pctrlDelete    = new QPushButton(tr("Delete"));
+        QHBoxLayout * pListLayout = new QHBoxLayout;
+        {
+            m_pctrlReTable = new QTableView(this);
+            m_pctrlReTable->setFont(Settings::s_TableFont);
+            m_pctrlReTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+            m_pctrlReTable->setEditTriggers(QAbstractItemView::AllEditTriggers);
+            m_pctrlReTable->setWindowTitle(QObject::tr("Re List"));
 
-        OKButton        = new QPushButton(tr("OK"));
-        CancelButton    = new QPushButton(tr("Cancel"));
-        pCommandButtons->addStretch(1);
-        pCommandButtons->addWidget(m_pctrlInsert);
-        pCommandButtons->addWidget(m_pctrlDelete);
-        pCommandButtons->addStretch(2);
-        pCommandButtons->addWidget(OKButton);
-        pCommandButtons->addWidget(CancelButton);
-        pCommandButtons->addStretch(1);
-    }
+            QVBoxLayout *pCommandButtons = new QVBoxLayout;
+            {
+                m_pctrlInsert    = new QPushButton(tr("Insert"));
+                m_pctrlDelete    = new QPushButton(tr("Delete"));
 
-    m_pctrlReTable = new QTableView(this);
-    m_pctrlReTable->setFont(Settings::s_TableFont);
+                pCommandButtons->addWidget(m_pctrlInsert);
+                pCommandButtons->addWidget(m_pctrlDelete);
+                pCommandButtons->addStretch(1);
+            }
+            pListLayout->addWidget(m_pctrlReTable);
+            pListLayout->addLayout(pCommandButtons);
+        }
+        m_pButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+        {
+            connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
+        }
 
-    m_pctrlReTable->setMinimumHeight(500);
-    m_pctrlReTable->setMinimumWidth(250);
-    m_pctrlReTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-    m_pctrlReTable->setEditTriggers(QAbstractItemView::AllEditTriggers);
-    m_pctrlReTable->setWindowTitle(QObject::tr("Re List"));
-
-    QHBoxLayout * pMainLayout = new QHBoxLayout(this);
-    {
-        pMainLayout->addWidget(m_pctrlReTable);
-        pMainLayout->addLayout(pCommandButtons);
+        pMainLayout->addLayout(pListLayout);
+        pMainLayout->addWidget(m_pButtonBox);
+        setLayout(pMainLayout);
     }
     setLayout(pMainLayout);
 }
 
 
+void ReListDlg::onButton(QAbstractButton *pButton)
+{
+    if (     m_pButtonBox->button(QDialogButtonBox::Ok)     == pButton)  onOK();
+    else if (m_pButtonBox->button(QDialogButtonBox::Cancel) == pButton)  reject();
+}
+
 void ReListDlg::fillReModel()
 {
-    m_pReModel->setColumnCount(3);
     m_pReModel->setRowCount(m_ReList.count());
 
     m_pReModel->blockSignals(true);
@@ -200,11 +198,18 @@ void ReListDlg::onDelete()
 void ReListDlg::onInsert()
 {
     int sel = m_pctrlReTable->currentIndex().row();
-    //    if(sel<0) return;
-
-    m_ReList.insert(sel, 0.0);
-    m_MachList.insert(sel, 0.0);
-    m_NCritList.insert(sel, 0.0);
+    if(sel<0)
+    {
+        m_ReList.prepend(0.0);
+        m_MachList.prepend(0.0);
+        m_NCritList.prepend(0.0);
+    }
+    else
+    {
+        m_ReList.insert(sel, 0.0);
+        m_MachList.insert(sel, 0.0);
+        m_NCritList.insert(sel, 0.0);
+    }
 
     if(sel>0)        m_ReList[sel]    = (m_ReList[sel-1]+m_ReList[sel+1]) /2.0;
     else if(sel==0)  m_ReList[sel]    = m_ReList[sel+1]                   /2.0;
@@ -269,9 +274,6 @@ void ReListDlg::sortData()
 }
 
 
-
-
-
 /**
 * Bubble sort algorithm for the arrays of Reynolds, Mach and NCrit numbers.
 * The arrays are sorted by crescending Re numbers.
@@ -313,7 +315,19 @@ void ReListDlg::sortRe()
 }
 
 
+void ReListDlg::showEvent(QShowEvent *)
+{
+    resizeEvent(nullptr);
+}
 
+
+
+void ReListDlg::resizeEvent(QResizeEvent *)
+{
+    int w3 = int(double(m_pctrlReTable->width())*0.9/3.0);
+    m_pctrlReTable->setColumnWidth(0, w3);
+    m_pctrlReTable->setColumnWidth(1, w3);
+}
 
 
 
