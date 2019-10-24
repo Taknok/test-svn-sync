@@ -22,7 +22,7 @@
 
 #include <QtXml/QDomDocument>
 #include <QtXml/QDomNodeList>
-
+#include <QSslError>
 
 #include "updater.h"
 #include <globals/mainframe.h>

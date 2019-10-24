@@ -893,7 +893,7 @@ void StabViewDlg::setupLayout()
                 m_pctrlAnimationSpeed->setSliderPosition(m_ModeInterval);
                 m_pctrlAnimationSpeed->setNotchesVisible(true);
                 m_pctrlAnimationSpeed->setSingleStep(20);
-                m_pctrlAnimationSpeed->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+                m_pctrlAnimationSpeed->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 
 
                 pAnimSpeedLayout->addWidget(m_pctrlAnimationSpeed,1,1);
@@ -907,7 +907,7 @@ void StabViewDlg::setupLayout()
                 m_pctrlAnimationAmplitude->setSliderPosition(int(m_ModeAmplitude*500));
                 m_pctrlAnimationAmplitude->setNotchesVisible(true);
                 m_pctrlAnimationAmplitude->setSingleStep(20);
-                m_pctrlAnimationAmplitude->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+                m_pctrlAnimationAmplitude->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
                 pAnimSpeedLayout->addWidget(m_pctrlAnimationAmplitude,1,2);
                 pAnimSpeedLayout->addWidget(LabAmplitude,2,2);
             }
@@ -939,7 +939,6 @@ void StabViewDlg::setupLayout()
             pAnimationBox->setLayout(pAnimationLayout);
         }
 
-
         m_pctrlModeViewType= new QStackedWidget;
         m_pctrlModeViewType->addWidget(pEigenBox);
         m_pctrlModeViewType->addWidget(pAnimationBox);
@@ -950,12 +949,10 @@ void StabViewDlg::setupLayout()
             pRLLayout->addWidget(pRLModeBox);
             pRLLayout->addWidget(pFreakBox);
             pRLLayout->addWidget(m_pctrlModeViewType);
-            pRLLayout->addStretch(1);
+//            pRLLayout->addStretch(1);
             pModeBox->setLayout(pRLLayout);
         }
-
     }
-
 
     //___________________Main Layout____________
     m_pctrlStackWidget = new QStackedWidget;

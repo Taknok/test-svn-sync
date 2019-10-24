@@ -1811,16 +1811,6 @@ void Miarex::keyPressEvent(QKeyEvent *pEvent)
             break;
         }
 
-        case Qt::Key_F1:
-        {
-            /*            if(m_pCurPlane && m_pCurPlane->body())
-            {
-                EditBodyDlg ebDlg;
-                ebDlg.initDialog(m_pCurPlane->body());
-                ebDlg.exec();
-            }*/
-            break;
-        }
         case Qt::Key_8:
         {
             break;
@@ -1830,11 +1820,7 @@ void Miarex::keyPressEvent(QKeyEvent *pEvent)
             if(bCtrl) onExporttoSTL();
             break;
         }
-        case Qt::Key_M:
-        {
-            //            if(bCtrl) onImportSTLFile();
-            break;
-        }
+
         default:
             //            QWidget::keyPressEvent(event);
             pEvent->ignore();
