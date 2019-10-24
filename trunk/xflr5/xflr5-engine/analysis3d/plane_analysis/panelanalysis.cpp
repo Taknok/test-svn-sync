@@ -1258,7 +1258,7 @@ void PanelAnalysis::computeFarField(double QInf, double Alpha0, double AlphaDelt
                 WingForce.set(0.0, 0.0, 0.0);
                 panelTrefftz(m_pWingList[iw], QInf, alpha, Mu, Sigma, pos, WingForce, IDrag, m_pWPolar, m_pWakePanel, m_pWakeNode);
 
-                //save the results... will save another FF calculation when computing operating point
+                //save the results... will save another FF calculation when computing the operating point
                 m_WingForce[q*MAXWINGS+iw] = WingForce;  // N/q
                 m_WingIDrag[q*MAXWINGS+iw] = IDrag;
 
@@ -3061,9 +3061,7 @@ void PanelAnalysis::forces(double *Mu, double *Sigma, double alpha, Vector3d Vin
                         // Hence it sees twice the downwash.
                         // So divide by 2 to account for this.
                         Wg *= 1.0/2.0;
-
                         Wg += Velocity; //total speed vector
-
 
                         //induced force
                         dF  = Wg * m_pPanel[p].Vortex;    // Kutta-Joukowski theorem
@@ -3447,13 +3445,13 @@ bool PanelAnalysis::computeTrimmedConditions()
 
     strong ="      Searching for zero-moment angle... ";
 
-
     if(!getZeroMomentAngle())
     {
         strong += "none found\n";
         traceLog(strong);
         return false;
     }
+
     strong += QString("Alpha=%1").arg(m_AlphaEq,0,'f',5) + QString::fromUtf8("°") +"\n";
     traceLog(strong);
 
@@ -3574,8 +3572,6 @@ bool PanelAnalysis::computeTrimmedConditions()
 
     return true;
 }
-
-
 
 
 void PanelAnalysis::computeStabilityDerivativesOld()
@@ -3787,6 +3783,8 @@ void PanelAnalysis::computeStabilityDerivativesOld()
 
     All this is for a conventional configuration. Not sure what the impact is on the pitch damping of flying wings. */
 }
+
+
 /**
 * Calculates the stability derivatives.
 * @todo implement automatic differentiation. Considerable task.
@@ -4200,9 +4198,9 @@ void PanelAnalysis::computeStabilityInertia()
 void PanelAnalysis::computeControlDerivatives()
 {
     Vector3d WindDirection, H, Force, Moment, V0, is, js, ks;
-    int j, p, pos, NCtrls;
-    double DeltaAngle, SignedDeltaAngle, cosa, sina;
-    //    double q, S, b, mac;
+
+    double SignedDeltaAngle=0.0;
+
     QString str;
     Quaternion Quat;
 
@@ -4230,19 +4228,19 @@ void PanelAnalysis::computeControlDerivatives()
     }
 
     // Define the stability axes and the freestream velocity field
-    cosa = cos(m_AlphaEq*PI/180);
-    sina = sin(m_AlphaEq*PI/180);
+    double cosa = cos(m_AlphaEq*PI/180);
+    double sina = sin(m_AlphaEq*PI/180);
     V0.set(u0*cosa, 0.0, u0*sina);
     WindDirection.set(cosa, 0.0, sina);
     is.set(-cosa, 0.0, -sina);
     js.set(  0.0, 1.0,   0.0);
     ks.set( sina, 0.0, -cosa);
 
-    DeltaAngle = 0.001;
+    double DeltaAngle = 0.001;
 
-    pos = 0;
+    int pos = 0;
 
-    NCtrls = 0;
+    int NCtrls = 0;
 
     if(!m_pPlane->isWing())
     {
@@ -4257,7 +4255,7 @@ void PanelAnalysis::computeControlDerivatives()
 
             Quat.set(SignedDeltaAngle*180.0/PI, H);
 
-            for(p=0; p<m_pWingList[0]->m_MatSize; p++)
+            for(int p=0; p<m_pWingList[0]->m_MatSize; p++)
             {
                 (m_pWingList[0]->m_pWingPanel+p)->rotateBC(m_pPlane->wingLE(0), Quat);
             }
@@ -4280,7 +4278,7 @@ void PanelAnalysis::computeControlDerivatives()
 
             Quat.set(SignedDeltaAngle*180.0/PI, H);
 
-            for(p=0; p<m_pWingList[2]->m_MatSize; p++)
+            for(int p=0; p<m_pWingList[2]->m_MatSize; p++)
             {
                 (m_pWingList[2]->m_pWingPanel+p)->rotateBC(m_pPlane->wingLE(2), Quat);
             }
@@ -4291,7 +4289,7 @@ void PanelAnalysis::computeControlDerivatives()
 
     //flap tilt
     /** @todo : exclude fin flaps, or add them to StabPolarDlg*/
-    for (j=0; j<m_ppSurface->size(); j++)
+    for (int j=0; j<m_ppSurface->size(); j++)
     {
         if(m_ppSurface->at(j)->m_bTEFlap)
         {
@@ -4303,7 +4301,7 @@ void PanelAnalysis::computeControlDerivatives()
                 else SignedDeltaAngle = DeltaAngle;
 
                 Quat.set(SignedDeltaAngle*180.0/PI, m_ppSurface->at(j)->m_HingeVector);
-                for(p=0; p<m_MatSize;p++)
+                for(int p=0; p<m_MatSize;p++)
                 {
                     if(m_ppSurface->at(j)->isFlapPanel(p))
                     {
@@ -4321,7 +4319,7 @@ void PanelAnalysis::computeControlDerivatives()
     if(!m_pWPolar->bThinSurfaces())
     {
         createWakeContribution(m_uWake,  WindDirection);// re-use m_uWake memory, which is re-calculated anyway at the next control iteration
-        for(p=0; p<m_MatSize; p++)    m_cRHS[p]+= m_uWake[p]*u0;
+        for(int p=0; p<m_MatSize; p++)    m_cRHS[p]+= m_uWake[p]*u0;
     }
 
     //Solve the system

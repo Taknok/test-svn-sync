@@ -222,6 +222,8 @@ public:
         return 3;//dimension
     }
 
+    double distanceTo(Vector3d const & pt) {return sqrt((pt.x-x)*(pt.x-x) + (pt.y-y)*(pt.y-y) + (pt.z-z)*(pt.z-z));}
+
     //other methods
     void rotate(Vector3d const &R, double Angle);
     void rotate(Vector3d &O, Vector3d const &R, double Angle);

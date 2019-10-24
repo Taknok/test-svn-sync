@@ -24,6 +24,8 @@
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
 #include <QSettings>
+#include <QDate>
+
 
 class MainFrame;
 
@@ -38,8 +40,6 @@ public:
     bool hasUpdate();
     QString releaseDate()        const {return m_Date;}
     QString releaseDescription() const {return m_Description;}
-
-
 
     static void setAutoCheck(bool bAuto) {s_bAutoCheck=bAuto;}
     static bool bAutoCheck() {return s_bAutoCheck;}
@@ -61,8 +61,6 @@ public slots:
 
 private slots:
     void onDownloadFinished(QNetworkReply *pNetworkReply);
-
-
     void onReplyFinished(QNetworkReply*pNetReply);
     void onReadyRead();
     void slotError(QNetworkReply::NetworkError neterror);
