@@ -130,12 +130,6 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
     setWindowTitle(VERSIONNAME);
     setWindowIcon(QIcon(":/images/xflr5_64.png"));
 
-#ifdef QT_DEBUG
-    g_bTrace = true;
-#else
-    g_bTrace = false;
-#endif
-
     testConfiguration();
 
     m_bManualUpdateCheck = false;

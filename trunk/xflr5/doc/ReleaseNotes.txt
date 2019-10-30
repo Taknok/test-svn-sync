@@ -17,6 +17,7 @@
 
 
 xflr5 v6.48 July xxxth, 2019
+    - Added an option to select the OpenGL version and the trace flag when launching the app from the command line
     - fix for request #144
     - corrected the bug which caused unconverged XFoil operating points to be stored
     - removed the addition of .dat and .plr type files to the recent file menu list

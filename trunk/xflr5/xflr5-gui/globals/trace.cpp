@@ -79,7 +79,7 @@ void Trace(QString msg)
     if(g_pTraceFile && g_pTraceFile->isOpen())
     {
         QTextStream ts(g_pTraceFile);
-        ts<<msg;
+        ts<<msg<<"\n";
         ts.flush();
     }
 }
@@ -89,8 +89,8 @@ void Trace(QString msg)
 * Outputs in a debug file the current time, a string message and the value of the integer passed as an input parameter.
 * The file is in the user's default temporary directory with the name Trace.log.
 * Used for debugging.
-*@param msg the message to output
-*@param n the integer to output
+* @param msg the message to output
+* @param n the integer to output
 */
 void Trace(QString msg, int n)
 {
@@ -112,8 +112,8 @@ void Trace(QString msg, int n)
 * Outputs in a debug file the current time, a string message and the value of the floating number passed as an input parameter.
 * The file is in the user's default temporary directory with the name Trace.log.
 * Used for debugging.
-*@param msg the message to output
-*@param f the float number to output
+* @param msg the message to output
+* @param f the float number to output
 */
 void Trace(QString msg, double f)
 {
