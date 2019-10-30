@@ -159,6 +159,7 @@ protected:
     QPoint worldToScreen(Vector3d v);
     QPoint worldToScreen(QVector4D v4);
 
+public:
     static void printFormat(QSurfaceFormat const &ctxFormat, QString &log);
     static void setOGLVersion(int OGLMajor, int OGLMinor) {s_OpenGLMajor=OGLMajor; s_OpenGLMinor=OGLMinor;}
     static int oglMajor() {return s_OpenGLMajor;}

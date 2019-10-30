@@ -37,7 +37,7 @@
 
 
 #include <design/afoil.h>
-#include <glcontextinfo/view3dtestdlg.h>
+#include <glcontextinfo/opengldlg.h>
 #include <globals/globals.h>
 #include <globals/trace.h>
 #include <globals/mainframe.h>
@@ -50,7 +50,6 @@
 #include <miarex/design/bodytransdlg.h>
 #include <miarex/design/editobjectdelegate.h>
 #include <miarex/design/gl3dbodydlg.h>
-#include <miarex/design/gl3dwingdlg.h>
 #include <miarex/design/inertiadlg.h>
 #include <miarex/design/planedlg.h>
 #include <miarex/mgt/planetabledelegate.h>
@@ -531,7 +530,7 @@ void MainFrame::createActions()
     m_pExitAct->setStatusTip(tr("Exit the application"));
     connect(m_pExitAct, SIGNAL(triggered()), this, SLOT(close()));
 
-    m_pOpenGLAct = new QAction(tr("OpenGL info"), this);
+    m_pOpenGLAct = new QAction(tr("OpenGL settings"), this);
     connect(m_pOpenGLAct, SIGNAL(triggered()), this, SLOT(onOpenGLInfo()));
 
     m_pAboutAct = new QAction(tr("About"), this);
@@ -1050,6 +1049,8 @@ void MainFrame::createMenus()
         m_pOptionsMenu->addSeparator();
         m_pOptionsMenu->addAction(m_pPreferencesAct);
         m_pOptionsMenu->addSeparator();
+        m_pOptionsMenu->addAction(m_pOpenGLAct);
+        m_pOptionsMenu->addSeparator();
         m_pOptionsMenu->addAction(m_pRestoreToolbarsAct);
         m_pOptionsMenu->addSeparator();
         m_pOptionsMenu->addAction(m_pResetSettingsAct);
@@ -1075,7 +1076,6 @@ void MainFrame::createMenus()
 
     m_pHelpMenu = menuBar()->addMenu(tr("?"));
     {
-        m_pHelpMenu->addAction(m_pOpenGLAct);
         m_pHelpMenu->addAction(m_pAboutQtAct);
         m_pHelpMenu->addAction(m_pAboutAct);
         m_pHelpMenu->addAction(m_pCheckForUpdates);
@@ -3917,8 +3917,7 @@ void MainFrame::onNewProject()
 
 void MainFrame::onOpenGLInfo()
 {
-    View3dTestDlg w(this);
-    w.resize(900, 800);
+    OpenGlDlg w(this);
     w.exec();
 }
 
@@ -4808,6 +4807,8 @@ void MainFrame::saveSettings()
 #else
     QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
 #endif
+    settings.setValue("OpenGL_Major", gl3dView::oglMajor());
+    settings.setValue("OpenGL_Minor", gl3dView::oglMinor());
 
     settings.beginGroup("MainFrame");
     {

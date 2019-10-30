@@ -30,11 +30,8 @@
 
 #include <globals/globals.h>
 #include <miarex/design/gl3dwingdlg.h>
-#include <miarex/design/gl3dwingdlg.h>
-#include <miarex/design/inertiadlg.h>
 #include <miarex/design/inertiadlg.h>
 #include <miarex/design/wingdelegate.h>
-#include <miarex/design/wingscaledlg.h>
 #include <miarex/design/wingscaledlg.h>
 #include <miarex/mgt/xmlplanereader.h>
 #include <miarex/mgt/xmlplanewriter.h>
@@ -51,7 +48,6 @@
 #include <objects/objects_global.h>
 #include <viewwidgets/glWidgets/gl3dwingview.h>
 #include <xdirect/objects2d.h>
-
 
 
 QByteArray GL3dWingDlg::s_WindowGeometry;
@@ -134,16 +130,19 @@ bool GL3dWingDlg::checkWing()
         }
     }
 
-    for (int k=1; k<m_pWing->NWingSection(); k++)
+    for (int k=0; k<m_pWing->NWingSection(); k++)
     {
         if(fabs(m_pWing->Chord(k))<0.0001)
         {
             QMessageBox::warning(this, tr("Warning"), tr("Zero length chords will cause a division by zero and should be avoided."));
             return false;
         }
-        WingSection *pSection = m_pWing->m_Section.at(k);
-        Foil *pLeftFoil = Objects2d::foil(pSection->m_LeftFoilName);
-        Foil *pRightFoil = Objects2d::foil(pSection->m_RightFoilName);
+    }
+    for (int k=1; k<m_pWing->NWingSection(); k++)
+    {
+        WingSection const *pSection = m_pWing->m_Section.at(k);
+        Foil const *pLeftFoil = Objects2d::foil(pSection->m_LeftFoilName);
+        Foil const *pRightFoil = Objects2d::foil(pSection->m_RightFoilName);
         if(pLeftFoil )
         {
             if((pLeftFoil->m_TEXHinge>=99&& pLeftFoil->m_bTEFlap) ||(pLeftFoil->m_LEXHinge<0.01&&pLeftFoil->m_bLEFlap))
