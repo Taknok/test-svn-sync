@@ -1,5 +1,7 @@
 
 SOURCES += \
+    $$PWD/globals/trace.cpp \
+    $$PWD/globals/xflr5app.cpp \
     design/afoil.cpp \
     design/afoiltabledlg.cpp \
     design/foiltabledelegate.cpp \
@@ -11,7 +13,6 @@ SOURCES += \
     globals/globals.cpp \
     globals/main.cpp \
     globals/mainframe.cpp \
-    globals/xflr5application.cpp \
     graph/curve.cpp \
     graph/graph.cpp \
     graph/graph_globals.cpp \
@@ -132,6 +133,8 @@ SOURCES += \
 
 
 HEADERS += \
+    $$PWD/globals/trace.h \
+    $$PWD/globals/xflr5app.h \
     $$PWD/misc/text/floateditdelegate.h \
     $$PWD/xdirect/xdirectstyledlg.h \
     design/afoil.h \
@@ -146,7 +149,6 @@ HEADERS += \
     globals/gui_enums.h \
     globals/gui_params.h \
     globals/mainframe.h \
-    globals/xflr5application.h \
     graph/curve.h \
     graph/graph.h \
     graph/graph_globals.h \

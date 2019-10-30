@@ -27,6 +27,7 @@
 #include "gl3dview.h"
 #include <analysis3d/plane_analysis/lltanalysis.h>
 #include <globals/globals.h>
+#include <globals/trace.h>
 
 #include <globals/mainframe.h>
 #include <miarex/miarex.h>
@@ -52,6 +53,10 @@ Miarex *gl3dView::s_pMiarex;
 MainFrame *gl3dView::s_pMainFrame;
 
 GLLightDlg *gl3dView::s_pglLightDlg = nullptr;
+
+
+int gl3dView::s_OpenGLMajor = 2;
+int gl3dView::s_OpenGLMinor = 1;
 
 
 gl3dView::gl3dView(QWidget *pParent) : QOpenGLWidget(pParent)
@@ -115,36 +120,62 @@ gl3dView::gl3dView(QWidget *pParent) : QOpenGLWidget(pParent)
 }
 
 
-void gl3dView::printFormat(const QSurfaceFormat &format)
+void gl3dView::printFormat(QSurfaceFormat const &ctxtFormat, QString &log)
 {
-    Trace(QString("OpenGL version: %1.%2").arg(format.majorVersion()).arg(format.minorVersion()));
+    QString strange;
+    log.clear();
+    log += "-------Testing OpenGL support--------\n";
+    strange.sprintf("Loaded version= %d.%d\n", ctxtFormat.majorVersion(),ctxtFormat.minorVersion());
+    log +=strange;
+    QString vendor, renderer, version, glslVersion;
+    const GLubyte *p;
+    if ((p = glGetString(GL_VENDOR)))
+        vendor = QString::fromLatin1(reinterpret_cast<const char *>(p));
+    if ((p = glGetString(GL_RENDERER)))
+        renderer = QString::fromLatin1(reinterpret_cast<const char *>(p));
+    if ((p = glGetString(GL_VERSION)))
+        version = QString::fromLatin1(reinterpret_cast<const char *>(p));
+    if ((p = glGetString(GL_SHADING_LANGUAGE_VERSION)))
+        glslVersion = QString::fromLatin1(reinterpret_cast<const char *>(p));
 
-    switch (format.profile()) {
-        case QSurfaceFormat::NoProfile:
-            Trace("No Profile");
-            break;
-        case QSurfaceFormat::CoreProfile:
-            Trace("Core Profile");
-            break;
-        case QSurfaceFormat::CompatibilityProfile:
-            Trace("Compatibility Profile");
-            break;
+    log += "*** Context information ***\n";
+    log += QString("   Vendor: %1\n").arg(vendor).toStdString().c_str();
+    log += QString("   Renderer: %1\n").arg(renderer).toStdString().c_str();
+    log += QString("   OpenGL version: %1\n").arg(version).toStdString().c_str();
+    log += QString("   GLSL version: %1\n").arg(glslVersion).toStdString().c_str();
+
+    if(ctxtFormat.testOption(QSurfaceFormat::DeprecatedFunctions))  log += "Using deprecated functions\n";
+    if(ctxtFormat.testOption(QSurfaceFormat::DebugContext))         log += "Using debug context\n";
+    if(ctxtFormat.testOption(QSurfaceFormat::StereoBuffers))        log += "Using Stereo buffers\n";
+
+    switch (ctxtFormat.profile()) {
+    case QSurfaceFormat::NoProfile:
+        log += "No Profile\n";
+        break;
+    case QSurfaceFormat::CoreProfile:
+        log += ("Core Profile\n");
+        break;
+    case QSurfaceFormat::CompatibilityProfile:
+        log += ("Compatibility Profile\n");
+        break;
     }
-    switch (format.renderableType())
+    switch (ctxtFormat.renderableType())
     {
-        case QSurfaceFormat::DefaultRenderableType:
-            Trace("DefaultRenderableType: The default, unspecified rendering method");
-            break;
-        case QSurfaceFormat::OpenGL:
-            Trace("OpenGL: Desktop OpenGL rendering");
-            break;
-        case QSurfaceFormat::OpenGLES:
-            Trace("OpenGLES: OpenGL ES 2.0 rendering");
-            break;
-        case QSurfaceFormat::OpenVG:
-            Trace("OpenVG: Open Vector Graphics rendering");
-            break;
+    case QSurfaceFormat::DefaultRenderableType:
+        log += ("DefaultRenderableType: The default, unspecified rendering method\n");
+        break;
+    case QSurfaceFormat::OpenGL:
+        log += ("OpenGL: Desktop OpenGL rendering\n");
+        break;
+    case QSurfaceFormat::OpenGLES:
+        log += ("OpenGLES: OpenGL ES 2.0 rendering\n");
+        break;
+    case QSurfaceFormat::OpenVG:
+        log += ("OpenVG: Open Vector Graphics rendering\n");
+        break;
     }
+    log += "-------  Done Testing OpenGL --------";
+    log += "\n\n";
 }
 
 
@@ -1353,9 +1384,13 @@ void gl3dView::initializeGL()
     QSurfaceFormat ctxtFormat = format();
     m_bUse120StyleShaders = (ctxtFormat.majorVersion()*10+ctxtFormat.minorVersion())<33;
 
-#ifdef QT_DEBUG
-    printFormat(ctxtFormat);
-#endif
+    if(g_bTrace)
+    {
+        QString log;
+        printFormat(ctxtFormat, log);
+        Trace(log);
+    }
+
 
     glMakeAxis();
     glMakeUnitSphere();

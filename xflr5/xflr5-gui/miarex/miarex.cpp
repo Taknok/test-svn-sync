@@ -35,6 +35,7 @@
 #include "graphtilewidget.h"
 #include <analysis3d/matrix.h>
 #include <globals/globals.h>
+#include <globals/trace.h>
 #include <globals/mainframe.h>
 #include <graph/curve.h>
 #include <graph/graph.h>
@@ -1698,7 +1699,7 @@ void Miarex::keyPressEvent(QKeyEvent *pEvent)
 
         case Qt::Key_D:
         {
-            if(MainFrame::s_bTrace)
+            if(g_bTrace)
             {
                 QString FileName = QDir::tempPath() + "/Trace.log";
                 QDesktopServices::openUrl(QUrl::fromLocalFile(FileName));

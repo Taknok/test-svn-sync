@@ -1,8 +1,8 @@
 /****************************************************************************
 
-    PopUp Class
+    Trace functions
 
-    Copyright (C) 2019 Andre Deperrois
+    Copyright (C) 2008-2017 Andre Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,37 +20,17 @@
 
 *****************************************************************************/
 
-#pragma once
+#include <QFile>
+#include <QString>
 
-#include <QWidget>
-#include <QLabel>
+extern bool g_bTrace;
+extern QFile *g_pTraceFile;
 
-
-
-class PopUp : public QWidget
-{
-    Q_OBJECT
-
-    public:
-        PopUp(QWidget *pParent=nullptr);
-        PopUp(QString const &message, QWidget *pParent);
-        void appendTextMessage(QString const &text);
-        void setTextMessage(QString const &text);
-
-        void setRed();
-        void setGreen();
-        void setFont(QFont const &fnt);
-
-    protected:
-        void showEvent(QShowEvent *);
-        void mousePressEvent(QMouseEvent *event);
-
-    private:
-        void setupLayout();
+void Trace(int n);
+void Trace(QString msg);
+void Trace(QString msg, bool b);
+void Trace(QString msg, int n);
+void Trace(QString msg, double f);
 
 
-    private:
-        QLabel *m_pMessage;
-
-};
-
+void startTrace(bool bTrace);

@@ -39,6 +39,7 @@
 #include <design/afoil.h>
 #include <glcontextinfo/view3dtestdlg.h>
 #include <globals/globals.h>
+#include <globals/trace.h>
 #include <globals/mainframe.h>
 #include <graph/graphdlg.h>
 #include <gui_objects/splinefoil.h>
@@ -116,13 +117,7 @@ QDir MainFrame::s_TranslationDir;
 bool MainFrame::s_bSaved = true;
 bool MainFrame::s_bOpenGL = true;
 
-#ifdef QT_DEBUG
-bool MainFrame::s_bTrace = true;
-#else
-bool MainFrame::s_bTrace = false;
-#endif
 
-QFile *MainFrame::s_pTraceFile = nullptr;
 
 QLabel *MainFrame::m_pctrlProjectName = nullptr;
 QVector <QColor> MainFrame::s_ColorList;
@@ -135,7 +130,12 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
     setWindowTitle(VERSIONNAME);
     setWindowIcon(QIcon(":/images/xflr5_64.png"));
 
-//    if(s_bTrace)
+#ifdef QT_DEBUG
+    g_bTrace = true;
+#else
+    g_bTrace = false;
+#endif
+
     testConfiguration();
 
     m_bManualUpdateCheck = false;
@@ -280,7 +280,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 
 MainFrame::~MainFrame()
 {
-    if(s_pTraceFile) s_pTraceFile->close();
+    if(g_pTraceFile) g_pTraceFile->close();
 
     Objects2d::deleteAllFoils();
 
@@ -301,11 +301,10 @@ MainFrame::~MainFrame()
 void MainFrame::testConfiguration()
 {
     QString FileName = QDir::tempPath() + "/Trace.log";
-    Trace(FileName);
-    s_pTraceFile = new QFile(FileName);
+    g_pTraceFile = new QFile(FileName);
 
-    if (!s_pTraceFile->open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text)) s_bTrace = false;
-    s_pTraceFile->reset();
+    if (!g_pTraceFile->open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text)) g_bTrace = false;
+    g_pTraceFile->reset();
 
 #if QT_VERSION >= 0x050500
     QString strange;
@@ -330,7 +329,7 @@ void MainFrame::testConfiguration()
     Trace("    Software OpenGL", qApp->testAttribute(Qt::AA_UseSoftwareOpenGL));
 
 
-    strange.sprintf("   Default OpengGl format:%d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
+    strange.sprintf("    Default OpengGl format:%d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
     Trace(strange);
 
 
@@ -3371,6 +3370,9 @@ bool MainFrame::loadSettings()
 #else
     QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
 #endif
+
+    bool bOK = false;
+    gl3dView::setOGLVersion(settings.value("OpenGL_Major", 2).toInt(&bOK), settings.value("OpenGL_Minor", 1).toInt(&bOK));
 
     settings.beginGroup("MainFrame");
     {

@@ -27,7 +27,7 @@
 #include "updater.h"
 #include <globals/mainframe.h>
 #include <globals/gui_params.h>
-#include <globals/globals.h>
+#include <globals/trace.h>
 
 
 bool Updater::s_bAutoCheck = false;  // until crash bugs are fixed
