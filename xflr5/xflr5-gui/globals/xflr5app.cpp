@@ -148,12 +148,13 @@ XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
     MainFrame *w = MainFrame::self();
     MainFrame::self()->resize(sz);
     MainFrame::self()->move(pt);
-    if(bMaximized)    MainFrame::self()->showMaximized();
+    if(bMaximized)  MainFrame::self()->showMaximized();
     else            MainFrame::self()->show();
     splash.finish(w);
 
 
 #ifndef Q_OS_MAC
+    bool bProjectFile = false;
     if(argc>1)
     {
         QString PathName, Extension;
@@ -165,13 +166,15 @@ XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
         if (Extension.compare("xfl",Qt::CaseInsensitive)==0 || Extension.compare("wpa",Qt::CaseInsensitive)==0 ||
             Extension.compare("plr",Qt::CaseInsensitive)==0 || Extension.compare("dat",Qt::CaseInsensitive)==0)
         {
+            bProjectFile = true;
             int iApp = w->loadXFLR5File(PathName);
 
-            if (iApp == XFLR5::MIAREX)             w->onMiarex();
+            if      (iApp == XFLR5::MIAREX)        w->onMiarex();
             else if (iApp == XFLR5::XFOILANALYSIS) w->onXDirect();
         }
     }
-    else
+
+    if(!bProjectFile)
     {
         if(w->bAutoLoadLast())
         {
