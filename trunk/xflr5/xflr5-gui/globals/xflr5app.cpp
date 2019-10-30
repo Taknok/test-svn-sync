@@ -1,6 +1,6 @@
 /****************************************************************************
 
-    XFLR5Application  Class
+    XFLR5App  Class
     Copyright (C) 2008-2017 Andre Deperrois 
 
     This program is free software; you can redistribute it and/or modify
@@ -25,16 +25,18 @@
 #include <QMessageBox>
 #include <QCommandLineOption>
 #include <QCommandLineParser>
+#include <QSurfaceFormat>
 #include <QDebug>
 
 
-#include "xflr5application.h"
+#include "xflr5app.h"
 #include <globals/mainframe.h>
+#include <globals/trace.h>
 #include <misc/options/settings.h>
 #include <ctime>
 #include <iostream>
 
-XFLR5Application::XFLR5Application(int &argc, char** argv) : QApplication(argc, argv)
+XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
 {
     setApplicationDisplayName(VERSIONNAME);
     setApplicationName(VERSIONNAME);
@@ -50,12 +52,11 @@ XFLR5Application::XFLR5Application(int &argc, char** argv) : QApplication(argc, 
     QString LanguagePath ="";
 
     QString str;
-    int a,b,c,d,k;
-    a=150;
-    b=50;
-    c=800;
-    d=700;
 
+    int a=150;
+    int b=50;
+    int c=800;
+    int d=700;
 
 #if defined Q_OS_MAC && defined MAC_NATIVE_PREFS
     QSettings settings(QSettings::NativeFormat,QSettings::UserScope,"sourceforge.net","xflr5");
@@ -68,7 +69,8 @@ XFLR5Application::XFLR5Application(int &argc, char** argv) : QApplication(argc, 
     qsrand(uint(time(nullptr)));
 
     bool bMaximized = true;
-    bool bOK;
+    bool bOK= false;
+    int k=0;
     settings.beginGroup("MainFrame");
     {
         k = settings.value("FrameGeometryx").toInt(&bOK);
@@ -95,6 +97,49 @@ XFLR5Application::XFLR5Application(int &argc, char** argv) : QApplication(argc, 
     {
         if(xflr5Translator.load(LanguagePath)) installTranslator(&xflr5Translator);
     }
+
+
+
+    int OGLversion = -1;
+    parseCmdLine(*this, OGLversion);
+
+
+    // Load preferred OpenGL version
+    // and set the default format before any 3d view is created
+    int OGLMajor = 3;
+    int OGLMinor = 3;
+    if(QFile(settings.fileName()).exists())
+    {
+        int vM = settings.value("OpenGL_Major", 4).toInt(&bOK);
+        if(bOK) OGLMajor = vM;
+        int vm = settings.value("OpenGL_Minor", 4).toInt(&bOK);
+        if(bOK) OGLMinor = vm;
+    }
+
+    // choose between the version passed as option if valid and the saved setting
+    QString msg;
+
+    if(OGLversion==-1)
+    {
+    }
+    else
+    {
+        OGLMajor = OGLversion/10;
+        OGLMinor = OGLversion - 10*OGLMajor;
+    }
+    msg.sprintf("Requesting OpenGL %d.%d with the core profile", OGLMajor, OGLMinor);
+    Trace(msg);
+
+    QSurfaceFormat defaultformat;
+    defaultformat.setVersion(OGLMajor, OGLMinor); // in Linux/OpenSuse, version>=3.1 forces the core profile
+    // Force the core profile, to ensure that the app does not use any compatibility
+    // function which could be unsupported by some GPU vendors at some future point
+    defaultformat.setProfile(QSurfaceFormat::CoreProfile);
+#ifdef QT_DEBUG
+    defaultformat.setOption(QSurfaceFormat::DebugContext);
+#endif
+    QSurfaceFormat::setDefaultFormat(defaultformat);
+
 
     QPoint pt(a,b);
     QSize sz(c,d);
@@ -145,7 +190,7 @@ XFLR5Application::XFLR5Application(int &argc, char** argv) : QApplication(argc, 
 }
 
 
-void XFLR5Application::addStandardBtnStrings()
+void XFLR5App::addStandardBtnStrings()
 {
     QT_TRANSLATE_NOOP("QPlatformTheme", "OK");
     QT_TRANSLATE_NOOP("QPlatformTheme", "Save");
@@ -168,7 +213,7 @@ void XFLR5Application::addStandardBtnStrings()
 }
 
 
-bool XFLR5Application::event(QEvent *event)
+bool XFLR5App::event(QEvent *event)
 {
     int iApp = XFLR5::NOAPP;
     switch (event->type())
@@ -189,4 +234,50 @@ bool XFLR5Application::event(QEvent *event)
 }
 
 
+
+void XFLR5App::parseCmdLine(XFLR5App &fl5app, int &OGLVersion)
+{
+    QCommandLineParser parser;
+    parser.setApplicationDescription("Analysis tool for planes and sails operating at low Reynolds numbers");
+    parser.addHelpOption();
+    parser.addVersionOption();
+
+    // An integer option with a single name (-o)
+    QCommandLineOption OGLOption(QStringList() << "o" << "opengl");
+    OGLOption.setValueName("OpenGL_version");
+    OGLOption.setDefaultValue("44");
+    OGLOption.setDescription("Launches the application with the specified OpenGL version. "
+                             "The default is the legacy format 2.1. Test and set higher "
+                             "versions using the in-app OpenGL test window in the Options menu. "
+                             "Usage: xflr5 -o 41 to request a 4.1 context.");
+    parser.addOption(OGLOption);
+
+
+    QCommandLineOption TraceOption(QStringList() << "t" << "trace");
+    TraceOption.setDescription("Runs the program in trace mode. The trace file is "+QDir::tempPath() + "/Trace.log");
+    parser.addOption(TraceOption);
+
+    // Process the actual command line arguments provided by the user
+    parser.process(fl5app);
+
+
+    if(parser.isSet(TraceOption))
+    {
+        Trace("Processing option -t", true);
+        g_bTrace=true;
+    }
+
+
+    if(parser.isSet(OGLOption))
+    {
+        bool bOK=false;
+        int version = parser.value(OGLOption).toInt(&bOK);
+        if(bOK) OGLVersion = version; else OGLVersion = -1;
+        Trace("Processing option -o", OGLVersion);
+    }
+    else
+    {
+        OGLVersion = -1;
+    }
+}
 

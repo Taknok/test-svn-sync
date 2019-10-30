@@ -146,7 +146,6 @@ protected:
     void paintEditBodyMesh(Body const *pBody);
     void paintWing(int iWing, const Wing *pWing);
     void paintSphere(Vector3d place, double radius, QColor sphereColor, bool bLight=true);
-    void printFormat(const QSurfaceFormat &format);
     void reset3DRotationCenter();
     void set3DScale(double length=-1.0);
     void setSpanStations(Plane const *pPlane, WPolar const *pWPolar, PlaneOpp const *pPOpp);
@@ -159,6 +158,13 @@ protected:
     QVector4D worldToViewport(Vector3d v);
     QPoint worldToScreen(Vector3d v);
     QPoint worldToScreen(QVector4D v4);
+
+    static void printFormat(QSurfaceFormat const &ctxFormat, QString &log);
+    static void setOGLVersion(int OGLMajor, int OGLMinor) {s_OpenGLMajor=OGLMajor; s_OpenGLMinor=OGLMinor;}
+    static int oglMajor() {return s_OpenGLMajor;}
+    static int oglMinor() {return s_OpenGLMinor;}
+
+protected:
 
     QOpenGLShaderProgram m_ShaderProgramLine,  m_ShaderProgramGradient;
     QOpenGLShaderProgram m_ShaderProgramSurface, m_ShaderProgramTexture;
@@ -270,6 +276,8 @@ protected:
 
     QOpenGLVertexArrayObject m_vao; /** generic vao required for the core profile >3.x*/
 
+    static int s_OpenGLMajor;
+    static int s_OpenGLMinor;
 };
 
 void GLLineStipple(int style);

@@ -23,9 +23,9 @@
 #include <QSurfaceFormat>
 #include <QDebug>
 
-#include "xflr5application.h"
+#include "xflr5app.h"
 #include <globals/mainframe.h>
-
+#include <globals/trace.h>
 
 
 void customLogHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg)
@@ -57,6 +57,8 @@ void customLogHandler(QtMsgType type, const QMessageLogContext& context, const Q
             fprintf(stderr, "Fatal: %s\n", localMsg.constData());
             break;
     }
+
+    if(g_bTrace) Trace(msg);
 }
 
 /**
@@ -127,7 +129,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL);
 
     qInstallMessageHandler(&customLogHandler);
-    XFLR5Application app(argc, argv);
+    XFLR5App app(argc, argv);
 
     return app.exec();
 }

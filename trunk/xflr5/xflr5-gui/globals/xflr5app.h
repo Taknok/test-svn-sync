@@ -1,6 +1,6 @@
 /****************************************************************************
 
-        XFLR5Application Class
+        XFLR5App Class
 
     Copyright (C) 2008 Andre Deperrois 
                        Francesco Meschia francesco.meschia@gmail.com
@@ -27,16 +27,18 @@
 #include <globals/mainframe.h>
 
 
-class XFLR5Application : public QApplication
+class XFLR5App : public QApplication
 {
     Q_OBJECT
 
 public:
-    XFLR5Application(int&, char**);
+    XFLR5App(int&, char**);
 
 private:
     bool event(QEvent *);
     void addStandardBtnStrings();
+    void parseCmdLine(XFLR5App &app, int &OGLVersion);
+
 };
 
 #endif // XFLR5APPLICATION_H

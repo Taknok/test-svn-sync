@@ -431,9 +431,7 @@ private:
     Updater *m_pUpdater;
 
 public:
-    static bool s_bTrace;
     static bool s_bOpenGL;
-    static QFile *s_pTraceFile;
     static QString s_ProjectName;      /**< The Project's name. */
 
 

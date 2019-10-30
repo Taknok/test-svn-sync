@@ -33,7 +33,6 @@
 #include <QPainter>
 
 
-
 #include "analysis3d/analysis3d_enums.h"
 #include <objects/objectcolor.h>
 
@@ -60,13 +59,6 @@ float GLGetBlue(float tau);
 
 
 QColor randomColor(bool bLightColor);
-
-void Trace(int n);
-void Trace(QString msg);
-void Trace(QString msg, bool b);
-void Trace(QString msg, int n);
-void Trace(QString msg, double f);
-
 
 
 XFLR5::enumPanelDistribution distributionType(QString strDist);
