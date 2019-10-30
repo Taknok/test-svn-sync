@@ -3821,7 +3821,6 @@ void Miarex::onEditCurWing()
 
         if(plDlg.m_bChanged)
         {
-
             if(bHasResults)
             {
                 ModDlg mdDlg(s_pMainFrame);

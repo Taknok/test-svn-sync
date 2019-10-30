@@ -1,5 +1,6 @@
 
 SOURCES += \
+    $$PWD/glcontextinfo/opengldlg.cpp \
     $$PWD/globals/trace.cpp \
     $$PWD/globals/xflr5app.cpp \
     design/afoil.cpp \
@@ -8,8 +9,6 @@ SOURCES += \
     design/gridsettingsdlg.cpp \
     design/lecircledlg.cpp \
     design/splinectrlsdlg.cpp \
-    glcontextinfo/glrenderwindow.cpp \
-    glcontextinfo/view3dtestdlg.cpp \
     globals/globals.cpp \
     globals/main.cpp \
     globals/mainframe.cpp \
@@ -133,6 +132,7 @@ SOURCES += \
 
 
 HEADERS += \
+    $$PWD/glcontextinfo/opengldlg.h \
     $$PWD/globals/trace.h \
     $$PWD/globals/xflr5app.h \
     $$PWD/misc/text/floateditdelegate.h \
@@ -143,8 +143,6 @@ HEADERS += \
     design/gridsettingsdlg.h \
     design/lecircledlg.h \
     design/splinectrlsdlg.h \
-    glcontextinfo/glrenderwindow.h \
-    glcontextinfo/view3dtestdlg.h \
     globals/globals.h \
     globals/gui_enums.h \
     globals/gui_params.h \
