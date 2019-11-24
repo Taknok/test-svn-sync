@@ -779,6 +779,18 @@ void Graph::saveSettings(QSettings &settings)
         settings.setValue("LabelFontItalic", lgft.italic());
         settings.setValue("LabelFontBold", lgft.bold());
 
+        settings.setValue("bAutoX",  m_bAutoX);
+        settings.setValue("XOrigin", xo);
+        settings.setValue("XMin",    xmin);
+        settings.setValue("XMax",    xmax);
+        settings.setValue("XUnit",   xunit);
+
+        settings.setValue("bAutoY",  m_bAutoY);
+        settings.setValue("YOrigin", yo);
+        settings.setValue("YMin",    ymin);
+        settings.setValue("YMax",    ymax);
+        settings.setValue("YUnit",   yunit);
+
         bXMajGrid(bs,clr,s,w);
         settings.setValue("XMajGridColor", clr);
         settings.setValue("XMajGridShow",bs);
@@ -864,6 +876,19 @@ void Graph::loadSettings(QSettings &settings)
         lgft.setItalic(settings.value("LabelFontItalic", false).toBool());
         lgft.setBold(settings.value("LabelFontBold", false).toBool());
         setLabelFont(lgft);
+
+        m_bAutoX = settings.value("bAutoX", true).toBool();
+        xo       = settings.value("XOrigin", 0.0).toDouble();
+        xmin     = settings.value("XMin",    0.0).toDouble();
+        xmax     = settings.value("XMax",    1.0).toDouble();
+        xunit    = settings.value("XUnit",   0.2).toDouble();
+
+        m_bAutoY = settings.value("bAutoY", true).toBool();
+        yo       = settings.value("YOrigin", 0.0).toDouble();
+        ymin     = settings.value("YMin",    0.0).toDouble();
+        ymax     = settings.value("YMax",    1.0).toDouble();
+        yunit    = settings.value("YUnit",   0.2).toDouble();
+
 
         clr  = settings.value("XMajGridColor", QColor(90,90,90)).value<QColor>();
         bs = settings.value("XMajGridShow",true).toBool();
@@ -1099,27 +1124,6 @@ int Graph::axisStyle() const
 int Graph::axisWidth() const
 {
     return m_AxisWidth;
-}
-
-bool Graph::bAutoX() const
-{
-    return m_bAutoX;
-}
-
-bool Graph::bAutoY() const
-{
-    return m_bAutoY;
-}
-
-
-bool Graph::bAutoXMin() const
-{
-    return m_bXAutoMinGrid;
-}
-
-bool Graph::bAutoYMin() const
-{
-    return m_bYAutoMinGrid;
 }
 
 
@@ -1424,8 +1428,6 @@ void Graph::scaleYAxis(double zoom)
     ymax = ym+(ymax-ym)*zoom;
 }
 
-//___________________Start Sets______________________________________________________________
-
 
 void Graph::setAuto(bool bAuto)
 {
@@ -1435,16 +1437,21 @@ void Graph::setAuto(bool bAuto)
     resetYLimits();
 }
 
+
 void Graph::setAutoX(bool bAuto)
 {
     m_bAutoX = bAuto;
     resetXLimits();
 }
+
+
 void Graph::setAutoY(bool bAuto)
 {
     m_bAutoY = bAuto;
     resetYLimits();
 }
+
+
 void Graph::setAutoXMinUnit(bool bAuto)
 {
     m_bXAutoMinGrid = bAuto;
@@ -1472,7 +1479,6 @@ void Graph::setAutoXUnit()
         xunit = 2.0*pow(10.0,exp_x);
     else
         xunit = 5.0*pow(10.0,exp_x);
-
 }
 
 

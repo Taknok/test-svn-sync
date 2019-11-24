@@ -1329,6 +1329,10 @@ void XDirect::loadSettings(QSettings &settings)
             s_MachList.append(settings.value(str2).toDouble());
             s_NCritList.append(settings.value(str3).toDouble());
         }
+
+        BatchDlg::s_Geometry       = settings.value("BatchDlgGeometry").toByteArray();
+        BatchThreadDlg::s_Geometry = settings.value("BatchThreadDlgGeometry").toByteArray();
+
     }
     settings.endGroup();
 
@@ -4233,6 +4237,9 @@ void XDirect::saveSettings(QSettings &settings)
             settings.setValue(str2, s_MachList[i]);
             settings.setValue(str3, s_NCritList[i]);
         }
+
+        settings.setValue("BatchDlgGeometry",       BatchDlg::s_Geometry);
+        settings.setValue("BatchThreadDlgGeometry", BatchThreadDlg::s_Geometry);
     }
     settings.endGroup();
 

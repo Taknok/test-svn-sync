@@ -288,6 +288,7 @@ void BatchThreadDlg::setupLayout()
             }
             pTransVarsGroupBox->setLayout(pTransVars);
         }
+
         QHBoxLayout *pCommandButtons = new QHBoxLayout;
         {
             QPushButton *pAdvancedSettings =  new QPushButton(tr("Advanced Settings"));
@@ -360,6 +361,7 @@ void BatchThreadDlg::setupLayout()
     {
         pBoxesLayout->addLayout(pLeftSide);
         pBoxesLayout->addLayout(pRightSide);
+        pBoxesLayout->setStretchFactor(pRightSide, 1);
     }
 
     setLayout(pBoxesLayout);

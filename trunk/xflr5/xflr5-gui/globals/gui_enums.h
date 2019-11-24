@@ -28,7 +28,7 @@
 namespace XFLR5
 {
     /** @enum The different applications available to the user */
-    typedef enum {NOAPP, XFOILANALYSIS, DIRECTDESIGN, INVERSEDESIGN, MIAREX, OPENGL3}    enumApp;
+    typedef enum {NOAPP, XFOILANALYSIS, DIRECTDESIGN, INVERSEDESIGN, MIAREX}    enumApp;
 
     /**< @enum The different image formats usable to export screen captures*/
     typedef enum {PNG, JPEG, BMP}    enumImageFormat;

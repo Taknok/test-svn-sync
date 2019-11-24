@@ -153,151 +153,6 @@ BatchDlg::~BatchDlg()
  */
 void BatchDlg::setupLayout()
 {
-    QGroupBox *pFoilBox = new QGroupBox(tr("Foil Selection"));
-    {
-        QHBoxLayout *pFoilLayout = new QHBoxLayout;
-        {
-            m_pctrlFoil1 = new QRadioButton(tr("Current foil only"));
-            m_pctrlFoil2 = new QRadioButton(tr("Foil list"));
-            m_pctrlFoilList = new QPushButton(tr("Foil list"));
-            pFoilLayout->addWidget(m_pctrlFoil1);
-            pFoilLayout->addWidget(m_pctrlFoil2);
-            pFoilLayout->addStretch(1);
-            pFoilLayout->addWidget(m_pctrlFoilList);
-        }
-        pFoilBox->setLayout(pFoilLayout);
-    }
-
-    QGroupBox *pAnalysisTypeGroupBox = new QGroupBox(tr("Analysis Type"));
-    {
-        QHBoxLayout *pAnalysisTypeLayout = new QHBoxLayout;
-        {
-            m_rbtype1 = new    QRadioButton(tr("Type 1"));
-            m_rbtype2 = new QRadioButton(tr("Type 2"));
-            m_rbtype3 = new QRadioButton(tr("Type 3"));
-            m_rbtype4 = new QRadioButton(tr("Type 4"));
-            pAnalysisTypeLayout->addWidget(m_rbtype1);
-            pAnalysisTypeLayout->addWidget(m_rbtype2);
-            pAnalysisTypeLayout->addWidget(m_rbtype3);
-            pAnalysisTypeLayout->addWidget(m_rbtype4);
-        }
-        pAnalysisTypeGroupBox->setLayout(pAnalysisTypeLayout);
-    }
-
-    QGroupBox *pBatchVarsGroupBox = new QGroupBox(tr("Batch Variables"));
-    {
-        QGridLayout *pBatchVarsLayout = new QGridLayout;
-        {
-            m_rbRange1 = new QRadioButton(tr("Range"));
-            m_rbRange2 = new QRadioButton(tr("Re List"));
-            m_pctrlEditList = new QPushButton(tr("Edit List"));
-            QLabel *MinVal   = new QLabel(tr("Min"));
-            QLabel *MaxVal   = new QLabel(tr("Max"));
-            QLabel *DeltaVal = new QLabel(tr("Increment"));
-            MinVal->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
-            MaxVal->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
-            DeltaVal->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
-            m_pctrlReType  = new QLabel("Reynolds=");
-            m_pctrlMaType  = new QLabel("Mach=");
-            m_pctrlReType->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
-            m_pctrlMaType->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
-            m_pctrlReMin   = new DoubleEdit(100000,0);
-            m_pctrlReMax   = new DoubleEdit(150000,0);
-            m_pctrlReDelta = new DoubleEdit(50000,0);
-            m_pctrlMach    = new DoubleEdit(0.0, 3);
-
-            QLabel *NCritLabel = new QLabel(tr("NCrit="));
-            NCritLabel->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
-            m_pctrlNCrit   = new DoubleEdit(9.00);
-
-            pBatchVarsLayout->addWidget(m_rbRange1, 1, 2);
-            pBatchVarsLayout->addWidget(m_rbRange2, 1, 3);
-            pBatchVarsLayout->addWidget(m_pctrlEditList, 1, 4);
-            pBatchVarsLayout->addWidget(MinVal, 2, 2);
-            pBatchVarsLayout->addWidget(MaxVal, 2, 3);
-            pBatchVarsLayout->addWidget(DeltaVal, 2, 4);
-            pBatchVarsLayout->addWidget(m_pctrlReType, 3, 1);
-            pBatchVarsLayout->addWidget(m_pctrlReMin, 3, 2);
-            pBatchVarsLayout->addWidget(m_pctrlReMax, 3, 3);
-            pBatchVarsLayout->addWidget(m_pctrlReDelta, 3, 4);
-            pBatchVarsLayout->addWidget(m_pctrlMaType, 4, 1);
-            pBatchVarsLayout->addWidget(m_pctrlMach, 4, 2);
-            pBatchVarsLayout->addWidget(NCritLabel, 5, 1);
-            pBatchVarsLayout->addWidget(m_pctrlNCrit, 5,2);
-        }
-        pBatchVarsGroupBox->setLayout(pBatchVarsLayout);
-    }
-
-    QGroupBox *pTransVarsGroupBox = new QGroupBox(tr("Forced transitions"));
-    {
-        QGridLayout *pTransVarsLayout = new QGridLayout;
-        {
-            pTransVarsLayout->setColumnStretch(0,4);
-            pTransVarsLayout->setColumnStretch(1,1);
-            QLabel *TopTransLabel = new QLabel(tr("Top transition location (x/c)"));
-            QLabel *BotTransLabel = new QLabel(tr("Bottom transition location (x/c)"));
-            TopTransLabel->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
-            BotTransLabel->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
-            m_pctrlXTopTr = new DoubleEdit(1.00);
-            m_pctrlXBotTr = new DoubleEdit(1.00);
-            pTransVarsLayout->addWidget(TopTransLabel, 1, 1);
-            pTransVarsLayout->addWidget(m_pctrlXTopTr, 1, 2);
-            pTransVarsLayout->addWidget(BotTransLabel, 2, 1);
-            pTransVarsLayout->addWidget(m_pctrlXBotTr, 2, 2);
-        }
-        pTransVarsGroupBox->setLayout(pTransVarsLayout);
-    }
-
-    QGroupBox *pRangeVarsGroupBox = new QGroupBox(tr("Analysis Range"));
-    {
-        QGridLayout *pRangeVarsLayout = new QGridLayout;
-        {
-            QLabel *Spec = new QLabel(tr("Specify"));
-            m_rbspec1 = new QRadioButton(tr("Alpha"));
-            m_rbspec2 = new QRadioButton(tr("Cl"));
-            m_pctrlFromZero   = new QCheckBox(tr("From Zero"));
-            QLabel *SpecMin   = new QLabel(tr("Min"));
-            QLabel *SpecMax   = new QLabel(tr("Max"));
-            QLabel *SpecDelta = new QLabel(tr("Increment"));
-            SpecMin->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
-            SpecMax->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
-            SpecDelta->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
-            m_pctrlSpecVar    = new QLabel(tr("Spec ="));
-            m_pctrlSpecMin    = new DoubleEdit(0.00,3);
-            m_pctrlSpecMax    = new DoubleEdit(1.00,3);
-            m_pctrlSpecDelta  = new DoubleEdit(0.50,3);
-            pRangeVarsLayout->addWidget(Spec, 1, 1);
-            pRangeVarsLayout->addWidget(m_rbspec1, 1, 2);
-            pRangeVarsLayout->addWidget(m_rbspec2, 1, 3);
-            pRangeVarsLayout->addWidget(m_pctrlFromZero, 1, 4);
-            pRangeVarsLayout->addWidget(SpecMin, 2, 2);
-            pRangeVarsLayout->addWidget(SpecMax, 2, 3);
-            pRangeVarsLayout->addWidget(SpecDelta, 2, 4);
-            pRangeVarsLayout->addWidget(m_pctrlSpecVar, 3, 1);
-            pRangeVarsLayout->addWidget(m_pctrlSpecMin, 3, 2);
-            pRangeVarsLayout->addWidget(m_pctrlSpecMax, 3, 3);
-            pRangeVarsLayout->addWidget(m_pctrlSpecDelta, 3, 4);
-        }
-        pRangeVarsGroupBox->setLayout(pRangeVarsLayout);
-    }
-
-    QGroupBox *pConvergenceBox = new QGroupBox(tr("Iterations control"));
-    {
-        QHBoxLayout *pConvergenceLayout = new QHBoxLayout;
-        {
-            QLabel *pMaxIterLab     = new QLabel(tr("Max. iterations"));
-            m_pctrlMaxIter = new IntEdit(XFoilTask::s_IterLim);
-            m_pctrlSkipOpp   = new QPushButton(tr("Skip Opp"));
-            m_pctrlSkipPolar = new QPushButton(tr("Skip Polar"));
-            pConvergenceLayout->addWidget(pMaxIterLab);
-            pConvergenceLayout->addWidget(m_pctrlMaxIter);
-            pConvergenceLayout->addStretch(1);
-            pConvergenceLayout->addWidget(m_pctrlSkipOpp);
-            pConvergenceLayout->addWidget(m_pctrlSkipPolar);
-        }
-        pConvergenceBox->setLayout(pConvergenceLayout);
-    }
-
     QVBoxLayout *pOptionsLayout = new QVBoxLayout;
     {
         m_pctrlInitBLPolar  = new QCheckBox(tr("Initialize the boundary layer after each polar calculation"));
@@ -314,22 +169,161 @@ void BatchDlg::setupLayout()
         pOptionsLayout->addLayout(pSubOptionsLayout);
     }
 
-    QHBoxLayout *pCommandButtonsLayout = new QHBoxLayout;
-    {
-        m_pctrlClose     = new QPushButton(tr("Close"));
-        m_pctrlAnalyze   = new QPushButton(tr("Analyze"));
-        m_pctrlAnalyze->setAutoDefault(true);
-
-        pCommandButtonsLayout->addStretch(1);
-        pCommandButtonsLayout->addWidget(m_pctrlAnalyze);
-        pCommandButtonsLayout->addStretch(1);
-        pCommandButtonsLayout->addStretch(1);
-        pCommandButtonsLayout->addWidget(m_pctrlClose);
-        pCommandButtonsLayout->addStretch(1);
-    }
-
     QVBoxLayout *pLeftSideLayout = new QVBoxLayout;
     {
+        QGroupBox *pFoilBox = new QGroupBox(tr("Foil Selection"));
+        {
+            QHBoxLayout *pFoilLayout = new QHBoxLayout;
+            {
+                m_pctrlFoil1 = new QRadioButton(tr("Current foil only"));
+                m_pctrlFoil2 = new QRadioButton(tr("Foil list"));
+                m_pctrlFoilList = new QPushButton(tr("Foil list"));
+                pFoilLayout->addWidget(m_pctrlFoil1);
+                pFoilLayout->addWidget(m_pctrlFoil2);
+                pFoilLayout->addStretch(1);
+                pFoilLayout->addWidget(m_pctrlFoilList);
+            }
+            pFoilBox->setLayout(pFoilLayout);
+        }
+        QGroupBox *pAnalysisTypeGroupBox = new QGroupBox(tr("Analysis Type"));
+        {
+            QHBoxLayout *pAnalysisTypeLayout = new QHBoxLayout;
+            {
+                m_rbtype1 = new    QRadioButton(tr("Type 1"));
+                m_rbtype2 = new QRadioButton(tr("Type 2"));
+                m_rbtype3 = new QRadioButton(tr("Type 3"));
+                m_rbtype4 = new QRadioButton(tr("Type 4"));
+                pAnalysisTypeLayout->addWidget(m_rbtype1);
+                pAnalysisTypeLayout->addWidget(m_rbtype2);
+                pAnalysisTypeLayout->addWidget(m_rbtype3);
+                pAnalysisTypeLayout->addWidget(m_rbtype4);
+            }
+            pAnalysisTypeGroupBox->setLayout(pAnalysisTypeLayout);
+        }
+        QGroupBox *pBatchVarsGroupBox = new QGroupBox(tr("Batch Variables"));
+        {
+            QGridLayout *pBatchVarsLayout = new QGridLayout;
+            {
+                m_rbRange1 = new QRadioButton(tr("Range"));
+                m_rbRange2 = new QRadioButton(tr("Re List"));
+                m_pctrlEditList = new QPushButton(tr("Edit List"));
+                QLabel *MinVal   = new QLabel(tr("Min"));
+                QLabel *MaxVal   = new QLabel(tr("Max"));
+                QLabel *DeltaVal = new QLabel(tr("Increment"));
+                MinVal->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
+                MaxVal->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
+                DeltaVal->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
+                m_pctrlReType  = new QLabel("Reynolds=");
+                m_pctrlMaType  = new QLabel("Mach=");
+                m_pctrlReType->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
+                m_pctrlMaType->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
+                m_pctrlReMin   = new DoubleEdit(100000,0);
+                m_pctrlReMax   = new DoubleEdit(150000,0);
+                m_pctrlReDelta = new DoubleEdit(50000,0);
+                m_pctrlMach    = new DoubleEdit(0.0, 3);
+
+                QLabel *NCritLabel = new QLabel(tr("NCrit="));
+                NCritLabel->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
+                m_pctrlNCrit   = new DoubleEdit(9.00);
+
+                pBatchVarsLayout->addWidget(m_rbRange1, 1, 2);
+                pBatchVarsLayout->addWidget(m_rbRange2, 1, 3);
+                pBatchVarsLayout->addWidget(m_pctrlEditList, 1, 4);
+                pBatchVarsLayout->addWidget(MinVal, 2, 2);
+                pBatchVarsLayout->addWidget(MaxVal, 2, 3);
+                pBatchVarsLayout->addWidget(DeltaVal, 2, 4);
+                pBatchVarsLayout->addWidget(m_pctrlReType, 3, 1);
+                pBatchVarsLayout->addWidget(m_pctrlReMin, 3, 2);
+                pBatchVarsLayout->addWidget(m_pctrlReMax, 3, 3);
+                pBatchVarsLayout->addWidget(m_pctrlReDelta, 3, 4);
+                pBatchVarsLayout->addWidget(m_pctrlMaType, 4, 1);
+                pBatchVarsLayout->addWidget(m_pctrlMach, 4, 2);
+                pBatchVarsLayout->addWidget(NCritLabel, 5, 1);
+                pBatchVarsLayout->addWidget(m_pctrlNCrit, 5,2);
+            }
+            pBatchVarsGroupBox->setLayout(pBatchVarsLayout);
+        }
+        QGroupBox *pTransVarsGroupBox = new QGroupBox(tr("Forced transitions"));
+        {
+            QGridLayout *pTransVarsLayout = new QGridLayout;
+            {
+                pTransVarsLayout->setColumnStretch(0,4);
+                pTransVarsLayout->setColumnStretch(1,1);
+                QLabel *TopTransLabel = new QLabel(tr("Top transition location (x/c)"));
+                QLabel *BotTransLabel = new QLabel(tr("Bottom transition location (x/c)"));
+                TopTransLabel->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
+                BotTransLabel->setAlignment(Qt::AlignVCenter|Qt::AlignRight);
+                m_pctrlXTopTr = new DoubleEdit(1.00);
+                m_pctrlXBotTr = new DoubleEdit(1.00);
+                pTransVarsLayout->addWidget(TopTransLabel, 1, 1);
+                pTransVarsLayout->addWidget(m_pctrlXTopTr, 1, 2);
+                pTransVarsLayout->addWidget(BotTransLabel, 2, 1);
+                pTransVarsLayout->addWidget(m_pctrlXBotTr, 2, 2);
+            }
+            pTransVarsGroupBox->setLayout(pTransVarsLayout);
+        }
+        QGroupBox *pRangeVarsGroupBox = new QGroupBox(tr("Analysis Range"));
+        {
+            QGridLayout *pRangeVarsLayout = new QGridLayout;
+            {
+                QLabel *Spec = new QLabel(tr("Specify"));
+                m_rbspec1 = new QRadioButton(tr("Alpha"));
+                m_rbspec2 = new QRadioButton(tr("Cl"));
+                m_pctrlFromZero   = new QCheckBox(tr("From Zero"));
+                QLabel *SpecMin   = new QLabel(tr("Min"));
+                QLabel *SpecMax   = new QLabel(tr("Max"));
+                QLabel *SpecDelta = new QLabel(tr("Increment"));
+                SpecMin->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
+                SpecMax->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
+                SpecDelta->setAlignment(Qt::AlignCenter | Qt::AlignVCenter);
+                m_pctrlSpecVar    = new QLabel(tr("Spec ="));
+                m_pctrlSpecMin    = new DoubleEdit(0.00,3);
+                m_pctrlSpecMax    = new DoubleEdit(1.00,3);
+                m_pctrlSpecDelta  = new DoubleEdit(0.50,3);
+                pRangeVarsLayout->addWidget(Spec, 1, 1);
+                pRangeVarsLayout->addWidget(m_rbspec1, 1, 2);
+                pRangeVarsLayout->addWidget(m_rbspec2, 1, 3);
+                pRangeVarsLayout->addWidget(m_pctrlFromZero, 1, 4);
+                pRangeVarsLayout->addWidget(SpecMin, 2, 2);
+                pRangeVarsLayout->addWidget(SpecMax, 2, 3);
+                pRangeVarsLayout->addWidget(SpecDelta, 2, 4);
+                pRangeVarsLayout->addWidget(m_pctrlSpecVar, 3, 1);
+                pRangeVarsLayout->addWidget(m_pctrlSpecMin, 3, 2);
+                pRangeVarsLayout->addWidget(m_pctrlSpecMax, 3, 3);
+                pRangeVarsLayout->addWidget(m_pctrlSpecDelta, 3, 4);
+            }
+            pRangeVarsGroupBox->setLayout(pRangeVarsLayout);
+        }
+        QGroupBox *pConvergenceBox = new QGroupBox(tr("Iterations control"));
+        {
+            QHBoxLayout *pConvergenceLayout = new QHBoxLayout;
+            {
+                QLabel *pMaxIterLab     = new QLabel(tr("Max. iterations"));
+                m_pctrlMaxIter = new IntEdit(XFoilTask::s_IterLim);
+                m_pctrlSkipOpp   = new QPushButton(tr("Skip Opp"));
+                m_pctrlSkipPolar = new QPushButton(tr("Skip Polar"));
+                pConvergenceLayout->addWidget(pMaxIterLab);
+                pConvergenceLayout->addWidget(m_pctrlMaxIter);
+                pConvergenceLayout->addStretch(1);
+                pConvergenceLayout->addWidget(m_pctrlSkipOpp);
+                pConvergenceLayout->addWidget(m_pctrlSkipPolar);
+            }
+            pConvergenceBox->setLayout(pConvergenceLayout);
+        }
+        QHBoxLayout *pCommandButtonsLayout = new QHBoxLayout;
+        {
+            m_pctrlClose     = new QPushButton(tr("Close"));
+            m_pctrlAnalyze   = new QPushButton(tr("Analyze"));
+            m_pctrlAnalyze->setAutoDefault(true);
+
+            pCommandButtonsLayout->addStretch(1);
+            pCommandButtonsLayout->addWidget(m_pctrlAnalyze);
+            pCommandButtonsLayout->addStretch(1);
+            pCommandButtonsLayout->addStretch(1);
+            pCommandButtonsLayout->addWidget(m_pctrlClose);
+            pCommandButtonsLayout->addStretch(1);
+        }
+
         pLeftSideLayout->addWidget(pFoilBox);
         pLeftSideLayout->addWidget(pAnalysisTypeGroupBox);
         pLeftSideLayout->addWidget(pBatchVarsGroupBox);
@@ -358,13 +352,14 @@ void BatchDlg::setupLayout()
         pRightSideLayout->addWidget(m_pctrlGraphOutput,2);
     }
 
-    QHBoxLayout *mainLayout= new QHBoxLayout;
+    QHBoxLayout *pMainLayout= new QHBoxLayout;
     {
-        mainLayout->setSpacing(10);
-        mainLayout->addLayout(pLeftSideLayout);
-        mainLayout->addLayout(pRightSideLayout);
+        pMainLayout->setSpacing(10);
+        pMainLayout->addLayout(pLeftSideLayout);
+        pMainLayout->addLayout(pRightSideLayout);
+        pMainLayout->setStretchFactor(pRightSideLayout,1);
     }
-    setLayout(mainLayout);
+    setLayout(pMainLayout);
 }
 
 

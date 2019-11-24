@@ -60,17 +60,18 @@ class BatchDlg : public QDialog
 
 public:
     BatchDlg(QWidget *pParent=nullptr);
-    ~BatchDlg();
+    ~BatchDlg() override;
 
+    QSize sizeHint() const override {return QSize(1100,900);}
 
     void handleXFoilTaskEvent(const XFoilTaskEvent *event);
-    void customEvent(QEvent * pEvent);
+    void customEvent(QEvent * pEvent) override;
 
 private:
-    void keyPressEvent(QKeyEvent *event);
-    void showEvent(QShowEvent *event);
-    void hideEvent(QHideEvent *event);
-    void reject();
+    void keyPressEvent(QKeyEvent *event) override;
+    void showEvent(QShowEvent *event) override;
+    void hideEvent(QHideEvent *event) override;
+    void reject() override;
 
     void alphaLoop();
     void cleanUp();

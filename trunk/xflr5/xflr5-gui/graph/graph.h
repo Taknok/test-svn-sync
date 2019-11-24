@@ -83,10 +83,10 @@ public:
 
     void setGraphType(GRAPH::enumGraphType type) {m_GraphType=type;}
     GRAPH::enumGraphType graphType() const {return m_GraphType;}
-    bool bAutoX() const;
-    bool bAutoY() const;
-    bool bAutoXMin() const;
-    bool bAutoYMin() const;
+    bool bAutoX() const {return m_bAutoX;}
+    bool bAutoY() const {return m_bAutoY;}
+    bool bAutoXMin() const {return m_bXAutoMinGrid;}
+    bool bAutoYMin() const {return m_bYAutoMinGrid;}
     bool hasBorder() const;
     bool bInverted() const;
     bool isInDrawRect(int const &x, int const &y);

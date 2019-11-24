@@ -44,18 +44,6 @@
 
 QByteArray OpenGlDlg::s_Geometry;
 
-struct Profile {
-    QSurfaceFormat::OpenGLContextProfile profile;
-    const char *str = nullptr;
-};
-
-
-static struct Profile profiles[] = {
-    { QSurfaceFormat::NoProfile, "none" },
-    { QSurfaceFormat::CoreProfile, "core" },
-    { QSurfaceFormat::CompatibilityProfile, "compatibility" }
-};
-
 
 struct Option {
     const char *str;
@@ -105,6 +93,12 @@ static struct Version versions[] = {
 OpenGlDlg::OpenGlDlg(QWidget *pParent) : QDialog(pParent)
 {
     setWindowTitle("OpenGL context info");
+
+    m_SurfaceProfiles[0] =   { QSurfaceFormat::NoProfile, "none" };
+    m_SurfaceProfiles[1] =   { QSurfaceFormat::CoreProfile, "core" };
+    m_SurfaceProfiles[2] =   { QSurfaceFormat::CompatibilityProfile, "compatibility" };
+
+
     setupLayout();
 
     // select the active default format in the CbBox
@@ -201,8 +195,8 @@ void OpenGlDlg::addProfiles(QLayout *pLayout)
     {
         QVBoxLayout *pVBoxLayout = new QVBoxLayout;
         {
-            for (size_t i = 0; i < sizeof(profiles) / sizeof(Profile); ++i)
-                pVBoxLayout->addWidget(new QRadioButton(QString::fromLatin1(profiles[i].str)));
+            for (size_t i=0; i<3; ++i)
+                pVBoxLayout->addWidget(new QRadioButton(m_SurfaceProfiles[i].second));
             static_cast<QRadioButton *>(pVBoxLayout->itemAt(0)->widget())->setChecked(true);
         }
         pGroupBox->setLayout(pVBoxLayout);
@@ -348,10 +342,10 @@ void OpenGlDlg::onCreateContext()
     if (idx < 0)  return;
     fmt.setVersion(versions[idx].major, versions[idx].minor);
 
-    for (size_t i=0; i<sizeof(profiles)/sizeof(Profile); ++i)
+    for (size_t i=0; i<3; ++i)
     {
         if (static_cast<QRadioButton *>(m_profiles->itemAt(int(i))->widget())->isChecked()) {
-            fmt.setProfile(profiles[i].profile);
+            fmt.setProfile(m_SurfaceProfiles[i].first);
             break;
         }
     }
@@ -393,11 +387,11 @@ void OpenGlDlg::printFormat(const QSurfaceFormat &format, bool bFull)
 {
     m_pctrlglOutput->appendPlainText(QString("   OpenGL version: %1.%2").arg(format.majorVersion()).arg(format.minorVersion()));
 
-    for (size_t i=0; i<sizeof(profiles) / sizeof(Profile); ++i)
+    for (size_t i=0; i<3; ++i)
     {
-        if (profiles[i].profile == format.profile())
+        if (m_SurfaceProfiles[i].first == format.profile())
         {
-            m_pctrlglOutput->appendPlainText(QString("   Profile: %1").arg(QString::fromLatin1(profiles[i].str)));
+            m_pctrlglOutput->appendPlainText(QString("   Profile: %1").arg(m_SurfaceProfiles[i].second));
             break;
         }
     }
