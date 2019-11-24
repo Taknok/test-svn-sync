@@ -57,8 +57,9 @@ class BatchThreadDlg : public QDialog
 
 public:
     BatchThreadDlg(QWidget *pParent=nullptr);
-    ~BatchThreadDlg();
+    ~BatchThreadDlg() override;
     void initDialog();
+    QSize sizeHint() const override {return QSize(1100,900);}
 
 private:
 
@@ -66,10 +67,10 @@ private:
     void cleanUp();
     Polar * createPolar(Foil *pFoil, double Re, double Mach, double NCrit);
 
-    void keyPressEvent(QKeyEvent *event);
-    void showEvent(QShowEvent *event);
-    void hideEvent(QHideEvent *event);
-    void reject();
+    void keyPressEvent(QKeyEvent *event) override;
+    void showEvent(QShowEvent *event) override;
+    void hideEvent(QHideEvent *event) override;
+    void reject() override;
 
 
     void outputFoilList();
@@ -83,7 +84,7 @@ private:
     void writeString(QString &strong);
 
 protected:
-    void customEvent(QEvent *pEvent); // This overrides QObject::customEvent()
+    void customEvent(QEvent *pEvent) override; // This overrides QObject::customEvent()
 
 private:
     void handleXFoilTaskEvent(const XFoilTaskEvent *pEvent);

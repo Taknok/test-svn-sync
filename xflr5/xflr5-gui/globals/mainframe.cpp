@@ -299,8 +299,9 @@ void MainFrame::testConfiguration()
     if (!g_pTraceFile->open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text)) g_bTrace = false;
     g_pTraceFile->reset();
 
-#if QT_VERSION >= 0x050500
     QString strange;
+
+#if QT_VERSION >= 0x050900
     QOperatingSystemVersion const &sys = QOperatingSystemVersion::current();
     strange = sys.name();
     Trace(strange);
@@ -328,7 +329,8 @@ void MainFrame::testConfiguration()
 
     if(!QGLFormat::hasOpenGL())
     {
-        QMessageBox::warning(this, tr("Warning"), tr("Your system does not provide support for OpenGL.\nXFLR5 will not operate correctly."));
+        QMessageBox::warning(this, tr("Warning"), tr("Your system does not provide support for OpenGL.\n"
+                                                     "XFLR5 will not operate correctly."));
         s_bOpenGL = false;
     }
     else if(QSurfaceFormat::defaultFormat().majorVersion()<2)
@@ -6498,9 +6500,6 @@ void MainFrame::onExportCurGraph()
 }
 
 
-
-
-
 void MainFrame::onCurGraphSettings()
 {
     switch(m_iApp)
@@ -6524,7 +6523,6 @@ void MainFrame::onCurGraphSettings()
             break;
     }
 }
-
 
 
 void MainFrame::onLoadLastProject()

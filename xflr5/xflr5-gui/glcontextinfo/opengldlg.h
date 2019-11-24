@@ -70,6 +70,8 @@ class OpenGlDlg : public QDialog
 
         gl3dTestView *m_pgl3dTestView;
 
+        QPair<QSurfaceFormat::OpenGLContextProfile, QString> m_SurfaceProfiles[3];
+
         bool m_bVersionChanged;
         static QByteArray s_Geometry;
 };
