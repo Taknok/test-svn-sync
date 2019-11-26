@@ -153,22 +153,6 @@ BatchDlg::~BatchDlg()
  */
 void BatchDlg::setupLayout()
 {
-    QVBoxLayout *pOptionsLayout = new QVBoxLayout;
-    {
-        m_pctrlInitBLPolar  = new QCheckBox(tr("Initialize the boundary layer after each polar calculation"));
-        m_pctrlInitBLOpp    = new QCheckBox(tr("Initialize the boundary layer after unconverged points"));
-        QHBoxLayout *pSubOptionsLayout = new QHBoxLayout;
-        {
-            m_pctrlStoreOpp     = new QCheckBox(tr("Store OpPoints"));
-            pSubOptionsLayout->addWidget(m_pctrlStoreOpp);
-            pSubOptionsLayout->addStretch();
-
-        }
-        pOptionsLayout->addWidget(m_pctrlInitBLOpp);
-        pOptionsLayout->addWidget(m_pctrlInitBLPolar);
-        pOptionsLayout->addLayout(pSubOptionsLayout);
-    }
-
     QVBoxLayout *pLeftSideLayout = new QVBoxLayout;
     {
         QGroupBox *pFoilBox = new QGroupBox(tr("Foil Selection"));
@@ -337,6 +321,22 @@ void BatchDlg::setupLayout()
 
     QVBoxLayout *pRightSideLayout = new QVBoxLayout;
     {
+        QVBoxLayout *pOptionsLayout = new QVBoxLayout;
+        {
+            m_pctrlInitBLPolar  = new QCheckBox(tr("Initialize the boundary layer after each polar calculation"));
+            m_pctrlInitBLOpp    = new QCheckBox(tr("Initialize the boundary layer after unconverged points"));
+            QHBoxLayout *pSubOptionsLayout = new QHBoxLayout;
+            {
+                m_pctrlStoreOpp     = new QCheckBox(tr("Store OpPoints"));
+                pSubOptionsLayout->addWidget(m_pctrlStoreOpp);
+                pSubOptionsLayout->addStretch();
+
+            }
+            pOptionsLayout->addWidget(m_pctrlInitBLOpp);
+            pOptionsLayout->addWidget(m_pctrlInitBLPolar);
+            pOptionsLayout->addLayout(pSubOptionsLayout);
+        }
+
         m_pctrlTextOutput = new QTextEdit;
         m_pctrlTextOutput->setReadOnly(true);
         m_pctrlTextOutput->setLineWrapMode(QTextEdit::NoWrap);

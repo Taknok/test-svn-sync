@@ -16,13 +16,15 @@
 
 
 
-xflr5 v6.48 July xxxth, 2019
+xflr5 v6.48 November xxxth, 2019
     - added an option to select the OpenGL format from the in-app test window
     - added an option to select the OpenGL format and the trace flag when launching the app from the command line
     - fix for request #144
+    - fix for request #147
     - corrected the bug which caused unconverged XFoil operating points to be stored
     - removed the addition of .dat and .plr type files to the recent file menu list
     - added an option to set style flow-down from the LinePicker dialog
+    - fixed a crash bug when deleting the last entry of the point mass tables in the inertia dialog
 
 
 xflr5 v6.47 July 7th, 2019

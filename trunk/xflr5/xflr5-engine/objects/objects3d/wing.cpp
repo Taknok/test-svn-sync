@@ -1054,16 +1054,16 @@ void Wing::computeChords(int NStation, double *chord, double *offset, double *tw
 
         for (int k=0; k<=NStation; k++)
         {
-            double yob   = cos(k*PI/NStation);
+            double yob = cos(k*PI/NStation);
             double y = qAbs(yob * m_PlanformSpan/2);
             for (int is=0; is<NWingSection(); is++)
             {
-                if(YPosition(is) < y && y <=YPosition(is+1))
+                if(YPosition(is)<y && y<=YPosition(is+1))
                 {
                     double tau = (y-YPosition(is))/(YPosition(is+1)-YPosition(is));
                     chord[k]  = Chord(is)  + (Chord(is+1) -Chord(is))  * tau;
                     offset[k] = Offset(is) + (Offset(is+1)-Offset(is)) * tau;
-                    twist[k]  = Twist(is)  + (Twist(is+1) -Twist(is))  * tau;;
+                    twist[k]  = Twist(is)  + (Twist(is+1) -Twist(is))  * tau;
                     break;
                 }
             }
@@ -1158,28 +1158,28 @@ double Wing::averageSweep() const
 
 
 /**
- * Returns the x-position of the quarter-chord point at a given span position, relative to a reference x-value
+ * Returns the x-position of the quarter-chord point at a given span position, in geometric axes
  *@param yob the span position where the quarter-chord point will be calculated
  *@param xRef the reference position
  *@return the quarter-chord position
  */
-double Wing::C4(double yob, double xRef) const
+double Wing::C4(double yob) const
 {
-    double chord, offset, tau;
-    double C4 = 0.0;
     double y = qAbs(yob*m_PlanformSpan/2.0);
     for(int is=0; is<NWingSection()-1; is++)
     {
         if(YPosition(is)<= y && y <=YPosition(is+1))
         {
-            tau = (y - YPosition(is))/(YPosition(is+1)-YPosition(is));
-            chord  = Chord(is)  + tau * (Chord(is+1) - Chord(is));
-            offset = Offset(is) + tau * (Offset(is+1) - Offset(is));
-            C4 = offset + chord/4.0 - xRef;
+            double tau = (y - YPosition(is))/(YPosition(is+1)-YPosition(is));
+            double chord  = Chord(is)  + tau * (Chord(is+1) - Chord(is));
+            double offset = Offset(is) + tau * (Offset(is+1) - Offset(is));
+            double C4 = offset + chord/4.0;
             return C4;
         }
     }
-    return C4;
+    // should never reach this point
+    Q_ASSERT(false);
+    return 0.0;
 }
 
 /**
@@ -1641,13 +1641,13 @@ int Wing::VLMPanelTotal(bool bThinSurface) const
 *    centre of pressure position (XCP, YCP)
 *    moment coefficients GCm, VCm, ICm, GRm, GYm, VYm, IYm
 */
-void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double *Gamma, double &XCP, double &YCP, double &ZCP,
+void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double const*Gamma,
+                              double &XCP, double &YCP, double &ZCP,
                               double &GCm, double &VCm, double &ICm, double &GRm, double &GYm, double &VYm,double &IYm,
-                              WPolar *pWPolar, Vector3d CoG)
+                              WPolar const*pWPolar, Vector3d const &CoG)
 
 {
-    int  j, k, l, p, m, nFlap, coef;
-    double CPStrip, tau, NForce, cosa, sina;
+    double CPStrip=0, tau=0, NForce=0, cosa=0, sina=0;
     Vector3d HingeLeverArm,  PtC4Strip, PtLEStrip, ForcePt, SurfaceNormal, LeverArmC4CoG, LeverArmPanelC4, LeverArmPanelCoG;
     Vector3d Force, panelforce, StripForce, viscousDragVector, panelmoment, HingeMoment, viscousDragMoment, GeomMoment;
     Vector3d WindNormal, WindDirection;
@@ -1659,10 +1659,11 @@ void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double *Gam
     m_GYm = m_VYm = m_IYm = 0.0;
 
     // Define the number of panels to consider on each strip
+    int coef=1;
     if(pWPolar->bThinSurfaces()) coef = 1;    // only mid-surface
     else                         coef = 2;    // top and bottom surfaces
 
-    // Define the wind axis
+    // Define the wind axes
     cosa = cos(Alpha*PI/180.0);
     sina = sin(Alpha*PI/180.0);
     WindDirection.set( cosa, 0.0, sina);
@@ -1670,9 +1671,9 @@ void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double *Gam
 
 
     // Calculate the Reynolds number on each strip
-    for (m=0; m< m_NStation; m++) m_Re[m] = m_Chord[m] * QInf /pWPolar->m_Viscosity;
+    for (int m=0; m<m_NStation; m++) m_Re[m] = m_Chord[m] * QInf /pWPolar->m_Viscosity;
 
-    m = p = nFlap = 0;
+    int m=0, p=0, nFlap=0;
     m_FlapMoment.clear();
 
     // For each of the wing's surfaces, calculate the coefficients on each strip
@@ -1680,7 +1681,7 @@ void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double *Gam
 
     int NSurfaces = m_Surface.size();
 
-    for (j=0; j<NSurfaces; j++)
+    for (int j=0; j<NSurfaces; j++)
     {
         Surface *pSurf = m_Surface.at(j);
         //do not consider left tip patch, if any
@@ -1691,7 +1692,7 @@ void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double *Gam
         SurfaceNormal = pSurf->Normal;
 
         // consider each strip in turn
-        for (k=0; k<pSurf->m_NYPanels; k++)
+        for (int k=0; k<pSurf->m_NYPanels; k++)
         {
             //initialize
             viscousDragVector.set(0.0,0.0,0.0);
@@ -1711,7 +1712,7 @@ void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double *Gam
 
             LeverArmC4CoG = PtC4Strip - CoG;
 
-            for (l=0; l<coef*pSurf->m_NXPanels; l++)
+            for (int l=0; l<coef*pSurf->m_NXPanels; l++)
             {
                 // Get the force acting on the panel
                 if(m_pWingPanel[p].m_Pos!=MIDSURFACE)
@@ -1819,10 +1820,10 @@ void Wing::panelComputeOnBody(double QInf, double Alpha, double *Cp, double *Gam
 *    - The viscous drag coefficient m_PCd[]
 *      - The top and bottom transition points m_XTrtop[] and m_XTrBot[]
 */
-void Wing::panelComputeViscous(double QInf, WPolar *pWPolar, double &WingVDrag, bool bViscous, QString &OutString)
+void Wing::panelComputeViscous(double QInf, const WPolar *pWPolar, double &WingVDrag, bool bViscous, QString &OutString)
 {
     QString string, strong, strLength;
-    int m;
+
     bool bPointOutRe, bPointOutCl, bOutRe, bError;
     double tau = 0.0;
     Vector3d PtC4;
@@ -1836,11 +1837,11 @@ void Wing::panelComputeViscous(double QInf, WPolar *pWPolar, double &WingVDrag, 
     strLength = "m";
 
     // Calculate the Reynolds number on each strip
-    for (m=0; m<m_NStation; m++)  m_Re[m] = m_Chord[m] * QInf /pWPolar->m_Viscosity;
+    for (int m=0; m<m_NStation; m++)  m_Re[m] = m_Chord[m] * QInf /pWPolar->m_Viscosity;
 
     if(!bViscous)
     {
-        for(m=0; m <m_NStation; m++)
+        for(int m=0; m <m_NStation; m++)
         {
             m_PCd[m] = m_XTrTop[m] = m_XTrBot[m] = 0.0;
         }
@@ -1848,7 +1849,7 @@ void Wing::panelComputeViscous(double QInf, WPolar *pWPolar, double &WingVDrag, 
     }
 
     //Interpolate the viscous properties from the foil's type 1 polar mesh
-    m=0;
+    int m=0;
     for (int j=0; j<m_Surface.size(); j++)
     {
         for(int k=0; k<m_Surface.at(j)->m_NYPanels; k++)

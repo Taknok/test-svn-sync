@@ -71,15 +71,16 @@ class LLTAnalysisDlg : public QDialog
 
 public:
     LLTAnalysisDlg(QWidget *pParent);
-    ~LLTAnalysisDlg();
+    ~LLTAnalysisDlg() override;
 
+    QSize sizeHint() const override {return QSize(900,700);}
     void initDialog();
-    void setTask(PlaneAnalysisTask *pTask){m_pTheTask = pTask;}
+    void setTask(PlaneAnalysisTask *pTask) {m_pTheTask = pTask;}
     void deleteTask();
     void analyze();
     void cleanUp();
 
-    Graph* iterGraph(){return m_pIterGraph;}
+    Graph* iterGraph() const {return m_pIterGraph;}
 
 private slots:
     void onCancelAnalysis();
@@ -88,10 +89,10 @@ private slots:
     void onMessage(QString msg);
 
 private:
-    void keyPressEvent(QKeyEvent *event);
-    void showEvent(QShowEvent *pEvent);
-    void hideEvent(QHideEvent *pEvent);
-    void customEvent(QEvent * pEvent);
+    void keyPressEvent(QKeyEvent *event) override;
+    void showEvent(QShowEvent *pEvent) override;
+    void hideEvent(QHideEvent *pEvent) override;
+    void customEvent(QEvent * pEvent) override;
 
     bool AlphaLoop();
     bool QInfLoop();
@@ -99,6 +100,7 @@ private:
     void updateView();
     void updateOutput(QString &strong);
 
+private:
     PlaneAnalysisTask *m_pTheTask; /**< a pointer to the one and only instance of the PlaneAnalysisTask class */
 
     bool m_bCancel;             /**< true if the user has cancelled the analysis */

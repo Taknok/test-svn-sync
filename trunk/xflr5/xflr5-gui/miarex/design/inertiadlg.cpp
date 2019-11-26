@@ -717,15 +717,14 @@ void InertiaDlg::onInsertMassRow()
 
 void InertiaDlg::onDeleteMassRow()
 {
-    int sel;
     m_pctrlMassTable->closePersistentEditor(m_pctrlMassTable->currentIndex());
-    sel = m_pctrlMassTable->currentIndex().row();
-
-    m_PointMass.removeAt(sel);
-
-    fillMassModel();
+    int sel = m_pctrlMassTable->currentIndex().row();
+    if(sel>=0 && sel<m_PointMass.size())
+    {
+        m_PointMass.removeAt(sel);
+        fillMassModel();
+    }
 }
-
 
 
 void InertiaDlg::onOK()
