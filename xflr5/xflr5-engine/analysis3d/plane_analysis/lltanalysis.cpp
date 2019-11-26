@@ -189,11 +189,18 @@ double LLTAnalysis::Beta(int m, int k)
  */
 void LLTAnalysis::computeWing(double QInf, double Alpha, QString &ErrorMessage)
 {
-    Foil* pFoil0 = nullptr;
-    Foil* pFoil1 = nullptr;
+    Foil * pFoil0 = nullptr;
+    Foil * pFoil1 = nullptr;
+
+    // Define the wind axes
+    Vector3d WindNormal, WindDirection;
+    double cosa = cos(Alpha*PI/180.0);
+    double sina = sin(Alpha*PI/180.0);
+    WindDirection.set( cosa, 0.0, sina);
+    WindNormal.set(   -sina, 0.0, cosa);
 
     QString strange;
-    double yob=0, tau=0, c4=0, arad=0, zpos=0;
+    double yob=0, tau=0, c4=0, zpos=0;
 
     double Integral0           = 0.0;
     double Integral1           = 0.0;
@@ -208,7 +215,6 @@ void LLTAnalysis::computeWing(double QInf, double Alpha, QString &ErrorMessage)
     double ICm                 = 0.0;
     double eta=0, sigma=0;
     double Cm0=0;
-    double ViscCm=0, InducedCm=0;
 
     bool bOutRe=false, bError=false;
     bool bPointOutRe=false, bPointOutAlpha=false;
@@ -257,29 +263,39 @@ void LLTAnalysis::computeWing(double QInf, double Alpha, QString &ErrorMessage)
         if(bOutRe) bPointOutRe = true;
         if(bError) bPointOutAlpha = true;
 
-        arad = (Alpha+m_Ai[m]+m_Twist[m])*PI/180.0;
-        //        arad = (s_Alpha-m_Ai[m])*PI/180.0;
-        c4   = m_pWing->C4(yob, m_pWPolar->CoG().x)/m_Chord[m];
-        zpos = m_pWing->zPos(yob*m_pWing->m_PlanformSpan/2.0)/m_Chord[m];
+/*        double arad = (Alpha+m_Ai[m]+m_Twist[m])*PI/180.0;
+        double sina = sin(arad);
+        double cosa = cos(arad);*/
 
-        m_Cm[m]      = m_CmAirf[m]- c4  * (m_Cl[m]*cos(arad) + m_PCd[m]*sin(arad)) - zpos* (m_Cl[m]*sin(arad) - m_PCd[m]*cos(arad));
-        ViscCm       = (-c4 *sin(arad) + zpos*cos(arad))* m_PCd[m];
-        InducedCm    = m_CmAirf[m]- c4  * m_Cl[m]*cos(arad) - zpos* m_Cl[m]*sin(arad);
+        // v6.48
+        // added wingLE position to the calculation of lever arms - cf. Ticket 147
+        c4   = m_pPlane->wingLE(0).x + m_pWing->C4(yob)                                - m_pWPolar->CoG().x; //m
+        zpos = m_pPlane->wingLE(0).z + m_pWing->zPos(yob*m_pWing->m_PlanformSpan/2.0)  - m_pWPolar->CoG().z; //m
+        Vector3d LeverArm(c4, 0, zpos); //m
+        Vector3d Finv(m_ICd[m], 0.0, m_Cl[m]); // Inviscid force,  N/qS
+        Vector3d Fvisc(m_PCd[m],0,0);          // Viscous force,   N/qS
+        Vector3d Minv  = LeverArm * Finv;      // Inviscid moment, Nm/qS
+        Vector3d Mvisc = LeverArm * Fvisc;     // Viscousmoment,   Nm/qS
+
+        double Cm_i = m_CmAirf[m] + Minv.y /m_pWing->mac();  // N.m/qSc
+        double Cm_v =               Mvisc.y/m_pWing->mac();  // N.m/qSc
+
+        m_Cm[m] = Cm_i + Cm_v;                               // N.m/qSc
 
         eta = Eta(m);
         sigma = Sigma(m);
-        Integral0           += eta   * m_Cl[m]  * m_Chord[m];
-        Integral1           += sigma * m_Cl[m]  * m_Chord[m];
-        Integral2           += eta   * m_Cl[m]  * m_Chord[m] * (m_Offset[m]+m_XCPSpanRel[m]*m_Chord[m]);
-        Integral3           += eta   * m_Cl[m]  * m_Chord[m] * (zpos*m_Chord[m]);
+        Integral0           += eta   * m_Cl[m]   * m_Chord[m];
+        Integral1           += sigma * m_Cl[m]   * m_Chord[m];
+        Integral2           += eta   * m_Cl[m]   * m_Chord[m] * (m_Offset[m]+m_XCPSpanRel[m]*m_Chord[m]);
+        Integral3           += eta   * m_Cl[m]   * m_Chord[m] * (zpos*m_Chord[m]);
         //        Integral3           += eta   * m_Cl[m]  * m_Chord[m] * ((m_XCPSpanRel[m]*m_Chord[m]*cos(-m_Twist[m]*PI/180.0)+m_Offset[m]) * sin(-Alpha*PI/180.0) + (zpos*m_Chord[m]+m_XCPSpanRel[m]*m_Chord[m]*sin(-m_Twist[m]*PI/180.0)) * cos(-Alpha*PI/180.0));
-        InducedDrag         += eta   * m_Cl[m]  * m_Chord[m] * (-m_Ai[m]);
-        ViscousDrag         += eta   * m_PCd[m] * m_Chord[m];
-        InducedYawingMoment += sigma * m_Cl[m]  * m_Chord[m] * (-m_Ai[m]);
-        ViscousYawingMoment += sigma * m_PCd[m] * m_Chord[m];
-        PitchingMoment      += eta   * m_Cm[m]      * m_Chord[m] * m_Chord[m];
-        VCm                 += eta   * ViscCm    * m_Chord[m] * m_Chord[m];
-        ICm                 += eta   * InducedCm * m_Chord[m] * m_Chord[m];
+        InducedDrag         += eta   * m_Cl[m]   * m_Chord[m] * (-m_Ai[m]);
+        ViscousDrag         += eta   * m_PCd[m]  * m_Chord[m];
+        InducedYawingMoment += sigma * m_Cl[m]   * m_Chord[m] * (-m_Ai[m]);
+        ViscousYawingMoment += sigma * m_PCd[m]  * m_Chord[m];
+        PitchingMoment      += eta   * m_Cm[m]   * m_Chord[m] * m_Chord[m];
+        VCm                 += eta   * Cm_v * m_Chord[m] * m_Chord[m];
+        ICm                 += eta   * Cm_i * m_Chord[m] * m_Chord[m];
 
         if(bPointOutAlpha)
         {

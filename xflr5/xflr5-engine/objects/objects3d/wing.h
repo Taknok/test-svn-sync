@@ -106,12 +106,12 @@ public:
     int  VLMPanelTotal(bool bThinSurface) const;
     void VLMSetBending();
 
-    void panelComputeOnBody(double QInf, double Alpha, double *Cp, double *Gamma, double &XCP, double &YCP, double &ZCP,
-                         double &GCm, double &VCm, double &ICm, double &GRm, double &GYm, double &VYm,double &IYm,
-                         WPolar *pWPolar, Vector3d CoG);
+    void panelComputeOnBody(double QInf, double Alpha, double *Cp, const double *Gamma, double &XCP, double &YCP, double &ZCP,
+                            double &GCm, double &VCm, double &ICm, double &GRm, double &GYm, double &VYm, double &IYm,
+                            const WPolar *pWPolar, const Vector3d &CoG);
 
 
-    void panelComputeViscous(double QInf, WPolar *pWPolar, double &WingVDrag, bool bViscous, QString &OutString);
+    void panelComputeViscous(double QInf, WPolar const*pWPolar, double &WingVDrag, bool bViscous, QString &OutString);
     void panelComputeBending(bool bThinSurface);
 
     bool isWingPanel(int nPanel);
@@ -210,7 +210,7 @@ public:
     void setVolumeMass(double m) {m_VolumeMass=m;}
 
     double totalMass() const;
-    double C4(double yob, double xRef) const;
+    double C4(double yob) const;
     double zPos(double y) const;
 
 
@@ -260,6 +260,7 @@ public:
     double IntegralC2(double y1, double y2, double c1, double c2) const;
     double IntegralCy(double y1, double y2, double c1, double c2) const;
 
+    double mac() const {return m_MAChord;}
 
     static double getInterpolatedVariable(int nVar, Foil *pFoil0, Foil *pFoil1, double Re, double Cl, double Tau, bool &bOutRe, bool &bError);
     static double getPlrPointFromCl(Foil *pFoil, double Re, double Cl, int PlrVar, bool &bOutRe, bool &bError);
