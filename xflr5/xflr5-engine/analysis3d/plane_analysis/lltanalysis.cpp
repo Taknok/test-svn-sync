@@ -192,13 +192,6 @@ void LLTAnalysis::computeWing(double QInf, double Alpha, QString &ErrorMessage)
     Foil * pFoil0 = nullptr;
     Foil * pFoil1 = nullptr;
 
-    // Define the wind axes
-    Vector3d WindNormal, WindDirection;
-    double cosa = cos(Alpha*PI/180.0);
-    double sina = sin(Alpha*PI/180.0);
-    WindDirection.set( cosa, 0.0, sina);
-    WindNormal.set(   -sina, 0.0, cosa);
-
     QString strange;
     double yob=0, tau=0, c4=0, zpos=0;
 
@@ -263,6 +256,8 @@ void LLTAnalysis::computeWing(double QInf, double Alpha, QString &ErrorMessage)
         if(bOutRe) bPointOutRe = true;
         if(bError) bPointOutAlpha = true;
 
+        // incorrect up to v6.47, moments should be calculated in wind axes, notwithstanding induced angle and twist
+        // makes a non-significant difference on results
 /*        double arad = (Alpha+m_Ai[m]+m_Twist[m])*PI/180.0;
         double sina = sin(arad);
         double cosa = cos(arad);*/
