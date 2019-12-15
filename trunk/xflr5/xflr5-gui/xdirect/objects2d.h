@@ -60,7 +60,6 @@ public:
 
     static void      addPolar(Polar *pPolar);
     static void      appendPolar(Polar *pPolar) {s_oaPolar.append(pPolar);}
-    static Polar*    insertNewPolar(Polar *pModPolar, Foil *pCurFoil);
     static Polar*    getPolar(Foil const *pFoil, QString PolarName);
     static Polar*    getPolar(QString m_FoilName, QString PolarName);
     static Polar*    polarAt(int index);

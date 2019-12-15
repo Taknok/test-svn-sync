@@ -2410,17 +2410,22 @@ void XDirect::onExportBLData()
  */
 void XDirect::onExportAllPolarsTxt()
 {
-    QString FileName, DirName;
+    QString DirName;
+    //select the directory for output
+    DirName = QFileDialog::getExistingDirectory(this,  tr("Export Directory"), Settings::s_LastDirName);
+    onExportAllPolarsTxt(DirName, Settings::s_ExportFileType);
+}
+
+
+void XDirect::onExportAllPolarsTxt(QString DirName, XFLR5::enumTextFileType exporttype)
+{
+    QString FileName;
     QFile XFile;
     QTextStream out(&XFile);
 
-    //select the directory for output
-    DirName = QFileDialog::getExistingDirectory(this,  tr("Export Directory"), Settings::s_LastDirName);
-
-    Polar *pPolar;
     for(int l=0; l<m_poaPolar->size(); l++)
     {
-        pPolar = m_poaPolar->at(l);
+        Polar *pPolar = m_poaPolar->at(l);
         FileName = DirName + "/" + pPolar->foilName() + "_" + pPolar->polarName();
         if(Settings::s_ExportFileType==XFLR5::TXT) FileName += ".txt";
         else                                       FileName += ".csv";
@@ -2428,7 +2433,7 @@ void XDirect::onExportAllPolarsTxt()
         XFile.setFileName(FileName);
         if (XFile.open(QIODevice::WriteOnly | QIODevice::Text))
         {
-            pPolar->exportPolar(out, VERSIONNAME, Settings::s_ExportFileType);
+            pPolar->exportPolar(out, VERSIONNAME, exporttype);
             XFile.close();
         }
         else

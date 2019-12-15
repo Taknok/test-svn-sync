@@ -79,6 +79,9 @@ public:
 
     void addXFoilData(OpPoint *pOpp, XFoil *pXFoil, Foil *pFoil);
 
+    static void cancelTask() {s_bCancel=true;}
+    static void setCancelled(bool bCancelled) {s_bCancel=bCancelled;}
+
     static bool s_bSkipPolar;
     static bool s_bCancel;          /**< true if the user has asked to cancel the analysis */
     static bool s_bAutoInitBL;      /**< true if the BL initialization is left to the code's decision */

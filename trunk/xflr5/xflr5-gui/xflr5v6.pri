@@ -3,6 +3,7 @@ SOURCES += \
     $$PWD/glcontextinfo/opengldlg.cpp \
     $$PWD/globals/trace.cpp \
     $$PWD/globals/xflr5app.cpp \
+    $$PWD/script/logwt.cpp \
     design/afoil.cpp \
     design/afoiltabledlg.cpp \
     design/foiltabledelegate.cpp \
@@ -136,6 +137,7 @@ HEADERS += \
     $$PWD/globals/trace.h \
     $$PWD/globals/xflr5app.h \
     $$PWD/misc/text/floateditdelegate.h \
+    $$PWD/script/logwt.h \
     $$PWD/xdirect/xdirectstyledlg.h \
     design/afoil.h \
     design/afoiltabledlg.h \

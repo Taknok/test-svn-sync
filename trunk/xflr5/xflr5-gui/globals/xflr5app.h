@@ -33,12 +33,14 @@ class XFLR5App : public QApplication
 
 public:
     XFLR5App(int&, char**);
+    bool done() const {return m_bDone;}
 
 private:
     bool event(QEvent *);
     void addStandardBtnStrings();
-    void parseCmdLine(XFLR5App &app, int &OGLVersion);
+    void parseCmdLine(XFLR5App &xflapp, QString &scriptfilename, bool &bScript, bool &bShowProgress, int &OGLVersion);
 
+    bool m_bDone;
 };
 
 #endif // XFLR5APPLICATION_H

@@ -43,9 +43,9 @@ class Vector3d;
  */
 struct PlaneAnalysis
 {
-    Plane *pPlane;            /**< a pointer to the Foil to be analyzed by the thread */
-    WPolar *pWPolar;          /**< a pointer to the polar to be analyzed by the thread */
-    double vMin, vMax, vInc;
+    Plane *pPlane=nullptr;            /**< a pointer to the Foil to be analyzed by the thread */
+    WPolar *pWPolar=nullptr;          /**< a pointer to the polar to be analyzed by the thread */
+    double vMin=0, vMax=0, vInc=0;
 };
 
 

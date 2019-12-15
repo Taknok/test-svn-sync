@@ -45,7 +45,8 @@ class OpPoint;
 class Plane;
 class WPolar;
 
-QStringList findFiles(const QString &startDir, QStringList filters, bool bRecursive);
+void findFiles(const QString &startDir, QStringList filters, bool bRecursive, QStringList &filepathnames);
+bool findFile(QString const &filename, QString const &startDir, QStringList filters, bool bRecursive, QString &filePathName);
 
 int readValues(QString line, double &x, double &y, double &z);
 

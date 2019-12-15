@@ -160,22 +160,14 @@ void LLTAnalysisDlg::onCancelAnalysis()
 */
 void LLTAnalysisDlg::setupLayout()
 {
-    QDesktopWidget desktop;
-    QRect r = desktop.geometry();
-    //    setMinimumHeight(r.height()*2/3);
-    //    setMinimumWidth((int)(r.width()*2.0/5.0));
-
     m_pctrlTextOutput = new QTextEdit;
     m_pctrlTextOutput->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
 
     m_pctrlTextOutput->setReadOnly(true);
     m_pctrlTextOutput->setLineWrapMode(QTextEdit::NoWrap);
     m_pctrlTextOutput->setWordWrapMode(QTextOption::NoWrap);
-    m_pctrlTextOutput->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
     m_pGraphWidget = new GraphWidget;
-    m_pGraphWidget->setMinimumHeight(r.height()/3);
-    m_pGraphWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
 
     m_pGraphWidget->showLegend(true);
 
@@ -194,8 +186,8 @@ void LLTAnalysisDlg::setupLayout()
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
     {
-        pMainLayout->addWidget(m_pctrlTextOutput);
-        pMainLayout->addWidget(m_pGraphWidget,2);
+        pMainLayout->addWidget(m_pctrlTextOutput,1);
+        pMainLayout->addWidget(m_pGraphWidget,1);
         pMainLayout->addLayout(pctrlLayout);
     }
     setLayout(pMainLayout);

@@ -29,49 +29,80 @@
 
 
 class Foil;
-class Plane;
-class PlaneAnalysisTask;
 class PlaneOpp;
 class Polar;
-class WPolar;
-class XfoilTask;
-
+class XFoilTask;
+class MainFrame;
 
 struct FoilAnalysis;
-struct PlaneAnalysis;
 
-class XflScriptExec
+class XflScriptExec : public QObject
 {
+    Q_OBJECT
 public:
-    XflScriptExec();
-    ~XflScriptExec();
-    void readScript();
-    void runScript();
-    void makeFoils();
-    void makePlanes();
-    void loadFoilPolarFiles();
-    void makeFoilAnalysisList();
-    void makePlaneAnalysisList();
+    XflScriptExec(MainFrame *pMainFrame);
+    ~XflScriptExec() override;
 
-private:
-    void setLogFile();
+    void customEvent(QEvent *pEvent) override;
+
+    bool readScript(QString scriptpathname);
+    bool runScript();
+    void setStdOutStream(bool bStdOut) {m_bStdOutStream = bStdOut;}
+
+    bool bCSVOutput()       const {return m_ScriptReader.m_bcsvPolarOutput;}
+
     void traceLog(QString strMsg);
-    Polar *makePolar(QString pathName);
-    WPolar *makeWPolar(QString pathName);
+
+    QString outputDirPath()               const {return m_OutputPath;}
+    QString foilPolarTextOutputDirPath()  const {return m_FoilPolarsTextPath;}
+    QString foilPolarBinOutputDirPath()   const {return m_FoilPolarsBinPath;}
+
+    QString projectFilePathName() const;
+
+    bool outputPolarBin()   const {return m_ScriptReader.m_bOutputPolarsBin;}
+    bool outputPolarText()  const {return m_ScriptReader.m_bOutputPolarsText;}
+    bool makeProjectFile()  const {return m_ScriptReader.m_bMakeProjectFile;}
+    bool setLogFile();
+
+    void closeLogFile();
+    QString logFileName() const {return m_LogFileName;}
 
 private:
-    XFLScriptReader m_scriptReader;
+    Polar *makePolar(QString pathName);
+    bool makeExportDirectories();
+    bool makeFoils();
+    void makeFoilAnalysisList();
+    void runFoilAnalyses();
+    void cleanUpFoilAnalyses();
+    void startXFoilTaskThread();
+
+signals:
+    void msgUpdate(const QString &msg) const;
+    void cancelTask() const;
+
+public slots:
+    void onCancel();
+
+private:
+    XFLScriptReader m_ScriptReader;
     QFile *m_pXFile;
-    QTextStream m_outLogStream;
+    QTextStream m_OutLogStream;
+    QString m_LogFileName;
+    QString m_FoilPolarsBinPath, m_FoilPolarsTextPath, m_OutputPath;
 
     QVector<FoilAnalysis*> m_FoilExecList;
-    QVector<PlaneAnalysis*> m_PlaneExecList;
 
-    QVector <Plane *> m_oaPlane;   /**< The array of void pointers to the Plane objects. */
-    QVector <WPolar *> m_oaWPolar;  /**< The array of void pointers to the WPolar objects. */
-    QVector <PlaneOpp *> m_oaPOpp;    /**< The array of void pointers to the PlaneOpp objects. */
+    MainFrame *m_pMainFrame;
+
+    bool m_bCancel;
+    bool m_bStdOutStream;
+
+    int m_nTaskStarted, m_nTaskDone;
+    int m_nThreads;
+
     QVector <Foil*>  m_oaFoil;
-    QVector <Polar*> m_oaPolar;
+
+    static QString s_VersionName;
 };
 
 #endif // XFLSCRIPTEXEC_H

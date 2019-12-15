@@ -41,12 +41,10 @@ XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
     setApplicationDisplayName(VERSIONNAME);
     setApplicationName(VERSIONNAME);
 //    setDesktopFileName(VERSIONNAME);
+    setOrganizationName("Cere-Aero");
+    setOrganizationDomain("cere-aero.tech");
 
-    QPixmap pixmap;
-    pixmap.load(":/images/splash.png");
-    QSplashScreen splash(pixmap);
-    splash.setWindowFlags(Qt::SplashScreen);
-    splash.show();
+    m_bDone = false;
 
     QString StyleName;
     QString LanguagePath ="";
@@ -99,10 +97,18 @@ XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
     }
 
 
-
     int OGLversion = -1;
-    parseCmdLine(*this, OGLversion);
+    bool bScript=false, bShowProgress=false;
+    QString scriptPathName;
 
+    parseCmdLine(*this, scriptPathName, bScript, bShowProgress, OGLversion);
+
+    QPixmap pixmap;
+    pixmap.load(":/images/splash.png");
+    QSplashScreen splash(pixmap);
+    splash.setWindowFlags(Qt::SplashScreen);
+    if(!bScript)
+        splash.show();
 
     // Load preferred OpenGL version
     // and set the default format before any 3d view is created
@@ -145,12 +151,20 @@ XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
     QSize sz(c,d);
 
     if(StyleName.length())    qApp->setStyle(StyleName);
-    MainFrame *w = MainFrame::self();
+    MainFrame *m_pMainFrame = MainFrame::self();
     MainFrame::self()->resize(sz);
     MainFrame::self()->move(pt);
+
+    if(bScript)
+    {
+        m_pMainFrame->executeScript(scriptPathName, bShowProgress);
+        m_bDone = true;
+        return;
+    }
+
     if(bMaximized)  MainFrame::self()->showMaximized();
     else            MainFrame::self()->show();
-    splash.finish(w);
+    splash.finish(m_pMainFrame);
 
 
 #ifndef Q_OS_MAC
@@ -167,18 +181,18 @@ XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
             Extension.compare("plr",Qt::CaseInsensitive)==0 || Extension.compare("dat",Qt::CaseInsensitive)==0)
         {
             bProjectFile = true;
-            int iApp = w->loadXFLR5File(PathName);
+            int iApp = m_pMainFrame->loadXFLR5File(PathName);
 
-            if      (iApp == XFLR5::MIAREX)        w->onMiarex();
-            else if (iApp == XFLR5::XFOILANALYSIS) w->onXDirect();
+            if      (iApp == XFLR5::MIAREX)        m_pMainFrame->onMiarex();
+            else if (iApp == XFLR5::XFOILANALYSIS) m_pMainFrame->onXDirect();
         }
     }
 
     if(!bProjectFile)
     {
-        if(w->bAutoLoadLast())
+        if(m_pMainFrame->bAutoLoadLast())
         {
-            w->onLoadLastProject();
+            m_pMainFrame->onLoadLastProject();
         }
     }
 #else
@@ -238,7 +252,9 @@ bool XFLR5App::event(QEvent *event)
 
 
 
-void XFLR5App::parseCmdLine(XFLR5App &fl5app, int &OGLVersion)
+void XFLR5App::parseCmdLine(XFLR5App &xflapp,
+                            QString &scriptfilename, bool &bScript, bool &bShowProgress,
+                            int &OGLVersion)
 {
     QCommandLineParser parser;
     parser.setApplicationDescription("Analysis tool for planes and sails operating at low Reynolds numbers");
@@ -255,14 +271,32 @@ void XFLR5App::parseCmdLine(XFLR5App &fl5app, int &OGLVersion)
                              "Usage: xflr5 -o 41 to request a 4.1 context.");
     parser.addOption(OGLOption);
 
+    QCommandLineOption ShowProgressOption(QStringList() << "p" << "progress");
+    ShowProgressOption.setDescription(QCoreApplication::translate("main", "Show progress during script execution."));
+    parser.addOption(ShowProgressOption);
+
+    QCommandLineOption ScriptOption(QStringList() << "s" << "script");
+    ScriptOption.setValueName("file");
+    ScriptOption.setDescription("Runs the script file");
+    parser.addOption(ScriptOption);
 
     QCommandLineOption TraceOption(QStringList() << "t" << "trace");
     TraceOption.setDescription("Runs the program in trace mode. The trace file is "+QDir::tempPath() + "/Trace.log");
     parser.addOption(TraceOption);
 
     // Process the actual command line arguments provided by the user
-    parser.process(fl5app);
+    parser.process(xflapp);
 
+    bShowProgress = parser.isSet(ShowProgressOption);
+    bScript = parser.isSet(ScriptOption);
+    scriptfilename = parser.value(ScriptOption);
+
+
+    bScript = parser.isSet(ScriptOption);
+    if(bScript)
+    {
+        Trace("Processing option -s", true);
+    }
 
     if(parser.isSet(TraceOption))
     {
