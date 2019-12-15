@@ -1476,28 +1476,56 @@ bool serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
     return true;
 }
 
+
 QColor color(ObjectColor clr)
 {
     return QColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
 }
 
-QStringList findFiles(const QString &startDir, QStringList filters, bool bRecursive)
+
+bool findFile(QString const &filename, QString const &startDir, QStringList filters, bool bRecursive, QString &filePathName)
 {
-    QStringList names;
     QDir dir(startDir);
 
     foreach (QString file, dir.entryList(filters, QDir::Files))
     {
-        names += startDir + '/' + file;
+        if(file.compare(filename, Qt::CaseInsensitive)==0)
+        {
+            filePathName = startDir + '/' + file;
+            return true;
+        }
     }
 
     if(bRecursive)
     {
         foreach (QString subdir, dir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot))
         {
-            names += findFiles(startDir + '/' + subdir, filters, bRecursive);
+            if(findFile(filename, startDir + '/' + subdir, filters, bRecursive, filePathName))
+                return true;
         }
     }
 
-    return names;
+    return false;
 }
+
+
+void findFiles(const QString &startDir, QStringList filters, bool bRecursive, QStringList &filepathnames)
+{
+    QDir dir(startDir);
+
+    foreach (QString file, dir.entryList(filters, QDir::Files))
+    {
+        filepathnames += startDir + '/' + file;
+    }
+
+    if(bRecursive)
+    {
+        foreach (QString subdir, dir.entryList(QDir::AllDirs | QDir::NoDotAndDotDot))
+        {
+            findFiles(startDir + '/' + subdir, filters, bRecursive, filepathnames);
+        }
+    }
+}
+
+
+

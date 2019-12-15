@@ -113,6 +113,7 @@ public slots:
     void onEditCurPolar();
     void onExportAllFoilPolars();
     void onExportAllPolarsTxt();
+    void onExportAllPolarsTxt(QString DirName, XFLR5::enumTextFileType);
     void onExportBLData();
     void onExportCurFoil();
     void onExportCurOpp();

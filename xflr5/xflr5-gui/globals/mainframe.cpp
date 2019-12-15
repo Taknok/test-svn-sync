@@ -98,7 +98,7 @@
 #include <xdirect/geometry/twodpaneldlg.h>
 #include <xdirect/objects2d.h>
 #include <xinverse/xinverse.h>
-
+#include <script/logwt.h>
 
 #ifdef Q_OS_MAC
 #include <CoreFoundation/CoreFoundation.h>
@@ -447,6 +447,10 @@ void MainFrame::createActions()
 //    m_pSaveProjectAsAct->setShortcut(QKeySequence::SaveAs); // bug in Qt libs: shortcut is defined twice in translation files
     m_pSaveProjectAsAct->setStatusTip(tr("Save the current project under a new name"));
     connect(m_pSaveProjectAsAct, SIGNAL(triggered()), this, SLOT(onSaveProjectAs()));
+
+    m_pExecuteScript = new QAction(tr("Execute script"), this);
+    m_pExecuteScript->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_X));
+    connect(m_pExecuteScript, SIGNAL(triggered()), SLOT(onExecuteScript()));
 
     m_pCloseProjectAct = new QAction(QIcon(":/images/new.png"), tr("Close the Project"), this);
     m_pCloseProjectAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F4));
@@ -1032,6 +1036,8 @@ void MainFrame::createMenus()
         m_pFileMenu->addSeparator();
         m_pFileMenu->addAction(m_pSaveAct);
         m_pFileMenu->addAction(m_pSaveProjectAsAct);
+        m_pFileMenu->addSeparator();
+        m_pFileMenu->addAction(m_pExecuteScript);
         m_pFileMenu->addSeparator();
 
         m_pFileMenu->addAction(m_pOnAFoilAct);
@@ -2364,10 +2370,6 @@ void MainFrame::createXDirectActions()
     m_pShowNeutralLine = new QAction(tr("Neutral Line"), this);
     m_pShowNeutralLine->setCheckable(true);
 
-    /*    m_pShowPanels = new QAction(tr("Show Panels"), this);
-    m_pShowPanels->setCheckable(true);
-    m_pShowPanels->setStatusTip(tr("Show the foil's panels"));*/
-
     m_pResetFoilScale = new QAction(tr("Reset Foil Scale"), this);
     m_pResetFoilScale->setStatusTip(tr("Resets the foil's scale to original size"));
 
@@ -2379,12 +2381,10 @@ void MainFrame::createXDirectActions()
     m_pRenamePolarAct->setShortcut(QKeySequence(Qt::SHIFT +Qt::Key_F2));
     connect(m_pRenamePolarAct, SIGNAL(triggered()), m_pXDirect, SLOT(onRenameCurPolar()));
 
-
     m_pShowInviscidCurve = new QAction(tr("Show Inviscid Curve"), this);
     m_pShowInviscidCurve->setCheckable(true);
     m_pShowInviscidCurve->setStatusTip(tr("Display the Opp's inviscid curve"));
     connect(m_pShowInviscidCurve, SIGNAL(triggered()), m_pXDirect, SLOT(onCpi()));
-
 
     m_pShowAllPolars = new QAction(tr("Show All Polars"), this);
     connect(m_pShowAllPolars, SIGNAL(triggered()), m_pXDirect, SLOT(onShowAllPolars()));
@@ -2652,7 +2652,9 @@ void MainFrame::createXDirectMenus()
             m_pCurrentPolarMenu_OperFoilCtxMenu->addAction(m_pResetCurPolar);
             m_pCurrentPolarMenu_OperFoilCtxMenu->addAction(m_pDeletePolar);
             m_pCurrentPolarMenu_OperFoilCtxMenu->addAction(m_pRenamePolarAct);
+            m_pCurrentPolarMenu_OperFoilCtxMenu->addSeparator();
             m_pCurrentPolarMenu_OperFoilCtxMenu->addAction(m_pExportCurPolar);
+            m_pCurrentPolarMenu_OperFoilCtxMenu->addAction(m_pExportXMLFoilAnalysis);
             m_pCurrentPolarMenu_OperFoilCtxMenu->addSeparator();
             m_pCurrentPolarMenu_OperFoilCtxMenu->addAction(m_pShowPolarOpps);
             m_pCurrentPolarMenu_OperFoilCtxMenu->addAction(m_pHidePolarOpps);
@@ -2756,7 +2758,9 @@ void MainFrame::createXDirectMenus()
             m_pCurrentPolarMenu_OperPolarCtxMenu->addAction(m_pResetCurPolar);
             m_pCurrentPolarMenu_OperPolarCtxMenu->addAction(m_pDeletePolar);
             m_pCurrentPolarMenu_OperPolarCtxMenu->addAction(m_pRenamePolarAct);
+            m_pCurrentPolarMenu_OperPolarCtxMenu->addSeparator();
             m_pCurrentPolarMenu_OperPolarCtxMenu->addAction(m_pExportCurPolar);
+            m_pCurrentPolarMenu_OperPolarCtxMenu->addAction(m_pExportXMLFoilAnalysis);
             m_pCurrentPolarMenu_OperPolarCtxMenu->addSeparator();
             m_pCurrentPolarMenu_OperPolarCtxMenu->addAction(m_pShowPolarOpps);
             m_pCurrentPolarMenu_OperPolarCtxMenu->addAction(m_pHidePolarOpps);
@@ -3651,22 +3655,32 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString pathname)
 }
 
 
+void MainFrame::hideDockWindows()
+{
+    m_pctrlMiarexToolBar->hide();
+    m_pctrlStabViewWidget->hide();
+    m_pctrlXDirectToolBar->hide();
+    m_pctrlXInverseToolBar->hide();
+    m_pctrlAFoilToolBar->hide();
+
+    m_pctrlAFoilWidget->hide();
+    m_pctrlMiarexWidget->hide();
+    m_pctrlXDirectWidget->hide();
+    m_pctrlXInverseWidget->hide();
+    m_pctrlXInverseWidget->hide();
+}
+
+
 void MainFrame::onAFoil()
 {
     m_pMiarex->stopAnimate();
 
     m_pXDirect->stopAnimate();
+    hideDockWindows();
 
     m_iApp = XFLR5::DIRECTDESIGN;
-    m_pctrlMiarexToolBar->hide();
-    m_pctrlStabViewWidget->hide();
-    m_pctrlXDirectToolBar->hide();
-    m_pctrlXInverseToolBar->hide();
-    m_pctrlAFoilToolBar->show();
 
-    m_pctrlMiarexWidget->hide();
-    m_pctrlXDirectWidget->hide();
-    m_pctrlXInverseWidget->hide();
+    m_pctrlAFoilToolBar->show();
     m_pctrlAFoilWidget->show();
 
     setMainFrameCentralWidget();
@@ -4072,6 +4086,13 @@ bool MainFrame::onSaveProjectAs()
 }
 
 
+bool MainFrame::onSaveProjectAs(const QString pathName)
+{
+    saveProject(pathName);
+    setProjectName(pathName);
+    statusBar()->showMessage(tr("The project ") + pathName + tr(" has been saved\n\n"));
+    return true;
+}
 
 
 void MainFrame::onSaveViewToImageFile()
@@ -4330,15 +4351,8 @@ void MainFrame::onXDirect()
 
     m_iApp = XFLR5::XFOILANALYSIS;
 
-    m_pctrlMiarexToolBar->hide();
-    m_pctrlStabViewWidget->hide();
-    m_pctrlAFoilToolBar->hide();
-    m_pctrlXInverseToolBar->hide();
+    hideDockWindows();
     m_pctrlXDirectToolBar->show();
-
-    m_pctrlAFoilWidget->hide();
-    m_pctrlMiarexWidget->hide();
-    m_pctrlXInverseWidget->hide();
     m_pctrlXDirectWidget->show();
 
     m_pXDirect->setFoil();
@@ -4353,21 +4367,13 @@ void MainFrame::onXDirect()
 }
 
 
-
-
 void MainFrame::onMiarex()
 {
     m_pXDirect->stopAnimate();
     m_iApp = XFLR5::MIAREX;
 
-    m_pctrlXDirectToolBar->hide();
-    m_pctrlXInverseToolBar->hide();
-    m_pctrlAFoilToolBar->hide();
+    hideDockWindows();
     m_pctrlMiarexToolBar->show();
-
-    m_pctrlXDirectWidget->hide();
-    m_pctrlAFoilWidget->hide();
-    m_pctrlXInverseWidget->hide();
     m_pctrlMiarexWidget->show();
 
     updatePlaneListBox();
@@ -4383,7 +4389,6 @@ void MainFrame::onMiarex()
 }
 
 
-
 void MainFrame::onXInverse()
 {
     m_pXDirect->stopAnimate();
@@ -4392,15 +4397,8 @@ void MainFrame::onXInverse()
     //    pXInverse->SetScale();
     m_iApp = XFLR5::INVERSEDESIGN;
 
-    m_pctrlMiarexToolBar->hide();
-    m_pctrlStabViewWidget->hide();
-    m_pctrlAFoilToolBar->hide();
-    m_pctrlXDirectToolBar->hide();
+    hideDockWindows();
     m_pctrlXInverseToolBar->show();
-
-    m_pctrlAFoilWidget->hide();
-    m_pctrlMiarexWidget->hide();
-    m_pctrlXDirectWidget->hide();
     m_pctrlXInverseWidget->show();
 
     setMainFrameCentralWidget();
@@ -4418,16 +4416,11 @@ void MainFrame::onXInverseMixed()
 
     //    pXInverse->SetScale();
     m_iApp = XFLR5::INVERSEDESIGN;
-    m_pctrlMiarexToolBar->hide();
-    m_pctrlStabViewWidget->hide();
-    m_pctrlAFoilToolBar->hide();
-    m_pctrlXDirectToolBar->hide();
-    m_pctrlXInverseToolBar->show();
 
-    m_pctrlAFoilWidget->hide();
-    m_pctrlMiarexWidget->hide();
-    m_pctrlXDirectWidget->hide();
+    hideDockWindows();
+    m_pctrlXInverseToolBar->show();
     m_pctrlXInverseWidget->show();
+
     m_pXInverse->m_bFullInverse = false;
     setMainFrameCentralWidget();
     setMenus();
@@ -6184,7 +6177,7 @@ void MainFrame::updateView()
 }
 
 
-void MainFrame::saveFoilPolars(QDataStream &ar, QVector<Foil*> const &FoilList)
+void MainFrame::saveFoilPolars(QDataStream &ar, QVector<Foil*> const &FoilList) const
 {
     QVector<Foil*> ExportList;
     if(FoilList.isEmpty())
@@ -6552,16 +6545,121 @@ void MainFrame::onLoadLastProject()
 }
 
 
+void MainFrame::setNoApp()
+{
+    hideDockWindows();
+    m_iApp = XFLR5::NOAPP;
+    setMenus();
+    setMainFrameCentralWidget();
+    update();
+}
+
+
 void MainFrame::onExecuteScript()
 {
-    XflScriptExec scriptExecutor;
-    scriptExecutor.readScript();
-    scriptExecutor.makeFoils();
-    scriptExecutor.loadFoilPolarFiles();
-    scriptExecutor.makePlanes();
-    scriptExecutor.makePlaneAnalysisList();
+    setNoApp();
+    XDirect::setCurFoil(nullptr);
+    XDirect::setCurPolar(nullptr);
+    XDirect::setCurOpp(nullptr);
 
-    //    scriptExecutor.runScript();
+    m_pMiarex->m_pCurPlane = nullptr;
+    m_pMiarex->m_pCurWPolar = nullptr;
+    m_pMiarex->m_pCurPOpp = nullptr;
+
+    QString XmlPathName;
+    XmlPathName = QFileDialog::getOpenFileName(this, tr("Open XML Script File"),
+                                               Settings::lastDirName(),
+                                               tr("XML Script file")+"(*.xml)");
+    if(!XmlPathName.length()) return;
+    QFileInfo fileInfo(XmlPathName);
+//    XmlPathName = ":/script/example_script.xml";
+
+    executeScript(XmlPathName, false, true);
+}
+
+
+void MainFrame::executeScript(QString XmlScriptName, bool bShowProgressStdIO, bool bShowLog)
+{
+    XflScriptExec scriptexecutor(this);
+
+    LogWt *pLogWidget = new LogWt;
+    if(bShowLog)
+    {
+        pLogWidget->setCancelButton(true);
+        connect(&scriptexecutor,          SIGNAL(msgUpdate(QString)), pLogWidget,      SLOT(onUpdate(QString)), static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::UniqueConnection));
+        connect(pLogWidget->ctrlButton(), SIGNAL(clicked(bool)),      &scriptexecutor, SLOT(onCancel()));
+        pLogWidget->show();
+    }
+
+    if(bShowProgressStdIO)
+    {
+        //output log messages to the console
+        scriptexecutor.setStdOutStream(true);
+    }
+
+    qApp->processEvents();
+
+    QFileInfo fi(XmlScriptName);
+    if(!fi.exists())
+    {
+        return;
+    }
+
+    if(!scriptexecutor.readScript(fi.filePath()))
+    {
+        QString strange("Error reading script... aborting\n");
+        if(bShowProgressStdIO) scriptexecutor.traceLog(strange);
+        else pLogWidget->onUpdate(strange);
+    }
+    else
+    {
+        scriptexecutor.runScript();
+
+        bool bCSV = scriptexecutor.bCSVOutput();
+        if(scriptexecutor.outputPolarBin()) onMakePlrFiles(scriptexecutor.foilPolarBinOutputDirPath());
+
+        XFLR5::enumTextFileType exporttype = bCSV ? XFLR5::CSV : XFLR5::TXT;
+        if(scriptexecutor.outputPolarText()) m_pXDirect->onExportAllPolarsTxt(scriptexecutor.foilPolarTextOutputDirPath(), exporttype);
+        if(scriptexecutor.makeProjectFile()) onSaveProjectAs(scriptexecutor.projectFilePathName());
+
+        disconnect(&scriptexecutor, SIGNAL(msgUpdate(QString)), nullptr, nullptr);
+        scriptexecutor.closeLogFile();
+    }
+    pLogWidget->setFinished(true);
+
+    // duplicate the log file in the temp directory
+    QString projectLogFileName = QDir::tempPath() + "/xfl_"+QTime::currentTime().toString("hhmmss")+".log";
+
+    QFile::copy(scriptexecutor.logFileName(), projectLogFileName);
+
+    qApp->processEvents();
+}
+
+
+/** Make one .plr file for each foil and save it to the path name*/
+void MainFrame::onMakePlrFiles(QString const pathname) const
+{
+    QFile XFile;
+    QString fileName;
+
+    for(int l=0; l<Objects2d::foilCount(); l++)
+    {
+        Foil *pFoil = Objects2d::foilAt(l);
+        if(pFoil)
+        {
+            fileName = pathname + QDir::separator() + pFoil->foilName() +".plr";
+            XFile.setFileName(fileName);
+            if (XFile.open(QIODevice::WriteOnly | QIODevice::Text))
+            {
+                QDataStream ar(&XFile);
+                ar.setVersion(QDataStream::Qt_4_5);
+                ar.setByteOrder(QDataStream::LittleEndian);
+                QVector<Foil *> foillist = {pFoil};
+                saveFoilPolars(ar, foillist);
+                XFile.close();
+            }
+        }
+    }
 }
 
 
@@ -6572,7 +6670,6 @@ void MainFrame::showEvent(QShowEvent *pEvent)
     m_pXDirect->m_CpGraph.initializeGraph(m_pctrlCentralWidget->width(), m_pctrlCentralWidget->height());
     pEvent->ignore();
 }
-
 
 
 /**

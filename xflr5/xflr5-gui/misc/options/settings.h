@@ -67,10 +67,10 @@ public:
     static QFont &tableFont(){return s_TableFont;}
     static void setDefaultFonts();
     static void setColorList();
-    static bool isLightTheme(){return s_Theme==SETTINGS::LIGHTTHEME;}
+    static bool isLightTheme() {return s_Theme==SETTINGS::LIGHTTHEME;}
 
     static void setLastDirName(QString dirname) {s_LastDirName=dirname;}
-    static QString const &lastDirName(){return s_LastDirName;}
+    static QString const &lastDirName() {return s_LastDirName;}
 
     static void setXmlDirName(QString dirname) {s_xmlDirName=dirname;}
     static QString xmlDirName() {return s_xmlDirName;}

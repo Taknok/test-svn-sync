@@ -114,7 +114,6 @@ public slots:
     void onXInverse();
     void onXInverseMixed();
     void onMiarex();
-    void onExecuteScript();
     void onLoadLastProject();
     void onAlignChildrenStyle(bool bAlign);
 
@@ -122,10 +121,12 @@ private slots:
     void aboutQt();
     void aboutXFLR5();
     void onCurFoilStyle();
+    void onExecuteScript();
     void onExportCurGraph();
     void onCurGraphSettings();
     void onInsertProject();
     void onHighlightOperatingPoint();
+    void onMakePlrFiles(QString const pathname) const;
     void onNewProject();
     void onLoadFile();
     void onLogFile();
@@ -136,6 +137,7 @@ private slots:
     void onResetSettings();
     void onRestoreToolbars();
     bool onSaveProjectAs();
+    bool onSaveProjectAs(const QString pathName);
     void onSaveTimer();
     void onSaveViewToImageFile();
     void onSelChangeFoil(int sel);
@@ -182,12 +184,13 @@ public:
     void createAFoilMenus();
     void createAFoilToolbar();
     void deleteProject(bool bClosing=false);
+    void executeScript(QString XmlScriptName, bool bShowProgressStdIO, bool bShowLog=false);
     void exportGraph(Graph *pGraph);
-    static bool hasOpenGL(){return s_bOpenGL;}
+    void hideDockWindows();
     bool loadSettings();
     bool loadPolarFileV3(QDataStream &ar, bool bIsStoring, int ArchiveFormat=0);
     void readPolarFile(QDataStream &ar);
-    void saveFoilPolars(QDataStream &ar, const QVector<Foil*> &FoilList);
+    void saveFoilPolars(QDataStream &ar, const QVector<Foil*> &FoilList) const;
     bool saveProject(QString PathName="");
     void saveSettings();
     void selectFoil(Foil *pFoil);
@@ -196,6 +199,7 @@ public:
     void selectPlane(Plane *pPlane);
     void selectWPolar(WPolar *pWPolar);
     void selectPlaneOpp(PlaneOpp *pPlaneOpp);
+    void setNoApp();
     bool serializeProjectWPA(QDataStream &ar, bool bIsStoring);
     bool serializeProjectXFL(QDataStream &ar, bool bIsStoring);
     bool serializePlaneProject(QDataStream &ar);
@@ -220,6 +224,8 @@ public:
     void updatePOppListBox();
 
     bool bAutoLoadLast() const {return m_bAutoLoadLast;}
+
+    static bool hasOpenGL(){return s_bOpenGL;}
 
     static QString projectName() {return s_ProjectName;}
     static void setSaveState(bool bSave);
@@ -303,6 +309,7 @@ private:
     QAction *m_pOnXDirectAct, *m_pOnMiarexAct, *m_pOnAFoilAct, *m_pOnXInverseAct, *m_pOnMixedInverseAct;
     QAction *m_pOpenAct, *m_pInsertAct;
     QAction *m_pSaveAct, *m_pSaveProjectAsAct,*m_pNewProjectAct, *m_pCloseProjectAct;
+    QAction *m_pExecuteScript;
 
     QAction *m_pExitAct;
     QAction *m_pAboutAct, *m_pAboutQtAct, *m_pOpenGLAct, *m_pCheckForUpdates;

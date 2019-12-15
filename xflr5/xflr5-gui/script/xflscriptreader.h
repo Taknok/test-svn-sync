@@ -25,43 +25,77 @@
 #include <QFile>
 #include <QXmlStreamReader>
 #include <QVector>
+#include <QThread>
+
+#include <analysis3d/analysis3d_enums.h>
 
 class XFLScriptReader : public QXmlStreamReader
 {
+    friend class XflScriptExec;
+
 public:
     XFLScriptReader();
     bool readScript();
 
-    bool readInput();
-    bool readOutput();
-    bool readOptions();
+    bool readDirectoryData();
+    bool readBatchAnalysisData();
+    bool readFoilAnalysisFiles();
+    bool readFoilAnalysisOptions();
+    bool readFoilAnalysisOutput();
+    bool readFoilAnalysisRange();
+    bool readFoilBatchRange();
+    bool readFoilData();
     bool readFoils();
-    bool readFoilPolars();
-    bool readFoilAnalysis();
-    bool readPlanes();
-    bool readPlanePolars();
-    bool readPlaneAnalysis();
+    bool readMetaData();
+    bool readThreadingOptions();
 
-    QStringList m_planeList, m_wPolarList;
-    QStringList m_foilList, m_polarList;
+    bool bMakeFoilOpps() const {return m_bMakeOpps;}
+    bool bRunAllAnalyses() const {return m_bRunAllFoilAnalyses;}
 
-    double alphaMin, alphaMax, alphaInc;
-    double qinfMin, qinfMax, qinfInc;
+    QString datFoilDirPath()     const {return m_datFoilDirPath;}
+    QString binPolarDirPath()    const {return m_PolarBinDirPath;}
+    QString xmlAnalysisDirPath() const {return m_xmlAnalysisDirPath;}
+    QString outputDirPath()      const {return m_OutputDirPath;}
 
-    QVector<double> m_Reynolds, m_NCrit, m_Mach;
+private:
+    QString projectFileName()   const {return m_ProjectFileName;}
+
+    QStringList m_FoilList, m_PolarList;
+
+    QVector<double> m_Reynolds, m_NCrit, m_Mach; /** Type 123 polars */
+    QVector<double> m_Alpha; /** Type 4 polars */
     double m_XtrTop, m_XtrBot;
 
-    double aoaMin, aoaMax, aoaInc;
-    double betaMin, betaMax, betaInc;
-    double VInfMin, VInfMax, VInfInc;
-    double ctrlMin, ctrlMax, ctrlInc;
-    QString m_InputPlaneDirectoryPath, m_InputWPolarDirectoryPath;
-    QString m_InputFoilDirectoryPath, m_InputPolarDirectoryPath;
-    QString m_OutputDirectoryPath, m_projectFileName;
+    double m_aoaMin, m_aoaMax, m_aoaInc;
+    double m_ClMin, m_ClMax, m_ClInc;
+    double m_ReMin, m_ReMax, m_ReInc;
+
+    int m_MaxXFoilIterations;
+    int m_NFoilPanels;
+    bool m_bRepanelFoils;
+
+    QString m_OutputDirectoryPath, m_ProjectFileName;
+    QString m_datFoilDirPath, m_xmlAnalysisDirPath, m_PolarBinDirPath;
+    QString m_OutputDirPath;
+    QStringList m_XmlFoilAnalysisList;         /**< The list of xml foil analysis files to load */
+
+    bool m_bOutputPolarsBin;
+    bool m_bOutputPolarsText;
+    bool m_bMakeProjectFile;
+    bool m_bRunAllFoilAnalyses;
+
+    bool m_bMakeOpps, m_bAlphaSpec, m_bFromZero;
+
     bool m_bMakeXfl;
     bool m_bMakePOpps;
     bool m_bMultiThreading;
     int m_nMaxThreads;
+    bool m_bRecursiveDirScan;
+    bool m_bcsvPolarOutput;
+
+    XFLR5::enumPolarType m_FoilPolarType;
+
+    QThread::Priority m_ThreadPriority;
 };
 
 #endif // XFLSCRIPTREADER_H

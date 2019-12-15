@@ -63,6 +63,9 @@ win32 {
 #prevent qmake from making useless \debug and \release subdirs
     CONFIG -= debug_and_release debug_and_release_target
 
+    # add console support for scripts
+    CONFIG += console
+
     LIBS += -lopenGL32
 
     RC_FILE = ../win/xflr5.rc

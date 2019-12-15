@@ -128,10 +128,11 @@ int main(int argc, char *argv[])
 
     QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL);
 
-    qInstallMessageHandler(&customLogHandler);
+//    qInstallMessageHandler(&customLogHandler);
     XFLR5App app(argc, argv);
 
-    return app.exec();
+    if(app.done())	return 0;
+    else            return app.exec();
 }
 
 
