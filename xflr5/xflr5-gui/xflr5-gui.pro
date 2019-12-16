@@ -79,11 +79,21 @@ linux-g++{
     # VARIABLES
     isEmpty(PREFIX):PREFIX = /usr/local
     BINDIR = $$PREFIX/bin
-    DATADIR = $$PREFIX/share
+    DATADIR = $$PREFIX/share/xflr5
+
+    desktop.path = $$DATADIR
+    desktop.files += ../linux/$${TARGET}.desktop
+
+    icon128.path = $$DATADIR
+    icon128.files += ../res/$${TARGET}.png
+
+    translations.path = $$DATADIR/translations
+    translations.files = ../translations/*.qm
+
+    target.path = $$BINDIR
 
     # MAKE INSTALL
-    INSTALLS += target
-    target.path = $$BINDIR
+    INSTALLS += target desktop icon128 translations
 }
 
 
