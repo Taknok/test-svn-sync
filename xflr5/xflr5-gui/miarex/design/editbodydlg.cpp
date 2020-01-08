@@ -1310,8 +1310,6 @@ void EditBodyDlg::onExportBodyGeom()
 }
 
 
-
-
 void EditBodyDlg::onExportBodyXML()
 {
     if(!m_pBody)return ;// is there anything to export ?
@@ -1329,8 +1327,8 @@ void EditBodyDlg::onExportBodyXML()
     int pos = FileName.lastIndexOf("/");
     if(pos>0) Settings::s_LastDirName = FileName.left(pos);
 
-    pos = FileName.indexOf(".xùl", Qt::CaseInsensitive);
-    if(pos<0) FileName += ".xùl";
+    pos = FileName.indexOf(".xml", Qt::CaseInsensitive);
+    if(pos<0) FileName += ".xml";
 
 
     QFile XFile(FileName);
@@ -1390,8 +1388,6 @@ void EditBodyDlg::onImportBodyXML()
 }
 
 
-
-
 void EditBodyDlg::onScaleBody()
 {
     if(!m_pBody) return;
@@ -1414,7 +1410,6 @@ void EditBodyDlg::onScaleBody()
 }
 
 
-
 void EditBodyDlg::onTranslateBody()
 {
     if(!m_pBody) return;
@@ -1434,7 +1429,6 @@ void EditBodyDlg::onTranslateBody()
 }
 
 
-
 void EditBodyDlg::onBodyInertia()
 {
     if(!m_pBody) return;
@@ -1448,15 +1442,6 @@ void EditBodyDlg::onBodyInertia()
     m_pBody->computeBodyAxisInertia();
     fillBodyTreeView();
 }
-
-
-
-
-
-
-
-
-
 
 
 

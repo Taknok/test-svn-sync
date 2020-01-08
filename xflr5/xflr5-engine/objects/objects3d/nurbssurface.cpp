@@ -104,7 +104,6 @@ double NURBSSurface::getu(double pos, double v) const
 }
 
 
-
 /**
 * Calculates the blending value of a point on a BSpline. This is done recursively.
 * If the numerator and denominator are 0 the expression is 0.
@@ -362,16 +361,15 @@ bool NURBSSurface::intersectNURBS(Vector3d A, Vector3d B, Vector3d &I) const
  */
 void NURBSSurface::setKnots()
 {
-    int j;
-    double b;
     if(!frameCount())return;
     if(!framePointCount())return;
 
+    m_iuDegree = std::max(1, m_iuDegree);
     m_iuDegree = std::min(m_iuDegree, frameCount()-1);
     m_nuKnots  = m_iuDegree + frameCount() + 1;
-    b = double(m_nuKnots-2*m_iuDegree-1);
+    double b = double(m_nuKnots-2*m_iuDegree-1);
 
-    for (j=0; j<m_nuKnots; j++)
+    for (int j=0; j<m_nuKnots; j++)
     {
         if (j<m_iuDegree+1)  m_uKnots[j] = 0.0;
         else
@@ -385,12 +383,13 @@ void NURBSSurface::setKnots()
         }
     }
 
+    m_ivDegree = std::max(1,m_ivDegree);
     m_ivDegree = std::min(m_ivDegree, firstFrame()->pointCount()-1);
 
     m_nvKnots  = m_ivDegree + framePointCount() + 1;
     b = double(m_nvKnots-2*m_ivDegree-1);
 
-    for (j=0; j<m_nvKnots; j++)
+    for (int j=0; j<m_nvKnots; j++)
     {
         if (j<m_ivDegree+1)  m_vKnots[j] = 0.0;
         else
@@ -422,13 +421,9 @@ void NURBSSurface::setKnots()
  */
 int NURBSSurface::setvDegree(int nvDegree)
 {
-    if(framePointCount()>nvDegree) m_ivDegree = nvDegree;
-    else                           m_ivDegree = framePointCount()-1;
+    m_ivDegree = nvDegree;
     return m_ivDegree;
 }
-
-
-
 
 
 /**
@@ -440,8 +435,7 @@ int NURBSSurface::setvDegree(int nvDegree)
  */
 int NURBSSurface::setuDegree(int nuDegree)
 {
-    if(frameCount()>nuDegree) m_iuDegree = nuDegree;
-    else                     m_iuDegree = frameCount()-1;
+    m_iuDegree = nuDegree;
     return m_iuDegree;
 }
 

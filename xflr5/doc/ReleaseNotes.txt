@@ -17,6 +17,7 @@
 
 
 xflr5 v6.48 December xxxth, 2019
+    - fixed an occasional crash bug when importing a body from xml files
     - added a scripting capability for foil analyses to complement the flow5 plane scripts
     - added an option to select the OpenGL format from the in-app test window
     - added an option to select the OpenGL format and the trace flag when launching the app from the command line
