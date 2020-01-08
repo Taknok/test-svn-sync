@@ -90,8 +90,6 @@ bool XMLPlaneReader::readXMLPlaneFile()
 }
 
 
-
-
 /** */
 bool XMLPlaneReader::readPlane(Plane *pPlane, double lengthunit, double massunit)
 {

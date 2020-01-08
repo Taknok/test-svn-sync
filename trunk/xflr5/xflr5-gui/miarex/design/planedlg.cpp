@@ -455,8 +455,6 @@ void PlaneDlg::onDefaultBody()
 }
 
 
-
-
 void PlaneDlg::onImportXMLBody()
 {
     QString PathName;
@@ -489,7 +487,6 @@ void PlaneDlg::onImportXMLBody()
         return;
     }
 
-
     m_bChanged = true;
     //    if(m_pPlane->body()) delete m_pPlane->body();
 
@@ -498,8 +495,6 @@ void PlaneDlg::onImportXMLBody()
     m_pPlane->body()->duplicate(a_plane.body());
     m_pctrlBody->setChecked(true);
 }
-
-
 
 
 void PlaneDlg::onImportWing()
