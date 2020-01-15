@@ -272,7 +272,9 @@ bool Foil::exportFoil(QTextStream &out)
 
     for (i=0; i< n; i++)
     {
-        strOut = QString("%1    %2\n").arg(x[i],8,'f',5).arg(y[i],8,'f',5);
+        // jojo-Patch increase precision from 5 to 7 (2020/01)
+        strOut = QString("%1    %2\n").arg(x[i],10,'f',7).arg(y[i],10,'f',7);
+        // strOut = QString("%1    %2\n").arg(x[i],8,'f',5).arg(y[i],8,'f',5);
         out << strOut;
     }
 
