@@ -251,7 +251,7 @@ void OpenGlDlg::setupLayout()
         {
             QLabel *pDefaultLab = new QLabel("Current context version requested by the application:");
             QString strange;
-            strange.sprintf("OpenGL %d.%d", gl3dView::oglMajor(), gl3dView::oglMinor());
+            strange = QString::asprintf("OpenGL %d.%d", gl3dView::oglMajor(), gl3dView::oglMinor());
             QLabel *pCurrentLab = new QLabel(strange);
 
             pCurrentDefaultLayout->addWidget(pDefaultLab);

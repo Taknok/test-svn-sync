@@ -221,7 +221,7 @@ void Updater::slotSslErrors(QVector<QSslError> sslerrors)
     QString strange;
     for(int i=0; i<sslerrors.size(); i++)
     {
-       strange.sprintf("SSl Error %d : ", sslerrors.at(i).error());
+       strange = QString::asprintf("SSl Error %d : ", sslerrors.at(i).error());
        Trace(strange+sslerrors.at(i).errorString());
     }
 }
@@ -323,7 +323,7 @@ void Updater::onDownloadFinished(QNetworkReply *pNetworkReply)
 bool Updater::hasUpdate()
 {
     QString strange;
-    strange.sprintf("Latest version %d.%d", Updater::majorVersion(), Updater::minorVersion());
+    strange = QString::asprintf("Latest version %d.%d", Updater::majorVersion(), Updater::minorVersion());
     Trace(strange);
 
     if(s_AvailableMajorVersion>MAJOR_VERSION) return true;

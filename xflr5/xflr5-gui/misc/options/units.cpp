@@ -348,9 +348,9 @@ void Units::onSelChanged(const QString &)
     m_pctrlMomentInvFactor->setText(strange);
 
     strUnitLabel = pressureUnitLabel();
-    strange.sprintf("1 Pa = %11.5g",s_PatoUnit);
+    strange = QString::asprintf("1 Pa = %11.5g",s_PatoUnit);
     m_pctrlPressureFactor->setText(strange);
-    strUnit.sprintf("%11.5g Pa",1./s_PatoUnit);
+    strUnit = QString::asprintf("%11.5g Pa",1./s_PatoUnit);
     strUnitLabel = "1 "+strUnitLabel;
     strange= strUnitLabel.rightJustified(len1) +" = " + strUnit.leftJustified(len2);
     m_pctrlPressureInvFactor->setText(strange);

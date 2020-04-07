@@ -323,7 +323,7 @@ void MainFrame::testConfiguration()
     Trace("    Software OpenGL", qApp->testAttribute(Qt::AA_UseSoftwareOpenGL));
 
 
-    strange.sprintf("    Default OpengGl format:%d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
+    strange = QString::asprintf("    Default OpengGl format:%d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
     Trace(strange);
 
 
@@ -337,7 +337,7 @@ void MainFrame::testConfiguration()
     {
         QString strong = "XFLR5 requires OpenGL 2.1 or greater.\n";
         QString strange;
-        strange.sprintf("Your system provides by default OpenGL %d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
+        strange = QString::asprintf("Your system provides by default OpenGL %d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
         QMessageBox::warning(this, tr("Warning"), strong+strange);
         s_bOpenGL = false;
     }
@@ -7109,10 +7109,10 @@ void MainFrame::onFinishedUpdater()
     if(m_pUpdater->hasUpdate() || m_bManualUpdateCheck)
     {
         QString strange;
-        strange.sprintf("Latest version %d.%d", Updater::majorVersion(), Updater::minorVersion());
+        strange = QString::asprintf("Latest version %d.%d", Updater::majorVersion(), Updater::minorVersion());
         pPopUp->setTextMessage(strange);
         pPopUp->appendTextMessage("Release date: " + m_pUpdater->releaseDate());
-        strange.sprintf("%d.%d", MAJOR_VERSION, MINOR_VERSION);
+        strange = QString::asprintf("%d.%d", MAJOR_VERSION, MINOR_VERSION);
         pPopUp->appendTextMessage("Your version: " + strange);
         //        aPopup->appendTextMessage(m_pUpdater->releaseDescription()+"\n");
 

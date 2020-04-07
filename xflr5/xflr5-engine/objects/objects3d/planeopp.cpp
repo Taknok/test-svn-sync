@@ -993,11 +993,11 @@ void PlaneOpp::getPlaneOppProperties(QString &planeOppProperties, QString length
 
             if(fabs(c.real())>PRECISION && fabs(c.imag())<PRECISION)
             {
-                strange.sprintf(   "  Time to double            = %8.3fs", log(2)/fabs(c.real()));
+                strange = QString::asprintf(   "  Time to double            = %8.3fs", log(2)/fabs(c.real()));
                 planeOppProperties += strange +"\n";
                 if(c.real()<0.0)
                 {
-                    strange.sprintf("  Time constant              =%8.3f", -1.0/c.real());
+                    strange = QString::asprintf("  Time constant              =%8.3f", -1.0/c.real());
                     planeOppProperties += strange +"\n";
                 }
             }
@@ -1031,34 +1031,34 @@ void PlaneOpp::getPlaneOppProperties(QString &planeOppProperties, QString length
         modeProperties(m_phiPH, OmegaN, Omega1, Dsi);
 
         planeOppProperties += "Phillips Phugoid eq.38 JOURNAL OF AIRCRAFT Vol. 37, No. 1, January–February 2000\n";
-        if(c.imag()>=0.0) strange.sprintf("  Eigenvalue    = %9.5f+%9.5fi", m_phiPH.real(), m_phiPH.imag());
-        else              strange.sprintf("  Eigenvalue    = %9.5f-%9.5fi", m_phiPH.real(), m_phiPH.imag());
+        if(c.imag()>=0.0) strange = QString::asprintf("  Eigenvalue    = %9.5f+%9.5fi", m_phiPH.real(), m_phiPH.imag());
+        else              strange = QString::asprintf("  Eigenvalue    = %9.5f-%9.5fi", m_phiPH.real(), m_phiPH.imag());
         planeOppProperties += strange +"\n";
 
-        strange.sprintf("     Undamped Natural Frequency = %8.3f Hz",OmegaN/2.0/PI);
+        strange = QString::asprintf("     Undamped Natural Frequency = %8.3f Hz",OmegaN/2.0/PI);
         planeOppProperties += strange +"\n";
 
-        strange.sprintf("     Damped Natural Frequency   = %8.3f Hz",Omega1/2.0/PI);
+        strange = QString::asprintf("     Damped Natural Frequency   = %8.3f Hz",Omega1/2.0/PI);
         planeOppProperties += strange +"\n";
 
-        strange.sprintf("     Damping Ratio              = %8.3f ", Dsi);
+        strange = QString::asprintf("     Damping Ratio              = %8.3f ", Dsi);
         planeOppProperties += strange +"\n";
 
 
         modeProperties(m_phiDR, OmegaN, Omega1, Dsi);
 
         planeOppProperties += "Phillips Dutch-Roll eq. 28 JOURNAL OF AIRCRAFT Vol. 37, No. 3, May–June 2000\n";
-        if(c.imag()>=0.0) strange.sprintf("  Eigenvalue    = %9.5f+%9.5fi", m_phiDR.real(), m_phiDR.imag());
-        else              strange.sprintf("  Eigenvalue    = %9.5f-%9.5fi", m_phiDR.real(), m_phiDR.imag());
+        if(c.imag()>=0.0) strange = QString::asprintf("  Eigenvalue    = %9.5f+%9.5fi", m_phiDR.real(), m_phiDR.imag());
+        else              strange = QString::asprintf("  Eigenvalue    = %9.5f-%9.5fi", m_phiDR.real(), m_phiDR.imag());
         planeOppProperties += strange +"\n";
 
-        strange.sprintf("     Undamped Natural Frequency = %8.3f Hz",OmegaN/2.0/PI);
+        strange = QString::asprintf("     Undamped Natural Frequency = %8.3f Hz",OmegaN/2.0/PI);
         planeOppProperties += strange +"\n";
 
-        strange.sprintf("     Damped Natural Frequency   = %8.3f Hz",Omega1/2.0/PI);
+        strange = QString::asprintf("     Damped Natural Frequency   = %8.3f Hz",Omega1/2.0/PI);
         planeOppProperties += strange +"\n";
 
-        strange.sprintf("     Damping Ratio              = %8.3f ", Dsi);
+        strange = QString::asprintf("     Damping Ratio              = %8.3f ", Dsi);
         planeOppProperties += strange +"\n";
     }
 }

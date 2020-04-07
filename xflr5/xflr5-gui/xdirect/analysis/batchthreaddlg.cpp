@@ -875,7 +875,7 @@ void BatchThreadDlg::setPlrName(Polar *pNewPolar)
 void BatchThreadDlg::updateOutput(QString &str)
 {
     QString strong;
-    strong.sprintf("%3d/%3d/%3d  ", m_nTaskStarted, m_nTaskDone, m_nAnalysis);
+    strong = QString::asprintf("%3d/%3d/%3d  ", m_nTaskStarted, m_nTaskDone, m_nAnalysis);
     m_pctrlTextOutput->insertPlainText(strong + str);
     m_pctrlTextOutput->ensureCursorVisible();
 }

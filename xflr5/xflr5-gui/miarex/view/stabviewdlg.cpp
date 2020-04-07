@@ -165,8 +165,8 @@ void StabViewDlg::fillEigenThings()
         span = s_pMiarex->m_pCurPlane->m_Wing[0].m_PlanformSpan;
 
         eigenvalue = s_pMiarex->m_pCurPOpp->m_EigenValue[m_iCurrentMode];
-        if(eigenvalue.imag()>=0.0) strange.sprintf("%9.4f+%9.4fi", eigenvalue.real(), eigenvalue.imag());
-        else                       strange.sprintf("%9.4f-%9.4fi", eigenvalue.real(), eigenvalue.imag());
+        if(eigenvalue.imag()>=0.0) strange = QString::asprintf("%9.4f+%9.4fi", eigenvalue.real(), eigenvalue.imag());
+        else                       strange = QString::asprintf("%9.4f-%9.4fi", eigenvalue.real(), eigenvalue.imag());
         m_pctrlEigenValue->setText(strange);
         ModeDescription.append("Lambda="+strange+"<br/>");
 
@@ -178,7 +178,7 @@ void StabViewDlg::fillEigenThings()
         if(Omega1>PRECISION)
         {
             m_pctrlFreq1->setValue(Omega1/2.0/PI);
-            strange.sprintf("Fd=%6.3f Hz", Omega1/2.0/PI);
+            strange = QString::asprintf("Fd=%6.3f Hz", Omega1/2.0/PI);
             ModeDescription.append(strange+"<br/>");
         }
         else
@@ -190,9 +190,9 @@ void StabViewDlg::fillEigenThings()
         {
             m_pctrlFreqN->setValue(OmegaN/2.0/PI);
             m_pctrlZeta->setValue(Zeta);
-            strange.sprintf("FN=%6.3f Hz",OmegaN/2.0/PI);
+            strange = QString::asprintf("FN=%6.3f Hz",OmegaN/2.0/PI);
             ModeDescription.append(strange+"<br/>");
-            strange.sprintf("Zeta=%6.3f",Zeta);
+            strange = QString::asprintf("Zeta=%6.3f",Zeta);
             ModeDescription.append(strange+"<br/>");
         }
         else
@@ -203,13 +203,13 @@ void StabViewDlg::fillEigenThings()
 
         if(fabs(eigenvalue.real())>PRECISION && fabs(eigenvalue.imag())<PRECISION)
         {
-            strange.sprintf("T2=%6.3f s", log(2)/fabs(eigenvalue.real()));
+            strange = QString::asprintf("T2=%6.3f s", log(2)/fabs(eigenvalue.real()));
             ModeDescription.append(strange+"<br/>");
             m_pctrlT2->setValue(log(2)/fabs(eigenvalue.real()));
             if(eigenvalue.real()<0.0)
             {
                 m_pctrlTau->setValue(-1.0/eigenvalue.real());
-                strange.sprintf("tau=%6.3f", -1.0/eigenvalue.real());
+                strange = QString::asprintf("tau=%6.3f", -1.0/eigenvalue.real());
                 ModeDescription.append(strange+"<br/>");
             }
             else
@@ -226,26 +226,26 @@ void StabViewDlg::fillEigenThings()
         {
             angle = s_pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][3];
             eigenvalue = s_pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][0]/u0;
-            if(eigenvalue.imag()>=0.0) strange.sprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
-            else                       strange.sprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
+            if(eigenvalue.imag()>=0.0) strange = QString::asprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
+            else                       strange = QString::asprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
             m_pctrlEigenVector1->setText(strange);
             ModeDescription.append("v1="+strange+"<br/>");
 
             eigenvalue = s_pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][1]/u0;
-            if(eigenvalue.imag()>=0.0) strange.sprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
-            else                       strange.sprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
+            if(eigenvalue.imag()>=0.0) strange = QString::asprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
+            else                       strange = QString::asprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
             m_pctrlEigenVector2->setText(strange);
             ModeDescription.append("v2="+strange+"<br/>");
 
             eigenvalue = s_pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][2]/(2.0*u0/mac);
-            if(eigenvalue.imag()>=0.0) strange.sprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
-            else                       strange.sprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
+            if(eigenvalue.imag()>=0.0) strange = QString::asprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
+            else                       strange = QString::asprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
             m_pctrlEigenVector3->setText(strange);
             ModeDescription.append("v3="+strange+"<br/>");
 
             eigenvalue = s_pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][3]/angle;
-            if(eigenvalue.imag()>=0.0) strange.sprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
-            else                       strange.sprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
+            if(eigenvalue.imag()>=0.0) strange = QString::asprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
+            else                       strange = QString::asprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
             m_pctrlEigenVector4->setText(strange);
             ModeDescription.append("v4="+strange);
         }
@@ -254,26 +254,26 @@ void StabViewDlg::fillEigenThings()
             angle = s_pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][3];
 
             eigenvalue = s_pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][0]/u0;
-            if(eigenvalue.imag()>=0.0) strange.sprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
-            else                       strange.sprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
+            if(eigenvalue.imag()>=0.0) strange = QString::asprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
+            else                       strange = QString::asprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
             m_pctrlEigenVector1->setText(strange);
             ModeDescription.append("v1="+strange+"<br/>");
 
             eigenvalue = s_pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][1]/(2.0*u0/span);
-            if(eigenvalue.imag()>=0.0) strange.sprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
-            else                       strange.sprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
+            if(eigenvalue.imag()>=0.0) strange = QString::asprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
+            else                       strange = QString::asprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
             m_pctrlEigenVector2->setText(strange);
             ModeDescription.append("v2="+strange+"<br/>");
 
             eigenvalue = s_pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][2]/(2.0*u0/span);
-            if(eigenvalue.imag()>=0.0) strange.sprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
-            else                       strange.sprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
+            if(eigenvalue.imag()>=0.0) strange = QString::asprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
+            else                       strange = QString::asprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
             m_pctrlEigenVector3->setText(strange);
             ModeDescription.append("v3="+strange+"<br/>");
 
             eigenvalue = s_pMiarex->m_pCurPOpp->m_EigenVector[m_iCurrentMode][3]/angle;
-            if(eigenvalue.imag()>=0.0) strange.sprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
-            else                       strange.sprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
+            if(eigenvalue.imag()>=0.0) strange = QString::asprintf("%10.5f+%10.5fi",eigenvalue.real(),eigenvalue.imag());
+            else                       strange = QString::asprintf("%10.5f-%10.5fi",eigenvalue.real(),fabs(eigenvalue.imag()));
             m_pctrlEigenVector4->setText(strange);
             ModeDescription.append("v4="+strange);
 

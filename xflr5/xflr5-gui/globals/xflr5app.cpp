@@ -133,7 +133,7 @@ XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
         OGLMajor = OGLversion/10;
         OGLMinor = OGLversion - 10*OGLMajor;
     }
-    msg.sprintf("Requesting OpenGL %d.%d with the core profile", OGLMajor, OGLMinor);
+    msg = QString::asprintf("Requesting OpenGL %d.%d with the core profile", OGLMajor, OGLMinor);
     Trace(msg);
 
     QSurfaceFormat defaultformat;

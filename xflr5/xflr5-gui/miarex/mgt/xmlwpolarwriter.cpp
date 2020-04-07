@@ -97,7 +97,7 @@ void XmlWPolarWriter::writeXMLWPolar(WPolar *pWPolar)
         writeStartElement("Inertia_Value");
         {
             writeTextElement("Mass", QString("%1").arg(pWPolar->mass()*Units::kgtoUnit(),11,'f',5));
-            strange.sprintf("%11.5g %11.5g %11.5g", pWPolar->CoG().x*Units::mtoUnit(), pWPolar->CoG().y*Units::mtoUnit(), pWPolar->CoG().z*Units::mtoUnit());
+            strange = QString::asprintf("%11.5g %11.5g %11.5g", pWPolar->CoG().x*Units::mtoUnit(), pWPolar->CoG().y*Units::mtoUnit(), pWPolar->CoG().z*Units::mtoUnit());
             writeTextElement("CoG", strange);
             writeTextElement("CoG_Ixx", QString("%1").arg(pWPolar->CoGIxx()*Units::kgm2toUnit(), 11, 'f', 5));
             writeTextElement("CoG_Iyy", QString("%1").arg(pWPolar->CoGIyy()*Units::kgm2toUnit(), 11, 'f', 5));

@@ -251,7 +251,7 @@ bool XflScriptExec::readScript(QString scriptpathname)
     if(m_ScriptReader.hasError())
     {
         QString strange;
-        strange.sprintf("\nline %d column %d", int(m_ScriptReader.lineNumber()), int(m_ScriptReader.columnNumber()));
+        strange = QString::asprintf("\nline %d column %d", int(m_ScriptReader.lineNumber()), int(m_ScriptReader.columnNumber()));
         QString errorMsg = m_ScriptReader.errorString() + strange;
         traceLog(errorMsg);
     }
@@ -392,14 +392,14 @@ void XflScriptExec::runFoilAnalyses()
 
     m_nThreads = m_ScriptReader.m_nMaxThreads;
     QThreadPool::globalInstance()->setMaxThreadCount(m_nThreads);
-    strong.sprintf("Running with %d thread(s)\n", m_ScriptReader.m_nMaxThreads);
+    strong = QString::asprintf("Running with %d thread(s)\n", m_ScriptReader.m_nMaxThreads);
     traceLog(strong+"\n");
 
     //build an array of all analysis pairs to run
     m_nTaskDone = 0;
     m_nTaskStarted = 0;
 
-    strong.sprintf("Found %d (foil, polar) pairs to analyze.\n",m_FoilExecList.size());
+    strong = QString::asprintf("Found %d (foil, polar) pairs to analyze.\n",m_FoilExecList.size());
     traceLog(strong+"\n");
 
     XFoilTask::s_bCancel = false;

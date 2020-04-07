@@ -901,23 +901,23 @@ void setAutoWPolarName(WPolar *pWPolar, Plane *pPlane)
 
     if(!pWPolar->bAutoInertia())
     {
-        strong.sprintf("-%.1f", pWPolar->mass()*Units::kgtoUnit());
+        strong = QString::asprintf("-%.1f", pWPolar->mass()*Units::kgtoUnit());
         if(pWPolar->isStabilityPolar()&&fabs(pWPolar->m_inertiaGain[0])>PRECISION)
-            str.sprintf("/%0.2f", pWPolar->m_inertiaGain[0]*Units::kgtoUnit());
+            str = QString::asprintf("/%0.2f", pWPolar->m_inertiaGain[0]*Units::kgtoUnit());
         else str.clear();
         name += strong + str + Units::weightUnitLabel();
 
-        strong.sprintf("-x%.1f", pWPolar->CoG().x*Units::mtoUnit());
+        strong = QString::asprintf("-x%.1f", pWPolar->CoG().x*Units::mtoUnit());
         if(pWPolar->isStabilityPolar()&&fabs(pWPolar->m_inertiaGain[1])>PRECISION)
-            str.sprintf("/%0.2f", pWPolar->m_inertiaGain[1]*Units::mtoUnit());
+            str = QString::asprintf("/%0.2f", pWPolar->m_inertiaGain[1]*Units::mtoUnit());
         else str.clear();
         name += strong + str + Units::lengthUnitLabel();
 
         if(qAbs(pWPolar->CoG().z)>=.000001)
         {
-            strong.sprintf("-z%.1f", pWPolar->CoG().z*Units::mtoUnit());
+            strong = QString::asprintf("-z%.1f", pWPolar->CoG().z*Units::mtoUnit());
             if(pWPolar->isStabilityPolar()&&fabs(pWPolar->m_inertiaGain[2])>PRECISION)
-                str.sprintf("/%0.2f", pWPolar->m_inertiaGain[2]*Units::mtoUnit());
+                str = QString::asprintf("/%0.2f", pWPolar->m_inertiaGain[2]*Units::mtoUnit());
             else str.clear();
             name += strong + str + Units::lengthUnitLabel();
         }

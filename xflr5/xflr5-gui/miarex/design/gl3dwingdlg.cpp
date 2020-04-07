@@ -1690,7 +1690,7 @@ void GL3dWingDlg::onImportWingFromXML()
         QString strong;
         QString errorMsg;
         errorMsg = "Failed to read the file "+path_to_file+"\n";
-        strong.sprintf("error on line %d column %d", int(planereader.lineNumber()), int(planereader.columnNumber()));
+        strong = QString::asprintf("error on line %d column %d", int(planereader.lineNumber()), int(planereader.columnNumber()));
         errorMsg += planereader.errorString() + " at " + strong;
         QMessageBox::warning(this, "XML read", errorMsg, QMessageBox::Ok);
         return;
