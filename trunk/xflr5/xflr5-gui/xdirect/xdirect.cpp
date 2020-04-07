@@ -4392,7 +4392,7 @@ Foil* XDirect::setFoil(Foil* pFoil)
         if(pCurFoil->n>=IQX-2)
         {
             QString strange;
-            strange.sprintf("Cannot initialize the foil %s:\nNumber of panels=%d, Max. size=%d,\nRecommended size=100-150 panels",
+            strange = QString::asprintf("Cannot initialize the foil %s:\nNumber of panels=%d, Max. size=%d,\nRecommended size=100-150 panels",
                             pCurFoil->foilName().toStdString().c_str(), pCurFoil->n, IQX-2);
             QMessageBox::warning(s_pMainFrame, tr("Warning"), strange);
         }
@@ -4402,7 +4402,7 @@ Foil* XDirect::setFoil(Foil* pFoil)
             if(!bRes)
             {
                 QString strange;
-                strange.sprintf("Error while initializing the foil %s", pCurFoil->foilName().toStdString().c_str());
+                strange = QString::asprintf("Error while initializing the foil %s", pCurFoil->foilName().toStdString().c_str());
                 QMessageBox::warning(s_pMainFrame, tr("Warning"), strange);
             }
         }

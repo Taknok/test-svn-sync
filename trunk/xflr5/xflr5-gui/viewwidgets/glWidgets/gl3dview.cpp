@@ -125,7 +125,7 @@ void gl3dView::printFormat(QSurfaceFormat const &ctxtFormat, QString &log)
     QString strange;
     log.clear();
     log += "-------Testing OpenGL support--------\n";
-    strange.sprintf("Loaded version= %d.%d\n", ctxtFormat.majorVersion(),ctxtFormat.minorVersion());
+    strange = QString::asprintf("Loaded version= %d.%d\n", ctxtFormat.majorVersion(),ctxtFormat.minorVersion());
     log +=strange;
     QString vendor, renderer, version, glslVersion;
     const GLubyte *p;

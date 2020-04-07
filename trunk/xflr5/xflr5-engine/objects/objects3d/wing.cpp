@@ -1875,7 +1875,7 @@ void Wing::panelComputeViscous(double QInf, const WPolar *pWPolar, double &WingV
                 strong = QString(QObject::tr("           Span pos = %1 ")).arg(m_SpanPos[m], 9,'f',2);
                 strong += strLength;
                 strong += ",  Re = ";
-                string.sprintf("%.0f", m_Re[m]);
+                string = QString::asprintf("%.0f", m_Re[m]);
                 strong += string;
 
                 strong+= QString(QObject::tr(",  Cl = %1 could not be interpolated")+"\n").arg(m_Cl[m],6,'f',2);
@@ -1888,7 +1888,7 @@ void Wing::panelComputeViscous(double QInf, const WPolar *pWPolar, double &WingV
                 strong = QString(QObject::tr("           Span pos = %1 ")).arg(m_SpanPos[m],9,'f',2);
                 strong += strLength;
                 strong += ",  Re = ";
-                string.sprintf("%.0f", m_Re[m]);
+                string = QString::asprintf("%.0f", m_Re[m]);
                 strong += string;
                 strong += QString(QObject::tr(",  Cl = %1 is outside the flight envelope")+"\n").arg(m_Cl[m],6,'f',2);
                 OutString += strong;
@@ -3126,25 +3126,25 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
                 N.normalize();
 
                 //1st triangle
-                outStream << strong.sprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
+                outStream << QString::asprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
                 outStream << "    outer loop\n";
                 Pt = PtLeft[ic]   * (1.0-tauA) + PtRight[ic]   * tauA;
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
+                outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
                 Pt = PtLeft[ic+1] * (1.0-tauA) + PtRight[ic+1] * tauA;
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
+                outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
                 Pt = PtLeft[ic]   * (1.0-tauB) + PtRight[ic]   * tauB;
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
+                outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
                 outStream << "    endloop\n  endfacet\n";
 
                 //2nd triangle
-                outStream << strong.sprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
+                outStream << QString::asprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
                 outStream << "    outer loop\n";
                 Pt = PtLeft[ic]   * (1.0-tauB) + PtRight[ic]   * tauB;
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
+                outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
                 Pt = PtLeft[ic+1] * (1.0-tauA) + PtRight[ic+1] * tauA;
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
+                outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
                 Pt = PtLeft[ic+1] * (1.0-tauB) + PtRight[ic+1] * tauB;
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
+                outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
                 outStream << "    endloop\n  endfacet\n";
                 iTriangles +=2;
             }
@@ -3166,25 +3166,25 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
                 N.normalize();
 
                 //1st triangle
-                outStream << strong.sprintf("facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
+                outStream << QString::asprintf("facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
                 outStream << "    outer loop\n";
                 Pt = PtLeft[ic]   * (1.0-tauA) + PtRight[ic]   * tauA;
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
+                outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
                 Pt = PtLeft[ic+1] * (1.0-tauA) + PtRight[ic+1] * tauA;
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
+                outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
                 Pt = PtLeft[ic]   * (1.0-tauB) + PtRight[ic]   * tauB;
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
+                outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
                 outStream << "    endloop\n  endfacet\n";
 
                 //2nd triangle
-                outStream << strong.sprintf("facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
+                outStream << QString::asprintf("facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
                 outStream << "    outer loop\n";
                 Pt = PtLeft[ic+1] * (1.0-tauA) + PtRight[ic+1] * tauA;
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
+                outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
                 Pt = PtLeft[ic+1] * (1.0-tauB) + PtRight[ic+1] * tauB;
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
+                outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
                 Pt = PtLeft[ic]   * (1.0-tauB) + PtRight[ic]   * tauB;
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
+                outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  Pt.x, Pt.y, Pt.z);
                 outStream << "    endloop\n  endfacet\n";
                 iTriangles +=2;
             }
@@ -3206,39 +3206,39 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
             N.rotateX(90.0);
 
             //L.E. triangle
-            outStream << strong.sprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
+            outStream << QString::asprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
             outStream << "    outer loop\n";
-            outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[0].x, PtBotLeft[0].y, PtBotLeft[0].z);
-            outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtLeft[1].x,    PtLeft[1].y,    PtLeft[1].z);
-            outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[1].x, PtBotLeft[1].y, PtBotLeft[1].z);
+            outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[0].x, PtBotLeft[0].y, PtBotLeft[0].z);
+            outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtLeft[1].x,    PtLeft[1].y,    PtLeft[1].z);
+            outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[1].x, PtBotLeft[1].y, PtBotLeft[1].z);
             outStream << "    endloop\n  endfacet\n";
             iTriangles +=1;
 
             for(int ic=1; ic<CHORDPANELS-1; ic++)
             {
                 //1st triangle
-                outStream << strong.sprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
+                outStream << QString::asprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
                 outStream << "    outer loop\n";
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[ic].x,   PtBotLeft[ic].y,   PtBotLeft[ic].z);
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtLeft[ic].x,      PtLeft[ic].y,      PtLeft[ic].z);
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[ic+1].x, PtBotLeft[ic+1].y, PtBotLeft[ic+1].z);
+                outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[ic].x,   PtBotLeft[ic].y,   PtBotLeft[ic].z);
+                outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtLeft[ic].x,      PtLeft[ic].y,      PtLeft[ic].z);
+                outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[ic+1].x, PtBotLeft[ic+1].y, PtBotLeft[ic+1].z);
                 outStream << "    endloop\n  endfacet\n";
                 //2nd triangle
-                outStream << strong.sprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
+                outStream << QString::asprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
                 outStream << "    outer loop\n";
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[ic+1].x, PtBotLeft[ic+1].y, PtBotLeft[ic+1].z);
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtLeft[ic].x,      PtLeft[ic].y,      PtLeft[ic].z);
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtLeft[ic+1].x,    PtLeft[ic+1].y,    PtLeft[ic+1].z);
+                outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[ic+1].x, PtBotLeft[ic+1].y, PtBotLeft[ic+1].z);
+                outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtLeft[ic].x,      PtLeft[ic].y,      PtLeft[ic].z);
+                outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtLeft[ic+1].x,    PtLeft[ic+1].y,    PtLeft[ic+1].z);
                 outStream << "    endloop\n  endfacet\n";
                 iTriangles +=2;
             }
             //T.E. triangle
             int ic = CHORDPANELS-1;
-            outStream << strong.sprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
+            outStream << QString::asprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
             outStream << "    outer loop\n";
-            outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[ic].x,   PtBotLeft[ic].y,   PtBotLeft[ic].z);
-            outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtLeft[ic].x,      PtLeft[ic].y,      PtLeft[ic].z);
-            outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[ic+1].x, PtBotLeft[ic+1].y, PtBotLeft[ic+1].z);
+            outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[ic].x,   PtBotLeft[ic].y,   PtBotLeft[ic].z);
+            outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtLeft[ic].x,      PtLeft[ic].y,      PtLeft[ic].z);
+            outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotLeft[ic+1].x, PtBotLeft[ic+1].y, PtBotLeft[ic+1].z);
             outStream << "    endloop\n  endfacet\n";
             iTriangles +=1;
         }
@@ -3252,39 +3252,39 @@ void Wing::exportSTLText(QTextStream &outStream, int CHORDPANELS, int SPANPANELS
             N.rotateX(-90.0);
 
             //L.E. triangle
-            outStream << strong.sprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
+            outStream << QString::asprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
             outStream << "    outer loop\n";
-            outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[0].x, PtBotRight[0].y, PtBotRight[0].z);
-            outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtRight[1].x,    PtRight[1].y,    PtRight[1].z);
-            outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[1].x, PtBotRight[1].y, PtBotRight[1].z);
+            outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[0].x, PtBotRight[0].y, PtBotRight[0].z);
+            outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtRight[1].x,    PtRight[1].y,    PtRight[1].z);
+            outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[1].x, PtBotRight[1].y, PtBotRight[1].z);
             outStream << "    endloop\n  endfacet\n";
             iTriangles +=1;
 
             for(int ic=1; ic<CHORDPANELS-1; ic++)
             {
                 //1st triangle
-                outStream << strong.sprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
+                outStream << QString::asprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
                 outStream << "    outer loop\n";
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[ic].x,   PtBotRight[ic].y,   PtBotRight[ic].z);
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtRight[ic].x,      PtRight[ic].y,      PtRight[ic].z);
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[ic+1].x, PtBotRight[ic+1].y, PtBotRight[ic+1].z);
+                outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[ic].x,   PtBotRight[ic].y,   PtBotRight[ic].z);
+                outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtRight[ic].x,      PtRight[ic].y,      PtRight[ic].z);
+                outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[ic+1].x, PtBotRight[ic+1].y, PtBotRight[ic+1].z);
                 outStream << "    endloop\n  endfacet\n";
                 //2nd triangle
-                outStream << strong.sprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
+                outStream << QString::asprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
                 outStream << "    outer loop\n";
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[ic+1].x, PtBotRight[ic+1].y, PtBotRight[ic+1].z);
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtRight[ic].x,      PtRight[ic].y,      PtRight[ic].z);
-                outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtRight[ic+1].x,    PtRight[ic+1].y,    PtRight[ic+1].z);
+                outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[ic+1].x, PtBotRight[ic+1].y, PtBotRight[ic+1].z);
+                outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtRight[ic].x,      PtRight[ic].y,      PtRight[ic].z);
+                outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtRight[ic+1].x,    PtRight[ic+1].y,    PtRight[ic+1].z);
                 outStream << "    endloop\n  endfacet\n";
                 iTriangles +=2;
             }
             //T.E. triangle
             int ic = CHORDPANELS-1;
-            outStream << strong.sprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
+            outStream << QString::asprintf("  facet normal %13.7f  %13.7f  %13.7f\n",  N.x, N.y, N.z);
             outStream << "    outer loop\n";
-            outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[ic].x,   PtBotRight[ic].y,   PtBotRight[ic].z);
-            outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtRight[ic].x,      PtRight[ic].y,      PtRight[ic].z);
-            outStream << strong.sprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[ic+1].x, PtBotRight[ic+1].y, PtBotRight[ic+1].z);
+            outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[ic].x,   PtBotRight[ic].y,   PtBotRight[ic].z);
+            outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtRight[ic].x,      PtRight[ic].y,      PtRight[ic].z);
+            outStream << QString::asprintf("      vertex %13.7f  %13.7f  %13.7f\n",  PtBotRight[ic+1].x, PtBotRight[ic+1].y, PtBotRight[ic+1].z);
             outStream << "    endloop\n  endfacet\n";
             iTriangles +=1;
         }

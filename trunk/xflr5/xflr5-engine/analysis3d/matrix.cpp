@@ -953,50 +953,50 @@ void display_vec(double const *vec, int rows)
 void displayDouble(double d0, double d1, double d2, double d3, double d4, double d5, double d6, double d7, double d8, double d9)
 {
     QString strong, str;
-    strong.sprintf("  %13.7g", d0);
+    strong = QString::asprintf("  %13.7g", d0);
     if(d1>-1.0e50)
     {
-        str.sprintf("  %13.7g", d1);
+        str = QString::asprintf("  %13.7g", d1);
         strong += str;
     }
     if(d2>-1.0e50)
     {
-        str.sprintf("  %13.7g", d2);
+        str = QString::asprintf("  %13.7g", d2);
         strong += str;
     }
     if(d3>-1.0e50)
     {
-        str.sprintf("  %13.7g", d3);
+        str = QString::asprintf("  %13.7g", d3);
         strong += str;
     }
     if(d4>-1.0e50)
     {
-        str.sprintf("  %13.7g", d4);
+        str = QString::asprintf("  %13.7g", d4);
         strong += str;
     }
     if(d5>-1.0e50)
     {
-        str.sprintf("  %13.7g", d5);
+        str = QString::asprintf("  %13.7g", d5);
         strong += str;
     }
     if(d6>-1.0e50)
     {
-        str.sprintf("  %13.7g", d6);
+        str = QString::asprintf("  %13.7g", d6);
         strong += str;
     }
     if(d7>-1.0e50)
     {
-        str.sprintf("  %13.7g", d7);
+        str = QString::asprintf("  %13.7g", d7);
         strong += str;
     }
     if(d8>-1.0e50)
     {
-        str.sprintf("  %13.7g", d8);
+        str = QString::asprintf("  %13.7g", d8);
         strong += str;
     }
     if(d9>-1.0e50)
     {
-        str.sprintf("  %13.7g", d9);
+        str = QString::asprintf("  %13.7g", d9);
         strong += str;
     }
 

@@ -592,7 +592,7 @@ void PlaneDlg::onOK()
     if(nstations>MAXSPANSTATIONS)
     {
         QString strange;
-        strange.sprintf("The total number of span stations is %3d. Cannot exceed %3d. \n Please reduce the number of panels in the Y direction.",  nstations, MAXSPANSTATIONS);
+        strange = QString::asprintf("The total number of span stations is %3d. Cannot exceed %3d. \n Please reduce the number of panels in the Y direction.",  nstations, MAXSPANSTATIONS);
         QMessageBox::warning(this, tr("Warning"), strange);
         return;
     }

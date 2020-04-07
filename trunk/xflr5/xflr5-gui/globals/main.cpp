@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
 
 #ifdef QT_DEBUG
 /*    QString strange;
-    strange.sprintf("Default OpengGl format:%d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
+    strange = QString::asprintf("Default OpengGl format:%d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
     qDebug()<<strange;*/
 #endif
 
@@ -109,7 +109,7 @@ int main(int argc, char *argv[])
 /*
 #ifdef QT_DEBUG
     QString strange;
-    strange.sprintf("App default OpengGl format:%d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
+    strange = QString::asprintf("App default OpengGl format:%d.%d", QSurfaceFormat::defaultFormat().majorVersion(),QSurfaceFormat::defaultFormat().minorVersion());
     qDebug()<<strange;
     switch (QSurfaceFormat::defaultFormat().profile()) {
         case QSurfaceFormat::NoProfile:

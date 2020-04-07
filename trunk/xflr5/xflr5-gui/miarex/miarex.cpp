@@ -6363,7 +6363,7 @@ void Miarex::paintPlaneOppLegend(QPainter &painter, QRect drawRect)
         {
             for(i=0; i<m_pCurPOpp->m_pWOpp[0]->m_nFlaps; i++)
             {
-                Result.sprintf("Wing Flap %d Moment =%8.4f ", i+1, m_pCurPOpp->m_pWOpp[0]->m_FlapMoment[i]*Units::NmtoUnit());
+                Result = QString::asprintf("Wing Flap %d Moment =%8.4f ", i+1, m_pCurPOpp->m_pWOpp[0]->m_FlapMoment[i]*Units::NmtoUnit());
                 Units::getMomentUnitLabel(str);
                 Result += str;
                 D+=dheight;
@@ -6374,7 +6374,7 @@ void Miarex::paintPlaneOppLegend(QPainter &painter, QRect drawRect)
         {
             for(i=0; i<m_pCurPOpp->m_pWOpp[2]->m_nFlaps; i++)
             {
-                Result.sprintf("Elev Flap %d Moment =%8.4f ", i+1, m_pCurPOpp->m_pWOpp[2]->m_FlapMoment[i]*Units::NmtoUnit());
+                Result = QString::asprintf("Elev Flap %d Moment =%8.4f ", i+1, m_pCurPOpp->m_pWOpp[2]->m_FlapMoment[i]*Units::NmtoUnit());
                 Units::getMomentUnitLabel(str);
                 Result += str;
                 D+=dheight;
@@ -6385,7 +6385,7 @@ void Miarex::paintPlaneOppLegend(QPainter &painter, QRect drawRect)
         {
             for(i=0; i<m_pCurPOpp->m_pWOpp[3]->m_nFlaps; i++)
             {
-                Result.sprintf("Fin  Flap %d Moment =%8.4f ", i+1, m_pCurPOpp->m_pWOpp[3]->m_FlapMoment[i]*Units::NmtoUnit());
+                Result = QString::asprintf("Fin  Flap %d Moment =%8.4f ", i+1, m_pCurPOpp->m_pWOpp[3]->m_FlapMoment[i]*Units::NmtoUnit());
                 Units::getMomentUnitLabel(str);
                 Result += str;
                 D+=dheight;
@@ -8012,7 +8012,7 @@ void Miarex::paintPanelForceLegendText(QPainter &painter)
     for (i=0; i<=20; i++)
     {
         f = rmin + double(i) * delta;
-        strong.sprintf("%6.3f", f);
+        strong = QString::asprintf("%6.3f", f);
         labellength = (fm.width(strong)+5);
         painter.drawText(ixPos-labellength, iyPos+i*dy, strong);
     }

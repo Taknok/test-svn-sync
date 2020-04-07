@@ -6460,7 +6460,7 @@ for(int i=1; i<=n; i++)
     for(int j=1; j<=n+nw; j++)
     {
         QString str;
-        str.sprintf(" %11g", bij[i][j]);
+        str = QString::asprintf(" %11g", bij[i][j]);
         strong+=str;
     }
     qDebug(strong.toStdString().c_str());
@@ -6492,7 +6492,7 @@ for(int i=1; i<=n; i++)
     for(int j=1; j<=n+nw; j++)
     {
         QString str;
-        str.sprintf(" %11g", dij[i][j]);
+        str = QString::asprintf(" %11g", dij[i][j]);
         strong+=str;
     }
     qDebug(strong.toStdString().c_str());

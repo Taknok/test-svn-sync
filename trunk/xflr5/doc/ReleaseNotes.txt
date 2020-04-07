@@ -27,7 +27,7 @@ xflr5 v6.48 December xxxth, 2019
     - removed the addition of .dat and .plr type files to the recent file menu list
     - added an option to set style flow-down from the LinePicker dialog
     - fixed a crash bug when deleting the last entry of the point mass tables in the inertia dialog
-
+    - replaced the deprecated sprintf() with QString::asprintf() for forward compatibility
 
 xflr5 v6.47 July 7th, 2019
     - Fixed the problem of initial settings when running an LLT analysis

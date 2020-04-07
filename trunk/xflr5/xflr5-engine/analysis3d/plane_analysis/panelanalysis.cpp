@@ -2142,7 +2142,7 @@ bool PanelAnalysis::solveUnitRHS()
     Crout_LU_with_Pivoting_Solve(m_aij, m_wRHS, m_Index, m_RHS+Size, Size, &s_bCancel);
 
     QString strange;
-    strange.sprintf("      Time for linear system solve: %.3f s\n", double(t.elapsed())/1000.0);
+    strange = QString::asprintf("      Time for linear system solve: %.3f s\n", double(t.elapsed())/1000.0);
     //    qDebug(strange.toStdString().c_str());
     traceLog(strange);
 
@@ -4723,17 +4723,17 @@ void PanelAnalysis::computePhillipsFormulae()
     QString strange;
     traceLog("\n");
     traceLog("   Phillips formulae:\n");
-    strange.sprintf("       Phugoid eigenvalue:     %9.5f+%9.5fi",rlPH, ilPH);
+    strange = QString::asprintf("       Phugoid eigenvalue:     %9.5f+%9.5fi",rlPH, ilPH);
     traceLog(strange+"\n");
-    strange.sprintf("               frequency:%7.3f Hz", Fph);
+    strange = QString::asprintf("               frequency:%7.3f Hz", Fph);
     traceLog(strange+"\n");
-    strange.sprintf("               damping:  %7.3f", zeta_ph);
+    strange = QString::asprintf("               damping:  %7.3f", zeta_ph);
     traceLog(strange+"\n");
-    strange.sprintf("       Dutch-Roll eigenvalue:  %9.5f+%9.5fi",rlDR, ilDR);
+    strange = QString::asprintf("       Dutch-Roll eigenvalue:  %9.5f+%9.5fi",rlDR, ilDR);
     traceLog(strange+"\n");
-    strange.sprintf("               frequency:%7.3f Hz", Fdr);
+    strange = QString::asprintf("               frequency:%7.3f Hz", Fdr);
     traceLog(strange+"\n");
-    strange.sprintf("               damping:  %7.3f", zeta_dr);
+    strange = QString::asprintf("               damping:  %7.3f", zeta_dr);
     traceLog(strange+"\n");
 }
 

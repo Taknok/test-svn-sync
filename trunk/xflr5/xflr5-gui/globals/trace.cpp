@@ -162,14 +162,14 @@ void startTrace(bool bTrace)
     Trace(strange);
 
     const char *qt_version = qVersion();
-    strange.sprintf("Qt version: %s\n\n", qt_version);
+    strange = QString::asprintf("Qt version: %s\n\n", qt_version);
     Trace(strange);
 
-    strange.sprintf("Ideal thread count: %d\n\n", QThread::idealThreadCount());
+    strange = QString::asprintf("Ideal thread count: %d\n\n", QThread::idealThreadCount());
     Trace(strange);
 
 
-    strange.sprintf("Default OpengGl format:%d.%d\n",
+    strange = QString::asprintf("Default OpengGl format:%d.%d\n",
                     QSurfaceFormat::defaultFormat().majorVersion(),
                     QSurfaceFormat::defaultFormat().minorVersion());
     Trace(strange);

@@ -297,7 +297,7 @@ void LLTAnalysis::computeWing(double QInf, double Alpha, QString &ErrorMessage)
             ErrorMessage = QString("       Span pos = %1 ").arg(cos(m*PI/s_NLLTStations)*m_pWing->m_PlanformSpan/2.0*m_mtoUnit,9,'f',2);
             ErrorMessage += m_LengthUnit;
             ErrorMessage += ",  Re = ";
-            strange.sprintf("%.0f", m_Re[m]);
+            strange = QString::asprintf("%.0f", m_Re[m]);
             ErrorMessage += strange;
 
             strange = QString(" ,  A+Ai+Twist = %1 could not be interpolated\n").arg(Alpha+m_Ai[m] + m_Twist[m],6,'f',1);
@@ -311,7 +311,7 @@ void LLTAnalysis::computeWing(double QInf, double Alpha, QString &ErrorMessage)
             ErrorMessage = QString("       Span pos = %1 ").arg(cos(m*PI/s_NLLTStations)*m_pWing->m_PlanformSpan/2.0*m_mtoUnit,9,'f',2);
             ErrorMessage += m_LengthUnit;
             ErrorMessage += ",  Re = ";
-            strange.sprintf("%.0f", m_Re[m]);
+            strange = QString::asprintf("%.0f", m_Re[m]);
             ErrorMessage += strange;
 
             strange = QString(" ,  A+Ai+Twist = %1 is outside the flight envelope\n").arg(Alpha+m_Ai[m] + m_Twist[m],6,'f',1);
@@ -470,7 +470,7 @@ bool LLTAnalysis::setLinearSolution(double Alpha)
         m_Cl[i] *= slope*180.0/PI*cs/m_pWing->getChord(yob);
         m_Ai[i]  = -(Alpha-a0+m_pWing->getTwist(yob)) + m_Cl[i]/slope;
 
-//        strange.sprintf("    %2d   %11g  %11g\n", i, m_Cl[i], m_Ai[i]);
+//        strange = QString::asprintf("    %2d   %11g  %11g\n", i, m_Cl[i], m_Ai[i]);
 //        traceLog(strange);
     }
 //    traceLog("\n\n");
