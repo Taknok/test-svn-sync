@@ -47,7 +47,7 @@ void XFoilAdvancedDlg::SetupLayout()
     {
         QLabel *lab1 = new QLabel(tr("VAccel"));
         lab1->setAlignment(Qt::AlignRight);
-        m_pctrlVAccel = new DoubleEdit;
+        m_pctrlVAccel = new DoubleEdit(0.0, 3);     // jx-mod allow 3 decimals fo vaccel according to init value '0.001'
         m_pctrlVAccel->setAlignment(Qt::AlignRight);
         pVAccelBoxLayout->addStretch(1);
         pVAccelBoxLayout->addWidget(lab1);
