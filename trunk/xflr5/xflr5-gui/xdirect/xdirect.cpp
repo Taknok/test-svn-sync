@@ -3167,7 +3167,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
     Re = pPolar->Reynolds()/1000000.0;
     QString strange = QString("T%1_Re%2_M%3")
             .arg(pPolar->polarType())
-            .arg(Re,0,'f',2)
+            .arg(Re,0,'f',3)                        // jx-mod Re has 3 decimals
             .arg(pPolar->Mach(),0,'f',2);
     str = QString("_N%1").arg(pPolar->NCrit(),0,'f',1);
     strange += str + "_Imported";
