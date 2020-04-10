@@ -135,15 +135,15 @@ void writeQColor(QDataStream &ar, int r, int g, int b, int a)
 */
 bool ReadAVLString(QTextStream &in, int &Line, QString &strong)
 {
-    bool bComment = true;
-    int pos;
+    bool isCommentLine = true;
+    int pos=0;
+    if(in.atEnd()) return false;
 
-    while(bComment && !in.atEnd())
+    while(isCommentLine && !in.atEnd())
     {
-        bComment = false;
+        isCommentLine = false;
 
         strong = in.readLine();
-        if(in.atEnd()) return false;
 
         strong = strong.trimmed();
         pos = strong.indexOf("#",0);
@@ -151,15 +151,11 @@ bool ReadAVLString(QTextStream &in, int &Line, QString &strong)
         pos = strong.indexOf("!",0);
         if(pos>=0) strong = strong.left(pos);
 
-        if(strong.isEmpty()) bComment = true;
+        if(strong.isEmpty()) isCommentLine = true;
 
         Line++;
     }
 
-    if(in.atEnd())
-    {
-        return false;
-    }
     return true;
 }
 
