@@ -3007,6 +3007,8 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
     Polar *pPolar = new Polar;
     double Re, alpha, CL, CD, CDp, CM, Xt, Xb,Cpmn, HMom;
     QString FoilName, strong, str;
+    // JX-mod
+    Foil *pFoil;
 
 
     if (!txtFile.open(QIODevice::ReadOnly))
@@ -3164,6 +3166,25 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
     }
     txtFile.close();
 
+    // jx-mod Use xflr5 standards for naming and color of the new polar
+    pPolar->setAutoPolarName();
+    pPolar->setPolarName(pPolar->polarName() + "_Imported");
+
+    if(Settings::isAlignedChildrenStyle())
+    {
+        pFoil = Objects2d::foil(FoilName);
+        pPolar->m_Style = pFoil->m_Stipple;
+        pPolar->m_Width = pFoil->m_Width;
+        pPolar->setColor(pFoil->red(), pFoil->green(), pFoil->blue(), pFoil->alphaChannel());
+        pPolar->m_PointStyle = pFoil->m_PointStyle;
+    }
+    else
+    {
+        QColor clr = randomColor(!Settings::isLightTheme());
+        pPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
+    }
+
+/**
     Re = pPolar->Reynolds()/1000000.0;
     QString strange = QString("T%1_Re%2_M%3")
             .arg(pPolar->polarType())
@@ -3173,9 +3194,9 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
     strange += str + "_Imported";
 
     pPolar->setPolarName(strange);
-
     QColor clr = MainFrame::getColor(1);
     pPolar->setColor(clr.red(), clr.green(), clr.blue());
+*/
 
     Objects2d::addPolar(pPolar);
     return pPolar;
