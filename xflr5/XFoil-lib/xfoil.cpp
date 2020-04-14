@@ -3108,7 +3108,9 @@ void XFoil::getcam(double xcm[],double ycm[], int &ncm,double xtk[],double ytk[]
     }
 
     //---- tolerance for nominally identical points
-    tol = 0.001 * (s[n]-s[1]);
+    // jx-mod
+    //    tol = 0.001 * (s[n]-s[1]);     ! Bad bug -- was losing x=1.0 point - see org. xfoil
+    tol = 1.e-5 * (s[n]-s[1]);
 
     //---- sort the camber points
     ncm = n+1;
