@@ -3166,7 +3166,22 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
     }
     txtFile.close();
 
-    // jx-mod Use xflr5 standards for naming and color of the new polar
+    // jx-mod Use xflr5 standards for naming and coloring of a new polar
+
+    /**
+        Re = pPolar->Reynolds()/1000000.0;
+        QString strange = QString("T%1_Re%2_M%3")
+                .arg(pPolar->polarType())
+                .arg(Re,0,'f',3)                        // jx-mod Re has 3 decimals
+                .arg(pPolar->Mach(),0,'f',2);
+        str = QString("_N%1").arg(pPolar->NCrit(),0,'f',1);
+        strange += str + "_Imported";
+
+        pPolar->setPolarName(strange);
+        QColor clr = MainFrame::getColor(1);
+        pPolar->setColor(clr.red(), clr.green(), clr.blue());
+    */
+
     pPolar->setAutoPolarName();
     pPolar->setPolarName(pPolar->polarName() + "_Imported");
 
@@ -3184,19 +3199,6 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
         pPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
     }
 
-/**
-    Re = pPolar->Reynolds()/1000000.0;
-    QString strange = QString("T%1_Re%2_M%3")
-            .arg(pPolar->polarType())
-            .arg(Re,0,'f',3)                        // jx-mod Re has 3 decimals
-            .arg(pPolar->Mach(),0,'f',2);
-    str = QString("_N%1").arg(pPolar->NCrit(),0,'f',1);
-    strange += str + "_Imported";
-
-    pPolar->setPolarName(strange);
-    QColor clr = MainFrame::getColor(1);
-    pPolar->setColor(clr.red(), clr.green(), clr.blue());
-*/
 
     Objects2d::addPolar(pPolar);
     return pPolar;
@@ -4250,7 +4252,9 @@ void XDirect::saveSettings(QSettings &settings)
         settings.setValue("ASpec", s_RefPolar.aoa());
 
         if(s_RefPolar.polarType()==XFLR5::FIXEDSPEEDPOLAR)       settings.setValue("Type", 1);
-        else if(s_RefPolar.polarType()==XFLR5::RUBBERCHORDPOLAR) settings.setValue("Type", 2);
+        // jx-mod added missing FIXEDLIFTPOLAR, corrected RUBBERCHORDPOLAR
+        else if(s_RefPolar.polarType()==XFLR5::FIXEDLIFTPOLAR)   settings.setValue("Type", 2);
+        else if(s_RefPolar.polarType()==XFLR5::RUBBERCHORDPOLAR) settings.setValue("Type", 3);
         else if(s_RefPolar.polarType()==XFLR5::FIXEDAOAPOLAR)    settings.setValue("Type", 4);
 
         settings.setValue("NReynolds", s_ReList.count());
