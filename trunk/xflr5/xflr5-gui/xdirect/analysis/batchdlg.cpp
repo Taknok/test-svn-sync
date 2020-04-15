@@ -570,7 +570,8 @@ void BatchDlg::initDialog()
     m_XBot      = XDirect::s_RefPolar.XtrBot();
     m_XTop      = XDirect::s_RefPolar.XtrTop();
     m_Mach      = XDirect::s_RefPolar.Mach();
-    m_PolarType = XFLR5::FIXEDSPEEDPOLAR;
+    // jx-mod activated restore of polarType
+    m_PolarType = XDirect::s_RefPolar.polarType();
 
 
     m_pctrlFoil1->setChecked(s_bCurrentFoil);
@@ -847,6 +848,10 @@ void BatchDlg::onClose()
     XDirect::s_RefPolar.setXtrBot(m_XBot);
     XDirect::s_RefPolar.setXtrTop(m_XTop);
     XDirect::s_RefPolar.setMach(m_Mach);
+
+//  jx-mod save also polar type
+    XDirect::s_RefPolar.setPolarType(m_PolarType);
+
 
     done(1);
 }
