@@ -92,9 +92,9 @@ public:
     void VLMCmn(Vector3d const &A, Vector3d const &B, Vector3d const &C, Vector3d &V, bool const &bAll);
     void VLMQmn(Vector3d &LA, Vector3d &LB, Vector3d &TA, Vector3d &TB, Vector3d const &C, Vector3d &V);
 
-    void panelTrefftz(Wing *pWing, double QInf, double Alpha, double *Mu, double *Sigma, int pos, Vector3d &Force, double &WingIDrag,
-                      WPolar *pWPolar, Panel *pWakePanel, Vector3d *pWakeNode);
-    void getDoubletDerivative(const int &p, double *Mu, double &Cp, Vector3d &VTotl, double const &QInf, double Vx, double Vy, double Vz);
+    void panelTrefftz(Wing *pWing, double QInf, double Alpha, const double *Mu, const double *Sigma, int pos, Vector3d &Force, double &WingIDrag,
+                      const WPolar *pWPolar, const Panel *pWakePanel, const Vector3d *pWakeNode);
+    void getDoubletDerivative(const int &p, double const*Mu, double &Cp, Vector3d &VTotl, double const &QInf, double Vx, double Vy, double Vz);
     void getVortexCp(const int &p, double *Gamma, double *Cp, Vector3d &VInf);
 
     void relaxWake();
