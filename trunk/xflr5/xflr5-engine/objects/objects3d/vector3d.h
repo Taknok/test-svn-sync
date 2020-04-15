@@ -234,6 +234,6 @@ public:
     void rotateY(double YTilt);
     //    void rotateZ(double ZRot);
 
-    void displayCoords(QString msg) const;
+    void displayCoords(QString msg=QString()) const;
 };
 

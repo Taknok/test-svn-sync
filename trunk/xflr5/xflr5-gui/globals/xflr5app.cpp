@@ -28,6 +28,9 @@
 #include <QSurfaceFormat>
 #include <QDebug>
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
 
 #include "xflr5app.h"
 #include <globals/mainframe.h>
@@ -109,7 +112,12 @@ XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
     splash.setWindowFlags(Qt::SplashScreen);
     if(!bScript)
         splash.show();
-
+    else
+    {
+#ifdef Q_OS_WIN
+        ShowWindow(GetConsoleWindow(), SW_HIDE);
+#endif
+    }
     // Load preferred OpenGL version
     // and set the default format before any 3d view is created
     int OGLMajor = 3;

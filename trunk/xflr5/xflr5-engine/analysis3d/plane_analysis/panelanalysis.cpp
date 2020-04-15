@@ -1655,7 +1655,7 @@ void PanelAnalysis::getVortexCp(const int &p, double *Gamma, double *Cp, Vector3
 * @param Vx the x-component of the freestream velocity vector
 * @param Vz the z-component of the freestream velocity vector
 */
-void PanelAnalysis::getDoubletDerivative(const int &p, double *Mu, double &Cp, Vector3d &VLocal, double const &QInf, double Vx, double Vy, double Vz)
+void PanelAnalysis::getDoubletDerivative(const int &p, double const*Mu, double &Cp, Vector3d &VLocal, double const &QInf, double Vx, double Vy, double Vz)
 {
     int PL,PR, PU, PD;
     double DELQ, DELP, mu0,mu1,mu2, x0,x1,x2, Speed2;
@@ -5380,9 +5380,9 @@ void PanelAnalysis::onCancel()
 * Calculates the induced lift and drag from the vortices or wake panels strength using a farfield method
 * Downwash is evaluated at a distance 100 times the span downstream (i.e. infinite)
 */
-void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double *Mu, double *Sigma, int pos,
+void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double const*Mu, double const*Sigma, int pos,
                                  Vector3d &Force, double &WingIDrag,
-                                 WPolar *pWPolar, Panel *pWakePanel, Vector3d *pWakeNode)
+                                 WPolar const*pWPolar, Panel const*pWakePanel, Vector3d const*pWakeNode)
 {
     int nw=0, iTA=0, iTB=0;
     int k=0, l=0, pp=0;
@@ -5520,7 +5520,7 @@ void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double 
                 // Project on wind axes
                 pWing->m_Cl[m]    = StripForce.dot(surfaceNormal)   /pWing->m_StripArea[m];
                 pWing->m_ICd[m]   = StripForce.dot(WindDirection)/pWing->m_StripArea[m];
-                pWing->m_WingCL      += StripForce.dot(WindNormal);                // N/q
+                pWing->m_WingCL  += StripForce.dot(WindNormal);                // N/q
                 WingIDrag += StripForce.dot(WindDirection);          // N/q
             }
             p  += coef*pWing->m_Surface.at(j)->m_NXPanels;
@@ -5546,7 +5546,7 @@ void PanelAnalysis::relaxWake()
 
     int nInter=0;
     double t=0, dx=0;
-    double *Mu    = m_Mu   ;
+    double *Mu    = m_Mu;
     double *Sigma = m_Sigma;
 
     //Since the wake roll-up is performed on the tilted geometry,
