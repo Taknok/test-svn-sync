@@ -1028,6 +1028,8 @@ void Section2dWidget::drawScaleLegend(QPainter &painter)
     painter.drawText(5,34, QString(tr("x = %1")).arg(m_MousePos.x,9,'f',5));
     painter.drawText(5,46, QString(tr("y = %1")).arg(m_MousePos.y,9,'f',5));
 
+    painter.restore();
+
 }
 
 
