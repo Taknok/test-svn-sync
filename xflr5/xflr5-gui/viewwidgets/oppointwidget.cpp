@@ -477,8 +477,8 @@ void OpPointWidget::paintGraph(QPainter &painter)
 
         painter.setPen(textPen);
 
-        painter.drawText(m_pCpGraph->clientRect()->width()-12*fm.averageCharWidth(), m_pCpGraph->clientRect()->top()+fmheight,   QString("x = %1").arg(m_pCpGraph->clientTox(m_LastPoint.x()),7,'f',3));
-        painter.drawText(m_pCpGraph->clientRect()->width()-12*fm.averageCharWidth(), m_pCpGraph->clientRect()->top()+2*fmheight, QString("y = %1").arg(m_pCpGraph->clientToy(m_LastPoint.y()),7,'f',3));
+        painter.drawText(m_pCpGraph->clientRect()->width()-14*fm.averageCharWidth(), m_pCpGraph->clientRect()->top()+  fmheight, QString("x = %1").arg(m_pCpGraph->clientTox(m_LastPoint.x()),9,'f',5));
+        painter.drawText(m_pCpGraph->clientRect()->width()-14*fm.averageCharWidth(), m_pCpGraph->clientRect()->top()+2*fmheight, QString("y = %1").arg(m_pCpGraph->clientToy(m_LastPoint.y()),9,'f',5));
     }
     painter.restore();
 }
@@ -518,12 +518,12 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
         painter.setPen(textPen);
 
         Vector3d real = mousetoReal(m_LastPoint);
-        painter.drawText(m_pCpGraph->clientRect()->width()-12*fm.averageCharWidth(),
+        painter.drawText(m_pCpGraph->clientRect()->width()-14*fm.averageCharWidth(),
                          m_pCpGraph->clientRect()->height() + fmheight, QString("x = %1")
-                         .arg(real.x,7,'f',3));
-        painter.drawText(m_pCpGraph->clientRect()->width()-12*fm.averageCharWidth(),
+                         .arg(real.x,9,'f',5));
+        painter.drawText(m_pCpGraph->clientRect()->width()-14*fm.averageCharWidth(),
                          m_pCpGraph->clientRect()->height() + 2*fmheight, QString("y = %1")
-                         .arg(real.y,7,'f',3));
+                         .arg(real.y,9,'f',5));
     }
 
 
