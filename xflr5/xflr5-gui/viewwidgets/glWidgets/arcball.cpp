@@ -187,11 +187,11 @@ void ArcBall::quatToMatrix(float* mat, Quaternion Qt)
     mat[0] = float(1 - 2*y2 - 2*z2);
     mat[1] = float(2*xy + 2*wz);
     mat[2] = float(2*xz - 2*wy);
-
+    mat[3] = 0.0;
     mat[4] = float(2*xy - 2*wz);
     mat[5] = float(1 - 2*x2 - 2*z2);
     mat[6] = float(2*yz + 2*wx);
-
+    mat[7] = 0.0;
     mat[8] = float(2*xz + 2*wy);
     mat[9] = float(2*yz - 2*wx);
     mat[10]= float(1 - 2*x2 - 2*y2);
