@@ -60,13 +60,15 @@ private:
     void keyPressEvent(QKeyEvent *event);
     void setupLayout();
     void apply();
+    void setFoilDisplayStayle();
+    bool isXFoilOk ();
 
 private:
     QSlider    *m_pctrlCamberSlide, *m_pctrlThickSlide, *m_pctrlXThickSlide, *m_pctrlXCamberSlide;
     DoubleEdit *m_pctrlXCamber;
-    DoubleEdit    *m_pctrlXThickness;
-    DoubleEdit    *m_pctrlThickness;
-    DoubleEdit    *m_pctrlCamber;
+    DoubleEdit *m_pctrlXThickness;
+    DoubleEdit *m_pctrlThickness;
+    DoubleEdit *m_pctrlCamber;
 
     QPushButton *m_OKButton, *m_CancelButton, *m_pRestoreButton;
 
@@ -78,12 +80,15 @@ private:
     double m_fThickness;
     double m_fXCamber;
     double m_fXThickness;
+
+    Foil *m_pBaseFoil;
     Foil *m_pBufferFoil;
     Foil const*m_pMemFoil;
 
     QWidget *m_pParent;
 
-    bool  m_bApplied,m_bAppliedX, m_bModified;
+    bool m_bApplied,m_bAppliedX, m_bModified;
+    bool m_modifying;
 
 };
 
