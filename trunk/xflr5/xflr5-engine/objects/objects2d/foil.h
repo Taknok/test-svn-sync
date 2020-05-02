@@ -103,6 +103,8 @@ public:
     void setLineStipple(int s) {m_Stipple=s;}
     void setLineWidth(int w)   {m_Width=w;}
     void setPointStyle(int pts) {m_PointStyle=pts;}
+    void setEditStyle();
+
 
     QString const &foilName() const {return m_FoilName;}
     void setFoilName(QString const &FoilName) {m_FoilName = FoilName;}

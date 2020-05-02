@@ -1508,11 +1508,24 @@ void Foil::displayCoords(bool bBaseCoords) const
 }
 
 
-
 void Foil::setTheStyle(int stipple, int w, QColor clr, int pointstyle)
 {
     m_Stipple = stipple;
     m_Width = w;
     m_Color = clr;
     m_PointStyle = pointstyle;
+}
+
+
+/**
+ * Set the graphics style to the edit mode which is the grey line with the dots.
+ */
+void Foil::setEditStyle()
+{
+    setPointStyle(1);
+    setVisible(true);
+    setColor(160,160,160);
+    setLineStipple(1);
+    setLineWidth(1);
+    setVisible(true);
 }

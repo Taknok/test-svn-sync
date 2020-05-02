@@ -55,6 +55,7 @@ FoilGeomDlg::FoilGeomDlg(QWidget *pParent) : QDialog(pParent)
     connect(m_pctrlXCamberSlide, SIGNAL(sliderMoved(int)), this, SLOT(onXCamberSlide(int)));
     connect(m_pctrlThickSlide, SIGNAL(sliderMoved(int)), this, SLOT(onThickSlide(int)));
     connect(m_pctrlXThickSlide, SIGNAL(sliderMoved(int)), this, SLOT(onXThickSlide(int)));
+
 }
 
 
@@ -232,61 +233,66 @@ void FoilGeomDlg::setupLayout()
 
 
 
+/*
+    Modification of the airfoil with xfoils tcset and hipnt
+
+    There are several airfoils involved:
+
+       memFoil      holds the original airfoil - read only
+       baseFoil     either a copy of memFoil or a smoothed version of it
+       bufferFoil   the foil which is displayed during modification (slave)
+       XFoil        buffer airfoil on which XFoil is doing it's modification
+                    attention: pangen output is in current not in buffer airfoil.
+
+    XFoil->hipnt to set max. thickness or camber position is quite sensible to not
+    well defined airfoils especially at leading edge. This may result in garbage results.
+    If this is detected a re-paneling of the airfoil is made to smooth the outline.
+
+    Modification of geometry is always based on the original airfoil data
+         (repeated modification on the same xfoil foil leads to strange artefacts)
+
+*/
 void FoilGeomDlg::apply()
 {
-    //reset everything and retry
-    m_pBufferFoil->copyFoil(m_pMemFoil);
-    s_pXFoil->initXFoilGeometry(m_pBufferFoil->n, m_pBufferFoil->x, m_pBufferFoil->y, m_pBufferFoil->nx, m_pBufferFoil->ny);
-/*    for (i=0; i< m_pMemFoil->nb; i++)
-    {
-        pXFoil->xb[i+1] = m_pMemFoil->xb[i];
-        pXFoil->yb[i+1] = m_pMemFoil->yb[i];
-    }
-    pXFoil->nb = m_pMemFoil->nb;
-    pXFoil->lflap = false;
-    pXFoil->lbflap = false;
 
-    if(pXFoil->Preprocess())
-    {
-        pXFoil->CheckAngles();
-    }
-    else
-    {
-        QMessageBox::information(window(), tr("Warning"), "Unrecognized foil format");
-        return;
-    }*/
+    if (m_modifying) return;                        // avoid multi threaded xfoil modification of geometry
+                                                    // if user is playing around with the slider...
 
-//    if(!m_bApplied)
+    m_modifying = true;
+
+    // prepare xfoil foil for modification
+    s_pXFoil->initialize();
+    s_pXFoil->initXFoilGeometry(m_pBaseFoil->n, m_pBaseFoil->x, m_pBaseFoil->y, m_pBaseFoil->nx, m_pBaseFoil->ny);
+
+    // do it
+    s_pXFoil->hipnt(m_fXCamber, m_fXThickness);     // xfoil hipnt is the most sensitive routine - better do it first
+    s_pXFoil->tcset(m_fCamber, m_fThickness);       // xfoil tcset to change camber or thickness
+
+
+    // output sanity
+
+    // this never should happen
+    if(s_pXFoil->nb != m_pMemFoil->n)
     {
-        double thickness = m_pctrlThickness->value()/100.0;
-        double camber    = m_pctrlCamber->value()/100.0;
-        s_pXFoil->tcset(camber, thickness);
-        m_pctrlCamberSlide->setSliderPosition(int(camber*100*10));
-        m_pctrlThickSlide->setSliderPosition(int(thickness*100*10));
-        m_bApplied = true;
+        QMessageBox::information(window(), tr("Error"), tr("Panel number changed during modification"));
     }
 
-//    if(!m_bAppliedX)
+    // is output corrupted? if yes re-panel base airfoil for the next try
+    else if (!isXFoilOk())
     {
-        double Xthickness = m_pctrlXThickness->value()/100.0;
-        double Xcamber    = m_pctrlXCamber->value()/100.0;
-        s_pXFoil->hipnt(Xcamber, Xthickness);
-        m_pctrlXCamberSlide->setSliderPosition(int(Xcamber*100*10));
-        m_pctrlXThickSlide->setSliderPosition(int(Xthickness*100*10));
-        m_bAppliedX = true;
-    }
+        s_pXFoil->initialize();
+        s_pXFoil->initXFoilGeometry(m_pMemFoil->n, m_pMemFoil->x, m_pMemFoil->y, m_pBufferFoil->nx, m_pBufferFoil->ny);
+        s_pXFoil->npan = s_pXFoil->nb;
+        s_pXFoil->pangen();
+        qDebug ("FoilGeomDlg: pangen with nb =%3d due to corrupted output airfoil", s_pXFoil->nb);
 
-    if(s_pXFoil->nb>IQX)
-    {
-        QMessageBox::information(window(), tr("Warning"), tr("Panel number cannot exceed 300"));
-        //reset everything and retry
-        for (int i=0; i< m_pMemFoil->nb; i++)
+        for (int j=0; j< s_pXFoil->n; j++)
         {
-            s_pXFoil->x[i+1] = m_pMemFoil->xb[i];
-            s_pXFoil->y[i+1] = m_pMemFoil->yb[i];
+            m_pBaseFoil->x[j] = s_pXFoil->x[j+1];
+            m_pBaseFoil->y[j] = s_pXFoil->y[j+1];
         }
-        s_pXFoil->n = m_pMemFoil->nb;
     }
+    // everything ok - update bufferFoil to display for user
     else
     {
         for (int j=0; j< s_pXFoil->nb; j++)
@@ -298,10 +304,26 @@ void FoilGeomDlg::apply()
         m_pBufferFoil->initFoil();
         m_pBufferFoil->setFlap();
     }
-    m_bModified = true;
 
+    m_bModified = true;
     m_pParent->update();
+    m_modifying = false;
 }
+
+
+
+bool FoilGeomDlg::isXFoilOk ()
+{
+    for (int j=0; j< s_pXFoil->nb; j++)
+    {
+        if (isnan(s_pXFoil->xb[j+1]) || isnan(s_pXFoil->xb[j+1]))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 
 
 void FoilGeomDlg::keyPressEvent(QKeyEvent *event)
@@ -321,8 +343,6 @@ void FoilGeomDlg::keyPressEvent(QKeyEvent *event)
             {
                 apply();
                 m_OKButton->setFocus();
-                m_bApplied  = true;
-                m_bAppliedX = true;
             }
             else
             {
@@ -339,142 +359,124 @@ void FoilGeomDlg::keyPressEvent(QKeyEvent *event)
 
 void FoilGeomDlg::initDialog()
 {
-    m_fCamber     = m_pMemFoil->camber();
-    m_fThickness  = m_pMemFoil->thickness();
-    m_fXCamber    = m_pMemFoil->xCamber();
-    m_fXThickness = m_pMemFoil->xThickness();
+    // round values to be consistend to entry field value decimals
+    m_fCamber     = round (m_pMemFoil->camber()     * 10000) / 10000 ;
+    m_fThickness  = round (m_pMemFoil->thickness()  * 10000) / 10000 ;
+    m_fXCamber    = round (m_pMemFoil->xCamber()    * 10000) / 10000 ;
+    m_fXThickness = round (m_pMemFoil->xThickness() * 10000) / 10000 ;
 
     if(qAbs(m_fCamber) <0.0001)
     {
-//        m_pctrlCamb->SetWindowText("The foil's camber is too small to be scaled"); //TODO
         m_pctrlCamberSlide->setEnabled(false);
         m_pctrlCamber->setEnabled(false);
     }
 
+    // set values into entry fields and sliders
     m_pctrlCamber->setValue(m_fCamber*100.0);
     m_pctrlThickness->setValue(m_fThickness*100.0);
     m_pctrlXCamber->setValue(m_fXCamber*100.0);
     m_pctrlXThickness->setValue(m_fXThickness*100.0);
 
-
     m_pctrlCamberSlide->setSliderPosition(int(m_fCamber*1000.0));
     m_pctrlThickSlide->setSliderPosition(int(m_fThickness*1000.0));
-
     m_pctrlXCamberSlide->setSliderPosition(int(m_fXCamber*1000.0));
     m_pctrlXThickSlide->setSliderPosition(int(m_fXThickness*1000.0));
 
-    m_bApplied  = true;
-    m_bAppliedX = true;
+    m_modifying = false;
+    m_pBaseFoil = new Foil();
+    m_pBaseFoil->copyFoil(m_pMemFoil);
 }
 
 
 void FoilGeomDlg::onRestore()
 {
     m_pBufferFoil->copyFoil(m_pMemFoil);
+    m_pBufferFoil->setEditStyle();
 
-    m_fThickness   = m_pMemFoil->thickness();
-    m_fCamber      = m_pMemFoil->camber();
-    m_fXThickness  = m_pMemFoil->xThickness();
-    m_fXCamber     = m_pMemFoil->xCamber();
+    initDialog ();
 
-    s_pXFoil->thickb = m_fThickness;
-    s_pXFoil->cambrb = m_fCamber;
-
-    m_pctrlThickness->setValue(m_fThickness*100.0);
-    m_pctrlCamber->setValue(m_fCamber*100.0);
-    m_pctrlThickSlide->setSliderPosition(int(m_fThickness*1000.0));
-    m_pctrlCamberSlide->setSliderPosition(int(m_fCamber*1000.0));
-
-    m_pctrlXThickness->setValue(m_fXThickness*100.0);
-    m_pctrlXCamber->setValue(m_fXCamber*100.0);
-    m_pctrlXThickSlide->setSliderPosition(int(m_fXThickness*1000.0));
-    m_pctrlXCamberSlide->setSliderPosition(int(m_fXCamber*1000.0));
-
-    m_bApplied  = true;
-    m_bAppliedX = true;
     m_bModified = false;
-
     m_pParent->update();
+}
+
+void FoilGeomDlg::onOK()
+{
+    apply();
+    if(!m_bModified) done(0);
+    else done(1);
 }
 
 
 
 void FoilGeomDlg::onCamber()
 {
-    m_bApplied = false;
-    m_fCamber = m_pctrlCamber->value();
-    m_pctrlCamberSlide->setValue(int(m_fCamber*10.0));
+    m_fCamber = m_pctrlCamber->value() / 100.0;
+    m_pctrlCamberSlide->blockSignals( true );
+    m_pctrlCamberSlide->setValue(int(m_fCamber*1000.0));
+    m_pctrlCamberSlide->blockSignals( false );
     apply();
 }
-
 
 void FoilGeomDlg::onCamberSlide(int pos)
 {
-    m_fCamber = double(pos)/10.0;
-    m_pctrlCamber->setValue(m_fCamber);
-    m_bApplied = false;
+    m_fCamber = double(pos)/1000.0;
+    m_pctrlCamber->blockSignals( true );
+    m_pctrlCamber->setValue(m_fCamber * 100.0);
+    m_pctrlCamber->blockSignals( false );
     apply();
 }
-
-
-void FoilGeomDlg::onOK()
-{
-    if(!m_bApplied || !m_bAppliedX)    apply();
-    if(!m_bModified) done(0);
-    else done(1);
-}
-
 
 void FoilGeomDlg::onThickness()
 {
-    m_bApplied = false;
-    m_fThickness = m_pctrlThickness->value();
-    m_pctrlThickSlide->setValue(int(m_fThickness*10.0));
+    m_fThickness = m_pctrlThickness->value() / 100.0;
+    m_pctrlThickSlide->blockSignals( true );
+    m_pctrlThickSlide->setValue(int(m_fThickness*1000.0));
+    m_pctrlThickSlide->blockSignals( false );
     apply();
 }
-
 
 void FoilGeomDlg::onThickSlide(int pos)
 {
-    m_fThickness = double(pos)/10.0;
-    m_pctrlThickness->setValue(m_fThickness);
-    m_bApplied = false;
+    m_fThickness = double(pos)/1000.0;
+    m_pctrlThickness->blockSignals( true );
+    m_pctrlThickness->setValue(m_fThickness *100.0);
+    m_pctrlThickness->blockSignals( false );
     apply();
 }
-
 
 void FoilGeomDlg::onXCamberSlide(int pos)
 {
-    m_fXCamber = double(pos)/10.0;
-    m_pctrlXCamber->setValue(m_fXCamber);
-    m_bAppliedX = false;
+    m_fXCamber = double(pos)/1000.0;
+    m_pctrlXCamber->blockSignals( true );
+    m_pctrlXCamber->setValue(m_fXCamber * 100.0);
+    m_pctrlXCamber->blockSignals( false );
     apply();
 }
-
 
 void FoilGeomDlg::onXCamber()
 {
-    m_bAppliedX = false;
-    m_fXCamber = m_pctrlXCamber->value();
-    m_pctrlXCamberSlide->setValue(int(m_fXCamber*10.0));
+    m_fXCamber = m_pctrlXCamber->value() / 100.0;
+    m_pctrlXCamberSlide->blockSignals( true );
+    m_pctrlXCamberSlide->setValue(int(m_fXCamber*1000.0));
+    m_pctrlXCamberSlide->blockSignals( false );
     apply();
 }
-
 
 void FoilGeomDlg::onXThickSlide(int pos)
 {
-    m_fXThickness = double(pos)/10.0;
-    m_pctrlXThickness->setValue(m_fXThickness);
-    m_bAppliedX = false;
+    m_fXThickness = double(pos)/1000.0;
+    m_pctrlXThickness->blockSignals( true );
+    m_pctrlXThickness->setValue(m_fXThickness * 100.0);
+    m_pctrlXThickness->blockSignals( false );
     apply();
 }
 
-
 void FoilGeomDlg::onXThickness()
 {
-    m_bAppliedX = false;
-    m_fXThickness = m_pctrlXThickness->value();
-    m_pctrlXThickSlide->setValue(int(m_fXThickness*10.0));
+    m_fXThickness = m_pctrlXThickness->value() / 100.0;
+    m_pctrlXThickSlide->blockSignals( true );
+    m_pctrlXThickSlide->setValue(int(m_fXThickness*1000.0));
+    m_pctrlXThickSlide->blockSignals( false );
     apply();
 }
 

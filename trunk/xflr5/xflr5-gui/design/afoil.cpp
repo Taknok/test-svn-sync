@@ -408,11 +408,8 @@ void AFoil::onAFoilDerotateFoil()
     if(!XDirect::curFoil()) return;
 
     m_pBufferFoil->copyFoil(XDirect::curFoil());
-    m_pBufferFoil->setVisible(true);
     m_pBufferFoil->setFoilName(XDirect::curFoil()->foilName());
-    m_pBufferFoil->setColor(160,160,160);
-    m_pBufferFoil->setLineStipple(1);
-    m_pBufferFoil->setLineWidth(1);
+    m_pBufferFoil->setEditStyle();
 
     m_p2DWidget->update();
 
@@ -462,11 +459,7 @@ void AFoil::onAFoilCadd()
 
     m_pBufferFoil->copyFoil(XDirect::curFoil());
     m_pBufferFoil->setFoilName(XDirect::curFoil()->foilName());
-    m_pBufferFoil->setColor(160,160,160);
-    m_pBufferFoil->setLineStipple(1);
-    m_pBufferFoil->setLineWidth(1);
-    m_pBufferFoil->setPointStyle(1);
-    m_pBufferFoil->setVisible(true);
+    m_pBufferFoil->setEditStyle();
 
     m_p2DWidget->update();
 
@@ -530,11 +523,7 @@ void AFoil::onAFoilPanels()
 
     m_pBufferFoil->copyFoil(XDirect::curFoil());
     m_pBufferFoil->setFoilName(XDirect::curFoil()->foilName());
-    m_pBufferFoil->setColor(160,160,160);
-    m_pBufferFoil->setLineStipple(1);
-    m_pBufferFoil->setLineWidth(1);
-    m_pBufferFoil->setPointStyle(1);
-    m_pBufferFoil->setVisible(true);
+    m_pBufferFoil->setEditStyle();
 
     m_p2DWidget->update();
 
@@ -581,12 +570,8 @@ void AFoil::onAFoilFoilCoordinates()
     if(!XDirect::curFoil()) return;
 
     m_pBufferFoil->copyFoil(XDirect::curFoil());
-    m_pBufferFoil->setPointStyle(1);
-    m_pBufferFoil->setVisible(true);
     m_pBufferFoil->setFoilName(XDirect::curFoil()->foilName());
-    m_pBufferFoil->setColor(160,160,160);
-    m_pBufferFoil->setLineStipple(1);
-    m_pBufferFoil->setLineWidth(1);
+    m_pBufferFoil->setEditStyle();
 
     m_p2DWidget->update();
 
@@ -628,12 +613,8 @@ void AFoil::onAFoilFoilGeom()
     if(!XDirect::curFoil()) return;
 
     m_pBufferFoil->copyFoil(XDirect::curFoil());
-    m_pBufferFoil->setPointStyle(1);
-    m_pBufferFoil->setVisible(true);
     m_pBufferFoil->setFoilName(XDirect::curFoil()->foilName());
-    m_pBufferFoil->setColor(160,160,160);
-    m_pBufferFoil->setLineStipple(1);
-    m_pBufferFoil->setLineWidth(1);
+    m_pBufferFoil->setEditStyle();
 
     m_p2DWidget->update();
 
@@ -680,12 +661,8 @@ void AFoil::onAFoilSetTEGap()
     if(!XDirect::curFoil()) return;
 
     m_pBufferFoil->copyFoil(XDirect::curFoil());
-    m_pBufferFoil->setPointStyle(1);
-    m_pBufferFoil->setVisible(true);
     m_pBufferFoil->setFoilName(XDirect::curFoil()->foilName());
-    m_pBufferFoil->setColor(160,160,160);
-    m_pBufferFoil->setLineStipple(1);
-    m_pBufferFoil->setLineWidth(1);
+    m_pBufferFoil->setEditStyle();
 
     m_p2DWidget->update();
 
@@ -733,12 +710,8 @@ void AFoil::onAFoilSetLERadius()
     if(!XDirect::curFoil()) return;
 
     m_pBufferFoil->copyFoil(XDirect::curFoil());
-    m_pBufferFoil->setVisible(true);
-    m_pBufferFoil->setPointStyle(1);
     m_pBufferFoil->setFoilName(XDirect::curFoil()->foilName());
-    m_pBufferFoil->setColor(160,160,160);
-    m_pBufferFoil->setLineStipple(1);
-    m_pBufferFoil->setLineWidth(1);
+    m_pBufferFoil->setEditStyle();
 
     m_p2DWidget->update();
 
@@ -793,11 +766,7 @@ void AFoil::onAFoilInterpolateFoils()
     if(!XDirect::curFoil()) return;
     m_pBufferFoil->copyFoil(XDirect::curFoil());
     m_pBufferFoil->setFoilName(XDirect::curFoil()->foilName());
-    m_pBufferFoil->setColor(160,160,160);
-    m_pBufferFoil->setLineStipple(1);
-    m_pBufferFoil->setLineWidth(1);
-    m_pBufferFoil->setPointStyle(1);
-    m_pBufferFoil->setVisible(true);
+    m_pBufferFoil->setEditStyle();
 
     m_p2DWidget->update();
 
@@ -841,12 +810,8 @@ void AFoil::onAFoilInterpolateFoils()
 void AFoil::onAFoilNacaFoils()
 {
     m_pBufferFoil->setNaca009();
-    m_pBufferFoil->setPointStyle(1);
-    m_pBufferFoil->setVisible(true);
     m_pBufferFoil->setFoilName("Naca xxxx");
-    m_pBufferFoil->setColor(160,160,160);
-    m_pBufferFoil->setLineStipple(1);
-    m_pBufferFoil->setLineWidth(1);
+    m_pBufferFoil->setEditStyle();
 
     m_p2DWidget->update();
 
@@ -899,11 +864,8 @@ void AFoil::onAFoilSetFlap()
     if(!XDirect::curFoil()) return;
 
     m_pBufferFoil->copyFoil(XDirect::curFoil());
-    m_pBufferFoil->setVisible(true);
     m_pBufferFoil->setFoilName(XDirect::curFoil()->foilName());
-    m_pBufferFoil->setColor(160,160,160);
-    m_pBufferFoil->setLineStipple(1);
-    m_pBufferFoil->setLineWidth(1);
+    m_pBufferFoil->setEditStyle();
 
     m_p2DWidget->update();
 
