@@ -1189,7 +1189,7 @@ void WPolarDlg::setReynolds()
     }
     else if(s_WPolar.polarType() == XFLR5::FIXEDLIFTPOLAR)
     {
-        double QCl =  sqrt(2.* 9.81 /s_WPolar.density()* s_WPolar.mass() /s_WPolar.referenceArea()) * Units::mstoUnit();
+        double QCl =  sqrt(2.* 9.81 /s_WPolar.density()* s_WPolar.mass() /s_WPolar.referenceArea());
         str = QString("%1 ").arg(QCl,5,'f',2);
         str += strUnit;
         strange = tr("Vinf.sqrt(Cl) =");
