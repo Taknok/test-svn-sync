@@ -107,11 +107,8 @@ PanelAnalysis::PanelAnalysis()
     m_nNodes         = 0;
     m_NWakeColumn    = 0;
 
-
     m_nWakeNodes = 0;
     m_WakeSize   = 0;
-
-    phiG = 0.0;
 
     Theta0 = 0.0;
     u0     = 0.0;
@@ -938,8 +935,8 @@ void PanelAnalysis::createWakeContribution()
 
     Vector3d V, C, CC, TrPt;
     double phi=0;
-    double* PHC = new double[ulong(m_NWakeColumn)];
-    Vector3d *VHC = new Vector3d[ulong(m_NWakeColumn)];
+    QVector<double> PHC(m_NWakeColumn);
+    QVector<Vector3d> VHC(m_NWakeColumn);
 
     traceLog("      Adding the wake's contribution...\n");
 
@@ -1066,10 +1063,8 @@ void PanelAnalysis::createWakeContribution()
         }
         m_Progress += 1.0/double(m_MatSize);
     }
-
-    delete [] PHC;
-    delete [] VHC;
 }
+
 
 
 /**
@@ -1081,14 +1076,12 @@ void PanelAnalysis::createWakeContribution()
 *     is set arbitrarily to the geometrical orgin so that phi = V.dot(WindDirectio) x point_position
 * Only a flat wake is considered. Wake roll-up has been tested but did not prove robust enough for implementation.
 */
-void PanelAnalysis::createWakeContribution(double *pWakeContrib, Vector3d WindDirection)
+void PanelAnalysis::createWakeContribution(double *pWakeContrib, const Vector3d &WindDirection)
 {
-    int kw, lw, pw, p, pp;
-
     Vector3d V, C, CC, TrPt;
-    double phi;
-    double* PHC = new double[uint(m_NWakeColumn)];
-    Vector3d* VHC = new Vector3d[uint(m_NWakeColumn)];
+    double phi=0.0;
+    QVector<double> PHC(m_NWakeColumn);
+    QVector<Vector3d> VHC(m_NWakeColumn);
 
     traceLog("      Adding the wake's contribution...\n");
 
@@ -1098,7 +1091,7 @@ void PanelAnalysis::createWakeContribution(double *pWakeContrib, Vector3d WindDi
     int m, mm;
     m = mm = 0;
 
-    for(p=0; p<m_MatSize; p++)
+    for(int p=0; p<m_MatSize; p++)
     {
         if(s_bCancel) return;
         //        if(!m_b3DSymetric || m_pPanel[p].m_bIsLeftPanel)
@@ -1112,13 +1105,13 @@ void PanelAnalysis::createWakeContribution(double *pWakeContrib, Vector3d WindDi
         //____________________________________________________________________________
         //build the contributions of each wake column at point C
         //we have m_NWakeColum to consider
-        pw=0;
-        for (kw=0; kw<m_NWakeColumn; kw++)
+        int pw=0;
+        for (int kw=0; kw<m_NWakeColumn; kw++)
         {
             PHC[kw] = 0.0;
             VHC[kw].set(0.0,0.0,0.0);
             //each wake column has m_NXWakePanels
-            for(lw=0; lw<m_pWPolar->m_NXWakePanels; lw++)
+            for(int lw=0; lw<m_pWPolar->m_NXWakePanels; lw++)
             {
                 getDoubletInfluence(C, m_pWakePanel+pw, V, phi, true, true);
 
@@ -1139,7 +1132,7 @@ void PanelAnalysis::createWakeContribution(double *pWakeContrib, Vector3d WindDi
         //____________________________________________________________________________
         //Add the contributions to the matrix coefficients and to the RHS
         mm = 0;
-        for(pp=0; pp<m_MatSize; pp++) //for each matrix column
+        for(int pp=0; pp<m_MatSize; pp++) //for each matrix column
         {
             //                if(!m_b3DSymetric || m_pPanel[pp].m_bIsLeftPanel)
             //                {
@@ -1200,9 +1193,6 @@ void PanelAnalysis::createWakeContribution(double *pWakeContrib, Vector3d WindDi
         //        }
         m_Progress += 1.0/double(m_MatSize);
     }
-
-    delete [] PHC;
-    delete [] VHC;
 }
 
 
@@ -1219,8 +1209,10 @@ void PanelAnalysis::createWakeContribution(double *pWakeContrib, Vector3d WindDi
 void PanelAnalysis::computeFarField(double QInf, double Alpha0, double AlphaDelta, int nval)
 {
     QString strong;
-    int q, pos;
-    double alpha, IDrag, *Mu, *Sigma;
+
+    double alpha=0, IDrag=0;
+    double *Mu=nullptr;
+    double *Sigma=nullptr;
     double ThinSize = 0.0;
     Vector3d WindNormal, WingForce;
 
@@ -1231,7 +1223,7 @@ void PanelAnalysis::computeFarField(double QInf, double Alpha0, double AlphaDelt
         if(m_pWingList[iw]) ThinSize += double(m_pWingList[iw]->m_MatSize);
     }
 
-    for (q=0; q<nval;q++)
+    for (int q=0; q<nval;q++)
     {
         if(m_pWPolar->bTilted()) alpha = m_OpAlpha;
         else
@@ -1244,7 +1236,7 @@ void PanelAnalysis::computeFarField(double QInf, double Alpha0, double AlphaDelt
         }
         WindNormal.set(-sin(alpha*PI/180.0), 0.0, cos(alpha*PI/180.0));
 
-        pos = 0;
+        int pos = 0;
         Mu     = m_Mu    + q*m_MatSize;
         Sigma  = m_Sigma + q*m_MatSize;
 
@@ -1288,7 +1280,6 @@ void PanelAnalysis::computeBalanceSpeeds(double Alpha, int q)
 {
     QString strong;
     Vector3d Force, WindNormal;
-    double TempCl,Lift;
     WindNormal.set(-sin(Alpha*PI/180.0),   0.0, cos(Alpha*PI/180.0));
 
     Force.set(0.0,0.0,0.0);
@@ -1303,8 +1294,8 @@ void PanelAnalysis::computeBalanceSpeeds(double Alpha, int q)
     }
     else if(m_pWPolar->isFixedLiftPolar())
     {
-        Lift =  Force.dot(WindNormal) ;      //N/q, for 1/ms
-        TempCl = Lift/m_pWPolar->referenceArea();
+        double Lift =  Force.dot(WindNormal) ;      //N/q, for 1/ms
+        double TempCl = Lift/m_pWPolar->referenceArea();
         if(Lift<=0.0)
         {
             strong = "           "+QString("Found a negative lift for Alpha=%1.... skipping the angle...\n").arg(Alpha, 5,'f',2);
@@ -1332,7 +1323,6 @@ void PanelAnalysis::computeBalanceSpeeds(double Alpha, int q)
 */
 void PanelAnalysis::scaleResultstoSpeed(int nval)
 {
-    int p, q, pp;
     //______________________________________________________________________________________
     // Scale RHS and Sigma i.a.w. speeds (so far we have unit doublet and source strengths)
 
@@ -1344,10 +1334,10 @@ void PanelAnalysis::scaleResultstoSpeed(int nval)
 
     if(m_pWPolar->polarType()!=XFLR5::FIXEDAOAPOLAR)
     {
-        p=0;
-        for (q=0; q<nval;q++)
+        int p=0;
+        for (int q=0; q<nval;q++)
         {
-            for(pp=0; pp<m_MatSize; pp++)
+            for(int pp=0; pp<m_MatSize; pp++)
             {
                 m_Mu[p]     *= m_3DQInf[q];
                 m_Sigma[p]  *= m_3DQInf[q];
@@ -1358,10 +1348,10 @@ void PanelAnalysis::scaleResultstoSpeed(int nval)
     else
     {
         //type 4, we scale the first single rhs for all specified speed values
-        p=0;
-        for (q=0; q<nval;q++)
+        int p=0;
+        for (int q=0; q<nval;q++)
         {
-            for(pp=0; pp<m_MatSize; pp++)
+            for(int pp=0; pp<m_MatSize; pp++)
             {
                 m_Mu[p]    = m_RHSRef[pp]   * m_3DQInf[q];
                 m_Sigma[p] = m_SigmaRef[pp] * m_3DQInf[q];
@@ -1373,7 +1363,7 @@ void PanelAnalysis::scaleResultstoSpeed(int nval)
     //scale the strip force and downwash fields
     if(m_pWPolar->polarType()!=XFLR5::FIXEDAOAPOLAR)
     {
-        for (q=0; q<nval;q++)
+        for (int q=0; q<nval;q++)
         {
             for(int iw=0; iw<MAXWINGS; iw++)
             {
@@ -1390,7 +1380,7 @@ void PanelAnalysis::scaleResultstoSpeed(int nval)
     }
     else
     {
-        for (q=0; q<nval;q++)
+        for (int q=0; q<nval;q++)
         {
             for(int iw=0; iw<MAXWINGS; iw++)
             {
@@ -1407,7 +1397,6 @@ void PanelAnalysis::scaleResultstoSpeed(int nval)
             }
         }
     }
-
 }
 
 
@@ -1626,7 +1615,7 @@ void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
 * @param Cp a pointer to the array of resulting panel lift coefficients
 * @param VInf the freestream velocity vector
 */
-void PanelAnalysis::getVortexCp(const int &p, double *Gamma, double *Cp, Vector3d &VInf)
+void PanelAnalysis::getVortexCp(int p, double const *Gamma, double *Cp, Vector3d const &VInf) const
 {
     Vector3d PanelForce, Force;
     // for each panel along the chord, add the lift coef
@@ -1655,17 +1644,16 @@ void PanelAnalysis::getVortexCp(const int &p, double *Gamma, double *Cp, Vector3
 * @param Vx the x-component of the freestream velocity vector
 * @param Vz the z-component of the freestream velocity vector
 */
-void PanelAnalysis::getDoubletDerivative(const int &p, double const*Mu, double &Cp, Vector3d &VLocal, double const &QInf, double Vx, double Vy, double Vz)
+void PanelAnalysis::getDoubletDerivative(const int &p, double const*Mu, double &Cp, Vector3d &VLocal, double QInf, double Vx, double Vy, double Vz) const
 {
-    int PL,PR, PU, PD;
-    double DELQ, DELP, mu0,mu1,mu2, x0,x1,x2, Speed2;
+    double DELQ=0, DELP=0, mu0=0, mu1=0, mu2=0, x0=0, x1=0, x2=0, Speed2=0;
     Vector3d VTot;//total local panel speed
     Vector3d S2, Sl2;
 
-    PL = m_pPanel[p].m_iPL;
-    PR = m_pPanel[p].m_iPR;
-    PU = m_pPanel[p].m_iPU;
-    PD = m_pPanel[p].m_iPD;
+    int PL = m_pPanel[p].m_iPL;
+    int PR = m_pPanel[p].m_iPR;
+    int PU = m_pPanel[p].m_iPU;
+    int PD = m_pPanel[p].m_iPD;
 
     if(PL>=0 && PR>=0)
     {
@@ -1822,7 +1810,7 @@ void PanelAnalysis::computeOnBodyCp(double V0, double VDelta, int nval)
 {
     //following VSAERO theory manual
     //the on-body tangential perturbation speed is the derivative of the doublet strength
-    int p, q;
+
     double Alpha, *Mu, *Cp;
     Vector3d WindDirection, VInf, VLocal;
     double Speed2, cosa, sina;
@@ -1831,7 +1819,7 @@ void PanelAnalysis::computeOnBodyCp(double V0, double VDelta, int nval)
 
     if(m_pWPolar->polarType() != XFLR5::FIXEDAOAPOLAR)
     {
-        for (q=0; q<nval; q++)
+        for (int q=0; q<nval; q++)
         {
             //   Define wind axis
             Alpha = V0 + double(q) * VDelta;
@@ -1844,7 +1832,7 @@ void PanelAnalysis::computeOnBodyCp(double V0, double VDelta, int nval)
             //            Sigma  = m_Sigma + q * m_MatSize;
             Cp     = m_Cp    + q * m_MatSize;
 
-            for (p=0; p<m_MatSize; p++)
+            for (int p=0; p<m_MatSize; p++)
             {
                 if(m_pPanel[p].m_Pos!=MIDSURFACE)
                 {
@@ -1865,7 +1853,7 @@ void PanelAnalysis::computeOnBodyCp(double V0, double VDelta, int nval)
     {
         //   Define wind axis
         WindDirection.set(cos(m_Alpha*PI/180.0), 0.0, sin(m_Alpha*PI/180.0));
-        for (q=0; q<nval; q++)
+        for (int q=0; q<nval; q++)
         {
             VInf = WindDirection * m_3DQInf[q];
 
@@ -1873,7 +1861,7 @@ void PanelAnalysis::computeOnBodyCp(double V0, double VDelta, int nval)
             //            Sigma  = m_Sigma + q * m_MatSize;
             Cp     = m_Cp    + q * m_MatSize;
 
-            for (p=0; p<m_MatSize; p++)
+            for (int p=0; p<m_MatSize; p++)
             {
                 if(s_bCancel) break;
 
@@ -1883,10 +1871,10 @@ void PanelAnalysis::computeOnBodyCp(double V0, double VDelta, int nval)
 
             m_Progress += 1.0  *double(nval)/double(nval);
         }
-        for (q=1; q<nval; q++)
+        for (int q=1; q<nval; q++)
         {
             if(s_bCancel) return;
-            for (p=0; p<m_MatSize; p++)
+            for (int p=0; p<m_MatSize; p++)
             {
                 m_Cp[p+q*m_MatSize] = m_Cp[p];
             }
@@ -1908,7 +1896,7 @@ void PanelAnalysis::computeOnBodyCp(double V0, double VDelta, int nval)
 *@param bWake true if the panel is located on the wake
 *@param bAll true if the influence of the bound vortex should be evaluated, in the case of a VLM analysis.
 */
-void PanelAnalysis::getDoubletInfluence(Vector3d const &C, Panel *pPanel, Vector3d &V, double &phi, bool bWake, bool bAll)
+void PanelAnalysis::getDoubletInfluence(Vector3d const &C, Panel const *pPanel, Vector3d &V, double &phi, bool bWake, bool bAll) const
 {
     if(pPanel->m_Pos!=MIDSURFACE || pPanel->m_bIsWakePanel)
         pPanel->doubletNASA4023(C, V, phi, bWake);
@@ -1920,7 +1908,9 @@ void PanelAnalysis::getDoubletInfluence(Vector3d const &C, Panel *pPanel, Vector
 
     if(m_pWPolar->bGround())
     {
-        CG.set(C.x, C.y, -C.z-2.0*m_pWPolar->m_Height);
+        double phiG = 0.0;
+        Vector3d VG;
+        Vector3d CG(C.x, C.y, -C.z-2.0*m_pWPolar->m_Height);
 
         if(pPanel->m_Pos!=MIDSURFACE || pPanel->m_bIsWakePanel)    pPanel->doubletNASA4023(CG, VG, phiG, bWake);
         else
@@ -1944,13 +1934,15 @@ void PanelAnalysis::getDoubletInfluence(Vector3d const &C, Panel *pPanel, Vector
 * @param V the perturbation velocity at point C
 * @param phi the potential at point C
 */
-void PanelAnalysis::getSourceInfluence(Vector3d const &C, Panel *pPanel, Vector3d &V, double &phi)
+void PanelAnalysis::getSourceInfluence(Vector3d const &C, Panel *pPanel, Vector3d &V, double &phi) const
 {
     pPanel->sourceNASA4023(C, V, phi);
 
     if(m_pWPolar->bGround())
     {
-        CG.set(C.x, C.y, -C.z-2.0*m_pWPolar->m_Height);
+        double phiG = 0.0;
+        Vector3d VG;
+        Vector3d CG(C.x, C.y, -C.z-2.0*m_pWPolar->m_Height);
         pPanel->sourceNASA4023(CG, VG, phiG);
         V.x += VG.x;
         V.y += VG.y;
@@ -1968,7 +1960,7 @@ void PanelAnalysis::getSourceInfluence(Vector3d const &C, Panel *pPanel, Vector3
 * @param VT the resulting perturbation velocity
 * @param bAll true if the influence of the bound vortex should be included, in the case of a VLM analysis
 */
-void PanelAnalysis::getSpeedVector(Vector3d const &C, double const *Mu, double const *Sigma, Vector3d &VT, bool bAll)
+void PanelAnalysis::getSpeedVector(Vector3d const &C, double const *Mu, double const *Sigma, Vector3d &VT, bool bAll) const
 {
     Vector3d V;
     int pp, pw, lw;
@@ -2219,12 +2211,11 @@ void PanelAnalysis::createDoubletStrength(double Alpha0, double AlphaDelta, int 
 * @param Lift the resulting lift force
 * @param Drag the resulting drag force
 */
-void PanelAnalysis::sumPanelForces(double *Cp, double Alpha, double &Lift, double &Drag)
+void PanelAnalysis::sumPanelForces(double const *Cp, double Alpha, double &Lift, double &Drag)
 {
-    int p;
     Vector3d PanelForce;
 
-    for(p=0; p<m_MatSize; p++)
+    for(int p=0; p<m_MatSize; p++)
     {
         PanelForce += m_pPanel[p].Normal * (-Cp[p]) * m_pPanel[p].Area;
     }
@@ -2246,7 +2237,7 @@ bool PanelAnalysis::unitLoop()
     QString str;
     Vector3d O(0.0,0.0,0.0);
 
-    int n, nWakeIter, MaxWakeIter;
+    int MaxWakeIter=0;
 
     if(!m_pWPolar->bWakeRollUp()) MaxWakeIter = 1;
     else                          MaxWakeIter = qMax(s_MaxWakeIter, 1);
@@ -2256,8 +2247,7 @@ bool PanelAnalysis::unitLoop()
     str = QString("   Solving the problem...\n");
     traceLog("\n"+str);
 
-
-    for (n=0; n<m_nRHS; n++)
+    for (int n=0; n<m_nRHS; n++)
     {
         switch(m_pWPolar->polarType())
         {
@@ -2317,7 +2307,7 @@ bool PanelAnalysis::unitLoop()
         createSourceStrength(0.0, m_vDelta, 1);
         if (s_bCancel) return true;
 
-        for (nWakeIter = 0; nWakeIter<MaxWakeIter; nWakeIter++)
+        for (int nWakeIter = 0; nWakeIter<MaxWakeIter; nWakeIter++)
         {
             if(m_pWPolar->bWakeRollUp())
             {
@@ -2409,7 +2399,7 @@ bool PanelAnalysis::unitLoop()
 * @param V a reference to the resulting perturbation velocity vector
 * @param bAll true if the influence of the bound vector should be included. Not necessary in the case of a far-field evaluation.
 */
-void PanelAnalysis::VLMGetVortexInfluence(Panel *pPanel, Vector3d const &C, Vector3d &V, bool bAll)
+void PanelAnalysis::VLMGetVortexInfluence(Panel const *pPanel, Vector3d const &C, Vector3d &V, bool bAll) const
 {
     int lw=0, pw=0, p=0;
     Vector3d AA1, BB1, VT;
@@ -4354,7 +4344,7 @@ void PanelAnalysis::computeControlDerivatives()
 * The effect of the viscous drag is not included.
 *@param Alpha the aoa for which Cm is calculated
 */
-double PanelAnalysis::computeCm(double Alpha)
+double PanelAnalysis::computeCm(double Alpha) const
 {
     Vector3d VInf, Force, PanelLeverArm, ForcePt, PanelForce, WindDirection, VLocal;
 
@@ -4635,9 +4625,9 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double *Gamma, double *Sigma
  * The message is read and cleared from the calling dialog class.
  * @param str the message to output
 */
-void PanelAnalysis::traceLog(QString str)
+void PanelAnalysis::traceLog(QString str) const
 {
-    emit(outputMsg(str));
+    emit outputMsg(str);
     qApp->processEvents();
 }
 
@@ -4738,28 +4728,26 @@ void PanelAnalysis::computePhillipsFormulae()
 }
 
 
-
-
-
 /**
  * Rotates all the panels about the y-axis
  * @param Angle the rotation angle in degrees
  * @param P the point of origin of the rotation
  */
-void PanelAnalysis::rotateGeomY(double const &Alpha, Vector3d const &P, int NXWakePanels)
+void PanelAnalysis::rotateGeomY(double Alpha, Vector3d const &P, int NXWakePanels)
 {
-    int n, p, pw, kw, lw;
-
-    int iLA, iLB, iTA, iTB;
     Vector3d LATB, TALB, Pt, Trans;
 
-    for (n=0; n<m_nNodes; n++)
-        m_pNode[n].rotateY(P, Alpha);
-
-    for (p=0; p<m_MatSize; p++)
+    for (int n=0; n<m_nNodes; n++)
     {
-        iLA = m_pPanel[p].m_iLA; iLB = m_pPanel[p].m_iLB;
-        iTA = m_pPanel[p].m_iTA; iTB = m_pPanel[p].m_iTB;
+        m_pNode[n].rotateY(P, Alpha);
+    }
+
+    for (int p=0; p<m_MatSize; p++)
+    {
+        int iLA = m_pPanel[p].m_iLA;
+        int iLB = m_pPanel[p].m_iLB;
+        int iTA = m_pPanel[p].m_iTA;
+        int iTB = m_pPanel[p].m_iTB;
 
         LATB = m_pNode[iLA] - m_pNode[iTB];
         TALB = m_pNode[iTA] - m_pNode[iLB];
@@ -4769,10 +4757,9 @@ void PanelAnalysis::rotateGeomY(double const &Alpha, Vector3d const &P, int NXWa
     }
 
     // the wake array is not rotated but translated to remain at the wing's trailing edge
-    pw=0;
+    int pw=0;
 
-
-    for (kw=0; kw<m_NWakeColumn; kw++)
+    for (int kw=0; kw<m_NWakeColumn; kw++)
     {
         //consider the first panel of the column;
         Pt = m_pWakeNode[m_pWakePanel[pw].m_iLA];
@@ -4781,7 +4768,7 @@ void PanelAnalysis::rotateGeomY(double const &Alpha, Vector3d const &P, int NXWa
         Trans = Pt - m_pWakeNode[m_pWakePanel[pw].m_iLA];
 
         //each wake column has m_NXWakePanels ... translate all left A nodes
-        for(lw=0; lw<NXWakePanels; lw++)
+        for(int lw=0; lw<NXWakePanels; lw++)
         {
             if(lw==0) m_pWakeNode[m_pWakePanel[pw].m_iLA] += Trans;
             m_pWakeNode[m_pWakePanel[pw].m_iTA] += Trans;
@@ -4797,7 +4784,7 @@ void PanelAnalysis::rotateGeomY(double const &Alpha, Vector3d const &P, int NXWa
     Trans = Pt-m_pWakeNode[m_pWakePanel[pw].m_iLB];
 
     //each wake column has m_NXWakePanels ... translate all right B nodes
-    for(lw=0; lw<NXWakePanels; lw++)
+    for(int lw=0; lw<NXWakePanels; lw++)
     {
         if(lw==0) m_pWakeNode[m_pWakePanel[pw].m_iLB] += Trans;
         m_pWakeNode[m_pWakePanel[pw].m_iTB] += Trans;
@@ -4807,15 +4794,13 @@ void PanelAnalysis::rotateGeomY(double const &Alpha, Vector3d const &P, int NXWa
     //Reset panel frame : CollPt has been translated
     for (pw=0; pw<m_WakeSize; pw++)
     {
-        iLA = m_pWakePanel[pw].m_iLA; iLB = m_pWakePanel[pw].m_iLB;
-        iTA = m_pWakePanel[pw].m_iTA; iTB = m_pWakePanel[pw].m_iTB;
+        int iLA = m_pWakePanel[pw].m_iLA;
+        int iLB = m_pWakePanel[pw].m_iLB;
+        int iTA = m_pWakePanel[pw].m_iTA;
+        int iTB = m_pWakePanel[pw].m_iTB;
         m_pWakePanel[pw].setPanelFrame(m_pWakeNode[iLA], m_pWakeNode[iLB], m_pWakeNode[iTA], m_pWakeNode[iTB]);
     }
 }
-
-
-
-
 
 
 
@@ -4828,7 +4813,7 @@ void PanelAnalysis::rotateGeomY(double const &Alpha, Vector3d const &P, int NXWa
  * @param beta the rotation angle in degrees
  * @param P the point of origin of the rotation
  */
-void PanelAnalysis::rotateGeomZ(double const &Beta, Vector3d const &P, int NXWakePanels)
+void PanelAnalysis::rotateGeomZ(double Beta, Vector3d const &P, int NXWakePanels)
 {
     int n, p, pw, kw, lw;
     int iLA, iLB, iTA, iTB;
@@ -4894,9 +4879,6 @@ void PanelAnalysis::rotateGeomZ(double const &Beta, Vector3d const &P, int NXWak
         m_pWakePanel[pw].setPanelFrame(m_pWakeNode[iLA], m_pWakeNode[iLB], m_pWakeNode[iTA], m_pWakeNode[iTB]);
     }
 }
-
-
-
 
 
 /**
@@ -5113,7 +5095,7 @@ void PanelAnalysis::setControlPositions(double t, int &NCtrls, QString &out, boo
 * @param V the resulting velocity vector at point C
 * @param bAll true if the influence of the bound vortex should be evaluated; false for a distant point in the far field.
 */
-void PanelAnalysis::VLMCmn(Vector3d const &A, Vector3d const &B, Vector3d const &C, Vector3d &V, bool const &bAll)
+void PanelAnalysis::VLMCmn(Vector3d const &A, Vector3d const &B, Vector3d const &C, Vector3d &V, bool bAll) const
 {
     //we use a default core size, unless the user has specified one
     double CoreSize = 0.0001;
@@ -5287,7 +5269,7 @@ void PanelAnalysis::VLMCmn(Vector3d const &A, Vector3d const &B, Vector3d const 
 * @param C the point where the velocity is calculated
 * @param V the resulting velocity vector at point C
 */
-void PanelAnalysis::VLMQmn(Vector3d &LA, Vector3d &LB, Vector3d &TA, Vector3d &TB, Vector3d const &C, Vector3d &V)
+void PanelAnalysis::VLMQmn(Vector3d const &LA, Vector3d const&LB, Vector3d const &TA, Vector3d const &TB, Vector3d const &C, Vector3d &V) const
 {
     //
     // C is the point where the induced speed is calculated
@@ -5296,7 +5278,7 @@ void PanelAnalysis::VLMQmn(Vector3d &LA, Vector3d &LB, Vector3d &TA, Vector3d &T
     // Vectorial operations are written explicitly to save computing times (4x more efficient)
     //
 
-    Vector3d *m_pR[5];
+    Vector3d const *m_pR[5];
     double ftmp, Omega, Psi_x, Psi_y, Psi_z, r0_x, r0_y, r0_z, r1_x, r1_y, r1_z, r2_x, r2_y, r2_z;
     double r1v, r2v, t_x, t_y, t_z;
 
@@ -5382,7 +5364,7 @@ void PanelAnalysis::onCancel()
 */
 void PanelAnalysis::panelTrefftz(Wing *pWing, double QInf, double Alpha, double const*Mu, double const*Sigma, int pos,
                                  Vector3d &Force, double &WingIDrag,
-                                 WPolar const*pWPolar, Panel const*pWakePanel, Vector3d const*pWakeNode)
+                                 WPolar const*pWPolar, Panel const*pWakePanel, Vector3d const*pWakeNode) const
 {
     int nw=0, iTA=0, iTB=0;
     int k=0, l=0, pp=0;

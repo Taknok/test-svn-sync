@@ -83,19 +83,19 @@ public:
     void createRHS(double *RHS, Vector3d VInf, double *VField=nullptr);
     void createUnitRHS();
     void createWakeContribution();
-    void createWakeContribution(double *pWakeContrib, Vector3d WindDirection);
-    void getDoubletInfluence(Vector3d const &C, Panel *pPanel, Vector3d &V, double &phi, bool bWake=false, bool bAll=true);
-    void getSourceInfluence(Vector3d const &C, Panel *pPanel, Vector3d &V, double &phi);
+    void createWakeContribution(double *pWakeContrib, Vector3d const &WindDirection);
+    void getDoubletInfluence(Vector3d const &C, const Panel *pPanel, Vector3d &V, double &phi, bool bWake=false, bool bAll=true) const;
+    void getSourceInfluence(Vector3d const &C, Panel *pPanel, Vector3d &V, double &phi) const;
     void scaleResultstoSpeed(int nval);
-    void sumPanelForces(double *Cp, double Alpha, double &Lift, double &Drag);
-    void VLMGetVortexInfluence(Panel *pPanel, Vector3d const &C, Vector3d &V, bool bAll);
-    void VLMCmn(Vector3d const &A, Vector3d const &B, Vector3d const &C, Vector3d &V, bool const &bAll);
-    void VLMQmn(Vector3d &LA, Vector3d &LB, Vector3d &TA, Vector3d &TB, Vector3d const &C, Vector3d &V);
+    void sumPanelForces(double const *Cp, double Alpha, double &Lift, double &Drag);
+    void VLMGetVortexInfluence(const Panel *pPanel, Vector3d const &C, Vector3d &V, bool bAll) const;
+    void VLMCmn(Vector3d const &A, Vector3d const &B, Vector3d const &C, Vector3d &V, bool bAll) const;
+    void VLMQmn(const Vector3d &LA, const Vector3d &LB, const Vector3d &TA, const Vector3d &TB, Vector3d const &C, Vector3d &V) const;
 
     void panelTrefftz(Wing *pWing, double QInf, double Alpha, const double *Mu, const double *Sigma, int pos, Vector3d &Force, double &WingIDrag,
-                      const WPolar *pWPolar, const Panel *pWakePanel, const Vector3d *pWakeNode);
-    void getDoubletDerivative(const int &p, double const*Mu, double &Cp, Vector3d &VTotl, double const &QInf, double Vx, double Vy, double Vz);
-    void getVortexCp(const int &p, double *Gamma, double *Cp, Vector3d &VInf);
+                      const WPolar *pWPolar, const Panel *pWakePanel, const Vector3d *pWakeNode) const;
+    void getDoubletDerivative(const int &p, double const*Mu, double &Cp, Vector3d &VLocal, double QInf, double Vx, double Vy, double Vz) const;
+    void getVortexCp(int p, const double *Gamma, double *Cp, const Vector3d &VInf) const;
 
     void relaxWake();
 
@@ -109,15 +109,15 @@ public:
     void computeControlDerivatives();
     void computeNDStabDerivatives();
     void forces(double *Mu, double *Sigma, double alpha, Vector3d Vinc, double *VInf, Vector3d &Force, Vector3d &Moment);
-    double computeCm(double Alpha);
+    double computeCm(double Alpha) const;
 
     bool allocateMatrix(int matSize, int &memsize);
     bool allocateRHS(int matSize, int &memsize);
     void releaseArrays();
-    void rotateGeomY(double const &Alpha, Vector3d const &P, int NXWakePanels);
-    void rotateGeomZ(double const &Beta, Vector3d const &P, int NXWakePanels);
+    void rotateGeomY(double Alpha, Vector3d const &P, int NXWakePanels);
+    void rotateGeomZ(double Beta, Vector3d const &P, int NXWakePanels);
 
-    void traceLog(QString str);
+    void traceLog(QString str) const;
 
     void setControlPositions(double t, int &NCtrls, QString &out, bool bBCOnly);
 
@@ -130,7 +130,7 @@ public:
     void setWPolar(WPolar*pWPolar){m_pWPolar = pWPolar;}
     PlaneOpp* createPlaneOpp(double *Cp, double *Gamma, double *Sigma);
 
-    void getSpeedVector(Vector3d const &C, const double *Mu, const double *Sigma, Vector3d &VT, bool bAll=true);
+    void getSpeedVector(Vector3d const &C, const double *Mu, const double *Sigma, Vector3d &VT, bool bAll=true) const;
     void computePhillipsFormulae();
 
     void clearPOppList();
@@ -140,7 +140,7 @@ public:
     static void setMaxWakeIter(int nMaxWakeIter) {s_MaxWakeIter = nMaxWakeIter;}
 
 signals:
-    void outputMsg(QString msg);
+    void outputMsg(QString msg) const;
 
 public slots:
     void onCancel();
@@ -223,13 +223,13 @@ private:
     // these arrays are defined in the QMiarex handling class,
     Panel *m_pPanel;            /**< the current working array of array of panels */
     Panel *m_pWakePanel;        /**< the current working array of wake panel array */
-    Panel *m_pRefWakePanel;     /**< a copy of the reference wake node array if wake needs to be reset */
-    Panel *m_pMemPanel;         /**< a copy of the reference panel array if the panels need to be restored, for instance after control surfaces have been rotated*/
+    Panel const *m_pRefWakePanel;     /**< a copy of the reference wake node array if wake needs to be reset */
+    Panel const *m_pMemPanel;         /**< a copy of the reference panel array if the panels need to be restored, for instance after control surfaces have been rotated*/
 
     Vector3d *m_pNode;            /**< the working array of nodes  */
-    Vector3d *m_pMemNode;        /**< a copy of the reference node array, if the nodes need to be restored */
+    Vector3d const *m_pMemNode;        /**< a copy of the reference node array, if the nodes need to be restored */
     Vector3d *m_pWakeNode;        /**< the current working wake node array */
-    Vector3d *m_pRefWakeNode;   /**< a copy of the reference wake node array if the flat wake geometry needs to be restored */
+    Vector3d const *m_pRefWakeNode;   /**< a copy of the reference wake node array if the flat wake geometry needs to be restored */
     Vector3d *m_pTempWakeNode;  /**< a temporary array to hold the calculations of wake roll-up */
 
 
@@ -239,8 +239,8 @@ private:
 
     //temp data
     int m_NSpanStations;
-    Vector3d VG, CG;
-    double phiG;
+
+
     //    Vector3d h, r0, r1, r2, Psi, t, Far;
     //    double r1v,r2v,ftmp, Omega;
     //    Vector3d *m_pR[5];
