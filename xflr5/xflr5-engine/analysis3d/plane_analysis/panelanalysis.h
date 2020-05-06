@@ -128,7 +128,7 @@ public:
     void setObjectPointers(Plane *pPlane, QVector<Surface *> *pSurfaceList);
     void setRange(double vMin, double VMax, double vDelta, bool bSequence);
     void setWPolar(WPolar*pWPolar){m_pWPolar = pWPolar;}
-    PlaneOpp* createPlaneOpp(double *Cp, double *Gamma, double *Sigma);
+    PlaneOpp* createPlaneOpp(double *Cp, const double *Gamma, const double *Sigma);
 
     void getSpeedVector(Vector3d const &C, const double *Mu, const double *Sigma, Vector3d &VT, bool bAll=true) const;
     void computePhillipsFormulae();

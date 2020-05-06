@@ -820,7 +820,7 @@ void WPolarDlg::setupLayout()
             QVBoxLayout *pOptionsLayout = new QVBoxLayout;
             {
                 m_pctrlViscous = new QCheckBox(tr("Viscous"));
-                m_pctrlTiltGeom = new QCheckBox(tr("Tilt. Geom."));
+                m_pctrlTiltGeom = new QCheckBox(tr("Tilted geometry - NOT RECOMMENDED"));
                 pOptionsLayout->addWidget(m_pctrlViscous);
                 pOptionsLayout->addWidget(m_pctrlTiltGeom);
                 //            OptionsLayout->addWidget(m_pctrlIgnoreBody);

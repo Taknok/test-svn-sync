@@ -1211,8 +1211,8 @@ void PanelAnalysis::computeFarField(double QInf, double Alpha0, double AlphaDelt
     QString strong;
 
     double alpha=0, IDrag=0;
-    double *Mu=nullptr;
-    double *Sigma=nullptr;
+    double const *Mu=nullptr;
+    double const *Sigma=nullptr;
     double ThinSize = 0.0;
     Vector3d WindNormal, WingForce;
 
@@ -1470,23 +1470,29 @@ void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
     Vector3d Force;
     QString OutString;
 
-    //   Define wind (stability) axis
-    double cosa = cos(Alpha*PI/180.0);
-    double sina = sin(Alpha*PI/180.0);
+    if(m_pWPolar->bTilted() || m_pWPolar->isBetaPolar() || fabs(m_pWPolar->Beta())>PRECISION)
+    {
+        // the analysis is performed at aoa = 0.0 on a rotated geometry
+        Alpha = m_OpAlpha;
+        WindNormal.set(0,0,1);
+        WindDirection.set(1,0,0);
+    }
+    else
+    {
+        m_OpAlpha = Alpha;
+        //   Define wind (stability) axis
+        double cosa = cos(Alpha*PI/180.0);
+        double sina = sin(Alpha*PI/180.0);
 
-    WindNormal.set(  -sina, 0.0, cosa);
-    WindDirection.set(cosa, 0.0, sina);
-    WindSide = WindNormal * WindDirection;
+        WindNormal.set(  -sina, 0.0, cosa);
+        WindDirection.set(cosa, 0.0, sina);
+        WindSide = WindNormal * WindDirection;
+    }
 
-    double *Mu     = m_Mu    + qrhs*m_MatSize;
-    double *Sigma  = m_Sigma + qrhs*m_MatSize;
+    double const*Mu     = m_Mu    + qrhs*m_MatSize;
+    double const*Sigma  = m_Sigma + qrhs*m_MatSize;
 
     m_QInf      = QInf;
-
-    if(m_pWPolar->bTilted() || m_pWPolar->isBetaPolar() || fabs(m_pWPolar->Beta())>PRECISION)
-        Alpha = m_OpAlpha;
-    else
-        m_OpAlpha = Alpha;
 
     for(int iw=0; iw<MAXWINGS; iw++)
         if(m_pWingList[iw])m_pWingList[iw]->m_bWingOut = false;
@@ -2177,25 +2183,16 @@ bool PanelAnalysis::solveUnitRHS()
 */
 void PanelAnalysis::createDoubletStrength(double Alpha0, double AlphaDelta, int nval)
 {
-
-    int  q, p;
-    double alpha, cosa, sina;
-
-    //    int Size = m_MatSize;
-    //    if(m_b3DSymetric) Size = m_SymSize;
-
     traceLog("      Calculating doublet strength...\n");
-    //    if(m_pWPolar->polarType()!=FIXEDAOAPOLAR) nrhs = nval;
-    //    else                                 nrhs = 0;
 
     //______________________________________________________________________________________
     //    reconstruct all results from cosine and sine unit vectors
-    for (q=0; q<nval;q++)
+    for (int q=0; q<nval;q++)
     {
-        alpha = Alpha0 + q * AlphaDelta;
-        cosa = cos(alpha*PI/180.0);
-        sina = sin(alpha*PI/180.0);
-        for(p=0; p<m_MatSize; p++)
+        double alpha = Alpha0 + q * AlphaDelta;
+        double cosa = cos(alpha*PI/180.0);
+        double sina = sin(alpha*PI/180.0);
+        for(int p=0; p<m_MatSize; p++)
         {
             m_Mu[p+q*m_MatSize] = cosa*m_uRHS[p] + sina*m_wRHS[p];
         }
@@ -4423,11 +4420,11 @@ void PanelAnalysis::restorePanels()
 *@param Sigma: the array of source strengths for a panel analysis
 *@return a pointer to the PlaneOpp object which has been created
 */
-PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double *Gamma, double *Sigma)
+PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double const *Gamma, double const *Sigma)
 {
     PlaneOpp *pPOpp = nullptr;
     WingOpp *pWOpp=nullptr;
-    int i=0,l=0;
+
     double Cb = 0.0;
 
     pPOpp = new PlaneOpp(m_pPlane, m_pWPolar, m_MatSize);
@@ -4448,7 +4445,7 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double *Gamma, double *Sigma
 
     pWOpp = pPOpp->m_pWOpp[0];
 
-    for (l=0; l<m_pPlane->m_Wing[0].m_NStation; l++)
+    for (int l=0; l<m_pPlane->m_Wing[0].m_NStation; l++)
     {
         if(qAbs(m_pPlane->m_Wing[0].m_BendingMoment[l])>qAbs(Cb))    Cb = m_pPlane->m_Wing[0].m_BendingMoment[l];
     }
@@ -4498,11 +4495,11 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double *Gamma, double *Sigma
             pWOpp->m_QInf             = u0;
             pWOpp->m_Alpha            = m_AlphaEq;
 
-            for(i=0; i<4; i++)
+            for(int i=0; i<4; i++)
             {
                 pPOpp->m_EigenValue[i]   = m_rLong[i];
                 pPOpp->m_EigenValue[i+4] = m_rLat[i];
-                for(l=0;l<4; l++)
+                for(int l=0;l<4; l++)
                 {
                     pPOpp->m_EigenVector[i][l]   = m_vLong[4*i+l];
                     pPOpp->m_EigenVector[i+4][l] = m_vLat[4*i+l];
@@ -4510,11 +4507,11 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double *Gamma, double *Sigma
             }
 
 
-            for(i=0; i<4; i++)
+            for(int i=0; i<4; i++)
             {
                 pPOpp->m_EigenValue[i]   = m_rLong[i];
                 pPOpp->m_EigenValue[i+4] = m_rLat[i];
-                for(l=0;l<4; l++)
+                for(int l=0;l<4; l++)
                 {
                     pPOpp->m_EigenVector[i][l]   = m_vLong[4*i+l];
                     pPOpp->m_EigenVector[i+4][l] = m_vLat[4*i+l];
@@ -4583,7 +4580,7 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double *Gamma, double *Sigma
 
 
             pPOpp->m_pWOpp[iw]->m_FlapMoment.clear();
-            for (i=0; i<m_pPlane->m_Wing[iw].m_nFlaps; i++)
+            for (int i=0; i<m_pPlane->m_Wing[iw].m_nFlaps; i++)
             {
                 pPOpp->m_pWOpp[iw]->m_FlapMoment.append(m_pPlane->m_Wing[iw].m_FlapMoment.at(i));
             }
