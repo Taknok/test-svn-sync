@@ -937,7 +937,7 @@ void display_mat(const double *mat, int rows, int cols)
         {
             strong += QString("%1  ").arg(mat[i*cols+j], 13, 'f', 11);
         }
-        qDebug()<<strong;
+        qDebug("%s", strong.toStdString().c_str());
     }
 }
 
