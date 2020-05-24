@@ -111,9 +111,10 @@ XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
     QSplashScreen splash(pixmap);
     splash.setWindowFlags(Qt::SplashScreen);
     if(!bScript)
-        splash.show();
-    else
     {
+        splash.show();
+    //else            - JX mod: fix of r1230
+    //{
 #ifdef Q_OS_WIN
         ShowWindow(GetConsoleWindow(), SW_HIDE);
 #endif
