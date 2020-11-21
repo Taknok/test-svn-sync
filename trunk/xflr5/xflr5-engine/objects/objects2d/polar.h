@@ -145,7 +145,7 @@ public:
     QVector<double> m_Cdp;               /**< the array of Cdp ? */
     QVector<double> m_Cm;                /**< the array of pitching moment coefficients */
     QVector<double> m_XTr1;              /**< the array of transition points on the top surface */
-    QVector<double> m_XTr2;              /**< the array of transition points on the top surface */
+    QVector<double> m_XTr2;              /**< the array of transition points on the bottom surface */
     QVector<double> m_HMom;              /**< the array of flap hinge moments */
     QVector<double> m_Cpmn;              /**< the array of Cpmn ? */
     QVector<double> m_ClCd;              /**< the array of glide ratios */

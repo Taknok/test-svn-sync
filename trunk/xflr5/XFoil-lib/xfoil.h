@@ -322,6 +322,7 @@ public:
     bool lalfa, lvisc, lvconv, lwake;
     double qgamm[IBX+1];
     double hmom;
+    double hfx,hfy;
     bool lcpxx;
     int niterq;
     double xbf,ybf;
@@ -366,7 +367,6 @@ private:
     int retyp, matyp;
     double rlx;
 
-    double hfx,hfy;
     double minf_cl, reinf_cl;
     double angtol;
 

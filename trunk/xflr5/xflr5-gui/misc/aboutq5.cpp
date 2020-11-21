@@ -67,9 +67,10 @@ void AboutQ5::setupLayout()
 //    QLabel *pLab9  = new QLabel(tr("Any other usage is expressly prohibited"));
     QLabel *plab10 = new QLabel(tr("Program distributed  under the terms of the GNU General Public License"));
     QLabel *pLab11 = new QLabel(tr("German translation by Christall, Jochen Günzel and Martin Willner"));
-    QLabel *pLab12 = new QLabel(tr("Japanese translation by IKUSU, Koichi Akabe, Misatus, dynamicsoar, hide253"));
-    QLabel *pLab13 = new QLabel(tr("icchy_07, ina111, ohayo_cycling, ohisa_64, ozawa64."));
-    QLabel *pLab14 = new QLabel(tr("French translation by Jean-Luc Coulon"));
+    QLabel *pLab12 = new QLabel("Traducció al català per David Cànovas");
+    QLabel *pLab13 = new QLabel(tr("Japanese translation by IKUSU, Koichi Akabe, Misatus, dynamicsoar, hide253"));
+    QLabel *pLab14 = new QLabel(tr("icchy_07, ina111, ohayo_cycling, ohisa_64, ozawa64."));
+    QLabel *pLab15 = new QLabel(tr("French translation by Jean-Luc Coulon"));
 
 
     QDialogButtonBox *pButtonBox = new QDialogButtonBox(QDialogButtonBox::Close);
@@ -89,6 +90,7 @@ void AboutQ5::setupLayout()
         pMainLayout->addWidget(pLab12);
         pMainLayout->addWidget(pLab13);
         pMainLayout->addWidget(pLab14);
+        pMainLayout->addWidget(pLab15);
         pMainLayout->addSpacing(20);
         pMainLayout->addStretch(1);
         pMainLayout->addWidget(pLab5);
