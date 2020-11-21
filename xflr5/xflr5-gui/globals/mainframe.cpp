@@ -4042,20 +4042,6 @@ void MainFrame::onSaveTimer()
 
 void MainFrame::onSaveProject()
 {
-    /*    QString Filter = "XFLR5 v6 Project File (*.xfl)";
-
-    QString saveFileName = "/home/techwinder/download/save.bin";
-    QFile fp(saveFileName);
-    fp.open(QIODevice::WriteOnly);
-    QDataStream ar(&fp);
-
-    ar<<1025;
-    ar << QColor(159,158,157,156);
-
-    ar << QColor(7,6,5,4);
-    fp.close();
-    return;*/
-
     QString FileName = s_ProjectName;
 
     if (!s_ProjectName.length())
@@ -4070,7 +4056,6 @@ void MainFrame::onSaveProject()
     }
     m_pMiarex->updateView();
 }
-
 
 
 bool MainFrame::onSaveProjectAs()

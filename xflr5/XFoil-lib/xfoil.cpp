@@ -4253,10 +4253,10 @@ bool XFoil::ludcmp(int n, double a[IQX][IQX], int indx[IQX])
  * ---------------------------------------------------- */
 bool XFoil::mhinge()
 {
-    int i;
-    double tops,bots,botp,botx,boty,frac,topp,topx,topy;
-    double xmid,ymid,pmid;
-    double dx,dy;
+    int i=0;
+    double tops=0,bots=0,botp=0,botx=0,boty=0,frac=0,topp=0,topx=0,topy=0;
+    double xmid=0,ymid=0,pmid=0;
+    double dx=0,dy=0;
 
     if(!lflap)
     {

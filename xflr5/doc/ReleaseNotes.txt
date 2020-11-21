@@ -16,7 +16,8 @@
 
 
 
-xflr5 v6.48 December xxxth, 2019
+xflr5 v6.48 December xxxth, 2020
+    - fixed the bug which caused results of tilted geometry analyses to depend on the aoa sequence; cf. bug report 156.
     - fixed an occasional crash bug when importing a body from xml files
     - added a scripting capability for foil analyses to complement the flow5 plane scripts
     - added an option to select the OpenGL format from the in-app test window
@@ -28,6 +29,7 @@ xflr5 v6.48 December xxxth, 2019
     - added an option to set style flow-down from the LinePicker dialog
     - fixed a crash bug when deleting the last entry of the point mass tables in the inertia dialog
     - replaced the deprecated sprintf() with QString::asprintf() for forward compatibility
+    - added translation to Catalan
 
 xflr5 v6.47 July 7th, 2019
     - Fixed the problem of initial settings when running an LLT analysis

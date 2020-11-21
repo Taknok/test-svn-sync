@@ -555,9 +555,9 @@ void XFoilTask::addXFoilData(OpPoint *pOpp, XFoil *pXFoil, Foil *pFoil)
     if(pOpp->m_bTEFlap || pOpp->m_bLEFlap)
     {
         pOpp->setHingeMoments(pFoil);
-        /*        m_TEHMom = m_pXFoil->hmom;
-        XForce   = m_pXFoil->hfx;
-        YForce   = m_pXFoil->hfy;*/
+        pOpp->m_TEHMom = pXFoil->hmom;
+        pOpp->XForce   = pXFoil->hfx;
+        pOpp->YForce   = pXFoil->hfy;
     }
 
     if(!pXFoil->lvisc || !pXFoil->lvconv)    return;
