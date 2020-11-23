@@ -67,7 +67,7 @@ XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
     QSettings settings(QSettings::IniFormat,QSettings::UserScope,"XFLR5");
 #endif
 
-    qsrand(uint(time(nullptr)));
+//    qsrand(uint(time(nullptr)));
 
     bool bMaximized = true;
     bool bOK= false;

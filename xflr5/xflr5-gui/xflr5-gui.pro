@@ -66,11 +66,13 @@ win32 {
     # add console support for scripts
     CONFIG += console
 
+    #hide the console
+    LIBS += -lKernel32 -lUser32
+
     LIBS += -lopenGL32
 
     RC_FILE = ../win/xflr5.rc
 
-    CONFIG+= static
 }
 
 
