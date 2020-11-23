@@ -14,7 +14,7 @@ TRANSLATIONS = translations/xflr5v6.ts \
 
 
 OTHER_FILES += License.txt \
-    doc/ReleaseNotes.txt \
+    doc/ReleaseNotes.htm \
     qss/appwidget.css \
     qss/xflr5_style.qss \
     qss/default.qss
