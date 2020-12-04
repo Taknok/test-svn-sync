@@ -19,6 +19,8 @@
 
 *****************************************************************************/
 
+#include <QRandomGenerator>
+
 #include "planeopp.h"
 #include "plane.h"
 #include "wpolar.h"
@@ -48,9 +50,14 @@ PlaneOpp::PlaneOpp(Plane *pPlane, WPolar *pWPolar, int PanelArraySize)
     m_PointStyle  = 0;
     m_bIsVisible  = true;
 
-    m_Color.setRed(  int((double(qrand())/double(RAND_MAX))*155)+100);
-    m_Color.setGreen(int((double(qrand())/double(RAND_MAX))*155)+100);
-    m_Color.setBlue( int((double(qrand())/double(RAND_MAX))*155)+100);
+    QRandomGenerator rg;
+    QColor clr;
+    clr.setHsv(rg.bounded(360),
+               rg.bounded(55)+30,
+               rg.bounded(55)+150);
+    m_Color.setRed(  clr.red());
+    m_Color.setGreen(clr.green());
+    m_Color.setBlue( clr.blue());
 
     m_bVLM1 = false;
     m_bThinSurface = true;

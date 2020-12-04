@@ -335,21 +335,17 @@ void OpPointWidget::setFoilScale()
 }
 
 
-
-
 /**
 *Overrides the wheelEvent function of the base class.
 *Dispatches the handling to the active child application.
 */
 void OpPointWidget::wheelEvent(QWheelEvent *pEvent)
 {
-    if(m_pCpGraph && m_pCpGraph->isInDrawRect(pEvent->pos()))
+    if(m_pCpGraph && m_pCpGraph->isInDrawRect(pEvent->position()))
     {
         double zoomFactor=1.0;
 
-        QPoint pt(pEvent->x(), pEvent->y()); //client coordinates
-
-        if(pEvent->delta()>0)
+        if(pEvent->angleDelta().y()>0)
         {
             if(!Settings::s_bReverseZoom) zoomFactor = 1./1.06;
             else                          zoomFactor = 1.06;
@@ -387,9 +383,7 @@ void OpPointWidget::wheelEvent(QWheelEvent *pEvent)
     {
         double zoomFactor=1.0;
 
-        QPoint pt(pEvent->x(), pEvent->y()); //client coordinates
-
-        if(pEvent->delta()>0)
+        if(pEvent->angleDelta().y()>0)
         {
             if(!Settings::s_bReverseZoom) zoomFactor = 1./1.06;
             else                          zoomFactor = 1.06;
@@ -626,7 +620,7 @@ void OpPointWidget::paintOpPoint(QPainter &painter)
         if(XDirect::curPolar()->polarType()!=XFLR5::FIXEDSPEEDPOLAR && XDirect::curPolar()->polarType()!=XFLR5::FIXEDAOAPOLAR) Back++;
     }
 
-    int dwidth = fm.width(tr("TE Hinge Moment/span = 0123456789"));
+    int dwidth = fm.horizontalAdvance(tr("TE Hinge Moment/span = 0123456789"));
 
     ZPos = rect().bottom()-Back*dD - 10;
     XPos = rect().right()-dwidth-20;

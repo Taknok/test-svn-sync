@@ -31,7 +31,7 @@
 #define PANELANALYSISDLG_H
 
 #include <QDialog>
-#include <QTime>
+#include <QElapsedTimer>
 #include <QTimer>
 #include <QProgressBar>
 #include <QCheckBox>
@@ -100,7 +100,7 @@ private:
     QCheckBox * m_pctrlLogFile;
     QProgressBar *m_pctrlProgress;
 
-    QTime clock;
+    QElapsedTimer clock;
 
     bool m_bIsFinished;         /**< true if the analysis is completed */
     bool m_bPointOut;           /** true if an interpolation was outside the min or max Cl */

@@ -1018,10 +1018,8 @@ void MainFrame::createDockWindows()
     LegendWidget::s_pMiarex    = m_pMiarex;
     LegendWidget::s_pXDirect   = m_pXDirect;
 
-
     m_pMiarex->connectSignals();
 }
-
 
 
 void MainFrame::createMenus()
@@ -1037,19 +1035,22 @@ void MainFrame::createMenus()
         m_pFileMenu->addAction(m_pSaveAct);
         m_pFileMenu->addAction(m_pSaveProjectAsAct);
         m_pFileMenu->addSeparator();
-        m_pFileMenu->addAction(m_pExecuteScript);
-        m_pFileMenu->addSeparator();
-
-        m_pFileMenu->addAction(m_pOnAFoilAct);
-        m_pFileMenu->addAction(m_pOnXInverseAct);
-        m_pFileMenu->addAction(m_pOnXDirectAct);
-        m_pFileMenu->addAction(m_pOnMiarexAct);
         m_pSeparatorAct = m_pFileMenu->addSeparator();
         for (int i = 0; i < MAXRECENTFILES; ++i)
             m_pFileMenu->addAction(m_pRecentFileActs[i]);
         m_pFileMenu->addSeparator();
         m_pFileMenu->addAction(m_pExitAct);
         updateRecentFileActions();
+    }
+
+    m_pModuleMenu = menuBar()->addMenu(tr("Module"));
+    {
+        m_pModuleMenu->addAction(m_pOnAFoilAct);
+        m_pModuleMenu->addAction(m_pOnXInverseAct);
+        m_pModuleMenu->addAction(m_pOnXDirectAct);
+        m_pModuleMenu->addAction(m_pOnMiarexAct);
+        m_pModuleMenu->addSeparator();
+        m_pModuleMenu->addAction(m_pExecuteScript);
     }
 
     m_pOptionsMenu = menuBar()->addMenu(tr("O&ptions"));
@@ -1079,7 +1080,6 @@ void MainFrame::createMenus()
         m_pGraphMenu->addAction(m_pHighlightOppAct);
         m_pGraphMenu->addSeparator();
         m_pGraphMenu->addAction(m_pShowMousePosAct);
-
     }
 
     m_pHelpMenu = menuBar()->addMenu(tr("?"));
@@ -1095,7 +1095,6 @@ void MainFrame::createMenus()
     createMiarexMenus();
     createAFoilMenus();
 }
-
 
 
 void MainFrame::createGraphActions()
@@ -5735,6 +5734,7 @@ void MainFrame::setMenus()
     {
         menuBar()->clear();
         menuBar()->addMenu(m_pFileMenu);
+        menuBar()->addMenu(m_pModuleMenu);
         menuBar()->addMenu(m_pOptionsMenu);
         menuBar()->addMenu(m_pHelpMenu);
     }
@@ -5742,6 +5742,7 @@ void MainFrame::setMenus()
     {
         menuBar()->clear();
         menuBar()->addMenu(m_pFileMenu);
+        menuBar()->addMenu(m_pModuleMenu);
         menuBar()->addMenu(m_pXDirectViewMenu);
         menuBar()->addMenu(m_pXDirectFoilMenu);
         menuBar()->addMenu(m_pDesignMenu);
@@ -5756,6 +5757,7 @@ void MainFrame::setMenus()
     {
         menuBar()->clear();
         menuBar()->addMenu(m_pFileMenu);
+        menuBar()->addMenu(m_pModuleMenu);
         menuBar()->addMenu(m_pXInverseViewMenu);
         menuBar()->addMenu(m_pXInverseGraphMenu);
         menuBar()->addMenu(m_pXInverseFoilMenu);
@@ -5766,6 +5768,7 @@ void MainFrame::setMenus()
     {
         menuBar()->clear();
         menuBar()->addMenu(m_pFileMenu);
+        menuBar()->addMenu(m_pModuleMenu);
         menuBar()->addMenu(m_pAFoilViewMenu);
         menuBar()->addMenu(m_pAFoilDesignMenu);
         menuBar()->addMenu(m_pAFoilSplineMenu);
@@ -5776,6 +5779,7 @@ void MainFrame::setMenus()
     {
         menuBar()->clear();
         menuBar()->addMenu(m_pFileMenu);
+        menuBar()->addMenu(m_pModuleMenu);
         menuBar()->addMenu(m_pMiarexViewMenu);
         menuBar()->addMenu(m_pPlaneMenu);
         menuBar()->addMenu(m_pMiarexWPlrMenu);
@@ -6556,9 +6560,9 @@ void MainFrame::onExecuteScript()
                                                Settings::lastDirName(),
                                                tr("XML Script file")+"(*.xml)");
     if(!XmlPathName.length()) return;
-    QFileInfo fileInfo(XmlPathName);
-//    XmlPathName = ":/script/example_script.xml";
+    QFileInfo fi(XmlPathName);
 
+    Settings::setLastDirName(fi.path());
     executeScript(XmlPathName, false, true);
 }
 
@@ -6600,6 +6604,8 @@ void MainFrame::executeScript(QString XmlScriptName, bool bShowProgressStdIO, bo
     {
         scriptexecutor.runScript();
 
+        addRecentFile(scriptexecutor.projectFilePathName());
+
         bool bCSV = scriptexecutor.bCSVOutput();
         if(scriptexecutor.outputPolarBin()) onMakePlrFiles(scriptexecutor.foilPolarBinOutputDirPath());
 
@@ -6614,8 +6620,13 @@ void MainFrame::executeScript(QString XmlScriptName, bool bShowProgressStdIO, bo
 
     // duplicate the log file in the temp directory
     QString projectLogFileName = QDir::tempPath() + "/xfl_"+QTime::currentTime().toString("hhmmss")+".log";
-
     QFile::copy(scriptexecutor.logFileName(), projectLogFileName);
+
+    if(!m_pMiarex->curPlane())
+    {
+        m_iApp=XFLR5::XFOILANALYSIS;
+        onXDirect();
+    }
 
     qApp->processEvents();
 }

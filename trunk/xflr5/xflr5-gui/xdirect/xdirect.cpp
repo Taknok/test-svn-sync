@@ -3137,7 +3137,7 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
                 //                res = sscanf(text, "%lf%lf%lf%lf%lf%lf%lf%lf%lf", &alpha, &CL, &CD, &CDp, &CM, &Xt, &Xb, &Cpmn, &HMom);
 
                 //Do this the C++ way
-                QStringList values = strong.split(" ", QString::SkipEmptyParts);
+                QStringList values = strong.split(" ", Qt::SkipEmptyParts);
 
                 if(values.length()>=7)
                 {

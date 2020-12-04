@@ -342,7 +342,7 @@ void Graph::drawXTicks(QPainter &painter)
             if(fabs(xt)<MININTERVAL)
             {
                 strLabel = "0";
-                painter.drawText(int(xt/m_scalex) - fm.width(strLabel)/2 + m_ptoffset.x(),
+                painter.drawText(int(xt/m_scalex) - fm.horizontalAdvance(strLabel)/2 + m_ptoffset.x(),
                                  int(yp/scaley)   + TickSize*2 +height   + m_ptoffset.y(),
                                  strLabel);
             }
@@ -352,12 +352,12 @@ void Graph::drawXTicks(QPainter &painter)
                 expFormat(main, exp);
 
                 strLabel = QString("%1 10").arg(main,5,'f',1);
-                painter.drawText(int(xt/m_scalex) - fm.width(strLabel)/2  +m_ptoffset.x(),
+                painter.drawText(int(xt/m_scalex) - fm.horizontalAdvance(strLabel)/2  +m_ptoffset.x(),
                                  int(yp/scaley)   + TickSize*2 +height    +m_ptoffset.y(),
                                  strLabel);
                 strLabelExp = QString("%1").arg(exp);
 
-                painter.drawText(int(xt/m_scalex) + fm.width(strLabel)/2       +m_ptoffset.x(),
+                painter.drawText(int(xt/m_scalex) + fm.horizontalAdvance(strLabel)/2       +m_ptoffset.x(),
                                  int(yp/scaley)   + TickSize*2 +height-yExpOff +m_ptoffset.y(),
                                  strLabelExp);
             }
@@ -367,7 +367,7 @@ void Graph::drawXTicks(QPainter &painter)
                 else if (exp_x>=-1) strLabel = QString("%1").arg(xt,6,'f',1);
                 else if (exp_x>=-2) strLabel = QString("%1").arg(xt,6,'f',2);
                 else if (exp_x>=-3) strLabel = QString("%1").arg(xt,6,'f',3);
-                painter.drawText(int(xt/m_scalex) - fm.width(strLabel)/2 + m_ptoffset.x(),
+                painter.drawText(int(xt/m_scalex) - fm.horizontalAdvance(strLabel)/2 + m_ptoffset.x(),
                                  int(yp/scaley)   + TickSize*2 +height   + m_ptoffset.y(),
                                  strLabel);
             }
@@ -423,7 +423,7 @@ void Graph::drawYTicks(QPainter &painter)
             if(fabs(yt)<MININTERVAL)
             {
                 strLabel = "0";
-                painter.drawText(int(xp/m_scalex) - fm.width(strLabel)-TickSize*2 +m_ptoffset.x(),
+                painter.drawText(int(xp/m_scalex) - fm.horizontalAdvance(strLabel)-TickSize*2 +m_ptoffset.x(),
                                  int(yt/scaley)   + fmheight4 +m_ptoffset.y(),
                                  strLabel);
             }
@@ -435,7 +435,7 @@ void Graph::drawYTicks(QPainter &painter)
                 strLabel    = QString("%1 10").arg(main,5,'f',1);
                 strLabelExp = QString("%1").arg(exp);
 
-                painter.drawText(int(xp/m_scalex) - fm.width(strLabel)-TickSize*3 + m_ptoffset.x(),
+                painter.drawText(int(xp/m_scalex) - fm.horizontalAdvance(strLabel)-TickSize*3 + m_ptoffset.x(),
                                  int(yt/scaley)   + fmheight4                     + m_ptoffset.y(),
                                  strLabel);
 
@@ -459,7 +459,7 @@ void Graph::drawYTicks(QPainter &painter)
                 else if (exp_y>=-2) strLabel = QString("%1").arg(yt,6,'f',2);
                 else if (exp_y>=-3) strLabel = QString("%1").arg(yt,6,'f',3);
 
-                painter.drawText(int(xp/m_scalex)   - fm.width(strLabel)-TickSize*2 +m_ptoffset.x(),
+                painter.drawText(int(xp/m_scalex)   - fm.horizontalAdvance(strLabel)-TickSize*2 +m_ptoffset.x(),
                                  int(yt/scaley) + fmheight4 +m_ptoffset.y(),
                                  strLabel);
             }
@@ -1335,6 +1335,13 @@ bool Graph::initializeGraph(int width, int height)
     if(m_bYAutoMinGrid) m_YMinorUnit = yunit/5.0;
 
     return true;
+}
+
+
+bool Graph::isInDrawRect(QPointF const &pt)
+{
+    if(m_rCltRect.contains(pt.toPoint())) return true;
+    else return false;
 }
 
 

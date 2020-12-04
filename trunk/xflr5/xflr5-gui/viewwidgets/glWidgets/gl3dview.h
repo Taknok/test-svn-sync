@@ -80,13 +80,13 @@ protected:
     virtual void resizeGL(int width, int height);
     virtual void glMake3dObjects() = 0;
 
-    void keyReleaseEvent(QKeyEvent *event);
-    void keyPressEvent(QKeyEvent *event);
-    void mouseDoubleClickEvent(QMouseEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void wheelEvent(QWheelEvent *event);
+    void keyReleaseEvent(QKeyEvent *pEvent);
+    void keyPressEvent(QKeyEvent *pEvent);
+    void mouseDoubleClickEvent(QMouseEvent *pEvent);
+    void mousePressEvent(QMouseEvent *pEvent);
+    void mouseMoveEvent(QMouseEvent *pEvent);
+    void mouseReleaseEvent(QMouseEvent *pEvent);
+    void wheelEvent(QWheelEvent *pEvent);
     QSize sizeHint() const;
     QSize minimumSizeHint() const;
 

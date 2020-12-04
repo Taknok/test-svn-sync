@@ -143,19 +143,17 @@ void InverseViewWidget::resizeEvent(QResizeEvent *event)
 }
 
 
-
-
 /**
 *Overrides the wheelEvent function of the base class.
 *Dispatches the handling to the active child application.
 */
-void InverseViewWidget::wheelEvent(QWheelEvent *event)
+void InverseViewWidget::wheelEvent(QWheelEvent *pEvent)
 {
     double ZoomFactor=1.0;
 
-    QPoint pt(event->x(), event->y()); //client coordinates
+    QPointF pt(pEvent->position()); //client coordinates
 
-    if(event->delta()>0)
+    if(pEvent->angleDelta().y()>0)
     {
         if(!Settings::s_bReverseZoom) ZoomFactor = 1./1.06;
         else                          ZoomFactor = 1.06;

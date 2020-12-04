@@ -58,11 +58,13 @@ GraphWidget::GraphWidget(QWidget *pParent) : QWidget(pParent)
     setLegendPosition(QPoint(20,20));
 }
 
+
 void GraphWidget::setGraph(Graph *pGraph)
 {
     m_pGraph = pGraph;
     if(m_pGraph) m_pGraph->setDrawRect(rect());
 }
+
 
 void GraphWidget::setTitles(QString &Title, QPoint &Place)
 {
@@ -71,14 +73,13 @@ void GraphWidget::setTitles(QString &Title, QPoint &Place)
 }
 
 
-
-void GraphWidget::paintEvent(QPaintEvent *  event )
+void GraphWidget::paintEvent(QPaintEvent *  pEvent )
 {
     QPainter painter(this);
     painter.save();
 
     QBrush BackBrush(m_pGraph->backgroundColor());
-    painter.fillRect(event->rect(), BackBrush);
+    painter.fillRect(pEvent->rect(), BackBrush);
     if(!m_pGraph)
     {
         painter.restore();
@@ -109,7 +110,7 @@ void GraphWidget::paintEvent(QPaintEvent *  event )
 
 
 
-void GraphWidget::resizeEvent ( QResizeEvent * event )
+void GraphWidget::resizeEvent (QResizeEvent * pEvent )
 {
     QRect r = rect();
     if(m_pGraph) m_pGraph->setDrawRect(r);
@@ -119,7 +120,7 @@ void GraphWidget::resizeEvent ( QResizeEvent * event )
         m_pGraph->initializeGraph();
         emit graphResized(m_pGraph);
     }
-    event->accept();
+    pEvent->accept();
 }
 
 
@@ -138,52 +139,52 @@ void GraphWidget::setLegendPosition(QPoint pos)
 
 
 
-void GraphWidget::contextMenuEvent (QContextMenuEvent *event)
+void GraphWidget::contextMenuEvent (QContextMenuEvent *pEvent)
 {
-    event->ignore();
+    pEvent->ignore();
 }
 
 
-void GraphWidget::keyPressEvent(QKeyEvent *event)
+void GraphWidget::keyPressEvent(QKeyEvent *pEvent)
 {
-    switch (event->key())
+    switch (pEvent->key())
     {
         case Qt::Key_R:
         {
             onResetGraphScales();
-            event->accept();
+            pEvent->accept();
             break;
         }
         case Qt::Key_V:
         {
             GraphDlg::setActivePage(0);
             onGraphSettings();
-            event->accept();
+            pEvent->accept();
             break;
         }
         case Qt::Key_G:
         {
             onGraphSettings();
-            event->accept();
+            pEvent->accept();
             break;
         }
 
-        default:event->ignore();
+        default:pEvent->ignore();
     }
 }
 
 
 
 
-void GraphWidget::mouseDoubleClickEvent (QMouseEvent *event)
+void GraphWidget::mouseDoubleClickEvent (QMouseEvent *pEvent)
 {
-    Q_UNUSED(event);
+    Q_UNUSED(pEvent);
     setCursor(Qt::CrossCursor);
     onGraphSettings();
 }
 
 
-void GraphWidget::mouseMoveEvent(QMouseEvent *event)
+void GraphWidget::mouseMoveEvent(QMouseEvent *pEvent)
 {
     bool bCtrl;
     QPoint point;
@@ -193,18 +194,18 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 
     setFocus();
 
-    point = event->pos();
+    point = pEvent->pos();
 
     bCtrl = false;
-    if(event->modifiers() & Qt::ControlModifier) bCtrl =true;
+    if(pEvent->modifiers() & Qt::ControlModifier) bCtrl =true;
 
-    if(!rect().contains(event->pos()))
+    if(!rect().contains(pEvent->pos()))
     {
         m_bTransGraph = false;
         return;
     }
 
-    if ((event->buttons() & Qt::LeftButton) && m_bTransGraph)
+    if ((pEvent->buttons() & Qt::LeftButton) && m_bTransGraph)
     {
         // we translate the curves inside the graph
         m_pGraph->setAuto(false);
@@ -223,7 +224,7 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
         update();
     }
 
-    else if ((event->buttons() & Qt::MidButton) && !bCtrl)
+    else if ((pEvent->buttons() & Qt::MidButton) && !bCtrl)
     //scaling
     {
         //zoom graph
@@ -234,7 +235,7 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
         update();
     }
     // we zoom the graph or the foil
-    else if ((event->buttons() & Qt::MidButton) || event->modifiers().testFlag(Qt::AltModifier))
+    else if ((pEvent->buttons() & Qt::MidButton) || pEvent->modifiers().testFlag(Qt::AltModifier))
     {
         if(m_pGraph)
         {
@@ -260,11 +261,11 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 }
 
 
-void GraphWidget::mousePressEvent(QMouseEvent *event)
+void GraphWidget::mousePressEvent(QMouseEvent *pEvent)
 {
-    if (event->buttons() & Qt::LeftButton)
+    if (pEvent->buttons() & Qt::LeftButton)
     {
-        QPoint point = event->pos();
+        QPoint point = pEvent->pos();
 
         m_LastPoint.rx() = point.x();
         m_LastPoint.ry() = point.y();
@@ -277,22 +278,20 @@ void GraphWidget::mousePressEvent(QMouseEvent *event)
 }
 
 
-void GraphWidget::mouseReleaseEvent(QMouseEvent *event)
+void GraphWidget::mouseReleaseEvent(QMouseEvent *pEvent)
 {
     setCursor(Qt::CrossCursor);
     m_bTransGraph = false;
 
-    event->accept();
+    pEvent->accept();
 }
 
 
-void GraphWidget::wheelEvent (QWheelEvent *event)
+void GraphWidget::wheelEvent (QWheelEvent *pEvent)
 {
     double zoomFactor=1.0;
 
-    QPoint pt(event->x(), event->y()); //client coordinates
-
-    if(event->delta()>0)
+    if(pEvent->angleDelta().y()>0)
     {
         if(!Settings::s_bReverseZoom) zoomFactor = 1./1.06;
         else                          zoomFactor = 1.06;
@@ -303,7 +302,7 @@ void GraphWidget::wheelEvent (QWheelEvent *event)
         else                          zoomFactor = 1./1.06;
     }
 
-    if(rect().contains(pt))
+    if(rect().contains(pEvent->position().toPoint()))
     {
         if (m_bXPressed)
         {
@@ -330,6 +329,7 @@ void GraphWidget::wheelEvent (QWheelEvent *event)
     }
 }
 
+
 /**
  * The user has requested the reset of the active graph's scales to their default value
  */
@@ -338,7 +338,6 @@ void GraphWidget::onResetGraphScales()
     m_pGraph->setAuto(true);
     update();
 }
-
 
 
 /**

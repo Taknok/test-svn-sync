@@ -2121,7 +2121,7 @@ bool PanelAnalysis::solveUnitRHS()
     double taskTime = 400.0;
     int Size = m_MatSize;
 
-    QTime t;
+    QElapsedTimer t;
     t.start();
 
     memcpy(m_RHS,      m_uRHS, uint(Size) * sizeof(double));

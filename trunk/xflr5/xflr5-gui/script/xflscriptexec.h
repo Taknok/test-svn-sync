@@ -49,7 +49,7 @@ public:
     bool runScript();
     void setStdOutStream(bool bStdOut) {m_bStdOutStream = bStdOut;}
 
-    bool bCSVOutput()       const {return m_ScriptReader.m_bcsvPolarOutput;}
+    bool bCSVOutput()       const {return m_Reader.m_bcsvPolarOutput;}
 
     void traceLog(QString strMsg);
 
@@ -59,9 +59,9 @@ public:
 
     QString projectFilePathName() const;
 
-    bool outputPolarBin()   const {return m_ScriptReader.m_bOutputPolarsBin;}
-    bool outputPolarText()  const {return m_ScriptReader.m_bOutputPolarsText;}
-    bool makeProjectFile()  const {return m_ScriptReader.m_bMakeProjectFile;}
+    bool outputPolarBin()   const {return m_Reader.m_bOutputPolarsBin;}
+    bool outputPolarText()  const {return m_Reader.m_bOutputPolarsText;}
+    bool makeProjectFile()  const {return m_Reader.m_bMakeProjectFile;}
     bool setLogFile();
 
     void closeLogFile();
@@ -84,13 +84,13 @@ public slots:
     void onCancel();
 
 private:
-    XFLScriptReader m_ScriptReader;
+    XFLScriptReader m_Reader;
     QFile *m_pXFile;
     QTextStream m_OutLogStream;
     QString m_LogFileName;
     QString m_FoilPolarsBinPath, m_FoilPolarsTextPath, m_OutputPath;
 
-    QVector<FoilAnalysis*> m_FoilExecList;
+    QVector<FoilAnalysis> m_FoilExecList;
 
     MainFrame *m_pMainFrame;
 

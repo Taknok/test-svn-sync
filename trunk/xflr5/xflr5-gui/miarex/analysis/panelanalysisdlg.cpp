@@ -300,7 +300,7 @@ void PanelAnalysisDlg::cleanUp()
         QDateTime dt = QDateTime::currentDateTime();
         QString str = dt.toString(Qt::DefaultLocaleLongDate);
         outstream << "Analysis ended "<<str<<"\n";
-        outstream << "Elapsed: "<<double(clock.elapsed())/1000.0<<"s";
+        outstream << "Elapsed: "<<double(clock.elapsed())/1000.0<<" s";
         outstream << "\n";
         outstream.flush();
         pXFile->close();

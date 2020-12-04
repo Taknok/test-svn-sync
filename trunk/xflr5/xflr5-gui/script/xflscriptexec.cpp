@@ -63,9 +63,7 @@ XflScriptExec::~XflScriptExec()
         m_pXFile->close();
         delete m_pXFile;
     }
-
-    for(int ix=0; ix<m_FoilExecList.size(); ix++)
-        delete m_FoilExecList.at(ix);
+    m_FoilExecList.clear();
 }
 
 
@@ -73,56 +71,104 @@ void XflScriptExec::makeFoilAnalysisList()
 {
     m_FoilExecList.clear();
 
+    // build from the xml files
     QStringList filters = {"*.xml"};
-    QStringList xmlanalyseslist = m_ScriptReader.m_PolarList;
-    if(m_ScriptReader.bRunAllAnalyses())
+    QStringList xmlanalyseslist = m_Reader.m_PolarList;
+    if(m_Reader.bRunAllAnalyses())
     {
-        findFiles(m_ScriptReader.xmlAnalysisDirPath(), filters, false, xmlanalyseslist);
+        findFiles(m_Reader.xmlAnalysisDirPath(), filters, false, xmlanalyseslist);
     }
 
     for(int ip=0; ip<m_oaFoil.count(); ip++)
     {
         Foil *pFoil = m_oaFoil.at(ip);
-        if(pFoil)
+        if(!pFoil) continue;
+
+        for(int ip=0; ip<xmlanalyseslist.count(); ip++)
         {
-            for(int ip=0; ip<xmlanalyseslist.count(); ip++)
+            Polar *pPolar = makePolar(xmlanalyseslist.at(ip));
+            if(pPolar)
             {
-                Polar *pPolar = makePolar(xmlanalyseslist.at(ip));
-                if(pPolar)
+                pPolar->setFoilName(pFoil->foilName());
+                pPolar->setPolarStyle(pFoil->foilLineStyle());
+                pPolar->setPolarWidth(pFoil->foilLineWidth());
+                pPolar->setColor(pFoil->foilColor().red(), pFoil->foilColor().green(), pFoil->foilColor().blue());
+                pPolar->setAutoPolarName();
+
+                FoilAnalysis FoilAnalysis;
+                switch(pPolar->polarType())
                 {
-                    pPolar->setFoilName(pFoil->foilName());
-                    pPolar->setPolarStyle(pFoil->foilLineStyle());
-                    pPolar->setPolarWidth(pFoil->foilLineWidth());
-                    pPolar->setColor(pFoil->foilColor().red(), pFoil->foilColor().green(), pFoil->foilColor().blue());
-                    FoilAnalysis *pFoilAnalysis = new FoilAnalysis;
-                    pFoilAnalysis->pFoil = pFoil;
-                    pFoilAnalysis->pPolar = pPolar;
-                    switch(pPolar->polarType())
+                    case XFLR5::FIXEDSPEEDPOLAR:
+                    case XFLR5::FIXEDLIFTPOLAR:
                     {
-                        case XFLR5::FIXEDSPEEDPOLAR:
-                        case XFLR5::FIXEDLIFTPOLAR:
-                        {
-                            pFoilAnalysis->vMin = m_ScriptReader.m_aoaMin;
-                            pFoilAnalysis->vMax = m_ScriptReader.m_aoaMax;
-                            pFoilAnalysis->vInc = m_ScriptReader.m_aoaInc;
-                            break;
-                        }
-                        case XFLR5::FIXEDAOAPOLAR:
-                        {
-                            pFoilAnalysis->vMin = m_ScriptReader.m_ReMin;
-                            pFoilAnalysis->vMax = m_ScriptReader.m_ReMax;
-                            pFoilAnalysis->vInc = m_ScriptReader.m_ReInc;
-                            break;
-                        }
-                        default:
-                        {
-                            break;
-                        }
+                        FoilAnalysis.vMin = m_Reader.m_aoaMin;
+                        FoilAnalysis.vMax = m_Reader.m_aoaMax;
+                        FoilAnalysis.vInc = m_Reader.m_aoaInc;
+                        break;
                     }
-                    m_FoilExecList.append(pFoilAnalysis);
-                    traceLog("   added analysis for foil "+pFoil->foilName()+" and "+pPolar->polarName() +"\n");
+                    case XFLR5::FIXEDAOAPOLAR:
+                    {
+                        FoilAnalysis.vMin = m_Reader.m_ReMin;
+                        FoilAnalysis.vMax = m_Reader.m_ReMax;
+                        FoilAnalysis.vInc = m_Reader.m_ReInc;
+                        break;
+                    }
+                    default: break;
                 }
+
+                FoilAnalysis.pFoil = pFoil;
+                FoilAnalysis.pPolar = pPolar;
+                m_FoilExecList.append(FoilAnalysis);
+                traceLog("   added analysis for foil "+pFoil->foilName()+" and "+pPolar->polarName() +"\n");
             }
+        }
+    }
+
+    //build the batch range
+
+    for(int ip=0; ip<m_oaFoil.count(); ip++)
+    {
+        Foil *pFoil = m_oaFoil.at(ip);
+        if(!pFoil) continue;
+
+        for(int ip=0; ip<m_Reader.m_Reynolds.count(); ip++)
+        {
+            Polar *pPolar = nullptr;
+
+            FoilAnalysis FoilAnalysis;
+            switch(m_Reader.m_PolarType)
+            {
+                case XFLR5::FIXEDSPEEDPOLAR:
+                case XFLR5::FIXEDLIFTPOLAR:
+                {
+                    pPolar = Objects2d::createPolar(pFoil, m_Reader.m_PolarType, m_Reader.m_Reynolds.at(ip), m_Reader.m_Mach.at(ip),
+                                                           m_Reader.m_NCrit.at(ip), m_Reader.m_XtrTop, m_Reader.m_XtrBot);
+
+                    FoilAnalysis.vMin = m_Reader.m_aoaMin;
+                    FoilAnalysis.vMax = m_Reader.m_aoaMax;
+                    FoilAnalysis.vInc = m_Reader.m_aoaInc;
+                    break;
+                }
+                case XFLR5::FIXEDAOAPOLAR:
+                {
+                    pPolar = Objects2d::createPolar(pFoil, m_Reader.m_PolarType, m_Reader.m_Alpha.at(ip), m_Reader.m_Mach.at(ip),
+                                                           m_Reader.m_NCrit.at(ip), m_Reader.m_XtrTop, m_Reader.m_XtrBot);
+
+                    FoilAnalysis.vMin = m_Reader.m_ReMin;
+                    FoilAnalysis.vMax = m_Reader.m_ReMax;
+                    FoilAnalysis.vInc = m_Reader.m_ReInc;
+                    break;
+                }
+                default: break;
+            }
+            if(!pPolar)
+                continue;
+
+            FoilAnalysis.pFoil = pFoil;
+            FoilAnalysis.pPolar = pPolar;
+            m_FoilExecList.append(FoilAnalysis);
+            traceLog("   added analysis for foil "+pFoil->foilName()+" and "+pPolar->polarName() +"\n");
+
         }
     }
 }
@@ -132,14 +178,14 @@ bool XflScriptExec::makeFoils()
 {
     traceLog("Reading foil files\n");
     QStringList filters =  {"*.dat"};
-    for(int ifo=0; ifo<m_ScriptReader.m_FoilList.count(); ifo++)
+    for(int ifo=0; ifo<m_Reader.m_FoilList.count(); ifo++)
     {
         QFile datFile;
         QString datPathName;
 
-        if (!findFile(m_ScriptReader.m_FoilList.at(ifo), m_ScriptReader.datFoilDirPath(), filters, true, datPathName))
+        if (!findFile(m_Reader.m_FoilList.at(ifo), m_Reader.datFoilDirPath(), filters, true, datPathName))
         {
-            QString strange = "   ...failed to find the file "+m_ScriptReader.m_FoilList.at(ifo);
+            QString strange = "   ...failed to find the file "+m_Reader.m_FoilList.at(ifo);
             traceLog(strange+"\n");
             return false;
         }
@@ -147,7 +193,7 @@ bool XflScriptExec::makeFoils()
         datFile.setFileName(datPathName);
         if (!datFile.open(QIODevice::ReadOnly))
         {
-            QString strange = "   ...Could not open the file "+m_ScriptReader.m_FoilList.at(ifo);
+            QString strange = "   ...Could not open the file "+m_Reader.m_FoilList.at(ifo);
             traceLog(strange+"\n");
             return false;
         }
@@ -164,7 +210,7 @@ bool XflScriptExec::makeFoils()
             }
             else
             {
-                traceLog("   ...failed to add the foil from "+m_ScriptReader.m_FoilList.at(ifo)+"\n");
+                traceLog("   ...failed to add the foil from "+m_Reader.m_FoilList.at(ifo)+"\n");
                 return false;
             }
         }
@@ -177,7 +223,7 @@ bool XflScriptExec::makeFoils()
 
 Polar* XflScriptExec::makePolar(QString fileName)
 {
-    QString pathName = m_ScriptReader.m_PolarBinDirPath+QDir::separator()+fileName;
+    QString pathName = m_Reader.m_PolarBinDirPath+QDir::separator()+fileName;
     QFile xmlFile(pathName);
     if (!xmlFile.open(QIODevice::ReadOnly))
     {
@@ -246,13 +292,13 @@ bool XflScriptExec::readScript(QString scriptpathname)
         return false;
     }
 
-    m_ScriptReader.setDevice(&xmlFile);
-    m_ScriptReader.readScript();
-    if(m_ScriptReader.hasError())
+    m_Reader.setDevice(&xmlFile);
+    m_Reader.readScript();
+    if(m_Reader.hasError())
     {
         QString strange;
-        strange = QString::asprintf("\nline %d column %d", int(m_ScriptReader.lineNumber()), int(m_ScriptReader.columnNumber()));
-        QString errorMsg = m_ScriptReader.errorString() + strange;
+        strange = QString::asprintf("\nline %d column %d", int(m_Reader.lineNumber()), int(m_Reader.columnNumber()));
+        QString errorMsg = m_Reader.errorString() + strange;
         traceLog(errorMsg);
     }
     else
@@ -264,7 +310,7 @@ bool XflScriptExec::readScript(QString scriptpathname)
 
 QString XflScriptExec::projectFilePathName() const
 {
-    QString projectFileName = m_ScriptReader.projectFileName();
+    QString projectFileName = m_Reader.projectFileName();
     QFileInfo fi(projectFileName);
 
     return m_OutputPath + QDir::separator() + fi.fileName();
@@ -294,10 +340,10 @@ void XflScriptExec::onCancel()
 bool XflScriptExec::makeExportDirectories()
 {
     bool bOK = true;
-    QString projectFileName = m_ScriptReader.projectFileName();
+    QString projectFileName = m_Reader.projectFileName();
     QFileInfo fi(projectFileName);
 
-    m_OutputPath = m_ScriptReader.outputDirPath();
+    m_OutputPath = m_Reader.outputDirPath();
     m_OutputPath += QDir::separator() + fi.baseName();
 
 
@@ -322,7 +368,7 @@ bool XflScriptExec::makeExportDirectories()
         }
     }
 
-    if(m_ScriptReader.binPolarDirPath().length()) m_FoilPolarsBinPath = m_ScriptReader.binPolarDirPath();
+    if(m_Reader.binPolarDirPath().length()) m_FoilPolarsBinPath = m_Reader.binPolarDirPath();
     else                                          m_FoilPolarsBinPath = m_FoilPolarsTextPath;
 
     return bOK;
@@ -369,13 +415,6 @@ void XflScriptExec::cleanUpFoilAnalyses()
 {
     XFoil::s_bCancel = false;
 
-    //in case we cancelled, delete all Analysis that are left
-    for(int ia=m_FoilExecList.count()-1; ia>=0; ia--)
-    {
-        FoilAnalysis *pAnalysis = m_FoilExecList.at(ia);
-        delete pAnalysis;
-        m_FoilExecList.removeAt(ia);
-    }
     QThreadPool::globalInstance()->setMaxThreadCount(QThread::idealThreadCount());
 }
 
@@ -390,9 +429,9 @@ void XflScriptExec::runFoilAnalyses()
     strong = "_____Starting foil analysis_____\n\n";
     traceLog(strong);
 
-    m_nThreads = m_ScriptReader.m_nMaxThreads;
+    m_nThreads = m_Reader.m_nMaxThreads;
     QThreadPool::globalInstance()->setMaxThreadCount(m_nThreads);
-    strong = QString::asprintf("Running with %d thread(s)\n", m_ScriptReader.m_nMaxThreads);
+    strong = QString::asprintf("Running with %d thread(s)\n", m_Reader.m_nMaxThreads);
     traceLog(strong+"\n");
 
     //build an array of all analysis pairs to run
@@ -430,37 +469,34 @@ void XflScriptExec::runFoilAnalyses()
  */
 void XflScriptExec::startXFoilTaskThread()
 {
-    FoilAnalysis *pAnalysis = nullptr;
     QString strong;
     //  browse through the array until we find an available thread
 
     XFoilTask *pXFoilTask = new XFoilTask(this);
 
     //take the last analysis in the array
-    pAnalysis = m_FoilExecList.at(m_FoilExecList.size()-1);
+     FoilAnalysis &Analysis = m_FoilExecList[m_FoilExecList.size()-1];
 
-    pAnalysis->pPolar->setVisible(true);
+    Analysis.pPolar->setVisible(true);
 
     //initiate the task
 
-    pXFoilTask->initializeTask(pAnalysis, false, true, true, true);
-    if(pAnalysis->pPolar->polarType()<XFLR5::FIXEDAOAPOLAR)
-        pXFoilTask->setSequence(true, pAnalysis->vMin, pAnalysis->vMax, pAnalysis->vInc);
-    else if(pAnalysis->pPolar->isFixedaoaPolar())
-        pXFoilTask->setReRange(pAnalysis->vMin, pAnalysis->vMax, pAnalysis->vInc);
+    pXFoilTask->initializeTask(Analysis, false, true, true, true);
+    if(Analysis.pPolar->polarType()<XFLR5::FIXEDAOAPOLAR)
+        pXFoilTask->setSequence(true, Analysis.vMin, Analysis.vMax, Analysis.vInc);
+    else if(Analysis.pPolar->isFixedaoaPolar())
+        pXFoilTask->setReRange(Analysis.vMin, Analysis.vMax, Analysis.vInc);
 
     //launch it
     m_nTaskStarted++;
-    strong = "Starting "+pAnalysis->pFoil->foilName()+" / "+pAnalysis->pPolar->polarName()+"\n";
+    strong = "Starting "+Analysis.pFoil->foilName()+" / "+Analysis.pPolar->polarName()+"\n";
     traceLog(strong);
 
 //    QThreadPool::globalInstance()->start(pXFoilTask);
     pXFoilTask->run();
 
     //remove it from the array of pairs to analyze
-    pAnalysis = m_FoilExecList.last();
     m_FoilExecList.removeLast();
-    delete pAnalysis;
 }
 
 

@@ -65,7 +65,6 @@ private:
 
     void setupLayout();
     void cleanUp();
-    Polar * createPolar(Foil *pFoil, double Re, double Mach, double NCrit);
 
     void keyPressEvent(QKeyEvent *event) override;
     void showEvent(QShowEvent *event) override;

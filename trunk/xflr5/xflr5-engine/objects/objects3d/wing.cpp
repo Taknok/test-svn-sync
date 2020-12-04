@@ -20,10 +20,8 @@
 *****************************************************************************/
 
 
-
 #include <QFile>
-#include <QtDebug>
-
+#include <QRandomGenerator>
 
 #include <objects/objects3d/wing.h>
 #include <objects/objects3d/wpolar.h>
@@ -83,9 +81,14 @@ Wing::Wing()
     m_WingType        = XFLR5::MAINWING;
     m_WingDescription = "";
 
-    m_WingColor.setRed(  int((double(qrand())/double(RAND_MAX))*155)+100);
-    m_WingColor.setGreen(int((double(qrand())/double(RAND_MAX))*155)+100);
-    m_WingColor.setBlue( int((double(qrand())/double(RAND_MAX))*155)+100);
+    QRandomGenerator rg;
+    QColor clr;
+    clr.setHsv(rg.bounded(360),
+               rg.bounded(55)+30,
+               rg.bounded(55)+150);
+    m_WingColor.setRed(  clr.red());
+    m_WingColor.setGreen(clr.green());
+    m_WingColor.setBlue( clr.blue());
 
     m_pWingPanel     = nullptr;
 
@@ -281,7 +284,7 @@ bool Wing::exportDefinition(QString path_to_file, QString errorMessage)
         } else {
             QTextStream out_file(&fp);
             //Iterate the wing sections are write out the data...
-            out_file << this->m_WingName << endl;
+            out_file << this->m_WingName << Qt::endl;
             for (int is=0; is<m_Section.size(); is++)
             {
                 out_file << YPosition(is) << " " << Chord(is) << " " << Offset(is) \
@@ -335,7 +338,7 @@ bool Wing::exportDefinition(QString path_to_file, QString errorMessage)
                     QString leftfoilname = leftFoilName(is);
                     out_file  << " " << leftfoilname.replace(QString(" "), QString("/_/")).toLatin1().data();
                 }
-                out_file << endl;
+                out_file << Qt::endl;
             }
             fp.close();
         }

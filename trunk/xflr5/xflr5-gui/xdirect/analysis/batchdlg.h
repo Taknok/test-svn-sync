@@ -68,14 +68,13 @@ public:
     void customEvent(QEvent * pEvent) override;
 
 private:
-    void keyPressEvent(QKeyEvent *event) override;
-    void showEvent(QShowEvent *event) override;
-    void hideEvent(QHideEvent *event) override;
+    void keyPressEvent(QKeyEvent *pEvent) override;
+    void showEvent(QShowEvent *pEvent) override;
+    void hideEvent(QHideEvent *pEvent) override;
     void reject() override;
 
     void alphaLoop();
     void cleanUp();
-    Polar* createPolar(Foil *pFoil, double Spec, double Mach, double NCrit);
     void setupLayout();
     void initDialog();
     void readParams();
