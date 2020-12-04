@@ -50,7 +50,8 @@ PlaneOpp::PlaneOpp(Plane *pPlane, WPolar *pWPolar, int PanelArraySize)
     m_PointStyle  = 0;
     m_bIsVisible  = true;
 
-    QRandomGenerator rg;
+    QRandomGenerator rg = QRandomGenerator::securelySeeded();
+
     QColor clr;
     clr.setHsv(rg.bounded(360),
                rg.bounded(55)+30,

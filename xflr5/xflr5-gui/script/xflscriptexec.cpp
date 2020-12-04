@@ -86,7 +86,7 @@ void XflScriptExec::makeFoilAnalysisList()
 
         for(int ip=0; ip<xmlanalyseslist.count(); ip++)
         {
-            Polar *pPolar = makePolar(xmlanalyseslist.at(ip));
+            Polar *pPolar = makePolarFromXml(xmlanalyseslist.at(ip));
             if(pPolar)
             {
                 pPolar->setFoilName(pFoil->foilName());
@@ -94,6 +94,13 @@ void XflScriptExec::makeFoilAnalysisList()
                 pPolar->setPolarWidth(pFoil->foilLineWidth());
                 pPolar->setColor(pFoil->foilColor().red(), pFoil->foilColor().green(), pFoil->foilColor().blue());
                 pPolar->setAutoPolarName();
+
+                if(pPolar->m_Reynolds<0.1)
+                {
+                    traceLog("   skipping polar "+pPolar->polarName()+": Reynolds number is null\n");
+                    Objects2d::deletePolar(pPolar);
+                    continue;
+                }
 
                 FoilAnalysis FoilAnalysis;
                 switch(pPolar->polarType())
@@ -161,8 +168,13 @@ void XflScriptExec::makeFoilAnalysisList()
                 }
                 default: break;
             }
-            if(!pPolar)
+
+            if(!pPolar || pPolar->m_Reynolds<0.1)
+            {
+                traceLog("   skipping polar "+pPolar->polarName()+": Reynolds number is null\n");
+                Objects2d::deletePolar(pPolar);
                 continue;
+            }
 
             FoilAnalysis.pFoil = pFoil;
             FoilAnalysis.pPolar = pPolar;
@@ -221,7 +233,7 @@ bool XflScriptExec::makeFoils()
 }
 
 
-Polar* XflScriptExec::makePolar(QString fileName)
+Polar* XflScriptExec::makePolarFromXml(QString fileName)
 {
     QString pathName = m_Reader.m_PolarBinDirPath+QDir::separator()+fileName;
     QFile xmlFile(pathName);
@@ -453,9 +465,7 @@ void XflScriptExec::runFoilAnalyses()
         QThread::msleep(100);
     }
 
-
     QThreadPool::globalInstance()->waitForDone();
-
 
     cleanUpFoilAnalyses();
     if(m_bCancel) strong = "\n_____Foil analysis cancelled_____\n";
@@ -492,8 +502,8 @@ void XflScriptExec::startXFoilTaskThread()
     strong = "Starting "+Analysis.pFoil->foilName()+" / "+Analysis.pPolar->polarName()+"\n";
     traceLog(strong);
 
-//    QThreadPool::globalInstance()->start(pXFoilTask);
-    pXFoilTask->run();
+    QThreadPool::globalInstance()->start(pXFoilTask);
+//    pXFoilTask->run();
 
     //remove it from the array of pairs to analyze
     m_FoilExecList.removeLast();

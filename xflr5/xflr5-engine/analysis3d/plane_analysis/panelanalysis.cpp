@@ -20,8 +20,7 @@
 
 *****************************************************************************/
 
-
-#include <QDebug>
+#include <QElapsedTimer>
 #include <QTime>
 #include <QThread>
 #include <QCoreApplication>

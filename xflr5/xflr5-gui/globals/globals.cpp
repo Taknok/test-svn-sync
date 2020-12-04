@@ -178,7 +178,7 @@ int readValues(QString line, double &x, double &y, double &z)
 
 QColor randomColor(bool bLightColor)
 {
-    QRandomGenerator rg;
+    QRandomGenerator rg = QRandomGenerator::securelySeeded();
     QColor clr;
 
     if(bLightColor)
@@ -191,7 +191,7 @@ QColor randomColor(bool bLightColor)
     {
         clr.setHsv(rg.bounded(360),
                    rg.bounded(55)+30,
-                   rg.bounded(55)+50);
+                   rg.bounded(55)+75);
     }
     return clr;
 }
@@ -362,11 +362,10 @@ Foil *readFoilFile(QFile &xFoilFile)
     QString FoilName;
 
     Foil* pFoil = nullptr;
-    int pos, i, ip;
-    pos = 0;
-    double x, y, z, area;
-    double xp, yp;
-    bool bRead;
+    int pos=0;
+    double x=0, y=0, z=0, area=0;
+    double xp=0, yp=0;
+
     QTextStream in(&xFoilFile);
 
     QString fileName = xFoilFile.fileName();
@@ -415,7 +414,7 @@ Foil *readFoilFile(QFile &xFoilFile)
         FoilName = FoilName.trimmed();
     }
 
-    bRead = true;
+    bool bRead = true;
     xp=-9999.0;
     yp=-9999.0;
     do
@@ -455,9 +454,10 @@ Foil *readFoilFile(QFile &xFoilFile)
     // Check if the foil was written clockwise or counter-clockwise
 
     area = 0.0;
-    for (i=0; i<pFoil->nb; i++)
+    for (int i=0; i<pFoil->nb; i++)
     {
-        if(i==pFoil->nb-1)    ip = 0;
+        int ip = 0;
+        if(i==pFoil->nb-1)  ip = 0;
         else                ip = i+1;
         area +=  0.5*(pFoil->yb[i]+pFoil->yb[ip])*(pFoil->xb[i]-pFoil->xb[ip]);
     }
@@ -487,9 +487,6 @@ Foil *readFoilFile(QFile &xFoilFile)
 
     return pFoil;
 }
-
-
-
 
 
 /**

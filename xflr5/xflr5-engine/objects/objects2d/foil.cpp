@@ -26,7 +26,7 @@
 #include <objects/objects2d/polar.h>
 
 #include <QTextStream>
-#include <QtDebug>
+#include <QRandomGenerator>
 
 #define PI 3.141592654
 
@@ -37,20 +37,21 @@ Foil::Foil()
 {
     m_PointStyle = 0; //no points to start with
     m_Stipple = 0;
-    m_Width = 1;
-    m_Color.setRed(int((double(rand())/double(RAND_MAX))*200));
-    m_Color.setGreen(int((double(rand())/double(RAND_MAX))*200));
-    m_Color.setBlue(int((double(rand())/double(RAND_MAX))*200));
-    m_Color.setAlpha(255);
+    m_Width = 2;
 
+    QRandomGenerator rg;
+    QColor clr;
+    clr.setHsv(rg.bounded(360),
+               rg.bounded(55)+30,
+               rg.bounded(55)+150);
+    m_Color.setRed(  clr.red());
+    m_Color.setGreen(clr.green());
+    m_Color.setBlue( clr.blue());
 
     m_iHighLight = -1;
 
     m_bCenterLine       = false;
     m_bIsFoilVisible    = true;
-
-    m_FoilName = "";
-    m_FoilDescription = "";
 
     m_fCamber     = 0.0;
     m_fXCamber    = 0.0;
@@ -92,8 +93,6 @@ Foil::Foil()
     m_LEXHinge    = 20.0;
     m_LEYHinge    = 50.0;
 }
-
-
 
 
 /**

@@ -107,7 +107,7 @@ void TextClrBtn::paintEvent(QPaintEvent *event)
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &painter, this);*/
 
     QFontMetrics fm(m_TextFont);
-    int w = fm.width(text());
+    int w = fm.horizontalAdvance(text());
 
     QBrush backBrush(m_BackgroundColor);
     painter.setBrush(backBrush);
@@ -123,7 +123,7 @@ void TextClrBtn::paintEvent(QPaintEvent *event)
     QPen ContourPen(ContourColor);
     painter.setPen(ContourPen);
     r.adjust(0,2,-1,-3);
-    painter.drawRoundRect(r,5,40);
+    painter.drawRoundedRect(r,5,40);
 
     QPen LinePen(m_TextColor);
     painter.setPen(LinePen);

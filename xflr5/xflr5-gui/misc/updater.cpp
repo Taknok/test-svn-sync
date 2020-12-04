@@ -70,7 +70,7 @@ void Updater::checkForUpdates()
         return;
     }
 
-    switch(m_pNetworkAcessManager->networkAccessible())
+/*    switch(m_pNetworkAcessManager->networkAccessible())
     {
         case QNetworkAccessManager::UnknownAccessibility:
             Trace("QNetworkAccessManager::Unknown Accessibility");
@@ -81,7 +81,7 @@ void Updater::checkForUpdates()
         case QNetworkAccessManager::Accessible:
             Trace("QNetworkAccessManager::Accessible");
             break;
-    }
+    }*/
 
     QUrl url("https://www.xflr5.tech/rss/rssfeed.xml");
 

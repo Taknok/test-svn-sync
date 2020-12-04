@@ -1862,7 +1862,12 @@ bool Body::importDefinition(QTextStream &inStream, double mtoUnit, QString &erro
             if(!bRead) break;
 
             //Do this the C++ way
-            QStringList values = strong.split(" ", Qt::SkipEmptyParts);
+            QStringList values;
+#if QT_VERSION >= 0x050F00
+            values = values = strong.split(" ", Qt::SkipEmptyParts);
+#else
+    values = values = strong.split(" ", QString::SkipEmptyParts);
+#endif
 
             if(values.length()==3)
             {

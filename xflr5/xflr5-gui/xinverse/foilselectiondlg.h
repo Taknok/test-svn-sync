@@ -58,8 +58,8 @@ private:
     void setupLayout();
 
     QDialogButtonBox *m_pButtonBox;
-    QPushButton *m_pctrlSelectAll;
-    QListWidget *m_pctrlNameList;
+    QPushButton *m_ppbSelectAll;
+    QListWidget *m_plwNameList;
     QString m_FoilName;
 
     QVector<Foil*> m_FoilList; /** in input, the array of all foil pointers, in output, pointers to the selected foils @todo make two lists*/
