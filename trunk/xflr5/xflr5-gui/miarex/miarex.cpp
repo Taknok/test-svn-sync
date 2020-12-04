@@ -5011,7 +5011,14 @@ void Miarex::onImportWPolars()
                     strong = inStream.readLine(); // one line with polar results
                     if(strong.length())
                     {
-                        QStringList values = strong.split(" ", Qt::SkipEmptyParts);
+
+                        QStringList values;
+#if QT_VERSION >= 0x050F00
+            values = values = strong.split(" ", Qt::SkipEmptyParts);
+#else
+    values = values = strong.split(" ", QString::SkipEmptyParts);
+#endif
+
                         //            alpha      Beta       CL          CDi        CDv        CD         CY         Cl         Cm         Cn        Cni       QInf        XCP
 
                         if(values.length()>=12)

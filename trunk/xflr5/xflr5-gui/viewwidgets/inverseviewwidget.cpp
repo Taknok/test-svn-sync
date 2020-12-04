@@ -151,8 +151,6 @@ void InverseViewWidget::wheelEvent(QWheelEvent *pEvent)
 {
     double ZoomFactor=1.0;
 
-    QPointF pt(pEvent->position()); //client coordinates
-
     if(pEvent->angleDelta().y()>0)
     {
         if(!Settings::s_bReverseZoom) ZoomFactor = 1./1.06;
@@ -166,6 +164,12 @@ void InverseViewWidget::wheelEvent(QWheelEvent *pEvent)
 
     if(m_pMainFrame->m_iApp == XFLR5::INVERSEDESIGN && m_pXInverse)
     {
+        QPoint pt;
+#if QT_VERSION >= 0x050F00
+        pt = pEvent->position().toPoint();
+#else
+        pt = pEvent->pos();
+#endif
         m_pXInverse->zoomEvent(pt, ZoomFactor);
     }
 }

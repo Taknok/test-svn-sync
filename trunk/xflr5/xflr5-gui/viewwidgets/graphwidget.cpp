@@ -302,31 +302,28 @@ void GraphWidget::wheelEvent (QWheelEvent *pEvent)
         else                          zoomFactor = 1./1.06;
     }
 
-    if(rect().contains(pEvent->position().toPoint()))
+    if (m_bXPressed)
     {
-        if (m_bXPressed)
-        {
-            //zoom x scale
-            m_pGraph->setAutoX(false);
-            m_pGraph->scaleXAxis(1./zoomFactor);
-        }
-        else if(m_bYPressed)
-        {
-            //zoom y scale
-            m_pGraph->setAutoY(false);
-            m_pGraph->scaleYAxis(1./zoomFactor);
-        }
-        else
-        {
-            //zoom both
-            m_pGraph->setAuto(false);
-            m_pGraph->scaleAxes(1./zoomFactor);
-        }
-
-        m_pGraph->setAutoXUnit();
-        m_pGraph->setAutoYUnit();
-        update();
+        //zoom x scale
+        m_pGraph->setAutoX(false);
+        m_pGraph->scaleXAxis(1./zoomFactor);
     }
+    else if(m_bYPressed)
+    {
+        //zoom y scale
+        m_pGraph->setAutoY(false);
+        m_pGraph->scaleYAxis(1./zoomFactor);
+    }
+    else
+    {
+        //zoom both
+        m_pGraph->setAuto(false);
+        m_pGraph->scaleAxes(1./zoomFactor);
+    }
+
+    m_pGraph->setAutoXUnit();
+    m_pGraph->setAutoYUnit();
+    update();
 }
 
 

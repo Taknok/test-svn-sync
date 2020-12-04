@@ -68,7 +68,7 @@ public:
     QString logFileName() const {return m_LogFileName;}
 
 private:
-    Polar *makePolar(QString pathName);
+    Polar *makePolarFromXml(QString pathName);
     bool makeExportDirectories();
     bool makeFoils();
     void makeFoilAnalysisList();

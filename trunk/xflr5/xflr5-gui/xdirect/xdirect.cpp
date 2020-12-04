@@ -2296,7 +2296,8 @@ void XDirect::onExportBLData()
                 .arg(m_pCurOpp->aoa(), 5, 'f',1)
                 .arg(m_pCurOpp->Reynolds(), 8, 'f',0)
                 .arg(m_pCurOpp->Mach(), 6, 'f',4)
-                .arg(m_pCurOpp->ACrit, 4, 'f',1);    out << (strong);
+                .arg(m_pCurOpp->ACrit, 4, 'f',1);
+    out << (strong);
 
 
     nside1 = m_pCurOpp->blx.nside1;
@@ -3137,7 +3138,12 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
                 //                res = sscanf(text, "%lf%lf%lf%lf%lf%lf%lf%lf%lf", &alpha, &CL, &CD, &CDp, &CM, &Xt, &Xb, &Cpmn, &HMom);
 
                 //Do this the C++ way
-                QStringList values = strong.split(" ", Qt::SkipEmptyParts);
+                QStringList values;
+#if QT_VERSION >= 0x050F00
+            values = values = strong.split(" ", Qt::SkipEmptyParts);
+#else
+    values = values = strong.split(" ", QString::SkipEmptyParts);
+#endif
 
                 if(values.length()>=7)
                 {

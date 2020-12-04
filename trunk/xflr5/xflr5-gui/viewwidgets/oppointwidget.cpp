@@ -341,7 +341,14 @@ void OpPointWidget::setFoilScale()
 */
 void OpPointWidget::wheelEvent(QWheelEvent *pEvent)
 {
-    if(m_pCpGraph && m_pCpGraph->isInDrawRect(pEvent->position()))
+    QPoint pt;
+#if QT_VERSION >= 0x050F00
+    pt = pEvent->position().toPoint();
+#else
+    pt = pEvent->pos();
+#endif
+
+    if(m_pCpGraph && m_pCpGraph->isInDrawRect(pt))
     {
         double zoomFactor=1.0;
 

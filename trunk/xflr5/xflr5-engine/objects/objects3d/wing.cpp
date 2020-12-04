@@ -81,7 +81,8 @@ Wing::Wing()
     m_WingType        = XFLR5::MAINWING;
     m_WingDescription = "";
 
-    QRandomGenerator rg;
+    QRandomGenerator rg = QRandomGenerator::securelySeeded();
+
     QColor clr;
     clr.setHsv(rg.bounded(360),
                rg.bounded(55)+30,
@@ -284,7 +285,14 @@ bool Wing::exportDefinition(QString path_to_file, QString errorMessage)
         } else {
             QTextStream out_file(&fp);
             //Iterate the wing sections are write out the data...
-            out_file << this->m_WingName << Qt::endl;
+            out_file << this->m_WingName;
+
+#if QT_VERSION >= 0x050F00
+            out_file << Qt::endl;
+#else
+            out_file << endl;
+#endif
+
             for (int is=0; is<m_Section.size(); is++)
             {
                 out_file << YPosition(is) << " " << Chord(is) << " " << Offset(is) \
@@ -338,7 +346,12 @@ bool Wing::exportDefinition(QString path_to_file, QString errorMessage)
                     QString leftfoilname = leftFoilName(is);
                     out_file  << " " << leftfoilname.replace(QString(" "), QString("/_/")).toLatin1().data();
                 }
-                out_file << Qt::endl;
+
+#if QT_VERSION >= 0x050F00
+            out_file << Qt::endl;
+#else
+            out_file << endl;
+#endif
             }
             fp.close();
         }
