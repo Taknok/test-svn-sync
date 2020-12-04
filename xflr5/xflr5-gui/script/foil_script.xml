@@ -14,7 +14,7 @@
              Specify either an absolute path or a path relative to the directory of project files specified
              in the Directories section.
              Should not be the same as the project file name to make to avoid data overwrite. -->
-        <!--load_project_file>/home/techwinder/studies/005.xflflow</load_project_file-->
+        <!--load_project_file>/home/user/studies/005.xflflow</load_project_file-->
 
         <!-- set this field either to TXT or CSV -->
         <polar_text_output_format>CSV</polar_text_output_format>
@@ -22,14 +22,14 @@
         <Directories>
             <!-- The directory where the project file (.xfl) and all output files will be created;
                  If undefined, the output directory will be the user's home directory -->
-            <output_dir>/home/techwinder/studies/xml/scripts/output</output_dir>
+            <output_dir>/home/user/studies/xml/scripts/output</output_dir>
             <!-- The default directory where the foil geometry files (.dat) will be looked for -->
-            <foil_files_dir>/home/techwinder/studies/airfoils</foil_files_dir>
+            <foil_files_dir>/home/user/studies/airfoils</foil_files_dir>
             <!-- The default directory where the foil analysis files (.xml) will be looked for -->
-            <foil_analysis_xml_dir>/home/techwinder/studies/xml/analyses_2d</foil_analysis_xml_dir>
+            <foil_analysis_xml_dir>/home/user/studies/xml/analyses_2d</foil_analysis_xml_dir>
             <!-- The default directory where the foil polar files (.plr) will be created after a foil analysis.
                  If undefined the files will be saved in the output directory -->
-            <!--foil_polars_dir>/home/techwinder/studies/polars</foil_polars_dir-->
+            <!--foil_polars_dir>/home/user/studies/polars</foil_polars_dir-->
 
         </Directories>
 
@@ -71,7 +71,7 @@
                  If the foil's name was left blank in the analysis file, a copy of this polar will be built for each foil object
                  Specify either the absolute path or a path relative to the directory of foil analysis defined in the Directories section-->
             <!--Analysis_File_Name>T6_polar.xml</Analysis_File_Name-->
-            <!--Analysis_File_Name>/home/techwinder/studies/xml/foilanalysis/T1_Re0_100_M0_00_N9_0.xml</Analysis_File_Name-->
+            <!--Analysis_File_Name>/home/user/studies/xml/foilanalysis/T1_Re0_100_M0_00_N9_0.xml</Analysis_File_Name-->
         </Analysis_Files>
 
         <!-- Batch analysis data; if defined, the analysis specified in this section will be performed
@@ -83,14 +83,14 @@
                  or to false if running a range of lift coefficients. -->
 
             <!-- Specify the forced transition locations for the analysis -->
-            <Forced_Top_Transition>0.15</Forced_Top_Transition>
-            <Forced_Bottom_Transition>0.35</Forced_Bottom_Transition>
+            <Forced_Top_Transition>1.0</Forced_Top_Transition>
+            <Forced_Bottom_Transition>1.0</Forced_Bottom_Transition>
             <Batch_Range>
                 <!-- Specify the batch variables to use in the analysis, separated by commas;
                      For type 123 polars, the fields used are (Reynolds, Mach, NCrit);
                      For type 4 polars, the fields used are (Alpha, Mach, NCrit); -->
                 <Alpha> -1.0, 3.0  </Alpha>
-                <Reynolds>  1e5, 5e4, 1e6, 123456 , 5e5  , 345678, 3e6   </Reynolds>
+                <Reynolds> 30000, 5.e4, 75000,  8.e4, 1.e5, 2e5, 3e5, 5e5, 1.e6, 40000 </Reynolds>
                 <!-- The number of Mach and NCrit values should match the number of Alpha or Reynolds values depending on the polar type,
                      otherwise M=0.0 and NCrit=9 will be used for missing values -->
                 <Mach>      0.0,   0.0,    0.0,   0.0</Mach>
@@ -104,7 +104,7 @@
             <Alpha>  -6.0, 12.0,  0.5 </Alpha>
             <Cl>  -0.2, 1.0, 0.1 </Cl>
             <!-- define field Reynolds if type 4 analysis are requested-->
-            <Reynolds>  1.e5, 2e5, 3e5, 5e5, 1.e6, 50000 </Reynolds>
+            <Reynolds>  30000, 5.e4, 75000,  8.e4, 1.e5, 2e5, 3e5, 5e5, 1.e6</Reynolds>
 
             <!-- For type 1-2-3 polars, set this field to true if the analysis should run for a range of aoa,
                  and to false if it should run for a range of lift coefficients; the default is true -->
@@ -135,6 +135,13 @@
 
     </Foil_Analysis>
 </xflscript>
+
+
+
+
+
+
+
 
 
 
