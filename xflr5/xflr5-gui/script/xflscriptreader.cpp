@@ -174,7 +174,7 @@ bool XFLScriptReader::readFoilData()
         {
             readBatchAnalysisData();
         }
-        else if(name().compare(QString("Range"), Qt::CaseInsensitive)==0)
+        else if(name().compare(QString("OpPoint_Range"), Qt::CaseInsensitive)==0)
         {
             readFoilAnalysisRange();
         }
@@ -355,7 +355,7 @@ bool XFLScriptReader::readBatchAnalysisData()
     {
         if(name().compare(QString("Polar_Type"), Qt::CaseInsensitive)==0)
         {
-            m_FoilPolarType  = polarType(readElementText());
+            m_PolarType  = polarType(readElementText());
         }
         else if(name().compare(QString("Forced_Top_Transition"), Qt::CaseInsensitive)==0)
         {

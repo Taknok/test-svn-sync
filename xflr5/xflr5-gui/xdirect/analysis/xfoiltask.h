@@ -1,7 +1,7 @@
 /****************************************************************************
 
     XFoilTask Class
-       Copyright (C) 2011-2017 Andre Deperrois
+       Copyright (C) 2011-2020 Andre Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -38,9 +38,9 @@
  */
 struct FoilAnalysis
 {
-    Foil *pFoil;            /**< a pointer to the Foil to be analyzed by the thread */
-    Polar *pPolar;          /**< a pointer to the polar to be analyzed by the thread */
-    double vMin, vMax, vInc;
+    Foil *pFoil=nullptr;            /**< a pointer to the Foil to be analyzed by the thread */
+    Polar *pPolar=nullptr;          /**< a pointer to the polar to be analyzed by the thread */
+    double vMin=0, vMax=0, vInc=0;
 };
 
 // this class runs an XFoil analysis in a thread separate from the main thread
@@ -61,7 +61,7 @@ public:
     bool ReSequence();
     bool isFinished(){return m_bIsFinished;}
 
-    bool initializeTask(FoilAnalysis *pFoilAnalysis, bool bStoreOpp, bool bViscous=true, bool bInitBL=true, bool bFromZero=false);
+    bool initializeTask(FoilAnalysis &pFoilAnalysis, bool bStoreOpp, bool bViscous=true, bool bInitBL=true, bool bFromZero=false);
     bool initializeTask(Foil *pFoil, Polar *pPolar, bool bStoreOpp, bool bViscous=true, bool bInitBL=true, bool bFromZero=false);
     bool iterate();
 

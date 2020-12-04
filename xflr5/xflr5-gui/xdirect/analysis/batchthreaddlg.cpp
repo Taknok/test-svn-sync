@@ -397,77 +397,6 @@ void BatchThreadDlg::cleanUp()
 
 
 /**
- * Creates a polar object for a given set of specified input data
- * @param pFoil a pointer to the Foil object to which the Polar will be attached
- * @param Re  the value of the Reynolds number
- * @param Mach  the value of the Mach number
- * @param NCrit the value of the transition criterion
- * @return a pointer to the Polar object which has been created
- */
-Polar * BatchThreadDlg::createPolar(Foil *pFoil, double Re, double Mach, double NCrit)
-{
-    if(!pFoil) return nullptr;
-
-    Polar *pNewPolar = new Polar;
-    if(Settings::isAlignedChildrenStyle())
-    {
-        pNewPolar->m_Style = pFoil->m_Stipple;
-        pNewPolar->m_Width = pFoil->m_Width;
-        pNewPolar->setColor(pFoil->red(), pFoil->green(), pFoil->blue(), pFoil->alphaChannel());
-        pNewPolar->m_PointStyle = pFoil->m_PointStyle;
-    }
-    else
-    {
-        QColor clr = randomColor(!Settings::isLightTheme());
-        pNewPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
-    }
-    pNewPolar->setFoilName(pFoil->foilName());
-    pNewPolar->setVisible(true);
-    pNewPolar->setPolarType(m_PolarType);
-
-    switch (pNewPolar->polarType())
-    {
-        default:
-        case XFLR5::FIXEDSPEEDPOLAR:
-            pNewPolar->setMaType(1);
-            pNewPolar->setReType(1);
-            break;
-        case XFLR5::FIXEDLIFTPOLAR:
-            pNewPolar->setMaType(2);
-            pNewPolar->setReType(2);
-            break;
-        case XFLR5::RUBBERCHORDPOLAR:
-            pNewPolar->setMaType(1);
-            pNewPolar->setReType(3);
-            break;
-        case XFLR5::FIXEDAOAPOLAR:
-            pNewPolar->setMaType(1);
-            pNewPolar->setReType(1);
-            break;
-    }
-    if(m_PolarType!=XFLR5::FIXEDAOAPOLAR)  pNewPolar->setReynolds(Re);
-    else                                   pNewPolar->setAoa(0.0);
-
-    pNewPolar->setMach(Mach);
-    pNewPolar->setNCrit(NCrit);
-    pNewPolar->setXtrTop(m_XTop);
-    pNewPolar->setXtrBot(m_XBot);
-
-
-    setPlrName(pNewPolar);
-    Polar *pOldPolar = Objects2d::getPolar(pFoil, pNewPolar->polarName());
-
-    if(pOldPolar)
-    {
-        delete pNewPolar;
-        pNewPolar = pOldPolar;
-    }
-    else Objects2d::addPolar(pNewPolar);
-    return pNewPolar;
-}
-
-
-/**
  * Overrides the base class keyPressEvent method
  * @param event the keyPressEvent.
  */
@@ -945,8 +874,14 @@ void BatchThreadDlg::startAnalysis()
                 m_AnalysisPair.append(pAnalysis);
                 pAnalysis->pFoil = pFoil;
 
-                if(!m_bFromList) pPolar = createPolar(pFoil, m_ReMin + iRe *m_ReInc, m_Mach, m_ACrit);
-                else             pPolar = createPolar(pFoil, XDirect::s_ReList[iRe], XDirect::s_MachList[iRe], XDirect::s_NCritList[iRe]);
+                if(!m_bFromList)
+                {
+                    pPolar = Objects2d::createPolar(pFoil, XFLR5::FIXEDSPEEDPOLAR, m_ReMin + iRe *m_ReInc, m_Mach, m_ACrit, m_XTop, m_XBot);
+                }
+                else
+                {
+                    pPolar = Objects2d::createPolar(pFoil, XFLR5::FIXEDSPEEDPOLAR, XDirect::s_ReList[iRe], XDirect::s_MachList[iRe], XDirect::s_NCritList[iRe], m_XTop, m_XBot);
+                }
                 pAnalysis->pPolar=pPolar;
 
                 m_nAnalysis++;

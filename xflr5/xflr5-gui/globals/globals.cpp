@@ -25,7 +25,7 @@
 /**@file This file contains the definitions of methods used throughout the program and not specific to one application. */
 
 
-#include <QDebug>
+#include <QRandomGenerator>
 #include <QPen>
 #include <QApplication>
 #include <QFile>
@@ -176,28 +176,25 @@ int readValues(QString line, double &x, double &y, double &z)
 }
 
 
-
-
 QColor randomColor(bool bLightColor)
 {
+    QRandomGenerator rg;
     QColor clr;
+
     if(bLightColor)
     {
-        clr.setHsv(int((double(qrand())/double(RAND_MAX))*360),
-                   int((double(qrand())/double(RAND_MAX))*255),
-                   int((double(qrand())/double(RAND_MAX))*100)+155,
-                   255);
+        clr.setHsv(rg.bounded(360),
+                   rg.bounded(55)+30,
+                   rg.bounded(55)+150);
     }
     else
     {
-        clr.setHsv(int((double(qrand())/double(RAND_MAX))*360),
-                   int((double(qrand())/double(RAND_MAX))*101)+ 99,
-                   int((double(qrand())/double(RAND_MAX))*100)+50,
-                   255);
+        clr.setHsv(rg.bounded(360),
+                   rg.bounded(55)+30,
+                   rg.bounded(55)+50);
     }
     return clr;
 }
-
 
 
 

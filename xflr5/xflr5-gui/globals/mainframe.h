@@ -271,7 +271,7 @@ private:
 
     //Common Menus
     QMenu *m_pMainMenu;
-    QMenu *m_pFileMenu, *m_pOptionsMenu, *m_pHelpMenu, *m_pGraphMenu;
+    QMenu *m_pFileMenu, *m_pOptionsMenu, *m_pHelpMenu, *m_pGraphMenu, *m_pModuleMenu;
 
     //AFoilMenus
     QMenu *m_pAFoilViewMenu, *m_pAFoilDesignMenu, *m_pAFoilSplineMenu;

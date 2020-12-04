@@ -117,7 +117,7 @@ private:
     void keyReleaseEvent(QKeyEvent *event);
 
     void doubleClickEvent(QPoint pos);
-    void zoomEvent(QPoint pos, double zoomFactor);
+    void zoomEvent(QPointF pos, double zoomFactor);
 
     void checkActions();
     void drawGrid(QPainter &painter, double scale);

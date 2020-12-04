@@ -89,16 +89,18 @@ void XFoilTask::run()
     }
 }
 
+
 /**
 * Initializes the XFoil calculation
 * @param pFoil a pointer to the instance of the Foil object for which the calculation is run
 * @param pPolar a pointer to the instance of the Polar object for which the calculation is run
 * @return true if the initialization of the Foil in XFoil has been sucessful, false otherwise
 */
-bool XFoilTask::initializeTask(FoilAnalysis *pFoilAnalysis, bool bStoreOpp, bool bViscous, bool bInitBL, bool bFromZero)
+bool XFoilTask::initializeTask(FoilAnalysis &foilanalysis, bool bStoreOpp, bool bViscous, bool bInitBL, bool bFromZero)
 {
-    return initializeTask(pFoilAnalysis->pFoil, pFoilAnalysis->pPolar, bStoreOpp, bViscous, bInitBL, bFromZero);
+    return initializeTask(foilanalysis.pFoil, foilanalysis.pPolar, bStoreOpp, bViscous, bInitBL, bFromZero);
 }
+
 
 /**
 * Initializes the XFoil calculation

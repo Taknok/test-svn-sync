@@ -462,9 +462,7 @@ void WingWidget::wheelEvent (QWheelEvent *pEvent)
 {
     double zoomFactor=1.0;
 
-    QPoint pt(pEvent->x(), pEvent->y()); //client coordinates
-
-    if(pEvent->delta()>0)
+    if(pEvent->angleDelta().y()>0)
     {
         if(!Settings::s_bReverseZoom) zoomFactor = 1./1.06;
         else                          zoomFactor = 1.06;

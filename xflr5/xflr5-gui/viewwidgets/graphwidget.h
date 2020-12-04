@@ -45,15 +45,15 @@ public:
     void setTitles(QString &Title, QPoint &Place);
 
 protected:
-    void paintEvent(QPaintEvent *event);
-    void resizeEvent (QResizeEvent *event);
-    void contextMenuEvent (QContextMenuEvent *event);
-    void keyPressEvent(QKeyEvent *event);
-    void mouseDoubleClickEvent (QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void wheelEvent (QWheelEvent *event);
+    void paintEvent(QPaintEvent *pEvent);
+    void resizeEvent (QResizeEvent *pEvent);
+    void contextMenuEvent (QContextMenuEvent *pEvent);
+    void keyPressEvent(QKeyEvent *pEvent);
+    void mouseDoubleClickEvent (QMouseEvent *pEvent);
+    void mouseMoveEvent(QMouseEvent *pEvent);
+    void mousePressEvent(QMouseEvent *pEvent);
+    void mouseReleaseEvent(QMouseEvent *pEvent);
+    void wheelEvent (QWheelEvent *pEvent);
 
 
 signals:

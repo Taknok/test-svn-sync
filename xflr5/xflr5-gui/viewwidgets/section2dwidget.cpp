@@ -822,7 +822,7 @@ void Section2dWidget::drawScale(QPainter &painter, double scalex)
 
     QFontMetrics fm(Settings::s_TextFont);
     int dD = fm.height();
-    int dW = fm.width("0.1");
+    int dW = fm.horizontalAdvance("0.1");
 
     int TickSize, offy;
 

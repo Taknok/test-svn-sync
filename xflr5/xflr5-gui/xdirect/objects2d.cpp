@@ -790,3 +790,81 @@ void Objects2d::setPolarChildrenStyle(Polar const *pPolar)
     }
 }
 
+
+/**
+ * Creates the Polar object from the specified data.
+ * If a former Polar  with an identical name exists for this Foil, cancels the creation and sets the former Polar as active.
+ * Otherwise, adds the new Polar to the array of objects.
+ * @param Spec the value of the Reynolds number in the case of Type 1, 2 or 3 Polars, or the value of the aoa in the case of a Type 4 Polar
+ * @param Mach the Mach number
+ * @param NCrit the transition parameter
+ * @return a pointer to the created Polar object
+ */
+Polar *Objects2d::createPolar(Foil *pFoil, XFLR5::enumPolarType PolarType, double Spec, double Mach, double NCrit, double m_XTop, double m_XBot)
+{
+    if(!pFoil) return nullptr;
+
+    Polar *pNewPolar = new Polar;
+
+    if(Settings::isAlignedChildrenStyle())
+    {
+        pNewPolar->m_Style = pFoil->m_Stipple;
+        pNewPolar->m_Width = pFoil->m_Width;
+        pNewPolar->setColor(pFoil->red(), pFoil->green(), pFoil->blue(), pFoil->alphaChannel());
+        pNewPolar->m_PointStyle = pFoil->m_PointStyle;
+    }
+    else
+    {
+        QColor clr = randomColor(!Settings::isLightTheme());
+        pNewPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
+    }
+
+    pNewPolar->setFoilName(pFoil->foilName());
+    pNewPolar->setVisible(true);
+    pNewPolar->setPolarType(PolarType);
+
+    switch (pNewPolar->polarType())
+    {
+        default:
+        case XFLR5::FIXEDSPEEDPOLAR:
+            pNewPolar->setMaType(1);
+            pNewPolar->setReType(1);
+            break;
+        case XFLR5::FIXEDLIFTPOLAR:
+            pNewPolar->setMaType(2);
+            pNewPolar->setReType(2);
+            break;
+        case XFLR5::RUBBERCHORDPOLAR:
+            pNewPolar->setMaType(1);
+            pNewPolar->setReType(3);
+            break;
+        case XFLR5::FIXEDAOAPOLAR:
+            pNewPolar->setMaType(1);
+            pNewPolar->setReType(1);
+            break;
+    }
+
+    if(PolarType!=XFLR5::FIXEDAOAPOLAR)
+    {
+        pNewPolar->setReynolds(Spec);
+    }
+    else
+    {
+        pNewPolar->setAoa(Spec);
+    }
+    pNewPolar->setMach(Mach);
+    pNewPolar->setNCrit(NCrit);
+    pNewPolar->setXtrTop(m_XTop);
+    pNewPolar->setXtrBot(m_XBot);
+
+    pNewPolar->setAutoPolarName();
+    Polar *pOldPolar = Objects2d::getPolar(pFoil, pNewPolar->polarName());
+
+    if(pOldPolar)
+    {
+        delete pNewPolar;
+        pNewPolar = pOldPolar;
+    }
+    else Objects2d::addPolar(pNewPolar);
+    return pNewPolar;
+}

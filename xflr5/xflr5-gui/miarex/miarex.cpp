@@ -29,7 +29,7 @@
 #include <QMenu>
 #include <QStatusBar>
 #include <QMessageBox>
-
+#include <QRandomGenerator>
 
 #include "miarex.h"
 #include "graphtilewidget.h"
@@ -4427,7 +4427,8 @@ void Miarex::onExporttoAVL()
 
     out << ("\n\n\n");
 
-    int index = int(double(qrand())/double(RAND_MAX) * 10000);
+    QRandomGenerator rg;
+    int index = rg.bounded(10000);
 
     exportAVLWing(m_pCurPlane->wing(0), out, index, 0.0, m_pCurPlane->wingTiltAngle(0));
 
@@ -5010,7 +5011,7 @@ void Miarex::onImportWPolars()
                     strong = inStream.readLine(); // one line with polar results
                     if(strong.length())
                     {
-                        QStringList values = strong.split(" ", QString::SkipEmptyParts);
+                        QStringList values = strong.split(" ", Qt::SkipEmptyParts);
                         //            alpha      Beta       CL          CDi        CDv        CD         CY         Cl         Cm         Cn        Cni       QInf        XCP
 
                         if(values.length()>=12)
@@ -7917,14 +7918,14 @@ void Miarex::paintCpLegendText(QPainter &painter)
     painter.setRenderHint(QPainter::Antialiasing);
 
     strong = "Cp";
-    int labellength = fm.width(strong)+5;
+    int labellength = fm.horizontalAdvance(strong)+5;
     painter.drawText(ixPos-labellength, iyPos-dy, strong);
 
     for (int i=0; i<=20; i ++)
     {
         double f = gl3dMiarexView::s_LegendMax - double(i) * delta;
         strong = QString("%1").arg(f, 5,'f',2);
-        labellength = (fm.width(strong)+5);
+        labellength = (fm.horizontalAdvance(strong)+5);
         painter.drawText(ixPos-labellength, iyPos+i*dy, strong);
     }
 
@@ -8006,14 +8007,14 @@ void Miarex::paintPanelForceLegendText(QPainter &painter)
     delta = range / 20.0;
 
     strPressure = Units::pressureUnitLabel();
-    labellength = fm.width(strPressure)+2+5;
+    labellength = fm.horizontalAdvance(strPressure)+2+5;
     painter.drawText(ixPos-labellength, iyPos-dy, "("+strPressure+")");
 
     for (i=0; i<=20; i++)
     {
         f = rmin + double(i) * delta;
         strong = QString::asprintf("%6.3f", f);
-        labellength = (fm.width(strong)+5);
+        labellength = (fm.horizontalAdvance(strong)+5);
         painter.drawText(ixPos-labellength, iyPos+i*dy, strong);
     }
 

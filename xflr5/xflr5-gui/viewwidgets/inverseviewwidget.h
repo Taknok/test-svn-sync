@@ -61,7 +61,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
     void paintEvent(QPaintEvent *event);
     void resizeEvent (QResizeEvent *event);
-    void wheelEvent (QWheelEvent *event);
+    void wheelEvent (QWheelEvent *pEvent);
 
 private:
     MainFrame *m_pMainFrame;   /**< A void pointer to the instance of the MainFrame object. */

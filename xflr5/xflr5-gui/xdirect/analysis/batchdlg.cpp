@@ -381,7 +381,7 @@ void BatchDlg::alphaLoop()
         str = QString("Alpha = %1\n").arg(alphadeg,0,'f',2);
         outputMsg(str);
 
-        Polar *pCurPolar = createPolar(m_pFoil, alphadeg, m_Mach, m_ACrit);// Do something
+        Polar *pCurPolar = Objects2d::createPolar(m_pFoil, XFLR5::FIXEDAOAPOLAR, alphadeg, m_Mach, m_ACrit, m_XTop, m_XBot);
 
         if(!pCurPolar) return;
 
@@ -444,94 +444,15 @@ void BatchDlg::cleanUp()
     qApp->processEvents();
 }
 
-/**
- * Creates the Polar object from the specified data.
- * If a former Polar  with an identical name exists for this Foil, cancels the creation and sets the former Polar as active.
- * Otherwise, adds the new Polar to the array of objects.
- * @param Spec the value of the Reynolds number in the case of Type 1, 2 or 3 Polars, or the value of the aoa in the case of a Type 4 Polar
- * @param Mach the Mach number
- * @param NCrit the transition parameter
- * @return a pointer to the created Polar object
- */
-Polar *BatchDlg::createPolar(Foil *pFoil, double Spec, double Mach, double NCrit)
-{
-    if(!pFoil) return nullptr;
-
-    Polar *pPolar = new Polar;
-
-    if(Settings::isAlignedChildrenStyle())
-    {
-        pPolar->m_Style = pFoil->m_Stipple;
-        pPolar->m_Width = pFoil->m_Width;
-        pPolar->setColor(pFoil->red(), pFoil->green(), pFoil->blue(), pFoil->alphaChannel());
-        pPolar->m_PointStyle = pFoil->m_PointStyle;
-    }
-    else
-    {
-        QColor clr = randomColor(!Settings::isLightTheme());
-        pPolar->setColor(clr.red(), clr.green(), clr.blue(), clr.alpha());
-    }
-
-    pPolar->setFoilName(pFoil->foilName());
-    pPolar->setVisible(true);
-    pPolar->setPolarType(m_PolarType);
-
-    switch (pPolar->polarType())
-    {
-        default:
-        case XFLR5::FIXEDSPEEDPOLAR:
-            pPolar->setMaType(1);
-            pPolar->setReType(1);
-            break;
-        case XFLR5::FIXEDLIFTPOLAR:
-            pPolar->setMaType(2);
-            pPolar->setReType(2);
-            break;
-        case XFLR5::RUBBERCHORDPOLAR:
-            pPolar->setMaType(1);
-            pPolar->setReType(3);
-            break;
-        case XFLR5::FIXEDAOAPOLAR:
-            pPolar->setMaType(1);
-            pPolar->setReType(1);
-            break;
-    }
-
-    if(m_PolarType!=XFLR5::FIXEDAOAPOLAR)
-    {
-        pPolar->setReynolds(Spec);
-    }
-    else
-    {
-        pPolar->setAoa(Spec);
-    }
-    pPolar->setMach(Mach);
-    pPolar->setNCrit(NCrit);
-    pPolar->setXtrTop(m_XTop);
-    pPolar->setXtrBot(m_XBot);
-
-    setPlrName(pPolar);
-    Polar *pOldPolar = Objects2d::getPolar(m_pFoil, pPolar->polarName());
-
-    if(pOldPolar)
-    {
-        delete pPolar;
-        pPolar = pOldPolar;
-    }
-    else Objects2d::addPolar(pPolar);
-    return pPolar;
-}
-
-
 
 /**
  * Overrides the base class keyPressEvent.
  * @param event the pointer to the QKeyEvent
  */
-void BatchDlg::keyPressEvent(QKeyEvent *event)
+void BatchDlg::keyPressEvent(QKeyEvent *pEvent)
 {
     // Prevent Return Key from closing App
-    switch (event->key())
+    switch (pEvent->key())
     {
         case Qt::Key_Return:
         case Qt::Key_Enter:
@@ -554,9 +475,9 @@ void BatchDlg::keyPressEvent(QKeyEvent *event)
             break;
         }
         default:
-            event->ignore();
+            pEvent->ignore();
     }
-    event->accept();
+    pEvent->accept();
 }
 
 /**
@@ -1076,7 +997,7 @@ void BatchDlg::ReLoop()
         str = QString("Re=%1   Ma=%2   Nc=%3\n").arg(Reynolds,8,'f',0).arg(Mach,5,'f',3).arg(NCrit,5,'f',2);
         outputMsg(str);
 
-        Polar *pCurPolar = createPolar(m_pFoil, Reynolds, Mach, NCrit);
+        Polar *pCurPolar = Objects2d::createPolar(m_pFoil, XFLR5::FIXEDSPEEDPOLAR, Reynolds, m_Mach, m_ACrit, m_XTop, m_XBot);
         if(!pCurPolar) return;
 
         m_pXFoilTask->initializeTask(m_pFoil, pCurPolar, XDirect::s_bStoreOpp, XDirect::s_bViscous, m_bInitBL, m_bFromZero);

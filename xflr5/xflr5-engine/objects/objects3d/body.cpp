@@ -1825,7 +1825,7 @@ int Body::readValues(QString line, double &x, double &y, double &z) const
  */
 bool Body::importDefinition(QTextStream &inStream, double mtoUnit, QString &errorMessage)
 {
-    int res, i, j, Line, NSideLines;
+    int res=0, Line=0, NSideLines=0;
     QString strong;
     bool bRead, bOK;
     double xo,yo,zo;
@@ -1862,7 +1862,7 @@ bool Body::importDefinition(QTextStream &inStream, double mtoUnit, QString &erro
             if(!bRead) break;
 
             //Do this the C++ way
-            QStringList values = strong.split(" ", QString::SkipEmptyParts);
+            QStringList values = strong.split(" ", Qt::SkipEmptyParts);
 
             if(values.length()==3)
             {
@@ -1873,7 +1873,6 @@ bool Body::importDefinition(QTextStream &inStream, double mtoUnit, QString &erro
                 zo /= mtoUnit;
                 //y0 is ignored, body is assumed centered along x-z plane
             }
-
         }
         else if (strong.indexOf("FRAME", 0)  >=0)
         {
@@ -1891,7 +1890,7 @@ bool Body::importDefinition(QTextStream &inStream, double mtoUnit, QString &erro
 
 
 
-    for(i=1; i<frameCount(); i++)
+    for(int i=1; i<frameCount(); i++)
     {
         if(m_SplineSurface.m_pFrame[i]->m_CtrlPoint.size() != m_SplineSurface.m_pFrame[i-1]->m_CtrlPoint.size())
         {
@@ -1900,10 +1899,10 @@ bool Body::importDefinition(QTextStream &inStream, double mtoUnit, QString &erro
         }
     }
 
-    for(i=0; i<frameCount(); i++)
+    for(int i=0; i<frameCount(); i++)
     {
         m_SplineSurface.m_pFrame[i]->m_Position.x =  m_SplineSurface.m_pFrame[i]->m_CtrlPoint[0].x + xo;
-        for(j=0; j<sideLineCount(); j++)
+        for(int j=0; j<sideLineCount(); j++)
         {
             m_SplineSurface.m_pFrame[i]->m_CtrlPoint[j].z += zo;
         }

@@ -364,20 +364,20 @@ void gl3dView::onShowMasses(bool bChecked)
 }
 
 
-void gl3dView::mousePressEvent(QMouseEvent *event)
+void gl3dView::mousePressEvent(QMouseEvent *pEvent)
 {
-    QPoint point(event->pos().x(), event->pos().y());
+    QPoint point(pEvent->pos().x(), pEvent->pos().y());
 
     bool bCtrl = false;
-    if(event->modifiers() & Qt::ControlModifier) bCtrl =true;
+    if(pEvent->modifiers() & Qt::ControlModifier) bCtrl =true;
 
     //    setFocus();
 
-    if (event->buttons() & Qt::MidButton)
+    if (pEvent->buttons() & Qt::MidButton)
     {
         m_bArcball = true;
         Vector3d real;
-        QPoint pt(event->pos().x(), event->pos().y());
+        QPoint pt(pEvent->pos().x(), pEvent->pos().y());
         screenToViewport(pt, real);
         m_ArcBall.start(real.x, real.y);
         m_bCrossPoint = true;
@@ -385,7 +385,7 @@ void gl3dView::mousePressEvent(QMouseEvent *event)
         reset3DRotationCenter();
         update();
     }
-    else if (event->buttons() & Qt::LeftButton)
+    else if (pEvent->buttons() & Qt::LeftButton)
     {
         Vector3d real;
         QPoint pt(point.x(), point.y());
@@ -430,15 +430,15 @@ QPoint gl3dView::worldToScreen(QVector4D v4)
 *Overrides the mouseDoubleClickEvent method of the base class.
 *Dispatches the handling to the active child application.
 */
-void gl3dView::mouseDoubleClickEvent(QMouseEvent *event)
+void gl3dView::mouseDoubleClickEvent(QMouseEvent *pEvent)
 {
-    set3DRotationCenter(event->pos());
+    set3DRotationCenter(pEvent->pos());
 }
 
 
-void gl3dView::mouseMoveEvent(QMouseEvent *event)
+void gl3dView::mouseMoveEvent(QMouseEvent *pEvent)
 {
-    QPoint point(event->pos().x(), event->pos().y());
+    QPoint point(pEvent->pos().x(), pEvent->pos().y());
     Vector3d Real;
 
     QPoint Delta(point.x()-m_LastPoint.x(), point.y()-m_LastPoint.y());
@@ -448,8 +448,8 @@ void gl3dView::mouseMoveEvent(QMouseEvent *event)
 
     bool bCtrl = false;
 
-    if (event->modifiers() & Qt::ControlModifier) bCtrl =true;
-    if (event->buttons()   & Qt::LeftButton)
+    if (pEvent->modifiers() & Qt::ControlModifier) bCtrl =true;
+    if (pEvent->buttons()   & Qt::LeftButton)
     {
         if(bCtrl)
         {
@@ -474,12 +474,12 @@ void gl3dView::mouseMoveEvent(QMouseEvent *event)
 
         }
     }
-    else if (event->buttons() & Qt::MidButton)
+    else if (pEvent->buttons() & Qt::MidButton)
     {
         m_ArcBall.move(Real.x, Real.y);
         update();
     }
-    else if(event->modifiers().testFlag(Qt::AltModifier))
+    else if(pEvent->modifiers().testFlag(Qt::AltModifier))
     {
         double zoomFactor=1.0;
 
@@ -497,10 +497,10 @@ void gl3dView::mouseMoveEvent(QMouseEvent *event)
 *Overrides the wheelEvent method of the base class.
 *Dispatches the handling to the active child application.
 */
-void gl3dView::wheelEvent(QWheelEvent *event)
+void gl3dView::wheelEvent(QWheelEvent *pEvent)
 {
     double zoomFactor=1.0;
-    if(event->delta()>0)
+    if(pEvent->angleDelta().y()>0)
     {
         if(!Settings::s_bReverseZoom) zoomFactor = 1./1.06;
         else                          zoomFactor = 1.06;
@@ -515,7 +515,7 @@ void gl3dView::wheelEvent(QWheelEvent *event)
 }
 
 
-void gl3dView::mouseReleaseEvent(QMouseEvent * event )
+void gl3dView::mouseReleaseEvent(QMouseEvent * pEvent )
 {
     setCursor(Qt::CrossCursor);
 
@@ -536,7 +536,7 @@ void gl3dView::mouseReleaseEvent(QMouseEvent * event )
     m_glViewportTrans.z =  (MatOut[2][0]*m_glRotCenter.x + MatOut[2][1]*m_glRotCenter.y + MatOut[2][2]*m_glRotCenter.z);
 
     update();
-    event->accept();
+    pEvent->accept();
 }
 
 
@@ -544,9 +544,9 @@ void gl3dView::mouseReleaseEvent(QMouseEvent * event )
 *Overrides the keyPressEvent method of the base class.
 *Dispatches the handling to the active child application.
 */
-void gl3dView::keyPressEvent(QKeyEvent *event)
+void gl3dView::keyPressEvent(QKeyEvent *pEvent)
 {
-    switch (event->key())
+    switch (pEvent->key())
     {
 
         case Qt::Key_Control:
@@ -558,7 +558,7 @@ void gl3dView::keyPressEvent(QKeyEvent *event)
         case Qt::Key_R:
         {
             on3DReset();
-            event->accept();
+            pEvent->accept();
             break;
         }
         case Qt::Key_X:
@@ -566,7 +566,7 @@ void gl3dView::keyPressEvent(QKeyEvent *event)
             break;
         }
         default:
-            event->ignore();
+            pEvent->ignore();
     }
 }
 
@@ -575,9 +575,9 @@ void gl3dView::keyPressEvent(QKeyEvent *event)
 *Overrides the keyReleaseEvent method of the base class.
 *Dispatches the handling to the active child application.
 */
-void gl3dView::keyReleaseEvent(QKeyEvent *event)
+void gl3dView::keyReleaseEvent(QKeyEvent *pEvent)
 {
-    switch (event->key())
+    switch (pEvent->key())
     {
         case Qt::Key_Control:
         {
@@ -587,7 +587,7 @@ void gl3dView::keyReleaseEvent(QKeyEvent *event)
         }
 
         default:
-            event->ignore();
+            pEvent->ignore();
     }
 }
 

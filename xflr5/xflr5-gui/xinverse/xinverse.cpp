@@ -2844,7 +2844,7 @@ void XInverse::updateView()
  * Dispatches the event
  * @param event the QMouseEvent
  */
-void XInverse::zoomEvent(QPoint pos, double zoomFactor)
+void XInverse::zoomEvent(QPointF pos, double zoomFactor)
 {
     releaseZoom();
 

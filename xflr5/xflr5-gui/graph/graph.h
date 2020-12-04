@@ -90,6 +90,7 @@ public:
     bool hasBorder() const;
     bool bInverted() const;
     bool isInDrawRect(int const &x, int const &y);
+    bool isInDrawRect(QPointF const &pt);
     bool isInDrawRect(QPoint const &pt);
     bool initializeGraph(int width=0, int height=0);
 
