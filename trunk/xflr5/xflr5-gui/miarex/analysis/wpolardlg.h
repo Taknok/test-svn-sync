@@ -63,10 +63,12 @@ public:
 private:
 
     void connectSignals();
-    void enableControls();
-    void fillExtraDragList();
     void initDialog(Plane *pPlane, WPolar *pWPolar=nullptr);
-    void keyPressEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *event) override;
+    void showEvent(QShowEvent *pEvent) override;
+    void hideEvent(QHideEvent *pEvent) override;
+
+private:
     void readExtraDragData();
     void readValues();
     void resizeColumns();
@@ -75,6 +77,8 @@ private:
     void setupLayout();
     void setWingLoad();
     void setWPolarName();
+    void enableControls();
+    void fillExtraDragList();
 
 
 private slots:
@@ -145,6 +149,8 @@ private:
     QStandardItemModel *m_pExtraDragControlModel;
     CtrlTableDelegate *m_pCtrlDelegate;
 
+
+    static QByteArray s_Geometry;
 };
 
 #endif // WPOLARDLG_H

@@ -41,6 +41,8 @@
 #include <objects/objects3d/wpolar.h>
 
 WPolar StabPolarDlg::s_StabWPolar;
+QByteArray StabPolarDlg::s_Geometry;
+
 
 StabPolarDlg::StabPolarDlg(QWidget *pParent) : QDialog(pParent)
 {
@@ -122,6 +124,17 @@ void StabPolarDlg::onButton(QAbstractButton *pButton)
     else if (m_pButtonBox->button(QDialogButtonBox::Discard) == pButton)  reject();
 }
 
+
+void StabPolarDlg::showEvent(QShowEvent *)
+{
+    restoreGeometry(s_Geometry);
+}
+
+
+void StabPolarDlg::hideEvent(QHideEvent *)
+{
+    s_Geometry = saveGeometry();
+}
 
 
 void StabPolarDlg::fillInertiaPage()

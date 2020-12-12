@@ -48,8 +48,6 @@ public:
     PlaneDlg(QWidget *parent);
     void initDialog();
 
-    static void setWindowPos(QPoint pos){s_WindowPosition = pos;}
-
 private slots:
     void onOK();
     void onFin();
@@ -80,8 +78,10 @@ private:
     void setResults();
     void readParams();
     void setParams();
-    void keyPressEvent(QKeyEvent *event);
-    void reject();
+    void keyPressEvent(QKeyEvent *event) override;
+    void showEvent(QShowEvent *pEvent) override;
+    void hideEvent(QHideEvent *pEvent) override;
+    void reject() override;
 
 private:
 
@@ -155,9 +155,7 @@ private:
 
     QAction *m_pImportXMLBody, *m_pImportPlaneBody;
 
-    static bool s_bWindowMaximized;
-    static QPoint s_WindowPosition;   /**< the position on the client area of the dialog's topleft corner */
-    static QSize s_WindowSize;     /**< the window size in the client area */
+    static QByteArray s_Geometry;
 
 };
 

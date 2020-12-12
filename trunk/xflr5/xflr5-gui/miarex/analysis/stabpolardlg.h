@@ -72,8 +72,9 @@ private:
     void setupLayout();
     void connectSignals();
     void resizeColumns();
-    void keyPressEvent(QKeyEvent *event);
-
+    void keyPressEvent(QKeyEvent *event) override;
+    void showEvent(QShowEvent *pEvent) override;
+    void hideEvent(QHideEvent *pEvent) override;
 
 private slots:
     void onOK();
@@ -156,6 +157,9 @@ private:
 
     bool m_bAutoName;
     int m_UnitType;//1= International, 2= Imperial
+
+
+    static QByteArray s_Geometry;
 };
 
 

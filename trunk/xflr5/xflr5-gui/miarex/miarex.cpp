@@ -2025,6 +2025,11 @@ bool Miarex::loadSettings(QSettings &settings)
         }
         pStabView->updateControlModelData();
 
+        PlaneDlg::s_Geometry = settings.value("PlaneDlgGeometry").toByteArray();
+        WPolarDlg::s_Geometry = settings.value("WPolarDlgGeometry").toByteArray();
+        StabPolarDlg::s_Geometry = settings.value("StabPolarDlgGeometry").toByteArray();
+
+
         StabPolarDlg::s_StabWPolar.m_bAutoInertia = settings.value("StabPolarAutoInertia", true).toBool();
         StabPolarDlg::s_StabWPolar.setMass(settings.value("StabPolarMass", 0.0).toDouble());
         StabPolarDlg::s_StabWPolar.setCoGx(settings.value("StabPolarCoGx", 0.0).toDouble());
@@ -6669,6 +6674,10 @@ bool Miarex::saveSettings(QSettings &settings)
             strong = QString("ForcedAmplitude%1").arg(i);
             settings.setValue(strong, pStabView->m_Amplitude[i]);
         }
+
+        settings.setValue("PlaneDlgGeometry",     PlaneDlg::s_Geometry);
+        settings.setValue("WPolarDlgGeometry",    WPolarDlg::s_Geometry);
+        settings.setValue("StabPolarDlgGeometry", StabPolarDlg::s_Geometry);
 
         settings.setValue("StabPolarAutoInertia", StabPolarDlg::s_StabWPolar.m_bAutoInertia);
         settings.setValue("StabPolarMass",   StabPolarDlg::s_StabWPolar.mass());

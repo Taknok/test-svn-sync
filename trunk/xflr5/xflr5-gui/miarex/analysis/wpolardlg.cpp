@@ -40,6 +40,7 @@
 #include <objects/objects3d/plane.h>
 #include <objects/objects3d/wpolar.h>
 
+QByteArray WPolarDlg::s_Geometry;
 
 WPolar WPolarDlg::s_WPolar;
 
@@ -106,6 +107,18 @@ void WPolarDlg::connectSignals()
     connect(m_pctrlArea1, SIGNAL(clicked()),this, SLOT(onArea()));
     connect(m_pctrlArea2, SIGNAL(clicked()),this, SLOT(onArea()));
     connect(m_pctrlArea3, SIGNAL(clicked()),this, SLOT(onArea()));
+}
+
+
+void WPolarDlg::showEvent(QShowEvent *)
+{
+    restoreGeometry(s_Geometry);
+}
+
+
+void WPolarDlg::hideEvent(QHideEvent *)
+{
+    s_Geometry = saveGeometry();
 }
 
 

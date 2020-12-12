@@ -227,9 +227,9 @@ private slots:
 
 public:
     //overrides
-    void keyPressEvent(QKeyEvent *event);
-    void keyReleaseEvent(QKeyEvent *event);
-    void showEvent(QShowEvent *event);
+    void keyPressEvent(QKeyEvent *event) override;
+    void keyReleaseEvent(QKeyEvent *event) override;
+    void showEvent(QShowEvent *event) override;
 
 public:
     //class methods
