@@ -42,13 +42,9 @@
 #include <misc/text/doubleedit.h>
 #include <objects/objects3d/plane.h>
 
+QByteArray PlaneDlg::s_Geometry;
 
-QSize PlaneDlg::s_WindowSize(1031,783);
-QPoint PlaneDlg::s_WindowPosition(131, 77);
-bool PlaneDlg::s_bWindowMaximized =false;
-
-
-PlaneDlg::PlaneDlg(QWidget *parent) :QDialog(parent)
+PlaneDlg::PlaneDlg(QWidget *parent) : QDialog(parent)
 {
     setWindowTitle(tr("Plane Editor"));
     m_pPlane = nullptr;
@@ -148,6 +144,19 @@ void PlaneDlg::initDialog()
     m_pPlane->m_Wing[2].createSurfaces(m_pPlane->m_WingLE[2],   0.0, m_pPlane->m_WingTiltAngle[2]);//necessary for eventual inertia calculations
     m_pPlane->m_Wing[3].createSurfaces(m_pPlane->m_WingLE[3], -90.0, m_pPlane->m_WingTiltAngle[3]);//necessary for eventual inertia calculations
 }
+
+
+void PlaneDlg::showEvent(QShowEvent *)
+{
+    restoreGeometry(s_Geometry);
+}
+
+
+void PlaneDlg::hideEvent(QHideEvent *)
+{
+    s_Geometry = saveGeometry();
+}
+
 
 
 void PlaneDlg::keyPressEvent(QKeyEvent *event)

@@ -47,7 +47,7 @@ private slots:
     void onButton(QAbstractButton *pButton);
 
 private:
-    void keyPressEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *event) override;
     void readParams();
     void setParams();
     void setupLayout();
