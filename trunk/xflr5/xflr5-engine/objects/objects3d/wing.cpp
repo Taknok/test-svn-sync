@@ -19,7 +19,7 @@
 
 *****************************************************************************/
 
-
+#include <QDebug>
 #include <QFile>
 #include <QRandomGenerator>
 
@@ -420,7 +420,7 @@ void Wing::computeGeometry()
         m_GChord  = m_PlanformArea/m_PlanformSpan*2.0;
         m_AR      = m_PlanformSpan*m_PlanformSpan/m_PlanformArea/2.0;
     }
-    if(tipChord()>0.0)    m_TR = rootChord()/tipChord();
+    if(tipChord()>0.0)  m_TR = tipChord()/rootChord();
     else                m_TR = 99999.0;
 
     //calculate the number of flaps
@@ -435,13 +435,15 @@ void Wing::computeGeometry()
         Foil const*pFoilB = foil(rightFoilName(is));
         if(pFoilA && pFoilB && (!m_bIsFin || (m_bIsFin && m_bSymFin) || (m_bIsFin && m_bDoubleFin)))
         {
-            if(pFoilA->m_bTEFlap && pFoilB->m_bTEFlap && qAbs(YPosition(is)-YPosition(is-1))>MinPanelSize)    m_nFlaps++;
+            if(pFoilA->m_bTEFlap && pFoilB->m_bTEFlap && qAbs(YPosition(is)-YPosition(is-1))>MinPanelSize)
+                m_nFlaps++;
         }
         pFoilA = foil(leftFoilName(is-1));
         pFoilB = foil(leftFoilName(is));
         if(pFoilA && pFoilB)
         {
-            if(pFoilA->m_bTEFlap && pFoilB->m_bTEFlap && qAbs(YPosition(is)-YPosition(is-1))>MinPanelSize)    m_nFlaps++;
+            if(pFoilA->m_bTEFlap && pFoilB->m_bTEFlap && qAbs(YPosition(is)-YPosition(is-1))>MinPanelSize)
+                m_nFlaps++;
         }
     }
 }
@@ -465,10 +467,10 @@ void Wing::computeVolumeInertia(Vector3d &CoG, double &CoGIxx, double &CoGIyy, d
     QVector<double> ElemVolume(NXSTATIONS*NYSTATIONS*m_Surface.size());
     QVector<Vector3d> PtVolume(NXSTATIONS*NYSTATIONS*m_Surface.size());
 
-    double rho, LocalSpan, LocalVolume;
-    double LocalChord,  LocalArea,  tau;
-    double LocalChord1, LocalArea1, tau1;
-    double xrel, xrel1, yrel, ElemArea;
+    double rho=0, LocalSpan=0, LocalVolume=0;
+    double LocalChord=0,  LocalArea=0,  tau=0;
+    double LocalChord1=0, LocalArea1=0, tau1=0;
+    double xrel=0, xrel1=0, yrel=0, ElemArea=0;
     Vector3d ATop, ABot, CTop, CBot, PointNormal, Diag1, Diag2;
     Vector3d PtC4, Pt, Pt1, N;
     CoG.set(0.0, 0.0, 0.0);
@@ -2487,11 +2489,11 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
 {
     QString tag;
     QString rightfoil, leftfoil;
-    int nx, ny;
-    int i, k, n, is;
-    int ArchiveFormat;// identifies the format of the file
-    double dble, dm, px, py, pz;
-    double chord, twist, pos, dihedral, offset;
+    int nx=0, ny=0;
+    int k=0, n=0, is=0;
+    int ArchiveFormat=0;// identifies the format of the file
+    double dble=0, dm=0, px=0, py=0, pz=0;
+    double chord=0, twist=0, pos=0, dihedral=0, offset=0;
     XFLR5::enumPanelDistribution xDist, yDist;
 
     if(bIsStoring)
@@ -2553,7 +2555,7 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
 
         ar << m_VolumeMass;
         ar << m_PointMass.size();
-        for(i=0; i<m_PointMass.size(); i++)
+        for(int i=0; i<m_PointMass.size(); i++)
         {
             ar << m_PointMass.at(i)->mass();
             ar << m_PointMass.at(i)->position().x << m_PointMass.at(i)->position().y << m_PointMass.at(i)->position().z;
@@ -2601,7 +2603,7 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
 
         clearWingSections();
         ar >> n;
-        for (i=0; i<n; i++)
+        for (int i=0; i<n; i++)
         {
             ar >> rightfoil;
             ar >> leftfoil;
@@ -2631,7 +2633,7 @@ bool Wing::serializeWingXFL(QDataStream &ar, bool bIsStoring)
         ar >> m_VolumeMass;
         clearPointMasses();
         ar >> n;
-        for(i=0; i<n; i++)
+        for(int i=0; i<n; i++)
         {
             ar >> dm >> px >> py >> pz;
             ar >> tag;

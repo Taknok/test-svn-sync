@@ -772,7 +772,6 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
 }
 
 
-
 void PlaneOpp::getPlaneOppProperties(QString &planeOppProperties, QString lengthUnitLabel, QString massUnitLabel, QString speedUnitLabel,
                                      double mtoUnit, double kgtoUnit, double mstoUnit)
 {

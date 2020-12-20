@@ -43,7 +43,6 @@
 WPolar StabPolarDlg::s_StabWPolar;
 QByteArray StabPolarDlg::s_Geometry;
 
-
 StabPolarDlg::StabPolarDlg(QWidget *pParent) : QDialog(pParent)
 {
     setWindowTitle(tr("Stability Polar Definition"));
@@ -124,17 +123,6 @@ void StabPolarDlg::onButton(QAbstractButton *pButton)
     else if (m_pButtonBox->button(QDialogButtonBox::Discard) == pButton)  reject();
 }
 
-
-void StabPolarDlg::showEvent(QShowEvent *)
-{
-    restoreGeometry(s_Geometry);
-}
-
-
-void StabPolarDlg::hideEvent(QHideEvent *)
-{
-    s_Geometry = saveGeometry();
-}
 
 
 void StabPolarDlg::fillInertiaPage()
@@ -253,14 +241,12 @@ void StabPolarDlg::resizeColumns()
 }
 
 
-
 void StabPolarDlg::fillControlList()
 {
-    m_pAngleControlModel->setRowCount(s_StabWPolar.m_nControls);//temporary
-    QString str, strong;
+//    m_pAngleControlModel->setRowCount(17);//temporary
+    QString strong;
     QModelIndex ind;
-    int i;
-    Units::getLengthUnitLabel(str);
+
 
     s_StabWPolar.m_nControls = 0;
     if(!m_pPlane->isWing())
@@ -271,7 +257,7 @@ void StabPolarDlg::fillControlList()
         ind = m_pAngleControlModel->index(s_StabWPolar.m_nControls, 1, QModelIndex());
         m_pAngleControlModel->setData(ind, s_StabWPolar.m_ControlGain[0]);
 
-        ++s_StabWPolar.m_nControls;
+        s_StabWPolar.m_nControls++;
 
         if(m_pWingList[2])
         {
@@ -282,11 +268,11 @@ void StabPolarDlg::fillControlList()
             ind = m_pAngleControlModel->index(s_StabWPolar.m_nControls, 1, QModelIndex());
             m_pAngleControlModel->setData(ind, s_StabWPolar.m_ControlGain[1]);
 
-            ++s_StabWPolar.m_nControls;
+            s_StabWPolar.m_nControls++;
         }
     }
 
-    for(i=0; i<m_pWingList[0]->m_nFlaps; i++)
+    for(int i=0; i<m_pWingList[0]->m_nFlaps; i++)
     {
         ind = m_pAngleControlModel->index(i+s_StabWPolar.m_nControls, 0, QModelIndex());
         strong = QString(tr("Wing Flap %1 ")+QString::fromUtf8("(°)")).arg(i+1);
@@ -300,7 +286,7 @@ void StabPolarDlg::fillControlList()
 
     if(m_pWingList[2])
     {
-        for(i=0; i<m_pWingList[2]->m_nFlaps; i++)
+        for(int i=0; i<m_pWingList[2]->m_nFlaps; i++)
         {
             ind = m_pAngleControlModel->index(i+s_StabWPolar.m_nControls, 0, QModelIndex());
             strong = QString(tr("Elevator Flap %1 ")+QString::fromUtf8("(°)")).arg(i+1);
@@ -313,7 +299,7 @@ void StabPolarDlg::fillControlList()
     }
     if(m_pWingList[3])
     {
-        for(i=0; i<m_pWingList[3]->m_nFlaps; i++)
+        for(int i=0; i<m_pWingList[3]->m_nFlaps; i++)
         {
             ind = m_pAngleControlModel->index(i+s_StabWPolar.m_nControls, 0, QModelIndex());
             strong = QString(tr("Fin Flap %1 ")+QString::fromUtf8("(°)")).arg(i+1);
@@ -326,6 +312,7 @@ void StabPolarDlg::fillControlList()
     }
 
     m_pAngleControlTable->resizeColumnsToContents();
+    m_pAngleControlModel->setRowCount(s_StabWPolar.m_nControls);
 }
 
 
@@ -502,7 +489,6 @@ void StabPolarDlg::keyPressEvent(QKeyEvent *event)
 }
 
 
-
 void StabPolarDlg::onArea()
 {
     if(m_pctrlArea1->isChecked())
@@ -528,7 +514,6 @@ void StabPolarDlg::onArea()
     }
 
     setWPolarName();
-
     enableControls();
 }
 
@@ -555,19 +540,18 @@ void StabPolarDlg::onInertiaCellChanged(QWidget *)
 }
 
 
-
 void StabPolarDlg::onDragCellChanged(QWidget *)
 {
     readExtraDragData();
     setWPolarName();
 }
 
+
 void StabPolarDlg::onEditingFinished()
 {
     readData();
     setWPolarName();
 }
-
 
 
 void StabPolarDlg::onUnit()
@@ -618,13 +602,11 @@ void StabPolarDlg::onOK()
 }
 
 
-
 void StabPolarDlg::onViscous()
 {
     s_StabWPolar.setViscous(m_pctrlViscous->isChecked());
     setWPolarName();
 }
-
 
 
 void StabPolarDlg::onIgnoreBodyPanels()
@@ -651,7 +633,6 @@ void StabPolarDlg::readCtrlData()
 
     setViscous();
 }
-
 
 
 void StabPolarDlg::onAutoInertia(bool isChecked)
@@ -1159,6 +1140,19 @@ void StabPolarDlg::setupLayout()
     setLayout(pMainLayout);
 }
 
+
+void StabPolarDlg::showEvent(QShowEvent *pEvent)
+{
+    restoreGeometry(s_Geometry);
+    pEvent->accept();
+}
+
+
+void StabPolarDlg::hideEvent(QHideEvent *pEvent)
+{
+    s_Geometry = saveGeometry();
+    pEvent->accept();
+}
 
 
 void StabPolarDlg::readExtraDragData()

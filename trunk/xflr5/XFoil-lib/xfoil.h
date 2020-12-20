@@ -2,7 +2,7 @@
 
     XFoil Class
     Copyright (C) 2000 Mark Drela 
-    Andre Deperrois techwinder@gmail.com - translation to C - 2003
+    Andre Deperrois - translation to C - 2003
 
     
     This program is free software; you can redistribute it and/or modify
