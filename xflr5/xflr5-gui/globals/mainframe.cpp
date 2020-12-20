@@ -5398,6 +5398,18 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
         double dble=0;
         for (int i=2; i<20; i++) ar >> k;
         for (int i=0; i<50; i++) ar >> dble;
+
+        // v6.49: recalculate the wing geometries after the foils have been loaded
+        // to determine the number of flaps
+        for(int ip=0; ip<Objects3d::planeCount(); ip++)
+        {
+            Plane *pPlane = Objects3d::planeAt(ip);
+            for(int iw=0; iw<MAXWINGS; iw++)
+            {
+                if(pPlane->wing(iw))
+                    pPlane->wing(iw)->computeGeometry();
+            }
+        }
     }
     return true;
 }

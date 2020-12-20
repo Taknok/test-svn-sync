@@ -2062,6 +2062,9 @@ bool Miarex::loadSettings(QSettings &settings)
 
         AeroDataDlg::s_Temperature = settings.value("Temperature", 288.15).toDouble();
         AeroDataDlg::s_Altitude    = settings.value("Altitude", 0.0).toDouble();
+
+        StabPolarDlg::s_Geometry = settings.value("StabPolarDlgGeom").toByteArray();
+        WPolarDlg::s_Geometry    = settings.value("WPolarDlgGeom").toByteArray();
     }
 
     settings.endGroup();
@@ -2772,7 +2775,7 @@ void Miarex::onDefineStabPolar()
     {
         emit projectModified();
 
-        WPolar* pNewStabPolar      = new WPolar;
+        WPolar* pNewStabPolar = new WPolar;
         pNewStabPolar->setPlaneName(m_pCurPlane->planeName());
         QColor clr = MainFrame::getColor(4);
         pNewStabPolar->setCurveColor(ObjectColor(clr.red(), clr.green(), clr.blue(), clr.alpha()));
@@ -6691,6 +6694,9 @@ bool Miarex::saveSettings(QSettings &settings)
 
         settings.setValue("Temperature", AeroDataDlg::s_Temperature);
         settings.setValue("Altitude", AeroDataDlg::s_Altitude);
+
+        settings.setValue("StabPolarDlgGeom", StabPolarDlg::s_Geometry);
+        settings.setValue("WPolarDlgGeom",    WPolarDlg::s_Geometry);
     }
     settings.endGroup();
 
