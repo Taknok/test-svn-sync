@@ -389,7 +389,7 @@ void gl3dMiarexView::glMakeCpLegendClr()
 bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d const *pNode,
                                        WPolar const *pWPolar, PlaneOpp const *pPOpp, int /*nPanels*/)
 {
-    qDebug("gl3dMiarexView::glMakeStreamLines");
+
     if(!isVisible()) return false;
     if(s_pMainFrame->m_iApp!=XFLR5::MIAREX) return false;
     if(s_pMiarex->m_iView!=XFLR5::W3DVIEW) return false;
@@ -399,8 +399,6 @@ bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d
 
     double memcoresize = Panel::coreSize();
     Panel::setCoreSize(0.0005); //mm, just for the time needed to build the streamlines which are very sensitive to trailing vortex interference
-
-    Wing const *pWing=nullptr;
 
 //    QProgressDialog pdlg(tr("Streamlines calculation"), tr("Abort"), 0, nPanels);
 //    pdlg.setWindowModality(Qt::WindowModal);
@@ -437,8 +435,8 @@ bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d
     {
         if(PlaneWing[iWing])
         {
-            pWing = PlaneWing[iWing];
-qDebug("gl3dMiarexView::glMakeStreamLines processing wing %d", iWing);
+            Wing const *pWing = PlaneWing[iWing];
+
             int nVertex = 0;
             for (int p=0; p<pWing->m_MatSize; p++)
             {
@@ -593,14 +591,13 @@ qDebug("gl3dMiarexView::glMakeStreamLines processing wing %d", iWing);
                 m++;
             }
             //            if(dlg.wasCanceled()) break;
-qDebug("gl3dMiarexView::glMakeStreamLines done wing %d", iWing);
 
             p0+=pWing->m_MatSize;
         }
         //        if(dlg.wasCanceled()) break;
     }
     //    if(!dlg.wasCanceled()) Q_ASSERT(iv==streamArraySize);
-qDebug("gl3dMiarexView::glMakeStreamLines done plane");
+
 
     m_NStreamLines = iv / GL3DScales::s_NX / 3;
 
@@ -615,7 +612,6 @@ qDebug("gl3dMiarexView::glMakeStreamLines done plane");
     m_vboStreamLines.release();
     m_bStreamlinesDone = true;
 
-qDebug("gl3dMiarexView::glMakeStreamLines done VBO");
     return true;
 }
 

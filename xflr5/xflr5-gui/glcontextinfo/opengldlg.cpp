@@ -212,7 +212,7 @@ void OpenGlDlg::addOptions(QLayout *pLayout)
     {
         QVBoxLayout *pVBoxLayout = new QVBoxLayout;
         {
-            for (size_t i=0; i < sizeof(options) / sizeof(Option); ++i)
+            for (size_t i=0; i<sizeof(options) / sizeof(Option); ++i)
                 pVBoxLayout->addWidget(new QCheckBox(QString::fromLatin1(options[i].str)));
             pGroupBox->setLayout(pVBoxLayout);
         }
@@ -371,6 +371,8 @@ void OpenGlDlg::onCreateContext()
 
     m_pgl3dTestView->setFormat(fmt);
 
+    printFormat(fmt, true);
+
     m_pStackWt->addWidget(m_pgl3dTestView);
     m_pStackWt->setCurrentWidget(m_pgl3dTestView);
     m_pgl3dTestView->repaint(); // force context initialization
@@ -387,24 +389,72 @@ void OpenGlDlg::printFormat(const QSurfaceFormat &format, bool bFull)
 {
     m_pctrlglOutput->appendPlainText(QString("   OpenGL version: %1.%2").arg(format.majorVersion()).arg(format.minorVersion()));
 
-    for (size_t i=0; i<3; ++i)
+    QString strange;
+    switch(format.renderableType())
     {
-        if (m_SurfaceProfiles[i].first == format.profile())
-        {
-            m_pctrlglOutput->appendPlainText(QString("   Profile: %1").arg(m_SurfaceProfiles[i].second));
+        case QSurfaceFormat::DefaultRenderableType:
+            strange = "The default, unspecified rendering method";
             break;
-        }
+        case QSurfaceFormat::OpenGL:
+            strange = "Desktop OpenGL rendering";
+            break;
+        case QSurfaceFormat::OpenGLES:
+            strange = "OpenGL ES 2.0 rendering";
+            break;
+        case QSurfaceFormat::OpenVG:
+            strange = "Open Vector Graphics rendering";
+            break;
     }
+    m_pctrlglOutput->appendPlainText("   Renderable type: " + strange);
 
-    QString opts;
-    for (size_t i=0; i<sizeof(options) / sizeof(Option); ++i)
+    switch(format.profile())
     {
-        if (format.testOption(options[i].option))
-        {
-            opts += QString::fromLatin1(options[i].str) + QStringLiteral(" ");
-        }
+        case QSurfaceFormat::NoProfile:
+            strange = "No profile";
+            break;
+        case QSurfaceFormat::CoreProfile:
+            strange = "Core profile";
+            break;
+        case QSurfaceFormat::CompatibilityProfile:
+            strange = "Compatibility profile";
+            break;
     }
-    m_pctrlglOutput->appendPlainText(QString("   Options: %1").arg(opts));
+    m_pctrlglOutput->appendPlainText("   Profile: "+strange);
+
+    switch(format.swapBehavior())
+    {
+        case QSurfaceFormat::DefaultSwapBehavior:
+            strange = "The default, unspecified swap behaviour of the platform";
+            break;
+        case QSurfaceFormat::SingleBuffer:
+            strange = "Single buffer";
+            break;
+        case QSurfaceFormat::DoubleBuffer:
+            strange = "Double buffer";
+            break;
+        case QSurfaceFormat::TripleBuffer:
+            strange = "Triple buffer";
+            break;
+    }
+    m_pctrlglOutput->appendPlainText("   Swap behaviour: "+strange);
+
+    switch(format.colorSpace())
+    {
+        case QSurfaceFormat::DefaultColorSpace:
+            strange = "The default, unspecified color space";
+            break;
+        case QSurfaceFormat::sRGBColorSpace:
+            strange = "sRGB-capable default framebuffer";
+            break;
+    }
+    m_pctrlglOutput->appendPlainText("   Colour space: "+strange);
+
+    QString opts = "   Options: ";
+    if(format.testOption(QSurfaceFormat::StereoBuffers))       opts += " Stereo buffers / ";
+    if(format.testOption(QSurfaceFormat::DebugContext))        opts += " DebugContext / ";
+    if(format.testOption(QSurfaceFormat::DeprecatedFunctions)) opts += " Deprecated functions / ";
+    if(format.testOption(QSurfaceFormat::ResetNotification))   opts += " Reset notification / ";
+    m_pctrlglOutput->appendPlainText(opts);
 
     if(bFull)
     {
@@ -444,13 +494,13 @@ void OpenGlDlg::onRenderWindowReady()
     m_pctrlglOutput->appendPlainText(QString("   GLSL version: %1").arg(glslVersion));
 
     m_pctrlglOutput->appendPlainText(QString("\n*** QSurfaceFormat::defaultFormat ***"));
-    printFormat(QSurfaceFormat::defaultFormat());
+    printFormat(QSurfaceFormat::defaultFormat(), true);
 
     m_pctrlglOutput->appendPlainText(QString("\n*** QSurfaceFormat from context ***"));
-    printFormat(pContext->format());
+    printFormat(pContext->format(), true);
 
     m_pctrlglOutput->appendPlainText(QString("\n*** QSurfaceFormat from QOpenGLWidget ***"));
-    printFormat(m_pgl3dTestView->format());
+    printFormat(m_pgl3dTestView->format(), true);
 
     m_pctrlglOutput->appendPlainText(QString("\n*** Qt build information ***"));
     const char *gltype[] = { "Desktop", "GLES 2", "GLES 1" };
