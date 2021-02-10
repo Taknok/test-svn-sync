@@ -96,14 +96,14 @@ private:
     QPushButton *m_pctrlAnimate, *m_pctrlAnimateRestart;
     DoubleEdit *m_pctrlModeStep;
     
-    QLabel *m_pctrlStabLabel1, *m_pctrlStabLabel2, *m_pctrlStabLabel3;
-    DoubleEdit  *m_pctrlStabVar1, *m_pctrlStabVar2, *m_pctrlStabVar3;
-    DoubleEdit *m_pctrlTotalTime, *m_pctrlDeltat;
-    QPushButton *m_pctrlPlotStabGraph;
-    QPushButton *m_pctrlAddCurve, *m_pctrlDeleteCurve, *m_pctrlRenameCurve;
-    QComboBox *m_pctrlCurveList;
+    QLabel *m_plabStab1, *m_plabStab2, *m_plabStab3;
+    DoubleEdit  *m_pdeStabVar1, *m_pdeStabVar2, *m_pdeStabVar3;
+    DoubleEdit *m_pdeTotalTime, *m_pdeDeltat;
+    QPushButton *m_ppbPlotStabGraph;
+    QPushButton *m_ppbAddCurve, *m_ppbDeleteCurve, *m_ppbRenameCurve;
+    QComboBox *m_pcbCurveList;
 
-    QLabel *m_pctrlUnit1, *m_pctrlUnit2, *m_pctrlUnit3;
+    QLabel *m_plabUnit1, *m_plabUnit2, *m_plabUnit3;
     DoubleEdit *m_pctrlFreqN, *m_pctrlFreq1, *m_pctrlZeta, *m_pctrlT2, *m_pctrlTau;
     QStackedWidget *m_pctrlStackWidget, *m_pctrlInitialConditionsWidget, *m_pctrlModeViewType;
 
