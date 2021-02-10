@@ -76,7 +76,7 @@ void StabViewDlg::connectSignals()
     connect(m_pctrlLongDynamics, SIGNAL(clicked()), s_pMiarex, SLOT(onStabilityDirection()));
     connect(m_pctrlLatDynamics,  SIGNAL(clicked()), s_pMiarex, SLOT(onStabilityDirection()));
 
-    connect(m_pctrlPlotStabGraph, SIGNAL(clicked()), this , SLOT(onPlotStabilityGraph()));
+    connect(m_ppbPlotStabGraph, SIGNAL(clicked()), this , SLOT(onPlotStabilityGraph()));
 
     connect(m_pctrlRLMode1,   SIGNAL(clicked()), this, SLOT(onModeSelection()));
     connect(m_pctrlRLMode2,   SIGNAL(clicked()), this, SLOT(onModeSelection()));
@@ -91,7 +91,7 @@ void StabViewDlg::connectSignals()
     connect(m_pctrlAnimationSpeed ,    SIGNAL(valueChanged(int)), this, SLOT(onAnimationSpeed(int)));
     connect(m_pctrlAnimationAmplitude, SIGNAL(valueChanged(int)), this, SLOT(onAnimationAmplitude(int)));
     connect(m_pctrlAnimateRestart,     SIGNAL(clicked()),         this, SLOT(onAnimateRestart()));
-    connect(m_pctrlDeltat,             SIGNAL(editingFinished()), this, SLOT(onReadData()));
+    connect(m_pdeDeltat,             SIGNAL(editingFinished()), this, SLOT(onReadData()));
     connect(m_pctrlModeStep,           SIGNAL(editingFinished()), this, SLOT(onReadData()));
 //    connect(m_pCtrlDelegate, SIGNAL(closeEditor(QWidget *)), this, SLOT(OnCellChanged(QWidget *)));
 
@@ -99,10 +99,10 @@ void StabViewDlg::connectSignals()
     connect(m_pctrlForcedResponse,   SIGNAL(clicked()), this, SLOT(onResponseType()));
     connect(m_pctrlModalResponse,    SIGNAL(clicked()), this, SLOT(onResponseType()));
     
-    connect(m_pctrlAddCurve,    SIGNAL(clicked()),      this, SLOT(onAddCurve()));
-    connect(m_pctrlDeleteCurve, SIGNAL(clicked()),      this, SLOT(onDeleteCurve()));
-    connect(m_pctrlRenameCurve, SIGNAL(clicked()),      this, SLOT(onRenameCurve()));
-    connect(m_pctrlCurveList,   SIGNAL(activated(int)), this, SLOT(onSelChangeCurve(int)));
+    connect(m_ppbAddCurve,    SIGNAL(clicked()),      this, SLOT(onAddCurve()));
+    connect(m_ppbDeleteCurve, SIGNAL(clicked()),      this, SLOT(onDeleteCurve()));
+    connect(m_ppbRenameCurve, SIGNAL(clicked()),      this, SLOT(onRenameCurve()));
+    connect(m_pcbCurveList,   SIGNAL(activated(int)), this, SLOT(onSelChangeCurve(int)));
     
     m_pControlModel = new QStandardItemModel(this);
     m_pControlModel->setRowCount(20);//temporary
@@ -305,7 +305,7 @@ void StabViewDlg::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Return:
         case Qt::Key_Enter:
         {
-            if(!m_pctrlPlotStabGraph->hasFocus()) m_pctrlPlotStabGraph->setFocus();
+            if(!m_ppbPlotStabGraph->hasFocus()) m_ppbPlotStabGraph->setFocus();
             else onPlotStabilityGraph();
              
             break;
@@ -505,7 +505,7 @@ void StabViewDlg::onModeSelection()
 void StabViewDlg::onReadData()
 {
     s_pMiarex->m_Modedt = m_pctrlModeStep->value();
-    s_pMiarex->m_Deltat = m_pctrlDeltat->value();
+    s_pMiarex->m_Deltat = m_pdeDeltat->value();
 }
 
 
@@ -608,31 +608,31 @@ void StabViewDlg::setupLayout()
 
         QGroupBox *pInitCondResponse = new QGroupBox(tr("Initial conditions"));
         {
-            m_pctrlStabLabel1 = new QLabel("u0__");
-            m_pctrlStabLabel2 = new QLabel("w0__");
-            m_pctrlStabLabel3 = new QLabel("q0__");
-            m_pctrlUnit1 = new QLabel("m/s");
-            m_pctrlUnit2 = new QLabel("m/s");
-            m_pctrlUnit3 = new QLabel("rad/s");
-            m_pctrlStabLabel1->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-            m_pctrlStabLabel2->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-            m_pctrlStabLabel3->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-            m_pctrlUnit1->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-            m_pctrlUnit2->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-            m_pctrlUnit3->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-            m_pctrlStabVar1 = new DoubleEdit(0.00,3);
-            m_pctrlStabVar2 = new DoubleEdit(0.00,3);
-            m_pctrlStabVar3 = new DoubleEdit(1.00,3);
+            m_plabStab1 = new QLabel("u0__");
+            m_plabStab2 = new QLabel("w0__");
+            m_plabStab3 = new QLabel("q0__");
+            m_plabUnit1 = new QLabel("m/s");
+            m_plabUnit2 = new QLabel("m/s");
+            m_plabUnit3 = new QLabel("rad/s");
+            m_plabStab1->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+            m_plabStab2->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+            m_plabStab3->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+            m_plabUnit1->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+            m_plabUnit2->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+            m_plabUnit3->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+            m_pdeStabVar1 = new DoubleEdit(0.00,3);
+            m_pdeStabVar2 = new DoubleEdit(0.00,3);
+            m_pdeStabVar3 = new DoubleEdit(1.00,3);
             QGridLayout *VarParams = new QGridLayout;
-            VarParams->addWidget(m_pctrlStabLabel1,1,1);
-            VarParams->addWidget(m_pctrlStabLabel2,2,1);
-            VarParams->addWidget(m_pctrlStabLabel3,3,1);
-            VarParams->addWidget(m_pctrlStabVar1,1,2);
-            VarParams->addWidget(m_pctrlStabVar2,2,2);
-            VarParams->addWidget(m_pctrlStabVar3,3,2);
-            VarParams->addWidget(m_pctrlUnit1,1,3);
-            VarParams->addWidget(m_pctrlUnit2,2,3);
-            VarParams->addWidget(m_pctrlUnit3,3,3);
+            VarParams->addWidget(m_plabStab1,1,1);
+            VarParams->addWidget(m_plabStab2,2,1);
+            VarParams->addWidget(m_plabStab3,3,1);
+            VarParams->addWidget(m_pdeStabVar1,1,2);
+            VarParams->addWidget(m_pdeStabVar2,2,2);
+            VarParams->addWidget(m_pdeStabVar3,3,2);
+            VarParams->addWidget(m_plabUnit1,1,3);
+            VarParams->addWidget(m_plabUnit2,2,3);
+            VarParams->addWidget(m_plabUnit3,3,3);
             QVBoxLayout *InitCondResponseLayout = new QVBoxLayout;
             InitCondResponseLayout ->addLayout(VarParams);
             InitCondResponseLayout->addStretch(1);
@@ -686,10 +686,10 @@ void StabViewDlg::setupLayout()
         m_pctrlInitialConditionsWidget->addWidget(pModalTimeBox);
         m_pctrlInitialConditionsWidget->setCurrentIndex(0);
 
-        m_pctrlTotalTime = new DoubleEdit(5,3);
-        m_pctrlTotalTime->setToolTip(tr("Define the total time range for the graphs"));
-        m_pctrlDeltat    = new DoubleEdit(.01,3);
-        m_pctrlDeltat->setToolTip(tr("Define the time step for the resolution of the differential equations"));
+        m_pdeTotalTime = new DoubleEdit(5,3);
+        m_pdeTotalTime->setToolTip(tr("Define the total time range for the graphs"));
+        m_pdeDeltat    = new DoubleEdit(.01,3);
+        m_pdeDeltat->setToolTip(tr("Define the time step for the resolution of the differential equations"));
 
         QGridLayout *pDtLayout  = new QGridLayout;
         {
@@ -698,28 +698,28 @@ void StabViewDlg::setupLayout()
             QLabel *TimeLab1       = new QLabel("s");
             QLabel *TimeLab2       = new QLabel("s");
             pDtLayout->addWidget(DtLabel,1,1);
-            pDtLayout->addWidget(m_pctrlDeltat,1,2);
+            pDtLayout->addWidget(m_pdeDeltat,1,2);
             pDtLayout->addWidget(TimeLab1,1,3);
             pDtLayout->addWidget(TotalTimeLabel,2,1);
-            pDtLayout->addWidget(m_pctrlTotalTime,2,2);
+            pDtLayout->addWidget(m_pdeTotalTime,2,2);
             pDtLayout->addWidget(TimeLab2,2,3);
         }
 
         QGridLayout *pCurveLayout = new QGridLayout;
         {
-            m_pctrlPlotStabGraph = new QPushButton(tr("Recalc."));
-            m_pctrlPlotStabGraph->setToolTip(tr("Re-calculate the currently selected curve with the user-specified input data"));
-            m_pctrlAddCurve  = new QPushButton(tr("Add"));
-            m_pctrlAddCurve->setToolTip(tr("Add a new curve to the graphs, using the current user-specified input"));
-            m_pctrlRenameCurve  = new QPushButton(tr("Rename"));
-            m_pctrlRenameCurve->setToolTip(tr("Rename the currently selected curve"));
-            m_pctrlDeleteCurve  = new QPushButton(tr("Delete"));
-            m_pctrlDeleteCurve->setToolTip(tr("Delete the currently selected curve"));
-            m_pctrlCurveList = new QComboBox();
-            pCurveLayout->addWidget(m_pctrlAddCurve,1,1);
-            pCurveLayout->addWidget(m_pctrlPlotStabGraph,1,2);
-            pCurveLayout->addWidget(m_pctrlRenameCurve,2,1);
-            pCurveLayout->addWidget(m_pctrlDeleteCurve,2,2);
+            m_ppbPlotStabGraph = new QPushButton(tr("Recalc."));
+            m_ppbPlotStabGraph->setToolTip(tr("Re-calculate the currently selected curve with the user-specified input data"));
+            m_ppbAddCurve  = new QPushButton(tr("Add"));
+            m_ppbAddCurve->setToolTip(tr("Add a new curve to the graphs, using the current user-specified input"));
+            m_ppbRenameCurve  = new QPushButton(tr("Rename"));
+            m_ppbRenameCurve->setToolTip(tr("Rename the currently selected curve"));
+            m_ppbDeleteCurve  = new QPushButton(tr("Delete"));
+            m_ppbDeleteCurve->setToolTip(tr("Delete the currently selected curve"));
+            m_pcbCurveList = new QComboBox();
+            pCurveLayout->addWidget(m_ppbAddCurve,1,1);
+            pCurveLayout->addWidget(m_ppbPlotStabGraph,1,2);
+            pCurveLayout->addWidget(m_ppbRenameCurve,2,1);
+            pCurveLayout->addWidget(m_ppbDeleteCurve,2,2);
         }
 
         QGroupBox *pCurveSettingsBox = new QGroupBox(tr("Curve Settings"));
@@ -727,7 +727,7 @@ void StabViewDlg::setupLayout()
             QVBoxLayout *pTimeLayout = new QVBoxLayout;
             {
                 pTimeLayout->addLayout(pDtLayout);
-                pTimeLayout->addWidget(m_pctrlCurveList);
+                pTimeLayout->addWidget(m_pcbCurveList);
                 pTimeLayout->addLayout(pCurveLayout);
             }
             pCurveSettingsBox->setLayout(pTimeLayout);
@@ -1007,28 +1007,28 @@ void StabViewDlg::setControls()
     strong = QString::fromUtf8("°/s");
     if(s_pMiarex->m_bLongitudinal)
     {
-        m_pctrlStabLabel1->setText(tr("u0="));
-        m_pctrlStabLabel2->setText(tr("w0="));
-        m_pctrlStabLabel3->setText(tr("q0="));
-        m_pctrlUnit1->setText(str);
-        m_pctrlUnit2->setText(str);
-        m_pctrlUnit3->setText(strong);
+        m_plabStab1->setText(tr("u0="));
+        m_plabStab2->setText(tr("w0="));
+        m_plabStab3->setText(tr("q0="));
+        m_plabUnit1->setText(str);
+        m_plabUnit2->setText(str);
+        m_plabUnit3->setText(strong);
     }
     else
     {
-        m_pctrlStabLabel1->setText(tr("v0="));
-        m_pctrlStabLabel2->setText(tr("p0="));
-        m_pctrlStabLabel3->setText(tr("r0="));
-        m_pctrlUnit1->setText(str);
-        m_pctrlUnit2->setText(strong);
-        m_pctrlUnit3->setText(strong);
+        m_plabStab1->setText(tr("v0="));
+        m_plabStab2->setText(tr("p0="));
+        m_plabStab3->setText(tr("r0="));
+        m_plabUnit1->setText(str);
+        m_plabUnit2->setText(strong);
+        m_plabUnit3->setText(strong);
     }
 
-    m_pctrlStabVar1->setValue(s_pMiarex->m_TimeInput[0]);
-    m_pctrlStabVar2->setValue(s_pMiarex->m_TimeInput[1]);
-    m_pctrlStabVar3->setValue(s_pMiarex->m_TimeInput[2]);
-    m_pctrlTotalTime->setValue(s_pMiarex->m_TotalTime);
-    m_pctrlDeltat->setValue(s_pMiarex->m_Deltat);
+    m_pdeStabVar1->setValue(s_pMiarex->m_TimeInput[0]);
+    m_pdeStabVar2->setValue(s_pMiarex->m_TimeInput[1]);
+    m_pdeStabVar3->setValue(s_pMiarex->m_TimeInput[2]);
+    m_pdeTotalTime->setValue(s_pMiarex->m_TotalTime);
+    m_pdeDeltat->setValue(s_pMiarex->m_Deltat);
 
     m_pctrlTimeMode1->setChecked(m_iCurrentMode%4==0);
     m_pctrlTimeMode2->setChecked(m_iCurrentMode%4==1);
@@ -1047,11 +1047,11 @@ void StabViewDlg::setControls()
     m_pctrlRLMode4->setEnabled(bStabPOpp);
 
     bool bEnableTimeCtrl = s_pMiarex->m_pCurPOpp && s_pMiarex->m_pCurPOpp->polarType()==XFLR5::STABILITYPOLAR && s_pMiarex->m_iView==XFLR5::STABTIMEVIEW;
-    m_pctrlAddCurve->setEnabled(bEnableTimeCtrl);
-    m_pctrlRenameCurve->setEnabled(m_pctrlCurveList->count());
-    m_pctrlPlotStabGraph->setEnabled(m_pctrlCurveList->count());
-    m_pctrlDeleteCurve->setEnabled(m_pctrlCurveList->count());
-    m_pctrlCurveList->setEnabled(m_pctrlCurveList->count());
+    m_ppbAddCurve->setEnabled(bEnableTimeCtrl);
+    m_ppbRenameCurve->setEnabled(m_pcbCurveList->count());
+    m_ppbPlotStabGraph->setEnabled(m_pcbCurveList->count());
+    m_ppbDeleteCurve->setEnabled(m_pcbCurveList->count());
+    m_pcbCurveList->setEnabled(m_pcbCurveList->count());
 
 
     m_pctrlTimeMode1->setEnabled(bEnableTimeCtrl);
@@ -1059,11 +1059,11 @@ void StabViewDlg::setControls()
     m_pctrlTimeMode3->setEnabled(bEnableTimeCtrl);
     m_pctrlTimeMode4->setEnabled(bEnableTimeCtrl);
 
-    m_pctrlStabVar1->setEnabled(bEnableTimeCtrl);
-    m_pctrlStabVar2->setEnabled(bEnableTimeCtrl);
-    m_pctrlStabVar3->setEnabled(bEnableTimeCtrl);
-    m_pctrlDeltat->setEnabled(bEnableTimeCtrl);
-    m_pctrlTotalTime->setEnabled(bEnableTimeCtrl);
+    m_pdeStabVar1->setEnabled(bEnableTimeCtrl);
+    m_pdeStabVar2->setEnabled(bEnableTimeCtrl);
+    m_pdeStabVar3->setEnabled(bEnableTimeCtrl);
+    m_pdeDeltat->setEnabled(bEnableTimeCtrl);
+    m_pdeTotalTime->setEnabled(bEnableTimeCtrl);
 
     // Enable the 3D mode animation controls only if
     //   - the polar's type is 7
@@ -1141,7 +1141,7 @@ void StabViewDlg::onRenameCurve()
 
 void StabViewDlg::onSelChangeCurve(int sel)
 {
-    QString strong = m_pctrlCurveList->itemText(sel);
+    QString strong = m_pcbCurveList->itemText(sel);
     m_pCurve = s_pMiarex->m_TimeGraph[0]->curve(strong);
     m_pCurve->curveName(strong);
     
@@ -1154,8 +1154,8 @@ void StabViewDlg::onAddCurve()
     addCurve();
     if(m_pCurve)
     {
-        int pos =m_pctrlCurveList->findText(m_pCurve->curveName());
-        m_pctrlCurveList->setCurrentIndex(pos);
+        int pos =m_pcbCurveList->findText(m_pCurve->curveName());
+        m_pcbCurveList->setCurrentIndex(pos);
     }
     onPlotStabilityGraph();
 }
@@ -1169,13 +1169,13 @@ void StabViewDlg::onDeleteCurve()
     m_pCurve = nullptr;
 
     fillCurveList();
-    m_pctrlCurveList->setCurrentIndex(0);
-    m_pctrlPlotStabGraph->setEnabled(s_pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
-    m_pctrlRenameCurve->setEnabled(  s_pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
-    m_pctrlDeleteCurve->setEnabled(  s_pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
-    m_pctrlCurveList->setEnabled(    s_pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
+    m_pcbCurveList->setCurrentIndex(0);
+    m_ppbPlotStabGraph->setEnabled(s_pMiarex->m_pCurPOpp && m_pcbCurveList->count());
+    m_ppbRenameCurve->setEnabled(  s_pMiarex->m_pCurPOpp && m_pcbCurveList->count());
+    m_ppbDeleteCurve->setEnabled(  s_pMiarex->m_pCurPOpp && m_pcbCurveList->count());
+    m_pcbCurveList->setEnabled(    s_pMiarex->m_pCurPOpp && m_pcbCurveList->count());
 
-    if(m_pctrlCurveList->count()) m_pCurve = s_pMiarex->m_TimeGraph[0]->curve(m_pctrlCurveList->itemText(0));
+    if(m_pcbCurveList->count()) m_pCurve = s_pMiarex->m_TimeGraph[0]->curve(m_pcbCurveList->itemText(0));
     else                          m_pCurve = nullptr;
 
     s_pMiarex->setCurveParams();
@@ -1198,12 +1198,12 @@ void StabViewDlg::addCurve()
         if(ig==0) m_pCurve = pCurve;
     }
 
-    if(pCurve) m_pctrlCurveList->addItem(pCurve->curveName());
+    if(pCurve) m_pcbCurveList->addItem(pCurve->curveName());
 
-    m_pctrlPlotStabGraph->setEnabled(s_pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
-    m_pctrlRenameCurve->setEnabled(  s_pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
-    m_pctrlDeleteCurve->setEnabled(  s_pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
-    m_pctrlCurveList->setEnabled(    s_pMiarex->m_pCurPOpp && m_pctrlCurveList->count());
+    m_ppbPlotStabGraph->setEnabled(s_pMiarex->m_pCurPOpp && m_pcbCurveList->count());
+    m_ppbRenameCurve->setEnabled(  s_pMiarex->m_pCurPOpp && m_pcbCurveList->count());
+    m_ppbDeleteCurve->setEnabled(  s_pMiarex->m_pCurPOpp && m_pcbCurveList->count());
+    m_pcbCurveList->setEnabled(    s_pMiarex->m_pCurPOpp && m_pcbCurveList->count());
 
     s_pMiarex->setCurveParams();
 }
@@ -1211,17 +1211,17 @@ void StabViewDlg::addCurve()
 
 void StabViewDlg::fillCurveList()
 {
-    m_pctrlCurveList->clear();
+    m_pcbCurveList->clear();
     QString strong;
     for(int i=0; i<s_pMiarex->m_TimeGraph[0]->curveCount(); i++)
     {
         s_pMiarex->m_TimeGraph[0]->curve(i)->curveName(strong);
-        m_pctrlCurveList->addItem(strong);
+        m_pcbCurveList->addItem(strong);
     }
     if(m_pCurve)
     {
-        int sel = m_pctrlCurveList->findText(m_pCurve->curveName());
-        m_pctrlCurveList->setCurrentIndex(sel);
+        int sel = m_pcbCurveList->findText(m_pCurve->curveName());
+        m_pcbCurveList->setCurrentIndex(sel);
     }
 }
 

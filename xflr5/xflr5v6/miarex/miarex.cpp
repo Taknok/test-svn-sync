@@ -987,7 +987,7 @@ void Miarex::createStabTimeCurves()
     QString strong, CurveTitle;
 
     StabViewDlg *pStabView = s_pMainFrame->m_pStabView;
-    CurveTitle = pStabView->m_pctrlCurveList->currentText();
+    CurveTitle = pStabView->m_pcbCurveList->currentText();
 
     pCurve0 = m_TimeGraph[0]->curve(CurveTitle);
     if(pCurve0) pCurve0->clear();
@@ -1004,18 +1004,18 @@ void Miarex::createStabTimeCurves()
 
     if(!m_pCurPOpp || !m_pCurPOpp->isVisible()) return;
 
-    strong = pStabView->m_pctrlCurveList->currentText();
+    strong = pStabView->m_pcbCurveList->currentText();
 
-    m_Deltat = pStabView->m_pctrlDeltat->value();
-    m_TotalTime = pStabView->m_pctrlTotalTime->value();
+    m_Deltat = pStabView->m_pdeDeltat->value();
+    m_TotalTime = pStabView->m_pdeTotalTime->value();
     dt = m_TotalTime/1000.;
     if(dt<m_Deltat) dt = m_Deltat;
 
     TotalPoints = qMin(1000, int(m_TotalTime/dt));
     //read the initial state condition
-    m_TimeInput[0] = pStabView->m_pctrlStabVar1->value();
-    m_TimeInput[1] = pStabView->m_pctrlStabVar2->value();
-    m_TimeInput[2] = pStabView->m_pctrlStabVar3->value();
+    m_TimeInput[0] = pStabView->m_pdeStabVar1->value();
+    m_TimeInput[1] = pStabView->m_pdeStabVar2->value();
+    m_TimeInput[2] = pStabView->m_pdeStabVar3->value();
     m_TimeInput[3] = 0.0;//we start with an initial 0.0 value for pitch or bank angles
 
     if(m_StabilityResponseType==0)
@@ -1023,7 +1023,7 @@ void Miarex::createStabTimeCurves()
         //start with the user input initial conditions
         in[0] = complex<double>(m_TimeInput[0], 0.0);
         in[1] = complex<double>(m_TimeInput[1], 0.0);
-        in[2] = complex<double>(m_TimeInput[2], 0.0);
+        in[2] = complex<double>(m_TimeInput[2]*PI/180.0, 0.0);
         in[3] = complex<double>(m_TimeInput[3]*PI/180.0, 0.0);
     }
     else if(m_StabilityResponseType==2)
@@ -1096,7 +1096,7 @@ void Miarex::createStabRungeKuttaCurves()
     QString CurveTitle;
 
     StabViewDlg *pStabView = s_pMainFrame->m_pStabView;
-    CurveTitle = pStabView->m_pctrlCurveList->currentText();
+    CurveTitle = pStabView->m_pcbCurveList->currentText();
     Curve *pCurve0 = m_TimeGraph[0]->curve(CurveTitle);
     if(pCurve0) pCurve0->clear();
     else return;
@@ -1132,8 +1132,8 @@ void Miarex::createStabRungeKuttaCurves()
     //    RampAmp     = m_RampAmplitude*PI/180.0;
     //    RampTime    = m_RampTime;           //s
 
-    m_Deltat    = pStabView->m_pctrlDeltat->value();
-    m_TotalTime = pStabView->m_pctrlTotalTime->value();
+    m_Deltat    = pStabView->m_pdeDeltat->value();
+    m_TotalTime = pStabView->m_pdeTotalTime->value();
     double dt = m_TotalTime/1000.;
     if(dt<m_Deltat) dt = m_Deltat;
 
