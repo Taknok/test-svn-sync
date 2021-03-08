@@ -642,7 +642,6 @@ void Optim2d::onMakeSwarm(bool bShow)
             outputText(QString::asprintf("   created particle %d\n", isw));
         }
     }
-//for(int i=0;i <m_Swarm.size(); i++)qDebug()<<m_Swarm.at(i).error();
 
     // debug helper
     if(bShow)
@@ -827,7 +826,7 @@ void Optim2d::PSO_moveParticle(Particle *pParticle) const
 
         newVelocity[j] = (s_InertiaWeight * pParticle->vel(j)) +
                          (s_CognitiveWeight * r1 * (pParticle->m_BestPosition.at(j) - pParticle->pos(j))) +
-                         (s_SocialWeight    * r2 * (m_BestPosition.at(j)          - pParticle->pos(j)));
+                         (s_SocialWeight    * r2 * (m_BestPosition.at(j)            - pParticle->pos(j)));
     }
     pParticle->setVelocity(newVelocity.constData());
 
@@ -979,7 +978,6 @@ void Optim2d::makeFoil(Particle const*pParticle, Foil *pFoil) const
         }
     }
 
-
     memcpy(pFoil->x, pFoil->xb, IBX*sizeof(double));
     memcpy(pFoil->y, pFoil->yb, IBX*sizeof(double));
     pFoil->normalizeGeometry();
@@ -1086,10 +1084,7 @@ void Optim2d::GA_crossOver()
     QVector<Particle> oldpop(m_Swarm);
     m_Swarm.clear();
     Particle parent[2], children[2];
-    parent[0].setDim(2);
-    parent[1].setDim(2);
-    children[0].setDim(2);
-    children[1].setDim(2);
+
     while (oldpop.size()>=2)
     {
         // extract two parents
@@ -1114,8 +1109,6 @@ void Optim2d::GA_crossOver()
                 }
 
                 checkBounds(&child);
-//                child.setFitness(foilFunc(&child));
-//                child.setError(Cl_error(child.fitness()));
             }
             if(children[0].error()>LARGEVALUE/10.0 || children[1].error()>LARGEVALUE/10.0)
             {
@@ -1153,7 +1146,7 @@ void Optim2d::GA_mutateGaussian()
             prob = QRandomGenerator::global()->bounded(1.0);
             if(prob<s_ProbMutation)
             {
-                randomvariation =  distribution(generator);
+                randomvariation = distribution(generator);
                 newgene = particle.pos(j) + randomvariation;
                 particle.setPos(j, newgene);
             }
@@ -1183,18 +1176,18 @@ void Optim2d::GA_evaluatePopulation()
     {
         for(int i=0; i<m_Swarm.size(); i++)
         {
-            Particle &pParticle = m_Swarm[i];
-            GA_evaluateParticle(&pParticle);
+            Particle &particle = m_Swarm[i];
+            GA_evaluateParticle(&particle);
         }
     }
 
     for(int i=0; i<m_Swarm.size(); i++)
     {
-        Particle &pParticle = m_Swarm[i];
-        if(pParticle.error()<m_Error)
+        Particle &particle = m_Swarm[i];
+        if(particle.error()<m_Error)
         {
-            m_Error = pParticle.error();
-            m_BestPosition = pParticle.position();
+            m_Error = particle.error();
+            m_BestPosition = particle.position();
             m_iBest = i;
         }
     }
