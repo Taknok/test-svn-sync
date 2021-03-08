@@ -26,7 +26,7 @@
 class Particle
 {
     public:
-        Particle() {m_Error = m_BestError = 1.0e10; m_Fitness=0.0;}
+        Particle() {m_Error = m_BestError = 1.0e10; m_Fitness=0.0; m_Dim=0;}
 
         void setDim(int dim) {m_Dim=dim; m_Position.resize(m_Dim); m_BestPosition.resize(m_Dim); m_Velocity.resize(m_Dim);}
 
