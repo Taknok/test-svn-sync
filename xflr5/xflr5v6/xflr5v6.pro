@@ -131,4 +131,8 @@ LIBS += -L../XFoil-lib -lXFoil
 
 include(xflr5v6.pri)
 
+HEADERS += \
+    xflcore/constants.h \
+    xflcore/xflevents.h
+
 
