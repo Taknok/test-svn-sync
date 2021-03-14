@@ -29,23 +29,23 @@
 #include "inverseoptionsdlg.h"
 #include "pertdlg.h"
 #include "xinverse.h"
-#include <xfoil.h>
 #include <globals/globals.h>
 #include <globals/mainframe.h>
-#include <graph/graphdlg.h>
+#include <graph/curve.h>
 #include <graph/graph_globals.h>
-#include <misc/renamedlg.h>
+#include <graph/graphdlg.h>
 #include <misc/options/settings.h>
+#include <misc/renamedlg.h>
 #include <misc/text/doubleedit.h>
 #include <misc/text/intedit.h>
 #include <misc/text/mintextedit.h>
-#include <xflobjects/objects2d/foil.h>
 #include <viewwidgets/inverseviewwt.h>
-#include <xdirect/xdirect.h>
 #include <xdirect/objects2d.h>
+#include <xdirect/xdirect.h>
 #include <xflanalysis/analysis3d_params.h>
-#include <graph/curve.h>
-
+#include <xflcore/constants.h>
+#include <xflobjects/objects2d/foil.h>
+#include <xfoil.h>
 
 MainFrame *XInverse::s_pMainFrame;
 inverseviewwt *XInverse::s_p2dWidget;

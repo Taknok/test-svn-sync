@@ -43,7 +43,7 @@
 #include <xflobjects/objects2d/polar.h>
 #include <xdirect/xdirect.h>
 #include <xdirect/analysis/xfoiltask.h>
-#include <xdirect/analysis/xfoiltaskevent.h>
+#include <xflcore/xflevents.h>
 #include <xdirect/objects2d.h>
 #include <xinverse/foilselectiondlg.h>
 

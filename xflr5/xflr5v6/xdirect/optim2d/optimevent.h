@@ -1,8 +1,7 @@
 /****************************************************************************
 
-    Trace functions
-
-    Copyright (C) 2008-2017 Andre Deperrois
+    OptimEvent Class
+    Copyright (C) 2021 Andre Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,17 +19,32 @@
 
 *****************************************************************************/
 
-#include <QFile>
-#include <QString>
+#pragma once
 
-extern bool g_bTrace;
-extern QFile *g_pTraceFile;
+#include <xflcore/xflevents.h>
+#include <xdirect/optim2d/particle.h>
 
-void Trace(int n);
-void Trace(const QString &msg);
-void Trace(const QString &msg, bool b);
-void Trace(const QString &msg, int n);
-void Trace(const QString &msg, double f);
+class OptimEvent : public QEvent
+{
+    public:
+        OptimEvent(int iter, int ibest, QVector<Particle> const &lastswarm, QVector<Particle> const &lastpareto): QEvent(PSO_ITER_EVENT)
+        {
+            m_Iter  = iter;
+            m_iBest = ibest;
 
+            m_Swarm  = lastswarm;
+            m_Pareto = lastpareto;
+        }
 
-void startTrace(bool bTrace);
+        int iter() const {return m_Iter;}
+        int iBest() const {return m_iBest;}
+        QVector<Particle> const &swarm() const {return m_Swarm;}
+        QVector<Particle> const &pareto() const {return m_Pareto;}
+
+    private:
+        QVector<Particle> m_Swarm;
+        QVector<Particle> m_Pareto;
+        int m_Iter=0;
+        int m_iBest = 0;
+};
+

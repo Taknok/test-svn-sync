@@ -20,15 +20,15 @@
 *****************************************************************************/
 
 
+#include <QTextStream>
+#include <QRandomGenerator>
 
 #include "foil.h"
 #include <xflobjects/objects2d/spline.h>
 #include <xflobjects/objects2d/polar.h>
+#include <xflcore/constants.h>
 
-#include <QTextStream>
-#include <QRandomGenerator>
 
-#define PI 3.141592654
 
 /**
  * The public constructor.

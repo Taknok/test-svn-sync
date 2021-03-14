@@ -23,47 +23,62 @@
 
 #include <QVector>
 
+/**
+ * @class Multi-Objective Particle for use in MOPSO
+ * To use in single objective PSO or GA, set NObjectives=1 and NBest=1 in resizeArrays()
+ */
 class Particle
 {
     public:
-        Particle() {m_Error = m_BestError = 1.0e10; m_Fitness=0.0; m_Dim=0;}
+        Particle();
 
-        void setDim(int dim) {m_Dim=dim; m_Position.resize(m_Dim); m_BestPosition.resize(m_Dim); m_Velocity.resize(m_Dim);}
+        void resizeArrays(int dim, int nobj, int nbest);
 
-        double error() const {return m_Error;}
-        double bestError() const {return m_BestError;}
-        void setError(double err) {m_Error=err;}
-        void setBestError(double err) {m_BestError=err;}
+        int dimension() const {return m_Position.size();}
+        int nObjectives() const {return m_Fitness.size();}
+        int nBest() const {return m_nBest;}
 
-        QVector<double> const &velocity()     const {return m_Velocity;}
-        QVector<double> const &position()     const {return m_Position;}
-        QVector<double> const &bestPosition() const {return m_BestPosition;}
+        double error(int iobj) const {return m_Error.at(iobj);}
+        void setError(int iobj, double err) {m_Error[iobj]=err;}
 
-        void setVelocity(double const*vel) {for(int i=0; i<m_Dim; i++) m_Velocity[i]=vel[i];}
-        void setBestPosition(double const*pos) {for(int i=0; i<m_Dim; i++) m_BestPosition[i]=pos[i];}
-        void setPosition(double const*pos) {for(int i=0; i<m_Dim; i++) m_Position[i]=pos[i];}
+        double bestError(int iFront, int iobj) const {return m_BestError.at(iFront).at(iobj);}
+        void setBestError(int iFront, int iobj, double err) {m_BestError[iFront][iobj]=err;}
+        void setBestPosition(int iFront, int idim, double pos) {m_BestError[iFront][idim]=pos;}
+        void storeBestPosition(int ifront) {m_BestPosition[ifront]=m_Position;}
 
-        void storePosition() {m_BestPosition=m_Position;}
+        QVector<double> const &velocity() const {return m_Velocity;}
+        QVector<double> const &position() const {return m_Position;}
+        QVector<double> const &bestPosition(int i) const {return m_BestPosition.at(i);}
+
+        void setPosition(QVector<double> const &pos) {m_Position=pos;}
+        void setVelocity(QVector<double> const &vel) {m_Velocity=vel;}
 
         void setPos(int i, double dble) {m_Position[i]=dble;}
         void setVel(int i, double dble) {m_Velocity[i]=dble;}
 
         double pos(int i) const {return m_Position.at(i);}
-        double bestPos(int i) const {return m_BestPosition.at(i);}
+        double bestPos(int iFront, int iComponent) const {return m_BestPosition.at(iFront).at(iComponent);}
         double vel(int i) const {return m_Velocity.at(i);}
 
-        int dim() const {return m_Dim;}
 
-        void setFitness(double f) {m_Fitness=f;}
-        double fitness() const {return m_Fitness;}
+        void setFitness(int i, double f) {m_Fitness[i]=f;}
+        double fitness(int i) const {return m_Fitness.at(i);}
 
-    public:
-        double m_Error, m_BestError;
-        QVector<double> m_Position; // Camb, XCamb, Thick, XThick
+        void initializeBest();
+        void updateBest();
+
+
+    private:
+        // size = dimension = nVariables
+        QVector<double> m_Position;
         QVector<double> m_Velocity;
-        QVector<double> m_BestPosition;
 
-        double m_Fitness;
+        //size = NObjectives
+        QVector<double> m_Fitness; /** the value of each objective funnction for this particle */
+        QVector<double> m_Error;   /** the error associated to each objective */
 
-        double m_Dim;
+        //size = PARETOSIZE
+        int m_nBest;
+        QVector<QVector<double>> m_BestError;    /** the particle's personal best errors achieved so far */
+        QVector<QVector<double>> m_BestPosition; /** the particle's personal best positions achieved so far */
 };

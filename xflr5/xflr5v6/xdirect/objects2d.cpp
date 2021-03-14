@@ -18,6 +18,7 @@
 
 *****************************************************************************/
 
+#include <QDebug>
 
 
 #include "objects2d.h"
@@ -25,9 +26,8 @@
 #include <xdirect/xdirect.h>
 #include <globals/globals.h>
 #include <misc/options/settings.h>
-#include <QDebug>
 
-#define PI 3.141592654
+
 
 QVector<Foil*>    Objects2d::s_oaFoil;
 QVector<Polar*>   Objects2d::s_oaPolar;

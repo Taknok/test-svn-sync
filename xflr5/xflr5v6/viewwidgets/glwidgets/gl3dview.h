@@ -35,7 +35,7 @@
 
 #include <globals/gui_enums.h>
 #include <viewwidgets/glwidgets/arcball.h>
-
+#include <xflanalysis/analysis3d_params.h>
 
 #define PIf 3.141592654f
 

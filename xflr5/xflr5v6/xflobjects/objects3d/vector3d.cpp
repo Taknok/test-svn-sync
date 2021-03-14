@@ -23,7 +23,7 @@
 
 #include "vector3d.h"
 #include <xflanalysis/analysis3d_params.h>
-
+#include <xflcore/constants.h>
 
 
 /** Rotates this vector around the axis defined by the vector R and by the angle Angle

@@ -39,12 +39,12 @@
 #include <misc/options/settings.h>
 #include <misc/text/doubleedit.h>
 #include <misc/text/intedit.h>
+#include <xdirect/analysis/xfoiltask.h>
+#include <xdirect/objects2d.h>
+#include <xdirect/xdirect.h>
+#include <xflcore/xflevents.h>
 #include <xflobjects/objects2d/foil.h>
 #include <xflobjects/objects2d/polar.h>
-#include <xdirect/xdirect.h>
-#include <xdirect/analysis/xfoiltask.h>
-#include <xdirect/analysis/xfoiltaskevent.h>
-#include <xdirect/objects2d.h>
 #include <xinverse/foilselectiondlg.h>
 
 

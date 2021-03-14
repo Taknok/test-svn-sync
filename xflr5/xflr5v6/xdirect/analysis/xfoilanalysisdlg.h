@@ -35,7 +35,7 @@
 #include <QCheckBox>
 
 #include <xdirect/analysis/xfoiltask.h>
-#include <xdirect/analysis/xfoiltaskevent.h>
+#include <xflcore/xflevents.h>
 
 class GraphWt;
 class Graph;

@@ -1,8 +1,6 @@
 
 SOURCES += \
-    $$PWD/misc/text/numedit.cpp \
-    $$PWD/viewwidgets/twodwidgets/foilwt.cpp \
-    $$PWD/xflobjects/objects2d/vector2d.cpp \
+    $$PWD/xdirect/optim2d/optimtask.cpp \
     design/afoil.cpp \
     design/afoiltabledlg.cpp \
     design/foiltabledelegate.cpp \
@@ -82,6 +80,7 @@ SOURCES += \
     misc/text/floateditdelegate.cpp \
     misc/text/intedit.cpp \
     misc/text/mintextedit.cpp \
+    misc/text/numedit.cpp \
     misc/text/textclrbtn.cpp \
     misc/updater.cpp \
     misc/voidwidget.cpp \
@@ -105,6 +104,7 @@ SOURCES += \
     viewwidgets/twodwidgets/bodyframewt.cpp \
     viewwidgets/twodwidgets/bodylinewt.cpp \
     viewwidgets/twodwidgets/foildesignwt.cpp \
+    viewwidgets/twodwidgets/foilwt.cpp \
     viewwidgets/twodwidgets/section2dwt.cpp \
     viewwidgets/wingwt.cpp \
     xdirect/analysis/batchdlg.cpp \
@@ -125,7 +125,11 @@ SOURCES += \
     xdirect/geometry/twodpaneldlg.cpp \
     xdirect/mgt/managefoilsdlg.cpp \
     xdirect/objects2d.cpp \
+    xdirect/optim2d/gatask.cpp \
+    xdirect/optim2d/mopsotask.cpp \
+    xdirect/optim2d/mopsotask2d.cpp \
     xdirect/optim2d/optim2d.cpp \
+    xdirect/optim2d/particle.cpp \
     xdirect/xdirect.cpp \
     xdirect/xdirectstyledlg.cpp \
     xdirect/xml/xmlpolarreader.cpp \
@@ -140,6 +144,7 @@ SOURCES += \
     xflobjects/objects2d/opppoint.cpp \
     xflobjects/objects2d/polar.cpp \
     xflobjects/objects2d/spline.cpp \
+    xflobjects/objects2d/vector2d.cpp \
     xflobjects/objects3d/body.cpp \
     xflobjects/objects3d/frame.cpp  \
     xflobjects/objects3d/nurbssurface.cpp  \
@@ -160,9 +165,8 @@ SOURCES += \
 
 
 HEADERS += \
-    $$PWD/misc/text/numedit.h \
-    $$PWD/viewwidgets/twodwidgets/foilwt.h \
-    $$PWD/xflobjects/objects2d/vector2d.h \
+    $$PWD/xdirect/optim2d/optimevent.h \
+    $$PWD/xdirect/optim2d/optimtask.h \
     design/afoil.h \
     design/afoiltabledlg.h \
     design/foiltabledelegate.h \
@@ -244,6 +248,7 @@ HEADERS += \
     misc/text/floateditdelegate.h \
     misc/text/intedit.h \
     misc/text/mintextedit.h \
+    misc/text/numedit.h \
     misc/text/textclrbtn.h \
     misc/updater.h \
     misc/voidwidget.h \
@@ -267,6 +272,7 @@ HEADERS += \
     viewwidgets/twodwidgets/bodyframewt.h \
     viewwidgets/twodwidgets/bodylinewt.h \
     viewwidgets/twodwidgets/foildesignwt.h \
+    viewwidgets/twodwidgets/foilwt.h \
     viewwidgets/twodwidgets/section2dwt.h \
     viewwidgets/wingwt.h \
     xdirect/analysis/batchdlg.h \
@@ -276,7 +282,6 @@ HEADERS += \
     xdirect/analysis/xfoiladvanceddlg.h \
     xdirect/analysis/xfoilanalysisdlg.h \
     xdirect/analysis/xfoiltask.h \
-    xdirect/analysis/xfoiltaskevent.h \
     xdirect/geometry/cadddlg.h \
     xdirect/geometry/flapdlg.h \
     xdirect/geometry/foilcoorddlg.h \
@@ -288,7 +293,11 @@ HEADERS += \
     xdirect/geometry/twodpaneldlg.h \
     xdirect/mgt/managefoilsdlg.h \
     xdirect/objects2d.h \
+    xdirect/optim2d/gatask.h \
+    xdirect/optim2d/mopsotask.h \
+    xdirect/optim2d/mopsotask2d.h \
     xdirect/optim2d/optim2d.h \
+    xdirect/optim2d/optstructures.h \
     xdirect/optim2d/particle.h \
     xdirect/xdirect.h \
     xdirect/xdirectstyledlg.h \
@@ -302,12 +311,15 @@ HEADERS += \
     xflanalysis/plane_analysis/panelanalysis.h \
     xflanalysis/plane_analysis/planetask.h \
     xflanalysis/plane_analysis/planetaskevent.h \
+    xflcore/constants.h \
+    xflcore/xflevents.h \
     xflobjects/objectcolor.h \
     xflobjects/objects2d/blxfoil.h \
     xflobjects/objects2d/foil.h \
     xflobjects/objects2d/oppoint.h \
     xflobjects/objects2d/polar.h \
     xflobjects/objects2d/spline.h \
+    xflobjects/objects2d/vector2d.h \
     xflobjects/objects3d/body.h \
     xflobjects/objects3d/frame.h  \
     xflobjects/objects3d/nurbssurface.h  \

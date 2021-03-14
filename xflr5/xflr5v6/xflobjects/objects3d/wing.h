@@ -35,6 +35,7 @@
 #include <xflobjects/objects3d/wingsection.h>
 #include <xflobjects/objects2d/foil.h>
 #include <xflobjects/objects2d/polar.h>
+#include <xflanalysis/analysis3d_params.h>
 
 /**
  * @class Wing
