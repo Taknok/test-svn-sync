@@ -32,7 +32,7 @@
 
 #include <xflobjects/objects3d/vector3d.h>
 #include <xflobjects/objects3d/panel.h>
-
+#include <xflanalysis/analysis3d_params.h>
 
 #define VLMMAXRHS 100
 

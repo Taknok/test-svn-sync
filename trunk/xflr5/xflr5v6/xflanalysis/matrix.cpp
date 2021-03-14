@@ -22,6 +22,7 @@
 
 #include "matrix.h"
 #include <xflanalysis/analysis3d_params.h>
+#include <xflcore/constants.h>
 
 /** Transposes in place a 3x3 matrix */
 void transpose33(double *l)

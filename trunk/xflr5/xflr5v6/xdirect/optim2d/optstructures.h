@@ -1,8 +1,7 @@
 /****************************************************************************
 
-    Trace functions
-
-    Copyright (C) 2008-2017 Andre Deperrois
+    Optimization structures Class
+    Copyright (C) 2021 Andre Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,17 +19,21 @@
 
 *****************************************************************************/
 
-#include <QFile>
+#pragma once
 #include <QString>
 
-extern bool g_bTrace;
-extern QFile *g_pTraceFile;
+struct OptObjective
+{
+    QString m_Name;
+    bool m_bActive = true;
+    double m_Target = 0.0;
+    double m_MaxError = 0.0;
+};
 
-void Trace(int n);
-void Trace(const QString &msg);
-void Trace(const QString &msg, bool b);
-void Trace(const QString &msg, int n);
-void Trace(const QString &msg, double f);
 
-
-void startTrace(bool bTrace);
+struct OptVariable
+{
+    QString m_Name;
+    double m_Min = 0.0;
+    double m_Max = 0.0;
+};

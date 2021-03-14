@@ -21,14 +21,15 @@
 
 #include <QCoreApplication>
 #include "xfoiltask.h"
-#include "xfoiltaskevent.h"
+#include <xflcore/xflevents.h>
+#include <xflcore/constants.h>
+
 
 
 #include <QThread>
 #include <QCoreApplication>
-#include <QtDebug>
+#include <QDebug>
 
-#define PI 3.141592654
 
 int XFoilTask::s_IterLim=100;
 bool XFoilTask::s_bAutoInitBL = true;

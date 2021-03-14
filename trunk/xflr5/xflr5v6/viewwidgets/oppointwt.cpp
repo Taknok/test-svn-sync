@@ -26,17 +26,18 @@
 #include <QAction>
 
 
-#include <globals/mainframe.h>
-#include <globals/globals.h>
-#include <graph/graph_globals.h>
 
+#include <globals/globals.h>
+#include <globals/mainframe.h>
 #include <graph/graph.h>
-#include <xdirect/xdirect.h>
-#include <xdirect/xdirectstyledlg.h>
+#include <graph/graph_globals.h>
 #include <graph/graphdlg.h>
 #include <misc/options/settings.h>
+#include <xdirect/xdirect.h>
+#include <xdirect/xdirectstyledlg.h>
+#include <xflcore/constants.h>
 
-#define PI 3.141592654
+
 
 
 MainFrame *OpPointWidget::s_pMainFrame = nullptr;

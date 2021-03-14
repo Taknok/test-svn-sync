@@ -38,10 +38,14 @@
 
 class Foil;
 class FoilWt;
+class Polar;
 class GraphWt;
 class DoubleEdit;
 class IntEdit;
 class XFoilTask;
+class GATask;
+class MOPSOTask2d;
+
 
 class Optim2d : public QDialog
 {
@@ -61,9 +65,9 @@ class Optim2d : public QDialog
         static void saveSettings(QSettings &settings);
 
     private:
-        void reject() override;
         void showEvent(QShowEvent *pEvent) override;
         void hideEvent(QHideEvent *pEvent) override;
+        void customEvent(QEvent *pEvent) override;
 
         void setupLayout();
         void connectSignals();
@@ -73,28 +77,15 @@ class Optim2d : public QDialog
 
         // common
         void makeRandomParticle(Particle *pParticle) const;
-        void listPopulation() const;
 
-        //PSO
-        void PSO_moveParticle(Particle *pParticle) const;
-        double Cl_error(double Cl) const;
+        void makePSOSwarm();
+        void makeGAGen();
 
-        //GA
-        void GA_crossOver();
-        void GA_evaluatePopulation();
-        void GA_evaluateParticle(Particle *pParticle) const;
-        void GA_makeNewGen();
-        void GA_makeSelection();
-        void GA_mutateGaussian();
-
-        //foil
-        void makeFoil(Particle const *pParticle, Foil *pFoil) const;
-        double foilFunc(Particle const *pParticle) const;
-        double HH(double x, double t1, double t2) const;
-        bool runXFoilTask(XFoilTask &task);
-        void checkBounds(Particle *pParticle) const;
+        void swarm();
+        void evolution();
 
     private slots:
+        void reject() override;
         void onButton(QAbstractButton *pButton);
         void onClose();
 
@@ -102,7 +93,6 @@ class Optim2d : public QDialog
         void onAnalyze();
         void onOptimize();
         void onMakeSwarm(bool bShow=true);
-        void onIteration();
         void onStoreBestFoil();
 
     private:
@@ -110,21 +100,17 @@ class Optim2d : public QDialog
         bool m_bModified;
 
         Foil const *m_pFoil;
-
         Foil *m_pBestFoil; // used to animate the display
+
+        Polar *m_pPolar;
 
         QVector<Foil*> m_TempFoils; /**< pointers to debug foils to delete on exit */
 
-        //Algo
-        double m_Error;
-        int m_Iter;
-        int m_iBest;
-
-        QVector<double> m_BestPosition; // population best
-
         int m_iLE;  /**< the index of the leading edge point for thee current aoa */
 
-        QVector<Particle> m_Swarm; // the swarm or the population in the case of the GA
+
+        MOPSOTask2d *m_pPSOTask;
+        GATask *m_pGATask;
 
         //XFoil
         static double s_Alpha;
@@ -135,7 +121,9 @@ class Optim2d : public QDialog
 
         //Target
         static double s_Cl;
-        static double s_MaxError;
+        static double s_ClMaxError;
+        static double s_Cd;
+        static double s_CdMaxError;
 
         static double s_HHt2;     /**< t2 parameter of the HH functions */
         static int    s_HHn;      /**< number of HH functions to use */
@@ -143,23 +131,9 @@ class Optim2d : public QDialog
 
         //Common
         static bool   s_bPSO;
-        static int    s_PopSize;
-        static int    s_MaxIter;
         static int    s_Dt;
-        static bool   s_bMultiThreaded;
-
-        //PSO
-        static double s_InertiaWeight;
-        static double s_CognitiveWeight;
-        static double s_SocialWeight;
-
-        //GA
-        static double s_ProbXOver;       /** probability of crossover */
-        static double s_ProbMutation;    /** probability of mutation */
-        static double s_SigmaMutation;   /** standard deviation of the gaussian mutation */
 
         // interface
-        QTabWidget *m_ptwMain;
         Graph m_Graph;
         GraphWt *m_pGraphWt;
         FoilWt *m_pFoilWt;
@@ -168,8 +142,9 @@ class Optim2d : public QDialog
         DoubleEdit *m_pdeAlpha, *m_pdeRe, *m_pdeNCrit, *m_pdeXtrTop, *m_pdeXtrBot;
         QPushButton *m_ppbAnalyze;
 
-        // Optim
-        DoubleEdit *m_pdeCl, *m_pdeMaxError;
+        // Optim targets
+        DoubleEdit *m_pdeCl, *m_pdeClMaxError;
+        DoubleEdit *m_pdeCd, *m_pdeCdMaxError;
 
         // Hicks-Henne
         IntEdit *m_pieNHH;

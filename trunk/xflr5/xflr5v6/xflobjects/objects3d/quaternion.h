@@ -44,7 +44,7 @@ Home made class. Since it was written, Qt has developed and provided a QQuaterni
 */
 
 #include <xflobjects/objects3d/vector3d.h>
-#include <xflanalysis/analysis3d_params.h>
+#include <xflcore/constants.h>
 
 class Quaternion
 {

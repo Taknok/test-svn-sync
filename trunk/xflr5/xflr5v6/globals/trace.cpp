@@ -51,7 +51,7 @@ void Trace(int n)
 }
 
 
-void Trace(QString msg, bool b)
+void Trace(QString const &msg, bool b)
 {
     if(!g_bTrace) return;
     QString str;
@@ -72,7 +72,7 @@ void Trace(QString msg, bool b)
 * Used for debugging.
 *@param msg the message to output
 */
-void Trace(QString msg)
+void Trace(QString const &msg)
 {
     if(!g_bTrace) return;
 
@@ -92,7 +92,7 @@ void Trace(QString msg)
 * @param msg the message to output
 * @param n the integer to output
 */
-void Trace(QString msg, int n)
+void Trace(QString const &msg, int n)
 {
     if(!g_bTrace) return;
 
@@ -115,7 +115,7 @@ void Trace(QString msg, int n)
 * @param msg the message to output
 * @param f the float number to output
 */
-void Trace(QString msg, double f)
+void Trace(QString const &msg, double f)
 {
     if(!g_bTrace) return;
 

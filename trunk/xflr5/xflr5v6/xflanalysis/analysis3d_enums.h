@@ -45,6 +45,9 @@ namespace XFLR5
 
     /** @enum The two types of boundary conditions for 3D panel analysis. VLM BC are of the NEUMANN type*/
     typedef enum {DIRICHLET, NEUMANN} enumBC;
+
+    /** @enum The status of the 3d analysis */
+    typedef enum {PENDING, RUNNING, CANCELLED, FINISHED} enumAnalysisStatus;
 }
 
 #endif // ENGINE_ENUMS_H

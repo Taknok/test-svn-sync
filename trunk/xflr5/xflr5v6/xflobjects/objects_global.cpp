@@ -20,8 +20,10 @@
 *****************************************************************************/
 
 #include "objects_global.h"
+#include <xflcore/constants.h>
 #include <xflobjects/objects2d/foil.h>
 #include <xflobjects/objects2d/polar.h>
+
 /**
 * Reads a sequence of characters from a binary stream and returns a QString. Inherited from the MFC versions of XFLR5.
 *@param ar the binary datastream

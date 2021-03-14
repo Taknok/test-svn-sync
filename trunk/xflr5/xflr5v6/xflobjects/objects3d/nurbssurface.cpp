@@ -21,9 +21,9 @@
 
 #include <QDebug>
 
-#include <xflanalysis/analysis3d_params.h>
 #include "nurbssurface.h"
-
+#include <xflanalysis/analysis3d_params.h>
+#include <xflcore/constants.h>
 
 
 /**

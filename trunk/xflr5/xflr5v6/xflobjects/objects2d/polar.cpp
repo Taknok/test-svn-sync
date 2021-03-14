@@ -19,11 +19,11 @@
 
 *****************************************************************************/
 
-#include <QtDebug>
-#include "foil.h"
-#include "polar.h"
 
-#define PI 3.141592654
+#include "polar.h"
+#include <xflcore/constants.h>
+#include <xflobjects/objects2d/foil.h>
+
 
 /**
 *The public constructor.

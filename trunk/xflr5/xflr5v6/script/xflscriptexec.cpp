@@ -29,16 +29,16 @@
 #include <QDebug>
 
 #include "xflscriptexec.h"
-#include <xflanalysis/plane_analysis/planetask.h>
 #include <globals/globals.h>
 #include <globals/gui_params.h>
 #include <miarex/mgt/xmlplanereader.h>
 #include <miarex/mgt/xmlwpolarreader.h>
 #include <misc/options/settings.h>
-#include <xdirect/objects2d.h>
 #include <xdirect/analysis/xfoiltask.h>
-#include <xdirect/analysis/xfoiltaskevent.h>
+#include <xdirect/objects2d.h>
 #include <xdirect/xml/xmlpolarreader.h>
+#include <xflanalysis/plane_analysis/planetask.h>
+#include <xflcore/xflevents.h>
 
 QString XflScriptExec::s_VersionName;
 

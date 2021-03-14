@@ -33,6 +33,7 @@
 #include <QDebug>
 
 #include "optim2d.h"
+
 #include <globals/globals.h>
 #include <graph/curve.h>
 #include <misc/text/doubleedit.h>
@@ -41,10 +42,12 @@
 #include <viewwidgets/twodwidgets/foilwt.h>
 #include <xdirect/analysis/xfoiltask.h>
 #include <xdirect/objects2d.h>
+#include <xdirect/optim2d/gatask.h>
+#include <xdirect/optim2d/mopsotask2d.h>
+#include <xdirect/optim2d/optimevent.h>
+#include <xflcore/constants.h>
+#include <xflobjects/objects2d/polar.h>
 #include <xfoil.h>
-
-#define PI 3.141592654
-#define LARGEVALUE 1.0e10
 
 QByteArray Optim2d::s_HSplitterSizes;
 QByteArray Optim2d::s_VSplitterSizes;
@@ -56,40 +59,36 @@ double Optim2d::s_NCrit           = 9.0;
 double Optim2d::s_XtrTop          = 1.0;
 double Optim2d::s_XtrBot          = 1.0;
 double Optim2d::s_Cl              = 0.0;
-double Optim2d::s_MaxError        = 1.e-4;
+double Optim2d::s_ClMaxError      = 1.e-3;
+double Optim2d::s_Cd              = 0.02;
+double Optim2d::s_CdMaxError      = 1.e-4;
 
 bool   Optim2d::s_bPSO            = true;
-bool   Optim2d::s_bMultiThreaded  = true;
-int    Optim2d::s_Dt              = 100;
-double Optim2d::s_InertiaWeight   = 0.5;
-double Optim2d::s_CognitiveWeight = 0.5;
-double Optim2d::s_SocialWeight    = 0.5;
-int    Optim2d::s_PopSize         = 17;
-int    Optim2d::s_MaxIter         = 100;
+int    Optim2d::s_Dt              = 16;
+
 int    Optim2d::s_HHn             = 6;   //GA seems to converge a little better if even number so that there is no bump function centered on the LE
 double Optim2d::s_HHt2            = 1.0;
 double Optim2d::s_HHmax           = 0.025;
-double Optim2d::s_ProbXOver       = 0.5;
-double Optim2d::s_ProbMutation    = 0.15;
-double Optim2d::s_SigmaMutation   = 0.2;
 
 Optim2d::Optim2d(QWidget *pParent) : QDialog(pParent)
 {
     setWindowTitle("2d Optimization");
 
     m_pFoil=nullptr;
-
     m_pBestFoil = new Foil;
+
+    m_pPolar = new Polar;
+
+    m_iLE = -1;
 
     m_bModified = false;
     m_bSaved = true;
 
     //PSO
-    m_Error = LARGEVALUE;
-    m_Iter=0;
-    m_iBest=0;
+    m_pPSOTask = nullptr;
 
-    m_iLE = -1;
+    //GA
+    m_pGATask = nullptr;
 
     setupLayout();
     connectSignals();
@@ -100,6 +99,11 @@ Optim2d::~Optim2d()
 {
     delete m_pBestFoil;
     for(int i=0; i<m_TempFoils.size(); i++) delete m_TempFoils[i];
+
+    delete m_pPolar;
+
+    if(m_pPSOTask) delete m_pPSOTask;
+    if(m_pGATask)  delete m_pGATask;
 }
 
 
@@ -114,25 +118,38 @@ void Optim2d::setupLayout()
             {
                 QVBoxLayout *pLeftLayout = new QVBoxLayout;
                 {
-                    m_ptwMain = new QTabWidget;
+                    QTabWidget *ptwMain = new QTabWidget;
                     {
                         QFrame *pTargetPage = new QFrame;
                         {
                             QGridLayout *pOptimLayout = new QGridLayout;
                             {
-                                QLabel *plabCl = new QLabel("Target Cl:");
+                                QLabel *plabTarget = new QLabel("Target ");
+                                QLabel *plabMaxError = new QLabel("Max. error");
+
+                                QLabel *plabCl = new QLabel("Cl:");
                                 m_pdeCl = new DoubleEdit(s_Cl);
-                                QLabel *plabMaxError = new QLabel("Max. error:");
-                                m_pdeMaxError = new DoubleEdit(s_MaxError);
+                                m_pdeClMaxError = new DoubleEdit(s_ClMaxError);
+
+                                QLabel *plabCd = new QLabel("Cd:");
+                                m_pdeCd = new DoubleEdit(s_Cd);
+                                m_pdeCdMaxError = new DoubleEdit(s_CdMaxError);
+
+                                QLabel *plabNote = new QLabel("Note: GA is single objective only");
 
                                 m_pchMultithread = new QCheckBox("Multithreaded");
-                                m_pchMultithread->setChecked(s_bMultiThreaded);
-                                pOptimLayout->addWidget(plabCl,           1, 1);
-                                pOptimLayout->addWidget(m_pdeCl,          1, 2);
-                                pOptimLayout->addWidget(plabMaxError,     2, 1);
-                                pOptimLayout->addWidget(m_pdeMaxError,    2, 2);
-                                pOptimLayout->setRowStretch(3,1);
-                                pOptimLayout->addWidget(m_pchMultithread, 4,1,1,2);
+                                m_pchMultithread->setChecked(OptimTask::s_bMultiThreaded);
+                                pOptimLayout->addWidget(plabTarget,         1, 2, Qt::AlignCenter);
+                                pOptimLayout->addWidget(plabMaxError,       1, 3, Qt::AlignCenter);
+                                pOptimLayout->addWidget(plabCl,             2, 1);
+                                pOptimLayout->addWidget(m_pdeCl,            2, 2);
+                                pOptimLayout->addWidget(m_pdeClMaxError,    2, 3);
+                                pOptimLayout->addWidget(plabCd,             3, 1);
+                                pOptimLayout->addWidget(m_pdeCd,            3, 2);
+                                pOptimLayout->addWidget(m_pdeCdMaxError,    3, 3);
+                                pOptimLayout->addWidget(plabNote,           4, 1, 1, 3);
+                                pOptimLayout->setRowStretch(5,1);
+                                pOptimLayout->addWidget(m_pchMultithread, 6,1,1,3);
                             }
                             pTargetPage->setLayout(pOptimLayout);
                         }
@@ -167,10 +184,10 @@ void Optim2d::setupLayout()
                                     QGridLayout *pCommonLayout = new QGridLayout;
                                     {
                                         QLabel *plabPopSize = new QLabel("Swarm size:");
-                                        m_piePopSize = new IntEdit(s_PopSize);
+                                        m_piePopSize = new IntEdit(OptimTask::s_PopSize);
 
                                         QLabel *plabMaxIter = new QLabel("Max. iterations:");
-                                        m_pieMaxIter = new IntEdit(s_MaxIter);
+                                        m_pieMaxIter = new IntEdit(OptimTask::s_MaxIter);
 
                                         QLabel *pLabUpdate = new QLabel("Update interval:");
                                         m_pieUpdateDt = new IntEdit(s_Dt);
@@ -195,16 +212,16 @@ void Optim2d::setupLayout()
                                         QGridLayout *pPSOLayout = new QGridLayout;
                                         {
                                             QLabel *plabInertia = new QLabel("Inertia weight:");
-                                            m_pdeInertiaWeight = new DoubleEdit(s_InertiaWeight);
+                                            m_pdeInertiaWeight = new DoubleEdit(MOPSOTask::s_InertiaWeight);
                                             m_pdeInertiaWeight->setToolTip("The inertia weight determines the influence of the particle's\n"
                                                                            "current velocity on its updated velocity.");
 
                                             QLabel *plabCognitive = new QLabel("Cognitive weight:");
-                                            m_pdeCognitiveWeight = new DoubleEdit(s_CognitiveWeight);
+                                            m_pdeCognitiveWeight = new DoubleEdit(MOPSOTask::s_CognitiveWeight);
                                             m_pdeCognitiveWeight->setToolTip("The cognitive weights determines the influence of the particle's best position");
 
                                             QLabel *plabSocial = new QLabel("Social weight:");
-                                            m_pdeSocialWeight = new DoubleEdit(s_SocialWeight);
+                                            m_pdeSocialWeight = new DoubleEdit(MOPSOTask::s_SocialWeight);
                                             m_pdeSocialWeight->setToolTip("The social weight determines the influence of the global best-known position");
 
 
@@ -223,34 +240,34 @@ void Optim2d::setupLayout()
                                     }
 
                                     QGroupBox *pGABox = new QGroupBox("GA");
-                                {
-                                    QGridLayout *pGALayout = new QGridLayout;
                                     {
-                                        QLabel *pLabXOver = new QLabel("Cross-over probability:");
-                                        m_pdeProbXOver = new DoubleEdit(s_ProbXOver);
-//                                        m_pdeProbXOver->setRange(0.0, 1.0);
+                                        QGridLayout *pGALayout = new QGridLayout;
+                                        {
+                                            QLabel *pLabXOver = new QLabel("Cross-over probability:");
+                                            m_pdeProbXOver = new DoubleEdit(GATask::s_ProbXOver);
+    //                                        m_pdeProbXOver->setRange(0.0, 1.0);
 
-                                        QLabel *pLabProbMute = new QLabel("Mutation probability:");
-                                        m_pdeProbMutation = new DoubleEdit(s_ProbMutation);
-//                                        m_pdeProbMutation->setRange(0.0, 1.0);
+                                            QLabel *pLabProbMute = new QLabel("Mutation probability:");
+                                            m_pdeProbMutation = new DoubleEdit(GATask::s_ProbMutation);
+    //                                        m_pdeProbMutation->setRange(0.0, 1.0);
 
-                                        QLabel *pLabSigMute = new QLabel("Mutation standard deviation:");
-                                        m_pdeSigmaMutation = new DoubleEdit(s_SigmaMutation);
-//                                        m_pdeSigmaMutation->setRange(0.0, 1.0); // absolute value
+                                            QLabel *pLabSigMute = new QLabel("Mutation standard deviation:");
+                                            m_pdeSigmaMutation = new DoubleEdit(GATask::s_SigmaMutation);
+    //                                        m_pdeSigmaMutation->setRange(0.0, 1.0); // absolute value
 
-                                        pGALayout->addWidget(pLabXOver,            1, 1);
-                                        pGALayout->addWidget(m_pdeProbXOver,       1, 2);
+                                            pGALayout->addWidget(pLabXOver,            1, 1);
+                                            pGALayout->addWidget(m_pdeProbXOver,       1, 2);
 
-                                        pGALayout->addWidget(pLabProbMute,         2, 1);
-                                        pGALayout->addWidget(m_pdeProbMutation,    2, 2);
+                                            pGALayout->addWidget(pLabProbMute,         2, 1);
+                                            pGALayout->addWidget(m_pdeProbMutation,    2, 2);
 
-                                        pGALayout->addWidget(pLabSigMute,          3, 1);
-                                        pGALayout->addWidget(m_pdeSigmaMutation,   3, 2);
+                                            pGALayout->addWidget(pLabSigMute,          3, 1);
+                                            pGALayout->addWidget(m_pdeSigmaMutation,   3, 2);
 
-                                        pGALayout->setColumnStretch(3,1);
+                                            pGALayout->setColumnStretch(3,1);
+                                        }
+                                        pGABox->setLayout(pGALayout);
                                     }
-                                    pGABox->setLayout(pGALayout);
-                                }
 
                                     m_pswAlgo->addWidget(pPSOBox);
                                     m_pswAlgo->addWidget(pGABox);
@@ -335,10 +352,10 @@ void Optim2d::setupLayout()
                             pHHPage->setLayout(pHHLayout);
                         }
 
-                        m_ptwMain->addTab(pTargetPage, "Target");
-                        m_ptwMain->addTab(pAlgoPage,   "Algorithms");
-                        m_ptwMain->addTab(pXFoilPage,  "XFoil");
-                        m_ptwMain->addTab(pHHPage,     "Hicks-Henne");
+                        ptwMain->addTab(pTargetPage, "Target");
+                        ptwMain->addTab(pAlgoPage,   "Algorithms");
+                        ptwMain->addTab(pXFoilPage,  "XFoil");
+                        ptwMain->addTab(pHHPage,     "Hicks-Henne");
                     }
 
                     m_ppbMakeSwarm = new QPushButton("Make random population");
@@ -361,7 +378,7 @@ void Optim2d::setupLayout()
                         connect(m_pButtonBox, SIGNAL(clicked(QAbstractButton*)), SLOT(onButton(QAbstractButton*)));
                     }
 
-                    pLeftLayout->addWidget(m_ptwMain);
+                    pLeftLayout->addWidget(ptwMain);
                     pLeftLayout->addWidget(m_ppbMakeSwarm);
                     pLeftLayout->addWidget(m_ppbSwarm);
                     pLeftLayout->addWidget(m_ppt);
@@ -374,10 +391,11 @@ void Optim2d::setupLayout()
             {
                 m_pVSplitter->setChildrenCollapsible(false);
                 m_pFoilWt = new FoilWt;
-//                m_pFoilWt->showLegend(true);
                 m_pGraphWt = new GraphWt;
                 m_pGraphWt->setGraph(&m_Graph);
                 m_Graph.setMargin(71);
+                m_Graph.setXTitle("Iter");
+                m_Graph.setYTitle("Error");
                 m_pGraphWt->showLegend(true);
 
                 m_pVSplitter->addWidget(m_pGraphWt);
@@ -403,7 +421,6 @@ void Optim2d::connectSignals()
     connect(m_prbGA,        SIGNAL(clicked()), SLOT(onAlgorithm()));
     connect(m_ppbMakeSwarm, SIGNAL(clicked()), SLOT(onMakeSwarm()));
     connect(m_ppbSwarm,     SIGNAL(clicked()), SLOT(onOptimize()));
-    connect(&m_Timer,       SIGNAL(timeout()), SLOT(onIteration()));
     connect(m_ppbAnalyze,   SIGNAL(clicked()), SLOT(onAnalyze()));
 }
 
@@ -417,6 +434,8 @@ void Optim2d::onButton(QAbstractButton *pButton)
 void Optim2d::onAlgorithm()
 {
     s_bPSO = m_prbPSO->isChecked();
+    m_pdeCd->setEnabled(s_bPSO);
+    m_pdeCdMaxError->setEnabled(s_bPSO);
 
     m_pswAlgo->setCurrentIndex(s_bPSO ? 0 : 1);
     update();
@@ -457,16 +476,16 @@ void Optim2d::showEvent(QShowEvent *)
     restoreGeometry(s_Geometry);
     if(s_HSplitterSizes.length()>0) m_pHSplitter->restoreState(s_HSplitterSizes);
     if(s_VSplitterSizes.length()>0) m_pVSplitter->restoreState(s_VSplitterSizes);
-#ifdef QT_DEBUG
-    onAnalyze(); // just to display something
-#endif
+
+    onAlgorithm();
+
     m_pGraphWt->update();
 }
 
 
 void Optim2d::hideEvent(QHideEvent *)
 {
-    s_Alpha =m_pdeAlpha->value();
+    readData();
 
     s_Geometry = saveGeometry();
     s_HSplitterSizes  = m_pHSplitter->saveState();
@@ -484,22 +503,27 @@ void Optim2d::loadSettings(QSettings &settings)
         s_XtrTop          = settings.value("XtrTop",          s_XtrTop).toDouble();
         s_XtrBot          = settings.value("XtrBot",          s_XtrBot).toDouble();
         s_Cl              = settings.value("Cl",              s_Cl).toDouble();
-        s_MaxError        = settings.value("MaxError",        s_MaxError).toDouble();
+        s_ClMaxError      = settings.value("ClMaxError",      s_ClMaxError).toDouble();
+        s_Cd              = settings.value("Cd",              s_Cd).toDouble();
+        s_CdMaxError      = settings.value("CdMaxError",      s_CdMaxError).toDouble();
 
-        s_bMultiThreaded  = settings.value("bMultithread",    s_bMultiThreaded).toBool();
         s_bPSO            = settings.value("bPSO",            s_bPSO).toBool();
         s_Dt              = settings.value("Dt",              s_Dt).toInt();
-        s_InertiaWeight   = settings.value("InertiaWeight",   s_InertiaWeight).toDouble();
-        s_CognitiveWeight = settings.value("CognitiveWeight", s_CognitiveWeight).toDouble();
-        s_SocialWeight    = settings.value("SocialWeight",    s_SocialWeight).toDouble();
-        s_ProbXOver       = settings.value("CrossOver",       s_ProbXOver).toDouble();
-        s_ProbMutation    = settings.value("ProbMutation",    s_ProbMutation).toDouble();
-        s_SigmaMutation   = settings.value("SigMutation",     s_SigmaMutation).toDouble();
-        s_PopSize         = settings.value("PopSize",         s_PopSize).toInt();
-        s_MaxIter         = settings.value("MaxIter",         s_MaxIter).toInt();
         s_HHn             = settings.value("HHn",             s_HHn).toInt();
         s_HHt2            = settings.value("HHt2",            s_HHt2).toDouble();
         s_HHmax           = settings.value("HHmax",           s_HHmax).toDouble();
+
+        OptimTask::s_bMultiThreaded  = settings.value("bMultithread",    OptimTask::s_bMultiThreaded).toBool();
+        OptimTask::s_PopSize         = settings.value("PopSize",         OptimTask::s_PopSize).toInt();
+        OptimTask::s_MaxIter         = settings.value("MaxIter",         OptimTask::s_MaxIter).toInt();
+
+        MOPSOTask::s_InertiaWeight   = settings.value("InertiaWeight",   MOPSOTask::s_InertiaWeight).toDouble();
+        MOPSOTask::s_CognitiveWeight = settings.value("CognitiveWeight", MOPSOTask::s_CognitiveWeight).toDouble();
+        MOPSOTask::s_SocialWeight    = settings.value("SocialWeight",    MOPSOTask::s_SocialWeight).toDouble();
+
+        GATask::s_ProbXOver          = settings.value("CrossOver",       GATask::s_ProbXOver).toDouble();
+        GATask::s_ProbMutation       = settings.value("ProbMutation",    GATask::s_ProbMutation).toDouble();
+        GATask::s_SigmaMutation      = settings.value("SigMutation",     GATask::s_SigmaMutation).toDouble();
 
         s_Geometry        = settings.value("WindowGeom",     QByteArray()).toByteArray();
         s_HSplitterSizes  = settings.value("HSplitterSizes", QByteArray()).toByteArray();
@@ -519,22 +543,27 @@ void Optim2d::saveSettings(QSettings &settings)
         settings.setValue("XtrTop",            s_XtrTop);
         settings.setValue("XtrBot",            s_XtrBot);
         settings.setValue("Cl",                s_Cl);
-        settings.setValue("MaxError",          s_MaxError);
+        settings.setValue("ClMaxError",        s_ClMaxError);
+        settings.setValue("Cd",                s_Cd);
+        settings.setValue("CdMaxError",        s_CdMaxError);
 
-        settings.setValue("bMultithread",      s_bMultiThreaded);
         settings.setValue("bPSO",              s_bPSO);
         settings.setValue("Dt",                s_Dt);
-        settings.setValue("InertiaWeight",     s_InertiaWeight);
-        settings.setValue("CognitiveWeight",   s_CognitiveWeight);
-        settings.setValue("SocialWeight",      s_SocialWeight);
-        settings.setValue("CrossOver",         s_ProbXOver);
-        settings.setValue("ProbMutation",      s_ProbMutation);
-        settings.setValue("SigMutation",       s_SigmaMutation);
-        settings.setValue("PopSize",           s_PopSize);
-        settings.setValue("MaxIter",           s_MaxIter);
         settings.setValue("HHn",               s_HHn);
         settings.setValue("HHt2",              s_HHt2);
         settings.setValue("HHmax",             s_HHmax);
+
+        settings.setValue("PopSize",           OptimTask::s_PopSize);
+        settings.setValue("bMultithread",      OptimTask::s_bMultiThreaded);
+        settings.setValue("MaxIter",           OptimTask::s_MaxIter);
+
+        settings.setValue("InertiaWeight",     MOPSOTask::s_InertiaWeight);
+        settings.setValue("CognitiveWeight",   MOPSOTask::s_CognitiveWeight);
+        settings.setValue("SocialWeight",      MOPSOTask::s_SocialWeight);
+
+        settings.setValue("CrossOver",         GATask::s_ProbXOver);
+        settings.setValue("ProbMutation",      GATask::s_ProbMutation);
+        settings.setValue("SigMutation",       GATask::s_SigmaMutation);
 
         settings.setValue("WindowGeom",     s_Geometry);
         settings.setValue("HSplitterSizes", s_HSplitterSizes);
@@ -576,29 +605,34 @@ void Optim2d::readData()
     s_XtrTop          = m_pdeXtrTop->value();
     s_XtrBot          = m_pdeXtrBot->value();
     s_Cl              = m_pdeCl->value();
-    s_MaxError        = m_pdeMaxError->value();
+    s_ClMaxError      = m_pdeClMaxError->value();
+    s_Cd              = m_pdeCd->value();
+    s_CdMaxError      = m_pdeCdMaxError->value();
     s_HHn             = m_pieNHH->value();
     s_HHt2            = m_pdeHHt2->value();
     s_HHmax           = m_pdeHHmax->value()/100.0;
-    s_MaxIter         = m_pieMaxIter->value();
-    s_PopSize         = m_piePopSize->value();
-    s_InertiaWeight   = m_pdeInertiaWeight->value();
-    s_CognitiveWeight = m_pdeCognitiveWeight->value();
-    s_SocialWeight    = m_pdeSocialWeight->value();
-    s_PopSize         = m_piePopSize->value();
-    s_ProbMutation    = m_pdeProbMutation->value();
-    s_SigmaMutation   = m_pdeSigmaMutation->value();
-    s_ProbXOver       = m_pdeProbXOver->value();
     s_Dt              = m_pieUpdateDt->value();
-    s_bMultiThreaded  = m_pchMultithread->isChecked();
 
-    m_BestPosition.resize(s_HHn);
+    // temporary duplication
+    OptimTask::s_MaxIter         = m_pieMaxIter->value();
+    OptimTask::s_PopSize         = m_piePopSize->value();
+    OptimTask::s_bMultiThreaded  = m_pchMultithread->isChecked();
+
+    MOPSOTask::s_InertiaWeight   = m_pdeInertiaWeight->value();
+    MOPSOTask::s_CognitiveWeight = m_pdeCognitiveWeight->value();
+    MOPSOTask::s_SocialWeight    = m_pdeSocialWeight->value();
+
+    GATask::s_ProbMutation    = m_pdeProbMutation->value();
+    GATask::s_SigmaMutation   = m_pdeSigmaMutation->value();
+    GATask::s_ProbXOver       = m_pdeProbXOver->value();
 }
 
 
 void Optim2d::onMakeSwarm(bool bShow)
 {
     QApplication::setOverrideCursor(Qt::WaitCursor);
+
+    m_Timer.stop();
 
     m_Graph.deleteCurves();
 
@@ -610,89 +644,106 @@ void Optim2d::onMakeSwarm(bool bShow)
     update();
 
     readData();
-    bool bWasActive = false;
-    if(m_Timer.isActive())
-    {
-        bWasActive=true;
-        m_Timer.stop();
-    }
 
-    outputText("Creating particles...\n");
-    QApplication::processEvents();
-    m_Swarm.resize(s_PopSize);
-    m_BestPosition.resize(s_HHn);
+    outputText("\nCreating particles...\n");
 
-    if(s_bMultiThreaded)
-    {
-        QFutureSynchronizer<void> futureSync;
-        for (int isw=0; isw<m_Swarm.size(); isw++)
-        {
-            Particle &particle = m_Swarm[isw];
-            futureSync.addFuture(QtConcurrent::run(this, &Optim2d::makeRandomParticle, &particle));
-        }
-        futureSync.waitForFinished();
-        outputText("   ...done\n");
-    }
-    else
-    {
-        for (int isw=0; isw<m_Swarm.size(); isw++)
-        {
-            Particle &particle = m_Swarm[isw];
-            makeRandomParticle(&particle);
-            outputText(QString::asprintf("   created particle %d\n", isw));
-        }
-    }
+    // update the polar with the latest user data
+    m_pPolar->setReType(1);
+    m_pPolar->setMaType(1);
+    m_pPolar->setReynolds(s_Re);
+    m_pPolar->setNCrit(s_NCrit);
+    m_pPolar->setXtrTop(s_XtrTop);
+    m_pPolar->setXtrBot(s_XtrBot);
+
+    onAnalyze(); // required to determine the leading edge index for the specified AOA
+
+    if(s_bPSO) makePSOSwarm();
+    else       makeGAGen();
 
     // debug helper
     if(bShow)
     {
         QColor clr = randomColor(true);
-        for (int isw=0; isw<m_Swarm.size(); isw++)
+        if(s_bPSO)
         {
-            Particle const&particle = m_Swarm.at(isw);
-            Foil *pFoil = new Foil;
-            pFoil->setFoilName(QString::asprintf("Particle_%d", isw));
-            pFoil->setColor(clr);
-            clr = clr.darker(119);
-            makeFoil(&particle, pFoil);
-            m_pFoilWt->addFoil(pFoil);
-            m_TempFoils.append(pFoil);
+            for (int isw=0; isw<m_pPSOTask->swarmSize(); isw++)
+            {
+                Foil *pFoil = new Foil;
+                pFoil->setFoilName(QString::asprintf("Particle_%d", isw));
+                pFoil->setColor(clr);
+                clr = clr.darker(117);
+
+                Particle const &particle = m_pPSOTask->particle(isw);
+                m_pPSOTask->makeFoil(particle, pFoil);
+
+                m_pFoilWt->addFoil(pFoil);
+                m_TempFoils.append(pFoil);
+            }
+        }
+        else
+        {
+            for (int isw=0; isw<m_pGATask->swarmSize(); isw++)
+            {
+                Foil *pFoil = new Foil;
+                pFoil->setFoilName(QString::asprintf("Particle_%d", isw));
+                pFoil->setColor(clr);
+                clr = clr.darker(117);
+
+                Particle const &particle = m_pGATask->particle(isw);
+                m_pGATask->makeFoil(&particle, pFoil);
+                m_pFoilWt->addFoil(pFoil);
+                m_TempFoils.append(pFoil);
+            }
         }
     }
 
     update();
 
-    outputText(QString::asprintf("Made %d random particles\n", s_PopSize));
-
-    if(bWasActive) m_Timer.start(s_Dt);
     QApplication::restoreOverrideCursor();
 }
 
 
-// note: QFutureSync requires that the parameters be passed by pointer and not by reference
-void Optim2d::makeRandomParticle(Particle *pParticle) const
+void Optim2d::makePSOSwarm()
 {
-    pParticle->setError(LARGEVALUE);
-    pParticle->setBestError(LARGEVALUE);
-    pParticle->setDim(s_HHn);
+    //initialize task
+    if(m_pPSOTask) delete m_pPSOTask;
+    m_pPSOTask = new MOPSOTask2d;
+    m_pPSOTask->setPolar(m_pPolar);
+    m_pPSOTask->setParent(this);
+    m_pPSOTask->setFoil(m_pFoil, m_iLE);
+    m_pPSOTask->setAlpha(s_Alpha);
+    m_pPSOTask->setHHParams(s_HHn, s_HHt2, s_HHmax);
+    m_pPSOTask->setDimension(s_HHn); //
+    for(int i=0; i<s_HHn; i++)
+        m_pPSOTask->setVariable(i, {QString::asprintf("HH%d", i), -s_HHmax, s_HHmax});
+    m_pPSOTask->setNObjectives(2);  // Cl, Cd
+    m_pPSOTask->setObjective(0, {"Cl", true, s_Cl, s_ClMaxError});
+    m_pPSOTask->setObjective(1, {"Cd", true, s_Cd, s_CdMaxError});
 
-    while(pParticle->error()>LARGEVALUE/10)
-    {
-        for(int i=0; i<pParticle->dim(); i++)
-        {
-            pParticle->setPos(i, QRandomGenerator::global()->bounded(2.0*s_HHmax)-s_HHmax);
-        }
+    //make the swarm
+    m_pPSOTask->makeSwarm();
+    m_pPSOTask->setAnalysisStatus(XFLR5::PENDING);// not started yet
+}
 
-        double const velamp = s_HHmax;
-        for(int i=0; i<pParticle->dim(); i++)
-        {
-            pParticle->setVel(i, QRandomGenerator::global()->bounded(velamp)-velamp/2.0);
-        }
-        double Cl = foilFunc(pParticle);
-        pParticle->setFitness(Cl);
-        pParticle->setError(Cl_error(Cl));
-        pParticle->setBestError(pParticle->error());
-    }
+
+void Optim2d::makeGAGen()
+{
+    //initialize task
+    if(m_pGATask) delete m_pGATask;
+    m_pGATask = new GATask;
+    m_pGATask->setPolar(m_pPolar);
+    m_pGATask->setParent(this);
+    m_pGATask->setFoil(m_pFoil, m_iLE);
+    m_pGATask->setAlpha(s_Alpha);
+    m_pGATask->setHHParams(s_HHn, s_HHt2, s_HHmax);
+    m_pGATask->setDimension(s_HHn); //
+    for(int i=0; i<s_HHn; i++)
+        m_pGATask->setVariable(i, {QString::asprintf("HH%d", i), -s_HHmax, s_HHmax});
+    m_pGATask->setObjective({"Cl", true, s_Cl, s_ClMaxError});
+
+    //make the swarm
+    m_pGATask->makeSwarm();
+    m_pGATask->setAnalysisStatus(XFLR5::PENDING);// not started yet
 }
 
 
@@ -704,14 +755,12 @@ void Optim2d::onOptimize()
     {
         m_Timer.stop();
         m_ppbSwarm->setText("Swarm");
-        outputText("Optimization interrupted\n\n");
+        outputText("\nOptimization interrupted\n\n");
         QApplication::restoreOverrideCursor();
         return;
     }
     else
         m_ppbSwarm->setText("Stop");
-
-    outputText(QString::asprintf("Optimizing for Cl=%.3g @ aoa=%.3g", s_Cl, s_Alpha)+QChar(0260)+"\n");
 
     m_bSaved = false;
 
@@ -721,142 +770,72 @@ void Optim2d::onOptimize()
 
     QApplication::setOverrideCursor(Qt::BusyCursor);
 
-    if(m_Swarm.size()==0 || m_Swarm.size()!=s_PopSize) onMakeSwarm(false);
-
-    m_Iter = 0;
-    m_iBest = -1;
-    m_Error = LARGEVALUE;
-
-    Curve *pCurve = m_Graph.curve(0);
-    if(!pCurve) pCurve = m_Graph.addCurve();
-    pCurve->setName("Error");
-    pCurve->clear();
-
-    m_Timer.start(s_Dt);
-    update();
-}
-
-
-void Optim2d::onIteration()
-{
-    if(m_Swarm.size()==0)
-    {
-        outputText("Particles have not been created\n");
-        m_Timer.stop();
-        m_ppbSwarm->setText("Swarm");
-        QApplication::restoreOverrideCursor();
-        return;
-    }
-
     if(s_bPSO)
     {
-        if(s_bMultiThreaded)
+        if(!m_pPSOTask) onMakeSwarm(false);
+
+        if(m_pPSOTask->isRunning())
         {
-            QFutureSynchronizer<void> futureSync;
-            for (int isw=0; isw<m_Swarm.size(); isw++)
-            {
-                Particle &particle = m_Swarm[isw];
-                futureSync.addFuture(QtConcurrent::run(this, &Optim2d::PSO_moveParticle, &particle));
-            }
-            futureSync.waitForFinished();
+            m_pPSOTask->setAnalysisStatus(XFLR5::CANCELLED);
+            // m_ppbSwarm->setText("Swarm"); done when the finish event is received
+            return;
         }
-        else
+        m_pPSOTask->setAnalysisStatus(XFLR5::RUNNING);
+
+
+        QString strange("Optimizing for: ");
+        for(int iobj=0; iobj<m_pPSOTask->nObjectives(); iobj++)
         {
-            for (int isw=0; isw<m_Swarm.size(); isw++)
-            {
-                Particle &particle = m_Swarm[isw];
-                PSO_moveParticle(&particle);
-            }
+            OptObjective const &obj = m_pPSOTask->objective(iobj);
+            strange += obj.m_Name;
+            strange += QString::asprintf("=%7.3g ", obj.m_Target);
         }
+        outputText(strange+"\n");
+
+        for(int iobj=0; iobj<m_pPSOTask->nObjectives(); iobj++)
+        {
+            OptObjective const &obj = m_pPSOTask->objective(iobj);
+            Curve *pCurve = m_Graph.curve(iobj);
+            if(!pCurve) pCurve = m_Graph.addCurve();
+            pCurve->setName(obj.m_Name+"_error");
+            pCurve->clear();
+        }
+
+        m_pPSOTask->setAnalysisStatus(XFLR5::RUNNING);
+        m_pPSOTask->restartIterations();
+
+        disconnect(&m_Timer, nullptr, nullptr, nullptr);
+        connect(&m_Timer, SIGNAL(timeout()), m_pPSOTask, SLOT(onIteration()));
+        m_Timer.start(s_Dt);
     }
     else
     {
-        GA_makeNewGen();
-    }
+        if(!m_pGATask) onMakeSwarm(false);
 
-    // make global best
-    for (int isw=0; isw<m_Swarm.size(); isw++)
-    {
-        Particle &particle = m_Swarm[isw];
-        if(particle.error()<m_Error)
+        QString strange("Optimizing for ");
+        OptObjective const &obj = m_pGATask->objective();
+        strange += obj.m_Name + QString::asprintf("=%.3g @ aoa=%.3g", obj.m_Target, m_pGATask->alpha())+QChar(0260);
+        outputText(strange + "\n");
+        Curve *pCurve = m_Graph.curve(0);
+        if(!pCurve) pCurve = m_Graph.addCurve();
+        pCurve->setName(obj.m_Name + "_error");
+        pCurve->clear();
+
+        if(m_pGATask->isRunning())
         {
-            m_BestPosition = particle.position();
-            m_Error = particle.error();
-            m_iBest = isw;
+            m_pGATask->setAnalysisStatus(XFLR5::CANCELLED);
+            // m_ppbSwarm->setText("Swarm"); done when the finish event is received
+            return;
         }
-    }
+        m_pGATask->setAnalysisStatus(XFLR5::RUNNING);
+        m_pGATask->restartIterations();
 
-    // update the best foil
-    if(m_iBest>=0 && m_iBest<m_Swarm.size())
-    {
-        Particle const &mf = m_Swarm.at(m_iBest);
-        makeFoil(&mf, m_pBestFoil);
+        disconnect(&m_Timer, nullptr, nullptr, nullptr);
+        connect(&m_Timer, SIGNAL(timeout()), m_pGATask, SLOT(onIteration()));
+        m_Timer.start(s_Dt);
     }
-
-    m_Iter++;
-    outputText(QString::asprintf("It(%d): err=%7.3g\n", m_Iter, m_Error));
-    Curve *pCurve = m_Graph.curve(0);
-    if(pCurve) pCurve->appendPoint(m_Iter, m_Error);
-    m_Graph.resetYLimits();
 
     update();
-
-    if(m_Iter>=s_MaxIter || m_Error<s_MaxError)
-    {
-        m_Timer.stop();
-        m_ppbSwarm->setText("Swarm");
-        outputText(QString::asprintf("The winner is particle %d\n", m_iBest));
-        outputText(QString::asprintf("Residual error = %7.3g\n\n", m_Error));
-        QApplication::restoreOverrideCursor();
-    }
-}
-
-
-void Optim2d::PSO_moveParticle(Particle *pParticle) const
-{
-    // note: QFutureSync requires that the parameters be passed by pointer and not by reference
-    double const probregen = 0.01;
-    double Cl=0;
-    double r1=0, r2=0, newerror=0;
-    QVector<double> newVelocity(s_HHn), newpos(s_HHn);
-    for(int j=0; j<pParticle->dim(); j++)
-    {
-        r1 = QRandomGenerator::global()->bounded(1.0);
-        r2 = QRandomGenerator::global()->bounded(1.0);
-
-        newVelocity[j] = (s_InertiaWeight * pParticle->vel(j)) +
-                         (s_CognitiveWeight * r1 * (pParticle->m_BestPosition.at(j) - pParticle->pos(j))) +
-                         (s_SocialWeight    * r2 * (m_BestPosition.at(j)            - pParticle->pos(j)));
-    }
-    pParticle->setVelocity(newVelocity.constData());
-
-    // new position
-    for (int j=0; j<pParticle->dim(); j++)
-        newpos[j] = pParticle->pos(j) + newVelocity.at(j);
-
-    checkBounds(pParticle);
-
-    pParticle->setPosition(newpos.constData());
-
-    Cl = foilFunc(pParticle);
-    newerror = Cl_error(Cl);
-    pParticle->setError(newerror);
-
-
-    // always regenerate if XFoil failed to converge on this particle: geom is likely flawed
-    // othewise regenerate particles with random probability
-    double regen = QRandomGenerator::global()->bounded(1.0);
-    if (newerror>LARGEVALUE/10.0 || regen<probregen)
-    {
-        if (newerror>LARGEVALUE/10.0) qDebug("Regenerating particle due to XFoil failed convergence");
-        makeRandomParticle(pParticle);
-    }
-
-    if (newerror<pParticle->bestError())
-    {
-        pParticle->setBestPosition(newpos.constData());
-        pParticle->setBestError(newerror);
-    }
 }
 
 
@@ -898,13 +877,6 @@ void Optim2d::onAnalyze()
     task->run();
     outputText(strange+"\n");
 
-/*    Curve *pCurve = m_Graph.curve(0);
-    if(!pCurve) pCurve = m_Graph.addCurve("Cp");
-    pCurve->setColor(Qt::darkCyan);
-
-    pCurve->resizePoints(xfoil.n);
-    for (int k=0; k<xfoil.n; k++) pCurve->setPoint(k, xfoil.x[k+1], xfoil.cpv[k+1]);*/
-
     m_iLE = -1;
     for(int i=0; i<xfoil.n-1; i++)
     {
@@ -921,294 +893,72 @@ void Optim2d::onAnalyze()
 }
 
 
-double Optim2d::Cl_error(double Cl) const
+void Optim2d::customEvent(QEvent *pEvent)
 {
-    return fabs(Cl-s_Cl);
-}
-
-
-double Optim2d::foilFunc(Particle const*pParticle) const
-{
-    Foil tempfoil;
-    makeFoil(pParticle, &tempfoil);
-
-    Polar polar;
-    polar.setReType(1);
-    polar.setMaType(1);
-    polar.setReynolds(s_Re);
-    polar.setNCrit(s_NCrit);
-    polar.setXtrTop(s_XtrTop);
-    polar.setXtrBot(s_XtrBot);
-    bool bViscous  = true;
-    bool bInitBL = true;
-
-    QString strange;
-
-    XFoilTask *task = new XFoilTask; // watch the stack
-    XFoil const &xfoil = task->m_XFoilInstance;
-    task->m_OutStream.setString(&strange);
-    task->setSequence(true, s_Alpha, s_Alpha, 0.0);
-    task->initializeXFoilTask(&tempfoil, &polar, bViscous, bInitBL, false);
-    task->run();
-
-    double Cl = LARGEVALUE;
-    if(xfoil.lvconv) Cl = xfoil.cl;
-
-    delete task;
-
-    return Cl;
-}
-
-
-void Optim2d::makeFoil(Particle const*pParticle, Foil *pFoil) const
-{
-    pFoil->copyFoil(m_pFoil, false);
-
-    double t1=0, hh=0, x=0;
-
-    for(int i=0; i<pFoil->n; i++)
+    if(pEvent->type() == PSO_ITER_EVENT)
     {
-        x = pFoil->x[i];
-        for(int j=0; j<pParticle->dim(); j++)
+        OptimEvent *pOptEvent = dynamic_cast<OptimEvent*>(pEvent);
+        Particle const &particle = pOptEvent->pareto().at(pOptEvent->iBest());
+
+        QString strange = QString::asprintf("It.%2d:", pOptEvent->iter());
+        if(m_pPSOTask)
         {
-            t1 = double(j+1)/double(pParticle->dim()+1); // HH undefined for t1=0
-            hh = HH(x, t1, s_HHt2) * pParticle->pos(j);
-            pFoil->xb[i] += pFoil->nx[i] *hh;
-            pFoil->yb[i] += pFoil->ny[i] *hh;
-        }
-    }
-
-    memcpy(pFoil->x, pFoil->xb, IBX*sizeof(double));
-    memcpy(pFoil->y, pFoil->yb, IBX*sizeof(double));
-    pFoil->normalizeGeometry();
-}
-
-
-/** Hicks-Henne bump function
- * parameter t1 controls the bump's position and t2 its width
- */
-double Optim2d::HH(double x, double t1, double t2) const
-{
-    if(x<=0.0 || x>=1.0) return 0.0;
-    return pow(sin(PI*pow(x, log(0.5)/log(t1))), t2);
-}
-
-
-void Optim2d::checkBounds(Particle *pParticle) const
-{
-    for(int i=0; i<pParticle->dim(); i++)
-    {
-        pParticle->setPos(i, std::max(-s_HHmax,  pParticle->pos(i)));
-        pParticle->setPos(i, std::min( s_HHmax,  pParticle->pos(i)));
-    }
-}
-
-
-void Optim2d::listPopulation() const
-{
-    for(int i=0; i<m_Swarm.size(); i++)
-    {
-        Particle const &ind = m_Swarm.at(i);
-        qDebug(" p[%d]: Cl=%7.3g  Err=%7.3g", i, ind.fitness(), ind.error());
-    }
-    qDebug();
-}
-
-
-void Optim2d::GA_makeNewGen()
-{
-//    QElapsedTimer t;    t.start();
-
-    GA_makeSelection();
-//    qDebug("selection in %d ms", int(t.elapsed()));
-
-    GA_crossOver();
-//    qDebug("crossover in %d ms", int(t.elapsed()));
-
-    GA_mutateGaussian();
-//    qDebug("mutation  in %d ms", int(t.elapsed()));
-
-    GA_evaluatePopulation();
-//    qDebug("evaluation in %d ms\n", int(t.elapsed()));
-}
-
-
-void Optim2d::GA_makeSelection()
-{
-    QVector<double>error(m_Swarm.size()), cumul(m_Swarm.size());
-
-    // find the error of the worst particle
-    double worsterror = 0.0;
-    for(int i=0; i<m_Swarm.size(); i++)
-    {
-        if(m_Swarm.at(i).error()>worsterror) worsterror = m_Swarm.at(i).error();
-    }
-
-    // define probability as: worsterror - particle.error
-    // this ensures that the worst has probability 0 and the best has max probability
-    for(int i=0; i<m_Swarm.size(); i++)
-        error[i] = worsterror - m_Swarm.at(i).error();
-
-    cumul.first() = error.first();
-    for(int i=1; i<m_Swarm.size(); i++) cumul[i] = cumul.at(i-1) + error.at(i);
-
-    QVector<Particle> newpop(m_Swarm);
-    for(int i=0; i<m_Swarm.size(); i++)
-    {
-        double p = QRandomGenerator::global()->bounded(cumul.last());
-        bool bFound = false;
-        for(int j=1; j<m_Swarm.size(); j++)
-        {
-            if(p<=cumul.at(j))
+            for(int iobj=0; iobj<particle.nObjectives(); iobj++)
             {
-                newpop[i] = m_Swarm.at(j);
-                bFound = true;
-                break;
+                OptObjective const &obj = m_pPSOTask->objective(iobj);
+                strange += obj.m_Name + "_err";
+                strange += QString::asprintf("=%7.3g ", particle.error(iobj));
             }
         }
-        Q_ASSERT(bFound);
+        else if(m_pGATask)
+        {
+            OptObjective const &obj = m_pGATask->objective();
+            strange += obj.m_Name + "_err";
+            strange += QString::asprintf("=%7.3g ", particle.error(0));
+        }
+        outputText(strange+"\n");
+
+        // display best foil - method may not be the same for each case
+        if     (m_pPSOTask) m_pPSOTask->makeFoil(particle, m_pBestFoil);
+        else if(m_pGATask)  m_pGATask->makeFoil(&particle, m_pBestFoil);
+
+        // update graph
+        for(int iobj=0; iobj<particle.nObjectives(); iobj++)
+        {
+            Curve *pCurve = m_Graph.curve(iobj);
+            if(pCurve) pCurve->appendPoint(pOptEvent->iter(), particle.error(iobj));
+        }
+        m_Graph.resetLimits();
+        update();
+        QApplication::processEvents();
     }
-
-    m_Swarm = newpop;
-}
-
-
-/**
- * @todo: in the standard GA, the best does not carry over to the next generation
- * so that there may be a regression
- */
-void Optim2d::GA_crossOver()
-{
-    double const alpha = 0.5;
-    double frac=0;
-    QVector<Particle> oldpop(m_Swarm);
-    m_Swarm.clear();
-    Particle parent[2], children[2];
-
-    while (oldpop.size()>=2)
+    else if(pEvent->type()==OPTIM_END_EVENT)
     {
-        // extract two parents
-        int ifirst = QRandomGenerator::global()->bounded(oldpop.size());
-        parent[0] = oldpop.takeAt(ifirst);
+        m_Timer.stop();
+        disconnect(&m_Timer, nullptr, nullptr, nullptr);
 
-        int isecond = QRandomGenerator::global()->bounded(oldpop.size());
-        parent[1] = oldpop.takeAt(isecond);
-
-        double prob = QRandomGenerator::global()->bounded(1.0);
-        if(prob<s_ProbXOver)
+        // display best foil - method may not be the same for each case
+        if (m_pPSOTask)
         {
-            // create two random children
-            for(int iChild=0; iChild<2; iChild++)
-            {
-                Particle &child = children[iChild];
-                child.setDim(parent[0].dim());
-                for(int i=0; i<child.dim(); i++)
-                {
-                    frac = -alpha + QRandomGenerator::global()->bounded(1.0+alpha);
-                    child.setPos(i, frac*parent[0].pos(i)+(1.0-frac)*parent[1].pos(i));
-                }
-
-                checkBounds(&child);
-            }
-            if(children[0].error()>LARGEVALUE/10.0 || children[1].error()>LARGEVALUE/10.0)
-            {
-                // XFoil has failed to converge: restore the parents
-                children[0] = parent[0];
-                children[1] = parent[1];
-            }
+            Particle const &particle = m_pPSOTask->bestParticle();
+            m_pPSOTask->makeFoil(particle, m_pBestFoil);
         }
-        else
+        else if(m_pGATask)
         {
-            children[0] = parent[0];
-            children[1] = parent[1];
+            // Already built at the last iteration
+/*            Particle particle = m_pGATask->bestParticle();
+            m_pGATask->makeFoil(&particle, m_pBestFoil);*/
         }
-        m_Swarm.append(children[0]);
-        m_Swarm.append(children[1]);
+
+        m_ppbSwarm->setText("Swarm");
+        QApplication::restoreOverrideCursor();
     }
-
-    m_Swarm.append(oldpop); // add the remaining single parent if odd population
-}
-
-
-/**
- * @todo: in the standard GA, the best can mutate, so that there may be a regression
- */
-void Optim2d::GA_mutateGaussian()
-{
-    std::default_random_engine generator;
-    std::normal_distribution<double> distribution(0.0, s_SigmaMutation*s_HHmax);
-    double prob=0, randomvariation=0, newgene=0;
-    for(int i=0; i<m_Swarm.size(); i++)
+    else if(pEvent->type() == MESSAGE_EVENT)
     {
-        Particle &particle = m_Swarm[i];
-        for(int j=0; j<particle.dim(); j++) // and y components
-        {
-            prob = QRandomGenerator::global()->bounded(1.0);
-            if(prob<s_ProbMutation)
-            {
-                randomvariation = distribution(generator);
-                newgene = particle.pos(j) + randomvariation;
-                particle.setPos(j, newgene);
-            }
-        }
-
-        checkBounds(&particle);
-    }
-}
-
-
-void Optim2d::GA_evaluatePopulation()
-{
-    m_iBest = -1;
-    m_Error=LARGEVALUE;
-
-    if(s_bMultiThreaded)
-    {
-        QFutureSynchronizer<void> futureSync;
-        for (int isw=0; isw<m_Swarm.size(); isw++)
-        {
-            Particle &particle = m_Swarm[isw];
-            futureSync.addFuture(QtConcurrent::run(this, &Optim2d::GA_evaluateParticle, &particle));
-        }
-        futureSync.waitForFinished();
+        MessageEvent *pMsgEvent = dynamic_cast<MessageEvent*>(pEvent);
+        outputText(pMsgEvent->msg());
     }
     else
-    {
-        for(int i=0; i<m_Swarm.size(); i++)
-        {
-            Particle &particle = m_Swarm[i];
-            GA_evaluateParticle(&particle);
-        }
-    }
-
-    for(int i=0; i<m_Swarm.size(); i++)
-    {
-        Particle &particle = m_Swarm[i];
-        if(particle.error()<m_Error)
-        {
-            m_Error = particle.error();
-            m_BestPosition = particle.position();
-            m_iBest = i;
-        }
-    }
+        QDialog::customEvent(pEvent);
 }
-
-// The lengthiest task
-// Note: PSO is parallelized at swarm level and GA at particle level
-// Note: QFutureSync requires that the parameters be passed by pointer and not by reference
-void Optim2d::GA_evaluateParticle(Particle *pParticle) const
-{
-    double Cl = foilFunc(pParticle);
-
-    while(Cl>LARGEVALUE/10.0)
-    {
-        // XFoil has failed to converge: make a new random particle
-        makeRandomParticle(pParticle);
-        Cl = foilFunc(pParticle);
-    }
-
-    pParticle->setFitness(Cl);
-    pParticle->setError(Cl_error(Cl));
-}
-
 

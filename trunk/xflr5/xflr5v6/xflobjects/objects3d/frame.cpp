@@ -22,7 +22,7 @@
 #include "frame.h"
 
 #include <xflanalysis/analysis3d_params.h>
-
+#include <xflcore/constants.h>
 
 int Frame::s_iHighlight = -1;
 int Frame::s_iSelect = -1;

@@ -23,7 +23,7 @@
 
 #include "vector2d.h"
 
-#define PI 3.141592654
+#include <xflcore/constants.h>
 
 
 
