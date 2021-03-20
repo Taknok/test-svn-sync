@@ -29,7 +29,7 @@
 #include "manageplanesdlg.h"
 #include <miarex/objects3d.h>
 #include <misc/options/units.h>
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <misc/options/settings.h>
 #include "planetabledelegate.h"
 #include <xflobjects/objects3d/plane.h>

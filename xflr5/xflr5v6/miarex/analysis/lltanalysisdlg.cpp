@@ -37,7 +37,7 @@
 #include <xflanalysis/plane_analysis/lltanalysis.h>
 #include <xflanalysis/plane_analysis/planetask.h>
 #include <xflanalysis/plane_analysis/planetaskevent.h>
-#include <globals/gui_params.h>
+#include <xflcore/gui_params.h>
 #include <graph/curve.h>
 #include <graph/graph.h>
 #include <miarex/miarex.h>

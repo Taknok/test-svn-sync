@@ -25,7 +25,7 @@
 
 #include "xflr5app.h"
 #include <globals/mainframe.h>
-#include <globals/trace.h>
+#include <xflcore/trace.h>
 
 
 void customLogHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg)

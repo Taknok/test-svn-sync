@@ -27,7 +27,7 @@
 #include <QFileDialog>
 #include <QShowEvent>
 
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <miarex/design/bodyscaledlg.h>
 #include <miarex/design/bodytransdlg.h>
 #include <miarex/design/editbodydlg.h>
@@ -67,7 +67,7 @@ EditBodyDlg::EditBodyDlg(QWidget *pParent) : QDialog(pParent)
     m_pDelegate = nullptr;
     m_pModel = nullptr;
 
-    m_enumActiveWingType = XFLR5::OTHERWING;
+    m_enumActiveWingType = Xfl::OTHERWING;
     m_iActivePointMass = -1;
 
     m_bChanged                 = false;
@@ -581,7 +581,7 @@ QList<QStandardItem *> EditBodyDlg::prepareRow(const QString &object, const QStr
 {
     QList<QStandardItem *> rowItems;
     rowItems << new QStandardItem(object)  << new QStandardItem(field)  << new QStandardItem(value) << new QStandardItem(unit);
-    for(int ii=0; ii<rowItems.size(); ii++) rowItems.at(ii)->setData(XFLR5::STRING, Qt::UserRole);
+    for(int ii=0; ii<rowItems.size(); ii++) rowItems.at(ii)->setData(Xfl::STRING, Qt::UserRole);
     return rowItems;
 }
 
@@ -595,10 +595,10 @@ QList<QStandardItem *> EditBodyDlg::prepareBoolRow(const QString &object, const 
     rowItems.at(2)->setData(value, Qt::DisplayRole);
     rowItems.append(new QStandardItem);
 
-    rowItems.at(0)->setData(XFLR5::STRING, Qt::UserRole);
-    rowItems.at(1)->setData(XFLR5::STRING, Qt::UserRole);
-    rowItems.at(2)->setData(XFLR5::BOOLVALUE, Qt::UserRole);
-    rowItems.at(3)->setData(XFLR5::STRING, Qt::UserRole);
+    rowItems.at(0)->setData(Xfl::STRING, Qt::UserRole);
+    rowItems.at(1)->setData(Xfl::STRING, Qt::UserRole);
+    rowItems.at(2)->setData(Xfl::BOOLVALUE, Qt::UserRole);
+    rowItems.at(3)->setData(Xfl::STRING, Qt::UserRole);
 
     return rowItems;
 }
@@ -613,10 +613,10 @@ QList<QStandardItem *> EditBodyDlg::prepareIntRow(const QString &object, const Q
     rowItems.at(2)->setData(value, Qt::DisplayRole);
     rowItems.append(new QStandardItem);
 
-    rowItems.at(0)->setData(XFLR5::STRING, Qt::UserRole);
-    rowItems.at(1)->setData(XFLR5::STRING, Qt::UserRole);
-    rowItems.at(2)->setData(XFLR5::INTEGER, Qt::UserRole);
-    rowItems.at(3)->setData(XFLR5::STRING, Qt::UserRole);
+    rowItems.at(0)->setData(Xfl::STRING, Qt::UserRole);
+    rowItems.at(1)->setData(Xfl::STRING, Qt::UserRole);
+    rowItems.at(2)->setData(Xfl::INTEGER, Qt::UserRole);
+    rowItems.at(3)->setData(Xfl::STRING, Qt::UserRole);
 
     return rowItems;
 }
@@ -631,10 +631,10 @@ QList<QStandardItem *> EditBodyDlg::prepareDoubleRow(const QString &object, cons
     rowItems.at(2)->setData(value, Qt::DisplayRole);
     rowItems.append(new QStandardItem(unit));
 
-    rowItems.at(0)->setData(XFLR5::STRING, Qt::UserRole);
-    rowItems.at(1)->setData(XFLR5::STRING, Qt::UserRole);
-    rowItems.at(2)->setData(XFLR5::DOUBLEVALUE, Qt::UserRole);
-    rowItems.at(3)->setData(XFLR5::STRING, Qt::UserRole);
+    rowItems.at(0)->setData(Xfl::STRING, Qt::UserRole);
+    rowItems.at(1)->setData(Xfl::STRING, Qt::UserRole);
+    rowItems.at(2)->setData(Xfl::DOUBLEVALUE, Qt::UserRole);
+    rowItems.at(3)->setData(Xfl::STRING, Qt::UserRole);
 
     return rowItems;
 }
@@ -664,7 +664,7 @@ void EditBodyDlg::fillBodyTreeView()
     bodyFolder.first()->appendRow(dataItem);
 
     dataItem = prepareRow("", "Type", bodyPanelType(m_pBody->bodyType()));
-    dataItem.at(2)->setData(XFLR5::BODYTYPE, Qt::UserRole);
+    dataItem.at(2)->setData(Xfl::BODYTYPE, Qt::UserRole);
     bodyFolder.first()->appendRow(dataItem);
 
     QList<QStandardItem*> bodyColorFolder = prepareRow("Color");
@@ -1072,7 +1072,7 @@ void EditBodyDlg::identifySelection(const QModelIndex &indexSel)
 {
     // we highlight wing sections and body frames
     // so check if the user's selection is one of these
-    m_enumActiveWingType = XFLR5::OTHERWING;
+    m_enumActiveWingType = Xfl::OTHERWING;
     m_iActivePointMass = -1;
 
     QModelIndex indexLevel = indexSel;

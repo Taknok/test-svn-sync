@@ -25,7 +25,7 @@
 #include <QEvent>
 
 #include <xdirect/optim2d/optimtask.h>
-#include <xflanalysis/analysis3d_enums.h>
+#include <xflcore/core_enums.h>
 #include <xflcore/xflevents.h>
 
 #include "particle.h"
@@ -77,8 +77,8 @@ class GATask : public OptimTask
         void postIterEvent(int iBest) override;
 
         /** @todo foil or case specific methods to deport in a derived class */
-        void calcFitness(Particle &particle) const override;
-        double error(const Particle &particle, int iObjective) const override;
+        void calcFitness(Particle*pParticle) const override;
+        double error(Particle const *pParticle, int iObjective) const override;
         double HH(double x, double t1, double t2) const;
         double foilFunc(Particle const*pParticle) const;
 

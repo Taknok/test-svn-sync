@@ -24,34 +24,29 @@
 #include <QVector>
 
 /**
- * @class Multi-Objective Particle for use in MOPSO
- * To use in single objective PSO or GA, set NObjectives=1 and NBest=1 in resizeArrays()
+ * @class Multi-Objective Particle
+ * To use in single objective PSO or GA, set NObjectives=1 and NBest=1
  */
 class Particle
 {
     public:
         Particle();
 
-        void resizeArrays(int dim, int nobj, int nbest);
-
         int dimension() const {return m_Position.size();}
         int nObjectives() const {return m_Fitness.size();}
         int nBest() const {return m_nBest;}
 
+        void resetBestError();
         double error(int iobj) const {return m_Error.at(iobj);}
         void setError(int iobj, double err) {m_Error[iobj]=err;}
 
         double bestError(int iFront, int iobj) const {return m_BestError.at(iFront).at(iobj);}
         void setBestError(int iFront, int iobj, double err) {m_BestError[iFront][iobj]=err;}
-        void setBestPosition(int iFront, int idim, double pos) {m_BestError[iFront][idim]=pos;}
+        void setBestPosition(int iFront, int idim, double pos) {m_BestPosition[iFront][idim]=pos;}
         void storeBestPosition(int ifront) {m_BestPosition[ifront]=m_Position;}
 
         QVector<double> const &velocity() const {return m_Velocity;}
         QVector<double> const &position() const {return m_Position;}
-        QVector<double> const &bestPosition(int i) const {return m_BestPosition.at(i);}
-
-        void setPosition(QVector<double> const &pos) {m_Position=pos;}
-        void setVelocity(QVector<double> const &vel) {m_Velocity=vel;}
 
         void setPos(int i, double dble) {m_Position[i]=dble;}
         void setVel(int i, double dble) {m_Velocity[i]=dble;}
@@ -67,6 +62,9 @@ class Particle
         void initializeBest();
         void updateBest();
 
+        void resizeArrays(int dim, int nobj, int nbest);
+
+        bool dominates(Particle const* pOther) const;
 
     private:
         // size = dimension = nVariables
@@ -79,6 +77,6 @@ class Particle
 
         //size = PARETOSIZE
         int m_nBest;
-        QVector<QVector<double>> m_BestError;    /** the particle's personal best errors achieved so far */
-        QVector<QVector<double>> m_BestPosition; /** the particle's personal best positions achieved so far */
+        QVector<QVector<double>> m_BestError;    /** the particle's personal best errors achieved so far; size=nObjectives*/
+        QVector<QVector<double>> m_BestPosition; /** the particle's personal best positions achieved so far; size=dimension */
 };

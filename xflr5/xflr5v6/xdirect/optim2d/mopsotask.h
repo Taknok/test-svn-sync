@@ -21,70 +21,64 @@
 
 #pragma once
 
-#include <QWidget>
-#include <QEvent>
+#include "optimtask.h"
 
-#include <xdirect/optim2d/optimtask.h>
-#include <xflanalysis/analysis3d_enums.h>
 #include <xflcore/xflevents.h>
+#include <xdirect/optim2d/particle.h>
+#include <xdirect/optim2d/optstructures.h>
 
-#include "particle.h"
-#include "optstructures.h"
 
-
-/**
- * @brief Abstract base class for MOPSO algorithms
- * Requires derivation and implementation of calcFitness() and error() functions
- */
 class MOPSOTask : public OptimTask
 {
     Q_OBJECT
+
+        friend class Optim2d;
+        friend class Optim3d;
 
     public:
         MOPSOTask();
 
         void setNObjectives(int nObj) {m_Objective.resize(nObj);}
-        OptObjective const &objective(int iobj) const {return m_Objective.at(iobj);}
 
         void makeSwarm() override;
-        void makeRandomParticle(Particle *pParticle) const override;
 
         int nObjectives() const {return m_Objective.size();}
+        OptObjective const & objective(int iobj) const {return m_Objective.at(iobj);}
         void setObjective(int iobj, const OptObjective &obj) {m_Objective[iobj] = obj;}
-
-        Particle const &bestParticle() const {return m_Bestparticle;}
+        void updateErrors();
+        void clearPareto(){ m_Pareto.clear();}
 
         static void restoreDefaults();
-        static void setWeights(double in, double cog, double soc) {s_InertiaWeight=in; s_CognitiveWeight=cog; s_SocialWeight=soc;}
 
-    protected:
-        virtual double error(const Particle &particle, int iObjective) const override;
-
-
-    private:        
+    private:
         void makeParetoFront();
-        void moveParticle(Particle *pParticle);
+        void makeRandomParticle(Particle *pParticle) const override;
+        void moveParticle(Particle *pParticle) const;
+
         void postIterEvent(int iBest) override;
+        void postPSOEvent(int iBest);
+
+        // redeclare for QtConcurrent
+        virtual double error(Particle const *pParticle, int iObjective) const override = 0;
+        virtual void calcFitness(Particle *pParticle) const override = 0;
 
     private slots:
-        void onIteration() override;
+        void onSwarm();
+        void onIteration() override; // in case the iteration is triggered by a timer
 
     protected:
+
         QVector<Particle> m_Pareto; /**< the particles which make the Pareto front */
-        Particle m_Bestparticle;
+
 
         // size = nObjectives
         QVector<OptObjective> m_Objective;
 
-    public:
+
         static int    s_ArchiveSize;
         static double s_InertiaWeight;
         static double s_CognitiveWeight;
         static double s_SocialWeight;
-
+        static double s_ProbRegenerate;
 };
-
-
-
-
 

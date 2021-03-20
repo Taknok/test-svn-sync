@@ -33,7 +33,7 @@ const QEvent::Type XFOIL_END_OPP_EVENT       = static_cast<QEvent::Type>(QEvent:
 const QEvent::Type PLANE_END_TASK_EVENT      = static_cast<QEvent::Type>(QEvent::User + 105);
 const QEvent::Type PLANE_END_POPP_EVENT      = static_cast<QEvent::Type>(QEvent::User + 106);
 const QEvent::Type VPW_UPDATE_EVENT          = static_cast<QEvent::Type>(QEvent::User + 107);
-const QEvent::Type PSO_ITER_EVENT            = static_cast<QEvent::Type>(QEvent::User + 108);
+const QEvent::Type OPTIM_ITER_EVENT          = static_cast<QEvent::Type>(QEvent::User + 108);
 const QEvent::Type OPTIM_END_EVENT           = static_cast<QEvent::Type>(QEvent::User + 109);
 
 class Foil;

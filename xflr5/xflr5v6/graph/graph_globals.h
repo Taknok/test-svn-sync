@@ -25,7 +25,7 @@
 #include <QPainter>
 
 
-void drawPoint(QPainter &painter, int pointStyle, QPoint pt, QColor backColor);
+void drawPoint(QPainter &painter, int pointStyle, const QPoint &pt, const QColor &backColor);
 Qt::PenStyle getStyle(int s);
 
 

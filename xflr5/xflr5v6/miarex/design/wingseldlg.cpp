@@ -25,8 +25,8 @@
 
 #include "wingseldlg.h"
 #include <xflobjects/objects3d/plane.h>
-#include <globals/globals.h>
-#include <xflanalysis/analysis3d_enums.h>
+#include <xflcore/xflcore.h>
+#include <xflcore/core_enums.h>
 
 WingSelDlg::WingSelDlg(QWidget *pParent) : QDialog(pParent)
 {
@@ -42,9 +42,9 @@ void WingSelDlg::setupLayout()
     {
         m_pctrlBody = new QCheckBox(tr("BODY"));
         pWingLayout->addWidget(m_pctrlBody);
-        for(int iw=XFLR5::MAINWING; iw!=XFLR5::OTHERWING; iw++)
+        for(int iw=Xfl::MAINWING; iw!=Xfl::OTHERWING; iw++)
         {
-            XFLR5::enumWingType wType = XFLR5::enumWingType(iw);
+            Xfl::enumWingType wType = Xfl::enumWingType(iw);
             m_pctrlWing[iw] = new QCheckBox(wingType(wType));
             pWingLayout->addWidget(m_pctrlWing[iw]);
         }

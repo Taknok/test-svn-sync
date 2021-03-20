@@ -35,14 +35,14 @@
 
 #include <qopengl.h>
 
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <globals/mainframe.h>
 #include <graph/graph_globals.h>
 #include <misc/options/units.h>
 #include <xflobjects/objects2d/foil.h>
 #include <xflobjects/objects2d/polar.h>
 #include <xflobjects/objects3d/wpolar.h>
-/** 
+/**
 * Returns a double number as its root and its base 10 exponent
 * @param f the double number to reformat; is returned as f = f/pow(10.0,exp);
 * @param exp the base 10 exponent of f.
@@ -198,128 +198,128 @@ QColor randomColor(bool bLightColor)
 
 
 
-XFLR5::enumPanelDistribution distributionType(QString const &strDist)
+Xfl::enumPanelDistribution distributionType(QString const &strDist)
 {
-    if(strDist.compare("COSINE",           Qt::CaseInsensitive)==0) return XFLR5::COSINE;
-    else if(strDist.compare("UNIFORM",     Qt::CaseInsensitive)==0) return XFLR5::UNIFORM;
-    else if(strDist.compare("SINE",        Qt::CaseInsensitive)==0) return XFLR5::SINE;
-    else if(strDist.compare("INVERSESINE", Qt::CaseInsensitive)==0) return XFLR5::INVERSESINE;
-    else return XFLR5::UNIFORM;
+    if(strDist.compare("COSINE",           Qt::CaseInsensitive)==0) return Xfl::COSINE;
+    else if(strDist.compare("UNIFORM",     Qt::CaseInsensitive)==0) return Xfl::UNIFORM;
+    else if(strDist.compare("SINE",        Qt::CaseInsensitive)==0) return Xfl::SINE;
+    else if(strDist.compare("INVERSESINE", Qt::CaseInsensitive)==0) return Xfl::INVERSESINE;
+    else return Xfl::UNIFORM;
 }
 
 
-QString distributionType(XFLR5::enumPanelDistribution dist)
+QString distributionType(Xfl::enumPanelDistribution dist)
 {
     switch(dist)
     {
-        case XFLR5::COSINE: return "COSINE";
-        case XFLR5::UNIFORM: return "UNIFORM";
-        case XFLR5::SINE: return "SINE";
-        case XFLR5::INVERSESINE: return "INVERSE SINE";
+        case Xfl::COSINE: return "COSINE";
+        case Xfl::UNIFORM: return "UNIFORM";
+        case Xfl::SINE: return "SINE";
+        case Xfl::INVERSESINE: return "INVERSE SINE";
     }
     return QString();
 }
 
 
 
-XFLR5::enumBodyLineType bodyPanelType(QString const &strPanelType)
+Xfl::enumBodyLineType bodyPanelType(QString const &strPanelType)
 {
-    if(strPanelType.compare("FLATPANELS", Qt::CaseInsensitive)==0) return XFLR5::BODYPANELTYPE;
-    else                                                           return XFLR5::BODYSPLINETYPE;
+    if(strPanelType.compare("FLATPANELS", Qt::CaseInsensitive)==0) return Xfl::BODYPANELTYPE;
+    else                                                           return Xfl::BODYSPLINETYPE;
 }
 
-QString bodyPanelType(XFLR5::enumBodyLineType panelType)
+QString bodyPanelType(Xfl::enumBodyLineType panelType)
 {
     switch(panelType)
     {
-        case XFLR5::BODYPANELTYPE:  return "FLATPANELS";
-        case XFLR5::BODYSPLINETYPE: return "NURBS";
+        case Xfl::BODYPANELTYPE:  return "FLATPANELS";
+        case Xfl::BODYSPLINETYPE: return "NURBS";
     }
     return QString();
 }
 
 
-XFLR5::enumPolarType polarType(const QString &strPolarType)
+Xfl::enumPolarType polarType(const QString &strPolarType)
 {
-    if     (strPolarType.compare("FIXEDSPEEDPOLAR",   Qt::CaseInsensitive)==0) return XFLR5::FIXEDSPEEDPOLAR;
-    else if(strPolarType.compare("FIXEDLIFTPOLAR",    Qt::CaseInsensitive)==0) return XFLR5::FIXEDLIFTPOLAR;
-    else if(strPolarType.compare("RUBBERCHORDPOLAR",  Qt::CaseInsensitive)==0) return XFLR5::RUBBERCHORDPOLAR;
-    else if(strPolarType.compare("FIXEDAOAPOLAR",     Qt::CaseInsensitive)==0) return XFLR5::FIXEDAOAPOLAR;
-    else return XFLR5::FIXEDSPEEDPOLAR;
+    if     (strPolarType.compare("FIXEDSPEEDPOLAR",   Qt::CaseInsensitive)==0) return Xfl::FIXEDSPEEDPOLAR;
+    else if(strPolarType.compare("FIXEDLIFTPOLAR",    Qt::CaseInsensitive)==0) return Xfl::FIXEDLIFTPOLAR;
+    else if(strPolarType.compare("RUBBERCHORDPOLAR",  Qt::CaseInsensitive)==0) return Xfl::RUBBERCHORDPOLAR;
+    else if(strPolarType.compare("FIXEDAOAPOLAR",     Qt::CaseInsensitive)==0) return Xfl::FIXEDAOAPOLAR;
+    else return Xfl::FIXEDSPEEDPOLAR;
 }
 
-QString polarType(XFLR5::enumPolarType polarType)
+QString polarType(Xfl::enumPolarType polarType)
 {
     switch(polarType)
     {
-        case XFLR5::FIXEDSPEEDPOLAR:  return "FIXEDSPEEDPOLAR";
-        case XFLR5::FIXEDLIFTPOLAR:   return "FIXEDLIFTPOLAR";
-        case XFLR5::RUBBERCHORDPOLAR: return "RUBBERCHORDPOLAR";
-        case XFLR5::FIXEDAOAPOLAR:    return "FIXEDAOAPOLAR";
+        case Xfl::FIXEDSPEEDPOLAR:  return "FIXEDSPEEDPOLAR";
+        case Xfl::FIXEDLIFTPOLAR:   return "FIXEDLIFTPOLAR";
+        case Xfl::RUBBERCHORDPOLAR: return "RUBBERCHORDPOLAR";
+        case Xfl::FIXEDAOAPOLAR:    return "FIXEDAOAPOLAR";
         default: return "";
     }
 }
 
 
 
-XFLR5::enumPolarType WPolarType(const QString &strPolarType)
+Xfl::enumPolarType WPolarType(const QString &strPolarType)
 {
-    if     (strPolarType.compare("FIXEDSPEEDPOLAR", Qt::CaseInsensitive)==0) return XFLR5::FIXEDSPEEDPOLAR;
-    else if(strPolarType.compare("FIXEDLIFTPOLAR",  Qt::CaseInsensitive)==0) return XFLR5::FIXEDLIFTPOLAR;
-    else if(strPolarType.compare("FIXEDAOAPOLAR",   Qt::CaseInsensitive)==0) return XFLR5::FIXEDAOAPOLAR;
-    else if(strPolarType.compare("STABILITYPOLAR",  Qt::CaseInsensitive)==0) return XFLR5::STABILITYPOLAR;
-    else if(strPolarType.compare("BETAPOLAR",       Qt::CaseInsensitive)==0) return XFLR5::BETAPOLAR;
-    else return XFLR5::FIXEDSPEEDPOLAR;
+    if     (strPolarType.compare("FIXEDSPEEDPOLAR", Qt::CaseInsensitive)==0) return Xfl::FIXEDSPEEDPOLAR;
+    else if(strPolarType.compare("FIXEDLIFTPOLAR",  Qt::CaseInsensitive)==0) return Xfl::FIXEDLIFTPOLAR;
+    else if(strPolarType.compare("FIXEDAOAPOLAR",   Qt::CaseInsensitive)==0) return Xfl::FIXEDAOAPOLAR;
+    else if(strPolarType.compare("STABILITYPOLAR",  Qt::CaseInsensitive)==0) return Xfl::STABILITYPOLAR;
+    else if(strPolarType.compare("BETAPOLAR",       Qt::CaseInsensitive)==0) return Xfl::BETAPOLAR;
+    else return Xfl::FIXEDSPEEDPOLAR;
 }
 
-QString WPolarType(XFLR5::enumPolarType polarType)
+QString WPolarType(Xfl::enumPolarType polarType)
 {
     switch(polarType)
     {
-        case XFLR5::FIXEDSPEEDPOLAR:  return "FIXEDSPEEDPOLAR";
-        case XFLR5::FIXEDLIFTPOLAR:   return "FIXEDLIFTPOLAR";
-        case XFLR5::FIXEDAOAPOLAR:    return "FIXEDAOAPOLAR";
-        case XFLR5::STABILITYPOLAR:   return "STABILITYPOLAR";
-        case XFLR5::BETAPOLAR:        return "BETAPOLAR";
+        case Xfl::FIXEDSPEEDPOLAR:  return "FIXEDSPEEDPOLAR";
+        case Xfl::FIXEDLIFTPOLAR:   return "FIXEDLIFTPOLAR";
+        case Xfl::FIXEDAOAPOLAR:    return "FIXEDAOAPOLAR";
+        case Xfl::STABILITYPOLAR:   return "STABILITYPOLAR";
+        case Xfl::BETAPOLAR:        return "BETAPOLAR";
         default: return "";
     }
 }
 
 
-XFLR5::enumAnalysisMethod analysisMethod(const QString &strAnalysisMethod)
+Xfl::enumAnalysisMethod analysisMethod(const QString &strAnalysisMethod)
 {
-    if     (strAnalysisMethod.compare("LLTMETHOD",   Qt::CaseInsensitive)==0) return XFLR5::LLTMETHOD;
-    else if(strAnalysisMethod.compare("VLMMETHOD",   Qt::CaseInsensitive)==0) return XFLR5::VLMMETHOD;
-    else if(strAnalysisMethod.compare("PANELMETHOD", Qt::CaseInsensitive)==0) return XFLR5::PANEL4METHOD;
-    else return XFLR5::VLMMETHOD;
+    if     (strAnalysisMethod.compare("LLTMETHOD",   Qt::CaseInsensitive)==0) return Xfl::LLTMETHOD;
+    else if(strAnalysisMethod.compare("VLMMETHOD",   Qt::CaseInsensitive)==0) return Xfl::VLMMETHOD;
+    else if(strAnalysisMethod.compare("PANELMETHOD", Qt::CaseInsensitive)==0) return Xfl::PANEL4METHOD;
+    else return Xfl::VLMMETHOD;
 }
 
 
-QString analysisMethod(XFLR5::enumAnalysisMethod analysisMethod)
+QString analysisMethod(Xfl::enumAnalysisMethod analysisMethod)
 {
     switch(analysisMethod)
     {
-        case XFLR5::LLTMETHOD:   return "LLTMETHOD";
-        case XFLR5::VLMMETHOD:   return "VLMMETHOD";
-        case XFLR5::PANEL4METHOD: return "PANELMETHOD";
+        case Xfl::LLTMETHOD:   return "LLTMETHOD";
+        case Xfl::VLMMETHOD:   return "VLMMETHOD";
+        case Xfl::PANEL4METHOD: return "PANELMETHOD";
         default: return "";
     }
 }
 
 
 
-XFLR5::enumBC boundaryCondition(const QString &strBC)
+Xfl::enumBC boundaryCondition(const QString &strBC)
 {
-    if   (strBC.compare("DIRICHLET", Qt::CaseInsensitive)==0) return XFLR5::DIRICHLET;
-    else                                                      return XFLR5::NEUMANN;
+    if   (strBC.compare("DIRICHLET", Qt::CaseInsensitive)==0) return Xfl::DIRICHLET;
+    else                                                      return Xfl::NEUMANN;
 }
 
-QString boundaryCondition(XFLR5::enumBC boundaryCondition)
+QString boundaryCondition(Xfl::enumBC boundaryCondition)
 {
     switch(boundaryCondition)
     {
-        case XFLR5::DIRICHLET: return "DIRICHLET";
-        case XFLR5::NEUMANN:   return "NEUMANN";
+        case Xfl::DIRICHLET: return "DIRICHLET";
+        case Xfl::NEUMANN:   return "NEUMANN";
     }
     return "DIRICHLET";
 }
@@ -329,24 +329,24 @@ bool stringToBool(QString str)
     return str.compare("true", Qt::CaseInsensitive)==0 ? true : false;
 }
 
-QString referenceDimension(XFLR5::enumRefDimension refDimension)
+QString referenceDimension(Xfl::enumRefDimension refDimension)
 {
     switch(refDimension)
     {
-        case XFLR5::PLANFORMREFDIM:  return "PLANFORMREFDIM";
-        case XFLR5::PROJECTEDREFDIM: return "PROJECTEDREFDIM";
-        case XFLR5::MANUALREFDIM:    return "MANUALREFDIM";
+        case Xfl::PLANFORMREFDIM:  return "PLANFORMREFDIM";
+        case Xfl::PROJECTEDREFDIM: return "PROJECTEDREFDIM";
+        case Xfl::MANUALREFDIM:    return "MANUALREFDIM";
     }
     return QString();
 }
 
 
-XFLR5::enumRefDimension referenceDimension(const QString &strRefDimension)
+Xfl::enumRefDimension referenceDimension(const QString &strRefDimension)
 {
-    if     (strRefDimension.compare("PLANFORMREFDIM",  Qt::CaseInsensitive)==0) return XFLR5::PLANFORMREFDIM;
-    else if(strRefDimension.compare("PROJECTEDREFDIM", Qt::CaseInsensitive)==0) return XFLR5::PROJECTEDREFDIM;
-    else if(strRefDimension.compare("MANUALREFDIM",    Qt::CaseInsensitive)==0) return XFLR5::MANUALREFDIM;
-    else return XFLR5::PLANFORMREFDIM;
+    if     (strRefDimension.compare("PLANFORMREFDIM",  Qt::CaseInsensitive)==0) return Xfl::PLANFORMREFDIM;
+    else if(strRefDimension.compare("PROJECTEDREFDIM", Qt::CaseInsensitive)==0) return Xfl::PROJECTEDREFDIM;
+    else if(strRefDimension.compare("MANUALREFDIM",    Qt::CaseInsensitive)==0) return Xfl::MANUALREFDIM;
+    else return Xfl::PLANFORMREFDIM;
 }
 
 
@@ -748,23 +748,23 @@ void setAutoWPolarName(WPolar *pWPolar, Plane *pPlane)
     QString name;
     switch(pWPolar->polarType())
     {
-        case XFLR5::FIXEDSPEEDPOLAR:
+        case Xfl::FIXEDSPEEDPOLAR:
         {
             name = QString("T1-%1 ").arg(pWPolar->velocity() * Units::mstoUnit(),0,'f',1);
             name += strSpeedUnit;
             break;
         }
-        case XFLR5::FIXEDLIFTPOLAR:
+        case Xfl::FIXEDLIFTPOLAR:
         {
             name = QString("T2");
             break;
         }
-        case XFLR5::FIXEDAOAPOLAR:
+        case Xfl::FIXEDAOAPOLAR:
         {
             name = QString(QString::fromUtf8("T4-%1°")).arg(pWPolar->Alpha(),0,'f',1);
             break;
         }
-        case XFLR5::BETAPOLAR:
+        case Xfl::BETAPOLAR:
         {
             name = QString(QString::fromUtf8("T5-a%1°-%2"))
                     .arg(pWPolar->Alpha(),0,'f',1)
@@ -772,7 +772,7 @@ void setAutoWPolarName(WPolar *pWPolar, Plane *pPlane)
             name += strSpeedUnit;
             break;
         }
-        case XFLR5::STABILITYPOLAR:
+        case Xfl::STABILITYPOLAR:
         {
             name = QString("T7");
             break;
@@ -786,18 +786,18 @@ void setAutoWPolarName(WPolar *pWPolar, Plane *pPlane)
 
     switch(pWPolar->analysisMethod())
     {
-        case XFLR5::LLTMETHOD:
+        case Xfl::LLTMETHOD:
         {
             name += "-LLT";
             break;
         }
-        case XFLR5::VLMMETHOD:
+        case Xfl::VLMMETHOD:
         {
             if(pWPolar->bVLM1()) name += "-VLM1";
             else                 name += "-VLM2";
             break;
         }
-        case XFLR5::PANEL4METHOD:
+        case Xfl::PANEL4METHOD:
         {
             if(!pWPolar->bThinSurfaces()) name += "-Panel";
             else
@@ -877,7 +877,7 @@ void setAutoWPolarName(WPolar *pWPolar, Plane *pPlane)
     }
 
 
-    if(qAbs(pWPolar->Beta()) > .001  && pWPolar->polarType()!=XFLR5::BETAPOLAR)
+    if(qAbs(pWPolar->Beta()) > .001  && pWPolar->polarType()!=Xfl::BETAPOLAR)
     {
         strong = QString(QString::fromUtf8("-b%1°")).arg(pWPolar->Beta(),0,'f',1);
         name += strong;
@@ -939,24 +939,24 @@ void setAutoWPolarName(WPolar *pWPolar, Plane *pPlane)
 
 
 
-XFLR5::enumWingType wingType(const QString &strWingType)
+Xfl::enumWingType wingType(const QString &strWingType)
 {
-    if     (strWingType.compare("MAINWING",   Qt::CaseInsensitive)==0) return XFLR5::MAINWING;
-    else if(strWingType.compare("SECONDWING", Qt::CaseInsensitive)==0) return XFLR5::SECONDWING;
-    else if(strWingType.compare("ELEVATOR",   Qt::CaseInsensitive)==0) return XFLR5::ELEVATOR;
-    else if(strWingType.compare("FIN",        Qt::CaseInsensitive)==0) return XFLR5::FIN;
-    else                                                               return XFLR5::OTHERWING;
+    if     (strWingType.compare("MAINWING",   Qt::CaseInsensitive)==0) return Xfl::MAINWING;
+    else if(strWingType.compare("SECONDWING", Qt::CaseInsensitive)==0) return Xfl::SECONDWING;
+    else if(strWingType.compare("ELEVATOR",   Qt::CaseInsensitive)==0) return Xfl::ELEVATOR;
+    else if(strWingType.compare("FIN",        Qt::CaseInsensitive)==0) return Xfl::FIN;
+    else                                                               return Xfl::OTHERWING;
 }
 
-QString wingType(XFLR5::enumWingType wingType)
+QString wingType(Xfl::enumWingType wingType)
 {
     switch(wingType)
     {
-        case XFLR5::MAINWING:   return "MAINWING";
-        case XFLR5::SECONDWING: return "SECONDWING";
-        case XFLR5::ELEVATOR:   return "ELEVATOR";
-        case XFLR5::FIN:        return "FIN";
-        case XFLR5::OTHERWING:  return "OTHERWING";
+        case Xfl::MAINWING:   return "MAINWING";
+        case Xfl::SECONDWING: return "SECONDWING";
+        case Xfl::ELEVATOR:   return "ELEVATOR";
+        case Xfl::FIN:        return "FIN";
+        case Xfl::OTHERWING:  return "OTHERWING";
     }
     return "OTHERWING";
 }
@@ -1323,10 +1323,10 @@ bool serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
         writeString(ar, pPolar->m_FoilName);
         writeString(ar, pPolar->m_PlrName);
 
-        if(pPolar->m_PolarType==XFLR5::FIXEDSPEEDPOLAR)       ar<<1;
-        else if(pPolar->m_PolarType==XFLR5::FIXEDLIFTPOLAR)   ar<<2;
-        else if(pPolar->m_PolarType==XFLR5::RUBBERCHORDPOLAR) ar<<3;
-        else if(pPolar->m_PolarType==XFLR5::FIXEDAOAPOLAR)    ar<<4;
+        if(pPolar->m_PolarType==Xfl::FIXEDSPEEDPOLAR)       ar<<1;
+        else if(pPolar->m_PolarType==Xfl::FIXEDLIFTPOLAR)   ar<<2;
+        else if(pPolar->m_PolarType==Xfl::RUBBERCHORDPOLAR) ar<<3;
+        else if(pPolar->m_PolarType==Xfl::FIXEDAOAPOLAR)    ar<<4;
         else                                   ar<<1;
 
         ar << pPolar->m_MaType << pPolar->m_ReType  ;
@@ -1374,11 +1374,11 @@ bool serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
         }
 
         ar >>k;
-        if     (k==1) pPolar->m_PolarType = XFLR5::FIXEDSPEEDPOLAR;
-        else if(k==2) pPolar->m_PolarType = XFLR5::FIXEDLIFTPOLAR;
-        else if(k==3) pPolar->m_PolarType = XFLR5::RUBBERCHORDPOLAR;
-        else if(k==4) pPolar->m_PolarType = XFLR5::FIXEDAOAPOLAR;
-        else          pPolar->m_PolarType = XFLR5::FIXEDSPEEDPOLAR;
+        if     (k==1) pPolar->m_PolarType = Xfl::FIXEDSPEEDPOLAR;
+        else if(k==2) pPolar->m_PolarType = Xfl::FIXEDLIFTPOLAR;
+        else if(k==3) pPolar->m_PolarType = Xfl::RUBBERCHORDPOLAR;
+        else if(k==4) pPolar->m_PolarType = Xfl::FIXEDAOAPOLAR;
+        else          pPolar->m_PolarType = Xfl::FIXEDSPEEDPOLAR;
 
 
         ar >> pPolar->m_MaType >> pPolar->m_ReType;
@@ -1433,7 +1433,7 @@ bool serializePolar(Polar *pPolar, QDataStream &ar, bool bIsStoring)
             else                    XCp = 0.0;
 
             bExists = false;
-            if(pPolar->m_PolarType!=XFLR5::FIXEDAOAPOLAR)
+            if(pPolar->m_PolarType!=Xfl::FIXEDAOAPOLAR)
             {
                 for (j=0; j<pPolar->m_Alpha.size(); j++)
                 {

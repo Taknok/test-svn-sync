@@ -34,7 +34,7 @@
  */
 WingOpp::WingOpp(int PanelArraySize)
 {
-    m_AnalysisMethod = XFLR5::LLTMETHOD;
+    m_AnalysisMethod = Xfl::LLTMETHOD;
 
     m_NVLMPanels   = PanelArraySize;
     m_dCp = m_dG = m_dSigma = nullptr;
@@ -120,7 +120,7 @@ bool WingOpp::exportWOpp(QTextStream &out, bool bCSV)
     out << Header;
 
     int nStart;
-    if(m_AnalysisMethod==XFLR5::LLTMETHOD) nStart = 1;
+    if(m_AnalysisMethod==Xfl::LLTMETHOD) nStart = 1;
     else                                   nStart = 0;
 
     if(!bCSV) Format = "%1  %2   %3   %4   %5   %6   %7   %8    %9   %10   %11   %12\n";
@@ -156,7 +156,7 @@ bool WingOpp::exportWOpp(QTextStream &out, bool bCSV)
 double WingOpp::maxLift() const
 {
     int nStart = 0;
-    if(m_AnalysisMethod==XFLR5::LLTMETHOD) nStart = 1;
+    if(m_AnalysisMethod==Xfl::LLTMETHOD) nStart = 1;
     else                                   nStart = 0;
 
     double maxlift = 0.0;
@@ -260,9 +260,9 @@ bool WingOpp::serializeWingOppXFL(QDataStream &ar, bool bIsStoring)
         ar << m_WingName;
         ar << m_PlrName;
 
-        if(m_AnalysisMethod==XFLR5::LLTMETHOD)         ar<<1;
-        else if(m_AnalysisMethod==XFLR5::VLMMETHOD)    ar<<2;
-        else if(m_AnalysisMethod==XFLR5::PANEL4METHOD)  ar<<3;
+        if(m_AnalysisMethod==Xfl::LLTMETHOD)         ar<<1;
+        else if(m_AnalysisMethod==Xfl::VLMMETHOD)    ar<<2;
+        else if(m_AnalysisMethod==Xfl::PANEL4METHOD)  ar<<3;
         else ar << 2;
 
         ar << m_bOut;
@@ -294,7 +294,7 @@ bool WingOpp::serializeWingOppXFL(QDataStream &ar, bool bIsStoring)
             ar << m_SpanPos[k] << m_StripArea[k];
         }
 
-        if(m_AnalysisMethod!=XFLR5::LLTMETHOD)
+        if(m_AnalysisMethod!=Xfl::LLTMETHOD)
         {
             ar << m_nFlaps;
             for(k=0; k<m_nFlaps; k++)
@@ -319,9 +319,9 @@ bool WingOpp::serializeWingOppXFL(QDataStream &ar, bool bIsStoring)
         ar >> m_PlrName;
 
         ar >> n;
-        if(n==1)      m_AnalysisMethod=XFLR5::LLTMETHOD;
-        else if(n==2) m_AnalysisMethod=XFLR5::VLMMETHOD;
-        else if(n==3) m_AnalysisMethod=XFLR5::PANEL4METHOD;
+        if(n==1)      m_AnalysisMethod=Xfl::LLTMETHOD;
+        else if(n==2) m_AnalysisMethod=Xfl::VLMMETHOD;
+        else if(n==3) m_AnalysisMethod=Xfl::PANEL4METHOD;
 
         ar >> m_bOut;
 
@@ -406,10 +406,10 @@ bool WingOpp::serializeWingOppWPA(QDataStream &ar, bool bIsStoring)
         if(a) m_bOut = true; else m_bOut = false;
 
         ar>>k;
-        if(k==1)      m_AnalysisMethod=XFLR5::LLTMETHOD;
-        else if(k==2) m_AnalysisMethod=XFLR5::VLMMETHOD;
-        else if(k==3) m_AnalysisMethod=XFLR5::PANEL4METHOD;
-        else if(k==4) m_AnalysisMethod=XFLR5::VLMMETHOD;
+        if(k==1)      m_AnalysisMethod=Xfl::LLTMETHOD;
+        else if(k==2) m_AnalysisMethod=Xfl::VLMMETHOD;
+        else if(k==3) m_AnalysisMethod=Xfl::PANEL4METHOD;
+        else if(k==4) m_AnalysisMethod=Xfl::VLMMETHOD;
         else return false;
 
         if(ArchiveFormat>=1005)
@@ -465,7 +465,7 @@ bool WingOpp::serializeWingOppWPA(QDataStream &ar, bool bIsStoring)
         ar >> f; m_VYm   = double(f);
         ar >> f; m_IYm   = double(f);
 
-        if(ArchiveFormat<1014 && m_AnalysisMethod>XFLR5::LLTMETHOD)
+        if(ArchiveFormat<1014 && m_AnalysisMethod>Xfl::LLTMETHOD)
         {
             m_GCm = m_GRm = m_GYm = m_VYm = m_IYm = 0.0;
         }
@@ -524,7 +524,7 @@ bool WingOpp::serializeWingOppWPA(QDataStream &ar, bool bIsStoring)
         for (k=0; k<=m_NStation; k++)
         {
             ar >> f1;
-            if(m_AnalysisMethod==XFLR5::LLTMETHOD  && ArchiveFormat<=1004)
+            if(m_AnalysisMethod==Xfl::LLTMETHOD  && ArchiveFormat<=1004)
                 m_SpanPos[k] = -double(f1);
             else
                 m_SpanPos[k] =  double(f1);
@@ -540,7 +540,7 @@ bool WingOpp::serializeWingOppWPA(QDataStream &ar, bool bIsStoring)
         {
             ar>> m_NVLMPanels;
 
-            if(ArchiveFormat<1023 || m_AnalysisMethod !=XFLR5::LLTMETHOD)
+            if(ArchiveFormat<1023 || m_AnalysisMethod !=Xfl::LLTMETHOD)
             {
                 for (p=0; p<m_NVLMPanels;p++)
                 {
@@ -551,7 +551,7 @@ bool WingOpp::serializeWingOppWPA(QDataStream &ar, bool bIsStoring)
 
         if(ArchiveFormat>=1009)
         {
-            if(ArchiveFormat<1023 || m_AnalysisMethod !=XFLR5::LLTMETHOD)
+            if(ArchiveFormat<1023 || m_AnalysisMethod !=Xfl::LLTMETHOD)
             {
                 for (p=0; p<m_NVLMPanels;p++)
                 {
@@ -562,7 +562,7 @@ bool WingOpp::serializeWingOppWPA(QDataStream &ar, bool bIsStoring)
         }
         if(ArchiveFormat>1010)
         {
-            if(m_AnalysisMethod==XFLR5::PANEL4METHOD)
+            if(m_AnalysisMethod==Xfl::PANEL4METHOD)
             {
                 for (p=0; p<m_NVLMPanels;p++)
                 {

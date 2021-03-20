@@ -24,7 +24,7 @@
 #include <QGridLayout>
 #include <QPushButton>
 
-#include <globals/gui_params.h>
+#include <xflcore/gui_params.h>
 #include "aboutq5.h"
 
 

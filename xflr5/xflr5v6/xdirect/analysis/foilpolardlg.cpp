@@ -22,7 +22,7 @@
 #include <QGroupBox>
 #include <QVBoxLayout>
 #include "foilpolardlg.h"
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <misc/options/units.h>
 #include <xdirect/xdirect.h>
 #include <misc/text/doubleedit.h>
@@ -42,7 +42,7 @@ FoilPolarDlg::FoilPolarDlg(QWidget *pParent) : QDialog(pParent)
 {
     setWindowTitle(tr("Foil Polar Definition"));
 
-    m_PolarType = XFLR5::FIXEDSPEEDPOLAR;
+    m_PolarType = Xfl::FIXEDSPEEDPOLAR;
     m_NCrit     = 9.0;
     m_XTop      = 1.0;
     m_XBot      = 1.0;
@@ -330,22 +330,22 @@ void FoilPolarDlg::initDialog()
 
     switch(XDirect::s_RefPolar.polarType())
     {
-        case XFLR5::FIXEDSPEEDPOLAR:
+        case Xfl::FIXEDSPEEDPOLAR:
         {
             m_rbtype1->setChecked(true);
             break;
         }
-        case XFLR5::FIXEDLIFTPOLAR:
+        case Xfl::FIXEDLIFTPOLAR:
         {
             m_rbtype2->setChecked(true);
             break;
         }
-        case XFLR5::RUBBERCHORDPOLAR:
+        case Xfl::RUBBERCHORDPOLAR:
         {
             m_rbtype3->setChecked(true);
             break;
         }
-        case XFLR5::FIXEDAOAPOLAR:
+        case Xfl::FIXEDAOAPOLAR:
         {
             m_rbtype4->setChecked(true);
             break;
@@ -463,14 +463,14 @@ void FoilPolarDlg::onPolarType()
         m_pctrlMachLabel->setText(tr("Mach ="));
         m_pctrlReynolds->setValue(XDirect::s_RefPolar.m_Reynolds);
 //        m_pctrlReynolds->setPrecision(0);
-        m_PolarType = XFLR5::FIXEDSPEEDPOLAR;
+        m_PolarType = Xfl::FIXEDSPEEDPOLAR;
     }
     else if(m_rbtype2->isChecked())
     {
         m_pctrlReLabel->setText(tr("Re.sqrt(Cl) ="));
         m_pctrlReUnit->setText(" ");
         m_pctrlMachLabel->setText(tr("Ma.sqrt(Cl) ="));
-        m_PolarType = XFLR5::FIXEDLIFTPOLAR;
+        m_PolarType = Xfl::FIXEDLIFTPOLAR;
 //        m_pctrlReynolds->setPrecision(0);
         onCalcReynolds();
     }
@@ -481,7 +481,7 @@ void FoilPolarDlg::onPolarType()
         m_pctrlMachLabel->setText(tr("Mach ="));
         m_pctrlReynolds->setValue(XDirect::s_RefPolar.m_Reynolds);
 //        m_pctrlReynolds->setPrecision(0);
-        m_PolarType = XFLR5::RUBBERCHORDPOLAR;
+        m_PolarType = Xfl::RUBBERCHORDPOLAR;
     }
     else if(m_rbtype4->isChecked())
     {
@@ -490,16 +490,16 @@ void FoilPolarDlg::onPolarType()
         m_pctrlMachLabel->setText(tr("Mach ="));
         m_pctrlReynolds->setValue(m_ASpec);
 //        m_pctrlReynolds->setPrecision(3);
-        m_PolarType = XFLR5::FIXEDAOAPOLAR;
+        m_PolarType = Xfl::FIXEDAOAPOLAR;
     }
 
-    m_pctrlChord->setEnabled(m_PolarType==XFLR5::FIXEDLIFTPOLAR);
-    m_pctrlSpan->setEnabled(m_PolarType==XFLR5::FIXEDLIFTPOLAR);
-    m_pctrlMass->setEnabled(m_PolarType==XFLR5::FIXEDLIFTPOLAR);
-    m_pctrlViscosity->setEnabled(m_PolarType==XFLR5::FIXEDLIFTPOLAR);
-    m_pctrlDensity->setEnabled(m_PolarType==XFLR5::FIXEDLIFTPOLAR);
-    m_pctrlFluidUnit1->setEnabled(m_PolarType==XFLR5::FIXEDLIFTPOLAR);
-    m_pctrlFluidUnit2->setEnabled(m_PolarType==XFLR5::FIXEDLIFTPOLAR);
+    m_pctrlChord->setEnabled(m_PolarType==Xfl::FIXEDLIFTPOLAR);
+    m_pctrlSpan->setEnabled(m_PolarType==Xfl::FIXEDLIFTPOLAR);
+    m_pctrlMass->setEnabled(m_PolarType==Xfl::FIXEDLIFTPOLAR);
+    m_pctrlViscosity->setEnabled(m_PolarType==Xfl::FIXEDLIFTPOLAR);
+    m_pctrlDensity->setEnabled(m_PolarType==Xfl::FIXEDLIFTPOLAR);
+    m_pctrlFluidUnit1->setEnabled(m_PolarType==Xfl::FIXEDLIFTPOLAR);
+    m_pctrlFluidUnit2->setEnabled(m_PolarType==Xfl::FIXEDLIFTPOLAR);
 
     setPlrName();
 }
@@ -548,7 +548,7 @@ void FoilPolarDlg::readParams()
     QString str;
     str = m_pctrlReynolds->text();
     str.replace(" ","");
-    if(m_PolarType==XFLR5::FIXEDAOAPOLAR) m_ASpec    = locale().toDouble(str, &bOK);
+    if(m_PolarType==Xfl::FIXEDAOAPOLAR) m_ASpec    = locale().toDouble(str, &bOK);
     else                                  m_Reynolds = locale().toDouble(str, &bOK);
 
     m_Mach     = m_pctrlMach->value();
@@ -583,7 +583,7 @@ void FoilPolarDlg::onCalcReynolds()
 {
     readParams();
 
-    if(m_PolarType==XFLR5::FIXEDLIFTPOLAR)
+    if(m_PolarType==Xfl::FIXEDLIFTPOLAR)
     {
         double lift   = s_Mass*9.81;
         double area   = s_Chord*s_Span;

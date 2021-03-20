@@ -28,7 +28,7 @@
 #include <QThread>
 #include <QApplication>
 
-#include <globals/trace.h>
+#include <xflcore/trace.h>
 
 bool g_bTrace = true;
 QFile *g_pTraceFile = nullptr;

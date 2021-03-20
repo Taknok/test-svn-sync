@@ -34,7 +34,7 @@
 
 #include "xflr5app.h"
 #include <globals/mainframe.h>
-#include <globals/trace.h>
+#include <xflcore/trace.h>
 #include <misc/options/settings.h>
 #include <ctime>
 #include <iostream>
@@ -194,8 +194,8 @@ XFLR5App::XFLR5App(int &argc, char** argv) : QApplication(argc, argv)
             bProjectFile = true;
             int iApp = m_pMainFrame->loadXFLR5File(PathName);
 
-            if      (iApp == XFLR5::MIAREX)        m_pMainFrame->onMiarex();
-            else if (iApp == XFLR5::XFOILANALYSIS) m_pMainFrame->onXDirect();
+            if      (iApp == Xfl::MIAREX)        m_pMainFrame->onMiarex();
+            else if (iApp == Xfl::XFOILANALYSIS) m_pMainFrame->onXDirect();
         }
     }
 
@@ -243,14 +243,14 @@ void XFLR5App::addStandardBtnStrings()
 
 bool XFLR5App::event(QEvent *event)
 {
-    int iApp = XFLR5::NOAPP;
+    int iApp = Xfl::NOAPP;
     switch (event->type())
     {
         case QEvent::FileOpen:
         {
             iApp = MainFrame::self()->loadXFLR5File(static_cast<QFileOpenEvent *>(event)->file());
-            if (iApp == XFLR5::MIAREX)             MainFrame::self()->onMiarex();
-            else if (iApp == XFLR5::XFOILANALYSIS) MainFrame::self()->onXDirect();
+            if (iApp == Xfl::MIAREX)             MainFrame::self()->onMiarex();
+            else if (iApp == Xfl::XFOILANALYSIS) MainFrame::self()->onXDirect();
 
             return true;
         }

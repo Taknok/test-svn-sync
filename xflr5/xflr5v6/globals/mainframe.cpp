@@ -38,9 +38,9 @@
 
 #include <design/afoil.h>
 #include <glcontextinfo/opengldlg.h>
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <globals/mainframe.h>
-#include <globals/trace.h>
+#include <xflcore/trace.h>
 #include <graph/graphdlg.h>
 #include <gui_objects/splinefoil.h>
 #include <miarex/analysis/panelanalysisdlg.h>
@@ -153,11 +153,11 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
     //    Settings::s_StyleSheetName = "xflr5_style";
     Settings::s_StyleSheetName = "";
 
-    m_iApp = XFLR5::NOAPP;
+    m_iApp = Xfl::NOAPP;
     createDockWindows();
 
-    m_ImageFormat = XFLR5::PNG;
-    Settings::s_ExportFileType = XFLR5::TXT;
+    m_ImageFormat = Xfl::PNG;
+    Settings::s_ExportFileType = Xfl::TXT;
 
     m_bAutoLoadLast = false;
     m_bAutoSave     = false;
@@ -244,7 +244,7 @@ MainFrame::MainFrame(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(paren
 
     s_bSaved     = true;
 
-    m_iApp = XFLR5::NOAPP;
+    m_iApp = Xfl::NOAPP;
     m_pctrlAFoilToolBar->hide();
     m_pctrlXDirectToolBar->hide();
     m_pctrlXInverseToolBar->hide();
@@ -2972,7 +2972,7 @@ void MainFrame::deleteProject(bool bClosing)
 
         m_pMiarex->setPlane();
 
-        if(m_iApp==XFLR5::MIAREX) m_pMiarex->setControls();
+        if(m_iApp==Xfl::MIAREX) m_pMiarex->setControls();
 
         m_pXDirect->setCurFoil(nullptr);
         m_pXDirect->setCurPolar(nullptr);
@@ -3120,20 +3120,20 @@ void MainFrame::keyPressEvent(QKeyEvent *pEvent)
         }
     }
 
-    if(m_iApp == XFLR5::XFOILANALYSIS && m_pXDirect)
+    if(m_iApp == Xfl::XFOILANALYSIS && m_pXDirect)
     {
         return m_pXDirect->keyPressEvent(pEvent);
     }
-    else if(m_iApp == XFLR5::MIAREX && m_pMiarex)
+    else if(m_iApp == Xfl::MIAREX && m_pMiarex)
     {
         return m_pMiarex->keyPressEvent(pEvent);
     }
-    else if(m_iApp == XFLR5::DIRECTDESIGN && m_pAFoil)
+    else if(m_iApp == Xfl::DIRECTDESIGN && m_pAFoil)
     {
         return m_pAFoil->keyPressEvent(pEvent);
 
     }
-    else if(m_iApp == XFLR5::INVERSEDESIGN && m_pXInverse)
+    else if(m_iApp == Xfl::INVERSEDESIGN && m_pXInverse)
     {
         return m_pXInverse->keyPressEvent(pEvent);
     }
@@ -3198,11 +3198,11 @@ void MainFrame::keyPressEvent(QKeyEvent *pEvent)
 
 void MainFrame::keyReleaseEvent(QKeyEvent *pEvent)
 {
-    if(m_iApp == XFLR5::XFOILANALYSIS && m_pXDirect)
+    if(m_iApp == Xfl::XFOILANALYSIS && m_pXDirect)
     {
         m_pXDirect->keyReleaseEvent(pEvent);
     }
-    else if(m_iApp == XFLR5::MIAREX && m_pMiarex)
+    else if(m_iApp == Xfl::MIAREX && m_pMiarex)
     {
         if (pEvent->key()==Qt::Key_Control)
         {
@@ -3210,11 +3210,11 @@ void MainFrame::keyReleaseEvent(QKeyEvent *pEvent)
         }
         else m_pMiarex->keyReleaseEvent(pEvent);
     }
-    else if(m_iApp == XFLR5::DIRECTDESIGN && m_pAFoil)
+    else if(m_iApp == Xfl::DIRECTDESIGN && m_pAFoil)
     {
         m_pAFoil->keyReleaseEvent(pEvent);
     }
-    else if(m_iApp == XFLR5::INVERSEDESIGN && m_pXInverse)
+    else if(m_iApp == Xfl::INVERSEDESIGN && m_pXInverse)
     {
         m_pXInverse->keyReleaseEvent(pEvent);
     }
@@ -3378,8 +3378,8 @@ bool MainFrame::loadSettings()
 
         Settings::s_StyleName = settings.value("StyleName","").toString();
         int k = settings.value("ExportFileType", 0).toInt();
-        if (k==0) Settings::s_ExportFileType = XFLR5::TXT;
-        else      Settings::s_ExportFileType = XFLR5::CSV;
+        if (k==0) Settings::s_ExportFileType = Xfl::TXT;
+        else      Settings::s_ExportFileType = Xfl::CSV;
 
         s_LanguageFilePath = settings.value("LanguageFilePath").toString();
         m_GraphExportFilter = settings.value("GraphExportFilter",".csv").toString();
@@ -3433,16 +3433,16 @@ bool MainFrame::loadSettings()
         switch(settings.value("ImageFormat").toInt())
         {
             case 0:
-                m_ImageFormat = XFLR5::PNG;
+                m_ImageFormat = Xfl::PNG;
                 break;
             case 1:
-                m_ImageFormat = XFLR5::JPEG;
+                m_ImageFormat = Xfl::JPEG;
                 break;
             case 2:
-                m_ImageFormat = XFLR5::BMP;
+                m_ImageFormat = Xfl::BMP;
                 break;
             default:
-                m_ImageFormat = XFLR5::PNG;
+                m_ImageFormat = Xfl::PNG;
                 break;
         }
 
@@ -3487,14 +3487,14 @@ MainFrame* MainFrame::self()
 }
 
 
-XFLR5::enumApp MainFrame::loadXFLR5File(QString pathname)
+Xfl::enumApp MainFrame::loadXFLR5File(QString pathname)
 {
     QFile XFile(pathname);
     if (!XFile.open(QIODevice::ReadOnly))
     {
         QString strange = tr("Could not open the file\n")+pathname;
         QMessageBox::information(window(), tr("Info"), strange);
-        return XFLR5::NOAPP;
+        return Xfl::NOAPP;
     }
 
     QString end = pathname.right(4).toLower();
@@ -3525,7 +3525,7 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString pathname)
 //        addRecentFile(pathname);
         setSaveState(false);
         m_pXDirect->setControls();
-        return XFLR5::XFOILANALYSIS;
+        return Xfl::XFOILANALYSIS;
     }
     else if(end==".dat")
     {
@@ -3550,17 +3550,17 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString pathname)
             setSaveState(false);
 //            addRecentFile(pathname);
 
-            if(m_iApp==XFLR5::XFOILANALYSIS)
+            if(m_iApp==Xfl::XFOILANALYSIS)
             {
                 m_pXDirect->setControls();
                 m_pXDirect->setFoil(pFoil);
 
-                return XFLR5::XFOILANALYSIS;
+                return Xfl::XFOILANALYSIS;
             }
-            else if(m_iApp==XFLR5::DIRECTDESIGN)  m_pAFoil->selectFoil(pFoil);
+            else if(m_iApp==Xfl::DIRECTDESIGN)  m_pAFoil->selectFoil(pFoil);
 
 
-            return XFLR5::DIRECTDESIGN;
+            return Xfl::DIRECTDESIGN;
         }
     }
     else if(end==".wpa")
@@ -3572,14 +3572,14 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString pathname)
             if(resp==QMessageBox::Cancel)
             {
                 XFile.close();
-                return XFLR5::NOAPP;
+                return Xfl::NOAPP;
             }
             else if (resp==QMessageBox::Yes)
             {
                 if(!saveProject(m_FileName))
                 {
                     XFile.close();
-                    return XFLR5::NOAPP;
+                    return Xfl::NOAPP;
                 }
             }
         }
@@ -3601,8 +3601,8 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString pathname)
 
         XFile.close();
 
-        if(Objects3d::s_oaPlane.size()) return XFLR5::MIAREX;
-        else                            return XFLR5::XFOILANALYSIS;
+        if(Objects3d::s_oaPlane.size()) return Xfl::MIAREX;
+        else                            return Xfl::XFOILANALYSIS;
     }
     else if(end==".xfl")
     {
@@ -3613,14 +3613,14 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString pathname)
             if(resp==QMessageBox::Cancel)
             {
                 XFile.close();
-                return XFLR5::NOAPP;
+                return Xfl::NOAPP;
             }
             else if (resp==QMessageBox::Yes)
             {
                 if(!saveProject(m_FileName))
                 {
                     XFile.close();
-                    return XFLR5::NOAPP;
+                    return Xfl::NOAPP;
                 }
             }
         }
@@ -3641,14 +3641,14 @@ XFLR5::enumApp MainFrame::loadXFLR5File(QString pathname)
 
         XFile.close();
 
-        if(Objects3d::s_oaPlane.size()) return XFLR5::MIAREX;
-        else                            return XFLR5::XFOILANALYSIS;
+        if(Objects3d::s_oaPlane.size()) return Xfl::MIAREX;
+        else                            return Xfl::XFOILANALYSIS;
     }
 
 
     XFile.close();
 
-    return XFLR5::NOAPP;
+    return Xfl::NOAPP;
 }
 
 
@@ -3675,7 +3675,7 @@ void MainFrame::onAFoil()
     m_pXDirect->stopAnimate();
     hideDockWindows();
 
-    m_iApp = XFLR5::DIRECTDESIGN;
+    m_iApp = Xfl::DIRECTDESIGN;
 
     m_pctrlAFoilToolBar->show();
     m_pctrlAFoilWidget->show();
@@ -3757,19 +3757,19 @@ void MainFrame::onInsertProject()
     XFile.close();
     setSaveState(false);
 
-    if(m_iApp == XFLR5::MIAREX)
+    if(m_iApp == Xfl::MIAREX)
     {
         updatePlaneListBox();
         m_pMiarex->setPlane();
         Miarex::s_bResetCurves = true;
     }
-    else if(m_iApp == XFLR5::XFOILANALYSIS)
+    else if(m_iApp == Xfl::XFOILANALYSIS)
     {
         if(m_pXDirect->m_bPolarView) m_pXDirect->createPolarCurves();
         else                         m_pXDirect->createOppCurves();
         updateFoilListBox();
     }
-    else if(m_iApp == XFLR5::DIRECTDESIGN)
+    else if(m_iApp == Xfl::DIRECTDESIGN)
     {
         m_pAFoil->fillFoilTable();
         m_pAFoil->selectFoil();
@@ -3783,12 +3783,12 @@ void MainFrame::onHighlightOperatingPoint()
     Graph::setOppHighlighting(!Graph::isHighLighting());
     m_pHighlightOppAct->setChecked(Graph::isHighLighting());
 
-    if(m_iApp == XFLR5::MIAREX)
+    if(m_iApp == Xfl::MIAREX)
     {
         Miarex::s_bResetCurves = true;
         m_pMiarex->updateView();
     }
-    else if(m_iApp == XFLR5::XFOILANALYSIS)
+    else if(m_iApp == Xfl::XFOILANALYSIS)
     {
         m_pXDirect->m_bResetCurves = true;
         m_pXDirect->updateView();
@@ -3801,7 +3801,7 @@ void MainFrame::onLoadFile()
 {
     QStringList PathNames;
     QString PathName;
-    XFLR5::enumApp App  = XFLR5::NOAPP;
+    Xfl::enumApp App  = Xfl::NOAPP;
     bool warn_non_airfoil_multiload = false;
 
     PathNames = QFileDialog::getOpenFileNames(this, tr("Open File"),
@@ -3837,18 +3837,18 @@ void MainFrame::onLoadFile()
         App = loadXFLR5File(PathName);
     }
 
-    if(m_iApp==XFLR5::NOAPP)
+    if(m_iApp==Xfl::NOAPP)
     {
         m_iApp = App;
 
-        if(m_iApp==XFLR5::MIAREX) onMiarex();
+        if(m_iApp==Xfl::MIAREX) onMiarex();
         else                      onXDirect();
     }
 
     if(App==0)
     {
     }
-    else if(m_iApp==XFLR5::XFOILANALYSIS)
+    else if(m_iApp==Xfl::XFOILANALYSIS)
     {
         if(Objects2d::polarCount())
         {
@@ -3858,7 +3858,7 @@ void MainFrame::onLoadFile()
         updateFoilListBox();
         updateView();
     }
-    else if(m_iApp==XFLR5::MIAREX)
+    else if(m_iApp==Xfl::MIAREX)
     {
         updatePlaneListBox();
         m_pMiarex->setPlane();
@@ -3867,13 +3867,13 @@ void MainFrame::onLoadFile()
         m_pMiarex->setControls();
         updateView();
     }
-    else if(m_iApp==XFLR5::DIRECTDESIGN)
+    else if(m_iApp==Xfl::DIRECTDESIGN)
     {
         m_pAFoil->setAFoilParams();
         m_pAFoil->selectFoil(XDirect::curFoil());
         updateView();
     }
-    else if(m_iApp==XFLR5::INVERSEDESIGN)
+    else if(m_iApp==Xfl::INVERSEDESIGN)
     {
         onXInverse();
         updateView();
@@ -3963,7 +3963,7 @@ void MainFrame::onResetSettings()
 
 void MainFrame::onRestoreToolbars()
 {
-    if(m_iApp==XFLR5::XFOILANALYSIS)
+    if(m_iApp==Xfl::XFOILANALYSIS)
     {
         m_pctrlXInverseToolBar->hide();
         m_pctrlAFoilToolBar->hide();
@@ -3978,7 +3978,7 @@ void MainFrame::onRestoreToolbars()
         m_pctrlXDirectToolBar->show();
         m_pctrlXDirectWidget->show();
     }
-    else if(m_iApp==XFLR5::DIRECTDESIGN)
+    else if(m_iApp==Xfl::DIRECTDESIGN)
     {
         m_pctrlXInverseToolBar->hide();
         m_pctrlMiarexToolBar->hide();
@@ -3993,7 +3993,7 @@ void MainFrame::onRestoreToolbars()
         m_pctrlAFoilToolBar->show();
         m_pctrlAFoilWidget->show();
     }
-    else if(m_iApp==XFLR5::INVERSEDESIGN)
+    else if(m_iApp==Xfl::INVERSEDESIGN)
     {
         m_pctrlAFoilToolBar->hide();
         m_pctrlMiarexToolBar->hide();
@@ -4008,7 +4008,7 @@ void MainFrame::onRestoreToolbars()
         m_pctrlXInverseToolBar->show();
         m_pctrlXInverseWidget->show();
     }
-    else if(m_iApp==XFLR5::MIAREX)
+    else if(m_iApp==Xfl::MIAREX)
     {
         m_pctrlXInverseToolBar->hide();
         m_pctrlAFoilToolBar->hide();
@@ -4083,17 +4083,17 @@ void MainFrame::onSaveViewToImageFile()
 
     switch(m_ImageFormat)
     {
-        case XFLR5::PNG :
+        case Xfl::PNG :
         {
             Filter = "Portable Network Graphics (*.png)";
             break;
         }
-        case XFLR5::JPEG :
+        case Xfl::JPEG :
         {
             Filter = "JPEG (*.jpg)";
             break;
         }
-        case XFLR5::BMP :
+        case Xfl::BMP :
         {
             Filter = "Windows Bitmap (*.bmp)";
             break;
@@ -4113,42 +4113,42 @@ void MainFrame::onSaveViewToImageFile()
     if(Filter == "Portable Network Graphics (*.png)")
     {
         if(FileName.right(4)!=".png") FileName+= ".png";
-        m_ImageFormat = XFLR5::PNG;
+        m_ImageFormat = Xfl::PNG;
     }
     else if(Filter == "JPEG (*.jpg)")
     {
         if(FileName.right(4)!=".jpg") FileName+= ".jpg";
-        m_ImageFormat = XFLR5::JPEG;
+        m_ImageFormat = Xfl::JPEG;
     }
     else if(Filter == "Windows Bitmap (*.bmp)")
     {
         if(FileName.right(4)!=".bmp") FileName+= ".bmp";
-        m_ImageFormat = XFLR5::BMP;
+        m_ImageFormat = Xfl::BMP;
     }
 
     switch(m_iApp)
     {
-        case XFLR5::XFOILANALYSIS:
+        case Xfl::XFOILANALYSIS:
         {
             QPixmap pix = m_pXDirectTileWidget->grab();
             pix.save(FileName, "PNG");
             return;
         }
-        case XFLR5::DIRECTDESIGN:
+        case Xfl::DIRECTDESIGN:
         {
             QPixmap pix = m_pDirect2dWidget->grab();
             pix.save(FileName, "PNG");
             return;
         }
-        case XFLR5::INVERSEDESIGN:
+        case Xfl::INVERSEDESIGN:
         {
             QPixmap pix = m_p2dWidget->grab();
             pix.save(FileName, "PNG");
             return;
         }
-        case XFLR5::MIAREX:
+        case Xfl::MIAREX:
         {
-            if(m_pMiarex->m_iView==XFLR5::W3DVIEW)
+            if(m_pMiarex->m_iView==Xfl::W3DVIEW)
             {
                 QMessageBox::StandardButton reply = QMessageBox::question(this, "3D save option", tr("Set a transparent background ?"), QMessageBox::Yes|QMessageBox::No);
                 if (reply == QMessageBox::Yes)
@@ -4207,7 +4207,7 @@ void MainFrame::onSelChangeWPolar(int sel)
     QString strong;
     //    int sel = m_pctrlPlanePolar->currentIndex();
     if (sel>=0) strong = m_pcbPlanePolar->itemText(sel);
-    m_iApp = XFLR5::MIAREX;
+    m_iApp = Xfl::MIAREX;
     m_pMiarex->setWPolar(false, strong);
     m_pMiarex->setControls();
     m_pMiarex->updateView();
@@ -4239,7 +4239,7 @@ void MainFrame::onSelChangePlaneOpp(int sel)
         double x = locale().toDouble(strong, &bOK);
         if(bOK)
         {
-            m_iApp = XFLR5::MIAREX;
+            m_iApp = Xfl::MIAREX;
             m_pMiarex->setPlaneOpp(false, x);
             m_pMiarex->updateView();
         }
@@ -4267,7 +4267,7 @@ void MainFrame::onSelChangeFoil(int sel)
     m_pXDirect->setCurFoil(Objects2d::foil(strong));
     m_pXDirect->setFoil(XDirect::curFoil());
     m_pXDirect->setPolar();
-    m_iApp = XFLR5::XFOILANALYSIS;
+    m_iApp = Xfl::XFOILANALYSIS;
     updatePolarListBox();
     m_pXDirect->setControls();
     updateView();
@@ -4282,7 +4282,7 @@ void MainFrame::onSelChangePolar(int sel)
     QString strong;
     //    int selNew = m_pctrlPolar->currentIndex();
     if (sel>=0) strong = m_pcbPolar->itemText(sel);
-    m_iApp = XFLR5::XFOILANALYSIS;
+    m_iApp = Xfl::XFOILANALYSIS;
 
 
     m_pXDirect->setPolar(Objects2d::getPolar(XDirect::curFoil(), strong));
@@ -4300,7 +4300,7 @@ void MainFrame::onSelChangeOpp(int sel)
     QString strong;
 
     if (sel>=0) strong = m_pcbOpPoint->itemText(sel);
-    m_iApp = XFLR5::XFOILANALYSIS;
+    m_iApp = Xfl::XFOILANALYSIS;
 
     double Alpha=0;
     bool bOK=false;
@@ -4331,7 +4331,7 @@ void MainFrame::onXDirect()
 {
     m_pMiarex->stopAnimate();
 
-    m_iApp = XFLR5::XFOILANALYSIS;
+    m_iApp = Xfl::XFOILANALYSIS;
 
     hideDockWindows();
     m_pctrlXDirectToolBar->show();
@@ -4352,7 +4352,7 @@ void MainFrame::onXDirect()
 void MainFrame::onMiarex()
 {
     m_pXDirect->stopAnimate();
-    m_iApp = XFLR5::MIAREX;
+    m_iApp = Xfl::MIAREX;
 
     hideDockWindows();
     m_pctrlMiarexToolBar->show();
@@ -4377,7 +4377,7 @@ void MainFrame::onXInverse()
     m_pMiarex->stopAnimate();
 
     //    pXInverse->SetScale();
-    m_iApp = XFLR5::INVERSEDESIGN;
+    m_iApp = Xfl::INVERSEDESIGN;
 
     hideDockWindows();
     m_pctrlXInverseToolBar->show();
@@ -4397,7 +4397,7 @@ void MainFrame::onXInverseMixed()
     m_pMiarex->stopAnimate();
 
     //    pXInverse->SetScale();
-    m_iApp = XFLR5::INVERSEDESIGN;
+    m_iApp = Xfl::INVERSEDESIGN;
 
     hideDockWindows();
     m_pctrlXInverseToolBar->show();
@@ -4417,10 +4417,10 @@ void MainFrame::onOpenRecentFile()
     QAction *action = qobject_cast<QAction *>(sender());
     if (!action) return;
 
-    XFLR5::enumApp App = loadXFLR5File(action->data().toString());
-    if(m_iApp==XFLR5::NOAPP) m_iApp = App;
+    Xfl::enumApp App = loadXFLR5File(action->data().toString());
+    if(m_iApp==Xfl::NOAPP) m_iApp = App;
 
-    if(App==XFLR5::NOAPP)
+    if(App==Xfl::NOAPP)
     {
         m_iApp = App;
         QString FileName = action->data().toString();
@@ -4428,7 +4428,7 @@ void MainFrame::onOpenRecentFile()
         updateRecentFileActions();
     }
 
-    else if(m_iApp==XFLR5::XFOILANALYSIS)
+    else if(m_iApp==Xfl::XFOILANALYSIS)
     {
         if(Objects2d::polarCount())
         {
@@ -4438,18 +4438,18 @@ void MainFrame::onOpenRecentFile()
         updateFoilListBox();
         onXDirect();
     }
-    else if(m_iApp==XFLR5::MIAREX)
+    else if(m_iApp==Xfl::MIAREX)
     {
         onMiarex();
         m_pMiarex->setScale();
     }
-    else if(m_iApp==XFLR5::DIRECTDESIGN)
+    else if(m_iApp==Xfl::DIRECTDESIGN)
     {
         m_pAFoil->setAFoilParams();
         onAFoil();
         updateView();
     }
-    else if(m_iApp==XFLR5::INVERSEDESIGN)
+    else if(m_iApp==Xfl::INVERSEDESIGN)
     {
         onXInverse();
         updateView();
@@ -4659,11 +4659,11 @@ bool MainFrame::serializePlaneProject(QDataStream &ar)
     ar << Units::momentUnitIndex();
 
     //Save default Polar data. Not in the Settings, since this is Project dependant
-    if(WPolarDlg::s_WPolar.polarType()==XFLR5::FIXEDSPEEDPOLAR)      ar<<1;
-    else if(WPolarDlg::s_WPolar.polarType()==XFLR5::FIXEDLIFTPOLAR)  ar<<2;
-    else if(WPolarDlg::s_WPolar.polarType()==XFLR5::FIXEDAOAPOLAR)   ar<<4;
-    else if(WPolarDlg::s_WPolar.polarType()==XFLR5::BETAPOLAR)       ar<<5;
-    else if(WPolarDlg::s_WPolar.polarType()==XFLR5::STABILITYPOLAR)  ar<<7;
+    if(WPolarDlg::s_WPolar.polarType()==Xfl::FIXEDSPEEDPOLAR)      ar<<1;
+    else if(WPolarDlg::s_WPolar.polarType()==Xfl::FIXEDLIFTPOLAR)  ar<<2;
+    else if(WPolarDlg::s_WPolar.polarType()==Xfl::FIXEDAOAPOLAR)   ar<<4;
+    else if(WPolarDlg::s_WPolar.polarType()==Xfl::BETAPOLAR)       ar<<5;
+    else if(WPolarDlg::s_WPolar.polarType()==Xfl::STABILITYPOLAR)  ar<<7;
     else ar << 0;
 
     if(WPolarDlg::s_WPolar.isLLTMethod())             ar << 1;
@@ -4797,7 +4797,7 @@ void MainFrame::saveSettings()
         settings.setValue("SizeMaximized", isMaximized());
         settings.setValue("StyleName", Settings::s_StyleName);
 
-        if (Settings::s_ExportFileType==XFLR5::TXT) settings.setValue("ExportFileType", 0);
+        if (Settings::s_ExportFileType==Xfl::TXT) settings.setValue("ExportFileType", 0);
         else                                        settings.setValue("ExportFileType", 1);
 
         settings.setValue("GraphExportFilter", m_GraphExportFilter);
@@ -4867,37 +4867,37 @@ void MainFrame::saveSettings()
 
 void MainFrame::setMainFrameCentralWidget()
 {
-    if(m_iApp==XFLR5::NOAPP)
+    if(m_iApp==Xfl::NOAPP)
     {
         m_pctrlCentralWidget->setCurrentWidget(&m_VoidWidget);
     }
-    else if(m_iApp==XFLR5::MIAREX)
+    else if(m_iApp==Xfl::MIAREX)
     {
-        if (m_pMiarex->m_iView==XFLR5::WOPPVIEW || m_pMiarex->m_iView==XFLR5::WPOLARVIEW || m_pMiarex->m_iView==XFLR5::WCPVIEW ||
-            m_pMiarex->m_iView==XFLR5::STABPOLARVIEW  || m_pMiarex->m_iView==XFLR5::STABTIMEVIEW)
+        if (m_pMiarex->m_iView==Xfl::WOPPVIEW || m_pMiarex->m_iView==Xfl::WPOLARVIEW || m_pMiarex->m_iView==Xfl::WCPVIEW ||
+            m_pMiarex->m_iView==Xfl::STABPOLARVIEW  || m_pMiarex->m_iView==Xfl::STABTIMEVIEW)
         {
             m_pctrlCentralWidget->setCurrentWidget(m_pMiarexTileWidget);
             m_pMiarex->setGraphTiles();
             m_pMiarexTileWidget->setFocus();
         }
-        else if(m_pMiarex->m_iView==XFLR5::W3DVIEW)
+        else if(m_pMiarex->m_iView==Xfl::W3DVIEW)
         {
             m_pctrlCentralWidget->setCurrentWidget(m_pgl3dMiarexView);
             m_pgl3dMiarexView->setFocus();
         }
     }
-    else if(m_iApp==XFLR5::DIRECTDESIGN)
+    else if(m_iApp==Xfl::DIRECTDESIGN)
     {
         m_pctrlCentralWidget->setCurrentWidget(m_pDirect2dWidget);
         m_pDirect2dWidget->setFocus();
     }
-    else if(m_iApp==XFLR5::XFOILANALYSIS)
+    else if(m_iApp==Xfl::XFOILANALYSIS)
     {
         m_pctrlCentralWidget->setCurrentWidget(m_pXDirectTileWidget);
         m_pXDirect->setGraphTiles();
         m_pXDirectTileWidget->setFocus();
     }
-    else if(m_iApp==XFLR5::INVERSEDESIGN)
+    else if(m_iApp==Xfl::INVERSEDESIGN)
     {
         m_pctrlCentralWidget->setCurrentWidget(m_p2dWidget);
         m_p2dWidget->setFocus();
@@ -4973,7 +4973,7 @@ void MainFrame::selectOpPoint(OpPoint *pOpp)
 
         double val = locale().toDouble(strange, &bOK);
 
-        if(pCurPlr->polarType() == XFLR5::FIXEDAOAPOLAR)
+        if(pCurPlr->polarType() == Xfl::FIXEDAOAPOLAR)
         {
             if(bOK && qAbs(val-pOpp->Reynolds())<1.0)
             {
@@ -5042,10 +5042,10 @@ void MainFrame::selectPlaneOpp(PlaneOpp *pPlaneOpp)
 
     if(pPlaneOpp)
     {
-        if(pPlaneOpp->polarType()<XFLR5::FIXEDAOAPOLAR)        x = pPlaneOpp->m_Alpha;
-        else if(pPlaneOpp->polarType()==XFLR5::FIXEDAOAPOLAR)  x = pPlaneOpp->m_QInf;
-        else if(pPlaneOpp->polarType()==XFLR5::BETAPOLAR)      x = pPlaneOpp->m_Beta;
-        else if(pPlaneOpp->polarType()==XFLR5::STABILITYPOLAR) x = pPlaneOpp->m_Ctrl;
+        if(pPlaneOpp->polarType()<Xfl::FIXEDAOAPOLAR)        x = pPlaneOpp->m_Alpha;
+        else if(pPlaneOpp->polarType()==Xfl::FIXEDAOAPOLAR)  x = pPlaneOpp->m_QInf;
+        else if(pPlaneOpp->polarType()==Xfl::BETAPOLAR)      x = pPlaneOpp->m_Beta;
+        else if(pPlaneOpp->polarType()==Xfl::STABILITYPOLAR) x = pPlaneOpp->m_Ctrl;
     }
     //Selects a pOpp in the combobox
     WPolar *pCurWPlr = m_pMiarex->m_pCurWPolar;
@@ -5067,7 +5067,7 @@ void MainFrame::selectPlaneOpp(PlaneOpp *pPlaneOpp)
         strange = m_pcbPlaneOpp->itemText(i);
         val = locale().toDouble(strange, &bOK);
 
-        if(pCurWPlr->polarType()<XFLR5::FIXEDAOAPOLAR)
+        if(pCurWPlr->polarType()<Xfl::FIXEDAOAPOLAR)
         {
             if(bOK && qAbs(val-x)<0.001)
             {
@@ -5075,7 +5075,7 @@ void MainFrame::selectPlaneOpp(PlaneOpp *pPlaneOpp)
                 break;
             }
         }
-        else if(pCurWPlr->polarType()==XFLR5::FIXEDAOAPOLAR)
+        else if(pCurWPlr->polarType()==Xfl::FIXEDAOAPOLAR)
         {
             if(bOK && qAbs(val-x)<1.0)
             {
@@ -5083,7 +5083,7 @@ void MainFrame::selectPlaneOpp(PlaneOpp *pPlaneOpp)
                 break;
             }
         }
-        else if(pCurWPlr->polarType()==XFLR5::BETAPOLAR)
+        else if(pCurWPlr->polarType()==Xfl::BETAPOLAR)
         {
             if(bOK && qAbs(val-x)<0.001)
             {
@@ -5091,7 +5091,7 @@ void MainFrame::selectPlaneOpp(PlaneOpp *pPlaneOpp)
                 break;
             }
         }
-        else if(pCurWPlr->polarType()==XFLR5::STABILITYPOLAR)
+        else if(pCurWPlr->polarType()==Xfl::STABILITYPOLAR)
         {
             if(bOK && qAbs(val-x)<.001)
             {
@@ -5226,18 +5226,18 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
         {
             //Load the default Polar data. Not in the Settings, since this is Project dependant
             ar >> n;
-            if     (n==1) WPolarDlg::s_WPolar.setPolarType(XFLR5::FIXEDSPEEDPOLAR);
-            else if(n==2) WPolarDlg::s_WPolar.setPolarType(XFLR5::FIXEDLIFTPOLAR);
-            else if(n==4) WPolarDlg::s_WPolar.setPolarType(XFLR5::FIXEDAOAPOLAR);
-            else if(n==5) WPolarDlg::s_WPolar.setPolarType(XFLR5::BETAPOLAR);
-            else if(n==7) WPolarDlg::s_WPolar.setPolarType(XFLR5::STABILITYPOLAR);
+            if     (n==1) WPolarDlg::s_WPolar.setPolarType(Xfl::FIXEDSPEEDPOLAR);
+            else if(n==2) WPolarDlg::s_WPolar.setPolarType(Xfl::FIXEDLIFTPOLAR);
+            else if(n==4) WPolarDlg::s_WPolar.setPolarType(Xfl::FIXEDAOAPOLAR);
+            else if(n==5) WPolarDlg::s_WPolar.setPolarType(Xfl::BETAPOLAR);
+            else if(n==7) WPolarDlg::s_WPolar.setPolarType(Xfl::STABILITYPOLAR);
 
             ar >> n;
-            if(n==1)      WPolarDlg::s_WPolar.setAnalysisMethod(XFLR5::LLTMETHOD);
-            else if(n==2) WPolarDlg::s_WPolar.setAnalysisMethod(XFLR5::VLMMETHOD);
-            else if(n==3) WPolarDlg::s_WPolar.setAnalysisMethod(XFLR5::PANEL4METHOD);
-            else if(n==4) WPolarDlg::s_WPolar.setAnalysisMethod(XFLR5::TRIUNIMETHOD);
-            else if(n==5) WPolarDlg::s_WPolar.setAnalysisMethod(XFLR5::TRILINMETHOD);
+            if(n==1)      WPolarDlg::s_WPolar.setAnalysisMethod(Xfl::LLTMETHOD);
+            else if(n==2) WPolarDlg::s_WPolar.setAnalysisMethod(Xfl::VLMMETHOD);
+            else if(n==3) WPolarDlg::s_WPolar.setAnalysisMethod(Xfl::PANEL4METHOD);
+            else if(n==4) WPolarDlg::s_WPolar.setAnalysisMethod(Xfl::TRIUNIMETHOD);
+            else if(n==5) WPolarDlg::s_WPolar.setAnalysisMethod(Xfl::TRILINMETHOD);
 
             ar >> dble;    WPolarDlg::s_WPolar.setMass(dble);
             ar >> WPolarDlg::s_WPolar.m_QInfSpec;
@@ -5282,14 +5282,14 @@ bool MainFrame::serializeProjectXFL(QDataStream &ar, bool bIsStoring)
                 if(pPlane)
                 {
                     Objects3d::s_oaWPolar.append(pWPolar);
-                    if(pWPolar->referenceDim()==XFLR5::PLANFORMREFDIM)
+                    if(pWPolar->referenceDim()==Xfl::PLANFORMREFDIM)
                     {
                         pWPolar->setReferenceSpanLength(pPlane->planformSpan());
                         double area  = pPlane->planformArea();
                         if(pPlane->biPlane()) area += pPlane->wing2()->m_PlanformArea;
                         pWPolar->setReferenceArea(area);
                     }
-                    else if(pWPolar->referenceDim()==XFLR5::PROJECTEDREFDIM)
+                    else if(pWPolar->referenceDim()==Xfl::PROJECTEDREFDIM)
                     {
                         pWPolar->setReferenceSpanLength(pPlane->projectedSpan());
                         double area = pPlane->projectedArea();
@@ -5466,11 +5466,11 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
             if(ArchiveFormat>=100004)
             {
                 ar >>k;
-                if     (k==1) WPolarDlg::s_WPolar.setPolarType(XFLR5::FIXEDSPEEDPOLAR);
-                else if(k==2) WPolarDlg::s_WPolar.setPolarType(XFLR5::FIXEDLIFTPOLAR);
-                else if(k==4) WPolarDlg::s_WPolar.setPolarType(XFLR5::FIXEDAOAPOLAR);
-                else if(k==5) WPolarDlg::s_WPolar.setPolarType(XFLR5::BETAPOLAR);
-                else if(k==7) WPolarDlg::s_WPolar.setPolarType(XFLR5::STABILITYPOLAR);
+                if     (k==1) WPolarDlg::s_WPolar.setPolarType(Xfl::FIXEDSPEEDPOLAR);
+                else if(k==2) WPolarDlg::s_WPolar.setPolarType(Xfl::FIXEDLIFTPOLAR);
+                else if(k==4) WPolarDlg::s_WPolar.setPolarType(Xfl::FIXEDAOAPOLAR);
+                else if(k==5) WPolarDlg::s_WPolar.setPolarType(Xfl::BETAPOLAR);
+                else if(k==7) WPolarDlg::s_WPolar.setPolarType(Xfl::STABILITYPOLAR);
 
                 ar >> f; WPolarDlg::s_WPolar.setMass(double(f));
                 ar >> f; WPolarDlg::s_WPolar.m_QInfSpec=double(f);
@@ -5495,9 +5495,9 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
                 }
 
                 ar >> k;
-                if     (k==1) WPolarDlg::s_WPolar.setAnalysisMethod(XFLR5::LLTMETHOD);
-                else if(k==2) WPolarDlg::s_WPolar.setAnalysisMethod(XFLR5::VLMMETHOD);
-                else if(k==3) WPolarDlg::s_WPolar.setAnalysisMethod(XFLR5::PANEL4METHOD);
+                if     (k==1) WPolarDlg::s_WPolar.setAnalysisMethod(Xfl::LLTMETHOD);
+                else if(k==2) WPolarDlg::s_WPolar.setAnalysisMethod(Xfl::VLMMETHOD);
+                else if(k==3) WPolarDlg::s_WPolar.setAnalysisMethod(Xfl::PANEL4METHOD);
             }
             if(ArchiveFormat>=100006)
             {
@@ -5555,7 +5555,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
             pWPolar = new WPolar;
             bWPolarOK = pWPolar->serializeWPlrWPA(ar, bIsStoring);
             //force compatibilty
-            if(pWPolar->analysisMethod()==XFLR5::PANEL4METHOD && pWPolar->polarType()==XFLR5::STABILITYPOLAR)
+            if(pWPolar->analysisMethod()==Xfl::PANEL4METHOD && pWPolar->polarType()==Xfl::STABILITYPOLAR)
                 pWPolar->setThinSurfaces(true);
 
             if (!bWPolarOK)
@@ -5563,10 +5563,10 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
                 if(pWPolar) delete pWPolar;
                 return false;
             }
-            if(pWPolar->analysisMethod()!=XFLR5::LLTMETHOD && ArchiveFormat <100003)    pWPolar->clearData();//former VLM version was flawed
+            if(pWPolar->analysisMethod()!=Xfl::LLTMETHOD && ArchiveFormat <100003)    pWPolar->clearData();//former VLM version was flawed
             //            if(pWPolar->polarType()==STABILITYPOLAR)    pWPolar->setThinSurfaces(true);
 
-            if(pWPolar->polarFormat()!=1020 || pWPolar->polarType()!=XFLR5::STABILITYPOLAR)
+            if(pWPolar->polarFormat()!=1020 || pWPolar->polarType()!=Xfl::STABILITYPOLAR)
                 Objects3d::addWPolar(pWPolar);
         }
 
@@ -5701,7 +5701,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
                         if(pWPolar) delete pWPolar;
                         return false;
                     }
-                    if(pWPolar->analysisMethod()!=XFLR5::LLTMETHOD && ArchiveFormat <100003)
+                    if(pWPolar->analysisMethod()!=Xfl::LLTMETHOD && ArchiveFormat <100003)
                         pWPolar->clearData();
                     Objects3d::addWPolar(pWPolar);
                 }
@@ -5725,7 +5725,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 
         m_pAFoil->m_pSF->serialize(ar, bIsStoring);
 
-        if(m_iApp==XFLR5::MIAREX)
+        if(m_iApp==Xfl::MIAREX)
         {
             m_pMiarex->setPlane();
             m_pMiarex->setScale();
@@ -5740,7 +5740,7 @@ bool MainFrame::serializeProjectWPA(QDataStream &ar, bool bIsStoring)
 
 void MainFrame::setMenus()
 {
-    if(m_iApp==XFLR5::NOAPP)
+    if(m_iApp==Xfl::NOAPP)
     {
         menuBar()->clear();
         menuBar()->addMenu(m_pFileMenu);
@@ -5748,7 +5748,7 @@ void MainFrame::setMenus()
         menuBar()->addMenu(m_pOptionsMenu);
         menuBar()->addMenu(m_pHelpMenu);
     }
-    else if(m_iApp==XFLR5::XFOILANALYSIS)
+    else if(m_iApp==Xfl::XFOILANALYSIS)
     {
         menuBar()->clear();
         menuBar()->addMenu(m_pFileMenu);
@@ -5763,7 +5763,7 @@ void MainFrame::setMenus()
         menuBar()->addMenu(m_pOptionsMenu);
         menuBar()->addMenu(m_pHelpMenu);
     }
-    else if(m_iApp==XFLR5::INVERSEDESIGN)
+    else if(m_iApp==Xfl::INVERSEDESIGN)
     {
         menuBar()->clear();
         menuBar()->addMenu(m_pFileMenu);
@@ -5774,7 +5774,7 @@ void MainFrame::setMenus()
         menuBar()->addMenu(m_pOptionsMenu);
         menuBar()->addMenu(m_pHelpMenu);
     }
-    else if(m_iApp==XFLR5::DIRECTDESIGN)
+    else if(m_iApp==Xfl::DIRECTDESIGN)
     {
         menuBar()->clear();
         menuBar()->addMenu(m_pFileMenu);
@@ -5785,7 +5785,7 @@ void MainFrame::setMenus()
         menuBar()->addMenu(m_pOptionsMenu);
         menuBar()->addMenu(m_pHelpMenu);
     }
-    else if(m_iApp== XFLR5::MIAREX)
+    else if(m_iApp== Xfl::MIAREX)
     {
         menuBar()->clear();
         menuBar()->addMenu(m_pFileMenu);
@@ -5980,10 +5980,10 @@ void MainFrame::updatePOppListBox()
         PlaneOpp *pPOpp = Objects3d::s_oaPOpp.at(iPOpp);
         if (pPOpp->planeName()==pCurPlane->planeName() && pPOpp->polarName()==pCurWPlr->polarName())
         {
-            if(pCurWPlr->polarType()<XFLR5::FIXEDAOAPOLAR)        str = QString("%L1").arg(pPOpp->m_Alpha,8,'f',3);
-            else if(pCurWPlr->polarType()==XFLR5::FIXEDAOAPOLAR)  str = QString("%L1").arg(pPOpp->m_QInf,8,'f',3);
-            else if(pCurWPlr->polarType()==XFLR5::BETAPOLAR)      str = QString("%L1").arg(pPOpp->m_Beta,8,'f',3);
-            else if(pCurWPlr->polarType()==XFLR5::STABILITYPOLAR) str = QString("%L1").arg(pPOpp->m_Ctrl,8,'f',3);
+            if(pCurWPlr->polarType()<Xfl::FIXEDAOAPOLAR)        str = QString("%L1").arg(pPOpp->m_Alpha,8,'f',3);
+            else if(pCurWPlr->polarType()==Xfl::FIXEDAOAPOLAR)  str = QString("%L1").arg(pPOpp->m_QInf,8,'f',3);
+            else if(pCurWPlr->polarType()==Xfl::BETAPOLAR)      str = QString("%L1").arg(pPOpp->m_Beta,8,'f',3);
+            else if(pCurWPlr->polarType()==Xfl::STABILITYPOLAR) str = QString("%L1").arg(pPOpp->m_Ctrl,8,'f',3);
             m_pcbPlaneOpp->addItem(str);
         }
     }
@@ -6101,7 +6101,7 @@ void MainFrame::updateOppListBox()
             OpPoint *pOpp = Objects2d::oppAt(iOpp);
             if (pOpp->foilName()==XDirect::curFoil()->name() && pOpp->polarName()==pCurPlr->polarName())
             {
-                if (pCurPlr->polarType() != XFLR5::FIXEDAOAPOLAR)
+                if (pCurPlr->polarType() != Xfl::FIXEDAOAPOLAR)
                     str = QString("%L1").arg(pOpp->aoa(),8,'f',3);
                 else
                     str = QString("%L1").arg(pOpp->Reynolds(),8,'f',0);
@@ -6150,22 +6150,22 @@ void MainFrame::updateView()
 {
     switch(m_iApp)
     {
-        case XFLR5::XFOILANALYSIS:
+        case Xfl::XFOILANALYSIS:
         {
             m_pXDirect->updateView();
             break;
         }
-        case XFLR5::DIRECTDESIGN:
+        case Xfl::DIRECTDESIGN:
         {
             m_pDirect2dWidget->update();
             break;
         }
-        case XFLR5::MIAREX:
+        case Xfl::MIAREX:
         {
             m_pMiarex->updateView();
             break;
         }
-        case XFLR5::INVERSEDESIGN:
+        case Xfl::INVERSEDESIGN:
         {
             m_pXInverse->updateView();
             break;
@@ -6304,13 +6304,13 @@ void MainFrame::onManageFoils()
 
     if(mfDlg.m_bChanged) setSaveState(false);
 
-    if(m_iApp==XFLR5::XFOILANALYSIS)
+    if(m_iApp==Xfl::XFOILANALYSIS)
     {
         m_pXDirect->setFoil(mfDlg.m_pFoil);
         updateFoilListBox();
         m_pXDirect->setControls();
     }
-    else if(m_iApp==XFLR5::DIRECTDESIGN)
+    else if(m_iApp==Xfl::DIRECTDESIGN)
     {
         m_pAFoil->fillFoilTable();
         m_pAFoil->selectFoil();
@@ -6328,16 +6328,16 @@ void MainFrame::checkGraphActions()
     m_pAllGraphs->setChecked(false);
     m_pSingleGraph[0]->setEnabled(true);
 
-    if(m_iApp==XFLR5::MIAREX)
+    if(m_iApp==Xfl::MIAREX)
     {
         switch(m_pMiarex->m_iView)
         {
-            case XFLR5::WOPPVIEW:
+            case Xfl::WOPPVIEW:
             {
-                if(m_pMiarex->m_iWingView == XFLR5::ONEGRAPH)        m_pSingleGraph[m_pMiarexTileWidget->activeGraphIndex()]->setChecked(true);
-                else if(m_pMiarex->m_iWingView == XFLR5::TWOGRAPHS)  m_pTwoGraphs->setChecked(true);
-                else if(m_pMiarex->m_iWingView == XFLR5::FOURGRAPHS) m_pFourGraphs->setChecked(true);
-                else if(m_pMiarex->m_iWingView == XFLR5::ALLGRAPHS)  m_pAllGraphs->setChecked(true);
+                if(m_pMiarex->m_iWingView == Xfl::ONEGRAPH)        m_pSingleGraph[m_pMiarexTileWidget->activeGraphIndex()]->setChecked(true);
+                else if(m_pMiarex->m_iWingView == Xfl::TWOGRAPHS)  m_pTwoGraphs->setChecked(true);
+                else if(m_pMiarex->m_iWingView == Xfl::FOURGRAPHS) m_pFourGraphs->setChecked(true);
+                else if(m_pMiarex->m_iWingView == Xfl::ALLGRAPHS)  m_pAllGraphs->setChecked(true);
                 m_pSingleGraph[1]->setEnabled(true);
                 m_pSingleGraph[2]->setEnabled(true);
                 m_pSingleGraph[3]->setEnabled(true);
@@ -6348,12 +6348,12 @@ void MainFrame::checkGraphActions()
                 m_pAllGraphs->setEnabled(true);
                 break;
             }
-            case XFLR5::WPOLARVIEW:
+            case Xfl::WPOLARVIEW:
             {
-                if(m_pMiarex->m_iWPlrView == XFLR5::ONEGRAPH)        m_pSingleGraph[m_pMiarexTileWidget->activeGraphIndex()]->setChecked(true);
-                else if(m_pMiarex->m_iWPlrView == XFLR5::TWOGRAPHS)  m_pTwoGraphs->setChecked(true);
-                else if(m_pMiarex->m_iWPlrView == XFLR5::FOURGRAPHS) m_pFourGraphs->setChecked(true);
-                else if(m_pMiarex->m_iWPlrView == XFLR5::ALLGRAPHS)  m_pAllGraphs->setChecked(true);
+                if(m_pMiarex->m_iWPlrView == Xfl::ONEGRAPH)        m_pSingleGraph[m_pMiarexTileWidget->activeGraphIndex()]->setChecked(true);
+                else if(m_pMiarex->m_iWPlrView == Xfl::TWOGRAPHS)  m_pTwoGraphs->setChecked(true);
+                else if(m_pMiarex->m_iWPlrView == Xfl::FOURGRAPHS) m_pFourGraphs->setChecked(true);
+                else if(m_pMiarex->m_iWPlrView == Xfl::ALLGRAPHS)  m_pAllGraphs->setChecked(true);
                 m_pSingleGraph[1]->setEnabled(true);
                 m_pSingleGraph[2]->setEnabled(true);
                 m_pSingleGraph[3]->setEnabled(true);
@@ -6364,10 +6364,10 @@ void MainFrame::checkGraphActions()
                 m_pAllGraphs->setEnabled(true);
                 break;
             }
-            case XFLR5::STABPOLARVIEW:
+            case Xfl::STABPOLARVIEW:
             {
-                if(m_pMiarex->m_bLongitudinal== XFLR5::ONEGRAPH)      m_pSingleGraph[0]->setChecked(true);
-                else if(m_pMiarex->m_bLongitudinal== XFLR5::ONEGRAPH) m_pSingleGraph[1]->setChecked(true);
+                if(m_pMiarex->m_bLongitudinal== Xfl::ONEGRAPH)      m_pSingleGraph[0]->setChecked(true);
+                else if(m_pMiarex->m_bLongitudinal== Xfl::ONEGRAPH) m_pSingleGraph[1]->setChecked(true);
                 m_pSingleGraph[2]->setEnabled(false);
                 m_pSingleGraph[3]->setEnabled(false);
                 m_pSingleGraph[4]->setEnabled(false);
@@ -6377,12 +6377,12 @@ void MainFrame::checkGraphActions()
                 m_pAllGraphs->setEnabled(false);
                 break;
             }
-            case XFLR5::STABTIMEVIEW:
+            case Xfl::STABTIMEVIEW:
             {
-                if(m_pMiarex->m_iStabTimeView == XFLR5::ONEGRAPH)        m_pSingleGraph[m_pMiarexTileWidget->activeGraphIndex()]->setChecked(true);
-                else if(m_pMiarex->m_iStabTimeView == XFLR5::TWOGRAPHS)  m_pTwoGraphs->setChecked(true);
-                else if(m_pMiarex->m_iStabTimeView == XFLR5::FOURGRAPHS) m_pFourGraphs->setChecked(true);
-                else if(m_pMiarex->m_iStabTimeView == XFLR5::ALLGRAPHS)  m_pAllGraphs->setChecked(true);
+                if(m_pMiarex->m_iStabTimeView == Xfl::ONEGRAPH)        m_pSingleGraph[m_pMiarexTileWidget->activeGraphIndex()]->setChecked(true);
+                else if(m_pMiarex->m_iStabTimeView == Xfl::TWOGRAPHS)  m_pTwoGraphs->setChecked(true);
+                else if(m_pMiarex->m_iStabTimeView == Xfl::FOURGRAPHS) m_pFourGraphs->setChecked(true);
+                else if(m_pMiarex->m_iStabTimeView == Xfl::ALLGRAPHS)  m_pAllGraphs->setChecked(true);
                 m_pSingleGraph[1]->setEnabled(true);
                 m_pSingleGraph[2]->setEnabled(true);
                 m_pSingleGraph[3]->setEnabled(true);
@@ -6399,7 +6399,7 @@ void MainFrame::checkGraphActions()
             }
         }
     }
-    else if (m_iApp==XFLR5::XFOILANALYSIS)
+    else if (m_iApp==Xfl::XFOILANALYSIS)
     {
         if(!m_pXDirect->m_bPolarView)
         {
@@ -6416,10 +6416,10 @@ void MainFrame::checkGraphActions()
         }
         else
         {
-            if(m_pXDirect->m_iPlrView == XFLR5::ONEGRAPH)        m_pSingleGraph[m_pXDirectTileWidget->activeGraphIndex()]->setChecked(true);
-            else if(m_pXDirect->m_iPlrView == XFLR5::TWOGRAPHS)  m_pTwoGraphs->setChecked(true);
-            else if(m_pXDirect->m_iPlrView == XFLR5::FOURGRAPHS) m_pFourGraphs->setChecked(true);
-            else if(m_pXDirect->m_iPlrView == XFLR5::ALLGRAPHS)  m_pAllGraphs->setChecked(true);
+            if(m_pXDirect->m_iPlrView == Xfl::ONEGRAPH)        m_pSingleGraph[m_pXDirectTileWidget->activeGraphIndex()]->setChecked(true);
+            else if(m_pXDirect->m_iPlrView == Xfl::TWOGRAPHS)  m_pTwoGraphs->setChecked(true);
+            else if(m_pXDirect->m_iPlrView == Xfl::FOURGRAPHS) m_pFourGraphs->setChecked(true);
+            else if(m_pXDirect->m_iPlrView == Xfl::ALLGRAPHS)  m_pAllGraphs->setChecked(true);
 
             m_pSingleGraph[1]->setEnabled(true);
             m_pSingleGraph[2]->setEnabled(true);
@@ -6431,7 +6431,7 @@ void MainFrame::checkGraphActions()
             m_pAllGraphs->setEnabled(true);
         }
     }
-    else if (m_iApp==XFLR5::INVERSEDESIGN)
+    else if (m_iApp==Xfl::INVERSEDESIGN)
     {
         m_pSingleGraph[0]->setChecked(true);
     }
@@ -6442,17 +6442,17 @@ void MainFrame::onResetCurGraphScales()
 {
     switch(m_iApp)
     {
-        case XFLR5::MIAREX:
+        case Xfl::MIAREX:
         {
             m_pMiarexTileWidget->onResetCurGraphScales();
             break;
         }
-        case XFLR5::XFOILANALYSIS:
+        case Xfl::XFOILANALYSIS:
         {
             m_pXDirectTileWidget->onResetCurGraphScales();
             break;
         }
-        case XFLR5::INVERSEDESIGN:
+        case Xfl::INVERSEDESIGN:
         {
             m_pXInverse->m_QGraph.setAuto(true);
             m_pXInverse->releaseZoom();
@@ -6470,18 +6470,18 @@ void MainFrame::onExportCurGraph()
 {
     switch(m_iApp)
     {
-        case XFLR5::MIAREX:
+        case Xfl::MIAREX:
         {
             m_pMiarexTileWidget->onExportCurGraph();
             break;
         }
-        case XFLR5::XFOILANALYSIS:
+        case Xfl::XFOILANALYSIS:
         {
             if(m_pXDirect->bPolarView()) m_pXDirectTileWidget->onExportCurGraph();
             else exportGraph(&m_pXDirect->m_CpGraph);
             break;
         }
-        case XFLR5::INVERSEDESIGN:
+        case Xfl::INVERSEDESIGN:
         {
             exportGraph(&m_pXInverse->m_QGraph);
             break;
@@ -6496,17 +6496,17 @@ void MainFrame::onCurGraphSettings()
 {
     switch(m_iApp)
     {
-        case XFLR5::MIAREX:
+        case Xfl::MIAREX:
         {
             m_pMiarexTileWidget->onCurGraphSettings();
             break;
         }
-        case XFLR5::XFOILANALYSIS:
+        case Xfl::XFOILANALYSIS:
         {
             m_pXDirectTileWidget->onCurGraphSettings();
             break;
         }
-        case XFLR5::INVERSEDESIGN:
+        case Xfl::INVERSEDESIGN:
         {
             m_pXInverse->onQGraphSettings();
             break;
@@ -6521,22 +6521,22 @@ void MainFrame::onLoadLastProject()
 {
     if(!m_RecentFiles.size()) return;
 
-    XFLR5::enumApp iApp = loadXFLR5File(m_RecentFiles.at(0));
-    if(m_iApp==XFLR5::NOAPP) m_iApp = iApp;
-    if(m_iApp==XFLR5::XFOILANALYSIS)
+    Xfl::enumApp iApp = loadXFLR5File(m_RecentFiles.at(0));
+    if(m_iApp==Xfl::NOAPP) m_iApp = iApp;
+    if(m_iApp==Xfl::XFOILANALYSIS)
     {
         onXDirect();
     }
-    else if(m_iApp==XFLR5::MIAREX)
+    else if(m_iApp==Xfl::MIAREX)
     {
         onMiarex();
         m_pMiarex->setScale();
     }
-    else if(m_iApp==XFLR5::DIRECTDESIGN)
+    else if(m_iApp==Xfl::DIRECTDESIGN)
     {
         onAFoil();
     }
-    else if(m_iApp==XFLR5::INVERSEDESIGN)
+    else if(m_iApp==Xfl::INVERSEDESIGN)
     {
         if(m_pXInverse->m_bFullInverse) onXInverse();
         else                            onXInverseMixed();
@@ -6547,7 +6547,7 @@ void MainFrame::onLoadLastProject()
 void MainFrame::setNoApp()
 {
     hideDockWindows();
-    m_iApp = XFLR5::NOAPP;
+    m_iApp = Xfl::NOAPP;
     setMenus();
     setMainFrameCentralWidget();
     update();
@@ -6619,7 +6619,7 @@ void MainFrame::executeScript(QString XmlScriptName, bool bShowProgressStdIO, bo
         bool bCSV = scriptexecutor.bCSVOutput();
         if(scriptexecutor.outputPolarBin()) onMakePlrFiles(scriptexecutor.foilPolarBinOutputDirPath());
 
-        XFLR5::enumTextFileType exporttype = bCSV ? XFLR5::CSV : XFLR5::TXT;
+        Xfl::enumTextFileType exporttype = bCSV ? Xfl::CSV : Xfl::TXT;
         if(scriptexecutor.outputPolarText()) m_pXDirect->onExportAllPolarsTxt(scriptexecutor.foilPolarTextOutputDirPath(), exporttype);
         if(scriptexecutor.makeProjectFile()) onSaveProjectAs(scriptexecutor.projectFilePathName());
 
@@ -6634,7 +6634,7 @@ void MainFrame::executeScript(QString XmlScriptName, bool bShowProgressStdIO, bo
 
     if(!m_pMiarex->curPlane())
     {
-        m_iApp=XFLR5::XFOILANALYSIS;
+        m_iApp=Xfl::XFOILANALYSIS;
         onXDirect();
     }
 
@@ -6778,10 +6778,10 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
         ar << pPolar->m_bIsVisible << false;
 
 
-        if      (pPolar->m_PolarType==XFLR5::FIXEDSPEEDPOLAR) ar<<1;
-        else if(pPolar->m_PolarType==XFLR5::FIXEDLIFTPOLAR)   ar<<2;
-        else if(pPolar->m_PolarType==XFLR5::RUBBERCHORDPOLAR) ar<<3;
-        else if(pPolar->m_PolarType==XFLR5::FIXEDAOAPOLAR)    ar<<4;
+        if      (pPolar->m_PolarType==Xfl::FIXEDSPEEDPOLAR) ar<<1;
+        else if(pPolar->m_PolarType==Xfl::FIXEDLIFTPOLAR)   ar<<2;
+        else if(pPolar->m_PolarType==Xfl::RUBBERCHORDPOLAR) ar<<3;
+        else if(pPolar->m_PolarType==Xfl::FIXEDAOAPOLAR)    ar<<4;
         else                                                  ar<<1;
 
         ar << pPolar->m_MaType << pPolar->m_ReType;
@@ -6825,10 +6825,10 @@ bool MainFrame::serializePolarXFL(Polar *pPolar, QDataStream &ar, bool bIsStorin
         ar >> pPolar->m_bIsVisible >> boolean;
 
         ar >> n;
-        if(n==1)      pPolar->m_PolarType=XFLR5::FIXEDSPEEDPOLAR;
-        else if(n==2) pPolar->m_PolarType=XFLR5::FIXEDLIFTPOLAR;
-        else if(n==3) pPolar->m_PolarType=XFLR5::RUBBERCHORDPOLAR;
-        else if(n==4) pPolar->m_PolarType=XFLR5::FIXEDAOAPOLAR;
+        if(n==1)      pPolar->m_PolarType=Xfl::FIXEDSPEEDPOLAR;
+        else if(n==2) pPolar->m_PolarType=Xfl::FIXEDLIFTPOLAR;
+        else if(n==3) pPolar->m_PolarType=Xfl::RUBBERCHORDPOLAR;
+        else if(n==4) pPolar->m_PolarType=Xfl::FIXEDAOAPOLAR;
 
         ar >> pPolar->m_MaType >> pPolar->m_ReType;
         ar >> pPolar->m_Reynolds >> pPolar->m_Mach;
@@ -6981,12 +6981,12 @@ void MainFrame::exportGraph(Graph *pGraph)
     bool bCSV = false;
     if(exportGraphFilter().indexOf("*.txt")>0)
     {
-        Settings::s_ExportFileType = XFLR5::TXT;
+        Settings::s_ExportFileType = Xfl::TXT;
         if(FileName.indexOf(".txt")<0) FileName +=".txt";
     }
     else if(exportGraphFilter().indexOf("*.csv")>0)
     {
-        Settings::s_ExportFileType = XFLR5::CSV;
+        Settings::s_ExportFileType = Xfl::CSV;
         if(FileName.indexOf(".csv")<0) FileName +=".csv";
         bCSV = true;
     }

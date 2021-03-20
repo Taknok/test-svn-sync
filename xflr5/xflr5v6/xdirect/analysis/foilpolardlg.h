@@ -31,7 +31,7 @@
 #include <QSettings>
 #include <QDialogButtonBox>
 
-#include <xflanalysis/analysis3d_enums.h>
+#include <xflcore/core_enums.h>
 
 class DoubleEdit;
 class Polar;
@@ -101,7 +101,7 @@ public:
 
     bool  m_bAutoName;
     int m_MaTypDef, m_ReTypDef;
-    XFLR5::enumPolarType m_PolarType;
+    Xfl::enumPolarType m_PolarType;
     double m_Reynolds;
     double m_Mach;
     double m_ReDef;

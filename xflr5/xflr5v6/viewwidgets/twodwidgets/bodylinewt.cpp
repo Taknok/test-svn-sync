@@ -23,7 +23,7 @@
 #include <QPaintEvent>
 #include <QtDebug>
 
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <miarex/design/bodyscaledlg.h>
 #include <misc/options/settings.h>
 #include <misc/options/units.h>
@@ -93,7 +93,7 @@ void BodyLineWt::drawBodyLines()
         midLine.append(QPointF(m_pBody->frame(k)->m_Position.x*m_fScale + m_ptOffset.x(), zpos*-m_fScale + m_ptOffset.y()));
     }
 
-    if(m_pBody->m_LineType==XFLR5::BODYPANELTYPE)
+    if(m_pBody->m_LineType==Xfl::BODYPANELTYPE)
     {
         //Top Line
         for (int k=0; k<m_pBody->frameCount();k++)

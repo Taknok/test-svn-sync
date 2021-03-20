@@ -34,8 +34,8 @@
 #include "batchthreaddlg.h"
 #include "relistdlg.h"
 #include "xfoiladvanceddlg.h"
-#include <globals/globals.h>
-#include <globals/gui_params.h>
+#include <xflcore/xflcore.h>
+#include <xflcore/gui_params.h>
 #include <misc/options/settings.h>
 #include <misc/text/doubleedit.h>
 #include <misc/text/intedit.h>
@@ -66,7 +66,7 @@ BatchThreadDlg::BatchThreadDlg(QWidget *pParent) : QDialog(pParent)
 
     m_pXFile = nullptr;
 
-    m_PolarType = XFLR5::FIXEDSPEEDPOLAR;
+    m_PolarType = Xfl::FIXEDSPEEDPOLAR;
 
     m_FoilList.clear();
 
@@ -450,7 +450,7 @@ void BatchThreadDlg::initDialog()
     m_XTop      = XDirect::s_RefPolar.XtrTop();
     m_Mach      = XDirect::s_RefPolar.Mach();
 
-    m_PolarType = XFLR5::FIXEDSPEEDPOLAR; //no choice...
+    m_PolarType = Xfl::FIXEDSPEEDPOLAR; //no choice...
 
     m_pctrlFoil1->setChecked(s_bCurrentFoil);
     m_pctrlFoil2->setChecked(!s_bCurrentFoil);
@@ -507,7 +507,7 @@ void BatchThreadDlg::initDialog()
  */
 void BatchThreadDlg::onAcl()
 {
-    if(m_PolarType==XFLR5::FIXEDAOAPOLAR) return;
+    if(m_PolarType==Xfl::FIXEDAOAPOLAR) return;
     m_bAlpha = m_pctrlAlpha->isChecked();
     if(m_bAlpha)
     {
@@ -717,7 +717,7 @@ void BatchThreadDlg::readParams()
 {
     m_bAlpha = m_pctrlAlpha->isChecked();
 
-    if(m_PolarType!=XFLR5::FIXEDAOAPOLAR)
+    if(m_PolarType!=Xfl::FIXEDAOAPOLAR)
     {
         m_ReInc = m_pctrlReDelta->value();
         m_ReMax = m_pctrlReMax->value();
@@ -876,11 +876,11 @@ void BatchThreadDlg::startAnalysis()
 
                 if(!m_bFromList)
                 {
-                    pPolar = Objects2d::createPolar(pFoil, XFLR5::FIXEDSPEEDPOLAR, m_ReMin + iRe *m_ReInc, m_Mach, m_ACrit, m_XTop, m_XBot);
+                    pPolar = Objects2d::createPolar(pFoil, Xfl::FIXEDSPEEDPOLAR, m_ReMin + iRe *m_ReInc, m_Mach, m_ACrit, m_XTop, m_XBot);
                 }
                 else
                 {
-                    pPolar = Objects2d::createPolar(pFoil, XFLR5::FIXEDSPEEDPOLAR, XDirect::s_ReList[iRe], XDirect::s_MachList[iRe], XDirect::s_NCritList[iRe], m_XTop, m_XBot);
+                    pPolar = Objects2d::createPolar(pFoil, Xfl::FIXEDSPEEDPOLAR, XDirect::s_ReList[iRe], XDirect::s_MachList[iRe], XDirect::s_NCritList[iRe], m_XTop, m_XBot);
                 }
                 pAnalysis->pPolar=pPolar;
 

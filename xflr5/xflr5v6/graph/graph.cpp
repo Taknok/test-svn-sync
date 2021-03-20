@@ -180,7 +180,7 @@ void Graph::drawCurve(int nIndex, QPainter &painter)
 
     QPen CurvePen(pCurve->color());
     CurvePen.setStyle(getStyle(pCurve->style()));
-    CurvePen.setWidth(pCurve->width());
+    CurvePen.setWidth(std::max(pCurve->width(), 1));
     painter.setPen(CurvePen);
 
     Min.setX(int(xmin/m_scalex) +m_ptoffset.x());
@@ -197,7 +197,7 @@ void Graph::drawCurve(int nIndex, QPainter &painter)
         {
             polycurve[i] = {pCurve->x(i)/m_scalex+m_ptoffset.x(), pCurve->y(i)/  scaley+m_ptoffset.y()};
         }
-        painter.drawPolyline(polycurve);
+        if(pCurve->width()>=1) painter.drawPolyline(polycurve);
 
         for (int i=0; i<polycurve.size(); i++)
         {
@@ -955,7 +955,7 @@ Curve* Graph::addCurve()
     {
         int nIndex = m_oaCurves.size();
         pCurve->setColor(s_CurveColors[nIndex%10]);
-        pCurve->setStyle(0);
+        pCurve->setStipple(0);
         pCurve->m_pParentGraph = this;
         m_oaCurves.append(pCurve);
     }
@@ -969,7 +969,7 @@ Curve* Graph::addCurve(Curve *pCurve)
     {
         int nIndex = m_oaCurves.size();
         pCurve->setColor(s_CurveColors[nIndex%10]);
-        pCurve->setStyle(0);
+        pCurve->setStipple(0);
         pCurve->m_pParentGraph = this;
         m_oaCurves.append(pCurve);
     }

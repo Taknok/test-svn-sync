@@ -1,6 +1,5 @@
 
 SOURCES += \
-    $$PWD/xdirect/optim2d/optimtask.cpp \
     design/afoil.cpp \
     design/afoiltabledlg.cpp \
     design/foiltabledelegate.cpp \
@@ -8,10 +7,8 @@ SOURCES += \
     design/lecircledlg.cpp \
     design/splinectrlsdlg.cpp \
     glcontextinfo/opengldlg.cpp \
-    globals/globals.cpp \
     globals/main.cpp \
     globals/mainframe.cpp \
-    globals/trace.cpp \
     globals/xflr5app.cpp \
     graph/curve.cpp \
     graph/graph.cpp \
@@ -129,6 +126,7 @@ SOURCES += \
     xdirect/optim2d/mopsotask.cpp \
     xdirect/optim2d/mopsotask2d.cpp \
     xdirect/optim2d/optim2d.cpp \
+    xdirect/optim2d/optimtask.cpp \
     xdirect/optim2d/particle.cpp \
     xdirect/xdirect.cpp \
     xdirect/xdirectstyledlg.cpp \
@@ -139,6 +137,8 @@ SOURCES += \
     xflanalysis/plane_analysis/lltanalysis.cpp \
     xflanalysis/plane_analysis/panelanalysis.cpp \
     xflanalysis/plane_analysis/planetask.cpp \
+    xflcore/trace.cpp \
+    xflcore/xflcore.cpp \
     xflobjects/objects2d/blxfoil.cpp \
     xflobjects/objects2d/foil.cpp \
     xflobjects/objects2d/opppoint.cpp \
@@ -165,8 +165,6 @@ SOURCES += \
 
 
 HEADERS += \
-    $$PWD/xdirect/optim2d/optimevent.h \
-    $$PWD/xdirect/optim2d/optimtask.h \
     design/afoil.h \
     design/afoiltabledlg.h \
     design/foiltabledelegate.h \
@@ -174,11 +172,7 @@ HEADERS += \
     design/lecircledlg.h \
     design/splinectrlsdlg.h \
     glcontextinfo/opengldlg.h \
-    globals/globals.h \
-    globals/gui_enums.h \
-    globals/gui_params.h \
     globals/mainframe.h \
-    globals/trace.h \
     globals/xflr5app.h \
     graph/curve.h \
     graph/graph.h \
@@ -297,13 +291,14 @@ HEADERS += \
     xdirect/optim2d/mopsotask.h \
     xdirect/optim2d/mopsotask2d.h \
     xdirect/optim2d/optim2d.h \
+    xdirect/optim2d/optimevent.h \
+    xdirect/optim2d/optimtask.h \
     xdirect/optim2d/optstructures.h \
     xdirect/optim2d/particle.h \
     xdirect/xdirect.h \
     xdirect/xdirectstyledlg.h \
     xdirect/xml/xmlpolarreader.h \
     xdirect/xml/xmlpolarwriter.h \
-    xflanalysis/analysis3d_enums.h \
     xflanalysis/analysis3d_globals.h \
     xflanalysis/analysis3d_params.h \
     xflanalysis/matrix.h \
@@ -312,6 +307,11 @@ HEADERS += \
     xflanalysis/plane_analysis/planetask.h \
     xflanalysis/plane_analysis/planetaskevent.h \
     xflcore/constants.h \
+    xflcore/core_enums.h \
+    xflcore/gui_enums.h \
+    xflcore/gui_params.h \
+    xflcore/trace.h \
+    xflcore/xflcore.h \
     xflcore/xflevents.h \
     xflobjects/objectcolor.h \
     xflobjects/objects2d/blxfoil.h \

@@ -32,8 +32,8 @@
 #include "editpolardefdlg.h"
 #include <xflanalysis/analysis3d_globals.h>
 #include <misc/options/units.h>
-#include <globals/globals.h>
-#include <globals/gui_enums.h>
+#include <xflcore/xflcore.h>
+#include <xflcore/gui_enums.h>
 #include <xflobjects/objects3d/wpolar.h>
 #include <xflobjects/objects3d/plane.h>
 #include <miarex/design/editobjectdelegate.h>
@@ -205,16 +205,16 @@ void EditPolarDefDlg::accept()
 {
     readData();
 
-    if (m_pWPolar->analysisMethod()==XFLR5::VLMMETHOD)
+    if (m_pWPolar->analysisMethod()==Xfl::VLMMETHOD)
     {
         m_pWPolar->setThinSurfaces(true);
-        m_pWPolar->setAnalysisMethod(XFLR5::PANEL4METHOD);
+        m_pWPolar->setAnalysisMethod(Xfl::PANEL4METHOD);
     }
-    else if (m_pWPolar->analysisMethod()==XFLR5::PANEL4METHOD && !m_pPlane->isWing())
+    else if (m_pWPolar->analysisMethod()==Xfl::PANEL4METHOD && !m_pPlane->isWing())
     {
         m_pWPolar->setThinSurfaces(true);
     }
-    else if (m_pWPolar->analysisMethod()==XFLR5::PANEL4METHOD && m_pPlane->isWing())
+    else if (m_pWPolar->analysisMethod()==Xfl::PANEL4METHOD && m_pPlane->isWing())
     {
         m_pWPolar->setThinSurfaces(false);
     }
@@ -226,7 +226,7 @@ QList<QStandardItem *> EditPolarDefDlg::prepareRow(const QString &object, const 
 {
     QList<QStandardItem *> rowItems;
     rowItems << new QStandardItem(object)  << new QStandardItem(field)  << new QStandardItem(value) << new QStandardItem(unit);
-    for(int ii=0; ii<rowItems.size(); ii++) rowItems.at(ii)->setData(XFLR5::STRING, Qt::UserRole);
+    for(int ii=0; ii<rowItems.size(); ii++) rowItems.at(ii)->setData(Xfl::STRING, Qt::UserRole);
     return rowItems;
 }
 
@@ -240,10 +240,10 @@ QList<QStandardItem *> EditPolarDefDlg::prepareBoolRow(const QString &object, co
     rowItems.at(2)->setData(value, Qt::DisplayRole);
     rowItems.append(new QStandardItem);
 
-    rowItems.at(0)->setData(XFLR5::STRING, Qt::UserRole);
-    rowItems.at(1)->setData(XFLR5::STRING, Qt::UserRole);
-    rowItems.at(2)->setData(XFLR5::BOOLVALUE, Qt::UserRole);
-    rowItems.at(3)->setData(XFLR5::STRING, Qt::UserRole);
+    rowItems.at(0)->setData(Xfl::STRING, Qt::UserRole);
+    rowItems.at(1)->setData(Xfl::STRING, Qt::UserRole);
+    rowItems.at(2)->setData(Xfl::BOOLVALUE, Qt::UserRole);
+    rowItems.at(3)->setData(Xfl::STRING, Qt::UserRole);
     return rowItems;
 }
 
@@ -257,10 +257,10 @@ QList<QStandardItem *> EditPolarDefDlg::prepareIntRow(const QString &object, con
     rowItems.at(2)->setData(value, Qt::DisplayRole);
     rowItems.append(new QStandardItem);
 
-    rowItems.at(0)->setData(XFLR5::STRING, Qt::UserRole);
-    rowItems.at(1)->setData(XFLR5::STRING, Qt::UserRole);
-    rowItems.at(2)->setData(XFLR5::INTEGER, Qt::UserRole);
-    rowItems.at(3)->setData(XFLR5::STRING, Qt::UserRole);
+    rowItems.at(0)->setData(Xfl::STRING, Qt::UserRole);
+    rowItems.at(1)->setData(Xfl::STRING, Qt::UserRole);
+    rowItems.at(2)->setData(Xfl::INTEGER, Qt::UserRole);
+    rowItems.at(3)->setData(Xfl::STRING, Qt::UserRole);
     return rowItems;
 }
 
@@ -274,10 +274,10 @@ QList<QStandardItem *> EditPolarDefDlg::prepareDoubleRow(const QString &object, 
     rowItems.at(2)->setData(value, Qt::DisplayRole);
     rowItems.append(new QStandardItem(unit));
 
-    rowItems.at(0)->setData(XFLR5::STRING, Qt::UserRole);
-    rowItems.at(1)->setData(XFLR5::STRING, Qt::UserRole);
-    rowItems.at(2)->setData(XFLR5::DOUBLEVALUE, Qt::UserRole);
-    rowItems.at(3)->setData(XFLR5::STRING, Qt::UserRole);
+    rowItems.at(0)->setData(Xfl::STRING, Qt::UserRole);
+    rowItems.at(1)->setData(Xfl::STRING, Qt::UserRole);
+    rowItems.at(2)->setData(Xfl::DOUBLEVALUE, Qt::UserRole);
+    rowItems.at(3)->setData(Xfl::STRING, Qt::UserRole);
     return rowItems;
 }
 
@@ -306,7 +306,7 @@ void EditPolarDefDlg::showWPolar()
     rootItem->appendRow(polarTypeFolder);
     {
         dataItem = prepareRow("", "Type", WPolarType(m_pWPolar->polarType()));
-        dataItem.at(2)->setData(XFLR5::POLARTYPE, Qt::UserRole);
+        dataItem.at(2)->setData(Xfl::POLARTYPE, Qt::UserRole);
         polarTypeFolder.first()->appendRow(dataItem);
 
         dataItem = prepareDoubleRow("", "Velocity", m_pWPolar->velocity(), Units::speedUnitLabel());
@@ -322,15 +322,15 @@ void EditPolarDefDlg::showWPolar()
     QList<QStandardItem*> analysisTypeFolder = prepareRow("Analysis Type");
     rootItem->appendRow(analysisTypeFolder);
     {
-        if(m_pWPolar->analysisMethod()==XFLR5::LLTMETHOD) dataItem = prepareRow("", "Method", "LLTMETHOD");
+        if(m_pWPolar->analysisMethod()==Xfl::LLTMETHOD) dataItem = prepareRow("", "Method", "LLTMETHOD");
         else if(m_pWPolar->bThinSurfaces())               dataItem = prepareRow("", "Method", "VLMMETHOD");
         else                                              dataItem = prepareRow("", "Method", "PANELMETHOD");
-        dataItem.at(2)->setData(XFLR5::ANALYSISMETHOD, Qt::UserRole);
+        dataItem.at(2)->setData(Xfl::ANALYSISMETHOD, Qt::UserRole);
         analysisTypeFolder.first()->appendRow(dataItem);
 
         if(m_pWPolar->bDirichlet())  dataItem = prepareRow("", "Boundary condition", "DIRICHLET");
         else                         dataItem = prepareRow("", "Boundary condition", "NEUMANN");
-        dataItem.at(2)->setData(XFLR5::BOUNDARYCONDITION, Qt::UserRole);
+        dataItem.at(2)->setData(Xfl::BOUNDARYCONDITION, Qt::UserRole);
         analysisTypeFolder.first()->appendRow(dataItem);
 
         dataItem = prepareBoolRow("", "Viscous", m_pWPolar->bViscous());
@@ -351,7 +351,7 @@ void EditPolarDefDlg::showWPolar()
     rootItem->appendRow(refDimensionsFolder);
     {
         dataItem = prepareRow("", "Reference dimensions", referenceDimension(m_pWPolar->referenceDim()));
-        dataItem.at(2)->setData(XFLR5::REFDIMENSIONS, Qt::UserRole);
+        dataItem.at(2)->setData(Xfl::REFDIMENSIONS, Qt::UserRole);
         refDimensionsFolder.first()->appendRow(dataItem);
 
         dataItem = prepareDoubleRow("", "Reference Area", m_pWPolar->referenceArea() * Units::m2toUnit(), Units::areaUnitLabel());
@@ -440,19 +440,19 @@ void EditPolarDefDlg::fillInertiaData(QList<QStandardItem *> inertiaFolder)
 void EditPolarDefDlg::readData()
 {
     readViewLevel(m_pModel->index(0,0));
-    if (m_pWPolar->analysisMethod() == XFLR5::LLTMETHOD)
+    if (m_pWPolar->analysisMethod() == Xfl::LLTMETHOD)
     {
         m_pWPolar->setViscous(true) ;
         m_pWPolar->setThinSurfaces(true);
         m_pWPolar->setWakeRollUp(false);
         m_pWPolar->setTilted(false);
     }
-    else if (m_pWPolar->analysisMethod() == XFLR5::VLMMETHOD)
+    else if (m_pWPolar->analysisMethod() == Xfl::VLMMETHOD)
     {
         m_pWPolar->setThinSurfaces(true);
         //        m_pWPolar->analysisMethod() = XFLR5::PANELMETHOD;
     }
-    else if (m_pWPolar->analysisMethod() == XFLR5::PANEL4METHOD)
+    else if (m_pWPolar->analysisMethod() == Xfl::PANEL4METHOD)
     {
         m_pWPolar->setThinSurfaces(false);
     }

@@ -28,7 +28,7 @@
 
 #include "linecbbox.h"
 
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <graph/graph_globals.h>
 #include <misc/options/settings.h>
 

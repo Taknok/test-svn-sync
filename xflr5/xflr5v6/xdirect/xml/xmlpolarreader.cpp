@@ -21,7 +21,7 @@
 
 #include <QDebug>
 
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include "xmlpolarreader.h"
 #include <xflobjects/objects2d/polar.h>
 

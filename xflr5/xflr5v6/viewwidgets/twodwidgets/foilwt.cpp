@@ -24,7 +24,7 @@
 
 
 #include "foilwt.h"
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <globals/mainframe.h>
 #include <graph/graph_globals.h>
 #include <gui_objects/splinefoil.h>

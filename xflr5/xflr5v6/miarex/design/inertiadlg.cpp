@@ -33,7 +33,7 @@
 
 
 #include "inertiadlg.h"
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <misc/options/units.h>
 #include <misc/options/settings.h>
 #include <misc/text/doubleedit.h>

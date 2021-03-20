@@ -29,8 +29,8 @@
 #include <graph/graph.h>
 
 
-#include <globals/gui_enums.h>
-#include <xflanalysis/analysis3d_enums.h>
+#include <xflcore/gui_enums.h>
+#include <xflcore/core_enums.h>
 
 class LegendWt;
 class GraphWt;
@@ -51,7 +51,7 @@ public:
     Graph *graph(int iGraph);
     GraphWt *graphWidget(int iGraph);
 
-    XFLR5::enumApp xflr5App() const {return m_xflr5App;}
+    Xfl::enumApp xflr5App() const {return m_xflr5App;}
 
     int graphWidgetCount() const {return m_GraphWidget.count();}
     int activeGraphIndex() const {return m_iActiveGraphWidget;}
@@ -107,8 +107,8 @@ private:
     int m_iPOppIndex, m_iWPolarIndex, m_iStabPolarIndex, m_iStabTimeIndex;
 
 
-    XFLR5::enumApp m_xflr5App;
-    XFLR5::enumMiarexViews m_MiarexView;
+    Xfl::enumApp m_xflr5App;
+    Xfl::enumMiarexViews m_MiarexView;
 
     Qt::Orientation m_SingleGraphOrientation;
 };

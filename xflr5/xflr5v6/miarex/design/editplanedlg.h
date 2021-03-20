@@ -34,7 +34,7 @@
 #include <QDialogButtonBox>
 
 #include <xflobjects/objects3d/vector3d.h>
-#include <xflanalysis/analysis3d_enums.h>
+#include <xflcore/core_enums.h>
 
 class Plane;
 class Body;
@@ -162,7 +162,7 @@ private:
     static bool s_bFoilNames;
 
     enumObjectType m_enumActiveObject;
-    XFLR5::enumWingType m_enumActiveWingType;
+    Xfl::enumWingType m_enumActiveWingType;
     int m_iActiveSection, m_iActiveFrame, m_iActivePointMass;
 };
 

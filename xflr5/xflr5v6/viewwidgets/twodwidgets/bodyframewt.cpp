@@ -26,7 +26,7 @@
 #include <misc/options/settings.h>
 #include <miarex/design/bodyscaledlg.h>
 #include <misc/options/units.h>
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <xflobjects/objects3d/body.h>
 
 
@@ -117,7 +117,7 @@ void BodyFrameWt::drawFrameLines()
 
     QPolygonF rightPolyline, leftPolyline;
 
-    if(m_pBody->m_LineType ==XFLR5::BODYSPLINETYPE)
+    if(m_pBody->m_LineType ==Xfl::BODYSPLINETYPE)
     {
         if(m_pBody->activeFrame())
         {
@@ -162,7 +162,7 @@ void BodyFrameWt::drawFrameLines()
                 rightPolyline.clear();
                 leftPolyline.clear();
 
-                if(m_pBody->m_LineType ==XFLR5::BODYSPLINETYPE)
+                if(m_pBody->m_LineType ==Xfl::BODYSPLINETYPE)
                 {
                     u = m_pBody->getu(m_pBody->frame(j)->m_Position.x);
 

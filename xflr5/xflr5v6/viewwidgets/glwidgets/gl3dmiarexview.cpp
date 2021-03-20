@@ -30,7 +30,7 @@
 #include <globals/mainframe.h>
 
 #include <misc/options/settings.h>
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <miarex/view/gl3dscales.h>
 #include <xflobjects/objects3d/surface.h>
 #include <xflobjects/objects3d/wpolar.h>
@@ -94,8 +94,8 @@ gl3dMiarexView::~gl3dMiarexView()
 void gl3dMiarexView::glRenderView()
 {
     if(!isVisible()) return;
-    if(s_pMainFrame->m_iApp!=XFLR5::MIAREX) return;
-    if(s_pMiarex->m_iView!=XFLR5::W3DVIEW) return;
+    if(s_pMainFrame->m_iApp!=Xfl::MIAREX) return;
+    if(s_pMiarex->m_iView!=Xfl::W3DVIEW) return;
 
     WPolar const*pWPolar = s_pMiarex->curWPolar();
     PlaneOpp const *pPOpp = s_pMiarex->curPOpp();
@@ -104,7 +104,7 @@ void gl3dMiarexView::glRenderView()
 
     if(pWPolar && pWPolar->isStabilityPolar())
     {
-        if(pPOpp && pPOpp->polarType()==XFLR5::STABILITYPOLAR)
+        if(pPOpp && pPOpp->polarType()==Xfl::STABILITYPOLAR)
         {
             QString strong = QString(tr("Time =")+"%1s").arg(s_pMiarex->m_ModeTime,6,'f',3);
             glRenderText(10, 15, strong, Settings::s_TextColor);
@@ -172,11 +172,11 @@ void gl3dMiarexView::glRenderView()
 
         if(pPOpp)
         {
-            if(s_pMiarex->m_b3DCp && pPOpp->analysisMethod()>=XFLR5::VLMMETHOD)
+            if(s_pMiarex->m_b3DCp && pPOpp->analysisMethod()>=Xfl::VLMMETHOD)
             {
                 paintPanelCp(s_pMiarex->matSize());
             }
-            if(s_pMiarex->m_bPanelForce && pPOpp->analysisMethod()>=XFLR5::VLMMETHOD)
+            if(s_pMiarex->m_bPanelForce && pPOpp->analysisMethod()>=Xfl::VLMMETHOD)
             {
                 paintPanelForces(s_pMiarex->matSize());
             }
@@ -237,11 +237,11 @@ void gl3dMiarexView::glRenderView()
                 }
             }
 
-            if (s_pMiarex->m_b3DCp && pPOpp && pPOpp->analysisMethod()>=XFLR5::VLMMETHOD)
+            if (s_pMiarex->m_b3DCp && pPOpp && pPOpp->analysisMethod()>=Xfl::VLMMETHOD)
             {
                 //                paintCpLegendClr();
             }
-            else if (s_pMiarex->m_bPanelForce && pPOpp && pPOpp->analysisMethod()>=XFLR5::VLMMETHOD)
+            else if (s_pMiarex->m_bPanelForce && pPOpp && pPOpp->analysisMethod()>=Xfl::VLMMETHOD)
             {
                 //                paintCpLegendClr();
             }
@@ -261,9 +261,9 @@ void gl3dMiarexView::contextMenuEvent(QContextMenuEvent * pEvent)
     m_bArcball = false;
     update();
 
-    if (s_pMiarex->m_iView==XFLR5::W3DVIEW)
+    if (s_pMiarex->m_iView==Xfl::W3DVIEW)
     {
-        if(s_pMiarex->m_pCurWPolar && s_pMiarex->m_pCurWPolar->polarType()==XFLR5::STABILITYPOLAR)
+        if(s_pMiarex->m_pCurWPolar && s_pMiarex->m_pCurWPolar->polarType()==Xfl::STABILITYPOLAR)
             s_pMainFrame->m_pW3DStabCtxMenu->exec(ScreenPt);
         else s_pMainFrame->m_pW3DCtxMenu->exec(ScreenPt);
     }
@@ -391,8 +391,8 @@ bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d
 {
 
     if(!isVisible()) return false;
-    if(s_pMainFrame->m_iApp!=XFLR5::MIAREX) return false;
-    if(s_pMiarex->m_iView!=XFLR5::W3DVIEW) return false;
+    if(s_pMainFrame->m_iApp!=Xfl::MIAREX) return false;
+    if(s_pMiarex->m_iView!=Xfl::W3DVIEW) return false;
     if(!pPOpp || !pWPolar || pWPolar->isLLTMethod()) return false;
 
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
@@ -619,8 +619,8 @@ bool gl3dMiarexView::glMakeStreamLines(Wing const *PlaneWing[MAXWINGS], Vector3d
 void gl3dMiarexView::glMakeSurfVelocities(Panel const*pPanel, WPolar const *pWPolar, PlaneOpp const *pPOpp, int nPanels)
 {
     if(!isVisible()) return;
-    if(s_pMainFrame->m_iApp!=XFLR5::MIAREX) return;
-    if(s_pMiarex->m_iView!=XFLR5::W3DVIEW) return;
+    if(s_pMainFrame->m_iApp!=Xfl::MIAREX) return;
+    if(s_pMiarex->m_iView!=Xfl::W3DVIEW) return;
     if(!pWPolar || !pPOpp || pPOpp->isLLTMethod() || !pPanel)
         return;
 
@@ -654,7 +654,7 @@ void gl3dMiarexView::glMakeSurfVelocities(Panel const*pPanel, WPolar const *pWPo
     {
         VT.set(pPOpp->m_QInf,0.0,0.0);
 
-        if(pWPolar->analysisMethod()==XFLR5::PANEL4METHOD)
+        if(pWPolar->analysisMethod()==Xfl::PANEL4METHOD)
         {
             if(pPanel[p].m_Pos==MIDSURFACE) C.copy(pPanel[p].CtrlPt);
             else                            C.copy(pPanel[p].CollPt);
@@ -2504,14 +2504,14 @@ void gl3dMiarexView::glMake3dObjects()
 
     if(s_bResetglPanelCp || s_bResetglOpp)
     {
-        if(pCurWPolar && pCurWPolar->analysisMethod()!=XFLR5::LLTMETHOD)
+        if(pCurWPolar && pCurWPolar->analysisMethod()!=Xfl::LLTMETHOD)
             glMakePanels(m_vboPanelCp, theTask.m_MatSize, theTask.m_nNodes, theTask.m_Node, theTask.m_Panel, pCurPOpp);
         s_bResetglPanelCp = false;
     }
 
 
     if((s_bResetglPanelForce || s_bResetglOpp)
-            && pCurWPolar && pCurWPolar->analysisMethod()!=XFLR5::LLTMETHOD)
+            && pCurWPolar && pCurWPolar->analysisMethod()!=Xfl::LLTMETHOD)
     {
         if (pCurPlane && pCurPOpp)
         {
@@ -2590,7 +2590,7 @@ void gl3dMiarexView::glMake3dObjects()
         m_bStream = false; //Disable temporarily during calculation
         m_bStreamlinesDone = false; // don't render until the vbo is built
         //no need to recalculate if not showing
-        if(pCurPlane && pCurPOpp && pCurPOpp->analysisMethod()>=XFLR5::VLMMETHOD)
+        if(pCurPlane && pCurPOpp && pCurPOpp->analysisMethod()>=Xfl::VLMMETHOD)
         {
             Wing const *pWingList[MAXWINGS];
             for(int iw=0; iw<MAXWINGS;iw++) pWingList[iw]=pCurPlane->wing(iw);
@@ -2618,7 +2618,7 @@ void gl3dMiarexView::glMake3dObjects()
 
         m_bSurfVelocities = false;
 
-        if(pCurPlane && pCurPOpp && pCurPOpp->analysisMethod()>=XFLR5::VLMMETHOD)
+        if(pCurPlane && pCurPOpp && pCurPOpp->analysisMethod()>=Xfl::VLMMETHOD)
         {
             glMakeSurfVelocities(theTask.m_Panel, pCurWPolar, pCurPOpp, theTask.m_MatSize);
         }

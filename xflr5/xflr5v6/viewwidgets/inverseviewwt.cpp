@@ -55,7 +55,7 @@ inverseviewwt::inverseviewwt(QWidget *parent)
 */
 void inverseviewwt::keyPressEvent(QKeyEvent *event)
 {
-    if(m_pMainFrame->m_iApp == XFLR5::INVERSEDESIGN && m_pXInverse)
+    if(m_pMainFrame->m_iApp == Xfl::INVERSEDESIGN && m_pXInverse)
     {
         m_pXInverse->keyPressEvent(event);
     }
@@ -68,7 +68,7 @@ void inverseviewwt::keyPressEvent(QKeyEvent *event)
 */
 void inverseviewwt::keyReleaseEvent(QKeyEvent *event)
 {
-    if(m_pMainFrame->m_iApp == XFLR5::INVERSEDESIGN && m_pXInverse)
+    if(m_pMainFrame->m_iApp == Xfl::INVERSEDESIGN && m_pXInverse)
     {
         m_pXInverse->keyReleaseEvent(event);
     }
@@ -82,7 +82,7 @@ void inverseviewwt::keyReleaseEvent(QKeyEvent *event)
 */
 void inverseviewwt::mousePressEvent(QMouseEvent *event)
 {
-    if(m_pMainFrame->m_iApp == XFLR5::INVERSEDESIGN && m_pXInverse)
+    if(m_pMainFrame->m_iApp == Xfl::INVERSEDESIGN && m_pXInverse)
     {
         m_pXInverse->mousePressEvent(event);
     }
@@ -95,7 +95,7 @@ void inverseviewwt::mousePressEvent(QMouseEvent *event)
 */
 void inverseviewwt::mouseReleaseEvent(QMouseEvent *event)
 {
-    if(m_pMainFrame->m_iApp == XFLR5::INVERSEDESIGN && m_pXInverse)
+    if(m_pMainFrame->m_iApp == Xfl::INVERSEDESIGN && m_pXInverse)
     {
         m_pXInverse->mouseReleaseEvent(event);
     }
@@ -108,7 +108,7 @@ void inverseviewwt::mouseReleaseEvent(QMouseEvent *event)
 */
 void inverseviewwt::mouseMoveEvent(QMouseEvent *event)
 {
-    if(m_pMainFrame->m_iApp == XFLR5::INVERSEDESIGN && m_pXInverse)
+    if(m_pMainFrame->m_iApp == Xfl::INVERSEDESIGN && m_pXInverse)
     {
         m_pXInverse->mouseMoveEvent(event);
     }
@@ -122,7 +122,7 @@ void inverseviewwt::mouseMoveEvent(QMouseEvent *event)
 */
 void inverseviewwt::mouseDoubleClickEvent ( QMouseEvent * event )
 {
-    if(m_pMainFrame->m_iApp == XFLR5::INVERSEDESIGN && m_pXInverse)
+    if(m_pMainFrame->m_iApp == Xfl::INVERSEDESIGN && m_pXInverse)
     {
         m_pXInverse->doubleClickEvent(event->pos());
     }
@@ -162,7 +162,7 @@ void inverseviewwt::wheelEvent(QWheelEvent *pEvent)
         else                          ZoomFactor = 1./1.06;
     }
 
-    if(m_pMainFrame->m_iApp == XFLR5::INVERSEDESIGN && m_pXInverse)
+    if(m_pMainFrame->m_iApp == Xfl::INVERSEDESIGN && m_pXInverse)
     {
         QPoint pt;
 #if QT_VERSION >= 0x050F00
@@ -181,7 +181,7 @@ void inverseviewwt::wheelEvent(QWheelEvent *pEvent)
 */
 void inverseviewwt::paintEvent(QPaintEvent *event)
 {
-    if(m_pMainFrame->m_iApp == XFLR5::INVERSEDESIGN && m_pXInverse)
+    if(m_pMainFrame->m_iApp == Xfl::INVERSEDESIGN && m_pXInverse)
     {
         QPainter painter(this);
         m_pXInverse->paintView(painter);
@@ -205,7 +205,7 @@ void inverseviewwt::contextMenuEvent (QContextMenuEvent * event)
 
     switch(m_pMainFrame->m_iApp)
     {
-        case XFLR5::INVERSEDESIGN:
+        case Xfl::INVERSEDESIGN:
         {
             m_pMainFrame->m_pInverseContextMenu->exec(ScreenPt);
             break;

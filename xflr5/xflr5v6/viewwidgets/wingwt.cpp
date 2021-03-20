@@ -24,7 +24,7 @@
 #include <QContextMenuEvent>
 
 #include "wingwt.h"
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <graph/graph.h>
 #include <graph/graph_globals.h>
 #include <miarex/miarex.h>
@@ -306,7 +306,7 @@ void WingWidget::paintXCP(QPainter & painter, QPointF ORef, double scale)
     QPointF From, To;
 
     int nStart=0;
-    if(s_pMiarex->m_pCurPOpp->analysisMethod()==XFLR5::LLTMETHOD) nStart = 1; else nStart = 0;
+    if(s_pMiarex->m_pCurPOpp->analysisMethod()==Xfl::LLTMETHOD) nStart = 1; else nStart = 0;
 
     QPointF O(ORef);
     QPointF offset;
@@ -375,7 +375,7 @@ void WingWidget::paintXTr(QPainter & painter, QPointF ORef, double scale)
 
     double y;
     int m,nStart;
-    if(s_pMiarex->m_pCurPOpp->analysisMethod()==XFLR5::LLTMETHOD) nStart = 1; else nStart = 0;
+    if(s_pMiarex->m_pCurPOpp->analysisMethod()==Xfl::LLTMETHOD) nStart = 1; else nStart = 0;
 
     QPointF O(ORef);
     QPointF offset, From, To;

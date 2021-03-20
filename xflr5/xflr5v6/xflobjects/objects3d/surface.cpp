@@ -48,8 +48,8 @@ Surface::Surface()
     m_NYPanels  = 2;
     m_NXLead    = 1;
     m_NXFlap    = 0;
-    m_XDistType = XFLR5::COSINE;
-    m_YDistType = XFLR5::UNIFORM;
+    m_XDistType = Xfl::COSINE;
+    m_YDistType = Xfl::UNIFORM;
 
     m_pLeftSurface = m_pRightSurface = nullptr;
     m_pFoilA   = nullptr;
@@ -733,19 +733,19 @@ void Surface::getYDist(int const &k, double &y1, double &y2) const
     YPanels = double(m_NYPanels);
     dk      = double(k);
 
-    if(m_YDistType==XFLR5::COSINE)
+    if(m_YDistType==Xfl::COSINE)
     {
         //cosine case
         y1  = 1.0/2.0*(1.0-cos( dk*PI   /YPanels));
         y2  = 1.0/2.0*(1.0-cos((dk+1)*PI/YPanels));
     }
-    else if(m_YDistType== XFLR5::INVERSESINE)
+    else if(m_YDistType== Xfl::INVERSESINE)
     {
         //sine case
         y1  = 1.0*(sin( dk*PI   /2.0/YPanels));
         y2  = 1.0*(sin((dk+1)*PI/2.0/YPanels));
     }
-    else if(m_YDistType==XFLR5::SINE)
+    else if(m_YDistType==Xfl::SINE)
     {
         //-sine case
         y1  = 1.0*(1.-cos( dk*PI   /2.0/YPanels));
@@ -1267,7 +1267,7 @@ void Surface::createXPoints()
     {
         dl =  double(l);
         dl2 = double(NXFlapA);
-        if(m_XDistType==XFLR5::COSINE)
+        if(m_XDistType==Xfl::COSINE)
             m_xPointA[l] = 1.0 - (1.0-xHingeA)/2.0 * (1.0-cos(dl*PI /dl2));
         else
             m_xPointA[l] = 1.0 - (1.0-xHingeA) * (dl/dl2);
@@ -1277,7 +1277,7 @@ void Surface::createXPoints()
     {
         dl =  double(l);
         dl2 = double(NXLeadA);
-        if(m_XDistType==XFLR5::COSINE)
+        if(m_XDistType==Xfl::COSINE)
             m_xPointA[l+NXFlapA] = xHingeA - (xHingeA)/2.0 * (1.0-cos(dl*PI /dl2));
         else
             m_xPointA[l+NXFlapA] = xHingeA - (xHingeA) * (dl/dl2);
@@ -1287,7 +1287,7 @@ void Surface::createXPoints()
     {
         dl =  double(l);
         dl2 = double(NXFlapB);
-        if(m_XDistType==XFLR5::COSINE)
+        if(m_XDistType==Xfl::COSINE)
             m_xPointB[l] = 1.0 - (1.0-xHingeB)/2.0 * (1.0-cos(dl*PI /dl2));
         else
             m_xPointB[l] = 1.0 - (1.0-xHingeB) * (dl/dl2);
@@ -1297,7 +1297,7 @@ void Surface::createXPoints()
     {
         dl =  double(l);
         dl2 = double(NXLeadB);
-        if(m_XDistType==XFLR5::COSINE)
+        if(m_XDistType==Xfl::COSINE)
             m_xPointB[l+NXFlapB] = xHingeB - (xHingeB)/2.0 * (1.0-cos(dl*PI /dl2));
         else
             m_xPointB[l+NXFlapB] = xHingeB - (xHingeB) * (dl/dl2);

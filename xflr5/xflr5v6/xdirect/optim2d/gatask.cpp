@@ -29,7 +29,7 @@
 #include <xflobjects/objects2d/foil.h>
 #include <xflcore/constants.h>
 #include <xdirect/analysis/xfoiltask.h>
-#include <xdirect/optim2d/optimevent.h>
+//#include <xdirect/optim2d/optimevent.h>
 
 
 double GATask::s_ProbXOver       = 0.5;
@@ -122,7 +122,7 @@ void GATask::restoreDefaults()
 /** Posted when an iteration has ended */
 void GATask::postIterEvent(int iBest)
 {
-    OptimEvent *pIterEvent = new OptimEvent(m_Iter, iBest, m_Swarm, m_Swarm);
+    OptimEvent *pIterEvent = new OptimEvent(OPTIM_ITER_EVENT, m_Iter, iBest, m_Swarm.at(iBest));
     qApp->postEvent(m_pParent, pIterEvent);
     qApp->processEvents();
 }
@@ -153,7 +153,7 @@ void GATask::onIteration()
         outputMsg(QString::asprintf("The winner is particle %d\n", m_iBest));
         outputMsg(QString::asprintf("Residual error = %7.3g\n", m_Error));
 
-        m_Status = XFLR5::FINISHED;
+        m_Status = Xfl::FINISHED;
 
         postOptEndEvent(); // tell the GUI that the task is done
 
@@ -412,17 +412,17 @@ double GATask::HH(double x, double t1, double t2) const
 }
 
 
-double GATask::error(const Particle &particle, int iObjective) const
+double GATask::error(const Particle *pParticle, int iObjective) const
 {
-    double err = fabs(particle.fitness(iObjective) - m_Objective.m_Target); // could also maximize or minimize etc.
+    double err = fabs(pParticle->fitness(iObjective) - m_Objective.m_Target); // could also maximize or minimize etc.
     return err;
 }
 
 
-void GATask::calcFitness(Particle &particle) const
+void GATask::calcFitness(Particle *pParticle) const
 {
     Foil tempfoil;
-    makeFoil(&particle, &tempfoil);
+    makeFoil(pParticle, &tempfoil);
 
     bool bViscous  = true;
     bool bInitBL = true;
@@ -438,9 +438,9 @@ void GATask::calcFitness(Particle &particle) const
 
     if(xfoil.lvconv)
     {
-        particle.setFitness(0, xfoil.cl);
+        pParticle->setFitness(0, xfoil.cl);
     }
-    else particle.setFitness(0, LARGEVALUE); // set and unlikely value
+    else pParticle->setFitness(0, LARGEVALUE); // set and unlikely value
 
     delete task;
 

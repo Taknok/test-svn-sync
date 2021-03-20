@@ -29,7 +29,7 @@
 #include <QPushButton>
 
 #include "bodygriddlg.h"
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <misc/line/linebtn.h>
 #include <misc/line/linepickerdlg.h>
 #include <misc/options/units.h>

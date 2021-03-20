@@ -22,7 +22,7 @@
 #include <QGridLayout>
 #include <QVBoxLayout>
 
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <misc/options/settings.h>
 #include "lengthunitdlg.h"
 

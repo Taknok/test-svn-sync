@@ -34,7 +34,7 @@
 
 #include "optim2d.h"
 
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <graph/curve.h>
 #include <misc/text/doubleedit.h>
 #include <misc/text/intedit.h>
@@ -44,7 +44,7 @@
 #include <xdirect/objects2d.h>
 #include <xdirect/optim2d/gatask.h>
 #include <xdirect/optim2d/mopsotask2d.h>
-#include <xdirect/optim2d/optimevent.h>
+//#include <xdirect/optim2d/optimevent.h>
 #include <xflcore/constants.h>
 #include <xflobjects/objects2d/polar.h>
 #include <xfoil.h>
@@ -390,15 +390,34 @@ void Optim2d::setupLayout()
             m_pVSplitter = new QSplitter(Qt::Vertical);
             {
                 m_pVSplitter->setChildrenCollapsible(false);
-                m_pFoilWt = new FoilWt;
-                m_pGraphWt = new GraphWt;
-                m_pGraphWt->setGraph(&m_Graph);
-                m_Graph.setMargin(71);
-                m_Graph.setXTitle("Iter");
-                m_Graph.setYTitle("Error");
-                m_pGraphWt->showLegend(true);
+                QFrame *pTopFrame = new QFrame;
+                {
+                    QHBoxLayout *pTopLayout = new QHBoxLayout;
+                    {
+                        m_pErrorGraphWt = new GraphWt;
+                        m_pErrorGraphWt->setGraph(&m_ErrorGraph);
+                        m_ErrorGraph.setMargin(71);
+                        m_ErrorGraph.setXTitle("Iter");
+                        m_ErrorGraph.setYTitle("Error");
+                        m_pErrorGraphWt->showLegend(true);
 
-                m_pVSplitter->addWidget(m_pGraphWt);
+                        m_pParetoGraphWt = new GraphWt;
+                        m_pParetoGraphWt->setGraph(&m_ParetoGraph);
+                        m_ParetoGraph.setMargin(71);
+                        m_ParetoGraph.setXTitle("Iter");
+                        m_ParetoGraph.setYTitle("Pareto");
+                        m_ParetoGraph.setAuto(false);
+                        m_pParetoGraphWt->showLegend(true);
+
+                        pTopLayout->addWidget(m_pErrorGraphWt);
+                        pTopLayout->addWidget(m_pParetoGraphWt);
+                    }
+                    pTopFrame->setLayout(pTopLayout);
+                }
+
+                m_pFoilWt = new FoilWt;
+
+                m_pVSplitter->addWidget(pTopFrame);
                 m_pVSplitter->addWidget(m_pFoilWt);
                 m_pVSplitter->setStretchFactor(0,1);
             }
@@ -479,7 +498,7 @@ void Optim2d::showEvent(QShowEvent *)
 
     onAlgorithm();
 
-    m_pGraphWt->update();
+    m_pErrorGraphWt->update();
 }
 
 
@@ -634,7 +653,7 @@ void Optim2d::onMakeSwarm(bool bShow)
 
     m_Timer.stop();
 
-    m_Graph.deleteCurves();
+    m_ErrorGraph.deleteCurves();
 
     m_pFoilWt->clearFoils();
     m_pFoilWt->addFoil(m_pFoil);
@@ -707,22 +726,32 @@ void Optim2d::makePSOSwarm()
 {
     //initialize task
     if(m_pPSOTask) delete m_pPSOTask;
-    m_pPSOTask = new MOPSOTask2d;
-    m_pPSOTask->setPolar(m_pPolar);
-    m_pPSOTask->setParent(this);
-    m_pPSOTask->setFoil(m_pFoil, m_iLE);
-    m_pPSOTask->setAlpha(s_Alpha);
-    m_pPSOTask->setHHParams(s_HHn, s_HHt2, s_HHmax);
-    m_pPSOTask->setDimension(s_HHn); //
+    m_pPSOTask = nullptr; // to avoid GUI conflicts
+
+    MOPSOTask2d *pPSOTask2d = new MOPSOTask2d;
+
+    pPSOTask2d->setPolar(m_pPolar);
+    pPSOTask2d->setParent(this);
+    pPSOTask2d->setFoil(m_pFoil, m_iLE);
+    pPSOTask2d->setAlpha(s_Alpha);
+    pPSOTask2d->setHHParams(s_HHn, s_HHt2, s_HHmax);
+    pPSOTask2d->setDimension(s_HHn); //
     for(int i=0; i<s_HHn; i++)
-        m_pPSOTask->setVariable(i, {QString::asprintf("HH%d", i), -s_HHmax, s_HHmax});
-    m_pPSOTask->setNObjectives(2);  // Cl, Cd
-    m_pPSOTask->setObjective(0, {"Cl", true, s_Cl, s_ClMaxError});
-    m_pPSOTask->setObjective(1, {"Cd", true, s_Cd, s_CdMaxError});
+        pPSOTask2d->setVariable(i, {QString::asprintf("HH%d", i), -s_HHmax, s_HHmax});
+    pPSOTask2d->setNObjectives(2);  // Cl, Cd
+    pPSOTask2d->setObjective(0, {"Cl", true, s_Cl, s_ClMaxError});
+    pPSOTask2d->setObjective(1, {"Cd", true, s_Cd, s_CdMaxError});
 
     //make the swarm
-    m_pPSOTask->makeSwarm();
-    m_pPSOTask->setAnalysisStatus(XFLR5::PENDING);// not started yet
+    pPSOTask2d->makeSwarm();
+    pPSOTask2d->clearPareto();   // current Pareto may be obsolete if target values have changed since swarm creationli
+    pPSOTask2d->makeParetoFront();
+    pPSOTask2d->setAnalysisStatus(Xfl::PENDING);// not started yet
+
+    m_pPSOTask = pPSOTask2d;
+    updateParetoGraph();
+    m_ParetoGraph.resetLimits();
+    m_pParetoGraphWt->update();
 }
 
 
@@ -743,7 +772,7 @@ void Optim2d::makeGAGen()
 
     //make the swarm
     m_pGATask->makeSwarm();
-    m_pGATask->setAnalysisStatus(XFLR5::PENDING);// not started yet
+    m_pGATask->setAnalysisStatus(Xfl::PENDING);// not started yet
 }
 
 
@@ -776,11 +805,11 @@ void Optim2d::onOptimize()
 
         if(m_pPSOTask->isRunning())
         {
-            m_pPSOTask->setAnalysisStatus(XFLR5::CANCELLED);
+            m_pPSOTask->setAnalysisStatus(Xfl::CANCELLED);
             // m_ppbSwarm->setText("Swarm"); done when the finish event is received
             return;
         }
-        m_pPSOTask->setAnalysisStatus(XFLR5::RUNNING);
+        m_pPSOTask->setAnalysisStatus(Xfl::RUNNING);
 
 
         QString strange("Optimizing for: ");
@@ -795,14 +824,16 @@ void Optim2d::onOptimize()
         for(int iobj=0; iobj<m_pPSOTask->nObjectives(); iobj++)
         {
             OptObjective const &obj = m_pPSOTask->objective(iobj);
-            Curve *pCurve = m_Graph.curve(iobj);
-            if(!pCurve) pCurve = m_Graph.addCurve();
+            Curve *pCurve = m_ErrorGraph.curve(iobj);
+            if(!pCurve) pCurve = m_ErrorGraph.addCurve();
             pCurve->setName(obj.m_Name+"_error");
             pCurve->clear();
         }
 
-        m_pPSOTask->setAnalysisStatus(XFLR5::RUNNING);
+        m_pPSOTask->setAnalysisStatus(Xfl::RUNNING);
         m_pPSOTask->restartIterations();
+        m_pPSOTask->clearPareto();  // current Pareto may be obsolete if target values have changed since swarm creation
+        m_pPSOTask->makeParetoFront();
 
         disconnect(&m_Timer, nullptr, nullptr, nullptr);
         connect(&m_Timer, SIGNAL(timeout()), m_pPSOTask, SLOT(onIteration()));
@@ -816,18 +847,18 @@ void Optim2d::onOptimize()
         OptObjective const &obj = m_pGATask->objective();
         strange += obj.m_Name + QString::asprintf("=%.3g @ aoa=%.3g", obj.m_Target, m_pGATask->alpha())+QChar(0260);
         outputText(strange + "\n");
-        Curve *pCurve = m_Graph.curve(0);
-        if(!pCurve) pCurve = m_Graph.addCurve();
+        Curve *pCurve = m_ErrorGraph.curve(0);
+        if(!pCurve) pCurve = m_ErrorGraph.addCurve();
         pCurve->setName(obj.m_Name + "_error");
         pCurve->clear();
 
         if(m_pGATask->isRunning())
         {
-            m_pGATask->setAnalysisStatus(XFLR5::CANCELLED);
+            m_pGATask->setAnalysisStatus(Xfl::CANCELLED);
             // m_ppbSwarm->setText("Swarm"); done when the finish event is received
             return;
         }
-        m_pGATask->setAnalysisStatus(XFLR5::RUNNING);
+        m_pGATask->setAnalysisStatus(Xfl::RUNNING);
         m_pGATask->restartIterations();
 
         disconnect(&m_Timer, nullptr, nullptr, nullptr);
@@ -895,10 +926,10 @@ void Optim2d::onAnalyze()
 
 void Optim2d::customEvent(QEvent *pEvent)
 {
-    if(pEvent->type() == PSO_ITER_EVENT)
+    if(pEvent->type() == OPTIM_ITER_EVENT)
     {
         OptimEvent *pOptEvent = dynamic_cast<OptimEvent*>(pEvent);
-        Particle const &particle = pOptEvent->pareto().at(pOptEvent->iBest());
+        Particle const &particle = pOptEvent->particle();
 
         QString strange = QString::asprintf("It.%2d:", pOptEvent->iter());
         if(m_pPSOTask)
@@ -925,23 +956,28 @@ void Optim2d::customEvent(QEvent *pEvent)
         // update graph
         for(int iobj=0; iobj<particle.nObjectives(); iobj++)
         {
-            Curve *pCurve = m_Graph.curve(iobj);
+            Curve *pCurve = m_ErrorGraph.curve(iobj);
             if(pCurve) pCurve->appendPoint(pOptEvent->iter(), particle.error(iobj));
         }
-        m_Graph.resetLimits();
+        m_ErrorGraph.resetLimits();
+
+        if(m_pPSOTask) updateParetoGraph();
+
         update();
         QApplication::processEvents();
     }
     else if(pEvent->type()==OPTIM_END_EVENT)
     {
+        OptimEvent *pOptEvent = dynamic_cast<OptimEvent*>(pEvent);
+        Particle const &particle = pOptEvent->particle();
         m_Timer.stop();
         disconnect(&m_Timer, nullptr, nullptr, nullptr);
 
         // display best foil - method may not be the same for each case
         if (m_pPSOTask)
         {
-            Particle const &particle = m_pPSOTask->bestParticle();
             m_pPSOTask->makeFoil(particle, m_pBestFoil);
+            updateParetoGraph();
         }
         else if(m_pGATask)
         {
@@ -962,3 +998,57 @@ void Optim2d::customEvent(QEvent *pEvent)
         QDialog::customEvent(pEvent);
 }
 
+
+void Optim2d::updateParetoGraph()
+{
+    if(m_pPSOTask)
+    {
+        if(m_pPSOTask->nObjectives()!=2)
+        {
+            outputText("\nTwo objectives are required to build the Pareto graph\n");
+            return;
+        }
+
+        m_ParetoGraph.setXTitle(m_pPSOTask->objective(0).m_Name+"_err");
+        m_ParetoGraph.setYTitle(m_pPSOTask->objective(1).m_Name+"_err");
+        m_pParetoGraphWt->setOverlayedRect(true,  m_pPSOTask->objective(0).m_MaxError, 0, 0, m_pPSOTask->objective(1).m_MaxError);
+
+        Curve *pCurveSw  = m_ParetoGraph.curve(0);
+        if(!pCurveSw)
+        {
+            pCurveSw = m_ParetoGraph.addCurve("Swarm");
+            pCurveSw->setStipple(0);
+            pCurveSw->setWidth(0);
+            pCurveSw->setColor(Qt::darkYellow);
+            pCurveSw->setPointStyle(1);
+        }
+        pCurveSw->clear();
+        for(int i=0; i<m_pPSOTask->m_Swarm.size(); i++)
+        {
+            Particle const &particle = m_pPSOTask->m_Swarm.at(i);
+            double err0 = fabs(particle.fitness(0)-m_pPSOTask->objective(0).m_Target);
+            double err1 = fabs(particle.fitness(1)-m_pPSOTask->objective(1).m_Target);
+            pCurveSw->appendPoint(err0, err1);
+        }
+
+        Curve *pCurveDom = m_ParetoGraph.curve(1);
+        if(!pCurveDom)
+        {
+            pCurveDom = m_ParetoGraph.addCurve("Frontier");
+            pCurveDom->setColor(Qt::cyan);
+            pCurveDom->setWidth(0);
+            pCurveDom->setStipple(0);
+            pCurveDom->setPointStyle(2);
+        }
+        pCurveDom->clear();
+        for(int i=0; i<m_pPSOTask->m_Pareto.size(); i++)
+        {
+            Particle const &particle = m_pPSOTask->m_Pareto.at(i);
+            double err0 = fabs(particle.fitness(0)-m_pPSOTask->objective(0).m_Target);
+            double err1 = fabs(particle.fitness(1)-m_pPSOTask->objective(1).m_Target);
+            pCurveDom->appendPoint(err0, err1);
+        }
+
+        m_pParetoGraphWt->update();
+    }
+}

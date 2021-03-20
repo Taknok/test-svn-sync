@@ -30,7 +30,7 @@
 #include <misc/exponentialslider.h>
 #include <misc/text/intedit.h>
 #include <misc/text/doubleedit.h>
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <misc/options/settings.h>
 #include <viewwidgets/glwidgets/gl3dmiarexview.h>
 

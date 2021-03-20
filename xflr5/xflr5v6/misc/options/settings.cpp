@@ -50,7 +50,7 @@ QColor Settings::s_BackgroundColor = QColor(3, 9, 9);
 QColor Settings::s_TextColor=QColor(221,221,221);
 bool Settings::s_bReverseZoom = false;
 Graph Settings::s_RefGraph;
-XFLR5::enumTextFileType Settings::s_ExportFileType;  /**< Defines if the list separator for the output text files should be a space or a comma. */
+Xfl::enumTextFileType Settings::s_ExportFileType;  /**< Defines if the list separator for the output text files should be a space or a comma. */
 QString Settings::s_LastDirName = QDir::homePath();
 QString Settings::s_xmlDirName = QDir::homePath();
 QString Settings::s_plrDirName = QDir::homePath();

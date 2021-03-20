@@ -24,7 +24,7 @@
 #include "objects2d.h"
 
 #include <xdirect/xdirect.h>
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <misc/options/settings.h>
 
 
@@ -238,7 +238,7 @@ OpPoint* Objects2d::addOpPoint(Foil const *pFoil, Polar *pPolar, OpPoint *pOpPoi
     }
 
     // Now insert OpPoint in the current Polar object
-    if(pPolar->polarType()==XFLR5::FIXEDLIFTPOLAR || pPolar->polarType()==XFLR5::RUBBERCHORDPOLAR)
+    if(pPolar->polarType()==Xfl::FIXEDLIFTPOLAR || pPolar->polarType()==Xfl::RUBBERCHORDPOLAR)
     {
         if(pOpPoint && pOpPoint->Reynolds()<1.00e8)
         {
@@ -492,7 +492,7 @@ OpPoint *Objects2d::getOpp(Foil *pFoil, Polar *pPolar, double Alpha)
         {
             if (pOpPoint->polarName() == pPolar->polarName())
             {
-                if(pPolar->polarType() != XFLR5::FIXEDAOAPOLAR)
+                if(pPolar->polarType() != Xfl::FIXEDAOAPOLAR)
                 {
                     if(qAbs(pOpPoint->aoa() - Alpha) <0.001)
                     {
@@ -631,7 +631,7 @@ void Objects2d::addPolar(Polar *pPolar)
                 }
                 else if(pPolar->polarType() == pOldPlr->polarType())
                 {
-                    if (pPolar->polarType() != XFLR5::FIXEDAOAPOLAR)
+                    if (pPolar->polarType() != Xfl::FIXEDAOAPOLAR)
                     {
                         //sort by re Nbr
                         if(pPolar->Reynolds() < pOldPlr->Reynolds())
@@ -800,7 +800,7 @@ void Objects2d::setPolarChildrenStyle(Polar const *pPolar)
  * @param NCrit the transition parameter
  * @return a pointer to the created Polar object
  */
-Polar *Objects2d::createPolar(Foil *pFoil, XFLR5::enumPolarType PolarType, double Spec, double Mach, double NCrit, double m_XTop, double m_XBot)
+Polar *Objects2d::createPolar(Foil *pFoil, Xfl::enumPolarType PolarType, double Spec, double Mach, double NCrit, double m_XTop, double m_XBot)
 {
     if(!pFoil) return nullptr;
 
@@ -826,25 +826,25 @@ Polar *Objects2d::createPolar(Foil *pFoil, XFLR5::enumPolarType PolarType, doubl
     switch (pNewPolar->polarType())
     {
         default:
-        case XFLR5::FIXEDSPEEDPOLAR:
+        case Xfl::FIXEDSPEEDPOLAR:
             pNewPolar->setMaType(1);
             pNewPolar->setReType(1);
             break;
-        case XFLR5::FIXEDLIFTPOLAR:
+        case Xfl::FIXEDLIFTPOLAR:
             pNewPolar->setMaType(2);
             pNewPolar->setReType(2);
             break;
-        case XFLR5::RUBBERCHORDPOLAR:
+        case Xfl::RUBBERCHORDPOLAR:
             pNewPolar->setMaType(1);
             pNewPolar->setReType(3);
             break;
-        case XFLR5::FIXEDAOAPOLAR:
+        case Xfl::FIXEDAOAPOLAR:
             pNewPolar->setMaType(1);
             pNewPolar->setReType(1);
             break;
     }
 
-    if(PolarType!=XFLR5::FIXEDAOAPOLAR)
+    if(PolarType!=Xfl::FIXEDAOAPOLAR)
     {
         pNewPolar->setReynolds(Spec);
     }

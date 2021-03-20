@@ -29,7 +29,7 @@
 
 
 #include "wadvanceddlg.h"
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <misc/options/units.h>
 #include <misc/text/doubleedit.h>
 #include <misc/text/intedit.h>

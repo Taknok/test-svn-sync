@@ -372,7 +372,7 @@ void PanelAnalysis::setRange(double vMin, double vMax, double vDelta, bool bSequ
 
     //ESTIMATED UNIT TIMES FOR OPERATIONS
 
-    if(m_pWPolar->bTilted() || m_pWPolar->polarType()==XFLR5::BETAPOLAR)
+    if(m_pWPolar->bTilted() || m_pWPolar->polarType()==Xfl::BETAPOLAR)
     {
 
         //ESTIMATED UNIT TIMES FOR OPERATIONS
@@ -395,7 +395,7 @@ void PanelAnalysis::setRange(double vMin, double vMax, double vDelta, bool bSequ
         m_TotalTime *= double(m_nRHS);
 
     }
-    else if(m_pWPolar->polarType()<XFLR5::FIXEDAOAPOLAR)
+    else if(m_pWPolar->polarType()<Xfl::FIXEDAOAPOLAR)
     {
         //BuildInfluenceMatrix :     10 x MatSize/400
         //CreateRHS :                10
@@ -418,7 +418,7 @@ void PanelAnalysis::setRange(double vMin, double vMax, double vDelta, bool bSequ
                 + 1*double(m_nRHS)
                 + 5*double(m_nRHS) ;
     }
-    else if(m_pWPolar->polarType()==XFLR5::FIXEDAOAPOLAR)
+    else if(m_pWPolar->polarType()==Xfl::FIXEDAOAPOLAR)
     {
         //BuildInfluenceMatrix :     10 x m_MatSize/400
         //CreateRHS :                10
@@ -436,7 +436,7 @@ void PanelAnalysis::setRange(double vMin, double vMax, double vDelta, bool bSequ
                 + 1*double(m_nRHS)
                 + 5*double(m_nRHS) ;
     }
-    else if(m_pWPolar->polarType()==XFLR5::STABILITYPOLAR)
+    else if(m_pWPolar->polarType()==Xfl::STABILITYPOLAR)
     {
         if(!m_bSequence) m_nRHS = 1;
         else if(m_nRHS==0) m_nRHS = 1;//compute at least nominal control positions, even if none is active nor defined
@@ -517,7 +517,7 @@ bool PanelAnalysis::initializeAnalysis()
     {
         strange = "Wings as thick surfaces";
         traceLog(strange+"\n");
-        if(m_pWPolar->boundaryCondition()==XFLR5::DIRICHLET) strange = "Using Dirichlet boundary conditions for wings";
+        if(m_pWPolar->boundaryCondition()==Xfl::DIRICHLET) strange = "Using Dirichlet boundary conditions for wings";
         else                                                 strange = "Using Neumann boundary conditions for wings";
         traceLog(strange+"\n");
     }
@@ -549,14 +549,14 @@ bool PanelAnalysis::initializeAnalysis()
         m_pWPolar->setCoGIxz(m_pPlane->CoGIxz());
     }
 
-    if(m_pWPolar->referenceDim()!=XFLR5::MANUALREFDIM)
+    if(m_pWPolar->referenceDim()!=Xfl::MANUALREFDIM)
     {
-        if(m_pWPolar->referenceDim()==XFLR5::PLANFORMREFDIM)
+        if(m_pWPolar->referenceDim()==Xfl::PLANFORMREFDIM)
         {
             m_pWPolar->setReferenceArea(m_pPlane->planformArea());
             m_pWPolar->setReferenceSpanLength(m_pPlane->planformSpan());
         }
-        else if(m_pWPolar->referenceDim()==XFLR5::PLANFORMREFDIM)
+        else if(m_pWPolar->referenceDim()==Xfl::PLANFORMREFDIM)
         {
             m_pWPolar->setReferenceArea(m_pPlane->projectedArea());
             m_pWPolar->setReferenceSpanLength(m_pPlane->projectedSpan());
@@ -618,21 +618,21 @@ bool PanelAnalysis::initializeAnalysis()
 
 bool PanelAnalysis::loop()
 {
-    if(m_pWPolar->polarType()<XFLR5::FIXEDAOAPOLAR)
+    if(m_pWPolar->polarType()<Xfl::FIXEDAOAPOLAR)
     {
         if(m_pWPolar->bTilted() || fabs(m_pWPolar->Beta())>PRECISION) return unitLoop();
         else                                                          return alphaLoop();
     }
-    else if(m_pWPolar->polarType()==XFLR5::FIXEDAOAPOLAR)
+    else if(m_pWPolar->polarType()==Xfl::FIXEDAOAPOLAR)
     {
         if(m_pWPolar->bTilted() || fabs(m_pWPolar->Beta())>PRECISION) return unitLoop();
         else                                                          return QInfLoop();
     }
-    else if(m_pWPolar->polarType()==XFLR5::BETAPOLAR)
+    else if(m_pWPolar->polarType()==Xfl::BETAPOLAR)
     {
         return unitLoop();
     }
-    else if(m_pWPolar->polarType()==XFLR5::STABILITYPOLAR)
+    else if(m_pWPolar->polarType()==Xfl::STABILITYPOLAR)
     {
         return controlLoop();
     }
@@ -1223,8 +1223,8 @@ void PanelAnalysis::computeFarField(double QInf, double Alpha0, double AlphaDelt
         if(m_pWPolar->bTilted()) alpha = m_OpAlpha;
         else
         {
-            if(m_pWPolar->polarType()==XFLR5::FIXEDAOAPOLAR)       alpha = m_OpAlpha;
-            else if(m_pWPolar->polarType()==XFLR5::BETAPOLAR)      alpha = m_OpAlpha;
+            if(m_pWPolar->polarType()==Xfl::FIXEDAOAPOLAR)       alpha = m_OpAlpha;
+            else if(m_pWPolar->polarType()==Xfl::BETAPOLAR)      alpha = m_OpAlpha;
 //            else if(m_pWPolar->polarType()==XFLR5::STABILITYPOLAR) alpha = m_OpAlpha;
             else if(fabs(m_pWPolar->Beta())>PRECISION)             alpha = m_OpAlpha;
             else                                                   alpha = Alpha0 + q*AlphaDelta;
@@ -1327,7 +1327,7 @@ void PanelAnalysis::scaleResultstoSpeed(int nval)
     memcpy(m_SigmaRef, m_Sigma, uint(nval*m_MatSize)*sizeof(double));
     memcpy(m_RHSRef,   m_Mu,    uint(nval*m_MatSize)*sizeof(double));
 
-    if(m_pWPolar->polarType()!=XFLR5::FIXEDAOAPOLAR)
+    if(m_pWPolar->polarType()!=Xfl::FIXEDAOAPOLAR)
     {
         int p=0;
         for (int q=0; q<nval;q++)
@@ -1356,7 +1356,7 @@ void PanelAnalysis::scaleResultstoSpeed(int nval)
     }
 
     //scale the strip force and downwash fields
-    if(m_pWPolar->polarType()!=XFLR5::FIXEDAOAPOLAR)
+    if(m_pWPolar->polarType()!=Xfl::FIXEDAOAPOLAR)
     {
         for (int q=0; q<nval;q++)
         {
@@ -1510,7 +1510,7 @@ void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
             {
                 traceLog("         Calculating wing..." + m_pWingList[iw]->m_WingName+"\n");
                 //restore the saved FF results
-                if(m_pWPolar->polarType()!=XFLR5::FIXEDAOAPOLAR)
+                if(m_pWPolar->polarType()!=Xfl::FIXEDAOAPOLAR)
                 {
                     memcpy(m_pWingList[iw]->m_Cl,  m_Cl  + (qrhs*MAXWINGS+iw)*m_NSpanStations, uint(m_pWingList[iw]->m_NStation)*sizeof(double));
                     memcpy(m_pWingList[iw]->m_ICd, m_ICd + (qrhs*MAXWINGS+iw)*m_NSpanStations, uint(m_pWingList[iw]->m_NStation)*sizeof(double));
@@ -1550,7 +1550,7 @@ void PanelAnalysis::computePlane(double Alpha, double QInf, int qrhs)
             }
         }
 
-        if(m_pPlane->body() && m_pWPolar->analysisMethod()==XFLR5::PANEL4METHOD && !m_pWPolar->bIgnoreBodyPanels())
+        if(m_pPlane->body() && m_pWPolar->analysisMethod()==Xfl::PANEL4METHOD && !m_pWPolar->bIgnoreBodyPanels())
         {
             double ICm = 0.0;
             traceLog("       Calculating body...\n");
@@ -1818,7 +1818,7 @@ void PanelAnalysis::computeOnBodyCp(double V0, double VDelta, int nval)
     //______________________________________________________________________________________
     traceLog("      Computing On-Body Speeds...\n");
 
-    if(m_pWPolar->polarType() != XFLR5::FIXEDAOAPOLAR)
+    if(m_pWPolar->polarType() != Xfl::FIXEDAOAPOLAR)
     {
         for (int q=0; q<nval; q++)
         {
@@ -2243,18 +2243,18 @@ bool PanelAnalysis::unitLoop()
     {
         switch(m_pWPolar->polarType())
         {
-            case XFLR5::BETAPOLAR:
+            case Xfl::BETAPOLAR:
                 m_OpAlpha = m_pWPolar->m_AlphaSpec;
                 m_OpBeta  = m_vMin+n*m_vDelta;
                 break;
 
-            case XFLR5::FIXEDSPEEDPOLAR:
-            case XFLR5::FIXEDLIFTPOLAR:
+            case Xfl::FIXEDSPEEDPOLAR:
+            case Xfl::FIXEDLIFTPOLAR:
                 m_OpAlpha = m_vMin+n*m_vDelta;
                 m_OpBeta  = m_pWPolar->Beta();
                 break;
 
-            case XFLR5::FIXEDAOAPOLAR:
+            case Xfl::FIXEDAOAPOLAR:
                 m_OpAlpha = m_pWPolar->Alpha();
                 m_OpBeta  = m_pWPolar->Beta();
                 m_QInf      = m_vMin+n*m_vDelta;
@@ -2269,7 +2269,7 @@ bool PanelAnalysis::unitLoop()
 
         setInertia(0.0, m_OpAlpha, m_OpBeta);
 
-        if(m_pWPolar->polarType()!=XFLR5::BETAPOLAR) str = QString("      \n    Processing Alpha= %1\n").arg(m_OpAlpha,0,'f',1);
+        if(m_pWPolar->polarType()!=Xfl::BETAPOLAR) str = QString("      \n    Processing Alpha= %1\n").arg(m_OpAlpha,0,'f',1);
         else                                         str = QString("      \n    Processing Beta= %1\n").arg(m_OpBeta,0,'f',1);
         traceLog(str);
 
@@ -2355,16 +2355,16 @@ bool PanelAnalysis::unitLoop()
 
         switch(m_pWPolar->polarType())
         {
-            case XFLR5::BETAPOLAR:
+            case Xfl::BETAPOLAR:
                 computeAeroCoefs(0.0, m_vDelta, 1);
                 break;
 
-            case XFLR5::FIXEDSPEEDPOLAR:
-            case XFLR5::FIXEDLIFTPOLAR:
+            case Xfl::FIXEDSPEEDPOLAR:
+            case Xfl::FIXEDLIFTPOLAR:
                 computeAeroCoefs(m_vMin, m_vDelta, 1);
                 break;
 
-            case XFLR5::FIXEDAOAPOLAR:
+            case Xfl::FIXEDAOAPOLAR:
                 computeAeroCoefs(m_QInf, m_vDelta, 1);
                 break;
 
@@ -4393,7 +4393,7 @@ double PanelAnalysis::computeCm(double Alpha) const
 
 void PanelAnalysis::restorePanels()
 {
-    if(m_pWPolar && (m_pWPolar->polarType()==XFLR5::STABILITYPOLAR || m_pWPolar->bTilted() || m_pWPolar->bWakeRollUp()))
+    if(m_pWPolar && (m_pWPolar->polarType()==Xfl::STABILITYPOLAR || m_pWPolar->bTilted() || m_pWPolar->bWakeRollUp()))
     {
         //restore the panels and nodes;
         memcpy(m_pPanel,        m_pMemPanel,     uint(m_MatSize) * sizeof(Panel));
@@ -4448,11 +4448,11 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double const *Gamma, double 
 
     pWOpp->m_MaxBending = Cb;
 
-    if(m_pWPolar->analysisMethod()==XFLR5::VLMMETHOD)
+    if(m_pWPolar->analysisMethod()==Xfl::VLMMETHOD)
     {
         traceLog("OldVLM polar\n");
     }
-    else if(m_pWPolar->analysisMethod()==XFLR5::PANEL4METHOD)
+    else if(m_pWPolar->analysisMethod()==Xfl::PANEL4METHOD)
     {
         //get the data from the PanelAnalysis dialog, and from the plane object
         pPOpp->m_NPanels             = m_MatSize;
@@ -4477,10 +4477,10 @@ PlaneOpp* PanelAnalysis::createPlaneOpp(double *Cp, double const *Gamma, double 
 
         pPOpp->m_CP                  = m_CP;
 
-        if(m_pWPolar->polarType()!=XFLR5::BETAPOLAR) pPOpp->m_Beta = m_pWPolar->m_BetaSpec;
+        if(m_pWPolar->polarType()!=Xfl::BETAPOLAR) pPOpp->m_Beta = m_pWPolar->m_BetaSpec;
         else                                         pPOpp->m_Beta = m_OpBeta;
 
-        if(m_pWPolar->polarType()==XFLR5::STABILITYPOLAR)
+        if(m_pWPolar->polarType()==Xfl::STABILITYPOLAR)
         {
             pPOpp->setAlpha(m_AlphaEq);
             pPOpp->m_QInf             = u0;

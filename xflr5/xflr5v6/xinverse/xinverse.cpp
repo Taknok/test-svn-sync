@@ -29,7 +29,7 @@
 #include "inverseoptionsdlg.h"
 #include "pertdlg.h"
 #include "xinverse.h"
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <globals/mainframe.h>
 #include <graph/curve.h>
 #include <graph/graph_globals.h>
@@ -1532,11 +1532,11 @@ void XInverse::onInverseStyles()
     m_pXInverseStyleDlg->initDialog();
     m_pXInverseStyleDlg->exec();
 
-    m_pQCurve->setStyle(m_pRefFoil->foilLineStyle());
+    m_pQCurve->setStipple(m_pRefFoil->foilLineStyle());
     m_pQCurve->setWidth(m_pRefFoil->foilLineWidth());
     m_pQCurve->setColor(colour(m_pRefFoil));
 
-    m_pMCurve->setStyle(m_pModFoil->foilLineStyle());
+    m_pMCurve->setStipple(m_pModFoil->foilLineStyle());
     m_pMCurve->setWidth(m_pModFoil->foilLineWidth());
     m_pMCurve->setColor(colour(m_pModFoil));
 
@@ -1669,8 +1669,8 @@ void XInverse::onQViscous()
 void XInverse::onQPoints()
 {
     m_bShowPoints = !m_bShowPoints;
-    m_pQCurve->setPoints(m_bShowPoints);
-    m_pMCurve->setPoints(m_bShowPoints);
+    m_pQCurve->setPointStyle(m_bShowPoints);
+    m_pMCurve->setPointStyle(m_bShowPoints);
     checkActions();
     updateView();
 }
@@ -2323,19 +2323,19 @@ bool XInverse::setParams()
     }
 
     m_pQCurve->setColor(colour(m_pRefFoil));
-    m_pQCurve->setStyle(m_pRefFoil->foilLineStyle());
+    m_pQCurve->setStipple(m_pRefFoil->foilLineStyle());
     m_pQCurve->setWidth(m_pRefFoil->foilLineWidth());
     m_pMCurve->setColor(colour(m_pModFoil));
-    m_pMCurve->setStyle(m_pModFoil->foilLineStyle());
+    m_pMCurve->setStipple(m_pModFoil->foilLineStyle());
     m_pMCurve->setWidth(m_pModFoil->foilLineWidth());
     m_pQCurve->setName(tr("Q - Reference"));
     m_pMCurve->setName(tr("Q - Specification"));
     m_pQVCurve->setName(tr("Q - Viscous"));
     m_pQVCurve->setColor(QColor(50,170,0));
-    m_pQVCurve->setStyle(0);
+    m_pQVCurve->setStipple(0);
 
     m_pReflectedCurve->setColor(m_ReflectedClr);
-    m_pReflectedCurve->setStyle(m_ReflectedStyle);
+    m_pReflectedCurve->setStipple(m_ReflectedStyle);
     m_pReflectedCurve->setWidth(m_ReflectedWidth);
     m_pReflectedCurve->setName(tr("Reflected"));
 

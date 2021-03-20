@@ -41,12 +41,12 @@
 #include <QVector>
 #include <QActionGroup>
 
-#include <globals/gui_params.h>
-#include <globals/gui_enums.h>
-#include <xflanalysis/analysis3d_enums.h>
+#include <xflcore/gui_enums.h>
+#include <xflcore/gui_params.h>
 #include <graph/graph.h>
 #include <miarex/view/gllightdlg.h>
 #include <misc/voidwidget.h>
+#include <xflcore/core_enums.h>
 
 class AFoil;
 class FoilDesignWt;
@@ -103,7 +103,7 @@ public:
     MainFrame(QWidget * parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
     ~MainFrame();
 
-    XFLR5::enumApp loadXFLR5File(QString PathName);
+    Xfl::enumApp loadXFLR5File(QString PathName);
     static MainFrame* self();
 
     /*___________________________________________Methods_______________________________*/
@@ -233,7 +233,7 @@ public:
     static QColor getColor(int type);
 
 
-    XFLR5::enumApp xflr5App(){return m_iApp;}
+    Xfl::enumApp xflr5App(){return m_iApp;}
     QString &exportLastDirName() {return m_ExportLastDirName;}
     QString &exportGraphFilter() {return m_GraphExportFilter;}
 
@@ -408,7 +408,7 @@ private:
 
     QStringList m_RecentFiles;
 
-    XFLR5::enumApp m_iApp;                 /**< The identification number of the active app. */
+    Xfl::enumApp m_iApp;                 /**< The identification number of the active app. */
 
     static bool s_bSaved;       /**< true if the project has not been modified since the last save operation. */
     bool m_bAutoLoadLast;       /**< true if the last project should be loaded on startup */
@@ -430,7 +430,7 @@ private:
 
     QString m_GraphExportFilter;
 
-    XFLR5::enumImageFormat m_ImageFormat;   /**< The index of the type of image file which should be used. */
+    Xfl::enumImageFormat m_ImageFormat;   /**< The index of the type of image file which should be used. */
     QTimer *m_pSaveTimer;          /**< The timer which triggers the autosaving of the project at given intervals */
 
     bool m_bManualUpdateCheck;

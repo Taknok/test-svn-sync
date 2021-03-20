@@ -21,7 +21,7 @@
 
 #include <QGridLayout>
 
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 
 #include "xinverse.h"
 #include "inverseoptionsdlg.h"

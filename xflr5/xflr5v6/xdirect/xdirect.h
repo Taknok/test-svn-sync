@@ -39,7 +39,7 @@
 #include <xflobjects/objects2d/foil.h>
 #include <xdirect/analysis/xfoilanalysisdlg.h>
 #include <viewwidgets/oppointwt.h>
-#include <globals/gui_enums.h>
+#include <xflcore/gui_enums.h>
 #include <xflobjects/objects2d/oppoint.h>
 #include <graph/graph.h>
 #include <graph/linestyle.h>
@@ -113,7 +113,7 @@ public slots:
     void onEditCurPolar();
     void onExportAllFoilPolars();
     void onExportAllPolarsTxt();
-    void onExportAllPolarsTxt(QString DirName, XFLR5::enumTextFileType);
+    void onExportAllPolarsTxt(QString DirName, Xfl::enumTextFileType);
     void onExportBLData();
     void onExportCurFoil();
     void onExportCurOpp();
@@ -195,7 +195,7 @@ public:
     void setGraphTitles(Graph* pGraph, int iX, int iY);
     void setGraphTitles(Graph* pGraph);
     void setupLayout();
-    void setView(XFLR5::enumGraphView eView);
+    void setView(Xfl::enumGraphView eView);
     void stopAnimate();
     void updateCurveStyle();
 
@@ -294,7 +294,7 @@ private:
     static int s_TimeUpdateInterval;  /**< time interval in ms between two output display updates during an XFoil analysis */
 
     int m_iPlrGraph;           /**< defines whch polar graph is selected if m_iPlrView=1 */
-    XFLR5::enumGraphView m_iPlrView;  /**< defines the number of graphs to be displayed in the polar view */
+    Xfl::enumGraphView m_iPlrView;  /**< defines the number of graphs to be displayed in the polar view */
     int m_FoilYPos;            /**< y position for the foil display, in pixels from the bottom of the screen */
 
     double m_fFoilScale;        /**< the scale for foil display*/

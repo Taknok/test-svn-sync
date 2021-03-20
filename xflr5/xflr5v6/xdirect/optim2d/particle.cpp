@@ -19,6 +19,7 @@
 
 *****************************************************************************/
 
+
 #include <QRandomGenerator>
 
 #include "particle.h"
@@ -69,47 +70,35 @@ void Particle::initializeBest()
 /** Stores the current best if it is non-dominated by the existing solutions */
 void Particle::updateBest()
 {
-    bool bIsDominated = false;
     for(int i=0; i<m_nBest; i++)
     {
         QVector<double> const &olderror = m_BestError.at(i);
 
-        bool bIsWorse = true;
         for(int j=0; j<m_Error.size(); j++)
         {
-            if(m_Error.at(j)<olderror.at(j))
+            if(olderror.at(j)>m_Error.at(j))
             {
-                bIsWorse = false;
-                break;
+                // this particle dominates the old personal best, so replace it
+                m_BestError[i] = m_Error;
+                m_BestPosition[i] = m_Position;
+                return;
             }
         }
-        if(bIsWorse)
-        {
-            bIsDominated = true;
-            break;
-        }
-    }
-
-    if(!bIsDominated)
-    {
-        // replace at random one particle of the Pareto front
-        int irand = QRandomGenerator::global()->bounded(m_nBest);
-        m_BestError[irand] = m_Error;
-        m_BestPosition[irand] = m_Position;
     }
 }
 
 
-
-
-
-
-
-
-
-
-
-
+bool Particle::dominates(Particle const* pOther) const
+{
+    for(int j=0; j<m_Error.size(); j++)
+    {
+        if(m_Error.at(j) > pOther->m_Error.at(j))
+        {
+            return false;
+        }
+    }
+    return true;
+}
 
 
 

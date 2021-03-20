@@ -25,7 +25,7 @@
 
 #include "xflscriptreader.h"
 #include <misc/options/units.h>
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 
 
 XFLScriptReader::XFLScriptReader()
