@@ -24,15 +24,15 @@
 
 #include "optimtask.h"
 
-int  OptimTask::s_PopSize           = 11;
+int  OptimTask::s_PopSize           = 31;
 int  OptimTask::s_MaxIter           = 100;
-bool OptimTask::s_bMultiThreaded      = false;
+bool OptimTask::s_bMultiThreaded    = true;
 
 
 OptimTask::OptimTask()
 {
     m_Iter = 0;
-    m_Status = XFLR5::PENDING;
+    m_Status = Xfl::PENDING;
 }
 
 
@@ -44,7 +44,7 @@ void OptimTask::outputMsg(QString const &msg) const
 }
 
 
-void OptimTask::checkBounds(Particle &particle)
+void OptimTask::checkBounds(Particle &particle) const
 {
     for(int i=0; i<particle.dimension(); i++)
     {
@@ -72,4 +72,18 @@ void OptimTask::postOptEndEvent()
     qApp->postEvent(m_pParent, pOptimEvent);
     qApp->processEvents();
 }
+
+
+int OptimTask::nActiveVariables() const
+{
+    int nActive = 0;
+    for(int ivar=0; ivar<m_Variable.size(); ivar++)
+    {
+        OptVariable const &var = m_Variable.at(ivar);
+        if(var.m_Max-var.m_Min>DELTAVAR) nActive++;
+    }
+    return nActive;
+}
+
+
 

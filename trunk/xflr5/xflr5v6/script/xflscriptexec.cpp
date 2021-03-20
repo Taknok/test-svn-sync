@@ -29,8 +29,8 @@
 #include <QDebug>
 
 #include "xflscriptexec.h"
-#include <globals/globals.h>
-#include <globals/gui_params.h>
+#include <xflcore/xflcore.h>
+#include <xflcore/gui_params.h>
 #include <miarex/mgt/xmlplanereader.h>
 #include <miarex/mgt/xmlwpolarreader.h>
 #include <misc/options/settings.h>
@@ -105,15 +105,15 @@ void XflScriptExec::makeFoilAnalysisList()
                 FoilAnalysis FoilAnalysis;
                 switch(pPolar->polarType())
                 {
-                    case XFLR5::FIXEDSPEEDPOLAR:
-                    case XFLR5::FIXEDLIFTPOLAR:
+                    case Xfl::FIXEDSPEEDPOLAR:
+                    case Xfl::FIXEDLIFTPOLAR:
                     {
                         FoilAnalysis.vMin = m_Reader.m_aoaMin;
                         FoilAnalysis.vMax = m_Reader.m_aoaMax;
                         FoilAnalysis.vInc = m_Reader.m_aoaInc;
                         break;
                     }
-                    case XFLR5::FIXEDAOAPOLAR:
+                    case Xfl::FIXEDAOAPOLAR:
                     {
                         FoilAnalysis.vMin = m_Reader.m_ReMin;
                         FoilAnalysis.vMax = m_Reader.m_ReMax;
@@ -145,8 +145,8 @@ void XflScriptExec::makeFoilAnalysisList()
             FoilAnalysis FoilAnalysis;
             switch(m_Reader.m_PolarType)
             {
-                case XFLR5::FIXEDSPEEDPOLAR:
-                case XFLR5::FIXEDLIFTPOLAR:
+                case Xfl::FIXEDSPEEDPOLAR:
+                case Xfl::FIXEDLIFTPOLAR:
                 {
                     pPolar = Objects2d::createPolar(pFoil, m_Reader.m_PolarType, m_Reader.m_Reynolds.at(ip), m_Reader.m_Mach.at(ip),
                                                            m_Reader.m_NCrit.at(ip), m_Reader.m_XtrTop, m_Reader.m_XtrBot);
@@ -156,7 +156,7 @@ void XflScriptExec::makeFoilAnalysisList()
                     FoilAnalysis.vInc = m_Reader.m_aoaInc;
                     break;
                 }
-                case XFLR5::FIXEDAOAPOLAR:
+                case Xfl::FIXEDAOAPOLAR:
                 {
                     pPolar = Objects2d::createPolar(pFoil, m_Reader.m_PolarType, m_Reader.m_Alpha.at(ip), m_Reader.m_Mach.at(ip),
                                                            m_Reader.m_NCrit.at(ip), m_Reader.m_XtrTop, m_Reader.m_XtrBot);
@@ -492,7 +492,7 @@ void XflScriptExec::startXFoilTaskThread()
     //initiate the task
 
     pXFoilTask->initializeTask(Analysis, true, true, false);
-    if(Analysis.pPolar->polarType()<XFLR5::FIXEDAOAPOLAR)
+    if(Analysis.pPolar->polarType()<Xfl::FIXEDAOAPOLAR)
         pXFoilTask->setSequence(true, Analysis.vMin, Analysis.vMax, Analysis.vInc);
     else if(Analysis.pPolar->isFixedaoaPolar())
         pXFoilTask->setReRange(Analysis.vMin, Analysis.vMax, Analysis.vInc);

@@ -29,7 +29,7 @@
 #include <QThread>
 #include <QStatusBar>
 
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <globals/mainframe.h>
 #include <graph/curve.h>
 #include <graph/graphdlg.h>
@@ -135,7 +135,7 @@ XDirect::XDirect(QWidget *parent) : QWidget(parent)
 
     m_bPolarView          = true;
     m_iPlrGraph = 0;
-    m_iPlrView  = XFLR5::ALLGRAPHS;
+    m_iPlrView  = Xfl::ALLGRAPHS;
     m_FoilYPos  = 150;
 
     m_PointDown.setX(0);
@@ -410,8 +410,8 @@ void XDirect::createOppCurves(OpPoint *pOpp)
             if(m_bShowInviscid && pOpPoint && m_CpGraph.yVariable()<2 && pOpp==curOpp())
             {
                 Curve *pCpi = m_CpGraph.addCurve();
-                pCpi->setPoints(pOpPoint->pointStyle());
-                pCpi->setStyle(1);
+                pCpi->setPointStyle(pOpPoint->pointStyle());
+                pCpi->setStipple(1);
                 pCpi->setColor(colour(pOpPoint).darker(150));
                 pCpi->setWidth(pOpPoint->oppWidth());
                 str= QString("-Re=%1-Alpha=%2_Inviscid").arg(pOpPoint->Reynolds(),8,'f',0).arg(pOpPoint->aoa(),5,'f',2);
@@ -445,10 +445,10 @@ void XDirect::createPolarCurves()
 
         if (pPolar->isVisible() && pPolar->m_Alpha.size()>0)
         {
-            if ((pPolar->polarType()==XFLR5::FIXEDSPEEDPOLAR  && m_bType1) ||
-                    (pPolar->polarType()==XFLR5::FIXEDLIFTPOLAR   && m_bType2) ||
-                    (pPolar->polarType()==XFLR5::RUBBERCHORDPOLAR && m_bType3) ||
-                    (pPolar->polarType()==XFLR5::FIXEDAOAPOLAR    && m_bType4))
+            if ((pPolar->polarType()==Xfl::FIXEDSPEEDPOLAR  && m_bType1) ||
+                    (pPolar->polarType()==Xfl::FIXEDLIFTPOLAR   && m_bType2) ||
+                    (pPolar->polarType()==Xfl::RUBBERCHORDPOLAR && m_bType3) ||
+                    (pPolar->polarType()==Xfl::FIXEDAOAPOLAR    && m_bType4))
             {
 
                 Curve* pCurve[MAXPOLARGRAPHS];
@@ -1269,16 +1269,16 @@ void XDirect::loadSettings(QSettings &settings)
         switch(settings.value("PlrView").toInt())
         {
             case 1:
-                m_iPlrView = XFLR5::ONEGRAPH;
+                m_iPlrView = Xfl::ONEGRAPH;
                 break;
             case 2:
-                m_iPlrView = XFLR5::TWOGRAPHS;
+                m_iPlrView = Xfl::TWOGRAPHS;
                 break;
             case 4:
-                m_iPlrView = XFLR5::FOURGRAPHS;
+                m_iPlrView = Xfl::FOURGRAPHS;
                 break;
             default:
-                m_iPlrView = XFLR5::ALLGRAPHS;
+                m_iPlrView = Xfl::ALLGRAPHS;
                 break;
         }
 
@@ -1309,10 +1309,10 @@ void XDirect::loadSettings(QSettings &settings)
         s_RefPolar.setAoa(settings.value("ASpec").toDouble());
 
         b = settings.value("Type").toInt();
-        if(b==1)      s_RefPolar.setPolarType(XFLR5::FIXEDSPEEDPOLAR);
-        else if(b==2) s_RefPolar.setPolarType(XFLR5::FIXEDLIFTPOLAR);
-        else if(b==3) s_RefPolar.setPolarType(XFLR5::RUBBERCHORDPOLAR);
-        else if(b==4) s_RefPolar.setPolarType(XFLR5::FIXEDAOAPOLAR);
+        if(b==1)      s_RefPolar.setPolarType(Xfl::FIXEDSPEEDPOLAR);
+        else if(b==2) s_RefPolar.setPolarType(Xfl::FIXEDLIFTPOLAR);
+        else if(b==3) s_RefPolar.setPolarType(Xfl::RUBBERCHORDPOLAR);
+        else if(b==4) s_RefPolar.setPolarType(Xfl::FIXEDAOAPOLAR);
 
 
         int NRe = settings.value("NReynolds").toInt();
@@ -1471,7 +1471,7 @@ void XDirect::onAnimateSingle()
             setCurOpp(pOpPoint);
 
             //select current OpPoint in Combobox
-            if(m_pCurPolar->polarType()!=XFLR5::FIXEDAOAPOLAR) str = QString("%1").arg(m_pCurOpp->m_Alpha,8,'f',2);
+            if(m_pCurPolar->polarType()!=Xfl::FIXEDAOAPOLAR) str = QString("%1").arg(m_pCurOpp->m_Alpha,8,'f',2);
             else                                                     str = QString("%1").arg(m_pCurOpp->Reynolds(),8,'f',2);
             indexCbBox = s_pMainFrame->m_pcbOpPoint->findText(str);
             if(indexCbBox>=0) s_pMainFrame->m_pcbOpPoint->setCurrentIndex(indexCbBox);
@@ -1888,7 +1888,7 @@ void XDirect::onDelCurOpp()
     if (!pOpPoint) return;
     QString strong,str;
     strong = tr("Are you sure you want to delete the Operating Point\n");
-    if(m_pCurPolar->polarType()!=XFLR5::FIXEDAOAPOLAR) str = QString("Alpha = %1").arg(pOpPoint->aoa(),0,'f',2);
+    if(m_pCurPolar->polarType()!=Xfl::FIXEDAOAPOLAR) str = QString("Alpha = %1").arg(pOpPoint->aoa(),0,'f',2);
     else                                                     str = QString("Reynolds = %1").arg(pOpPoint->Reynolds(),0,'f',0);
     strong += str;
     strong += "  ?";
@@ -2256,7 +2256,7 @@ void XDirect::onExportBLData()
     double que = 0.5*m_XFoil.QInf()*m_XFoil.QInf();
     double qrf = m_XFoil.QInf();
     int nside1, nside2, ibl;
-    XFLR5::enumTextFileType type = XFLR5::TXT;
+    Xfl::enumTextFileType type = Xfl::TXT;
 
     fileName = m_pCurFoil->name();
     fileName.replace("/", " ");
@@ -2270,7 +2270,7 @@ void XDirect::onExportBLData()
     if(pos>0) Settings::s_LastDirName = fileName.left(pos);
 
     pos  = fileName.lastIndexOf(".csv");
-    if(pos>0) type = XFLR5::CSV;
+    if(pos>0) type = Xfl::CSV;
 
     QFile destFile(fileName);
 
@@ -2283,7 +2283,7 @@ void XDirect::onExportBLData()
     strong = m_pCurFoil->name()+ "\n";
     out << (strong);
 
-    if(type==XFLR5::TXT)
+    if(type==Xfl::TXT)
         strong = QString("Alpha = %1,  Re = %2,  Ma= %3,  ACrit=%4\n\n")
                 .arg(m_pCurOpp->aoa(), 5, 'f',1)
                 .arg(m_pCurOpp->Reynolds(), 8, 'f',0)
@@ -2340,12 +2340,12 @@ void XDirect::onExportBLData()
     }
 
     out << tr("\nTop Side\n");
-    if(type==XFLR5::TXT) OutString = QString(tr("    x         Hk     Ue/Vinf      Cf        Cd     A/A0       D*       Theta      CTq\n"));
+    if(type==Xfl::TXT) OutString = QString(tr("    x         Hk     Ue/Vinf      Cf        Cd     A/A0       D*       Theta      CTq\n"));
     else                 OutString = QString(tr("x,Hk,Ue/Vinf,Cf,Cd,A/A0,D*,Theta,CTq\n"));
     out << (OutString);
     for (ibl=2; ibl<nside1; ibl++)
     {
-        if(type==XFLR5::TXT)
+        if(type==Xfl::TXT)
             OutString = QString("%1  %2  %3  %4 %5 %6  %7  %8  %9\n")
                     .arg(xBL[ibl][1],8,'f',5)
                     .arg(m_pCurOpp->blx.Hk[ibl][1],8,'f',5)
@@ -2370,12 +2370,12 @@ void XDirect::onExportBLData()
         out << (OutString);
     }
     out << tr("\n\nBottom Side\n");
-    if(type==XFLR5::TXT) OutString = QString(tr("    x         Hk     Ue/Vinf      Cf        Cd     A/A0       D*       Theta      CTq\n"));
+    if(type==Xfl::TXT) OutString = QString(tr("    x         Hk     Ue/Vinf      Cf        Cd     A/A0       D*       Theta      CTq\n"));
     else        OutString = QString(tr("x,Hk,Ue/Vinf,Cf,Cd,A/A0,D*,Theta,CTq\n"));
     out << (OutString);
     for (ibl=2; ibl<nside2; ibl++)
     {
-        if(type==XFLR5::TXT)
+        if(type==Xfl::TXT)
             OutString = QString("%1  %2  %3  %4 %5 %6  %7  %8  %9\n")
                     .arg(xBL[ibl][2],8,'f',5)
                     .arg(m_pCurOpp->blx.Hk[ibl][2],8,'f',5)
@@ -2416,7 +2416,7 @@ void XDirect::onExportAllPolarsTxt()
 }
 
 
-void XDirect::onExportAllPolarsTxt(QString DirName, XFLR5::enumTextFileType exporttype)
+void XDirect::onExportAllPolarsTxt(QString DirName, Xfl::enumTextFileType exporttype)
 {
     QString FileName;
     QFile XFile;
@@ -2426,7 +2426,7 @@ void XDirect::onExportAllPolarsTxt(QString DirName, XFLR5::enumTextFileType expo
     {
         Polar *pPolar = m_poaPolar->at(l);
         FileName = DirName + "/" + pPolar->foilName() + "_" + pPolar->polarName();
-        if(Settings::s_ExportFileType==XFLR5::TXT) FileName += ".txt";
+        if(Settings::s_ExportFileType==Xfl::TXT) FileName += ".txt";
         else                                       FileName += ".csv";
 
         XFile.setFileName(FileName);
@@ -2564,7 +2564,7 @@ void XDirect::onExportCurOpp()
     QString FileName;
 
     QString filter;
-    if(Settings::s_ExportFileType==XFLR5::TXT) filter = "Text File (*.txt)";
+    if(Settings::s_ExportFileType==Xfl::TXT) filter = "Text File (*.txt)";
     else                                       filter = "Comma Separated Values (*.csv)";
 
     FileName = QFileDialog::getSaveFileName(this, tr("Export OpPoint"),
@@ -2576,8 +2576,8 @@ void XDirect::onExportCurOpp()
     int pos = FileName.lastIndexOf("/");
     if(pos>0) Settings::s_LastDirName = FileName.left(pos);
     pos = FileName.lastIndexOf(".csv");
-    if (pos>0) Settings::s_ExportFileType = XFLR5::CSV;
-    else       Settings::s_ExportFileType = XFLR5::TXT;
+    if (pos>0) Settings::s_ExportFileType = Xfl::CSV;
+    else       Settings::s_ExportFileType = Xfl::TXT;
 
     QFile XFile(FileName);
 
@@ -2605,7 +2605,7 @@ void XDirect::onExportPolarOpps()
     QString FileName;
 
     QString filter;
-    if(Settings::s_ExportFileType==XFLR5::TXT) filter = "Text File (*.txt)";
+    if(Settings::s_ExportFileType==Xfl::TXT) filter = "Text File (*.txt)";
     else                                       filter = "Comma Separated Values (*.csv)";
 
     FileName = QFileDialog::getSaveFileName(this, tr("Export OpPoint"),
@@ -2619,8 +2619,8 @@ void XDirect::onExportPolarOpps()
     int pos = FileName.lastIndexOf("/");
     if(pos>0) Settings::s_LastDirName = FileName.left(pos);
     pos = FileName.lastIndexOf(".csv");
-    if (pos>0) Settings::s_ExportFileType = XFLR5::CSV;
-    else       Settings::s_ExportFileType = XFLR5::TXT;
+    if (pos>0) Settings::s_ExportFileType = Xfl::CSV;
+    else       Settings::s_ExportFileType = Xfl::TXT;
 
     QFile XFile(FileName);
 
@@ -2642,7 +2642,7 @@ void XDirect::onExportPolarOpps()
         pOpPoint = m_poaOpp->at(i);
         if(pOpPoint->foilName() == m_pCurPolar->foilName() && pOpPoint->polarName() == m_pCurPolar->polarName() )
         {
-            if(Settings::s_ExportFileType==XFLR5::TXT)
+            if(Settings::s_ExportFileType==Xfl::TXT)
                 strong = QString("Reynolds = %1   Mach = %2  NCrit = %3\n")
                         .arg(pOpPoint->Reynolds(), 7, 'f', 0)
                         .arg(pOpPoint->m_Mach, 4,'f',0)
@@ -2658,7 +2658,7 @@ void XDirect::onExportPolarOpps()
             else        Header = QString("Alpha,Cd,Cl,Cm,XTr1,XTr2,TEHMom,Cpmn\n");
             out<<Header;
 
-            if(Settings::s_ExportFileType==XFLR5::TXT)
+            if(Settings::s_ExportFileType==Xfl::TXT)
                 strong = QString("%1   %2   %3   %4   %5   %6   %7  %8\n")
                         .arg(pOpPoint->aoa(),7,'f',3)
                         .arg(pOpPoint->Cd,9,'f',3)
@@ -2680,14 +2680,14 @@ void XDirect::onExportPolarOpps()
                         .arg(pOpPoint->Cpmn,7,'f',4);
 
             out<<strong;
-            if(Settings::s_ExportFileType==XFLR5::TXT) out<< " Cpi          Cpv\n-----------------\n";
+            if(Settings::s_ExportFileType==Xfl::TXT) out<< " Cpi          Cpv\n-----------------\n";
             else                                       out << "Cpi,Cpv\n";
 
             for (j=0; j<pOpPoint->n; j++)
             {
                 if(pOpPoint->m_bViscResults)
                 {
-                    if(Settings::s_ExportFileType==XFLR5::TXT) strong = QString("%1   %2\n").arg(pOpPoint->Cpi[j], 7,'f',4).arg(pOpPoint->Cpv[j], 7, 'f',4);
+                    if(Settings::s_ExportFileType==Xfl::TXT) strong = QString("%1   %2\n").arg(pOpPoint->Cpi[j], 7,'f',4).arg(pOpPoint->Cpv[j], 7, 'f',4);
                     else                                       strong = QString("%1,%2\n").arg(pOpPoint->Cpi[j], 7,'f',4).arg(pOpPoint->Cpv[j], 7, 'f',4);
                 }
                 else
@@ -2715,7 +2715,7 @@ void XDirect::onExportCurPolar()
 
     QString FileName, filter;
 
-    if(Settings::s_ExportFileType==XFLR5::TXT) filter = "Text File (*.txt)";
+    if(Settings::s_ExportFileType==Xfl::TXT) filter = "Text File (*.txt)";
     else                                       filter = "Comma Separated Values (*.csv)";
 
     FileName = m_pCurPolar->polarName();
@@ -2729,8 +2729,8 @@ void XDirect::onExportCurPolar()
     int pos = FileName.lastIndexOf("/");
     if(pos>0) Settings::s_LastDirName = FileName.left(pos);
     pos = FileName.lastIndexOf(".csv");
-    if (pos>0) Settings::s_ExportFileType = XFLR5::CSV;
-    else       Settings::s_ExportFileType = XFLR5::TXT;
+    if (pos>0) Settings::s_ExportFileType = Xfl::CSV;
+    else       Settings::s_ExportFileType = Xfl::TXT;
 
     QFile XFile(FileName);
 
@@ -3049,10 +3049,10 @@ Polar * XDirect::importXFoilPolar(QFile & txtFile)
         QMessageBox::warning(s_pMainFrame, tr("Warning"), str);
         return nullptr;
     }
-    if     (pPolar->ReType() ==1 && pPolar->MaType() ==1) pPolar->setPolarType(XFLR5::FIXEDSPEEDPOLAR);
-    else if(pPolar->ReType() ==2 && pPolar->MaType() ==2) pPolar->setPolarType(XFLR5::FIXEDLIFTPOLAR);
-    else if(pPolar->ReType() ==3 && pPolar->MaType() ==1) pPolar->setPolarType(XFLR5::RUBBERCHORDPOLAR);
-    else                                                  pPolar->setPolarType(XFLR5::FIXEDSPEEDPOLAR);
+    if     (pPolar->ReType() ==1 && pPolar->MaType() ==1) pPolar->setPolarType(Xfl::FIXEDSPEEDPOLAR);
+    else if(pPolar->ReType() ==2 && pPolar->MaType() ==2) pPolar->setPolarType(Xfl::FIXEDLIFTPOLAR);
+    else if(pPolar->ReType() ==3 && pPolar->MaType() ==1) pPolar->setPolarType(Xfl::RUBBERCHORDPOLAR);
+    else                                                  pPolar->setPolarType(Xfl::FIXEDSPEEDPOLAR);
 
 
     bRead  = ReadAVLString(in, Line, strong);
@@ -4154,7 +4154,7 @@ void XDirect::readParams()
     else if (m_pctrlSpec3->isChecked()) s_bAlpha = false;
 
 
-    if(m_pCurPolar->polarType()!=XFLR5::FIXEDAOAPOLAR)
+    if(m_pCurPolar->polarType()!=Xfl::FIXEDAOAPOLAR)
     {
         if(s_bAlpha)
         {
@@ -4215,13 +4215,13 @@ void XDirect::saveSettings(QSettings &settings)
 
         switch(m_iPlrView)
         {
-            case XFLR5::ONEGRAPH:
+            case Xfl::ONEGRAPH:
                 settings.setValue("PlrView", 1);
                 break;
-            case XFLR5::TWOGRAPHS:
+            case Xfl::TWOGRAPHS:
                 settings.setValue("PlrView", 2);
                 break;
-            case XFLR5::FOURGRAPHS:
+            case Xfl::FOURGRAPHS:
                 settings.setValue("PlrView", 4);
                 break;
             default:
@@ -4254,11 +4254,11 @@ void XDirect::saveSettings(QSettings &settings)
         settings.setValue("Mach", s_RefPolar.Mach());
         settings.setValue("ASpec", s_RefPolar.aoa());
 
-        if(s_RefPolar.polarType()==XFLR5::FIXEDSPEEDPOLAR)       settings.setValue("Type", 1);
+        if(s_RefPolar.polarType()==Xfl::FIXEDSPEEDPOLAR)       settings.setValue("Type", 1);
         // jx-mod added missing FIXEDLIFTPOLAR, corrected RUBBERCHORDPOLAR
-        else if(s_RefPolar.polarType()==XFLR5::FIXEDLIFTPOLAR)   settings.setValue("Type", 2);
-        else if(s_RefPolar.polarType()==XFLR5::RUBBERCHORDPOLAR) settings.setValue("Type", 3);
-        else if(s_RefPolar.polarType()==XFLR5::FIXEDAOAPOLAR)    settings.setValue("Type", 4);
+        else if(s_RefPolar.polarType()==Xfl::FIXEDLIFTPOLAR)   settings.setValue("Type", 2);
+        else if(s_RefPolar.polarType()==Xfl::RUBBERCHORDPOLAR) settings.setValue("Type", 3);
+        else if(s_RefPolar.polarType()==Xfl::FIXEDAOAPOLAR)    settings.setValue("Type", 4);
 
         settings.setValue("NReynolds", s_ReList.count());
         for (int i=0; i<s_ReList.count(); i++)
@@ -4301,7 +4301,7 @@ void XDirect::setAnalysisParams()
 
     if(m_pCurPolar)
     {
-        if(m_pCurPolar->polarType()!=XFLR5::FIXEDAOAPOLAR)
+        if(m_pCurPolar->polarType()!=Xfl::FIXEDAOAPOLAR)
         {
             m_pctrlAlphaMin->setDigits(3);
             m_pctrlAlphaMax->setDigits(3);
@@ -4334,7 +4334,7 @@ void XDirect::setAnalysisParams()
     setOpPointSequence();
     if(m_pCurPolar)
     {
-        if(m_pCurPolar->polarType()!=XFLR5::FIXEDAOAPOLAR)
+        if(m_pCurPolar->polarType()!=Xfl::FIXEDAOAPOLAR)
         {
 
         }
@@ -4632,7 +4632,7 @@ void XDirect::setOpPointSequence()
     }
 
 
-    if(m_pCurPolar && m_pCurPolar->polarType()!=XFLR5::FIXEDAOAPOLAR)
+    if(m_pCurPolar && m_pCurPolar->polarType()!=Xfl::FIXEDAOAPOLAR)
     {
         if(m_pctrlSpec3->isChecked())
         {
@@ -4656,7 +4656,7 @@ void XDirect::setOpPointSequence()
         m_pctrlSpec2->setEnabled(true);
         m_pctrlSpec3->setEnabled(false);
     }
-    else if(m_pCurPolar && m_pCurPolar->polarType()==XFLR5::FIXEDAOAPOLAR)
+    else if(m_pCurPolar && m_pCurPolar->polarType()==Xfl::FIXEDAOAPOLAR)
     {
         m_pctrlSpec3->setChecked(true);
         s_bAlpha = true;        // no choice with type 4 polars
@@ -5064,7 +5064,7 @@ void XDirect::renameFoil(Foil *pFoil)
 }
 
 
-void XDirect::setView(XFLR5::enumGraphView eView)
+void XDirect::setView(Xfl::enumGraphView eView)
 {
     if (m_bPolarView)
     {
@@ -5079,16 +5079,16 @@ void XDirect::setGraphTiles()
     {
         switch(m_iPlrView)
         {
-            case XFLR5::ONEGRAPH:
+            case Xfl::ONEGRAPH:
                 s_pMainFrame->m_pXDirectTileWidget->setGraphList(m_PlrGraph, 1, 0);
                 break;
-            case XFLR5::TWOGRAPHS:
+            case Xfl::TWOGRAPHS:
                 s_pMainFrame->m_pXDirectTileWidget->setGraphList(m_PlrGraph, 2, 0);
                 break;
-            case XFLR5::FOURGRAPHS:
+            case Xfl::FOURGRAPHS:
                 s_pMainFrame->m_pXDirectTileWidget->setGraphList(m_PlrGraph, 4, 0);
                 break;
-            case XFLR5::ALLGRAPHS:
+            case Xfl::ALLGRAPHS:
                 s_pMainFrame->m_pXDirectTileWidget->setGraphList(m_PlrGraph, m_PlrGraph.count(), 0);
                 break;
         }

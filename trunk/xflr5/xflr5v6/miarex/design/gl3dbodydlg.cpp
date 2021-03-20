@@ -33,7 +33,7 @@
 
 
 #include <viewwidgets/glwidgets/gl3dbodyview.h>
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <miarex/design/bodygriddlg.h>
 #include <miarex/design/bodyscaledlg.h>
 #include <miarex/design/bodytabledelegate.h>
@@ -744,7 +744,7 @@ void GL3dBodyDlg::onLineType()
     m_bChanged = true;
     if(m_pctrlFlatPanels->isChecked())
     {
-        m_pBody->m_LineType = XFLR5::BODYPANELTYPE;
+        m_pBody->m_LineType = Xfl::BODYPANELTYPE;
         m_pctrlNXPanels->setEnabled(false);
         m_pctrlNHoopPanels->setEnabled(false);
         m_pctrlXDegree->setEnabled(false);
@@ -752,7 +752,7 @@ void GL3dBodyDlg::onLineType()
     }
     else
     {
-        m_pBody->m_LineType = XFLR5::BODYSPLINETYPE;
+        m_pBody->m_LineType = Xfl::BODYSPLINETYPE;
         m_pctrlNXPanels->setEnabled(true);
         m_pctrlNHoopPanels->setEnabled(true);
         m_pctrlXDegree->setEnabled(true);
@@ -1104,14 +1104,14 @@ void GL3dBodyDlg::setControls()
 
     //    m_pctrlEdgeWeight->setSliderPosition((int)((m_pBody->m_SplineSurface.m_EdgeWeightu-1.0)*100.0));
 
-    if(m_pBody && m_pBody->m_LineType==XFLR5::BODYPANELTYPE)
+    if(m_pBody && m_pBody->m_LineType==Xfl::BODYPANELTYPE)
     {
         m_pctrlNXPanels->setEnabled(false);
         m_pctrlNHoopPanels->setEnabled(false);
         m_pctrlXDegree->setEnabled(false);
         m_pctrlHoopDegree->setEnabled(false);
     }
-    else if(m_pBody && m_pBody->m_LineType==XFLR5::BODYSPLINETYPE)
+    else if(m_pBody && m_pBody->m_LineType==Xfl::BODYSPLINETYPE)
     {
         m_pctrlNXPanels->setEnabled(true);
         m_pctrlNHoopPanels->setEnabled(true);
@@ -1154,8 +1154,8 @@ bool GL3dBodyDlg::setBody(Body *pBody)
     m_pctrlColor->setChecked(!m_pBody->hasTextures());
     m_pctrlTextures->setChecked(m_pBody->hasTextures());
 
-    m_pctrlFlatPanels->setChecked(m_pBody->m_LineType==XFLR5::BODYPANELTYPE);
-    m_pctrlBSplines->setChecked(m_pBody->m_LineType==XFLR5::BODYSPLINETYPE);
+    m_pctrlFlatPanels->setChecked(m_pBody->m_LineType==Xfl::BODYPANELTYPE);
+    m_pctrlBSplines->setChecked(m_pBody->m_LineType==Xfl::BODYSPLINETYPE);
 
     m_pBodyLineWidget->setBody(m_pBody);
     m_pFrameWidget->setBody(m_pBody);

@@ -26,7 +26,7 @@
 #include <QStringList>
 
 #include "objectpropsdlg.h"
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 
 
 

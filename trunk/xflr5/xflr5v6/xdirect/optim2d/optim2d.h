@@ -83,6 +83,7 @@ class Optim2d : public QDialog
 
         void swarm();
         void evolution();
+        void updateParetoGraph();
 
     private slots:
         void reject() override;
@@ -134,8 +135,11 @@ class Optim2d : public QDialog
         static int    s_Dt;
 
         // interface
-        Graph m_Graph;
-        GraphWt *m_pGraphWt;
+        Graph m_ErrorGraph;
+        GraphWt *m_pErrorGraphWt;
+        Graph m_ParetoGraph;
+        GraphWt *m_pParetoGraphWt;
+
         FoilWt *m_pFoilWt;
 
         // XFoil

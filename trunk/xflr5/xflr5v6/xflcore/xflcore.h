@@ -33,7 +33,7 @@
 #include <QPainter>
 
 
-#include <xflanalysis/analysis3d_enums.h>
+#include <xflcore/core_enums.h>
 #include <xflobjects/objectcolor.h>
 
 
@@ -62,26 +62,26 @@ float GLGetBlue(float tau);
 QColor randomColor(bool bLightColor);
 
 
-XFLR5::enumPanelDistribution distributionType(QString const &strDist);
-QString distributionType(XFLR5::enumPanelDistribution dist);
+Xfl::enumPanelDistribution distributionType(QString const &strDist);
+QString distributionType(Xfl::enumPanelDistribution dist);
 
-XFLR5::enumBodyLineType bodyPanelType(QString const &strPanelType);
-QString bodyPanelType(XFLR5::enumBodyLineType panelType);
-
-
-XFLR5::enumPolarType polarType(QString const &strPolarType);
-QString polarType(XFLR5::enumPolarType polarType);
-
-XFLR5::enumPolarType WPolarType(QString const &strPolarType);
-QString WPolarType(XFLR5::enumPolarType polarType);
+Xfl::enumBodyLineType bodyPanelType(QString const &strPanelType);
+QString bodyPanelType(Xfl::enumBodyLineType panelType);
 
 
-XFLR5::enumAnalysisMethod analysisMethod(QString const &strAnalysisMethod);
-QString analysisMethod(XFLR5::enumAnalysisMethod analysisMethod);
+Xfl::enumPolarType polarType(QString const &strPolarType);
+QString polarType(Xfl::enumPolarType polarType);
+
+Xfl::enumPolarType WPolarType(QString const &strPolarType);
+QString WPolarType(Xfl::enumPolarType polarType);
 
 
-XFLR5::enumBC boundaryCondition(QString const &strBC);
-QString boundaryCondition(XFLR5::enumBC boundaryCondition);
+Xfl::enumAnalysisMethod analysisMethod(QString const &strAnalysisMethod);
+QString analysisMethod(Xfl::enumAnalysisMethod analysisMethod);
+
+
+Xfl::enumBC boundaryCondition(QString const &strBC);
+QString boundaryCondition(Xfl::enumBC boundaryCondition);
 
 Foil *readFoilFile(QFile &xFoilFile);
 Foil *readPolarFile(QFile &plrFile, QVector<Polar*> &polarList);
@@ -92,11 +92,11 @@ void drawPoints(QPainter &painter, Foil const*pFoil, double alpha, double scalex
 void drawPoint(QPainter &painter, int pointStyle, QColor const &bkColor, QPoint const &pt);
 
 bool stringToBool(QString str);
-QString referenceDimension(XFLR5::enumRefDimension refDimension);
-XFLR5::enumRefDimension referenceDimension(QString const &strRefDimension);
+QString referenceDimension(Xfl::enumRefDimension refDimension);
+Xfl::enumRefDimension referenceDimension(QString const &strRefDimension);
 
-XFLR5::enumWingType wingType(QString const &strWingType);
-QString wingType(XFLR5::enumWingType wingType);
+Xfl::enumWingType wingType(QString const &strWingType);
+QString wingType(Xfl::enumWingType wingType);
 
 void setAutoWPolarName(WPolar * pWPolar, Plane *pPlane);
 

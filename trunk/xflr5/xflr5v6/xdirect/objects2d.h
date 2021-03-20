@@ -26,7 +26,7 @@
 
 #include <QVector>
 
-#include <xflanalysis/analysis3d_enums.h>
+#include <xflcore/core_enums.h>
 
 
 class Foil;
@@ -86,7 +86,7 @@ public:
     static QVector<Polar*> * pOAPolar() {return &s_oaPolar;}
     static QVector<OpPoint*> * pOAOpp() {return &s_oaOpp;}
 
-    static Polar* createPolar(Foil *pFoil, XFLR5::enumPolarType PolarType, double Spec, double Mach, double NCrit, double m_XTop, double m_XBot);
+    static Polar* createPolar(Foil *pFoil, Xfl::enumPolarType PolarType, double Spec, double Mach, double NCrit, double m_XTop, double m_XBot);
 
 private:
     // object arrays

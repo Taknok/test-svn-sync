@@ -36,49 +36,54 @@ class GraphWt : public QWidget
     friend class XDirectTileWidget;
     friend class MiarexTileWidget;
 
-public:
-    GraphWt(QWidget *pParent=nullptr);
-    Graph *graph(){return m_pGraph;}
+    public:
+        GraphWt(QWidget *pParent=nullptr);
+        Graph *graph(){return m_pGraph;}
 
-    virtual void setGraph(Graph *pGraph);
-    void setTitles(QString &Title, QPoint &Place);
+        virtual void setGraph(Graph *pGraph);
+        void setTitles(QString &Title, QPoint &Place);
 
-    void showLegend(bool bShow) {m_bDrawLegend = bShow;}
-    void setLegendPosition(QPoint const &pos) {m_LegendOrigin = pos;}
+        void showLegend(bool bShow) {m_bDrawLegend = bShow;}
+        void setLegendPosition(QPoint const &pos) {m_LegendOrigin = pos;}
+
+        void setOverlayedRect(bool bShow, double tlx, double tly, double brx, double bry);
+
+    protected:
+        void paintEvent(QPaintEvent *pEvent) override;
+        void resizeEvent (QResizeEvent *pEvent) override;
+        void contextMenuEvent (QContextMenuEvent *pEvent) override;
+        void keyPressEvent(QKeyEvent *pEvent) override;
+        void mouseDoubleClickEvent (QMouseEvent *pEvent) override;
+        void mouseMoveEvent(QMouseEvent *pEvent) override;
+        void mousePressEvent(QMouseEvent *pEvent) override;
+        void mouseReleaseEvent(QMouseEvent *pEvent) override;
+        void wheelEvent (QWheelEvent *pEvent) override;
 
 
-protected:
-    void paintEvent(QPaintEvent *pEvent) override;
-    void resizeEvent (QResizeEvent *pEvent) override;
-    void contextMenuEvent (QContextMenuEvent *pEvent) override;
-    void keyPressEvent(QKeyEvent *pEvent) override;
-    void mouseDoubleClickEvent (QMouseEvent *pEvent) override;
-    void mouseMoveEvent(QMouseEvent *pEvent) override;
-    void mousePressEvent(QMouseEvent *pEvent) override;
-    void mouseReleaseEvent(QMouseEvent *pEvent) override;
-    void wheelEvent (QWheelEvent *pEvent) override;
+    signals:
+        void graphChanged(Graph *);
+        void graphResized(Graph *);
 
+    public slots:
+        void onGraphSettings();
+        void onResetGraphScales();
 
-signals:
-    void graphChanged(Graph *);
-    void graphResized(Graph *);
+    protected:
 
-public slots:
-    void onGraphSettings();
-    void onResetGraphScales();
+        QPoint m_TitlePosition;
+        QString m_GraphTitle;
+        Graph *m_pGraph;
 
-protected:
+        QPoint m_LegendOrigin;
+        bool m_bDrawLegend;
 
-    QPoint m_TitlePosition;
-    QString m_GraphTitle;
-    Graph *m_pGraph;
+        QPoint m_LastPoint;           /**< The client position of the previous mousepress event */
+        bool m_bTransGraph;
+        bool m_bXPressed;                  /**< true if the X key is pressed */
+        bool m_bYPressed;                  /**< true if the Y key is pressed */
 
-    QPoint m_LegendOrigin;
-    bool m_bDrawLegend;
+        bool m_bOverlayRectangle;
+        QPointF m_TopLeft, m_BotRight; // in graph coordinates; should really be a Vector2d
 
-    QPoint m_LastPoint;           /**< The client position of the previous mousepress event */
-    bool m_bTransGraph;
-    bool m_bXPressed;                  /**< true if the X key is pressed */
-    bool m_bYPressed;                  /**< true if the Y key is pressed */
 };
 

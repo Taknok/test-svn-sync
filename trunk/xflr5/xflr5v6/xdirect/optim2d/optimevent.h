@@ -23,7 +23,7 @@
 
 #include <xflcore/xflevents.h>
 #include <xdirect/optim2d/particle.h>
-
+/*
 class OptimEvent : public QEvent
 {
     public:
@@ -48,3 +48,4 @@ class OptimEvent : public QEvent
         int m_iBest = 0;
 };
 
+*/

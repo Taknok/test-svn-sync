@@ -22,7 +22,7 @@
 
 #include "graph_globals.h"
 
-void drawPoint(QPainter &painter, int pointStyle, QPoint pt, QColor backColor)
+void drawPoint(QPainter &painter, int pointStyle, QPoint const &pt, QColor const &backColor)
 {
     QBrush backBrush(backColor);
     painter.setBrush(backBrush);
@@ -66,12 +66,12 @@ void drawPoint(QPainter &painter, int pointStyle, QPoint pt, QColor backColor)
  */
 Qt::PenStyle getStyle(int s)
 {
-    if(s==0)      return Qt::SolidLine;
+    if     (s==0) return Qt::SolidLine;
     else if(s==1) return Qt::DashLine;
     else if(s==2) return Qt::DotLine;
     else if(s==3) return Qt::DashDotLine;
     else if(s==4) return Qt::DashDotDotLine;
-    return Qt::SolidLine;
+    return Qt::NoPen;
 }
 
 

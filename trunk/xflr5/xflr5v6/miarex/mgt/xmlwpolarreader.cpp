@@ -19,7 +19,7 @@
 
 *****************************************************************************/
 #include <QStringList>
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include "xmlwpolarreader.h"
 #include <xflobjects/objects3d/wpolar.h>
 

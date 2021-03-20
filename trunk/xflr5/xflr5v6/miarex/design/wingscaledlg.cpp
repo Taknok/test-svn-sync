@@ -24,7 +24,7 @@
 #include <QLabel>
 
 #include "wingscaledlg.h"
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <misc/options/units.h>
 #include <misc/text/doubleedit.h>
 

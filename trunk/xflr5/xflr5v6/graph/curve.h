@@ -52,7 +52,7 @@ public:
 
     int  appendPoint(double xn, double yn);
     void setPoint(int k, double xc, double yc) {if(k<0||k>m_x.size())return; m_x[k]=xc; m_y[k]=yc;}
-    void setPoints(QVector<double> const &xc, QVector<double> const&yc) {m_x=xc; m_y=yc;}
+    void setPointStyle(QVector<double> const &xc, QVector<double> const&yc) {m_x=xc; m_y=yc;}
 
     /**
      * Resets the content of the curve.
@@ -93,13 +93,13 @@ public:
      * Sets the curve's style
      * @param nStyle the index of the new curve's style
      */
-    void setStyle(int nStyle){ m_curveStyle.m_Stipple = nStyle;}
+    void setStipple(int nStyle){ m_curveStyle.m_Stipple = nStyle;}
 
     void setLineStyle(LineStyle lineStyle) { m_curveStyle = lineStyle; }
 
     void setLineStyle(int Style, int Width, QColor color, int PointStyle, bool bVisible);
 
-    void setPoints(int points) {m_curveStyle.m_PointStyle=points;}
+    void setPointStyle(int pointstyle) {m_curveStyle.m_PointStyle=pointstyle;}
 
     /**
      * Sets the index of the currently selected point of this curve

@@ -529,13 +529,13 @@ int LLTAnalysis::iterate(double &QInf, double Alpha)
             yob     = cos(k*PI/s_NLLTStations);
             m_pWing->getFoils(&pFoil0, &pFoil1, yob*m_pWing->m_PlanformSpan/2.0, tau);
             m_Cl[k] = getCl( pFoil0, pFoil1, m_Re[k], Alpha + m_Ai[k]+ m_Twist[k], tau, bOutRe, bError);
-            if (m_pWPolar->polarType()==XFLR5::FIXEDLIFTPOLAR)
+            if (m_pWPolar->polarType()==Xfl::FIXEDLIFTPOLAR)
             {
                 Lift += Eta(k) * m_Cl[k] * m_Chord[k];
             }
         }
 
-        if(m_pWPolar->polarType()==XFLR5::FIXEDLIFTPOLAR)
+        if(m_pWPolar->polarType()==Xfl::FIXEDLIFTPOLAR)
         {
             Lift *= m_pWing->m_AR / m_pWing->m_PlanformSpan;
             if(Lift<=0.0)  return -1;
@@ -603,7 +603,7 @@ void LLTAnalysis::initializeGeom()
 
 bool LLTAnalysis::loop()
 {
-    if (m_pWPolar->polarType()!=XFLR5::FIXEDAOAPOLAR)
+    if (m_pWPolar->polarType()!=Xfl::FIXEDAOAPOLAR)
     {
         return alphaLoop();
     }
@@ -1399,7 +1399,7 @@ double LLTAnalysis::getPlrPointFromAlpha(Foil const*pFoil, double Re, double Alp
     for (int i=0; i<m_poaPolar->size(); i++)
     {
         pPolar = m_poaPolar->at(i);
-        if((pPolar->polarType()==XFLR5::FIXEDSPEEDPOLAR) && (pPolar->foilName() == pFoil->name()))
+        if((pPolar->polarType()==Xfl::FIXEDSPEEDPOLAR) && (pPolar->foilName() == pFoil->name()))
         {
             n++;
             if(n>=2) break;

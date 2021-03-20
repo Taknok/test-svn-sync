@@ -21,11 +21,17 @@
 
 #pragma once
 
+
 #include <QWidget>
 #include <QEvent>
 
-#include <xflanalysis/analysis3d_enums.h>
+
 #include <xflcore/xflevents.h>
+#include <xdirect/optim2d/particle.h>
+#include <xdirect/optim2d/optstructures.h>
+#include <xflcore/core_enums.h>
+
+#define DELTAVAR 0.0001     // minimum difference between varmax and varmin
 
 #include "particle.h"
 #include "optstructures.h"
@@ -47,32 +53,38 @@ class OptimTask : public QObject
         virtual void setDimension(int n) {m_Variable.resize(n);}
         virtual void makeSwarm() = 0;
 
-        void setVariable(int iDim, const OptVariable&var) {m_Variable[iDim] = var;}
 
         int swarmSize() const {return m_Swarm.size();}
+
+        int nVariables() const {return m_Variable.size();}
+        void setVariables(QVector<OptVariable> const &var) {m_Variable=var;}
+        void setVariable(int iDim, const OptVariable&var) {m_Variable[iDim] = var;}
+        OptVariable const &variable(int iDim) const {return m_Variable.at(iDim);}
+        int nActiveVariables() const;
+
         Particle const &particle(int ip) const {return m_Swarm.at(ip);}
 
         void restartIterations() {m_Iter=0;}
 
         void listPopulation() const;
 
-        void setAnalysisStatus(XFLR5::enumAnalysisStatus status) {m_Status=status;}
-        void cancelAnalyis() {m_Status = XFLR5::CANCELLED;}
-        bool isCancelled() const {return m_Status==XFLR5::CANCELLED;}
-        bool isRunning()   const {return m_Status==XFLR5::RUNNING;}
-        bool isPending()   const {return m_Status==XFLR5::PENDING;}
-        bool isFinished()  const {return m_Status==XFLR5::FINISHED || m_Status==XFLR5::CANCELLED;}
+        void setAnalysisStatus(Xfl::enumAnalysisStatus status) {m_Status=status;}
+        void cancelAnalyis() {m_Status = Xfl::CANCELLED;}
+        bool isCancelled() const {return m_Status==Xfl::CANCELLED;}
+        bool isRunning()   const {return m_Status==Xfl::RUNNING;}
+        bool isPending()   const {return m_Status==Xfl::PENDING;}
+        bool isFinished()  const {return m_Status==Xfl::FINISHED || m_Status==Xfl::CANCELLED;}
 
         static void setMultithreaded(bool b) {s_bMultiThreaded=b;}
 
     protected:
-        void checkBounds(Particle &particle);;
+        void checkBounds(Particle &particle) const;
         virtual void makeRandomParticle(Particle *pParticle) const = 0;
 
         void outputMsg(QString const &msg) const;
 
-        virtual double error(const Particle &particle, int iObjective) const = 0;
-        virtual void calcFitness(Particle &particle) const = 0;
+        virtual double error(Particle const *pParticle, int iObjective) const = 0;
+        virtual void calcFitness(Particle *pParticle) const = 0;
 
         virtual void postIterEvent(int iBest) = 0;
         void postOptEndEvent();
@@ -86,7 +98,7 @@ class OptimTask : public QObject
 
         int m_Iter;
         QObject *m_pParent;
-        XFLR5::enumAnalysisStatus m_Status;
+        Xfl::enumAnalysisStatus m_Status;
 
         // size = dim
         QVector<OptVariable> m_Variable;
@@ -98,6 +110,28 @@ class OptimTask : public QObject
         static bool s_bMultiThreaded;
 
 };
+
+
+class OptimEvent : public QEvent
+{
+    public:
+        OptimEvent(QEvent::Type type, int iter, int ibest, Particle const &p): QEvent(type)
+        {
+            m_Iter  = iter;
+            m_iBest = ibest;
+            m_Particle = p;
+        }
+
+        Particle const &particle() const {return m_Particle;}
+        int iter() const {return m_Iter;}
+        int iBest() const {return m_iBest;}
+
+    private:
+        Particle m_Particle;
+        int m_Iter=0;
+        int m_iBest = 0;
+};
+
 
 
 

@@ -34,7 +34,7 @@
 #include <QTextEdit>
 
 
-#include <xflanalysis/analysis3d_enums.h>
+#include <xflcore/core_enums.h>
 
 
 
@@ -124,7 +124,7 @@ private:
 
     static XDirect* s_pXDirect;     /**< a void pointer to the instance of the QXDirect object >*/
     static bool s_bCurrentFoil;  /**< true if the analysis should be performed on the active Foil, false if on a list of Foils>*/
-    XFLR5::enumPolarType m_PolarType;   /**< the type of Polar to be created for the analysis>*/
+    Xfl::enumPolarType m_PolarType;   /**< the type of Polar to be created for the analysis>*/
 
     double m_Mach;               /**< the Mach number for the Polars and the analysis>*/
 

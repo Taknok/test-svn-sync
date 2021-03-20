@@ -24,7 +24,7 @@
 #include <QDebug>
 
 #include "xmlplanereader.h"
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <xflobjects/objects3d/plane.h>
 
 XMLPlaneReader::XMLPlaneReader(QFile &file, Plane *pPlane)
@@ -139,7 +139,7 @@ bool XMLPlaneReader::readPlane(Plane *pPlane, double lengthunit, double massunit
             newwing.clearPointMasses();
             newwing.clearSurfaces();
             newwing.clearWingSections();
-            newwing.setWingType(XFLR5::OTHERWING);
+            newwing.setWingType(Xfl::OTHERWING);
             newwing.m_Section.clear();
 
             Vector3d pos;
@@ -148,40 +148,40 @@ bool XMLPlaneReader::readPlane(Plane *pPlane, double lengthunit, double massunit
 
 
             int iWing = 0;
-            if(newwing.wingType()==XFLR5::OTHERWING)
+            if(newwing.wingType()==Xfl::OTHERWING)
             {
                 if(newwing.isFin())
                 {
-                    newwing.setWingType(XFLR5::FIN);
+                    newwing.setWingType(Xfl::FIN);
                     pPlane->setFin(true);
                     iWing = 3;
                 }
                 else if(iw==0)
                 {
-                    newwing.setWingType(XFLR5::MAINWING);
+                    newwing.setWingType(Xfl::MAINWING);
                     iWing = 0;
                 }
                 else if(iw==1)
                 {
-                    newwing.setWingType(XFLR5::ELEVATOR);
+                    newwing.setWingType(Xfl::ELEVATOR);
                     pPlane->setElevator(true);
                     iWing = 2;
                 }
             }
             else
             {
-                if(newwing.wingType()==XFLR5::MAINWING) iWing = 0;
-                else if(newwing.wingType()==XFLR5::SECONDWING)
+                if(newwing.wingType()==Xfl::MAINWING) iWing = 0;
+                else if(newwing.wingType()==Xfl::SECONDWING)
                 {
                     iWing = 1;
                     pPlane->setSecondWing(true);
                 }
-                else if(newwing.wingType()==XFLR5::ELEVATOR)
+                else if(newwing.wingType()==Xfl::ELEVATOR)
                 {
                     iWing = 2;
                     pPlane->setElevator(true);
                 }
-                else if(newwing.wingType()==XFLR5::FIN)
+                else if(newwing.wingType()==Xfl::FIN)
                 {
                     iWing = 3;
                     pPlane->setFin(true);
@@ -219,9 +219,9 @@ bool XMLPlaneReader::readWing(Wing &newwing, Vector3d &position, double &tiltang
             newwing.setWingType(wingType(readElementText()));
             if(m_pPlane)
             {
-                if     (newwing.wingType()==XFLR5::ELEVATOR)   m_pPlane->setElevator(true);
-                else if(newwing.wingType()==XFLR5::SECONDWING) m_pPlane->setSecondWing(true);
-                else if(newwing.wingType()==XFLR5::FIN)        m_pPlane->setFin(true);
+                if     (newwing.wingType()==Xfl::ELEVATOR)   m_pPlane->setElevator(true);
+                else if(newwing.wingType()==Xfl::SECONDWING) m_pPlane->setSecondWing(true);
+                else if(newwing.wingType()==Xfl::FIN)        m_pPlane->setFin(true);
             }
         }
         else if (name().compare(QString("color"),           Qt::CaseInsensitive)==0)
@@ -427,8 +427,8 @@ bool XMLPlaneReader::readBody(Body *pBody, Vector3d &position, double lengthUnit
         }
         else if (name().compare(QString("type"), Qt::CaseInsensitive)==0)
         {
-            if(readElementText().compare(QString("NURBS"), Qt::CaseInsensitive)==0) pBody->bodyType()=XFLR5::BODYSPLINETYPE;
-            else                                                           pBody->bodyType()=XFLR5::BODYPANELTYPE;
+            if(readElementText().compare(QString("NURBS"), Qt::CaseInsensitive)==0) pBody->bodyType()=Xfl::BODYSPLINETYPE;
+            else                                                           pBody->bodyType()=Xfl::BODYPANELTYPE;
         }
         else if (name().compare(QString("x_degree"),    Qt::CaseInsensitive)==0) pBody->splineSurface()->setuDegree(readElementText().toInt());
         else if (name().compare(QString("hoop_degree"), Qt::CaseInsensitive)==0) pBody->splineSurface()->setvDegree(readElementText().toInt());

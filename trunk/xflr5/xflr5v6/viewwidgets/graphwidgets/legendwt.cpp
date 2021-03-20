@@ -24,7 +24,7 @@
 #include "legendwt.h"
 
 #include <viewwidgets/graphwidgets/graphtilewt.h>
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <graph/graph_globals.h>
 #include <globals/mainframe.h>
 #include <xflobjects/objects3d/plane.h>
@@ -53,7 +53,7 @@ LegendWt::LegendWt(QWidget *pParent) : QWidget(pParent)
     setMouseTracking(true);
     m_pGraphTileWt = dynamic_cast<GraphTileWidget*>(pParent);
     m_pGraph = nullptr;
-    m_MiarexView = XFLR5::OTHERVIEW;
+    m_MiarexView = Xfl::OTHERVIEW;
     m_LegendPosition = QPointF(11.0,11.0);
     m_bTrans = false;
 }
@@ -63,7 +63,7 @@ LegendWt::~LegendWt()
 {
 }
 
-void LegendWt::setMiarexView(XFLR5::enumMiarexViews eMiarexView)
+void LegendWt::setMiarexView(Xfl::enumMiarexViews eMiarexView)
 {
     m_MiarexView = eMiarexView;
 }
@@ -80,23 +80,23 @@ void LegendWt::paintEvent(QPaintEvent *)
 
     if(m_pGraphTileWt)
     {
-        if(m_pGraphTileWt->xflr5App()==XFLR5::MIAREX)
+        if(m_pGraphTileWt->xflr5App()==Xfl::MIAREX)
         {
             switch(m_MiarexView)
             {
-                case XFLR5::WOPPVIEW:
+                case Xfl::WOPPVIEW:
                     drawPOppGraphLegend(painter, m_LegendPosition, bottom);
                     break;
-                case XFLR5::WPOLARVIEW:
+                case Xfl::WPOLARVIEW:
                     drawWPolarLegend(painter, m_LegendPosition, bottom);
                     break;
-                case XFLR5::STABPOLARVIEW:
+                case Xfl::STABPOLARVIEW:
                     drawWPolarLegend(painter, m_LegendPosition, bottom);
                     break;
-                case XFLR5::STABTIMEVIEW:
+                case Xfl::STABTIMEVIEW:
                     if(m_pGraph) drawStabTimeLegend(painter, m_pGraph, m_LegendPosition, bottom);
                     break;
-                case XFLR5::WCPVIEW:
+                case Xfl::WCPVIEW:
                     if(m_pGraph) drawCpLegend(painter, m_pGraph, m_LegendPosition, bottom);
                     break;
                 default: break;
@@ -156,7 +156,7 @@ void LegendWt::drawWPolarLegend(QPainter &painter, QPointF place, int bottom)
             pWPolar = Objects3d::s_oaWPolar.at(i);
             if (pWPolar->planeName()==pPlane->planeName() && pWPolar->isVisible() && !isFiltered(pWPolar))
             {
-                if(m_MiarexView==XFLR5::WPOLARVIEW || (m_MiarexView==XFLR5::STABPOLARVIEW && pWPolar->isStabilityPolar()))
+                if(m_MiarexView==Xfl::WPOLARVIEW || (m_MiarexView==Xfl::STABPOLARVIEW && pWPolar->isStabilityPolar()))
                 {
                     strPlaneList.append(pPlane->planeName());
                     break;
@@ -188,7 +188,7 @@ void LegendWt::drawWPolarLegend(QPainter &painter, QPointF place, int bottom)
 
             if (pWPolar->dataSize() && pWPolar->isVisible() && !isFiltered(pWPolar) && pWPolar->planeName()==strPlaneList.at(k))
             {
-                if(m_MiarexView==XFLR5::WPOLARVIEW || (m_MiarexView==XFLR5::STABPOLARVIEW && pWPolar->isStabilityPolar()))
+                if(m_MiarexView==Xfl::WPOLARVIEW || (m_MiarexView==Xfl::STABPOLARVIEW && pWPolar->isStabilityPolar()))
                     nPlanePlrs++;
             }
         }
@@ -221,7 +221,7 @@ void LegendWt::drawWPolarLegend(QPainter &painter, QPointF place, int bottom)
                     else if(!pWPolar->isVisible() || isFiltered(pWPolar))
                     {
                     }
-                    else if(m_MiarexView!=XFLR5::WPOLARVIEW && (m_MiarexView!=XFLR5::STABPOLARVIEW || !pWPolar->isStabilityPolar()))
+                    else if(m_MiarexView!=Xfl::WPOLARVIEW && (m_MiarexView!=Xfl::STABPOLARVIEW || !pWPolar->isStabilityPolar()))
                     {
                     }
                     else

@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include "units.h"
 #include <QGridLayout>
 #include <QVBoxLayout>

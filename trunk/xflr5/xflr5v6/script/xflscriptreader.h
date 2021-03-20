@@ -27,7 +27,7 @@
 #include <QVector>
 #include <QThread>
 
-#include <xflanalysis/analysis3d_enums.h>
+#include <xflcore/core_enums.h>
 
 class XFLScriptReader : public QXmlStreamReader
 {
@@ -93,7 +93,7 @@ private:
     bool m_bRecursiveDirScan;
     bool m_bcsvPolarOutput;
 
-    XFLR5::enumPolarType m_PolarType;
+    Xfl::enumPolarType m_PolarType;
 
     QThread::Priority m_ThreadPriority;
 };

@@ -34,7 +34,7 @@
 #include <QRadioButton>
 #include <QTextEdit>
 
-#include <xflanalysis/analysis3d_enums.h>
+#include <xflcore/core_enums.h>
 
 class Foil;
 class Polar;
@@ -144,7 +144,7 @@ private:
     bool m_bCancel;             /**< true if the user has clicked the cancel button */
     bool m_bIsRunning;          /**< true until all the pairs of (foil, polar) have been calculated */
 
-    XFLR5::enumPolarType m_PolarType;  /**< the type of analysis to perform */
+    Xfl::enumPolarType m_PolarType;  /**< the type of analysis to perform */
 
     int m_nAnalysis;            /**< the number of analysis pairs to run */
     int m_nTaskStarted;         /**< the number of started tasks */

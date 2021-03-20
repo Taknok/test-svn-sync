@@ -32,7 +32,7 @@
 #include <QLabel>
 #include <QSettings>
 
-#include <globals/gui_enums.h>
+#include <xflcore/gui_enums.h>
 #include <graph/graph.h>
 
 class MainFrame;
@@ -122,7 +122,7 @@ public:
     static QColor s_TextColor;
     static bool s_bStyleSheets;
     static bool s_bReverseZoom;
-    static XFLR5::enumTextFileType s_ExportFileType;  /**< Defines if the list separator for the output text files should be a space or a comma. */
+    static Xfl::enumTextFileType s_ExportFileType;  /**< Defines if the list separator for the output text files should be a space or a comma. */
     static Graph s_RefGraph;//Reference setttings
     static QString s_LastDirName, s_xmlDirName, s_plrDirName;
     static QStringList s_colorList;

@@ -85,6 +85,18 @@ void GraphWt::paintEvent(QPaintEvent *  pEvent )
 
     m_pGraph->drawGraph(painter);
 
+    if(m_bOverlayRectangle)
+    {
+        painter.save();
+        QBrush overlaybrush(QColor(0,175,225,105));
+        painter.setBrush(overlaybrush);
+        QPointF topleft(m_pGraph->toClient(m_TopLeft.x(), m_TopLeft.y()));
+        QPointF botright(m_pGraph->toClient(m_BotRight.x(), m_BotRight.y()));
+        QRectF rect(topleft, botright);
+        painter.drawRect(rect);
+        painter.restore();
+    }
+
     if(m_bDrawLegend) m_pGraph->drawLegend(painter, m_LegendOrigin, Settings::textFont(), Settings::textColor(), Settings::backgroundColor());
     if(hasFocus() && Settings::bMousePos())
     {
@@ -408,6 +420,15 @@ void GraphWt::onGraphSettings()
     update();
 }
 
+
+
+
+void GraphWt::setOverlayedRect(bool bShow, double tlx, double tly, double brx, double bry)
+{
+    m_bOverlayRectangle = bShow;
+    m_TopLeft  = QPointF(tlx, tly);
+    m_BotRight = QPointF(brx, bry);
+}
 
 
 

@@ -20,7 +20,7 @@
 *****************************************************************************/
 
 #include "xmlplanewriter.h"
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <misc/options/units.h>
 #include <xflobjects/objects3d/plane.h>
 
@@ -217,8 +217,8 @@ void XMLPlaneWriter::writeBody(Body *pBody, Vector3d position, double lengthUnit
                          .arg(position.y*lengthUnit, 11,'g',5)
                          .arg(position.z*lengthUnit, 11,'g',5));
 
-        writeTextElement("Type", pBody->bodyType()==XFLR5::BODYPANELTYPE ? "FLATPANELS" : "NURBS");
-        if(pBody->bodyType()==XFLR5::BODYSPLINETYPE && pSurface)
+        writeTextElement("Type", pBody->bodyType()==Xfl::BODYPANELTYPE ? "FLATPANELS" : "NURBS");
+        if(pBody->bodyType()==Xfl::BODYSPLINETYPE && pSurface)
         {
             writeTextElement("x_degree", QString ("%1").arg(pSurface->uDegree()));
             writeTextElement("hoop_degree", QString ("%1").arg(pSurface->vDegree()));
@@ -251,7 +251,7 @@ void XMLPlaneWriter::writeBody(Body *pBody, Vector3d position, double lengthUnit
             Frame *pFrame = pBody->splineSurface()->frameAt(iFrame);
             writeStartElement("frame");
             {
-                if(pBody->bodyType()==XFLR5::BODYPANELTYPE)
+                if(pBody->bodyType()==Xfl::BODYPANELTYPE)
                 {
                     writeTextElement("x_panels", QString("%1").arg(pBody->m_xPanels.at(iFrame)));
                     //                    writeTextElement("h_panels", QString("%1").arg(pBody->m_xPanels.at(iFrame)));

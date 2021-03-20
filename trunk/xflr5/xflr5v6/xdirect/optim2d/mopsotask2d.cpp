@@ -66,10 +66,10 @@ void MOPSOTask2d::makeFoil(Particle const &particle, Foil *pFoil) const
 }
 
 
-void MOPSOTask2d::calcFitness(Particle &particle) const
+void MOPSOTask2d::calcFitness(Particle *pParticle) const
 {
     Foil tempfoil;
-    makeFoil(particle, &tempfoil);
+    makeFoil(*pParticle, &tempfoil);
 
     bool bViscous  = true;
     bool bInitBL = true;
@@ -90,11 +90,24 @@ void MOPSOTask2d::calcFitness(Particle &particle) const
         Cl = xfoil.cl;
         Cd = xfoil.cd;
     }
+    else
+    {
+        // just to keep a reasonable scale for the Pareto graph
+        Cl = 2.0;
+        Cd = 0.5;
+
+    }
 
     delete task;
 
-    particle.setFitness(0, Cl);
-    particle.setFitness(1, Cd);
+    pParticle->setFitness(0, Cl);
+    pParticle->setFitness(1, Cd);
+}
+
+
+double MOPSOTask2d::error(const Particle *pParticle, int iObjective) const
+{
+    return fabs(pParticle->fitness(iObjective)-m_Objective.at(iObjective).m_Target);
 }
 
 

@@ -1,7 +1,7 @@
 /****************************************************************************
 
     Engine enums
-    Copyright (C) 2008-2018 Andre Deperrois 
+    Copyright (C) 2008-2018 Andre Deperrois
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,11 +19,10 @@
 
 *****************************************************************************/
 
-#ifndef ENGINE_ENUMS_H
-#define ENGINE_ENUMS_H
+#pragma once
 
 // first name space
-namespace XFLR5
+namespace Xfl
 {
     /** @enum The different types of analysis methods for 3D calculations of wings and planes. */
     typedef enum {LLTMETHOD, VLMMETHOD, PANEL4METHOD, TRILINMETHOD, TRIUNIMETHOD} enumAnalysisMethod;
@@ -49,6 +48,4 @@ namespace XFLR5
     /** @enum The status of the 3d analysis */
     typedef enum {PENDING, RUNNING, CANCELLED, FINISHED} enumAnalysisStatus;
 }
-
-#endif // ENGINE_ENUMS_H
 

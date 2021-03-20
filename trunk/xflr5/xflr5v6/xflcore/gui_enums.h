@@ -21,11 +21,10 @@
 *****************************************************************************/
 
 
-#ifndef GUI_ENUMS_H
-#define GUI_ENUMS_H
+#pragma once
 
 // first name space
-namespace XFLR5
+namespace Xfl
 {
     /** @enum The different applications available to the user */
     typedef enum {NOAPP, XFOILANALYSIS, DIRECTDESIGN, INVERSEDESIGN, MIAREX}    enumApp;
@@ -45,6 +44,4 @@ namespace XFLR5
     /** @enum The different formats usable to export data to text format files*/
     typedef enum {TXT, CSV}    enumTextFileType;
 }
-
-#endif // GUI_ENUMS_H
 

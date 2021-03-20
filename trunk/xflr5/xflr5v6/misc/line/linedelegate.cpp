@@ -23,7 +23,7 @@
 
 #include "linedelegate.h"
 #include <misc/line/linecbbox.h>
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <graph/graph_globals.h>
 
 

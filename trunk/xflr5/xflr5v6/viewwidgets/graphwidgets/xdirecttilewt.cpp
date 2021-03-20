@@ -41,7 +41,7 @@ XDirectTileWidget::XDirectTileWidget(QWidget *pParent) :  GraphTileWidget(pParen
     }
 
 
-    m_xflr5App = XFLR5::XFOILANALYSIS;
+    m_xflr5App = Xfl::XFOILANALYSIS;
 
     m_pLegendWidget = new LegendWt(this);
     m_pOpPointWidget = new OpPointWidget(this);

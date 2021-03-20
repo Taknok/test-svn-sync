@@ -28,7 +28,7 @@
 #include <QMenu>
 
 
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <miarex/design/editbodydlg.h>
 #include <miarex/design/gl3dbodydlg.h>
 #include <miarex/design/gl3dwingdlg.h>

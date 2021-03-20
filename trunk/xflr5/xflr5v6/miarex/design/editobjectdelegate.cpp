@@ -26,7 +26,7 @@
 #include <misc/options/settings.h>
 #include <misc/text/intedit.h>
 #include <misc/text/doubleedit.h>
-#include <xflanalysis/analysis3d_enums.h>
+#include <xflcore/core_enums.h>
 
 
 QVector<Foil*> *EditObjectDelegate::s_poaFoil;
@@ -43,7 +43,7 @@ QWidget *EditObjectDelegate::createEditor(QWidget *parent, const QStyleOptionVie
 
     switch (dataType)
     {
-        case XFLR5::BOOLVALUE:
+        case Xfl::BOOLVALUE:
         {
             QComboBox *editor = new QComboBox(parent);
             editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
@@ -52,7 +52,7 @@ QWidget *EditObjectDelegate::createEditor(QWidget *parent, const QStyleOptionVie
             editor->addItem("false");
             return editor;
         }
-        case XFLR5::POLARTYPE:
+        case Xfl::POLARTYPE:
         {
             QComboBox *editor = new QComboBox(parent);
             editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
@@ -64,7 +64,7 @@ QWidget *EditObjectDelegate::createEditor(QWidget *parent, const QStyleOptionVie
             editor->addItem("BETAPOLAR");
             return editor;
         }
-        case XFLR5::ANALYSISMETHOD:
+        case Xfl::ANALYSISMETHOD:
         {
             QComboBox *editor = new QComboBox(parent);
             editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
@@ -74,7 +74,7 @@ QWidget *EditObjectDelegate::createEditor(QWidget *parent, const QStyleOptionVie
             editor->addItem("PANELMETHOD");
             return editor;
         }
-        case XFLR5::PANELDISTRIBUTION:
+        case Xfl::PANELDISTRIBUTION:
         {
             QComboBox *editor = new QComboBox(parent);
             editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
@@ -85,7 +85,7 @@ QWidget *EditObjectDelegate::createEditor(QWidget *parent, const QStyleOptionVie
             editor->addItem("UNIFORM");
             return editor;
         }
-        case XFLR5::REFDIMENSIONS:
+        case Xfl::REFDIMENSIONS:
         {
             QComboBox *editor = new QComboBox(parent);
             editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
@@ -96,7 +96,7 @@ QWidget *EditObjectDelegate::createEditor(QWidget *parent, const QStyleOptionVie
 
             return editor;
         }
-        case XFLR5::BODYTYPE:
+        case Xfl::BODYTYPE:
         {
             QComboBox *editor = new QComboBox(parent);
             editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
@@ -105,7 +105,7 @@ QWidget *EditObjectDelegate::createEditor(QWidget *parent, const QStyleOptionVie
             editor->addItem("NURBS");
             return editor;
         }
-        case XFLR5::FOILNAME:
+        case Xfl::FOILNAME:
         {
             QComboBox *editor = new QComboBox(parent);
             editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
@@ -117,7 +117,7 @@ QWidget *EditObjectDelegate::createEditor(QWidget *parent, const QStyleOptionVie
             }
             return editor;
         }
-        case XFLR5::BOUNDARYCONDITION:
+        case Xfl::BOUNDARYCONDITION:
         {
             QComboBox *editor = new QComboBox(parent);
             editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
@@ -126,7 +126,7 @@ QWidget *EditObjectDelegate::createEditor(QWidget *parent, const QStyleOptionVie
             editor->addItem("NEUMANN");
             return editor;
         }
-        case XFLR5::WINGTYPE:
+        case Xfl::WINGTYPE:
         {
             /*        QComboBox *editor = new QComboBox(parent);
             editor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
@@ -139,13 +139,13 @@ QWidget *EditObjectDelegate::createEditor(QWidget *parent, const QStyleOptionVie
             return editor;*/
             return nullptr;
         }
-        case XFLR5::DOUBLEVALUE:
+        case Xfl::DOUBLEVALUE:
         {
             DoubleEdit *editor = new DoubleEdit(parent);
             editor->setDigits(3);
             return editor;
         }
-        case XFLR5::INTEGER:
+        case Xfl::INTEGER:
         {
             IntEdit *editor = new IntEdit(parent);
             return editor;
@@ -163,19 +163,19 @@ QWidget *EditObjectDelegate::createEditor(QWidget *parent, const QStyleOptionVie
 void EditObjectDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
     int dataType = index.model()->data(index, Qt::UserRole).toInt();
-    if(dataType==XFLR5::INTEGER)
+    if(dataType==Xfl::INTEGER)
     {
         int value = index.model()->data(index, Qt::EditRole).toInt();
         IntEdit *pIE = static_cast<IntEdit*>(editor);
         pIE->setValue(value);
     }
-    else if(dataType==XFLR5::DOUBLEVALUE)
+    else if(dataType==Xfl::DOUBLEVALUE)
     {
         double value = index.model()->data(index, Qt::EditRole).toDouble();
         DoubleEdit *pDE = static_cast<DoubleEdit*>(editor);
         pDE->setValue(value);
     }
-    else if(dataType==XFLR5::STRING)
+    else if(dataType==Xfl::STRING)
     {
         QString strong = index.model()->data(index, Qt::EditRole).toString();
         QLineEdit *pLineEdit = dynamic_cast<QLineEdit*>(editor);
@@ -196,19 +196,19 @@ void EditObjectDelegate::setEditorData(QWidget *editor, const QModelIndex &index
 void EditObjectDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {
     int dataType = index.model()->data(index, Qt::UserRole).toInt();
-    if(dataType==XFLR5::INTEGER)
+    if(dataType==Xfl::INTEGER)
     {
         IntEdit *pIE = static_cast<IntEdit*>(editor);
         int value = pIE->value();
         model->setData(index, value, Qt::EditRole);
     }
-    else if(dataType==XFLR5::DOUBLEVALUE)
+    else if(dataType==Xfl::DOUBLEVALUE)
     {
         DoubleEdit *pDE = static_cast<DoubleEdit*>(editor);
         double value = pDE->value();
         model->setData(index, value, Qt::EditRole);
     }
-    else if(dataType==XFLR5::STRING)
+    else if(dataType==Xfl::STRING)
     {
         QLineEdit *pLineEdit = dynamic_cast<QLineEdit*>(editor);
         model->setData(index, pLineEdit->text(), Qt::EditRole);
@@ -231,12 +231,12 @@ void EditObjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
     int dataType = index.model()->data(index, Qt::UserRole).toInt();
     QString strong;
     QStyleOptionViewItem myOption = option;
-    if(dataType==XFLR5::INTEGER)
+    if(dataType==Xfl::INTEGER)
     {
         myOption.displayAlignment = Qt::AlignRight | Qt::AlignVCenter;
         strong = QString("%L1").arg(index.model()->data(index, Qt::DisplayRole).toInt());
     }
-    else if(dataType==XFLR5::DOUBLEVALUE)
+    else if(dataType==Xfl::DOUBLEVALUE)
     {
         myOption.displayAlignment = Qt::AlignRight | Qt::AlignVCenter;
         double val = index.model()->data(index, Qt::DisplayRole).toDouble();
@@ -245,12 +245,12 @@ void EditObjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
         else if(fabs(val)>100.0)  strong = QString("%L1").arg(val, 0,'f', 2);
         else                      strong = QString("%L1").arg(val, 0,'f', 3);
     }
-    else if(dataType==XFLR5::STRING)
+    else if(dataType==Xfl::STRING)
     {
         myOption.displayAlignment = Qt::AlignLeft | Qt::AlignVCenter;
         strong = index.model()->data(index, Qt::DisplayRole).toString();
     }
-    else if( dataType==XFLR5::REFDIMENSIONS)
+    else if( dataType==Xfl::REFDIMENSIONS)
     {
         myOption.displayAlignment = Qt::AlignLeft | Qt::AlignVCenter;
         strong = index.model()->data(index, Qt::DisplayRole).toString();

@@ -39,7 +39,8 @@ class MOPSOTask2d : public MOPSOTask
         void makeFoil(Particle const &particle, Foil *pFoil) const;
 
     private:
-        void calcFitness(Particle &particle) const override;
+        void calcFitness(Particle *pParticle) const override;
+        double error(Particle const *pParticle, int iObjective) const override;
         double HH(double x, double t1, double t2) const;
 
     private:

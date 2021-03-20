@@ -36,8 +36,8 @@
 #include "panelanalysisdlg.h"
 #include <xflanalysis/plane_analysis/panelanalysis.h>
 #include <xflanalysis/plane_analysis/planetask.h>
-#include <globals/globals.h>
-#include <globals/gui_params.h>
+#include <xflcore/xflcore.h>
+#include <xflcore/gui_params.h>
 #include <miarex/miarex.h>
 #include <miarex/objects3d.h>
 #include <misc/options/units.h>

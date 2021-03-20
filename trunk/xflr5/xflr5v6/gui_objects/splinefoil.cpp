@@ -24,7 +24,7 @@
 
 #include "splinefoil.h"
 #include <xflobjects/objects2d/foil.h>
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <xflobjects/objects_global.h>
 
 /**

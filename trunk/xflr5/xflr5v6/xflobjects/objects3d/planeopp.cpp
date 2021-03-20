@@ -40,8 +40,8 @@ PlaneOpp::PlaneOpp(Plane *pPlane, WPolar *pWPolar, int PanelArraySize)
     m_NStation    = 0;
     m_NPanels     = 0;
 
-    m_WPolarType     = XFLR5::FIXEDSPEEDPOLAR;
-    m_AnalysisMethod = XFLR5::VLMMETHOD;
+    m_WPolarType     = Xfl::FIXEDSPEEDPOLAR;
+    m_AnalysisMethod = Xfl::VLMMETHOD;
 
     m_Weight = 0.0;
 
@@ -278,11 +278,11 @@ bool PlaneOpp::serializePOppWPA(QDataStream &ar, bool bIsStoring)
         readCOLORREF(ar, r,g,b);
 
         ar >>k;
-        if(k==1)      m_WPolarType = XFLR5::FIXEDSPEEDPOLAR;
-        else if(k==2) m_WPolarType = XFLR5::FIXEDLIFTPOLAR;
-        else if(k==4) m_WPolarType = XFLR5::FIXEDAOAPOLAR;
-        else if(k==5) m_WPolarType = XFLR5::BETAPOLAR;
-        else if(k==7) m_WPolarType = XFLR5::STABILITYPOLAR;
+        if(k==1)      m_WPolarType = Xfl::FIXEDSPEEDPOLAR;
+        else if(k==2) m_WPolarType = Xfl::FIXEDLIFTPOLAR;
+        else if(k==4) m_WPolarType = Xfl::FIXEDAOAPOLAR;
+        else if(k==5) m_WPolarType = Xfl::BETAPOLAR;
+        else if(k==7) m_WPolarType = Xfl::STABILITYPOLAR;
         else return false;
 
 
@@ -550,18 +550,18 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
 
         ar << m_bThinSurface << m_bTiltedGeom;
 
-        if(m_WPolarType==XFLR5::FIXEDSPEEDPOLAR)      ar<<1;
-        else if(m_WPolarType==XFLR5::FIXEDLIFTPOLAR)  ar<<2;
-        else if(m_WPolarType==XFLR5::FIXEDAOAPOLAR)   ar<<4;
-        else if(m_WPolarType==XFLR5::BETAPOLAR)       ar<<5;
-        else if(m_WPolarType==XFLR5::STABILITYPOLAR)  ar<<7;
+        if(m_WPolarType==Xfl::FIXEDSPEEDPOLAR)      ar<<1;
+        else if(m_WPolarType==Xfl::FIXEDLIFTPOLAR)  ar<<2;
+        else if(m_WPolarType==Xfl::FIXEDAOAPOLAR)   ar<<4;
+        else if(m_WPolarType==Xfl::BETAPOLAR)       ar<<5;
+        else if(m_WPolarType==Xfl::STABILITYPOLAR)  ar<<7;
         else ar << 1;
 
-        if(m_AnalysisMethod==XFLR5::LLTMETHOD)         ar<<1;
-        else if(m_AnalysisMethod==XFLR5::VLMMETHOD)    ar<<2;
-        else if(m_AnalysisMethod==XFLR5::PANEL4METHOD) ar<<3;
-        else if(m_AnalysisMethod==XFLR5::TRILINMETHOD) ar<<4;
-        else if(m_AnalysisMethod==XFLR5::TRIUNIMETHOD) ar<<5;
+        if(m_AnalysisMethod==Xfl::LLTMETHOD)         ar<<1;
+        else if(m_AnalysisMethod==Xfl::VLMMETHOD)    ar<<2;
+        else if(m_AnalysisMethod==Xfl::PANEL4METHOD) ar<<3;
+        else if(m_AnalysisMethod==Xfl::TRILINMETHOD) ar<<4;
+        else if(m_AnalysisMethod==Xfl::TRIUNIMETHOD) ar<<5;
         else                                           ar<<0;
 
         ar << m_NPanels;
@@ -572,7 +572,7 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
 
         ar << m_Weight;
 
-        if(m_AnalysisMethod!=XFLR5::LLTMETHOD)
+        if(m_AnalysisMethod!=Xfl::LLTMETHOD)
         {
             for (k=0; k<m_NPanels; k++) ar<<float(m_dCp[k])<<float(m_dSigma[k])<<float(m_dG[k]);
         }
@@ -652,18 +652,18 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
         ar >> m_bThinSurface >> m_bTiltedGeom;
 
         ar >> n;
-        if(n==1)      m_WPolarType=XFLR5::FIXEDSPEEDPOLAR;
-        else if(n==2) m_WPolarType=XFLR5::FIXEDLIFTPOLAR;
-        else if(n==4) m_WPolarType=XFLR5::FIXEDAOAPOLAR;
-        else if(n==5) m_WPolarType=XFLR5::BETAPOLAR;
-        else if(n==7) m_WPolarType=XFLR5::STABILITYPOLAR;
+        if(n==1)      m_WPolarType=Xfl::FIXEDSPEEDPOLAR;
+        else if(n==2) m_WPolarType=Xfl::FIXEDLIFTPOLAR;
+        else if(n==4) m_WPolarType=Xfl::FIXEDAOAPOLAR;
+        else if(n==5) m_WPolarType=Xfl::BETAPOLAR;
+        else if(n==7) m_WPolarType=Xfl::STABILITYPOLAR;
 
         ar >> n;
-        if(n==1)      m_AnalysisMethod=XFLR5::LLTMETHOD;
-        else if(n==2) m_AnalysisMethod=XFLR5::VLMMETHOD;
-        else if(n==3) m_AnalysisMethod=XFLR5::PANEL4METHOD;
-        else if(n==4) m_AnalysisMethod=XFLR5::TRILINMETHOD;
-        else if(n==5) m_AnalysisMethod=XFLR5::TRIUNIMETHOD;
+        if(n==1)      m_AnalysisMethod=Xfl::LLTMETHOD;
+        else if(n==2) m_AnalysisMethod=Xfl::VLMMETHOD;
+        else if(n==3) m_AnalysisMethod=Xfl::PANEL4METHOD;
+        else if(n==4) m_AnalysisMethod=Xfl::TRILINMETHOD;
+        else if(n==5) m_AnalysisMethod=Xfl::TRIUNIMETHOD;
 
         ar >> m_NPanels;
         ar >> m_NStation;
@@ -681,7 +681,7 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
         m_dSigma = new double[ulong(m_NPanels)];
         m_dCp    = new double[ulong(m_NPanels)];
 
-        if(m_AnalysisMethod!=XFLR5::LLTMETHOD)
+        if(m_AnalysisMethod!=Xfl::LLTMETHOD)
         {
             for (k=0; k<m_NPanels; k++)
             {
@@ -738,7 +738,7 @@ bool PlaneOpp::serializePOppXFL(QDataStream &ar, bool bIsStoring)
         }
 
         ar >> m_XNP;
-        if(m_WPolarType!=XFLR5::STABILITYPOLAR) m_XNP = 0.0;
+        if(m_WPolarType!=Xfl::STABILITYPOLAR) m_XNP = 0.0;
 
         for(int kv=0; kv<8;kv++)
         {
@@ -777,18 +777,18 @@ void PlaneOpp::getPlaneOppProperties(QString &planeOppProperties, QString length
 
     planeOppProperties.clear();
 
-    if     (m_WPolarType==XFLR5::FIXEDSPEEDPOLAR) strong += "Type 1 ("+QObject::tr("Fixed speed") +")\n";
-    else if(m_WPolarType==XFLR5::FIXEDLIFTPOLAR)  strong += "Type 2 ("+QObject::tr("Fixed lift") +")\n";
-    else if(m_WPolarType==XFLR5::FIXEDAOAPOLAR)   strong += "Type 4 ("+QObject::tr("Fixed angle of attack") +")\n";
-    else if(m_WPolarType==XFLR5::BETAPOLAR)       strong += "Type 5 ("+QObject::tr("Beta range") +")\n";
-    else if(m_WPolarType==XFLR5::STABILITYPOLAR)  strong += "Type 7 ("+QObject::tr("Stability analysis") +")\n";
+    if     (m_WPolarType==Xfl::FIXEDSPEEDPOLAR) strong += "Type 1 ("+QObject::tr("Fixed speed") +")\n";
+    else if(m_WPolarType==Xfl::FIXEDLIFTPOLAR)  strong += "Type 2 ("+QObject::tr("Fixed lift") +")\n";
+    else if(m_WPolarType==Xfl::FIXEDAOAPOLAR)   strong += "Type 4 ("+QObject::tr("Fixed angle of attack") +")\n";
+    else if(m_WPolarType==Xfl::BETAPOLAR)       strong += "Type 5 ("+QObject::tr("Beta range") +")\n";
+    else if(m_WPolarType==Xfl::STABILITYPOLAR)  strong += "Type 7 ("+QObject::tr("Stability analysis") +")\n";
     planeOppProperties += strong;
 
     //    WOppProperties += QObject::tr("Method")+" = ";
-    if     (m_AnalysisMethod==XFLR5::LLTMETHOD)                         planeOppProperties +=QObject::tr("LLT");
-    else if(m_AnalysisMethod==XFLR5::PANEL4METHOD && !m_bThinSurface)   planeOppProperties +=QObject::tr("3D-Panels");
-    else if(m_AnalysisMethod==XFLR5::PANEL4METHOD && m_bVLM1)           planeOppProperties +=QObject::tr("3D-Panels/VLM1");
-    else if(m_AnalysisMethod==XFLR5::PANEL4METHOD && !m_bVLM1)          planeOppProperties +=QObject::tr("3D-Panels/VLM2");
+    if     (m_AnalysisMethod==Xfl::LLTMETHOD)                         planeOppProperties +=QObject::tr("LLT");
+    else if(m_AnalysisMethod==Xfl::PANEL4METHOD && !m_bThinSurface)   planeOppProperties +=QObject::tr("3D-Panels");
+    else if(m_AnalysisMethod==Xfl::PANEL4METHOD && m_bVLM1)           planeOppProperties +=QObject::tr("3D-Panels/VLM1");
+    else if(m_AnalysisMethod==Xfl::PANEL4METHOD && !m_bVLM1)          planeOppProperties +=QObject::tr("3D-Panels/VLM2");
     planeOppProperties +="\n";
 
 
@@ -811,7 +811,7 @@ void PlaneOpp::getPlaneOppProperties(QString &planeOppProperties, QString length
         planeOppProperties += strong +QString::fromUtf8("°")+"\n\n";
     }
 
-    if(m_WPolarType==XFLR5::STABILITYPOLAR)
+    if(m_WPolarType==Xfl::STABILITYPOLAR)
     {
         strong  = QString(QObject::tr("Control value")+" = %1").arg(m_Ctrl,5,'f',2);
         planeOppProperties += strong +"\n";
@@ -868,7 +868,7 @@ void PlaneOpp::getPlaneOppProperties(QString &planeOppProperties, QString length
     }*/
 
 
-    if(m_WPolarType==XFLR5::STABILITYPOLAR)
+    if(m_WPolarType==Xfl::STABILITYPOLAR)
     {
         planeOppProperties += "\n\n";
         planeOppProperties += QObject::tr("Non-dimensional Stability Derivatives:")+"\n";

@@ -33,7 +33,7 @@
 #include <QOpenGLTexture>
 #include <QTimer>
 
-#include <globals/gui_enums.h>
+#include <xflcore/gui_enums.h>
 #include <viewwidgets/glwidgets/arcball.h>
 #include <xflanalysis/analysis3d_params.h>
 

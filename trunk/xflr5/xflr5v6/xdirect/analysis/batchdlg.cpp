@@ -32,8 +32,8 @@
 #include "batchdlg.h"
 #include "relistdlg.h"
 #include <viewwidgets/graphwidgets/graphwt.h>
-#include <globals/globals.h>
-#include <globals/gui_params.h>
+#include <xflcore/xflcore.h>
+#include <xflcore/gui_params.h>
 #include <graph/curve.h>
 #include <graph/graph.h>
 #include <misc/options/settings.h>
@@ -67,7 +67,7 @@ BatchDlg::BatchDlg(QWidget *pParent) : QDialog(pParent)
 
     m_FoilList.clear();
 
-    m_PolarType = XFLR5::FIXEDSPEEDPOLAR;
+    m_PolarType = Xfl::FIXEDSPEEDPOLAR;
 
     m_Mach  = 0.0;
 
@@ -381,7 +381,7 @@ void BatchDlg::alphaLoop()
         str = QString("Alpha = %1\n").arg(alphadeg,0,'f',2);
         outputMsg(str);
 
-        Polar *pCurPolar = Objects2d::createPolar(m_pFoil, XFLR5::FIXEDAOAPOLAR, alphadeg, m_Mach, m_ACrit, m_XTop, m_XBot);
+        Polar *pCurPolar = Objects2d::createPolar(m_pFoil, Xfl::FIXEDAOAPOLAR, alphadeg, m_Mach, m_ACrit, m_XTop, m_XBot);
 
         if(!pCurPolar) return;
 
@@ -514,7 +514,7 @@ void BatchDlg::initDialog()
 
     if(m_ReMin<=0.0) m_ReMin = qAbs(m_ReInc);
 
-    if(m_PolarType!=XFLR5::FIXEDAOAPOLAR)
+    if(m_PolarType!=Xfl::FIXEDAOAPOLAR)
     {
         m_pctrlReMin->setDigits(0);
         m_pctrlReMax->setDigits(0);
@@ -561,10 +561,10 @@ void BatchDlg::initDialog()
     else         m_rbspec2->setChecked(true);
     onAcl();
 
-    if     (m_PolarType==XFLR5::FIXEDSPEEDPOLAR)  m_rbtype1->setChecked(true);
-    else if(m_PolarType==XFLR5::FIXEDLIFTPOLAR)   m_rbtype2->setChecked(true);
-    else if(m_PolarType==XFLR5::RUBBERCHORDPOLAR) m_rbtype3->setChecked(true);
-    else if(m_PolarType==XFLR5::FIXEDAOAPOLAR)    m_rbtype4->setChecked(true);
+    if     (m_PolarType==Xfl::FIXEDSPEEDPOLAR)  m_rbtype1->setChecked(true);
+    else if(m_PolarType==Xfl::FIXEDLIFTPOLAR)   m_rbtype2->setChecked(true);
+    else if(m_PolarType==Xfl::RUBBERCHORDPOLAR) m_rbtype3->setChecked(true);
+    else if(m_PolarType==Xfl::FIXEDAOAPOLAR)    m_rbtype4->setChecked(true);
     onPolarType();
 
 
@@ -594,7 +594,7 @@ void BatchDlg::initDialog()
  */
 void BatchDlg::onAcl()
 {
-    if(m_PolarType==XFLR5::FIXEDAOAPOLAR) return;
+    if(m_PolarType==Xfl::FIXEDAOAPOLAR) return;
     if(m_rbspec1->isChecked())
     {
         m_pctrlSpecVar->setText(tr("Alpha ="));
@@ -626,21 +626,21 @@ void BatchDlg::onPolarType()
         m_pctrlReType->setText(tr("Reynolds ="));
         m_pctrlMaType->setText(tr("Mach ="));
         m_pctrlEditList->setEnabled(true);
-        m_PolarType = XFLR5::FIXEDSPEEDPOLAR;
+        m_PolarType = Xfl::FIXEDSPEEDPOLAR;
     }
     else if(m_rbtype2->isChecked())
     {
         m_pctrlReType->setText(tr("Re.sqrt(Cl) ="));
         m_pctrlMaType->setText(tr("Ma.sqrt(Cl) ="));
         m_pctrlEditList->setEnabled(true);
-        m_PolarType = XFLR5::FIXEDLIFTPOLAR;
+        m_PolarType = Xfl::FIXEDLIFTPOLAR;
     }
     else if(m_rbtype3->isChecked())
     {
         m_pctrlReType->setText(tr("Re.Cl ="));
         m_pctrlMaType->setText(tr("Mach ="));
         m_pctrlEditList->setEnabled(true);
-        m_PolarType = XFLR5::RUBBERCHORDPOLAR;
+        m_PolarType = Xfl::RUBBERCHORDPOLAR;
     }
     else if(m_rbtype4->isChecked())
     {
@@ -648,10 +648,10 @@ void BatchDlg::onPolarType()
         m_pctrlMaType->setText(tr("Mach ="));
         m_pctrlEditList->setEnabled(false);
         m_rbspec1->setChecked(true);
-        m_PolarType = XFLR5::FIXEDAOAPOLAR;
+        m_PolarType = Xfl::FIXEDAOAPOLAR;
     }
 
-    if(m_PolarType!=XFLR5::FIXEDAOAPOLAR)
+    if(m_PolarType!=Xfl::FIXEDAOAPOLAR)
     {
         m_pctrlReMin->setDigits(0);
         m_pctrlReMax->setDigits(0);
@@ -902,7 +902,7 @@ void BatchDlg::readParams()
 {
     m_bAlpha = m_rbspec1->isChecked();
 
-    if(m_PolarType!=XFLR5::FIXEDAOAPOLAR)
+    if(m_PolarType!=Xfl::FIXEDAOAPOLAR)
     {
         m_ReInc = m_pctrlReDelta->value();
         m_ReMax = m_pctrlReMax->value();
@@ -997,7 +997,7 @@ void BatchDlg::ReLoop()
         str = QString("Re=%1   Ma=%2   Nc=%3\n").arg(Reynolds,8,'f',0).arg(Mach,5,'f',3).arg(NCrit,5,'f',2);
         outputMsg(str);
 
-        Polar *pCurPolar = Objects2d::createPolar(m_pFoil, XFLR5::FIXEDSPEEDPOLAR, Reynolds, m_Mach, m_ACrit, m_XTop, m_XBot);
+        Polar *pCurPolar = Objects2d::createPolar(m_pFoil, Xfl::FIXEDSPEEDPOLAR, Reynolds, m_Mach, m_ACrit, m_XTop, m_XBot);
         if(!pCurPolar) return;
 
         m_pXFoilTask->initializeXFoilTask(m_pFoil, pCurPolar, XDirect::s_bViscous, m_bInitBL, m_bFromZero);
@@ -1034,7 +1034,7 @@ void BatchDlg::resetCurves()
     Curve *pCurve1 = m_pRmsGraph->addCurve();
     pCurve0->setName("rms");
     pCurve1->setName("max");
-    pCurve1->setStyle(0);
+    pCurve1->setStipple(0);
     m_pRmsGraph->setAutoX(false);
     m_pRmsGraph->setXMin(0.0);
     m_pRmsGraph->setXMax(double(XFoilTask::s_IterLim));
@@ -1101,7 +1101,7 @@ void BatchDlg::analyze()
 
     if(s_bCurrentFoil)
     {
-        if(m_PolarType!=XFLR5::FIXEDAOAPOLAR) ReLoop();
+        if(m_PolarType!=Xfl::FIXEDAOAPOLAR) ReLoop();
         else                                  alphaLoop();
     }
     else
@@ -1112,7 +1112,7 @@ void BatchDlg::analyze()
 
             strong = tr("Analyzing ")+m_pFoil->name()+("\n");
             outputMsg(strong);
-            if(m_PolarType!=XFLR5::FIXEDAOAPOLAR) ReLoop();
+            if(m_PolarType!=Xfl::FIXEDAOAPOLAR) ReLoop();
             else                                  alphaLoop();
             strong = "\n\n";
             outputMsg(strong);

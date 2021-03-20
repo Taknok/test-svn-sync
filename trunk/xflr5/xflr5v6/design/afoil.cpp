@@ -33,7 +33,7 @@
 #include "afoiltabledlg.h"
 #include "splinectrlsdlg.h"
 #include "lecircledlg.h"
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <globals/mainframe.h>
 #include <xdirect/xdirect.h>
 #include <misc/options/settings.h>

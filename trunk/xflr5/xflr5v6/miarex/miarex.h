@@ -45,7 +45,7 @@ class MainFrame;
 #include <QDialog>
 #include <QSettings>
 
-#include <globals/gui_enums.h>
+#include <xflcore/gui_enums.h>
 
 #include "./analysis/panelanalysisdlg.h"
 #include "./analysis/lltanalysisdlg.h"
@@ -246,7 +246,7 @@ public:
     void drawTextLegend();
     void exportAVLWing_Old(Wing *pWing, QTextStream &out, int index, double y, double Thetay);
     void exportAVLWing(Wing *pWing, QTextStream &out, int index, double y, double Thetay);
-    void exportToTextStream(const WPolar *pWPolar, QTextStream &out, XFLR5::enumTextFileType FileType, bool bDataOnly=false);
+    void exportToTextStream(const WPolar *pWPolar, QTextStream &out, Xfl::enumTextFileType FileType, bool bDataOnly=false);
     void fillComboBoxes(bool bEnable = true);
     void fillWPlrCurve(Curve *pCurve, const WPolar *pWPolar, int XVar, int YVar);
     void fillWOppCurve(WingOpp const*pWOpp, Graph *pGraph, Curve *pCurve);
@@ -278,7 +278,7 @@ public:
     void setPlane(QString PlaneName="");
     void setupLayout();
     void setViewControls();
-    void setView(XFLR5::enumGraphView eView);
+    void setView(Xfl::enumGraphView eView);
     void setWGraphScale();
     void setWGraphTitles(Graph* pGraph);
     void setWPolar(bool bCurrent = true, QString WPlrName = "");
@@ -414,10 +414,10 @@ public:
 
     int m_StabilityResponseType;   /**< 0 = initial conditions, 1=forced response, 2=modal response */
 
-    XFLR5::enumGraphView m_iWPlrView;              /**< defines how many graphs will be displayed in WPolar view */
-    XFLR5::enumGraphView m_iWingView;              /**< defines how many graphs will be displayed in the operating point view */
-    XFLR5::enumGraphView m_iRootLocusView;         /**< defines how many graphs will be displayed in the root locus view */
-    XFLR5::enumGraphView m_iStabTimeView;          /**< defines how many graphs will be displayed in the stability time view */
+    Xfl::enumGraphView m_iWPlrView;              /**< defines how many graphs will be displayed in WPolar view */
+    Xfl::enumGraphView m_iWingView;              /**< defines how many graphs will be displayed in the operating point view */
+    Xfl::enumGraphView m_iRootLocusView;         /**< defines how many graphs will be displayed in the root locus view */
+    Xfl::enumGraphView m_iStabTimeView;          /**< defines how many graphs will be displayed in the stability time view */
 
     int m_InducedDragPoint;     /**< 0 if downwash is at panel's centroid, 1 if averaged over panel length; used in CWing::VLMTrefftz */
     int m_LLTMaxIterations;     /**< the number of iterations for LLT */
@@ -425,7 +425,7 @@ public:
     int m_posAnimateMode;       /**< the current animation aoa index for Mode animation */
     int m_WakeInterNodes;        /**< number of intermediate nodes between wake panels */
 
-    XFLR5::enumMiarexViews m_iView;    /**< defines the currently active view */
+    Xfl::enumMiarexViews m_iView;    /**< defines the currently active view */
 
 
     double m_CurSpanPos;        /**< Span position for Cp Graph  */

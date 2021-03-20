@@ -27,7 +27,7 @@
 #include <QAction>
 
 #include "section2dwt.h"
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <misc/options/settings.h>
 #include <design/gridsettingsdlg.h>
 #include <graph/graph_globals.h>

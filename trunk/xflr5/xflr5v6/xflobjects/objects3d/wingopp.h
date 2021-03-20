@@ -52,7 +52,7 @@
 
 
 #include <xflanalysis/analysis3d_params.h>
-#include <xflanalysis/analysis3d_enums.h>
+#include <xflcore/core_enums.h>
 #include <xflobjects/objects3d/vector3d.h>
 
 class Wing;
@@ -105,7 +105,7 @@ public:
     int m_NStation;        /**< the number of stations along the span */
     int m_nFlaps;        /**< the number of trailing edge flaps */
 
-    XFLR5::enumAnalysisMethod m_AnalysisMethod;   /**< defines by which type of method (LLT, VLM, PANEL), this WingOpp was calculated */
+    Xfl::enumAnalysisMethod m_AnalysisMethod;   /**< defines by which type of method (LLT, VLM, PANEL), this WingOpp was calculated */
 
     double *m_dCp;                           /**< a pointer to the array of pressure coefficient for each panel */
     double *m_dG;                            /**< a pointer to the array of vortice or doublet strengths */

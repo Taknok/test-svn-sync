@@ -31,7 +31,7 @@
 
 
 #include "stabviewdlg.h"
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <misc/options/settings.h>
 #include <misc/newnamedlg.h>
 #include <misc/options/units.h>
@@ -157,7 +157,7 @@ void StabViewDlg::fillEigenThings()
 
     QString ModeDescription = tr("<small>Mode Properties:")+"<br/>";
 
-    if(s_pMiarex->m_pCurPlane && s_pMiarex->m_pCurPOpp && s_pMiarex->m_pCurWPolar->polarType()==XFLR5::STABILITYPOLAR)
+    if(s_pMiarex->m_pCurPlane && s_pMiarex->m_pCurPOpp && s_pMiarex->m_pCurWPolar->polarType()==Xfl::STABILITYPOLAR)
     {
         //We normalize the mode before display and only for display purposes
         u0   = s_pMiarex->m_pCurPOpp->m_QInf;
@@ -330,7 +330,7 @@ void StabViewDlg::onAnimate()
     if(m_pctrlAnimate->isChecked())
     {
 //        pMiarex->m_iView = WSTABVIEW;
-        s_pMiarex->m_iView=XFLR5::W3DVIEW;
+        s_pMiarex->m_iView=Xfl::W3DVIEW;
         s_pMiarex->setControls();
         
         s_pMiarex->m_Modedt = m_pctrlModeStep->value();
@@ -477,14 +477,14 @@ void StabViewDlg::onPlotStabilityGraph()
 
 void StabViewDlg::onModeSelection()
 {
-    if(s_pMiarex->m_iView==XFLR5::STABTIMEVIEW)
+    if(s_pMiarex->m_iView==Xfl::STABTIMEVIEW)
     {
         if(m_pctrlTimeMode1->isChecked())      m_iCurrentMode = 0;
         else if(m_pctrlTimeMode2->isChecked()) m_iCurrentMode = 1;
         else if(m_pctrlTimeMode3->isChecked()) m_iCurrentMode = 2;
         else if(m_pctrlTimeMode4->isChecked()) m_iCurrentMode = 3;
     }
-    else if(s_pMiarex->m_iView==XFLR5::STABPOLARVIEW || s_pMiarex->m_iView==XFLR5::W3DVIEW)
+    else if(s_pMiarex->m_iView==Xfl::STABPOLARVIEW || s_pMiarex->m_iView==Xfl::W3DVIEW)
     {
         if(m_pctrlRLMode1->isChecked())      m_iCurrentMode = 0;
         else if(m_pctrlRLMode2->isChecked()) m_iCurrentMode = 1;
@@ -494,7 +494,7 @@ void StabViewDlg::onModeSelection()
     if(!s_pMiarex->m_bLongitudinal) m_iCurrentMode +=4;
     setMode(m_iCurrentMode);
 
-    if(s_pMiarex->m_iView==XFLR5::STABPOLARVIEW && Graph::isHighLighting())
+    if(s_pMiarex->m_iView==Xfl::STABPOLARVIEW && Graph::isHighLighting())
     {
         s_pMiarex->createStabRLCurves();
         s_pMiarex->updateView();
@@ -978,12 +978,12 @@ void StabViewDlg::setControls()
     m_pctrlLongDynamics->setChecked(s_pMiarex->m_bLongitudinal);
     m_pctrlLatDynamics->setChecked(!s_pMiarex->m_bLongitudinal);
 
-    if(s_pMiarex->m_pCurWPolar && s_pMiarex->m_pCurWPolar->polarType()!=XFLR5::STABILITYPOLAR)
+    if(s_pMiarex->m_pCurWPolar && s_pMiarex->m_pCurWPolar->polarType()!=Xfl::STABILITYPOLAR)
     {
 //        m_pControlModel->setRowCount(0);
     }
 
-    if(s_pMiarex->m_iView==XFLR5::STABTIMEVIEW)
+    if(s_pMiarex->m_iView==Xfl::STABTIMEVIEW)
     {
         m_pctrlStackWidget->setCurrentIndex(0);
         m_pctrlInitialConditionsWidget->setCurrentIndex(s_pMiarex->m_StabilityResponseType);
@@ -992,12 +992,12 @@ void StabViewDlg::setControls()
         m_pctrlForcedResponse->setChecked(s_pMiarex->m_StabilityResponseType==1);
         m_pctrlModalResponse->setChecked(s_pMiarex->m_StabilityResponseType==2);
     }
-    else if(s_pMiarex->m_iView==XFLR5::STABPOLARVIEW)
+    else if(s_pMiarex->m_iView==Xfl::STABPOLARVIEW)
     {
         m_pctrlStackWidget->setCurrentIndex(1);
         m_pctrlModeViewType->setCurrentIndex(0);
     }
-    else if(s_pMiarex->m_iView==XFLR5::W3DVIEW)
+    else if(s_pMiarex->m_iView==Xfl::W3DVIEW)
     {
         m_pctrlStackWidget->setCurrentIndex(1);
         m_pctrlModeViewType->setCurrentIndex(1);
@@ -1040,13 +1040,13 @@ void StabViewDlg::setControls()
     m_pctrlRLMode4->setChecked(m_iCurrentMode%4==3);
 
 
-    bool bStabPOpp = s_pMiarex->m_pCurWPolar && s_pMiarex->m_pCurWPolar->isStabilityPolar() && s_pMiarex->m_pCurPOpp && s_pMiarex->m_iView>=XFLR5::W3DVIEW;
+    bool bStabPOpp = s_pMiarex->m_pCurWPolar && s_pMiarex->m_pCurWPolar->isStabilityPolar() && s_pMiarex->m_pCurPOpp && s_pMiarex->m_iView>=Xfl::W3DVIEW;
     m_pctrlRLMode1->setEnabled(bStabPOpp);
     m_pctrlRLMode2->setEnabled(bStabPOpp);
     m_pctrlRLMode3->setEnabled(bStabPOpp);
     m_pctrlRLMode4->setEnabled(bStabPOpp);
 
-    bool bEnableTimeCtrl = s_pMiarex->m_pCurPOpp && s_pMiarex->m_pCurPOpp->polarType()==XFLR5::STABILITYPOLAR && s_pMiarex->m_iView==XFLR5::STABTIMEVIEW;
+    bool bEnableTimeCtrl = s_pMiarex->m_pCurPOpp && s_pMiarex->m_pCurPOpp->polarType()==Xfl::STABILITYPOLAR && s_pMiarex->m_iView==Xfl::STABTIMEVIEW;
     m_ppbAddCurve->setEnabled(bEnableTimeCtrl);
     m_ppbRenameCurve->setEnabled(m_pcbCurveList->count());
     m_ppbPlotStabGraph->setEnabled(m_pcbCurveList->count());
@@ -1069,7 +1069,7 @@ void StabViewDlg::setControls()
     //   - the polar's type is 7
     //   - we have an active wopp
     //   - the StabilityView is 3
-    bool bEnable3DAnimation = s_pMiarex->m_iView==XFLR5::W3DVIEW && s_pMiarex->m_pCurPOpp && s_pMiarex->m_pCurPOpp->polarType()==XFLR5::STABILITYPOLAR;
+    bool bEnable3DAnimation = s_pMiarex->m_iView==Xfl::W3DVIEW && s_pMiarex->m_pCurPOpp && s_pMiarex->m_pCurPOpp->polarType()==Xfl::STABILITYPOLAR;
     m_pctrlAnimate->setEnabled(bEnable3DAnimation);
     m_pctrlAnimateRestart->setEnabled(bEnable3DAnimation);
     m_pctrlAnimationAmplitude->setEnabled(bEnable3DAnimation);
@@ -1096,10 +1096,10 @@ void StabViewDlg::setTimeCurveStyle(QColor const &Color, int const&Style, int co
             {
                 pCurve = s_pMiarex->m_TimeGraph[ig]->curve(i);
                 pCurve->setColor(Color);
-                pCurve->setStyle(Style);
+                pCurve->setStipple(Style);
                 pCurve->setWidth(Width);
                 pCurve->setVisible(bCurve);
-                pCurve->setPoints(PointStyle);
+                pCurve->setPointStyle(PointStyle);
             }
                         
             return;

@@ -39,7 +39,7 @@
 #include <xflobjects/objects3d/pointmass.h>
 
 
-#include <xflanalysis/analysis3d_enums.h>
+#include <xflcore/core_enums.h>
 
 #define NHOOPPOINTS 67  //used for display and to export the geometry
 #define NXPOINTS 97     //used for display and to export the geometry
@@ -132,9 +132,9 @@ public:
 
     NURBSSurface& nurbs() {return m_SplineSurface;}
 
-    XFLR5::enumBodyLineType &bodyType(){return m_LineType;}
-    bool isFlatPanelType() const {return m_LineType==XFLR5::BODYPANELTYPE;}
-    bool isSplineType()    const {return m_LineType==XFLR5::BODYSPLINETYPE;}
+    Xfl::enumBodyLineType &bodyType(){return m_LineType;}
+    bool isFlatPanelType() const {return m_LineType==Xfl::BODYPANELTYPE;}
+    bool isSplineType()    const {return m_LineType==Xfl::BODYSPLINETYPE;}
 
     NURBSSurface *splineSurface() {return &m_SplineSurface;}
 
@@ -164,7 +164,7 @@ public:
 
     NURBSSurface m_SplineSurface;             /**< the spline surface which defines the left (port) side of the body */
 
-    XFLR5::enumBodyLineType m_LineType;              /**< the type of body surfaces 1=PANELS  2=NURBS */
+    Xfl::enumBodyLineType m_LineType;              /**< the type of body surfaces 1=PANELS  2=NURBS */
 
     int m_iActiveFrame;                          /**< the currently selected Frame for display */
     int m_iHighlightFrame;                    /**< the currently selected Frame to highlight */

@@ -35,7 +35,7 @@
 
 #include <QVector>
 #include <xflobjects/objects3d/panel.h>
-#include <xflanalysis/analysis3d_enums.h>
+#include <xflcore/core_enums.h>
 
 #define VLMHALF 2500
 
@@ -214,8 +214,8 @@ private :
     QVector<double> m_xPointA;        /**< the chordwise relative position of the VLM panel left corner points at side A */
     QVector<double> m_xPointB;        /**< the chordwise relative position of the VLM panel right corner points at side B */
 
-    XFLR5::enumPanelDistribution m_XDistType;            /**< the type of distribution along the Surface's x axis */
-    XFLR5::enumPanelDistribution m_YDistType;            /**< the type of distribution along the Surface's y axis */
+    Xfl::enumPanelDistribution m_XDistType;            /**< the type of distribution along the Surface's x axis */
+    Xfl::enumPanelDistribution m_YDistType;            /**< the type of distribution along the Surface's y axis */
     int m_NXLead;               /**< the number of panels upstream of the flap, i.e. between the leading edge and the hinge */
     int m_NXFlap;               /**< the number of panels on the flap, i.e. between the hinge and the trailing edge */
     int m_NElements;            /**< the number of panel elements constructer on this Surface. */

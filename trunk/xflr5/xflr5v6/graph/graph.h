@@ -220,6 +220,8 @@ public:
     int curveCount() const {return m_oaCurves.size();}
     QVector<Curve*> *getCurves() {return &m_oaCurves;}
 
+    QPointF toClient(double x, double y) const {return QPointF(xToClient(x), yToClient(y));}
+
 
     QColor backgroundColor() const {return m_BkColor;}
     QColor borderColor() const {return m_BorderColor;}

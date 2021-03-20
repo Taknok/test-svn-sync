@@ -26,8 +26,8 @@
 
 #include "gl3dview.h"
 #include <xflanalysis/plane_analysis/lltanalysis.h>
-#include <globals/globals.h>
-#include <globals/trace.h>
+#include <xflcore/xflcore.h>
+#include <xflcore/trace.h>
 
 #include <globals/mainframe.h>
 #include <miarex/miarex.h>
@@ -2702,16 +2702,16 @@ void gl3dView::glMakeWingGeometry(int iWing, Wing const *pWing, Body const *pBod
         planeName = s_pMiarex->m_pCurPlane->planeName();
         switch(pWing->wingType())
         {
-            case XFLR5::MAINWING:
+            case Xfl::MAINWING:
                 textureName = "wing_";
                 break;
-            case XFLR5::SECONDWING:
+            case Xfl::SECONDWING:
                 textureName = "wing2_";
                 break;
-            case XFLR5::ELEVATOR:
+            case Xfl::ELEVATOR:
                 textureName = "elevator_";
                 break;
-            case XFLR5::FIN:
+            case Xfl::FIN:
                 textureName = "fin_";
                 break;
             default:

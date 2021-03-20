@@ -27,7 +27,7 @@
 
 #include "bodytransdlg.h"
 #include <misc/options/units.h>
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <misc/text/intedit.h>
 #include <misc/text/doubleedit.h>
 

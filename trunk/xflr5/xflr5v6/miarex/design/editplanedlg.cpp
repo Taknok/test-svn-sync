@@ -32,7 +32,7 @@
 
 #include "editplanedlg.h"
 
-#include <globals/globals.h>
+#include <xflcore/xflcore.h>
 #include <miarex/design/editobjectdelegate.h>
 #include <miarex/design/wingseldlg.h>
 #include <miarex/view/w3dprefsdlg.h>
@@ -69,7 +69,7 @@ EditPlaneDlg::EditPlaneDlg(QWidget *pParent) : QDialog(pParent)
     m_pModel = nullptr;
 
     m_enumActiveObject = NOOBJECT;
-    m_enumActiveWingType = XFLR5::OTHERWING;
+    m_enumActiveWingType = Xfl::OTHERWING;
     m_iActiveSection   = -1;
     m_iActiveFrame     = -1;
     m_iActivePointMass = -1;
@@ -716,7 +716,7 @@ QList<QStandardItem *> EditPlaneDlg::prepareRow(const QString &object, const QSt
 {
     QList<QStandardItem *> rowItems;
     rowItems << new QStandardItem(object)  << new QStandardItem(field)  << new QStandardItem(value) << new QStandardItem(unit);
-    for(int ii=0; ii<rowItems.size(); ii++) rowItems.at(ii)->setData(XFLR5::STRING, Qt::UserRole);
+    for(int ii=0; ii<rowItems.size(); ii++) rowItems.at(ii)->setData(Xfl::STRING, Qt::UserRole);
     return rowItems;
 }
 
@@ -730,10 +730,10 @@ QList<QStandardItem *> EditPlaneDlg::prepareBoolRow(const QString &object, const
     rowItems.at(2)->setData(value, Qt::DisplayRole);
     rowItems.append(new QStandardItem);
 
-    rowItems.at(0)->setData(XFLR5::STRING, Qt::UserRole);
-    rowItems.at(1)->setData(XFLR5::STRING, Qt::UserRole);
-    rowItems.at(2)->setData(XFLR5::BOOLVALUE, Qt::UserRole);
-    rowItems.at(3)->setData(XFLR5::STRING, Qt::UserRole);
+    rowItems.at(0)->setData(Xfl::STRING, Qt::UserRole);
+    rowItems.at(1)->setData(Xfl::STRING, Qt::UserRole);
+    rowItems.at(2)->setData(Xfl::BOOLVALUE, Qt::UserRole);
+    rowItems.at(3)->setData(Xfl::STRING, Qt::UserRole);
 
     return rowItems;
 }
@@ -748,10 +748,10 @@ QList<QStandardItem *> EditPlaneDlg::prepareIntRow(const QString &object, const 
     rowItems.at(2)->setData(value, Qt::DisplayRole);
     rowItems.append(new QStandardItem);
 
-    rowItems.at(0)->setData(XFLR5::STRING, Qt::UserRole);
-    rowItems.at(1)->setData(XFLR5::STRING, Qt::UserRole);
-    rowItems.at(2)->setData(XFLR5::INTEGER, Qt::UserRole);
-    rowItems.at(3)->setData(XFLR5::STRING, Qt::UserRole);
+    rowItems.at(0)->setData(Xfl::STRING, Qt::UserRole);
+    rowItems.at(1)->setData(Xfl::STRING, Qt::UserRole);
+    rowItems.at(2)->setData(Xfl::INTEGER, Qt::UserRole);
+    rowItems.at(3)->setData(Xfl::STRING, Qt::UserRole);
 
     return rowItems;
 }
@@ -766,10 +766,10 @@ QList<QStandardItem *> EditPlaneDlg::prepareDoubleRow(const QString &object, con
     rowItems.at(2)->setData(value, Qt::DisplayRole);
     rowItems.append(new QStandardItem(unit));
 
-    rowItems.at(0)->setData(XFLR5::STRING, Qt::UserRole);
-    rowItems.at(1)->setData(XFLR5::STRING, Qt::UserRole);
-    rowItems.at(2)->setData(XFLR5::DOUBLEVALUE, Qt::UserRole);
-    rowItems.at(3)->setData(XFLR5::STRING, Qt::UserRole);
+    rowItems.at(0)->setData(Xfl::STRING, Qt::UserRole);
+    rowItems.at(1)->setData(Xfl::STRING, Qt::UserRole);
+    rowItems.at(2)->setData(Xfl::DOUBLEVALUE, Qt::UserRole);
+    rowItems.at(3)->setData(Xfl::STRING, Qt::UserRole);
 
     return rowItems;
 }
@@ -846,23 +846,23 @@ void EditPlaneDlg::fillPlaneMetaData(QStandardItem *item)
                         m_pStruct->expand(m_pModel->indexFromItem(planePointMassFolder.first()));
                     }
                     QList<QStandardItem*> dataItem = prepareRow("", "Tag", pm->tag());
-                    dataItem.at(2)->setData(XFLR5::STRING, Qt::UserRole);
+                    dataItem.at(2)->setData(Xfl::STRING, Qt::UserRole);
                     planePointMassFolder.first()->appendRow(dataItem);
 
                     dataItem = prepareRow("", "mass", QString("%1").arg(pm->mass()*Units::kgtoUnit()), Units::weightUnitLabel());
-                    dataItem.at(2)->setData(XFLR5::DOUBLEVALUE, Qt::UserRole);
+                    dataItem.at(2)->setData(Xfl::DOUBLEVALUE, Qt::UserRole);
                     planePointMassFolder.first()->appendRow(dataItem);
 
                     dataItem = prepareDoubleRow("", "x", pm->position().x*Units::mtoUnit(), Units::lengthUnitLabel());
-                    dataItem.at(2)->setData(XFLR5::DOUBLEVALUE, Qt::UserRole);
+                    dataItem.at(2)->setData(Xfl::DOUBLEVALUE, Qt::UserRole);
                     planePointMassFolder.first()->appendRow(dataItem);
 
                     dataItem = prepareDoubleRow("", "y", pm->position().y*Units::mtoUnit(), Units::lengthUnitLabel());
-                    dataItem.at(2)->setData(XFLR5::DOUBLEVALUE, Qt::UserRole);
+                    dataItem.at(2)->setData(Xfl::DOUBLEVALUE, Qt::UserRole);
                     planePointMassFolder.first()->appendRow(dataItem);
 
                     dataItem = prepareDoubleRow("", "z", pm->position().z*Units::mtoUnit(), Units::lengthUnitLabel());
-                    dataItem.at(2)->setData(XFLR5::DOUBLEVALUE, Qt::UserRole);
+                    dataItem.at(2)->setData(Xfl::DOUBLEVALUE, Qt::UserRole);
                     planePointMassFolder.first()->appendRow(dataItem);
                 }
             }
@@ -877,7 +877,7 @@ void EditPlaneDlg::fillWingTreeView(int iw, QList<QStandardItem*> &planeRootItem
     Wing *pWing = m_pPlane->wing(iw);
 
     QList<QStandardItem*> wingFolder = prepareRow("Wing", "Type", wingType(pWing->wingType()));
-    wingFolder.at(2)->setData(XFLR5::WINGTYPE, Qt::UserRole);
+    wingFolder.at(2)->setData(Xfl::WINGTYPE, Qt::UserRole);
     planeRootItem.first()->appendRow(wingFolder);
 
     if(m_pPlane->wing(m_enumActiveWingType)==pWing)
@@ -889,11 +889,11 @@ void EditPlaneDlg::fillWingTreeView(int iw, QList<QStandardItem*> &planeRootItem
     wingFolder.first()->appendRow(dataItem);
 
     dataItem = prepareRow("Symetric", "Symetric", pWing->isSymetric() ? "true": "false");
-    dataItem.at(2)->setData(XFLR5::BOOLVALUE, Qt::UserRole);
+    dataItem.at(2)->setData(Xfl::BOOLVALUE, Qt::UserRole);
     wingFolder.first()->appendRow(dataItem);
 
     dataItem = prepareDoubleRow("Pitch angle", "Angle", m_pPlane->wingTiltAngle(iw),QString::fromUtf8("°"));
-    dataItem.at(2)->setData(XFLR5::DOUBLEVALUE, Qt::UserRole);
+    dataItem.at(2)->setData(Xfl::DOUBLEVALUE, Qt::UserRole);
     wingFolder.first()->appendRow(dataItem);
 
     QList<QStandardItem*> wingColorFolder = prepareRow("Color");
@@ -916,15 +916,15 @@ void EditPlaneDlg::fillWingTreeView(int iw, QList<QStandardItem*> &planeRootItem
     wingFolder.first()->appendRow(finDataFolder);
     {
         QList<QStandardItem*> dataItem = prepareRow("", "is Fin:", pWing->isFin() ? "true": "false");
-        dataItem.at(2)->setData(XFLR5::BOOLVALUE, Qt::UserRole);
+        dataItem.at(2)->setData(Xfl::BOOLVALUE, Qt::UserRole);
         finDataFolder.first()->appendRow(dataItem);
 
         dataItem = prepareRow("", "is Symetric Fin:", pWing->isSymFin() ? "true": "false");
-        dataItem.at(2)->setData(XFLR5::BOOLVALUE, Qt::UserRole);
+        dataItem.at(2)->setData(Xfl::BOOLVALUE, Qt::UserRole);
         finDataFolder.first()->appendRow(dataItem);
 
         dataItem = prepareRow("", "is Double Fin:", pWing->isDoubleFin() ? "true": "false");
-        dataItem.at(2)->setData(XFLR5::BOOLVALUE, Qt::UserRole);
+        dataItem.at(2)->setData(Xfl::BOOLVALUE, Qt::UserRole);
         finDataFolder.first()->appendRow(dataItem);
     }
 
@@ -932,15 +932,15 @@ void EditPlaneDlg::fillWingTreeView(int iw, QList<QStandardItem*> &planeRootItem
     wingFolder.first()->appendRow(wingPositionFolder);
     {
         dataItem = prepareDoubleRow("", "x", m_pPlane->wingLE(iw).x*Units::mtoUnit(), Units::lengthUnitLabel());
-        dataItem.at(2)->setData(XFLR5::DOUBLEVALUE, Qt::UserRole);
+        dataItem.at(2)->setData(Xfl::DOUBLEVALUE, Qt::UserRole);
         wingPositionFolder.first()->appendRow(dataItem);
 
         dataItem = prepareDoubleRow("", "y", m_pPlane->wingLE(iw).y*Units::mtoUnit(), Units::lengthUnitLabel());
-        dataItem.at(2)->setData(XFLR5::DOUBLEVALUE, Qt::UserRole);
+        dataItem.at(2)->setData(Xfl::DOUBLEVALUE, Qt::UserRole);
         wingPositionFolder.first()->appendRow(dataItem);
 
         dataItem = prepareDoubleRow("", "z", m_pPlane->wingLE(iw).z*Units::mtoUnit(), Units::lengthUnitLabel());
-        dataItem.at(2)->setData(XFLR5::DOUBLEVALUE, Qt::UserRole);
+        dataItem.at(2)->setData(Xfl::DOUBLEVALUE, Qt::UserRole);
         wingPositionFolder.first()->appendRow(dataItem);
     }
 
@@ -952,7 +952,7 @@ void EditPlaneDlg::fillWingTreeView(int iw, QList<QStandardItem*> &planeRootItem
             m_pStruct->expand(m_pModel->indexFromItem(wingInertiaFolder.first()));
         }
         QList<QStandardItem*> dataItem = prepareDoubleRow( "", "Volume mass", pWing->volumeMass()*Units::kgtoUnit(), Units::weightUnitLabel());
-        dataItem.at(2)->setData(XFLR5::DOUBLEVALUE, Qt::UserRole);
+        dataItem.at(2)->setData(Xfl::DOUBLEVALUE, Qt::UserRole);
         wingInertiaFolder.first()->appendRow(dataItem);
 
         for(int iwm=0; iwm<pWing->m_PointMass.size(); iwm++)
@@ -968,23 +968,23 @@ void EditPlaneDlg::fillWingTreeView(int iw, QList<QStandardItem*> &planeRootItem
                 }
 
                 QList<QStandardItem*> dataItem = prepareRow("", "Tag", pm->tag());
-                dataItem.at(2)->setData(XFLR5::STRING, Qt::UserRole);
+                dataItem.at(2)->setData(Xfl::STRING, Qt::UserRole);
                 wingPointMassFolder.first()->appendRow(dataItem);
 
                 dataItem = prepareDoubleRow("", "mass", pm->mass()*Units::kgtoUnit(), Units::weightUnitLabel());
-                dataItem.at(2)->setData(XFLR5::DOUBLEVALUE, Qt::UserRole);
+                dataItem.at(2)->setData(Xfl::DOUBLEVALUE, Qt::UserRole);
                 wingPointMassFolder.first()->appendRow(dataItem);
 
                 dataItem = prepareDoubleRow("", "x", pm->position().x*Units::mtoUnit(), Units::lengthUnitLabel());
-                dataItem.at(2)->setData(XFLR5::DOUBLEVALUE, Qt::UserRole);
+                dataItem.at(2)->setData(Xfl::DOUBLEVALUE, Qt::UserRole);
                 wingPointMassFolder.first()->appendRow(dataItem);
 
                 dataItem = prepareDoubleRow("", "y", pm->position().y*Units::mtoUnit(), Units::lengthUnitLabel());;
-                dataItem.at(2)->setData(XFLR5::DOUBLEVALUE, Qt::UserRole);
+                dataItem.at(2)->setData(Xfl::DOUBLEVALUE, Qt::UserRole);
                 wingPointMassFolder.first()->appendRow(dataItem);
 
                 dataItem = prepareDoubleRow("", "z", pm->position().z*Units::mtoUnit(), Units::lengthUnitLabel());
-                dataItem.at(2)->setData(XFLR5::DOUBLEVALUE, Qt::UserRole);
+                dataItem.at(2)->setData(Xfl::DOUBLEVALUE, Qt::UserRole);
                 wingPointMassFolder.first()->appendRow(dataItem);
             }
         }
@@ -1023,7 +1023,7 @@ void EditPlaneDlg::fillWingTreeView(int iw, QList<QStandardItem*> &planeRootItem
                 sectionFolder.first()->appendRow(dataItem);
 
                 dataItem = prepareRow("", "x-distribution", distributionType(wingsec->m_XPanelDist));
-                dataItem.at(2)->setData(XFLR5::PANELDISTRIBUTION, Qt::UserRole);
+                dataItem.at(2)->setData(Xfl::PANELDISTRIBUTION, Qt::UserRole);
                 sectionFolder.first()->appendRow(dataItem);
 
                 dataItem = prepareIntRow("", "y-panels",wingsec->m_NYPanels);
@@ -1031,14 +1031,14 @@ void EditPlaneDlg::fillWingTreeView(int iw, QList<QStandardItem*> &planeRootItem
 
                 dataItem = prepareRow("", "y-distribution", distributionType(wingsec->m_YPanelDist));
                 sectionFolder.first()->appendRow(dataItem);
-                dataItem.at(2)->setData(XFLR5::PANELDISTRIBUTION, Qt::UserRole);
+                dataItem.at(2)->setData(Xfl::PANELDISTRIBUTION, Qt::UserRole);
 
                 dataItem = prepareRow("", "Left side foil name", wingsec->m_LeftFoilName.length() ? wingsec->m_LeftFoilName : "No left foil defined");
-                dataItem.at(2)->setData(XFLR5::FOILNAME, Qt::UserRole);
+                dataItem.at(2)->setData(Xfl::FOILNAME, Qt::UserRole);
                 sectionFolder.first()->appendRow(dataItem);
 
                 dataItem = prepareRow("", "Right side foil name", wingsec->m_LeftFoilName.length() ? wingsec->m_RightFoilName : "No left foil defined");
-                dataItem.at(2)->setData(XFLR5::FOILNAME, Qt::UserRole);
+                dataItem.at(2)->setData(Xfl::FOILNAME, Qt::UserRole);
                 sectionFolder.first()->appendRow(dataItem);
             }
         }
@@ -1067,7 +1067,7 @@ void EditPlaneDlg::fillBodyTreeView(QStandardItem*planeRootItem)
     bodyFolder.first()->appendRow(dataItem);
 
     dataItem = prepareRow("", "Type", bodyPanelType(pBody->bodyType()));
-    dataItem.at(2)->setData(XFLR5::BODYTYPE, Qt::UserRole);
+    dataItem.at(2)->setData(Xfl::BODYTYPE, Qt::UserRole);
     bodyFolder.first()->appendRow(dataItem);
 
     QList<QStandardItem*> bodyColorFolder = prepareRow("Color");
@@ -1247,22 +1247,22 @@ void EditPlaneDlg::readViewLevel(QModelIndex indexLevel)
 
                 switch(newwing.wingType())
                 {
-                    case XFLR5::MAINWING:
+                    case Xfl::MAINWING:
                     {
                         iWing=0;
                         break;
                     }
-                    case XFLR5::SECONDWING:
+                    case Xfl::SECONDWING:
                     {
                         iWing=1;
                         break;
                     }
-                    case XFLR5::ELEVATOR:
+                    case Xfl::ELEVATOR:
                     {
                         iWing=2;
                         break;
                     }
-                    case XFLR5::FIN:
+                    case Xfl::FIN:
                     {
                         iWing=3;
                         break;
@@ -1671,7 +1671,7 @@ void EditPlaneDlg::identifySelection(const QModelIndex &indexSel)
     // we highlight wing sections and body frames
     // so check if the user's selection is one of these
     m_enumActiveObject = NOOBJECT;
-    m_enumActiveWingType = XFLR5::OTHERWING;
+    m_enumActiveWingType = Xfl::OTHERWING;
     m_iActiveFrame     = -1;
     m_iActiveSection   = -1;
     m_iActivePointMass = -1;
@@ -1755,7 +1755,7 @@ void EditPlaneDlg::identifySelection(const QModelIndex &indexSel)
         else if(object.compare("Body", Qt::CaseInsensitive)==0)
         {
             m_enumActiveObject = BODY;
-            m_enumActiveWingType = XFLR5::OTHERWING;
+            m_enumActiveWingType = Xfl::OTHERWING;
             return;
         }
 
@@ -1769,7 +1769,7 @@ void EditPlaneDlg::onInsertBefore()
 {
     Wing *pWing = m_pPlane->wing(m_enumActiveWingType);
 
-    if(pWing && m_iActiveSection>=0 && m_iActiveSection<pWing->NWingSection() && m_enumActiveWingType!=XFLR5::OTHERWING)
+    if(pWing && m_iActiveSection>=0 && m_iActiveSection<pWing->NWingSection() && m_enumActiveWingType!=Xfl::OTHERWING)
     {
         if(m_iActiveSection==0)
         {
@@ -1858,7 +1858,7 @@ void EditPlaneDlg::onInsertAfter()
 {
     Wing *pWing = m_pPlane->wing(m_enumActiveWingType);
 
-    if(pWing && m_iActiveSection>=0 && m_iActiveSection<pWing->NWingSection() && m_enumActiveWingType!=XFLR5::OTHERWING)
+    if(pWing && m_iActiveSection>=0 && m_iActiveSection<pWing->NWingSection() && m_enumActiveWingType!=Xfl::OTHERWING)
     {
         int n = m_iActiveSection;
 
@@ -1954,7 +1954,7 @@ void EditPlaneDlg::onInsertAfter()
 
 void EditPlaneDlg::onDelete()
 {
-    if(m_iActiveSection>=0 && m_enumActiveWingType!=XFLR5::OTHERWING)
+    if(m_iActiveSection>=0 && m_enumActiveWingType!=Xfl::OTHERWING)
     {
         if(m_iActiveSection==0)
         {

@@ -30,7 +30,7 @@
 
 #include "xfoilanalysisdlg.h"
 #include <xfoil.h>
-#include <globals/gui_params.h>
+#include <xflcore/gui_params.h>
 #include <graph/curve.h>
 #include <graph/graph.h>
 #include <misc/options/settings.h>
@@ -173,7 +173,7 @@ void XFoilAnalysisDlg::initDialog()
     pCurve0->setName(str);
     str = "max";
     pCurve1->setName(str);
-    pCurve1->setStyle(0);
+    pCurve1->setStipple(0);
 
     m_pRmsGraph->setXMin(0.0);
     m_pRmsGraph->setXMax(double(XFoilTask::s_IterLim));

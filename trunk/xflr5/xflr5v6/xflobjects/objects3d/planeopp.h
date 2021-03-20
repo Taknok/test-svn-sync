@@ -83,16 +83,16 @@ public:
     void setCtrl(double c) {m_Ctrl=c;}
     void setQInf(double q) {m_QInf=q;}
 
-    XFLR5::enumAnalysisMethod analysisMethod() const {return m_AnalysisMethod;}
-    bool isLLTMethod() const {return m_AnalysisMethod==XFLR5::LLTMETHOD;}
+    Xfl::enumAnalysisMethod analysisMethod() const {return m_AnalysisMethod;}
+    bool isLLTMethod() const {return m_AnalysisMethod==Xfl::LLTMETHOD;}
 
     QString const &planeName() const {return m_PlaneName;}
     QString const &polarName()const {return m_WPlrName;}
     void setPlaneName(QString const &name) {m_PlaneName=name;}
     void setPolarName(QString const &name) {m_WPlrName=name;}
 
-    XFLR5::enumPolarType const& polarType() const {return m_WPolarType;}
-    void setPolarType(XFLR5::enumPolarType type) {m_WPolarType=type;}
+    Xfl::enumPolarType const& polarType() const {return m_WPolarType;}
+    void setPolarType(Xfl::enumPolarType type) {m_WPolarType=type;}
 
     bool isOut() const {return m_bOut;}
 
@@ -115,13 +115,13 @@ public:
                                double mtoUnit, double kgtoUnit, double mstoUnit);
 
 
-    bool isStabilityPOpp(){return m_WPolarType==XFLR5::STABILITYPOLAR;}
+    bool isStabilityPOpp(){return m_WPolarType==Xfl::STABILITYPOLAR;}
 
     static bool storePOpps() {return s_bStoreOpps;}
     static bool keepOutPOpps() {return s_bKeepOutOpps;}
 
 private:
-    XFLR5::enumAnalysisMethod m_AnalysisMethod;   /**< defines by which type of method (LLT, VLM, PANEL), this WingOpp was calculated */
+    Xfl::enumAnalysisMethod m_AnalysisMethod;   /**< defines by which type of method (LLT, VLM, PANEL), this WingOpp was calculated */
 
     QString m_PlaneName;       /**< the pPane's name to which the PlaneOpp is attached */
     QString m_WPlrName;         /**< the WPolar's name to which the PlaneOpp is attached */
@@ -145,7 +145,7 @@ private:
     bool m_bOut;               /**<  true if the interpolation of viscous properties was outside the Foil Polar mesh */
 
 public:
-    XFLR5::enumPolarType m_WPolarType;   /**< defines the type of the parent WPolar */
+    Xfl::enumPolarType m_WPolarType;   /**< defines the type of the parent WPolar */
     WingOpp *m_pWOpp[MAXWINGS];      /**< An array of pointers to the four WingOpp objects associated to the four wings */
     double m_QInf;                        /**< the freestream velocity */
     double *m_dG;                         /**< the VLM vortex strengths, or the panel's doublet's strengths */
